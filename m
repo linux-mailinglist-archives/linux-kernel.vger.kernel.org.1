@@ -2,135 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D520326D679
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2B7326D691
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:29:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726444AbgIQI06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 04:26:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726400AbgIQI0l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 04:26:41 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 471A6C061788
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 01:26:41 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id m15so735414pls.8
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 01:26:41 -0700 (PDT)
+        id S1726528AbgIQI3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 04:29:09 -0400
+Received: from mail-dm6nam10on2060.outbound.protection.outlook.com ([40.107.93.60]:29760
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726362AbgIQI2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 04:28:40 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mW1rl+UE1jlLbYXBvA+buIrOHCUqRM6btCIvQ4IziQOjNeCCNA5Pb0U6l/YQHFvcSu4N/bmkB1I4SdyYDOzlg89sir/4ldfi6BfHvpoYBnYcf1KUNC7KIjlHQueQroJ5KXpfzjiEHIAZBFELytzx3ZmXIaFqVRCZcajHD1ei0kHS+HRO5/CI2bQ3po8iuk5/k9SjPEwPZrjQOnVQnnmI7YzAc8yhDMPS6jmLGScbRyMswVrc3clWmomu+GwSq+4prJJNjcOq8hhjRZmBcmode9RYYIyXfNGYhYdfsNYZ6pdBYPenI8wk6khMl9jpT1qqpynqr4Imil5M8jnsKkphDQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x+2PecgMNBZG18SbvGq9ipF5iZKRS3JIyLVDPPpzENc=;
+ b=IfRqMMCPTE3MLA8LU90MdZf6pJrVk2U6KCEbOHtDV6THrn+8+vyOiG+pz3BDFPxEZ9kJ9bXl6SP+qjMja2ySNBVDsVsmI0NYPIpoctFuXANpJczDy1PwZLkyYIvoLRRbrBYaXCemrM/PsJizS4FCUTjkroUxKEAbVmT03JGj0UnjNgx8qSo4HsNFpsJ0IYhaH04Yqsf9uorukXok/Ueuj7k5Hx30IeDEVzZ0JnaMEYoHq/2W34mkGEIu9rbDOFAxSDImtTE7MxCy0kCnmvYRnKrlql2kcQaaz28l1GxxqdgDkBOGocd6lFU6720mVx3TDmrjvZ4MWYVxYPa9XaQzOg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Oi8lbN5PJDRQE+iSBWgwU9oDc6wIuFWvYfEWRaH/5pI=;
-        b=M9H5ftN4oUtIuuJDpSKHEGjzTr2hAZfkTMzi1TYBt5HhoiYhKLQdpODJqOWZGu7KPO
-         Qfh5YBhZ+xCfhBsQq0Z4wl+T3e4zywr675DlkDjpNs8/KUhYhYVMIv8n0wEU0V4kmaGX
-         p+uDT85RvLumaoRSR+CjQaxLsoBPVcSjraQgWeSCWTgeHmKIgwTF/a0WQHwFzNOIN3Yq
-         nmpaLDAEt63oFVY8dGVgOEzDP0GzqtXR9yIL4ic9Rs2tC3RWLdjU/dDhJi3kDOjPFvGH
-         bqv3Lx3mTYbKoyKhMIoFqQBFeEC6QS8+cTQTGHo6Dx8TMnVB1i+aFGf8EYtJt+QEAssN
-         KWcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=Oi8lbN5PJDRQE+iSBWgwU9oDc6wIuFWvYfEWRaH/5pI=;
-        b=GNRhhAhvLVikRC40Pw5EVCQ89fw4pMFU1d+Xeoqkawu3A8DsrDqPrQoSFLDi209aHF
-         a+kZHEVD+X+Fl0YMNOSKoGJs0xdXni4OmATX5USqdozJRGQDvCLJLzBBx3r+dxeXgM8A
-         IykCXN/c2vzYSQmvQH9N3Of3g25V1BOuQPe0F2I0ORgDAj48adBagh5TZfnQqhfGZwR1
-         HY3JyXm2drjncmzzWfyMz0rkAyjCAWfos6sIfxhSt2/l10VDJSMuY9yf3Z2Zvv9NlYbR
-         MbzAdVymyoaghS21W+mfIsa7YMnIuBIfsU6ZCTDWasWk29oz3w5pCxbVJJnQ5RrXgwE/
-         vBKQ==
-X-Gm-Message-State: AOAM530lIFScA7CXGKpMYjfxe8/N0AIrO84s4kq59cDIwxp/Dey2lT62
-        rvBgK58wV0M17vGDgYJSaeM7
-X-Google-Smtp-Source: ABdhPJxyAvFUcLLGLA+PHHamxiaJgNx9inQLxxyB39a/BJ6NeF3R8QCWDEDUgz3MUXumpKfbrCmZHQ==
-X-Received: by 2002:a17:90a:160f:: with SMTP id n15mr7325454pja.75.1600331200762;
-        Thu, 17 Sep 2020 01:26:40 -0700 (PDT)
-Received: from Mani-XPS-13-9360.localdomain ([103.59.133.81])
-        by smtp.gmail.com with ESMTPSA id g129sm8233194pfb.9.2020.09.17.01.26.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 01:26:40 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dmitry.baryshkov@linaro.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 3/3] arm64: dts: qcom: qrb5165-rb5: Add USB support
-Date:   Thu, 17 Sep 2020 13:56:22 +0530
-Message-Id: <20200917082622.6823-4-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200917082622.6823-1-manivannan.sadhasivam@linaro.org>
-References: <20200917082622.6823-1-manivannan.sadhasivam@linaro.org>
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x+2PecgMNBZG18SbvGq9ipF5iZKRS3JIyLVDPPpzENc=;
+ b=UWlnuiR2gmSpufTdc/i6yzAz1qcW1yWRjFhZWX29mTz4PIR43KQmv3YsaBYg/Dsj8IhIfQvLMPL8lGjfEv1Xh1NRLNigEBwDxc5P9gFcu7xfm5Rnkg3uWgTNx6MQpFp8bD+KRkk/wFypw+6lm35FIy2bX2iq5x+P+cR/GjzMpws=
+Authentication-Results: linux.alibaba.com; dkim=none (message not signed)
+ header.d=none;linux.alibaba.com; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by BL0PR12MB2419.namprd12.prod.outlook.com (2603:10b6:207:44::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.25; Thu, 17 Sep
+ 2020 08:28:30 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::f8f7:7403:1c92:3a60]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::f8f7:7403:1c92:3a60%6]) with mapi id 15.20.3391.014; Thu, 17 Sep 2020
+ 08:28:30 +0000
+Subject: Re: [PATCH v1] powerplay:hwmgr - modify the return value
+To:     Xiaoliang Pang <dawning.pang@gmail.com>, evan.quan@amd.com,
+        alexander.deucher@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+        kenneth.feng@amd.com, zhengbin13@huawei.com, pelle@vangils.xyz,
+        yttao@amd.com
+Cc:     nirmoy.das@amd.com, JinHuiEric.Huang@amd.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, tianjia.zhang@linux.alibaba.com
+References: <20200917034610.21703-1-dawning.pang@gmail.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <e4ac75c6-ce1f-7d4e-9402-82f499392521@amd.com>
+Date:   Thu, 17 Sep 2020 10:28:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20200917034610.21703-1-dawning.pang@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: AM4PR0202CA0002.eurprd02.prod.outlook.com
+ (2603:10a6:200:89::12) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM4PR0202CA0002.eurprd02.prod.outlook.com (2603:10a6:200:89::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11 via Frontend Transport; Thu, 17 Sep 2020 08:28:28 +0000
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: d62e4742-ec1f-4c1e-2f68-08d85ae3a849
+X-MS-TrafficTypeDiagnostic: BL0PR12MB2419:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL0PR12MB2419CCEB6C82FBC156F50C94833E0@BL0PR12MB2419.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Imx78aEOk184ZznKw6AiniFu/Trl87mbMZvz9aiSpZQIoZOALM1QpPyHM6VMFwNY+6q1YcwWP6HOdRpOiEe96z5JZ0ad8fVrfX8eZ3t2wXdC7L7gjfXq4jzyfM0vjfLEaxgZLc2GzXf4w0wnexkCui1t3Ty+1OgRteJHThbGZ1rzUTyr5eU7v1y8T66M9JK5jrXQ9nPqzEt9Gv6YEyCjSd+SVDhy0Vtm+ELV5408cEdeolHNJPtiE48uHGvtYfHyllR3HjtFA/gI4B9LIQBJm4vK0ck97B1INvaIHUZfYrKSYjUKkNPNi+Z/x+f58BEHWeMoNSH1o8VuqBfbOi9BQoUhDj7QhoMt9bSP57lJ0cd+p0OekdLYTH47W7YPEieX
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(396003)(136003)(366004)(376002)(31696002)(66556008)(186003)(66476007)(16526019)(478600001)(6666004)(316002)(2616005)(8676002)(83380400001)(8936002)(66946007)(86362001)(2906002)(31686004)(6486002)(5660300002)(6636002)(4326008)(36756003)(52116002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: eP3WvTfGSBc1DZ6CqQ7f2yrhHMnWQ1PESVuptRu8eIlecBD3RK7Yos8H8hHSxnToPFlIB4sCd4vW3AVehqf2n2UjVpXTApL3rkwHT2j9LwYBPWKpV+W0ta/nuVqNkOBHkFNpMHe9axjM3ey9rA1R96LUCugrcNEq9lapzq+7XNyHhnfWMRr7ZyyjgedkEKP0AZ1nDKoj51hZZHCAdqI7/FAe3tQKERE+cLpAtTJP/zD4lQyKD8KdJMzagxQUBfgiGUCLM2Yux86++D/A8TL9y5NI4I1GJLqFPg0/5+mhOnTZ7XJyh+Fui3pzPdHdr/mBe8XQbhigktSPHOliiKNbMvqrvEetoEb/uBuzR7ciiUqgdX2AvkZ1t72poqRAsJMWSqtu50S4EgLai1jGD8kfGgFiqGcFlFYPjlbd9VkGrukFDHdX2CKaAHKjNw+cbQRyPb06KsaoYxpQR9X8afEc+X7d5jbNM0005CH4/+qqJ4kI91TIYp6EmOktnRHq2qJnLabNJI6jLfzvtlYfYYyqfO0cKIxOIrOsUH+6KLU/SLfDjgNOhr6sZHxW0CJfu5UMJc924yY32Ie+Y3WAcbs/ORzyknEvUq7J/iZyItiwnHsxc88v7xkScHOeFFcm36etoFpQMWaWohhuZZAj2X0VolzrZP7he4l7qmrh2IPTdBesHM2VelWrSL74vNKAMEAxHryACaV3Go/9lcHkaXrEtg==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d62e4742-ec1f-4c1e-2f68-08d85ae3a849
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2020 08:28:30.3627
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: p5kCpH/lKV+xRE4O9NF/lCNlyeUXoWSYTVv/rFDMZa0iBkuPhA6z48rNk9pBcy7x
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2419
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RB5 makes use of the two USB controllers onboard. USB0 is connected
-to the Type C port and USB1 is connected to USB3.1 HUB which exposes
-following downstream ports:
+Am 17.09.20 um 05:46 schrieb Xiaoliang Pang:
+> modify the return value is -EINVAL
 
-* 2 Type A ports
-* 2 HS/SS ports on the expansion connector
-* USB to LAN device
+Maybe better write something like "The correct return value should be 
+-EINVAL." With that done feel free to add my acked-by.
 
-Hence, enable these two controllers with the required PHYs.
+Christian.
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 46 ++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-index 1528a865f1f8..e020013c1add 100644
---- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-+++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-@@ -684,3 +684,49 @@
- 	vdda-pll-supply = <&vreg_l9a_1p2>;
- 	vdda-pll-max-microamp = <18800>;
- };
-+
-+&usb_1 {
-+	status = "okay";
-+};
-+
-+&usb_1_dwc3 {
-+	dr_mode = "peripheral";
-+};
-+
-+&usb_1_hsphy {
-+	status = "okay";
-+
-+	vdda-pll-supply = <&vreg_l5a_0p88>;
-+	vdda33-supply = <&vreg_l2a_3p1>;
-+	vdda18-supply = <&vreg_l12a_1p8>;
-+};
-+
-+&usb_1_qmpphy {
-+	status = "okay";
-+
-+	vdda-phy-supply = <&vreg_l9a_1p2>;
-+	vdda-pll-supply = <&vreg_l18a_0p92>;
-+};
-+
-+&usb_2 {
-+	status = "okay";
-+};
-+
-+&usb_2_dwc3 {
-+	dr_mode = "host";
-+};
-+
-+&usb_2_hsphy {
-+	status = "okay";
-+
-+	vdda-pll-supply = <&vreg_l5a_0p88>;
-+	vdda33-supply = <&vreg_l2a_3p1>;
-+	vdda18-supply = <&vreg_l12a_1p8>;
-+};
-+
-+&usb_2_qmpphy {
-+	status = "okay";
-+
-+	vdda-phy-supply = <&vreg_l9a_1p2>;
-+	vdda-pll-supply = <&vreg_l18a_0p92>;
-+};
--- 
-2.17.1
+>
+> Fixes: f83a9991648bb("drm/amd/powerplay: add Vega10 powerplay support (v5)")
+> Fixes: 2cac05dee6e30("drm/amd/powerplay: add the hw manager for vega12 (v4)")
+> Cc: Eric Huang <JinHuiEric.Huang@amd.com>
+> Cc: Evan Quan <evan.quan@amd.com>
+> Signed-off-by: Xiaoliang Pang <dawning.pang@gmail.com>
+> ---
+>   drivers/gpu/drm/amd/powerplay/hwmgr/vega10_hwmgr.c | 2 +-
+>   drivers/gpu/drm/amd/powerplay/hwmgr/vega12_hwmgr.c | 2 +-
+>   2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/powerplay/hwmgr/vega10_hwmgr.c b/drivers/gpu/drm/amd/powerplay/hwmgr/vega10_hwmgr.c
+> index c378a000c934..7eada3098ffc 100644
+> --- a/drivers/gpu/drm/amd/powerplay/hwmgr/vega10_hwmgr.c
+> +++ b/drivers/gpu/drm/amd/powerplay/hwmgr/vega10_hwmgr.c
+> @@ -4659,7 +4659,7 @@ static int vega10_display_configuration_changed_task(struct pp_hwmgr *hwmgr)
+>   	if ((data->water_marks_bitmap & WaterMarksExist) &&
+>   			!(data->water_marks_bitmap & WaterMarksLoaded)) {
+>   		result = smum_smc_table_manager(hwmgr, (uint8_t *)wm_table, WMTABLE, false);
+> -		PP_ASSERT_WITH_CODE(result, "Failed to update WMTABLE!", return EINVAL);
+> +		PP_ASSERT_WITH_CODE(result, "Failed to update WMTABLE!", return -EINVAL);
+>   		data->water_marks_bitmap |= WaterMarksLoaded;
+>   	}
+>   
+> diff --git a/drivers/gpu/drm/amd/powerplay/hwmgr/vega12_hwmgr.c b/drivers/gpu/drm/amd/powerplay/hwmgr/vega12_hwmgr.c
+> index a678a67f1c0d..04da52cea824 100644
+> --- a/drivers/gpu/drm/amd/powerplay/hwmgr/vega12_hwmgr.c
+> +++ b/drivers/gpu/drm/amd/powerplay/hwmgr/vega12_hwmgr.c
+> @@ -2390,7 +2390,7 @@ static int vega12_display_configuration_changed_task(struct pp_hwmgr *hwmgr)
+>   			!(data->water_marks_bitmap & WaterMarksLoaded)) {
+>   		result = smum_smc_table_manager(hwmgr,
+>   						(uint8_t *)wm_table, TABLE_WATERMARKS, false);
+> -		PP_ASSERT_WITH_CODE(result, "Failed to update WMTABLE!", return EINVAL);
+> +		PP_ASSERT_WITH_CODE(result, "Failed to update WMTABLE!", return -EINVAL);
+>   		data->water_marks_bitmap |= WaterMarksLoaded;
+>   	}
+>   
 
