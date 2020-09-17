@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2ED126E72C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 23:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D21D426E71A
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 23:07:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726699AbgIQVHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726735AbgIQVHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 17 Sep 2020 17:07:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45424 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:45452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725900AbgIQVHr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726600AbgIQVHr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 17 Sep 2020 17:07:47 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 345FE2137B;
+        by mail.kernel.org (Postfix) with ESMTPSA id 6881A21D7B;
         Thu, 17 Sep 2020 21:07:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1600376867;
-        bh=YG58AqGwRC/b1zVwI1vspT5s6BpQVBYT61T44ZLacOI=;
+        bh=/tExeEJ8/c6egD6eYM7a6JORIf/FIWn57CX8Gi2aybg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E57WJmZQduslOXz7AOIuGgMS6T5RNuKF9YBfPyKXp3v/LJbp8uVTXF9YYxYqD7+oo
-         eKn/LV8O82n1rWn2vJCQlhN7hTCc9qih+c6m7h40k6S/xswfrqbADrkFuRjK9FrNyw
-         leL3cUP1KRZ0ysdtwsB7YX32FUcJ3g0ncW4sE5Gg=
+        b=ij7PiVs6QNZN10LFEowyvgKPywEL8rvgsSMi3bjkqV8/WrDnxSHgbqBO2muzxipt0
+         PNfcHhMxOLnH1UZyoQTJ0lMU8OAjuNY6wJ6GhQ7/4r14od6fULuBS0HmpFxRtRrNcw
+         QN2wvQzJ7KZdjUF+bK/nhRbBFAGA8rmLbWVdF39Y=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -31,11 +31,10 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        sfr@canb.auug.org.au, "Paul E. McKenney" <paulmck@kernel.org>,
-        "# 5 . 8 . x" <stable@vger.kernel.org>
-Subject: [PATCH tip/core/rcu 1/8] rcu-tasks: Prevent complaints of unused show_rcu_tasks_classic_gp_kthread()
-Date:   Thu, 17 Sep 2020 14:07:37 -0700
-Message-Id: <20200917210744.2995-1-paulmck@kernel.org>
+        sfr@canb.auug.org.au, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 2/8] rcu-tasks: Mark variables static
+Date:   Thu, 17 Sep 2020 14:07:38 -0700
+Message-Id: <20200917210744.2995-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200917210652.GA31242@paulmck-ThinkPad-P72>
 References: <20200917210652.GA31242@paulmck-ThinkPad-P72>
@@ -45,35 +44,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Commit 8344496e8b49 ("rcu-tasks: Conditionally compile
-show_rcu_tasks_gp_kthreads()") introduced conditional
-compilation of several functions, but forgot one occurrence of
-show_rcu_tasks_classic_gp_kthread() that causes the compiler to warn of
-an unused static function.  This commit uses "static inline" to avoid
-these complaints and possibly also to avoid emitting an actual definition
-of this function.
+The n_heavy_reader_attempts, n_heavy_reader_updates, and
+n_heavy_reader_ofl_updates variables are not used outside of their
+translation unit, so this commit marks them static.
 
-Fixes: 8344496e8b49 ("rcu-tasks: Conditionally compile show_rcu_tasks_gp_kthreads()")
-Cc: <stable@vger.kernel.org> # 5.8.x
-Reported-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/tasks.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 835e2df..05d3e13 100644
+index 05d3e13..978508e 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -590,7 +590,7 @@ void exit_tasks_rcu_finish(void) __releases(&tasks_rcu_exit_srcu)
- }
+@@ -745,9 +745,9 @@ static DEFINE_PER_CPU(bool, trc_ipi_to_cpu);
  
- #else /* #ifdef CONFIG_TASKS_RCU */
--static void show_rcu_tasks_classic_gp_kthread(void) { }
-+static inline void show_rcu_tasks_classic_gp_kthread(void) { }
- void exit_tasks_rcu_start(void) { }
- void exit_tasks_rcu_finish(void) { exit_tasks_rcu_finish_trace(current); }
- #endif /* #else #ifdef CONFIG_TASKS_RCU */
+ // The number of detections of task quiescent state relying on
+ // heavyweight readers executing explicit memory barriers.
+-unsigned long n_heavy_reader_attempts;
+-unsigned long n_heavy_reader_updates;
+-unsigned long n_heavy_reader_ofl_updates;
++static unsigned long n_heavy_reader_attempts;
++static unsigned long n_heavy_reader_updates;
++static unsigned long n_heavy_reader_ofl_updates;
+ 
+ void call_rcu_tasks_trace(struct rcu_head *rhp, rcu_callback_t func);
+ DEFINE_RCU_TASKS(rcu_tasks_trace, rcu_tasks_wait_gp, call_rcu_tasks_trace,
 -- 
 2.9.5
 
