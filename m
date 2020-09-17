@@ -2,147 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB83B26E54D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7851D26E53C
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726367AbgIQTTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 15:19:42 -0400
-Received: from mga02.intel.com ([134.134.136.20]:20787 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728277AbgIQQR1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 12:17:27 -0400
-IronPort-SDR: UtgzDv6uhSynXL1KJBrA75X0OfX4RZZvwbhFS6hYk0+E45c9w808362+Xqecq38TV3s5mgdqTz
- cYeokyTNcABA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="147424427"
-X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
-   d="scan'208";a="147424427"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 09:11:40 -0700
-IronPort-SDR: 2IvSOp2DGDUp0NJPU/N1ucVV6d2TAuY3TScq5Xr8NAcaY6qiLx+dq52cUFwWYxJI3UaNdsdLmb
- 5OMhNHAa0afA==
-X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
-   d="scan'208";a="287636163"
-Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 09:11:38 -0700
-Date:   Thu, 17 Sep 2020 09:11:36 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Jim Mattson <jmattson@google.com>,
-        Borislav Petkov <bp@alien8.de>, Joerg Roedel <joro@8bytes.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: Re: [PATCH 1/1] KVM: x86: fix MSR_IA32_TSC read for nested migration
-Message-ID: <20200917161135.GC13522@sjchrist-ice>
-References: <20200917110723.820666-1-mlevitsk@redhat.com>
- <20200917110723.820666-2-mlevitsk@redhat.com>
+        id S1726409AbgIQTQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 15:16:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728388AbgIQQSp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 12:18:45 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D292C061226;
+        Thu, 17 Sep 2020 09:18:09 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id z22so4082724ejl.7;
+        Thu, 17 Sep 2020 09:18:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CwsCZGPPc4UztwJYa8ujzMQrMgcPcRryCeMG+FPPd0o=;
+        b=jwvCOxibAW//ZJ3LBKpKwQb+MWCze3cCT9PoT+1UeRVR8pvOmQEH6Lz0gpWi8teTXI
+         iCIZEz41kSt6ulScHaN2iX7F3eNDYCEwt2IPgduOnEaflG6/FmhxGHgmLypim4xYkrI1
+         1XFCG4E6Wuq1bMdQwFjPUQ5/Ac4z9UOoR5809yK+fJZ5plLVpPbWWjxg4k/iwJkkCubH
+         Jd5IAv1HWVV51zc9WFS8Xni8sHBo2LIYkEkd3raAG8yhqOcL7X4pzeW4pxVolnrp36g5
+         zvCA+3Y/YOUTS5WhTgjrK3YN43bVEBWoXRdsJvvziZBWeo5BsEJCpvJSmuPwmxo9v5GY
+         owzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CwsCZGPPc4UztwJYa8ujzMQrMgcPcRryCeMG+FPPd0o=;
+        b=oaydIV1IbxgbqMU0ArJGhn295ehm/UwDNq0oUiGeupoP+WiG4DoVdfeR59+Q7F8DGq
+         W0SMChRPLugFmD6eRPSjQXXXnwTKbE7Gq2KUsjqJMSR0L6NGmuhBQwu/oRR4kjcvSSph
+         1lsdZCXD6YeQIKYxY052ykyH+iCWzv/3lGnuhlJtKVH6zVKKYxba0Fxc3+Hw4/ww7fek
+         haNOA1GPGu6NZo2j1OfgbOg8nMlGjEUr7wuOld7c6KHQUd+IcyYT3IaJYlLW7k12Ja+T
+         lo83AOCQlHx11LnPoTw9PVOH0oyGGvRA3DkOg5zHBZNVS5DSQu+PonBbaV0FufjcXQvK
+         3bHg==
+X-Gm-Message-State: AOAM533gwEshLgd5q/v529bamH3DJok50cAYiCoRNBZYnFmhSk60q2hb
+        8LOUFfH2lJClVdp4zlOKk+o=
+X-Google-Smtp-Source: ABdhPJxlYSJ4C4Rgl+RcS36v/pR8pI8wwmEvOL3Sv1i1PmWpwbGa2nxfM12nDkk7oVdu28K2HrK3yA==
+X-Received: by 2002:a17:906:3913:: with SMTP id f19mr33272392eje.83.1600359487673;
+        Thu, 17 Sep 2020 09:18:07 -0700 (PDT)
+Received: from localhost.localdomain ([85.153.229.188])
+        by smtp.gmail.com with ESMTPSA id bo8sm109242edb.39.2020.09.17.09.18.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 09:18:06 -0700 (PDT)
+From:   Necip Fazil Yildiran <fazilyildiran@gmail.com>
+To:     andy@infradead.org
+Cc:     hdegoede@redhat.com, matan@svgalib.org,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        paul@pgazz.com, jeho@cs.utexas.edu,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Subject: [PATCH] platform/x86: fix kconfig dependency warning for FUJITSU_LAPTOP
+Date:   Thu, 17 Sep 2020 19:16:53 +0300
+Message-Id: <20200917161652.147616-1-fazilyildiran@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917110723.820666-2-mlevitsk@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 02:07:23PM +0300, Maxim Levitsky wrote:
-> MSR reads/writes should always access the L1 state, since the (nested)
-> hypervisor should intercept all the msrs it wants to adjust, and these
-> that it doesn't should be read by the guest as if the host had read it.
-> 
-> However IA32_TSC is an exception.Even when not intercepted, guest still
+When FUJITSU_LAPTOP is enabled and NEW_LEDS is disabled, it results in the
+following Kbuild warning:
 
-Missing a space after the period.
+WARNING: unmet direct dependencies detected for LEDS_CLASS
+  Depends on [n]: NEW_LEDS [=n]
+  Selected by [y]:
+  - FUJITSU_LAPTOP [=y] && X86 [=y] && X86_PLATFORM_DEVICES [=y] && ACPI [=y] && INPUT [=y] && BACKLIGHT_CLASS_DEVICE [=y] && (ACPI_VIDEO [=n] || ACPI_VIDEO [=n]=n)
 
-> reads the value + TSC offset.
-> The write however does not take any TSC offset in the account.
+The reason is that FUJITSU_LAPTOP selects LEDS_CLASS without depending on
+or selecting NEW_LEDS while LEDS_CLASS is subordinate to NEW_LEDS.
 
-s/in the/into
+Honor the kconfig menu hierarchy to remove kconfig dependency warnings.
 
-> This is documented in Intel's PRM and seems also to happen on AMD as well.
+Reported-by: Hans de Goede <hdegoede@redhat.com>
+Fixes: d89bcc83e709 ("platform/x86: fujitsu-laptop: select LEDS_CLASS")
+Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+---
+ drivers/platform/x86/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-Ideally we'd get confirmation from AMD that this is the correct behavior.
+diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+index 40219bba6801..3cd2b99628ba 100644
+--- a/drivers/platform/x86/Kconfig
++++ b/drivers/platform/x86/Kconfig
+@@ -469,6 +469,7 @@ config FUJITSU_LAPTOP
+ 	depends on BACKLIGHT_CLASS_DEVICE
+ 	depends on ACPI_VIDEO || ACPI_VIDEO = n
+ 	select INPUT_SPARSEKMAP
++	select NEW_LEDS
+ 	select LEDS_CLASS
+ 	help
+ 	  This is a driver for laptops built by Fujitsu:
+-- 
+2.25.1
 
-> This creates a problem when userspace wants to read the IA32_TSC value and then
-> write it. (e.g for migration)
-> 
-> In this case it reads L2 value but write is interpreted as an L1 value.
-
-It _may_ read the L2 value, e.g. it's not going to read the L2 value if L1
-is active.
-
-> To fix this make the userspace initiated reads of IA32_TSC return L1 value
-> as well.
-> 
-> Huge thanks to Dave Gilbert for helping me understand this very confusing
-> semantic of MSR writes.
-> 
-> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> ---
->  arch/x86/kvm/x86.c | 19 ++++++++++++++++++-
->  1 file changed, 18 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 17f4995e80a7e..d10d5c6add359 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -2025,6 +2025,11 @@ u64 kvm_read_l1_tsc(struct kvm_vcpu *vcpu, u64 host_tsc)
->  }
->  EXPORT_SYMBOL_GPL(kvm_read_l1_tsc);
->  
-> +static u64 kvm_read_l2_tsc(struct kvm_vcpu *vcpu, u64 host_tsc)
-
-This is definitely not L2 specific.  I would vote to just omit the helper so
-that we don't need to come up with a name that is correct across the board,
-e.g. "raw" is also not quite correct.
-
-An alternative would be to do:
-
-	u64 tsc_offset = msr_info->host_initiated ? vcpu->arch.l1_tsc_offset :
-						    vcpu->arch.tsc_offset;
-
-	msr_info->data = kvm_scale_tsc(vcpu, rdtsc()) + tsc_offset;
-
-Which I kind of like because the behavioral difference is a bit more obvious.
-
-> +{
-> +	return vcpu->arch.tsc_offset + kvm_scale_tsc(vcpu, host_tsc);
-> +}
-> +
->  static void kvm_vcpu_write_tsc_offset(struct kvm_vcpu *vcpu, u64 offset)
->  {
->  	vcpu->arch.l1_tsc_offset = offset;
-> @@ -3220,7 +3225,19 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->  		msr_info->data = vcpu->arch.msr_ia32_power_ctl;
->  		break;
->  	case MSR_IA32_TSC:
-> -		msr_info->data = kvm_scale_tsc(vcpu, rdtsc()) + vcpu->arch.tsc_offset;
-> +		/*
-> +		 * Intel PRM states that MSR_IA32_TSC read adds the TSC offset
-> +		 * even when not intercepted. AMD manual doesn't define this
-> +		 * but appears to behave the same
-> +		 *
-> +		 * However when userspace wants to read this MSR, return its
-> +		 * real L1 value so that its restore will be correct
-> +		 *
-
-Extra line is unnecessary.
-
-> +		 */
-> +		if (msr_info->host_initiated)
-> +			msr_info->data = kvm_read_l1_tsc(vcpu, rdtsc());
-> +		else
-> +			msr_info->data = kvm_read_l2_tsc(vcpu, rdtsc());
->  		break;
->  	case MSR_MTRRcap:
->  	case 0x200 ... 0x2ff:
-> -- 
-> 2.26.2
-> 
