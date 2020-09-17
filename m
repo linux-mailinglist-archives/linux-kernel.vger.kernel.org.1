@@ -2,113 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D064E26E311
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F07AA26E312
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726239AbgIQR7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 13:59:37 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:47606 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726531AbgIQR7P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 13:59:15 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600365554; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=MHJ08k8F25u/dke1/sNKpfE9guwu2CMycQbHzCSGJEE=; b=b8LSpatO1WO5K9eby4gwa+vgXzchhX7f2YAbScuVgp7yiqTOpxIfqLhi1MYABv+B9+NLnSwB
- QCTrDK15eoQDDVFnVv/Rgv8+dFRzik6fS9knjMil5vOBLBwYj4/5PftbZIRNjVBtoHFwGYvc
- jWj3cx/viP1/6pDdSzfe6FA2a58=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5f63a3df6ace44cacc7ffe15 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Sep 2020 17:58:55
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8C5E4C433F1; Thu, 17 Sep 2020 17:58:54 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5AFE6C433C8;
-        Thu, 17 Sep 2020 17:58:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5AFE6C433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sibis@codeaurora.org
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     bjorn.andersson@linaro.org, swboyd@chromium.org
-Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ohad@wizery.com, evgreen@chromium.org,
-        Sibi Sankar <sibis@codeaurora.org>
-Subject: [PATCH v3] remoteproc: qcom_q6v5: Assign mpss region to Q6 before MBA boot
-Date:   Thu, 17 Sep 2020 23:28:40 +0530
-Message-Id: <20200917175840.18708-1-sibis@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
+        id S1726452AbgIQR7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 13:59:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726582AbgIQR7X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 13:59:23 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79EA5C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:59:23 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id b19so2791720lji.11
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:59:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=s/ee+MYUELRkezGa0AUSkRTrQNoSLc8QIm1BNLJSq/s=;
+        b=RLSV25HCpGRUhd6y3DrJ4YHZmVRNWzpLTarogx3oqWBFjt71dM5nd9UPnIIknkEPJD
+         dz5BQOhcGH+uQVxjuEJL1U9KU+Tt7MI90t6YY5Mu9bW3+PKDrfkGMHhB8Rv695yYhFwx
+         VEQdE5iC2UtXW5a2pIMCOMRcWByCtfO32odtM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s/ee+MYUELRkezGa0AUSkRTrQNoSLc8QIm1BNLJSq/s=;
+        b=kFxgGNUhcSa6xM8/i8dP8RW6Nt6jC0un4l6k666cFUuSOq7Ii8T+Oxltas9C90ZnmK
+         6FwW/qpWy+M0cV0/x/CPGdzjwhtJjvO2GaBhICEd7/pXVrza+pCNs1i+awgNyXMwRT9d
+         TuS57psQDMLa2N99I1zUld3pDmDEJxbl639ifibz5SXTZF0wvR7WBCm8iYz5NWOte7eh
+         5aA1eXFmyDDDQKP/UK8LEImxshoyVgrZ3A2M3A/cshaWuXSvqzq0TQNHIK4ej6gRjcZ2
+         eubgFZQAZibjriPbY9m+hAx2yXAZz29zS/4e+NUcFpjfNgmUERKoRPkM6mB+pbkNvb8O
+         F2hQ==
+X-Gm-Message-State: AOAM533KXNryOq2n/DMEHXRoYH7MaBJy9zfC87mxCRxOPCttrTMMqpHW
+        LalifMy4/xql8ZGVeuugSods70rr+enbCA==
+X-Google-Smtp-Source: ABdhPJyuRtE8JkBZpy/lbIZjTu0ZWNPWB7cvKAnfnpNkSehBaRHAYz6Vs4heEZgpq3ScDr0gbXaiyw==
+X-Received: by 2002:a2e:9d9a:: with SMTP id c26mr9790235ljj.227.1600365561673;
+        Thu, 17 Sep 2020 10:59:21 -0700 (PDT)
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
+        by smtp.gmail.com with ESMTPSA id z28sm56420ljn.46.2020.09.17.10.59.16
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Sep 2020 10:59:17 -0700 (PDT)
+Received: by mail-lj1-f170.google.com with SMTP id y4so2805297ljk.8
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:59:16 -0700 (PDT)
+X-Received: by 2002:a05:651c:514:: with SMTP id o20mr11283202ljp.312.1600365556555;
+ Thu, 17 Sep 2020 10:59:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200917131644.25838-1-john.ogness@linutronix.de> <20200917131644.25838-4-john.ogness@linutronix.de>
+In-Reply-To: <20200917131644.25838-4-john.ogness@linutronix.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 17 Sep 2020 10:59:00 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiUp2=szOdVP8A7+iG8iguNvHo4gnU6f9QBuj1hh3DBvA@mail.gmail.com>
+Message-ID: <CAHk-=wiUp2=szOdVP8A7+iG8iguNvHo4gnU6f9QBuj1hh3DBvA@mail.gmail.com>
+Subject: Re: [PATCH printk 3/3] printk: remove dict ring
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kexec@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On secure devices which support warm reset, the MBA firmware requires
-access to the modem region to clear them out. Hence provide Q6 access
-to this region before MBA boot. This will be a nop during a modem SSR.
+On Thu, Sep 17, 2020 at 6:16 AM John Ogness <john.ogness@linutronix.de> wrote:
+>
+> Since there is no code that will ever store anything into the dict
+> ring, remove it. If any future dictionary properties are to be
+> added, these should be added to the struct printk_info.
 
-Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
----
+Ack. I'm very happy to see the dictionary stuff go. It was one of
+those over-designed things in the printk rewrite years and years ago.
 
-V3:
- * Fixup comment style [Stephen] 
-
-V2:
- * Fixup comments [Bjorn] 
-
- drivers/remoteproc/qcom_q6v5_mss.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
-index c401bcc263fa..eb3457a6c3b7 100644
---- a/drivers/remoteproc/qcom_q6v5_mss.c
-+++ b/drivers/remoteproc/qcom_q6v5_mss.c
-@@ -931,6 +931,17 @@ static int q6v5_mba_load(struct q6v5 *qproc)
- 		goto assert_reset;
- 	}
- 
-+	/*
-+	 * Some versions of the MBA firmware will upon boot wipe the MPSS region as well, so provide
-+	 * the Q6 access to this region.
-+	 */
-+	ret = q6v5_xfer_mem_ownership(qproc, &qproc->mpss_perm, false, true,
-+				      qproc->mpss_phys, qproc->mpss_size);
-+	if (ret) {
-+		dev_err(qproc->dev, "assigning Q6 access to mpss memory failed: %d\n", ret);
-+		goto disable_active_clks;
-+	}
-+
- 	/* Assign MBA image access in DDR to q6 */
- 	ret = q6v5_xfer_mem_ownership(qproc, &qproc->mba_perm, false, true,
- 				      qproc->mba_phys, qproc->mba_size);
-@@ -1135,10 +1146,9 @@ static int q6v5_mpss_load(struct q6v5 *qproc)
- 			max_addr = ALIGN(phdr->p_paddr + phdr->p_memsz, SZ_4K);
- 	}
- 
--	/**
-+	/*
- 	 * In case of a modem subsystem restart on secure devices, the modem
--	 * memory can be reclaimed only after MBA is loaded. For modem cold
--	 * boot this will be a nop
-+	 * memory can be reclaimed only after MBA is loaded.
- 	 */
- 	q6v5_xfer_mem_ownership(qproc, &qproc->mpss_perm, true, false,
- 				qproc->mpss_phys, qproc->mpss_size);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+              Linus
