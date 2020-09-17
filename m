@@ -2,142 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A54626DFB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 17:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C893926DFBA
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 17:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728242AbgIQPbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 11:31:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727952AbgIQP3v (ORCPT
+        id S1728208AbgIQPce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 11:32:34 -0400
+Received: from smtprelay0233.hostedemail.com ([216.40.44.233]:56994 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728125AbgIQPb2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 11:29:51 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E546FC06174A;
-        Thu, 17 Sep 2020 08:27:31 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id r24so2412398ljm.3;
-        Thu, 17 Sep 2020 08:27:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ayxZ/apLrEsT1wotEfQehRQnLkINjTczpn8uLHl9SZs=;
-        b=DJpJIBCp+9h8BU3cFFtUV53GeJ1YpgZyucs9afKIg9xFPsx0DlCXdV932Np4NZFmK3
-         gXfukvFcrdbhALcvHA+QnWEYJYgqvj1L7ID3W6omqTkSPJqWfCmtKhUdfR6qSfKwNBgG
-         2Khy3ine7vO4vT62jVIV7SY7vJvGf7rs4ZVPukmiaZJBCpSN54a0gIHtxpAlKc92kkr1
-         EwRiq3yWmy3l/hBHtOIhkt0kDPETCJsDKEE4LqfbnmFqRDZcZ4/83sJULzEd31ZouAk8
-         tKyv0e/3rLkEnXYG1RyHC/yHnWOalPkl4Dw4vECb+JkkRBnjIJIjLWvLDmQjMf/yKERS
-         G2Ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ayxZ/apLrEsT1wotEfQehRQnLkINjTczpn8uLHl9SZs=;
-        b=sdfY67Yq3A+vJeQAs8epBPuLqMc0KBNsEpdh+eCf6Sr+qff8cbfgxol1PtHZIMZtnW
-         a4gaYlRnDr1202LyBNLLecfvr4cxXZTX/wdH7tqeGBu0B8eBf3w6ZOylSfDiLEkVGyWz
-         mUUU995h/mQl3yJ8UWqmkXZzDv0Ga+dKK0PHQI8SFx19ozZcMYJep1xRX6rNh1pCSyYT
-         UWYECKnGJBZCBRF9Sk9DokqA2XKDSye0WxqfxoPnSu4gp+hqhWbYsEWy3tl5tof1Xdhz
-         UwM2uL7ajvQkOcqg26ecwLhPJ3lDoUbN5HZcecKZnAmq5wwNKVY6Oae79bs8sjUL8wDK
-         Jllg==
-X-Gm-Message-State: AOAM531oADnpq9B/GWNK6vbS+XcULuiR0907/iluSZsGhhV0j0Y+rSF1
-        UBT9CVM+Oo/E3yrdi5sZ+AztsTPpnvc=
-X-Google-Smtp-Source: ABdhPJy8d99/Pbv+6/CzgFnGRxlv4uWxZuQ7RuLtQMhsj3Rb+/ghDu8lW3+99++S72u7C/wjlae9QQ==
-X-Received: by 2002:a2e:8619:: with SMTP id a25mr10922980lji.390.1600356450050;
-        Thu, 17 Sep 2020 08:27:30 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id y21sm6119219ljk.110.2020.09.17.08.27.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Sep 2020 08:27:29 -0700 (PDT)
-Subject: Re: [PATCH v7 06/34] i2c: tegra: Remove
- i2c_dev.clk_divisor_non_hs_mode member
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200908224006.25636-1-digetx@gmail.com>
- <20200908224006.25636-7-digetx@gmail.com> <20200917112541.GR3515672@ulmo>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <716583f1-60df-f576-16d3-dbb72d12fa54@gmail.com>
-Date:   Thu, 17 Sep 2020 18:27:28 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 17 Sep 2020 11:31:28 -0400
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave01.hostedemail.com (Postfix) with ESMTP id CAB7D1813B78B;
+        Thu, 17 Sep 2020 15:30:01 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id F3AFD182CED28;
+        Thu, 17 Sep 2020 15:28:14 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3167:3352:3622:3867:3868:3873:3874:4321:5007:8603:10004:10400:10848:11026:11232:11658:11914:12043:12297:12438:12740:12760:12895:13019:13069:13255:13311:13357:13439:14659:14721:21080:21627:30025:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: shock03_2c15c0f27123
+X-Filterd-Recvd-Size: 1891
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf07.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 17 Sep 2020 15:28:13 +0000 (UTC)
+Message-ID: <707865b7ccc9168177940cd4f63cf7cb9ead2d63.camel@perches.com>
+Subject: Re: [PATCH v2] EDAC/mc_sysfs: Add missing newlines when printing
+ {max,dimm}_location
+From:   Joe Perches <joe@perches.com>
+To:     Xiongfeng Wang <wangxiongfeng2@huawei.com>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     mchehab@kernel.org, tony.luck@intel.com,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 17 Sep 2020 08:28:12 -0700
+In-Reply-To: <591e613e-0b53-028f-08fd-3d62a35b8c4f@huawei.com>
+References: <1600051734-8993-1-git-send-email-wangxiongfeng2@huawei.com>
+         <20200916170052.GO2643@zn.tnic>
+         <591e613e-0b53-028f-08fd-3d62a35b8c4f@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <20200917112541.GR3515672@ulmo>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-17.09.2020 14:25, Thierry Reding пишет:
-> On Wed, Sep 09, 2020 at 01:39:38AM +0300, Dmitry Osipenko wrote:
->> The "non_hs_mode" divisor value is fixed, thus there is no need to have
->> the variable i2c_dev.clk_divisor_non_hs_mode struct member. Let's remove
->> it and move the mode selection into tegra_i2c_init() where it can be
->> united with the timing selection.
->>
->> Reviewed-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  drivers/i2c/busses/i2c-tegra.c | 46 ++++++++++++++++------------------
->>  1 file changed, 21 insertions(+), 25 deletions(-)
->>
->> diff --git a/drivers/i2c/busses/i2c-tegra.c b/drivers/i2c/busses/i2c-tegra.c
->> index 720a75439e91..85ed0e02d48c 100644
->> --- a/drivers/i2c/busses/i2c-tegra.c
->> +++ b/drivers/i2c/busses/i2c-tegra.c
->> @@ -250,7 +250,6 @@ struct tegra_i2c_hw_feature {
->>   * @msg_buf_remaining: size of unsent data in the message buffer
->>   * @msg_read: identifies read transfers
->>   * @bus_clk_rate: current I2C bus clock rate
->> - * @clk_divisor_non_hs_mode: clock divider for non-high-speed modes
->>   * @is_multimaster_mode: track if I2C controller is in multi-master mode
->>   * @tx_dma_chan: DMA transmit channel
->>   * @rx_dma_chan: DMA receive channel
->> @@ -281,7 +280,6 @@ struct tegra_i2c_dev {
->>  	size_t msg_buf_remaining;
->>  	int msg_read;
->>  	u32 bus_clk_rate;
->> -	u16 clk_divisor_non_hs_mode;
->>  	bool is_multimaster_mode;
->>  	struct dma_chan *tx_dma_chan;
->>  	struct dma_chan *rx_dma_chan;
->> @@ -783,6 +781,7 @@ static int tegra_i2c_init(struct tegra_i2c_dev *i2c_dev)
->>  	u32 val;
->>  	int err;
->>  	u32 clk_divisor, clk_multiplier;
->> +	u32 non_hs_mode;
->>  	u32 tsu_thd;
->>  	u8 tlow, thigh;
->>  
->> @@ -805,24 +804,33 @@ static int tegra_i2c_init(struct tegra_i2c_dev *i2c_dev)
->>  	if (i2c_dev->is_vi)
->>  		tegra_i2c_vi_init(i2c_dev);
->>  
->> -	/* Make sure clock divisor programmed correctly */
->> -	clk_divisor = FIELD_PREP(I2C_CLK_DIVISOR_HSMODE,
->> -				 i2c_dev->hw->clk_divisor_hs_mode) |
->> -		      FIELD_PREP(I2C_CLK_DIVISOR_STD_FAST_MODE,
->> -				 i2c_dev->clk_divisor_non_hs_mode);
->> -	i2c_writel(i2c_dev, clk_divisor, I2C_CLK_DIVISOR);
->> -
->> -	if (i2c_dev->bus_clk_rate > I2C_MAX_STANDARD_MODE_FREQ &&
->> -	    i2c_dev->bus_clk_rate <= I2C_MAX_FAST_MODE_PLUS_FREQ) {
->> +	switch (i2c_dev->bus_clk_rate) {
->> +	case I2C_MAX_STANDARD_MODE_FREQ + 1 ... I2C_MAX_FAST_MODE_PLUS_FREQ:
-> 
-> Is there are particular reason for switching the simple conditional to a
-> switch here? The old variant looks much easier to understand to me.
+On Thu, 2020-09-17 at 19:38 +0800, Xiongfeng Wang wrote:
+> On 2020/9/17 1:00, Borislav Petkov wrote:
+> > On Mon, Sep 14, 2020 at 10:48:54AM +0800, Xiongfeng Wang wrote:
+> > > @@ -813,15 +817,21 @@ static ssize_t mci_max_location_show(struct device *dev,
+> > >  				     char *data)
+> > >  {
+> > >  	struct mem_ctl_info *mci = to_mci(dev);
+> > > -	int i;
+> > > +	int i, n;
+> > >  	char *p = data;
+> > > +	unsigned int len = PAGE_SIZE;
+> > >  
+> > >  	for (i = 0; i < mci->n_layers; i++) {
+> > > -		p += sprintf(p, "%s %d ",
+> > > +		n = snprintf(p, len, "%s %d ",
+> > >  			     edac_layer_name[mci->layers[i].type],
+> > >  			     mci->layers[i].size - 1);
+> > > +		p += n;
+> > > +		len -= n;
+> > 
+> > What happens if that subtraction causes len to wrap around and become a
+> > huge positive unsigned integer?
 
-The reason is make it readable :) For me it's too difficult to read > <=
-&& { } + no proper indentation.
+If you're really concerned about wrapping, use scnprintf.
 
-The switches are more suitable for ranges, IMO. Especially when there
-are multiple ranges, and there could be more ranges in the future in
-this code.
+
+
