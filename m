@@ -2,328 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0E3D26E774
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 23:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73E3026E77D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 23:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726037AbgIQVfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 17:35:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725844AbgIQVfW (ORCPT
+        id S1726065AbgIQViy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 17:38:54 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:40507 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725844AbgIQVix (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 17:35:22 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7BC5C06174A;
-        Thu, 17 Sep 2020 14:35:21 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id t13so3813254ile.9;
-        Thu, 17 Sep 2020 14:35:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=by2g0TdnYiEszXl4WLhtiW60xcXdnIiMaC0I8Ggo5jc=;
-        b=BUwjTbRju7vioALgovqqOZ5OYhAoePzz562wTgH35EKh7TvoLIZtCAQPZ0RRaCcvQv
-         UtVMcoIhH+vEqNMQksplsOMeefbQ4cgWKf+086lylkp/TDksR/I3G2HqrUC7ZPqdxBxJ
-         Sw6Vpmfh9oH5jUcHa2n3zfNkMvuAtfytdLR39LlYhWskERueMp4UdDP/s6/m6qnEUnK5
-         pAIT8QHJudN02Pn7i+ELbvcln0PVHdd/ZzfBJrh84/qrMRarM6sqlapVXBqAsz0yaTaA
-         OPRgImmHkoLSHAK8YAPp3HdnPgw29ECtzHl+kty0l+jm5S5/pAhDYG6gyGgRKq6G/hdc
-         61zg==
+        Thu, 17 Sep 2020 17:38:53 -0400
+Received: by mail-pl1-f194.google.com with SMTP id bd2so1820857plb.7;
+        Thu, 17 Sep 2020 14:38:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=by2g0TdnYiEszXl4WLhtiW60xcXdnIiMaC0I8Ggo5jc=;
-        b=SVkBedKpe1BKY2JBxMdVjl3hlQBqtu/wcxfrjtoXOzdypJo/pxB127kTI32FGU0X1t
-         VZeCd8p5HcHFbzGfmGJmnEOO8XCKMXJc89U6TslEay1xB/XcKSSArrWgFUJla6R3SmlL
-         QlQXzKtJt2qgiG9zg9cbaDBazVPvAYbP2QOUA9BIlgZBBwp5Bj5Wt3GdO3ZNOZ2dX9US
-         1KrNBNl2yJvKuFEYJISjVOyDxReCoFqtFsEcBokCfBfMOIonWbAygJrR7V5MOM3jU8yB
-         kwpDbuj6KyTOAyn9o8Vjpsz0OpupStk0Y0WYrTArDYpfQS63Hd9yKbxclfhhqfyQ6URf
-         xSxg==
-X-Gm-Message-State: AOAM533jx1f9YEw0dNiqXOH8Sjz6O2a97k8TIt2bzRiIrc7+gFCkURtg
-        rQoN8d1mUxUOdGAoW2+Nu87IM9pS8jDujtXli/U=
-X-Google-Smtp-Source: ABdhPJwTE5EgDscBPw77yttngOKRXNWOVWKXeVum9HHeyZpCIHPUGp1tlUYV73LxsKOrk/IQe9Xn3Vbk+wxt0KFfHTQ=
-X-Received: by 2002:a92:a307:: with SMTP id a7mr6926461ili.97.1600378520588;
- Thu, 17 Sep 2020 14:35:20 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=DQO2QRePQlXia+QUwE8Gms1jAKPwrC5Qe3OxLi8PShE=;
+        b=G3n2Q6vqPcrDqw0MkX4uqqODpzHEeKopGNNNNPzLFzhmRn0ItxDBVkRJPiPPIfQw9e
+         PaG7s/cIZI7e3/UE3KpGRN30XAn+La3a+OF9eh7adb3FE+hi3JYa/dYFUiUNk3pq1Wyc
+         ydGKCDwI31/42iuVRrq93Oy1kS7jVnHAqqC/XqeJhvYUdzco3RTxRkRKPMblTB8oSLD4
+         UtDzmNHkIyshPzbXa8AAUx4KiSvhtWmK15YlwoBN7leQ2jpyLJsxViGHZQoWvYCwtmCn
+         mjpK7hjTIueOAaIHg3fDx779cBQksDRe22Uei7ynftAmUSs8tEOgOApv0kf0AB27rk4n
+         SfNw==
+X-Gm-Message-State: AOAM5312h9+aUb779J+pPjgpARiW4DrtcW9xcEiLIqebEPiQEUMnktBe
+        as9lpGolkgDww4DnGgmHjrg=
+X-Google-Smtp-Source: ABdhPJy9tI1kYYlurN/DC7b21ka7aeE44Qh2Bs0MiFQUvmjkt1WSeRd/hJ1p+SAibgsgvWZfXURznw==
+X-Received: by 2002:a17:902:e9d3:b029:d1:f370:1e90 with SMTP id 19-20020a170902e9d3b02900d1f3701e90mr8082063plk.76.1600378732449;
+        Thu, 17 Sep 2020 14:38:52 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:1162:1ac0:17a6:4cc6:d1ef])
+        by smtp.gmail.com with ESMTPSA id c7sm615323pfj.100.2020.09.17.14.38.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 14:38:51 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 14:38:50 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Tom Rix <trix@redhat.com>
+Cc:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
+        matthew.gerlach@intel.com
+Subject: Re: [PATCH v2 1/1] fpga: dfl: afu: harden port enable logic
+Message-ID: <20200917213850.GA30570@archbook>
+References: <20200917183219.3603-1-russell.h.weight@intel.com>
+ <7f181203-c164-4e6e-c710-1096b0aa13b8@redhat.com>
 MIME-Version: 1.0
-References: <20200911194549.12780-1-david.e.box@linux.intel.com>
- <20200911194549.12780-4-david.e.box@linux.intel.com> <6e3738db-bfff-7fd2-65e6-bd0d126f9eaa@redhat.com>
- <CAKgT0UcxSwRseMBdMd0_HDUS=JGZDAZnAy-tkLkB-hMXLYtucw@mail.gmail.com>
- <CAKgT0UfM0534GZcKzgTeEa3nq2+FWHk4PfA593smGOLun4d97A@mail.gmail.com> <67f5816a-1307-da81-ff71-cea1f907b58b@redhat.com>
-In-Reply-To: <67f5816a-1307-da81-ff71-cea1f907b58b@redhat.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Thu, 17 Sep 2020 14:35:09 -0700
-Message-ID: <CAKgT0UdvuLuDRnE5nzOr6fWkC9TJVQNRa+kf1Pcb9mUxGMBXPw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] platform/x86: Intel PMT Crashlog capability driver
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "David E. Box" <david.e.box@linux.intel.com>,
-        Lee Jones <lee.jones@linaro.org>, dvhart@infradead.org,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        Andy Shevchenko <andy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7f181203-c164-4e6e-c710-1096b0aa13b8@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 5:12 AM Hans de Goede <hdegoede@redhat.com> wrote:
->
-> Hi,
->
-> On 9/15/20 12:35 AM, Alexander Duyck wrote:
-> > On Mon, Sep 14, 2020 at 11:07 AM Alexander Duyck
-> > <alexander.duyck@gmail.com> wrote:
-> >>
-> >> On Mon, Sep 14, 2020 at 6:42 AM Hans de Goede <hdegoede@redhat.com> wrote:
-> >>>
-> >>> Hi,
-> >>>
-> >>> On 9/11/20 9:45 PM, David E. Box wrote:
-> >>>> From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> >>>>
-> >>>> Add support for the Intel Platform Monitoring Technology crashlog
-> >>>> interface.  This interface provides a few sysfs values to allow for
-> >>>> controlling the crashlog telemetry interface as well as a character driver
-> >>>> to allow for mapping the crashlog memory region so that it can be accessed
-> >>>> after a crashlog has been recorded.
-> >>>>
-> >>>> This driver is meant to only support the server version of the crashlog
-> >>>> which is identified as crash_type 1 with a version of zero. Currently no
-> >>>> other types are supported.
-> >>>>
-> >>>> Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> >>>> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> >>>> ---
-> >>>>    .../ABI/testing/sysfs-class-pmt_crashlog      |  66 ++
-> >>>>    drivers/platform/x86/Kconfig                  |  10 +
-> >>>>    drivers/platform/x86/Makefile                 |   1 +
-> >>>>    drivers/platform/x86/intel_pmt_crashlog.c     | 588 ++++++++++++++++++
-> >>>>    4 files changed, 665 insertions(+)
-> >>>>    create mode 100644 Documentation/ABI/testing/sysfs-class-pmt_crashlog
-> >>>>    create mode 100644 drivers/platform/x86/intel_pmt_crashlog.c
-> >>>>
-> >>>> diff --git a/Documentation/ABI/testing/sysfs-class-pmt_crashlog b/Documentation/ABI/testing/sysfs-class-pmt_crashlog
-> >>>> new file mode 100644
-> >>>> index 000000000000..40fb4ff437a6
-> >>>> --- /dev/null
-> >>>> +++ b/Documentation/ABI/testing/sysfs-class-pmt_crashlog
-> >>>> @@ -0,0 +1,66 @@
-> >>>> +What:                /sys/class/pmt_crashlog/
-> >>>> +Date:                September 2020
-> >>>> +KernelVersion:       5.10
-> >>>> +Contact:     Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> >>>> +Description:
-> >>>> +             The pmt_crashlog/ class directory contains information
-> >>>> +             for devices that expose crashlog capabilities using the Intel
-> >>>> +             Platform Monitoring Technology (PTM).
-> >>>> +
-> >>>> +What:                /sys/class/pmt_crashlog/crashlogX
-> >>>> +Date:                September 2020
-> >>>> +KernelVersion:       5.10
-> >>>> +Contact:     Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> >>>> +Description:
-> >>>> +             The crashlogX directory contains files for configuring an
-> >>>> +             instance of a PMT crashlog device that can perform crash data
-> >>>> +             recoring. Each crashlogX device has an associated
-> >>>> +             /dev/crashlogX device node. This node can be opened and mapped
-> >>>> +             to access the resulting crashlog data. The register layout for
-> >>>> +             the log can be determined from an XML file of specified guid
-> >>>> +             for the parent device.
-> >>>> +
-> >>>> +What:                /sys/class/pmt_crashlog/crashlogX/guid
-> >>>> +Date:                September 2020
-> >>>> +KernelVersion:       5.10
-> >>>> +Contact:     Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> >>>> +Description:
-> >>>> +             (RO) The guid for this crashlog device. The guid identifies the
-> >>>> +             version of the XML file for the parent device that should be
-> >>>> +             used to determine the register layout.
-> >>>> +
-> >>>> +What:                /sys/class/pmt_crashlog/crashlogX/size
-> >>>> +Date:                September 2020
-> >>>> +KernelVersion:       5.10
-> >>>> +Contact:     Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> >>>> +Description:
-> >>>> +             (RO) The length of the result buffer in bytes that corresponds
-> >>>> +             to the mapping size for the /dev/crashlogX device node.
-> >>>> +
-> >>>> +What:                /sys/class/pmt_crashlog/crashlogX/offset
-> >>>> +Date:                September 2020
-> >>>> +KernelVersion:       5.10
-> >>>> +Contact:     Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> >>>> +Description:
-> >>>> +             (RO) The offset of the buffer in bytes that corresponds
-> >>>> +             to the mapping for the /dev/crashlogX device node.
-> >>>> +
-> >>>> +What:                /sys/class/pmt_crashlog/crashlogX/enable
-> >>>> +Date:                September 2020
-> >>>> +KernelVersion:       5.10
-> >>>> +Contact:     Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> >>>> +Description:
-> >>>> +             (RW) Boolean value controlling if the crashlog functionality
-> >>>> +             is enabled for the /dev/crashlogX device node.
-> >>>> +
-> >>>> +What:                /sys/class/pmt_crashlog/crashlogX/trigger
-> >>>> +Date:                September 2020
-> >>>> +KernelVersion:       5.10
-> >>>> +Contact:     Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> >>>> +Description:
-> >>>> +             (RW) Boolean value controlling  the triggering of the
-> >>>> +             /dev/crashlogX device node. When read it provides data on if
-> >>>> +             the crashlog has been triggered. When written to it can be
-> >>>> +             used to either clear the current trigger by writing false, or
-> >>>> +             to trigger a new event if the trigger is not currently set.
-> >>>> +
-> >>>
-> >>> Both the pmt_crashlog and the attributes suggest that this is highly
-> >>> Intel PMT specific. /sys/class/foo interfaces are generally speaking
-> >>> meant to be generic interfaces.
-> >>>
-> >>> If this was defining a generic, vendor and implementation agnostic interface for
-> >>> configuring / accessing crashlogs, then using a class would be fine, but that
-> >>> is not the case, so I believe that this should not implement / register a class.
-> >>>
-> >>> Since the devices are instantiated through MFD there already is a
-> >>> static sysfs-path which can be used to find the device in sysfs:
-> >>> /sys/bus/platform/device/pmt_crashlog
-> >>>
-> >>> So you can register the sysfs attributes directly under the platform_device
-> >>> and then userspace can easily find them, so there really is no need to
-> >>> use a class here.
-> >>
-> >> I see. So we change the root directory from "/sys/class/pmt_crashlog/"
-> >> to "/sys/bus/platform/device/pmt_crashlog" while retaining the same
-> >> functionality. That should be workable.
+On Thu, Sep 17, 2020 at 01:28:22PM -0700, Tom Rix wrote:
+> 
+> On 9/17/20 11:32 AM, Russ Weight wrote:
+> > Port enable is not complete until ACK = 0. Change
+> > __afu_port_enable() to guarantee that the enable process
+> > is complete by polling for ACK == 0.
 > >
-> > So one issue as I see it is that if we were to change this then we
-> > probably need to to change the telemetry functionality that was
-> > recently accepted
-> > (https://lore.kernel.org/lkml/20200819180255.11770-1-david.e.box@linux.intel.com/)
-> > as well. The general idea with using the /sys/class/pmt_crashlog/
-> > approach was to keep things consistent with how the pmt_telemetry was
-> > being accessed. So if we change this then we end up with very
-> > different interfaces for the two very similar pieces of functionality.
-> > So ideally we would want to change both telemetry and crashlog to
-> > function the same way.
->
-> I agree that the telemetry interface should be changed in a similar way.
->
-> Luckily it seems that this is not in Linus' tree yet and I'm also not
-> seeing it in next yet, e.g. :
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/drivers/platform/x86/intel_pmt_telemetry.c
-> does not exist.
->
-> So we seem to still have time to also get the telemetry driver userspace API
-> fixed too.
->
-> I see that Andy gave his Reviewed-by for the intel_pmt_telemetry.c code.
->
-> Andy, I have some concerns about the userspace API choices made here,
-> see my earlier review of this patch. Do you agree with my suggestions,
-> or do you think it would be ok to move forward with the telemetry and
-> now also the crashlog API each registering their own private class
-> under /sys/class ?
->
-> AFAIK classes are supposed to be generic and not driver-private, so
-> that seems wrong to me.  Also PMC is Intel specific and vendor specific
-> stuff really does not belong under /sys/class AFAIK ?
->
-> > Do you have any good examples of anything that has done something
-> > similar? From what I can tell it looks like we need to clean up the
-> > naming to drop the ".%d.auto" for the bus directory names
->
-> Assuming there will only be one of each platform-device, then you
-> can just replace the PLATFORM_DEVID_AUTO param to devm_mfd_add_devices()
-> with PLATFORM_DEVID_NONE and the .%d.auto will go away.
+> > Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+General note: Please keep a changelog if you send updated versions of a
+patch. This can be added here with an extra '---' + Text between Signed-off and
+diffstat:
 
-We will have multiples of each platform device. So for example we can
-have multiple OOBMSM in each system and each OOBMSM may have multiple
-telemetry regions and maybe one crashlog.
+--- 
+Changes from v1:
+- FOo
+- Bar
+> > ---
+> >  drivers/fpga/dfl-afu-error.c |  2 +-
+> >  drivers/fpga/dfl-afu-main.c  | 29 +++++++++++++++++++++--------
+> >  drivers/fpga/dfl-afu.h       |  2 +-
+> >  3 files changed, 23 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/drivers/fpga/dfl-afu-error.c b/drivers/fpga/dfl-afu-error.c
+> > index c4691187cca9..0806532a3e9f 100644
+> > --- a/drivers/fpga/dfl-afu-error.c
+> > +++ b/drivers/fpga/dfl-afu-error.c
+> > @@ -103,7 +103,7 @@ static int afu_port_err_clear(struct device *dev, u64 err)
+> >  	__afu_port_err_mask(dev, false);
+> >  
+> 
+> There is an earlier bit that sets ret = -EINVAL.
+> 
+> This error will be lost or not handled well.
+> 
+> Right now it doesn't seem to be handled.
 
-> > and then
-> > look at adding a folder to handle all of the instances of either
-> > telemetry or crashlog, assuming we follow the reg-dummy or serial8250
-> > model.
->
-> So there can be multiple instances, you mean like the multiple chardevs
-> you add now, or can there be multiple platform-devices of the same
-> time instantiated through the MFD code ?
->
-> If you mean like the multiple chardevs, then yes you could add a folder
-> for the binary sysfs attributes replacing those, or register them
-> with a dynamic name with a number appended to the name.
+Ultimately you'd want to report *at least* one of them, the current code
+seems to continue and enable the port either case. Is that what it
+should be doing? 
 
-In addition to just the binary sysfs we need to expose several other
-fields including the GUID, the size, and controls for enabling,
-disabling, and either triggering or checking to see if the crashlog
-has already been triggered. As such we would end up with a folder per
-device and the binary sysfs would probably be living in the folder.
+Is the timeout more severe than the invalid value? Do you want to print
+a warning?
 
-> > Similarly the crashlog and telemetry both rely on similar mechanisms
-> > to display the MMIO region containing the data. I still need to spend
-> > some more time looking into what is involved in switching from a char
-> > device to a binary sysfs, but I think with the example I found earlier
-> > of the resourceN bit from the PCI sysfs I can probably make that work
-> > for both cases.
->
-> I'm not sure that the PCI sysfs io resources are the best example,
-> as mentioned those mmap to actual memory-mapped io, which is somewhat
-> special.
+Either way a comment explaining why this is ok would be appreciated :)
+> 
+> >  	/* Enable the Port by clear the reset */
+> > -	__afu_port_enable(pdev);
+> > +	ret = __afu_port_enable(pdev);
+> >  
+> >  done:
+> >  	mutex_unlock(&pdata->lock);
+> > diff --git a/drivers/fpga/dfl-afu-main.c b/drivers/fpga/dfl-afu-main.c
+> > index 753cda4b2568..f73b06cdf13c 100644
+> > --- a/drivers/fpga/dfl-afu-main.c
+> > +++ b/drivers/fpga/dfl-afu-main.c
+> > @@ -21,6 +21,9 @@
+> >  
+> >  #include "dfl-afu.h"
+> >  
+> > +#define RST_POLL_INVL 10 /* us */
+> > +#define RST_POLL_TIMEOUT 1000 /* us */
+> > +
+> >  /**
+> >   * __afu_port_enable - enable a port by clear reset
+> >   * @pdev: port platform device.
+> > @@ -32,7 +35,7 @@
+> >   *
+> >   * The caller needs to hold lock for protection.
+> >   */
+> > -void __afu_port_enable(struct platform_device *pdev)
+> > +int __afu_port_enable(struct platform_device *pdev)
+> >  {
+> >  	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
+> >  	void __iomem *base;
+> > @@ -41,7 +44,7 @@ void __afu_port_enable(struct platform_device *pdev)
+> >  	WARN_ON(!pdata->disable_count);
+> >  
+> >  	if (--pdata->disable_count != 0)
+> > -		return;
+> > +		return 0;
+> Is this really a success ? Maybe -EBUSY ?
+Seems like if it's severe enough for a warning you'd probably want to
+return an error.
+> >  
+> >  	base = dfl_get_feature_ioaddr_by_id(&pdev->dev, PORT_FEATURE_ID_HEADER);
+> >  
+> > @@ -49,10 +52,20 @@ void __afu_port_enable(struct platform_device *pdev)
+> >  	v = readq(base + PORT_HDR_CTRL);
+> >  	v &= ~PORT_CTRL_SFTRST;
+> >  	writeq(v, base + PORT_HDR_CTRL);
+> > -}
+> >  
+> > -#define RST_POLL_INVL 10 /* us */
+> > -#define RST_POLL_TIMEOUT 1000 /* us */
+> > +	/*
+> > +	 * HW clears the ack bit to indicate that the port is fully out
+> > +	 * of reset.
+> > +	 */
+> > +	if (readq_poll_timeout(base + PORT_HDR_CTRL, v,
+> > +			       !(v & PORT_CTRL_SFTRST_ACK),
+> > +			       RST_POLL_INVL, RST_POLL_TIMEOUT)) {
+> > +		dev_err(&pdev->dev, "timeout, failure to enable device\n");
+> > +		return -ETIMEDOUT;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> >  
+> >  /**
+> >   * __afu_port_disable - disable a port by hold reset
+> > @@ -111,7 +124,7 @@ static int __port_reset(struct platform_device *pdev)
+> >  
+> >  	ret = __afu_port_disable(pdev);
+> >  	if (!ret)
+> > -		__afu_port_enable(pdev);
+> > +		ret = __afu_port_enable(pdev);
+> >  
+> >  	return ret;
+> >  }
+> > @@ -872,11 +885,11 @@ static int afu_dev_destroy(struct platform_device *pdev)
+> >  static int port_enable_set(struct platform_device *pdev, bool enable)
+> >  {
+> >  	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
+> > -	int ret = 0;
+> > +	int ret;
+> >  
+> >  	mutex_lock(&pdata->lock);
+> >  	if (enable)
+> > -		__afu_port_enable(pdev);
+> > +		ret = __afu_port_enable(pdev);
+> >  	else
+> >  		ret = __afu_port_disable(pdev);
+> >  	mutex_unlock(&pdata->lock);
+> > diff --git a/drivers/fpga/dfl-afu.h b/drivers/fpga/dfl-afu.h
+> > index 576e94960086..e5020e2b1f3d 100644
+> > --- a/drivers/fpga/dfl-afu.h
+> > +++ b/drivers/fpga/dfl-afu.h
+> > @@ -80,7 +80,7 @@ struct dfl_afu {
+> >  };
+> >  
+> >  /* hold pdata->lock when call __afu_port_enable/disable */
+> > -void __afu_port_enable(struct platform_device *pdev);
+> > +int __afu_port_enable(struct platform_device *pdev);
+> >  int __afu_port_disable(struct platform_device *pdev);
+> 
+> The other functions in this file have afu_*  since the __afu_port_enable/disable
+> 
+> are used other places would it make sense to remove the '__' prefix ?
 
-The reason why I bring them up is because there are cases for
-telemetry where the applications will likely want to be able to just
-memory map the region and poll on certain statistics. So if nothing
-else we may end up supporting both a mmap and a read option.
+The idea on those is to indicate that the caller need to be cautious
+(often a lock / mutex) is required. I think keeping them as is is fine.
 
-> For a simpler example see drivers/platform/x86/wmi-bmof.c.
->
-> The way normal sysfs binary attributes work is that they
-> have a read method much like the read method on a block device
-> where an offset into the file gets passed. So you just copy_to_user
-> the requested amount of data starting at offset from the in-kernel
-> mapped buffer to the user buffer:
->
-> static ssize_t
-> read_bmof(struct file *filp, struct kobject *kobj,
->           struct bin_attribute *attr,
->           char *buf, loff_t off, size_t count)
-> {
->          struct bmof_priv *priv =
->                  container_of(attr, struct bmof_priv, bmof_bin_attr);
->
->          if (off < 0)
->                  return -EINVAL;
->
->          if (off >= priv->bmofdata->buffer.length)
->                  return 0;
->
->          if (count > priv->bmofdata->buffer.length - off)
->                  count = priv->bmofdata->buffer.length - off;
->
->          memcpy(buf, priv->bmofdata->buffer.pointer + off, count);
->          return count;
-> }
->
-> The wmi_bmof code also shows how you can dynamically create and
-> add binary sysfs attr which allows you to add a %d postfix to the
-> name. Note you should always dynamically create binary sysfs attr.
->
-> There are some old static initializers for these, but AFAIK those
-> lead to lockdep issues.
->
-> Regards,
->
-> Hans
+> 
+> If you think so, maybe a cleanup patch later.
+> 
+> Tom
+> 
+> >  
+> >  void afu_mmio_region_init(struct dfl_feature_platform_data *pdata);
+> 
 
-The binary sysfs isn't that much of a concern for me other than the
-fact that it eliminates the character devices. The
-cdev_add/device_create path is fairly simple to put together and
-worked for the setup. However in switching to a binary sysfs I need to
-create something similar to the folder that was created before and
-then insert the binary sysfs file there. I have only done a bit of
-sysfs work so I am not familiar with what is involved in setting that
-up and need to spend some time trying to grok the code.
-
-Thanks.
-
-- Alex
+Thanks,
+Moritz
