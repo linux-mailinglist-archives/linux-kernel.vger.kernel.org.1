@@ -2,70 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5091526E4B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:54:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1407926E49E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:53:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726392AbgIQSyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 14:54:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37044 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728428AbgIQQU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 12:20:29 -0400
-Received: from localhost (unknown [70.37.104.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 23ECD221E3;
-        Thu, 17 Sep 2020 15:53:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600358016;
-        bh=DJoY4SjCm0Aq9Cv3Amd8XdYF2qxkng+cNtLI1j/5DaE=;
-        h=Date:From:To:To:To:To:Cc:Cc:Cc:Subject:In-Reply-To:References:
-         From;
-        b=XM/wX/1lFyQ5ceU5E5oLA5UfhCfGPVZm/15Ci0O+oyUl/yBmYnTJP6/1Gqpc9lsBz
-         KGkNbYMbDK/v4zbKw3s0l1BJtByZyg00MIlhjW+lJAJJH96Pbj6OBa3j0/uNlegCjc
-         4HlA3IDOkkWVbmCqzHABbWVDZu+dFSoqOGukoNXY=
-Date:   Thu, 17 Sep 2020 15:53:35 +0000
-From:   Sasha Levin <sashal@kernel.org>
-To:     Sasha Levin <sashal@kernel.org>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org
-Cc:     stable@vger.kernel.org
-Subject: Re: [PATCH v3 01/14] rtc: rx8010: don't modify the global rtc ops
-In-Reply-To: <20200914154601.32245-2-brgl@bgdev.pl>
-References: <20200914154601.32245-2-brgl@bgdev.pl>
-Message-Id: <20200917155336.23ECD221E3@mail.kernel.org>
+        id S1728443AbgIQQUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 12:20:41 -0400
+Received: from condef-01.nifty.com ([202.248.20.66]:34881 "EHLO
+        condef-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728362AbgIQQRW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 12:17:22 -0400
+Received: from conssluserg-03.nifty.com ([10.126.8.82])by condef-01.nifty.com with ESMTP id 08HGBjSp013101;
+        Fri, 18 Sep 2020 01:11:45 +0900
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 08HG96BI023460;
+        Fri, 18 Sep 2020 01:09:06 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 08HG96BI023460
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1600358947;
+        bh=yULUqiWt2SWgw5mTiS7zYO2hzW0Ie61k0FqxlWmWeH4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LElvIdS9XHoSA00xhrPQymc7YKtyp5JVFGDJu54Udb+uE+/GqPj8sV/2vsS5DuATo
+         S1LzrbX8tkVWzTZemJiiWQc50jsuiQVb9ecrVUCXejhWLbNHf9Vm1up6trEU20SIfm
+         90xLCwxca3/BWzZHxPvSTh7E7kV95RY45sw4uxBO01Z1SAgkB8CHLSAFEWBEg2BnBG
+         Kq28yZkdp6YaKvAp3vfdTcKuCr/zic54q4sd2ruGm4H9gR1Dfx+QHnHuyYK/cBXCZC
+         SZMLhTyARc9Mu8QFzQ29qErYXTl19aw++7TUPYpJmRZTASHkeXmsECY/1BC3wLqFZw
+         K+mtEGa7r1sLQ==
+X-Nifty-SrcIP: [209.85.216.42]
+Received: by mail-pj1-f42.google.com with SMTP id gf14so1452998pjb.5;
+        Thu, 17 Sep 2020 09:09:06 -0700 (PDT)
+X-Gm-Message-State: AOAM530GxbNcPybOP1NWCSTBtvaik3q0HZYq2mDmZ5zZaK0iQrXKqVV6
+        pSo4ADSo02Epz51aNQ2qSQ22gTMrxEgw3QdAiL8=
+X-Google-Smtp-Source: ABdhPJxssgarhgzM7MqOY61Xtmz9VYnoIYinKy6ZG1jOP7WdiUzDiYTfNkWC8PDvBunlBOClw2h2K/YvUZa15pElPuU=
+X-Received: by 2002:a17:902:34f:b029:d1:e5e7:bdcf with SMTP id
+ 73-20020a170902034fb02900d1e5e7bdcfmr11915446pld.47.1600358946099; Thu, 17
+ Sep 2020 09:09:06 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200908221638.2782778-1-masahiroy@kernel.org> <CAKwvOdnP7UmpRPL8XjzoMPjgQb9Di8OXk9UEX8NWaa35A01Q3Q@mail.gmail.com>
+In-Reply-To: <CAKwvOdnP7UmpRPL8XjzoMPjgQb9Di8OXk9UEX8NWaa35A01Q3Q@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 18 Sep 2020 01:08:27 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAT75mW-1npr-2Rfe2OaJH7yKS1TeizPsKxbbunKW-c_sA@mail.gmail.com>
+Message-ID: <CAK7LNAT75mW-1npr-2Rfe2OaJH7yKS1TeizPsKxbbunKW-c_sA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] kconfig: qconf: use delete[] instead of delete to
+ free array (again)
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Fri, Sep 11, 2020 at 2:24 AM 'Nick Desaulniers' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
+>
+> On Tue, Sep 8, 2020 at 3:17 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > Commit c9b09a9249e6 ("kconfig: qconf: use delete[] instead of delete
+> > to free array") fixed two lines, but there is one more.
+> > (cppcheck does not report it for some reason...)
+> >
+> > This was detected by Clang.
+> >
+> > "make HOSTCXX=clang++ xconfig" reports the following:
+> >
+> > scripts/kconfig/qconf.cc:1279:2: warning: 'delete' applied to a pointer that was allocated with 'new[]'; did you mean 'delete[]'? [-Wmismatched-new-delete]
+> >         delete data;
+> >         ^
+> >               []
+> > scripts/kconfig/qconf.cc:1239:15: note: allocated with 'new[]' here
+> >         char *data = new char[count + 1];
+> >                      ^
+> >
+> > Fixes: c4f7398bee9c ("kconfig: qconf: make debug links work again")
+> > Fixes: c9b09a9249e6 ("kconfig: qconf: use delete[] instead of delete to free array")
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+>
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+>
+> > ---
+> >
+> >  scripts/kconfig/qconf.cc | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/scripts/kconfig/qconf.cc b/scripts/kconfig/qconf.cc
+> > index 8638785328a7..c7216b9110fc 100644
+> > --- a/scripts/kconfig/qconf.cc
+> > +++ b/scripts/kconfig/qconf.cc
+> > @@ -1276,7 +1276,7 @@ void ConfigInfoView::clicked(const QUrl &url)
+> >         }
+> >
+> >         free(result);
+> > -       delete data;
+> > +       delete[] data;
+> >  }
+> >
+> >  void ConfigInfoView::contextMenuEvent(QContextMenuEvent *event)
+> > --
+> > 2.25.1
+> >
+>
+>
+> --
+> Thanks,
+> ~Nick Desaulniers
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/CAKwvOdnP7UmpRPL8XjzoMPjgQb9Di8OXk9UEX8NWaa35A01Q3Q%40mail.gmail.com.
 
-[This is an automated email]
-
-This commit has been processed because it contains a "Fixes:" tag
-fixing commit: ed13d89b08e3 ("rtc: Add Epson RX8010SJ RTC driver").
-
-The bot has tested the following trees: v5.8.9, v5.4.65, v4.19.145, v4.14.198, v4.9.236.
-
-v5.8.9: Build OK!
-v5.4.65: Build OK!
-v4.19.145: Failed to apply! Possible dependencies:
-    9d085c54202d ("rtc: rx8010: simplify getting the adapter of a client")
-
-v4.14.198: Failed to apply! Possible dependencies:
-    9d085c54202d ("rtc: rx8010: simplify getting the adapter of a client")
-
-v4.9.236: Failed to apply! Possible dependencies:
-    9d085c54202d ("rtc: rx8010: simplify getting the adapter of a client")
 
 
-NOTE: The patch will not be queued to stable trees until it is upstream.
+Applied to linux-kbuild/fixes.
 
-How should we proceed with this patch?
 
 -- 
-Thanks
-Sasha
+Best Regards
+Masahiro Yamada
