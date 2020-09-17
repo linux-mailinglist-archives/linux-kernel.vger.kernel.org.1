@@ -2,106 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 730F126D60F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:12:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A3D26D5B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726495AbgIQIMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 04:12:16 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:43689 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726353AbgIQIMK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 04:12:10 -0400
-Received: by mail-ed1-f68.google.com with SMTP id n13so1511028edo.10
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 01:12:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Z2cMPrnQf5Z9BUMQYWdci5L6icLIhq49YJLAXZRSXl0=;
-        b=tCyh+8eYCxeUS09FhH1LvQDSMqC/pmru0aBWVY4tgqjLKofeG5XABU47aJdXCWU1Xo
-         Q0kYTU4KAvoOnywPfbqCNAkd2W7pcsewkMvedP9dSINsJs3Ghu+JkDpcY4X7mQlBmW6V
-         RFTWZrt2JTp4keI6828OHVC9V8TYz4gO6Ph6BVM4NOWLPAdPlpdFWdyti5VHdIIp7PGB
-         v4cNfweClrYKG+pY4pzm25gJKf+4YPGEJMozwlmZLdebW/+dfvt000EFLfksRwaKwgjL
-         PxCDbz04o43SjhDrJm0cmFvbGMcrY4F4LgqD5Bbhm80iscDsRXkBkMUcpMZcOf71dTW6
-         6rnA==
-X-Gm-Message-State: AOAM532WJ6u8U2pX9R8lAaYV2/VSFwsMZ5DXZ+XiVhlTjUiH3cGlnsQz
-        rbs05T2BYvxD9Wi/jWy89m/pB1bccxqqpQ==
-X-Google-Smtp-Source: ABdhPJzX5oLzb4C53YfeJYtuZP0zd8DG+nEsuvOi+XpsvP5f5D4FioGJS5r7XaMIWwa+3LG/o71vGg==
-X-Received: by 2002:ac2:4301:: with SMTP id l1mr8104366lfh.389.1600329843054;
-        Thu, 17 Sep 2020 01:04:03 -0700 (PDT)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id t2sm5089852lff.150.2020.09.17.01.04.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 01:04:01 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 11:03:54 +0300
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com,
-        linux-watchdog@vger.kernel.org
-Subject: [PATCH v1 6/6] MAINTAINERS: Add ROHM BD9576MUF and BD9573MUF drivers
-Message-ID: <358f571158d344196dc56b2eab7fcd802a236d69.1600329307.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1600329307.git.matti.vaittinen@fi.rohmeurope.com>
+        id S1726508AbgIQIH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 04:07:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47894 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726416AbgIQIGh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 04:06:37 -0400
+Received: from mail.kernel.org (ip5f5ad5d2.dynamic.kabel-deutschland.de [95.90.213.210])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BC07920707;
+        Thu, 17 Sep 2020 08:04:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600329870;
+        bh=2vRvBaqh9EKp9T9C1x2X/Aw5e2zrJra1E4+MhA18gXM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=JwMinYkF0td1iRhPW6tYFYQK+S7ineNCASogVdgKBrsKxz4mmq+nyP57pilLOicSW
+         mW5kv6Dca7sMxfzTudNRr/uKLQuG5PWfYo/j4P+yvMvZ1mcWh0YwiaUHO0ufDxu8OU
+         dmMBEW7Mj0h6WR3KhpliVNeoCCyqQDWt7g8/f1ZI=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kIou4-0051LO-6j; Thu, 17 Sep 2020 10:04:28 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Alexander Potapenko <glider@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+        kasan-dev@googlegroups.com, netdev@vger.kernel.org
+Subject: [PATCH 0/3] Additional doc warning fixes for issues at next-20200915
+Date:   Thu, 17 Sep 2020 10:04:24 +0200
+Message-Id: <cover.1600328701.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1600329307.git.matti.vaittinen@fi.rohmeurope.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add maintainer entries for ROHM BD9576MUF and ROHM BD9573MUF drivers.
-MFD, regulator and watchdog drivers were introduced for these PMICs.
+There are a couple of new warnings introduced at linux-next.
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
- MAINTAINERS | 4 ++++
- 1 file changed, 4 insertions(+)
+This small patch series address them.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b5cfab015bd6..630a23fc84f0 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14956,16 +14956,20 @@ F:	drivers/gpio/gpio-bd71828.c
- F:	drivers/mfd/rohm-bd70528.c
- F:	drivers/mfd/rohm-bd71828.c
- F:	drivers/mfd/rohm-bd718x7.c
-+F:	drivers/mfd/rohm-bd9576.c
- F:	drivers/power/supply/bd70528-charger.c
- F:	drivers/regulator/bd70528-regulator.c
- F:	drivers/regulator/bd71828-regulator.c
- F:	drivers/regulator/bd718x7-regulator.c
-+F:	drivers/regulator/bd9576-regulator.c
- F:	drivers/regulator/rohm-regulator.c
- F:	drivers/rtc/rtc-bd70528.c
- F:	drivers/watchdog/bd70528_wdt.c
-+F:	drivers/watchdog/bd9576_wdt.c
- F:	include/linux/mfd/rohm-bd70528.h
- F:	include/linux/mfd/rohm-bd71828.h
- F:	include/linux/mfd/rohm-bd718x7.h
-+F:	include/linux/mfd/rohm-bd957x.h
- F:	include/linux/mfd/rohm-generic.h
- F:	include/linux/mfd/rohm-shared.h
- 
--- 
-2.21.0
+The complete series addressing (almost) all doc warnings is at:
 
+	https://git.linuxtv.org/mchehab/experimental.git/log/?h=doc-fixes
+
+I'll keep rebasing such tree until we get rid of all doc warnings upstream,
+hopefully in time for Kernel 5.10.
+
+Mauro Carvalho Chehab (3):
+  docs: kasan.rst: add two missing blank lines
+  mm: pagemap.h: fix two kernel-doc markups
+  docs: bpf: ringbuf.rst: fix a broken cross-reference
+
+ Documentation/bpf/ringbuf.rst     | 2 +-
+ Documentation/dev-tools/kasan.rst | 2 ++
+ include/linux/pagemap.h           | 8 ++++----
+ 3 files changed, 7 insertions(+), 5 deletions(-)
 
 -- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
+2.26.2
 
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+
