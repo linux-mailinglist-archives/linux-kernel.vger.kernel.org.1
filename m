@@ -2,29 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BA9A26DC04
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:50:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE7D826DC00
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:49:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727042AbgIQMt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 08:49:28 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:60704 "EHLO huawei.com"
+        id S1726943AbgIQMtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 08:49:49 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12833 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726861AbgIQMok (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 08:44:40 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 9C27B4177A00CAD98421;
-        Thu, 17 Sep 2020 20:44:38 +0800 (CST)
+        id S1727016AbgIQMou (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 08:44:50 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 2D97E76B3A852E820812;
+        Thu, 17 Sep 2020 20:44:41 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 17 Sep 2020 20:44:30 +0800
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 17 Sep 2020 20:44:31 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
+To:     Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>
 CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH -next v2] net: hsr: Convert to DEFINE_SHOW_ATTRIBUTE
-Date:   Thu, 17 Sep 2020 20:45:07 +0800
-Message-ID: <20200917124507.102709-1-miaoqinglang@huawei.com>
+Subject: [PATCH -next v2] dpaa2-eth: Convert to DEFINE_SHOW_ATTRIBUTE
+Date:   Thu, 17 Sep 2020 20:45:08 +0800
+Message-ID: <20200917124508.102754-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -35,62 +37,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
-
 Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
 v2: based on linux-next(20200917), and can be applied to
     mainline cleanly now.
 
- net/hsr/hsr_debugfs.c | 21 ++-------------------
- 1 file changed, 2 insertions(+), 19 deletions(-)
+ .../freescale/dpaa2/dpaa2-eth-debugfs.c       | 63 ++-----------------
+ 1 file changed, 6 insertions(+), 57 deletions(-)
 
-diff --git a/net/hsr/hsr_debugfs.c b/net/hsr/hsr_debugfs.c
-index 7e11a6c35..4cfd9e829 100644
---- a/net/hsr/hsr_debugfs.c
-+++ b/net/hsr/hsr_debugfs.c
-@@ -60,17 +60,7 @@ hsr_node_table_show(struct seq_file *sfp, void *data)
+diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c
+index 56d9927fb..b87db0846 100644
+--- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c
++++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c
+@@ -42,24 +42,7 @@ static int dpaa2_dbg_cpu_show(struct seq_file *file, void *offset)
  	return 0;
  }
  
--/* hsr_node_table_open - Open the node_table file
-- *
-- * Description:
-- * This routine opens a debugfs file node_table of specific hsr
-- * or prp device
-- */
--static int
--hsr_node_table_open(struct inode *inode, struct file *filp)
+-static int dpaa2_dbg_cpu_open(struct inode *inode, struct file *file)
 -{
--	return single_open(filp, hsr_node_table_show, inode->i_private);
+-	int err;
+-	struct dpaa2_eth_priv *priv = (struct dpaa2_eth_priv *)inode->i_private;
+-
+-	err = single_open(file, dpaa2_dbg_cpu_show, priv);
+-	if (err < 0)
+-		netdev_err(priv->net_dev, "single_open() failed\n");
+-
+-	return err;
 -}
-+DEFINE_SHOW_ATTRIBUTE(hsr_node_table);
- 
- void hsr_debugfs_rename(struct net_device *dev)
- {
-@@ -85,13 +75,6 @@ void hsr_debugfs_rename(struct net_device *dev)
- 		priv->node_tbl_root = d;
- }
- 
--static const struct file_operations hsr_fops = {
--	.open	= hsr_node_table_open,
--	.read	= seq_read,
+-
+-static const struct file_operations dpaa2_dbg_cpu_ops = {
+-	.open = dpaa2_dbg_cpu_open,
+-	.read = seq_read,
 -	.llseek = seq_lseek,
 -	.release = single_release,
 -};
--
- /* hsr_debugfs_init - create hsr node_table file for dumping
-  * the node table
-  *
-@@ -113,7 +96,7 @@ void hsr_debugfs_init(struct hsr_priv *priv, struct net_device *hsr_dev)
++DEFINE_SHOW_ATTRIBUTE(dpaa2_dbg_cpu);
  
- 	de = debugfs_create_file("node_table", S_IFREG | 0444,
- 				 priv->node_tbl_root, priv,
--				 &hsr_fops);
-+				 &hsr_node_table_fops);
- 	if (IS_ERR(de)) {
- 		pr_err("Cannot create hsr node_table file\n");
- 		debugfs_remove(priv->node_tbl_root);
+ static char *fq_type_to_str(struct dpaa2_eth_fq *fq)
+ {
+@@ -106,24 +89,7 @@ static int dpaa2_dbg_fqs_show(struct seq_file *file, void *offset)
+ 	return 0;
+ }
+ 
+-static int dpaa2_dbg_fqs_open(struct inode *inode, struct file *file)
+-{
+-	int err;
+-	struct dpaa2_eth_priv *priv = (struct dpaa2_eth_priv *)inode->i_private;
+-
+-	err = single_open(file, dpaa2_dbg_fqs_show, priv);
+-	if (err < 0)
+-		netdev_err(priv->net_dev, "single_open() failed\n");
+-
+-	return err;
+-}
+-
+-static const struct file_operations dpaa2_dbg_fq_ops = {
+-	.open = dpaa2_dbg_fqs_open,
+-	.read = seq_read,
+-	.llseek = seq_lseek,
+-	.release = single_release,
+-};
++DEFINE_SHOW_ATTRIBUTE(dpaa2_dbg_fqs);
+ 
+ static int dpaa2_dbg_ch_show(struct seq_file *file, void *offset)
+ {
+@@ -151,24 +117,7 @@ static int dpaa2_dbg_ch_show(struct seq_file *file, void *offset)
+ 	return 0;
+ }
+ 
+-static int dpaa2_dbg_ch_open(struct inode *inode, struct file *file)
+-{
+-	int err;
+-	struct dpaa2_eth_priv *priv = (struct dpaa2_eth_priv *)inode->i_private;
+-
+-	err = single_open(file, dpaa2_dbg_ch_show, priv);
+-	if (err < 0)
+-		netdev_err(priv->net_dev, "single_open() failed\n");
+-
+-	return err;
+-}
+-
+-static const struct file_operations dpaa2_dbg_ch_ops = {
+-	.open = dpaa2_dbg_ch_open,
+-	.read = seq_read,
+-	.llseek = seq_lseek,
+-	.release = single_release,
+-};
++DEFINE_SHOW_ATTRIBUTE(dpaa2_dbg_ch);
+ 
+ void dpaa2_dbg_add(struct dpaa2_eth_priv *priv)
+ {
+@@ -179,13 +128,13 @@ void dpaa2_dbg_add(struct dpaa2_eth_priv *priv)
+ 	priv->dbg.dir = dir;
+ 
+ 	/* per-cpu stats file */
+-	debugfs_create_file("cpu_stats", 0444, dir, priv, &dpaa2_dbg_cpu_ops);
++	debugfs_create_file("cpu_stats", 0444, dir, priv, &dpaa2_dbg_cpu_fops);
+ 
+ 	/* per-fq stats file */
+-	debugfs_create_file("fq_stats", 0444, dir, priv, &dpaa2_dbg_fq_ops);
++	debugfs_create_file("fq_stats", 0444, dir, priv, &dpaa2_dbg_fqs_fops);
+ 
+ 	/* per-fq stats file */
+-	debugfs_create_file("ch_stats", 0444, dir, priv, &dpaa2_dbg_ch_ops);
++	debugfs_create_file("ch_stats", 0444, dir, priv, &dpaa2_dbg_ch_fops);
+ }
+ 
+ void dpaa2_dbg_remove(struct dpaa2_eth_priv *priv)
 -- 
 2.23.0
 
