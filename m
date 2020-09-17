@@ -2,126 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B66726DAFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:04:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAF0826DB3C
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726775AbgIQMES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 08:04:18 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:51069 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726478AbgIQMBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 08:01:49 -0400
-X-Greylist: delayed 382 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 08:01:47 EDT
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1726958AbgIQMMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 08:12:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42964 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726579AbgIQMB4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 08:01:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600344102;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=N5pwbMLEsViJmn+EwXFmMFAOXinBm5HFZNemqmzs6bE=;
+        b=TalTQeUcU5X1sRlofP76nR4lWTqvbGazn+H8DehilpwJgBYoZeoyGGo3b66F8HE24oMjL3
+        UBZFpD9h08zmg5Pv8dgCuz8DropPeM5t6yuW/H9BAFSqfH5/L3ssaTCegiEiUiN978tLUj
+        8kbDvd+SZFYy1wEIEAhw2m5kyKwhuKI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-391-rkJLU2RJMSmNxZKHK4MfIQ-1; Thu, 17 Sep 2020 08:01:38 -0400
+X-MC-Unique: rkJLU2RJMSmNxZKHK4MfIQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BsbCK5G3Rz9sS8;
-        Thu, 17 Sep 2020 22:01:01 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1600344062;
-        bh=drKiJPh6uUahqNiKyElUeAZk2wIXu3ZhA3NKB9nCYcw=;
-        h=From:To:Subject:In-Reply-To:References:Date:From;
-        b=K1UY89jCixp72jlWeIPSfpOB7vyiQ2pwGnUFVvsf0B2FOmy7/yaCzh6UCT7p5W/Yw
-         70F9JkRP1E9jKlutDTKywLjjzj6Z7rg+8fYmE/G3k7D7HgEbb3MZ+NwOlLDgTRQYUZ
-         1EkTImlGWMYYzoDYOlmr87dXl+80hpg4SFZC85Sh4waowIocEYUUT+DLl8FpyH4Lg3
-         7gvv3s+HIp1yRZ6pXo3wGCKVhpn7poXOIMnY9q3+HVTGh4Fj4eGnUUF3YyPN+AEAHi
-         HPh+GRDX7d+HzQwYacuaSKo1D3gk/4OVThEvPTzsv/53OHblkyoZq4enad7HsrK5Ys
-         CKSIckbWyg/Gw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Wang Wensheng <wangwensheng4@huawei.com>, davem@davemloft.net,
-        benh@kernel.crashing.org, paulus@samba.org,
-        linux-ide@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] ide: Fix symbol undeclared warnings
-In-Reply-To: <20200916092333.77158-1-wangwensheng4@huawei.com>
-References: <20200916092333.77158-1-wangwensheng4@huawei.com>
-Date:   Thu, 17 Sep 2020 22:01:00 +1000
-Message-ID: <87zh5oobnn.fsf@mpe.ellerman.id.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0DE9C802B79;
+        Thu, 17 Sep 2020 12:01:37 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.159])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 6886075132;
+        Thu, 17 Sep 2020 12:01:34 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu, 17 Sep 2020 14:01:36 +0200 (CEST)
+Date:   Thu, 17 Sep 2020 14:01:33 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Boaz Harrosh <boaz@plexistor.com>
+Cc:     Hou Tao <houtao1@huawei.com>, peterz@infradead.org,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.cz>
+Subject: Re: [RFC PATCH] locking/percpu-rwsem: use this_cpu_{inc|dec}() for
+ read_count
+Message-ID: <20200917120132.GA5602@redhat.com>
+References: <20200915140750.137881-1-houtao1@huawei.com>
+ <20200915150610.GC2674@hirez.programming.kicks-ass.net>
+ <20200915153113.GA6881@redhat.com>
+ <20200915155150.GD2674@hirez.programming.kicks-ass.net>
+ <20200915160344.GH35926@hirez.programming.kicks-ass.net>
+ <b885ce8e-4b0b-8321-c2cc-ee8f42de52d4@huawei.com>
+ <ddd5d732-06da-f8f2-ba4a-686c58297e47@plexistor.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ddd5d732-06da-f8f2-ba4a-686c58297e47@plexistor.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wang Wensheng <wangwensheng4@huawei.com> writes:
-> Build the object file with `C=2` and get the following warnings:
-> make allmodconfig ARCH=powerpc CROSS_COMPILE=powerpc64-linux-gnu-
-> make C=2 drivers/ide/pmac.o ARCH=powerpc64
-> CROSS_COMPILE=powerpc64-linux-gnu-
+On 09/17, Boaz Harrosh wrote:
 >
-> drivers/ide/pmac.c:228:23: warning: symbol 'mdma_timings_33' was not
-> declared. Should it be static?
-> drivers/ide/pmac.c:241:23: warning: symbol 'mdma_timings_33k' was not
-> declared. Should it be static?
-> drivers/ide/pmac.c:254:23: warning: symbol 'mdma_timings_66' was not
-> declared. Should it be static?
-> drivers/ide/pmac.c:272:3: warning: symbol 'kl66_udma_timings' was not
-> declared. Should it be static?
-> drivers/ide/pmac.c:1418:12: warning: symbol 'pmac_ide_probe' was not
-> declared. Should it be static?
+> On 16/09/2020 15:32, Hou Tao wrote:
+> <>
+> >However the performance degradation is huge under aarch64 (4 sockets, 24 core per sockets): nearly 60% lost.
+> >
+> >v4.19.111
+> >no writer, reader cn                               | 24        | 48        | 72        | 96
+> >the rate of down_read/up_read per second           | 166129572 | 166064100 | 165963448 | 165203565
+> >the rate of down_read/up_read per second (patched) |  63863506 |  63842132 |  63757267 |  63514920
+> >
 >
-> Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
-> ---
->  drivers/ide/pmac.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+> I believe perhaps Peter Z's suggestion of an additional
+> percpu_down_read_irqsafe() API and let only those in IRQ users pay the
+> penalty.
+>
+> Peter Z wrote:
+> >My leading alternative was adding: percpu_down_read_irqsafe() /
+> >percpu_up_read_irqsafe(), which use local_irq_save() instead of
+> >preempt_disable().
 
-TIL davem maintains IDE?
+This means that __sb_start/end_write() and probably more users in fs/super.c
+will have to use this API, not good.
 
-But I suspect he isn't that interested in this powerpc only driver, so
-I'll grab this.
+IIUC, file_end_write() was never IRQ safe (at least if !CONFIG_SMP), even
+before 8129ed2964 ("change sb_writers to use percpu_rw_semaphore"), but this
+doesn't matter...
 
-cheers
+Perhaps we can change aio.c, io_uring.c and fs/overlayfs/file.c to avoid
+file_end_write() in IRQ context, but I am not sure it's worth the trouble.
 
+Oleg.
 
-> diff --git a/drivers/ide/pmac.c b/drivers/ide/pmac.c
-> index ea0b064b5f56..6bb2fc6755c2 100644
-> --- a/drivers/ide/pmac.c
-> +++ b/drivers/ide/pmac.c
-> @@ -225,7 +225,7 @@ struct mdma_timings_t {
->  	int	cycleTime;
->  };
->  
-> -struct mdma_timings_t mdma_timings_33[] =
-> +static struct mdma_timings_t mdma_timings_33[] =
->  {
->      { 240, 240, 480 },
->      { 180, 180, 360 },
-> @@ -238,7 +238,7 @@ struct mdma_timings_t mdma_timings_33[] =
->      {   0,   0,   0 }
->  };
->  
-> -struct mdma_timings_t mdma_timings_33k[] =
-> +static struct mdma_timings_t mdma_timings_33k[] =
->  {
->      { 240, 240, 480 },
->      { 180, 180, 360 },
-> @@ -251,7 +251,7 @@ struct mdma_timings_t mdma_timings_33k[] =
->      {   0,   0,   0 }
->  };
->  
-> -struct mdma_timings_t mdma_timings_66[] =
-> +static struct mdma_timings_t mdma_timings_66[] =
->  {
->      { 240, 240, 480 },
->      { 180, 180, 360 },
-> @@ -265,7 +265,7 @@ struct mdma_timings_t mdma_timings_66[] =
->  };
->  
->  /* KeyLargo ATA-4 Ultra DMA timings (rounded) */
-> -struct {
-> +static struct {
->  	int	addrSetup; /* ??? */
->  	int	rdy2pause;
->  	int	wrDataSetup;
-> @@ -1415,7 +1415,7 @@ static struct pci_driver pmac_ide_pci_driver = {
->  };
->  MODULE_DEVICE_TABLE(pci, pmac_ide_pci_match);
->  
-> -int __init pmac_ide_probe(void)
-> +static int __init pmac_ide_probe(void)
->  {
->  	int error;
->  
-> -- 
-> 2.25.0
