@@ -2,204 +2,351 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58D0426DD59
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 15:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F41E726DD38
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 15:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727237AbgIQN7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 09:59:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727156AbgIQNzh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 09:55:37 -0400
-Received: from gaia (unknown [31.124.44.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E42FE206DB;
-        Thu, 17 Sep 2020 13:46:55 +0000 (UTC)
-Date:   Thu, 17 Sep 2020 14:46:53 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        kasan-dev@googlegroups.com,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 22/37] arm64: mte: Add in-kernel MTE helpers
-Message-ID: <20200917134653.GB10662@gaia>
-References: <cover.1600204505.git.andreyknvl@google.com>
- <4ac1ed624dd1b0851d8cf2861b4f4aac4d2dbc83.1600204505.git.andreyknvl@google.com>
+        id S1727136AbgIQNzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 09:55:42 -0400
+Received: from out28-170.mail.aliyun.com ([115.124.28.170]:55394 "EHLO
+        out28-170.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727094AbgIQNyi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 09:54:38 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436282|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.025677-3.6347e-05-0.974287;FP=0|0|0|0|0|-1|-1|-1;HT=e01l04362;MF=zhouyu@wanyeetech.com;NM=1;PH=DS;RN=9;RT=9;SR=0;TI=SMTPD_---.IYODQKv_1600350755;
+Received: from 192.168.10.195(mailfrom:zhouyu@wanyeetech.com fp:SMTPD_---.IYODQKv_1600350755)
+          by smtp.aliyun-inc.com(10.147.40.7);
+          Thu, 17 Sep 2020 21:52:35 +0800
+Subject: Re: [PATCH] MIPS: Loongson64: Add kexec/kdump support
+To:     Jinyang He <hejinyang@loongson.cn>, Huacai Chen <chenhc@lemote.com>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Youling Tang <tangyouling@loongson.cn>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, kexec@lists.infradead.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+References: <1600175263-7872-1-git-send-email-hejinyang@loongson.cn>
+ <376B4B91-0736-43FA-87EA-43E12FF24EF1@flygoat.com>
+ <7b78c4d4-7ee3-cf57-71d1-95611713de2b@loongson.cn>
+ <CAAhV-H5t3KWL1O+JKVp+T2qqGXuW7OiasjnnCLmV0+GE0Ns9xQ@mail.gmail.com>
+ <647822a9-bc3b-5da1-95e7-c048a5a3b8fa@loongson.cn>
+From:   Zhou Yanjie <zhouyu@wanyeetech.com>
+Message-ID: <bd73b4da-94e2-c809-2422-4071792cd9d1@wanyeetech.com>
+Date:   Thu, 17 Sep 2020 21:52:31 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4ac1ed624dd1b0851d8cf2861b4f4aac4d2dbc83.1600204505.git.andreyknvl@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <647822a9-bc3b-5da1-95e7-c048a5a3b8fa@loongson.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 11:16:04PM +0200, Andrey Konovalov wrote:
-> diff --git a/arch/arm64/include/asm/mte-helpers.h b/arch/arm64/include/asm/mte-helpers.h
-> new file mode 100644
-> index 000000000000..5dc2d443851b
-> --- /dev/null
-> +++ b/arch/arm64/include/asm/mte-helpers.h
-> @@ -0,0 +1,48 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) 2020 ARM Ltd.
-> + */
-> +#ifndef __ASM_MTE_ASM_H
-> +#define __ASM_MTE_ASM_H
-> +
-> +#define __MTE_PREAMBLE		".arch armv8.5-a\n.arch_extension memtag\n"
+Hello,
 
-Because of how the .arch overrides a previous .arch, we should follow
-the ARM64_ASM_PREAMBLE introduced in commit 1764c3edc668 ("arm64: use a
-common .arch preamble for inline assembly"). The above should be
-something like:
+在 2020/9/17 下午8:41, Jinyang He 写道:
+> Hi, Huacai,
+>
+>
+> On 09/16/2020 01:39 PM, Huacai Chen wrote:
+>> Hi, Jinyang,
+>>
+>> On Tue, Sep 15, 2020 at 10:17 PM Jinyang He <hejinyang@loongson.cn> 
+>> wrote:
+>>>
+>>>
+>>> On 09/16/2020 09:33 AM, Jiaxun Yang wrote:
+>>>> 于 2020年9月15日 GMT+08:00 下午9:07:43, Jinyang He 
+>>>> <hejinyang@loongson.cn> 写到:
+>>>>> Add loongson_kexec_prepare(), loongson_kexec_shutdown() and
+>>>>> loongson_kexec_crashdown() for passing the parameters of kexec_args.
+>>>>>
+>>>>> To start loongson64, CPU0 needs 3 parameters:
+>>>>> fw_arg0: the number of cmd.
+>>>>> fw_arg1: cmd structure which seems strange, the cmd array[index]'s
+>>>>>           value is cmd string's address, index >= 1.
+>>>>> fw_arg2: environment.
+>>>>>
+>>>>> Secondary CPUs do not need parameter at once. They query their
+>>>>> mailbox to get PC, SP and GP in a loop before CPU0 brings them up
+>>>>> and passes these parameters via mailbox.
+>>>>>
+>>>>> loongson_kexec_prepare(): Alloc new memory to save cmd for kexec.
+>>>>> Combine the kexec append option string as cmd structure, and the cmd
+>>>>> struct will be parsed in fw_init_cmdline() of 
+>>>>> arch/mips/fw/lib/cmdline.c.
+>>>>> image->control_code_page need pointing to a safe memory page. In 
+>>>>> order to
+>>>>> maintain compatibility for the old firmware the low 2MB is reserverd
+>>>>> and safe for Loongson. So let it points here.
+>>>>>
+>>>>> loongson_kexec_shutdown(): Wake up all present CPUs and let them go
+>>>>> to reboot_code_buffer. Pass the kexec parameters to kexec_args.
+>>>>>
+>>>>> loongson_crash_shutdown(): Pass the kdump parameters to kexec_args.
+>>>>>
+>>>>> The assembly part provide a way like BIOS doing to keep secondary
+>>>>> CPUs in a querying loop.
+>>>>>
+>>>>> This patch referenced [1][2][3].
+>>>>>
+>>>>> [1] arch/mips/cavium-octeon/setup.c
+>>>>> [2] https://patchwork.kernel.org/patch/10799217/
+>>>>> [3] 
+>>>>> https://gitee.com/loongsonlab/qemu/blob/master/hw/mips/loongson3a_rom.h 
+>>>>>
+>>>>>
+>>>>> Co-developed-by: Youling Tang <tangyouling@loongson.cn>
+>>>>> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+>>>>> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+>>>>> ---
+>>>>> arch/mips/kernel/relocate_kernel.S | 19 ++++++++
+>>>>> arch/mips/loongson64/reset.c       | 88 
+>>>>> ++++++++++++++++++++++++++++++++++++++
+>>>>> 2 files changed, 107 insertions(+)
+>>>>>
+>>>>> diff --git a/arch/mips/kernel/relocate_kernel.S 
+>>>>> b/arch/mips/kernel/relocate_kernel.S
+>>>>> index ac87089..061cbfb 100644
+>>>>> --- a/arch/mips/kernel/relocate_kernel.S
+>>>>> +++ b/arch/mips/kernel/relocate_kernel.S
+>>>>> @@ -133,6 +133,25 @@ LEAF(kexec_smp_wait)
+>>>>> #else
+>>>>>       sync
+>>>>> #endif
+>>>>> +
+>>>>> +#ifdef CONFIG_CPU_LOONGSON64
+>>>>> +#define MAILBOX_BASE 0x900000003ff01000
+>>>> Please avoid hardcoded SMP information. You're breaking Loongson 3B 
+>>>> support.
+>>>>
+>>> Ok, I see. Since my machine is Loongson 3A. I'll send v2
+>>> after I test it in 3B.
+>> 1, My original version can work on both Loongson-3A and Loongson-3B,
+>> why you modify my patch and hadn't discuss with me?
+>>
+>> 2, With this single patch both kexec and kdump cannot work reliably,
+>> because kexec need this patch:
+>>     https://patchwork.kernel.org/patch/11695929/
+>>
+>>     and kdump need my first patch in my original version:
+>>     https://patchwork.kernel.org/patch/10799215/
+>>
+>>     You may argue that you have tested. Yes, I believe that, I'm not
+>> saying that you haven't test, and I'm not saying that your patch
+>> cannot work, I'm just saying that your patch is not robust.
+>>
+>> 3, I'm the original author and paying attention to kexec/kdump
+>> continuosly, I will send a new version once the above two patches be
+>> accepted. But you re-send my patch without any communication with me,
+>> why you so impatient?
+>>
+>> Huacai
+>>
+>
+> 1, Your original version:
+>    https://patchwork.kernel.org/patch/10799217/
+>
+> This patch can work on Loongson-3A, I tested it.
+>
+> But it works wrong after the follow behaviors,
+>    kexec -l vmlinux --append=cmdline_kexec
+>    kexec -p vmlinux --append=cmdline_kdump
+>    kexec -e
+>
 
-#define __MTE_PREAMBLE	ARM64_ASM_PREAMBLE ".arch_extension memtag"
+What 's wrong with you Loongson guys? Why do you always send patches 
+with the same functions as the original author withou any communication 
+with the original author? Especially the original author of the patch is 
+the maintainer of Loongson64 architecture.
 
-with the ARM64_ASM_PREAMBLE adjusted to armv8.5-a if available.
+In the past year, Loongson employees have been very active. This is a 
+happy thing, but at the same time, it is confusing that, in addition to 
+always sending patches that others have already sent, many patches send 
+by Loongson employees often with only a few lines (less than 10 lines). 
+I don't think this is a normal phenomenon, is this caused by any other 
+factors? Such as KPIs? If the patches are submitted for this purpose, it 
+is not advisable, this behavior will harm the entire Loongson.
 
-> +#define MTE_GRANULE_SIZE	UL(16)
-> +#define MTE_GRANULE_MASK	(~(MTE_GRANULE_SIZE - 1))
-> +#define MTE_TAG_SHIFT		56
-> +#define MTE_TAG_SIZE		4
-> +#define MTE_TAG_MASK		GENMASK((MTE_TAG_SHIFT + (MTE_TAG_SIZE - 1)), MTE_TAG_SHIFT)
-> +#define MTE_TAG_MAX		(MTE_TAG_MASK >> MTE_TAG_SHIFT)
 
-In v1 I suggested we keep those definitions in mte-def.h (or
-mte-hwdef.h) so that they can be included in cache.h. Anything else
-should go in mte.h, I don't see the point of two headers for various MTE
-function prototypes.
-
-> +
-> +#ifndef __ASSEMBLY__
-> +
-> +#include <linux/types.h>
-> +
-> +#ifdef CONFIG_ARM64_MTE
-> +
-> +#define mte_get_ptr_tag(ptr)	((u8)(((u64)(ptr)) >> MTE_TAG_SHIFT))
-
-I wonder whether this could also be an inline function that takes a void
-*ptr.
-
-> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-> index 52a0638ed967..e238ffde2679 100644
-> --- a/arch/arm64/kernel/mte.c
-> +++ b/arch/arm64/kernel/mte.c
-> @@ -72,6 +74,52 @@ int memcmp_pages(struct page *page1, struct page *page2)
->  	return ret;
->  }
->  
-> +u8 mte_get_mem_tag(void *addr)
-> +{
-> +	if (system_supports_mte())
-> +		asm volatile(ALTERNATIVE("ldr %0, [%0]",
-> +					 __MTE_PREAMBLE "ldg %0, [%0]",
-> +					 ARM64_MTE)
-> +			     : "+r" (addr));
-
-This doesn't do what you think it does. LDG indeed reads the tag from
-memory but LDR loads the actual data at that address. Instead of the
-first LDR, you may want something like "mov %0, #0xf << 56" (and use
-some macros to avoid the hard-coded 56).
-
-> +
-> +	return 0xF0 | mte_get_ptr_tag(addr);
-> +}
-> +
-> +u8 mte_get_random_tag(void)
-> +{
-> +	u8 tag = 0xF;
-> +	u64 addr = 0;
-> +
-> +	if (system_supports_mte()) {
-> +		asm volatile(ALTERNATIVE("add %0, %0, %0",
-> +					 __MTE_PREAMBLE "irg %0, %0",
-> +					 ARM64_MTE)
-> +			     : "+r" (addr));
-
-What was the intention here? The first ADD doubles the pointer value and
-gets a tag out of it (possibly doubled as well, depends on the carry
-from bit 55). Better use something like "orr %0, %0, #0xf << 56".
-
-> +
-> +		tag = mte_get_ptr_tag(addr);
-> +	}
-> +
-> +	return 0xF0 | tag;
-
-This function return seems inconsistent with the previous one. I'd
-prefer the return line to be the same in both.
-
-> +}
-> +
-> +void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
-> +{
-> +	void *ptr = addr;
-> +
-> +	if ((!system_supports_mte()) || (size == 0))
-> +		return addr;
-> +
-> +	/* Make sure that size is aligned. */
-> +	WARN_ON(size & (MTE_GRANULE_SIZE - 1));
-> +
-> +	tag = 0xF0 | (tag & 0xF);
-
-No point in tag & 0xf, the top nibble doesn't matter as you or 0xf0 in.
-
-> +	ptr = (void *)__tag_set(ptr, tag);
-> +
-> +	mte_assign_mem_tag_range(ptr, size);
-> +
-> +	return ptr;
-> +}
-> +
->  static void update_sctlr_el1_tcf0(u64 tcf0)
->  {
->  	/* ISB required for the kernel uaccess routines */
-> diff --git a/arch/arm64/lib/mte.S b/arch/arm64/lib/mte.S
-> index 03ca6d8b8670..cc2c3a378c00 100644
-> --- a/arch/arm64/lib/mte.S
-> +++ b/arch/arm64/lib/mte.S
-> @@ -149,3 +149,20 @@ SYM_FUNC_START(mte_restore_page_tags)
->  
->  	ret
->  SYM_FUNC_END(mte_restore_page_tags)
-> +
-> +/*
-> + * Assign allocation tags for a region of memory based on the pointer tag
-> + *   x0 - source pointer
-> + *   x1 - size
-> + *
-> + * Note: size must be non-zero and MTE_GRANULE_SIZE aligned
-> + */
-> +SYM_FUNC_START(mte_assign_mem_tag_range)
-> +	/* if (src == NULL) return; */
-> +	cbz	x0, 2f
-> +1:	stg	x0, [x0]
-> +	add	x0, x0, #MTE_GRANULE_SIZE
-> +	sub	x1, x1, #MTE_GRANULE_SIZE
-> +	cbnz	x1, 1b
-> +2:	ret
-> +SYM_FUNC_END(mte_assign_mem_tag_range)
-
-I thought Vincenzo agreed to my comments on the previous version w.r.t.
-the fist cbz and the last cbnz:
-
-https://lore.kernel.org/linux-arm-kernel/921c4ed0-b5b5-bc01-5418-c52d80f1af59@arm.com/
-
--- 
-Catalin
+> It works but cmdline_kdump merged cmdline_kexec.
+>
+> And this patch memcpy from fw_arg2 to kexec_envp and later memcpy from
+> kexec_envp to fw_arg2 when fw_arg2 was not changed, it's redundant.
+>
+> However, I have not Loongson-3B now, and did not test it. For this patch,
+> does it work well on Loongson-3B3000/Loongson-3B4000?
+>
+> 2, I have known that problem before your patch:
+>    https://patchwork.kernel.org/patch/11695929/
+>
+> I also did efforts although I had't committed my patch. It's due to the
+> hardware issues, and I removed pcie_port_device_remove(). Kexec works
+> normally on GUI. But it works terriblely on CLI. After this discuss:
+>    https://lore.kernel.org/patchwork/patch/1304917/
+>
+> What Lukas said helped me. I removed
+>    drivers/pci/pci-driver.c: pci_device_shutdown(): pci_clear_master...
+> Kexec works well on CLI also.
+>
+> For another patch:
+>    https://patchwork.kernel.org/patch/10799215/
+>
+> I have not 2way or 4way machine, and I did not test it.
+>
+> 3, I try to fix Loongson64 kexec function since I joined the community.
+> I fell sorry to not do enough research on Loongson64 kexec. My first 
+> patch:
+>    https://patchwork.kernel.org/patch/11684849/
+>
+> It fixed problem about "Crash kernel" which can be traced back to 
+> linux-5.4.
+> At that time, I thought there is no developer work on Kexec. Thus, I 
+> did a
+> lot on Kexec. Are you really continuosly paying attention to kexec/kdump?
+> With the exploring and developing deep, I found your patch several 
+> days ago
+> after I did a draft patch witch referenced:
+>    arch/mips/cavium-octeon/setup.c
+> https://gitee.com/loongsonlab/qemu/blob/master/hw/mips/loongson3a_rom.h
+>
+> There is no doubt that your patch gives me confidence and suggestion 
+> while
+> it gives me worry. As a newcomer, I do not know if should communicate 
+> with
+> you since your patch was committed one year ago. And now it may be a good
+> chance to do some communication.
+>
+> Thanks,
+>
+> - Jinyang.
+>
+>>>>> +    mfc0  t1, CP0_EBASE
+>>>>> +    andi  t1, MIPS_EBASE_CPUNUM
+>>>>> +    dli   t0, MAILBOX_BASE
+>>>>> +    andi  t3, t1, 0x3
+>>>>> +    sll   t3, 8
+>>>>> +    or    t0, t0, t3        /* insert core id */
+>>>>> +    andi  t2, t1, 0xc
+>>>>> +    dsll  t2, 42
+>>>>> +    or    t0, t0, t2        /* insert node id */
+>>>>> +1:  ld    s1, 0x20(t0)      /* get PC via mailbox0 */
+>>>>> +    beqz  s1, 1b
+>>>>> +    ld    sp, 0x28(t0)      /* get SP via mailbox1 */
+>>>>> +    ld    gp, 0x30(t0)      /* get GP via mailbox2 */
+>>>>> +    ld    a1, 0x38(t0)
+>>>>> +    jr    s1
+>>>>> +#endif
+>>>>>       j               s1
+>>>>>       END(kexec_smp_wait)
+>>>>> #endif
+>>>>> diff --git a/arch/mips/loongson64/reset.c 
+>>>>> b/arch/mips/loongson64/reset.c
+>>>>> index 3bb8a1e..322c326 100644
+>>>>> --- a/arch/mips/loongson64/reset.c
+>>>>> +++ b/arch/mips/loongson64/reset.c
+>>>>> @@ -47,12 +47,100 @@ static void loongson_halt(void)
+>>>>>       }
+>>>>> }
+>>>>>
+>>>>> +#ifdef CONFIG_KEXEC
+>>>>> +#include <linux/cpu.h>
+>>>>> +#include <linux/kexec.h>
+>>>>> +
+>>>>> +#include <asm/bootinfo.h>
+>>>>> +
+>>>>> +#define CONTROL_CODE_PAGE    0xFFFFFFFF80000000UL
+>>>>> +static int kexec_argc;
+>>>>> +static int kdump_argc;
+>>>>> +static void *kexec_argv;
+>>>>> +static void *kdump_argv;
+>>>>> +
+>>>>> +static int loongson_kexec_prepare(struct kimage *image)
+>>>>> +{
+>>>>> +    int i, offt, argc = 0;
+>>>>> +    int *argv;
+>>>>> +    char *str, *ptr, *bootloader = "kexec";
+>>>>> +
+>>>>> +    argv = kmalloc(COMMAND_LINE_SIZE, GFP_KERNEL);
+>>>>> +    if (!argv)
+>>>>> +            return -ENOMEM;
+>>>>> +
+>>>>> +    for (i = 0; i < image->nr_segments; i++) {
+>>>>> +            if (!strncmp(bootloader, (char *)image->segment[i].buf,
+>>>>> +                            strlen(bootloader))) {
+>>>>> +                    argv[argc++] = fw_arg1 + COMMAND_LINE_SIZE/2;
+>>>>> +                    str = (char *)argv + COMMAND_LINE_SIZE/2;
+>>>>> +                    memcpy(str, image->segment[i].buf, 
+>>>>> COMMAND_LINE_SIZE/2);
+>>>>> +                    ptr = strchr(str, ' ');
+>>>>> +                    while (ptr) {
+>>>>> +                            *ptr = '\0';
+>>>>> +                            if (ptr[1] != ' ') {
+>>>>> +                                    offt = (int)(ptr - str + 1);
+>>>>> +                                    argv[argc++] = fw_arg1 + 
+>>>>> COMMAND_LINE_SIZE/2 + offt;
+>>>>> +                            }
+>>>>> +                            ptr = strchr(ptr + 1, ' ');
+>>>>> +                    }
+>>>>> +                    break;
+>>>>> +            }
+>>>>> +    }
+>>>>> +
+>>>>> +    /* Kexec/kdump needs a safe page to save reboot_code_buffer. */
+>>>>> +    image->control_code_page = virt_to_page((void 
+>>>>> *)CONTROL_CODE_PAGE);
+>>>>> +
+>>>>> +    if (image->type == KEXEC_TYPE_CRASH) {
+>>>>> +            kfree(kdump_argv);
+>>>>> +            kdump_argc = argc;
+>>>>> +            kdump_argv = argv;
+>>>>> +    } else {
+>>>>> +            kfree(kexec_argv);
+>>>>> +            kexec_argc = argc;
+>>>>> +            kexec_argv = argv;
+>>>>> +    }
+>>>>> +
+>>>>> +    return 0;
+>>>>> +}
+>>>>> +
+>>>>> +static void loongson_kexec_shutdown(void)
+>>>>> +{
+>>>>> +#ifdef CONFIG_SMP
+>>>>> +    bringup_nonboot_cpus(loongson_sysconf.nr_cpus);
+>>>>> +#endif
+>>>>> +    fw_arg0 = kexec_argc;
+>>>>> +    memcpy((void *)fw_arg1, kexec_argv, COMMAND_LINE_SIZE);
+>>>>> +
+>>>>> +    kexec_args[0] = fw_arg0;
+>>>>> +    kexec_args[1] = fw_arg1;
+>>>>> +    kexec_args[2] = fw_arg2;
+>>>>> +}
+>>>>> +
+>>>>> +static void loongson_crash_shutdown(struct pt_regs *regs)
+>>>>> +{
+>>>>> +    default_machine_crash_shutdown(regs);
+>>>>> +    fw_arg0 = kdump_argc;
+>>>>> +    memcpy((void *)fw_arg1, kdump_argv, COMMAND_LINE_SIZE);
+>>>>> +
+>>>>> +    kexec_args[0] = fw_arg0;
+>>>>> +    kexec_args[1] = fw_arg1;
+>>>>> +    kexec_args[2] = fw_arg2;
+>>>>> +}
+>>>>> +#endif
+>>>>> +
+>>>>> static int __init mips_reboot_setup(void)
+>>>>> {
+>>>>>       _machine_restart = loongson_restart;
+>>>>>       _machine_halt = loongson_halt;
+>>>>>       pm_power_off = loongson_poweroff;
+>>>>>
+>>>>> +#ifdef CONFIG_KEXEC
+>>>>> +    _machine_kexec_prepare = loongson_kexec_prepare;
+>>>>> +    _machine_kexec_shutdown = loongson_kexec_shutdown;
+>>>>> +    _machine_crash_shutdown = loongson_crash_shutdown;
+>>>>> +#endif
+>>>>> +
+>>>>>       return 0;
+>>>>> }
+>>>>>
