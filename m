@@ -2,160 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DBAA26DCA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 15:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE20226DCB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 15:21:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726719AbgIQNRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 09:17:54 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:48872 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726478AbgIQNQB (ORCPT
+        id S1726871AbgIQNVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 09:21:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726915AbgIQNRJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 09:16:01 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08HDCpfe110398;
-        Thu, 17 Sep 2020 09:15:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=enh8OcIBw43YmJKaYzY58QOrw1oBaNAWROv4I7Cq1ZY=;
- b=ZHCPf4WAOsRx+0bdEUjngXLxGjJUMWD3kzkgbIv06DIJM/+WJPMaNmiUUs9Hkt3eccqf
- MDitTBOe5zVSKoT7ELcLYc8cN7Ekqcb2gs4vXsh/+Mp1K/dkIqcmYaAXP3ML+mUKhoVw
- gRI62nUOXS9Aaf0PQnGzMVSSyT3Hz4YCFClyKkidovkaHATGkeKm6ke+7pt0cVGLh9lN
- aokJjd+j+xKdrBEcuRH5R1V4L2yEDADlt2M2B+HRP6hXI39QB5h4Cy+etbPiZFuoy9mU
- MNXil49ZOsxxY5a+UOf1081DQeVxdXLS2XalWXyY3niFw0gorpcesKS1rhcFH6kMsOcc tQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33m8g0g2vk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Sep 2020 09:15:50 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08HDFNKQ124507;
-        Thu, 17 Sep 2020 09:15:49 -0400
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33m8g0g2u9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Sep 2020 09:15:49 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08HDDH5Z005652;
-        Thu, 17 Sep 2020 13:15:47 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma01fra.de.ibm.com with ESMTP id 33k5v993s2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Sep 2020 13:15:46 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08HDEAoY34341286
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 17 Sep 2020 13:14:10 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B2E364C044;
-        Thu, 17 Sep 2020 13:15:44 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 30CB94C04A;
-        Thu, 17 Sep 2020 13:15:43 +0000 (GMT)
-Received: from sig-9-65-208-105.ibm.com (unknown [9.65.208.105])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 17 Sep 2020 13:15:42 +0000 (GMT)
-Message-ID: <65512863d3cee25b0ba40fce8e819772b20c363c.camel@linux.ibm.com>
-Subject: Re: [PATCH v2 09/12] evm: Allow setxattr() and setattr() if
- metadata digest won't change
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>, mjg59@google.com
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, silviu.vlasceanu@huawei.com
-Date:   Thu, 17 Sep 2020 09:15:42 -0400
-In-Reply-To: <20200904092643.20013-5-roberto.sassu@huawei.com>
-References: <20200904092339.19598-1-roberto.sassu@huawei.com>
-         <20200904092643.20013-5-roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-17_09:2020-09-16,2020-09-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=3
- clxscore=1015 phishscore=0 bulkscore=0 adultscore=0 lowpriorityscore=0
- impostorscore=0 malwarescore=0 priorityscore=1501 mlxscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009170098
+        Thu, 17 Sep 2020 09:17:09 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF0AC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 06:16:46 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600348605;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=qqrugSgV949CdzvU7pgK3gjGPRkrAVHp23YNTmFYong=;
+        b=KH4wirRGbuCkTMQqBJfaIozz94hpwkoDaQ4VbqARGKCRh7ShB+/Rye8aZwYJlspikHGlTu
+        Xma7mt7fKSHq5PriwtTsQDQZrFC0ebENQ2yq0Wkipyhz/rT+7DtwHv3f7zKoAaUJNGFKD2
+        YAlyBb6jQyO7gHSXf75KNtJbWVqZPfYAVM+lpGMx9xjazvcgoJFVx7wr0Us1CJu3+I2Q9M
+        WrE9Lju//YSKOAF5wxWT8zMLIyc+zn73Kd5Kvc7esj+oHsHEXXpIFxRvwQKOCzeZZj62Ic
+        IA0CrLmkxmE6/MGid45klq6RQINhHoSW02l3BrCIv61KKS5RPqVqquNtK5VtXw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600348605;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=qqrugSgV949CdzvU7pgK3gjGPRkrAVHp23YNTmFYong=;
+        b=xniQY8t5qTNQKqGhv4vO4a9boZ0iGYUmmJPoD1IOlz25IBCANtxtGTkCj11LmumOiuCqRh
+        9Ox/QJfQtTsxJXAg==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH printk 0/3] printk: move dictionaries to meta data
+Date:   Thu, 17 Sep 2020 15:22:41 +0206
+Message-Id: <20200917131644.25838-1-john.ogness@linutronix.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Roberto,
+Hello,
 
-"if" doesn't belong in the subject line.  In this case, instead of "if
-metadata ...", how about something like "for unmodified metadata"?
+Here is a series to move dictionary properties (currently only
+SUBSYSTEM and DEVICE exist) into the meta data of a record,
+thus eliminating the need for the dict ring. This change
+affects how the dictionaries are stored, but does not affect
+how they are presented to userspace.
 
-On Fri, 2020-09-04 at 11:26 +0200, Roberto Sassu wrote:
-> With the patch to allow xattr/attr operations if a portable signature
-> verification fails, cp and tar can copy all xattrs/attrs so that at the
-> end of the process verification succeeds.
-> 
-> However, it might happen that xattrs/attrs are already set to the correct
+The main purpose of the change is to address concerns [0]
+about the reliability of dictionary properties as well as
+allowing to efficiently expand the type and number of
+properties available [1].
 
-^ the xattrs/attrs
+This series is based heavily on the proof of concept [2] from
+Petr Mladek. (Petr, feel free to add Co-developed-by tags.)
 
-> value (taken at signing time) and signature verification succeeds before
-> the copy is completed. For example, an archive might contains files owned
+The series is based on the printk-rework branch of the printk git                                          
+tree:                                                                                                      
+                                                                                                           
+f5f022e53b87 ("printk: reimplement log_cont using record extension")
 
-^ has completed.
+John Ogness
 
-> by root and the archive is extracted by root.
-> 
-> Then, since portable signatures are immutable, all subsequent operations
-> fail (e.g. fchown()), even if the operation is legitimate (does not alter
-> the current value).
-> 
-> This patch avoids this problem by reporting successful operation to user
-> space when that operation does not alter the current value of xattrs/attrs.
-> 
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+[0] https://lkml.kernel.org/r/20200904151336.GC20558@alley
+[1] https://lkml.kernel.org/r/008801d684f9$43e1c140$cba543c0$@samsung.com
+[2] https://lkml.kernel.org/r/20200911095035.GI3864@alley
 
-<snip>
+John Ogness (3):
+  printk: move printk_info into separate array
+  printk: move dictionary keys to dev_printk_info
+  printk: remove dict ring
 
-> +/*
-> + * evm_xattr_change - check if passed xattr value differs from current value
-> + * @dentry: pointer to the affected dentry
-> + * @xattr_name: requested xattr
-> + * @xattr_value: requested xattr value
-> + * @xattr_value_len: requested xattr value length
-> + *
-> + * Check if passed xattr value differs from current value.
-> + *
-> + * Returns 1 if passed xattr value differs from current value, 0 otherwise.
-> + */
-> +static int evm_xattr_change(struct dentry *dentry, const char *xattr_name,
-> +			    const void *xattr_value, size_t xattr_value_len)
-> +{
-> +	char *xattr_data = NULL;
-> +	int rc = 0;
-> +
-> +	if (posix_xattr_acl(xattr_name))
-> +		return evm_xattr_acl_change(dentry, xattr_name, xattr_value,
-> +					    xattr_value_len);
-> +
-> +	rc = vfs_getxattr_alloc(dentry, xattr_name, &xattr_data, 0, GFP_NOFS);
-> +	if (rc < 0)
-> +		return 1;
-> +
-> +	if (rc == xattr_value_len)
-> +		rc = memcmp(xattr_value, xattr_data, rc);
+ Documentation/admin-guide/kdump/gdbmacros.txt |  73 ++---
+ drivers/base/core.c                           |  46 +--
+ include/linux/dev_printk.h                    |   8 +
+ include/linux/printk.h                        |   6 +-
+ kernel/printk/internal.h                      |   4 +-
+ kernel/printk/printk.c                        | 209 ++++++-------
+ kernel/printk/printk_ringbuffer.c             | 292 ++++++++----------
+ kernel/printk/printk_ringbuffer.h             |  95 ++----
+ kernel/printk/printk_safe.c                   |   2 +-
+ scripts/gdb/linux/dmesg.py                    |  16 +-
+ 10 files changed, 336 insertions(+), 415 deletions(-)
 
-This should probably be changed to crypto_memneq().   Refer to commit
-613317bd212c ("EVM: Use crypto_memneq() for digest comparisons").
-
-thanks,
-
-Mimi
-
-> +	else
-> +		rc = 1;
-> +
-> +	kfree(xattr_data);
-> +	return rc;
-> +}
-> +
-> 
+-- 
+2.20.1
 
