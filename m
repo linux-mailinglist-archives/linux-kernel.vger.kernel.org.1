@@ -2,113 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 745FE26E31F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:02:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7F226E32A
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726612AbgIQSBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 14:01:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60454 "EHLO
+        id S1726526AbgIQSBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 14:01:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726368AbgIQRjc (ORCPT
+        with ESMTP id S1726549AbgIQRjl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 13:39:32 -0400
+        Thu, 17 Sep 2020 13:39:41 -0400
 Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 626D2C06178C
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:39:31 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id r25so3161392ioj.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:39:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8341C061355
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:39:34 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id y74so3102392iof.12
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:39:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+ZxAUcAmt6npTzXXqhjeGo2zTumi5Cj+Gk+e9dSx3UM=;
-        b=cShgdx+JpWGQOxPqOVDTlma/AMvctg37njScDQ5XzSxzgIIimXiwGWPSI03EJxaIPj
-         LX/9UKfkW/hSE0dxk70r3/CbNRUbVVc/1gIIRJ92pRk/yjrw/7fcY2mCO7dWlhcLRNEY
-         LD8ZQZQpIln1joA2lEXC18vgLW0kTatul0Q3PUdy9H60ZEjzZChTHOBmyolPoR3WnRuA
-         Ea3F3zinJ5ruO4J6csoTMHxxAM2TEQgAUeRe4w8bTVW9MKAEVvtRK+EHE7Qbou39Rtmi
-         in/ATnGVmAbpQZPSxerSlarCL6ASTbeeznRn93R9t9WafZLwVrt/hmNTxx2fGQ3NJ1mv
-         H2GA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=1JC8Jq8l5d3FMIOqG3s3tOJTv29rQ/B9PWS+aSrpLGw=;
+        b=U405yXMXivO9GetXit4zYyFid6bzqqIA4UwrlGS5LHR/5sRVogi2Yb/2UL2pKQhQ6I
+         h2y8mLHqugpSytlwllaXNvD6yLD2LkMx6JYV9OkEP9tOlOXqlqXR51d7I0PXmXIgGSsN
+         Z56BE5EQTRP3G5Ug/DWidnc4tOtRGffpZTTssuJqbgiX/9ELY7wXCL/+ZS3FxPlQWGF6
+         macQV8BiucaZiMVMEUIulgydWrNK1duaqGU3OOj+9FOBLjc3olAiIFCgp8R3MkMyWWgA
+         5qS+MG6/cUb69sajAlTpfCU8wIwH/K+AT3KB9jsPOHI/1Cg3LPckfVKgyvafgZhfiaOt
+         2cXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+ZxAUcAmt6npTzXXqhjeGo2zTumi5Cj+Gk+e9dSx3UM=;
-        b=CdJ74lZhQ1XT4iFt++clZwnhbC5s/LfrcHz9BSHPqU+sr6idQgvIfI2YNh2y9STyYq
-         dN7dCDHmWjG5qJeXuUKq2y6obN/k9kDaRzKLVXCVnf8TN/gCCCw+afJlo8JxfIu1x32a
-         x2ju8z0T9rLSH9sB2U9+C4fp9fkTRB+eyXT7uNe8ltPV/Vp1Kkzi5JJ9lwbzKFtG2OTP
-         NQ/INk/e+micbVB09XNv1yD66njLttH8kqgjMhGPi+i+OWSYV0UiNnsQaNaujqObD0Wr
-         o6/LHkLoWbLBRfb8kRpYRG4EGttWcN/OpkoeZnPU2E5hqqsC1VJDnGvkV5pEvRfBKCn/
-         7GbQ==
-X-Gm-Message-State: AOAM530hj9NHHCVt0tqP54sW0z4cdPHMJ7GjLSfWuerZ34IpwAgf771L
-        QGZoD2GLey3iskD1hEAu8FcD/w==
-X-Google-Smtp-Source: ABdhPJypMoW15gdVtEqB9xDXyHPrAfTthEFyW2SbFOwrIMod4BCI0p/Av/DlgxXkEyfSCsGOnx2d/g==
-X-Received: by 2002:a6b:b7cf:: with SMTP id h198mr24360700iof.55.1600364370637;
-        Thu, 17 Sep 2020 10:39:30 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=1JC8Jq8l5d3FMIOqG3s3tOJTv29rQ/B9PWS+aSrpLGw=;
+        b=K8aUqfgQC2ZiixJgVVG/9lw+z14dgTtRejXweR5/VLzcNuWUkMeSulMiobG+u9RZ24
+         2tgq1R9luEc9g//WWnuCqDEYx6ZYZcSc4Qz8B5zCMacVaRPeeQGalu7w96UFvAor4tkV
+         tf8y1FNbD7rIPqRNyM9zEvzSzyRmOrcDFND1joMyrHo6XiDiIVb8t83BZXlZ/mH8OT7l
+         QKpzUbWUxSGGR+cYpatllPFN3sf4Pr6KYK9RfLEZwidsT5sqL6rUiwwCy7UyXIxYCshm
+         ubSUxP8voQaviTBO444o2K86kIeaT5QN8UuDt5hlyTXatNeDXtUGY8It9+TarIPoXFTT
+         snBg==
+X-Gm-Message-State: AOAM530UB62AKHHQPlltPVd9PyvNHf3qfYb9vMquNs4uBeh88xqz0Oz0
+        waSyo1ZWiLuETN9C1BShAugdJA==
+X-Google-Smtp-Source: ABdhPJybbRBFZ3GvAgFEYWFu2IpIWGxn/o7bQ4EoBVHUsEH7hygQHQnFqx2LFmtttDZyH5am5EUs7Q==
+X-Received: by 2002:a05:6638:144:: with SMTP id y4mr27177041jao.61.1600364374081;
+        Thu, 17 Sep 2020 10:39:34 -0700 (PDT)
 Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id l6sm192725ilt.34.2020.09.17.10.39.29
+        by smtp.gmail.com with ESMTPSA id l6sm192725ilt.34.2020.09.17.10.39.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 10:39:29 -0700 (PDT)
+        Thu, 17 Sep 2020 10:39:33 -0700 (PDT)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     evgreen@chromium.org, subashab@codeaurora.org,
         cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v3 0/7] net: ipa: wake up system on RX available
-Date:   Thu, 17 Sep 2020 12:39:19 -0500
-Message-Id: <20200917173926.24266-1-elder@linaro.org>
+Subject: [PATCH net-next v3 3/7] net: ipa: manage endpoints separate from clock
+Date:   Thu, 17 Sep 2020 12:39:22 -0500
+Message-Id: <20200917173926.24266-4-elder@linaro.org>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200917173926.24266-1-elder@linaro.org>
+References: <20200917173926.24266-1-elder@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series arranges for the IPA driver to wake up a suspended
-system if the IPA hardware has a packet to deliver to the AP.
+Currently, when (before) the last IPA clock reference is dropped,
+all endpoints are suspended.  And whenever the first IPA clock
+reference is taken, all endpoints are resumed (or started).
 
-Version 2 replaced the first patch from version 1 with three
-patches, in response to David Miller's feedback.  And based on
-Bjorn Andersson's feedback on version 2, this version reworks
-the tracking of IPA clock references.  As a result, we no
-longer need a flag to determine whether a "don't' suspend" clock
-reference is held (though an bit in a bitmask is still used for
-a different purpose).
+In most cases there's no need to start endpoints when the clock
+starts.  So move the calls to ipa_endpoint_suspend() and
+ipa_endpoint_resume() out of ipa_clock_put() and ipa_clock_get(),
+respectiely.  Instead, only suspend endpoints when handling a system
+suspend, and only resume endpoints when handling a system resume.
 
-In summary:
-    - A refcount_t is used to track IPA clock references where an
-      atomic_t was previously used.  (This may go away soon as well,
-      with upcoming work to implement runtime PM.)
-    - We no longer track whether a special reference has been taken
-      to avoid suspending IPA.
-    - A bit in a bitmask is used to ensure we only trigger a system
-      resume once per system suspend.
-And from the original series:
-    - Suspending endpoints only occurs when suspending the driver,
-      not when dropping the last clock reference.  Resuming
-      endpoints is also disconnected from starting the clock.
-    - The IPA SUSPEND interrupt is now a wakeup interrupt.  If it
-      fires, it schedules a system resume operation.
-    - The GSI interrupt is no longer a wakeup interrupt.
+Signed-off-by: Alex Elder <elder@linaro.org>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+v3: Added Bjorn's reviewed-by tag.
 
-					-Alex
+ drivers/net/ipa/ipa_clock.c | 14 ++++----------
+ drivers/net/ipa/ipa_main.c  |  8 ++++++++
+ 2 files changed, 12 insertions(+), 10 deletions(-)
 
-Alex Elder (7):
-  net: ipa: use refcount_t for IPA clock reference count
-  net: ipa: replace ipa->suspend_ref with a flag bit
-  net: ipa: manage endpoints separate from clock
-  net: ipa: use device_init_wakeup()
-  net: ipa: repurpose CLOCK_HELD flag
-  net: ipa: enable wakeup on IPA interrupt
-  net: ipa: do not enable GSI interrupt for wakeup
-
- drivers/net/ipa/gsi.c           | 17 +++------
- drivers/net/ipa/gsi.h           |  1 -
- drivers/net/ipa/ipa.h           | 16 ++++++---
- drivers/net/ipa/ipa_clock.c     | 28 ++++++---------
- drivers/net/ipa/ipa_interrupt.c | 14 ++++++++
- drivers/net/ipa/ipa_main.c      | 64 +++++++++++++++++----------------
- 6 files changed, 74 insertions(+), 66 deletions(-)
-
+diff --git a/drivers/net/ipa/ipa_clock.c b/drivers/net/ipa/ipa_clock.c
+index b703866f2e20b..a2c0fde058199 100644
+--- a/drivers/net/ipa/ipa_clock.c
++++ b/drivers/net/ipa/ipa_clock.c
+@@ -200,9 +200,8 @@ bool ipa_clock_get_additional(struct ipa *ipa)
+ 
+ /* Get an IPA clock reference.  If the reference count is non-zero, it is
+  * incremented and return is immediate.  Otherwise it is checked again
+- * under protection of the mutex, and if appropriate the clock (and
+- * interconnects) are enabled suspended endpoints (if any) are resumed
+- * before returning.
++ * under protection of the mutex, and if appropriate the IPA clock
++ * is enabled.
+  *
+  * Incrementing the reference count is intentionally deferred until
+  * after the clock is running and endpoints are resumed.
+@@ -229,17 +228,14 @@ void ipa_clock_get(struct ipa *ipa)
+ 		goto out_mutex_unlock;
+ 	}
+ 
+-	ipa_endpoint_resume(ipa);
+-
+ 	refcount_set(&clock->count, 1);
+ 
+ out_mutex_unlock:
+ 	mutex_unlock(&clock->mutex);
+ }
+ 
+-/* Attempt to remove an IPA clock reference.  If this represents the last
+- * reference, suspend endpoints and disable the clock (and interconnects)
+- * under protection of a mutex.
++/* Attempt to remove an IPA clock reference.  If this represents the
++ * last reference, disable the IPA clock under protection of the mutex.
+  */
+ void ipa_clock_put(struct ipa *ipa)
+ {
+@@ -249,8 +245,6 @@ void ipa_clock_put(struct ipa *ipa)
+ 	if (!refcount_dec_and_mutex_lock(&clock->count, &clock->mutex))
+ 		return;
+ 
+-	ipa_endpoint_suspend(ipa);
+-
+ 	ipa_clock_disable(ipa);
+ 
+ 	mutex_unlock(&clock->mutex);
+diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
+index 409375b96eb8f..4d5394bcfe47e 100644
+--- a/drivers/net/ipa/ipa_main.c
++++ b/drivers/net/ipa/ipa_main.c
+@@ -907,11 +907,15 @@ static int ipa_remove(struct platform_device *pdev)
+  * Return:	Always returns zero
+  *
+  * Called by the PM framework when a system suspend operation is invoked.
++ * Suspends endpoints and releases the clock reference held to keep
++ * the IPA clock running until this point.
+  */
+ static int ipa_suspend(struct device *dev)
+ {
+ 	struct ipa *ipa = dev_get_drvdata(dev);
+ 
++	ipa_endpoint_suspend(ipa);
++
+ 	ipa_clock_put(ipa);
+ 	__clear_bit(IPA_FLAG_CLOCK_HELD, ipa->flags);
+ 
+@@ -925,6 +929,8 @@ static int ipa_suspend(struct device *dev)
+  * Return:	Always returns 0
+  *
+  * Called by the PM framework when a system resume operation is invoked.
++ * Takes an IPA clock reference to keep the clock running until suspend,
++ * and resumes endpoints.
+  */
+ static int ipa_resume(struct device *dev)
+ {
+@@ -936,6 +942,8 @@ static int ipa_resume(struct device *dev)
+ 	__set_bit(IPA_FLAG_CLOCK_HELD, ipa->flags);
+ 	ipa_clock_get(ipa);
+ 
++	ipa_endpoint_resume(ipa);
++
+ 	return 0;
+ }
+ 
 -- 
 2.20.1
 
