@@ -2,149 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7F9626D2F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 07:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7654226D303
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 07:23:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726126AbgIQFTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 01:19:54 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:38362 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725267AbgIQFTu (ORCPT
+        id S1726193AbgIQFXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 01:23:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726112AbgIQFXA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 01:19:50 -0400
-Received: by mail-wr1-f66.google.com with SMTP id g4so572328wrs.5
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 22:19:49 -0700 (PDT)
+        Thu, 17 Sep 2020 01:23:00 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95930C06174A;
+        Wed, 16 Sep 2020 22:22:59 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id v196so496097pfc.1;
+        Wed, 16 Sep 2020 22:22:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DuzvDrmcmFUROMahjXsaIv677k9LWQoyjXqdmtsaBMI=;
+        b=bxnFO5n3SkFWMS85cU1DAcdMSzGE74ZVXiqLcUxw0HX/4GRXpamomB+nOSVo9HrVZO
+         VCCGSiJaDrANpunvM0OnKdpJdrG/hO0wacQLUJld32pbqlO/1I/ZwxrdMvL78U+DYG4a
+         JOI3KN1qvSsDPTz0RAmAChw9LLzUmEiX29wwz3X4W1BsnuWpQgqVHNLfkQnoFADtfgcZ
+         Q9tcmR8UmiJxOY/VaGHd+TnpVje0AF0gBc9/R9YJHfevBxXVE+LSijTnI4N1TrnRW5hK
+         s6m7oXrx8FECohNau2O8zzXk4NeN9AUueXOo1ksvIvN5VozIEp8puXbi2AuxLFjA/kF7
+         Fz1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BHpuAUTaCPXW51YTfA4N1UnGTafHFhHpoxgaMPqjs9s=;
-        b=Gpg6BsK889xdMQGVHQfOPjZuH8zFGPgixZK1fBYs6+epjmp/29B31SsiSUtaK0QXBj
-         PWnGHprinHIcRo9UrMKkwYp+a1jpgmqfbWvAjL5jLCwJ13MHkNFTVbH/UJ2DZJPoCmaY
-         A2HoODwZXqcIvtA5+as46UQLGHNXEob8Qj+rOcGw5Mf6SLhcirlMvEqkEGc4T3W5ZYBs
-         HwnNdlD6JL8jHZN2lraYzkwahQ7I2jOjWibmsAczRATWTl0IIPSxVLSJTdgB+gYdxfOn
-         /o6p2rVi9zVviLglEnXZprD002oDPxQGYyLhkamjeZVKRP4/qXg/iCfFsDcQl1v9C8HV
-         7PBw==
-X-Gm-Message-State: AOAM532UHY79JJM6GDL5hPNrtwOuILU0Rq3q9fZHuaodA4/YUhQSt7/4
-        asN2DZeBSLBQsrRaE8hWxPA6VXd4xM1yrRPuCEM=
-X-Google-Smtp-Source: ABdhPJzJDTidFp6JFJYume7QQwdNTaBasc1JO9NMDh0McBwDKZXyYbdqUGBbMMRUDU84gGSQXqeodjxsbIuLUKX0k0w=
-X-Received: by 2002:adf:a418:: with SMTP id d24mr22277038wra.80.1600319988591;
- Wed, 16 Sep 2020 22:19:48 -0700 (PDT)
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=DuzvDrmcmFUROMahjXsaIv677k9LWQoyjXqdmtsaBMI=;
+        b=Xm0R924xKsFYZ8nhiRWzulaekhcM4Jt4t+w4q+H7wGi7q8puDnHv+9gJtIFzmh46kl
+         vq+u62zjb7V8v3rt8FkTupevyDsCnC8gKgFnHH7Aq63ytz7itcDVgIA6ufsn0UMP4tYx
+         N9wCsAfgIZXX6sN/ZFMW1MF+IhELyGKgSHvqv7ELeO60LQhJJcnz6VkG/2CqizgxnmZJ
+         dyLVY7uo2sSbG0HYO8RPaaE992bvYji91ua8b8YUiZJT80d5Fdv4IQbgrYMJJPA5jhh4
+         VVpHKCJ/UrRragzjYbga878DSSXrBZvJNk8HjRHQ2T6TAp1nICByqe82Vkc3pQRFcnS1
+         xo7A==
+X-Gm-Message-State: AOAM533WPrrJqdKahWA5Gw0aMe5I6RrWzDbm2WbjPghRnIHFlmsQGUDV
+        IqmDAKqJhq1FItk0Iw8pEf8nE7PGQblTLg==
+X-Google-Smtp-Source: ABdhPJw7MI5v8hAUH6Yv8ZDHRjeZDtK2cRkFfnZbkBrXlzKA87WIhoC1VJMzv7dTLP1azOz3LGE4VA==
+X-Received: by 2002:a62:545:0:b029:142:2501:35db with SMTP id 66-20020a6205450000b0290142250135dbmr9550209pff.59.1600320178779;
+        Wed, 16 Sep 2020 22:22:58 -0700 (PDT)
+Received: from sultan-book.localdomain ([104.200.129.212])
+        by smtp.gmail.com with ESMTPSA id i62sm18705619pfe.140.2020.09.16.22.22.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 22:22:58 -0700 (PDT)
+From:   Sultan Alsawaf <sultan@kerneltoast.com>
+X-Google-Original-From: Sultan Alsawaf
+To:     linux-i2c@vger.kernel.org
+Cc:     jikos@kernel.org, aaron.ma@canonical.com, admin@kryma.net,
+        andriy.shevchenko@linux.intel.com, benjamin.tissoires@redhat.com,
+        hdegoede@redhat.com, hn.chen@weidahitech.com,
+        jarkko.nikula@linux.intel.com, kai.heng.feng@canonical.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mika.westerberg@linux.intel.com, vicamo.yang@canonical.com,
+        wsa@kernel.org, Sultan Alsawaf <sultan@kerneltoast.com>
+Subject: [PATCH v2 0/4] i2c-hid: Save power by reducing i2c xfers with block reads
+Date:   Wed, 16 Sep 2020 22:22:52 -0700
+Message-Id: <20200917052256.5770-1-sultan@kerneltoast.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20200917024421.46973-1-liwei391@huawei.com>
-In-Reply-To: <20200917024421.46973-1-liwei391@huawei.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 17 Sep 2020 14:19:37 +0900
-Message-ID: <CAM9d7cgDK6n1=k+45PmdjtFf48oPRYx+rjMKWx0aiVWjyD3trg@mail.gmail.com>
-Subject: Re: [PATCH] perf metric: Code cleanup with map_for_each_event()
-To:     Wei Li <liwei391@huawei.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, Ian Rogers <irogers@google.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Li Bin <huawei.libin@huawei.com>, guohanjun@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Sultan Alsawaf <sultan@kerneltoast.com>
 
-On Thu, Sep 17, 2020 at 11:45 AM Wei Li <liwei391@huawei.com> wrote:
->
-> Since we have introduced map_for_each_event() to walk the 'pmu_events_map',
-> clean up metricgroup__print() and metricgroup__has_metric() with it.
->
-> Signed-off-by: Wei Li <liwei391@huawei.com>
+This is a fixed resubmission of "[PATCH 0/2] i2c-hid: Save power by reducing i2c
+xfers with block reads". That original patchset did not have enough fixes for
+the designware i2c adapter's I2C_M_RECV_LEN feature, which is documented
+extensively in the original email thread.
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+Here is the original cover letter, which still applies:
+"I noticed on my Dell Precision 15 5540 with an i9-9880H that simply putting my
+finger on the touchpad would increase my system's power consumption by 4W, which
+is quite considerable. Resting my finger on the touchpad would generate roughly
+4000 i2c irqs per second, or roughly 20 i2c irqs per touchpad irq.
 
-A nit-pick below:
+Upon closer inspection, I noticed that the i2c-hid driver would always transfer
+the maximum report size over i2c (which is 60 bytes for my touchpad), but all of
+my touchpad's normal touch events are only 32 bytes long according to the length
+byte contained in the buffer sequence.
 
+Therefore, I was able to save about 2W of power by passing the I2C_M_RECV_LEN
+flag in i2c-hid, which says to look for the payload length in the first byte of
+the transfer buffer and adjust the i2c transaction accordingly. The only problem
+though is that my i2c controller's driver allows bytes other than the first one
+to be used to retrieve the payload length, which is incorrect according to the
+SMBus spec, and would break my i2c-hid change since not *all* of the reports
+from my touchpad are conforming SMBus block reads.
 
-> ---
->  tools/perf/util/metricgroup.c | 33 +++++++++++++--------------------
->  1 file changed, 13 insertions(+), 20 deletions(-)
->
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-> index 8831b964288f..3734cbb2c456 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -26,6 +26,17 @@
->  #include "util.h"
->  #include <asm/bug.h>
->
-> +#define map_for_each_event(__pe, __idx, __map)                         \
-> +       for (__idx = 0, __pe = &__map->table[__idx];                    \
-> +            __pe->name || __pe->metric_group || __pe->metric_name;     \
-> +            __pe = &__map->table[++__idx])
-> +
-> +#define map_for_each_metric(__pe, __idx, __map, __metric)              \
-> +       map_for_each_event(__pe, __idx, __map)                          \
-> +               if (__pe->metric_expr &&                                \
-> +                   (match_metric(__pe->metric_group, __metric) ||      \
-> +                    match_metric(__pe->metric_name, __metric)))
-> +
+This patchset fixes the I2C_M_RECV_LEN behavior in the designware i2c driver and
+modifies i2c-hid to use I2C_M_RECV_LEN to save quite a bit of power. Even if the
+peripheral controlled by i2c-hid doesn't support block reads, the i2c controller
+drivers should cope with this and proceed with the i2c transfer using the
+original requested length."
 
-You may consider adding a declaration of match_metric() here.
-Right now, all users are below the function so it's ok but
-having the macro here can enable future addition above IMHO.
+Sultan
 
-Thanks
-Namhyung
+Sultan Alsawaf (4):
+  i2c: designware: Fix transfer failures for invalid SMBus block reads
+  i2c: designware: Ensure tx_buf_len is nonzero for SMBus block reads
+  i2c: designware: Allow SMBus block reads up to 255 bytes in length
+  HID: i2c-hid: Use block reads when possible to save power
 
+ drivers/hid/i2c-hid/i2c-hid-core.c         |  5 ++++-
+ drivers/i2c/busses/i2c-designware-master.c | 15 +++++++++------
+ 2 files changed, 13 insertions(+), 7 deletions(-)
 
->  struct metric_event *metricgroup__lookup(struct rblist *metric_events,
->                                          struct evsel *evsel,
->                                          bool create)
-> @@ -475,12 +486,9 @@ void metricgroup__print(bool metrics, bool metricgroups, char *filter,
->         groups.node_new = mep_new;
->         groups.node_cmp = mep_cmp;
->         groups.node_delete = mep_delete;
-> -       for (i = 0; ; i++) {
-> +       map_for_each_event(pe, i, map) {
->                 const char *g;
-> -               pe = &map->table[i];
->
-> -               if (!pe->name && !pe->metric_group && !pe->metric_name)
-> -                       break;
->                 if (!pe->metric_expr)
->                         continue;
->                 g = pe->metric_group;
-> @@ -745,17 +753,6 @@ static int __add_metric(struct list_head *metric_list,
->         return 0;
->  }
->
-> -#define map_for_each_event(__pe, __idx, __map)                         \
-> -       for (__idx = 0, __pe = &__map->table[__idx];                    \
-> -            __pe->name || __pe->metric_group || __pe->metric_name;     \
-> -            __pe = &__map->table[++__idx])
-> -
-> -#define map_for_each_metric(__pe, __idx, __map, __metric)              \
-> -       map_for_each_event(__pe, __idx, __map)                          \
-> -               if (__pe->metric_expr &&                                \
-> -                   (match_metric(__pe->metric_group, __metric) ||      \
-> -                    match_metric(__pe->metric_name, __metric)))
-> -
->  static struct pmu_event *find_metric(const char *metric, struct pmu_events_map *map)
->  {
->         struct pmu_event *pe;
-> @@ -1092,11 +1089,7 @@ bool metricgroup__has_metric(const char *metric)
->         if (!map)
->                 return false;
->
-> -       for (i = 0; ; i++) {
-> -               pe = &map->table[i];
-> -
-> -               if (!pe->name && !pe->metric_group && !pe->metric_name)
-> -                       break;
-> +       map_for_each_event(pe, i, map) {
->                 if (!pe->metric_expr)
->                         continue;
->                 if (match_metric(pe->metric_name, metric))
-> --
-> 2.17.1
->
+-- 
+2.28.0
+
