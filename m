@@ -2,112 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D368826D06F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 03:13:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2765426D075
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 03:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726130AbgIQBMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 21:12:54 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:45060 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726043AbgIQBMt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 21:12:49 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600305167; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=Pab/b4V0MVoJpiK20EmuKX2qwzZMvn4eLJv8tE/lWK8=;
- b=UDlSmQlRxG4kbxjPuHYQv1gEwbW/EKdUMoWA6soe2SNTtg/XIUlyjp5qGbIyCrlvNkOXqGCa
- QqFgOkXiMGcJvjAF14ZcIJ+fqu0dQvnfNxA/kfVG2BTMsiwRHb0bRPtopOyIejlKMUsWazQa
- s2D8d8U7VPs1899/WWo0k+8L6SQ=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5f62b6e2f1e3eb89c7f8a8a1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Sep 2020 01:07:46
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4DBA3C433F1; Thu, 17 Sep 2020 01:07:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: mansur)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9C121C433CA;
-        Thu, 17 Sep 2020 01:07:44 +0000 (UTC)
+        id S1726055AbgIQBQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 21:16:34 -0400
+Received: from mga04.intel.com ([192.55.52.120]:59622 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725858AbgIQBQa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 21:16:30 -0400
+X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 21:16:30 EDT
+IronPort-SDR: m3l7vfWtAffhSbjCEPJFDGIg+TbXBbL0hTr44HSB4ufQd2jomzRhbFd54y24FCHatYRFDjVPi0
+ Wz3nFCGLvUSA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="156982019"
+X-IronPort-AV: E=Sophos;i="5.76,434,1592895600"; 
+   d="scan'208";a="156982019"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 18:09:21 -0700
+IronPort-SDR: hmsRNOgsXNVJVvJx0cAQLagijiHwosmnCPveYTnafbybnITSam3345zTiGI1T4zurv0/N7rlRn
+ k4jW35BFRO/Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,434,1592895600"; 
+   d="scan'208";a="331931692"
+Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.135]) ([10.239.161.135])
+  by fmsmga004.fm.intel.com with ESMTP; 16 Sep 2020 18:09:13 -0700
+Subject: Re: [RFC PATCH v7 11/23] sched/fair: core wide cfs task priority
+ comparison
+To:     chris hyser <chris.hyser@oracle.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>
+Cc:     mingo@kernel.org, tglx@linutronix.de, pjt@google.com,
+        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        fweisbec@gmail.com, keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, joel@joelfernandes.org,
+        vineeth@bitbyteword.org, Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        rostedt@goodmis.org, derkling@google.com, benbjiang@tencent.com,
+        Aaron Lu <ziqian.lzq@antfin.com>,
+        "Ning, Hongyu" <hongyu.ning@linux.intel.com>
+References: <cover.1598643276.git.jdesfossez@digitalocean.com>
+ <d02923d38df20f1d8c51cf4df6dce66ac0a385ce.1598643276.git.jdesfossez@digitalocean.com>
+ <f20f4d5b-574a-7c3d-8c08-3e6b7893fc58@oracle.com>
+ <81b208ad-b9e6-bfbf-631e-02e9f75d73a2@linux.intel.com>
+ <51424491-b7e0-b245-1062-319021eb1845@oracle.com>
+ <b7bfdba2-b1db-2acd-5f50-e6eb0008c817@oracle.com>
+From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
+Message-ID: <600ffdab-472b-0190-481c-a4042f3ee833@linux.intel.com>
+Date:   Thu, 17 Sep 2020 09:09:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 17 Sep 2020 06:37:44 +0530
-From:   mansur@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org
-Subject: Re: [PATCH 1/2] venus: core: change clk enable and disable order in
- resume and suspend
-In-Reply-To: <159959010893.454335.18221321331314189759@swboyd.mtv.corp.google.com>
-References: <1599536645-4593-1-git-send-email-mansur@codeaurora.org>
- <159959010893.454335.18221321331314189759@swboyd.mtv.corp.google.com>
-Message-ID: <4865efd5e746d2e94cc4680a47a30a0d@codeaurora.org>
-X-Sender: mansur@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <b7bfdba2-b1db-2acd-5f50-e6eb0008c817@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On 2020-09-09 00:05, Stephen Boyd wrote:
->> Quoting Mansur Alisha Shaik (2020-09-07 20:44:05)
->>> Currently video driver is voting after clk enable and un voting
->>> before clk disable. Basically we should vote before clk enable
->>> and un vote after clk disable.
->>> 
->>> Corrected this by changing the order of clk enable and clk disable.
->>> 
->>> Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
->>> ---
->> 
->> Any Fixes: tag?
-Added Fixes tag
->> 
->>>  drivers/media/platform/qcom/venus/core.c | 17 ++++++++++-------
->>>  1 file changed, 10 insertions(+), 7 deletions(-)
->>> 
->>> diff --git a/drivers/media/platform/qcom/venus/core.c 
->>> b/drivers/media/platform/qcom/venus/core.c
->>> index c5af428..4857bbd 100644
->>> --- a/drivers/media/platform/qcom/venus/core.c
->>> +++ b/drivers/media/platform/qcom/venus/core.c
->>> @@ -363,13 +363,16 @@ static __maybe_unused int 
->>> venus_runtime_suspend(struct device *dev)
->>>         if (ret)
->>>                 return ret;
->>> 
->>> +       if (pm_ops->core_power) {
->>> +               ret = pm_ops->core_power(dev, POWER_OFF);
->>> +               if (ret)
->>> +                       return ret;
->>> +       }
->>> +
->>>         ret = icc_set_bw(core->cpucfg_path, 0, 0);
->>>         if (ret)
->>>                 return ret;
->> 
->> Shouldn't we power it back up if this fails during suspend?
-On icc_set_bw() failure, we are just power it and return.
-Addressed these comments and posted new version
-https://lore.kernel.org/patchwork/project/lkml/list/?series=463224
->> 
->>> 
->>> -       if (pm_ops->core_power)
->>> -               ret = pm_ops->core_power(dev, POWER_OFF);
->>> -
->>>         return ret;
->>>  }
->>> 
+On 2020/9/17 4:53, chris hyser wrote:
+> On 9/16/20 10:24 AM, chris hyser wrote:
+>> On 9/16/20 8:57 AM, Li, Aubrey wrote:
+>>>> Here are the uperf results of the various patchsets. Note, that disabling smt is better for these tests and that that presumably reflects the overall overhead of core scheduling which went from bad to really bad. The primary focus in this email is to start to understand what happened within core sched itself.
+>>>>
+>>>> patchset          smt=on/cs=off  smt=off    smt=on/cs=on
+>>>> --------------------------------------------------------
+>>>> v5-v5.6.y      :    1.78Gb/s     1.57Gb/s     1.07Gb/s
+>>>> pre-v6-v5.6.y  :    1.75Gb/s     1.55Gb/s    822.16Mb/s
+>>>> v6-5.7         :    1.87Gs/s     1.56Gb/s    561.6Mb/s
+>>>> v6-5.7-hotplug :    1.75Gb/s     1.58Gb/s    438.21Mb/s
+>>>> v7             :    1.80Gb/s     1.61Gb/s    440.44Mb/s
+>>>
+>>> I haven't had a chance to play with v7, but I got something different.
+>>>
+>>>    branch        smt=on/cs=on
+>>> coresched/v5-v5.6.y    1.09Gb/s
+>>> coresched/v6-v5.7.y    1.05Gb/s
+>>>
+>>> I attached my kernel config in case you want to make a comparison, or you
+>>> can send yours, I'll try to see I can replicate your result.
+>>
+>> I will give this config a try. One of the reports forwarded to me about the drop in uperf perf was an email from you I believe mentioning a 50% perf drop between v5 and v6?? I was actually setting out to duplicate your results. :-)
+> 
+> The first thing I did was to verify I built and tested the right bits. Presumably as I get same numbers. I'm still trying to tweak your config to get a root disk in my setup. Oh, one thing I missed in reading your first response, I had 24 cores/48 cpus. I think you had half that, though my guess is that that should have actually made the numbers even worse. :-)
+> 
+> The following was forwarded to me originally sent on Aug 3, by you I believe:
+> 
+>> We found uperf(in cgroup) throughput drops by ~50% with corescheduling.
+>>
+>> The problem is, uperf triggered a lot of softirq and offloaded softirq
+>> service to *ksoftirqd* thread.
+>>
+>> - default, ksoftirqd thread can run with uperf on the same core, we saw
+>>   100% CPU utilization.
+>> - coresched enabled, ksoftirqd's core cookie is different from uperf, so
+>>   they can't run concurrently on the same core, we saw ~15% forced idle.
+>>
+>> I guess this kind of performance drop can be replicated by other similar
+>> (a lot of softirq activities) workloads.
+>>
+>> Currently core scheduler picks cookie-match tasks for all SMT siblings, does
+>> it make sense we add a policy to allow cookie-compatible task running together?
+>> For example, if a task is trusted(set by admin), it can work with kernel thread.
+>> The difference from corescheduling disabled is that we still have user to user
+>> isolation.
+>>
+>> Thanks,
+>> -Aubrey
+> 
+> Would you please elaborate on what this test was? In trying to duplicate this, I just kept adding uperf threads to my setup until I started to see performance losses similar to what is reported above (and a second report about v7). Also, I wasn't looking for absolute numbers per-se, just significant enough differences to try to track where the performance went.
+> 
+
+This test was smt-on/cs-on against smt-on/cs-off on the same corescheduling version,
+we didn't find such big regression between different versions as you encountered.
+
+Thanks,
+-Aubrey
