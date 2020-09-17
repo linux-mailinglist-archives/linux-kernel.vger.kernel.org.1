@@ -2,47 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5BF226D636
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0BBA26D5AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726290AbgIQIPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 04:15:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53480 "EHLO mail.kernel.org"
+        id S1726457AbgIQIHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 04:07:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726200AbgIQIPa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 04:15:30 -0400
+        id S1726417AbgIQIGh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 04:06:37 -0400
 Received: from mail.kernel.org (ip5f5ad5d2.dynamic.kabel-deutschland.de [95.90.213.210])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BD1652083B;
+        by mail.kernel.org (Postfix) with ESMTPSA id BD22D221E8;
         Thu, 17 Sep 2020 08:04:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1600329870;
-        bh=c5TmzbpIrEVAt9sd99ho7XUbJVUUU2idBFIUP3aW+UA=;
+        bh=mYwYOXWHk8m9yb3WuJTI/V6/GmciN+v4xy+Pzj/6yrw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KzPSefoMA5MrB5981SX7oyhdBEhPQ6cFFxfHdNGFYWefsdDcqxVPIPVHF7pMwbKjy
-         93aj74UoZ96o1nro4vBCmMi0hDfAp3TbgL7vK/meYXPa7kCIXWI1FCD0PwjjSSWgBB
-         tmXN2I7Kk1tucOoNJgd0SueYLpsYaqQ1Wk/7mPac=
+        b=wmhcMPOapbbfMbgpTrJy+WRPRaosnbfTglGznVwZt+kUxXqP2o+VvO5EXbptacD6J
+         mPrcWfom7WQb7eK9NEMfh3/Ot66XLheBK3+ecYyddkRJUMWpQWO5e9izKNPmakk0c9
+         9z0F9ZCADzLLWKZQVAlFcBgv8iQ973wB1aJFDiGo=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kIou4-0051LS-9p; Thu, 17 Sep 2020 10:04:28 +0200
+        id 1kIou4-0051LU-Ai; Thu, 17 Sep 2020 10:04:28 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] mm: pagemap.h: fix two kernel-doc markups
-Date:   Thu, 17 Sep 2020 10:04:26 +0200
-Message-Id: <8e49099fa71f0f5098c21c6d1e2575d4c357f8c0.1600328701.git.mchehab+huawei@kernel.org>
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH 3/3] docs: bpf: ringbuf.rst: fix a broken cross-reference
+Date:   Thu, 17 Sep 2020 10:04:27 +0200
+Message-Id: <442b27cc035ab7f9e5e000f2ac44ce88ea8b16a6.1600328701.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1600328701.git.mchehab+huawei@kernel.org>
 References: <cover.1600328701.git.mchehab+huawei@kernel.org>
@@ -52,44 +51,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset 6c8adf8446a3 ("mm: add find_lock_head") renamed the
-index parameter, but forgot to update the kernel-doc markups
-accordingly.
+Sphinx warns about a broken cross-reference:
 
-Fixes: 6c8adf8446a3 ("mm: add find_lock_head")
+	Documentation/bpf/ringbuf.rst:194: WARNING: Unknown target name: "bench_ringbufs.c".
+
+It seems that the original idea were to add a reference for this file:
+
+	tools/testing/selftests/bpf/benchs/bench_ringbufs.c
+
+However, this won't work as such file is not part of the
+documentation output dir. It could be possible to use
+an extension like interSphinx in order to make external
+references to be pointed to some website (like kernel.org),
+where the file is stored, but currently we don't use it.
+
+It would also be possible to include this file as a
+literal include, placing it inside Documentation/bpf.
+
+For now, let's take the simplest approach: just drop
+the "_" markup at the end of the reference. This
+should solve the warning, and it sounds quite obvious
+that the file to see is at the Kernel tree.
+
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- include/linux/pagemap.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ Documentation/bpf/ringbuf.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index 4e52a3ff92fb..965ee92df1ad 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -308,9 +308,9 @@ static inline struct page *find_get_page_flags(struct address_space *mapping,
- /**
-  * find_lock_page - locate, pin and lock a pagecache page
-  * @mapping: the address_space to search
-- * @offset: the page index
-+ * @index: the page index
-  *
-- * Looks up the page cache entry at @mapping & @offset.  If there is a
-+ * Looks up the page cache entry at @mapping & @index.  If there is a
-  * page cache page, it is returned locked and with an increased
-  * refcount.
-  *
-@@ -327,9 +327,9 @@ static inline struct page *find_lock_page(struct address_space *mapping,
- /**
-  * find_lock_head - Locate, pin and lock a pagecache page.
-  * @mapping: The address_space to search.
-- * @offset: The page index.
-+ * @index: The page index.
-  *
-- * Looks up the page cache entry at @mapping & @offset.  If there is a
-+ * Looks up the page cache entry at @mapping & @index.  If there is a
-  * page cache page, its head page is returned locked and with an increased
-  * refcount.
-  *
+diff --git a/Documentation/bpf/ringbuf.rst b/Documentation/bpf/ringbuf.rst
+index 4d4f3bcb1477..6a615cd62bda 100644
+--- a/Documentation/bpf/ringbuf.rst
++++ b/Documentation/bpf/ringbuf.rst
+@@ -197,7 +197,7 @@ a self-pacing notifications of new data being availability.
+ being available after commit only if consumer has already caught up right up to
+ the record being committed. If not, consumer still has to catch up and thus
+ will see new data anyways without needing an extra poll notification.
+-Benchmarks (see tools/testing/selftests/bpf/benchs/bench_ringbufs.c_) show that
++Benchmarks (see tools/testing/selftests/bpf/benchs/bench_ringbufs.c) show that
+ this allows to achieve a very high throughput without having to resort to
+ tricks like "notify only every Nth sample", which are necessary with perf
+ buffer. For extreme cases, when BPF program wants more manual control of
 -- 
 2.26.2
 
