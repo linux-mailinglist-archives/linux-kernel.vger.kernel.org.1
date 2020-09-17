@@ -2,113 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72CDC26D153
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 04:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 640BA26D164
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 05:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726121AbgIQCrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 22:47:43 -0400
-Received: from ozlabs.org ([203.11.71.1]:45133 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725886AbgIQCrj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 22:47:39 -0400
-X-Greylist: delayed 1837 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 22:47:37 EDT
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BsLwl3xmlz9sSW;
-        Thu, 17 Sep 2020 12:47:35 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600310855;
-        bh=t7gDy3HQShyClQS/wpwcGgnRoswh/b2yiyij2Bde5no=;
-        h=Date:From:To:Cc:Subject:From;
-        b=NwK8Ztdvz3LHpJ1Q4NWQrL2uH/0YadfwrH0FFXG1s3GFPxWlUwa0+G6pmqJnml1pf
-         YKoP2NpqNxPvAYhPzDOIIPtJtme4sSJHbm4mPhkymDxHCmPTW0du/TErYZpzi4kQz9
-         cWyHRg7/G5ujyGXUoQMgbknMDVSaPZ2e+ws+HMMvm3sbuEv/cdcrdraFiSvQPwFv5t
-         J3XUX++P+lrzFxwOtmDfvxgvnnmbOjspeP+uyruEbKiQk+OX6OTcRd0ZuO0kYNaZVv
-         ZHN/aVGWx5f15hLNQgkwRMIrqVvUDUa/ysUS8xF3QX8OJR07BDBxhh9pT26kzs6Xmc
-         7yPwmYajDtOEw==
-Date:   Thu, 17 Sep 2020 12:47:34 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     David Ahern <dsahern@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: manual merge of the net-next tree with the net tree
-Message-ID: <20200917124734.250793b1@canb.auug.org.au>
+        id S1726154AbgIQDBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 23:01:38 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12767 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726135AbgIQDB2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 23:01:28 -0400
+X-Greylist: delayed 971 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 23:01:27 EDT
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 82F1A66FE07F77A47874;
+        Thu, 17 Sep 2020 10:45:08 +0800 (CST)
+Received: from euler.huawei.com (10.175.124.27) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 17 Sep 2020 10:44:57 +0800
+From:   Wei Li <liwei391@huawei.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "Namhyung Kim" <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Kan Liang <kan.liang@linux.intel.com>
+CC:     <linux-kernel@vger.kernel.org>, <huawei.libin@huawei.com>,
+        <guohanjun@huawei.com>
+Subject: [PATCH] perf metric: Code cleanup with map_for_each_event()
+Date:   Thu, 17 Sep 2020 10:44:21 +0800
+Message-ID: <20200917024421.46973-1-liwei391@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/gA2diz/RaKZuwM_+0YOfN6s";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
+X-Originating-IP: [10.175.124.27]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/gA2diz/RaKZuwM_+0YOfN6s
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Since we have introduced map_for_each_event() to walk the 'pmu_events_map',
+clean up metricgroup__print() and metricgroup__has_metric() with it.
 
-Hi all,
+Signed-off-by: Wei Li <liwei391@huawei.com>
+---
+ tools/perf/util/metricgroup.c | 33 +++++++++++++--------------------
+ 1 file changed, 13 insertions(+), 20 deletions(-)
 
-Today's linux-next merge of the net-next tree got a conflict in:
+diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+index 8831b964288f..3734cbb2c456 100644
+--- a/tools/perf/util/metricgroup.c
++++ b/tools/perf/util/metricgroup.c
+@@ -26,6 +26,17 @@
+ #include "util.h"
+ #include <asm/bug.h>
+ 
++#define map_for_each_event(__pe, __idx, __map)				\
++	for (__idx = 0, __pe = &__map->table[__idx];			\
++	     __pe->name || __pe->metric_group || __pe->metric_name;	\
++	     __pe = &__map->table[++__idx])
++
++#define map_for_each_metric(__pe, __idx, __map, __metric)		\
++	map_for_each_event(__pe, __idx, __map)				\
++		if (__pe->metric_expr &&				\
++		    (match_metric(__pe->metric_group, __metric) ||	\
++		     match_metric(__pe->metric_name, __metric)))
++
+ struct metric_event *metricgroup__lookup(struct rblist *metric_events,
+ 					 struct evsel *evsel,
+ 					 bool create)
+@@ -475,12 +486,9 @@ void metricgroup__print(bool metrics, bool metricgroups, char *filter,
+ 	groups.node_new = mep_new;
+ 	groups.node_cmp = mep_cmp;
+ 	groups.node_delete = mep_delete;
+-	for (i = 0; ; i++) {
++	map_for_each_event(pe, i, map) {
+ 		const char *g;
+-		pe = &map->table[i];
+ 
+-		if (!pe->name && !pe->metric_group && !pe->metric_name)
+-			break;
+ 		if (!pe->metric_expr)
+ 			continue;
+ 		g = pe->metric_group;
+@@ -745,17 +753,6 @@ static int __add_metric(struct list_head *metric_list,
+ 	return 0;
+ }
+ 
+-#define map_for_each_event(__pe, __idx, __map)				\
+-	for (__idx = 0, __pe = &__map->table[__idx];			\
+-	     __pe->name || __pe->metric_group || __pe->metric_name;	\
+-	     __pe = &__map->table[++__idx])
+-
+-#define map_for_each_metric(__pe, __idx, __map, __metric)		\
+-	map_for_each_event(__pe, __idx, __map)				\
+-		if (__pe->metric_expr &&				\
+-		    (match_metric(__pe->metric_group, __metric) ||	\
+-		     match_metric(__pe->metric_name, __metric)))
+-
+ static struct pmu_event *find_metric(const char *metric, struct pmu_events_map *map)
+ {
+ 	struct pmu_event *pe;
+@@ -1092,11 +1089,7 @@ bool metricgroup__has_metric(const char *metric)
+ 	if (!map)
+ 		return false;
+ 
+-	for (i = 0; ; i++) {
+-		pe = &map->table[i];
+-
+-		if (!pe->name && !pe->metric_group && !pe->metric_name)
+-			break;
++	map_for_each_event(pe, i, map) {
+ 		if (!pe->metric_expr)
+ 			continue;
+ 		if (match_metric(pe->metric_name, metric))
+-- 
+2.17.1
 
-  net/ipv4/route.c
-
-between commit:
-
-  2fbc6e89b2f1 ("ipv4: Update exception handling for multipath routes via s=
-ame device")
-
-from the net tree and commit:
-
-  8b4510d76cde ("net: gain ipv4 mtu when mtu is not locked")
-
-from the net-next tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc net/ipv4/route.c
-index 58642b29a499,2c05b863ae43..000000000000
---- a/net/ipv4/route.c
-+++ b/net/ipv4/route.c
-@@@ -1015,10 -1013,9 +1015,10 @@@ out:	kfree_skb(skb)
-  static void __ip_rt_update_pmtu(struct rtable *rt, struct flowi4 *fl4, u3=
-2 mtu)
-  {
-  	struct dst_entry *dst =3D &rt->dst;
- +	struct net *net =3D dev_net(dst->dev);
-- 	u32 old_mtu =3D ipv4_mtu(dst);
-  	struct fib_result res;
-  	bool lock =3D false;
-+ 	u32 old_mtu;
- =20
-  	if (ip_mtu_locked(dst))
-  		return;
-
---Sig_/gA2diz/RaKZuwM_+0YOfN6s
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9izkYACgkQAVBC80lX
-0Gz35gf/Rlg2W34UB0eBDPBQBObUB86EA4M6CjRWeXtASGMAF3mnxXGHFktCF3Jm
-ykpmCHhc4pFfzaaw5L0liNj7hs3b98fnF0xwEv2ZpMRHVjcEqysAZ5DZKvMDf69X
-rlwMF+fORB1kVDBbnyXFBKMaTYk8ZaNkoqo9m+z00TvwED3pbWOaRDRpR0hLUT0L
-iZD/rI2pBVIbfvRUFOapd2WLheP83EjQFsHcUCz83zriWchp5l6qxLIPaQ6JN5IG
-7GoH2ZOixbl1MOX/GuBouMoVzeTX1H9op39a/cGou8yedr68puzpj1am3kpm7AnH
-KzWO/mOkmgFj+0GLrb5T0xGmYcs3dg==
-=lrQd
------END PGP SIGNATURE-----
-
---Sig_/gA2diz/RaKZuwM_+0YOfN6s--
