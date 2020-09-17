@@ -2,99 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A109F26D819
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 11:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D0C26D7B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 11:33:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726538AbgIQJvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 05:51:09 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:42600 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726285AbgIQJvE (ORCPT
+        id S1726496AbgIQJdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 05:33:02 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:49698 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726185AbgIQJc5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 05:51:04 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08H7dfBN037005;
-        Thu, 17 Sep 2020 07:41:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=gFPfIys6+PJasFVewq/jqD1yD7if0Z8tU612k2cZKJo=;
- b=zQ0O+oBkiu5EURek44YX9wgPk75pHPWeranllkgQmNtPS6+1Z5jhl078QQ54xw3Kn7fq
- drtEyCuHnObclDOufGlyRON4lDxlymqmPs7q1H21U32UXAj8SRVKnHNaZcclu/2QolVd
- +aTn3zJG4qvDN8iWrRTUr4g5NBx7d6rtbR7opJYUXYZAb9d4vYyMA4xf85ZM7n6pqJcQ
- 5B7nRfcdKFFNPZmS+yhyAl0koZXEgZ+AYKk+ryXK91ThVHS3c+F6DwE77pEBue0603H9
- Y7i6D/ih5PuiQ5msOrbhsXZkKt1dcw/3U74kC7k2ZeYHGlGc7pRWzfFy67fckXMufUpC 9g== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 33gnrr7f9p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 17 Sep 2020 07:41:16 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08H7dukT157045;
-        Thu, 17 Sep 2020 07:41:16 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 33hm34au9p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 17 Sep 2020 07:41:16 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08H7f2nR025598;
-        Thu, 17 Sep 2020 07:41:02 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 17 Sep 2020 07:41:01 +0000
-Date:   Thu, 17 Sep 2020 10:40:54 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     akpm@linux-foundation.org, alex.bou9@gmail.com,
-        gustavoars@kernel.org, ira.weiny@intel.com, jrdr.linux@gmail.com,
-        linux-kernel@vger.kernel.org, madhuparnabhowmik10@gmail.com,
-        mporter@kernel.crashing.org, willy@infradead.org
-Subject: Re: [PATCH] mm/gup: protect unpin_user_pages() against npages==-ERRNO
-Message-ID: <20200917074054.GO18329@kadam>
-References: <20200916100232.GF18329@kadam>
- <20200917065706.409079-1-jhubbard@nvidia.com>
+        Thu, 17 Sep 2020 05:32:57 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08H7mOEw098051;
+        Thu, 17 Sep 2020 02:48:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600328904;
+        bh=XUWlwYnEa2/3Aqan6ilt7Si/rPK+fDEzdyGLCe7s26s=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=XfVFDzffOZH+snsOjD7l30rhEKKlaWkQe+vP9JTPKsrN4oJGGx9RYZzs6jKALZTbm
+         T0CAPjJWaUFqZJjV28Yok/6HEaG3nygfk6zWCc9Aiyv8Jh3AmlsosBv7CKSwsikuND
+         zRQymHVKRpvLF87NLuxW0wPHWMC1UWBs3v/9u4GA=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08H7mOQl102335
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 17 Sep 2020 02:48:24 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 17
+ Sep 2020 02:48:24 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 17 Sep 2020 02:48:24 -0500
+Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08H7mEdu100359;
+        Thu, 17 Sep 2020 02:48:22 -0500
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+To:     Vignesh Raghavendra <vigneshr@ti.com>
+CC:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 3/4] mtd: hyperbus: hbmc-am654: Drop pm_runtime* calls from probe
+Date:   Thu, 17 Sep 2020 13:17:48 +0530
+Message-ID: <20200917074749.8957-4-vigneshr@ti.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200917074749.8957-1-vigneshr@ti.com>
+References: <20200917074749.8957-1-vigneshr@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917065706.409079-1-jhubbard@nvidia.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9746 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxlogscore=999
- malwarescore=0 mlxscore=0 phishscore=0 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009170055
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9746 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0
- lowpriorityscore=0 malwarescore=0 mlxscore=0 bulkscore=0 suspectscore=0
- clxscore=1015 mlxlogscore=999 adultscore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009170055
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 11:57:06PM -0700, John Hubbard wrote:
-> As suggested by Dan Carpenter, fortify unpin_user_pages() just a bit,
-> against a typical caller mistake: check if the npages arg is really a
-> -ERRNO value, which would blow up the unpinning loop: WARN and return.
-> 
-> If this new WARN_ON() fires, then the system *might* be leaking pages
-> (by leaving them pinned), but probably not. More likely, gup/pup
-> returned a hard -ERRNO error to the caller, who erroneously passed it
-> here.
-> 
-> Cc: Ira Weiny <ira.weiny@intel.com>
-> Cc: Souptick Joarder <jrdr.linux@gmail.com>
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> ---
-> 
-> Hi Dan,
-> 
-> Is is OK to use your signed-off-by here? Since you came up with this.
-> 
+Recent genpd changes for K3 platform ensure device is ON before driver
+probe is called. Therefore, drop redundant pm_runtime_* calls from
+driver to simplify the code.
 
-Yeah.  That's fine.
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+---
+ drivers/mtd/hyperbus/hbmc-am654.c | 16 ++--------------
+ 1 file changed, 2 insertions(+), 14 deletions(-)
 
-regards,
-dan carpenter
+diff --git a/drivers/mtd/hyperbus/hbmc-am654.c b/drivers/mtd/hyperbus/hbmc-am654.c
+index 1e70ecfffa39..b6a2400fcaa9 100644
+--- a/drivers/mtd/hyperbus/hbmc-am654.c
++++ b/drivers/mtd/hyperbus/hbmc-am654.c
+@@ -13,7 +13,6 @@
+ #include <linux/of.h>
+ #include <linux/of_address.h>
+ #include <linux/platform_device.h>
+-#include <linux/pm_runtime.h>
+ #include <linux/types.h>
+ 
+ #define AM654_HBMC_CALIB_COUNT 25
+@@ -89,13 +88,6 @@ static int am654_hbmc_probe(struct platform_device *pdev)
+ 		priv->mux_ctrl = control;
+ 	}
+ 
+-	pm_runtime_enable(dev);
+-	ret = pm_runtime_get_sync(dev);
+-	if (ret < 0) {
+-		pm_runtime_put_noidle(dev);
+-		goto disable_pm;
+-	}
+-
+ 	priv->hbdev.map.size = resource_size(&res);
+ 	priv->hbdev.map.virt = devm_ioremap_resource(dev, &res);
+ 	if (IS_ERR(priv->hbdev.map.virt))
+@@ -107,13 +99,11 @@ static int am654_hbmc_probe(struct platform_device *pdev)
+ 	ret = hyperbus_register_device(&priv->hbdev);
+ 	if (ret) {
+ 		dev_err(dev, "failed to register controller\n");
+-		pm_runtime_put_sync(&pdev->dev);
+-		goto disable_pm;
++		goto disable_mux;
+ 	}
+ 
+ 	return 0;
+-disable_pm:
+-	pm_runtime_disable(dev);
++disable_mux:
+ 	if (priv->mux_ctrl)
+ 		mux_control_deselect(priv->mux_ctrl);
+ 	return ret;
+@@ -127,8 +117,6 @@ static int am654_hbmc_remove(struct platform_device *pdev)
+ 	ret = hyperbus_unregister_device(&priv->hbdev);
+ 	if (priv->mux_ctrl)
+ 		mux_control_deselect(priv->mux_ctrl);
+-	pm_runtime_put_sync(&pdev->dev);
+-	pm_runtime_disable(&pdev->dev);
+ 
+ 	return ret;
+ }
+-- 
+2.28.0
 
