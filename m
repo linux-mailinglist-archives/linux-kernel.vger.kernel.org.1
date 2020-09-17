@@ -2,65 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B555426E19F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD85F26E197
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728857AbgIQRB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 13:01:56 -0400
-Received: from mga11.intel.com ([192.55.52.93]:10481 "EHLO mga11.intel.com"
+        id S1728184AbgIQRCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 13:02:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728797AbgIQRBU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 13:01:20 -0400
-X-Greylist: delayed 535 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 13:01:18 EDT
-IronPort-SDR: wOt2ZyytiIpIeChFEwF/LeJLxO2ZgjsSruS0XB5HJrrmTR2wst8qlyIyxI9hheTbQyCPd9H1dH
- 8Lx5G5nyeSUw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="157140512"
-X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
-   d="scan'208";a="157140512"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 09:51:41 -0700
-IronPort-SDR: lZrgv4FXbMh/S4zFQ7S60lsGHcta9rWAw443s2Ua8cyzBhkTq5gVU6Asn2ZS+dFwOl3mEov6nA
- QvUEzK1EvRqA==
-X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
-   d="scan'208";a="303012833"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 09:51:38 -0700
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 2BB2220621; Thu, 17 Sep 2020 19:51:06 +0300 (EEST)
-Date:   Thu, 17 Sep 2020 19:51:06 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jacopo Mondi <jacopo@jmondi.org>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: Re: [PATCH v2] media: v4l2-fwnode: Return -EINVAL for invalid
- bus-type
-Message-ID: <20200917165105.GA26842@paasikivi.fi.intel.com>
-References: <20200917160847.31936-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S1728788AbgIQRAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 13:00:30 -0400
+Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8DAB7206E6;
+        Thu, 17 Sep 2020 16:51:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600361504;
+        bh=6+WiNVNUK0WVAF4Ka/mkudbm4081hA29z9BacHCkjUw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=eNHTEuAQxtV1/GcQH7qv1k8d4vHIxPDIIyneSiNWeItqDAUu8Pg6rANV7qEmA1lTw
+         6DWTsoNDKg5ftjisEQtZTXh6PjmUQsinh8crAWipysDShqoUOHb/8gLBw0DV9Oueu/
+         6LzPG0NX2hiDFP2RVKuPEnKjWTv9wFyUtXzNnBts=
+Date:   Thu, 17 Sep 2020 11:51:43 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Liu Shixin <liushixin2@huawei.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Alexander Duyck <alexander.h.duyck@intel.com>
+Subject: Re: [PATCH -next] PCI/IOV: use module_pci_driver to simplify the code
+Message-ID: <20200917165143.GA1707439@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200917160847.31936-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200917071042.1909191-1-liushixin2@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 05:08:47PM +0100, Lad Prabhakar wrote:
-> Return -EINVAL if invalid bus-type is detected while parsing endpoints.
+[+cc Alexander]
+
+On Thu, Sep 17, 2020 at 03:10:42PM +0800, Liu Shixin wrote:
+> Use the module_pci_driver() macro to make the code simpler
+> by eliminating module_init and module_exit calls.
 > 
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
 
-Thanks!
+Applied to pci/misc for v5.10, thanks!
 
-I'm adding:
-
-Fixes: 26c1126c9b56 ("media: v4l: fwnode: Use media bus type for bus parser selection")
-
--- 
-Sakari Ailus
+> ---
+>  drivers/pci/pci-pf-stub.c | 14 +-------------
+>  1 file changed, 1 insertion(+), 13 deletions(-)
+> 
+> diff --git a/drivers/pci/pci-pf-stub.c b/drivers/pci/pci-pf-stub.c
+> index a0b2bd6c918a..45855a5e9fca 100644
+> --- a/drivers/pci/pci-pf-stub.c
+> +++ b/drivers/pci/pci-pf-stub.c
+> @@ -37,18 +37,6 @@ static struct pci_driver pf_stub_driver = {
+>  	.probe			= pci_pf_stub_probe,
+>  	.sriov_configure	= pci_sriov_configure_simple,
+>  };
+> -
+> -static int __init pci_pf_stub_init(void)
+> -{
+> -	return pci_register_driver(&pf_stub_driver);
+> -}
+> -
+> -static void __exit pci_pf_stub_exit(void)
+> -{
+> -	pci_unregister_driver(&pf_stub_driver);
+> -}
+> -
+> -module_init(pci_pf_stub_init);
+> -module_exit(pci_pf_stub_exit);
+> +module_pci_driver(pf_stub_driver);
+>  
+>  MODULE_LICENSE("GPL");
+> -- 
+> 2.25.1
+> 
