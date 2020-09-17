@@ -2,90 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D7726E154
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 18:55:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 165BD26E173
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 18:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728756AbgIQQzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 12:55:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60884 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728734AbgIQQzC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 12:55:02 -0400
-Received: from gaia (unknown [31.124.44.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0CD1F2078D;
-        Thu, 17 Sep 2020 16:54:59 +0000 (UTC)
-Date:   Thu, 17 Sep 2020 17:54:57 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        kasan-dev@googlegroups.com,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 28/37] arm64: kasan: Enable TBI EL1
-Message-ID: <20200917165457.GG10662@gaia>
-References: <cover.1600204505.git.andreyknvl@google.com>
- <9ecc27d43a01ca32bcacf44b393a9a100e0dfdb2.1600204505.git.andreyknvl@google.com>
+        id S1728803AbgIQQ60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 12:58:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728609AbgIQQ5M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 12:57:12 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D2E9C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 09:57:11 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id q4so2973099ils.4
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 09:57:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bC1NcC/3gidYXCraT60Gha0Mskxal5CIrv7vcfFm264=;
+        b=sog7KaMBpFzPZ3X+j8JIxEP8Br4VuN/7bbEbqQ6pgKnWfUg+mphsD4ykMF4p7N3xE8
+         TX0oRzojfHz/tkwzrqGaB7cov2rrVWj2cohzLfxXJDhqs+ssiTrawp2cR6AEnJsPajFG
+         CFABejwOXs0LhY7rdRnP0BnlzMHQUYisOPHVt65NAUJ3BmKxMjWhbkwDZizccHNP6L2C
+         9xYX5X+OpIs14f7hv0Bqi0nyH0wteb/H4IVY6mdi40+uaB5h1ZheE9z5SIt7mB1GSx6r
+         bBzDe163r5aQwI6dLgMKAx+oQzdCjhVkAR/H4W2QypVb/Y/82/YiwrKBPmO+1aZWV6XD
+         BpXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bC1NcC/3gidYXCraT60Gha0Mskxal5CIrv7vcfFm264=;
+        b=ZNlUcJDP0tb62AkPSWpYMK6VMKO3HNViVr6EQM5ICWiQdoNlMb6cd4YZl4ib7G6X6y
+         YIi4bX13HUOTDcy52+Yb/TzEO6Vp+UV6ucqp/k6S64IURCvZeWvS0rzTAVm+Rrnu1Vxr
+         wB7pLA3s0EQ8KxG1+pSM0wxZnN3GzvuwfPM6r12VxTx+AxQmERrrbN1DoQiF/IxkQq8N
+         OIC3zcDzXDyRsn1vzSrK0ZQdDoQnAuzXGBSKAv4s0jCxUVCs9e9x6g/LvvtUWDF+Eb57
+         k06zzfEyA8A7/RC4NmBTVCpbj1WhAh+0mgoTer10YbWzAl7PpElyS1Q+ErNQ3CYhOIJ6
+         Dhcg==
+X-Gm-Message-State: AOAM530QyF0MODhg9n3GxcyTkj7bEHtJOMXJ1RGTFDE+k0hFMnsywAA5
+        hXYIfDuud/JUqwvY5rFtP65zEKc0uglsDjCiTjg=
+X-Google-Smtp-Source: ABdhPJzryqIcyg4u45DMs3RqBmJvDVkP+yaW9gZAShRD12e7AUM84+dryjgpeBwIQ5GY9XEXjTPw9YMBgpWVWQlmR+w=
+X-Received: by 2002:a05:6e02:c07:: with SMTP id d7mr26971412ile.301.1600361830153;
+ Thu, 17 Sep 2020 09:57:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9ecc27d43a01ca32bcacf44b393a9a100e0dfdb2.1600204505.git.andreyknvl@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200916153648.5475-1-ztong0001@gmail.com> <20200916165433.GA3675881@dhcp-10-100-145-180.wdl.wdc.com>
+In-Reply-To: <20200916165433.GA3675881@dhcp-10-100-145-180.wdl.wdc.com>
+From:   Tong Zhang <ztong0001@gmail.com>
+Date:   Thu, 17 Sep 2020 12:56:59 -0400
+Message-ID: <CAA5qM4B-KpRvFuf+5YR4iOqNzic=fuYm=_seqwLoLp9+_xOqdA@mail.gmail.com>
+Subject: Re: [PATCH] nvme: fix NULL pointer dereference
+To:     Keith Busch <kbusch@kernel.org>
+Cc:     Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 11:16:10PM +0200, Andrey Konovalov wrote:
-> diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
-> index 5ba7ac5e9c77..1687447dee7a 100644
-> --- a/arch/arm64/mm/proc.S
-> +++ b/arch/arm64/mm/proc.S
-> @@ -40,9 +40,13 @@
->  #define TCR_CACHE_FLAGS	TCR_IRGN_WBWA | TCR_ORGN_WBWA
->  
->  #ifdef CONFIG_KASAN_SW_TAGS
-> -#define TCR_KASAN_FLAGS TCR_TBI1
-> +#define TCR_KASAN_SW_FLAGS TCR_TBI1
->  #else
-> -#define TCR_KASAN_FLAGS 0
-> +#define TCR_KASAN_SW_FLAGS 0
-> +#endif
-> +
-> +#ifdef CONFIG_KASAN_HW_TAGS
-> +#define TCR_KASAN_HW_FLAGS TCR_TBI1
->  #endif
->  
->  /*
-> @@ -462,7 +466,7 @@ SYM_FUNC_START(__cpu_setup)
->  	 */
->  	mov_q	x10, TCR_TxSZ(VA_BITS) | TCR_CACHE_FLAGS | TCR_SMP_FLAGS | \
->  			TCR_TG_FLAGS | TCR_KASLR_FLAGS | TCR_ASID16 | \
-> -			TCR_TBI0 | TCR_A1 | TCR_KASAN_FLAGS
-> +			TCR_TBI0 | TCR_A1 | TCR_KASAN_SW_FLAGS
->  	tcr_clear_errata_bits x10, x9, x5
->  
->  #ifdef CONFIG_ARM64_VA_BITS_52
-> @@ -495,6 +499,9 @@ SYM_FUNC_START(__cpu_setup)
->  	/* Update TCR_EL1 if MTE is supported (ID_AA64PFR1_EL1[11:8] > 1) */
->  	cbz	mte_present, 1f
->  	orr	x10, x10, #SYS_TCR_EL1_TCMA1
-> +#ifdef CONFIG_KASAN_HW_TAGS
-> +	orr	x10, x10, #TCR_KASAN_HW_FLAGS
-> +#endif
+The command_id in CQE is writable by NVMe controller, driver should
+check its sanity before using it.
+- Tong
 
-That's fine in general but see my comment about refactoring the other
-patch touching this file, this will move around a bit.
-
--- 
-Catalin
+On Wed, Sep 16, 2020 at 12:54 PM Keith Busch <kbusch@kernel.org> wrote:
+>
+> On Wed, Sep 16, 2020 at 11:36:49AM -0400, Tong Zhang wrote:
+> > @@ -960,6 +960,8 @@ static inline void nvme_handle_cqe(struct nvme_queue *nvmeq, u16 idx)
+> >       }
+> >
+> >       req = blk_mq_tag_to_rq(nvme_queue_tagset(nvmeq), cqe->command_id);
+> > +     if (!req)
+> > +             return;
+>
+> As I mentioned before, blk_mq_tag_to_rq() returns NULL if the tag
+> exceeds the depth. We already verify the tag prior to calling this
+> function, so what's the real root cause for how we're winding up with
+> NULL here? I'm only asking this because it sounds like there's a bug
+> somewhere else and this change is masking over it.
+>
+>
+> >       trace_nvme_sq(req, cqe->sq_head, nvmeq->sq_tail);
+> >       if (!nvme_try_complete_req(req, cqe->status, cqe->result))
+> >               nvme_pci_complete_rq(req);
