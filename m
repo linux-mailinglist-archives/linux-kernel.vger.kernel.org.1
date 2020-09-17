@@ -2,59 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6141626D10C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 04:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C53426D10D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 04:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726112AbgIQCTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 22:19:12 -0400
-Received: from m17618.mail.qiye.163.com ([59.111.176.18]:39155 "EHLO
-        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725267AbgIQCTM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 22:19:12 -0400
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.227])
-        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id 157C14E16DF;
-        Thu, 17 Sep 2020 10:19:09 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Wang Qing <wangqing@vivo.com>
-Subject: [PATCH] nfs: fix spellint typo in pnfs.c
-Date:   Thu, 17 Sep 2020 10:19:00 +0800
-Message-Id: <1600309143-5483-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZT0lIS0JPS09PGEkaVkpNS0tIS0JKT0JITE1VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKQ1VKS0tZBg++
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OBw6Iio*NT8pDhQaFw0jHywf
-        GiJPCwJVSlVKTUtLSEtCSk9CQk9DVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlJTFlXWQgBWUFKSE9INwY+
-X-HM-Tid: 0a7499dbbe489376kuws157c14e16df
+        id S1726156AbgIQCTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 22:19:30 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:49652 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725267AbgIQCT1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 22:19:27 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id C3E6F57BA7866E7F09C0;
+        Thu, 17 Sep 2020 10:19:23 +0800 (CST)
+Received: from localhost (10.174.179.108) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Thu, 17 Sep 2020
+ 10:19:16 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <saeed@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH v2 net-next] netdev: Remove unused functions
+Date:   Thu, 17 Sep 2020 10:19:10 +0800
+Message-ID: <20200917021910.41448-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
+In-Reply-To: <20200916141814.7376-1-yuehaibing@huawei.com>
+References: <20200916141814.7376-1-yuehaibing@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.108]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change the comment typo: "manger" -> "manager".
+There is no callers in tree, so can remove it.
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
 ---
- fs/nfs/pnfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v2: fix title typo 'funtions' --> 'functions'
+---
+ include/linux/netdevice.h | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-diff --git a/fs/nfs/pnfs.c b/fs/nfs/pnfs.c
-index 71f7741..0e50b9d
---- a/fs/nfs/pnfs.c
-+++ b/fs/nfs/pnfs.c
-@@ -902,7 +902,7 @@ pnfs_destroy_layouts_byclid(struct nfs_client *clp,
- }
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index 157e0242e9ee..909b1fbb0481 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -4677,16 +4677,6 @@ int netdev_class_create_file_ns(const struct class_attribute *class_attr,
+ void netdev_class_remove_file_ns(const struct class_attribute *class_attr,
+ 				 const void *ns);
  
- /*
-- * Called by the state manger to remove all layouts established under an
-+ * Called by the state manager to remove all layouts established under an
-  * expired lease.
-  */
- void
+-static inline int netdev_class_create_file(const struct class_attribute *class_attr)
+-{
+-	return netdev_class_create_file_ns(class_attr, NULL);
+-}
+-
+-static inline void netdev_class_remove_file(const struct class_attribute *class_attr)
+-{
+-	netdev_class_remove_file_ns(class_attr, NULL);
+-}
+-
+ extern const struct kobj_ns_type_operations net_ns_type_operations;
+ 
+ const char *netdev_drivername(const struct net_device *dev);
 -- 
-2.7.4
+2.17.1
 
