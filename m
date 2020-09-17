@@ -2,80 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFFFB26DE7D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:43:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 242E026DE9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727626AbgIQOl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 10:41:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60626 "EHLO
+        id S1727682AbgIQOp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 10:45:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727608AbgIQOkz (ORCPT
+        with ESMTP id S1727239AbgIQOlB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 10:40:55 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FFDBC0612F2
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 07:39:56 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 16:38:50 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600353531;
+        Thu, 17 Sep 2020 10:41:01 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A9AFC0612F2;
+        Thu, 17 Sep 2020 07:41:00 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f1053001db76021617d6ec9.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:5300:1db7:6021:617d:6ec9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C42331EC0260;
+        Thu, 17 Sep 2020 16:39:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600353567;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IsjaeOzKr9oow++4iThZuJ2UeMp6oJKMxaZTXN3CO5Q=;
-        b=SEu1J5fEwah4ZH4cIHAp+/6ZDYvKlLpFAEfgEv+mNXFQYi/s9z0cgPVfIrt/qA2M88earO
-        sPHfuS44oioiBhqwiFFt8wOpGgBzv55sCZXUvdDMUY4eI5nQdYRadVNKRtHZ+F0uRB5+0a
-        S5COCwR4QCnbKO6SKtWed92nNZGac4NFXVx1pZnDRmO57Xr6+67BtoV8Tgyx5KjQnU7je/
-        G4naNsraAH1sixXGPfpIAHp4CAfr/G/hwXddCR/1nrr6Ld3dCek51luASq1Uit5++tr7hl
-        tc5ZQ3U7zoc4fCsA/PL0U5B+7I9SkfIszvKslFv/ee0rMyGlbTEGpgh5tYxTgQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600353531;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IsjaeOzKr9oow++4iThZuJ2UeMp6oJKMxaZTXN3CO5Q=;
-        b=yhbOPpNiKfVPtlecpO1boF/C9OBpsVg/ivsU8TyilnWN9yzvJzh3g+COBSkhqWY42NdHKA
-        lo70Ckyjlnj522DA==
-From:   Sebastian Siewior <bigeasy@linutronix.de>
-To:     peterz@infradead.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=kTdpctjr26+hadEPAalxUdZ4IHHCvTX0roS3TMkt6bQ=;
+        b=fnDxZUejBlcEL1dJreJ2gTSVjd0tdD7ozJi6uNPbe2/LV10xJTqaOiO1WGzuHHpWUivcPV
+        IKKnRdQgbsK5HGvs2ZhPrKT6U7h/I5hkHmOkYIsHo7n6TBB5agBEEkgBGYqFsrYYRkFvOk
+        mimTMJp1UL0YcNXTEOOT5K/ct5ozFgM=
+Date:   Thu, 17 Sep 2020 16:39:20 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     Andrew Cooper <andrew.cooper3@citrix.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bill Wendling <morbo@google.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Scott Wood <swood@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>
-Subject: Re: [patch 09/10] sched/core: Add migrate_disable/enable()
-Message-ID: <20200917143850.25akkvr32ojtwohy@linutronix.de>
-References: <20200917094202.301694311@linutronix.de>
- <20200917101624.813835219@linutronix.de>
- <20200917142438.GH1362448@hirez.programming.kicks-ass.net>
+        Greg Thelen <gthelen@google.com>,
+        John Sperbeck <jsperbeck@google.com>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH] x86/smap: Fix the smap_save() asm
+Message-ID: <20200917143920.GJ31960@zn.tnic>
+References: <CAKwvOdnjHbyamsW71FJ=Cd36YfVppp55ftcE_eSDO_z+KE9zeQ@mail.gmail.com>
+ <441AA771-A859-4145-9425-E9D041580FE4@amacapital.net>
+ <7233f4cf-5b1d-0fca-0880-f1cf2e6e765b@citrix.com>
+ <20200916082621.GB2643@zn.tnic>
+ <be498e49-b467-e04c-d833-372f7d83cb1f@citrix.com>
+ <20200917060432.GA31960@zn.tnic>
+ <ec617df229514fbaa9897683ac88dfda@AcuMS.aculab.com>
+ <20200917115733.GH31960@zn.tnic>
+ <823af5fadd464c48ade635498d07ba4e@AcuMS.aculab.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200917142438.GH1362448@hirez.programming.kicks-ass.net>
+In-Reply-To: <823af5fadd464c48ade635498d07ba4e@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-17 16:24:38 [+0200], peterz@infradead.org wrote:
-> And if I'm not mistaken, the above migrate_enable() *does* require being
-> able to schedule, and our favourite piece of futex:
-> 
-> 	raw_spin_lock_irq(&q.pi_state->pi_mutex.wait_lock);
-> 	spin_unlock(q.lock_ptr);
-> 
-> is broken. Consider that spin_unlock() doing migrate_enable() with a
-> pending sched_setaffinity().
+On Thu, Sep 17, 2020 at 02:25:50PM +0000, David Laight wrote:
+> I actually wonder if there is any code that really benefits from
+> the red-zone.
 
-There are two instances of the above and only in the futex code and we
-have sort of duct tape for that by manually balancing the migrate
-counter so that it does not come to this.
-But yes, not having to do the manual balance is a plus.
+The kernel has been without a red zone since 2002 at least:
 
-Sebastian
+  commit 47f16da277d10ef9494f3e9da2a9113bb22bcd75
+  Author: Andi Kleen <ak@muc.de>
+  Date:   Tue Feb 12 20:17:35 2002 -0800
+
+      [PATCH] x86_64 merge: arch + asm
+
+      This adds the x86_64 arch and asm directories and a Documentation/x86_64.
+
+  ...
+  +CFLAGS += $(shell if $(CC) -mno-red-zone -S -o /dev/null -xc /dev/null >/dev/null 2>&1; then echo "-mno-red-zone"; fi )
+
+
+Also, from the ABI doc:
+
+"A.2.2 Stack Layout
+
+The Linux kernel may align the end of the input argument area to a
+8, instead of 16, byte boundary. It does not honor the red zone (see
+section 3.2.2) and therefore this area is not allowed to be used by
+kernel code. Kernel code should be compiled by GCC with the option
+-mno-red-zone."
+
+so forget the red zone.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
