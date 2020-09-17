@@ -2,99 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A7626DC3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BFEA26DB92
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727054AbgIQM6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 08:58:19 -0400
-Received: from mailout12.rmx.de ([94.199.88.78]:59194 "EHLO mailout12.rmx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726823AbgIQM6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 08:58:09 -0400
-Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mailout12.rmx.de (Postfix) with ESMTPS id 4BsbhM6kVbzRnbH;
-        Thu, 17 Sep 2020 14:22:43 +0200 (CEST)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin01.retarus.com (Postfix) with ESMTPS id 4BsbgT1D7qz2xKS;
-        Thu, 17 Sep 2020 14:21:57 +0200 (CEST)
-Received: from N95HX1G2.wgnetz.xx (192.168.54.80) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Thu, 17 Sep
- 2020 14:21:47 +0200
-From:   Christian Eggers <ceggers@arri.de>
-To:     Oleksij Rempel <linux@rempel-privat.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>
-CC:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        <linux-i2c@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Christian Eggers <ceggers@arri.de>,
-        <stable@vger.kernel.org>
-Subject: [PATCH 2/3] i2c: imx: Check for I2SR_IAL after every byte
-Date:   Thu, 17 Sep 2020 14:20:28 +0200
-Message-ID: <20200917122029.11121-3-ceggers@arri.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200917122029.11121-1-ceggers@arri.de>
-References: <20200917122029.11121-1-ceggers@arri.de>
+        id S1726822AbgIQMbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 08:31:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726799AbgIQM3B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 08:29:01 -0400
+X-Greylist: delayed 370 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 17 Sep 2020 05:28:59 PDT
+Received: from smtp.ungleich.ch (smtp.ungleich.ch [IPv6:2a0a:e5c0:0:2:400:b3ff:fe39:7956])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9418C06178A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 05:28:59 -0700 (PDT)
+Received: from bridge.localdomain (localhost [IPv6:::1])
+        by smtp.ungleich.ch (Postfix) with ESMTP id E27731FD7E;
+        Thu, 17 Sep 2020 14:22:42 +0200 (CEST)
+Received: by bridge.localdomain (Postfix, from userid 1000)
+        id 0C6E01A60327; Thu, 17 Sep 2020 14:22:57 +0200 (CEST)
+References: <20200910112701.13853-1-linux@rasmusvillemoes.dk>
+ <20200917065615.18843-1-linux@rasmusvillemoes.dk>
+User-agent: mu4e 1.4.13; emacs 27.1
+From:   Nico Schottelius <nico-linuxsetlocalversion@schottelius.org>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Brian Norris <briannorris@chromium.org>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Nico Schottelius <nico-linuxsetlocalversion@schottelius.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] scripts/setlocalversion: make git describe output
+ more reliable
+In-reply-to: <20200917065615.18843-1-linux@rasmusvillemoes.dk>
+Date:   Thu, 17 Sep 2020 14:22:57 +0200
+Message-ID: <87pn6k384e.fsf@ungleich.ch>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.54.80]
-X-RMX-ID: 20200917-142203-4BsbgT1D7qz2xKS-0@kdin01
-X-RMX-SOURCE: 217.111.95.66
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arbitration Lost (IAL) can happen after every single byte transfer. If
-arbitration is lost, the I2C hardware will autonomously switch from
-master mode to slave. If a transfer is not aborted in this state,
-consecutive transfers will not be executed by the hardware and will
-timeout.
 
-Signed-off-by: Christian Eggers <ceggers@arri.de>
-Cc: stable@vger.kernel.org
----
- drivers/i2c/busses/i2c-imx.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+Thanks for the patch Rasmus. Overall it looks good to me, be aligned to
+the stable patch submission rules makes sense. A tiny thing though:
 
-diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
-index d8b2e632dd10..9d9b668ec7f2 100644
---- a/drivers/i2c/busses/i2c-imx.c
-+++ b/drivers/i2c/busses/i2c-imx.c
-@@ -479,6 +479,20 @@ static int i2c_imx_trx_complete(struct imx_i2c_struct *i2c_imx, bool atomic)
- 		dev_dbg(&i2c_imx->adapter.dev, "<%s> Timeout\n", __func__);
- 		return -ETIMEDOUT;
- 	}
-+
-+	/* check for arbitration lost */
-+	if (i2c_imx->i2csr & I2SR_IAL) {
-+		unsigned int temp = i2c_imx->i2csr;
-+
-+		dev_dbg(&i2c_imx->adapter.dev, "<%s> Arbitration lost\n", __func__);
-+		temp &= ~I2SR_IAL;
-+		temp |= (i2c_imx->hwdata->i2sr_clr_opcode & I2SR_IAL);
-+		imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2SR);
-+
-+		i2c_imx->i2csr = 0;
-+		return -EAGAIN;
-+	}
-+
- 	dev_dbg(&i2c_imx->adapter.dev, "<%s> TRX complete\n", __func__);
- 	i2c_imx->i2csr = 0;
- 	return 0;
--- 
-Christian Eggers
-Embedded software developer
+I did not calculate the exact collision probability with 12 characters
+and it does not make sense to even discuss this, if this is a current
+rule for stable patches. However we have a couple of 12's scattered in
+the code. And if the submission rule changes in the future, we should
+have a single location to update it.
 
-Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
-Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
-Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
+So I suggest you introduce something on the line of:
 
+...
+num_chars=12
+...
+--abbrev=$num_chars
+...
+
+I guess you get the picture.
+
+Greetings from the sunny mountains,
+
+Nico
+
+
+Rasmus Villemoes <linux@rasmusvillemoes.dk> writes:
+
+> When building for an embedded target using Yocto, we're sometimes
+> observing that the version string that gets built into vmlinux (and
+> thus what uname -a reports) differs from the path under /lib/modules/
+> where modules get installed in the rootfs, but only in the length of
+> the -gabc123def suffix. Hence modprobe always fails.
+>
+> The problem is that Yocto has the concept of "sstate" (shared state),
+> which allows different developers/buildbots/etc. to share build
+> artifacts, based on a hash of all the metadata that went into building
+> that artifact - and that metadata includes all dependencies (e.g. the
+> compiler used etc.). That normally works quite well; usually a clean
+> build (without using any sstate cache) done by one developer ends up
+> being binary identical to a build done on another host. However, one
+> thing that can cause two developers to end up with different builds
+> [and thus make one's vmlinux package incompatible with the other's
+> kernel-dev package], which is not captured by the metadata hashing, is
+> this `git describe`: The output of that can be affected by
+>
+> (1) git version: before 2.11 git defaulted to a minimum of 7, since
+> 2.11 (git.git commit e6c587) the default is dynamic based on the
+> number of objects in the repo
+> (2) hence even if both run the same git version, the output can differ
+> based on how many remotes are being tracked (or just lots of local
+> development branches or plain old garbage)
+> (3) and of course somebody could have a core.abbrev config setting in
+> ~/.gitconfig
+>
+> So in order to avoid `uname -a` output relying on such random details
+> of the build environment which are rather hard to ensure are
+> consistent between developers and buildbots, make sure the abbreviated
+> sha1 always consists of exactly 12 hex characters. That is consistent
+> with the current rule for -stable patches, and is almost always enough
+> to identify the head commit unambigously - in the few cases where it
+> does not, the v5.4.3-00021- prefix would certainly nail it down.
+>
+> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> ---
+> v2: use 12 instead of 15, and ensure that the result does have exactly
+> 12 hex chars.
+>
+>  scripts/setlocalversion | 21 ++++++++++++++++-----
+>  1 file changed, 16 insertions(+), 5 deletions(-)
+>
+> diff --git a/scripts/setlocalversion b/scripts/setlocalversion
+> index 20f2efd57b11..bb709eda96cd 100755
+> --- a/scripts/setlocalversion
+> +++ b/scripts/setlocalversion
+> @@ -45,7 +45,7 @@ scm_version()
+>
+>  	# Check for git and a git repo.
+>  	if test -z "$(git rev-parse --show-cdup 2>/dev/null)" &&
+> -	   head=$(git rev-parse --verify --short HEAD 2>/dev/null); then
+> +	   head=$(git rev-parse --verify HEAD 2>/dev/null); then
+>
+>  		# If we are at a tagged commit (like "v2.6.30-rc6"), we ignore
+>  		# it, because this version is defined in the top level Makefile.
+> @@ -59,11 +59,22 @@ scm_version()
+>  			fi
+>  			# If we are past a tagged commit (like
+>  			# "v2.6.30-rc5-302-g72357d5"), we pretty print it.
+> -			if atag="$(git describe 2>/dev/null)"; then
+> -				echo "$atag" | awk -F- '{printf("-%05d-%s", $(NF-1),$(NF))}'
+> -
+> -			# If we don't have a tag at all we print -g{commitish}.
+> +			#
+> +			# Ensure the abbreviated sha1 has exactly 12
+> +			# hex characters, to make the output
+> +			# independent of git version, local
+> +			# core.abbrev settings and/or total number of
+> +			# objects in the current repository - passing
+> +			# --abbrev=12 ensures a minimum of 12, and the
+> +			# awk substr() then picks the 'g' and first 12
+> +			# hex chars.
+> +			if atag="$(git describe --abbrev=12 2>/dev/null)"; then
+> +				echo "$atag" | awk -F- '{printf("-%05d-%s", $(NF-1),substr($(NF),0,13))}'
+> +
+> +			# If we don't have a tag at all we print -g{commitish},
+> +			# again using exactly 12 hex chars.
+>  			else
+> +				head="$(echo $head | cut -c1-12)"
+>  				printf '%s%s' -g $head
+>  			fi
+>  		fi
+
+
+--
+Modern, affordable, Swiss Virtual Machines. Visit www.datacenterlight.ch
