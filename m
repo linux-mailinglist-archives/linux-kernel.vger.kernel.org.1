@@ -2,116 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AC1026DE28
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF3EC26DD78
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727106AbgIQOYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 10:24:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53310 "EHLO
+        id S1727186AbgIQOHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 10:07:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727118AbgIQNym (ORCPT
+        with ESMTP id S1727241AbgIQN6j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 09:54:42 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67587C0612F2
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 06:44:53 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id x14so2119694wrl.12
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 06:44:53 -0700 (PDT)
+        Thu, 17 Sep 2020 09:58:39 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C32DC061223
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 06:47:07 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id k8so1256512pfk.2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 06:47:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0TD4+9iw5f0guEsDm/c+HK3Ocusvfch9PhoEaUy5Bk8=;
-        b=vHQsjfi3TO+BgGONL/X32Hu4+02s11T31MxOnZyowhQ9TjJ1ienzYwe/0ez3hVVnWr
-         CWBYu54aNesZC7n556nAq5h1o/vXYnypGiu8CYcIkOkgkEqx5zaAHGZd5Hlrqx4WDp6K
-         GQZDZp5FsciRI9DXdtiZKOhXU/TRkufFJCN/5BsYqo61TF2tJGJoNx1SgLQYXOhzOvxI
-         pxR0xkMqC3fyilz3LJJVp+CjqbwsNsbyA0Xsc97j1dQRodGq4F2TMWAvgFjylL8uP0/h
-         prJFSuVQB/P/AjLCf29yBHCppNN+BCtCXaRM3hF0kQOPLtvm8KqNAVvzxkDUJAKiwlSi
-         1n1w==
+        h=from:to:cc:subject:date:message-id;
+        bh=japyhlZJHqjvvY23WBswkoPhDdPOCw8vAFWR64JRMAo=;
+        b=moaySg5dik4Lmk9RXXScA/9T274DPHQu5jVZ1/PZgJaWyJGy2IXTZeDsTOAmWRub7Q
+         xTDMK2BkQ/z+NHQv06RZDa2oi6oALRQvwlBK1ZMpzu0Hjwa58wFxU0qYWhB4Mx3UKhYj
+         XctS3mxqYaT46bZTcV6TAlP4tHHTz6YhhjEnROMaKgQdB2tdhuF+iigcIgdLlDtb1Mpx
+         1bmXzG/MmuKfrTLTPh0V/VGy5AHsDqhpD9xq8geIeAXbTSIF0AG3QTNVnCpZ/oDy2os5
+         T/hxpO4wSNhDTccMFo5L5LR8mP4OM8AcLrX0utHb6FG9YAlRrAYhQ8+8QR7wcarNCIhB
+         vTYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0TD4+9iw5f0guEsDm/c+HK3Ocusvfch9PhoEaUy5Bk8=;
-        b=PJ370lo0JSczjfCx1X8fHC8htKcbHjLDCNyJsxUI9rG1qsfepmcTDec9Da0NnJlqyj
-         5qmGN8liBFnDpB6q3MIEdLvHgmSrXDrF9cQB0/AjKPdtHLl/91A1+4xJRASg6ng15pql
-         qOFQIL9iPF5wY16noW+tpm8yAJkwDe4DDmdoJhKXwmt6Q60WYoVSdr0p2TweT64G/rdf
-         NjLeySptg/0wzTVhBWblLUJms7qgCf0Q9EwtoMyMXyIs8rWA/ruprsrCUcCvjTfPWILS
-         MzOZfyPVtoJWSg+GyJhAUDNTViwxXi/lF+NV3OunnASL0XWA8wXgVkKNL5x7FJWAyt2H
-         xKdw==
-X-Gm-Message-State: AOAM5300URZqY/B68skXYeprioEDBPPlR8ntJdA0VeQYvZr9E3/lEHUY
-        5tsr/KLxUTPd8c8eNye5xi/0Bw==
-X-Google-Smtp-Source: ABdhPJyTQ+Dr1MDyC6o8ysMkW0o1KRqHQeDqFvxE+c6tBU3npeOvrboz/4cTCc9Z0J6JCZ6IrLz4ZQ==
-X-Received: by 2002:adf:f10a:: with SMTP id r10mr31109336wro.86.1600350291765;
-        Thu, 17 Sep 2020 06:44:51 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id q15sm36892406wrr.8.2020.09.17.06.44.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 06:44:51 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 3/4] nvmem: switch to simpler IDA interface
-Date:   Thu, 17 Sep 2020 14:44:36 +0100
-Message-Id: <20200917134437.16637-4-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200917134437.16637-1-srinivas.kandagatla@linaro.org>
-References: <20200917134437.16637-1-srinivas.kandagatla@linaro.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=japyhlZJHqjvvY23WBswkoPhDdPOCw8vAFWR64JRMAo=;
+        b=Q+swCFZqTzJc51YrMsAPLy+WuN7CwGEiQfc0KdMzDP81smeJDCGwoC8MWjb2IfuljD
+         trQ1k0272pksUwiGyvtEXpDM75M4h6VGjotH/cthVKowclSHCLn9VqObIIOL0Y/Frt7x
+         dZpEk8rCbrq160cjapRsrQ5Ol4LEOQpHpiZrFOmj+ctxi1zdYtSEzh7R2D43yP0kfqlA
+         NiVsyUgQ6KbuzJtYGTYHTOArwu4cSPgr2YQXXDtzHWWyZlvk1mXQosDdd1DDTKeXqghL
+         pJWBND1PoiRQJYfdfH+YL1T2oWQLU8Ff5777CprQo5W5V0vlx72LTL2KxiktbPpKBpbN
+         /uNQ==
+X-Gm-Message-State: AOAM532pLdZ+DFIBO+OX/Ouvcr7DPObB/sANuZ5Tp0Ym1HD+MJSs3nsW
+        LdKE1I4x7Ae2qhKO2Awkuwx4tw==
+X-Google-Smtp-Source: ABdhPJwGkICdVHzr7bA01n7thT2TYn0FduI6F4TEUuQvhGZbu4J3IGB6KK7FOQEYljS4a7Z+xROv6w==
+X-Received: by 2002:a65:408b:: with SMTP id t11mr21151814pgp.199.1600350426605;
+        Thu, 17 Sep 2020 06:47:06 -0700 (PDT)
+Received: from localhost.localdomain ([117.252.66.163])
+        by smtp.gmail.com with ESMTPSA id i73sm6821120pfe.67.2020.09.17.06.46.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 17 Sep 2020 06:47:05 -0700 (PDT)
+From:   Sumit Garg <sumit.garg@linaro.org>
+To:     jarkko.sakkinen@linux.intel.com, zohar@linux.ibm.com,
+        jejb@linux.ibm.com
+Cc:     dhowells@redhat.com, jens.wiklander@linaro.org, corbet@lwn.net,
+        jmorris@namei.org, serge@hallyn.com, casey@schaufler-ca.com,
+        janne.karhunen@gmail.com, daniel.thompson@linaro.org,
+        Markus.Wamser@mixed-mode.de, lhinds@redhat.com,
+        keyrings@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        op-tee@lists.trustedfirmware.org,
+        Sumit Garg <sumit.garg@linaro.org>
+Subject: [PATCH v6 0/4] Introduce TEE based Trusted Keys support
+Date:   Thu, 17 Sep 2020 19:16:34 +0530
+Message-Id: <1600350398-4813-1-git-send-email-sumit.garg@linaro.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Add support for TEE based trusted keys where TEE provides the functionality
+to seal and unseal trusted keys using hardware unique key. Also, this is
+an alternative in case platform doesn't possess a TPM device.
 
-We don't need to specify any ranges when allocating IDs so we can switch
-to ida_alloc() and ida_free() instead of the ida_simple_ counterparts.
+This patch-set has been tested with OP-TEE based early TA which is already
+merged in upstream [1].
 
-ida_simple_get(ida, 0, 0, gfp) is equivalent to
-ida_alloc_range(ida, 0, UINT_MAX, gfp) which is equivalent to
-ida_alloc(ida, gfp). Note: IDR will never actually allocate an ID
-larger than INT_MAX.
+[1] https://github.com/OP-TEE/optee_os/commit/f86ab8e7e0de869dfa25ca05a37ee070d7e5b86b
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/nvmem/core.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Changes in v6:
+1. Revert back to dynamic detection of trust source.
+2. Drop author mention from trusted_core.c and trusted_tpm1.c files.
+3. Rebased to latest tpmdd/master.
 
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 7641e56a17bc..96ac8a632a7a 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -321,7 +321,7 @@ static void nvmem_release(struct device *dev)
- {
- 	struct nvmem_device *nvmem = to_nvmem_device(dev);
- 
--	ida_simple_remove(&nvmem_ida, nvmem->id);
-+	ida_free(&nvmem_ida, nvmem->id);
- 	gpiod_put(nvmem->wp_gpio);
- 	kfree(nvmem);
- }
-@@ -596,7 +596,7 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
- 	if (!nvmem)
- 		return ERR_PTR(-ENOMEM);
- 
--	rval  = ida_simple_get(&nvmem_ida, 0, 0, GFP_KERNEL);
-+	rval  = ida_alloc(&nvmem_ida, GFP_KERNEL);
- 	if (rval < 0) {
- 		kfree(nvmem);
- 		return ERR_PTR(rval);
-@@ -608,7 +608,7 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
- 		nvmem->wp_gpio = gpiod_get_optional(config->dev, "wp",
- 						    GPIOD_OUT_HIGH);
- 	if (IS_ERR(nvmem->wp_gpio)) {
--		ida_simple_remove(&nvmem_ida, nvmem->id);
-+		ida_free(&nvmem_ida, nvmem->id);
- 		rval = PTR_ERR(nvmem->wp_gpio);
- 		kfree(nvmem);
- 		return ERR_PTR(rval);
+Changes in v5:
+1. Drop dynamic detection of trust source and use compile time flags
+   instead.
+2. Rename trusted_common.c -> trusted_core.c.
+3. Rename callback: cleanup() -> exit().
+4. Drop "tk" acronym.
+5. Other misc. comments.
+6. Added review tags for patch #3 and #4.
+
+Changes in v4:
+1. Pushed independent TEE features separately:
+  - Part of recent TEE PR: https://lkml.org/lkml/2020/5/4/1062
+2. Updated trusted-encrypted doc with TEE as a new trust source.
+3. Rebased onto latest tpmdd/master.
+
+Changes in v3:
+1. Update patch #2 to support registration of multiple kernel pages.
+2. Incoporate dependency patch #4 in this patch-set:
+   https://patchwork.kernel.org/patch/11091435/
+
+Changes in v2:
+1. Add reviewed-by tags for patch #1 and #2.
+2. Incorporate comments from Jens for patch #3.
+3. Switch to use generic trusted keys framework.
+
+Sumit Garg (4):
+  KEYS: trusted: Add generic trusted keys framework
+  KEYS: trusted: Introduce TEE based Trusted Keys
+  doc: trusted-encrypted: updates with TEE as a new trust source
+  MAINTAINERS: Add entry for TEE based Trusted Keys
+
+ Documentation/security/keys/trusted-encrypted.rst | 203 ++++++++++---
+ MAINTAINERS                                       |   8 +
+ include/keys/trusted-type.h                       |  42 +++
+ include/keys/trusted_tee.h                        |  55 ++++
+ include/keys/trusted_tpm.h                        |  17 +-
+ security/keys/trusted-keys/Makefile               |   2 +
+ security/keys/trusted-keys/trusted_core.c         | 325 +++++++++++++++++++++
+ security/keys/trusted-keys/trusted_tee.c          | 278 ++++++++++++++++++
+ security/keys/trusted-keys/trusted_tpm1.c         | 336 ++++------------------
+ 9 files changed, 939 insertions(+), 327 deletions(-)
+ create mode 100644 include/keys/trusted_tee.h
+ create mode 100644 security/keys/trusted-keys/trusted_core.c
+ create mode 100644 security/keys/trusted-keys/trusted_tee.c
+
 -- 
-2.21.0
+2.7.4
 
