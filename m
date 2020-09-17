@@ -2,219 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B38A26DEE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A939426DEC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727659AbgIQO7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 10:59:16 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:25798 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727716AbgIQOxU (ORCPT
+        id S1727815AbgIQOwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 10:52:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727659AbgIQOnB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 10:53:20 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08HDJhOu107007;
-        Thu, 17 Sep 2020 09:25:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=6tiVtpObG1jc9y3j7QUgB4f6VYVXThdByx1D34/MMJY=;
- b=U9BaAeejVyKvhcV5+90Bb6UTcyBd9o404DS374TK8zcNdRhpmiR1bNWSachMFDv+6gA7
- TiZD/CVN0YSEuvQqQ2F/rLCpyPUWZk/AWUgu3dcVCfQwlVw3jTthQU5Sz7m4xOn+4HFP
- Wq1QEPy99VSV4tn6QWnpjXdrDe+1gnAnrV6kJbmBt9BcAFa1qziQE+GZhjCQxVJafmvE
- kQg/giTpv6zDinHRF2dmgwDzMQRS8sbn899bI/Vmzp5zLQBTbE/pt94XnIHo5qaWpKdk
- 4lgqF5JyNDtjIVZQ2xNXYYJQt07bG9EuUI9QnSk3DulBLdqRaX1fcrdltkewYv2uE4+8 kA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33m8k2r52s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Sep 2020 09:25:58 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08HDLAS5110180;
-        Thu, 17 Sep 2020 09:25:57 -0400
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33m8k2r526-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Sep 2020 09:25:57 -0400
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08HDNEdC029011;
-        Thu, 17 Sep 2020 13:25:57 GMT
-Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
-        by ppma01dal.us.ibm.com with ESMTP id 33k6591e0x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Sep 2020 13:25:57 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08HDPurx56623564
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 17 Sep 2020 13:25:56 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 544E7AE060;
-        Thu, 17 Sep 2020 13:25:56 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E4287AE05C;
-        Thu, 17 Sep 2020 13:25:52 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.211.95.89])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu, 17 Sep 2020 13:25:52 +0000 (GMT)
-Subject: Re: [PATCH v6 5/8] powerpc/watchpoint: Fix exception handling for
- CONFIG_HAVE_HW_BREAKPOINT=N
-To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>, mpe@ellerman.id.au,
-        christophe.leroy@c-s.fr
-Cc:     mikey@neuling.org, jniethe5@gmail.com, pedromfc@linux.ibm.com,
-        linux-kernel@vger.kernel.org, paulus@samba.org,
-        rogealve@linux.ibm.com, naveen.n.rao@linux.vnet.ibm.com,
-        linuxppc-dev@lists.ozlabs.org
-References: <20200902042945.129369-1-ravi.bangoria@linux.ibm.com>
- <20200902042945.129369-6-ravi.bangoria@linux.ibm.com>
-From:   Rogerio Alves <rcardoso@linux.ibm.com>
-Message-ID: <7632bf52-3a0c-66d7-a236-7f896b1ce13e@linux.ibm.com>
-Date:   Thu, 17 Sep 2020 10:25:51 -0300
+        Thu, 17 Sep 2020 10:43:01 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 543B9C06174A;
+        Thu, 17 Sep 2020 06:36:25 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id o5so2087524wrn.13;
+        Thu, 17 Sep 2020 06:36:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=NrYccvW8EewxdxP/tYL+GSHWBm9LlWoKt2Rngij9Qu0=;
+        b=scrrmCu8z68GIU1EmmAt/fXRf5oYi77EUr8Mli6ErbE68/v06v8N/XIgKRT97jh8CI
+         LxpMrbFWFcdZbQzeODCZHwLri56gaCFU8j/SkQlTvK4kdpIRQrZQjZMwNGlwkOVgP82z
+         uQZB2qWa0AAdTy0/BOqjwsTbKN1sC8YzILnJx5VSQs6HtkYOUXAyACfxyb2h62q9sgCi
+         dWkurhPfQodpBCA2Lb99mpFQLh2NMlynR/62ktw2no+MXSyW8G/LwZ7F91HEzP7dzufS
+         7qGFjY3Ui6r8MIuL/sfEXDRqN95zoGRXbrd7Ubq6JJYrGgyzZRjd7eTZcxz2dOpQIezT
+         bNGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=NrYccvW8EewxdxP/tYL+GSHWBm9LlWoKt2Rngij9Qu0=;
+        b=CHWV+PvvNHEhryPL352nGxV8NdflYpqyPazl7nyq1wXeSvKFHErTAQMW8P7zwizMws
+         cjScmz5vJso4KwTDgZ5cYhFceSXKj66mBYqQb+FJxPv5LGmx1vaYkatTF1hHv3WoBxDF
+         92ZB0xO5OMbhirqJdtH9dQkhiqrnecTfQNUp0wOfbSHVMg+K9V82/KX5bUgOx3CGCoE/
+         x311Thz+b/5+UciEyWbFZUDmfIf8tgXfGQTJaDLJ5cVL21t1t8U3+lMdkVmlKVwTJvtt
+         fBBBI3IzQl4acvAjeNwGwaSj9cf5X5f1O9ZGrzmEtwZmR9PBgkNvgrt4ckJANkokdTS2
+         W/Iw==
+X-Gm-Message-State: AOAM531l389qbljcrETwWCFzCTBNIaWRE0aHb6tetaYJVU2dJHipEcw5
+        xL33L67NRfTvpFLyWyhodxw=
+X-Google-Smtp-Source: ABdhPJy19mXiA3ihkeppKeKRQzh8Cl3+/8IpAIdFYSHDCUl8bVUJjtCpl/lN4/F3SUxP0dCgohVRYg==
+X-Received: by 2002:a5d:458a:: with SMTP id p10mr31333302wrq.282.1600349783908;
+        Thu, 17 Sep 2020 06:36:23 -0700 (PDT)
+Received: from [192.168.1.211] ([2.29.208.34])
+        by smtp.gmail.com with ESMTPSA id k15sm3679762wrv.90.2020.09.17.06.36.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Sep 2020 06:36:23 -0700 (PDT)
+Subject: Re: [RFC PATCH] Add bridge driver to connect sensors to CIO2 device
+ via software nodes on ACPI platforms
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>, yong.zhi@intel.com,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
+        gregkh@linuxfoundation.org, davem@davemloft.net, robh@kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        devel@driverdev.osuosl.org, jorhand@linux.microsoft.com,
+        kitakar@gmail.com, kieran.bingham@ideasonboard.com
+References: <20200916213618.8003-1-djrscally@gmail.com>
+ <20200917103343.GW26842@paasikivi.fi.intel.com>
+ <8133a57d-ab4c-dccd-4325-9b10e7805648@gmail.com>
+ <20200917124514.GK3956970@smile.fi.intel.com>
+From:   Dan Scally <djrscally@gmail.com>
+Message-ID: <fea9d85a-7be9-0270-bd59-8e479a836ae6@gmail.com>
+Date:   Thu, 17 Sep 2020 14:36:22 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200902042945.129369-6-ravi.bangoria@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <20200917124514.GK3956970@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-17_09:2020-09-16,2020-09-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
- priorityscore=1501 suspectscore=0 impostorscore=0 mlxlogscore=999
- lowpriorityscore=0 phishscore=0 adultscore=0 mlxscore=0 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009170098
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Andy, thanks for input (as always)
+
+On 17/09/2020 13:45, Andy Shevchenko wrote:
+> On Thu, Sep 17, 2020 at 11:52:28AM +0100, Dan Scally wrote:
+>> On 17/09/2020 11:33, Sakari Ailus wrote:
+> I will do better review for next version, assuming you will Cc reviewers and
+> TWIMC people. Below is like small part of comments I may give to the code.
+TWIMC?
+>>> The ones I know require PMIC control done in software (not even
+>>> sensors are accessible without that).
+>> So far we've just been getting the sensor drivers themselves to toggle
+>> the gpio pins that turn the PMIC on (those pins are listed against the
+>> PMIC's _CRS, and we've been finding those by evaluating the sensor's
+>> _DEP) - once that's done the cameras show up on i2c and,with the bridge
+>> driver installed, you can use libcamera to take photos.
+> Do I understand correctly that you are able to get pictures from the camera
+> hardware?
+
+Yes, using the libcamera project's qcam program. They're poor quality at
+the moment, because there's no auto-white-balance / exposure controls in
+the ipu3 pipeline yet, but we can take images. Example:
 
 
-On 9/2/20 1:29 AM, Ravi Bangoria wrote:
-> On powerpc, ptrace watchpoint works in one-shot mode. i.e. kernel
-> disables event every time it fires and user has to re-enable it.
-> Also, in case of ptrace watchpoint, kernel notifies ptrace user
-> before executing instruction.
-> 
-> With CONFIG_HAVE_HW_BREAKPOINT=N, kernel is missing to disable
-> ptrace event and thus it's causing infinite loop of exceptions.
-> This is especially harmful when user watches on a data which is
-> also read/written by kernel, eg syscall parameters. In such case,
-> infinite exceptions happens in kernel mode which causes soft-lockup.
-> 
-> Fixes: 9422de3e953d ("powerpc: Hardware breakpoints rewrite to handle non DABR breakpoint registers")
-> Reported-by: Pedro Miraglia Franco de Carvalho <pedromfc@linux.ibm.com>
-> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Tested-by: Rogerio Alves <rcardoso@linux.ibm.com>
-> ---
->   arch/powerpc/include/asm/hw_breakpoint.h  |  3 ++
->   arch/powerpc/kernel/process.c             | 48 +++++++++++++++++++++++
->   arch/powerpc/kernel/ptrace/ptrace-noadv.c |  4 +-
->   3 files changed, 54 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/powerpc/include/asm/hw_breakpoint.h b/arch/powerpc/include/asm/hw_breakpoint.h
-> index 81872c420476..abebfbee5b1c 100644
-> --- a/arch/powerpc/include/asm/hw_breakpoint.h
-> +++ b/arch/powerpc/include/asm/hw_breakpoint.h
-> @@ -18,6 +18,7 @@ struct arch_hw_breakpoint {
->   	u16		type;
->   	u16		len; /* length of the target data symbol */
->   	u16		hw_len; /* length programmed in hw */
-> +	u8		flags;
->   };
->   
->   /* Note: Don't change the first 6 bits below as they are in the same order
-> @@ -37,6 +38,8 @@ struct arch_hw_breakpoint {
->   #define HW_BRK_TYPE_PRIV_ALL	(HW_BRK_TYPE_USER | HW_BRK_TYPE_KERNEL | \
->   				 HW_BRK_TYPE_HYP)
->   
-> +#define HW_BRK_FLAG_DISABLED	0x1
-> +
->   /* Minimum granularity */
->   #ifdef CONFIG_PPC_8xx
->   #define HW_BREAKPOINT_SIZE  0x4
-> diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
-> index 016bd831908e..160fbbf41d40 100644
-> --- a/arch/powerpc/kernel/process.c
-> +++ b/arch/powerpc/kernel/process.c
-> @@ -636,6 +636,44 @@ void do_send_trap(struct pt_regs *regs, unsigned long address,
->   				    (void __user *)address);
->   }
->   #else	/* !CONFIG_PPC_ADV_DEBUG_REGS */
-> +
-> +static void do_break_handler(struct pt_regs *regs)
-> +{
-> +	struct arch_hw_breakpoint null_brk = {0};
-> +	struct arch_hw_breakpoint *info;
-> +	struct ppc_inst instr = ppc_inst(0);
-> +	int type = 0;
-> +	int size = 0;
-> +	unsigned long ea;
-> +	int i;
-> +
-> +	/*
-> +	 * If underneath hw supports only one watchpoint, we know it
-> +	 * caused exception. 8xx also falls into this category.
-> +	 */
-> +	if (nr_wp_slots() == 1) {
-> +		__set_breakpoint(0, &null_brk);
-> +		current->thread.hw_brk[0] = null_brk;
-> +		current->thread.hw_brk[0].flags |= HW_BRK_FLAG_DISABLED;
-> +		return;
-> +	}
-> +
-> +	/* Otherwise findout which DAWR caused exception and disable it. */
-> +	wp_get_instr_detail(regs, &instr, &type, &size, &ea);
-> +
-> +	for (i = 0; i < nr_wp_slots(); i++) {
-> +		info = &current->thread.hw_brk[i];
-> +		if (!info->address)
-> +			continue;
-> +
-> +		if (wp_check_constraints(regs, instr, ea, type, size, info)) {
-> +			__set_breakpoint(i, &null_brk);
-> +			current->thread.hw_brk[i] = null_brk;
-> +			current->thread.hw_brk[i].flags |= HW_BRK_FLAG_DISABLED;
-> +		}
-> +	}
-> +}
-> +
->   void do_break (struct pt_regs *regs, unsigned long address,
->   		    unsigned long error_code)
->   {
-> @@ -647,6 +685,16 @@ void do_break (struct pt_regs *regs, unsigned long address,
->   	if (debugger_break_match(regs))
->   		return;
->   
-> +	/*
-> +	 * We reach here only when watchpoint exception is generated by ptrace
-> +	 * event (or hw is buggy!). Now if CONFIG_HAVE_HW_BREAKPOINT is set,
-> +	 * watchpoint is already handled by hw_breakpoint_handler() so we don't
-> +	 * have to do anything. But when CONFIG_HAVE_HW_BREAKPOINT is not set,
-> +	 * we need to manually handle the watchpoint here.
-> +	 */
-> +	if (!IS_ENABLED(CONFIG_HAVE_HW_BREAKPOINT))
-> +		do_break_handler(regs);
-> +
->   	/* Deliver the signal to userspace */
->   	force_sig_fault(SIGTRAP, TRAP_HWBKPT, (void __user *)address);
->   }
-> diff --git a/arch/powerpc/kernel/ptrace/ptrace-noadv.c b/arch/powerpc/kernel/ptrace/ptrace-noadv.c
-> index 57a0ab822334..c9122ed91340 100644
-> --- a/arch/powerpc/kernel/ptrace/ptrace-noadv.c
-> +++ b/arch/powerpc/kernel/ptrace/ptrace-noadv.c
-> @@ -286,11 +286,13 @@ long ppc_del_hwdebug(struct task_struct *child, long data)
->   	}
->   	return ret;
->   #else /* CONFIG_HAVE_HW_BREAKPOINT */
-> -	if (child->thread.hw_brk[data - 1].address == 0)
-> +	if (!(child->thread.hw_brk[data - 1].flags & HW_BRK_FLAG_DISABLED) &&
-> +	    child->thread.hw_brk[data - 1].address == 0)
->   		return -ENOENT;
->   
->   	child->thread.hw_brk[data - 1].address = 0;
->   	child->thread.hw_brk[data - 1].type = 0;
-> +	child->thread.hw_brk[data - 1].flags = 0;
->   #endif /* CONFIG_HAVE_HW_BREAKPOINT */
->   
->   	return 0;
-> 
+https://user-images.githubusercontent.com/4592235/91197920-d1d41500-e6f3-11ea-8207-1c27cf24dd45.png
+
+
+A bunch of folks have managed it so far on a couple different platforms
+(Surface Book 1, Surface Pro something, an Acer A12 and a Lenovo Miix-510)
+
+>>>> I wanted to raise this as an RFC as although I don't think it's ready for
+>>>> integration it has some things that I'd like feedback on, in particular the
+>>>> method I chose to make the module be auto-inserted. A more ideal method would
+>>>> have been to have the driver be an ACPI driver for the INT343E device, but each
+>>> What do you think this device does represent? Devices whose status is
+>>> always zero may exist in the table even if they would not be actually
+>>> present.
+>>>
+>>> CIO2 is a PCI device and it has no ACPI (or PNP) ID, or at least should not
+>>> have one.
+>> This is the ACPI entry I mean:
+>>
+>> Device (CIO2)
+>> {
+>>     Method (_STA, 0, NotSerialized)  // _STA: Status
+>>     {
+>>         If ((CIOE == One))
+>>         {
+>>             Return (0x0F)
+>>         }
+>>         Else
+>>         {
+>>             Return (Zero)
+>>         }
+>>     }
+>>
+>>     Name (_HID, "INT343E")  // _HID: Hardware ID
+>>     Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
+>>     {
+>>         Name (CBUF, ResourceTemplate ()
+>>         {
+>>             Interrupt (ResourceConsumer, Level, ActiveLow, Shared, ,, _Y15)
+>>             {
+>>                 0x00000010,
+>>             }
+>>             Memory32Fixed (ReadWrite,
+>>                 0xFE400000,         // Address Base
+>>                 0x00010000,         // Address Length
+>>                 )
+>>         })
+>>         CreateDWordField (CBUF, \_SB.PCI0.CIO2._CRS._Y15._INT, CIOV)  // _INT: Interrupts
+>>         CIOV = CIOI /* \CIOI */
+>>         Return (CBUF) /* \_SB_.PCI0.CIO2._CRS.CBUF */
+>>     }
+>> }
+> Ah, I think you misinterpreted the meaning of above. The above is a switch how
+> camera device appears either as PCI or an ACPI. So, it effectively means you
+> should *not* have any relation for this HID until you find a platform where the
+> device is for real enumerated via ACPI.
+>
+Ah, ok. So that was never going to work. Thanks. That does raise another
+question; we have had some testers report failure, which turns out to be
+because on their platforms the definition of their cameras in ACPI is
+never translated into an i2c_client so the cio2-bridge doesn't bind.
+Those have a similar conditional in the _STA method, see CAM1 in this
+DSDT for example:
+https://raw.githubusercontent.com/linux-surface/acpidumps/master/surface_go/dsdt.dsl.
+Is there anything we can do to enable those cameras to be discovered too?
+
+>>>> +static int cio2_probe_can_progress(struct pci_dev *pci_dev)
+>>>> +{
+>>>> +	void *sensor;
+> Why void?
+> Besides the fact that castings from or to void * are implicit in C, the proper
+> use of list API should have pretty well defined type of lvalue.
+>
+Yeah, I misunderstood how this worked - after greg pointed out I was
+doing it wrong I read the code a bit better and got it working assigning
+to a struct device *sensor; - TIL.
+>>>> +	if (!IS_ENABLED(CONFIG_ACPI)) {
+>>>> +		r = cio2_parse_firmware(cio2);
+>>>> +		if (r)
+>>>> +			goto fail_clean_notifier;
+>>>> +	}
+> How comes?
+Me misunderstanding again; it will be removed.
+>
+>>>> \ No newline at end of file
+> ???
+>
+> Be sure you are using good editor.
+>
+Yeah haven't managed to track down what's causing this yet. Visual
+Studio Code maybe.
+>>>> +#define PROPERTY_ENTRY_NULL			\
+>>>> +((const struct property_entry) { })
+>>> Alignment. Same appears to apply to other macros (please indent).
+>> Yep
+>>>> +#define SOFTWARE_NODE_NULL			\
+>>>> +((const struct software_node) { })
+> Why?!
+>
+It felt ugly to have the other definitions be macros and not this one,
+but I can change it.
+>>>> +		return -ENODEV;
+>>>> +
+>>>> +	obj = (union acpi_object *)buffer.pointer;
+> Why explicit casting?
+>
+>
+
+>>>> +		if (!dev->driver_data) {
+>>>> +			pr_info("ACPI match for %s, but it has no driver\n",
+>>>> +				supported_devices[i]);
+>>>> +			continue;
+>>>> +		} else {
+>>>> +			pr_info("Found supported device %s\n",
+>>>> +				supported_devices[i]);
+>>>> +		}
+> Positive conditions are easier to read, but on the other hand 'else' is
+> redundant in such conditionals (where if branch bails out from the flow).
+
+Yeah good point - and much more readable that way. Thanks; I'll stick to
+that in future.
+
+
+All your other suggestions are great - thank you, I will fix them for
+the v2.
+
