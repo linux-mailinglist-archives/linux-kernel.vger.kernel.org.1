@@ -2,75 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5617B26D17D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 05:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3371A26D17F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 05:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726126AbgIQDPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 23:15:53 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12811 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726002AbgIQDPu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 23:15:50 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 788A67913720DC5DBE00;
-        Thu, 17 Sep 2020 11:15:48 +0800 (CST)
-Received: from euler.huawei.com (10.175.124.27) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 17 Sep 2020 11:15:41 +0800
-From:   Wei Li <liwei391@huawei.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        "Namhyung Kim" <namhyung@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <huawei.libin@huawei.com>,
-        <guohanjun@huawei.com>
-Subject: [PATCH] Revert "perf report: Treat an argument as a symbol filter"
-Date:   Thu, 17 Sep 2020 11:14:14 +0800
-Message-ID: <20200917031414.47498-1-liwei391@huawei.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.124.27]
-X-CFilter-Loop: Reflected
+        id S1726139AbgIQDRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 23:17:11 -0400
+Received: from m17618.mail.qiye.163.com ([59.111.176.18]:3588 "EHLO
+        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725267AbgIQDRI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 23:17:08 -0400
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.226])
+        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id 0F1634E16D2;
+        Thu, 17 Sep 2020 11:17:05 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Evgeniy Polyakov <zbr@ioremap.net>, linux-kernel@vger.kernel.org
+Cc:     Wang Qing <wangqing@vivo.com>
+Subject: [PATCH] w1: Use kobj_to_dev() API
+Date:   Thu, 17 Sep 2020 11:16:58 +0800
+Message-Id: <1600312620-27333-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZShkfQkodHUwfQ08YVkpNS0tISklNSU5OQktVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VKS0tZBg++
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6ODY6UQw*GD8eHhQMMxgrNUpJ
+        IzdPCxdVSlVKTUtLSEpJTUlNS0pDVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlJTVlXWQgBWUFKSU1MNwY+
+X-HM-Tid: 0a749a10c9279376kuws0f1634e16d2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 6db6127c4dad ("perf report: Treat an argument as a symbol
-filter"), the only one unrecognized argument for perf-report is treated
-as a symbol filter. This is not described in man page nor help info,
-and the result is really confusing, especially when it's misspecified by
-the user (e.g. missing -i for perf.data).
+Use kobj_to_dev() instead of container_of()
 
-As we can use "--symbol-filter=" if we really want to filter a symbol,
-it may be better to revert this misfeature.
-
-Signed-off-by: Wei Li <liwei391@huawei.com>
+Signed-off-by: Wang Qing <wangqing@vivo.com>
 ---
- tools/perf/builtin-report.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ include/linux/w1.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
-index 3c74c9c0f3c3..f57ebc1bcd20 100644
---- a/tools/perf/builtin-report.c
-+++ b/tools/perf/builtin-report.c
-@@ -1317,13 +1317,9 @@ int cmd_report(int argc, const char **argv)
- 	argc = parse_options(argc, argv, options, report_usage, 0);
- 	if (argc) {
- 		/*
--		 * Special case: if there's an argument left then assume that
--		 * it's a symbol filter:
-+		 * Any (unrecognized) arguments left?
- 		 */
--		if (argc > 1)
--			usage_with_options(report_usage, options);
--
--		report.symbol_filter_str = argv[0];
-+		usage_with_options(report_usage, options);
- 	}
+diff --git a/include/linux/w1.h b/include/linux/w1.h
+index cebf346..7f45174
+--- a/include/linux/w1.h
++++ b/include/linux/w1.h
+@@ -311,7 +311,7 @@ static inline struct w1_slave* dev_to_w1_slave(struct device *dev)
  
- 	if (annotate_check_args(&report.annotation_opts) < 0)
+ static inline struct w1_slave* kobj_to_w1_slave(struct kobject *kobj)
+ {
+-	return dev_to_w1_slave(container_of(kobj, struct device, kobj));
++	return dev_to_w1_slave(kobj_to_dev(kobj););
+ }
+ 
+ static inline struct w1_master* dev_to_w1_master(struct device *dev)
 -- 
-2.17.1
+2.7.4
 
