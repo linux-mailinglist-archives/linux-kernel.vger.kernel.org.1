@@ -2,120 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 254C626D357
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 08:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAC8C26D374
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 08:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726199AbgIQGAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 02:00:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726106AbgIQGAt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 02:00:49 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7457FC06174A;
-        Wed, 16 Sep 2020 23:00:49 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id f1so528261plo.13;
-        Wed, 16 Sep 2020 23:00:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=L+n8O03kRtHAQB8HeA2TekCPJc3BthVlbg+kGkS/U9I=;
-        b=i17tH6dAzp+22MDJ6C8x6tK0XY9DBubi96Sywpatf7u6LkqpNF9L0GUZxUVG7pnb8k
-         mQUFPINZMKnNMpU+JmkDKjFxryhX/u1dpJcGjLn4WOUAesOM+Wx3wxywDlGuy9u6OOV1
-         wG5+qtbr57SZsWTR9toh3/Qj8AbelXQYmRfm7aYdxrI+trc4gDV6SIFSaW7JbWo+vrK+
-         tcqVjXH5eL8CnZslGO2RBves/ZeefKbfTCPcYUGL5BC53lR4VYQ8Dj9H4Qbaj2Kk09GK
-         IjlIp/3sEQh77JV2Jwv7cKUEObln5bEAFynyZF4bsnVA2C10dML2ct7aBuoWt9lA1fak
-         tqTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=L+n8O03kRtHAQB8HeA2TekCPJc3BthVlbg+kGkS/U9I=;
-        b=pp9YgU4PiuCSy4VIESVwKh2y0VGCh6MIlaeMIn7wWuiyc7PecNFk3/k3S9sfSRdGb1
-         ajSKj1TFAdKn5qPLsMlkvUTeSf7AbCbtp+EcGFgj3SVWQi2l2+Q2yvOL6J88diPR/DLg
-         +OfYRhnqDwJYO7X02qtOEcTJ8NXCpjtq53jtlj67Qv+K1BdsJaavSuKdqxESSqF+gZEn
-         8Tgbpux8duaYIViYneta04ScHluhTEDiUr05eX+QJuBaw3uJHMO4Il6/MmSoKl/u2Xko
-         ZSSHTXmuANIGoQ3VggbkZyYUNadHSFUYUwEr88qJidGRrOhOuvmkfTEiy1qaheHiPFtH
-         wG2g==
-X-Gm-Message-State: AOAM530+mpXh9AxyyqcnhhjX8DRQCd+ayY1kK3vwtb/4dDySTFziNn8W
-        PzRiBdMiCisT/7cQ2msSbSM=
-X-Google-Smtp-Source: ABdhPJxEAwIoMBefG1Bgz2UXHHiaQYa2f/aGNkGF0+FLDpZ0T1rQ4mxuoCF9K8no+MB+Pyzfnzp4xg==
-X-Received: by 2002:a17:902:b086:b029:d1:e3bd:48ed with SMTP id p6-20020a170902b086b02900d1e3bd48edmr11189453plr.14.1600322449055;
-        Wed, 16 Sep 2020 23:00:49 -0700 (PDT)
-Received: from localhost.localdomain ([209.9.72.212])
-        by smtp.gmail.com with ESMTPSA id d128sm13300167pfc.8.2020.09.16.23.00.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 23:00:48 -0700 (PDT)
-From:   zhuguangqing83@gmail.com
-To:     amit.kachhap@gmail.com, daniel.lezcano@linaro.org,
-        viresh.kumar@linaro.org, javi.merino@kernel.org,
-        rui.zhang@intel.com, amitk@kernel.org, zhuguangqing@xiaomi.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] thermal/drivers/cpuidle_cooling: Change the set_cur_state function
-Date:   Thu, 17 Sep 2020 14:00:31 +0800
-Message-Id: <20200917060031.6566-1-zhuguangqing83@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726306AbgIQGKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 02:10:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40428 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726210AbgIQGKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 02:10:32 -0400
+Received: from kernel.org (unknown [87.71.73.56])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DCCDC206DC;
+        Thu, 17 Sep 2020 06:00:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600322465;
+        bh=2eXxBCNlIdy/NmilmfE2zcnstt/gSlJAZ4p0990VyuQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eSqETZ6e9aUM8TBVL4kfjQtcwF6oBMWwsHru29dQWN3+qfwISbA5tb9PZQF37FhLQ
+         ktVNOjoz7kC5FyqYgvEn0gVLPLqRwiIgxxazN2flKq0QRH6x3joT7iU3g25yeUFQUt
+         zpnGR4vSdvi7tnn1Ka2batJdt48um4JpgTP6zlJA=
+Date:   Thu, 17 Sep 2020 09:00:52 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-riscv@lists.infradead.org, x86@kernel.org
+Subject: Re: [PATCH v5 0/5] mm: introduce memfd_secret system call to create
+ "secret" memory areas
+Message-ID: <20200917060052.GN2142832@kernel.org>
+References: <20200916073539.3552-1-rppt@kernel.org>
+ <20200916162020.0d68c2bd6711024cfcaa8bd7@linux-foundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916162020.0d68c2bd6711024cfcaa8bd7@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhuguangqing <zhuguangqing@xiaomi.com>
+On Wed, Sep 16, 2020 at 04:20:20PM -0700, Andrew Morton wrote:
+> On Wed, 16 Sep 2020 10:35:34 +0300 Mike Rapoport <rppt@kernel.org> wrote:
+> 
+> > This is an implementation of "secret" mappings backed by a file descriptor. 
+> > I've dropped the boot time reservation patch for now as it is not strictly
+> > required for the basic usage and can be easily added later either with or
+> > without CMA.
+> 
+> It seems early days for this, especially as regards reviewer buyin. 
+> But I'll toss it in there to get it some additional testing.
 
-In the function cpuidle_cooling_set_cur_state(), if current_state is
-not equal to state and both current_state and state are greater than
-0(scene 4 as follows), then maybe it should stop->start or restart
-idle_inject.
+Thanks!
 
-The scenes changed is as follows,
+> A test suite in tools/testging/selftests/ would be helpful, especially
+> for arch maintainers.
 
-scene    current_state    state    action
- 1              0          >0       start
- 2              0          0        do nothing
- 3              >0         0        stop
- 4        >0 && !=state    >0       stop->start or restart
- 5        >0 && ==state    >0       do nothing
+I'll look into it.
 
-Signed-off-by: zhuguangqing <zhuguangqing@xiaomi.com>
----
- drivers/thermal/cpuidle_cooling.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+> I assume that user-facing manpage alterations are planned?
 
-diff --git a/drivers/thermal/cpuidle_cooling.c b/drivers/thermal/cpuidle_cooling.c
-index 78e3e8238116..868919ad3dda 100644
---- a/drivers/thermal/cpuidle_cooling.c
-+++ b/drivers/thermal/cpuidle_cooling.c
-@@ -113,7 +113,7 @@ static int cpuidle_cooling_get_cur_state(struct thermal_cooling_device *cdev,
- /**
-  * cpuidle_cooling_set_cur_state - Set the current cooling state
-  * @cdev: the thermal cooling device
-- * @state: the target state
-+ * @state: the target state, max value is 100
-  *
-  * The function checks first if we are initiating the mitigation which
-  * in turn wakes up all the idle injection tasks belonging to the idle
-@@ -130,6 +130,9 @@ static int cpuidle_cooling_set_cur_state(struct thermal_cooling_device *cdev,
- 	unsigned long current_state = idle_cdev->state;
- 	unsigned int runtime_us, idle_duration_us;
- 
-+	if (state > 100 || current_state == state)
-+		return 0;
-+
- 	idle_cdev->state = state;
- 
- 	idle_inject_get_duration(ii_dev, &runtime_us, &idle_duration_us);
-@@ -140,8 +143,11 @@ static int cpuidle_cooling_set_cur_state(struct thermal_cooling_device *cdev,
- 
- 	if (current_state == 0 && state > 0) {
- 		idle_inject_start(ii_dev);
--	} else if (current_state > 0 && !state)  {
-+	} else if (current_state > 0 && !state) {
- 		idle_inject_stop(ii_dev);
-+	} else {
-+		idle_inject_stop(ii_dev);
-+		idle_inject_start(ii_dev);
- 	}
- 
- 	return 0;
+Of course.
+
 -- 
-2.17.1
-
+Sincerely yours,
+Mike.
