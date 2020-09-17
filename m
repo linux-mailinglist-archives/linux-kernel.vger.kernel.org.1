@@ -2,160 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93E8526E380
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9D726E36A
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:22:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgIQS0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 14:26:44 -0400
-Received: from mga06.intel.com ([134.134.136.31]:26062 "EHLO mga06.intel.com"
+        id S1726564AbgIQSWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 14:22:41 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:18026 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726480AbgIQSZs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 14:25:48 -0400
-X-Greylist: delayed 396 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 14:25:43 EDT
-IronPort-SDR: OAQrGXnofE2ix3QRRVleUwYmAlE6vjAZIGibBdpXLt/flMsxHVckRqBtyd0juqiepdb1BVwuaO
- fZEpp5aOdY6w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="221321883"
-X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
-   d="scan'208";a="221321883"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 11:18:10 -0700
-IronPort-SDR: kkf8DHurafAM1VSYqAAV2BJk2FzaMJxjF7+wDR/y4P+41vjGqfRSxJQo2xlOcYnKH0JPjLLL3m
- GnyV5m2HTutw==
-X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
-   d="scan'208";a="483850364"
-Received: from jbrandeb-mobl3.amr.corp.intel.com (HELO localhost) ([10.251.16.238])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 11:18:10 -0700
-Date:   Thu, 17 Sep 2020 11:18:07 -0700
-From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
-To:     Nitesh Narayan Lal <nitesh@redhat.com>
-Cc:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>, <frederic@kernel.org>,
-        <mtosatti@redhat.com>, <sassmann@redhat.com>,
-        <jeffrey.t.kirsher@intel.com>, <jacob.e.keller@intel.com>,
-        <jlelli@redhat.com>, <hch@infradead.org>, <bhelgaas@google.com>,
-        <mike.marciniszyn@intel.com>, <dennis.dalessandro@intel.com>,
-        <thomas.lendacky@amd.com>, <jerinj@marvell.com>,
-        <mathias.nyman@intel.com>, <jiri@nvidia.com>
-Subject: Re: [RFC][Patch v1 1/3] sched/isolation: API to get num of
- hosekeeping CPUs
-Message-ID: <20200917111807.00002eac@intel.com>
-In-Reply-To: <20200909150818.313699-2-nitesh@redhat.com>
-References: <20200909150818.313699-1-nitesh@redhat.com>
-        <20200909150818.313699-2-nitesh@redhat.com>
-X-Mailer: Claws Mail 3.12.0 (GTK+ 2.24.28; i686-w64-mingw32)
+        id S1726438AbgIQSU5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 14:20:57 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600366822; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=2Awvd0docYELA3/VOnVrhxEnBWW9DSBcjwiYbeE9eKM=; b=pM4KX74rJnmgWF+NPvK2Buz5+Si7HHxRJZ0clYcafPmcZTxPrrEYcEA28XaWoJ4ASCmKF7bM
+ lRfh4GqAOQm8Xz7VM+CVziQ24786u8KWQMMaSDjQutzli95xIoT0jy1e0B/g+mWnAa85MS/X
+ G6IqI9zLikmRJKdcLIaa0PHv4gg=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5f63a8daea858627d51edc3f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Sep 2020 18:20:10
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 76D50C433FF; Thu, 17 Sep 2020 18:20:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.1.10] (cpe-75-83-25-192.socal.res.rr.com [75.83.25.192])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sidgup)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0AEE5C433CA;
+        Thu, 17 Sep 2020 18:20:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0AEE5C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sidgup@codeaurora.org
+Subject: Re: [PATCH v4 0/3] Introduce mini-dump support for remoteproc
+To:     agross@kernel.org, bjorn.andersson@linaro.org, ohad@wizery.com
+Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, tsoni@codeaurora.org,
+        psodagud@codeaurora.org, rishabhb@codeaurora.org,
+        linux-doc@vger.kernel.org
+References: <01010174796142bd-a595147b-833a-48fe-b692-f8b6fe466146-000000@us-west-2.amazonses.com>
+From:   Siddharth Gupta <sidgup@codeaurora.org>
+Message-ID: <5a8002bd-2eaa-5acd-d7ad-b651dd5e4fbb@codeaurora.org>
+Date:   Thu, 17 Sep 2020 11:20:08 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <01010174796142bd-a595147b-833a-48fe-b692-f8b6fe466146-000000@us-west-2.amazonses.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nitesh Narayan Lal wrote:
+Gentle remind to review this patch series.
 
-> Introduce a new API num_housekeeping_cpus(), that can be used to retrieve
-> the number of housekeeping CPUs by reading an atomic variable
-> __num_housekeeping_cpus. This variable is set from housekeeping_setup().
-> 
-> This API is introduced for the purpose of drivers that were previously
-> relying only on num_online_cpus() to determine the number of MSIX vectors
-> to create. In an RT environment with large isolated but a fewer
-> housekeeping CPUs this was leading to a situation where an attempt to
-> move all of the vectors corresponding to isolated CPUs to housekeeping
-> CPUs was failing due to per CPU vector limit.
-> 
-> If there are no isolated CPUs specified then the API returns the number
-> of all online CPUs.
-> 
-> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
-> ---
->  include/linux/sched/isolation.h |  7 +++++++
->  kernel/sched/isolation.c        | 23 +++++++++++++++++++++++
->  2 files changed, 30 insertions(+)
+Thanks,
+Sid
 
-I'm not a scheduler expert, but a couple comments follow.
-
-> 
-> diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
-> index cc9f393e2a70..94c25d956d8a 100644
-> --- a/include/linux/sched/isolation.h
-> +++ b/include/linux/sched/isolation.h
-> @@ -25,6 +25,7 @@ extern bool housekeeping_enabled(enum hk_flags flags);
->  extern void housekeeping_affine(struct task_struct *t, enum hk_flags flags);
->  extern bool housekeeping_test_cpu(int cpu, enum hk_flags flags);
->  extern void __init housekeeping_init(void);
-> +extern unsigned int num_housekeeping_cpus(void);
->  
->  #else
->  
-> @@ -46,6 +47,12 @@ static inline bool housekeeping_enabled(enum hk_flags flags)
->  static inline void housekeeping_affine(struct task_struct *t,
->  				       enum hk_flags flags) { }
->  static inline void housekeeping_init(void) { }
-> +
-> +static unsigned int num_housekeeping_cpus(void)
-> +{
-> +	return num_online_cpus();
-> +}
-> +
->  #endif /* CONFIG_CPU_ISOLATION */
->  
->  static inline bool housekeeping_cpu(int cpu, enum hk_flags flags)
-> diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-> index 5a6ea03f9882..7024298390b7 100644
-> --- a/kernel/sched/isolation.c
-> +++ b/kernel/sched/isolation.c
-> @@ -13,6 +13,7 @@ DEFINE_STATIC_KEY_FALSE(housekeeping_overridden);
->  EXPORT_SYMBOL_GPL(housekeeping_overridden);
->  static cpumask_var_t housekeeping_mask;
->  static unsigned int housekeeping_flags;
-> +static atomic_t __num_housekeeping_cpus __read_mostly;
->  
->  bool housekeeping_enabled(enum hk_flags flags)
->  {
-> @@ -20,6 +21,27 @@ bool housekeeping_enabled(enum hk_flags flags)
->  }
->  EXPORT_SYMBOL_GPL(housekeeping_enabled);
->  
-> +/*
-
-use correct kdoc style, and you get free documentation from your source
-(you're so close!)
-
-should be (note the first line and the function title line change to
-remove parens:
-/**
- * num_housekeeping_cpus - Read the number of housekeeping CPUs.
- *
- * This function returns the number of available housekeeping CPUs
- * based on __num_housekeeping_cpus which is of type atomic_t
- * and is initialized at the time of the housekeeping setup.
- */
-
-> + * num_housekeeping_cpus() - Read the number of housekeeping CPUs.
-> + *
-> + * This function returns the number of available housekeeping CPUs
-> + * based on __num_housekeeping_cpus which is of type atomic_t
-> + * and is initialized at the time of the housekeeping setup.
-> + */
-> +unsigned int num_housekeeping_cpus(void)
-> +{
-> +	unsigned int cpus;
-> +
-> +	if (static_branch_unlikely(&housekeeping_overridden)) {
-> +		cpus = atomic_read(&__num_housekeeping_cpus);
-> +		/* We should always have at least one housekeeping CPU */
-> +		BUG_ON(!cpus);
-
-you need to crash the kernel because of this? maybe a WARN_ON? How did
-the global even get set to the bad value? It's going to blame the poor
-caller for this in the trace, but the caller likely had nothing to do
-with setting the value incorrectly!
-
-> +		return cpus;
-> +	}
-> +	return num_online_cpus();
-> +}
-> +EXPORT_SYMBOL_GPL(num_housekeeping_cpus);
-
+On 9/10/2020 11:57 AM, Siddharth Gupta wrote:
+> Sometimes firmware sizes can be in ten's of MB's and reading
+> all the memory during coredump can consume lot of time and
+> memory.
+> Introducing support for mini-dumps. Mini-dump contains smallest
+> amount of useful information, that could help to debug subsystem
+> crashes.
+> During bootup memory is allocated in SMEM (Shared memory)
+> in the form of a table that contains the physical
+> addresses and sizes of the regions that are supposed to be
+> collected during coredump. This memory is shared amongst all
+> processors in a Qualcomm platform, so all remoteprocs
+> fill in their entry in the global table once they are out
+> of reset.
+> This patch series adds support for parsing the global minidump
+> table and uses the current coredump frameork to expose this memory
+> to userspace during remoteproc's recovery.
+>
+> This patch series also integrates the patch:
+> https://patchwork.kernel.org/patch/11695541/ sent by Siddharth.
+>
+> Changelog:
+> v3 -> v4:
+> - Made adsp_priv_cleanup a static function.
+>
+> v2 -> v3:
+> - Refactored code to remove dependency on Qualcomm configs.
+> - Renamed do_rproc_minidump to rproc_minidump and marked as exported
+>    symbol.
+>
+> v1 -> v2:
+> - 3 kernel test robot warnings have been resolved.
+> - Introduced priv_cleanup op in order to making the cleaning of
+>    private elements used by the remoteproc more readable.
+> - Removed rproc_cleanup_priv as it is no longer needed.
+> - Switched to if/else format for rproc_alloc in order to keep
+>    the static const decalaration of adsp_minidump_ops.
+>
+> Siddharth Gupta (3):
+>    remoteproc: core: Add ops to enable custom coredump functionality
+>    remoteproc: qcom: Add capability to collect minidumps
+>    remoteproc: qcom: Add minidump id for sm8150 modem remoteproc
+>
+>   drivers/remoteproc/qcom_minidump.h          |  64 +++++++++++++
+>   drivers/remoteproc/qcom_q6v5_pas.c          | 107 ++++++++++++++++++++-
+>   drivers/remoteproc/remoteproc_core.c        |   6 +-
+>   drivers/remoteproc/remoteproc_coredump.c    | 138 ++++++++++++++++++++++++++++
+>   drivers/remoteproc/remoteproc_elf_helpers.h |  27 ++++++
+>   include/linux/remoteproc.h                  |   5 +
+>   6 files changed, 344 insertions(+), 3 deletions(-)
+>   create mode 100644 drivers/remoteproc/qcom_minidump.h
+>
