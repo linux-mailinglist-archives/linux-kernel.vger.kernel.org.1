@@ -2,100 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C14026E0BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 18:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82D0826E0C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 18:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728551AbgIQQbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 12:31:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40978 "EHLO mail.kernel.org"
+        id S1728567AbgIQQdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 12:33:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728438AbgIQQaf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 12:30:35 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728369AbgIQQcs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 12:32:48 -0400
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1254D206B6;
-        Thu, 17 Sep 2020 16:30:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EFF5720795
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 16:32:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600360234;
-        bh=SwA4GzVDjFMXxHbLJlgIocEQg3KBF/MEs3lwul3fjb0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZMY0p3kFrO2qtW63noCt/K/CoW6LvOUmdLYfykmZH6AsMuQ26XdUaCzx4H7xmBTLi
-         GYAOFqVczjY6NHwr63FNjm4tNxGA8abzgQWcRbOMXd+1DLMziS14bAxnH97q9za5dQ
-         e5tgWRUcvs/0EhHDf/UgVOvWj7G4EQ2uc6U047Co=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 15E35400E9; Thu, 17 Sep 2020 13:30:32 -0300 (-03)
-Date:   Thu, 17 Sep 2020 13:30:31 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCH v2 1/2] perf parse-event: Release cpu_map if evsel alloc
- failed
-Message-ID: <20200917163031.GD1322686@kernel.org>
-References: <20200917060219.1287863-1-namhyung@kernel.org>
- <20200917131058.GA2514666@krava>
+        s=default; t=1600360365;
+        bh=UDnf3IREiyw2euRvGQM7rzF6Y4TR+WX+NcIvD+ugudE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NYYGO1W9mAXkZuhUVO6Y6L2ioaTm69njsOiz956DuPatVMLXjEOMakpQLAC8TnpKc
+         4iYeVyukASZSm+hf20tK0OnRNG5sSjC1TliYP1FruK+0+W0Ntpo+yxeHz+kFA3eG//
+         ZcQsULVdSf1k0luzdvprTwHETbWvZAEeXhMFslOE=
+Received: by mail-wr1-f49.google.com with SMTP id x14so2738771wrl.12
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 09:32:44 -0700 (PDT)
+X-Gm-Message-State: AOAM530wLqZci73AJTD8O04BDgnJUlxPLNnD7FYldO7FKUaD6GY59gSb
+        jmJZyhM3gF6F5blwKJiEATivDy8Lf7BC2tTR1/AzuQ==
+X-Google-Smtp-Source: ABdhPJzQHsv5KOOJ8HO3NJ8qYnGzHb8S1Gxpn/9DUWUzZVpO9MblLZxfCuqdaXBDWVT+IasvV7RYQjIKMu6Li9tO5bs=
+X-Received: by 2002:a5d:5111:: with SMTP id s17mr32904987wrt.70.1600360363524;
+ Thu, 17 Sep 2020 09:32:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917131058.GA2514666@krava>
-X-Url:  http://acmel.wordpress.com
+References: <CAKwvOdnjHbyamsW71FJ=Cd36YfVppp55ftcE_eSDO_z+KE9zeQ@mail.gmail.com>
+ <441AA771-A859-4145-9425-E9D041580FE4@amacapital.net> <7233f4cf-5b1d-0fca-0880-f1cf2e6e765b@citrix.com>
+ <20200916082621.GB2643@zn.tnic> <be498e49-b467-e04c-d833-372f7d83cb1f@citrix.com>
+ <20200917060432.GA31960@zn.tnic> <ec617df229514fbaa9897683ac88dfda@AcuMS.aculab.com>
+ <20200917115733.GH31960@zn.tnic> <823af5fadd464c48ade635498d07ba4e@AcuMS.aculab.com>
+ <20200917143920.GJ31960@zn.tnic>
+In-Reply-To: <20200917143920.GJ31960@zn.tnic>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Thu, 17 Sep 2020 09:32:32 -0700
+X-Gmail-Original-Message-ID: <CALCETrXuV1rucx7=+nx339G43K_8pigfFU5cT-emqpJG4TwjoA@mail.gmail.com>
+Message-ID: <CALCETrXuV1rucx7=+nx339G43K_8pigfFU5cT-emqpJG4TwjoA@mail.gmail.com>
+Subject: Re: [PATCH] x86/smap: Fix the smap_save() asm
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     David Laight <David.Laight@aculab.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bill Wendling <morbo@google.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Thelen <gthelen@google.com>,
+        John Sperbeck <jsperbeck@google.com>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Sep 17, 2020 at 03:10:58PM +0200, Jiri Olsa escreveu:
-> On Thu, Sep 17, 2020 at 03:02:18PM +0900, Namhyung Kim wrote:
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  tools/perf/util/parse-events.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-> > index 667cbca1547a..176a51698a64 100644
-> > --- a/tools/perf/util/parse-events.c
-> > +++ b/tools/perf/util/parse-events.c
-> > @@ -360,8 +360,10 @@ __add_event(struct list_head *list, int *idx,
-> >  		event_attr_init(attr);
-> >  
-> >  	evsel = evsel__new_idx(attr, *idx);
-> > -	if (!evsel)
-> > +	if (!evsel) {
-> > +		perf_cpu_map__put(cpus);
-> 
-> if there's pmu defined, we don't we get on perf_cpu_map:
-> 
->         struct perf_cpu_map *cpus = pmu ? pmu->cpus :
->                                cpu_list ? perf_cpu_map__new(cpu_list) : NULL;
+On Thu, Sep 17, 2020 at 7:39 AM Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Thu, Sep 17, 2020 at 02:25:50PM +0000, David Laight wrote:
+> > I actually wonder if there is any code that really benefits from
+> > the red-zone.
+>
+> The kernel has been without a red zone since 2002 at least:
+>
+>   commit 47f16da277d10ef9494f3e9da2a9113bb22bcd75
+>   Author: Andi Kleen <ak@muc.de>
+>   Date:   Tue Feb 12 20:17:35 2002 -0800
+>
+>       [PATCH] x86_64 merge: arch + asm
+>
+>       This adds the x86_64 arch and asm directories and a Documentation/x86_64.
+>
+>   ...
+>   +CFLAGS += $(shell if $(CC) -mno-red-zone -S -o /dev/null -xc /dev/null >/dev/null 2>&1; then echo "-mno-red-zone"; fi )
+>
+>
+> Also, from the ABI doc:
+>
+> "A.2.2 Stack Layout
+>
+> The Linux kernel may align the end of the input argument area to a
+> 8, instead of 16, byte boundary. It does not honor the red zone (see
+> section 3.2.2) and therefore this area is not allowed to be used by
+> kernel code. Kernel code should be compiled by GCC with the option
+> -mno-red-zone."
+>
+> so forget the red zone.
+>
+> --
+> Regards/Gruss,
+>     Boris.
+>
+> https://people.kernel.org/tglx/notes-about-netiquette
 
-Yeah, I fixed this up by applying first the patch that grabs the
-pmu->cpus refcount and makes the first attribution of evsel->core.cpus
-be directly to 'cpus', as it will either have the refcount for pmu->cpus
-or the newly created, refcount set at 1 cpu map.o
-
-Then the error path fix goes in, just dropping the reference to whatever
-cpu map we have a refcount for.
-
-- Arnaldo
- 
-> jirka
-> 
-> >  		return NULL;
-> > +	}
-> >  
-> >  	(*idx)++;
-> >  	evsel->core.cpus   = perf_cpu_map__get(cpus);
-> > -- 
-> > 2.28.0.618.gf4bc123cb7-goog
-> > 
-> 
-
--- 
-
-- Arnaldo
+Regardless of anything that any docs may or may not say, the kernel
+*can't* use a redzone -- an interrupt would overwrite it.
