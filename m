@@ -2,110 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4767F26DC42
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17D9126DC40
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:59:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727092AbgIQM7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 08:59:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44654 "EHLO
+        id S1726740AbgIQM7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 08:59:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727138AbgIQM61 (ORCPT
+        with ESMTP id S1727222AbgIQM6m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 08:58:27 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8BD6C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 05:58:26 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id u126so2301836oif.13
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 05:58:26 -0700 (PDT)
+        Thu, 17 Sep 2020 08:58:42 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4714C06178A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 05:58:35 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id z22so3125838ejl.7
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 05:58:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
+        d=rasmusvillemoes.dk; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=v+fNl0lP+nDgkIqWYqUCp9ojQxRjrA9fuGvhmoD3cl4=;
-        b=Xx9BA4CJAQ+/KNh9Oytu6Cp3JJRd7dZPKb0a9lbgdBNsP4TrCuCoM2hv/MeNZDJOt2
-         MIgdbjC+wvFlCsmnuqIU88Zn/DGSfwCm49nVbgVhm4JGYS3rQqQQ8VztYVsEiBaiVSYt
-         P3rMGajvrLFM8xPLxVdoUq+XX/LyQQsFsonFU=
+        bh=AsrkYaB5f4BSz50/ihxdxwFEMXRJcXp75/PCDEQiMy0=;
+        b=Vf2xa4k9S0nQtTV7MnWa+2vLfMHqsZaqn6ux5O0gP30Ws/pxXeyWKFfJR7hMISvSyl
+         ZbTQzn+a124uP5Pdl53Ex3EN964qbGCdcUJLlh6+btTFNiVl01BeF+vdsxLbpDj04zPf
+         K/rsEASYKoAYDuE5aWIsnAcMaRJGlEpDuo9qk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=v+fNl0lP+nDgkIqWYqUCp9ojQxRjrA9fuGvhmoD3cl4=;
-        b=GTscZhdFbtzPQtPP4o8QVBgAVtK/C1BJRVU1wgIk4Es0lveSepSdGvG5sv8iOCkUk9
-         258l8nw1Zq0XTK6boHK3B6RkTz9gPkElsGOjsCMvYd0fy77j4oJOKzSFlv7TE1OZX71t
-         Q8Fxj/4wnLOSCcQIbzLKTZ/yMYWHTPHk+9YW0342oiOGfiEMXwju5mH33UHSWb2NamWR
-         HWPiYfkyIkzGPzCabI9Gcxtx9D+y2psC/x7mZ64hvIXnasjZuvJXGBVJt4dDebJzylBu
-         +MDgD08TEvGNGrzZok3k28sIw4WZtbMuYT7AE7KmQR2mYI4/csdZmPRkPCXMIVwuH4CP
-         GQ7g==
-X-Gm-Message-State: AOAM533auqtp6dAfzXxghqiI92iHTS85CGFBmxwweujweKiQ9WtxMkKd
-        +BgBEPQqQ/kr07NTFiAzPPN3J6XGNaasdQ==
-X-Google-Smtp-Source: ABdhPJxJ+hJC5NgrepAXypYOwEjQMM4lNMMM27TkWxWgD7WozscsKqRmtHl4Tv93I1l3RzjjxNAuQw==
-X-Received: by 2002:aca:a88e:: with SMTP id r136mr5904429oie.13.1600347506033;
-        Thu, 17 Sep 2020 05:58:26 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id h14sm10380230otr.21.2020.09.17.05.58.24
+        bh=AsrkYaB5f4BSz50/ihxdxwFEMXRJcXp75/PCDEQiMy0=;
+        b=J9J+1gDkqztpoT1D02Q9nv7Mm7KlmKAgMmHt/Kq9e1KgoJ8WG/nNCXM9a10s0UrdZI
+         n+Ke0WMViaN1/lKKWdcs4EuDKBz1MGJmOQ81TGOYm1VhyuWHC1HkRz4QCsQsuERYyWuA
+         lE+6bZB6HPQpJdSlMboaL3Jz7pQw/jy+adNzPflw3nQJltcaK29vU5tcJ5jlHO0ATJrH
+         qh1YpWY73LFSnTmXV8psSMqVlH9qXlsjR0ffrK2Z7+rVrcX0X4Q7LIVZZ2/oU1pbe8fs
+         Q6642PBLv+cM88iUl3mzl2PbAsCz0niG36j+uoXDxu8cWBkkFAZ1l/0ZcA9/I+UmgeBB
+         iXGw==
+X-Gm-Message-State: AOAM530u2Y3OKLtN8MR1aWs3lwA1tH3NyxXQ15m7YOS0bfIcWKdPqsps
+        bABNhZuj9Zl5LR7rZiPeCo71cSqoXsELjeNtuTA=
+X-Google-Smtp-Source: ABdhPJwFfxv/px4vSMgha1IlklyB3BoTv0/kUJK0Vp6D+D5NpthMfhhVniG2TrfRSuxcaVbyIpGh+w==
+X-Received: by 2002:a17:906:1a4b:: with SMTP id j11mr29705331ejf.97.1600347514058;
+        Thu, 17 Sep 2020 05:58:34 -0700 (PDT)
+Received: from [172.16.11.132] ([81.216.59.226])
+        by smtp.gmail.com with ESMTPSA id t12sm16963758edy.61.2020.09.17.05.58.33
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Sep 2020 05:58:25 -0700 (PDT)
-Subject: Re: [PATCH] selftests/harness: Flush stdout before forking
-To:     Max Filippov <jcmvbkbc@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Kees Cook <keescook@chromium.org>, linux-kselftest@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20200917041519.3284582-1-mpe@ellerman.id.au>
- <CAMo8BfJ5j4nG0z1Bk00J=3xPM++J68Hp2idJ-D5aHT84-vOzsQ@mail.gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <e24df908-c50d-59ef-563c-9db24c819248@linuxfoundation.org>
-Date:   Thu, 17 Sep 2020 06:58:23 -0600
+        Thu, 17 Sep 2020 05:58:33 -0700 (PDT)
+Subject: Re: [PATCH v2] scripts/setlocalversion: make git describe output more
+ reliable
+To:     Nico Schottelius <nico-linuxsetlocalversion@schottelius.org>
+Cc:     Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Brian Norris <briannorris@chromium.org>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-kernel@vger.kernel.org
+References: <20200910112701.13853-1-linux@rasmusvillemoes.dk>
+ <20200917065615.18843-1-linux@rasmusvillemoes.dk>
+ <87pn6k384e.fsf@ungleich.ch>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <73cb82c5-37fd-7fa3-5778-723337934a2b@rasmusvillemoes.dk>
+Date:   Thu, 17 Sep 2020 14:58:32 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAMo8BfJ5j4nG0z1Bk00J=3xPM++J68Hp2idJ-D5aHT84-vOzsQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <87pn6k384e.fsf@ungleich.ch>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/16/20 10:53 PM, Max Filippov wrote:
-> On Wed, Sep 16, 2020 at 9:16 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
->>
->> The test harness forks() a child to run each test. Both the parent and
->> the child print to stdout using libc functions. That can lead to
->> duplicated (or more) output if the libc buffers are not flushed before
->> forking.
->>
->> It's generally not seen when running programs directly, because stdout
->> will usually be line buffered when it's pointing to a terminal.
->>
->> This was noticed when running the seccomp_bpf test, eg:
->>
->>    $ ./seccomp_bpf | tee test.log
->>    $ grep -c "TAP version 13" test.log
->>    2
->>
->> But we only expect the TAP header to appear once.
->>
->> It can be exacerbated using stdbuf to increase the buffer size:
->>
->>    $ stdbuf -o 1MB ./seccomp_bpf > test.log
->>    $ grep -c "TAP version 13" test.log
->>    13
->>
->> The fix is simple, we just flush stdout & stderr before fork. Usually
->> stderr is unbuffered, but that can be changed, so flush it as well
->> just to be safe.
->>
->> Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
->> ---
->>   tools/testing/selftests/kselftest_harness.h | 5 +++++
->>   1 file changed, 5 insertions(+)
+On 17/09/2020 14.22, Nico Schottelius wrote:
 > 
-> Tested-by: Max Filippov <jcmvbkbc@gmail.com>
+> Thanks for the patch Rasmus. Overall it looks good to me, be aligned to
+> the stable patch submission rules makes sense. A tiny thing though:
 > 
+> I did not calculate the exact collision probability with 12 characters
 
-Thank you both. Applying to linux-kselftest fixes for 5.9-rc7
+For reference, the math is something like this: Consider a repo with N+1
+objects. We look at one specific object (for setlocalversion its the
+head commit being built, for the stable rules its whatever particular
+commit one is interested in for backporting), and want to know the
+probability that its sha1 collides with some other object in the first b
+bits (here b=48). Assuming the sha1s are independent and uniformly
+distributed, the probability of not colliding with one specific other
+commit is x=1-1/2^b, and the probability of not colliding with any of
+the other N commits is x^N, making the probability of a collision 1-x^N
+= (1-x)(1+x+x^2+...+x^{N-1}). Now the N terms in the second factor are
+very-close-to-but-slightly-smaller-than 1, so an upper bound for this
+probability is (1-x)N = N/2^b, which is also what one would naively
+expect. [This estimate is always valid, but it becomes a void statement
+of "the probability is less then 1" when N is >= 2^b].
 
-thanks,
--- Shuah
+So, assuming some vendor kernel repo that has all of Greg's stable.git
+(around 10M objects I think) and another 10M objects because random
+vendor, that works out to 20e6/2^48 = 7.1e-8, 71 ppb.
+
+> So I suggest you introduce something on the line of:
+> 
+> ...
+> num_chars=12
+> ...
+> --abbrev=$num_chars
+
+I considered that, but it becomes quite ugly since it needs to get into
+the awk script (as a 13, though perhaps we could get awk to do the +1, I
+don't really speak awk), where we'd then need to use " instead of ' and
+then escape the $ that are to be interpreted by awk and not the shell.
+So I think it's more readable with hardcoding and comments explaining
+why they are there; should anyone ever want to change 12.
+
+Rasmus
