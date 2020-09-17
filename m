@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C120B26D42D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:06:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ECFB26D42A
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:05:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726338AbgIQHGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 03:06:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45478 "EHLO
+        id S1726343AbgIQHFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 03:05:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726211AbgIQHAO (ORCPT
+        with ESMTP id S1726216AbgIQHAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 03:00:14 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D56CC061352
+        Thu, 17 Sep 2020 03:00:18 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAA82C061353
         for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 00:00:05 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id z1so799640wrt.3
+Received: by mail-wr1-x444.google.com with SMTP id e16so797371wrm.2
         for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 00:00:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ZG6N/rhNc2zEd0OmlssDRFgV4b5KjiPy9hIEmRV9zOc=;
-        b=GVoDkghgcAlUKt8WnZ0zuyGHxFOF6iJbX0CkdJ7VSuHnfyB0eSkmYBJmJvknoWmN16
-         W67hTuQ48S68jHaxzPwVVIfNmpEwkoQSUT+VWRyQEX4g+RDNfoS+wJ7nHegZ838E6JKO
-         RO4T9m2u9wQybkMXV0I+cZUqNZ/lCmsSgyWOSiF45JI8c6fQffCao9QuIdIhrRoGTOkP
-         7PiyoG3oz1C7hBbcp4POtOnEWC44Ptmtzb4RXImlH2Jov0oKcidiEN+TOIU9FV+AaiCk
-         4BmiXKy7ZPY5P8V2hDihIKzLqvG0Sp2INBAqC72OYYVBlZ7oduR9EMFdVsgzA2rUGSsF
-         fHcA==
+        bh=I+DywmJboSNUNdQ2uZXss10ZspnBgEtSObT6BaOsYuU=;
+        b=lW/beOL3XA50ods5obfOlL1dVy/tZBu/kxr17RwS+DsUR2pKeIq9zso0GGCWkx9NQ2
+         fSI2bLvOyM/STfJjZub70ytbqqVRlUveC73rzwBk9bP7DWkVGH1C6utZmbmbgowqVWHB
+         jrnAn5Hvj5TetikiiBPLMvL3WJEs9BijPJveO5LjfTFqYFagIzYRipupJFYzWPjEO8EI
+         djSpZc3OrzRY3KTHLwYhgvO7M6DsqzMh/hIMuFAH1R4jjWomJ9qF3kaQozA+DY8vQcQ5
+         r4vfqZk19knZ/sPSD525pqW9tzMhw+5V0v0VhIL37p0NIGCV+NyNP3R87hrR2o7R5Cdk
+         TXGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ZG6N/rhNc2zEd0OmlssDRFgV4b5KjiPy9hIEmRV9zOc=;
-        b=l5xJ+8I1mPOx2oRk0nYhSo2DAlYGKau1Yp63CeCo6ZhUXq7fhBn7MXW8tY7ZZYqefE
-         9AJWVf46RDpKJJC6MNlAMB2IbajlHNX6x8MCerY45j9UtFWU0/m5iNsp4MQBGj0/HkfW
-         cJjxylL/PpB4lxpLU3kYXAqmnpknhn0UgW0MvF3zuuGjC9aWoZckwCobz62gW+jqN56W
-         q+xaMfrIa3z3I3k+gl7wXarLei1wvXXFvo0WyTZP7g1InAOQKEKM6Rf1DxMfRj8bp2xC
-         IfrIylP3sST/vRQqme6Gz8/E/gt1FisINRP09BavJntHY1//DbhHS0l3NvF3P5wnqzDU
-         G46g==
-X-Gm-Message-State: AOAM533lgNhRignYgKMiQB5Tc2laUGR9gHOn7iAofz11xexaXcwKc6OS
-        rmRtVpGQMS1bfuFYH/mudx/PqA==
-X-Google-Smtp-Source: ABdhPJyKfXYnIS4ErZB/cswC92sAGdSNdhniNnIBWbPAMUoVrHd/CFYke/iib87+7iJgpTBeQrIDnA==
-X-Received: by 2002:adf:e989:: with SMTP id h9mr32555878wrm.38.1600326003291;
-        Thu, 17 Sep 2020 00:00:03 -0700 (PDT)
+        bh=I+DywmJboSNUNdQ2uZXss10ZspnBgEtSObT6BaOsYuU=;
+        b=ND8AYVFtqpbeFhEB2p4CIn1NCZt78Zfb2EPicAmZZI3lYM882vPi1CEpJY/qBjc7kh
+         Rj5BT4ebhLRbTT9W9ippHN8DtTLFdCpHBx0mGSot/lzB9jGtpeExYRVNZ+sq4zzqb6P2
+         8GG8CJKQVmOu07RjX7HarDJ88FcH5vJQ1cykrv9KvUCblEVuTKi0TJ5Vy5sZdPz+nyLu
+         SDUWJIjBg0y744xO8E+mMqzvFSPSkHHFkpnB9SZt2ci671MoIsMG8H7Mk89wdxz3PVqQ
+         hFN+QxpFQYzq+XDUOoB4clBKguhLgqz8sO3mVSePIjZH8mffBdXORhjWTbsCTCZTbgwd
+         TaHw==
+X-Gm-Message-State: AOAM530Z+ZcfWUadKcA3C0gUe4j0PmAMEZ56zr5DFO3ElK/w2Lb3+YgY
+        IQh9OO3WH3SWsqkm92wefwXi5Q==
+X-Google-Smtp-Source: ABdhPJwECOk8wlkQy6PMVw8pFFC5HSF/3EfVuOGPHmRJS9Hqhvn+vAyLeHVIlckru2yuDvcc8cBcsw==
+X-Received: by 2002:a5d:414b:: with SMTP id c11mr29380507wrq.181.1600326004238;
+        Thu, 17 Sep 2020 00:00:04 -0700 (PDT)
 Received: from bender.baylibre.local (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id z14sm35709055wrh.14.2020.09.17.00.00.01
+        by smtp.gmail.com with ESMTPSA id z14sm35709055wrh.14.2020.09.17.00.00.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 00:00:02 -0700 (PDT)
+        Thu, 17 Sep 2020 00:00:03 -0700 (PDT)
 From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     khilman@baylibre.com, balbi@kernel.org,
-        martin.blumenstingl@googlemail.com
+To:     khilman@baylibre.com
 Cc:     linux-amlogic@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Neil Armstrong <narmstrong@baylibre.com>,
-        linux-usb@vger.kernel.org
-Subject: [PATCH v2 3/5] usb: dwc-meson-g12a: Add support for USB on AXG SoCs
-Date:   Thu, 17 Sep 2020 08:59:47 +0200
-Message-Id: <20200917065949.3476-4-narmstrong@baylibre.com>
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH v2 4/5] arm64: dts: meson-axg: add USB nodes
+Date:   Thu, 17 Sep 2020 08:59:48 +0200
+Message-Id: <20200917065949.3476-5-narmstrong@baylibre.com>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20200917065949.3476-1-narmstrong@baylibre.com>
 References: <20200917065949.3476-1-narmstrong@baylibre.com>
@@ -67,60 +66,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Amlogic AXG is close to the GXL Glue but with a single OTG PHY.
-
-It needs the same init sequence as GXL & GXM, but it seems it doesn't need
-the host disconnect bit.
+This adds the USB Glue node, with the USB2 & USB3 controllers along the single
+USB2 PHY node.
 
 Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
 Reviewed-by: Kevin Hilman <khilman@baylibre.com>
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 ---
- drivers/usb/dwc3/dwc3-meson-g12a.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ arch/arm64/boot/dts/amlogic/meson-axg.dtsi | 50 ++++++++++++++++++++++
+ 1 file changed, 50 insertions(+)
 
-diff --git a/drivers/usb/dwc3/dwc3-meson-g12a.c b/drivers/usb/dwc3/dwc3-meson-g12a.c
-index 1f7f4d88ed9d..784e7eafc9ce 100644
---- a/drivers/usb/dwc3/dwc3-meson-g12a.c
-+++ b/drivers/usb/dwc3/dwc3-meson-g12a.c
-@@ -127,6 +127,7 @@ static const char *meson_g12a_phy_names[] = {
- /*
-  * Amlogic A1 has a single physical PHY, in slot 1, but still has the
-  * two U2 PHY controls register blocks like G12A.
-+ * AXG has the similar scheme, thus needs the same tweak.
-  * Handling the first PHY on slot 1 would need a large amount of code
-  * changes, and the current management is generic enough to handle it
-  * correctly when only the "usb2-phy1" phy is specified on-par with the
-@@ -215,6 +216,19 @@ static struct dwc3_meson_g12a_drvdata gxm_drvdata = {
- 	.usb_post_init = dwc3_meson_gxl_usb_post_init,
- };
+diff --git a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
+index 9ae6db16b8e6..d047779a3dc3 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
+@@ -171,6 +171,46 @@
+ 		#size-cells = <2>;
+ 		ranges;
  
-+static struct dwc3_meson_g12a_drvdata axg_drvdata = {
-+	.otg_switch_supported = true,
-+	.clks = meson_gxl_clocks,
-+	.num_clks = ARRAY_SIZE(meson_gxl_clocks),
-+	.phy_names = meson_a1_phy_names,
-+	.num_phys = ARRAY_SIZE(meson_a1_phy_names),
-+	.setup_regmaps = dwc3_meson_gxl_setup_regmaps,
-+	.usb2_init_phy = dwc3_meson_gxl_usb2_init_phy,
-+	.set_phy_mode = dwc3_meson_gxl_set_phy_mode,
-+	.usb_init = dwc3_meson_g12a_usb_init,
-+	.usb_post_init = dwc3_meson_gxl_usb_post_init,
-+};
++		usb: usb@ffe09080 {
++			compatible = "amlogic,meson-axg-usb-ctrl";
++			reg = <0x0 0xffe09080 0x0 0x20>;
++			interrupts = <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
++			#address-cells = <2>;
++			#size-cells = <2>;
++			ranges;
 +
- static struct dwc3_meson_g12a_drvdata g12a_drvdata = {
- 	.otg_switch_supported = true,
- 	.clks = meson_g12a_clocks,
-@@ -930,6 +944,10 @@ static const struct of_device_id dwc3_meson_g12a_match[] = {
- 		.compatible = "amlogic,meson-gxm-usb-ctrl",
- 		.data = &gxm_drvdata,
- 	},
-+	{
-+		.compatible = "amlogic,meson-axg-usb-ctrl",
-+		.data = &axg_drvdata,
-+	},
- 	{
- 		.compatible = "amlogic,meson-g12a-usb-ctrl",
- 		.data = &g12a_drvdata,
++			clocks = <&clkc CLKID_USB>, <&clkc CLKID_USB1_DDR_BRIDGE>;
++			clock-names = "usb_ctrl", "ddr";
++			resets = <&reset RESET_USB_OTG>;
++
++			dr_mode = "otg";
++
++			phys = <&usb2_phy1>;
++			phy-names = "usb2-phy1";
++
++			dwc2: usb@ff400000 {
++				compatible = "amlogic,meson-g12a-usb", "snps,dwc2";
++				reg = <0x0 0xff400000 0x0 0x40000>;
++				interrupts = <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clkc CLKID_USB1>;
++				clock-names = "otg";
++				phys = <&usb2_phy1>;
++				dr_mode = "peripheral";
++				g-rx-fifo-size = <192>;
++				g-np-tx-fifo-size = <128>;
++				g-tx-fifo-size = <128 128 16 16 16>;
++			};
++
++			dwc3: usb@ff500000 {
++				compatible = "snps,dwc3";
++				reg = <0x0 0xff500000 0x0 0x100000>;
++				interrupts = <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>;
++				dr_mode = "host";
++				maximum-speed = "high-speed";
++				snps,dis_u2_susphy_quirk;
++			};
++		};
++
+ 		ethmac: ethernet@ff3f0000 {
+ 			compatible = "amlogic,meson-axg-dwmac",
+ 				     "snps,dwmac-3.70a",
+@@ -1734,6 +1774,16 @@
+ 				clock-names = "core", "clkin0", "clkin1";
+ 				resets = <&reset RESET_SD_EMMC_C>;
+ 			};
++
++			usb2_phy1: phy@9020 {
++				compatible = "amlogic,meson-gxl-usb2-phy";
++				#phy-cells = <0>;
++				reg = <0x0 0x9020 0x0 0x20>;
++				clocks = <&clkc CLKID_USB>;
++				clock-names = "phy";
++				resets = <&reset RESET_USB_OTG>;
++				reset-names = "phy";
++			};
+ 		};
+ 
+ 		sram: sram@fffc0000 {
 -- 
 2.22.0
 
