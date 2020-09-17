@@ -2,207 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 010B126E863
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 00:29:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2F5926E873
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 00:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726183AbgIQW3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 18:29:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725874AbgIQW3i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 18:29:38 -0400
-Received: from mail.sammserver.com (sammserver.com [IPv6:2001:470:5a5b:1::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E00C06174A;
-        Thu, 17 Sep 2020 15:29:37 -0700 (PDT)
-Received: by mail.sammserver.com (Postfix, from userid 5011)
-        id 737C81061E01; Fri, 18 Sep 2020 00:29:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cavoj.net; s=email;
-        t=1600381775; bh=4OkF/ts3VmXxP5ACYAT+Id05Ctul6GucokcbtHMMRsk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aKPj+ydAVvuuF0BK7Rx1VgQkTY+jsgcAOC9T1nT1NX7mmupCksoQrG7d3Wn8PWVGm
-         UdUtGJX6YqEzWlAgr44a3NiMcFGhN4BnRQtvlYVVQMD17klRP8tF4j3JVxYpN2p0z1
-         VIARE5Aibw7nOXGv3QQ9EwZg56CbTehGISp7hbhY=
-Received: from fastboi.localdomain (fastboi.wg [10.32.40.5])
-        by mail.sammserver.com (Postfix) with ESMTP id 0F2201061DFE;
-        Fri, 18 Sep 2020 00:29:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cavoj.net; s=email;
-        t=1600381775; bh=4OkF/ts3VmXxP5ACYAT+Id05Ctul6GucokcbtHMMRsk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aKPj+ydAVvuuF0BK7Rx1VgQkTY+jsgcAOC9T1nT1NX7mmupCksoQrG7d3Wn8PWVGm
-         UdUtGJX6YqEzWlAgr44a3NiMcFGhN4BnRQtvlYVVQMD17klRP8tF4j3JVxYpN2p0z1
-         VIARE5Aibw7nOXGv3QQ9EwZg56CbTehGISp7hbhY=
-Received: by fastboi.localdomain (Postfix, from userid 1000)
-        id ECC8814209C4; Fri, 18 Sep 2020 00:29:34 +0200 (CEST)
-Date:   Fri, 18 Sep 2020 00:29:34 +0200
-From:   Samuel =?utf-8?B?xIxhdm9q?= <samuel@cavoj.net>
-To:     mark gross <mgross@linux.intel.com>
-Cc:     Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Corentin Chary <corentin.chary@gmail.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH] platform/x86: asus-wmi: Add support for SW_TABLET_MODE
- on UX360
-Message-ID: <20200917222934.syf5aqgkq5zurq2g@fastboi.localdomain>
-References: <20200916191232.1020318-1-samuel@cavoj.net>
- <20200917215606.GF29136@mtg-dev.jf.intel.com>
+        id S1726316AbgIQWeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 18:34:04 -0400
+Received: from lists.nic.cz ([217.31.204.67]:35328 "EHLO mail.nic.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725987AbgIQWd4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 18:33:56 -0400
+Received: from dellmb.labs.office.nic.cz (unknown [IPv6:2001:1488:fffe:6:cac7:3539:7f1f:463])
+        by mail.nic.cz (Postfix) with ESMTP id 5E0D1140A46;
+        Fri, 18 Sep 2020 00:33:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nic.cz; s=default;
+        t=1600382032; bh=TJuUID/L9eaDnNRsRdqcK0Cxl9UEdL6iLjD3qM5pZTs=;
+        h=From:To:Date;
+        b=EomSSvdO1o33fzVItTb4OJuriitP+/LnsNdlUuTNyoOP3XGJY6Edm8M9YVDA8vxL4
+         H74xSIGK/PJBrfKmnIJtrilTwmGK39TFHjDHsJwROakmcWDbGblKejg7wpDLyQwxnq
+         GB/w+wUkZ98VuTz26zPlICIRc9PKjfJVesgTFsGI=
+From:   =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>
+To:     linux-leds@vger.kernel.org
+Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        =?UTF-8?q?Ond=C5=99ej=20Jirman?= <megous@megous.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>,
+        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Andrey Utkin <andrey_utkin@fastmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Baolin Wang <baolin.wang@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Christian Mauderer <oss@c-mauderer.de>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Daniel Mack <daniel@caiaq.de>,
+        David Rivshin <drivshin@allworx.com>,
+        Grant Feng <von81@163.com>,
+        Haojian Zhuang <haojian.zhuang@marvell.com>,
+        "H . Nikolaus Schaller" <hns@goldelico.com>,
+        Jaedon Shin <jaedon.shin@gmail.com>,
+        John Crispin <john@phrozen.org>,
+        Kevin Cernekee <cernekee@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Milo Kim <milo.kim@ti.com>, NeilBrown <neilb@suse.de>,
+        Nikita Travkin <nikitos.tr@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Philippe Retornaz <philippe.retornaz@epfl.ch>,
+        Riku Voipio <riku.voipio@iki.fi>,
+        Rod Whitby <rod@whitby.id.au>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Simon Guinot <sguinot@lacie.com>,
+        Simon Guinot <simon.guinot@sequanux.org>,
+        Simon Shields <simon@lineageos.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Bogendoerfer <tbogendoerfer@suse.de>,
+        Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Vasant Hegde <hegdevasant@linux.vnet.ibm.com>,
+        Vincent Donnefort <vdonnefort@gmail.com>,
+        Xiaotong Lu <xiaotong.lu@spreadtrum.com>
+Subject: [PATCH leds v2 00/50] Start moving parsing of `linux,default-trigger` to LED core (a cleanup of LED drivers)
+Date:   Fri, 18 Sep 2020 00:32:48 +0200
+Message-Id: <20200917223338.14164-1-marek.behun@nic.cz>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200917215606.GF29136@mtg-dev.jf.intel.com>
-X-Spam-Status: No, score=-2.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS autolearn=no autolearn_force=no
-        version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on sammserver.tu
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Spam-Status: No, score=0.00
+X-Spamd-Bar: /
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.09.2020 14:56, mark gross wrote:
-> On Wed, Sep 16, 2020 at 09:12:33PM +0200, Samuel Čavoj wrote:
-> > The UX360CA has a WMI device id 0x00060062, which reports whether the
-> > lid is flipped in tablet mode (1) or in normal laptop mode (0).
-> > 
-> > This commit adds a quirk (quirk_asus_use_lid_flip_devid) for devices on
-> > which this WMI device should be used to figure out the SW_TABLET_MODE
-> > state, as opposed to the quirk_asus_use_kbd_dock_devid.
-> see Documentation/process/submitting-patches.rst
-> section2  the bit about "imperative mood".
+Hi,
 
-Thanks, I will keep that in mind going forward. I don't believe it's
-worth submitting a v3 at this point?
+this series is also available at [1].
 
-Regards,
-Samuel
+This is v2, you can read cover letter of v1 at [2] (togehter with
+explanation of why I did this).
 
-> > 
-> > It is assumed other UX360* models have the same WMI device. As such, the
-> > quirk is applied to devices with DMI_MATCH(DMI_PRODUCT_NAME, "UX360").
-> > More devices with this feature need to be tested and added accordingly.
-> > 
-> > The reason for using a whitelist via the quirk mechanism is that the new
-> > WMI device (0x00060062) is also present on some models which do not have
-> > a 360 degree hinge (at least FX503VD and GL503VD from Hans' DSTS
-> > collection) and therefore its presence cannot be relied on.
-> > 
-> > This patch is a followup to "platform/x86: asus-wmi: Fix SW_TABLET_MODE
-> > always reporting 1 on many different models" by Hans de Goede.
-> > 
-> > Signed-off-by: Samuel Čavoj <samuel@cavoj.net>
-> > Cc: Hans de Goede <hdegoede@redhat.com>
-> > ---
-> >  drivers/platform/x86/asus-nb-wmi.c         | 14 +++++++++++++
-> >  drivers/platform/x86/asus-wmi.c            | 23 ++++++++++++++++++++++
-> >  drivers/platform/x86/asus-wmi.h            |  1 +
-> >  include/linux/platform_data/x86/asus-wmi.h |  1 +
-> >  4 files changed, 39 insertions(+)
-> > 
-> > diff --git a/drivers/platform/x86/asus-nb-wmi.c b/drivers/platform/x86/asus-nb-wmi.c
-> > index 345bd224494b..ae5501e07712 100644
-> > --- a/drivers/platform/x86/asus-nb-wmi.c
-> > +++ b/drivers/platform/x86/asus-nb-wmi.c
-> > @@ -119,6 +119,10 @@ static struct quirk_entry quirk_asus_use_kbd_dock_devid = {
-> >  	.use_kbd_dock_devid = true,
-> >  };
-> >  
-> > +static struct quirk_entry quirk_asus_use_lid_flip_devid = {
-> > +	.use_lid_flip_devid = true,
-> > +};
-> > +
-> >  static int dmi_matched(const struct dmi_system_id *dmi)
-> >  {
-> >  	pr_info("Identified laptop model '%s'\n", dmi->ident);
-> > @@ -520,6 +524,16 @@ static const struct dmi_system_id asus_quirks[] = {
-> >  		},
-> >  		.driver_data = &quirk_asus_use_kbd_dock_devid,
-> >  	},
-> > +	{
-> > +		.callback = dmi_matched,
-> > +		.ident = "ASUS ZenBook Flip UX360",
-> > +		.matches = {
-> > +			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-> > +			/* Match UX360* */
-> > +			DMI_MATCH(DMI_PRODUCT_NAME, "UX360"),
-> > +		},
-> > +		.driver_data = &quirk_asus_use_lid_flip_devid,
-> > +	},
-> >  	{},
-> >  };
-> >  
-> > diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-> > index ae6289d37faf..a628a7d9e066 100644
-> > --- a/drivers/platform/x86/asus-wmi.c
-> > +++ b/drivers/platform/x86/asus-wmi.c
-> > @@ -63,6 +63,7 @@ MODULE_LICENSE("GPL");
-> >  #define NOTIFY_KBD_BRTTOGGLE		0xc7
-> >  #define NOTIFY_KBD_FBM			0x99
-> >  #define NOTIFY_KBD_TTP			0xae
-> > +#define NOTIFY_LID_FLIP			0xfa
-> >  
-> >  #define ASUS_WMI_FNLOCK_BIOS_DISABLED	BIT(0)
-> >  
-> > @@ -375,6 +376,18 @@ static int asus_wmi_input_init(struct asus_wmi *asus)
-> >  		}
-> >  	}
-> >  
-> > +	if (asus->driver->quirks->use_lid_flip_devid) {
-> > +		result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_LID_FLIP);
-> > +		if (result >= 0) {
-> > +			input_set_capability(asus->inputdev, EV_SW, SW_TABLET_MODE);
-> > +			input_report_switch(asus->inputdev, SW_TABLET_MODE, result);
-> > +		} else if (result == -ENODEV) {
-> > +			pr_err("This device has lid_flip quirk but got ENODEV checking it. This is a bug.");
-> > +		} else {
-> > +			pr_err("Error checking for lid-flip: %d\n", result);
-> > +		}
-> > +	}
-> > +
-> >  	err = input_register_device(asus->inputdev);
-> >  	if (err)
-> >  		goto err_free_dev;
-> > @@ -2127,6 +2140,16 @@ static void asus_wmi_handle_event_code(int code, struct asus_wmi *asus)
-> >  		return;
-> >  	}
-> >  
-> > +	if (asus->driver->quirks->use_lid_flip_devid && code == NOTIFY_LID_FLIP) {
-> > +		result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_LID_FLIP);
-> > +
-> > +		if (result >= 0) {
-> > +			input_report_switch(asus->inputdev, SW_TABLET_MODE, result);
-> > +			input_sync(asus->inputdev);
-> > +		}
-> > +		return;
-> > +	}
-> > +
-> >  	if (asus->fan_boost_mode_available && code == NOTIFY_KBD_FBM) {
-> >  		fan_boost_mode_switch_next(asus);
-> >  		return;
-> > diff --git a/drivers/platform/x86/asus-wmi.h b/drivers/platform/x86/asus-wmi.h
-> > index 1a95c172f94b..b302415bf1d9 100644
-> > --- a/drivers/platform/x86/asus-wmi.h
-> > +++ b/drivers/platform/x86/asus-wmi.h
-> > @@ -34,6 +34,7 @@ struct quirk_entry {
-> >  	bool wmi_backlight_set_devstate;
-> >  	bool wmi_force_als_set;
-> >  	bool use_kbd_dock_devid;
-> > +	bool use_lid_flip_devid;
-> >  	int wapf;
-> >  	/*
-> >  	 * For machines with AMD graphic chips, it will send out WMI event
-> > diff --git a/include/linux/platform_data/x86/asus-wmi.h b/include/linux/platform_data/x86/asus-wmi.h
-> > index 897b8332a39f..2f274cf52805 100644
-> > --- a/include/linux/platform_data/x86/asus-wmi.h
-> > +++ b/include/linux/platform_data/x86/asus-wmi.h
-> > @@ -62,6 +62,7 @@
-> >  
-> >  /* Misc */
-> >  #define ASUS_WMI_DEVID_CAMERA		0x00060013
-> > +#define ASUS_WMI_DEVID_LID_FLIP		0x00060062
-> >  
-> >  /* Storage */
-> >  #define ASUS_WMI_DEVID_CARDREADER	0x00080013
-> > -- 
-> > 2.28.0
-> > 
+Changes since v1:
+- split big changes into several patches of little changes
+- added many cosmetic fixes (helper variables, reversal christmas tree
+  variables declaration, ...)
+- fixed some bugs in various drivers (memory leaks, iteration over
+  unavailable OF nodes)
+- made some drivers compilable when COMPILE_TEST=y (since allyesconfig
+  did not compile them). Not all though, some still don't compile with
+  allyesconfig
+- the commit that moves parsing of `linux,default-trigger` property from
+  drivers to LED core is now last in the series, instead of first
+
+Marek
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/kabel/linux.git/log/?h=leds-cleanup-for-pavel
+[2] https://lore.kernel.org/linux-leds/20200916231650.11484-1-marek.behun@nic.cz/T/#m826493318174b0f38a3d4ba107092b5420ce440c
+
+Cc: Álvaro Fernández Rojas <noltari@gmail.com>
+Cc: Andrew Lunn <andrew@lunn.ch>
+Cc: Andrey Utkin <andrey_utkin@fastmail.com>
+Cc: Baolin Wang <baolin.wang7@gmail.com>
+Cc: Baolin Wang <baolin.wang@linaro.org>
+Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Christian Mauderer <oss@c-mauderer.de>
+Cc: Chunyan Zhang <zhang.lyra@gmail.com>
+Cc: Daniel Mack <daniel@caiaq.de>
+Cc: Dan Murphy <dmurphy@ti.com>
+Cc: David Rivshin <drivshin@allworx.com>
+Cc: Grant Feng <von81@163.com>
+Cc: Haojian Zhuang <haojian.zhuang@marvell.com>
+Cc: H. Nikolaus Schaller <hns@goldelico.com>
+Cc: Jaedon Shin <jaedon.shin@gmail.com>
+Cc: John Crispin <john@phrozen.org>
+Cc: Kevin Cernekee <cernekee@gmail.com>
+Cc: Lee Jones <lee.jones@linaro.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Milo Kim <milo.kim@ti.com>
+Cc: NeilBrown <neilb@suse.de>
+Cc: Nikita Travkin <nikitos.tr@gmail.com>
+Cc: Orson Zhai <orsonzhai@gmail.com>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Pavel Machek <pavel@ucw.cz>
+Cc: Philippe Retornaz <philippe.retornaz@epfl.ch>
+Cc: Riku Voipio <riku.voipio@iki.fi>
+Cc: Rod Whitby <rod@whitby.id.au>
+Cc: Ryder Lee <ryder.lee@mediatek.com>
+Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc: Sean Wang <sean.wang@mediatek.com>
+Cc: Sebastian Reichel <sre@kernel.org>
+Cc: Simon Guinot <sguinot@lacie.com>
+Cc: Simon Guinot <simon.guinot@sequanux.org>
+Cc: Simon Shields <simon@lineageos.org>
+Cc: Thierry Reding <thierry.reding@gmail.com>
+Cc: Thomas Bogendoerfer <tbogendoerfer@suse.de>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Cc: "Uwe Kleine-König" <u.kleine-koenig@pengutronix.de>
+Cc: Vasant Hegde <hegdevasant@linux.vnet.ibm.com>
+Cc: Vincent Donnefort <vdonnefort@gmail.com>
+Cc: Xiaotong Lu <xiaotong.lu@spreadtrum.com>
+
+Marek Behún (50):
+  leds: various: compile if COMPILE_TEST=y
+  leds: ip30: compile if COMPILE_TEST=y
+  leds: fsg: compile if COMPILE_TEST=y
+  leds: various: use device_get_match_data
+  leds: various: guard of_match_table member value with of_match_ptr
+  leds: various: use dev_of_node(dev) instead of dev->of_node
+  leds: lt3593: do not rewrite .of_node of new LED device to wrong value
+  leds: various: use only available OF children
+  leds: various: fix OF node leaks
+  leds: bcm6328, bcm6358: use devres LED registering function
+  leds: bcm6328, bcm6358: use struct led_init_data when registering
+  leds: bcm6328: cosmetic: use reverse christmas tree
+  leds: bcm6358: cosmetic: use reverse christmas tree
+  leds: lm3697: use struct led_init_data when registering
+  leds: lm3697: cosmetic change: use helper variable, reverse christmas
+    tree
+  leds: max77650: use struct led_init_data when registering
+  leds: max77650: use reverse christmas tree
+  leds: mt6323: use struct led_init_data when registering
+  leds: mt6323: cosmetic change: use helper variable
+  leds: pm8058: use struct led_init_data when registering
+  leds: pm8058: cosmetic change: use helper variable
+  leds: pm8058: cosmetic change: no need to return in if guard
+  leds: pm8058: cosmetic: use reverse christmas tree
+  leds: is31fl32xx: use struct led_init_data when registering
+  leds: is31fl319x: compute aggregated max current separately
+  leds: is31fl319x: don't store shutdown gpio descriptor
+  leds: is31fl319x: don't store audio gain value, simply set it
+  leds: is31fl319x: refactor to register LEDs while parsing DT
+  leds: is31fl319x: cosmetic: use reverse christmas tree
+  leds: is31fl319x: use struct led_init_data when registering
+  leds: lm36274: use devres LED registering function
+  leds: lm36274: cosmetic: rename lm36274_data to chip
+  leds: lm36274: don't iterate through children since there is only one
+  leds: lm36274: use struct led_init_data when registering
+  leds: lm36274: do not set chip settings in DT parsing function
+  leds: ns2: use devres LED registering function
+  leds: ns2: alloc simple array instead of struct ns2_led_priv
+  leds: ns2: support OF probing only, forget platdata
+  leds: ns2: move parsing of one LED into separate function
+  leds: ns2: use devres API for getting GPIO descriptors
+  leds: ns2: cosmetic structure rename
+  leds: ns2: cosmetic variable rename
+  leds: ns2: cosmetic change
+  leds: ns2: cosmetic change: use helper variable
+  leds: ns2: register LED immediately after parsing DT properties
+  leds: ns2: remove unneeded variable
+  leds: ns2: cosmetic: use reverse christmas tree
+  leds: ns2: reorder headers alphabetically
+  leds: ns2: use struct led_init_data when registering
+  leds: parse linux,default-trigger DT property in LED core
+
+ drivers/leds/Kconfig              |  14 +-
+ drivers/leds/led-class.c          |   5 +
+ drivers/leds/leds-88pm860x.c      |   6 +-
+ drivers/leds/leds-aat1290.c       |   4 +-
+ drivers/leds/leds-an30259a.c      |   7 +-
+ drivers/leds/leds-as3645a.c       |   2 +-
+ drivers/leds/leds-aw2013.c        |  11 +-
+ drivers/leds/leds-bcm6328.c       |  28 ++-
+ drivers/leds/leds-bcm6358.c       |  20 +-
+ drivers/leds/leds-cpcap.c         |   9 +-
+ drivers/leds/leds-cr0014114.c     |   5 +-
+ drivers/leds/leds-el15203000.c    |   5 +-
+ drivers/leds/leds-fsg.c           |   6 +
+ drivers/leds/leds-gpio.c          |   5 +-
+ drivers/leds/leds-ip30.c          |   1 +
+ drivers/leds/leds-is31fl319x.c    | 260 +++++++++++-----------
+ drivers/leds/leds-is31fl32xx.c    |  35 ++-
+ drivers/leds/leds-ktd2692.c       |   6 +-
+ drivers/leds/leds-lm3532.c        |   5 +-
+ drivers/leds/leds-lm3601x.c       |   2 +-
+ drivers/leds/leds-lm36274.c       | 122 +++++------
+ drivers/leds/leds-lm3692x.c       |   5 +-
+ drivers/leds/leds-lm3697.c        |  96 ++++----
+ drivers/leds/leds-lp50xx.c        |   2 +-
+ drivers/leds/leds-lp5521.c        |   2 +-
+ drivers/leds/leds-lp5523.c        |   2 +-
+ drivers/leds/leds-lp5562.c        |   2 +-
+ drivers/leds/leds-lp55xx-common.c |  14 +-
+ drivers/leds/leds-lp8501.c        |   2 +-
+ drivers/leds/leds-lp8860.c        |   8 +-
+ drivers/leds/leds-lt3593.c        |   6 +-
+ drivers/leds/leds-max77650.c      |  28 +--
+ drivers/leds/leds-max77693.c      |   4 +-
+ drivers/leds/leds-mc13783.c       |   8 +-
+ drivers/leds/leds-mt6323.c        |  22 +-
+ drivers/leds/leds-netxbig.c       |   8 +-
+ drivers/leds/leds-ns2.c           | 349 ++++++++++--------------------
+ drivers/leds/leds-pca9532.c       |   4 +-
+ drivers/leds/leds-pca955x.c       |   2 +-
+ drivers/leds/leds-pca963x.c       |   2 +-
+ drivers/leds/leds-pm8058.c        |  43 ++--
+ drivers/leds/leds-powernv.c       |   4 +-
+ drivers/leds/leds-pwm.c           |   2 +-
+ drivers/leds/leds-sc27xx-bltc.c   |   8 +-
+ drivers/leds/leds-sgm3140.c       |   2 +-
+ drivers/leds/leds-spi-byte.c      |  13 +-
+ drivers/leds/leds-syscon.c        |   6 +-
+ drivers/leds/leds-tca6507.c       |   8 +-
+ drivers/leds/leds-tlc591xx.c      |  16 +-
+ drivers/leds/leds-turris-omnia.c  |  10 +-
+ 50 files changed, 511 insertions(+), 725 deletions(-)
+
+-- 
+2.26.2
+
