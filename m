@@ -2,97 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAF0826DB3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9063526DB35
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726958AbgIQMMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 08:12:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42964 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726579AbgIQMB4 (ORCPT
+        id S1726808AbgIQMEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 08:04:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726719AbgIQMBz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 08:01:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600344102;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=N5pwbMLEsViJmn+EwXFmMFAOXinBm5HFZNemqmzs6bE=;
-        b=TalTQeUcU5X1sRlofP76nR4lWTqvbGazn+H8DehilpwJgBYoZeoyGGo3b66F8HE24oMjL3
-        UBZFpD9h08zmg5Pv8dgCuz8DropPeM5t6yuW/H9BAFSqfH5/L3ssaTCegiEiUiN978tLUj
-        8kbDvd+SZFYy1wEIEAhw2m5kyKwhuKI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-391-rkJLU2RJMSmNxZKHK4MfIQ-1; Thu, 17 Sep 2020 08:01:38 -0400
-X-MC-Unique: rkJLU2RJMSmNxZKHK4MfIQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0DE9C802B79;
-        Thu, 17 Sep 2020 12:01:37 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.159])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 6886075132;
-        Thu, 17 Sep 2020 12:01:34 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Thu, 17 Sep 2020 14:01:36 +0200 (CEST)
-Date:   Thu, 17 Sep 2020 14:01:33 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Boaz Harrosh <boaz@plexistor.com>
-Cc:     Hou Tao <houtao1@huawei.com>, peterz@infradead.org,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.cz>
-Subject: Re: [RFC PATCH] locking/percpu-rwsem: use this_cpu_{inc|dec}() for
- read_count
-Message-ID: <20200917120132.GA5602@redhat.com>
-References: <20200915140750.137881-1-houtao1@huawei.com>
- <20200915150610.GC2674@hirez.programming.kicks-ass.net>
- <20200915153113.GA6881@redhat.com>
- <20200915155150.GD2674@hirez.programming.kicks-ass.net>
- <20200915160344.GH35926@hirez.programming.kicks-ass.net>
- <b885ce8e-4b0b-8321-c2cc-ee8f42de52d4@huawei.com>
- <ddd5d732-06da-f8f2-ba4a-686c58297e47@plexistor.com>
+        Thu, 17 Sep 2020 08:01:55 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC8B2C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 05:01:43 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id w2so1707222wmi.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 05:01:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oqsiLJm8rZryhs+SsCl8JpeQLd5wde3AeDM1WscX2vc=;
+        b=WdckR2snfW99iGY4aSs2s4CIrenfAmRy8DqptjREBVZwVf498KixuWhpXgu6P0ju/b
+         NqTHV1yoexwpVm4xa/qagJ+QkNUNKzMwmJdVe9tAQZlmsyoqlu2yLjWuX7ovzH/6fGZe
+         ImsRAt4+1HjYsbsEqI56HS6nHFQwEYrU/E/09apd1XoLNfcU6xjRW/JrQzjbOJKhZESL
+         PejE5e31EvzJelsNKsI4UC2RJGuP0KMwkY6zzrAp5fV+iRaZSQaj34xiyVuZiwfm/nKj
+         mmwmpRmeFO88ZTL+VNjbFCr4Z7wj2x5RhIskzrR9XM0ZjuR+AOXx4HjkjJ/VEZhe6nvk
+         k3JQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oqsiLJm8rZryhs+SsCl8JpeQLd5wde3AeDM1WscX2vc=;
+        b=N0X6/ol37ky+IpYSO5VMAtemJIRwwSh8Ua/Epzm1aowmAfyTQjJ6AIy7w0ecNb7aPi
+         et6wGdzHgx+7A9SezbDBYwZZSBQauzaWcGGrAO1hnTeiR9sHh36lXhWpjEYyBWOOpOQC
+         OLsKOw+s5y0FKc5Bban4FD3T1E/D0IISRdvMDKadmHr9Ld314FjJeMhbV/3nmMjvv3wc
+         qEqudwn8VrEGW9wjHdK/TOZuOX4AoiMEs44/FxIxOcyTJ2bp2XltcSlCYDLGtXeiyLZA
+         YHdEkHPQ3y8jkn0QrOx/YFmKv5qU0VDF8PNIEsS2x/pioCr8rWWsjpnORGa6s8dOwBkp
+         qG7Q==
+X-Gm-Message-State: AOAM533N+UlJYh/ukq1OH4JlMjPdNZqf0Q4D5f2ZsQA7kMztLEkrCFGt
+        oKy6dGZtmpXK5F+qFki2OmOZUg==
+X-Google-Smtp-Source: ABdhPJxEuV9ibb7bGIMvu83QGUqmmb1vrX7gGy8FAmpg7WRyQort0z4eK5M+oFuFcHxxz5FZkKmCew==
+X-Received: by 2002:a1c:6555:: with SMTP id z82mr9592444wmb.101.1600344102349;
+        Thu, 17 Sep 2020 05:01:42 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id q18sm37584860wre.78.2020.09.17.05.01.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 05:01:41 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     vkoul@kernel.org, yung-chuan.liao@linux.intel.com
+Cc:     pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v4 0/3] soundwire: qcom: fix IP version v1.5.1 support
+Date:   Thu, 17 Sep 2020 13:01:35 +0100
+Message-Id: <20200917120138.11313-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ddd5d732-06da-f8f2-ba4a-686c58297e47@plexistor.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/17, Boaz Harrosh wrote:
->
-> On 16/09/2020 15:32, Hou Tao wrote:
-> <>
-> >However the performance degradation is huge under aarch64 (4 sockets, 24 core per sockets): nearly 60% lost.
-> >
-> >v4.19.111
-> >no writer, reader cn                               | 24        | 48        | 72        | 96
-> >the rate of down_read/up_read per second           | 166129572 | 166064100 | 165963448 | 165203565
-> >the rate of down_read/up_read per second (patched) |  63863506 |  63842132 |  63757267 |  63514920
-> >
->
-> I believe perhaps Peter Z's suggestion of an additional
-> percpu_down_read_irqsafe() API and let only those in IRQ users pay the
-> penalty.
->
-> Peter Z wrote:
-> >My leading alternative was adding: percpu_down_read_irqsafe() /
-> >percpu_up_read_irqsafe(), which use local_irq_save() instead of
-> >preempt_disable().
+While testing Qualcomm soundwire controller version 1.5.1, found two issue,
+Firstly the frame shape information configured vs the bus parameters
+are out of sync. secondly some ports on this ip version require
+block packing mode support.
 
-This means that __sb_start/end_write() and probably more users in fs/super.c
-will have to use this API, not good.
+With this patchset I was able to test 2 WSA speakers!
 
-IIUC, file_end_write() was never IRQ safe (at least if !CONFIG_SMP), even
-before 8129ed2964 ("change sb_writers to use percpu_rw_semaphore"), but this
-doesn't matter...
+Also I found a regression due to move to REG_FIELD, which patch 1 fixes it!
 
-Perhaps we can change aio.c, io_uring.c and fs/overlayfs/file.c to avoid
-file_end_write() in IRQ context, but I am not sure it's worth the trouble.
+thanks,
+srini
 
-Oleg.
+
+Change since v3:
+- use u32p_replace_bits instead of u32_replace_bits
+
+Srinivas Kandagatla (3):
+  soundwire: qcom: clear BIT FIELDs before value set.
+  soundwire: qcom: add support to block packing mode
+  soundwire: qcom: get max rows and cols info from compatible
+
+ drivers/soundwire/qcom.c | 70 +++++++++++++++++++++++++++++-----------
+ 1 file changed, 51 insertions(+), 19 deletions(-)
+
+-- 
+2.21.0
 
