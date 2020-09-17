@@ -2,66 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8336B26E42E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA37B26E434
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726489AbgIQSmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 14:42:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45646 "EHLO mail.kernel.org"
+        id S1726375AbgIQSm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 14:42:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726325AbgIQSlm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 14:41:42 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.191])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1725882AbgIQSmi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 14:42:38 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B549208E4;
-        Thu, 17 Sep 2020 18:41:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF69721D7B;
+        Thu, 17 Sep 2020 18:42:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600368102;
-        bh=uCeoYS1WM7mLuDFhPwrThQkz1h44ZUgeNbtoDxCFJFI=;
-        h=From:To:Subject:Date:From;
-        b=L4gTo1Sx/q1x967UZSyvgj2MBVYErMEU3GYogXde/e5jUTTAFg3E9IGUfJMi3X3Yh
-         Q2ol8iezMA+VLZwAsWUSILU5h5j2nMB4Z2f6feNxfpWD4/f8uwvnPtS11LQb51K6PZ
-         SAuu/liLOVtnSr4xu1z34saNZnjPd260r3Z5u0ig=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: imx8mm-var-som-symphony: fix ptn5150 interrupts
-Date:   Thu, 17 Sep 2020 20:41:31 +0200
-Message-Id: <20200917184131.2087-1-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        s=default; t=1600368157;
+        bh=CdigQ/+3mxrVUS6hZ+1nUMXkX34CWxjHp9qYy4kPe2g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Yvxz1yVf9HlZKzaI5XZkJ0swb7TQ4GqZr5VoHlNGY1vEsoFTw8PnkUhgufYWgD8jz
+         ZI+i1i20lHPi6Tz7A5APBnNcSVHKL+tK688hMge35fRAhUtLSodp4abWRjClpBk758
+         o++88nfw29MtbOExF3szyxHr+yM8CzlSS/vZR+u8=
+Date:   Thu, 17 Sep 2020 19:42:33 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/3] iio: dac: ad5592r: localize locks only where needed
+ in ad5592r_read_raw()
+Message-ID: <20200917194233.57b548be@archlinux>
+In-Reply-To: <20200706110259.23947-3-alexandru.ardelean@analog.com>
+References: <20200706110259.23947-1-alexandru.ardelean@analog.com>
+        <20200706110259.23947-3-alexandru.ardelean@analog.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Conversion of int-gpios into interrupts property requires also
-interrupt-parent and uses different flags.
+On Mon, 6 Jul 2020 14:02:59 +0300
+Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> Since there was a recently discovered issue with these locks, it probably
+> makes sense to cleanup the code a bit, to prevent it from being used as an
+> example/reference.
+> 
+> This change moves the lock only where it is explicitly needed to protect
+> resources from potential concurrent accesses.
+> 
+> It also reworks the switch statements to do direct returns vs caching the
+> return value on a variable.
+> 
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Applied these two to the togreg branch of iio.git
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts b/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
-index 630a7ee159e3..a56f602ba0a3 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
-@@ -113,7 +113,8 @@
- 	extcon_usbotg1: typec@3d {
- 		compatible = "nxp,ptn5150";
- 		reg = <0x3d>;
--		interrupts = <&gpio1 11 GPIO_ACTIVE_LOW>;
-+		interrupt-parent = <&gpio1>;
-+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&pinctrl_ptn5150>;
- 		status = "okay";
--- 
-2.17.1
+Thanks,
+
+Jonathan
+
+> ---
+>  drivers/iio/dac/ad5592r-base.c | 30 +++++++++++++++---------------
+>  1 file changed, 15 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/iio/dac/ad5592r-base.c b/drivers/iio/dac/ad5592r-base.c
+> index 7ea79e9bfa1d..f697b20efb6e 100644
+> --- a/drivers/iio/dac/ad5592r-base.c
+> +++ b/drivers/iio/dac/ad5592r-base.c
+> @@ -380,32 +380,32 @@ static int ad5592r_read_raw(struct iio_dev *iio_dev,
+>  
+>  	switch (m) {
+>  	case IIO_CHAN_INFO_RAW:
+> -		mutex_lock(&st->lock);
+> -
+>  		if (!chan->output) {
+> +			mutex_lock(&st->lock);
+>  			ret = st->ops->read_adc(st, chan->channel, &read_val);
+> +			mutex_unlock(&st->lock);
+>  			if (ret)
+> -				goto unlock;
+> +				return ret;
+>  
+>  			if ((read_val >> 12 & 0x7) != (chan->channel & 0x7)) {
+>  				dev_err(st->dev, "Error while reading channel %u\n",
+>  						chan->channel);
+> -				ret = -EIO;
+> -				goto unlock;
+> +				return -EIO;
+>  			}
+>  
+>  			read_val &= GENMASK(11, 0);
+>  
+>  		} else {
+> +			mutex_lock(&st->lock);
+>  			read_val = st->cached_dac[chan->channel];
+> +			mutex_unlock(&st->lock);
+>  		}
+>  
+>  		dev_dbg(st->dev, "Channel %u read: 0x%04hX\n",
+>  				chan->channel, read_val);
+>  
+>  		*val = (int) read_val;
+> -		ret = IIO_VAL_INT;
+> -		break;
+> +		return IIO_VAL_INT;
+>  	case IIO_CHAN_INFO_SCALE:
+>  		*val = ad5592r_get_vref(st);
+>  
+> @@ -425,11 +425,13 @@ static int ad5592r_read_raw(struct iio_dev *iio_dev,
+>  			mult = !!(st->cached_gp_ctrl &
+>  				AD5592R_REG_CTRL_ADC_RANGE);
+>  
+> +		mutex_unlock(&st->lock);
+> +
+>  		*val *= ++mult;
+>  
+>  		*val2 = chan->scan_type.realbits;
+> -		ret = IIO_VAL_FRACTIONAL_LOG2;
+> -		break;
+> +
+> +		return IIO_VAL_FRACTIONAL_LOG2;
+>  	case IIO_CHAN_INFO_OFFSET:
+>  		ret = ad5592r_get_vref(st);
+>  
+> @@ -439,15 +441,13 @@ static int ad5592r_read_raw(struct iio_dev *iio_dev,
+>  			*val = (-34365 * 25) / ret;
+>  		else
+>  			*val = (-75365 * 25) / ret;
+> -		ret =  IIO_VAL_INT;
+> -		break;
+> +
+> +		mutex_unlock(&st->lock);
+> +
+> +		return IIO_VAL_INT;
+>  	default:
+>  		return -EINVAL;
+>  	}
+> -
+> -unlock:
+> -	mutex_unlock(&st->lock);
+> -	return ret;
+>  }
+>  
+>  static int ad5592r_write_raw_get_fmt(struct iio_dev *indio_dev,
 
