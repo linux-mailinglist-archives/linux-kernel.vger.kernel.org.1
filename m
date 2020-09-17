@@ -2,145 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1557B26D957
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 12:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F84126D959
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 12:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726618AbgIQKlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 06:41:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726217AbgIQKlo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 06:41:44 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C2F1C06174A;
-        Thu, 17 Sep 2020 03:41:43 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id l15so4157174wmh.1;
-        Thu, 17 Sep 2020 03:41:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=X83+YxLNLakSEy2MO2kNdUk1vFYzpBNVVoYA7qc9Hv8=;
-        b=r8Zs4fj610xUajyLYCKzJ7kAYSxcX52cD0GDHf40+fI98gr6h+EEWEzyMRb075ARrd
-         I4sQVmOtKcmMh9a+5BNplnzJgXH3H25Zj9voFQqDQ+xop77fAYdWEjS1wT6K98E1DRCr
-         BVBWvX6+Y0BzkRUk6UgA7Hgj3WPBr8HhdmogWFQYUibY6Mpol9wiICtNNiHZoEbj4+SZ
-         8TrBabmozaC37Inx39cnR26MiNEG68s44MsDxPnMLY5nwuoubCF0djgum70p26BQBADS
-         mcZ1QsQWAAvz4kTrJ++tk5PgAIVrK8UrUbAl4aLFZ1dr9p1vR+yQ+21BhkLKWpUdEnsT
-         VrQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=X83+YxLNLakSEy2MO2kNdUk1vFYzpBNVVoYA7qc9Hv8=;
-        b=My2Vnx/vz5mQBgZMa0/joBJ9x0MnXZcYWOjJzgRsPNd348NkLOKmyI4gPNDKZ9GwuI
-         5tOKaz/t5D33bOtUnqm1UYdq6Q1xL3cey6cHiYY7mIxK0VGb2rW/vvGjNk68KeZZQzKd
-         OeJ1e0m/ESXyWCVs4i4S977yBkDB+43x3QWpKcBVHQeGJuPE36v3XfP5KaJdIlPQpQSD
-         01DAfCxucyfC5tL6wE3tlcT704XqIcnaWa+HDsxx7QnwM+wgKykzIHi3CkBgtlrT2dio
-         HaoWGr/eEtYiR+bSaGtUq734/UQrN95BxxHf3AiTQ0lZzT1uWDD8o3Fsk3AFPQnJTRz6
-         H9uQ==
-X-Gm-Message-State: AOAM5326sM4lkYOHFccn7uxutIKmnFzcNciHTIY6/u+0lSVgK6+7AxDS
-        m98M0iyTmGwEvflHWa7V3Zc=
-X-Google-Smtp-Source: ABdhPJzLaq0pt0bNv92XyZEyoER6JQVztwJxVRUOSMo+cF5R4NCHmce2JIVKbOJMi0TkQ/eTSVcYZA==
-X-Received: by 2002:a1c:6a11:: with SMTP id f17mr8726659wmc.143.1600339302168;
-        Thu, 17 Sep 2020 03:41:42 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id y6sm38883203wrn.41.2020.09.17.03.41.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 03:41:40 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 12:41:39 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     joro@8bytes.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-tegra@vger.kernel.org, jonathanh@nvidia.com,
-        vdumpa@nvidia.com
-Subject: Re: [PATCH] iommu/tegra-smmu: Fix tlb_mask
-Message-ID: <20200917104139.GH3515672@ulmo>
-References: <20200916002359.10823-1-nicoleotsuka@gmail.com>
+        id S1726656AbgIQKmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 06:42:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53430 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726410AbgIQKmX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 06:42:23 -0400
+Received: from mail.kernel.org (ip5f5ad5d2.dynamic.kabel-deutschland.de [95.90.213.210])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F366021974;
+        Thu, 17 Sep 2020 10:42:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600339342;
+        bh=9k9zMYoo7wLOALaUaUO6kuKmP2XcikxIb3HqIINf7VU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EPQGk1AIsg3Z+pONCVNoO3iIhe2T4DJKru8TzuTb3Co84VOHkjZEJXzucW8M+Mn9d
+         U7ciA6959RmEk6fLE+x9AHEOlh7NFu32eO1smz8ctXlb8JCmP5hEjtF4ZeLTc8p+ej
+         AfHtKHfAAm7e08Js6/NWjwlW2g5X+/zJsDSUcTrI=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kIrMp-005WZQ-J9; Thu, 17 Sep 2020 12:42:19 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/8] Add a staging driver for Hikey 970 PHY laywer
+Date:   Thu, 17 Sep 2020 12:42:04 +0200
+Message-Id: <cover.1600338981.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Yia77v5a8fyVHJSl"
-Content-Disposition: inline
-In-Reply-To: <20200916002359.10823-1-nicoleotsuka@gmail.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Greg,
 
---Yia77v5a8fyVHJSl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This series add the phy layer needed for the USB stack to work
+on Hikey 970. 
 
-On Tue, Sep 15, 2020 at 05:23:59PM -0700, Nicolin Chen wrote:
-> The "num_tlb_lines" might not be a power-of-2 value, being 48 on
-> Tegra210 for example. So the current way of calculating tlb_mask
-> using the num_tlb_lines is not correct: tlb_mask=3D0x5f in case of
-> num_tlb_lines=3D48, which will trim a setting of 0x30 (48) to 0x10.
->=20
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> ---
->  drivers/iommu/tegra-smmu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+The main difference against v3 is that I'm sending this one via
+staging.
 
-This is technically a prerequisite for this patch you sent out earlier:
+In order for this phy to actually work properly, we still need to
+apply one quirk patch at dwc3, which fixes some issues with
+USB HID driver. 
 
-    https://patchwork.ozlabs.org/project/linux-tegra/patch/20200915232803.2=
-6163-1-nicoleotsuka@gmail.com/
+I'm working with Felipe and Rob in order to add the quirk on
+an approach that would be acceptable for both DT and dwc3
+maintainers.
 
-You should send both of those out as one series and add maintainers for
-both subsystems to both patches so that they can work out who will be
-applying them.
+Due to that, I'm not sending the final patch that adds the
+the needed dt bindings for this board. 
 
-For this pair it's probably best for Joerg to pick up both patches
-because this primarily concerns the Tegra SMMU, whereas the above patch
-only provides the per-SoC data update for the SMMU. Obviously if Joerg
-prefers for Krzysztof to pick up both patches that's fine with me too.
+Thanks!
+Mauro
 
-In either case, please send this out as a series so that both Joerg and
-Krzysztof (Cc'ed for visibility) are aware of both patches. From the
-Tegra side:
+Mauro Carvalho Chehab (6):
+  staging: hikey9xx: add build for the Kirin 970 PHY driver
+  staging: hikey9xx: phy-hi3670-usb3: use a consistent namespace
+  staging: hikey9xx: phy-hi3670-usb3.txt: use a consistent namespace
+  staging: hikey9xx: phy-hi3670-usb3: fix coding style
+  staging: hikey9xx: phy-hi3670-usb3: change some DT properties
+  staging: hikey9xx: convert phy-kirin970-usb3.txt to yaml
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+Yu Chen (2):
+  staging: hikey9xx: add USB physical layer for Kirin 3670
+  staging: hikey9xx: phy-hi3670-usb3: fix some issues at the init code
 
-> diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-> index 84fdee473873..0becdbfea306 100644
-> --- a/drivers/iommu/tegra-smmu.c
-> +++ b/drivers/iommu/tegra-smmu.c
-> @@ -1120,7 +1120,7 @@ struct tegra_smmu *tegra_smmu_probe(struct device *=
-dev,
->  		BIT_MASK(mc->soc->num_address_bits - SMMU_PTE_SHIFT) - 1;
->  	dev_dbg(dev, "address bits: %u, PFN mask: %#lx\n",
->  		mc->soc->num_address_bits, smmu->pfn_mask);
-> -	smmu->tlb_mask =3D (smmu->soc->num_tlb_lines << 1) - 1;
-> +	smmu->tlb_mask =3D (1 << fls(smmu->soc->num_tlb_lines)) - 1;
->  	dev_dbg(dev, "TLB lines: %u, mask: %#lx\n", smmu->soc->num_tlb_lines,
->  		smmu->tlb_mask);
-> =20
-> --=20
-> 2.17.1
->=20
+ drivers/staging/hikey9xx/Kconfig              |  11 +
+ drivers/staging/hikey9xx/Makefile             |   2 +
+ drivers/staging/hikey9xx/phy-hi3670-usb3.c    | 671 ++++++++++++++++++
+ drivers/staging/hikey9xx/phy-hi3670-usb3.yaml |  72 ++
+ 4 files changed, 756 insertions(+)
+ create mode 100644 drivers/staging/hikey9xx/phy-hi3670-usb3.c
+ create mode 100644 drivers/staging/hikey9xx/phy-hi3670-usb3.yaml
 
---Yia77v5a8fyVHJSl
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+2.26.2
 
------BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9jPWMACgkQ3SOs138+
-s6F/bg//XdumYVA2ODztwS8iTzCljbnXyjUzNX8Ru37N5Br82W9rXoStYRiZ7boA
-8IQVASAvvHf8pKd8J6Sm1sXasSi6yGFeJqPrCfZxYq1PCs+RIM93OrXtBd1JRajl
-8d/u3ivynx6Qd3E98BQTc9uNc2+6cXY11XR6dKwhHuI4wb43BS/4FOR8a3lq+VWf
-gznzq/QZPd11ZbCNLF4eI/LaWByGR4c/J1yrnw4O/QcCv/MTMr2m6YViJHhybm+V
-XOTLotbAK0sjn2ihlieHKVUHvluPKkAn+qJVdB9/9SpgaPBq1/wueXu4GpLOcA9F
-1ffbBx27wHv/dW3QzAqyOrjeTsKd0vFwTVziux0eZ1zOt74n9ARp9C+KDEn4b28G
-2XtbuBE4CVTsZ2IS+ePrWAAG3ZnPfcz+cu+v6NNxZ9cd65qDK2aqOD6nskkUbbaf
-m8eV41RK2PqT8p5FaeA3KFmXASVIMAwSFqWhNGnPYO5fzPSdr43m/iPas77sM8pE
-OXPy/+SL5YDyYwez4mEs3gCzdPy19pFcnXgKGACS9yR5xnYAEBBvU+UpV8xAHFfE
-vJYX5UyOBqJbmUAccVEhqllklQ0iWpTR1gmGBWlwjizBGxyR4bXW82oL/+ePcv0c
-xdzFtey9zMVqmbsX3wqCi83VoEEwfo8VzxWF399WCoUiQMUJo+s=
-=dbE2
------END PGP SIGNATURE-----
-
---Yia77v5a8fyVHJSl--
