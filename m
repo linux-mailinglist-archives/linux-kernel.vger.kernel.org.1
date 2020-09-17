@@ -2,111 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C2026D0E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 03:54:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B86B26D0C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 03:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726221AbgIQBy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 21:54:28 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12801 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725987AbgIQByW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 21:54:22 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 4C4479FA31C5FF9D6CFA;
-        Thu, 17 Sep 2020 09:38:32 +0800 (CST)
-Received: from [127.0.0.1] (10.74.185.4) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Thu, 17 Sep 2020
- 09:38:22 +0800
-Subject: Re: [PATCH v2] KVM: arm64: fix doc warnings in mmu code
-To:     Will Deacon <will@kernel.org>
-References: <1600221639-4471-1-git-send-email-tanxiaofei@huawei.com>
- <20200916083756.GD27496@willie-the-truck>
-CC:     <maz@kernel.org>, <james.morse@arm.com>,
-        <julien.thierry.kdev@gmail.com>, <suzuki.poulose@arm.com>,
-        <catalin.marinas@arm.com>, <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>
-From:   Xiaofei Tan <tanxiaofei@huawei.com>
-Message-ID: <5F62BE0E.9060208@huawei.com>
-Date:   Thu, 17 Sep 2020 09:38:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.5.1
+        id S1726151AbgIQBqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 21:46:23 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:47585 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726072AbgIQBqS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 21:46:18 -0400
+X-Greylist: delayed 387 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 21:46:16 EDT
+X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 08H1dJ9Y1015685, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb05.realtek.com.tw[172.21.6.98])
+        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 08H1dJ9Y1015685
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 17 Sep 2020 09:39:19 +0800
+Received: from RTEXMB04.realtek.com.tw (172.21.6.97) by
+ RTEXMB05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2044.4; Thu, 17 Sep 2020 09:39:19 +0800
+Received: from localhost.localdomain (172.21.179.130) by
+ RTEXMB04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2044.4; Thu, 17 Sep 2020 09:39:18 +0800
+From:   Willy Liu <willy.liu@realtek.com>
+To:     <hkallweit1@gmail.com>
+CC:     <davem@davemloft.net>, <andrew@lunn.ch>, <linux@armlinux.org.uk>,
+        <kuba@kernel.org>, <ryankao@realtek.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Willy Liu <willy.liu@realtek.com>
+Subject: [PATCH] net: phy: realtek: Replace 2.5Gbps name from RTL8125 to RTL8226
+Date:   Thu, 17 Sep 2020 09:39:08 +0800
+Message-ID: <1600306748-3176-1-git-send-email-willy.liu@realtek.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-In-Reply-To: <20200916083756.GD27496@willie-the-truck>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.185.4]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-Originating-IP: [172.21.179.130]
+X-ClientProxiedBy: RTEXMB01.realtek.com.tw (172.21.6.94) To
+ RTEXMB04.realtek.com.tw (172.21.6.97)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+According to PHY ID, 0x001cc800 should be named "RTL8226 2.5Gbps PHY"
+and 0x001cc840 should be named "RTL8226B_RTL8221B 2.5Gbps PHY".
+RTL8125 is not a single PHY solution, it integrates PHY/MAC/PCIE bus
+controller and embedded memory.
 
-Hi Will,
+Signed-off-by: Willy Liu <willy.liu@realtek.com>
+---
+ drivers/net/phy/realtek.c | 38 +++++++++++++++++++-------------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
+ mode change 100644 => 100755 drivers/net/phy/realtek.c
 
-Thanks for your advices, will accept all of them.
-
-On 2020/9/16 16:37, Will Deacon wrote:
-> On Wed, Sep 16, 2020 at 10:00:39AM +0800, Xiaofei Tan wrote:
->> Fix following warnings caused by mismatch bewteen function parameters
->> and comments.
->> arch/arm64/kvm/mmu.c:128: warning: Function parameter or member 'mmu' not described in '__unmap_stage2_range'
->> arch/arm64/kvm/mmu.c:128: warning: Function parameter or member 'may_block' not described in '__unmap_stage2_range'
->> arch/arm64/kvm/mmu.c:128: warning: Excess function parameter 'kvm' description in '__unmap_stage2_range'
->> arch/arm64/kvm/mmu.c:499: warning: Function parameter or member 'writable' not described in 'kvm_phys_addr_ioremap'
->> arch/arm64/kvm/mmu.c:538: warning: Function parameter or member 'mmu' not described in 'stage2_wp_range'
->> arch/arm64/kvm/mmu.c:538: warning: Excess function parameter 'kvm' description in 'stage2_wp_range'
->>
->> Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
->> ---
->>  arch/arm64/kvm/mmu.c | 6 ++++--
->>  1 file changed, 4 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
->> index e8a51799..909e995 100644
->> --- a/arch/arm64/kvm/mmu.c
->> +++ b/arch/arm64/kvm/mmu.c
->> @@ -114,9 +114,10 @@ static bool kvm_is_device_pfn(unsigned long pfn)
->>   */
->>  /**
->>   * unmap_stage2_range -- Clear stage2 page table entries to unmap a range
->> - * @kvm:   The VM pointer
->> + * @mmu:   pointer to mmu structure to operate on
->>   * @start: The intermediate physical base address of the range to unmap
->>   * @size:  The size of the area to unmap
->> + * @may_block: The flag that if block is allowed here
-> 
-> Whether or not we are permitted to block.
-> 
->>   *
->>   * Clear a range of stage-2 mappings, lowering the various ref-counts.  Must
->>   * be called while holding mmu_lock (unless for freeing the stage2 pgd before
->> @@ -493,6 +494,7 @@ void kvm_free_stage2_pgd(struct kvm_s2_mmu *mmu)
->>   * @guest_ipa:	The IPA at which to insert the mapping
->>   * @pa:		The physical address of the device
->>   * @size:	The size of the mapping
->> + * @writable:   If it is writable here
-> 
-> Whether or not to create a writable mapping.
-> 
->>   */
->>  int kvm_phys_addr_ioremap(struct kvm *kvm, phys_addr_t guest_ipa,
->>  			  phys_addr_t pa, unsigned long size, bool writable)
->> @@ -530,7 +532,7 @@ int kvm_phys_addr_ioremap(struct kvm *kvm, phys_addr_t guest_ipa,
->>  
->>  /**
->>   * stage2_wp_range() - write protect stage2 memory region range
->> - * @kvm:	The KVM pointer
->> + * @mmu:        pointer to mmu structure to operate on
-> 
-> The KVM stage-2 MMU pointer.
-> 
-> Will
-> 
-> .
-> 
-
+diff --git a/drivers/net/phy/realtek.c b/drivers/net/phy/realtek.c
+old mode 100644
+new mode 100755
+index 95dbe5e..a98b09d
+--- a/drivers/net/phy/realtek.c
++++ b/drivers/net/phy/realtek.c
+@@ -400,7 +400,7 @@ static int rtlgen_write_mmd(struct phy_device *phydev, int devnum, u16 regnum,
+ 	return ret;
+ }
+ 
+-static int rtl8125_read_mmd(struct phy_device *phydev, int devnum, u16 regnum)
++static int rtl822x_read_mmd(struct phy_device *phydev, int devnum, u16 regnum)
+ {
+ 	int ret = rtlgen_read_mmd(phydev, devnum, regnum);
+ 
+@@ -424,7 +424,7 @@ static int rtl8125_read_mmd(struct phy_device *phydev, int devnum, u16 regnum)
+ 	return ret;
+ }
+ 
+-static int rtl8125_write_mmd(struct phy_device *phydev, int devnum, u16 regnum,
++static int rtl822x_write_mmd(struct phy_device *phydev, int devnum, u16 regnum,
+ 			     u16 val)
+ {
+ 	int ret = rtlgen_write_mmd(phydev, devnum, regnum, val);
+@@ -441,7 +441,7 @@ static int rtl8125_write_mmd(struct phy_device *phydev, int devnum, u16 regnum,
+ 	return ret;
+ }
+ 
+-static int rtl8125_get_features(struct phy_device *phydev)
++static int rtl822x_get_features(struct phy_device *phydev)
+ {
+ 	int val;
+ 
+@@ -459,7 +459,7 @@ static int rtl8125_get_features(struct phy_device *phydev)
+ 	return genphy_read_abilities(phydev);
+ }
+ 
+-static int rtl8125_config_aneg(struct phy_device *phydev)
++static int rtl822x_config_aneg(struct phy_device *phydev)
+ {
+ 	int ret = 0;
+ 
+@@ -479,7 +479,7 @@ static int rtl8125_config_aneg(struct phy_device *phydev)
+ 	return __genphy_config_aneg(phydev, ret);
+ }
+ 
+-static int rtl8125_read_status(struct phy_device *phydev)
++static int rtl822x_read_status(struct phy_device *phydev)
+ {
+ 	int ret;
+ 
+@@ -521,7 +521,7 @@ static int rtlgen_match_phy_device(struct phy_device *phydev)
+ 	       !rtlgen_supports_2_5gbps(phydev);
+ }
+ 
+-static int rtl8125_match_phy_device(struct phy_device *phydev)
++static int rtl8226_match_phy_device(struct phy_device *phydev)
+ {
+ 	return phydev->phy_id == RTL_GENERIC_PHYID &&
+ 	       rtlgen_supports_2_5gbps(phydev);
+@@ -626,29 +626,29 @@ static int rtlgen_resume(struct phy_device *phydev)
+ 		.read_mmd	= rtlgen_read_mmd,
+ 		.write_mmd	= rtlgen_write_mmd,
+ 	}, {
+-		.name		= "RTL8125 2.5Gbps internal",
+-		.match_phy_device = rtl8125_match_phy_device,
+-		.get_features	= rtl8125_get_features,
+-		.config_aneg	= rtl8125_config_aneg,
+-		.read_status	= rtl8125_read_status,
++		.name		= "RTL8226 2.5Gbps PHY",
++		.match_phy_device = rtl8226_match_phy_device,
++		.get_features	= rtl822x_get_features,
++		.config_aneg	= rtl822x_config_aneg,
++		.read_status	= rtl822x_read_status,
+ 		.suspend	= genphy_suspend,
+ 		.resume		= rtlgen_resume,
+ 		.read_page	= rtl821x_read_page,
+ 		.write_page	= rtl821x_write_page,
+-		.read_mmd	= rtl8125_read_mmd,
+-		.write_mmd	= rtl8125_write_mmd,
++		.read_mmd	= rtl822x_read_mmd,
++		.write_mmd	= rtl822x_write_mmd,
+ 	}, {
+ 		PHY_ID_MATCH_EXACT(0x001cc840),
+-		.name		= "RTL8125B 2.5Gbps internal",
+-		.get_features	= rtl8125_get_features,
+-		.config_aneg	= rtl8125_config_aneg,
+-		.read_status	= rtl8125_read_status,
++		.name		= "RTL8226B_RTL8221B 2.5Gbps PHY",
++		.get_features	= rtl822x_get_features,
++		.config_aneg	= rtl822x_config_aneg,
++		.read_status	= rtl822x_read_status,
+ 		.suspend	= genphy_suspend,
+ 		.resume		= rtlgen_resume,
+ 		.read_page	= rtl821x_read_page,
+ 		.write_page	= rtl821x_write_page,
+-		.read_mmd	= rtl8125_read_mmd,
+-		.write_mmd	= rtl8125_write_mmd,
++		.read_mmd	= rtl822x_read_mmd,
++		.write_mmd	= rtl822x_write_mmd,
+ 	}, {
+ 		PHY_ID_MATCH_EXACT(0x001cc961),
+ 		.name		= "RTL8366RB Gigabit Ethernet",
 -- 
- thanks
-tanxiaofei
+1.9.1
 
