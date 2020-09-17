@@ -2,48 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D80CE26E460
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:47:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F38B526E4A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726458AbgIQSrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 14:47:10 -0400
-Received: from basementscanada.com-http1 ([159.203.32.190]:45574 "EHLO
-        basementscanada.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726430AbgIQSqo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 14:46:44 -0400
-X-Greylist: delayed 4293 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 14:46:43 EDT
-Received: by basementscanada.com (Postfix, from userid 33)
-        id AE0504ECA4; Thu, 17 Sep 2020 12:12:26 -0400 (EDT)
-To:     linux-kernel@vger.kernel.org
-Subject: IFC Fund Approved (IFC-060290_EC)  09-17-2020
-X-PHP-Originating-Script: 33:xeiwyvgitz.php(6) : eval()'d code
-Date:   Thu, 17 Sep 2020 12:12:26 -0400
-From:   IFC <support@basementscanada.com>
-Reply-To: onari.duke@bk.ru
-Message-ID: <bf087248f75c6bf1b4608b0acb8f0e86@www.basementscanada.com>
+        id S1726563AbgIQSxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 14:53:52 -0400
+Received: from foss.arm.com ([217.140.110.172]:48708 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728408AbgIQQUb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 12:20:31 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4C88412FC;
+        Thu, 17 Sep 2020 09:20:25 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D90443F68F;
+        Thu, 17 Sep 2020 09:20:22 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 17:20:17 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
+Cc:     linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, robh+dt@kernel.org,
+        bhelgaas@google.com, shawnguo@kernel.org, leoyang.li@nxp.com,
+        kishon@ti.com, gustavo.pimentel@synopsys.com, roy.zang@nxp.com,
+        jingoohan1@gmail.com, andrew.murray@arm.com, mingkai.hu@nxp.com,
+        minghuan.Lian@nxp.com
+Subject: Re: [PATCHv7 00/12]PCI: dwc: Add the multiple PF support for DWC and
+ Layerscape
+Message-ID: <20200917162017.GA6830@e121166-lin.cambridge.arm.com>
+References: <20200811095441.7636-1-Zhiqiang.Hou@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200811095441.7636-1-Zhiqiang.Hou@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Congratulations!
+On Tue, Aug 11, 2020 at 05:54:29PM +0800, Zhiqiang Hou wrote:
+> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> 
+> Add the PCIe EP multiple PF support for DWC and Layerscape, and use
+> a list to manage the PFs of each PCIe controller; add the doorbell
+> MSIX function for DWC; and refactor the Layerscape EP driver due to
+> some difference in Layercape platforms PCIe integration.
+> 
+> Hou Zhiqiang (1):
+>   misc: pci_endpoint_test: Add driver data for Layerscape PCIe
+>     controllers
+> 
+> Xiaowei Bao (11):
+>   PCI: designware-ep: Add multiple PFs support for DWC
+>   PCI: designware-ep: Add the doorbell mode of MSI-X in EP mode
+>   PCI: designware-ep: Move the function of getting MSI capability
+>     forward
+>   PCI: designware-ep: Modify MSI and MSIX CAP way of finding
+>   dt-bindings: pci: layerscape-pci: Add compatible strings for ls1088a
+>     and ls2088a
+>   PCI: layerscape: Fix some format issue of the code
+>   PCI: layerscape: Modify the way of getting capability with different
+>     PEX
+>   PCI: layerscape: Modify the MSIX to the doorbell mode
+>   PCI: layerscape: Add EP mode support for ls1088a and ls2088a
+>   arm64: dts: layerscape: Add PCIe EP node for ls1088a
+>   misc: pci_endpoint_test: Add LS1088a in pci_device_id table
+> 
+>  .../bindings/pci/layerscape-pci.txt           |   2 +
+>  .../arm64/boot/dts/freescale/fsl-ls1088a.dtsi |  31 +++
+>  drivers/misc/pci_endpoint_test.c              |   8 +-
+>  .../pci/controller/dwc/pci-layerscape-ep.c    | 100 +++++--
+>  .../pci/controller/dwc/pcie-designware-ep.c   | 258 ++++++++++++++----
+>  drivers/pci/controller/dwc/pcie-designware.c  |  59 ++--
+>  drivers/pci/controller/dwc/pcie-designware.h  |  48 +++-
+>  7 files changed, 410 insertions(+), 96 deletions(-)
 
-We are pleased to announce that your EMAIL ADDRESS has been selected to receive $ 1,500,000 under the IFC Global Development Funding Program due to the ongoing Coronavirus Pandemic. It was agreed and signed by the management team of the International Finance Corporation (IFC) and the Board of Directors of the World Bank Group and UBA Group. The reference number of your file is (IFC-060290_EC).
+Side note: I will change it for you but please keep Signed-off-by:
+tags together in the log instead of mixing them with other tags
+randomly.
 
-All beneficiaries were selected through the IFC Global Random Integrated System, which has received more than 27 million e-mail addresses on the Internet. The lucky beneficiaries do not need to buy a ticket to participate in this IFC Global Development Funding program. Include your full details, such as your name and phone number: Age: Gender: Address and your file reference for processing and disbursing your IFC Global Development Fund. You are to receive your funding through a certified VISA ATM Card. With this VISA Card you can withdraw money from any part of the World without being disturbed or delay. Contact Mrs. Onari Duke with your code: IFC-060290_EC for more information.
+Can you rebase this series against my pci/dwc branch please and
+send a v8 ?
 
-Card Issuing Bank: UBA Group
-Contact Name: Mrs. Onari Duke
-Email: onari.duke@bk.ru
+I will apply it then.
 
-We hope to hear from you as soon as you receive payment for the IFC Global Development Fund. Further information on the IFC Global Development Funding Program can be found on our website: www.ifc.org
-
-Greetings,
-Mr. Philippe Le Houerou (Chairman of IFC)
-
-*********************************************************************************************************
-NOTE: If you have received this message in your SPAM / BULK folder because your ISP has introduced restrictions, we (IFC Team) kindly ask you to handle it.
-********************************************************************************************************
-
+Thanks,
+Lorenzo
