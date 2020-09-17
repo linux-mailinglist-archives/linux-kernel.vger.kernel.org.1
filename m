@@ -2,81 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EAB726D031
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 02:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E861626D053
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 03:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726333AbgIQAsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 20:48:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52044 "EHLO mail.kernel.org"
+        id S1726193AbgIQBAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 21:00:08 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:18983 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726304AbgIQAsm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 20:48:42 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726072AbgIQBAD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 21:00:03 -0400
+X-Greylist: delayed 304 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 20:59:24 EDT
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600304395; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=fVudm0/lgiiKwjiWJ16VOu7Farkh1dx277bHuq90WXc=;
+ b=N6XJJfFa1WiFwdzYr0lzfRSxTDRmbCkQ7ILHGHh0z1fiT4tEKakk/vGlBJgkADc26P+Rtx9Z
+ hA14J6mIuXd78kHkhzE6c3gQph3NT8c6zeFFKBkHc88VrS9jw9hBDG9OXIntd2Dq8OoBSoOY
+ dWz8Td3xE21HuIiEBhExNiNYOs0=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 5f62b3944ab73023a7f6fd9e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Sep 2020 00:53:40
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 35E1EC433F0; Thu, 17 Sep 2020 00:53:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 25335206A4;
-        Thu, 17 Sep 2020 00:48:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600303718;
-        bh=9ulv5jv9pJhqtRTxFWJWZ3bKt7i9GYxG1m9W2m+4RSY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZotmgASXWB6fIEAU9GkPSAO/v4Tagu4jVZSwB41P4mgM92EeiC+NZ5ZwnBVl6K0Oq
-         2EUz1Ql5c3swNskssvc7TROyx8qXpA+MSKtOInjpwRCfn6S9J1HQDyg00rnJs0HB/D
-         65CbAlgT9kTFiv+gJ6aq1YUVqgLLFlCdwzFzlfs4=
-Date:   Wed, 16 Sep 2020 17:48:36 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     davem@davemloft.net, joel@joelfernandes.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org, josh@joshtriplett.org, peterz@infradead.org,
-        christian.brauner@ubuntu.com
-Subject: Re: [PATCH net-next 0/7] rcu: prevent RCU_LOCKDEP_WARN() from
- swallowing  the condition
-Message-ID: <20200916174836.4dd22aca@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200916231505.GH29330@paulmck-ThinkPad-P72>
-References: <20200916184528.498184-1-kuba@kernel.org>
-        <20200916231505.GH29330@paulmck-ThinkPad-P72>
+        (Authenticated sender: nguyenb)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DCB40C433C8;
+        Thu, 17 Sep 2020 00:53:37 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Wed, 16 Sep 2020 17:53:37 -0700
+From:   nguyenb@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     cang@codeaurora.org, asutoshd@codeaurora.org,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 1/1] scsi: ufshcd: Properly set the device Icc Level
+In-Reply-To: <20200915133729.GD670377@yoga>
+References: <5c9d6f76303bbe5188bf839b2ea5e5bf530e7281.1598923023.git.nguyenb@codeaurora.org>
+ <20200915025401.GD471@uller>
+ <a8c851744fcaee205fc7a58db8f747fa@codeaurora.org>
+ <20200915133729.GD670377@yoga>
+Message-ID: <6e36f0a315c13429bdad1ce704cbe878@codeaurora.org>
+X-Sender: nguyenb@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Sep 2020 16:15:05 -0700 Paul E. McKenney wrote:
-> On Wed, Sep 16, 2020 at 11:45:21AM -0700, Jakub Kicinski wrote:
-> > Hi!
-> > 
-> > So I unfolded the RFC patch into smaller chunks and fixed an issue
-> > in SRCU pointed out by build bot. Build bot has been quiet for
-> > a day but I'm not 100% sure it's scanning my tree, so let's
-> > give these patches some ML exposure.
-> > 
-> > The motivation here is that we run into a unused variable
-> > warning in networking code because RCU_LOCKDEP_WARN() makes
-> > its argument disappear with !LOCKDEP / !PROVE_RCU. We marked
-> > the variable as __maybe_unused, but that's ugly IMHO.
-> > 
-> > This set makes the relevant function declarations visible to
-> > the compiler and uses (0 && (condition)) to make the compiler
-> > remove those calls before linker realizes they are never defined.
-> > 
-> > I'm tentatively marking these for net-next, but if anyone (Paul?)
-> > wants to take them into their tree - even better.  
+On 2020-09-15 06:37, Bjorn Andersson wrote:
+> On Tue 15 Sep 03:49 CDT 2020, nguyenb@codeaurora.org wrote:
 > 
-> I have pulled these into -rcu for review and further testing, thank you!
-> I of course could not resist editing the commit logs, so please check
-> to make sure that I did not mess anything up.
-
-Done & thank you!
-
-> Just so you know, unless this is urgent, it is in my v5.11 pile, that
-> is, for the merge window after next.
+>> On 2020-09-14 19:54, Bjorn Andersson wrote:
+>> > On Tue 01 Sep 01:19 UTC 2020, Bao D. Nguyen wrote:
+>> >
+>> > > UFS version 3.0 and later devices require Vcc and Vccq power supplies
+>> > > with Vccq2 being optional. While earlier UFS version 2.0 and 2.1
+>> > > devices, the Vcc and Vccq2 are required with Vccq being optional.
+>> > > Check the required power supplies used by the device
+>> > > and set the device's supported Icc level properly.
+>> > >
+>> > > Signed-off-by: Can Guo <cang@codeaurora.org>
+>> > > Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+>> > > Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
+>> > > ---
+>> > >  drivers/scsi/ufs/ufshcd.c | 5 +++--
+>> > >  1 file changed, 3 insertions(+), 2 deletions(-)
+>> > >
+>> > > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> > > index 06e2439..fdd1d3e 100644
+>> > > --- a/drivers/scsi/ufs/ufshcd.c
+>> > > +++ b/drivers/scsi/ufs/ufshcd.c
+>> > > @@ -6845,8 +6845,9 @@ static u32
+>> > > ufshcd_find_max_sup_active_icc_level(struct ufs_hba *hba,
+>> > >  {
+>> > >  	u32 icc_level = 0;
+>> > >
+>> > > -	if (!hba->vreg_info.vcc || !hba->vreg_info.vccq ||
+>> > > -						!hba->vreg_info.vccq2) {
+>> > > +	if (!hba->vreg_info.vcc ||
+>> >
+>> > How did you test this?
+>> >
+>> > devm_regulator_get() never returns NULL, so afaict this conditional will
+>> > never be taken with either the old or new version of the code.
+>> Thanks for your comment. The call flow is as follows:
+>> ufshcd_pltfrm_init->ufshcd_parse_regulator_info->ufshcd_populate_vreg
+>> In the ufshcd_populate_vreg() function, it looks for DT entries 
+>> "%s-supply"
+>> For UFS3.0+ devices, "vccq2-supply" is optional, so the vendor may 
+>> choose
+>> not to provide vccq2-supply in the DT.
+>> As a result, a NULL is returned to hba->vreg_info.vccq2.
+>> Same for UFS2.0 and UFS2.1 devices, a NULL may be returned to
+>> hba->vreg_info.vccq if vccq-supply is not provided in the DT.
+>> The current code only checks for !hba->vreg_info.vccq OR
+>> !hba->vreg_info.vccq2. It will skip the setting for icc_level
+>> if either vccq or vccq2 is not provided in the DT.
+>> >
 > 
-> If someone else wants to take them, please feel free to add my
-> Acked-by to the RCU pieces.
+> Thanks for the pointers, I now see that the there will only be struct
+> ufs_vreg objects allocated for the items that has an associated
+> %s-supply.
+> 
+> FYI, the idiomatic way to handle optional regulators is to use
+> regulator_get_optional(), which will return -ENODEV for regulators not
+> specified.
+Thanks for the regulator_get_optional() suggestion. Do you have a strong 
+opinion about
+using regulator_get_optional() or would my proposal be ok? With 
+regulator_get_optional(),
+we need to make 3 calls and check each result while the current 
+implementation is also reliable
+simple quick check for NULL without any potential problem.
 
-Sounds good to me, the RCU tree seems most appropriate and we added 
-a workaround for the issue in net-next already, anyway.
-
-Thanks!
+Thanks,
+Bao
+> 
+> Regards,
+> Bjorn
+> 
+>> > Regards,
+>> > Bjorn
+>> >
+>> > > +		(!hba->vreg_info.vccq && hba->dev_info.wspecversion >= 0x300) ||
+>> > > +		(!hba->vreg_info.vccq2 && hba->dev_info.wspecversion < 0x300)) {
+>> > >  		dev_err(hba->dev,
+>> > >  			"%s: Regulator capability was not set, actvIccLevel=%d",
+>> > >  							__func__, icc_level);
+>> > > --
+>> > > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
+>> > > Forum,
+>> > > a Linux Foundation Collaborative Project
+>> > >
