@@ -2,75 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB71B26D5B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4909F26D57E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726518AbgIQIIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 04:08:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33874 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726502AbgIQIH6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 04:07:58 -0400
-X-Greylist: delayed 823 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 04:07:58 EDT
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E01A8B1AA;
-        Thu, 17 Sep 2020 07:54:15 +0000 (UTC)
-Date:   Thu, 17 Sep 2020 09:53:58 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Liu Shixin <liushixin2@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] mm/madvise: Remove set but not used variable 'zone'
-Message-ID: <20200917075354.GA27201@linux>
-References: <20200917071757.1915501-1-liushixin2@huawei.com>
+        id S1726344AbgIQIAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 04:00:44 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:16941 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726321AbgIQIAB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 04:00:01 -0400
+X-Greylist: delayed 311 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 04:00:01 EDT
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f6316260002>; Thu, 17 Sep 2020 00:54:14 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 17 Sep 2020 00:54:27 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 17 Sep 2020 00:54:27 -0700
+Received: from [10.26.74.242] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 17 Sep
+ 2020 07:54:14 +0000
+Subject: Re: [PATCH v3 08/16] irqchip/gic: Configure SGIs as standard
+ interrupts
+To:     Marc Zyngier <maz@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+CC:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Sumit Garg" <sumit.garg@linaro.org>, <kernel-team@android.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Saravana Kannan <saravanak@google.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Gregory Clement" <gregory.clement@bootlin.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "Linux Samsung SOC" <linux-samsung-soc@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+References: <20200901144324.1071694-1-maz@kernel.org>
+ <20200901144324.1071694-9-maz@kernel.org>
+ <CGME20200914130601eucas1p23ce276d168dee37909b22c75499e68da@eucas1p2.samsung.com>
+ <a917082d-4bfd-a6fd-db88-36e75f5f5921@samsung.com>
+ <933bc43e-3cd7-10ec-b9ec-58afaa619fb7@nvidia.com>
+ <3378cd07b92e87a24f1db75f708424ee@kernel.org>
+ <CACRpkdYvqQUJaReD1yNTwiHhaZpQ9h5Z9DgdqbKkCexnM7cWNw@mail.gmail.com>
+ <049d62ac7de32590cb170714b47fb87d@kernel.org>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <a88528cd-eb76-367a-77d6-7ae20bd28304@nvidia.com>
+Date:   Thu, 17 Sep 2020 08:54:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917071757.1915501-1-liushixin2@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <049d62ac7de32590cb170714b47fb87d@kernel.org>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600329254; bh=30mp0f3ouirzej9wVaCNihVfHw5D9hL0SMgLcIPw1Ow=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=j0x93+j7OUBnB6jX6fD5/bc7qs3RMJ0n7ZWeJ4vOe+y1vDF9qfUSdZdkWR8u59L10
+         JVoTdDlHGAPO4E2PqpwBLh5AGAbux2iXQ8L/dQBBW/gfVKlYSRYmXaaM2so1uoFqd/
+         4b6/F9IPtgNTr6sAAylMErP2KGh1Kak6BUi7UbXdNydUMr3EUew6blsFZEnb66w3YH
+         VXl16tsxmzZAh9gh6uVscZrbBrIVf/vSFxM5q/HiFZvqb9Sa7pPCHuYJPKMJ3Wo+nj
+         A9WB3BtmdB+YQ6QYcV5S13DPJ31F0UR85+96w7cquxk7zfSvP833ETYQUi8v7UcI0F
+         wPBxi4C7RpOaA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 03:17:57PM +0800, Liu Shixin wrote:
-> Fixes gcc '-Wunused-but-set-variable' warning:
-> 
-> mm/madvise.c: In function 'madvise_inject_error':
-> mm/madvise.c:882:15: warning: unused variable 'zone' [-Wunused-variable]
-> 
-> After 4b63fdbe2b25 ("mm: remove the now-unnecessary mmget_still_valid()
-> hack"), variable 'zone' is never used. Remove it to avoid build warning.
 
-Hi Liu,
+On 17/09/2020 08:50, Marc Zyngier wrote:
+> Hi Linus,
+>=20
+> On 2020-09-17 08:40, Linus Walleij wrote:
+>> On Wed, Sep 16, 2020 at 5:11 PM Marc Zyngier <maz@kernel.org> wrote:
+>>
+>>> Can you try the patch below and let me know?
+>>
+>> I tried this patch and now Ux500 WORKS. So this patch is definitely
+>> something you should apply.
+>>
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (is_fran=
+kengic())
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 set_sgi_intid(irqstat);
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 this_cpu_wr=
+ite(sgi_intid, intid);
+>>
+>> This needs changing to irqstat to compile as pointed out by Jon.
+>>
+>> With that:
+>> Tested-by: Linus Walleij <linus.walleij@linaro.org>
+>=20
+> Thanks a lot for that.
+>=20
+> Still need to understand why some of Jon's systems are left unbootable,
+> despite having similar GIC implementations (Tegra194 and Tegra210 use
+> the same GIC-400, and yet only one of the two boots correctly...).
 
-Andrew already fixed that in the mmotm tree.
+So far, I have only tested this patch on Tegra20. Let me try the other
+failing boards this morning and see if those still fail.
 
-Thanks anyway
+Cheers
+Jon
 
-> 
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> ---
->  mm/madvise.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/mm/madvise.c b/mm/madvise.c
-> index 460e19d60ba3..94b9d17331b9 100644
-> --- a/mm/madvise.c
-> +++ b/mm/madvise.c
-> @@ -879,7 +879,6 @@ static long madvise_remove(struct vm_area_struct *vma,
->  static int madvise_inject_error(int behavior,
->  		unsigned long start, unsigned long end)
->  {
-> -	struct zone *zone;
->  	unsigned long size;
->  
->  	if (!capable(CAP_SYS_ADMIN))
-> -- 
-> 2.25.1
-> 
-> 
-
--- 
-Oscar Salvador
-SUSE L3
+--=20
+nvpublic
