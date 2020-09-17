@@ -2,42 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA7B26E2B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F08226E2AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:41:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726650AbgIQRnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 13:43:15 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:40603 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726597AbgIQRlF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 13:41:05 -0400
+        id S1726401AbgIQRl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 13:41:29 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:35767 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726290AbgIQRkA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 13:40:00 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600364463; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=cPHkj+a/0Rl2xRJ1IzjV1BjMb2iMw5KcPWUXja2H2B8=; b=P9aEP/uQXjmzltj0t4E1RmIXIZrx78gpztFqQVLD2ovL8Hzun8xHcDYl7YHDs95IsB9LtYJ8
- oNnMZWLn492UeO26XCXV9h8VN+LTdRmkDoUTbKfgPv6VYZsIZIcB3p7PWI4n4suw+3AfUd2R
- TBp3FMOH0hJ3RjeHAWYgw2rYlPQ=
-X-Mailgun-Sending-Ip: 69.72.43.7
+ s=smtp; t=1600364394; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=gPyLpnk35md75z42y0gXvz/xNdSmi34X9M0nhz3DYJ8=; b=LFmRXBnFs+VDed6aVplIkVvrsvSMXT1eZzEUys3S69yI7pieOsi99zxbydHrxiIvovq69DO1
+ BNqXMdIdP18hB+NwGOjxrExVkCp3cJxho2CDuwF8THioFxKUmQZZmlXPAcY7R/92t29xpHOO
+ d42w2UwtmLnHEEr4Vi+jQzQO9vA=
+X-Mailgun-Sending-Ip: 104.130.122.29
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5f63669b0915d3035792bf2e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Sep 2020 13:37:31
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5f6366a591755cb92b39744e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Sep 2020 13:37:41
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CF5A4C43387; Thu, 17 Sep 2020 13:37:30 +0000 (UTC)
+        id 4FE8EC433CA; Thu, 17 Sep 2020 13:37:41 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7FB9DC433F0;
-        Thu, 17 Sep 2020 13:37:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7FB9DC433F0
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 214B4C433FE;
+        Thu, 17 Sep 2020 13:37:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 214B4C433FE
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
 From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
@@ -47,52 +49,174 @@ To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
         srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
         linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Subject: [PATCH v5 0/5] Qualcomm's lpass-hdmi ASoC driver to support audio over dp port
-Date:   Thu, 17 Sep 2020 19:07:03 +0530
-Message-Id: <1600349828-10727-1-git-send-email-srivasam@codeaurora.org>
+Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
+        Srinivasa Rao <srivasam@codeaurora.org>
+Subject: [PATCH v5 2/5] ASoC: dt-bindings: Add dt binding for lpass hdmi
+Date:   Thu, 17 Sep 2020 19:07:05 +0530
+Message-Id: <1600349828-10727-3-git-send-email-srivasam@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1600349828-10727-1-git-send-email-srivasam@codeaurora.org>
+References: <1600349828-10727-1-git-send-email-srivasam@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These patches are to support audio over DP port on Qualcomm's SC7180 LPASS Asoc.
-It includes machine driver, cpu driver, platform driver updates for HDMI path support, 
-device tree documention, lpass variant structure optimization and configuration changes.
-These patches depends on the DP patch series 
-https://patchwork.kernel.org/project/dri-devel/list/?series=332029
-Changes Since v4:
-    -- Updated with single compatible node for both I2S and HDMI.
-Changes Since v3:
-    -- Removed id in lpass variant structure and used snd_soc_dai_driver id.
-Changes Since v2:
-	-- Audio buffer size(i.e. LPASS_PLATFORM_BUFFER_SIZE) in lpass-platform.c increased.
-Changes Since v1:
-	-- Commit messages are updated
-	-- Addressed Rob Herring review comments
+From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
 
-V Sujith Kumar Reddy (5):
-  ASoC: Add sc7180-lpass binding header hdmi define
-  ASoC: dt-bindings: Add dt binding for lpass hdmi
-  Asoc:qcom:lpass-cpu:Update dts property read API
-  ASoC: qcom: Add support for lpass hdmi driver
-  ASoC: qcom: sc7180: Add support for audio over DP
+Adds bindings for lpass hdmi interface
+which can support audio path over dp.
 
- .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  |  74 ++-
- include/dt-bindings/sound/sc7180-lpass.h           |   1 +
- sound/soc/qcom/Kconfig                             |   5 +
- sound/soc/qcom/Makefile                            |   2 +
- sound/soc/qcom/lpass-cpu.c                         |  39 +-
- sound/soc/qcom/lpass-hdmi.c                        | 596 +++++++++++++++++++++
- sound/soc/qcom/lpass-hdmi.h                        | 129 +++++
- sound/soc/qcom/lpass-lpaif-reg.h                   |  52 +-
- sound/soc/qcom/lpass-platform.c                    | 468 ++++++++++++----
- sound/soc/qcom/lpass-sc7180.c                      | 116 +++-
- sound/soc/qcom/lpass.h                             | 119 +++-
- 11 files changed, 1447 insertions(+), 154 deletions(-)
- create mode 100644 sound/soc/qcom/lpass-hdmi.c
- create mode 100644 sound/soc/qcom/lpass-hdmi.h
+Signed-off-by: Srinivasa Rao <srivasam@codeaurora.org>
+Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+---
+ .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  | 74 +++++++++++++++-------
+ 1 file changed, 52 insertions(+), 22 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+index 09c9bd2..f95ef70 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+@@ -24,9 +24,10 @@ properties:
+       - qcom,sc7180-lpass-cpu
+ 
+   reg:
+-    maxItems: 1
++    maxItems: 2
+     description: LPAIF core registers
+-
++  reg-names:
++     maxItems: 2
+   clocks:
+     minItems: 3
+     maxItems: 6
+@@ -36,15 +37,16 @@ properties:
+     maxItems: 6
+ 
+   interrupts:
+-    maxItems: 1
++    maxItems: 2
+     description: LPAIF DMA buffer interrupt
+-
++  interrupt-names:
++    maxItems: 2
+   qcom,adsp:
+     $ref: /schemas/types.yaml#/definitions/phandle
+     description: Phandle for the audio DSP node
+ 
+   iommus:
+-    maxItems: 1
++    maxItems: 2
+     description: Phandle to apps_smmu node with sid mask
+ 
+   power-domains:
+@@ -60,10 +62,12 @@ properties:
+     const: 0
+ 
+ patternProperties:
+-  "(^mi2s-[0-9a-f]$|mi2s)":
++  "^dai-link@[0-9a-f]$":
+     type: object
+-    description: Required properties for each DAI
+-
++    description: |
++      LPASS CPU dai node for each I2S device. Bindings of each node
++      depends on the specific driver providing the functionality and
++      properties.
+     properties:
+       reg:
+         maxItems: 1
+@@ -85,9 +89,11 @@ patternProperties:
+ required:
+   - compatible
+   - reg
++  - reg-names
+   - clocks
+   - clock-names
+   - interrupts
++  - interrupt-names
+   - '#sound-dai-cells'
+ 
+ additionalProperties: false
+@@ -134,13 +140,32 @@ allOf:
+     then:
+       properties:
+         clock-names:
+-          items:
+-            - const: pcnoc-sway-clk
+-            - const: audio-core
+-            - const: mclk0
+-            - const: pcnoc-mport-clk
+-            - const: mi2s-bit-clk0
+-            - const: mi2s-bit-clk1
++          oneOf:
++           - items:   #for I2S
++              - const: pcnoc-sway-clk
++              - const: audio-core
++              - const: mclk0
++              - const: pcnoc-mport-clk
++              - const: mi2s-bit-clk0
++              - const: mi2s-bit-clk1
++           - items:   #for HDMI
++              - const: pcnoc-sway-clk
++              - const: audio-core
++              - const: pcnoc-mport-clk
++        reg-names:
++          anyOf:
++            - items:   #for I2S and HDMI
++              - const: lpass-hdmiif
++              - const: lpass-lpaif
++            - items:   #for I2S
++              - const: lpass-lpaif
++        interrupt-names:
++          anyOf:
++            - items:   #for I2S and HDMI
++              - const: lpass-irq-lpaif
++              - const: lpass-irq-hdmi
++            - items:   #for I2S
++              - const: lpass-irq-lpaif
+       required:
+         - iommus
+         - power-domains
+@@ -152,12 +177,15 @@ examples:
+     soc {
+         #address-cells = <2>;
+         #size-cells = <2>;
+-        lpass@62f00000 {
++        lpass@62d80000 {
+             compatible = "qcom,sc7180-lpass-cpu";
+ 
+-            reg = <0 0x62f00000  0 0x29000>;
+-
+-            iommus = <&apps_smmu 0x1020 0>;
++            reg = <0 0x62d87000 0 0x68000>,
++                  <0 0x62f00000 0 0x29000>;
++            reg-names = "lpass-hdmiif",
++                        "lpass-lpaif";
++            iommus = <&apps_smmu 0x1020 0>,
++                     <&apps_smmu 0x1032 0>;
+             power-domains = <&lpass_hm 0>;
+ 
+             clocks = <&gcc 131>,
+@@ -171,14 +199,16 @@ examples:
+                           "mclk0", "pcnoc-mport-clk",
+                           "mi2s-bit-clk0", "mi2s-bit-clk1";
+ 
+-            interrupts = <0 160 1>;
+-
++            interrupts = <0 160 1>,
++                         <0 268 1>;
++            interrupt-names = "lpass-irq-lpaif",
++                              "lpass-irq-hdmi";
+             #sound-dai-cells = <1>;
+ 
+             #address-cells = <1>;
+             #size-cells = <0>;
+             /* Optional to set different MI2S SD lines */
+-            mi2s-primary@0 {
++            dai-link@0 {
+                 reg = <MI2S_PRIMARY>;
+                 qcom,playback-sd-lines = <1>;
+                 qcom,capture-sd-lines = <0>;
 -- 
 Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
 is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
