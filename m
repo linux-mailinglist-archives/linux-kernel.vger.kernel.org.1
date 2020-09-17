@@ -2,130 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58F4726E999
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 01:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F123A26E99D
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 01:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726152AbgIQXty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 19:49:54 -0400
-Received: from mx.aristanetworks.com ([162.210.129.12]:37114 "EHLO
-        smtp.aristanetworks.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725886AbgIQXty (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 19:49:54 -0400
-Received: from us180.sjc.aristanetworks.com (us180.sjc.aristanetworks.com [10.243.128.7])
-        by smtp.aristanetworks.com (Postfix) with ESMTP id E53F0402CF6;
-        Thu, 17 Sep 2020 16:49:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arista.com;
-        s=Arista-A; t=1600386593;
-        bh=3mGeEJtfpy/OYgDYPcjZMbm1NYXeXX6f8ds3K0JrI0Y=;
-        h=Date:To:Subject:From:From;
-        b=1YdG9jLlZA2OFGLtwHTY0x1Rmo2WvWtLLqc3zqGSisVBBHF6+B1vucCmaxbqxAUPy
-         x0Hk7xwQvhhVMx2XE/3eSeGnJT+MB6WaXOsXxQ+gcagOKnkQV6x9dH6Vaz3OVrLNy8
-         nFbf7SrhkXxVMY8aiFUnEFlj0UqnaerltpSbZxd7VGAhDc0yLsbzVuMxeSIKPAWE9T
-         WzjO1Pi3/V/qlQMikinyvkUGAVh1zOtoLq8/Bp77SFnV9THszv/Qofch6m3jPVYGH4
-         MYweUOOJ8JYnYnVVgFg0SQSZsVChrqHigrZg7ZuiwZXAZ9FcJ+b4JBAGv5CquAVTjw
-         lP4xhA02dQWCg==
-Received: by us180.sjc.aristanetworks.com (Postfix, from userid 10189)
-        id CB1D295C0A69; Thu, 17 Sep 2020 16:49:53 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 16:49:53 -0700
-To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        xiyou.wangcong@gmail.com, ap420073@gmail.com, andriin@fb.com,
-        edumazet@google.com, jiri@mellanox.com, ast@kernel.org,
-        kuba@kernel.org, davem@davemloft.net, fruggeri@arista.com
-Subject: [PATCH v3] net: use exponential backoff in netdev_wait_allrefs
-User-Agent: Heirloom mailx 12.5 7/5/10
-Content-Type: text/plain; charset=us-ascii
+        id S1726157AbgIQXwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 19:52:02 -0400
+Received: from mga02.intel.com ([134.134.136.20]:62814 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725987AbgIQXwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 19:52:02 -0400
+IronPort-SDR: tvLjnt3oTb2lstSKyqgCrB3efE5ptCk+Z3M6T2aj1f7INh+ieax4Bt2X+TB7Dt4LSRLd2Y0Z3j
+ cpZ6TqKKZjZA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="147504038"
+X-IronPort-AV: E=Sophos;i="5.77,272,1596524400"; 
+   d="scan'208";a="147504038"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 16:51:55 -0700
+IronPort-SDR: sKYl2n7CV2n/qrByGfT/KHF30CYNtfq36ZzeTbW05uM2a3VJ1rZp0vQaZmvPRKJwTAbWje/OXY
+ gVwrTLkmIjqA==
+X-IronPort-AV: E=Sophos;i="5.77,272,1596524400"; 
+   d="scan'208";a="336600459"
+Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.212.200.158]) ([10.212.200.158])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 16:51:55 -0700
+Subject: Re: [PATCH v4 0/5] Add shared workqueue support for idxd driver
+To:     Randy Dunlap <rdunlap@infradead.org>, vkoul@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dan.j.williams@intel.com, tony.luck@intel.com, jing.lin@intel.com,
+        ashok.raj@intel.com, sanjay.k.kumar@intel.com,
+        fenghua.yu@intel.com, kevin.tian@intel.com
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <160037680630.3777.16356270178889649944.stgit@djiang5-desk3.ch.intel.com>
+ <e178a1ae-0ce2-70bc-54b9-9e2fae837f06@infradead.org>
+From:   Dave Jiang <dave.jiang@intel.com>
+Message-ID: <84e1ec28-4a89-963a-49f6-3bbf1d276603@intel.com>
+Date:   Thu, 17 Sep 2020 16:51:53 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <e178a1ae-0ce2-70bc-54b9-9e2fae837f06@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Message-Id: <20200917234953.CB1D295C0A69@us180.sjc.aristanetworks.com>
-From:   fruggeri@arista.com (Francesco Ruggeri)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The combination of aca_free_rcu, introduced in commit 2384d02520ff
-("net/ipv6: Add anycast addresses to a global hashtable"), and
-fib6_info_destroy_rcu, introduced in commit 9b0a8da8c4c6 ("net/ipv6:
-respect rcu grace period before freeing fib6_info"), can result in
-an extra rcu grace period being needed when deleting an interface,
-with the result that netdev_wait_allrefs ends up hitting the msleep(250),
-which is considerably longer than the required grace period.
-This can result in long delays when deleting a large number of interfaces,
-and it can be observed with this script:
 
-ns=dummy-ns
-NIFS=100
 
-ip netns add $ns
-ip netns exec $ns ip link set lo up
-ip netns exec $ns sysctl net.ipv6.conf.default.disable_ipv6=0
-ip netns exec $ns sysctl net.ipv6.conf.default.forwarding=1
+On 9/17/2020 4:43 PM, Randy Dunlap wrote:
+> Hi,
+> 
+> On 9/17/20 2:15 PM, Dave Jiang wrote:
+>>
+>> ---
+>>
+>> Dave Jiang (5):
+>>        x86/asm: move the raw asm in iosubmit_cmds512() to special_insns.h
+>>        x86/asm: add enqcmds() to support ENQCMDS instruction
+>>        dmaengine: idxd: add shared workqueue support
+>>        dmaengine: idxd: clean up descriptors with fault error
+>>        dmaengine: idxd: add ABI documentation for shared wq
+>>
+> 
+> I don't see patch 3/5 in my inbox nor at https://lore.kernel.org/dmaengine/
+> 
+> Did the email monster eat it?
 
-for ((i=0; i<$NIFS; i++))
-do
-        if=eth$i
-        ip netns exec $ns ip link add $if type dummy
-        ip netns exec $ns ip link set $if up
-        ip netns exec $ns ip -6 addr add 2021:$i::1/120 dev $if
-done
+Grrrrrr looks like Intel email server ate it. Everyone on cc list got it. But 
+does not look like it made it to any of the mailing lists. I'll resend 3/5.
 
-for ((i=0; i<$NIFS; i++))
-do
-        if=eth$i
-        ip netns exec $ns ip link del $if
-done
-
-ip netns del $ns
-
-This patch uses exponential backoff instead of the fixed msleep(250)
-to get out of the loop faster.
-
-Time with this patch on a 5.4 kernel:
-
-real	0m8.199s
-user	0m0.402s
-sys	0m1.213s
-
-Time without this patch:
-
-real	0m31.522s
-user	0m0.438s
-sys	0m1.156s
-
-v2: use exponential backoff instead of trying to wake up
-    netdev_wait_allrefs.
-v3: preserve reverse christmas tree ordering of local variables
-
-Signed-off-by: Francesco Ruggeri <fruggeri@arista.com>
----
- net/core/dev.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 4086d335978c..e5fa60cb8832 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -9986,9 +9986,12 @@ EXPORT_SYMBOL(netdev_refcnt_read);
-  * We can get stuck here if buggy protocols don't correctly
-  * call dev_put.
-  */
-+#define MIN_MSLEEP	((unsigned int)16)
-+#define MAX_MSLEEP	((unsigned int)250)
- static void netdev_wait_allrefs(struct net_device *dev)
- {
- 	unsigned long rebroadcast_time, warning_time;
-+	unsigned int wait = MIN_MSLEEP;
- 	int refcnt;
- 
- 	linkwatch_forget_dev(dev);
-@@ -10023,7 +10026,8 @@ static void netdev_wait_allrefs(struct net_device *dev)
- 			rebroadcast_time = jiffies;
- 		}
- 
--		msleep(250);
-+		msleep(wait);
-+		wait = min(wait << 1, MAX_MSLEEP);
- 
- 		refcnt = netdev_refcnt_read(dev);
- 
--- 
-2.28.0
+> 
+> thanks.
+> 
+>>
+>>   Documentation/ABI/stable/sysfs-driver-dma-idxd |   14 ++
+>>   arch/x86/include/asm/io.h                      |   46 +++++---
+>>   arch/x86/include/asm/special_insns.h           |   17 +++
+>>   drivers/dma/Kconfig                            |   10 ++
+>>   drivers/dma/idxd/cdev.c                        |   49 ++++++++
+>>   drivers/dma/idxd/device.c                      |   91 ++++++++++++++-
+>>   drivers/dma/idxd/dma.c                         |    9 --
+>>   drivers/dma/idxd/idxd.h                        |   33 +++++-
+>>   drivers/dma/idxd/init.c                        |   92 ++++++++++++---
+>>   drivers/dma/idxd/irq.c                         |  143 ++++++++++++++++++++++--
+>>   drivers/dma/idxd/registers.h                   |   14 ++
+>>   drivers/dma/idxd/submit.c                      |   33 +++++-
+>>   drivers/dma/idxd/sysfs.c                       |  127 +++++++++++++++++++++
+>>   13 files changed, 608 insertions(+), 70 deletions(-)
+>>
+>> --
+>>
+> 
