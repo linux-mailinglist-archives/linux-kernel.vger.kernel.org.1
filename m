@@ -2,100 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A8226DE60
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F008B26DEDA
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727132AbgIQOhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 10:37:36 -0400
-Received: from mail-eopbgr60063.outbound.protection.outlook.com ([40.107.6.63]:40418
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727635AbgIQOc3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 10:32:29 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hFcTuhmTRuMBNdoSICS1zFeR4CNosYfVRz/Esdt7mEd4xZ9AiySiXzwasmrxwOoPzQg8Xujafz58cfo1J+H/+FxcJ9XJCcAxS8295eQctjk7iUS12UcuDvDofGYyCsqSfs6BdXdgF9t8Othjqu4ZeGOOF9gTF4+9kbMCsSlAiq4ZwWdkBGxj8jAvkJeXqsdH4l/c/zDLSgqb74PXIiT1HPyhwkqj90P3fskF58GKqt8EfF/9iY1eUGQwKbZkmrSMbi8ifXVywXJvAMZ2Tw2jkm9ieAeyDBycVOuX2gK1ZRDfmoG4BWtrg7ihlxt9OaD/qAohnCAFLTNh7MchA+ql9g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hDZs1CtzXQ+mz12mXflTcKAQi+QqMa8cxmdSISP8K8Y=;
- b=QRu/ZqA6zrs/yY2e2J8oT6M1BCpTYUIHdh6PfDw8ybtFlU1j9KkLJucDb6DiN2mbAvY0HQT1T2qczB3HTxKbDziZe04qtm9odPJ6J4ESipaTP7ksEe4Tkvf6ztr8Pn8UQGnBXLjWB8uAwTnW2xcAI2zFHgdivvHYDrzU4+bc18H3pUZqe51oYM5lTrxDhMaI2enpWoL43q5mFe3TlD7Der2a/ZY0gNgs6i9NqvjDy/KjAyiSbUzfN+fk+qAoXpIZW1VqAgttLcvdo6XFer/z4HXzRREnhN60y829WaZr1J14PCme5Vc4I5P1rhwveRIw5WQkzW8NAM9oTYd/oUGIBg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hDZs1CtzXQ+mz12mXflTcKAQi+QqMa8cxmdSISP8K8Y=;
- b=ntAg/xQ5iyEyX17MnMtgxDxQMDqOjz+j+pyrc3YFr00TX6ZbrkYY/7MgUUcvzoooHou40dXflgfLT/LZPPSUDKgfjWD2PoaoAazTDERk2VZufKxZL0Y7eOCGrJDJ8bJXDba5Cj9GJ9JpnMzTODxenoVZNW9ptgM6n73g8l0dPu0=
-Received: from VI1PR0402MB3871.eurprd04.prod.outlook.com
- (2603:10a6:803:16::14) by VE1PR04MB7422.eurprd04.prod.outlook.com
- (2603:10a6:800:1af::5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Thu, 17 Sep
- 2020 14:15:26 +0000
-Received: from VI1PR0402MB3871.eurprd04.prod.outlook.com
- ([fe80::9488:e177:a8e8:9037]) by VI1PR0402MB3871.eurprd04.prod.outlook.com
- ([fe80::9488:e177:a8e8:9037%7]) with mapi id 15.20.3370.019; Thu, 17 Sep 2020
- 14:15:26 +0000
-From:   Ioana Ciornei <ioana.ciornei@nxp.com>
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-CC:     Ioana Ciocoi Radulescu <ruxandra.radulescu@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next v2] dpaa2-eth: Convert to DEFINE_SHOW_ATTRIBUTE
-Thread-Topic: [PATCH -next v2] dpaa2-eth: Convert to DEFINE_SHOW_ATTRIBUTE
-Thread-Index: AQHWjPBTL0pvGCXY6kmuFwdzssdIm6ls4BiA
-Date:   Thu, 17 Sep 2020 14:15:26 +0000
-Message-ID: <20200917141525.eyjlmkvdy53myjio@skbuf>
-References: <20200917124508.102754-1-miaoqinglang@huawei.com>
-In-Reply-To: <20200917124508.102754-1-miaoqinglang@huawei.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [188.25.217.212]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 2344c444-04c1-40bf-555d-08d85b141ff6
-x-ms-traffictypediagnostic: VE1PR04MB7422:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VE1PR04MB7422373FCA50A31C4EA63F37E03E0@VE1PR04MB7422.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1332;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: vC+/DOZ+U8yBwpobeuTTrOCTeKGc2YqHPe6bsXyB70fb57DTkXPQP0CoV0Wfnggd6N6Uw8jG0sknROjfAlPuKqBSUQLhI43SBg2AuuGozQg9UUOL40sC/lUcDlQllOxpIcEIsOlXFnKVy1QsJ4SZzbTpI7cuaxJGqlfl7KNHtfgj/r+mRw5PrJf0nWYnpPHQzlbAGIFZKopGD21OSodvDkoqFvr/+lw5AdB7R1sHQCT8qH7ST04QBUEMV8nh5jPyAoboK120eodv3urEy7QIqK0tPo8oR2o61ui+4YDb3TitmIWmdkjkuzD9BY5zlr1H9j5caaFugim1fbVDegZCFA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3871.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(376002)(136003)(346002)(396003)(366004)(39860400002)(64756008)(4744005)(5660300002)(8936002)(8676002)(54906003)(44832011)(26005)(186003)(316002)(478600001)(66476007)(66946007)(4326008)(1076003)(6512007)(2906002)(76116006)(66556008)(6916009)(66446008)(91956017)(9686003)(6506007)(71200400001)(86362001)(6486002)(83380400001)(33716001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: Ax2KxagO/3GnL6IAPtotpRMYk/V+NkewLr5WcLWv+TSnYONhyj0JD0viHegg1oMwtmBuehw8WwElW1x5tpawZayDowzm3vk0w0G4a7byXSs9Af12YlJXj5GtQDP/IXylsCwtHgiVmiNGm+8doNE/5WI93t8UgZK1fPLM76TmuYFXZ7QvAYE1PCKeSeP8/iQvMsCJ8lIu/9wyzVq4yvXcpQKyRGEM4Lz7y9zmFcMuz4FsWsZcCDbZv1n3Fl1adLJ6m2y2JNPD6ujnRpuHscCjOgHJdV6us+gjDGWBBfv5ACdqXhdVFP1AV/abw9xjkLj5f0EnOSGvSGWYXY9L6GN3UmbaTx0lCPz2j9oxzDqrXgjAP97fM/4MYD2QbYWOxdZr4dJ+4+bUVyKiQUHQ8QNjLLghli4H+w+ibeV8UR6xtWbVhAqD1PSuS2XwP2gpxKz7QjsASvhpQ2FV7TE30JRmMLbxJCjYbRj8dAgJPhYoxxVZkp+0fGqQjEVPG7mc5DOdDXYHtw6V5kEvToaxcWZjqRB5ZDCt5H8o6LnsHE7OAD4kx4lsd+lx8iZeP50Y1ybFXxybFvpMnDXg0khc5RlEl+38E9ugq0Jn9+1ZzOY3Ooo0qi2EmD3f570XQjV812MshkNUGMJYmsd1KBWS+aYTXQ==
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <A336A06675DF13478C9182908E590A39@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1727651AbgIQO5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 10:57:00 -0400
+Received: from relay-us1.mymailcheap.com ([51.81.35.219]:33826 "EHLO
+        relay-us1.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727593AbgIQOtX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 10:49:23 -0400
+Received: from relay5.mymailcheap.com (relay5.mymailcheap.com [159.100.241.64])
+        by relay-us1.mymailcheap.com (Postfix) with ESMTPS id 6E96620DE4;
+        Thu, 17 Sep 2020 14:24:29 +0000 (UTC)
+Received: from relay1.mymailcheap.com (relay1.mymailcheap.com [144.217.248.100])
+        by relay5.mymailcheap.com (Postfix) with ESMTPS id 6FCE92008F;
+        Thu, 17 Sep 2020 14:24:24 +0000 (UTC)
+Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
+        by relay1.mymailcheap.com (Postfix) with ESMTPS id 12C163F1C5;
+        Thu, 17 Sep 2020 14:24:19 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by filter1.mymailcheap.com (Postfix) with ESMTP id EA7502A0FD;
+        Thu, 17 Sep 2020 10:24:18 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1600352659;
+        bh=viAHQu2L83R9ESQNfxHMi9ooNlxH9kEpvfY/wdYaq34=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=HTvXg4kV0NOh8aCY15bSNzdqFDujXabkSJMbE6oFoVYUjkdPUlqX6y2//OCRVj93z
+         A14NMa//JLCIg71Mck2JXvjscT/BIMXJprAFcoUbZd69Tm2QMx4m97IwaXYWRKkBIJ
+         GhckXAKo6YLEH10HWyvOE8g+wEq5XYWlMRGSSd2k=
+X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
+Received: from filter1.mymailcheap.com ([127.0.0.1])
+        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id tZ8_4j9BMlXg; Thu, 17 Sep 2020 10:24:16 -0400 (EDT)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter1.mymailcheap.com (Postfix) with ESMTPS;
+        Thu, 17 Sep 2020 10:24:16 -0400 (EDT)
+Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id 772E640EEC;
+        Thu, 17 Sep 2020 14:24:12 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="VaxzxN5E";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from [0.0.0.0] (li1197-90.members.linode.com [45.79.98.90])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id BB68140FF5;
+        Thu, 17 Sep 2020 14:21:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
+        s=default; t=1600352477;
+        bh=viAHQu2L83R9ESQNfxHMi9ooNlxH9kEpvfY/wdYaq34=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=VaxzxN5ErI17+SmxwTOyzK7glLqBmELJ8dsWKWgo0wkglfPIm+yCtvQSabYcsayds
+         LTF7ifpDNd8XRXJkpwCtbW0JmxHBsdU6lsC6S1TOaTnVsB/5uVqHfUxpjTub6cFryO
+         C6ifDOPgcIssYOU7m97dvQUJEODIsgrZxob9yJiQ=
+Subject: Re: [PATCH] MIPS: Loongson64: Add kexec/kdump support
+To:     Jinyang He <hejinyang@loongson.cn>, Huacai Chen <chenhc@lemote.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Youling Tang <tangyouling@loongson.cn>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, kexec@lists.infradead.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+References: <1600175263-7872-1-git-send-email-hejinyang@loongson.cn>
+ <376B4B91-0736-43FA-87EA-43E12FF24EF1@flygoat.com>
+ <7b78c4d4-7ee3-cf57-71d1-95611713de2b@loongson.cn>
+ <CAAhV-H5t3KWL1O+JKVp+T2qqGXuW7OiasjnnCLmV0+GE0Ns9xQ@mail.gmail.com>
+ <647822a9-bc3b-5da1-95e7-c048a5a3b8fa@loongson.cn>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <42ff66fb-a0bf-937f-8415-5d407fb93e03@flygoat.com>
+Date:   Thu, 17 Sep 2020 22:21:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3871.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2344c444-04c1-40bf-555d-08d85b141ff6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Sep 2020 14:15:26.5876
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VODrbFh+s5RKF/AZAuaACO0xzdpGcLByIzPKalZT6/VuGCIb3YSdzbHIyIUHtVAAPdGbRrCju6oeP9NwMeIvIA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7422
+In-Reply-To: <647822a9-bc3b-5da1-95e7-c048a5a3b8fa@loongson.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 772E640EEC
+X-Spamd-Result: default: False [-0.10 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         ML_SERVERS(-3.10)[213.133.102.83];
+         DKIM_TRACE(0.00)[flygoat.com:+];
+         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
+         RCPT_COUNT_SEVEN(0.00)[8];
+         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_MATCH_FROM(0.00)[];
+         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
+X-Rspamd-Server: mail20.mymailcheap.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 08:45:08PM +0800, Qinglang Miao wrote:
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 
-Reviewed-by: Ioana Ciornei <ioana.ciornei@nxp.com>
 
-> ---
-> v2: based on linux-next(20200917), and can be applied to
->     mainline cleanly now.
->=20
->  .../freescale/dpaa2/dpaa2-eth-debugfs.c       | 63 ++-----------------
->  1 file changed, 6 insertions(+), 57 deletions(-)
-> =
+在 2020/9/17 20:41, Jinyang He 写道:
+> Hi, Huacai,
+>
+>
+> On 09/16/2020 01:39 PM, Huacai Chen wrote:
+>> Hi, Jinyang,
+>>
+>> On Tue, Sep 15, 2020 at 10:17 PM Jinyang He <hejinyang@loongson.cn> 
+>> wrote:
+>>>
+>>>
+>>> On 09/16/2020 09:33 AM, Jiaxun Yang wrote:
+>>>> 于 2020年9月15日 GMT+08:00 下午9:07:43, Jinyang He 
+>>>> <hejinyang@loongson.cn> 写到:
+>>>>> Add loongson_kexec_prepare(), loongson_kexec_shutdown() and
+>>>>> loongson_kexec_crashdown() for passing the parameters of kexec_args.
+>>>>>
+>>>>> To start loongson64, CPU0 needs 3 parameters:
+>>>>> fw_arg0: the number of cmd.
+>>>>> fw_arg1: cmd structure which seems strange, the cmd array[index]'s
+>>>>>           value is cmd string's address, index >= 1.
+>>>>> fw_arg2: environment.
+>>>>>
+>>>>> Secondary CPUs do not need parameter at once. They query their
+>>>>> mailbox to get PC, SP and GP in a loop before CPU0 brings them up
+>>>>> and passes these parameters via mailbox.
+>>>>>
+>>>>> loongson_kexec_prepare(): Alloc new memory to save cmd for kexec.
+>>>>> Combine the kexec append option string as cmd structure, and the cmd
+>>>>> struct will be parsed in fw_init_cmdline() of 
+>>>>> arch/mips/fw/lib/cmdline.c.
+>>>>> image->control_code_page need pointing to a safe memory page. In 
+>>>>> order to
+>>>>> maintain compatibility for the old firmware the low 2MB is reserverd
+>>>>> and safe for Loongson. So let it points here.
+>>>>>
+>>>>> loongson_kexec_shutdown(): Wake up all present CPUs and let them go
+>>>>> to reboot_code_buffer. Pass the kexec parameters to kexec_args.
+>>>>>
+>>>>> loongson_crash_shutdown(): Pass the kdump parameters to kexec_args.
+>>>>>
+>>>>> The assembly part provide a way like BIOS doing to keep secondary
+>>>>> CPUs in a querying loop.
+>>>>>
+>>>>> This patch referenced [1][2][3].
+>>>>>
+>>>>> [1] arch/mips/cavium-octeon/setup.c
+>>>>> [2] https://patchwork.kernel.org/patch/10799217/
+>>>>> [3] 
+>>>>> https://gitee.com/loongsonlab/qemu/blob/master/hw/mips/loongson3a_rom.h 
+>>>>>
+>>>>>
+>>>>> Co-developed-by: Youling Tang <tangyouling@loongson.cn>
+>>>>> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+>>>>> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+>>>>> ---
+>>>>> arch/mips/kernel/relocate_kernel.S | 19 ++++++++
+>>>>> arch/mips/loongson64/reset.c       | 88 
+>>>>> ++++++++++++++++++++++++++++++++++++++
+>>>>> 2 files changed, 107 insertions(+)
+>>>>>
+>>>>> diff --git a/arch/mips/kernel/relocate_kernel.S 
+>>>>> b/arch/mips/kernel/relocate_kernel.S
+>>>>> index ac87089..061cbfb 100644
+>>>>> --- a/arch/mips/kernel/relocate_kernel.S
+>>>>> +++ b/arch/mips/kernel/relocate_kernel.S
+>>>>> @@ -133,6 +133,25 @@ LEAF(kexec_smp_wait)
+>>>>> #else
+>>>>>       sync
+>>>>> #endif
+>>>>> +
+>>>>> +#ifdef CONFIG_CPU_LOONGSON64
+>>>>> +#define MAILBOX_BASE 0x900000003ff01000
+>>>> Please avoid hardcoded SMP information. You're breaking Loongson 3B 
+>>>> support.
+>>>>
+>>> Ok, I see. Since my machine is Loongson 3A. I'll send v2
+>>> after I test it in 3B.
+>> 1, My original version can work on both Loongson-3A and Loongson-3B,
+>> why you modify my patch and hadn't discuss with me?
+>>
+>> 2, With this single patch both kexec and kdump cannot work reliably,
+>> because kexec need this patch:
+>>     https://patchwork.kernel.org/patch/11695929/
+>>
+>>     and kdump need my first patch in my original version:
+>>     https://patchwork.kernel.org/patch/10799215/
+>>
+>>     You may argue that you have tested. Yes, I believe that, I'm not
+>> saying that you haven't test, and I'm not saying that your patch
+>> cannot work, I'm just saying that your patch is not robust.
+>>
+>> 3, I'm the original author and paying attention to kexec/kdump
+>> continuosly, I will send a new version once the above two patches be
+>> accepted. But you re-send my patch without any communication with me,
+>> why you so impatient?
+>>
+>> Huacai
+>>
+>
+> 1, Your original version:
+>    https://patchwork.kernel.org/patch/10799217/
+>
+> This patch can work on Loongson-3A, I tested it.
+>
+> But it works wrong after the follow behaviors,
+>    kexec -l vmlinux --append=cmdline_kexec
+>    kexec -p vmlinux --append=cmdline_kdump
+>    kexec -e
+>
+> It works but cmdline_kdump merged cmdline_kexec.
+>
+> And this patch memcpy from fw_arg2 to kexec_envp and later memcpy from
+> kexec_envp to fw_arg2 when fw_arg2 was not changed, it's redundant.
+>
+> However, I have not Loongson-3B now, and did not test it. For this patch,
+> does it work well on Loongson-3B3000/Loongson-3B4000?
+
+Hi Jingyang,
+
+Well for Loongson-3B I meant 3B1000/3B1500, which have different layout
+of SMP registers. For 3B3000/3B4000 everyone know they're just different
+branding to the same silicon.
+>
+> 3, I try to fix Loongson64 kexec function since I joined the community.
+> I fell sorry to not do enough research on Loongson64 kexec. My first 
+> patch:
+>    https://patchwork.kernel.org/patch/11684849/
+
+I'm glad to see Loongson staff joining the community and enhance our code.
+It is common practice to investigate historical changes before do something
+to the upstream code :-)
+
+>
+> It fixed problem about "Crash kernel" which can be traced back to 
+> linux-5.4.
+> At that time, I thought there is no developer work on Kexec. Thus, I 
+> did a
+> lot on Kexec. Are you really continuosly paying attention to kexec/kdump?
+> With the exploring and developing deep, I found your patch several 
+> days ago
+> after I did a draft patch witch referenced:
+>    arch/mips/cavium-octeon/setup.c
+> https://gitee.com/loongsonlab/qemu/blob/master/hw/mips/loongson3a_rom.h
+>
+> There is no doubt that your patch gives me confidence and suggestion 
+> while
+> it gives me worry. As a newcomer, I do not know if should communicate 
+> with
+> you since your patch was committed one year ago. And now it may be a good
+> chance to do some communication.
+
+You should *always* try to *credit* others properly, that's the first thing.
+Communication is optional but highly recommanded.
+
+Recently I can smell there are some tensions raised between the 
+community and
+the Loongson company, mainly about GPL violation and Loongson's attitude
+towards the community. Personaly I don't hold any hostility to Loongosn's
+practice in the community but I'd also like to see Loongson show their 
+respect
+to the community.
+
+Thanks.
+
+- Jiaxun
+
+>
+> Thanks,
+>
+> - Jinyang.
+>
