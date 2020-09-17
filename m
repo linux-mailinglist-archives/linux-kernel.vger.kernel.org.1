@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62ED426D5C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EB2326D5F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726250AbgIQIIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 04:08:40 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:57678 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726455AbgIQIH5 (ORCPT
+        id S1726361AbgIQILf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 04:11:35 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:37338 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726406AbgIQIEs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 04:07:57 -0400
+        Thu, 17 Sep 2020 04:04:48 -0400
+X-Greylist: delayed 968 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 04:04:47 EDT
 Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08H7mJhn109035;
-        Thu, 17 Sep 2020 02:48:19 -0500
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08H7mMUw098041;
+        Thu, 17 Sep 2020 02:48:22 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600328899;
-        bh=GQf2mrBMP5jSalqwKWbonLXiaPuvhMhO6Zn1bvzCtGE=;
+        s=ti-com-17Q1; t=1600328902;
+        bh=SHgXttKECBGQDR9ohxlLnwKQKV//DVB9akw0KXwlW2U=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=SiWSIe++RtO9/1LZxTiUV6d4hNOgna3Co3TJtBBUp5/6ygS8qhOhu0coMs6RawyAt
-         DqZmAMdfw2SM9j4cWAzUOUacx2f+1euC2CJBA5oHmYF2sPusFYag9Dzd6O5AEe8OjO
-         njdBnuidc91XrN8pQWl+rmN4FGH7CooYVZ9T/hUQ=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08H7mJmW102251
+        b=STXDMYpH8YG2YYjA2oRpmKjST6laTX4vlvGdasGxq4mKKbT78XN5JsITm8QSWQjiY
+         D88xsrbu3oPbfMamp35Wz4Huy5lPa275h3ALQSKq+6DDbKQzhH7yss9WFya/fHsfb9
+         zkP1kX9etsK7XooaasQ8uN2D/QXPPvII4+cJOwXk=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08H7mMR5102292
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 17 Sep 2020 02:48:19 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+        Thu, 17 Sep 2020 02:48:22 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 17
- Sep 2020 02:48:19 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ Sep 2020 02:48:21 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 17 Sep 2020 02:48:19 -0500
+ Frontend Transport; Thu, 17 Sep 2020 02:48:21 -0500
 Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08H7mEds100359;
-        Thu, 17 Sep 2020 02:48:17 -0500
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08H7mEdt100359;
+        Thu, 17 Sep 2020 02:48:19 -0500
 From:   Vignesh Raghavendra <vigneshr@ti.com>
 To:     Vignesh Raghavendra <vigneshr@ti.com>
 CC:     Miquel Raynal <miquel.raynal@bootlin.com>,
         Richard Weinberger <richard@nod.at>,
         Sergei Shtylyov <sergei.shtylyov@gmail.com>,
         <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 1/4] mtd: hyperbus: Provide per device private pointer
-Date:   Thu, 17 Sep 2020 13:17:46 +0530
-Message-ID: <20200917074749.8957-2-vigneshr@ti.com>
+Subject: [PATCH 2/4] mtd: hyperbus: hbmc-am654: Fix direct mapping setup flash access
+Date:   Thu, 17 Sep 2020 13:17:47 +0530
+Message-ID: <20200917074749.8957-3-vigneshr@ti.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200917074749.8957-1-vigneshr@ti.com>
 References: <20200917074749.8957-1-vigneshr@ti.com>
@@ -57,34 +58,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide per device private pointer that can be used by controller
-drivers to store device specific private data.
+Setting up of direct mapping should be done with flash node's IO
+address space and not with controller's IO region.
 
+Fixes: b6fe8bc67d2d3 ("mtd: hyperbus: move direct mapping setup to AM654 HBMC driver")
 Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
 ---
- include/linux/mtd/hyperbus.h | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/mtd/hyperbus/hbmc-am654.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/mtd/hyperbus.h b/include/linux/mtd/hyperbus.h
-index 2129f7d3b6eb..d8cb1aec826d 100644
---- a/include/linux/mtd/hyperbus.h
-+++ b/include/linux/mtd/hyperbus.h
-@@ -20,6 +20,7 @@ enum hyperbus_memtype {
-  * @mtd: pointer to MTD struct
-  * @ctlr: pointer to HyperBus controller struct
-  * @memtype: type of memory device: HyperFlash or HyperRAM
-+ * @priv: pointer to controller specific per device private data
-  */
+diff --git a/drivers/mtd/hyperbus/hbmc-am654.c b/drivers/mtd/hyperbus/hbmc-am654.c
+index e0e33f6bf513..1e70ecfffa39 100644
+--- a/drivers/mtd/hyperbus/hbmc-am654.c
++++ b/drivers/mtd/hyperbus/hbmc-am654.c
+@@ -70,7 +70,8 @@ static int am654_hbmc_probe(struct platform_device *pdev)
  
- struct hyperbus_device {
-@@ -28,6 +29,7 @@ struct hyperbus_device {
- 	struct mtd_info *mtd;
- 	struct hyperbus_ctlr *ctlr;
- 	enum hyperbus_memtype memtype;
-+	void *priv;
- };
+ 	platform_set_drvdata(pdev, priv);
  
- /**
+-	ret = of_address_to_resource(np, 0, &res);
++	priv->hbdev.np = of_get_next_child(np, NULL);
++	ret = of_address_to_resource(priv->hbdev.np, 0, &res);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -103,7 +104,6 @@ static int am654_hbmc_probe(struct platform_device *pdev)
+ 	priv->ctlr.dev = dev;
+ 	priv->ctlr.ops = &am654_hbmc_ops;
+ 	priv->hbdev.ctlr = &priv->ctlr;
+-	priv->hbdev.np = of_get_next_child(dev->of_node, NULL);
+ 	ret = hyperbus_register_device(&priv->hbdev);
+ 	if (ret) {
+ 		dev_err(dev, "failed to register controller\n");
 -- 
 2.28.0
 
