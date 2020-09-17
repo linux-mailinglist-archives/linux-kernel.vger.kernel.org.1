@@ -2,92 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C79426E2B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7110D26E27E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:33:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726584AbgIQRmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 13:42:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726621AbgIQRlT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 13:41:19 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85CB8C06174A;
-        Thu, 17 Sep 2020 10:41:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=KzFlskTtmrM7XbM2RHeFq/XrvDOcZp5iQ+zvN+xoZ6s=; b=W52KmyKfz6Yg3D0Gg5sOUVRhY6
-        9YO2fXcc15UC2+ZB2tB1a0OE4cfo9DsFWP7/dS743uyXakYRhS1KIY3opHGbxQt+iLIdF6wvt2WtP
-        LLz0yp5vyGE6FTYHWtp4ORfhbFh7EO7JQPux3AS+/zCdT0F8/GUZmhaNyWdj4k6BRIwfnFewGpgKs
-        nMrx6f3O+9pRsKF9wBuEEgVYdWEmAhrDe76OJoWf3L6mY3oyBVMyPt+zNlZaxqln9B5i+OgP3qbYF
-        ZkRP5uQO5bM2XVOxbcPsz4RCDpxE0XOPeTJZPAYeOBc+Oder4glvi+mKRSlECAkvSONOV8ILHN1Xk
-        TAnZT62Q==;
-Received: from 089144214092.atnat0023.highway.a1.net ([89.144.214.92] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIxuD-0003Ny-D8; Thu, 17 Sep 2020 17:41:13 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Russell King <linux@armlinux.org.uk>
-Cc:     Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Tony Lindgren <tony@atomide.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: [PATCH 3/4] ARM/dma-mapping: don't handle NULL devices in dma-direct.h
-Date:   Thu, 17 Sep 2020 19:32:28 +0200
-Message-Id: <20200917173229.3311382-4-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200917173229.3311382-1-hch@lst.de>
-References: <20200917173229.3311382-1-hch@lst.de>
+        id S1726584AbgIQRdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 13:33:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38474 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726458AbgIQRca (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 13:32:30 -0400
+Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C07192137B;
+        Thu, 17 Sep 2020 17:32:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600363950;
+        bh=FILNgR3grz7ZmaIuphzbDr2tocKVxDkRDNJ9MW8uHO8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=q1NiPFr0WX2V61U67EWEAEyuEvbVfQ1B0TP8bOtiop0XX1i44JmzvhAYANhZrb6uj
+         CJbIex+ECShGfs9IKcfqjZ7N6KXm/2WXG0UwmLFcEcep+q5GiLKIeztbAsdg8SNF3e
+         eD1Dtgw+Rwm6iRckSqOLZKg5XKG1IG+Dp3iqqYuo=
+Date:   Thu, 17 Sep 2020 12:32:28 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Jiang Biao <benbjiang@gmail.com>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jiang Biao <benbjiang@tencent.com>,
+        Bin Lai <robinlai@tencent.com>
+Subject: Re: [PATCH] driver/pci: reduce the single block time in
+ pci_read_config
+Message-ID: <20200917173228.GA1713970@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200824052025.48362-1-benbjiang@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DMA API removed support for not passing in a device a long time
-ago, so remove the NULL checks.
+On Mon, Aug 24, 2020 at 01:20:25PM +0800, Jiang Biao wrote:
+> From: Jiang Biao <benbjiang@tencent.com>
+> 
+> pci_read_config() could block several ms in kernel space, mainly
+> caused by the while loop to call pci_user_read_config_dword().
+> Singel pci_user_read_config_dword() loop could consume 130us+,
+>               |    pci_user_read_config_dword() {
+>               |      _raw_spin_lock_irq() {
+> ! 136.698 us  |        native_queued_spin_lock_slowpath();
+> ! 137.582 us  |      }
+>               |      pci_read() {
+>               |        raw_pci_read() {
+>               |          pci_conf1_read() {
+>   0.230 us    |            _raw_spin_lock_irqsave();
+>   0.035 us    |            _raw_spin_unlock_irqrestore();
+>   8.476 us    |          }
+>   8.790 us    |        }
+>   9.091 us    |      }
+> ! 147.263 us  |    }
+> and dozens of the loop could consume ms+.
+> 
+> If we execute some lspci commands concurrently, ms+ scheduling
+> latency could be detected.
+> 
+> Add scheduling chance in the loop to improve the latency.
+> 
+> Reported-by: Bin Lai <robinlai@tencent.com>
+> Signed-off-by: Jiang Biao <benbjiang@tencent.com>
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/arm/include/asm/dma-direct.h | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+Applied to pci/enumeration for v5.10, thanks!
 
-diff --git a/arch/arm/include/asm/dma-direct.h b/arch/arm/include/asm/dma-direct.h
-index 1f04a5e1c615de..84cb4e30658891 100644
---- a/arch/arm/include/asm/dma-direct.h
-+++ b/arch/arm/include/asm/dma-direct.h
-@@ -11,7 +11,7 @@
-  */
- static inline dma_addr_t pfn_to_dma(struct device *dev, unsigned long pfn)
- {
--	if (dev && dev->dma_range_map)
-+	if (dev->dma_range_map)
- 		pfn = PFN_DOWN(translate_phys_to_dma(dev, PFN_PHYS(pfn)));
- 	return (dma_addr_t)__pfn_to_phys(pfn);
- }
-@@ -20,16 +20,13 @@ static inline unsigned long dma_to_pfn(struct device *dev, dma_addr_t addr)
- {
- 	unsigned long pfn = __phys_to_pfn(addr);
- 
--	if (dev && dev->dma_range_map)
-+	if (dev->dma_range_map)
- 		pfn = PFN_DOWN(translate_dma_to_phys(dev, PFN_PHYS(pfn)));
- 	return pfn;
- }
- 
- static inline dma_addr_t virt_to_dma(struct device *dev, void *addr)
- {
--	if (dev)
--		return pfn_to_dma(dev, virt_to_pfn(addr));
--
- 	return (dma_addr_t)__virt_to_bus((unsigned long)(addr));
- }
- 
--- 
-2.28.0
-
+> ---
+>  drivers/pci/pci-sysfs.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> index 6d78df9..3b9f63d 100644
+> --- a/drivers/pci/pci-sysfs.c
+> +++ b/drivers/pci/pci-sysfs.c
+> @@ -708,6 +708,7 @@ static ssize_t pci_read_config(struct file *filp, struct kobject *kobj,
+>  		data[off - init_off + 3] = (val >> 24) & 0xff;
+>  		off += 4;
+>  		size -= 4;
+> +		cond_resched();
+>  	}
+>  
+>  	if (size >= 2) {
+> -- 
+> 1.8.3.1
+> 
