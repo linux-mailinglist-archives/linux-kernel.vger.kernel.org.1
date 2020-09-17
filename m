@@ -2,123 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ABC926D740
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1B7A26D73F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:58:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726497AbgIQI5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 04:57:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726191AbgIQI5h (ORCPT
+        id S1726476AbgIQI5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 04:57:39 -0400
+Received: from lb3-smtp-cloud8.xs4all.net ([194.109.24.29]:46885 "EHLO
+        lb3-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726217AbgIQI5g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 04:57:37 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CD77C06174A;
-        Thu, 17 Sep 2020 01:57:35 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BsW7Z2M8fz9sSC;
-        Thu, 17 Sep 2020 18:57:30 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600333050;
-        bh=x+1vU5s/qiYCUF+IZF2QwlxWyd8G1Gbr/+jRFDRLYsQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=hIpHaiHjARQMG9yODevuXD3saGCjTXzTfRhk1DdtHGusBJMlkuFIStPOnaw8YVF42
-         QXb2IYOzKa0yvxAgfn4GzWmUtUI/kVxeshowDOTN8AWizwm28DZd7ZRikTqPJ5DRxd
-         2153q1PVAwjM4Uiy6J470i148Y0ERQU2TpiMPm645dFjG5vZ7jEweswMhui4wdGef/
-         hm3sTUmjxanSU05jyVviyLLwwUf/xzxxK9kwjGnC/1j0JQ4yw24OVz/CZTQjGl8zrR
-         nWWfFRQwiJHiKKMvIHLOmjHseXabNFKPYPrxxQ7tZUyiEwXSZM0fP8wKDjPsMaUC17
-         t24uqqPFB1GZQ==
-Date:   Thu, 17 Sep 2020 18:57:29 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Cc:     Mike Rapoport <rppt@linux.ibm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: manual merge of the akpm-current tree with the powerpc
- tree
-Message-ID: <20200917185729.7911e2b5@canb.auug.org.au>
+        Thu, 17 Sep 2020 04:57:36 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id IpjOkLFp4PTBMIpjPklEVJ; Thu, 17 Sep 2020 10:57:32 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1600333052; bh=TbnZlMyjc7hLW5uIquqo+lfYa05Kd4uURNp0UGR0Q6c=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=qhWncq+6AkVVfv7kbN22XwqiEJUyw652fCtE+1rMl8B8+4Ubq5SBp/w+g4myHmhB/
+         7lwUqNU/t4lJ5uw2PCu4vv8aZy+PbZcULxZshJcr2Hszcorv7jZGL+E95nuuRRouAo
+         7Pe/I79ebUjrg8FHil26o3k5cKs0J7e8p0il/dkIrbb7ovWr0w5YJsAHK6UeShckZ1
+         BY6wctElBKYNsJ1SgMigSZchyKs6ayjYo9ZseZgvFaaUQERN6M67ZeGXj25KcWPnHi
+         ImmhRykluwfEqWE/mJudRQrwg5AgqD11S/1yzuUAUPURbBVYD2rr2ZilmMgXHX9oAw
+         5qbiiMzqiHJyw==
+Subject: Re: [PATCH v3] media: rcar-vin: Enable YDS bit depending on bus_width
+ and data_shift
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>
+References: <20200913181608.32077-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <a153e31a-4115-db74-9b21-3e0cbcd8993d@xs4all.nl>
+Date:   Thu, 17 Sep 2020 10:57:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/h=lzTyWsgBMheYWQVF1XVyg";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20200913181608.32077-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfFFR2firi3VrZbJciuz+8KyIN1Cr/M78LF570WN6OoeLmaimY1FXDLMAni4sG3Px59Z6eh/leikmodORkTkZUSnq7JXf6nAjD8UZOZBnCY5g/No67Iah
+ 8pfVXOZSJ6F+9WdXNt0HteX7kNzeAdd1wShfXmPyWQMPkIYHEoaTtBgyPT9JUjNRXrQlQp5XxzSLTS02q8qdA7r39/4vgZi9UXHnD1FJ6sQK9QSPhx6b7Vs8
+ hkcn5VFihQKp+dcmaSONcRb0bdcoQuzyXblHfrvGpRWAYcFB+k9KDI2nDje8zRXdLeYZORQ353NuCbMawor8/wkmDHCURnhdpi4evkb5YZSlpFrcK1SzlBnQ
+ oiUTBUWC8Ihq6FKLIK91R0zBgEt/b/kOz8pCiGOZjcGwv+KqtU6r1cNvIrjtIKCnKnzDYTfHkymXF1HSMJZtiYsJI5TNrsDcTC5zXRDstfdTlQYdU7PkF992
+ auVLCyO1vVGcDXwCdGwMNuZ0HTqivea7fjy8kkI6zsgPbLaHCNvQ0qKwne9UCjWd03k2lXevPSQB9l+YVO9q3pmivRFtkaiH564mW1XRxmIPc6JCHZNCcdNu
+ NCRcNUBLqwpE5LKsH100hxH9HqcNmPUG0w43j/zWrvWznw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/h=lzTyWsgBMheYWQVF1XVyg
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Prabhakar,
 
-Hi all,
+Can you rebase this patch? It no longer applies.
 
-Today's linux-next merge of the akpm-current tree got a conflict in:
+Regards,
 
-  arch/powerpc/mm/kasan/kasan_init_32.c
+	Hans
 
-between commit:
+On 13/09/2020 20:16, Lad Prabhakar wrote:
+> Enable YDS bit if bus_width and data_shift is set to 8 in parallel mode
+> for MEDIA_BUS_FMT_UYVY8_2X8 format.
+> 
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> ---
+> Changes for v3:
+> * Dropped BIT macro
+> * Introduced struct v4l2_fwnode_bus_parallel
+> 
+> Changes for v2:
+> * Dropped DT binding documentation patch
+> * Select the data pins depending on bus-width and data-shift
+> 
+> v1 -
+> https://patchwork.kernel.org/project/linux-renesas-soc/list/?series=323799
+> ---
+>  drivers/media/platform/rcar-vin/rcar-core.c |  9 ++++-----
+>  drivers/media/platform/rcar-vin/rcar-dma.c  | 17 ++++++++++++++---
+>  drivers/media/platform/rcar-vin/rcar-vin.h  |  5 +++--
+>  3 files changed, 21 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/media/platform/rcar-vin/rcar-core.c b/drivers/media/platform/rcar-vin/rcar-core.c
+> index 7440c8965d27..1149ab76cf5c 100644
+> --- a/drivers/media/platform/rcar-vin/rcar-core.c
+> +++ b/drivers/media/platform/rcar-vin/rcar-core.c
+> @@ -626,12 +626,11 @@ static int rvin_parallel_parse_v4l2(struct device *dev,
+>  
+>  	switch (vin->parallel->mbus_type) {
+>  	case V4L2_MBUS_PARALLEL:
+> -		vin_dbg(vin, "Found PARALLEL media bus\n");
+> -		vin->parallel->mbus_flags = vep->bus.parallel.flags;
+> -		break;
+>  	case V4L2_MBUS_BT656:
+> -		vin_dbg(vin, "Found BT656 media bus\n");
+> -		vin->parallel->mbus_flags = 0;
+> +		vin_dbg(vin, "Found %s media bus\n",
+> +			vin->parallel->mbus_type == V4L2_MBUS_PARALLEL ?
+> +			"PARALLEL" : "BT656");
+> +		vin->parallel->bus = vep->bus.parallel;
+>  		break;
+>  	default:
+>  		vin_err(vin, "Unknown media bus type\n");
+> diff --git a/drivers/media/platform/rcar-vin/rcar-dma.c b/drivers/media/platform/rcar-vin/rcar-dma.c
+> index a5dbb90c5210..d067439b0b0d 100644
+> --- a/drivers/media/platform/rcar-vin/rcar-dma.c
+> +++ b/drivers/media/platform/rcar-vin/rcar-dma.c
+> @@ -125,6 +125,7 @@
+>  #define VNDMR2_VPS		(1 << 30)
+>  #define VNDMR2_HPS		(1 << 29)
+>  #define VNDMR2_CES		(1 << 28)
+> +#define VNDMR2_YDS		(1 << 22)
+>  #define VNDMR2_FTEV		(1 << 17)
+>  #define VNDMR2_VLV(n)		((n & 0xf) << 12)
+>  
+> @@ -698,16 +699,26 @@ static int rvin_setup(struct rvin_dev *vin)
+>  
+>  	if (!vin->is_csi) {
+>  		/* Hsync Signal Polarity Select */
+> -		if (!(vin->parallel->mbus_flags & V4L2_MBUS_HSYNC_ACTIVE_LOW))
+> +		if (!(vin->parallel->bus.flags & V4L2_MBUS_HSYNC_ACTIVE_LOW))
+>  			dmr2 |= VNDMR2_HPS;
+>  
+>  		/* Vsync Signal Polarity Select */
+> -		if (!(vin->parallel->mbus_flags & V4L2_MBUS_VSYNC_ACTIVE_LOW))
+> +		if (!(vin->parallel->bus.flags & V4L2_MBUS_VSYNC_ACTIVE_LOW))
+>  			dmr2 |= VNDMR2_VPS;
+>  
+>  		/* Data Enable Polarity Select */
+> -		if (vin->parallel->mbus_flags & V4L2_MBUS_DATA_ENABLE_LOW)
+> +		if (vin->parallel->bus.flags & V4L2_MBUS_DATA_ENABLE_LOW)
+>  			dmr2 |= VNDMR2_CES;
+> +
+> +		switch (vin->mbus_code) {
+> +		case MEDIA_BUS_FMT_UYVY8_2X8:
+> +			if (vin->parallel->bus.bus_width == 8 &&
+> +			    vin->parallel->bus.data_shift == 8)
+> +				dmr2 |= VNDMR2_YDS;
+> +			break;
+> +		default:
+> +			break;
+> +		}
+>  	}
+>  
+>  	/*
+> diff --git a/drivers/media/platform/rcar-vin/rcar-vin.h b/drivers/media/platform/rcar-vin/rcar-vin.h
+> index c19d077ce1cb..8396e0e45478 100644
+> --- a/drivers/media/platform/rcar-vin/rcar-vin.h
+> +++ b/drivers/media/platform/rcar-vin/rcar-vin.h
+> @@ -19,6 +19,7 @@
+>  #include <media/v4l2-ctrls.h>
+>  #include <media/v4l2-dev.h>
+>  #include <media/v4l2-device.h>
+> +#include <media/v4l2-fwnode.h>
+>  #include <media/videobuf2-v4l2.h>
+>  
+>  /* Number of HW buffers */
+> @@ -92,7 +93,7 @@ struct rvin_video_format {
+>   * @asd:	sub-device descriptor for async framework
+>   * @subdev:	subdevice matched using async framework
+>   * @mbus_type:	media bus type
+> - * @mbus_flags:	media bus configuration flags
+> + * @bus:	media bus parallel configuration
+>   * @source_pad:	source pad of remote subdevice
+>   * @sink_pad:	sink pad of remote subdevice
+>   *
+> @@ -102,7 +103,7 @@ struct rvin_parallel_entity {
+>  	struct v4l2_subdev *subdev;
+>  
+>  	enum v4l2_mbus_type mbus_type;
+> -	unsigned int mbus_flags;
+> +	struct v4l2_fwnode_bus_parallel bus;
+>  
+>  	unsigned int source_pad;
+>  	unsigned int sink_pad;
+> 
 
-  4c42dc5c69a8 ("powerpc/kasan: Fix CONFIG_KASAN_VMALLOC for 8xx")
-
-from the powerpc tree and commit:
-
-  76713c119a9d ("arch, drivers: replace for_each_membock() with for_each_me=
-m_range()")
-
-from the akpm-current tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/powerpc/mm/kasan/kasan_init_32.c
-index 929716ea21e9,26fda3203320..000000000000
---- a/arch/powerpc/mm/kasan/kasan_init_32.c
-+++ b/arch/powerpc/mm/kasan/kasan_init_32.c
-@@@ -137,12 -138,12 +137,12 @@@ void __init kasan_mmu_init(void
- =20
-  void __init kasan_init(void)
-  {
-- 	struct memblock_region *reg;
-+ 	phys_addr_t base, end;
- +	int ret;
-+ 	u64 i;
- =20
-- 	for_each_memblock(memory, reg) {
-- 		phys_addr_t base =3D reg->base;
-- 		phys_addr_t top =3D min(base + reg->size, total_lowmem);
-+ 	for_each_mem_range(i, &base, &end) {
-+ 		phys_addr_t top =3D min(end, total_lowmem);
- -		int ret;
- =20
-  		if (base >=3D top)
-  			continue;
-
---Sig_/h=lzTyWsgBMheYWQVF1XVyg
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9jJPkACgkQAVBC80lX
-0GzX1Qf/WyTnkTqyUByLSsUHq60F3H+M30drzVVUeJ62iEtD/O42AYpwitbMsJTf
-QHZNYbop7aCBXjmPTbSg93xiV/npJz71eFbbwYxjdWG2WNcRHT6TEKtFzqdkmI7d
-or+2qYkq14sYkqm1jv3+8dLBmKBS2lGZ0XCdrnQKk4NmwtcLo443o5TGZZhxl7Ee
-sfRK7oxl3ESYSVPUL7B/uBC59Iwkr0f7WhTQ6lKZLDXMZLKXOQ2AoNL9RwAI21D6
-7yakCPtax05i0aJl4FJEuOGuP32pgJmdxvqFK4WemEoOXrXK6CUDBr7IE5e7jliO
-/2U/kf7dDag+gQL9tklDqdHkkL/NUQ==
-=f7B6
------END PGP SIGNATURE-----
-
---Sig_/h=lzTyWsgBMheYWQVF1XVyg--
