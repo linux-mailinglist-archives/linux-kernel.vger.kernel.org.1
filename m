@@ -2,153 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23CA726DFF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 17:44:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13FA526E021
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 17:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727900AbgIQPoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 11:44:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42400 "EHLO
+        id S1728254AbgIQP6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 11:58:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728160AbgIQPnd (ORCPT
+        with ESMTP id S1728110AbgIQPru (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 11:43:33 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB4D8C061756;
-        Thu, 17 Sep 2020 08:43:31 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id w3so2456115ljo.5;
-        Thu, 17 Sep 2020 08:43:31 -0700 (PDT)
+        Thu, 17 Sep 2020 11:47:50 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB06C061756;
+        Thu, 17 Sep 2020 08:47:35 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id q13so3932939ejo.9;
+        Thu, 17 Sep 2020 08:47:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DAWnaNNCLzi2b/HYy/bsKZyv4EO4JHS8WK3RrU3eKQE=;
-        b=QQ1f0h6p9q4wGklnosXzt8rGHZ3AFmRZF8H2xnIIeFrDAKe4zA6eEXRQ9XZ5Jig+UQ
-         7zZF/0POnOdLmtWmPDyRI3p7S+zM4NoV9hQoQ0eL+EIQn+I4mC9n5Z34qOLlC64T87oU
-         YxzGX+gwY3iSiUKM7T8n639FTqeoqRDbaps7wGxF/svu99Uf4qBNA06R2Ri6An3/vTrN
-         z4hGbTO3Q4x94WIyRVaODSvJrKCo1QKmGRz0HVb9dRXnivzXdMj0n7yZQbL5h+SedIys
-         LG+zIEDkNQv/D5f3o0Il7WTFwDtkpt5L8DB51xvgg/YtVW8O10eVW8Lj0YJMZQt4Z4A6
-         scjg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ifLqIBBiM4ThXSLoxSOsnfI6fbrmlczs4vIdt9aQ3i0=;
+        b=YLjJHrEuERndMlBjeyPJXtaXrcSqPWAfH/IdF/gAMGs8Jlh0vBM6JXXRNMxgY29Snk
+         x0yhRpynliTUZLb9ciGmDIDewRdguVfNo52eyyfPJ/Dv1+tc2Lv4jcIHRaR+WYc/qeNo
+         2MHcXE/wajEJvwsBWTH8DC2e4TFtacYLsjFJuNzxrzfeka4bnUDi0IeMv3jI4pbKtvh4
+         qD5kAAUWxpSV20byptqb9B/MJaGA7qgpwHOmyajZSNWUCjFhXp/lBYVTJsGplJ6BdrYK
+         IS8l8STJtLhAOc2ZEHRGo18Ba7KjtfW3fciUX0ImQ3iup9RzXYhgXiKhdHfvd/yPw7O/
+         8CbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=DAWnaNNCLzi2b/HYy/bsKZyv4EO4JHS8WK3RrU3eKQE=;
-        b=XsYfcL90MFXeEUgLW6fJVbQRcSnXWHh0Tflcxy1kjaTbDQ0qBIHoJbL8yazcau/zCj
-         PzTmeq+xD2UIn+h14woaBXCIh4/pCHkn9CqPk3Jc0i67jsmcEZzUNFEUU0Qkw7K51mkU
-         FA1+fIHyD+R2bJd1urLg1ttuu5Jzg2PhFZFZeXWmzwXive7vaRiCE68JnGGkDXLAb8Se
-         H2hN3T7oV3UOvNv2p6je77YmPFGNTDRhutmwidfF+J79SBs5Dg7g6vlkFcMJOxX2wBxC
-         dqRCr6DYFsDU9kMmB6gEQJWvvxMo68U7TQxr1Fq+HYcaS9wyk0E0SYNYKcHIdOUyHwrt
-         lU5w==
-X-Gm-Message-State: AOAM532mavdSIVbt11qQm7fjtjUKDQJDzuts6eZXWSYh2NFXP8CWfqhP
-        iWxIUMWX/y2Z2rh8UldsZCa2p3EemAc=
-X-Google-Smtp-Source: ABdhPJwpb9L2t1kEXCu/zJQbLoXsknW2ZpQlhcAy/zmrCSGu1WKnb3or7d+bh/5ugj/9eI7nXYkRSg==
-X-Received: by 2002:a2e:989a:: with SMTP id b26mr9064020ljj.111.1600357409561;
-        Thu, 17 Sep 2020 08:43:29 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id m10sm5348006lfo.184.2020.09.17.08.43.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Sep 2020 08:43:29 -0700 (PDT)
-Subject: Re: [PATCH v7 30/34] i2c: tegra: Clean up variable names
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200908224006.25636-1-digetx@gmail.com>
- <20200908224006.25636-31-digetx@gmail.com> <20200917122105.GI3515672@ulmo>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <49498b9c-3b75-ad97-1859-5d6442b27b0c@gmail.com>
-Date:   Thu, 17 Sep 2020 18:43:28 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=ifLqIBBiM4ThXSLoxSOsnfI6fbrmlczs4vIdt9aQ3i0=;
+        b=LVNkvU4z1yx0xXbffaJj/rceIuyK7tIHYD8blox9Yucu4VqqLsMABVij+o5ifUQ2yN
+         daGmPQ9gbNda6RsMPJYhhjzFzWcaepMDRnBlpNyEO8uivVIG1F1ebhzbwtT+Ap1zpUOS
+         MFp8Tsi2ox4nUImnS9/IZRWAUK9SgzZymjQmh6CkYBcrz9luGl11EQn364NxZVd8AZ5B
+         LuLea58MeyGePMCGtWI2oG2lDmBIOupAPhpinGfWc3/JBEdiDeUCtYjK1rmaet50qNyI
+         pFCj6KjGKzfZTgk2C5JadAJY2gT6XsCP0AFS75uZ16uSBZ/avqPcu5LFJMM6BWXlJbvu
+         hr0Q==
+X-Gm-Message-State: AOAM533rkvEnmtfGeqOtRzP3DBgkg2I0AEYhXDDsmOwPaNfYe0TAjk6M
+        DjzAI+1GMbJKKVwNXCl2HvzL67Oj7qTrvg==
+X-Google-Smtp-Source: ABdhPJzsyJnhXvY4nVvfIupO8x6ooIe6FqbqDIdAvcyagj7JpkdPhdHmABTuYzil9/KssGWzkl1wYg==
+X-Received: by 2002:a17:906:fb8c:: with SMTP id lr12mr32902212ejb.9.1600357654295;
+        Thu, 17 Sep 2020 08:47:34 -0700 (PDT)
+Received: from localhost.localdomain ([85.153.229.188])
+        by smtp.gmail.com with ESMTPSA id dm22sm50748edb.49.2020.09.17.08.47.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 08:47:33 -0700 (PDT)
+From:   Necip Fazil Yildiran <fazilyildiran@gmail.com>
+To:     dalias@libc.org
+Cc:     lethal@linux-sh.org, iwamatsu.nobuhiro@renesas.com,
+        ysato@users.sourceforge.jp, linux-sh@vger.kernel.org,
+        linux-kernel@vger.kernel.org, paul@pgazz.com, jeho@cs.utexas.edu,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Subject: [PATCH] sh: dma: fix kconfig dependency for G2_DMA
+Date:   Thu, 17 Sep 2020 18:45:48 +0300
+Message-Id: <20200917154547.139019-1-fazilyildiran@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200917122105.GI3515672@ulmo>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-17.09.2020 15:21, Thierry Reding пишет:
-> On Wed, Sep 09, 2020 at 01:40:02AM +0300, Dmitry Osipenko wrote:
->> Rename "ret" variables to "err" in order to make code a bit more
->> expressive, emphasizing that the returned value is an error code.
->> Same vice versa, where appropriate.
->>
->> Rename variable "reg" to "val" in order to better reflect the actual
->> usage of the variable in the code and to make naming consistent with
->> the rest of the code.
->>
->> Use briefer names for a few members of the tegra_i2c_dev structure in
->> order to improve readability of the code.
->>
->> All dev/&pdev->dev are replaced with i2c_dev->dev in order to have uniform
->> code style across the driver.
->>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  drivers/i2c/busses/i2c-tegra.c | 173 ++++++++++++++++-----------------
->>  1 file changed, 86 insertions(+), 87 deletions(-)
-> 
-> That's indeed a nice improvement. One thing did spring out at me,
-> though.
-> 
->> diff --git a/drivers/i2c/busses/i2c-tegra.c b/drivers/i2c/busses/i2c-tegra.c
-> [...]
->> @@ -1831,20 +1830,20 @@ static int __maybe_unused tegra_i2c_runtime_suspend(struct device *dev)
->>  
->>  	clk_bulk_disable(i2c_dev->nclocks, i2c_dev->clocks);
->>  
->> -	return pinctrl_pm_select_idle_state(i2c_dev->dev);
->> +	return pinctrl_pm_select_idle_state(dev);
->>  }
->>  
->>  static int __maybe_unused tegra_i2c_suspend(struct device *dev)
->>  {
->>  	struct tegra_i2c_dev *i2c_dev = dev_get_drvdata(dev);
->> -	int err = 0;
->> +	int ret = 0;
->>  
->>  	i2c_mark_adapter_suspended(&i2c_dev->adapter);
->>  
->>  	if (!pm_runtime_status_suspended(dev))
->> -		err = tegra_i2c_runtime_suspend(dev);
->> +		ret = tegra_i2c_runtime_suspend(dev);
->>  
->> -	return err;
->> +	return ret;
->>  }
-> 
-> Isn't this exactly the opposite of what the commit message says (and the
-> rest of the patch does)?
+When G2_DMA is enabled and SH_DMA is disabled, it results in the following
+Kbuild warning:
 
-This change makes it to be consistent with the rest of the code. You may
-notice that "Factor out hardware initialization into separate function"
-made a similar change.
+WARNING: unmet direct dependencies detected for SH_DMA_API
+  Depends on [n]: SH_DMA [=n]
+  Selected by [y]:
+  - G2_DMA [=y] && SH_DREAMCAST [=y]
 
-The reason I'm doing this is that the "err" suggests that code returns a
-error failure code, while it could be a success too and you don't know
-for sure by looking only at the part of code. Hence it's cleaner to use
-"err" when error code is returned.
+The reason is that G2_DMA selects SH_DMA_API without depending on or
+selecting SH_DMA while SH_DMA_API depends on SH_DMA.
 
-It is possible (and maybe even better) to rewrite this function as:
+When G2_DMA was first introduced with commit 40f49e7ed77f
+("sh: dma: Make G2 DMA configurable."), this wasn't an issue since
+SH_DMA_API didn't have such dependency, and this way was the only way to
+enable it since SH_DMA_API was non-visible. However, later SH_DMA_API was
+made visible and dependent on SH_DMA with commit d8902adcc1a9
+("dmaengine: sh: Add Support SuperH DMA Engine driver").
 
-static int __maybe_unused tegra_i2c_suspend(struct device *dev)
-{
-	struct tegra_i2c_dev *i2c_dev = dev_get_drvdata(dev);
+Let G2_DMA depend on SH_DMA_API instead to avoid Kbuild issues.
 
-	i2c_mark_adapter_suspended(&i2c_dev->adapter);
+Fixes: d8902adcc1a9 ("dmaengine: sh: Add Support SuperH DMA Engine driver")
+Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+---
+ arch/sh/drivers/dma/Kconfig | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-	if (!pm_runtime_status_suspended(dev)) {
-		int err = tegra_i2c_runtime_suspend(dev);
-		if (err)
-			return err;
-	}
+diff --git a/arch/sh/drivers/dma/Kconfig b/arch/sh/drivers/dma/Kconfig
+index d0de378beefe..7d54f284ce10 100644
+--- a/arch/sh/drivers/dma/Kconfig
++++ b/arch/sh/drivers/dma/Kconfig
+@@ -63,8 +63,7 @@ config PVR2_DMA
+ 
+ config G2_DMA
+ 	tristate "G2 Bus DMA support"
+-	depends on SH_DREAMCAST
+-	select SH_DMA_API
++	depends on SH_DREAMCAST && SH_DMA_API
+ 	help
+ 	  This enables support for the DMA controller for the Dreamcast's
+ 	  G2 bus. Drivers that want this will generally enable this on
+-- 
+2.25.1
 
-	return 0;
-}
