@@ -2,101 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D0826E0C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 18:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1E1726E0DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 18:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728567AbgIQQdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 12:33:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43658 "EHLO mail.kernel.org"
+        id S1728552AbgIQQhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 12:37:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728369AbgIQQcs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 12:32:48 -0400
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1728513AbgIQQfn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 12:35:43 -0400
+Received: from gaia (unknown [31.124.44.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EFF5720795
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 16:32:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600360365;
-        bh=UDnf3IREiyw2euRvGQM7rzF6Y4TR+WX+NcIvD+ugudE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=NYYGO1W9mAXkZuhUVO6Y6L2ioaTm69njsOiz956DuPatVMLXjEOMakpQLAC8TnpKc
-         4iYeVyukASZSm+hf20tK0OnRNG5sSjC1TliYP1FruK+0+W0Ntpo+yxeHz+kFA3eG//
-         ZcQsULVdSf1k0luzdvprTwHETbWvZAEeXhMFslOE=
-Received: by mail-wr1-f49.google.com with SMTP id x14so2738771wrl.12
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 09:32:44 -0700 (PDT)
-X-Gm-Message-State: AOAM530wLqZci73AJTD8O04BDgnJUlxPLNnD7FYldO7FKUaD6GY59gSb
-        jmJZyhM3gF6F5blwKJiEATivDy8Lf7BC2tTR1/AzuQ==
-X-Google-Smtp-Source: ABdhPJzQHsv5KOOJ8HO3NJ8qYnGzHb8S1Gxpn/9DUWUzZVpO9MblLZxfCuqdaXBDWVT+IasvV7RYQjIKMu6Li9tO5bs=
-X-Received: by 2002:a5d:5111:: with SMTP id s17mr32904987wrt.70.1600360363524;
- Thu, 17 Sep 2020 09:32:43 -0700 (PDT)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0D54420672;
+        Thu, 17 Sep 2020 16:35:39 +0000 (UTC)
+Date:   Thu, 17 Sep 2020 17:35:37 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev@googlegroups.com,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 25/37] arm64: kasan: Enable in-kernel MTE
+Message-ID: <20200917163536.GE10662@gaia>
+References: <cover.1600204505.git.andreyknvl@google.com>
+ <859111cf1d862ce26f094cf14511461c372e5bbc.1600204505.git.andreyknvl@google.com>
 MIME-Version: 1.0
-References: <CAKwvOdnjHbyamsW71FJ=Cd36YfVppp55ftcE_eSDO_z+KE9zeQ@mail.gmail.com>
- <441AA771-A859-4145-9425-E9D041580FE4@amacapital.net> <7233f4cf-5b1d-0fca-0880-f1cf2e6e765b@citrix.com>
- <20200916082621.GB2643@zn.tnic> <be498e49-b467-e04c-d833-372f7d83cb1f@citrix.com>
- <20200917060432.GA31960@zn.tnic> <ec617df229514fbaa9897683ac88dfda@AcuMS.aculab.com>
- <20200917115733.GH31960@zn.tnic> <823af5fadd464c48ade635498d07ba4e@AcuMS.aculab.com>
- <20200917143920.GJ31960@zn.tnic>
-In-Reply-To: <20200917143920.GJ31960@zn.tnic>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Thu, 17 Sep 2020 09:32:32 -0700
-X-Gmail-Original-Message-ID: <CALCETrXuV1rucx7=+nx339G43K_8pigfFU5cT-emqpJG4TwjoA@mail.gmail.com>
-Message-ID: <CALCETrXuV1rucx7=+nx339G43K_8pigfFU5cT-emqpJG4TwjoA@mail.gmail.com>
-Subject: Re: [PATCH] x86/smap: Fix the smap_save() asm
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bill Wendling <morbo@google.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Thelen <gthelen@google.com>,
-        John Sperbeck <jsperbeck@google.com>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <859111cf1d862ce26f094cf14511461c372e5bbc.1600204505.git.andreyknvl@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 7:39 AM Borislav Petkov <bp@alien8.de> wrote:
->
-> On Thu, Sep 17, 2020 at 02:25:50PM +0000, David Laight wrote:
-> > I actually wonder if there is any code that really benefits from
-> > the red-zone.
->
-> The kernel has been without a red zone since 2002 at least:
->
->   commit 47f16da277d10ef9494f3e9da2a9113bb22bcd75
->   Author: Andi Kleen <ak@muc.de>
->   Date:   Tue Feb 12 20:17:35 2002 -0800
->
->       [PATCH] x86_64 merge: arch + asm
->
->       This adds the x86_64 arch and asm directories and a Documentation/x86_64.
->
->   ...
->   +CFLAGS += $(shell if $(CC) -mno-red-zone -S -o /dev/null -xc /dev/null >/dev/null 2>&1; then echo "-mno-red-zone"; fi )
->
->
-> Also, from the ABI doc:
->
-> "A.2.2 Stack Layout
->
-> The Linux kernel may align the end of the input argument area to a
-> 8, instead of 16, byte boundary. It does not honor the red zone (see
-> section 3.2.2) and therefore this area is not allowed to be used by
-> kernel code. Kernel code should be compiled by GCC with the option
-> -mno-red-zone."
->
-> so forget the red zone.
->
-> --
-> Regards/Gruss,
->     Boris.
->
-> https://people.kernel.org/tglx/notes-about-netiquette
+On Tue, Sep 15, 2020 at 11:16:07PM +0200, Andrey Konovalov wrote:
+> diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
+> index 23c326a06b2d..5ba7ac5e9c77 100644
+> --- a/arch/arm64/mm/proc.S
+> +++ b/arch/arm64/mm/proc.S
+> @@ -427,6 +427,10 @@ SYM_FUNC_START(__cpu_setup)
+>  	 */
+>  	mov_q	x5, MAIR_EL1_SET
+>  #ifdef CONFIG_ARM64_MTE
+> +	mte_present	.req	x20
+> +
+> +	mov	mte_present, #0
+> +
+>  	/*
+>  	 * Update MAIR_EL1, GCR_EL1 and TFSR*_EL1 if MTE is supported
+>  	 * (ID_AA64PFR1_EL1[11:8] > 1).
+> @@ -447,6 +451,8 @@ SYM_FUNC_START(__cpu_setup)
+>  	/* clear any pending tag check faults in TFSR*_EL1 */
+>  	msr_s	SYS_TFSR_EL1, xzr
+>  	msr_s	SYS_TFSRE0_EL1, xzr
+> +
+> +	mov	mte_present, #1
+>  1:
+>  #endif
+>  	msr	mair_el1, x5
+> @@ -485,6 +491,13 @@ SYM_FUNC_START(__cpu_setup)
+>  	orr	x10, x10, #TCR_HA		// hardware Access flag update
+>  1:
+>  #endif	/* CONFIG_ARM64_HW_AFDBM */
+> +#ifdef CONFIG_ARM64_MTE
+> +	/* Update TCR_EL1 if MTE is supported (ID_AA64PFR1_EL1[11:8] > 1) */
+> +	cbz	mte_present, 1f
+> +	orr	x10, x10, #SYS_TCR_EL1_TCMA1
+> +1:
+> +	.unreq	mte_present
+> +#endif
+>  	msr	tcr_el1, x10
+>  	/*
+>  	 * Prepare SCTLR
 
-Regardless of anything that any docs may or may not say, the kernel
-*can't* use a redzone -- an interrupt would overwrite it.
+I'd keep this simpler, no branches or #ifdefs (you can still add the
+.req if you want):
+
+diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
+index 23c326a06b2d..a35344754081 100644
+--- a/arch/arm64/mm/proc.S
++++ b/arch/arm64/mm/proc.S
+@@ -426,6 +426,7 @@ SYM_FUNC_START(__cpu_setup)
+ 	 * Memory region attributes
+ 	 */
+ 	mov_q	x5, MAIR_EL1_SET
++	mov	x8, #0
+ #ifdef CONFIG_ARM64_MTE
+ 	/*
+ 	 * Update MAIR_EL1, GCR_EL1 and TFSR*_EL1 if MTE is supported
+@@ -447,6 +448,9 @@ SYM_FUNC_START(__cpu_setup)
+ 	/* clear any pending tag check faults in TFSR*_EL1 */
+ 	msr_s	SYS_TFSR_EL1, xzr
+ 	msr_s	SYS_TFSRE0_EL1, xzr
++
++	/* set the TCR_EL1 bits */
++	orr	x8, x8, #SYS_TCR_EL1_TCMA1
+ 1:
+ #endif
+ 	msr	mair_el1, x5
+@@ -457,6 +461,7 @@ SYM_FUNC_START(__cpu_setup)
+ 	mov_q	x10, TCR_TxSZ(VA_BITS) | TCR_CACHE_FLAGS | TCR_SMP_FLAGS | \
+ 			TCR_TG_FLAGS | TCR_KASLR_FLAGS | TCR_ASID16 | \
+ 			TCR_TBI0 | TCR_A1 | TCR_KASAN_FLAGS
++	orr	x10, x10, x8
+ 	tcr_clear_errata_bits x10, x9, x5
+ 
+ #ifdef CONFIG_ARM64_VA_BITS_52
+
+-- 
+Catalin
