@@ -2,84 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7BE26D37A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 08:12:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 457D526D38D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 08:21:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726221AbgIQGMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 02:12:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726106AbgIQGMZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 02:12:25 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CEE2C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 23:12:24 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f1053004ecb76e63d7beff7.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:5300:4ecb:76e6:3d7b:eff7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E2A281EC03A0;
-        Thu, 17 Sep 2020 08:12:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600323143;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=wP5V6e8HmsuFSJFurli6pgsVa/P/4K0cBE0gZt2GKdg=;
-        b=JI72fkmwMRbrq54ehWoY2a3ZyB+/C8UiyKOsg0ezkIRmtGglIS18JJBk8v4VdoryO59HRO
-        bJ1hI3H9trJh7Do6eeI/iylDMBwFQ41FubrpshnX52CMKEFScXRDThXh2m0rN1ep9Ec+wr
-        jNvainROYMCl52KqkAAQ4gUzHgJd1DY=
-Date:   Thu, 17 Sep 2020 08:12:20 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     kernel test robot <lkp@intel.com>,
-        "Li, Philip" <philip.li@intel.com>,
-        Rong Chen <rong.a.chen@intel.com>
-Cc:     x86-ml <x86@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [tip:x86/pti] BUILD SUCCESS WITH WARNING
- 767d46ab566dd489733666efe48732d523c8c332
-Message-ID: <20200917061220.GB31960@zn.tnic>
-References: <5f62b7f2.Q9ixRaxJwQpWTURd%lkp@intel.com>
+        id S1726221AbgIQGVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 02:21:18 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3543 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725267AbgIQGVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 02:21:17 -0400
+Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.54])
+        by Forcepoint Email with ESMTP id 5402E246117BD6188804;
+        Thu, 17 Sep 2020 14:21:14 +0800 (CST)
+Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
+ dggeme752-chm.china.huawei.com (10.3.19.98) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Thu, 17 Sep 2020 14:21:14 +0800
+Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
+ dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
+ Thu, 17 Sep 2020 14:21:13 +0800
+From:   linmiaohe <linmiaohe@huawei.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+CC:     "Gustavo A . R . Silva" <gustavo@embeddedor.com>,
+        Joe Perches <joe@perches.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>
+Subject: Re: [PATCH v2] nfs: remove incorrect fallthrough label
+Thread-Topic: [PATCH v2] nfs: remove incorrect fallthrough label
+Thread-Index: AdaMuodnVDGlupKbQBWadlZPzzQK5g==
+Date:   Thu, 17 Sep 2020 06:21:13 +0000
+Message-ID: <5de6c6d3ced340ac80702c527bb38d12@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.176.109]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <5f62b7f2.Q9ixRaxJwQpWTURd%lkp@intel.com>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi guys,
-
-On Thu, Sep 17, 2020 at 09:12:18AM +0800, kernel test robot wrote:
-> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/pti
-> branch HEAD: 767d46ab566dd489733666efe48732d523c8c332  Documentation: Add L1D flushing Documentation
-> 
-> Warning in current branch:
-> 
-> arch/x86/mm/tlb.c:426:36: sparse:     expected void const [noderef] __percpu *__vpp_verify
-> arch/x86/mm/tlb.c:426:36: sparse:     got bool *
-> arch/x86/mm/tlb.c:426:36: sparse: sparse: incorrect type in initializer (different address spaces)
-> 
-> Warning ids grouped by kconfigs:
-> 
-> gcc_recent_errors
-> `-- i386-randconfig-s002-20200916
->     |-- arch-x86-mm-tlb.c:sparse:expected-void-const-noderef-__percpu-__vpp_verify
->     |-- arch-x86-mm-tlb.c:sparse:got-bool
->     `-- arch-x86-mm-tlb.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-void-const-noderef-__percpu-__vpp_verify-got-bool
-
-this is another worthless bug report:
-
-* No .config attached
-
-* no build command line to know how you run sparse. I'm guessing with
-C=1. But I should not have to guess.
-
-Pls fix.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+TmljayBEZXNhdWxuaWVycyA8bmRlc2F1bG5pZXJzQGdvb2dsZS5jb20+IHdyb3RlOg0KPiBUaGVy
+ZSBpcyBubyBjYXNlIGFmdGVyIHRoZSBkZWZhdWx0IGZyb20gd2hpY2ggdG8gZmFsbHRocm91Z2gg
+dG8uIENsYW5nIHdpbGwgZXJyb3IgaW4gdGhpcyBjYXNlICh1bmhlbHBmdWxseSB3aXRob3V0IGNv
+bnRleHQsIHNlZSBsaW5rIGJlbG93KSBhbmQgR0NDIHdpbGwgd2l0aCAtV3N3aXRjaC11bnJlYWNo
+YWJsZS4NCj4NCj5UaGUgcHJldmlvdXMgY29tbWl0IHNob3VsZCBoYXZlIGp1c3QgcmVwbGFjZWQg
+dGhlIGNvbW1lbnQgd2l0aCBhIGJyZWFrIHN0YXRlbWVudC4NCj4NCj5JZiB3ZSBjb25zaWRlciBp
+bXBsaWNpdCBmYWxsdGhyb3VnaCB0byBiZSBhIGRlc2lnbiBtaXN0YWtlIG9mIEMsIHRoZW4gYWxs
+IGNhc2Ugc3RhdGVtZW50cyBzaG91bGQgYmUgdGVybWluYXRlZCB3aXRoIG9uZSBvZiB0aGUgZm9s
+bG93aW5nDQo+c3RhdGVtZW50czoNCj4qIGJyZWFrDQo+KiBjb250aW51ZQ0KPiogcmV0dXJuDQo+
+KiBfX2F0dHJpYnV0ZV9fKF9fZmFsbHRocm91Z2hfXykNCj4qIGdvdG8gKHBseiBubykNCj4qIChj
+YWxsIG9mIGZ1bmN0aW9uIHdpdGggX19hdHRyaWJ1dGVfXyhfX25vcmV0dXJuX18pKQ0KPg0KPkZp
+eGVzOiAyYTEzOTBjOTVhNjkgKCJuZnM6IENvbnZlcnQgdG8gdXNlIHRoZSBwcmVmZXJyZWQgZmFs
+bHRocm91Z2ggbWFjcm8iKQ0KPkxpbms6IGh0dHBzOi8vYnVncy5sbHZtLm9yZy9zaG93X2J1Zy5j
+Z2k/aWQ9NDc1MzkNCj5TdWdnZXN0ZWQtYnk6IEpvZSBQZXJjaGVzIDxqb2VAcGVyY2hlcy5jb20+
+DQo+U2lnbmVkLW9mZi1ieTogTmljayBEZXNhdWxuaWVycyA8bmRlc2F1bG5pZXJzQGdvb2dsZS5j
+b20+DQo+LS0tDQoNClJldmlld2VkLWJ5OiBNaWFvaGUgTGluIDxsaW5taWFvaGVAaHVhd2VpLmNv
+bT4NCg0KDQo=
