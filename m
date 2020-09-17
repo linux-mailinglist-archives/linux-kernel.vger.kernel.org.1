@@ -2,107 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DD6B26DEBF
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FFCE26DE74
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727684AbgIQOv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 10:51:26 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:33746 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727468AbgIQO1M (ORCPT
+        id S1727591AbgIQOiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 10:38:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727298AbgIQOgr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 10:27:12 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08HEOcRI054131;
-        Thu, 17 Sep 2020 14:26:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=kWMuOkBEzKmqnR4JA7GRFSVM89Mf8rcx6R9OK0t1o8o=;
- b=UxnoQld7c9iVJG+UWxCx8mzgw5093d2eAhT6slS9zZ9BOBcdTxqSrKXeSN7AZWpWxSSI
- DwuIP3mCnlVBi3NLzV57fDZiE/05TvYbuGWj4t9mcHd2PQfZLY3JrdnvthH2jirfby0T
- vipAmmtEyRoPQw1PoVrfdIKAJhrrBAFk/9/MSMpw0emMIjRWVZWre4042wPaDqW4u+wR
- uumXy8iVLJUra4z91dyam5tS7SvAQMycWLp1BZ4iq4NePorhpH7plhEtvEYAOQx1OHuG
- 3QWQKherkVgBYwt3vreL9JdQGE1sR/EchO86PjffxRP7+tSNfz1pKQjpQijBKEXWBGu9 Gg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 33j91du9v2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 17 Sep 2020 14:26:26 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08HEOnfX140495;
-        Thu, 17 Sep 2020 14:26:25 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 33h893vgpr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 17 Sep 2020 14:26:25 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08HEQHlg020112;
-        Thu, 17 Sep 2020 14:26:17 GMT
-Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 17 Sep 2020 14:26:17 +0000
-Date:   Thu, 17 Sep 2020 10:35:19 -0400
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Hugh Dickins <hughd@google.com>,
+        Thu, 17 Sep 2020 10:36:47 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EDECC061354
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 07:35:53 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id t138so2445749qka.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 07:35:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=4FMmUqw3Ogf5DWfrcaBYE+88tcXzyk3qcn9Gd5hl3YQ=;
+        b=j5oYloPvYL7s4CPTt81wv4olgyoI/6IlhT6aI8lDvNqHADWP/JsUZ4WNwSAnarJJVd
+         Jdd7y5LK3H4qrJDXIzo4GzxtRtRdSn74TO+sPmBQ+A3UTKrWoV2qqwIgla/t6cN1mEzh
+         YgB03e2F1hYq89gJy2In7h5LX8mfdp/lJ8vauS8eQJrPZEuv9vFNxus3W1QS8aEEh2jU
+         aNgxQzkQEHZvN34u0lGhLEgUFKJXoYCaI/tF+nC0CovO/q9P121VcOoAOdmqbPSwPlwQ
+         9k8ecPtmJZWZCMPSONUM47C13l3uQbZ64/zvk+EFKCwijs/wPUYHVUJBOSzB9UTR274e
+         bIsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=4FMmUqw3Ogf5DWfrcaBYE+88tcXzyk3qcn9Gd5hl3YQ=;
+        b=lby5ZXfCJCogmiE3Jp+lI0p+4sta80FwaZ6ycSyPbHDaeZsxGK26UX0r5J8iPwE+gM
+         oTZw9Fmg3FbyApuYEUwvo4yeAlr2D+0/zJSwl7ppeQDYVdAj7vCkLjc0X5eoY3qTS680
+         h6SD+xKsWQEwMHCraOq2XzAYvKbUW/XlUdrToIKRSbnWMTR99ivb2jm1MAANakW1dj0U
+         4iCwXvg0sqCiedycqAJrdL67GkRTWmrkEavwCeCE7qUp5TVvZnc0swtbRS+7bJT/QhVp
+         Vy/eWYm3lxfikh7fmhxojrwvtfMU8K7wcbzju8VBkbsUxfzAhEn3scxVj2EpEPSJHVaC
+         GwEg==
+X-Gm-Message-State: AOAM532WsPWEDIXiUhINSVG9es6KSecZQdFBFL6Xb/6u4CCpVQ3jwWqw
+        AxZf8fFLR6GbbyNpZbRbqacKlg==
+X-Google-Smtp-Source: ABdhPJzS5DvFjFRz09F8HD5ZwD/CTVt6TV63hE1mZt++JvtsXfCWDtAegDUHikgXHQCiEAeg2s8xdA==
+X-Received: by 2002:a05:620a:15ac:: with SMTP id f12mr27633534qkk.19.1600353352699;
+        Thu, 17 Sep 2020 07:35:52 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id m36sm20906770qtd.10.2020.09.17.07.35.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 07:35:52 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kIv0p-000VC1-Ed; Thu, 17 Sep 2020 11:35:51 -0300
+Date:   Thu, 17 Sep 2020 11:35:51 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     christian.koenig@amd.com
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>, Linux MM <linux-mm@kvack.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
         Andrew Morton <akpm@linux-foundation.org>,
-        mgorman@techsingularity.net, tj@kernel.org,
-        khlebnikov@yandex-team.ru, willy@infradead.org, hannes@cmpxchg.org,
-        lkp@intel.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com, vbabka@suse.cz, minchan@kernel.org, cai@lca.pw
-Subject: Re: [PATCH v18 00/32] per memcg lru_lock: reviews
-Message-ID: <20200917143519.lhdfnoc47qrmbhaz@ca-dmjordan1.us.oracle.com>
-References: <alpine.LSU.2.11.2008262301240.4405@eggly.anvils>
- <alpine.LSU.2.11.2009081640070.7256@eggly.anvils>
- <61a42a87-eec9-e300-f710-992756f70de6@linux.alibaba.com>
- <alpine.LSU.2.11.2009091524260.10087@eggly.anvils>
- <855ad6ee-dba4-9729-78bd-23e392905cf6@linux.alibaba.com>
- <alpine.LSU.2.11.2009111634020.22739@eggly.anvils>
- <5cfc6142-752d-26e6-0108-38d13009268b@linux.alibaba.com>
- <alpine.LSU.2.11.2009150112130.1550@eggly.anvils>
- <20200915165807.kpp7uhiw7l3loofu@ca-dmjordan1.us.oracle.com>
- <c3362c0a-3707-3a3d-9955-960d95f3ad8c@linux.alibaba.com>
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Subject: Re: [Linaro-mm-sig] Changing vma->vm_file in dma_buf_mmap()
+Message-ID: <20200917143551.GG8409@ziepe.ca>
+References: <8db2474f-ecb7-0e17-5f5b-145708fe44d5@amd.com>
+ <CAKMK7uFdwrT3HACPh3ADAKvhXJ-Hf3dExZmgJVAQ1KKjSai_0w@mail.gmail.com>
+ <aa953b09-53b1-104b-dc4b-156ad8a75e62@gmail.com>
+ <CAKMK7uHJNRzCJfWVSmMrLmGXE0qo+OCXiMd+zPTOkeG2pnVrmQ@mail.gmail.com>
+ <8d8693db-a3f0-4f5f-3e32-57d23ca620f8@amd.com>
+ <CAKMK7uE=UqZD3PVC8XZAXrgGH-VsUF_-YQD3MLV8KK1kpxO4yQ@mail.gmail.com>
+ <20200917113110.GE8409@ziepe.ca>
+ <6fd74b84-959c-8b3b-c27b-e9fbf66396c7@gmail.com>
+ <20200917121858.GF8409@ziepe.ca>
+ <d82f08ee-2dec-18e8-fb06-d26f18ed777a@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <c3362c0a-3707-3a3d-9955-960d95f3ad8c@linux.alibaba.com>
-User-Agent: NeoMutt/20180716
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9747 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
- suspectscore=0 mlxscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009170113
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9747 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
- priorityscore=1501 malwarescore=0 suspectscore=0 mlxlogscore=999
- clxscore=1015 adultscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009170113
+In-Reply-To: <d82f08ee-2dec-18e8-fb06-d26f18ed777a@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 10:37:45AM +0800, Alex Shi wrote:
-> 在 2020/9/16 上午12:58, Daniel Jordan 写道:
-> > On Tue, Sep 15, 2020 at 01:21:56AM -0700, Hugh Dickins wrote:
-> >> On Sun, 13 Sep 2020, Alex Shi wrote:
-> >>> Uh, I updated the testing with some new results here:
-> >>> https://lkml.org/lkml/2020/8/26/212
-> >> Right, I missed that, that's better, thanks.  Any other test results?
-> > Alex, you were doing some will-it-scale runs earlier.  Are you planning to do
-> > more of those?  Otherwise I can add them in.
+On Thu, Sep 17, 2020 at 02:24:29PM +0200, Christian König wrote:
+> Am 17.09.20 um 14:18 schrieb Jason Gunthorpe:
+> > On Thu, Sep 17, 2020 at 02:03:48PM +0200, Christian König wrote:
+> > > Am 17.09.20 um 13:31 schrieb Jason Gunthorpe:
+> > > > On Thu, Sep 17, 2020 at 10:09:12AM +0200, Daniel Vetter wrote:
+> > > > 
+> > > > > Yeah, but it doesn't work when forwarding from the drm chardev to the
+> > > > > dma-buf on the importer side, since you'd need a ton of different
+> > > > > address spaces. And you still rely on the core code picking up your
+> > > > > pgoff mangling, which feels about as risky to me as the vma file
+> > > > > pointer wrangling - if it's not consistently applied the reverse map
+> > > > > is toast and unmap_mapping_range doesn't work correctly for our needs.
+> > > > I would think the pgoff has to be translated at the same time the
+> > > > vm->vm_file is changed?
+> > > > 
+> > > > The owner of the dma_buf should have one virtual address space and FD,
+> > > > all its dma bufs should be linked to it, and all pgoffs translated to
+> > > > that space.
+> > > Yeah, that is exactly like amdgpu is doing it.
+> > > 
+> > > Going to document that somehow when I'm done with TTM cleanups.
+> > BTW, while people are looking at this, is there a way to go from a VMA
+> > to a dma_buf that owns it?
 > 
-> Hi Daniel,
-> 
-> Does compaction perf scalable, like thpscale, I except they could get some benefit.
+> Only a driver specific one.
 
-Yep, I plan to stress compaction.  Reclaim as well.
+Sounds OK
 
-I should have said which Alex I meant.  I was asking Alex Duyck since he'd done
-some will-it-scale runs.
+> For TTM drivers vma->vm_private_data points to the buffer object. Not sure
+> about the drivers using GEM only.
+
+Why are drivers in control of the vma? I would think dma_buf should be
+the vma owner. IIRC module lifetime correctness essentially hings on
+the module owner of the struct file
+
+> Why are you asking?
+
+I'm thinking about using find_vma on something that is not
+get_user_pages()'able to go to the underlying object, in this case dma
+buf.
+
+So, user VA -> find_vma -> dma_buf object -> dma_buf operations on the
+memory it represents
+
+Jason
