@@ -2,100 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3901226E942
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 01:09:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7259326E946
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 01:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726109AbgIQXI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 19:08:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56585 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725987AbgIQXI7 (ORCPT
+        id S1726115AbgIQXM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 19:12:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725987AbgIQXM2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 19:08:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600384137;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uzfwQDrkfORvWeEWQ/DT80gvpbqXcqJubxjDGJKPNLI=;
-        b=SGOQDxePKgv0OLL7fEvyxsGMGpnJ9nUJ49NapHWnoaWOs5Uzxsblxy4yd0MEdxkiyGlPBy
-        y2Eom1/yr6q2LBW55X3nL8NEi3+GftHE4QfEZ5UGBIStBZjOqSCGbsgcPpulV4T/k6FCj4
-        1mF/mD53CUPq/y2PQyG5hH+UMo5kOTs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-561-euwv-xhLMlWa5iZ5HdKl-w-1; Thu, 17 Sep 2020 19:08:56 -0400
-X-MC-Unique: euwv-xhLMlWa5iZ5HdKl-w-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C25F01882FB0;
-        Thu, 17 Sep 2020 23:08:54 +0000 (UTC)
-Received: from T590 (ovpn-12-51.pek2.redhat.com [10.72.12.51])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C42D055769;
-        Thu, 17 Sep 2020 23:08:46 +0000 (UTC)
-Date:   Fri, 18 Sep 2020 07:08:42 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-ext4@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-block@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: REGRESSION: 37f4a24c2469: blk-mq: centralise related handling
- into blk_mq_get_driver_tag
-Message-ID: <20200917230842.GA1139137@T590>
-References: <5140ba6c-779c-2a71-b7f2-3c3220cdf19c@kernel.dk>
- <68510957-c887-8e26-4a1a-a7a93488586a@kernel.dk>
- <20200904035528.GE558530@mit.edu>
- <20200915044519.GA38283@mit.edu>
- <20200915073303.GA754106@T590>
- <20200915224541.GB38283@mit.edu>
- <20200915230941.GA791425@T590>
- <20200916202026.GC38283@mit.edu>
- <20200917022051.GA1004828@T590>
- <20200917143012.GF38283@mit.edu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917143012.GF38283@mit.edu>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+        Thu, 17 Sep 2020 19:12:28 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 930DBC06174A;
+        Thu, 17 Sep 2020 16:12:28 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id EEC6113659C88;
+        Thu, 17 Sep 2020 15:55:38 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 16:12:04 -0700 (PDT)
+Message-Id: <20200917.161204.1375552873412345194.davem@davemloft.net>
+To:     fruggeri@arista.com
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        xiyou.wangcong@gmail.com, ap420073@gmail.com, andriin@fb.com,
+        edumazet@google.com, jiri@mellanox.com, ast@kernel.org,
+        kuba@kernel.org
+Subject: Re: [PATCH v2] net: use exponential backoff in netdev_wait_allrefs
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200917221922.A5D3D95C0A57@us180.sjc.aristanetworks.com>
+References: <20200917221922.A5D3D95C0A57@us180.sjc.aristanetworks.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Thu, 17 Sep 2020 15:55:39 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 10:30:12AM -0400, Theodore Y. Ts'o wrote:
-> On Thu, Sep 17, 2020 at 10:20:51AM +0800, Ming Lei wrote:
-> > 
-> > Obviously there is other more serious issue, since 568f27006577 is
-> > completely reverted in your test, and you still see list corruption
-> > issue.
-> > 
-> > So I'd suggest to find the big issue first. Once it is fixed, maybe
-> > everything becomes fine.
-> > ...
-> > Looks it is more like a memory corruption issue, is there any helpful log
-> > dumped when running kernel with kasan?
-> 
-> Last night, I ran six VM's using -rc4 with and without KASAN; without
-> Kasan, half of them hung.  With KASAN enabled, all of the test VM's
-> ran to completion.
+From: fruggeri@arista.com (Francesco Ruggeri)
+Date: Thu, 17 Sep 2020 15:19:22 -0700
 
-From your last email, when you run -rc4 with revert of 568f27006577, you
-can observe list corruption easily.
+>  static void netdev_wait_allrefs(struct net_device *dev)
+>  {
+>  	unsigned long rebroadcast_time, warning_time;
+>  	int refcnt;
+> +	unsigned int wait = MIN_MSLEEP;
 
-So can you enable KASAN on -rc4 with revert of 568f27006577 and see if
-it makes a difference?
-
-> 
-> This strongly suggests whatever the problem is, it's timing related.
-> I'll run a larger set of test runs to see if this pattern is confirmed
-> today.
-
-Looks you enable lots of other debug options, such a lockdep, which has
-much much heavy runtime load. Maybe you can disable all non-KASAN debug
-option(non-KASAN memory debug options, lockdep, ...) and keep KASAN
-debug only and see if you are lucky.
-
-
-Thanks, 
-Ming
-
+Please preserve the reverse christmas tree ordering of local
+variables here, thank you.
