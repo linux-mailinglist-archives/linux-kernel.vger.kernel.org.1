@@ -2,151 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 066A226D766
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 11:09:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C87E026D769
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 11:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726468AbgIQJJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 05:09:32 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:8662 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726171AbgIQJJb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 05:09:31 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f63279c0002>; Thu, 17 Sep 2020 02:08:44 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 17 Sep 2020 02:09:27 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 17 Sep 2020 02:09:27 -0700
-Received: from [10.26.74.242] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 17 Sep
- 2020 09:09:17 +0000
-Subject: Re: [PATCH v3 08/16] irqchip/gic: Configure SGIs as standard
- interrupts
-To:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Marc Zyngier <maz@kernel.org>
-CC:     Linus Walleij <linus.walleij@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        "Sumit Garg" <sumit.garg@linaro.org>, <kernel-team@android.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King <linux@arm.linux.org.uk>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Saravana Kannan <saravanak@google.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Gregory Clement" <gregory.clement@bootlin.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "Linux Samsung SOC" <linux-samsung-soc@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-References: <20200901144324.1071694-1-maz@kernel.org>
- <20200901144324.1071694-9-maz@kernel.org>
- <CGME20200914130601eucas1p23ce276d168dee37909b22c75499e68da@eucas1p2.samsung.com>
- <a917082d-4bfd-a6fd-db88-36e75f5f5921@samsung.com>
- <933bc43e-3cd7-10ec-b9ec-58afaa619fb7@nvidia.com>
- <3378cd07b92e87a24f1db75f708424ee@kernel.org>
- <CACRpkdYvqQUJaReD1yNTwiHhaZpQ9h5Z9DgdqbKkCexnM7cWNw@mail.gmail.com>
- <049d62ac7de32590cb170714b47fb87d@kernel.org>
- <a88528cd-eb76-367a-77d6-7ae20bd28304@nvidia.com>
- <81cb16323baa1c81e7bc1e8156fa47b8@kernel.org>
- <e317b2fe-52e3-8ce7-ba77-43d2708d660f@nvidia.com>
- <4645f636-e7cc-6983-a3b7-897c20ec5096@samsung.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <bec733a1-227f-d943-90dd-85fc9a993109@nvidia.com>
-Date:   Thu, 17 Sep 2020 10:09:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <4645f636-e7cc-6983-a3b7-897c20ec5096@samsung.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
+        id S1726336AbgIQJMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 05:12:38 -0400
+Received: from mail-eopbgr20072.outbound.protection.outlook.com ([40.107.2.72]:40510
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726171AbgIQJMh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 05:12:37 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YUDprUzKpGmsGasaIsOBEUCZ40UKNys4XuIHKif9u80zhPCphsWNd39DPw8RSDlBl58uzOcfl+s0efjZnDzpxACZ4Umd3INspe+ay6OKLvsQczFRSy9kzUlY6gZ4JYod4UEydVhZpOHq35jt0w8GR7a7OAY+9osuv9Ve3y5bLOH35GOrrXeLIC4/d4Pyt8isW+lGZJoTqGgygB7Z71ipzgvJSuXYBQKymhuGf/W56CH7Ue6+RokIJihZDZjzTP5O7+xL/PriK4w775O8IW4yRCzBI+/dgtSb5ilAZIDt1FCrHFz8vtqhG8DLFYEQJZ/ESaQQfD3+OcbytD/FgJOwHQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CG854cfah+9raoJ+bHgls0Yatt8PYLA/zjuYZNdoVFw=;
+ b=bDNT9jM0eIZQpUxFriD+7g2qRP4HVU0ByjYnrPI5Upvk96OHNhr2XZzfvhRMY9KoCq6mEX2ykrvoTCdhDEz16sypnoS8orvdBYGGLjgkd0O17Xh7yEmNoGLzJvpkUidKDKC84J8RrxL0l4mZk2v+h1o3A6dPk7kst/53eZhyFkUHIvrqy8MidtkBqzyDbAOYNJ75jYBbhKzK7YKdwqoNnyANV+MpDMj8Og4SDBNUVOJOjRMTwkMGUVkugJH/kHaDaOonfP9Q+397XICEewmAzsKYoN4pZc6UE6OK1EAcpNaliyaSiptUZs2B/COEhVV44zDYLml0EpDVxAKuvN6s8Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CG854cfah+9raoJ+bHgls0Yatt8PYLA/zjuYZNdoVFw=;
+ b=Qkxq1ONLGkG3hKfKF/1MaftDPHTd1EhD4QV9zYjY4RF44foCrnJ8PSzw5woz/6PORGMSM3N+VIutBLGrZy9r0tKJ2cxWLljyy0UbuQSPTqhPjcOgnxd6nBzld2Rfnh28NZhf+gMNe9TPMa7QHirkPe7VUMw4bWrMODpi6c2KBIA=
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+ by DB8PR04MB6971.eurprd04.prod.outlook.com (2603:10a6:10:113::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Thu, 17 Sep
+ 2020 09:12:32 +0000
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::d12e:689a:169:fd68]) by DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::d12e:689a:169:fd68%8]) with mapi id 15.20.3391.011; Thu, 17 Sep 2020
+ 09:12:32 +0000
+From:   Joakim Zhang <qiangqing.zhang@nxp.com>
+To:     Sean Young <sean@mess.org>
+CC:     "mchehab@kernel.org" <mchehab@kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: RE: [PATCH] media: rc: gpio-ir-recv: add QoS support for cpuidle
+ system
+Thread-Topic: [PATCH] media: rc: gpio-ir-recv: add QoS support for cpuidle
+ system
+Thread-Index: AQHWiy4MW1TKQEfe6k2eA6q7pgHUfqlpcD0AgAMT72A=
+Date:   Thu, 17 Sep 2020 09:12:32 +0000
+Message-ID: <DB8PR04MB6795CB9F519D2BD277654B29E63E0@DB8PR04MB6795.eurprd04.prod.outlook.com>
+References: <20200915150202.24165-1-qiangqing.zhang@nxp.com>
+ <20200915093342.GA24139@gofer.mess.org>
+In-Reply-To: <20200915093342.GA24139@gofer.mess.org>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600333724; bh=mnh+2hfEbHi6YA77yln4HeXzAzNL58Y3B6oR5K7Jkn0=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=F4mbesU/lx+WOj0v9InZSi8Qdgos5F7v59koJlfx85AxYkozo7GWTfPEpXc7gyUmj
-         t762hIU7FWKp+rStnubQuDvbr/WVdvTII5lBO901Po4CXZvvrTDIirgffmxrYpDUvl
-         bN3BN+sEJ8TcNU904PL04BTtBWZU2Knwr/1HrWfpwv0NmO5g1zItN3oBOYDS8rqrR5
-         DaU5vwFQs/Cj4U8THmPcXZH9lGhBbXqXk5Z22MqNoXpV6bh+dh0+rNMZH3E7bj1AMn
-         DyjqtT9yaCzO1IYmx+RP4vhBZ/6Kuwfz+Z8e4qSpQQUTZdhWafzeu70mEkKS6dIlQk
-         JkV18Q/BI3hhQ==
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: mess.org; dkim=none (message not signed)
+ header.d=none;mess.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.71]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 9b8e55a4-91f6-449e-ccc3-08d85ae9cf3e
+x-ms-traffictypediagnostic: DB8PR04MB6971:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB8PR04MB69717FBFF44A4CCE9FB108C6E63E0@DB8PR04MB6971.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2733;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 2kzS6JdHB3bnGw+WM0+vSIudfXwGeKDzj5RFhsJUJ6gpJcwHhqq6f01ht4fgBPBMfIs0mmJoz9F1RR1a4jYuiga7bToHeMeoSCfxslGo6587oxASDx5K7zHWnoXbP12rQA0cYHYt9mu0RBL0LUgPkrQIjJ49gtMsjGqtvgWYM+bW4Bi6cNA0QTdjtzC4kLVFVJGaELJYoczFCDDJCE5IPPe1PlOtP9SlmX/2YZf/POsf9vqc0h/z+VgtnoiqI2xPKFXPfTuYX5037s1pxVLP1FcOzHEqzjAJKQg1hHFpP4ZpujsU5rFQxO95JAJqTCJBK5jUNtHf/6ajWFDOEayB7Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(346002)(366004)(396003)(66446008)(26005)(9686003)(33656002)(186003)(64756008)(66556008)(83380400001)(66476007)(66946007)(52536014)(5660300002)(71200400001)(76116006)(6506007)(53546011)(316002)(54906003)(86362001)(6916009)(478600001)(4326008)(55016002)(8936002)(8676002)(2906002)(7696005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: W7LBWnpcH3oLYCe/NDaQPtNkxDw+jHW/osQQ8Z6pQddoFBWlI3CrrCFfw8nLq9PxuTV7qbKKemTH35SWzzf7jtdmUYb0rLFy92lO419W88kpvAqX+31R9qpAtb+cChvLjDBi8rGq9kTjVkgE47kj4H25BKPYJf8cBV90fBbw4PmWQRLhdH3Q9mu0VK+CKI3Q4pEkVuQTLGI5ja4lieD3uwu91LXBgv0E+0GhMZ31N4Vls78lghlFXDRCxRVgpPl2VSSj0xd2HSrRQ/GQvy0RsZI2xehl/WW7ECvGcjy4x9yOqgu1Et854ta0R+1wGr+MwzAbws6VHPn1bbJKxvtDBYSU/XIIiAl5AUclmbM0/+MBbVB2xcIJfMYjmKoafvJbMsOmv51TmIyikkZy5ADCnIjLkSTbWwOSPaRXZ0YXdxCHzRcdtp0oLIdCXfYmFK/uD+YKCrkyLsHvm/Dwj1get38+fOuyz2HmfI3dFgNyeNRWvhUt13CvTCNXjwSHbif9Y76Wyi8PHtgzOfy5StOIrf4n6+VW7QJ3Dvo6inaoAwWTM5gvtCb49mJDrpupxgx5ql/S29mix/v7A+9yOV9AJBTd+r+zjgsM8Vf4yafmnX+0D3HJJpxfQHGy4sxcFwDDd+77GbKjPXsaj112uN4jGg==
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9b8e55a4-91f6-449e-ccc3-08d85ae9cf3e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Sep 2020 09:12:32.2968
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: QD9aK6HxYL+umZLGlDrLuOWG5RsUHJdz59SZegDfPH+SROXSZuSM5TbHkpCRSDi3sWUXhKCh39OCqkj0Aqst/w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6971
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 17/09/2020 09:54, Marek Szyprowski wrote:
-> Hi Jon,
->=20
-> On 17.09.2020 10:49, Jon Hunter wrote:
->> On 17/09/2020 09:45, Marc Zyngier wrote:
->>> On 2020-09-17 08:54, Jon Hunter wrote:
->>>> On 17/09/2020 08:50, Marc Zyngier wrote:
->>>>> On 2020-09-17 08:40, Linus Walleij wrote:
->>>>>> On Wed, Sep 16, 2020 at 5:11 PM Marc Zyngier <maz@kernel.org> wrote:
->>>>>>
->>>>>>> Can you try the patch below and let me know?
->>>>>> I tried this patch and now Ux500 WORKS. So this patch is definitely
->>>>>> something you should apply.
->>>>>>
->>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (is_f=
-rankengic())
->>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 set_sgi_intid(irqstat);
->>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 this_cpu=
-_write(sgi_intid, intid);
->>>>>> This needs changing to irqstat to compile as pointed out by Jon.
->>>>>>
->>>>>> With that:
->>>>>> Tested-by: Linus Walleij <linus.walleij@linaro.org>
->>>>> Thanks a lot for that.
->>>>>
->>>>> Still need to understand why some of Jon's systems are left unbootabl=
-e,
->>>>> despite having similar GIC implementations (Tegra194 and Tegra210 use
->>>>> the same GIC-400, and yet only one of the two boots correctly...).
->>>> So far, I have only tested this patch on Tegra20. Let me try the other
->>>> failing boards this morning and see if those still fail.
->>> Tegra20 (if I remember well) is a dual A9 with the same GIC implementat=
-ion
->>> as Ux500, hence requiring the source CPU bits to be written back. So th=
-is
->>> patch should have cured it, but didn't...
->>>
->>> /me puzzled.
->> Me too. Maybe there just happens to be something else also going wrong
->> in next. I am doing a bit more testing to see if applying the fix
->> directly on top of this change fixes it to try and eliminate anything
->> else in -next.
->>
->> Linus, what -next are you testing on? I am using next-20200916.
->=20
-> next-20200916 completely broken on ARM and ARM64. Please check=20
-> next-20200915 + the mentioned fix or just check=20
-> https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/log=
-/?h=3Dirq/ipi-as-irq
-
-Ah thanks! Any idea what is causing the other failure on next-20200916?
-
-Yes we have noticed that now everything fails next-20200916 so not just
-this issue.
-
-Cheers
-Jon
-
---=20
-nvpublic
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFNlYW4gWW91bmcgPHNlYW5A
+bWVzcy5vcmc+DQo+IFNlbnQ6IDIwMjDE6jnUwjE1yNUgMTc6MzQNCj4gVG86IEpvYWtpbSBaaGFu
+ZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+DQo+IENjOiBtY2hlaGFiQGtlcm5lbC5vcmc7IGxp
+bnV4LW1lZGlhQHZnZXIua2VybmVsLm9yZzsNCj4gbGludXgta2VybmVsQHZnZXIua2VybmVsLm9y
+ZzsgZGwtbGludXgtaW14IDxsaW51eC1pbXhAbnhwLmNvbT4NCj4gU3ViamVjdDogUmU6IFtQQVRD
+SF0gbWVkaWE6IHJjOiBncGlvLWlyLXJlY3Y6IGFkZCBRb1Mgc3VwcG9ydCBmb3IgY3B1aWRsZQ0K
+PiBzeXN0ZW0NCj4gDQo+IA0KDQpbLi4uXQ0KPiA+IEBAIC05Miw2ICsxMTMsMTIgQEAgc3RhdGlj
+IGludCBncGlvX2lyX3JlY3ZfcHJvYmUoc3RydWN0DQo+ID4gcGxhdGZvcm1fZGV2aWNlICpwZGV2
+KQ0KPiA+DQo+ID4gIAlwbGF0Zm9ybV9zZXRfZHJ2ZGF0YShwZGV2LCBncGlvX2Rldik7DQo+ID4N
+Cj4gPiArDQo+ID4gKwlwbV9ydW50aW1lX3NldF9hdXRvc3VzcGVuZF9kZWxheShkZXYsIChyY2Rl
+di0+dGltZW91dCAvIDEwMDAgLw0KPiA+ICsxMDAwKSk7DQo+IA0KPiByY2Rldi0+dGltZW91dCBp
+cyBpbiBtaWNyb3NlY29uZHMgKHNpbmNlIHZlcnkgcmVjZW50bHkpLCBzbyB0aGlzIGlzIHdyb25n
+Lg0KPiBBbHNvLCB0aGUgdGltZW91dCBjYW4gYmUgY2hhbmdlZCB1c2luZyB0aGUgTElSQ19TRVRf
+UkVDX1RJTUVPVVQgaW9jdGwNCj4gKHVzaW5nIGlyLWN0bCAtdCBpbiB1c2Vyc3BhY2UpLiBUaGUg
+YXV0b3N1c3BlbmQgZGVsYXkgc2hvdWxkIGJlIHVwZGF0ZWQgd2hlbg0KPiB0aGlzIGhhcHBlbnMu
+IFRoaXMgY2FuIGJlIGRvbmUgYnkgaW1wbGVtZW50aW5nIHRoZSBzX3RpbWVvdXQgcmNkZXYgZnVu
+Y3Rpb24uDQoNCkhpIFNlYW4sDQoNCkkgY29tZSBhY3Jvc3MgYSBwcm9ibGVtIHdoZW4gaW1wbGVt
+ZW50aW5nIHRoaXMgZmVhdHVyZS4NCg0KQXQgcHJvYmUgc3RhZ2UsIGRldm1fcmNfcmVnaXN0ZXJf
+ZGV2aWNlIC0+IGNoYW5nZV9wcm90b2NvbCwgdGhlbiB0aW1lb3V0IHNldCB0byAxMjVtcy4NCg0K
+V2hlbiBlY2hvIHNvbnkgb3IgbmVjIHRvIHByb3RvY29scywgd2lsbCBjYWxsIGNoYW5nZV9wcm90
+b2NvbCBjaGFuZ2luZyB0aGUgdGltZW91dCB2YWx1ZSwgdGhhdCB0aW1lb3V0IHdvdWxkIGNoYW5n
+ZSB0byBoYW5kbGVyLT5taW5fdGltZW91dCArIDEwbXMuIEZvciBzb255IGlzIDE2MDAwMDAwbnMs
+IGZvciAxNTYyNTAwMG5zLg0KVGhpcyBpcyBub3QgdGhlIHdheSBJIHdhbnQgdG8gdGFrZSBiZWZv
+cmUsIHRoaXMgd291bGQgZnJlcXVlbnRseSBkaXNhYmxlL2VuYWJsZSBjcHVpZGxlLiBTbyBpcyBp
+dCBuZWNlc3NhcnkgdG8gcHJvdmlkZSBzX3RpbWVvdXQsIHRoaXMgY2FsbGJhY2sgc2hvdWxkIGJl
+IHVzZWQgdG8gY2hhbmdlIHByb3RvY29scycgdGltZW91dD8NCklmIGltcGxlbWVudCBzX3RpbWVv
+dXQsIHVzZXJzIG5lZWQgY2hhbmdlIHRoZSB0aW1lb3V0IHZhbHVlIGZyb20gdXNlcnNwYWNlLCB0
+aGlzIGlzIGEgbWFuZGF0b3J5IG9wZXJhdGlvbiBhbmQgdW5mcmllbmRseS4gQW5kIGl0IHdpbGwg
+YWZmZWN0IHByb3RvY29sJ3MgdGltZW91dC4NCg0KQXV0b3N1c3BlbmQgZGVsYXkgc2hvdWxkIGJl
+IGZpeGVkIHZhbHVlLCBzaG91bGQgYmUgc2V0IHRvIGdwaW8gZGV2aWNlIHRpbWVvdXQgdmFsdWUs
+IHdoaWNoIGlzIDEyNW1zLg0KDQpCZXN0IFJlZ2FyZHMsDQpKb2FraW0gWmhhbmcNCj4gPiArCXBt
+X3J1bnRpbWVfdXNlX2F1dG9zdXNwZW5kKGRldik7DQo+ID4gKwlwbV9ydW50aW1lX3NldF9zdXNw
+ZW5kZWQoZGV2KTsNCj4gPiArCXBtX3J1bnRpbWVfZW5hYmxlKGRldik7DQo+ID4gKw0KPiA+ICAJ
+cmV0dXJuIGRldm1fcmVxdWVzdF9pcnEoZGV2LCBncGlvX2Rldi0+aXJxLCBncGlvX2lyX3JlY3Zf
+aXJxLA0KPiA+ICAJCQkJSVJRRl9UUklHR0VSX0ZBTExJTkcgfCBJUlFGX1RSSUdHRVJfUklTSU5H
+LA0KPiA+ICAJCQkJImdwaW8taXItcmVjdi1pcnEiLCBncGlvX2Rldik7DQo=
