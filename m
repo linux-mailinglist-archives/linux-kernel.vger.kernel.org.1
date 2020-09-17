@@ -2,124 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0521926E78B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 23:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B28BF26E78F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 23:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726022AbgIQVqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 17:46:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725858AbgIQVqA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 17:46:00 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76805C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 14:46:00 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id 205so2801410qkd.2
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 14:46:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=IhKMP2yDqla4bVCkJ4x51hskFiR/f7svOYkmrG2KUNE=;
-        b=TWVIG1xeekErrOWhlV/nnA95BVALmStjr90hXy/egUz8wcg3E7GRjsC/6lUH7WXmVS
-         WP2xLDEH9zdJ5H4JOeOjACFo4v6PzBNl+fPBYMRsvX7ScJZsTnym7BQ0WaAkujxIH1bo
-         ZNGnhG2+/3JenN40EmcHrLeuN/YJX72pwiec2eiHBdeLk+dNhqI06ADPH6+oBcsAhOMN
-         ORyP4k58pVw5u+A8aaljsWgSm5XhiljRIH54YphSCpJaJ5cWx5Nq//cFJZiLGnp3GzfU
-         g3nphqn8pyMDlyMqyBmSX6J/BIRswGQd8FExW3fSz6/JX1Hfz3VjXJcNIEXWkfnsm9D2
-         mw4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=IhKMP2yDqla4bVCkJ4x51hskFiR/f7svOYkmrG2KUNE=;
-        b=IU2OwTqU65tJE8J97yJkwiPr6sqXWADiFKWJH9EVLNg/bid7pGLfc5oyN9szLLIat9
-         R41P83+SckaWdHVQqCUYiVSwMLQqB+UrSg1JFz8kRRuVYaOdxhDDjkKhDaYVk2KkcI8u
-         /Hcu9MSmH0KNlDjc4Xj/fWqIFGKIRAOL8XiRKJQfUMAdiGaiZCAJapiYSJ0RcTgKPV5h
-         l9Srkl4FTi9gNG5UiSvn4Whhk4B1PbNwrNlFIlVFBpMsYT19Z6HE+szSXtmZNrLXi4Hk
-         XvJED8nPVTFToD+nlJLc407gy7mJFfwiPQMKPplbx7fTEwetWUMDl/qpnTN8VD2mq27j
-         tZPA==
-X-Gm-Message-State: AOAM530dNYN+UbP39yEFbnpcy8KWg/bx/1SRaBNc+hmCPOQ0YcEOUZr6
-        nU3OgZonNIB8GPE1V96iFtUupvc7jEE7bQ8/N7o=
-X-Google-Smtp-Source: ABdhPJzHIimFKFdpvNlyjrJFZoq+9sht5as+u3dxKNL5X6CgRp/ja15bbH7/Fz9n2O8EwngZkHNGrzkGuL4Rca57TYE=
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:ad4:5745:: with SMTP id
- q5mr30422692qvx.29.1600379158156; Thu, 17 Sep 2020 14:45:58 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 14:45:45 -0700
-In-Reply-To: <ce28bb9bc25cb3f1197f75950a0cfe14947f9002.camel@perches.com>
-Message-Id: <20200917214545.199463-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-References: <ce28bb9bc25cb3f1197f75950a0cfe14947f9002.camel@perches.com>
-X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
-Subject: [PATCH v3] nfs: remove incorrect fallthrough label
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>
-Cc:     "Gustavo A . R . Silva" <gustavo@embeddedor.com>,
-        Joe Perches <joe@perches.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Hongxiang Lou <louhongxiang@huawei.com>,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        id S1726121AbgIQVqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 17:46:31 -0400
+Received: from mga14.intel.com ([192.55.52.115]:65310 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726040AbgIQVqb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 17:46:31 -0400
+IronPort-SDR: axf+HoJ90SfdUDYT1oOxFUDQ685O/BR61kqcGfrW5LFwCvuUucEGilAmwHGxEG+iWV5OghJ1Wp
+ OcgEnYKi05mQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="159105813"
+X-IronPort-AV: E=Sophos;i="5.77,272,1596524400"; 
+   d="scan'208";a="159105813"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 14:46:29 -0700
+IronPort-SDR: 4v506Jv4WNG8inJA6c0dcYElPBXLhmBjERs77eC/TvL6SfRnAMW2nK5nbrBfR3DgUSYstFPc5M
+ DckGfjp+fSsA==
+X-IronPort-AV: E=Sophos;i="5.77,272,1596524400"; 
+   d="scan'208";a="344508817"
+Received: from smtp.ostc.intel.com ([10.54.29.231])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 14:46:28 -0700
+Received: from localhost (mtg-dev.jf.intel.com [10.54.74.10])
+        by smtp.ostc.intel.com (Postfix) with ESMTP id 3FC1A6369;
+        Thu, 17 Sep 2020 14:46:28 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 14:46:28 -0700
+From:   mark gross <mgross@linux.intel.com>
+To:     trix@redhat.com
+Cc:     ibm-acpi@hmh.eng.br, dvhart@infradead.org, andy@infradead.org,
+        natechancellor@gmail.com, ndesaulniers@google.com,
+        len.brown@intel.com, ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
         clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] platform/x86: thinkpad_acpi: initialize tp_nvram_state
+ variable
+Message-ID: <20200917214628.GC29136@mtg-dev.jf.intel.com>
+Reply-To: mgross@linux.intel.com
+References: <20200913190203.22238-1-trix@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200913190203.22238-1-trix@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no case after the default from which to fallthrough to. Clang
-will error in this case (unhelpfully without context, see link below)
-and GCC will with -Wswitch-unreachable.
+Acked-by: mark gross <mgross@linux.intel.com>
 
-The previous commit should have just replaced the comment with a break
-statement.
+--mark
 
-If we consider implicit fallthrough to be a design mistake of C, then
-all case statements should be terminated with one of the following
-statements:
-* break
-* continue
-* return
-* fallthrough
-* goto
-* (call of function with __attribute__(__noreturn__))
 
-Fixes: 2a1390c95a69 ("nfs: Convert to use the preferred fallthrough macro")
-Link: https://bugs.llvm.org/show_bug.cgi?id=47539
-Acked-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Suggested-by: Joe Perches <joe@perches.com>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
-Changes v3:
-* update the commit message as per Joe.
-* collect tags.
-
-Changes v2:
-* add break rather than no terminating statement as per Joe.
-* add Joe's suggested by tag.
-* add blurb about acceptable terminal statements.
-
- fs/nfs/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/nfs/super.c b/fs/nfs/super.c
-index d20326ee0475..eb2401079b04 100644
---- a/fs/nfs/super.c
-+++ b/fs/nfs/super.c
-@@ -889,7 +889,7 @@ static struct nfs_server *nfs_try_mount_request(struct fs_context *fc)
- 		default:
- 			if (rpcauth_get_gssinfo(flavor, &info) != 0)
- 				continue;
--			fallthrough;
-+			break;
- 		}
- 		dfprintk(MOUNT, "NFS: attempting to use auth flavor %u\n", flavor);
- 		ctx->selected_flavor = flavor;
--- 
-2.28.0.681.g6f77f65b4e-goog
-
+On Sun, Sep 13, 2020 at 12:02:03PM -0700, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> clang static analysis flags this represenative problem
+> thinkpad_acpi.c:2523:7: warning: Branch condition evaluates
+>   to a garbage value
+>                 if (!oldn->mute ||
+>                     ^~~~~~~~~~~
+> 
+> In hotkey_kthread() mute is conditionally set by hotkey_read_nvram()
+> but unconditionally checked by hotkey_compare_and_issue_event().
+> So the tp_nvram_state variable s[2] needs to be initialized.
+> 
+> Fixes: 01e88f25985d ("ACPI: thinkpad-acpi: add CMOS NVRAM polling for hot keys (v9)")
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
+>  drivers/platform/x86/thinkpad_acpi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+> index 47925c319d7b..24da8b6872f2 100644
+> --- a/drivers/platform/x86/thinkpad_acpi.c
+> +++ b/drivers/platform/x86/thinkpad_acpi.c
+> @@ -2573,7 +2573,7 @@ static void hotkey_compare_and_issue_event(struct tp_nvram_state *oldn,
+>   */
+>  static int hotkey_kthread(void *data)
+>  {
+> -	struct tp_nvram_state s[2];
+> +	struct tp_nvram_state s[2] = { 0 };
+>  	u32 poll_mask, event_mask;
+>  	unsigned int si, so;
+>  	unsigned long t;
+> -- 
+> 2.18.1
+> 
