@@ -2,96 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2980526D6AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55D3726D6EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726327AbgIQIcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 04:32:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726106AbgIQIcr (ORCPT
+        id S1726376AbgIQIl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 04:41:26 -0400
+Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:44853 "EHLO
+        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726241AbgIQIlX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 04:32:47 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D8D2C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 01:32:47 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id t138so1448989qka.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 01:32:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dNBztFDezqekJtC49rUbCsf0Z74k1dMsAl9uwNJ4HMg=;
-        b=NE//sKAF5oHMFSx8NdDh3n1kEVjrLoAWs6HDtTaDZXdWadnlTrFLMOYgnIkJOBBL1g
-         yR9aokrbfw7dTG1MLqmfDoeJKko2QFrspR3PFqQV+i7kLZQr7eE//YmOU13D2u2ZfC+L
-         qtU4uVjhHR4WvGNM37FfTPitwNAI4hlrqJSHbKWsyjcRCuq080Vhpj4G5S4uWWbzRbZo
-         YQQ0JXT5naMVZBihDayUFCaJKEeSVECsp8UBDl1ReaBjmVXiBCZFGoKRtvUo5Z88qI0c
-         IwD4p9thFBzagOXcFhqz94mpBfb5odzheYwYx7DtsUgF6xOJamO0p8t+L6uS2uDucZXK
-         ZopQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dNBztFDezqekJtC49rUbCsf0Z74k1dMsAl9uwNJ4HMg=;
-        b=hx+T7/4XjekL5zVmBuPpgVS50t4DUDUpdK1meOQTkV7RhXO0oW7PcAPE114NHC3yZ5
-         7OSQ8YnO0qw/Xwlx6/FWa8e+6KMECUjfeDtkMAZAgI0Ww2wX1gmTtjd7eidkDMvoOe8/
-         G6I7k2A4kfCVKy+7Pl3NChAl+G80TJUD9fV0XjNqNvn6ZXjRo4rcDhhzSF50k4f9H97Z
-         QXYAJZF32Nwe7U6aAooisOJb+pEX6FBVH/gzVgK1TQbcOK6CypbYw2lwd6AP9lNL3BRS
-         mpEIfCQ6zXSXRuRoTSyIXoC6HM2EwnN3QPPiSZvzSAJ897GiC7nDeVR+3StgLUPVtAIs
-         nWPw==
-X-Gm-Message-State: AOAM5302ZaJmCdvoqjWIpdhFBzLuyhN8RKbeSppzRfM8L2JHjykY3MUp
-        pc8O7Dcg9YeHkMCDQJyjgsdFI62D61mYPEVC55uZeg==
-X-Google-Smtp-Source: ABdhPJzSbJKQwJomn0u0cTWLeQAt36WLYkPlwqjqb02SBfTghwU+ZRWQqWxtF7a+fSZQitCz8PQXGt4x+08VM1Y3waw=
-X-Received: by 2002:a05:620a:2082:: with SMTP id e2mr25860117qka.421.1600331566286;
- Thu, 17 Sep 2020 01:32:46 -0700 (PDT)
+        Thu, 17 Sep 2020 04:41:23 -0400
+X-Greylist: delayed 446 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 04:41:21 EDT
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id IpMJkL7H0PTBMIpMNkl9Tx; Thu, 17 Sep 2020 10:33:52 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1600331632; bh=16XUzEaDqPGbj9ZPKdSKXNPfKFUiYOCU2kzIJSjyIOg=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=a3SrX882ByFRkqBq9jc/ZgOfOFP2pk5Fs1xhpaAqq5uiW5i9+m7P7C4+jmEpDCxZD
+         AlObv8wTW96BPXolOGeLnqb3Qmog8fhCq4GNCFJV0zL4GDGzGpL4hvUWRA8IkoQBIE
+         buICtH0MMt7UcE+IkdojU6MXorE9lFG55pqglO8zyB0Wvc8+7fRBAlKEYFgFlCvV5/
+         PguZpGF/oL+iLofVMFaC0IDSit+M/uAVZiK9rBz8GmkJ8/TBmqlkvZmv94pN9D0HLr
+         1Br7qjZXye+AOyJXl1IaYaDSTQs1gajNg40QrYUv3b6b442tCingIyU3NURVHQngLU
+         78/5dEepeenrw==
+Subject: Re: [PATCH 0/5] ARM: dts: sun8i: r40: Enable video decoder
+To:     Maxime Ripard <maxime@cerno.tech>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Cc:     wens@csie.org, paul.kocialkowski@bootlin.com, mchehab@kernel.org,
+        robh+dt@kernel.org, gregkh@linuxfoundation.org,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com
+References: <20200825173523.1289379-1-jernej.skrabec@siol.net>
+ <20200827151914.copcle3xjn3ek6p4@gilmour.lan>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <e9d108ee-29c8-7a34-16c0-f9fb2b788f25@xs4all.nl>
+Date:   Thu, 17 Sep 2020 10:33:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200917070543.19064-1-krzk@kernel.org>
-In-Reply-To: <20200917070543.19064-1-krzk@kernel.org>
-From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-Date:   Thu, 17 Sep 2020 10:32:35 +0200
-Message-ID: <CAMxfBF5WWQX3ZH0YcRZ_N8q4njTdG-RA4eM+zyQwmK7tYvw6DQ@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: soc: ti: ti,pruss: fix schema ID
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Roger Quadros <rogerq@ti.com>, Suman Anna <s-anna@ti.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200827151914.copcle3xjn3ek6p4@gilmour.lan>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfJTGm402BRM932Ez8WjMKHNh3v1XhbIPN7JDQclduO2YMTLNWxavqM4T9eK6Peswf8a1mvbQTWKYX7BrVxLX46DQX+KyEbSbJ/G5nktysxAKj58Iwz5B
+ Z+YzYIkzkb6bTZzXh880sQ6Cq2qiO6YRt2TAgtSial1DZc6HUfqA30uiCloy0tEXJwj0M7PVKHEgepuU/SPkNc/oHoOYhX2LwBgvU3TT4BLPx0xnSivtkAyA
+ K+6fGeJWAfyXWFTFkTI9S9taRNWAwODZ6PgtHatO6pNk4jQWwN3rQ2qU7TGdlL9Px8NUa+Rm7d4gnl1cdgqxTdGV33o5aaMfx3E+5Q6aH2flh80GYgDkTaZG
+ oMJ8j6AYjZFmjbD3UXgItwQrorJGMNNZ76mcCcqHTga75iUQjzM8nGSh4mXzQ/DAWHfJb4LTewEP/8AX4j4d6lqM6eVlLHms4dt6gPxzx08DiqGbBSnajBap
+ seocacVixhfVCITKs4oJPxPzihOtJIdadVzPKoIA7RcNX2vwiVRwCi/EnpyvGQpXcMREaYpwE5pRd3oHzLxlPJEv+J2aiynISsyeF004QtrLtmuW5UqB9byP
+ GrfO993YRuoIky4LlARkTBAO6Z5HJQBIU5+r3x+6fgjNy765vbu6kgjhHHIyfzJNcPTVVcmw7NyPLUZnlfjOaiA6pIdzf4QEDC/dxF6N/zct2r8eL1Ad/z/i
+ k3Nc8SDYPcw=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Sep 2020 at 09:05, Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
-> Add missing '#' to fix schema errors:
->
->   $id: 'http://devicetree.org/schemas/soc/ti/ti,pruss.yaml' does not match 'http://devicetree.org/schemas/.*\\.yaml#'
->   $schema: 'http://devicetree.org/meta-schemas/core.yaml' is not one of ['http://devicetree.org/meta-schemas/core.yaml#', 'http://devicetree.org/meta-schemas/base.yaml#']
->   Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml: ignoring, error in schema: $id
->
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml b/Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
-> index cf7dc83f724f..037c51b2f972 100644
-> --- a/Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
-> +++ b/Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
-> @@ -1,8 +1,8 @@
->  # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->  %YAML 1.2
->  ---
-> -$id: http://devicetree.org/schemas/soc/ti/ti,pruss.yaml
-> -$schema: http://devicetree.org/meta-schemas/core.yaml
-> +$id: http://devicetree.org/schemas/soc/ti/ti,pruss.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+Hi Maxime,
 
-I've double checked and "#" was present in the original patch sent and
-ack for upstream: https://patchwork.kernel.org/patch/11729649/
-It seems like something got wrong on linux-next but this is the only
-diff between original patch and one found in linux-next. Thank you for
-taking care of it.
+On 27/08/2020 17:19, Maxime Ripard wrote:
+> On Tue, Aug 25, 2020 at 07:35:18PM +0200, Jernej Skrabec wrote:
+>> Allwinner R40 SoC contains video engine very similar to that in A33.
+>>
+>> First two patches add system controller nodes and the rest of them
+>> add support for Cedrus VPU.
+>>
+>> Please take a look.
+> 
+> Applied all 5 patches, thanks
 
-Best regards,
-Grzegorz
+Just to confirm: you've taken patches 3 and 4 as well? If so, then I can mark them as
+done in patchwork.
+
+Regards,
+
+	Hans
