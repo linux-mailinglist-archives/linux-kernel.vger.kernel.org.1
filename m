@@ -2,97 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CD4726DCDC
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 15:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13CA626DD0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 15:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727085AbgIQNbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 09:31:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50974 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727015AbgIQN3x (ORCPT
+        id S1726850AbgIQN3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 09:29:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726827AbgIQN3L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 09:29:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600349389;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qjkdQTJ/VBG7ZFMg5Nhpzya4K81fiyu8UjZya2led1Q=;
-        b=V5lZC3/t/VHSw6TIrIt2X6QD/sgLQyk6RiZ8PC8zlIS9egEgDe4zyS+1EY3fzLGPlx2jZg
-        oFd7fQKwgckZA7QxZb4zwOloG1Z0VYKvFoqoPQF+TP1wko7vAVxUFBZ2wI3LP9pBnxGnWn
-        SAJIE+khwUpVwTOoa4sQ4S4YJDrOLBw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-579-Q_ysnWYENLK5sfwraF7T4g-1; Thu, 17 Sep 2020 09:27:41 -0400
-X-MC-Unique: Q_ysnWYENLK5sfwraF7T4g-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EC33956B35;
-        Thu, 17 Sep 2020 13:27:35 +0000 (UTC)
-Received: from ovpn-66-148.rdu2.redhat.com (ovpn-66-148.rdu2.redhat.com [10.10.66.148])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 17FB860BEC;
-        Thu, 17 Sep 2020 13:27:28 +0000 (UTC)
-Message-ID: <5d97da4d86db258fdc9b20be3c12588089e17da2.camel@redhat.com>
-Subject: Re: [PATCH v5 0/5] mm: introduce memfd_secret system call to create
- "secret" memory areas
-From:   Qian Cai <cai@redhat.com>
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-riscv@lists.infradead.org, x86@kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-next@vger.kernel.org
-Date:   Thu, 17 Sep 2020 09:27:27 -0400
-In-Reply-To: <20200916073539.3552-1-rppt@kernel.org>
-References: <20200916073539.3552-1-rppt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        Thu, 17 Sep 2020 09:29:11 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A33BC061354
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 06:28:58 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id e16so2095921wrm.2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 06:28:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=hLnWR4evaA6k5JcpTnqiMDGjsxjllMiiAGlGQ8F3HZE=;
+        b=l+Mv+dibZupqn1Wn9tvZXyjbwSeNfqOSSDZrkTAfAgSV7y3N/tHQUqkekZNLj7HVKY
+         QiqxgaYwvbzwUWoc1pmuBQcANAtURIaj0ThqU/T4fvkaxCA8LTxiIwCHHwiWmaN4H3lC
+         xjXUkTKELeCF7xxT/K4SBZ3sfz1mS6Ke092Xit+s7VbFREyHte4PWk4mgxBgNiKuHo52
+         whBw3j4g2DzTf6hlHalzbn8dUkqmCh9ZRPlX2nxPR0vg7ovB74dbS8NywKNdNz8TMTWc
+         MCYsdzE/Xj7YEyY5dMSa6TmDVqzPmh6kTV9Ls4LwBPBIvGUnqnBZDVTd9KBRAhaOgvel
+         Lg2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=hLnWR4evaA6k5JcpTnqiMDGjsxjllMiiAGlGQ8F3HZE=;
+        b=iTHX2gtRNiidJxAGYPMqRTuQhu39SqgO9aLqgz/mWuBl9+2Qu7E/HWKz85WENmgOqv
+         YgAjP2NCOh7lLdMnhyuAZmZjynH2N+Egl5+q8b7SilZ3upzr+kF8vBbprqCBA0uIhvNR
+         PgHGvbBf8qa02Gqnk+IVeIML0knIKb+A6GS2fOP7cMOUm4d8c98k4ftk+utNlUyRAdB+
+         7jAZA4VoIyPsE9BkIXKASBlrlbz9fG5mXfd+n0GOxgNpp0rzD0O/Ff5mQdJ82fEsf+5k
+         ZhOEXTw9j/helnqaid7yhnrANoegi2cTUhHI0zT1nzZEWKtb03jYaRwoi0F17PFQrTRi
+         BfRQ==
+X-Gm-Message-State: AOAM530zTFAOqMjrB2vIKkpYnMLiWSSwistMgVw7OBAkeE0CsePaSPfr
+        /S+4cIzohF0sOIpfboL12J/5VQ==
+X-Google-Smtp-Source: ABdhPJzpRZywHJU2br/37IFuEgJxuNjlKbBPHbvYEgneX2qrE4S0jT0umwaSAa8FByRpSv2x/xKPaw==
+X-Received: by 2002:adf:e690:: with SMTP id r16mr31923257wrm.15.1600349337498;
+        Thu, 17 Sep 2020 06:28:57 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id n10sm11486910wmk.7.2020.09.17.06.28.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 06:28:56 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     sboyd@kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     bjorn.andersson@linaro.org, mturquette@baylibre.com,
+        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 1/4] dt-bindings: clock: Add support for LPASS Audio Clock Controller
+Date:   Thu, 17 Sep 2020 14:28:47 +0100
+Message-Id: <20200917132850.7730-2-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20200917132850.7730-1-srinivas.kandagatla@linaro.org>
+References: <20200917132850.7730-1-srinivas.kandagatla@linaro.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-09-16 at 10:35 +0300, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> Hi,
-> 
-> This is an implementation of "secret" mappings backed by a file descriptor. 
-> I've dropped the boot time reservation patch for now as it is not strictly
-> required for the basic usage and can be easily added later either with or
-> without CMA.
+Audio Clock controller is a block inside LPASS which controls
+2 Glitch free muxes to LPASS codec Macros.
 
-On powerpc: https://gitlab.com/cailca/linux-mm/-/blob/master/powerpc.config
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ .../bindings/clock/qcom,audiocc-sm8250.yaml   | 58 +++++++++++++++++++
+ .../clock/qcom,sm8250-lpass-audiocc.h         | 13 +++++
+ 2 files changed, 71 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,audiocc-sm8250.yaml
+ create mode 100644 include/dt-bindings/clock/qcom,sm8250-lpass-audiocc.h
 
-There is a compiling warning from the today's linux-next:
-
-<stdin>:1532:2: warning: #warning syscall memfd_secret not implemented [-Wcpp]
+diff --git a/Documentation/devicetree/bindings/clock/qcom,audiocc-sm8250.yaml b/Documentation/devicetree/bindings/clock/qcom,audiocc-sm8250.yaml
+new file mode 100644
+index 000000000000..915d76206ad0
+--- /dev/null
++++ b/Documentation/devicetree/bindings/clock/qcom,audiocc-sm8250.yaml
+@@ -0,0 +1,58 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/qcom,audiocc-sm8250.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Clock bindings for LPASS Audio Clock Controller on SM8250 SoCs
++
++maintainers:
++  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
++
++description: |
++  The clock consumer should specify the desired clock by having the clock
++  ID in its "clocks" phandle cell.
++  See include/dt-bindings/clock/qcom,sm8250-lpass-audiocc.h for the full list
++  of Audio Clock controller clock IDs.
++
++properties:
++  compatible:
++    const: qcom,sm8250-lpass-audiocc
++
++  reg:
++    maxItems: 1
++
++  '#clock-cells':
++    const: 1
++
++  clocks:
++    items:
++      - description: LPASS Core voting clock
++      - description: Glitch Free Mux register clock
++
++  clock-names:
++    items:
++      - const: core
++      - const: bus
++
++required:
++  - compatible
++  - reg
++  - '#clock-cells'
++  - clocks
++  - clock-names
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/qcom,sm8250-lpass-audiocc.h>
++    #include <dt-bindings/sound/qcom,q6afe.h>
++    clock-controller@3300000 {
++      #clock-cells = <1>;
++      compatible = "qcom,sm8250-lpass-audiocc";
++      reg = <0x03300000 0x30000>;
++      clocks = <&q6afecc LPASS_HW_MACRO_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
++               <&q6afecc LPASS_CLK_ID_TX_CORE_MCLK LPASS_CLK_ATTRIBUTE_COUPLE_NO>;
++      clock-names = "core", "bus";
++    };
+diff --git a/include/dt-bindings/clock/qcom,sm8250-lpass-audiocc.h b/include/dt-bindings/clock/qcom,sm8250-lpass-audiocc.h
+new file mode 100644
+index 000000000000..a1aa6cb5d840
+--- /dev/null
++++ b/include/dt-bindings/clock/qcom,sm8250-lpass-audiocc.h
+@@ -0,0 +1,13 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef _DT_BINDINGS_CLK_LPASS_AUDIOCC_SM8250_H
++#define _DT_BINDINGS_CLK_LPASS_AUDIOCC_SM8250_H
++
++/* From AudioCC */
++#define LPASS_CDC_WSA_NPL				0
++#define LPASS_CDC_WSA_MCLK				1
++#define LPASS_CDC_RX_MCLK				2
++#define LPASS_CDC_RX_NPL				3
++#define LPASS_CDC_RX_MCLK_MCLK2				4
++
++#endif /* _DT_BINDINGS_CLK_LPASS_AUDIOCC_SM8250_H */
+-- 
+2.21.0
 
