@@ -2,46 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B01326E4C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC47A26E4CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726424AbgIQS5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 14:57:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58440 "EHLO mail.kernel.org"
+        id S1726617AbgIQS6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 14:58:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726607AbgIQS5o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 14:57:44 -0400
+        id S1726646AbgIQS6M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 14:58:12 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC5B3206A1;
-        Thu, 17 Sep 2020 18:57:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D2832072E;
+        Thu, 17 Sep 2020 18:57:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600369064;
-        bh=SJN4xfUdkl7bi48FKRfNPPAsTv9Fk8jme/sg3RpIUiI=;
+        s=default; t=1600369080;
+        bh=h2oBzSRlDP6lx+rd4sKX9zHni5NLmneiOlwvYFS28v4=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=xZiC/FkGQ0IWa40HGPG6OTJ68weDC26g+OAq/cpzzemPVP5Sdmya55zK6KGh1plmO
-         VOFswtms6tVavILDSklQIXy4GxHQshtKaI32zl4jzteOyI/cDbVdzKrPXEisBwv3td
-         BvkyJF8ttDOFDWWynnKVUhGDXof61/P8A97Uwk4U=
-Date:   Thu, 17 Sep 2020 19:56:54 +0100
+        b=COy9VIGawcbUC2qB47O6ifSy3VHIHqyKV/Slg/r590Y0r1xhwDQLyjWdTHieGTVa1
+         ekqEU3m4TvI+HUfQNCzoMc529Mwgs4mau+JK2IkbI+5LX0EnIdCgSeDb8uOPgAgvep
+         WjSJoYVYU9b70EnDGw7VXkRzUdzV7YrrpEAiKQhs=
+Date:   Thu, 17 Sep 2020 19:57:10 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
-In-Reply-To: <20200902133043.19504-1-matthias.schiffer@ew.tq-group.com>
-References: <20200902133043.19504-1-matthias.schiffer@ew.tq-group.com>
-Subject: Re: [PATCH 1/2] ASoC: codec: tlv320aic32x4: fix missing aic32x4_disable_regulators() in error path
-Message-Id: <160036900935.20113.2391843531663465832.b4-ty@kernel.org>
+To:     robh+dt@kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     tiwai@suse.com, lgirdwood@gmail.com, bgoswami@codeaurora.org,
+        plai@codeaurora.org, linux-kernel@vger.kernel.org,
+        sboyd@kernel.org, devicetree@vger.kernel.org,
+        alsa-devel@alsa-project.org
+In-Reply-To: <20200910135708.14842-1-srinivas.kandagatla@linaro.org>
+References: <20200910135708.14842-1-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH 0/2] ASoC: q6afe: add clocks support
+Message-Id: <160036900935.20113.3270260230921504372.b4-ty@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Sep 2020 15:30:42 +0200, Matthias Schiffer wrote:
-> The regulators need to be disabled in the aic32x4_register_clocks()
-> failure case as well.
+On Thu, 10 Sep 2020 14:57:06 +0100, Srinivas Kandagatla wrote:
+> q6afe already exposes clocks using apis, but not as proper
+> clock controller driver. This patch puts those clocks
+> in to a proper clock controller so that other drivers that
+> depend on those clocks can be properly expressed.
+> 
+> 
+> Srinivas Kandagatla (2):
+>   ASoC: q6afe: dt-bindings: add q6afe clock bindings
+>   ASoC: q6afe-clocks: add q6afe clock controller
+> 
+> [...]
 
 Applied to
 
@@ -49,10 +58,10 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: codec: tlv320aic32x4: fix missing aic32x4_disable_regulators() in error path
-      commit: 251e5c8694db01cd10828e39c07f90d958d7b303
-[2/2] ASoC: codec: tlv320aic32x4: do software reset before clock registration
-      commit: df44bc16e616809172cda90fd816596ded4ea219
+[1/2] ASoC: q6afe: dt-bindings: add q6afe clock bindings
+      commit: 4e398353a7e51410c34fd19f8b7dfc56fff5901b
+[2/2] ASoC: q6afe-clocks: add q6afe clock controller
+      commit: 520a1c396d1966b64884d8e0176a580150d5a09e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
