@@ -2,119 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79FEA26D733
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:55:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C9B026D705
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726234AbgIQIzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 04:55:22 -0400
-Received: from foss.arm.com ([217.140.110.172]:42712 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726153AbgIQIzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 04:55:18 -0400
-X-Greylist: delayed 460 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 04:55:17 EDT
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 034DC1FB;
-        Thu, 17 Sep 2020 01:47:37 -0700 (PDT)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.73.95])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 837433F718;
-        Thu, 17 Sep 2020 01:47:33 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     will@kernel.org, catalin.marinas@arm.com,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64/mm: Validate hotplug range before creating linear mapping
-Date:   Thu, 17 Sep 2020 14:16:42 +0530
-Message-Id: <1600332402-30123-1-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
+        id S1726462AbgIQIrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 04:47:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726153AbgIQIrW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 04:47:22 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35425C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 01:47:22 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id n24so1008073pgl.3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 01:47:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=TA6OcLEDFUQ9qpFM/VfmsZehtp68guNS6V1Wug38hMA=;
+        b=HG/p8OtMNJt3DU2dQ9qbZrDYYfxtJ1yHfmzDGy2+DvKn5KAtYBklDNcgaWqriMJR7T
+         QKi/tQrMIzGJUomQakhUysfJPgrC3N/hmHFw+jMpo6aaRYRQU3PBn0OtGDpqVDPaRyV1
+         K64lZnsIL4rAsvBvNsjRsRVWVDTYU2UeqxcCAFuloKVKMXiUuaVUAYQk+bWGK0FBpLtX
+         qMMxxjVsIn7aEdaeYEDjYGjKJJkdH8hblUgpPbwFrg6UpeMF+MP+4GU+gWDvwGRcVlHa
+         IFkTYGGulSgbqwlFsRZXAjoE9Wn81CYYbQfvyhbTZ6WjrETt0igM0XKNY5RWIkQC5Qqv
+         fPbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=TA6OcLEDFUQ9qpFM/VfmsZehtp68guNS6V1Wug38hMA=;
+        b=CDoWZqtl8r9oH2oSD34MWlWOZKz6yvY1mPKdVfZOmh68MPqRzeOxm1uThhbusyw0sF
+         Hi85fgJs3MEiEA/kod0gACmeCGghgRB4DefgWByvmrnCKFfTLkAd2R93ybnyjsZ3RoHs
+         0KdcEt5u6EClVfrvX1YMuqBT0d7mSA7TZM6FVbt1PpxPcXDXiKfSKA9Dy3G+kU1NPCoE
+         nR4F3Nj3DNzWj0wd2HuEzKxwB6/sDQfjvvOBQ8Oc49RJTe8I+KbRrQZwD8OLVHS7q2Kw
+         lKiZE8ndW4tvam8WbeZgYDQWG4mp5UqKZrKtCGqrsqFj0LsheQ8EQ+yB3jbwaQC/xBVL
+         ZLZA==
+X-Gm-Message-State: AOAM531/f+FjKursmkvuL5t4Wiu8XaqpDSPJh1nXJqF8VZ2RZwvULBUI
+        T3+EJYeoaFWGMGVD9xELdFJ4JXExK4R/mdbMsg==
+X-Google-Smtp-Source: ABdhPJy+2YhIYObzfV77phmcp2UmHDPK1RrJqmYemdv0On6uAglDARSoIJlhbey92KAYkU+onC3EkUEhGJ6zxG2F6g==
+X-Received: from howardchung-p920.tpe.corp.google.com ([2401:fa00:1:10:f693:9fff:fef4:4e45])
+ (user=howardchung job=sendgmr) by 2002:a17:90b:15c6:: with SMTP id
+ lh6mr715470pjb.0.1600332441228; Thu, 17 Sep 2020 01:47:21 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 16:47:10 +0800
+Message-Id: <20200917164632.BlueZ.v2.1.I27ef2a783d8920c147458639f3fa91b69f6fd9ea@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
+Subject: [BlueZ PATCH v2 1/6] Bluetooth: Update Adv monitor count upon removal
+From:   Howard Chung <howardchung@google.com>
+To:     linux-bluetooth@vger.kernel.org
+Cc:     marcel@holtmann.org, luiz.dentz@gmail.com, mmandlik@chromium.org,
+        mcchou@chromium.org, howardchung@google.com, alainm@chromium.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During memory hotplug process, the linear mapping should not be created for
-a given memory range if that would fall outside the maximum allowed linear
-range. Else it might cause memory corruption in the kernel virtual space.
+From: Miao-chen Chou <mcchou@chromium.org>
 
-Maximum linear mapping region is [PAGE_OFFSET..(PAGE_END -1)] accommodating
-both its ends but excluding PAGE_END. Max physical range that can be mapped
-inside this linear mapping range, must also be derived from its end points.
+This fixes the count of Adv monitor upon monitor removal.
 
-When CONFIG_ARM64_VA_BITS_52 is enabled, PAGE_OFFSET is computed with the
-assumption of 52 bits virtual address space. However, if the CPU does not
-support 52 bits, then it falls back using 48 bits instead and the PAGE_END
-is updated to reflect this using the vabits_actual. As for PAGE_OFFSET,
-bits [51..48] are ignored by the MMU and remain unchanged, even though the
-effective start address of linear map is now slightly different. Hence, to
-reliably check the physical address range mapped by the linear map, the
-start address should be calculated using vabits_actual. This ensures that
-arch_add_memory() validates memory hot add range for its potential linear
-mapping requirement, before creating it with __create_pgd_mapping().
+The following test was performed.
+- Start two btmgmt consoles, issue a btmgmt advmon-remove command on one
+console and observe a MGMT_EV_ADV_MONITOR_REMOVED event on the other.
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: Steven Price <steven.price@arm.com>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Fixes: 4ab215061554 ("arm64: Add memory hotplug support")
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Signed-off-by: Miao-chen Chou <mcchou@chromium.org>
+Signed-off-by: Howard Chung <howardchung@google.com>
+Reviewed-by: Alain Michaud <alainm@chromium.org>
 ---
- arch/arm64/mm/mmu.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
 
-diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index 75df62fea1b6..d59ffabb9c84 100644
---- a/arch/arm64/mm/mmu.c
-+++ b/arch/arm64/mm/mmu.c
-@@ -1433,11 +1433,38 @@ static void __remove_pgd_mapping(pgd_t *pgdir, unsigned long start, u64 size)
- 	free_empty_tables(start, end, PAGE_OFFSET, PAGE_END);
+Changes in v2:
+- delete 'case 0x001c' in mgmt_config.c
+
+ net/bluetooth/hci_core.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index 8a2645a833013..f30a1f5950e15 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -3061,6 +3061,7 @@ static int free_adv_monitor(int id, void *ptr, void *data)
+ 
+ 	idr_remove(&hdev->adv_monitors_idr, monitor->handle);
+ 	hci_free_adv_monitor(monitor);
++	hdev->adv_monitors_cnt--;
+ 
+ 	return 0;
  }
+@@ -3077,6 +3078,7 @@ int hci_remove_adv_monitor(struct hci_dev *hdev, u16 handle)
  
-+static bool inside_linear_region(u64 start, u64 size)
-+{
-+	/*
-+	 * Linear mapping region is the range [PAGE_OFFSET..(PAGE_END - 1)]
-+	 * accommodating both its ends but excluding PAGE_END. Max physical
-+	 * range which can be mapped inside this linear mapping range, must
-+	 * also be derived from its end points.
-+	 *
-+	 * With CONFIG_ARM64_VA_BITS_52 enabled, PAGE_OFFSET is defined with
-+	 * the assumption of 52 bits virtual address space. However, if the
-+	 * CPU does not support 52 bits, it falls back using 48 bits and the
-+	 * PAGE_END is updated to reflect this using the vabits_actual. As
-+	 * for PAGE_OFFSET, bits [51..48] are ignored by the MMU and remain
-+	 * unchanged, even though the effective start address of linear map
-+	 * is now slightly different. Hence, to reliably check the physical
-+	 * address range mapped by the linear map, the start address should
-+	 * be calculated using vabits_actual.
-+	 */
-+	return ((start >= __pa(_PAGE_OFFSET(vabits_actual)))
-+			&& ((start + size) <= __pa(PAGE_END - 1)));
-+}
-+
- int arch_add_memory(int nid, u64 start, u64 size,
- 		    struct mhp_params *params)
- {
- 	int ret, flags = 0;
- 
-+	if (!inside_linear_region(start, size)) {
-+		pr_err("[%llx %llx] is outside linear mapping region\n", start, start + size);
-+		return -EINVAL;
-+	}
-+
- 	if (rodata_full || debug_pagealloc_enabled())
- 		flags = NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
- 
+ 		idr_remove(&hdev->adv_monitors_idr, monitor->handle);
+ 		hci_free_adv_monitor(monitor);
++		hdev->adv_monitors_cnt--;
+ 	} else {
+ 		/* Remove all monitors if handle is 0. */
+ 		idr_for_each(&hdev->adv_monitors_idr, &free_adv_monitor, hdev);
 -- 
-2.20.1
+2.28.0.618.gf4bc123cb7-goog
 
