@@ -2,63 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34C6D26D0EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 03:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8F5926D0BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 03:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726055AbgIQB5U convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 16 Sep 2020 21:57:20 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:3518 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725886AbgIQB5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 21:57:19 -0400
-X-Greylist: delayed 937 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 21:57:18 EDT
-Received: from dggeme751-chm.china.huawei.com (unknown [172.30.72.57])
-        by Forcepoint Email with ESMTP id 685C42EE129367064534;
-        Thu, 17 Sep 2020 09:41:38 +0800 (CST)
-Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
- dggeme751-chm.china.huawei.com (10.3.19.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Thu, 17 Sep 2020 09:41:38 +0800
-Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
- dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
- Thu, 17 Sep 2020 09:41:37 +0800
-From:   linmiaohe <linmiaohe@huawei.com>
-To:     Michal Hocko <mhocko@suse.com>
-CC:     "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "vdavydov.dev@gmail.com" <vdavydov.dev@gmail.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: memcontrol: correct the comment of
- mem_cgroup_unmark_under_oom()
-Thread-Topic: [PATCH] mm: memcontrol: correct the comment of
- mem_cgroup_unmark_under_oom()
-Thread-Index: AdaMk2onBuSUvuaupEiH3Zos6miJVQ==
-Date:   Thu, 17 Sep 2020 01:41:37 +0000
-Message-ID: <e192943774324dc6af20095c0e274dbf@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.176.109]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726119AbgIQBmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 21:42:14 -0400
+Received: from mail-io1-f80.google.com ([209.85.166.80]:54462 "EHLO
+        mail-io1-f80.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726093AbgIQBmJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 21:42:09 -0400
+Received: by mail-io1-f80.google.com with SMTP id q6so597162iod.21
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 18:42:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=/sygnsQByh+EwXCfZR6Do2whKxLsSoSrY8B6J/yTUtY=;
+        b=ig+ULEFM4K6rcSsz8XLdsFcEahAT6qGjD0oLKPo/w0kEQd5i6etZVA+Ewpb2GHC8zG
+         ZMszD6yjVUfrNcgeBMH0wz0FPHgraIgb8OYif5215nwtDn3sj2ETEn9cEvYVXL155Hpk
+         YfQWhUewKZ+AYB5hBmRCnhCjCi4l/fyfnvAc35kt128dzxA+3gVBi4tFCQ1dmlY1JThD
+         M+QZQFjFuRaVl7Bbuwy7XrJu0U/vs1ygdKvg79whIAOZIwY300kLTVKUbAA/2xI06SlL
+         CYsn6PoFlLh0oRPysn+C761ortlnkJiMnEhviWNe4C+Yjy/K4irLtXBA7hsfKOq2WhSK
+         G+Fw==
+X-Gm-Message-State: AOAM531HP3/icaKNuHQgAMVVerkpu4SI11o8mmqJUS0GDD/vy8CWafpl
+        KHpdkCQqrmgWVKJeRKeZFecolOR1WnZvgKHtCoLOALESXCie
+X-Google-Smtp-Source: ABdhPJxVMb+uOEerKF5s9Gb1ikE6JGsTujv7BAzkTlHPxkcCj/j3pCJ5o+iyWmzehBveVDnI38KnOrlXHDSc07kAYD3TL0Ym9yYi
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+X-Received: by 2002:a02:6607:: with SMTP id k7mr24979424jac.91.1600306928703;
+ Wed, 16 Sep 2020 18:42:08 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 18:42:08 -0700
+In-Reply-To: <000000000000391eaf05ac87b74d@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000004632a05af787ebf@google.com>
+Subject: Re: INFO: task hung in io_uring_flush
+From:   syzbot <syzbot+6338dcebf269a590b668@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michal Hocko <mhocko@suse.com> wrote:
-> On Wed 16-09-20 09:19:27, Miaohe Lin wrote:
->> Since commit fb2a6fc56be6 ("mm: memcg: rework and document OOM waiting 
->> and wakeup"), we have renamed mem_cgroup_oom_lock to 
->> mem_cgroup_oom_trylock. So replace mem_cgroup_oom_lock with mem_cgroup_oom_trylock in comment.
->
->While you are right I find the comment more confusing then helpful.
->What does it try to tell us actually? Is it still valid? Shouldn't we rather remove it or make it more clear?
->> 
+syzbot suspects this issue was fixed by commit:
 
-It seems this comment no long make sense. Many thanks for your nice advise.
+commit b7ddce3cbf010edbfac6c6d8cc708560a7bcd7a4
+Author: Pavel Begunkov <asml.silence@gmail.com>
+Date:   Sat Sep 5 21:45:14 2020 +0000
 
+    io_uring: fix cancel of deferred reqs with ->files
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=173d9b0d900000
+start commit:   9123e3a7 Linux 5.9-rc1
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3d400a47d1416652
+dashboard link: https://syzkaller.appspot.com/bug?extid=6338dcebf269a590b668
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1573f116900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=144d3072900000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: io_uring: fix cancel of deferred reqs with ->files
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
