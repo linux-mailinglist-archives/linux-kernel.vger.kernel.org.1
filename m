@@ -2,92 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CC3326E6E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 22:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DA2A26E6E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 22:46:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726622AbgIQUpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 16:45:18 -0400
-Received: from mail-vk1-f196.google.com ([209.85.221.196]:39064 "EHLO
-        mail-vk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726180AbgIQUpR (ORCPT
+        id S1726644AbgIQUqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 16:46:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726180AbgIQUqA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 16:45:17 -0400
-Received: by mail-vk1-f196.google.com with SMTP id m8so844847vka.6
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 13:45:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=KOMGP0AY1AiXNwWcSEx/xdRLKkV1S0FOTpp6dxykL9Y=;
-        b=s3sD8BIsC6AzJuGVDggDwQmTpmSovO5Z5YPsK1zsZrFUY7yZENZhFQeJ8nLMF5UfmW
-         CrT8ZtRvt1I1/2Xzzd7D1XQjwnFi0Ulk70NZF/DDAoKRcxMyby9La+x8/VCIg8UdrcU+
-         cv/qG5l45u3iTjsQGxqUuKA+1AfXBcQ4su5xAmRdvht5e5pG1MgmhdR+AnkHSoXWCJ7V
-         SquEZudRLkV9IQPTaFNQYlvB7IVHwN3sQNMIc3tyxskau5G+sXkvIwewR/k3qUaikqa3
-         Akx0Ckb4Ql5CuSlmkVft7Whh3QTPwD2RoEcn4DDmTGO7UP+3fqF7s94dG7GPXSRLGKAQ
-         OFbg==
-X-Gm-Message-State: AOAM531MO9X6Y5aGhCqvBYwuatk8ZuWDUBvafoSGrcoGh+uEWWahlAjy
-        JJ6xE5KXis0u1Szw0cZusn7kBDhfaCY=
-X-Google-Smtp-Source: ABdhPJwYAUf2rq4aE2OsG1ltzwEma/KF0vYji20g4gZxw4N3Gg5N0MH9ul1/KZQeXstl3K2RDpq18g==
-X-Received: by 2002:a1f:a3cc:: with SMTP id m195mr10343933vke.16.1600375516558;
-        Thu, 17 Sep 2020 13:45:16 -0700 (PDT)
-Received: from google.com (239.145.196.35.bc.googleusercontent.com. [35.196.145.239])
-        by smtp.gmail.com with ESMTPSA id 23sm163372vkw.25.2020.09.17.13.45.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 13:45:15 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 20:45:14 +0000
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] percpu fix for v5.9-rc6
-Message-ID: <20200917204514.GA2880159@google.com>
+        Thu, 17 Sep 2020 16:46:00 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33DC3C06174A;
+        Thu, 17 Sep 2020 13:46:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=c1lsbc6FhnfAVC3lDDgO0Z2ss8deQHdSkB0npF+L6xM=; b=VJ/nPwNq75TVlW4a0cj1JDQtRh
+        +v7LKagZQ6SRSIc7RTdJJ+MEFik0wYOachu4uq0V8dn0K1rxLWuloheSLatnEXKoAtaxEpXTzlJe3
+        UjHimWtmrJBvBwN0Bu2kPh6J744PVpT2mmdsNjpfJ3vUeWW4DbbePESasA5Kgx5t4S9jgTsOAOniD
+        rZvN4OyvYEFA/Ds6WYFrcgJAbtTq3Q+c+25zaPYQBTdvacwVkezQGbebJ/PoGdSOqrIOq51L4Q4kw
+        h0B8/WYfTkubPq/h/XdNld0jiLV6t22igTJxVgWm6+fKZdyE3GJTZzNP8WuEB10YCs4aqwgYCHQEP
+        JGiBInMA==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kJ0mx-0007um-LM; Thu, 17 Sep 2020 20:45:55 +0000
+Subject: Re: linux-next: Tree for Sep 17 (net/ipv4/devinet.c)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+References: <20200917202313.143f66f3@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <0b592973-55d6-b318-ed38-1d5fbd706e7a@infradead.org>
+Date:   Thu, 17 Sep 2020 13:45:52 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20200917202313.143f66f3@canb.auug.org.au>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 9/17/20 3:23 AM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Changes since 20200916:
+> 
 
-This is a fix for the first chunk size calculation where the variable
-length array incorrectly used # of longs instead of bytes of longs. This
-came in as a code fix and not a bug report, so I don't think it was
-widely problematic. I believe it worked out due to it being memblock
-memory and alignment requirements working in our favor.
 
-Thanks,
-Dennis
+Maybe some older versions of gcc just can't handle IS_ENABLED() inside an
+if (expression) very well.
 
-The following changes since commit f75aef392f869018f78cfedf3c320a6b3fcfda6b:
+> gcc --version
+gcc (SUSE Linux) 7.5.0
 
-  Linux 5.9-rc3 (2020-08-30 16:01:54 -0700)
+This patch:
 
-are available in the Git repository at:
+commit 9efd6a3cecdde984d67e63d17fe6af53c7c50968
+Author: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Date:   Wed May 13 15:58:43 2020 +0200
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/dennis/percpu.git for-5.9-fixes
+    netns: enable to inherit devconf from current netns
 
-for you to fetch changes up to b3b33d3c43bbe0177d70653f4e889c78cc37f097:
+causes a build error:
 
-  percpu: fix first chunk size calculation for populated bitmap (2020-09-17 17:34:39 +0000)
+../net/ipv4/devinet.c: In function ‘devinet_init_net’:
+../net/ipv4/devinet.c:2672:7: error: ‘sysctl_devconf_inherit_init_net’ undeclared (first use in this function); did you mean ‘devinet_init_net’?
+       sysctl_devconf_inherit_init_net == 3) {
+       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+       devinet_init_net
+../net/ipv4/devinet.c:2672:7: note: each undeclared identifier is reported only
 
-----------------------------------------------------------------
-Sunghyun Jin (1):
-      percpu: fix first chunk size calculation for populated bitmap
 
- mm/percpu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/percpu.c b/mm/percpu.c
-index f4709629e6de..1ed1a349eab8 100644
---- a/mm/percpu.c
-+++ b/mm/percpu.c
-@@ -1316,7 +1316,7 @@ static struct pcpu_chunk * __init pcpu_alloc_first_chunk(unsigned long tmp_addr,
- 
- 	/* allocate chunk */
- 	alloc_size = sizeof(struct pcpu_chunk) +
--		BITS_TO_LONGS(region_size >> PAGE_SHIFT);
-+		BITS_TO_LONGS(region_size >> PAGE_SHIFT) * sizeof(unsigned long);
- 	chunk = memblock_alloc(alloc_size, SMP_CACHE_BYTES);
- 	if (!chunk)
- 		panic("%s: Failed to allocate %zu bytes\n", __func__,
+-- 
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
