@@ -2,171 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AE4326DDA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9099026DD99
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727145AbgIQOLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 10:11:48 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:51546 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727156AbgIQOK5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 10:10:57 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 21A53F9BC37027CA1775;
-        Thu, 17 Sep 2020 21:52:26 +0800 (CST)
-Received: from huawei.com (10.90.53.225) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Thu, 17 Sep 2020
- 21:52:16 +0800
-From:   Hou Tao <houtao1@huawei.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>
-CC:     <linux-kernel@vger.kernel.org>, <houtao1@huawei.com>,
-        <rcu@vger.kernel.org>
-Subject: [PATCH 2/2] locktorture: call percpu_free_rwsem() to do percpu-rwsem cleanup
-Date:   Thu, 17 Sep 2020 21:59:10 +0800
-Message-ID: <20200917135910.137389-3-houtao1@huawei.com>
-X-Mailer: git-send-email 2.25.0.4.g0ad7144999
-In-Reply-To: <20200917135910.137389-1-houtao1@huawei.com>
-References: <20200917135910.137389-1-houtao1@huawei.com>
+        id S1727344AbgIQOKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 10:10:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53958 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727221AbgIQOAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 10:00:46 -0400
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F21AD2220F
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 14:00:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600351239;
+        bh=Z+Q+oKy6kYMCPhHXhxfLXbvQ3jss6nDsyWD/Z4O5YlM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=j40ylg4m8LXKEAxubcz7ahDOZqsGBCvC86g7ieq5yzcqybVi5FgGMImstlii4I0QX
+         Ir2itplg8NWLltZJzHiI+OdB5T45n5vwlMrzFMhCanLTREwxlpky2FUy8YEARuSvY9
+         G+UVS7OiTv9/UbJXWra4Ql2LRXT8h8/mQapPDTyc=
+Received: by mail-ot1-f54.google.com with SMTP id g96so1948373otb.12
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 07:00:38 -0700 (PDT)
+X-Gm-Message-State: AOAM530RoaWT7ba/xejkhcX+f78tPh7qZTJQQb5KrjcX+RSdeuPtARL4
+        cgMnXfoGwcHbtSPzC6gziO9m1rx41YY/ajsDV9c=
+X-Google-Smtp-Source: ABdhPJx3K8tRbfYK2iUD9eIc020QUDlT6Vbmpmw/XcQWT30fU0+YPmOu00DxmCq6NhBa4cLa83PrwQVgZN+ZvoGPrAE=
+X-Received: by 2002:a9d:6193:: with SMTP id g19mr19256118otk.108.1600351238208;
+ Thu, 17 Sep 2020 07:00:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.90.53.225]
-X-CFilter-Loop: Reflected
+References: <20200915131615.3138-1-thunder.leizhen@huawei.com>
+ <20200915131615.3138-3-thunder.leizhen@huawei.com> <20200915190143.GP1551@shell.armlinux.org.uk>
+In-Reply-To: <20200915190143.GP1551@shell.armlinux.org.uk>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 17 Sep 2020 17:00:27 +0300
+X-Gmail-Original-Message-ID: <CAMj1kXHdX5cCZKvbBO+hCkkt46aOgf4NjK2jba2Gb2tziZm2DQ@mail.gmail.com>
+Message-ID: <CAMj1kXHdX5cCZKvbBO+hCkkt46aOgf4NjK2jba2Gb2tziZm2DQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] ARM: support PHYS_OFFSET minimum aligned at 64KiB boundary
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Jianguo Chen <chenjianguo3@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Libin <huawei.libin@huawei.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        patches-armlinux <patches@armlinux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When do percpu-rwsem writer lock torture, the RCU callback
-rcu_sync_func() may still be pending after locktorture module
-is removed, and it will lead to the following Oops:
+On Tue, 15 Sep 2020 at 22:06, Russell King - ARM Linux admin
+<linux@armlinux.org.uk> wrote:
+>
+> On Tue, Sep 15, 2020 at 09:16:15PM +0800, Zhen Lei wrote:
+> > Currently, only support the kernels where the base of physical memory is
+> > at a 16MiB boundary. Because the add/sub instructions only contains 8bits
+> > unrotated value. But we can use one more "add/sub" instructions to handle
+> > bits 23-16. The performance will be slightly affected.
+> >
+> > Since most boards meet 16 MiB alignment, so add a new configuration
+> > option ARM_PATCH_PHYS_VIRT_RADICAL (default n) to control it. Say Y if
+> > anyone really needs it.
+> >
+> > All r0-r7 (r1 = machine no, r2 = atags or dtb, in the start-up phase) are
+> > used in __fixup_a_pv_table() now, but the callee saved r11 is not used in
+> > the whole head.S file. So choose it.
+> >
+> > Because the calculation of "y = x + __pv_offset[63:24]" have been done,
+> > so we only need to calculate "y = y + __pv_offset[23:16]", that's why
+> > the parameters "to" and "from" of __pv_stub() and __pv_add_carry_stub()
+> > in the scope of CONFIG_ARM_PATCH_PHYS_VIRT_RADICAL are all passed "t"
+> > (above y).
+> >
+> > Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> > ---
+> >  arch/arm/Kconfig              | 18 +++++++++++++++++-
+> >  arch/arm/include/asm/memory.h | 16 +++++++++++++---
+> >  arch/arm/kernel/head.S        | 25 +++++++++++++++++++------
+> >  3 files changed, 49 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+> > index e00d94b16658765..19fc2c746e2ce29 100644
+> > --- a/arch/arm/Kconfig
+> > +++ b/arch/arm/Kconfig
+> > @@ -240,12 +240,28 @@ config ARM_PATCH_PHYS_VIRT
+> >         kernel in system memory.
+> >
+> >         This can only be used with non-XIP MMU kernels where the base
+> > -       of physical memory is at a 16MB boundary.
+> > +       of physical memory is at a 16MiB boundary.
+> >
+> >         Only disable this option if you know that you do not require
+> >         this feature (eg, building a kernel for a single machine) and
+> >         you need to shrink the kernel to the minimal size.
+> >
+> > +config ARM_PATCH_PHYS_VIRT_RADICAL
+> > +     bool "Support PHYS_OFFSET minimum aligned at 64KiB boundary"
+> > +     default n
+>
+> Please drop the "default n" - this is the default anyway.
+>
+> > @@ -236,6 +243,9 @@ static inline unsigned long __phys_to_virt(phys_addr_t x)
+> >        * in place where 'r' 32 bit operand is expected.
+> >        */
+> >       __pv_stub((unsigned long) x, t, "sub", __PV_BITS_31_24);
+> > +#ifdef CONFIG_ARM_PATCH_PHYS_VIRT_RADICAL
+> > +     __pv_stub((unsigned long) t, t, "sub", __PV_BITS_23_16);
+>
+> t is already unsigned long, so this cast is not necessary.
+>
+> I've been debating whether it would be better to use "movw" for this
+> for ARMv7.  In other words:
+>
+>         movw    tmp, #16-bit
+>         adds    %Q0, %1, tmp, lsl #16
+>         adc     %R0, %R0, #0
+>
+> It would certainly be less instructions, but at the cost of an
+> additional register - and we'd have to change the fixup code to
+> know about movw.
+>
+> Thoughts?
+>
 
-  BUG: unable to handle page fault for address: ffffffffc00eb920
-  #PF: supervisor read access in kernel mode
-  #PF: error_code(0x0000) - not-present page
-  PGD 6500a067 P4D 6500a067 PUD 6500c067 PMD 13a36c067 PTE 800000013691c163
-  Oops: 0000 [#1] PREEMPT SMP
-  CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.9.0-rc5+ #4
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996)
-  RIP: 0010:rcu_cblist_dequeue+0x12/0x30
-  Call Trace:
-   <IRQ>
-   rcu_core+0x1b1/0x860
-   __do_softirq+0xfe/0x326
-   asm_call_on_stack+0x12/0x20
-   </IRQ>
-   do_softirq_own_stack+0x5f/0x80
-   irq_exit_rcu+0xaf/0xc0
-   sysvec_apic_timer_interrupt+0x2e/0xb0
-   asm_sysvec_apic_timer_interrupt+0x12/0x20
+Since LPAE implies v7, we can use movw unconditionally, which is nice.
 
-Fix it by adding an exit hook in lock_torture_ops and
-use it to call percpu_free_rwsem() for percpu rwsem torture
-before the module is removed, so we can ensure rcu_sync_func()
-completes before module exits.
+There is no need to use an additional temp register, as we can use the
+register holding the high word. (There is no need for the mov_hi macro
+to be separate)
 
-Also needs to call exit hook if lock_torture_init() fails half-way,
-so use ctx->cur_ops != NULL to signal that init hook has been called.
+0:     movw    %R0, #low offset >> 16
+       adds    %Q0, %1, %R0, lsl #16
+1:     mov     %R0, #high offset
+       adc     %R0, %R0, #0
+       .pushsection .pv_table,"a"
+       .long 0b, 1b
+       .popsection
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- kernel/locking/locktorture.c | 28 ++++++++++++++++++++++------
- 1 file changed, 22 insertions(+), 6 deletions(-)
-
-diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-index bebdf98e6cd78..e91033e9b6f95 100644
---- a/kernel/locking/locktorture.c
-+++ b/kernel/locking/locktorture.c
-@@ -74,6 +74,7 @@ static void lock_torture_cleanup(void);
-  */
- struct lock_torture_ops {
- 	void (*init)(void);
-+	void (*exit)(void);
- 	int (*writelock)(void);
- 	void (*write_delay)(struct torture_random_state *trsp);
- 	void (*task_boost)(struct torture_random_state *trsp);
-@@ -571,6 +572,11 @@ void torture_percpu_rwsem_init(void)
- 	BUG_ON(percpu_init_rwsem(&pcpu_rwsem));
- }
- 
-+static void torture_percpu_rwsem_exit(void)
-+{
-+	percpu_free_rwsem(&pcpu_rwsem);
-+}
-+
- static int torture_percpu_rwsem_down_write(void) __acquires(pcpu_rwsem)
- {
- 	percpu_down_write(&pcpu_rwsem);
-@@ -595,6 +601,7 @@ static void torture_percpu_rwsem_up_read(void) __releases(pcpu_rwsem)
- 
- static struct lock_torture_ops percpu_rwsem_lock_ops = {
- 	.init		= torture_percpu_rwsem_init,
-+	.exit		= torture_percpu_rwsem_exit,
- 	.writelock	= torture_percpu_rwsem_down_write,
- 	.write_delay	= torture_rwsem_write_delay,
- 	.task_boost     = torture_boost_dummy,
-@@ -786,9 +793,10 @@ static void lock_torture_cleanup(void)
- 
- 	/*
- 	 * Indicates early cleanup, meaning that the test has not run,
--	 * such as when passing bogus args when loading the module. As
--	 * such, only perform the underlying torture-specific cleanups,
--	 * and avoid anything related to locktorture.
-+	 * such as when passing bogus args when loading the module.
-+	 * However cxt->cur_ops.init() may have been invoked, so beside
-+	 * perform the underlying torture-specific cleanups, cur_ops.exit()
-+	 * will be invoked if needed.
- 	 */
- 	if (!cxt.lwsa && !cxt.lrsa)
- 		goto end;
-@@ -828,6 +836,12 @@ static void lock_torture_cleanup(void)
- 	cxt.lrsa = NULL;
- 
- end:
-+	/* If init() has been called, then do exit() accordingly */
-+	if (cxt.cur_ops) {
-+		if (cxt.cur_ops->exit)
-+			cxt.cur_ops->exit();
-+		cxt.cur_ops = NULL;
-+	}
- 	torture_cleanup_end();
- }
- 
-@@ -835,6 +849,7 @@ static int __init lock_torture_init(void)
- {
- 	int i, j;
- 	int firsterr = 0;
-+	struct lock_torture_ops *cur_ops;
- 	static struct lock_torture_ops *torture_ops[] = {
- 		&lock_busted_ops,
- 		&spin_lock_ops, &spin_lock_irq_ops,
-@@ -853,8 +868,8 @@ static int __init lock_torture_init(void)
- 
- 	/* Process args and tell the world that the torturer is on the job. */
- 	for (i = 0; i < ARRAY_SIZE(torture_ops); i++) {
--		cxt.cur_ops = torture_ops[i];
--		if (strcmp(torture_type, cxt.cur_ops->name) == 0)
-+		cur_ops = torture_ops[i];
-+		if (strcmp(torture_type, cur_ops->name) == 0)
- 			break;
- 	}
- 	if (i == ARRAY_SIZE(torture_ops)) {
-@@ -869,12 +884,13 @@ static int __init lock_torture_init(void)
- 	}
- 
- 	if (nwriters_stress == 0 &&
--	    (!cxt.cur_ops->readlock || nreaders_stress == 0)) {
-+	    (!cur_ops->readlock || nreaders_stress == 0)) {
- 		pr_alert("lock-torture: must run at least one locking thread\n");
- 		firsterr = -EINVAL;
- 		goto unwind;
- 	}
- 
-+	cxt.cur_ops = cur_ops;
- 	if (cxt.cur_ops->init)
- 		cxt.cur_ops->init();
- 
--- 
-2.25.0.4.g0ad7144999
-
+The only problem is distinguishing the two mov instructions from each
+other, but that should not be too hard I think.
