@@ -2,82 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 787C526D0C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 03:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB82C26D0C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 03:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726186AbgIQBrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 21:47:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726022AbgIQBrk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 21:47:40 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F22C06178B
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 18:47:39 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id a9so421301pjg.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 18:47:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=IAe9YrO2c2nTBXJ+6AECIPfq5RqNfakgD6ec87G1lRc=;
-        b=BRj0knLsGJxxYLXBhVmfZKGmxujjz+/Hmqi/qEwMX//OJvKf9yyDeEixQBGPd4wts4
-         6a1NAlBUMJK+9HsT0tHExIiIBY51fBoIN1yU3XQ8O9EkJj//97LGtCL11Pe5o+QJ+bcS
-         et0sT0lWTzye+QnNs4WZa5DghwevjSdMMaI9tIfXsfOrCJHnbGucKLqyBveNCMYoqf3A
-         9t6u+brl3mB9g4hGos+8dgLT0f8ElY0zna3yl8gzeOh5Pr+C5judrj0NmF4GGrl6ENI7
-         ParWAThpX6/xse3rOFEo2Qr7eC6Z7XHGuVFMsX8cwQuJ1jtwBxjW95ySSrHiGJABu2XO
-         wuvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=IAe9YrO2c2nTBXJ+6AECIPfq5RqNfakgD6ec87G1lRc=;
-        b=IXL/gl0dEm5hFtCX/EVLseJB+TkOHR8CNe+ZAxrSOUmbFLykUr9CapTek7m+yzpUus
-         EVU+mjOIExTxWqZGVZ/450yhfcYiDYWY7vT3B1s00tSA1Lcu9A6RPGGVC3/xEMZ2gePO
-         of0Dz+rg/rsznqQFJlnrs3v5Ga0aUdw7au8MHzImk0Db1AVOnfGgS1y0NHL0TaWljQXA
-         SEwEFW5vUAfbpuKO1+MRxrWoiRh8WXpdxxjWZ4aCtRO+tqQ4cywxEnLJ2Cb/y2WbaTYY
-         NG6+rfxC4qGAHuCRX6wBZl7QW4dhXBXdGykRkwO46VVRgkjaiHRvTPGQ0wSD3P4aiZj+
-         XDLQ==
-X-Gm-Message-State: AOAM533bHCpOOspRUR8hD0mOXphg4S01Gvnz8+fiUbDRhNFsjW/AfTSL
-        QAmQ6vCGWRMA3cIydCCqD/w=
-X-Google-Smtp-Source: ABdhPJxQrmqIyoEdGAwBvg6EW9yUh/vXTcfWc6Q0cRa/d1a/exrU70dlGhePTvzfeLRNM6mxTIWJgA==
-X-Received: by 2002:a17:902:8605:b029:d0:cbe1:e773 with SMTP id f5-20020a1709028605b02900d0cbe1e773mr27020490plo.26.1600307259038;
-        Wed, 16 Sep 2020 18:47:39 -0700 (PDT)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id u2sm3883917pji.50.2020.09.16.18.47.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 16 Sep 2020 18:47:38 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 18:44:27 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     timur@kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org, lgirdwood@gmail.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] ASoC: fsl_sai: Add new added registers and new bit
- definition
-Message-ID: <20200917014426.GB22566@Asurada-Nvidia>
-References: <1600251387-1863-1-git-send-email-shengjiu.wang@nxp.com>
- <1600251387-1863-2-git-send-email-shengjiu.wang@nxp.com>
+        id S1726055AbgIQBpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 21:45:24 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:28635 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725858AbgIQBpW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 21:45:22 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600307122; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=bs58Ng6kyMcqvwBvNdPkE2BNArpEi+g/GUcaUJv2s7Y=;
+ b=K0SNe9EcUyXYgispkoVuOP+eBDhgcV4OHvQCh5NxsQSDhpybzJPH7qTnAhWyFc4EECmx4efU
+ Fs9bc954opKFwS309Nxu2PQUzCH6e9mYoHYgiCVzokx0+dpAxJqUUsRdxIOPMQnRbvQwfonf
+ IAzASOrsjn/mo4urIvNtWAVKL5g=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5f62bf98aac0601354b16774 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Sep 2020 01:44:56
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7A430C433F0; Thu, 17 Sep 2020 01:44:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: mansur)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C280CC433CA;
+        Thu, 17 Sep 2020 01:44:55 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1600251387-1863-2-git-send-email-shengjiu.wang@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 17 Sep 2020 07:14:55 +0530
+From:   mansur@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org
+Subject: Re: [PATCH 2/2] venus: core: vote for video-mem icc path and change
+ avg, peak bw
+In-Reply-To: <159959029779.454335.10674172341529908104@swboyd.mtv.corp.google.com>
+References: <1599536678-4666-1-git-send-email-mansur@codeaurora.org>
+ <159959029779.454335.10674172341529908104@swboyd.mtv.corp.google.com>
+Message-ID: <30ad67bf36be40c6a2b395962f8e918f@codeaurora.org>
+X-Sender: mansur@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 06:16:25PM +0800, Shengjiu Wang wrote:
-> On i.MX850/i.MX815/i.MX845 platform, the sai IP is upgraded.
-> There are some new registers and new bit definition. This
-> patch is to complete the register list.
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-
-Change itself looks good.
-
-Can add once fixing the commit message:
-
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> On 2020-09-09 00:08, Stephen Boyd wrote:
+>> Quoting Mansur Alisha Shaik (2020-09-07 20:44:38)
+>>> Currently we are voting for venus0-ebi path during buffer processing
+>>> with an average bandwidth of all the instances and unvoting during
+>>> session release.
+>>> 
+>>> While video streaming when we try to do XO-SD using the command
+>>> "echo mem > /sys/power/state command" , device is not entering
+>>> to suspend state and from interconnect summary seeing votes for 
+>>> venus0-ebi
+>>> 
+>>> Corrected this by voting for venus0-ebi path in venus_runtime_resume
+>> 
+>> venus_runtime_resume() please so we know it's a function.
+Changed to function like notation and RESEND v2
+https://lore.kernel.org/patchwork/project/lkml/list/?series=463283
+>> 
+>>> and unvote during venus_runtime_suspend.
+>> 
+>> venus_runtime_suspend().
+>> 
+>>> 
+>>> Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+>>> ---
+>> 
+>> Any Fixes: tag?
+Added the Fixes tag
+>> 
+>>>  drivers/media/platform/qcom/venus/core.c | 10 +++++++++-
+>>>  1 file changed, 9 insertions(+), 1 deletion(-)
+>>> 
+>>> diff --git a/drivers/media/platform/qcom/venus/core.c 
+>>> b/drivers/media/platform/qcom/venus/core.c
+>>> index 4857bbd..79d8600 100644
+>>> --- a/drivers/media/platform/qcom/venus/core.c
+>>> +++ b/drivers/media/platform/qcom/venus/core.c
+>>> @@ -373,6 +373,10 @@ static __maybe_unused int 
+>>> venus_runtime_suspend(struct device *dev)
+>>>         if (ret)
+>>>                 return ret;
+>>> 
+>>> +       ret = icc_set_bw(core->video_path, 0, 0);
+>>> +       if (ret)
+>>> +               return ret;
+>>> +
+>>>         return ret;
+>>>  }
+>>> 
+>>> @@ -382,7 +386,11 @@ static __maybe_unused int 
+>>> venus_runtime_resume(struct device *dev)
+>>>         const struct venus_pm_ops *pm_ops = core->pm_ops;
+>>>         int ret;
+>>> 
+>>> -       ret = icc_set_bw(core->cpucfg_path, 0, kbps_to_icc(1000));
+>>> +       ret = icc_set_bw(core->video_path, kbps_to_icc(20000), 0);
+>> 
+>> This also shows that the arguments to icc_set_bw() we're backwards? 
+>> Can
+>> that be fixed in another patch instead of putting it in this one?
+posted as another patch set.
+https://lore.kernel.org/patchwork/project/lkml/list/?series=463283
