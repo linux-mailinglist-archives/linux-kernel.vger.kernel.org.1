@@ -2,87 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE6AD26E98E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 01:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB1B426E991
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 01:43:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726221AbgIQXlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 19:41:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59886 "EHLO
+        id S1726101AbgIQXna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 19:43:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725886AbgIQXln (ORCPT
+        with ESMTP id S1725886AbgIQXn3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 19:41:43 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B600BC06174A;
-        Thu, 17 Sep 2020 16:41:43 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 478BA13662869;
-        Thu, 17 Sep 2020 16:24:56 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 16:41:42 -0700 (PDT)
-Message-Id: <20200917.164142.50960632445826777.davem@davemloft.net>
-To:     xie.he.0141@gmail.com
-Cc:     kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, khc@pm.waw.pl
-Subject: Re: [PATCH net] drivers/net/wan/hdlc: Set skb->protocol before
- transmitting
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200916212507.528223-1-xie.he.0141@gmail.com>
-References: <20200916212507.528223-1-xie.he.0141@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+        Thu, 17 Sep 2020 19:43:29 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B82FC06174A;
+        Thu, 17 Sep 2020 16:43:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=+QooxsRPLy4jqdonZqXT/xWaR2mYqwJaHtHqYhdaYX0=; b=RKsRpsBgrvEUJYxCzE0Z0nrivI
+        IsQ902HTw9JOSWpoS0kcKymTAkWeUKlQ6xVMu/iEvYp0RLyBGxCffC7hPS3dAWybwadDQjbBW22Si
+        fTkIJoxFkGERqF0Xu5eTJ4I9lo2yk3ddJM59dLOZD2dm2piJNNJga/ObeVSEeBEYfZe+lYkrcKXoH
+        ecRTVrg4O8JTaIb3mFIH4aNN5GldrGJdKHFucpwRkFCjDEqoeqUxB2Ko5dNIWTwsSnnZZDOR9oxP5
+        s2EnSAjq+cDx6N8L7QgCkteR/uauic3snm8oys6pLRAqlGSoq4J8+Qy2YlJlavwF9LtAfgfhkz2rF
+        axFKh2ww==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kJ3Yk-0000zj-7L; Thu, 17 Sep 2020 23:43:26 +0000
+Subject: Re: [PATCH v4 0/5] Add shared workqueue support for idxd driver
+To:     Dave Jiang <dave.jiang@intel.com>, vkoul@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dan.j.williams@intel.com, tony.luck@intel.com, jing.lin@intel.com,
+        ashok.raj@intel.com, sanjay.k.kumar@intel.com,
+        fenghua.yu@intel.com, kevin.tian@intel.com
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <160037680630.3777.16356270178889649944.stgit@djiang5-desk3.ch.intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <e178a1ae-0ce2-70bc-54b9-9e2fae837f06@infradead.org>
+Date:   Thu, 17 Sep 2020 16:43:21 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <160037680630.3777.16356270178889649944.stgit@djiang5-desk3.ch.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Thu, 17 Sep 2020 16:24:56 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie He <xie.he.0141@gmail.com>
-Date: Wed, 16 Sep 2020 14:25:07 -0700
+Hi,
 
-> This patch sets skb->protocol before transmitting frames on the HDLC
-> device, so that a user listening on the HDLC device with an AF_PACKET
-> socket will see outgoing frames' sll_protocol field correctly set and
-> consistent with that of incoming frames.
+On 9/17/20 2:15 PM, Dave Jiang wrote:
 > 
-> 1. Control frames in hdlc_cisco and hdlc_ppp
+> ---
 > 
-> When these drivers send control frames, skb->protocol is not set.
+> Dave Jiang (5):
+>       x86/asm: move the raw asm in iosubmit_cmds512() to special_insns.h
+>       x86/asm: add enqcmds() to support ENQCMDS instruction
+>       dmaengine: idxd: add shared workqueue support
+>       dmaengine: idxd: clean up descriptors with fault error
+>       dmaengine: idxd: add ABI documentation for shared wq
 > 
-> This value should be set to htons(ETH_P_HDLC), because when receiving
-> control frames, their skb->protocol is set to htons(ETH_P_HDLC).
-> 
-> When receiving, hdlc_type_trans in hdlc.h is called, which then calls
-> cisco_type_trans or ppp_type_trans. The skb->protocol of control frames
-> is set to htons(ETH_P_HDLC) so that the control frames can be received
-> by hdlc_rcv in hdlc.c, which calls cisco_rx or ppp_rx to process the
-> control frames.
-> 
-> 2. hdlc_fr
-> 
-> When this driver sends control frames, skb->protocol is set to internal
-> values used in this driver.
-> 
-> When this driver sends data frames (from upper stacked PVC devices),
-> skb->protocol is the same as that of the user data packet being sent on
-> the upper PVC device (for normal PVC devices), or is htons(ETH_P_802_3)
-> (for Ethernet-emulating PVC devices).
-> 
-> However, skb->protocol for both control frames and data frames should be
-> set to htons(ETH_P_HDLC), because when receiving, all frames received on
-> the HDLC device will have their skb->protocol set to htons(ETH_P_HDLC).
-> 
-> When receiving, hdlc_type_trans in hdlc.h is called, and because this
-> driver doesn't provide a type_trans function in struct hdlc_proto,
-> all frames will have their skb->protocol set to htons(ETH_P_HDLC).
-> The frames are then received by hdlc_rcv in hdlc.c, which calls fr_rx
-> to process the frames (control frames are consumed and data frames
-> are re-received on upper PVC devices).
-> 
-> Cc: Krzysztof Halasa <khc@pm.waw.pl>
-> Signed-off-by: Xie He <xie.he.0141@gmail.com>
 
-Applied, thank you.
+I don't see patch 3/5 in my inbox nor at https://lore.kernel.org/dmaengine/
+
+Did the email monster eat it?
+
+thanks.
+
+> 
+>  Documentation/ABI/stable/sysfs-driver-dma-idxd |   14 ++
+>  arch/x86/include/asm/io.h                      |   46 +++++---
+>  arch/x86/include/asm/special_insns.h           |   17 +++
+>  drivers/dma/Kconfig                            |   10 ++
+>  drivers/dma/idxd/cdev.c                        |   49 ++++++++
+>  drivers/dma/idxd/device.c                      |   91 ++++++++++++++-
+>  drivers/dma/idxd/dma.c                         |    9 --
+>  drivers/dma/idxd/idxd.h                        |   33 +++++-
+>  drivers/dma/idxd/init.c                        |   92 ++++++++++++---
+>  drivers/dma/idxd/irq.c                         |  143 ++++++++++++++++++++++--
+>  drivers/dma/idxd/registers.h                   |   14 ++
+>  drivers/dma/idxd/submit.c                      |   33 +++++-
+>  drivers/dma/idxd/sysfs.c                       |  127 +++++++++++++++++++++
+>  13 files changed, 608 insertions(+), 70 deletions(-)
+> 
+> --
+> 
+
+-- 
+~Randy
+
