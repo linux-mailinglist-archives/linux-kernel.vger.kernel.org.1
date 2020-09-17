@@ -2,55 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA8726DAE3
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:57:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A219026DAE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726942AbgIQL5o convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 17 Sep 2020 07:57:44 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3607 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726850AbgIQLyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 07:54:52 -0400
-Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.57])
-        by Forcepoint Email with ESMTP id F2794487DE71E8F30B73;
-        Thu, 17 Sep 2020 19:54:43 +0800 (CST)
-Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
- dggeme754-chm.china.huawei.com (10.3.19.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Thu, 17 Sep 2020 19:54:43 +0800
-Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
- dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
- Thu, 17 Sep 2020 19:54:43 +0800
-From:   linmiaohe <linmiaohe@huawei.com>
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: avoid possible multiple call to swap_node()
-Thread-Topic: [PATCH] mm: avoid possible multiple call to swap_node()
-Thread-Index: AdaM6Oe6eaYOLUj9SMWV/0KAXRUceQ==
-Date:   Thu, 17 Sep 2020 11:54:43 +0000
-Message-ID: <691578e1e0844c7c876a54c6ff9c2f0a@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.176.109]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726802AbgIQL6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 07:58:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726939AbgIQLz3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 07:55:29 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A70BC06174A;
+        Thu, 17 Sep 2020 04:55:28 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bsb4W64ffz9ryj;
+        Thu, 17 Sep 2020 21:55:07 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1600343708;
+        bh=fCZj5obSeQ0Pnfx7QT/+Bd2NhEwGjy1covQLImy2inM=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=M0AuMmfNOc4Sj4HwQTeyWwU8R87iUeiYI16Mt2mqmT1v8mMuSYPJr+VnwbXwsaDO1
+         RwoexPoAbMlS0r69j+UXjfqdfJ30qJfra9JHVQtj88QRmvrgc4tzccFkmRTdaorgHh
+         lpAH1djxWDTphKNnCsGaRoM1ELZupeBx1lxfW326H2vh6Ll3CTkgIrjLfwAjveD6mK
+         TIXNVlfS5igZS4eReH+W2lv4lSoR0T6GzD13rnc1pwcO229aw6kR40rDULn5LQ6/A9
+         dcQAU1yC1wv1MnRGU0q4T/MB/xLh2HnsiB5V6rs+O3oDKwsQ+WqRkzqDP8836U/o9x
+         NDSS+lmizEQuQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Tony Ambardar <tony.ambardar@gmail.com>
+Cc:     Tony Ambardar <Tony.Ambardar@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Rosen Penev <rosenp@gmail.com>,
+        linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2] powerpc: fix EDEADLOCK redefinition error in uapi/asm/errno.h
+In-Reply-To: <20200917000757.1232850-1-Tony.Ambardar@gmail.com>
+References: <20200916074214.995128-1-Tony.Ambardar@gmail.com> <20200917000757.1232850-1-Tony.Ambardar@gmail.com>
+Date:   Thu, 17 Sep 2020 21:55:04 +1000
+Message-ID: <87363gpqhz.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> wrote:
-> On Thu, Sep 17, 2020 at 07:44:49AM -0400, Miaohe Lin wrote:
->> Cache the swap_node() in a local variable to avoid possible multiple 
->> call to swap_node(), though compiler may do this for us.
+[ Cc += linux-arch & Arnd ]
+
+Hi Tony,
+
+This looks OK to me, but I'm always a bit nervous about changes in uapi.
+I've Cc'ed linux-arch and Arnd who look after the asm-generic headers,
+which this is slightly related to, just in case.
+
+One minor comment below.
+
+Tony Ambardar <tony.ambardar@gmail.com> writes:
+> A few archs like powerpc have different errno.h values for macros
+> EDEADLOCK and EDEADLK. In code including both libc and linux versions of
+> errno.h, this can result in multiple definitions of EDEADLOCK in the
+> include chain. Definitions to the same value (e.g. seen with mips) do
+> not raise warnings, but on powerpc there are redefinitions changing the
+> value, which raise warnings and errors (if using "-Werror").
 >
->Why don't you find out?  Compare the assembly before and after, see what the compiler did.
+> Guard against these redefinitions to avoid build errors like the following,
+> first seen cross-compiling libbpf v5.8.9 for powerpc using GCC 8.4.0 with
+> musl 1.1.24:
+>
+>   In file included from ../../arch/powerpc/include/uapi/asm/errno.h:5,
+>                    from ../../include/linux/err.h:8,
+>                    from libbpf.c:29:
+>   ../../include/uapi/asm-generic/errno.h:40: error: "EDEADLOCK" redefined [-Werror]
+>    #define EDEADLOCK EDEADLK
+>
+>   In file included from toolchain-powerpc_8540_gcc-8.4.0_musl/include/errno.h:10,
+>                    from libbpf.c:26:
+>   toolchain-powerpc_8540_gcc-8.4.0_musl/include/bits/errno.h:58: note: this is the location of the previous definition
+>    #define EDEADLOCK       58
+>
+>   cc1: all warnings being treated as errors
+>
+> Fixes: 95f28190aa01 ("tools include arch: Grab a copy of errno.h for arch's supported by perf")
+> Fixes: c3617f72036c ("UAPI: (Scripted) Disintegrate arch/powerpc/include/asm")
 
-In fact, I don't care if the compiler can really do this for us. I think it's better to do this explicity. I think this can improve the readability.
-Thanks.
+I suspect that's not the right commit to tag. It just moved errno.h from
+arch/powerpc/include/asm to arch/powerpc/include/uapi/asm. It's content
+was almost identical, and entirely identical as far as EDEADLOCK was
+concerned.
 
+Prior to that the file lived in asm-powerpc/errno.h, eg:
+
+$ git cat-file -p b8b572e1015f^:include/asm-powerpc/errno.h
+
+Before that it was include/asm-ppc64/errno.h, content still the same.
+
+To go back further we'd have to look at the historical git trees, which
+is probably overkill. I'm pretty sure it's always had this problem.
+
+So we should probably drop the Fixes tags and just Cc: stable, that
+means please backport it as far back as possible.
+
+cheers
+
+
+> Reported-by: Rosen Penev <rosenp@gmail.com>
+> Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
+> ---
+> v1 -> v2:
+>  * clean up commit description formatting
+> ---
+>  arch/powerpc/include/uapi/asm/errno.h       | 1 +
+>  tools/arch/powerpc/include/uapi/asm/errno.h | 1 +
+>  2 files changed, 2 insertions(+)
+>
+> diff --git a/arch/powerpc/include/uapi/asm/errno.h b/arch/powerpc/include/uapi/asm/errno.h
+> index cc79856896a1..4ba87de32be0 100644
+> --- a/arch/powerpc/include/uapi/asm/errno.h
+> +++ b/arch/powerpc/include/uapi/asm/errno.h
+> @@ -2,6 +2,7 @@
+>  #ifndef _ASM_POWERPC_ERRNO_H
+>  #define _ASM_POWERPC_ERRNO_H
+>  
+> +#undef	EDEADLOCK
+>  #include <asm-generic/errno.h>
+>  
+>  #undef	EDEADLOCK
+> diff --git a/tools/arch/powerpc/include/uapi/asm/errno.h b/tools/arch/powerpc/include/uapi/asm/errno.h
+> index cc79856896a1..4ba87de32be0 100644
+> --- a/tools/arch/powerpc/include/uapi/asm/errno.h
+> +++ b/tools/arch/powerpc/include/uapi/asm/errno.h
+> @@ -2,6 +2,7 @@
+>  #ifndef _ASM_POWERPC_ERRNO_H
+>  #define _ASM_POWERPC_ERRNO_H
+>  
+> +#undef	EDEADLOCK
+>  #include <asm-generic/errno.h>
+>  
+>  #undef	EDEADLOCK
+> -- 
+> 2.25.1
