@@ -2,95 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77AA526D105
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 04:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7C8626D111
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 04:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725267AbgIQCOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 22:14:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57846 "EHLO
+        id S1726098AbgIQCXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 22:23:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726047AbgIQCOn (ORCPT
+        with ESMTP id S1725858AbgIQCXA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 22:14:43 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F29BEC06174A;
-        Wed, 16 Sep 2020 19:14:42 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIjRX-00088p-UJ; Thu, 17 Sep 2020 02:14:40 +0000
-Date:   Thu, 17 Sep 2020 03:14:39 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Qian Cai <cai@redhat.com>
-Cc:     torvalds@linux-foundation.org, vgoyal@redhat.com,
-        miklos@szeredi.hu, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: slab-out-of-bounds in iov_iter_revert()
-Message-ID: <20200917021439.GA31009@ZenIV.linux.org.uk>
-References: <20200911215903.GA16973@lca.pw>
- <20200911235511.GB3421308@ZenIV.linux.org.uk>
- <87ded87d232d9cf87c9c64495bf9190be0e0b6e8.camel@redhat.com>
- <20200917020440.GQ3421308@ZenIV.linux.org.uk>
+        Wed, 16 Sep 2020 22:23:00 -0400
+X-Greylist: delayed 356 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 22:23:00 EDT
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35C9FC06174A;
+        Wed, 16 Sep 2020 19:17:02 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BsLFP38xGz9sR4;
+        Thu, 17 Sep 2020 12:16:57 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1600309018;
+        bh=XmnzNHyOMY5V5YvP7hNYdtpvOe/Crgd8oTpWk1u4OPU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=aCF+gvuagg+fsMR/AtPdE0qdf6XaEzNqqu3lATJkPGQnaY0J+UG21I72F9sf63Rlq
+         dg0/AvBHkOPBV8NpZai5pEvg6sAEOxwLFD8Apf2XW+GggY93i2PjAsZGPWn7/B9TGW
+         nlO9l7EhSsQa6q6nzwgXifAe53wCFYMlo4DQQ06ymQ+3ZZFH0AKuILc9VuZE5ygWHL
+         R+DhUhsHt6ydEJuNKpYXPhCVbI8+fASIzlFxiKhEHQw192IaOdHQ/Kk2oCwKqyQ8IQ
+         zYr+QCsUcpEL61yDtVQLvani+aoqtGep9qlfW5GgrTm7zYDxmFPN1Aiw7CKi+SpYgs
+         1V36zfvhwsyiw==
+Date:   Thu, 17 Sep 2020 12:16:56 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jonathan Corbet <corbet@lwn.net>, Greg KH <greg@kroah.com>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: manual merge of the jc_docs tree with the spdx tree
+Message-ID: <20200917121656.4116529b@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917020440.GQ3421308@ZenIV.linux.org.uk>
+Content-Type: multipart/signed; boundary="Sig_/efZTYfB+EgRwI8YjIPr/SZh";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 03:04:40AM +0100, Al Viro wrote:
-> On Wed, Sep 16, 2020 at 05:09:49PM -0400, Qian Cai wrote:
-> > On Sat, 2020-09-12 at 00:55 +0100, Al Viro wrote:
-> > > On Fri, Sep 11, 2020 at 05:59:04PM -0400, Qian Cai wrote:
-> > > > Super easy to reproduce on today's mainline by just fuzzing for a few
-> > > > minutes
-> > > > on virtiofs (if it ever matters). Any thoughts?
-> > > 
-> > > Usually happens when ->direct_IO() fucks up and reports the wrong amount
-> > > of data written/read.  We had several bugs like that in the past - see
-> > > e.g. 85128b2be673 (fix nfs O_DIRECT advancing iov_iter too much).
-> > > 
-> > > Had there been any recent O_DIRECT-related patches on the filesystems
-> > > involved?
-> > 
-> > This is only reproducible using FUSE/virtiofs so far, so I will stare at
-> > fuse_direct_IO() until someone can beat me to it.
-> 
-> What happens there is that it tries to play with iov_iter_truncate() in
-> ->direct_IO() without a corresponding iov_iter_reexpand().  Could you
-> check if the following helps?
+--Sig_/efZTYfB+EgRwI8YjIPr/SZh
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Gyah...  Sorry, that should be
+Hi all,
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
----
-diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-index 6611ef3269a8..92de6b9b06b0 100644
---- a/fs/fuse/file.c
-+++ b/fs/fuse/file.c
-@@ -3095,7 +3095,7 @@ fuse_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
- 	loff_t pos = 0;
- 	struct inode *inode;
- 	loff_t i_size;
--	size_t count = iov_iter_count(iter);
-+	size_t count = iov_iter_count(iter), shortened;
- 	loff_t offset = iocb->ki_pos;
- 	struct fuse_io_priv *io;
- 
-@@ -3111,7 +3111,8 @@ fuse_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
- 		if (offset >= i_size)
- 			return 0;
- 		iov_iter_truncate(iter, fuse_round_up(ff->fc, i_size - offset));
--		count = iov_iter_count(iter);
-+		shortened = count - iov_iter_count(iter);
-+		count -= shortened;
- 	}
- 
- 	io = kmalloc(sizeof(struct fuse_io_priv), GFP_KERNEL);
-@@ -3177,6 +3178,7 @@ fuse_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
- 		else if (ret < 0 && offset + count > i_size)
- 			fuse_do_truncate(file);
- 	}
-+	iov_iter_reexpand(iter, iov_iter_count(iter) + shortened);
- 
- 	return ret;
- }
+Today's linux-next merge of the jc_docs tree got a conflict in:
+
+  MAINTAINERS
+
+between commit:
+
+  951f3e9f2086 ("net/qla3xxx: Convert to SPDX license identifiers")
+
+from the spdx tree and commit:
+
+  51652804d018 ("MAINTAINERS: fix location of qlogic/LICENSE.qla3xxx")
+
+from the jc_docs tree.
+
+I fixed it up (I used the former - which removed the line updated by the
+latter) and can carry the fix as necessary. This is now fixed as far as
+linux-next is concerned, but any non trivial conflicts should be mentioned
+to your upstream maintainer when your tree is submitted for merging.
+You may also want to consider cooperating with the maintainer of the
+conflicting tree to minimise any particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/efZTYfB+EgRwI8YjIPr/SZh
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9ixxgACgkQAVBC80lX
+0GwL7QgAodsiugJzF2URw56oK7RGFUe9VoL7UAqm8WnwT0ojqIY6+V9IYClwQn7r
+OGqvT6yW43VSUH8P6bv+9JpTrnR16orUcvfln8yA+AhVM8RCmUQ1XolfUBv7I74E
+mHcV5EIlmxLXMJAh9gQnrAOZC+fErBnZwehDm2CeGxziYikTmlkV4Fw5lgS+beym
+QAW/WuzuPi7EDrzr2OalfPhvtfQZvVFDfz2NqMLphydLO4+rP1BQUr3MJPDufXKu
+LZCL1jpObw+r5CvIG8Us5c6iPfJ1dwtRGSjenWrjf8GaKDZ8Au4oVpXfsfGBgAxZ
+xv5TASjU47RHHsqUawsOXdH6UzyJTA==
+=U39a
+-----END PGP SIGNATURE-----
+
+--Sig_/efZTYfB+EgRwI8YjIPr/SZh--
