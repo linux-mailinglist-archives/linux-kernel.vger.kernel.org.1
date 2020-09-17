@@ -2,73 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B21626E5D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 033B126E5CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726868AbgIQT4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 15:56:34 -0400
-Received: from mail-out.m-online.net ([212.18.0.9]:47891 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727689AbgIQOpd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 10:45:33 -0400
-X-Greylist: delayed 527 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 10:44:08 EDT
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4Bsfc51bKlz1qrfr;
-        Thu, 17 Sep 2020 16:34:13 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4Bsfc50dRNz1qxpD;
-        Thu, 17 Sep 2020 16:34:13 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id 5BBP84tpYrRa; Thu, 17 Sep 2020 16:34:12 +0200 (CEST)
-X-Auth-Info: 9jeFQNW3jEEEH5nEGLwfVfPMZp09Oa4fJ4yvtcjDHLxUxZpFdLTFXHuxHVOi8s+j
-Received: from igel.home (ppp-46-244-188-79.dynamic.mnet-online.de [46.244.188.79])
+        id S1726850AbgIQT4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 15:56:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43278 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727512AbgIQOpj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 10:45:39 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Thu, 17 Sep 2020 16:34:11 +0200 (CEST)
-Received: by igel.home (Postfix, from userid 1000)
-        id 0E03B2C2894; Thu, 17 Sep 2020 16:34:11 +0200 (CEST)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Tony Ambardar <tony.ambardar@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Rosen Penev <rosenp@gmail.com>, bpf <bpf@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: [PATCH v2] powerpc: fix EDEADLOCK redefinition error in
- uapi/asm/errno.h
-References: <20200916074214.995128-1-Tony.Ambardar@gmail.com>
-        <20200917000757.1232850-1-Tony.Ambardar@gmail.com>
-        <87363gpqhz.fsf@mpe.ellerman.id.au>
-        <CAK8P3a3FVoDzNb1TOA6cRQDdEc+st7KkBL70t0FeStEziQG4+A__37056.5000850306$1600351707$gmane$org@mail.gmail.com>
-X-Yow:  Yow!  Am I cleansed yet?!
-Date:   Thu, 17 Sep 2020 16:34:11 +0200
-In-Reply-To: <CAK8P3a3FVoDzNb1TOA6cRQDdEc+st7KkBL70t0FeStEziQG4+A__37056.5000850306$1600351707$gmane$org@mail.gmail.com>
-        (Arnd Bergmann's message of "Thu, 17 Sep 2020 16:01:27 +0200")
-Message-ID: <87h7rw321o.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0325C21582;
+        Thu, 17 Sep 2020 14:45:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600353902;
+        bh=PebSWXQKwXVcYAUHxdRQaN64t6YAf60XzC+pP27srAY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GFoqH90oTcBu9apcTAJzYnF+qJnUghZfdBsfz+bu3MF8YN5/FJc1akTVS43BtbyMA
+         9XMPgoHHVIUS/s95Oyl1ioYtUJ6f7hmyCuvzylcrWW1Ad5TBT92IEqDJXgOKqdhl95
+         mgQ91bWRGGx4I4tPpkmUAxvPv+UMJ6K0R6iq6bu4=
+Date:   Thu, 17 Sep 2020 16:45:29 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Bob Peterson <rpeterso@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Daniel Craig <Daniel.Craig@csiro.au>,
+        Nicolas Courtel <courtel@cena.fr>,
+        Salvatore Bonaccorso <carnil@debian.org>
+Subject: Re: [PATCH 4.19 142/206] gfs2: fix use-after-free on transaction ail
+ lists
+Message-ID: <20200917144529.GJ3941575@kroah.com>
+References: <20200623195316.864547658@linuxfoundation.org>
+ <20200623195323.968867013@linuxfoundation.org>
+ <20200910194319.GA131386@eldamar.local>
+ <20200911115816.GB3717176@kroah.com>
+ <942693093.16771250.1599826115915.JavaMail.zimbra@redhat.com>
+ <20200911122024.GA3758477@kroah.com>
+ <1542145456.16781948.1599828554609.JavaMail.zimbra@redhat.com>
+ <20200912064713.GA291675@eldamar.local>
+ <1934025224.17237499.1600188721184.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1934025224.17237499.1600188721184.JavaMail.zimbra@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sep 17 2020, Arnd Bergmann wrote:
+On Tue, Sep 15, 2020 at 12:52:01PM -0400, Bob Peterson wrote:
+> ----- Original Message -----
+> > Hi Bob, hi Greg,
+> > 
+> > On Fri, Sep 11, 2020 at 08:49:14AM -0400, Bob Peterson wrote:
+> > > ----- Original Message -----
+> > > > On Fri, Sep 11, 2020 at 08:08:35AM -0400, Bob Peterson wrote:
+> > > > > ----- Original Message -----
+> > > > > > On Thu, Sep 10, 2020 at 09:43:19PM +0200, Salvatore Bonaccorso wrote:
+> > > > > > > Hi,
+> > > > > > > 
+> > > > > > > On Tue, Jun 23, 2020 at 09:57:50PM +0200, Greg Kroah-Hartman wrote:
+> > > > > > > > From: Bob Peterson <rpeterso@redhat.com>
+> > > > > > > > 
+> > > > > > > > [ Upstream commit 83d060ca8d90fa1e3feac227f995c013100862d3 ]
+> > > > > > > > 
+> > > > > > > > Before this patch, transactions could be merged into the system
+> > > > > > > > transaction by function gfs2_merge_trans(), but the transaction
+> > > > > > > > ail
+> > > > > > > > lists were never merged. Because the ail flushing mechanism can
+> > > > > > > > run
+> > > > > > > > separately, bd elements can be attached to the transaction's
+> > > > > > > > buffer
+> > > > > > > > list during the transaction (trans_add_meta, etc) but quickly
+> > > > > > > > moved
+> > > > > > > > to its ail lists. Later, in function gfs2_trans_end, the
+> > > > > > > > transaction
+> > > > > > > > can be freed (by gfs2_trans_end) while it still has bd elements
+> > > > > > > > queued to its ail lists, which can cause it to either lose track
+> > > > > > > > of
+> > > > > > > > the bd elements altogether (memory leak) or worse, reference the
+> > > > > > > > bd
+> > > > > > > > elements after the parent transaction has been freed.
+> > > > > > > > 
+> > > > > > > > Although I've not seen any serious consequences, the problem
+> > > > > > > > becomes
+> > > > > > > > apparent with the previous patch's addition of:
+> > > > > > > > 
+> > > > > > > > 	gfs2_assert_warn(sdp, list_empty(&tr->tr_ail1_list));
+> > > > > > > > 
+> > > > > > > > to function gfs2_trans_free().
+> > > > > > > > 
+> > > > > > > > This patch adds logic into gfs2_merge_trans() to move the merged
+> > > > > > > > transaction's ail lists to the sdp transaction. This prevents the
+> > > > > > > > use-after-free. To do this properly, we need to hold the ail
+> > > > > > > > lock,
+> > > > > > > > so we pass sdp into the function instead of the transaction
+> > > > > > > > itself.
+> > > > > > > > 
+> > > > > > > > Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+> > > > > > > > Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+> > > > > > > > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > > > > (snip)
+> > > > > > > 
+> > > > > > > In Debian two user confirmed issues on writing on a GFS2 partition
+> > > > > > > with this commit applied. The initial Debian report is at
+> > > > > > > https://bugs.debian.org/968567 and Daniel Craig reported it into
+> > > > > > > Bugzilla at https://bugzilla.kernel.org/show_bug.cgi?id=209217 .
+> > > > > > > 
+> > > > > > > Writing to a gfs2 filesystem fails and results in a soft lookup of
+> > > > > > > the
+> > > > > > > machine for kernels with that commit applied. I cannot reporduce
+> > > > > > > the
+> > > > > > > issue myself due not having a respective setup available, but
+> > > > > > > Daniel
+> > > > > > > described a minimal serieos of steps to reproduce the issue.
+> > > > > > > 
+> > > > > > > This might affect as well other stable series where this commit was
+> > > > > > > applied, as there was a similar report for someone running 5.4.58
+> > > > > > > in
+> > > > > > > https://www.redhat.com/archives/linux-cluster/2020-August/msg00000.html
+> > > > > > 
+> > > > > > Can you report this to the gfs2 developers?
+> > > > > > 
+> > > > > > thanks,
+> > > > > > 
+> > > > > > greg k-h
+> > > > > 
+> > > > > Hi Greg,
+> > > > > 
+> > > > > No need. The patch came from the gfs2 developers. I think he just wants
+> > > > > it added to a stable release.
+> > > > 
+> > > > What commit needs to be added to a stable release?
+> > > > 
+> > > > confused,
+> > > > 
+> > > > greg k-h
+> > > 
+> > > Sorry Greg,
+> > > 
+> > > It's pretty early here and the caffeine hadn't quite hit my system.
+> > > The problem is most likely that 4.19.132 is missing this upstream patch:
+> > > 
+> > > cbcc89b630447ec7836aa2b9242d9bb1725f5a61
+> > > 
+> > > I'm not sure how or why 83d060ca8d90fa1e3feac227f995c013100862d3 got
+> > > put into stable without a stable CC but cbcc89b6304 is definitely
+> > > required.
+> > > 
+> > > I'd like to suggest Salvatore try cherry-picking this patch to see if
+> > > it fixes the problem, and if so, perhaps Greg can add it to stable.
+> > 
+> > I can confirm (Daniel was able to test): Applying cbcc89b63044 ("gfs2:
+> > initialize transaction tr_ailX_lists earlier") fixes the issue. So
+> > would be great if you can pick that up for stable for those series
+> > which had 83d060ca8d90 ("gfs2: fix use-after-free on transaction ail
+> > lists") as well.
+> > 
+> > Regards,
+> > Salvatore
+> > 
+> > 
+> 
+> Hi Greg,
+> 
+> As per Salvatore's email above, can you please cherry-pick GFS2 patch
+> cbcc89b630447ec7836aa2b9242d9bb1725f5a61 to the stable releases like
+> 4.19 to which ("gfs2: fix use-after-free on transaction ail lists")
+> (83d060ca8d90fa1e3feac227f995c013100862d3) was applied? Thanks.
 
-> The errno man page says they are supposed to be synonyms,
-> and glibc defines it that way, while musl uses the numbers
-> from the kernel.
+Now queued up, thanks.
 
-glibc also uses whatever the kernel defines.
-
-Andreas.
-
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+greg k-h
