@@ -2,176 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 857E226D146
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 04:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E95526D14D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 04:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726159AbgIQChv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 22:37:51 -0400
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:47931 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726047AbgIQChs (ORCPT
+        id S1726121AbgIQCjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 22:39:44 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:35878 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726040AbgIQCjm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 22:37:48 -0400
-Received: from dread.disaster.area (pa49-195-191-192.pa.nsw.optusnet.com.au [49.195.191.192])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 2EBC38270C7;
-        Thu, 17 Sep 2020 12:37:44 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1kIjnq-00011T-Rc; Thu, 17 Sep 2020 12:37:42 +1000
-Date:   Thu, 17 Sep 2020 12:37:42 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/2] Remove shrinker's nr_deferred
-Message-ID: <20200917023742.GT12096@dread.disaster.area>
-References: <20200916185823.5347-1-shy828301@gmail.com>
+        Wed, 16 Sep 2020 22:39:42 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=24;SR=0;TI=SMTPD_---0U9ANYuN_1600310363;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U9ANYuN_1600310363)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 17 Sep 2020 10:39:27 +0800
+Subject: Re: [PATCH v18 00/32] per memcg lru_lock: reviews
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        mgorman@techsingularity.net, tj@kernel.org,
+        khlebnikov@yandex-team.ru, willy@infradead.org, hannes@cmpxchg.org,
+        lkp@intel.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com, vbabka@suse.cz, minchan@kernel.org, cai@lca.pw
+References: <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org>
+ <alpine.LSU.2.11.2008241231460.1065@eggly.anvils>
+ <alpine.LSU.2.11.2008262301240.4405@eggly.anvils>
+ <alpine.LSU.2.11.2009081640070.7256@eggly.anvils>
+ <61a42a87-eec9-e300-f710-992756f70de6@linux.alibaba.com>
+ <alpine.LSU.2.11.2009091524260.10087@eggly.anvils>
+ <855ad6ee-dba4-9729-78bd-23e392905cf6@linux.alibaba.com>
+ <alpine.LSU.2.11.2009111634020.22739@eggly.anvils>
+ <5cfc6142-752d-26e6-0108-38d13009268b@linux.alibaba.com>
+ <alpine.LSU.2.11.2009150112130.1550@eggly.anvils>
+ <20200915165807.kpp7uhiw7l3loofu@ca-dmjordan1.us.oracle.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <c3362c0a-3707-3a3d-9955-960d95f3ad8c@linux.alibaba.com>
+Date:   Thu, 17 Sep 2020 10:37:45 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916185823.5347-1-shy828301@gmail.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=XJ9OtjpE c=1 sm=1 tr=0 cx=a_idp_d
-        a=vvDRHhr1aDYKXl+H6jx2TA==:117 a=vvDRHhr1aDYKXl+H6jx2TA==:17
-        a=kj9zAlcOel0A:10 a=reM5J-MqmosA:10 a=VwQbUJbxAAAA:8 a=7-415B0cAAAA:8
-        a=Q-JY_qLZEkq_jSbg818A:9 a=_x8q4c4buY6SSWo_:21 a=-F0HHi-jCq9ankDh:21
-        a=CjuIK1q_8ugA:10 a=-RoEEKskQ1sA:10 a=AjGcO6oz07-iQ99wixmX:22
-        a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20200915165807.kpp7uhiw7l3loofu@ca-dmjordan1.us.oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 11:58:21AM -0700, Yang Shi wrote:
-> 
-> Recently huge amount one-off slab drop was seen on some vfs metadata heavy workloads,
-> it turned out there were huge amount accumulated nr_deferred objects seen by the
-> shrinker.
-> 
-> I managed to reproduce this problem with kernel build workload plus negative dentry
-> generator.
-> 
-> First step, run the below kernel build test script:
-> 
-> NR_CPUS=`cat /proc/cpuinfo | grep -e processor | wc -l`
-> 
-> cd /root/Buildarea/linux-stable
-> 
-> for i in `seq 1500`; do
->         cgcreate -g memory:kern_build
->         echo 4G > /sys/fs/cgroup/memory/kern_build/memory.limit_in_bytes
-> 
->         echo 3 > /proc/sys/vm/drop_caches
->         cgexec -g memory:kern_build make clean > /dev/null 2>&1
->         cgexec -g memory:kern_build make -j$NR_CPUS > /dev/null 2>&1
-> 
->         cgdelete -g memory:kern_build
-> done
-> 
-> That would generate huge amount deferred objects due to __GFP_NOFS allocations.
-> 
-> Then run the below negative dentry generator script:
-> 
-> NR_CPUS=`cat /proc/cpuinfo | grep -e processor | wc -l`
-> 
-> mkdir /sys/fs/cgroup/memory/test
-> echo $$ > /sys/fs/cgroup/memory/test/tasks
-> 
-> for i in `seq $NR_CPUS`; do
->         while true; do
->                 FILE=`head /dev/urandom | tr -dc A-Za-z0-9 | head -c 64`
->                 cat $FILE 2>/dev/null
->         done &
-> done
-> 
-> Then kswapd will shrink half of dentry cache in just one loop as the below tracing result
-> showed:
-> 
-> 	kswapd0-475   [028] .... 305968.252561: mm_shrink_slab_start: super_cache_scan+0x0/0x190 0000000024acf00c: nid: 0
-> objects to shrink 4994376020 gfp_flags GFP_KERNEL cache items 93689873 delta 45746 total_scan 46844936 priority 12
-> 	kswapd0-475   [021] .... 306013.099399: mm_shrink_slab_end: super_cache_scan+0x0/0x190 0000000024acf00c: nid: 0 unused
-> scan count 4994376020 new scan count 4947576838 total_scan 8 last shrinker return val 46844928
 
 
-You have 93M dentries and inodes in the cache, and the reclaim delta is 45746,
-which is totally sane for a priority 12 reclaim priority. SO you've
-basically had to do a couple of million GFP_NOFS direct reclaim
-passes that were unable to reclaim anything to get to a point
-where the deferred reclaim would up to 4.9 -billion- objects.
+在 2020/9/16 上午12:58, Daniel Jordan 写道:
+> On Tue, Sep 15, 2020 at 01:21:56AM -0700, Hugh Dickins wrote:
+>> On Sun, 13 Sep 2020, Alex Shi wrote:
+>>> Uh, I updated the testing with some new results here:
+>>> https://lkml.org/lkml/2020/8/26/212
+>> Right, I missed that, that's better, thanks.  Any other test results?
+> Alex, you were doing some will-it-scale runs earlier.  Are you planning to do
+> more of those?  Otherwise I can add them in.
 
-Basically, you would up the deferred work so far that it got out of
-control before a GFP_KERNEL reclaim context could do anything to
-bring it under control.
+Hi Daniel,
 
-However, removing defered work is not the solution. If we don't
-defer some of this reclaim work, then filesystem intensive workloads
--cannot reclaim memory from their own caches- when they need memory.
-And when those caches largely dominate the used memory in the
-machine, this will grind the filesystem workload to a halt.. Hence
-this deferral mechanism is actually critical to keeping the
-filesystem caches balanced with the rest of the system.
+Does compaction perf scalable, like thpscale, I except they could get some benefit.
 
-The behaviour you see is the windup clamping code triggering:
-
-        /*
-         * We need to avoid excessive windup on filesystem shrinkers
-         * due to large numbers of GFP_NOFS allocations causing the
-         * shrinkers to return -1 all the time. This results in a large
-         * nr being built up so when a shrink that can do some work
-         * comes along it empties the entire cache due to nr >>>
-         * freeable. This is bad for sustaining a working set in
-         * memory.
-         *
-         * Hence only allow the shrinker to scan the entire cache when
-         * a large delta change is calculated directly.
-         */
-        if (delta < freeable / 4)
-                total_scan = min(total_scan, freeable / 2);
-
-It clamps the worst case freeing to half the cache, and that is
-exactly what you are seeing. This, unfortunately, won't be enough to
-fix the windup problem once it's spiralled out of control. It's
-fairly rare for this to happen - it takes effort to find an adverse
-workload that will cause windup like this.
-
-So, with all that said, a year ago I actually fixed this problem
-as part of some work I did to provide non-blocking inode reclaim
-infrastructure in the shrinker for XFS inode reclaim.
-See this patch:
-
-https://lore.kernel.org/linux-xfs/20191031234618.15403-13-david@fromorbit.com/
-
-It did two things. First it ensured all the deferred work was done
-by kswapd so that some poor direct reclaim victim didn't hit a
-massive reclaim latency spike because of windup. Secondly, it
-clamped the maximum windup to the maximum single pass reclaim scan
-limit, which is (freeable * 2) objects.
-
-Finally it also changed the amount of deferred work a single kswapd
-pass did to be directly proportional to the reclaim priority. Hence
-as we get closer to OOM, kswapd tries much harder to get the
-deferred work backlog down to zero. This means that a single, low
-priority reclaim pass will never reclaim half the cache - only
-sustained memory pressure and _reclaim priority windup_ will do
-that.
-
-You probably want to look at all the shrinker infrastructure patches
-in that series as the deferred work tracking and accounting changes
-span a few patches in the series:
-
-https://lore.kernel.org/linux-xfs/20191031234618.15403-1-david@fromorbit.com/
-
-Unfortunately, none of the MM developers showed any interest in
-these patches, so when I found a different solution to the XFS
-problem it got dropped on the ground.
-
-> So why do we have to still keep it around? 
-
-Because we need a feedback mechanism to allow us to maintain control
-of the size of filesystem caches that grow via GFP_NOFS allocations.
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Thanks
+Alex
