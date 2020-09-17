@@ -2,85 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C05A626DCFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 15:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 307D826DD4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 15:58:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726950AbgIQNlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 09:41:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41767 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727015AbgIQNez (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 09:34:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600349661;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vAZ7GYrpBa5ucLCP/AOwHIdySIKLL/ta6t+Gc/7xpW4=;
-        b=f7+EgQ4J2PhaDA1G2yv/CQgQiIF96kLEhMy+1DQOzBB3lELkCTkWpRZkUZ6UlltZatQtNk
-        Sdoe/TtObHFzAqRkewM523OOIklUXQJBUbmLd823JfciOfBtxfJQ/zPpFUzl9LL0w7KNaw
-        GWUL+GJ/bi1p1dicmxRxdq02NNXaeyo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-238-2Aq0qTI6MbitNKLSTYgyNw-1; Thu, 17 Sep 2020 09:34:17 -0400
-X-MC-Unique: 2Aq0qTI6MbitNKLSTYgyNw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B9A05ACE37;
-        Thu, 17 Sep 2020 13:34:15 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.159])
-        by smtp.corp.redhat.com (Postfix) with SMTP id D2FF45DEBB;
-        Thu, 17 Sep 2020 13:34:12 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Thu, 17 Sep 2020 15:34:15 +0200 (CEST)
-Date:   Thu, 17 Sep 2020 15:34:11 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Boaz Harrosh <boaz@plexistor.com>, Hou Tao <houtao1@huawei.com>,
-        peterz@infradead.org, Ingo Molnar <mingo@redhat.com>,
-        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Jan Kara <jack@suse.cz>
-Subject: Re: [RFC PATCH] locking/percpu-rwsem: use this_cpu_{inc|dec}() for
- read_count
-Message-ID: <20200917133411.GB5602@redhat.com>
-References: <20200915140750.137881-1-houtao1@huawei.com>
- <20200915150610.GC2674@hirez.programming.kicks-ass.net>
- <20200915153113.GA6881@redhat.com>
- <20200915155150.GD2674@hirez.programming.kicks-ass.net>
- <20200915160344.GH35926@hirez.programming.kicks-ass.net>
- <b885ce8e-4b0b-8321-c2cc-ee8f42de52d4@huawei.com>
- <ddd5d732-06da-f8f2-ba4a-686c58297e47@plexistor.com>
- <20200917120132.GA5602@redhat.com>
- <20200917124838.GT5449@casper.infradead.org>
+        id S1727166AbgIQN6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 09:58:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33992 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727112AbgIQNyn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 09:54:43 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 11DBEB13C;
+        Thu, 17 Sep 2020 13:40:43 +0000 (UTC)
+Date:   Thu, 17 Sep 2020 15:40:06 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+j44CA55u05LmfKQ==?= 
+        <naoya.horiguchi@nec.com>
+Cc:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "aris@ruivo.org" <aris@ruivo.org>,
+        "mhocko@kernel.org" <mhocko@kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "cai@lca.pw" <cai@lca.pw>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: Re: [PATCH v4 0/7] HWpoison: further fixes and cleanups
+Message-ID: <20200917133959.GA2504@linux>
+References: <20200917081049.27428-1-osalvador@suse.de>
+ <20200917113920.GA19898@hori.linux.bs1.fc.nec.co.jp>
+ <20200917130948.GA1812@linux>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200917124838.GT5449@casper.infradead.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20200917130948.GA1812@linux>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/17, Matthew Wilcox wrote:
->
-> On Thu, Sep 17, 2020 at 02:01:33PM +0200, Oleg Nesterov wrote:
-> > IIUC, file_end_write() was never IRQ safe (at least if !CONFIG_SMP), even
-> > before 8129ed2964 ("change sb_writers to use percpu_rw_semaphore"), but this
-> > doesn't matter...
-> >
-> > Perhaps we can change aio.c, io_uring.c and fs/overlayfs/file.c to avoid
-> > file_end_write() in IRQ context, but I am not sure it's worth the trouble.
->
-> If we change bio_endio to invoke the ->bi_end_io callbacks in softirq
+On Thu, Sep 17, 2020 at 03:09:52PM +0200, Oscar Salvador wrote:
+> static bool page_handle_poison(struct page *page, bool hugepage_or_freepage, bool release)
+> {
+>         if (release) {
+>                 put_page(page);
+>                 drain_all_pages(page_zone(page));
+>         }
+> 
+> 	...
+>         SetPageHWPoison(page);
+>         page_ref_inc(page);
+> 
+> 1) You are freeing the page first, which means it goes to buddy
+> 2) Then you set it as poisoned and you update its refcount.
+> 
+> Now we have a page sitting in Buddy with a refcount = 1 and poisoned, and that is quite wrong.
 
-Not sure I understand...
+Hi Naoya,
 
-How can this help? irq_exit() can invoke_softirq() -> __do_softirq() ?
+Ok, I tested it and with the following changes on top I cannot reproduce the issue:
 
-Oleg.
+diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+index f68cb5e3b320..4ffaaa5c2603 100644
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -67,11 +67,6 @@ atomic_long_t num_poisoned_pages __read_mostly = ATOMIC_LONG_INIT(0);
+ 
+ static bool page_handle_poison(struct page *page, bool hugepage_or_freepage, bool release)
+ {
+-	if (release) {
+-		put_page(page);
+-		drain_all_pages(page_zone(page));
+-	}
+-
+ 	if (hugepage_or_freepage) {
+ 		/*
+ 		 * Doing this check for free pages is also fine since dissolve_free_huge_page
+@@ -89,6 +84,12 @@ static bool page_handle_poison(struct page *page, bool hugepage_or_freepage, boo
+ 	}
+ 
+ 	SetPageHWPoison(page);
++
++	if (release) {
++                put_page(page);
++                drain_all_pages(page_zone(page));
++        }
++
+ 	page_ref_inc(page);
+ 	num_poisoned_pages_inc();
+ 	return true;
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 0d9f9bd0e06c..8a6ab05f074c 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -1173,6 +1173,16 @@ static __always_inline bool free_pages_prepare(struct page *page,
+ 
+ 	trace_mm_page_free(page, order);
+ 
++	if (unlikely(PageHWPoison(page)) && !order) {
++		/*
++		 * Untie memcg state and reset page's owner
++		 */
++		if (memcg_kmem_enabled() && PageKmemcg(page))
++			__memcg_kmem_uncharge_page(page, order);
++		reset_page_owner(page, order);
++		return false;
++	}
++
+ 	/*
+ 	 * Check tail pages before head page information is cleared to
+ 	 * avoid checking PageCompound for order-0 pages.
 
+
+# sh tmp_run_ksm_madv.sh 
+p1 0x7f6b6b08e000
+p2 0x7f6b529ee000
+madvise(p1) 0
+madvise(p2) 0
+writing p1 ... done
+writing p2 ... done
+soft offline
+soft offline returns 0
+OK
+
+
+Can you try to re-run your tests and see if they come clean?
+If they do, I will try to see if Andrew can squezee above changes into [1],
+where they belong to.
+
+Otherwise I will craft a v5 containing all fixups (pretty unfortunate).
+
+[1] https://patchwork.kernel.org/patch/11704099/
+
+-- 
+Oscar Salvador
+SUSE L3
