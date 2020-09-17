@@ -2,102 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E530326E57B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:54:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4698D26E5E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:58:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728349AbgIQQP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 12:15:58 -0400
-Received: from foss.arm.com ([217.140.110.172]:48608 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728246AbgIQQP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 12:15:29 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DD34D11D4;
-        Thu, 17 Sep 2020 09:14:36 -0700 (PDT)
-Received: from [10.37.8.97] (unknown [10.37.8.97])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BC3BF3F68F;
-        Thu, 17 Sep 2020 09:14:33 -0700 (PDT)
-Subject: Re: [PATCH v2 22/37] arm64: mte: Add in-kernel MTE helpers
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1600204505.git.andreyknvl@google.com>
- <4ac1ed624dd1b0851d8cf2861b4f4aac4d2dbc83.1600204505.git.andreyknvl@google.com>
- <20200917134653.GB10662@gaia>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <9ef0a773-71f0-c1d6-b67e-ccf7d8bcbbe6@arm.com>
-Date:   Thu, 17 Sep 2020 17:17:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726904AbgIQT6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 15:58:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726424AbgIQT57 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 15:57:59 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40407C061355;
+        Thu, 17 Sep 2020 12:29:21 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id j2so3679052eds.9;
+        Thu, 17 Sep 2020 12:29:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jj1NYDHlCzwQu/Kib7EFw2erEDA1Fuy+oKP7IZvnOMA=;
+        b=KqGdOe/enJaOZIkuti5nTMI7rgvsIlf73k5XMbvRdt+cR9DCpA6KGv59gbaJC2YK7e
+         Iq+W0RlRAc1nGYbtScmzZ4cyVS7oEiHG8x3cyFXPEZ9qNeNP9mNmGS3ftHTbW33BTmBU
+         Sck+8J+YHQYgjHPkh84CQqrgmceWQ+MmpUgo+lLY3JhRymA4AxUL0rauLlpbuH5mVxi1
+         MmeXfszygeeVzaMO2VcxD62LjtT9oFw4X8+e29XT1GR+RUGq1+8dSJOOqsxNogXbCtuX
+         jaNRsG0jYODsCxfye5k0qyfOodg8lhfnJYX7KNOSRihMzl7BCsDGYdS3zt4aaollA9Mk
+         DsRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jj1NYDHlCzwQu/Kib7EFw2erEDA1Fuy+oKP7IZvnOMA=;
+        b=VVg5+P//MZxAs4dnq2/tpjFqPGOzv18o5Irrwc/C+zlGb8DTYjXEI394dTYMPrrUY3
+         yUdVzYBDjAYCB4goif9CAThw2jUhOtTvcoqmNjbJODXSvFGR0lw1X9f+YN+26x9iFq/e
+         ilhHtcxfDq3dLyWZ2izdoZt49RMLxb5qnxJf+KQo+sEU+LDdbrmWkec7idUk7kKEuHBV
+         7eAf5jzyIwpUfWVInhW2WKzFYldni/WlXtdDlpJ4j3gOYaVayF2bncHfb9dc8pFi5VSs
+         Y2Y/JUJhSScMw0FiPrCweW/ut0KOgLqAWrMPr8D9s1lST+Fdj/wPVvr0s92M0PQ3WE72
+         lgzw==
+X-Gm-Message-State: AOAM533nvrTbG2B4V0w/SBuo832+SmwkR5shEFZ/mYQoxqrQ3Qa3hStV
+        sHn/uAeV/j9acWE3TBRKSr3xtFMYDndeM2FerYU=
+X-Google-Smtp-Source: ABdhPJzA3dLWUoHTqvdw58Fcn7ViL3Xce9QemwoZRQ0np0RaFSOpwhtb2LL6kwQC0qntPblEuVLPOrR5AfhwMNaQmfo=
+X-Received: by 2002:aa7:d959:: with SMTP id l25mr34054370eds.383.1600370959694;
+ Thu, 17 Sep 2020 12:29:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200917134653.GB10662@gaia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200827091441.12972-1-qiang.zhao@nxp.com> <20200909202456.GA3019412@bogus>
+ <VE1PR04MB676899EEA79D59061FE91BF691270@VE1PR04MB6768.eurprd04.prod.outlook.com>
+ <CAL_JsqJx=7npNYNe4MybNvdNRxBj_XjvEOJsSm+gNGEkvbh2VA@mail.gmail.com> <VE1PR04MB6768F9352B510CB6E873515A91230@VE1PR04MB6768.eurprd04.prod.outlook.com>
+In-Reply-To: <VE1PR04MB6768F9352B510CB6E873515A91230@VE1PR04MB6768.eurprd04.prod.outlook.com>
+From:   Bruno Thomsen <bruno.thomsen@gmail.com>
+Date:   Thu, 17 Sep 2020 21:29:03 +0200
+Message-ID: <CAH+2xPAVhivJJ4DGZ+79kyeiLN-f93xMBbMEXTVUN-rrm4hawQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: rtc-2127: Add bindings for nxp,rtc-2127.txt
+To:     Qiang Zhao <qiang.zhao@nxp.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        "a.zummo@towertech.it" <a.zummo@towertech.it>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/17/20 2:46 PM, Catalin Marinas wrote:
->> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
->> index 52a0638ed967..e238ffde2679 100644
->> --- a/arch/arm64/kernel/mte.c
->> +++ b/arch/arm64/kernel/mte.c
->> @@ -72,6 +74,52 @@ int memcmp_pages(struct page *page1, struct page *page2)
->>  	return ret;
->>  }
->>  
->> +u8 mte_get_mem_tag(void *addr)
->> +{
->> +	if (system_supports_mte())
->> +		asm volatile(ALTERNATIVE("ldr %0, [%0]",
->> +					 __MTE_PREAMBLE "ldg %0, [%0]",
->> +					 ARM64_MTE)
->> +			     : "+r" (addr));
-> This doesn't do what you think it does. LDG indeed reads the tag from
-> memory but LDR loads the actual data at that address. Instead of the
-> first LDR, you may want something like "mov %0, #0xf << 56" (and use
-> some macros to avoid the hard-coded 56).
+Den man. 14. sep. 2020 kl. 09.08 skrev Qiang Zhao <qiang.zhao@nxp.com>:
 >
+> On Fri, Sep 11, 2020 at 22:03, Rob Herring <robh@kernel.org> wrote:
 
-Seems I can't encode a shift of 56 neither in mov nor in orr. I propose to
-replace both with an and of the address with itself.
-This should not change anything.
+> Please help to review as below, if it is ok, I will send the new version patch. Thank you!
+>
+> diff --git a/Documentation/devicetree/bindings/rtc/nxp,pcf2127.yaml b/Documentation/devicetree/bindings/rtc/nxp,pcf2127.yaml
+> new file mode 100644
+> index 0000000..809dd59
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/rtc/nxp,pcf2127.yaml
+> @@ -0,0 +1,38 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/rtc/nxp,pcf2127.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: PCF RTCs
+> +
+> +maintainers:
+> +  - Qiang Zhao <qiang.zhao@nxp.com>
+> +
+> +allOf:
+> +  - $ref: "rtc.yaml#"
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - nxp,pcf2127
+> +      - nxp,pcf2129
 
-Thoughts?
+The device driver have 3 compatible strings, "nxp,pca2129" is missing.
 
->> +
->> +	return 0xF0 | mte_get_ptr_tag(addr);
->> +}
->> +
->> +u8 mte_get_random_tag(void)
->> +{
->> +	u8 tag = 0xF;
->> +	u64 addr = 0;
->> +
->> +	if (system_supports_mte()) {
->> +		asm volatile(ALTERNATIVE("add %0, %0, %0",
->> +					 __MTE_PREAMBLE "irg %0, %0",
->> +					 ARM64_MTE)
->> +			     : "+r" (addr));
-> What was the intention here? The first ADD doubles the pointer value and
-> gets a tag out of it (possibly doubled as well, depends on the carry
-> from bit 55). Better use something like "orr %0, %0, #0xf << 56".
-> 
+/Bruno
 
--- 
-Regards,
-Vincenzo
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  no-watchdog:
+> +    maxItems: 1
+> +
+> +  start-year: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +...
+>
+> >
+> > Documentation/devicetree/writing-schema.rst and about 1000 examples in the
+> > kernel tree.
+> >
+> > Rob
