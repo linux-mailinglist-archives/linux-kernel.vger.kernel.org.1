@@ -2,152 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3BC926D87B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 12:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8129B26D880
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 12:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726540AbgIQKKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 06:10:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46734 "EHLO
+        id S1726594AbgIQKKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 06:10:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726453AbgIQKKI (ORCPT
+        with ESMTP id S1726453AbgIQKKj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 06:10:08 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF42C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 03:10:07 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id o8so2426087ejb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 03:10:07 -0700 (PDT)
+        Thu, 17 Sep 2020 06:10:39 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50DF7C06174A;
+        Thu, 17 Sep 2020 03:10:39 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id b22so1520503lfs.13;
+        Thu, 17 Sep 2020 03:10:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=04WngnQ0jFkRbt43U2XgSIOKzRq0Sv9eq28pqM57V98=;
-        b=1Y3onGh9sya70Zj5ROGYqM0vDIhG4Pml5qhYfxy8YUxodW4UyPXuWfE/5qvPW18y0G
-         RsCoULWffDaThKdKHgV+HTshDZ76MBK1aNpTI/wJSVJT07+//6anf7CuheYFg56aKYGw
-         bui1WW6rC7/1DHCi7LCOhxD5lqFdGhQaSRO+y9neK0mYMG0lTmyEMGgELYPpzU4HDDH2
-         R3faJ4NB2MbBMe01Gnya+Z4mLbSxarcksrAe47iJArFWde/7tMEwGOWnlAXKFwAA6/lc
-         +QsP8F6ezv0foahLyTK0ZRf82TXdj960eZvjztPyUV2eEpInVwBH9ZmvQGzsyDh2k1dD
-         52ag==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FQdxnzFRF8w408R2EqIrB/+ghDevgj/VHmIDuzUiaME=;
+        b=LtP4o/ZY7yOXWp5koODtkK0fMRBhdcr9aPsj7K9asNGiTcl8ptAewNLbZKkox7kL6X
+         JySKYViV7IrUwlgUT505NKMS4f6luQFn9IvT719gSLct9IHawazLHrsokasFg1/gvRD9
+         EByUWMw1ip+fFNRsry0+8JMN3NOANxq4bgB05zDWuhQ8nEen61YhMR2+uDRlacU7bczO
+         yombie/4gPTNywJI1hbWM9zxRVEmh8VkbK3cxTQoMhfKKwvFlayHFyn8etDWl4+GDqGO
+         H3CPQ4uipNiRDhhGxxYKJ43dCFd50LmHGvfgEgREDD8tFymcl2BE9TQEYdO4bcSb0vLa
+         0Rbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=04WngnQ0jFkRbt43U2XgSIOKzRq0Sv9eq28pqM57V98=;
-        b=OOFt7Na4yooGNJuqpbZjcJwtOL34Z8WapNNdviU0GWyf/UXMWsKOLCjM8er5tdcp+A
-         j8+1fTv6IqMbHiYAFMBj8flBn1Z4EeP4GeFLVJmQfhGO8r84yQVKJfJTSztXqreBcYhn
-         1v5fM/QBAFyv2J6nr6T91FyTHSqNrLVoZ++hnji0t43rLqzYATFEGsiaDjb9AT/SveGk
-         tYryARF0hM3+afe4v3/twxdjz1Y0X49gb2JA0fHSMTrx95CpqpJwIRLD7vfNZxNWgOB/
-         +uiBfJueI5Hysv3GMPQ48jGPYAcHDQRWp0KrsUmWi3SDhP+HLCMj3Fxg6WUgCYUKaPCF
-         aq3w==
-X-Gm-Message-State: AOAM530CpUbNMTOb0b/7AFpAR7PtdqVCV5emeXftyHV3cIEfd5SELtnn
-        G1MDIoeC2RdWFRarmztBHPTl8yp9bi8zPruitQDM8A==
-X-Google-Smtp-Source: ABdhPJxdb1PMRdnzgj842p+yq28ULJU3QGXnN/dhAo9RWsiz8goGZ+9Bi/ZDVoXn/zlS2GMz9d9ggFcKkxLuvSaAscM=
-X-Received: by 2002:a17:906:f11:: with SMTP id z17mr30847115eji.88.1600337406050;
- Thu, 17 Sep 2020 03:10:06 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FQdxnzFRF8w408R2EqIrB/+ghDevgj/VHmIDuzUiaME=;
+        b=MbnfOXRtWkP5f75MJZu+PfNJETgAdcgZPpe7QQDH13y7nWLcD2/hOJAO+/FqLtaqVl
+         NZfcnHZDnMaqUC+SMn3/7jK5mDDbvxyYy5Fay9OwXb7xjHyrEH7yaaowsemRVDbDqMiq
+         qtkDT5ZATxf6uYyd/K5a4r2CCEDbmlIDIr8HDAUG1gtnB0+QDlUs5caq5FXIt5U4m2Mq
+         1LH7h8lHH1RA+oTIyawSgA+mMAf9f55ZpV5DBINjTEpJ4e2VRxarCQN3IAlJ/2Sue/7+
+         P5p8UuTv2IiFDQef/sW0ilkfFkiXqqSm0P5QOILruPdXr/kl6KEDEFQVyNjpgt4fH7+W
+         ANGA==
+X-Gm-Message-State: AOAM5317hSS0PvnM/i8twPsueWeS2Md3fmzTz0aX2t6lCUOEvcpN8ybG
+        MsayWeuODLuYDjZcNk1oBCcBDixbTr8feQ==
+X-Google-Smtp-Source: ABdhPJwA+Tle2tcD/KC5ITtEgfM6S0L5pFzkzdsXjRw84le3/xJ2tt4uBtzBMAnNZD6s25GgBBEQLw==
+X-Received: by 2002:ac2:51a8:: with SMTP id f8mr9879799lfk.472.1600337437743;
+        Thu, 17 Sep 2020 03:10:37 -0700 (PDT)
+Received: from mobilestation ([95.79.141.114])
+        by smtp.gmail.com with ESMTPSA id h22sm5990523ljl.101.2020.09.17.03.10.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 03:10:37 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 13:10:35 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Willy Liu <willy.liu@realtek.com>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ryankao@realtek.com,
+        Kyle Evans <kevans@FreeBSD.org>,
+        Joe Hershberger <joe.hershberger@ni.com>,
+        Peter Robinson <pbrobinson@gmail.com>
+Subject: Re: [PATCH] net: phy: realtek: fix rtl8211e rx/tx delay config
+Message-ID: <20200917101035.uwajg4m524g4lz5o@mobilestation>
+References: <1600307253-3538-1-git-send-email-willy.liu@realtek.com>
 MIME-Version: 1.0
-References: <20200916231650.11484-1-marek.behun@nic.cz> <20200916231650.11484-5-marek.behun@nic.cz>
-In-Reply-To: <20200916231650.11484-5-marek.behun@nic.cz>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Thu, 17 Sep 2020 12:09:55 +0200
-Message-ID: <CAMpxmJVC7J3awjDWVC49JaBQVrqiubG7Nz761FAv=zdXe_6Reg@mail.gmail.com>
-Subject: Re: [PATCH leds v1 04/10] leds: max77650: use struct led_init_data
- when registering
-To:     =?UTF-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>
-Cc:     Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        =?UTF-8?Q?Ond=C5=99ej_Jirman?= <megous@megous.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-devicetree <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1600307253-3538-1-git-send-email-willy.liu@realtek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 1:16 AM Marek Beh=C3=BAn <marek.behun@nic.cz> wrote=
-:
->
-> By using struct led_init_data when registering we do not need to parse
-> `label` DT property nor `linux,default-trigger` property.
->
-> Previously if the `label` DT property was not present, the code composed
-> name for the LED in the form
->   "max77650::"
-> For backwards compatibility we therefore set
->   init_data->default_label =3D ":";
-> so that the LED will not get a different name if `label` property is not
-> present.
->
-> Signed-off-by: Marek Beh=C3=BAn <marek.behun@nic.cz>
-> Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Hello Willy,
+Thanks for the patch. My comments are below.
+
+I've Cc'ed the U-boot/FreeBSD, who might be also interested in the solution
+you've provided.
+
+On Thu, Sep 17, 2020 at 09:47:33AM +0800, Willy Liu wrote:
+> RGMII RX Delay and TX Delay settings will not applied if Force TX RX Delay
+> Control bit is not set.
+> Register bit for configuration pins:
+> 13 = force Tx RX Delay controlled by bit12 bit11
+> 12 = Tx Delay
+> 11 = Rx Delay
+
+This is a very useful information, but it contradicts a bit to what knowledge
+we've currently got about that magical register. Current code in U-boot does
+the delays configuration by means of another bits:
+https://elixir.bootlin.com/u-boot/v2020.10-rc4/source/drivers/net/phy/realtek.c
+
+Could you provide a full register layout, so we'd know for sure what that
+register really does and finally close the question for good?
+
+> 
+> Fixes: f81dadbcf7fd ("net: phy: realtek: Add rtl8211e rx/tx delays config")
+> Signed-off-by: Willy Liu <willy.liu@realtek.com>
 > ---
->  drivers/leds/leds-max77650.c | 24 ++++++++----------------
->  1 file changed, 8 insertions(+), 16 deletions(-)
->
-> diff --git a/drivers/leds/leds-max77650.c b/drivers/leds/leds-max77650.c
-> index a0d4b725c9178..1eeac56b00146 100644
-> --- a/drivers/leds/leds-max77650.c
-> +++ b/drivers/leds/leds-max77650.c
-> @@ -66,7 +66,6 @@ static int max77650_led_probe(struct platform_device *p=
-dev)
->         struct max77650_led *leds, *led;
->         struct device *dev;
->         struct regmap *map;
-> -       const char *label;
->         int rv, num_leds;
->         u32 reg;
->
-> @@ -86,6 +85,8 @@ static int max77650_led_probe(struct platform_device *p=
-dev)
->                 return -ENODEV;
->
->         device_for_each_child_node(dev, child) {
-> +               struct led_init_data init_data =3D {};
-> +
->                 rv =3D fwnode_property_read_u32(child, "reg", &reg);
->                 if (rv || reg >=3D MAX77650_LED_NUM_LEDS) {
->                         rv =3D -EINVAL;
-> @@ -99,22 +100,13 @@ static int max77650_led_probe(struct platform_device=
- *pdev)
->                 led->cdev.brightness_set_blocking =3D max77650_led_bright=
-ness_set;
->                 led->cdev.max_brightness =3D MAX77650_LED_MAX_BRIGHTNESS;
->
-> -               rv =3D fwnode_property_read_string(child, "label", &label=
-);
-> -               if (rv) {
-> -                       led->cdev.name =3D "max77650::";
-> -               } else {
-> -                       led->cdev.name =3D devm_kasprintf(dev, GFP_KERNEL=
-,
-> -                                                       "max77650:%s", la=
-bel);
-> -                       if (!led->cdev.name) {
-> -                               rv =3D -ENOMEM;
-> -                               goto err_node_put;
-> -                       }
-> -               }
-> -
-> -               fwnode_property_read_string(child, "linux,default-trigger=
-",
-> -                                           &led->cdev.default_trigger);
-> +               init_data.fwnode =3D child;
-> +               init_data.devicename =3D "max77650";
-> +               /* for backwards compatibility if `label` is not present =
-*/
-> +               init_data.default_label =3D ":";
->
-> -               rv =3D devm_led_classdev_register(dev, &led->cdev);
-> +               rv =3D devm_led_classdev_register_ext(dev, &led->cdev,
-> +                                                   &init_data);
->                 if (rv)
->                         goto err_node_put;
->
-> --
-> 2.26.2
->
+>  drivers/net/phy/realtek.c | 20 ++++++++++----------
+>  1 file changed, 10 insertions(+), 10 deletions(-)
+>  mode change 100644 => 100755 drivers/net/phy/realtek.c
+> 
+> diff --git a/drivers/net/phy/realtek.c b/drivers/net/phy/realtek.c
+> old mode 100644
+> new mode 100755
+> index 95dbe5e..3fddd57
+> --- a/drivers/net/phy/realtek.c
+> +++ b/drivers/net/phy/realtek.c
+> @@ -32,9 +32,9 @@
+>  #define RTL8211F_TX_DELAY			BIT(8)
+>  #define RTL8211F_RX_DELAY			BIT(3)
+>  
 
-I don't know this new API very well but looks good to me.
+> -#define RTL8211E_TX_DELAY			BIT(1)
+> -#define RTL8211E_RX_DELAY			BIT(2)
+> -#define RTL8211E_MODE_MII_GMII			BIT(3)
+> +#define RTL8211E_CTRL_DELAY			BIT(13)
+> +#define RTL8211E_TX_DELAY			BIT(12)
+> +#define RTL8211E_RX_DELAY			BIT(11)
 
-Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+So, what do BIT(1) and BIT(2) control then? Could you explain?
+
+>  
+>  #define RTL8201F_ISR				0x1e
+>  #define RTL8201F_IER				0x13
+> @@ -249,13 +249,13 @@ static int rtl8211e_config_init(struct phy_device *phydev)
+>  		val = 0;
+>  		break;
+>  	case PHY_INTERFACE_MODE_RGMII_ID:
+> -		val = RTL8211E_TX_DELAY | RTL8211E_RX_DELAY;
+> +		val = RTL8211E_CTRL_DELAY | RTL8211E_TX_DELAY | RTL8211E_RX_DELAY;
+>  		break;
+>  	case PHY_INTERFACE_MODE_RGMII_RXID:
+> -		val = RTL8211E_RX_DELAY;
+> +		val = RTL8211E_CTRL_DELAY | RTL8211E_RX_DELAY;
+>  		break;
+>  	case PHY_INTERFACE_MODE_RGMII_TXID:
+> -		val = RTL8211E_TX_DELAY;
+> +		val = RTL8211E_CTRL_DELAY | RTL8211E_TX_DELAY;
+>  		break;
+>  	default: /* the rest of the modes imply leaving delays as is. */
+>  		return 0;
+> @@ -265,9 +265,8 @@ static int rtl8211e_config_init(struct phy_device *phydev)
+>  	 * 0xa4 extension page (0x7) layout. It can be used to disable/enable
+>  	 * the RX/TX delays otherwise controlled by RXDLY/TXDLY pins. It can
+>  	 * also be used to customize the whole configuration register:
+
+> -	 * 8:6 = PHY Address, 5:4 = Auto-Negotiation, 3 = Interface Mode Select,
+> -	 * 2 = RX Delay, 1 = TX Delay, 0 = SELRGV (see original PHY datasheet
+> -	 * for details).
+> +	 * 13 = Force Tx RX Delay controlled by bit12 bit11,
+> +	 * 12 = RX Delay, 11 = TX Delay
+
+Here you've removed the register layout description and replaced it with just three
+bits info. So from now the text above doesn't really corresponds to what follows.
+
+I might have forgotten something, but AFAIR that register bits state mapped
+well to what was available on the corresponding external pins. So if you've got
+a sacred knowledge what configs are really hidden behind that register, please
+open it up. This in-code comment would be a good place to provide the full
+register description.
+
+-Sergey
+
+>  	 */
+>  	oldpage = phy_select_page(phydev, 0x7);
+>  	if (oldpage < 0)
+> @@ -277,7 +276,8 @@ static int rtl8211e_config_init(struct phy_device *phydev)
+>  	if (ret)
+>  		goto err_restore_page;
+>  
+> -	ret = __phy_modify(phydev, 0x1c, RTL8211E_TX_DELAY | RTL8211E_RX_DELAY,
+> +	ret = __phy_modify(phydev, 0x1c, RTL8211E_CTRL_DELAY
+> +			   | RTL8211E_TX_DELAY | RTL8211E_RX_DELAY,
+>  			   val);
+>  
+>  err_restore_page:
+> -- 
+> 1.9.1
+> 
