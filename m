@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F78426E16E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 18:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6959026E184
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:00:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728515AbgIQQ5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 12:57:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35904 "EHLO mail.kernel.org"
+        id S1728553AbgIQQ77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 12:59:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728651AbgIQQ41 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 12:56:27 -0400
+        id S1728436AbgIQQ5M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 12:57:12 -0400
 Received: from kozik-lap.mshome.net (unknown [194.230.155.191])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C26952078D;
-        Thu, 17 Sep 2020 16:56:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1792E21D24;
+        Thu, 17 Sep 2020 16:56:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600361787;
-        bh=BHBvTl9J5bVNGcjbgF1Wrd0LOUeqr0pjrgInbdXE4tc=;
+        s=default; t=1600361829;
+        bh=xuQmgvom3JUoAvAV6bjHRGM2H4w5dmPc0B4gmkTYQ6w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GRH/P+hmbkvZV1XUdX3hrXr/M7yIadjWJCzkILNlNjfuSFyrmNOxxyOBSVjiJTn4J
-         gKvBNwbvbYzo0IGdWxTLE2oG9gmZ6oXMt70NrCbSqHARK+31sF7Rx0nhtl11Izm9do
-         rhuxXTc0Y62DIAey7vczzig9Bz3xjl9vz5LWXWP8=
+        b=2nIdFuBmgTsOPstR3DJ+GBSMq0yPAAhpUFrSGg0/b5nEQXGzDWyo4URkovlz+zduY
+         TiGAzEIOjw5bQjqHndSbUTi23mZ6M981+fWk5OusyN4pN88Q7mqlhPf5azB2u/j/H4
+         4bm/uys6PrWVv1lr1jiHQLAtdsXBSRv6ObSzXVeg=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>,
@@ -86,9 +86,9 @@ To:     Linus Walleij <linus.walleij@linaro.org>,
         linux-mediatek@lists.infradead.org,
         linux-renesas-soc@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v2 10/13] ASoC: dt-bindings: zl38060: include common schema in GPIO controllers
-Date:   Thu, 17 Sep 2020 18:52:58 +0200
-Message-Id: <20200917165301.23100-11-krzk@kernel.org>
+Subject: [PATCH v2 13/13] ARM: dts: imx: align GPIO hog names with dtschema
+Date:   Thu, 17 Sep 2020 18:53:01 +0200
+Message-Id: <20200917165301.23100-14-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200917165301.23100-1-krzk@kernel.org>
 References: <20200917165301.23100-1-krzk@kernel.org>
@@ -96,33 +96,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Include the common GPIO schema in GPIO controllers to be sure all common
-properties are properly validated.
+dtschema for GPIO controllers expects GPIO hogs to end with 'hog'
+suffix.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-
 ---
+ arch/arm/boot/dts/imx51-zii-rdu1.dts        | 2 +-
+ arch/arm/boot/dts/imx6qdl-zii-rdu2.dtsi     | 8 ++++----
+ arch/arm/boot/dts/imx6ul-ccimx6ulsbcpro.dts | 2 +-
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-Changes since v1:
-1. New patch
----
- Documentation/devicetree/bindings/sound/zl38060.yaml | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/sound/zl38060.yaml b/Documentation/devicetree/bindings/sound/zl38060.yaml
-index 338e2a13c775..0e3d8c854806 100644
---- a/Documentation/devicetree/bindings/sound/zl38060.yaml
-+++ b/Documentation/devicetree/bindings/sound/zl38060.yaml
-@@ -15,6 +15,9 @@ maintainers:
-   - Jaroslav Kysela <perex@perex.cz>
-   - Takashi Iwai <tiwai@suse.com>
+diff --git a/arch/arm/boot/dts/imx51-zii-rdu1.dts b/arch/arm/boot/dts/imx51-zii-rdu1.dts
+index e559ab0c3645..ec8ca3ac2c1c 100644
+--- a/arch/arm/boot/dts/imx51-zii-rdu1.dts
++++ b/arch/arm/boot/dts/imx51-zii-rdu1.dts
+@@ -451,7 +451,7 @@
+ 			  "", "", "", "",
+ 			  "", "", "", "";
  
-+allOf:
-+  - $ref: /schemas/gpio/gpio-common.yaml#
-+
- properties:
-   compatible:
-     const: mscc,zl38060
+-	unused-sd3-wp-gpio {
++	unused-sd3-wp-hog {
+ 		/*
+ 		 * See pinctrl_esdhc1 below for more details on this
+ 		 */
+diff --git a/arch/arm/boot/dts/imx6qdl-zii-rdu2.dtsi b/arch/arm/boot/dts/imx6qdl-zii-rdu2.dtsi
+index 66b15748e287..c0a76202e16b 100644
+--- a/arch/arm/boot/dts/imx6qdl-zii-rdu2.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-zii-rdu2.dtsi
+@@ -330,28 +330,28 @@
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_gpio3_hog>;
+ 
+-	usb-emulation {
++	usb-emulation-hog {
+ 		gpio-hog;
+ 		gpios = <19 GPIO_ACTIVE_HIGH>;
+ 		output-low;
+ 		line-name = "usb-emulation";
+ 	};
+ 
+-	usb-mode1 {
++	usb-mode1-hog {
+ 		gpio-hog;
+ 		gpios = <20 GPIO_ACTIVE_HIGH>;
+ 		output-high;
+ 		line-name = "usb-mode1";
+ 	};
+ 
+-	usb-pwr {
++	usb-pwr-hog {
+ 		gpio-hog;
+ 		gpios = <22 GPIO_ACTIVE_LOW>;
+ 		output-high;
+ 		line-name = "usb-pwr-ctrl-en-n";
+ 	};
+ 
+-	usb-mode2 {
++	usb-mode2-hog {
+ 		gpio-hog;
+ 		gpios = <23 GPIO_ACTIVE_HIGH>;
+ 		output-high;
+diff --git a/arch/arm/boot/dts/imx6ul-ccimx6ulsbcpro.dts b/arch/arm/boot/dts/imx6ul-ccimx6ulsbcpro.dts
+index a0bbec57ddc7..3ec042bfccba 100644
+--- a/arch/arm/boot/dts/imx6ul-ccimx6ulsbcpro.dts
++++ b/arch/arm/boot/dts/imx6ul-ccimx6ulsbcpro.dts
+@@ -110,7 +110,7 @@
+ };
+ 
+ &gpio5 {
+-	emmc-usd-mux {
++	emmc-usd-mux-hog {
+ 		gpio-hog;
+ 		gpios = <1 GPIO_ACTIVE_LOW>;
+ 		output-high;
 -- 
 2.17.1
 
