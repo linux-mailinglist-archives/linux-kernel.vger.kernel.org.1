@@ -2,179 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22B9E26E307
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D064E26E311
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726424AbgIQR5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 13:57:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46998 "EHLO mail.kernel.org"
+        id S1726239AbgIQR7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 13:59:37 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:47606 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726582AbgIQR4F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 13:56:05 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726531AbgIQR7P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 13:59:15 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600365554; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=MHJ08k8F25u/dke1/sNKpfE9guwu2CMycQbHzCSGJEE=; b=b8LSpatO1WO5K9eby4gwa+vgXzchhX7f2YAbScuVgp7yiqTOpxIfqLhi1MYABv+B9+NLnSwB
+ QCTrDK15eoQDDVFnVv/Rgv8+dFRzik6fS9knjMil5vOBLBwYj4/5PftbZIRNjVBtoHFwGYvc
+ jWj3cx/viP1/6pDdSzfe6FA2a58=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5f63a3df6ace44cacc7ffe15 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Sep 2020 17:58:55
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8C5E4C433F1; Thu, 17 Sep 2020 17:58:54 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B8F8A20707;
-        Thu, 17 Sep 2020 17:56:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600365364;
-        bh=JPsTCcKQSJWwioUgZClYmjeaDcco+sofmS5Hjg0G3ek=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=k5ag4xwb9mY1gMrrsG6c8EQLFPZ/cX/gXYPDYWqZbG8xFOrK7iAWLAbu7jffpeIj7
-         qFl6zqMq8hBlU355hSDh67wO+0ZmiTpgXYQvvrtjMc5wom6ya0PpeGFlxoSOLV68vk
-         +BhWrpgM3aCOuxrq1diqfXfgQrn+DpkSwKIEG0ig=
-Date:   Thu, 17 Sep 2020 18:55:59 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <ardeleanalex@gmail.com>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] iio: buffer: split buffer sysfs creation to take buffer
- as primary arg
-Message-ID: <20200917185559.7d6971e3@archlinux>
-In-Reply-To: <CA+U=DspN3WYX5_1MZpRPzUcC5NV4=iSekQ9jNSehad1jfi2bQw@mail.gmail.com>
-References: <20200917125951.861-1-alexandru.ardelean@analog.com>
-        <20200917181626.59eb84c8@archlinux>
-        <CA+U=DspN3WYX5_1MZpRPzUcC5NV4=iSekQ9jNSehad1jfi2bQw@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5AFE6C433C8;
+        Thu, 17 Sep 2020 17:58:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5AFE6C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sibis@codeaurora.org
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     bjorn.andersson@linaro.org, swboyd@chromium.org
+Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ohad@wizery.com, evgreen@chromium.org,
+        Sibi Sankar <sibis@codeaurora.org>
+Subject: [PATCH v3] remoteproc: qcom_q6v5: Assign mpss region to Q6 before MBA boot
+Date:   Thu, 17 Sep 2020 23:28:40 +0530
+Message-Id: <20200917175840.18708-1-sibis@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Sep 2020 20:41:08 +0300
-Alexandru Ardelean <ardeleanalex@gmail.com> wrote:
+On secure devices which support warm reset, the MBA firmware requires
+access to the modem region to clear them out. Hence provide Q6 access
+to this region before MBA boot. This will be a nop during a modem SSR.
 
-> On Thu, Sep 17, 2020 at 8:18 PM Jonathan Cameron <jic23@kernel.org> wrote:
-> >
-> > On Thu, 17 Sep 2020 15:59:51 +0300
-> > Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
-> >  
-> > > Currently the iio_buffer_{alloc,free}_sysfs_and_mask() take 'indio_dev' as
-> > > primary argument. This change splits the main logic into a private function
-> > > that takes an IIO buffer as primary argument.
-> > >
-> > > That way, the functions can be extended to configure the sysfs for multiple
-> > > buffers.
-> > >
-> > > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>  
-> >
-> > One comment inline.  Whilst I think it is safe as you have it, I'd
-> > rather avoid the minor change in logic if we don't need to make it.
-> >
-> > Thanks,
-> >
-> > Jonathan
-Applied to the togreg branch of iio.git.
+Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+---
 
-See below for my pathetic Diff confused me excuse :)
+V3:
+ * Fixup comment style [Stephen] 
 
-Jonathan
+V2:
+ * Fixup comments [Bjorn] 
 
-> >
-> >  
-> > > ---
-> > >  drivers/iio/industrialio-buffer.c | 46 ++++++++++++++++++++-----------
-> > >  1 file changed, 30 insertions(+), 16 deletions(-)
-> > >
-> > > diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-> > > index a7d7e5143ed2..a4f6bb96d4f4 100644
-> > > --- a/drivers/iio/industrialio-buffer.c
-> > > +++ b/drivers/iio/industrialio-buffer.c
-> > > @@ -1264,26 +1264,14 @@ static struct attribute *iio_buffer_attrs[] = {
-> > >       &dev_attr_data_available.attr,
-> > >  };
-> > >
-> > > -int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
-> > > +static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
-> > > +                                          struct iio_dev *indio_dev)
-> > >  {
-> > >       struct iio_dev_attr *p;
-> > >       struct attribute **attr;
-> > > -     struct iio_buffer *buffer = indio_dev->buffer;
-> > >       int ret, i, attrn, attrcount;
-> > >       const struct iio_chan_spec *channels;
-> > >
-> > > -     channels = indio_dev->channels;
-> > > -     if (channels) {
-> > > -             int ml = indio_dev->masklength;
-> > > -
-> > > -             for (i = 0; i < indio_dev->num_channels; i++)
-> > > -                     ml = max(ml, channels[i].scan_index + 1);
-> > > -             indio_dev->masklength = ml;
-> > > -     }
-> > > -
-> > > -     if (!buffer)
-> > > -             return 0;
-> > > -
-> > >       attrcount = 0;
-> > >       if (buffer->attrs) {
-> > >               while (buffer->attrs[attrcount] != NULL)
-> > > @@ -1367,19 +1355,45 @@ int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
-> > >       return ret;
-> > >  }
-> > >
-> > > -void iio_buffer_free_sysfs_and_mask(struct iio_dev *indio_dev)
-> > > +int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
-> > >  {
-> > >       struct iio_buffer *buffer = indio_dev->buffer;
-> > > +     const struct iio_chan_spec *channels;
-> > > +     int i;
-> > > +
-> > > +     channels = indio_dev->channels;
-> > > +     if (channels) {
-> > > +             int ml = indio_dev->masklength;
-> > > +
-> > > +             for (i = 0; i < indio_dev->num_channels; i++)
-> > > +                     ml = max(ml, channels[i].scan_index + 1);
-> > > +             indio_dev->masklength = ml;
-> > > +     }  
-> >
-> > I've not really figured out if it matters, but this is a logic change.
-> > Previously we didn't compute masklength if there was no buffer provided.
-> > Now we do.  It's probably better to move the if (!buffer) check above
-> > this block or at least mention this change in the patch description.
-> >  
-> 
-> Umm, are you referring that this patch is a logic change or you are
-> suggesting a logic change?
-> The "if (!buffer)" check was positioned after the masklength
-> computation even in the old code.
-> 
-Got you.  Diff confused me :)
+ drivers/remoteproc/qcom_q6v5_mss.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
-
-> >  
-> > >
-> > >       if (!buffer)
-> > > -             return;
-> > > +             return 0;
-> > > +
-> > > +     return __iio_buffer_alloc_sysfs_and_mask(buffer, indio_dev);
-> > > +}
-> > >
-> > > +static void __iio_buffer_free_sysfs_and_mask(struct iio_buffer *buffer)
-> > > +{
-> > >       bitmap_free(buffer->scan_mask);
-> > >       kfree(buffer->buffer_group.attrs);
-> > >       kfree(buffer->scan_el_group.attrs);
-> > >       iio_free_chan_devattr_list(&buffer->scan_el_dev_attr_list);
-> > >  }
-> > >
-> > > +void iio_buffer_free_sysfs_and_mask(struct iio_dev *indio_dev)
-> > > +{
-> > > +     struct iio_buffer *buffer = indio_dev->buffer;
-> > > +
-> > > +     if (!buffer)
-> > > +             return;
-> > > +
-> > > +     __iio_buffer_free_sysfs_and_mask(buffer);
-> > > +}
-> > > +
-> > >  /**
-> > >   * iio_validate_scan_mask_onehot() - Validates that exactly one channel is selected
-> > >   * @indio_dev: the iio device  
-> >  
+diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
+index c401bcc263fa..eb3457a6c3b7 100644
+--- a/drivers/remoteproc/qcom_q6v5_mss.c
++++ b/drivers/remoteproc/qcom_q6v5_mss.c
+@@ -931,6 +931,17 @@ static int q6v5_mba_load(struct q6v5 *qproc)
+ 		goto assert_reset;
+ 	}
+ 
++	/*
++	 * Some versions of the MBA firmware will upon boot wipe the MPSS region as well, so provide
++	 * the Q6 access to this region.
++	 */
++	ret = q6v5_xfer_mem_ownership(qproc, &qproc->mpss_perm, false, true,
++				      qproc->mpss_phys, qproc->mpss_size);
++	if (ret) {
++		dev_err(qproc->dev, "assigning Q6 access to mpss memory failed: %d\n", ret);
++		goto disable_active_clks;
++	}
++
+ 	/* Assign MBA image access in DDR to q6 */
+ 	ret = q6v5_xfer_mem_ownership(qproc, &qproc->mba_perm, false, true,
+ 				      qproc->mba_phys, qproc->mba_size);
+@@ -1135,10 +1146,9 @@ static int q6v5_mpss_load(struct q6v5 *qproc)
+ 			max_addr = ALIGN(phdr->p_paddr + phdr->p_memsz, SZ_4K);
+ 	}
+ 
+-	/**
++	/*
+ 	 * In case of a modem subsystem restart on secure devices, the modem
+-	 * memory can be reclaimed only after MBA is loaded. For modem cold
+-	 * boot this will be a nop
++	 * memory can be reclaimed only after MBA is loaded.
+ 	 */
+ 	q6v5_xfer_mem_ownership(qproc, &qproc->mpss_perm, true, false,
+ 				qproc->mpss_phys, qproc->mpss_size);
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
