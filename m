@@ -2,69 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B815026E3C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FAF626E3CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:36:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726390AbgIQSfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 14:35:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726236AbgIQSey (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 14:34:54 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B435AC06174A;
-        Thu, 17 Sep 2020 11:34:53 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id x18so825782ila.7;
-        Thu, 17 Sep 2020 11:34:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zPDJUdvQHs4KWTgjCiT5lhv4aKDrK9sKrsn6icmW7p8=;
-        b=a0N9D87u2X4EnPeQQo7ru8V5gotXYwKueZm2yQVWTfJ/ILuBMzGHZLcMgqL6dfkTy4
-         FfzeoVNrZ4Id+9dpctvo9RB8GTQYx+sg7cjYuRLqUeEBofggJBS4lL86gpEoK7UorIbg
-         g5sGLJffNN+Hmgj95LsyWSeYhss0D9t2zQ9Pt52E05X/p17kt34EmfMVpK6QQgDjZrwm
-         Gnn5Dp5FryCJcDkyfethCZ8uX0OISIxgcAt2F2z47jMHzaF6MtCGE+TUvEfVW8LQco+n
-         jMuL+x3yltTkkxUCPvC7No5xCX03ZDQGB2vX4zfpGi6Itt+n0ElLejfytcC0g7AboESx
-         RVGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zPDJUdvQHs4KWTgjCiT5lhv4aKDrK9sKrsn6icmW7p8=;
-        b=PdCEIciPJkqcBVLvfpUVvfUpebQEfyELboHFSToxisGINZb2IdoizekqOrktI4pbl3
-         ZOMj6+g8CRHzb7dQaWNNwGRgMzDAhBMQZn2yS+ddoRVrzxZh0dGVJlEMULf2mMHGX11Q
-         7ecSh3nwV1Kk41/UbrJi++aQQ/gQ+zcsEeqJdFT0itJf+JYYtLuPgONELIV5O7Gx28KA
-         jsCtQEojsS6Biq0phmT2mAtUP/hZSz1NTVVoX2dsOdnLMMmZbrA11XvjoZYAcAhNIqiG
-         hCydyG358pG5dvH9rIYBEvQCkhSbN5YJer+MVO1w01DD8c0ZT+BkHdhz80YC0tDYKV0/
-         3etw==
-X-Gm-Message-State: AOAM533WuA2VGAwSVPHfaEs4yx/ZjX/7LIbL6P1ELyr6z+p/pqf2FWxF
-        4dq/8CsMFUuTFBqo+V1Bhdq3cKyDszzNOuJWxUqEIXGP0e8r+w==
-X-Google-Smtp-Source: ABdhPJxeZ+BrcQVhnruM0cnEHb/19pTKp7ffx/UzdnW5n6aWwmZu5swtR7N9kj5V9MjWlzGJx+W5NBsYlqfoA+rcaVA=
-X-Received: by 2002:a92:5a48:: with SMTP id o69mr23266047ilb.268.1600367692957;
- Thu, 17 Sep 2020 11:34:52 -0700 (PDT)
+        id S1726492AbgIQSgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 14:36:06 -0400
+Received: from mga06.intel.com ([134.134.136.31]:27022 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726385AbgIQSfc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 14:35:32 -0400
+IronPort-SDR: +UGK1Bsn0NCNEbuMv76u9Pmm0oUMxWtxrFvOaKxtd3pxMaHHy1usHFqLDbaNfj7h3U+8I0PNS6
+ r6W1krsm2PeA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="221325500"
+X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
+   d="scan'208";a="221325500"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 11:35:29 -0700
+IronPort-SDR: fNTaLWivZ6STQ5x7R8iekT0ajVrrFrrZoOr8ayV2LEz68mN2rdHciS/iH3zy0h2sLLheu7Yolm
+ dLSL4H6lnJPQ==
+X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
+   d="scan'208";a="483857433"
+Received: from hhuan26-mobl1.amr.corp.intel.com (HELO mqcpg7oapc828.gar.corp.intel.com) ([10.255.32.247])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 17 Sep 2020 11:35:25 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     "Jarkko Sakkinen" <jarkko.sakkinen@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Jethro Beekman" <jethro@fortanix.com>,
+        "Chunyang Hui" <sanqian.hcy@antfin.com>,
+        "Jordan Hand" <jorhand@linux.microsoft.com>,
+        "Nathaniel McCallum" <npmccallum@redhat.com>,
+        "Seth Moore" <sethmo@google.com>,
+        "Darren Kenny" <darren.kenny@oracle.com>,
+        "Sean Christopherson" <sean.j.christopherson@intel.com>,
+        "Suresh Siddha" <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 13/24] x86/sgx: Add SGX_IOC_ENCLAVE_ADD_PAGES
+References: <20200915110522.893152-1-jarkko.sakkinen@linux.intel.com>
+ <20200915110522.893152-14-jarkko.sakkinen@linux.intel.com>
+ <op.0q2prldowjvjmi@mqcpg7oapc828.gar.corp.intel.com>
+ <20200917160206.GF8530@linux.intel.com>
+Date:   Thu, 17 Sep 2020 13:35:10 -0500
 MIME-Version: 1.0
-References: <20200916141728.34796-1-yuehaibing@huawei.com>
-In-Reply-To: <20200916141728.34796-1-yuehaibing@huawei.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Thu, 17 Sep 2020 11:34:41 -0700
-Message-ID: <CAM_iQpUgZo+xz8+iwma6FxLdoxXvdtq_tZc1aMipfqHEU3x6qA@mail.gmail.com>
-Subject: Re: [PATCH net-next] genetlink: Remove unused function genl_err_attr()
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel Corp
+Message-ID: <op.0q3pw0stwjvjmi@mqcpg7oapc828.gar.corp.intel.com>
+In-Reply-To: <20200917160206.GF8530@linux.intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 9:33 AM YueHaibing <yuehaibing@huawei.com> wrote:
->
-> It is never used, so can remove it.
+On Thu, 17 Sep 2020 11:02:06 -0500, Jarkko Sakkinen  
+<jarkko.sakkinen@linux.intel.com> wrote:
 
-This is a bit confusing, it was actually used before, see commit
-ab0d76f6823cc3a4e2.
+> On Thu, Sep 17, 2020 at 12:34:18AM -0500, Haitao Huang wrote:
+>> On Tue, 15 Sep 2020 06:05:11 -0500, Jarkko Sakkinen
+>> <jarkko.sakkinen@linux.intel.com> wrote:
+>> ...
+>>
+>> > +static int __sgx_encl_add_page(struct sgx_encl *encl,
+>> > +			       struct sgx_encl_page *encl_page,
+>> > +			       struct sgx_epc_page *epc_page,
+>> > +			       struct sgx_secinfo *secinfo, unsigned long src)
+>> > +{
+>> > +	struct sgx_pageinfo pginfo;
+>> > +	struct vm_area_struct *vma;
+>> > +	struct page *src_page;
+>> > +	int ret;
+>> > +
+>> > +	/* Query vma's VM_MAYEXEC as an indirect path_noexec() check. */
+>> > +	if (encl_page->vm_max_prot_bits & VM_EXEC) {
+>> > +		vma = find_vma(current->mm, src);
+>> > +		if (!vma)
+>> > +			return -EFAULT;
+>> > +
+>> > +		if (!(vma->vm_flags & VM_MAYEXEC))
+>> > +			return -EACCES;
+>> > +	}
+>> > +
+>> > +	ret = get_user_pages(src, 1, 0, &src_page, NULL);
+>> > +	if (ret < 1)
+>> > +		return ret;
+>> > +
+>> > +	pginfo.secs = (unsigned long)sgx_get_epc_addr(encl->secs.epc_page);
+>> > +	pginfo.addr = SGX_ENCL_PAGE_ADDR(encl_page);
+>> > +	pginfo.metadata = (unsigned long)secinfo;
+>> > +	pginfo.contents = (unsigned long)kmap_atomic(src_page);
+>> > +
+>> > +	ret = __eadd(&pginfo, sgx_get_epc_addr(epc_page));
+>> > +
+>> > +	kunmap_atomic((void *)pginfo.contents);
+>> > +	put_page(src_page);
+>> > +
+>> > +	return ret ? -EIO : 0;
+>> > +}
+>> > +
+>> > +/*
+>> > + * If the caller requires measurement of the page as a proof for the
+>> > content,
+>> > + * use EEXTEND to add a measurement for 256 bytes of the page. Repeat
+>> > this
+>> > + * operation until the entire page is measured."
+>> > + */
+>> > +static int __sgx_encl_extend(struct sgx_encl *encl,
+>> > +			     struct sgx_epc_page *epc_page)
+>> > +{
+>> > +	int ret;
+>> > +	int i;
+>> > +
+>> > +	for (i = 0; i < 16; i++) {
+>> > +		ret = __eextend(sgx_get_epc_addr(encl->secs.epc_page),
+>> > +				sgx_get_epc_addr(epc_page) + (i * 0x100));
+>> > +		if (ret) {
+>> > +			if (encls_failed(ret))
+>> > +				ENCLS_WARN(ret, "EEXTEND");
+>> > +			return -EIO;
+>> > +		}
+>> > +	}
+>> > +
+>> > +	return 0;
+>> > +}
+>> > +
+>> > +static int sgx_encl_add_page(struct sgx_encl *encl, unsigned long  
+>> src,
+>> > +			     unsigned long offset, struct sgx_secinfo *secinfo,
+>> > +			     unsigned long flags)
+>> > +{
+>> > +	struct sgx_encl_page *encl_page;
+>> > +	struct sgx_epc_page *epc_page;
+>> > +	int ret;
+>> > +
+>> > +	encl_page = sgx_encl_page_alloc(encl, offset, secinfo->flags);
+>> > +	if (IS_ERR(encl_page))
+>> > +		return PTR_ERR(encl_page);
+>> > +
+>> > +	epc_page = __sgx_alloc_epc_page();
+>> > +	if (IS_ERR(epc_page)) {
+>> > +		kfree(encl_page);
+>> > +		return PTR_ERR(epc_page);
+>> > +	}
+>> > +
+>> > +	mmap_read_lock(current->mm);
+>> > +	mutex_lock(&encl->lock);
+>> > +
+>> > +	/*
+>> > +	 * Insert prior to EADD in case of OOM.  EADD modifies MRENCLAVE,  
+>> i.e.
+>> > +	 * can't be gracefully unwound, while failure on EADD/EXTEND is  
+>> limited
+>> > +	 * to userspace errors (or kernel/hardware bugs).
+>> > +	 */
+>> > +	ret = xa_insert(&encl->page_array, PFN_DOWN(encl_page->desc),
+>> > +			encl_page, GFP_KERNEL);
+>> > +	if (ret)
+>> > +		goto err_out_unlock;
+>> > +
+>> > +	ret = __sgx_encl_add_page(encl, encl_page, epc_page, secinfo,
+>> > +				  src);
+>> > +	if (ret)
+>> > +		goto err_out;
+>> > +
+>> > +	/*
+>> > +	 * Complete the "add" before doing the "extend" so that the "add"
+>> > +	 * isn't in a half-baked state in the extremely unlikely scenario
+>> > +	 * the enclave will be destroyed in response to EEXTEND failure.
+>> > +	 */
+>> > +	encl_page->encl = encl;
+>> > +	encl_page->epc_page = epc_page;
+>> > +	encl->secs_child_cnt++;
+>> > +
+>> > +	if (flags & SGX_PAGE_MEASURE) {
+>> > +		ret = __sgx_encl_extend(encl, epc_page);
+>> > +		if (ret)
+>> > +			goto err_out;
+>> > +	}
+>> > +
+>> > +	mutex_unlock(&encl->lock);
+>> > +	mmap_read_unlock(current->mm);
+>> > +	return ret;
+>> > +
+>> > +err_out:
+>> > +	xa_erase(&encl->page_array, PFN_DOWN(encl_page->desc));
+>> > +
+>> > +err_out_unlock:
+>> > +	mutex_unlock(&encl->lock);
+>> > +	mmap_read_unlock(current->mm);
+>> > +
+>> > +	sgx_free_epc_page(epc_page);
+>> > +	kfree(encl_page);
+>> > +
+>> > +	/*
+>> > +	 * Destroy enclave on ENCLS failure as this means that EPC has been
+>> > +	 * invalidated.
+>> > +	 */
+>> > +	if (ret == -EIO) {
+>> > +		mutex_lock(&encl->lock);
+>> > +		sgx_encl_destroy(encl);
+>> > +		mutex_unlock(&encl->lock);
+>> > +	}
+>> > +
+>>
+>> I think originally we return both count of succeeded EADDs and the  
+>> errors.
+>> So we only destroy enclaves in cases of fatal ENCLS failures.
+>>
+>> Now we only return errors in all failures other than interrupted  
+>> operations
+>> or SGX_MAX_ADD_PAGES_LENGTH is reached.
+>>
+>> So, for the new design we should destroy enclaves in all cases here, not
+>> just for -EIO.
+>>
+>> On the other hand, I do like the old way returning both the count and  
+>> error
+>> better. It helps greatly for debugging any issues in enclave image or  
+>> user
+>> space code, and also keeps flexibility for user space to recover in  
+>> certain
+>> errors, such as out of EPC.
+>
+> Right, I do get the OOM case but wouldn't in that case the reasonable
+> thing to do destroy the enclave that is not even running? I mean that
+> means that we are globally out of EPC.
+>
+
+I would say it could be a policy, but not the only one. If it does not  
+make much difference to kernel, IMHO we should  not set it in stone now.   
+Debugging is also huge benefit to me.
