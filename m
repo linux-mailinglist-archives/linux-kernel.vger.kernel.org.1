@@ -2,109 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDD2D26E59E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E340726E5A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726614AbgIQTzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 15:55:01 -0400
-Received: from mga06.intel.com ([134.134.136.31]:4470 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727865AbgIQPEC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 11:04:02 -0400
-X-Greylist: delayed 449 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 11:04:01 EDT
-IronPort-SDR: NXySNJAsmhYt1sU7dSKvJLRAjvceAGiMhh+hXu7rPGxCIRYAqlbYmUoNK+cE98XlodDOWnnKh6
- gEt/6lgbmL5w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="221260494"
-X-IronPort-AV: E=Sophos;i="5.77,437,1596524400"; 
-   d="scan'208";a="221260494"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 07:56:11 -0700
-IronPort-SDR: QyFN85vOPnvWLorCFQzvTxleVhmEHePss429B5h+XJrYHl5eD0jZQ5fwuyoYb4Rx7BJtflaqaU
- TMdD1NUCff9Q==
-X-IronPort-AV: E=Sophos;i="5.77,437,1596524400"; 
-   d="scan'208";a="332182841"
-Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 07:56:11 -0700
-Date:   Thu, 17 Sep 2020 07:56:09 -0700
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Sohil Mehta <sohil.mehta@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [PATCH v8 3/9] Documentation/x86: Add documentation for SVA
- (Shared Virtual Addressing)
-Message-ID: <20200917145609.GB91028@otc-nc-03>
-References: <1600187413-163670-1-git-send-email-fenghua.yu@intel.com>
- <1600187413-163670-4-git-send-email-fenghua.yu@intel.com>
- <20200917075338.GC31960@zn.tnic>
+        id S1726692AbgIQTz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 15:55:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727777AbgIQO5q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 10:57:46 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63799C06174A;
+        Thu, 17 Sep 2020 07:57:19 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id c2so2286388ljj.12;
+        Thu, 17 Sep 2020 07:57:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=n0joxHTLl3BqxQ6ij0VXBgOyNi8Eer/XXbvWMRdVNFY=;
+        b=irr5qCIjdOYv20J8iTCaTRA5UJ8jnzNtuQ9wBAKUkBkUwYZvSpC/yLVt7ThRgwXQ3B
+         sAUAzvzQiKgn6uepWWSuEPmVz6AgknRFD868eBfrgomBpnC125FhY/EeTGUpTSm4EjC9
+         y90PFg52OzZ5LKvpAMAB/vVIvpPXfMTxkIIDssejlrp/YCzJN5iEAdDOK9wprJcz/blX
+         XYdmup+XrgixfQUOA4hklmzYVqN/FszMsZ8QEph+f65iaugTJXhxnuorpw7OqYYL9Vk7
+         t8goGMla2PD6wfNBb1hJInCz+6Al0znr5ED4bTqS3Fq69eQDa2TN4Ys8SrknAT+w41tV
+         7nvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=n0joxHTLl3BqxQ6ij0VXBgOyNi8Eer/XXbvWMRdVNFY=;
+        b=PSo1alyDuynrGPcrAxt+CcAStZ+K+d5aQcjbOrPtmTymCzHfcwmOJa2dm6w1ORnXEa
+         17O15R/GlKK749BNEwak3wA0a40kng2HuLEhWy6/Skr0k4GTjq9zQ7nqipNXv4h9voaA
+         mJYIbisHQPOGhTn+IpMCpbqslUEC2aP4lqpJf7SKg1s0l80WvsFVcSuBlngIurb5O9XF
+         zyeBHik9dxugun6M2xqF4RIMxW/lpEM5WlPSbgwW7dJGt3T4CSaDwAA5XDEIwpJPwat0
+         8k9p/i7/KGX5qLnvhVbH1qrm20Rr4WeBPloqk234oFpEGKqzL+F3/C2Q/j/RBrT3dXS3
+         taNQ==
+X-Gm-Message-State: AOAM533eQ4e9Sw2gtNdrRpU+vVmlcnCSgJeG0fTzbbywEF0TQv3qCWa3
+        QK+8QEPuqOlZB0InRG0MSUZYQoc7r3g=
+X-Google-Smtp-Source: ABdhPJxDy3ZIF2c4BkIXP4LkxiCyIhhPar673IiuvvC9LBQ6MF45yrzV0/L+xC0E2Z0ABrAbjVzUPQ==
+X-Received: by 2002:a2e:810a:: with SMTP id d10mr10798579ljg.302.1600354637605;
+        Thu, 17 Sep 2020 07:57:17 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id 140sm5274211lfj.146.2020.09.17.07.57.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Sep 2020 07:57:16 -0700 (PDT)
+Subject: Re: [PATCH v7 01/34] i2c: tegra: Make tegra_i2c_flush_fifos() usable
+ in atomic transfer
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200908224006.25636-1-digetx@gmail.com>
+ <20200908224006.25636-2-digetx@gmail.com> <20200917111057.GM3515672@ulmo>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <9beab533-8734-f18b-887d-d0e8cc09bb72@gmail.com>
+Date:   Thu, 17 Sep 2020 17:57:15 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917075338.GC31960@zn.tnic>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200917111057.GM3515672@ulmo>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Boris,
-
-On Thu, Sep 17, 2020 at 09:53:38AM +0200, Borislav Petkov wrote:
-> On Tue, Sep 15, 2020 at 09:30:07AM -0700, Fenghua Yu wrote:
-> > +Background
-> > +==========
-> > +
-> > +Shared Virtual Addressing (SVA) allows the processor and device to use the
-> > +same virtual addresses avoiding the need for software to translate virtual
-> > +addresses to physical addresses. SVA is what PCIe calls Shared Virtual
-> > +Memory (SVM).
-> > +
-> > +In addition to the convenience of using application virtual addresses
-> > +by the device, it also doesn't require pinning pages for DMA.
-> > +PCIe Address Translation Services (ATS) along with Page Request Interface
-> > +(PRI) allow devices to function much the same way as the CPU handling
-> > +application page-faults. For more information please refer to the PCIe
-> > +specification Chapter 10: ATS Specification.
-> > +
-> > +Use of SVA requires IOMMU support in the platform. IOMMU also is required
-> > +to support PCIe features ATS and PRI. ATS allows devices to cache
-> > +translations for virtual addresses. The IOMMU driver uses the mmu_notifier()
-> > +support to keep the device TLB cache and the CPU cache in sync. PRI allows
-> > +the device to request paging the virtual address by using the CPU page tables
-> > +before accessing the address.
+17.09.2020 14:10, Thierry Reding пишет:
+> On Wed, Sep 09, 2020 at 01:39:33AM +0300, Dmitry Osipenko wrote:
+>> The tegra_i2c_flush_fifos() shouldn't sleep in atomic transfer and jiffies
+>> are not updating if interrupts are disabled. Let's switch to use iopoll
+>> API helpers for register-polling. The iopoll API provides helpers for both
+>> atomic and non-atomic cases.
+>>
+>> Note that this patch doesn't fix any known problem because normally FIFO
+>> is flushed at the time of starting a new transfer.
+>>
+>> Reviewed-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  drivers/i2c/busses/i2c-tegra.c | 25 ++++++++++++++++---------
+>>  1 file changed, 16 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/drivers/i2c/busses/i2c-tegra.c b/drivers/i2c/busses/i2c-tegra.c
+>> index 00d3e4d7a01e..ab88cdd70376 100644
+>> --- a/drivers/i2c/busses/i2c-tegra.c
+>> +++ b/drivers/i2c/busses/i2c-tegra.c
+>> @@ -470,9 +470,9 @@ static int tegra_i2c_init_dma(struct tegra_i2c_dev *i2c_dev)
+>>  
+>>  static int tegra_i2c_flush_fifos(struct tegra_i2c_dev *i2c_dev)
+>>  {
+>> -	unsigned long timeout = jiffies + HZ;
+>> -	unsigned int offset;
+>> -	u32 mask, val;
+>> +	u32 mask, val, offset, reg_offset;
 > 
-> That still reads funny, the "the device to request paging the virtual
-> address" part. Do you mean that per chance here:
+> Is there are reason why we need reg_offset? Seems to me like we could
+> simplify this, see below.
+
+The reason is that this patch addresses potential problem, hence it's
+not a cleanup change and it should be kept minimal.
+
+>> +	void __iomem *addr;
+>> +	int err;
+>>  
+>>  	if (i2c_dev->hw->has_mst_fifo) {
+>>  		mask = I2C_MST_FIFO_CONTROL_TX_FLUSH |
+>> @@ -488,12 +488,19 @@ static int tegra_i2c_flush_fifos(struct tegra_i2c_dev *i2c_dev)
+>>  	val |= mask;
+>>  	i2c_writel(i2c_dev, val, offset);
+>>  
+>> -	while (i2c_readl(i2c_dev, offset) & mask) {
+>> -		if (time_after(jiffies, timeout)) {
+>> -			dev_warn(i2c_dev->dev, "timeout waiting for fifo flush\n");
+>> -			return -ETIMEDOUT;
+>> -		}
+>> -		usleep_range(1000, 2000);
+>> +	reg_offset = tegra_i2c_reg_addr(i2c_dev, offset);
+>> +	addr = i2c_dev->base + reg_offset;
 > 
-> "Before the device can access that address, the device uses the PRI in
-> order to request the virtual address to be paged in into the CPU page
-> tables."
+> Why not just:
 > 
-Agree, this reads a bit funny.
+> 	offset = tegra_i2c_reg_offset(i2c_dev, offset);
+> 	addr = i2c_dev->base + offset;
+> 
+> or even just:
+> 
+> 	addr = i2c_dev->base + tegra_i2c_reg_offset(i2c_dev, offset);
+> 
+> ? That makes the patch much smaller because you don't have to rewrite
+> the whole variable declaration block and just add the "addr" and "err"
+> variables while removing "timeout".
 
-Just tweaked it a bit: 
-
-"When ATS lookup fails for a virtual address, device should use PRI in
-order to request the virtual address to be paged into the CPU page tables.
-The device must use ATS again in order the fetch the translation again
-before use"
-
-Cheers,
-Ashok
+There is a further "cleanup" patch named "Factor out register polling
+into separate function" that already implements yours suggestion.
