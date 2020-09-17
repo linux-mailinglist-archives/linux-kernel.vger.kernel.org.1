@@ -2,238 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC1D26E678
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 22:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E1B426E67C
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 22:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726192AbgIQUSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 16:18:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726380AbgIQUSM (ORCPT
+        id S1726456AbgIQUTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 16:19:04 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:9204 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726216AbgIQUTE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 16:18:12 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B81FC061356
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 13:18:12 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id w8so134783qvt.18
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 13:18:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=+qn0hmllJB1IjyXqhj19h4c4rALkHNh35RY+rYVLwWk=;
-        b=oIqjID0Z7zC8gUeMsqR+odV/iEANb+zSaRcB7zHOKEFout655BQ6yGH9NaSq7vDeCe
-         cpB4NI3WEDP3KZff3xXN0y3plrwFhTCO/PMXlC/pH7V/u9xJ+7T1gkI6Q38TRQuAvtsx
-         ft90aah+CdQ1SQvjLfxDFdBhkFIMMVCr7L+VvL0IX+uIWCGuzY6ZsDACSxhX8RKWNGuQ
-         HPl2Tn/++qAV+FHB5MOb5mkmBBuxkE6kU57QoM7G3TlG3AcQocWVPAYTreP6hWDyoSu+
-         Q6buY1FkOqQsAvjlTGuO2Rs1wOchEfX0+SodaSwEKyGAdzY2NUwMVP8APBfUyTMpnF3c
-         EzNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=+qn0hmllJB1IjyXqhj19h4c4rALkHNh35RY+rYVLwWk=;
-        b=gPF4Q0MpiaM0/TXVGhCN9277Pa6YDlPwAlqjM5p8ZnqAsf7p5oT5L2U3oaxSxPFOqw
-         /JCgPtuHXt0u+jid8wFmVy/npDwGnYTB43Q95iYIRJQxkE0sHv1UDxG72rjwh2ycLEZg
-         cl8FoNKAMZqOGqiHe6SY4NO0v/O437v3oH0gVMY/qzBcr7bj1gCXuuNnr/XbaUqFgCNq
-         YlC0ywXAnypZ64GG/9xHsLMUp7Z2NY8FnsDnbSyEpxs9oOBSF7TwnAmkjK+WTlgPFdaA
-         +BYmtTbkmQvGb3LBBUrJ75BPK6gmK0ac7eVXRCKGAdpwv0ZrToVG38axoxT+CAxRcZNh
-         jO2g==
-X-Gm-Message-State: AOAM530y/g2oMuJFnkJQWsAlKupbmrtKmlsJjauTW2Nse8UPJ0Lgtuzo
-        kL/jEWtgKUHJzUGpAXqxgq2TRGid5mKA
-X-Google-Smtp-Source: ABdhPJxwP13h73YzKi0iuDbLGGJt5UnSuAYRRUGk2Y3OfYFbqNk3PEaFzTqb1Xz8u9hjtGUleTwJVedyVk91
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f693:9fff:fef4:4583])
- (user=irogers job=sendgmr) by 2002:ad4:5387:: with SMTP id
- i7mr13567860qvv.43.1600373890879; Thu, 17 Sep 2020 13:18:10 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 13:18:07 -0700
-In-Reply-To: <20200917190026.GB1426933@kernel.org>
-Message-Id: <20200917201807.4090224-1-irogers@google.com>
-Mime-Version: 1.0
-References: <20200917190026.GB1426933@kernel.org>
-X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
-Subject: [PATCH v4] perf metricgroup: Fix uncore metric expressions
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Jin Yao <yao.jin@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 17 Sep 2020 16:19:04 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f63c48c0000>; Thu, 17 Sep 2020 13:18:20 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 17 Sep 2020 13:19:03 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 17 Sep 2020 13:19:03 -0700
+Received: from [10.2.52.182] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 17 Sep
+ 2020 20:19:03 +0000
+Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+CC:     Peter Xu <peterx@redhat.com>, Leon Romanovsky <leonro@nvidia.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Maya B . Gokhale" <gokhale2@llnl.gov>,
+        "Yang Shi" <yang.shi@linux.alibaba.com>,
+        Marty Mcfadden <mcfadden8@llnl.gov>,
+        "Kirill Shutemov" <kirill@shutemov.name>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Christoph Hellwig" <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20200915213330.GE2949@xz-x1> <20200915232238.GO1221970@ziepe.ca>
+ <e6c352f8-7ee9-0702-10a4-122d2c4422fc@nvidia.com>
+ <20200916174804.GC8409@ziepe.ca> <20200916184619.GB40154@xz-x1>
+ <20200917112538.GD8409@ziepe.ca> <20200917181411.GA133226@xz-x1>
+ <CAHk-=wgMVPAhD7C24ipe03+MScgp6F=zMS-roOznvxJ+hOGfSA@mail.gmail.com>
+ <20200917190332.GB133226@xz-x1>
+ <CAHk-=wgw3GNyF_6euymOFxM62Y3B=C=f2iUJn8Py-u5YELJ5JA@mail.gmail.com>
+ <20200917200638.GM8409@ziepe.ca>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <24b8ad6b-4e4c-4651-86e6-bc2232fce772@nvidia.com>
+Date:   Thu, 17 Sep 2020 13:19:02 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <20200917200638.GM8409@ziepe.ca>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600373900; bh=zJdwNYAMx90ir5RMJ1DLuiQztq3J/XgFvjEA6+/wCH8=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=nyoerkUlDkmYju8FLrprAmhFwQ2yQ14beGJqSa/ebssucj/MOaDQ8TlVyNJyCcTbr
+         HVn0czbJOxKuW86+K2B7KNDFD/gWfMVnbM39MsyrQf6Le7ItzRkuOtPuS1ZrOa11i5
+         0MAuMVfw+0ebfVFZfSybhpd+BDBAJlB2mHRS8Ay5Hmz6CxaC1HoX7Dhs2IX4vTeFaE
+         BB+9RH5wbrhH0VpBrASXC93Sna9D1yGhaE6AUFsSHl8t1SQgEb8DgXS9f1gPukvo6I
+         /oAwpjV3RhBI+XcQwZrgTMHokp/LtyixkCfwwpvHySIj9RHMtKHUpSWoDKM42coCPZ
+         3jMy4K3ZPxhhQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A metric like DRAM_BW_Use has on SkylakeX events uncore_imc/cas_count_read/
-and uncore_imc/case_count_write/. These events open 6 events per socket
-with pmu names of uncore_imc_[0-5]. The current metric setup code in
-find_evsel_group assumes one ID will map to 1 event to be recorded in
-metric_events. For events with multiple matches, the first event is
-recorded in metric_events (avoiding matching >1 event with the same
-name) and the evlist_used updated so that duplicate events aren't
-removed when the evlist has unused events removed.
+On 9/17/20 1:06 PM, Jason Gunthorpe wrote:
+> On Thu, Sep 17, 2020 at 12:42:11PM -0700, Linus Torvalds wrote:
+...
+>> Is there possibly somethign else we can filter on than just
+>> GUP_PIN_COUNTING_BIAS? Because it could be as simple as just marking
+>> the vma itself and saying "this vma has had a page pinning event done
+>> on it".
+> 
+> We'd have to give up pin_user_pages_fast() to do that as we can't fast
+> walk and get vmas?
 
-Before this change:
-$ /tmp/perf/perf stat -M DRAM_BW_Use -a -- sleep 1
+oops, yes. I'd forgotten about that point. Basically all of the O_DIRECT
+callers need _fast. This is a big problem.
 
- Performance counter stats for 'system wide':
-
-             41.14 MiB  uncore_imc/cas_count_read/
-     1,002,614,251 ns   duration_time
-
-       1.002614251 seconds time elapsed
-
-After this change:
-$ /tmp/perf/perf stat -M DRAM_BW_Use -a -- sleep 1
-
- Performance counter stats for 'system wide':
-
-            157.47 MiB  uncore_imc/cas_count_read/ #     0.00 DRAM_BW_Use
-            126.97 MiB  uncore_imc/cas_count_write/
-     1,003,019,728 ns   duration_time
-
-Erroneous duplication introduced in:
-commit 2440689d62e9 ("perf metricgroup: Remove duped metric group events").
-
-Fixes: ded80bda8bc9 ("perf expr: Migrate expr ids table to a hashmap").
-Reported-by: Jin Yao <yao.jin@linux.intel.com>
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/metricgroup.c | 75 ++++++++++++++++++++++++++---------
- 1 file changed, 56 insertions(+), 19 deletions(-)
-
-diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index ab5030fcfed4..d948a7f910cf 100644
---- a/tools/perf/util/metricgroup.c
-+++ b/tools/perf/util/metricgroup.c
-@@ -150,6 +150,18 @@ static void expr_ids__exit(struct expr_ids *ids)
- 		free(ids->id[i].id);
- }
- 
-+static bool contains_event(struct evsel **metric_events, int num_events,
-+			const char *event_name)
-+{
-+	int i;
-+
-+	for (i = 0; i < num_events; i++) {
-+		if (!strcmp(metric_events[i]->name, event_name))
-+			return true;
-+	}
-+	return false;
-+}
-+
- /**
-  * Find a group of events in perf_evlist that correpond to those from a parsed
-  * metric expression. Note, as find_evsel_group is called in the same order as
-@@ -180,7 +192,11 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
- 	int i = 0, matched_events = 0, events_to_match;
- 	const int idnum = (int)hashmap__size(&pctx->ids);
- 
--	/* duration_time is grouped separately. */
-+	/*
-+	 * duration_time is always grouped separately, when events are grouped
-+	 * (ie has_constraint is false) then ignore it in the matching loop and
-+	 * add it to metric_events at the end.
-+	 */
- 	if (!has_constraint &&
- 	    hashmap__find(&pctx->ids, "duration_time", (void **)&val_ptr))
- 		events_to_match = idnum - 1;
-@@ -207,23 +223,20 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
- 				sizeof(struct evsel *) * idnum);
- 			current_leader = ev->leader;
- 		}
--		if (hashmap__find(&pctx->ids, ev->name, (void **)&val_ptr)) {
--			if (has_constraint) {
--				/*
--				 * Events aren't grouped, ensure the same event
--				 * isn't matched from two groups.
--				 */
--				for (i = 0; i < matched_events; i++) {
--					if (!strcmp(ev->name,
--						    metric_events[i]->name)) {
--						break;
--					}
--				}
--				if (i != matched_events)
--					continue;
--			}
-+		/*
-+		 * Check for duplicate events with the same name. For example,
-+		 * uncore_imc/cas_count_read/ will turn into 6 events per socket
-+		 * on skylakex. Only the first such event is placed in
-+		 * metric_events. If events aren't grouped then this also
-+		 * ensures that the same event in different sibling groups
-+		 * aren't both added to metric_events.
-+		 */
-+		if (contains_event(metric_events, matched_events, ev->name))
-+			continue;
-+		/* Does this event belong to the parse context? */
-+		if (hashmap__find(&pctx->ids, ev->name, (void **)&val_ptr))
- 			metric_events[matched_events++] = ev;
--		}
-+
- 		if (matched_events == events_to_match)
- 			break;
- 	}
-@@ -239,7 +252,7 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
- 	}
- 
- 	if (matched_events != idnum) {
--		/* Not whole match */
-+		/* Not a whole match */
- 		return NULL;
- 	}
- 
-@@ -247,8 +260,32 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
- 
- 	for (i = 0; i < idnum; i++) {
- 		ev = metric_events[i];
--		ev->metric_leader = ev;
-+		/* Don't free the used events. */
- 		set_bit(ev->idx, evlist_used);
-+		/*
-+		 * The metric leader points to the identically named event in
-+		 * metric_events.
-+		 */
-+		ev->metric_leader = ev;
-+		/*
-+		 * Mark two events with identical names in the same group (or
-+		 * globally) as being in use as uncore events may be duplicated
-+		 * for each pmu. Set the metric leader of such events to be the
-+		 * event that appears in metric_events.
-+		 */
-+		evlist__for_each_entry_continue(perf_evlist, ev) {
-+			/*
-+			 * If events are grouped then the search can terminate
-+			 * when then group is left.
-+			 */
-+			if (!has_constraint &&
-+			    ev->leader != metric_events[i]->leader)
-+				break;
-+			if (!strcmp(metric_events[i]->name, ev->name)) {
-+				set_bit(ev->idx, evlist_used);
-+				ev->metric_leader = metric_events[i];
-+			}
-+		}
- 	}
- 
- 	return metric_events[0];
+thanks,
 -- 
-2.28.0.618.gf4bc123cb7-goog
+John Hubbard
+NVIDIA
+
+> 
+> Hmm, there are many users. I remember that the hfi1 folks really
+> wanted the fast version for some reason..
+> 
+>> Because if we only start copying the page *iff* the vma is marked by
+>> that "this vma had page pinning" _and_ the page count is bigger than
+>> GUP_PIN_COUNTING_BIAS, than I think we can rest pretty easily knowing
+>> that we aren't going to hit some regular old-fashioned UNIX server
+>> cases with a lot of forks..
+> 
+> Agree
+> 
+> Given that this is a user visible regression, it is nearly rc6, what
+> do you prefer for next steps?
+> 
+> Sorting out this for fork, especially if it has the vma change is
+> probably more than a weeks time.
+> 
+> Revert this patch and try again next cycle?
+> 
+> Thanks,
+> Jason
+> 
 
