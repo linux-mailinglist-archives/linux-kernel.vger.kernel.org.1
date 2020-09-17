@@ -2,49 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66D2F26D029
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 02:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 190C326D02F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 02:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726004AbgIQAsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 20:48:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44540 "EHLO
+        id S1726306AbgIQAsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 20:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725987AbgIQAr7 (ORCPT
+        with ESMTP id S1726154AbgIQAsB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 20:47:59 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DE37C06174A;
-        Wed, 16 Sep 2020 17:39:16 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 7BA3413C788AB;
-        Wed, 16 Sep 2020 17:22:28 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 17:39:14 -0700 (PDT)
-Message-Id: <20200916.173914.735810705311066748.davem@davemloft.net>
-To:     liushixin2@huawei.com
-Cc:     vishal@gmail.com, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] cxgb4vf: convert to use DEFINE_SEQ_ATTRIBUTE
- macro
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200916025018.3992419-1-liushixin2@huawei.com>
-References: <20200916025018.3992419-1-liushixin2@huawei.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Wed, 16 Sep 2020 17:22:28 -0700 (PDT)
+        Wed, 16 Sep 2020 20:48:01 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 595C9C061351
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 17:39:42 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id g10so303519otq.9
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 17:39:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qnQdbtqxCDTIqKqOna77dN+ZLQyEkOzOK58YwCfa3H0=;
+        b=XBAadIW9bVAGcIfHj9raEdIjBWaRKYLD5ma49V74gb5amE/rxRwD89ELv8aJK5GhCF
+         g1V25+4dqH1vN3CXRDMj0Cp2+YXyDxcXTFX3mum5Mws9Tdj6d9KpshqpiQfJoW87E12v
+         iy2hdSvA4fm0U+tImJWAFOwoE04Qt1KzTZXbkGLU4IuttxOh0fp9voDy4ewqGNVrYqIO
+         6Zx26upjeuOiz1MaDt9bS1g/oR3eRrp5DYc24ayXEJI904gH/TBAsy5YsaZLDqKOMkDA
+         ACHMb3MYiUK8xyn5/jcZbEZ5UYahXAWyu5UWRg33iZUp1JgnSiTl1gp90GDwEhUpPnXa
+         gzsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qnQdbtqxCDTIqKqOna77dN+ZLQyEkOzOK58YwCfa3H0=;
+        b=gf8arwoE7gpdXhjAIDzPS0pNNAm/6XgBY359iT/jJWBMYORVzDrxrcZ3a86bx9Xvd0
+         sgwgxkROl7a5qtAcWvkmtiDJKich9ytqu9tkqf8y5i7JhVm+zef5VE01W6XNsVDU3ohD
+         KixSvqt68LcH6veOcb/EbMzZOy/pAsZ7IWmCO69y9DtsKTBFFxGCmscLD5oJCNfhSJ9Y
+         Niz2iq+kz2LLED6HhVZejJ4HD9suGfjgqps+i4BKiS0mLdw0tiFMM+0JhjaqlsRst0vf
+         C8E3IBy8MVdqGxIoecJPnX8eTl8Mv3Uzw8hzf8Ms78deTBwLbtX88rIN2PxiRgXTCik5
+         BNNQ==
+X-Gm-Message-State: AOAM532Dj7bccSrLc+cIwukiPA6obf7RH/1gw6+1DdLLHAmrhGdjHQiX
+        Gw1o5kM//Wl1SLPWtIfx9vJz/A==
+X-Google-Smtp-Source: ABdhPJzYgxc/qCjtDcdsd3TwLr0HUaOJpA8OKmX8Hc2wBd9RfexwmyUmEf463C3CLCZQpPADunp2YQ==
+X-Received: by 2002:a9d:335:: with SMTP id 50mr3923676otv.90.1600303181463;
+        Wed, 16 Sep 2020 17:39:41 -0700 (PDT)
+Received: from yoga ([2605:6000:e5cb:c100:7cad:6eff:fec8:37e4])
+        by smtp.gmail.com with ESMTPSA id u2sm10507631oig.48.2020.09.16.17.39.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 17:39:40 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 19:39:37 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     agross@kernel.org, kishon@ti.com, vkoul@kernel.org,
+        robh@kernel.org, svarbanov@mm-sol.com, bhelgaas@google.com,
+        lorenzo.pieralisi@arm.com, linux-arm-msm@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mgautam@codeaurora.org, devicetree@vger.kernel.org,
+        Jonathan Marek <jonathan@marek.ca>
+Subject: Re: [PATCH 5/5] pci: controller: dwc: qcom: Harcode PCIe config SID
+Message-ID: <20200917003937.GI1893@yoga>
+References: <20200916132000.1850-1-manivannan.sadhasivam@linaro.org>
+ <20200916132000.1850-6-manivannan.sadhasivam@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916132000.1850-6-manivannan.sadhasivam@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liu Shixin <liushixin2@huawei.com>
-Date: Wed, 16 Sep 2020 10:50:18 +0800
+On Wed 16 Sep 08:20 CDT 2020, Manivannan Sadhasivam wrote:
 
-> Use DEFINE_SEQ_ATTRIBUTE macro to simplify the code.
+> Hardcode the PCIe config SID table value. This is needed to avoid random
+> MHI failure observed during reboot on SM8250.
 > 
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> [mani: stripped out unnecessary settings and ported for upstream]
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  drivers/pci/controller/dwc/pcie-qcom.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> index ca8ad354e09d..50748016ce96 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> @@ -57,6 +57,7 @@
+>  #define PCIE20_PARF_SID_OFFSET			0x234
+>  #define PCIE20_PARF_BDF_TRANSLATE_CFG		0x24C
+>  #define PCIE20_PARF_DEVICE_TYPE			0x1000
+> +#define PCIE20_PARF_BDF_TO_SID_TABLE_N		0x2000
+>  
+>  #define PCIE20_ELBI_SYS_CTRL			0x04
+>  #define PCIE20_ELBI_SYS_CTRL_LT_ENABLE		BIT(0)
+> @@ -1290,6 +1291,9 @@ static int qcom_pcie_host_init(struct pcie_port *pp)
+>  	if (ret)
+>  		goto err;
+>  
+> +	writel(0x0, pcie->parf + PCIE20_PARF_BDF_TO_SID_TABLE_N);
+> +	writel(0x01000100, pcie->parf + PCIE20_PARF_BDF_TO_SID_TABLE_N + 0x054);
 
-Looks good, applied to net-next, thanks.
+This needs to be properly implemented.
+
+The mechanism at hand is responsible for mapping BDFs by the means of a
+BDF->SID hash table.  Per the downstream kernel the hash is 256 entries
+of 32 bits registers.  The slot is selected by taking the crc8() of the
+BDF (in big endian) and in that slot encode the BDF in the upper 16
+bits, followed by the SID (relative to the first SID of the controller)
+in the next 8 and finally the index of the next entry in cases of
+collisions.
+
+Also like the downstream kernel you can extract this information from
+the iommu-map property. But note that the last cell in the iommu-map is
+"length", not mask as in the typical iommus property - so you would need
+to install "length" entries in the hash table, for each iommu-map.
+
+
+
+Finally, this was first introduced in SM8150, so it can not be done
+unconditionally in qcom_pcie_host_init(). The previous hardware used a
+different mechanism for configuring this information.
+
+Regards,
+Bjorn
+
+> +
+>  	return 0;
+>  err:
+>  	qcom_ep_reset_assert(pcie);
+> -- 
+> 2.17.1
+> 
