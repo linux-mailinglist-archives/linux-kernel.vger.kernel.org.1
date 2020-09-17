@@ -2,85 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD79B26E4E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1A226E4E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726379AbgIQTBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 15:01:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60534 "EHLO mail.kernel.org"
+        id S1726594AbgIQTC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 15:02:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726667AbgIQTA3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 15:00:29 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EA34B21973;
-        Thu, 17 Sep 2020 19:00:28 +0000 (UTC)
+        id S1726589AbgIQTBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 15:01:16 -0400
+Subject: Re: [GIT PULL] MIPS fixes for v5.9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600369229;
-        bh=3JGWNB8c2qNysyg2H63u02x8rYe2epKRl1hQ1YYXCFg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Qzk+eKAqIZxb9O9BkJq7d0k4YLbKsoqob6kA/9KsyhcG1yUGlZhj1gnnQTqFpoI8R
-         aeNx4IMzR9URbWUo1SVWenORu1OQ9vwKbEMp0pQDoXNvDkKIZmWGXFdhwSpprF/thR
-         EAW4YSDrWGrjTc2hrzhcn0l4b+WIyFuDASgh0ql8=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id F4226400E9; Thu, 17 Sep 2020 16:00:26 -0300 (-03)
-Date:   Thu, 17 Sep 2020 16:00:26 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, Kajol Jain <kjain@linux.ibm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v3] perf metricgroup: Fix uncore metric expressions
-Message-ID: <20200917190026.GB1426933@kernel.org>
-References: <20200910180231.786751-1-irogers@google.com>
- <CAM9d7cjLpE=cKfemsuokc57-5kzezRr3YzqOKZb9Pf4r4-X8+g@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7cjLpE=cKfemsuokc57-5kzezRr3YzqOKZb9Pf4r4-X8+g@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+        s=default; t=1600369274;
+        bh=xLQsV/kyLLPrxxe8WerUF7nbBOh3OY2jmvHNMDZ6Ufc=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=xIk77pbF0x+ouXOVsNiweVs0AEEBkceZlowyjQKHvyxnc5YuAFIV/5X6C35MZQV8o
+         XDmLekiLMuWOmxPxKONJvTImyot9tJx/dXbKlLDDO4CLrlqjQIhIBRszDPeGHs3SGL
+         4ofJN4NnGDIF8Doj2C1dphNyG2+ukDZuRKTDWzus=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200917144736.GA14255@alpha.franken.de>
+References: <20200917144736.GA14255@alpha.franken.de>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200917144736.GA14255@alpha.franken.de>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_fixes_5.9_2
+X-PR-Tracked-Commit-Id: b959b97860d0fee8c8f6a3e641d3c2ad76eab6be
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 4cbffc461ec91287c4cb1d0e27b01b988d0b8fba
+Message-Id: <160036927396.32754.12464056875205937503.pr-tracker-bot@kernel.org>
+Date:   Thu, 17 Sep 2020 19:01:13 +0000
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     torvalds@linux-foundation.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Sep 11, 2020 at 12:07:35PM +0900, Namhyung Kim escreveu:
-> On Fri, Sep 11, 2020 at 3:02 AM Ian Rogers <irogers@google.com> wrote:
-> > v3. cleans up searching for the same event within metric_events to use a
-> >     helper and avoids a redundant search. It uses a continue loop to
-> >     make the search for similarly named events shorter.
-> > v2. avoids iterating over the whole evlist as suggested by
-> >     namhyung@kernel.org. It also fixes the metric_leader computation
-> >     that was broken in the same commits.
-> >
-> > Erroneous duplication introduced in:
-> > commit 2440689d62e9 ("perf metricgroup: Remove duped metric group events").
-> >
-> > Fixes: ded80bda8bc9 ("perf expr: Migrate expr ids table to a hashmap").
-> > Reported-by: Jin Yao <yao.jin@linux.intel.com>
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> 
-> Acked-by: Namhyung Kim <namhyung@kernel.org>
+The pull request you sent on Thu, 17 Sep 2020 16:47:36 +0200:
 
-On my perf/urgent branch (upstream should be the same):
+> git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_fixes_5.9_2
 
-[acme@five perf]$ patch -p1 < /wb/1.patch
-patching file tools/perf/util/metricgroup.c
-Hunk #1 succeeded at 150 with fuzz 2 (offset 1 line).
-Hunk #2 succeeded at 192 (offset 1 line).
-Hunk #3 succeeded at 223 (offset 1 line).
-Hunk #4 succeeded at 252 (offset 1 line).
-Hunk #5 succeeded at 260 (offset 1 line).
-[acme@five perf]$
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/4cbffc461ec91287c4cb1d0e27b01b988d0b8fba
 
-I'm fixing it up, please check that doing this is safe on your side.
+Thank you!
 
-- Arnaldo
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
