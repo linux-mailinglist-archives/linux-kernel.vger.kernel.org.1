@@ -2,76 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A8926D178
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 05:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6DE126D17A
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 05:13:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726043AbgIQDLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 23:11:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38460 "EHLO
+        id S1726079AbgIQDNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 23:13:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725858AbgIQDLi (ORCPT
+        with ESMTP id S1726047AbgIQDNL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 23:11:38 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51208C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 20:11:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GKghxhRLzhiu2qEyWdAXVHkgMgfdRZjJpRZm/WkUb6E=; b=ltKks9VB83KII8YUlizV4bPpRD
-        iA1zhTL5/Kpf9GimjDqJWqFZ8LfscnshHqQzYV+axi3vd0GXpv5Ae2PC1K5iDHKorJtNBL0JQKRw9
-        wDn6JAY2u0o2cItqK9zfRP75bm3pkSpOT5N+OLewy3URZIT01WlEE3qx/r/8YiKh9DFARuep8UltU
-        I+VyTDhFH2qghSIoU1ioHSP/9bXDL/oIZEyCxXs59Y9v7S4+u8KiT/IMxXbEW0aRUk0JLLiLFeRIw
-        0zIdIOhCeVfIUJvjslBjRPsNfLanYrAIlFXG3u6kzMiK/2UfMTq7f/6byYSElsF/dr81JQvp7B+H6
-        9wefTPNw==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIkKW-0006l2-Na; Thu, 17 Sep 2020 03:11:28 +0000
-Date:   Thu, 17 Sep 2020 04:11:28 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Qian Cai <cai@redhat.com>, Huang Ying <ying.huang@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Mel Gorman <mgorman@suse.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>
-Subject: Re: [RFC] autonuma: Migrate on fault among multiple bound nodes
-Message-ID: <20200917031128.GQ5449@casper.infradead.org>
-References: <20200916005936.232788-1-ying.huang@intel.com>
- <2fe2a22235a0474b4a3de939cc22c19affc945fd.camel@redhat.com>
- <91cfda06-0286-cb36-01fb-23cf28facee4@redhat.com>
+        Wed, 16 Sep 2020 23:13:11 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3815C061788
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 20:13:09 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id e11so3462067wme.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 20:13:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Bb9B11eCivxPDOxPGYCNptgsmSVh3UlA/TMn/OGTs70=;
+        b=Kulw2ZgqEeM4N7LvjNnWIqASSdQbasKueZxTVDcbPfjQ42wY2942by6Y+AJjPRHlq9
+         MRKwApsFEZXLlaFykfxspjQ5HzLnqkU1WZ3e5of50+K6l10f3eDRFFOLCz396J6HG8yf
+         WF7QTHCHLdxhjw7dBtHP0XqnrPAkyaU1d7gak=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Bb9B11eCivxPDOxPGYCNptgsmSVh3UlA/TMn/OGTs70=;
+        b=fmV5bJtR2Ryz5GctCk4OlYMDF3KLrxcmUX+eL9IU3G/8kp/MGVRC2I+N6elRO1QBec
+         nr7oF56UTaez1st7w2yhtmo4RLs6tKhvdlYVHzmiF7LcP+kPpb4uvbT6+MmMFQZczGas
+         aqkaVE4dy0ASewelSzI9SnXIm51u3181t53XUTaKG/D0ibfaS7DDz+3uaLxPdtrnI7gt
+         5lTiXV3wjSbeNrsmOLG9WjTYVlLa8KbLrEjaZfy+LOjmuP7wDeNv1N32jCydWyCIVZiE
+         5MfxyQrVTAp/Zpnyf86bFoCh68PdavO0K8C1sVBPDirc6VoNbgHn5bx3D9RoxUJ2J/Il
+         Ac2g==
+X-Gm-Message-State: AOAM533mlgrzhrGuFTxtlj5ovE+0Ai/lC0XMfwihSS1Aljyywt7LKTVe
+        BmD8iFWHAxKjMv2zDoRIDDtbIz2zwpazFgOb2pSdXA==
+X-Google-Smtp-Source: ABdhPJwtQYZ0nTf5HqOg6CcEOUgQq2e+8WeMNd0dXHDWv0zb/bPbYcuIA6QWamHn/aubspmbvT75A/gXYsWvjePgunc=
+X-Received: by 2002:a1c:7f8b:: with SMTP id a133mr8054540wmd.155.1600312387899;
+ Wed, 16 Sep 2020 20:13:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <91cfda06-0286-cb36-01fb-23cf28facee4@redhat.com>
+References: <20200915134541.14711-1-srinath.mannam@broadcom.com>
+ <20200915134541.14711-4-srinath.mannam@broadcom.com> <20200917015245.GA678675@bogus>
+In-Reply-To: <20200917015245.GA678675@bogus>
+From:   Srinath Mannam <srinath.mannam@broadcom.com>
+Date:   Thu, 17 Sep 2020 08:42:56 +0530
+Message-ID: <CABe79T72=Hd7NBh664_fOudpxB5z+iiBKTBQC3=XqJRy9Oqs+A@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] PCI: iproc: Display PCIe Link information
+To:     Rob Herring <robh@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Ray Jui <rjui@broadcom.com>, linux-pci@vger.kernel.org,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 05:29:41PM +0200, David Hildenbrand wrote:
-> On 16.09.20 15:39, Qian Cai wrote:
-> > On Wed, 2020-09-16 at 08:59 +0800, Huang Ying wrote:
-> >>  static int apply_policy_zone(struct mempolicy *policy, enum zone_type zone)
-> >> @@ -2474,11 +2481,13 @@ int mpol_misplaced(struct page *page, struct
-> >> vm_area_struct *vma, unsigned long
-> >>  	int thisnid = cpu_to_node(thiscpu);
-> >>  	int polnid = NUMA_NO_NODE;
-> >>  	int ret = -1;
-> >> +	bool moron;
-> > 
-> > Are you really going to use that name those days?
-> > 
-> > 
-> 
-> include/uapi/linux/mempolicy.h:#define MPOL_F_MORON     (1 << 4) /*
-> Migrate On protnone Reference On Node */
-> 
-> Not commenting the decision for that name. It's uapi ... and naming the
-> variable like the uapi flag seems to be a sane thing to do ... hmmm ...
+On Thu, Sep 17, 2020 at 7:22 AM Rob Herring <robh@kernel.org> wrote:
+>
+Hi Rob,
+Thanks for review.
+> On Tue, Sep 15, 2020 at 07:15:41PM +0530, Srinath Mannam wrote:
+> > After successful linkup more comprehensive information about PCIe link
+> > speed and link width will be displayed to the console.
+> >
+> > Signed-off-by: Srinath Mannam <srinath.mannam@broadcom.com>
+> > ---
+> >  drivers/pci/controller/pcie-iproc.c | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> >
+> > diff --git a/drivers/pci/controller/pcie-iproc.c b/drivers/pci/controller/pcie-iproc.c
+> > index cc5b7823edeb..8ef2d1fe392c 100644
+> > --- a/drivers/pci/controller/pcie-iproc.c
+> > +++ b/drivers/pci/controller/pcie-iproc.c
+> > @@ -1479,6 +1479,7 @@ int iproc_pcie_setup(struct iproc_pcie *pcie, struct list_head *res)
+> >  {
+> >       struct device *dev;
+> >       int ret;
+> > +     struct pci_dev *pdev;
+> >       struct pci_host_bridge *host = pci_host_bridge_from_priv(pcie);
+> >
+> >       dev = pcie->dev;
+> > @@ -1542,6 +1543,11 @@ int iproc_pcie_setup(struct iproc_pcie *pcie, struct list_head *res)
+> >               goto err_power_off_phy;
+> >       }
+> >
+> > +     for_each_pci_bridge(pdev, host->bus) {
+> > +             if (pci_pcie_type(pdev) == PCI_EXP_TYPE_ROOT_PORT)
+> > +                     pcie_print_link_status(pdev);
+> > +     }
+>
+> If this information is useful for 1 host implementation, why not all of
+> them and put this in a common spot.
+In common, pcie_print_link_status() is called during pci device caps
+initialization, if the available link bandwidth is less than capabilities
+of devices. Few EP drivers also used this function to print link
+bandwidth info. This host can be configured for different link
+speeds and link widths on different platforms so we thought
+displaying link bandwidth after successful linkup is helpful to
+know link details.
 
-Perhaps we could migrate to mopron / MPOL_F_MOPRON?
+Thanks & Regards,
+Srinath.
+>
+> Rob
