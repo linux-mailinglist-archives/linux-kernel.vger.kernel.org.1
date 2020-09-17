@@ -2,100 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 607CA26D4CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22BAF26D4D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726199AbgIQHgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 03:36:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726157AbgIQHg2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 03:36:28 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19500C06174A;
-        Thu, 17 Sep 2020 00:36:28 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id k14so853335pgi.9;
-        Thu, 17 Sep 2020 00:36:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=LVgjNZrNQHeGVyzoXCZ5eaezteocik+IrAZzCdzJuBs=;
-        b=QLoT4iocwJDgRY3jVhIx2DI4949mVscTOINeUfXIxEZ6B5God1X8pv8ghXq9RS/aJa
-         oqKXCcAgyLDBPezA0SA2dIdsGYy9EMv6DRb8EhC1h1PMH1PHVlyiTscxmG36D5LJ9Efq
-         K+/lgt9VC2Eo9oQc7KdqHaK2GD1N3ZsMkGeWG5TfQTbhMyx2Isgl1aCOrlzfrpGawq9N
-         fdx97Ug9bNjbsMuC0bCq5liTXYmQoHovaXNrL0kzAHAOa2rAfzhQLi3Njfu6lW5R9jO3
-         t+hcQddrpcL+4PCDb9jQTZ/pkgt1euQmifwy1IRcLi7Oy8joLWCP5VHszTKqkRj3DVby
-         f3Gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=LVgjNZrNQHeGVyzoXCZ5eaezteocik+IrAZzCdzJuBs=;
-        b=AXhZ2qlT7uRFuDulE0HOXgryTP+7GSdxbBGhCsY1fbhixLqyVbyG4pIdIjDmoRzEaP
-         AKp4r6HYBs/H1fnMTARE7M9TkVudB7qc7fXqJLA6f7Eb53Nuh5YKavXtoKhn7dnFPyft
-         BUkgBlWcrqSoftlR+P9TMhFs9HQPyFnb0IW5Z9NpEWpAN5tCVkeRnV1WBk82uFVRqfyr
-         46XQWZQmXEdyw5aItmFBrqowaMM5ls11ZjjZAc2n4MYDCDIoDoj7EIB35TRAc2VwWdna
-         YPqNrCAcidvUqA9Gy0HH63SPNeOD3itTmkw0xcdp7Rghgs3A8o46jYkykOe+qYOzb29q
-         3a1g==
-X-Gm-Message-State: AOAM530Mg8Qv06nQWqJDR+boJt28Q6l3F93/xDCP24ElRsOU1O4Y0rmc
-        cQwaS7jTeGiyM5JAmv1GINk=
-X-Google-Smtp-Source: ABdhPJx6RK7QekcSJhCtPgsq4WyKnAmNS0Vif0ivK8GqYif0kzjdgiRloWKMja0iM+RMIh7hEWszHg==
-X-Received: by 2002:a63:f342:: with SMTP id t2mr21786819pgj.313.1600328187689;
-        Thu, 17 Sep 2020 00:36:27 -0700 (PDT)
-Received: from localhost.localdomain ([43.224.245.179])
-        by smtp.gmail.com with ESMTPSA id 22sm5491834pfw.17.2020.09.17.00.36.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 00:36:27 -0700 (PDT)
-From:   zhuguangqing83@gmail.com
-To:     amit.kachhap@gmail.com, daniel.lezcano@linaro.org,
-        viresh.kumar@linaro.org, javi.merino@kernel.org,
-        rui.zhang@intel.com, amitk@kernel.org, rafael.j.wysocki@intel.com,
-        zhuguangqing@xiaomi.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] thermal/idle_inject: Fix comment of idle_duration_us and name of latency_ns
-Date:   Thu, 17 Sep 2020 15:35:53 +0800
-Message-Id: <20200917073553.898-1-zhuguangqing83@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726221AbgIQHiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 03:38:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726142AbgIQHh6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 03:37:58 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F09C82072E;
+        Thu, 17 Sep 2020 07:37:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600328278;
+        bh=FjSv8XEEoWrIMEanxIPT/0Qq1UiQIZi7fTyweXh+MrE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lBxEr6zqOvX/1KOUDTxfvdHhepQeC2lcCD+APU7zie8biWAFQjrJ9K9bFM7s8ZIsa
+         jAAt7zRXaCOcjvgkwe345rnZNBUpKm1LEEMIKESo4Ja/of2gHtWaxd8f2eYKgYdiTB
+         PgYFQnTlBAXr/KP64fddduizEG/0iD/O13hsfocA=
+Date:   Thu, 17 Sep 2020 09:38:31 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>, balbi@kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, matthias.bgg@gmail.com,
+        swboyd@chromium.org, linux-arm-kernel@lists.infradead.org,
+        alcooperx@gmail.com
+Subject: Re: [PATCH] MAINTAINERS: Add entry for Broadcom BDC driver
+Message-ID: <20200917073831.GB3217334@kroah.com>
+References: <20200710034806.15650-1-f.fainelli@gmail.com>
+ <830cd104-87de-4246-35ff-47a0ed5b05a9@gmail.com>
+ <1600325394.20109.16.camel@mhfsdcap03>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1600325394.20109.16.camel@mhfsdcap03>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhuguangqing <zhuguangqing@xiaomi.com>
+On Thu, Sep 17, 2020 at 02:49:54PM +0800, Chunfeng Yun wrote:
+> On Sun, 2020-09-06 at 12:55 -0700, Florian Fainelli wrote:
+> > 
+> > On 7/9/2020 8:48 PM, Florian Fainelli wrote:
+> > > The Broadcom BDC driver did not have a MAINTAINERS entry which made it
+> > > escape review from Al and myself, add an entry so the relevant mailing
+> > > lists and people are copied.
+> > > 
+> > > Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> > 
+> > This patch still does not seem to have been picked up (not seeing it in 
+> > linux-next), can this be applied so we have an accurate maintainer 
+> > information for this driver?
+> Ping
 
-The comment of idle_duration_us and the name of latency_ns can be misleading,
-so fix them.
+Felipe should have picked this up.
 
-Signed-off-by: zhuguangqing <zhuguangqing@xiaomi.com>
----
- drivers/thermal/cpuidle_cooling.c | 2 +-
- include/linux/idle_inject.h       | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+If not, please resend it again and I can.
 
-diff --git a/drivers/thermal/cpuidle_cooling.c b/drivers/thermal/cpuidle_cooling.c
-index 78e3e8238116..7ecab4b16b29 100644
---- a/drivers/thermal/cpuidle_cooling.c
-+++ b/drivers/thermal/cpuidle_cooling.c
-@@ -30,7 +30,7 @@ static DEFINE_IDA(cpuidle_ida);
- 
- /**
-  * cpuidle_cooling_runtime - Running time computation
-- * @idle_duration_us: the idle cooling device
-+ * @idle_duration_us: CPU idle time to inject in microseconds
-  * @state: a percentile based number
-  *
-  * The running duration is computed from the idle injection duration
-diff --git a/include/linux/idle_inject.h b/include/linux/idle_inject.h
-index 91a8612b8bf9..fb88e23a99d3 100644
---- a/include/linux/idle_inject.h
-+++ b/include/linux/idle_inject.h
-@@ -28,6 +28,6 @@ void idle_inject_get_duration(struct idle_inject_device *ii_dev,
- 				 unsigned int *idle_duration_us);
- 
- void idle_inject_set_latency(struct idle_inject_device *ii_dev,
--			     unsigned int latency_ns);
-+			     unsigned int latency_us);
- 
- #endif /* __IDLE_INJECT_H__ */
--- 
-2.17.1
+thanks,
 
+greg k-h
