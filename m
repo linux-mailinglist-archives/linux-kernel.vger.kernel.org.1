@@ -2,75 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C893926DFBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 17:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D48E26E008
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 17:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728208AbgIQPce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 11:32:34 -0400
-Received: from smtprelay0233.hostedemail.com ([216.40.44.233]:56994 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728125AbgIQPb2 (ORCPT
+        id S1728166AbgIQPuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 11:50:20 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:40155 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727457AbgIQPsJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 11:31:28 -0400
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave01.hostedemail.com (Postfix) with ESMTP id CAB7D1813B78B;
-        Thu, 17 Sep 2020 15:30:01 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id F3AFD182CED28;
-        Thu, 17 Sep 2020 15:28:14 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3167:3352:3622:3867:3868:3873:3874:4321:5007:8603:10004:10400:10848:11026:11232:11658:11914:12043:12297:12438:12740:12760:12895:13019:13069:13255:13311:13357:13439:14659:14721:21080:21627:30025:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: shock03_2c15c0f27123
-X-Filterd-Recvd-Size: 1891
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf07.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 17 Sep 2020 15:28:13 +0000 (UTC)
-Message-ID: <707865b7ccc9168177940cd4f63cf7cb9ead2d63.camel@perches.com>
-Subject: Re: [PATCH v2] EDAC/mc_sysfs: Add missing newlines when printing
- {max,dimm}_location
-From:   Joe Perches <joe@perches.com>
-To:     Xiongfeng Wang <wangxiongfeng2@huawei.com>,
-        Borislav Petkov <bp@alien8.de>
-Cc:     mchehab@kernel.org, tony.luck@intel.com,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 17 Sep 2020 08:28:12 -0700
-In-Reply-To: <591e613e-0b53-028f-08fd-3d62a35b8c4f@huawei.com>
-References: <1600051734-8993-1-git-send-email-wangxiongfeng2@huawei.com>
-         <20200916170052.GO2643@zn.tnic>
-         <591e613e-0b53-028f-08fd-3d62a35b8c4f@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Thu, 17 Sep 2020 11:48:09 -0400
+Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
+ (mreue011 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1MOAFl-1k7klU2K4X-00OXa8; Thu, 17 Sep 2020 17:28:25 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     linux-media@vger.kernel.org, mchehab@kernel.org, hverkuil@xs4all.nl
+Cc:     hch@lst.de, linux-kernel@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 0/8] media: v4l2: simplify compat ioctl handling
+Date:   Thu, 17 Sep 2020 17:28:15 +0200
+Message-Id: <20200917152823.1241599-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:FguSgiNJ4aWc+kW5QZOgRIPkQbvvC7vfswN0wtTQW8jWPvxsyNM
+ xnz1BIZWj+1CMSttGTvG9camB3KITe+3S5QMBfqhwZ1Bhyy8IOs4qq6ottkyVpvsvntYwfw
+ Zyq53Z6iApYo/0Y5+ts784x9r4vjRpgm4UgZHEwz5z8S7Rs8wC57/UYc/4jjc9t8KgJvzWh
+ dY9TYc/+OQZ1KqaPXliMA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:C9DuMQ1gut0=:jFtdSP+Yev6L0fqA0Y51iG
+ IJ6Gh8PdJOFp3l4bkZjX5Qqhai2OUMqnb4N7BAUHSwfPToLEb+M17bppxY2SqHW14gYA/1a9k
+ v077vArnF3RG7yt98/aPRmaJUaJN2V46pKNjyaTKfhzqilhc2NZJc01MEIVty/GhZF3MmQxbu
+ fleOpJOHWFPNR/sx7sklCB+PmbnHck/7u/aRRWZtB1X6jPKOMo5n9mDiLLdZhbHn+Vr30B/Hq
+ kq4b/JMTQ9C6uzGZfxOyUC5HVttKaFG1ugbx5r0SZOEWPpeEDF+W3I35Wao1nI9UWeENDs+4K
+ lbhq/ZAGD6wl1J82vbq5Vx+fjWD1FY2sUAzlZ3dCflwZ3JvIIEXmr8f4uK0c75sIBmhgQkydT
+ Wy8mThXA0PW46oK61m9MS2QPDKDlLCD5pGQVDWIm+5ILnR/3tKMZXb6WHgL9g0BVyp2DXMW33
+ EXkdtpwfh0kKuJCznJnKNoy0D05NoxKncML4bvnrdAe8qYuVwxHbonbe5lcu5+ZZNyTLbFVBr
+ oRDZ2uO9YhFVK9NWW2TisoQW225w+Wqrk1KDMeDNCLFl7bkE7WOLjdFMICv06gU3egH0bnfxL
+ ae3gEVI0/mp62Ss77rcYbZpA4NRAe0ZGVHUsE5kB/kz1/QmYXBOSARmy6ilPdYSJID0wIixIl
+ tkWKLHfjYJTr/tPfXKVQYg9NIpL061xTtcY3/qLaRfS2I6mn/3WtdRDzM9ia6Hjxl9eb8l+xE
+ 5eg5Y/zrYJiEYiB+kJbib7n+oMBue79jLTevUu9SpgHDg4fErbumJRQWgCZkS6nyyN5mmH+UW
+ hCKE7Jxsd9TsC8vxx942v5NFuu5ZN/vuT4gt7rKRIcJId+ZXpd2+ka6FPVhInbLz7kS5kgo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-09-17 at 19:38 +0800, Xiongfeng Wang wrote:
-> On 2020/9/17 1:00, Borislav Petkov wrote:
-> > On Mon, Sep 14, 2020 at 10:48:54AM +0800, Xiongfeng Wang wrote:
-> > > @@ -813,15 +817,21 @@ static ssize_t mci_max_location_show(struct device *dev,
-> > >  				     char *data)
-> > >  {
-> > >  	struct mem_ctl_info *mci = to_mci(dev);
-> > > -	int i;
-> > > +	int i, n;
-> > >  	char *p = data;
-> > > +	unsigned int len = PAGE_SIZE;
-> > >  
-> > >  	for (i = 0; i < mci->n_layers; i++) {
-> > > -		p += sprintf(p, "%s %d ",
-> > > +		n = snprintf(p, len, "%s %d ",
-> > >  			     edac_layer_name[mci->layers[i].type],
-> > >  			     mci->layers[i].size - 1);
-> > > +		p += n;
-> > > +		len -= n;
-> > 
-> > What happens if that subtraction causes len to wrap around and become a
-> > huge positive unsigned integer?
+I have a series to remove all uses of compat_alloc_user_space()
+and copy_in_user() from the kernel, this is the part of it that
+involves the v4l2 compat code.
 
-If you're really concerned about wrapping, use scnprintf.
+The resulting code is significantly shorter and arguably more
+readable, but I have not done any testing beyond compilation on
+it, so at the minimum this first needs to pass the test suite
+for both native and compat users space.
 
+Given the complexity of the code, I am fairly sure that there
+are bugs I missed.
 
+Please review and test if possible.
+
+    Arnd
+
+Arnd Bergmann (8):
+  media: v4l2: prepare compat-ioctl rework
+  media: v4l2: remove unneeded compat ioctl handlers
+  media: v4l2: move v4l2_ext_controls conversion
+  media: v4l2: move compat handling for v4l2_buffer
+  media: v4l2: allocate v4l2_clip objects early
+  media: v4l2: convert v4l2_format compat ioctls
+  media: v4l2: remaining compat handlers
+  media: v4l2: remove remaining compat_ioctl
+
+ drivers/media/common/saa7146/saa7146_video.c  |    6 +-
+ drivers/media/pci/bt8xx/bttv-driver.c         |    8 +-
+ drivers/media/pci/saa7134/saa7134-video.c     |   19 +-
+ .../media/test-drivers/vivid/vivid-vid-cap.c  |   18 +-
+ .../media/test-drivers/vivid/vivid-vid-out.c  |   18 +-
+ drivers/media/v4l2-core/v4l2-compat-ioctl32.c | 1774 ++++++-----------
+ drivers/media/v4l2-core/v4l2-ioctl.c          |  120 +-
+ include/media/v4l2-ioctl.h                    |   11 +
+ include/uapi/linux/videodev2.h                |    2 +-
+ 9 files changed, 729 insertions(+), 1247 deletions(-)
+
+-- 
+2.27.0
 
