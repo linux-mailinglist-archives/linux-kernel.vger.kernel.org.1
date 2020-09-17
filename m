@@ -2,122 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E37B26D5EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E3D26D629
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:14:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726511AbgIQILI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 04:11:08 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:50230 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726385AbgIQIKw (ORCPT
+        id S1726383AbgIQIN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 04:13:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726348AbgIQIAv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 04:10:52 -0400
-X-Greylist: delayed 572 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 04:10:50 EDT
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08H7XPUq001868;
-        Thu, 17 Sep 2020 04:00:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=c+wPm6PVQRdyk+z4PFiSPi8wp98j19QEEf9sb83BFjk=;
- b=nBVP99ZFRQzuQiov4ujQnU9FTg6WmWr6Ojly8I/DvM9JU8WGxDeP/D+c6BeygSB97X8t
- 5AVJS7t6+5LRGxK2RPm4Auvgv+BMjeqFc1vj9wGj1brTFkzoiowslOiT5ZJEjpcU/Vhz
- tGPIv+MkLf+clO/U7ikHnFvLYn2snJNHGYFNKda0iAiE5sZLEelzoONSgHl6bdjPLhND
- 2AwGiKfRDiPHu0GRj1ldi52mC++VPY7GpGXgBZk45iCtGy0fRL4oGa8TanVXzs07OC/i
- z/S6xCQ/C2t9hmxpxVozVBxyK2zX3p3Cu6SXMpmt6pHZu8Ie0gBD6Mw9gQnixYoRhlP4 6g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33m1he48fw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Sep 2020 04:00:36 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08H7aOxA014022;
-        Thu, 17 Sep 2020 04:00:36 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33m1he48ec-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Sep 2020 04:00:36 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08H80XPR014957;
-        Thu, 17 Sep 2020 08:00:33 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 33k6eshv03-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Sep 2020 08:00:33 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08H80U6u28639676
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 17 Sep 2020 08:00:30 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8BC2542081;
-        Thu, 17 Sep 2020 08:00:27 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 19BC64207B;
-        Thu, 17 Sep 2020 08:00:27 +0000 (GMT)
-Received: from pomme.local (unknown [9.145.22.71])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 17 Sep 2020 08:00:27 +0000 (GMT)
-Subject: Re: [PATCH v3 1/3] mm: replace memmap_context by meminit_context
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Oscar Salvador <osalvador@suse.de>, mhocko@suse.com,
-        linux-mm@kvack.org, "Rafael J . Wysocki" <rafael@kernel.org>,
-        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20200915121541.GD4649@dhcp22.suse.cz>
- <20200915132624.9723-1-ldufour@linux.ibm.com>
- <20200916063325.GK142621@kroah.com>
- <0b3f2eb1-0efa-a491-c509-d16a7e18d8e8@linux.ibm.com>
- <20200916074047.GA189144@kroah.com>
- <9e8d38b9-3875-0fd8-5f28-3502f33c2c34@linux.ibm.com>
- <95005625-b159-0d49-8334-3c6cdbb7f27a@redhat.com>
- <f522bcb8-575e-0ac7-69cb-1064e8b38c58@linux.ibm.com>
- <20200916163756.af1bece4bbd1937a20a727df@linux-foundation.org>
-From:   Laurent Dufour <ldufour@linux.ibm.com>
-Message-ID: <10f4239f-290e-8ae5-0bef-f583197fafec@linux.ibm.com>
-Date:   Thu, 17 Sep 2020 10:00:26 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        Thu, 17 Sep 2020 04:00:51 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20166C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 01:00:48 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f1053007b81a97eebdb4df7.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:5300:7b81:a97e:ebdb:4df7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A510C1EC0286;
+        Thu, 17 Sep 2020 10:00:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600329646;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=QepYPUrdCQfPP7ZtEtvksFM9JlQkCdq+XWMcdWXauHA=;
+        b=NYFZlaLSjWG3vFlwDqNKfpMsuv2dgJFjZsUt4zYY88iKRBlLDNJvwhbc0GF8omxpQrA/M1
+        ZXK83b6UAkrbbr7vs0QfUzSekqKBwEnMLaBVfviuvKS4xeu+FCMYC7gJl6M9i18LoWs5o4
+        gqsnTf673/tD4FwIa+T1Wbrv7gPBRYc=
+Date:   Thu, 17 Sep 2020 10:00:44 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Philip Li <philip.li@intel.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        Rong Chen <rong.a.chen@intel.com>, x86-ml <x86@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [tip:x86/pti] BUILD SUCCESS WITH WARNING
+ 767d46ab566dd489733666efe48732d523c8c332
+Message-ID: <20200917080044.GD31960@zn.tnic>
+References: <5f62b7f2.Q9ixRaxJwQpWTURd%lkp@intel.com>
+ <20200917061220.GB31960@zn.tnic>
+ <20200917073620.GA4946@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200916163756.af1bece4bbd1937a20a727df@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-17_03:2020-09-16,2020-09-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
- mlxscore=0 mlxlogscore=871 impostorscore=0 lowpriorityscore=0 bulkscore=0
- suspectscore=0 malwarescore=0 priorityscore=1501 adultscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009170051
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200917073620.GA4946@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 17/09/2020 à 01:37, Andrew Morton a écrit :
-> On Wed, 16 Sep 2020 18:09:55 +0200 Laurent Dufour <ldufour@linux.ibm.com> wrote:
-> 
->>>>> It's up to the maintainer what they want, but as it is, this patch is
->>>>> not going to end up in stable kernel release (which it looks like is the
->>>>> right thing to do...)
->>>>
->>>> Thanks a lot Greg.
->>>>
->>>> I'll send that single patch again with the Cc: stable tag.
->>>
->>> I think Andrew can add that when sending upstream.
->>
->> Andrew, can you do that?
->>
-> 
-> I did.
-> 
-> Patches 1 & 2 are cc:stable, patch 3 is not.
-> 
-> I'll queue up 1 & 2 for a 5.9-rcX merge.
+On Thu, Sep 17, 2020 at 03:36:20PM +0800, Philip Li wrote:
+> The 2nd type is this one, which is a summarized report of head
+> to provide an overview. Most of time, repo owner can receive the
+> bisected mail. For this time, the issue is reported against peterz-queue
+> repo which has this 767d46ab56 head firstly. Since the head later appears
+> in tip, we just gather all issues and send the summary to tip related
+> recipients. But no more bisected mail.
 
-Thanks a lot Andrew.
+Yeah, but that second report is not very helpful because nowhere it says
+it is a summary and nowhere it has that link you pasted above so that
+some other maintainer can go look.
 
+Always put yourself in the recipient's shoes and ask yourself: "what can
+the recipient do with this report and does it have everything in there
+required to be able to reproduce the issue?"
+
+If not, then it needs changing.
+
+> We will consider how to show useful produce info in summary report as
+> the feedback here, which is quite useful, such like pointing to the
+> bisected mail. This would take some time, and we will add to our TODO
+> as high priority.
+
+Yes, that would be much appreciated. You can also tag your reports with
+a unique hash which is then in an URL so that one can go and download the
+.config and what else is needed. For example...
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
