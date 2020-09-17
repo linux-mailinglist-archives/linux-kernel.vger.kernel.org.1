@@ -2,176 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D152826E294
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:38:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BCB726E2E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:51:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726583AbgIQRhr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 17 Sep 2020 13:37:47 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2882 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726318AbgIQRgP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 13:36:15 -0400
-Received: from lhreml729-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id 4C8B462749644120D060;
-        Thu, 17 Sep 2020 18:36:05 +0100 (IST)
-Received: from fraeml706-chm.china.huawei.com (10.206.15.55) by
- lhreml729-chm.china.huawei.com (10.201.108.80) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.1913.5; Thu, 17 Sep 2020 18:36:05 +0100
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml706-chm.china.huawei.com (10.206.15.55) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Thu, 17 Sep 2020 19:36:03 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.1913.007;
- Thu, 17 Sep 2020 19:36:03 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Mimi Zohar <zohar@linux.ibm.com>,
-        "mjg59@google.com" <mjg59@google.com>,
-        John Johansen <john.johansen@canonical.com>
-CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH v2 07/12] evm: Introduce EVM_RESET_STATUS atomic flag
-Thread-Topic: [PATCH v2 07/12] evm: Introduce EVM_RESET_STATUS atomic flag
-Thread-Index: AQHWgp3/4yVQpxJegUaUIa256vF1xqlsrbeAgAB3aaA=
-Date:   Thu, 17 Sep 2020 17:36:03 +0000
-Message-ID: <581966c47e94412ab3fd5b2ca9aacd3d@huawei.com>
-References: <20200904092339.19598-1-roberto.sassu@huawei.com>
-         <20200904092643.20013-3-roberto.sassu@huawei.com>
- <5bbf2169cfa38bb7a3d696e582c1de954a82d5c6.camel@linux.ibm.com>
-In-Reply-To: <5bbf2169cfa38bb7a3d696e582c1de954a82d5c6.camel@linux.ibm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.220.96.108]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726598AbgIQRvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 13:51:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726647AbgIQRnQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 13:43:16 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59552C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:36:55 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id l191so1773393pgd.5
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:36:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8xZMHi4HwDhGZXftClnq46LW61QUYpAjALMHSAmeHFo=;
+        b=HrJY2l/+l6LLt+Iw+bTAHyVBsfRpf7NXHisw3NF+BRrcx97XLJ1enSWvPFYFay6mlq
+         nIPRsnaEYtIDGPEQOSnNcHEug3cCEXVWXaRveLYt/Wj5rweFLiorsoUedzM/kkVQg7DE
+         pt87URxYnqvl+qYdQDAmzB9SmZKlpSN3tCDu56s/pq5y6sFOY7GsDnat4M0Um5xN2acp
+         nkOscukJPH2POn4AO+doyLqmX3oi3cc1Iv3NGHvSq9y3yaeaAeqxyiCh0jrUDluzlSy5
+         TcAgjwkcWg/DUbcbv3GSssYHuZhxPrsQ3+lRtQaikvqx2J19Gsnj9n6rMCNCCu4UfCCn
+         ejxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8xZMHi4HwDhGZXftClnq46LW61QUYpAjALMHSAmeHFo=;
+        b=lXpfPWw5oB1Ump02ZyJc0hnfpBlIPfiJJ/n3NtlGX3jqsoOCrrnsvdWM+wVsvLietQ
+         E44YIZf4mfDUjnR7C7JPP1juVS79Br/Q+exi2gpN/oFLTa3ekDD17XGzkpye6xyetSa5
+         gk+MEOwImyWmeRYHLKg+lGbMVT59hsGa1L5weHmA9vEk6+xO0j18DUJ7+yZ5OKwZvciI
+         FiA7v+VDIxuP8Ja08cgmyW8nGVrPfosYJv9q6E1Y5TScGlFnGXuA3fA0SsHAOtbpYquV
+         dOoF5hGGOQGfFjPOsrMPhJhwSYD/USarNNBhDqxqsGkKy2qRixbUoiNc3xVurtb7q2jE
+         FLoA==
+X-Gm-Message-State: AOAM533pN+7xHAQiS7FShlb/jlpjVcs8CxfayC+YD9vF8wthK6XjgSqw
+        cEWpv2uuKcBiVoDQAv5jkSS62rknO+aamURajdDPpQ==
+X-Google-Smtp-Source: ABdhPJxE3ZgMjHDO8XI3+2LaZOLj4qA0/dlWB3n1yY4pXgIC9QaqYcsZlYmpVt+Ecsma4zqmTYQ9dIr0Ws0KfewjqLg=
+X-Received: by 2002:a63:5d57:: with SMTP id o23mr7458172pgm.263.1600364214666;
+ Thu, 17 Sep 2020 10:36:54 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <20200917131515.147029-1-jingxiangfeng@huawei.com>
+In-Reply-To: <20200917131515.147029-1-jingxiangfeng@huawei.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 17 Sep 2020 10:36:43 -0700
+Message-ID: <CAKwvOdnm-PkEt6T3HqB-NYNYADth0MJkXCvFsc-_gyqRE-nmcg@mail.gmail.com>
+Subject: Re: [PATCH] fbcon: Remove the superfluous break
+To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Greg KH <gregkh@linuxfoundation.org>, daniel.vetter@ffwll.ch,
+        jirislaby@kernel.org, Nathan Chancellor <natechancellor@gmail.com>,
+        george.kennedy@oracle.com, peda@axentia.se,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-fbdev@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Joe Perches <joe@perches.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Mimi Zohar [mailto:zohar@linux.ibm.com]
-> Sent: Thursday, September 17, 2020 2:01 PM
-> [Cc'ing John Johansen]
-> 
-> Hi Roberto,
-> 
-> On Fri, 2020-09-04 at 11:26 +0200, Roberto Sassu wrote:
-> > When EVM_ALLOW_METADATA_WRITES is set, EVM allows any operation
-> on
-> > metadata. Its main purpose is to allow users to freely set metadata when
-> > they are protected by a portable signature, until the HMAC key is loaded.
-> >
-> > However, IMA is not notified about metadata changes and, after the first
-> > successful appraisal, always allows access to the files without checking
-> > metadata again.
-> >
-> > This patch introduces the new atomic flag EVM_RESET_STATUS in
-> > integrity_iint_cache that is set in the EVM post hooks and cleared in
-> > evm_verify_hmac(). IMA checks the new flag in process_measurement()
-> and if
-> > it is set, it clears the appraisal flags.
-> >
-> > Although the flag could be cleared also by evm_inode_setxattr() and
-> > evm_inode_setattr() before IMA sees it, this does not happen if
-> > EVM_ALLOW_METADATA_WRITES is set. Since the only remaining caller is
-> > evm_verifyxattr(), this ensures that IMA always sees the flag set before it
-> > is cleared.
-> >
-> > This patch also adds a call to evm_reset_status() in
-> > evm_inode_post_setattr() so that EVM won't return the cached status
-> the
-> > next time appraisal is performed.
-> >
-> > Cc: stable@vger.kernel.org # 4.16.x
-> > Fixes: ae1ba1676b88e ("EVM: Allow userland to permit modification of
-> EVM-protected metadata")
-> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > ---
-> >  security/integrity/evm/evm_main.c | 17 +++++++++++++++--
-> >  security/integrity/ima/ima_main.c |  8 ++++++--
-> >  security/integrity/integrity.h    |  1 +
-> >  3 files changed, 22 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/security/integrity/evm/evm_main.c
-> b/security/integrity/evm/evm_main.c
-> > index 4e9f5e8b21d5..05be1ad3e6f3 100644
-> > --- a/security/integrity/evm/evm_main.c
-> > +++ b/security/integrity/evm/evm_main.c
-> > @@ -221,8 +221,15 @@ static enum integrity_status
-> evm_verify_hmac(struct dentry *dentry,
-> >  		evm_status = (rc == -ENODATA) ?
-> >  				INTEGRITY_NOXATTRS : INTEGRITY_FAIL;
-> >  out:
-> > -	if (iint)
-> > +	if (iint) {
-> > +		/*
-> > +		 * EVM_RESET_STATUS can be cleared only by
-> evm_verifyxattr()
-> > +		 * when EVM_ALLOW_METADATA_WRITES is set. This
-> guarantees that
-> > +		 * IMA sees the EVM_RESET_STATUS flag set before it is
-> cleared.
-> > +		 */
-> > +		clear_bit(EVM_RESET_STATUS, &iint->atomic_flags);
-> >  		iint->evm_status = evm_status;
-> 
-> True IMA is currently the only caller of evm_verifyxattr() in the
-> upstreamed kernel, but it is an exported function, which may be called
-> from elsewhere.  The previous version crossed the boundary between EVM
-> & IMA with EVM modifying the IMA flag directly.  This version assumes
-> that IMA will be the only caller.  Otherwise, I like this version.
+On Thu, Sep 17, 2020 at 6:15 AM Jing Xiangfeng <jingxiangfeng@huawei.com> wrote:
+>
+> Remove the superfuous break, as there is a 'return' before it.
 
-Ok, I think it is better, as you suggested, to export a new EVM function
-that tells if evm_reset_status() will be executed in the EVM post hooks, and
-to call this function from IMA. IMA would then call ima_reset_appraise_flags()
-also depending on the result of the new EVM function.
+superfluous (missed "l")
 
-ima_reset_appraise_flags() should be called in a post hook in IMA.
-Should I introduce it?
+>
+> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
 
-Thanks
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Roberto
+Thanks for the patch; I audited the rest of the switch statements in
+this translation unit; LGTM.
 
-HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-Managing Director: Li Peng, Li Jian, Shi Yanli
+> ---
+>  drivers/video/fbdev/core/fbcon.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
+> index 0b49b0f44edf..623359aadd1e 100644
+> --- a/drivers/video/fbdev/core/fbcon.c
+> +++ b/drivers/video/fbdev/core/fbcon.c
+> @@ -1727,7 +1727,6 @@ static bool fbcon_scroll(struct vc_data *vc, unsigned int t, unsigned int b,
+>                                     vc->vc_video_erase_char,
+>                                     vc->vc_size_row * count);
+>                         return true;
+> -                       break;
+>
+>                 case SCROLL_WRAP_MOVE:
+>                         if (b - t - count > 3 * vc->vc_rows >> 2) {
+> @@ -1818,7 +1817,6 @@ static bool fbcon_scroll(struct vc_data *vc, unsigned int t, unsigned int b,
+>                                     vc->vc_video_erase_char,
+>                                     vc->vc_size_row * count);
+>                         return true;
+> -                       break;
+>
+>                 case SCROLL_WRAP_MOVE:
+>                         if (b - t - count > 3 * vc->vc_rows >> 2) {
+> --
+> 2.17.1
+>
 
-> Mimi
-> 
-> > +	}
-> >  	kfree(xattr_data);
-> >  	return evm_status;
-> >  }
-> > @@ -418,8 +425,12 @@ static void evm_reset_status(struct inode *inode)
-> >  	struct integrity_iint_cache *iint;
-> >
-> >  	iint = integrity_iint_find(inode);
-> > -	if (iint)
-> > +	if (iint) {
-> > +		if (evm_initialized & EVM_ALLOW_METADATA_WRITES)
-> > +			set_bit(EVM_RESET_STATUS, &iint->atomic_flags);
-> > +
-> >  		iint->evm_status = INTEGRITY_UNKNOWN;
-> > +	}
-> >  }
-> >
-> >  /**
-> > @@ -513,6 +524,8 @@ void evm_inode_post_setattr(struct dentry
-> *dentry, int ia_valid)
-> >  	if (!evm_key_loaded())
-> >  		return;
-> >
-> > +	evm_reset_status(dentry->d_inode);
-> > +
-> >  	if (ia_valid & (ATTR_MODE | ATTR_UID | ATTR_GID))
-> >  		evm_update_evmxattr(dentry, NULL, NULL, 0);
-> >  }
 
+-- 
+Thanks,
+~Nick Desaulniers
