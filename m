@@ -2,140 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1413226E6F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 22:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A0FE26E6F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 22:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726496AbgIQUzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 16:55:22 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:8875 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726180AbgIQUzV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 16:55:21 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f63cd2c0002>; Thu, 17 Sep 2020 13:55:08 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 17 Sep 2020 13:55:21 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 17 Sep 2020 13:55:21 -0700
-Received: from [10.2.173.225] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 17 Sep
- 2020 20:55:16 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     Daniel Jordan <daniel.m.jordan@oracle.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: Re: [PATCH] mm/migrate: correct thp migration stats.
-Date:   Thu, 17 Sep 2020 16:55:14 -0400
-X-Mailer: MailMate (1.13.1r5705)
-Message-ID: <70175233-F250-4072-AEF4-659DF73F9F7C@nvidia.com>
-In-Reply-To: <20200917205912.fljcyldna6bg7m4l@ca-dmjordan1.us.oracle.com>
-References: <20200917202729.1460743-1-zi.yan@sent.com>
- <20200917205912.fljcyldna6bg7m4l@ca-dmjordan1.us.oracle.com>
+        id S1726533AbgIQU5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 16:57:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43578 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726180AbgIQU5I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 16:57:08 -0400
+Received: from localhost (router.4pisysteme.de [80.79.225.122])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4F5A520874;
+        Thu, 17 Sep 2020 20:57:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600376228;
+        bh=yioVQ2V47I4LfYvG7JgQOgciS8kwofLhOenDKNaa3XQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QM28TeKuU/FZvrhw0wWzwLsDqf2A6RT82P5IJYWJo17ZTE51enNCflKAXRRtaKwdO
+         B8dHOKgWsAG1ppdT8v/LmtqC+78QGUZ3+VXom4JrK2Vl/Mg6aMU+QpoSiB8ntzNMqM
+         YKDgjrvVISeTCzynyfXXJaZUMyD6wMkFJEQ+M3i0=
+Date:   Thu, 17 Sep 2020 22:57:04 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Sultan Alsawaf <sultan@kerneltoast.com>
+Cc:     linux-i2c@vger.kernel.org, jikos@kernel.org,
+        aaron.ma@canonical.com, admin@kryma.net,
+        andriy.shevchenko@linux.intel.com, benjamin.tissoires@redhat.com,
+        hdegoede@redhat.com, hn.chen@weidahitech.com,
+        jarkko.nikula@linux.intel.com, kai.heng.feng@canonical.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mika.westerberg@linux.intel.com, vicamo.yang@canonical.com
+Subject: Re: [PATCH v2 3/4] i2c: designware: Allow SMBus block reads up to
+ 255 bytes in length
+Message-ID: <20200917205704.GA18027@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Sultan Alsawaf <sultan@kerneltoast.com>, linux-i2c@vger.kernel.org,
+        jikos@kernel.org, aaron.ma@canonical.com, admin@kryma.net,
+        andriy.shevchenko@linux.intel.com, benjamin.tissoires@redhat.com,
+        hdegoede@redhat.com, hn.chen@weidahitech.com,
+        jarkko.nikula@linux.intel.com, kai.heng.feng@canonical.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mika.westerberg@linux.intel.com, vicamo.yang@canonical.com
+References: <20200917052256.5770-1-sultan@kerneltoast.com>
+ <20200917052256.5770-4-sultan@kerneltoast.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: multipart/signed;
-        boundary="=_MailMate_AB6C36DA-A6A6-4127-B6B8-6BD347044092_=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600376108; bh=YvADe2ZL90eoOWfjmzJTDfz7rKtmDxYSNyCrdCAx3kc=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:X-Mailer:Message-ID:
-         In-Reply-To:References:MIME-Version:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type;
-        b=MQPydcNWJEUPiYdzWav0XURQ5C6jZf7w49Os0xHgSdXpo4txmgYnl2UkHpt2Yj5Y2
-         8lVyFAdWkljBK4tnTj7/cmXe0W82kXydnZQfhRBAHISbnOPJRGsN5kVVq2I46XBMJV
-         ipdigaOLzf+sOyokI5W1cZ3q0de6HCh6CoEpbgG69keLYYzpKhosWPAvDUaoFXCdfq
-         YD86M9yPLA1mdJGv5i7JhxXbb08bYNutTyUH2qpKcxv3jziAZTFPvjan0drqc2/WIs
-         LwwTZ/UtB3kivi+djCZrHGcAX2DLxmiBQRafpbwHEgtagZTGZIOZMbiuueENJU3O9M
-         c5c9dWN/RFJ/w==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="yrj/dFKFPuw6o+aM"
+Content-Disposition: inline
+In-Reply-To: <20200917052256.5770-4-sultan@kerneltoast.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_AB6C36DA-A6A6-4127-B6B8-6BD347044092_=
-Content-Type: text/plain; charset="UTF-8"; markup=markdown
+
+--yrj/dFKFPuw6o+aM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On 17 Sep 2020, at 16:59, Daniel Jordan wrote:
+On Wed, Sep 16, 2020 at 10:22:55PM -0700, Sultan Alsawaf wrote:
+> From: Sultan Alsawaf <sultan@kerneltoast.com>
+>=20
+> According to the SMBus 3.0 protocol specification, block transfer limits
+> were increased from 32 bytes to 255 bytes. Remove the obsolete 32-byte
+> limitation.
 
-> On Thu, Sep 17, 2020 at 04:27:29PM -0400, Zi Yan wrote:
->> From: Zi Yan <ziy@nvidia.com>
->>
->> PageTransHuge returns true for both thp and hugetlb, so thp stats was
->> counting both thp and hugetlb migrations. Exclude hugetlb migration by=
+Sadly, it is not that easy. We are trying to extend BLOCK_MAX to 255
+(SMBus 3 specs) but there are various things to be considered,
+especially with buffers and when passing it to userspace. Check here for
+the discussion (and you are welcome to join, of course):
 
->> setting is_thp variable right.
->
-> Yeah, shoot.
->
->> Fixes: 1a5bae25e3cf ("mm/vmstat: add events for THP migration without =
-split")
->> Signed-off-by: Zi Yan <ziy@nvidia.com>
->
-> Reviewed-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+http://patchwork.ozlabs.org/project/linux-i2c/list/?submitter=3D79741&state=
+=3D*
 
-Thanks.
+>=20
+> Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
+> ---
+>  drivers/i2c/busses/i2c-designware-master.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/bus=
+ses/i2c-designware-master.c
+> index 22f28516bca7..5bd64bd17d94 100644
+> --- a/drivers/i2c/busses/i2c-designware-master.c
+> +++ b/drivers/i2c/busses/i2c-designware-master.c
+> @@ -433,7 +433,7 @@ i2c_dw_read(struct dw_i2c_dev *dev)
+>  			regmap_read(dev->map, DW_IC_DATA_CMD, &tmp);
+>  			if (flags & I2C_M_RECV_LEN) {
+>  				/* Ensure length byte is a valid value */
+> -				if (tmp <=3D I2C_SMBUS_BLOCK_MAX && tmp > 0)
+> +				if (tmp > 0)
+>  					len =3D i2c_dw_recv_len(dev, tmp);
+>  				else
+>  					len =3D i2c_dw_recv_len(dev, len);
+> --=20
+> 2.28.0
+>=20
 
->
-> If you wanted, you could also do this.
->
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index d1ad964165e5..6bc9559afc70 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -1471,7 +1471,7 @@ int migrate_pages(struct list_head *from, new_pag=
-e_t get_new_page,
->  				 * we encounter them after the rest of the list
->  				 * is processed.
->  				 */
-> -				if (PageTransHuge(page) && !PageHuge(page)) {
-> +				if (is_thp) {
->  					lock_page(page);
->  					rc =3D split_huge_page_to_list(page, from);
->  					unlock_page(page);
-> @@ -1480,8 +1480,7 @@ int migrate_pages(struct list_head *from, new_pag=
-e_t get_new_page,
->  						nr_thp_split++;
->  						goto retry;
->  					}
-> -				}
-> -				if (is_thp) {
-> +
->  					nr_thp_failed++;
->  					nr_failed +=3D nr_subpages;
->  					goto out;
-
-Yeah, makes sense to me. Let me send V2 to include this.
-
-=E2=80=94
-Best Regards,
-Yan Zi
-
---=_MailMate_AB6C36DA-A6A6-4127-B6B8-6BD347044092_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+--yrj/dFKFPuw6o+aM
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl9jzTIPHHppeUBudmlk
-aWEuY29tAAoJEJ2yUfNrYfqKnysQAKMogiBkhHXHcsYRoMTuXzPAcuvY7YdD8Vi6
-j7RLsGNeZ/Sb+meTDrRaBRZiSAETgYCDiQUTJw7BJGDE9D4KVtoqccAugoEeO4+2
-YT4Yg4/sVlZpZ4kXv9kc5VAIsKgilfB+UVA31p4xJVF/6a667SehXkAlfRtjEPhH
-o7CHggVYaPMhEk+1CnzSA47en8Xh1Q1+FAxnZc5+bUxN2s6xzH92DqfW9irpYNXr
-1TkVBKwPRBc8FgDeDV1iEnXMv7frxFFNomkNMzr5mBf8xJQdxcUtilaYxedflb6i
-2ROw3cTQ35ndFAKlJl0KKICL3xhe/yLA6vyXnyw8z1gNDPQC5WcP1pJ3xmrrHASX
-CYrRzeZJI6JTOOqEo3eoU4HE43CQlFxxMLwZv8qjTnL7dSTdf8cTRAWjQ1DnvRyB
-fmJ91QUmYQ4WGB6BFkG9SAGiV1w8eWKj6qJQ8xQAjg5ZQphsS/Prr9gK/auxmSc5
-p0HLzNFtZvzH40Gkv+GRMstcBgZj9jjsVt+RFHX+blr7ux6QZq8OCE+KgPlHO6xd
-WzeglXTA7DRSUKYAUEvQHalLK2YSekqMfZqxaIWdzbKZEAoF3YIHh6Qj2gWEuyzj
-PgvRha9oekAYaN2/AwCL3EBr5UVX9n77Q25eMfeiuurJ25BT5/JA7PZ2bvRnWx8i
-k5dTUmQY
-=iPpR
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9jzZwACgkQFA3kzBSg
+KbbyuxAAtVvk4z2xbQhHrVRJqygO8JzmyOFWL1J8QCn7/cwZ+Kf1OhainyVtGkuq
+t36/lVl69MNwe7DNumQg3UdxpmSHdGTwd0QYkVRrHkQIEuCZEsvys7cWXcddvB/E
+v/rSyY4XQsJBK1+NKQxEBe0CdZ3geZoIMcBYNP67DF5qTH41G7Hgo/PIoBAfXyL8
+xqfpnr1zydL7ZtF4tRQ28moIbtuXO7sCxac8OpiDSFgJrLOby2eyw24nchu6aZL7
+ZVhCb71CeAmVrnRWHoma0HplPvxBGjR97qPfb7Bpsl42A1F4bk/didb3xIRzQvtt
+v6S1xQy6voytuBYzy/d1y6yss0aPeF7MZ4/W/953hspriVcd+D0kvHP8JyzG0AYo
+tMmIUdDV18k/v/21IFynhvxXcoSu3+BF2tAcbE3tkSCu5YSfH31EnJESVKAszlxW
+yCRgjpwN6cgcvlun4OHrRU+E2gnYVbY//Byt6zWUIEBt3QWhWALPhIHuHrLep4EZ
+gnBIadvjYZ5zL5lyUo+tQd+QLBtvkUV14WdxQXfGFbqokmZXjGlrH7+YTjuZm/2p
+U3Tft0oXVoT2ZSICejyCHEk/eYP1r4cEH5xupU/LPmnkIcxlQevQDbjek9+c23BU
+FRGQMvoYApPk2xcrfBau9ailDzUedB9gw7otHdP5+pCz599a3iI=
+=GStr
 -----END PGP SIGNATURE-----
 
---=_MailMate_AB6C36DA-A6A6-4127-B6B8-6BD347044092_=--
+--yrj/dFKFPuw6o+aM--
