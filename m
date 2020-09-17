@@ -2,98 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 242E026DE9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58C1726DED6
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727682AbgIQOp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 10:45:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727239AbgIQOlB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 10:41:01 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A9AFC0612F2;
-        Thu, 17 Sep 2020 07:41:00 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f1053001db76021617d6ec9.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:5300:1db7:6021:617d:6ec9])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C42331EC0260;
-        Thu, 17 Sep 2020 16:39:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600353567;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=kTdpctjr26+hadEPAalxUdZ4IHHCvTX0roS3TMkt6bQ=;
-        b=fnDxZUejBlcEL1dJreJ2gTSVjd0tdD7ozJi6uNPbe2/LV10xJTqaOiO1WGzuHHpWUivcPV
-        IKKnRdQgbsK5HGvs2ZhPrKT6U7h/I5hkHmOkYIsHo7n6TBB5agBEEkgBGYqFsrYYRkFvOk
-        mimTMJp1UL0YcNXTEOOT5K/ct5ozFgM=
-Date:   Thu, 17 Sep 2020 16:39:20 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     Andrew Cooper <andrew.cooper3@citrix.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bill Wendling <morbo@google.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Thelen <gthelen@google.com>,
-        John Sperbeck <jsperbeck@google.com>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH] x86/smap: Fix the smap_save() asm
-Message-ID: <20200917143920.GJ31960@zn.tnic>
-References: <CAKwvOdnjHbyamsW71FJ=Cd36YfVppp55ftcE_eSDO_z+KE9zeQ@mail.gmail.com>
- <441AA771-A859-4145-9425-E9D041580FE4@amacapital.net>
- <7233f4cf-5b1d-0fca-0880-f1cf2e6e765b@citrix.com>
- <20200916082621.GB2643@zn.tnic>
- <be498e49-b467-e04c-d833-372f7d83cb1f@citrix.com>
- <20200917060432.GA31960@zn.tnic>
- <ec617df229514fbaa9897683ac88dfda@AcuMS.aculab.com>
- <20200917115733.GH31960@zn.tnic>
- <823af5fadd464c48ade635498d07ba4e@AcuMS.aculab.com>
+        id S1727785AbgIQO4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 10:56:35 -0400
+Received: from mga01.intel.com ([192.55.52.88]:34475 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727215AbgIQOtx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 10:49:53 -0400
+IronPort-SDR: Ce5CTOz0wjN8Z78iVc7HkP0BLzzbxDcuTMJ05NWKsg6IspgyxBqLXjtYbPvUtVjJ/COP2UU1QS
+ 3QUxacFGU4Ig==
+X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="177804239"
+X-IronPort-AV: E=Sophos;i="5.77,437,1596524400"; 
+   d="scan'208";a="177804239"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 07:44:21 -0700
+IronPort-SDR: 2PjTpGPUJrmk/qAGxhB331O0Aj/pPwhH4tXe00zQmSC7rMAaOijzfKiwbCewdba0OWZ8HRpvcR
+ 00Ep3pHxDpBQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,437,1596524400"; 
+   d="scan'208";a="336439709"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 17 Sep 2020 07:44:17 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kIv8v-00HLiv-II; Thu, 17 Sep 2020 17:44:13 +0300
+Date:   Thu, 17 Sep 2020 17:44:13 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Dan Scally <djrscally@gmail.com>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>, yong.zhi@intel.com,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
+        gregkh@linuxfoundation.org, davem@davemloft.net, robh@kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        devel@driverdev.osuosl.org, jorhand@linux.microsoft.com,
+        kitakar@gmail.com, kieran.bingham@ideasonboard.com
+Subject: Re: [RFC PATCH] Add bridge driver to connect sensors to CIO2 device
+ via software nodes on ACPI platforms
+Message-ID: <20200917144413.GN3956970@smile.fi.intel.com>
+References: <20200916213618.8003-1-djrscally@gmail.com>
+ <20200917103343.GW26842@paasikivi.fi.intel.com>
+ <8133a57d-ab4c-dccd-4325-9b10e7805648@gmail.com>
+ <20200917124514.GK3956970@smile.fi.intel.com>
+ <fea9d85a-7be9-0270-bd59-8e479a836ae6@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <823af5fadd464c48ade635498d07ba4e@AcuMS.aculab.com>
+In-Reply-To: <fea9d85a-7be9-0270-bd59-8e479a836ae6@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 02:25:50PM +0000, David Laight wrote:
-> I actually wonder if there is any code that really benefits from
-> the red-zone.
+On Thu, Sep 17, 2020 at 02:36:22PM +0100, Dan Scally wrote:
+> On 17/09/2020 13:45, Andy Shevchenko wrote:
+> > On Thu, Sep 17, 2020 at 11:52:28AM +0100, Dan Scally wrote:
+> >> On 17/09/2020 11:33, Sakari Ailus wrote:
+> > I will do better review for next version, assuming you will Cc reviewers and
+> > TWIMC people. Below is like small part of comments I may give to the code.
+> TWIMC?
 
-The kernel has been without a red zone since 2002 at least:
-
-  commit 47f16da277d10ef9494f3e9da2a9113bb22bcd75
-  Author: Andi Kleen <ak@muc.de>
-  Date:   Tue Feb 12 20:17:35 2002 -0800
-
-      [PATCH] x86_64 merge: arch + asm
-
-      This adds the x86_64 arch and asm directories and a Documentation/x86_64.
-
-  ...
-  +CFLAGS += $(shell if $(CC) -mno-red-zone -S -o /dev/null -xc /dev/null >/dev/null 2>&1; then echo "-mno-red-zone"; fi )
-
-
-Also, from the ABI doc:
-
-"A.2.2 Stack Layout
-
-The Linux kernel may align the end of the input argument area to a
-8, instead of 16, byte boundary. It does not honor the red zone (see
-section 3.2.2) and therefore this area is not allowed to be used by
-kernel code. Kernel code should be compiled by GCC with the option
--mno-red-zone."
-
-so forget the red zone.
+Missed this. To Whom It May Concern.
 
 -- 
-Regards/Gruss,
-    Boris.
+With Best Regards,
+Andy Shevchenko
 
-https://people.kernel.org/tglx/notes-about-netiquette
+
