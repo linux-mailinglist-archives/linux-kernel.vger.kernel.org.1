@@ -2,120 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 640BA26D164
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 05:01:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE65426D173
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 05:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726154AbgIQDBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 23:01:38 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12767 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726135AbgIQDB2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 23:01:28 -0400
-X-Greylist: delayed 971 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 23:01:27 EDT
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 82F1A66FE07F77A47874;
-        Thu, 17 Sep 2020 10:45:08 +0800 (CST)
-Received: from euler.huawei.com (10.175.124.27) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 17 Sep 2020 10:44:57 +0800
-From:   Wei Li <liwei391@huawei.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        "Namhyung Kim" <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Kan Liang <kan.liang@linux.intel.com>
-CC:     <linux-kernel@vger.kernel.org>, <huawei.libin@huawei.com>,
-        <guohanjun@huawei.com>
-Subject: [PATCH] perf metric: Code cleanup with map_for_each_event()
-Date:   Thu, 17 Sep 2020 10:44:21 +0800
-Message-ID: <20200917024421.46973-1-liwei391@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726156AbgIQDIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 23:08:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726047AbgIQDIL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 23:08:11 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3599EC061354;
+        Wed, 16 Sep 2020 20:01:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uMnEgq9vaCRYsRSBlvAbbXAo3XKw/rA3rHucz8CqYPs=; b=tsk5XKZMdogbEKddhS+kYKFpSD
+        tILj0/PIxWt27O5LKM5LnkW0dVmd2e+wSOuIwwD/69G1QTC0K9EZq/JtTGUiu5IJQdbq8E5/9vX/5
+        Z4nAYPlyd3jGV/ixISlEA7eQg04hLVeQo8y8AyhP2/sQczxD/DKca/SQK0h1Xz+cidtDCb3TKeHWI
+        NcAVLTA5afy+MX63+apM1DVpm5l3NmZAKe8s8l+9gymmzr2KzdJ5+DL8szLk64FlPa77tf4peRqyT
+        mFvJ+NQZGfSNvdy7S+pd84wgCtbEXDVhZpnujB3NB666Vc8G8mRJzth09++ywm/yC2Qk8joI2zn7U
+        G9IawJkw==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kIkAY-0006Co-3p; Thu, 17 Sep 2020 03:01:10 +0000
+Date:   Thu, 17 Sep 2020 04:01:10 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Theodore Tso <tytso@mit.edu>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Qiuyang Sun <sunqiuyang@huawei.com>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, nborisov@suse.de
+Subject: Re: More filesystem need this fix (xfs: use MMAPLOCK around
+ filemap_map_pages())
+Message-ID: <20200917030110.GP5449@casper.infradead.org>
+References: <20200623052059.1893966-1-david@fromorbit.com>
+ <CAOQ4uxh0dnVXJ9g+5jb3q72RQYYqTLPW_uBqHPKn6AJZ2DNPOQ@mail.gmail.com>
+ <20200916155851.GA1572@quack2.suse.cz>
+ <20200917014454.GZ12131@dread.disaster.area>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.124.27]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917014454.GZ12131@dread.disaster.area>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since we have introduced map_for_each_event() to walk the 'pmu_events_map',
-clean up metricgroup__print() and metricgroup__has_metric() with it.
+On Thu, Sep 17, 2020 at 11:44:54AM +1000, Dave Chinner wrote:
+> So....
+> 
+> P0					p1
+> 
+> hole punch starts
+>   takes XFS_MMAPLOCK_EXCL
+>   truncate_pagecache_range()
 
-Signed-off-by: Wei Li <liwei391@huawei.com>
----
- tools/perf/util/metricgroup.c | 33 +++++++++++++--------------------
- 1 file changed, 13 insertions(+), 20 deletions(-)
+... locks page ...
 
-diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index 8831b964288f..3734cbb2c456 100644
---- a/tools/perf/util/metricgroup.c
-+++ b/tools/perf/util/metricgroup.c
-@@ -26,6 +26,17 @@
- #include "util.h"
- #include <asm/bug.h>
- 
-+#define map_for_each_event(__pe, __idx, __map)				\
-+	for (__idx = 0, __pe = &__map->table[__idx];			\
-+	     __pe->name || __pe->metric_group || __pe->metric_name;	\
-+	     __pe = &__map->table[++__idx])
-+
-+#define map_for_each_metric(__pe, __idx, __map, __metric)		\
-+	map_for_each_event(__pe, __idx, __map)				\
-+		if (__pe->metric_expr &&				\
-+		    (match_metric(__pe->metric_group, __metric) ||	\
-+		     match_metric(__pe->metric_name, __metric)))
-+
- struct metric_event *metricgroup__lookup(struct rblist *metric_events,
- 					 struct evsel *evsel,
- 					 bool create)
-@@ -475,12 +486,9 @@ void metricgroup__print(bool metrics, bool metricgroups, char *filter,
- 	groups.node_new = mep_new;
- 	groups.node_cmp = mep_cmp;
- 	groups.node_delete = mep_delete;
--	for (i = 0; ; i++) {
-+	map_for_each_event(pe, i, map) {
- 		const char *g;
--		pe = &map->table[i];
- 
--		if (!pe->name && !pe->metric_group && !pe->metric_name)
--			break;
- 		if (!pe->metric_expr)
- 			continue;
- 		g = pe->metric_group;
-@@ -745,17 +753,6 @@ static int __add_metric(struct list_head *metric_list,
- 	return 0;
- }
- 
--#define map_for_each_event(__pe, __idx, __map)				\
--	for (__idx = 0, __pe = &__map->table[__idx];			\
--	     __pe->name || __pe->metric_group || __pe->metric_name;	\
--	     __pe = &__map->table[++__idx])
--
--#define map_for_each_metric(__pe, __idx, __map, __metric)		\
--	map_for_each_event(__pe, __idx, __map)				\
--		if (__pe->metric_expr &&				\
--		    (match_metric(__pe->metric_group, __metric) ||	\
--		     match_metric(__pe->metric_name, __metric)))
--
- static struct pmu_event *find_metric(const char *metric, struct pmu_events_map *map)
- {
- 	struct pmu_event *pe;
-@@ -1092,11 +1089,7 @@ bool metricgroup__has_metric(const char *metric)
- 	if (!map)
- 		return false;
- 
--	for (i = 0; ; i++) {
--		pe = &map->table[i];
--
--		if (!pe->name && !pe->metric_group && !pe->metric_name)
--			break;
-+	map_for_each_event(pe, i, map) {
- 		if (!pe->metric_expr)
- 			continue;
- 		if (match_metric(pe->metric_name, metric))
--- 
-2.17.1
+>     unmap_mapping_range(start, end)
+>       <clears ptes>
+> 					<read fault>
+> 					do_fault_around()
+> 					  ->map_pages
+> 					    filemap_map_pages()
 
+... trylock page fails ...
+
+> 					      page mapping valid,
+> 					      page is up to date
+> 					      maps PTEs
+> 					<fault done>
+>     truncate_inode_pages_range()
+>       truncate_cleanup_page(page)
+>         invalidates page
+>       delete_from_page_cache_batch(page)
+>         frees page
+> 					<pte now points to a freed page>
+> 
+> That doesn't seem good to me.
+> 
+> Sure, maybe the page hasn't been freed back to the free lists
+> because of elevated refcounts. But it's been released by the
+> filesystem and not longer in the page cache so nothing good can come
+> of this situation...
+> 
+> AFAICT, this race condition exists for the truncate case as well
+> as filemap_map_pages() doesn't have a "page beyond inode size" check
+> in it. However, exposure here is very limited in the truncate case
+> because truncate_setsize()->truncate_pagecache() zaps the PTEs
+> again after invalidating the page cache.
+> 
+> Either way, adding the XFS_MMAPLOCK_SHARED around
+> filemap_map_pages() avoids the race condition for fallocate and
+> truncate operations for XFS...
+> 
+> > As such it is a rather
+> > different beast compared to the fault handler from fs POV and does not need
+> > protection from hole punching (current serialization on page lock and
+> > checking of page->mapping is enough).
+> > That being said I agree this is subtle and the moment someone adds e.g. a
+> > readahead call into filemap_map_pages() we have a real problem. I'm not
+> > sure how to prevent this risk...
+> 
+> Subtle, yes. So subtle, in fact, I fail to see any reason why the
+> above race cannot occur as there's no obvious serialisation in the
+> page cache between PTE zapping and page invalidation to prevent a
+> fault from coming in an re-establishing the PTEs before invalidation
+> occurs.
+> 
+> Cheers,
+> 
+> Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
+> 
