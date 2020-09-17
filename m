@@ -2,139 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9E726D723
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:49:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39B2026D721
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:49:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726644AbgIQItd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 04:49:33 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:6281 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726400AbgIQItZ (ORCPT
+        id S1726321AbgIQItr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 04:49:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726643AbgIQItd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 04:49:25 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f6322b90001>; Thu, 17 Sep 2020 01:47:54 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 17 Sep 2020 01:49:22 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 17 Sep 2020 01:49:22 -0700
-Received: from [10.26.74.242] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 17 Sep
- 2020 08:49:08 +0000
-Subject: Re: [PATCH v3 08/16] irqchip/gic: Configure SGIs as standard
- interrupts
-To:     Marc Zyngier <maz@kernel.org>
-CC:     Linus Walleij <linus.walleij@linaro.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Sumit Garg <sumit.garg@linaro.org>,
-        <kernel-team@android.com>, Florian Fainelli <f.fainelli@gmail.com>,
-        "Russell King" <linux@arm.linux.org.uk>,
-        Jason Cooper <jason@lakedaemon.net>,
-        "Saravana Kannan" <saravanak@google.com>,
-        Andrew Lunn <andrew@lunn.ch>,
+        Thu, 17 Sep 2020 04:49:33 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C057FC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 01:49:31 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id j11so2218693ejk.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 01:49:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/ZD6uiMISg/fpcyTy88cLwJ4vqsBUwMi3b4vpK88cUM=;
+        b=kFhLAcUMkbF4edZ9eKREh3+VZQMUJqW2YJ+W+d+1k5RC4KmEycQqotxAqYVrui1zOu
+         MJurHSUWV1vZlmxaqTPDpScrPArADgfONJE4ONU+wHD27zlesJH7APjnnNeL5Hyu8WCh
+         C4fAqUlrVL5xqk0pz3tov56HVHYZmf5VCIdsjY2I5SB8pvcSOCrGAb17Do3/DLu50IPO
+         mQldNKHsLCwdf3fv8ko9VHUai0K1tzD0WXJCags87pS/U9JC0JbwOg9o7zo0OqlVM/9s
+         H5HLr6QwoggBU4u78jV79dGO5WzBVs+WlIm8sXgNUkULCC9AM+0lmKxwzf4BSrjqA0u2
+         Zkgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/ZD6uiMISg/fpcyTy88cLwJ4vqsBUwMi3b4vpK88cUM=;
+        b=NfFJ/vw8vCLkJ4rWVyZLcO1vjJl8ao4MHvv+z2p85BdSXlLzOXWe2igp5yw+e7DPgX
+         vMmJHbKbUfXFkWs8vz98TU4SWWGlshxrMo3EzczeFe52FVyGdK7Zh+o1f5xw/kEUu5vV
+         MsdlrTEZIxEMrrkUfFfhbHTnwqnEoTofi1HKjnFMwTOrg9mO6PcRiAsIObXumRkzkC5u
+         TWmD05nw629dU2EmCbw9tGeMXvo8Rzz6thGdbKq0svP92PVebL4GZlZTOjVHi+uli8fB
+         PjT14uenJA8mHQ9XmPpGLRpUwg+NB9iiMQq4r4BbqTEOmLiQ6flNi45l9QZbVIDwyJ7u
+         ZgWw==
+X-Gm-Message-State: AOAM532K4m/c5oHiO+X79vcABm2bfmrNlaroUznw7KnDLMynn97SCfvS
+        wWNBzWh19cncvsfIoqmmPnG7vQ==
+X-Google-Smtp-Source: ABdhPJyNRfp0OtisgQ1SdFHWwaIMZS2PexUPwtv9uoGERRa6Db+PA/QE5xxnZ7iO6FUZ0pih+rf/PA==
+X-Received: by 2002:a17:906:52c2:: with SMTP id w2mr30212544ejn.389.1600332570250;
+        Thu, 17 Sep 2020 01:49:30 -0700 (PDT)
+Received: from apalos.home ([2a02:587:4615:c071:2e56:dcff:fe9a:8f06])
+        by smtp.gmail.com with ESMTPSA id y24sm15822393eds.35.2020.09.17.01.49.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 01:49:29 -0700 (PDT)
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     bpf@vger.kernel.org
+Cc:     ardb@kernel.org, naresh.kamboju@linaro.org, xi.wang@gmail.com,
+        luke.r.nels@gmail.com,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        "Valentin Schneider" <Valentin.Schneider@arm.com>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-References: <20200901144324.1071694-1-maz@kernel.org>
- <20200901144324.1071694-9-maz@kernel.org>
- <CGME20200914130601eucas1p23ce276d168dee37909b22c75499e68da@eucas1p2.samsung.com>
- <a917082d-4bfd-a6fd-db88-36e75f5f5921@samsung.com>
- <933bc43e-3cd7-10ec-b9ec-58afaa619fb7@nvidia.com>
- <3378cd07b92e87a24f1db75f708424ee@kernel.org>
- <CACRpkdYvqQUJaReD1yNTwiHhaZpQ9h5Z9DgdqbKkCexnM7cWNw@mail.gmail.com>
- <049d62ac7de32590cb170714b47fb87d@kernel.org>
- <a88528cd-eb76-367a-77d6-7ae20bd28304@nvidia.com>
- <81cb16323baa1c81e7bc1e8156fa47b8@kernel.org>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <e317b2fe-52e3-8ce7-ba77-43d2708d660f@nvidia.com>
-Date:   Thu, 17 Sep 2020 09:49:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Will Deacon <will@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] arm64: bpf: Fix branch offset in JIT
+Date:   Thu, 17 Sep 2020 11:49:25 +0300
+Message-Id: <20200917084925.177348-1-ilias.apalodimas@linaro.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <81cb16323baa1c81e7bc1e8156fa47b8@kernel.org>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600332474; bh=z6Ik8MFeZEIDclcxjNpVE2no7Ouado4SrHpNqiqWNco=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=sRwsmYAmFaTCDPAkn8vF/y4g2Cmas4wK7XFrt0y/7V0EcmgrEu67Chb3lSkP100Jb
-         zB2akawgML/0UT/BNLeVPr8jT/8jIGMtHZExgIwfdpxkpJsacH239vhpKga6PWypjn
-         med48LElyVmDabuyz3zzX2eEGKKFMMV4LPrTgpS/GbML+jEk9VlXilS+7kYanUHHhI
-         VT6F7woytMHNUOklP7MOSN17iQuqcdOK2nV3PE51PQ/a5btLU73LBkjvu619NeAs7w
-         MKVcv3vCaXlYzrZvCbuQ5vy3rpJw1vewHtqvNsqCpxtfGQ6giVe8aADSDinN4Ph+x6
-         lm2E0XxQnB7oA==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Running the eBPF test_verifier leads to random errors looking like this:
 
-On 17/09/2020 09:45, Marc Zyngier wrote:
-> On 2020-09-17 08:54, Jon Hunter wrote:
->> On 17/09/2020 08:50, Marc Zyngier wrote:
->>> Hi Linus,
->>>
->>> On 2020-09-17 08:40, Linus Walleij wrote:
->>>> On Wed, Sep 16, 2020 at 5:11 PM Marc Zyngier <maz@kernel.org> wrote:
->>>>
->>>>> Can you try the patch below and let me know?
->>>>
->>>> I tried this patch and now Ux500 WORKS. So this patch is definitely
->>>> something you should apply.
->>>>
->>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (is_f=
-rankengic())
->>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 set_sgi_intid(irqstat);
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 this_cpu=
-_write(sgi_intid, intid);
->>>>
->>>> This needs changing to irqstat to compile as pointed out by Jon.
->>>>
->>>> With that:
->>>> Tested-by: Linus Walleij <linus.walleij@linaro.org>
->>>
->>> Thanks a lot for that.
->>>
->>> Still need to understand why some of Jon's systems are left unbootable,
->>> despite having similar GIC implementations (Tegra194 and Tegra210 use
->>> the same GIC-400, and yet only one of the two boots correctly...).
->>
->> So far, I have only tested this patch on Tegra20. Let me try the other
->> failing boards this morning and see if those still fail.
->=20
-> Tegra20 (if I remember well) is a dual A9 with the same GIC implementatio=
-n
-> as Ux500, hence requiring the source CPU bits to be written back. So this
-> patch should have cured it, but didn't...
->=20
-> /me puzzled.
+[ 6525.735488] Unexpected kernel BRK exception at EL1
+[ 6525.735502] Internal error: ptrace BRK handler: f2000100 [#1] SMP
+[ 6525.741609] Modules linked in: nls_utf8 cifs libdes libarc4 dns_resolver fscache binfmt_misc nls_ascii nls_cp437 vfat fat aes_ce_blk crypto_simd cryptd aes_ce_cipher ghash_ce gf128mul efi_pstore sha2_ce sha256_arm64 sha1_ce evdev efivars efivarfs ip_tables x_tables autofs4 btrfs blake2b_generic xor xor_neon zstd_compress raid6_pq libcrc32c crc32c_generic ahci xhci_pci libahci xhci_hcd igb libata i2c_algo_bit nvme realtek usbcore nvme_core scsi_mod t10_pi netsec mdio_devres of_mdio gpio_keys fixed_phy libphy gpio_mb86s7x
+[ 6525.787760] CPU: 3 PID: 7881 Comm: test_verifier Tainted: G        W         5.9.0-rc1+ #47
+[ 6525.796111] Hardware name: Socionext SynQuacer E-series DeveloperBox, BIOS build #1 Jun  6 2020
+[ 6525.804812] pstate: 20000005 (nzCv daif -PAN -UAO BTYPE=--)
+[ 6525.810390] pc : bpf_prog_c3d01833289b6311_F+0xc8/0x9f4
+[ 6525.815613] lr : bpf_prog_d53bb52e3f4483f9_F+0x38/0xc8c
+[ 6525.820832] sp : ffff8000130cbb80
+[ 6525.824141] x29: ffff8000130cbbb0 x28: 0000000000000000
+[ 6525.829451] x27: 000005ef6fcbf39b x26: 0000000000000000
+[ 6525.834759] x25: ffff8000130cbb80 x24: ffff800011dc7038
+[ 6525.840067] x23: ffff8000130cbd00 x22: ffff0008f624d080
+[ 6525.845375] x21: 0000000000000001 x20: ffff800011dc7000
+[ 6525.850682] x19: 0000000000000000 x18: 0000000000000000
+[ 6525.855990] x17: 0000000000000000 x16: 0000000000000000
+[ 6525.861298] x15: 0000000000000000 x14: 0000000000000000
+[ 6525.866606] x13: 0000000000000000 x12: 0000000000000000
+[ 6525.871913] x11: 0000000000000001 x10: ffff8000000a660c
+[ 6525.877220] x9 : ffff800010951810 x8 : ffff8000130cbc38
+[ 6525.882528] x7 : 0000000000000000 x6 : 0000009864cfa881
+[ 6525.887836] x5 : 00ffffffffffffff x4 : 002880ba1a0b3e9f
+[ 6525.893144] x3 : 0000000000000018 x2 : ffff8000000a4374
+[ 6525.898452] x1 : 000000000000000a x0 : 0000000000000009
+[ 6525.903760] Call trace:
+[ 6525.906202]  bpf_prog_c3d01833289b6311_F+0xc8/0x9f4
+[ 6525.911076]  bpf_prog_d53bb52e3f4483f9_F+0x38/0xc8c
+[ 6525.915957]  bpf_dispatcher_xdp_func+0x14/0x20
+[ 6525.920398]  bpf_test_run+0x70/0x1b0
+[ 6525.923969]  bpf_prog_test_run_xdp+0xec/0x190
+[ 6525.928326]  __do_sys_bpf+0xc88/0x1b28
+[ 6525.932072]  __arm64_sys_bpf+0x24/0x30
+[ 6525.935820]  el0_svc_common.constprop.0+0x70/0x168
+[ 6525.940607]  do_el0_svc+0x28/0x88
+[ 6525.943920]  el0_sync_handler+0x88/0x190
+[ 6525.947838]  el0_sync+0x140/0x180
+[ 6525.951154] Code: d4202000 d4202000 d4202000 d4202000 (d4202000)
+[ 6525.957249] ---[ end trace cecc3f93b14927e2 ]---
 
-Me too. Maybe there just happens to be something else also going wrong
-in next. I am doing a bit more testing to see if applying the fix
-directly on top of this change fixes it to try and eliminate anything
-else in -next.
+The reason is the offset[] creation and later usage, while building
+the eBPF body. The code currently omits the first instruction, since
+build_insn() will increase our ctx->idx before saving it.
+That was fine up until bounded eBPF loops were introduced. After that
+introduction, offset[0] must be the offset of the end of prologue which
+is the start of the 1st insn while, offset[n] holds the
+offset of the end of n-th insn.
 
-Linus, what -next are you testing on? I am using next-20200916.
+When "taken loop with back jump to 1st insn" test runs, it will
+eventually call bpf2a64_offset(-1, 2, ctx). Since negative indexing is
+permitted, the current outcome depends on the value stored in
+ctx->offset[-1], which has nothing to do with our array.
+If the value happens to be 0 the tests will work. If not this error
+triggers.
 
-Jon
+commit 7c2e988f400e ("bpf: fix x64 JIT code generation for jmp to 1st insn")
+fixed an indentical bug on x86 when eBPF bounded loops were introduced.
 
---=20
-nvpublic
+So let's fix it by creating the ctx->offset[] differently. Track the
+beginning of instruction and account for the extra instruction while
+calculating the arm instruction offsets.
+
+Fixes: 2589726d12a1 ("bpf: introduce bounded loops")
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Reported-by: Jiri Olsa <jolsa@kernel.org>
+Co-developed-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+Co-developed-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+---
+Changes since v1: 
+ - Added Co-developed-by, Reported-by and Fixes tags correctly
+ - Describe the expected context of ctx->offset[] in comments
+Changes since v2:
+ - Drop the change of behavior for 16-byte eBPF instructions. This won't
+ currently cause any problems and can go in on a different patch
+ - simplify bpf2a64_offset()
+
+ arch/arm64/net/bpf_jit_comp.c | 43 +++++++++++++++++++++++++----------
+ 1 file changed, 31 insertions(+), 12 deletions(-)
+
+diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+index f8912e45be7a..ef9f1d5e989d 100644
+--- a/arch/arm64/net/bpf_jit_comp.c
++++ b/arch/arm64/net/bpf_jit_comp.c
+@@ -143,14 +143,17 @@ static inline void emit_addr_mov_i64(const int reg, const u64 val,
+ 	}
+ }
+ 
+-static inline int bpf2a64_offset(int bpf_to, int bpf_from,
++static inline int bpf2a64_offset(int bpf_insn, int off,
+ 				 const struct jit_ctx *ctx)
+ {
+-	int to = ctx->offset[bpf_to];
+-	/* -1 to account for the Branch instruction */
+-	int from = ctx->offset[bpf_from] - 1;
+-
+-	return to - from;
++	/* BPF JMP offset is relative to the next instruction */
++	bpf_insn++;
++	/*
++	 * Whereas arm64 branch instructions encode the offset
++	 * from the branch itself, so we must subtract 1 from the
++	 * instruction offset.
++	 */
++	return ctx->offset[bpf_insn + off] - (ctx->offset[bpf_insn] - 1);
+ }
+ 
+ static void jit_fill_hole(void *area, unsigned int size)
+@@ -642,7 +645,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
+ 
+ 	/* JUMP off */
+ 	case BPF_JMP | BPF_JA:
+-		jmp_offset = bpf2a64_offset(i + off, i, ctx);
++		jmp_offset = bpf2a64_offset(i, off, ctx);
+ 		check_imm26(jmp_offset);
+ 		emit(A64_B(jmp_offset), ctx);
+ 		break;
+@@ -669,7 +672,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
+ 	case BPF_JMP32 | BPF_JSLE | BPF_X:
+ 		emit(A64_CMP(is64, dst, src), ctx);
+ emit_cond_jmp:
+-		jmp_offset = bpf2a64_offset(i + off, i, ctx);
++		jmp_offset = bpf2a64_offset(i, off, ctx);
+ 		check_imm19(jmp_offset);
+ 		switch (BPF_OP(code)) {
+ 		case BPF_JEQ:
+@@ -908,10 +911,21 @@ static int build_body(struct jit_ctx *ctx, bool extra_pass)
+ 	const struct bpf_prog *prog = ctx->prog;
+ 	int i;
+ 
++	/*
++	 * - offset[0] offset of the end of prologue,
++	 *   start of the 1st instruction.
++	 * - offset[1] - offset of the end of 1st instruction,
++	 *   start of the 2nd instruction
++	 * [....]
++	 * - offset[3] - offset of the end of 3rd instruction,
++	 *   start of 4th instruction
++	 */
+ 	for (i = 0; i < prog->len; i++) {
+ 		const struct bpf_insn *insn = &prog->insnsi[i];
+ 		int ret;
+ 
++		if (ctx->image == NULL)
++			ctx->offset[i] = ctx->idx;
+ 		ret = build_insn(insn, ctx, extra_pass);
+ 		if (ret > 0) {
+ 			i++;
+@@ -919,11 +933,16 @@ static int build_body(struct jit_ctx *ctx, bool extra_pass)
+ 				ctx->offset[i] = ctx->idx;
+ 			continue;
+ 		}
+-		if (ctx->image == NULL)
+-			ctx->offset[i] = ctx->idx;
+ 		if (ret)
+ 			return ret;
+ 	}
++	/*
++	 * offset is allocated with prog->len + 1 so fill in
++	 * the last element with the offset after the last
++	 * instruction (end of program)
++	 */
++	if (ctx->image == NULL)
++		ctx->offset[i] = ctx->idx;
+ 
+ 	return 0;
+ }
+@@ -1002,7 +1021,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+ 	memset(&ctx, 0, sizeof(ctx));
+ 	ctx.prog = prog;
+ 
+-	ctx.offset = kcalloc(prog->len, sizeof(int), GFP_KERNEL);
++	ctx.offset = kcalloc(prog->len + 1, sizeof(int), GFP_KERNEL);
+ 	if (ctx.offset == NULL) {
+ 		prog = orig_prog;
+ 		goto out_off;
+@@ -1089,7 +1108,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+ 	prog->jited_len = prog_size;
+ 
+ 	if (!prog->is_func || extra_pass) {
+-		bpf_prog_fill_jited_linfo(prog, ctx.offset);
++		bpf_prog_fill_jited_linfo(prog, ctx.offset + 1);
+ out_off:
+ 		kfree(ctx.offset);
+ 		kfree(jit_data);
+-- 
+2.28.0
+
