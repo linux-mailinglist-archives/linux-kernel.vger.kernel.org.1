@@ -2,89 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED52926E027
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 18:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7040726E02C
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 18:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727833AbgIQP7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728075AbgIQQAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 12:00:40 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:30404 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728088AbgIQP7q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 17 Sep 2020 11:59:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50022 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728097AbgIQP66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 11:58:58 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EEB372220F;
-        Thu, 17 Sep 2020 15:57:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600358228;
-        bh=0R8wQ8wtOhNvgIX+2H28XDlxNwOFHmlyptZe/q+b84M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=prSjxzW19p/f7/IiwXidlQxWIH4yvQe3YiglaEZOzU+xmrU8Rdom+UWXBbTRDidKX
-         47oehxQHgFGKaSQk54UP3d5JFCxVhVjp7Z2ltXy9Ke6DVUeKqG61MIDETd/c0i8zSC
-         hjUAYjlLMOFUMr0yoF6qhtl/U0F7s3ucTW+AdapM=
-Date:   Thu, 17 Sep 2020 16:56:18 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     lgirdwood@gmail.com, tiwai@suse.com, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, camel.guo@axis.com
-Subject: Re: [PATCH 5/6] dt-bindings: tlv320adcx140: Add slot programming
- property
-Message-ID: <20200917155618.GG4755@sirena.org.uk>
-References: <20200915190606.1744-1-dmurphy@ti.com>
- <20200915190606.1744-5-dmurphy@ti.com>
- <20200917130236.GA2954@sirena.org.uk>
- <f4a83c01-58e2-1b7a-677e-44d5bde7b175@ti.com>
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08HClZei001796;
+        Thu, 17 Sep 2020 09:00:01 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 33k5q56qjm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Sep 2020 09:00:01 -0400
+Received: from SCSQMBX10.ad.analog.com (scsqmbx10.ad.analog.com [10.77.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 08HCxxnv024628
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Thu, 17 Sep 2020 09:00:00 -0400
+Received: from SCSQCASHYB7.ad.analog.com (10.77.17.133) by
+ SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 17 Sep 2020 06:00:05 -0700
+Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by
+ SCSQCASHYB7.ad.analog.com (10.77.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 17 Sep 2020 06:00:05 -0700
+Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX10.ad.analog.com
+ (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Thu, 17 Sep 2020 06:00:05 -0700
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 08HCxsR3022978;
+        Thu, 17 Sep 2020 08:59:54 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <jic23@kernel.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH] iio: buffer: split buffer sysfs creation to take buffer as primary arg
+Date:   Thu, 17 Sep 2020 15:59:51 +0300
+Message-ID: <20200917125951.861-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="+sHJum3is6Tsg7/J"
-Content-Disposition: inline
-In-Reply-To: <f4a83c01-58e2-1b7a-677e-44d5bde7b175@ti.com>
-X-Cookie: If you fail to plan, plan to fail.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-17_09:2020-09-16,2020-09-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
+ impostorscore=0 mlxscore=0 malwarescore=0 phishscore=0 mlxlogscore=999
+ lowpriorityscore=0 suspectscore=2 priorityscore=1501 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009170099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Currently the iio_buffer_{alloc,free}_sysfs_and_mask() take 'indio_dev' as
+primary argument. This change splits the main logic into a private function
+that takes an IIO buffer as primary argument.
 
---+sHJum3is6Tsg7/J
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+That way, the functions can be extended to configure the sysfs for multiple
+buffers.
 
-On Thu, Sep 17, 2020 at 10:15:27AM -0500, Dan Murphy wrote:
-> On 9/17/20 8:02 AM, Mark Brown wrote:
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
+ drivers/iio/industrialio-buffer.c | 46 ++++++++++++++++++++-----------
+ 1 file changed, 30 insertions(+), 16 deletions(-)
 
-> > This is something I'd expect to be done by the machine driver rather
-> > than in the CODEC specific DT bindings, and apart from anything else
+diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+index a7d7e5143ed2..a4f6bb96d4f4 100644
+--- a/drivers/iio/industrialio-buffer.c
++++ b/drivers/iio/industrialio-buffer.c
+@@ -1264,26 +1264,14 @@ static struct attribute *iio_buffer_attrs[] = {
+ 	&dev_attr_data_available.attr,
+ };
+ 
+-int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
++static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
++					     struct iio_dev *indio_dev)
+ {
+ 	struct iio_dev_attr *p;
+ 	struct attribute **attr;
+-	struct iio_buffer *buffer = indio_dev->buffer;
+ 	int ret, i, attrn, attrcount;
+ 	const struct iio_chan_spec *channels;
+ 
+-	channels = indio_dev->channels;
+-	if (channels) {
+-		int ml = indio_dev->masklength;
+-
+-		for (i = 0; i < indio_dev->num_channels; i++)
+-			ml = max(ml, channels[i].scan_index + 1);
+-		indio_dev->masklength = ml;
+-	}
+-
+-	if (!buffer)
+-		return 0;
+-
+ 	attrcount = 0;
+ 	if (buffer->attrs) {
+ 		while (buffer->attrs[attrcount] != NULL)
+@@ -1367,19 +1355,45 @@ int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
+ 	return ret;
+ }
+ 
+-void iio_buffer_free_sysfs_and_mask(struct iio_dev *indio_dev)
++int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
+ {
+ 	struct iio_buffer *buffer = indio_dev->buffer;
++	const struct iio_chan_spec *channels;
++	int i;
++
++	channels = indio_dev->channels;
++	if (channels) {
++		int ml = indio_dev->masklength;
++
++		for (i = 0; i < indio_dev->num_channels; i++)
++			ml = max(ml, channels[i].scan_index + 1);
++		indio_dev->masklength = ml;
++	}
+ 
+ 	if (!buffer)
+-		return;
++		return 0;
++
++	return __iio_buffer_alloc_sysfs_and_mask(buffer, indio_dev);
++}
+ 
++static void __iio_buffer_free_sysfs_and_mask(struct iio_buffer *buffer)
++{
+ 	bitmap_free(buffer->scan_mask);
+ 	kfree(buffer->buffer_group.attrs);
+ 	kfree(buffer->scan_el_group.attrs);
+ 	iio_free_chan_devattr_list(&buffer->scan_el_dev_attr_list);
+ }
+ 
++void iio_buffer_free_sysfs_and_mask(struct iio_dev *indio_dev)
++{
++	struct iio_buffer *buffer = indio_dev->buffer;
++
++	if (!buffer)
++		return;
++
++	__iio_buffer_free_sysfs_and_mask(buffer);
++}
++
+ /**
+  * iio_validate_scan_mask_onehot() - Validates that exactly one channel is selected
+  * @indio_dev: the iio device
+-- 
+2.17.1
 
-> Customers need the ability to not transmit on a TDM slot, since another
-> device could be using the slot.
-
-TDM is not an issue, we already have the set_tdm_slot() API.  The issue
-is how you're configuring it.
-
-> The dai-tdm-slot-num would be a good candidate to add to the sound card to
-> define the slot number but it's definition is "Number of slots in use." So
-> it is not really setting the needed slot.
-> I am not finding any good way to assign specific slots to specific channels.
-
-If the generic features are not sufficent then please extend the generic
-features rather than bodging around them in individual drivers.
-
---+sHJum3is6Tsg7/J
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9jhyEACgkQJNaLcl1U
-h9B6/Qf+M5hvEXVKhLg+PkuggYW/zHPqIs79pJjddV/tkBhy612mpeKAAj8Crp4G
-WTsAdCZ8gh0xhUu5quFCArp73bD+tVGMcp2OidYjpG9sZ/4sBW36oYeBRei3zPw0
-531VEYn5lS95/BbYlXyTJGT09zHbPRIv2PReev6s+3pUmK1DFsgaLitDRwLz+Ndt
-DiJLHewySrOXdvwg3VBE04nQjYW5qAgkF9EVKAyKU68NKpAw3NAYcaIlOe7KFubg
-Gy1yyCiYFNmdfDGcGJ+H8JdhpvUKc8fh4dUbNJGl5n1X3S4R78IunjNw9fnR/l3U
-yiO+EE3d5A1qgWqlUDXSOLr+om19xA==
-=OC0y
------END PGP SIGNATURE-----
-
---+sHJum3is6Tsg7/J--
