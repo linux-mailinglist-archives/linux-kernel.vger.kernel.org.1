@@ -2,157 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 738D226E2AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BA1C26E2AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgIQRle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 13:41:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41294 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726533AbgIQRkB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 13:40:01 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5EC50208E4;
-        Thu, 17 Sep 2020 17:39:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600364400;
-        bh=7HLpTU1NuW5mP5sx9uopdOJKdZeEuCHGzpDV/K4dqmk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lnI2rw1G2x+xqAUqX5Dp98Nq5DGUN5X0SWuku0RcErA8E5hCfJPTfHrfdzcm7tF6+
-         62LadmqKCifWGz9006fpB2vFukPDBfVfcrxfj0O6AWT1xtnJawBGCoyR0iVFIch3n4
-         i/JHhwGfgnHgebI6+Dcio+pzy3tym1KyP9j+AP/4=
-Date:   Thu, 17 Sep 2020 19:40:31 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Prateek Sood <prsood@codeaurora.org>, Takashi Iwai <tiwai@suse.de>,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, ben.hutchings@codethink.co.uk,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 5.8 000/177] 5.8.10-rc1 review
-Message-ID: <20200917174031.GA867706@kroah.com>
-References: <b94c29b3-ef68-897b-25a8-e6fcc181a22a@linuxfoundation.org>
- <8277900f-d300-79fa-eac7-096686a6fbc3@linuxfoundation.org>
- <20200916062958.GH142621@kroah.com>
- <69e7c908-4332-91fd-bdb2-6be19fcbf126@linuxfoundation.org>
- <20200916152629.GD3018065@kroah.com>
- <09de87b0-8055-26ef-cc31-0c63e63e5d2a@linuxfoundation.org>
- <20200916172529.GA3056792@kroah.com>
- <9365ff94-2a28-cc5f-7487-a6d8d42de302@linuxfoundation.org>
- <20200917144645.GA275135@kroah.com>
- <72d215df-5087-18d5-13e1-301ea5ad037e@linuxfoundation.org>
+        id S1726489AbgIQRlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 13:41:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726623AbgIQRlX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 13:41:23 -0400
+Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A59C061788;
+        Thu, 17 Sep 2020 10:41:20 -0700 (PDT)
+Received: by mail-oo1-xc42.google.com with SMTP id s17so752791ooe.6;
+        Thu, 17 Sep 2020 10:41:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ay7jsk8o+Eqah3J51yvrWMQYd0dtmSWP1P2mdx9VXhI=;
+        b=jmXdxy2RlxPMrYvZua5LpdZ+7Z6dQ9pL3oNt+iDFrDNUbjf90IB/VdCyQBgGxTu903
+         ACGRDw5Us4/6CRgvJrgFNuPUysoVD8S/hmjLRxffphCq8c3EaZVLuNn7CoT5sxS5dwNO
+         NJlYl9GIxA4+Rb1nhLHun5DUzirJTq5YkNnChOgtB5E2F5ObcurDtVfjGdjcAPkhzyzq
+         m4fDysTaZPvkBLL2+X4tPdNQ84Ywc4MvxPRGNCuz7jENNeyUjq51saM797XFL//sqVG5
+         aCqrrGHhVUd4y1IPwvgSDJu8rR/YlDaivDdxGVynLdNMQGUJiOuToyMkoAhmvMUVr9Hi
+         lpzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ay7jsk8o+Eqah3J51yvrWMQYd0dtmSWP1P2mdx9VXhI=;
+        b=ofF+yReofE4yR56eVOR02c1FBZ/AqFI476mh+dkERaykhVPK4e7sagggO8SmDd1nGT
+         rehzWKf5seW/BWLPDG8bU1tDJ/Ly/Ii0BXNTOFo0gNpz7oNBd1ryoGEPs6JF0cuD4+yd
+         l8kG7O/ngyTM7UaA1cyxf3NM76dvWhSjkQU9lZ1hgq3u9KEkOjFFtKYpelrUWgGqopAe
+         ZgmOW88+eJrZAQ5T50zUouAj9PKnLHXMJX65BJQahNd7LK4Z2iWvTR778WIdPAs2OTbk
+         d45YHtqNAhBsERUF6oKBVZ5UsMvh+h9U9m1dqDXW7nXNfQQDJvAWcDChH4BsqllkaIe5
+         hQBQ==
+X-Gm-Message-State: AOAM533hhzDGruNjEDQiOYg7Rt4qkx/+7ZWwOx717iT5w4nJFD6KJROu
+        9JpLTM+bJc28W8Xa+O+iMKvdansiH8aEPOJav/g=
+X-Google-Smtp-Source: ABdhPJxHUMXwOFUpKkCNjq4rEsKcM54Nh06EjfpPz5bYVqYmfmE3lbHZVp3fBSeUGLfbk9Drt+dKfUhJVGsNHSuz8wI=
+X-Received: by 2002:a4a:e616:: with SMTP id f22mr8522398oot.11.1600364479815;
+ Thu, 17 Sep 2020 10:41:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <72d215df-5087-18d5-13e1-301ea5ad037e@linuxfoundation.org>
+References: <20200917125951.861-1-alexandru.ardelean@analog.com> <20200917181626.59eb84c8@archlinux>
+In-Reply-To: <20200917181626.59eb84c8@archlinux>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Thu, 17 Sep 2020 20:41:08 +0300
+Message-ID: <CA+U=DspN3WYX5_1MZpRPzUcC5NV4=iSekQ9jNSehad1jfi2bQw@mail.gmail.com>
+Subject: Re: [PATCH] iio: buffer: split buffer sysfs creation to take buffer
+ as primary arg
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 11:06:05AM -0600, Shuah Khan wrote:
-> On 9/17/20 8:46 AM, Greg Kroah-Hartman wrote:
-> > On Thu, Sep 17, 2020 at 08:34:58AM -0600, Shuah Khan wrote:
-> > > On 9/16/20 11:25 AM, Greg Kroah-Hartman wrote:
-> > > > On Wed, Sep 16, 2020 at 09:34:52AM -0600, Shuah Khan wrote:
-> > > > > On 9/16/20 9:26 AM, Greg Kroah-Hartman wrote:
-> > > > > > On Wed, Sep 16, 2020 at 08:26:48AM -0600, Shuah Khan wrote:
-> > > > > > > On 9/16/20 12:29 AM, Greg Kroah-Hartman wrote:
-> > > > > > > > On Tue, Sep 15, 2020 at 08:54:24PM -0600, Shuah Khan wrote:
-> > > > > > > > > On 9/15/20 3:06 PM, Shuah Khan wrote:
-> > > > > > > > > > On 9/15/20 8:11 AM, Greg Kroah-Hartman wrote:
-> > > > > > > > > > > This is the start of the stable review cycle for the 5.8.10 release.
-> > > > > > > > > > > There are 177 patches in this series, all will be posted as a response
-> > > > > > > > > > > to this one.  If anyone has any issues with these being applied, please
-> > > > > > > > > > > let me know.
-> > > > > > > > > > > 
-> > > > > > > > > > > Responses should be made by Thu, 17 Sep 2020 14:06:12 +0000.
-> > > > > > > > > > > Anything received after that time might be too late.
-> > > > > > > > > > > 
-> > > > > > > > > > > The whole patch series can be found in one patch at:
-> > > > > > > > > > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.10-rc1.gz
-> > > > > > > > > > > 
-> > > > > > > > > > > or in the git tree and branch at:
-> > > > > > > > > > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-> > > > > > > > > > > linux-5.8.y
-> > > > > > > > > > > and the diffstat can be found below.
-> > > > > > > > > > > 
-> > > > > > > > > > > thanks,
-> > > > > > > > > > > 
-> > > > > > > > > > > greg k-h
-> > > > > > > > > > > 
-> > > > > > > > > > 
-> > > > > > > > > > Compiled and booted fine. wifi died:
-> > > > > > > > > > 
-> > > > > > > > > > ath10k_pci 0000:02:00.0: could not init core (-110)
-> > > > > > > > > > ath10k_pci 0000:02:00.0: could not probe fw (-110)
-> > > > > > > > > > 
-> > > > > > > > > > This is regression from 5.8.9 and 5.9-rc5 works just fine.
-> > > > > > > > > > 
-> > > > > > > > > > I will try to bisect later this evening to see if I can isolate the
-> > > > > > > > > > commit.
-> > > > > > > > > > 
-> > > > > > > > > 
-> > > > > > > > > The following commit is what caused ath10k_pci driver problem
-> > > > > > > > > that killed wifi.
-> > > > > > > > > 
-> > > > > > > > > Prateek Sood <prsood@codeaurora.org>
-> > > > > > > > >         firmware_loader: fix memory leak for paged buffer
-> > > > > > > > > 
-> > > > > > > > > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?h=linux-5.8.y&id=ec0a59266c9c9f46037efd3dcc0323973e102271
-> > > > > > > > 
-> > > > > > > > Ugh, that's not good, is this also a problem in 5.9-rc5 as well?  For
-> > > > > > > > reference, this is commit 4965b8cd1bc1 ("firmware_loader: fix memory
-> > > > > > > > leak for paged buffer") in Linus's tree.
-> > > > > > > > 
-> > > > > > > 
-> > > > > > > I am not seeing this on Linux 5.9-rc5 for sure.
-> > > > > > > 
-> > > > > > > > And it should be showing up in 5.4.y at the moment too, as this patch is
-> > > > > > > > in that tree right now...
-> > > > > > > > 
-> > > > > > > 
-> > > > > > > I don't see this patch in  4.19.146-rc1
-> > > > > > 
-> > > > > > It's not there, it's in 5.4.66-rc1, which worked for you somehow, right?
-> > > > > > 
-> > > > > > > Linus's tree works for with this patch in. I compared the two files
-> > > > > > > for differences in commit between Linus's tree and 5.8.10-rc1
-> > > > > > > 
-> > > > > > > Couldn't find anything obvious.
-> > > > > > 
-> > > > > > Again, really odd...
-> > > > > > 
-> > > > > > I don't have a problem dropping it, but I should drop it from both 5.4.y
-> > > > > > and 5.8.y, right?
-> > > > > > 
-> > > > > 
-> > > > > Sorry. Yes. Dropping from 5.8 and 5.4 would be great until we figure out
-> > > > > why this patch causes problems.
-> > > > > 
-> > > > > I will continue debugging and let you know what I find.
-> > > > 
-> > > 
-> > > With this it boots and wifi is good for me. I am very puzzled by why
-> > > this made a difference to make sure I am not narrowing in on the wrong
-> > > patch.
-> > > 
-> 
-> Update on this. I did a series of reboots and boots with the patch
-> I asked you to drop and I am not seeing the wifi problem.
-> 
-> Prateek Sood <prsood@codeaurora.org>
->     firmware_loader: fix memory leak for paged buffer
-> 
-> With my testing, I think it is an unrelated issue and the error
-> messages from the fw load code path in the driver when wifi failed
-> through me off.
-> 
-> Sorry for making you drop the patch from 5.8.y and 5.4.y.
-> Please include them in the next rc.
+On Thu, Sep 17, 2020 at 8:18 PM Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Thu, 17 Sep 2020 15:59:51 +0300
+> Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+>
+> > Currently the iio_buffer_{alloc,free}_sysfs_and_mask() take 'indio_dev' as
+> > primary argument. This change splits the main logic into a private function
+> > that takes an IIO buffer as primary argument.
+> >
+> > That way, the functions can be extended to configure the sysfs for multiple
+> > buffers.
+> >
+> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+>
+> One comment inline.  Whilst I think it is safe as you have it, I'd
+> rather avoid the minor change in logic if we don't need to make it.
+>
+> Thanks,
+>
+> Jonathan
+>
+>
+> > ---
+> >  drivers/iio/industrialio-buffer.c | 46 ++++++++++++++++++++-----------
+> >  1 file changed, 30 insertions(+), 16 deletions(-)
+> >
+> > diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+> > index a7d7e5143ed2..a4f6bb96d4f4 100644
+> > --- a/drivers/iio/industrialio-buffer.c
+> > +++ b/drivers/iio/industrialio-buffer.c
+> > @@ -1264,26 +1264,14 @@ static struct attribute *iio_buffer_attrs[] = {
+> >       &dev_attr_data_available.attr,
+> >  };
+> >
+> > -int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
+> > +static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
+> > +                                          struct iio_dev *indio_dev)
+> >  {
+> >       struct iio_dev_attr *p;
+> >       struct attribute **attr;
+> > -     struct iio_buffer *buffer = indio_dev->buffer;
+> >       int ret, i, attrn, attrcount;
+> >       const struct iio_chan_spec *channels;
+> >
+> > -     channels = indio_dev->channels;
+> > -     if (channels) {
+> > -             int ml = indio_dev->masklength;
+> > -
+> > -             for (i = 0; i < indio_dev->num_channels; i++)
+> > -                     ml = max(ml, channels[i].scan_index + 1);
+> > -             indio_dev->masklength = ml;
+> > -     }
+> > -
+> > -     if (!buffer)
+> > -             return 0;
+> > -
+> >       attrcount = 0;
+> >       if (buffer->attrs) {
+> >               while (buffer->attrs[attrcount] != NULL)
+> > @@ -1367,19 +1355,45 @@ int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
+> >       return ret;
+> >  }
+> >
+> > -void iio_buffer_free_sysfs_and_mask(struct iio_dev *indio_dev)
+> > +int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
+> >  {
+> >       struct iio_buffer *buffer = indio_dev->buffer;
+> > +     const struct iio_chan_spec *channels;
+> > +     int i;
+> > +
+> > +     channels = indio_dev->channels;
+> > +     if (channels) {
+> > +             int ml = indio_dev->masklength;
+> > +
+> > +             for (i = 0; i < indio_dev->num_channels; i++)
+> > +                     ml = max(ml, channels[i].scan_index + 1);
+> > +             indio_dev->masklength = ml;
+> > +     }
+>
+> I've not really figured out if it matters, but this is a logic change.
+> Previously we didn't compute masklength if there was no buffer provided.
+> Now we do.  It's probably better to move the if (!buffer) check above
+> this block or at least mention this change in the patch description.
+>
 
-No worries, now added back, thanks for testing some more.
+Umm, are you referring that this patch is a logic change or you are
+suggesting a logic change?
+The "if (!buffer)" check was positioned after the masklength
+computation even in the old code.
 
-greg k-h
+>
+> >
+> >       if (!buffer)
+> > -             return;
+> > +             return 0;
+> > +
+> > +     return __iio_buffer_alloc_sysfs_and_mask(buffer, indio_dev);
+> > +}
+> >
+> > +static void __iio_buffer_free_sysfs_and_mask(struct iio_buffer *buffer)
+> > +{
+> >       bitmap_free(buffer->scan_mask);
+> >       kfree(buffer->buffer_group.attrs);
+> >       kfree(buffer->scan_el_group.attrs);
+> >       iio_free_chan_devattr_list(&buffer->scan_el_dev_attr_list);
+> >  }
+> >
+> > +void iio_buffer_free_sysfs_and_mask(struct iio_dev *indio_dev)
+> > +{
+> > +     struct iio_buffer *buffer = indio_dev->buffer;
+> > +
+> > +     if (!buffer)
+> > +             return;
+> > +
+> > +     __iio_buffer_free_sysfs_and_mask(buffer);
+> > +}
+> > +
+> >  /**
+> >   * iio_validate_scan_mask_onehot() - Validates that exactly one channel is selected
+> >   * @indio_dev: the iio device
+>
