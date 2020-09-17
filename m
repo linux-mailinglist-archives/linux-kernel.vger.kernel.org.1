@@ -2,109 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB5C26DFFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 17:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8D9626DFEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 17:42:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728114AbgIQPpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 11:45:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728061AbgIQPOw (ORCPT
+        id S1727876AbgIQPmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 11:42:45 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:37186 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728098AbgIQPQS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 11:14:52 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D92C06178A;
-        Thu, 17 Sep 2020 08:14:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9VdUj82i1voMW0HzA3fhImIu/omKpBsKf5XkZHcle8M=; b=fN/clyJLi0gpSAQ9dY/gHSFtzi
-        B9i3x4sG59TjoaZhhi1PxQfXznlkNpc0JifdCAofvS2cQPUKZjIeOCetK9upe3aGB2zNzF93xKS5N
-        mjU2qL6fjktaSIZZZugRhBN6m5eidycNeMWPgEnPYFf3ey3V0Lg5X0KNkcJAz+oZEXZD/vq+N49/J
-        HnPtKN/dcj/xafFGSMGXV3CLDfQiSyP/Uf0Hb7KdVn80iotliaV6r7uMXmD3m3iIxeBbwxWB9o9wW
-        U6FnyMqd0fQDpsgLHi3FGXF21IaKMLMCnyFIXItEyF0eb4AF51asiik5+y1lzrjlAK2KisKxcGuVY
-        vHmVsaUw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIvcG-00025n-K8; Thu, 17 Sep 2020 15:14:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2BD833011C6;
-        Thu, 17 Sep 2020 17:14:29 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CE97E2BC7FEE6; Thu, 17 Sep 2020 17:14:29 +0200 (CEST)
-Date:   Thu, 17 Sep 2020 17:14:29 +0200
-From:   peterz@infradead.org
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     davem@davemloft.net, paulmck@kernel.org, joel@joelfernandes.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org, josh@joshtriplett.org,
-        christian.brauner@ubuntu.com, mingo@redhat.com, will@kernel.org
-Subject: Re: [PATCH net-next 6/7] lockdep: provide dummy forward declaration
- of *_is_held() helpers
-Message-ID: <20200917151429.GJ1362448@hirez.programming.kicks-ass.net>
-References: <20200916184528.498184-1-kuba@kernel.org>
- <20200916184528.498184-7-kuba@kernel.org>
+        Thu, 17 Sep 2020 11:16:18 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08HFFXRu101141;
+        Thu, 17 Sep 2020 10:15:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600355733;
+        bh=zJUvUPlDG3fjTS6W6hFpNIPLT9BdATy27+PbP+vGrPs=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=BeCOCdSyBx881M4VX9eLbF/b3wotePX5ouLGLCmPnRF1IEbV4bxpZrJdGfR/FHZ7V
+         wjyNgtTgNVK1fFFL2wjQSVXP87c0bIbKLNy5ogG3Gl7zGB+bUH4vonwcM91+kWfH2M
+         y8V/6HIYDzMWzK74m9gaHS5hE9C9Rh+7WETtmg50=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08HFFXSS120076;
+        Thu, 17 Sep 2020 10:15:33 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 17
+ Sep 2020 10:15:33 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 17 Sep 2020 10:15:33 -0500
+Received: from [10.250.32.129] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08HFFWuJ008246;
+        Thu, 17 Sep 2020 10:15:32 -0500
+Subject: Re: [PATCH 5/6] dt-bindings: tlv320adcx140: Add slot programming
+ property
+To:     Mark Brown <broonie@kernel.org>
+CC:     <lgirdwood@gmail.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
+        <devicetree@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <camel.guo@axis.com>
+References: <20200915190606.1744-1-dmurphy@ti.com>
+ <20200915190606.1744-5-dmurphy@ti.com> <20200917130236.GA2954@sirena.org.uk>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <f4a83c01-58e2-1b7a-677e-44d5bde7b175@ti.com>
+Date:   Thu, 17 Sep 2020 10:15:27 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916184528.498184-7-kuba@kernel.org>
+In-Reply-To: <20200917130236.GA2954@sirena.org.uk>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 11:45:27AM -0700, Jakub Kicinski wrote:
-> When CONFIG_LOCKDEP is not set, lock_is_held() and lockdep_is_held()
-> are not declared or defined. This forces all callers to use ifdefs
-> around these checks.
-> 
-> Recent RCU changes added a lot of lockdep_is_held() calls inside
-> rcu_dereference_protected(). rcu_dereference_protected() hides
-> its argument on !LOCKDEP builds, but this may lead to unused variable
-> warnings.
-> 
-> Provide forward declarations of lock_is_held() and lockdep_is_held()
-> but never define them. This way callers can keep them visible to
-> the compiler on !LOCKDEP builds and instead depend on dead code
-> elimination to remove the references before the linker barfs.
-> 
-> We need lock_is_held() for RCU.
-> 
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> --
-> CC: peterz@infradead.org
-> CC: mingo@redhat.com
-> CC: will@kernel.org
-> ---
->  include/linux/lockdep.h | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
-> index 6a584b3e5c74..6b5bbc536bf6 100644
-> --- a/include/linux/lockdep.h
-> +++ b/include/linux/lockdep.h
-> @@ -371,6 +371,12 @@ static inline void lockdep_unregister_key(struct lock_class_key *key)
->  
->  #define lockdep_depth(tsk)	(0)
->  
-> +/*
-> + * Dummy forward declarations, allow users to write less ifdef-y code
-> + * and depend on dead code elimination.
-> + */
-> +int lock_is_held(const void *);
+Mark
 
-extern int lock_is_held(const struct lockdep_map *);
+On 9/17/20 8:02 AM, Mark Brown wrote:
+> On Tue, Sep 15, 2020 at 02:06:05PM -0500, Dan Murphy wrote:
+>
+>> +  ti,slot-mapping:
+>> +    type: boolean
+>> +    description: |
+>> +      Each channel can be assigned a specific TDM slot for either a left or
+>> +      right channel. The left channel values are from 0-31d and the right
+>> +      channel values are from 32-63d. If the right channel value is 32 then the
+>> +      right channel slot will be slot 31.
+>> +      The array index is sequential audio channel to be set.
+>> +      [ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8]
+>> +      If the channel is not to be used then the channel should be set to it's
+>> +      default value.
+> This is something I'd expect to be done by the machine driver rather
+> than in the CODEC specific DT bindings, and apart from anything else
+> everything involved in the DAI will need to agree on the mapping so this
+> doesn't look like something that should be done in a device specific
+> binding.
 
-> +int lockdep_is_held(const void *);
+Here is the use case from our customers
 
-extern
+Customers need the ability to not transmit on a TDM slot, since another 
+device could be using the slot.
+For example, the customer has an amp and dig microphone sharing one TDM 
+bus. The amp uses slot 0 while dig microphone use slots 1-3.
+In another example, customers use 2 dig microphones. One device 
+transmits on slots 0-3, the second device transmits on slots 4-7.
+In a third example, customers use 4 dig microphones. Device 1 uses Slots 
+0-3, Device 2 uses Slots 4-7, Device 3 uses Slots 8-11, and Device 4 
+uses Slots 12-15.
 
-I suppose we can't pull the lockdep_is_held() definition out from under
-CONFIG_LOCKDEP because it does the ->dep_map dereference and many types
-will simply not have that member.
+The dai-tdm-slot-num would be a good candidate to add to the sound card 
+to define the slot number but it's definition is "Number of slots in 
+use." So it is not really setting the needed slot.
+I am not finding any good way to assign specific slots to specific channels.
 
->  #define lockdep_is_held_type(l, r)		(1)
->  
->  #define lockdep_assert_held(l)			do { (void)(l); } while (0)
+I can add DAI slot numbering parameter for specific codecs.
+
+Dan
