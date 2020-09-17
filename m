@@ -2,157 +2,423 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 189C126D45B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C07B826D46C
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726218AbgIQHNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 03:13:08 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:17809 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726106AbgIQHNG (ORCPT
+        id S1726255AbgIQHRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 03:17:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726191AbgIQHRM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 03:13:06 -0400
+        Thu, 17 Sep 2020 03:17:12 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23BCFC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 00:17:12 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id e16so849744wrm.2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 00:17:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1600326785; x=1631862785;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   mime-version;
-  bh=bT02fndMmz9E4+y+xqKPl+BUNHOX1Ddkk2I4qA/LheA=;
-  b=iOqYzDKKbENVnSLY71h77Jgxr0XDNuRBnrSAjgkUPmg8LX98NYcJlgAw
-   8LHjG21k28HBwh1Bo2oOxTDiIluI8taAqLvTHMepmHAr0G/tiF4de1uxF
-   E+3v6yTsnjC4mpADQKl9tae5p9Rw/kOjsamZWueDK0i4Ru+R1yH/ZSkNr
-   c=;
-X-IronPort-AV: E=Sophos;i="5.76,436,1592870400"; 
-   d="scan'208";a="54591284"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-2225282c.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 17 Sep 2020 07:13:01 +0000
-Received: from EX13D31EUA004.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2c-2225282c.us-west-2.amazon.com (Postfix) with ESMTPS id 7EAABA18C7;
-        Thu, 17 Sep 2020 07:12:57 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.71) by
- EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 17 Sep 2020 07:12:39 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     Shakeel Butt <shakeelb@google.com>
-CC:     SeongJae Park <sjpark@amazon.com>,
-        SeongJae Park <sjpark@amazon.de>,
-        <Jonathan.Cameron@huawei.com>,
-        Andrea Arcangeli <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Qian Cai <cai@lca.pw>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "David Hildenbrand" <david@redhat.com>, <dwmw@amazon.com>,
-        Marco Elver <elver@google.com>, "Du, Fan" <fan.du@intel.com>,
-        <foersleo@amazon.de>, "Greg Thelen" <gthelen@google.com>,
-        Ian Rogers <irogers@google.com>, <jolsa@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        <mark.rutland@arm.com>, Mel Gorman <mgorman@suse.de>,
-        Minchan Kim <minchan@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, <namhyung@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Rik van Riel <riel@surriel.com>,
-        David Rientjes <rientjes@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>, <rppt@kernel.org>,
-        <sblbir@amazon.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
-        <snu@amazon.de>, Vlastimil Babka <vbabka@suse.cz>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Huang Ying <ying.huang@intel.com>, <zgf574564920@gmail.com>,
-        <linux-damon@amazon.com>, Linux MM <linux-mm@kvack.org>,
-        <linux-doc@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 2/2] mm/damon/debugfs: Support multiple contexts
-Date:   Thu, 17 Sep 2020 09:12:23 +0200
-Message-ID: <20200917071224.3939-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <CALvZod5fO4PzRKO84TZMZ_wqjPTXnEcecbKUaV_TVkmoF70gpA@mail.gmail.com>
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7tNETdKrKKC4EeIiwJmoRhdNqEytWTikJ3McwzcmerE=;
+        b=I66YaWyB15sQjUXcE47A1q6Niy/N5S5HvyXB03UwSD0T2DFKdWqofPeQUH058xmZcV
+         WV6LqBFagrO+SZTKOdn4HReWhkDZfyOxWi8z1d8wXUuZDzIrvdn9OvL7f24N4OA1/Hls
+         Dczcf8pCRClcUKIprTY0cD0zuV5nCuKZmQZ50dC8Ejr+V40AySVKcTQ3M2WImj+5DsOk
+         7xhx6pf95sXAsDuJH6elh9o/SmMBfKeHQOO8l8jkk5nJ4zYL5ONPAlSr1XuM3f3k/h6O
+         m4uMIf5boULWdPDMwyUmOgZgNbNXFQkXk55SXoZLISU5mqpSUqK67CIP+CsClMCvKPum
+         jELA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7tNETdKrKKC4EeIiwJmoRhdNqEytWTikJ3McwzcmerE=;
+        b=Ka9ymioUKNGD+iG6cEH5hml72fUH8S56RCmaRi2/Qo4LYFxwuduNpoGUXS7T0203q4
+         J8F7Rk3Xl32QW6gVIZDUYAJ/oY1+AC6PuQ4A11oDM26tNKMOPOMVGvniix9KU3bj0dkb
+         oQPTKnl3EkIDpKM0aUrF5OkaPq5T7ERBAQv4Eb2ZHCII8d1L5UM2DuLz3ST8E3WPmW92
+         FjiyfdUUoYg7214wbEWAyeQgAy7CZQjEwrjE0W1ZbQ4fTSDu2ILxuFDom1qB17DTwMxA
+         CaLCOC/x8N78EWcZomXnh+mAvZPEVZUONCps9B8KzlXbDtn0r7vYLC0I6Ns56YBWBR9o
+         dEuw==
+X-Gm-Message-State: AOAM533quyP8zQO6uoY2TRqioCpP0aKgmjUs8+aZBVX48t7xT7uBeL69
+        WwOO3+tRAZFfaP/Pr5WpSDw=
+X-Google-Smtp-Source: ABdhPJyhRB7fP3ty0zffYHi4zxHR4rArZnsLu1SH0PzJW0AIzUezTQYgQ73k9WxW/nBPCmCjQOu/lA==
+X-Received: by 2002:adf:a4cc:: with SMTP id h12mr25160854wrb.123.1600327030585;
+        Thu, 17 Sep 2020 00:17:10 -0700 (PDT)
+Received: from localhost.localdomain (dslb-088-070-028-140.088.070.pools.vodafone-ip.de. [88.70.28.140])
+        by smtp.gmail.com with ESMTPSA id t6sm41696271wre.30.2020.09.17.00.17.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 00:17:09 -0700 (PDT)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: [PATCH 1/2] staging: rtl8188eu: use __func__ in hal directory
+Date:   Thu, 17 Sep 2020 09:13:29 +0200
+Message-Id: <20200917071330.31740-1-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.71]
-X-ClientProxiedBy: EX13D40UWC001.ant.amazon.com (10.43.162.149) To
- EX13D31EUA004.ant.amazon.com (10.43.165.161)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Sep 2020 09:11:18 -0700 Shakeel Butt <shakeelb@google.com> wrote:
+Use __func__ instead of hardcoded function names to clear
+checkpatch warnings.
 
-> On Tue, Sep 15, 2020 at 11:03 AM SeongJae Park <sjpark@amazon.com> wrote:
-> >
-> > From: SeongJae Park <sjpark@amazon.de>
-> >
-> > DAMON allows the programming interface users to run monitoring with
-> > multiple contexts.  This could be useful in some cases.  For example, if
-> > someone want to do highly accurate monitoring and lots of CPUs are
-> > available, splitting the monitoring target regions into multiple small
-> > regions and allocating context (monitoring thread) to each small region
-> > could be helpful.  Or, someone could need to monitor different types of
-> > address spaces simultaneously.
-> >
-> > However, it's impossible from the user space because the DAMON debugfs
-> > interface supports only single context.  This commit makes it available
-> > by implementing 'nr_contexts' debugfs file.
-> >
-> > Users can pass the number (N) of contexts they want to use to the file.
-> 
-> Why not just mkdir which will create a new context?
-
-Because I referenced the naming rule of zram and because I just wanted to make
-this as simple as possible.  I find no special functional difference between
-current way and you suggested way.
-
-That said, I also think you suggested way is much more flexible.  I will try to
-make this in that way.
-
-> 
-> > Then, N folders having name of 'ctx<1-(N-1)>' are created in the DAMON
-> > debugfs dir.  Each of the directory is associated with the contexts and
-> > contains the the files for context setting (attrs, init_regions, record,
-> > schemes, and target_ids).
-> 
-> Also instead of naming the kthread with context number why not give
-> the kthread pids through attrs (or new interface) and the admin can
-> move those kthreads to the cgroup they want to charge against?
-
-Again, I just wanted to make this as simple as possible, and I also referenced
-blkback thread naming.  And I find no special functional difference here,
-either.
-
-And yes, I think you suggested way is much more flexible and easy to be used.
-I will make this in that way.
-
+Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
+ drivers/staging/rtl8188eu/hal/hal_intf.c      |  4 +-
+ drivers/staging/rtl8188eu/hal/odm.c           | 60 +++++++++----------
+ drivers/staging/rtl8188eu/hal/phy.c           |  2 +-
+ drivers/staging/rtl8188eu/hal/pwrseqcmd.c     | 25 ++++----
+ .../staging/rtl8188eu/hal/rtl8188e_hal_init.c |  2 +-
+ .../staging/rtl8188eu/hal/rtl8188eu_xmit.c    |  2 +-
+ drivers/staging/rtl8188eu/hal/usb_halinit.c   |  5 +-
+ 7 files changed, 50 insertions(+), 50 deletions(-)
 
-Just a note (not for only Shakeel, but anyone who interested in DAMON).  The
-DAMON debugfs interface is not highly coupled with DAMON.  Rather than that, it
-is implemented as an application using DAMON as a framework via the DAMON's
-kernel space interface.  This means that anyone who want different user space
-interface can implement their own on top of the framework.  I will try to make
-the changes as soon as possible, but if you cannot wait until then, you could
-implement your own.
+diff --git a/drivers/staging/rtl8188eu/hal/hal_intf.c b/drivers/staging/rtl8188eu/hal/hal_intf.c
+index b8fecc952cfc..9585dffc63a3 100644
+--- a/drivers/staging/rtl8188eu/hal/hal_intf.c
++++ b/drivers/staging/rtl8188eu/hal/hal_intf.c
+@@ -23,7 +23,7 @@ uint rtw_hal_init(struct adapter *adapt)
+ 			rtw_hal_notch_filter(adapt, 1);
+ 	} else {
+ 		adapt->hw_init_completed = false;
+-		DBG_88E("rtw_hal_init: hal__init fail\n");
++		DBG_88E("%s: hal__init fail\n", __func__);
+ 	}
+ 
+ 	RT_TRACE(_module_hal_init_c_, _drv_err_,
+@@ -41,7 +41,7 @@ uint rtw_hal_deinit(struct adapter *adapt)
+ 	if (status == _SUCCESS)
+ 		adapt->hw_init_completed = false;
+ 	else
+-		DBG_88E("\n rtw_hal_deinit: hal_init fail\n");
++		DBG_88E("\n %s: hal_init fail\n", __func__);
+ 
+ 	return status;
+ }
+diff --git a/drivers/staging/rtl8188eu/hal/odm.c b/drivers/staging/rtl8188eu/hal/odm.c
+index edc278e5744f..d6c4c7d023d1 100644
+--- a/drivers/staging/rtl8188eu/hal/odm.c
++++ b/drivers/staging/rtl8188eu/hal/odm.c
+@@ -249,7 +249,7 @@ void odm_CommonInfoSelfUpdate(struct odm_dm_struct *pDM_Odm)
+ 
+ void odm_CmnInfoInit_Debug(struct odm_dm_struct *pDM_Odm)
+ {
+-	ODM_RT_TRACE(pDM_Odm, ODM_COMP_COMMON, ODM_DBG_LOUD, ("odm_CmnInfoInit_Debug==>\n"));
++	ODM_RT_TRACE(pDM_Odm, ODM_COMP_COMMON, ODM_DBG_LOUD, ("%s==>\n", __func__));
+ 	ODM_RT_TRACE(pDM_Odm, ODM_COMP_COMMON, ODM_DBG_LOUD, ("SupportPlatform=%d\n", pDM_Odm->SupportPlatform));
+ 	ODM_RT_TRACE(pDM_Odm, ODM_COMP_COMMON, ODM_DBG_LOUD, ("SupportAbility=0x%x\n", pDM_Odm->SupportAbility));
+ 	ODM_RT_TRACE(pDM_Odm, ODM_COMP_COMMON, ODM_DBG_LOUD, ("SupportInterface=%d\n", pDM_Odm->SupportInterface));
+@@ -267,7 +267,7 @@ void odm_CmnInfoInit_Debug(struct odm_dm_struct *pDM_Odm)
+ 
+ void odm_CmnInfoHook_Debug(struct odm_dm_struct *pDM_Odm)
+ {
+-	ODM_RT_TRACE(pDM_Odm, ODM_COMP_COMMON, ODM_DBG_LOUD, ("odm_CmnInfoHook_Debug==>\n"));
++	ODM_RT_TRACE(pDM_Odm, ODM_COMP_COMMON, ODM_DBG_LOUD, ("%s==>\n", __func__));
+ 	ODM_RT_TRACE(pDM_Odm, ODM_COMP_COMMON, ODM_DBG_LOUD, ("pNumTxBytesUnicast=%llu\n", *pDM_Odm->pNumTxBytesUnicast));
+ 	ODM_RT_TRACE(pDM_Odm, ODM_COMP_COMMON, ODM_DBG_LOUD, ("pNumRxBytesUnicast=%llu\n", *pDM_Odm->pNumRxBytesUnicast));
+ 	ODM_RT_TRACE(pDM_Odm, ODM_COMP_COMMON, ODM_DBG_LOUD, ("pWirelessMode=0x%x\n", *pDM_Odm->pWirelessMode));
+@@ -282,7 +282,7 @@ void odm_CmnInfoHook_Debug(struct odm_dm_struct *pDM_Odm)
+ 
+ void odm_CmnInfoUpdate_Debug(struct odm_dm_struct *pDM_Odm)
+ {
+-	ODM_RT_TRACE(pDM_Odm, ODM_COMP_COMMON, ODM_DBG_LOUD, ("odm_CmnInfoUpdate_Debug==>\n"));
++	ODM_RT_TRACE(pDM_Odm, ODM_COMP_COMMON, ODM_DBG_LOUD, ("%s==>\n", __func__));
+ 	ODM_RT_TRACE(pDM_Odm, ODM_COMP_COMMON, ODM_DBG_LOUD, ("bWIFI_Direct=%d\n", pDM_Odm->bWIFI_Direct));
+ 	ODM_RT_TRACE(pDM_Odm, ODM_COMP_COMMON, ODM_DBG_LOUD, ("bWIFI_Display=%d\n", pDM_Odm->bWIFI_Display));
+ 	ODM_RT_TRACE(pDM_Odm, ODM_COMP_COMMON, ODM_DBG_LOUD, ("bLinked=%d\n", pDM_Odm->bLinked));
+@@ -339,21 +339,21 @@ void odm_DIG(struct odm_dm_struct *pDM_Odm)
+ 	u8 dm_dig_max, dm_dig_min;
+ 	u8 CurrentIGI = pDM_DigTable->CurIGValue;
+ 
+-	ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD, ("odm_DIG()==>\n"));
++	ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD, ("%s()==>\n", __func__));
+ 	if ((!(pDM_Odm->SupportAbility & ODM_BB_DIG)) || (!(pDM_Odm->SupportAbility & ODM_BB_FA_CNT))) {
+ 		ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD,
+-			     ("odm_DIG() Return: SupportAbility ODM_BB_DIG or ODM_BB_FA_CNT is disabled\n"));
++			     ("%s() Return: SupportAbility ODM_BB_DIG or ODM_BB_FA_CNT is disabled\n", __func__));
+ 		return;
+ 	}
+ 
+ 	if (*pDM_Odm->pbScanInProcess) {
+-		ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD, ("odm_DIG() Return: In Scan Progress\n"));
++		ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD, ("%s() Return: In Scan Progress\n", __func__));
+ 		return;
+ 	}
+ 
+ 	/* add by Neil Chen to avoid PSD is processing */
+ 	if (!pDM_Odm->bDMInitialGainEnable) {
+-		ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD, ("odm_DIG() Return: PSD is Processing\n"));
++		ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD, ("%s() Return: PSD is Processing\n", __func__));
+ 		return;
+ 	}
+ 
+@@ -383,18 +383,18 @@ void odm_DIG(struct odm_dm_struct *pDM_Odm)
+ 			else
+ 				DIG_Dynamic_MIN = pDM_Odm->RSSI_Min;
+ 			ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD,
+-				     ("odm_DIG() : bOneEntryOnly=true,  DIG_Dynamic_MIN=0x%x\n",
+-				     DIG_Dynamic_MIN));
++				     ("%s() : bOneEntryOnly=true,  DIG_Dynamic_MIN=0x%x\n",
++				      __func__, DIG_Dynamic_MIN));
+ 			ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD,
+-				     ("odm_DIG() : pDM_Odm->RSSI_Min=%d\n",
+-				     pDM_Odm->RSSI_Min));
++				     ("%s() : pDM_Odm->RSSI_Min=%d\n",
++				      __func__, pDM_Odm->RSSI_Min));
+ 		} else if (pDM_Odm->SupportAbility & ODM_BB_ANT_DIV) {
+ 			/* 1 Lower Bound for 88E AntDiv */
+ 			if (pDM_Odm->AntDivType == CG_TRX_HW_ANTDIV) {
+ 				DIG_Dynamic_MIN = (u8)pDM_DigTable->AntDiv_RSSI_max;
+ 				ODM_RT_TRACE(pDM_Odm, ODM_COMP_ANT_DIV, ODM_DBG_LOUD,
+-					     ("odm_DIG(): pDM_DigTable->AntDiv_RSSI_max=%d\n",
+-					     pDM_DigTable->AntDiv_RSSI_max));
++					     ("%s(): pDM_DigTable->AntDiv_RSSI_max=%d\n",
++					      __func__, pDM_DigTable->AntDiv_RSSI_max));
+ 			}
+ 		} else {
+ 			DIG_Dynamic_MIN = dm_dig_min;
+@@ -402,7 +402,7 @@ void odm_DIG(struct odm_dm_struct *pDM_Odm)
+ 	} else {
+ 		pDM_DigTable->rx_gain_range_max = dm_dig_max;
+ 		DIG_Dynamic_MIN = dm_dig_min;
+-		ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD, ("odm_DIG() : No Link\n"));
++		ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD, ("%s() : No Link\n", __func__));
+ 	}
+ 
+ 	/* 1 Modify DIG lower bound, deal with abnormally large false alarm */
+@@ -433,11 +433,11 @@ void odm_DIG(struct odm_dm_struct *pDM_Odm)
+ 				if ((pDM_DigTable->ForbiddenIGI - 1) < DIG_Dynamic_MIN) { /* DM_DIG_MIN) */
+ 					pDM_DigTable->ForbiddenIGI = DIG_Dynamic_MIN; /* DM_DIG_MIN; */
+ 					pDM_DigTable->rx_gain_range_min = DIG_Dynamic_MIN; /* DM_DIG_MIN; */
+-					ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD, ("odm_DIG(): Normal Case: At Lower Bound\n"));
++					ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD, ("%s(): Normal Case: At Lower Bound\n", __func__));
+ 				} else {
+ 					pDM_DigTable->ForbiddenIGI--;
+ 					pDM_DigTable->rx_gain_range_min = (pDM_DigTable->ForbiddenIGI + 1);
+-					ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD, ("odm_DIG(): Normal Case: Approach Lower Bound\n"));
++					ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD, ("%s(): Normal Case: Approach Lower Bound\n", __func__));
+ 				}
+ 			} else {
+ 				pDM_DigTable->LargeFAHit = 0;
+@@ -445,12 +445,12 @@ void odm_DIG(struct odm_dm_struct *pDM_Odm)
+ 		}
+ 	}
+ 	ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD,
+-		     ("odm_DIG(): pDM_DigTable->LargeFAHit=%d\n",
+-		     pDM_DigTable->LargeFAHit));
++		     ("%s(): pDM_DigTable->LargeFAHit=%d\n",
++		      __func__, pDM_DigTable->LargeFAHit));
+ 
+ 	/* 1 Adjust initial gain by false alarm */
+ 	if (pDM_Odm->bLinked) {
+-		ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD, ("odm_DIG(): DIG AfterLink\n"));
++		ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD, ("%s(): DIG AfterLink\n", __func__));
+ 		if (FirstConnect) {
+ 			CurrentIGI = pDM_Odm->RSSI_Min;
+ 			ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD, ("DIG: First Connect\n"));
+@@ -463,10 +463,10 @@ void odm_DIG(struct odm_dm_struct *pDM_Odm)
+ 				CurrentIGI = CurrentIGI - 2;/* pDM_DigTable->CurIGValue =pDM_DigTable->PreIGValue-1; */
+ 		}
+ 	} else {
+-		ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD, ("odm_DIG(): DIG BeforeLink\n"));
++		ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD, ("%s(): DIG BeforeLink\n", __func__));
+ 		if (FirstDisConnect) {
+ 			CurrentIGI = pDM_DigTable->rx_gain_range_min;
+-			ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD, ("odm_DIG(): First DisConnect\n"));
++			ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD, ("%s(): First DisConnect\n", __func__));
+ 		} else {
+ 			/* 2012.03.30 LukeLee: enable DIG before link but with very high thresholds */
+ 			if (pFalseAlmCnt->Cnt_all > 10000)
+@@ -475,10 +475,10 @@ void odm_DIG(struct odm_dm_struct *pDM_Odm)
+ 				CurrentIGI = CurrentIGI + 1;/* pDM_DigTable->CurIGValue = pDM_DigTable->PreIGValue+1; */
+ 			else if (pFalseAlmCnt->Cnt_all < 500)
+ 				CurrentIGI = CurrentIGI - 1;/* pDM_DigTable->CurIGValue =pDM_DigTable->PreIGValue-1; */
+-			ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD, ("odm_DIG(): England DIG\n"));
++			ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD, ("%s(): England DIG\n", __func__));
+ 		}
+ 	}
+-	ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD, ("odm_DIG(): DIG End Adjust IGI\n"));
++	ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD, ("%s(): DIG End Adjust IGI\n", __func__));
+ 	/* 1 Check initial gain by upper/lower bound */
+ 	if (CurrentIGI > pDM_DigTable->rx_gain_range_max)
+ 		CurrentIGI = pDM_DigTable->rx_gain_range_max;
+@@ -486,10 +486,10 @@ void odm_DIG(struct odm_dm_struct *pDM_Odm)
+ 		CurrentIGI = pDM_DigTable->rx_gain_range_min;
+ 
+ 	ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD,
+-		     ("odm_DIG(): rx_gain_range_max=0x%x, rx_gain_range_min=0x%x\n",
+-		     pDM_DigTable->rx_gain_range_max, pDM_DigTable->rx_gain_range_min));
+-	ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD, ("odm_DIG(): TotalFA=%d\n", pFalseAlmCnt->Cnt_all));
+-	ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD, ("odm_DIG(): CurIGValue=0x%x\n", CurrentIGI));
++		     ("%s(): rx_gain_range_max=0x%x, rx_gain_range_min=0x%x\n",
++		      __func__, pDM_DigTable->rx_gain_range_max, pDM_DigTable->rx_gain_range_min));
++	ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD, ("%s(): TotalFA=%d\n", __func__, pFalseAlmCnt->Cnt_all));
++	ODM_RT_TRACE(pDM_Odm, ODM_COMP_DIG, ODM_DBG_LOUD, ("%s(): CurIGValue=0x%x\n", __func__, CurrentIGI));
+ 
+ 	/* 2 High power RSSI threshold */
+ 
+@@ -557,7 +557,7 @@ void odm_FalseAlarmCounterStatistics(struct odm_dm_struct *pDM_Odm)
+ 
+ 	FalseAlmCnt->Cnt_CCA_all = FalseAlmCnt->Cnt_OFDM_CCA + FalseAlmCnt->Cnt_CCK_CCA;
+ 
+-	ODM_RT_TRACE(pDM_Odm, ODM_COMP_FA_CNT, ODM_DBG_LOUD, ("Enter odm_FalseAlarmCounterStatistics\n"));
++	ODM_RT_TRACE(pDM_Odm, ODM_COMP_FA_CNT, ODM_DBG_LOUD, ("Enter %s\n", __func__));
+ 	ODM_RT_TRACE(pDM_Odm, ODM_COMP_FA_CNT, ODM_DBG_LOUD,
+ 		     ("Cnt_Fast_Fsync=%d, Cnt_SB_Search_fail=%d\n",
+ 		     FalseAlmCnt->Cnt_Fast_Fsync, FalseAlmCnt->Cnt_SB_Search_fail));
+@@ -1015,13 +1015,13 @@ void odm_EdcaTurboCheck(struct odm_dm_struct *pDM_Odm)
+ 	/*  2011/09/29 MH In HW integration first stage, we provide 4 different handle to operate */
+ 	/*  at the same time. In the stage2/3, we need to prive universal interface and merge all */
+ 	/*  HW dynamic mechanism. */
+-	ODM_RT_TRACE(pDM_Odm, ODM_COMP_EDCA_TURBO, ODM_DBG_LOUD, ("odm_EdcaTurboCheck========================>\n"));
++	ODM_RT_TRACE(pDM_Odm, ODM_COMP_EDCA_TURBO, ODM_DBG_LOUD, ("%s========================>\n", __func__));
+ 
+ 	if (!(pDM_Odm->SupportAbility & ODM_MAC_EDCA_TURBO))
+ 		return;
+ 
+ 	odm_EdcaTurboCheckCE(pDM_Odm);
+-	ODM_RT_TRACE(pDM_Odm, ODM_COMP_EDCA_TURBO, ODM_DBG_LOUD, ("<========================odm_EdcaTurboCheck\n"));
++	ODM_RT_TRACE(pDM_Odm, ODM_COMP_EDCA_TURBO, ODM_DBG_LOUD, ("<========================%s\n", __func__));
+ }	/*  odm_CheckEdcaTurbo */
+ 
+ void odm_EdcaTurboCheckCE(struct odm_dm_struct *pDM_Odm)
+diff --git a/drivers/staging/rtl8188eu/hal/phy.c b/drivers/staging/rtl8188eu/hal/phy.c
+index db6f05b77a70..8d1267bf0848 100644
+--- a/drivers/staging/rtl8188eu/hal/phy.c
++++ b/drivers/staging/rtl8188eu/hal/phy.c
+@@ -345,7 +345,7 @@ static void dm_txpwr_track_setpwr(struct odm_dm_struct *dm_odm)
+ {
+ 	if (dm_odm->BbSwingFlagOfdm || dm_odm->BbSwingFlagCck) {
+ 		ODM_RT_TRACE(dm_odm, ODM_COMP_TX_PWR_TRACK, ODM_DBG_LOUD,
+-			     ("dm_txpwr_track_setpwr CH=%d\n", *dm_odm->pChannel));
++			     ("%s CH=%d\n", __func__, *dm_odm->pChannel));
+ 		phy_set_tx_power_level(dm_odm->Adapter, *dm_odm->pChannel);
+ 		dm_odm->BbSwingFlagOfdm = false;
+ 		dm_odm->BbSwingFlagCck = false;
+diff --git a/drivers/staging/rtl8188eu/hal/pwrseqcmd.c b/drivers/staging/rtl8188eu/hal/pwrseqcmd.c
+index 77edd7ad19a1..34784943a7d1 100644
+--- a/drivers/staging/rtl8188eu/hal/pwrseqcmd.c
++++ b/drivers/staging/rtl8188eu/hal/pwrseqcmd.c
+@@ -26,25 +26,26 @@ u8 rtl88eu_pwrseqcmdparsing(struct adapter *padapter, u8 cut_vers,
+ 		pwrcfgcmd = pwrseqcmd[aryidx];
+ 
+ 		RT_TRACE(_module_hal_init_c_, _drv_info_,
+-			 ("rtl88eu_pwrseqcmdparsing: offset(%#x) cut_msk(%#x)"
++			 ("%s: offset(%#x) cut_msk(%#x)"
+ 			  " cmd(%#x)"
+ 			  "msk(%#x) value(%#x)\n",
+-			 GET_PWR_CFG_OFFSET(pwrcfgcmd),
+-			 GET_PWR_CFG_CUT_MASK(pwrcfgcmd),
+-			 GET_PWR_CFG_CMD(pwrcfgcmd),
+-			 GET_PWR_CFG_MASK(pwrcfgcmd),
+-			 GET_PWR_CFG_VALUE(pwrcfgcmd)));
++			  __func__,
++			  GET_PWR_CFG_OFFSET(pwrcfgcmd),
++			  GET_PWR_CFG_CUT_MASK(pwrcfgcmd),
++			  GET_PWR_CFG_CMD(pwrcfgcmd),
++			  GET_PWR_CFG_MASK(pwrcfgcmd),
++			  GET_PWR_CFG_VALUE(pwrcfgcmd)));
+ 
+ 		/* Only Handle the command whose CUT is matched */
+ 		if (GET_PWR_CFG_CUT_MASK(pwrcfgcmd) & cut_vers) {
+ 			switch (GET_PWR_CFG_CMD(pwrcfgcmd)) {
+ 			case PWR_CMD_READ:
+ 				RT_TRACE(_module_hal_init_c_, _drv_info_,
+-					 ("rtl88eu_pwrseqcmdparsing: PWR_CMD_READ\n"));
++					 ("%s: PWR_CMD_READ\n", __func__));
+ 				break;
+ 			case PWR_CMD_WRITE:
+ 				RT_TRACE(_module_hal_init_c_, _drv_info_,
+-					 ("rtl88eu_pwrseqcmdparsing: PWR_CMD_WRITE\n"));
++					 ("%s: PWR_CMD_WRITE\n", __func__));
+ 				offset = GET_PWR_CFG_OFFSET(pwrcfgcmd);
+ 
+ 				/*  Read the value from system register */
+@@ -59,7 +60,7 @@ u8 rtl88eu_pwrseqcmdparsing(struct adapter *padapter, u8 cut_vers,
+ 				break;
+ 			case PWR_CMD_POLLING:
+ 				RT_TRACE(_module_hal_init_c_, _drv_info_,
+-					 ("rtl88eu_pwrseqcmdparsing: PWR_CMD_POLLING\n"));
++					 ("%s: PWR_CMD_POLLING\n", __func__));
+ 
+ 				poll_bit = false;
+ 				offset = GET_PWR_CFG_OFFSET(pwrcfgcmd);
+@@ -81,7 +82,7 @@ u8 rtl88eu_pwrseqcmdparsing(struct adapter *padapter, u8 cut_vers,
+ 				break;
+ 			case PWR_CMD_DELAY:
+ 				RT_TRACE(_module_hal_init_c_, _drv_info_,
+-					 ("rtl88eu_pwrseqcmdparsing: PWR_CMD_DELAY\n"));
++					 ("%s: PWR_CMD_DELAY\n", __func__));
+ 				if (GET_PWR_CFG_VALUE(pwrcfgcmd) == PWRSEQ_DELAY_US)
+ 					udelay(GET_PWR_CFG_OFFSET(pwrcfgcmd));
+ 				else
+@@ -90,11 +91,11 @@ u8 rtl88eu_pwrseqcmdparsing(struct adapter *padapter, u8 cut_vers,
+ 			case PWR_CMD_END:
+ 				/* When this command is parsed, end the process */
+ 				RT_TRACE(_module_hal_init_c_, _drv_info_,
+-					 ("rtl88eu_pwrseqcmdparsing: PWR_CMD_END\n"));
++					 ("%s: PWR_CMD_END\n", __func__));
+ 				return true;
+ 			default:
+ 				RT_TRACE(_module_hal_init_c_, _drv_err_,
+-					 ("rtl88eu_pwrseqcmdparsing: Unknown CMD!!\n"));
++					 ("%s: Unknown CMD!!\n", __func__));
+ 				break;
+ 			}
+ 		}
+diff --git a/drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c b/drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c
+index 2baef9a285c0..e640c2256ab9 100644
+--- a/drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c
++++ b/drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c
+@@ -95,7 +95,7 @@ void _8051Reset88E(struct adapter *padapter)
+ 	u1bTmp = usb_read8(padapter, REG_SYS_FUNC_EN + 1);
+ 	usb_write8(padapter, REG_SYS_FUNC_EN + 1, u1bTmp & (~BIT(2)));
+ 	usb_write8(padapter, REG_SYS_FUNC_EN + 1, u1bTmp | (BIT(2)));
+-	DBG_88E("=====> _8051Reset88E(): 8051 reset success .\n");
++	DBG_88E("=====> %s(): 8051 reset success .\n", __func__);
+ }
+ 
+ void rtl8188e_InitializeFirmwareVars(struct adapter *padapter)
+diff --git a/drivers/staging/rtl8188eu/hal/rtl8188eu_xmit.c b/drivers/staging/rtl8188eu/hal/rtl8188eu_xmit.c
+index 52023551ab30..2866283c211d 100644
+--- a/drivers/staging/rtl8188eu/hal/rtl8188eu_xmit.c
++++ b/drivers/staging/rtl8188eu/hal/rtl8188eu_xmit.c
+@@ -346,7 +346,7 @@ static s32 rtw_dump_xframe(struct adapter *adapt, struct xmit_frame *pxmitframe)
+ 		rtw_issue_addbareq_cmd(adapt, pxmitframe);
+ 	mem_addr = pxmitframe->buf_addr;
+ 
+-	RT_TRACE(_module_rtl871x_xmit_c_, _drv_info_, ("rtw_dump_xframe()\n"));
++	RT_TRACE(_module_rtl871x_xmit_c_, _drv_info_, ("%s()\n", __func__));
+ 
+ 	for (t = 0; t < pattrib->nr_frags; t++) {
+ 		if (inner_ret != _SUCCESS && ret == _SUCCESS)
+diff --git a/drivers/staging/rtl8188eu/hal/usb_halinit.c b/drivers/staging/rtl8188eu/hal/usb_halinit.c
+index 114638f6f719..c25b2275266c 100644
+--- a/drivers/staging/rtl8188eu/hal/usb_halinit.c
++++ b/drivers/staging/rtl8188eu/hal/usb_halinit.c
+@@ -876,7 +876,7 @@ static void CardDisableRTL8188EU(struct adapter *Adapter)
+ {
+ 	u8 val8;
+ 
+-	RT_TRACE(_module_hci_hal_init_c_, _drv_info_, ("CardDisableRTL8188EU\n"));
++	RT_TRACE(_module_hci_hal_init_c_, _drv_info_, ("%s\n", __func__));
+ 
+ 	/* Stop Tx Report Timer. 0x4EC[Bit1]=b'0 */
+ 	val8 = usb_read8(Adapter, REG_TX_RPT_CTRL);
+@@ -1038,8 +1038,7 @@ static void Hal_EfuseParseMACAddr_8188EU(struct adapter *adapt, u8 *hwinfo, bool
+ 		memcpy(eeprom->mac_addr, &hwinfo[EEPROM_MAC_ADDR_88EU], ETH_ALEN);
+ 	}
+ 	RT_TRACE(_module_hci_hal_init_c_, _drv_notice_,
+-		 ("Hal_EfuseParseMACAddr_8188EU: Permanent Address = %pM\n",
+-		 eeprom->mac_addr));
++		 ("%s: Permanent Address = %pM\n", __func__, eeprom->mac_addr));
+ }
+ 
+ static void readAdapterInfo_8188EU(struct adapter *adapt)
+-- 
+2.28.0
 
-Similarly, DAMON lacks many functionality such as support of special address
-spaces.  I already have a TODO list.  And I will implement those one by one.
-So, please give me the requests.  However, I believe the kernel space interface
-is already almost complete.  Thus, almost every such future features could be
-implemented on top of current DAMON interface.  Therefore, if you cannot wait
-until I finish the work, you can implement your own on DAMON's kernel space
-interface.
-
-Of course, if you send the patches for your own implementations, that will make
-not only I, but the community happier.
-
-And this is the reason why the patchset containing only the framework part and
-minimal applications / addons is titled as official 'PATCH', while the
-patchsets for the future features are titled 'RFC'.  So, I am asking you to
-consider giving more attention to the framework part (the first 4 patches of
-the patchset[1]), as all future features will depend on it.
-
-[1] https://lore.kernel.org/linux-mm/20200817105137.19296-1-sjpark@amazon.com/
-
-
-Thanks,
-SeongJae Park
