@@ -2,115 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDF5F26E754
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 23:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D926326E743
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 23:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726040AbgIQVXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 17:23:41 -0400
-Received: from mga18.intel.com ([134.134.136.126]:61846 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725874AbgIQVXk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 17:23:40 -0400
-X-Greylist: delayed 426 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 17:23:40 EDT
-IronPort-SDR: T0Na8pX+NOmc8zlK6qBBzuWuwjH3Zmpd2JFsjqshrKYAUy9VBxkYqn0M1PsG+/gvO3A3llvZL1
- 78Y15QuDthLw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="147542843"
-X-IronPort-AV: E=Sophos;i="5.77,272,1596524400"; 
-   d="scan'208";a="147542843"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 14:16:32 -0700
-IronPort-SDR: 7CENmsfUyVNTB/c/ycqvMjEwYhH/7xKDggIpJMzOn7Ts2EC8GErquhceAUhFPMtO+Gf0RAb+j1
- vvRsy9hdOJBg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,272,1596524400"; 
-   d="scan'208";a="507893687"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga006.fm.intel.com with ESMTP; 17 Sep 2020 14:16:31 -0700
-Received: from [10.251.12.27] (kliang2-MOBL.ccr.corp.intel.com [10.251.12.27])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 00EEE5807C9;
-        Thu, 17 Sep 2020 14:16:29 -0700 (PDT)
-Subject: Re: [PATCH V7 1/4] perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE
-To:     Dave Hansen <dave.hansen@intel.com>, peterz@infradead.org,
-        mingo@redhat.com, acme@kernel.org, linux-kernel@vger.kernel.org
-Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, eranian@google.com, ak@linux.intel.com,
-        kirill.shutemov@linux.intel.com, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org
-References: <20200917135237.2857-1-kan.liang@linux.intel.com>
- <20200917135237.2857-2-kan.liang@linux.intel.com>
- <13427458-3934-1490-68bb-071be2ae01da@intel.com>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <40234c70-720e-9c0d-1fc2-ac23c0acf721@linux.intel.com>
-Date:   Thu, 17 Sep 2020 17:16:28 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726037AbgIQVTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 17:19:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725858AbgIQVTo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 17:19:44 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B83C061351
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 14:19:43 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id d15so3746450lfq.11
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 14:19:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=axN/EH8Seu2ahO13HO/SqkoEfnWHGFkbfFIVyd8qzAY=;
+        b=s8SiQUA4O3KkxvoYBzSjtU72gzf6BKPcYZoQmI/j6hZgnyWRDPaYYUvxoktMMxaOvJ
+         SDkrseLi2cl78EXnTlBIL7euysHz0cLMi+UxsKJbWQza7Hq7ltQDsth9r1RWCX7FSIiq
+         khVr7fELDaTkOrwSjGeTtAbRsUCdvuSD25pOVTpQ3s38tU9ZK7DodQI0crIU/DlCnfkV
+         N6+96GWvyFHjrJoE8e8OtN8LNYGpMW5aQBF/6lODvNKsQAOxWVuDJinJglW4wKaM63zT
+         aqL7vzMosGtEC8UHFWRpkrlGIo1SEOjGprO9Dqqu/HngXE8GtkNzsItJL4hl7f93urDK
+         fDog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=axN/EH8Seu2ahO13HO/SqkoEfnWHGFkbfFIVyd8qzAY=;
+        b=eH0q7nNGBtk/wJcjOO8CQfQ9ldboX54v5roHJSnxgEG46lapvHiwezwRF11nQJkqz7
+         jT4M032bi65t5lAf0ELueW9bQjZD6i2OsIgxv0P9aRvmv2QS7dqZQDctuaPuNitnjcTT
+         6EsteFYBvkL17YDxTl4OLIdR/PFaTBwAjbq7+EiU3hESfNc2TALkkbcZ2FfvVjZLMTu0
+         fuzNy62NakmLA14UvR6EbhLXnfD0l/GEtsuPXy54RyeCsvh7bIXQqfHbfBZ7Qnd96PjA
+         XoCix/ZKSzuucuQAng9a2aXNnmk+vLOZdqaFA1NdRv9oMtQ8etrmVSiAqliSxsSARMpM
+         6tiA==
+X-Gm-Message-State: AOAM532CfxqnExEK0QgYXQ6bJBrMy5V5soTQ684r43nA1XgMPKDDBGF+
+        YhJDXXWDPo8r9hlyCFXy+u8hfK4Tu9HTyg==
+X-Google-Smtp-Source: ABdhPJzAvc1idJqWvyBa2Qp0Jqar7jG69zi+EGQJByY+swX689k7JY6xGICvPCWM6her1Li4yk8Glg==
+X-Received: by 2002:ac2:4c01:: with SMTP id t1mr10393252lfq.351.1600377582132;
+        Thu, 17 Sep 2020 14:19:42 -0700 (PDT)
+Received: from localhost.localdomain (188.147.112.12.nat.umts.dynamic.t-mobile.pl. [188.147.112.12])
+        by smtp.gmail.com with ESMTPSA id u24sm144940lfo.117.2020.09.17.14.19.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 14:19:41 -0700 (PDT)
+From:   mateusznosek0@gmail.com
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Mateusz Nosek <mateusznosek0@gmail.com>, akpm@linux-foundation.org
+Subject: [PATCH] mmzone: clean code by removing unused macro parameter
+Date:   Thu, 17 Sep 2020 23:19:06 +0200
+Message-Id: <20200917211906.30059-1-mateusznosek0@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <13427458-3934-1490-68bb-071be2ae01da@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Mateusz Nosek <mateusznosek0@gmail.com>
 
+Previously 'for_next_zone_zonelist_nodemask' macro parameter 'zlist' was
+unused so this patch removes it.
 
-On 9/17/2020 3:00 PM, Dave Hansen wrote:
-> On 9/17/20 6:52 AM, kan.liang@linux.intel.com wrote:
->> +	mm = current->mm;
->> +	if (!mm) {
->> +		/*
->> +		 * For kernel threads and the like, use init_mm so that
->> +		 * we can find kernel memory.
->> +		 */
->> +		mm = &init_mm;
->> +	}
-> 
-> I think it might be better to use current->active_mm instead of
-> current->mm.  Kernel threads can "take over" the mm of the threads that
-> switched to them, so they're not actually using all of the page tables
-> from the init_mm all the time.
-> 
-> It's not _common_, thought.  The only time that I think they can diverge
-> is when vmalloc PGD sync'ing needs to be done, and there's even an
-> effort to remove that.
-> 
-> But, it's probably more more precise to just use ->active_mm since
-> that's what will actually be more consistent with the values loaded into
-> CR3.
-> 
-> I _think_ ->active_mm is always non-NULL, too.
->
+Signed-off-by: Mateusz Nosek <mateusznosek0@gmail.com>
+---
+ include/linux/mmzone.h | 2 +-
+ mm/page_alloc.c        | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-Thanks. yes, active_mm looks better here. I will use active_mm to 
-replace the mm and &init_mm.
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index 90721f3156bc..7e0ea3fe95ca 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -1120,7 +1120,7 @@ static inline struct zoneref *first_zones_zonelist(struct zonelist *zonelist,
+ 		z = next_zones_zonelist(++z, highidx, nodemask),	\
+ 			zone = zonelist_zone(z))
+ 
+-#define for_next_zone_zonelist_nodemask(zone, z, zlist, highidx, nodemask) \
++#define for_next_zone_zonelist_nodemask(zone, z, highidx, nodemask) \
+ 	for (zone = z->zone;	\
+ 		zone;							\
+ 		z = next_zones_zonelist(++z, highidx, nodemask),	\
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 60a0e94645a6..6b1b4a331792 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -3727,8 +3727,8 @@ get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
+ 	 */
+ 	no_fallback = alloc_flags & ALLOC_NOFRAGMENT;
+ 	z = ac->preferred_zoneref;
+-	for_next_zone_zonelist_nodemask(zone, z, ac->zonelist,
+-					ac->highest_zoneidx, ac->nodemask) {
++	for_next_zone_zonelist_nodemask(zone, z, ac->highest_zoneidx,
++					ac->nodemask) {
+ 		struct page *page;
+ 		unsigned long mark;
+ 
+-- 
+2.20.1
 
-> One last concern as I look at this: I wish it was a bit more
-> future-proof.  There are lots of weird things folks are trying to do
-> with the page tables, like Address Space Isolation.  For instance, if
-> you get a perf NMI when running userspace, current->mm->pgd is
-> *different* than the PGD that was in use when userspace was running.
-> It's close enough today, but it might not stay that way.  But I can't
-> think of any great ways to future proof this code, other than spitting
-> out an error message if too many of the page table walks fail when they
-> shouldn't.
-> 
-
-If the page table walks fail, page size 0 will return. So the worst case 
-is that the page size is not available for users, which is not a fatal 
-error.
-
-If my understanding is correct, when the above case happens, there is 
-nothing we can do for now (because we have no idea what it will become), 
-except disabling the page size support and throw an error/warning.
-
- From the user's perspective, throwing an error message or marking the 
-page size unavailable should be the same. I think we may leave the code 
-as-is. We can fix the future case later separately.
-
-Thanks,
-Kan
