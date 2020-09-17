@@ -2,126 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3E3826DA18
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D42226DA16
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbgIQLIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 07:08:25 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:54007 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726543AbgIQLHx (ORCPT
+        id S1726776AbgIQLXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 07:23:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726718AbgIQLIf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 07:07:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600340858;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6jPa4Eca2QJFB9z/ho9ZCcjVgGtPPG1+kl3a+IvmFXI=;
-        b=fPwK+M3z16gEQ24nJxtTsh2kU9gl8Oj/Ok8N6HMxOpPkqPpEGBpePA/kmRowrRIPgacKPJ
-        +e4VLaThKoznD/0eEU6Vic4lSw/xjPG8UPThplBGJjk6l2xFhxgdLQLPaZhOVhAtnH+pU8
-        TcxFaHq7XoWglv0fiP6EjobfpNRJnFU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-126-eyXnH01vO8ug49cAiWT_Bw-1; Thu, 17 Sep 2020 07:07:35 -0400
-X-MC-Unique: eyXnH01vO8ug49cAiWT_Bw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4D08888EF01;
-        Thu, 17 Sep 2020 11:07:33 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.35.206.187])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B233275142;
-        Thu, 17 Sep 2020 11:07:29 +0000 (UTC)
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        Jim Mattson <jmattson@google.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Borislav Petkov <bp@alien8.de>, Joerg Roedel <joro@8bytes.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH 1/1] KVM: x86: fix MSR_IA32_TSC read for nested migration
-Date:   Thu, 17 Sep 2020 14:07:23 +0300
-Message-Id: <20200917110723.820666-2-mlevitsk@redhat.com>
-In-Reply-To: <20200917110723.820666-1-mlevitsk@redhat.com>
-References: <20200917110723.820666-1-mlevitsk@redhat.com>
+        Thu, 17 Sep 2020 07:08:35 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 827F6C06178A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 04:08:30 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id k25so1644015ljg.9
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 04:08:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fzxb6kNCOD+DqnVPedrk4ksMuODtrVDGEO33gyPazGw=;
+        b=B64gIrXrRDM1onplNYixz/gQEBZY1ILGIczqYFuVbeUT85sUR7x1nBTni0AD2S8U0X
+         Ux0Sm4hyhvgvsP1Vk1IZQgu6cuCHxj23/8yd1pFvkPAvw+KU9sEa3DAFJAh/Cj0b5Vme
+         vjWfRAyoq6KKPkDXhmfdZk00JrJNNfNElPmO8UkOnySs718i9HZTIFRHg5BPJkZaye3w
+         gx5go2pQ5wpbScBofFhfzg7fEsIh8QVJcO6AUxyr81QtaW1r9h11pHYYXPWr7yN6dAM5
+         j0KKiYNkh/wtmw2rmLfYjrg2069HNaht/lDiri5X+UfEc7TQUBWPSwt+vnxqBvC4fyB0
+         4UhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fzxb6kNCOD+DqnVPedrk4ksMuODtrVDGEO33gyPazGw=;
+        b=MQPotOoJknmS+xqlQxSDqSdrMMKDzGf8HYvoYHB0Fpi4IGMFi5W8oHaxTiuq8v5h3Q
+         +nFLHhONZubKc3L2paW+DdwjmyIFl1V+jS4fNsys75bBbaZHN3k+xo5F5OdUxyeVJHOk
+         lE0EN7ArhcdggZO0oi+srwUZDMv4Zru662Tkm/VACFoNbLlKR8KTywn4daP5M5f7LiXE
+         F1fdKcOtYnNB7xKMqhbNm7IsgVp+H0aKV9Px+roWiyC5BSBMw7eQ6gNgS4zDaiEf1OpI
+         6Yjn+0hh+zKjz7ON/MPZS0lNb2WTeIv/p4xK3l/1bIyuJQw7s9QXm916FX8HNpXHCLAK
+         K9ow==
+X-Gm-Message-State: AOAM531a56ukDgirviSF2BHn62Syu3CCx1JjohBrkoJh9NKtM6CsVRVq
+        GLj+dzLepgBJDutw+WwBKOnV7ntRuFa8+w==
+X-Google-Smtp-Source: ABdhPJz47WCCueKSK2oljgVZEVs06Xevc2jCjCDRWBviVru8kGC2LKPhdr0mNzOmQsedW3VMt63RaQ==
+X-Received: by 2002:a05:651c:1203:: with SMTP id i3mr5625871lja.382.1600340906861;
+        Thu, 17 Sep 2020 04:08:26 -0700 (PDT)
+Received: from localhost.localdomain (188.147.112.12.nat.umts.dynamic.t-mobile.pl. [188.147.112.12])
+        by smtp.gmail.com with ESMTPSA id m22sm6001734lji.36.2020.09.17.04.08.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 04:08:26 -0700 (PDT)
+From:   mateusznosek0@gmail.com
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Mateusz Nosek <mateusznosek0@gmail.com>, akpm@linux-foundation.org
+Subject: [PATCH] include/linux/compaction.h: clean code by removing unused enum value
+Date:   Thu, 17 Sep 2020 13:07:50 +0200
+Message-Id: <20200917110750.12015-1-mateusznosek0@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MSR reads/writes should always access the L1 state, since the (nested)
-hypervisor should intercept all the msrs it wants to adjust, and these
-that it doesn't should be read by the guest as if the host had read it.
+From: Mateusz Nosek <mateusznosek0@gmail.com>
 
-However IA32_TSC is an exception.Even when not intercepted, guest still
-reads the value + TSC offset.
-The write however does not take any TSC offset in the account.
+The enum value 'COMPACT_INACTIVE' is never used so can be removed.
 
-This is documented in Intel's PRM and seems also to happen on AMD as well.
-
-This creates a problem when userspace wants to read the IA32_TSC value and then
-write it. (e.g for migration)
-
-In this case it reads L2 value but write is interpreted as an L1 value.
-To fix this make the userspace initiated reads of IA32_TSC return L1 value
-as well.
-
-Huge thanks to Dave Gilbert for helping me understand this very confusing
-semantic of MSR writes.
-
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+Signed-off-by: Mateusz Nosek <mateusznosek0@gmail.com>
 ---
- arch/x86/kvm/x86.c | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+ include/linux/compaction.h | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 17f4995e80a7e..d10d5c6add359 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -2025,6 +2025,11 @@ u64 kvm_read_l1_tsc(struct kvm_vcpu *vcpu, u64 host_tsc)
- }
- EXPORT_SYMBOL_GPL(kvm_read_l1_tsc);
+diff --git a/include/linux/compaction.h b/include/linux/compaction.h
+index 25a521d299c1..1de5a1151ee7 100644
+--- a/include/linux/compaction.h
++++ b/include/linux/compaction.h
+@@ -29,9 +29,6 @@ enum compact_result {
+ 	/* compaction didn't start as it was deferred due to past failures */
+ 	COMPACT_DEFERRED,
  
-+static u64 kvm_read_l2_tsc(struct kvm_vcpu *vcpu, u64 host_tsc)
-+{
-+	return vcpu->arch.tsc_offset + kvm_scale_tsc(vcpu, host_tsc);
-+}
-+
- static void kvm_vcpu_write_tsc_offset(struct kvm_vcpu *vcpu, u64 offset)
- {
- 	vcpu->arch.l1_tsc_offset = offset;
-@@ -3220,7 +3225,19 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 		msr_info->data = vcpu->arch.msr_ia32_power_ctl;
- 		break;
- 	case MSR_IA32_TSC:
--		msr_info->data = kvm_scale_tsc(vcpu, rdtsc()) + vcpu->arch.tsc_offset;
-+		/*
-+		 * Intel PRM states that MSR_IA32_TSC read adds the TSC offset
-+		 * even when not intercepted. AMD manual doesn't define this
-+		 * but appears to behave the same
-+		 *
-+		 * However when userspace wants to read this MSR, return its
-+		 * real L1 value so that its restore will be correct
-+		 *
-+		 */
-+		if (msr_info->host_initiated)
-+			msr_info->data = kvm_read_l1_tsc(vcpu, rdtsc());
-+		else
-+			msr_info->data = kvm_read_l2_tsc(vcpu, rdtsc());
- 		break;
- 	case MSR_MTRRcap:
- 	case 0x200 ... 0x2ff:
+-	/* compaction not active last round */
+-	COMPACT_INACTIVE = COMPACT_DEFERRED,
+-
+ 	/* For more detailed tracepoint output - internal to compaction */
+ 	COMPACT_NO_SUITABLE_PAGE,
+ 	/* compaction should continue to another pageblock */
 -- 
-2.26.2
+2.20.1
 
