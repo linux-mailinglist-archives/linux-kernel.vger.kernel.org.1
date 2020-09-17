@@ -2,86 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C185426D116
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 04:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFFB926D10B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 04:18:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726115AbgIQCZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 22:25:16 -0400
-Received: from mga02.intel.com ([134.134.136.20]:8729 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726009AbgIQCZO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 22:25:14 -0400
-X-Greylist: delayed 427 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 22:25:14 EDT
-IronPort-SDR: RLPAwYg3QBZ+OcJmLAdwnLzIx/yx4+eS+Nkd5Z6QRHEUyi5UZjvPSTybuSZMVyaZ7MPKu8V+1u
- hvrbCpatoB1w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="147293194"
-X-IronPort-AV: E=Sophos;i="5.76,434,1592895600"; 
-   d="scan'208";a="147293194"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 19:18:07 -0700
-IronPort-SDR: RyW/XF2QCFYjBGFf4yPbqq0p+JS78SW5ZGhiITYlXrKKk3I9Vna4p8LPaDYdOgUXbMXlKWQoiM
- OSgGhpMn3p9g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,434,1592895600"; 
-   d="scan'208";a="344116004"
-Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.164])
-  by FMSMGA003.fm.intel.com with ESMTP; 16 Sep 2020 19:18:04 -0700
-From:   "Huang\, Ying" <ying.huang@intel.com>
-To:     peterz@infradead.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Mel Gorman <mgorman@suse.de>,
-        Rik van Riel <riel@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Matthew Wilcox \(Oracle\)" <willy@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>
-Subject: Re: [RFC] autonuma: Migrate on fault among multiple bound nodes
-References: <20200916005936.232788-1-ying.huang@intel.com>
-        <20200916081052.GI2674@hirez.programming.kicks-ass.net>
-Date:   Thu, 17 Sep 2020 10:18:03 +0800
-In-Reply-To: <20200916081052.GI2674@hirez.programming.kicks-ass.net>
-        (peterz@infradead.org's message of "Wed, 16 Sep 2020 10:10:52 +0200")
-Message-ID: <87ft7hrvs4.fsf@yhuang-dev.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        id S1726040AbgIQCSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 22:18:40 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:43729 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725267AbgIQCSY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 22:18:24 -0400
+Received: by mail-pg1-f196.google.com with SMTP id t14so439386pgl.10;
+        Wed, 16 Sep 2020 19:18:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oddmu3a6DAOAVtWoXMsWKj4HUjHptDRzvjsx4oGSL8I=;
+        b=c8P9W3w20g3zBA6dekWcQjBbqc4GigPm/y9fjJlpGKM4VrD0Gp6XPrZm4fMoBmyrlF
+         O16eYKUxAyPk/Eb8OG2O2oO6IOv0hGSe7Vc1CmjNZPMnkmxkqeEtXt8hDLSsA0rZv46f
+         XkeY2VXUhaCWPhUGGbw0qo5YQ5x0N/6SDMNLmvnK9dxKVi+i/g4/dPVBF0MaumL+6wEQ
+         JyKTMgqILhYskgz475D+0PmJWGSL3BE+jH+wiI8lQOB9mvPsnOlICs8mQvuRtW9PMuPA
+         0Mf8hA8QcDDP6YPgegqe7Biz1s2NsdGOrwPkfoUf4oJOeDjNxcZYslHm66V9Xuzqg7gz
+         VVqQ==
+X-Gm-Message-State: AOAM532bJmNUaM3RmfK0uGdpdB4ZryFgYBBBeIv7kSf725TBCypS+fkf
+        3vGLDrpunbpk7FF6DbL71m4=
+X-Google-Smtp-Source: ABdhPJw3uN6pysDRMiQRII0m3fq07Tt0wIgCsWU7b8yjD7cmL/etmfDyyog6RaTR3LUXxJzWJ7igVQ==
+X-Received: by 2002:a62:5586:0:b029:13e:d13d:a12c with SMTP id j128-20020a6255860000b029013ed13da12cmr24687727pfb.20.1600309103673;
+        Wed, 16 Sep 2020 19:18:23 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id f12sm14607661pfa.31.2020.09.16.19.18.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 19:18:23 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 19:18:22 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     hao.wu@intel.com, trix@redhat.com, mdf@kernel.org,
+        yilun.xu@intel.com, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 next] fpga: dfl: n3000-nios: Make m10_n3000_info static
+Message-ID: <20200917021822.GA1081552@epycbox.lan>
+References: <20200917021240.40252-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917021240.40252-1-yuehaibing@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-peterz@infradead.org writes:
+On Thu, Sep 17, 2020 at 10:12:40AM +0800, YueHaibing wrote:
+> Fix sparse warning:
+> 
+> drivers/fpga/dfl-n3000-nios.c:392:23: warning:
+>  symbol 'm10_n3000_info' was not declared. Should it be static?
+> 
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
+>  drivers/fpga/dfl-n3000-nios.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/fpga/dfl-n3000-nios.c b/drivers/fpga/dfl-n3000-nios.c
+> index 5088f8f0e0cd..686813b59d33 100644
+> --- a/drivers/fpga/dfl-n3000-nios.c
+> +++ b/drivers/fpga/dfl-n3000-nios.c
+> @@ -389,7 +389,7 @@ static int n3000_nios_init_done_check(struct n3000_nios *ns)
+>  	return ret;
+>  }
+>  
+> -struct spi_board_info m10_n3000_info = {
+> +static struct spi_board_info m10_n3000_info = {
+>  	.modalias = "m10-n3000",
+>  	.max_speed_hz = 12500000,
+>  	.bus_num = 0,
+> -- 
+> 2.17.1
+> 
+Applied to for-next,
 
-> On Wed, Sep 16, 2020 at 08:59:36AM +0800, Huang Ying wrote:
->> +static bool mpol_may_mof(struct mempolicy *pol)
->> +{
->> +	/* May migrate among bound nodes for MPOL_BIND */
->> +	return pol->flags & MPOL_F_MOF ||
->> +		(pol->mode == MPOL_BIND && nodes_weight(pol->v.nodes) > 1);
->> +}
->
-> This is weird, why not just set F_MOF on the policy?
->
-> In fact, why wouldn't something like:
->
->   mbind(.mode=MPOL_BIND, .flags=MPOL_MF_LAZY);
->
-> work today? Afaict MF_LAZY will unconditionally result in M_MOF.
-
-Another question.
-
-This means for all VMAs that are mbind() without MPOL_MF_LAZY and tasks
-which binds memory via set_mempolicy(), we will not try to optimize
-their page placement among the bound nodes even if sysctl knob
-kernel.numa_balancing is enabled.
-
-Is this the intended behavior?  Although we enable AutoNUMA globally, we
-will not try to use it in any places if possible.  In some places, it
-needs to be enabled again.
-
-Best Regards,
-Huang, Ying
+Thanks
