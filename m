@@ -2,120 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74A9326E21F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:19:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79C1B26E22E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726475AbgIQRTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 13:19:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57208 "EHLO
+        id S1726298AbgIQRUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 13:20:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726470AbgIQRSg (ORCPT
+        with ESMTP id S1726405AbgIQRTj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 13:18:36 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B17C061788
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:18:36 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id b2so2479432qtp.8
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:18:36 -0700 (PDT)
+        Thu, 17 Sep 2020 13:19:39 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A89C061756;
+        Thu, 17 Sep 2020 10:19:24 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id r9so3091216ioa.2;
+        Thu, 17 Sep 2020 10:19:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jfL5I8+SAEaL2OQyBySvbdAEfPXTRZQx7kR/t+e9RqA=;
-        b=UgmNS1ftT004DWJhMLLmAaHR2BO1naPrzFegZa5rZnf3rGpWH8LMd1xTTJKbRlPhqt
-         5ze07Yq/IeeCzRJkU8FCSG9qU7RVm34s/t37biz6aQFB8nlZATJJz83vJ272XMHqXboE
-         RvOhYFgszZRwlejnC4o2y865WVl/4NTQWeYhnVX7pacrsGys8HLaK9NFowueO0pvOP8+
-         bgB0BQA3PQNHnQ2s1nzRiqfajZFklpSFbi3PXOxNyYvluJygKcOCGzqQU72aqH2ef6zd
-         FApi0ug9pTRrGURqNOZz5Tueh7aalLAgRaDYuAgXIMZOzigN2jCcaDeoLYOY5CpBfEgx
-         npSw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CTx4SmzLTM9R4VIN+7JIqONJ9j1anOACjhRKh3TuGxY=;
+        b=NlrhQuY65CItYgVlKVrPYv/5crqW3ibCPMk9LN9mZtLDYC2iLLp/ETU5vCCGuErIjE
+         h4qWU0VLhRjQkqk1xSCZH2asba2SaNDkmFD4XttCbTy6eWVNuyRnmCIb9xscUb36id8v
+         MLsqGzk+7tnaveXKoLtKxPCaOPKBB53kpbYCcoiRfkIjtO8hahzl/SJZy9H3sWlBVYdY
+         CSxqbEFjDnEELiGL1KiqaHvZ/NyLS7Z0puxlVCqeXYDtKuZTgDs04ofRzeaH3lTvP0vC
+         bxY6mEr7nACVyzICjHlTGa7VTtd3PDKHJi/nhLM6M1lrkMWwHm5GSJFmugzlPnbqqwdM
+         iRCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jfL5I8+SAEaL2OQyBySvbdAEfPXTRZQx7kR/t+e9RqA=;
-        b=OpKeiIaDYJXeMjMwNeV1TZ1cHyJRRsF77BvpmF3jy+BBaHCkNl+cQF6usaB0/8yOxq
-         ZAaCX513PfFFL2jgjUeWesCbCNduD/1/Jo6VFjvKlnH/5YtMAk2W2LjBAqLhzeHmxWuN
-         OBMydxQdqhjz9uKk+mUxyvSYAVIE8UiJSIlUcaEcDLE4MrpLrHBzh4IQESthK+0Jvl/J
-         G/kmD4uF+Z6zke6PLQrdZCv/HkcaH6nQ0EEShe9vHIWuiqXKDckCSfsKaooLW2S1yp+C
-         iOdEpunDzm2yTvW4ypzJAUyOB7X9RZwr7DfthKGCj0MVeCWa9goFWFuiiNez1j26Qp+7
-         qzbg==
-X-Gm-Message-State: AOAM531p8DfZdtFuoAgSsu+t0BhdSrxAKZtC66jhTwsMjCC7W3kxzO6I
-        El/yJYERDPnslS3t2U6chHU0Gg==
-X-Google-Smtp-Source: ABdhPJxyBiY7E2PwXlRdxQJ94MHJWynfjteZ/S0FWxpEdsMUTXsd97vU2/ByViQ4IYP6HH7MEiQ61g==
-X-Received: by 2002:ac8:2383:: with SMTP id q3mr16956309qtq.230.1600363115224;
-        Thu, 17 Sep 2020 10:18:35 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id i187sm280659qke.43.2020.09.17.10.18.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 10:18:34 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kIxYH-000afx-Uu; Thu, 17 Sep 2020 14:18:33 -0300
-Date:   Thu, 17 Sep 2020 14:18:33 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Oded Gabbay <oded.gabbay@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
-Message-ID: <20200917171833.GJ8409@ziepe.ca>
-References: <20200915171022.10561-1-oded.gabbay@gmail.com>
- <20200915133556.21268811@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAFCwf12XZRxLYifSfuB+RGhuiKBytzsUTOnEa6FqfJHYvcVJPQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CTx4SmzLTM9R4VIN+7JIqONJ9j1anOACjhRKh3TuGxY=;
+        b=ZPWB9nBEFHevL7fk2xu+THmlyq0/BcArg6AiHJCRF0AlHObGIp+vwCeu3Qd98gBjC2
+         Qwl0677jyB3KXVLu16c41QcJ/bF3fqJflHJvXFKwcZxBTu8p5p2eQvbvp99esfcnODJ6
+         +sVxdLBTEWUyyCNd5lWQLM5XkhPDX5j8tB6Zd0bKsU+G/OTwg+qe7WC/+tfqN7n30Rat
+         YuQed9fvJd7tTjnN+DnpJCaARIBY/oLOouyrUbsKC9L4SVUHwIq848x/8gVH4U6JijYM
+         Nr9caN98mV141+ueq3jLEgwSn4rAT4WvGfB9B2+lURDyAZE+7RDC7azG04CP4KNd0lAD
+         HzVg==
+X-Gm-Message-State: AOAM533+z1AnboCDgFfv+lReIW9bPjlpmXHfb8X7q8TLVjCmzRW+L/ba
+        GEtYKg0UjjIVDmZIEpwKCZzHyDe0ik0Cmw2Fs5UlS5mVbYk=
+X-Google-Smtp-Source: ABdhPJxEY+mHc6gjE46QOlMBUYdnQ3inoVgBHX0mg3UwNm23n6R5Yz3een21dvdSmgbc+3nYVeB0wUL4vk5Q2HVMZsY=
+X-Received: by 2002:a05:6638:1448:: with SMTP id l8mr27177276jad.83.1600363163802;
+ Thu, 17 Sep 2020 10:19:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFCwf12XZRxLYifSfuB+RGhuiKBytzsUTOnEa6FqfJHYvcVJPQ@mail.gmail.com>
+References: <20200917071042.1909191-1-liushixin2@huawei.com> <20200917165143.GA1707439@bjorn-Precision-5520>
+In-Reply-To: <20200917165143.GA1707439@bjorn-Precision-5520>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Thu, 17 Sep 2020 10:19:13 -0700
+Message-ID: <CAKgT0Uf=TmW0SKWROPcwAOdoaXvLn3t6_ynUtPVoH64bnCRTww@mail.gmail.com>
+Subject: Re: [PATCH -next] PCI/IOV: use module_pci_driver to simplify the code
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Liu Shixin <liushixin2@huawei.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexander Duyck <alexander.h.duyck@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 11:46:58PM +0300, Oded Gabbay wrote:
-> infrastructure for communication between multiple accelerators. Same
-> as Nvidia uses NVlink, we use RDMA that we have inside our ASIC.
-> The RDMA implementation we did does NOT support some basic RDMA
-> IBverbs (such as MR and PD) and therefore, we can't use the rdma-core
-> library or to connect to the rdma infrastructure in the kernel. 
+On Thu, Sep 17, 2020 at 9:56 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> [+cc Alexander]
+>
+> On Thu, Sep 17, 2020 at 03:10:42PM +0800, Liu Shixin wrote:
+> > Use the module_pci_driver() macro to make the code simpler
+> > by eliminating module_init and module_exit calls.
+> >
+> > Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+>
+> Applied to pci/misc for v5.10, thanks!
 
-You can't create a parallel RDMA subsystem in netdev, or in misc, and
-you can't add random device offloads as IOCTL to nedevs.
+The code below seems pretty straight forward.
 
-RDMA is the proper home for all the networking offloads that don't fit
-into netdev.
+Acked-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
 
-EFA was able to fit into rdma-core/etc and it isn't even RoCE at
-all. I'm sure this can too.
-
-> wanted to do it but when we analyzed it, we saw we wouldn't be able to
-> support basic stuff and therefore we had to revert to our IOCTLs.
-
-Try again. Ask for help.
-
-Your patches add CQs, WQ, and other RDMA objects. This is very clearly
-not an appropriate functionality for netdev.
-
-> To sum it up, because our NIC is used for intra-communication, we
-> don't expose nor intend users to use it as a NIC per-se. However, to
-> be able to get statistics and manage them in a standard way, and
-> support control plane over Ethernet, we do register each port to the
-> net subsystem (i.e. create netdev per port).
-
-Sure, the basic ethernet side is conceptually fine.
-
-> > Please make sure to CC linux-rdma. You clearly stated that the device
-> > does RDMA-like transfers.
-> 
-> We don't use the RDMA infrastructure in the kernel and we can't
-> connect to it due to the lack of H/W support we have so I don't see
-> why we need to CC linux-rdma.
-
-Because you can't put RDMA like concepts under net.
-
-Jakub, NAK from me on this series.
-
-Jason
+> > ---
+> >  drivers/pci/pci-pf-stub.c | 14 +-------------
+> >  1 file changed, 1 insertion(+), 13 deletions(-)
+> >
+> > diff --git a/drivers/pci/pci-pf-stub.c b/drivers/pci/pci-pf-stub.c
+> > index a0b2bd6c918a..45855a5e9fca 100644
+> > --- a/drivers/pci/pci-pf-stub.c
+> > +++ b/drivers/pci/pci-pf-stub.c
+> > @@ -37,18 +37,6 @@ static struct pci_driver pf_stub_driver = {
+> >       .probe                  = pci_pf_stub_probe,
+> >       .sriov_configure        = pci_sriov_configure_simple,
+> >  };
+> > -
+> > -static int __init pci_pf_stub_init(void)
+> > -{
+> > -     return pci_register_driver(&pf_stub_driver);
+> > -}
+> > -
+> > -static void __exit pci_pf_stub_exit(void)
+> > -{
+> > -     pci_unregister_driver(&pf_stub_driver);
+> > -}
+> > -
+> > -module_init(pci_pf_stub_init);
+> > -module_exit(pci_pf_stub_exit);
+> > +module_pci_driver(pf_stub_driver);
+> >
+> >  MODULE_LICENSE("GPL");
+> > --
+> > 2.25.1
+> >
