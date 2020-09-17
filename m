@@ -2,56 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 517AE26E3E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D809C26E3D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:36:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726412AbgIQShp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 14:37:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48908 "EHLO mail.kernel.org"
+        id S1726333AbgIQRSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 13:18:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728100AbgIQRF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 13:05:29 -0400
-Received: from gaia (unknown [31.124.44.166])
+        id S1726543AbgIQRQb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 13:16:31 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB5C7206CA;
-        Thu, 17 Sep 2020 17:05:23 +0000 (UTC)
-Date:   Thu, 17 Sep 2020 18:05:21 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        kasan-dev@googlegroups.com,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 19/37] kasan: don't allow SW_TAGS with ARM64_MTE
-Message-ID: <20200917170521.GM10662@gaia>
-References: <cover.1600204505.git.andreyknvl@google.com>
- <42f25c11d97aa8497ee3851ee3531b379d6a922e.1600204505.git.andreyknvl@google.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 07F56221E3;
+        Thu, 17 Sep 2020 17:16:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600362990;
+        bh=Tlz5MsNMitAcZew4gZ2m7t4Tux7gDMCdLF29hPUUCx4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=wRIlXxmae7L0B2Sc6zDYoqxOttkK0u2IdYfiFJ9bDaJIMf/D2Sh6t6XVxZCo61XcV
+         fUfzrEuMUe4vYtPteMQOAt1kBlBmj5P9uPEstKQTz7206mu5H0wA3dk9XN5WejEyvp
+         ZR6h2+CoDwx43OCsK5HTV4fSNa3c/GGEs5L5UVs4=
+Date:   Thu, 17 Sep 2020 18:16:26 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] iio: buffer: split buffer sysfs creation to take buffer
+ as primary arg
+Message-ID: <20200917181626.59eb84c8@archlinux>
+In-Reply-To: <20200917125951.861-1-alexandru.ardelean@analog.com>
+References: <20200917125951.861-1-alexandru.ardelean@analog.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <42f25c11d97aa8497ee3851ee3531b379d6a922e.1600204505.git.andreyknvl@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 11:16:01PM +0200, Andrey Konovalov wrote:
-> Software tag-based KASAN provides its own tag checking machinery that
-> can conflict with MTE. Don't allow enabling software tag-based KASAN
-> when MTE is enabled.
-> 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+On Thu, 17 Sep 2020 15:59:51 +0300
+Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
 
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> Currently the iio_buffer_{alloc,free}_sysfs_and_mask() take 'indio_dev' as
+> primary argument. This change splits the main logic into a private function
+> that takes an IIO buffer as primary argument.
+> 
+> That way, the functions can be extended to configure the sysfs for multiple
+> buffers.
+> 
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+
+One comment inline.  Whilst I think it is safe as you have it, I'd
+rather avoid the minor change in logic if we don't need to make it.
+
+Thanks,
+
+Jonathan
+
+
+> ---
+>  drivers/iio/industrialio-buffer.c | 46 ++++++++++++++++++++-----------
+>  1 file changed, 30 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+> index a7d7e5143ed2..a4f6bb96d4f4 100644
+> --- a/drivers/iio/industrialio-buffer.c
+> +++ b/drivers/iio/industrialio-buffer.c
+> @@ -1264,26 +1264,14 @@ static struct attribute *iio_buffer_attrs[] = {
+>  	&dev_attr_data_available.attr,
+>  };
+>  
+> -int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
+> +static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
+> +					     struct iio_dev *indio_dev)
+>  {
+>  	struct iio_dev_attr *p;
+>  	struct attribute **attr;
+> -	struct iio_buffer *buffer = indio_dev->buffer;
+>  	int ret, i, attrn, attrcount;
+>  	const struct iio_chan_spec *channels;
+>  
+> -	channels = indio_dev->channels;
+> -	if (channels) {
+> -		int ml = indio_dev->masklength;
+> -
+> -		for (i = 0; i < indio_dev->num_channels; i++)
+> -			ml = max(ml, channels[i].scan_index + 1);
+> -		indio_dev->masklength = ml;
+> -	}
+> -
+> -	if (!buffer)
+> -		return 0;
+> -
+>  	attrcount = 0;
+>  	if (buffer->attrs) {
+>  		while (buffer->attrs[attrcount] != NULL)
+> @@ -1367,19 +1355,45 @@ int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
+>  	return ret;
+>  }
+>  
+> -void iio_buffer_free_sysfs_and_mask(struct iio_dev *indio_dev)
+> +int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
+>  {
+>  	struct iio_buffer *buffer = indio_dev->buffer;
+> +	const struct iio_chan_spec *channels;
+> +	int i;
+> +
+> +	channels = indio_dev->channels;
+> +	if (channels) {
+> +		int ml = indio_dev->masklength;
+> +
+> +		for (i = 0; i < indio_dev->num_channels; i++)
+> +			ml = max(ml, channels[i].scan_index + 1);
+> +		indio_dev->masklength = ml;
+> +	}
+
+I've not really figured out if it matters, but this is a logic change.
+Previously we didn't compute masklength if there was no buffer provided.
+Now we do.  It's probably better to move the if (!buffer) check above
+this block or at least mention this change in the patch description.
+
+
+>  
+>  	if (!buffer)
+> -		return;
+> +		return 0;
+> +
+> +	return __iio_buffer_alloc_sysfs_and_mask(buffer, indio_dev);
+> +}
+>  
+> +static void __iio_buffer_free_sysfs_and_mask(struct iio_buffer *buffer)
+> +{
+>  	bitmap_free(buffer->scan_mask);
+>  	kfree(buffer->buffer_group.attrs);
+>  	kfree(buffer->scan_el_group.attrs);
+>  	iio_free_chan_devattr_list(&buffer->scan_el_dev_attr_list);
+>  }
+>  
+> +void iio_buffer_free_sysfs_and_mask(struct iio_dev *indio_dev)
+> +{
+> +	struct iio_buffer *buffer = indio_dev->buffer;
+> +
+> +	if (!buffer)
+> +		return;
+> +
+> +	__iio_buffer_free_sysfs_and_mask(buffer);
+> +}
+> +
+>  /**
+>   * iio_validate_scan_mask_onehot() - Validates that exactly one channel is selected
+>   * @indio_dev: the iio device
+
