@@ -2,149 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6EE826E63A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 22:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E9F26E64B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 22:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726501AbgIQUGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 16:06:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54884 "EHLO
+        id S1726456AbgIQUKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 16:10:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726236AbgIQUGk (ORCPT
+        with ESMTP id S1725874AbgIQUKK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 16:06:40 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A4BEC061355
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 13:06:40 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id j3so1651778qvi.7
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 13:06:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3Q1qejjjhezfyiurKJRhlDxB+DXAgXxFnb9TedTa7L4=;
-        b=lcRgZ5GzpJ04pDPiF882GvGQfA2klPwdj72TcNSCwqEw7IIEOzRf1pXGmBCRxdByGn
-         ZWILbFyH5h5Ta8bppvRX+L9ZRICb1mWgtPJygZk1EKPsj6r/MAzLelBVl8cLBeYtHyH3
-         /3vsvX2OX8dryVJtfjjDzZvTbdEwkpwD59PpIZbA/E6lJO6me1kJwS3tyKHzxBiAIwfJ
-         Pe/e2mKvSQH0zN04VtLbscoqrBNtuoKgeObD+sjm+uwH+XFb7qPHR4wQSzhsg6E+ZoYb
-         Rlm7sR59h57IQ3F+Hja05Bmrnqm/3RwZyUn2nQRoejUm1fTynhjzSShvJScutXEAm/SJ
-         jaXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3Q1qejjjhezfyiurKJRhlDxB+DXAgXxFnb9TedTa7L4=;
-        b=lKDNSR02E/wqBeADx32mZ6QMTtiRv/KJqr1saPNYY4lPZ/Oy2BS92Gkqv6qdxgd3FA
-         9F6mEX5BIlirGQ9YS30NwtZR9AOoO9otN6t5NHGOS471SCWqlPpwElqIDQcm+9HmJUWQ
-         KxVYiDBZPv8Bwnjc9ncqNTN830rFiRFZuTLC6zDZSPm+Pzl+anlEz76VUfTYOUw9XR/B
-         kPHPMABgKssUcJTA4iqX9BDmnpEh1SeztVkSjnIFe/B/Bcc88t4l/oWRDSy0lxUyX1nK
-         0faQW5WCG4rElKrkNlenqT3wDhp+cWF84hhtMyvI1FhlrHLMtMtV6AsDNpfB3q/eUEaX
-         YaFg==
-X-Gm-Message-State: AOAM532Zmhsaol8xnk2VXjkZFMLGsxIwKLhuxfnSEkj8uCdv6bHk1cNG
-        lZphW8p9uxCq7U7fq5NYVhKh4g==
-X-Google-Smtp-Source: ABdhPJxuZnt5wzjBKuVgR/rcdMf+nNahk7ll2ZTJLpD1Brk0GLK2cYvnAB3V+7hnzlBYIm81lj3K7g==
-X-Received: by 2002:a0c:d443:: with SMTP id r3mr30442508qvh.20.1600373199344;
-        Thu, 17 Sep 2020 13:06:39 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id w59sm574671qtd.1.2020.09.17.13.06.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 13:06:38 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kJ0Aw-000lCJ-5W; Thu, 17 Sep 2020 17:06:38 -0300
-Date:   Thu, 17 Sep 2020 17:06:38 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Peter Xu <peterx@redhat.com>, John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Maya B . Gokhale" <gokhale2@llnl.gov>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Marty Mcfadden <mcfadden8@llnl.gov>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
-Message-ID: <20200917200638.GM8409@ziepe.ca>
-References: <20200915213330.GE2949@xz-x1>
- <20200915232238.GO1221970@ziepe.ca>
- <e6c352f8-7ee9-0702-10a4-122d2c4422fc@nvidia.com>
- <20200916174804.GC8409@ziepe.ca>
- <20200916184619.GB40154@xz-x1>
- <20200917112538.GD8409@ziepe.ca>
- <20200917181411.GA133226@xz-x1>
- <CAHk-=wgMVPAhD7C24ipe03+MScgp6F=zMS-roOznvxJ+hOGfSA@mail.gmail.com>
- <20200917190332.GB133226@xz-x1>
- <CAHk-=wgw3GNyF_6euymOFxM62Y3B=C=f2iUJn8Py-u5YELJ5JA@mail.gmail.com>
+        Thu, 17 Sep 2020 16:10:10 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC040C06174A;
+        Thu, 17 Sep 2020 13:10:09 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 361D6E42;
+        Thu, 17 Sep 2020 22:10:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1600373406;
+        bh=4DMjAbU38sRZa4Hb+7uteuEdS1wnI9GFHiIgCUgEZ/c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q0VtsHkhoUVlzTu7tNMMcMsFAPfpXoYMh4cRGn6MmDxvumEgpl8HoPhsaS9P5RQ0Y
+         NVTFOFHBfusC0IIVq9IenTWY3skD0ldFuVOF8UWv0RFNF3NZ/lN8K6JSoJROzof6o8
+         kv65KBP9KWCuIrAttiiUNKk2jIgT65ueP7LagMtc=
+Date:   Thu, 17 Sep 2020 23:09:36 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Hoan Tran <hoan@os.amperecomputing.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Niklas =?utf-8?Q?S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Andreas =?utf-8?Q?F=C3=A4rber?= <afaerber@suse.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Sungbo Eo <mans0n@gorani.run>, Stefan Agner <stefan@agner.ch>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Yash Shah <yash.shah@sifive.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        - <patches@opensource.cirrus.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Amelie Delaunay <amelie.delaunay@st.com>,
+        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Andy Teng <andy.teng@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Sricharan R <sricharan@codeaurora.org>,
+        Chris Brandt <chris.brandt@renesas.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-unisoc@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-media@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH v2 01/13] dt-bindings: gpio: add common schema for GPIO
+ controllers
+Message-ID: <20200917200936.GF3969@pendragon.ideasonboard.com>
+References: <20200917165301.23100-1-krzk@kernel.org>
+ <20200917165301.23100-2-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wgw3GNyF_6euymOFxM62Y3B=C=f2iUJn8Py-u5YELJ5JA@mail.gmail.com>
+In-Reply-To: <20200917165301.23100-2-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 12:42:11PM -0700, Linus Torvalds wrote:
+Hi Krzysztof,
 
-> Because the whole "do page pinning without MADV_DONTFORK and then fork
-> the area" is I feel a very very invalid load. It sure as hell isn't
-> something we should care about performance for, and in fact it is
-> something we should very well warn for exactly to let people know
-> "this process is doing bad things".
+Thank you for the patch.
 
-It is easy for things like iouring that can just allocate the queue
-memory they care about and MADV_DONTFORK it.
+On Thu, Sep 17, 2020 at 06:52:49PM +0200, Krzysztof Kozlowski wrote:
+> Convert parts of gpio.txt bindings into common dtschema file for GPIO
+> controllers.
 
-Other things work more like O_DIRECT - the data it is working on is
-arbtiary app memory, not controlled in anyway.
+How about deleting the part that has been converted from gpio.txt ?
 
-In RDMA we have this ugly scheme were we automatically call
-MADV_DONTFORK on the virtual address and hope it doesn't explode. It
-is very hard to call MADV_DONTFORK if you don't control the
-allocation. Don't want to break huge pages, have to hope really really
-hard that a fork doesn't need that memory. Hope you don't run out of
-vmas beause it causes a vma split. So ugly. So much overhead.
+> The schema enforces proper naming of GPIO controller nodes and GPIO
+> hogs.
+> 
+> The schema should be included by specific GPIO controllers bindings.
 
-Considering almost anything can do a fork() - we've seen app authors
-become confused. They say stuff is busted, support folks ask if they
-use fork, author says no.. Investigation later shows some hidden
-library did system() or whatever.
+Instead of including it manually, could we use a conditional select: to
+apply the schema automatically when a gpio-controller property is
+present ?
 
-In this case the tests that found this failed because they were
-written in Python and buried in there was some subprocess.call().
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> 
+> ---
+> 
+> Changes since v1:
+> 1. Do not require compatible (some child nodes are gpio-controllers
+>    without the compatible).
+> ---
+>  .../devicetree/bindings/gpio/gpio-common.yaml | 125 ++++++++++++++++++
+>  1 file changed, 125 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/gpio/gpio-common.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/gpio/gpio-common.yaml b/Documentation/devicetree/bindings/gpio/gpio-common.yaml
+> new file mode 100644
+> index 000000000000..af9f6c7feeec
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/gpio/gpio-common.yaml
+> @@ -0,0 +1,125 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/gpio/gpio-common.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Common GPIO controller properties
+> +
+> +maintainers:
+> +  - Krzysztof Kozlowski <krzk@kernel.org>
+> +  - Linus Walleij <linus.walleij@linaro.org>
+> +
+> +properties:
+> +  nodename:
+> +    pattern: "^(gpio-controller|gpio)(@[0-9a-f]+|-[0-9a-f]+)?$"
+> +
+> +  '#gpio-cells': true
+> +  gpio-controller: true
+> +  gpio-ranges: true
+> +
+> +  gpio-line-names:
+> +    description: |
+> +      Optionally, a GPIO controller may have a "gpio-line-names" property. This
+> +      is an array of strings defining the names of the GPIO lines going out of
+> +      the GPIO controller. This name should be the most meaningful producer
+> +      name for the system, such as a rail name indicating the usage. Package
+> +      names such as pin name are discouraged: such lines have opaque names
+> +      (since they are by definition generic purpose) and such names are usually
+> +      not very helpful.
+> +
+> +      For example "MMC-CD", "Red LED Vdd" and "ethernet reset" are reasonable
+> +      line names as they describe what the line is used for. "GPIO0" is not a
+> +      good name to give to a GPIO line.
+> +
+> +      Placeholders are discouraged: rather use the "" (blank string) if the use
+> +      of the GPIO line is undefined in your design. The names are assigned
+> +      starting from line offset 0 from left to right from the passed array. An
+> +      incomplete array (where the number of passed named are less than ngpios)
+> +      will still be used up until the last provided valid line index.
+> +
+> +  gpio-reserved-ranges:
+> +    description:
+> +      Indicates the start and size of the GPIOs that can't be used.
+> +
+> +  ngpios:
+> +    description: |
+> +      Optionally, a GPIO controller may have a "ngpios" property. This property
+> +      indicates the number of in-use slots of available slots for GPIOs. The
+> +      typical example is something like this: the hardware register is 32 bits
+> +      wide, but only 18 of the bits have a physical counterpart. The driver is
+> +      generally written so that all 32 bits can be used, but the IP block is
+> +      reused in a lot of designs, some using all 32 bits, some using 18 and
+> +      some using 12. In this case, setting "ngpios = <18>;" informs the driver
+> +      that only the first 18 GPIOs, at local offset 0 .. 17, are in use.
+> +
+> +      If these GPIOs do not happen to be the first N GPIOs at offset 0...N-1,
+> +      an additional set of tuples is needed to specify which GPIOs are
+> +      unusable, with the gpio-reserved-ranges binding.
+> +
+> +patternProperties:
+> +  "^(hog-[0-9]+|.+-hog(-[0-9]+)?)$":
+> +    type: object
+> +    description:
+> +      The GPIO chip may contain GPIO hog definitions. GPIO hogging is a mechanism
+> +      providing automatic GPIO request and configuration as part of the
+> +      gpio-controller's driver probe function.
+> +      Each GPIO hog definition is represented as a child node of the GPIO controller.
+> +
+> +    properties:
+> +      gpio-hog: true
+> +      gpios: true
+> +      input: true
+> +      output-high: true
+> +      output-low: true
+> +      line-name:
+> +        description:
+> +          The GPIO label name. If not present the node name is used.
+> +
+> +    required:
+> +      - gpio-hog
+> +      - gpios
+> +
+> +    oneOf:
+> +      - required:
+> +          - input
+> +      - required:
+> +          - output-high
+> +      - required:
+> +          - output-low
+> +
+> +    additionalProperties: false
+> +
+> +required:
+> +  - "#gpio-cells"
+> +  - gpio-controller
+> +
+> +examples:
+> +  - |
+> +    gpio-controller@15000000 {
+> +        compatible = "foo";
+> +        reg = <0x15000000 0x1000>;
+> +        gpio-controller;
+> +        #gpio-cells = <2>;
+> +        ngpios = <18>;
+> +        gpio-reserved-ranges = <0 4>, <12 2>;
+> +        gpio-line-names = "MMC-CD", "MMC-WP", "VDD eth", "RST eth", "LED R",
+> +                          "LED G", "LED B", "Col A", "Col B", "Col C", "Col D",
+> +                          "Row A", "Row B", "Row C", "Row D", "NMI button",
+> +                          "poweroff", "reset";
+> +    };
+> +
+> +  - |
+> +    gpio-controller@1400 {
+> +        compatible = "fsl,qe-pario-bank-a", "fsl,qe-pario-bank";
+> +        reg = <0x1400 0x18>;
+> +        gpio-controller;
+> +        #gpio-cells = <2>;
+> +
+> +        line-b-hog {
+> +            gpio-hog;
+> +            gpios = <6 0>;
+> +            input;
+> +            line-name = "foo-bar-gpio";
+> +        };
+> +    };
 
-I would prefer the kernel consider it a valid work load with the
-semantics the sketch patch shows..
+-- 
+Regards,
 
-> Is there possibly somethign else we can filter on than just
-> GUP_PIN_COUNTING_BIAS? Because it could be as simple as just marking
-> the vma itself and saying "this vma has had a page pinning event done
-> on it".
-
-We'd have to give up pin_user_pages_fast() to do that as we can't fast
-walk and get vmas?
-
-Hmm, there are many users. I remember that the hfi1 folks really
-wanted the fast version for some reason..
-
-> Because if we only start copying the page *iff* the vma is marked by
-> that "this vma had page pinning" _and_ the page count is bigger than
-> GUP_PIN_COUNTING_BIAS, than I think we can rest pretty easily knowing
-> that we aren't going to hit some regular old-fashioned UNIX server
-> cases with a lot of forks..
-
-Agree
-
-Given that this is a user visible regression, it is nearly rc6, what
-do you prefer for next steps? 
-
-Sorting out this for fork, especially if it has the vma change is
-probably more than a weeks time.
-
-Revert this patch and try again next cycle?
-
-Thanks,
-Jason
+Laurent Pinchart
