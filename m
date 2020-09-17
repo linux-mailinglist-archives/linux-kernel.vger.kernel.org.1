@@ -2,67 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C38B26DFC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 17:35:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A54626DFB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 17:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727956AbgIQPfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 11:35:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39542 "EHLO
+        id S1728242AbgIQPbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 11:31:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728172AbgIQPZG (ORCPT
+        with ESMTP id S1727952AbgIQP3v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 11:25:06 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C97EAC061788;
-        Thu, 17 Sep 2020 08:25:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=+8Uahuv6B8JzyKr+68NNMng9KA/JRAa8Du+YW43o7PM=; b=r2V+1e1cC5J2I0YysafnwV8mdk
-        v8buLS1F4VsC6NXj7s+0y5UkO8K1pwSbP091XCCQjbrbq8IQhe/jlX3JgXx+Gl4I+uAcTHISAmJvS
-        whzRbgYPJ8tdC2nQfoVCKlXT4fWkL3kJGef5I1L+pvlW10BfPLQuPVUhMc2fu9LYKSfVRFJXwrGFw
-        IP01eevM9gbWikpXh9pqobku9cRwpHUUQ9aW9xG4567VzBHReZmhuDSs5FRbCwr+2zkus0GBaDOml
-        +rGX6EmkHCRMfOvKH4BeJCW7VHfC3iAnq0BAD08NOVC2xw45hDmRPH+7PKlcP3mvJy0LnfWbMgozm
-        DJXBvvGA==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIvmP-0002PA-Ih; Thu, 17 Sep 2020 15:25:01 +0000
-Subject: Re: [PATCH linux-next] docs:dev-tools: Fix typo in
- Documentation/dev-tools
-To:     Masanari Iida <standby24x7@gmail.com>, corbet@lwn.net,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        aryabinin@virtuozzo.com, glider@google.com, dvyukov@google.com,
-        catalin.marinas@arm.com, andreyknvl@google.com
-References: <20200917134407.63487-1-standby24x7@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <a8e79395-d281-d620-d9f8-1be53d8fa7e1@infradead.org>
-Date:   Thu, 17 Sep 2020 08:24:57 -0700
+        Thu, 17 Sep 2020 11:29:51 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E546FC06174A;
+        Thu, 17 Sep 2020 08:27:31 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id r24so2412398ljm.3;
+        Thu, 17 Sep 2020 08:27:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ayxZ/apLrEsT1wotEfQehRQnLkINjTczpn8uLHl9SZs=;
+        b=DJpJIBCp+9h8BU3cFFtUV53GeJ1YpgZyucs9afKIg9xFPsx0DlCXdV932Np4NZFmK3
+         gXfukvFcrdbhALcvHA+QnWEYJYgqvj1L7ID3W6omqTkSPJqWfCmtKhUdfR6qSfKwNBgG
+         2Khy3ine7vO4vT62jVIV7SY7vJvGf7rs4ZVPukmiaZJBCpSN54a0gIHtxpAlKc92kkr1
+         EwRiq3yWmy3l/hBHtOIhkt0kDPETCJsDKEE4LqfbnmFqRDZcZ4/83sJULzEd31ZouAk8
+         tKyv0e/3rLkEnXYG1RyHC/yHnWOalPkl4Dw4vECb+JkkRBnjIJIjLWvLDmQjMf/yKERS
+         G2Ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ayxZ/apLrEsT1wotEfQehRQnLkINjTczpn8uLHl9SZs=;
+        b=sdfY67Yq3A+vJeQAs8epBPuLqMc0KBNsEpdh+eCf6Sr+qff8cbfgxol1PtHZIMZtnW
+         a4gaYlRnDr1202LyBNLLecfvr4cxXZTX/wdH7tqeGBu0B8eBf3w6ZOylSfDiLEkVGyWz
+         mUUU995h/mQl3yJ8UWqmkXZzDv0Ga+dKK0PHQI8SFx19ozZcMYJep1xRX6rNh1pCSyYT
+         UWYECKnGJBZCBRF9Sk9DokqA2XKDSye0WxqfxoPnSu4gp+hqhWbYsEWy3tl5tof1Xdhz
+         UwM2uL7ajvQkOcqg26ecwLhPJ3lDoUbN5HZcecKZnAmq5wwNKVY6Oae79bs8sjUL8wDK
+         Jllg==
+X-Gm-Message-State: AOAM531oADnpq9B/GWNK6vbS+XcULuiR0907/iluSZsGhhV0j0Y+rSF1
+        UBT9CVM+Oo/E3yrdi5sZ+AztsTPpnvc=
+X-Google-Smtp-Source: ABdhPJy8d99/Pbv+6/CzgFnGRxlv4uWxZuQ7RuLtQMhsj3Rb+/ghDu8lW3+99++S72u7C/wjlae9QQ==
+X-Received: by 2002:a2e:8619:: with SMTP id a25mr10922980lji.390.1600356450050;
+        Thu, 17 Sep 2020 08:27:30 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id y21sm6119219ljk.110.2020.09.17.08.27.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Sep 2020 08:27:29 -0700 (PDT)
+Subject: Re: [PATCH v7 06/34] i2c: tegra: Remove
+ i2c_dev.clk_divisor_non_hs_mode member
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200908224006.25636-1-digetx@gmail.com>
+ <20200908224006.25636-7-digetx@gmail.com> <20200917112541.GR3515672@ulmo>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <716583f1-60df-f576-16d3-dbb72d12fa54@gmail.com>
+Date:   Thu, 17 Sep 2020 18:27:28 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200917134407.63487-1-standby24x7@gmail.com>
+In-Reply-To: <20200917112541.GR3515672@ulmo>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/17/20 6:44 AM, Masanari Iida wrote:
-> This patch fixes some spelling typos found in
-> Documentation/dev-tools.
+17.09.2020 14:25, Thierry Reding пишет:
+> On Wed, Sep 09, 2020 at 01:39:38AM +0300, Dmitry Osipenko wrote:
+>> The "non_hs_mode" divisor value is fixed, thus there is no need to have
+>> the variable i2c_dev.clk_divisor_non_hs_mode struct member. Let's remove
+>> it and move the mode selection into tegra_i2c_init() where it can be
+>> united with the timing selection.
+>>
+>> Reviewed-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  drivers/i2c/busses/i2c-tegra.c | 46 ++++++++++++++++------------------
+>>  1 file changed, 21 insertions(+), 25 deletions(-)
+>>
+>> diff --git a/drivers/i2c/busses/i2c-tegra.c b/drivers/i2c/busses/i2c-tegra.c
+>> index 720a75439e91..85ed0e02d48c 100644
+>> --- a/drivers/i2c/busses/i2c-tegra.c
+>> +++ b/drivers/i2c/busses/i2c-tegra.c
+>> @@ -250,7 +250,6 @@ struct tegra_i2c_hw_feature {
+>>   * @msg_buf_remaining: size of unsent data in the message buffer
+>>   * @msg_read: identifies read transfers
+>>   * @bus_clk_rate: current I2C bus clock rate
+>> - * @clk_divisor_non_hs_mode: clock divider for non-high-speed modes
+>>   * @is_multimaster_mode: track if I2C controller is in multi-master mode
+>>   * @tx_dma_chan: DMA transmit channel
+>>   * @rx_dma_chan: DMA receive channel
+>> @@ -281,7 +280,6 @@ struct tegra_i2c_dev {
+>>  	size_t msg_buf_remaining;
+>>  	int msg_read;
+>>  	u32 bus_clk_rate;
+>> -	u16 clk_divisor_non_hs_mode;
+>>  	bool is_multimaster_mode;
+>>  	struct dma_chan *tx_dma_chan;
+>>  	struct dma_chan *rx_dma_chan;
+>> @@ -783,6 +781,7 @@ static int tegra_i2c_init(struct tegra_i2c_dev *i2c_dev)
+>>  	u32 val;
+>>  	int err;
+>>  	u32 clk_divisor, clk_multiplier;
+>> +	u32 non_hs_mode;
+>>  	u32 tsu_thd;
+>>  	u8 tlow, thigh;
+>>  
+>> @@ -805,24 +804,33 @@ static int tegra_i2c_init(struct tegra_i2c_dev *i2c_dev)
+>>  	if (i2c_dev->is_vi)
+>>  		tegra_i2c_vi_init(i2c_dev);
+>>  
+>> -	/* Make sure clock divisor programmed correctly */
+>> -	clk_divisor = FIELD_PREP(I2C_CLK_DIVISOR_HSMODE,
+>> -				 i2c_dev->hw->clk_divisor_hs_mode) |
+>> -		      FIELD_PREP(I2C_CLK_DIVISOR_STD_FAST_MODE,
+>> -				 i2c_dev->clk_divisor_non_hs_mode);
+>> -	i2c_writel(i2c_dev, clk_divisor, I2C_CLK_DIVISOR);
+>> -
+>> -	if (i2c_dev->bus_clk_rate > I2C_MAX_STANDARD_MODE_FREQ &&
+>> -	    i2c_dev->bus_clk_rate <= I2C_MAX_FAST_MODE_PLUS_FREQ) {
+>> +	switch (i2c_dev->bus_clk_rate) {
+>> +	case I2C_MAX_STANDARD_MODE_FREQ + 1 ... I2C_MAX_FAST_MODE_PLUS_FREQ:
 > 
-> Signed-off-by: Masanari Iida <standby24x7@gmail.com>
-> ---
->  Documentation/dev-tools/kasan.rst    | 4 ++--
->  Documentation/dev-tools/kcov.rst     | 2 +-
->  Documentation/dev-tools/kmemleak.rst | 2 +-
->  3 files changed, 4 insertions(+), 4 deletions(-)
+> Is there are particular reason for switching the simple conditional to a
+> switch here? The old variant looks much easier to understand to me.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+The reason is make it readable :) For me it's too difficult to read > <=
+&& { } + no proper indentation.
 
-Thanks.
-
--- 
-~Randy
+The switches are more suitable for ranges, IMO. Especially when there
+are multiple ranges, and there could be more ranges in the future in
+this code.
