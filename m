@@ -2,150 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88CE726D828
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 11:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00FC826D829
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 11:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726458AbgIQJyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 05:54:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26235 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726200AbgIQJy1 (ORCPT
+        id S1726522AbgIQJyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 05:54:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726200AbgIQJyz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 05:54:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600336464;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PfgTD4QYp7HdelC/Cdt/0p7DJlm562Qxcolq6GnkE9E=;
-        b=IknfHHJniumpYiT/JzVvMXvYOFDSXryZZecG2Z2KWKUV763Y0AD9V40w3siaMVf8XaD/vP
-        s7MdOUdIjiAo4CxW9HglXwWbrUnz7t23Y4c64TF0/QcAL3CxmKM8pZBCU0u4iWBmHcFK56
-        3KS/ggwqJMcYHLI5v4pFbfDP/X/WiZw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-353-vgJu2ttfNdah2wYv3YNUsQ-1; Thu, 17 Sep 2020 05:54:20 -0400
-X-MC-Unique: vgJu2ttfNdah2wYv3YNUsQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BDA5681F03B;
-        Thu, 17 Sep 2020 09:54:18 +0000 (UTC)
-Received: from krava (ovpn-114-176.ams2.redhat.com [10.36.114.176])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 273927BE44;
-        Thu, 17 Sep 2020 09:54:16 +0000 (UTC)
-Date:   Thu, 17 Sep 2020 11:54:15 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Seth Forshee <seth.forshee@canonical.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: resolve_btfids breaks kernel cross-compilation
-Message-ID: <20200917095415.GG2411168@krava>
-References: <20200916194733.GA4820@ubuntu-x1>
- <20200917080452.GB2411168@krava>
- <20200917083809.GE2411168@krava>
- <20200917091406.GF2411168@krava>
+        Thu, 17 Sep 2020 05:54:55 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA245C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 02:54:54 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id j7so839271plk.11
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 02:54:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PJlBiIeS5Wdy2999YEJLifVI7R/wk8pty4fRR2lBgRs=;
+        b=G5eUcMixy97pPQRUaJlNCnHmF1P60hPgz2mFAP2BIXDpYT4BtxuJZ5UPzi8yFOlFNE
+         Dz8ouauaaFmcaB3SHVoxU/TaIi829YIaHyMBX31XgvQkQNFCpYA0+wooNtQNBiGkpKRZ
+         jqJKXZE5if2AYb+oKIBZfs1Bs0KgrkaKWGK+9uzU9wRYYl7rGNIGrUzX6hKpcLMqY9/X
+         BcYB7f0hMmHpqlmGlJm+XV4oL3DwqPocu2PAVBrBchDHKLJXnpen7XzWFlGSMlt2symy
+         4bOcvaUGowUIwKl3vcp2csFrTzXrxIsuhieHLrOh3vbfVbhAnWwJ1C3qYxbvE1cFnXdK
+         i/4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PJlBiIeS5Wdy2999YEJLifVI7R/wk8pty4fRR2lBgRs=;
+        b=hj0Y05YV54mwrupRwxsfhgS+25yJ3KQ+CjOytI5lHA64n/mBVlzOvEIoZebJMy9h13
+         oZVVhDkl8WRh2TzOIYBP4lZZMHgrW8OfFSFT5VgPIJ6c0E6mlyMqtQYjLM8DQxYYJs7W
+         g/pre7ZNvVhZgxYvde6xArzyBuKYmuxGa4xImbF2aGpZTAyBi01vVsaBPyDjKLrixETt
+         7WNbwzh5At3SqtZmBuoNmLXszlSxtzPNZmVMQlUyY2h/UYX/nLNwdfYhpbL3h2aiBjfL
+         j7Zk2DkyJXTSSCiAi9bu6aKpewWVWdtgXvbwprs0CEOad/8UMUul3EkM+AqymtIDSe0A
+         AunQ==
+X-Gm-Message-State: AOAM533+FwMphs5it+6J20TzJaLir3yb/g6dLUZ5Bfj06wHi961+WQDI
+        Av8Hcim+roNRR/QVtPQQPi4=
+X-Google-Smtp-Source: ABdhPJzuOpGFgvMt8I8gvUiYn7kWUfZIBqIbyo3e/S95bnvOZqn2ju/2Bwet3gGY2zXMf+u8ss2D8w==
+X-Received: by 2002:a17:90b:891:: with SMTP id bj17mr4239804pjb.11.1600336494426;
+        Thu, 17 Sep 2020 02:54:54 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id c20sm5411643pfc.209.2020.09.17.02.54.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 02:54:53 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 18:54:50 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCHv3] perf kvm: add kvm-stat for arm64
+Message-ID: <20200917095450.GA3049@jagdpanzerIV.localdomain>
+References: <20200917003645.689665-1-sergey.senozhatsky@gmail.com>
+ <20200917084744.GB12548@leoy-ThinkPad-X240s>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200917091406.GF2411168@krava>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20200917084744.GB12548@leoy-ThinkPad-X240s>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 11:14:08AM +0200, Jiri Olsa wrote:
-> On Thu, Sep 17, 2020 at 10:38:12AM +0200, Jiri Olsa wrote:
-> > On Thu, Sep 17, 2020 at 10:04:55AM +0200, Jiri Olsa wrote:
-> > > On Wed, Sep 16, 2020 at 02:47:33PM -0500, Seth Forshee wrote:
-> > > > The requirement to build resolve_btfids whenever CONFIG_DEBUG_INFO_BTF
-> > > > is enabled breaks some cross builds. For example, when building a 64-bit
-> > > > powerpc kernel on amd64 I get:
-> > > > 
-> > > >  Auto-detecting system features:
-> > > >  ...                        libelf: [ [32mon[m  ]
-> > > >  ...                          zlib: [ [32mon[m  ]
-> > > >  ...                           bpf: [ [31mOFF[m ]
-> > > >  
-> > > >  BPF API too old
-> > > >  make[6]: *** [Makefile:295: bpfdep] Error 1
-> > > > 
-> > > > The contents of tools/bpf/resolve_btfids/feature/test-bpf.make.output:
-> > > > 
-> > > >  In file included from /home/sforshee/src/u-k/unstable/tools/arch/powerpc/include/uapi/asm/bitsperlong.h:11,
-> > > >                   from /usr/include/asm-generic/int-ll64.h:12,
-> > > >                   from /usr/include/asm-generic/types.h:7,
-> > > >                   from /usr/include/x86_64-linux-gnu/asm/types.h:1,
-> > > >                   from /home/sforshee/src/u-k/unstable/tools/include/linux/types.h:10,
-> > > >                   from /home/sforshee/src/u-k/unstable/tools/include/uapi/linux/bpf.h:11,
-> > > >                   from test-bpf.c:3:
-> > > >  /home/sforshee/src/u-k/unstable/tools/include/asm-generic/bitsperlong.h:14:2: error: #error Inconsistent word size. Check asm/bitsperlong.h
-> > > >     14 | #error Inconsistent word size. Check asm/bitsperlong.h
-> > > >        |  ^~~~~
-> > > > 
-> > > > This is because tools/arch/powerpc/include/uapi/asm/bitsperlong.h sets
-> > > > __BITS_PER_LONG based on the predefinied compiler macro __powerpc64__,
-> > > > which is not defined by the host compiler. What can we do to get cross
-> > > > builds working again?
-> > > 
-> > > could you please share the command line and setup?
-> > 
-> > I just reproduced.. checking on fix
+On (20/09/17 16:47), Leo Yan wrote:
+[..]
+> > +static void event_get_key(struct evsel *evsel,
+> > +			  struct perf_sample *sample,
+> > +			  struct event_key *key)
+> > +{
+> > +	key->info = 0;
+> > +	key->key = perf_evsel__intval(evsel, sample, kvm_exit_reason);
 > 
-> I still need to check on few things, but patch below should help
+> Now the perf/core branch doesn't have API perf_evsel__intval(), and it
+> has been replaced with evsel__intval(); so please
 > 
-> we might have a problem for cross builds with different endianity
-> than the host because libbpf does not support reading BTF data
-> with different endianity, and we get:
-> 
->   BTFIDS  vmlinux
-> libbpf: non-native ELF endianness is not supported
-> 
-> jirka
-> 
-> 
-> ---
-> diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
-> index a88cd4426398..d3c818b8d8d3 100644
-> --- a/tools/bpf/resolve_btfids/Makefile
-> +++ b/tools/bpf/resolve_btfids/Makefile
-> @@ -1,5 +1,6 @@
->  # SPDX-License-Identifier: GPL-2.0-only
->  include ../../scripts/Makefile.include
-> +include ../../scripts/Makefile.arch
->  
->  ifeq ($(srctree),)
->  srctree := $(patsubst %/,%,$(dir $(CURDIR)))
-> @@ -29,6 +30,7 @@ endif
->  AR       = $(HOSTAR)
->  CC       = $(HOSTCC)
->  LD       = $(HOSTLD)
-> +ARCH     = $(HOSTARCH)
->  
->  OUTPUT ?= $(srctree)/tools/bpf/resolve_btfids/
->  
+> s/perf_evsel__intval/evsel__intval
 
-and I realized we can have CONFIG_DEBUG_INFO_BTF without
-CONFIG_BPF, so we need also fix below for such cases
+ACK.
+The kernel I'm using still have perf_evsel__intval().
 
-jirka
+> > +	if (key->key == ARM_EXCEPTION_TRAP) {
+> > +		key->key = perf_evsel__intval(evsel, sample,
+> 
+> Ditto.
 
+ACK. Sorry about that.
 
----
-diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-index e6e2d9e5ff48..8a990933a690 100755
---- a/scripts/link-vmlinux.sh
-+++ b/scripts/link-vmlinux.sh
-@@ -343,7 +343,10 @@ vmlinux_link vmlinux "${kallsymso}" ${btf_vmlinux_bin_o}
- # fill in BTF IDs
- if [ -n "${CONFIG_DEBUG_INFO_BTF}" ]; then
- info BTFIDS vmlinux
--${RESOLVE_BTFIDS} vmlinux
-+if [ -z "${CONFIG_BPF}" ]; then
-+  no_fail=--no-fail
-+fi
-+${RESOLVE_BTFIDS} $no_fail vmlinux
- fi
- 
- if [ -n "${CONFIG_BUILDTIME_TABLE_SORT}" ]; then
+> Otherwise, this patch is good for me and I have tested this patch with
+> below commands:
+> 
+>   $ perf kvm stat record
+>   $ perf kvm stat report
 
+"perf kvm stat live" should also work.
+
+> Reviewed-by: Leo Yan <leo.yan@linaro.org>
+> Tested-by: Leo Yan <leo.yan@linaro.org>
+
+Thanks!
+
+	-ss
