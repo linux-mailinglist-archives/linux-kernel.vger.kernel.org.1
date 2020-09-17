@@ -2,94 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C9B026DD01
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 15:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CD4726DCDC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 15:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726789AbgIQNnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 09:43:33 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:36402 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727034AbgIQNfC (ORCPT
+        id S1727085AbgIQNbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 09:31:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50974 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727015AbgIQN3x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 09:35:02 -0400
-Received: by mail-wm1-f66.google.com with SMTP id z9so2090080wmk.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 06:34:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xpVtaXWQ5D1qPdZ2YyEvy4eIPN92vWUCSfHuIMRx3OI=;
-        b=WmF3zLVSZYI2/W2H41lmVBYE6WcgexLIx3MTjWHrI/rsXb0QAFdSZ0+G4dLeJYeGss
-         kwKnQQVP8Y32sgqDqUlT6wmgteRAztjhCHiTuYe055YDjfH4jCZ7WEpVX9Cf6emqWI9+
-         ZKXF2LgWl4dSQzfAFI3ER5yEIZy/TCcdvus8ZoBS5eQXnJW7FElEaZw7lB5vSwJmeKjr
-         ogkA3aoRh7HOpPXQw4Npyq7e0FRyRtmi2dPThJZe4lX40TK0fXfw1WhW6ggcP4Z+9r6O
-         KM8v4Ehkw1wvKKpDHhUKiYD+v6u10B8FceB/c34DRdaZPDwFsMW02AByPLwpU09lEk3k
-         6/Hw==
-X-Gm-Message-State: AOAM531fY8ZKeNUXQdMLZFM0xzDO+daDCtspyL4vy1mI4xHLTT8RomyY
-        GaU+BW/kiVdMNOxU5kROQyEVPfFryfVYybUZ0G7eh2h+
-X-Google-Smtp-Source: ABdhPJzL/RxQO6Rjd39pYwn3RvqGaiv6XCWiQ3kZCM+fcB5givJEYHlkkc2eSrv49QXJzQz3WI2j0GbT/kXsZxB12d8=
-X-Received: by 2002:a1c:6341:: with SMTP id x62mr10157645wmb.70.1600349248614;
- Thu, 17 Sep 2020 06:27:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200917060219.1287863-1-namhyung@kernel.org> <20200917131058.GA2514666@krava>
-In-Reply-To: <20200917131058.GA2514666@krava>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 17 Sep 2020 22:27:17 +0900
-Message-ID: <CAM9d7ci_oPsOzRnCiU4PXK7Ye9xT_cTLNshs3P2MTXjxJUcH7Q@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] perf parse-event: Release cpu_map if evsel alloc failed
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Thu, 17 Sep 2020 09:29:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600349389;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qjkdQTJ/VBG7ZFMg5Nhpzya4K81fiyu8UjZya2led1Q=;
+        b=V5lZC3/t/VHSw6TIrIt2X6QD/sgLQyk6RiZ8PC8zlIS9egEgDe4zyS+1EY3fzLGPlx2jZg
+        oFd7fQKwgckZA7QxZb4zwOloG1Z0VYKvFoqoPQF+TP1wko7vAVxUFBZ2wI3LP9pBnxGnWn
+        SAJIE+khwUpVwTOoa4sQ4S4YJDrOLBw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-579-Q_ysnWYENLK5sfwraF7T4g-1; Thu, 17 Sep 2020 09:27:41 -0400
+X-MC-Unique: Q_ysnWYENLK5sfwraF7T4g-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EC33956B35;
+        Thu, 17 Sep 2020 13:27:35 +0000 (UTC)
+Received: from ovpn-66-148.rdu2.redhat.com (ovpn-66-148.rdu2.redhat.com [10.10.66.148])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 17FB860BEC;
+        Thu, 17 Sep 2020 13:27:28 +0000 (UTC)
+Message-ID: <5d97da4d86db258fdc9b20be3c12588089e17da2.camel@redhat.com>
+Subject: Re: [PATCH v5 0/5] mm: introduce memfd_secret system call to create
+ "secret" memory areas
+From:   Qian Cai <cai@redhat.com>
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-riscv@lists.infradead.org, x86@kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-next@vger.kernel.org
+Date:   Thu, 17 Sep 2020 09:27:27 -0400
+In-Reply-To: <20200916073539.3552-1-rppt@kernel.org>
+References: <20200916073539.3552-1-rppt@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 10:11 PM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Thu, Sep 17, 2020 at 03:02:18PM +0900, Namhyung Kim wrote:
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  tools/perf/util/parse-events.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-> > index 667cbca1547a..176a51698a64 100644
-> > --- a/tools/perf/util/parse-events.c
-> > +++ b/tools/perf/util/parse-events.c
-> > @@ -360,8 +360,10 @@ __add_event(struct list_head *list, int *idx,
-> >               event_attr_init(attr);
-> >
-> >       evsel = evsel__new_idx(attr, *idx);
-> > -     if (!evsel)
-> > +     if (!evsel) {
-> > +             perf_cpu_map__put(cpus);
->
-> if there's pmu defined, we don't we get on perf_cpu_map:
->
->         struct perf_cpu_map *cpus = pmu ? pmu->cpus :
->                                cpu_list ? perf_cpu_map__new(cpu_list) : NULL;
+On Wed, 2020-09-16 at 10:35 +0300, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> Hi,
+> 
+> This is an implementation of "secret" mappings backed by a file descriptor. 
+> I've dropped the boot time reservation patch for now as it is not strictly
+> required for the basic usage and can be easily added later either with or
+> without CMA.
 
-Right, but it's changed in the next patch.  Maybe I need to exchange them.
+On powerpc: https://gitlab.com/cailca/linux-mm/-/blob/master/powerpc.config
 
-Thanks
-Namhyung
+There is a compiling warning from the today's linux-next:
 
+<stdin>:1532:2: warning: #warning syscall memfd_secret not implemented [-Wcpp]
 
->
-> >               return NULL;
-> > +     }
-> >
-> >       (*idx)++;
-> >       evsel->core.cpus   = perf_cpu_map__get(cpus);
-> > --
-> > 2.28.0.618.gf4bc123cb7-goog
-> >
->
