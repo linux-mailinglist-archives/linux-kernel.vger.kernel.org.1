@@ -2,99 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2FB26D7AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 11:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D145726D7ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 11:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726411AbgIQJas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 05:30:48 -0400
-Received: from smtprelay0101.hostedemail.com ([216.40.44.101]:38664 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726200AbgIQJaq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 05:30:46 -0400
-X-Greylist: delayed 309 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 05:30:46 EDT
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave06.hostedemail.com (Postfix) with ESMTP id CF5B2800EEB2
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 09:25:37 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 7514F182CF66A;
-        Thu, 17 Sep 2020 09:25:33 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3653:3865:3866:3867:3868:4321:5007:6299:7903:8957:10004:10400:11026:11232:11473:11657:11658:11914:12043:12295:12296:12297:12438:12740:12760:12895:13069:13161:13229:13311:13357:13439:14659:14721:21080:21221:21433:21627:21939:21990:30030:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: watch69_32046bb27121
-X-Filterd-Recvd-Size: 2774
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf09.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 17 Sep 2020 09:25:32 +0000 (UTC)
-Message-ID: <5341538083077360205d50683ac2f3df22cfa72a.camel@perches.com>
-Subject: Re: [PATCH 1/2] staging: rtl8188eu: use __func__ in hal directory
-From:   Joe Perches <joe@perches.com>
-To:     Michael Straube <straube.linux@gmail.com>,
-        gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 17 Sep 2020 02:25:31 -0700
-In-Reply-To: <20200917071330.31740-1-straube.linux@gmail.com>
-References: <20200917071330.31740-1-straube.linux@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S1726485AbgIQJns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 05:43:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51076 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726180AbgIQJno (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 05:43:44 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=cantorsusede;
+        t=1600334886;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FwWPfDrCUnyxcQdgYg+FPBsfaE9zUa4R5PcsOTmxFv0=;
+        b=uDVPRbCTaT2ftWuX3z/pI91Ujj/KU81C6J+sJrjB76TgxMowwvIvDoGcOKnBh+m6WgWpVU
+        ahcO5bV1L36LwHmXl6ORgjJSei2fFH910gSSW8nrjihGG8+r0+4dNKFklBq1SvWzoPXwKu
+        EBl6Wu0B8WsqJ9G1q89QlgVua4fzN+yaFm54ZZSsNG0JZ2aGD9Id7hDs3BKHTjivGhwVsY
+        AW1GBdfnPnHiodblOy5bUsTw1U6EoWtW8dqc4MuDyKjplzHknGldlaR+hXTTzMfw3dmGZt
+        UBg0a2Y0x03WGg/A2dJslKFRp0+2aMigR1RhkarOECIPmMI13RSWU21GDvJq9g==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D2576AFEC;
+        Thu, 17 Sep 2020 09:28:39 +0000 (UTC)
+Date:   Thu, 17 Sep 2020 11:28:05 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vijay Balakrishna <vijayb@linux.microsoft.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Allen Pais <apais@microsoft.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [v4] mm: khugepaged: avoid overriding min_free_kbytes set by user
+Message-ID: <20200917092805.GA29887@dhcp22.suse.cz>
+References: <1600324779-6782-1-git-send-email-vijayb@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1600324779-6782-1-git-send-email-vijayb@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-09-17 at 09:13 +0200, Michael Straube wrote:
-> Use __func__ instead of hardcoded function names to clear
-> checkpatch warnings.
-[]
-> diff --git a/drivers/staging/rtl8188eu/hal/odm.c b/drivers/staging/rtl8188eu/hal/odm.c
-[]
-> @@ -249,7 +249,7 @@ void odm_CommonInfoSelfUpdate(struct odm_dm_struct *pDM_Odm)
->  
->  void odm_CmnInfoInit_Debug(struct odm_dm_struct *pDM_Odm)
->  {
-> -	ODM_RT_TRACE(pDM_Odm, ODM_COMP_COMMON, ODM_DBG_LOUD, ("odm_CmnInfoInit_Debug==>\n"));
-> +	ODM_RT_TRACE(pDM_Odm, ODM_COMP_COMMON, ODM_DBG_LOUD, ("%s==>\n", __func__));
->  	ODM_RT_TRACE(pDM_Odm, ODM_COMP_COMMON, ODM_DBG_LOUD, ("SupportPlatform=%d\n", pDM_Odm->SupportPlatform));
->  	ODM_RT_TRACE(pDM_Odm, ODM_COMP_COMMON, ODM_DBG_LOUD, ("SupportAbility=0x%x\n", pDM_Odm->SupportAbility));
->  	ODM_RT_TRACE(pDM_Odm, ODM_COMP_COMMON, ODM_DBG_LOUD, ("SupportInterface=%d\n", pDM_Odm->SupportInterface));
+On Wed 16-09-20 23:39:39, Vijay Balakrishna wrote:
+> set_recommended_min_free_kbytes need to honor min_free_kbytes set by the
+> user.  Post start-of-day THP enable or memory hotplug operations can
+> lose user specified min_free_kbytes, in particular when it is higher than
+> calculated recommended value.
 
-These ODM_RT_TRACE macro uses are rather ugly.
-Perhaps a rename to odm_dbg would be better.
-So would removing the unnecessary parentheses from
-the macro uses and fixing the macro definition
+I was about to recommend a more detailed explanation when I have
+realized that this patch is not really needed after all. Unless I am
+missing something.
 
-Maybe using a perl script something like the below:
+init_per_zone_wmark_min ignores the newly calculated min_free_kbytes if
+it is lower than user_min_free_kbytes. So calculated min_free_kbytes >=
+user_min_free_kbytes.
 
-our $balanced_parens = qr/(\((?:[^\(\)]++|(?-1))*\))/;
-
-sub deparenthesize {
-	my ($string) = @_;
-	return "" if (!defined($string));
-
-	while ($string =~ /^\s*\(.*\)\s*$/s) {
-		$string =~ s@^\s*\(\s*@@s;
-		$string =~ s@\s*\)\s*$@@s;
-	}
-
-	return $string;
-}
-
-foreach my $file (@ARGV) {
-    my $FILE;
-    my $count;
-    open($FILE, '<', $file) or die("Can't read $file $!\n");
-    undef $/;
-    my $text = (<$FILE>);
-    close($FILE);
-    $count = $text =~ s/ODM_RT_TRACE\s*\(\s*([^,]*),\s*ODM_COMP_(\w+)\s*,\s*ODM_DBG_(\w+)\s*,\s*($balanced_parens)\s*\)\s*;/"odm_dbg($1, $2, $3, " . deparenthesize($4) . ");"/ge;
-    if ($count > 0) {
-	open($FILE, '>', $file) or die("Can't write $file $!\n");
-	print $FILE $text;
-	close($FILE);
-    }
-}
-
-
+Except for value clamping when the value is reduced and this likely
+needs fixing. But set_recommended_min_free_kbytes should be fine.
+-- 
+Michal Hocko
+SUSE Labs
