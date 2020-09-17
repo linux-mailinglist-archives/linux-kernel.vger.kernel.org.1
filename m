@@ -2,183 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D2BA26E1F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:14:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F93A26E1C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726342AbgIQRNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 13:13:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726955AbgIQRGH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 13:06:07 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84600C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:06:07 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id h17so2605110otr.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:06:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=b6dM6er6BsFmhOPlofrIQDtE6KwehXYeI/hRvWD52RI=;
-        b=KI/6mXmH/zJwPF/ASc9acdlWQNxuIIgmvTAz+Zi9Eyyyns7gfyHfHzN3IO1PmXssCa
-         I6O7suvCPnMbtMEjl89e0Dli+D+pv0AJ2UWJNv/nmJ6LYpV0UFwz9Ec0+4ISAvKPNkry
-         stxpg8+2zvJo8a/wlFaQAeeJEmRcAdpqs9gsk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=b6dM6er6BsFmhOPlofrIQDtE6KwehXYeI/hRvWD52RI=;
-        b=lf34ouINm3PBvPzBh1mHZ/dnL6nSG26znWzpK8NeNXKs6tI05FwLBiLPi4G9Ckboql
-         u4vUv3C/puYVnOhXRzT8769n/3y1DLTCDKZI3UKuqP1I0gTlB9uKWgwWOrzXVyOF+XRP
-         YkGxPSRkll4ReFcLnJGTZFkECZEUYt1MqOImFnG7EWkpYdCciyC0TD/NKX0pyFXdMluV
-         opWszAy4HcIfO/JUfFpHqw/Zsy9bzFEZwG/vES4RWeXlyvWNbHSdWWj+25JQdzm8QC+4
-         etiEev/pLqoBuGAMJGrpiRm6U/Ia1K3vWuff136aCwFFxuROGSXeRv6wXmSlmD9ikEvy
-         qBoA==
-X-Gm-Message-State: AOAM533yCjfVztuUc0vD94ZSG0vwnBC+A4yOL0KmXObAAcKOZNtXiaMk
-        46Y2MDLOWIGrdJg1J+vkmTli4zgGlfg1yg==
-X-Google-Smtp-Source: ABdhPJzun/kdXM3AuZ6ka1frpUfxB7vjrSBR90H5H73XrgTVb0n5nHno4p6WfEKAVnHCXxuA7prx+A==
-X-Received: by 2002:a9d:4d17:: with SMTP id n23mr20880704otf.364.1600362366877;
-        Thu, 17 Sep 2020 10:06:06 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id 68sm268981otw.3.2020.09.17.10.06.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Sep 2020 10:06:06 -0700 (PDT)
-Subject: Re: [PATCH 5.8 000/177] 5.8.10-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Prateek Sood <prsood@codeaurora.org>, Takashi Iwai <tiwai@suse.de>,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, ben.hutchings@codethink.co.uk,
-        lkft-triage@lists.linaro.org, pavel@denx.de,
-        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <20200915140653.610388773@linuxfoundation.org>
- <b94c29b3-ef68-897b-25a8-e6fcc181a22a@linuxfoundation.org>
- <8277900f-d300-79fa-eac7-096686a6fbc3@linuxfoundation.org>
- <20200916062958.GH142621@kroah.com>
- <69e7c908-4332-91fd-bdb2-6be19fcbf126@linuxfoundation.org>
- <20200916152629.GD3018065@kroah.com>
- <09de87b0-8055-26ef-cc31-0c63e63e5d2a@linuxfoundation.org>
- <20200916172529.GA3056792@kroah.com>
- <9365ff94-2a28-cc5f-7487-a6d8d42de302@linuxfoundation.org>
- <20200917144645.GA275135@kroah.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <72d215df-5087-18d5-13e1-301ea5ad037e@linuxfoundation.org>
-Date:   Thu, 17 Sep 2020 11:06:05 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727043AbgIQRIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 13:08:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50232 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727033AbgIQRGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 13:06:20 -0400
+Received: from gaia (unknown [31.124.44.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 12335214D8;
+        Thu, 17 Sep 2020 17:06:13 +0000 (UTC)
+Date:   Thu, 17 Sep 2020 18:06:11 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev@googlegroups.com,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 29/37] arm64: kasan: Align allocations for HW_TAGS
+Message-ID: <20200917170611.GP10662@gaia>
+References: <cover.1600204505.git.andreyknvl@google.com>
+ <0845668a82ddd3eeb3f652712597ffd056f97504.1600204505.git.andreyknvl@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20200917144645.GA275135@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0845668a82ddd3eeb3f652712597ffd056f97504.1600204505.git.andreyknvl@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/17/20 8:46 AM, Greg Kroah-Hartman wrote:
-> On Thu, Sep 17, 2020 at 08:34:58AM -0600, Shuah Khan wrote:
->> On 9/16/20 11:25 AM, Greg Kroah-Hartman wrote:
->>> On Wed, Sep 16, 2020 at 09:34:52AM -0600, Shuah Khan wrote:
->>>> On 9/16/20 9:26 AM, Greg Kroah-Hartman wrote:
->>>>> On Wed, Sep 16, 2020 at 08:26:48AM -0600, Shuah Khan wrote:
->>>>>> On 9/16/20 12:29 AM, Greg Kroah-Hartman wrote:
->>>>>>> On Tue, Sep 15, 2020 at 08:54:24PM -0600, Shuah Khan wrote:
->>>>>>>> On 9/15/20 3:06 PM, Shuah Khan wrote:
->>>>>>>>> On 9/15/20 8:11 AM, Greg Kroah-Hartman wrote:
->>>>>>>>>> This is the start of the stable review cycle for the 5.8.10 release.
->>>>>>>>>> There are 177 patches in this series, all will be posted as a response
->>>>>>>>>> to this one.  If anyone has any issues with these being applied, please
->>>>>>>>>> let me know.
->>>>>>>>>>
->>>>>>>>>> Responses should be made by Thu, 17 Sep 2020 14:06:12 +0000.
->>>>>>>>>> Anything received after that time might be too late.
->>>>>>>>>>
->>>>>>>>>> The whole patch series can be found in one patch at:
->>>>>>>>>>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.10-rc1.gz
->>>>>>>>>>
->>>>>>>>>> or in the git tree and branch at:
->>>>>>>>>>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
->>>>>>>>>> linux-5.8.y
->>>>>>>>>> and the diffstat can be found below.
->>>>>>>>>>
->>>>>>>>>> thanks,
->>>>>>>>>>
->>>>>>>>>> greg k-h
->>>>>>>>>>
->>>>>>>>>
->>>>>>>>> Compiled and booted fine. wifi died:
->>>>>>>>>
->>>>>>>>> ath10k_pci 0000:02:00.0: could not init core (-110)
->>>>>>>>> ath10k_pci 0000:02:00.0: could not probe fw (-110)
->>>>>>>>>
->>>>>>>>> This is regression from 5.8.9 and 5.9-rc5 works just fine.
->>>>>>>>>
->>>>>>>>> I will try to bisect later this evening to see if I can isolate the
->>>>>>>>> commit.
->>>>>>>>>
->>>>>>>>
->>>>>>>> The following commit is what caused ath10k_pci driver problem
->>>>>>>> that killed wifi.
->>>>>>>>
->>>>>>>> Prateek Sood <prsood@codeaurora.org>
->>>>>>>>         firmware_loader: fix memory leak for paged buffer
->>>>>>>>
->>>>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?h=linux-5.8.y&id=ec0a59266c9c9f46037efd3dcc0323973e102271
->>>>>>>
->>>>>>> Ugh, that's not good, is this also a problem in 5.9-rc5 as well?  For
->>>>>>> reference, this is commit 4965b8cd1bc1 ("firmware_loader: fix memory
->>>>>>> leak for paged buffer") in Linus's tree.
->>>>>>>
->>>>>>
->>>>>> I am not seeing this on Linux 5.9-rc5 for sure.
->>>>>>
->>>>>>> And it should be showing up in 5.4.y at the moment too, as this patch is
->>>>>>> in that tree right now...
->>>>>>>
->>>>>>
->>>>>> I don't see this patch in  4.19.146-rc1
->>>>>
->>>>> It's not there, it's in 5.4.66-rc1, which worked for you somehow, right?
->>>>>
->>>>>> Linus's tree works for with this patch in. I compared the two files
->>>>>> for differences in commit between Linus's tree and 5.8.10-rc1
->>>>>>
->>>>>> Couldn't find anything obvious.
->>>>>
->>>>> Again, really odd...
->>>>>
->>>>> I don't have a problem dropping it, but I should drop it from both 5.4.y
->>>>> and 5.8.y, right?
->>>>>
->>>>
->>>> Sorry. Yes. Dropping from 5.8 and 5.4 would be great until we figure out
->>>> why this patch causes problems.
->>>>
->>>> I will continue debugging and let you know what I find.
->>>
->>
->> With this it boots and wifi is good for me. I am very puzzled by why
->> this made a difference to make sure I am not narrowing in on the wrong
->> patch.
->>
+On Tue, Sep 15, 2020 at 11:16:11PM +0200, Andrey Konovalov wrote:
+> Hardware tag-based KASAN uses the memory tagging approach, which requires
+> all allocations to be aligned to the memory granule size. Align the
+> allocations to MTE_GRANULE_SIZE via ARCH_SLAB_MINALIGN when
+> CONFIG_KASAN_HW_TAGS is enabled.
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-Update on this. I did a series of reboots and boots with the patch
-I asked you to drop and I am not seeing the wifi problem.
-
-Prateek Sood <prsood@codeaurora.org>
-     firmware_loader: fix memory leak for paged buffer
-
-With my testing, I think it is an unrelated issue and the error
-messages from the fw load code path in the driver when wifi failed
-through me off.
-
-Sorry for making you drop the patch from 5.8.y and 5.4.y.
-Please include them in the next rc.
-
-thanks,
--- Shuah
-
-
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
