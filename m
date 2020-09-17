@@ -2,117 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5562926DB74
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:26:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 281A926DB6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726737AbgIQMZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 08:25:52 -0400
-Received: from mailout11.rmx.de ([94.199.88.76]:36114 "EHLO mailout11.rmx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726787AbgIQMYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 08:24:54 -0400
-Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mailout11.rmx.de (Postfix) with ESMTPS id 4BsbjG5879z41wd;
-        Thu, 17 Sep 2020 14:23:30 +0200 (CEST)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin01.retarus.com (Postfix) with ESMTPS id 4BsbhM6hCVz2xj2;
-        Thu, 17 Sep 2020 14:22:43 +0200 (CEST)
-Received: from N95HX1G2.wgnetz.xx (192.168.54.80) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Thu, 17 Sep
- 2020 14:22:22 +0200
-From:   Christian Eggers <ceggers@arri.de>
-To:     Oleksij Rempel <linux@rempel-privat.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>
-CC:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        <linux-i2c@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Christian Eggers <ceggers@arri.de>,
-        <stable@vger.kernel.org>
-Subject: [PATCH 3/3] i2c: imx: Don't generate STOP condition if arbitration has been lost
-Date:   Thu, 17 Sep 2020 14:20:29 +0200
-Message-ID: <20200917122029.11121-4-ceggers@arri.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200917122029.11121-1-ceggers@arri.de>
-References: <20200917122029.11121-1-ceggers@arri.de>
+        id S1726446AbgIQMWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 08:22:53 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:39050 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726478AbgIQMVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 08:21:08 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id F3CC630D8D0F54673ADE;
+        Thu, 17 Sep 2020 20:21:05 +0800 (CST)
+Received: from [10.174.179.91] (10.174.179.91) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 17 Sep 2020 20:20:59 +0800
+Subject: Re: [PATCH -next] bcache: Convert to DEFINE_SHOW_ATTRIBUTE
+To:     Coly Li <colyli@suse.de>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <liuyongqiang13@huawei.com>
+References: <20200716090313.13216-1-miaoqinglang@huawei.com>
+ <a0f9b92b-d8f2-7c03-8c48-9e71e506361b@suse.de>
+ <639a9561-2824-b668-42b3-b69f016f54e1@suse.de>
+From:   miaoqinglang <miaoqinglang@huawei.com>
+Message-ID: <9a465086-fd4a-80ea-015d-cc812f2aa1c2@huawei.com>
+Date:   Thu, 17 Sep 2020 20:20:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.54.80]
-X-RMX-ID: 20200917-142249-4BsbhM6hCVz2xj2-0@kdin01
-X-RMX-SOURCE: 217.111.95.66
+In-Reply-To: <639a9561-2824-b668-42b3-b69f016f54e1@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.91]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If arbitration is lost, the master automatically changes to slave mode.
-I2SR_IBB may or may not be reset by hardware. Raising a STOP condition
-by resetting I2CR_MSTA has no effect and will not clear I2SR_IBB.
 
-So calling i2c_imx_bus_busy() is not required and would busy-wait until
-timeout.
 
-Signed-off-by: Christian Eggers <ceggers@arri.de>
-Cc: stable@vger.kernel.org # Requires trival backporting, simple remove the
-                           # 3rd argument from the calls to i2c_imx_bus_busy().
----
- drivers/i2c/busses/i2c-imx.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
-index 9d9b668ec7f2..c52fe20d74c9 100644
---- a/drivers/i2c/busses/i2c-imx.c
-+++ b/drivers/i2c/busses/i2c-imx.c
-@@ -608,6 +608,8 @@ static void i2c_imx_stop(struct imx_i2c_struct *i2c_imx, bool atomic)
- 		/* Stop I2C transaction */
- 		dev_dbg(&i2c_imx->adapter.dev, "<%s>\n", __func__);
- 		temp = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
-+		if (!(temp & I2CR_MSTA))
-+			i2c_imx->stopped = 1;
- 		temp &= ~(I2CR_MSTA | I2CR_MTX);
- 		if (i2c_imx->dma)
- 			temp &= ~I2CR_DMAEN;
-@@ -773,9 +775,12 @@ static int i2c_imx_dma_read(struct imx_i2c_struct *i2c_imx,
- 		 */
- 		dev_dbg(dev, "<%s> clear MSTA\n", __func__);
- 		temp = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
-+		if (!(temp & I2CR_MSTA))
-+			i2c_imx->stopped = 1;
- 		temp &= ~(I2CR_MSTA | I2CR_MTX);
- 		imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2CR);
--		i2c_imx_bus_busy(i2c_imx, 0, false);
-+		if (!i2c_imx->stopped)
-+			i2c_imx_bus_busy(i2c_imx, 0, false);
- 	} else {
- 		/*
- 		 * For i2c master receiver repeat restart operation like:
-@@ -900,9 +905,12 @@ static int i2c_imx_read(struct imx_i2c_struct *i2c_imx, struct i2c_msg *msgs,
- 				dev_dbg(&i2c_imx->adapter.dev,
- 					"<%s> clear MSTA\n", __func__);
- 				temp = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
-+				if (!(temp & I2CR_MSTA))
-+					i2c_imx->stopped =  1;
- 				temp &= ~(I2CR_MSTA | I2CR_MTX);
- 				imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2CR);
--				i2c_imx_bus_busy(i2c_imx, 0, atomic);
-+				if (!i2c_imx->stopped)
-+					i2c_imx_bus_busy(i2c_imx, 0, atomic);
- 			} else {
- 				/*
- 				 * For i2c master receiver repeat restart operation like:
--- 
-Christian Eggers
-Embedded software developer
-
-Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
-Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
-Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
-
+在 2020/7/17 10:22, Coly Li 写道:
+> On 2020/7/16 17:54, Coly Li wrote:
+>> On 2020/7/16 17:03, Qinglang Miao wrote:
+>>> From: Yongqiang Liu <liuyongqiang13@huawei.com>
+>>>
+>>
+>> Hi Qianlang and Yongqiang,
+>>
+>>> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
+>>>
+>>> Signed-off-by: Yongqiang Liu <liuyongqiang13@huawei.com>
+>>> ---
+>>>   drivers/md/bcache/closure.c | 16 +++-------------
+>>>   1 file changed, 3 insertions(+), 13 deletions(-)
+>>>
+>>> diff --git a/drivers/md/bcache/closure.c b/drivers/md/bcache/closure.c
+>>> index 99222aa5d..37b9c5d49 100644
+>>> --- a/drivers/md/bcache/closure.c
+>>> +++ b/drivers/md/bcache/closure.c
+>>> @@ -159,7 +159,7 @@ void closure_debug_destroy(struct closure *cl)
+>>>   
+>>>   static struct dentry *closure_debug;
+>>>   
+>>> -static int debug_seq_show(struct seq_file *f, void *data)
+>>> +static int debug_show(struct seq_file *f, void *data)
+>>>   {
+>>>   	struct closure *cl;
+>>>   
+>>> @@ -188,17 +188,7 @@ static int debug_seq_show(struct seq_file *f, void *data)
+>>>   	return 0;
+>>>   }
+>>>   
+>>> -static int debug_seq_open(struct inode *inode, struct file *file)
+>>> -{
+>>> -	return single_open(file, debug_seq_show, NULL);
+>>> -}
+>>> -
+>>
+>> Here NULL is sent to single_open(), in DEFINE_SHOW_ATTRIBUTE()
+>> inode->i_private is sent into single_open(). I don't see the commit log
+>> mentions or estimates such change.
+>>
+> 
+> Still this change modifies original code logic, I need to know the exact
+> effect before taking this patch.
+ >
+It's equivalent to original code logic, because inode->iprivate equals 
+to third parameter of debugfs_create_file() which is NULL.
+> 
+>>
+>>> -static const struct file_operations debug_ops = {
+>>> -	.owner		= THIS_MODULE,
+>>> -	.open		= debug_seq_open,
+>>> -	.read_iter		= seq_read_iter,
+>>
+>> I doubt this patch applies to Linux v5.8-rc, this is how debug_ops is
+>> defined in Linux v5.8-rc5,
+>>
+> 
+> I realize your patch is against linux-next, which is ahead of both
+> linux-block and mainline tree. So this patch does not apply to
+> linux-block tree, which is my upstream for bcache going to upstream.
+> 
+> I suggest to generate the patch against latest mainline kernel, or
+> linux-block branch for next merge window (for 5.9 it is branch
+> remotes/origin/for-5.9/drivers).
+> 
+I've sent a new patch against latest mainline kernel. Thanks.
+> 
+>> 196 static const struct file_operations debug_ops = {
+>> 197         .owner          = THIS_MODULE,
+>> 198         .open           = debug_seq_open,
+>> 199         .read           = seq_read,
+>> 200         .release        = single_release
+>> 201 };
+>>
+>>> -	.release	= single_release
+>>> -};
+>>> +DEFINE_SHOW_ATTRIBUTE(debug);
+>>>   
+>>>   void  __init closure_debug_init(void)
+>>>   {
+>>> @@ -209,7 +199,7 @@ void  __init closure_debug_init(void)
+>>>   		 * about this.
+>>>   		 */
+>>>   		closure_debug = debugfs_create_file(
+>>> -			"closures", 0400, bcache_debug, NULL, &debug_ops);
+>>> +				"closures", 0400, bcache_debug, NULL, &debug_fops);
+>>>   }
+>>>   #endif
+>>
+>> Do you test your change with upstream kernel ? Or at least you should
+>> try to apply and compile the patch with latest upstream kernel.
+> 
+> I withdraw the above wrong word, the -next tag in patch subject was
+> overlooked by me. Next time I will try to avoid such mistake.
+> 
+> Coly Li
+> 
+> 
+> .
+> 
