@@ -2,220 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02AF926D123
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 04:31:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29F8126D125
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 04:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726098AbgIQCbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 22:31:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60388 "EHLO
+        id S1726118AbgIQCbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 22:31:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726040AbgIQCbU (ORCPT
+        with ESMTP id S1725886AbgIQCbv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 22:31:20 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92762C061351
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 19:31:19 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id j34so462413pgi.7
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 19:31:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2u7wbhcgfeP+OhvwSg+SAWVQGFl0XrxeVCAdE2eggas=;
-        b=IiaQMhPSuXqLZqN62H2EziGzPykC+lkhYyaHuAc6XQxtxDXvYeQdiWhDHbMGc0X/pa
-         XDHOUURST+EFWhRahOCLZWYAZH0tQJsHeNfJMrqhTs5gTDnmyU4Ij4ku/73zokN7Ucz1
-         +Sn4DHgJecpt1/gNlzQSdU91oUX8iIUQ+ncmdoNseljzRBFpxrVj6xm9Lx4Yi4R4amYZ
-         V8XogJlaFcuB4TJLhTj88og22izyPRj8Nx4dL6gG0hEcAqLHUThB9xbKp5wCqGDQpVgK
-         qkCeORvl14LPhkQ+R+xtAIp+gl7yeuQrpg9eYMQd1HfDaWbTnKkD/IzXWaJamenAkNMu
-         XusQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=2u7wbhcgfeP+OhvwSg+SAWVQGFl0XrxeVCAdE2eggas=;
-        b=fz/73gXjGqw0Y0pDKgGLvCgg3eIG1h1Z4W2FwtRnuM0AXCZ5dIMNeBw2lNV708p871
-         ZeJ9tYs0ijRIZpYeHYlY3wwG99K11vcGSfHOVxoA8I9KDHF2WqhK+pP8bVCBpdwJLsyH
-         pbwqWlYFXLfWlHgQ1rasoQDnE4E49FlVmVQxWntCsoLdwo0pM+lYdNfsDKE7noNgL9G0
-         jOufWh1TzunCAJtqzObEJMUQpJpWK0OKvQ9PvaXAR17SDs+KazEIRkSOes82jwmI7sx5
-         g/ViZ7F7lNJf+lk2GfLItjJ1nDPNAlIbFsteb4SwbVOt0QqHidb8RI0d9NxkxKMN3DdX
-         QoFg==
-X-Gm-Message-State: AOAM532l/5dEqbAthE/nEXq6nZixuu3HeTDqPqUPsGFWwrSh5f2QccHN
-        5mJFeV+HpfLdgd9wH+u+JzFCJg==
-X-Google-Smtp-Source: ABdhPJzBSW6XWGnayRmbLzx2RWdCT0/3tud8f6BldLbaq247IoUN57V7YiogyF53ZmZ0egVNaBH+zA==
-X-Received: by 2002:a63:694a:: with SMTP id e71mr20774824pgc.280.1600309878901;
-        Wed, 16 Sep 2020 19:31:18 -0700 (PDT)
-Received: from laputa (p784a66b9.tkyea130.ap.so-net.ne.jp. [120.74.102.185])
-        by smtp.gmail.com with ESMTPSA id c6sm1288647pfd.83.2020.09.16.19.31.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 19:31:18 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 11:31:13 +0900
-From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Ben Chuang <benchuanggli@gmail.com>, ulf.hansson@linaro.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
-Subject: Re: [RFC PATCH V3 12/21] mmc: sdhci: UHS-II support, add hooks for
- additional operations
-Message-ID: <20200917023113.GB3071249@laputa>
-Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ben Chuang <benchuanggli@gmail.com>, ulf.hansson@linaro.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
-References: <20200710111054.29562-1-benchuanggli@gmail.com>
- <9fa17d60-a540-d0d8-7b2c-0016c3b5c532@intel.com>
- <20200916080558.GA2978867@laputa>
- <6bf86b26-391a-0699-1818-d070357b9ddc@intel.com>
+        Wed, 16 Sep 2020 22:31:51 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E115CC061351;
+        Wed, 16 Sep 2020 19:31:50 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BsLZW4rKqz9sRf;
+        Thu, 17 Sep 2020 12:31:47 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1600309909;
+        bh=390y6I+DYM38qkkVXCcUkc6LlriptJwAccl9l3BvkgI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=rzr9aEngQMP5agzlqO2vQstP9xUarpY7Y24jgCYeDFZjBHC00upkaKyVMt/7Ts6E3
+         kknawMhaiPzO7unlf5UbJzykgXcEmorP5ww2zMy8rYPibDJ4B35Z9y0fpordI4eqTK
+         fLUh37f8WEbc9jEEob3MumCwLVjDm+ZhabyxUldCzF5woebiskKm3VT54MaOx6mLF2
+         us904viYiCk4++CoQfxXECtBOr81Vz2deN70iHGlh3ljZg/ltBrPaSk5exWRENMJm8
+         CcmpoJJ+c1yRsLNNtWeypZgIujZ6ytZ9JxUKSxeASE2eK0aSGnBJZalC0xBn02hdZu
+         U6DI67nWLHLXg==
+Date:   Thu, 17 Sep 2020 12:31:46 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     peterz@infradead.org
+Cc:     Qian Cai <caiqian@redhat.com>, Qian Cai <cai@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org,
+        Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v2 0/5] seqlock: Introduce PREEMPT_RT support
+Message-ID: <20200917123146.1ddc2f6d@canb.auug.org.au>
+In-Reply-To: <20200916130233.GS2674@hirez.programming.kicks-ass.net>
+References: <20200904153231.11994-1-a.darwish@linutronix.de>
+        <224bd11b533dd2acff3f6cce51ab4ca676eb4f9f.camel@redhat.com>
+        <20200915124817.GA127490@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+        <20200915143028.GB2674@hirez.programming.kicks-ass.net>
+        <32bfdec1ad4e11cfecd840e1b83d95ba2bab1abc.camel@redhat.com>
+        <20200916125402.GR2674@hirez.programming.kicks-ass.net>
+        <1750732498.13475000.1600261259894.JavaMail.zimbra@redhat.com>
+        <20200916130233.GS2674@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6bf86b26-391a-0699-1818-d070357b9ddc@intel.com>
+Content-Type: multipart/signed; boundary="Sig_/ZJigch=EJZvUj24UONED_0g";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adrian,
+--Sig_/ZJigch=EJZvUj24UONED_0g
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 16, 2020 at 01:00:35PM +0300, Adrian Hunter wrote:
-> On 16/09/20 11:05 am, AKASHI Takahiro wrote:
-> > Adrian,
-> > 
-> > Your comments are scattered over various functions, and so
-> > I would like to address them in separate replies.
-> > 
-> > First, I'd like to discuss sdhci_[add|remove]_host().
-> > 
-> > On Fri, Aug 21, 2020 at 05:08:32PM +0300, Adrian Hunter wrote:
-> >> On 10/07/20 2:10 pm, Ben Chuang wrote:
-> >>> From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
-> >>>
-> >>> In this commit, UHS-II related operations will be called via a function
-> >>> pointer array, sdhci_uhs2_ops, in order to make UHS-II support as
-> >>> a kernel module.
-> >>> This array will be initialized only if CONFIG_MMC_SDHCI_UHS2 is enabled
-> >>> and when the UHS-II module is loaded. Otherwise, all the functions
-> >>> stay void.
-> >>>
-> >>> Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
-> >>> Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
-> >>> ---
-> > 
-> >  (snip)
-> > 
-> >>>  		if (intmask & (SDHCI_INT_CARD_INSERT | SDHCI_INT_CARD_REMOVE)) {
-> >>>  			u32 present = sdhci_readl(host, SDHCI_PRESENT_STATE) &
-> >>>  				      SDHCI_CARD_PRESENT;
-> >>> @@ -4717,6 +4812,14 @@ int sdhci_setup_host(struct sdhci_host *host)
-> >>>  		/* This may alter mmc->*_blk_* parameters */
-> >>>  		sdhci_allocate_bounce_buffer(host);
-> >>>  
-> >>> +	if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> >>> +	    host->version >= SDHCI_SPEC_400 &&
-> >>> +	    sdhci_uhs2_ops.add_host) {
-> >>> +		ret = sdhci_uhs2_ops.add_host(host, host->caps1);
-> >>> +		if (ret)
-> >>> +			goto unreg;
-> >>> +	}
-> >>> +
-> >>
-> >> I think you should look at creating uhs2_add_host() instead
-> >>
-> >>>  	return 0;
-> >>>  
-> >>>  unreg:
-> >>> @@ -4738,6 +4841,8 @@ void sdhci_cleanup_host(struct sdhci_host *host)
-> >>>  {
-> >>>  	struct mmc_host *mmc = host->mmc;
-> >>>  
-> >>> +	/* FIXME: Do we have to do some cleanup for UHS2 here? */
-> >>> +
-> >>>  	if (!IS_ERR(mmc->supply.vqmmc))
-> >>>  		regulator_disable(mmc->supply.vqmmc);
-> >>>  
-> >>> @@ -4766,6 +4871,14 @@ int __sdhci_add_host(struct sdhci_host *host)
-> >>>  		mmc->cqe_ops = NULL;
-> >>>  	}
-> >>>  
-> >>> +	if ((mmc->caps & MMC_CAP_UHS2) && !host->v4_mode) {
-> >>> +		/* host doesn't want to enable UHS2 support */
-> >>> +		mmc->caps &= ~MMC_CAP_UHS2;
-> >>> +		mmc->flags &= ~MMC_UHS2_SUPPORT;
-> >>> +
-> >>> +		/* FIXME: Do we have to do some cleanup here? */
-> >>> +	}
-> >>> +
-> >>>  	host->complete_wq = alloc_workqueue("sdhci", flags, 0);
-> >>>  	if (!host->complete_wq)
-> >>>  		return -ENOMEM;
-> >>> @@ -4812,6 +4925,9 @@ int __sdhci_add_host(struct sdhci_host *host)
-> >>>  unled:
-> >>>  	sdhci_led_unregister(host);
-> >>>  unirq:
-> >>> +	if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> >>> +	    sdhci_uhs2_ops.remove_host)
-> >>> +		sdhci_uhs2_ops.remove_host(host, 0);
-> >>>  	sdhci_do_reset(host, SDHCI_RESET_ALL);
-> >>>  	sdhci_writel(host, 0, SDHCI_INT_ENABLE);
-> >>>  	sdhci_writel(host, 0, SDHCI_SIGNAL_ENABLE);
-> >>> @@ -4869,6 +4985,10 @@ void sdhci_remove_host(struct sdhci_host *host, int dead)
-> >>>  
-> >>>  	sdhci_led_unregister(host);
-> >>>  
-> >>> +	if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> >>> +	    sdhci_uhs2_ops.remove_host)
-> >>> +		sdhci_uhs2_ops.remove_host(host, dead);
-> >>> +
-> >>
-> >> I think you should look at creating uhs2_remove_host() instead
-> > 
-> > You suggest that we will have separate sdhci_uhs2_[add|remove]_host(),
-> > but I don't think it's always convenient.
-> > 
-> > UHS-II capable host will be set to call sdhci_uhs2_add_host() explicitly,
-> > but we can't do that in case of pci and pltfm based drivers as they utilize
-> > common helper functions, sdhci_pci_probe() and sdhci_pltfm_register(),
-> > respectively.
-> 
-> sdhci-pci has an add_host op
-> 
-> sdhci_pltfm_init can be used instead of sdhci_pltfm_register
-> 
-> 
-> > Therefore, we inevitably have to call sdhci_uhs2_add_host() there.
-> > 
-> > If so, why should we distinguish sdhci_uhs2_add_host from sdhci_uhs_add_host?
-> > I don't see any good reason.
-> > Moreover, as a result, there exists a mixed usage of sdhci_ interfaces
-> > and sdhci_uhs2_ interfaces in sdhci-pci-core.c and sdhci-pltfm.c.
-> > 
-> > It sounds odd to me.
-> 
-> It is already done that way for cqhci.
+Hi all,
 
-Okay, if it is your policy, I will follow that.
-Then, I'm going to add
-- remove_host field to struct sdhci_pci_fixes
-- a controller specific helper function to each driver (only pci-gli for now)
-  even though it looks quite generic.
+On Wed, 16 Sep 2020 15:02:33 +0200 peterz@infradead.org wrote:
+>
+> On Wed, Sep 16, 2020 at 09:00:59AM -0400, Qian Cai wrote:
+> >=20
+> >=20
+> > ----- Original Message ----- =20
+> > > On Wed, Sep 16, 2020 at 08:52:07AM -0400, Qian Cai wrote: =20
+> > > > On Tue, 2020-09-15 at 16:30 +0200, peterz@infradead.org wrote: =20
+> > > > > On Tue, Sep 15, 2020 at 08:48:17PM +0800, Boqun Feng wrote: =20
+> > > > > > I think this happened because seqcount_##lockname##_init() is d=
+efined
+> > > > > > at
+> > > > > > function rather than macro, so when the seqcount_init() gets ex=
+pand in =20
+> > > > >=20
+> > > > > Bah! I hate all this :/
+> > > > >=20
+> > > > > I suspect the below, while more verbose than I'd like is the best
+> > > > > option. =20
+> > > >=20
+> > > > Stephen, can you add this patch for now until Peter beats you to it=
+? =20
+> > >=20
+> > > Did you verify it works? I only wrote it.. =20
+> >=20
+> > Yes, I did. =20
+>=20
+> Excellent, I'll stick a Tested-by from you on then.
 
-  sdhci_gli_[add|remove]_host(struct sdhci_pci_slot *slot)
-  {
-      return sdhci_uhs2_[add|remove]_host(slot->host);
-  }
+I'll add this into the tip tree merge today (unless the tip tree is
+updated in the mean time).
 
-# Or do you want to create a file like sdhci-uhs2-pci.c for those functions?
+--=20
+Cheers,
+Stephen Rothwell
 
--Takahiro Akashi
+--Sig_/ZJigch=EJZvUj24UONED_0g
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-> > 
-> > -Takahiro Akashi
-> > 
-> > 
-> >>
-> >>>  	if (!dead)
-> >>>  		sdhci_do_reset(host, SDHCI_RESET_ALL);
-> >>>  
-> >>>
-> >>
-> 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9iypIACgkQAVBC80lX
+0Gy1zggAjI2K6Kl9QkLwo+d/njeP3TD356LUn4zvKepNoeRA0/Wz9TWA4gRpaTzg
+a28nOfWT3SNuuDSTxaw0/EAA6i1uBUSh0weJlsdwtO3B0Il/rzXRfJgfoCMJCd0a
+CfhIWur6ceGx4y9+JY2lTV/ua4+lxqGofqKdA1U6bpWud3t9XGtJqUFn1NVFAYNd
+1FOSw5aMISEPhiCGCH4dVTm855pgWGfH+9N5Cav75U01230Q8+ZCoMDCSdGqCrYf
+ZvVH/RD/uxtGBdrUXW4EUt4i+XliTJyaY2kZzgyADcfB3SghfwmrhOQYoXURm3vV
+iXH7/gv3r+uj+i4ZeoYnf+bsPWcf3g==
+=sfKF
+-----END PGP SIGNATURE-----
+
+--Sig_/ZJigch=EJZvUj24UONED_0g--
