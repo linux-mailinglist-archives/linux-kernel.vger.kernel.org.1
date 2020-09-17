@@ -2,66 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A95626D785
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 11:23:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 475B326D77D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 11:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726382AbgIQJUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 05:20:52 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:42426 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726200AbgIQJUv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 05:20:51 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id D238686AB85E77F6F371;
-        Thu, 17 Sep 2020 17:20:49 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 17 Sep 2020 17:20:39 +0800
-From:   Xiaofei Tan <tanxiaofei@huawei.com>
-To:     <b.zolnierkie@samsung.com>, <sam@ravnborg.org>, <arnd@arndb.de>,
-        <laurent.pinchart@ideasonboard.com>, <jani.nikula@intel.com>,
-        <dri-devel@lists.freedesktop.org>, <linux-fbdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <linuxarm@huawei.com>, Xiaofei Tan <tanxiaofei@huawei.com>
-Subject: [PATCH] fbdev: mx3fb: remove unused variable 'irq'
-Date:   Thu, 17 Sep 2020 17:19:20 +0800
-Message-ID: <1600334360-4214-1-git-send-email-tanxiaofei@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S1726350AbgIQJUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 05:20:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726200AbgIQJUK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 05:20:10 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A915C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 02:20:09 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id k15so1230949wrn.10
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 02:20:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Rs4qIsV+1Nc8/ULSmz6fhje8+3Q5WuQ/ZqN8EKMf44M=;
+        b=HneP4Ax9h4G9FuTtlRadvMHfIy7MklfXQgvihGj/s4IkedJjlIcDIIN9OKN+TKPv1Q
+         YOHbDkBxijps9TuQt3WI77Trp6FzEmkd34MvgCBmrO8u7YmmMCiiTCU7Pw4wtwO+tq5Y
+         XL68N5LVD01YXce3Md5P8IJSX0+xPNbPGcRZx/IkAGd06yRy1L91j4Nn/tUN1oQBd+9X
+         MB5TIz2AfCzFVqkRTMHEOoq5gvl3mqc9iRiCI9jU17Jnt6aUBj+V23z+o/lKXomR1VBg
+         aysEiRfYQsaZu/Zif0ZW9cJgfORgsrpcDmNKMizSGKbKB5f5jaU9hm0d9jvxb8p/udCk
+         l6kQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Rs4qIsV+1Nc8/ULSmz6fhje8+3Q5WuQ/ZqN8EKMf44M=;
+        b=I3jbs0tDsBqJgLfulCJo2jlkyjNSa3hlPPGZsVhyaYujD8i286lmeHZHK8HRQCSU40
+         Sl5jmBXwR4Cto70GmcyrI8tQGn8SQcPvNACNuXriVrbW8KBYGzLk3lh/Qh9ptTLHRcRH
+         Yih81viVGuX66xjmG8xAu2I7/6eGDgUwDIzolgmb7x2cKO9A55wIT6roe9LXk6OARXZ3
+         xiaElKvjiT9DPlZdUSeF7qjcqlkqvkKUpj04CU/7SfWGC6inFOUGKaJzVfKkzBUnD7co
+         RWZPnmNDqglmvx36XQVqnSCw9iQVGysFNL9OtQo6veylSEuPx24v/cly82Z30t9UiQJ/
+         8Kfg==
+X-Gm-Message-State: AOAM5337CxsB2l9fJVSrxQqO8HO+7l/yQXZrqYqzMncVGFk40buJbkr+
+        2WC9NF2jFHFRb+ZYk0H96JbMwQ==
+X-Google-Smtp-Source: ABdhPJwDBcbUJMmuU1+Ad2eRRDNOJE6+feQz9qegFGUMrQF2ZIMUj7aGlnqVTlh4Dy8cUHkn08Eo4w==
+X-Received: by 2002:a5d:5583:: with SMTP id i3mr30071275wrv.119.1600334407681;
+        Thu, 17 Sep 2020 02:20:07 -0700 (PDT)
+Received: from x1 ([2001:16b8:5c22:e701:5f2:8f03:4748:2bc6])
+        by smtp.gmail.com with ESMTPSA id x10sm10543614wmi.37.2020.09.17.02.20.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 02:20:06 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 11:20:04 +0200
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Trent Piepho <tpiepho@gmail.com>
+Cc:     Tony Lindgren <tony@atomide.com>, Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@gmail.com>,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-gpio <linux-gpio@vger.kernel.org>
+Subject: Re: [PATCH] ARM: dts: document pinctrl-single,pins when
+ #pinctrl-cells = 2
+Message-ID: <20200917092004.GA2468349@x1>
+References: <20200914104352.2165818-1-drew@beagleboard.org>
+ <CA+7tXii8rwBexgAHeqYsvBywhWLmk-Hf5_VWUU5bQkBREeFcSA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+7tXii8rwBexgAHeqYsvBywhWLmk-Hf5_VWUU5bQkBREeFcSA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the variable 'irq' that is set but never used.
+On Thu, Sep 17, 2020 at 02:03:46AM -0700, Trent Piepho wrote:
+> On Mon, Sep 14, 2020 at 3:44 AM Drew Fustini <drew@beagleboard.org> wrote:
+> >
+> > +
+> > +When #pinctrl-cells = 2, then setting a pin for a device could be done with:
+> > +
+> > +       pinctrl-single,pins = <0xdc 0x30 0x07>;
+> > +
+> > +Where 0x30 is the pin configuration value and 0x07 is the pin mux mode value.
+> > +See the device example and static board pins example below for more information.
+> 
+> Pin configuration and mux mode don't mean anything in pinctrl-single.
+> On another machine, mux mode might not be programmed this way or even
+> exist.  Or the location of bits would probably be different, and this
+> would seem to imply the 0x07 would get shifted to the correct location
+> for where the pin mux setting was on that machine's pinctrl registers.
+> 
+> It seems like it would be better to explain the values are ORed together.
 
-Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
----
- drivers/video/fbdev/mx3fb.c | 2 --
- 1 file changed, 2 deletions(-)
+I descirbed it as seoerate values as I did not want to prescribe what
+the pcs driver would do with those values.  But, yes, it is a just an OR
+operation, so I could change the language to reflect tat.
 
-diff --git a/drivers/video/fbdev/mx3fb.c b/drivers/video/fbdev/mx3fb.c
-index 603731a..894617d 100644
---- a/drivers/video/fbdev/mx3fb.c
-+++ b/drivers/video/fbdev/mx3fb.c
-@@ -1428,7 +1428,6 @@ static int init_fb_chan(struct mx3fb_data *mx3fb, struct idmac_channel *ichan)
- 	struct device *dev = mx3fb->dev;
- 	struct mx3fb_platform_data *mx3fb_pdata = dev_get_platdata(dev);
- 	const char *name = mx3fb_pdata->name;
--	unsigned int irq;
- 	struct fb_info *fbi;
- 	struct mx3fb_info *mx3fbi;
- 	const struct fb_videomode *mode;
-@@ -1441,7 +1440,6 @@ static int init_fb_chan(struct mx3fb_data *mx3fb, struct idmac_channel *ichan)
- 	}
- 
- 	ichan->client = mx3fb;
--	irq = ichan->eof_irq;
- 
- 	if (ichan->dma_chan.chan_id != IDMAC_SDC_0)
- 		return -EINVAL;
--- 
-2.8.1
+> What is the purpose of this change anyway?  It seems like in the end
+> it just does what it did before.  The data is now split into two cells
+> in the device tree, but why?
 
+These changes were a result of desire to seperate pinconf and pinmux.
+Tony raised the idea in a thread at the end of May [1].
+
+Tony wrote:
+> Only slightly related, but we should really eventually move omaps to use
+> #pinctrl-cells = <2> (or 3) instead of 1, and pass the pinconf seprately
+> from the mux mode. We already treat them separately with the new
+> AM33XX_PADCONF macro, so we'd only have to change one SoC at a time to
+> use updated #pinctrl-cells. But I think pinctrl-single might need some
+> changes before we can do that.
+
+
+thanks,
+drew
+
+[1] https://lore.kernel.org/linux-omap/20200527165122.GL37466@atomide.com/
