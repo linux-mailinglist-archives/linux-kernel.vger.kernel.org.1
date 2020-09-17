@@ -2,109 +2,351 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D14626D014
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 02:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D54426D00B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 02:39:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726219AbgIQAlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 20:41:08 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:42045 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725858AbgIQAlG (ORCPT
+        id S1726179AbgIQAjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 20:39:25 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:2558 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725858AbgIQAjW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 20:41:06 -0400
-X-Greylist: delayed 450 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 20:41:03 EDT
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 2EEDA5C0C9D;
-        Wed, 16 Sep 2020 20:33:31 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Wed, 16 Sep 2020 20:33:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm3; bh=nitlheN0IsLIrcvvbSsvp3wovHOQpfw
-        gG1F9+OPBH+M=; b=Pj1cVpkv+TXoltLKj77sDn+NzDQJ1ZTckutBgtoDUOUNEWa
-        TzJ14uJ9hBTQRnuR0b0cv4lHfWERaQjNkF5vpOp59DsVXjUxL+F+4tSkAofngHm+
-        mvgfNChrj3MKgOl8DwimAUbzvN+NKW2urssktHTlf1jMMOX0bSW2kzc0oDxrrfqJ
-        4/LdwHJXKpQkuY2jbc7YPHgtSgrzSYS3xE1UCIux2IkiA3Kcp4g6HpET24wc/YHu
-        CckJG13bYLJ6ysp/eIBvNTB0322DGrPJhebiedrTaXWA0y+VyirRPq07lnm9H5aU
-        VvMDKtdssrBShdPOTtDsan4e+D/L3aWDkkQzlIg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=nitlhe
-        N0IsLIrcvvbSsvp3wovHOQpfwgG1F9+OPBH+M=; b=GLF+i8ktV0YKu27g4QYc+Y
-        /rNY9EDg5tpFMGFI5/WaW+PXWB21QSLrKzUCgDrJ30cp+c04J4xQj+1exuU2Xl0t
-        FvW2DUxXNvZdubp8PPqxIyAgObbbqwkX9ujV5Eo5HNuiRjPEQYZfA8fEl9WeRUsh
-        RaW74PF1URcmwJJ0g8pwHsZLSiglCXjVtb7hz2aZUs2T8h92z5TQ5dgFWBPLsfBB
-        qoqoDr+LJTvX94B8JJc3gNxGptnWw6H9kDjc/3jEljnIYBYCImdYZuOb+PmreRxb
-        9ao4x5sXBHp4TJm/UL5an8KAuDQtQ/MqakTRmygSIrVb8DGV2fJ1LqW6o7oMJNuA
-        ==
-X-ME-Sender: <xms:2q5iX3xh5q7gaj3fKjMgVDAiYg2Zt1Igwtnyw7cYxXEIYeL_Nc1f5g>
-    <xme:2q5iX_QF8yGZ8iLhTWhPZZ8IRqQ16hvcl325GtqjSBOH1GMTMXhme6ZS1Sq5nhn7v
-    rP4EOntaWA-3gq6JA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrtdefgdefhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderreejnecuhfhrohhmpedftehnughr
-    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
-    htthgvrhhnpedutddtkeeugeegvddttdeukeeiuddtgfeuuddtfeeiueetfeeileettedv
-    tdfhieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grnhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:2q5iXxUZI9hkWQ5zOKi8KR-M8falIWTKEjpHTWUoOrPTC2syiGxw-Q>
-    <xmx:2q5iXxj4uSmznpQIRjJ5tpcrnu9fJCsUIVf4qtqQfBVn9deZJ64Zag>
-    <xmx:2q5iX5D2d5uTzaHuTBybNmA59sCSc3eiKtF31kMXFxQoKtiuWSCwuQ>
-    <xmx:265iX09Ms89duDK2ZOAmLv22D9KOXSonoDUqGp8AXLLYW4yUaOkWPw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 89E9FE00D1; Wed, 16 Sep 2020 20:33:29 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.3.0-324-g0f99587-fm-20200916.004-g0f995879
-Mime-Version: 1.0
-Message-Id: <61537381-b1ea-48d3-b445-a33e355f8338@www.fastmail.com>
-In-Reply-To: <20200916155651.GA90122@roeck-us.net>
-References: <20200914122811.3295678-1-andrew@aj.id.au>
- <20200914122811.3295678-3-andrew@aj.id.au>
- <71067b18-c4bc-533a-0069-f21069c5fd0d@roeck-us.net>
- <48962472-b025-4b0d-90e9-60469bebf206@www.fastmail.com>
- <20200916155651.GA90122@roeck-us.net>
-Date:   Thu, 17 Sep 2020 10:03:09 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Guenter Roeck" <linux@roeck-us.net>
-Cc:     linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org,
-        "Jean Delvare" <jdelvare@suse.com>, wsa@kernel.org,
-        "Joel Stanley" <joel@jms.id.au>, linux-kernel@vger.kernel.org
-Subject: =?UTF-8?Q?Re:_[RFC_PATCH_2/2]_hwmon:_(pmbus/ucd9000)_Throttle_SMBus_tran?=
- =?UTF-8?Q?sfers_to_avoid_poor_behaviour?=
-Content-Type: text/plain
+        Wed, 16 Sep 2020 20:39:22 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f62aeb60001>; Wed, 16 Sep 2020 17:32:54 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Wed, 16 Sep 2020 17:34:22 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Wed, 16 Sep 2020 17:34:22 -0700
+Received: from rcampbell-dev.nvidia.com (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 17 Sep
+ 2020 00:34:18 +0000
+Subject: Re: [PATCH] mm: remove extra ZONE_DEVICE struct page refcount
+To:     Christoph Hellwig <hch@lst.de>
+CC:     <linux-mm@kvack.org>, <kvm-ppc@vger.kernel.org>,
+        <nouveau@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        Zi Yan <ziy@nvidia.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20200914224509.17699-1-rcampbell@nvidia.com>
+ <20200916060921.GB7321@lst.de>
+X-Nvconfidentiality: public
+From:   Ralph Campbell <rcampbell@nvidia.com>
+Message-ID: <45942676-a87f-c6ef-1514-cabfc4a5fa8e@nvidia.com>
+Date:   Wed, 16 Sep 2020 17:34:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
+MIME-Version: 1.0
+In-Reply-To: <20200916060921.GB7321@lst.de>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600302774; bh=ITgHj0XAkgZskpfmNSquGxzCCfbz03lmRzNgV2/ej+M=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=nWL6vw5KSkD6hKxF7BFJXcCNzF+xJ8M9Yql3tuI3JADmTsTohAupXvlSfifV03/v6
+         UTm8uZ1f87FJOmFX3H7GEeDofr2dhnXCn/VmBBNswHn8zAGEbipODNR2B56fntzz+p
+         CVnbX49uKq1A3fw1UYwn2A7yxVtqsRspoSCUQ58AlSEGkGMs0b684arpkwVQv3Dj+Z
+         d25RhLPZwGFhs1AL2QXTV8Yx+nTiCA9oOBtfwy3LDy0v0P1/5J450jDyL6i/6nx6KK
+         CraSEgSYM/wXuhTDx6YLi4lZdq4RZ3RPXt7SPZG+W7RDRAAZANA/0GQgRiVCdaiBxC
+         BCZNxIxSLY3fQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-On Thu, 17 Sep 2020, at 01:26, Guenter Roeck wrote:
-> > I've had a look at these two examples. As you suggest the delays in zl6100.c 
-> > look pretty similar to what this series implements in the i2c core. I'm finding 
-> > it hard to dislodge the feeling that open-coding the waits is error prone, but 
-> > to avoid that and not implement the waits in the i2c core means having almost 
-> > duplicate implementations of handlers for i2c_smbus_{read,write}*() and 
-> > pmbus_{read,write}*() calls in the driver.
-> > 
+On 9/15/20 11:09 PM, Christoph Hellwig wrote:
+>> diff --git a/include/linux/mm.h b/include/linux/mm.h
+>> index 517751310dd2..5a82037a4b26 100644
+>> --- a/include/linux/mm.h
+>> +++ b/include/linux/mm.h
+>> @@ -1093,34 +1093,6 @@ static inline bool is_zone_device_page(const struct page *page)
+>>   #ifdef CONFIG_DEV_PAGEMAP_OPS
+>>   void free_devmap_managed_page(struct page *page);
+>>   DECLARE_STATIC_KEY_FALSE(devmap_managed_key);
 > 
-> Not sure I can follow you here. Anyway, it seems to me that you are set on
-> an implementation in the i2c core. I personally don't like that approach,
+> The export for devmap_managed_key can be dropped now.  In fact I think
+> we can remove devmap_managed_key entirely now - it is only checked in
+> the actual page free path instead of for each refcount manipulation,
+> so a good old unlikely is probably enough.
+> 
+> Also free_devmap_managed_page can move to mm/internal.h.
 
-Not really set on it, but it does seem convenient. I'm looking at whether 
-delays resolve the issues we have with the max31785 as well (I have a bunch of 
-patches that introduce retries under the various circumstances we've hit poor 
-behaviour).
+Good suggestion.
 
-> but I'll accept a change in the ucd9000 driver to make use of it. Please
-> leave the zl6100 code alone, though - it took me long enough to get that
-> working, and I won't have time to test any changes.
+>> +#ifdef CONFIG_DEV_PAGEMAP_OPS
+>> +static void __put_devmap_managed_page(struct page *page)
+>> +{
+>> +	if (!static_branch_unlikely(&devmap_managed_key))
+>> +		return;
+>> +
+>> +	switch (page->pgmap->type) {
+>> +	case MEMORY_DEVICE_PRIVATE:
+>> +	case MEMORY_DEVICE_FS_DAX:
+>> +		free_devmap_managed_page(page);
+>> +		break;
+>> +	default:
+>> +		break;
+>> +	}
+>> +}
+>> +#else
+>> +static inline void __put_devmap_managed_page(struct page *page)
+>> +{
+>> +}
+>> +#endif
+> 
+> I think this should be moved to mm/memremap.c or even better
+> actually be folded into free_devmap_managed_page, which would need
+> a new name like free_zone_device_page().
+> 
+> Something like this incremental patch:
+> 
+> 
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 7bb9e93cf86cde..29350dc27cd0cd 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -1090,11 +1090,6 @@ static inline bool is_zone_device_page(const struct page *page)
+>   }
+>   #endif
+>   
+> -#ifdef CONFIG_DEV_PAGEMAP_OPS
+> -void free_devmap_managed_page(struct page *page);
+> -DECLARE_STATIC_KEY_FALSE(devmap_managed_key);
+> -#endif /* CONFIG_DEV_PAGEMAP_OPS */
+> -
+>   static inline bool is_device_private_page(const struct page *page)
+>   {
+>   	return IS_ENABLED(CONFIG_DEV_PAGEMAP_OPS) &&
+> diff --git a/mm/internal.h b/mm/internal.h
+> index 6345b08ce86ccf..629959a6f26d7c 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -618,4 +618,12 @@ struct migration_target_control {
+>   	gfp_t gfp_mask;
+>   };
+>   
+> +#ifdef CONFIG_DEV_PAGEMAP_OPS
+> +void free_zone_device_page(struct page *page);
+> +#else
+> +static inline void free_zone_device_page(struct page *page)
+> +{
+> +}
+> +#endif
+> +
+>   #endif	/* __MM_INTERNAL_H */
+> diff --git a/mm/memremap.c b/mm/memremap.c
+> index d549e3733f4098..b15ad2264a4f1c 100644
+> --- a/mm/memremap.c
+> +++ b/mm/memremap.c
+> @@ -12,6 +12,7 @@
+>   #include <linux/types.h>
+>   #include <linux/wait_bit.h>
+>   #include <linux/xarray.h>
+> +#include "internal.h"
+>   
+>   static DEFINE_XARRAY(pgmap_array);
+>   
+> @@ -37,36 +38,6 @@ unsigned long memremap_compat_align(void)
+>   EXPORT_SYMBOL_GPL(memremap_compat_align);
+>   #endif
+>   
+> -#ifdef CONFIG_DEV_PAGEMAP_OPS
+> -DEFINE_STATIC_KEY_FALSE(devmap_managed_key);
+> -EXPORT_SYMBOL(devmap_managed_key);
+> -
+> -static void devmap_managed_enable_put(void)
+> -{
+> -	static_branch_dec(&devmap_managed_key);
+> -}
+> -
+> -static int devmap_managed_enable_get(struct dev_pagemap *pgmap)
+> -{
+> -	if (pgmap->type == MEMORY_DEVICE_PRIVATE &&
+> -	    (!pgmap->ops || !pgmap->ops->page_free)) {
+> -		WARN(1, "Missing page_free method\n");
+> -		return -EINVAL;
+> -	}
+> -
+> -	static_branch_inc(&devmap_managed_key);
+> -	return 0;
+> -}
+> -#else
+> -static int devmap_managed_enable_get(struct dev_pagemap *pgmap)
+> -{
+> -	return -EINVAL;
+> -}
+> -static void devmap_managed_enable_put(void)
+> -{
+> -}
+> -#endif /* CONFIG_DEV_PAGEMAP_OPS */
+> -
+>   static void pgmap_array_delete(struct range *range)
+>   {
+>   	xa_store_range(&pgmap_array, PHYS_PFN(range->start), PHYS_PFN(range->end),
+> @@ -181,7 +152,6 @@ void memunmap_pages(struct dev_pagemap *pgmap)
+>   		pageunmap_range(pgmap, i);
+>   
+>   	WARN_ONCE(pgmap->altmap.alloc, "failed to free all reserved pages\n");
+> -	devmap_managed_enable_put();
+>   }
+>   EXPORT_SYMBOL_GPL(memunmap_pages);
+>   
+> @@ -319,7 +289,6 @@ void *memremap_pages(struct dev_pagemap *pgmap, int nid)
+>   		.pgprot = PAGE_KERNEL,
+>   	};
+>   	const int nr_range = pgmap->nr_range;
+> -	bool need_devmap_managed = true;
+>   	int error, i;
+>   
+>   	if (WARN_ONCE(!nr_range, "nr_range must be specified\n"))
+> @@ -331,8 +300,9 @@ void *memremap_pages(struct dev_pagemap *pgmap, int nid)
+>   			WARN(1, "Device private memory not supported\n");
+>   			return ERR_PTR(-EINVAL);
+>   		}
+> -		if (!pgmap->ops || !pgmap->ops->migrate_to_ram) {
+> -			WARN(1, "Missing migrate_to_ram method\n");
+> +		if (!pgmap->ops ||
+> +		    !pgmap->ops->migrate_to_ram || !pgmap->ops->page_free) {
+> +			WARN(1, "Missing ops\n");
+>   			return ERR_PTR(-EINVAL);
+>   		}
+>   		if (!pgmap->owner) {
+> @@ -348,11 +318,9 @@ void *memremap_pages(struct dev_pagemap *pgmap, int nid)
+>   		}
+>   		break;
+>   	case MEMORY_DEVICE_GENERIC:
+> -		need_devmap_managed = false;
+>   		break;
+>   	case MEMORY_DEVICE_PCI_P2PDMA:
+>   		params.pgprot = pgprot_noncached(params.pgprot);
+> -		need_devmap_managed = false;
+>   		break;
+>   	default:
+>   		WARN(1, "Invalid pgmap type %d\n", pgmap->type);
+> @@ -376,12 +344,6 @@ void *memremap_pages(struct dev_pagemap *pgmap, int nid)
+>   		}
+>   	}
+>   
+> -	if (need_devmap_managed) {
+> -		error = devmap_managed_enable_get(pgmap);
+> -		if (error)
+> -			return ERR_PTR(error);
+> -	}
+> -
+>   	/*
+>   	 * Clear the pgmap nr_range as it will be incremented for each
+>   	 * successfully processed range. This communicates how many
+> @@ -496,16 +458,9 @@ struct dev_pagemap *get_dev_pagemap(unsigned long pfn,
+>   EXPORT_SYMBOL_GPL(get_dev_pagemap);
+>   
+>   #ifdef CONFIG_DEV_PAGEMAP_OPS
+> -void free_devmap_managed_page(struct page *page)
+> +static void free_device_private_page(struct page *page)
+>   {
+> -	/* notify page idle for dax */
+> -	if (!is_device_private_page(page)) {
+> -		wake_up_var(&page->_refcount);
+> -		return;
+> -	}
+> -
+>   	__ClearPageWaiters(page);
+> -
+>   	mem_cgroup_uncharge(page);
+>   
+>   	/*
+> @@ -540,4 +495,19 @@ void free_devmap_managed_page(struct page *page)
+>   	page->mapping = NULL;
+>   	page->pgmap->ops->page_free(page);
+>   }
+> +
+> +void free_zone_device_page(struct page *page)
+> +{
+> +	switch (page->pgmap->type) {
+> +	case MEMORY_DEVICE_FS_DAX:
+> +		/* notify page idle */
+> +		wake_up_var(&page->_refcount);
+> +		return;
+> +	case MEMORY_DEVICE_PRIVATE:
+> +		free_device_private_page(page);
+> +		return;
+> +	default:
+> +		return;
+> +	}
+> +}
+>   #endif /* CONFIG_DEV_PAGEMAP_OPS */
+> diff --git a/mm/swap.c b/mm/swap.c
+> index bcab5db351184a..83451ac70d0f05 100644
+> --- a/mm/swap.c
+> +++ b/mm/swap.c
+> @@ -113,36 +113,14 @@ static void __put_compound_page(struct page *page)
+>   	destroy_compound_page(page);
+>   }
+>   
+> -#ifdef CONFIG_DEV_PAGEMAP_OPS
+> -static void __put_devmap_managed_page(struct page *page)
+> -{
+> -	if (!static_branch_unlikely(&devmap_managed_key))
+> -		return;
+> -
+> -	switch (page->pgmap->type) {
+> -	case MEMORY_DEVICE_PRIVATE:
+> -	case MEMORY_DEVICE_FS_DAX:
+> -		free_devmap_managed_page(page);
+> -		break;
+> -	default:
+> -		break;
+> -	}
+> -}
+> -#else
+> -static inline void __put_devmap_managed_page(struct page *page)
+> -{
+> -}
+> -#endif
+> -
+>   void __put_page(struct page *page)
+>   {
+>   	if (is_zone_device_page(page)) {
+> -		__put_devmap_managed_page(page);
+> -
+>   		/*
+>   		 * The page belongs to the device that created pgmap. Do
+>   		 * not return it to page allocator.
+>   		 */
+> +		free_zone_device_page(page);
+>   		return;
+>   	}
+>   
+> @@ -923,7 +901,7 @@ void release_pages(struct page **pages, int nr)
+>   						       flags);
+>   				locked_pgdat = NULL;
+>   			}
+> -			__put_devmap_managed_page(page);
+> +			free_zone_device_page(page);
+>   			return;
+>   		}
+>   
+> 
 
-No worries. If you don't have time to test changes it reduces the motivation to 
-find a general approach, and so maybe isolating the work-arounds to the ucd9000 
-is the way to go.
-
-Thanks for the feedback.
-
-Andrew
+Thanks for the review!
+I will apply the above in v2.
+I found a couple of more reference count checks in fs/dax.c so I need to
+run fstests with dax before sending v2 out.
