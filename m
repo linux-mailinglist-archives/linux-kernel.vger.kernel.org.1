@@ -2,76 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD6226E4DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A8B26E4F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726681AbgIQTAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 15:00:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60104 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726496AbgIQS72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 14:59:28 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EFF73206A1;
-        Thu, 17 Sep 2020 18:59:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600369168;
-        bh=5j+4R+6a1Y3ohIw1PIgcrqZxCypD7KxxGmhRmqZL/Fg=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=HPB6FD/6HUNAs5vvh1Qgf3EhgdioIthOFzGxeyk/tv+uslRdvfJ4nV230EabcI8BC
-         Q8m+MW+/YNioIWG/4+TzFmtw+v3F020+110SMdS10GiXYYk1PCBWcThv6B92AaAime
-         eeabj2HzPK/LeYS8EnWg9uY3YRUx69RKfy49tB5M=
-Date:   Thu, 17 Sep 2020 19:58:38 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Ricardo Ribalda <ribalda@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20200915112936.320647-1-ribalda@kernel.org>
-References: <20200915112936.320647-1-ribalda@kernel.org>
-Subject: Re: [PATCH] spi: xilinx: Fix info message during probe
-Message-Id: <160036909795.20353.17587960090458836310.b4-ty@kernel.org>
+        id S1726676AbgIQTDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 15:03:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726409AbgIQS7V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 14:59:21 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C44DC06174A;
+        Thu, 17 Sep 2020 11:59:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Date:Message-ID:Subject:From:Cc:To:Sender:Reply-To:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=dCb3Mw8emqdBD/1nF+oUHT3U3i0WT8UHhM2aFDWS07g=; b=a6AAAWT6OpuM+kWcatw3TlS2JP
+        +8IS6npgj/d5gENj7cfht68AdE18jEyqNklaqeTUkp7d2dLDMsPPi+veQLTosycBB0vDYDd4A8Yyr
+        tznRa1dqP11vzU13o+w8+NI0S2IwbKOxHAR6RHTudrhQhOFeRLJxOB8d7iUlNyWiPZPONYGOMMtMO
+        jMNj7kl01I7FnTNmILeOSFXO2K+G4obIYF76n4aWfGHU+4d/ez4I1+WdKfY8QkAIoHxTzeSrtMWgD
+        979WzHnWW1wU6ehSV+WMb0E8LWmwYqMzX9Jd9A+0HqijmAVIwP9BMmj4KuLIubgEiqvd+S9pNQk99
+        Y9x+AIAw==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kIz7L-0000LU-Rs; Thu, 17 Sep 2020 18:58:52 +0000
+To:     LKML <linux-kernel@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH -next] vdpa: mlx5: select VHOST to fix build errors
+Message-ID: <f47e2bab-c19c-fab5-cfb9-e2b5ba1be69a@infradead.org>
+Date:   Thu, 17 Sep 2020 11:58:48 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Sep 2020 13:29:36 +0200, Ricardo Ribalda wrote:
-> The info message was showing the mapped address of the device. To avoid
-> security problems, all virtual addresses are converted to __ptrval__, so
-> the message was useless/ugly:
-> 
-> [    2.304949] xilinx_spi b0010000.spi-flash: at 0xB0010000 mapped to 0x(____ptrval____), irq=37
-> 
-> Use %pR instead:
-> 
-> [...]
+From: Randy Dunlap <rdunlap@infradead.org>
 
-Applied to
+drivers/vdpa/mlx5/ uses vhost_iotlb*() interfaces, so select
+VHOST to eliminate build errors.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+ld: drivers/vdpa/mlx5/core/mr.o: in function `add_direct_chain':
+mr.c:(.text+0x106): undefined reference to `vhost_iotlb_itree_first'
+ld: mr.c:(.text+0x1cf): undefined reference to `vhost_iotlb_itree_next'
+ld: mr.c:(.text+0x30d): undefined reference to `vhost_iotlb_itree_first'
+ld: mr.c:(.text+0x3e8): undefined reference to `vhost_iotlb_itree_next'
+ld: drivers/vdpa/mlx5/core/mr.o: in function `_mlx5_vdpa_create_mr':
+mr.c:(.text+0x908): undefined reference to `vhost_iotlb_itree_first'
+ld: mr.c:(.text+0x9e6): undefined reference to `vhost_iotlb_itree_next'
+ld: drivers/vdpa/mlx5/core/mr.o: in function `mlx5_vdpa_handle_set_map':
+mr.c:(.text+0xf1d): undefined reference to `vhost_iotlb_itree_first'
 
-Thanks!
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: virtualization@lists.linux-foundation.org
+Cc: Saeed Mahameed <saeedm@nvidia.com>
+Cc: Leon Romanovsky <leonro@nvidia.com>
+Cc: netdev@vger.kernel.org
+---
+Note: This patch may not be the right thing, but it fixes the build errors.
 
-[1/1] spi: xilinx: Fix info message during probe
-      commit: 985be7ebfbf79767bc3705eee7de635edd4eba7d
+ drivers/vdpa/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+--- linux-next-20200917.orig/drivers/vdpa/Kconfig
++++ linux-next-20200917/drivers/vdpa/Kconfig
+@@ -32,6 +32,7 @@ config IFCVF
+ config MLX5_VDPA
+ 	bool "MLX5 VDPA support library for ConnectX devices"
+ 	depends on MLX5_CORE
++	select VHOST
+ 	default n
+ 	help
+ 	  Support library for Mellanox VDPA drivers. Provides code that is
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
