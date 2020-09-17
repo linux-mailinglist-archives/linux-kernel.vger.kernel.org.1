@@ -2,105 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF2E26E3CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:35:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4B7726E39F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726510AbgIQRZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 13:25:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726318AbgIQRZK (ORCPT
+        id S1726543AbgIQSbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 14:31:15 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:49350 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726477AbgIQR1D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 13:25:10 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2CB8C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:24:53 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id z18so1373643qvp.6
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:24:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qnISMbW3nm4yggbOBgqyVMEyiRIror+WZEAjWJm/K2g=;
-        b=FgfHEC+paMaduo6pBiGfkE6HvXXKKjAXDfribiWG8g4jTuepijvRaEFw+U+dfXI5oo
-         OJL4xOE4CizfEM/4FWvJAG4beepZ2VRh626USUpegbA0MWIvyPkWb1ogt8sXzndhQEfV
-         5FV6VLMO4GQ2Zvzwu9bdBiiY9SrU1s9ehrpmJcZD8t23FjgQ61jVLKYlaXgdUBeSK/cB
-         DAnDPvvilysMmI7oWRL+vD4bEodstP5lgTEHQFP/Ut0ngu0vMuhDk99Q8bVXK5rcR1tg
-         0mFZeVCzJJrRJD+5LBgOQRWQKsloBbweX4HVZaSGNEPEa7phLjn0k5d3jKDAQQ0NF/r1
-         3YZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qnISMbW3nm4yggbOBgqyVMEyiRIror+WZEAjWJm/K2g=;
-        b=nIjzTrzdmxcMqQc7dqZntogpa9t2jAQoQGtRyd+uUxMj/MKmeJGrhUujF74ZnWS1qW
-         ipWd/lwy/ys7RLouFPnbx0hPZBVb+4/OSUaLK4peyMOfkLMIqRQG9/UdL5g+b5JX1Uzu
-         ZsmMwl+QFPCZ199woWPv1aM/EGqmBCRCwSXJquvNXEQyis8XtcZPEpWyVat4eHLvAXvz
-         0O7Lp/pSN3sBGs850ub5P2knfKBKWzb2ETBcOuOQ52SsERK24BFzWSGszJIjGUC0Vsls
-         sSIyfkSYyKapYi3Zrmeb+uh5igBvVxHB1TTMB2qvggF1VQpoZXaXBEnk20UetuzWc5NV
-         tEVw==
-X-Gm-Message-State: AOAM530p/7+kFkruBOaW7rLqfjWf7mwLdaVQ/PN9ht6HbhYcLRqXI4AR
-        6o9XRcqbFHtrDtrUDJhUUDFTfw==
-X-Google-Smtp-Source: ABdhPJxT+y+sQqjzbnRyXv8mTryKXanFEp2eAHIugZuaFmBoM8WwlSxulEay3IkHrwXW7q8cM9fRDg==
-X-Received: by 2002:a0c:a990:: with SMTP id a16mr12961214qvb.59.1600363493126;
-        Thu, 17 Sep 2020 10:24:53 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id o26sm254821qtb.24.2020.09.17.10.24.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 10:24:52 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kIxeN-000akx-Ni; Thu, 17 Sep 2020 14:24:51 -0300
-Date:   Thu, 17 Sep 2020 14:24:51 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Liu Shixin <liushixin2@huawei.com>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] RDMA/mlx5: fix type warning of sizeof in
- __mlx5_ib_alloc_counters()
-Message-ID: <20200917172451.GK8409@ziepe.ca>
-References: <20200917082926.GA869610@unreal>
- <20200917091008.2309158-1-liushixin2@huawei.com>
- <20200917090810.GB869610@unreal>
- <20200917123806.GA114613@nvidia.com>
- <20200917170511.GI869610@unreal>
+        Thu, 17 Sep 2020 13:27:03 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600363602; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=/iCaG40ns1PhHJ95GUSwGali/3Yo5uLsIvEIXPCMj3E=;
+ b=Q8ZWV8qPrtYR46YbbB22l+uaaR6lCxV+C/mQCOJAthvUyGY4wM+OcVZ4DcaHp3s7Y0iaBqfU
+ Mv0kYXDzpvBR1825VTiwO4dPpsDJz3Gv+OwEgH8LsFzTQvJu7s8qrDpwVO+WcB4XRSvzFvg2
+ 1A6UUrlyrduuPFjYgdEfU5WSsz0=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5f639c520566e2dcd73fe159 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Sep 2020 17:26:42
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6BA3AC433FF; Thu, 17 Sep 2020 17:26:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cgoldswo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5887BC433C8;
+        Thu, 17 Sep 2020 17:26:40 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917170511.GI869610@unreal>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 17 Sep 2020 10:26:40 -0700
+From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pratikp@codeaurora.org, pdaly@codeaurora.org,
+        sudaraja@codeaurora.org, iamjoonsoo.kim@lge.com,
+        linux-arm-msm-owner@vger.kernel.org,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        linux-kernel-owner@vger.kernel.org
+Subject: Re: [PATCH v2] mm: cma: indefinitely retry allocations in cma_alloc
+In-Reply-To: <a3d62a77-4c4f-e86c-de6d-5222c2a747e0@redhat.com>
+References: <06489716814387e7f147cf53d1b185a8@codeaurora.org>
+ <1599851809-4342-1-git-send-email-cgoldswo@codeaurora.org>
+ <010101747e998731-e49f209f-8232-4496-a9fc-2465334e70d7-000000@us-west-2.amazonses.com>
+ <a4bdda08-9e2a-4862-00a3-72d4c90e82c7@redhat.com>
+ <72ae0f361df527cf70946992e4ab1eb3@codeaurora.org>
+ <a3d62a77-4c4f-e86c-de6d-5222c2a747e0@redhat.com>
+Message-ID: <c1ed5d8c8a07bdf6cf75aea3047a0806@codeaurora.org>
+X-Sender: cgoldswo@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 08:05:11PM +0300, Leon Romanovsky wrote:
-> On Thu, Sep 17, 2020 at 09:38:06AM -0300, Jason Gunthorpe wrote:
-> > On Thu, Sep 17, 2020 at 12:08:10PM +0300, Leon Romanovsky wrote:
-> > > On Thu, Sep 17, 2020 at 05:10:08PM +0800, Liu Shixin wrote:
-> > > > sizeof() when applied to a pointer typed expression should give the
-> > > > size of the pointed data, even if the data is a pointer.
-> > > >
-> > > > Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> >
-> > Needs a fixes line
-> >
-> > > >  	if (!cnts->names)
-> > > >  		return -ENOMEM;
-> > > >
-> > > >  	cnts->offsets = kcalloc(num_counters,
-> > > > -				sizeof(cnts->offsets), GFP_KERNEL);
-> > > > +				sizeof(*cnts->offsets), GFP_KERNEL);
-> > >
-> > > This is not.
-> >
-> > Why not?
+On 2020-09-15 00:53, David Hildenbrand wrote:
+> On 14.09.20 20:33, Chris Goldsworthy wrote:
+>> On 2020-09-14 02:31, David Hildenbrand wrote:
+>>> On 11.09.20 21:17, Chris Goldsworthy wrote:
+>>>> 
+>>>> So, inside of cma_alloc(), instead of giving up when
+>>>> alloc_contig_range()
+>>>> returns -EBUSY after having scanned a whole CMA-region bitmap, 
+>>>> perform
+>>>> retries indefinitely, with sleeps, to give the system an opportunity
+>>>> to
+>>>> unpin any pinned pages.
+>>>> 
+>>>> Signed-off-by: Chris Goldsworthy <cgoldswo@codeaurora.org>
+>>>> Co-developed-by: Vinayak Menon <vinmenon@codeaurora.org>
+>>>> Signed-off-by: Vinayak Menon <vinmenon@codeaurora.org>
+>>>> ---
+>>>>  mm/cma.c | 25 +++++++++++++++++++++++--
+>>>>  1 file changed, 23 insertions(+), 2 deletions(-)
+>>>> 
+>>>> diff --git a/mm/cma.c b/mm/cma.c
+>>>> index 7f415d7..90bb505 100644
+>>>> --- a/mm/cma.c
+>>>> +++ b/mm/cma.c
+>>>> @@ -442,8 +443,28 @@ struct page *cma_alloc(struct cma *cma, size_t
+>>>> count, unsigned int align,
+>>>>  				bitmap_maxno, start, bitmap_count, mask,
+>>>>  				offset);
+>>>>  		if (bitmap_no >= bitmap_maxno) {
+>>>> -			mutex_unlock(&cma->lock);
+>>>> -			break;
+>>>> +			if (ret == -EBUSY) {
+>>>> +				mutex_unlock(&cma->lock);
+>>>> +
+>>>> +				/*
+>>>> +				 * Page may be momentarily pinned by some other
+>>>> +				 * process which has been scheduled out, e.g.
+>>>> +				 * in exit path, during unmap call, or process
+>>>> +				 * fork and so cannot be freed there. Sleep
+>>>> +				 * for 100ms and retry the allocation.
+>>>> +				 */
+>>>> +				start = 0;
+>>>> +				ret = -ENOMEM;
+>>>> +				msleep(100);
+>>>> +				continue;
+>>>> +			} else {
+>>>> +				/*
+>>>> +				 * ret == -ENOMEM - all bits in cma->bitmap are
+>>>> +				 * set, so we break accordingly.
+>>>> +				 */
+>>>> +				mutex_unlock(&cma->lock);
+>>>> +				break;
+>>>> +			}
+>>>>  		}
+>>>>  		bitmap_set(cma->bitmap, bitmap_no, bitmap_count);
+>>>>  		/*
+>>>> 
+>>> 
+>>> What about long-term pinnings? IIRC, that can happen easily e.g., 
+>>> with
+>>> vfio (and I remember there is a way via vmsplice).
+>>> 
+>>> Not convinced trying forever is a sane approach in the general case 
+>>> ...
+>> 
+>> V1:
+>> [1] https://lkml.org/lkml/2020/8/5/1097
+>> [2] https://lkml.org/lkml/2020/8/6/1040
+>> [3] https://lkml.org/lkml/2020/8/11/893
+>> [4] https://lkml.org/lkml/2020/8/21/1490
+>> [5] https://lkml.org/lkml/2020/9/11/1072
+>> 
+>> We're fine with doing indefinite retries, on the grounds that if there
+>> is some long-term pinning that occurs when alloc_contig_range returns
+>> -EBUSY, that it should be debugged and fixed.  Would it be possible to
+>> make this infinite-retrying something that could be enabled or 
+>> disabled
+>> by a defconfig option?
 > 
-> cnts->offsets is array of pointers that we will set later.
-> The "sizeof(*cnts->offsets)" will return the size of size_t, while we
-> need to get "size_t *".
+> Two thoughts:
+> 
+> This means I strongly prefer something like [3] if feasible.
 
-Then why isn't a pointer to size **?
+I can give [3] some further thought then.  Also, I realized [3] will not 
+completely solve the problem, it just reduces the window in which 
+_refcount > _mapcount (as mentioned in earlier threads, we encountered 
+the pinning when a task in copy_one_pte() or in the exit_mmap() path 
+gets context switched out).  If we were to try a sleeping-lock based 
+solution, do you think it would be permissible to add another lock to 
+struct page?
 
-Something is rotten here
+> 2. The issue that I am having is that long-term pinnings are
+> (unfortunately) a real thing. It's not something to debug and fix as 
+> you
+> suggest. Like, run a VM with VFIO (e.g., PCI passthrough). While that 
+> VM
+> is running, all VM memory will be pinned. If memory falls onto a CMA
+> region your cma_alloc() will be stuck in an (endless, meaning until the
+> VM ended) loop. I am not sure if all cma users are fine with that -
+> especially, think about CMA being used for gigantic pages now.
+> 
+> Assume you want to start a new VM while the other one is running and 
+> use
+> some (new) gigantic pages for it. Suddenly you're trapped in an endless
+> loop in the kernel. That's nasty.
 
-Jason
+
+Thanks for providing this example.
+
+> 
+> If we want to stick to retrying forever, can't we use flags like
+> __GFP_NOFAIL to explicitly enable this new behavior for selected
+> cma_alloc() users that really can't fail/retry manually again?
+
+This would work, we would just have to undo the work done by this patch 
+/ re-introduce the GFP parameter for cma_alloc(): 
+http://lkml.kernel.org/r/20180709122019eucas1p2340da484acfcc932537e6014f4fd2c29~-sqTPJKij2939229392eucas1p2j@eucas1p2.samsung.com 
+, and add the support __GFP_NOFAIL (and ignore any flag that is not one 
+of __GFP_NOFAIL or __GFP_NOWARN).
+
+-- 
+The Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
