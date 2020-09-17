@@ -2,159 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AA4426D8C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 12:21:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 599CC26D8EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 12:25:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726601AbgIQKVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 06:21:20 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:43873 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726684AbgIQKUZ (ORCPT
+        id S1726670AbgIQKZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 06:25:03 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:39382 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726588AbgIQKTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 06:20:25 -0400
-X-Greylist: delayed 350 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 06:20:25 EDT
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200917101430euoutp01b7e99bf1e38563b496de71402420c46b~1iqHrcN842859928599euoutp01H
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:14:30 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200917101430euoutp01b7e99bf1e38563b496de71402420c46b~1iqHrcN842859928599euoutp01H
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1600337670;
-        bh=8z0Q/zllco9taX8DhGAyt2E9g1QJtkv+J7GHxLWbFa4=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=gjeggAwdEFrG3xjxo0/ItWd+aDLmg151TLik934UCQynZMz0rEWcmIslJxegXqfM0
-         KX+0Qu3i7kx+N+ulBjlix5ntX9lCqjWPcm7kTwTOXQaU9LF8WK5rUKR/gwyt/hqccT
-         MN1xge6VD14a4jTDNaWb3CFy8E4hre1kp27W1oBM=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200917101430eucas1p115b36c9a44d1aaf4e42c1d47b53844ce~1iqHdDa-i0221902219eucas1p1Z;
-        Thu, 17 Sep 2020 10:14:30 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id DD.D4.06456.607336F5; Thu, 17
-        Sep 2020 11:14:30 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200917101429eucas1p20d6a56a9856cd0e1296496f650ae33cf~1iqHEsMVW0645206452eucas1p2p;
-        Thu, 17 Sep 2020 10:14:29 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200917101429eusmtrp1db6072aed6347d0942fe07718290909f~1iqHEBF3a0383903839eusmtrp1P;
-        Thu, 17 Sep 2020 10:14:29 +0000 (GMT)
-X-AuditID: cbfec7f2-809ff70000001938-76-5f6337060210
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 6F.BE.06017.507336F5; Thu, 17
-        Sep 2020 11:14:29 +0100 (BST)
-Received: from [106.210.123.115] (unknown [106.210.123.115]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200917101429eusmtip1c5764a956b50d084bfef5e98d28f2bbd~1iqGgMZfB1685116851eusmtip1A;
-        Thu, 17 Sep 2020 10:14:29 +0000 (GMT)
-Subject: Re: [PATCH v2 2/2] clk: samsung: exynos5420: Avoid __clk_lookup()
- calls when enabling clocks
-To:     linux-clk@vger.kernel.org
-Cc:     tomasz.figa@gmail.com, cw00.choi@samsung.com, sboyd@kernel.org,
-        mturquette@baylibre.com, linux-samsung-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, b.zolnierkie@samsung.com,
-        m.szyprowski@samsung.com
-From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
-Message-ID: <534c401e-611e-4cb4-644d-8ed9d00ce36d@samsung.com>
-Date:   Thu, 17 Sep 2020 12:14:28 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.12.0
+        Thu, 17 Sep 2020 06:19:06 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08HADek6162111;
+        Thu, 17 Sep 2020 10:18:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
+ bh=3kOIuaOxFmA1usT1/RfXqAK09LFS7TujyVumCl5N4AA=;
+ b=QYoG7s2ruCZliRR9mzKOC+bhevipHAZ/AqCoMjOdzh/3Fvv5Ky94wyDgv3SNkYvfvtEB
+ ueuKRR3j9OtXF1gtm2cc0FVdpEzGEL06YqyoSRWd/p3OO/1zaWQccybGAeDFyd14tJcV
+ nKP6ppq+9OSgNwMFnCMXHSg7Mfu+3iJbYlT1A7LujuIgXzVM60EW1dqXNEmgFUgit/ms
+ fUFVZv42ZBzi3QVxODpNicNmtDZu60FVLq4sSgoMY/V2pulBpEz+NksdFgbBMHLA5CiN
+ GDqeqWVAE0nF+7L8vEc3R4bbIEDkyI+ACjze/Y1wi9cAJZeT5xooza1N1NatoQh8Pyha yQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 33gnrr8baj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 17 Sep 2020 10:18:03 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08HAG147131702;
+        Thu, 17 Sep 2020 10:16:03 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 33hm34gwyw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 17 Sep 2020 10:16:03 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08HAFlmY017062;
+        Thu, 17 Sep 2020 10:15:47 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 17 Sep 2020 10:15:47 +0000
+Date:   Thu, 17 Sep 2020 13:15:38 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Dan Scally <djrscally@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org,
+        robh@kernel.org, jorhand@linux.microsoft.com,
+        linux-media@vger.kernel.org, kieran.bingham@ideasonboard.com,
+        linux-kernel@vger.kernel.org, kitakar@gmail.com,
+        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
+        mchehab@kernel.org, davem@davemloft.net, tian.shu.qiu@intel.com,
+        yong.zhi@intel.com
+Subject: Re: [RFC PATCH] Add bridge driver to connect sensors to CIO2 device
+ via software nodes on ACPI platforms
+Message-ID: <20200917101538.GO4282@kadam>
+References: <20200916213618.8003-1-djrscally@gmail.com>
+ <20200917075356.GA3333802@kroah.com>
+ <d97fb93f-5258-b654-3063-863e81ae7298@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200811151251.31613-2-s.nawrocki@samsung.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Sa0gUURjt7szszkpr11XxQ3vQplGZmig4lthmBZtI+EcII3XVQcV1lR21
-        7JcSSj6zhLTFR4WRLZkPNi0jhSXXx6amlZpl4qMyS81HhFaa4yj575zznXPu98GlCXkt5UjH
-        aZNZnVatUYityAbzUreb2Ccq/EjtnA1TV1JDMQOLXyhmLu8jxbxuKhUzJT3NIqb6xbCE6e08
-        zaz015GMoekPUkpVs4OZEtVT/bBEVW/IFqsKjAakWqjfHUyFWvlFs5q4VFbn4R9hFfv5wbgo
-        aRJfMhqbReko0zoHSWnA3jCT3yLKQVa0HFcheJUxTAhkEUHlWyOZg+g1soBgfO9mYGWmc8Nz
-        H8Fse6VEIHMIbloWKT5gi2PAWBzHB+zwLhgyL4l5D4H7EZiuG8T8QIw9Ib+1APF+GfaHrF/7
-        eZnELmAun0c8tsdhYO4cI3kswzbQcWtiHUuxH7Rmv1v3ENgBhiYqRALeA43TpYSwqFkCPVOB
-        fD3gU5D/0EOQbWGqzSgR8E6wFOWR/GqAryDIe/ZeIpBCBCNtt5HgOgYfupfFfBGBD0JN00bR
-        CegrmqaEfmsYnLYRVrCGGw3FhCDL4GqWXHA7w29DsUjAjpA7sUoWIoV+y2H6Lcfotxyj///u
-        bUQakAObwiXEsJynlr3ozqkTuBRtjHtUYkI9WvtHlpW2+SfoZ1+kCWEaKbbLau0jw+WUOpVL
-        SzAhoAmFnSygyxIml0Wr0y6zusRwXYqG5UzIiSYVDjKvu18vyHGMOpmNZ9kkVrc5FdFSx3Sk
-        7GBPtvgXmw6fbXzJXvu06tb7PeKMzai2J3lpuLJlAIVoQs8f1YxW5XqlNlVRymDnN3GotDoj
-        qGzsh7f+QNJcisk/XRof8vxxoMIy1VW+PF4tD+IyXc45b2u7027cYe9TVl/1TWlQ/3XSuyjv
-        7Tte4esx6Vvi6mpfmE8vBzwaUZBcrNrzEKHj1P8AetigBEMDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrKIsWRmVeSWpSXmKPExsVy+t/xu7qs5snxBjPWWFlsnLGe1eL6l+es
-        Fh977rFaXN41h81ixvl9TBZrj9xlt7h4ytXi37WNLBardv1hdOD0eH+jld1j56y77B6bVnWy
-        efRtWcXo8XmTXABrlJ5NUX5pSapCRn5xia1StKGFkZ6hpYWekYmlnqGxeayVkamSvp1NSmpO
-        Zllqkb5dgl7Gs5WPmQpeCFRs2bKPqYGxla+LkZNDQsBE4t+7U8xdjFwcQgJLGSU2n97M1sXI
-        AZSQkpjfogRRIyzx51oXG0TNe0aJ1zcvsILUCAukS2yZnglSIyIgK3Hr2E+wGmaBa4wSy7dt
-        g2o4yChxd8FfVpAqNgFDid6jfYwgzbwCdhJt39VAwiwCqhLH5n1iBLFFBeIkzvS8YAOxeQUE
-        JU7OfMICYnMK2Egc7bwJVsMsoC7xZ94lZghbXOLWk/lMELa8xPa3c5gnMArNQtI+C0nLLCQt
-        s5C0LGBkWcUoklpanJueW2ykV5yYW1yal66XnJ+7iREYhduO/dyyg7HrXfAhRgEORiUe3g2i
-        SfFCrIllxZW5hxglOJiVRHidzp6OE+JNSaysSi3Kjy8qzUktPsRoCvTcRGYp0eR8YILIK4k3
-        NDU0t7A0NDc2NzazUBLn7RA4GCMkkJ5YkpqdmlqQWgTTx8TBKdXAuMckb7FXX1VU7IaHk499
-        93adueBOT9jXd1dXTLM868Kxhsv384fQUwtm1LXmTbY9IfrO0UZGSiAjZkFru6nnqhR7d1PZ
-        subAk6lvLnn0aTalL2i/229fzOn/JYmRef++b98Srj3ldT/+ST27zVV58R275vSfIhvexL3c
-        fI37htKtoqCIh8fjlViKMxINtZiLihMB+feusNgCAAA=
-X-CMS-MailID: 20200917101429eucas1p20d6a56a9856cd0e1296496f650ae33cf
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200811151304eucas1p2c113097f89229b51bb55329c38990830
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200811151304eucas1p2c113097f89229b51bb55329c38990830
-References: <20200811151251.31613-1-s.nawrocki@samsung.com>
-        <CGME20200811151304eucas1p2c113097f89229b51bb55329c38990830@eucas1p2.samsung.com>
-        <20200811151251.31613-2-s.nawrocki@samsung.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d97fb93f-5258-b654-3063-863e81ae7298@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9746 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxlogscore=999
+ malwarescore=0 mlxscore=0 phishscore=0 adultscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009170077
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9746 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0
+ lowpriorityscore=0 malwarescore=0 mlxscore=0 bulkscore=0 suspectscore=0
+ clxscore=1015 mlxlogscore=999 adultscore=0 priorityscore=1501
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009170077
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.08.2020 17:12, Sylwester Nawrocki wrote:
-> This patch adds a clk ID to the mout_sw_aclk_g3d clk definition so related
-> clk pointer gets cached in the driver's private data and can be used
-> later instead of a __clk_lookup() call.
-> 
-> With that we have all clocks used in the clk_prepare_enable() calls in the
-> clk provider init callback cached in clk_data.hws[] and we can reference
-> the clk pointers directly rather than using __clk_lookup() with global names.
-> 
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> ---
-> Changes for v2:
->  - added missing part of the patch lost during rebase of the previous version
+On Thu, Sep 17, 2020 at 10:47:50AM +0100, Dan Scally wrote:
+> Hi Greg - thanks for the comments, appreciate it (sorry there's so many,
+> I'm new to both C and kernel work)
 
-Actually that conflict resolution was incorrect and I squashed 
-below patch as a correction.
+It's pretty impressive work if you're new to C...
 
------------------8<--------------------
-From 1594bdb8fd1ab85e994d638256d214adff4e9d40 Mon Sep 17 00:00:00 2001
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Thu, 17 Sep 2020 11:42:14 +0200
-Subject: [PATCH] clk: samsung: exynos5420: Fix assignment of hws
+> >
+> >> +			return;
+> > No error value?
+> The prototype for sync_state callbacks is to return void, so my
+> understanding is it can't return an error value.  I guess a better thing
+> to do might be call another function performing cleanup and unloading
+> the driver before the return or something along those lines though.
 
-Fix incorrect rebase conflict resolution.
+Yeah.  I suspect you should be using a different callback instead of
+->sync_state() but I don't know what... :/
 
-Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
----
- drivers/clk/samsung/clk-exynos5420.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+regards,
+dan carpenter
 
-diff --git a/drivers/clk/samsung/clk-exynos5420.c b/drivers/clk/samsung/clk-exynos5420.c
-index ba4e0a4..3ccd4ea 100644
---- a/drivers/clk/samsung/clk-exynos5420.c
-+++ b/drivers/clk/samsung/clk-exynos5420.c
-@@ -1574,6 +1574,7 @@ static void __init exynos5x_clk_init(struct device_node *np,
- 	exynos5x_soc = soc;
- 
- 	ctx = samsung_clk_init(np, reg_base, CLK_NR_CLKS);
-+	hws = ctx->clk_data.hws;
- 
- 	samsung_clk_of_register_fixed_ext(ctx, exynos5x_fixed_rate_ext_clks,
- 			ARRAY_SIZE(exynos5x_fixed_rate_ext_clks),
-@@ -1651,7 +1652,6 @@ static void __init exynos5x_clk_init(struct device_node *np,
- 				     exynos5x_subcmus);
- 	}
- 
--	hws = ctx->clk_data.hws;
- 	/*
- 	 * Keep top part of G3D clock path enabled permanently to ensure
- 	 * that the internal busses get their clock regardless of the
--- 
-2.7.4
------------------8<--------------------
