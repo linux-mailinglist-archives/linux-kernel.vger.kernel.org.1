@@ -2,194 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D86F26DA1C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2916A26DA1E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726748AbgIQL0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 07:26:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58454 "EHLO
+        id S1726241AbgIQL0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 07:26:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726719AbgIQLZm (ORCPT
+        with ESMTP id S1726185AbgIQLZs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 07:25:42 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A08A2C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 04:25:41 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id w186so1806437qkd.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 04:25:41 -0700 (PDT)
+        Thu, 17 Sep 2020 07:25:48 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F564C061756;
+        Thu, 17 Sep 2020 04:25:45 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id m6so1678816wrn.0;
+        Thu, 17 Sep 2020 04:25:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TmuOAuPqFkLEUVE/VOD7wN6NrUglI5pWEI0/RzoOeAM=;
-        b=amcXrLuQydF5s2mbCGVXNJVE5jL/3upTVVlK/vaqWWqAAWxHo4fWaelHnE4tELsn0B
-         iduI7ukYFh+mfEbYMMDH4FWyOT3yjlOjenKlY9QMCqvvM5nToAops7w513DcVJuI89re
-         VUd+0tjKCbJln+UdJLB96z1IHgmBu8p/+autHL/H/j94cb/i1lCNIw7BcQIB9K2rPTeb
-         GH1fFt7IJuJbztqAk8wj1UmC8gqcGb9QosOSc8M/ezYkBP80R3kJ1JfrZkX8CFYAJbWa
-         xwpz+Lqx2918BxcobFmZQdrR1MZxzfF44xk0Sb3ozAl+J9jze3ptUMaQCYUfoBcJbdbG
-         3mBw==
+         :content-disposition:in-reply-to:user-agent;
+        bh=n7mBa3+CaabyaqB7OhdCT9CLExpPusdRJluP0asp0D0=;
+        b=Ogm/0uscGeh7KAqkm/ldWNn0FW/9aagq7DisuImZNRkAK9HzRblbPJlWYGnmISFJH2
+         7HO+HlI3U6+xrL5eA2p8OlGNsh16X93j0kXa29nDk3itm7lQK2hVxKFTYBm+85aWXyE/
+         ZPxooKr1DdVC8+d+gdnZWTkGsvBuqPFJ5BI06Vv4/JBCUfGmfmA9+dywjd9axOeWm0Yt
+         JI83xwNTdbZTGKHIipqYsaOdGzWunRHPZintkX9omNFWAiLk9LJ2i6y4+vLVar7ViGhC
+         Gcnxuin6xACClSWHsSuzGbl+kHARpcCQujCLXOXdvGPkOJVq9iID6xnaM4nQxWZnLUZC
+         gTXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TmuOAuPqFkLEUVE/VOD7wN6NrUglI5pWEI0/RzoOeAM=;
-        b=E3v5QQmWcq+Zp61/Vf8DYUfff32B81mCPzWoK6w8M0l3QsWEdc9adQP2rQdtkMaC44
-         9juIj95dnfQVcgqs5H2lIkfI1ZDxpExY/AeH01h1hXcntis6EMzFA1a31UuEDbI4uAS9
-         1EA4z5ZEWbXTpqGEBJEqcF4w1aEtgk1t8dFXECboVrfhi9EhligTDEaHM8VgjN676umM
-         8A/+WwfYwkySmY/xmMJ/7XPC8WI9KSdSo8U5jNMoTGJXJbVPO0U/RawMGzA3Ee+e3Sdn
-         b8dL/Yn/x4O+BOqSuKDpu+IU1c/emWYgZB+qK0ot+OGNmcF4YcMG+U0vCdVzoWgEq/QF
-         JbPg==
-X-Gm-Message-State: AOAM532A/2xPhVueUoKriswg2SWJPFivAonc2R/TbJvH8UzcN5N+c0IL
-        ozwM6UfMcv7IUwKpv4ZdHJuw8g==
-X-Google-Smtp-Source: ABdhPJyw+KpoZK0nQOrMdZBZkFTnHb1J6OElAkAlLCNP/cbsBRptilj/xyi8WRz+n/QZKtCz+oUbFQ==
-X-Received: by 2002:a05:620a:20db:: with SMTP id f27mr28964306qka.11.1600341940464;
-        Thu, 17 Sep 2020 04:25:40 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id n1sm1367610qte.91.2020.09.17.04.25.39
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=n7mBa3+CaabyaqB7OhdCT9CLExpPusdRJluP0asp0D0=;
+        b=n+B/4eLW+HQOVzFhV2cR2xYeVz9VgznKw31jr8zDcbCVyIs9xy2kTfj5UZXZR67/Mb
+         AhgJoQ3WnnbXJUnpVKQ4pwYn9glX+0UA0Mb31vyuaWRnaI9XHqIrfZE45CoNt+hY38th
+         UKVZjl/MyZrrqATAXimJhEeKhyJjhYAEadonorvjwLE9mO0N8veP+MlwyMfno6I6TBlT
+         V1oBNsJ9bpMQ0u+oMNB9HmB3wMz1Qq6WaRwYVnbkB6YQ0CVJjWskZuot1+6Wh37IIHiu
+         Ae8GKqdB4WkDVo8otGAUO7WxVQqlCUXT9I5J0AGEC2wHI6sC3YfKixyZX2CzpSiTvwoA
+         /z9Q==
+X-Gm-Message-State: AOAM533eM8nuTSH74C4Yh9n9VjHJcfDKhjmt1Xk9od1or1j6mq8EAZkW
+        3MAeTJU6keEZ4/tkAUhiNYU=
+X-Google-Smtp-Source: ABdhPJxEQ66hE6LXyYUreo4HvpzmU/v+VrDmSoavPcLF8vPs0JdHc6p/NdXzSaOvChNf2cuFhoXS/g==
+X-Received: by 2002:a5d:6406:: with SMTP id z6mr30563305wru.133.1600341944228;
+        Thu, 17 Sep 2020 04:25:44 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id x16sm37547473wrq.62.2020.09.17.04.25.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 04:25:39 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kIs2k-000Q09-QL; Thu, 17 Sep 2020 08:25:38 -0300
-Date:   Thu, 17 Sep 2020 08:25:38 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Maya B . Gokhale" <gokhale2@llnl.gov>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Marty Mcfadden <mcfadden8@llnl.gov>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
-Message-ID: <20200917112538.GD8409@ziepe.ca>
-References: <20200915145040.GA2949@xz-x1>
- <20200915160553.GJ1221970@ziepe.ca>
- <20200915182933.GM1221970@ziepe.ca>
- <20200915191346.GD2949@xz-x1>
- <20200915193838.GN1221970@ziepe.ca>
- <20200915213330.GE2949@xz-x1>
- <20200915232238.GO1221970@ziepe.ca>
- <e6c352f8-7ee9-0702-10a4-122d2c4422fc@nvidia.com>
- <20200916174804.GC8409@ziepe.ca>
- <20200916184619.GB40154@xz-x1>
+        Thu, 17 Sep 2020 04:25:43 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 13:25:41 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 06/34] i2c: tegra: Remove
+ i2c_dev.clk_divisor_non_hs_mode member
+Message-ID: <20200917112541.GR3515672@ulmo>
+References: <20200908224006.25636-1-digetx@gmail.com>
+ <20200908224006.25636-7-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="gMqNd2jlyJQcupG/"
 Content-Disposition: inline
-In-Reply-To: <20200916184619.GB40154@xz-x1>
+In-Reply-To: <20200908224006.25636-7-digetx@gmail.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 02:46:19PM -0400, Peter Xu wrote:
 
-> My understanding is this may only work for the case when the fork()ed child
-> quitted before we reach here (so we still have mapcount==1 for the
-> page).  
+--gMqNd2jlyJQcupG/
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yes
+On Wed, Sep 09, 2020 at 01:39:38AM +0300, Dmitry Osipenko wrote:
+> The "non_hs_mode" divisor value is fixed, thus there is no need to have
+> the variable i2c_dev.clk_divisor_non_hs_mode struct member. Let's remove
+> it and move the mode selection into tegra_i2c_init() where it can be
+> united with the timing selection.
+>=20
+> Reviewed-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/i2c/busses/i2c-tegra.c | 46 ++++++++++++++++------------------
+>  1 file changed, 21 insertions(+), 25 deletions(-)
+>=20
+> diff --git a/drivers/i2c/busses/i2c-tegra.c b/drivers/i2c/busses/i2c-tegr=
+a.c
+> index 720a75439e91..85ed0e02d48c 100644
+> --- a/drivers/i2c/busses/i2c-tegra.c
+> +++ b/drivers/i2c/busses/i2c-tegra.c
+> @@ -250,7 +250,6 @@ struct tegra_i2c_hw_feature {
+>   * @msg_buf_remaining: size of unsent data in the message buffer
+>   * @msg_read: identifies read transfers
+>   * @bus_clk_rate: current I2C bus clock rate
+> - * @clk_divisor_non_hs_mode: clock divider for non-high-speed modes
+>   * @is_multimaster_mode: track if I2C controller is in multi-master mode
+>   * @tx_dma_chan: DMA transmit channel
+>   * @rx_dma_chan: DMA receive channel
+> @@ -281,7 +280,6 @@ struct tegra_i2c_dev {
+>  	size_t msg_buf_remaining;
+>  	int msg_read;
+>  	u32 bus_clk_rate;
+> -	u16 clk_divisor_non_hs_mode;
+>  	bool is_multimaster_mode;
+>  	struct dma_chan *tx_dma_chan;
+>  	struct dma_chan *rx_dma_chan;
+> @@ -783,6 +781,7 @@ static int tegra_i2c_init(struct tegra_i2c_dev *i2c_d=
+ev)
+>  	u32 val;
+>  	int err;
+>  	u32 clk_divisor, clk_multiplier;
+> +	u32 non_hs_mode;
+>  	u32 tsu_thd;
+>  	u8 tlow, thigh;
+> =20
+> @@ -805,24 +804,33 @@ static int tegra_i2c_init(struct tegra_i2c_dev *i2c=
+_dev)
+>  	if (i2c_dev->is_vi)
+>  		tegra_i2c_vi_init(i2c_dev);
+> =20
+> -	/* Make sure clock divisor programmed correctly */
+> -	clk_divisor =3D FIELD_PREP(I2C_CLK_DIVISOR_HSMODE,
+> -				 i2c_dev->hw->clk_divisor_hs_mode) |
+> -		      FIELD_PREP(I2C_CLK_DIVISOR_STD_FAST_MODE,
+> -				 i2c_dev->clk_divisor_non_hs_mode);
+> -	i2c_writel(i2c_dev, clk_divisor, I2C_CLK_DIVISOR);
+> -
+> -	if (i2c_dev->bus_clk_rate > I2C_MAX_STANDARD_MODE_FREQ &&
+> -	    i2c_dev->bus_clk_rate <=3D I2C_MAX_FAST_MODE_PLUS_FREQ) {
+> +	switch (i2c_dev->bus_clk_rate) {
+> +	case I2C_MAX_STANDARD_MODE_FREQ + 1 ... I2C_MAX_FAST_MODE_PLUS_FREQ:
 
-> What if not?  Then mapcount will be greater than 1, and cow will
-> still trigger.  Is that what we want?
+Is there are particular reason for switching the simple conditional to a
+switch here? The old variant looks much easier to understand to me.
 
-That doesn't work today anyhow, so it is fine continuing to be broken.
+Thierry
 
-> Another problem is that, aiui, one of the major change previous patch proposed
-> is to avoid using lock_page() so that we never block in this path.
+--gMqNd2jlyJQcupG/
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I saw you mention this before, but it looks like the change was to
-lift some of the atomc_reads out of the lock and avoid the lock if
-they indicate failure, checking also for page_maybe_dma_pinned()
-outside the lock just means the rare case of FOLL_PIN we will take the
-lock again.
+-----BEGIN PGP SIGNATURE-----
 
-> Maybe even more complicated, because "correctness" should be even harder
-> than "best effort reuse" since it can cause data corruption if we didn't do it
-> right...
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9jR7UACgkQ3SOs138+
+s6EJmw//f5VTJ9VKqV7qgDBw5KqPdBxP4vgDU7q1b0NNHgCiXE3+4v3pwldNLP2i
+g/thiKML1GPBWcZImlVHvlWOzXt6KScIH8NuXpx4hXZW5vJPbCVjuk9LSDZUfJDg
+ue9apmnUvTsnVwdn/D8KR8RpcPk3psHysIaUWaJCN306bhIIMeo9UutHsCOhukST
+bgXbDnGmkAuEYf56wh2MHIe1NdqPXXE3TJxjYVbGNX0ZEhEE8UbeRNpL0oSIAmqG
+8jtkjXxKxilmdG23woleqf/3FpSt78uREv0N8Zt3nADlHcFa7OhqZ56muFDoM/y0
+hS2ho8hFa5AAcAEiANbxmMec6qz5n3MMyK/f9BYLZsOKryuEmKKzFnCkHbM3MERX
+Zu2328AjtA7hpYxHA2PYchunbV3FCWOrCn5CsgEZhUnxBjYjnGi0yNST1VrIsES7
+wqRQ1LIVT7DR63eRaaHfpqhLR59/p3dkF0Dk93k+BaYKLqUZRD50yCrTgKg1Hwrm
+3fsJASIGJStLmZXVYzL+B3+I1hEmfv5QkiKcYJ4KKlFZ7FVEccRbtITdKv/jMv1N
+k9mHp75h7g8Q7m/WwrPojbSkzdhYZxmHjMPcitB9qCUUdo1n+OuFZJDsl0Y2Q5oS
+x2+GxSlY1lr3MvDpdiolWdJ5eyvwgsjvG3XILl7G0jhXFrxwsUY=
+=nRmr
+-----END PGP SIGNATURE-----
 
-The only correct way is for the application to avoid write protect on
-FOLL_PIN pages. The purpose here is to allow applications that hadn't
-hit "bad luck" and failed to keep working.
-
-Another thought is to insert a warning print here as well that the
-program is working improperly? At least it would give a transition
-period to evaluate the extent of the problem.
-
-We are thinking it is going to be a notable regression.
-
-I botched the last version of the patch, here is something a bit
-better.
-
-Does it seem like it could be OK? I know very little about this part
-of the kernel
-
-Thanks,
-Jason
-
-diff --git a/mm/memory.c b/mm/memory.c
-index 469af373ae76e1..332de777854f8b 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -2889,6 +2889,24 @@ static vm_fault_t wp_page_shared(struct vm_fault *vmf)
- 	return ret;
- }
- 
-+static bool cow_needed(struct vm_fault *vmf)
-+{
-+	int total_map_swapcount;
-+
-+	if (!reuse_swap_page(vmf->page, &total_map_swapcount))
-+		return true;
-+
-+	if (total_map_swapcount == 1) {
-+		/*
-+		 * The page is all ours. Move it to our anon_vma so the rmap
-+		 * code will not search our parent or siblings.  Protected
-+		 * against the rmap code by the page lock.
-+		 */
-+		page_move_anon_rmap(vmf->page, vmf->vma);
-+	}
-+	return false;
-+}
-+
- /*
-  * This routine handles present pages, when users try to write
-  * to a shared page. It is done by copying the page to a new address
-@@ -2942,13 +2960,27 @@ static vm_fault_t do_wp_page(struct vm_fault *vmf)
- 		struct page *page = vmf->page;
- 
- 		/* PageKsm() doesn't necessarily raise the page refcount */
--		if (PageKsm(page) || page_count(page) != 1)
-+		if (PageKsm(page))
- 			goto copy;
-+		if (page_count(page) != 1) {
-+			/*
-+			 * If the page is DMA pinned we can't rely on the
-+			 * above to know if there are other CPU references as
-+			 * page_count() will be elevated by the
-+			 * pin. Needlessly copying the page will cause the DMA
-+			 * pin to break, try harder to avoid that.
-+			 */
-+			if (!page_maybe_dma_pinned(page))
-+				goto copy;
-+		}
-+
- 		if (!trylock_page(page))
- 			goto copy;
- 		if (PageKsm(page) || page_mapcount(page) != 1 || page_count(page) != 1) {
--			unlock_page(page);
--			goto copy;
-+			if (cow_needed(vmf)) {
-+				unlock_page(page);
-+				goto copy;
-+			}
- 		}
- 		/*
- 		 * Ok, we've got the only map reference, and the only
+--gMqNd2jlyJQcupG/--
