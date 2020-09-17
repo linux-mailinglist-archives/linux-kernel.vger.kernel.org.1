@@ -2,164 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E08AE26D348
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 07:53:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 018FE26D334
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 07:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726187AbgIQFxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 01:53:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42622 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726112AbgIQFxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 01:53:45 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=cantorsusede;
-        t=1600321040;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=i/IF3vBhE0MNfDnpI+LKOtHPaAvDj1Zmh8eIZNNXgtE=;
-        b=qPN53akcCr37rpzIs5hg1+JmyVKf1Ol1vCTG2BvmW1dz7f7njSTwLFw4YKQ9gAt8ikBTkX
-        RXUs6tMfkMRD8RSgqKiLzw6Q2Y8oTnO+sgSYzt7g08sZWBo1Vi1nnQqXMIBiYVfV4gjinq
-        RgPILzW4OT5zdCKJhTxJP+/Rl+MvyRsDVwl7R6OV+dUH6dM/37yuX1MuKzoy9lNEEzYMKi
-        5Rh56KV0HrB7iWKSxPOkpFpZzBjLfLWdUDB1bVSvO2q8RGZU4/UxWFP+p8/R29J4qUteKX
-        8RPCr/2bIicziWa3Rjaj4PauiddI3Z7CbOG9Fz/5k7rWHUni6BghXhmCD/BJxw==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 60E33AD12;
-        Thu, 17 Sep 2020 05:37:35 +0000 (UTC)
-Subject: Re: More filesystem need this fix (xfs: use MMAPLOCK around
- filemap_map_pages())
-To:     Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>
-Cc:     Amir Goldstein <amir73il@gmail.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Theodore Tso <tytso@mit.edu>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Qiuyang Sun <sunqiuyang@huawei.com>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, nborisov@suse.de
-References: <20200623052059.1893966-1-david@fromorbit.com>
- <CAOQ4uxh0dnVXJ9g+5jb3q72RQYYqTLPW_uBqHPKn6AJZ2DNPOQ@mail.gmail.com>
- <20200916155851.GA1572@quack2.suse.cz>
- <20200917014454.GZ12131@dread.disaster.area>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <df9eb392-8b86-591a-b1be-535a13b874d9@suse.com>
-Date:   Thu, 17 Sep 2020 08:37:17 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726112AbgIQFq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 01:46:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726149AbgIQFq0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 01:46:26 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8320C06174A;
+        Wed, 16 Sep 2020 22:46:24 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id v20so1153977oiv.3;
+        Wed, 16 Sep 2020 22:46:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=03zgBdOmJo+1h1F3YVTbbY3y6xnSeDHzXEapmphTwIw=;
+        b=bbKl9UWPeRhmTphLackrhk80UEzUzcPTNe72QmMk7/fs5a/LxCxtV+mb6MSWQFVDmC
+         F22yt5hvhiNFb2j/gFnw8yxBQviOrz2mlbiqk83dwMA7AkjqITFQd1eVdq1X39tqelCL
+         VQYLiT8PHgFrLapRSXmMmT+MgfubVdogkhnR8iaU9CBQieW2dO0skkpZLwguhZi/JnBV
+         GroqbGpDUZEjnODXLPHpOPwc0N7/cjNeafIH1QgpKVpeU6uH1eY/RuZkMDyTnjr9U7fb
+         tviHseO3/70GTW4fSLc2vk/vqzCFhAHroNAVb0ANnf+lzN+TxeDA/upoZku1GEWDb8D1
+         7Ugg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=03zgBdOmJo+1h1F3YVTbbY3y6xnSeDHzXEapmphTwIw=;
+        b=R63WZ7Pzj6zQil9s3NhYYqO1MpyQ2wCRpNXtmAfUZv7Q8ehJclRc8if4sCNYjCGUTl
+         tXMclYOKG/ViwaMXgz6qDslAaLv63WPsh5P4zHYzCTT/TLUFnKn3iESbIxtdOr//S5GU
+         Ls8jdSa69Us4+27kpx/EZVHW7NaDytvbT6oKY2Gqf9RtZw0N/dGVJpBWjaGGizFr7TTQ
+         pZ4kNBjCOBdYO3qzMikJZMmSeI7Gml7dAg39opXlTxC13kIN2otPC/Qvhpf0jtCdb/IY
+         7vaAapMgH+2qow6eeHSSRoZLEpC5WOt+Y53kFUJlkYm0wm89+H7M1YJ3bu26VweqRdFX
+         ZwiQ==
+X-Gm-Message-State: AOAM533N2117Cm/diQzdCogRlWEGnMZsD5QYh32kEx86Yt3xaKQJSEJO
+        SapTjwU+UWd4VdK8gPu0SCslKxQc404eIbpUnkA=
+X-Google-Smtp-Source: ABdhPJzQezUvckVK0wvtjtSXJuH78/qLicEZ94e9jzpjFRfX1+eKqEzksVrp0ORp5rdZVfo95r94sEe5o2dL6iEln5E=
+X-Received: by 2002:a54:458f:: with SMTP id z15mr3791761oib.148.1600321584018;
+ Wed, 16 Sep 2020 22:46:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200917014454.GZ12131@dread.disaster.area>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200916073539.3552-1-rppt@kernel.org> <20200916162020.0d68c2bd6711024cfcaa8bd7@linux-foundation.org>
+In-Reply-To: <20200916162020.0d68c2bd6711024cfcaa8bd7@linux-foundation.org>
+Reply-To: mtk.manpages@gmail.com
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Date:   Thu, 17 Sep 2020 07:46:12 +0200
+Message-ID: <CAKgNAkiSRDoZWKkBLB03X_knOeoeKVTy2oLmMopZ5vK8UZSAPg@mail.gmail.com>
+Subject: Re: [PATCH v5 0/5] mm: introduce memfd_secret system call to create
+ "secret" memory areas
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>, linux-nvdimm@lists.01.org,
+        linux-riscv@lists.infradead.org,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 17 Sep 2020 at 01:20, Andrew Morton <akpm@linux-foundation.org> wrote:
+>
+> On Wed, 16 Sep 2020 10:35:34 +0300 Mike Rapoport <rppt@kernel.org> wrote:
+>
+> > This is an implementation of "secret" mappings backed by a file descriptor.
+> > I've dropped the boot time reservation patch for now as it is not strictly
+> > required for the basic usage and can be easily added later either with or
+> > without CMA.
+>
+> It seems early days for this, especially as regards reviewer buyin.
+> But I'll toss it in there to get it some additional testing.
+>
+> A test suite in tools/testging/selftests/ would be helpful, especially
+> for arch maintainers.
+>
+> I assume that user-facing manpage alterations are planned?
 
+I was just about to write a mail into this thread when I saw this :-).
 
-On 17.09.20 г. 4:44 ч., Dave Chinner wrote:
-> On Wed, Sep 16, 2020 at 05:58:51PM +0200, Jan Kara wrote:
->> On Sat 12-09-20 09:19:11, Amir Goldstein wrote:
->>> On Tue, Jun 23, 2020 at 8:21 AM Dave Chinner <david@fromorbit.com> wrote:
+So far, I don't think I saw a manual page patch. Mike, how about it?
 
-<snip>
+Thanks,
 
-> 
-> So....
-> 
-> P0					p1
-> 
-> hole punch starts
->   takes XFS_MMAPLOCK_EXCL
->   truncate_pagecache_range()
->     unmap_mapping_range(start, end)
->       <clears ptes>
-> 					<read fault>
-> 					do_fault_around()
-> 					  ->map_pages
-> 					    filemap_map_pages()
-> 					      page mapping valid,
-> 					      page is up to date
-> 					      maps PTEs
-> 					<fault done>
->     truncate_inode_pages_range()
->       truncate_cleanup_page(page)
->         invalidates page
->       delete_from_page_cache_batch(page)
->         frees page
-> 					<pte now points to a freed page>
-> 
-> That doesn't seem good to me.
-> 
-> Sure, maybe the page hasn't been freed back to the free lists
-> because of elevated refcounts. But it's been released by the
-> filesystem and not longer in the page cache so nothing good can come
-> of this situation...
-> 
-> AFAICT, this race condition exists for the truncate case as well
-> as filemap_map_pages() doesn't have a "page beyond inode size" check
-> in it. 
+Michael
 
-(It's not relevant to the discussion at hand but for the sake of
-completeness):
-
-It does have a check:
-
- max_idx = DIV_ROUND_UP(i_size_read(mapping->host), PAGE_SIZE);
- if (page->index >= max_idx)
-      goto unlock;
-
-
-<snip>
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
