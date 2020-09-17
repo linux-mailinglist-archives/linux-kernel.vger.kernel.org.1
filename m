@@ -2,120 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4114A26E043
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 18:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 778D426E07D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 18:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728244AbgIQQHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 12:07:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45410 "EHLO
+        id S1728416AbgIQQVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 12:21:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728282AbgIQQDU (ORCPT
+        with ESMTP id S1728403AbgIQQS2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 12:03:20 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86662C061352;
-        Thu, 17 Sep 2020 08:39:46 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id q4so2715320ils.4;
-        Thu, 17 Sep 2020 08:39:46 -0700 (PDT)
+        Thu, 17 Sep 2020 12:18:28 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18287C061797
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 08:54:06 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id l191so1606039pgd.5
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 08:54:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+9HU43KroNK5/x6wnhb2ZPEi6bPpfMElvU5+soOALQc=;
-        b=WILyDFJqy/kKppDyOXiv0T0ZJeoRPbsBrW+7oCxHCSzypdd0t9S2MeYT/bSdApP/pK
-         yDT3toE44n1//aXcVJqtiZALsGX6gYub0Lj2RthM0Eb8YPYutIppe3s+iJasQDNFdWxN
-         x6vc4gQ0VnYI2VMMVKYHpBdbIxHQ8TleU96wpk4sjSOPC2SaPiBy1w5ccYTRNg6mu9kQ
-         T5PtHr2DR/bv9S2bjQRnrQEYZOwsx+DOYWNC5wlf+K4A5m066MyWwa/eN58LHhXtnutz
-         Mqx3V0JDt8c7JMIIap0P8HISCbbafv2ol/KoD4rSnLph5PIdCTR7M7/pGif4EaBTDFUX
-         WwKw==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SLbdaPRsUm17Oxy4TshTtUDtovCxhCm/CCE1+IYwJv8=;
+        b=d7RlsgYHVPiVpsrOpvAWEc4RvTmn1+NdIwLr6SDhRJVU1RnMyCgMfxJ1KWUX88M71x
+         EiuWvXsBPc1t1n+DA4dM4TZB6/w+CJJ4wJ0xQXy7zQ/dWeWNHofW1gzGdH28Z8h/Vh1y
+         7fqvBfBwFXFjgEnzwLmO0AtTXxY2rKi+dbGAE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+9HU43KroNK5/x6wnhb2ZPEi6bPpfMElvU5+soOALQc=;
-        b=QfEmB2lKunzC2ZhFoQks6EAfB4caVFNOFZLnCREED+eH0S42xQjd0AxN5Offi0ZK/9
-         IJ3VcKZm/RobNEWRrklc4R8X1y+BVWFrL19XWXMRLLAtLsH9WI1Vb8Cw5w8I64r2rY+y
-         Fn9rL7fTnsPM5MUtuQ8atXHLjTyX4U5OXwntomc/uhGld0yja4qu4b1XUBi3bAP3+pdQ
-         pUP+NJoMMCgX7GJ4J830TXlH6GyFqcNjVeoZ/jVl9+7qy7kE8VGA3zIB87HL35q6K2m3
-         GJbKc7b+S+82WjOnF1/nC4xujCKCRheAbA105wd9+5OHGuj1GDWvso4e9A0jZ2ESzHY3
-         ly1Q==
-X-Gm-Message-State: AOAM531+BMpjgF+PMzyJrQ77Hl2S7M4UVVENQLgpR6FJE7fNqwDwVUjg
-        f++N2CPhhpN+md9hpLxn5i+DrpkVNQjpEq7obag=
-X-Google-Smtp-Source: ABdhPJxV3kTtMKU9Fb9Mz10pXxYSNq4oOPvCHIapWzAoUpP3YpZs9DQZTZltRrEQ3HLZWIgSINsZ2+tPMe1gQqVmhpU=
-X-Received: by 2002:a92:b74c:: with SMTP id c12mr26223986ilm.237.1600357185698;
- Thu, 17 Sep 2020 08:39:45 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SLbdaPRsUm17Oxy4TshTtUDtovCxhCm/CCE1+IYwJv8=;
+        b=KaXNru7KslUQv7VfQLPdh4rLMOBifPPf1x9gUVjTrlIHozwDrP3miyuQDjegNSv8yU
+         U1GTdwKlIRYAzEd/J1X1F6OccYqwLPp97NvKIo2i9WjBzvOLh00CEd2tQiMfhO9880fl
+         3h/X5S1x1QXBy6pfhAVOIiGjPA9DJRM/rFO3ZY9qTeOCag/zX22JC+XK6TqFPSWAC7KF
+         AXtnoccW/Qm+bVbNJnOaOEFj0iLKMlKPtCFd8W+g6aJiDvu+0S3JShNUybBdb8JVYC2L
+         cOPnFZF+cHsGAvdGde9ltMYgHHYzCQdxQx9S7Bagvs2XbAa/XQm97X6FU+pSn6BL+z7A
+         l9aA==
+X-Gm-Message-State: AOAM5308HBVHr6aa7sCE42ca4rc3YhHNKhexhiYc1wK81Iqn3//ufsiD
+        Kjbka3kTCq59uXZfutaHZCfO2A==
+X-Google-Smtp-Source: ABdhPJx3sAJiavm4slDW3NkgOwvuqia4sXV+vKNmPQVo6YaTKWma2qu3v9hvtwlfbebcMPf1/2VNiA==
+X-Received: by 2002:a65:4984:: with SMTP id r4mr22470809pgs.261.1600358044925;
+        Thu, 17 Sep 2020 08:54:04 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
+        by smtp.gmail.com with ESMTPSA id 1sm21247pfx.126.2020.09.17.08.54.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Sep 2020 08:54:04 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 08:54:03 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Peter Chen <peter.chen@nxp.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH 2/2] USB: misc: Add onboard_usb_hub driver
+Message-ID: <20200917155403.GA21107@google.com>
+References: <20200914112716.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
+ <20200915025426.GA17450@b29397-desktop>
+ <20200915050207.GF2022397@google.com>
+ <AM7PR04MB715735A8A102F3EC9041EA328B200@AM7PR04MB7157.eurprd04.prod.outlook.com>
+ <20200915230345.GF2771744@google.com>
+ <20200916081821.GA14376@b29397-desktop>
+ <20200916191607.GB3560556@google.com>
+ <20200917002646.GA23310@b29397-desktop>
+ <20200917004758.GD3560556@google.com>
+ <AM7PR04MB7157872B1019B748119B7DBA8B3E0@AM7PR04MB7157.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-References: <alpine.LSU.2.11.2008262301240.4405@eggly.anvils>
- <alpine.LSU.2.11.2009081640070.7256@eggly.anvils> <61a42a87-eec9-e300-f710-992756f70de6@linux.alibaba.com>
- <alpine.LSU.2.11.2009091524260.10087@eggly.anvils> <855ad6ee-dba4-9729-78bd-23e392905cf6@linux.alibaba.com>
- <alpine.LSU.2.11.2009111634020.22739@eggly.anvils> <5cfc6142-752d-26e6-0108-38d13009268b@linux.alibaba.com>
- <alpine.LSU.2.11.2009150112130.1550@eggly.anvils> <20200915165807.kpp7uhiw7l3loofu@ca-dmjordan1.us.oracle.com>
- <c3362c0a-3707-3a3d-9955-960d95f3ad8c@linux.alibaba.com> <20200917143519.lhdfnoc47qrmbhaz@ca-dmjordan1.us.oracle.com>
-In-Reply-To: <20200917143519.lhdfnoc47qrmbhaz@ca-dmjordan1.us.oracle.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Thu, 17 Sep 2020 08:39:34 -0700
-Message-ID: <CAKgT0Ud8sYidvxtyrN3AFLs+-DiW7cuPGrKknaRicQsC8PLRtg@mail.gmail.com>
-Subject: Re: [PATCH v18 00/32] per memcg lru_lock: reviews
-To:     Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tejun Heo <tj@kernel.org>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        kbuild test robot <lkp@intel.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Rong Chen <rong.a.chen@intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>, shy828301@gmail.com,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Minchan Kim <minchan@kernel.org>, Qian Cai <cai@lca.pw>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <AM7PR04MB7157872B1019B748119B7DBA8B3E0@AM7PR04MB7157.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 7:26 AM Daniel Jordan
-<daniel.m.jordan@oracle.com> wrote:
->
-> On Thu, Sep 17, 2020 at 10:37:45AM +0800, Alex Shi wrote:
-> > =E5=9C=A8 2020/9/16 =E4=B8=8A=E5=8D=8812:58, Daniel Jordan =E5=86=99=E9=
-=81=93:
-> > > On Tue, Sep 15, 2020 at 01:21:56AM -0700, Hugh Dickins wrote:
-> > >> On Sun, 13 Sep 2020, Alex Shi wrote:
-> > >>> Uh, I updated the testing with some new results here:
-> > >>> https://lkml.org/lkml/2020/8/26/212
-> > >> Right, I missed that, that's better, thanks.  Any other test results=
-?
-> > > Alex, you were doing some will-it-scale runs earlier.  Are you planni=
-ng to do
-> > > more of those?  Otherwise I can add them in.
-> >
-> > Hi Daniel,
-> >
-> > Does compaction perf scalable, like thpscale, I except they could get s=
-ome benefit.
->
-> Yep, I plan to stress compaction.  Reclaim as well.
->
-> I should have said which Alex I meant.  I was asking Alex Duyck since he'=
-d done
-> some will-it-scale runs.
+On Thu, Sep 17, 2020 at 01:24:30AM +0000, Peter Chen wrote:
+> > > >
+> > >
+> > > You may need both (glue & xhci), it depends on system design, and
+> > > usually, these two kinds of wakeup setting isn't conflict.
+> > 
+> > Ok, thanks. So if I understand correctly the onboard hub driver should check the
+> > wakeup state of the xHCI to determine if remote wakeup is enabled for the
+> > controller (after all it doesn't know anything about the platform device).
+> > Wakeup might not work properly if it is disabled for the platform device, but it's
+> > the responsability of the board software/config to make sure it is enabled
+> > (possibly this could be done by making the dwc3-qcom driver understand the
+> > 'wakeup-source' property, as the xhci-mtk driver does).
+> 
+> No, every level should handle its own wakeup setting. You may have to do this since the USB bus and platform bus
+> are two different buses, you should not visit device structure across the bus. And you don't need a device tree property
+> to do it. For platform driver, you could use device_may_wakeup, for onboard hub power driver, you could use
+> usb_wakeup_enabled_descendants since you need to cover descendants.
+> 
+> The purpose of these two wakeup logic is different, for USB bus, it is used to tell USB devices to enable remote wakeup
+> and do not power off its regulator; for platform bus, it is used to tell the controller to enable its wakeup setting and keep
+> the regulator for its USB controller and USB PHY (if needed).
 
-I probably won't be able to do any will-it-scale runs any time soon.
-If I recall I ran them for this latest v18 patch set and didn't see
-any regressions like I did with the previous set. However the system I
-was using is tied up for other purposes and it may be awhile before I
-can free it up to look into this again.
-
-Thanks.
-
-- Alex
+Sorry, I didn't express myself clearly. With the platform device I was
+referring to the dwc3-qcom ('glue') in this case, which could check
+it's own 'wakeup-source' attribute to enable wakeup at boot. The driver
+currently enables wakeup statically. The onboard_hub driver is agnostic
+of this device.
