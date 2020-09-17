@@ -2,89 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24AEB26DABD
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6F0B26DA67
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:37:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726853AbgIQLux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 07:50:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60000 "EHLO
+        id S1726662AbgIQLhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 07:37:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726799AbgIQLfX (ORCPT
+        with ESMTP id S1726810AbgIQLcP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 07:35:23 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79AE1C061756;
-        Thu, 17 Sep 2020 04:35:23 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id y1so1197745pgk.8;
-        Thu, 17 Sep 2020 04:35:23 -0700 (PDT)
+        Thu, 17 Sep 2020 07:32:15 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49CBCC06174A;
+        Thu, 17 Sep 2020 04:32:01 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id k18so1671092wmj.5;
+        Thu, 17 Sep 2020 04:32:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=44JkQ0xk/m6YNhH3hVjpFztigV1A13fyXiwxKi+U+Xc=;
-        b=VYEi0ommvZ/cuDCP/38rRPYUvZFPkgwB+TFwx9CUcF0Rrc6CxikinYRSo8JLeozSM4
-         nZuR/iudhktaOl9035RVAB1bWwE2aNPKQ68RqJ2moK7wErajVDa2W4KsVdgnxqATvPsH
-         qesyy7x4S9n/tF5N6LU7GbCS2rAPfNYR31ArlBn5YdLYdyd3k5GY0UvtN38CEeWqksWS
-         +2t76vzN9kETK9E65XfknlmpGtSxnX4uN06GS+Mm362bhgkQ8lrobYQdvP4612iOYdmD
-         jaBuIkEgTga2SwFSc3gNmg9/eFJxTUGf+egOJ+Qm16Pdufzuscb9EXB7pVV8KRmOL+zM
-         OSQg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=WajD7Q5IaEUeqlGzuj9f4SKj/X4IJE7Rh0zR/eL6gi8=;
+        b=XKoIQ5LwWSVKQPOxrOces5s/xdb6iMl76kL+eVU9QNRs9jbIsbBr7kvTzmRTX2ya0j
+         FibQfCrYj9OG13OWmKlDVAZWGnVo/fKsSu3AC6ZMdK7MR936TLdiOY5zaWDfNrDtc+EX
+         PvHzTe6ZdECU6Z0YR7eCGJfyEtYfJV2CBKQD02yR0NP3mUpZ/ZCThPhvHXbB7FFFiHBS
+         GIZOC2M+IX+urevXxx70diNZ5mzn3wz7OUMhwzGZN2/UOxnI11uOk3usmWciwJ3S7tM9
+         cMvHcri/k1sElWz5NV73YnLmjrUx3AsB3Jwr/qAkPCSP45WpfoXvCDYd3jb4SqlWlpku
+         1dWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=44JkQ0xk/m6YNhH3hVjpFztigV1A13fyXiwxKi+U+Xc=;
-        b=O258ZyPics6QyFWliRQmw/AUMDERhrf8VbyozAwaJT7ao0CmKTaV5iqKo0Z5mAojx/
-         irr2OI+zz/aJ/TacPycQC8TtpVF1xpmbtVr3YpXaHI9+ZBf/WTHwlAPDNKVP9xK5KebI
-         nElZ7o4kBh7oOw7kGkx3fO0JtqPmo3UIKmhwg62jL3mI7IqU+ctajFC18LTXlImXwcqH
-         Vg8Kp/7XCxsGD4GXnyIijBY0RtFA/pYTIqmz5euAu/rMRtYeUKW9zz7qsoLhI1EMmiYn
-         KLQooplhem87Btd0JFUr/lAMc4fqDYNP7WhTrFJjBmloFs1xYTPo8o8RJLyUPy1Eq0bp
-         CdkQ==
-X-Gm-Message-State: AOAM530zRGX9Rh4ITTgkmRRoQl2oVsGpNbye3tBIehWkTAAfFJO46Gjm
-        6I6WWNk/sisrrOz8CDdWLPwi9SHRD/U=
-X-Google-Smtp-Source: ABdhPJyP5LqjnXvH1LhpCFGPDM4Dnp5PmbvsiDx0qDuxmUYG+ysZXqB6qzdfLj9uIk8o7d38xlH5Ng==
-X-Received: by 2002:a05:6a00:1356:b029:13e:d13d:a084 with SMTP id k22-20020a056a001356b029013ed13da084mr26669802pfu.27.1600342522940;
-        Thu, 17 Sep 2020 04:35:22 -0700 (PDT)
-Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id a138sm21128382pfd.19.2020.09.17.04.35.22
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=WajD7Q5IaEUeqlGzuj9f4SKj/X4IJE7Rh0zR/eL6gi8=;
+        b=A4rOByXAfl2HxZ7AWHx0zNiPH2t9RVc1o3wFN+c1HEwRkwuTEkMSzIlJzshiTbw0Jp
+         P2R4/BCVzNV6cTNRALyKnu6mXxFpezqQPvB2q+MuYDp+qoi0dr7wn4XUEiWh8W+IsbrI
+         KzSm6d2IfGmjLqg3vKLWygt4XfSdlI0M2hYupVoHtO7zRwyT+uFz7eba9FaczQhzyfhI
+         iE8060nPX/Nvb+M5nkA8PAhcYNR/pdBrM6i+hsPhv6BOhIXB95gtqecDmCW2cS1ixfNi
+         OdNEvfdRFeaF5W8732Uf6kUBqq8RZ1U38yYsto8fiwNIX9OEuEYB+fbOlBEfNtGgn4/K
+         QRNg==
+X-Gm-Message-State: AOAM531IkAEIm7p8DYInhRAX580/N56crA4Dj03KFH4DTu8nMswbodIu
+        +D80q0I8ZhFpRGaSyn9LoC6fkxnQTsz8LA==
+X-Google-Smtp-Source: ABdhPJwk4+ou8IHIzcuyJxZq22L1zderwjpVKf78WTU+pyCvP/jeFyd94qbdR7A4/3sPPZ7lsi382A==
+X-Received: by 2002:a1c:f402:: with SMTP id z2mr9231898wma.87.1600342320026;
+        Thu, 17 Sep 2020 04:32:00 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id s80sm10200478wme.41.2020.09.17.04.31.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 04:35:22 -0700 (PDT)
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     krzk@kernel.org, joro@8bytes.org
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-tegra@vger.kernel.org, jonathanh@nvidia.com,
-        vdumpa@nvidia.com, thierry.reding@gmail.com
-Subject: [RESEND][PATCH 2/2] memory: tegra: Correct num_tlb_lines for tegra210
-Date:   Thu, 17 Sep 2020 04:31:55 -0700
-Message-Id: <20200917113155.13438-3-nicoleotsuka@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200917113155.13438-1-nicoleotsuka@gmail.com>
-References: <20200917113155.13438-1-nicoleotsuka@gmail.com>
+        Thu, 17 Sep 2020 04:31:58 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 13:31:57 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 10/34] i2c: tegra: Use
+ devm_platform_get_and_ioremap_resource()
+Message-ID: <20200917113157.GV3515672@ulmo>
+References: <20200908224006.25636-1-digetx@gmail.com>
+ <20200908224006.25636-11-digetx@gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="dRgc669pgRVB2OqT"
+Content-Disposition: inline
+In-Reply-To: <20200908224006.25636-11-digetx@gmail.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to Tegra210 TRM, the default value of TLB_ACTIVE_LINES
-field of register MC_SMMU_TLB_CONFIG_0 is 0x30. So num_tlb_lines
-should be 48 (0x30) rather than 32 (0x20).
 
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+--dRgc669pgRVB2OqT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Sep 09, 2020 at 01:39:42AM +0300, Dmitry Osipenko wrote:
+> Driver now uses devm_platform_get_and_ioremap_resource() which replaces
+> the typical boilerplate code and makes code cleaner.
+>=20
+> Reviewed-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/i2c/busses/i2c-tegra.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+
 Acked-by: Thierry Reding <treding@nvidia.com>
----
- drivers/memory/tegra/tegra210.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/memory/tegra/tegra210.c b/drivers/memory/tegra/tegra210.c
-index 51b537cfa5a7..4fbf8cbc6666 100644
---- a/drivers/memory/tegra/tegra210.c
-+++ b/drivers/memory/tegra/tegra210.c
-@@ -1074,7 +1074,7 @@ static const struct tegra_smmu_soc tegra210_smmu_soc = {
- 	.num_groups = ARRAY_SIZE(tegra210_groups),
- 	.supports_round_robin_arbitration = true,
- 	.supports_request_limit = true,
--	.num_tlb_lines = 32,
-+	.num_tlb_lines = 48,
- 	.num_asids = 128,
- };
- 
--- 
-2.17.1
+--dRgc669pgRVB2OqT
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9jSS0ACgkQ3SOs138+
+s6GyoA/+JS/7t4lJVZ41P+9Vnrd05ZUVparmqXNdy03HlhU8g3/GC0JJ0qW0nzJd
+AW69IMT2HGYO9qJlC4NZbfWWiY/a4A3Oiqiemixp5hgOU7nkeOADsYmNargr6K6z
+cyDsMjbABeYth+wB3PvDGvCzb4hWWHk4GgOEwvzr6Aiotf9+SFSe0b/UoL9rWqpO
+lnooT+d6c6vhDVmUhGk9PgAdXh4Ym883V858NUpTm/Pghn2V86S9rrDzUKFSenWP
+vzEUzWFA1nvcCxOghmKBvmRXFep6uOLsyGh5CmYmUo6+t2ezuUdXx7TLy9VAl+tI
+Tlzt9tKAkSlIKrLR/VS2CRV1aClpxMJ6QoGyE/pj2EkmpvuGsT5sliQiZ3HEDpjn
+7AM1yEpwBYuGzLsMpl7nYCMKjbLf9PqRYNF/ZYEGcGWXe0f+pveyXhW4riJpBeVu
+QtAEZoaEXHKUIB02Mj0PoHEzZJMrlxlrEO1U/xT38Nm/sTiaZP52DMJBZhMgyZjF
+xKn4zOPyz7U/a7u9Ph6Ch12tdjrfDCA9a+NdwFP4jJEIFaoOD58DShw6XsciJro1
+PlROhUCEzsiPgrKdSIL2CxyS3RgpTsKQF1w244brlBJZfU1eMcFeZC28V5nJJDl0
+/LK/Ole9R1neAa+VVxJr6klZa5O6z1I5switUvfWktXxEse4Y5I=
+=J1ev
+-----END PGP SIGNATURE-----
+
+--dRgc669pgRVB2OqT--
