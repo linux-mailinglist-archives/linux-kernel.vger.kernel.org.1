@@ -2,448 +2,555 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 736FE26DDF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:20:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D5CC26DE40
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727329AbgIQOUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 10:20:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39677 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727401AbgIQOM3 (ORCPT
+        id S1727525AbgIQO3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 10:29:49 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:44718 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727289AbgIQOZH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 10:12:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600351944;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ozBEdw7cEDkOyLj5uAEnohgspW4J9HbnQgrQZwg4gwk=;
-        b=KQ9xv3pDZZOFfkdjs9KXgDuuWRuUHSh0Go04gxscYEG1nEEHFa7uGKySomgOVN5yrpQ2wf
-        wfMZA2Ue3n8H8dvG0jmEiuE0EStn/AcM3Vbbb0PXvoVsbqwHVHsbJrF79M5P+Cv45mPJer
-        YTvVBqBFiBHC97apbY2ZNyRrl61x3Xo=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-158-lTTWLP7vPYK3XnKsoAKwDQ-1; Thu, 17 Sep 2020 10:11:17 -0400
-X-MC-Unique: lTTWLP7vPYK3XnKsoAKwDQ-1
-Received: by mail-qk1-f198.google.com with SMTP id m23so1576658qkh.10
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 07:11:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ozBEdw7cEDkOyLj5uAEnohgspW4J9HbnQgrQZwg4gwk=;
-        b=JSCqSShYOKIEjNO6IWNRgvDjnVZZb3JL2ogiUV2QXyaXxj33TJToFTAaSQiHWkSytz
-         eEwuYqZbSiUBWxgadJq69wbzTjvOTD521St7EMLlJiBZT1L9zcKXvIwDNY9Dtc5544fa
-         X39dcxTf/3kAi84r1QnWKzrMNaxspc9A6hToVEsySK1yNgJaSRet1G/qROrB1cAa8a3i
-         61WHwmqw7n7YIazrVNSLsv6sE1VjadQmF8XwiWL73+yRq/88AcQFUwSXZzZILCRIFWtL
-         IRh4Q2xaqLyAKUSnYVfaNugyRMjqX8lwgUewIs+l7H8c+TNmJiwz4+GbIphCfQwoGbwK
-         Ju0w==
-X-Gm-Message-State: AOAM531s//S0r2SOk6PnV/joagePJqDiIfMZLuXOCT3FbJG3NO2Gp81/
-        uLCF7FpQbC75mx8y1kBP7ogtrGbV5luwxB0EHyWzh9+TM2L1IvdLWPcljzH8nB32XgvP9410em5
-        ToCoqp3z3YeQQQ49fbk90tbcI
-X-Received: by 2002:a05:620a:221:: with SMTP id u1mr29358316qkm.373.1600351876353;
-        Thu, 17 Sep 2020 07:11:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx9oz3sa3CWmX53JmgEixheM27L2HjnQSpKByimi7hbYlJLB2/Ea1vZq5Ub8IhIzOvwdTwDLA==
-X-Received: by 2002:a05:620a:221:: with SMTP id u1mr29358280qkm.373.1600351875858;
-        Thu, 17 Sep 2020 07:11:15 -0700 (PDT)
-Received: from dev.jcline.org ([136.56.20.95])
-        by smtp.gmail.com with ESMTPSA id 196sm20981218qkm.49.2020.09.17.07.11.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 07:11:15 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 10:11:13 -0400
-From:   Jeremy Cline <jcline@redhat.com>
-To:     Karol Herbst <kherbst@redhat.com>
-Cc:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        nouveau <nouveau@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/2] drm/nouveau: return temperatures in temp_get()
- via parameter
-Message-ID: <20200917141113.GA750296@dev.jcline.org>
-References: <20200812204952.1921587-1-jcline@redhat.com>
- <20200916194711.999602-1-jcline@redhat.com>
- <20200916194711.999602-2-jcline@redhat.com>
- <CACO55tueUdL0Jp15keCUpFzBuSM8gimkth7VUZxhnaijHOXKxw@mail.gmail.com>
- <CACO55tuKO61iQQEmrFwct2NDxgbgqMYBnrvtXaDQRu95dZfk6A@mail.gmail.com>
+        Thu, 17 Sep 2020 10:25:07 -0400
+Received: from [192.168.86.179] (c-73-38-52-84.hsd1.vt.comcast.net [73.38.52.84])
+        by linux.microsoft.com (Postfix) with ESMTPSA id EB7DD20B7178;
+        Thu, 17 Sep 2020 07:15:32 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EB7DD20B7178
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1600352136;
+        bh=p3fqxLPIJozFQkWu3Fz+4Wr2YMms5zt1i+JTof0NDzM=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=B31bP1QE0UddHqszYBCzAXT06DgGP8/Ki5sH5oKYThqdPSx/iS+tTWb102Oz7tFSA
+         y1h6z2HykVxmf7T3n/u6AR3W4odXjVcfcUQCcV0f/7qOtYM71Vum6woq+/Grweba6t
+         neUmJzrrhA9QeCSCbCUax8iYsO5iNeSMCjrW6KFo=
+Subject: Re: [RFC PATCH v7 11/23] sched/fair: core wide cfs task priority
+ comparison
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Julien Desfossez <jdesfossez@digitalocean.com>
+Cc:     Joel Fernandes <joelaf@google.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Chris Hyser <chris.hyser@oracle.com>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        mingo@kernel.org, tglx@linutronix.de, pjt@google.com,
+        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        fweisbec@gmail.com, keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, joel@joelfernandes.org,
+        vineeth@bitbyteword.org, Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        rostedt@goodmis.org, derkling@google.com, benbjiang@tencent.com,
+        Aaron Lu <ziqian.lzq@antfin.com>
+References: <cover.1598643276.git.jdesfossez@digitalocean.com>
+ <d02923d38df20f1d8c51cf4df6dce66ac0a385ce.1598643276.git.jdesfossez@digitalocean.com>
+ <20200828212927.GE29142@worktop.programming.kicks-ass.net>
+From:   Vineeth Pillai <viremana@linux.microsoft.com>
+Message-ID: <8b9f28f2-7f21-b7da-1056-732b6227ea25@linux.microsoft.com>
+Date:   Thu, 17 Sep 2020 10:15:31 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACO55tuKO61iQQEmrFwct2NDxgbgqMYBnrvtXaDQRu95dZfk6A@mail.gmail.com>
+In-Reply-To: <20200828212927.GE29142@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 10:03:22PM +0200, Karol Herbst wrote:
-> On Wed, Sep 16, 2020 at 10:01 PM Karol Herbst <kherbst@redhat.com> wrote:
-> >
-> > On Wed, Sep 16, 2020 at 9:47 PM Jeremy Cline <jcline@redhat.com> wrote:
-> > >
-> > > The temp_get() function currently returns negative error numbers or a
-> > > temperature. However, the thermal sensors can (in theory) measure
-> > > negative temperatures. Some implementations of temp_get() correctly
-> > > clamp negative temperature readings to 0 so that users do not mistake
-> > > them for errors, but some, like gp100_temp_get(), do not.
-> > >
-> > > Rather than relying on implementations remembering to clamp values,
-> > > dedicate the function return value to error codes and accept a pointer
-> > > to an integer where the temperature reading should be stored.
-> > >
-> > > Signed-off-by: Jeremy Cline <jcline@redhat.com>
-> > > ---
-> > >  .../drm/nouveau/include/nvkm/subdev/therm.h   |  2 +-
-> > >  drivers/gpu/drm/nouveau/nouveau_hwmon.c       | 12 ++++++------
-> > >  .../gpu/drm/nouveau/nvkm/subdev/therm/base.c  | 19 ++++++++++++++-----
-> > >  .../gpu/drm/nouveau/nvkm/subdev/therm/g84.c   | 11 ++++++-----
-> > >  .../gpu/drm/nouveau/nvkm/subdev/therm/gp100.c | 11 ++++++-----
-> > >  .../gpu/drm/nouveau/nvkm/subdev/therm/nv40.c  |  9 +++------
-> > >  .../gpu/drm/nouveau/nvkm/subdev/therm/nv50.c  |  9 +++------
-> > >  .../gpu/drm/nouveau/nvkm/subdev/therm/priv.h  | 17 +++++++++++++++--
-> > >  .../gpu/drm/nouveau/nvkm/subdev/therm/temp.c  | 12 ++++++++----
-> > >  9 files changed, 62 insertions(+), 40 deletions(-)
-> > >
-> > > diff --git a/drivers/gpu/drm/nouveau/include/nvkm/subdev/therm.h b/drivers/gpu/drm/nouveau/include/nvkm/subdev/therm.h
-> > > index 62c34f98c930..bfe9779216fc 100644
-> > > --- a/drivers/gpu/drm/nouveau/include/nvkm/subdev/therm.h
-> > > +++ b/drivers/gpu/drm/nouveau/include/nvkm/subdev/therm.h
-> > > @@ -99,7 +99,7 @@ struct nvkm_therm {
-> > >         bool clkgating_enabled;
-> > >  };
-> > >
-> > > -int nvkm_therm_temp_get(struct nvkm_therm *);
-> > > +int nvkm_therm_temp_get(struct nvkm_therm *therm, int *temp);
-> > >  int nvkm_therm_fan_sense(struct nvkm_therm *);
-> > >  int nvkm_therm_cstate(struct nvkm_therm *, int, int);
-> > >  void nvkm_therm_clkgate_init(struct nvkm_therm *,
-> > > diff --git a/drivers/gpu/drm/nouveau/nouveau_hwmon.c b/drivers/gpu/drm/nouveau/nouveau_hwmon.c
-> > > index 1c3104d20571..aff6aa296678 100644
-> > > --- a/drivers/gpu/drm/nouveau/nouveau_hwmon.c
-> > > +++ b/drivers/gpu/drm/nouveau/nouveau_hwmon.c
-> > > @@ -325,7 +325,7 @@ nouveau_temp_is_visible(const void *data, u32 attr, int channel)
-> > >         struct nouveau_drm *drm = nouveau_drm((struct drm_device *)data);
-> > >         struct nvkm_therm *therm = nvxx_therm(&drm->client.device);
-> > >
-> > > -       if (!therm || !therm->attr_get || nvkm_therm_temp_get(therm) < 0)
-> > > +       if (!therm || !therm->attr_get || nvkm_therm_temp_get(therm, NULL) < 0)
-> > >                 return 0;
-> > >
-> > >         switch (attr) {
-> > > @@ -419,7 +419,7 @@ nouveau_temp_read(struct device *dev, u32 attr, int channel, long *val)
-> > >         struct drm_device *drm_dev = dev_get_drvdata(dev);
-> > >         struct nouveau_drm *drm = nouveau_drm(drm_dev);
-> > >         struct nvkm_therm *therm = nvxx_therm(&drm->client.device);
-> > > -       int ret;
-> > > +       int ret = 0, temp;
-> > >
-> > >         if (!therm || !therm->attr_get)
-> > >                 return -EOPNOTSUPP;
-> > > @@ -428,8 +428,8 @@ nouveau_temp_read(struct device *dev, u32 attr, int channel, long *val)
-> > >         case hwmon_temp_input:
-> > >                 if (drm_dev->switch_power_state != DRM_SWITCH_POWER_ON)
-> > >                         return -EINVAL;
-> > > -               ret = nvkm_therm_temp_get(therm);
-> > > -               *val = ret < 0 ? ret : (ret * 1000);
-> > > +               ret = nvkm_therm_temp_get(therm, &temp);
-> > > +               *val = temp * 1000;
-> > >                 break;
-> > >         case hwmon_temp_max:
-> > >                 *val = therm->attr_get(therm, NVKM_THERM_ATTR_THRS_DOWN_CLK)
-> > > @@ -459,7 +459,7 @@ nouveau_temp_read(struct device *dev, u32 attr, int channel, long *val)
-> > >                 return -EOPNOTSUPP;
-> > >         }
-> > >
-> > > -       return 0;
-> > > +       return ret;
-> > >  }
-> > >
-> > >  static int
-> > > @@ -735,7 +735,7 @@ nouveau_hwmon_init(struct drm_device *dev)
-> > >         hwmon->dev = dev;
-> > >
-> > >         if (therm && therm->attr_get && therm->attr_set) {
-> > > -               if (nvkm_therm_temp_get(therm) >= 0)
-> > > +               if (nvkm_therm_temp_get(therm, NULL) >= 0)
-> > >                         special_groups[i++] = &temp1_auto_point_sensor_group;
-> > >                 if (therm->fan_get && therm->fan_get(therm) >= 0)
-> > >                         special_groups[i++] = &pwm_fan_sensor_group;
-> > > diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/therm/base.c b/drivers/gpu/drm/nouveau/nvkm/subdev/therm/base.c
-> > > index 4a4d1e224126..e7ffea1512e6 100644
-> > > --- a/drivers/gpu/drm/nouveau/nvkm/subdev/therm/base.c
-> > > +++ b/drivers/gpu/drm/nouveau/nvkm/subdev/therm/base.c
-> > > @@ -27,10 +27,15 @@
-> > >  #include <subdev/pmu.h>
-> > >
-> > >  int
-> > > -nvkm_therm_temp_get(struct nvkm_therm *therm)
-> > > +nvkm_therm_temp_get(struct nvkm_therm *therm, int *temp)
-> > >  {
-> > > +       int ignored_reading;
-> > > +
-> > > +       if (temp == NULL)
-> > > +               temp = &ignored_reading;
-> > > +
-> > >         if (therm->func->temp_get)
-> > > -               return therm->func->temp_get(therm);
-> > > +               return therm->func->temp_get(therm, temp);
-> > >         return -ENODEV;
-> > >  }
-> > >
-> > > @@ -40,9 +45,11 @@ nvkm_therm_update_trip(struct nvkm_therm *therm)
-> > >         struct nvbios_therm_trip_point *trip = therm->fan->bios.trip,
-> > >                                        *cur_trip = NULL,
-> > >                                        *last_trip = therm->last_trip;
-> > > -       u8  temp = therm->func->temp_get(therm);
-> > > +       int temp;
-> > >         u16 duty, i;
-> > >
-> > > +       WARN_ON(nvkm_therm_temp_get(therm, &temp) < 0);
-> > > +
-> >
-> > I think adding WARN_ONs like this is fine, I am just not sure how much
-> > our code is actually protected against the GPU being runtime
-> > suspended... so on laptops this could trigger some warnings.. might
-> > even be just because nouveau_pmops_runtime_suspend and the hwmon API
-> > race here, even though it's quite unlikely that the hwmon thread
-> > stalls enough so it survives the entire suspend path. But in theory
-> > that could be causing random errors getting reported.
-> >
-> 
-> Actually, we never set the status to DRM_SWITCH_POWER_CHANGING, so I
-> guess this race is indeed real. I thought we did that, but maybe
-> that's because I never send out the patch to use them.
-> 
+Hi Peter,
 
-Yeah, so my thinking was that since before there was no error handling
-it would show whether or not it's a real problem, but it sounds like it
-is so I think it'd be better to handle that.
+On 8/28/20 5:29 PM, Peter Zijlstra wrote:
+>
+> This is still a horrible patch..
 
-I see nvkm_therm_update() is checking to make sure the duty is positive.
-Should it always be safe to skip setting the fan in cases where the
-temperature isn't readable? If so we can just return the error here.
+I was working on your idea of using the lag as a tool to compare vruntime
+across cpus:
+https://lwn.net/ml/linux-kernel/20200506143506.GH5298@hirez.programming.kicks-ass.net/
+https://lwn.net/ml/linux-kernel/20200514130248.GD2940@hirez.programming.kicks-ass.net/
 
-> > >         /* look for the trip point corresponding to the current temperature */
-> > >         cur_trip = NULL;
-> > >         for (i = 0; i < therm->fan->bios.nr_fan_trip; i++) {
-> > > @@ -70,9 +77,11 @@ static int
-> > >  nvkm_therm_compute_linear_duty(struct nvkm_therm *therm, u8 linear_min_temp,
-> > >                                 u8 linear_max_temp)
-> > >  {
-> > > -       u8  temp = therm->func->temp_get(therm);
-> > > +       int temp;
-> > >         u16 duty;
-> > >
-> > > +       WARN_ON(nvkm_therm_temp_get(therm, &temp) < 0);
-> > > +
-> > >         /* handle the non-linear part first */
-> > >         if (temp < linear_min_temp)
-> > >                 return therm->fan->bios.min_duty;
-> > > @@ -200,7 +209,7 @@ nvkm_therm_fan_mode(struct nvkm_therm *therm, int mode)
-> > >         /* do not allow automatic fan management if the thermal sensor is
-> > >          * not available */
-> > >         if (mode == NVKM_THERM_CTRL_AUTO &&
-> > > -           therm->func->temp_get(therm) < 0)
-> > > +           nvkm_therm_temp_get(therm, NULL) < 0)
-> > >                 return -EINVAL;
-> > >
-> > >         if (therm->mode == mode)
-> > > diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/therm/g84.c b/drivers/gpu/drm/nouveau/nvkm/subdev/therm/g84.c
-> > > index 96f8da40ac82..e2f891d5c7ba 100644
-> > > --- a/drivers/gpu/drm/nouveau/nvkm/subdev/therm/g84.c
-> > > +++ b/drivers/gpu/drm/nouveau/nvkm/subdev/therm/g84.c
-> > > @@ -27,14 +27,15 @@
-> > >  #include <subdev/fuse.h>
-> > >
-> > >  int
-> > > -g84_temp_get(struct nvkm_therm *therm)
-> > > +g84_temp_get(struct nvkm_therm *therm, int *temp)
-> > >  {
-> > >         struct nvkm_device *device = therm->subdev.device;
-> > >
-> > > -       if (nvkm_fuse_read(device->fuse, 0x1a8) == 1)
-> > > -               return nvkm_rd32(device, 0x20400);
-> > > -       else
-> > > +       if (nvkm_fuse_read(device->fuse, 0x1a8) != 1)
-> > >                 return -ENODEV;
-> > > +
-> > > +       *temp = nvkm_rd32(device, 0x20400);
-> > > +       return 0;
-> > >  }
-> > >
-> > >  void
-> > > @@ -115,7 +116,7 @@ g84_therm_threshold_hyst_emulation(struct nvkm_therm *therm,
-> > >         }
-> > >
-> > >         /* fix the state (in case someone reprogrammed the alarms) */
-> > > -       cur = therm->func->temp_get(therm);
-> > > +       WARN_ON(nvkm_therm_temp_get(therm, &cur) < 0);
-> > >         if (new_state == NVKM_THERM_THRS_LOWER && cur > thrs->temp)
-> > >                 new_state = NVKM_THERM_THRS_HIGHER;
-> > >         else if (new_state == NVKM_THERM_THRS_HIGHER &&
-> > > diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/therm/gp100.c b/drivers/gpu/drm/nouveau/nvkm/subdev/therm/gp100.c
-> > > index 9f0dea3f61dc..4c32e4f21bec 100644
-> > > --- a/drivers/gpu/drm/nouveau/nvkm/subdev/therm/gp100.c
-> > > +++ b/drivers/gpu/drm/nouveau/nvkm/subdev/therm/gp100.c
-> > > @@ -24,7 +24,7 @@
-> > >  #include "priv.h"
-> > >
-> > >  static int
-> > > -gp100_temp_get(struct nvkm_therm *therm)
-> > > +gp100_temp_get(struct nvkm_therm *therm, int *temp)
-> > >  {
-> > >         struct nvkm_device *device = therm->subdev.device;
-> > >         struct nvkm_subdev *subdev = &therm->subdev;
-> > > @@ -35,11 +35,12 @@ gp100_temp_get(struct nvkm_therm *therm)
-> > >         if (tsensor & 0x40000000)
-> > >                 nvkm_trace(subdev, "reading temperature from SHADOWed sensor\n");
-> > >
-> > > -       /* device valid */
-> > > -       if (tsensor & 0x20000000)
-> > > -               return (inttemp >> 8);
-> > > -       else
-> > > +       /* device invalid */
-> > > +       if (!(tsensor & 0x20000000))
-> > >                 return -ENODEV;
-> > > +
-> > > +       *temp = inttemp >> 8;
-> > > +       return 0;
-> > >  }
-> > >
-> > >  static const struct nvkm_therm_func
-> > > diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/therm/nv40.c b/drivers/gpu/drm/nouveau/nvkm/subdev/therm/nv40.c
-> > > index 2c92ffb5f9d0..9753ad4bee4a 100644
-> > > --- a/drivers/gpu/drm/nouveau/nvkm/subdev/therm/nv40.c
-> > > +++ b/drivers/gpu/drm/nouveau/nvkm/subdev/therm/nv40.c
-> > > @@ -70,7 +70,7 @@ nv40_sensor_setup(struct nvkm_therm *therm)
-> > >  }
-> > >
-> > >  static int
-> > > -nv40_temp_get(struct nvkm_therm *therm)
-> > > +nv40_temp_get(struct nvkm_therm *therm, int *temp)
-> > >  {
-> > >         struct nvkm_device *device = therm->subdev.device;
-> > >         struct nvbios_therm_sensor *sensor = &therm->bios_sensor;
-> > > @@ -95,11 +95,8 @@ nv40_temp_get(struct nvkm_therm *therm)
-> > >         core_temp = core_temp + sensor->offset_num / sensor->offset_den;
-> > >         core_temp = core_temp + sensor->offset_constant - 8;
-> > >
-> > > -       /* reserve negative temperatures for errors */
-> > > -       if (core_temp < 0)
-> > > -               core_temp = 0;
-> > > -
-> > > -       return core_temp;
-> > > +       *temp = core_temp;
-> > > +       return 0;
-> > >  }
-> > >
-> > >  static int
-> > > diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/therm/nv50.c b/drivers/gpu/drm/nouveau/nvkm/subdev/therm/nv50.c
-> > > index 9b57b433d4cf..38fa6777c129 100644
-> > > --- a/drivers/gpu/drm/nouveau/nvkm/subdev/therm/nv50.c
-> > > +++ b/drivers/gpu/drm/nouveau/nvkm/subdev/therm/nv50.c
-> > > @@ -126,7 +126,7 @@ nv50_sensor_setup(struct nvkm_therm *therm)
-> > >  }
-> > >
-> > >  static int
-> > > -nv50_temp_get(struct nvkm_therm *therm)
-> > > +nv50_temp_get(struct nvkm_therm *therm, int *temp)
-> > >  {
-> > >         struct nvkm_device *device = therm->subdev.device;
-> > >         struct nvbios_therm_sensor *sensor = &therm->bios_sensor;
-> > > @@ -143,11 +143,8 @@ nv50_temp_get(struct nvkm_therm *therm)
-> > >         core_temp = core_temp + sensor->offset_num / sensor->offset_den;
-> > >         core_temp = core_temp + sensor->offset_constant - 8;
-> > >
-> > > -       /* reserve negative temperatures for errors */
-> > > -       if (core_temp < 0)
-> > > -               core_temp = 0;
-> > > -
-> > > -       return core_temp;
-> > > +       *temp = core_temp;
-> > > +       return 0;
-> > >  }
-> > >
-> > >  static void
-> > > diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/therm/priv.h b/drivers/gpu/drm/nouveau/nvkm/subdev/therm/priv.h
-> > > index 21659daf1864..04607d8b1755 100644
-> > > --- a/drivers/gpu/drm/nouveau/nvkm/subdev/therm/priv.h
-> > > +++ b/drivers/gpu/drm/nouveau/nvkm/subdev/therm/priv.h
-> > > @@ -91,7 +91,15 @@ struct nvkm_therm_func {
-> > >         int (*pwm_set)(struct nvkm_therm *, int line, u32, u32);
-> > >         int (*pwm_clock)(struct nvkm_therm *, int line);
-> > >
-> > > -       int (*temp_get)(struct nvkm_therm *);
-> > > +       /**
-> > > +        * @temp_get: Get the temperature reading from a thermal device
-> > > +        *
-> > > +        * @therm: The thermal device instance.
-> > > +        * @temp: A pointer to write the temperature reading to.
-> > > +        *
-> > > +        * Returns: Zero on success, or a negative error code on failure.
-> > > +        */
-> > > +       int (*temp_get)(struct nvkm_therm *therm, int *temp);
-> > >
-> > >         int (*fan_sense)(struct nvkm_therm *);
-> > >
-> > > @@ -110,7 +118,12 @@ int  nv50_fan_pwm_get(struct nvkm_therm *, int, u32 *, u32 *);
-> > >  int  nv50_fan_pwm_set(struct nvkm_therm *, int, u32, u32);
-> > >  int  nv50_fan_pwm_clock(struct nvkm_therm *, int);
-> > >
-> > > -int  g84_temp_get(struct nvkm_therm *);
-> > > +/**
-> > > + * g84_temp_get() - An implementation of the &struct nvkm_therm_func temp_get()
-> > > + * @therm: The thermal device instance.
-> > > + * @temp: A pointer to write the temperature reading to.
-> > > + */
-> > > +int  g84_temp_get(struct nvkm_therm *therm, int *temp);
-> > >  void g84_sensor_setup(struct nvkm_therm *);
-> > >  void g84_therm_fini(struct nvkm_therm *);
-> > >
-> > > diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/therm/temp.c b/drivers/gpu/drm/nouveau/nvkm/subdev/therm/temp.c
-> > > index ddb2b2c600ca..1e8803901abc 100644
-> > > --- a/drivers/gpu/drm/nouveau/nvkm/subdev/therm/temp.c
-> > > +++ b/drivers/gpu/drm/nouveau/nvkm/subdev/therm/temp.c
-> > > @@ -86,7 +86,9 @@ nvkm_therm_sensor_event(struct nvkm_therm *therm, enum nvkm_therm_thrs thrs,
-> > >         static const char * const thresholds[] = {
-> > >                 "fanboost", "downclock", "critical", "shutdown"
-> > >         };
-> > > -       int temperature = therm->func->temp_get(therm);
-> > > +       int temperature;
-> > > +
-> > > +       WARN_ON(nvkm_therm_temp_get(therm, &temperature) < 0);
-> > >
-> > >         if (thrs < 0 || thrs > 3)
-> > >                 return;
-> > > @@ -140,7 +142,9 @@ nvkm_therm_threshold_hyst_polling(struct nvkm_therm *therm,
-> > >  {
-> > >         enum nvkm_therm_thrs_direction direction;
-> > >         enum nvkm_therm_thrs_state prev_state, new_state;
-> > > -       int temp = therm->func->temp_get(therm);
-> > > +       int temp;
-> > > +
-> > > +       WARN_ON(nvkm_therm_temp_get(therm, &temp) < 0);
-> > >
-> > >         prev_state = nvkm_therm_sensor_get_threshold_state(therm, thrs_name);
-> > >
-> > > @@ -185,7 +189,7 @@ alarm_timer_callback(struct nvkm_alarm *alarm)
-> > >         spin_unlock_irqrestore(&therm->sensor.alarm_program_lock, flags);
-> > >
-> > >         /* schedule the next poll in one second */
-> > > -       if (therm->func->temp_get(therm) >= 0)
-> > > +       if (nvkm_therm_temp_get(therm, NULL) >= 0)
-> > >                 nvkm_timer_alarm(tmr, 1000000000ULL, alarm);
-> > >  }
-> > >
-> > > @@ -229,7 +233,7 @@ nvkm_therm_sensor_preinit(struct nvkm_therm *therm)
-> > >  {
-> > >         const char *sensor_avail = "yes";
-> > >
-> > > -       if (therm->func->temp_get(therm) < 0)
-> > > +       if (nvkm_therm_temp_get(therm, NULL) < 0)
-> > >                 sensor_avail = "no";
-> > >
-> > >         nvkm_debug(&therm->subdev, "internal sensor: %s\n", sensor_avail);
-> > > --
-> > > 2.26.2
-> > >
-> 
+Basically, I record the clock time when a sibling is force idled. And before
+comparison, if the sibling is still force idled, take the weighted delta 
+of time
+the sibling was force idled and then decrement it from the vruntime. The
+lag is  computed in pick_task_fair as we do cross-cpu comparison only after
+a task_pick.
 
+I think this can solve the SMTn issues since we are doing a one-sided
+comaprison.
+
+I have done some initial testing and looks good. Need to do some deep 
+analysis
+and check the fairness cases. Thought of sharing the prototype and get 
+feedback
+as I am doing further testing. Please have a look and let me know your 
+thoughts.
+
+The git tree is here: 
+https://github.com/vineethrp/linux/tree/coresched/pre-v8-v5.9-rc-lagfix
+It has  the review comments addressed since v8 was posted.
+
+Thanks,
+Vineeth
+
+---
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index cea9a63c2e7a..52b3e7b356e9 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -136,19 +136,8 @@ static inline bool prio_less(struct task_struct *a, 
+struct task_struct *b)
+         if (pa == -1) /* dl_prio() doesn't work because of stop_class 
+above */
+                 return !dl_time_before(a->dl.deadline, b->dl.deadline);
+
+-       if (pa == MAX_RT_PRIO + MAX_NICE)  { /* fair */
+-               u64 vruntime = b->se.vruntime;
+-
+-               /*
+-                * Normalize the vruntime if tasks are in different cpus.
+-                */
+-               if (task_cpu(a) != task_cpu(b)) {
+-                       vruntime -= task_cfs_rq(b)->min_vruntime;
+-                       vruntime += task_cfs_rq(a)->min_vruntime;
+-               }
+-
+-               return !((s64)(a->se.vruntime - vruntime) <= 0);
+-       }
++       if (pa == MAX_RT_PRIO + MAX_NICE)       /* fair */
++               return cfs_prio_less(a, b);
+
+         return false;
+  }
+@@ -235,6 +224,13 @@ static void sched_core_dequeue(struct rq *rq, 
+struct task_struct *p)
+
+         rb_erase(&p->core_node, &rq->core_tree);
+         RB_CLEAR_NODE(&p->core_node);
++
++    /*
++     * Reset last force idle time if this rq will be
++     * empty after this dequeue.
++     */
++    if (rq->nr_running == 1)
++        rq->core_fi_time = 0;
+  }
+
+  /*
+@@ -310,8 +306,10 @@ static int __sched_core_stopper(void *data)
+                          * cgroup tags. However, dying tasks could still be
+                          * left in core queue. Flush them here.
+                          */
+-                       if (!enabled)
++                       if (!enabled) {
+                                 sched_core_flush(cpu);
++                               rq->core_fi_time = 0;
++            }
+
+                         rq->core_enabled = enabled;
+                 }
+@@ -5181,9 +5179,17 @@ next_class:;
+                 if (!rq_i->core_pick)
+                         continue;
+
+-               if (is_task_rq_idle(rq_i->core_pick) && rq_i->nr_running &&
+-                   !rq_i->core->core_forceidle) {
+-                       rq_i->core->core_forceidle = true;
++               if (is_task_rq_idle(rq_i->core_pick) && rq_i->nr_running) {
++
++                       if (!rq_i->core->core_forceidle)
++                               rq_i->core->core_forceidle = true;
++
++                       /*
++                        * XXX: Should we record force idled time a bit 
+later on the
++                        * pick_next_task of this sibling when it forces 
+itself idle?
++                        */
++                       rq_i->core_fi_time = rq_clock_task(rq_i);
++                       trace_printk("force idle(cpu=%d) TS=%llu\n", i, 
+rq_i->core_fi_time);
+                 }
+
+                 rq_i->core_pick->core_occupation = occ;
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index eadc62930336..7f62a50e23e1 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -389,6 +389,12 @@ static inline struct sched_entity 
+*parent_entity(struct sched_entity *se)
+         return se->parent;
+  }
+
++static inline bool
++is_same_tg(struct sched_entity *se, struct sched_entity *pse)
++{
++       return se->cfs_rq->tg == pse->cfs_rq->tg;
++}
++
+  static void
+  find_matching_se(struct sched_entity **se, struct sched_entity **pse)
+  {
+@@ -453,6 +459,12 @@ static inline struct sched_entity 
+*parent_entity(struct sched_entity *se)
+         return NULL;
+  }
+
++static inline bool
++is_same_tg(struct sched_entity *se, struct sched_entity *pse)
++{
++       return true;
++}
++
+  static inline void
+  find_matching_se(struct sched_entity **se, struct sched_entity **pse)
+  {
+@@ -6962,13 +6974,26 @@ static struct task_struct *pick_task_fair(struct 
+rq *rq)
+  {
+         struct cfs_rq *cfs_rq = &rq->cfs;
+         struct sched_entity *se;
++       u64 lag = 0;
+
+         if (!cfs_rq->nr_running)
+                 return NULL;
+
++       /*
++        * Calculate the lag caused due to force idle on this
++        * sibling. Since we do cross-cpu comparison of vruntime
++        * only after a task pick, it should be safe to compute
++        * the lag here.
++        */
++       if (rq->core_fi_time) {
++               lag = rq_clock_task(rq) - rq->core_fi_time;
++               if ((s64)lag < 0)
++                       lag = 0;
++       }
+         do {
+                 struct sched_entity *curr = cfs_rq->curr;
+
++
+                 se = pick_next_entity(cfs_rq, NULL);
+
+                 if (curr) {
+@@ -6977,11 +7002,15 @@ static struct task_struct *pick_task_fair(struct 
+rq *rq)
+
+                         if (!se || entity_before(curr, se))
+                                 se = curr;
++
++                       cfs_rq->core_lag += lag;
+                 }
+
+                 cfs_rq = group_cfs_rq(se);
+         } while (cfs_rq);
+
++       rq->core_fi_time = 0;
++
+         return task_of(se);
+  }
+  #endif
+@@ -10707,6 +10736,41 @@ static inline void task_tick_core(struct rq 
+*rq, struct task_struct *curr)
+             __entity_slice_used(&curr->se))
+                 resched_curr(rq);
+  }
++
++bool cfs_prio_less(struct task_struct *a, struct task_struct *b)
++{
++       struct sched_entity *se_a = &a->se, *se_b = &b->se;
++       struct cfs_rq *cfs_rq_a, *cfs_rq_b;
++       u64 vruntime_a, vruntime_b;
++
++#ifdef CONFIG_FAIR_GROUP_SCHED
++       while (!is_same_tg(se_a, se_b)) {
++               int se_a_depth = se_a->depth;
++               int se_b_depth = se_b->depth;
++
++               if (se_a_depth <= se_b_depth)
++                       se_b = parent_entity(se_b);
++               if (se_a_depth >= se_b_depth)
++                       se_a = parent_entity(se_a);
++       }
++#endif
++
++       cfs_rq_a = cfs_rq_of(se_a);
++       cfs_rq_b = cfs_rq_of(se_b);
++
++       vruntime_a = se_a->vruntime - cfs_rq_a->min_vruntime;
++       vruntime_b = se_b->vruntime - cfs_rq_b->min_vruntime;
++
++       trace_printk("(%s/%d;%Ld,%Lu) ?< (%s/%d;%Ld,%Lu)\n",
++                    a->comm, a->pid, vruntime_a, cfs_rq_a->core_lag,
++                    b->comm, b->pid, vruntime_b, cfs_rq_b->core_lag);
++       if (cfs_rq_a != cfs_rq_b) {
++               vruntime_a -= calc_delta_fair(cfs_rq_a->core_lag, &a->se);
++               vruntime_b -= calc_delta_fair(cfs_rq_b->core_lag, &b->se);
++       }
++
++       return !((s64)(vruntime_a - vruntime_b) <= 0);
++}
+  #else
+  static inline void task_tick_core(struct rq *rq, struct task_struct 
+*curr) {}
+  #endif
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 5374ace195b9..a1c15edf8dd5 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -607,6 +607,10 @@ struct cfs_rq {
+         struct list_head        throttled_list;
+  #endif /* CONFIG_CFS_BANDWIDTH */
+  #endif /* CONFIG_FAIR_GROUP_SCHED */
++
++#ifdef CONFIG_SCHED_CORE
++       u64                     core_lag;
++#endif
+  };
+
+  static inline int rt_bandwidth_enabled(void)
+@@ -1056,6 +1060,7 @@ struct rq {
+  #ifdef CONFIG_SCHED_CORE
+         /* per rq */
+         struct rq               *core;
++       u64                     core_fi_time; /* Last forced idle TS */
+         struct task_struct      *core_pick;
+         unsigned int            core_enabled;
+         unsigned int            core_sched_seq;
+vineeth@vinstation340u:~/WS/kernel_test/linux-qemu/out$ git show > log
+vineeth@vinstation340u:~/WS/kernel_test/linux-qemu/out$ cat log
+commit e97ec4d317ac01cabbcdcb1ac8a315a02b3e39f6
+Author: Vineeth Pillai <viremana@linux.microsoft.com>
+Date:   Wed Sep 16 11:35:37 2020 -0400
+
+     sched/coresched: lag based cross cpu vruntime comparison
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index cea9a63c2e7a..52b3e7b356e9 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -136,19 +136,8 @@ static inline bool prio_less(struct task_struct *a, 
+struct task_struct *b)
+      if (pa == -1) /* dl_prio() doesn't work because of stop_class above */
+          return !dl_time_before(a->dl.deadline, b->dl.deadline);
+
+-    if (pa == MAX_RT_PRIO + MAX_NICE)  { /* fair */
+-        u64 vruntime = b->se.vruntime;
+-
+-        /*
+-         * Normalize the vruntime if tasks are in different cpus.
+-         */
+-        if (task_cpu(a) != task_cpu(b)) {
+-            vruntime -= task_cfs_rq(b)->min_vruntime;
+-            vruntime += task_cfs_rq(a)->min_vruntime;
+-        }
+-
+-        return !((s64)(a->se.vruntime - vruntime) <= 0);
+-    }
++    if (pa == MAX_RT_PRIO + MAX_NICE)    /* fair */
++        return cfs_prio_less(a, b);
+
+      return false;
+  }
+@@ -235,6 +224,13 @@ static void sched_core_dequeue(struct rq *rq, 
+struct task_struct *p)
+
+      rb_erase(&p->core_node, &rq->core_tree);
+      RB_CLEAR_NODE(&p->core_node);
++
++    /*
++     * Reset last force idle time if this rq will be
++     * empty after this dequeue.
++     */
++    if (rq->nr_running == 1)
++        rq->core_fi_time = 0;
+  }
+
+  /*
+@@ -310,8 +306,10 @@ static int __sched_core_stopper(void *data)
+               * cgroup tags. However, dying tasks could still be
+               * left in core queue. Flush them here.
+               */
+-            if (!enabled)
++            if (!enabled) {
+                  sched_core_flush(cpu);
++                rq->core_fi_time = 0;
++                /* XXX Reset cfs_rq->core_lag? */
++            }
+
+              rq->core_enabled = enabled;
+          }
+@@ -5181,9 +5179,17 @@ next_class:;
+          if (!rq_i->core_pick)
+              continue;
+
+-        if (is_task_rq_idle(rq_i->core_pick) && rq_i->nr_running &&
+-            !rq_i->core->core_forceidle) {
+-            rq_i->core->core_forceidle = true;
++        if (is_task_rq_idle(rq_i->core_pick) && rq_i->nr_running) {
++
++            if (!rq_i->core->core_forceidle)
++                rq_i->core->core_forceidle = true;
++
++            /*
++             * XXX: Should we record force idled time a bit later on the
++             * pick_next_task of this sibling when it forces itself idle?
++             */
++            rq_i->core_fi_time = rq_clock_task(rq_i);
++            trace_printk("force idle(cpu=%d) TS=%llu\n", i, 
+rq_i->core_fi_time);
+          }
+
+          rq_i->core_pick->core_occupation = occ;
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index eadc62930336..7f62a50e23e1 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -389,6 +389,12 @@ static inline struct sched_entity 
+*parent_entity(struct sched_entity *se)
+      return se->parent;
+  }
+
++static inline bool
++is_same_tg(struct sched_entity *se, struct sched_entity *pse)
++{
++    return se->cfs_rq->tg == pse->cfs_rq->tg;
++}
++
+  static void
+  find_matching_se(struct sched_entity **se, struct sched_entity **pse)
+  {
+@@ -453,6 +459,12 @@ static inline struct sched_entity 
+*parent_entity(struct sched_entity *se)
+      return NULL;
+  }
+
++static inline bool
++is_same_tg(struct sched_entity *se, struct sched_entity *pse)
++{
++    return true;
++}
++
+  static inline void
+  find_matching_se(struct sched_entity **se, struct sched_entity **pse)
+  {
+@@ -6962,13 +6974,26 @@ static struct task_struct *pick_task_fair(struct 
+rq *rq)
+  {
+      struct cfs_rq *cfs_rq = &rq->cfs;
+      struct sched_entity *se;
++  u64 lag = 0;
+
+      if (!cfs_rq->nr_running)
+          return NULL;
+
++    /*
++     * Calculate the lag caused due to force idle on this
++     * sibling. Since we do cross-cpu comparison of vruntime
++     * only after a task pick, it should be safe to compute
++     * the lag here.
++     */
++    if (rq->core_fi_time) {
++        lag = rq_clock_task(rq) - rq->core_fi_time;
++        if ((s64)lag < 0)
++            lag = 0;
++    }
+      do {
+          struct sched_entity *curr = cfs_rq->curr;
+
++
+          se = pick_next_entity(cfs_rq, NULL);
+
+          if (curr) {
+@@ -6977,11 +7002,15 @@ static struct task_struct *pick_task_fair(struct 
+rq *rq)
+
+              if (!se || entity_before(curr, se))
+                  se = curr;
++
++            cfs_rq->core_lag += lag;
+          }
+
+          cfs_rq = group_cfs_rq(se);
+      } while (cfs_rq);
+
++    rq->core_fi_time = 0;
++
+      return task_of(se);
+  }
+  #endif
+@@ -10707,6 +10736,41 @@ static inline void task_tick_core(struct rq 
+*rq, struct task_struct *curr)
+          __entity_slice_used(&curr->se))
+          resched_curr(rq);
+  }
++
++bool cfs_prio_less(struct task_struct *a, struct task_struct *b)
++{
++    struct sched_entity *se_a = &a->se, *se_b = &b->se;
++    struct cfs_rq *cfs_rq_a, *cfs_rq_b;
++    u64 vruntime_a, vruntime_b;
++
++#ifdef CONFIG_FAIR_GROUP_SCHED
++    while (!is_same_tg(se_a, se_b)) {
++        int se_a_depth = se_a->depth;
++        int se_b_depth = se_b->depth;
++
++        if (se_a_depth <= se_b_depth)
++            se_b = parent_entity(se_b);
++        if (se_a_depth >= se_b_depth)
++            se_a = parent_entity(se_a);
++    }
++#endif
++
++    cfs_rq_a = cfs_rq_of(se_a);
++    cfs_rq_b = cfs_rq_of(se_b);
++
++    vruntime_a = se_a->vruntime - cfs_rq_a->min_vruntime;
++    vruntime_b = se_b->vruntime - cfs_rq_b->min_vruntime;
++
++    trace_printk("(%s/%d;%Ld,%Lu) ?< (%s/%d;%Ld,%Lu)\n",
++             a->comm, a->pid, vruntime_a, cfs_rq_a->core_lag,
++             b->comm, b->pid, vruntime_b, cfs_rq_b->core_lag);
++    if (cfs_rq_a != cfs_rq_b) {
++        vruntime_a -= calc_delta_fair(cfs_rq_a->core_lag, &a->se);
++        vruntime_b -= calc_delta_fair(cfs_rq_b->core_lag, &b->se);
++    }
++
++    return !((s64)(vruntime_a - vruntime_b) <= 0);
++}
+  #else
+  static inline void task_tick_core(struct rq *rq, struct task_struct 
+*curr) {}
+  #endif
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 5374ace195b9..a1c15edf8dd5 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -607,6 +607,10 @@ struct cfs_rq {
+      struct list_head    throttled_list;
+  #endif /* CONFIG_CFS_BANDWIDTH */
+  #endif /* CONFIG_FAIR_GROUP_SCHED */
++
++#ifdef CONFIG_SCHED_CORE
++    u64            core_lag;
++#endif
+  };
+
+  static inline int rt_bandwidth_enabled(void)
+@@ -1056,6 +1060,7 @@ struct rq {
+  #ifdef CONFIG_SCHED_CORE
+      /* per rq */
+      struct rq        *core;
++   u64            core_fi_time; /* Last forced idle TS */
+      struct task_struct    *core_pick;
+      unsigned int        core_enabled;
+      unsigned int        core_sched_seq;
