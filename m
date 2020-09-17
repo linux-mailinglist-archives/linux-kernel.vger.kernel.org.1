@@ -2,110 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CB9C26E5EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ADDA26E5EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726601AbgIQT60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 15:58:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53510 "EHLO
+        id S1726721AbgIQT6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 15:58:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726469AbgIQT57 (ORCPT
+        with ESMTP id S1726471AbgIQT57 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 17 Sep 2020 15:57:59 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7494DC0611C2
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 12:52:09 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id z19so3529986lfr.4
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 12:52:09 -0700 (PDT)
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A51D4C0611C3;
+        Thu, 17 Sep 2020 12:52:44 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id u18so3446673iln.13;
+        Thu, 17 Sep 2020 12:52:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=32bcgpldYXbmLkD9PAPTV/r5I9yvArjUAJrUez/8fCw=;
-        b=VOlzEfJuZB9Z+OwJNOchIJXDkd0bTa9i+wPMaYSxT6D0dAH/K7Ga73jt3/YtjGTVK4
-         sVlY9P9deW7WIX2Nd152ey3/qPcCEHpblJw+UwDlDNRH2yhqCE0SHAuB/jZEQ2s1KDp6
-         q34MhREhlKcWU3KC+0AmTV4BHtmSJ7oVUjShk=
+        bh=V8vmq5V6kxX7SFyjUH93d+10+n1COuPc3VLs9cGSZh4=;
+        b=blEBjv5XPevr8kXz0RXht7oiKhmdZ9iemyt6IWI5W2V/OaJM/xMEZibpwmdrYcrHAk
+         Q/Kz3F8Dv/cHKOPllymJvYazjiyJ77Xdgdin7Oq9ktnk/HZTVWt+8f5Aufww4/nm8OS7
+         bBetggUZ+2QL1/YTrYNiuJWT6YdDof1zJlbHjAsW0BycertlbDtgtTa+pGzGYOZemljR
+         F4hDIQUwaoZ/IuEKXf0p+kEHsu5pMUPC4ss5qr8kj2xvTByDcZDZqmygWWs5kncGAjVb
+         YFTum1SlMU/KWYEC5Kx/mbGYOvRj8lKkFck3V/goYW4NtQWB8X4reFl1lShuiaQkvzD1
+         at5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=32bcgpldYXbmLkD9PAPTV/r5I9yvArjUAJrUez/8fCw=;
-        b=bcqsVUDeucNcg4i4g/M3cVB1Q0V2Fwj8nTgi2Fi0APLbrWJ7Ru50ys99kJh1aolKOW
-         Qt8UX79acUNP4mmtemIl+Xde0qJQMj2Ks5XE4sY+gYNa66Xhdhlc1Mc3nEWtq9uV42Y8
-         cQ/rItdlEqT+OOk8zKGc5mO440xuen3QmqksOQdHRNobEwoosi/UR/QykGXW+q4gbX5r
-         xopXGvXjS19ds9+seAjjmw3U7Rr3p/tRPRf0Ya6RX5OtUwMyWi00dHMZbDvfgGGcrU43
-         59YwcpesMHNdawXaRw5c30vu42vAegAFlxXJ4ZHzQ/pea/WfQTZtw4Uf/b6J6+GnDCBI
-         09BA==
-X-Gm-Message-State: AOAM533uqLYBPitmQBiJRWgNWBzFHZEvCSsGvXY41IX8hX/pUgqPuvg3
-        r5qGFJCQ7QsvR675VJjOkFIdeb9zp6ttyg==
-X-Google-Smtp-Source: ABdhPJwzNTnS8fum/nyuSmL1+gfqzodnpyq4+OQHsUKu7BrcuPEp4bykjqj4s46kq2G/sWg1OMeJtg==
-X-Received: by 2002:a19:4284:: with SMTP id p126mr9217957lfa.393.1600372327219;
-        Thu, 17 Sep 2020 12:52:07 -0700 (PDT)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id f2sm105525lfd.103.2020.09.17.12.52.06
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Sep 2020 12:52:06 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id y11so3521817lfl.5
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 12:52:06 -0700 (PDT)
-X-Received: by 2002:a19:4186:: with SMTP id o128mr9365158lfa.148.1600372325687;
- Thu, 17 Sep 2020 12:52:05 -0700 (PDT)
+        bh=V8vmq5V6kxX7SFyjUH93d+10+n1COuPc3VLs9cGSZh4=;
+        b=Y56fnjfipnPnzkFk/I+bZ/E4q4mwMT/Ex1IzzKEE29muKy7yK3V091ZJFwrc2V2dAk
+         kLp5cSFkE6V1UmM+NLJf3QbUv+OnIk47wpTCTwLgqnkzBl14wbsLwbqCYhsMYYL7uS+/
+         EkFYlnTTqV2PlWftbZCFOoE92XAzUuVRxv+TeGu9KU4PZqdW8vXvwxrSY87FHXvg4C2L
+         6cFvq8WHl205wSjkHGBSnD4ts1tJS3X3PX3LvJqQT/CZfrv6366Io4qQreOW4zBvVtO2
+         7YbiTefiRS27ZCR9wQENVMxjIxdgev+I7JTgKbH94G29ijM76HNmY+2x3qSJjsDmQrup
+         TzxQ==
+X-Gm-Message-State: AOAM530P6JtQnUGEVKZHIjpEKWDTwCwIMHWHqTk4I7PajB5zTBlBSlEO
+        3O1YZg/WnxXdiJglsiAx4XR76Q1afXYwZL18CoQ=
+X-Google-Smtp-Source: ABdhPJzVfFmFHyFDyrzoEwG6qbDO2JrQi85Qrvh0iz4GRy6pxkgRQRi5Ag07cyir2a0FgAmNsdZru5r4FZmfV0akpq0=
+X-Received: by 2002:a92:dad1:: with SMTP id o17mr26400856ilq.22.1600372363985;
+ Thu, 17 Sep 2020 12:52:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200915182933.GM1221970@ziepe.ca> <20200915191346.GD2949@xz-x1>
- <20200915193838.GN1221970@ziepe.ca> <20200915213330.GE2949@xz-x1>
- <20200915232238.GO1221970@ziepe.ca> <e6c352f8-7ee9-0702-10a4-122d2c4422fc@nvidia.com>
- <20200916174804.GC8409@ziepe.ca> <20200916184619.GB40154@xz-x1>
- <20200917112538.GD8409@ziepe.ca> <CAHk-=wjtfjB3TqTFRzVmOrB9Mii6Yzc-=wKq0fu4ruDE6AsJgg@mail.gmail.com>
- <20200917193824.GL8409@ziepe.ca>
-In-Reply-To: <20200917193824.GL8409@ziepe.ca>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 17 Sep 2020 12:51:49 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiY_g+SSjncZi8sO=LrxXmMox0NO7K34-Fs653XVXheGg@mail.gmail.com>
-Message-ID: <CAHk-=wiY_g+SSjncZi8sO=LrxXmMox0NO7K34-Fs653XVXheGg@mail.gmail.com>
-Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Peter Xu <peterx@redhat.com>, John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Maya B . Gokhale" <gokhale2@llnl.gov>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Marty Mcfadden <mcfadden8@llnl.gov>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>
+References: <465a540e-5296-32e7-f6a6-79942dfe2618@netrounds.com>
+ <CACS=qqKhsu6waaXndO5tQL_gC9TztuUQpqQigJA2Ac0y12czMQ@mail.gmail.com>
+ <20200825032312.11776-1-hdanton@sina.com> <CACS=qqK-5g-QM_vczjY+A=3fi3gChei4cAkKweZ4Sn2L537DQA@mail.gmail.com>
+ <20200825162329.11292-1-hdanton@sina.com> <CACS=qqKgiwdCR_5+z-vkZ0X8DfzOPD7_ooJ_imeBnx+X1zw2qg@mail.gmail.com>
+ <CACS=qqKptAQQGiMoCs1Zgs9S4ZppHhasy1AK4df2NxnCDR+vCw@mail.gmail.com>
+ <5f46032e.1c69fb81.9880c.7a6cSMTPIN_ADDED_MISSING@mx.google.com>
+ <CACS=qq+Yw734DWhETNAULyBZiy_zyjuzzOL-NO30AM7fd2vUOQ@mail.gmail.com>
+ <20200827125747.5816-1-hdanton@sina.com> <CACS=qq+a0H=e8yLFu95aE7Hr0bQ9ytCBBn2rFx82oJnPpkBpvg@mail.gmail.com>
+ <CAM_iQpV-JMURzFApp-Zhxs3QN9j=Zdf6yqwOP=E42ERDHxe6Hw@mail.gmail.com>
+ <dd73f551d1fc89e457ffabd106cbf0bf401b747b.camel@redhat.com>
+ <20200903101957.428-1-hdanton@sina.com> <CACS=qqLKSpnRrgROm8jzzFid3MH97phPXWsk28b371dfu0mnVA@mail.gmail.com>
+ <CAM_iQpUq9-wja3JHz9+TMeXGyAOmJfZDxWUZJ9v25i7vd0Z-Wg@mail.gmail.com> <c97908eb-5a0b-363c-93fd-59c037bbd9f0@huawei.com>
+In-Reply-To: <c97908eb-5a0b-363c-93fd-59c037bbd9f0@huawei.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Thu, 17 Sep 2020 12:52:32 -0700
+Message-ID: <CAM_iQpXiNaushoWjma44X_agPosg9AKk4RzFTX93MSVTM6z3Uw@mail.gmail.com>
+Subject: Re: Packet gets stuck in NOLOCK pfifo_fast qdisc
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Kehuan Feng <kehuan.feng@gmail.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jike Song <albcamus@gmail.com>, Josh Hunt <johunt@akamai.com>,
+        Jonas Bonn <jonas.bonn@netrounds.com>,
+        Michael Zhivich <mzhivich@akamai.com>,
+        David Miller <davem@davemloft.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        "linuxarm@huawei.com" <linuxarm@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 12:38 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+On Sun, Sep 13, 2020 at 7:10 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
 >
-> Looking for awhile, this now looks reasonable and
-> doable. page_maybe_dma_pinned() was created for exactly this kind of
-> case.
+> On 2020/9/11 4:19, Cong Wang wrote:
+> > On Thu, Sep 3, 2020 at 8:21 PM Kehuan Feng <kehuan.feng@gmail.com> wrote:
+> >> I also tried Cong's patch (shown below on my tree) and it could avoid
+> >> the issue (stressing for 30 minutus for three times and not jitter
+> >> observed).
+> >
+> > Thanks for verifying it!
+> >
+> >>
+> >> --- ./include/net/sch_generic.h.orig 2020-08-21 15:13:51.787952710 +0800
+> >> +++ ./include/net/sch_generic.h 2020-09-03 21:36:11.468383738 +0800
+> >> @@ -127,8 +127,7 @@
+> >>  static inline bool qdisc_run_begin(struct Qdisc *qdisc)
+> >>  {
+> >>   if (qdisc->flags & TCQ_F_NOLOCK) {
+> >> - if (!spin_trylock(&qdisc->seqlock))
+> >> - return false;
+> >> + spin_lock(&qdisc->seqlock);
+> >>   } else if (qdisc_is_running(qdisc)) {
+> >>   return false;
+> >>   }
+> >>
+> >> I am not actually know what you are discussing above. It seems to me
+> >> that Cong's patch is similar as disabling lockless feature.
+> >
+> >>From performance's perspective, yeah. Did you see any performance
+> > downgrade with my patch applied? It would be great if you can compare
+> > it with removing NOLOCK. And if the performance is as bad as no
+> > NOLOCK, then we can remove the NOLOCK bit for pfifo_fast, at least
+> > for now.
 >
-> I've attached a dumb sketch for the pte level (surely wrong! I have
-> never looked at this part of the mm before!) at the end of this
-> message.
+> It seems the lockless qdisc may have below concurrent problem:
+>   cpu0:                                                           cpu1:
+> q->enqueue                                                          .
+> qdisc_run_begin(q)                                                  .
+> __qdisc_run(q) ->qdisc_restart() -> dequeue_skb()                   .
+>                                  -> sch_direct_xmit()               .
+>                                                                     .
+>                                                                 q->enqueue
+>                                                              qdisc_run_begin(q)
+> qdisc_run_end(q)
+>
+>
+> cpu1 enqueue a skb without calling __qdisc_run(), and cpu0 did not see the
+> enqueued skb when calling __qdisc_run(q) because cpu1 may enqueue the skb
+> after cpu0 called __qdisc_run(q) and before cpu0 called qdisc_run_end(q).
 
-This looks conceptually fine to me.
+This is the same problem that my patch fixes, I do not know
+why you are suggesting another patch despite quoting mine.
+Please read the whole thread if you want to participate.
 
-But as mentioned, I think I'd be even happier if we added a "thsi vma
-has seen a page pin event" flag to the vma flags, and didn't rely
-_just_ on the page_maybe_dma_pinned() check, which migth be triggered
-by those fork-happy loads.
-
-Side note: I wonder if that COW mapping check could be entirely within
-that vm_normal_page() path.
-
-Because how could a non-normal page be a COW page and not already
-write-protected?
-
-But that's a separate issue, it's just how your patch makes that odd
-case more obvious.
-
-            Linus
+Thanks.
