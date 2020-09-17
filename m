@@ -2,84 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71E1E26E251
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4BE726E208
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:17:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726456AbgIQR1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 13:27:02 -0400
-Received: from mga17.intel.com ([192.55.52.151]:18415 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726192AbgIQRZg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 13:25:36 -0400
-X-Greylist: delayed 531 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 13:24:40 EDT
-IronPort-SDR: W8aiqw4mkzlHLXz5QxbMNIN05J7T7inNnDLPY+r2FgFiSMoUcA1Y36/e48I/GNoRaHtMjzoKWa
- OdSiv3spRsSg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="139750307"
-X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
-   d="scan'208";a="139750307"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 10:15:29 -0700
-IronPort-SDR: RA7L5wTJFENSj9aj9zv5UwUQj1QaPo2BOH7baLD4WB+F7Jd8xCbwCzwwWSovervwInN7w1nizZ
- r8ga1TIhji0Q==
-X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
-   d="scan'208";a="287659895"
-Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.212.200.158]) ([10.212.200.158])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 10:15:27 -0700
-Subject: Re: [PATCH v3 00/18] Add VFIO mediated device support and DEV-MSI
- support for the idxd driver
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     vkoul@kernel.org, megha.dey@intel.com, maz@kernel.org,
-        bhelgaas@google.com, tglx@linutronix.de,
-        alex.williamson@redhat.com, jacob.jun.pan@intel.com,
-        ashok.raj@intel.com, yi.l.liu@intel.com, baolu.lu@intel.com,
-        kevin.tian@intel.com, sanjay.k.kumar@intel.com,
-        tony.luck@intel.com, jing.lin@intel.com, dan.j.williams@intel.com,
-        kwankhede@nvidia.com, eric.auger@redhat.com, parav@mellanox.com,
-        rafael@kernel.org, netanelg@mellanox.com, shahafs@mellanox.com,
-        yan.y.zhao@linux.intel.com, pbonzini@redhat.com,
-        samuel.ortiz@intel.com, mona.hossain@intel.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-pci@vger.kernel.org, kvm@vger.kernel.org
-References: <160021207013.67751.8220471499908137671.stgit@djiang5-desk3.ch.intel.com>
- <20200917150641.GM3699@nvidia.com>
-From:   Dave Jiang <dave.jiang@intel.com>
-Message-ID: <f4a085f1-f6de-2539-12fe-c7308d243a4a@intel.com>
-Date:   Thu, 17 Sep 2020 10:15:24 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726576AbgIQRQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 13:16:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726524AbgIQRQX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 13:16:23 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F6C1C06174A;
+        Thu, 17 Sep 2020 10:16:23 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kIxVs-000WY1-Kr; Thu, 17 Sep 2020 17:16:04 +0000
+Date:   Thu, 17 Sep 2020 18:16:04 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org
+Subject: Re: [PATCH 2/5] fs,nfs: lift compat nfs4 mount data handling into
+ the nfs code
+Message-ID: <20200917171604.GW3421308@ZenIV.linux.org.uk>
+References: <20200917082236.2518236-1-hch@lst.de>
+ <20200917082236.2518236-3-hch@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <20200917150641.GM3699@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917082236.2518236-3-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 17, 2020 at 10:22:33AM +0200, Christoph Hellwig wrote:
+> There is no reason the generic fs code should bother with NFS specific
+> binary mount data - lift the conversion into nfs4_parse_monolithic
+> instead.
 
+Considering the size of struct compat_nfs4_mount_data_v1...  Do we really
+need to bother with that "copy in place, so we go through the fields
+backwards" logics?  Just make that
 
-On 9/17/2020 8:06 AM, Jason Gunthorpe wrote:
-> On Tue, Sep 15, 2020 at 04:27:35PM -0700, Dave Jiang wrote:
->>   drivers/dma/idxd/idxd.h                            |   65 +
->>   drivers/dma/idxd/init.c                            |  100 ++
->>   drivers/dma/idxd/irq.c                             |    6
->>   drivers/dma/idxd/mdev.c                            | 1089 ++++++++++++++++++++
->>   drivers/dma/idxd/mdev.h                            |  118 ++
-> 
-> It is common that drivers of a subsystem will be under that
-> subsystem's directory tree. This allows the subsystem community to
-> manage pages related to their subsystem and it's drivers.
-> 
-> Should the mdev parts be moved there?
-
-I personally don't have a preference. I'll defer to Alex or Kirti to provide 
-that guidance. It may make certains things like dealing with dma fault regions 
-and etc easier using vfio calls from vfio_pci_private.h later on for vSVM 
-support. It also may be the better code review and maintenance domain and 
-alleviate Vinod having to deal with that portion since it's not dmaengine domain.
-
-> 
-> Jason
-> 
+> +static void nfs4_compat_mount_data_conv(struct nfs4_mount_data *data)
+> +{
+	struct compat_nfs4_mount_data_v1 compat;
+	compat = *(struct compat_nfs4_mount_data_v1 *)data;
+and copy the damnt thing without worrying about the field order...
