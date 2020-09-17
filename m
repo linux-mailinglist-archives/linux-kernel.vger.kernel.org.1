@@ -2,220 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C85F426E287
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A991426E28B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:36:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726597AbgIQRec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 13:34:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726434AbgIQReH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 13:34:07 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E34B6C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:34:06 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id a19so3077624ilq.10
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:34:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bvEQFztQPuE8viTRZv4r7NoJrBod8jSBPM7mRWmOF+Q=;
-        b=jCONn2tTLvDiGW7wFctPJ63OT+YcQ7bhKJF4WyqpYEfE5v/++tWhcomwDc+jqGwFBq
-         MfF6zoiPZM+Iy7spF56rgE/fs3LXOhz9B4bgA2yfBZ8DFDyBKIM0aKk5atHVP7eQgS0v
-         0LMFKG4dY9VTvVLwbmWg+9da7/b++K0dmxPiA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bvEQFztQPuE8viTRZv4r7NoJrBod8jSBPM7mRWmOF+Q=;
-        b=gC9H/wauKLZmjW9Yl2nzrqLFYLw1o1501wxOI9lTDZzs47CsvUbxDuau6foe4NedHT
-         7DebTIpzW/hJQ43Lnm7+MP4XQLoj3XqGuEv7IhG95I+Qh5TT+Fi1eRUShNyMJygXPFea
-         tl9aZJU36Ip5nwXxqaHJo9ilCu1l/KgegR0aCxsBQnD3vC3qHgHESU5T/12Klr8Cw3i5
-         LtbgKXVJx04aY462RgZkRg/0mPk0xCz7/Ek47y7s/EtELH23e/4G5St6Pbrgxr9vgLBc
-         sci2cJmLzEHyTU+C+h38jolk0UuR4uUB6SSaO1uGVZZcyYYaPBE9MDIZ+VTdsB0tBK9b
-         sz/Q==
-X-Gm-Message-State: AOAM531NFCZguELOFq3bsgJpZxjZXgWbpjU70ul2TBT1A01YJFnzSRea
-        /eqeSUlxLcnCOUph1BkgyImUjMp818TraaEzdk4yfA==
-X-Google-Smtp-Source: ABdhPJy+6fAG8ognE5b0H5zeigIDrGPIlgUmyvJHvGbn0gU4BsqIo9N+xzdQEUiHr4ZlYAPQadfXG13Z3Eo+ig1LkxI=
-X-Received: by 2002:a92:d785:: with SMTP id d5mr19151636iln.123.1600364045296;
- Thu, 17 Sep 2020 10:34:05 -0700 (PDT)
+        id S1726417AbgIQRf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 13:35:59 -0400
+Received: from mga09.intel.com ([134.134.136.24]:13515 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726368AbgIQRe0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 13:34:26 -0400
+IronPort-SDR: OdVklUU62wCQs3ZUYy/pJF9iDiWC/NKL6kzXRqEmpZEiRu8VjxGtvsYiYRRI815LFuf9VEnzyn
+ V10KevEOolJQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="160678242"
+X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
+   d="scan'208";a="160678242"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 10:34:25 -0700
+IronPort-SDR: Tfk15wsHCj+1fwMeEfq68zQkzJwAiQxm0lrVLBwfSLsqhngWIMQX1PcBBY0QXO/v0ToPNSju5z
+ AtGPm0O6iGkg==
+X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
+   d="scan'208";a="307557365"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 10:34:24 -0700
+Date:   Thu, 17 Sep 2020 10:34:24 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Souptick Joarder <jrdr.linux@gmail.com>, jhubbard@nvidia.com,
+        mporter@kernel.crashing.org, alex.bou9@gmail.com,
+        akpm@linux-foundation.org, gustavoars@kernel.org,
+        madhuparnabhowmik10@gmail.com, linux-kernel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [linux-next PATCH] rapidio: Fix error handling path
+Message-ID: <20200917173424.GB2540965@iweiny-DESK2.sc.intel.com>
+References: <1600227737-20785-1-git-send-email-jrdr.linux@gmail.com>
+ <20200916100232.GF18329@kadam>
+ <20200917123951.GP18329@kadam>
 MIME-Version: 1.0
-References: <20200917110838.1.I63d52f5b96d7e81e1e2dc2a72c4bf5fd84d3d3d0@changeid>
- <e3dfb952555890779ad0717370786bf748955494.camel@redhat.com>
-In-Reply-To: <e3dfb952555890779ad0717370786bf748955494.camel@redhat.com>
-From:   Kevin Chowski <chowski@chromium.org>
-Date:   Thu, 17 Sep 2020 11:33:54 -0600
-Message-ID: <CANM=9DPUh8tZbW=qXEdoE7bKqCv55hHr-YAAOerKi+ES_JSH+A@mail.gmail.com>
-Subject: Re: [PATCH] i915: Introduce quirk for shifting eDP brightness.
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        intel-gfx@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Juha-Pekka Heikkila <juhapekka.heikkila@gmail.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917123951.GP18329@kadam>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(resending as plain-text, my last mail was rejected by lots of
-addresses for some reason)
+On Thu, Sep 17, 2020 at 03:39:51PM +0300, Dan Carpenter wrote:
+> On Wed, Sep 16, 2020 at 01:02:32PM +0300, Dan Carpenter wrote:
+> > On Wed, Sep 16, 2020 at 09:12:17AM +0530, Souptick Joarder wrote:
+> > > There is an error when pin_user_pages_fast() returns -ERRNO and
+> > > inside error handling path driver end up calling unpin_user_pages()
+> > > with -ERRNO which is not correct.
+> > > 
+> > > This patch will fix the problem.
+> > 
+> > There are a few ways we could prevent bug in the future.
+> > 
+> > 1) This could have been caught with existing static analysis tools
+> >    which warn about when a value is set but not used.
+> > 
+> > 2) I've created a Smatch check which warngs about:
+> > 
+> > 	drivers/rapidio/devices/rio_mport_cdev.c:955 rio_dma_transfer() warn: unpinning negative pages 'nr_pages'
+> > 
+> >    I'll test it out tonight and see how well it works.  I don't
+> >    immediately see any other bugs allthough Smatch doesn't like the code
+> >    in siw_umem_release().  It uses "min_t(int" which suggests that
+> >    negative pages are okay.
+> > 
+> > 	   int to_free = min_t(int, PAGES_PER_CHUNK, num_pages);
+> >
+> 
+> I only found one bug but I'm going to add unpin_user_pages_dirty_lock()
+> to the mix a retest.  There were a few other false positives.  In
+> reviewing the code, I noticed that orangefs_bufmap_map() is also buggy.
+> 
+> I sort of feel like returning partial successes is not working.  We
+> could easily make a wrapper which either pins everything or it returns
+> an error code.
 
-Thanks very much for the quick reply, Lyude!
+I guess the question is are there drivers which will keep working (or limp
+along?) on partial pins?  A quick search of a driver I thought did this does
+not apparently any more...  So it sounds good to me from 30,000 feet!  :-D
 
-I'm happy to make the requested changes, but I wanted to clarify
-before falling down the wrong hole: are you suggesting that I move the
-intel_dp_aux_set_backlight/intel_dp_aux_get_backlight routines to the
-drm_dp_helper.c file?
+Ira
 
-On Thu, Sep 17, 2020 at 11:13 AM Lyude Paul <lyude@redhat.com> wrote:
->
-> Just an FYI, my plan for some of this eDP backlight code is to move as much of
-> it into helpers as possible since we need to implement the same interface in
-> nouveau. We probably can figure out some other solution for handling this quirk
-> if this isn't possible, but could we maybe use the panel's OUI here and add a
-> quirk to drm_dp_helper.c instead?
->
-> On Thu, 2020-09-17 at 11:09 -0600, Kevin Chowski wrote:
-> > We have observed that Google Pixelbook's backlight hardware is
-> > interpretting these backlight bits from the most-significant side of the
-> > 16 bit word (if DP_EDP_PWMGEN_BIT_COUNT < 16), whereas the driver code
-> > assumes the peripheral cares about the least-significant bits.
-> >
-> > Testing was done from within Chrome OS's build environment when the
-> > patch is backported to 5.4 (the version we are newly targeting for the
-> > Pixelbook); for the record:
-> >    $ emerge-eve-kernelnext sys-kernel/chromeos-kernel-5_4 && \
-> >       ./update_kernel.sh --remote=$IP
-> >
-> > I used `/sys/kernel/debug/dri/0/eDP-1/i915_dpcd` on my laptop to verify
-> > that the registers were being set according to what the actual hardware
-> > expects; I also observe that the backlight is noticeably brighter with
-> > this patch.
-> >
-> > Signed-off-by: Kevin Chowski <chowski@chromium.org>
-> > ---
-> >
-> >  .../drm/i915/display/intel_dp_aux_backlight.c | 34 +++++++++++++++++++
-> >  drivers/gpu/drm/i915/display/intel_quirks.c   | 13 +++++++
-> >  drivers/gpu/drm/i915/i915_drv.h               |  1 +
-> >  3 files changed, 48 insertions(+)
-> >
-> > diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> > b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> > index acbd7eb66cbe3..99c98f217356d 100644
-> > --- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> > +++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> > @@ -91,6 +91,23 @@ static u32 intel_dp_aux_get_backlight(struct
-> > intel_connector *connector)
-> >       if (intel_dp->edp_dpcd[2] & DP_EDP_BACKLIGHT_BRIGHTNESS_BYTE_COUNT)
-> >               level = (read_val[0] << 8 | read_val[1]);
-> >
-> > +     if (i915->quirks & QUIRK_SHIFT_EDP_BACKLIGHT_BRIGHTNESS) {
-> > +             if (!drm_dp_dpcd_readb(&intel_dp->aux, DP_EDP_PWMGEN_BIT_COUNT,
-> > +                                             &read_val[0])) {
-> > +                     DRM_DEBUG_KMS("Failed to read DPCD register 0x%x\n",
-> > +                                     DP_EDP_PWMGEN_BIT_COUNT);
-> > +                     return 0;
-> > +             }
-> > +             // Only bits 4:0 are used, 7:5 are reserved.
-> > +             read_val[0] = read_val[0] & 0x1F;
-> > +             if (read_val[0] > 16) {
-> > +                     DRM_DEBUG_KMS("Invalid DP_EDP_PWNGEN_BIT_COUNT 0x%X,
-> > expected at most 16\n",
-> > +                                             read_val[0]);
-> > +                     return 0;
-> > +             }
-> > +             level >>= 16 - read_val[0];
-> > +     }
-> > +
-> >       return level;
-> >  }
-> >
-> > @@ -106,6 +123,23 @@ intel_dp_aux_set_backlight(const struct
-> > drm_connector_state *conn_state, u32 lev
-> >       struct drm_i915_private *i915 = dp_to_i915(intel_dp);
-> >       u8 vals[2] = { 0x0 };
-> >
-> > +     if (i915->quirks & QUIRK_SHIFT_EDP_BACKLIGHT_BRIGHTNESS) {
-> > +             if (!drm_dp_dpcd_readb(&intel_dp->aux, DP_EDP_PWMGEN_BIT_COUNT,
-> > +                                             &vals[0])) {
-> > +                     DRM_DEBUG_KMS("Failed to write aux backlight level:
-> > Failed to read DPCD register 0x%x\n",
-> > +                                       DP_EDP_PWMGEN_BIT_COUNT);
-> > +                     return;
-> > +             }
-> > +             // Only bits 4:0 are used, 7:5 are reserved.
-> > +             vals[0] = vals[0] & 0x1F;
-> > +             if (vals[0] > 16) {
-> > +                     DRM_DEBUG_KMS("Failed to write aux backlight level:
-> > Invalid DP_EDP_PWNGEN_BIT_COUNT 0x%X, expected at most 16\n",
-> > +                                             vals[0]);
-> > +                     return;
-> > +             }
-> > +             level <<= (16 - vals[0]) & 0xFFFF;
-> > +     }
-> > +
-> >       vals[0] = level;
-> >
-> >       /* Write the MSB and/or LSB */
-> > diff --git a/drivers/gpu/drm/i915/display/intel_quirks.c
-> > b/drivers/gpu/drm/i915/display/intel_quirks.c
-> > index 46beb155d835f..63b27d49b2864 100644
-> > --- a/drivers/gpu/drm/i915/display/intel_quirks.c
-> > +++ b/drivers/gpu/drm/i915/display/intel_quirks.c
-> > @@ -53,6 +53,16 @@ static void quirk_increase_ddi_disabled_time(struct
-> > drm_i915_private *i915)
-> >       drm_info(&i915->drm, "Applying Increase DDI Disabled quirk\n");
-> >  }
-> >
-> > +/*
-> > + * Some eDP backlight hardware uses the most-significant bits of the
-> > brightness
-> > + * register, so brightness values must be shifted first.
-> > + */
-> > +static void quirk_shift_edp_backlight_brightness(struct drm_i915_private
-> > *i915)
-> > +{
-> > +     i915->quirks |= QUIRK_SHIFT_EDP_BACKLIGHT_BRIGHTNESS;
-> > +     DRM_INFO("Applying shift eDP backlight brightness quirk\n");
-> > +}
-> > +
-> >  struct intel_quirk {
-> >       int device;
-> >       int subsystem_vendor;
-> > @@ -156,6 +166,9 @@ static struct intel_quirk intel_quirks[] = {
-> >       /* ASRock ITX*/
-> >       { 0x3185, 0x1849, 0x2212, quirk_increase_ddi_disabled_time },
-> >       { 0x3184, 0x1849, 0x2212, quirk_increase_ddi_disabled_time },
-> > +
-> > +     /* Google Pixelbook */
-> > +     { 0x591E, 0x8086, 0x2212, quirk_shift_edp_backlight_brightness },
-> >  };
-> >
-> >  void intel_init_quirks(struct drm_i915_private *i915)
-> > diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
-> > index e4f7f6518945b..cc93bede4fab8 100644
-> > --- a/drivers/gpu/drm/i915/i915_drv.h
-> > +++ b/drivers/gpu/drm/i915/i915_drv.h
-> > @@ -525,6 +525,7 @@ struct i915_psr {
-> >  #define QUIRK_PIN_SWIZZLED_PAGES (1<<5)
-> >  #define QUIRK_INCREASE_T12_DELAY (1<<6)
-> >  #define QUIRK_INCREASE_DDI_DISABLED_TIME (1<<7)
-> > +#define QUIRK_SHIFT_EDP_BACKLIGHT_BRIGHTNESS (1<<8)
-> >
-> >  struct intel_fbdev;
-> >  struct intel_fbc_work;
-> --
-> Sincerely,
->       Lyude Paul (she/her)
->       Software Engineer at Red Hat
->
+> 
+> drivers/misc/mic/scif/scif_rma.c:1399 __scif_pin_pages() warn: unpinning negative pages 'pinned_pages->nr_pages'
+> 
+> drivers/misc/mic/scif/scif_rma.c
+>   1355                          vmalloc_addr = true;
+>   1356  
+>   1357                  for (i = 0; i < nr_pages; i++) {
+>   1358                          if (vmalloc_addr)
+>   1359                                  pinned_pages->pages[i] =
+>   1360                                          vmalloc_to_page(addr + (i * PAGE_SIZE));
+>   1361                          else
+>   1362                                  pinned_pages->pages[i] =
+>   1363                                          virt_to_page(addr + (i * PAGE_SIZE));
+>   1364                  }
+>   1365                  pinned_pages->nr_pages = nr_pages;
+>   1366                  pinned_pages->map_flags = SCIF_MAP_KERNEL;
+>   1367          } else {
+>   1368                  /*
+>   1369                   * SCIF supports registration caching. If a registration has
+>   1370                   * been requested with read only permissions, then we try
+>   1371                   * to pin the pages with RW permissions so that a subsequent
+>   1372                   * transfer with RW permission can hit the cache instead of
+>   1373                   * invalidating it. If the upgrade fails with RW then we
+>   1374                   * revert back to R permission and retry
+>   1375                   */
+>   1376                  if (prot == SCIF_PROT_READ)
+>   1377                          try_upgrade = true;
+>   1378                  prot |= SCIF_PROT_WRITE;
+>   1379  retry:
+>   1380                  mm = current->mm;
+>   1381                  if (ulimit) {
+>   1382                          err = __scif_check_inc_pinned_vm(mm, nr_pages);
+>   1383                          if (err) {
+>   1384                                  pinned_pages->nr_pages = 0;
+>   1385                                  goto error_unmap;
+>   1386                          }
+>   1387                  }
+>   1388  
+>   1389                  pinned_pages->nr_pages = pin_user_pages_fast(
+>   1390                                  (u64)addr,
+>   1391                                  nr_pages,
+>   1392                                  (prot & SCIF_PROT_WRITE) ? FOLL_WRITE : 0,
+>   1393                                  pinned_pages->pages);
+>   1394                  if (nr_pages != pinned_pages->nr_pages) {
+>   1395                          if (try_upgrade) {
+>   1396                                  if (ulimit)
+>   1397                                          __scif_dec_pinned_vm_lock(mm, nr_pages);
+>   1398                                  /* Roll back any pinned pages */
+>   1399                                  unpin_user_pages(pinned_pages->pages,
+>   1400                                                   pinned_pages->nr_pages);
+>                                                          ^^^^^^^^^^^^^^^^^^^^^^
+> Negative.
+> 
+>   1401                                  prot &= ~SCIF_PROT_WRITE;
+>   1402                                  try_upgrade = false;
+>   1403                                  goto retry;
+>   1404                          }
+>   1405                  }
+>   1406                  pinned_pages->map_flags = 0;
+>   1407          }
+>   1408  
+>   1409          if (pinned_pages->nr_pages < nr_pages) {
+>                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> These are both signed so it negative ->nr_pages are less than nr_pages.
+> 
+>   1410                  err = -EFAULT;
+>   1411                  pinned_pages->nr_pages = nr_pages;
+>                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> This sets it to "everything was pinned".
+> 
+>   1412                  goto dec_pinned;
+>   1413          }
+>   1414  
+>   1415          *out_prot = prot;
+>   1416          atomic_set(&pinned_pages->ref_count, 1);
+>   1417          *pages = pinned_pages;
+>   1418          return err;
+>   1419  dec_pinned:
+>   1420          if (ulimit)
+>   1421                  __scif_dec_pinned_vm_lock(mm, nr_pages);
+>   1422          /* Something went wrong! Rollback */
+>   1423  error_unmap:
+>   1424          pinned_pages->nr_pages = nr_pages;
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> This assumes everything was pinned successfully.
+> 
+>   1425          scif_destroy_pinned_pages(pinned_pages);
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> We absolutely don't want to pass negative ->nr_pages to this function
+> either.
+> 
+>   1426          *pages = NULL;
+>   1427          dev_dbg(scif_info.mdev.this_device,
+>   1428                  "%s %d err %d len 0x%lx\n", __func__, __LINE__, err, len);
+>   1429          return err;
+>   1430  }
+> 
+> regards,
+> dan carpenter
+> 
