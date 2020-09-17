@@ -2,113 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E104026DA78
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E09CC26DA79
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726906AbgIQLjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 07:39:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726863AbgIQLfb (ORCPT
+        id S1726918AbgIQLj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 07:39:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24620 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726707AbgIQLgK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 07:35:31 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC940C06178A;
-        Thu, 17 Sep 2020 04:35:30 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id s13so1621190wmh.4;
-        Thu, 17 Sep 2020 04:35:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Mus1g7E9Rtbt7/nepGmgFQZVliCzO5VVruzhgZKok1k=;
-        b=GWxRVmNUwNR9Ey5zhEDaCxB8vv1SHPfruBwXls5beC7jujQF9UjZwyDycRPrdLdOsv
-         Z3BWpYUlraPEsFkTHs6OIfyGhK4h4DbqGQNG06+ULS73/C7I4zuUeYnkG+NkQAE8iZDT
-         KdFapj1rUlWsf87R61RI3QAv1mDuGo6oZt4uTl5orzGpEyvoCV7beECuaoacvZsaJRgZ
-         JgNUyA6qGFpyc5YhTVZTHQlZ5Z3FmdomkquHtR6/hE+RbYFffAExC+LO62KD0pvkfH1s
-         NM1qWpBIUrU+/2DMMXCfHVZXL+x+BsE8ONfghfOhvS0JzzmfgeBYIgRmubvFgDZECiGY
-         ztcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Mus1g7E9Rtbt7/nepGmgFQZVliCzO5VVruzhgZKok1k=;
-        b=PwzDx/dHVDEwmrpky8s87RHTh7oxJ22ti5MUl5QWTxFboXTnfLwGOgWnM/XS1po6Od
-         9B3HgujZsxPGVmg7yBCMBD4DvOxyZFSoOrB1PXaX2E133ZXkEHZucn12ZpSS78SBGTsB
-         HZnCiMd4c7nOKkEKVRBmSxLHTuhpIl/38pHW43ozCft7bEhJlIVhQ8dKfoFZPSfzEOTw
-         D+YzKMJTJ/fViy3Q2/avz9n9QJkdK86Hll8HxByLO5yOnzScamg/JWrIq442oAnwfjWK
-         dNz5ATomBnEWRr4gwelAloyfSdiQYmCyrSarC+IvlK1RhEIndKUCRDY8nxnIJn2EWgl5
-         sq9Q==
-X-Gm-Message-State: AOAM533hgonaKYptMFh4yxh72d6VXGstd1Amtz82CSvX05pMwkN+Cl9y
-        xjobpxJsHnVUa4MDzChZRoNp5Vckrs4ABQ==
-X-Google-Smtp-Source: ABdhPJwi+j3bVV9XLDKvfIFeifnu1UdiG8GWsRRGY75Du3lRw3z/gOOcDakf0MzklQhLjWAvLqdD9A==
-X-Received: by 2002:a05:600c:20c:: with SMTP id 12mr10078544wmi.40.1600342529387;
-        Thu, 17 Sep 2020 04:35:29 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id i83sm11166196wma.22.2020.09.17.04.35.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 04:35:27 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 13:35:26 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 13/34] i2c: tegra: Move out all device-tree parsing
- into tegra_i2c_parse_dt()
-Message-ID: <20200917113526.GW3515672@ulmo>
-References: <20200908224006.25636-1-digetx@gmail.com>
- <20200908224006.25636-14-digetx@gmail.com>
+        Thu, 17 Sep 2020 07:36:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600342557;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5n7wJKyexD2oiZEydGT+/+g5eqfjGOnTvWw7VQtJAzQ=;
+        b=L8znAvSCc4CF9oWcs7z4WspCJmSx7mTnWbDGLK9urFzVGxA8tGw7P2t6hkNoXxdHv2mDd/
+        f4gUHAKMtSifecut22XQIv6OV12TlGH9pF525wptKFgEEB/iE0jPbsc5/yFeAKahn8s+bb
+        ya2iZMKJCMkTMlwKB1GWzHSR3edO/Zw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-582-dqePwP51NmafVBHYPjGY7g-1; Thu, 17 Sep 2020 07:35:55 -0400
+X-MC-Unique: dqePwP51NmafVBHYPjGY7g-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C1BC685C731;
+        Thu, 17 Sep 2020 11:35:54 +0000 (UTC)
+Received: from gondolin (ovpn-113-19.ams2.redhat.com [10.36.113.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A2662101416C;
+        Thu, 17 Sep 2020 11:35:50 +0000 (UTC)
+Date:   Thu, 17 Sep 2020 13:35:37 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Zenghui Yu <yuzenghui@huawei.com>
+Cc:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <alex.williamson@redhat.com>, <wanghaibin.wang@huawei.com>
+Subject: Re: [PATCH 2/2] vfio/pci: Remove bardirty from vfio_pci_device
+Message-ID: <20200917133537.17af2ef3.cohuck@redhat.com>
+In-Reply-To: <20200917033128.872-2-yuzenghui@huawei.com>
+References: <20200917033128.872-1-yuzenghui@huawei.com>
+        <20200917033128.872-2-yuzenghui@huawei.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="NO4xtVTk6ycZDAf4"
-Content-Disposition: inline
-In-Reply-To: <20200908224006.25636-14-digetx@gmail.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 17 Sep 2020 11:31:28 +0800
+Zenghui Yu <yuzenghui@huawei.com> wrote:
 
---NO4xtVTk6ycZDAf4
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Sep 09, 2020 at 01:39:45AM +0300, Dmitry Osipenko wrote:
-> Move out code related to device-tree parsing from the probe function into
-> tegra_i2c_parse_dt() in order to make code more consistent.
->=20
-> Reviewed-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> It isn't clear what purpose the @bardirty serves. It might be used to avoid
+> the unnecessary vfio_bar_fixup() invoking on a user-space BAR read, which
+> is not required when bardirty is unset.
+> 
+> The variable was introduced in commit 89e1f7d4c66d ("vfio: Add PCI device
+> driver") but never actually used, so it shouldn't be that important. Remove
+> it.
+> 
+> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
 > ---
->  drivers/i2c/busses/i2c-tegra.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
+>  drivers/vfio/pci/vfio_pci_config.c  | 7 -------
+>  drivers/vfio/pci/vfio_pci_private.h | 1 -
+>  2 files changed, 8 deletions(-)
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+Yes, it seems to have been write-only all the time.
 
---NO4xtVTk6ycZDAf4
-Content-Type: application/pgp-signature; name="signature.asc"
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9jSf0ACgkQ3SOs138+
-s6EdSA//fSTxfL0lQvOvL75JmgW/zF9J1QXfQzIC7XqKLeVa26a5695M346bbUuh
-2DiJpiTXoAKxbqVg+X/M1ptf+04/cACAMj4jyaCaFIjVngsCtV96bRNcZFTkjmH0
-kL5KcPHbvKi5rRfyKjodfDTworIbMg8WqDabhUl1pXL6SyctkkLNreXXlDuKMUbx
-vo/I2xu8G4bxHAiBA+mBg3l9nJ70vENR4GlT8NRhmaGCnaEtYUYtpgKXUq25Y5Gc
-/OIibcJ4hErXLjFnfaEf4wUtkVTlRlz/yB8jDSVqFu/E/ybsW0pZO//LiIwwIpTn
-abmXuOzJxQPhkay8fdE8jymUALh5vpb1iE8eEGHHZOibb8Q6UD3dXZKuZcWqNGZP
-Myj/ROITZ6nTpZSp5x4NThxltO9J6L+5WVyFyq3ZqRV2WBeDmzfayXePdf0WuW6F
-aoT8bL049X5fNl+wg8dCI91NKHxeOwXk4ns22Zy5UdO6YE701GG02VeAg/eifb3y
-3Sj41pcdsOQR4JpDB2wSJFOrtuiEvHzUuc2VQJjtUany7dArhLp9FmxFtggIh9Er
-gZApT//JSGbdNMju+n6UAQRIZnwrFUir2IRdGqFdHKePVBz3pcPeLyuWfCLe0/7o
-CVpKTi3HwfRg4sXpWh0ePK0p3RvjjpTPX8yghsGXGXRtT0/9NHQ=
-=tV8d
------END PGP SIGNATURE-----
-
---NO4xtVTk6ycZDAf4--
