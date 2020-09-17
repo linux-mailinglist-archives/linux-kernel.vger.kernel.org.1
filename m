@@ -2,100 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE2C626DA83
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02EB826DA99
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:44:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbgIQLlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 07:41:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55586 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726794AbgIQLis (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 07:38:48 -0400
-Received: from localhost.localdomain (unknown [31.124.44.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E674F208DB;
-        Thu, 17 Sep 2020 11:38:42 +0000 (UTC)
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>, bpf@vger.kernel.org
-Cc:     Will Deacon <will@kernel.org>, ardb@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <songliubraving@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Olsa <jolsa@kernel.org>, KP Singh <kpsingh@chromium.org>,
-        Yonghong Song <yhs@fb.com>, linux-kernel@vger.kernel.org,
-        naresh.kamboju@linaro.org, luke.r.nels@gmail.com,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>, xi.wang@gmail.com,
-        Andrii Nakryiko <andriin@fb.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        netdev@vger.kernel.org, Zi Shen Lim <zlim.lnx@gmail.com>
-Subject: Re: [PATCH v3] arm64: bpf: Fix branch offset in JIT
-Date:   Thu, 17 Sep 2020 12:38:41 +0100
-Message-Id: <160034270905.31412.2297717371363448460.b4-ty@arm.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200917084925.177348-1-ilias.apalodimas@linaro.org>
-References: <20200917084925.177348-1-ilias.apalodimas@linaro.org>
+        id S1726896AbgIQLoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 07:44:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726792AbgIQLi4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 07:38:56 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 929CFC06174A;
+        Thu, 17 Sep 2020 04:38:50 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id s13so1630138wmh.4;
+        Thu, 17 Sep 2020 04:38:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=rJmyCRW8hkjib/ACuJzI9iaXZVPDBL4tzkgKMlfeHek=;
+        b=FJt8nLbiJIpDK5kEO0R2QVVPKC0r12QCW+NaKgxWS+oKXAlaL55uOQNHiAuSg+402U
+         iBWtjhuUAjp7TzgPtLSnQmjG9e+nYqZkHkXb9ZqG/kt5K68NwRf7SaqmUcccDzi1R5U4
+         fTLh0HR3V92jqgV5bxFigzJHOsBZwCS9OhPXTWW4hyOGgqwYYNCaRF3+ci8i86ihApXT
+         dANf0kAKtW1TxXEd2urDs+vZzKHRwGZujLIZvYeoRpttOX9kL95Guzn8S+eVQKKXrH76
+         w6Bdx67RqjZrGAYxCVq5xBtRjZGS/fcHy49958Ms0JVIN+WLYdS3NMiz9WadjIvDUwMv
+         Yzmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=rJmyCRW8hkjib/ACuJzI9iaXZVPDBL4tzkgKMlfeHek=;
+        b=VFLbLGInNG9IPS3WNrEcl3Hs9thAud3WGoD8lb6SyTB5VoVbqNHWVM81nyzRMbBq4S
+         3uVgNJLI0rkEW4zyj1k8/4DGCVkD9aQefynDQoXsPvgj610jgAlAx2WEW6lfDixYbnlV
+         cY+phTxAonSXjhFC8xjuLACQ+fabFmB/uf44H0m7aQvTaUlMR4Sucs5GNfO5AADa4fZP
+         5cuTrekTVkkSFse2aRaPBs7Yq3CT6jCqH2ZXnwanYbCpElTSvfLNmIstNP//+OUdJbR3
+         MwrNr8bIeX4uy1MrhB7VUxfvDDUCCP9b+ETmrd4GyaFW/i6z2DXkUSXB9iKWUC/Yx/fH
+         hKYA==
+X-Gm-Message-State: AOAM532wSwlP+WxRWupWhGM1rqV8lIpaY9O3Ikw6N8aXGyt6Qlk7nLzI
+        uPoGVyedcqA8380RUTquct/PxaU5sHfzsw==
+X-Google-Smtp-Source: ABdhPJza4bV3f7fwZefZHWaa6AB76+OITGW8sLvHJnevW+Y3HCVqWcrl8TOfJ6cS5T9+8L7oHM56Rw==
+X-Received: by 2002:a1c:81c9:: with SMTP id c192mr9197209wmd.2.1600342729283;
+        Thu, 17 Sep 2020 04:38:49 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id v17sm41293646wrc.23.2020.09.17.04.38.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 04:38:48 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 13:38:46 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 12/34] i2c: tegra: Use clk-bulk helpers
+Message-ID: <20200917113846.GX3515672@ulmo>
+References: <20200908224006.25636-1-digetx@gmail.com>
+ <20200908224006.25636-13-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="oIMVlEQ///Q2JYC7"
+Content-Disposition: inline
+In-Reply-To: <20200908224006.25636-13-digetx@gmail.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Sep 2020 11:49:25 +0300, Ilias Apalodimas wrote:
-> Running the eBPF test_verifier leads to random errors looking like this:
-> 
-> [ 6525.735488] Unexpected kernel BRK exception at EL1
-> [ 6525.735502] Internal error: ptrace BRK handler: f2000100 [#1] SMP
-> [ 6525.741609] Modules linked in: nls_utf8 cifs libdes libarc4 dns_resolver fscache binfmt_misc nls_ascii nls_cp437 vfat fat aes_ce_blk crypto_simd cryptd aes_ce_cipher ghash_ce gf128mul efi_pstore sha2_ce sha256_arm64 sha1_ce evdev efivars efivarfs ip_tables x_tables autofs4 btrfs blake2b_generic xor xor_neon zstd_compress raid6_pq libcrc32c crc32c_generic ahci xhci_pci libahci xhci_hcd igb libata i2c_algo_bit nvme realtek usbcore nvme_core scsi_mod t10_pi netsec mdio_devres of_mdio gpio_keys fixed_phy libphy gpio_mb86s7x
-> [ 6525.787760] CPU: 3 PID: 7881 Comm: test_verifier Tainted: G        W         5.9.0-rc1+ #47
-> [ 6525.796111] Hardware name: Socionext SynQuacer E-series DeveloperBox, BIOS build #1 Jun  6 2020
-> [ 6525.804812] pstate: 20000005 (nzCv daif -PAN -UAO BTYPE=--)
-> [ 6525.810390] pc : bpf_prog_c3d01833289b6311_F+0xc8/0x9f4
-> [ 6525.815613] lr : bpf_prog_d53bb52e3f4483f9_F+0x38/0xc8c
-> [ 6525.820832] sp : ffff8000130cbb80
-> [ 6525.824141] x29: ffff8000130cbbb0 x28: 0000000000000000
-> [ 6525.829451] x27: 000005ef6fcbf39b x26: 0000000000000000
-> [ 6525.834759] x25: ffff8000130cbb80 x24: ffff800011dc7038
-> [ 6525.840067] x23: ffff8000130cbd00 x22: ffff0008f624d080
-> [ 6525.845375] x21: 0000000000000001 x20: ffff800011dc7000
-> [ 6525.850682] x19: 0000000000000000 x18: 0000000000000000
-> [ 6525.855990] x17: 0000000000000000 x16: 0000000000000000
-> [ 6525.861298] x15: 0000000000000000 x14: 0000000000000000
-> [ 6525.866606] x13: 0000000000000000 x12: 0000000000000000
-> [ 6525.871913] x11: 0000000000000001 x10: ffff8000000a660c
-> [ 6525.877220] x9 : ffff800010951810 x8 : ffff8000130cbc38
-> [ 6525.882528] x7 : 0000000000000000 x6 : 0000009864cfa881
-> [ 6525.887836] x5 : 00ffffffffffffff x4 : 002880ba1a0b3e9f
-> [ 6525.893144] x3 : 0000000000000018 x2 : ffff8000000a4374
-> [ 6525.898452] x1 : 000000000000000a x0 : 0000000000000009
-> [ 6525.903760] Call trace:
-> [ 6525.906202]  bpf_prog_c3d01833289b6311_F+0xc8/0x9f4
-> [ 6525.911076]  bpf_prog_d53bb52e3f4483f9_F+0x38/0xc8c
-> [ 6525.915957]  bpf_dispatcher_xdp_func+0x14/0x20
-> [ 6525.920398]  bpf_test_run+0x70/0x1b0
-> [ 6525.923969]  bpf_prog_test_run_xdp+0xec/0x190
-> [ 6525.928326]  __do_sys_bpf+0xc88/0x1b28
-> [ 6525.932072]  __arm64_sys_bpf+0x24/0x30
-> [ 6525.935820]  el0_svc_common.constprop.0+0x70/0x168
-> [ 6525.940607]  do_el0_svc+0x28/0x88
-> [ 6525.943920]  el0_sync_handler+0x88/0x190
-> [ 6525.947838]  el0_sync+0x140/0x180
-> [ 6525.951154] Code: d4202000 d4202000 d4202000 d4202000 (d4202000)
-> [ 6525.957249] ---[ end trace cecc3f93b14927e2 ]---
-> 
-> [...]
 
-Applied to arm64 (for-next/fixes), thanks!
+--oIMVlEQ///Q2JYC7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[1/1] arm64: bpf: Fix branch offset in JIT
-      https://git.kernel.org/arm64/c/32f6865c7aa3
+On Wed, Sep 09, 2020 at 01:39:44AM +0300, Dmitry Osipenko wrote:
+> Use clk-bulk helpers and factor out clocks initialization into separate
+> function in order to make code cleaner.
+>=20
+> The clocks initialization now performed after reset-control initialization
+> in order to avoid a noisy -PROBE_DEFER errors on T186+ from the clk-bulk
+> helper which doesn't silence this error code. Hence reset_control_get()
+> now may return -EPROBE_DEFER on newer Tegra SoCs because they use BPMP
+> driver that provides reset controls and BPMP doesn't come up early during
+> boot. Previously rst was protected by the clocks retrieval and now this
+> patch makes dev_err_probe() to be used for the rst error handling.
+>=20
+> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/i2c/busses/i2c-tegra.c | 187 ++++++++++++---------------------
+>  1 file changed, 67 insertions(+), 120 deletions(-)
 
--- 
-Catalin
+This is tempting from a diffstat point of view, but the downside is that
+we can now no longer validate that all of the necessary clocks are given
+in device tree.
 
+Previously the driver would fail to probe the I2C controller if any of
+the expected clocks were not defined in device tree, but now it's just
+going to continue without it and not give any indication as to what's
+wrong.
+
+Thierry
+
+--oIMVlEQ///Q2JYC7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9jSsYACgkQ3SOs138+
+s6GU2w//Q0AhqiF0c/SNMjblAQKKSNF3TRODXCut1pqNibaGWR6hooo5r52Fb6cE
+9TRTDmOgHUvclr9gZ16V97AUNisBJ8LpYOUaDsehz6Y0xjTYpKczQfFj3YpMMBAT
++uV9S7kCE1UU+tW8UZKHDxo5WI3rNF49CKR8r5p0P2PCjzO+GIvHQicUQJqbT5ZP
+CXPOKqx+sIgyGVa/Ygt5+68linjQa59RfQQPLtGSC9SguIjspFSPo4mrYVgjQwx2
+FuHd2s8I3lncTpvQncWc2XZuZcJl5iMDyKpJaKKgZmpUbR2B7Tel+F4ynhLFPRbk
+WuDsC/EcA0FgRHDkoOAuaDw/YFWZpUwimy9nEKafiqcGulLWlncvVHJcJDmSgG7U
+Kmo5ftI6jEl8mQWIxbm/fo4Ja++iLvqR1fxUhXsvGHW0ZjnaN9qGZulTwjp0SKvw
+/YRLcNZ001wb+i9ax0kDq+J28gIH4Q5ZXUQlH3vOnlniGRCiVJsrJ7NuHhFNZwQa
+ybAqssMzlcjXUNsAL2SmBj8CCTI79VzHEiUeXcBMXtxFRvWHuByR5EHlwf2zggVx
+W2CFO1NYJs1wjxDBnsy3lFdMDd6tMBe6qL88aojEWKFw3Ads9Vs6+IsiYi364hVS
+k6L9ZeVtu7FI//UbUViyMGNorCy+WS0RvPWgZd4zBwv11O2UF3E=
+=mt5b
+-----END PGP SIGNATURE-----
+
+--oIMVlEQ///Q2JYC7--
