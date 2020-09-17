@@ -2,109 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F32DB26DF10
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 17:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D3F26DF15
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 17:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727939AbgIQPGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 11:06:25 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:55178 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727747AbgIQPET (ORCPT
+        id S1727868AbgIQPGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 11:06:41 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:56080 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727786AbgIQPE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 11:04:19 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08HF3nrx093974;
-        Thu, 17 Sep 2020 10:03:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600355029;
-        bh=68MpQKTxCsWGwGbzyWvdukkDiJlxjWj2z9bwK07+mIc=;
-        h=Subject:From:To:CC:References:Date:In-Reply-To;
-        b=lOpXGXAPhmGYsk2hY2bA9ZJ7mS1TXFA0SFETEkwJEZE7azGrHllU51Kd3btXbG0xa
-         YIcmSI1PTtcPhj8IxkcxOr+6DcPoBhTygSCnH3m8nYxnmtOKCaRKWGKw8slQnv4ijx
-         wGTd2sGIc2GC+/qho4wa8fm4Yi1TAEe0efWoRlik=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08HF3niL092139
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 17 Sep 2020 10:03:49 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 17
- Sep 2020 10:03:49 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 17 Sep 2020 10:03:49 -0500
-Received: from [10.250.32.129] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08HF3mer076110;
-        Thu, 17 Sep 2020 10:03:48 -0500
-Subject: Re: [PATCH net-next 1/3] ethtool: Add 100base-FX link mode entries
-From:   Dan Murphy <dmurphy@ti.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     <davem@davemloft.net>, <f.fainelli@gmail.com>,
-        <hkallweit1@gmail.com>, <mkubecek@suse.cz>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200915181708.25842-1-dmurphy@ti.com>
- <20200915181708.25842-2-dmurphy@ti.com> <20200915202113.GE3526428@lunn.ch>
- <f2a38c01-8726-a7fe-f645-2c83fe30b932@ti.com>
-Message-ID: <24c84585-2a42-31c7-2493-1a9891b3a21e@ti.com>
-Date:   Thu, 17 Sep 2020 10:03:43 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 17 Sep 2020 11:04:56 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600355096; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=QuOovRlqqQ4imLlh/3CVPxCw7KlkSP4GZEYANQVrcVc=; b=v1Lgt083Euy6q+zW9VPK9XH7/M8FVy35NCT5dEoHTsIr2+s6m8AIZw8GlAnrBOH0ZrtqVN6f
+ bxA4ZS94T8hA5KmUhWQQz4Uv4pcJYxoFmP43UTxBQyYZczkvwSIYhx55xExenPWu1u5ybOnW
+ 8e8IttAkiTIzZyDXRJdZr3ZilVQ=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5f637af60915d30357e88d46 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Sep 2020 15:04:22
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D40F4C433CA; Thu, 17 Sep 2020 15:04:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AA653C433F1;
+        Thu, 17 Sep 2020 15:04:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AA653C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     Carl Huang <cjhuang@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, ath11k@lists.infradead.org,
+        "linux-wireless\@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        netdev@vger.kernel.org,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: ath11k: initialize wmi config based on hw_params
+References: <480d8984-a5fb-be1b-b553-e01609601059@canonical.com>
+Date:   Thu, 17 Sep 2020 18:04:16 +0300
+In-Reply-To: <480d8984-a5fb-be1b-b553-e01609601059@canonical.com> (Colin Ian
+        King's message of "Wed, 19 Aug 2020 12:05:17 +0100")
+Message-ID: <875z8ch2bz.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <f2a38c01-8726-a7fe-f645-2c83fe30b932@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew
+Colin Ian King <colin.king@canonical.com> writes:
 
-On 9/15/20 6:29 PM, Dan Murphy wrote:
-> Andrew
+> Hi,
 >
-> On 9/15/20 3:21 PM, Andrew Lunn wrote:
->> On Tue, Sep 15, 2020 at 01:17:06PM -0500, Dan Murphy wrote:
->>> Add entries for the 100base-FX full and half duplex supported modes.
->>>
->>> $ ethtool eth0
->>>          Supported ports: [ TP    MII     FIBRE ]
->>>          Supported link modes:   10baseT/Half 10baseT/Full
->>>                                  100baseT/Half 100baseT/Full
->>>                                  100baseFX/Half 100baseFX/Full
->>>          Supported pause frame use: Symmetric Receive-only
->>>          Supports auto-negotiation: No
->>>          Supported FEC modes: Not reported
->>>          Advertised link modes:  10baseT/Half 10baseT/Full
->>>                                  100baseT/Half 100baseT/Full
->>>                                  100baseFX/Half 100baseFX/Full
->> I thought this PHY could not switch between TP and Fibre. It has a
->> strap which decides? So i would expect the supported modes to be
->> either BaseT or BaseFX. Not both. Same for Advertised?
->>
->>         Andrew
+> static analysis with Coverity has detected a duplicated assignment issue
+> with the following commit:
 >
-> I found that the phy-device was setting all these bits in phy_init in 
-> features_init.
+> commit 2d4bcbed5b7d53e19fc158885e7340b464b64507
+> Author: Carl Huang <cjhuang@codeaurora.org>
+> Date:   Mon Aug 17 13:31:51 2020 +0300
 >
-> My first pass was to clear all these bits as well because the PHY was 
-> still advertising these modes.
+>     ath11k: initialize wmi config based on hw_params
 >
-> But you are right this PHY cannot switch without strapping.
+> The analysis is as follows:
 >
-> I can clear these bits.
+>
+>  74        config->beacon_tx_offload_max_vdev = 0x2;
+>  75        config->num_multicast_filter_entries = 0x20;
+>  76        config->num_wow_filters = 0x16;
+>
+> Unused value (UNUSED_VALUE)
+> assigned_value: Assigning value 1U to config->num_keep_alive_pattern
+> here, but that stored value is overwritten before it can be used.
+>  77        config->num_keep_alive_pattern = 0x1;
+>
+> value_overwrite: Overwriting previous write to
+> config->num_keep_alive_pattern with value 0U.
+>
+>  78        config->num_keep_alive_pattern = 0;
+>
+>
+> I'm not sure if one of these assignments is redundant, or perhaps one of
+> the assignments is meant to be setting a different structure element.
 
-I re-read your reply and this is just an example.  This patch really has 
-nothing to do with any PHY as it is just adding in the new link modes.
+0x1 assignment should be removed, I'll send a patch.
 
-Unless you comment wanted me to remove the TP and advertised modes from 
-the example in the commit message?
-
-Dan
-
-
->
-> Dan
->
+-- 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
