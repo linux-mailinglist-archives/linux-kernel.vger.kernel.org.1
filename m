@@ -2,123 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2CE526D579
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D65B726D542
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:53:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726332AbgIQIAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 04:00:09 -0400
-Received: from esa5.microchip.iphmx.com ([216.71.150.166]:12410 "EHLO
-        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726312AbgIQH7p (ORCPT
+        id S1726360AbgIQHxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 03:53:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726388AbgIQHwn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 03:59:45 -0400
-X-Greylist: delayed 430 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 03:59:44 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1600329584; x=1631865584;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=soGW+pknjaksN08RJ7LPk0ndAYp4pwodv9WM2rL7awQ=;
-  b=xH84vWDsBMerjf4jlpJQplhyPcyh42/sziUXFknvrneZBlz4bRpCPqph
-   ceYbBIf/u1wvC1usP2dsYyJo8J90NR5ykEQM0sSRHHgUvxxGAH8j2xABc
-   aQ452PrrEUPReUjAW3y0Lnt/ObEM5PbfOAnl4SUFbMI8wKf9Orrd6zWmn
-   3UCHLWPCdB/ENKEBPafCD16w4glXmJnxmr6HoFT/gF4hehSxEbsH+J3Zu
-   B+pypYBjX5vblT1bng5mIY1MEOn09quRF26m2MNN5wNzzwj/3QCJAgWy5
-   DR+ebQGXvfmdj+SkQuO38xEDQqcXAVmfROlVC1jUI4ABjFVw9u/tzFdPZ
-   w==;
-IronPort-SDR: aQjr5gh0DdIuLQSBqrioZhf/IlVjfM2bc7tzY7wh5eIXW/WLU3XtGnxxUedOv4W8W8AR6/Lycm
- v4dbgfEldFXsybFqTNPSRj/XZC1Ie2LRirq3d1Dc5f1O5NQoSaLyXVrLddLeXHNDVSmZ0vZ6WO
- uyOkaGqkGCl0/9eteH/aw6VT111LLcO4d6hCMGIOwuZIBbzzjc7tovBfIOUBSTt9jpCrTOralY
- Ytn/4KdEFMwWkXhMOkgx7/XmFCHC73hs7SxqTXk4O1QK117/ZZ3PCb0EFYcqd0jBgqk1NEG8da
- wFc=
-X-IronPort-AV: E=Sophos;i="5.76,436,1592895600"; 
-   d="scan'208";a="91346697"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 17 Sep 2020 00:52:33 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 17 Sep 2020 00:51:56 -0700
-Received: from atudor-ThinkPad-T470p.local (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Thu, 17 Sep 2020 00:51:54 -0700
-From:   Tudor Ambarus <tudor.ambarus@microchip.com>
-To:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <boris.brezillon@collabora.com>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        "Tudor Ambarus" <tudor.ambarus@microchip.com>
-Subject: [PATCH 0/3] mtd: rawnand: Fix HW ECC handling
-Date:   Thu, 17 Sep 2020 10:52:10 +0300
-Message-ID: <20200917075213.532161-1-tudor.ambarus@microchip.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 17 Sep 2020 03:52:43 -0400
+Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C036CC06178A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 00:52:42 -0700 (PDT)
+Received: by mail-oo1-xc42.google.com with SMTP id s17so346360ooe.6
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 00:52:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MLPliof4bq0obfk79tkyGvNCXOsQ7BD3hMLvNlRm5YM=;
+        b=lmjV7jmhWrrKBgwXp0qVWAIjnmXSdwAdsxB903/bd62vT+zHtKE9WbtHZyZXX3qNS2
+         WlUVKNrmMtsp72We2nbFAa2OXrUh1ZbfSLTjkPhxQFuOxy0qTO/EwUvkDEvVGIrlOppf
+         13pXw6YdaE5AVqPvasda/afzRcLhX0t9qeEiA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MLPliof4bq0obfk79tkyGvNCXOsQ7BD3hMLvNlRm5YM=;
+        b=EhIZOEEZ7ObS4tTKlBwPW/CvVLP8yhEM138vAsP8p6eHjh3RDmfc5G+/YeXp+ZhX3w
+         Pj+XeucvOiJTg9KbcV6xD3dBVRc9m38+ghIWTdcgMbpntCoCixoKar82XwLPEYPNVRiy
+         +aBuwgNcU0i/nRTqKLd6pXKmCmummiQA6rVldM6jvKW4rUQzlA2WW8MYA/a1+9kIBLVk
+         jPw7foS26wN1RxIA0XQgO7WaVBodQKxxmQpYVjZLrHlPlMB4XFjZ9kNFH+CgSWvvD6or
+         FyANdH0hO+3xjFxVJVc7KGbFFhMuXI7wfKgzoegg9U0Th7LRXHosmBfoIYCwH5MHIwSs
+         8Qaw==
+X-Gm-Message-State: AOAM532u188fSB8fYfuhlIYixho6WFwtZHREGLzJvCXp8bnOAYLcne4l
+        jCWK8zo1ci4caJVmqkX5OF7WQiVo8r/4J69CbZkG8g==
+X-Google-Smtp-Source: ABdhPJxPknb4buPkkRJBTjkJiQFcegse2PBpzAyrqY3dsF9AaqJyFoI197M/VYgwOZcC5hfcFxFqVJKZ4UAY/QNVlo0=
+X-Received: by 2002:a4a:3b44:: with SMTP id s65mr20346105oos.85.1600329161458;
+ Thu, 17 Sep 2020 00:52:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
+ <871rj4owfn.fsf@nanos.tec.linutronix.de> <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
+ <87bli75t7v.fsf@nanos.tec.linutronix.de> <CAHk-=wht7kAeyR5xEW2ORj7m0hibVxZ3t+2ie8vNHLQfdbN2_g@mail.gmail.com>
+ <CAKMK7uHAk9-Vy2cof0ws=DrcD52GHiCDiyHbjLd19CgpBU2rKQ@mail.gmail.com>
+ <20200916152956.GV29330@paulmck-ThinkPad-P72> <CAKMK7uGFyfhEyt=jmdk2jDO-hq0_Pf0ck+cKSELHjr2U3rPuYQ@mail.gmail.com>
+ <20200916205840.GD29330@paulmck-ThinkPad-P72> <CAKMK7uHL2dMv80b8uBXr=BqHD2TQeODQQM1MGYhAfCYbX7sLrA@mail.gmail.com>
+ <20200916223951.GG29330@paulmck-ThinkPad-P72>
+In-Reply-To: <20200916223951.GG29330@paulmck-ThinkPad-P72>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Thu, 17 Sep 2020 09:52:30 +0200
+Message-ID: <CAKMK7uFXD7FzGZJZx0QAR2WdbewGmLnsSVaH7+HD0XSr--f0kw@mail.gmail.com>
+Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um <linux-um@lists.infradead.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        linux-hexagon@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>, Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix a wrongful fallthrough NAND_ECC_SOFT when a valid HW ECC is
-available. Follow with two patches to make the code more readable.
+On Thu, Sep 17, 2020 at 12:39 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Wed, Sep 16, 2020 at 11:43:02PM +0200, Daniel Vetter wrote:
+> > On Wed, Sep 16, 2020 at 10:58 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > >
+> > > On Wed, Sep 16, 2020 at 10:29:06PM +0200, Daniel Vetter wrote:
+> > > > On Wed, Sep 16, 2020 at 5:29 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > > >
+> > > > > On Wed, Sep 16, 2020 at 09:37:17AM +0200, Daniel Vetter wrote:
+> > > > > > On Tue, Sep 15, 2020 at 7:35 PM Linus Torvalds
+> > > > > > <torvalds@linux-foundation.org> wrote:
+> > > > > > >
+> > > > > > > On Tue, Sep 15, 2020 at 1:39 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+> > > > > > > >
+> > > > > > > > OTOH, having a working 'preemptible()' or maybe better named
+> > > > > > > > 'can_schedule()' check makes tons of sense to make decisions about
+> > > > > > > > allocation modes or other things.
+> > > > > > >
+> > > > > > > No. I think that those kinds of decisions about actual behavior are
+> > > > > > > always simply fundamentally wrong.
+> > > > > > >
+> > > > > > > Note that this is very different from having warnings about invalid
+> > > > > > > use. THAT is correct. It may not warn in all configurations, but that
+> > > > > > > doesn't matter: what matters is that it warns in common enough
+> > > > > > > configurations that developers will catch it.
+> > > > > > >
+> > > > > > > So having a warning in "might_sleep()" that doesn't always trigger,
+> > > > > > > because you have a limited configuration that can't even detect the
+> > > > > > > situation, that's fine and dandy and intentional.
+> > > > > > >
+> > > > > > > But having code like
+> > > > > > >
+> > > > > > >        if (can_schedule())
+> > > > > > >            .. do something different ..
+> > > > > > >
+> > > > > > > is fundamentally complete and utter garbage.
+> > > > > > >
+> > > > > > > It's one thing if you test for "am I in hardware interrupt context".
+> > > > > > > Those tests aren't great either, but at least they make sense.
+> > > > > > >
+> > > > > > > But a driver - or some library routine - making a difference based on
+> > > > > > > some nebulous "can I schedule" is fundamentally and basically WRONG.
+> > > > > > >
+> > > > > > > If some code changes behavior, it needs to be explicit to the *caller*
+> > > > > > > of that code.
+> > > > > > >
+> > > > > > > So this is why GFP_ATOMIC is fine, but "if (!can_schedule())
+> > > > > > > do_something_atomic()" is pure shite.
+> > > > > > >
+> > > > > > > And I am not IN THE LEAST interested in trying to help people doing
+> > > > > > > pure shite. We need to fix them. Like the crypto code is getting
+> > > > > > > fixed.
+> > > > > >
+> > > > > > Just figured I'll throw my +1 in from reading too many (gpu) drivers.
+> > > > > > Code that tries to cleverly adjust its behaviour depending upon the
+> > > > > > context it's running in is harder to understand and blows up in more
+> > > > > > interesting ways. We still have drm_can_sleep() and it's mostly just
+> > > > > > used for debug code, and I've largely ended up just deleting
+> > > > > > everything that used it because when you're driver is blowing up the
+> > > > > > last thing you want is to realize your debug code and output can't be
+> > > > > > relied upon. Or worse, that the only Oops you have is the one in the
+> > > > > > debug code, because the real one scrolled away - the original idea
+> > > > > > behind drm_can_sleep was to make all the modeset code work
+> > > > > > automagically both in normal ioctl/kworker context and in the panic
+> > > > > > handlers or kgdb callbacks. Wishful thinking at best.
+> > > > > >
+> > > > > > Also at least for me that extends to everything, e.g. I much prefer
+> > > > > > explicit spin_lock and spin_lock_irq vs magic spin_lock_irqsave for
+> > > > > > locks shared with interrupt handlers, since the former two gives me
+> > > > > > clear information from which contexts such function can be called.
+> > > > > > Other end is the memalloc_no*_save/restore functions, where I recently
+> > > > > > made a real big fool of myself because I didn't realize how much that
+> > > > > > impacts everything that's run within - suddenly "GFP_KERNEL for small
+> > > > > > stuff never fails" is wrong everywhere.
+> > > > > >
+> > > > > > It's all great for debugging and sanity checks (and we run with all
+> > > > > > that stuff enabled in our CI), but really semantic changes depending
+> > > > > > upon magic context checks freak my out :-)
+> > > > >
+> > > > > All fair, but some of us need to write code that must handle being
+> > > > > invoked from a wide variety of contexts.  Now perhaps you like the idea of
+> > > > > call_rcu() for schedulable contexts, call_rcu_nosched() when preemption
+> > > > > is disabled, call_rcu_irqs_are_disabled() when interrupts are disabled,
+> > > > > call_rcu_raw_atomic() from contexts where (for example) raw spinlocks
+> > > > > are held, and so on.  However, from what I can see, most people instead
+> > > > > consistently prefer that the RCU API instead be consolidated.
+> > > > >
+> > > > > Some in-flight cache-efficiency work for kvfree_rcu() and call_rcu()
+> > > > > needs to be able to allocate memory occasionally.  It can do that when
+> > > > > invoked from some contexts, but not when invoked from others.  Right now,
+> > > > > in !PREEMPT kernels, it cannot tell, and must either do things to the
+> > > > > memory allocators that some of the MM hate or must unnecessarily invoke
+> > > > > workqueues.  Thomas's patches would allow the code to just allocate in
+> > > > > the common case when these primitives are invoked from contexts where
+> > > > > allocation is permitted.
+> > > > >
+> > > > > If we want to restrict access to the can_schedule() or whatever primitive,
+> > > > > fine and good.  We can add a check to checkpatch.pl, for example.  Maybe
+> > > > > we can go back to the old brlock approach of requiring certain people's
+> > > > > review for each addition to the kernel.
+> > > > >
+> > > > > But there really are use cases that it would greatly help.
+> > > >
+> > > > We can deadlock in random fun places if random stuff we're calling
+> > > > suddenly starts allocating. Sometimes. Maybe once in a blue moon, to
+> > > > make it extra fun to reproduce. Maybe most driver subsystems are less
+> > > > brittle, but gpu drivers definitely need to know about the details for
+> > > > exactly this example. And yes gpu drivers use rcu for freeing
+> > > > dma_fence structures, and that tends to happen in code that we only
+> > > > recently figured out should really not allocate memory.
+> > > >
+> > > > I think minimally you need to throw in an unconditional
+> > > > fs_reclaim_acquire();fs_reclaim_release(); so that everyone who runs
+> > > > with full debugging knows what might happen. It's kinda like
+> > > > might_sleep, but a lot more specific. might_sleep() alone is not
+> > > > enough, because in the specific code paths I'm thinking of (and
+> > > > created special lockdep annotations for just recently) sleeping is
+> > > > allowed, but any memory allocations with GFP_RECLAIM set are no-go.
+> > >
+> > > Completely agreed!  Any allocation on any free path must be handled
+> > > -extremely- carefully.  To that end...
+> > >
+> > > First, there is always a fallback in case the allocation fails.  Which
+> > > might have performance or corner-case robustness issues, but which will
+> > > at least allow forward progress.  Second, we consulted with a number of
+> > > MM experts to arrive at appropriate GFP_* flags (and their patience is
+> > > greatly appreciated).  Third, the paths that can allocate will do so about
+> > > one time of 500, so any issues should be spotted sooner rather than later.
+> > >
+> > > So you are quite right to be concerned, but I believe we will be doing the
+> > > right things.  And based on his previous track record, I am also quite
+> > > certain that Mr. Murphy will be on hand to provide me any additional
+> > > education that I might require.
+> > >
+> > > Finally, I have noted down your point about fs_reclaim_acquire() and
+> > > fs_reclaim_release().  Whether or not they prove to be needed, I do
+> > > appreciate your calling them to my attention.
+> >
+> > I just realized that since these dma_fence structs are refcounted and
+> > userspace can hold references (directly, it can pass them around
+> > behind file descriptors) we might never hit such a path until slightly
+> > unusual or evil userspace does something interesting. Do you have
+> > links to those patches? Some googling didn't turn up anything. I can
+> > then figure out whether it's better to risk not spotting issues with
+> > call_rcu vs slapping a memalloc_noio_save/restore around all these
+> > critical section which force-degrades any allocation to GFP_ATOMIC at
+> > most, but has the risk that we run into code that assumes "GFP_KERNEL
+> > never fails for small stuff" and has a decidedly less tested fallback
+> > path than rcu code.
+>
+> Here is the previous early draft version, which will change considerably
+> for the next version:
+>
+>         lore.kernel.org/lkml/20200809204354.20137-1-urezki@gmail.com
+>
+> This does kvfree_rcu(), but we expect to handle call_rcu() similarly.
+>
+> The version in preparation will use workqueues to do the allocation in a
+> known-safe environment and also use lockless access to certain portions
+> of the allocator caches (as noted earlier, this last is not much loved
+> by some of the MM guys).  Given Thomas's patch, we could with high
+> probability allocate directly, perhaps even not needing memory-allocator
+> modifications.
+>
+> Either way, kvfree_rcu(), and later call_rcu(), will avoid asking the
+> allocator to do anything that the calling context prohibits.  So what
+> types of bugs are you looking for?  Where reclaim calls back into the
+> driver or some such?
 
-Following error was seen in case of a valid HW ECC:
-nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xda
-nand: Micron MT29F2G08ABAEAWP
-nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 1 at drivers/mtd/nand/raw/nand_base.c:5148 nand_scan_with_ids+0x12b8/0x1674
-Modules linked in:
-CPU: 0 PID: 1 Comm: swapper Not tainted 5.9.0-rc5-next-20200914 #2
-Hardware name: Atmel SAMA5
-[<c010c1e0>] (unwind_backtrace) from [<c0109aac>] (show_stack+0x10/0x14)
-[<c0109aac>] (show_stack) from [<c07e9380>] (__warn+0xb8/0xd0)
-[<c07e9380>] (__warn) from [<c07e93f8>] (warn_slowpath_fmt+0x60/0xbc)
-[<c07e93f8>] (warn_slowpath_fmt) from [<c04cbc84>] (nand_scan_with_ids+0x12b8/0x1674)
-[<c04cbc84>] (nand_scan_with_ids) from [<c04d32e0>] (atmel_nand_controller_add_nand+0x54/0x100)
-[<c04d32e0>] (atmel_nand_controller_add_nand) from [<c04d36a8>] (atmel_nand_controller_add_nands+0x31c/0x60c)
-[<c04d36a8>] (atmel_nand_controller_add_nands) from [<c04d55c0>] (atmel_hsmc_nand_controller_probe+0x188/0x284)
-[<c04d55c0>] (atmel_hsmc_nand_controller_probe) from [<c04d40ec>] (atmel_nand_controller_probe+0x54/0x134)
-[<c04d40ec>] (atmel_nand_controller_probe) from [<c047ef2c>] (platform_drv_probe+0x48/0x98)
-[<c047ef2c>] (platform_drv_probe) from [<c047cfd0>] (really_probe+0x1e0/0x3b8)
-[<c047cfd0>] (really_probe) from [<c047d310>] (driver_probe_device+0x5c/0xb4)
-[<c047d310>] (driver_probe_device) from [<c047b3c0>] (bus_for_each_drv+0x80/0xc4)
-[<c047b3c0>] (bus_for_each_drv) from [<c047cd7c>] (__device_attach+0xe0/0x14c)
-[<c047cd7c>] (__device_attach) from [<c047c064>] (bus_probe_device+0x84/0x8c)
-[<c047c064>] (bus_probe_device) from [<c04790bc>] (device_add+0x408/0x774)
-[<c04790bc>] (device_add) from [<c05d742c>] (of_platform_device_create_pdata+0x98/0xd4)
-[<c05d742c>] (of_platform_device_create_pdata) from [<c05d7604>] (of_platform_bus_create+0x190/0x220)
-[<c05d7604>] (of_platform_bus_create) from [<c05d77c8>] (of_platform_populate+0x60/0xc0)
-[<c05d77c8>] (of_platform_populate) from [<c05dd6e4>] (atmel_ebi_probe+0x358/0x530)
-[<c05dd6e4>] (atmel_ebi_probe) from [<c047ef2c>] (platform_drv_probe+0x48/0x98)
-[<c047ef2c>] (platform_drv_probe) from [<c047cfd0>] (really_probe+0x1e0/0x3b8)
-[<c047cfd0>] (really_probe) from [<c047d310>] (driver_probe_device+0x5c/0xb4)
-[<c047d310>] (driver_probe_device) from [<c047d508>] (device_driver_attach+0x58/0x60)
-[<c047d508>] (device_driver_attach) from [<c047d568>] (__driver_attach+0x58/0xcc)
-[<c047d568>] (__driver_attach) from [<c047b2ec>] (bus_for_each_dev+0x74/0xb4)
-[<c047b2ec>] (bus_for_each_dev) from [<c047c258>] (bus_add_driver+0xf4/0x1d8)
-[<c047c258>] (bus_add_driver) from [<c047dd88>] (driver_register+0x74/0x108)
-[<c047dd88>] (driver_register) from [<c047f33c>] (__platform_driver_probe+0x68/0xc8)
-[<c047f33c>] (__platform_driver_probe) from [<c01016d0>] (do_one_initcall+0x7c/0x1cc)
-[<c01016d0>] (do_one_initcall) from [<c0b00f78>] (kernel_init_freeable+0x15c/0x1c0)
-[<c0b00f78>] (kernel_init_freeable) from [<c07f23a4>] (kernel_init+0x8/0x114)
-[<c07f23a4>] (kernel_init) from [<c0100148>] (ret_from_fork+0x14/0x2c)
-Exception stack(0xcf427fb0 to 0xcf427ff8)
-7fa0:                                     00000000 00000000 00000000 00000000
-7fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-7fe0: 00000000 00000000 00000000 00000000 00000013 00000000
----[ end trace 7fad321bf58a54e1 ]---
-atmel-nand-controller 10000000.ebi:nand-controller: NAND scan failed: -22
-atmel-nand-controller: probe of 10000000.ebi:nand-controller failed with error -22
+Yeah pretty much. It's a problem for gpu, fs, block drivers and really
+anything else that's remotely involved in memory reclaim somehow.
+Generally this is all handled explicitly by passing gfp_t flags down
+any call chain, but in some cases it's instead solved with the
+memalloc_no* functions. E.g. sunrpc uses that to make sure the network
+stack (which generally just assumes it can allocate memory) doesn't,
+to avoid recursions back into nfs/sunrpc. To my knowledge there's no
+way to check at runtime with which gfp flags you're allowed to
+allocate memory, a preemptible check is definitely not enough.
+Disabled preemption implies only GFP_ATOMIC is allowed (ignoring nmi
+and stuff like that), but the inverse is not true.
 
-Tudor Ambarus (3):
-  mtd: rawnand: Fix wrongful fallthrough NAND_ECC_SOFT
-  mtd: rawnand: Introduce nand_set_ecc_on_host_ops()
-  mtd: rawnand: Don't overwrite the error code from
-    nand_set_ecc_soft_ops()
+So if you want the automagic in call_rcu I think either
+- we need to replace all explicit gfp flags with the context marking
+memalloc_no* across the entire kernel, or at least anywhere rcu might
+be used.
+- audit all callchains and make sure a call_rcu_noalloc is used
+anywhere there might be a problem. probably better to have a
+call_rcu_gfp with explicit gfp flags parameter, since generally that
+needs to be passed down.
 
- drivers/mtd/nand/raw/nand_base.c | 134 ++++++++++++++++---------------
- 1 file changed, 70 insertions(+), 64 deletions(-)
-
+But at least to me the lockless magic in mm sounds a lot safer, since
+it contains the complexity and doesn't leak it out to callers of
+call_rcu.
+-Daniel
 -- 
-2.25.1
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
