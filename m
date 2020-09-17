@@ -2,147 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9099026DD99
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E681026DDA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727344AbgIQOKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 10:10:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53958 "EHLO mail.kernel.org"
+        id S1727376AbgIQOMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 10:12:06 -0400
+Received: from vps.xff.cz ([195.181.215.36]:33788 "EHLO vps.xff.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727221AbgIQOAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 10:00:46 -0400
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F21AD2220F
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 14:00:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600351239;
-        bh=Z+Q+oKy6kYMCPhHXhxfLXbvQ3jss6nDsyWD/Z4O5YlM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=j40ylg4m8LXKEAxubcz7ahDOZqsGBCvC86g7ieq5yzcqybVi5FgGMImstlii4I0QX
-         Ir2itplg8NWLltZJzHiI+OdB5T45n5vwlMrzFMhCanLTREwxlpky2FUy8YEARuSvY9
-         G+UVS7OiTv9/UbJXWra4Ql2LRXT8h8/mQapPDTyc=
-Received: by mail-ot1-f54.google.com with SMTP id g96so1948373otb.12
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 07:00:38 -0700 (PDT)
-X-Gm-Message-State: AOAM530RoaWT7ba/xejkhcX+f78tPh7qZTJQQb5KrjcX+RSdeuPtARL4
-        cgMnXfoGwcHbtSPzC6gziO9m1rx41YY/ajsDV9c=
-X-Google-Smtp-Source: ABdhPJx3K8tRbfYK2iUD9eIc020QUDlT6Vbmpmw/XcQWT30fU0+YPmOu00DxmCq6NhBa4cLa83PrwQVgZN+ZvoGPrAE=
-X-Received: by 2002:a9d:6193:: with SMTP id g19mr19256118otk.108.1600351238208;
- Thu, 17 Sep 2020 07:00:38 -0700 (PDT)
+        id S1727096AbgIQOKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 10:10:48 -0400
+X-Greylist: delayed 568 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 10:10:47 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
+        t=1600351277; bh=qnHYhaaKVCCwO/ktdRKTzt/AgnNkQWX8+dKtOxokgRg=;
+        h=Date:From:To:Cc:Subject:References:X-My-GPG-KeyId:From;
+        b=hLZ44t05ZmSFhok+LIFpDP7ZwXbyXheWfWYKIsYp4atU0ouWzSERQn/ZtReSUQ5hB
+         gsfAyEsohXkb4W2IR+gGoTMEb0LP3gKztArv/hoUrQWI9BUN1OzngrNVdwaanLjuSd
+         m1e+uSO33pzUbZuhdz1MbF1q26H0M23HYm/IQu5k=
+Date:   Thu, 17 Sep 2020 16:01:17 +0200
+From:   =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     linux-sunxi@googlegroups.com, Lee Jones <lee.jones@linaro.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        "moderated list:ARM/Allwinner sunXi SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mfd: sun4i-gpadc: Interrupt numbers should start from 1
+Message-ID: <20200917140117.jowpyurs5pjyr2if@core.my.home>
+Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
+        Maxime Ripard <maxime@cerno.tech>, linux-sunxi@googlegroups.com,
+        Lee Jones <lee.jones@linaro.org>, Chen-Yu Tsai <wens@csie.org>,
+        "moderated list:ARM/Allwinner sunXi SoC support" <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200912112200.226530-1-megous@megous.com>
+ <20200917131904.d7yqpa2sucerg2nm@gilmour.lan>
 MIME-Version: 1.0
-References: <20200915131615.3138-1-thunder.leizhen@huawei.com>
- <20200915131615.3138-3-thunder.leizhen@huawei.com> <20200915190143.GP1551@shell.armlinux.org.uk>
-In-Reply-To: <20200915190143.GP1551@shell.armlinux.org.uk>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 17 Sep 2020 17:00:27 +0300
-X-Gmail-Original-Message-ID: <CAMj1kXHdX5cCZKvbBO+hCkkt46aOgf4NjK2jba2Gb2tziZm2DQ@mail.gmail.com>
-Message-ID: <CAMj1kXHdX5cCZKvbBO+hCkkt46aOgf4NjK2jba2Gb2tziZm2DQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] ARM: support PHYS_OFFSET minimum aligned at 64KiB boundary
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Jianguo Chen <chenjianguo3@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Libin <huawei.libin@huawei.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        patches-armlinux <patches@armlinux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917131904.d7yqpa2sucerg2nm@gilmour.lan>
+X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
+ <https://xff.cz/key.txt>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Sep 2020 at 22:06, Russell King - ARM Linux admin
-<linux@armlinux.org.uk> wrote:
->
-> On Tue, Sep 15, 2020 at 09:16:15PM +0800, Zhen Lei wrote:
-> > Currently, only support the kernels where the base of physical memory is
-> > at a 16MiB boundary. Because the add/sub instructions only contains 8bits
-> > unrotated value. But we can use one more "add/sub" instructions to handle
-> > bits 23-16. The performance will be slightly affected.
-> >
-> > Since most boards meet 16 MiB alignment, so add a new configuration
-> > option ARM_PATCH_PHYS_VIRT_RADICAL (default n) to control it. Say Y if
-> > anyone really needs it.
-> >
-> > All r0-r7 (r1 = machine no, r2 = atags or dtb, in the start-up phase) are
-> > used in __fixup_a_pv_table() now, but the callee saved r11 is not used in
-> > the whole head.S file. So choose it.
-> >
-> > Because the calculation of "y = x + __pv_offset[63:24]" have been done,
-> > so we only need to calculate "y = y + __pv_offset[23:16]", that's why
-> > the parameters "to" and "from" of __pv_stub() and __pv_add_carry_stub()
-> > in the scope of CONFIG_ARM_PATCH_PHYS_VIRT_RADICAL are all passed "t"
-> > (above y).
-> >
-> > Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Hello Maxime,
+
+On Thu, Sep 17, 2020 at 03:19:04PM +0200, Maxime Ripard wrote:
+> Hi,
+> 
+> On Sat, Sep 12, 2020 at 01:22:00PM +0200, Ondrej Jirman wrote:
+> > mfd: sun4i-gpadc: Interrupt numbers should start from 1
+> 
+> Why? An hwirq with 0 is totally fine
+> 
+> > This avoids a warning:
+> > 
+> > [    2.891592] ------------[ cut here ]------------
+> > [    2.895052] WARNING: CPU: 0 PID: 149 at drivers/base/platform.c:317 __platform_get_irq_byname+0x7c/0x8c
+> > [    2.903212] usb 1-1: new high-speed USB device number 2 using ehci-platform
+> > [    2.908930] 0 is an invalid IRQ number
+> > [    2.911425] Modules linked in: sun4i_gpadc_iio(+) r8188eu(C) lib80211 ohci_platform ohci_hcd ehci_platform ehci_hcd cyttsp4_i2c cyttsp_i2c_common cyttsp4_core g_cdc usb_f_acm u_serial usb_f_ecm u_ether libcomposite sunxi phy_generic musb_hdrc udc_core usbcore sun5ieink
+> > [    2.934048] CPU: 0 PID: 149 Comm: tablet-init Tainted: G         C        5.8.0-rc2-00316-gc6a5213fdeba-dirty #8
+> > [    2.943027] Hardware name: Allwinner sun4i/sun5i Families
+> > [    2.947204] [<c010c080>] (unwind_backtrace) from [<c0109ee4>] (show_stack+0x10/0x14)
+> > [    2.953714] [<c0109ee4>] (show_stack) from [<c012cd04>] (__warn+0xc0/0xd8)
+> > [    2.959364] [<c012cd04>] (__warn) from [<c012cda0>] (warn_slowpath_fmt+0x84/0x94)
+> > [    2.965599] [<c012cda0>] (warn_slowpath_fmt) from [<c0592a60>] (__platform_get_irq_byname+0x7c/0x8c)
+> > [    2.973480] [<c0592a60>] (__platform_get_irq_byname) from [<c0592a80>] (platform_get_irq_byname+0x10/0x48)
+> > [    2.981896] [<c0592a80>] (platform_get_irq_byname) from [<bf1142f0>] (sun4i_irq_init+0x38/0xe0 [sun4i_gpadc_iio])
+> > [    2.990923] [<bf1142f0>] (sun4i_irq_init [sun4i_gpadc_iio]) from [<bf1145cc>] (sun4i_gpadc_probe+0x234/0x308 [sun4i_gpadc_iio])
+> > [    3.001152] [<bf1145cc>] (sun4i_gpadc_probe [sun4i_gpadc_iio]) from [<c0592edc>] (platform_drv_probe+0x48/0x98)
+> > [    3.010051] [<c0592edc>] (platform_drv_probe) from [<c0591074>] (really_probe+0x1e0/0x348)
+> > [    3.017152] [<c0591074>] (really_probe) from [<c05912e8>] (driver_probe_device+0x5c/0xb4)
+> > [    3.024081] [<c05912e8>] (driver_probe_device) from [<c05914e0>] (device_driver_attach+0x58/0x60)
+> > [    3.031696] [<c05914e0>] (device_driver_attach) from [<c0591540>] (__driver_attach+0x58/0xcc)
+> > [    3.038966] [<c0591540>] (__driver_attach) from [<c058f418>] (bus_for_each_dev+0x64/0x90)
+> > [    3.045886] [<c058f418>] (bus_for_each_dev) from [<c0590490>] (bus_add_driver+0x15c/0x1e0)
+> > [    3.052892] [<c0590490>] (bus_add_driver) from [<c0591dc4>] (driver_register+0x7c/0x114)
+> > [    3.059731] [<c0591dc4>] (driver_register) from [<c0101674>] (do_one_initcall+0x44/0x194)
+> > [    3.066696] [<c0101674>] (do_one_initcall) from [<c01946e8>] (do_init_module+0x5c/0x220)
+> > [    3.073568] [<c01946e8>] (do_init_module) from [<c0196a3c>] (load_module+0x20ec/0x2380)
+> > [    3.080340] [<c0196a3c>] (load_module) from [<c0196e04>] (sys_init_module+0x134/0x154)
+> > [    3.087020] [<c0196e04>] (sys_init_module) from [<c0100060>] (ret_fast_syscall+0x0/0x54)
+> > [    3.093852] Exception stack(0xc8ea7fa8 to 0xc8ea7ff0)
+> > [    3.097649] 7fa0:                   00000000 00000000 b6fe2000 00003b14 00031284 00000005
+> > [    3.104596] 7fc0: 00000000 00000000 b6fe2000 00000080 00052220 be9fd940 00052246 0000002e
+> > [    3.111626] 7fe0: be9fd79c be9fd780 00015bd0 0001dcf4
+> > [    3.115468] ---[ end trace df4dd47fb61bf5a4 ]---
+> 
+> In which situation?
+
+During boot.
+
+It's a new check added in Linux 5.8. https://elixir.bootlin.com/linux/latest/source/drivers/base/platform.c#L317
+
+> > Signed-off-by: Ondrej Jirman <megous@megous.com>
 > > ---
-> >  arch/arm/Kconfig              | 18 +++++++++++++++++-
-> >  arch/arm/include/asm/memory.h | 16 +++++++++++++---
-> >  arch/arm/kernel/head.S        | 25 +++++++++++++++++++------
-> >  3 files changed, 49 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-> > index e00d94b16658765..19fc2c746e2ce29 100644
-> > --- a/arch/arm/Kconfig
-> > +++ b/arch/arm/Kconfig
-> > @@ -240,12 +240,28 @@ config ARM_PATCH_PHYS_VIRT
-> >         kernel in system memory.
-> >
-> >         This can only be used with non-XIP MMU kernels where the base
-> > -       of physical memory is at a 16MB boundary.
-> > +       of physical memory is at a 16MiB boundary.
-> >
-> >         Only disable this option if you know that you do not require
-> >         this feature (eg, building a kernel for a single machine) and
-> >         you need to shrink the kernel to the minimal size.
-> >
-> > +config ARM_PATCH_PHYS_VIRT_RADICAL
-> > +     bool "Support PHYS_OFFSET minimum aligned at 64KiB boundary"
-> > +     default n
->
-> Please drop the "default n" - this is the default anyway.
->
-> > @@ -236,6 +243,9 @@ static inline unsigned long __phys_to_virt(phys_addr_t x)
-> >        * in place where 'r' 32 bit operand is expected.
-> >        */
-> >       __pv_stub((unsigned long) x, t, "sub", __PV_BITS_31_24);
-> > +#ifdef CONFIG_ARM_PATCH_PHYS_VIRT_RADICAL
-> > +     __pv_stub((unsigned long) t, t, "sub", __PV_BITS_23_16);
->
-> t is already unsigned long, so this cast is not necessary.
->
-> I've been debating whether it would be better to use "movw" for this
-> for ARMv7.  In other words:
->
->         movw    tmp, #16-bit
->         adds    %Q0, %1, tmp, lsl #16
->         adc     %R0, %R0, #0
->
-> It would certainly be less instructions, but at the cost of an
-> additional register - and we'd have to change the fixup code to
-> know about movw.
->
-> Thoughts?
->
+> >  include/linux/mfd/sun4i-gpadc.h | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/include/linux/mfd/sun4i-gpadc.h b/include/linux/mfd/sun4i-gpadc.h
+> > index ea0ccf33a459..021f820f9d52 100644
+> > --- a/include/linux/mfd/sun4i-gpadc.h
+> > +++ b/include/linux/mfd/sun4i-gpadc.h
+> > @@ -81,8 +81,8 @@
+> >  #define SUN4I_GPADC_TEMP_DATA				0x20
+> >  #define SUN4I_GPADC_DATA				0x24
+> >  
+> > -#define SUN4I_GPADC_IRQ_FIFO_DATA			0
+> > -#define SUN4I_GPADC_IRQ_TEMP_DATA			1
+> > +#define SUN4I_GPADC_IRQ_FIFO_DATA			1
+> > +#define SUN4I_GPADC_IRQ_TEMP_DATA			2
+> 
+> Where is it coming from, and why is it the proper fix?
 
-Since LPAE implies v7, we can use movw unconditionally, which is nice.
+Actual numbers seem irrelevant. It's just an index into this array:
 
-There is no need to use an additional temp register, as we can use the
-register holding the high word. (There is no need for the mov_hi macro
-to be separate)
+https://elixir.bootlin.com/linux/latest/source/drivers/mfd/sun4i-gpadc.c#L27
 
-0:     movw    %R0, #low offset >> 16
-       adds    %Q0, %1, %R0, lsl #16
-1:     mov     %R0, #high offset
-       adc     %R0, %R0, #0
-       .pushsection .pv_table,"a"
-       .long 0b, 1b
-       .popsection
+The array will get sparse, but that doesn't seem like an issue to me,
+because the irq code handles the holes in the list if mask is 0.
 
-The only problem is distinguishing the two mov instructions from each
-other, but that should not be too hard I think.
+Not sure it's the best fix.
+
+regards,
+	o.
+
+> Maxime
+
+
