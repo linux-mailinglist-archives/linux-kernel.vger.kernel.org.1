@@ -2,77 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C3E26E06F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 18:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A7826E072
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 18:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728356AbgIQQQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 12:16:40 -0400
-Received: from mga02.intel.com ([134.134.136.20]:20561 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728345AbgIQQPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 12:15:54 -0400
-IronPort-SDR: bz1/n0NOc9jNVRTjMzaQ4Novv5FUKTQCv677VGGnuHPUjEuN0P4TmfLDdH7DiQBBSO8sF6YNxE
- o3rDPqHLKrzw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="147424938"
-X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
-   d="scan'208";a="147424938"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 09:14:52 -0700
-IronPort-SDR: R5mUICFwZKuKAO9KC2ySr+6STYYqlq/nADHq/Ypxmab0Slc+5fjZSTaesVf67q3Ulvo43ovO5Q
- n0tpqXqSvZUQ==
-X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
-   d="scan'208";a="320273937"
-Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 09:14:52 -0700
-Date:   Thu, 17 Sep 2020 09:14:50 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Jim Mattson <jmattson@google.com>,
-        Borislav Petkov <bp@alien8.de>, Joerg Roedel <joro@8bytes.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: Re: [PATCH 1/1] KVM: x86: fix MSR_IA32_TSC read for nested migration
-Message-ID: <20200917161450.GD13522@sjchrist-ice>
-References: <20200917110723.820666-1-mlevitsk@redhat.com>
- <20200917110723.820666-2-mlevitsk@redhat.com>
+        id S1728373AbgIQQRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 12:17:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728353AbgIQQQ2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 12:16:28 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA32C061223
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 09:16:14 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id a12so3033466eds.13
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 09:16:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XXtED6WfkK75LMSgQ8vQsHgOI0yBBTxcCbphfrryf6M=;
+        b=pxXpcpXnfAa9lQiUbT1N7VNoozm1D6PgfhboSOd3HXlWtPP7dYn2AhERiYfxBWj37j
+         jsduSgKo3fSswcu5jj7rT8R/p1UoiktZNMLCBziOtWuDhQCPfVIjzVBeazVgnC7kRgvb
+         cGOIN9WJf/fdeKcuLTS4+4caBpl9TCTVBd0AvPoYPAUTCm0L5Eu+6tCTUkWqTzKAN6Sg
+         6hVKODArf8j6huwlEWsNCAN0SmhEWJP+z7xiTEXP/xs+c+C93cyj03dm9fgx6GGdgbZP
+         L1l6cPnrFPnghuoXMbTxtMYD3X5cX0CpEDPNPU8W+/vBUg07fEYXXi8zmHuICCNykgYh
+         Ljsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XXtED6WfkK75LMSgQ8vQsHgOI0yBBTxcCbphfrryf6M=;
+        b=LtfPJobu/pBq3CPoALS8yNNwh6fm304L/wOO3KTHnZ4l3zDTrY1bA0I7DjIIEf+y9g
+         0lSSy82gO85Pz5cMOQ84lUXRCbeqE30mkVL8M9RuFDBKlDLiPV8UzijtekP/1MPdRO8a
+         q0x5WXxNsLvkgDbIX0MlOJHqHFo3furIm0iwWyBPV+eMoultRw54YBrba7ftj0QnAJnz
+         WQSOdtGW5nP/nglmOoWEIt8YvgrXrlNZBKtUxOkHz4QPdI5GxgSVPOShXX4y3YRsGUme
+         YpnPyiIiA/xogYzBr+IK3okJIchFn7pn23DCKfTDKPyvKajacF9Uf3LJe3aNFpnXNBFs
+         daGw==
+X-Gm-Message-State: AOAM530Z9tsntDYyk+hA8H1m7j6ZUrIpwyWfyedrpfdUCJ91fum77Ghe
+        pGbqGISR/n2mRaZlAIAJOWzQ/x+vh2FQ6I8x2wTDNQ==
+X-Google-Smtp-Source: ABdhPJwfOaudC9vLJAbRhRYhSHh7q4n3U/sNpTA5Q1/lxT2SwoFxppQHiVyye1h5POHhmPDl/bW1IEH53reBheDklw4=
+X-Received: by 2002:a50:9b44:: with SMTP id a4mr32910561edj.12.1600359373655;
+ Thu, 17 Sep 2020 09:16:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917110723.820666-2-mlevitsk@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200914154601.32245-2-brgl@bgdev.pl> <20200917155336.23ECD221E3@mail.kernel.org>
+In-Reply-To: <20200917155336.23ECD221E3@mail.kernel.org>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Thu, 17 Sep 2020 18:16:02 +0200
+Message-ID: <CAMpxmJVhfVZLmepERHSVg9qnuWUJj+BwiOKc_7QopREbHvAZpQ@mail.gmail.com>
+Subject: Re: [PATCH v3 01/14] rtc: rx8010: don't modify the global rtc ops
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        "Stable # 4 . 20+" <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 02:07:23PM +0300, Maxim Levitsky wrote:
-> +		 * Intel PRM states that MSR_IA32_TSC read adds the TSC offset
+On Thu, Sep 17, 2020 at 5:53 PM Sasha Levin <sashal@kernel.org> wrote:
+>
+> Hi
+>
+> [This is an automated email]
+>
+> This commit has been processed because it contains a "Fixes:" tag
+> fixing commit: ed13d89b08e3 ("rtc: Add Epson RX8010SJ RTC driver").
+>
+> The bot has tested the following trees: v5.8.9, v5.4.65, v4.19.145, v4.14.198, v4.9.236.
+>
+> v5.8.9: Build OK!
+> v5.4.65: Build OK!
+> v4.19.145: Failed to apply! Possible dependencies:
+>     9d085c54202d ("rtc: rx8010: simplify getting the adapter of a client")
+>
+> v4.14.198: Failed to apply! Possible dependencies:
+>     9d085c54202d ("rtc: rx8010: simplify getting the adapter of a client")
+>
+> v4.9.236: Failed to apply! Possible dependencies:
+>     9d085c54202d ("rtc: rx8010: simplify getting the adapter of a client")
+>
+>
+> NOTE: The patch will not be queued to stable trees until it is upstream.
+>
+> How should we proceed with this patch?
+>
+> --
+> Thanks
+> Sasha
 
-One more nit, "Intel SDM" would be preferred as that's most commonly used in
-KVM changelogs, and there are multiple PRM acronyms in Intel's dictionary
-these days.
+I sent out a backport for v4.X branches.
 
-> +		 * even when not intercepted. AMD manual doesn't define this
-> +		 * but appears to behave the same
-> +		 *
-> +		 * However when userspace wants to read this MSR, return its
-> +		 * real L1 value so that its restore will be correct
-> +		 *
-> +		 */
-> +		if (msr_info->host_initiated)
-> +			msr_info->data = kvm_read_l1_tsc(vcpu, rdtsc());
-> +		else
-> +			msr_info->data = kvm_read_l2_tsc(vcpu, rdtsc());
->  		break;
->  	case MSR_MTRRcap:
->  	case 0x200 ... 0x2ff:
-> -- 
-> 2.26.2
-> 
+Bartosz
