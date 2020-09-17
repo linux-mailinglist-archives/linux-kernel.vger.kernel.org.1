@@ -2,143 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 199A426E270
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5797926E279
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:33:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726543AbgIQRcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 13:32:24 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:42827 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726420AbgIQRb6 (ORCPT
+        id S1726192AbgIQRcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 13:32:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54287 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726494AbgIQRcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 13:31:58 -0400
-Received: from mail-lf1-f53.google.com ([209.85.167.53]) by
- mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MpUpW-1kqvZm1lvw-00pql1; Thu, 17 Sep 2020 19:29:54 +0200
-Received: by mail-lf1-f53.google.com with SMTP id b22so3032151lfs.13;
-        Thu, 17 Sep 2020 10:29:54 -0700 (PDT)
-X-Gm-Message-State: AOAM532ihZRAecplX3fYbRwKWyjIBw6zinPu3GUYdgLKb6hQTFWLqifG
-        l8AGO87mT0NihAFepRdVUQL6Tg44JhuAyyACwv0=
-X-Google-Smtp-Source: ABdhPJzwgZONEEbeCNVowNajGNC0I3sxwCqfiLLvbIfHBJmaGq8bHpOEUS4++jrPo6OMAEeRAFD1NnTekokAhv3RdV4=
-X-Received: by 2002:a19:81cc:: with SMTP id c195mr8826623lfd.274.1600363793772;
- Thu, 17 Sep 2020 10:29:53 -0700 (PDT)
+        Thu, 17 Sep 2020 13:32:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600363936;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JDy+vxvRfZGmnu6cg8GKuFwx7k+u4v4T4TYyDPV/nUE=;
+        b=ga5xtDB2XUoecA+5h18IfIRhrYFA+hGNxNUX16GxQMP+OxtZqlyE6hbK7UAuSCCTwzAoRx
+        xjMrlXsZuMyY69hcHDNZgSWnsicQ94PYiaxzWItFHidbi3Mq8TvsnMGLDw0i4Sb+RbXSV8
+        CMxKgg8WPyxYvKMdgBr0utovTTCJ88k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-212-vjKounHvMB-E6fZzxPGr2w-1; Thu, 17 Sep 2020 13:30:26 -0400
+X-MC-Unique: vjKounHvMB-E6fZzxPGr2w-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 92E0C8015C6;
+        Thu, 17 Sep 2020 17:30:22 +0000 (UTC)
+Received: from x1.home (ovpn-112-71.phx2.redhat.com [10.3.112.71])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5522160BEC;
+        Thu, 17 Sep 2020 17:30:17 +0000 (UTC)
+Date:   Thu, 17 Sep 2020 11:30:16 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Dave Jiang <dave.jiang@intel.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, vkoul@kernel.org,
+        megha.dey@intel.com, maz@kernel.org, bhelgaas@google.com,
+        tglx@linutronix.de, jacob.jun.pan@intel.com, ashok.raj@intel.com,
+        yi.l.liu@intel.com, baolu.lu@intel.com, kevin.tian@intel.com,
+        sanjay.k.kumar@intel.com, tony.luck@intel.com, jing.lin@intel.com,
+        dan.j.williams@intel.com, kwankhede@nvidia.com,
+        eric.auger@redhat.com, parav@mellanox.com, rafael@kernel.org,
+        netanelg@mellanox.com, shahafs@mellanox.com,
+        yan.y.zhao@linux.intel.com, pbonzini@redhat.com,
+        samuel.ortiz@intel.com, mona.hossain@intel.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-pci@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v3 00/18] Add VFIO mediated device support and DEV-MSI
+ support for the idxd driver
+Message-ID: <20200917113016.425dcde7@x1.home>
+In-Reply-To: <f4a085f1-f6de-2539-12fe-c7308d243a4a@intel.com>
+References: <160021207013.67751.8220471499908137671.stgit@djiang5-desk3.ch.intel.com>
+        <20200917150641.GM3699@nvidia.com>
+        <f4a085f1-f6de-2539-12fe-c7308d243a4a@intel.com>
+Organization: Red Hat
 MIME-Version: 1.0
-References: <20200907153701.2981205-1-arnd@arndb.de> <20200907153701.2981205-3-arnd@arndb.de>
- <20200908061528.GB13930@lst.de>
-In-Reply-To: <20200908061528.GB13930@lst.de>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 17 Sep 2020 19:29:37 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a22EiD-uMZQaBpHQYyy=MJ_7J-ih=6CtgH_9RXT6OOYvg@mail.gmail.com>
-Message-ID: <CAK8P3a22EiD-uMZQaBpHQYyy=MJ_7J-ih=6CtgH_9RXT6OOYvg@mail.gmail.com>
-Subject: Re: [PATCH 2/9] ARM: traps: use get_kernel_nofault instead of set_fs()
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Russell King <rmk@arm.linux.org.uk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux- <kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:EJWme0fl08M+nevYKi7T9EiZ1cAWhKsZe1VYy+NPrU6H5ml9Vwz
- GLx9fgRi4YITtEOu/3V3T/BQ0LEr09olXsPb05aunh5Af6SPz/Ns0MnZnRHzLpQ9nH0LzzY
- yI7FpJl174dLNCapbMPDHWT/sCW7MGdhL1Oi2acKpOJkDMJxhtijd95twilVjneTf4QHzMi
- hxLwrAFEruRgtBmTc0emg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ZCU/w1Vq4M0=:/YKfNEkxNxxMqdjwqld7wv
- uca3Oid+Ja4lHi1RV6ga5MwTW9FWgPTTPk7aVNlSAnYk18kdGPy9zth4TUKOy6irdYhC0EisX
- Be3CPJqXTS86bm2Q+KaDVyAqvZkqJQMLCPi90Wbh4Ew+/YDSPpB6CQannD25KEmMYQV8hxGe2
- AcBl5P1rC8nwCVlGHlLfNZOLkE+J2cfcdgjg3Q0W9qn6ydIUN2zVa/gssuWN6+AdcCaoPKq3+
- jFAcf1Q52yN+QpneKl9dN+SP6zgye14kg06QdxQ2Z1ej2VCsxroMpIedFnOdQKhEYb4gbPZ8a
- eSC2xzBbETfYIP+cBC2aHBubzd7gX70H8FeeLaohc0V0cKfI+eEIuXSl2+kjVi2wOY19eaqe0
- GuWmnTftlDPIDw76DFSFLNNYSnAaOivL7GIK5KGklvXYs6HADlShFP/HUa9gzvdbK2EzM+UdH
- mfKKUy4TL6mY7gyT/MDwIMacMYKA4FH1CsRBunDlDugz1zhKYNAM9b9v7//+AjCMTPN/7h/Ts
- 9iWrf3SiAg2e1TAf1TkCj0Su/7RE/j1g+azbnMYBB5/ShxZLB3U/2LaTN8YohQInAkR/25LgP
- 6PPgxiZ1XaF51UEcoGNVPpiYY1NxJHa4Vkby9P3FqeZmGxRpgWU926Jgzr5bN8tfYZi55T09q
- B1br+XDEMlLoWEPV8XHfOTgZKHgQPaX92iZwsit/sfiENXczp5IrlZ4bo1cWbB1EnQ+kam0/a
- lc0wLgLLCL+tNFV/gi96f7E5gZ5cSLjmSvP//6QzPryEzO5vuF8mLchgzCZXr++FvO8Iu4yxn
- 0pFYxWsXVgs6FkTSOcHEKJMcsQxJnlDdrZeXbCyUc9UyNW+BXomb1mGnSsBDzmaastH7e975G
- QM4d8xNS0rX+APIFILySC803mVG2/egPdMLdvjzUZizfFUfLrWdOOHh8eldFwXmNsM6h1Tmml
- 9WE6/H+Amgvw2H4ziFY2uUMzvZ/wuVNQxdktvCttznHYcXR+W2/i8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 8, 2020 at 8:15 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> > +static void dump_mem(const char *, const char *, unsigned long, unsigned long, bool kernel_mode);
->
-> This adds a pointlessly long line.
+On Thu, 17 Sep 2020 10:15:24 -0700
+Dave Jiang <dave.jiang@intel.com> wrote:
 
-Fixed.
+> On 9/17/2020 8:06 AM, Jason Gunthorpe wrote:
+> > On Tue, Sep 15, 2020 at 04:27:35PM -0700, Dave Jiang wrote:  
+> >>   drivers/dma/idxd/idxd.h                            |   65 +
+> >>   drivers/dma/idxd/init.c                            |  100 ++
+> >>   drivers/dma/idxd/irq.c                             |    6
+> >>   drivers/dma/idxd/mdev.c                            | 1089 ++++++++++++++++++++
+> >>   drivers/dma/idxd/mdev.h                            |  118 ++  
+> > 
+> > It is common that drivers of a subsystem will be under that
+> > subsystem's directory tree. This allows the subsystem community to
+> > manage pages related to their subsystem and it's drivers.
+> > 
+> > Should the mdev parts be moved there?  
+> 
+> I personally don't have a preference. I'll defer to Alex or Kirti to provide 
+> that guidance. It may make certains things like dealing with dma fault regions 
+> and etc easier using vfio calls from vfio_pci_private.h later on for vSVM 
+> support. It also may be the better code review and maintenance domain and 
+> alleviate Vinod having to deal with that portion since it's not dmaengine domain.
 
-> And looking at the code I don't see why the argument is even needed.
->
-> dump_mem() currently does an unconditional set_fs(KERNEL_DS), so it
-> should always use get_kernel_nofault.
+TBH, I'd expect an mdev driver to be co-located with the remainder of
+its parent driver.  It's hopefully sharing more code with that driver
+than anything in mdev of vfio (either of which should be exported for
+the vendor driver).  mdev support is largely expected to be a feature of
+a driver, much like it is for i915, not necessarily its sole purpose for
+existing (see the rejected fpga mdev driver).  Also being nearby
+vfio_pci_private shouldn't invite anyone other than vfio_pci to make
+use of that header.  Thanks,
 
-I had looked at
+Alex
 
-        if (!user_mode(regs) || in_interrupt()) {
-                dump_mem(KERN_EMERG, "Stack: ", regs->ARM_sp,
-                         THREAD_SIZE + (unsigned
-long)task_stack_page(tsk), kernel_mode);
-
-which told me that there should be at least some code path ending up in
-__die() that has in_interrupt() set but comes from user mode.
-
-In this case, the memory to print would be a user pointer and cannot be
-accessed by get_kernel_nofault() (but could be accessed with
-"set_fs(KERNEL_DS); __get_user()").
-
-I looked through the history now and the only code path I could
-find that would arrive here this way is from bad_mode(), indicating
-that there is probably a hardware bug or the contents of *regs are
-corrupted.
-
-Russell might have a better explanation for this, but I would assume
-now that you are right in that we don't ever need to care about
-dumping user space addresses here.
-
-> > +static void dump_instr(const char *lvl, struct pt_regs *regs)
-> >  {
-> >       unsigned long addr = instruction_pointer(regs);
-> >       const int thumb = thumb_mode(regs);
-> > @@ -173,10 +169,20 @@ static void __dump_instr(const char *lvl, struct pt_regs *regs)
-> >       for (i = -4; i < 1 + !!thumb; i++) {
-> >               unsigned int val, bad;
-> >
-> > -             if (thumb)
-> > -                     bad = get_user(val, &((u16 *)addr)[i]);
-> > -             else
-> > -                     bad = get_user(val, &((u32 *)addr)[i]);
-> > +             if (!user_mode(regs)) {
-> > +                     if (thumb) {
-> > +                             u16 val16;
-> > +                             bad = get_kernel_nofault(val16, &((u16 *)addr)[i]);
-> > +                             val = val16;
-> > +                     } else {
-> > +                             bad = get_kernel_nofault(val, &((u32 *)addr)[i]);
-> > +                     }
-> > +             } else {
-> > +                     if (thumb)
-> > +                             bad = get_user(val, &((u16 *)addr)[i]);
-> > +                     else
-> > +                             bad = get_user(val, &((u32 *)addr)[i]);
-> > +             }
->
-> When I looked at this earlier I just added a little helper to make
-> this a little easier to read.   Here is my patch from an old tree:
->
-> http://git.infradead.org/users/hch/misc.git/commitdiff/67413030ccb7a64a7eb828e13ff0795f4eadfeb7
-
-I think your version was broken for the in-kernel thumb version
-because get_kernel_nofault does not widen the result
-from 16 to 32 bits. I tried fixing this in your version, but the
-result ended up more complex than my version here, so I
-decided to keep what I had.
-
-       Arnd
