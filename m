@@ -2,84 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 511E326D9E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:13:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ADA026D9F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726617AbgIQLLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 07:11:52 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:41757 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726333AbgIQLKl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 07:10:41 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BsZ4n5g9Rz9sSn;
-        Thu, 17 Sep 2020 21:10:17 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600341017;
-        bh=WgBa20qobIP1NTevgK+CZPRTSep8ttMyfa6zfCns6Hs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=omEWjyGQri6+wVOuWic9PWoFBf6hPONqMS2DL/CScJc9u+BB5UyYOQprxFS9id4Ju
-         o3u7i4g74xwIz2FbMbxqPziTr/HetHVpbzP+Zs/D9JhG6mbWON3S5zZYl2kdYb0a53
-         qyCB0iInPOij4XKNqW7Yt45KUAR4Rc5CnxP5cHC5F7QiccUzPhdm4YSr40un6kFA31
-         m4O+M5U4LJxE05WY3xZlAy/gJPZDpHeYYB2GoTjQkrpg3vE5c1BNjnyJTk+8k5yFVt
-         GUqlq35FCJ0r4N/CJykSTT/5b2EQO7SNAwFvMpmi1c4G6HMtZ8u+WcFG4ipaT2jQ5o
-         wi7n1RqnVxesA==
-Date:   Thu, 17 Sep 2020 21:10:17 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commits in the irqchip tree
-Message-ID: <20200917211017.1d1216b7@canb.auug.org.au>
+        id S1726614AbgIQLNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 07:13:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726719AbgIQLLv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 07:11:51 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B88CC061756;
+        Thu, 17 Sep 2020 04:11:01 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id g4so1609622wrs.5;
+        Thu, 17 Sep 2020 04:11:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=cSAbf+VwagpVi5OwclNO3B1suQsjmcg0FLJ59nbKPUk=;
+        b=FNIKApCDlsy+3dSx4/pZNoG5TZEV2gkIXPXgGZqNYqksrjvnfmLP3YcPciGeI256UF
+         UtfPuKBVqu3yCNSiFZ7nfmYXeC1kHdEDinSgYRSyT2sHUm/1cQBmqJM6JsRqoo8H02v2
+         fQTcdGilqHn4v5MIogxlU3xh8drTHoBiCWakfgXB56+OJ4zfSe9mYVuj8v0q1CT2rhJb
+         e7ocRfKeQWxkNZbuqYw+Lgny2SRACHZCjSHp145WRE8ZNy3OEdF9s0ubX9ZHWmAXL0uK
+         cThRejs0IhEbFsr/N6t5oDfS9a+CFszjMUMCjRuuJd68q2dn1tIH+OM4J5n56vovh0KA
+         VwQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=cSAbf+VwagpVi5OwclNO3B1suQsjmcg0FLJ59nbKPUk=;
+        b=H6C9jJJIMg3GDLaDFPKKCm0roE/OI0d8r3+3grXSh9e0aHVkPPcvbEGvvqL80foTdf
+         m5ZkY97G83Nmv04KfRrXADzBm/LLzYtJ0YlGNCFQUaII7aMZ5pykn4rbftqFOYcaE3r3
+         ifTkp8AKUCzDIALGQ9GPVwWcvGj21MFjt/i3qCjM8tFE1U1/MI8I5wvdr459MU0oR6k1
+         xJT8sS1/+6ZnlAJkaC2qCRMDmmKo3Yq4Gxow9O6SGwsef/EDdOpN74vog3PSDV6ImWE/
+         urOxNmmzGqEuRpH2/3L72uU0qlyhpIojYZmk6z+Owh+GqjqqWcHpMe0TzL8nodpB6ZY7
+         e0KQ==
+X-Gm-Message-State: AOAM532CAiHRNlBbCoKXo3aM4qQQnmCYwIFwf/jyEaTyARU0tE99oJos
+        g8/bKZNB/y3giTU1MTI8oNReapm4PjIjcA==
+X-Google-Smtp-Source: ABdhPJwDH7aNIf/h8X+eZZ/5ak0e9WMZtJjaEbf+KNouecSIHbomby/ah/gxYGjEQRrR44kumOubyw==
+X-Received: by 2002:a5d:4949:: with SMTP id r9mr32858029wrs.27.1600341060489;
+        Thu, 17 Sep 2020 04:11:00 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id f23sm15283173wmc.3.2020.09.17.04.10.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 04:10:59 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 13:10:57 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 01/34] i2c: tegra: Make tegra_i2c_flush_fifos() usable
+ in atomic transfer
+Message-ID: <20200917111057.GM3515672@ulmo>
+References: <20200908224006.25636-1-digetx@gmail.com>
+ <20200908224006.25636-2-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/TevJp64OHmXh7L4/CQ7eDZg";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="oYAXToTM8kn9Ra/9"
+Content-Disposition: inline
+In-Reply-To: <20200908224006.25636-2-digetx@gmail.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/TevJp64OHmXh7L4/CQ7eDZg
-Content-Type: text/plain; charset=US-ASCII
+
+--oYAXToTM8kn9Ra/9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On Wed, Sep 09, 2020 at 01:39:33AM +0300, Dmitry Osipenko wrote:
+> The tegra_i2c_flush_fifos() shouldn't sleep in atomic transfer and jiffies
+> are not updating if interrupts are disabled. Let's switch to use iopoll
+> API helpers for register-polling. The iopoll API provides helpers for both
+> atomic and non-atomic cases.
+>=20
+> Note that this patch doesn't fix any known problem because normally FIFO
+> is flushed at the time of starting a new transfer.
+>=20
+> Reviewed-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/i2c/busses/i2c-tegra.c | 25 ++++++++++++++++---------
+>  1 file changed, 16 insertions(+), 9 deletions(-)
+>=20
+> diff --git a/drivers/i2c/busses/i2c-tegra.c b/drivers/i2c/busses/i2c-tegr=
+a.c
+> index 00d3e4d7a01e..ab88cdd70376 100644
+> --- a/drivers/i2c/busses/i2c-tegra.c
+> +++ b/drivers/i2c/busses/i2c-tegra.c
+> @@ -470,9 +470,9 @@ static int tegra_i2c_init_dma(struct tegra_i2c_dev *i=
+2c_dev)
+> =20
+>  static int tegra_i2c_flush_fifos(struct tegra_i2c_dev *i2c_dev)
+>  {
+> -	unsigned long timeout =3D jiffies + HZ;
+> -	unsigned int offset;
+> -	u32 mask, val;
+> +	u32 mask, val, offset, reg_offset;
 
-Commits
+Is there are reason why we need reg_offset? Seems to me like we could
+simplify this, see below.
 
-  e86085c6e2fb ("irqchip/irq-pruss-intc: Add support for ICSSG INTC on K3 S=
-oCs")
-  1c46bcaed207 ("irqchip/irq-pruss-intc: Implement irq_{get, set}_irqchip_s=
-tate ops")
-  7d1ca43a7c14 ("irqchip/irq-pruss-intc: Add logic for handling reserved in=
-terrupts")
-  7a141591acde ("irqchip/irq-pruss-intc: Add a PRUSS irqchip driver for PRU=
-SS interrupts")
-  309f1f85f7b0 ("dt-bindings: irqchip: Add PRU-ICSS interrupt controller bi=
-ndings")
+> +	void __iomem *addr;
+> +	int err;
+> =20
+>  	if (i2c_dev->hw->has_mst_fifo) {
+>  		mask =3D I2C_MST_FIFO_CONTROL_TX_FLUSH |
+> @@ -488,12 +488,19 @@ static int tegra_i2c_flush_fifos(struct tegra_i2c_d=
+ev *i2c_dev)
+>  	val |=3D mask;
+>  	i2c_writel(i2c_dev, val, offset);
+> =20
+> -	while (i2c_readl(i2c_dev, offset) & mask) {
+> -		if (time_after(jiffies, timeout)) {
+> -			dev_warn(i2c_dev->dev, "timeout waiting for fifo flush\n");
+> -			return -ETIMEDOUT;
+> -		}
+> -		usleep_range(1000, 2000);
+> +	reg_offset =3D tegra_i2c_reg_addr(i2c_dev, offset);
+> +	addr =3D i2c_dev->base + reg_offset;
 
-are missing a Signed-off-by from their committer.
+Why not just:
 
---=20
-Cheers,
-Stephen Rothwell
+	offset =3D tegra_i2c_reg_offset(i2c_dev, offset);
+	addr =3D i2c_dev->base + offset;
 
---Sig_/TevJp64OHmXh7L4/CQ7eDZg
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+or even just:
+
+	addr =3D i2c_dev->base + tegra_i2c_reg_offset(i2c_dev, offset);
+
+? That makes the patch much smaller because you don't have to rewrite
+the whole variable declaration block and just add the "addr" and "err"
+variables while removing "timeout".
+
+Thierry
+
+--oYAXToTM8kn9Ra/9
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9jRBkACgkQAVBC80lX
-0Gz6iQf/Udj1BrH6NVYa4nypIA0MMHbj2TDinhhz+HPAjTEp3zze0rKsRHS4N0+E
-LyZQqbpRd8LKXS87j5czw9VIoBN5Lne2a91XhmyNqBp1UN+lVS/2vfX9cows9Mri
-Njr1hnrGHj/SZDaFmuG2NAy594/ZooI9KBPI0GDOx3GM5MqWritmol/RrgMu0v5L
-nDY+uAvGJpyomu3D2aCL7Ms85sB/tyP9RbxGEn2iTX4NGidTAz8dWq0gc0Fy/NIB
-flAuiCBuvb+kbsunDUktVmnT8xzBhuFPZTQfOLDQZPKYC7EWWEma/inl9SED0B5/
-3qwR29K/5UOL1Tju5UrEilzyxC/gIg==
-=ZB3y
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9jREEACgkQ3SOs138+
+s6FcNw//dQsaWaIy/AQO16/aC91z2Usg0AVFYQSAhkpULp+aIZLrIT7L4e8wBlvb
+/avIxzjkvsJ2iOT10fBaLg+R8w7hOs5Fejq4p6VMr35G5Y11IDLayXz6MzBXr3rY
+zzrahMFY3hSkk6nxuIHYqWztoFrKIphKPt42de6kwZ758FnUDbQuY5ybg3TKmw2a
+X1x3pmXUizrs2ONjCtEAu7e+TrrYBHG39jZX+EdQBCXb41dWCwrBI3VhQWjtxB3F
+unuwAfp8Mpc1oRwhh1bdOicD916tLKzVrjN6iBWjd87K17re0VkLGIuAIK7cSP/N
+wXUGX761pemW1KGguprq/V7+bU+TDZFzrQMoKXpVvCqxfiVa8yN8n/hcFqyu8f6J
+Lf5M72GLOvRxRyQrFP8I/EQV0mkAOFm8R5qcHIh7ntGCJ8wVkZPFwm09R3S63kqs
+yhLZH3TIV/9TPJsLharKc3vBLFIP8Scr8AywCBNTYfTRfckgcSWzH1/hDireyTr1
+MO1x4AfX6joNOHEGt/qnHq5etrAwDFbt94+/SE+qHNbpyg3HCofTrz/c6V7JP0Q0
+Ta1ad7LExFzFI4k9+ZH1fcMqa7CM2cQZxgKGrP1gDrNmKIKjcxbOD9oKP/OWB+vd
+Gi4YcQcoWPQ6MdqFy6Ave7f+uxqgjW32UV9H7k6Xzx8H3NJ0hAY=
+=2RDZ
 -----END PGP SIGNATURE-----
 
---Sig_/TevJp64OHmXh7L4/CQ7eDZg--
+--oYAXToTM8kn9Ra/9--
