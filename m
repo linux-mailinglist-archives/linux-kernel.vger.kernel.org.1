@@ -2,119 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCECE26D701
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79FEA26D733
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:55:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726427AbgIQIqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 04:46:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40376 "EHLO mail.kernel.org"
+        id S1726234AbgIQIzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 04:55:22 -0400
+Received: from foss.arm.com ([217.140.110.172]:42712 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726169AbgIQIp7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 04:45:59 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8271F206A1;
-        Thu, 17 Sep 2020 08:45:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600332358;
-        bh=XYG6JGcwgkmjNbVGDa4h66QWAsy/bKbSi/BpwoM8ZUU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=TvMRY2qOEraH4Rfb8k5hDT8yd1Lz4WxBT0oWNg/vfxujfyT7zAh5fVe5VXdROxz3V
-         fjxL56HpXlT9rEhS1V6QbWFjKeNrhwuYJSiuF+sDqd0JJuxFbzdAnEjLioqFC2oPV/
-         EKZO8cw4Z4UVtE7Q9XSt5BlFS0Y6ujF7tV63c4UY=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kIpYC-00Ca3q-N1; Thu, 17 Sep 2020 09:45:56 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Thu, 17 Sep 2020 09:45:56 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>,
-        kernel-team@android.com, Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King <linux@arm.linux.org.uk>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Saravana Kannan <saravanak@google.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH v3 08/16] irqchip/gic: Configure SGIs as standard
- interrupts
-In-Reply-To: <a88528cd-eb76-367a-77d6-7ae20bd28304@nvidia.com>
-References: <20200901144324.1071694-1-maz@kernel.org>
- <20200901144324.1071694-9-maz@kernel.org>
- <CGME20200914130601eucas1p23ce276d168dee37909b22c75499e68da@eucas1p2.samsung.com>
- <a917082d-4bfd-a6fd-db88-36e75f5f5921@samsung.com>
- <933bc43e-3cd7-10ec-b9ec-58afaa619fb7@nvidia.com>
- <3378cd07b92e87a24f1db75f708424ee@kernel.org>
- <CACRpkdYvqQUJaReD1yNTwiHhaZpQ9h5Z9DgdqbKkCexnM7cWNw@mail.gmail.com>
- <049d62ac7de32590cb170714b47fb87d@kernel.org>
- <a88528cd-eb76-367a-77d6-7ae20bd28304@nvidia.com>
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <81cb16323baa1c81e7bc1e8156fa47b8@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: jonathanh@nvidia.com, linus.walleij@linaro.org, m.szyprowski@samsung.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, sumit.garg@linaro.org, kernel-team@android.com, f.fainelli@gmail.com, linux@arm.linux.org.uk, jason@lakedaemon.net, saravanak@google.com, andrew@lunn.ch, catalin.marinas@arm.com, gregory.clement@bootlin.com, b.zolnierkie@samsung.com, krzk@kernel.org, linux-samsung-soc@vger.kernel.org, tglx@linutronix.de, will@kernel.org, Valentin.Schneider@arm.com, linux-tegra@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        id S1726153AbgIQIzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 04:55:18 -0400
+X-Greylist: delayed 460 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 04:55:17 EDT
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 034DC1FB;
+        Thu, 17 Sep 2020 01:47:37 -0700 (PDT)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.73.95])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 837433F718;
+        Thu, 17 Sep 2020 01:47:33 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     will@kernel.org, catalin.marinas@arm.com,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64/mm: Validate hotplug range before creating linear mapping
+Date:   Thu, 17 Sep 2020 14:16:42 +0530
+Message-Id: <1600332402-30123-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-17 08:54, Jon Hunter wrote:
-> On 17/09/2020 08:50, Marc Zyngier wrote:
->> Hi Linus,
->> 
->> On 2020-09-17 08:40, Linus Walleij wrote:
->>> On Wed, Sep 16, 2020 at 5:11 PM Marc Zyngier <maz@kernel.org> wrote:
->>> 
->>>> Can you try the patch below and let me know?
->>> 
->>> I tried this patch and now Ux500 WORKS. So this patch is definitely
->>> something you should apply.
->>> 
->>>> -                       if (is_frankengic())
->>>> -                               set_sgi_intid(irqstat);
->>>> +                       this_cpu_write(sgi_intid, intid);
->>> 
->>> This needs changing to irqstat to compile as pointed out by Jon.
->>> 
->>> With that:
->>> Tested-by: Linus Walleij <linus.walleij@linaro.org>
->> 
->> Thanks a lot for that.
->> 
->> Still need to understand why some of Jon's systems are left 
->> unbootable,
->> despite having similar GIC implementations (Tegra194 and Tegra210 use
->> the same GIC-400, and yet only one of the two boots correctly...).
-> 
-> So far, I have only tested this patch on Tegra20. Let me try the other
-> failing boards this morning and see if those still fail.
+During memory hotplug process, the linear mapping should not be created for
+a given memory range if that would fall outside the maximum allowed linear
+range. Else it might cause memory corruption in the kernel virtual space.
 
-Tegra20 (if I remember well) is a dual A9 with the same GIC 
-implementation
-as Ux500, hence requiring the source CPU bits to be written back. So 
-this
-patch should have cured it, but didn't...
+Maximum linear mapping region is [PAGE_OFFSET..(PAGE_END -1)] accommodating
+both its ends but excluding PAGE_END. Max physical range that can be mapped
+inside this linear mapping range, must also be derived from its end points.
 
-/me puzzled.
+When CONFIG_ARM64_VA_BITS_52 is enabled, PAGE_OFFSET is computed with the
+assumption of 52 bits virtual address space. However, if the CPU does not
+support 52 bits, then it falls back using 48 bits instead and the PAGE_END
+is updated to reflect this using the vabits_actual. As for PAGE_OFFSET,
+bits [51..48] are ignored by the MMU and remain unchanged, even though the
+effective start address of linear map is now slightly different. Hence, to
+reliably check the physical address range mapped by the linear map, the
+start address should be calculated using vabits_actual. This ensures that
+arch_add_memory() validates memory hot add range for its potential linear
+mapping requirement, before creating it with __create_pgd_mapping().
 
-         M.
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: Steven Price <steven.price@arm.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Fixes: 4ab215061554 ("arm64: Add memory hotplug support")
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+ arch/arm64/mm/mmu.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+
+diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+index 75df62fea1b6..d59ffabb9c84 100644
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@ -1433,11 +1433,38 @@ static void __remove_pgd_mapping(pgd_t *pgdir, unsigned long start, u64 size)
+ 	free_empty_tables(start, end, PAGE_OFFSET, PAGE_END);
+ }
+ 
++static bool inside_linear_region(u64 start, u64 size)
++{
++	/*
++	 * Linear mapping region is the range [PAGE_OFFSET..(PAGE_END - 1)]
++	 * accommodating both its ends but excluding PAGE_END. Max physical
++	 * range which can be mapped inside this linear mapping range, must
++	 * also be derived from its end points.
++	 *
++	 * With CONFIG_ARM64_VA_BITS_52 enabled, PAGE_OFFSET is defined with
++	 * the assumption of 52 bits virtual address space. However, if the
++	 * CPU does not support 52 bits, it falls back using 48 bits and the
++	 * PAGE_END is updated to reflect this using the vabits_actual. As
++	 * for PAGE_OFFSET, bits [51..48] are ignored by the MMU and remain
++	 * unchanged, even though the effective start address of linear map
++	 * is now slightly different. Hence, to reliably check the physical
++	 * address range mapped by the linear map, the start address should
++	 * be calculated using vabits_actual.
++	 */
++	return ((start >= __pa(_PAGE_OFFSET(vabits_actual)))
++			&& ((start + size) <= __pa(PAGE_END - 1)));
++}
++
+ int arch_add_memory(int nid, u64 start, u64 size,
+ 		    struct mhp_params *params)
+ {
+ 	int ret, flags = 0;
+ 
++	if (!inside_linear_region(start, size)) {
++		pr_err("[%llx %llx] is outside linear mapping region\n", start, start + size);
++		return -EINVAL;
++	}
++
+ 	if (rodata_full || debug_pagealloc_enabled())
+ 		flags = NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
+ 
 -- 
-Jazz is not dead. It just smells funny...
+2.20.1
+
