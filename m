@@ -2,110 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE9226DECF
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFFFB26DE7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727328AbgIQOyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 10:54:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33686 "EHLO
+        id S1727626AbgIQOl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 10:41:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727310AbgIQOss (ORCPT
+        with ESMTP id S1727608AbgIQOkz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 10:48:48 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF61EC06178B;
-        Thu, 17 Sep 2020 07:36:21 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id z19so1323512pfn.8;
-        Thu, 17 Sep 2020 07:36:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Q8jrz6uWJjZDV5osg8THNEfIWCpsd8KCJUTVbj5qsm0=;
-        b=SNst3m0v1mqRhl2zQtDQSsgxFQI03f/4abAenMcrtiZa3F20Ldtk5p950SXqNvzohh
-         9eG7P3yvILc/52txWdh3OUJ23SaQr7B5/TFalX4QW9btcWzWNkVSoOcdHcnW6DrmgKNU
-         gBHF/78VXjeadWrs7z+rVXCzFWo9JyRcmdUQIlV9ewnOiJVWPzAB86Woqm+b7a9L30HX
-         yod5fx91qCtk1/19XDlTTtK+dbmTSmpye6G6yCiIH/hrbLlZeezGLwlprIXR1e68ZPpu
-         aTG2Og7+W1/iBbLSszbja1sVSYHDParWBDC5SUV82ySP8+g9DtFLlgYQbj4PyDXTBqy+
-         UZzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Q8jrz6uWJjZDV5osg8THNEfIWCpsd8KCJUTVbj5qsm0=;
-        b=UgEmvqy9JSjJGxrMQBr5ecGiX8Ova0pMQlX/1YUlO9MRRtUGdZrRYULeIH3un5+L9q
-         24rTvqzyW6Tp0Xw6Y3sEpZueVk1kPCTXRK9atnyKRMtLd3ad5m24C0BZu4psXHy5tBps
-         EZ45IFTpbA6P2fm/w1v/8JTs9nSASAb349VqkPRPILSYdEqPlxgB1thZUoUCv+z/LApJ
-         n9mlynA+MLEfh2eU16syC1YBG92F2pCeXleslx7lu1YEgWw9GC3mB9Vi/lMwfapK6Ggx
-         rO34/0BDrV+C9phEg7Rs3Zx/PagiK5kRQTvMKpbhHNAjBq9JUF0Bmc8ZPn8Kz7B9Z4xB
-         eUZA==
-X-Gm-Message-State: AOAM533infkbZIQPAmAhGvPkBF9aVRCrm3iy83AgTx8LYMOY8J4iryfa
-        iTRoJFWAyTv4jfGv7lbv6hcB4rYL5XOcqADJn9bTF+jgSVSTWw==
-X-Google-Smtp-Source: ABdhPJwoGicLiaC6w05McLgvuCi15yGa4WMG7a4CIxJz55Pw3FYa5lbkadDow5+1sPXEbSjRU9z7QiGiI86iOFyWa9s=
-X-Received: by 2002:a63:c543:: with SMTP id g3mr23214145pgd.203.1600353381129;
- Thu, 17 Sep 2020 07:36:21 -0700 (PDT)
+        Thu, 17 Sep 2020 10:40:55 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FFDBC0612F2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 07:39:56 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 16:38:50 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600353531;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IsjaeOzKr9oow++4iThZuJ2UeMp6oJKMxaZTXN3CO5Q=;
+        b=SEu1J5fEwah4ZH4cIHAp+/6ZDYvKlLpFAEfgEv+mNXFQYi/s9z0cgPVfIrt/qA2M88earO
+        sPHfuS44oioiBhqwiFFt8wOpGgBzv55sCZXUvdDMUY4eI5nQdYRadVNKRtHZ+F0uRB5+0a
+        S5COCwR4QCnbKO6SKtWed92nNZGac4NFXVx1pZnDRmO57Xr6+67BtoV8Tgyx5KjQnU7je/
+        G4naNsraAH1sixXGPfpIAHp4CAfr/G/hwXddCR/1nrr6Ld3dCek51luASq1Uit5++tr7hl
+        tc5ZQ3U7zoc4fCsA/PL0U5B+7I9SkfIszvKslFv/ee0rMyGlbTEGpgh5tYxTgQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600353531;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IsjaeOzKr9oow++4iThZuJ2UeMp6oJKMxaZTXN3CO5Q=;
+        b=yhbOPpNiKfVPtlecpO1boF/C9OBpsVg/ivsU8TyilnWN9yzvJzh3g+COBSkhqWY42NdHKA
+        lo70Ckyjlnj522DA==
+From:   Sebastian Siewior <bigeasy@linutronix.de>
+To:     peterz@infradead.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Scott Wood <swood@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>
+Subject: Re: [patch 09/10] sched/core: Add migrate_disable/enable()
+Message-ID: <20200917143850.25akkvr32ojtwohy@linutronix.de>
+References: <20200917094202.301694311@linutronix.de>
+ <20200917101624.813835219@linutronix.de>
+ <20200917142438.GH1362448@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20200916213618.8003-1-djrscally@gmail.com> <20200917075356.GA3333802@kroah.com>
- <d97fb93f-5258-b654-3063-863e81ae7298@gmail.com> <53787a36-4473-9336-6719-270930db2735@ideasonboard.com>
- <CAHp75VcjSZC7BG9ckFTogTK0xXog9tev8i3w=P0iN4JRQY05XQ@mail.gmail.com> <f48ec4c5-0674-2e43-cbd8-f5dcc4bf5b15@ideasonboard.com>
-In-Reply-To: <f48ec4c5-0674-2e43-cbd8-f5dcc4bf5b15@ideasonboard.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 17 Sep 2020 17:36:03 +0300
-Message-ID: <CAHp75VcsDVe8RzPT9pWE1v7rX6yCysmV5tNR9q09UR_sHDfBaA@mail.gmail.com>
-Subject: Re: [RFC PATCH] Add bridge driver to connect sensors to CIO2 device
- via software nodes on ACPI platforms
-To:     kieran.bingham@ideasonboard.com
-Cc:     Dan Scally <djrscally@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tian Shu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>,
-        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
-        jorhand@linux.microsoft.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200917142438.GH1362448@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 5:19 PM Kieran Bingham
-<kieran.bingham@ideasonboard.com> wrote:
-> On 17/09/2020 15:08, Andy Shevchenko wrote:
+On 2020-09-17 16:24:38 [+0200], peterz@infradead.org wrote:
+> And if I'm not mistaken, the above migrate_enable() *does* require being
+> able to schedule, and our favourite piece of futex:
+> 
+> 	raw_spin_lock_irq(&q.pi_state->pi_mutex.wait_lock);
+> 	spin_unlock(q.lock_ptr);
+> 
+> is broken. Consider that spin_unlock() doing migrate_enable() with a
+> pending sched_setaffinity().
 
-...
+There are two instances of the above and only in the futex code and we
+have sort of duct tape for that by manually balancing the migrate
+counter so that it does not come to this.
+But yes, not having to do the manual balance is a plus.
 
-> Ayee, ok so we have 'half' the driver for IPU3 out of staging.
-
-Correct. And your below analysis is correct.
-
-> From my understanding, the IPU3 consists of two components, the CIO2
-> (CSI2 capture), and the IMGU (the ISP).
->
-> - drivers/media/pci/intel/ipu3
->
-> This is indeed the CIO2 component (config VIDEO_IPU3_CIO2), and that is
-> the part that this bridge relates to, so in fact this cio2-bridge should
-> probably go there indeed. No need to go through staging.
->
-> The files remaining at:
->
-> - drivers/staging/media/ipu3
->
-> are in fact also for the IPU3 but the ISP component (VIDEO_IPU3_IMGU).
->
-> I'm sorry for the confusion, I knew that the ISP was still in staging, I
-> hadn't realised the CSI2 receiver (CIO2) was not.
->
-> >> Hopefully with more users of the IPU3 brought in by this cio2-bridge,
-> >> that will help gather momentum to get the IPU3 developments required
-> >> completed and moved into drivers/media.
-
--- 
-With Best Regards,
-Andy Shevchenko
+Sebastian
