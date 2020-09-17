@@ -2,191 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE8326D910
+	by mail.lfdr.de (Postfix) with ESMTP id D09B826D913
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 12:33:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726592AbgIQKbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 06:31:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:44236 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726446AbgIQKaU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 06:30:20 -0400
-X-Greylist: delayed 444 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 06:30:19 EDT
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9AF2230E;
-        Thu, 17 Sep 2020 03:22:53 -0700 (PDT)
-Received: from [10.57.47.84] (unknown [10.57.47.84])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 35C5C3F68F;
-        Thu, 17 Sep 2020 03:22:52 -0700 (PDT)
-Subject: Re: [PATCH 2/2] arm64/mm: Enable color zero pages
-To:     Gavin Shan <gshan@redhat.com>, Will Deacon <will@kernel.org>
-Cc:     mark.rutland@arm.com, anshuman.khandual@arm.com,
-        catalin.marinas@arm.com, linux-kernel@vger.kernel.org,
-        shan.gavin@gmail.com, linux-arm-kernel@lists.infradead.org
-References: <20200916032523.13011-1-gshan@redhat.com>
- <20200916032523.13011-3-gshan@redhat.com>
- <20200916082819.GB27496@willie-the-truck>
- <c1b79a8c-e5a5-f375-87e1-20bbc5cc2707@redhat.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <33e9a04e-9f93-6a06-273d-284900bc1535@arm.com>
-Date:   Thu, 17 Sep 2020 11:22:50 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726566AbgIQKb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 06:31:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726236AbgIQKbx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 06:31:53 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2903CC06174A;
+        Thu, 17 Sep 2020 03:31:52 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id b17so1016391pji.1;
+        Thu, 17 Sep 2020 03:31:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+k+2enWfqqILy+Gnd8aFpkqmOPrS/xqIZRf0Vu1kx8I=;
+        b=KQjJtWEthOOxcaw9SMIUlIZ/VkAJBJC51v/p8FxRobm/5NQa77ipjtwAOmF6/MKPZe
+         XvKWc+3uBGqgPKYoimI2ciBXp/HxYocK/E+M3IWgHybm+LIt6W7ITrIHxsRwfYsqpDBy
+         /kcLvxF/OW9V0TdcVB+SkBpzIFikA1r8fDsM5/uXneSzQ9a+ecyryqme2bp1s5mTRcpl
+         HjuwfZ3SXfrXU9cajfWQ+Rmlu+niMCnBIRS7JRz4nMhoEyd95AWqheIATRSG9G/wGE4i
+         NA8DgOfj9Mv/FJ6tAwrp9uN90C/rC6r44zxBMjjmfwuuDQrIp1s+7E7mgiGpUTLkEOIM
+         fjDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+k+2enWfqqILy+Gnd8aFpkqmOPrS/xqIZRf0Vu1kx8I=;
+        b=o2dk91vIqOH0K1GvZTl7WVJM4/thHJSuDnrIpuadsj3lQn1WDRm4fVEHkAitChBUXi
+         LpXUnoukERArmMWgl6oLTNJu/EylUTge7zAk5HFcJF1hjPDJf/YRcxKTB0PqTI6fJK0a
+         UwODGAzpyA+OnTcV3AfZTTj9cSpbwy6cWbLOIHQ28CpOmfqi0zX5j9DT4zSHJFKF4AXn
+         eiKYLlSjsb0QEAu1JKzPJ8s07253c7toWjIa6ATtZPzry8r5EFNjADiThbtGccQ/GmRe
+         CWIHStbOnE7OWU1lNUQEDu4J3AHZlA8P/IRfakZEkabuOcvmKnWYBQ1e9k18OUOzRX+o
+         /a+w==
+X-Gm-Message-State: AOAM531fCDtNoiy1e740cU/G4ccXvgNuPWblr1ldlrCh+x267B/bCbKX
+        fsfqJrHb5dzu/TimDx4tzLk=
+X-Google-Smtp-Source: ABdhPJxpn0f9nC0LsqN8CNdcZjbCyswhe+eUHU1FfjjrzXGmYIVMt3OTervUn+W31q+bJQfAPQjdNw==
+X-Received: by 2002:a17:90a:be05:: with SMTP id a5mr7886030pjs.120.1600338710501;
+        Thu, 17 Sep 2020 03:31:50 -0700 (PDT)
+Received: from localhost.localdomain (sau-465d4-or.servercontrol.com.au. [43.250.207.1])
+        by smtp.gmail.com with ESMTPSA id e207sm21781927pfh.171.2020.09.17.03.31.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 03:31:49 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     b.zolnierkie@samsung.com, linux-fbdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     corbet@lwn.net, rdunlap@infradead.org, gregkh@linuxfoundation.org,
+        daniel@ffwll.ch, yuanmingbuaa@gmail.com, w@1wt.eu,
+        nopitydays@gmail.com, zhangyunhai@nsfocus.com, luto@amacapital.net,
+        torvalds@linux-foundation.org,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH v4 0/4] docs: fb: Removed framebuffer scrollback related documentations
+Date:   Thu, 17 Sep 2020 15:56:11 +0530
+Message-Id: <cover.1600333774.git.unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <c1b79a8c-e5a5-f375-87e1-20bbc5cc2707@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-17 04:35, Gavin Shan wrote:
-> Hi Will,
-> 
-> On 9/16/20 6:28 PM, Will Deacon wrote:
->> On Wed, Sep 16, 2020 at 01:25:23PM +1000, Gavin Shan wrote:
->>> This enables color zero pages by allocating contigous page frames
->>> for it. The number of pages for this is determined by L1 dCache
->>> (or iCache) size, which is probbed from the hardware.
->>>
->>>     * Add cache_total_size() to return L1 dCache (or iCache) size
->>>
->>>     * Implement setup_zero_pages(), which is called after the page
->>>       allocator begins to work, to allocate the contigous pages
->>>       needed by color zero page.
->>>
->>>     * Reworked ZERO_PAGE() and define __HAVE_COLOR_ZERO_PAGE.
->>>
->>> Signed-off-by: Gavin Shan <gshan@redhat.com>
->>> ---
->>>   arch/arm64/include/asm/cache.h   | 22 ++++++++++++++++++++
->>>   arch/arm64/include/asm/pgtable.h |  9 ++++++--
->>>   arch/arm64/kernel/cacheinfo.c    | 34 +++++++++++++++++++++++++++++++
->>>   arch/arm64/mm/init.c             | 35 ++++++++++++++++++++++++++++++++
->>>   arch/arm64/mm/mmu.c              |  7 -------
->>>   5 files changed, 98 insertions(+), 9 deletions(-)
->>>
->>> diff --git a/arch/arm64/include/asm/cache.h 
->>> b/arch/arm64/include/asm/cache.h
->>> index a4d1b5f771f6..420e9dde2c51 100644
->>> --- a/arch/arm64/include/asm/cache.h
->>> +++ b/arch/arm64/include/asm/cache.h
->>> @@ -39,6 +39,27 @@
->>>   #define CLIDR_LOC(clidr)    (((clidr) >> CLIDR_LOC_SHIFT) & 0x7)
->>>   #define CLIDR_LOUIS(clidr)    (((clidr) >> CLIDR_LOUIS_SHIFT) & 0x7)
->>> +#define CSSELR_TND_SHIFT    4
->>> +#define CSSELR_TND_MASK        (UL(1) << CSSELR_TND_SHIFT)
->>> +#define CSSELR_LEVEL_SHIFT    1
->>> +#define CSSELR_LEVEL_MASK    (UL(7) << CSSELR_LEVEL_SHIFT)
->>> +#define CSSELR_IND_SHIFT    0
->>> +#define CSSERL_IND_MASK        (UL(1) << CSSELR_IND_SHIFT)
->>> +
->>> +#define CCSIDR_64_LS_SHIFT    0
->>> +#define CCSIDR_64_LS_MASK    (UL(7) << CCSIDR_64_LS_SHIFT)
->>> +#define CCSIDR_64_ASSOC_SHIFT    3
->>> +#define CCSIDR_64_ASSOC_MASK    (UL(0x1FFFFF) << CCSIDR_64_ASSOC_SHIFT)
->>> +#define CCSIDR_64_SET_SHIFT    32
->>> +#define CCSIDR_64_SET_MASK    (UL(0xFFFFFF) << CCSIDR_64_SET_SHIFT)
->>> +
->>> +#define CCSIDR_32_LS_SHIFT    0
->>> +#define CCSIDR_32_LS_MASK    (UL(7) << CCSIDR_32_LS_SHIFT)
->>> +#define CCSIDR_32_ASSOC_SHIFT    3
->>> +#define CCSIDR_32_ASSOC_MASK    (UL(0x3FF) << CCSIDR_32_ASSOC_SHIFT)
->>> +#define CCSIDR_32_SET_SHIFT    13
->>> +#define CCSIDR_32_SET_MASK    (UL(0x7FFF) << CCSIDR_32_SET_SHIFT)
->>
->> I don't think we should be inferring cache structure from these register
->> values. The Arm ARM helpfully says:
->>
->>    | You cannot make any inference about the actual sizes of caches based
->>    | on these parameters.
->>
->> so we need to take the topology information from elsewhere.
->>
-> 
-> Yeah, I also noticed the statement in the spec. However, the L1 cache size
-> figured out from above registers are matching with "lscpu" on the machine
-> where I did my tests. Note "lscpu" depends on sysfs entries whose 
-> information
-> is retrieved from ACPI (PPTT) table. The number of cache levels are 
-> partially
-> retrieved from system register (clidr_el1).
-> 
-> It's doable to retrieve the L1 cache size from ACPI (PPTT) table. I'll
-> change accordingly in v2 if this enablement is really needed. More clarify
-> is provided below.
-> 
->> But before we get into that, can you justify why we need to do this at 
->> all,
->> please? Do you have data to show the benefit of adding this complexity?
->>
-> 
-> Initially, I found it's the missed feature which has been enabled on
-> mips/s390. Currently, all read-only anonymous VMAs are backed up by
-> same zero page. It means all reads to these VMAs are cached by same
-> set of cache, but still multiple ways if supported. So it would be
-> nice to have multiple zero pages to back up these read-only anonymous
-> VMAs, so that the reads on them can be cached by multiple sets (multiple
-> ways still if supported). It's overall beneficial to the performance.
 
-Is this a concern for true PIPT caches, or is it really just working 
-around a pathological case for alias-detecting VIPT caches?
+In this patch series, documentation get in sync with the code removal
+of scrollback,by this commit 50145474f6ef ("fbcon: remove soft scrollback code"),
+by eliminating the information related to it.
 
-> Unfortunately, I didn't find a machine where the size of cache set is
-> larger than page size. So I had one experiment as indication how L1
-> data cache miss affects the overall performance:
-> 
->      L1 data cache size:           32KB
->      L1 data cache line size:      64
->      Number of L1 data cache set:  64
->      Number of L1 data cache ways: 8
->      ----------------------------------------------------------------------
->                    size = (cache_line_size) * (num_of_sets) * (num_of_ways)
-> 
->      Kernel configuration:
->             VA_BITS:               48
->             PAGE_SIZE:             4KB
->             PMD HugeTLB Page Size: 2MB
-> 
->      Experiment:
->             I have a program to do the following things and check the
->             consumed time and L1-data-cache-misses by perf.
-> 
->             (1) Allocate (mmap) a PMD HugeTLB Page, which is 2MB.
->             (2) Read on the mmap'd region in step of page size (4KB)
->                 for 8 or 9 times. Note 8 is the number of data cache
->                 ways.
->             (3) Repeat (2) for 1000000 times.
->      Result:
->             (a) when we have 8 for the steps in (2):
->                 37,103      L1-dcache-load-misses
->                 0.217522515 seconds time elapsed
->                 0.217564000 seconds user
->                 0.000000000 seconds sys
->             (b) when we have 9 for the steps in (2):
->                 4,687,932   L1-dcache-load-misses            (126 times)
->                 0.248132105 seconds time elapsed             (+14.2%)
->                 0.248267000 seconds user
->                 0.000000000 seconds sys
 
-I have a vague feeling this may have come up before, but are there 
-real-world applications that have a performance bottleneck on reading 
-from uninitialised memory? As far as synthetic benchmarks go, I'm sure 
-we could equally come up with one that shows a regression due to real 
-data being pushed out of the cache by all those extra zeros ;)
+Changes since V3:
 
-Robin.
+Remove the wrong commit hash and messages from all the 4 patches i.e 
+Commit 973c096f6a85(vgacon: remove software scrollback support)
+from the patches as suggested by Willy and Greg.
 
-> Please let me know if it's worthy for a v2, to retrieve the cache size
-> from ACPI (PPTT) table. The cost is to allocate multiple zero pages and
-> the worst case is fail back to one zero page, as before :)
-> 
-> Cheers,
-> Gavin
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+Patch 1: Remove the documentation related to framebuffer scrollback from the file
+   fbcon.rst
+
+Patch 2: Remove the documentation  boot option for scrollback from the file matroxfb.rst
+
+Patch 3: Remove the documentation scrollback option from sstfb.rst file.
+
+Patch 4: Remove the documentation scrollback option from vesafb.rst file. 
+
+Bhaskar Chowdhury (4):
+  Remove framebuffer scrollback boot option
+  Remove matroxfb scrollback boot option
+  Remove sstfb scrollback boot option
+  Remove vesafb scrollback boot option
+
+ Documentation/fb/fbcon.rst    | 21 +++++++--------------
+ Documentation/fb/matroxfb.rst |  2 --
+ Documentation/fb/sstfb.rst    |  3 ---
+ Documentation/fb/vesafb.rst   |  2 --
+ 4 files changed, 7 insertions(+), 21 deletions(-)
+
+-- 
+2.28.0
+
