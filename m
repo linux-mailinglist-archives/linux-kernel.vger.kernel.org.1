@@ -2,111 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7592F26D7A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 11:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 333EC26D7A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 11:29:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726441AbgIQJ3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 05:29:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38186 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726180AbgIQJ3E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 05:29:04 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 760A6206E6;
-        Thu, 17 Sep 2020 09:29:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600334943;
-        bh=+HiIxjCTi2UxE0tL5EFrkZ6hadNYj6Tx+yaIuvsKGAQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=zgzseetFM2Zg7BX1vbmvRwxcaGYWo0pVQRch8wbH4Do9FqEoBt4zfkh5O8LqRPW47
-         lEKWnLEvXzaWXjA4Tksp6LbYi4ou27CsQBuOEmGCRgWGu0gkp6bIg/pRejIjnbeQur
-         VRr/6lvePHSK0YUq1XEVlFlQNgWrXrgVr9wqGAzs=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kIqDt-00CaaF-HC; Thu, 17 Sep 2020 10:29:01 +0100
+        id S1726469AbgIQJ3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 05:29:55 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13229 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726180AbgIQJ3y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 05:29:54 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 142B0358C863271402AA;
+        Thu, 17 Sep 2020 17:29:50 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Thu, 17 Sep 2020
+ 17:29:43 +0800
+From:   Liu Shixin <liushixin2@huawei.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Liu Shixin <liushixin2@huawei.com>
+Subject: [PATCH -next v2] RDMA/mlx5: fix type warning of sizeof in __mlx5_ib_alloc_counters()
+Date:   Thu, 17 Sep 2020 17:52:16 +0800
+Message-ID: <20200917095216.2381855-1-liushixin2@huawei.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200917090810.GB869610@unreal>
+References: <20200917090810.GB869610@unreal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 17 Sep 2020 10:29:01 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Jon Hunter <jonathanh@nvidia.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>,
-        kernel-team@android.com, Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King <linux@arm.linux.org.uk>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Saravana Kannan <saravanak@google.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH v3 08/16] irqchip/gic: Configure SGIs as standard
- interrupts
-In-Reply-To: <54318b15-cfa4-1460-1e8b-049da2ab2bda@samsung.com>
-References: <20200901144324.1071694-1-maz@kernel.org>
- <20200901144324.1071694-9-maz@kernel.org>
- <CGME20200914130601eucas1p23ce276d168dee37909b22c75499e68da@eucas1p2.samsung.com>
- <a917082d-4bfd-a6fd-db88-36e75f5f5921@samsung.com>
- <933bc43e-3cd7-10ec-b9ec-58afaa619fb7@nvidia.com>
- <3378cd07b92e87a24f1db75f708424ee@kernel.org>
- <CACRpkdYvqQUJaReD1yNTwiHhaZpQ9h5Z9DgdqbKkCexnM7cWNw@mail.gmail.com>
- <049d62ac7de32590cb170714b47fb87d@kernel.org>
- <a88528cd-eb76-367a-77d6-7ae20bd28304@nvidia.com>
- <81cb16323baa1c81e7bc1e8156fa47b8@kernel.org>
- <e317b2fe-52e3-8ce7-ba77-43d2708d660f@nvidia.com>
- <4645f636-e7cc-6983-a3b7-897c20ec5096@samsung.com>
- <bec733a1-227f-d943-90dd-85fc9a993109@nvidia.com>
- <54318b15-cfa4-1460-1e8b-049da2ab2bda@samsung.com>
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <1831a66f81bbacc337329a8b57297d83@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: m.szyprowski@samsung.com, jonathanh@nvidia.com, linus.walleij@linaro.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, sumit.garg@linaro.org, kernel-team@android.com, f.fainelli@gmail.com, linux@arm.linux.org.uk, jason@lakedaemon.net, saravanak@google.com, andrew@lunn.ch, catalin.marinas@arm.com, gregory.clement@bootlin.com, b.zolnierkie@samsung.com, krzk@kernel.org, linux-samsung-soc@vger.kernel.org, tglx@linutronix.de, will@kernel.org, Valentin.Schneider@arm.com, linux-tegra@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.32]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-17 10:13, Marek Szyprowski wrote:
+sizeof() when applied to a pointer typed expression should give the
+size of the pointed data, even if the data is a pointer.
 
-[...]
+Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+---
+ drivers/infiniband/hw/mlx5/counters.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->>>> Linus, what -next are you testing on? I am using next-20200916.
->>> next-20200916 completely broken on ARM and ARM64. Please check
->>> next-20200915 + the mentioned fix or just check
->>> https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/log/?h=irq/ipi-as-irq
->> Ah thanks! Any idea what is causing the other failure on 
->> next-20200916?
->> 
->> Yes we have noticed that now everything fails next-20200916 so not 
->> just
->> this issue.
-> 
-> The issue is caused by commit c999bd436fe9 ("mm/cma: make number of CMA
-> areas dynamic, remove CONFIG_CMA_AREAS")
-> 
-> https://lore.kernel.org/linux-arm-kernel/20200915205703.34572-1-mike.kravetz@oracle.com/
-
-There is a workaround here[1] for arm64, but I doubt that's the end of
-it (32bit is still dead).
-
-         M.
-
-[1] 
-https://lore.kernel.org/linux-arm-kernel/20200916085933.25220-1-song.bao.hua@hisilicon.com/
+diff --git a/drivers/infiniband/hw/mlx5/counters.c b/drivers/infiniband/hw/mlx5/counters.c
+index 8d77fea0eb48..6f8a8b558070 100644
+--- a/drivers/infiniband/hw/mlx5/counters.c
++++ b/drivers/infiniband/hw/mlx5/counters.c
+@@ -457,7 +457,7 @@ static int __mlx5_ib_alloc_counters(struct mlx5_ib_dev *dev,
+ 		cnts->num_ext_ppcnt_counters = ARRAY_SIZE(ext_ppcnt_cnts);
+ 		num_counters += ARRAY_SIZE(ext_ppcnt_cnts);
+ 	}
+-	cnts->names = kcalloc(num_counters, sizeof(cnts->names), GFP_KERNEL);
++	cnts->names = kcalloc(num_counters, sizeof(*cnts->names), GFP_KERNEL);
+ 	if (!cnts->names)
+ 		return -ENOMEM;
+ 
 -- 
-Jazz is not dead. It just smells funny...
+2.25.1
+
