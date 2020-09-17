@@ -2,106 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B03926E5B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDD2D26E59E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726751AbgIQTzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 15:55:53 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:42487 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727831AbgIQO4a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 10:56:30 -0400
-Received: from mail-lj1-f178.google.com ([209.85.208.178]) by
- mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1MXp1Q-1k06J73QwW-00YBtl; Thu, 17 Sep 2020 16:56:05 +0200
-Received: by mail-lj1-f178.google.com with SMTP id c2so2282441ljj.12;
-        Thu, 17 Sep 2020 07:56:05 -0700 (PDT)
-X-Gm-Message-State: AOAM531gOuxw6B3HMibCIs7c5PN5vP97LgwXiV1TDUs5+Seel9FGAZx9
-        a0mOk6rbITsT3rYNCzNm+zcSies232Zt5I5qGlw=
-X-Google-Smtp-Source: ABdhPJyXAeW/X/vUfrjW8LIX+29c3f5FGDUd17W9rK9Pn/Vi9uZ/dih0ocJwvfWpmI4GGWt1IoC+QnOz/UhV92idazI=
-X-Received: by 2002:a2e:b161:: with SMTP id a1mr9630509ljm.189.1600354565212;
- Thu, 17 Sep 2020 07:56:05 -0700 (PDT)
+        id S1726614AbgIQTzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 15:55:01 -0400
+Received: from mga06.intel.com ([134.134.136.31]:4470 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727865AbgIQPEC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 11:04:02 -0400
+X-Greylist: delayed 449 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 11:04:01 EDT
+IronPort-SDR: NXySNJAsmhYt1sU7dSKvJLRAjvceAGiMhh+hXu7rPGxCIRYAqlbYmUoNK+cE98XlodDOWnnKh6
+ gEt/6lgbmL5w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="221260494"
+X-IronPort-AV: E=Sophos;i="5.77,437,1596524400"; 
+   d="scan'208";a="221260494"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 07:56:11 -0700
+IronPort-SDR: QyFN85vOPnvWLorCFQzvTxleVhmEHePss429B5h+XJrYHl5eD0jZQ5fwuyoYb4Rx7BJtflaqaU
+ TMdD1NUCff9Q==
+X-IronPort-AV: E=Sophos;i="5.77,437,1596524400"; 
+   d="scan'208";a="332182841"
+Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 07:56:11 -0700
+Date:   Thu, 17 Sep 2020 07:56:09 -0700
+From:   "Raj, Ashok" <ashok.raj@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org,
+        Ashok Raj <ashok.raj@intel.com>
+Subject: Re: [PATCH v8 3/9] Documentation/x86: Add documentation for SVA
+ (Shared Virtual Addressing)
+Message-ID: <20200917145609.GB91028@otc-nc-03>
+References: <1600187413-163670-1-git-send-email-fenghua.yu@intel.com>
+ <1600187413-163670-4-git-send-email-fenghua.yu@intel.com>
+ <20200917075338.GC31960@zn.tnic>
 MIME-Version: 1.0
-References: <20200908213715.3553098-1-arnd@arndb.de> <20200908213715.3553098-3-arnd@arndb.de>
- <20200912074757.GA6688@infradead.org> <CAK8P3a363DxgZnN9x4oNL7W4__kyG1U_34=7Hpqhpc-obAvjWw@mail.gmail.com>
- <20200913065051.GA17932@infradead.org> <CAK8P3a3W1EYts=2uL-6kTWwcgBeigLdv-W4mnxBd+En2ZFReLA@mail.gmail.com>
-In-Reply-To: <CAK8P3a3W1EYts=2uL-6kTWwcgBeigLdv-W4mnxBd+En2ZFReLA@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 17 Sep 2020 16:55:49 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2r=-JQLyVeLhFvDtWrdtJN_pWsPHRoi5VHcgfK0SbQ5g@mail.gmail.com>
-Message-ID: <CAK8P3a2r=-JQLyVeLhFvDtWrdtJN_pWsPHRoi5VHcgfK0SbQ5g@mail.gmail.com>
-Subject: Re: compat_alloc_user_space removal, was Re: [PATCH 3/3] scsi:
- megaraid_sas: simplify compat_ioctl handling
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Kashyap Desai <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Anand Lodnoor <anand.lodnoor@broadcom.com>,
-        Chandrakanth Patil <chandrakanth.patil@broadcom.com>,
-        Hannes Reinecke <hare@suse.de>, megaraidlinux.pdl@broadcom.com,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:U4pNn/L9pBqEnn0uQRl1oAnkE71gwgvZK+cqa3vHgq8KSmYiB3E
- 3KsKvUbLCuC0cmbjsajD/C/Dt2B4vv1nf5tvHv/NsSJ5O/EZctPiMwkp7QCg1+IbBlFfjIM
- 5W9TyvIpjBQkWYg8eWIfKLvX5vfsAmAtbOYJHmFEBaZFe4CyEJsvRaLFMEa83jUpoz8t1JG
- aNOECUm/UcrC8imlucwow==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:j4G9oaZuUec=:cs2qoMLvlXb69ZsotlH/5Q
- WEJLBZj368+1qLsYmbHXlq9IkfZvrZc9n9f7y9jtE6ASej0k4mI9ZHO+jz+wkQkmOB0hpU3DD
- as+mM6nbgIMK+YxfBJCnWmaaavRxkBOPcaq1w+6HfNqcaLIIZ0dJOoVUjk2ZKKRlVr26ODoJG
- S/NeMWKhqeNzxvESlp4BQCdr41WGQsAOxVwBA7qxG/KKeDZE7KBPNP3TJVi4F7Cpef6TGI12c
- PFizI6RQo/SN+vqNU59pOvH+tqJMhVQdC+acJUwPvgPvPddLy2SlwczGlghFcKQJEjBafee7w
- kc+f4L/bCZanu51WOXu8i0Q0b+mM6d+/duDxleF1T4AJy/iRN3ojqhJWqhuibuGrxJirgItBO
- Uk1UF9aLI2XA+J5Xv/AFPDHNAiwXwRWW4vXY87t6LAVGk+C5abgYwPXodYj2mny0dORTcbfLx
- jY/ryYlEVt0gEgtivb0m6o+G50eKv5KEmSrx9ea9gg4QR2rBbuP+1T/srF5lng+1zyOX03zvX
- WRrToJS539DMgb7WS21zZEhlcefeJ8yK+/xaZlzLb+eoAGfOy0kAVj66SvoX6eaLp6PbdAv3J
- 4QXdNt//01B2WgvdH3B7HUEFa9dukcsr+tTig0fdXactaF8lK1vbj2L60YelbeAxmJTKvye2z
- WtAI3NrqRKlF3IeefHlnM6HDznBfgwboVv2X51nRfv+zgITb9KgHS4YyXFd4lYaIqujUuZvuz
- ajtUnp1h0nmPhayFVuC4sCwVO5YXiahRgBMn1XVz2xFtlOGMHnIXxTP/HsJI6asIvwdMxaG0s
- 5RBTb0VWkACvPIHlwh5hdNjoShte0Ey3a4/oVzvKiADZ7ukIrVJK5YOzOTYcKAFH57yuOEi8k
- V+zu+vKwHq9ySW/fLw2LPujW5cPbcmQNi4e0FTLHpld3enusE5UCC/xUzi4tS57CjyTb/IjPg
- Sz4e818dMgJL2lf6BaOLlZssEOnaApABNGQtKBkJsMT5HDaioGXG+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917075338.GC31960@zn.tnic>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 13, 2020 at 1:46 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Sun, Sep 13, 2020 at 8:50 AM Christoph Hellwig <hch@infradead.org> wrote:
-> >
-> > On Sat, Sep 12, 2020 at 02:49:05PM +0200, Arnd Bergmann wrote:
-> > > fs/quota/compat.c: dqblk = compat_alloc_user_space(sizeof(struct if_dqblk));
-> > > fs/quota/compat.c: dqblk = compat_alloc_user_space(sizeof(struct if_dqblk));
-> > > fs/quota/compat.c: fsqstat = compat_alloc_user_space(sizeof(struct
-> > > fs_quota_stat));
-> >
-> > I sent this out a while ago, an Al has it in a branch, but not in
-> > linux-next:
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git/log/?h=work.quota-compat
->
-> Nice! Aside from already being queued, your patch is also nicer than
-> my version, and it makes it trivial to fix it for arm oabi as well by adding
->
-> #ifdef CONFIG_OABI_COMPAT
-> #define compat_need_64bit_alignment_fixup in_oabi_syscall
-> #endif
->
-> to arch/arm/include/asm/compat.h
->
-> I had considered fixing that case for arch/arm as well but it ended up being
-> harder to do in my version.
+Hi Boris,
 
-Unfortunately, the commit b902bfb3f0e "arm64: stop using <asm/compat.h>
-directly" seems to introduce a circular header file inclusion between
-linux/compat.h and asm/stat.h, breaking arm64 compilation.
+On Thu, Sep 17, 2020 at 09:53:38AM +0200, Borislav Petkov wrote:
+> On Tue, Sep 15, 2020 at 09:30:07AM -0700, Fenghua Yu wrote:
+> > +Background
+> > +==========
+> > +
+> > +Shared Virtual Addressing (SVA) allows the processor and device to use the
+> > +same virtual addresses avoiding the need for software to translate virtual
+> > +addresses to physical addresses. SVA is what PCIe calls Shared Virtual
+> > +Memory (SVM).
+> > +
+> > +In addition to the convenience of using application virtual addresses
+> > +by the device, it also doesn't require pinning pages for DMA.
+> > +PCIe Address Translation Services (ATS) along with Page Request Interface
+> > +(PRI) allow devices to function much the same way as the CPU handling
+> > +application page-faults. For more information please refer to the PCIe
+> > +specification Chapter 10: ATS Specification.
+> > +
+> > +Use of SVA requires IOMMU support in the platform. IOMMU also is required
+> > +to support PCIe features ATS and PRI. ATS allows devices to cache
+> > +translations for virtual addresses. The IOMMU driver uses the mmu_notifier()
+> > +support to keep the device TLB cache and the CPU cache in sync. PRI allows
+> > +the device to request paging the virtual address by using the CPU page tables
+> > +before accessing the address.
+> 
+> That still reads funny, the "the device to request paging the virtual
+> address" part. Do you mean that per chance here:
+> 
+> "Before the device can access that address, the device uses the PRI in
+> order to request the virtual address to be paged in into the CPU page
+> tables."
+> 
+Agree, this reads a bit funny.
 
-Moving the compat_u64/compat_s64 definitions to include/asm-generic/compat.h
-works fine though.
+Just tweaked it a bit: 
 
-      Arnd
+"When ATS lookup fails for a virtual address, device should use PRI in
+order to request the virtual address to be paged into the CPU page tables.
+The device must use ATS again in order the fetch the translation again
+before use"
+
+Cheers,
+Ashok
