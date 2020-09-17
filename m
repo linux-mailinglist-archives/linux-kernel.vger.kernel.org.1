@@ -2,119 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5287426D229
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 06:15:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B21026D263
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 06:23:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726115AbgIQEPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 00:15:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48280 "EHLO
+        id S1726157AbgIQEXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 00:23:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725267AbgIQEPK (ORCPT
+        with ESMTP id S1725858AbgIQEW7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 00:15:10 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2298C06174A;
-        Wed, 16 Sep 2020 21:15:09 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIlK3-000BFY-Og; Thu, 17 Sep 2020 04:15:03 +0000
-Date:   Thu, 17 Sep 2020 05:15:03 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Rich Felker <dalias@libc.org>, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] vfs: block chmod of symlinks
-Message-ID: <20200917041503.GT3421308@ZenIV.linux.org.uk>
-References: <20200916002157.GO3265@brightrain.aerifal.cx>
- <20200916002253.GP3265@brightrain.aerifal.cx>
- <20200916062553.GB27867@infradead.org>
- <20200917040715.GS3421308@ZenIV.linux.org.uk>
+        Thu, 17 Sep 2020 00:22:59 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71889C06174A;
+        Wed, 16 Sep 2020 21:16:16 -0700 (PDT)
+Received: by ozlabs.org (Postfix, from userid 1034)
+        id 4BsNtv1s87z9sSn; Thu, 17 Sep 2020 14:15:59 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1600316167;
+        bh=E4XTRIY2Yg5zL9/EFXMuDBdNiIOZtiHl+cuCUmjJXGw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=dnMJXdBQiQhKQ4LlvkTFq7q1SWmi7Eb4zYRGEE9QQcaZauuZnnT20J4dFS2U/Fzi+
+         GZL3ChfHLiOflz3xxaPzo4gxvBDzXYh6+HeaSkYEh7IsF5//BOq438Rc0DwZufsa8X
+         s8mn7sZfXaMhyNEqA9re1rC/d8sEycbRwpOI2TFRMFPLBYZ/ij34H/KB5+vKps8Ph0
+         Yrxqzr5ki4lWVaA/vjkdj0eao/gTxUmZVdKw5aD8nv5GJhkl65Q8MtVQW//x/n/bS6
+         cNE9Ew0z9EL18ZIAj0GG5K4MxRkLjshyC5B5bNJdEhsmcbuIErvZbstSHE+BgFPAmT
+         4ywo/8iLBpXUA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     keescook@chromium.org
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jcmvbkbc@gmail.com
+Subject: [PATCH] selftests/harness: Flush stdout before forking
+Date:   Thu, 17 Sep 2020 14:15:19 +1000
+Message-Id: <20200917041519.3284582-1-mpe@ellerman.id.au>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917040715.GS3421308@ZenIV.linux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 05:07:15AM +0100, Al Viro wrote:
-> On Wed, Sep 16, 2020 at 07:25:53AM +0100, Christoph Hellwig wrote:
-> > On Tue, Sep 15, 2020 at 08:22:54PM -0400, Rich Felker wrote:
-> > > It was discovered while implementing userspace emulation of fchmodat
-> > > AT_SYMLINK_NOFOLLOW (using O_PATH and procfs magic symlinks; otherwise
-> > > it's not possible to target symlinks with chmod operations) that some
-> > > filesystems erroneously allow access mode of symlinks to be changed,
-> > > but return failure with EOPNOTSUPP (see glibc issue #14578 and commit
-> > > a492b1e5ef). This inconsistency is non-conforming and wrong, and the
-> > > consensus seems to be that it was unintentional to allow link modes to
-> > > be changed in the first place.
-> > > 
-> > > Signed-off-by: Rich Felker <dalias@libc.org>
-> > > ---
-> > >  fs/open.c | 6 ++++++
-> > >  1 file changed, 6 insertions(+)
-> > > 
-> > > diff --git a/fs/open.c b/fs/open.c
-> > > index 9af548fb841b..cdb7964aaa6e 100644
-> > > --- a/fs/open.c
-> > > +++ b/fs/open.c
-> > > @@ -570,6 +570,12 @@ int chmod_common(const struct path *path, umode_t mode)
-> > >  	struct iattr newattrs;
-> > >  	int error;
-> > >  
-> > > +	/* Block chmod from getting to fs layer. Ideally the fs would either
-> > > +	 * allow it or fail with EOPNOTSUPP, but some are buggy and return
-> > > +	 * an error but change the mode, which is non-conforming and wrong. */
-> > > +	if (S_ISLNK(inode->i_mode))
-> > > +		return -EOPNOTSUPP;
-> > 
-> > Our usualy place for this would be setattr_prepare.  Also the comment
-> > style is off, and I don't think we should talk about buggy file systems
-> > here, but a policy to not allow the chmod.  I also suspect the right
-> > error value is EINVAL - EOPNOTSUPP isn't really used in normal posix
-> > file system interfaces.
-> 
-> Er...   Wasn't that an ACL-related crap?  XFS calling posix_acl_chmod()
-> after it has committed to i_mode change, propagating the error to
-> caller of ->notify_change(), IIRC...
-> 
-> Put it another way, why do we want
->         if (!inode->i_op->set_acl)
->                 return -EOPNOTSUPP;
-> in posix_acl_chmod(), when we have
->         if (!IS_POSIXACL(inode))
->                 return 0;
-> right next to it?  If nothing else, make that
-> 	if (!IS_POSIXACL(inode) || !inode->i_op->get_acl)
-> 		return 0;	// piss off - nothing to adjust here
+The test harness forks() a child to run each test. Both the parent and
+the child print to stdout using libc functions. That can lead to
+duplicated (or more) output if the libc buffers are not flushed before
+forking.
 
-Arrgh...  That'd break shmem and similar filesystems...  Still, it
-feels like we should _not_ bother in cases when there's no ACL
-for that sucker; after all, if get_acl() returns NULL, we quietly
-return 0 and that's it.
+It's generally not seen when running programs directly, because stdout
+will usually be line buffered when it's pointing to a terminal.
 
-How about something like this instead?
+This was noticed when running the seccomp_bpf test, eg:
 
-diff --git a/fs/posix_acl.c b/fs/posix_acl.c
-index 95882b3f5f62..2339160fabab 100644
---- a/fs/posix_acl.c
-+++ b/fs/posix_acl.c
-@@ -559,8 +559,6 @@ posix_acl_chmod(struct inode *inode, umode_t mode)
+  $ ./seccomp_bpf | tee test.log
+  $ grep -c "TAP version 13" test.log
+  2
+
+But we only expect the TAP header to appear once.
+
+It can be exacerbated using stdbuf to increase the buffer size:
+
+  $ stdbuf -o 1MB ./seccomp_bpf > test.log
+  $ grep -c "TAP version 13" test.log
+  13
+
+The fix is simple, we just flush stdout & stderr before fork. Usually
+stderr is unbuffered, but that can be changed, so flush it as well
+just to be safe.
+
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+---
+ tools/testing/selftests/kselftest_harness.h | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/tools/testing/selftests/kselftest_harness.h b/tools/testing/selftests/kselftest_harness.h
+index 4f78e4805633..f19804df244c 100644
+--- a/tools/testing/selftests/kselftest_harness.h
++++ b/tools/testing/selftests/kselftest_harness.h
+@@ -971,6 +971,11 @@ void __run_test(struct __fixture_metadata *f,
  
- 	if (!IS_POSIXACL(inode))
- 		return 0;
--	if (!inode->i_op->set_acl)
--		return -EOPNOTSUPP;
- 
- 	acl = get_acl(inode, ACL_TYPE_ACCESS);
- 	if (IS_ERR_OR_NULL(acl)) {
-@@ -569,6 +567,10 @@ posix_acl_chmod(struct inode *inode, umode_t mode)
- 		return PTR_ERR(acl);
- 	}
- 
-+	if (!inode->i_op->set_acl) {
-+		posix_acl_release(acl);
-+		return -EOPNOTSUPP;
-+	}
- 	ret = __posix_acl_chmod(&acl, GFP_KERNEL, mode);
- 	if (ret)
- 		return ret;
+ 	ksft_print_msg(" RUN           %s%s%s.%s ...\n",
+ 	       f->name, variant->name[0] ? "." : "", variant->name, t->name);
++
++	/* Make sure output buffers are flushed before fork */
++	fflush(stdout);
++	fflush(stderr);
++
+ 	t->pid = fork();
+ 	if (t->pid < 0) {
+ 		ksft_print_msg("ERROR SPAWNING TEST CHILD\n");
+-- 
+2.25.1
+
