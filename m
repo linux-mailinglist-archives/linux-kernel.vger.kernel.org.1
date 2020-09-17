@@ -2,244 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9983426DEC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A602726DEC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:53:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727227AbgIQOtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 10:49:19 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:29125 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727623AbgIQOhy (ORCPT
+        id S1727671AbgIQOxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 10:53:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727669AbgIQOm7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 10:37:54 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600353420; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=7Sm5zlmuS6dtNCaEUMlHA+OIjhjC9XiXWyfX26b/NUQ=; b=vmP9AJjXbuLsSWLZqX8PuApQa5yEwTNZGWKtNFzc1YMrdWBNK6Upyj5VNC45kJjjzO6enSFY
- eAO99r0jBqkLeLD7VqePUj5aTHLy93ACNcTA2fgB5wnowP1S/pFWjsL5xrzzHh/oKry5pYJN
- 4T4HleNmE4H2KF90ItxtSVX3m/Q=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5f6366b6aac06013549bfc96 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Sep 2020 13:37:58
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CCBC8C43387; Thu, 17 Sep 2020 13:37:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0A175C433CA;
-        Thu, 17 Sep 2020 13:37:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0A175C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
-        Srinivasa Rao <srivasam@codeaurora.org>
-Subject: [PATCH v5 5/5] ASoC: qcom: sc7180: Add support for audio over DP
-Date:   Thu, 17 Sep 2020 19:07:08 +0530
-Message-Id: <1600349828-10727-6-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1600349828-10727-1-git-send-email-srivasam@codeaurora.org>
-References: <1600349828-10727-1-git-send-email-srivasam@codeaurora.org>
+        Thu, 17 Sep 2020 10:42:59 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3546C06178A;
+        Thu, 17 Sep 2020 06:38:07 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id d4so2002517wmd.5;
+        Thu, 17 Sep 2020 06:38:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+U0ANCedTXmZ61Vy39O8cbQewFJtCfyUeqxdMzTRfeI=;
+        b=aXLBgkvZ+ZfiutVcnS66UN2sRHTXikqw7/zapXEEIDwy0eQeON4QoRRRD6Ao1T8dwV
+         7FO3T7eIg7kcILN2sryGMUCwHsECE9/agmSY2853xlLwyTRvkLv3gGq2ZxlgakZ8fpYY
+         ff0WMgflSn7Fcfb3twf/Fj/YjLg6S7pj5DnqK0JLe9C0aikZPolN+dEHAE2YPGDuKz9J
+         TY9SdL586qjoBuJjU/CgXTbMKZjXAPY1uyUVGbkV+cnO+id+bLX+cknOXGr1weKLGlGP
+         IRgyqun/WPUdyJV5Oy9Xh7ZocWZc0u96uSd5f/lIuwhW6MoWB38PaCJOEbJN+WtO/340
+         awSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+U0ANCedTXmZ61Vy39O8cbQewFJtCfyUeqxdMzTRfeI=;
+        b=ft5bINY4lCsr0wapocG3O+guGWGLDlxXw1A/YrCxzxeDP3FYZ5ZiPosBv2aO9pykQb
+         VmQYNgIIjW+552FS1t0Lp0Psc/q2cnpF7m1dBKrGZXpjRK+HNI/aIEQl/CVWjEiPB0OJ
+         3UpFmSvEVrIVK0doRoxx4yma3h383VnjTrplelKV2eA/2zeLhyBqnh7ZMEqVY2ZHn/17
+         FDYmmNzr/BSF1NufArdVXcxAndnmjxjL9PsFBlkcPnB4cPsxn56z7xWNZgFmL4D/582q
+         zIAS641LvRfiDTrCu8hy5tz6kACaKWyv599rUpQR8hWtLn4NesQ9tZUb7wHFo8bZGBd3
+         ablA==
+X-Gm-Message-State: AOAM530rJ7gj4FQ1FElNJz8IPa3f4mHLaLGAn/1pXeRqXk7oyDiQoiar
+        UAdYorgY0SFS14oUnR5PkJBQ97129GH50OrJ4GM=
+X-Google-Smtp-Source: ABdhPJz1QhTvKBayChW0luBSxMLyl3aJeFDYaFiBJypZp081zAtDL6V9mW0etuBU1zghbDwqBk4WqA==
+X-Received: by 2002:a1c:3985:: with SMTP id g127mr10531746wma.32.1600349886086;
+        Thu, 17 Sep 2020 06:38:06 -0700 (PDT)
+Received: from [10.127.42.2] ([94.156.155.144])
+        by smtp.gmail.com with ESMTPSA id y207sm11911056wmc.17.2020.09.17.06.38.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Sep 2020 06:38:05 -0700 (PDT)
+Subject: Re: [PATCH v2 1/4] kselftests/arm64: add a basic Pointer
+ Authentication test
+To:     Amit Kachhap <amit.kachhap@arm.com>,
+        Boyan Karatotev <boyan.karatotev@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     vincenzo.frascino@arm.com, Shuah Khan <shuah@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+References: <20200831110450.30188-1-boyan.karatotev@arm.com>
+ <20200831110450.30188-2-boyan.karatotev@arm.com>
+ <2e89a5ff-738b-5484-bd00-9ccdeccf9f60@arm.com>
+From:   Boyan Karatotev <boian4o1@gmail.com>
+Message-ID: <fa24987e-c8e9-0130-d2bc-ec114a729491@gmail.com>
+Date:   Thu, 17 Sep 2020 14:38:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <2e89a5ff-738b-5484-bd00-9ccdeccf9f60@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+On 16/09/2020 1:11 pm, Amit Kachhap wrote:
+> On 8/31/20 4:34 PM, Boyan Karatotev wrote:
+>> PAuth signs and verifies return addresses on the stack. It does so by
+>> +
+>> +/* check that a corrupted PAC results in SIGSEGV */
+>> +TEST_SIGNAL(corrupt_pac, SIGSEGV)
+>> +{
+>> +    ASSERT_PAUTH_ENABLED();
+>> +
+>> +    pac_corruptor();
+>
+> With 8.6-Pauth extension merged in arm tree [1]. It makes sense to
+> verify PAC corruption for both SIGSEGV and SIGILL signals.
+>
+> Code something like below handles both the cases.
+>
+>
+-----------------------------------------------------------------------------------
+>
+>  int exec_sign_all(struct signatures *signed_vals, size_t val)
+> @@ -187,12 +188,29 @@ int exec_sign_all(struct signatures *signed_vals,
+> size_t val)
+>         return 0;
+>  }
+>
+> -/* check that a corrupted PAC results in SIGSEGV */
+> -TEST_SIGNAL(corrupt_pac, SIGSEGV)
+> +sigjmp_buf jmpbuf;
+> +void pac_signal_handler(int signum, siginfo_t *si, void *uc)
+>  {
+> -       ASSERT_PAUTH_ENABLED();
+> +       if (signum == SIGSEGV || signum == SIGILL) {
+> +               siglongjmp(jmpbuf, 1);
+> +       }
+> +}
+> +
+> +/* check that a corrupted PAC results in SIGSEGV or SIGILL */
+> +TEST(corrupt_pac)
+> +{
+> +       struct sigaction sa;
+>
+> -       pac_corruptor();
+> +       ASSERT_PAUTH_ENABLED();
+> +       if (sigsetjmp(jmpbuf, 1) == 0) {
+> +               sa.sa_sigaction = pac_signal_handler;
+> +               sa.sa_flags = SA_SIGINFO;
+> +               sigemptyset(&sa.sa_mask);
+> +               sigaction(SIGSEGV, &sa, NULL);
+> +               sigaction(SIGILL, &sa, NULL);
+> +               pac_corruptor();
+> +               ASSERT_TRUE(0) TH_LOG("SIGSEGV/SIGILL signal did not
+> occur");
+> +       }
+>  }
+>
+>  /*
+> @@ -265,7 +283,7 @@ TEST(single_thread_different_keys)
+>
+>                 tmp = n_same_single_set(&signed_vals, nkeys);
+>
+---------------------------------------------------------------------------------------
+>
+>
+>
+> Thanks,
+> Amit Daniel
+>
+> [1]:
+>
+https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/log/?h=for-next/ptrauth
 
-Add support for audio playback over DP in lpass sc7180 platform driver.
-Update lpass_variant structure for hdmi data configuaration.
+Okay, I will add this and post it with the next version.
 
-Signed-off-by: Srinivasa Rao <srivasam@codeaurora.org>
-Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
----
- sound/soc/qcom/lpass-sc7180.c | 116 +++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 102 insertions(+), 14 deletions(-)
-
-diff --git a/sound/soc/qcom/lpass-sc7180.c b/sound/soc/qcom/lpass-sc7180.c
-index 167bf2c..59f115e 100644
---- a/sound/soc/qcom/lpass-sc7180.c
-+++ b/sound/soc/qcom/lpass-sc7180.c
-@@ -60,38 +60,65 @@ static struct snd_soc_dai_driver sc7180_lpass_cpu_dai_driver[] = {
- 		.probe	= &asoc_qcom_lpass_cpu_dai_probe,
- 		.ops    = &asoc_qcom_lpass_cpu_dai_ops,
- 	},
-+	[LPASS_DP_RX] = {
-+		.id = LPASS_DP_RX,
-+		.name = "Hdmi",
-+		.playback = {
-+			.stream_name = "Hdmi Playback",
-+			.formats	= SNDRV_PCM_FMTBIT_S24,
-+			.rates = SNDRV_PCM_RATE_48000,
-+			.rate_min	= 48000,
-+			.rate_max	= 48000,
-+			.channels_min	= 2,
-+			.channels_max	= 2,
-+		},
-+		.ops    = &asoc_qcom_lpass_hdmi_dai_ops,
-+	},
- };
- 
- static int sc7180_lpass_alloc_dma_channel(struct lpass_data *drvdata,
--					   int direction)
-+					   int direction, unsigned int dai_id)
- {
- 	struct lpass_variant *v = drvdata->variant;
- 	int chan = 0;
- 
--	if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
--		chan = find_first_zero_bit(&drvdata->dma_ch_bit_map,
--					v->rdma_channels);
-+	if (dai_id == LPASS_DP_RX) {
-+		if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+			chan = find_first_zero_bit(&drvdata->hdmi_dma_ch_bit_map,
-+						v->hdmi_rdma_channels);
-+
-+			if (chan >= v->hdmi_rdma_channels)
-+				return -EBUSY;
-+		}
-+		set_bit(chan, &drvdata->hdmi_dma_ch_bit_map);
-+	} else {
-+		if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+			chan = find_first_zero_bit(&drvdata->dma_ch_bit_map,
-+						v->rdma_channels);
- 
- 		if (chan >= v->rdma_channels)
- 			return -EBUSY;
--	} else {
--		chan = find_next_zero_bit(&drvdata->dma_ch_bit_map,
-+		} else {
-+			chan = find_next_zero_bit(&drvdata->dma_ch_bit_map,
- 					v->wrdma_channel_start +
- 					v->wrdma_channels,
- 					v->wrdma_channel_start);
- 
--		if (chan >=  v->wrdma_channel_start + v->wrdma_channels)
--			return -EBUSY;
--	}
--
--	set_bit(chan, &drvdata->dma_ch_bit_map);
-+			if (chan >=  v->wrdma_channel_start + v->wrdma_channels)
-+				return -EBUSY;
-+		}
- 
-+		set_bit(chan, &drvdata->dma_ch_bit_map);
-+	}
- 	return chan;
- }
- 
--static int sc7180_lpass_free_dma_channel(struct lpass_data *drvdata, int chan)
-+static int sc7180_lpass_free_dma_channel(struct lpass_data *drvdata, int chan, unsigned int dai_id)
- {
--	clear_bit(chan, &drvdata->dma_ch_bit_map);
-+	if (dai_id == LPASS_DP_RX)
-+		clear_bit(chan, &drvdata->hdmi_dma_ch_bit_map);
-+	else
-+		clear_bit(chan, &drvdata->dma_ch_bit_map);
- 
- 	return 0;
- }
-@@ -144,6 +171,9 @@ static struct lpass_variant sc7180_data = {
- 	.rdma_reg_base		= 0xC000,
- 	.rdma_reg_stride	= 0x1000,
- 	.rdma_channels		= 5,
-+	.hdmi_rdma_reg_base		= 0x64000,
-+	.hdmi_rdma_reg_stride	= 0x1000,
-+	.hdmi_rdma_channels		= 4,
- 	.dmactl_audif_start	= 1,
- 	.wrdma_reg_base		= 0x18000,
- 	.wrdma_reg_stride	= 0x1000,
-@@ -163,7 +193,7 @@ static struct lpass_variant sc7180_data = {
- 	.rdma_dyncclk		= REG_FIELD_ID(0xC000, 21, 21, 5, 0x1000),
- 	.rdma_bursten		= REG_FIELD_ID(0xC000, 20, 20, 5, 0x1000),
- 	.rdma_wpscnt		= REG_FIELD_ID(0xC000, 16, 19, 5, 0x1000),
--	.rdma_intf		= REG_FIELD_ID(0xC000, 12, 15, 5, 0x1000),
-+	.rdma_intf			= REG_FIELD_ID(0xC000, 12, 15, 5, 0x1000),
- 	.rdma_fifowm		= REG_FIELD_ID(0xC000, 1, 5, 5, 0x1000),
- 	.rdma_enable		= REG_FIELD_ID(0xC000, 0, 0, 5, 0x1000),
- 
-@@ -174,6 +204,64 @@ static struct lpass_variant sc7180_data = {
- 	.wrdma_fifowm		= REG_FIELD_ID(0x18000, 1, 5, 4, 0x1000),
- 	.wrdma_enable		= REG_FIELD_ID(0x18000, 0, 0, 4, 0x1000),
- 
-+	.hdmi_tx_ctl_addr	= 0x1000,
-+	.hdmi_legacy_addr	= 0x1008,
-+	.hdmi_vbit_addr		= 0x610c0,
-+	.hdmi_ch_lsb_addr	= 0x61048,
-+	.hdmi_ch_msb_addr	= 0x6104c,
-+	.ch_stride		= 0x8,
-+	.hdmi_parity_addr	= 0x61034,
-+	.hdmi_dmactl_addr	= 0x61038,
-+	.hdmi_dma_stride	= 0x4,
-+	.hdmi_DP_addr		= 0x610c8,
-+	.hdmi_sstream_addr	= 0x6101c,
-+	.hdmi_irq_reg_base		= 0x63000,
-+	.hdmi_irq_ports		= 1,
-+
-+	.hdmi_rdma_dyncclk		= REG_FIELD_ID(0x64000, 14, 14, 4, 0x1000),
-+	.hdmi_rdma_bursten		= REG_FIELD_ID(0x64000, 13, 13, 4, 0x1000),
-+	.hdmi_rdma_burst8		= REG_FIELD_ID(0x64000, 15, 15, 4, 0x1000),
-+	.hdmi_rdma_burst16		= REG_FIELD_ID(0x64000, 16, 16, 4, 0x1000),
-+	.hdmi_rdma_dynburst		= REG_FIELD_ID(0x64000, 18, 18, 4, 0x1000),
-+	.hdmi_rdma_wpscnt		= REG_FIELD_ID(0x64000, 10, 12, 4, 0x1000),
-+	.hdmi_rdma_fifowm		= REG_FIELD_ID(0x64000, 1, 5, 4, 0x1000),
-+	.hdmi_rdma_enable		= REG_FIELD_ID(0x64000, 0, 0, 4, 0x1000),
-+
-+	.sstream_en		= REG_FIELD(0x6101c, 0, 0),
-+	.dma_sel			= REG_FIELD(0x6101c, 1, 2),
-+	.auto_bbit_en	= REG_FIELD(0x6101c, 3, 3),
-+	.layout			= REG_FIELD(0x6101c, 4, 4),
-+	.layout_sp		= REG_FIELD(0x6101c, 5, 8),
-+	.set_sp_on_en	= REG_FIELD(0x6101c, 10, 10),
-+	.dp_audio		= REG_FIELD(0x6101c, 11, 11),
-+	.dp_staffing_en	= REG_FIELD(0x6101c, 12, 12),
-+	.dp_sp_b_hw_en	= REG_FIELD(0x6101c, 13, 13),
-+
-+	.mute			= REG_FIELD(0x610c8, 0, 0),
-+	.as_sdp_cc		= REG_FIELD(0x610c8, 1, 3),
-+	.as_sdp_ct		= REG_FIELD(0x610c8, 4, 7),
-+	.aif_db4			= REG_FIELD(0x610c8, 8, 15),
-+	.frequency		= REG_FIELD(0x610c8, 16, 21),
-+	.mst_index		= REG_FIELD(0x610c8, 28, 29),
-+	.dptx_index		= REG_FIELD(0x610c8, 30, 31),
-+
-+	.soft_reset		= REG_FIELD(0x1000, 31, 31),
-+	.force_reset	= REG_FIELD(0x1000, 30, 30),
-+
-+	.use_hw_chs		= REG_FIELD(0x61038, 0, 0),
-+	.use_hw_usr		= REG_FIELD(0x61038, 1, 1),
-+	.hw_chs_sel		= REG_FIELD(0x61038, 2, 4),
-+	.hw_usr_sel		= REG_FIELD(0x61038, 5, 6),
-+
-+	.replace_vbit	= REG_FIELD(0x610c0, 0, 0),
-+	.vbit_stream	= REG_FIELD(0x610c0, 1, 1),
-+
-+	.legacy_en		=  REG_FIELD(0x1008, 0, 0),
-+	.calc_en		=  REG_FIELD(0x61034, 0, 0),
-+	.lsb_bits		=  REG_FIELD(0x61048, 0, 31),
-+	.msb_bits		=  REG_FIELD(0x6104c, 0, 31),
-+
-+
- 	.clk_name		= (const char*[]) {
- 				   "pcnoc-sway-clk",
- 				   "audio-core",
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+Regards,
+Boyan
