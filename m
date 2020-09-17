@@ -2,97 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D0C26D3DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 08:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C16626D3B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 08:33:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726210AbgIQGnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 02:43:07 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:60042 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726109AbgIQGnG (ORCPT
+        id S1726267AbgIQGdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 02:33:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726109AbgIQGde (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 02:43:06 -0400
-X-Greylist: delayed 303 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 02:43:05 EDT
-X-UUID: 9ce8dc1f769b461ebfc6778803b3d27b-20200917
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=q3zAN8zFo1/THiBdhYK4ZALTgtXSBsMJR5IaK/NHfaM=;
-        b=WFDVt9Ec2VeCS10jZZxIB+Uw+zlN7CKT2jnblL04VB7CSRJOaWqAU4mJfqkZtQ8sBlwCQDO6jXap7QuRm7hruHGfPReOWRd+2mA9C4KkAWLnUbZZ2kl2gfP7qXUtvuNbQE6pCkp0lYAO5ReHXsUuJt9ujU+/Y55ou/IXL/eia6U=;
-X-UUID: 9ce8dc1f769b461ebfc6778803b3d27b-20200917
-Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <lina.wang@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2100878145; Thu, 17 Sep 2020 14:37:52 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- MTKMBS32N2.mediatek.inc (172.27.4.72) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 17 Sep 2020 14:37:50 +0800
-Received: from localhost.localdomain (10.15.20.246) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 17 Sep 2020 14:37:49 +0800
-From:   mtk81216 <lina.wang@mediatek.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        mtk81216 <lina.wang@mediatek.com>
-Subject: [PATCH] xfrm:ignore big packets when tunnel mode
-Date:   Thu, 17 Sep 2020 14:32:49 +0800
-Message-ID: <20200917063249.13457-1-lina.wang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Thu, 17 Sep 2020 02:33:34 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FFB1C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 23:33:34 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id q10so466830qvs.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 23:33:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=googlenew;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=C33+1DOqnTOdhGEShIG3XwfWH0GCMYX8FFAlfTyHRQk=;
+        b=RZMGGdrUq5VvBwNoudF+YLRuvCQOaepLpAKGZTFjM1tgqFw2xBnoKhcDdkVPEGTYt4
+         R2dNLvD6wlqoz0+RPcN0qHmUozglwOIL1qFO7CVY4JEAjh8dTHbUjKMSABe0j9K/PZ+7
+         4oFdFEVAUBLyJuz+zRKwGX67a+oMOEuB1j6P37HLxnjdKUSd/wJyUaNpN0WuWYpcEPCN
+         s79iBtph4ObtoCWxx2N0SAy4w9bluc7xsXC67ey7DXeCH2CrH1mRfcQtIzvAnHDBDfRW
+         74Az4lWPq+cmouAnZIm1I4Y4t+iygx/lg7JaQsg+yOrQQixpOCXiTngrKTDy8OjzGtH4
+         SzZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=C33+1DOqnTOdhGEShIG3XwfWH0GCMYX8FFAlfTyHRQk=;
+        b=P4SIcKMNQReLyEJGlNb6izJNjG2+5dVRc5wpRIzDoOMQfBhQFUr1Och8WMzN8z+K6i
+         s2BFOb6kOmnhO4IxPMrKa6H/v0w4iqzsBwEowAG18RQSKJI3RiKTvt4/sPnpyAaGfFg7
+         0qZOOUpx5CP/anyov1ifjUw/kkZjrzEJZtqHWViyOhYdzfsrA5U2sYoy64zS62EREIGD
+         DjJNPpAvWHgDNILRtWuMnNcqQi7WjfcIREARgSqFrxcJHZ+5e5Yd4dh2rVyK54BNAo/k
+         JtZysOdb6DYKb2NFaYH2UaQQ1eAOZbYUqRlyrEtZXZf/+08xdpXR7McZYYYBZrfdkOyn
+         XfDw==
+X-Gm-Message-State: AOAM532J9pwCJ75xvYwLVdGD/STtSF4HO/ZS5ZHW1w5KflsS26NTu7ve
+        kL460Zs3GNowC3bXsTpvuVbN+uRRjqC0/oPPlk6j5W9ipB4=
+X-Google-Smtp-Source: ABdhPJzSj82M17alFDek6U+fYB0GBjnfm5rfbgVwaP6KwQ4CDHW0KnAQEKKIPAZAxHTp1klKnimcbdal/i8MfWvQk60=
+X-Received: by 2002:ad4:45b3:: with SMTP id y19mr10773997qvu.59.1600324412443;
+ Wed, 16 Sep 2020 23:33:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: A425E91767A7A18DC5E4A7FBDF28EB4693A4C644D5DD00B9FC8494E7B463B61B2000:8
-Content-Transfer-Encoding: base64
+References: <20200917020021.0860995C06B9@us180.sjc.aristanetworks.com>
+In-Reply-To: <20200917020021.0860995C06B9@us180.sjc.aristanetworks.com>
+From:   Francesco Ruggeri <fruggeri@arista.com>
+Date:   Wed, 16 Sep 2020 23:33:21 -0700
+Message-ID: <CA+HUmGjX4_4_UXWNn=EehQ_3QtFPZq8RJU146r-nc0nA8apx7w@mail.gmail.com>
+Subject: Re: [PATCH] net: make netdev_wait_allrefs wake-able
+To:     open list <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, xiyou.wangcong@gmail.com,
+        ap420073@gmail.com, andriin@fb.com,
+        Eric Dumazet <edumazet@google.com>, jiri@mellanox.com,
+        ast@kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Francesco Ruggeri <fruggeri@arista.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SW4gdHVubmVsIG1vZGUsIHdoZW4gaW5uZXIgaW50ZXJmYWNlIGlzIGlwdjQsb3V0ZXIgaW50ZXJm
-YWNlIGlzIGlwdjYsIGZsYWdzDQpvZiB0dW5uZWwgbW9kZSdzIHhmcm0gc3RhdGUgaXMgYWYtdW5z
-cGVjLCBpZiBhIGxhcmdlciBwYWNrZXQgd2hvIGlzIGJpZ2dlcg0KdGhhbiBtdHUgZ29lcyB0aHJv
-dWdoIHR1bm5lbCBpbnRlcmZhY2UsIGl0IGVudGVycyBpcDZfZnJhZ21lbnQsIGdvZXMgdG8NCmZh
-aWxfdG9vYmlnLCBhbmQgSUNNUFY2KElDTVBWNl9QS1RfVE9PQklHKSB3aWxsIGJlIHNlbnQuIEl0
-IGlzIHVubmVjZXNzYXJ5DQp0byBkbyBzby4gSXA2X2ZyYWdtZW50IHdpbGwgZnJhZ21lbnQgc3Vj
-aCBwYWNrZXQgd2l0aCBvdXRlciBpbnRlcmZhY2UncyBtdHUNCm1pbnVzIHR1bm5lbGxlZCBlc3Ag
-aGVhZGVyLGl0IHdvbm90IGJlIHRvbyBiaWcuDQoNClRoZSBzYW1lIHRoaW5ncyBoYXBwZW4sIHdo
-ZW4gYSBsYXJnZXIgZnJhZ21lbnRlZCBwYWNrZXQgd2hvc2UgZnJhZ19tYXhfc2l6ZQ0KaXMgbGFy
-Z2VyIHRoYW4gbXR1Lg0KDQpXaGVuIGEgbGFyZ2VyIGZyYWdtZW50ZWQgcGFja2V0IGlzIGZvcndh
-cmRlZCwgaXQgYWxzbyBtZWV0cyB0aGUgc2FtZSANCnNjZW5hcnkuDQoNClRoaXMgcGF0Y2ggaGFz
-IGhhbmRsZWQgdGhyZWUgYWJvdmUgc2NlbmFyaWVzLCBpZiBpdCBpcyB0dW5uZWwgbW9kZSxqdXN0
-IA0KaWdub3JlIHNrYl9sZW4gb3IgZnJhZ19tYXhfc2l6ZSwga2VlcCBnb2luZy4NCg0KU2lnbmVk
-LW9mZi1ieTogbXRrODEyMTYgPGxpbmEud2FuZ0BtZWRpYXRlay5jb20+DQotLS0NCiBuZXQvaXB2
-Ni9pcDZfb3V0cHV0LmMgfCAyMyArKysrKysrKysrKysrKy0tLS0tLS0tLQ0KIDEgZmlsZSBjaGFu
-Z2VkLCAxNCBpbnNlcnRpb25zKCspLCA5IGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvbmV0
-L2lwdjYvaXA2X291dHB1dC5jIGIvbmV0L2lwdjYvaXA2X291dHB1dC5jDQppbmRleCBjNzhlNjdk
-Nzc0N2YuLjBlMWU2ZmNkN2E1ZCAxMDA2NDQNCi0tLSBhL25ldC9pcHY2L2lwNl9vdXRwdXQuYw0K
-KysrIGIvbmV0L2lwdjYvaXA2X291dHB1dC5jDQpAQCAtNDAyLDEyICs0MDIsMTQgQEAgc3RhdGlj
-IGlubGluZSBpbnQgaXA2X2ZvcndhcmRfZmluaXNoKHN0cnVjdCBuZXQgKm5ldCwgc3RydWN0IHNv
-Y2sgKnNrLA0KIA0KIHN0YXRpYyBib29sIGlwNl9wa3RfdG9vX2JpZyhjb25zdCBzdHJ1Y3Qgc2tf
-YnVmZiAqc2tiLCB1bnNpZ25lZCBpbnQgbXR1KQ0KIHsNCisJc3RydWN0IHJ0Nl9pbmZvICpydCA9
-IChzdHJ1Y3QgcnQ2X2luZm8gKilza2JfZHN0KHNrYik7DQogCWlmIChza2ItPmxlbiA8PSBtdHUp
-DQogCQlyZXR1cm4gZmFsc2U7DQogDQogCS8qIGlwdjYgY29ubnRyYWNrIGRlZnJhZyBzZXRzIG1h
-eF9mcmFnX3NpemUgKyBpZ25vcmVfZGYgKi8NCiAJaWYgKElQNkNCKHNrYiktPmZyYWdfbWF4X3Np
-emUgJiYgSVA2Q0Ioc2tiKS0+ZnJhZ19tYXhfc2l6ZSA+IG10dSkNCi0JCXJldHVybiB0cnVlOw0K
-KwkJaWYgKHJ0ICYmICEocnQtPmRzdC5mbGFncyAmIERTVF9YRlJNX1RVTk5FTCkpDQorCQkJcmV0
-dXJuIHRydWU7DQogDQogCWlmIChza2ItPmlnbm9yZV9kZikNCiAJCXJldHVybiBmYWxzZTsNCkBA
-IC03ODcsMTYgKzc4OSwxOSBAQCBpbnQgaXA2X2ZyYWdtZW50KHN0cnVjdCBuZXQgKm5ldCwgc3Ry
-dWN0IHNvY2sgKnNrLCBzdHJ1Y3Qgc2tfYnVmZiAqc2tiLA0KIAkgKiBvciBpZiB0aGUgc2tiIGl0
-IG5vdCBnZW5lcmF0ZWQgYnkgYSBsb2NhbCBzb2NrZXQuDQogCSAqLw0KIAlpZiAodW5saWtlbHko
-IXNrYi0+aWdub3JlX2RmICYmIHNrYi0+bGVuID4gbXR1KSkNCi0JCWdvdG8gZmFpbF90b29iaWc7
-DQotDQotCWlmIChJUDZDQihza2IpLT5mcmFnX21heF9zaXplKSB7DQotCQlpZiAoSVA2Q0Ioc2ti
-KS0+ZnJhZ19tYXhfc2l6ZSA+IG10dSkNCisJCWlmIChydCAmJiAocnQtPmRzdC5mbGFncyAmIERT
-VF9YRlJNX1RVTk5FTCkpDQogCQkJZ290byBmYWlsX3Rvb2JpZzsNCiANCi0JCS8qIGRvbid0IHNl
-bmQgZnJhZ21lbnRzIGxhcmdlciB0aGFuIHdoYXQgd2UgcmVjZWl2ZWQgKi8NCi0JCW10dSA9IElQ
-NkNCKHNrYiktPmZyYWdfbWF4X3NpemU7DQotCQlpZiAobXR1IDwgSVBWNl9NSU5fTVRVKQ0KLQkJ
-CW10dSA9IElQVjZfTUlOX01UVTsNCisJaWYgKElQNkNCKHNrYiktPmZyYWdfbWF4X3NpemUpIHsN
-CisJCWlmIChJUDZDQihza2IpLT5mcmFnX21heF9zaXplID4gbXR1KSB7DQorCQkJaWYgKHJ0ICYm
-ICEocnQtPmRzdC5mbGFncyAmIERTVF9YRlJNX1RVTk5FTCkpDQorCQkJCWdvdG8gZmFpbF90b29i
-aWc7DQorCQl9IGVsc2Ugew0KKwkJCS8qIGRvbid0IHNlbmQgZnJhZ21lbnRzIGxhcmdlciB0aGFu
-IHdoYXQgd2UgcmVjZWl2ZWQgKi8NCisJCQltdHUgPSBJUDZDQihza2IpLT5mcmFnX21heF9zaXpl
-Ow0KKwkJCWlmIChtdHUgPCBJUFY2X01JTl9NVFUpDQorCQkJCW10dSA9IElQVjZfTUlOX01UVTsN
-CisJCX0NCiAJfQ0KIA0KIAlpZiAobnAgJiYgbnAtPmZyYWdfc2l6ZSA8IG10dSkgew0KLS0gDQoy
-LjE4LjANCg==
+>  static inline void dev_put(struct net_device *dev)
+>  {
+> +       struct task_struct *destroy_task = dev->destroy_task;
+> +
+>         this_cpu_dec(*dev->pcpu_refcnt);
+> +       if (destroy_task)
+> +               wake_up_process(destroy_task);
+>  }
 
+I just realized that this introduces a race, if dev_put drops the last
+reference, an already running netdev_wait_allrefs runs to completion
+and then dev_put tries to wake it up.
+Any suggestions on how to avoid this without resorting to
+locking?
+
+Thanks,
+Francesco
