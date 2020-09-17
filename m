@@ -2,140 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3366C26E5A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BF3026E5A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726666AbgIQTzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 15:55:18 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:40560 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727695AbgIQO6J (ORCPT
+        id S1726659AbgIQTzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 15:55:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727693AbgIQO7c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 10:58:09 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08HEvfcf109799;
-        Thu, 17 Sep 2020 09:57:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600354661;
-        bh=MUUriQmoDl0IAD2+idX5HWLt4OHGMZ2OvXBr/yXqYPE=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=ZKpGyqo57A7n6jxXx7n3Wxj53/PWhJRKroietC2X5tdvUpbXqL8dFoeHiQjODT55Z
-         b+krQ8NSrtZiLqUZ1FagRiMMDAZw1S48+pEfzBGcRMxcWbFMq/7CMKs4rFUiXYlYT7
-         xjHZGXTYSxTrlEMxRZouG02zHFsU1stRn+bLwooA=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08HEvfW8091773;
-        Thu, 17 Sep 2020 09:57:41 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 17
- Sep 2020 09:57:41 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 17 Sep 2020 09:57:41 -0500
-Received: from [10.250.32.129] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08HEvfeX021517;
-        Thu, 17 Sep 2020 09:57:41 -0500
-Subject: Re: [PATCH net-next 2/3] net: dp83869: Add ability to advertise Fiber
- connection
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     <davem@davemloft.net>, <f.fainelli@gmail.com>,
-        <hkallweit1@gmail.com>, <mkubecek@suse.cz>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200915181708.25842-1-dmurphy@ti.com>
- <20200915181708.25842-3-dmurphy@ti.com> <20200915201718.GD3526428@lunn.ch>
- <4b297d8a-b4da-0e19-a5fb-6dda89ca4148@ti.com>
- <20200916221313.GI3526428@lunn.ch>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <44ee56f6-fd72-b479-3b96-7565a439e4bc@ti.com>
-Date:   Thu, 17 Sep 2020 09:57:36 -0500
+        Thu, 17 Sep 2020 10:59:32 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD64CC06174A;
+        Thu, 17 Sep 2020 07:59:31 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id x77so2553494lfa.0;
+        Thu, 17 Sep 2020 07:59:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5b+6iKz7/t1fonq7I0abGl0uRV12XzzWdSbVpQjE5Vw=;
+        b=cbRL789XfnfU1Xx4aPxfYvS0BogNxW6NYyP/o+A0BzA8uAnN9kRa/ceXi062kYTW4g
+         EXEuLIZjE60aRPcqgzDHis6VKgXJvFKPKWHbnIcGL7jcyEGSiG1hNA1m0LwC2C7eCZ1F
+         LlrThZ8KZMCZLAjenpChvvsb15mkU6JqmcCuYM2eS5OKyiZ4PFsygb/fieSPDdTA4AvJ
+         4wevfUutG6jfzO8x6cX9dpmlJE+NxAjeO+4ZRibi45FocH/5ixYF9gQZGA0OPdP5TRyl
+         jNVmfG7ZRAaATTJhdtr9h0vGX3VBmQGTvfH09Q8F+qLFpDtTKWBqfvukuNPSmcL4elNY
+         62jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5b+6iKz7/t1fonq7I0abGl0uRV12XzzWdSbVpQjE5Vw=;
+        b=HPs612WM/pacvoFsConNrQuzbILVtFthAsuuhEWEje88a7+phMCfDdT+OXGl3JtlHZ
+         7HeAcxSmSCHDxKl9FOgvjIbeBxZzbtq5IOoSCiiQdxpPF5yDUG6gIUymMzJx9bvPakL/
+         sKEZs+f1eMnrroIY1SgPHDw/r8usf1YMb52L4swEjbdQQ51ldNcw6M3vyprGDinEjkf9
+         0rzjDZXisyCTG1O/3CUVpC9kAvaAU7Ka3NiKWNtGVTGTnEFU2e4HkuGn8yrTF1qJK3t4
+         UcznFTofSgfgx3bcLDjP5I2v/k9vGealwjxpyJDEnVsf/jLyoAR+0sdSj8eHlWIG/t28
+         2Uug==
+X-Gm-Message-State: AOAM530syzSbfwW8sO/YJG3+tO8euDMY+1+PcaspzysNICkjCv4hkGRD
+        ICZZ/zCNafBhBiWzjfEscqFVE4osu7A=
+X-Google-Smtp-Source: ABdhPJxuGPxhfyGLCIpyTeGimrwYaCFW7sgdBAiWdB9sRQBcaJSgPp5YAxdd65GGqr2xqqASiTxbfg==
+X-Received: by 2002:a19:992:: with SMTP id 140mr8866749lfj.273.1600354770100;
+        Thu, 17 Sep 2020 07:59:30 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id y8sm6073590ljy.107.2020.09.17.07.59.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Sep 2020 07:59:29 -0700 (PDT)
+Subject: Re: [PATCH v7 08/34] i2c: tegra: Remove error message used for
+ devm_request_irq() failure
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200908224006.25636-1-digetx@gmail.com>
+ <20200908224006.25636-9-digetx@gmail.com> <20200917112852.GT3515672@ulmo>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <0a11e836-dcc0-0fba-4da7-caf28cbcf7d6@gmail.com>
+Date:   Thu, 17 Sep 2020 17:59:28 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200916221313.GI3526428@lunn.ch>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200917112852.GT3515672@ulmo>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew
-
-On 9/16/20 5:13 PM, Andrew Lunn wrote:
-> On Wed, Sep 16, 2020 at 03:54:34PM -0500, Dan Murphy wrote:
->> Andrew
+17.09.2020 14:28, Thierry Reding пишет:
+> On Wed, Sep 09, 2020 at 01:39:40AM +0300, Dmitry Osipenko wrote:
+>> The error message prints number of vIRQ, which isn't a useful information.
+>> In practice devm_request_irq() never fails, hence let's remove the bogus
+>> message in order to make code cleaner.
 >>
->> On 9/15/20 3:17 PM, Andrew Lunn wrote:
->>>> +		linkmode_set_bit(ETHTOOL_LINK_MODE_100baseFX_Full_BIT,
->>>> +				 phydev->supported);
->>>> +		linkmode_set_bit(ETHTOOL_LINK_MODE_100baseFX_Half_BIT,
->>>> +				 phydev->supported);
->>>> +
->>>> +		/* Auto neg is not supported in 100base FX mode */
->>> Hi Dan
->>>
->>> If it does not support auto neg, how do you decide to do half duplex?
->>> I don't see any code here which allows the user to configure it.
->> Ethtool has the provisions to set the duplex and speed right?.
-> What i'm getting at is you say you support
-> ETHTOOL_LINK_MODE_100baseFX_Full_BIT &
-> ETHTOOL_LINK_MODE_100baseFX_Half_BIT. If there is no auto neg in FX
-> mode, i'm questioning how these two different modes code be used? I'm
-> guessing the PHY defaults to ETHTOOL_LINK_MODE_100baseFX_Full_BIT? How
-> does the user set it to ETHTOOL_LINK_MODE_100baseFX_Half_BIT?
+>> Reviewed-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  drivers/i2c/busses/i2c-tegra.c | 4 +---
+>>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> I think I have seen this fail occasionally when something's wrong in the
+> IRQ code, or when we are not properly configuring the IRQ in device tree
+> for example.
+> 
+> So I'd prefer if this error message stayed here. I agree that it's not a
+> terribly useful error message, so perhaps adding the error code to it
+> would make it more helpful?
 
-The user can use ethtool to set the speed and duplex. And ethtool uses 
-the IOCTLs to configure the device.
+We have dtbs_check nowadays and I assume you only saw a such problem
+during of hardware bring-up, correct?
 
-So if the user creates their own HAL then they can use those IOCTLs as well.
+Realistically, this error should never happen "randomly" and even if it
+will happen, then you will still know that I2C driver failed because
+driver-core will tell you about that.
 
-The data sheet indicates
+Hence there is no much value in the error message, it should be more
+practical to remove it in order to keep the code cleaner.
 
-"In fiber mode, the speed is not
-decided through auto-negotiation. Both sides of the link must be 
-configured to the same operating speed."
-
->
->> The only call back I see which is valid is config_aneg which would still
->> require a user space tool to set the needed link modes.
-> Correct. Maybe all you need to do is point me at the code in the
-> driver which actually sets the PHY into half duplex in FX mode when
-> the user asks for it. Is it just clearing BMCR_FULLDPLX?
-
-Here is the full flow when setting the speed and duplex mode from the 
-Ethtool or when the IOCTL's are called to update the PHY
-
-phy_ethtool_ksettings_set updates the phydev->speed and phydev->duplex
-
-Since Auto Neg is disabled the call to genphy_setup_forced is done in 
-the __genphy_config_aneg in phy_device.
-
-genphy_setup_forced updates the BMCR with the updated values.
-
-So IMO there is no need to populate the config_aneg call back to
-
-root@am335x-evm:~# ./ethtool -s eth0 speed 10 duplex half
-[   92.098491] phy_ethtool_ksettings_set
-[   92.102247] phy_ethtool_ksettings_set: speed 10 duplex 0
-[   92.107755] phy_sanitize_settings
-[   92.111085] phy_config_aneg
-[   92.113930] genphy_config_aneg
-[   92.116997] __genphy_config_aneg
-[   92.120237] genphy_setup_forced
-[   92.123419] genphy_setup_forced: Update the BMCR
-root@am335x-evm:~# ./ethtool -s eth0 speed 100 duplex full
-[  102.693105] phy_ethtool_ksettings_set
-[  102.697029] phy_ethtool_ksettings_set: speed 100 duplex 1
-[  102.702462] phy_sanitize_settings
-[  102.705892] phy_config_aneg
-[  102.708702] genphy_config_aneg
-[  102.711770] __genphy_config_aneg
-[  102.715051] genphy_setup_forced
-[  102.718209] genphy_setup_forced: Update the BMCR
-
-I am hoping this answers your question.
-
-Dan
+>> diff --git a/drivers/i2c/busses/i2c-tegra.c b/drivers/i2c/busses/i2c-tegra.c
+>> index a52c72135390..b813c0976c10 100644
+>> --- a/drivers/i2c/busses/i2c-tegra.c
+>> +++ b/drivers/i2c/busses/i2c-tegra.c
+>> @@ -1807,10 +1807,8 @@ static int tegra_i2c_probe(struct platform_device *pdev)
+>>  
+>>  	ret = devm_request_irq(&pdev->dev, i2c_dev->irq, tegra_i2c_isr,
+>>  			       IRQF_NO_SUSPEND, dev_name(&pdev->dev), i2c_dev);
+>> -	if (ret) {
+>> -		dev_err(&pdev->dev, "Failed to request irq %i\n", i2c_dev->irq);
+>> +	if (ret)
+>>  		goto release_dma;
+>> -	}
+>>  
+>>  	i2c_set_adapdata(&i2c_dev->adapter, i2c_dev);
+>>  	i2c_dev->adapter.owner = THIS_MODULE;
+>> -- 
+>> 2.27.0
+>>
 
