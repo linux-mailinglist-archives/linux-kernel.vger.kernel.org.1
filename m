@@ -2,198 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4743A26E0E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 18:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95E9526E0BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 18:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728607AbgIQQiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 12:38:54 -0400
-Received: from mga09.intel.com ([134.134.136.24]:7509 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728456AbgIQQhk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 12:37:40 -0400
-X-Greylist: delayed 450 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 12:37:39 EDT
-IronPort-SDR: IH7fwMyBW16jk7KacROESBqmaq2y1CkVd3tG+FMEHV4HhN6syD+a2/lWBgXyaBfmfR3yiNePvY
- mbPmiMQ3yZLw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="160660856"
-X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
-   d="scan'208";a="160660856"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 09:29:45 -0700
-IronPort-SDR: gn/KSpAbMBSgBwaK1L10/ocDUzlNBiPJXg9sQ+idOEzYsmEgRqss7+LiDVfLtilmKC+yXSq0q2
- COZXnykra9sg==
-X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
-   d="scan'208";a="452376324"
-Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 09:29:45 -0700
-Date:   Thu, 17 Sep 2020 09:29:43 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Jim Mattson <jmattson@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v4 2/2] KVM: nSVM: implement ondemand allocation of the
- nested state
-Message-ID: <20200917162942.GE13522@sjchrist-ice>
-References: <20200917101048.739691-1-mlevitsk@redhat.com>
- <20200917101048.739691-3-mlevitsk@redhat.com>
+        id S1728548AbgIQQbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 12:31:51 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56644 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728530AbgIQQaI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 12:30:08 -0400
+Date:   Thu, 17 Sep 2020 18:30:01 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600360203;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nXpBybO4CWXGQ/MADYCmIruC1fes9wIrjOBI4fqmH1g=;
+        b=NlA6pC8S1cHhI/0T1uK8i1fVc0zGUz3app9gBMKbZuPQe7DcdG4TmQ/5y+AomaqbDihJNp
+        hvwGnpXP6URbpV5PyAGSYkJ9uACmbz/MlIgGC7R5+v1a6nXGvRBXhEmn8OQpVqcJkX21N0
+        1CsR6jqKDiuq7kYVxQyRk8X7n29azvL7078OfUoMe7izNnDyygxlqDi+wbxnvRsLxxkwEZ
+        P5t6cg7rKN6Ard14oB0HMZyZbU2xQWM9ehMSW9esybhY7Ck03m0aEufV6U3R942/nEgBoM
+        Iye5T7fj5OamXjRd5rAgwQ1FP9uH7zh212nEB7NVOsJHNnLdRzKS4/JMO9pM9g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600360203;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nXpBybO4CWXGQ/MADYCmIruC1fes9wIrjOBI4fqmH1g=;
+        b=7kSqDZphcWT1gjtxzsYa0nOdlLSZqvHOORKVB1nvwfJcQKywJY3+QqNXTbsqN6OIuQgrHw
+        c/VhXZBvEhWSNJCw==
+From:   Sebastian Siewior <bigeasy@linutronix.de>
+To:     peterz@infradead.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Scott Wood <swood@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>
+Subject: Re: [patch 09/10] sched/core: Add migrate_disable/enable()
+Message-ID: <20200917163001.5ksl5vjwi35ozzsv@linutronix.de>
+References: <20200917094202.301694311@linutronix.de>
+ <20200917101624.813835219@linutronix.de>
+ <20200917142438.GH1362448@hirez.programming.kicks-ass.net>
+ <20200917143850.25akkvr32ojtwohy@linutronix.de>
+ <20200917144937.GI1362448@hirez.programming.kicks-ass.net>
+ <20200917151341.2ilqamtnc6hperix@linutronix.de>
+ <20200917155410.GK1362448@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200917101048.739691-3-mlevitsk@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200917155410.GK1362448@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 01:10:48PM +0300, Maxim Levitsky wrote:
-> This way we don't waste memory on VMs which don't use
-> nesting virtualization even if it is available to them.
-> 
-> If allocation of nested state fails (which should happen,
-> only when host is about to OOM anyway), use new KVM_REQ_OUT_OF_MEMORY
-> request to shut down the guest
-> 
-> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> ---
->  arch/x86/kvm/svm/nested.c | 42 ++++++++++++++++++++++++++++++
->  arch/x86/kvm/svm/svm.c    | 54 ++++++++++++++++++++++-----------------
->  arch/x86/kvm/svm/svm.h    |  7 +++++
->  3 files changed, 79 insertions(+), 24 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-> index 09417f5197410..fe119da2ef836 100644
-> --- a/arch/x86/kvm/svm/nested.c
-> +++ b/arch/x86/kvm/svm/nested.c
-> @@ -467,6 +467,9 @@ int nested_svm_vmrun(struct vcpu_svm *svm)
->  
->  	vmcb12 = map.hva;
->  
-> +	if (WARN_ON(!svm->nested.initialized))
-> +		return 1;
-> +
->  	if (!nested_vmcb_checks(svm, vmcb12)) {
->  		vmcb12->control.exit_code    = SVM_EXIT_ERR;
->  		vmcb12->control.exit_code_hi = 0;
-> @@ -684,6 +687,45 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
->  	return 0;
->  }
->  
-> +int svm_allocate_nested(struct vcpu_svm *svm)
-> +{
-> +	struct page *hsave_page;
-> +
-> +	if (svm->nested.initialized)
-> +		return 0;
-> +
-> +	hsave_page = alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
-> +	if (!hsave_page)
-> +		goto error;
+On 2020-09-17 17:54:10 [+0200], peterz@infradead.org wrote:
+> I'm not sure what the problem with FPU was, I was throwing alternatives
+> at tglx to see what would stick, in part to (re)discover the design
+> constraints of this thing.
 
-goto is unnecessary, just do
+was this recent or distant in the time line?
 
-		return -ENOMEM;
+> One reason for not allowing migrate_disable() to sleep was: FPU code.
+>=20
+> Could it be it does something like:
+>=20
+> 	preempt_disable();
+> 	spin_lock();
+>=20
+> 	spin_unlock();
+> 	preempt_enable();
+>=20
+> Where we'll never get preempted while migrate_disable()'d and thus never
+> trigger any of the sleep paths?
 
-> +
-> +	svm->nested.hsave = page_address(hsave_page);
-> +
-> +	svm->nested.msrpm = svm_vcpu_init_msrpm();
-> +	if (!svm->nested.msrpm)
-> +		goto err_free_hsave;
-> +
-> +	svm->nested.initialized = true;
-> +	return 0;
-> +err_free_hsave:
-> +	__free_page(hsave_page);
-> +error:
-> +	return 1;
+I try to get rid of something like that. This doesn't work either way
+because the spin_lock() may block which it can't with disabled
+preemption.
 
-As above, -ENOMEM would be preferable.
+Looking at my queue, FPU related is crypto. And here we break the loops
+mostly due to the construct:
+	kernel_fpu_begin();
+	while (bytes)
+		crypto_thingy();
+		skcipher_walk_done()
 
-> +}
-> +
-> +void svm_free_nested(struct vcpu_svm *svm)
-> +{
-> +	if (!svm->nested.initialized)
-> +		return;
-> +
-> +	svm_vcpu_free_msrpm(svm->nested.msrpm);
-> +	svm->nested.msrpm = NULL;
-> +
-> +	__free_page(virt_to_page(svm->nested.hsave));
-> +	svm->nested.hsave = NULL;
-> +
-> +	svm->nested.initialized = false;
-> +}
-> +
->  /*
->   * Forcibly leave nested mode in order to be able to reset the VCPU later on.
->   */
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 3da5b2f1b4a19..57ea4407dcf09 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -266,6 +266,7 @@ static int get_max_npt_level(void)
->  void svm_set_efer(struct kvm_vcpu *vcpu, u64 efer)
->  {
->  	struct vcpu_svm *svm = to_svm(vcpu);
-> +	u64 old_efer = vcpu->arch.efer;
->  	vcpu->arch.efer = efer;
->  
->  	if (!npt_enabled) {
-> @@ -276,9 +277,26 @@ void svm_set_efer(struct kvm_vcpu *vcpu, u64 efer)
->  			efer &= ~EFER_LME;
->  	}
->  
-> -	if (!(efer & EFER_SVME)) {
-> -		svm_leave_nested(svm);
-> -		svm_set_gif(svm, true);
-> +	if ((old_efer & EFER_SVME) != (efer & EFER_SVME)) {
-> +		if (!(efer & EFER_SVME)) {
-> +			svm_leave_nested(svm);
-> +			svm_set_gif(svm, true);
-> +
-> +			/*
-> +			 * Free the nested state unless we are in SMM, in which
-> +			 * case the exit from SVM mode is only for duration of the SMI
-> +			 * handler
-> +			 */
-> +			if (!is_smm(&svm->vcpu))
-> +				svm_free_nested(svm);
-> +
-> +		} else {
-> +			if (svm_allocate_nested(svm)) {
-> +				vcpu->arch.efer = old_efer;
-> +				kvm_make_request(KVM_REQ_OUT_OF_MEMORY, vcpu);
+and skcipher_walk_done() could allocate/free/map memory. This is
+independent.
 
-I really dislike KVM_REQ_OUT_OF_MEMORY.  It's redundant with -ENOMEM and
-creates a huge discrepancy with respect to existing code, e.g. nVMX returns
--ENOMEM in a similar situation.
+Ah. We used to have migrate_disable() in pagefault_disable(). The x86
+FPU code does
+	preempt_disable();
+	=E2=80=A6
+	pagefault_disable();
 
-The deferred error handling creates other issues, e.g. vcpu->arch.efer is
-unwound but the guest's RIP is not.
+but that migrate_disable() was moved from pagefault_disable() to
+kmap_atomic(). We shouldn't have
+	preempt_disable(); || local_irq_disable();
+	kmap_atomic();
 
-One thought for handling this without opening a can of worms would be to do:
+on RT. I've been running around removing those. See
+   a10dcebacdb0c ("fs/ntfs/aops.c: don't disable interrupts during kmap_ato=
+mic()")
+   ce1e518190ea7 ("ide: don't disable interrupts during kmap_atomic()")
+   f3a1075e5fc34 ("block: don't disable interrupts during kmap_atomic()")
 
-	r = kvm_x86_ops.set_efer(vcpu, efer);
-	if (r) {
-		WARN_ON(r > 0);
-		return r;
-	}
-
-I.e. go with the original approach, but only for returning errors that will
-go all the way out to userspace.
-
-> +				return;
-> +			}
-> +		}
->  	}
->  
->  	svm->vmcb->save.efer = efer | EFER_SVME;
+Sebastian
