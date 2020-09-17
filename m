@@ -2,116 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B074326E6CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 22:36:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E61926E6D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 22:39:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726496AbgIQUgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 16:36:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726192AbgIQUgR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 16:36:17 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D493C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 13:36:17 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id y4so3177889ljk.8
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 13:36:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RwZiLc6S8KRXpHX9Z3VeVt6Qzg9ortSMhRW1DWsmxfU=;
-        b=Gw4YF1Eo+YJ8TgEJHuR+iXYu0AX9ZB/vRTZi5W6owfBh+Fzo/uWlGdJHJMsfQur04/
-         Z12gGwxut2GKxd4MZW/Z8FgdJkaUGpnh+akWrazKSRsVrmkIChvw5UjjR7WQqUy9/mBm
-         kEVmmYqN1HhbreponBnTKCuEJjAtHoKKQ8kHQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RwZiLc6S8KRXpHX9Z3VeVt6Qzg9ortSMhRW1DWsmxfU=;
-        b=I0mFwJhNfeNRnYnddWKyt7iBtDRoEK6PwBkpXlJwtwmHAwrimamEs+VBj25oPhnHmn
-         ajDndGFCK1SJCxXd4S0JPyH257HDWOjLDCqxLynfAdshvRGqec81/7hmU6wXdVP3DDZj
-         6KOx3ngZ4YksK8PRKVEJysekhg1T2CtJvETVCnB9KNIkJYyUvvBVtFfr54eAhCcW2dIt
-         TCFaECcdwIRJ77CiWUXeDzZt9rLfG9EmgVvbqn6AO9ZAH/SPN92O2O9fIPB7D7V639i6
-         lx0e9Kpx6+d6x9Og2POvaeSmbD/AzB69JxYf4qnBajPvvHlDqGefkLyeNrFSUyG3czDq
-         Z0aw==
-X-Gm-Message-State: AOAM5304ZLRDr+/cdtmKjp2ULUugwNlnN7MdyiH9cLDX1UyYhFXYecHg
-        LTTatmaD63EnNqusA+4mgMfWUBSlFE4XYw==
-X-Google-Smtp-Source: ABdhPJz4Kv1LerkZ1tol0f7e5Lz6zsU7FRD3jIRUSUH/Qmz/4R6/0iCrSNioWsphEId8441jgLiqjA==
-X-Received: by 2002:a2e:8ed9:: with SMTP id e25mr10328286ljl.404.1600374975119;
-        Thu, 17 Sep 2020 13:36:15 -0700 (PDT)
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
-        by smtp.gmail.com with ESMTPSA id h124sm119989lfd.203.2020.09.17.13.36.12
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Sep 2020 13:36:13 -0700 (PDT)
-Received: by mail-lf1-f50.google.com with SMTP id z17so3619839lfi.12
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 13:36:12 -0700 (PDT)
-X-Received: by 2002:ac2:4ec7:: with SMTP id p7mr8748891lfr.352.1600374972561;
- Thu, 17 Sep 2020 13:36:12 -0700 (PDT)
+        id S1726575AbgIQUj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 16:39:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40942 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726234AbgIQUj4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 16:39:56 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A8C320838;
+        Thu, 17 Sep 2020 20:39:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600375195;
+        bh=4KM+0ViDDGL59kEm4u7dBzMtR1TEU6CQ1hNFnYqg/o0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oinJ3xJUwiNOarvn45C05PK8IYn9TGzDPInTjKUHZQSKplkprYblyXN5j5+1YbcNo
+         O/6WKcHsGr3Gx8+PMkf8GmKMrupIPYL2tkblG4Aw6toCsY3o9OIDGOS3lWsD5fvPO+
+         DR6M5+rNSBqMfjvY2xUuSfdKimrxpnfUJZVs10oA=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 616FB400E9; Thu, 17 Sep 2020 17:39:53 -0300 (-03)
+Date:   Thu, 17 Sep 2020 17:39:53 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Stephane Eranian <eranian@google.com>,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: Re: [PATCH v4] perf metricgroup: Fix uncore metric expressions
+Message-ID: <20200917203953.GA1525630@kernel.org>
+References: <20200917190026.GB1426933@kernel.org>
+ <20200917201807.4090224-1-irogers@google.com>
 MIME-Version: 1.0
-References: <20200915213330.GE2949@xz-x1> <20200915232238.GO1221970@ziepe.ca>
- <e6c352f8-7ee9-0702-10a4-122d2c4422fc@nvidia.com> <20200916174804.GC8409@ziepe.ca>
- <20200916184619.GB40154@xz-x1> <20200917112538.GD8409@ziepe.ca>
- <20200917181411.GA133226@xz-x1> <CAHk-=wgMVPAhD7C24ipe03+MScgp6F=zMS-roOznvxJ+hOGfSA@mail.gmail.com>
- <20200917190332.GB133226@xz-x1> <CAHk-=wgw3GNyF_6euymOFxM62Y3B=C=f2iUJn8Py-u5YELJ5JA@mail.gmail.com>
- <20200917200638.GM8409@ziepe.ca>
-In-Reply-To: <20200917200638.GM8409@ziepe.ca>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 17 Sep 2020 13:35:56 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh+qz0oOjyiQFXR_73RYSDUmJwHC8xd=KG0RzELnbS5OA@mail.gmail.com>
-Message-ID: <CAHk-=wh+qz0oOjyiQFXR_73RYSDUmJwHC8xd=KG0RzELnbS5OA@mail.gmail.com>
-Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Peter Xu <peterx@redhat.com>, John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Maya B . Gokhale" <gokhale2@llnl.gov>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Marty Mcfadden <mcfadden8@llnl.gov>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917201807.4090224-1-irogers@google.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 1:06 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> Given that this is a user visible regression, it is nearly rc6, what
-> do you prefer for next steps?
+Em Thu, Sep 17, 2020 at 01:18:07PM -0700, Ian Rogers escreveu:
+> A metric like DRAM_BW_Use has on SkylakeX events uncore_imc/cas_count_read/
+> and uncore_imc/case_count_write/. These events open 6 events per socket
+> with pmu names of uncore_imc_[0-5]. The current metric setup code in
+> find_evsel_group assumes one ID will map to 1 event to be recorded in
+> metric_events. For events with multiple matches, the first event is
+> recorded in metric_events (avoiding matching >1 event with the same
+> name) and the evlist_used updated so that duplicate events aren't
+> removed when the evlist has unused events removed.
 
-Since I had to deal with the page lock performance regression too, and
-I think we have a fairly simple way forward, I'd rather do an rc8 and
-get this done with, than revert and know we have to deal with it
-anyway.
+Namhyung, please check if you still Acks this as you provided it for v3.
 
-Particularly since I think this would _finally_ make page pinning make
-sense. In it's current state, it's just yet another broken GUP that
-doesn't actually fix things. But if we have the semantics that page
-pinning really fixes things in the page tables, I think we now have a
-proper solution to this and a _much_ cleaner model for it.
+Thanks,
 
-If it means that page pinning can also stop worrying about
-MADV_DONTFORK any more, that would be an added API bonus.
+- Arnaldo
+ 
+> Before this change:
+> $ /tmp/perf/perf stat -M DRAM_BW_Use -a -- sleep 1
+> 
+>  Performance counter stats for 'system wide':
+> 
+>              41.14 MiB  uncore_imc/cas_count_read/
+>      1,002,614,251 ns   duration_time
+> 
+>        1.002614251 seconds time elapsed
+> 
+> After this change:
+> $ /tmp/perf/perf stat -M DRAM_BW_Use -a -- sleep 1
+> 
+>  Performance counter stats for 'system wide':
+> 
+>             157.47 MiB  uncore_imc/cas_count_read/ #     0.00 DRAM_BW_Use
+>             126.97 MiB  uncore_imc/cas_count_write/
+>      1,003,019,728 ns   duration_time
+> 
+> Erroneous duplication introduced in:
+> commit 2440689d62e9 ("perf metricgroup: Remove duped metric group events").
+> 
+> Fixes: ded80bda8bc9 ("perf expr: Migrate expr ids table to a hashmap").
+> Reported-by: Jin Yao <yao.jin@linux.intel.com>
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/util/metricgroup.c | 75 ++++++++++++++++++++++++++---------
+>  1 file changed, 56 insertions(+), 19 deletions(-)
+> 
+> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+> index ab5030fcfed4..d948a7f910cf 100644
+> --- a/tools/perf/util/metricgroup.c
+> +++ b/tools/perf/util/metricgroup.c
+> @@ -150,6 +150,18 @@ static void expr_ids__exit(struct expr_ids *ids)
+>  		free(ids->id[i].id);
+>  }
+>  
+> +static bool contains_event(struct evsel **metric_events, int num_events,
+> +			const char *event_name)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < num_events; i++) {
+> +		if (!strcmp(metric_events[i]->name, event_name))
+> +			return true;
+> +	}
+> +	return false;
+> +}
+> +
+>  /**
+>   * Find a group of events in perf_evlist that correpond to those from a parsed
+>   * metric expression. Note, as find_evsel_group is called in the same order as
+> @@ -180,7 +192,11 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+>  	int i = 0, matched_events = 0, events_to_match;
+>  	const int idnum = (int)hashmap__size(&pctx->ids);
+>  
+> -	/* duration_time is grouped separately. */
+> +	/*
+> +	 * duration_time is always grouped separately, when events are grouped
+> +	 * (ie has_constraint is false) then ignore it in the matching loop and
+> +	 * add it to metric_events at the end.
+> +	 */
+>  	if (!has_constraint &&
+>  	    hashmap__find(&pctx->ids, "duration_time", (void **)&val_ptr))
+>  		events_to_match = idnum - 1;
+> @@ -207,23 +223,20 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+>  				sizeof(struct evsel *) * idnum);
+>  			current_leader = ev->leader;
+>  		}
+> -		if (hashmap__find(&pctx->ids, ev->name, (void **)&val_ptr)) {
+> -			if (has_constraint) {
+> -				/*
+> -				 * Events aren't grouped, ensure the same event
+> -				 * isn't matched from two groups.
+> -				 */
+> -				for (i = 0; i < matched_events; i++) {
+> -					if (!strcmp(ev->name,
+> -						    metric_events[i]->name)) {
+> -						break;
+> -					}
+> -				}
+> -				if (i != matched_events)
+> -					continue;
+> -			}
+> +		/*
+> +		 * Check for duplicate events with the same name. For example,
+> +		 * uncore_imc/cas_count_read/ will turn into 6 events per socket
+> +		 * on skylakex. Only the first such event is placed in
+> +		 * metric_events. If events aren't grouped then this also
+> +		 * ensures that the same event in different sibling groups
+> +		 * aren't both added to metric_events.
+> +		 */
+> +		if (contains_event(metric_events, matched_events, ev->name))
+> +			continue;
+> +		/* Does this event belong to the parse context? */
+> +		if (hashmap__find(&pctx->ids, ev->name, (void **)&val_ptr))
+>  			metric_events[matched_events++] = ev;
+> -		}
+> +
+>  		if (matched_events == events_to_match)
+>  			break;
+>  	}
+> @@ -239,7 +252,7 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+>  	}
+>  
+>  	if (matched_events != idnum) {
+> -		/* Not whole match */
+> +		/* Not a whole match */
+>  		return NULL;
+>  	}
+>  
+> @@ -247,8 +260,32 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+>  
+>  	for (i = 0; i < idnum; i++) {
+>  		ev = metric_events[i];
+> -		ev->metric_leader = ev;
+> +		/* Don't free the used events. */
+>  		set_bit(ev->idx, evlist_used);
+> +		/*
+> +		 * The metric leader points to the identically named event in
+> +		 * metric_events.
+> +		 */
+> +		ev->metric_leader = ev;
+> +		/*
+> +		 * Mark two events with identical names in the same group (or
+> +		 * globally) as being in use as uncore events may be duplicated
+> +		 * for each pmu. Set the metric leader of such events to be the
+> +		 * event that appears in metric_events.
+> +		 */
+> +		evlist__for_each_entry_continue(perf_evlist, ev) {
+> +			/*
+> +			 * If events are grouped then the search can terminate
+> +			 * when then group is left.
+> +			 */
+> +			if (!has_constraint &&
+> +			    ev->leader != metric_events[i]->leader)
+> +				break;
+> +			if (!strcmp(metric_events[i]->name, ev->name)) {
+> +				set_bit(ev->idx, evlist_used);
+> +				ev->metric_leader = metric_events[i];
+> +			}
+> +		}
+>  	}
+>  
+>  	return metric_events[0];
+> -- 
+> 2.28.0.618.gf4bc123cb7-goog
+> 
 
-For that to happen, we'd need to have the vma flag so that we wouldn't
-have any worry about non-pinners, but as you suggested, I think even
-just a mm-wide counter - or flag - to deal with the fast-bup case is
-likely perfectly sufficient.
+-- 
 
-Yes, you'd still take a hit on fork, but only the actual process that
-did pinning would take that hit. And *if* that ends up being a big
-deal, the MADV_DONTFORK can be used to avoid it, rather than be a
-correctness issue.
-
-It really feels like this should be just "tens of lines of fairly
-simple code", and it would clarify our GUP/PIN/COW rules enormously.
-
-            Linus
+- Arnaldo
