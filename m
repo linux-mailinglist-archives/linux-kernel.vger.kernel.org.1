@@ -2,125 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1407926E49E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:53:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D80CE26E460
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728443AbgIQQUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 12:20:41 -0400
-Received: from condef-01.nifty.com ([202.248.20.66]:34881 "EHLO
-        condef-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728362AbgIQQRW (ORCPT
+        id S1726458AbgIQSrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 14:47:10 -0400
+Received: from basementscanada.com-http1 ([159.203.32.190]:45574 "EHLO
+        basementscanada.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726430AbgIQSqo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 12:17:22 -0400
-Received: from conssluserg-03.nifty.com ([10.126.8.82])by condef-01.nifty.com with ESMTP id 08HGBjSp013101;
-        Fri, 18 Sep 2020 01:11:45 +0900
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 08HG96BI023460;
-        Fri, 18 Sep 2020 01:09:06 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 08HG96BI023460
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1600358947;
-        bh=yULUqiWt2SWgw5mTiS7zYO2hzW0Ie61k0FqxlWmWeH4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=LElvIdS9XHoSA00xhrPQymc7YKtyp5JVFGDJu54Udb+uE+/GqPj8sV/2vsS5DuATo
-         S1LzrbX8tkVWzTZemJiiWQc50jsuiQVb9ecrVUCXejhWLbNHf9Vm1up6trEU20SIfm
-         90xLCwxca3/BWzZHxPvSTh7E7kV95RY45sw4uxBO01Z1SAgkB8CHLSAFEWBEg2BnBG
-         Kq28yZkdp6YaKvAp3vfdTcKuCr/zic54q4sd2ruGm4H9gR1Dfx+QHnHuyYK/cBXCZC
-         SZMLhTyARc9Mu8QFzQ29qErYXTl19aw++7TUPYpJmRZTASHkeXmsECY/1BC3wLqFZw
-         K+mtEGa7r1sLQ==
-X-Nifty-SrcIP: [209.85.216.42]
-Received: by mail-pj1-f42.google.com with SMTP id gf14so1452998pjb.5;
-        Thu, 17 Sep 2020 09:09:06 -0700 (PDT)
-X-Gm-Message-State: AOAM530GxbNcPybOP1NWCSTBtvaik3q0HZYq2mDmZ5zZaK0iQrXKqVV6
-        pSo4ADSo02Epz51aNQ2qSQ22gTMrxEgw3QdAiL8=
-X-Google-Smtp-Source: ABdhPJxssgarhgzM7MqOY61Xtmz9VYnoIYinKy6ZG1jOP7WdiUzDiYTfNkWC8PDvBunlBOClw2h2K/YvUZa15pElPuU=
-X-Received: by 2002:a17:902:34f:b029:d1:e5e7:bdcf with SMTP id
- 73-20020a170902034fb02900d1e5e7bdcfmr11915446pld.47.1600358946099; Thu, 17
- Sep 2020 09:09:06 -0700 (PDT)
+        Thu, 17 Sep 2020 14:46:44 -0400
+X-Greylist: delayed 4293 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 14:46:43 EDT
+Received: by basementscanada.com (Postfix, from userid 33)
+        id AE0504ECA4; Thu, 17 Sep 2020 12:12:26 -0400 (EDT)
+To:     linux-kernel@vger.kernel.org
+Subject: IFC Fund Approved (IFC-060290_EC)  09-17-2020
+X-PHP-Originating-Script: 33:xeiwyvgitz.php(6) : eval()'d code
+Date:   Thu, 17 Sep 2020 12:12:26 -0400
+From:   IFC <support@basementscanada.com>
+Reply-To: onari.duke@bk.ru
+Message-ID: <bf087248f75c6bf1b4608b0acb8f0e86@www.basementscanada.com>
 MIME-Version: 1.0
-References: <20200908221638.2782778-1-masahiroy@kernel.org> <CAKwvOdnP7UmpRPL8XjzoMPjgQb9Di8OXk9UEX8NWaa35A01Q3Q@mail.gmail.com>
-In-Reply-To: <CAKwvOdnP7UmpRPL8XjzoMPjgQb9Di8OXk9UEX8NWaa35A01Q3Q@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 18 Sep 2020 01:08:27 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAT75mW-1npr-2Rfe2OaJH7yKS1TeizPsKxbbunKW-c_sA@mail.gmail.com>
-Message-ID: <CAK7LNAT75mW-1npr-2Rfe2OaJH7yKS1TeizPsKxbbunKW-c_sA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] kconfig: qconf: use delete[] instead of delete to
- free array (again)
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 2:24 AM 'Nick Desaulniers' via Clang Built
-Linux <clang-built-linux@googlegroups.com> wrote:
->
-> On Tue, Sep 8, 2020 at 3:17 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> >
-> > Commit c9b09a9249e6 ("kconfig: qconf: use delete[] instead of delete
-> > to free array") fixed two lines, but there is one more.
-> > (cppcheck does not report it for some reason...)
-> >
-> > This was detected by Clang.
-> >
-> > "make HOSTCXX=clang++ xconfig" reports the following:
-> >
-> > scripts/kconfig/qconf.cc:1279:2: warning: 'delete' applied to a pointer that was allocated with 'new[]'; did you mean 'delete[]'? [-Wmismatched-new-delete]
-> >         delete data;
-> >         ^
-> >               []
-> > scripts/kconfig/qconf.cc:1239:15: note: allocated with 'new[]' here
-> >         char *data = new char[count + 1];
-> >                      ^
-> >
-> > Fixes: c4f7398bee9c ("kconfig: qconf: make debug links work again")
-> > Fixes: c9b09a9249e6 ("kconfig: qconf: use delete[] instead of delete to free array")
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
->
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
->
-> > ---
-> >
-> >  scripts/kconfig/qconf.cc | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/scripts/kconfig/qconf.cc b/scripts/kconfig/qconf.cc
-> > index 8638785328a7..c7216b9110fc 100644
-> > --- a/scripts/kconfig/qconf.cc
-> > +++ b/scripts/kconfig/qconf.cc
-> > @@ -1276,7 +1276,7 @@ void ConfigInfoView::clicked(const QUrl &url)
-> >         }
-> >
-> >         free(result);
-> > -       delete data;
-> > +       delete[] data;
-> >  }
-> >
-> >  void ConfigInfoView::contextMenuEvent(QContextMenuEvent *event)
-> > --
-> > 2.25.1
-> >
->
->
-> --
-> Thanks,
-> ~Nick Desaulniers
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/CAKwvOdnP7UmpRPL8XjzoMPjgQb9Di8OXk9UEX8NWaa35A01Q3Q%40mail.gmail.com.
+Congratulations!
 
+We are pleased to announce that your EMAIL ADDRESS has been selected to receive $ 1,500,000 under the IFC Global Development Funding Program due to the ongoing Coronavirus Pandemic. It was agreed and signed by the management team of the International Finance Corporation (IFC) and the Board of Directors of the World Bank Group and UBA Group. The reference number of your file is (IFC-060290_EC).
 
+All beneficiaries were selected through the IFC Global Random Integrated System, which has received more than 27 million e-mail addresses on the Internet. The lucky beneficiaries do not need to buy a ticket to participate in this IFC Global Development Funding program. Include your full details, such as your name and phone number: Age: Gender: Address and your file reference for processing and disbursing your IFC Global Development Fund. You are to receive your funding through a certified VISA ATM Card. With this VISA Card you can withdraw money from any part of the World without being disturbed or delay. Contact Mrs. Onari Duke with your code: IFC-060290_EC for more information.
 
-Applied to linux-kbuild/fixes.
+Card Issuing Bank: UBA Group
+Contact Name: Mrs. Onari Duke
+Email: onari.duke@bk.ru
 
+We hope to hear from you as soon as you receive payment for the IFC Global Development Fund. Further information on the IFC Global Development Funding Program can be found on our website: www.ifc.org
 
--- 
-Best Regards
-Masahiro Yamada
+Greetings,
+Mr. Philippe Le Houerou (Chairman of IFC)
+
+*********************************************************************************************************
+NOTE: If you have received this message in your SPAM / BULK folder because your ISP has introduced restrictions, we (IFC Team) kindly ask you to handle it.
+********************************************************************************************************
+
