@@ -2,226 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D900126DBF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2881926DBFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:48:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726610AbgIQMqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 08:46:40 -0400
-Received: from mga02.intel.com ([134.134.136.20]:61610 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726719AbgIQMnU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 08:43:20 -0400
-IronPort-SDR: 0h8UUWqgI7Z6d8+c02Q/048ALz4aNpTFaCJgp1RUvhEDATfuZStD9KR98iF6jIDegXotY1JFiq
- W+AQXHEZtG/A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="147373218"
-X-IronPort-AV: E=Sophos;i="5.76,436,1592895600"; 
-   d="scan'208";a="147373218"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 05:43:14 -0700
-IronPort-SDR: 6Fvuxw55l3OKRZviiauIZyNQL4kpmHf99NHxt4c4qKXQYH1ht4L8rqosI2oDIyrXzxk4SBVx8k
- eXU3K9SPlTPQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,436,1592895600"; 
-   d="scan'208";a="288753780"
-Received: from lkp-server02.sh.intel.com (HELO bdcb92cf8b4e) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 17 Sep 2020 05:43:10 -0700
-Received: from kbuild by bdcb92cf8b4e with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kItFm-0000bK-7N; Thu, 17 Sep 2020 12:43:10 +0000
-Date:   Thu, 17 Sep 2020 20:43:00 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rtt-speedup.2020.09.16a] BUILD SUCCESS
- f747c7e15d7bc71a967a94ceda686cf2460b69e8
-Message-ID: <5f6359d4.aVQii8cmphu1HFbK%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1727068AbgIQMsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 08:48:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727049AbgIQMoX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 08:44:23 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87E88C06174A;
+        Thu, 17 Sep 2020 05:44:22 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id m6so1939324wrn.0;
+        Thu, 17 Sep 2020 05:44:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=WPlmUK6xwfYIFf3eWa41i7jGBkJm7AGo8SuUlHspOHo=;
+        b=oNVzEkwh40IxzO/aY6JQzbYAPpqvISEzTYDWD2bUR4qN45wRoNgiHxyBi9jWKdo3Hk
+         4axmalkFJNo/1tKG7y7Ww0FlAJhF4I+TpP/IYsn9URi9FnzSVAA30Ekrrmxf1qi9gQ5Y
+         sLLzb+MKBTcpSj2RGjEYn864kGGMgOAL7BXcgoySg6fjY6SefDMklVOiKcL9wvgnFBau
+         /r15uSaU0tE41865RuC4H+V4GLCTrdSltEAwXcjVnsmWbRpjcO1Qfv0kIO8Ugw+LQber
+         JoLlcrPxHQMh8oS1AShVm2Caxy0OyYCKT0DHQWhwQeCOCPE5l9ukwpGhRZJko1pY5avO
+         YLGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=WPlmUK6xwfYIFf3eWa41i7jGBkJm7AGo8SuUlHspOHo=;
+        b=bHzNgd0+g0tE/CC/ezfuSyjEXbMcZMQD7pnBgkeVIBsU537P/vb7Kbm3ZpSB3NyWRF
+         2aIr4dw8Liy/Ie8L8xvBOz264Xw+Vdb8wolq4EEZbgFTWD8Woa020quR/tC3iYwElCvm
+         A0m5zdjsVwVVwIH1KFxgIFW5swQzJ+adPjw0L1UR1eCDBzrl4cl5eduQUC89UhZvykSp
+         5UqCR/dp6hZqPSssocnYbngZYliHRe7nYybBu59a001fO/2q1PM7cniBCKm83TMuc6l5
+         n01LEC/LpyVF6v5n0KCkI8OZmNAapcce/aZDnI+cXWLHGV3uCsT1/5mNwTCF3T4Y0Rn8
+         q4nQ==
+X-Gm-Message-State: AOAM532VOe3a+mcwBiJdNvmR/C1jYikR04PG65Kf9xVA9HNi5/J0VqFV
+        vDekFWKysUMuUUTG7TkvHIY=
+X-Google-Smtp-Source: ABdhPJxC+ACx1y00LV9cPUIOkPlWKgy7JaEDqL3m8hrxOjM4ZoCyav9AC2Gv/4UV9aLYz9cWRi0Xgw==
+X-Received: by 2002:adf:fe42:: with SMTP id m2mr31464066wrs.367.1600346661188;
+        Thu, 17 Sep 2020 05:44:21 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id h2sm39945128wrp.69.2020.09.17.05.44.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 05:44:20 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 14:44:18 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Wolfram Sang <wsa@the-dreams.de>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        linux-tegra@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 00/34] Improvements for Tegra I2C driver
+Message-ID: <20200917124418.GU3515672@ulmo>
+References: <20200908224006.25636-1-digetx@gmail.com>
+ <CAHp75Vdh6bErqeO-ki2xsS9jEeoy4mKF1h0Jw_HM6UpukqH_BQ@mail.gmail.com>
+ <854a0ed8-35dd-0b25-6c53-4915be0e33e9@gmail.com>
+ <20200909154902.GA916@kunai>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="KCGU/3tJP9FZjbY4"
+Content-Disposition: inline
+In-Reply-To: <20200909154902.GA916@kunai>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rtt-speedup.2020.09.16a
-branch HEAD: f747c7e15d7bc71a967a94ceda686cf2460b69e8  rcu-tasks: Enclose task-list scan in rcu_read_lock()
 
-elapsed time: 723m
+--KCGU/3tJP9FZjbY4
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-configs tested: 162
-configs skipped: 2
+On Wed, Sep 09, 2020 at 05:49:02PM +0200, Wolfram Sang wrote:
+> On Wed, Sep 09, 2020 at 06:36:50PM +0300, Dmitry Osipenko wrote:
+> > 09.09.2020 12:11, Andy Shevchenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > > On Wed, Sep 9, 2020 at 1:40 AM Dmitry Osipenko <digetx@gmail.com> wro=
+te:
+> > >>
+> > >> Hello!
+> > >>
+> > >> This series performs refactoring of the Tegra I2C driver code and ha=
+rdens
+> > >> the atomic-transfer mode.
+> > >=20
+> > > I think there is still room for improvement, but let not block it, FW=
+IW,
+> > > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> >=20
+> > Thank you and Micha=C5=82 for helping with the review! Very appreciate =
+this!
+>=20
+> Yes, thanks everyone so far!
+>=20
+> Is there some internal testfarm where this should be regression tested?
+> Otherwise, I'd trust Dmitry, Andy, and Micha=C5=82 here and would apply it
+> this week after some generic high-level review.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+I'll queue this for a run on the test farm. I had a couple of minor
+comments, but after going through the full series I'm pretty happy
+overall with the result, so I'll go over my comments again and will
+reevaluate.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                    vt8500_v6_v7_defconfig
-arm                       omap2plus_defconfig
-arc                     haps_hs_smp_defconfig
-sparc                               defconfig
-m68k                        mvme16x_defconfig
-sh                             espt_defconfig
-mips                        omega2p_defconfig
-arm                         lubbock_defconfig
-arm                           spitz_defconfig
-powerpc                        warp_defconfig
-sh                        dreamcast_defconfig
-parisc                           allyesconfig
-m68k                          hp300_defconfig
-powerpc                      mgcoge_defconfig
-powerpc                 mpc832x_mds_defconfig
-arm                            u300_defconfig
-m68k                             allyesconfig
-arm                         axm55xx_defconfig
-sh                           se7722_defconfig
-powerpc                      pasemi_defconfig
-sh                        apsh4ad0a_defconfig
-arm                         ebsa110_defconfig
-openrisc                         alldefconfig
-arm                      tct_hammer_defconfig
-openrisc                 simple_smp_defconfig
-arm                      jornada720_defconfig
-mips                     decstation_defconfig
-mips                      malta_kvm_defconfig
-sh                        sh7763rdp_defconfig
-arm                          pcm027_defconfig
-powerpc                  storcenter_defconfig
-mips                         cobalt_defconfig
-m68k                             alldefconfig
-sh                   sh7724_generic_defconfig
-mips                          malta_defconfig
-m68k                          sun3x_defconfig
-sh                        edosk7705_defconfig
-riscv                            alldefconfig
-sh                   secureedge5410_defconfig
-sh                            shmin_defconfig
-arm                           efm32_defconfig
-arm                             mxs_defconfig
-arc                            hsdk_defconfig
-arm                           u8500_defconfig
-arm                      integrator_defconfig
-powerpc                  mpc885_ads_defconfig
-nios2                            allyesconfig
-arm                           sama5_defconfig
-sh                ecovec24-romimage_defconfig
-mips                         tb0287_defconfig
-mips                         db1xxx_defconfig
-arc                             nps_defconfig
-arm                        trizeps4_defconfig
-powerpc                 mpc836x_mds_defconfig
-mips                         rt305x_defconfig
-powerpc                  mpc866_ads_defconfig
-alpha                            alldefconfig
-m68k                         apollo_defconfig
-alpha                               defconfig
-powerpc                   motionpro_defconfig
-powerpc                      obs600_defconfig
-powerpc                     rainier_defconfig
-arm                         assabet_defconfig
-powerpc                 mpc85xx_cds_defconfig
-arm                       imx_v6_v7_defconfig
-arc                           tb10x_defconfig
-arm                             ezx_defconfig
-arm                        multi_v5_defconfig
-arm                       spear13xx_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20200916
-x86_64               randconfig-a004-20200916
-x86_64               randconfig-a003-20200916
-x86_64               randconfig-a002-20200916
-x86_64               randconfig-a001-20200916
-x86_64               randconfig-a005-20200916
-i386                 randconfig-a004-20200916
-i386                 randconfig-a006-20200916
-i386                 randconfig-a003-20200916
-i386                 randconfig-a001-20200916
-i386                 randconfig-a002-20200916
-i386                 randconfig-a005-20200916
-i386                 randconfig-a004-20200917
-i386                 randconfig-a006-20200917
-i386                 randconfig-a003-20200917
-i386                 randconfig-a001-20200917
-i386                 randconfig-a002-20200917
-i386                 randconfig-a005-20200917
-x86_64               randconfig-a014-20200917
-x86_64               randconfig-a011-20200917
-x86_64               randconfig-a016-20200917
-x86_64               randconfig-a012-20200917
-x86_64               randconfig-a015-20200917
-x86_64               randconfig-a013-20200917
-i386                 randconfig-a015-20200917
-i386                 randconfig-a014-20200917
-i386                 randconfig-a011-20200917
-i386                 randconfig-a013-20200917
-i386                 randconfig-a016-20200917
-i386                 randconfig-a012-20200917
-i386                 randconfig-a015-20200916
-i386                 randconfig-a014-20200916
-i386                 randconfig-a011-20200916
-i386                 randconfig-a013-20200916
-i386                 randconfig-a016-20200916
-i386                 randconfig-a012-20200916
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allyesconfig
-riscv                            allmodconfig
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Thierry
 
-clang tested configs:
-x86_64               randconfig-a006-20200917
-x86_64               randconfig-a004-20200917
-x86_64               randconfig-a003-20200917
-x86_64               randconfig-a002-20200917
-x86_64               randconfig-a001-20200917
-x86_64               randconfig-a005-20200917
-x86_64               randconfig-a014-20200916
-x86_64               randconfig-a011-20200916
-x86_64               randconfig-a016-20200916
-x86_64               randconfig-a012-20200916
-x86_64               randconfig-a015-20200916
-x86_64               randconfig-a013-20200916
+--KCGU/3tJP9FZjbY4
+Content-Type: application/pgp-signature; name="signature.asc"
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9jWiIACgkQ3SOs138+
+s6GyBQ//eTPEG9XrbiSZuZ/pokmEuYx3ZKqv/WXycZTlqx7dXe0FAqHrwGm0id00
+IqlDYhim9YMkjsCREzyevGrEW2Joua02DCLyMEasJrZIFb82ttFTZ7kthKsr+iqN
+AYx1tmsfo7LhRbRciW/QPUDunWVjrvBW7ts95hv6/3Dg89wSscpJYSjba1scfZjV
+lwxgvYRN//RmpTgiln+yWVlAgF4tkZPcRBAVeH0b0DJkuIGRDAbawl9n0rLkTk2Y
+nC9PahvrSX8Z100WXmIxEeBNDSYJq9mGAU7ZG/muHmd5eiAKS6y7Ck6SpQj+9QbT
+euIMgQTO/B3/rYJ6KAIsS3Dt+jjkp5K/oMGvBamyzQZkgpia1GduaqkjEaCvBF4c
+IzRyKuxMxU6DJk2yMM7sMxVNMpySlXPeNHB+q4bWjQkD3pATfuu/GYmYpzGuNX7R
+dU8FgmmbbnjIfzABLKBqfJh4njke/ppWZAOhqzV1o4mGU60r9ReN59E24rzGrW2H
+lHlkpZbgr04yV3QpW22mG4GX0aRQxz851uVqcUZTWnYGfI2DVIa/mEyHqXOLFRsN
+Yh+HdBeVx3oTkL2myo5MrVG4yGZsJX5D6c1n8uLPJWyuDaR0ydb1tZMNaJB2LbgU
+3Ded33GREKwK6yKLzqoPS3tnfiWGUzRGP8bsZf+dVR55JkcbvZ0=
+=fNMv
+-----END PGP SIGNATURE-----
+
+--KCGU/3tJP9FZjbY4--
