@@ -2,110 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2751626DB5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5562926DB74
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726646AbgIQMTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 08:19:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726915AbgIQMTB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 08:19:01 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF3FC061788
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 05:19:00 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id v123so1904844qkd.9
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 05:19:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=bVH4jGgQihKj5QSekUnZ2zb+7aLw+KLxMSJUC/hbv48=;
-        b=Fhg6lAOjlbLyEga2rG8pPURoI3htqOr2pKe+vNBAihwLsY1v7CQoxRX/649FEzDXL0
-         39FqlveIvSVsbxnDqRrLJG066HQKp6GPqRPvv7sINamdCEVmQVcfibTDwqQ3GZ9hu48e
-         bJWC0truOv3or+gTqYMGK8Nk/aI7LVNws/zxpIKCCcVnOEN096VUQVtTCuEGqpL/bs0b
-         b7qBpYAC22kVivdgl0u4A8/znqNgMdzttibfzOG7nl4p+6OR1ajRt59PhYyeJJCeqC0/
-         zbtfT2ps/ucVP4yscFeka54htZL+4FqrDY02jJyOzHv7rkq5iYcsVSz5CsB5kWcbLufb
-         HzAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=bVH4jGgQihKj5QSekUnZ2zb+7aLw+KLxMSJUC/hbv48=;
-        b=XDAwew0ZtOD6n1mlT/5sdW34WsZ2Q/St+6wV2hjtvVieIik0D27mFFUMobdBbWx9uQ
-         H486UvnGy6l9G/vTHgV86m/R188+XJjGGO4JCfEFnZY9I5Vx7+yzHqt6/IWpyx2pw6Iv
-         frg4m7AHsB2uA1Hb9StxwwkIRbBUptK7suk2Z6DR54hC2YNkVWZaQ/5qdNmgrFgCcW1x
-         5qG5Firy8ZtfHsy869HkfML6CJVr8RJM2pRMKxIkLLn236RzqKs8C/3K/MwhqfVV/OHc
-         RIT9Mi1CxtfFYPXJY0QoW+FkovILfxN/k7Kf1qMToow9ui72lKqGzyCdorlm2rqW/3V8
-         amCg==
-X-Gm-Message-State: AOAM532yVRdE4i5zLwHdxpT0L7oLhMOz5aOYmSPkkczeIbs02lmbr6gM
-        DVuLIeIVHa0XxCbSpwK7zPxghA==
-X-Google-Smtp-Source: ABdhPJz0GJRdg0Id6c/JdQbGUXlRLa+Wdw0oKs6yW4L3DgyAUr2dNjQnoWL5C3nALl2/OucOloGmLA==
-X-Received: by 2002:a05:620a:a45:: with SMTP id j5mr28227082qka.367.1600345139834;
-        Thu, 17 Sep 2020 05:18:59 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id 145sm22054177qkf.18.2020.09.17.05.18.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 05:18:59 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kIssM-000R84-9L; Thu, 17 Sep 2020 09:18:58 -0300
-Date:   Thu, 17 Sep 2020 09:18:58 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     christian.koenig@amd.com
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>, Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Subject: Re: [Linaro-mm-sig] Changing vma->vm_file in dma_buf_mmap()
-Message-ID: <20200917121858.GF8409@ziepe.ca>
-References: <20200916095359.GD438822@phenom.ffwll.local>
- <20200916140710.GA8409@ziepe.ca>
- <8db2474f-ecb7-0e17-5f5b-145708fe44d5@amd.com>
- <CAKMK7uFdwrT3HACPh3ADAKvhXJ-Hf3dExZmgJVAQ1KKjSai_0w@mail.gmail.com>
- <aa953b09-53b1-104b-dc4b-156ad8a75e62@gmail.com>
- <CAKMK7uHJNRzCJfWVSmMrLmGXE0qo+OCXiMd+zPTOkeG2pnVrmQ@mail.gmail.com>
- <8d8693db-a3f0-4f5f-3e32-57d23ca620f8@amd.com>
- <CAKMK7uE=UqZD3PVC8XZAXrgGH-VsUF_-YQD3MLV8KK1kpxO4yQ@mail.gmail.com>
- <20200917113110.GE8409@ziepe.ca>
- <6fd74b84-959c-8b3b-c27b-e9fbf66396c7@gmail.com>
+        id S1726737AbgIQMZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 08:25:52 -0400
+Received: from mailout11.rmx.de ([94.199.88.76]:36114 "EHLO mailout11.rmx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726787AbgIQMYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 08:24:54 -0400
+Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mailout11.rmx.de (Postfix) with ESMTPS id 4BsbjG5879z41wd;
+        Thu, 17 Sep 2020 14:23:30 +0200 (CEST)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin01.retarus.com (Postfix) with ESMTPS id 4BsbhM6hCVz2xj2;
+        Thu, 17 Sep 2020 14:22:43 +0200 (CEST)
+Received: from N95HX1G2.wgnetz.xx (192.168.54.80) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Thu, 17 Sep
+ 2020 14:22:22 +0200
+From:   Christian Eggers <ceggers@arri.de>
+To:     Oleksij Rempel <linux@rempel-privat.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>
+CC:     Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        <linux-i2c@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Christian Eggers <ceggers@arri.de>,
+        <stable@vger.kernel.org>
+Subject: [PATCH 3/3] i2c: imx: Don't generate STOP condition if arbitration has been lost
+Date:   Thu, 17 Sep 2020 14:20:29 +0200
+Message-ID: <20200917122029.11121-4-ceggers@arri.de>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200917122029.11121-1-ceggers@arri.de>
+References: <20200917122029.11121-1-ceggers@arri.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6fd74b84-959c-8b3b-c27b-e9fbf66396c7@gmail.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [192.168.54.80]
+X-RMX-ID: 20200917-142249-4BsbhM6hCVz2xj2-0@kdin01
+X-RMX-SOURCE: 217.111.95.66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 02:03:48PM +0200, Christian König wrote:
-> Am 17.09.20 um 13:31 schrieb Jason Gunthorpe:
-> > On Thu, Sep 17, 2020 at 10:09:12AM +0200, Daniel Vetter wrote:
-> > 
-> > > Yeah, but it doesn't work when forwarding from the drm chardev to the
-> > > dma-buf on the importer side, since you'd need a ton of different
-> > > address spaces. And you still rely on the core code picking up your
-> > > pgoff mangling, which feels about as risky to me as the vma file
-> > > pointer wrangling - if it's not consistently applied the reverse map
-> > > is toast and unmap_mapping_range doesn't work correctly for our needs.
-> > I would think the pgoff has to be translated at the same time the
-> > vm->vm_file is changed?
-> > 
-> > The owner of the dma_buf should have one virtual address space and FD,
-> > all its dma bufs should be linked to it, and all pgoffs translated to
-> > that space.
-> 
-> Yeah, that is exactly like amdgpu is doing it.
-> 
-> Going to document that somehow when I'm done with TTM cleanups.
+If arbitration is lost, the master automatically changes to slave mode.
+I2SR_IBB may or may not be reset by hardware. Raising a STOP condition
+by resetting I2CR_MSTA has no effect and will not clear I2SR_IBB.
 
-BTW, while people are looking at this, is there a way to go from a VMA
-to a dma_buf that owns it?
+So calling i2c_imx_bus_busy() is not required and would busy-wait until
+timeout.
 
-Jason
+Signed-off-by: Christian Eggers <ceggers@arri.de>
+Cc: stable@vger.kernel.org # Requires trival backporting, simple remove the
+                           # 3rd argument from the calls to i2c_imx_bus_busy().
+---
+ drivers/i2c/busses/i2c-imx.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
+index 9d9b668ec7f2..c52fe20d74c9 100644
+--- a/drivers/i2c/busses/i2c-imx.c
++++ b/drivers/i2c/busses/i2c-imx.c
+@@ -608,6 +608,8 @@ static void i2c_imx_stop(struct imx_i2c_struct *i2c_imx, bool atomic)
+ 		/* Stop I2C transaction */
+ 		dev_dbg(&i2c_imx->adapter.dev, "<%s>\n", __func__);
+ 		temp = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
++		if (!(temp & I2CR_MSTA))
++			i2c_imx->stopped = 1;
+ 		temp &= ~(I2CR_MSTA | I2CR_MTX);
+ 		if (i2c_imx->dma)
+ 			temp &= ~I2CR_DMAEN;
+@@ -773,9 +775,12 @@ static int i2c_imx_dma_read(struct imx_i2c_struct *i2c_imx,
+ 		 */
+ 		dev_dbg(dev, "<%s> clear MSTA\n", __func__);
+ 		temp = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
++		if (!(temp & I2CR_MSTA))
++			i2c_imx->stopped = 1;
+ 		temp &= ~(I2CR_MSTA | I2CR_MTX);
+ 		imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2CR);
+-		i2c_imx_bus_busy(i2c_imx, 0, false);
++		if (!i2c_imx->stopped)
++			i2c_imx_bus_busy(i2c_imx, 0, false);
+ 	} else {
+ 		/*
+ 		 * For i2c master receiver repeat restart operation like:
+@@ -900,9 +905,12 @@ static int i2c_imx_read(struct imx_i2c_struct *i2c_imx, struct i2c_msg *msgs,
+ 				dev_dbg(&i2c_imx->adapter.dev,
+ 					"<%s> clear MSTA\n", __func__);
+ 				temp = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
++				if (!(temp & I2CR_MSTA))
++					i2c_imx->stopped =  1;
+ 				temp &= ~(I2CR_MSTA | I2CR_MTX);
+ 				imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2CR);
+-				i2c_imx_bus_busy(i2c_imx, 0, atomic);
++				if (!i2c_imx->stopped)
++					i2c_imx_bus_busy(i2c_imx, 0, atomic);
+ 			} else {
+ 				/*
+ 				 * For i2c master receiver repeat restart operation like:
+-- 
+Christian Eggers
+Embedded software developer
+
+Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
+Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
+Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
+Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
+
