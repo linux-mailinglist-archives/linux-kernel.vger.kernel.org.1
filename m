@@ -2,188 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBB0F26D41A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:03:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7374026D432
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726316AbgIQHCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 03:02:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45838 "EHLO
+        id S1726355AbgIQHGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 03:06:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726202AbgIQHCd (ORCPT
+        with ESMTP id S1726342AbgIQHFn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 03:02:33 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A523C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 00:02:32 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id s13so844479wmh.4
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 00:02:31 -0700 (PDT)
+        Thu, 17 Sep 2020 03:05:43 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E16D8C06178B
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 00:05:33 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id s13so852312wmh.4
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 00:05:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:autocrypt:organization:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BqhRqTEPpCjb9qnDcmrdqW2jBinVNi/yu11Q61abTtY=;
-        b=gBbOaaw76CpZdXT71jt7xPL2LZn8f8UkdL17+Rg8Ha6AX91WYLPgjzrYFJDUxzC1r4
-         hOyaCe3BqiB9h56uRvlPibNuAsupIyDGk+HgfjNoinuKUcOnOW64p0OINGJ3K5G5KiXA
-         eshIObWJ/Ce8XjO1Ii1xKv3mIWfjRCRhpZJmup6V0T7hKFSj/ZBCLFJ98dJUHAI92CIg
-         zqHZ3CSqPGiJXn9L/X9imu64rNJs+jdszKdQTVV6CJqX+4Z7jarpPOFwm8TrKuCshqgF
-         FZyHlxV6eCkimTzftwRkZzaaLxkwU+9oJdasa+kFyBbAZXXCJ29x/1xeqmc7JwlJt2QH
-         qzjQ==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lWWYwFEJdlsj3P23LfFOjyoT1SaVdGZj4iXJfGwnMqE=;
+        b=jXo8gyXs0EsvrL9UUHQW0PEwyvI40Z9dhYF2NKmEYlhnZ6rBzuNtSYjMZwzPv59koM
+         SvD5m/gZCUU+UhByyffqKA6p1faPwy8lUVpFka2LI06Jy7B8RUffW+iZjwiFa/11b1dN
+         pqVJe3nuLWn+f7Z7ezVlt1JGUk6gh7OdOUBLx+MoPwAM7z51AsFwKGWVDa9t712kyNYn
+         cyo25lXeVT/8iE/GW2ct1MHu53BuMfJIPKP0HNz2a8sO1nZCtIZVyuH7Jp9T71p2x8tw
+         xm6/fFY2po8pm3TYGmVPOZyZpTkg6OL9RYNY2thWB+qlTmLAotYsnWkPS3hi38XzFe1u
+         Lt8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=BqhRqTEPpCjb9qnDcmrdqW2jBinVNi/yu11Q61abTtY=;
-        b=hlUkwKFS24tqj/T5VkGZQmus4eB5pLFWSDIi0hLRId3M+IFh6RosD8gehW1OExLbj6
-         Q3tcpBdhkWzaSXsyTxE1GhV9zVlOwVSfsbxi4TcVIGLrXlEq7PiRRZ+1uS/nNS9fiOZO
-         WMk1Y0CCAoJHhkHnNKAT6fdrEaqqvWajKrS9nnUE6EFSJX3ZlNvHPkIOGthaHguUgkaw
-         SWE4xRyhJmptKbrjLzJKFIQ5Ms8gtqiRhRudq/rIvd+FkZnSwfnJATpC0UaA+guN1CZc
-         t88PeKJarFrXptIUIhPiYKc6sE72MiaVDPx/JhVdQTel7tdKKhkioO29NYM1t3nEQ6Jb
-         eRVQ==
-X-Gm-Message-State: AOAM531kFDXfaH7amr1g6QVH+ax/YnmPWp6aXZV0+L2/p6WmyLafDqmc
-        cylKieoM42mFauZeJHcychPa4w==
-X-Google-Smtp-Source: ABdhPJyl0mVSI2T/IyvbYO1mIMoVwJj7ck9To5e6GHu79NKu8XaupWDAuatOLm24KeK3k4JYsxq4VQ==
-X-Received: by 2002:a1c:dec2:: with SMTP id v185mr8275637wmg.1.1600326150520;
-        Thu, 17 Sep 2020 00:02:30 -0700 (PDT)
-Received: from [10.1.2.12] (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id k8sm10416163wma.16.2020.09.17.00.02.29
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lWWYwFEJdlsj3P23LfFOjyoT1SaVdGZj4iXJfGwnMqE=;
+        b=ZxcbiPEDCFY4Z13rGKVJljZQTSwbY3f8eg2T3tGjR+eECSBwm55WZAi9AVnlB8+u8R
+         G0/HQYprwggkhQ+gVgs0eXsEHjAonTiKBVn3v+WxUHfU7fHGX2j8edPedFSEqaiPBR4i
+         RZcNTgclQXyJIUFih+qM1KCGWKhMeI5RDt6tA/AMn9Th0wG/GEkIVIKsnKOh+tNdZV+k
+         0wU1LZ2a4wvmwxfZrf6ZHIvG1EfQQa9Z8uh6OaHrcHfFIwxVaNKcyBHnbXb3f7a62/5O
+         bgb4yrdgLLy0Z3Bchfu9LfpEEOoy3VE1sfC7wevJMxJEfjW/JkVYibejaK6EdMrFjPc4
+         iL/Q==
+X-Gm-Message-State: AOAM532jlC7NLFfvWWCO5LLdXe2MtyTUWG2rXrKV+DuWQ5kX7e0N1Xqf
+        PLw3eN6S8WFs4qF+T50MQN6XqzVAnijrzf51
+X-Google-Smtp-Source: ABdhPJww5pkMLl/HlZqN0QZzWsU+BDIPqCp7mPcGBAdQQG53/A1JOh4lzZJAHV5aita8sA+1qJMMvA==
+X-Received: by 2002:a7b:c5c1:: with SMTP id n1mr8035673wmk.125.1600326332159;
+        Thu, 17 Sep 2020 00:05:32 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:9934:ad8d:e364:de32? ([2a01:e34:ed2f:f020:9934:ad8d:e364:de32])
+        by smtp.googlemail.com with ESMTPSA id h8sm36632684wrw.68.2020.09.17.00.05.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Sep 2020 00:02:29 -0700 (PDT)
-Subject: Re: [PATCH v2 2/5] dt-bindings: usb: amlogic,meson-g12a-usb-ctrl: add
- the Amlogic AXG Families USB Glue Bindings
-To:     khilman@baylibre.com, martin.blumenstingl@googlemail.com,
-        devicetree@vger.kernel.org
-Cc:     linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-References: <20200917065949.3476-1-narmstrong@baylibre.com>
- <20200917065949.3476-3-narmstrong@baylibre.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
- 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
- BSwxi7g3Mu7u5kUByanqHyA=
-Organization: Baylibre
-Message-ID: <d411aaba-389d-3200-1370-922a071e53d9@baylibre.com>
-Date:   Thu, 17 Sep 2020 09:02:29 +0200
+        Thu, 17 Sep 2020 00:05:31 -0700 (PDT)
+Subject: Re: [PATCH] thermal/drivers/cpuidle_cooling: Change the set_cur_state
+ function
+To:     zhuguangqing83@gmail.com, amit.kachhap@gmail.com,
+        viresh.kumar@linaro.org, javi.merino@kernel.org,
+        rui.zhang@intel.com, amitk@kernel.org, zhuguangqing@xiaomi.com
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200917060031.6566-1-zhuguangqing83@gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <ff6e6aaa-3707-b320-0afe-d34118be4a2b@linaro.org>
+Date:   Thu, 17 Sep 2020 09:05:30 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200917065949.3476-3-narmstrong@baylibre.com>
+In-Reply-To: <20200917060031.6566-1-zhuguangqing83@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/09/2020 08:59, Neil Armstrong wrote:
-> The Amlogic AXG is close to the GXL Glue but with a single OTG PHY.
+On 17/09/2020 08:00, zhuguangqing83@gmail.com wrote:
+> From: zhuguangqing <zhuguangqing@xiaomi.com>
 > 
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-> Reviewed-by: Kevin Hilman <khilman@baylibre.com>
-> Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> In the function cpuidle_cooling_set_cur_state(), if current_state is
+> not equal to state and both current_state and state are greater than
+> 0(scene 4 as follows), then maybe it should stop->start or restart
+> idle_inject.
 
-Forgot:
-Reviewed-by: Rob Herring <robh@kernel.org>
+Sorry, I don't get it.
 
-Neil
+It is an update of the state, why do we need to restart the idle
+injection ? The state change will be automatically take into account by
+the idle injection code at the new injection cycle.
 
+> The scenes changed is as follows,
+> 
+> scene    current_state    state    action
+>  1              0          >0       start
+>  2              0          0        do nothing
+>  3              >0         0        stop
+>  4        >0 && !=state    >0       stop->start or restart
+>  5        >0 && ==state    >0       do nothing
+> 
+> Signed-off-by: zhuguangqing <zhuguangqing@xiaomi.com>
 > ---
->  .../usb/amlogic,meson-g12a-usb-ctrl.yaml      | 22 ++++++++++++++++++-
->  1 file changed, 21 insertions(+), 1 deletion(-)
+>  drivers/thermal/cpuidle_cooling.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml b/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml
-> index 5b04a7dfa018..c0058332b967 100644
-> --- a/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml
-> +++ b/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml
-> @@ -25,13 +25,14 @@ description: |
->    The Amlogic A1 embeds a DWC3 USB IP Core configured for USB2 in
->    host-only mode.
+> diff --git a/drivers/thermal/cpuidle_cooling.c b/drivers/thermal/cpuidle_cooling.c
+> index 78e3e8238116..868919ad3dda 100644
+> --- a/drivers/thermal/cpuidle_cooling.c
+> +++ b/drivers/thermal/cpuidle_cooling.c
+> @@ -113,7 +113,7 @@ static int cpuidle_cooling_get_cur_state(struct thermal_cooling_device *cdev,
+>  /**
+>   * cpuidle_cooling_set_cur_state - Set the current cooling state
+>   * @cdev: the thermal cooling device
+> - * @state: the target state
+> + * @state: the target state, max value is 100
+>   *
+>   * The function checks first if we are initiating the mitigation which
+>   * in turn wakes up all the idle injection tasks belonging to the idle
+> @@ -130,6 +130,9 @@ static int cpuidle_cooling_set_cur_state(struct thermal_cooling_device *cdev,
+>  	unsigned long current_state = idle_cdev->state;
+>  	unsigned int runtime_us, idle_duration_us;
 >  
-> -  The Amlogic GXL & GXM SoCs doesn't embed an USB3 PHY.
-> +  The Amlogic GXL, GXM & AXG SoCs doesn't embed an USB3 PHY.
->  
->  properties:
->    compatible:
->      enum:
->        - amlogic,meson-gxl-usb-ctrl
->        - amlogic,meson-gxm-usb-ctrl
-> +      - amlogic,meson-axg-usb-ctrl
->        - amlogic,meson-g12a-usb-ctrl
->        - amlogic,meson-a1-usb-ctrl
->  
-> @@ -151,6 +152,25 @@ allOf:
->  
->        required:
->          - clock-names
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          enum:
-> +            - amlogic,meson-axg-usb-ctrl
+> +	if (state > 100 || current_state == state)
+> +		return 0;
 > +
-> +    then:
-> +      properties:
-> +        phy-names:
-> +          items:
-> +            - const: usb2-phy1 # USB2 PHY1 if USBOTG_B port is used
-> +        clocks:
-> +          minItems: 2
-> +        clock-names:
-> +          items:
-> +            - const: usb_ctrl
-> +            - const: ddr
-> +      required:
-> +        - clock-names
->    - if:
->        properties:
->          compatible:
+>  	idle_cdev->state = state;
+>  
+>  	idle_inject_get_duration(ii_dev, &runtime_us, &idle_duration_us);
+> @@ -140,8 +143,11 @@ static int cpuidle_cooling_set_cur_state(struct thermal_cooling_device *cdev,
+>  
+>  	if (current_state == 0 && state > 0) {
+>  		idle_inject_start(ii_dev);
+> -	} else if (current_state > 0 && !state)  {
+> +	} else if (current_state > 0 && !state) {
+>  		idle_inject_stop(ii_dev);
+> +	} else {
+> +		idle_inject_stop(ii_dev);
+> +		idle_inject_start(ii_dev);
+>  	}
+>  
+>  	return 0;
 > 
 
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
