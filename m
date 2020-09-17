@@ -2,92 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F68626DC0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:52:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6137926DC11
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:52:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726902AbgIQMwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 08:52:02 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:57734 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726812AbgIQMtY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 08:49:24 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 551D3E035904526DD661;
-        Thu, 17 Sep 2020 20:48:29 +0800 (CST)
-Received: from [10.174.179.91] (10.174.179.91) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 17 Sep 2020 20:48:28 +0800
-Subject: Re: [PATCH -next] memory: Convert to DEFINE_SHOW_ATTRIBUTE
-To:     Pavel Machek <pavel@denx.de>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        <linux-bcache@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200716090303.13154-1-miaoqinglang@huawei.com>
- <20200717211420.GA4140@amd>
-From:   miaoqinglang <miaoqinglang@huawei.com>
-Message-ID: <9d53ed56-1b64-ffce-5130-36f81b5f892c@huawei.com>
-Date:   Thu, 17 Sep 2020 20:48:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1727031AbgIQMwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 08:52:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727047AbgIQMts (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 08:49:48 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 886F4C06174A;
+        Thu, 17 Sep 2020 05:48:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=SMn65b1Ip8Ki5T6DVuzVOZrtWMuF5zN5A9x9ed/EeiM=; b=DwWnLbTRETJm4THXgzUPgbIB8/
+        SC1nOfGV2bZdTxx+07wbcuWc8lb9XWM5j9y335xTIHsHypuOD7qzOsHC4odGHFOcCSYcH+AmL/Gq1
+        iblgnQWzT40BL1wzR758SRxNkHWAkom/+X+guJ+XE4+SRxL7Pwv+H6MLIf3MOqvP37LDcleJZ30gR
+        SRHgSRXwpI2i53nFf67X4a0DdM7mMQrb8hP0qEYBz07UHcBjUP8Z7inoike2zBOMKs7EosLgAr3bx
+        hHq3yw/cC+Rq27i5N9EwjmHWmgeVYxfdfVIuGj7soXOcmrBO4YOExyPqSVxL+Efg5o3vYJa+Ug+u6
+        BB1qTPIQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kItL4-0000g3-MY; Thu, 17 Sep 2020 12:48:39 +0000
+Date:   Thu, 17 Sep 2020 13:48:38 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Boaz Harrosh <boaz@plexistor.com>, Hou Tao <houtao1@huawei.com>,
+        peterz@infradead.org, Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Jan Kara <jack@suse.cz>
+Subject: Re: [RFC PATCH] locking/percpu-rwsem: use this_cpu_{inc|dec}() for
+ read_count
+Message-ID: <20200917124838.GT5449@casper.infradead.org>
+References: <20200915140750.137881-1-houtao1@huawei.com>
+ <20200915150610.GC2674@hirez.programming.kicks-ass.net>
+ <20200915153113.GA6881@redhat.com>
+ <20200915155150.GD2674@hirez.programming.kicks-ass.net>
+ <20200915160344.GH35926@hirez.programming.kicks-ass.net>
+ <b885ce8e-4b0b-8321-c2cc-ee8f42de52d4@huawei.com>
+ <ddd5d732-06da-f8f2-ba4a-686c58297e47@plexistor.com>
+ <20200917120132.GA5602@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200717211420.GA4140@amd>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.91]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917120132.GA5602@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 2020/7/18 5:14, Pavel Machek 写道:
-> On Thu 2020-07-16 17:03:03, Qinglang Miao wrote:
->> From: Yongqiang Liu <liuyongqiang13@huawei.com>
->>
->> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
->>
->> Signed-off-by: Yongqiang Liu <liuyongqiang13@huawei.com>
->> ---
->>   drivers/memory/emif.c               | 22 ++--------------------
->>   drivers/memory/tegra/tegra124-emc.c | 14 +-------------
->>   2 files changed, 3 insertions(+), 33 deletions(-)
->>
->> diff --git a/drivers/memory/emif.c b/drivers/memory/emif.c
->> index 58a82eea5..aab8ddad7 100644
->> --- a/drivers/memory/emif.c
->> +++ b/drivers/memory/emif.c
->> @@ -131,16 +131,7 @@ static int emif_regdump_show(struct seq_file *s, void *unused)
->>   	return 0;
->>   }
->>   
->> -static int emif_regdump_open(struct inode *inode, struct file *file)
->> -{
->> -	return single_open(file, emif_regdump_show, inode->i_private);
->> -}
->> -
->> -static const struct file_operations emif_regdump_fops = {
->> -	.open			= emif_regdump_open,
->> -	.read_iter			= seq_read_iter,
->> -	.release		= single_release,
->> -};
->> +DEFINE_SHOW_ATTRIBUTE(emif_regdump);
+On Thu, Sep 17, 2020 at 02:01:33PM +0200, Oleg Nesterov wrote:
+> IIUC, file_end_write() was never IRQ safe (at least if !CONFIG_SMP), even
+> before 8129ed2964 ("change sb_writers to use percpu_rw_semaphore"), but this
+> doesn't matter...
 > 
-> This is not equivalent (and I guess changelog should mention that).
-> 
-> Along with other changes, we get:
-> 
->          .owner          = THIS_MODULE,
->          .llseek         = seq_lseek,
-> 
-> . Is that okay thing to add?
-> 									Pavel
-> 
-Hi Pavel,
+> Perhaps we can change aio.c, io_uring.c and fs/overlayfs/file.c to avoid
+> file_end_write() in IRQ context, but I am not sure it's worth the trouble.
 
-I've sent a new patch against linux-next(20200917), and it can
-be applied to mainline cleanly now.
+If we change bio_endio to invoke the ->bi_end_io callbacks in softirq
+context instead of hardirq context, we can change the pagecache to take
+BH-safe locks instead of IRQ-safe locks.  I believe the only reason the
+lock needs to be IRQ-safe is for the benefit of paths like:
 
-And your concerns are explained in commit log.
+mpage_end_io
+page_endio
+end_page_writeback
+test_clear_page_writeback
 
-Thanks.
+Admittedly, I haven't audited all the places that call end_page_writeback;
+there might be others called from non-BIO contexts (network filesystems?).
+That was the point where I gave up my investigation of why we use an
+IRQ-safe spinlock when basically all page cache operations are done
+from user context.
