@@ -2,196 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6F5A26E2FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:54:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EDA126E304
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726489AbgIQRyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 13:54:43 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:31815 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726381AbgIQRyS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 13:54:18 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600365246; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=pg6KaEx324bDub42qXfgj8NNuvTJUXFoa4wh2VHcn/c=;
- b=E7A2KOsBKe3xAjn7uwPYaQwEv/WxCGipZX2UepS8jCx0vNdK8ZywhNzgx0HwxMT6L+kPgjo3
- WwaFvN9EKQCeTMlTmD++BoM7CCUKytTmSKEb37QH3S1udmwfmD/dLi0biTACc5ZBGZRTYl5v
- gKjDII/R+qMGMNp0TjglrYAei5k=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5f63a2bdea858627d501668d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Sep 2020 17:54:05
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 37DAFC433F1; Thu, 17 Sep 2020 17:54:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cgoldswo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 344DFC433CA;
-        Thu, 17 Sep 2020 17:54:04 +0000 (UTC)
+        id S1726589AbgIQR4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 13:56:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726596AbgIQRzV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 13:55:21 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21698C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:55:21 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id v14so1601823pjd.4
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:55:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version;
+        bh=ubb5DTI+VStVNf7vCLZGfulNZTbgJJzRYzc72+9jK9E=;
+        b=ON4H+9Y8h3o8YE3iPqyfPP/sKdjVU6pm9VPHxQEHYlrLmEpE5niP6zABuP3bXIpcje
+         Cc+Uk0/IX+bqEQZ2gGRi6yeo/50W0pBd8s44bnh6gbFvk0PoZYrt57DlExVTrGxS08lP
+         vjVlih7n178dALzI4v2/bKVM6UfVWFxIe6G8YQO9eY5BeYSeXAkHnYwQupZ2aqpa2mwK
+         QWdsnmMBEY1GC2kp5f1Iwu0H6p6swbAY6WKwldbmX9jl8gC+KJ9KHiVq/XYZZupBG2wv
+         8u8Zmi8Tor3pcZyLTUc2y7cUWALrMCzBPQXtJm261sUqA7Miofw4BpwEYcCeHdeW3Mbh
+         K76Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version;
+        bh=ubb5DTI+VStVNf7vCLZGfulNZTbgJJzRYzc72+9jK9E=;
+        b=uUBZvKW89YUhO0p36oFY2HrPH7RWfS/GqAFsuscZo0gX05reMaBv0pDuNhfy1tPCAg
+         j7+odwF+6L3PwHhbK80tEy/lzkev/GW+Z5TFqx62p4S8+s3wrx8gMzQ6Bic+JnAfRUv0
+         TLePGtjCvn14O5V8pD3yfLvrEo/EXD17/qEtaDwbNHjVc69qHN59ts/5LrLjzB+bZKmv
+         wHItHwRWMGv77D7oHZhaSLBhVtHg+4LqIBrcj+KpC2RebZ1eW5gLp7oZpjoKvnYP36G+
+         NU9MavlWd5bY3ejwM1VqRC/AEWOdiL5KaO9g44P11RuPEXXUsgL0SEQ1QHbwa1YZstb/
+         Oo2w==
+X-Gm-Message-State: AOAM531vclpVTbfCzcy4yV6zYfPijy91LL4CKbAX2/DrZaNBpEEoumQk
+        RHkCQHV7X9I2FToEfOGyz+/X1A==
+X-Google-Smtp-Source: ABdhPJwsnHCwj1aJ+RtYHAqNUbG0c69lhV8xw3LT+lpTYldpRMG+j90Pd5X/FjCD+qYceDAAgFQaHA==
+X-Received: by 2002:a17:90a:d514:: with SMTP id t20mr8857755pju.134.1600365320606;
+        Thu, 17 Sep 2020 10:55:20 -0700 (PDT)
+Received: from [10.209.126.152] ([192.55.54.40])
+        by smtp.gmail.com with ESMTPSA id b29sm229896pgb.71.2020.09.17.10.55.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 17 Sep 2020 10:55:19 -0700 (PDT)
+From:   "Sean V Kelley" <sean.v.kelley@intel.com>
+To:     "Bjorn Helgaas" <helgaas@kernel.org>
+Cc:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
+        rjw@rjwysocki.net, ashok.raj@intel.com, tony.luck@intel.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, qiuxu.zhuo@intel.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4 00/10] Add RCEC handling to PCI/AER
+Date:   Thu, 17 Sep 2020 10:55:16 -0700
+X-Mailer: MailMate (1.13.2r5673)
+Message-ID: <39F1C577-2486-43DC-BB65-1F6EDE02B217@intel.com>
+In-Reply-To: <20200917173600.GA1706067@bjorn-Precision-5520>
+References: <20200917173600.GA1706067@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 17 Sep 2020 10:54:04 -0700
-From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pratikp@codeaurora.org, pdaly@codeaurora.org,
-        sudaraja@codeaurora.org, iamjoonsoo.kim@lge.com,
-        linux-arm-msm-owner@vger.kernel.org,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        linux-kernel-owner@vger.kernel.org
-Subject: Re: [PATCH v2] mm: cma: indefinitely retry allocations in cma_alloc
-In-Reply-To: <a3d62a77-4c4f-e86c-de6d-5222c2a747e0@redhat.com>
-References: <06489716814387e7f147cf53d1b185a8@codeaurora.org>
- <1599851809-4342-1-git-send-email-cgoldswo@codeaurora.org>
- <010101747e998731-e49f209f-8232-4496-a9fc-2465334e70d7-000000@us-west-2.amazonses.com>
- <a4bdda08-9e2a-4862-00a3-72d4c90e82c7@redhat.com>
- <72ae0f361df527cf70946992e4ab1eb3@codeaurora.org>
- <a3d62a77-4c4f-e86c-de6d-5222c2a747e0@redhat.com>
-Message-ID: <5cfa914fca107d884aa845b9273ec656@codeaurora.org>
-X-Sender: cgoldswo@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-15 00:53, David Hildenbrand wrote:
-> On 14.09.20 20:33, Chris Goldsworthy wrote:
->> On 2020-09-14 02:31, David Hildenbrand wrote:
->>> On 11.09.20 21:17, Chris Goldsworthy wrote:
->>>> 
->>>> So, inside of cma_alloc(), instead of giving up when
->>>> alloc_contig_range()
->>>> returns -EBUSY after having scanned a whole CMA-region bitmap,
->>>> perform
->>>> retries indefinitely, with sleeps, to give the system an opportunity
->>>> to
->>>> unpin any pinned pages.
->>>> 
->>>> Signed-off-by: Chris Goldsworthy <cgoldswo@codeaurora.org>
->>>> Co-developed-by: Vinayak Menon <vinmenon@codeaurora.org>
->>>> Signed-off-by: Vinayak Menon <vinmenon@codeaurora.org>
->>>> ---
->>>>  mm/cma.c | 25 +++++++++++++++++++++++--
->>>>  1 file changed, 23 insertions(+), 2 deletions(-)
->>>> 
->>>> diff --git a/mm/cma.c b/mm/cma.c
->>>> index 7f415d7..90bb505 100644
->>>> --- a/mm/cma.c
->>>> +++ b/mm/cma.c
->>>> @@ -442,8 +443,28 @@ struct page *cma_alloc(struct cma *cma, size_t
->>>> count, unsigned int align,
->>>>  				bitmap_maxno, start, bitmap_count, mask,
->>>>  				offset);
->>>>  		if (bitmap_no >= bitmap_maxno) {
->>>> -			mutex_unlock(&cma->lock);
->>>> -			break;
->>>> +			if (ret == -EBUSY) {
->>>> +				mutex_unlock(&cma->lock);
->>>> +
->>>> +				/*
->>>> +				 * Page may be momentarily pinned by some other
->>>> +				 * process which has been scheduled out, e.g.
->>>> +				 * in exit path, during unmap call, or process
->>>> +				 * fork and so cannot be freed there. Sleep
->>>> +				 * for 100ms and retry the allocation.
->>>> +				 */
->>>> +				start = 0;
->>>> +				ret = -ENOMEM;
->>>> +				msleep(100);
->>>> +				continue;
->>>> +			} else {
->>>> +				/*
->>>> +				 * ret == -ENOMEM - all bits in cma->bitmap are
->>>> +				 * set, so we break accordingly.
->>>> +				 */
->>>> +				mutex_unlock(&cma->lock);
->>>> +				break;
->>>> +			}
->>>>  		}
->>>>  		bitmap_set(cma->bitmap, bitmap_no, bitmap_count);
->>>>  		/*
->>>> 
->>> 
->>> What about long-term pinnings? IIRC, that can happen easily e.g.,
->>> with
->>> vfio (and I remember there is a way via vmsplice).
->>> 
->>> Not convinced trying forever is a sane approach in the general case
->>> ...
->> 
->> V1:
->> [1] https://lkml.org/lkml/2020/8/5/1097
->> [2] https://lkml.org/lkml/2020/8/6/1040
->> [3] https://lkml.org/lkml/2020/8/11/893
->> [4] https://lkml.org/lkml/2020/8/21/1490
->> [5] https://lkml.org/lkml/2020/9/11/1072
->> 
->> We're fine with doing indefinite retries, on the grounds that if there
->> is some long-term pinning that occurs when alloc_contig_range returns
->> -EBUSY, that it should be debugged and fixed.  Would it be possible to
->> make this infinite-retrying something that could be enabled or
->> disabled
->> by a defconfig option?
-> 
-> Two thoughts:
-> 
-> This means I strongly prefer something like [3] if feasible.
+On 17 Sep 2020, at 10:36, Bjorn Helgaas wrote:
 
-_Resending so that this ends up on LKML_
+> On Thu, Sep 17, 2020 at 09:25:38AM -0700, Sean V Kelley wrote:
+>> Changes since v3 [1]:
+>
+> This series claims "V4 00/10", i.e., there should be this cover letter
+> plus 10 patches, but I only got 3 patches.  I don't know if some got
+> lost, or if only those 3 patches were updated, or what?  If it's the
+> latter, it's too hard for me to collect the right versions of
+> everything into a single series.
+>
+> Either way, can you resend the entire series as a V5?
+>
+> Bjorn
 
-I can give [3] some further thought then.  Also, I realized [3] will not
-completely solve the problem, it just reduces the window in which
-_refcount > _mapcount (as mentioned in earlier threads, we encountered
-the pinning when a task in copy_one_pte() or in the exit_mmap() path
-gets context switched out).  If we were to try a sleeping-lock based
-solution, do you think it would be permissible to add another lock to
-struct page?
+That's weird.  I can see all 10 got sent. There's something awry with 
+the mailer as I got the copies.  You are right.  Lore only shows 3.  I 
+will see if something happened with the smtp access.  Will resend as V5.
 
-> 2. The issue that I am having is that long-term pinnings are
-> (unfortunately) a real thing. It's not something to debug and fix as
-> you
-> suggest. Like, run a VM with VFIO (e.g., PCI passthrough). While that
-> VM
-> is running, all VM memory will be pinned. If memory falls onto a CMA
-> region your cma_alloc() will be stuck in an (endless, meaning until the
-> VM ended) loop. I am not sure if all cma users are fine with that -
-> especially, think about CMA being used for gigantic pages now.
-> 
-> Assume you want to start a new VM while the other one is running and
-> use
-> some (new) gigantic pages for it. Suddenly you're trapped in an endless
-> loop in the kernel. That's nasty.
+Thanks,
 
-
-Thanks for providing this example.
-
-> 
-> If we want to stick to retrying forever, can't we use flags like
-> __GFP_NOFAIL to explicitly enable this new behavior for selected
-> cma_alloc() users that really can't fail/retry manually again?
-
-This would work, we would just have to undo the work done by this patch
-/ re-introduce the GFP parameter for cma_alloc():
-http://lkml.kernel.org/r/20180709122019eucas1p2340da484acfcc932537e6014f4fd2c29~-sqTPJKij2939229392eucas1p2j@eucas1p2.samsung.com
-, and add the support __GFP_NOFAIL (and ignore any flag that is not one
-of __GFP_NOFAIL or __GFP_NOWARN).
-
--- 
-The Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+Sean
