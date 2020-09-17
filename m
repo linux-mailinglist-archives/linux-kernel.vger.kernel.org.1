@@ -2,226 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85EB026D96D
+	by mail.lfdr.de (Postfix) with ESMTP id F397D26D96E
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 12:47:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726751AbgIQKpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726660AbgIQKpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 17 Sep 2020 06:45:24 -0400
-Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:35671 "EHLO
-        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726671AbgIQKn2 (ORCPT
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726678AbgIQKnU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 06:43:28 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id IrNSkLsPUPTBMIrNUkld4X; Thu, 17 Sep 2020 12:43:00 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1600339380; bh=tBofln9fi0bOS9AixJEkYWKxTP17FuLQMJpQPVwQixs=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=H/IHXFoYlYC0dq0+fTuDqblhEtwJYDZlP+0PJf9IeNEgImMpTCZOTVT1zlKOtEnQK
-         +hdoZojS0QM1y85S3ymItUteJ4Qr/IMH9SKXXCOG2gco5yEAYu5xB27l9mj6mJ5foW
-         d2jg4Bj0QAg+UP5pa4Wx20to+esldc6zJvs0OiEvyorRHleZKNUDVquTov8RiGaCSg
-         mqp48bOA712Oxwj1y8/F4R/8BMtKrxoIB/U8KmoAxqdB8gtWm67TkBp31RkXEMjyQO
-         Sqh884mybshOQLll56Etx5tzX6GtCBpH02IWmG6AZq6EFUoLHGGwjg0GJPyWbjxhTp
-         0yDLXMSxKAIUw==
-Subject: Re: [PATCH v3] media: rcar-vin: Enable YDS bit depending on bus_width
- and data_shift
-To:     =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>
-References: <20200913181608.32077-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <a153e31a-4115-db74-9b21-3e0cbcd8993d@xs4all.nl>
- <be419827-86b4-8aa2-2c82-2c7e328889c3@xs4all.nl>
- <20200917101942.GA2382958@oden.dyn.berto.se>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <256995d1-99d3-e7a8-6cf7-a9bf4acffddf@xs4all.nl>
-Date:   Thu, 17 Sep 2020 12:42:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 17 Sep 2020 06:43:20 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D567DC06174A;
+        Thu, 17 Sep 2020 03:43:19 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z4so1523756wrr.4;
+        Thu, 17 Sep 2020 03:43:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=mKCF4ocmjj0Rm/uGS3hAJIwKdlyyGieDpW/qiQNTdJk=;
+        b=qseHGXS+myHj8YT5np06wt5GuN3KC9SHsrQKnfIB33AKOpEwc2CRp8YEaM8Fyzo8Jf
+         8gLosBtOHZzdOTjf0O4tiAJAx/fOFkPK1Lvr8paLzeYh/HxR+cF4I1VTnnP6Rkv7WaCH
+         hjGEaRwgaUflAzRjLzwcIQoQH9u5FMCjk91LM0X5/6t/0WVNajYkaopS9jMKX0XtXDJ1
+         HsC4TXCFXEvXp9h2SuEEN6m+eBafPkwkaatwa7UN5292Ew0kES3VD67QsUxaXi9lSFxz
+         5TEjL1tjKe+gKTdd1Ywhk4kSq5N2R0VcAxCeIPZXWNJ20R/Q2iakudz9fvYzM+B4XTKt
+         Ebvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=mKCF4ocmjj0Rm/uGS3hAJIwKdlyyGieDpW/qiQNTdJk=;
+        b=Md+uSjlljgZfyotZT6wv6CWH42Ob2a26Q7ULT/xsIuXtzqCcSHvKN6jRoZ2ubOptij
+         rvPk+WpzWfE9/ksOt4wCTzjk7BjLhKAeJJ07Vpi8wIXdN2IH8xCLUI4pzG9lP0eWgRg8
+         cbJ/VPOSKBuYT+Wc4uz9U53uZDmgQZjuBC7/b4TyJgJ6hhfoZGexoagj4N2NCqCfyNfo
+         dbuLhsDXk84yktpZIrlUi5s2uw2Cgw2aSvDXortFJY9BiOa00JWQKfXIKwhvZWQ5OA8S
+         QNSaOlHjsfPHzRbH7IzutqJ5Rv3XPKlZ8cmGQUZTY/U07R5wVaNHjsebsRgUFu8wvNNp
+         pcnQ==
+X-Gm-Message-State: AOAM532AhUmosCWT/FBKRt7x4+aUE1wMYqP/yJiEOpVHp38IowURktpX
+        LC4rT5O77REYPqABypQCCZzMxmEzsDbpJQ==
+X-Google-Smtp-Source: ABdhPJyBLuiFgLg3ScXKGeKllJOMU22WY2nsLkgR2mJHwhvarmwmUZ5Qy9UU6mDr6dlEtNsUFWiDVw==
+X-Received: by 2002:adf:eacf:: with SMTP id o15mr33419886wrn.12.1600339398589;
+        Thu, 17 Sep 2020 03:43:18 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id t188sm11273801wmf.41.2020.09.17.03.43.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 03:43:17 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 12:43:15 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     krzk@kernel.org, Joerg Roedel <joro@8bytes.org>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jonathanh@nvidia.com
+Subject: Re: [PATCH] memory: tegra: Correct num_tlb_lines for tegra210
+Message-ID: <20200917104315.GI3515672@ulmo>
+References: <20200915232803.26163-1-nicoleotsuka@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200917101942.GA2382958@oden.dyn.berto.se>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4wfH9wHTkV5EhGU/n6WeiFZSpPckNFXgpdCMHutDLW9w5f6DbQ1viTAtV7jae+umGScT7eW9dsact9qYBDu6bf2PdJLSgCOuKbKGqq0KRnEOQO5LUVKDzj
- vkNX+5f/8cDgMsLAecDSVnojBz/i7elruK29zScfBAoANEoZO5K5+4gVeYtL3pPRU3WfFMXuEopT7noMzQBYzYjiv0bP2Fp2oEcJMSfmhAa2el7fN/vouuAi
- WJ1/yHa2Ru58tL7cXLaRu8dSjiM1htrpS24lZlzPt7ELAi0Qljl89xFtTMUiJsbz7nLZwqaQv/MBaHZ7OYDCtPZFDsQsJJUzXghuEEo5Z/ymLCpnDOM64wHo
- nSW0Cvt1nk441DFHqeX1gcfoXqcse7tzjWtuxDz5oGE64bUSgBz1axgRmcYrD4g/tnZL2NOJSjfcQmaG+8U98qqAeDto8kl6qcNkq17ernOiESXdMwHV60qA
- /GWbXDu48pijiE/T5F+N26+OiXoYj58CKkcAvTdEf914gsl4unBe0iztlHTcBqcntzSWYkBgp2DikP4Cq0Sg229NsyjAiQFbAs6daTEFOVt9sNQqBrvwGyHc
- S5WIR8boTZJH6iOoyPyDHROqVyTXOh350qcLpYHf+Pk5Lg==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="D6z0c4W1rkZNF4Vu"
+Content-Disposition: inline
+In-Reply-To: <20200915232803.26163-1-nicoleotsuka@gmail.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/09/2020 12:19, Niklas Söderlund wrote:
-> Hi Hans,
-> 
-> On 2020-09-17 11:58:16 +0200, Hans Verkuil wrote:
->> On 17/09/2020 10:57, Hans Verkuil wrote:
->>> Hi Prabhakar,
->>>
->>> Can you rebase this patch? It no longer applies.
->>
->> Never mind, my mistake. When I was preparing this patch I also had this patch
->> applied: https://patchwork.linuxtv.org/project/linux-media/patch/1595602732-25582-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com/
->>
->> And that caused the conflict with this YDS patch.
->>
->> However, I backed out the two renesas-vin-ycbcr-8b-g patches since there were a
->> bunch comments for https://patchwork.linuxtv.org/project/linux-media/patch/1595602732-25582-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com/
->>
->> So after dropping those two patches this YDS patch now applies fine and will
->> be included in the PR.
-> 
-> Thanks for dropping the renesas-vin-ycbcr-8b-g patches from the PR, they 
-> really should not have been picked up as this patch address the issue in 
-> a nicer way. To ease your workload would you like me to collect VIN 
-> patches and send PR to you for that driver?
 
-I don't think that's necessary. It's not all that much.
+--D6z0c4W1rkZNF4Vu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-But please don't hesitate to ping/mail me if it takes too long for me to pick up
-rcar patches, in case I missed some.
+On Tue, Sep 15, 2020 at 04:28:03PM -0700, Nicolin Chen wrote:
+> According to Tegra210 TRM, the default value of TLB_ACTIVE_LINES
+> field of register MC_SMMU_TLB_CONFIG_0 is 0x30. So num_tlb_lines
+> should be 48 (0x30) rather than 32 (0x20).
+>=20
+> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> ---
+>  drivers/memory/tegra/tegra210.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regards,
+Please send this as part of a series including:
 
-	Hans
+    https://patchwork.ozlabs.org/project/linux-tegra/patch/20200916002359.1=
+0823-1-nicoleotsuka@gmail.com/
 
-> 
->>
->> Sorry for the confusion,
->>
->> 	Hans
->>
->>>
->>> Regards,
->>>
->>> 	Hans
->>>
->>> On 13/09/2020 20:16, Lad Prabhakar wrote:
->>>> Enable YDS bit if bus_width and data_shift is set to 8 in parallel mode
->>>> for MEDIA_BUS_FMT_UYVY8_2X8 format.
->>>>
->>>> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->>>> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
->>>> ---
->>>> Changes for v3:
->>>> * Dropped BIT macro
->>>> * Introduced struct v4l2_fwnode_bus_parallel
->>>>
->>>> Changes for v2:
->>>> * Dropped DT binding documentation patch
->>>> * Select the data pins depending on bus-width and data-shift
->>>>
->>>> v1 -
->>>> https://patchwork.kernel.org/project/linux-renesas-soc/list/?series=323799
->>>> ---
->>>>  drivers/media/platform/rcar-vin/rcar-core.c |  9 ++++-----
->>>>  drivers/media/platform/rcar-vin/rcar-dma.c  | 17 ++++++++++++++---
->>>>  drivers/media/platform/rcar-vin/rcar-vin.h  |  5 +++--
->>>>  3 files changed, 21 insertions(+), 10 deletions(-)
->>>>
->>>> diff --git a/drivers/media/platform/rcar-vin/rcar-core.c b/drivers/media/platform/rcar-vin/rcar-core.c
->>>> index 7440c8965d27..1149ab76cf5c 100644
->>>> --- a/drivers/media/platform/rcar-vin/rcar-core.c
->>>> +++ b/drivers/media/platform/rcar-vin/rcar-core.c
->>>> @@ -626,12 +626,11 @@ static int rvin_parallel_parse_v4l2(struct device *dev,
->>>>  
->>>>  	switch (vin->parallel->mbus_type) {
->>>>  	case V4L2_MBUS_PARALLEL:
->>>> -		vin_dbg(vin, "Found PARALLEL media bus\n");
->>>> -		vin->parallel->mbus_flags = vep->bus.parallel.flags;
->>>> -		break;
->>>>  	case V4L2_MBUS_BT656:
->>>> -		vin_dbg(vin, "Found BT656 media bus\n");
->>>> -		vin->parallel->mbus_flags = 0;
->>>> +		vin_dbg(vin, "Found %s media bus\n",
->>>> +			vin->parallel->mbus_type == V4L2_MBUS_PARALLEL ?
->>>> +			"PARALLEL" : "BT656");
->>>> +		vin->parallel->bus = vep->bus.parallel;
->>>>  		break;
->>>>  	default:
->>>>  		vin_err(vin, "Unknown media bus type\n");
->>>> diff --git a/drivers/media/platform/rcar-vin/rcar-dma.c b/drivers/media/platform/rcar-vin/rcar-dma.c
->>>> index a5dbb90c5210..d067439b0b0d 100644
->>>> --- a/drivers/media/platform/rcar-vin/rcar-dma.c
->>>> +++ b/drivers/media/platform/rcar-vin/rcar-dma.c
->>>> @@ -125,6 +125,7 @@
->>>>  #define VNDMR2_VPS		(1 << 30)
->>>>  #define VNDMR2_HPS		(1 << 29)
->>>>  #define VNDMR2_CES		(1 << 28)
->>>> +#define VNDMR2_YDS		(1 << 22)
->>>>  #define VNDMR2_FTEV		(1 << 17)
->>>>  #define VNDMR2_VLV(n)		((n & 0xf) << 12)
->>>>  
->>>> @@ -698,16 +699,26 @@ static int rvin_setup(struct rvin_dev *vin)
->>>>  
->>>>  	if (!vin->is_csi) {
->>>>  		/* Hsync Signal Polarity Select */
->>>> -		if (!(vin->parallel->mbus_flags & V4L2_MBUS_HSYNC_ACTIVE_LOW))
->>>> +		if (!(vin->parallel->bus.flags & V4L2_MBUS_HSYNC_ACTIVE_LOW))
->>>>  			dmr2 |= VNDMR2_HPS;
->>>>  
->>>>  		/* Vsync Signal Polarity Select */
->>>> -		if (!(vin->parallel->mbus_flags & V4L2_MBUS_VSYNC_ACTIVE_LOW))
->>>> +		if (!(vin->parallel->bus.flags & V4L2_MBUS_VSYNC_ACTIVE_LOW))
->>>>  			dmr2 |= VNDMR2_VPS;
->>>>  
->>>>  		/* Data Enable Polarity Select */
->>>> -		if (vin->parallel->mbus_flags & V4L2_MBUS_DATA_ENABLE_LOW)
->>>> +		if (vin->parallel->bus.flags & V4L2_MBUS_DATA_ENABLE_LOW)
->>>>  			dmr2 |= VNDMR2_CES;
->>>> +
->>>> +		switch (vin->mbus_code) {
->>>> +		case MEDIA_BUS_FMT_UYVY8_2X8:
->>>> +			if (vin->parallel->bus.bus_width == 8 &&
->>>> +			    vin->parallel->bus.data_shift == 8)
->>>> +				dmr2 |= VNDMR2_YDS;
->>>> +			break;
->>>> +		default:
->>>> +			break;
->>>> +		}
->>>>  	}
->>>>  
->>>>  	/*
->>>> diff --git a/drivers/media/platform/rcar-vin/rcar-vin.h b/drivers/media/platform/rcar-vin/rcar-vin.h
->>>> index c19d077ce1cb..8396e0e45478 100644
->>>> --- a/drivers/media/platform/rcar-vin/rcar-vin.h
->>>> +++ b/drivers/media/platform/rcar-vin/rcar-vin.h
->>>> @@ -19,6 +19,7 @@
->>>>  #include <media/v4l2-ctrls.h>
->>>>  #include <media/v4l2-dev.h>
->>>>  #include <media/v4l2-device.h>
->>>> +#include <media/v4l2-fwnode.h>
->>>>  #include <media/videobuf2-v4l2.h>
->>>>  
->>>>  /* Number of HW buffers */
->>>> @@ -92,7 +93,7 @@ struct rvin_video_format {
->>>>   * @asd:	sub-device descriptor for async framework
->>>>   * @subdev:	subdevice matched using async framework
->>>>   * @mbus_type:	media bus type
->>>> - * @mbus_flags:	media bus configuration flags
->>>> + * @bus:	media bus parallel configuration
->>>>   * @source_pad:	source pad of remote subdevice
->>>>   * @sink_pad:	sink pad of remote subdevice
->>>>   *
->>>> @@ -102,7 +103,7 @@ struct rvin_parallel_entity {
->>>>  	struct v4l2_subdev *subdev;
->>>>  
->>>>  	enum v4l2_mbus_type mbus_type;
->>>> -	unsigned int mbus_flags;
->>>> +	struct v4l2_fwnode_bus_parallel bus;
->>>>  
->>>>  	unsigned int source_pad;
->>>>  	unsigned int sink_pad;
->>>>
->>>
->>
-> 
+Adding Joerg for visibility. From the Tegra side:
 
+Acked-by: Thierry Reding <treding@nvidia.com>
+
+> diff --git a/drivers/memory/tegra/tegra210.c b/drivers/memory/tegra/tegra=
+210.c
+> index 51b537cfa5a7..4fbf8cbc6666 100644
+> --- a/drivers/memory/tegra/tegra210.c
+> +++ b/drivers/memory/tegra/tegra210.c
+> @@ -1074,7 +1074,7 @@ static const struct tegra_smmu_soc tegra210_smmu_so=
+c =3D {
+>  	.num_groups =3D ARRAY_SIZE(tegra210_groups),
+>  	.supports_round_robin_arbitration =3D true,
+>  	.supports_request_limit =3D true,
+> -	.num_tlb_lines =3D 32,
+> +	.num_tlb_lines =3D 48,
+>  	.num_asids =3D 128,
+>  };
+> =20
+> --=20
+> 2.17.1
+>=20
+
+--D6z0c4W1rkZNF4Vu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9jPcMACgkQ3SOs138+
+s6EmBg/9HLDWhpRNJR/5mco/9GHyNB36dWfDmikjmORhkt5kJlK8O5z93Y7+kUbE
+s/KFvB/lBMrkKqHhG2SeCFB7gQ+xQKz0isV1S/NhjgzxWfggd2B1w3ZRLdQZksFP
+YEzQIdj81fGuI4/kJSt/q1/yVAgqXDTbuZeYjdrLOwK59y89BUZjS89H0AeKHduG
+0UN/zrFuc67q587yy+kVFjhuHoSZG/APsIIMc0x0Q/GmSbPKcAf3UMEZ/QpwE0Bb
+PT657IFAhhdosRc89UAjBXBMqCwaXEn4ZVImaUs4DM+GUm+lM8LnvQswDf1s+TkT
+eDfsI2B4ptr0hMaoC4NC7BZX1BDbgj13S40x1kkXAyWSzRvTZjhF/2pHA8Mu6ZAx
+3nH3v9o7cCu7qKpWYW+wTuewj9IejPXMKVjy3Dx8zVIAxux4Q3zr9LCJASzMoabk
+M1ph2Nd3j3/dMKDAQGkW9Yyj/Ny16k7LWbtEAM+V3Ineg8vTOgTc869Tfmj5IK+K
+V+kVgzokJ8JL8wxpzvVS2mvhGKl5vGD97BYQnlOTaC4iOZcLr99YfeVUdY43Yo+9
+wHgaGfY1c3XxmiOre3OYXaXUOB0pXF2++3L1G1OUZowdH1v180WK+1IWG1Qk3ol+
+tQiVymrJlDnzyw/MhKdzJ+WBB3uxibFu6LzOnQuIbidFHxhAFI8=
+=w5PD
+-----END PGP SIGNATURE-----
+
+--D6z0c4W1rkZNF4Vu--
