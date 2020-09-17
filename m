@@ -2,128 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C077B26DCB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 15:23:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DBAA26DCA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 15:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726948AbgIQNWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 09:22:15 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:44710 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726986AbgIQNQo (ORCPT
+        id S1726719AbgIQNRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 09:17:54 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:48872 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726478AbgIQNQB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 09:16:44 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08HDF94R191683;
-        Thu, 17 Sep 2020 13:15:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=5CbLmgITuVkqkFczc34ggox0p6HVp0zkDBlqxycTwzg=;
- b=y2lyX+h85UIrFjMPlZFK+zvbr7kOVi+d+2Se7Np3DWIxTcOBpQmgK9qcaBM9SJ2yUt/5
- 4/DXHW/niq1G7676El/PJ9QrTpvV2kBv2yUz1sTEmlsOzMO1jv7haDG8U3yV+8ufdgMJ
- V+USwsMGsPYQl11bu4d4eAtdxkh2oYXO/QUctgSU6ah+E85asMERpC/JPuPYaKXDHMwT
- OcNRn884hxXDYm2BLeWNwkBUzvVTTnGl5CgZyGfslQhzHh5xYqAqDxkEHET0c/xJ7cO9
- p9yOngAxcUjAllLG1NafauUKgaNqaz10zMha1zao8RbtNmvm/Ke0VhNVlXX3QRevJAk8 Wg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 33gp9mh71k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 17 Sep 2020 13:15:59 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08HDFvk1002688;
-        Thu, 17 Sep 2020 13:15:58 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 33hm34u9y4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 17 Sep 2020 13:15:58 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08HDFnLD003602;
-        Thu, 17 Sep 2020 13:15:49 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 17 Sep 2020 13:15:48 +0000
-Date:   Thu, 17 Sep 2020 16:15:39 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     devel@driverdev.osuosl.org, robh@kernel.org, mchehab@kernel.org,
-        jorhand@linux.microsoft.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, kieran.bingham@ideasonboard.com,
-        Daniel Scally <djrscally@gmail.com>, yong.zhi@intel.com,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        bingbu.cao@intel.com, kitakar@gmail.com, davem@davemloft.net,
-        tian.shu.qiu@intel.com, linux-media@vger.kernel.org
-Subject: Re: [RFC PATCH] Add bridge driver to connect sensors to CIO2 device
- via software nodes on ACPI platforms
-Message-ID: <20200917131539.GR4282@kadam>
-References: <20200916213618.8003-1-djrscally@gmail.com>
- <20200917103343.GW26842@paasikivi.fi.intel.com>
- <20200917104941.GP4282@kadam>
- <20200917122529.GJ3956970@smile.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917122529.GJ3956970@smile.fi.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9746 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxlogscore=999
- malwarescore=0 mlxscore=0 phishscore=0 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009170101
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9746 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
- spamscore=0 priorityscore=1501 suspectscore=0 impostorscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009170101
+        Thu, 17 Sep 2020 09:16:01 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08HDCpfe110398;
+        Thu, 17 Sep 2020 09:15:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=enh8OcIBw43YmJKaYzY58QOrw1oBaNAWROv4I7Cq1ZY=;
+ b=ZHCPf4WAOsRx+0bdEUjngXLxGjJUMWD3kzkgbIv06DIJM/+WJPMaNmiUUs9Hkt3eccqf
+ MDitTBOe5zVSKoT7ELcLYc8cN7Ekqcb2gs4vXsh/+Mp1K/dkIqcmYaAXP3ML+mUKhoVw
+ gRI62nUOXS9Aaf0PQnGzMVSSyT3Hz4YCFClyKkidovkaHATGkeKm6ke+7pt0cVGLh9lN
+ aokJjd+j+xKdrBEcuRH5R1V4L2yEDADlt2M2B+HRP6hXI39QB5h4Cy+etbPiZFuoy9mU
+ MNXil49ZOsxxY5a+UOf1081DQeVxdXLS2XalWXyY3niFw0gorpcesKS1rhcFH6kMsOcc tQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33m8g0g2vk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Sep 2020 09:15:50 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08HDFNKQ124507;
+        Thu, 17 Sep 2020 09:15:49 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33m8g0g2u9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Sep 2020 09:15:49 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08HDDH5Z005652;
+        Thu, 17 Sep 2020 13:15:47 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma01fra.de.ibm.com with ESMTP id 33k5v993s2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Sep 2020 13:15:46 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08HDEAoY34341286
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 17 Sep 2020 13:14:10 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B2E364C044;
+        Thu, 17 Sep 2020 13:15:44 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 30CB94C04A;
+        Thu, 17 Sep 2020 13:15:43 +0000 (GMT)
+Received: from sig-9-65-208-105.ibm.com (unknown [9.65.208.105])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 17 Sep 2020 13:15:42 +0000 (GMT)
+Message-ID: <65512863d3cee25b0ba40fce8e819772b20c363c.camel@linux.ibm.com>
+Subject: Re: [PATCH v2 09/12] evm: Allow setxattr() and setattr() if
+ metadata digest won't change
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>, mjg59@google.com
+Cc:     linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, silviu.vlasceanu@huawei.com
+Date:   Thu, 17 Sep 2020 09:15:42 -0400
+In-Reply-To: <20200904092643.20013-5-roberto.sassu@huawei.com>
+References: <20200904092339.19598-1-roberto.sassu@huawei.com>
+         <20200904092643.20013-5-roberto.sassu@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-17_09:2020-09-16,2020-09-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=3
+ clxscore=1015 phishscore=0 bulkscore=0 adultscore=0 lowpriorityscore=0
+ impostorscore=0 malwarescore=0 priorityscore=1501 mlxscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009170098
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 03:25:29PM +0300, Andy Shevchenko wrote:
-> On Thu, Sep 17, 2020 at 01:49:41PM +0300, Dan Carpenter wrote:
-> > On Thu, Sep 17, 2020 at 01:33:43PM +0300, Sakari Ailus wrote:
+Hi Roberto,
+
+"if" doesn't belong in the subject line.  In this case, instead of "if
+metadata ...", how about something like "for unmodified metadata"?
+
+On Fri, 2020-09-04 at 11:26 +0200, Roberto Sassu wrote:
+> With the patch to allow xattr/attr operations if a portable signature
+> verification fails, cp and tar can copy all xattrs/attrs so that at the
+> end of the process verification succeeds.
 > 
-> > > > +	int i, ret;
-> > > 
-> > > unsigned int i
-> > > 
-> > 
-> > Why?
-> > 
-> > For list iterators then "int i;" is best...  For sizes then unsigned is
-> > sometimes best.  Or if it's part of the hardware spec or network spec
-> > unsigned is best.  Otherwise unsigned variables cause a ton of bugs.
-> > They're not as intuitive as signed variables.  Imagine if there is an
-> > error in this loop and you want to unwind.  With a signed variable you
-> > can do:
-> > 
-> > 	while (--i >= 0)
-> > 		cleanup(&bridge.sensors[i]);
+> However, it might happen that xattrs/attrs are already set to the correct
+
+^ the xattrs/attrs
+
+> value (taken at signing time) and signature verification succeeds before
+> the copy is completed. For example, an archive might contains files owned
+
+^ has completed.
+
+> by root and the archive is extracted by root.
 > 
-> Ha-ha. It's actually a counter argument to your stuff because above is the same as
+> Then, since portable signatures are immutable, all subsequent operations
+> fail (e.g. fchown()), even if the operation is legitimate (does not alter
+> the current value).
 > 
-> 	while (i--)
-> 		cleanup(&bridge.sensors[i]);
+> This patch avoids this problem by reporting successful operation to user
+> space when that operation does not alter the current value of xattrs/attrs.
 > 
-> with pretty much unsigned int i.
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 
-With vanilla "int i;" you can't go wrong because both styles work as
-expected.  I was just giving examples of real life bugs that I have seen
-involving unsigned iterators.
+<snip>
 
-54313503f9a3 ("drm/amdgpu: signedness bug in amdgpu_cs_parser_init()")
+> +/*
+> + * evm_xattr_change - check if passed xattr value differs from current value
+> + * @dentry: pointer to the affected dentry
+> + * @xattr_name: requested xattr
+> + * @xattr_value: requested xattr value
+> + * @xattr_value_len: requested xattr value length
+> + *
+> + * Check if passed xattr value differs from current value.
+> + *
+> + * Returns 1 if passed xattr value differs from current value, 0 otherwise.
+> + */
+> +static int evm_xattr_change(struct dentry *dentry, const char *xattr_name,
+> +			    const void *xattr_value, size_t xattr_value_len)
+> +{
+> +	char *xattr_data = NULL;
+> +	int rc = 0;
+> +
+> +	if (posix_xattr_acl(xattr_name))
+> +		return evm_xattr_acl_change(dentry, xattr_name, xattr_value,
+> +					    xattr_value_len);
+> +
+> +	rc = vfs_getxattr_alloc(dentry, xattr_name, &xattr_data, 0, GFP_NOFS);
+> +	if (rc < 0)
+> +		return 1;
+> +
+> +	if (rc == xattr_value_len)
+> +		rc = memcmp(xattr_value, xattr_data, rc);
 
-Here are a couple more bugs involving unsigned iterators...
+This should probably be changed to crypto_memneq().   Refer to commit
+613317bd212c ("EVM: Use crypto_memneq() for digest comparisons").
 
-d72cf01f410a ("drm/mipi-dbi: fix a loop in debugfs code")
-ce6c1cd2c324 ("pinctrl: nsp-gpio: forever loop in nsp_gpio_get_strength()")
+thanks,
 
-I've change a lot of variables unsigned as well.  For min_t() then it
-should *always* be an unsigned type.
+Mimi
 
-It's pretty rare to iterate over 2 billion times in the kernel, but
-there are times when you might want to do that.  Normally you would
-want to declare the iterator as an unsigned ong in that case.  But most
-of the time iterators should just be "int i;" to prevent bugs.
+> +	else
+> +		rc = 1;
+> +
+> +	kfree(xattr_data);
+> +	return rc;
+> +}
+> +
+> 
 
-regards,
-dan carpenter
