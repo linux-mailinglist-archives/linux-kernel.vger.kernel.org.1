@@ -2,170 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F5726D3C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 08:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1113626D3C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 08:37:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726180AbgIQGhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 02:37:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726106AbgIQGhV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 02:37:21 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED52C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 23:37:20 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id x69so1243960oia.8
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 23:37:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DmH7lVb417eXI2VeqeItQgKBp0xKHSxQ9iYZKyDox1E=;
-        b=dyKzxUO8iJ6MybLJ52ubrLm+liYaOMZR++Y5xaNiwrDBw/iA3Nut6Yn841d9KubXm4
-         Q/Hnp7VOy43qKf+4ZlHubvF2Hdp9iphzEQCUzgi9oCE+cpXws2VNr6dYgd1yt+hcf7RQ
-         ovD/bqaoaPuu0pb0BMYefZ2SPU7qCJy0sih2cTdUHk8AAGVDcnMfHgFBt8oqfzwr2Tu/
-         39Gb2P8mjacNiJ31cgYTzquiQCF5rabvKIYewuU8dFzVNMdaMOQ4ZY3kN4zf5tdfOPvX
-         yop7vE70Lw2Nlbx3pGduzbVq+QT8e+Xb6ko5Nl4aOdowhMgtb+NGMkJvWPP3h+N08sRH
-         J4kA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DmH7lVb417eXI2VeqeItQgKBp0xKHSxQ9iYZKyDox1E=;
-        b=Cq2GjLbc+qxN3p0/joEyf9gF9uZG4UTJlzWR+ZQ6TwuHAS8/XEYJO5oTyP7fkdH8AV
-         hUTwQNpoG9BfiWEmk/H7dc2G99jvmPnQrVySWTcPX0TCHyWWicZSfyJTAaSwDJFGPT2F
-         rirJYybbv9SCJFd4rn+VhAnY3YKK7KTRrKqB67f4E1/2mfuSIjrdfeRAmTuVYVL+sxTf
-         AMBYULfdu6F7hEsBZweJa8B7aRYpIMVJ729a8FJS39gWciVCCy4vzhyKs7cBAPonTWnY
-         VYPUfPq3DoQ6qJA5fbjPk9uZKMuWQIhXbi5rQ/Y0+t1bwj0hQjnyG8i5VXGbQaN5GKAE
-         ZAzw==
-X-Gm-Message-State: AOAM530d2RQojnryyw9QyeVtKeB+FpVV5qREbVjnJsfQIoyNpz/JuzV8
-        M9KVfzIgJoazEmkw6IkZ2p8DJB6DJzqLz4lg1MPeog==
-X-Google-Smtp-Source: ABdhPJx2jnXpIUmp24nTKDkWxZRLjM1Wslz6+lowH+iNNw8va1V6kY9UCGOGi/uVM7SEkQXpHTIqXCSF8rXYgnPrFO0=
-X-Received: by 2002:aca:5158:: with SMTP id f85mr5592894oib.121.1600324639579;
- Wed, 16 Sep 2020 23:37:19 -0700 (PDT)
+        id S1726198AbgIQGhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 02:37:45 -0400
+Received: from mail-eopbgr00062.outbound.protection.outlook.com ([40.107.0.62]:36993
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726106AbgIQGhn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 02:37:43 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=enIRquX0Zgpv8qAPGRy+ny/OXpGryrEwMEOhfva7N5ToxCb5Wh8J/0rVsMm8P82DOs9yfkqFhi6woUH1OJ/+G5e3+M0HOnI/6/Y9kW9sqQnXJuS+VV9OwiI/FnEZYvLW9EQv6VTBNS7z3xkX4ExhfuDH4QkREPZJh7GazZimpCo6g5LKR+83freRXAfooelVo3xd9ENpZWsCkAYZSCk0Vxu/8vDv7fLFp3irC5IvUo0/CATdTCSeecreoJDQMARJKQVhVF+EG123vWWL1QBz2IsV6FPqvex8QmfiwM0/eD4Fm6iqXTkWwRinRlCGgza59UDy7qfZlpSmHGL0FpQYYA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jSZwACkWH4U6TlTGhRyGDN3sZlhs25HMsloGKq+Ki1Q=;
+ b=khlgK35BHoG/BlPCjckDBs024bWHN+yqmeTEKfQZMU1djWJMYPr3S/RIu8FHtQIsj9aYag6gVIevu0W48Nth1b8pGENPYpjLLNuWuu1AgmWzzbef2t/RJUUntvmD6U+pcno13T5wXsNQxmjyQp2LCubvYOrvnNPTV6C4rG92IoDycKNIZd3Ko3juDns/W0te99MDl8t+0pAVvB1VA8RHLI6hUBNFGydzzRUZ0fFGz12CrXbHfB05ncKDnJLUaWzXn11qIbkBmPkrYGupXfGSEkRlVRatvsPCMUooytXooe7WE7gHDSsNElUmKQXEJxm9BZo4Xuu55OnxyoYsXw9KkQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jSZwACkWH4U6TlTGhRyGDN3sZlhs25HMsloGKq+Ki1Q=;
+ b=j78p3DYQnhDYpMatrclbC3V/yEQOhL5qR6IeO66mBiX/XSauhaw6CWEoshilmEb+XduVVOM/Fi5kNPRTKgYO+EhDCM3pYu5XtYDFwa4IT5V0+rn8/BE5LwCQujwCGW+8T74B9tspYtqGhw5+nbiIQxBB5RUfRvcSGrxhgxCgPNY=
+Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com (2603:10a6:8:10::18)
+ by DBAPR04MB7350.eurprd04.prod.outlook.com (2603:10a6:10:1a9::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Thu, 17 Sep
+ 2020 06:37:39 +0000
+Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com
+ ([fe80::9c75:8bb2:aff6:450d]) by DB3PR0402MB3916.eurprd04.prod.outlook.com
+ ([fe80::9c75:8bb2:aff6:450d%3]) with mapi id 15.20.3370.019; Thu, 17 Sep 2020
+ 06:37:39 +0000
+From:   Anson Huang <anson.huang@nxp.com>
+To:     "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     dl-linux-imx <linux-imx@nxp.com>
+Subject: RE: [PATCH V2 1/3] pwm: imx-tpm: Use dev_err_probe() to simplify
+ error handling
+Thread-Topic: [PATCH V2 1/3] pwm: imx-tpm: Use dev_err_probe() to simplify
+ error handling
+Thread-Index: AQHWb6jFmW826APPQE2tjObLx/xFGalsmpqg
+Date:   Thu, 17 Sep 2020 06:37:39 +0000
+Message-ID: <DB3PR0402MB391689D2F31A63C720291456F53E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+References: <1597127072-26365-1-git-send-email-Anson.Huang@nxp.com>
+In-Reply-To: <1597127072-26365-1-git-send-email-Anson.Huang@nxp.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.67]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 7249c09f-5321-4ab9-e66f-08d85ad42c87
+x-ms-traffictypediagnostic: DBAPR04MB7350:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DBAPR04MB7350DD57408A2496EA200F2AF53E0@DBAPR04MB7350.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1091;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: j18LOxkDHhHtcu+aLMc9eBowk+WT1Xdy1k6No9cZ2hl5h/W+pqCdUCATfpHm66kemnR7iAIlurI8d3Z82hWvZz7/RPhgO+L1geIDQ/6Rh1QUQNUV69iEIz94Vs7am93FpXzefy4FMjxKdD/RIuXrDfY1k5vURq9uXvehp800ZVn9202RoonASLOMP5T6ambHEPHK/UJl8icTFhi3ZCF72Soxzs7vom5OHwnENSUY6R29crHtRRnt9fOFWEFQ7cCXdoXUnVYyG8L+K0ExJv9HmdZ2uTUBCBVKZ3KMb5PZSwp0eXUEm4EImU6lAeE2oFK+9p4/klhX13Z0dFeOQ55RuTSrDsw89gmLms1yKt7HxS+afIW0+FKQnaC69d8PbzXw
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB3PR0402MB3916.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(136003)(346002)(376002)(396003)(52536014)(186003)(6506007)(7696005)(478600001)(44832011)(26005)(7416002)(2906002)(316002)(55016002)(8676002)(4326008)(9686003)(64756008)(8936002)(66946007)(66556008)(66476007)(76116006)(110136005)(5660300002)(83380400001)(71200400001)(86362001)(33656002)(66446008)(921003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: KW4VoDkE1Tcl0lsNago8cFeXJ+IwS5yrsxGYWJE8yugbD0Z0qxV4Fco2m/ZOpfaq8Z3lGXhy1jqEJ+U/3xVJ840RpW75qEqk7L9avQgqdeDfvZazy1x8Cgv9jAAEZj8WT2Pzpq2PNB3TFDb5UAwsdkXcgH7/2fjssKcttwtIly9lWP53hOjGmey+4V1lGyOHo5vkXbufL9hnMK5Jf8CRBNbHX+UmcO9Kd6j55W3+e85ysdvSAtEPa0KoHCfnxy+k6W3VQkIcNg3OwTRZyD7z6iSHQt7c+UliWd30keOaU9hWhnZRIb7l16dIetLW5ShXklJeWi/sTPzhRXuKInpSibs2c4kL84KDyKTf+lIiqXZb5vVOnHi+7bYDZOkLrakLKB8h8vsYLazAbaNpk0iPBS3/usFgOkJ26brVQpTcXQeC34xBfetYf+kV3VkOSiL/A6rXFjpOsKucauxapb9mfErsTSo+gTGhNsMkCewEhMjoWqm4JTvegqBKI8A4GXf4PwVAAHnQil+4rn4ri6yDHfjVDPt44XDzIEX0+dz18KFXl2W4B9I+Wu1v2F28t2kvG3ynhdQ4ttafGqzP7Rp+t8b/OFiP5m4GJwrtH4GZrsRQRIK7UAGOv3HJsCoO8sYsOIxMIBGeT7sTbP57bgHnUQ==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20200914172750.852684-1-georgepope@google.com>
- <20200914172750.852684-7-georgepope@google.com> <202009141509.CDDC8C8@keescook>
- <20200915102458.GA1650630@google.com> <CANpmjNOTcS_vvZ1swh1iHYaRbTvGKnPAe4Q2DpR1MGhk_oZDeA@mail.gmail.com>
- <20200915120105.GA2294884@google.com> <CANpmjNPpq7LfTHYesz2wTVw6Pqv0FQ2gc-vmSB6Mdov+XWPZiw@mail.gmail.com>
- <20200916074027.GA2946587@google.com> <CANpmjNMT9-a8qKZSvGWBPAb9x9y1DkrZMSvHGq++_TcEv=7AuA@mail.gmail.com>
- <20200916121401.GA3362356@google.com> <20200916134029.GA1146904@elver.google.com>
-In-Reply-To: <20200916134029.GA1146904@elver.google.com>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 17 Sep 2020 08:37:07 +0200
-Message-ID: <CANpmjNOfgeR0zpL-4AtOt0FL56BFZ_sud-mR3CrYB7OCMg0PaA@mail.gmail.com>
-Subject: Re: [PATCH 06/14] Fix CFLAGS for UBSAN_BOUNDS on Clang
-To:     George Popescu <georgepope@google.com>
-Cc:     Kees Cook <keescook@chromium.org>, maz@kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        kvmarm@lists.cs.columbia.edu, LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        james.morse@arm.com, julien.thierry.kdev@gmail.com,
-        suzuki.poulose@arm.com,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        David Brazdil <dbrazdil@google.com>, broonie@kernel.org,
-        Fangrui Song <maskray@google.com>,
-        Andrew Scull <ascull@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Alexander Potapenko <glider@google.com>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB3PR0402MB3916.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7249c09f-5321-4ab9-e66f-08d85ad42c87
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Sep 2020 06:37:39.8816
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: fOT6znPzm7DSlFLD72uZ5uLpwPmAe+VgxYIQAOHyfAmeDE7XtMMzhKgJMDNnh+0Ck343ZB1zYM2EaUbCYq27xQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR04MB7350
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Sep 2020 at 15:40, Marco Elver <elver@google.com> wrote:
-> On Wed, Sep 16, 2020 at 12:14PM +0000, George Popescu wrote:
-> > On Wed, Sep 16, 2020 at 10:32:40AM +0200, Marco Elver wrote:
-> > > On Wed, 16 Sep 2020 at 09:40, George Popescu <georgepope@google.com> wrote:
-> > > > On Tue, Sep 15, 2020 at 07:32:28PM +0200, Marco Elver wrote:
-> > > > > On Tue, 15 Sep 2020 at 14:01, George Popescu <georgepope@google.com> wrote:
-> > > > > > On Tue, Sep 15, 2020 at 01:18:11PM +0200, Marco Elver wrote:
-> > > > > > > On Tue, 15 Sep 2020 at 12:25, George Popescu <georgepope@google.com> wrote:
-> > > > > > > > On Mon, Sep 14, 2020 at 03:13:14PM -0700, Kees Cook wrote:
-> > > > > > > > > On Mon, Sep 14, 2020 at 05:27:42PM +0000, George-Aurelian Popescu wrote:
-> > > > > > > > > > From: George Popescu <georgepope@google.com>
-> > > > > > > > > >
-> > > > > > > > > > When the kernel is compiled with Clang, UBSAN_BOUNDS inserts a brk after
-> > > > > > > > > > the handler call, preventing it from printing any information processed
-> > > > > > > > > > inside the buffer.
-> > > > > > > > > > For Clang -fsanitize=bounds expands to -fsanitize=array-bounds and
-> > > > > > > > > > -fsanitize=local-bounds, and the latter adds a brk after the handler
-> > > > > > > > > > call
-> > > > > > > > >
-> > > > > > > > This would mean losing the local-bounds coverage. I tried to  test it without
-> > > > > > > > local-bounds and with a locally defined array on the stack and it works fine
-> > > > > > > > (the handler is called and the error reported). For me it feels like
-> > > > > > > > --array-bounds and --local-bounds are triggered for the same type of
-> > > > > > > > undefined_behaviours but they are handling them different.
-> > > > > > >
-> > > > > > > Does -fno-sanitize-trap=bounds help?
-> [...]
-> > > Your full config would be good, because it includes compiler version etc.
-> > My full config is:
->
-> Thanks. Yes, I can reproduce, and the longer I keep digging I start
-> wondering why we have local-bounds at all.
->
-> It appears that local-bounds finds a tiny subset of the issues that
-> KASAN finds:
->
->         http://lists.llvm.org/pipermail/cfe-commits/Week-of-Mon-20131021/091536.html
->         http://llvm.org/viewvc/llvm-project?view=revision&revision=193205
->
-> fsanitize=undefined also does not include local-bounds:
->
->         https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html#available-checks
->
-> And the reason is that we do want to enable KASAN and UBSAN together;
-> but local-bounds is useless overhead if we already have KASAN.
->
-> I'm inclined to say that what you propose is reasonable (but the commit
-> message needs to be more detailed explaining the relationship with
-> KASAN) -- but I have no idea if this is going to break somebody's
-> usecase (e.g. find some OOB bugs, but without KASAN -- but then why not
-> use KASAN?!)
+Gentle ping...
 
-So, it seems that local-bounds can still catch some rare OOB accesses,
-where KASAN fails to catch it because the access might skip over the
-redzone.
+> Subject: [PATCH V2 1/3] pwm: imx-tpm: Use dev_err_probe() to simplify err=
+or
+> handling
+>=20
+> dev_err_probe() can reduce code size, uniform error handling and record t=
+he
+> defer probe reason etc., use it to simplify the code.
+>=20
+> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+> ---
+> changes since V1:
+> 	- remove redundant return value print.
+> ---
+>  drivers/pwm/pwm-imx-tpm.c | 10 +++-------
+>  1 file changed, 3 insertions(+), 7 deletions(-)
+>=20
+> diff --git a/drivers/pwm/pwm-imx-tpm.c b/drivers/pwm/pwm-imx-tpm.c index
+> fcdf6be..aaf629b 100644
+> --- a/drivers/pwm/pwm-imx-tpm.c
+> +++ b/drivers/pwm/pwm-imx-tpm.c
+> @@ -350,13 +350,9 @@ static int pwm_imx_tpm_probe(struct
+> platform_device *pdev)
+>  		return PTR_ERR(tpm->base);
+>=20
+>  	tpm->clk =3D devm_clk_get(&pdev->dev, NULL);
+> -	if (IS_ERR(tpm->clk)) {
+> -		ret =3D PTR_ERR(tpm->clk);
+> -		if (ret !=3D -EPROBE_DEFER)
+> -			dev_err(&pdev->dev,
+> -				"failed to get PWM clock: %d\n", ret);
+> -		return ret;
+> -	}
+> +	if (IS_ERR(tpm->clk))
+> +		return dev_err_probe(&pdev->dev, PTR_ERR(tpm->clk),
+> +				     "failed to get PWM clock\n");
+>=20
+>  	ret =3D clk_prepare_enable(tpm->clk);
+>  	if (ret) {
+> --
+> 2.7.4
 
-The other more interesting bit of history is that
--fsanitize=local-bounds used to be -fbounds-checking, and meant for
-production use as a hardening feature:
-http://lists.llvm.org/pipermail/llvm-dev/2012-May/049972.html
-
-And local-bounds just does not behave like any other sanitizer as a
-result, it just traps. The fact that it's enabled via
--fsanitize=local-bounds (or just bounds) but hasn't much changed in
-behaviour is a little unfortunate.
-
-I suppose there are 3 options:
-
-1. George implements trap handling somehow. Is this feasible? If not,
-why not? Maybe that should also have been explained in the commit
-message.
-
-2. Only enable -fsanitize=local-bounds if UBSAN_TRAP was selected, at
-least for as long as Clang traps for local-bounds. I think this makes
-sense either way, because if we do not expect UBSAN to trap, it really
-should not trap!
-
-3. Change the compiler. As always, this will take a while to implement
-and then to reach whoever should have that updated compiler.
-
-Preferences?
-
-Thanks,
--- Marco
