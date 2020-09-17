@@ -2,146 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAE4E26DFEC
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 17:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDBA926E018
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 17:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728129AbgIQPn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 11:43:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728239AbgIQPm7 (ORCPT
+        id S1728076AbgIQP4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 11:56:24 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:55182 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727959AbgIQPvA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 11:42:59 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAD69C061788
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 08:35:55 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id o5so2542902wrn.13
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 08:35:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=++KjjTeArkQUc6wTWp+OUexd5LFyCKXsX9i3O0Psxsg=;
-        b=vdIO7GRao1HIL7dDL5HmL7RgluYPLILqZijreSW8tI3heqpGROlE+g6JUvU8DgkyI9
-         6TRbJxmXdMuRcFA82d8pXd3KqM5j7x2k4VF0otEj9YS8sStZ7NYi+9Zhc46FRaWdD2gP
-         llkuK1ntu1GYTTlMyHPBP+HH4EzCrXnUtvklzb/PDqkmGQK4RyS4zghJkgC3we2Ld0xW
-         jUaxfCxYoyvRH/QdaHFxPor/58NzsYJaCw+Sm/AAhgw5/45wT+GtzNqM9qHorCwBDDTd
-         X+9CHr8U+PSeNMkaTn818RIsLuEevjd+mUn/9eGfmspJogTLkgloJG3WI9TZB94qfhGC
-         B+2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=++KjjTeArkQUc6wTWp+OUexd5LFyCKXsX9i3O0Psxsg=;
-        b=Lfor3WZGcuM9Shm6F5QMQKMEKTxvXmmJwkhfsEdCZmBR3hBqOBC5FZmyJjHbzc86PY
-         +/98FkwnweN2c45Begm1pOTB7PwQhqAwsyz/1C8ZkJZBP5j4RZz0xYrzeYaheWAvFJvz
-         5wKZZ2rGDI3zMOwwH1oTts9YOjPzQycD9amoaDnpOfvRjUgKPONAYilFmFcNaZKxXl79
-         fgvsG0uk8ArXm4VBuDOuotW7BNXmRl2YiTlb+CDAzaG041y/VhfU6IFG9pZuuhRvW7XG
-         j0wpSS/uaKIrJohwpRHSnN/qQRxMJ0AIJ+apJgn0LzJRkF6RJWAfPxco+H71gCsvp20r
-         kfOQ==
-X-Gm-Message-State: AOAM531XvYYHvfIFGSaQfSUdd5TJqLZDPrTfx5ot4QeBr0ovNY6VA1by
-        TeXIHCvE4jma3srCRw2BJje4coYTAX/MFnsIw5Q=
-X-Google-Smtp-Source: ABdhPJx+y5u32oEgAaxgCr4+qkhtdjMNEjLzBX2Y42T5/J7OajS6cvRPu2WGqZQFekeAyY44eKuWJ6ETVkhNYfMPRQs=
-X-Received: by 2002:adf:dd82:: with SMTP id x2mr34902393wrl.419.1600356954497;
- Thu, 17 Sep 2020 08:35:54 -0700 (PDT)
+        Thu, 17 Sep 2020 11:51:00 -0400
+Received: from [192.168.254.38] (unknown [47.187.206.220])
+        by linux.microsoft.com (Postfix) with ESMTPSA id B4CB020B7178;
+        Thu, 17 Sep 2020 08:36:03 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B4CB020B7178
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1600356964;
+        bh=QO+LfG0Faopxheg2cutvYRBT+pPhms6wveYLa1LgL+U=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=BFLuqVFA/BDQQm7DZtjpCvIA39dAw9ux6L9xLBXRs6zIIXnRN+iAbXLuSLqhrzA+k
+         BG7bFfSeOzurlviYcp2xoC7KmQR6uPkch48sGL+8ZSgMbTtNqSk+vcT3F4zKwn48wg
+         Rw5oLxGtZN7S6/Kam+IanR5OdBOQIIId/5GCFEoU=
+Subject: Re: [PATCH v2 0/4] [RFC] Implement Trampoline File Descriptor
+To:     Florian Weimer <fw@deneb.enyo.de>
+Cc:     kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, oleg@redhat.com,
+        x86@kernel.org, libffi-discuss@sourceware.org
+References: <20200916150826.5990-1-madvenka@linux.microsoft.com>
+ <87v9gdz01h.fsf@mid.deneb.enyo.de>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <96ea02df-4154-5888-1669-f3beeed60b33@linux.microsoft.com>
+Date:   Thu, 17 Sep 2020 10:36:02 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200917034610.21703-1-dawning.pang@gmail.com> <e4ac75c6-ce1f-7d4e-9402-82f499392521@amd.com>
-In-Reply-To: <e4ac75c6-ce1f-7d4e-9402-82f499392521@amd.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 17 Sep 2020 11:35:43 -0400
-Message-ID: <CADnq5_N4S9gOGPcgUzdkyF2svD3_4bxMyB=k9Px_ddyT-q3RTA@mail.gmail.com>
-Subject: Re: [PATCH v1] powerplay:hwmgr - modify the return value
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Xiaoliang Pang <dawning.pang@gmail.com>,
-        "Quan, Evan" <evan.quan@amd.com>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kenneth Feng <kenneth.feng@amd.com>,
-        zhengbin <zhengbin13@huawei.com>, pelle@vangils.xyz,
-        Yintian Tao <yttao@amd.com>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, Nirmoy Das <nirmoy.das@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Eric Huang <JinHuiEric.Huang@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <87v9gdz01h.fsf@mid.deneb.enyo.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 4:28 AM Christian K=C3=B6nig
-<christian.koenig@amd.com> wrote:
->
-> Am 17.09.20 um 05:46 schrieb Xiaoliang Pang:
-> > modify the return value is -EINVAL
->
-> Maybe better write something like "The correct return value should be
-> -EINVAL." With that done feel free to add my acked-by.
-
-Applied with updated commit message.
-
-Thanks!
-
-Alex
 
 
->
-> Christian.
->
-> >
-> > Fixes: f83a9991648bb("drm/amd/powerplay: add Vega10 powerplay support (=
-v5)")
-> > Fixes: 2cac05dee6e30("drm/amd/powerplay: add the hw manager for vega12 =
-(v4)")
-> > Cc: Eric Huang <JinHuiEric.Huang@amd.com>
-> > Cc: Evan Quan <evan.quan@amd.com>
-> > Signed-off-by: Xiaoliang Pang <dawning.pang@gmail.com>
-> > ---
-> >   drivers/gpu/drm/amd/powerplay/hwmgr/vega10_hwmgr.c | 2 +-
-> >   drivers/gpu/drm/amd/powerplay/hwmgr/vega12_hwmgr.c | 2 +-
-> >   2 files changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/amd/powerplay/hwmgr/vega10_hwmgr.c b/drive=
-rs/gpu/drm/amd/powerplay/hwmgr/vega10_hwmgr.c
-> > index c378a000c934..7eada3098ffc 100644
-> > --- a/drivers/gpu/drm/amd/powerplay/hwmgr/vega10_hwmgr.c
-> > +++ b/drivers/gpu/drm/amd/powerplay/hwmgr/vega10_hwmgr.c
-> > @@ -4659,7 +4659,7 @@ static int vega10_display_configuration_changed_t=
-ask(struct pp_hwmgr *hwmgr)
-> >       if ((data->water_marks_bitmap & WaterMarksExist) &&
-> >                       !(data->water_marks_bitmap & WaterMarksLoaded)) {
-> >               result =3D smum_smc_table_manager(hwmgr, (uint8_t *)wm_ta=
-ble, WMTABLE, false);
-> > -             PP_ASSERT_WITH_CODE(result, "Failed to update WMTABLE!", =
-return EINVAL);
-> > +             PP_ASSERT_WITH_CODE(result, "Failed to update WMTABLE!", =
-return -EINVAL);
-> >               data->water_marks_bitmap |=3D WaterMarksLoaded;
-> >       }
-> >
-> > diff --git a/drivers/gpu/drm/amd/powerplay/hwmgr/vega12_hwmgr.c b/drive=
-rs/gpu/drm/amd/powerplay/hwmgr/vega12_hwmgr.c
-> > index a678a67f1c0d..04da52cea824 100644
-> > --- a/drivers/gpu/drm/amd/powerplay/hwmgr/vega12_hwmgr.c
-> > +++ b/drivers/gpu/drm/amd/powerplay/hwmgr/vega12_hwmgr.c
-> > @@ -2390,7 +2390,7 @@ static int vega12_display_configuration_changed_t=
-ask(struct pp_hwmgr *hwmgr)
-> >                       !(data->water_marks_bitmap & WaterMarksLoaded)) {
-> >               result =3D smum_smc_table_manager(hwmgr,
-> >                                               (uint8_t *)wm_table, TABL=
-E_WATERMARKS, false);
-> > -             PP_ASSERT_WITH_CODE(result, "Failed to update WMTABLE!", =
-return EINVAL);
-> > +             PP_ASSERT_WITH_CODE(result, "Failed to update WMTABLE!", =
-return -EINVAL);
-> >               data->water_marks_bitmap |=3D WaterMarksLoaded;
-> >       }
-> >
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+On 9/16/20 8:04 PM, Florian Weimer wrote:
+> * madvenka:
+> 
+>> Examples of trampolines
+>> =======================
+>>
+>> libffi (A Portable Foreign Function Interface Library):
+>>
+>> libffi allows a user to define functions with an arbitrary list of
+>> arguments and return value through a feature called "Closures".
+>> Closures use trampolines to jump to ABI handlers that handle calling
+>> conventions and call a target function. libffi is used by a lot
+>> of different applications. To name a few:
+>>
+>> 	- Python
+>> 	- Java
+>> 	- Javascript
+>> 	- Ruby FFI
+>> 	- Lisp
+>> 	- Objective C
+> 
+> libffi does not actually need this.  It currently collocates
+> trampolines and the data they need on the same page, but that's
+> actually unecessary.  It's possible to avoid doing this just by
+> changing libffi, without any kernel changes.
+> 
+> I think this has already been done for the iOS port.
+> 
+
+The trampoline table that has been implemented for the iOS port (MACH)
+is based on PC-relative data referencing. That is, the code and data
+are placed in adjacent pages so that the code can access the data using
+an address relative to the current PC.
+
+This is an ISA feature that is not supported on all architectures.
+
+Now, if it is a performance feature, we can include some architectures
+and exclude others. But this is a security feature. IMO, we cannot
+exclude any architecture even if it is a legacy one as long as Linux
+is running on the architecture. So, we need a solution that does
+not assume any specific ISA feature.
+
+>> The code for trampoline X in the trampoline table is:
+>>
+>> 	load	&code_table[X], code_reg
+>> 	load	(code_reg), code_reg
+>> 	load	&data_table[X], data_reg
+>> 	load	(data_reg), data_reg
+>> 	jump	code_reg
+>>
+>> The addresses &code_table[X] and &data_table[X] are baked into the
+>> trampoline code. So, PC-relative data references are not needed. The user
+>> can modify code_table[X] and data_table[X] dynamically.
+> 
+> You can put this code into the libffi shared object and map it from
+> there, just like the rest of the libffi code.  To get more
+> trampolines, you can map the page containing the trampolines multiple
+> times, each instance preceded by a separate data page with the control
+> information.
+> 
+
+If you put the code in the libffi shared object, how do you pass data to
+the code at runtime? If the code we are talking about is a function, then
+there is an ABI defined way to pass data to the function. But if the
+code we are talking about is some arbitrary code such as a trampoline,
+there is no ABI defined way to pass data to it except in a couple of
+platforms such as HP PA-RISC that have support for function descriptors
+in the ABI itself.
+
+As mentioned before, if the ISA supports PC-relative data references
+(e.g., X86 64-bit platforms support RIP-relative data references)
+then we can pass data to that code by placing the code and data in
+adjacent pages. So, you can implement the trampoline table for X64.
+i386 does not support it.
+
+
+> I think the previous patch submission has also resulted in several
+> comments along those lines, so I'm not sure why you are reposting
+> this.
+
+IIRC, I have answered all of those comments by mentioning the point
+that we need to support all architectures without requiring special
+ISA features. Taking the kernel's help in this is one solution.
+
+
+> 
+>> libffi
+>> ======
+>>
+>> I have implemented my solution for libffi and provided the changes for
+>> X86 and ARM, 32-bit and 64-bit. Here is the reference patch:
+>>
+>> http://linux.microsoft.com/~madvenka/libffi/libffi.v2.txt
+> 
+> The URL does not appear to work, I get a 403 error.
+
+I apologize for that. That site is supposed to be accessible publicly.
+I will contact the administrator and get this resolved.
+
+Sorry for the annoyance.
+
+> 
+>> If the trampfd patchset gets accepted, I will send the libffi changes
+>> to the maintainers for a review. BTW, I have also successfully executed
+>> the libffi self tests.
+> 
+> I have not seen your libffi changes, but I expect that the complexity
+> is about the same as a userspace-only solution.
+> 
+> 
+
+I agree. The complexity is about the same. But the support is for all
+architectures. Once the common code is in place, the changes for each
+architecture are trivial.
+
+Madhavan
+
+> Cc:ing libffi upstream for awareness.  The start of the thread is
+> here:
+> 
+> <https://lore.kernel.org/linux-api/20200916150826.5990-1-madvenka@linux.microsoft.com/>
+> 
