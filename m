@@ -2,102 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 735E826E325
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E968426E327
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726576AbgIQSEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 14:04:42 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:43349 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726452AbgIQSE1 (ORCPT
+        id S1726551AbgIQSFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 14:05:11 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:50500 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726452AbgIQSEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 14:04:27 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 88A0E5C01A8;
-        Thu, 17 Sep 2020 14:04:14 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Thu, 17 Sep 2020 14:04:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=7VUzACW3o+6cNDJ3S+mM87r8DXh
-        kj/NUDh7FQ3+b6dw=; b=IbL8jc4Jp3PoBZc4BTkAhnE+X46z9FxTw1uK5EA8ecU
-        GzeN63qs/So8SD7gkgjDxRF65XWeW2038VwRCeO9icLO+nmcOvNYbIiO0xMJIUHn
-        UJeRZKRExSZHN9+I3uPMJcy1j9/E+kxXg2B8rMfbpW9GzPQZ0UN9bXOTcKhQyGnR
-        cF3D9s8a+n7RWtvSx+JYt5a3KdyeKXesm46PCHe5v9Hrj0SCMMj8RJmwk1xHtWfp
-        Sj60dMKaHYgB/9znbBai1uKULA75vMT6ElMphCbBZraa8XoMRRWJ3B8FtIWIvn0f
-        3lltKEMRgHIVkXdEuQ4X4OLDqwEbNeHgkJAsxMZjLTQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=7VUzAC
-        W3o+6cNDJ3S+mM87r8DXhkj/NUDh7FQ3+b6dw=; b=FFE1l4n+yPi8zXSp0qU6l6
-        Ee/L73SWpiBJgmwZSgtiphFIhl0FsVBHXdwOyRQFUlTnjygPCJjTr42qyiwCwObJ
-        8lYHBdJvujEL6+v4DVEC7VB9ioNzmLcjRNnPlZTIZTpcQloNGPkQAlfrUHZ8ootw
-        3frT2nBXOinYrtLP9FRzL9WLMl98MuzmW47ZN95keYcCzGrxW+4KwJ6Y9xo5oSlY
-        jlExrTRuT8q7t7dnj5HGaGfd7DzqpT8Gc5rWA3QkUeneU8XHD6xKpab8iOYqNAvA
-        ol25RZlxcT9ffwQm7HW06GSdynscc4sM/COfkhBRvgwySzXnWZRD9m+WDJn6LD5A
-        ==
-X-ME-Sender: <xms:G6VjX6tWm6JZ9U9KQ7H4bzteR8tpgg5fPx1-nB95_ADkAGeDXSPR3g>
-    <xme:G6VjX_ekm0Mg1_HZxPXypoWKaYYY19ieMeJHMcnVigi9gN0zYbVYGishpfj0kssZt
-    DeDwNZEbYDP2A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrtdeggdduvddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
-    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:G6VjX1x_j9woSPdtqRBR4gn6bV-RrZ2KR29R3Nf5O-tDNcm4q9N1RQ>
-    <xmx:G6VjX1NOOUumCHHwITKbxt9Y59kl1LoBfu2gzaGebptWifgypqf5tw>
-    <xmx:G6VjX6-vjO6OWFFqgLCrNYXVTVcoXy4sLTKSOuGzSrIv5a8KJ4ignw>
-    <xmx:HqVjXxbPP3s_fs0p2b8mUrwTOKjh1CgpXtPfo9gKJ4-y_cNGZqEoNg>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id C5D0A3064687;
-        Thu, 17 Sep 2020 14:04:10 -0400 (EDT)
-Date:   Thu, 17 Sep 2020 20:04:43 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the jc_docs tree with the spdx tree
-Message-ID: <20200917180443.GA871678@kroah.com>
-References: <20200917121656.4116529b@canb.auug.org.au>
+        Thu, 17 Sep 2020 14:04:54 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08HI4Pwo132430;
+        Thu, 17 Sep 2020 18:04:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=AgmV/y+LF8mXPDnVjEBzoGjKPMcGmk0BeS1TT7N1nXQ=;
+ b=J3kw/L3t1HES2NX9hsXCa/y7nyYfKql3XreB51IpzdGc/I+YTgq4uDzz7k+wTt9nOJXc
+ TrxsCWUaD2bpZ7LWI95LBshOH6KMpPU+uH0i+4FtjOGE+tzP/DdWPjBCZ/DHfQzskcGd
+ I8P+NNZ3ywTllionkEjjkMB+KfeizPAh01Rh2nvRi3b+Qu5tsM1YZBgSZButSqrpqCTR
+ ms43NfmZ8JzNTGTku0ziuXAXXsVGlH2VygBg1ZVadRxsd2O4V1V0fbk5/VnHSOmTIGAO
+ AxEWpuUMrpbZwdu9nojfahpX4vmVL+6hSwhbsVPk4dk3fQu8ruKe6SiY41tKBJzaY5ZC 8Q== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 33j91dvjh5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 17 Sep 2020 18:04:49 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08HHxv6g009853;
+        Thu, 17 Sep 2020 18:04:49 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 33hm359ngk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 17 Sep 2020 18:04:48 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08HI4lV4024534;
+        Thu, 17 Sep 2020 18:04:47 GMT
+Received: from [10.74.106.99] (/10.74.106.99)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 17 Sep 2020 18:04:47 +0000
+Subject: Re: [PATCH] dt-bindings: soc: ti: ti,pruss: fix schema ID
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Roger Quadros <rogerq@ti.com>,
+        Suman Anna <s-anna@ti.com>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200917070543.19064-1-krzk@kernel.org>
+ <CAMxfBF5WWQX3ZH0YcRZ_N8q4njTdG-RA4eM+zyQwmK7tYvw6DQ@mail.gmail.com>
+ <CAJKOXPfd9iWHDNo9v=COroD_wuYL0xmOkRt-63WS_7G3As=kXQ@mail.gmail.com>
+From:   santosh.shilimkar@oracle.com
+Organization: Oracle Corporation
+Message-ID: <e022fdc2-f33d-da13-fb35-b3c04d38e736@oracle.com>
+Date:   Thu, 17 Sep 2020 11:04:45 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917121656.4116529b@canb.auug.org.au>
+In-Reply-To: <CAJKOXPfd9iWHDNo9v=COroD_wuYL0xmOkRt-63WS_7G3As=kXQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9747 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxlogscore=999
+ malwarescore=0 mlxscore=0 phishscore=0 adultscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009170134
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9747 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
+ priorityscore=1501 malwarescore=0 suspectscore=0 mlxlogscore=999
+ clxscore=1011 adultscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009170135
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 12:16:56PM +1000, Stephen Rothwell wrote:
-> Hi all,
+On 9/17/20 1:35 AM, Krzysztof Kozlowski wrote:
+> On Thu, 17 Sep 2020 at 10:32, Grzegorz Jaszczyk
+> <grzegorz.jaszczyk@linaro.org> wrote:
+>>
+>> On Thu, 17 Sep 2020 at 09:05, Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>>>
+>>> Add missing '#' to fix schema errors:
+>>>
+>>>    $id: 'https://urldefense.com/v3/__http://devicetree.org/schemas/soc/ti/ti,pruss.yaml__;!!GqivPVa7Brio!NF67-KbyQr0smc7iM86dsdgoOaQrQRN4F2aNdLndleTjLn6BhqrmDBL4ekWiVIG6IBFwLA$ ' does not match 'https://urldefense.com/v3/__http://devicetree.org/schemas/.**A5C*5C.yaml*__;KiUlIw!!GqivPVa7Brio!NF67-KbyQr0smc7iM86dsdgoOaQrQRN4F2aNdLndleTjLn6BhqrmDBL4ekWiVIGpNPP7ig$ '
+>>>    $schema: 'https://urldefense.com/v3/__http://devicetree.org/meta-schemas/core.yaml__;!!GqivPVa7Brio!NF67-KbyQr0smc7iM86dsdgoOaQrQRN4F2aNdLndleTjLn6BhqrmDBL4ekWiVIEdWH0Bzw$ ' is not one of ['https://urldefense.com/v3/__http://devicetree.org/meta-schemas/core.yaml*__;Iw!!GqivPVa7Brio!NF67-KbyQr0smc7iM86dsdgoOaQrQRN4F2aNdLndleTjLn6BhqrmDBL4ekWiVIHcNI2bOQ$ ', 'https://urldefense.com/v3/__http://devicetree.org/meta-schemas/base.yaml*__;Iw!!GqivPVa7Brio!NF67-KbyQr0smc7iM86dsdgoOaQrQRN4F2aNdLndleTjLn6BhqrmDBL4ekWiVIFH0HvA-g$ ']
+>>>    Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml: ignoring, error in schema: $id
+>>>
+>>> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+>>> ---
+>>>   Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml | 4 ++--
+>>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml b/Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
+>>> index cf7dc83f724f..037c51b2f972 100644
+>>> --- a/Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
+>>> +++ b/Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
+>>> @@ -1,8 +1,8 @@
+>>>   # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>>   %YAML 1.2
+>>>   ---
+>>> -$id: https://urldefense.com/v3/__http://devicetree.org/schemas/soc/ti/ti,pruss.yaml__;!!GqivPVa7Brio!NF67-KbyQr0smc7iM86dsdgoOaQrQRN4F2aNdLndleTjLn6BhqrmDBL4ekWiVIG6IBFwLA$
+>>> -$schema: https://urldefense.com/v3/__http://devicetree.org/meta-schemas/core.yaml__;!!GqivPVa7Brio!NF67-KbyQr0smc7iM86dsdgoOaQrQRN4F2aNdLndleTjLn6BhqrmDBL4ekWiVIEdWH0Bzw$
+>>> +$id: https://urldefense.com/v3/__http://devicetree.org/schemas/soc/ti/ti,pruss.yaml*__;Iw!!GqivPVa7Brio!NF67-KbyQr0smc7iM86dsdgoOaQrQRN4F2aNdLndleTjLn6BhqrmDBL4ekWiVIHAb7bLvA$
+>>> +$schema: https://urldefense.com/v3/__http://devicetree.org/meta-schemas/core.yaml*__;Iw!!GqivPVa7Brio!NF67-KbyQr0smc7iM86dsdgoOaQrQRN4F2aNdLndleTjLn6BhqrmDBL4ekWiVIHcNI2bOQ$
+>>
+>> I've double checked and "#" was present in the original patch sent and
+>> ack for upstream: https://urldefense.com/v3/__https://patchwork.kernel.org/patch/11729649/__;!!GqivPVa7Brio!NF67-KbyQr0smc7iM86dsdgoOaQrQRN4F2aNdLndleTjLn6BhqrmDBL4ekWiVIEaRPpx1g$
+>> It seems like something got wrong on linux-next but this is the only
+>> diff between original patch and one found in linux-next. Thank you for
+>> taking care of it.
 > 
-> Today's linux-next merge of the jc_docs tree got a conflict in:
+> Indeed that's weird. It must get lost when applying...
 > 
->   MAINTAINERS
-> 
-> between commit:
-> 
->   951f3e9f2086 ("net/qla3xxx: Convert to SPDX license identifiers")
-> 
-> from the spdx tree and commit:
-> 
->   51652804d018 ("MAINTAINERS: fix location of qlogic/LICENSE.qla3xxx")
-> 
-> from the jc_docs tree.
-> 
-> I fixed it up (I used the former - which removed the line updated by the
-> latter) and can carry the fix as necessary. This is now fixed as far as
-> linux-next is concerned, but any non trivial conflicts should be mentioned
-> to your upstream maintainer when your tree is submitted for merging.
-> You may also want to consider cooperating with the maintainer of the
-> conflicting tree to minimise any particularly complex conflicts.
-
-Merge is fine, thanks!
-
-greg k-h
+These URLs get mangled sometimes and I needed to fix them. Will fix the
+original commit. Thanks for reporting.
