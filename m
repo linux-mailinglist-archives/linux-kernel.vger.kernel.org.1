@@ -2,160 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F31026DB4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07AC426DB59
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726819AbgIQMPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 08:15:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35055 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726766AbgIQMPB (ORCPT
+        id S1726605AbgIQMRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 08:17:16 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:41910 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726611AbgIQMP3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 08:15:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600344899;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EP9WEZ46YHNtdW0HPtYLcHBIcBFzJYSz8/bOvDElUN4=;
-        b=avP4PIahcYpro6vATTHscv5IcSJ7vFLZekh+IgdkjN0cS5PLQmqgOpTPdkm3iUlUqhzsFi
-        JvNoEPzkV4xfPDnFf6M3qAfq2eJnaXOWX8XBhk1HrZc7JKQDVY2Y1Ofl7g+Pf4Iyy+VB+t
-        wQwObIUL9OoGBNjoCHbC8A/dCDq3EIo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-239-5Tm4eSR-P1qnKjmrHrE4Rw-1; Thu, 17 Sep 2020 08:14:57 -0400
-X-MC-Unique: 5Tm4eSR-P1qnKjmrHrE4Rw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 140D41084C81;
-        Thu, 17 Sep 2020 12:14:55 +0000 (UTC)
-Received: from gondolin (ovpn-113-19.ams2.redhat.com [10.36.113.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3D24B75261;
-        Thu, 17 Sep 2020 12:14:45 +0000 (UTC)
-Date:   Thu, 17 Sep 2020 14:14:42 +0200
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
-        mjrosato@linux.ibm.com, pasic@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v10 04/16] s390/zcrypt: driver callback to indicate
- resource in use
-Message-ID: <20200917141442.6e531799.cohuck@redhat.com>
-In-Reply-To: <fe3ba715-8ea7-45df-4144-d1f5dec38a45@linux.ibm.com>
-References: <20200821195616.13554-1-akrowiak@linux.ibm.com>
-        <20200821195616.13554-5-akrowiak@linux.ibm.com>
-        <20200914172947.533ddf56.cohuck@redhat.com>
-        <fe3ba715-8ea7-45df-4144-d1f5dec38a45@linux.ibm.com>
-Organization: Red Hat GmbH
+        Thu, 17 Sep 2020 08:15:29 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08HCEqlZ040922;
+        Thu, 17 Sep 2020 07:14:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600344892;
+        bh=cGd0Zeuy4+fUXyw2xolJhUi55PGX5GYAQgVtJo/AyC4=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=E6UgGNdeQX6dbpJ4gAkJ65gVnBRDaQ9Skax2apqdMdlFOvb9W8bL+Z0iofqK932j4
+         adlW/Pt/M8ZfCEU/ZUrW+PB/KDMCrGICol8hrwIlEpbeS3nqjkiOxMysyNcn3L9P8t
+         p8m6LibnfbctlgKpdbhq1uONMaoL/5PHMV5Bxz5w=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08HCEqq6085548
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 17 Sep 2020 07:14:52 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 17
+ Sep 2020 07:14:52 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 17 Sep 2020 07:14:52 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08HCEpmP058482;
+        Thu, 17 Sep 2020 07:14:51 -0500
+Date:   Thu, 17 Sep 2020 07:14:51 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Roger Quadros <rogerq@ti.com>
+CC:     Peter Rosin <peda@axentia.se>, <t-kristo@ti.com>,
+        <robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <nsekhar@ti.com>,
+        <kishon@ti.com>
+Subject: Re: [PATCH v3 1/6] dt-bindings: mux-j7200-wiz: Add lane function
+ defines
+Message-ID: <20200917121451.mp4pdld5w6qkv6d3@akan>
+References: <20200915112038.30219-1-rogerq@ti.com>
+ <20200915112038.30219-2-rogerq@ti.com>
+ <e28e98a0-f3fc-29bd-d7a6-cc45f3a69ede@axentia.se>
+ <20200916154536.m552ft2jzfsaeokr@akan>
+ <08c84d02-abe1-8399-50fb-9268c7130f8a@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <08c84d02-abe1-8399-50fb-9268c7130f8a@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Sep 2020 15:32:35 -0400
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
-
-> On 9/14/20 11:29 AM, Cornelia Huck wrote:
-> > On Fri, 21 Aug 2020 15:56:04 -0400
-> > Tony Krowiak <akrowiak@linux.ibm.com> wrote:
-> >  
-> >> Introduces a new driver callback to prevent a root user from unbinding
-> >> an AP queue from its device driver if the queue is in use. The intent of
-> >> this callback is to provide a driver with the means to prevent a root user
-> >> from inadvertently taking a queue away from a matrix mdev and giving it to
-> >> the host while it is assigned to the matrix mdev. The callback will
-> >> be invoked whenever a change to the AP bus's sysfs apmask or aqmask
-> >> attributes would result in one or more AP queues being removed from its
-> >> driver. If the callback responds in the affirmative for any driver
-> >> queried, the change to the apmask or aqmask will be rejected with a device
-> >> in use error.
-> >>
-> >> For this patch, only non-default drivers will be queried. Currently,
-> >> there is only one non-default driver, the vfio_ap device driver. The
-> >> vfio_ap device driver facilitates pass-through of an AP queue to a
-> >> guest. The idea here is that a guest may be administered by a different
-> >> sysadmin than the host and we don't want AP resources to unexpectedly
-> >> disappear from a guest's AP configuration (i.e., adapters, domains and
-> >> control domains assigned to the matrix mdev). This will enforce the proper
-> >> procedure for removing AP resources intended for guest usage which is to
-> >> first unassign them from the matrix mdev, then unbind them from the
-> >> vfio_ap device driver.
-> >>
-> >> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> >> Reported-by: kernel test robot <lkp@intel.com>  
-> > This looks a bit odd...  
+On 15:00-20200917, Roger Quadros wrote:
+> Hi Peter & Nishanth,
 > 
-> I've removed all of those. These kernel test robot errors were flagged
-> in the last series. The review comments from the robot suggested
-> the reported-by, but I assume that was for patches intended to
-> fix those errors, so I am removing these as per Christian's comments.
+> On 16/09/2020 18:45, Nishanth Menon wrote:
+> > On 06:52-20200916, Peter Rosin wrote:
+> > > Hi,
+> > > 
+> > > Sorry for the delay.
+> > > 
+> > > On 2020-09-15 13:20, Roger Quadros wrote:
+> > > > Each SERDES lane mux can select upto 4 different IPs.
+> > > > There are 4 lanes in each J7200 SERDES. Define all
+> > > > the possible functions in this file.
+> > > > 
+> > > > Cc: Peter Rosin <peda@axentia.se>
+> > > > Signed-off-by: Roger Quadros <rogerq@ti.com>
+> > > > ---
+> > > >   include/dt-bindings/mux/mux-j7200-wiz.h | 29 +++++++++++++++++++++++++
+> > > >   1 file changed, 29 insertions(+)
+> > > >   create mode 100644 include/dt-bindings/mux/mux-j7200-wiz.h
+> > > > 
+> > > > diff --git a/include/dt-bindings/mux/mux-j7200-wiz.h b/include/dt-bindings/mux/mux-j7200-wiz.h
+> > > > new file mode 100644
+> > > > index 000000000000..b091b1185a36
+> > > > --- /dev/null
+> > > > +++ b/include/dt-bindings/mux/mux-j7200-wiz.h
+> > > > @@ -0,0 +1,29 @@
+> > > > +/* SPDX-License-Identifier: GPL-2.0 */
+> > > > +/*
+> > > > + * This header provides constants for J7200 WIZ.
+> > > > + */
+> > > > +
+> > > > +#ifndef _DT_BINDINGS_J7200_WIZ
+> > > > +#define _DT_BINDINGS_J7200_WIZ
+> > > > +
+> > > > +#define SERDES0_LANE0_QSGMII_LANE3	0x0
+> > > > +#define SERDES0_LANE0_PCIE1_LANE0	0x1
+> > > > +#define SERDES0_LANE0_IP3_UNUSED	0x2
+> > > > +#define SERDES0_LANE0_IP4_UNUSED	0x3
+> > > > +
+> > > > +#define SERDES0_LANE1_QSGMII_LANE4	0x0
+> > > > +#define SERDES0_LANE1_PCIE1_LANE1	0x1
+> > > > +#define SERDES0_LANE1_IP3_UNUSED	0x2
+> > > > +#define SERDES0_LANE1_IP4_UNUSED	0x3
+> > > > +
+> > > > +#define SERDES0_LANE2_QSGMII_LANE1	0x0
+> > > > +#define SERDES0_LANE2_PCIE1_LANE2	0x1
+> > > > +#define SERDES0_LANE2_IP3_UNUSED	0x2
+> > > > +#define SERDES0_LANE2_IP4_UNUSED	0x3
+> > > > +
+> > > > +#define SERDES0_LANE3_QSGMII_LANE2	0x0
+> > > > +#define SERDES0_LANE3_PCIE1_LANE3	0x1
+> > > > +#define SERDES0_LANE3_USB		0x2
+> > > > +#define SERDES0_LANE3_IP4_UNUSED	0x3
+> > > > +
+> > > > +#endif /* _DT_BINDINGS_J7200_WIZ */
+> > > 
+> > > Should not the defines start with J7200_WIZ? SERDES0 seems like a too
+> > > generic prefix, at least to me.
+> > 
+> > Thanks, good point. I am not sure if WIZ should even be used.. It is
+> > a TI internal prefix for various serdes solutions, but I agree that
+> > SERDES0 is too generic a terminology. That said, we should cleanup
+> > include/dt-bindings/mux/mux-j721e-wiz.h as well, prior to introducing
+> > j7200 changes.
+> > 
+> 
+> I'm planning to put all TI SERDES definitions in one header file "ti-serdes-mux.h"
+> and add SOC specific prefixes to the macros.
+> 
+> This will mean some churn in the existing DT files. (only 2 so far)
 
-Yes, I think the Reported-by: mostly makes sense if you include a patch
-to fix something on top.
+Please check bindings and examples if any reference as well. Those
+changes will need to be considered as well.
 
 > 
-> >  
-> >> ---
-> >>   drivers/s390/crypto/ap_bus.c | 148 ++++++++++++++++++++++++++++++++---
-> >>   drivers/s390/crypto/ap_bus.h |   4 +
-> >>   2 files changed, 142 insertions(+), 10 deletions(-)
-> >>  
-> > (...)
-> >  
-> >> @@ -1107,12 +1118,70 @@ static ssize_t apmask_show(struct bus_type *bus, char *buf)
-> >>   	return rc;
-> >>   }
-> >>   
-> >> +static int __verify_card_reservations(struct device_driver *drv, void *data)
-> >> +{
-> >> +	int rc = 0;
-> >> +	struct ap_driver *ap_drv = to_ap_drv(drv);
-> >> +	unsigned long *newapm = (unsigned long *)data;
-> >> +
-> >> +	/*
-> >> +	 * No need to verify whether the driver is using the queues if it is the
-> >> +	 * default driver.
-> >> +	 */
-> >> +	if (ap_drv->flags & AP_DRIVER_FLAG_DEFAULT)
-> >> +		return 0;
-> >> +
-> >> +	/* The non-default driver's module must be loaded */
-> >> +	if (!try_module_get(drv->owner))
-> >> +		return 0;
-> >> +
-> >> +	if (ap_drv->in_use)
-> >> +		if (ap_drv->in_use(newapm, ap_perms.aqm))
-> >> +			rc = -EADDRINUSE;  
-> > ISTR that Christian suggested -EBUSY in a past revision of this series?
-> > I think that would be more appropriate.  
+> Are you guys OK if I do the change in one patch to avoid a broken build in between.
+> You guys can then decide whose tree it goes through.
 > 
-> I went back and looked and sure enough, he did recommend that.
-> You have a great memory! I didn't respond to that comment, so I
-> must have missed it at the time.
-> 
-> I personally prefer EADDRINUSE because I think it is more indicative
-> of the reason an AP resource can not be assigned back to the host
-> drivers is because it is in use by a guest or, at the very least, reserved
-> for use by a guest (i.e., assigned to an mdev). To say it is busy implies
-> that the device is busy performing encryption services which may or
-> may not be true at a given moment. Even if so, that is not the reason
-> for refusing to allow reassignment of the device.
+> The new SoC addition will be separate of course.
 
-I have a different understanding of these error codes: EADDRINUSE is
-something used in the networking context when an actual address is
-already used elsewhere. EBUSY is more of a generic error that indicates
-that a certain resource is not free to perform the requested operation;
-it does not necessarily mean that the resource is currently actively
-doing something. Kind of when you get EBUSY when trying to eject
-something another program holds a reference on: that other program
-might not actually be doing anything, but it potentially could.
+If Peter acks and is OK with the changes, then based on Peter's opinion,
+I'd rather take the changes via SoC tree for 5.10+ for maintaining
+bisectability.
 
+I prefer we name it ti-serdes-mux or something that Peter is OK with as
+well. reasons:
+
+i) "wiz" is yet another TLA deal even if documented in public TI TRM in some
+   remote chapter, other non-TI folks are going to go scratching their
+   heads..
+ii) There is no way this can scale with one header per SoC!
+
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
