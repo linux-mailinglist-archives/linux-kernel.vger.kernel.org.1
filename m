@@ -2,125 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C87E026D769
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 11:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C85A326D76F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 11:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726336AbgIQJMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 05:12:38 -0400
-Received: from mail-eopbgr20072.outbound.protection.outlook.com ([40.107.2.72]:40510
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726171AbgIQJMh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 05:12:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YUDprUzKpGmsGasaIsOBEUCZ40UKNys4XuIHKif9u80zhPCphsWNd39DPw8RSDlBl58uzOcfl+s0efjZnDzpxACZ4Umd3INspe+ay6OKLvsQczFRSy9kzUlY6gZ4JYod4UEydVhZpOHq35jt0w8GR7a7OAY+9osuv9Ve3y5bLOH35GOrrXeLIC4/d4Pyt8isW+lGZJoTqGgygB7Z71ipzgvJSuXYBQKymhuGf/W56CH7Ue6+RokIJihZDZjzTP5O7+xL/PriK4w775O8IW4yRCzBI+/dgtSb5ilAZIDt1FCrHFz8vtqhG8DLFYEQJZ/ESaQQfD3+OcbytD/FgJOwHQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CG854cfah+9raoJ+bHgls0Yatt8PYLA/zjuYZNdoVFw=;
- b=bDNT9jM0eIZQpUxFriD+7g2qRP4HVU0ByjYnrPI5Upvk96OHNhr2XZzfvhRMY9KoCq6mEX2ykrvoTCdhDEz16sypnoS8orvdBYGGLjgkd0O17Xh7yEmNoGLzJvpkUidKDKC84J8RrxL0l4mZk2v+h1o3A6dPk7kst/53eZhyFkUHIvrqy8MidtkBqzyDbAOYNJ75jYBbhKzK7YKdwqoNnyANV+MpDMj8Og4SDBNUVOJOjRMTwkMGUVkugJH/kHaDaOonfP9Q+397XICEewmAzsKYoN4pZc6UE6OK1EAcpNaliyaSiptUZs2B/COEhVV44zDYLml0EpDVxAKuvN6s8Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CG854cfah+9raoJ+bHgls0Yatt8PYLA/zjuYZNdoVFw=;
- b=Qkxq1ONLGkG3hKfKF/1MaftDPHTd1EhD4QV9zYjY4RF44foCrnJ8PSzw5woz/6PORGMSM3N+VIutBLGrZy9r0tKJ2cxWLljyy0UbuQSPTqhPjcOgnxd6nBzld2Rfnh28NZhf+gMNe9TPMa7QHirkPe7VUMw4bWrMODpi6c2KBIA=
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
- by DB8PR04MB6971.eurprd04.prod.outlook.com (2603:10a6:10:113::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Thu, 17 Sep
- 2020 09:12:32 +0000
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::d12e:689a:169:fd68]) by DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::d12e:689a:169:fd68%8]) with mapi id 15.20.3391.011; Thu, 17 Sep 2020
- 09:12:32 +0000
-From:   Joakim Zhang <qiangqing.zhang@nxp.com>
-To:     Sean Young <sean@mess.org>
-CC:     "mchehab@kernel.org" <mchehab@kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH] media: rc: gpio-ir-recv: add QoS support for cpuidle
- system
-Thread-Topic: [PATCH] media: rc: gpio-ir-recv: add QoS support for cpuidle
- system
-Thread-Index: AQHWiy4MW1TKQEfe6k2eA6q7pgHUfqlpcD0AgAMT72A=
-Date:   Thu, 17 Sep 2020 09:12:32 +0000
-Message-ID: <DB8PR04MB6795CB9F519D2BD277654B29E63E0@DB8PR04MB6795.eurprd04.prod.outlook.com>
-References: <20200915150202.24165-1-qiangqing.zhang@nxp.com>
- <20200915093342.GA24139@gofer.mess.org>
-In-Reply-To: <20200915093342.GA24139@gofer.mess.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: mess.org; dkim=none (message not signed)
- header.d=none;mess.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.71]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 9b8e55a4-91f6-449e-ccc3-08d85ae9cf3e
-x-ms-traffictypediagnostic: DB8PR04MB6971:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB8PR04MB69717FBFF44A4CCE9FB108C6E63E0@DB8PR04MB6971.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2733;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2kzS6JdHB3bnGw+WM0+vSIudfXwGeKDzj5RFhsJUJ6gpJcwHhqq6f01ht4fgBPBMfIs0mmJoz9F1RR1a4jYuiga7bToHeMeoSCfxslGo6587oxASDx5K7zHWnoXbP12rQA0cYHYt9mu0RBL0LUgPkrQIjJ49gtMsjGqtvgWYM+bW4Bi6cNA0QTdjtzC4kLVFVJGaELJYoczFCDDJCE5IPPe1PlOtP9SlmX/2YZf/POsf9vqc0h/z+VgtnoiqI2xPKFXPfTuYX5037s1pxVLP1FcOzHEqzjAJKQg1hHFpP4ZpujsU5rFQxO95JAJqTCJBK5jUNtHf/6ajWFDOEayB7Q==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(346002)(366004)(396003)(66446008)(26005)(9686003)(33656002)(186003)(64756008)(66556008)(83380400001)(66476007)(66946007)(52536014)(5660300002)(71200400001)(76116006)(6506007)(53546011)(316002)(54906003)(86362001)(6916009)(478600001)(4326008)(55016002)(8936002)(8676002)(2906002)(7696005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: W7LBWnpcH3oLYCe/NDaQPtNkxDw+jHW/osQQ8Z6pQddoFBWlI3CrrCFfw8nLq9PxuTV7qbKKemTH35SWzzf7jtdmUYb0rLFy92lO419W88kpvAqX+31R9qpAtb+cChvLjDBi8rGq9kTjVkgE47kj4H25BKPYJf8cBV90fBbw4PmWQRLhdH3Q9mu0VK+CKI3Q4pEkVuQTLGI5ja4lieD3uwu91LXBgv0E+0GhMZ31N4Vls78lghlFXDRCxRVgpPl2VSSj0xd2HSrRQ/GQvy0RsZI2xehl/WW7ECvGcjy4x9yOqgu1Et854ta0R+1wGr+MwzAbws6VHPn1bbJKxvtDBYSU/XIIiAl5AUclmbM0/+MBbVB2xcIJfMYjmKoafvJbMsOmv51TmIyikkZy5ADCnIjLkSTbWwOSPaRXZ0YXdxCHzRcdtp0oLIdCXfYmFK/uD+YKCrkyLsHvm/Dwj1get38+fOuyz2HmfI3dFgNyeNRWvhUt13CvTCNXjwSHbif9Y76Wyi8PHtgzOfy5StOIrf4n6+VW7QJ3Dvo6inaoAwWTM5gvtCb49mJDrpupxgx5ql/S29mix/v7A+9yOV9AJBTd+r+zjgsM8Vf4yafmnX+0D3HJJpxfQHGy4sxcFwDDd+77GbKjPXsaj112uN4jGg==
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S1726171AbgIQJNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 05:13:43 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:43863 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726340AbgIQJNm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 05:13:42 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200917091339euoutp01f5a0b2533e87d36f804c8033a30bff8c~1h0-uBWaN0979909799euoutp01B
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 09:13:39 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200917091339euoutp01f5a0b2533e87d36f804c8033a30bff8c~1h0-uBWaN0979909799euoutp01B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1600334020;
+        bh=B/62Rlrgs6pTDct1H3Yfp3nsJVLyqEOvjMmYhqZfxYc=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=qvjfQDUTWO9qZ3uJYCRYSbQM0rqk5JEKtJOweo/2Trw2HIRwzJt55wUnApEtQ2ZgO
+         /TrBU8ktxYhFFSVNcYdlWPrZT22kOf9UqhSFd6DX5Y2+z2ye4IvzIGAw7KfINaiXtI
+         vRmCewpwUFVR9lbsood6viaBy3lyhxgeLAe7Ode0=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200917091339eucas1p1e8123965c945be5992653c6bdec3baa3~1h0-JKfuP2623126231eucas1p1s;
+        Thu, 17 Sep 2020 09:13:39 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 9D.4D.06318.3C8236F5; Thu, 17
+        Sep 2020 10:13:39 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200917091338eucas1p17216de760da67b46756b316cb19650f5~1h0_0Xzh51720917209eucas1p1W;
+        Thu, 17 Sep 2020 09:13:38 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200917091338eusmtrp1f5fc53ec7f3b7578406d8353537b6919~1h0_zhLnE2872328723eusmtrp1j;
+        Thu, 17 Sep 2020 09:13:38 +0000 (GMT)
+X-AuditID: cbfec7f5-38bff700000018ae-89-5f6328c309dd
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 58.74.06017.2C8236F5; Thu, 17
+        Sep 2020 10:13:38 +0100 (BST)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200917091337eusmtip2b226949d24ee4419ce57ab15598613a5~1h09r_BlF1866518665eusmtip2H;
+        Thu, 17 Sep 2020 09:13:37 +0000 (GMT)
+Subject: Re: [PATCH v3 08/16] irqchip/gic: Configure SGIs as standard
+ interrupts
+To:     Jon Hunter <jonathanh@nvidia.com>, Marc Zyngier <maz@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>,
+        kernel-team@android.com, Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Saravana Kannan <saravanak@google.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <54318b15-cfa4-1460-1e8b-049da2ab2bda@samsung.com>
+Date:   Thu, 17 Sep 2020 11:13:37 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.12.0
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9b8e55a4-91f6-449e-ccc3-08d85ae9cf3e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Sep 2020 09:12:32.2968
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: QD9aK6HxYL+umZLGlDrLuOWG5RsUHJdz59SZegDfPH+SROXSZuSM5TbHkpCRSDi3sWUXhKCh39OCqkj0Aqst/w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6971
+In-Reply-To: <bec733a1-227f-d943-90dd-85fc9a993109@nvidia.com>
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Sa0hTYRjmO+fs7DhanS3DF4vCQVJBF7Hg60LY5ccJsisUCGXTTlNyM3a0
+        soK0SenSykrU4/ISZiWadSx1FcNWuXS0hQPLW5nZRSm7qD8qi9yOlf+e932e93ueBz6G1Nro
+        UCbRlMKbTfokHa2i6pu/exY+nBcfu6TyowZ7e5wkvlVYq8CfK3MQ/jH0SIlt19JwRoWPwpni
+        ZQo3NgRjr/emEl8cu0pg6U27Avvu2mhc6HUQOHtEpHGXT43tthYFtjp/0fiG4wyN66R8EjeU
+        fidxZveyqBlc/b16BVddUo24TEsOzZVUH+XsYo+SK5NSOakqm+bSm7wU191+n+aGPB4lV1dx
+        nLM3DhNcrmWI5s7crkLcsDR7y7QY1aq9fFLiQd68ePUeVcKrbyXEgd7gw73vN6ejCo0VBTHA
+        LoXHpz5SVqRitOw1BB++jhB+QsuOIKjpWScTwwiKW38q/148t55TyMRVBC878iaGzwgyRn+R
+        ftV0dhv0nM5DfhzMrocTfTUBEckW0CB9+UL5CZqNAOsnK+3HanY12JqkgDfFzoUOR1HgoRns
+        bmhu7aNkjQZaivoDOGhc315THMAkOwcsd4pJGYdAZ38p4TcD9hkD0tlOQs69Hhqut010mA6D
+        rtsTeBa4L+RQ8oEFwWtPjVIechD4ThQiWbUSuj0/xqMy4xbzofbuYnm9Bgazrij8a2CnwotP
+        GjnEVDhfX0DKazVkndTK6nAQXTf+2T541kaeQzpxUjVxUh1xUh3xv28ZoqpQCJ8qGA28EGni
+        Dy0S9EYh1WRYFJ9slND4n3X/do02IsdYnBOxDNJNUTMQF6tV6A8KaUYnAobUBavXPnXv1qr3
+        6tOO8ObkWHNqEi840UyG0oWoIy8P7NKyBn0Kv5/nD/DmvyzBBIWmo9bHZckJA62zrmfbo5a/
+        TZ7f0RG2NCxO9bNw2GCKGBPW5mXc62sp25rbhejaunebUkqNLvexV4bGsRTN6SpVRnjcgGXF
+        JV+Wmai8FBMfXS5mX3HXctv78tJORQ9ujYl6sqO/rTx3Nq8Ncw1UdyfY9+W79fc3PIoP3yiZ
+        SfWoY6eOEhL0EQtIs6D/A/Wh/GivAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0hTURyAO/e1Ga6uc9JJImvQA6vptLVj5IgecCGiF/ZOW3pR0W1x7yaZ
+        QavZa5komOmc64E9EF/Nt6bpKkVMF5lKD0tr2CRcmEHYe9MC//v4ne87hwM/IS6uIIOFyVo9
+        y2nVqVJqLtH9u/PtGsfK+Lhw93mEnEMOHN0vqCTR5ztZAH33PBYg6710dKakj0CZllsEaqiX
+        IKezSoDyft7FkP3DAIn6mqwUKnC2YujSVwuFXveJUKO1i0Rmxy8KVbRmU6jafhVH9dencJT5
+        RrExiKlrriOZMlsZYDJNWRRjK8tgGi1DAuaG3cDYSy9RjLHNSTBvBh5QjKe3V8BUl5xmGhsm
+        MeaKyUMx2TWlgJm0L945/6BsA6cz6NklSTpeHy09JEcRMnkUkkWsjZLJI5VH1kcopGGqDQls
+        anIay4WpjsqS3n2xYceHJSeGP+4wgpIAM/ATQnotHDTnkD4W07cBvFlLzcwXwa58IznDgfDn
+        gNk7n+t1xgEcezmF+w4C6d1w6HIu8LGE3gLPvi8nfRJOF1Nw0p1NzBQdJHS/+Er4LIqWQ/O4
+        efoJEa2C1jY75mOCXgZfthZO3xpEx8KnWe5/TgDsKnRNt35ef6C8aJpxeh20VY/gMxwCTbVF
+        /3gBfOW6juUAsWVWbpmVWGYlllnJDUCUAglr4DWJGj5Cxqs1vEGbKIvXaezAuyt1HVM1DcDs
+        2eMAtBBI/UVVQcfixKQ6jU/XOAAU4lKJaFNPd6xYlKBOP8lyujjOkMryDqDwfi4XDw6K13k3
+        T6uPkyvkShQlV0YqI9ch6QLRRbr9sJhOVOvZFJY9znL/O0zoF2wE85qfG3tCu7tGBU8S3K5H
+        /rHFz4YHe5ImzhWauAMjmepPMX5EQ55rv2trfMbrOS1/Ou3Lo1fLQmI2e0KV7Z7nD1fks2lF
+        bsk+7hc0WXelbOvvr9moV52CP/L7ayv3jmHab0sr/BeaVtXa3uOKmsaEFlXT6LVNI9tjLuT6
+        T2Dl4VKCT1LLQ3GOV/8FLFh/EkEDAAA=
+X-CMS-MailID: 20200917091338eucas1p17216de760da67b46756b316cb19650f5
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200914130601eucas1p23ce276d168dee37909b22c75499e68da
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200914130601eucas1p23ce276d168dee37909b22c75499e68da
+References: <20200901144324.1071694-1-maz@kernel.org>
+        <20200901144324.1071694-9-maz@kernel.org>
+        <CGME20200914130601eucas1p23ce276d168dee37909b22c75499e68da@eucas1p2.samsung.com>
+        <a917082d-4bfd-a6fd-db88-36e75f5f5921@samsung.com>
+        <933bc43e-3cd7-10ec-b9ec-58afaa619fb7@nvidia.com>
+        <3378cd07b92e87a24f1db75f708424ee@kernel.org>
+        <CACRpkdYvqQUJaReD1yNTwiHhaZpQ9h5Z9DgdqbKkCexnM7cWNw@mail.gmail.com>
+        <049d62ac7de32590cb170714b47fb87d@kernel.org>
+        <a88528cd-eb76-367a-77d6-7ae20bd28304@nvidia.com>
+        <81cb16323baa1c81e7bc1e8156fa47b8@kernel.org>
+        <e317b2fe-52e3-8ce7-ba77-43d2708d660f@nvidia.com>
+        <4645f636-e7cc-6983-a3b7-897c20ec5096@samsung.com>
+        <bec733a1-227f-d943-90dd-85fc9a993109@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFNlYW4gWW91bmcgPHNlYW5A
-bWVzcy5vcmc+DQo+IFNlbnQ6IDIwMjDE6jnUwjE1yNUgMTc6MzQNCj4gVG86IEpvYWtpbSBaaGFu
-ZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+DQo+IENjOiBtY2hlaGFiQGtlcm5lbC5vcmc7IGxp
-bnV4LW1lZGlhQHZnZXIua2VybmVsLm9yZzsNCj4gbGludXgta2VybmVsQHZnZXIua2VybmVsLm9y
-ZzsgZGwtbGludXgtaW14IDxsaW51eC1pbXhAbnhwLmNvbT4NCj4gU3ViamVjdDogUmU6IFtQQVRD
-SF0gbWVkaWE6IHJjOiBncGlvLWlyLXJlY3Y6IGFkZCBRb1Mgc3VwcG9ydCBmb3IgY3B1aWRsZQ0K
-PiBzeXN0ZW0NCj4gDQo+IA0KDQpbLi4uXQ0KPiA+IEBAIC05Miw2ICsxMTMsMTIgQEAgc3RhdGlj
-IGludCBncGlvX2lyX3JlY3ZfcHJvYmUoc3RydWN0DQo+ID4gcGxhdGZvcm1fZGV2aWNlICpwZGV2
-KQ0KPiA+DQo+ID4gIAlwbGF0Zm9ybV9zZXRfZHJ2ZGF0YShwZGV2LCBncGlvX2Rldik7DQo+ID4N
-Cj4gPiArDQo+ID4gKwlwbV9ydW50aW1lX3NldF9hdXRvc3VzcGVuZF9kZWxheShkZXYsIChyY2Rl
-di0+dGltZW91dCAvIDEwMDAgLw0KPiA+ICsxMDAwKSk7DQo+IA0KPiByY2Rldi0+dGltZW91dCBp
-cyBpbiBtaWNyb3NlY29uZHMgKHNpbmNlIHZlcnkgcmVjZW50bHkpLCBzbyB0aGlzIGlzIHdyb25n
-Lg0KPiBBbHNvLCB0aGUgdGltZW91dCBjYW4gYmUgY2hhbmdlZCB1c2luZyB0aGUgTElSQ19TRVRf
-UkVDX1RJTUVPVVQgaW9jdGwNCj4gKHVzaW5nIGlyLWN0bCAtdCBpbiB1c2Vyc3BhY2UpLiBUaGUg
-YXV0b3N1c3BlbmQgZGVsYXkgc2hvdWxkIGJlIHVwZGF0ZWQgd2hlbg0KPiB0aGlzIGhhcHBlbnMu
-IFRoaXMgY2FuIGJlIGRvbmUgYnkgaW1wbGVtZW50aW5nIHRoZSBzX3RpbWVvdXQgcmNkZXYgZnVu
-Y3Rpb24uDQoNCkhpIFNlYW4sDQoNCkkgY29tZSBhY3Jvc3MgYSBwcm9ibGVtIHdoZW4gaW1wbGVt
-ZW50aW5nIHRoaXMgZmVhdHVyZS4NCg0KQXQgcHJvYmUgc3RhZ2UsIGRldm1fcmNfcmVnaXN0ZXJf
-ZGV2aWNlIC0+IGNoYW5nZV9wcm90b2NvbCwgdGhlbiB0aW1lb3V0IHNldCB0byAxMjVtcy4NCg0K
-V2hlbiBlY2hvIHNvbnkgb3IgbmVjIHRvIHByb3RvY29scywgd2lsbCBjYWxsIGNoYW5nZV9wcm90
-b2NvbCBjaGFuZ2luZyB0aGUgdGltZW91dCB2YWx1ZSwgdGhhdCB0aW1lb3V0IHdvdWxkIGNoYW5n
-ZSB0byBoYW5kbGVyLT5taW5fdGltZW91dCArIDEwbXMuIEZvciBzb255IGlzIDE2MDAwMDAwbnMs
-IGZvciAxNTYyNTAwMG5zLg0KVGhpcyBpcyBub3QgdGhlIHdheSBJIHdhbnQgdG8gdGFrZSBiZWZv
-cmUsIHRoaXMgd291bGQgZnJlcXVlbnRseSBkaXNhYmxlL2VuYWJsZSBjcHVpZGxlLiBTbyBpcyBp
-dCBuZWNlc3NhcnkgdG8gcHJvdmlkZSBzX3RpbWVvdXQsIHRoaXMgY2FsbGJhY2sgc2hvdWxkIGJl
-IHVzZWQgdG8gY2hhbmdlIHByb3RvY29scycgdGltZW91dD8NCklmIGltcGxlbWVudCBzX3RpbWVv
-dXQsIHVzZXJzIG5lZWQgY2hhbmdlIHRoZSB0aW1lb3V0IHZhbHVlIGZyb20gdXNlcnNwYWNlLCB0
-aGlzIGlzIGEgbWFuZGF0b3J5IG9wZXJhdGlvbiBhbmQgdW5mcmllbmRseS4gQW5kIGl0IHdpbGwg
-YWZmZWN0IHByb3RvY29sJ3MgdGltZW91dC4NCg0KQXV0b3N1c3BlbmQgZGVsYXkgc2hvdWxkIGJl
-IGZpeGVkIHZhbHVlLCBzaG91bGQgYmUgc2V0IHRvIGdwaW8gZGV2aWNlIHRpbWVvdXQgdmFsdWUs
-IHdoaWNoIGlzIDEyNW1zLg0KDQpCZXN0IFJlZ2FyZHMsDQpKb2FraW0gWmhhbmcNCj4gPiArCXBt
-X3J1bnRpbWVfdXNlX2F1dG9zdXNwZW5kKGRldik7DQo+ID4gKwlwbV9ydW50aW1lX3NldF9zdXNw
-ZW5kZWQoZGV2KTsNCj4gPiArCXBtX3J1bnRpbWVfZW5hYmxlKGRldik7DQo+ID4gKw0KPiA+ICAJ
-cmV0dXJuIGRldm1fcmVxdWVzdF9pcnEoZGV2LCBncGlvX2Rldi0+aXJxLCBncGlvX2lyX3JlY3Zf
-aXJxLA0KPiA+ICAJCQkJSVJRRl9UUklHR0VSX0ZBTExJTkcgfCBJUlFGX1RSSUdHRVJfUklTSU5H
-LA0KPiA+ICAJCQkJImdwaW8taXItcmVjdi1pcnEiLCBncGlvX2Rldik7DQo=
+Hi Jon,
+
+On 17.09.2020 11:09, Jon Hunter wrote:
+> On 17/09/2020 09:54, Marek Szyprowski wrote:
+>> On 17.09.2020 10:49, Jon Hunter wrote:
+>>> On 17/09/2020 09:45, Marc Zyngier wrote:
+>>>> On 2020-09-17 08:54, Jon Hunter wrote:
+>>>>> On 17/09/2020 08:50, Marc Zyngier wrote:
+>>>>>> On 2020-09-17 08:40, Linus Walleij wrote:
+>>>>>>> On Wed, Sep 16, 2020 at 5:11 PM Marc Zyngier <maz@kernel.org> wrote:
+>>>>>>>
+>>>>>>>> Can you try the patch below and let me know?
+>>>>>>> I tried this patch and now Ux500 WORKS. So this patch is definitely
+>>>>>>> something you should apply.
+>>>>>>>
+>>>>>>>> -                       if (is_frankengic())
+>>>>>>>> -                               set_sgi_intid(irqstat);
+>>>>>>>> +                       this_cpu_write(sgi_intid, intid);
+>>>>>>> This needs changing to irqstat to compile as pointed out by Jon.
+>>>>>>>
+>>>>>>> With that:
+>>>>>>> Tested-by: Linus Walleij <linus.walleij@linaro.org>
+>>>>>> Thanks a lot for that.
+>>>>>>
+>>>>>> Still need to understand why some of Jon's systems are left unbootable,
+>>>>>> despite having similar GIC implementations (Tegra194 and Tegra210 use
+>>>>>> the same GIC-400, and yet only one of the two boots correctly...).
+>>>>> So far, I have only tested this patch on Tegra20. Let me try the other
+>>>>> failing boards this morning and see if those still fail.
+>>>> Tegra20 (if I remember well) is a dual A9 with the same GIC implementation
+>>>> as Ux500, hence requiring the source CPU bits to be written back. So this
+>>>> patch should have cured it, but didn't...
+>>>>
+>>>> /me puzzled.
+>>> Me too. Maybe there just happens to be something else also going wrong
+>>> in next. I am doing a bit more testing to see if applying the fix
+>>> directly on top of this change fixes it to try and eliminate anything
+>>> else in -next.
+>>>
+>>> Linus, what -next are you testing on? I am using next-20200916.
+>> next-20200916 completely broken on ARM and ARM64. Please check
+>> next-20200915 + the mentioned fix or just check
+>> https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/log/?h=irq/ipi-as-irq
+> Ah thanks! Any idea what is causing the other failure on next-20200916?
+>
+> Yes we have noticed that now everything fails next-20200916 so not just
+> this issue.
+
+The issue is caused by commit c999bd436fe9 ("mm/cma: make number of CMA 
+areas dynamic, remove CONFIG_CMA_AREAS")
+
+https://lore.kernel.org/linux-arm-kernel/20200915205703.34572-1-mike.kravetz@oracle.com/
+
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
+
