@@ -2,160 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A2826E3A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:33:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3D426E3AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726433AbgIQSdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 14:33:38 -0400
-Received: from mga06.intel.com ([134.134.136.31]:26670 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726468AbgIQScW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 14:32:22 -0400
-IronPort-SDR: 4LLZDr/gwwWyouxMSZpcjoKd81CWfTR6L7d5ILGkEDndx5eFT/ZVl3i2lbr6k01yxUNGrREi4o
- LkrQLlIYFZMg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="221324686"
-X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
-   d="scan'208";a="221324686"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 11:32:21 -0700
-IronPort-SDR: as+CxmLANJA19hGEGEyDYIA2S8iZZQNm8I4EaDjKRwzs408vtoi2KNZ0hfgmWnMMyyC3RqtK8w
- Vx149JEhvMiQ==
-X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
-   d="scan'208";a="346713850"
-Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.212.91.84])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 11:32:21 -0700
-From:   Russ Weight <russell.h.weight@intel.com>
-To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
-        hao.wu@intel.com, matthew.gerlach@intel.com,
-        Russ Weight <russell.h.weight@intel.com>
-Subject: [PATCH v2 1/1] fpga: dfl: afu: harden port enable logic
-Date:   Thu, 17 Sep 2020 11:32:19 -0700
-Message-Id: <20200917183219.3603-1-russell.h.weight@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726303AbgIQSeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 14:34:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726587AbgIQSdl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 14:33:41 -0400
+Received: from saturn.retrosnub.co.uk (saturn.retrosnub.co.uk [IPv6:2a00:1098:86::1:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 884ADC06174A;
+        Thu, 17 Sep 2020 11:33:38 -0700 (PDT)
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        by saturn.retrosnub.co.uk (Postfix; Retrosnub mail submission) with ESMTPSA id C83FF9E022B;
+        Thu, 17 Sep 2020 19:33:03 +0100 (BST)
+Date:   Thu, 17 Sep 2020 19:33:02 +0100
+From:   Jonathan Cameron <jic23@jic23.retrosnub.co.uk>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Barry Song <21cnbao@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH 12/30] iio: gyro: adis16080: Fix formatting issue and
+ compiler attribute ordering
+Message-ID: <20200917193302.65e922c0@archlinux>
+In-Reply-To: <20200718155442.14c420db@archlinux>
+References: <20200716135928.1456727-1-lee.jones@linaro.org>
+        <20200716135928.1456727-13-lee.jones@linaro.org>
+        <20200718155442.14c420db@archlinux>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Port enable is not complete until ACK = 0. Change
-__afu_port_enable() to guarantee that the enable process
-is complete by polling for ACK == 0.
+On Sat, 18 Jul 2020 15:54:42 +0100
+Jonathan Cameron <jic23@kernel.org> wrote:
 
-Signed-off-by: Russ Weight <russell.h.weight@intel.com>
----
- drivers/fpga/dfl-afu-error.c |  2 +-
- drivers/fpga/dfl-afu-main.c  | 29 +++++++++++++++++++++--------
- drivers/fpga/dfl-afu.h       |  2 +-
- 3 files changed, 23 insertions(+), 10 deletions(-)
+> On Thu, 16 Jul 2020 14:59:10 +0100
+> Lee Jones <lee.jones@linaro.org> wrote:
+> 
+> > Kerneldoc expects attributes/parameters to be in '@*.: ' format and
+> > gets confused if the variable does not follow the type/attribute
+> > definitions.
+> > 
+> > Fixes the following W=1 kernel build warning(s):
+> > 
+> >  drivers/iio/gyro/adis16080.c:49: warning: Function parameter or member 'lock' not described in 'adis16080_state'
+> >  drivers/iio/gyro/adis16080.c:49: warning: Function parameter or member '____cacheline_aligned' not described in 'adis16080_state'
+> > 
+> > Cc: Michael Hennerich <Michael.Hennerich@analog.com>
+> > Cc: Barry Song <21cnbao@gmail.com>
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>  
+> Hmm. You are going to have an awful lot of those ____cacheline_aligned ones.
+> 
+> Might be worth thinking about whether we fix kernel-doc to cope with those.
+> 
+> A quick grep suggests the vast majority of users of this have it after
+> the element name.
+> 
+> @Jon Corbet :  What do you think?  Looks like there is special
+> handling already for ____cacheline_aligned_in_smp. Should we extend
+> that to this case?
 
-diff --git a/drivers/fpga/dfl-afu-error.c b/drivers/fpga/dfl-afu-error.c
-index c4691187cca9..0806532a3e9f 100644
---- a/drivers/fpga/dfl-afu-error.c
-+++ b/drivers/fpga/dfl-afu-error.c
-@@ -103,7 +103,7 @@ static int afu_port_err_clear(struct device *dev, u64 err)
- 	__afu_port_err_mask(dev, false);
- 
- 	/* Enable the Port by clear the reset */
--	__afu_port_enable(pdev);
-+	ret = __afu_port_enable(pdev);
- 
- done:
- 	mutex_unlock(&pdata->lock);
-diff --git a/drivers/fpga/dfl-afu-main.c b/drivers/fpga/dfl-afu-main.c
-index 753cda4b2568..f73b06cdf13c 100644
---- a/drivers/fpga/dfl-afu-main.c
-+++ b/drivers/fpga/dfl-afu-main.c
-@@ -21,6 +21,9 @@
- 
- #include "dfl-afu.h"
- 
-+#define RST_POLL_INVL 10 /* us */
-+#define RST_POLL_TIMEOUT 1000 /* us */
-+
- /**
-  * __afu_port_enable - enable a port by clear reset
-  * @pdev: port platform device.
-@@ -32,7 +35,7 @@
-  *
-  * The caller needs to hold lock for protection.
-  */
--void __afu_port_enable(struct platform_device *pdev)
-+int __afu_port_enable(struct platform_device *pdev)
- {
- 	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
- 	void __iomem *base;
-@@ -41,7 +44,7 @@ void __afu_port_enable(struct platform_device *pdev)
- 	WARN_ON(!pdata->disable_count);
- 
- 	if (--pdata->disable_count != 0)
--		return;
-+		return 0;
- 
- 	base = dfl_get_feature_ioaddr_by_id(&pdev->dev, PORT_FEATURE_ID_HEADER);
- 
-@@ -49,10 +52,20 @@ void __afu_port_enable(struct platform_device *pdev)
- 	v = readq(base + PORT_HDR_CTRL);
- 	v &= ~PORT_CTRL_SFTRST;
- 	writeq(v, base + PORT_HDR_CTRL);
--}
- 
--#define RST_POLL_INVL 10 /* us */
--#define RST_POLL_TIMEOUT 1000 /* us */
-+	/*
-+	 * HW clears the ack bit to indicate that the port is fully out
-+	 * of reset.
-+	 */
-+	if (readq_poll_timeout(base + PORT_HDR_CTRL, v,
-+			       !(v & PORT_CTRL_SFTRST_ACK),
-+			       RST_POLL_INVL, RST_POLL_TIMEOUT)) {
-+		dev_err(&pdev->dev, "timeout, failure to enable device\n");
-+		return -ETIMEDOUT;
-+	}
-+
-+	return 0;
-+}
- 
- /**
-  * __afu_port_disable - disable a port by hold reset
-@@ -111,7 +124,7 @@ static int __port_reset(struct platform_device *pdev)
- 
- 	ret = __afu_port_disable(pdev);
- 	if (!ret)
--		__afu_port_enable(pdev);
-+		ret = __afu_port_enable(pdev);
- 
- 	return ret;
- }
-@@ -872,11 +885,11 @@ static int afu_dev_destroy(struct platform_device *pdev)
- static int port_enable_set(struct platform_device *pdev, bool enable)
- {
- 	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
--	int ret = 0;
-+	int ret;
- 
- 	mutex_lock(&pdata->lock);
- 	if (enable)
--		__afu_port_enable(pdev);
-+		ret = __afu_port_enable(pdev);
- 	else
- 		ret = __afu_port_disable(pdev);
- 	mutex_unlock(&pdata->lock);
-diff --git a/drivers/fpga/dfl-afu.h b/drivers/fpga/dfl-afu.h
-index 576e94960086..e5020e2b1f3d 100644
---- a/drivers/fpga/dfl-afu.h
-+++ b/drivers/fpga/dfl-afu.h
-@@ -80,7 +80,7 @@ struct dfl_afu {
- };
- 
- /* hold pdata->lock when call __afu_port_enable/disable */
--void __afu_port_enable(struct platform_device *pdev);
-+int __afu_port_enable(struct platform_device *pdev);
- int __afu_port_disable(struct platform_device *pdev);
- 
- void afu_mmio_region_init(struct dfl_feature_platform_data *pdata);
--- 
-2.17.1
+Applied with the ____cacheline_aligned bit dropped as Jon took the patch
+to stop kernel-doc complaining about this.
+
+thanks,
+
+Jonathan
+
+> 
+> Jonathan
+> 
+> 
+> 
+> > ---
+> >  drivers/iio/gyro/adis16080.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/iio/gyro/adis16080.c b/drivers/iio/gyro/adis16080.c
+> > index 1b84b8e112fe1..f38f9abcccbb5 100644
+> > --- a/drivers/iio/gyro/adis16080.c
+> > +++ b/drivers/iio/gyro/adis16080.c
+> > @@ -38,14 +38,14 @@ struct adis16080_chip_info {
+> >   * @us:			actual spi_device to write data
+> >   * @info:		chip specific parameters
+> >   * @buf:		transmit or receive buffer
+> > - * @lock		lock to protect buffer during reads
+> > + * @lock:		lock to protect buffer during reads
+> >   **/
+> >  struct adis16080_state {
+> >  	struct spi_device		*us;
+> >  	const struct adis16080_chip_info *info;
+> >  	struct mutex			lock;
+> >  
+> > -	__be16 buf ____cacheline_aligned;
+> > +	__be16 ____cacheline_aligned buf;
+> >  };
+> >  
+> >  static int adis16080_read_sample(struct iio_dev *indio_dev,  
+> 
 
