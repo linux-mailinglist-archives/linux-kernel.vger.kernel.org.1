@@ -2,91 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A202C26E4E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A400226E4E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:01:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726686AbgIQTB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 15:01:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726668AbgIQS7v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 14:59:51 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8027C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 11:59:45 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id z4so3184652wrr.4
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 11:59:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=/FQeEcWUlQDqfQ8wanTKIcTElJ0+/H0Q34PjAFqIS2E=;
-        b=UDH2kSarbkBuYBTeWj3n0fqUdD9XU0XvPc+4NOngHaapEW0SOpuLQ8y2YcruoNZeEX
-         svVWs1RwWe/w6VHGkXAOgYyz3Cix45a6NYx3vT6cF0+ufr8RGH7pgc/1fC9yA3KIbmZE
-         MTt7xB/yrUVL+6MJpVcF2vyvi/2cOm2JzUH6JFmGAgB61p5NzL4KKCADVFcHVZh7q+UF
-         ohOzgpHwsME46bLgBALQPJR3APlbQv4PT/DrXz2a7r+k3AZWUjujgKyUqrLxY2ve1zWl
-         96ociw42g1nxXnxTmBpW5arpqMbDoUXiYheqCebLj3yquFlTwDkxwk7xLLnZtqD4h3cP
-         N53A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=/FQeEcWUlQDqfQ8wanTKIcTElJ0+/H0Q34PjAFqIS2E=;
-        b=A5pqGdRjEyz5PBRG3uCNjoiBsZdxgM5AdZG+V2A4hQ1uiJtSDzgAoifAe7SSmudeo3
-         /o271oVvNkJzKuiLE3D8E3pGSZ6gkQPRHxcSaxAA+o5G6cqqLO/ulQt8DKziiyWXd7jg
-         JvI19aWYdncU+vbJXnRPXtct81zWw2kJBsF0Wy4A6pZn0Hj6gHFHLDtV/9gjBqolToHb
-         81sLGZ8OKryy05NJg/W+3fran5RCn4h6GrR56QyPj0zGRww2lYtngcW66an17ouDbKV0
-         sU4JiTQUH03joicHE/l3HKDhLQ94v+pQXg+wGs2E+6HmytAsBmsFBnacY7FxlWmhPWTS
-         4Kzw==
-X-Gm-Message-State: AOAM533FrQJ754fBIfCPs8nhDmll+jkDK9B/LqO+cSFvSd4ONJi4eTYU
-        dyI59m7cQDQvDD75HpUefgyvFg==
-X-Google-Smtp-Source: ABdhPJzbVDEFcxbw/TjYhFdXwMyu3mguWYl6vvOW6/lfjbNAQgC808oX9KFWtD4HV3w00/BjD7ipww==
-X-Received: by 2002:a5d:6283:: with SMTP id k3mr35007812wru.191.1600369184565;
-        Thu, 17 Sep 2020 11:59:44 -0700 (PDT)
-Received: from localhost.localdomain ([51.15.160.169])
-        by smtp.googlemail.com with ESMTPSA id f23sm16639470wmc.3.2020.09.17.11.59.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 17 Sep 2020 11:59:43 -0700 (PDT)
-From:   Corentin Labbe <clabbe@baylibre.com>
-To:     davem@davemloft.net, herbert@gondor.apana.org.au
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH] crypto: procfs: Removing some useless only space lines
-Date:   Thu, 17 Sep 2020 18:59:36 +0000
-Message-Id: <1600369176-28975-1-git-send-email-clabbe@baylibre.com>
-X-Mailer: git-send-email 2.7.4
+        id S1726304AbgIQTBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 15:01:37 -0400
+Received: from mga06.intel.com ([134.134.136.31]:29249 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726378AbgIQTAQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 15:00:16 -0400
+IronPort-SDR: Dn0QizSnaUvzpLzBeYe/6rYcoh2QBdggfW0A1B3FETK2/9sHS1zgGXMoxV/ANVWuHZbVg0Nfcc
+ koQ4M+YY8BqQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="221329573"
+X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
+   d="scan'208";a="221329573"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 12:00:09 -0700
+IronPort-SDR: CP5inFyXovzqr8MlGWk2/rgD4ZdLkrLskS6IZgCx4ziTR722VbnpDxm6953S10AE/epIdmy0vs
+ 26o6WHKpoAiA==
+X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
+   d="scan'208";a="307583510"
+Received: from kpgoodma-desk.amr.corp.intel.com (HELO [10.254.88.157]) ([10.254.88.157])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 12:00:08 -0700
+Subject: Re: [PATCH V7 1/4] perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE
+To:     kan.liang@linux.intel.com, peterz@infradead.org, mingo@redhat.com,
+        acme@kernel.org, linux-kernel@vger.kernel.org
+Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, eranian@google.com, ak@linux.intel.com,
+        kirill.shutemov@linux.intel.com, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org
+References: <20200917135237.2857-1-kan.liang@linux.intel.com>
+ <20200917135237.2857-2-kan.liang@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
+ oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
+ 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
+ ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
+ VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
+ iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
+ c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
+ pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
+ ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
+ QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
+ c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
+ CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
+ 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
+ K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
+ VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
+ e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
+ ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
+ kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
+ rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
+ f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
+ mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
+ UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
+ sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
+ 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
+ cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
+ UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
+ db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
+ lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
+ kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
+ gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
+ AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
+ XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
+ e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
+ pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
+ YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
+ lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
+ M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
+ 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
+ 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
+ OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
+ ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
+ z5cecg==
+Message-ID: <13427458-3934-1490-68bb-071be2ae01da@intel.com>
+Date:   Thu, 17 Sep 2020 12:00:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200917135237.2857-2-kan.liang@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some line got only spaces, remove them
+On 9/17/20 6:52 AM, kan.liang@linux.intel.com wrote:
+> +	mm = current->mm;
+> +	if (!mm) {
+> +		/*
+> +		 * For kernel threads and the like, use init_mm so that
+> +		 * we can find kernel memory.
+> +		 */
+> +		mm = &init_mm;
+> +	}
 
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
----
- crypto/proc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I think it might be better to use current->active_mm instead of
+current->mm.  Kernel threads can "take over" the mm of the threads that
+switched to them, so they're not actually using all of the page tables
+from the init_mm all the time.
 
-diff --git a/crypto/proc.c b/crypto/proc.c
-index 08d8c2bc7e62..12fccb9c5205 100644
---- a/crypto/proc.c
-+++ b/crypto/proc.c
-@@ -36,7 +36,7 @@ static void c_stop(struct seq_file *m, void *p)
- static int c_show(struct seq_file *m, void *p)
- {
- 	struct crypto_alg *alg = list_entry(p, struct crypto_alg, cra_list);
--	
-+
- 	seq_printf(m, "name         : %s\n", alg->cra_name);
- 	seq_printf(m, "driver       : %s\n", alg->cra_driver_name);
- 	seq_printf(m, "module       : %s\n", module_name(alg->cra_module));
-@@ -59,7 +59,7 @@ static int c_show(struct seq_file *m, void *p)
- 		alg->cra_type->show(m, alg);
- 		goto out;
- 	}
--	
-+
- 	switch (alg->cra_flags & CRYPTO_ALG_TYPE_MASK) {
- 	case CRYPTO_ALG_TYPE_CIPHER:
- 		seq_printf(m, "type         : cipher\n");
--- 
-2.26.2
+It's not _common_, thought.  The only time that I think they can diverge
+is when vmalloc PGD sync'ing needs to be done, and there's even an
+effort to remove that.
 
+But, it's probably more more precise to just use ->active_mm since
+that's what will actually be more consistent with the values loaded into
+CR3.
+
+I _think_ ->active_mm is always non-NULL, too.
+
+One last concern as I look at this: I wish it was a bit more
+future-proof.  There are lots of weird things folks are trying to do
+with the page tables, like Address Space Isolation.  For instance, if
+you get a perf NMI when running userspace, current->mm->pgd is
+*different* than the PGD that was in use when userspace was running.
+It's close enough today, but it might not stay that way.  But I can't
+think of any great ways to future proof this code, other than spitting
+out an error message if too many of the page table walks fail when they
+shouldn't.
