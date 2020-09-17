@@ -2,90 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27FD526D7FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 11:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01F2426D80B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 11:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726550AbgIQJqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 05:46:20 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52796 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726217AbgIQJqT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 05:46:19 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6D705AFE5;
-        Thu, 17 Sep 2020 09:46:49 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 5E80E1E12E1; Thu, 17 Sep 2020 11:46:15 +0200 (CEST)
-Date:   Thu, 17 Sep 2020 11:46:15 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Song Liu <song@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Richard Weinberger <richard@nod.at>,
-        Minchan Kim <minchan@kernel.org>,
-        linux-mtd@lists.infradead.org, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        drbd-dev@lists.linbit.com, linux-raid@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 02/12] drbd: remove dead code in device_to_statistics
-Message-ID: <20200917094615.GI7347@quack2.suse.cz>
-References: <20200910144833.742260-1-hch@lst.de>
- <20200910144833.742260-3-hch@lst.de>
+        id S1726537AbgIQJrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 05:47:46 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:45098 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726200AbgIQJrp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 05:47:45 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id D017618895634891A208;
+        Thu, 17 Sep 2020 17:47:41 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.253) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Thu, 17 Sep 2020
+ 17:47:36 +0800
+Subject: Re: [PATCH v4 1/4] genirq: define an empty function set_handle_irq()
+ if !GENERIC_IRQ_MULTI_HANDLER
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Rob Herring <robh+dt@kernel.org>, Guo Ren <guoren@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-csky <linux-csky@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Haoyu Lv <lvhaoyu@huawei.com>, Libin <huawei.libin@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        "Jianguo Chen" <chenjianguo3@huawei.com>
+References: <20200915084305.3085-1-thunder.leizhen@huawei.com>
+ <20200915084305.3085-2-thunder.leizhen@huawei.com>
+ <0a2bc6bf-db9e-6467-dfcc-27f37d2db816@huawei.com>
+ <22defc7e8bf8d4dd91565473e1a67f22@kernel.org>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <c9868aee-f03a-53cf-1004-f1e6ddcf3f44@huawei.com>
+Date:   Thu, 17 Sep 2020 17:47:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200910144833.742260-3-hch@lst.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <22defc7e8bf8d4dd91565473e1a67f22@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.253]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 10-09-20 16:48:22, Christoph Hellwig wrote:
-> Ever since the switch to blk-mq, a lower device not used for VM
-> writeback will not be marked congested, so the check will never
-> trigger.
+
+
+On 2020/9/17 17:32, Marc Zyngier wrote:
+> On 2020-09-17 04:46, Leizhen (ThunderTown) wrote:
+>> On 2020/9/15 16:43, Zhen Lei wrote:
+>>> To avoid compilation error if an irqchip driver references the function
+>>> set_handle_irq() but may not select GENERIC_IRQ_MULTI_HANDLER on some
+>>> systems.
+>>
+>> Hi, Marc:
+>>   Do you agree with this method?
+>>
+>>   Otherwise, I should use "#ifdef CONFIG_GENERIC_IRQ_MULTI_HANDLER ... #endif"
+>> to perform the compilation isolation. This may make the code less beautiful.
+>>
+>>>
+>>> For example, the Synopsys DesignWare APB interrupt controller
+>>> (dw_apb_ictl) is used as the secondary interrupt controller on arc, csky,
+>>> arm64, and most arm32 SoCs, and it's also used as the primary interrupt
+>>> controller on Hisilicon SD5203 (an arm32 SoC). The latter need to use
+>>> set_handle_irq() to register the top-level IRQ handler, but this multi
+>>> irq handler registration mechanism is not implemented on arc system.
+>>>
+>>> The input parameter "handle_irq" maybe defined as static and only
+>>> set_handle_irq() references it. This will trigger "defined but not used"
+>>> warning. So add "(void)handle_irq" to suppress it.
+>>>
+>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>>> ---
+>>>  include/linux/irq.h | 2 ++
+>>>  1 file changed, 2 insertions(+)
+>>>
+>>> diff --git a/include/linux/irq.h b/include/linux/irq.h
+>>> index 1b7f4dfee35b397..0848a2aaa9b40b1 100644
+>>> --- a/include/linux/irq.h
+>>> +++ b/include/linux/irq.h
+>>> @@ -1252,6 +1252,8 @@ void irq_matrix_free(struct irq_matrix *m, unsigned int cpu,
+>>>   * top-level IRQ handler.
+>>>   */
+>>>  extern void (*handle_arch_irq)(struct pt_regs *) __ro_after_init;
+>>> +#else
+>>> +#define set_handle_irq(handle_irq)    do { (void)handle_irq; } while (0)
+>>>  #endif
+>>>
+>>>  #endif /* _LINUX_IRQ_H */
+>>>
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> You shouldn't just make it a NOP. Consider adding a WARN_ON(1), so that
+> people can realize this cannot work without the required architecture support.
 
-Looks good to me. You can add:
+Oh, right. I will add it.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  drivers/block/drbd/drbd_nl.c | 6 ------
->  1 file changed, 6 deletions(-)
 > 
-> diff --git a/drivers/block/drbd/drbd_nl.c b/drivers/block/drbd/drbd_nl.c
-> index 43c8ae4d9fca81..aaff5bde391506 100644
-> --- a/drivers/block/drbd/drbd_nl.c
-> +++ b/drivers/block/drbd/drbd_nl.c
-> @@ -3370,7 +3370,6 @@ static void device_to_statistics(struct device_statistics *s,
->  	if (get_ldev(device)) {
->  		struct drbd_md *md = &device->ldev->md;
->  		u64 *history_uuids = (u64 *)s->history_uuids;
-> -		struct request_queue *q;
->  		int n;
->  
->  		spin_lock_irq(&md->uuid_lock);
-> @@ -3384,11 +3383,6 @@ static void device_to_statistics(struct device_statistics *s,
->  		spin_unlock_irq(&md->uuid_lock);
->  
->  		s->dev_disk_flags = md->flags;
-> -		q = bdev_get_queue(device->ldev->backing_bdev);
-> -		s->dev_lower_blocked =
-> -			bdi_congested(q->backing_dev_info,
-> -				      (1 << WB_async_congested) |
-> -				      (1 << WB_sync_congested));
->  		put_ldev(device);
->  	}
->  	s->dev_size = drbd_get_capacity(device->this_bdev);
-> -- 
-> 2.28.0
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>         M.
+
