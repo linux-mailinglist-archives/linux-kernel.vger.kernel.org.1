@@ -2,161 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44D2A26E3B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 893C726E397
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726598AbgIQSeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 14:34:44 -0400
-Received: from mga14.intel.com ([192.55.52.115]:48063 "EHLO mga14.intel.com"
+        id S1726467AbgIQSai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 14:30:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726390AbgIQSdf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 14:33:35 -0400
-X-Greylist: delayed 442 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 14:33:19 EDT
-IronPort-SDR: 1T0qoYjdEwUQSs2nTKZnO7D29FpHSCbozdDbA8lF0SLG2efHyAIsgbY3f7CX6vitxw0XbQs2mX
- sJZCSCwLFUkQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="159075370"
-X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
-   d="scan'208";a="159075370"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 11:25:48 -0700
-IronPort-SDR: N9BazKDdduRVcRT5MP4sYPA66mLeTpWQiF2tVqdVqHPMZ/xqe2+tPzyqIkYm3RYLWMdJUEpRfV
- 9MWzmKfn/c7w==
-X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
-   d="scan'208";a="287679792"
-Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.212.91.84])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 11:25:48 -0700
-From:   Russ Weight <russell.h.weight@intel.com>
-To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
-        hao.wu@intel.com, matthew.gerlach@intel.com,
-        Russ Weight <russell.h.weight@intel.com>
-Subject: [PATCH 1/1] fpga: dfl: afu: harden port enable logic
-Date:   Thu, 17 Sep 2020 11:25:45 -0700
-Message-Id: <20200917182546.1788-1-russell.h.weight@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726200AbgIQSae (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 14:30:34 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EA474221EE;
+        Thu, 17 Sep 2020 18:30:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600367429;
+        bh=JZVoYCj9TVsqgcGVk0M6zcrr/208nx/00klNnUVjI/s=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=yrXu9K0a3PXwKp73G1fLdEMQbfky9bykOb0c6vVUaeUAa7BMjDNwKnS8dlU6C+9mr
+         DN38vPLQvlt0CuFpOfy6tDLxCiMm3X1iwnNmfnSO64O7XMVJOkenPk/0KjPduRU8wo
+         ilu+S02Y9sAvSduAcPKQCH9BSTTfYpGanucvU8jA=
+Date:   Thu, 17 Sep 2020 19:30:24 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 30/30] iio: dac: ad7303: Complete 'struct ad7303_state'
+ doc and reorder compiler attribute
+Message-ID: <20200917193024.73fa1108@archlinux>
+In-Reply-To: <20200716135928.1456727-31-lee.jones@linaro.org>
+References: <20200716135928.1456727-1-lee.jones@linaro.org>
+        <20200716135928.1456727-31-lee.jones@linaro.org>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Port enable is not complete until ACK = 0. Change
-__afu_port_enable() guarantee that the enable process
-is complete by polling for ACK == 0.
+On Thu, 16 Jul 2020 14:59:28 +0100
+Lee Jones <lee.jones@linaro.org> wrote:
 
-Signed-off-by: Russ Weight <russell.h.weight@intel.com>
----
- drivers/fpga/dfl-afu-error.c |  2 +-
- drivers/fpga/dfl-afu-main.c  | 29 +++++++++++++++++++++--------
- drivers/fpga/dfl-afu.h       |  2 +-
- 3 files changed, 23 insertions(+), 10 deletions(-)
+> Kerneldoc gets confused if the variable does not follow the
+> type/attribute definitions.
+> 
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/iio/dac/ad7303.c:49: warning: Function parameter or member 'vdd_reg' not described in 'ad7303_state'
+>  drivers/iio/dac/ad7303.c:49: warning: Function parameter or member 'vref_reg' not described in 'ad7303_state'
+>  drivers/iio/dac/ad7303.c:49: warning: Function parameter or member 'lock' not described in 'ad7303_state'
+>  drivers/iio/dac/ad7303.c:49: warning: Function parameter or member '____cacheline_aligned' not described in 'ad7303_state'
+> 
+> Cc: Michael Hennerich <Michael.Hennerich@analog.com>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Applied with ___cacheline_aligned bit dropped as now kernel-doc will ignore
+that.
 
-diff --git a/drivers/fpga/dfl-afu-error.c b/drivers/fpga/dfl-afu-error.c
-index c4691187cca9..0806532a3e9f 100644
---- a/drivers/fpga/dfl-afu-error.c
-+++ b/drivers/fpga/dfl-afu-error.c
-@@ -103,7 +103,7 @@ static int afu_port_err_clear(struct device *dev, u64 err)
- 	__afu_port_err_mask(dev, false);
- 
- 	/* Enable the Port by clear the reset */
--	__afu_port_enable(pdev);
-+	ret = __afu_port_enable(pdev);
- 
- done:
- 	mutex_unlock(&pdata->lock);
-diff --git a/drivers/fpga/dfl-afu-main.c b/drivers/fpga/dfl-afu-main.c
-index 753cda4b2568..f73b06cdf13c 100644
---- a/drivers/fpga/dfl-afu-main.c
-+++ b/drivers/fpga/dfl-afu-main.c
-@@ -21,6 +21,9 @@
- 
- #include "dfl-afu.h"
- 
-+#define RST_POLL_INVL 10 /* us */
-+#define RST_POLL_TIMEOUT 1000 /* us */
-+
- /**
-  * __afu_port_enable - enable a port by clear reset
-  * @pdev: port platform device.
-@@ -32,7 +35,7 @@
-  *
-  * The caller needs to hold lock for protection.
-  */
--void __afu_port_enable(struct platform_device *pdev)
-+int __afu_port_enable(struct platform_device *pdev)
- {
- 	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
- 	void __iomem *base;
-@@ -41,7 +44,7 @@ void __afu_port_enable(struct platform_device *pdev)
- 	WARN_ON(!pdata->disable_count);
- 
- 	if (--pdata->disable_count != 0)
--		return;
-+		return 0;
- 
- 	base = dfl_get_feature_ioaddr_by_id(&pdev->dev, PORT_FEATURE_ID_HEADER);
- 
-@@ -49,10 +52,20 @@ void __afu_port_enable(struct platform_device *pdev)
- 	v = readq(base + PORT_HDR_CTRL);
- 	v &= ~PORT_CTRL_SFTRST;
- 	writeq(v, base + PORT_HDR_CTRL);
--}
- 
--#define RST_POLL_INVL 10 /* us */
--#define RST_POLL_TIMEOUT 1000 /* us */
-+	/*
-+	 * HW clears the ack bit to indicate that the port is fully out
-+	 * of reset.
-+	 */
-+	if (readq_poll_timeout(base + PORT_HDR_CTRL, v,
-+			       !(v & PORT_CTRL_SFTRST_ACK),
-+			       RST_POLL_INVL, RST_POLL_TIMEOUT)) {
-+		dev_err(&pdev->dev, "timeout, failure to enable device\n");
-+		return -ETIMEDOUT;
-+	}
-+
-+	return 0;
-+}
- 
- /**
-  * __afu_port_disable - disable a port by hold reset
-@@ -111,7 +124,7 @@ static int __port_reset(struct platform_device *pdev)
- 
- 	ret = __afu_port_disable(pdev);
- 	if (!ret)
--		__afu_port_enable(pdev);
-+		ret = __afu_port_enable(pdev);
- 
- 	return ret;
- }
-@@ -872,11 +885,11 @@ static int afu_dev_destroy(struct platform_device *pdev)
- static int port_enable_set(struct platform_device *pdev, bool enable)
- {
- 	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
--	int ret = 0;
-+	int ret;
- 
- 	mutex_lock(&pdata->lock);
- 	if (enable)
--		__afu_port_enable(pdev);
-+		ret = __afu_port_enable(pdev);
- 	else
- 		ret = __afu_port_disable(pdev);
- 	mutex_unlock(&pdata->lock);
-diff --git a/drivers/fpga/dfl-afu.h b/drivers/fpga/dfl-afu.h
-index 576e94960086..e5020e2b1f3d 100644
---- a/drivers/fpga/dfl-afu.h
-+++ b/drivers/fpga/dfl-afu.h
-@@ -80,7 +80,7 @@ struct dfl_afu {
- };
- 
- /* hold pdata->lock when call __afu_port_enable/disable */
--void __afu_port_enable(struct platform_device *pdev);
-+int __afu_port_enable(struct platform_device *pdev);
- int __afu_port_disable(struct platform_device *pdev);
- 
- void afu_mmio_region_init(struct dfl_feature_platform_data *pdata);
--- 
-2.17.1
+Thanks,
+
+Jonathan
+
+> ---
+>  drivers/iio/dac/ad7303.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iio/dac/ad7303.c b/drivers/iio/dac/ad7303.c
+> index 15af8a1cce3eb..05d8dc88d4fad 100644
+> --- a/drivers/iio/dac/ad7303.c
+> +++ b/drivers/iio/dac/ad7303.c
+> @@ -29,6 +29,9 @@
+>   * @spi:		the device for this driver instance
+>   * @config:		cached config register value
+>   * @dac_cache:		current DAC raw value (chip does not support readback)
+> + * @vdd_reg:		reference to VDD regulator
+> + * @vref_reg:		reference to VREF regulator
+> + * @lock:		protect writes and cache updates
+>   * @data:		spi transfer buffer
+>   */
+>  
+> @@ -45,7 +48,7 @@ struct ad7303_state {
+>  	 * DMA (thus cache coherency maintenance) requires the
+>  	 * transfer buffers to live in their own cache lines.
+>  	 */
+> -	__be16 data ____cacheline_aligned;
+> +	__be16 ____cacheline_aligned data;
+>  };
+>  
+>  static int ad7303_write(struct ad7303_state *st, unsigned int chan,
 
