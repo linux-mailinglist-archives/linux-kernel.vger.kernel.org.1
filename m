@@ -2,113 +2,571 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F8B126D73C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B09926D741
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726448AbgIQI42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 04:56:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27591 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726171AbgIQI4Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 04:56:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600332983;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=u2Q5W6NAzslAk1ByBm0MYfEGJIT21PziYx8gteQ5Vhs=;
-        b=ZazY5rTciOz5z3PkF74rvLA3KRiEgy/gl27HcF9URyWcDF3bEkd5Vuv0BWp8rVZTvnoGTK
-        Wl/e04/AxEW4Y9PWYbG7/8REHkCrx7GLttUJEAz1rLE3OCxiuDEBrJxchZYGKcx9RKS/Oe
-        oUrCBK3rJ6qhddlLyndC/3S1iImje9A=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-119-PvbhCh1aNRm0H_fo6Oq5MQ-1; Thu, 17 Sep 2020 04:56:21 -0400
-X-MC-Unique: PvbhCh1aNRm0H_fo6Oq5MQ-1
-Received: by mail-wr1-f72.google.com with SMTP id h4so621456wrb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 01:56:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=u2Q5W6NAzslAk1ByBm0MYfEGJIT21PziYx8gteQ5Vhs=;
-        b=H25yasmsESS9AZu6qNCgLGvzdv02dntJPJkuqWbN13bB/k3WAuu0odDBkSL2es7xwW
-         zL9AvwctNVArdNyE+zougP7yc9mGD7jwHK3mnfe1EzlfM044Qw41spDUfI84x2jBzlbV
-         Kc7v3FvhdU6c3RTMdqRmbVKe+guj6VriopWOqtsrf3Fm/2hVojJ2bOk/FoFQMz3kjMoO
-         pZzsXYiyiH/gdQYcU1ZRaQxlKqNK7AbljvquXHSuCMIaOOpIdhSE5x32OBz7puODuHPX
-         /C1f5oTFBwWuxUqzABiNNFX5qlo5c5/rHM2PuR9SUZFyDkOofiEL22lnjo+UfJPv/GD6
-         lgMw==
-X-Gm-Message-State: AOAM532L/Kp+aDDwzl0EpsuUjOAougsf9qg2GkswiSmKAvoSiKXkSAgP
-        QD0bONidUBFqPpyF3WeABcSTTp1IfKeUMaWjCHWRtyQXrG3FM/ASbFF88TWcLBOH2p0Is261Tq+
-        WYb11RCAXi/WrK0fGTKCXPLj2
-X-Received: by 2002:adf:f5c7:: with SMTP id k7mr31978533wrp.246.1600332979873;
-        Thu, 17 Sep 2020 01:56:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx4OF1kdzQGvwv13LuHvoUh2lakQ8Xdk63kyMZtVuSxMDmrRTKIgQMp+gqghXnztKnI07Yygw==
-X-Received: by 2002:adf:f5c7:: with SMTP id k7mr31978509wrp.246.1600332979621;
-        Thu, 17 Sep 2020 01:56:19 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:d003:b94f:6314:4839? ([2001:b07:6468:f312:d003:b94f:6314:4839])
-        by smtp.gmail.com with ESMTPSA id v2sm37283429wrm.16.2020.09.17.01.56.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Sep 2020 01:56:19 -0700 (PDT)
-Subject: Re: [PATCH RFC] KVM: x86: emulate wait-for-SIPI and SIPI-VMExit
-To:     yadong.qi@intel.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     sean.j.christopherson@intel.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        liran.alon@oracle.com, nikita.leshchenko@oracle.com,
-        chao.gao@intel.com, kevin.tian@intel.com, luhai.chen@intel.com,
-        bing.zhu@intel.com, kai.z.wang@intel.com
-References: <20200917022501.369121-1-yadong.qi@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <c3eaf796-67f1-9224-3e16-72d93501b6cf@redhat.com>
-Date:   Thu, 17 Sep 2020 10:56:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726365AbgIQI6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 04:58:35 -0400
+Received: from mga09.intel.com ([134.134.136.24]:26458 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726191AbgIQI63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 04:58:29 -0400
+IronPort-SDR: ZorQ1sjcU+t09FxYElDPz0ytegG5heFaU5pz3Wgc2jtfT6OcEfw8CS/P8/HQE9qNIx4thBJWw3
+ m9GaBTGfDGmQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="160583550"
+X-IronPort-AV: E=Sophos;i="5.76,436,1592895600"; 
+   d="scan'208";a="160583550"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 01:58:26 -0700
+IronPort-SDR: 6mceYQLmUXxkOEmKnrjsjZUn/go8Z0KA4lh5ycJkVeZckn4gciJkI7rZl4tjEUgC0ev5xjqVlX
+ HMvcRg/GvEsQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,436,1592895600"; 
+   d="scan'208";a="344208885"
+Received: from lkp-server02.sh.intel.com (HELO bdcb92cf8b4e) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 17 Sep 2020 01:58:24 -0700
+Received: from kbuild by bdcb92cf8b4e with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kIpkF-0000Vc-Gb; Thu, 17 Sep 2020 08:58:23 +0000
+Date:   Thu, 17 Sep 2020 16:57:23 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2020.09.10a] BUILD REGRESSION
+ ccb38b2f3e160fbfecedbd0c80bde97a7dfcbdec
+Message-ID: <5f6324f3.M/lstAiJtUsyxgyd%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20200917022501.369121-1-yadong.qi@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/09/20 04:25, yadong.qi@intel.com wrote:
-> From: Yadong Qi <yadong.qi@intel.com>
-> 
-> Background: We have a lightweight HV, it needs INIT-VMExit and
-> SIPI-VMExit to wake-up APs for guests since it do not monitoring
-> the Local APIC. But currently virtual wait-for-SIPI(WFS) state
-> is not supported in KVM, so when running on top of KVM, the L1
-> HV cannot receive the INIT-VMExit and SIPI-VMExit which cause
-> the L2 guest cannot wake up the APs.
-> 
-> This patch is incomplete, it emulated wait-for-SIPI state by halt
-> the vCPU and emulated SIPI-VMExit to L1 when trapped SIPI signal
-> from L2. I am posting it RFC to gauge whether or not upstream
-> KVM is interested in emulating wait-for-SIPI state before
-> investing the time to finish the full support.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.09.10a
+branch HEAD: ccb38b2f3e160fbfecedbd0c80bde97a7dfcbdec  rcutorture: Make grace-period kthread report match RCU flavor being tested
 
-Yes, the patch makes sense and is a good addition.  What exactly is
-missing?  (Apart from test cases in kvm-unit-tests!)
+Error/Warning in current branch:
 
-Paolo
+ERROR: modpost: "show_rcu_tasks_rude_gp_kthread" [kernel/rcu/rcutorture.ko] undefined!
+ERROR: modpost: "show_rcu_tasks_trace_gp_kthread" [kernel/rcu/rcutorture.ko] undefined!
+kernel/rcu/rcutorture.c:698:20: error: 'show_rcu_tasks_classic_gp_kthread' undeclared here (not in a function)
+kernel/rcu/rcutorture.c:768:20: error: 'show_rcu_tasks_rude_gp_kthread' undeclared here (not in a function)
+kernel/rcu/rcutorture.c:807:20: error: 'show_rcu_tasks_trace_gp_kthread' undeclared here (not in a function)
+kernel/rcu/tasks.h:1212:2: error: implicit declaration of function 'show_rcu_tasks_generic_gp_kthread'; did you mean 'show_rcu_tasks_classic_gp_kthread'? [-Werror=implicit-function-declaration]
+kernel/rcu/tasks.h:1218:20: error: static declaration of 'show_rcu_tasks_trace_gp_kthread' follows non-static declaration
+kernel/rcu/tasks.h:574:2: error: implicit declaration of function 'show_rcu_tasks_generic_gp_kthread' [-Werror,-Wimplicit-function-declaration]
+kernel/rcu/tasks.h:574:2: error: implicit declaration of function 'show_rcu_tasks_generic_gp_kthread'; did you mean 'show_rcu_tasks_classic_gp_kthread'? [-Werror=implicit-function-declaration]
+kernel/rcu/tasks.h:599:20: error: static declaration of 'show_rcu_tasks_classic_gp_kthread' follows non-static declaration
+kernel/rcu/tasks.h:703:2: error: implicit declaration of function 'show_rcu_tasks_generic_gp_kthread' [-Werror,-Wimplicit-function-declaration]
+kernel/rcu/tasks.h:703:2: error: implicit declaration of function 'show_rcu_tasks_generic_gp_kthread'; did you mean 'show_rcu_tasks_classic_gp_kthread'? [-Werror=implicit-function-declaration]
+kernel/rcu/tasks.h:708:13: error: static declaration of 'show_rcu_tasks_rude_gp_kthread' follows non-static declaration
 
-> According to Intel SDM Chapter 25.2 Other Causes of VM Exits,
-> SIPIs cause VM exits when a logical processor is in
-> wait-for-SIPI state.
-> 
-> In this patch:
->     1. introduce SIPI exit reason,
->     2. introduce wait-for-SIPI state for nVMX,
->     3. advertise wait-for-SIPI support to guest.
-> 
-> When L1 hypervisor is not monitoring Local APIC, L0 need to emulate
-> INIT-VMExit and SIPI-VMExit to L1 to emulate INIT-SIPI-SIPI for
-> L2. L2 LAPIC write would be traped by L0 Hypervisor(KVM), L0 should
-> emulate the INIT/SIPI vmexit to L1 hypervisor to set proper state
-> for L2's vcpu state.
+Error/Warning ids grouped by kconfigs:
 
+gcc_recent_errors
+|-- alpha-randconfig-r005-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- alpha-randconfig-r015-20200916
+|   |-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_classic_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|-- alpha-randconfig-s032-20200916
+|   |-- kernel-rcu-rcutorture.c:error:show_rcu_tasks_classic_gp_kthread-undeclared-here-(not-in-a-function)
+|   |-- kernel-rcu-rcutorture.c:error:show_rcu_tasks_rude_gp_kthread-undeclared-here-(not-in-a-function)
+|   `-- kernel-rcu-rcutorture.c:error:show_rcu_tasks_trace_gp_kthread-undeclared-here-(not-in-a-function)
+|-- arc-axs103_smp_defconfig
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- arc-defconfig
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- arc-nps_defconfig
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- arc-randconfig-r022-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- arc-randconfig-r031-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- arc-randconfig-s032-20200916
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- arm-allmodconfig
+|   |-- ERROR:show_rcu_tasks_rude_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|   `-- ERROR:show_rcu_tasks_trace_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|-- arm-axm55xx_defconfig
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- arm-efm32_defconfig
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- arm-imote2_defconfig
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- arm-integrator_defconfig
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- arm-pcm027_defconfig
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- arm-randconfig-p001-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- arm-randconfig-r013-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- arm-randconfig-r026-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- arm-randconfig-r035-20200917
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- arm-trizeps4_defconfig
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- arm64-defconfig
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- c6x-allyesconfig
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- c6x-randconfig-c003-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- c6x-randconfig-c004-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- c6x-randconfig-r021-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- c6x-randconfig-r024-20200917
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- c6x-randconfig-r033-20200916
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- c6x-randconfig-r034-20200916
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- c6x-randconfig-r035-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- h8300-allyesconfig
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- h8300-randconfig-r012-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- h8300-randconfig-r014-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- h8300-randconfig-r025-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- h8300-randconfig-r031-20200916
+|   |-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_classic_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|-- i386-randconfig-a003-20200917
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- i386-randconfig-a004-20200917
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- i386-randconfig-a006-20200916
+|   |-- kernel-rcu-rcutorture.c:error:show_rcu_tasks_classic_gp_kthread-undeclared-here-(not-in-a-function)
+|   |-- kernel-rcu-rcutorture.c:error:show_rcu_tasks_rude_gp_kthread-undeclared-here-(not-in-a-function)
+|   `-- kernel-rcu-rcutorture.c:error:show_rcu_tasks_trace_gp_kthread-undeclared-here-(not-in-a-function)
+|-- i386-randconfig-a012-20200916
+|   |-- ERROR:show_rcu_tasks_rude_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|   `-- ERROR:show_rcu_tasks_trace_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|-- i386-randconfig-a013-20200916
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_classic_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- i386-randconfig-a014-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- i386-randconfig-a016-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- i386-randconfig-c001-20200916
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- i386-randconfig-c003-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- i386-randconfig-r015-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- i386-randconfig-r031-20200917
+|   |-- ERROR:show_rcu_tasks_rude_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|   `-- ERROR:show_rcu_tasks_trace_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|-- i386-randconfig-r033-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- i386-randconfig-s001-20200917
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- i386-randconfig-s002-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- ia64-randconfig-r026-20200916
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_classic_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|-- m68k-allmodconfig
+|   |-- kernel-rcu-rcutorture.c:error:show_rcu_tasks_classic_gp_kthread-undeclared-here-(not-in-a-function)
+|   |-- kernel-rcu-rcutorture.c:error:show_rcu_tasks_rude_gp_kthread-undeclared-here-(not-in-a-function)
+|   `-- kernel-rcu-rcutorture.c:error:show_rcu_tasks_trace_gp_kthread-undeclared-here-(not-in-a-function)
+|-- m68k-allyesconfig
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- m68k-randconfig-r001-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- m68k-randconfig-r001-20200917
+|   |-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_classic_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|-- m68k-randconfig-r004-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- m68k-randconfig-r011-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- microblaze-randconfig-c004-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- microblaze-randconfig-r011-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- microblaze-randconfig-r013-20200916
+|   |-- kernel-rcu-rcutorture.c:error:show_rcu_tasks_classic_gp_kthread-undeclared-here-(not-in-a-function)
+|   |-- kernel-rcu-rcutorture.c:error:show_rcu_tasks_rude_gp_kthread-undeclared-here-(not-in-a-function)
+|   `-- kernel-rcu-rcutorture.c:error:show_rcu_tasks_trace_gp_kthread-undeclared-here-(not-in-a-function)
+|-- microblaze-randconfig-r025-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- microblaze-randconfig-r032-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- microblaze-randconfig-r032-20200917
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- mips-allmodconfig
+|   |-- ERROR:show_rcu_tasks_rude_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|   `-- ERROR:show_rcu_tasks_trace_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|-- mips-cu1830-neo_defconfig
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- mips-randconfig-c003-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- mips-randconfig-r006-20200917
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- nds32-allyesconfig
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- nds32-defconfig
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- nds32-randconfig-r003-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- nds32-randconfig-r034-20200917
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- nios2-allyesconfig
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- nios2-randconfig-r001-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- nios2-randconfig-r006-20200916
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- nios2-randconfig-r022-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- nios2-randconfig-r023-20200916
+|   |-- kernel-rcu-rcutorture.c:error:show_rcu_tasks_classic_gp_kthread-undeclared-here-(not-in-a-function)
+|   |-- kernel-rcu-rcutorture.c:error:show_rcu_tasks_rude_gp_kthread-undeclared-here-(not-in-a-function)
+|   `-- kernel-rcu-rcutorture.c:error:show_rcu_tasks_trace_gp_kthread-undeclared-here-(not-in-a-function)
+|-- nios2-randconfig-r035-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- openrisc-randconfig-p001-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- openrisc-randconfig-r006-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- openrisc-randconfig-r031-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- openrisc-randconfig-r035-20200916
+|   |-- ERROR:show_rcu_tasks_rude_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|   `-- ERROR:show_rcu_tasks_trace_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|-- openrisc-randconfig-s031-20200916
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|-- parisc-randconfig-p001-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- parisc-randconfig-r013-20200916
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_classic_gp_kthread-follows-non-static-declaration
+|-- parisc-randconfig-r016-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- parisc-randconfig-r024-20200916
+|   |-- ERROR:show_rcu_tasks_rude_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|   `-- ERROR:show_rcu_tasks_trace_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|-- parisc-randconfig-r031-20200916
+|   |-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_classic_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- parisc-randconfig-r032-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- powerpc-allmodconfig
+|   |-- ERROR:show_rcu_tasks_rude_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|   `-- ERROR:show_rcu_tasks_trace_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|-- powerpc-randconfig-r034-20200916
+|   |-- ERROR:show_rcu_tasks_rude_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|   `-- ERROR:show_rcu_tasks_trace_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|-- powerpc64-randconfig-r003-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- riscv-allmodconfig
+|   |-- ERROR:show_rcu_tasks_rude_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|   `-- ERROR:show_rcu_tasks_trace_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|-- riscv-defconfig
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_classic_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|-- riscv-randconfig-r013-20200916
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- riscv-randconfig-r022-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- riscv-randconfig-r032-20200916
+|   |-- kernel-rcu-rcutorture.c:error:show_rcu_tasks_classic_gp_kthread-undeclared-here-(not-in-a-function)
+|   |-- kernel-rcu-rcutorture.c:error:show_rcu_tasks_rude_gp_kthread-undeclared-here-(not-in-a-function)
+|   `-- kernel-rcu-rcutorture.c:error:show_rcu_tasks_trace_gp_kthread-undeclared-here-(not-in-a-function)
+|-- riscv-randconfig-s031-20200916
+|   |-- ERROR:show_rcu_tasks_rude_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|   `-- ERROR:show_rcu_tasks_trace_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|-- s390-defconfig
+|   |-- ERROR:show_rcu_tasks_rude_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|   `-- ERROR:show_rcu_tasks_trace_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|-- s390-randconfig-p002-20200916
+|   |-- ERROR:show_rcu_tasks_rude_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|   `-- ERROR:show_rcu_tasks_trace_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|-- s390-randconfig-r005-20200916
+|   |-- ERROR:show_rcu_tasks_rude_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|   `-- ERROR:show_rcu_tasks_trace_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|-- sh-allmodconfig
+|   |-- kernel-rcu-rcutorture.c:error:show_rcu_tasks_classic_gp_kthread-undeclared-here-(not-in-a-function)
+|   |-- kernel-rcu-rcutorture.c:error:show_rcu_tasks_rude_gp_kthread-undeclared-here-(not-in-a-function)
+|   `-- kernel-rcu-rcutorture.c:error:show_rcu_tasks_trace_gp_kthread-undeclared-here-(not-in-a-function)
+|-- sh-randconfig-c003-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- sh-randconfig-p001-20200916
+|   |-- ERROR:show_rcu_tasks_rude_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|   `-- ERROR:show_rcu_tasks_trace_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|-- sparc-randconfig-r005-20200917
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- sparc-randconfig-r032-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- sparc64-randconfig-p002-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- sparc64-randconfig-r016-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- sparc64-randconfig-r022-20200916
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_classic_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|-- sparc64-randconfig-r024-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- sparc64-randconfig-r034-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- x86_64-kexec
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_classic_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- x86_64-randconfig-a001-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- x86_64-randconfig-a002-20200916
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_classic_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|-- x86_64-randconfig-a003-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- x86_64-randconfig-a006-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- x86_64-randconfig-a011-20200917
+|   |-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_classic_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|-- x86_64-randconfig-a013-20200917
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- x86_64-randconfig-m001-20200917
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- x86_64-randconfig-r002-20200916
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|-- x86_64-randconfig-s021-20200916
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_classic_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|-- x86_64-randconfig-s022-20200916
+|   |-- ERROR:show_rcu_tasks_rude_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|   `-- ERROR:show_rcu_tasks_trace_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|-- x86_64-randconfig-s031-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- x86_64-rhel
+|   |-- ERROR:show_rcu_tasks_rude_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|   `-- ERROR:show_rcu_tasks_trace_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|-- x86_64-rhel-7.6-kselftests
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- x86_64-rhel-8.3
+|   |-- ERROR:show_rcu_tasks_rude_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|   `-- ERROR:show_rcu_tasks_trace_gp_kthread-kernel-rcu-rcutorture.ko-undefined
+|-- xtensa-allyesconfig
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- xtensa-randconfig-r015-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+|-- xtensa-randconfig-r016-20200916
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- xtensa-randconfig-r026-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+`-- xtensa-randconfig-r026-20200917
+    `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread
+
+clang_recent_errors
+|-- arm-randconfig-r004-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread-Werror-Wimplicit-function-declaration
+|-- arm-randconfig-r031-20200916
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- powerpc-randconfig-r012-20200916
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- powerpc-randconfig-r021-20200916
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- x86_64-randconfig-a001-20200917
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- x86_64-randconfig-a003-20200917
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- x86_64-randconfig-a004-20200917
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread-Werror-Wimplicit-function-declaration
+|-- x86_64-randconfig-a005-20200917
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|-- x86_64-randconfig-a012-20200916
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- x86_64-randconfig-a013-20200916
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+|-- x86_64-randconfig-a014-20200916
+|   `-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread-Werror-Wimplicit-function-declaration
+|-- x86_64-randconfig-a015-20200916
+|   |-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_rude_gp_kthread-follows-non-static-declaration
+|   `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+`-- x86_64-randconfig-r002-20200917
+    |-- kernel-rcu-tasks.h:error:implicit-declaration-of-function-show_rcu_tasks_generic_gp_kthread-Werror-Wimplicit-function-declaration
+    `-- kernel-rcu-tasks.h:error:static-declaration-of-show_rcu_tasks_trace_gp_kthread-follows-non-static-declaration
+
+elapsed time: 987m
+
+configs tested: 134
+configs skipped: 2
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                     decstation_defconfig
+mips                      malta_kvm_defconfig
+sh                        sh7763rdp_defconfig
+arm                          pcm027_defconfig
+powerpc                  storcenter_defconfig
+mips                         cobalt_defconfig
+m68k                             alldefconfig
+sh                   sh7724_generic_defconfig
+mips                          malta_defconfig
+m68k                          sun3x_defconfig
+sh                        edosk7705_defconfig
+powerpc                      chrp32_defconfig
+mips                     cu1830-neo_defconfig
+nios2                         3c120_defconfig
+powerpc                      bamboo_defconfig
+arm                      integrator_defconfig
+powerpc                    sam440ep_defconfig
+arm                         axm55xx_defconfig
+arm                         at91_dt_defconfig
+powerpc                     kilauea_defconfig
+arm                          imote2_defconfig
+parisc                           allyesconfig
+powerpc                  mpc885_ads_defconfig
+nios2                            allyesconfig
+arm                           sama5_defconfig
+sh                ecovec24-romimage_defconfig
+arm                           efm32_defconfig
+mips                         tb0287_defconfig
+mips                         db1xxx_defconfig
+arc                             nps_defconfig
+arm                        trizeps4_defconfig
+powerpc                 mpc836x_mds_defconfig
+mips                         rt305x_defconfig
+powerpc                  mpc866_ads_defconfig
+alpha                            alldefconfig
+m68k                         apollo_defconfig
+alpha                               defconfig
+arc                      axs103_smp_defconfig
+powerpc                   lite5200b_defconfig
+sh                           se7343_defconfig
+powerpc                 mpc85xx_cds_defconfig
+xtensa                          iss_defconfig
+ia64                            zx1_defconfig
+sh                            migor_defconfig
+powerpc                     ppa8548_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20200916
+x86_64               randconfig-a004-20200916
+x86_64               randconfig-a003-20200916
+x86_64               randconfig-a002-20200916
+x86_64               randconfig-a001-20200916
+x86_64               randconfig-a005-20200916
+i386                 randconfig-a004-20200916
+i386                 randconfig-a006-20200916
+i386                 randconfig-a003-20200916
+i386                 randconfig-a001-20200916
+i386                 randconfig-a002-20200916
+i386                 randconfig-a005-20200916
+i386                 randconfig-a004-20200917
+i386                 randconfig-a006-20200917
+i386                 randconfig-a003-20200917
+i386                 randconfig-a001-20200917
+i386                 randconfig-a002-20200917
+i386                 randconfig-a005-20200917
+x86_64               randconfig-a014-20200917
+x86_64               randconfig-a011-20200917
+x86_64               randconfig-a016-20200917
+x86_64               randconfig-a012-20200917
+x86_64               randconfig-a015-20200917
+x86_64               randconfig-a013-20200917
+i386                 randconfig-a015-20200916
+i386                 randconfig-a014-20200916
+i386                 randconfig-a011-20200916
+i386                 randconfig-a013-20200916
+i386                 randconfig-a016-20200916
+i386                 randconfig-a012-20200916
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a006-20200917
+x86_64               randconfig-a004-20200917
+x86_64               randconfig-a003-20200917
+x86_64               randconfig-a002-20200917
+x86_64               randconfig-a001-20200917
+x86_64               randconfig-a005-20200917
+x86_64               randconfig-a014-20200916
+x86_64               randconfig-a011-20200916
+x86_64               randconfig-a016-20200916
+x86_64               randconfig-a012-20200916
+x86_64               randconfig-a015-20200916
+x86_64               randconfig-a013-20200916
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
