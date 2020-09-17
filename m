@@ -2,95 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C83AD26D300
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 07:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6201A26D310
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 07:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726280AbgIQFX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 01:23:26 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:53732 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726247AbgIQFXT (ORCPT
+        id S1726072AbgIQF3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 01:29:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725267AbgIQF3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 01:23:19 -0400
-Received: by mail-wm1-f66.google.com with SMTP id x23so651110wmi.3
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 22:23:18 -0700 (PDT)
+        Thu, 17 Sep 2020 01:29:49 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2482FC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 22:29:49 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id 139so815970qkl.11
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 22:29:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=DZtn9Rr5NAewp1qZv3hmsmsuQTNnLlGeDd7GB4F/76U=;
+        b=N5U4fkyXuSJJo80wRUSBbIGDBA3w3e+zfqT8bI/6fqISU81t+RiYolHSLlsTvDD19M
+         xjSY3EkS66Pg6nTWAfsAMszpfpx/k1bH0dAwzGAkqAiS35tTV9xqJysEccv+1kZnP/xr
+         4LeXHMQXLFZ0mkry9aoUkV0IxLTVIHGv6VoRNyraUdBGsGxjvyrAmEL9+6lCOcbqCU/6
+         ffRKh03667e2hOaNrprKQRxp6HeqietvqwpIGd43ki0BKutqaMI9X49iqoLqGYMg+D8z
+         cdo5fFARDhZeRM5RlYxWuw3CHSU0ORRCSB21QPhNCZHqjw27+I2yEXQaHlapIcXd84bE
+         /yQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LA/6WNJUJj4/BwlueXf+wc0/D0puEAWQO2AdVn51wXk=;
-        b=Hq+XR8pAEagwYVqpnbO6EizvK21W28nE+rc7595x+4igckRxytXcHQSowlfUSBy+Oj
-         MnH2rh7C4xQKGEOog5vJ2hXLAQg4TVYxYfNUzZEcCFTiZoq2huaW9atQqjUwQ5jVSLQy
-         ++QecEO46QDGcpVauaA0G77jLXYgB0M5JvnXM5HK6/I24plZEy96ZqSzZ0Kq2+Cg6KgU
-         rfDDaarqr2fy6I749T9xFsK1pGX/vFRU0XhMp4qnN5VefnCipmKgx0fNpugeV/ixHtkZ
-         U0EfxlRXoNZJDYGe5/KhDN83uWRc/A9EgoFrX2b42+Wj8Tk1egkKPB+In0EnNduBShrs
-         RNnA==
-X-Gm-Message-State: AOAM530E+Tp7IfVnFIM/OHN8pIbcxgxd1YgQK4hz4XiV7xXggOBxdRV2
-        NOuMl3PveF9szyRnt8xntgWKSD770OpxGEthSUo=
-X-Google-Smtp-Source: ABdhPJz1WcWLgFTSKM1j2p89Kj52DLWJ1V0PAQlHxMu7r0IOZjbwFG32UvH6y96us90HGx0ABbCwaNqrbLbDMOJV3tc=
-X-Received: by 2002:a7b:c404:: with SMTP id k4mr7957800wmi.168.1600320198027;
- Wed, 16 Sep 2020 22:23:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200917031414.47498-1-liwei391@huawei.com>
-In-Reply-To: <20200917031414.47498-1-liwei391@huawei.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 17 Sep 2020 14:23:07 +0900
-Message-ID: <CAM9d7cicKypGwhASKfu8GKE0y4v80o9tEyv7tn1d14J2tOezzw@mail.gmail.com>
-Subject: Re: [PATCH] Revert "perf report: Treat an argument as a symbol filter"
-To:     Wei Li <liwei391@huawei.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Li Bin <huawei.libin@huawei.com>, guohanjun@huawei.com
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=DZtn9Rr5NAewp1qZv3hmsmsuQTNnLlGeDd7GB4F/76U=;
+        b=iPqrfpnpHkSE7qeHnC0jQWiI6Wx79KQXFaVkjdoEb2+8ZAb8nIvOpcpRXcHPzBt1IU
+         Nrq5TJzpAjM9O7mlgVKtvXOvq0aRbz1L2YhvbTslNPLrqATAecQdfJq0pexh/PIBygTN
+         jRcy0Em02cYs6m2xLQV1sE/GdJ0iT2A5ismSqUNRem7Aovs4PfVRPh7PQ0nTCZnYyk5Q
+         NXk22r9dT7ylD1fJ41oy/nwKD+5oX7KnQdEdE9MQjwv/gRhoCBcQVOWtYySu/QuIuxYL
+         ZAWpLLCVtJmbwQeEyRurHDf4TdF6TixzInE8z6Piiis4jr4M5/z8LgfqP75Aqgn/XIg/
+         ONOw==
+X-Gm-Message-State: AOAM5326Dc/nULti20IcHWJWiQF3LA01XS7tTs3idT0R9X8Bn9saulLk
+        Rlb6SiPxsfRhUO5HSdUZH1qnIQ1PMZg5duGhaw==
+X-Google-Smtp-Source: ABdhPJxBxxNGWgG//JG92tXqEKNVQMibAYANYD7k1sVUyTqLXpM98PAOyJ1XVSkQqbQ9sd3NjaACQu/QPCpkCcX6lQ==
+X-Received: from howardchung-p920.tpe.corp.google.com ([2401:fa00:1:10:f693:9fff:fef4:4e45])
+ (user=howardchung job=sendgmr) by 2002:a0c:fe8b:: with SMTP id
+ d11mr10852077qvs.48.1600320588288; Wed, 16 Sep 2020 22:29:48 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 13:29:38 +0800
+Message-Id: <20200917132836.BlueZ.1.I27ef2a783d8920c147458639f3fa91b69f6fd9ea@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
+Subject: [BlueZ PATCH 1/6] Bluetooth: Update Adv monitor count upon removal
+From:   Howard Chung <howardchung@google.com>
+To:     linux-bluetooth@vger.kernel.org
+Cc:     mcchou@chromium.org, marcel@holtmann.org, mmandlik@chromium.org,
+        howardchung@google.com, luiz.dentz@gmail.com, alainm@chromium.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 12:15 PM Wei Li <liwei391@huawei.com> wrote:
->
-> Since commit 6db6127c4dad ("perf report: Treat an argument as a symbol
-> filter"), the only one unrecognized argument for perf-report is treated
-> as a symbol filter. This is not described in man page nor help info,
-> and the result is really confusing, especially when it's misspecified by
-> the user (e.g. missing -i for perf.data).
+From: Miao-chen Chou <mcchou@chromium.org>
 
-How about adding documentation then?
+This fixes the count of Adv monitor upon monitor removal.
 
-Thanks
-Namhyung
+The following test was performed.
+- Start two btmgmt consoles, issue a btmgmt advmon-remove command on one
+console and observe a MGMT_EV_ADV_MONITOR_REMOVED event on the other.
 
->
-> As we can use "--symbol-filter=" if we really want to filter a symbol,
-> it may be better to revert this misfeature.
->
-> Signed-off-by: Wei Li <liwei391@huawei.com>
-> ---
->  tools/perf/builtin-report.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
->
-> diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
-> index 3c74c9c0f3c3..f57ebc1bcd20 100644
-> --- a/tools/perf/builtin-report.c
-> +++ b/tools/perf/builtin-report.c
-> @@ -1317,13 +1317,9 @@ int cmd_report(int argc, const char **argv)
->         argc = parse_options(argc, argv, options, report_usage, 0);
->         if (argc) {
->                 /*
-> -                * Special case: if there's an argument left then assume that
-> -                * it's a symbol filter:
-> +                * Any (unrecognized) arguments left?
->                  */
-> -               if (argc > 1)
-> -                       usage_with_options(report_usage, options);
-> -
-> -               report.symbol_filter_str = argv[0];
-> +               usage_with_options(report_usage, options);
->         }
->
->         if (annotate_check_args(&report.annotation_opts) < 0)
-> --
-> 2.17.1
->
+Signed-off-by: Howard Chung <howardchung@google.com>
+Signed-off-by: Miao-chen Chou <mcchou@chromium.org>
+Reviewed-by: Alain Michaud <alainm@chromium.org>
+---
+
+ net/bluetooth/hci_core.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index 8a2645a833013..f30a1f5950e15 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -3061,6 +3061,7 @@ static int free_adv_monitor(int id, void *ptr, void *data)
+ 
+ 	idr_remove(&hdev->adv_monitors_idr, monitor->handle);
+ 	hci_free_adv_monitor(monitor);
++	hdev->adv_monitors_cnt--;
+ 
+ 	return 0;
+ }
+@@ -3077,6 +3078,7 @@ int hci_remove_adv_monitor(struct hci_dev *hdev, u16 handle)
+ 
+ 		idr_remove(&hdev->adv_monitors_idr, monitor->handle);
+ 		hci_free_adv_monitor(monitor);
++		hdev->adv_monitors_cnt--;
+ 	} else {
+ 		/* Remove all monitors if handle is 0. */
+ 		idr_for_each(&hdev->adv_monitors_idr, &free_adv_monitor, hdev);
+-- 
+2.28.0.618.gf4bc123cb7-goog
+
