@@ -2,194 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F2A426E31A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA9626E333
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:06:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726498AbgIQR6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 13:58:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726565AbgIQRjm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 13:39:42 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B3AC06121E
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:39:37 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id u18so3053198iln.13
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:39:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=c6CNu1LYWNz4YTYxiYPRvkqPWBqpDM+ovhrPcXJRY08=;
-        b=xcjO2apobyoynwr8mlo+BSGWBbL2VnaNrO/p5X+YCAfoQW0L3BTq5m4l9/P5y82U1b
-         31XYlB/+9ASi1ngE2ipcUdePPYfd3yRJrFhgHXqqU1y6x4ymTawjEeEyat16xG3dy3JI
-         dUQ+qPqLg/kCTQPGyc/nWbHkBo1CJFnyQzLvnIhoGjtUbjGVK3gQQL+UfJFTv1JSMMVb
-         4trRT8nGQQxMY4b9jpbIHpHzq6QLy6KhCUOO066hxad3KHSQtV0btNKx2hRwsbOA/2RS
-         /22uXRYgObFyCedDtzl17so7ac6enMRyDVgttaNomlW33nsHMxuUCP3B/RlQjVJJYY1t
-         Z+cA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=c6CNu1LYWNz4YTYxiYPRvkqPWBqpDM+ovhrPcXJRY08=;
-        b=ePXeUG5SdOmBTkcTsoyUbrVGA1vMguCq9DgPIlwgc27r1qBdCsgCpmsQ5ztWSQKNva
-         AenTGW2F9A8bAaeT0RZl9+8FLXYEwX2QuKVNGJSoG4Ug2XaS+ga0qCJ4rurtIJPzcZue
-         EvfVfu14lFLHQVZ7qvjyhr2iZxTZ0S6INTTYkpe5Mo3lF8OGpScoXnrGGc1zgH0Nrft1
-         5iH6NphZaBQ6z/1D25F1xC4PN7dtvttnlxSXwq7SKrypwPMOA8JVHjqQ8fy1aku2A6Ba
-         zKpvo0a8TEjCoZdEJHhxVZN74dp557HoGTRQQtVAV6xGWArndj/KFn1A8lZxiWDA6dyS
-         wa5w==
-X-Gm-Message-State: AOAM532RH0cXHP5Pk5oBXN15UDARs8dVe0dNlNvdtul9NXkGdWGuCzx3
-        2lRMevfnKQ5mnpCeN8/Vx8lfCA==
-X-Google-Smtp-Source: ABdhPJwaFsCSU3TPi/ucp9NUFbo+IVA1+K0seDDcl5QN5d1HKoNl+4jATzsWhbdJY0CYLF0bWqLxcw==
-X-Received: by 2002:a92:8b0e:: with SMTP id i14mr485068ild.28.1600364376991;
-        Thu, 17 Sep 2020 10:39:36 -0700 (PDT)
-Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id l6sm192725ilt.34.2020.09.17.10.39.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 10:39:35 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     evgreen@chromium.org, subashab@codeaurora.org,
-        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v3 5/7] net: ipa: repurpose CLOCK_HELD flag
-Date:   Thu, 17 Sep 2020 12:39:24 -0500
-Message-Id: <20200917173926.24266-6-elder@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200917173926.24266-1-elder@linaro.org>
-References: <20200917173926.24266-1-elder@linaro.org>
+        id S1726600AbgIQSGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 14:06:15 -0400
+Received: from mail.ispras.ru ([83.149.199.84]:47882 "EHLO mail.ispras.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726358AbgIQSFq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 14:05:46 -0400
+X-Greylist: delayed 594 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 14:05:45 EDT
+Received: from monopod.intra.ispras.ru (unknown [10.10.3.121])
+        by mail.ispras.ru (Postfix) with ESMTPS id 1BB264089F1B;
+        Thu, 17 Sep 2020 17:55:32 +0000 (UTC)
+Date:   Thu, 17 Sep 2020 20:55:32 +0300 (MSK)
+From:   Alexander Monakov <amonakov@ispras.ru>
+To:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+cc:     linux-kernel@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
+        iommu@lists.linux-foundation.org
+Subject: Re: [PATCH] iommu/amd: Fix event counter availability check
+In-Reply-To: <b01994db-da9b-d8e6-e0c1-1af35dd62191@amd.com>
+Message-ID: <alpine.LNX.2.20.13.2009172052480.29869@monopod.intra.ispras.ru>
+References: <20200529200738.1923-1-amonakov@ispras.ru> <56761139-f794-39b1-4dfa-dfc05fbe5f60@amd.com> <alpine.LNX.2.20.13.2006011132530.16067@monopod.intra.ispras.ru> <dba1e37a-1ed7-ef7f-7252-2ebd1d6bde8c@amd.com> <alpine.LNX.2.20.13.2006152346320.21123@monopod.intra.ispras.ru>
+ <b01994db-da9b-d8e6-e0c1-1af35dd62191@amd.com>
+User-Agent: Alpine 2.20.13 (LNX 116 2015-12-14)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The previous patch causes a system resume to be triggered when a
-packet is available for receipt on a suspended RX endpoint.
+On Tue, 16 Jun 2020, Suravee Suthikulpanit wrote:
 
-The CLOCK_HELD flag was previously used to indicate that an extra
-clock reference was held, preventing suspend.  But we no longer need
-such a flag:
-  - We take an initial reference in ipa_config().
-  - That reference is held until ipa_suspend() releases it.
-  - A subsequent system resume leads to a reference getting
-    re-acquired in ipa_resume().
-  - This can repeat until ultimately the module is removed, where
-    ipa_remove() releases the reference.
-We no longer need a special flag to determine whether this extra
-reference is held--it is, provided probe has completed successfully
-and the driver is not suspended (or removed).
+> > > Instead of blindly moving the code around to a spot that would just work,
+> > > I am trying to understand what might be required here. In this case,
+> > > the init_device_table_dma()should not be needed. I suspect it's the IOMMU
+> > > invalidate all command that's also needed here.
+> > > 
+> > > I'm also checking with the HW and BIOS team. Meanwhile, could you please
+> > > give
+> > > the following change a try:
+> > Hello. Can you give any update please?
+> > 
+> > Alexander
+> > 
+> 
+> Sorry for late reply. I have a reproducer and working with the HW team to
+> understand the issue.
+> I should be able to provide update with solution by the end of this week.
 
-On the other hand, once suspended, it's possible for more than one
-endpoint to trip the IPA SUSPEND interrupt, and we only want to
-trigger the system resume once.  So repurpose the Boolean CLOCK_HELD
-flag to record whether the IPA SUSPEND handler should initiate a
-system resume.
+Hello, hope you are doing well. Has this investigation found anything?
 
-The flag will be be cleared each time ipa_suspend() is called,
-*before* any endpoints are suspended.  And it will be set inside the
-IPA SUSPEND interrupt handler exactly once per suspend.
-
-Rename the flag IPA_FLAG_RESUMED to reflect its new purpose.
-
-Signed-off-by: Alex Elder <elder@linaro.org>
----
-v3: New; eliminated need for "clock held" flag, as Bjorn suggested.
-
- drivers/net/ipa/ipa.h      |  6 +++---
- drivers/net/ipa/ipa_main.c | 14 +++++++-------
- 2 files changed, 10 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/net/ipa/ipa.h b/drivers/net/ipa/ipa.h
-index c688155ccf375..6c2371084c55a 100644
---- a/drivers/net/ipa/ipa.h
-+++ b/drivers/net/ipa/ipa.h
-@@ -29,11 +29,11 @@ struct ipa_interrupt;
- 
- /**
-  * enum ipa_flag - IPA state flags
-- * @IPA_FLAG_CLOCK_HELD:	Whether IPA clock is held to prevent suspend
-- * @IPA_FLAG_COUNT:		Number of defined IPA flags
-+ * @IPA_FLAG_RESUMED:	Whether resume from suspend has been signaled
-+ * @IPA_FLAG_COUNT:	Number of defined IPA flags
-  */
- enum ipa_flag {
--	IPA_FLAG_CLOCK_HELD,
-+	IPA_FLAG_RESUMED,
- 	IPA_FLAG_COUNT,		/* Last; not a flag */
- };
- 
-diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
-index 4e2508bb1bf80..1044758b501d2 100644
---- a/drivers/net/ipa/ipa_main.c
-+++ b/drivers/net/ipa/ipa_main.c
-@@ -86,7 +86,7 @@ static void ipa_suspend_handler(struct ipa *ipa, enum ipa_irq_id irq_id)
- 	 * More than one endpoint could signal this; if so, ignore
- 	 * all but the first.
- 	 */
--	if (!test_and_set_bit(IPA_FLAG_CLOCK_HELD, ipa->flags))
-+	if (!test_and_set_bit(IPA_FLAG_RESUMED, ipa->flags))
- 		pm_wakeup_dev_event(&ipa->pdev->dev, 0, true);
- 
- 	/* Acknowledge/clear the suspend interrupt on all endpoints */
-@@ -518,7 +518,6 @@ static int ipa_config(struct ipa *ipa, const struct ipa_data *data)
- 	 * is held after initialization completes, and won't get dropped
- 	 * unless/until a system suspend request arrives.
- 	 */
--	__set_bit(IPA_FLAG_CLOCK_HELD, ipa->flags);
- 	ipa_clock_get(ipa);
- 
- 	ipa_hardware_config(ipa);
-@@ -554,7 +553,6 @@ static int ipa_config(struct ipa *ipa, const struct ipa_data *data)
- err_hardware_deconfig:
- 	ipa_hardware_deconfig(ipa);
- 	ipa_clock_put(ipa);
--	__clear_bit(IPA_FLAG_CLOCK_HELD, ipa->flags);
- 
- 	return ret;
- }
-@@ -572,7 +570,6 @@ static void ipa_deconfig(struct ipa *ipa)
- 	ipa_endpoint_deconfig(ipa);
- 	ipa_hardware_deconfig(ipa);
- 	ipa_clock_put(ipa);
--	__clear_bit(IPA_FLAG_CLOCK_HELD, ipa->flags);
- }
- 
- static int ipa_firmware_load(struct device *dev)
-@@ -778,7 +775,6 @@ static int ipa_probe(struct platform_device *pdev)
- 	dev_set_drvdata(dev, ipa);
- 	ipa->modem_rproc = rproc;
- 	ipa->clock = clock;
--	__clear_bit(IPA_FLAG_CLOCK_HELD, ipa->flags);
- 	ipa->version = data->version;
- 
- 	ret = ipa_reg_init(ipa);
-@@ -908,10 +904,15 @@ static int ipa_suspend(struct device *dev)
- {
- 	struct ipa *ipa = dev_get_drvdata(dev);
- 
-+	/* When a suspended RX endpoint has a packet ready to receive, we
-+	 * get an IPA SUSPEND interrupt.  We trigger a system resume in
-+	 * that case, but only on the first such interrupt since suspend.
-+	 */
-+	__clear_bit(IPA_FLAG_RESUMED, ipa->flags);
-+
- 	ipa_endpoint_suspend(ipa);
- 
- 	ipa_clock_put(ipa);
--	__clear_bit(IPA_FLAG_CLOCK_HELD, ipa->flags);
- 
- 	return 0;
- }
-@@ -933,7 +934,6 @@ static int ipa_resume(struct device *dev)
- 	/* This clock reference will keep the IPA out of suspend
- 	 * until we get a power management suspend request.
- 	 */
--	__set_bit(IPA_FLAG_CLOCK_HELD, ipa->flags);
- 	ipa_clock_get(ipa);
- 
- 	ipa_endpoint_resume(ipa);
--- 
-2.20.1
-
+Thanks.
+Alexander
