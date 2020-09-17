@@ -2,79 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EEA826DE0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 355E626DDCF
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727114AbgIQNxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 09:53:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726783AbgIQNut (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 09:50:49 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3DD9C061D73;
-        Thu, 17 Sep 2020 06:50:24 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id f18so1239780pfa.10;
-        Thu, 17 Sep 2020 06:50:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KPaE7MzGUy8EbIKncE+ieqkHzqJTXMjDit15B2UGepg=;
-        b=a7Tbc5qCqZH1fluejWr2MXblRtsb9a2CqU2gJzpaLB9c9UMzc+C1vVA3c41+7EzAZN
-         xqsUgvC68sxJhZSg5G87dmdsSWmfyB7XBEgTunHAWWdnBPsWSSCXjfTvLVbvju9OINYU
-         emefOm/lLYe7UdeEL3G8G+bcX7vb0Jw+6sitSGEpAhGnkoNHCCQ3C4+Hc2j/V8WSZA+E
-         QJ9XIZDpo/soa+7C1+SrBzWjcPrz8wdqJN2OxJIsnP+V8uzVhUVJdfq+uj2JlJh7wNtZ
-         GRWKYwwEIoRe9SETYWdUoYKEhdQG8mdstglf9vkeQSQi1QtAoN8M92aJywoZXAxTbw63
-         DMNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KPaE7MzGUy8EbIKncE+ieqkHzqJTXMjDit15B2UGepg=;
-        b=rOQr+74F1vP0ToiGnp7GDUSJTa8Ok3dizlVdL3YJIME8ZEyG3NwS4t5KmBYZqkg6Nu
-         gzTm1TAuNSidyO7zWcgbxPMcgiLx7jUJvQ88pjNTnhsXPN1JNdVxd+Vrv0VKqeGzkZi0
-         zem1g2hU02MwGSzpkkEWjUb1HXAFSVgeI7NtAcrbudusznGPIPKNUE4OUcFVRGI6yvb8
-         yBJMah48/wLyy4Sd8xKkbfd3KxP/FDlBPsF4I6u0JTJcacVffmgbE6KFlN7fzUZfOJq7
-         3LSFbu4mydes5Jxhlpe8IJSNlIKtwjedDjyfpqDrwi1GXdO4ihZpSj0T2Yb41fOqlEjt
-         SJvQ==
-X-Gm-Message-State: AOAM530lES8lacUwTdHCdPbVW4P5mWHHCT5NVLwtt5QyFuqZLcxuRjvk
-        OIbDr8NxPJq0BiENy9kLtz7her0geih5l54yU/o=
-X-Google-Smtp-Source: ABdhPJxMxXTy2uCYupbtrxsmgKQ11wUvjaFj0XA2C+8VDhh7rl8J6tQJs14Up25DkPThBFF4YdLE5wdSJQ+X85PmC6k=
-X-Received: by 2002:a63:d648:: with SMTP id d8mr22534746pgj.4.1600350624302;
- Thu, 17 Sep 2020 06:50:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200908224006.25636-1-digetx@gmail.com> <20200908224006.25636-28-digetx@gmail.com>
- <20200917120955.GF3515672@ulmo>
-In-Reply-To: <20200917120955.GF3515672@ulmo>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 17 Sep 2020 16:50:06 +0300
-Message-ID: <CAHp75VdEoLAMvQWb1_p8ydROmY9p7KCqFGarRsgM8p8nDhyY7g@mail.gmail.com>
-Subject: Re: [PATCH v7 27/34] i2c: tegra: Check errors for both positive and
- negative values
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        linux-tegra@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727271AbgIQOQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 10:16:49 -0400
+Received: from mga05.intel.com ([192.55.52.43]:3608 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727308AbgIQOK7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 10:10:59 -0400
+IronPort-SDR: W9VCMEiTFucvYbWubyekqg/f6dFSEwc5e8bF9hpEMxARCNaGb1BTSqtsuKXzTuJ004oFkxGNG3
+ EtoVji+9176A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="244532738"
+X-IronPort-AV: E=Sophos;i="5.76,437,1592895600"; 
+   d="scan'208";a="244532738"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 06:53:37 -0700
+IronPort-SDR: vFN5+teL5oxaNitimB4WYvK2kNus1HioosHN0VBptKxHYo+CXSVK3Z+dv/yLs5C3F7qOlI+KEH
+ Q9Hn0CaY+BQw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,437,1592895600"; 
+   d="scan'208";a="380543123"
+Received: from labuser-ice-lake-client-platform.jf.intel.com ([10.54.55.65])
+  by orsmga001.jf.intel.com with ESMTP; 17 Sep 2020 06:53:37 -0700
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, eranian@google.com, ak@linux.intel.com,
+        dave.hansen@intel.com, kirill.shutemov@linux.intel.com,
+        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH V7 0/4] Add the page size in the perf record (kernel)
+Date:   Thu, 17 Sep 2020 06:52:33 -0700
+Message-Id: <20200917135237.2857-1-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 3:09 PM Thierry Reding <thierry.reding@gmail.com> wrote:
-> On Wed, Sep 09, 2020 at 01:39:59AM +0300, Dmitry Osipenko wrote:
+From: Kan Liang <kan.liang@linux.intel.com>
 
-> Why? All of these functions "return 0 on success or a negative error
-> code on failure", don't they?
+Changes since V6
+- Return the MMU page size of a given virtual address, not the kernel
+  software page size
+- Add PERF_SAMPLE_DATA_PAGE_SIZE support for Power
+- Allow large PEBS for PERF_SAMPLE_CODE_PAGE_SIZE
+- Only include the kernel patches. The perf tool patches will be posted
+  later separately once the kernel patches are accepted.
 
-And what is the point of having ' < 0' in all those cases?
+Changes since V5
+- Introduce a new universal page walker for the page size in the perf
+  subsystem.
+- Rebased on Peter's tree.
+
+Current perf can report both virtual addresses and physical addresses,
+but not the page size. Without the page size information of the utilized
+page, users cannot decide whether to promote/demote large pages to
+optimize memory usage.
+
+The patch set was submitted a year ago.
+https://lkml.kernel.org/r/1549648509-12704-1-git-send-email-kan.liang@linux.intel.com
+It introduced a __weak function, perf_get_page_size(), aim to retrieve
+the page size via a given virtual address in the generic code, and
+implemented a x86 specific version of perf_get_page_size().
+However, the proposal was rejected, because it's a pure x86
+implementation.
+https://lkml.kernel.org/r/20190208200731.GN32511@hirez.programming.kicks-ass.net
+
+At that time, it's not easy to support perf_get_page_size() universally,
+because some key functions, e.g., p?d_large, are not supported by some
+architectures.
+
+Now, the generic p?d_leaf() functions are added in the latest kernel.
+https://lkml.kernel.org/r/20191218162402.45610-2-steven.price@arm.com
+Starts from V6, a new universal perf_get_page_size() function is
+implemented based on the generic p?d_leaf() functions.
+
+On some platforms, e.g., X86, the page walker is invoked in an NMI
+handler. So the page walker must be NMI-safe and low overhead. Besides,
+the page walker should work for both user and kernel virtual address.
+The existing generic page walker, e.g., walk_page_range_novma(), is a
+little bit complex and doesn't guarantee the NMI-safe. The follow_page()
+is only for the user-virtual address. So a simpler page walk function is
+implemented here.
+
+
+Kan Liang (3):
+  perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE
+  perf/x86/intel: Support PERF_SAMPLE_DATA_PAGE_SIZE
+  powerpc/perf: Support PERF_SAMPLE_DATA_PAGE_SIZE
+
+Stephane Eranian (1):
+  perf/core: Add support for PERF_SAMPLE_CODE_PAGE_SIZE
+
+ arch/powerpc/perf/core-book3s.c |   6 +-
+ arch/x86/events/intel/ds.c      |  11 ++-
+ arch/x86/events/perf_event.h    |   2 +-
+ include/linux/perf_event.h      |   2 +
+ include/uapi/linux/perf_event.h |   6 +-
+ kernel/events/core.c            | 114 +++++++++++++++++++++++++++++++-
+ 6 files changed, 133 insertions(+), 8 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.17.1
+
