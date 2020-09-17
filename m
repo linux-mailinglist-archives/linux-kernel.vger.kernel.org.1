@@ -2,243 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA77426DFA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 17:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2CA026DFDB
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 17:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726988AbgIQPaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 11:30:06 -0400
-Received: from mail-eopbgr1320080.outbound.protection.outlook.com ([40.107.132.80]:33792
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726980AbgIQP2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 11:28:00 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mHTuuhhAkQ7+qdQhHE17GWUINzuIgq8kT3y9k8tf1P9pJTjlPsn0nnWDwemDt6jv9sGskmhW0HwurrW9rxiIKbDSLTtSfkvAUPvl42Y/B8B79AwdugNb7QpRU1MJEqpGjl2fs5Iy3hifBc/kRFzFBMJnZIKIbpBeueQebgjhCvxresw7c1UpY8INmZdNhIWqC2KeQ+PZZvVwfudl1wnd7x0whghsdyM+Kn82BHOUHCcsyKFx4+yWZdEGn4ot8RWVf8kT1gTdVhTVsbeb3aQOi+A8oWQK6YJeY4+JIwcWccp+1IIxFSxD7PYI4O49tw9DDUOB5NM2Ps74V6m/AbGACA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ih8BITUqoRBEgMQKT8LoulaEwOok7Old01uQ2xSjdWo=;
- b=EBPF5QUZiVoeaS0+tVY1vJ5mI1kN8Y0BEjo+a18aTdLMQEHlPVkbA7EvIpbW8iwu+VAbT0uz78zmU1mM7FKYofb/LCWJh5x7iLfUX8B24EDecFAPkKrfkSCtxV3KdYgDTwSr9l52bZQPZjEMdXr+ZQ2FciOalGWxDmmdRxXNR8dd7CPoK6hwJn4AoG1Qam+gxKPdRc4UCgYQ3ZyW7dKdqs2uaVAlyNwRit3JvCxWtVMT/aG+UNhh7DpYpX5p1jnB5TAFqd2VAOx0VRrBjbOVeRBxM9oUg8v91vLGuuHMCBCmpBeiA48LfSgHKAUqP5tpGKcK8EUkxTr+nECldcpx5g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
- header.d=nec.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=necglobal.onmicrosoft.com; s=selector1-necglobal-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ih8BITUqoRBEgMQKT8LoulaEwOok7Old01uQ2xSjdWo=;
- b=u3TIjAtiHiQFeQF0O7LDFtet0X0sheBy1TBol2c1Q472MtoxHsQ9Q1ZKAxrA7Of/2NWjxw6MWhvMqLSWzml4IibM5tSt2iRaQLBMLmen4QEuDElKFcVEdB8IpZEVPkS5QsxAuv7nsCJHO2EDKgUGW3U3lke2K6dsjJStSheNTsA=
-Received: from TY2PR01MB3210.jpnprd01.prod.outlook.com (2603:1096:404:74::14)
- by TY2PR01MB4284.jpnprd01.prod.outlook.com (2603:1096:404:112::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Thu, 17 Sep
- 2020 15:27:18 +0000
-Received: from TY2PR01MB3210.jpnprd01.prod.outlook.com
- ([fe80::108f:629c:d934:9206]) by TY2PR01MB3210.jpnprd01.prod.outlook.com
- ([fe80::108f:629c:d934:9206%7]) with mapi id 15.20.3370.019; Thu, 17 Sep 2020
- 15:27:18 +0000
-From:   =?iso-2022-jp?B?SE9SSUdVQ0hJIE5BT1lBKBskQktZOH0hIUQ+TGkbKEIp?= 
-        <naoya.horiguchi@nec.com>
-To:     Oscar Salvador <osalvador@suse.de>
-CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "aris@ruivo.org" <aris@ruivo.org>,
-        "mhocko@kernel.org" <mhocko@kernel.org>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "cai@lca.pw" <cai@lca.pw>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: Re: [PATCH v4 0/7] HWpoison: further fixes and cleanups
-Thread-Topic: [PATCH v4 0/7] HWpoison: further fixes and cleanups
-Thread-Index: AQHWjMx2j/0L2wEy/UuRZxbicfqQp6lstMQAgAAZSwCAAAhzAIAAHfMA
-Date:   Thu, 17 Sep 2020 15:27:18 +0000
-Message-ID: <20200917152717.GA26808@hori.linux.bs1.fc.nec.co.jp>
-References: <20200917081049.27428-1-osalvador@suse.de>
- <20200917113920.GA19898@hori.linux.bs1.fc.nec.co.jp>
- <20200917130948.GA1812@linux> <20200917133959.GA2504@linux>
-In-Reply-To: <20200917133959.GA2504@linux>
-Accept-Language: ja-JP, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.de; dkim=none (message not signed)
- header.d=none;suse.de; dmarc=none action=none header.from=nec.com;
-x-originating-ip: [165.225.110.205]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 98a3172b-fd70-401e-4bfc-08d85b1e2a12
-x-ms-traffictypediagnostic: TY2PR01MB4284:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <TY2PR01MB428426C91CE6E4730F42A9DAE73E0@TY2PR01MB4284.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 1E9kzz38TBeY/p7gFHnm8KZsVWW6HSgEYN0wjI8gn9uHLciuCWaXSXS/eqDSQYEkFcoTSFAesdzODgAr4Om6EUhxJm9no8U7jCbGJd8FyiytVdp7GxuSyS5uUwDKJnDCJ8RpNPlXsx3SlWRBRMZbuC3f0XX5PXFKU4pqcp8Fx7k8M3IRHY9Zz/DnxJt9RaTGHDC42EqeRsVT72gy/BUivXeyqHKPacySlg0kBL351UFzcl2P/WRFnZCLNiPuteBnN9uv17O80LRo5ufJ9BHoIkPQcrWtBwQzvT36prR8bVYrQA3HrIcmkA3dwLUXzEEbYhI1T6n6j3MHVRs4IDWzYg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB3210.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6486002)(6512007)(86362001)(76116006)(1076003)(9686003)(6916009)(6506007)(8936002)(2906002)(54906003)(33656002)(26005)(55236004)(186003)(4326008)(64756008)(66446008)(66946007)(66476007)(8676002)(66556008)(85182001)(5660300002)(498600001)(83380400001)(71200400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: sxCmmxeqb/X06S6EXs38eFCQLNAt1wp+1/YYFehOJB5xlWvTWj2BiycEUu8X/rkFhroXXJ63xqWlUTZdQoP2PWnAQuBqVhsJ7UeptUdbgXQIM4/Ej3ui9G6/XcjYeg7W/GlOvs0p7R5IAgJ57RQWeplb0oUeSsMAAiB/SuLkTLt2yQD/5SDaSv2zHCn40erSk3WztakQlWyeq17DrY5R0goKI2hdH34N2URCIlBpXdoBqUsvrbm7VuymAarXSt/vHs8xq0BM7lTboOYkHA7qmfAt+N81dc3CN2WNzmL/n1+g4WqqWiYyuA+cQBeC6ha5zeFctSAonkV0RMNXMWo5iPOyAJz1YqMsshXLGJK6ivWtUMv6EWvMtJ0qvF32HqA9uGtdHxCdvp7nJ9r2TuMnujAKclA+C+QDUZO+O7UOiyfQ5WJ9lEa5JV0Y9fo2QaijnHXUkTjilZS4mSV95Y4iwn2oKemGExXFxxSwFgPB6fXUck2Go9h9CyM0dwXEcJN6V1y6LdgnnXJBva9rt6r7QMqN0XoGneHVPdZ0mCkaRzZ9N6pMZCKy7qZZtZB+lHtPIhfUj8G4Rv+Sc4D7dfpUKlvGchdhWMF03jOdS5JuoHIHFyNXqyA3eGyx3B1yb1Ex3x12yDwO4Is+gJJcF92TPA==
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-ID: <4227A18ABFD8174383A6324FB3D3E1A1@jpnprd01.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1727952AbgIQPlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 11:41:53 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:44232 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728094AbgIQPUk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 11:20:40 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08HBg4ce055141;
+        Thu, 17 Sep 2020 06:42:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600342924;
+        bh=y520wGsDhS1XSzX21A9XTTvZro3KlWBo64bgJuekHQI=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=rSKLKEfXAZUPflKQYLcfuY+C68HX5iwdon/nbOZ7ev1xWm0v0wDE/YYr6/ujfb5rQ
+         ccEWaP7l9hY79Ku59Wj86wJPna9MUeGJjR9tHsAaLiLr/8aPx+Wfs/ejcmlK2M346f
+         Ip1+T63EKoA8nqBliYQ6WZd8p1of7cBRVkvsFTnc=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08HBg3pb042538
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 17 Sep 2020 06:42:03 -0500
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 17
+ Sep 2020 06:42:02 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 17 Sep 2020 06:42:02 -0500
+Received: from [10.250.32.129] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08HBg20q127931;
+        Thu, 17 Sep 2020 06:42:02 -0500
+Subject: Re: [PATCH v3 2/2] ASoC: tlv320adcx140: Add support for configuring
+ GPIO pin
+To:     Camel Guo <camel.guo@axis.com>, <lgirdwood@gmail.com>,
+        <broonie@kernel.org>, <tiwai@suse.com>, <robh+dt@kernel.org>,
+        <devicetree@vger.kernel.org>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@axis.com>, Camel Guo <camelg@axis.com>
+References: <20200916075949.28479-1-camel.guo@axis.com>
+ <20200916075949.28479-2-camel.guo@axis.com>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <b9b0a159-905b-6d18-6b7c-db63c2f61c0d@ti.com>
+Date:   Thu, 17 Sep 2020 06:42:02 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: nec.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB3210.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 98a3172b-fd70-401e-4bfc-08d85b1e2a12
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Sep 2020 15:27:18.5064
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZCV0l2eJ5wLGzKbTiMb4uEi7kRfoe3TuoR1NthAYSkvZBetxXxmSSwynSNeTjRGaza6Ae9XCYCmUkmeRfN5QYw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB4284
+In-Reply-To: <20200916075949.28479-2-camel.guo@axis.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 03:40:06PM +0200, Oscar Salvador wrote:
-> On Thu, Sep 17, 2020 at 03:09:52PM +0200, Oscar Salvador wrote:
-> > static bool page_handle_poison(struct page *page, bool hugepage_or_free=
-page, bool release)
-> > {
-> >         if (release) {
-> >                 put_page(page);
-> >                 drain_all_pages(page_zone(page));
-> >         }
-> >
-> > 	...
-> >         SetPageHWPoison(page);
-> >         page_ref_inc(page);
-> >
-> > 1) You are freeing the page first, which means it goes to buddy
-> > 2) Then you set it as poisoned and you update its refcount.
-> >
-> > Now we have a page sitting in Buddy with a refcount =3D 1 and poisoned,=
- and that is quite wrong.
+Camel
+
+On 9/16/20 2:59 AM, Camel Guo wrote:
+> From: Camel Guo <camelg@axis.com>
 >
-> Hi Naoya,
+> Add support to configure the GPIO pin to the specific configuration.
+> The GPIO pin can be configured as GPO, IRQ, SDOUT2, PDMCLK, MICBASE_EN,
+> GPI, MCLK, SDIN, PDMDIN1, PDMDIN2, PDMDIN3 or PDMDIN4 and the output
+> drive can be configured with various configuration.
 >
-> Ok, I tested it and with the following changes on top I cannot reproduce =
-the issue:
+> Signed-off-by: Camel Guo <camelg@axis.com>
+> ---
+>   v3:
+>    - Add ADCX140_NUM_GPIO_CFGS avoiding using magic number
+>    - Remove unneeded check on ret in adcx140_configure_gpio
 >
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index f68cb5e3b320..4ffaaa5c2603 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -67,11 +67,6 @@ atomic_long_t num_poisoned_pages __read_mostly =3D ATO=
-MIC_LONG_INIT(0);
+>   sound/soc/codecs/tlv320adcx140.c | 40 ++++++++++++++++++++++++++++++++
+>   sound/soc/codecs/tlv320adcx140.h |  5 ++++
+>   2 files changed, 45 insertions(+)
 >
->  static bool page_handle_poison(struct page *page, bool hugepage_or_freep=
-age, bool release)
->  {
-> -	if (release) {
-> -		put_page(page);
-> -		drain_all_pages(page_zone(page));
-> -	}
-> -
->  	if (hugepage_or_freepage) {
->  		/*
->  		 * Doing this check for free pages is also fine since dissolve_free_hu=
-ge_page
-> @@ -89,6 +84,12 @@ static bool page_handle_poison(struct page *page, bool=
- hugepage_or_freepage, boo
->  	}
->
->  	SetPageHWPoison(page);
+> diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
+> index f33ee604ee78..fe6fc6df66cc 100644
+> --- a/sound/soc/codecs/tlv320adcx140.c
+> +++ b/sound/soc/codecs/tlv320adcx140.c
+> @@ -837,6 +837,42 @@ static int adcx140_configure_gpo(struct adcx140_priv *adcx140)
+>   
+>   }
+>   
+> +static int adcx140_configure_gpio(struct adcx140_priv *adcx140)
+> +{
+> +	int gpio_count = 0;
+> +	u32 gpio_outputs[ADCX140_NUM_GPIO_CFGS];
+> +	u32 gpio_output_val = 0;
+> +	int ret;
 > +
-> +	if (release) {
-> +                put_page(page);
-> +                drain_all_pages(page_zone(page));
-> +        }
+> +	gpio_count = device_property_count_u32(adcx140->dev,
+> +			"ti,gpio-config");
+> +	if (gpio_count == 0)
+> +		return 0;
 > +
->  	page_ref_inc(page);
->  	num_poisoned_pages_inc();
->  	return true;
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 0d9f9bd0e06c..8a6ab05f074c 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -1173,6 +1173,16 @@ static __always_inline bool free_pages_prepare(str=
-uct page *page,
->
->  	trace_mm_page_free(page, order);
->
-> +	if (unlikely(PageHWPoison(page)) && !order) {
-> +		/*
-> +		 * Untie memcg state and reset page's owner
-> +		 */
-> +		if (memcg_kmem_enabled() && PageKmemcg(page))
-> +			__memcg_kmem_uncharge_page(page, order);
-> +		reset_page_owner(page, order);
-> +		return false;
+> +	if (gpio_count != ADCX140_NUM_GPIO_CFGS)
+> +		return -EINVAL;
+> +
+> +	ret = device_property_read_u32_array(adcx140->dev, "ti,gpio-config",
+> +			gpio_outputs, gpio_count);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (gpio_outputs[0] > ADCX140_GPIO_CFG_MAX) {
+> +		dev_err(adcx140->dev, "GPIO config out of range\n");
+> +		return -EINVAL;
 > +	}
 > +
-
-Sorry, I modified the patches based on the different assumption from yours.
-I firstly thought of taking page off after confirming the error page
-is freed back to buddy. This approach leaves the possibility of reusing
-the error page (which is acceptable), but simpler and less invasive one.
-
-Your approach removes the error page from page allocator's control in
-freeing time. It has no possibility of reusing the error page but changes
-are tightly coupled with page free code.
-
-This is a tradeoff between complexity and completeness of soft offline,
-Now I'm not sure I could persist on my own opinion without providing
-working code, and it's OK for me to take your one.
-
->  	/*
->  	 * Check tail pages before head page information is cleared to
->  	 * avoid checking PageCompound for order-0 pages.
->
->
-
-...
-(let me reply to older email here...)
-> static bool page_handle_poison(struct page *page, bool hugepage_or_freepa=
-ge, bool release)
-> {
->         if (release) {
->                 put_page(page);
->                 drain_all_pages(page_zone(page));
->         }
->
->       ...
->         SetPageHWPoison(page);
->         page_ref_inc(page);
->
-> 1) You are freeing the page first, which means it goes to buddy
-> 2) Then you set it as poisoned and you update its refcount.
->
-> Now we have a page sitting in Buddy with a refcount =3D 1 and poisoned, a=
-nd that is quite wrong.
-
-This order was correct in my approach. Isolation operation is done
-after confirming it's in the free list. This prevents PageHWPoison pages
-from being in pcpclists. But the page_ref_inc() may not be necessary in my =
-approach.
-
-
-> # sh tmp_run_ksm_madv.sh
-> p1 0x7f6b6b08e000
-> p2 0x7f6b529ee000
-> madvise(p1) 0
-> madvise(p2) 0
-> writing p1 ... done
-> writing p2 ... done
-> soft offline
-> soft offline returns 0
-> OK
->
->
-> Can you try to re-run your tests and see if they come clean?
-
-The test passed in my environment, so this is fine.
-
-> If they do, I will try to see if Andrew can squezee above changes into [1=
-],
-> where they belong to.
-
-Yes, proposing the fix for mmhwpoison-rework-soft-offline-for-in-use-pages.=
-patch
-seems fine to me.
-
-Again, sorry for modifying code without asking.
-
-Naoya Horiguchi=
+> +	if (gpio_outputs[1] > ADCX140_GPIO_DRV_MAX) {
+> +		dev_err(adcx140->dev, "GPIO drive out of range\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	gpio_output_val = gpio_outputs[0] << ADCX140_GPIO_SHIFT
+> +		| gpio_outputs[1];
+> +
+> +	return regmap_write(adcx140->regmap, ADCX140_GPIO_CFG0, gpio_output_val);
+> +}
+> +
+>   static int adcx140_codec_probe(struct snd_soc_component *component)
+>   {
+>   	struct adcx140_priv *adcx140 = snd_soc_component_get_drvdata(component);
+> @@ -934,6 +970,10 @@ static int adcx140_codec_probe(struct snd_soc_component *component)
+>   			return ret;
+>   	}
+>   
+> +	ret = adcx140_configure_gpio(adcx140);
+> +	if (ret)
+> +		return ret;
+> +
+>   	ret = adcx140_configure_gpo(adcx140);
+>   	if (ret)
+>   		goto out;
+> diff --git a/sound/soc/codecs/tlv320adcx140.h b/sound/soc/codecs/tlv320adcx140.h
+> index eedbc1d7221f..9d04dec374d1 100644
+> --- a/sound/soc/codecs/tlv320adcx140.h
+> +++ b/sound/soc/codecs/tlv320adcx140.h
+> @@ -145,4 +145,9 @@
+>   #define ADCX140_GPO_CFG_MAX		4
+>   #define ADCX140_GPO_DRV_MAX		5
+>   
+> +#define ADCX140_NUM_GPIO_CFGS		2
+> +#define ADCX140_GPIO_SHIFT		4
+> +#define ADCX140_GPIO_CFG_MAX		15
+> +#define ADCX140_GPIO_DRV_MAX		5
+> +
+>   #endif /* _TLV320ADCX140_ */
+Acked-by: Dan Murphy <dmurphy@ti.com>
