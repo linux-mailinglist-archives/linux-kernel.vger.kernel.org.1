@@ -2,110 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 455F726D1B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 05:29:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0296B26D18B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 05:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726009AbgIQD3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 23:29:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726149AbgIQD2H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 23:28:07 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0609C061A27
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 20:22:35 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id r8so757108qtp.13
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 20:22:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7uYlLNN0UyKBRIab8OLOITLg387YzzBqmIZv+ipj1Bk=;
-        b=WgQWIsUlbXN3VVXSecXh6NSwzMBUdXegJ1UbE5dZ5hL0zTZqMnJXK3IU1YodWCoeuB
-         Y4OEpjgNajgPg+yhYvIAF872GecFsE1BgxlzwnqnA2jGT679cwonprKHeJe8p+UZy5J4
-         r72IIPcyanDumuLDsqhSxQlUc1HrTMomgmZd3gWrEDjF51lbPdFbSTdtKnYDJe3bi49z
-         HEdjA9fmvjxIv9m2vCLCmsz7H6ZD+ixW5RTucdXqj8nak9ZZl5Ra/dU9HxJrqjt1fx3v
-         5Uc6+JFwsR2u575L2MXyGO88rbRgDz78wJEGc2KS0sgSp02IBTsoU+HrrDclIL7UUzD5
-         yPIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7uYlLNN0UyKBRIab8OLOITLg387YzzBqmIZv+ipj1Bk=;
-        b=pGW5E4bgiWSYARgIlfZZ6VFUxQE9x72APL/vhzIzCN8/fQz0q03mhSUvqggLap7aST
-         8TKbgJGAEgV1K0NVNE0aJid5clKniFTl7QLjHeofncwDmo3MvCair/ZSspZxlmn8Wf1L
-         jZC4oezYZGb8wM2DrFmolJb+G1CNbH7R8EBf7ZIyrfRkBQT4Nlb6XTAaTsnz2Q0m7kTD
-         5KQ2GX8NW6rGIe+uED5s2PdtwfwRJCgA6HdIcAcEco7G+dH+OKGicgS6oPrU5WMT1hqr
-         ZOib0so+/fYvwsBKXmas0PblvxjLfKi80rc1Ti2WJjz43WfqTDeXfF+fwf0BiQ123ZyQ
-         Eshg==
-X-Gm-Message-State: AOAM532D4VR+4Hx9z3PsIrhsiB8Dte6d3JQRG+l2W0Y+7KQa0cMKQtPJ
-        BteJNQwnHxc6sb+Rnn2p6Z5o2Q==
-X-Google-Smtp-Source: ABdhPJzGL4YEJnZLHDs2gCK48wqeWdvZlE8nmVrQmjPTUaQ1EXFV5sqoz+sP/iUjbWjWIJ3lhJr+wg==
-X-Received: by 2002:aed:2b86:: with SMTP id e6mr25582795qtd.86.1600312955087;
-        Wed, 16 Sep 2020 20:22:35 -0700 (PDT)
-Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.googlemail.com with ESMTPSA id g45sm21370801qtb.60.2020.09.16.20.22.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 20:22:34 -0700 (PDT)
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-To:     rui.zhang@intel.com, daniel.lezcano@linaro.org, robh+dt@kernel.org,
-        agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        lukasz.luba@arm.com, amitk@kernel.org
-Subject: [PATCH RFC 8/8] soc:qcom:qcom_aoss: Change cooling_device_register to warming_device_register
-Date:   Wed, 16 Sep 2020 23:22:26 -0400
-Message-Id: <20200917032226.820371-9-thara.gopinath@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200917032226.820371-1-thara.gopinath@linaro.org>
-References: <20200917032226.820371-1-thara.gopinath@linaro.org>
+        id S1726040AbgIQD06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 23:26:58 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:54331 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725858AbgIQD04 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 23:26:56 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BsMp5010tz9sRK;
+        Thu, 17 Sep 2020 13:26:52 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1600313213;
+        bh=ELr1x3h14ixxxrsflPbK5sh8QdFvlikfGcntJ32IDeI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=DiegpUk0xhMm7xvLbA7Gl5TxUKcNOA9xTCXuiIgqTAjbtZCTrKZ3xFmcClJYXo28b
+         IvKtFrx68SXZ0XjW1aWr6xa6WE0vETTetCghntRke9AZyqQ+3i+qc9ld6GNGL4jzrZ
+         DEZ7w+vyNU+ew6qF4QfRUSsONJvOElK+9WuxSW5Z8pRV4r9gD0lg841xomK+8LpR3R
+         UOzeH9Gd03mwAxtdQz5BLt+y1F8ohKPXJPiaAq4OIH5NjpRc0A/hSlh/khz046J400
+         dc7T7Ib/x4elVN5nf15H9J64TngGfXYkuZcWLMu1ZCuK7iQjMyuiwJ3MykFtVgjyk1
+         9m4dcFNJxvRiw==
+Date:   Thu, 17 Sep 2020 13:26:52 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the rcu tree
+Message-ID: <20200917132652.738c4cc2@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/_R95F7dG0bpFloOA5TN3puZ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Always on subsystem host resources cx and ebi that are used as warming
-devices. Use the newly introduce _warming_device_register to register
-these devices with the thermal framework.
+--Sig_/_R95F7dG0bpFloOA5TN3puZ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
----
- drivers/soc/qcom/qcom_aoss.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Hi all,
 
-diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
-index ed2c687c16b3..4f65c03a5def 100644
---- a/drivers/soc/qcom/qcom_aoss.c
-+++ b/drivers/soc/qcom/qcom_aoss.c
-@@ -461,7 +461,7 @@ static int qmp_cooling_device_add(struct qmp *qmp,
- 	qmp_cdev->qmp = qmp;
- 	qmp_cdev->state = !qmp_cdev_max_state;
- 	qmp_cdev->name = cdev_name;
--	qmp_cdev->cdev = devm_thermal_of_cooling_device_register
-+	qmp_cdev->cdev = devm_thermal_of_warming_device_register
- 				(qmp->dev, node,
- 				cdev_name,
- 				qmp_cdev, &qmp_cooling_device_ops);
-@@ -501,7 +501,7 @@ static int qmp_cooling_devices_register(struct qmp *qmp)
- 
- unroll:
- 	while (--count >= 0)
--		thermal_cooling_device_unregister
-+		thermal_warming_device_unregister
- 			(qmp->cooling_devs[count].cdev);
- 
- 	return ret;
-@@ -512,7 +512,7 @@ static void qmp_cooling_devices_remove(struct qmp *qmp)
- 	int i;
- 
- 	for (i = 0; i < QMP_NUM_COOLING_RESOURCES; i++)
--		thermal_cooling_device_unregister(qmp->cooling_devs[i].cdev);
-+		thermal_warming_device_unregister(qmp->cooling_devs[i].cdev);
- }
- 
- static int qmp_probe(struct platform_device *pdev)
--- 
-2.25.1
+Commit
 
+  903c5302fa2d ("sched/core: Allow try_invoke_on_locked_down_task() with ir=
+qs disabled")
+
+is missing a Signed-off-by from its author and committer.
+
+I didn't complain about this when it was first present because I figured
+it was just a debugging commit that would be removed quickly.  However,
+there are now quite a few follow up commits ...
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/_R95F7dG0bpFloOA5TN3puZ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9i13wACgkQAVBC80lX
+0GyNmAf+Jlgxzic9jjkBUQs4aLsVOAg7smlWRkQPjBiSOxibcVN2tA7GDLOJp3o2
+gY/fRyqaaaq7cpsO6XVQQ0CTzcYmVT6fPRZm8z+3gIG+Cc+brh214uAwUtCHSNgf
+cu8dXcW1x5rbtDaBSNboY6dOddkvqPXph4XpOhNUvg/KMztW1k7GczHk5cRPOKdv
+Y7gke3AlGBvp7L8XuJP0E5VAy0RQY5dyDbwlHveMMbwV8HD3XMkrNT/Et5lMu1kn
+CCwV1edSzlVtQkgMc/WUDzxEZxsbXXf7hqKCqhfP0l01JafGA6d/g+mgijgORaCE
+W75MOx1dbIN4SG8f9CVBfEt4rgMWQA==
+=q6m1
+-----END PGP SIGNATURE-----
+
+--Sig_/_R95F7dG0bpFloOA5TN3puZ--
