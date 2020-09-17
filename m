@@ -2,105 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FDB626E910
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 00:44:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2986026E916
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 00:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726055AbgIQWo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 18:44:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725858AbgIQWo1 (ORCPT
+        id S1726244AbgIQWrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 18:47:45 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:40701 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725900AbgIQWrm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 18:44:27 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A81DC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 15:44:27 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id s14so3405824pju.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 15:44:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=emK8TCQ/AOCbQCaTZuyx4EX1GGlS5xLteCwUhZhZWKs=;
-        b=asVwRODTCKzTMhPdETpQLiZroP91Get/mIBjAac5bezdK+pOzFI4MJpd0T9o9DUYWW
-         Jrgc59dc5QywWAx0/rRfNXXzIp+8G6594T6t/N1pVZVe2h3Q97pV/5VPO3dLx5rXGWbS
-         OUXTBUjCBjdKZPF75UxabZQM0laVCy2zi9SYQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=emK8TCQ/AOCbQCaTZuyx4EX1GGlS5xLteCwUhZhZWKs=;
-        b=ANEAe4ptdrvOQ9s7gsGsHmpYMdEck9Qf5Fqfn5D5v8RfyNqHhla3neC73IqtWmSf0m
-         zetm9xfoVy8ukc4Pw9k6oM786kq+7iMeeBeEg5yW1QU6wz066eF187HMU8eto6W0dqDd
-         CbwQog3WCwmVbawWY+EFaeJuKBRLSdqAumYtue8bWxm7huQKpXGzJNUG38Lgi/TXs3kC
-         z0NZlES6l9aodeTH86TX2fVk7SdDpsZxoKHRYzSE7nZlOQYVcIvNZwagykDhWReEUuah
-         QDgKR9oFYOJL3NGEaG+ESqBBe7vLfKU7xnminX0LlbtraEmQvLuu6cQRy1iQcM8/q90Z
-         ZCpg==
-X-Gm-Message-State: AOAM531OOz7CnnSWqrlgqbAT9EuJ7NqjrUFMkIQsufP4+CNUCMeKsZXc
-        CQ5k07i/VGh/sAjtSTRmyUyUHVdJB5H99A==
-X-Google-Smtp-Source: ABdhPJywypDGBU0fygZ+vRZ0Ah7m+uJXUNioxfPKAcCRYPGZUExxbYZ5CmLJLP3uPld3wN0+0sGN1Q==
-X-Received: by 2002:a17:902:8509:b029:d0:cbe1:e746 with SMTP id bj9-20020a1709028509b02900d0cbe1e746mr29812096plb.33.1600382667062;
-        Thu, 17 Sep 2020 15:44:27 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id l123sm674509pgl.24.2020.09.17.15.44.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 15:44:26 -0700 (PDT)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>
-Subject: [PATCH] drm/msm/dp: Sleep properly in dp_hpd_handler kthread
-Date:   Thu, 17 Sep 2020 15:44:25 -0700
-Message-Id: <20200917224425.2331583-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
+        Thu, 17 Sep 2020 18:47:42 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R501e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0U9Fg-Aw_1600382859;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U9Fg-Aw_1600382859)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 18 Sep 2020 06:47:39 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+Subject: [PATCH] mm/mmap: do the check on expand instead of on insert
+Date:   Fri, 18 Sep 2020 06:47:22 +0800
+Message-Id: <20200917224722.54428-1-richard.weiyang@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1 (Apple Git-117)
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We shouldn't be waiting for an event here with a timeout of 100ms when
-we're not in the 'timeout' arm of the if condition. Instead we should be
-sleeping in the interruptible state (S) until something happens and we
-need to wakeup. Right now this kthread is running almost all the time
-because it sleeps for 100ms, wakes up, sees there's nothing to do, and
-then starts the process all over again. Looking at top it shows up in
-the D state (uninterruptible) because it uses wait_event_timeout(). FIx
-this up.
+Function __vma_adjust() checks on *insert* to decide whether it is
+necessary to remove_next/adjust_next. While it is more reasonable to do
+the check on *expand* instead of on *insert*, since this is only necessary
+when *expand* is non-NULL.
 
-Cc: Tanmay Shah <tanmay@codeaurora.org>
-Cc: Kuogee Hsieh <khsieh@codeaurora.org>
-Reported-by: Douglas Anderson <dianders@chromium.org>
-Fixes: 8ede2ecc3e5e ("drm/msm/dp: Add DP compliance tests on Snapdragon Chipsets")
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+There are several users for __vma_adjust, let's classify them based on
+the value of *insert*/*expand*:
+
+   caller                  |    insert/expand
+   ------------------------+-----------------
+   vma_merge               |    NULL/non-NULL
+   __split_vma             |    non-NULL/NULL
+   shift_arg_pages/mremap  |    NULL/NULL
+
+To make this change, we need to make sure those non-NULL *insert* cases
+wouldn't go into this if branch except vma_merge. There are two cases we
+need to take care of: shift_arg_pages and mremap. Let's look at it one
+by one.
+
+For mremap, it is for sure we won't go into this if branch since
+vma_adjust tries to expand the vma and the vma is expandable(the end
+wouldn't interact with vma and next).
+
+For shift_arg_pages, this case is a little tricky. Actually, for this
+case, vma->vm_next should be NULL. Otherwise we would go into the branch
+of "end < vma->vm_end" since we are shifting left. This means we would
+expand the vma->vm_next by accident. Luckily, in current code, we won't
+fall into this situation because shift_arg_pages only shift the stack
+which is the highest one in virtual space.
+
+To make the code more easy to understand(only vma_merge has a non-NULL
+expand), and to make it handle the corner case(shift_arg_pages)
+properly, let's do the check on *expand* instead of *insert*.
+
+Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
 ---
+ mm/mmap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Based on msm-next-dp of https://gitlab.freedesktop.org/drm/msm.git
-
- drivers/gpu/drm/msm/dp/dp_display.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index 05a97e097edf..e175aa3fd3a9 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -970,9 +970,8 @@ static int hpd_event_thread(void *data)
- 				(dp_priv->event_pndx == dp_priv->event_gndx),
- 						EVENT_TIMEOUT);
- 		} else {
--			wait_event_timeout(dp_priv->event_q,
--				(dp_priv->event_pndx != dp_priv->event_gndx),
--						EVENT_TIMEOUT);
-+			wait_event_interruptible(dp_priv->event_q,
-+				(dp_priv->event_pndx != dp_priv->event_gndx));
- 		}
- 		spin_lock_irqsave(&dp_priv->event_lock, flag);
- 		todo = &dp_priv->event_list[dp_priv->event_gndx];
-
-base-commit: 937f941ca06f2f3ab64baebf31be2c16d57ae7b8
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 829897646a9c..ca31b405fbfa 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -706,7 +706,7 @@ int __vma_adjust(struct vm_area_struct *vma, unsigned long start,
+ 	long adjust_next = 0;
+ 	int remove_next = 0;
+ 
+-	if (next && !insert) {
++	if (next && expand) {
+ 		struct vm_area_struct *exporter = NULL, *importer = NULL;
+ 
+ 		if (end >= next->vm_end) {
 -- 
-Sent by a computer, using git, on the internet
+2.20.1 (Apple Git-117)
 
