@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF94826E44D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D73A226E42C
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726421AbgIQSoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 14:44:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57978 "EHLO mail.kernel.org"
+        id S1726315AbgIQSmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 14:42:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728606AbgIQQx3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 12:53:29 -0400
+        id S1728747AbgIQQza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 12:55:30 -0400
 Received: from kozik-lap.mshome.net (unknown [194.230.155.191])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 39C1520708;
-        Thu, 17 Sep 2020 16:53:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 647A521D24;
+        Thu, 17 Sep 2020 16:55:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600361605;
-        bh=P6t4EObPuKTAtjmptm4+AFH+z1+4hhhtxhJjS4UyDF0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=QWWMJnynLqLOQxMCeIhdb30C/fJHQKsRzanwLdTpwbhaMyXT+tXpbqbOYpkb+Ly2M
-         aBumK6+zCHsWhNp6ZfqN5QXKUzl+nO1TwJgKiLkTRKlRiFxwyqIPdifsq9tCyheivp
-         WIbwLhtE7vcm3MGDi0wpAwkD5yRasj8RADVLwNo8=
+        s=default; t=1600361729;
+        bh=pV5NUEmeW9mZ1TS+/Jc3oFxArHOIVWs9UQjncMMV5dA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ZezngZwDO3KQgBWc5kH7o+363k3VkzXLGbSLbSc0tebpQso6t6pYwNkEyZCDiQPmV
+         SDInDhjroyojBh7Mphf9Czz2rjH6R5ZkFLMbtuCEXnnrfdP8uQrsgKQcvItrVphoK1
+         F0JF12gmB5ueiJxBeEsZOAKj0ouhtPyo/iU8CgBA=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>,
@@ -86,90 +86,54 @@ To:     Linus Walleij <linus.walleij@linaro.org>,
         linux-mediatek@lists.infradead.org,
         linux-renesas-soc@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v2 00/13] gpio: add common dtschema
-Date:   Thu, 17 Sep 2020 18:52:48 +0200
-Message-Id: <20200917165301.23100-1-krzk@kernel.org>
+Subject: [PATCH v2 06/13] dt-bindings: gpio: gpio-vf610: fix iMX 7ULP compatible matching
+Date:   Thu, 17 Sep 2020 18:52:54 +0200
+Message-Id: <20200917165301.23100-7-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200917165301.23100-1-krzk@kernel.org>
+References: <20200917165301.23100-1-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The i.MX 7ULP DTSes use two compatibles so update the binding to fix
+dtbs_check warnings like:
 
-Changes since v1
-================
-1. Use common schema in bindings outside of gpio/ (new patches).
-2. Minor fixes - see individual patches for changelogs.
+  arch/arm/boot/dts/imx7ulp-com.dt.yaml: gpio@40ae0000:
+    compatible: ['fsl,imx7ulp-gpio', 'fsl,vf610-gpio'] is too long
 
+  arch/arm/boot/dts/imx7ulp-com.dt.yaml: gpio@40ae0000:
+    compatible: Additional items are not allowed ('fsl,vf610-gpio' was unexpected)
 
-Notes
-=====
-This is independent work of pca953x bindings:
-https://lore.kernel.org/lkml/20200916155715.21009-1-krzk@kernel.org/T/#u
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-The DTS patches can be also applied independently.
-The bindings patches depend on first one, adding common schema.
+---
 
-Best regards,
-Krzysztof
+Changes since v1:
+1. New patch
+---
+ Documentation/devicetree/bindings/gpio/gpio-vf610.yaml | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-Krzysztof Kozlowski (13):
-  dt-bindings: gpio: add common schema for GPIO controllers
-  dt-bindings: gpio: include common schema in GPIO controllers
-  dt-bindings: gpio: pl061: add missing properties and include common
-    schema
-  dt-bindings: gpio: fsl-imx-gpio: add i.MX ARMv6 and ARMv7 compatibles
-  dt-bindings: gpio: fsl-imx-gpio: add gpio-line-names
-  dt-bindings: gpio: gpio-vf610: fix iMX 7ULP compatible matching
-  dt-bindings: media: include common schema in GPIO controllers
-  dt-bindings: mfd: include common schema in GPIO controllers
-  dt-bindings: pinctrl: include common schema in GPIO controllers
-  ASoC: dt-bindings: zl38060: include common schema in GPIO controllers
-  arm64: dts: imx8mq-librem5: correct GPIO hog property
-  arm64: dts: imx8mq-librem5: align GPIO hog names with dtschema
-  ARM: dts: imx: align GPIO hog names with dtschema
-
- .../bindings/gpio/brcm,xgs-iproc-gpio.yaml    |   3 +
- .../bindings/gpio/fsl-imx-gpio.yaml           |  17 ++-
- .../devicetree/bindings/gpio/gpio-common.yaml | 125 ++++++++++++++++++
- .../devicetree/bindings/gpio/gpio-mxs.yaml    |   4 +
- .../bindings/gpio/gpio-pca9570.yaml           |   3 +
- .../devicetree/bindings/gpio/gpio-rda.yaml    |   3 +
- .../devicetree/bindings/gpio/gpio-vf610.yaml  |  11 +-
- .../devicetree/bindings/gpio/mrvl-gpio.yaml   |   1 +
- .../devicetree/bindings/gpio/pl061-gpio.yaml  |   6 +
- .../bindings/gpio/qcom,wcd934x-gpio.yaml      |   3 +
- .../bindings/gpio/renesas,em-gio.yaml         |   3 +
- .../bindings/gpio/renesas,rcar-gpio.yaml      |   3 +
- .../devicetree/bindings/gpio/sifive,gpio.yaml |   3 +
- .../bindings/gpio/snps,dw-apb-gpio.yaml       |   3 +
- .../gpio/socionext,uniphier-gpio.yaml         |   3 +
- .../bindings/gpio/xylon,logicvc-gpio.yaml     |   3 +
- .../bindings/media/i2c/maxim,max9286.yaml     |   3 +
- .../bindings/mfd/cirrus,madera.yaml           |   1 +
- .../devicetree/bindings/mfd/max77650.yaml     |   3 +
- .../bindings/mfd/rohm,bd71828-pmic.yaml       |   3 +
- .../devicetree/bindings/mfd/st,stmfx.yaml     |   2 +
- .../devicetree/bindings/mfd/wlf,arizona.yaml  |   1 +
- .../pinctrl/actions,s500-pinctrl.yaml         |   3 +
- .../pinctrl/allwinner,sun4i-a10-pinctrl.yaml  |   1 +
- .../bindings/pinctrl/cirrus,lochnagar.yaml    |   3 +
- .../bindings/pinctrl/ingenic,pinctrl.yaml     |   3 +
- .../pinctrl/mediatek,mt6779-pinctrl.yaml      |   3 +
- .../bindings/pinctrl/pinctrl-mt8192.yaml      |   3 +
- .../pinctrl/qcom,ipq6018-pinctrl.yaml         |   3 +
- .../pinctrl/qcom,msm8226-pinctrl.yaml         |   3 +
- .../bindings/pinctrl/qcom,sm8250-pinctrl.yaml |   3 +
- .../pinctrl/renesas,rza2-pinctrl.yaml         |   3 +
- .../bindings/pinctrl/st,stm32-pinctrl.yaml    |   3 +
- .../devicetree/bindings/sound/zl38060.yaml    |   3 +
- arch/arm/boot/dts/imx51-zii-rdu1.dts          |   2 +-
- arch/arm/boot/dts/imx6qdl-zii-rdu2.dtsi       |   8 +-
- arch/arm/boot/dts/imx6ul-ccimx6ulsbcpro.dts   |   2 +-
- .../boot/dts/freescale/imx8mq-librem5.dtsi    |   4 +-
- 38 files changed, 245 insertions(+), 12 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/gpio/gpio-common.yaml
-
+diff --git a/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml b/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml
+index 82f3e4b407d1..7a5745255969 100644
+--- a/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml
++++ b/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml
+@@ -22,9 +22,11 @@ allOf:
+ 
+ properties:
+   compatible:
+-    enum:
+-      - fsl,vf610-gpio
+-      - fsl,imx7ulp-gpio
++    oneOf:
++      - const: fsl,vf610-gpio
++      - items:
++          - const: fsl,imx7ulp-gpio
++          - const: fsl,vf610-gpio
+ 
+   reg:
+     description: The first reg tuple represents the PORT module, the second tuple
 -- 
 2.17.1
 
