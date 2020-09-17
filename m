@@ -2,91 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 750BF26E3AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:34:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B815026E3C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:35:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726543AbgIQSec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 14:34:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40732 "EHLO
+        id S1726390AbgIQSfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 14:35:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726489AbgIQSeB (ORCPT
+        with ESMTP id S1726236AbgIQSey (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 14:34:01 -0400
-Received: from saturn.retrosnub.co.uk (saturn.retrosnub.co.uk [IPv6:2a00:1098:86::1:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07DA8C06174A;
-        Thu, 17 Sep 2020 11:34:00 -0700 (PDT)
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        by saturn.retrosnub.co.uk (Postfix; Retrosnub mail submission) with ESMTPSA id 655929E023F;
-        Thu, 17 Sep 2020 19:33:52 +0100 (BST)
-Date:   Thu, 17 Sep 2020 19:33:51 +0100
-From:   Jonathan Cameron <jic23@jic23.retrosnub.co.uk>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org,
-        Andreas Brauchli <a.brauchli@elementarea.net>,
-        Pascal Sachs <pascal.sachs@sensirion.com>
-Subject: Re: [PATCH 05/30] iio: chemical: sgp30: Add description for
- sgp_read_cmd()'s 'duration_us'
-Message-ID: <20200917193351.6d640cb5@archlinux>
-In-Reply-To: <20200718153345.0a6a5720@archlinux>
-References: <20200716135928.1456727-1-lee.jones@linaro.org>
-        <20200716135928.1456727-6-lee.jones@linaro.org>
-        <20200718153345.0a6a5720@archlinux>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Thu, 17 Sep 2020 14:34:54 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B435AC06174A;
+        Thu, 17 Sep 2020 11:34:53 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id x18so825782ila.7;
+        Thu, 17 Sep 2020 11:34:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zPDJUdvQHs4KWTgjCiT5lhv4aKDrK9sKrsn6icmW7p8=;
+        b=a0N9D87u2X4EnPeQQo7ru8V5gotXYwKueZm2yQVWTfJ/ILuBMzGHZLcMgqL6dfkTy4
+         FfzeoVNrZ4Id+9dpctvo9RB8GTQYx+sg7cjYuRLqUeEBofggJBS4lL86gpEoK7UorIbg
+         g5sGLJffNN+Hmgj95LsyWSeYhss0D9t2zQ9Pt52E05X/p17kt34EmfMVpK6QQgDjZrwm
+         Gnn5Dp5FryCJcDkyfethCZ8uX0OISIxgcAt2F2z47jMHzaF6MtCGE+TUvEfVW8LQco+n
+         jMuL+x3yltTkkxUCPvC7No5xCX03ZDQGB2vX4zfpGi6Itt+n0ElLejfytcC0g7AboESx
+         RVGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zPDJUdvQHs4KWTgjCiT5lhv4aKDrK9sKrsn6icmW7p8=;
+        b=PdCEIciPJkqcBVLvfpUVvfUpebQEfyELboHFSToxisGINZb2IdoizekqOrktI4pbl3
+         ZOMj6+g8CRHzb7dQaWNNwGRgMzDAhBMQZn2yS+ddoRVrzxZh0dGVJlEMULf2mMHGX11Q
+         7ecSh3nwV1Kk41/UbrJi++aQQ/gQ+zcsEeqJdFT0itJf+JYYtLuPgONELIV5O7Gx28KA
+         jsCtQEojsS6Biq0phmT2mAtUP/hZSz1NTVVoX2dsOdnLMMmZbrA11XvjoZYAcAhNIqiG
+         hCydyG358pG5dvH9rIYBEvQCkhSbN5YJer+MVO1w01DD8c0ZT+BkHdhz80YC0tDYKV0/
+         3etw==
+X-Gm-Message-State: AOAM533WuA2VGAwSVPHfaEs4yx/ZjX/7LIbL6P1ELyr6z+p/pqf2FWxF
+        4dq/8CsMFUuTFBqo+V1Bhdq3cKyDszzNOuJWxUqEIXGP0e8r+w==
+X-Google-Smtp-Source: ABdhPJxeZ+BrcQVhnruM0cnEHb/19pTKp7ffx/UzdnW5n6aWwmZu5swtR7N9kj5V9MjWlzGJx+W5NBsYlqfoA+rcaVA=
+X-Received: by 2002:a92:5a48:: with SMTP id o69mr23266047ilb.268.1600367692957;
+ Thu, 17 Sep 2020 11:34:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20200916141728.34796-1-yuehaibing@huawei.com>
+In-Reply-To: <20200916141728.34796-1-yuehaibing@huawei.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Thu, 17 Sep 2020 11:34:41 -0700
+Message-ID: <CAM_iQpUgZo+xz8+iwma6FxLdoxXvdtq_tZc1aMipfqHEU3x6qA@mail.gmail.com>
+Subject: Re: [PATCH net-next] genetlink: Remove unused function genl_err_attr()
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 18 Jul 2020 15:33:45 +0100
-Jonathan Cameron <jic23@kernel.org> wrote:
+On Wed, Sep 16, 2020 at 9:33 AM YueHaibing <yuehaibing@huawei.com> wrote:
+>
+> It is never used, so can remove it.
 
-> On Thu, 16 Jul 2020 14:59:03 +0100
-> Lee Jones <lee.jones@linaro.org> wrote:
-> 
-> > Fixes the following W=1 kernel build warning(s):
-> > 
-> >  drivers/iio/chemical/sgp30.c:236: warning: Function parameter or member 'duration_us' not described in 'sgp_read_cmd'
-> > 
-> > Cc: Andreas Brauchli <a.brauchli@elementarea.net>
-> > Cc: Pascal Sachs <pascal.sachs@sensirion.com>
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>  
-> 
-> Perhaps we can do better on the wording.
-> 
-> > ---
-> >  drivers/iio/chemical/sgp30.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/drivers/iio/chemical/sgp30.c b/drivers/iio/chemical/sgp30.c
-> > index 403e8803471a9..82e407d48a0aa 100644
-> > --- a/drivers/iio/chemical/sgp30.c
-> > +++ b/drivers/iio/chemical/sgp30.c
-> > @@ -227,6 +227,7 @@ static int sgp_verify_buffer(const struct sgp_data *data,
-> >   * @cmd:         SGP Command to issue
-> >   * @buf:         Raw data buffer to use
-> >   * @word_count:  Num words to read, excluding CRC bytes
-> > + * @duration_us: Time to sleep in microseconds  
-> 
-> Time taken to sensor to take a reading and data to be ready.
-> 
-> Something like that maybe?  I've not checked the datasheet but from
-> code that looks to be what this describes..
-
-Tweaked and applied
-
-Thanks,
-
-Jonathan
-
-> 
-> Jonathan
-> 
-> >   *
-> >   * Return:       0 on success, negative error otherwise.
-> >   */  
-> 
-
+This is a bit confusing, it was actually used before, see commit
+ab0d76f6823cc3a4e2.
