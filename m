@@ -2,156 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F32826DB6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:24:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE3726DB70
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726773AbgIQMYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 08:24:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38888 "EHLO
+        id S1726792AbgIQMY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 08:24:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726756AbgIQMVL (ORCPT
+        with ESMTP id S1726611AbgIQMYx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 08:21:11 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F034C06174A;
-        Thu, 17 Sep 2020 05:21:11 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id c18so1826407wrm.9;
-        Thu, 17 Sep 2020 05:21:10 -0700 (PDT)
+        Thu, 17 Sep 2020 08:24:53 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1EDFC061788;
+        Thu, 17 Sep 2020 05:24:34 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id j2so2264531eds.9;
+        Thu, 17 Sep 2020 05:24:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=CYQqreqmPY+DdlI4/LMZT7n9HFySUCBTaZzOmy+nr3g=;
-        b=DZr9ss0fgb2wj2gUXhmJok1/Q/Q4uiYxlTW3iX6Inp9/ElTtZBw5O7hulX/W5L69Bs
-         MIBfn49IkSjttHs4u8HiC068gprnMI5YJ2UB24eFGNckWq/F3KkCX1eooK1asqjyBrnP
-         bigRyNbt4HXEFSyQVrquOKYPnF7GOyaYgjIdu+U8moAlA+k22hhtLfV+ivIRezj8hV3C
-         CsWx8nmRiJ58HTrjHSKTmCSQgzsGb2xaky0Z6xg4RvV/2xeyL5kwgcp+b8Ara2pVpwkQ
-         R3bdUazVy10T++cD0TLJ/zWJ45w72Ddc1zfRg6QpINTNYGB7JW8D89ClBJIj5iAohLcw
-         tokQ==
+        h=reply-to:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=GBPWnK+O45hDPiwD6Yl2FVueQas8+06W2RHndFOU4x0=;
+        b=YSwvclpgwQrjaZJLio4+fZCnlFslcy8Smk4D3Nl1taPur3YUbCtbgZhfm/6+rxDLDb
+         wnpQZk8wKk/ZMKnF8vQJK7jlxVoRuJE6PwMpAZIlrRUdYNDuAbOMf896/BwdweSdvEDR
+         egGfWHIWpyYNDLR+YDZFocW3Spw/+1H3TuHMdAE5hQV4Sa7vq171+oowCUwvVE1XPned
+         BNGCHnafxMkf0uGcmrVb/SW+uYrSjukjUsITqm1O0eLlKXIQ//sx5vYoWXnSP9AjX43r
+         JzICsn9YQNoT2j5O7gynMB4YyLqxhQ4BfDYgM40y/TSWY5dKWblFY0toaz+U49m5h2eD
+         SrPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=CYQqreqmPY+DdlI4/LMZT7n9HFySUCBTaZzOmy+nr3g=;
-        b=NzajggZwb180xJtJ+ueR4gzYK9EmSz+vTUExHhs/V8lhCpTnoEo0W2hUNOss4k9G0p
-         Bzb4i0chi9WfnLkDHLxWTeaqxI0eEcTqF8St3eoM8+lugV4+BRpi2Ot2WR6nkqwfV1E7
-         tXt7BsatCEuxv5G9LLH/XWscWHkdkLtrWGUrl04nPquV0sakrcJIlrHnwfFny8qZKRO1
-         mexgGyXXM5XH7bRgmjnFTnRuWrQU75qYz3oIy/l5214EN/bUUTlUV4UUQWfRqO9BAqK3
-         7ELqdnTlfbxVdd2X3dlsps/Jo/OBe8mbJvl1qlnd+t5L+srY2PCLnPSY1Z8rXlQTtQd4
-         PrZw==
-X-Gm-Message-State: AOAM531JSssUA2UJo4GKA8FBQoCAfxGSqHIYYFHtWE1JoigNXbwvB8Ld
-        esYA7eUZOGzh7QrQFIDtYV8=
-X-Google-Smtp-Source: ABdhPJwqLArPanxVYGT0wrN9q+h5qbgQQV95mKlf8JZyrm5TDMv9t3ePg13PltUi9ZLLsL25B/fK5g==
-X-Received: by 2002:a5d:4e0f:: with SMTP id p15mr32223970wrt.155.1600345269703;
-        Thu, 17 Sep 2020 05:21:09 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id m23sm10978706wmi.19.2020.09.17.05.21.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 05:21:08 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 14:21:05 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 30/34] i2c: tegra: Clean up variable names
-Message-ID: <20200917122105.GI3515672@ulmo>
-References: <20200908224006.25636-1-digetx@gmail.com>
- <20200908224006.25636-31-digetx@gmail.com>
+        h=x-gm-message-state:reply-to:subject:to:cc:references:from
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-transfer-encoding:content-language;
+        bh=GBPWnK+O45hDPiwD6Yl2FVueQas8+06W2RHndFOU4x0=;
+        b=NlN69kOP9FDRpkuv6GNSuvUE6DRgjq01q50HJGYBRlV7pWR3hoeypwQelEAo4y+c2d
+         VPSxGvJnZIExFtavV88KyWUL6nkwYT//3lhBkGZaeiEVmzN+wHrRrna2DrC/+HmhvCTv
+         BD6gLeCQdQgV0m1DLeVY4QBm2VPVqawVZilLdsO5F8Ph3iPmwTvXbNijlODZSJf87EoY
+         qcA9m10qEXxLp2YD4ge0oBlYxF6bvbtzoNSa2sF1iEGnQ6y/7V8VFTTDEq6w0zimRxU1
+         UqURXC10lrqwErD5xUGn3xBEgPrOCJH6dsGKWrTbvAWgIiIQfMiSLLeroLc5tItQQn4I
+         K5BA==
+X-Gm-Message-State: AOAM5334VeEOwXUhP1mj3IG1clhp9PsF8ld4WXLUSBXWTBoGkByx2Bok
+        eQu4wq9hbQcWjfkAexWLbzgzQAczzdg=
+X-Google-Smtp-Source: ABdhPJxjg1yiXefIk0NeL3VjLQ2zbCP7yoFRn/H/W2k2rNszWXwepBIqx8bZOzhUQkVeMcmckHNfJw==
+X-Received: by 2002:a05:6402:1110:: with SMTP id u16mr32547477edv.253.1600345471990;
+        Thu, 17 Sep 2020 05:24:31 -0700 (PDT)
+Received: from ?IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7? ([2a02:908:1252:fb60:be8a:bd56:1f94:86e7])
+        by smtp.gmail.com with ESMTPSA id b5sm16198291edq.69.2020.09.17.05.24.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Sep 2020 05:24:31 -0700 (PDT)
+Reply-To: christian.koenig@amd.com
+Subject: Re: [Linaro-mm-sig] Changing vma->vm_file in dma_buf_mmap()
+To:     Jason Gunthorpe <jgg@ziepe.ca>, christian.koenig@amd.com
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>, Linux MM <linux-mm@kvack.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+References: <20200916095359.GD438822@phenom.ffwll.local>
+ <20200916140710.GA8409@ziepe.ca>
+ <8db2474f-ecb7-0e17-5f5b-145708fe44d5@amd.com>
+ <CAKMK7uFdwrT3HACPh3ADAKvhXJ-Hf3dExZmgJVAQ1KKjSai_0w@mail.gmail.com>
+ <aa953b09-53b1-104b-dc4b-156ad8a75e62@gmail.com>
+ <CAKMK7uHJNRzCJfWVSmMrLmGXE0qo+OCXiMd+zPTOkeG2pnVrmQ@mail.gmail.com>
+ <8d8693db-a3f0-4f5f-3e32-57d23ca620f8@amd.com>
+ <CAKMK7uE=UqZD3PVC8XZAXrgGH-VsUF_-YQD3MLV8KK1kpxO4yQ@mail.gmail.com>
+ <20200917113110.GE8409@ziepe.ca>
+ <6fd74b84-959c-8b3b-c27b-e9fbf66396c7@gmail.com>
+ <20200917121858.GF8409@ziepe.ca>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Message-ID: <d82f08ee-2dec-18e8-fb06-d26f18ed777a@gmail.com>
+Date:   Thu, 17 Sep 2020 14:24:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="XLWMkxR+mZNQ4WTO"
-Content-Disposition: inline
-In-Reply-To: <20200908224006.25636-31-digetx@gmail.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+In-Reply-To: <20200917121858.GF8409@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am 17.09.20 um 14:18 schrieb Jason Gunthorpe:
+> On Thu, Sep 17, 2020 at 02:03:48PM +0200, Christian König wrote:
+>> Am 17.09.20 um 13:31 schrieb Jason Gunthorpe:
+>>> On Thu, Sep 17, 2020 at 10:09:12AM +0200, Daniel Vetter wrote:
+>>>
+>>>> Yeah, but it doesn't work when forwarding from the drm chardev to the
+>>>> dma-buf on the importer side, since you'd need a ton of different
+>>>> address spaces. And you still rely on the core code picking up your
+>>>> pgoff mangling, which feels about as risky to me as the vma file
+>>>> pointer wrangling - if it's not consistently applied the reverse map
+>>>> is toast and unmap_mapping_range doesn't work correctly for our needs.
+>>> I would think the pgoff has to be translated at the same time the
+>>> vm->vm_file is changed?
+>>>
+>>> The owner of the dma_buf should have one virtual address space and FD,
+>>> all its dma bufs should be linked to it, and all pgoffs translated to
+>>> that space.
+>> Yeah, that is exactly like amdgpu is doing it.
+>>
+>> Going to document that somehow when I'm done with TTM cleanups.
+> BTW, while people are looking at this, is there a way to go from a VMA
+> to a dma_buf that owns it?
 
---XLWMkxR+mZNQ4WTO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Only a driver specific one.
 
-On Wed, Sep 09, 2020 at 01:40:02AM +0300, Dmitry Osipenko wrote:
-> Rename "ret" variables to "err" in order to make code a bit more
-> expressive, emphasizing that the returned value is an error code.
-> Same vice versa, where appropriate.
->=20
-> Rename variable "reg" to "val" in order to better reflect the actual
-> usage of the variable in the code and to make naming consistent with
-> the rest of the code.
->=20
-> Use briefer names for a few members of the tegra_i2c_dev structure in
-> order to improve readability of the code.
->=20
-> All dev/&pdev->dev are replaced with i2c_dev->dev in order to have uniform
-> code style across the driver.
->=20
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/i2c/busses/i2c-tegra.c | 173 ++++++++++++++++-----------------
->  1 file changed, 86 insertions(+), 87 deletions(-)
+For TTM drivers vma->vm_private_data points to the buffer object. Not 
+sure about the drivers using GEM only.
 
-That's indeed a nice improvement. One thing did spring out at me,
-though.
+Why are you asking?
 
-> diff --git a/drivers/i2c/busses/i2c-tegra.c b/drivers/i2c/busses/i2c-tegr=
-a.c
-[...]
-> @@ -1831,20 +1830,20 @@ static int __maybe_unused tegra_i2c_runtime_suspe=
-nd(struct device *dev)
-> =20
->  	clk_bulk_disable(i2c_dev->nclocks, i2c_dev->clocks);
-> =20
-> -	return pinctrl_pm_select_idle_state(i2c_dev->dev);
-> +	return pinctrl_pm_select_idle_state(dev);
->  }
-> =20
->  static int __maybe_unused tegra_i2c_suspend(struct device *dev)
->  {
->  	struct tegra_i2c_dev *i2c_dev =3D dev_get_drvdata(dev);
-> -	int err =3D 0;
-> +	int ret =3D 0;
-> =20
->  	i2c_mark_adapter_suspended(&i2c_dev->adapter);
-> =20
->  	if (!pm_runtime_status_suspended(dev))
-> -		err =3D tegra_i2c_runtime_suspend(dev);
-> +		ret =3D tegra_i2c_runtime_suspend(dev);
-> =20
-> -	return err;
-> +	return ret;
->  }
+Regards,
+Christian.
 
-Isn't this exactly the opposite of what the commit message says (and the
-rest of the patch does)?
+>
+> Jason
+> _______________________________________________
+> Linaro-mm-sig mailing list
+> Linaro-mm-sig@lists.linaro.org
+> https://lists.linaro.org/mailman/listinfo/linaro-mm-sig
 
-Thierry
-
---XLWMkxR+mZNQ4WTO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9jVLEACgkQ3SOs138+
-s6GC6w/+IyW7glSDNb080etzU2+oeqx/jVPyinPTxjE6/IcKuvVd5LWJNFLOaJ4W
-FeumA7waD71+2k+On9pJOyGUJNzIBJZkxE/ZkeWEE2ZnVMT4/OMEYce25dY7pYO7
-ZS28oqIIJxkM1B9m8uxaMEVaaoOGNtowVK/gQSvfdfm4tk5P11RaKb0D3HjXa6cL
-2oITcSdciVhHVTP+qeSLYNIZ3mNinplUn4hmIgkhr9d+SyLRf33riqFOGerKsCEW
-u96fPqydLev4TQWyMs0TuMAzgC8Xer40i/Cn5OS6WLj2x3/WBISWL4WpMolykf4r
-iMhmTStys/yN4EVJD6qUJ0XGqTtlTNAvPPSon2hUOIbjKzhi6Zxt6VleYLbPhOFE
-Cs2r8ouMApBBvU4TBgG7+H29SChKHGHOtpjb9CmETdu/DHwVvUz3ShHAR8ae3RDm
-YKj1NlFqAMgshb7GtFa1p0lVXOhxNNZKYx2dbX7bCeM6m4N4OW0S0Wo8beODDPZF
-Wfzrx6P9+1xMiZjw+gNZoa4TgHVNWePUgfNN1jBO1BXgi52ciIvMErble5RuRClG
-5nQ2M1glVLMlC5O/LakR2Tb9usscH2d9vu2kSLWst+u7IYXY5ympuAFvXrHCc608
-bSX8SZnvB4SIA99lozNyzRhnXl5l5/1ytKEoi9Qd/2Qua4urTUQ=
-=dMIY
------END PGP SIGNATURE-----
-
---XLWMkxR+mZNQ4WTO--
