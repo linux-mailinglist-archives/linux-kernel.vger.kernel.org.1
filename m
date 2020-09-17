@@ -2,142 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E04E26D11E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 04:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF98F26D120
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 04:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726139AbgIQC2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 22:28:35 -0400
-Received: from mail-vi1eur05on2040.outbound.protection.outlook.com ([40.107.21.40]:27585
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726043AbgIQC2W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 22:28:22 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FeHfaCpzgqY06uAJh/IMvNvF2Jn9Rkk8OO1Pqq3qEw360p1yZYpKXMm95cN5sOxHLgzZm3NzPhfXfQFApwjPY8yWr8kqohKfQuQmc0MMcIcTYEtlgLhEtRMhiKPwwslTbBMOj3h+wBTIoTWCP5lswLiv0hWhlJtabM9ILBZrOB7rNWVy5iEgeTtn2BKFZ5HSiL58PpZhlI+Kvg2NtgwCXTsRbK5zv+2B0fVf8WLS2/TpBzYrHh2zmZEWGOO+9yv+cnAIMT2NN9EDJIHhWaxDy0Sl5XA6tqlX/L0iSfwVXyn9Hk/BBHSs+28CvP5v+n7JjrFcMcxlxZt7FETQWL9Lew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=98Kdt8wMagAsWpVii1F57PPPi9+TCR975+YHMmoQ5Fc=;
- b=dUdWpcqSW5lK07Eon6rPyFhCntghFhIWbIX2nlA9t2zzZbXr2vCp5CvzH09vL1RUCbKbQGQujXulNHtB+aDCEm9/HRhTxgP7TwqLneOAyHV96qF8/aS8wiLTko/JQgPNoy8CilM6PQDFHDt6IiyS8JQxsIGin8xBfZA+QDGvW5dFP5O/Z9o527f54dzaZMOb3V4MNXlw8yUu3bUzEzM8YQ0Sh05I2MFvCkpmE9MBxje+bTjxPCGpPHKZWnDopex2TzMvw0FTFCKgAdtfz3rgqB5rKa2/6dpXqQCAfdNq/ngSl2hfv0cRxOlrKo6Y5GHaeBQxS4euJMKdkiouXa7Lew==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=98Kdt8wMagAsWpVii1F57PPPi9+TCR975+YHMmoQ5Fc=;
- b=DX+mwe7Ce0jMWS7JhQN4EZHhi70MKEEDr3QNGqMvYMJB5UeiT+kyqMxBDPGGTyyFx7SeEZIvORHJ7v6pic9tkqnXieWeOPBCgQ0F8BOUGzUmYELrBUI1F5caayOAkcY98wBYX6hifPlm5Q5LHSxQfuYWYLKRRDW7f6hjZCXHpXI=
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
- by DB6PR0402MB2727.eurprd04.prod.outlook.com (2603:10a6:4:98::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Thu, 17 Sep
- 2020 02:28:19 +0000
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::d12e:689a:169:fd68]) by DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::d12e:689a:169:fd68%8]) with mapi id 15.20.3391.011; Thu, 17 Sep 2020
- 02:28:18 +0000
-From:   Joakim Zhang <qiangqing.zhang@nxp.com>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        Vladimir Oltean <olteanv@gmail.com>
-CC:     "wg@grandegger.com" <wg@grandegger.com>,
-        Pankaj Bansal <pankaj.bansal@nxp.com>,
-        "Pankaj Bansal (OSS)" <pankaj.bansal@oss.nxp.com>,
-        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: canfdtest on flexcan loopback
-Thread-Topic: canfdtest on flexcan loopback
-Thread-Index: AdaA1oPvF2ksseKmSLeb8OzLcaFJ8QLQkV0AAAAZ7gAAAPp9gAAAcdiAAACLxoAAHKBHIA==
-Date:   Thu, 17 Sep 2020 02:28:18 +0000
-Message-ID: <DB8PR04MB6795D95B0B9905C4B25D764EE63E0@DB8PR04MB6795.eurprd04.prod.outlook.com>
-References: <VI1PR04MB4093944944C574B138371F51F12F0@VI1PR04MB4093.eurprd04.prod.outlook.com>
- <20200916110154.hp4up6yhyokduvf2@skbuf>
- <20200916110448.dsla6vjzy4fvdr22@skbuf>
- <12688d2b-a198-ef5e-dd8f-64957df36574@pengutronix.de>
- <20200916114533.3hlthhfd7xmpamoa@skbuf>
- <77d5c83d-1fb2-0d8a-f1ed-bec4857796e7@pengutronix.de>
-In-Reply-To: <77d5c83d-1fb2-0d8a-f1ed-bec4857796e7@pengutronix.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-Mentions: olteanv@gmail.com
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: pengutronix.de; dkim=none (message not signed)
- header.d=none;pengutronix.de; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.71]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 403831d2-3b14-43d3-3798-08d85ab156fd
-x-ms-traffictypediagnostic: DB6PR0402MB2727:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB6PR0402MB2727B6078285B2006B0A2546E63E0@DB6PR0402MB2727.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 0KrkUSFBriIucTGqXK8D/nwh4DN+h1dPOnI+gRKYS8rOk9yACS9wHekigBxidTFhzJKdRu3tmf8oUVvusRvBOE3sADmRPGZa/0UarRDEPv8UzflZDv2ey9X2TWLnehH46gf6t4WQaxmexZ2GrXE6DbAzIi3kkoqa04f5g8NJMzfZhTOIJcBYJXuaWYMD+9F57iICzl3AH6pVxmptJ/ad3vhHBYLJFfCpliR9aVCIlg/O2YHlPXt4UqnNx8ZSN1uCxjxKTYjhezRhyAlvb9ojwNPs3AQayeNLs519w3tIUMJ1y3ggXf5UrzXiHXN/EW9Z2WbM7/qZjVN8PdcfLZcxchs95Z1TbRKDnJ1exjiy9xGOGjFvL14jwzgQ1y6KNa5rhU2Ge4NE/ve1g5rkIBmZ4Q==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(346002)(396003)(136003)(39860400002)(33656002)(7696005)(71200400001)(55016002)(83080400001)(83380400001)(53546011)(966005)(8936002)(6506007)(26005)(4326008)(5660300002)(110136005)(8676002)(3480700007)(54906003)(478600001)(86362001)(186003)(9686003)(76116006)(52536014)(316002)(66476007)(2906002)(66556008)(64756008)(66946007)(66446008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: 2C1uyMoFOEZRbe29APUFkAkDvuKdYk/2Gfh6BcH45UAW6bBzPBvbWTEKmdcYMSDt7ttn/h/7CswhifzlnMLJ5YbcUnZd9O15kLhq85F7Yy5JSyCPf5kxlTCvU3k8kPA2BK6OIHlJdImYPbSZN1TrSvn/+5x78qafHo9vXpcL3KWi7uWWHkUHOLtYl40ia5qv3Wr2h1ay5ONJvv1J5ReKq064hFUCcsVDAoFpUamU124nkCenYH7xVqnH5lHt/j4tWnO1rz2JB21B6L3OxvJxYJcCHPguh3skeEqXuc+m03y7aERCrE96hCv5FiKXvRHmz1pKA0UqmlBpSZcjZg9/d7IZwwuStY1Zk0XnS2OURvQMfS079dxK9dqURT9lBVmBy/hXFJ5wmuMlun4+epBV8O0LbBaZ5TH3rI2gujlhZfYLLGm+pFZ2ePIyPV8H6dlY06TkWIgrnA3K8bXKIpg+jiU9E7NoQaKl0nl07vUOIh4SmuqMxr5P+URR+9AcT9qre7ArLnCNhMsGW7fQIgjByLpo5DfZ8wsEldVo4ljH9FBg4dfukL6LbEsGs+SuPlfDCM3/oKPgcmJbBzmbosLX9ZvVyEU2oUJG53H1RuzD4UB2r9ThU6mxv1sV9Hurslp0dpBJc2WCkeYE29Wks+mpXA==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726152AbgIQC3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 22:29:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726109AbgIQC3i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 22:29:38 -0400
+Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84E6AC061353
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 19:29:37 -0700 (PDT)
+Received: by mail-oo1-xc42.google.com with SMTP id z1so202225ooj.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 19:29:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VE5n3jGn2FvmnuiKIkLlfMO4cq4htPGZqkOIyp7oCTk=;
+        b=hR2nePbgnTCUSqe41FcHVgNm6Xjz7Zcw43IyQiS21NSCRJrlVvCvgXCGKY+F16FJ/s
+         JvtIF9bPYtgc+XzhdG1AsItCFVfZL8eNSdQZnJtJztmCrTvdiuFRUwhVQJrf3EHb4Exg
+         TbdUZWZ13gZ6yAqUVIj6VR+oPYAHBpPuD9kfvPH7tpKx54iQW8pOi3aw1D7ll99udSB+
+         WvK7Vtcqsd2QFjYl90EpyOXrWUNhSHGWTPaSbp+/HIqUfdl5vM9jd+FuP7CUF/clPBu6
+         dpANmsKilhkPW5hKKW9R/IL6BQQf50CljJqXlVAxo+DWHLiTzOkJEgqQB4tPcgDS1LTA
+         g9Ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VE5n3jGn2FvmnuiKIkLlfMO4cq4htPGZqkOIyp7oCTk=;
+        b=niTkyT1rcoGZP4O1Y6Lw/WC0LGsCGghNrOggcedeVnOWMZBnM8mu/ch2+P934S8oxd
+         Dz0x1tAqUTEZwZQH6oaWNQGcrne4tsx3q4FfU7aXh1qK/4JikJdIFxc3aRD3D9sYtgqh
+         5nu9WimNgT2A/R7qYkNBpy0/Bn93x8XsoHwmYF4oG+XELgUpL4d5RP0KAo00w94me8Hc
+         FnOSG27uxKRnffm9YfCO5BKK+y3GSZ8+TOWNkf9YdFM0sq9t40qv1M+cjojKE5kBAebF
+         XYH5aQ+op0GQ9Azq63eEc6taVnXiUGDh/Z7W0PA+lTu/I65VR6W+xXIpclC3Qf6gUuPp
+         b8mg==
+X-Gm-Message-State: AOAM532UMYbuAYyAbKRuGme8mpLIcCE7yIkunfp4nfK21gL5HsG+v2Kt
+        YbXUF/RTE/7/ylUE858sCHLKfg==
+X-Google-Smtp-Source: ABdhPJzJXURfl4y3VSIHVzz+sPBmYwpGpspEgIn+LJcsthzHcADKcaXDgK8YmNFE3yaluddQ3frHJg==
+X-Received: by 2002:a4a:5d84:: with SMTP id w126mr17892143ooa.1.1600309776351;
+        Wed, 16 Sep 2020 19:29:36 -0700 (PDT)
+Received: from yoga ([2605:6000:e5cb:c100:7cad:6eff:fec8:37e4])
+        by smtp.gmail.com with ESMTPSA id a22sm5143467oie.13.2020.09.16.19.29.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 19:29:35 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 21:29:31 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     nguyenb@codeaurora.org
+Cc:     cang@codeaurora.org, asutoshd@codeaurora.org,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 1/1] scsi: ufshcd: Properly set the device Icc Level
+Message-ID: <20200917022931.GK1893@yoga>
+References: <5c9d6f76303bbe5188bf839b2ea5e5bf530e7281.1598923023.git.nguyenb@codeaurora.org>
+ <20200915025401.GD471@uller>
+ <a8c851744fcaee205fc7a58db8f747fa@codeaurora.org>
+ <20200915133729.GD670377@yoga>
+ <6e36f0a315c13429bdad1ce704cbe878@codeaurora.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 403831d2-3b14-43d3-3798-08d85ab156fd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Sep 2020 02:28:18.7354
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 1+03Y9YcK42s3vhT9EZGKJLJDa1nmQSuo6izXvFCA/8BguPO5LQmIJTXUvcwDB7lIOFv0KGcRjoldQUsNtt/9A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0402MB2727
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6e36f0a315c13429bdad1ce704cbe878@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmMgS2xlaW5lLUJ1ZGRl
-IDxta2xAcGVuZ3V0cm9uaXguZGU+DQo+IFNlbnQ6IDIwMjDlubQ55pyIMTbml6UgMjA6MDENCj4g
-VG86IFZsYWRpbWlyIE9sdGVhbiA8b2x0ZWFudkBnbWFpbC5jb20+DQo+IENjOiB3Z0BncmFuZGVn
-Z2VyLmNvbTsgUGFua2FqIEJhbnNhbCA8cGFua2FqLmJhbnNhbEBueHAuY29tPjsgUGFua2FqDQo+
-IEJhbnNhbCAoT1NTKSA8cGFua2FqLmJhbnNhbEBvc3MubnhwLmNvbT47IGxpbnV4LWNhbkB2Z2Vy
-Lmtlcm5lbC5vcmc7DQo+IEpvYWtpbSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+OyBs
-aW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOw0KPiBWbGFkaW1pciBPbHRlYW4gPHZsYWRpbWly
-Lm9sdGVhbkBueHAuY29tPg0KPiBTdWJqZWN0OiBSZTogY2FuZmR0ZXN0IG9uIGZsZXhjYW4gbG9v
-cGJhY2sNCj4gDQo+IE9uIDkvMTYvMjAgMTo0NSBQTSwgVmxhZGltaXIgT2x0ZWFuIHdyb3RlOg0K
-PiA+IE9uIFdlZCwgU2VwIDE2LCAyMDIwIGF0IDAxOjMyOjQ5UE0gKzAyMDAsIE1hcmMgS2xlaW5l
-LUJ1ZGRlIHdyb3RlOg0KPiA+PiBXaGljaCBkcml2ZXIgYXJlIHlvdSB1c2luZz8gVGhlIG1haW5s
-aW5lIGRyaXZlciBvbmx5IHVzZXMgb25lIFRYIGJ1ZmZlci4NCj4gPg0KPiA+IEFyZSB0aGVyZSBt
-dWx0aXBsZSBmbGV4Y2FuIGRyaXZlcnMgaW4gY2lyY3VsYXRpb24/IFllcywgdGhlIG1haW5saW5l
-DQo+ID4gZHJpdmVyIHdpdGggYSBzaW5nbGUgcHJpdi0+dHhfbWIuDQo+IA0KPiBJIGFzc3VtZSBu
-eHAgaGFzIHNldmVyYWwgcGF0Y2hlcyBvbiB0aGVpciBrZXJuZWxzLiBBcmUgeW91IHVzaW5nIHRo
-ZSBtYWlubGluZQ0KPiBrZXJuZWwgb3IgdGhlIG9uZSB0aGF0J3MgcHJvdmlkZWQgYnkgbnhwPw0K
-DQpIaSBNYXJjLCBWbGFkaW1pciwNCg0KWWVzLCBWbGFkaW1pciB1c2VzIGtlcm5lbCBwcm92aWRl
-ZCBieSBOWFAsIEkgYWxzbyBoZWxwIHRyeSB0byBsb29rIGludG8gdGhpcyBpc3N1ZSwgYnV0IGl0
-IGNhbid0IGJlIHJlcHJvZHVjZWQgb24gaS5NWCBwbGF0Zm9ybXMuDQoNCk91ciBsb2NhbCBmbGV4
-Y2FuIGRyaXZlciBpcyBhbG1vc3QgY2hlcnJ5LXBpY2tlZCBmcm9tIGxpbnV4LWNhbi1uZXh0L2Zs
-ZXhjYW4gYnJhbmNoIHRvIGltcGxlbWVudCBDQU4gRkQgbW9kZSwgd2hpY2ggaXMgYSB2ZXJzaW9u
-IHRoYXQgY2xlYW5lZCB1cCBieSB5b3UgYmVmb3JlLg0KSSBjb25maXJtIHRoYXQgd2Ugc3RpbGwg
-dXNlIHNpbmdsZSBUWCBtYWlsYm94IHRvIHNlbmQgZnJhbWVzLCBwZXIgbXkgdW5kZXJzdGFuZGlu
-ZywgcmVvcmRlciBzaG91bGQgbm90IG9jY3VyIGhlcmUuDQoNCkFjY29yZGluZyB0byBWbGFkaW1p
-cidzIGRlc2NyaXB0aW9uLCBleGFjdGx5IGl0IGhhcHBlbnM6DQoiSSBoYXZlIGFkZGVkIHRyYWNl
-IHBvaW50cyB0byB0aGUgZW5kIG9mIHRoZSBmbGV4Y2FuX3N0YXJ0X3htaXQgZnVuY3Rpb24sIHdo
-aWNoIHByaW50IHRoZSBlbnRpcmUgc2tiLCBhbmQgdGhlIGZyYW1lcyBhcHBlYXIgdG8gYmUgd3Jp
-dHRlbiB0byB0aGUgVFggbWVzc2FnZSBidWZmZXIgaW4gdGhlIGNvcnJlY3Qgb3JkZXIuIFRoZXkg
-YXJlIHNlZW4sIGhvd2V2ZXIsIGluIHRoZSBpbmNvcnJlY3Qgb3JkZXIgb24gdGhlIHdpcmUuIg0K
-DQpTaW5jZSBWbGFkaW1pciBvbmx5IHRlc3QgQ2xhc3NpYyBtb2RlLCBoZSBjYW4gdHVybiB0byA1
-LjQgdXBzdHJlYW0ga2VybmVsIHRvIHNlZSBpZiB0aGlzIHJlb3JkZXIgaXNzdWUgYWxzbyBjYW4g
-YmUgcmVwcm9kdWNlZC4gQFZsYWRpbWlyIE9sdGVhbiwgY291bGQgeW91IHBsZWFzZSBoYXZlIGEg
-dHJ5Pw0KVG8gZWFzeSB0aGUgdGVzdCwgSSB0aGluayB5b3Ugb25seSBuZWVkIHJlcGxhY2UgYmVs
-b3cgc2V2ZXJhbCBmaWxlcyBhdCBsb2NhbCBzaWRlLCB0aGVuIHVzZSAiZnNsLGxzMTAyMWFyMi1m
-bGV4Y2FuIiBjb21wYXRpYmxlIHN0cmluZyBpbiBkdHMuDQpodHRwczovL2dpdC5rZXJuZWwub3Jn
-L3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9zdGFibGUvbGludXguZ2l0L3RyZWUvZHJpdmVycy9u
-ZXQvY2FuL2ZsZXhjYW4uYz9oPXY1LjQuNjUNCmh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3Nj
-bS9saW51eC9rZXJuZWwvZ2l0L3N0YWJsZS9saW51eC5naXQvdHJlZS9kcml2ZXJzL25ldC9jYW4v
-cngtb2ZmbG9hZC5jP2g9djUuNC42NQ0KaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xp
-bnV4L2tlcm5lbC9naXQvc3RhYmxlL2xpbnV4LmdpdC90cmVlL2luY2x1ZGUvbGludXgvY2FuL3J4
-LW9mZmxvYWQuaD9oPXY1LjQuNjUNCg0KSWYgaXQgY2FuJ3Qgd29yaywgc3VnZ2VzdCB0byB1c2Ug
-NS40IHVwc3RyZWFtIGtlcm5lbCB0byByZXByb2R1Y2UgdGhpcyBpc3N1ZS4NCg0KQmVzdCBSZWdh
-cmRzLA0KSm9ha2ltIFpoYW5nDQo+IE1hcmMNCj4gDQo+IC0tDQo+IFBlbmd1dHJvbml4IGUuSy4g
-ICAgICAgICAgICAgICAgIHwgTWFyYyBLbGVpbmUtQnVkZGUgICAgICAgICAgIHwNCj4gRW1iZWRk
-ZWQgTGludXggICAgICAgICAgICAgICAgICAgfCBodHRwczovL3d3dy5wZW5ndXRyb25peC5kZSAg
-fA0KPiBWZXJ0cmV0dW5nIFdlc3QvRG9ydG11bmQgICAgICAgICB8IFBob25lOiArNDktMjMxLTI4
-MjYtOTI0ICAgICB8DQo+IEFtdHNnZXJpY2h0IEhpbGRlc2hlaW0sIEhSQSAyNjg2IHwgRmF4OiAg
-ICs0OS01MTIxLTIwNjkxNy01NTU1IHwNCg0K
+On Wed 16 Sep 19:53 CDT 2020, nguyenb@codeaurora.org wrote:
+
+> On 2020-09-15 06:37, Bjorn Andersson wrote:
+> > On Tue 15 Sep 03:49 CDT 2020, nguyenb@codeaurora.org wrote:
+> > 
+> > > On 2020-09-14 19:54, Bjorn Andersson wrote:
+> > > > On Tue 01 Sep 01:19 UTC 2020, Bao D. Nguyen wrote:
+> > > >
+> > > > > UFS version 3.0 and later devices require Vcc and Vccq power supplies
+> > > > > with Vccq2 being optional. While earlier UFS version 2.0 and 2.1
+> > > > > devices, the Vcc and Vccq2 are required with Vccq being optional.
+> > > > > Check the required power supplies used by the device
+> > > > > and set the device's supported Icc level properly.
+> > > > >
+> > > > > Signed-off-by: Can Guo <cang@codeaurora.org>
+> > > > > Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+> > > > > Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
+> > > > > ---
+> > > > >  drivers/scsi/ufs/ufshcd.c | 5 +++--
+> > > > >  1 file changed, 3 insertions(+), 2 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> > > > > index 06e2439..fdd1d3e 100644
+> > > > > --- a/drivers/scsi/ufs/ufshcd.c
+> > > > > +++ b/drivers/scsi/ufs/ufshcd.c
+> > > > > @@ -6845,8 +6845,9 @@ static u32
+> > > > > ufshcd_find_max_sup_active_icc_level(struct ufs_hba *hba,
+> > > > >  {
+> > > > >  	u32 icc_level = 0;
+> > > > >
+> > > > > -	if (!hba->vreg_info.vcc || !hba->vreg_info.vccq ||
+> > > > > -						!hba->vreg_info.vccq2) {
+> > > > > +	if (!hba->vreg_info.vcc ||
+> > > >
+> > > > How did you test this?
+> > > >
+> > > > devm_regulator_get() never returns NULL, so afaict this conditional will
+> > > > never be taken with either the old or new version of the code.
+> > > Thanks for your comment. The call flow is as follows:
+> > > ufshcd_pltfrm_init->ufshcd_parse_regulator_info->ufshcd_populate_vreg
+> > > In the ufshcd_populate_vreg() function, it looks for DT entries
+> > > "%s-supply"
+> > > For UFS3.0+ devices, "vccq2-supply" is optional, so the vendor may
+> > > choose
+> > > not to provide vccq2-supply in the DT.
+> > > As a result, a NULL is returned to hba->vreg_info.vccq2.
+> > > Same for UFS2.0 and UFS2.1 devices, a NULL may be returned to
+> > > hba->vreg_info.vccq if vccq-supply is not provided in the DT.
+> > > The current code only checks for !hba->vreg_info.vccq OR
+> > > !hba->vreg_info.vccq2. It will skip the setting for icc_level
+> > > if either vccq or vccq2 is not provided in the DT.
+> > > >
+> > 
+> > Thanks for the pointers, I now see that the there will only be struct
+> > ufs_vreg objects allocated for the items that has an associated
+> > %s-supply.
+> > 
+> > FYI, the idiomatic way to handle optional regulators is to use
+> > regulator_get_optional(), which will return -ENODEV for regulators not
+> > specified.
+> Thanks for the regulator_get_optional() suggestion. Do you have a strong
+> opinion about
+> using regulator_get_optional() or would my proposal be ok? With
+> regulator_get_optional(),
+> we need to make 3 calls and check each result while the current
+> implementation is also reliable
+> simple quick check for NULL without any potential problem.
+> 
+
+I think the changes to the conditional that you're proposing in this
+patch is reasonable.
+
+Regards,
+Bjorn
+
+> Thanks,
+> Bao
+> > 
+> > Regards,
+> > Bjorn
+> > 
+> > > > Regards,
+> > > > Bjorn
+> > > >
+> > > > > +		(!hba->vreg_info.vccq && hba->dev_info.wspecversion >= 0x300) ||
+> > > > > +		(!hba->vreg_info.vccq2 && hba->dev_info.wspecversion < 0x300)) {
+> > > > >  		dev_err(hba->dev,
+> > > > >  			"%s: Regulator capability was not set, actvIccLevel=%d",
+> > > > >  							__func__, icc_level);
+> > > > > --
+> > > > > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
+> > > > > Forum,
+> > > > > a Linux Foundation Collaborative Project
+> > > > >
