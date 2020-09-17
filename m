@@ -2,153 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D48E26D400
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 08:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A10B326D40B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 08:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726273AbgIQG4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 02:56:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726109AbgIQG4V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 02:56:21 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F84C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 23:56:21 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id o8so1652481ejb.10
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 23:56:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=hWs+oHzCE+pxj+9sRgHEVF+gX1sDVTnjvZSOKVqUVRE=;
-        b=BFsDtQXFxf/Gir4+cdzUNfMbTASAUTfvSw7BwIJFzjYU4kORzNZ1Vou9PpuYZQkuJp
-         51NrYTI9N+IxKfov63ZTwAulLmcGTxu6N7IU7vB8OjODlZ+qwNE0Ar0phdtO69En0stn
-         8o9lbVk0kRuPpKhQRDS2jPMav4ecp2WQf5WjM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=hWs+oHzCE+pxj+9sRgHEVF+gX1sDVTnjvZSOKVqUVRE=;
-        b=ONaZ2qmkqM/4qV2P8tragtB1iiKeFgxB5bsUD3DNPLhFFMECdXfGJK0SE3wD2EPURB
-         1tbnPT4kFaZDTef8E5JNEG9VdLHv0VFT4FZr3UbUEMINz2uymubiFGYDtTllZUWKMQHd
-         nADM5tos+7Cged7WRGYI1E8XFlihg3ECtRUo76HeEtCVz/E5RHZF9a4qt3Yww2ar2GZL
-         6Gth74EBoiU89mZJonAkQ7fo/JhZA6mrLsQAxcO1eQpijun/2usCKtfKQQ8FFzSWuAEI
-         yNeYiAVJi6KYTr3wzisNPO55pn7AFq1T+ws3yzk/YP4casXFXbgIYXzXgcrCr6AopzI4
-         3NVw==
-X-Gm-Message-State: AOAM530YbV883I1XKdSzyt7Rjm5b+g4rLK0ZmvTiJjA/L1MYIbYUAlB9
-        1sn2PpnAKJqaAP+6wxT9MTc48Q==
-X-Google-Smtp-Source: ABdhPJzbBaFA/g1m+Icd5LdWGUeNT0Y1+BJer0ATd7eGuRwQJTsduXK8MOe6iUBBVvdH8RE9bvhNPw==
-X-Received: by 2002:a17:906:a207:: with SMTP id r7mr29909557ejy.32.1600325779598;
-        Wed, 16 Sep 2020 23:56:19 -0700 (PDT)
-Received: from prevas-ravi.prevas.se ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id t4sm14248382ejj.6.2020.09.16.23.56.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 23:56:19 -0700 (PDT)
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-To:     Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Brian Norris <briannorris@chromium.org>,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Nico Schottelius <nico-linuxsetlocalversion@schottelius.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] scripts/setlocalversion: make git describe output more reliable
-Date:   Thu, 17 Sep 2020 08:56:11 +0200
-Message-Id: <20200917065615.18843-1-linux@rasmusvillemoes.dk>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20200910112701.13853-1-linux@rasmusvillemoes.dk>
-References: <20200910112701.13853-1-linux@rasmusvillemoes.dk>
+        id S1726217AbgIQG6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 02:58:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52590 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726142AbgIQG62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 02:58:28 -0400
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9DA8C21D41;
+        Thu, 17 Sep 2020 06:58:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600325906;
+        bh=nPSrDuBIqK++Cs2Yf8watCT9FKUAvE8l/UEvBK+iyoI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=R8+Zxy8DVnHIGDtj/rxH1HYE7+ZI7x6ClAOFZg+v/22EvmPQmS0iR+V1m6PRFpW3X
+         X873efb8X9+8WoporP624GJXUCGLxqPWvml5scUjhzOAEvZNxJr7BjL3kGMyKIHRIa
+         H25+QiYH6WFTG3Sh7e7uJRiq2cQfj0Qetv1YjJ4k=
+Received: by mail-ed1-f43.google.com with SMTP id n22so1324522edt.4;
+        Wed, 16 Sep 2020 23:58:26 -0700 (PDT)
+X-Gm-Message-State: AOAM533xf7kos8Rcs+nf+MxotAttzjoFfbIq9U+TD7aKPz2l89rq5mbZ
+        qhys+waoSlxfQM72s1cF7a4C95/G/ii+VuZdo4c=
+X-Google-Smtp-Source: ABdhPJw6oBjGfpKJpPCFXBca1WTyVw1bjowRIiOkT6Iq1M84hhnCUG0jSC0ArmHu21bBl/Bc3OMUftiIy2mZoqPT59s=
+X-Received: by 2002:a50:e78f:: with SMTP id b15mr31833332edn.104.1600325905101;
+ Wed, 16 Sep 2020 23:58:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200916162250.16098-1-krzk@kernel.org> <20200916162250.16098-3-krzk@kernel.org>
+ <CAMuHMdUS134fokz9Xus_pnL6tVYvgQE_uAS4Q-+B4r77VeY=xg@mail.gmail.com>
+In-Reply-To: <CAMuHMdUS134fokz9Xus_pnL6tVYvgQE_uAS4Q-+B4r77VeY=xg@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Thu, 17 Sep 2020 08:58:13 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPeTTbrz5Ja8Y=qeCx_vbUub9sBzQqQY1yNa8dWN0nafGg@mail.gmail.com>
+Message-ID: <CAJKOXPeTTbrz5Ja8Y=qeCx_vbUub9sBzQqQY1yNa8dWN0nafGg@mail.gmail.com>
+Subject: Re: [PATCH 2/8] dt-bindings: gpio: include common schema in GPIO controllers
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Sungbo Eo <mans0n@gorani.run>, Stefan Agner <stefan@agner.ch>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Yash Shah <yash.shah@sifive.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-unisoc@lists.infradead.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building for an embedded target using Yocto, we're sometimes
-observing that the version string that gets built into vmlinux (and
-thus what uname -a reports) differs from the path under /lib/modules/
-where modules get installed in the rootfs, but only in the length of
-the -gabc123def suffix. Hence modprobe always fails.
+On Thu, 17 Sep 2020 at 08:40, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Krzysztof,
+>
+> On Wed, Sep 16, 2020 at 6:23 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> > Include the common GPIO schema in GPIO controllers to be sure all common
+> > properties are properly validated.
+> >
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+>
+> Thanks for your patch!
+>
+> > ---
+> >  .../devicetree/bindings/gpio/brcm,xgs-iproc-gpio.yaml          | 3 +++
+> >  Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml       | 3 +++
+> >  Documentation/devicetree/bindings/gpio/gpio-mxs.yaml           | 3 +++
+> >  Documentation/devicetree/bindings/gpio/gpio-pca9570.yaml       | 3 +++
+> >  Documentation/devicetree/bindings/gpio/gpio-rda.yaml           | 3 +++
+> >  Documentation/devicetree/bindings/gpio/gpio-vf610.yaml         | 3 +++
+> >  Documentation/devicetree/bindings/gpio/mrvl-gpio.yaml          | 1 +
+> >  Documentation/devicetree/bindings/gpio/qcom,wcd934x-gpio.yaml  | 3 +++
+> >  Documentation/devicetree/bindings/gpio/renesas,em-gio.yaml     | 3 +++
+> >  Documentation/devicetree/bindings/gpio/renesas,rcar-gpio.yaml  | 3 +++
+> >  Documentation/devicetree/bindings/gpio/sifive,gpio.yaml        | 3 +++
+> >  .../devicetree/bindings/gpio/socionext,uniphier-gpio.yaml      | 3 +++
+> >  Documentation/devicetree/bindings/gpio/xylon,logicvc-gpio.yaml | 3 +++
+> >  13 files changed, 37 insertions(+)
+>
+> There are more binding files describing GPIO controllers outside the
+> Documentation/devicetree/bindings/gpio/ subdirectory, cfr.
+> 'git grep gpio-controller:.true -- "Doc*yaml"'
 
-The problem is that Yocto has the concept of "sstate" (shared state),
-which allows different developers/buildbots/etc. to share build
-artifacts, based on a hash of all the metadata that went into building
-that artifact - and that metadata includes all dependencies (e.g. the
-compiler used etc.). That normally works quite well; usually a clean
-build (without using any sstate cache) done by one developer ends up
-being binary identical to a build done on another host. However, one
-thing that can cause two developers to end up with different builds
-[and thus make one's vmlinux package incompatible with the other's
-kernel-dev package], which is not captured by the metadata hashing, is
-this `git describe`: The output of that can be affected by
+Oh, indeed. Thanks for spotting these. I will check them and send a follow up.
 
-(1) git version: before 2.11 git defaulted to a minimum of 7, since
-2.11 (git.git commit e6c587) the default is dynamic based on the
-number of objects in the repo
-(2) hence even if both run the same git version, the output can differ
-based on how many remotes are being tracked (or just lots of local
-development branches or plain old garbage)
-(3) and of course somebody could have a core.abbrev config setting in
-~/.gitconfig
-
-So in order to avoid `uname -a` output relying on such random details
-of the build environment which are rather hard to ensure are
-consistent between developers and buildbots, make sure the abbreviated
-sha1 always consists of exactly 12 hex characters. That is consistent
-with the current rule for -stable patches, and is almost always enough
-to identify the head commit unambigously - in the few cases where it
-does not, the v5.4.3-00021- prefix would certainly nail it down.
-
-Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
----
-v2: use 12 instead of 15, and ensure that the result does have exactly
-12 hex chars.
-
- scripts/setlocalversion | 21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
-
-diff --git a/scripts/setlocalversion b/scripts/setlocalversion
-index 20f2efd57b11..bb709eda96cd 100755
---- a/scripts/setlocalversion
-+++ b/scripts/setlocalversion
-@@ -45,7 +45,7 @@ scm_version()
- 
- 	# Check for git and a git repo.
- 	if test -z "$(git rev-parse --show-cdup 2>/dev/null)" &&
--	   head=$(git rev-parse --verify --short HEAD 2>/dev/null); then
-+	   head=$(git rev-parse --verify HEAD 2>/dev/null); then
- 
- 		# If we are at a tagged commit (like "v2.6.30-rc6"), we ignore
- 		# it, because this version is defined in the top level Makefile.
-@@ -59,11 +59,22 @@ scm_version()
- 			fi
- 			# If we are past a tagged commit (like
- 			# "v2.6.30-rc5-302-g72357d5"), we pretty print it.
--			if atag="$(git describe 2>/dev/null)"; then
--				echo "$atag" | awk -F- '{printf("-%05d-%s", $(NF-1),$(NF))}'
--
--			# If we don't have a tag at all we print -g{commitish}.
-+			#
-+			# Ensure the abbreviated sha1 has exactly 12
-+			# hex characters, to make the output
-+			# independent of git version, local
-+			# core.abbrev settings and/or total number of
-+			# objects in the current repository - passing
-+			# --abbrev=12 ensures a minimum of 12, and the
-+			# awk substr() then picks the 'g' and first 12
-+			# hex chars.
-+			if atag="$(git describe --abbrev=12 2>/dev/null)"; then
-+				echo "$atag" | awk -F- '{printf("-%05d-%s", $(NF-1),substr($(NF),0,13))}'
-+
-+			# If we don't have a tag at all we print -g{commitish},
-+			# again using exactly 12 hex chars.
- 			else
-+				head="$(echo $head | cut -c1-12)"
- 				printf '%s%s' -g $head
- 			fi
- 		fi
--- 
-2.23.0
-
+Best regards,
+Krzysztof
