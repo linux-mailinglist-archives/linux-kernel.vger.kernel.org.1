@@ -2,105 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7572C26DD45
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 15:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C77126DD31
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 15:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727066AbgIQN4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 09:56:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53316 "EHLO
+        id S1726956AbgIQNye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 09:54:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727120AbgIQNym (ORCPT
+        with ESMTP id S1726988AbgIQNxu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 09:54:42 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76EA5C06121D
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 06:44:54 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id y15so2125676wmi.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 06:44:54 -0700 (PDT)
+        Thu, 17 Sep 2020 09:53:50 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F72C06121F
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 06:46:42 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id lo4so3350472ejb.8
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 06:46:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=KoTwgcJHCiN12qhXXsWAZQ9cL1lknXX7tKKcNmydNqo=;
-        b=BmPRtRyjw5x9JTXVjCslbOu/dNgHLkaxjtMplzNc743B5TULUqdAhm3G8ZEIAmRRRX
-         flNz27ag0sXQRVoTrc9Rvpatv/VYTtBHXAn6x53p31PWex6Y1ArdZLGYZaXteaYZ1UNu
-         LRsjNHI0/InI9guh5a0ZyA4gfdHnZ4ei2Q3Nj4m9c+GONwBfCqPNbFmSnJH6WBBtdCZn
-         RUg/n9USEDBVp8W+DTyE9RmRTeIsT5L0WOQbqLB2BbdhkqLdw7Etpcvy4pi13j/tGCE/
-         AGeU5r8/sEkCuvGF/xj74LNDmFtCTPWK4zhOJwVoU8S0zTZINE7B/QJ5hW9D2iDutffz
-         GcEg==
+        d=plexistor-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vn8Ib8aYTFIxxqTycEHlG/ghKTkhckew2Lqu7O8X6Rs=;
+        b=2I8GLAggHCEfndqwRmqt6x9A4uf6YSTFBgDaUxJ98/fF1Of0hW1Hn3Y0XgE5bbIH2X
+         wSsUcP8tLlvbw98s2+9sd5rV1UQKg1UQ9ANndPUHHAZ9WcYBfkYFwfTJwY3yiBFSMVxX
+         B46Cjm13oovsckeJ47Cv3IjeGdJz1+OzXVso6+sng5gjggxC0id2th69lYQ22dICwm/a
+         +HWTYQRWEcAlCjSY5/gsyh0biMRT6SdYy+t/Rin2dcgW4q95wHZqZFeXKWB7E6C3+nb5
+         Xz1FnwnJ97bXkJVYF2r6iQhqX8YSGywxolWfg4I0ol86+Vwh/NMVeKKvqK6kyFaEG3uK
+         h32w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KoTwgcJHCiN12qhXXsWAZQ9cL1lknXX7tKKcNmydNqo=;
-        b=d5gd0WDyMU0nQEq1GtSLkjcmV1R3WVgGift0NXQdg22Dk6f5EzftGCn1fE7SOJi3Dh
-         BbdzdcgSFVaDwbnjhaHS3LtKBrzSp8XW75R7Vo0zPhqzT+lNFpMneTN9+PBZuESPrv2w
-         OBqjkMUl/Lm5h8obRMgTvrKC36svtdyyWIL44aqHfwlENba+sJ4T2mdZywszgZOxaFY5
-         HexqKdN4pEZSDNIfRg0fY3DmBbH5ugOPs1x7RI0K9jatczB7ORMwSZ+y6xQuJgoXcZJy
-         QAvd2VLX+vW6Bgf38pUd60wG8JOfu1QFeaXkh3qDS0nlbmPlXiupv5N2VaoM9ObXW0Is
-         CpWw==
-X-Gm-Message-State: AOAM533K2uGrweXbEbe34pHN+yg+DHUktTJQ7ADDrKdyFvuIkBo9/8xL
-        OuVLs0LMyTBxhb4uqg8sgY0n3g==
-X-Google-Smtp-Source: ABdhPJzSd5ZSDQlEeejl4AtFMW/GTCs6vW9E2g9tSl2Ci/fjDtcCQdTPjfERjKGZivkfpw1TU4wG1Q==
-X-Received: by 2002:a05:600c:204e:: with SMTP id p14mr9741371wmg.182.1600350293095;
-        Thu, 17 Sep 2020 06:44:53 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id q15sm36892406wrr.8.2020.09.17.06.44.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 06:44:52 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org,
-        Vadym Kochan <vadym.kochan@plvision.eu>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 4/4] nvmem: core: fix missing of_node_put() in of_nvmem_device_get()
-Date:   Thu, 17 Sep 2020 14:44:37 +0100
-Message-Id: <20200917134437.16637-5-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200917134437.16637-1-srinivas.kandagatla@linaro.org>
-References: <20200917134437.16637-1-srinivas.kandagatla@linaro.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vn8Ib8aYTFIxxqTycEHlG/ghKTkhckew2Lqu7O8X6Rs=;
+        b=D3YnpiM0emhYiLXKNGgEycncUxLDiCrXP9+b4SQVCFOOBoNmahzKKO4tBwkQ2wWJjN
+         8DE8+Y885o72WWcrjn/rrXQy/LyI2xIw5Fp2GoXJ5wzLOKJ0pgcIe468qpLeSmqJpnZG
+         yTCj8gyJ9Nv6eQ6CiVi/2xzur+iNrLeexpEcAkQXXV/aEOwV+pirbt3byRMJpw0mL3QQ
+         Hq2F+iOhAYCK3Ux4HwztXCbXtTH1mnLNKYHwL8sZiJcmOp7YyXqsai/pyzQSwLod5cpR
+         HMaVDDq3aMjCBn5PazHryPJNWylkvYoB+/3jzgBZbqDqRL2lBmwntcIWL1KolcNyawmw
+         dNeA==
+X-Gm-Message-State: AOAM5331r0fApBs6RFNth6FAUFvAp9VorVXZuI9xD3SSivFJdW/MT4/T
+        B5iCpCiDfvRMAMFir1mQsUoyEg==
+X-Google-Smtp-Source: ABdhPJxMRbmTCEPByc8ZLp+OCATWxVGB3JQ0YY8lhNTPhEkHaHhbeMfMV0xWWNKI0J6LYeuZwbug7Q==
+X-Received: by 2002:a17:906:9346:: with SMTP id p6mr29979581ejw.305.1600350401578;
+        Thu, 17 Sep 2020 06:46:41 -0700 (PDT)
+Received: from [192.168.88.231] ([45.139.212.114])
+        by smtp.gmail.com with ESMTPSA id f13sm15496884ejb.81.2020.09.17.06.46.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Sep 2020 06:46:40 -0700 (PDT)
+Subject: Re: [RFC PATCH] locking/percpu-rwsem: use this_cpu_{inc|dec}() for
+ read_count
+To:     Matthew Wilcox <willy@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>
+Cc:     Hou Tao <houtao1@huawei.com>, peterz@infradead.org,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.cz>
+References: <20200915140750.137881-1-houtao1@huawei.com>
+ <20200915150610.GC2674@hirez.programming.kicks-ass.net>
+ <20200915153113.GA6881@redhat.com>
+ <20200915155150.GD2674@hirez.programming.kicks-ass.net>
+ <20200915160344.GH35926@hirez.programming.kicks-ass.net>
+ <b885ce8e-4b0b-8321-c2cc-ee8f42de52d4@huawei.com>
+ <ddd5d732-06da-f8f2-ba4a-686c58297e47@plexistor.com>
+ <20200917120132.GA5602@redhat.com>
+ <20200917124838.GT5449@casper.infradead.org>
+From:   Boaz Harrosh <boaz@plexistor.com>
+Message-ID: <e25a3354-04e4-54e9-a45f-7305bfd1f2bb@plexistor.com>
+Date:   Thu, 17 Sep 2020 16:46:38 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200917124838.GT5449@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vadym Kochan <vadym.kochan@plvision.eu>
+On 17/09/2020 15:48, Matthew Wilcox wrote:
+> On Thu, Sep 17, 2020 at 02:01:33PM +0200, Oleg Nesterov wrote:
+<>
+> 
+> If we change bio_endio to invoke the ->bi_end_io callbacks in softirq
+> context instead of hardirq context, we can change the pagecache to take
+> BH-safe locks instead of IRQ-safe locks.  I believe the only reason the
+> lock needs to be IRQ-safe is for the benefit of paths like:
+> 
 
-of_parse_phandle() returns device_node with incremented ref count
-which needs to be decremented by of_node_put() when device_node
-is not used.
+ From my totally subjective experience on the filesystem side (user of 
+bio_endio) all HW block drivers I used including Nvme isci, sata... etc. 
+end up calling bio_endio in softirq. The big exception to that is the 
+vdX drivers under KVM. Which is very Ironic to me.
+I wish we could make all drivers be uniform in this regard.
 
-Fixes: e2a5402ec7c6 ("nvmem: Add nvmem_device based consumer apis.")
-Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/nvmem/core.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+But maybe I'm just speaking crap. Its only from my limited debuging 
+expirience.
 
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 96ac8a632a7a..ab57289fe593 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -835,6 +835,7 @@ struct nvmem_device *of_nvmem_device_get(struct device_node *np, const char *id)
- {
- 
- 	struct device_node *nvmem_np;
-+	struct nvmem_device *nvmem;
- 	int index = 0;
- 
- 	if (id)
-@@ -844,7 +845,9 @@ struct nvmem_device *of_nvmem_device_get(struct device_node *np, const char *id)
- 	if (!nvmem_np)
- 		return ERR_PTR(-ENOENT);
- 
--	return __nvmem_device_get(nvmem_np, device_match_of_node);
-+	nvmem = __nvmem_device_get(nvmem_np, device_match_of_node);
-+	of_node_put(nvmem_np);
-+	return nvmem;
- }
- EXPORT_SYMBOL_GPL(of_nvmem_device_get);
- #endif
--- 
-2.21.0
-
+Thanks
+Boaz
