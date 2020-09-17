@@ -2,160 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9765C26E7C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 00:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E918826E7CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 00:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726065AbgIQWAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 18:00:40 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:41402 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725858AbgIQWAk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 18:00:40 -0400
-X-Greylist: delayed 1634 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 18:00:39 EDT
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08HLxfa0047948;
-        Thu, 17 Sep 2020 22:00:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=6Yw7FZiIzqNMwMA8TDvezwmycMynYGKLn2r6WY2pEOw=;
- b=EbD6kch8pT1TuAXxEK5KBg6sWhumiP8dBYhRXrhlulb3gLkKsGEc7aJUCONX5hy45k6Y
- TL8vKuIOLDy3PyNkPlkQYIHCxy0z39dlBljGMnyEZklEaPox2lUUZEy1GQMuwQa+AjoK
- Ns7bV1z7nvf6dLgrLWfbafafy+8aQxZ24Qzl9aDQBAbJEqdDwY4YwwB1ebIjN400Cf2L
- KbGydDJWVvinIBBPpuRFQQe4CKMgpl9wV6pM6RenuygpFQu/HwkTx7dC7N7vyMQDjWP0
- A6jmp82JciizRb4QgkAAwFZGliLHpYUqUbf8OJ6KXet1pZThC+++nMZBELWm7rFLHeHx vg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 33gnrrc2bu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 17 Sep 2020 22:00:09 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08HM05EV101966;
-        Thu, 17 Sep 2020 22:00:08 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 33khpnqfy6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 17 Sep 2020 22:00:08 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08HM06ng029353;
-        Thu, 17 Sep 2020 22:00:06 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 17 Sep 2020 22:00:06 +0000
-Date:   Thu, 17 Sep 2020 15:00:03 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org,
-        Dave Kleikamp <shaggy@kernel.org>,
-        jfs-discussion@lists.sourceforge.net,
-        Dave Chinner <dchinner@redhat.com>
-Subject: Re: [PATCH v2 5/9] iomap: Support arbitrarily many blocks per page
-Message-ID: <20200917220003.GN7955@magnolia>
-References: <20200910234707.5504-1-willy@infradead.org>
- <20200910234707.5504-6-willy@infradead.org>
+        id S1726149AbgIQWBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 18:01:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59670 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725886AbgIQWBq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 18:01:46 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E139E20872;
+        Thu, 17 Sep 2020 22:01:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600380105;
+        bh=iSS3yVNSP4VslVAf8MgGuHdapmuSuK442eTIBtSj0SU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=JdyyX1wORgeZqLB4rR/p3TPUNlpPVkqqJ657t4PhebdQfbw0Ev0DT1jcr6HG97ANB
+         N18Wv8e6+aFtBIIkCP80aoptKXbo6cAujzY5y4n/MwasGqTASCi26E9OLh4lpMSf4Y
+         gULHhI2/+P+pI/Qti6wnlx0iHhGWN7usS0rn9Y0c=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id A63313522887; Thu, 17 Sep 2020 15:01:45 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 15:01:45 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the rcu tree
+Message-ID: <20200917220145.GQ29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200917151909.01fa6684@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200910234707.5504-6-willy@infradead.org>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9747 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=1
- mlxlogscore=999 phishscore=0 mlxscore=0 adultscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009170162
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9747 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0
- lowpriorityscore=0 malwarescore=0 mlxscore=0 bulkscore=0 suspectscore=1
- clxscore=1011 mlxlogscore=999 adultscore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009170162
+In-Reply-To: <20200917151909.01fa6684@canb.auug.org.au>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 12:47:03AM +0100, Matthew Wilcox (Oracle) wrote:
-> Size the uptodate array dynamically to support larger pages in the
-> page cache.  With a 64kB page, we're only saving 8 bytes per page today,
-> but with a 2MB maximum page size, we'd have to allocate more than 4kB
-> per page.  Add a few debugging assertions.
+On Thu, Sep 17, 2020 at 03:19:09PM +1000, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Dave Chinner <dchinner@redhat.com>
-
-Looks ok,
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-
---D
-
-> ---
->  fs/iomap/buffered-io.c | 22 +++++++++++++++++-----
->  1 file changed, 17 insertions(+), 5 deletions(-)
+> After merging the rcu tree, today's linux-next build (powerpc
+> ppc64_defconfig) failed like this:
 > 
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index 7fc0e02d27b0..9670c096b83e 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -22,18 +22,25 @@
->  #include "../internal.h"
->  
->  /*
-> - * Structure allocated for each page when block size < PAGE_SIZE to track
-> - * sub-page uptodate status and I/O completions.
-> + * Structure allocated for each page or THP when block size < page size
-> + * to track sub-page uptodate status and I/O completions.
->   */
->  struct iomap_page {
->  	atomic_t		read_count;
->  	atomic_t		write_count;
->  	spinlock_t		uptodate_lock;
-> -	DECLARE_BITMAP(uptodate, PAGE_SIZE / 512);
-> +	unsigned long		uptodate[];
->  };
->  
->  static inline struct iomap_page *to_iomap_page(struct page *page)
->  {
-> +	/*
-> +	 * per-block data is stored in the head page.  Callers should
-> +	 * not be dealing with tail pages (and if they are, they can
-> +	 * call thp_head() first.
-> +	 */
-> +	VM_BUG_ON_PGFLAGS(PageTail(page), page);
-> +
->  	if (page_has_private(page))
->  		return (struct iomap_page *)page_private(page);
->  	return NULL;
-> @@ -45,11 +52,13 @@ static struct iomap_page *
->  iomap_page_create(struct inode *inode, struct page *page)
->  {
->  	struct iomap_page *iop = to_iomap_page(page);
-> +	unsigned int nr_blocks = i_blocks_per_page(inode, page);
->  
-> -	if (iop || i_blocks_per_page(inode, page) <= 1)
-> +	if (iop || nr_blocks <= 1)
->  		return iop;
->  
-> -	iop = kzalloc(sizeof(*iop), GFP_NOFS | __GFP_NOFAIL);
-> +	iop = kzalloc(struct_size(iop, uptodate, BITS_TO_LONGS(nr_blocks)),
-> +			GFP_NOFS | __GFP_NOFAIL);
->  	spin_lock_init(&iop->uptodate_lock);
->  	attach_page_private(page, iop);
->  	return iop;
-> @@ -59,11 +68,14 @@ static void
->  iomap_page_release(struct page *page)
->  {
->  	struct iomap_page *iop = detach_page_private(page);
-> +	unsigned int nr_blocks = i_blocks_per_page(page->mapping->host, page);
->  
->  	if (!iop)
->  		return;
->  	WARN_ON_ONCE(atomic_read(&iop->read_count));
->  	WARN_ON_ONCE(atomic_read(&iop->write_count));
-> +	WARN_ON_ONCE(bitmap_full(iop->uptodate, nr_blocks) !=
-> +			PageUptodate(page));
->  	kfree(iop);
->  }
->  
-> -- 
-> 2.28.0
+> In file included from kernel/rcu/update.c:578:
+> kernel/rcu/tasks.h:601:20: error: static declaration of 'show_rcu_tasks_classic_gp_kthread' follows non-static declaration
+>   601 | static inline void show_rcu_tasks_classic_gp_kthread(void) { }
+>       |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> In file included from kernel/rcu/update.c:49:
+> kernel/rcu/rcu.h:537:6: note: previous declaration of 'show_rcu_tasks_classic_gp_kthread' was here
+>   537 | void show_rcu_tasks_classic_gp_kthread(void);
+>       |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 > 
+> Caused by commit
+> 
+>   675d3ca52626 ("rcutorture: Make grace-period kthread report match RCU flavor being tested")
+> 
+> I have used the rcu tree from next-20200916 for today.
+
+Please accept my apologies for the hassle!  I believe that I finally
+have this straightened out.
+
+Please ignore if you already pulled -rcu for today, as I previously
+set rcu/next back to a commit preceding the offending one.
+
+							Thanx, Paul
