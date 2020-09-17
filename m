@@ -2,68 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B0526D15E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 04:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D005826D15A
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 04:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726047AbgIQC7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 22:59:42 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3540 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725886AbgIQC7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 22:59:38 -0400
-X-Greylist: delayed 959 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 22:59:38 EDT
-Received: from DGGEMM406-HUB.china.huawei.com (unknown [172.30.72.57])
-        by Forcepoint Email with ESMTP id 35ECDF0861DC7A368510;
-        Thu, 17 Sep 2020 10:43:36 +0800 (CST)
-Received: from DGGEMM526-MBX.china.huawei.com ([169.254.8.250]) by
- DGGEMM406-HUB.china.huawei.com ([10.3.20.214]) with mapi id 14.03.0487.000;
- Thu, 17 Sep 2020 10:43:35 +0800
-From:   "Zengtao (B)" <prime.zeng@hisilicon.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] time: Avoid undefined behaviour in timespec64_to_ns
-Thread-Topic: [PATCH] time: Avoid undefined behaviour in timespec64_to_ns
-Thread-Index: AQHWgEKzPOJD6Y0rEkK1BVb7XFEfA6lTNUwAgBZ+m2D//4GbAIADAGmA
-Date:   Thu, 17 Sep 2020 02:43:34 +0000
-Message-ID: <678F3D1BB717D949B966B68EAEB446ED4827C527@dggemm526-mbx.china.huawei.com>
-References: <1598952616-6416-1-git-send-email-prime.zeng@hisilicon.com>
- <CAK8P3a1SJEEJ_U9Vai1jCyXYEH=qcsk+zaeo9sjzbB5qByPKDA@mail.gmail.com>
- <678F3D1BB717D949B966B68EAEB446ED4827837E@dggemm526-mbx.china.huawei.com>
- <CAK8P3a2WG0DvTyrTkiLg3GW1x2s-oo8BgAyvp7uHvzXhJCiHmQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a2WG0DvTyrTkiLg3GW1x2s-oo8BgAyvp7uHvzXhJCiHmQ@mail.gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.74.221.187]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726130AbgIQCxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 22:53:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726043AbgIQCxA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 22:53:00 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5283DC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 19:45:01 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id s12so328185wrw.11
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 19:45:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C8P2jctWZN/5eJkEdVuM9znhmWHOtIZTLDjAWDuJb9M=;
+        b=Za12trdXVsgVYk/OACJ23Hh32EeUwfxF8RHHC82ArfhSmg/irqmqNC3JhORAVhwsvl
+         pV6lpoHfaZ0CIiiaBnlUzWaRNay8gsbg4y7cvH9qeMF7XoY8K8oHkNIg0kBS6w1Vfxvw
+         nSUO2fjnEGJKWU1b5nziBpUJ+xbWOCHIc2IVs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C8P2jctWZN/5eJkEdVuM9znhmWHOtIZTLDjAWDuJb9M=;
+        b=n6Jkh+vFIdtoC9bOwRYXCUBV5akrF47ZwDoz7SFv9Lbfh0Dw7AwRPSyUciEvElUTRx
+         HkZWdpYm0yRVJbJCLuXxH9XHqUgYkA11MY2lu8huALOOD0UvmEU/VkQYpaSABGCvGgnJ
+         KGIioiIFEXvZzJwXldFqgo/sB+ovBCqYKg0/8gT7H8H9gzdtfxYZ0dxspHmG85+Gh13v
+         LRWrzGZM1CIYc0E6CNEWN6MXklUECDYZuT5jqR1VAJ715KQSwzVOxLetpYYKVS4TT8G5
+         huxovZwglIQH0qHxQdEEPKaIiqWjnIz/1dugd7smWYza3xh6Rf6r2JGHduA4xAy9Ft7g
+         yNNw==
+X-Gm-Message-State: AOAM533sOdgreasuotal/xI3DJqr64ptTKgusQCpaAeN6aso4TkJzpgU
+        6Nmsw07uh7CsYUZpemsPLK9W+hSGqfhjrN6PCxVkNw==
+X-Google-Smtp-Source: ABdhPJwgnPUqBBfqemPY+Nm+WDNYOKVc09CpbmuIpcXMT+8VwbnX/lKv7lAkMPik8q0vBvkMXlq3/sVclYG4JmI+oZM=
+X-Received: by 2002:a5d:5751:: with SMTP id q17mr6705826wrw.409.1600310699882;
+ Wed, 16 Sep 2020 19:44:59 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <20200915134541.14711-1-srinath.mannam@broadcom.com> <20200916220821.GA1589643@bjorn-Precision-5520>
+In-Reply-To: <20200916220821.GA1589643@bjorn-Precision-5520>
+From:   Srinath Mannam <srinath.mannam@broadcom.com>
+Date:   Thu, 17 Sep 2020 08:14:48 +0530
+Message-ID: <CABe79T7ADCYnQtFbhruo4-Lj9Q1cRZPU_Li4X69gKyLS-me-6w@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] PCI: iproc: Add fixes to pcie iproc
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Ray Jui <rjui@broadcom.com>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        linux-pci@vger.kernel.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBBcm5kIEJlcmdtYW5uIFttYWls
-dG86YXJuZEBhcm5kYi5kZV0NCj4gU2VudDogVHVlc2RheSwgU2VwdGVtYmVyIDE1LCAyMDIwIDg6
-NDUgUE0NCj4gVG86IFplbmd0YW8gKEIpDQo+IENjOiBUaG9tYXMgR2xlaXhuZXI7IFZpbmNlbnpv
-IEZyYXNjaW5vOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJlOiBb
-UEFUQ0hdIHRpbWU6IEF2b2lkIHVuZGVmaW5lZCBiZWhhdmlvdXIgaW4NCj4gdGltZXNwZWM2NF90
-b19ucw0KPiANCj4gT24gVHVlLCBTZXAgMTUsIDIwMjAgYXQgMjoyMCBQTSBaZW5ndGFvIChCKQ0K
-PiA8cHJpbWUuemVuZ0BoaXNpbGljb24uY29tPiB3cm90ZToNCj4gDQo+ID4gPiA+IEZpeGVzOiBi
-ZDQwYTE3NTc2OWQgKCJ5MjAzODogaXRpbWVyOiBjaGFuZ2UgaW1wbGVtZW50YXRpb24gdG8NCj4g
-PiA+IHRpbWVzcGVjNjQiKQ0KPiA+ID4NCj4gPiA+IFRoaXMgb25lIGNhdXNlZCB0aGUgcmVncmVz
-c2lvbiwgYnV0IGlmIHdlIGFkZCB0aGUgY2hlY2sgaGVyZSwgaXQNCj4gPiA+IG1heSBiZSBiZXN0
-IHRvIGFsc28gYWRkIGl0IGluIHByaW9yIGtlcm5lbHMgdGhhdCBtYXkgaGF2ZSB0aGUgc2FtZQ0K
-PiA+ID4gYnVnIGluIG90aGVyIGNhbGxlcnMgb2YgdGhlIHNhbWUgZnVuY3Rpb24uIE1heWJlIGJh
-Y2twb3J0IGFsbCB0aGUNCj4gPiA+IHdheSB0byBzdGFibGUga2VybmVscyB0aGF0IGZpcnN0IGFk
-ZGVkIHRpbWVzcGVjNjQ/DQo+ID4gPg0KPiA+DQo+ID4gSSB0aGluayB3ZSBuZWVkIHRvIGRvIHRo
-ZSBiYWNrcG9ydCwgYnV0IG5vdCBzdXJlIGFib3V0IHRoZSBzdGFydA0KPiBwb2ludA0KPiA+IFRo
-YW5rcyBmb3IgeW91ciByZXZpZXcuDQo+IA0KPiBJIHdvdWxkIHN1Z2dlc3QNCj4gDQo+IENjOiA8
-c3RhYmxlQHZnZXIua2VybmVsLm9yZz4gIyB2My4xNysNCj4gRml4ZXM6IDM2MWEzYmYwMDU4MiAo
-InRpbWU2NDogQWRkIHRpbWU2NC5oIGhlYWRlciBhbmQgZGVmaW5lDQo+IHN0cnVjdCB0aW1lc3Bl
-YzY0IikNCg0KWWVzLCBtYWtlIHNlbnNlLCBjb21taXQgMzYxYTNiZjAwNTgyIGludHJvZHVjZSBh
-IHBvdGVudGlhbCBpc3N1ZSBhbmQNCiBjb21taXQgYmQ0MGExNzU3NjlkIHRyaWdnZXIgdGhlIGlz
-c3VlLg0KDQpSZWdhcmRzDQpaZW5ndGFvIA0KDQo+IA0KPiAgICAgICAgQXJuZA0K
+On Thu, Sep 17, 2020 at 3:38 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+Hi Bjorn,
+Thanks for review.
+> On Tue, Sep 15, 2020 at 07:15:38PM +0530, Srinath Mannam wrote:
+> > This patch series contains fixes and improvements to pcie iproc driver.
+> >
+> > This patch set is based on Linux-5.9.0-rc2.
+> >
+> > Changes from v1:
+> >   - Addressed Bjorn's review comments
+> >      - pcie_print_link_status is used to print Link information.
+> >      - Added IARR1/IMAP1 window map definition.
+> >
+> > Bharat Gooty (1):
+> >   PCI: iproc: fix out of bound array access
+> >
+> > Roman Bacik (1):
+> >   PCI: iproc: fix invalidating PAXB address mapping
+>
+> You didn't update thest subject lines so they match.
+> https://lore.kernel.org/r/20200326194810.GA11112@google.com
+Yes this patchset is the latest version to the patches in the link.
+My apologies that I missed to address your review comment about
+the commit message of "PCI: iproc: fix out of bound array access"
+in this patchset.
+Thanks & Regards,
+Srinath.
+>
+> > Srinath Mannam (1):
+> >   PCI: iproc: Display PCIe Link information
+> >
+> >  drivers/pci/controller/pcie-iproc.c | 29 ++++++++++++++++++++++-------
+> >  1 file changed, 22 insertions(+), 7 deletions(-)
+> >
+> > --
+> > 2.17.1
+> >
