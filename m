@@ -2,68 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 502A226D398
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 08:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E7BE26D37A
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 08:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726211AbgIQGYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 02:24:03 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:60126 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725267AbgIQGX6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 02:23:58 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 9EF45201507;
-        Thu, 17 Sep 2020 08:18:13 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 2BB9D2000B5;
-        Thu, 17 Sep 2020 08:18:09 +0200 (CEST)
-Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 8CAE5402AE;
-        Thu, 17 Sep 2020 08:18:03 +0200 (CEST)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] ASoC: fsl_sai: Set MCLK input or output direction
-Date:   Thu, 17 Sep 2020 14:11:19 +0800
-Message-Id: <1600323079-5317-4-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1600323079-5317-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1600323079-5317-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726221AbgIQGMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 02:12:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726106AbgIQGMZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 02:12:25 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CEE2C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 23:12:24 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f1053004ecb76e63d7beff7.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:5300:4ecb:76e6:3d7b:eff7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E2A281EC03A0;
+        Thu, 17 Sep 2020 08:12:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600323143;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=wP5V6e8HmsuFSJFurli6pgsVa/P/4K0cBE0gZt2GKdg=;
+        b=JI72fkmwMRbrq54ehWoY2a3ZyB+/C8UiyKOsg0ezkIRmtGglIS18JJBk8v4VdoryO59HRO
+        bJ1hI3H9trJh7Do6eeI/iylDMBwFQ41FubrpshnX52CMKEFScXRDThXh2m0rN1ep9Ec+wr
+        jNvainROYMCl52KqkAAQ4gUzHgJd1DY=
+Date:   Thu, 17 Sep 2020 08:12:20 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     kernel test robot <lkp@intel.com>,
+        "Li, Philip" <philip.li@intel.com>,
+        Rong Chen <rong.a.chen@intel.com>
+Cc:     x86-ml <x86@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [tip:x86/pti] BUILD SUCCESS WITH WARNING
+ 767d46ab566dd489733666efe48732d523c8c332
+Message-ID: <20200917061220.GB31960@zn.tnic>
+References: <5f62b7f2.Q9ixRaxJwQpWTURd%lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <5f62b7f2.Q9ixRaxJwQpWTURd%lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SAI support select MCLK direction with version.major > 3
-and version.minor > 1, the default direction is input,
-set it to be output according to DT property.
+Hi guys,
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
- sound/soc/fsl/fsl_sai.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+On Thu, Sep 17, 2020 at 09:12:18AM +0800, kernel test robot wrote:
+> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/pti
+> branch HEAD: 767d46ab566dd489733666efe48732d523c8c332  Documentation: Add L1D flushing Documentation
+> 
+> Warning in current branch:
+> 
+> arch/x86/mm/tlb.c:426:36: sparse:     expected void const [noderef] __percpu *__vpp_verify
+> arch/x86/mm/tlb.c:426:36: sparse:     got bool *
+> arch/x86/mm/tlb.c:426:36: sparse: sparse: incorrect type in initializer (different address spaces)
+> 
+> Warning ids grouped by kconfigs:
+> 
+> gcc_recent_errors
+> `-- i386-randconfig-s002-20200916
+>     |-- arch-x86-mm-tlb.c:sparse:expected-void-const-noderef-__percpu-__vpp_verify
+>     |-- arch-x86-mm-tlb.c:sparse:got-bool
+>     `-- arch-x86-mm-tlb.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-void-const-noderef-__percpu-__vpp_verify-got-bool
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 738b4dda7847..5117c1cd5682 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -1117,6 +1117,13 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 	if (ret < 0)
- 		dev_warn(&pdev->dev, "Error reading SAI version: %d\n", ret);
- 
-+	/* Select MCLK direction */
-+	if (of_find_property(np, "fsl,sai-mclk-direction-output", NULL) &&
-+	    sai->verid.major >= 3 && sai->verid.minor >= 1) {
-+		regmap_update_bits(sai->regmap, FSL_SAI_MCTL,
-+				   FSL_SAI_MCTL_MCLK_EN, FSL_SAI_MCTL_MCLK_EN);
-+	}
-+
- 	pm_runtime_enable(&pdev->dev);
- 	regcache_cache_only(sai->regmap, true);
- 
+this is another worthless bug report:
+
+* No .config attached
+
+* no build command line to know how you run sparse. I'm guessing with
+C=1. But I should not have to guess.
+
+Pls fix.
+
+Thx.
+
 -- 
-2.27.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
