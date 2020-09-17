@@ -2,114 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 773A726DB37
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC96026DB1C
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:09:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726845AbgIQMML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 08:12:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36216 "EHLO
+        id S1726973AbgIQMIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 08:08:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726740AbgIQMFC (ORCPT
+        with ESMTP id S1726868AbgIQMGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 08:05:02 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1826DC06174A;
-        Thu, 17 Sep 2020 05:03:56 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id j11so2973125ejk.0;
-        Thu, 17 Sep 2020 05:03:56 -0700 (PDT)
+        Thu, 17 Sep 2020 08:06:40 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A74C06174A;
+        Thu, 17 Sep 2020 05:06:18 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id l9so1784350wme.3;
+        Thu, 17 Sep 2020 05:06:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=reply-to:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=4IJg+4CZG5b0foFWn90FskEpijf8EknkkB/FydWSevk=;
-        b=SHAudCosEoaJOlkj1OVOjFQm0Y2jdQloxoQK1u5ghFaOZNsqVQcaReGEzOO22+/PoG
-         e+zmIJbfaxRDJn6F1W66FvvVqDnIsGGL6MnPxsZh8q19Odhf0uffGcPV6JlO9CSgYMj5
-         QkbbrYxjVMjJru3LbVs2G9zuGLrpFenz8DlODuTJz87bSSJz05S7gbQDzrFDLzCPv/kp
-         GJP8rX03ZnSiOdHNJDp+lHa+bInML9gW2trO21lhdxxYzkvRIn4jvoVv1FHWfSG5mPzM
-         jBvCQfiVTBMNHksmujp+0ZgfYbsewbmHSE9bb1GJlNVIVWAigb+EHj3/Od4EcoLFVcPO
-         dmXw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=tE9yLGNH1EMsfGO/TyvFBeLycfQZd8KEkVYBUcpK+V4=;
+        b=J6bZqsPWsLpDwG7bmnR7GKqPSvmtPDV9Jb0lO1LO5qwAvotOxtvCLn21cRP0BzWt+V
+         uR9MAInTJAD7UgdD0/Oj4nYwhpeR+hr1MlGj+fUmSLzazWD14HDDjYoksBVkjAy6JQpl
+         zAXP9lCyeT1lT+eXeREUzCesaGBbJiBGFHpwsJOrfhQPrhZVrkLLUZTmUMOADJZvAHD/
+         LiuS9rQnTeF5hh4CNpYhfUXPgqzYs1MV+/ueFTdg0T1ETmD2ZH4/r226ENkFs1/NRv6q
+         HG+S+adX7nSi0wtrys00tkws9iRJH8HGn+F2B4VivNkDfwEDw0UzDs9TapH0mcN1zKjF
+         AVzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:subject:to:cc:references:from
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-transfer-encoding:content-language;
-        bh=4IJg+4CZG5b0foFWn90FskEpijf8EknkkB/FydWSevk=;
-        b=DjGvivlZuEOrCd6fLM7wcsX7oCPeC6HAy4Tps7VRcAWxKdlt7uMVi/6wgZsa/3FL0i
-         knknYh9Lw8PnCJqpK8YN4S7mSXhctzM2a2fqCsIRC+E/l5LhuXMEahefFn+bra6A5Fte
-         maqJFwJaFR7oQgUJoQB+sBfj/5zuWJA5t6QESE65KZgKR2kosGHhfcOkNdDsoz0tU57e
-         5K7E63hwDYM8lLABfrpZro4x3fPrFxikXbbKB5H5hgkRD7KXP95gFQwKy6YGxKKUq2ba
-         XUDEORhQNy0ciw55EuhS8Qf+n54HTO25/YquTGZP3Tn254D3USPGNwsBgep2n6cUm+pS
-         3tMw==
-X-Gm-Message-State: AOAM531T4InK8RYmyBS6QhKEg6xByA15uyUPp4ITMxOPgsLyKJAQjkoP
-        TD32VCz/SdQVATRyGAY5hLqmfcgwXSM=
-X-Google-Smtp-Source: ABdhPJxQ/GtwTry9ihPN5KEPP052Fm0uzzwbkUZn/afLWALJ8NH4ADJ6T2No/Zdu/rqor4uEEJWmkA==
-X-Received: by 2002:a17:906:d14e:: with SMTP id br14mr28329723ejb.299.1600344233035;
-        Thu, 17 Sep 2020 05:03:53 -0700 (PDT)
-Received: from ?IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7? ([2a02:908:1252:fb60:be8a:bd56:1f94:86e7])
-        by smtp.gmail.com with ESMTPSA id o3sm16325516edt.79.2020.09.17.05.03.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Sep 2020 05:03:50 -0700 (PDT)
-Reply-To: christian.koenig@amd.com
-Subject: Re: [Linaro-mm-sig] Changing vma->vm_file in dma_buf_mmap()
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Daniel Vetter <daniel@ffwll.ch>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>, Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-References: <20200914140632.GD1221970@ziepe.ca>
- <9302e4e0-0ff0-8b00-ada1-85feefb49e88@gmail.com>
- <20200916095359.GD438822@phenom.ffwll.local> <20200916140710.GA8409@ziepe.ca>
- <8db2474f-ecb7-0e17-5f5b-145708fe44d5@amd.com>
- <CAKMK7uFdwrT3HACPh3ADAKvhXJ-Hf3dExZmgJVAQ1KKjSai_0w@mail.gmail.com>
- <aa953b09-53b1-104b-dc4b-156ad8a75e62@gmail.com>
- <CAKMK7uHJNRzCJfWVSmMrLmGXE0qo+OCXiMd+zPTOkeG2pnVrmQ@mail.gmail.com>
- <8d8693db-a3f0-4f5f-3e32-57d23ca620f8@amd.com>
- <CAKMK7uE=UqZD3PVC8XZAXrgGH-VsUF_-YQD3MLV8KK1kpxO4yQ@mail.gmail.com>
- <20200917113110.GE8409@ziepe.ca>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-Message-ID: <6fd74b84-959c-8b3b-c27b-e9fbf66396c7@gmail.com>
-Date:   Thu, 17 Sep 2020 14:03:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tE9yLGNH1EMsfGO/TyvFBeLycfQZd8KEkVYBUcpK+V4=;
+        b=pROvloJt5Jkxp6+gRCj7jI0yd4q4tsnq9FM0HUrwsxWRgofSj94SxACus8Jb+PmZxk
+         rxhnUOk3faGwFdiix6PsNQjgyOsDDE/zdGCmhB3S3tUcFdT9W0Y2HQF/2D2G5WtCuRwf
+         mxv28iLF/VN5A95MHwUIcD9Itb2dbsdvOmH76GUpcBqmrjYTo0Nvga6qYybToHTFUIt0
+         p7GmgZJ5tE8oqqciPw0/QPY2g5dJiYKDeEVQDefh/93800RzaSO/2Um2tWIukxYmPNcJ
+         9HALRLUnMO8moB5j8xLym+i7vEEBRS0yv4GbTxet7cjKRZstlRfpEGzurb20yRePvc0H
+         DO7Q==
+X-Gm-Message-State: AOAM532kjFnH1Xsml/djx4G0Q84mePEpQFk5JHtaDChafQ43lgVeLnSr
+        +I42dG5JDkuTui8LJCtlHyM=
+X-Google-Smtp-Source: ABdhPJzmbtGSgc/sCPHjT+k5AfHdUa4dj7lYQlTy1Z+U37azmH8kS8esDLh8hX0vP2eldd03r2AWrg==
+X-Received: by 2002:a05:600c:210c:: with SMTP id u12mr10437557wml.185.1600344377136;
+        Thu, 17 Sep 2020 05:06:17 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id d83sm11075751wmf.23.2020.09.17.05.06.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 05:06:15 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 14:06:14 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 26/34] i2c: tegra: Factor out hardware initialization
+ into separate function
+Message-ID: <20200917120614.GE3515672@ulmo>
+References: <20200908224006.25636-1-digetx@gmail.com>
+ <20200908224006.25636-27-digetx@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200917113110.GE8409@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="kUmo4NyTJbuJZ752"
+Content-Disposition: inline
+In-Reply-To: <20200908224006.25636-27-digetx@gmail.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 17.09.20 um 13:31 schrieb Jason Gunthorpe:
-> On Thu, Sep 17, 2020 at 10:09:12AM +0200, Daniel Vetter wrote:
->
->> Yeah, but it doesn't work when forwarding from the drm chardev to the
->> dma-buf on the importer side, since you'd need a ton of different
->> address spaces. And you still rely on the core code picking up your
->> pgoff mangling, which feels about as risky to me as the vma file
->> pointer wrangling - if it's not consistently applied the reverse map
->> is toast and unmap_mapping_range doesn't work correctly for our needs.
-> I would think the pgoff has to be translated at the same time the
-> vm->vm_file is changed?
->
-> The owner of the dma_buf should have one virtual address space and FD,
-> all its dma bufs should be linked to it, and all pgoffs translated to
-> that space.
 
-Yeah, that is exactly like amdgpu is doing it.
+--kUmo4NyTJbuJZ752
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Going to document that somehow when I'm done with TTM cleanups.
+On Wed, Sep 09, 2020 at 01:39:58AM +0300, Dmitry Osipenko wrote:
+> Factor out hardware initialization into a separate function from the probe
+> function. The only place where runtime PM needs to be resumed during probe
+> is the place of hardware initialization, hence it makes sense to factor
+> out it in order to have a bit cleaner error handling in tegra_i2c_probe().
+>=20
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/i2c/busses/i2c-tegra.c | 32 +++++++++++++++++++-------------
+>  1 file changed, 19 insertions(+), 13 deletions(-)
 
-Christian.
+Not really sure this is worth it, but since I don't feel strongly, I'll
+leave this up to Wolfram to decide:
 
->
-> Jason
-> _______________________________________________
-> Linaro-mm-sig mailing list
-> Linaro-mm-sig@lists.linaro.org
-> https://lists.linaro.org/mailman/listinfo/linaro-mm-sig
+Acked-by: Thierry Reding <treding@nvidia.com>
 
+--kUmo4NyTJbuJZ752
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9jUTUACgkQ3SOs138+
+s6HD+BAArcmDQvZJ43BnrWJSDzM2F4Nc1yHsjUZkBEwlFdVehB88ksYQMGJRWs3/
+fkKLrBksvlGvGVReLfL0SxFmJXifR/qxYbnkZv+G2yleGdXa7w7VTfYUBI/CG8Dn
+Y78esXfSlqIr0sYIrXlSaIyiUqjzP6hB4x/G5awdKREiWyqGmgZ17AFd01QZyMG0
++wTVSvfR4/IGhMJnqqdgXRUCbY+NTGEMzT3pkTuZ629fmKBxDVac3Pg0wEOaK4T0
+IzIOc58zbQ1g1IwAfXxXf0MaQ1YtG6rDfU7xWUZxEWfV9Mjeg0RaX2ooXVfF5Y43
+rIKKdxS5v+hJhvZKoPAyjAjFaj8Nt83Wf5Tm/ZjyMVJCBPbws0DI5ZYAHo9ABEXp
+mWMTnFIcMQaSQTY/JIu32KCQxjoTC/ZI0U3SNtyY23C9RL85mnd4uDPzS/uv7auT
+EXvbL6htIs5dPzSJemQUpW93UKa5SbBsRj4u3k4ZFbqGVkO92L+gWBSUPcCU3Of0
+d3yru6TAaQoQbT3XGa5PaDHauscLeTWgcsPJM1VFD8T6IJeN6oqfM0zY4YSjkBLh
+Cw3mcAXX7uMiIxNdwfoNxJhm+eOCeDd4UEJWPW0IOumOy9JkgfdROEq7/4eFPpGP
+lcnaBN31gf/4jrZDNaeORhScYXUCPwP0dk+DLm3I0WcP7MknVjI=
+=pBH+
+-----END PGP SIGNATURE-----
+
+--kUmo4NyTJbuJZ752--
