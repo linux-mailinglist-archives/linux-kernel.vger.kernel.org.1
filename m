@@ -2,108 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13FA526E021
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 17:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED52926E027
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 18:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728254AbgIQP6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 11:58:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728110AbgIQPru (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 11:47:50 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB06C061756;
-        Thu, 17 Sep 2020 08:47:35 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id q13so3932939ejo.9;
-        Thu, 17 Sep 2020 08:47:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ifLqIBBiM4ThXSLoxSOsnfI6fbrmlczs4vIdt9aQ3i0=;
-        b=YLjJHrEuERndMlBjeyPJXtaXrcSqPWAfH/IdF/gAMGs8Jlh0vBM6JXXRNMxgY29Snk
-         x0yhRpynliTUZLb9ciGmDIDewRdguVfNo52eyyfPJ/Dv1+tc2Lv4jcIHRaR+WYc/qeNo
-         2MHcXE/wajEJvwsBWTH8DC2e4TFtacYLsjFJuNzxrzfeka4bnUDi0IeMv3jI4pbKtvh4
-         qD5kAAUWxpSV20byptqb9B/MJaGA7qgpwHOmyajZSNWUCjFhXp/lBYVTJsGplJ6BdrYK
-         IS8l8STJtLhAOc2ZEHRGo18Ba7KjtfW3fciUX0ImQ3iup9RzXYhgXiKhdHfvd/yPw7O/
-         8CbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ifLqIBBiM4ThXSLoxSOsnfI6fbrmlczs4vIdt9aQ3i0=;
-        b=LVNkvU4z1yx0xXbffaJj/rceIuyK7tIHYD8blox9Yucu4VqqLsMABVij+o5ifUQ2yN
-         daGmPQ9gbNda6RsMPJYhhjzFzWcaepMDRnBlpNyEO8uivVIG1F1ebhzbwtT+Ap1zpUOS
-         MFp8Tsi2ox4nUImnS9/IZRWAUK9SgzZymjQmh6CkYBcrz9luGl11EQn364NxZVd8AZ5B
-         LuLea58MeyGePMCGtWI2oG2lDmBIOupAPhpinGfWc3/JBEdiDeUCtYjK1rmaet50qNyI
-         pFCj6KjGKzfZTgk2C5JadAJY2gT6XsCP0AFS75uZ16uSBZ/avqPcu5LFJMM6BWXlJbvu
-         hr0Q==
-X-Gm-Message-State: AOAM533rkvEnmtfGeqOtRzP3DBgkg2I0AEYhXDDsmOwPaNfYe0TAjk6M
-        DjzAI+1GMbJKKVwNXCl2HvzL67Oj7qTrvg==
-X-Google-Smtp-Source: ABdhPJzsyJnhXvY4nVvfIupO8x6ooIe6FqbqDIdAvcyagj7JpkdPhdHmABTuYzil9/KssGWzkl1wYg==
-X-Received: by 2002:a17:906:fb8c:: with SMTP id lr12mr32902212ejb.9.1600357654295;
-        Thu, 17 Sep 2020 08:47:34 -0700 (PDT)
-Received: from localhost.localdomain ([85.153.229.188])
-        by smtp.gmail.com with ESMTPSA id dm22sm50748edb.49.2020.09.17.08.47.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 08:47:33 -0700 (PDT)
-From:   Necip Fazil Yildiran <fazilyildiran@gmail.com>
-To:     dalias@libc.org
-Cc:     lethal@linux-sh.org, iwamatsu.nobuhiro@renesas.com,
-        ysato@users.sourceforge.jp, linux-sh@vger.kernel.org,
-        linux-kernel@vger.kernel.org, paul@pgazz.com, jeho@cs.utexas.edu,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>
-Subject: [PATCH] sh: dma: fix kconfig dependency for G2_DMA
-Date:   Thu, 17 Sep 2020 18:45:48 +0300
-Message-Id: <20200917154547.139019-1-fazilyildiran@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S1727833AbgIQP7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 11:59:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50022 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728097AbgIQP66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 11:58:58 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EEB372220F;
+        Thu, 17 Sep 2020 15:57:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600358228;
+        bh=0R8wQ8wtOhNvgIX+2H28XDlxNwOFHmlyptZe/q+b84M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=prSjxzW19p/f7/IiwXidlQxWIH4yvQe3YiglaEZOzU+xmrU8Rdom+UWXBbTRDidKX
+         47oehxQHgFGKaSQk54UP3d5JFCxVhVjp7Z2ltXy9Ke6DVUeKqG61MIDETd/c0i8zSC
+         hjUAYjlLMOFUMr0yoF6qhtl/U0F7s3ucTW+AdapM=
+Date:   Thu, 17 Sep 2020 16:56:18 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     lgirdwood@gmail.com, tiwai@suse.com, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, camel.guo@axis.com
+Subject: Re: [PATCH 5/6] dt-bindings: tlv320adcx140: Add slot programming
+ property
+Message-ID: <20200917155618.GG4755@sirena.org.uk>
+References: <20200915190606.1744-1-dmurphy@ti.com>
+ <20200915190606.1744-5-dmurphy@ti.com>
+ <20200917130236.GA2954@sirena.org.uk>
+ <f4a83c01-58e2-1b7a-677e-44d5bde7b175@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="+sHJum3is6Tsg7/J"
+Content-Disposition: inline
+In-Reply-To: <f4a83c01-58e2-1b7a-677e-44d5bde7b175@ti.com>
+X-Cookie: If you fail to plan, plan to fail.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When G2_DMA is enabled and SH_DMA is disabled, it results in the following
-Kbuild warning:
 
-WARNING: unmet direct dependencies detected for SH_DMA_API
-  Depends on [n]: SH_DMA [=n]
-  Selected by [y]:
-  - G2_DMA [=y] && SH_DREAMCAST [=y]
+--+sHJum3is6Tsg7/J
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The reason is that G2_DMA selects SH_DMA_API without depending on or
-selecting SH_DMA while SH_DMA_API depends on SH_DMA.
+On Thu, Sep 17, 2020 at 10:15:27AM -0500, Dan Murphy wrote:
+> On 9/17/20 8:02 AM, Mark Brown wrote:
 
-When G2_DMA was first introduced with commit 40f49e7ed77f
-("sh: dma: Make G2 DMA configurable."), this wasn't an issue since
-SH_DMA_API didn't have such dependency, and this way was the only way to
-enable it since SH_DMA_API was non-visible. However, later SH_DMA_API was
-made visible and dependent on SH_DMA with commit d8902adcc1a9
-("dmaengine: sh: Add Support SuperH DMA Engine driver").
+> > This is something I'd expect to be done by the machine driver rather
+> > than in the CODEC specific DT bindings, and apart from anything else
 
-Let G2_DMA depend on SH_DMA_API instead to avoid Kbuild issues.
+> Customers need the ability to not transmit on a TDM slot, since another
+> device could be using the slot.
 
-Fixes: d8902adcc1a9 ("dmaengine: sh: Add Support SuperH DMA Engine driver")
-Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
----
- arch/sh/drivers/dma/Kconfig | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+TDM is not an issue, we already have the set_tdm_slot() API.  The issue
+is how you're configuring it.
 
-diff --git a/arch/sh/drivers/dma/Kconfig b/arch/sh/drivers/dma/Kconfig
-index d0de378beefe..7d54f284ce10 100644
---- a/arch/sh/drivers/dma/Kconfig
-+++ b/arch/sh/drivers/dma/Kconfig
-@@ -63,8 +63,7 @@ config PVR2_DMA
- 
- config G2_DMA
- 	tristate "G2 Bus DMA support"
--	depends on SH_DREAMCAST
--	select SH_DMA_API
-+	depends on SH_DREAMCAST && SH_DMA_API
- 	help
- 	  This enables support for the DMA controller for the Dreamcast's
- 	  G2 bus. Drivers that want this will generally enable this on
--- 
-2.25.1
+> The dai-tdm-slot-num would be a good candidate to add to the sound card to
+> define the slot number but it's definition is "Number of slots in use." So
+> it is not really setting the needed slot.
+> I am not finding any good way to assign specific slots to specific channels.
 
+If the generic features are not sufficent then please extend the generic
+features rather than bodging around them in individual drivers.
+
+--+sHJum3is6Tsg7/J
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9jhyEACgkQJNaLcl1U
+h9B6/Qf+M5hvEXVKhLg+PkuggYW/zHPqIs79pJjddV/tkBhy612mpeKAAj8Crp4G
+WTsAdCZ8gh0xhUu5quFCArp73bD+tVGMcp2OidYjpG9sZ/4sBW36oYeBRei3zPw0
+531VEYn5lS95/BbYlXyTJGT09zHbPRIv2PReev6s+3pUmK1DFsgaLitDRwLz+Ndt
+DiJLHewySrOXdvwg3VBE04nQjYW5qAgkF9EVKAyKU68NKpAw3NAYcaIlOe7KFubg
+Gy1yyCiYFNmdfDGcGJ+H8JdhpvUKc8fh4dUbNJGl5n1X3S4R78IunjNw9fnR/l3U
+yiO+EE3d5A1qgWqlUDXSOLr+om19xA==
+=OC0y
+-----END PGP SIGNATURE-----
+
+--+sHJum3is6Tsg7/J--
