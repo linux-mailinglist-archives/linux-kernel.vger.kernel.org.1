@@ -2,28 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8DCE26D422
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6406226D446
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726279AbgIQHEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 03:04:37 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:50714 "EHLO huawei.com"
+        id S1726217AbgIQHJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 03:09:15 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:59270 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726200AbgIQHEI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 03:04:08 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id B753530BBAD9E1F7EDF3;
-        Thu, 17 Sep 2020 14:48:16 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Thu, 17 Sep 2020
- 14:48:09 +0800
+        id S1726109AbgIQHJG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 03:09:06 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 4C3EFF1F76C25FDA1F18;
+        Thu, 17 Sep 2020 14:48:20 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Thu, 17 Sep 2020
+ 14:48:10 +0800
 From:   Liu Shixin <liushixin2@huawei.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH -next] PCI/IOV: use module_pci_driver to simplify the code
-Date:   Thu, 17 Sep 2020 15:10:42 +0800
-Message-ID: <20200917071042.1909191-1-liushixin2@huawei.com>
+To:     Oliver Neukum <oliver@neukum.org>, Ali Akcaagac <aliakc@web.de>,
+        "Jamie Lenehan" <lenehan@twibble.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+CC:     <dc395x@twibble.org>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Liu Shixin <liushixin2@huawei.com>
+Subject: [PATCH -next] scsi: dc395x: use module_pci_driver to simplify the code
+Date:   Thu, 17 Sep 2020 15:10:44 +0800
+Message-ID: <20200917071044.1909268-1-liushixin2@huawei.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -39,33 +42,45 @@ by eliminating module_init and module_exit calls.
 
 Signed-off-by: Liu Shixin <liushixin2@huawei.com>
 ---
- drivers/pci/pci-pf-stub.c | 14 +-------------
- 1 file changed, 1 insertion(+), 13 deletions(-)
+ drivers/scsi/dc395x.c | 25 +------------------------
+ 1 file changed, 1 insertion(+), 24 deletions(-)
 
-diff --git a/drivers/pci/pci-pf-stub.c b/drivers/pci/pci-pf-stub.c
-index a0b2bd6c918a..45855a5e9fca 100644
---- a/drivers/pci/pci-pf-stub.c
-+++ b/drivers/pci/pci-pf-stub.c
-@@ -37,18 +37,6 @@ static struct pci_driver pf_stub_driver = {
- 	.probe			= pci_pf_stub_probe,
- 	.sriov_configure	= pci_sriov_configure_simple,
+diff --git a/drivers/scsi/dc395x.c b/drivers/scsi/dc395x.c
+index 0c251a3b99b7..fa16894d8758 100644
+--- a/drivers/scsi/dc395x.c
++++ b/drivers/scsi/dc395x.c
+@@ -4721,30 +4721,7 @@ static struct pci_driver dc395x_driver = {
+ 	.probe          = dc395x_init_one,
+ 	.remove         = dc395x_remove_one,
  };
 -
--static int __init pci_pf_stub_init(void)
+-
+-/**
+- * dc395x_module_init - Module initialization function
+- *
+- * Used by both module and built-in driver to initialise this driver.
+- **/
+-static int __init dc395x_module_init(void)
 -{
--	return pci_register_driver(&pf_stub_driver);
+-	return pci_register_driver(&dc395x_driver);
 -}
 -
--static void __exit pci_pf_stub_exit(void)
+-
+-/**
+- * dc395x_module_exit - Module cleanup function.
+- **/
+-static void __exit dc395x_module_exit(void)
 -{
--	pci_unregister_driver(&pf_stub_driver);
+-	pci_unregister_driver(&dc395x_driver);
 -}
 -
--module_init(pci_pf_stub_init);
--module_exit(pci_pf_stub_exit);
-+module_pci_driver(pf_stub_driver);
+-
+-module_init(dc395x_module_init);
+-module_exit(dc395x_module_exit);
++module_pci_driver(dc395x_driver);
  
- MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("C.L. Huang / Erich Chen / Kurt Garloff");
+ MODULE_DESCRIPTION("SCSI host adapter driver for Tekram TRM-S1040 based adapters: Tekram DC395 and DC315 series");
 -- 
 2.25.1
 
