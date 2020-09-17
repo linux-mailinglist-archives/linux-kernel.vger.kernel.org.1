@@ -2,85 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 165BD26E173
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 18:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B4526E17D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 18:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728803AbgIQQ60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 12:58:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728609AbgIQQ5M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 12:57:12 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D2E9C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 09:57:11 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id q4so2973099ils.4
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 09:57:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bC1NcC/3gidYXCraT60Gha0Mskxal5CIrv7vcfFm264=;
-        b=sog7KaMBpFzPZ3X+j8JIxEP8Br4VuN/7bbEbqQ6pgKnWfUg+mphsD4ykMF4p7N3xE8
-         TX0oRzojfHz/tkwzrqGaB7cov2rrVWj2cohzLfxXJDhqs+ssiTrawp2cR6AEnJsPajFG
-         CFABejwOXs0LhY7rdRnP0BnlzMHQUYisOPHVt65NAUJ3BmKxMjWhbkwDZizccHNP6L2C
-         9xYX5X+OpIs14f7hv0Bqi0nyH0wteb/H4IVY6mdi40+uaB5h1ZheE9z5SIt7mB1GSx6r
-         bBzDe163r5aQwI6dLgMKAx+oQzdCjhVkAR/H4W2QypVb/Y/82/YiwrKBPmO+1aZWV6XD
-         BpXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bC1NcC/3gidYXCraT60Gha0Mskxal5CIrv7vcfFm264=;
-        b=ZNlUcJDP0tb62AkPSWpYMK6VMKO3HNViVr6EQM5ICWiQdoNlMb6cd4YZl4ib7G6X6y
-         YIi4bX13HUOTDcy52+Yb/TzEO6Vp+UV6ucqp/k6S64IURCvZeWvS0rzTAVm+Rrnu1Vxr
-         wB7pLA3s0EQ8KxG1+pSM0wxZnN3GzvuwfPM6r12VxTx+AxQmERrrbN1DoQiF/IxkQq8N
-         OIC3zcDzXDyRsn1vzSrK0ZQdDoQnAuzXGBSKAv4s0jCxUVCs9e9x6g/LvvtUWDF+Eb57
-         k06zzfEyA8A7/RC4NmBTVCpbj1WhAh+0mgoTer10YbWzAl7PpElyS1Q+ErNQ3CYhOIJ6
-         Dhcg==
-X-Gm-Message-State: AOAM530QyF0MODhg9n3GxcyTkj7bEHtJOMXJ1RGTFDE+k0hFMnsywAA5
-        hXYIfDuud/JUqwvY5rFtP65zEKc0uglsDjCiTjg=
-X-Google-Smtp-Source: ABdhPJzryqIcyg4u45DMs3RqBmJvDVkP+yaW9gZAShRD12e7AUM84+dryjgpeBwIQ5GY9XEXjTPw9YMBgpWVWQlmR+w=
-X-Received: by 2002:a05:6e02:c07:: with SMTP id d7mr26971412ile.301.1600361830153;
- Thu, 17 Sep 2020 09:57:10 -0700 (PDT)
+        id S1728705AbgIQQ7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 12:59:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38280 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728802AbgIQQ5Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 12:57:25 -0400
+Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 818A72064B;
+        Thu, 17 Sep 2020 16:57:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600361844;
+        bh=nu7RsY28LVyN+IsFpaXaxIpemXjC7Q2RYaAJUnnZ2r8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=MJLfb4lmVitwKrAl4tGM9ILl8JGYXcXszpcpnzFEb6k8oJ5ax0iNsfFS8e9FxKUZ0
+         C+tYyN/wTuiXpcH172VU1aywBGTfhiTyQoi/GkH/kglPqRuVr8iRxX5dmmGUpJsFdS
+         AJ9Faia/pQLEdUCrc/vdPrdf69lvmoVPAZPBsylY=
+Date:   Thu, 17 Sep 2020 11:57:23 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Qinglang Miao <miaoqinglang@huawei.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Tyrel Datwyler <tyreld@linux.ibm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] PCI: rpadlpar: use for_each_child_of_node() and
+ for_each_node_by_name
+Message-ID: <20200917165723.GA1708462@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20200916153648.5475-1-ztong0001@gmail.com> <20200916165433.GA3675881@dhcp-10-100-145-180.wdl.wdc.com>
-In-Reply-To: <20200916165433.GA3675881@dhcp-10-100-145-180.wdl.wdc.com>
-From:   Tong Zhang <ztong0001@gmail.com>
-Date:   Thu, 17 Sep 2020 12:56:59 -0400
-Message-ID: <CAA5qM4B-KpRvFuf+5YR4iOqNzic=fuYm=_seqwLoLp9+_xOqdA@mail.gmail.com>
-Subject: Re: [PATCH] nvme: fix NULL pointer dereference
-To:     Keith Busch <kbusch@kernel.org>
-Cc:     Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916062128.190819-1-miaoqinglang@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The command_id in CQE is writable by NVMe controller, driver should
-check its sanity before using it.
-- Tong
+On Wed, Sep 16, 2020 at 02:21:28PM +0800, Qinglang Miao wrote:
+> Use for_each_child_of_node() and for_each_node_by_name macro
+> instead of open coding it.
+> 
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 
-On Wed, Sep 16, 2020 at 12:54 PM Keith Busch <kbusch@kernel.org> wrote:
->
-> On Wed, Sep 16, 2020 at 11:36:49AM -0400, Tong Zhang wrote:
-> > @@ -960,6 +960,8 @@ static inline void nvme_handle_cqe(struct nvme_queue *nvmeq, u16 idx)
-> >       }
-> >
-> >       req = blk_mq_tag_to_rq(nvme_queue_tagset(nvmeq), cqe->command_id);
-> > +     if (!req)
-> > +             return;
->
-> As I mentioned before, blk_mq_tag_to_rq() returns NULL if the tag
-> exceeds the depth. We already verify the tag prior to calling this
-> function, so what's the real root cause for how we're winding up with
-> NULL here? I'm only asking this because it sounds like there's a bug
-> somewhere else and this change is masking over it.
->
->
-> >       trace_nvme_sq(req, cqe->sq_head, nvmeq->sq_tail);
-> >       if (!nvme_try_complete_req(req, cqe->status, cqe->result))
-> >               nvme_pci_complete_rq(req);
+Applied to pci/hotplug for v5.10, thanks!
+
+> ---
+>  drivers/pci/hotplug/rpadlpar_core.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/pci/hotplug/rpadlpar_core.c b/drivers/pci/hotplug/rpadlpar_core.c
+> index f979b7098..0a3c80ba6 100644
+> --- a/drivers/pci/hotplug/rpadlpar_core.c
+> +++ b/drivers/pci/hotplug/rpadlpar_core.c
+> @@ -40,13 +40,13 @@ static DEFINE_MUTEX(rpadlpar_mutex);
+>  static struct device_node *find_vio_slot_node(char *drc_name)
+>  {
+>  	struct device_node *parent = of_find_node_by_name(NULL, "vdevice");
+> -	struct device_node *dn = NULL;
+> +	struct device_node *dn;
+>  	int rc;
+>  
+>  	if (!parent)
+>  		return NULL;
+>  
+> -	while ((dn = of_get_next_child(parent, dn))) {
+> +	for_each_child_of_node(parent, dn) {
+>  		rc = rpaphp_check_drc_props(dn, drc_name, NULL);
+>  		if (rc == 0)
+>  			break;
+> @@ -60,10 +60,10 @@ static struct device_node *find_vio_slot_node(char *drc_name)
+>  static struct device_node *find_php_slot_pci_node(char *drc_name,
+>  						  char *drc_type)
+>  {
+> -	struct device_node *np = NULL;
+> +	struct device_node *np;
+>  	int rc;
+>  
+> -	while ((np = of_find_node_by_name(np, "pci"))) {
+> +	for_each_node_by_name(np, "pci") {
+>  		rc = rpaphp_check_drc_props(np, drc_name, drc_type);
+>  		if (rc == 0)
+>  			break;
+> -- 
+> 2.23.0
+> 
