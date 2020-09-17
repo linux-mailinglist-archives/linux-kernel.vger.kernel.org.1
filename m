@@ -2,76 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6E4A26E703
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 23:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5C4626E709
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 23:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726468AbgIQVBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 17:01:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35166 "EHLO
+        id S1726622AbgIQVD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 17:03:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726180AbgIQVBp (ORCPT
+        with ESMTP id S1726433AbgIQVD1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 17:01:45 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E9E5C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 14:01:45 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id v54so3119379qtj.7
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 14:01:45 -0700 (PDT)
+        Thu, 17 Sep 2020 17:03:27 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1211C061788
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 14:03:27 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id w1so3976056edr.3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 14:03:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=71NkNHP0R01eMpLBKZ+eul66Yg6+u+oK86rQqAUsTRI=;
-        b=qrS6RlXv0SSH5MY2IRAA4hFZaIZEZ8sCa9b3drzGXkH7msyVVJl2CY7qPJuO488s4w
-         z6dkkcEeRdPBeVeMx0KhHrt7Wqx3oQlMotQZacO1c5oLQp/2ba7N8JteLENPKMxCJqV0
-         4xNpEFhMAwYT01QiYvrvFzMmh+absFaOkjqk9LbmigCXSZm/2xtAOQ8mrttiYbfbTpYE
-         KmQcc/z8dSjq0q6KShUaGmhAizehyes1y5TZKAy5cB0Q163MXr2OE+5NISyrM5YWr5B9
-         oSFTu7iekalP1aodD3z2IW8uXatSz2ZCn7exRBt4aizZllPHMgqdqtO7VzOeEmP36XaN
-         4fyQ==
+        bh=EMb7Fr/Y54WaWzA68Yj/5jSEez+NMiA8A7BnkNxiejw=;
+        b=sevkU+IoTsyaC06bppYtADxBCtSKCU89Z+LMb2UAw1lmSINZLTMXafJOM6mC2VUVwl
+         b7VsFapD+2axwIV2HqwZxQjiqgBvuuH3N+GXwaPPFeF77TKG4ScxNxFMb+AmjVZI4J0J
+         HfcmEN3Y1gbRCKiQFzDxNcrrjOEf6/PNiz2GmY/vbjX/MdPT+BK+75ea7W9vVhPF/V0O
+         FjCcURzdRN2p28hWrbQidWPn3sJM6jRQ31LN63ylvV5sGCG7T1pk2puS1KaiX8TYRGay
+         YrYt/wwRzrPNwTdUBIHsbnfq5jP9CKGWeIAmFXijVjJ38BIG8kgYAoDSfZwnb9s+a597
+         PfOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=71NkNHP0R01eMpLBKZ+eul66Yg6+u+oK86rQqAUsTRI=;
-        b=TkD9H/8GWROWjXc9gNkXxgR2EXC7en6go8r0x0Yuf9bbOaK2RaGLn2WTsASs9Ds3Fh
-         OdnGzYfWtNm2Xep36lwlBbsAASqh1yFeOZK5pFU940bdhfu9GoAXsIoRIVAw0m1QGdUd
-         aUgzaQLxXLnVsYSWMfEoW5nhYyAl6ubx+S3FxByDhu53tXpLmBOQfEUXaKmbNcAOU3VO
-         ay686Y9IDEtrwa1lQRwbh6ENrIcQwQ97EElHhEfMdK+OzFwr+6/gWLf+2wUO7IudJMfm
-         /yblXHsi8Vk+VJTySs0fMaXjIjLoqIFnAadoAMseHkUL9v+8vr2fATFNMJmQJ7EnZFjR
-         oJGg==
-X-Gm-Message-State: AOAM530estQS1rMTUCCz24cz+Cj8lR09G6NMp1QJ/FLDCCkJajFYHAL+
-        /TXRD4vte4zpIOA2nrLZNozoPRm7cR65E7ic2pGroH3t
-X-Google-Smtp-Source: ABdhPJycV7BNmRRthSEHTlFtoTdelAi0Gj6AVCUBCe66kU0oQcmdd67QHHwJ6m3H/8GtiHO3kmy+tUfk8HU5vfFg7p4=
-X-Received: by 2002:ac8:76d0:: with SMTP id q16mr17885308qtr.164.1600376504666;
- Thu, 17 Sep 2020 14:01:44 -0700 (PDT)
+        bh=EMb7Fr/Y54WaWzA68Yj/5jSEez+NMiA8A7BnkNxiejw=;
+        b=uUjM2n5Etg9j+vK0zQEE7ypmTAtcaNOCQtPr0/7R1M6TNkBSiC1o6dCru8plJ7xkwk
+         BBOuGAHfCPjF4cdhPm0aMSn+kpX20D+mm8UzmKscmTBqy1fznRDbJPZZNdfU+8ssbjHH
+         Q9QAcp+moMAqx5jVHBNZCydLLWbIjofUhz/1jCDHxnZW9WmvhRY9cYOYi3yXreFbLrWt
+         jgV3PRnUaJw5vSgSc0P1JRBGp16ipGluDY8RMRfVqWig1s7ag2XDJ0pYaQHY436r8jc+
+         ThT+IBzsnkk+DTbHny3bOUNlJHPMssRucWvc2rDmx3zpwxPAU4um5PXPQCSI3FBbelmH
+         Vw6Q==
+X-Gm-Message-State: AOAM531k2OhCuTCVYGWBg0FGgpHymnnfjBg/6RefRDnlMGCv27eUykPq
+        rLcWhE4I4cD8scs4DsH5JeCS1VLDXKX7dAHNdQQJcw==
+X-Google-Smtp-Source: ABdhPJwMditRNWD0I+Geq7gliNOrha1QD/NA6DyNul2IcVhvc+BDjjs4upXJQcpFm5gr21jsGta8d+8iafhxJ1I9EX8=
+X-Received: by 2002:a50:9b44:: with SMTP id a4mr34151198edj.12.1600376605908;
+ Thu, 17 Sep 2020 14:03:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200914135654.55120-1-wanghai38@huawei.com>
-In-Reply-To: <20200914135654.55120-1-wanghai38@huawei.com>
-From:   Richard Weinberger <richard.weinberger@gmail.com>
-Date:   Thu, 17 Sep 2020 23:01:33 +0200
-Message-ID: <CAFLxGvwpspyEQ2PUORZt+aKmcXBrQ2i8q30WwCAq3j6FGd6p4g@mail.gmail.com>
-Subject: Re: [PATCH -next 0/4] ubifs: Fix some kernel-doc warnings for ubifs
-To:     Wang Hai <wanghai38@huawei.com>
-Cc:     Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20200916202951.23760-1-graf@amazon.com> <20200916202951.23760-7-graf@amazon.com>
+In-Reply-To: <20200916202951.23760-7-graf@amazon.com>
+From:   Aaron Lewis <aaronlewis@google.com>
+Date:   Thu, 17 Sep 2020 14:03:14 -0700
+Message-ID: <CAAAPnDH0yCr6299TLWe86U8Z2KV0QhdtHgxFF9Ya5M5F6973uA@mail.gmail.com>
+Subject: Re: [PATCH v7 6/7] KVM: x86: Introduce MSR filtering
+To:     Alexander Graf <graf@amazon.com>
+Cc:     kvm list <kvm@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        KarimAllah Raslan <karahmed@amazon.de>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 4:06 PM Wang Hai <wanghai38@huawei.com> wrote:
->
-> In the ubifs module, there are some kernel-doc warnings,
-> this series of patches can fix these warnings.
->
-> Wang Hai (4):
->   ubifs: Fix 'hash' kernel-doc warning in auth.c
->   ubifs: Fix some kernel-doc warnings in gc.c
->   ubifs: Fix some kernel-doc warnings in replay.c
->   ubifs: Fix some kernel-doc warnings in tnc.c
++4.126 KVM_X86_SET_MSR_FILTER
++----------------------------
++
++:Capability: KVM_X86_SET_MSR_FILTER
++:Architectures: x86
++:Type: vm ioctl
++:Parameters: struct kvm_msr_filter
++:Returns: 0 on success, < 0 on error
++
++::
++
++  struct kvm_msr_filter_range {
++  #define KVM_MSR_FILTER_READ  (1 << 0)
++  #define KVM_MSR_FILTER_WRITE (1 << 1)
++       __u32 flags;
++       __u32 nmsrs; /* number of msrs in bitmap */
++       __u32 base;  /* MSR index the bitmap starts at */
++       __u8 *bitmap; /* a 1 bit allows the operations in flags, 0 denies */
++  };
++
++  struct kvm_msr_filter {
++  #define KVM_MSR_FILTER_DEFAULT_ALLOW (0 << 0)
++  #define KVM_MSR_FILTER_DEFAULT_DENY  (1 << 0)
++       __u32 flags;
++       struct kvm_msr_filter_range ranges[16];
 
-Applied to next, thanks!
+Can we replace 16 with something more meaningful.  Prehaps
+KVM_MSR_FILTER_MAX_RANGES.
 
--- 
-Thanks,
-//richard
++  };
++
++flags values:
++
++KVM_MSR_FILTER_READ
++
++  Filter read accesses to MSRs using the given bitmap. A 0 in the bitmap
++  indicates that a read should immediately fail, while a 1 indicates that
++  a read should be handled like without the filter.
+
+nit: not sure you need 'like without the filter'
+
++
++KVM_MSR_FILTER_WRITE
++
++  Filter write accesses to MSRs using the given bitmap. A 0 in the bitmap
++  indicates that a write should immediately fail, while a 1 indicates that
++  a write should be handled like without the filter.
+
+nit: again, not sure you need 'like without the filter'
+
++
++KVM_MSR_FILTER_READ | KVM_MSR_FILTER_WRITE
++
++  Filter booth read and write accesses to MSRs using the given bitmap. A 0
+
+nit: replace 'booth' for 'both'
+
++  in the bitmap indicates that both reads and writes should immediately fail,
++  while a 1 indicates that reads and writes should be handled like without
++  the filter.
+
+nit: again, not sure you need 'like without the filter'
+
++
++KVM_MSR_FILTER_DEFAULT_ALLOW
++
++  If no filter range matches an MSR index that is getting accessed, KVM will
++  fall back to allowing access to the MSR.
++
++KVM_MSR_FILTER_DEFAULT_DENY
++
++  If no filter range matches an MSR index that is getting accessed, KVM will
++  fall back to rejecting access to the MSR. In this mode, all MSRs that should
++  be processed by KVM need to explicitly be marked as allowed in the bitmaps.
++
++This ioctl allows user space to define a up to 16 bitmaps of MSR ranges to
+
+nit: "define up to" remove 'a'
+
++specify whether a certain MSR access should be explicitly rejected or not.
++
++If this ioctl has never been invoked, MSR accesses are not guarded and the
++old KVM in-kernel emulation behavior is fully preserved.
++
++As soon as the filtering is in place, every MSR access is precessed through
+
+nit: processed
+
++the filtering. If a bit is within one of the defined ranges, read and write
++accesses are guarded by the bitmap's value for the MSR index. If it is not
++defined in any range, whether MSR access is rejected is determined by the flags
++field of in the kvm_msr_filter struct: KVM_MSR_FILTER_DEFAULT_ALLOW and
+
+nit: remove 'of' or 'in'
+
++KVM_MSR_FILTER_DEFAULT_DENY.
++
++Calling this ioctl with an empty set of ranges (all nmsrs == 0) disables MSR
++filtering. In that mode, KVM_MSR_FILTER_DEFAULT_DENY no longer has any effect.
+
+
++struct msr_bitmap_range {
++       u32 flags;
++       u32 nmsrs;
++       u32 base;
++       unsigned long *bitmap;
++};
++
+ enum kvm_irqchip_mode {
+        KVM_IRQCHIP_NONE,
+        KVM_IRQCHIP_KERNEL,       /* created with KVM_CREATE_IRQCHIP */
+@@ -964,6 +972,12 @@ struct kvm_arch {
+        /* Deflect RDMSR and WRMSR to user space when they trigger a #GP */
+        u32 user_space_msr_mask;
+
++       struct {
++               u8 count;
++               bool default_allow:1;
++               struct msr_bitmap_range ranges[16];
+
+Replace 16 with macro
+
++       } msr_filter;
++
+        struct kvm_pmu_event_filter *pmu_event_filter;
+        struct task_struct *nx_lpage_recovery_thread;
+ };
+diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
+index 50650cfd235a..66bba91e1bb8 100644
+--- a/arch/x86/include/uapi/asm/kvm.h
++++ b/arch/x86/include/uapi/asm/kvm.h
+@@ -192,8 +192,25 @@ struct kvm_msr_list {
+        __u32 indices[0];
+ };
+
+-#define KVM_MSR_ALLOW_READ  (1 << 0)
+-#define KVM_MSR_ALLOW_WRITE (1 << 1)
++/* Maximum size of any access bitmap in bytes */
++#define KVM_MSR_FILTER_MAX_BITMAP_SIZE 0x600
+
+Add a macro.  Prehaps, #define KVM_MSR_FILTER_MAX_RANGES 16
+
++
++/* for KVM_X86_SET_MSR_FILTER */
++struct kvm_msr_filter_range {
++#define KVM_MSR_FILTER_READ  (1 << 0)
++#define KVM_MSR_FILTER_WRITE (1 << 1)
++       __u32 flags;
++       __u32 nmsrs; /* number of msrs in bitmap */
++       __u32 base;  /* MSR index the bitmap starts at */
++       __u8 *bitmap; /* a 1 bit allows the operations in flags, 0 denies */
++};
++
++struct kvm_msr_filter {
++#define KVM_MSR_FILTER_DEFAULT_ALLOW (0 << 0)
++#define KVM_MSR_FILTER_DEFAULT_DENY  (1 << 0)
++       __u32 flags;
++       struct kvm_msr_filter_range ranges[16];
+
+Replace 16 with macro
+
++};
+
+ struct kvm_cpuid_entry {
+        __u32 function;
+
+@@ -3603,6 +3639,7 @@ int kvm_vm_ioctl_check_extension(struct kvm
+*kvm, long ext)
+        case KVM_CAP_SET_GUEST_DEBUG:
+        case KVM_CAP_LAST_CPU:
+        case KVM_CAP_X86_USER_SPACE_MSR:
++       case KVM_CAP_X86_MSR_FILTER:
+                r = 1;
+                break;
+        case KVM_CAP_SYNC_REGS:
+@@ -5134,6 +5171,103 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
+        return r;
+ }
+
++static void kvm_clear_msr_filter(struct kvm *kvm)
++{
++       u32 i;
++       u32 count = kvm->arch.msr_filter.count;
++       struct msr_bitmap_range ranges[16];
+
+Replace 16 with macro
+
++
++       mutex_lock(&kvm->lock);
++       kvm->arch.msr_filter.count = 0;
++       memcpy(ranges, kvm->arch.msr_filter.ranges, count * sizeof(ranges[0]));
++       mutex_unlock(&kvm->lock);
++       synchronize_srcu(&kvm->srcu);
++
++       for (i = 0; i < count; i++)
++               kfree(ranges[i].bitmap);
++}
