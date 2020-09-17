@@ -2,153 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C3026DB1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D8526DB82
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:28:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726981AbgIQMJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 08:09:07 -0400
-Received: from mout.gmx.net ([212.227.17.22]:42977 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726605AbgIQMIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 08:08:24 -0400
-X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 08:07:32 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1600344418;
-        bh=24JQ5sxy5SnOel0/HBCrFVsyOI5NmS1/SQy2+UMuASk=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=Tsn7Ag+JDQLQHP3Yw0GyVvjd2Ak07hzc2HG9ouWHP4pe6O3MkIJgyAfjj+vt+4jkH
-         Rj5wCv651IyssEkildCv6XRtEgCcnkhxMgEYrVMTBsV1Bsb+22G+I6c77GTQfikN1v
-         YY+g81M2IDdyRwIP0Lr56Ynx+++NGrrUszsb4M5E=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([5.146.195.151]) by mail.gmx.com (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MHoRK-1kF4f53zks-00EveU; Thu, 17
- Sep 2020 13:58:54 +0200
-Date:   Thu, 17 Sep 2020 13:58:48 +0200
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Andreas Kemnade <andreas@kemnade.info>,
-        Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org,
-        Linux PWM List <linux-pwm@vger.kernel.org>,
-        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
-        <linux-rtc@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>
-Subject: Re: [PATCH v2 04/10] dt-bindings: pwm: Add bindings for PWM function
- in Netronix EC
-Message-ID: <20200917115848.GH3306@latitude>
-References: <20200905133230.1014581-1-j.neuschaefer@gmx.net>
- <20200905133230.1014581-5-j.neuschaefer@gmx.net>
- <20200915005443.GA604385@bogus>
- <20200915082348.2f6fff7a@aktux>
- <CAL_JsqL=gQxiU5uK-AEJtG3daOy83aS_D6G2Jo8_-dzKH70NkQ@mail.gmail.com>
+        id S1726780AbgIQM2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 08:28:49 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:46018 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726799AbgIQM1g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 08:27:36 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08HC0X61059792;
+        Thu, 17 Sep 2020 07:00:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600344033;
+        bh=cdbe+Y1msYZUZho4J9GT8Lb/U6fSW1HOJKJwJCjY6vI=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=pIc5siM+52+t8PtNjdlea3M55mMhBi8bY/ZfeVlMx2O+6BHaCdX42OGD1iGik1SxX
+         JywogSaSFbB54zOoEI0dlGz/bmKnNv5nsIAzYUsu20ASbglz/WmKPAX7NpNgedekkq
+         kbSh0bo+epls6ccKhO+u9ooJU37FwpJLG4ZsUty8=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08HC0Xxg087303;
+        Thu, 17 Sep 2020 07:00:33 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 17
+ Sep 2020 07:00:33 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 17 Sep 2020 07:00:33 -0500
+Received: from [192.168.2.14] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08HC0VnM079871;
+        Thu, 17 Sep 2020 07:00:31 -0500
+Subject: Re: [PATCH v3 1/6] dt-bindings: mux-j7200-wiz: Add lane function
+ defines
+To:     Nishanth Menon <nm@ti.com>, Peter Rosin <peda@axentia.se>
+CC:     <t-kristo@ti.com>, <robh+dt@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <nsekhar@ti.com>,
+        <kishon@ti.com>
+References: <20200915112038.30219-1-rogerq@ti.com>
+ <20200915112038.30219-2-rogerq@ti.com>
+ <e28e98a0-f3fc-29bd-d7a6-cc45f3a69ede@axentia.se>
+ <20200916154536.m552ft2jzfsaeokr@akan>
+From:   Roger Quadros <rogerq@ti.com>
+Message-ID: <08c84d02-abe1-8399-50fb-9268c7130f8a@ti.com>
+Date:   Thu, 17 Sep 2020 15:00:30 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="y9PDtDHaFrXNoMPU"
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqL=gQxiU5uK-AEJtG3daOy83aS_D6G2Jo8_-dzKH70NkQ@mail.gmail.com>
-X-Provags-ID: V03:K1:S3H4EVtrAYZRUhJu6GbZc4OedPCD0Db2PTcKwit2EczWfGIux+C
- fTnPE7kzejg+V1Ln6NYce3Qz27+0vjAlwAKzArlfdi+JOqUrdrGoHbM60fLIEEnAsSIuc7G
- 9G2E8kq7hBv1tPd+NjSvK3XdLv+WdFAf+bTWSsLRNnMvsXH524bMTTDY+239ZCG4urdVZ39
- wq8FHBknn1r/1vALX3caA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:anzz6x+VGXU=:Ap6qLk1j90q8pQl02qYR5i
- RjFjf/5JGBjybFfd3oWBX4AjvHxZkaiqBSwgSFzvXHeN6lv9iEAFILvAMnCCBfFnNBGIm1rGb
- 5HTwKkd8wdg/v27bPLjxGeHJ/OR21IVpwEOXqGspfEeefGXhkCuisAuugrzjpJQBbWcE4sEAF
- Mc+ZN7ZfXfhjrTw/bneDlhCf+TEktmMQDlVeFr/1t6hS3eqLu3cxLqSGfJkCoL02uR37kjrkE
- swXjocwdW0S+du67yhzr/txD9hEXAfYshMa7z1Lc0kPV0wj2nZWxk2qda858lJB7kjfyHWB39
- vsRLlLpGGkPg/qEngb0bSlspKXdngRWztXON3tyGhFdfbwCyhAjTHxrD8aeN8qsyG+jmL4R3M
- Xe+m3sXo5A/lk296Xa04fBbTz03lpFxxONzgywCI1Aw7xw77KAUW234ROsO3/Rz8lyeiInLDP
- GmL0/neEusFOb9m2XFs5asBIFoLwSJ55m7BNBXObZ1y/EAcaYHMRHdMK7O5be3nEp4O2z1sUb
- hjnIcbBb3X3xPo8PPTobND58arzzXyqmq4vQzAvDEJ7YIc9ftLt2OOAQFiRzCYzxfFGBSotzY
- HMD8mIAm2eGBHUvdsPC2qjYg/DZ254sPfRtud2VSPMSP9v6RfY+vW1A6JNyCqKEa6mgHPkdno
- MFKYw3BxuT6cR3vvVDP3iczVuXSPmBEdXSaZpDHZWeMW75AI3L6CdA4GKxHDP8mOEXg8XrP0y
- H7Y1rdjGJ2FakIXZJJZpv2z1nf01Jm6G/SvBg6//kkYSQHZQmLhRdWou9mfpI9cePfVdMDNEm
- ODW6GOKERPX89bqpmnNoyVFn0yl72WPg0VD9orra6Aln05J7t0YEaMGJ02gr8WL0eUZK3lb6q
- iMk25gsbHN42ycJh2CBvfiSS3/5JU+BmQkBK9IrWOV9jB9A+nswjPQuoqI5KnDbBAChoYeqgu
- 5OvDFo8pLOLVEkWqSXPSLzmCl34/mLkmTCpGCXnvJqNBFBUOSe//eySqUb1GKeO+kzYoUamO2
- IfUDzITGZnXjqnZh5Gg3tXh080Rd4noyEOQlkHxNvhEviq5HjHKy5/L+npJ+iQUoORdf212CB
- ubocYvOrvN6dlsEGDdW0IgqFDDa+6klXpr+SJobRvUceAQG80j58f12Aimpqy5h0isf3kQiHg
- WYv8uI3ta1Pse8UxtLcLUu4a7Zwru4YhrWM3BxCI45z/n23SE8KRzxyab0m3u4OzcIjuhY+mD
- nbwgcPGl8dyisQqePhkvJjBmo5ybYwKHc5AGg8g==
+In-Reply-To: <20200916154536.m552ft2jzfsaeokr@akan>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Peter & Nishanth,
 
---y9PDtDHaFrXNoMPU
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 16/09/2020 18:45, Nishanth Menon wrote:
+> On 06:52-20200916, Peter Rosin wrote:
+>> Hi,
+>>
+>> Sorry for the delay.
+>>
+>> On 2020-09-15 13:20, Roger Quadros wrote:
+>>> Each SERDES lane mux can select upto 4 different IPs.
+>>> There are 4 lanes in each J7200 SERDES. Define all
+>>> the possible functions in this file.
+>>>
+>>> Cc: Peter Rosin <peda@axentia.se>
+>>> Signed-off-by: Roger Quadros <rogerq@ti.com>
+>>> ---
+>>>   include/dt-bindings/mux/mux-j7200-wiz.h | 29 +++++++++++++++++++++++++
+>>>   1 file changed, 29 insertions(+)
+>>>   create mode 100644 include/dt-bindings/mux/mux-j7200-wiz.h
+>>>
+>>> diff --git a/include/dt-bindings/mux/mux-j7200-wiz.h b/include/dt-bindings/mux/mux-j7200-wiz.h
+>>> new file mode 100644
+>>> index 000000000000..b091b1185a36
+>>> --- /dev/null
+>>> +++ b/include/dt-bindings/mux/mux-j7200-wiz.h
+>>> @@ -0,0 +1,29 @@
+>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>> +/*
+>>> + * This header provides constants for J7200 WIZ.
+>>> + */
+>>> +
+>>> +#ifndef _DT_BINDINGS_J7200_WIZ
+>>> +#define _DT_BINDINGS_J7200_WIZ
+>>> +
+>>> +#define SERDES0_LANE0_QSGMII_LANE3	0x0
+>>> +#define SERDES0_LANE0_PCIE1_LANE0	0x1
+>>> +#define SERDES0_LANE0_IP3_UNUSED	0x2
+>>> +#define SERDES0_LANE0_IP4_UNUSED	0x3
+>>> +
+>>> +#define SERDES0_LANE1_QSGMII_LANE4	0x0
+>>> +#define SERDES0_LANE1_PCIE1_LANE1	0x1
+>>> +#define SERDES0_LANE1_IP3_UNUSED	0x2
+>>> +#define SERDES0_LANE1_IP4_UNUSED	0x3
+>>> +
+>>> +#define SERDES0_LANE2_QSGMII_LANE1	0x0
+>>> +#define SERDES0_LANE2_PCIE1_LANE2	0x1
+>>> +#define SERDES0_LANE2_IP3_UNUSED	0x2
+>>> +#define SERDES0_LANE2_IP4_UNUSED	0x3
+>>> +
+>>> +#define SERDES0_LANE3_QSGMII_LANE2	0x0
+>>> +#define SERDES0_LANE3_PCIE1_LANE3	0x1
+>>> +#define SERDES0_LANE3_USB		0x2
+>>> +#define SERDES0_LANE3_IP4_UNUSED	0x3
+>>> +
+>>> +#endif /* _DT_BINDINGS_J7200_WIZ */
+>>
+>> Should not the defines start with J7200_WIZ? SERDES0 seems like a too
+>> generic prefix, at least to me.
+> 
+> Thanks, good point. I am not sure if WIZ should even be used.. It is
+> a TI internal prefix for various serdes solutions, but I agree that
+> SERDES0 is too generic a terminology. That said, we should cleanup
+> include/dt-bindings/mux/mux-j721e-wiz.h as well, prior to introducing
+> j7200 changes.
+> 
 
-On Tue, Sep 15, 2020 at 08:31:55AM -0600, Rob Herring wrote:
-> On Tue, Sep 15, 2020 at 12:24 AM Andreas Kemnade <andreas@kemnade.info> w=
-rote:
-> > On Mon, 14 Sep 2020 18:54:43 -0600 Rob Herring <robh@kernel.org> wrote:
-[...]
-> > > Just move this to the parent and make the parent a pwm provider. Ther=
-e's
-> > > no need for child nodes for this or the rtc.
-> > >
-> > hmm, there are apparently devices without rtc. If there is a child node
-> > for the rtc, the corresponding devicetrees could disable rtc by not
-> > having that node.
-> > But maybe using the controller version is also feasible for that task.
->=20
-> If not probeable, then the compatible string should distinguish that.
+I'm planning to put all TI SERDES definitions in one header file "ti-serdes-mux.h"
+and add SOC specific prefixes to the macros.
 
-Okay.
+This will mean some churn in the existing DT files. (only 2 so far)
 
-It's even simpler in some cases: The firmware version reported by the EC
-should tell us if it's one that is known to have no RTC.
+Are you guys OK if I do the change in one patch to avoid a broken build in between.
+You guys can then decide whose tree it goes through.
 
-That said, I don't have a good overview of the different variants of
-this device.
+The new SoC addition will be separate of course.
 
-
-Thanks,
-Jonathan Neusch=C3=A4fer
-
---y9PDtDHaFrXNoMPU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAl9jT3EACgkQCDBEmo7z
-X9vUoxAAkyn46+EvI774tTF2xzkOECPy08b3dfWCKmdc1jT0+XgT9cP5TeB1mEE0
-tX+cVVE9+yTFYno3cT8NwFY134Qzusin/+xBWUP07weUIt+ov6X3mFWjAV20ye9+
-8+UcnwaLEXDXCbrt5hG+eexwlXVQuxjiHdjIdiRL7FyRfbedLGG9q2LQWUWom3Sm
-Y3jGhzeEt60nIZTZ5iFcPT8P87tpT65YArmuO11ryUEoodzgO2mYsGR1ovZcN8vN
-DvEvDWuWxnPwNY5AAsFCyF2vzgif9aWwixCKskED8L33IC6HscmusmaEQNF1XpRk
-/khi5dhGqpsuSP9BkMC9HTPwVxmKZBX7BM7MpQYvQiAQCgKbqUPXiRYdHRNjCPCl
-OQg0/7FBlq7hVeZQeM92eEqiHaxtq7MjLpctM19vBwMlkJ4bX82qzsC/E7RtRyNu
-Il9eY7xG61gcyCLV0na7C+Cnwfva6u951d2pUI8N4KH/GsEbDY7FZiD07qBKv1Ur
-BAbDSOGryF/aRL/AJ1FyZrm9VxSSxoEkHeeTsuEn7OhhrRff4FCb/jfLZLnMv3KK
-tDCic9mPL1nsiOHU32qmzYkfpQRpVEBCN2/SwDNtqfl82TLA+6bLtPnWsXcCWWdi
-BTWzBgu+dvJa46LUBFKjRVliAHA/t9hyD7Vd0pZXt21rAoDXSmM=
-=YAep
------END PGP SIGNATURE-----
-
---y9PDtDHaFrXNoMPU--
+cheers,
+-roger
+-- 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
