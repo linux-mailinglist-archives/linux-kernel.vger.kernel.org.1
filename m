@@ -2,91 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 591FF26D56C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:58:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54DA026D576
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 09:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbgIQH6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 03:58:18 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:55489 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726196AbgIQH6I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 03:58:08 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BsTpz0LtWz9sTS;
-        Thu, 17 Sep 2020 17:58:03 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600329483;
-        bh=EPn/KIsEWg4qP+mChd9xQIyx9odP5Kr6Q7ENForP53o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NfRf3TJedGCwAsuVwPNV3NV986bOtiVKMfpnWTOqEvoSrtxLhL0qR09FlzLjGvs3G
-         zgUPnFA2TDYggXYmwx5mfw9U1EB3SIruFt+vJwsHkvLCv4JSGwCjSUrtl3VjmdzJRI
-         0Oiq1Iwl2gKrWLo686yCkifJ2cS3Z+7DffwKLNSYpCdk/LMQnfYoqptOBEvC/QzPkP
-         Tg8Nt71YlB2g7j9ZZNAquXoKcluhTXbyOPLdAf5CYQuKeHsEWXWZdR+Am+jjIDuMew
-         pP/78XbepgvagA1q6iZqsG4uZ5dskOyuI/UpB6XcvCIZVNCubcXiE0O8rIQnP1E7zp
-         6F+ho5OkwdJ+w==
-Date:   Thu, 17 Sep 2020 17:58:00 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <seanpaul@chromium.org>
-Cc:     Jonathan Marek <jonathan@marek.ca>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the drm-msm tree
-Message-ID: <20200917175800.7a55e4fb@canb.auug.org.au>
-In-Reply-To: <20200914121022.2c5c494a@canb.auug.org.au>
-References: <20200914121022.2c5c494a@canb.auug.org.au>
+        id S1726299AbgIQH7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 03:59:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726191AbgIQH7Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 03:59:25 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63375C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 00:59:25 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id d4so1001473wmd.5
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 00:59:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=o9pR7FK+JGoERdb0Ak9FECdQMuRJrYsyh3lgs4kFEwQ=;
+        b=MPL4ax1SFCVhCQXNZ+Ha0xfJQbr9rJo7lwNYbfSI5tHuUDUWkjIfUKBOpQG43D6n/n
+         FTlO+xC+hXTt010btWXgWLdlxelIeZtC21jWFar+z+83KCo0mepJEWxf/ReYS/dQDx6Y
+         KCWzPCJ7YK+kTZ5K2OoNmp/SD7rIC67kuetU9tQxsswe7RWhRRCGRhKKdf9YHNkb9P54
+         yDrj9zZ7CVqqiG0kNJeb6FpmswiC1blbOcloYm1T/T//rJWS0ung+s9Fx2X5rzbRGL/n
+         OJgFJjZZ51BK1Twn7baV28XqiiiGS8GoNJqsRSnm/GpxPYi+NLwEWRn7nGLC9M8+yjKd
+         j7+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o9pR7FK+JGoERdb0Ak9FECdQMuRJrYsyh3lgs4kFEwQ=;
+        b=HHG87xwaX54Uu6NV+F0zXSTC7olAr8IuPiT2EYc/gLugor/8gl2xjVqAjOPJWCCYvf
+         nZEzw7NlkU55aUdBwEhXnXVN1OAbNP/eZAorqD5fgxF28RJhW5GsDDaKjXdwLzihwC2z
+         n3aLTxmF0CRk+0wERurj3jnveorenHUauqxrx06zUL3lUeDqz9CJZx8TkHZU7gXLxk2I
+         df8y0laLYaXX7YKK96AKVGViAERH+6/iKi5Ofd3REdbSin293bUXDZRBHTF4abZKENA7
+         k2fkaJ/0+A+K7y7KqQ6YcT9FtacZDJ2cQm7aNWcRqX7ntMbBqFSMx29Zg9AJh7YOSz7g
+         bUVg==
+X-Gm-Message-State: AOAM533KCTBuSwkwxIUeut8o97Dw6byXfUI5fhRH7Q/AcP0dzeF/aVGN
+        rpkkW6qtIrIAtrGqi/fl3Il9b0Qy3K2hL3v30jnxUQ==
+X-Google-Smtp-Source: ABdhPJy64KlmX4N12OxqX23EP5E04YYy4MNUIXKmL/3zu7BPBVj4Ub21t3SB9b5bJIyYHJCiiwGiKVIn/Ld42eCnLog=
+X-Received: by 2002:a7b:c0c5:: with SMTP id s5mr8505787wmh.152.1600329563988;
+ Thu, 17 Sep 2020 00:59:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/rFJhFWUqe0ohZy1McHleVwY";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <1600327549-3995-1-git-send-email-liush@allwinnertech.com>
+In-Reply-To: <1600327549-3995-1-git-send-email-liush@allwinnertech.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Thu, 17 Sep 2020 13:29:12 +0530
+Message-ID: <CAAhSdy1kn5K3aH3-LP9zy2R-Xq0ha9RqjBnBd8y9xZkCEn0rsg@mail.gmail.com>
+Subject: Re: [PATCH] riscv: fix pfn_to_virt err in do_page_fault().
+To:     liush <liush@allwinnertech.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrew Morton <akpm@linux-foundation.org>, peterx@redhat.com,
+        walken@google.com, daniel.m.jordan@oracle.com, vbabka@suse.cz,
+        Mike Rapoport <rppt@kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/rFJhFWUqe0ohZy1McHleVwY
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-On Mon, 14 Sep 2020 12:10:22 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
+On Thu, Sep 17, 2020 at 12:56 PM liush <liush@allwinnertech.com> wrote:
 >
-> After merging the drm-msm tree, today's linux-next build (arm
-> multi_v7_defconfig) produced this warning:
->=20
-> drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c: In function 'msm_dsi_pll_7nm_i=
-nit':
-> drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c:882:19: warning: conversion fro=
-m 'long long unsigned int' to 'long unsigned int' changes value from '50000=
-00000' to '705032704' [-Woverflow]
->   882 |   pll->max_rate =3D 5000000000UL;
->       |                   ^~~~~~~~~~~~
->=20
-> Introduced by commit
->=20
->   1ef7c99d145c ("drm/msm/dsi: add support for 7nm DSI PHY/PLL")
+> The argument to pfn_to_virt() should be pfn not the value of CSR_SATP.
+>
+> Signed-off-by: liush <liush@allwinnertech.com>
+> ---
+>  arch/riscv/mm/fault.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/riscv/mm/fault.c b/arch/riscv/mm/fault.c
+> index 716d64e..9b4e088 100644
+> --- a/arch/riscv/mm/fault.c
+> +++ b/arch/riscv/mm/fault.c
+> @@ -212,7 +212,7 @@ asmlinkage void do_page_fault(struct pt_regs *regs)
+>                  * of a task switch.
+>                  */
+>                 index = pgd_index(addr);
+> -               pgd = (pgd_t *)pfn_to_virt(csr_read(CSR_SATP)) + index;
+> +               pgd = (pgd_t *)pfn_to_virt(csr_read(CSR_SATP) & SATP_PPN) + index;
+>                 pgd_k = init_mm.pgd + index;
+>
+>                 if (!pgd_present(*pgd_k))
+> --
+> 2.7.4
+>
 
-I am still getting this warning.
---=20
-Cheers,
-Stephen Rothwell
+Looks good to me.
 
---Sig_/rFJhFWUqe0ohZy1McHleVwY
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Reviewed-by: Anup Patel <anup@brainfault.org>
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9jFwgACgkQAVBC80lX
-0Gyx8wf8DDIt3TppVeZWpG8t7e0f9t+UkOcrzJMcgwlpHf7jNowlP2qaZe1D2qlv
-efLdmGI+XP8A9AL53dbEOSxY0NRDTBJBhwrEC5KcyieiHopGYaqUl+miE7K5rOx0
-cuJWuGPt2SBJ88pkDmAKp41sxctnOSpNJukhz656P+rufUqIhDC1JZa9jIWyOYAY
-KXurNu1+leiH/h3sxHayZIdFWvw6TBClwxUt1Al3Ml7p1xYj3LucCUTD926uj1nS
-1XkFAobJcMkaEMtuVSiaGsvAD0QgcqLki0qmhapQPWsKr5UJHzx9XhVQE/sRBzVK
-brYZYmkdbUwv4JnfWdTBQ8qZtj9Y8Q==
-=+3l+
------END PGP SIGNATURE-----
-
---Sig_/rFJhFWUqe0ohZy1McHleVwY--
+Regards,
+Anup
