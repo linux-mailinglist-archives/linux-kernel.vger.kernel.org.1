@@ -2,215 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5E426E450
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:44:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C356F26E455
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726422AbgIQSo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 14:44:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726403AbgIQSnm (ORCPT
+        id S1726409AbgIQSpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 14:45:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24084 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726461AbgIQSoq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 14:43:42 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82AF8C06174A;
-        Thu, 17 Sep 2020 11:43:30 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: nicolas)
-        with ESMTPSA id D21B229C5B9
-Message-ID: <72b35424372f4e3b73d82c84637672b7b39353e8.camel@collabora.com>
-Subject: Re: [PATCH] media: cedrus: Propagate OUTPUT resolution to CAPTURE
-From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
-Reply-To: Nicolas Dufresne <nicolas.dufresne@collabora.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     kernel@collabora.com, Maxime Ripard <mripard@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Chen-Yu Tsai <wens@csie.org>, linux-media@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 17 Sep 2020 14:43:19 -0400
-In-Reply-To: <b868e559-25e0-7381-67f4-d3a6f7c0e2ed@xs4all.nl>
-References: <20200514153903.341287-1-nicolas.dufresne@collabora.com>
-         <b868e559-25e0-7381-67f4-d3a6f7c0e2ed@xs4all.nl>
-Organization: Collabora
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
-        boundary="=-T5ZSHFf8CWwJEBgVkOmc"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        Thu, 17 Sep 2020 14:44:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600368283;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=dZv9dt2ed12j3IyCoFGh5jr70B/K0OY49garRCUq3u0=;
+        b=Z36AKp1dqYeaC4qcRl274+A5RD3J1m/UhpMOYM7nc/oS7sgdSPTCgXiqTFf80k+A84LGyU
+        EPWxMjFChJjfsXDcv0CRTiiokUaziPseM533apRu3Vh+9Mk0EYYOQFmL4rfw8BeM+Fpbg6
+        IUUUnr4lxrq3Rv86j3bJdrmVWLjEr6E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-221-AHZEaX63PWSWj8WezI2lUQ-1; Thu, 17 Sep 2020 14:43:32 -0400
+X-MC-Unique: AHZEaX63PWSWj8WezI2lUQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B5F88107465C;
+        Thu, 17 Sep 2020 18:43:28 +0000 (UTC)
+Received: from [10.10.112.95] (ovpn-112-95.rdu2.redhat.com [10.10.112.95])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1759855761;
+        Thu, 17 Sep 2020 18:43:26 +0000 (UTC)
+Subject: Re: [RFC][Patch v1 1/3] sched/isolation: API to get num of
+ hosekeeping CPUs
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pci@vger.kernel.org, frederic@kernel.org,
+        mtosatti@redhat.com, sassmann@redhat.com,
+        jeffrey.t.kirsher@intel.com, jacob.e.keller@intel.com,
+        jlelli@redhat.com, hch@infradead.org, bhelgaas@google.com,
+        mike.marciniszyn@intel.com, dennis.dalessandro@intel.com,
+        thomas.lendacky@amd.com, jerinj@marvell.com,
+        mathias.nyman@intel.com, jiri@nvidia.com,
+        "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
+References: <20200909150818.313699-1-nitesh@redhat.com>
+ <20200909150818.313699-2-nitesh@redhat.com>
+ <20200917111807.00002eac@intel.com>
+From:   Nitesh Narayan Lal <nitesh@redhat.com>
+Autocrypt: addr=nitesh@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ VujM7c/b4pps
+Organization: Red Hat Inc,
+Message-ID: <801be69a-0881-aa84-16fb-4b5782d95860@redhat.com>
+Date:   Thu, 17 Sep 2020 14:43:24 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
+In-Reply-To: <20200917111807.00002eac@intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=nitesh@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="sykWZyGOxPzNSXIvsAWNzG6mWTo7RX3SY"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--sykWZyGOxPzNSXIvsAWNzG6mWTo7RX3SY
+Content-Type: multipart/mixed; boundary="BkC94I1bakvFQJfqXdJVK6b9RIlJxfRoY"
 
---=-T5ZSHFf8CWwJEBgVkOmc
-Content-Type: text/plain; charset="UTF-8"
+--BkC94I1bakvFQJfqXdJVK6b9RIlJxfRoY
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
 
-Le jeudi 17 septembre 2020 =C3=A0 12:39 +0200, Hans Verkuil a =C3=A9crit :
-> On 14/05/2020 17:39, Nicolas Dufresne wrote:
-> > As per spec, the CAPTURE resolution should be automatically set based o=
-n
-> > the OTUPUT resolution. This patch properly propagate width/height to th=
+
+On 9/17/20 2:18 PM, Jesse Brandeburg wrote:
+> Nitesh Narayan Lal wrote:
+>
+>> Introduce a new API num_housekeeping_cpus(), that can be used to retriev=
 e
-> > capture when the OUTPUT format is set and override the user provided
-> > width/height with configured OUTPUT resolution when the CAPTURE fmt is
-> > updated.
-> >=20
-> > This also prevents userspace from selecting a CAPTURE resolution that i=
+>> the number of housekeeping CPUs by reading an atomic variable
+>> __num_housekeeping_cpus. This variable is set from housekeeping_setup().
+>>
+>> This API is introduced for the purpose of drivers that were previously
+>> relying only on num_online_cpus() to determine the number of MSIX vector=
 s
-> > too small, avoiding unwanted page faults.
-> >=20
-> > Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
-> > ---
-> >  drivers/staging/media/sunxi/cedrus/cedrus_video.c | 7 ++++++-
-> >  1 file changed, 6 insertions(+), 1 deletion(-)
-> >=20
-> > diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_video.c b/driver=
-s/staging/media/sunxi/cedrus/cedrus_video.c
-> > index 16d82309e7b6..a6d6b15adc2e 100644
-> > --- a/drivers/staging/media/sunxi/cedrus/cedrus_video.c
-> > +++ b/drivers/staging/media/sunxi/cedrus/cedrus_video.c
-> > @@ -247,6 +247,8 @@ static int cedrus_try_fmt_vid_cap(struct file *file=
-, void *priv,
-> >  		return -EINVAL;
-> > =20
-> >  	pix_fmt->pixelformat =3D fmt->pixelformat;
-> > +	pix_fmt->width =3D ctx->src_fmt.width;
-> > +	pix_fmt->height =3D ctx->src_fmt.height;
-> >  	cedrus_prepare_format(pix_fmt);
-> > =20
-> >  	return 0;
-> > @@ -319,11 +321,14 @@ static int cedrus_s_fmt_vid_out(struct file *file=
-, void *priv,
-> >  		break;
-> >  	}
-> > =20
-> > -	/* Propagate colorspace information to capture. */
-> > +	/* Propagate format information to capture. */
-> >  	ctx->dst_fmt.colorspace =3D f->fmt.pix.colorspace;
-> >  	ctx->dst_fmt.xfer_func =3D f->fmt.pix.xfer_func;
-> >  	ctx->dst_fmt.ycbcr_enc =3D f->fmt.pix.ycbcr_enc;
-> >  	ctx->dst_fmt.quantization =3D f->fmt.pix.quantization;
-> > +	ctx->dst_fmt.width =3D ctx->src_fmt.width;
-> > +	ctx->dst_fmt.height =3D ctx->src_fmt.height;
->=20
-> You can only do this if the capture queue isn't busy.
->=20
-> See also hantro_reset_raw_fmt() where it does that check.
->=20
-> So this needs a v2.
+>> to create. In an RT environment with large isolated but a fewer
+>> housekeeping CPUs this was leading to a situation where an attempt to
+>> move all of the vectors corresponding to isolated CPUs to housekeeping
+>> CPUs was failing due to per CPU vector limit.
+>>
+>> If there are no isolated CPUs specified then the API returns the number
+>> of all online CPUs.
+>>
+>> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
+>> ---
+>>  include/linux/sched/isolation.h |  7 +++++++
+>>  kernel/sched/isolation.c        | 23 +++++++++++++++++++++++
+>>  2 files changed, 30 insertions(+)
+> I'm not a scheduler expert, but a couple comments follow.
+>
+>> diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isola=
+tion.h
+>> index cc9f393e2a70..94c25d956d8a 100644
+>> --- a/include/linux/sched/isolation.h
+>> +++ b/include/linux/sched/isolation.h
+>> @@ -25,6 +25,7 @@ extern bool housekeeping_enabled(enum hk_flags flags);
+>>  extern void housekeeping_affine(struct task_struct *t, enum hk_flags fl=
+ags);
+>>  extern bool housekeeping_test_cpu(int cpu, enum hk_flags flags);
+>>  extern void __init housekeeping_init(void);
+>> +extern unsigned int num_housekeeping_cpus(void);
+>> =20
+>>  #else
+>> =20
+>> @@ -46,6 +47,12 @@ static inline bool housekeeping_enabled(enum hk_flags=
+ flags)
+>>  static inline void housekeeping_affine(struct task_struct *t,
+>>  =09=09=09=09       enum hk_flags flags) { }
+>>  static inline void housekeeping_init(void) { }
+>> +
+>> +static unsigned int num_housekeeping_cpus(void)
+>> +{
+>> +=09return num_online_cpus();
+>> +}
+>> +
+>>  #endif /* CONFIG_CPU_ISOLATION */
+>> =20
+>>  static inline bool housekeeping_cpu(int cpu, enum hk_flags flags)
+>> diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
+>> index 5a6ea03f9882..7024298390b7 100644
+>> --- a/kernel/sched/isolation.c
+>> +++ b/kernel/sched/isolation.c
+>> @@ -13,6 +13,7 @@ DEFINE_STATIC_KEY_FALSE(housekeeping_overridden);
+>>  EXPORT_SYMBOL_GPL(housekeeping_overridden);
+>>  static cpumask_var_t housekeeping_mask;
+>>  static unsigned int housekeeping_flags;
+>> +static atomic_t __num_housekeeping_cpus __read_mostly;
+>> =20
+>>  bool housekeeping_enabled(enum hk_flags flags)
+>>  {
+>> @@ -20,6 +21,27 @@ bool housekeeping_enabled(enum hk_flags flags)
+>>  }
+>>  EXPORT_SYMBOL_GPL(housekeeping_enabled);
+>> =20
+>> +/*
+> use correct kdoc style, and you get free documentation from your source
+> (you're so close!)
+>
+> should be (note the first line and the function title line change to
+> remove parens:
+> /**
+>  * num_housekeeping_cpus - Read the number of housekeeping CPUs.
+>  *
+>  * This function returns the number of available housekeeping CPUs
+>  * based on __num_housekeeping_cpus which is of type atomic_t
+>  * and is initialized at the time of the housekeeping setup.
+>  */
 
-I missed this reply, wasn't expecting a negative third review. I'll
-copy and paste from there. So basically:
+My bad, I missed that.
+Thanks for pointing it out.
 
- - EBUSY if peer vq is busy
- - EBUSY if pixel format is changed while vq is busy
- - EBUSY if streaming
+>
+>> + * num_housekeeping_cpus() - Read the number of housekeeping CPUs.
+>> + *
+>> + * This function returns the number of available housekeeping CPUs
+>> + * based on __num_housekeeping_cpus which is of type atomic_t
+>> + * and is initialized at the time of the housekeeping setup.
+>> + */
+>> +unsigned int num_housekeeping_cpus(void)
+>> +{
+>> +=09unsigned int cpus;
+>> +
+>> +=09if (static_branch_unlikely(&housekeeping_overridden)) {
+>> +=09=09cpus =3D atomic_read(&__num_housekeeping_cpus);
+>> +=09=09/* We should always have at least one housekeeping CPU */
+>> +=09=09BUG_ON(!cpus);
+> you need to crash the kernel because of this? maybe a WARN_ON? How did
+> the global even get set to the bad value? It's going to blame the poor
+> caller for this in the trace, but the caller likely had nothing to do
+> with setting the value incorrectly!
 
-Obviously, I don't have userspace to exercise any of these cases, but
-it seems to make sense. I remembered about this patch today as someone
-reported the kernel crash we get without this patch:
+Yes, ideally this should not be triggered, but if somehow it does then we h=
+ave
+a bug and that needs to be fixed. That's probably the only reason why I cho=
+se
+BUG_ON.
+But, I am not entirely against the usage of WARN_ON either, because we get =
+a
+stack trace anyways.
+I will see if anyone else has any other concerns on this patch and then I c=
+an
+post the next version.
 
----
-
-I tried testing cedrus with gstreamer 0.18 and it managed to crash the
-kernel on
-A64. I used:
-
-  gst-launch-1.0 filesrc location=3Dtest.mkv ! matroskademux ! queue !
-h264parse ! v4l2slh264dec ! filesink location=3Daaa.dat
-
-Unable to handle kernel paging request at virtual address
-8080808080808088
-Mem abort info:
-  ESR =3D 0x96000044
-  EC =3D 0x25: DABT (current EL), IL =3D 32 bits
-  SET =3D 0, FnV =3D 0
-  EA =3D 0, S1PTW =3D 0
-Data abort info:
-  ISV =3D 0, ISS =3D 0x00000044
-  CM =3D 0, WnR =3D 1
-[8080808080808088] address between user and kernel address ranges
-Internal error: Oops: 96000044 [#1] SMP
-Modules linked in: modem_power hci_uart btrtl bluetooth ecdh_generic
-ecc sunxi_cedrus(C) sun8i_ce crypto_engine snd_soc_bt_sco
-snd_soc_simple_card snd_soc_simple_card_utils snd_soc_simple_amplifier
-sun50i_codec_analog sun8i_codec sun8i_adda_pr_regmap snd_soc_ec25
-sun4i_i2s snd_soc_core snd_pcm_dmaengine snd_pcm snd_timer snd
-soundcore stk3310 inv_mpu6050_i2c inv_mpu6050 st_magn_i2c
-st_sensors_i2c st_magn st_sensors industrialio_triggered_buffer
-kfifo_buf regmap_i2c option usb_wwan usbserial anx7688 ohci_platform
-ohci_hcd ehci_platform ehci_hcd g_cdc usb_f_acm u_serial usb_f_ecm
-u_ether libcomposite sunxi phy_generic musb_hdrc udc_core usbcore
-sun8i_rotate v4l2_mem2mem gc2145 ov5640 sun6i_csi videobuf2_dma_contig
-v4l2_fwnode videobuf2_memops videobuf2_v4l2 videobuf2_common videodev
-mc 8723cs(C) cfg80211 rfkill lima gpu_sched goodix
-CPU: 0 PID: 0 Comm: swapper/0 Tainted: G         C        5.9.0-rc5-
-00386-g4fe2ef82bd0b #62
-Hardware name: Pine64 PinePhone (1.2) (DT)
-pstate: 80000085 (Nzcv daIf -PAN -UAO BTYPE=3D--)
-pc : v4l2_m2m_buf_remove+0x44/0x90 [v4l2_mem2mem]
-lr : v4l2_m2m_buf_remove+0x18/0x90 [v4l2_mem2mem]
-sp : ffffffc010c8be20
-x29: ffffffc010c8be20 x28: ffffffc010bb2fc0=20
-x27: 0000000000000060 x26: ffffffc010935e58=20
-x25: ffffffc010c06a5a x24: 0000000000000080=20
-x23: 0000000000000005 x22: ffffffc010c8bf4c=20
-x21: ffffff806ba0d088 x20: ffffff80687d1800=20
-x19: ffffff8066c40298 x18: 0000000000000000=20
-x17: 0000000000000000 x16: 0000000000000000=20
-x15: 000001b66678fd80 x14: 0000000000000204=20
-x13: 0000000000000001 x12: 0000000000000040=20
-x11: ffffff806f0c0248 x10: ffffff806f0c024a=20
-x9 : ffffffc010bbdac8 x8 : ffffff806f000270=20
-x7 : 0000000000000000 x6 : dead000000000100=20
-x5 : dead000000000122 x4 : 0000000000000000=20
-x3 : 8080808080808080 x2 : 8080808080808080=20
-x1 : ffffff80641327a8 x0 : 0000000000000080=20
-Call trace:
- v4l2_m2m_buf_remove+0x44/0x90 [v4l2_mem2mem]
- v4l2_m2m_buf_done_and_job_finish+0x34/0x140 [v4l2_mem2mem]
- cedrus_irq+0x8c/0xc0 [sunxi_cedrus]
- __handle_irq_event_percpu+0x54/0x150
- handle_irq_event+0x4c/0xec
- handle_fasteoi_irq+0xbc/0x1c0
- __handle_domain_irq+0x78/0xdc
- gic_handle_irq+0x50/0xa0
- el1_irq+0xb8/0x140
- arch_cpu_idle+0x10/0x14
- cpu_startup_entry+0x24/0x60
- rest_init+0xb0/0xbc
- arch_call_rest_init+0xc/0x14
- start_kernel+0x690/0x6b0
-Code: f2fbd5a6 f2fbd5a5 52800004 a9400823 (f9000462)=20
----[ end trace 88233b9a76cdb261 ]---
-Kernel panic - not syncing: Fatal exception in interrupt
+>
+>> +=09=09return cpus;
+>> +=09}
+>> +=09return num_online_cpus();
+>> +}
+>> +EXPORT_SYMBOL_GPL(num_housekeeping_cpus);
+--=20
+Thanks
+Nitesh
 
 
->=20
-> Regards,
->=20
-> 	Hans
->=20
-> > +	cedrus_prepare_format(&ctx->dst_fmt);
-> > =20
-> >  	return 0;
-> >  }
-> >=20
+--BkC94I1bakvFQJfqXdJVK6b9RIlJxfRoY--
 
---=-T5ZSHFf8CWwJEBgVkOmc
+--sykWZyGOxPzNSXIvsAWNzG6mWTo7RX3SY
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iF0EABECAB0WIQSScpfJiL+hb5vvd45xUwItrAaoHAUCX2OuRwAKCRBxUwItrAao
-HORwAKDS1aEYXGxWBg34aSw2nH9rISBBzACffPFBNUnc77SBAay4jgSCE7244uY=
-=eI5v
+iQIzBAEBCAAdFiEEkXcoRVGaqvbHPuAGo4ZA3AYyozkFAl9jrkwACgkQo4ZA3AYy
+oznAWQ/+LNkoBk/opDhpsa3BUvZBuRu+Mp2kh8m0YneZxK9li3b9N6fM5GJBplXR
+d380EKHI1vG7kNtpAezeAzqHNZdP0o6Ot2cdjRq63Czg+VL2j/BHmNxyUAZtJBtL
+owamuPgrp5E4TQGr8en6KpdI0PnrzqFN+ZkwEOx4LzOr1xaTssYwLhN0bhrle0jm
+uiImRTTxmmM2HhTKne4l3d9qzoS4ty79sbv/Tm6Gb/zIOQ5OXKlZKK7F6OWKk6iD
+0zVSPUERIoLJcsSUah4qxc6OCdE5z2jyuex1YcXLyVpHc7g0GilIqS7FjdkvS8ja
+tD9HJYivZvkFSukXpTn3DtlRdKIU6Bd16NdSsbx1WYCkf1IHhKDk66vpIo0MJNm/
+Q/9fpXQvZxam6heCt2/q4iy3PeGzdeGYng6GeyfrBT+YafZIIbBwH/jFm9wBzaXa
+4z1K3Pdx9Hr4ie+/XtaUoPXE/bT5QiJf4HAWlxDg3jrgj2UCpJhR9tWDYOYA29bR
+cz11jmYhWZyiStM179jEh3gnesOCL8T1aLGqxaMrLnZq/JdxAT+xK10VBy9j4Fiu
+Cr3JGvPZYGRriLMZXVR9/qiJbNVqEfgVAsasbE8VLsLjIgCggzuRUyj3OeUAJB4S
+uffEQdi3B1u31+2GH2yXdIv4yq0X6rtPnfTxEv1ti2Xbor4U8yc=
+=wCvB
 -----END PGP SIGNATURE-----
 
---=-T5ZSHFf8CWwJEBgVkOmc--
+--sykWZyGOxPzNSXIvsAWNzG6mWTo7RX3SY--
 
