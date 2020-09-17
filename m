@@ -2,96 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F5E226D5AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B8626D5B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:07:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726479AbgIQIHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 04:07:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726350AbgIQIGf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 04:06:35 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F38C061788
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 01:06:19 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id lo4so1961897ejb.8
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 01:06:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y5BAoQ8Ga3wPT4OqKnKaprIGJrT/HusINmypTex/K/Y=;
-        b=fykaRfQxvrMFJBznzJC/4DXMvQdeEBXRCs0ipScrz7+TPQLj/PDg3NN+YFiRbyaU7B
-         VJO+L2D9In6sycTN85X+zrnOPiWVZ33kF9HGFGbrlfbnwBg0dIdBOWuC8cNxDwuihD+J
-         P4nRreyyL/zIRM0SJn02HVctVDiqEtYYyR9aenjUWScNfPljCalUFsOnwBCrcCH5quHp
-         avU/HWv8vqjAsxTfDotKNqdqFIskXaAuxTC27+MdJAUeOCqeE5k1UsIomEze3gkAj2b5
-         JGnjXp1o5yfQLIp4yFsLPzI+JNF8wTuvjEWgyYgf0V53kg0zkpIL/tM6lSUzO6kwWews
-         MoMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y5BAoQ8Ga3wPT4OqKnKaprIGJrT/HusINmypTex/K/Y=;
-        b=jXdyj3cQtYy9e9POW2fPWrhkcs24Qw0Xrh5kepThyJ2gu2Lk/TWiBszx1cJbRPw1OG
-         zB7nO3xW6429cw9junZp4NSAlXbbkLs7mIlBXNe8E1FgGtDLqYyngRxLYgYir4F/Uo84
-         EzkxcOBegFiF73WYHcLksOQC0XzP9JrfPDvUk8fjGZYfHzwh8yI/epNkBYlC7NH78EQL
-         QE5utrkUvUy8Yt2KE88NgiE+rUybE+/0kF0ipYQvZRT+Q8ejVoLYQZLGRmwz2m7Hm2lo
-         jhbe+lw6d++qKbGw3E6JpkLKWrVKrfeXG5Fclj10rjHU9QRopgVU/OsWl3P0iT0N0L96
-         35hg==
-X-Gm-Message-State: AOAM531235Qt2ryWPgyykbqUkIGX82QYeIkcldl+UNTQ8llOwpR7hydJ
-        Sg4nmKVybnNmjTeZabTuPd/uVP8fEGygpjqxXbVIoA==
-X-Google-Smtp-Source: ABdhPJyVrvKr9O4Mdmci3LL1u8dOErH3YZeH/3QVImK3nZcr6/ha1wPAfWTKAntu/g6l2IcYVH8rCrQQSXatqi0ubnM=
-X-Received: by 2002:a17:906:7489:: with SMTP id e9mr28986969ejl.154.1600329978090;
- Thu, 17 Sep 2020 01:06:18 -0700 (PDT)
+        id S1726239AbgIQIHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 04:07:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48986 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726460AbgIQIHB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 04:07:01 -0400
+Received: from localhost (unknown [151.66.80.226])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7CB2021D7F;
+        Thu, 17 Sep 2020 08:07:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600330021;
+        bh=PYy18IYLPyly6lpSvONF4fmQOHk7Au32VIWvOL+8b8w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Tc7PsFLcqRhs565sfekGU8p420yu3Xn+raDRVhtpuC755sX5IOUIVMm3fMVnfQtf0
+         9U74O20nM03yTS4a2oIMm4P0o+xgVi5bw/4hSqXx2PInCNaG0y114SUolO91wy6K76
+         A8Mv+ABQPj9zy9krNynPkdb8/yf+KNoAqUQLqqkA=
+Date:   Thu, 17 Sep 2020 10:06:56 +0200
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Mario Tesi <martepisa@gmail.com>
+Cc:     lorenzo.bianconi83@gmail.com, jic23@kernel.org, knaack.h@gmx.de,
+        lars@metafoo.de, pmeerw@pmeerw.net, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mario.tesi@st.com
+Subject: Re: [PATCH] iio: imu: st_lsm6dsx: Scaling factor type set to
+ IIO_VAL_INT_PLUS_NANO
+Message-ID: <20200917080656.GA22982@lore-desk>
+References: <1600274660-29143-1-git-send-email-martepisa@gmail.com>
 MIME-Version: 1.0
-References: <20200916170933.20302-1-vadym.kochan@plvision.eu> <20200916170933.20302-2-vadym.kochan@plvision.eu>
-In-Reply-To: <20200916170933.20302-2-vadym.kochan@plvision.eu>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Thu, 17 Sep 2020 10:06:07 +0200
-Message-ID: <CAMpxmJXehV1R7FdgefxWL3aG9dZvtO1SQJdhL4MjDDbuGtuMhA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] eeprom: at24: set type id as EEPROM
-To:     Vadym Kochan <vadym.kochan@plvision.eu>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="KsGdsel6WgEHnImy"
+Content-Disposition: inline
+In-Reply-To: <1600274660-29143-1-git-send-email-martepisa@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 7:10 PM Vadym Kochan <vadym.kochan@plvision.eu> wrote:
->
-> Set type as NVMEM_TYPE_EEPROM to expose this info via
-> sysfs:
->
-> $ cat /sys/bus/nvmem/devices/{DEVICE}/type
-> EEPROM
->
-> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+
+--KsGdsel6WgEHnImy
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+> From: Mario Tesi <mario.tesi@st.com>
+>=20
+> Scaling factor values for Acc lead to an unacceptable rounding of the
+> full scale (FS) calculated by some SensorHAL on Android devices. For exam=
+ples
+> setting FS to 4g the in_accel_x_scale, in_accel_y_scale and in_accel_z_sc=
+ale
+> are 0.001196 on 6 decimal digits and the FS is
+> 0.001196 =C3=97 ((2^15) =E2=88=92 1) ~=3D 39.1893 m/s^2.
+>=20
+> Android CTS R10 SensorParameterRangeTest test expects a value greater than
+> 39.20 m/s^2 so this test fails (ACCELEROMETER_MAX_RANGE =3D 4 * 9.80).
+>=20
+> Using 9 decimal digits the new scale factor is 0.001196411 and the FS now
+> is 0.001196411 =C3=97 ((2^15)=E2=88=921) ~=3D 39.2028 m/s^2.
+>=20
+> This patch extends to IIO_VAL_INT_PLUS_NANO type the scaling factor to all
+> IMU devices where SensorParameterRangeTest CTS test fails.
+>=20
+> Signed-off-by: Mario Tesi <mario.tesi@st.com>
+
+Hi Mario,
+
+just a minor comment inline. Fixing it:
+
+Acked-by: Lorenzo Bianconi <lorenzo@kernel.org>
+
 > ---
->  drivers/misc/eeprom/at24.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
-> index 2591c21b2b5d..800300296c74 100644
-> --- a/drivers/misc/eeprom/at24.c
-> +++ b/drivers/misc/eeprom/at24.c
-> @@ -678,6 +678,7 @@ static int at24_probe(struct i2c_client *client)
->                         return err;
->         }
->
-> +       nvmem_config.type = NVMEM_TYPE_EEPROM;
->         nvmem_config.name = dev_name(dev);
->         nvmem_config.dev = dev;
->         nvmem_config.read_only = !writable;
-> --
-> 2.17.1
->
+>  drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c | 136 ++++++++++++++++-----=
+------
+>  1 file changed, 79 insertions(+), 57 deletions(-)
+>=20
 
-Queued for v5.10, thanks!
+[...]
 
-Bartosz
+>  	fs_table =3D &hw->settings->fs_table[sensor->id];
+>  	for (i =3D 0; i < fs_table->fs_len; i++)
+> -		len +=3D scnprintf(buf + len, PAGE_SIZE - len, "0.%06u ",
+> +		len +=3D scnprintf(buf + len, PAGE_SIZE - len, "0.%09u ",
+>  				 fs_table->fs_avl[i].gain);
+>  	buf[len - 1] =3D '\n';
+> =20
+>  	return len;
+>  }
+> =20
+> +static int st_lsm6dsx_write_raw_get_fmt(struct iio_dev *indio_dev,
+> +					struct iio_chan_spec const *chan,
+> +					long mask)
+> +{
+> +	switch (mask) {
+> +	case IIO_CHAN_INFO_SCALE:
+> +		switch (chan->type) {
+> +		case IIO_ANGL_VEL:
+> +		case IIO_ACCEL:
+> +			return IIO_VAL_INT_PLUS_NANO;
+> +		default:
+> +			return IIO_VAL_INT_PLUS_MICRO;
+> +		}
+> +	default:
+> +		return IIO_VAL_INT_PLUS_MICRO;
+> +	}
+> +
+> +	return -EINVAL;
+
+you can remove this
+
+> +}
+> +
+>  static IIO_DEV_ATTR_SAMP_FREQ_AVAIL(st_lsm6dsx_sysfs_sampling_frequency_=
+avail);
+>  static IIO_DEVICE_ATTR(in_accel_scale_available, 0444,
+>  		       st_lsm6dsx_sysfs_scale_avail, NULL, 0);
+> @@ -1868,6 +1888,7 @@ static const struct iio_info st_lsm6dsx_acc_info =
+=3D {
+>  	.read_event_config =3D st_lsm6dsx_read_event_config,
+>  	.write_event_config =3D st_lsm6dsx_write_event_config,
+>  	.hwfifo_set_watermark =3D st_lsm6dsx_set_watermark,
+> +	.write_raw_get_fmt =3D st_lsm6dsx_write_raw_get_fmt,
+>  };
+> =20
+>  static struct attribute *st_lsm6dsx_gyro_attributes[] =3D {
+> @@ -1885,6 +1906,7 @@ static const struct iio_info st_lsm6dsx_gyro_info =
+=3D {
+>  	.read_raw =3D st_lsm6dsx_read_raw,
+>  	.write_raw =3D st_lsm6dsx_write_raw,
+>  	.hwfifo_set_watermark =3D st_lsm6dsx_set_watermark,
+> +	.write_raw_get_fmt =3D st_lsm6dsx_write_raw_get_fmt,
+>  };
+> =20
+>  static int st_lsm6dsx_get_drdy_pin(struct st_lsm6dsx_hw *hw, int *drdy_p=
+in)
+> --=20
+> 2.7.4
+>=20
+
+--KsGdsel6WgEHnImy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCX2MZHQAKCRA6cBh0uS2t
+rHL/AP96R7XytMxa6K9VjyJF4K2K8BSdYyIad7PfYCNCKsj+dAEA2GQN9/EDTUz+
+Aoo53Jh582buw4rBvjezJiIXzFoZ9g4=
+=L8iq
+-----END PGP SIGNATURE-----
+
+--KsGdsel6WgEHnImy--
