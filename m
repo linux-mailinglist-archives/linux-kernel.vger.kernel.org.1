@@ -2,89 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EDA126E304
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B67CD26E306
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726589AbgIQR4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 13:56:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34700 "EHLO
+        id S1726603AbgIQR5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 13:57:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726596AbgIQRzV (ORCPT
+        with ESMTP id S1726430AbgIQRzu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 13:55:21 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21698C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:55:21 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id v14so1601823pjd.4
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:55:21 -0700 (PDT)
+        Thu, 17 Sep 2020 13:55:50 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97A4CC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:55:49 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id z25so3161480iol.10
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:55:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version;
-        bh=ubb5DTI+VStVNf7vCLZGfulNZTbgJJzRYzc72+9jK9E=;
-        b=ON4H+9Y8h3o8YE3iPqyfPP/sKdjVU6pm9VPHxQEHYlrLmEpE5niP6zABuP3bXIpcje
-         Cc+Uk0/IX+bqEQZ2gGRi6yeo/50W0pBd8s44bnh6gbFvk0PoZYrt57DlExVTrGxS08lP
-         vjVlih7n178dALzI4v2/bKVM6UfVWFxIe6G8YQO9eY5BeYSeXAkHnYwQupZ2aqpa2mwK
-         QWdsnmMBEY1GC2kp5f1Iwu0H6p6swbAY6WKwldbmX9jl8gC+KJ9KHiVq/XYZZupBG2wv
-         8u8Zmi8Tor3pcZyLTUc2y7cUWALrMCzBPQXtJm261sUqA7Miofw4BpwEYcCeHdeW3Mbh
-         K76Q==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=t/5EXQwKcuR5SrZP2SomH6aF6/YnDZtAGYcbLL9m+iQ=;
+        b=Ktaa/kmCUgvZdbQ4fa12dNAnlqlGwtF8SG5ZX4KRlryvaVSotiQcDybFGRydNOWtV3
+         +XSOFemgHM940xvhgR/Ytf/5jy/EprTRzTHtAHZVAYgNNd3QfIToN/Z0oiclaQt15kCA
+         MDPI3JaS/HKZ2NchHxGrBOIzgEKyxylNXV5R8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version;
-        bh=ubb5DTI+VStVNf7vCLZGfulNZTbgJJzRYzc72+9jK9E=;
-        b=uUBZvKW89YUhO0p36oFY2HrPH7RWfS/GqAFsuscZo0gX05reMaBv0pDuNhfy1tPCAg
-         j7+odwF+6L3PwHhbK80tEy/lzkev/GW+Z5TFqx62p4S8+s3wrx8gMzQ6Bic+JnAfRUv0
-         TLePGtjCvn14O5V8pD3yfLvrEo/EXD17/qEtaDwbNHjVc69qHN59ts/5LrLjzB+bZKmv
-         wHItHwRWMGv77D7oHZhaSLBhVtHg+4LqIBrcj+KpC2RebZ1eW5gLp7oZpjoKvnYP36G+
-         NU9MavlWd5bY3ejwM1VqRC/AEWOdiL5KaO9g44P11RuPEXXUsgL0SEQ1QHbwa1YZstb/
-         Oo2w==
-X-Gm-Message-State: AOAM531vclpVTbfCzcy4yV6zYfPijy91LL4CKbAX2/DrZaNBpEEoumQk
-        RHkCQHV7X9I2FToEfOGyz+/X1A==
-X-Google-Smtp-Source: ABdhPJwsnHCwj1aJ+RtYHAqNUbG0c69lhV8xw3LT+lpTYldpRMG+j90Pd5X/FjCD+qYceDAAgFQaHA==
-X-Received: by 2002:a17:90a:d514:: with SMTP id t20mr8857755pju.134.1600365320606;
-        Thu, 17 Sep 2020 10:55:20 -0700 (PDT)
-Received: from [10.209.126.152] ([192.55.54.40])
-        by smtp.gmail.com with ESMTPSA id b29sm229896pgb.71.2020.09.17.10.55.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 17 Sep 2020 10:55:19 -0700 (PDT)
-From:   "Sean V Kelley" <sean.v.kelley@intel.com>
-To:     "Bjorn Helgaas" <helgaas@kernel.org>
-Cc:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
-        rjw@rjwysocki.net, ashok.raj@intel.com, tony.luck@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, qiuxu.zhuo@intel.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V4 00/10] Add RCEC handling to PCI/AER
-Date:   Thu, 17 Sep 2020 10:55:16 -0700
-X-Mailer: MailMate (1.13.2r5673)
-Message-ID: <39F1C577-2486-43DC-BB65-1F6EDE02B217@intel.com>
-In-Reply-To: <20200917173600.GA1706067@bjorn-Precision-5520>
-References: <20200917173600.GA1706067@bjorn-Precision-5520>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=t/5EXQwKcuR5SrZP2SomH6aF6/YnDZtAGYcbLL9m+iQ=;
+        b=W/2O1rZCA7f8/Y1dGZrX2dOUF0dcOAinBmWCPrXSiuUzIH1YJLRq1NjXl/uHxeAum+
+         WVfUa+L2HH5GzjIl0wTkYVWDfKx5npr8ng14sZDlk6XoyOIqkZKISs/Tsv0p+xs0tFzY
+         Ps4G1unGdJe/aMxe5VwCJ7+XsrE+2JPm9d2Blg4E8TQ46bv8VcaSu9N19ey33knucXZ5
+         ngu3noY/Px+DZ/tOqHcktzQhHwCu7PLuP13ch2fnKfArHZawZNmYU5McMS8TZJimV7Xg
+         NHIqNN5xocT/rkAQYW5CNWLi9AWOcGRsnxvVNKhXciP66Lf6P+ZejKSbUCAv1dOrAqae
+         JnIQ==
+X-Gm-Message-State: AOAM533pXa5LMrYNIA4TxSnKHpWrULtcu9tyAP1CaknwnbkJ/pAlaP7O
+        ecSgQ+K3A73AuZYounAwKbkiuE+CiSGuDYgMwm6ZXA==
+X-Google-Smtp-Source: ABdhPJwjHQTt4A/hhPViMhr1t+Lep8t8zV1QMBSLA0IR7w18uzRAFO8wZ1BmtDelzWhb/ba/88tGB18qhtB9xeAInUs=
+X-Received: by 2002:a05:6638:69d:: with SMTP id i29mr27297366jab.138.1600365348823;
+ Thu, 17 Sep 2020 10:55:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
+References: <20200917110838.1.I63d52f5b96d7e81e1e2dc2a72c4bf5fd84d3d3d0@changeid>
+ <87o8m4uxcn.fsf@intel.com>
+In-Reply-To: <87o8m4uxcn.fsf@intel.com>
+From:   Kevin Chowski <chowski@chromium.org>
+Date:   Thu, 17 Sep 2020 11:55:38 -0600
+Message-ID: <CANM=9DOn9wvL1RBDhxzawY1rRq0PFUBmKdXUGmG1CygApK1Vyg@mail.gmail.com>
+Subject: Re: [PATCH] i915: Introduce quirk for shifting eDP brightness.
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Puthikorn Voravootivat <puthik@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        intel-gfx@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Juha-Pekka Heikkila <juhapekka.heikkila@gmail.com>,
+        Lyude Paul <lyude@redhat.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17 Sep 2020, at 10:36, Bjorn Helgaas wrote:
+Apologies for being too vague. To be as precise I can be, here is the
+specific code delta I tested: https://crrev.com/c/2406616 . To answer
+your other question, the code I tested against is indeed including the
+fde7266fb2f6 (despite ostensibly being called 5.4 in my commit
+message): our current top-of-tree for our 5.4 branch includes the
+intel_dp_aux_calc_max_backlight logic. Further, I'll note that change
+is exactly the change which breaks my Pixelbook model: prior to the
+change, the max_brightness was hard-coded to 0xFFFF and the math
+worked out that it didn't matter that the hardware cared about the MSB
+despite the driver code caring about the LSB.
 
-> On Thu, Sep 17, 2020 at 09:25:38AM -0700, Sean V Kelley wrote:
->> Changes since v3 [1]:
+To answer Ville's question: the fde7266fb2f6 change which fixes one
+laptop (I believe Thinkpad X1 extreme Gen 2, from some bug reports I
+dug up) and breaks another (Pixelbook); so unfortunately I believe we
+need a quirk at least for some laptop. Reading through the copy of the
+datasheet I have, it wasn't clear to me which was the correct
+interpretation. I'm cc'ing puthik@, who was leaning toward the current
+kernel code (caring about LSB) being the correct interpretation. I
+believe we have other chromebooks which do rely on LSB functionality,
+so unless we can find more examples of laptops wanting MSB it
+currently looks like Pixelbook is the outlier.
+
+On Thu, Sep 17, 2020 at 11:28 AM Jani Nikula
+<jani.nikula@linux.intel.com> wrote:
 >
-> This series claims "V4 00/10", i.e., there should be this cover letter
-> plus 10 patches, but I only got 3 patches.  I don't know if some got
-> lost, or if only those 3 patches were updated, or what?  If it's the
-> latter, it's too hard for me to collect the right versions of
-> everything into a single series.
+> On Thu, 17 Sep 2020, Kevin Chowski <chowski@chromium.org> wrote:
+> > We have observed that Google Pixelbook's backlight hardware is
+> > interpretting these backlight bits from the most-significant side of the
+> > 16 bit word (if DP_EDP_PWMGEN_BIT_COUNT < 16), whereas the driver code
+> > assumes the peripheral cares about the least-significant bits.
+> >
+> > Testing was done from within Chrome OS's build environment when the
+> > patch is backported to 5.4 (the version we are newly targeting for the
+> > Pixelbook); for the record:
+> >    $ emerge-eve-kernelnext sys-kernel/chromeos-kernel-5_4 && \
+> >       ./update_kernel.sh --remote=$IP
+> >
+> > I used `/sys/kernel/debug/dri/0/eDP-1/i915_dpcd` on my laptop to verify
+> > that the registers were being set according to what the actual hardware
+> > expects; I also observe that the backlight is noticeably brighter with
+> > this patch.
 >
-> Either way, can you resend the entire series as a V5?
+> It's unclear to me what kernel version this is against, and what you've
+> actually tested.
 >
-> Bjorn
-
-That's weird.  I can see all 10 got sent. There's something awry with 
-the mailer as I got the copies.  You are right.  Lore only shows 3.  I 
-will see if something happened with the smtp access.  Will resend as V5.
-
-Thanks,
-
-Sean
+> Have you tried v5.7 kernel with Lyude's fde7266fb2f6 ("drm/i915: Fix eDP
+> DPCD aux max backlight calculations")?
+>
+> I just want to make sure you've tested with all the relevant fixes
+> before adding quirks.
+>
+> BR,
+> Jani.
+>
+> >
+> > Signed-off-by: Kevin Chowski <chowski@chromium.org>
+> > ---
+> >
+> >  .../drm/i915/display/intel_dp_aux_backlight.c | 34 +++++++++++++++++++
+> >  drivers/gpu/drm/i915/display/intel_quirks.c   | 13 +++++++
+> >  drivers/gpu/drm/i915/i915_drv.h               |  1 +
+> >  3 files changed, 48 insertions(+)
+> >
+> > diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> > index acbd7eb66cbe3..99c98f217356d 100644
+> > --- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> > +++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> > @@ -91,6 +91,23 @@ static u32 intel_dp_aux_get_backlight(struct intel_connector *connector)
+> >       if (intel_dp->edp_dpcd[2] & DP_EDP_BACKLIGHT_BRIGHTNESS_BYTE_COUNT)
+> >               level = (read_val[0] << 8 | read_val[1]);
+> >
+> > +     if (i915->quirks & QUIRK_SHIFT_EDP_BACKLIGHT_BRIGHTNESS) {
+> > +             if (!drm_dp_dpcd_readb(&intel_dp->aux, DP_EDP_PWMGEN_BIT_COUNT,
+> > +                                             &read_val[0])) {
+> > +                     DRM_DEBUG_KMS("Failed to read DPCD register 0x%x\n",
+> > +                                     DP_EDP_PWMGEN_BIT_COUNT);
+> > +                     return 0;
+> > +             }
+> > +             // Only bits 4:0 are used, 7:5 are reserved.
+> > +             read_val[0] = read_val[0] & 0x1F;
+> > +             if (read_val[0] > 16) {
+> > +                     DRM_DEBUG_KMS("Invalid DP_EDP_PWNGEN_BIT_COUNT 0x%X, expected at most 16\n",
+> > +                                             read_val[0]);
+> > +                     return 0;
+> > +             }
+> > +             level >>= 16 - read_val[0];
+> > +     }
+> > +
+> >       return level;
+> >  }
+> >
+> > @@ -106,6 +123,23 @@ intel_dp_aux_set_backlight(const struct drm_connector_state *conn_state, u32 lev
+> >       struct drm_i915_private *i915 = dp_to_i915(intel_dp);
+> >       u8 vals[2] = { 0x0 };
+> >
+> > +     if (i915->quirks & QUIRK_SHIFT_EDP_BACKLIGHT_BRIGHTNESS) {
+> > +             if (!drm_dp_dpcd_readb(&intel_dp->aux, DP_EDP_PWMGEN_BIT_COUNT,
+> > +                                             &vals[0])) {
+> > +                     DRM_DEBUG_KMS("Failed to write aux backlight level: Failed to read DPCD register 0x%x\n",
+> > +                                       DP_EDP_PWMGEN_BIT_COUNT);
+> > +                     return;
+> > +             }
+> > +             // Only bits 4:0 are used, 7:5 are reserved.
+> > +             vals[0] = vals[0] & 0x1F;
+> > +             if (vals[0] > 16) {
+> > +                     DRM_DEBUG_KMS("Failed to write aux backlight level: Invalid DP_EDP_PWNGEN_BIT_COUNT 0x%X, expected at most 16\n",
+> > +                                             vals[0]);
+> > +                     return;
+> > +             }
+> > +             level <<= (16 - vals[0]) & 0xFFFF;
+> > +     }
+> > +
+> >       vals[0] = level;
+> >
+> >       /* Write the MSB and/or LSB */
+> > diff --git a/drivers/gpu/drm/i915/display/intel_quirks.c b/drivers/gpu/drm/i915/display/intel_quirks.c
+> > index 46beb155d835f..63b27d49b2864 100644
+> > --- a/drivers/gpu/drm/i915/display/intel_quirks.c
+> > +++ b/drivers/gpu/drm/i915/display/intel_quirks.c
+> > @@ -53,6 +53,16 @@ static void quirk_increase_ddi_disabled_time(struct drm_i915_private *i915)
+> >       drm_info(&i915->drm, "Applying Increase DDI Disabled quirk\n");
+> >  }
+> >
+> > +/*
+> > + * Some eDP backlight hardware uses the most-significant bits of the brightness
+> > + * register, so brightness values must be shifted first.
+> > + */
+> > +static void quirk_shift_edp_backlight_brightness(struct drm_i915_private *i915)
+> > +{
+> > +     i915->quirks |= QUIRK_SHIFT_EDP_BACKLIGHT_BRIGHTNESS;
+> > +     DRM_INFO("Applying shift eDP backlight brightness quirk\n");
+> > +}
+> > +
+> >  struct intel_quirk {
+> >       int device;
+> >       int subsystem_vendor;
+> > @@ -156,6 +166,9 @@ static struct intel_quirk intel_quirks[] = {
+> >       /* ASRock ITX*/
+> >       { 0x3185, 0x1849, 0x2212, quirk_increase_ddi_disabled_time },
+> >       { 0x3184, 0x1849, 0x2212, quirk_increase_ddi_disabled_time },
+> > +
+> > +     /* Google Pixelbook */
+> > +     { 0x591E, 0x8086, 0x2212, quirk_shift_edp_backlight_brightness },
+> >  };
+> >
+> >  void intel_init_quirks(struct drm_i915_private *i915)
+> > diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
+> > index e4f7f6518945b..cc93bede4fab8 100644
+> > --- a/drivers/gpu/drm/i915/i915_drv.h
+> > +++ b/drivers/gpu/drm/i915/i915_drv.h
+> > @@ -525,6 +525,7 @@ struct i915_psr {
+> >  #define QUIRK_PIN_SWIZZLED_PAGES (1<<5)
+> >  #define QUIRK_INCREASE_T12_DELAY (1<<6)
+> >  #define QUIRK_INCREASE_DDI_DISABLED_TIME (1<<7)
+> > +#define QUIRK_SHIFT_EDP_BACKLIGHT_BRIGHTNESS (1<<8)
+> >
+> >  struct intel_fbdev;
+> >  struct intel_fbc_work;
+>
+> --
+> Jani Nikula, Intel Open Source Graphics Center
