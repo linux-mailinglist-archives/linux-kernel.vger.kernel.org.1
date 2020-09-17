@@ -2,140 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5753826E7EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 00:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C6E926E7F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 00:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726044AbgIQWFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 18:05:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44966 "EHLO
+        id S1726135AbgIQWGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 18:06:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725886AbgIQWFX (ORCPT
+        with ESMTP id S1725874AbgIQWGl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 18:05:23 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F499C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 15:05:21 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id x123so2094979pfc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 15:05:21 -0700 (PDT)
+        Thu, 17 Sep 2020 18:06:41 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD146C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 15:06:41 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id m15so1856157pls.8
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 15:06:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RVejrFx8lqGVUKgRhIUmNAugSkLKO3AWaoC/1SxxcL0=;
-        b=gZfnTVPqJkwyJQbCSxJtksOl0Wp3oPCryqhhzYqmD6nXS59iDI+KLW4Fe8f0f8zL3n
-         /elUdPuoSqhgtEl2zfjQjTb/kbloI1vZr9vae5Jthw3imZMzfP9Eia8WaXmx3/Q3AM39
-         b9Swp7NuoP77Vi0xXufmukO6fA00nsfebrOJI=
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=KGNmIQxkdvUG3FJy4i5PBk+ji2PTypNkOa0bskKz16s=;
+        b=EaqigPaJOr6zzGO1gy3rVaDoZkIxYX1OWLosQF+sjumKAYPELnTLFQ6bdp1H+yafVN
+         HXWuwkjp9Zd4RV142Qe0R8wi6t+9dYOVRkwH0gGxAIL9j2GhMUlDd76IwzQZTGTCjyAT
+         gGCBimh9PMJ72w2Oa2z4sAEFv0bybwKf8JJ04=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RVejrFx8lqGVUKgRhIUmNAugSkLKO3AWaoC/1SxxcL0=;
-        b=mbdTzxz6w/X15Z3JIF51elo5fAXS5hZGVwq4hyPUDSWuNYBlPZBc8jhvfuJQ+3mS+T
-         aQCNklWgdhym0ZosSYIxQpYU3MykvXWWz5TsfXDmUogVXkpPMXJ9bOICfCV9fU7xWXVb
-         0XSZqCv3/5STkDCXhqw5IUV4ACgAfUX3rgMPrTNVwqECZ9F+2vMh8/6kPT+DJWKXKROj
-         d5EopHgX7dmO9kJbyjKs6x6AFHc7/5STHfMCZclEfXjRtfIPjhOuGCX3cOVjtn2cfqYP
-         x38qKvx2sl795allgSHlCf/fqGJ23/mj7q99I2j1/J3tZOaYzeyYWZDuzZi3cnd60CQ0
-         4QKw==
-X-Gm-Message-State: AOAM5326MgHsTvK+4DH7wTYLZfzeMbW5BrXCyCgopa0+Ud55hhpYUw85
-        ciPpyRalDmJ+Si0PGcwVM0+IPkbAi5loZj+m
-X-Google-Smtp-Source: ABdhPJxpTQhskINmsg7Ej2h7teJJR0+5sPJiS7FT04TblAYOWkDs4Jwx5Cao9/nMc6ypwIWmOhsmsw==
-X-Received: by 2002:a63:1e0c:: with SMTP id e12mr6153286pge.346.1600380320847;
-        Thu, 17 Sep 2020 15:05:20 -0700 (PDT)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=KGNmIQxkdvUG3FJy4i5PBk+ji2PTypNkOa0bskKz16s=;
+        b=qWN1Amxn6WO7Zj49lUbxt8rMf5yGGrC6z9B35s8WI8feIjVIjDP416A20Vj2Mdb/hW
+         vaDbkhkR2E2GgjN8/zch/AuRsnXvwAkHBvusktZ+Dk9vse1WBQzIe4AplyDC9bpmAm72
+         wJhBVjbn7mTBN35ojmexjrsDzPoMluObCoYFPTA1MI6yHZsinTJyZhUMgdFDWF0/cEf1
+         crvDa5ezcjvr2Yt3otRebRy9kvEUJAIuddFWOTVFKWnMfmHFyCEExTwH1rWcPc87I8rM
+         qAiTejkSh5OIhySgQevveXN4c2p/HV39KOqBU/7gLA5cp6yannFsETd6AVwEWOMQnJhy
+         DfdQ==
+X-Gm-Message-State: AOAM531qkMkLEb26EC4Jbd+U5ZGeDbpN/UAFhdaD65ZKq31pCe0koMG1
+        dWhBqelDIZFuvqzzl2TGGB/aQA==
+X-Google-Smtp-Source: ABdhPJxVxMDAVNtxxj0yGmkKjx8X6uSL8vN/TWKF3VyOltmqZVZ34+YdBYAC7vSM7w8gckWvKUnQVg==
+X-Received: by 2002:a17:902:b10b:b029:d1:e5e7:bdf8 with SMTP id q11-20020a170902b10bb02900d1e5e7bdf8mr12609117plr.43.1600380401403;
+        Thu, 17 Sep 2020 15:06:41 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id i9sm611190pfq.53.2020.09.17.15.05.19
+        by smtp.gmail.com with ESMTPSA id d128sm661053pfc.8.2020.09.17.15.06.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 15:05:19 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 15:05:18 -0700
+        Thu, 17 Sep 2020 15:06:40 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 15:06:39 -0700
 From:   Kees Cook <keescook@chromium.org>
-To:     John Wood <john.wood@gmx.com>
-Cc:     Jann Horn <jannh@google.com>, kernel-hardening@lists.openwall.com,
-        Matthew Wilcox <willy@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [RFC PATCH 1/6] security/fbfam: Add a Kconfig to enable the
- fbfam feature
-Message-ID: <202009171504.841FA53@keescook>
-References: <20200910202107.3799376-1-keescook@chromium.org>
- <20200910202107.3799376-2-keescook@chromium.org>
- <202009101615.8566BA3967@keescook>
- <20200917175146.GB3637@ubuntu>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-kselftest@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] selftests/harness: Flush stdout before forking
+Message-ID: <202009171506.535C5678@keescook>
+References: <20200917041519.3284582-1-mpe@ellerman.id.au>
+ <CAMo8BfJ5j4nG0z1Bk00J=3xPM++J68Hp2idJ-D5aHT84-vOzsQ@mail.gmail.com>
+ <e24df908-c50d-59ef-563c-9db24c819248@linuxfoundation.org>
+ <99f67c84-4dcd-278a-e7b8-e19054818ecf@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200917175146.GB3637@ubuntu>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <99f67c84-4dcd-278a-e7b8-e19054818ecf@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 08:40:06PM +0200, John Wood wrote:
-> Hi,
+On Thu, Sep 17, 2020 at 10:51:32AM -0600, Shuah Khan wrote:
+> On 9/17/20 6:58 AM, Shuah Khan wrote:
+> > On 9/16/20 10:53 PM, Max Filippov wrote:
+> > > On Wed, Sep 16, 2020 at 9:16 PM Michael Ellerman
+> > > <mpe@ellerman.id.au> wrote:
+> > > > 
+> > > > The test harness forks() a child to run each test. Both the parent and
+> > > > the child print to stdout using libc functions. That can lead to
+> > > > duplicated (or more) output if the libc buffers are not flushed before
+> > > > forking.
+> > > > 
+> > > > It's generally not seen when running programs directly, because stdout
+> > > > will usually be line buffered when it's pointing to a terminal.
+> > > > 
+> > > > This was noticed when running the seccomp_bpf test, eg:
+> > > > 
+> > > >    $ ./seccomp_bpf | tee test.log
+> > > >    $ grep -c "TAP version 13" test.log
+> > > >    2
+> > > > 
+> > > > But we only expect the TAP header to appear once.
+> > > > 
+> > > > It can be exacerbated using stdbuf to increase the buffer size:
+> > > > 
+> > > >    $ stdbuf -o 1MB ./seccomp_bpf > test.log
+> > > >    $ grep -c "TAP version 13" test.log
+> > > >    13
+> > > > 
+> > > > The fix is simple, we just flush stdout & stderr before fork. Usually
+> > > > stderr is unbuffered, but that can be changed, so flush it as well
+> > > > just to be safe.
+> > > > 
+> > > > Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+> > > > ---
+> > > >   tools/testing/selftests/kselftest_harness.h | 5 +++++
+> > > >   1 file changed, 5 insertions(+)
+> > > 
+> > > Tested-by: Max Filippov <jcmvbkbc@gmail.com>
+> > > 
+> > 
+> > Thank you both. Applying to linux-kselftest fixes for 5.9-rc7
+> > 
 > 
-> On Thu, Sep 10, 2020 at 04:18:08PM -0700, Kees Cook wrote:
-> > On Thu, Sep 10, 2020 at 01:21:02PM -0700, Kees Cook wrote:
-> > > From: John Wood <john.wood@gmx.com>
-> > >
-> > > Add a menu entry under "Security options" to enable the "Fork brute
-> > > force attack mitigation" feature.
-> > >
-> > > Signed-off-by: John Wood <john.wood@gmx.com>
-> > > ---
-> > >  security/Kconfig       |  1 +
-> > >  security/fbfam/Kconfig | 10 ++++++++++
-> > >  2 files changed, 11 insertions(+)
-> > >  create mode 100644 security/fbfam/Kconfig
-> > >
-> > > diff --git a/security/Kconfig b/security/Kconfig
-> > > index 7561f6f99f1d..00a90e25b8d5 100644
-> > > --- a/security/Kconfig
-> > > +++ b/security/Kconfig
-> > > @@ -290,6 +290,7 @@ config LSM
-> > >  	  If unsure, leave this as the default.
-> > >
-> > >  source "security/Kconfig.hardening"
-> > > +source "security/fbfam/Kconfig"
-> >
-> > Given the layout you've chosen and the interface you've got, I think
-> > this should just be treated like a regular LSM.
+> Kees,
 > 
-> Yes, throughout the review it seems the most appropiate is treat
-> this feature as a regular LSM. Thanks.
+> I haven't pulled this in yet. If you want to take this through seccomp
+> tree for dependencies:
 > 
-> > >
-> > >  endmenu
-> > >
-> > > diff --git a/security/fbfam/Kconfig b/security/fbfam/Kconfig
-> > > new file mode 100644
-> > > index 000000000000..bbe7f6aad369
-> > > --- /dev/null
-> > > +++ b/security/fbfam/Kconfig
-> > > @@ -0,0 +1,10 @@
-> > > +# SPDX-License-Identifier: GPL-2.0
-> > > +config FBFAM
-> >
-> > To jump on the bikeshed: how about just calling this
-> > FORK_BRUTE_FORCE_DETECTION or FORK_BRUTE, and the directory could be
-> > "brute", etc. "fbfam" doesn't tell anyone anything.
-> 
-> Understood. But how about use the fbfam abbreviation in the code? Like as
-> function name prefix, struct name prefix, ... It would be better to use a
-> more descriptive name in this scenario? It is not clear to me.
+> Acked-by: Shuah Khan <skhan@linuxfoundation.org>
 
-I don't feel too strongly, but I think having the CONFIG roughly match
-the directory name, roughly match the function prefixes should be best.
-Maybe call the directory and function prefix "brute"?
+You can have it -- it's a global fix and more than the seccomp selftest
+is likely affected. :)
 
 -- 
 Kees Cook
