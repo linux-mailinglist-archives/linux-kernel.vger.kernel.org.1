@@ -2,135 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E2626DD0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 15:47:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 991F026DCE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 15:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726611AbgIQNbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 09:31:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49444 "EHLO
+        id S1726785AbgIQNdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 09:33:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726861AbgIQN3j (ORCPT
+        with ESMTP id S1726805AbgIQN3l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 09:29:39 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 376DCC06121C;
+        Thu, 17 Sep 2020 09:29:41 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D12C061224
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 06:29:01 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id z1so2093292wrt.3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 06:29:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=55Fl8iRTWry8sClQedunMDBGG4ZcDw9WhyqWY+z9CDM=;
+        b=SaVtwZvEUlCSrKLSB/jfZIitdreCGj+Ltia5Xq+RfwUITIXjmTZipSdjeKv2qSA8hM
+         9m+oUjPEarkhjH0fdqZpHuylyxJkH1JatbCY/sFYvNZAnOe5Od9/BTOgfWfRcw2+wbSq
+         HNVGHyXKzr6FjEtDo6kooTPpyZRf3F3sQP4I/+w8Jv8mbM3r516VnMFu4b4Tz1pc3bYa
+         jf971i3CiAuuhi7d4RXMgmHbGmsoMVXre1PDLabRSkOaqTxPZeMAUR6ftxj/sh3WPul/
+         EJNEUb41JMhSbZ+MQWSsHwdgLOF+juDG+V4ob/fCPGjartfkzRHYq/YUmFBsf2eFW5JE
+         QvSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=55Fl8iRTWry8sClQedunMDBGG4ZcDw9WhyqWY+z9CDM=;
+        b=HQlp+qUSWkc0zU2yizU40HL7uHpFg0LP+WZUDeAeC+A3bFLagzkxO2yKJZZLKdZ4DO
+         CGkXIbiDkp1/26CWGRePzJHW9OW2xy2UGhMIxQCnqbLTQpJxyIt01XTp+4eZvILxlU0Q
+         QZEl2ZcuA/aMbEhf6kBhuMVZV6KxNedEqdaBK4Qu931U7gRfpq2oE6H98TkDT8C1x6kG
+         WvJbGW+Gnw4wnTxo7DGoNIyYgjy9olrMbo6T8o3zH/PrKVfLy5PP0xi78dJo+AUyLo3Q
+         Na6Zr1suHECWcmkh0ZQAF9Mz9aLNW5WVVdHywQMf63nUBe3q+bEmd3mgui7PaKG7uDU7
+         7NaQ==
+X-Gm-Message-State: AOAM533xLIRq5ybN1ujkav/3Jif3sZsdhLHWpFNuGBKowNdyXyX2oyf6
+        DyRf5UzYHhAngERZLkGUpsB/Pg==
+X-Google-Smtp-Source: ABdhPJxXjTMt3U1zADgl3ZVp6/v2FO6MZgS1jdesv+YId1tuFMuQm3yZn4cYLO0pVVRZzbFerEJT2w==
+X-Received: by 2002:a5d:470e:: with SMTP id y14mr32111551wrq.354.1600349340278;
+        Thu, 17 Sep 2020 06:29:00 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id n10sm11486910wmk.7.2020.09.17.06.28.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 17 Sep 2020 06:28:59 -0700 (PDT)
-Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A61082DB;
-        Thu, 17 Sep 2020 15:28:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1600349332;
-        bh=g49hkaQs5f9zSOYdludDm/Rp6CqSBfQ/JScZ2TJMKEg=;
-        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=a4EHaqCOdWk0yq0RR4Pd2lyYoUpABoGd1pn2AnB/2kypB3McqnYSv+A2C4fF/c7Xi
-         lgqGkDksr2NTiJViUquQ1QqJcd5Ec0Z+Xc+nFAVPls/ex6oXr5seDtGIkrSQq9bhiN
-         EJ1GUedOF2oCC2LzlZMv7C/7PwnGalf8gOLRFzV4=
-Reply-To: kieran.bingham@ideasonboard.com
-Subject: Re: [RFC PATCH] Add bridge driver to connect sensors to CIO2 device
- via software nodes on ACPI platforms
-To:     Dan Scally <djrscally@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     yong.zhi@intel.com, sakari.ailus@linux.intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        davem@davemloft.net, robh@kernel.org, devel@driverdev.osuosl.org,
-        jorhand@linux.microsoft.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, kitakar@gmail.com
-References: <20200916213618.8003-1-djrscally@gmail.com>
- <20200917075356.GA3333802@kroah.com>
- <d97fb93f-5258-b654-3063-863e81ae7298@gmail.com>
-From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
-Autocrypt: addr=kieran.bingham@ideasonboard.com; keydata=
- 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
- WZw01QYHU/GUV/zHJSFk
-Organization: Ideas on Board
-Message-ID: <53787a36-4473-9336-6719-270930db2735@ideasonboard.com>
-Date:   Thu, 17 Sep 2020 14:28:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     sboyd@kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     bjorn.andersson@linaro.org, mturquette@baylibre.com,
+        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 3/4] clk: qcom: Add support to LPASS AUDIO_CC Glitch Free Mux clocks
+Date:   Thu, 17 Sep 2020 14:28:49 +0100
+Message-Id: <20200917132850.7730-4-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20200917132850.7730-1-srinivas.kandagatla@linaro.org>
+References: <20200917132850.7730-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <d97fb93f-5258-b654-3063-863e81ae7298@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dan, Greg,
+GFM Muxes in AUDIO_CC control clocks to LPASS WSA and RX Codec Macros.
+This patch adds support to these muxes.
 
-On 17/09/2020 10:47, Dan Scally wrote:
-> Hi Greg - thanks for the comments, appreciate it (sorry there's so many,
-> I'm new to both C and kernel work)
-> 
-> On 17/09/2020 08:53, Greg KH wrote:
->> On Wed, Sep 16, 2020 at 10:36:18PM +0100, Daniel Scally wrote:
->>>  MAINTAINERS                              |   6 +
->>>  drivers/media/pci/intel/ipu3/ipu3-cio2.c |  67 +++-
->> staging drivers should be self-contained, and not modify stuff outside
->> of drivers/staging/
->>
->>>  drivers/staging/media/ipu3/Kconfig       |  15 +
->>>  drivers/staging/media/ipu3/Makefile      |   1 +
->>>  drivers/staging/media/ipu3/cio2-bridge.c | 448 +++++++++++++++++++++++
->> Why does this have to be in drivers/staging/ at all?  Why not spend the
->> time to fix it up properly and get it merged correctly?  It's a very
->> small driver, and should be smaller, so it should not be a lot of work
->> to do.  And it would be faster to do that than to take it through
->> staging...
-> I was just under the impression that that was the process to be honest,
-> if that's not right I'll just move it directly to drivers/media/ipu3
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ drivers/clk/qcom/Kconfig            |   7 +
+ drivers/clk/qcom/Makefile           |   1 +
+ drivers/clk/qcom/lpass-gfm-sm8250.c | 235 ++++++++++++++++++++++++++++
+ 3 files changed, 243 insertions(+)
+ create mode 100644 drivers/clk/qcom/lpass-gfm-sm8250.c
 
-The IPU3 driver is still in staging (unless I've missed something), so I
-think this cio2-bridge should stay with it.
-
-Hopefully with more users of the IPU3 brought in by this cio2-bridge,
-that will help gather momentum to get the IPU3 developments required
-completed and moved into drivers/media.
-
-<snip>
-
+diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
+index 2eda63b7c46c..4e46fd339e62 100644
+--- a/drivers/clk/qcom/Kconfig
++++ b/drivers/clk/qcom/Kconfig
+@@ -494,4 +494,11 @@ config KRAITCC
+ 	  Support for the Krait CPU clocks on Qualcomm devices.
+ 	  Say Y if you want to support CPU frequency scaling.
+ 
++config CLK_GFM_LPASS_SM8250
++	tristate "GFM LPASS Clocks"
++	depends on SND_SOC_QDSP6_COMMON
++	help
++	  Support for the GFM Glitch Free Mux LPASS clock. Say Y
++	  if you want to support GFM Clocks on LPASS for SM8250 SoC.
++
+ endif
+diff --git a/drivers/clk/qcom/Makefile b/drivers/clk/qcom/Makefile
+index 8eb395d02a32..c18e4ead6c9e 100644
+--- a/drivers/clk/qcom/Makefile
++++ b/drivers/clk/qcom/Makefile
+@@ -74,3 +74,4 @@ obj-$(CONFIG_SPMI_PMIC_CLKDIV) += clk-spmi-pmic-div.o
+ obj-$(CONFIG_KPSS_XCC) += kpss-xcc.o
+ obj-$(CONFIG_QCOM_HFPLL) += hfpll.o
+ obj-$(CONFIG_KRAITCC) += krait-cc.o
++obj-$(CONFIG_CLK_GFM_LPASS_SM8250) += lpass-gfm-sm8250.o
+diff --git a/drivers/clk/qcom/lpass-gfm-sm8250.c b/drivers/clk/qcom/lpass-gfm-sm8250.c
+new file mode 100644
+index 000000000000..2d5c41ae4969
+--- /dev/null
++++ b/drivers/clk/qcom/lpass-gfm-sm8250.c
+@@ -0,0 +1,235 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/clk-provider.h>
++#include <linux/io.h>
++#include <linux/clk.h>
++#include <linux/slab.h>
++#include <linux/err.h>
++#include <linux/notifier.h>
++#include <linux/device.h>
++#include <linux/platform_device.h>
++#include <linux/of_device.h>
++#include <dt-bindings/clock/qcom,sm8250-lpass-audiocc.h>
++
++struct lpass_gfm {
++	struct device *dev;
++	void __iomem *base;
++	struct clk *core_vote;
++	struct clk *bus_clk;
++};
++
++struct clk_gfm {
++	unsigned int mux_reg;
++	unsigned int mux_mask;
++	struct clk_hw	hw;
++	struct lpass_gfm *priv;
++	void __iomem *gfm_mux;
++};
++
++#define GFM_MASK	BIT(1)
++#define to_clk_gfm(_hw) container_of(_hw, struct clk_gfm, hw)
++
++static u8 clk_gfm_get_parent(struct clk_hw *hw)
++{
++	struct clk_gfm *clk = to_clk_gfm(hw);
++
++	return readl(clk->gfm_mux) & GFM_MASK;
++}
++
++static int clk_gfm_set_parent(struct clk_hw *hw, u8 index)
++{
++	struct clk_gfm *clk = to_clk_gfm(hw);
++	unsigned int val;
++
++	val = readl(clk->gfm_mux);
++
++	if (index)
++		val |= GFM_MASK;
++	else
++		val &= ~GFM_MASK;
++
++	writel(val, clk->gfm_mux);
++
++	return 0;
++}
++
++static const struct clk_ops clk_gfm_ops = {
++	.get_parent = clk_gfm_get_parent,
++	.set_parent = clk_gfm_set_parent,
++	.determine_rate = __clk_mux_determine_rate,
++};
++
++static struct clk_gfm lpass_gfm_wsa_mclk = {
++	.mux_reg = 0x220d8,
++	.mux_mask = BIT(0),
++	.hw.init = &(struct clk_init_data) {
++		.name = "WSA_MCLK",
++		.ops = &clk_gfm_ops,
++		.flags = CLK_SET_RATE_PARENT | CLK_OPS_PARENT_ENABLE,
++		.parent_names = (const char *[]){
++			"LPASS_CLK_ID_TX_CORE_MCLK",
++			"LPASS_CLK_ID_WSA_CORE_MCLK",
++		},
++		.parent_data = (const struct clk_parent_data[]){
++				{ .index = 0 },
++				{ .index = 1 },
++		},
++		.num_parents = 2,
++	},
++};
++
++static struct clk_gfm lpass_gfm_wsa_npl = {
++	.mux_reg = 0x220d8,
++	.mux_mask = BIT(0),
++	.hw.init = &(struct clk_init_data) {
++		.name = "WSA_NPL",
++		.ops = &clk_gfm_ops,
++		.flags = CLK_SET_RATE_PARENT | CLK_OPS_PARENT_ENABLE,
++		.parent_names = (const char *[]){
++			"LPASS_CLK_ID_TX_CORE_NPL_MCLK",
++			"LPASS_CLK_ID_WSA_CORE_NPL_MCLK",
++		},
++		.parent_data = (const struct clk_parent_data[]){
++				{ .index = 0 },
++				{ .index = 1 },
++		},
++		.num_parents = 2,
++	},
++};
++
++static struct clk_gfm lpass_gfm_rx_mclk_mclk2 = {
++	.mux_reg = 0x240d8,
++	.mux_mask = BIT(0),
++	.hw.init = &(struct clk_init_data) {
++		.name = "RX_MCLK_MCLK2",
++		.ops = &clk_gfm_ops,
++		.flags = CLK_SET_RATE_PARENT | CLK_OPS_PARENT_ENABLE,
++		.parent_names = (const char *[]){
++			"LPASS_CLK_ID_TX_CORE_MCLK",
++			"LPASS_CLK_ID_RX_CORE_MCLK",
++		},
++		.parent_data = (const struct clk_parent_data[]){
++				{ .index = 0 },
++				{ .index = 1 },
++		},
++		.num_parents = 2,
++	},
++};
++
++static struct clk_gfm lpass_gfm_rx_npl = {
++	.mux_reg = 0x240d8,
++	.mux_mask = BIT(0),
++	.hw.init = &(struct clk_init_data) {
++		.name = "RX_NPL",
++		.ops = &clk_gfm_ops,
++		.flags = CLK_SET_RATE_PARENT | CLK_OPS_PARENT_ENABLE,
++		.parent_names = (const char *[]){
++			"LPASS_CLK_ID_TX_CORE_NPL_MCLK",
++			"LPASS_CLK_ID_RX_CORE_NPL_MCLK",
++		},
++		.parent_data = (const struct clk_parent_data[]){
++				{ .index = 0 },
++				{ .index = 1 },
++		},
++		.num_parents = 2,
++	},
++};
++
++static struct clk_gfm *audiocc_gfm_clks[] = {
++	[LPASS_CDC_WSA_NPL]		= &lpass_gfm_wsa_npl,
++	[LPASS_CDC_WSA_MCLK]		= &lpass_gfm_wsa_mclk,
++	[LPASS_CDC_RX_NPL]		= &lpass_gfm_rx_npl,
++	[LPASS_CDC_RX_MCLK_MCLK2]	= &lpass_gfm_rx_mclk_mclk2,
++};
++
++static struct clk_hw_onecell_data audiocc_hw_onecell_data = {
++	.hws = {
++		[LPASS_CDC_WSA_NPL]	= &lpass_gfm_wsa_npl.hw,
++		[LPASS_CDC_WSA_MCLK]	= &lpass_gfm_wsa_mclk.hw,
++		[LPASS_CDC_RX_NPL]	= &lpass_gfm_rx_npl.hw,
++		[LPASS_CDC_RX_MCLK_MCLK2] = &lpass_gfm_rx_mclk_mclk2.hw,
++	},
++	.num = ARRAY_SIZE(audiocc_gfm_clks),
++};
++
++struct lpass_gfm_data {
++	struct clk_hw_onecell_data *onecell_data;
++	struct clk_gfm **gfm_clks;
++};
++
++static struct lpass_gfm_data audiocc_data = {
++	.onecell_data = &audiocc_hw_onecell_data,
++	.gfm_clks = audiocc_gfm_clks,
++};
++
++static int lpass_gfm_clk_driver_probe(struct platform_device *pdev)
++{
++	const struct lpass_gfm_data *data;
++	struct device *dev = &pdev->dev;
++	struct resource *res;
++	struct clk_gfm *gfm;
++	struct lpass_gfm *cc;
++	int err, i;
++
++	cc = devm_kzalloc(dev, sizeof(*cc), GFP_KERNEL);
++	if (!cc)
++		return -ENOMEM;
++
++	cc->core_vote = devm_clk_get(&pdev->dev, "core");
++	if (IS_ERR(cc->core_vote)) {
++		dev_dbg(dev, "Failed to get lpass core clk\n");
++		return PTR_ERR(cc->core_vote);
++	}
++
++	data = of_device_get_match_data(dev);
++	cc->bus_clk = devm_clk_get(&pdev->dev, "bus");
++	if (IS_ERR(cc->bus_clk)) {
++		dev_dbg(dev, "Failed to get lpass bus clk\n");
++		return PTR_ERR(cc->bus_clk);
++	}
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	cc->base = devm_ioremap_resource(dev, res);
++	if (IS_ERR(cc->base))
++		return PTR_ERR(cc->base);
++
++	clk_prepare_enable(cc->core_vote);
++	clk_prepare_enable(cc->bus_clk);
++
++	for (i = 0; i < data->onecell_data->num; i++) {
++		if (!data->gfm_clks[i])
++			continue;
++
++		gfm = data->gfm_clks[i];
++		gfm->priv = cc;
++		gfm->gfm_mux = cc->base;
++		gfm->gfm_mux = gfm->gfm_mux + data->gfm_clks[i]->mux_reg;
++
++		err = devm_clk_hw_register(dev, &data->gfm_clks[i]->hw);
++		if (err)
++			return err;
++
++	}
++
++	return devm_of_clk_add_hw_provider(dev, of_clk_hw_onecell_get,
++					   data->onecell_data);
++}
++
++static const struct of_device_id lpass_gfm_clk_match_table[] = {
++	{
++		.compatible = "qcom,sm8250-lpass-audiocc",
++		.data = &audiocc_data,
++	},
++	{ }
++};
++
++static struct platform_driver lpass_gfm_clk_driver = {
++	.probe		= lpass_gfm_clk_driver_probe,
++	.driver		= {
++		.name	= "lpass-gfm-clk",
++		.of_match_table = lpass_gfm_clk_match_table,
++	},
++};
++builtin_platform_driver(lpass_gfm_clk_driver);
 -- 
-Regards
---
-Kieran
+2.21.0
+
