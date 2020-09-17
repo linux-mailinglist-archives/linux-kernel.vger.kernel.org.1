@@ -2,84 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2248926E7F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 00:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D367426E7F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 00:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726152AbgIQWHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 18:07:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725874AbgIQWHh (ORCPT
+        id S1726183AbgIQWHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 18:07:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44137 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725874AbgIQWHu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 18:07:37 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 928ABC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 15:07:37 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id a9so2022850pjg.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 15:07:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZbCBEdq8KnsqpsS4hwIyptSV65b1idGsJpvWf9x1kWE=;
-        b=KjoJhWyxpjl6/1j5XZi1G6b1H4FHP4Jk7mq8yX/aKnzkjlTFoO0R6TTKvIJC75vWip
-         cgKUWONQ39ZjHRbpEZ0RlgW28n+mUx9G4bMtuddc5U2pnvJjDC0t/kI/+vj5h5CDncA+
-         n6k72TZQrlo8nUg75GwDZ97PDuacdmPKR6M9U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZbCBEdq8KnsqpsS4hwIyptSV65b1idGsJpvWf9x1kWE=;
-        b=jnmZRxNEvCJ5a+4t0U1cQt4wJ9ZKHb/vnbsriZ4rWMJ4N9Ofc0Xr0btVHqS/NIghq3
-         QcemnVcJfIeOlZrzOA3BYFIApH3PtGm+IT8Pjye7NSRkgUY00RPd2pV9nUfYxBt9YNrr
-         +Ng9ntaARl/WCLIsaWUWIASVe9zhAzpOlRH2Fho0RuyFYdj1HjDemcMJ+G3GzPLuA09A
-         KItvw8vDbM18d93Gw+egHBJkXP9zwF8pNViwXoA9MLcUdsX7duuFn2YFmQXv+tpVrOAb
-         ySJ/4+OuZPL46aUlUixfB+wPFqjjEBgCya+puHpf16cF3qUXUOLKvC33SfsnKgMsnVGr
-         iOTw==
-X-Gm-Message-State: AOAM530LdEJIvUBYtWK2ZFjr5I7Ie8QKPv/6DNGzBwx3g8MuDIi81/Ps
-        ZoAeHIz52g7ofDmZFL2KrNRcIw==
-X-Google-Smtp-Source: ABdhPJy++uAnXYuUHCnPvoy4kLjCn8ZQYz0aMLBOYABxGPWS3bJI6nJZQPjsSTyhj7sZqtbF4u0xcw==
-X-Received: by 2002:a17:902:c20a:b029:d1:e598:400d with SMTP id 10-20020a170902c20ab02900d1e598400dmr12681703pll.71.1600380457211;
-        Thu, 17 Sep 2020 15:07:37 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id a13sm592214pgq.41.2020.09.17.15.07.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 15:07:36 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 15:07:35 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jcmvbkbc@gmail.com
-Subject: Re: [PATCH] selftests/harness: Flush stdout before forking
-Message-ID: <202009171506.7147F47FE@keescook>
-References: <20200917041519.3284582-1-mpe@ellerman.id.au>
+        Thu, 17 Sep 2020 18:07:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600380469;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aViMg+Pc+E39KYInTit03KCHA+7VqkV7P3uI8wkBDXE=;
+        b=OgISkzbScbpqCLS4majy65JC8lyYJSnyqO9/mXeKFjsi82LDyCsgG/Qk75RDwCwij4jv5/
+        jTfU4GYqyS7HG7AAVEurF+edyVKmA5hG21NAbUI20PgJzuGnFK28Icl1krAc7f1Bt/R2ed
+        vALymO94YOp2eyaxeDvmNiY1ub2AuPc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-545-brqZ6OWuMAuh19u2m6FVMg-1; Thu, 17 Sep 2020 18:07:44 -0400
+X-MC-Unique: brqZ6OWuMAuh19u2m6FVMg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 30B77801AF5;
+        Thu, 17 Sep 2020 22:07:43 +0000 (UTC)
+Received: from x1.home (ovpn-112-71.phx2.redhat.com [10.3.112.71])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7F19B55761;
+        Thu, 17 Sep 2020 22:07:42 +0000 (UTC)
+Date:   Thu, 17 Sep 2020 16:07:42 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Cornelia Huck <cohuck@redhat.com>
+Cc:     Zenghui Yu <yuzenghui@huawei.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <wanghaibin.wang@huawei.com>
+Subject: Re: [PATCH 2/2] vfio/pci: Remove bardirty from vfio_pci_device
+Message-ID: <20200917160742.4e4d6efd@x1.home>
+In-Reply-To: <20200917133537.17af2ef3.cohuck@redhat.com>
+References: <20200917033128.872-1-yuzenghui@huawei.com>
+        <20200917033128.872-2-yuzenghui@huawei.com>
+        <20200917133537.17af2ef3.cohuck@redhat.com>
+Organization: Red Hat
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917041519.3284582-1-mpe@ellerman.id.au>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 02:15:19PM +1000, Michael Ellerman wrote:
-> The test harness forks() a child to run each test. Both the parent and
-> the child print to stdout using libc functions. That can lead to
-> duplicated (or more) output if the libc buffers are not flushed before
-> forking.
-> 
-> It's generally not seen when running programs directly, because stdout
-> will usually be line buffered when it's pointing to a terminal.
-> 
-> This was noticed when running the seccomp_bpf test, eg:
-> 
->   $ ./seccomp_bpf | tee test.log
->   $ grep -c "TAP version 13" test.log
->   2
+On Thu, 17 Sep 2020 13:35:37 +0200
+Cornelia Huck <cohuck@redhat.com> wrote:
 
-Oh thank you for tracking this down! I thought seccomp wasn't killing a
-child or something, and hadn't found it yet. :)
+> On Thu, 17 Sep 2020 11:31:28 +0800
+> Zenghui Yu <yuzenghui@huawei.com> wrote:
+> 
+> > It isn't clear what purpose the @bardirty serves. It might be used to avoid
+> > the unnecessary vfio_bar_fixup() invoking on a user-space BAR read, which
+> > is not required when bardirty is unset.
+> > 
+> > The variable was introduced in commit 89e1f7d4c66d ("vfio: Add PCI device
+> > driver") but never actually used, so it shouldn't be that important. Remove
+> > it.
+> > 
+> > Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+> > ---
+> >  drivers/vfio/pci/vfio_pci_config.c  | 7 -------
+> >  drivers/vfio/pci/vfio_pci_private.h | 1 -
+> >  2 files changed, 8 deletions(-)  
+> 
+> Yes, it seems to have been write-only all the time.
 
-Acked-by: Kees Cook <keescook@chromium.org>
+I suspect the intent was that vfio_bar_fixup() could test
+vdev->bardirty to avoid doing work if no BARs had been written since
+they were last read.  As it is now we regenerate vconfig for all the
+BARs every time any offset of any of them are read.  BARs aren't
+re-read regularly and config space is not a performance path, but maybe
+we should instead test if we see any regressions from returning without
+doing any work in vfio_bar_fixup() if vdev->bardirty is false.  Thanks,
 
--- 
-Kees Cook
+Alex
+
