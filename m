@@ -2,156 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B8626D5B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3762726D5D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:10:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726239AbgIQIHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 04:07:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48986 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726460AbgIQIHB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 04:07:01 -0400
-Received: from localhost (unknown [151.66.80.226])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7CB2021D7F;
-        Thu, 17 Sep 2020 08:07:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600330021;
-        bh=PYy18IYLPyly6lpSvONF4fmQOHk7Au32VIWvOL+8b8w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Tc7PsFLcqRhs565sfekGU8p420yu3Xn+raDRVhtpuC755sX5IOUIVMm3fMVnfQtf0
-         9U74O20nM03yTS4a2oIMm4P0o+xgVi5bw/4hSqXx2PInCNaG0y114SUolO91wy6K76
-         A8Mv+ABQPj9zy9krNynPkdb8/yf+KNoAqUQLqqkA=
-Date:   Thu, 17 Sep 2020 10:06:56 +0200
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Mario Tesi <martepisa@gmail.com>
-Cc:     lorenzo.bianconi83@gmail.com, jic23@kernel.org, knaack.h@gmx.de,
-        lars@metafoo.de, pmeerw@pmeerw.net, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mario.tesi@st.com
-Subject: Re: [PATCH] iio: imu: st_lsm6dsx: Scaling factor type set to
- IIO_VAL_INT_PLUS_NANO
-Message-ID: <20200917080656.GA22982@lore-desk>
-References: <1600274660-29143-1-git-send-email-martepisa@gmail.com>
+        id S1726483AbgIQIKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 04:10:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726196AbgIQIJo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 04:09:44 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D35C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 01:09:23 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id c13so1494540oiy.6
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 01:09:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=hj748MDWz3uGjap8dFpsmQR43oB5FdmeE3PU5X76VV0=;
+        b=LiGHVTAZBlNXFMLULoLuA7sDuYos0oM5OblFb/GVLUevRmNfmxziUxmN5o1oE1+kmU
+         Rj3uVZ8GFXSdl/JIHrwHGB9TM+RPKb1uNIqL0MqOn18aam/SH8w9FTYGAPGf5TzhNpRe
+         Pe+BiT0Mhqg6d1HSV5qM409pE0CFaTHo+UOd0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=hj748MDWz3uGjap8dFpsmQR43oB5FdmeE3PU5X76VV0=;
+        b=fNfzfJJYlim62IIu77H/RgtubfieWD1TxsPr0uYjE6Hu2JItdSrXamkZt2GQQDTRaE
+         nc/QMgbwq+/QA+l7/5BvQoyrFgzJFnRmODmRZkNghmQxdpayWTD/JPFLoqc52ScntSq/
+         KT85SYC81vAYAgI6oW67bKni+uRgQv8slv0vaf+bkSC/i+w5so2vXVJOZam5S+uv0TgY
+         Q7c1kv6eUVqhYP1hQ65b7rB3agutivdk2LW0QCVAU+R7VGlgl3OE+SJM5mHpHUsI4jNH
+         WZOssIWr4uKr968UySqjOVstYyqQamvWpXOxcHqqfZfCUFKCb/Q1v8BeJG0Cr8QBAwky
+         5w5w==
+X-Gm-Message-State: AOAM5304bIM73NcBVIXcTVrgafrJOCNI791W60hZUVMJnPP9xwdVntVp
+        3deu3Hew+YnvnWqjQSm48RqsVaNYOU130vTObxvA4A==
+X-Google-Smtp-Source: ABdhPJxnhcvTWespPIz0mwDd5lfmfASbxSQp+iv4wdI3VWmLcUZDr+o6jic2DrtQ3xdcC58bSj1uv5b78VL+7UnvPaQ=
+X-Received: by 2002:aca:de41:: with SMTP id v62mr5615790oig.128.1600330163116;
+ Thu, 17 Sep 2020 01:09:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="KsGdsel6WgEHnImy"
-Content-Disposition: inline
-In-Reply-To: <1600274660-29143-1-git-send-email-martepisa@gmail.com>
+References: <20200914132920.59183-1-christian.koenig@amd.com>
+ <40cd26ae-b855-4627-5a13-4dcea5d622f6@gmail.com> <20200914140632.GD1221970@ziepe.ca>
+ <9302e4e0-0ff0-8b00-ada1-85feefb49e88@gmail.com> <20200916095359.GD438822@phenom.ffwll.local>
+ <20200916140710.GA8409@ziepe.ca> <8db2474f-ecb7-0e17-5f5b-145708fe44d5@amd.com>
+ <CAKMK7uFdwrT3HACPh3ADAKvhXJ-Hf3dExZmgJVAQ1KKjSai_0w@mail.gmail.com>
+ <aa953b09-53b1-104b-dc4b-156ad8a75e62@gmail.com> <CAKMK7uHJNRzCJfWVSmMrLmGXE0qo+OCXiMd+zPTOkeG2pnVrmQ@mail.gmail.com>
+ <8d8693db-a3f0-4f5f-3e32-57d23ca620f8@amd.com>
+In-Reply-To: <8d8693db-a3f0-4f5f-3e32-57d23ca620f8@amd.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Thu, 17 Sep 2020 10:09:12 +0200
+Message-ID: <CAKMK7uE=UqZD3PVC8XZAXrgGH-VsUF_-YQD3MLV8KK1kpxO4yQ@mail.gmail.com>
+Subject: Re: [Linaro-mm-sig] Changing vma->vm_file in dma_buf_mmap()
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 17, 2020 at 9:11 AM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
+>
+> Am 17.09.20 um 08:23 schrieb Daniel Vetter:
+> > On Wed, Sep 16, 2020 at 5:31 PM Christian K=C3=B6nig
+> > <ckoenig.leichtzumerken@gmail.com> wrote:
+> >> Am 16.09.20 um 17:24 schrieb Daniel Vetter:
+> >>> On Wed, Sep 16, 2020 at 4:14 PM Christian K=C3=B6nig
+> >>> <christian.koenig@amd.com> wrote:
+> >>>> Am 16.09.20 um 16:07 schrieb Jason Gunthorpe:
+> >>>>> On Wed, Sep 16, 2020 at 11:53:59AM +0200, Daniel Vetter wrote:
+> >>>>>
+> >>>>>> But within the driver, we generally need thousands of these, and t=
+hat
+> >>>>>> tends to bring fd exhaustion problems with it. That's why all the =
+private
+> >>>>>> buffer objects which aren't shared with other process or other dri=
+vers are
+> >>>>>> handles only valid for a specific fd instance of the drm chardev (=
+each
+> >>>>>> open gets their own namespace), and only for ioctls done on that c=
+hardev.
+> >>>>>> And for mmap we assign fake (but unique across all open fd on it) =
+offsets
+> >>>>>> within the overall chardev. Hence all the pgoff mangling and re-ma=
+ngling.
+> >>>>> Are they still unique struct files? Just without a fdno?
+> >>>> Yes, exactly.
+> >>> Not entirely, since dma-buf happened after drm chardev, so for that
+> >>> historical reason the underlying struct file is shared, since it's th=
+e
+> >>> drm chardev. But since that's per-device we don't have a problem in
+> >>> practice with different vm_ops, since those are also per-device. But
+> >>> yeah we could fish out some entirely hidden per-object struct file if
+> >>> that's required for some mm internal reasons.
+> >> Hui? Ok that is just the handling in i915, isn't it?
+> >>
+> >> As far as I know we create an unique struct file for each DMA-buf.
+> > Yes dma-buf, but that gets forwarded to the original drm chardev which
+> > originally exported the buffer. It's only there where the forwarding
+> > chain stops. The other thing is that iirc we have a singleton
+> > anon_inode behind all the dma-buf, so they'd share all the same
+> > address_space and so would all alias for unmap_mapping_range (I think
+> > at least).
+>
+> Amdgpu works by using the address_space of the drm chardev into the
+> struct file of DMA-buf instead.
+>
+> I think that this is cleaner, but only by a little bit :)
 
---KsGdsel6WgEHnImy
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yeah, but it doesn't work when forwarding from the drm chardev to the
+dma-buf on the importer side, since you'd need a ton of different
+address spaces. And you still rely on the core code picking up your
+pgoff mangling, which feels about as risky to me as the vma file
+pointer wrangling - if it's not consistently applied the reverse map
+is toast and unmap_mapping_range doesn't work correctly for our needs.
 
-> From: Mario Tesi <mario.tesi@st.com>
->=20
-> Scaling factor values for Acc lead to an unacceptable rounding of the
-> full scale (FS) calculated by some SensorHAL on Android devices. For exam=
-ples
-> setting FS to 4g the in_accel_x_scale, in_accel_y_scale and in_accel_z_sc=
-ale
-> are 0.001196 on 6 decimal digits and the FS is
-> 0.001196 =C3=97 ((2^15) =E2=88=92 1) ~=3D 39.1893 m/s^2.
->=20
-> Android CTS R10 SensorParameterRangeTest test expects a value greater than
-> 39.20 m/s^2 so this test fails (ACCELEROMETER_MAX_RANGE =3D 4 * 9.80).
->=20
-> Using 9 decimal digits the new scale factor is 0.001196411 and the FS now
-> is 0.001196411 =C3=97 ((2^15)=E2=88=921) ~=3D 39.2028 m/s^2.
->=20
-> This patch extends to IIO_VAL_INT_PLUS_NANO type the scaling factor to all
-> IMU devices where SensorParameterRangeTest CTS test fails.
->=20
-> Signed-off-by: Mario Tesi <mario.tesi@st.com>
+> Anyway I'm a bit concerned that we have so many different approaches for
+> the same problem.
 
-Hi Mario,
+Yeah, I think if we can standardize this then that would be really good.
+-Daniel
 
-just a minor comment inline. Fixing it:
+>
+> Christian.
+>
+> > -Daniel
+> >
+> >> Regards,
+> >> Christian.
+> >>
+> >>
+> >>> -Daniel
+> >>>
+> >>>>>> Hence why we'd like to be able to forward aliasing mappings and ad=
+just the
+> >>>>>> file and pgoff, while hopefully everything keeps working. I though=
+t this
+> >>>>>> would work, but Christian noticed it doesn't really.
+> >>>>> It seems reasonable to me that the dma buf should be the owner of t=
+he
+> >>>>> VMA, otherwise like you say, there is a big mess attaching the cust=
+om
+> >>>>> vma ops and what not to the proper dma buf.
+> >>>>>
+> >>>>> I don't see anything obviously against this in mmap_region() - why =
+did
+> >>>>> Chritian notice it doesn't really work?
+> >>>> To clarify I think this might work.
+> >>>>
+> >>>> I just had the same "Is that legal?", "What about security?", etc..
+> >>>> questions you raised as well.
+> >>>>
+> >>>> It seems like a source of trouble so I thought better ask somebody m=
+ore
+> >>>> familiar with that.
+> >>>>
+> >>>> Christian.
+> >>>>
+> >>>>> Jason
+> >>>> _______________________________________________
+> >>>> dri-devel mailing list
+> >>>> dri-devel@lists.freedesktop.org
+> >>>> https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2F=
+lists.freedesktop.org%2Fmailman%2Flistinfo%2Fdri-devel&amp;data=3D02%7C01%7=
+Cchristian.koenig%40amd.com%7Cf725d2eb6a5a49bd533f08d85ad23308%7C3dd8961fe4=
+884e608e11a82d994e183d%7C0%7C0%7C637359206142262941&amp;sdata=3DqcLsl9R1gP%=
+2FGY39ctsQkIzI99Bn%2F840YS17F4xudrAE%3D&amp;reserved=3D0
+> >>>
+> >
+>
 
-Acked-by: Lorenzo Bianconi <lorenzo@kernel.org>
 
-> ---
->  drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c | 136 ++++++++++++++++-----=
-------
->  1 file changed, 79 insertions(+), 57 deletions(-)
->=20
-
-[...]
-
->  	fs_table =3D &hw->settings->fs_table[sensor->id];
->  	for (i =3D 0; i < fs_table->fs_len; i++)
-> -		len +=3D scnprintf(buf + len, PAGE_SIZE - len, "0.%06u ",
-> +		len +=3D scnprintf(buf + len, PAGE_SIZE - len, "0.%09u ",
->  				 fs_table->fs_avl[i].gain);
->  	buf[len - 1] =3D '\n';
-> =20
->  	return len;
->  }
-> =20
-> +static int st_lsm6dsx_write_raw_get_fmt(struct iio_dev *indio_dev,
-> +					struct iio_chan_spec const *chan,
-> +					long mask)
-> +{
-> +	switch (mask) {
-> +	case IIO_CHAN_INFO_SCALE:
-> +		switch (chan->type) {
-> +		case IIO_ANGL_VEL:
-> +		case IIO_ACCEL:
-> +			return IIO_VAL_INT_PLUS_NANO;
-> +		default:
-> +			return IIO_VAL_INT_PLUS_MICRO;
-> +		}
-> +	default:
-> +		return IIO_VAL_INT_PLUS_MICRO;
-> +	}
-> +
-> +	return -EINVAL;
-
-you can remove this
-
-> +}
-> +
->  static IIO_DEV_ATTR_SAMP_FREQ_AVAIL(st_lsm6dsx_sysfs_sampling_frequency_=
-avail);
->  static IIO_DEVICE_ATTR(in_accel_scale_available, 0444,
->  		       st_lsm6dsx_sysfs_scale_avail, NULL, 0);
-> @@ -1868,6 +1888,7 @@ static const struct iio_info st_lsm6dsx_acc_info =
-=3D {
->  	.read_event_config =3D st_lsm6dsx_read_event_config,
->  	.write_event_config =3D st_lsm6dsx_write_event_config,
->  	.hwfifo_set_watermark =3D st_lsm6dsx_set_watermark,
-> +	.write_raw_get_fmt =3D st_lsm6dsx_write_raw_get_fmt,
->  };
-> =20
->  static struct attribute *st_lsm6dsx_gyro_attributes[] =3D {
-> @@ -1885,6 +1906,7 @@ static const struct iio_info st_lsm6dsx_gyro_info =
-=3D {
->  	.read_raw =3D st_lsm6dsx_read_raw,
->  	.write_raw =3D st_lsm6dsx_write_raw,
->  	.hwfifo_set_watermark =3D st_lsm6dsx_set_watermark,
-> +	.write_raw_get_fmt =3D st_lsm6dsx_write_raw_get_fmt,
->  };
-> =20
->  static int st_lsm6dsx_get_drdy_pin(struct st_lsm6dsx_hw *hw, int *drdy_p=
-in)
-> --=20
-> 2.7.4
->=20
-
---KsGdsel6WgEHnImy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCX2MZHQAKCRA6cBh0uS2t
-rHL/AP96R7XytMxa6K9VjyJF4K2K8BSdYyIad7PfYCNCKsj+dAEA2GQN9/EDTUz+
-Aoo53Jh582buw4rBvjezJiIXzFoZ9g4=
-=L8iq
------END PGP SIGNATURE-----
-
---KsGdsel6WgEHnImy--
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
