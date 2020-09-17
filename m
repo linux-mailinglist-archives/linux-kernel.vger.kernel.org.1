@@ -2,119 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F26F526E73B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 23:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDF5F26E754
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 23:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726422AbgIQVQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 17:16:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726022AbgIQVQL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 17:16:11 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19CFAC061351;
-        Thu, 17 Sep 2020 14:16:11 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id x14so4168885oic.9;
-        Thu, 17 Sep 2020 14:16:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AsrYKbcsJijPEVDhNCGN3B0ZQvVsWmRif4gtcVM+Ig8=;
-        b=FtUH6ig8YVS7H8bq0navRcZiYF49TxzPX9fRzW7JKIGPgQLl2EM8/yhiD5j44bQ5N3
-         8KxclSLs7LhUcRssHDeyWFLIYh/uUBJpKkgAU36525ji5vAeQzRB2FNDpU416v06C7O9
-         r6h2rNPcrVHuP+G36S31dawRBJH6qkk/R0P9ZfpLNtlslHwcOGxepemxn5QBrd5j/zSm
-         Plw7DpGnqv3XvZFroop5Ggan5mCF3sjgN5rFNIjFUXQKcpRYC7LPZbdygTtB3TUgeK87
-         Q5B0imxW6aNeVDmtvxlylz6TgcmnDq4LT0ys5o+2dYDdPm52aKc5S8w5FjKpqktuSPv0
-         QhtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AsrYKbcsJijPEVDhNCGN3B0ZQvVsWmRif4gtcVM+Ig8=;
-        b=Ch6/oOMXUDydS65yn08UX0gPfm4UMLWtOPJiAHJvxhHvX7rhxoeIer+acGEVQHXlN8
-         i+k/+NGGfX4wdipLa61K91Jm9lmaYbAOmUNIn7xR4NuFHhTf26N+7zBTQvIX/a1qpGZd
-         uNulk190FtSDLgxfrU6xXz7virIPKiAiQ4RPnLCob0EHvpJIf8Z5R2Od2xfJpL50pUjX
-         K/JH4IYDZe69ycD28KWGfiZ/C/P8suPJRMCub6hG8hPVcD1XHbHJkN5JXStyP8cteD/I
-         EhFzNBtrZcoj3+N5rFu181pf5rEP+1xTtjsB4ELhR4wZNioVxvTtk2S1ZNt46+BXsbkl
-         7hsA==
-X-Gm-Message-State: AOAM5304z7F2dsfkTbJDPkWqqqQnUxQXQGKYl3Yqm5ame1K3fkEE2O4b
-        yl/fF1SCYt7WQxu9+1RuqW8cwMK1eHX5saFEDZk=
-X-Google-Smtp-Source: ABdhPJwgDDnl5tN43fme5AYZxwAY7UH2LIKkocXlWvtrFI5ouRKFJxpFRz92OcU3mU5hG8H7yUd4lgTV6f3PMlvsUpc=
-X-Received: by 2002:aca:1b01:: with SMTP id b1mr7789495oib.137.1600377370438;
- Thu, 17 Sep 2020 14:16:10 -0700 (PDT)
+        id S1726040AbgIQVXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 17:23:41 -0400
+Received: from mga18.intel.com ([134.134.136.126]:61846 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725874AbgIQVXk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 17:23:40 -0400
+X-Greylist: delayed 426 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 17:23:40 EDT
+IronPort-SDR: T0Na8pX+NOmc8zlK6qBBzuWuwjH3Zmpd2JFsjqshrKYAUy9VBxkYqn0M1PsG+/gvO3A3llvZL1
+ 78Y15QuDthLw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="147542843"
+X-IronPort-AV: E=Sophos;i="5.77,272,1596524400"; 
+   d="scan'208";a="147542843"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 14:16:32 -0700
+IronPort-SDR: 7CENmsfUyVNTB/c/ycqvMjEwYhH/7xKDggIpJMzOn7Ts2EC8GErquhceAUhFPMtO+Gf0RAb+j1
+ vvRsy9hdOJBg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,272,1596524400"; 
+   d="scan'208";a="507893687"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga006.fm.intel.com with ESMTP; 17 Sep 2020 14:16:31 -0700
+Received: from [10.251.12.27] (kliang2-MOBL.ccr.corp.intel.com [10.251.12.27])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 00EEE5807C9;
+        Thu, 17 Sep 2020 14:16:29 -0700 (PDT)
+Subject: Re: [PATCH V7 1/4] perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE
+To:     Dave Hansen <dave.hansen@intel.com>, peterz@infradead.org,
+        mingo@redhat.com, acme@kernel.org, linux-kernel@vger.kernel.org
+Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, eranian@google.com, ak@linux.intel.com,
+        kirill.shutemov@linux.intel.com, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org
+References: <20200917135237.2857-1-kan.liang@linux.intel.com>
+ <20200917135237.2857-2-kan.liang@linux.intel.com>
+ <13427458-3934-1490-68bb-071be2ae01da@intel.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <40234c70-720e-9c0d-1fc2-ac23c0acf721@linux.intel.com>
+Date:   Thu, 17 Sep 2020 17:16:28 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200917164632.BlueZ.v2.1.I27ef2a783d8920c147458639f3fa91b69f6fd9ea@changeid>
-In-Reply-To: <20200917164632.BlueZ.v2.1.I27ef2a783d8920c147458639f3fa91b69f6fd9ea@changeid>
-From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date:   Thu, 17 Sep 2020 14:15:59 -0700
-Message-ID: <CABBYNZJv2-GAsfOrUVjb+ZcTQz5TJBDvuCjFzMQm=N7_F0VYPg@mail.gmail.com>
-Subject: Re: [BlueZ PATCH v2 1/6] Bluetooth: Update Adv monitor count upon removal
-To:     Howard Chung <howardchung@google.com>
-Cc:     "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Manish Mandlik <mmandlik@chromium.org>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        Alain Michaud <alainm@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <13427458-3934-1490-68bb-071be2ae01da@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Howard,
 
-On Thu, Sep 17, 2020 at 1:47 AM Howard Chung <howardchung@google.com> wrote:
->
-> From: Miao-chen Chou <mcchou@chromium.org>
->
-> This fixes the count of Adv monitor upon monitor removal.
->
-> The following test was performed.
-> - Start two btmgmt consoles, issue a btmgmt advmon-remove command on one
-> console and observe a MGMT_EV_ADV_MONITOR_REMOVED event on the other.
->
-> Signed-off-by: Miao-chen Chou <mcchou@chromium.org>
-> Signed-off-by: Howard Chung <howardchung@google.com>
-> Reviewed-by: Alain Michaud <alainm@chromium.org>
-> ---
->
-> Changes in v2:
-> - delete 'case 0x001c' in mgmt_config.c
->
->  net/bluetooth/hci_core.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-> index 8a2645a833013..f30a1f5950e15 100644
-> --- a/net/bluetooth/hci_core.c
-> +++ b/net/bluetooth/hci_core.c
-> @@ -3061,6 +3061,7 @@ static int free_adv_monitor(int id, void *ptr, void *data)
->
->         idr_remove(&hdev->adv_monitors_idr, monitor->handle);
->         hci_free_adv_monitor(monitor);
-> +       hdev->adv_monitors_cnt--;
->
->         return 0;
->  }
-> @@ -3077,6 +3078,7 @@ int hci_remove_adv_monitor(struct hci_dev *hdev, u16 handle)
->
->                 idr_remove(&hdev->adv_monitors_idr, monitor->handle);
->                 hci_free_adv_monitor(monitor);
-> +               hdev->adv_monitors_cnt--;
->         } else {
->                 /* Remove all monitors if handle is 0. */
->                 idr_for_each(&hdev->adv_monitors_idr, &free_adv_monitor, hdev);
-> --
-> 2.28.0.618.gf4bc123cb7-goog
 
-This looks like a kernel patch so you shouldn't be prefixing it with
-BlueZ as it might confuse CI.
+On 9/17/2020 3:00 PM, Dave Hansen wrote:
+> On 9/17/20 6:52 AM, kan.liang@linux.intel.com wrote:
+>> +	mm = current->mm;
+>> +	if (!mm) {
+>> +		/*
+>> +		 * For kernel threads and the like, use init_mm so that
+>> +		 * we can find kernel memory.
+>> +		 */
+>> +		mm = &init_mm;
+>> +	}
+> 
+> I think it might be better to use current->active_mm instead of
+> current->mm.  Kernel threads can "take over" the mm of the threads that
+> switched to them, so they're not actually using all of the page tables
+> from the init_mm all the time.
+> 
+> It's not _common_, thought.  The only time that I think they can diverge
+> is when vmalloc PGD sync'ing needs to be done, and there's even an
+> effort to remove that.
+> 
+> But, it's probably more more precise to just use ->active_mm since
+> that's what will actually be more consistent with the values loaded into
+> CR3.
+> 
+> I _think_ ->active_mm is always non-NULL, too.
+>
 
--- 
-Luiz Augusto von Dentz
+Thanks. yes, active_mm looks better here. I will use active_mm to 
+replace the mm and &init_mm.
+
+> One last concern as I look at this: I wish it was a bit more
+> future-proof.  There are lots of weird things folks are trying to do
+> with the page tables, like Address Space Isolation.  For instance, if
+> you get a perf NMI when running userspace, current->mm->pgd is
+> *different* than the PGD that was in use when userspace was running.
+> It's close enough today, but it might not stay that way.  But I can't
+> think of any great ways to future proof this code, other than spitting
+> out an error message if too many of the page table walks fail when they
+> shouldn't.
+> 
+
+If the page table walks fail, page size 0 will return. So the worst case 
+is that the page size is not available for users, which is not a fatal 
+error.
+
+If my understanding is correct, when the above case happens, there is 
+nothing we can do for now (because we have no idea what it will become), 
+except disabling the page size support and throw an error/warning.
+
+ From the user's perspective, throwing an error message or marking the 
+page size unavailable should be the same. I think we may leave the code 
+as-is. We can fix the future case later separately.
+
+Thanks,
+Kan
