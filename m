@@ -2,121 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D0C26D7B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 11:33:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF2FB26D7AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 11:31:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726496AbgIQJdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 05:33:02 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:49698 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726185AbgIQJc5 (ORCPT
+        id S1726411AbgIQJas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 05:30:48 -0400
+Received: from smtprelay0101.hostedemail.com ([216.40.44.101]:38664 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726200AbgIQJaq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 05:32:57 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08H7mOEw098051;
-        Thu, 17 Sep 2020 02:48:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600328904;
-        bh=XUWlwYnEa2/3Aqan6ilt7Si/rPK+fDEzdyGLCe7s26s=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=XfVFDzffOZH+snsOjD7l30rhEKKlaWkQe+vP9JTPKsrN4oJGGx9RYZzs6jKALZTbm
-         T0CAPjJWaUFqZJjV28Yok/6HEaG3nygfk6zWCc9Aiyv8Jh3AmlsosBv7CKSwsikuND
-         zRQymHVKRpvLF87NLuxW0wPHWMC1UWBs3v/9u4GA=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08H7mOQl102335
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 17 Sep 2020 02:48:24 -0500
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 17
- Sep 2020 02:48:24 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 17 Sep 2020 02:48:24 -0500
-Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08H7mEdu100359;
-        Thu, 17 Sep 2020 02:48:22 -0500
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-To:     Vignesh Raghavendra <vigneshr@ti.com>
-CC:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 3/4] mtd: hyperbus: hbmc-am654: Drop pm_runtime* calls from probe
-Date:   Thu, 17 Sep 2020 13:17:48 +0530
-Message-ID: <20200917074749.8957-4-vigneshr@ti.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200917074749.8957-1-vigneshr@ti.com>
-References: <20200917074749.8957-1-vigneshr@ti.com>
+        Thu, 17 Sep 2020 05:30:46 -0400
+X-Greylist: delayed 309 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 05:30:46 EDT
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave06.hostedemail.com (Postfix) with ESMTP id CF5B2800EEB2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 09:25:37 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 7514F182CF66A;
+        Thu, 17 Sep 2020 09:25:33 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3653:3865:3866:3867:3868:4321:5007:6299:7903:8957:10004:10400:11026:11232:11473:11657:11658:11914:12043:12295:12296:12297:12438:12740:12760:12895:13069:13161:13229:13311:13357:13439:14659:14721:21080:21221:21433:21627:21939:21990:30030:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: watch69_32046bb27121
+X-Filterd-Recvd-Size: 2774
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf09.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 17 Sep 2020 09:25:32 +0000 (UTC)
+Message-ID: <5341538083077360205d50683ac2f3df22cfa72a.camel@perches.com>
+Subject: Re: [PATCH 1/2] staging: rtl8188eu: use __func__ in hal directory
+From:   Joe Perches <joe@perches.com>
+To:     Michael Straube <straube.linux@gmail.com>,
+        gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 17 Sep 2020 02:25:31 -0700
+In-Reply-To: <20200917071330.31740-1-straube.linux@gmail.com>
+References: <20200917071330.31740-1-straube.linux@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recent genpd changes for K3 platform ensure device is ON before driver
-probe is called. Therefore, drop redundant pm_runtime_* calls from
-driver to simplify the code.
+On Thu, 2020-09-17 at 09:13 +0200, Michael Straube wrote:
+> Use __func__ instead of hardcoded function names to clear
+> checkpatch warnings.
+[]
+> diff --git a/drivers/staging/rtl8188eu/hal/odm.c b/drivers/staging/rtl8188eu/hal/odm.c
+[]
+> @@ -249,7 +249,7 @@ void odm_CommonInfoSelfUpdate(struct odm_dm_struct *pDM_Odm)
+>  
+>  void odm_CmnInfoInit_Debug(struct odm_dm_struct *pDM_Odm)
+>  {
+> -	ODM_RT_TRACE(pDM_Odm, ODM_COMP_COMMON, ODM_DBG_LOUD, ("odm_CmnInfoInit_Debug==>\n"));
+> +	ODM_RT_TRACE(pDM_Odm, ODM_COMP_COMMON, ODM_DBG_LOUD, ("%s==>\n", __func__));
+>  	ODM_RT_TRACE(pDM_Odm, ODM_COMP_COMMON, ODM_DBG_LOUD, ("SupportPlatform=%d\n", pDM_Odm->SupportPlatform));
+>  	ODM_RT_TRACE(pDM_Odm, ODM_COMP_COMMON, ODM_DBG_LOUD, ("SupportAbility=0x%x\n", pDM_Odm->SupportAbility));
+>  	ODM_RT_TRACE(pDM_Odm, ODM_COMP_COMMON, ODM_DBG_LOUD, ("SupportInterface=%d\n", pDM_Odm->SupportInterface));
 
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
----
- drivers/mtd/hyperbus/hbmc-am654.c | 16 ++--------------
- 1 file changed, 2 insertions(+), 14 deletions(-)
+These ODM_RT_TRACE macro uses are rather ugly.
+Perhaps a rename to odm_dbg would be better.
+So would removing the unnecessary parentheses from
+the macro uses and fixing the macro definition
 
-diff --git a/drivers/mtd/hyperbus/hbmc-am654.c b/drivers/mtd/hyperbus/hbmc-am654.c
-index 1e70ecfffa39..b6a2400fcaa9 100644
---- a/drivers/mtd/hyperbus/hbmc-am654.c
-+++ b/drivers/mtd/hyperbus/hbmc-am654.c
-@@ -13,7 +13,6 @@
- #include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/platform_device.h>
--#include <linux/pm_runtime.h>
- #include <linux/types.h>
- 
- #define AM654_HBMC_CALIB_COUNT 25
-@@ -89,13 +88,6 @@ static int am654_hbmc_probe(struct platform_device *pdev)
- 		priv->mux_ctrl = control;
- 	}
- 
--	pm_runtime_enable(dev);
--	ret = pm_runtime_get_sync(dev);
--	if (ret < 0) {
--		pm_runtime_put_noidle(dev);
--		goto disable_pm;
--	}
--
- 	priv->hbdev.map.size = resource_size(&res);
- 	priv->hbdev.map.virt = devm_ioremap_resource(dev, &res);
- 	if (IS_ERR(priv->hbdev.map.virt))
-@@ -107,13 +99,11 @@ static int am654_hbmc_probe(struct platform_device *pdev)
- 	ret = hyperbus_register_device(&priv->hbdev);
- 	if (ret) {
- 		dev_err(dev, "failed to register controller\n");
--		pm_runtime_put_sync(&pdev->dev);
--		goto disable_pm;
-+		goto disable_mux;
- 	}
- 
- 	return 0;
--disable_pm:
--	pm_runtime_disable(dev);
-+disable_mux:
- 	if (priv->mux_ctrl)
- 		mux_control_deselect(priv->mux_ctrl);
- 	return ret;
-@@ -127,8 +117,6 @@ static int am654_hbmc_remove(struct platform_device *pdev)
- 	ret = hyperbus_unregister_device(&priv->hbdev);
- 	if (priv->mux_ctrl)
- 		mux_control_deselect(priv->mux_ctrl);
--	pm_runtime_put_sync(&pdev->dev);
--	pm_runtime_disable(&pdev->dev);
- 
- 	return ret;
- }
--- 
-2.28.0
+Maybe using a perl script something like the below:
+
+our $balanced_parens = qr/(\((?:[^\(\)]++|(?-1))*\))/;
+
+sub deparenthesize {
+	my ($string) = @_;
+	return "" if (!defined($string));
+
+	while ($string =~ /^\s*\(.*\)\s*$/s) {
+		$string =~ s@^\s*\(\s*@@s;
+		$string =~ s@\s*\)\s*$@@s;
+	}
+
+	return $string;
+}
+
+foreach my $file (@ARGV) {
+    my $FILE;
+    my $count;
+    open($FILE, '<', $file) or die("Can't read $file $!\n");
+    undef $/;
+    my $text = (<$FILE>);
+    close($FILE);
+    $count = $text =~ s/ODM_RT_TRACE\s*\(\s*([^,]*),\s*ODM_COMP_(\w+)\s*,\s*ODM_DBG_(\w+)\s*,\s*($balanced_parens)\s*\)\s*;/"odm_dbg($1, $2, $3, " . deparenthesize($4) . ");"/ge;
+    if ($count > 0) {
+	open($FILE, '>', $file) or die("Can't write $file $!\n");
+	print $FILE $text;
+	close($FILE);
+    }
+}
+
 
