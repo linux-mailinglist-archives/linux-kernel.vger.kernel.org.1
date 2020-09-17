@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FA6426E489
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70B0226E494
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726480AbgIQSwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 14:52:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53156 "EHLO mail.kernel.org"
+        id S1726589AbgIQSws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 14:52:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726553AbgIQSu7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 14:50:59 -0400
+        id S1726556AbgIQSwY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 14:52:24 -0400
 Received: from kozik-lap.mshome.net (unknown [194.230.155.191])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5882A206B2;
-        Thu, 17 Sep 2020 18:50:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D8DE206B2;
+        Thu, 17 Sep 2020 18:52:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600368658;
-        bh=EIFP5fdYl0NK4ED+IZFrpucD2i1ESwcvVrfUhfvX3WU=;
+        s=default; t=1600368740;
+        bh=XKp/ALCXKdogV898R63aYemHxOz/vb5HEsd5afFXsHs=;
         h=From:To:Subject:Date:From;
-        b=qI52GKlJ49udQyA+FXCl4IuCxAU06RHePjIHFJ7VQTXbCKo/3qt6P31lv2emucVOT
-         smazvS4EEF+s2YnNL/H53KaqxiebL6AeBQZ9KGf0sddpDBglUDbTwLXKQ/9cqoG/Sg
-         72giYy2NRdrD1m0YUItAaw5HTJLMXK/bmE7b6848=
+        b=xha31VWNPbcwTWQ1Qj7OW9FmHR3AheCdYBldwkejJwo8vrXEg+kjAy479DUWHSe6T
+         dUM8nf1AkP9wW3GZRCYtPkVnmyegqczuSCko7yCBte5/cwLSewA1ZFTLCvlEAmD2KU
+         qA9os2y9kMuaxIUqO0knW4W1GjYj4JRflneqn79Q=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Rajan Vaja <rajan.vaja@xilinx.com>,
+To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
+        Johan Jonker <jbx6244@gmail.com>,
         Krzysztof Kozlowski <krzk@kernel.org>,
-        Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Kever Yang <kever.yang@rock-chips.com>,
+        Vivek Unune <npcomplete13@gmail.com>,
+        Alexis Ballier <aballier@gentoo.org>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Anand Moon <linux.amoon@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2] arm64: dts: zynqmp-zcu100-revC: correct interrupt flags
-Date:   Thu, 17 Sep 2020 20:50:52 +0200
-Message-Id: <20200917185052.5084-1-krzk@kernel.org>
+Subject: [PATCH v2 1/2] ARM: dts: rk3188: correct interrupt flags
+Date:   Thu, 17 Sep 2020 20:52:10 +0200
+Message-Id: <20200917185211.5483-1-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -45,9 +49,8 @@ have the same meaning:
 1. GPIO_ACTIVE_HIGH = 0 = IRQ_TYPE_NONE
 2. GPIO_ACTIVE_LOW  = 1 = IRQ_TYPE_EDGE_RISING
 
-Correct the interrupt flags, assuming the author of the code wanted same
-logical behavior behind the name "ACTIVE_xxx", this is:
-  ACTIVE_LOW => IRQ_TYPE_LEVEL_LOW
+Correct the interrupt flags without affecting the code:
+  ACTIVE_HIGH => IRQ_TYPE_NONE
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
@@ -58,22 +61,30 @@ Not tested on HW.
 Changes since v1:
 1. Correct title
 ---
- arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/rk3188-bqedison2qc.dts | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts
-index d60110ad8367..c9460693f4e9 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts
-@@ -186,7 +186,7 @@
- 				compatible = "ti,tps65086";
- 				reg = <0x5e>;
- 				interrupt-parent = <&gpio>;
--				interrupts = <77 GPIO_ACTIVE_LOW>;
-+				interrupts = <77 IRQ_TYPE_LEVEL_LOW>;
- 				#gpio-cells = <2>;
- 				gpio-controller;
- 			};
+diff --git a/arch/arm/boot/dts/rk3188-bqedison2qc.dts b/arch/arm/boot/dts/rk3188-bqedison2qc.dts
+index 66a0ff196eb1..b191347894f6 100644
+--- a/arch/arm/boot/dts/rk3188-bqedison2qc.dts
++++ b/arch/arm/boot/dts/rk3188-bqedison2qc.dts
+@@ -7,6 +7,7 @@
+ /dts-v1/;
+ #include <dt-bindings/i2c/i2c.h>
+ #include <dt-bindings/input/input.h>
++#include <dt-bindings/interrupt-controller/irq.h>
+ #include "rk3188.dtsi"
+ 
+ / {
+@@ -479,7 +480,7 @@
+ 		reg = <1>;
+ 		compatible = "brcm,bcm4329-fmac";
+ 		interrupt-parent = <&gpio3>;
+-		interrupts = <RK_PD2 GPIO_ACTIVE_HIGH>;
++		interrupts = <RK_PD2 IRQ_TYPE_NONE>;
+ 		interrupt-names = "host-wake";
+ 		brcm,drive-strength = <5>;
+ 		pinctrl-names = "default";
 -- 
 2.17.1
 
