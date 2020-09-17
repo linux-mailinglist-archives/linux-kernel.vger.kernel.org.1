@@ -2,117 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8930326D2E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 07:07:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84A2926D2E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 07:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726156AbgIQFHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 01:07:42 -0400
-Received: from mga09.intel.com ([134.134.136.24]:6023 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726072AbgIQFHj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 01:07:39 -0400
-X-Greylist: delayed 431 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 01:07:39 EDT
-IronPort-SDR: FD7SVIALda3pF/NeBxGpzzV0YtII6kDNtoJU/dgeP+GsyVC5Ag5c5X5RzyWNwxkt5Js8kCOMjq
- eKFcMHKosVpQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="160554351"
-X-IronPort-AV: E=Sophos;i="5.76,435,1592895600"; 
-   d="scan'208";a="160554351"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 22:00:27 -0700
-IronPort-SDR: I2vTLVsvX8h5UF3mjIn+RSOOfj8ujvCbbBOZ/jLwXgFn+5ric5R27/Gx/NcaTmohGr5vo0j2bz
- KubqHSfrvIVw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,435,1592895600"; 
-   d="scan'208";a="508258776"
-Received: from glass.png.intel.com ([172.30.181.92])
-  by fmsmga005.fm.intel.com with ESMTP; 16 Sep 2020 22:00:24 -0700
-From:   Wong Vee Khee <vee.khee.wong@intel.com>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        Voon Wei Feng <weifeng.voon@intel.com>,
-        Tan Tee Min <tee.min.tan@intel.com>,
-        Wong Vee Khee <vee.khee.wong@intel.com>,
-        Vijaya Balan Sadhishkhanna 
-        <sadhishkhanna.vijaya.balan@intel.com>,
-        Seow Chen Yong <chen.yong.seow@intel.com>
-Subject: [PATCH net-next] net: stmmac: introduce rtnl_lock|unlock() on configuring real_num_rx|tx_queues
-Date:   Thu, 17 Sep 2020 13:02:15 +0800
-Message-Id: <20200917050215.8725-1-vee.khee.wong@intel.com>
-X-Mailer: git-send-email 2.17.0
+        id S1726185AbgIQFKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 01:10:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726109AbgIQFKO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 01:10:14 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA87C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 22:10:13 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id t76so1046968oif.7
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 22:10:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FSMe0eSMdIe3Gfx6n3S8crTzPvy5rJ0iSHhhJ3uKFKQ=;
+        b=iepgFmQ3Sui7+BcQEaNk/iFybMWOQ0B86m5XI/ZdRIUoMN0f6VUK8V3Lt68EYUEwzR
+         NpyYa7w3a4CU1H8rh9UvWl9FqtD3Uu5eWb0rKPoG6AKl0UN1EzZjRvvE6StOxT9q0lNq
+         vcVV3rZYILRRUqUzHt+DmzHj0nSe3fFpJhcomgoDBLLT1t44r44j7SKLiT4p4w46u+Sa
+         NFRDONt4EAwfsR/1HsbxT6jZCEV5QpNj90MLkARVC9L1OhfnoZnnFrA5gIue3tLt5lN2
+         Z/M3T73c4p53V2IFF3EX20OaB/yePEHVRIz5NVEn5vcFAbcz05Td3rGBNkWoWu7zt7gd
+         cYXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FSMe0eSMdIe3Gfx6n3S8crTzPvy5rJ0iSHhhJ3uKFKQ=;
+        b=FGqBz3Ir9kru6sMfciN58xGoW/PFVAkXLqwUGAiwh9cKHN7OjbKitd71BG103KNWVS
+         qK0wVeGjIxhputszD2tOsPLbsXe5NM/hVBtc+DFkMWAjmOJ1SX01y+Cp5kbaUaqQrvci
+         gVHrxYKcaMV1htvF+EOoqrNEwT67yEUAf0714lQluqxmqqbk7B7iTwak6VJyzw4nvycv
+         4Y28z8tOjR3a4/lfxWMwQZ/d470rRS8I4MtL/1nGKx6MtonARHYkliDKoLnVZAtqyiOE
+         VJSTlZKKRHJmTX+ddSTiSbZeWK4gUiFd2OVGpV9wBYK8W2ajTq/UhllQ49n1qsJZGaki
+         ja2w==
+X-Gm-Message-State: AOAM53095T8vwRsgq/2/0yTPwA3Tay7MZ/KLpk3Um0IClV0Qv0uVp59K
+        3DRbWKeInXfDKGrO6+yl945Z/g==
+X-Google-Smtp-Source: ABdhPJwlxnRFSwIwfe8pWnIKka7QS5n3Xntowx6Mq4Fdts+kaIq8AluucE5JQFb/Uuoh9uwg/npQDg==
+X-Received: by 2002:aca:c7c5:: with SMTP id x188mr5535465oif.34.1600319412788;
+        Wed, 16 Sep 2020 22:10:12 -0700 (PDT)
+Received: from yoga ([2605:6000:e5cb:c100:7cad:6eff:fec8:37e4])
+        by smtp.gmail.com with ESMTPSA id 189sm10965833oid.40.2020.09.16.22.10.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 22:10:11 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 00:10:08 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        agross@kernel.org, kishon@ti.com, robh@kernel.org,
+        svarbanov@mm-sol.com, bhelgaas@google.com,
+        lorenzo.pieralisi@arm.com, linux-arm-msm@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mgautam@codeaurora.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/5] dt-bindings: phy: qcom,qmp: Document SM8250 PCIe PHY
+ bindings
+Message-ID: <20200917051008.GM1893@yoga>
+References: <20200916132000.1850-1-manivannan.sadhasivam@linaro.org>
+ <20200916132000.1850-2-manivannan.sadhasivam@linaro.org>
+ <20200916224541.GF1893@yoga>
+ <20200917043239.GW2968@vkoul-mobl>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917043239.GW2968@vkoul-mobl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Tan, Tee Min" <tee.min.tan@intel.com>
+On Wed 16 Sep 23:32 CDT 2020, Vinod Koul wrote:
 
-For driver open(), rtnl_lock is acquired by network stack but not in the
-resume(). Therefore, we introduce lock_acquired boolean to control when
-to use rtnl_lock|unlock() within stmmac_hw_setup().
+> On 16-09-20, 17:45, Bjorn Andersson wrote:
+> > On Wed 16 Sep 08:19 CDT 2020, Manivannan Sadhasivam wrote:
+> > 
+> > > Document the DT bindings of below PCIe PHY versions used on SM8250:
+> > > 
+> > > QMP GEN3x1 PHY - 1 lane
+> > > QMP GEN3x2 PHY - 2 lanes
+> > > QMP Modem PHY - 2 lanes
+> > 
+> > How about something like "Add the three PCIe PHYs found in SM8250 to the
+> > QMP binding"?
+> 
+> Or add just one compatible sm8250-qmp-pcie and then use number of lanes
+> as dt property?
+> 
 
-Fixes: 686cff3d7022 ("net: stmmac: Fix incorrect location to set real_num_rx|tx_queues")
+If we have the same initialization sequence then that sounds reasonable.
+Perhaps we can derive the number of lanes from the child node?
 
-Signed-off-by: Tan, Tee Min <tee.min.tan@intel.com>
----
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+A bigger question is how we deal with this going forward, if there are
+more crazy setups like on sc8180x where the lanes might be grouped
+differently based on board...
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index df2c74bbfcff..22e6a3defa78 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -2607,7 +2607,8 @@ static void stmmac_safety_feat_configuration(struct stmmac_priv *priv)
-  *  0 on success and an appropriate (-)ve integer as defined in errno.h
-  *  file on failure.
-  */
--static int stmmac_hw_setup(struct net_device *dev, bool init_ptp)
-+static int stmmac_hw_setup(struct net_device *dev, bool init_ptp,
-+			   bool lock_acquired)
- {
- 	struct stmmac_priv *priv = netdev_priv(dev);
- 	u32 rx_cnt = priv->plat->rx_queues_to_use;
-@@ -2715,9 +2716,15 @@ static int stmmac_hw_setup(struct net_device *dev, bool init_ptp)
- 	}
- 
- 	/* Configure real RX and TX queues */
-+	if (!lock_acquired)
-+		rtnl_lock();
-+
- 	netif_set_real_num_rx_queues(dev, priv->plat->rx_queues_to_use);
- 	netif_set_real_num_tx_queues(dev, priv->plat->tx_queues_to_use);
- 
-+	if (!lock_acquired)
-+		rtnl_unlock();
-+
- 	/* Start the ball rolling... */
- 	stmmac_start_all_dma(priv);
- 
-@@ -2804,7 +2811,7 @@ static int stmmac_open(struct net_device *dev)
- 		goto init_error;
- 	}
- 
--	ret = stmmac_hw_setup(dev, true);
-+	ret = stmmac_hw_setup(dev, true, true);
- 	if (ret < 0) {
- 		netdev_err(priv->dev, "%s: Hw setup failed\n", __func__);
- 		goto init_error;
-@@ -5238,7 +5245,7 @@ int stmmac_resume(struct device *dev)
- 
- 	stmmac_clear_descriptors(priv);
- 
--	stmmac_hw_setup(ndev, false);
-+	stmmac_hw_setup(ndev, false, false);
- 	stmmac_init_coalesce(priv);
- 	stmmac_set_rx_mode(ndev);
- 
--- 
-2.17.0
+Regards,
+Bjorn
 
+> > 
+> > > 
+> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > ---
+> > >  Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml | 5 +++++
+> > >  1 file changed, 5 insertions(+)
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
+> > > index 185cdea9cf81..69b67f79075c 100644
+> > > --- a/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
+> > > +++ b/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
+> > > @@ -31,6 +31,9 @@ properties:
+> > >        - qcom,sdm845-qmp-usb3-uni-phy
+> > >        - qcom,sm8150-qmp-ufs-phy
+> > >        - qcom,sm8250-qmp-ufs-phy
+> > > +      - qcom,qcom,sm8250-qmp-gen3x1-pcie-phy
+> > > +      - qcom,qcom,sm8250-qmp-gen3x2-pcie-phy
+> > > +      - qcom,qcom,sm8250-qmp-modem-pcie-phy
+> > 
+> > One "qcom," should be enough.
+> > 
+> > >  
+> > >    reg:
+> > >      items:
+> > > @@ -259,6 +262,8 @@ allOf:
+> > >              enum:
+> > >                - qcom,sdm845-qhp-pcie-phy
+> > >                - qcom,sdm845-qmp-pcie-phy
+> > > +              - qcom,sm8250-qhp-pcie-phy
+> > > +              - qcom,sm8250-qmp-pcie-phy
+> > 
+> > Adjust these.
+> > 
+> > Regards,
+> > Bjorn
+> > 
+> > >      then:
+> > >        properties:
+> > >          clocks:
+> > > -- 
+> > > 2.17.1
+> > > 
+> 
+> -- 
+> ~Vinod
