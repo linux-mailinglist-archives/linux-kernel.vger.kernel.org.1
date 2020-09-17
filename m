@@ -2,107 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3CF326E3A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29A2826E3A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726387AbgIQSdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 14:33:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726448AbgIQScU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 14:32:20 -0400
-Received: from saturn.retrosnub.co.uk (saturn.retrosnub.co.uk [IPv6:2a00:1098:86::1:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F5BC06174A;
-        Thu, 17 Sep 2020 11:32:19 -0700 (PDT)
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        by saturn.retrosnub.co.uk (Postfix; Retrosnub mail submission) with ESMTPSA id 44C509E016A;
-        Thu, 17 Sep 2020 19:32:08 +0100 (BST)
-Date:   Thu, 17 Sep 2020 19:32:06 +0100
-From:   Jonathan Cameron <jic23@jic23.retrosnub.co.uk>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>
-Subject: Re: [PATCH 15/30] iio: dummy: iio_dummy_evgen: Demote file header
- and supply description for 'irq_sim_domain'
-Message-ID: <20200917193206.40f68d76@archlinux>
-In-Reply-To: <20200718160046.5d1c8abb@archlinux>
-References: <20200716135928.1456727-1-lee.jones@linaro.org>
-        <20200716135928.1456727-16-lee.jones@linaro.org>
-        <CAMpxmJU1NZniOOofWykaHmpJDD=ZDw2HpRofDHHF01fvr_JZfA@mail.gmail.com>
-        <20200718160046.5d1c8abb@archlinux>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726433AbgIQSdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 14:33:38 -0400
+Received: from mga06.intel.com ([134.134.136.31]:26670 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726468AbgIQScW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 14:32:22 -0400
+IronPort-SDR: 4LLZDr/gwwWyouxMSZpcjoKd81CWfTR6L7d5ILGkEDndx5eFT/ZVl3i2lbr6k01yxUNGrREi4o
+ LkrQLlIYFZMg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="221324686"
+X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
+   d="scan'208";a="221324686"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 11:32:21 -0700
+IronPort-SDR: as+CxmLANJA19hGEGEyDYIA2S8iZZQNm8I4EaDjKRwzs408vtoi2KNZ0hfgmWnMMyyC3RqtK8w
+ Vx149JEhvMiQ==
+X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
+   d="scan'208";a="346713850"
+Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.212.91.84])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 11:32:21 -0700
+From:   Russ Weight <russell.h.weight@intel.com>
+To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com, matthew.gerlach@intel.com,
+        Russ Weight <russell.h.weight@intel.com>
+Subject: [PATCH v2 1/1] fpga: dfl: afu: harden port enable logic
+Date:   Thu, 17 Sep 2020 11:32:19 -0700
+Message-Id: <20200917183219.3603-1-russell.h.weight@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 18 Jul 2020 16:00:46 +0100
-Jonathan Cameron <jic23@kernel.org> wrote:
+Port enable is not complete until ACK = 0. Change
+__afu_port_enable() to guarantee that the enable process
+is complete by polling for ACK == 0.
 
-> On Sat, 18 Jul 2020 11:24:40 +0200
-> Bartosz Golaszewski <bgolaszewski@baylibre.com> wrote:
-> 
-> > On Thu, Jul 16, 2020 at 3:59 PM Lee Jones <lee.jones@linaro.org> wrote:  
-> > >
-> > > File headers are not good candidates for kerneldoc.
-> > >
-> > > Fixes the following W=1 kernel build warning(s):
-> > >
-> > >  drivers/iio/dummy/iio_dummy_evgen.c:30: warning: Cannot understand  * @regs: irq regs we are faking
-> > >  on line 30 - I thought it was a doc line
-> > >  drivers/iio/dummy/iio_dummy_evgen.c:42: warning: Function parameter or member 'irq_sim_domain' not described in 'iio_dummy_eventgen'
-> > >
-> > > Cc: Marc Zyngier <maz@kernel.org>
-> > > Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > > ---
-> > >  drivers/iio/dummy/iio_dummy_evgen.c | 4 +++-
-> > >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/iio/dummy/iio_dummy_evgen.c b/drivers/iio/dummy/iio_dummy_evgen.c
-> > > index ee85d596e5284..1febbbff0ded6 100644
-> > > --- a/drivers/iio/dummy/iio_dummy_evgen.c
-> > > +++ b/drivers/iio/dummy/iio_dummy_evgen.c
-> > > @@ -1,5 +1,5 @@
-> > >  // SPDX-License-Identifier: GPL-2.0-only
-> > > -/**
-> > > +/*
-> > >   * Copyright (c) 2011 Jonathan Cameron
-> > >   *
-> > >   * Companion module to the iio simple dummy example driver.
-> > > @@ -27,11 +27,13 @@
-> > >  #define IIO_EVENTGEN_NO 10
-> > >
-> > >  /**
-> > > + * struct iio_dummy_eventgen  
-> 
-> Good to say what this structure is.  Perhaps "event generator specific state"
-> 
-> > >   * @regs: irq regs we are faking
-> > >   * @lock: protect the evgen state
-> > >   * @inuse: mask of which irqs are connected
-> > >   * @irq_sim: interrupt simulator
-> > >   * @base: base of irq range
-> > > + * @irq_sim_domain: irq domain    
-> > 
-> > To be even more clear: this could say: "interrupt simulator domain".
-> > 
-> > Bartosz
-Tweaked during applying and applied.
-> >   
-> > >   */
-> > >  struct iio_dummy_eventgen {
-> > >         struct iio_dummy_regs regs[IIO_EVENTGEN_NO];
-> > > --
-> > > 2.25.1
-> > >    
-> 
+Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+---
+ drivers/fpga/dfl-afu-error.c |  2 +-
+ drivers/fpga/dfl-afu-main.c  | 29 +++++++++++++++++++++--------
+ drivers/fpga/dfl-afu.h       |  2 +-
+ 3 files changed, 23 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/fpga/dfl-afu-error.c b/drivers/fpga/dfl-afu-error.c
+index c4691187cca9..0806532a3e9f 100644
+--- a/drivers/fpga/dfl-afu-error.c
++++ b/drivers/fpga/dfl-afu-error.c
+@@ -103,7 +103,7 @@ static int afu_port_err_clear(struct device *dev, u64 err)
+ 	__afu_port_err_mask(dev, false);
+ 
+ 	/* Enable the Port by clear the reset */
+-	__afu_port_enable(pdev);
++	ret = __afu_port_enable(pdev);
+ 
+ done:
+ 	mutex_unlock(&pdata->lock);
+diff --git a/drivers/fpga/dfl-afu-main.c b/drivers/fpga/dfl-afu-main.c
+index 753cda4b2568..f73b06cdf13c 100644
+--- a/drivers/fpga/dfl-afu-main.c
++++ b/drivers/fpga/dfl-afu-main.c
+@@ -21,6 +21,9 @@
+ 
+ #include "dfl-afu.h"
+ 
++#define RST_POLL_INVL 10 /* us */
++#define RST_POLL_TIMEOUT 1000 /* us */
++
+ /**
+  * __afu_port_enable - enable a port by clear reset
+  * @pdev: port platform device.
+@@ -32,7 +35,7 @@
+  *
+  * The caller needs to hold lock for protection.
+  */
+-void __afu_port_enable(struct platform_device *pdev)
++int __afu_port_enable(struct platform_device *pdev)
+ {
+ 	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
+ 	void __iomem *base;
+@@ -41,7 +44,7 @@ void __afu_port_enable(struct platform_device *pdev)
+ 	WARN_ON(!pdata->disable_count);
+ 
+ 	if (--pdata->disable_count != 0)
+-		return;
++		return 0;
+ 
+ 	base = dfl_get_feature_ioaddr_by_id(&pdev->dev, PORT_FEATURE_ID_HEADER);
+ 
+@@ -49,10 +52,20 @@ void __afu_port_enable(struct platform_device *pdev)
+ 	v = readq(base + PORT_HDR_CTRL);
+ 	v &= ~PORT_CTRL_SFTRST;
+ 	writeq(v, base + PORT_HDR_CTRL);
+-}
+ 
+-#define RST_POLL_INVL 10 /* us */
+-#define RST_POLL_TIMEOUT 1000 /* us */
++	/*
++	 * HW clears the ack bit to indicate that the port is fully out
++	 * of reset.
++	 */
++	if (readq_poll_timeout(base + PORT_HDR_CTRL, v,
++			       !(v & PORT_CTRL_SFTRST_ACK),
++			       RST_POLL_INVL, RST_POLL_TIMEOUT)) {
++		dev_err(&pdev->dev, "timeout, failure to enable device\n");
++		return -ETIMEDOUT;
++	}
++
++	return 0;
++}
+ 
+ /**
+  * __afu_port_disable - disable a port by hold reset
+@@ -111,7 +124,7 @@ static int __port_reset(struct platform_device *pdev)
+ 
+ 	ret = __afu_port_disable(pdev);
+ 	if (!ret)
+-		__afu_port_enable(pdev);
++		ret = __afu_port_enable(pdev);
+ 
+ 	return ret;
+ }
+@@ -872,11 +885,11 @@ static int afu_dev_destroy(struct platform_device *pdev)
+ static int port_enable_set(struct platform_device *pdev, bool enable)
+ {
+ 	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
+-	int ret = 0;
++	int ret;
+ 
+ 	mutex_lock(&pdata->lock);
+ 	if (enable)
+-		__afu_port_enable(pdev);
++		ret = __afu_port_enable(pdev);
+ 	else
+ 		ret = __afu_port_disable(pdev);
+ 	mutex_unlock(&pdata->lock);
+diff --git a/drivers/fpga/dfl-afu.h b/drivers/fpga/dfl-afu.h
+index 576e94960086..e5020e2b1f3d 100644
+--- a/drivers/fpga/dfl-afu.h
++++ b/drivers/fpga/dfl-afu.h
+@@ -80,7 +80,7 @@ struct dfl_afu {
+ };
+ 
+ /* hold pdata->lock when call __afu_port_enable/disable */
+-void __afu_port_enable(struct platform_device *pdev);
++int __afu_port_enable(struct platform_device *pdev);
+ int __afu_port_disable(struct platform_device *pdev);
+ 
+ void afu_mmio_region_init(struct dfl_feature_platform_data *pdata);
+-- 
+2.17.1
 
