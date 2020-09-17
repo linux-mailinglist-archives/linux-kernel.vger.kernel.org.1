@@ -2,56 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B7826D1FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 05:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6715C26D1EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 05:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726002AbgIQD7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 23:59:43 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3542 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725886AbgIQD7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 23:59:40 -0400
-X-Greylist: delayed 924 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 23:59:37 EDT
-Received: from dggeme758-chm.china.huawei.com (unknown [172.30.72.53])
-        by Forcepoint Email with ESMTP id 1BFA9FB61D8C2F704366;
-        Thu, 17 Sep 2020 11:44:12 +0800 (CST)
-Received: from [10.174.61.242] (10.174.61.242) by
- dggeme758-chm.china.huawei.com (10.3.19.104) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Thu, 17 Sep 2020 11:44:11 +0800
-Subject: Re: [PATCH] hinic: fix potential resource leak
-To:     Wei Li <liwei391@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <huawei.libin@huawei.com>, <guohanjun@huawei.com>
-References: <20200917030307.47195-1-liwei391@huawei.com>
-From:   "luobin (L)" <luobin9@huawei.com>
-Message-ID: <dadc79e3-a923-7a4a-2d6f-3f33d614591e@huawei.com>
-Date:   Thu, 17 Sep 2020 11:44:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-MIME-Version: 1.0
-In-Reply-To: <20200917030307.47195-1-liwei391@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.61.242]
-X-ClientProxiedBy: dggeme704-chm.china.huawei.com (10.1.199.100) To
- dggeme758-chm.china.huawei.com (10.3.19.104)
-X-CFilter-Loop: Reflected
+        id S1726152AbgIQDxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 23:53:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726007AbgIQDxA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 23:53:00 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F32C061756;
+        Wed, 16 Sep 2020 20:45:17 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id t7so537702pjd.3;
+        Wed, 16 Sep 2020 20:45:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Mt7v/mKOwnDC4a9DbmIXnGMrq64vZ0ow2BI870oSvcc=;
+        b=VMnw+nwkRS50Io9kAXzxH6MfUAtkpeBLXcpHx9of8xMTlsJj5Sd4eKcIoAbo9IIX6h
+         Hh1+Sy5VEb0cLALoYnSsQTPOQFr3YmFJrolT9Ktv924qMKSigLIyATlxgohsifatau/g
+         g/7zFXWkmUL+CbIOo7crGjRMWapFXQPxdO3imgnHtHJSVwHbJxxALyDaCLNwYmBv50fC
+         1F+0HZ8iqBkSu3dpTk0f/HxQPQLU/lc4ScdzMGsX8ssaGdkIxsARRGJ/5le/SkiXhKWC
+         HFPGtOEKpoCsO7sXJUFzOEwXllppkDzsfFLE38ZI71iltIZr9o2BdbkMKJ04SuzerOSC
+         vTag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Mt7v/mKOwnDC4a9DbmIXnGMrq64vZ0ow2BI870oSvcc=;
+        b=CvtQd3xO860Q0RMr1QdvKK2DeR0xV1rTqXaBpZSmPRatJPjXsrlCBRc0mmGOuAPN7o
+         6ylCefoB5ww/Su//JK/fnMkeCGGd3ukXeiHnaPyNoCtKhC9wPueEboPiDlS9BJa5Xbgl
+         ylaXZwfdv1O86LcQ0I2ItgFe8tJ/1aJOkfMiF6bg5M5gAGM8j0pitNq6/01cOnXmvn4q
+         80NsH1el+rpt2/8jDYe1aVJgF4rFZ5Tf+qCGqYM6zybIMaEG/apaTaewC0E9T2AD2rSY
+         6kUAFtrkfYJG2AY2oNznLfdl9ZlxIol7n/BhGYWfdP/qq7HiTgOBX7MGsXdK4FMXavs3
+         Ehkw==
+X-Gm-Message-State: AOAM532Awrv93ZZ0GPxgsIaock1GDe3lerYvIbIiRt9Zw8yq3CSn9+bm
+        uG7quZWo+GanBAHDb1rcEQEnNezfkl8=
+X-Google-Smtp-Source: ABdhPJwHADChbI607hnO01YTamNY0TBgJCkW5NZRTnx+5iKO89OWNLMCOd3fCnsPJOuvMBszWaeAAw==
+X-Received: by 2002:a17:90a:a58d:: with SMTP id b13mr6735632pjq.49.1600314313817;
+        Wed, 16 Sep 2020 20:45:13 -0700 (PDT)
+Received: from localhost.localdomain (ec2-13-52-163-24.us-west-1.compute.amazonaws.com. [13.52.163.24])
+        by smtp.gmail.com with ESMTPSA id a4sm4093795pjh.17.2020.09.16.20.45.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 20:45:13 -0700 (PDT)
+From:   Xiaoliang Pang <dawning.pang@gmail.com>
+To:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
+        gregkh@linuxfoundation.org
+Cc:     dawning.pang@gmail.com, alexander.deucher@amd.com,
+        evan.quan@amd.com, christian.koenig@amd.com,
+        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, tianjia.zhang@linux.alibaba.com
+Subject: [PATCH v1] atomisp:pci/runtime/queue: modify the return error value
+Date:   Thu, 17 Sep 2020 11:44:51 +0800
+Message-Id: <20200917034451.20897-1-dawning.pang@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/9/17 11:03, Wei Li wrote:
-> +	err = irq_set_affinity_hint(rq->irq, &rq->affinity_mask);
-> +	if (err)
-> +		goto err_irq;
-> +
-> +	return 0;
-> +
-> +err_irq:
-> +	rx_del_napi(rxq);
-> +	return err;
-If irq_set_affinity_hint fails, irq should be freed as well.
+modify the return error value is -EDOM
+
+Fixes: 2cac05dee6e30("drm/amd/powerplay: add the hw manager for vega12 (v4)")
+Cc: Evan Quan <evan.quan@amd.com>
+Signed-off-by: Xiaoliang Pang <dawning.pang@gmail.com>
+---
+ .../staging/media/atomisp/pci/runtime/queue/src/queue_access.c  | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/staging/media/atomisp/pci/runtime/queue/src/queue_access.c b/drivers/staging/media/atomisp/pci/runtime/queue/src/queue_access.c
+index fdca743c4ab7..424e7a15a389 100644
+--- a/drivers/staging/media/atomisp/pci/runtime/queue/src/queue_access.c
++++ b/drivers/staging/media/atomisp/pci/runtime/queue/src/queue_access.c
+@@ -44,7 +44,7 @@ int ia_css_queue_load(
+ 				   the value as zero. This causes division by 0
+ 				   exception as the size is used in a modular
+ 				   division operation. */
+-				return EDOM;
++				return -EDOM;
+ 			}
+ 		}
+ 
+-- 
+2.17.1
+
