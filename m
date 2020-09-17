@@ -2,78 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5617926D406
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 08:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ABE926D3F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 08:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726326AbgIQG5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 02:57:19 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:39923 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726192AbgIQG5R (ORCPT
+        id S1726202AbgIQGup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 02:50:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726106AbgIQGup (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 02:57:17 -0400
-X-Greylist: delayed 304 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 02:57:15 EDT
-X-UUID: e55451a087fc42be8ef1c6b376087c54-20200917
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=fhSCGvsrIBFTU6Oe3bgRtFqtBj0ow+eXgKg9mZZzjAo=;
-        b=mkXZApdw1q4Ada/u7mbaP0uKPociAuqFn4pQLb030fmPObNTH1GnLGrGnbCh5/PzKxJQAmrNMzT+nHUJRTAjkDyyO+mE27c4r/qu7CeZzHtF8U0SCNeP3dxXCVwAKKQLdFxYjN6gLWRcU5mjmfMvnDWk+1AKswd7G/7iBksMxrY=;
-X-UUID: e55451a087fc42be8ef1c6b376087c54-20200917
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 659381008; Thu, 17 Sep 2020 14:52:05 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31DR.mediatek.inc
- (172.27.6.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 17 Sep
- 2020 14:52:03 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 17 Sep 2020 14:52:02 +0800
-Message-ID: <1600325394.20109.16.camel@mhfsdcap03>
-Subject: Re: [PATCH] MAINTAINERS: Add entry for Broadcom BDC driver
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>, <balbi@kernel.org>,
-        <gregkh@linuxfoundation.org>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bcm-kernel-feedback-list@broadcom.com>, <balbi@kernel.org>,
-        <gregkh@linuxfoundation.org>, <matthias.bgg@gmail.com>,
-        <swboyd@chromium.org>, <linux-arm-kernel@lists.infradead.org>,
-        <alcooperx@gmail.com>
-Date:   Thu, 17 Sep 2020 14:49:54 +0800
-In-Reply-To: <830cd104-87de-4246-35ff-47a0ed5b05a9@gmail.com>
-References: <20200710034806.15650-1-f.fainelli@gmail.com>
-         <830cd104-87de-4246-35ff-47a0ed5b05a9@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Thu, 17 Sep 2020 02:50:45 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBAF5C06174A;
+        Wed, 16 Sep 2020 23:50:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FT9kKWqO44LtdODqEL2MRar9ou6XSVxG66enGGgs8Es=; b=g5CcHwamwpXA0o1C6qQ9TZ56eP
+        VOarKxr3hUyo+hJpsUhl01pWk1xTjBiFdw+lBU55OAClpb1VcZ8EEikff0FSz8RJJy1MCNTY80Rbb
+        M8JVGM8OzPsNYvf1r6H7nZQGwtF3LORlpwgMHWiUGk4nnf9RmoNfCDEcrX6/VM2bhzCVnm23CXHLh
+        vsbapnZKgfigwTxcdVp8K9LYMBKCcJQy5+8V5ATsTk1eQ/Hrs5II0+RfkZjMuZeKV/HTowP9yGvM+
+        e15KNpMXlQ2UT1mbVV93jxwsSVV8yCPQozn32YNC4AReBIWmF0f+XXjnF/IAuf1q7Y8/BrIztF/CB
+        AETmfowA==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kInkQ-0003E4-5e; Thu, 17 Sep 2020 06:50:26 +0000
+Date:   Thu, 17 Sep 2020 07:50:26 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Mikulas Patocka <mpatocka@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Eric Sandeen <esandeen@redhat.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        "Kani, Toshi" <toshi.kani@hpe.com>,
+        "Norton, Scott J" <scott.norton@hpe.com>,
+        "Tadakamadla, Rajesh (DCIG/CDI/HPS Perf)" 
+        <rajesh.tadakamadla@hpe.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>
+Subject: Re: [PATCH] pmem: export the symbols __copy_user_flushcache and
+ __copy_from_user_flushcache
+Message-ID: <20200917065026.GA11920@infradead.org>
+References: <alpine.LRH.2.02.2009140852030.22422@file01.intranet.prod.int.rdu2.redhat.com>
+ <CAPcyv4gh=QaDB61_9_QTgtt-pZuTFdR6td0orE0VMH6=6SA2vw@mail.gmail.com>
+ <alpine.LRH.2.02.2009151216050.16057@file01.intranet.prod.int.rdu2.redhat.com>
+ <alpine.LRH.2.02.2009151332280.3851@file01.intranet.prod.int.rdu2.redhat.com>
+ <alpine.LRH.2.02.2009160649560.20720@file01.intranet.prod.int.rdu2.redhat.com>
+ <CAPcyv4gW6AvR+RaShHdQzOaEPv9nrq5myXDmywuoCTYDZxk-hw@mail.gmail.com>
+ <alpine.LRH.2.02.2009161254400.745@file01.intranet.prod.int.rdu2.redhat.com>
+ <CAPcyv4gD0ZFkfajKTDnJhEEjf+5Av-GH+cHRFoyhzGe8bNEgAA@mail.gmail.com>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 003D9F375333C4C19A1819A9282574292585033BFA22A87247ADF63049C69E1C2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4gD0ZFkfajKTDnJhEEjf+5Av-GH+cHRFoyhzGe8bNEgAA@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU3VuLCAyMDIwLTA5LTA2IGF0IDEyOjU1IC0wNzAwLCBGbG9yaWFuIEZhaW5lbGxpIHdyb3Rl
-Og0KPiANCj4gT24gNy85LzIwMjAgODo0OCBQTSwgRmxvcmlhbiBGYWluZWxsaSB3cm90ZToNCj4g
-PiBUaGUgQnJvYWRjb20gQkRDIGRyaXZlciBkaWQgbm90IGhhdmUgYSBNQUlOVEFJTkVSUyBlbnRy
-eSB3aGljaCBtYWRlIGl0DQo+ID4gZXNjYXBlIHJldmlldyBmcm9tIEFsIGFuZCBteXNlbGYsIGFk
-ZCBhbiBlbnRyeSBzbyB0aGUgcmVsZXZhbnQgbWFpbGluZw0KPiA+IGxpc3RzIGFuZCBwZW9wbGUg
-YXJlIGNvcGllZC4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBGbG9yaWFuIEZhaW5lbGxpIDxm
-LmZhaW5lbGxpQGdtYWlsLmNvbT4NCj4gDQo+IFRoaXMgcGF0Y2ggc3RpbGwgZG9lcyBub3Qgc2Vl
-bSB0byBoYXZlIGJlZW4gcGlja2VkIHVwIChub3Qgc2VlaW5nIGl0IGluIA0KPiBsaW51eC1uZXh0
-KSwgY2FuIHRoaXMgYmUgYXBwbGllZCBzbyB3ZSBoYXZlIGFuIGFjY3VyYXRlIG1haW50YWluZXIg
-DQo+IGluZm9ybWF0aW9uIGZvciB0aGlzIGRyaXZlcj8NClBpbmcNCg0KPiANCj4gVGhhbmtzDQo+
-IA0KPiA+IC0tLQ0KPiA+ICAgTUFJTlRBSU5FUlMgfCA4ICsrKysrKysrDQo+ID4gICAxIGZpbGUg
-Y2hhbmdlZCwgOCBpbnNlcnRpb25zKCspDQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBhL01BSU5UQUlO
-RVJTIGIvTUFJTlRBSU5FUlMNCj4gPiBpbmRleCAxZDRhYTdmOTQyZGUuLjM2MGQwMDFiODFiOCAx
-MDA2NDQNCj4gPiAtLS0gYS9NQUlOVEFJTkVSUw0KPiA+ICsrKyBiL01BSU5UQUlORVJTDQo+ID4g
-QEAgLTM0MzQsNiArMzQzNCwxNCBAQCBGOglkcml2ZXJzL2J1cy9icmNtc3RiX2dpc2IuYw0KPiA+
-ICAgRjoJZHJpdmVycy9wY2kvY29udHJvbGxlci9wY2llLWJyY21zdGIuYw0KPiA+ICAgTjoJYnJj
-bXN0Yg0KPiA+ICAgDQo+ID4gK0JST0FEQ09NIEJEQyBEUklWRVINCj4gPiArTToJQWwgQ29vcGVy
-IDxhbGNvb3BlcnhAZ21haWwuY29tPg0KPiA+ICtMOglsaW51eC11c2JAdmdlci5rZXJuZWwub3Jn
-DQo+ID4gK0w6CWJjbS1rZXJuZWwtZmVlZGJhY2stbGlzdEBicm9hZGNvbS5jb20NCj4gPiArUzoJ
-TWFpbnRhaW5lZA0KPiA+ICtGOglEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvdXNi
-L2JyY20sYmRjLnR4dA0KPiA+ICtGOglkcml2ZXJzL3VzYi9nYWRnZXQvdWRjL2JkYy8NCj4gPiAr
-DQo+ID4gICBCUk9BRENPTSBCTUlQUyBDUFVGUkVRIERSSVZFUg0KPiA+ICAgTToJTWFya3VzIE1h
-eWVyIDxtbWF5ZXJAYnJvYWRjb20uY29tPg0KPiA+ICAgTToJYmNtLWtlcm5lbC1mZWVkYmFjay1s
-aXN0QGJyb2FkY29tLmNvbQ0KPiA+IA0KPiANCg0K
+On Wed, Sep 16, 2020 at 10:40:13AM -0700, Dan Williams wrote:
+> > Before nvfs gets included in the kernel, I need to distribute it as a
+> > module. So, it would make my maintenance easier. But if you don't want to
+> > export it now, no problem, I can just copy __copy_user_flushcache from the
+> > kernel to the module.
+> 
+> That sounds a better plan than exporting symbols with no in-kernel consumer.
 
+Exporting symbols without a user is a complete no-go.
+
+> > > My first question about nvfs is how it compares to a daxfs with
+> > > executables and other binaries configured to use page cache with the
+> > > new per-file dax facility?
+> >
+> > nvfs is faster than dax-based filesystems on metadata-heavy operations
+> > because it doesn't have the overhead of the buffer cache and bios. See
+> > this: http://people.redhat.com/~mpatocka/nvfs/BENCHMARKS
+> 
+> ...and that metadata problem is intractable upstream? Christoph poked
+> at bypassing the block layer for xfs metadata operations [1], I just
+> have not had time to carry that further.
+> 
+> [1]: "xfs: use dax_direct_access for log writes", although it seems
+> he's dropped that branch from his xfs.git
+
+I've pushed the old branch out again:
+
+    http://git.infradead.org/users/hch/xfs.git/shortlog/refs/heads/xfs-log-dax
+
+The main sticking points here are:
+
+ - currently all our nvdimm/DAX code does totally pointless pmem_flush
+   calls just to be on the safe side.  That probably is one of the big
+   speedups of nova and other academic snake oil projects over our
+   stack.  We need to handle this properly
+ - what do we do about write error handling?  That is the other big
+   thing in the pmem/dax stack that all of the direct writers (including
+   MAP_SYNC mmaps) pretty much ignore
+
+Once that is sorted out we can not just put the log changes like above
+in, but also move the buffer cache over to do a direct access and
+basically stop using the block layer for a pure DAX XFS.
