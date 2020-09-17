@@ -2,290 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBA3326E0D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 18:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D9126E0C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 18:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728541AbgIQQgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 12:36:43 -0400
-Received: from mxout03.lancloud.ru ([89.108.73.187]:60990 "EHLO
-        mxout03.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728359AbgIQQdo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 12:33:44 -0400
-Received: from LanCloud
-DKIM-Filter: OpenDKIM Filter v2.11.0 mxout03.lancloud.ru A084E2092EC1
-Received: from LanCloud
-Received: from LanCloud
-Received: from LanCloud
-Date:   Thu, 17 Sep 2020 18:38:03 +0300
-From:   Elvira Khabirova <e.khabirova@omprussia.ru>
-To:     <op-tee@lists.trustedfirmware.org>
-CC:     <jens.wiklander@linaro.org>, <linux-kernel@vger.kernel.org>,
-        <vesa.jaaskelainen@vaisala.com>, <s.shtylyov@omprussia.ru>,
-        <k.karasev@omprussia.ru>
-Subject: [RFC PATCH] tee: add support for application-based session login
- methods
-Message-ID: <20200917183803.4a0c5263@akathisia>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728504AbgIQQ2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 12:28:17 -0400
+Received: from mga12.intel.com ([192.55.52.136]:44131 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728489AbgIQQ1K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 12:27:10 -0400
+IronPort-SDR: /IzCwzGgBhaeJ3CK/BLkMuAN0zm1JoATbT6iQIsZnE+Kq5b3ysG+GagDLsuWJkjaj/REvqB3oI
+ oenZiyIyfs8w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="139236816"
+X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
+   d="scan'208";a="139236816"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 09:25:52 -0700
+IronPort-SDR: Tqt6xElPVuuu3GiK9gjdIs4YPpuzJ0od+KgP16vUnQ47N60aBz2mQTxLkfJzXETPNRyrHg8Vl1
+ yLQAjxebtzdQ==
+X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
+   d="scan'208";a="332220053"
+Received: from mbair-mobl1.amr.corp.intel.com (HELO arch-ashland-svkelley.intel.com) ([10.254.181.111])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 09:25:52 -0700
+From:   Sean V Kelley <sean.v.kelley@intel.com>
+To:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
+        rjw@rjwysocki.net, ashok.raj@intel.com, tony.luck@intel.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, qiuxu.zhuo@intel.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 01/10] PCI/RCEC: Add RCEC class code and extended capability
+Date:   Thu, 17 Sep 2020 09:25:39 -0700
+Message-Id: <20200917162548.2079894-2-sean.v.kelley@intel.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200917162548.2079894-1-sean.v.kelley@intel.com>
+References: <20200917162548.2079894-1-sean.v.kelley@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [89.255.69.56]
-X-ClientProxiedBy: LFEXT01.lancloud.ru (fd00:f066::141) To
- LFEX1904.lancloud.ru (fd00:f066::74)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GP TEE Client API in addition to login methods already supported
-in the kernel also defines several application-based methods:
-TEEC_LOGIN_APPLICATION, TEEC_LOGIN_USER_APPLICATION, and
-TEEC_LOGIN_GROUP_APPLICATION.
+From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
 
-It specifies credentials generated for TEEC_LOGIN_APPLICATION as only
-depending on the identity of the program, being persistent within one
-implementation, across multiple invocations of the application
-and across power cycles, enabling them to be used to disambiguate
-persistent storage. The exact nature is REE-specific.
+A PCIe Root Complex Event Collector(RCEC) has the base class 0x08,
+sub-class 0x07, and programming interface 0x00. Add the class code
+0x0807 to identify RCEC devices and add the defines for the RCEC
+Endpoint Association Extended Capability.
 
-As the exact method of generating application identifier strings may
-vary between vendors, setups and installations, add two suggested
-methods and an exact framework for vendors to extend upon.
+See PCI Express Base Specification, version 5.0-1, section "1.3.4
+Root Complex Event Collector" and section "7.9.10 Root Complex
+Event Collector Endpoint Association Extended Capability"
 
-Signed-off-by: Elvira Khabirova <e.khabirova@omprussia.ru>
+Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 ---
- drivers/tee/Kconfig    |  29 +++++++++
- drivers/tee/tee_core.c | 136 ++++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 164 insertions(+), 1 deletion(-)
+ include/linux/pci_ids.h       | 1 +
+ include/uapi/linux/pci_regs.h | 7 +++++++
+ 2 files changed, 8 insertions(+)
 
-diff --git a/drivers/tee/Kconfig b/drivers/tee/Kconfig
-index e99d840c2511..4cd6e0d2aad5 100644
---- a/drivers/tee/Kconfig
-+++ b/drivers/tee/Kconfig
-@@ -11,6 +11,35 @@ config TEE
- 	  This implements a generic interface towards a Trusted Execution
- 	  Environment (TEE).
+diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+index 1ab1e24bcbce..d8156a5dbee8 100644
+--- a/include/linux/pci_ids.h
++++ b/include/linux/pci_ids.h
+@@ -81,6 +81,7 @@
+ #define PCI_CLASS_SYSTEM_RTC		0x0803
+ #define PCI_CLASS_SYSTEM_PCI_HOTPLUG	0x0804
+ #define PCI_CLASS_SYSTEM_SDHCI		0x0805
++#define PCI_CLASS_SYSTEM_RCEC		0x0807
+ #define PCI_CLASS_SYSTEM_OTHER		0x0880
  
-+choice
-+	prompt "Application ID for client UUID"
-+	depends on TEE
-+	default TEE_APPID_PATH
-+	help
-+	  This option allows to choose which method will be used to generate
-+	  application identifiers for client UUID generation when login methods
-+	  TEE_LOGIN_APPLICATION, TEE_LOGIN_USER_APPLICATION
-+	  and TEE_LOGIN_GROUP_APPLICATION are used.
-+	  Please be mindful of the security of each method in your particular
-+	  installation.
-+
-+	config TEE_APPID_PATH
-+		bool "Path-based application ID"
-+		help
-+		  Use the executable's path as an application ID.
-+
-+	config TEE_APPID_SECURITY
-+		bool "Security extended attribute based application ID"
-+		help
-+		  Use the executable's security extended attribute as an application ID.
-+endchoice
-+
-+config TEE_APPID_SECURITY_XATTR
-+	string "Security extended attribute to use for application ID"
-+	depends on TEE_APPID_SECURITY
-+	help
-+	  Attribute to be used as an application ID (with the security prefix removed).
-+
- if TEE
+ #define PCI_BASE_CLASS_INPUT		0x09
+diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
+index f9701410d3b5..f335f65f65d6 100644
+--- a/include/uapi/linux/pci_regs.h
++++ b/include/uapi/linux/pci_regs.h
+@@ -828,6 +828,13 @@
+ #define  PCI_PWR_CAP_BUDGET(x)	((x) & 1)	/* Included in system budget */
+ #define PCI_EXT_CAP_PWR_SIZEOF	16
  
- menu "TEE drivers"
-diff --git a/drivers/tee/tee_core.c b/drivers/tee/tee_core.c
-index 64637e09a095..19c965dd212b 100644
---- a/drivers/tee/tee_core.c
-+++ b/drivers/tee/tee_core.c
-@@ -7,8 +7,10 @@
- 
- #include <linux/cdev.h>
- #include <linux/cred.h>
-+#include <linux/file.h>
- #include <linux/fs.h>
- #include <linux/idr.h>
-+#include <linux/mm.h>
- #include <linux/module.h>
- #include <linux/slab.h>
- #include <linux/tee_drv.h>
-@@ -17,11 +19,15 @@
- #include <crypto/sha.h>
- #include "tee_private.h"
- 
-+#ifdef CONFIG_TEE_APPID_SECURITY
-+#include <linux/security.h>
-+#endif
++/* Root Complex Event Collector Endpoint Association  */
++#define PCI_RCEC_RCIEP_BITMAP	4	/* Associated Bitmap for RCiEPs */
++#define PCI_RCEC_BUSN		8	/* RCEC Associated Bus Numbers */
++#define  PCI_RCEC_BUSN_REG_VER	0x02	/* Least capability version that BUSN present */
++#define  PCI_RCEC_BUSN_NEXT(x)	(((x) >> 8) & 0xff)
++#define  PCI_RCEC_BUSN_LAST(x)	(((x) >> 16) & 0xff)
 +
- #define TEE_NUM_DEVICES	32
- 
- #define TEE_IOCTL_PARAM_SIZE(x) (sizeof(struct tee_param) * (x))
- 
--#define TEE_UUID_NS_NAME_SIZE	128
-+#define TEE_UUID_NS_NAME_SIZE	PATH_MAX
- 
- /*
-  * TEE Client UUID name space identifier (UUIDv4)
-@@ -125,6 +131,67 @@ static int tee_release(struct inode *inode, struct file *filp)
- 	return 0;
- }
- 
-+#ifdef CONFIG_TEE_APPID_SECURITY
-+static const char *tee_session_get_application_id(void **data)
-+{
-+	struct file *exe_file;
-+	const char *name = CONFIG_TEE_APPID_SECURITY_XATTR;
-+	int len;
-+
-+	exe_file = get_mm_exe_file(current->mm);
-+	if (!exe_file)
-+		return ERR_PTR(-ENOENT);
-+
-+	if (!exe_file->f_inode) {
-+		fput(exe_file);
-+		return ERR_PTR(-ENOENT);
-+	}
-+
-+	len = security_inode_getsecurity(exe_file->f_inode, name, data, true);
-+	if (len < 0)
-+		return ERR_PTR(len);
-+
-+	fput(exe_file);
-+
-+	return *data;
-+}
-+#endif /* CONFIG_TEE_APPID_SECURITY */
-+
-+#ifdef CONFIG_TEE_APPID_PATH
-+static const char *tee_session_get_application_id(void **data)
-+{
-+	struct file *exe_file;
-+	char *path;
-+
-+	*data = kzalloc(TEE_UUID_NS_NAME_SIZE, GFP_KERNEL);
-+	if (!*data)
-+		return ERR_PTR(-ENOMEM);
-+
-+	exe_file = get_mm_exe_file(current->mm);
-+	if (!exe_file) {
-+		kfree(*data);
-+		return ERR_PTR(-ENOENT);
-+	}
-+
-+	path = file_path(exe_file, *data, TEE_UUID_NS_NAME_SIZE);
-+	if (IS_ERR(path)) {
-+		kfree(*data);
-+		return path;
-+	}
-+
-+	fput(exe_file);
-+
-+	return path;
-+}
-+#endif /* CONFIG_TEE_APPID_PATH */
-+
-+#if defined(CONFIG_TEE_APPID_PATH) || defined(CONFIG_TEE_APPID_SECURITY)
-+static void tee_session_free_application_id(void *data)
-+{
-+	kfree(data);
-+}
-+#endif /* CONFIG_TEE_APPID_PATH || CONFIG_TEE_APPID_SECURITY */
-+
- /**
-  * uuid_v5() - Calculate UUIDv5
-  * @uuid: Resulting UUID
-@@ -197,6 +264,8 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
- 	gid_t ns_grp = (gid_t)-1;
- 	kgid_t grp = INVALID_GID;
- 	char *name = NULL;
-+	void *application_id_data = NULL;
-+	const char *application_id = NULL;
- 	int name_len;
- 	int rc;
- 
-@@ -217,6 +286,14 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
- 	 * For TEEC_LOGIN_GROUP:
- 	 * gid=<gid>
- 	 *
-+	 * For TEEC_LOGIN_APPLICATION:
-+	 * app=<application id>
-+	 *
-+	 * For TEEC_LOGIN_USER_APPLICATION:
-+	 * uid=<uid>:app=<application id>
-+	 *
-+	 * For TEEC_LOGIN_GROUP_APPLICATION:
-+	 * gid=<gid>:app=<application id>
- 	 */
- 
- 	name = kzalloc(TEE_UUID_NS_NAME_SIZE, GFP_KERNEL);
-@@ -249,6 +326,63 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
- 		}
- 		break;
- 
-+	case TEE_IOCTL_LOGIN_APPLICATION:
-+		application_id = tee_session_get_application_id(&application_id_data);
-+		if (IS_ERR(application_id)) {
-+			rc = PTR_ERR(application_id);
-+			goto out_free_name;
-+		}
-+
-+		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "app=%s",
-+				    application_id);
-+		tee_session_free_application_id(application_id_data);
-+
-+		if (name_len >= TEE_UUID_NS_NAME_SIZE) {
-+			rc = -E2BIG;
-+			goto out_free_name;
-+		}
-+		break;
-+
-+	case TEE_IOCTL_LOGIN_USER_APPLICATION:
-+		application_id = tee_session_get_application_id(&application_id_data);
-+		if (IS_ERR(application_id)) {
-+			rc = PTR_ERR(application_id);
-+			goto out_free_name;
-+		}
-+
-+		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "uid=%x:app=%s",
-+				    current_euid().val, application_id);
-+		tee_session_free_application_id(application_id_data);
-+
-+		if (name_len >= TEE_UUID_NS_NAME_SIZE) {
-+			rc = -E2BIG;
-+			goto out_free_name;
-+		}
-+		break;
-+
-+	case TEE_IOCTL_LOGIN_GROUP_APPLICATION:
-+		memcpy(&ns_grp, connection_data, sizeof(gid_t));
-+		grp = make_kgid(current_user_ns(), ns_grp);
-+		if (!gid_valid(grp) || !in_egroup_p(grp)) {
-+			rc = -EPERM;
-+			goto out_free_name;
-+		}
-+
-+		application_id = tee_session_get_application_id(&application_id_data);
-+		if (IS_ERR(application_id)) {
-+			rc = PTR_ERR(application_id);
-+			goto out_free_name;
-+		}
-+		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "gid=%x:app=%s",
-+				    grp.val, application_id);
-+		tee_session_free_application_id(application_id_data);
-+
-+		if (name_len >= TEE_UUID_NS_NAME_SIZE) {
-+			rc = -E2BIG;
-+			goto out_free_name;
-+		}
-+		break;
-+
- 	default:
- 		rc = -EINVAL;
- 		goto out_free_name;
+ /* Vendor-Specific (VSEC, PCI_EXT_CAP_ID_VNDR) */
+ #define PCI_VNDR_HEADER		4	/* Vendor-Specific Header */
+ #define  PCI_VNDR_HEADER_ID(x)	((x) & 0xffff)
 -- 
 2.28.0
 
