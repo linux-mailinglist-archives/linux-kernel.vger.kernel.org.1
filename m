@@ -2,96 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F123A26E99D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 01:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5E6726E99E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 01:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726157AbgIQXwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 19:52:02 -0400
-Received: from mga02.intel.com ([134.134.136.20]:62814 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725987AbgIQXwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 19:52:02 -0400
-IronPort-SDR: tvLjnt3oTb2lstSKyqgCrB3efE5ptCk+Z3M6T2aj1f7INh+ieax4Bt2X+TB7Dt4LSRLd2Y0Z3j
- cpZ6TqKKZjZA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="147504038"
-X-IronPort-AV: E=Sophos;i="5.77,272,1596524400"; 
-   d="scan'208";a="147504038"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 16:51:55 -0700
-IronPort-SDR: sKYl2n7CV2n/qrByGfT/KHF30CYNtfq36ZzeTbW05uM2a3VJ1rZp0vQaZmvPRKJwTAbWje/OXY
- gVwrTLkmIjqA==
-X-IronPort-AV: E=Sophos;i="5.77,272,1596524400"; 
-   d="scan'208";a="336600459"
-Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.212.200.158]) ([10.212.200.158])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 16:51:55 -0700
-Subject: Re: [PATCH v4 0/5] Add shared workqueue support for idxd driver
-To:     Randy Dunlap <rdunlap@infradead.org>, vkoul@kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dan.j.williams@intel.com, tony.luck@intel.com, jing.lin@intel.com,
-        ashok.raj@intel.com, sanjay.k.kumar@intel.com,
-        fenghua.yu@intel.com, kevin.tian@intel.com
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <160037680630.3777.16356270178889649944.stgit@djiang5-desk3.ch.intel.com>
- <e178a1ae-0ce2-70bc-54b9-9e2fae837f06@infradead.org>
-From:   Dave Jiang <dave.jiang@intel.com>
-Message-ID: <84e1ec28-4a89-963a-49f6-3bbf1d276603@intel.com>
-Date:   Thu, 17 Sep 2020 16:51:53 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <e178a1ae-0ce2-70bc-54b9-9e2fae837f06@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S1726196AbgIQXwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 19:52:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725987AbgIQXwa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 19:52:30 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A82C06174A;
+        Thu, 17 Sep 2020 16:52:29 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 7A07A136663D0;
+        Thu, 17 Sep 2020 16:35:41 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 16:52:27 -0700 (PDT)
+Message-Id: <20200917.165227.836051306625197335.davem@davemloft.net>
+To:     yuehaibing@huawei.com
+Cc:     kuba@kernel.org, saeed@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 net-next] netdev: Remove unused functions
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200917021910.41448-1-yuehaibing@huawei.com>
+References: <20200916141814.7376-1-yuehaibing@huawei.com>
+        <20200917021910.41448-1-yuehaibing@huawei.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Thu, 17 Sep 2020 16:35:41 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: YueHaibing <yuehaibing@huawei.com>
+Date: Thu, 17 Sep 2020 10:19:10 +0800
 
+> There is no callers in tree, so can remove it.
+> 
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
+> ---
+> v2: fix title typo 'funtions' --> 'functions'
 
-On 9/17/2020 4:43 PM, Randy Dunlap wrote:
-> Hi,
-> 
-> On 9/17/20 2:15 PM, Dave Jiang wrote:
->>
->> ---
->>
->> Dave Jiang (5):
->>        x86/asm: move the raw asm in iosubmit_cmds512() to special_insns.h
->>        x86/asm: add enqcmds() to support ENQCMDS instruction
->>        dmaengine: idxd: add shared workqueue support
->>        dmaengine: idxd: clean up descriptors with fault error
->>        dmaengine: idxd: add ABI documentation for shared wq
->>
-> 
-> I don't see patch 3/5 in my inbox nor at https://lore.kernel.org/dmaengine/
-> 
-> Did the email monster eat it?
-
-Grrrrrr looks like Intel email server ate it. Everyone on cc list got it. But 
-does not look like it made it to any of the mailing lists. I'll resend 3/5.
-
-> 
-> thanks.
-> 
->>
->>   Documentation/ABI/stable/sysfs-driver-dma-idxd |   14 ++
->>   arch/x86/include/asm/io.h                      |   46 +++++---
->>   arch/x86/include/asm/special_insns.h           |   17 +++
->>   drivers/dma/Kconfig                            |   10 ++
->>   drivers/dma/idxd/cdev.c                        |   49 ++++++++
->>   drivers/dma/idxd/device.c                      |   91 ++++++++++++++-
->>   drivers/dma/idxd/dma.c                         |    9 --
->>   drivers/dma/idxd/idxd.h                        |   33 +++++-
->>   drivers/dma/idxd/init.c                        |   92 ++++++++++++---
->>   drivers/dma/idxd/irq.c                         |  143 ++++++++++++++++++++++--
->>   drivers/dma/idxd/registers.h                   |   14 ++
->>   drivers/dma/idxd/submit.c                      |   33 +++++-
->>   drivers/dma/idxd/sysfs.c                       |  127 +++++++++++++++++++++
->>   13 files changed, 608 insertions(+), 70 deletions(-)
->>
->> --
->>
-> 
+Applied, thank you.
