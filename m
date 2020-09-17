@@ -2,79 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9845926D17C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 05:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E649F26D176
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 05:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726064AbgIQDPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 23:15:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33214 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726002AbgIQDPc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 23:15:32 -0400
-X-Greylist: delayed 477 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 23:15:32 EDT
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6DDA42078D;
-        Thu, 17 Sep 2020 03:07:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600312053;
-        bh=RQRBoaQqDALDP4kOlcUyHxmW7glid2QWf8ufXBgsveI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Iwk7g+uGaaYCujkc7/ItS11t29T650I74YOla9t4oOYV6DfPh9T0/RCV/RM4OXEDm
-         AdU33vBshNENwyhCzn7sl/ZHEXT2VRRGexmFhC+sPCDvWCWYAzwDSnSDP3+Avijf7s
-         MXNRcM4eTVQGj2x+6vHGx8PMuFLuPCnokClFM8OY=
-Date:   Thu, 17 Sep 2020 12:07:28 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     "Frank Ch. Eigler" <fche@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Aaron Merey <amerey@redhat.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
+        id S1726186AbgIQDI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 23:08:58 -0400
+Received: from m17618.mail.qiye.163.com ([59.111.176.18]:28235 "EHLO
+        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726072AbgIQDI4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 23:08:56 -0400
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.227])
+        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id C0CA14E1447;
+        Thu, 17 Sep 2020 11:08:52 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] perf probe: Support debuginfod client
-Message-Id: <20200917120728.d5ecb9587ff3366b6c04228b@kernel.org>
-In-Reply-To: <20200916201753.GC16238@redhat.com>
-References: <160027467316.803747.10741549521899847231.stgit@devnote2>
-        <20200916181307.GB16238@redhat.com>
-        <20200916185218.GA1322686@kernel.org>
-        <20200916201753.GC16238@redhat.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Cc:     Wang Qing <wangqing@vivo.com>
+Subject: [PATCH] i2c: Use kobj_to_dev() API
+Date:   Thu, 17 Sep 2020 11:08:44 +0800
+Message-Id: <1600312126-24048-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQ01PSB1NHh1NS08dVkpNS0tISklKSEhLSElVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VKS0tZBg++
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MD46NAw4Tz8ZQxQvIzMOHAIx
+        HDwaCT5VSlVKTUtLSEpJSkhIT0NCVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlJTFlXWQgBWUFKSUJNNwY+
+X-HM-Tid: 0a749a0945409376kuwsc0ca14e1447
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Sep 2020 16:17:53 -0400
-"Frank Ch. Eigler" <fche@redhat.com> wrote:
+Use kobj_to_dev() instead of container_of()
 
-> Hi -
-> 
-> > > Nice, even uses the source code fetching part of the webapi!
-> > 
-> > So, can I take that as an Acked-by or Reviewed-by? 
-> 
-> Sure.
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+---
+ include/linux/i2c.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks Frank and Arnaldo!
-
-> 
-> > I need to support this in pahole...
-> 
-> pahole/dwarves use elfutils, so it already has automatic support.
-> 
-> https://sourceware.org/elfutils/Debuginfod.html
-
-I'm still not sure that which interface of elfutils I should use
-for this "automatic" debuginfod support. Are there good documentation
-about it?
-Since this series just for the kernel binary, I have to check we
-can do something on user-space binaries.
-
-Thank you,
-
+diff --git a/include/linux/i2c.h b/include/linux/i2c.h
+index fc55ea4..5662265
+--- a/include/linux/i2c.h
++++ b/include/linux/i2c.h
+@@ -344,7 +344,7 @@ const struct i2c_device_id *i2c_match_id(const struct i2c_device_id *id,
+ 
+ static inline struct i2c_client *kobj_to_i2c_client(struct kobject *kobj)
+ {
+-	struct device * const dev = container_of(kobj, struct device, kobj);
++	struct device * const dev = kobj_to_dev(kobj);
+ 	return to_i2c_client(dev);
+ }
+ 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.7.4
+
