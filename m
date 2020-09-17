@@ -2,91 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C64A726D6E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:38:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 335F626D6E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:40:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726408AbgIQIim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 04:38:42 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:4134 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726360AbgIQIie (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 04:38:34 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f6320570002>; Thu, 17 Sep 2020 01:37:43 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Thu, 17 Sep 2020 01:38:27 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Thu, 17 Sep 2020 01:38:27 -0700
-Received: from [10.26.74.242] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 17 Sep
- 2020 08:38:24 +0000
-Subject: Re: [Patch 2/2] cpufreq: tegra194: Fix unlisted boot freq warning
-To:     Sumit Gupta <sumitg@nvidia.com>, <viresh.kumar@linaro.org>,
-        <rjw@rjwysocki.net>, <thierry.reding@gmail.com>,
-        <linux-pm@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <ksitaraman@nvidia.com>, <bbasu@nvidia.com>
-References: <1600276277-7290-1-git-send-email-sumitg@nvidia.com>
- <1600276277-7290-3-git-send-email-sumitg@nvidia.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <53d4513d-0232-0287-9610-3e9ed8888273@nvidia.com>
-Date:   Thu, 17 Sep 2020 09:38:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726358AbgIQIks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 04:40:48 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:45068 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726153AbgIQIkr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 04:40:47 -0400
+X-Greylist: delayed 2797 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 04:40:47 EDT
+Received: from zn.tnic (p200300ec2f1053007b81a97eebdb4df7.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:5300:7b81:a97e:ebdb:4df7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 78CE61EC0286;
+        Thu, 17 Sep 2020 10:40:45 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600332045;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=f45tA0/YC9IUsPdn38WrzVyT4ZLG9lSHJ1gA3ePCJkg=;
+        b=TcdhPTEuj1NDjJ2AFLwnVTMhPwn/tSVlSy9KZFNSRZrqnyvoi1u9j8iPYUhb7zMGRjmvwG
+        FcFbdbOuZIW783X0fnKeDqmtaqWBTTtpPwd6wvbxZe1AMi+V84iOMGx80LUwujzcZ4Lw9J
+        cBgPHOjWCIxE503ZE+764ZpSuDaxvRg=
+Date:   Thu, 17 Sep 2020 10:40:38 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Shiju Jose <shiju.jose@huawei.com>
+Cc:     "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "lenb@kernel.org" <lenb@kernel.org>, Linuxarm <linuxarm@huawei.com>
+Subject: Re: [PATCH 1/1] RAS: Add CPU Correctable Error Collector to isolate
+ an erroneous CPU core
+Message-ID: <20200917084038.GE31960@zn.tnic>
+References: <20200901140140.1772-1-shiju.jose@huawei.com>
+ <20200901143539.GC8392@zn.tnic>
+ <512b7b8e6cb846aabaf5a2191cd9b5d4@huawei.com>
+ <20200909120203.GB12237@zn.tnic>
+ <50714e083d55491a8ccf5ad847682d1e@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <1600276277-7290-3-git-send-email-sumitg@nvidia.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600331863; bh=MA+kzDOpgaIasV/XTrUbK7Y5E/jn4WxvrvnA0rc5sJY=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=FBQFyK3BmMYcCS+AMC+d6rzOHscx6Cx871gJjyu9gktzGPEPSHBN1E0NPmUV+xws9
-         JSsI34zBL1Zmcm6ouTAxhmm09wIiTwC6/beMhPgu2LMg/kz4/POeY10s91TozWXHq5
-         R3gqmP2BWPtNSSY7YV0hTih6RsbIHeyQgTSdeDAnTRG9naAzgOwzjeFY3SmihwL6nw
-         T/jtEReI2WHmixMSfuQXyuCDTpYh4zYZNN/GUOAFRU6geHQCJJ8mm9C/FqTH+XQvmv
-         blS7uo2czX2lh4LIeA8ARFN8+P/bLBO6sKHRgt0iokxCFOh2D9X4zWASTFnkTVOBMv
-         V/Jm7tkOWJ6NQ==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <50714e083d55491a8ccf5ad847682d1e@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 10, 2020 at 03:29:56PM +0000, Shiju Jose wrote:
+> Ok. However the functions such as __find_elem() use
+> memory specific PFN() and PAGE_SHIFT.
 
-On 16/09/2020 18:11, Sumit Gupta wrote:
-> Warning coming during boot because the boot freq set by bootloader
-> gets filtered out due to big freq steps while creating freq_table.
-> Fixing this by setting closest ndiv value from freq_table.
-> Warning:
->   cpufreq: cpufreq_online: CPU0: Running at unlisted freq
->   cpufreq: cpufreq_online: CPU0: Unlisted initial frequency changed
-> 
-> Also, added change in init to wait till current frequency becomes
-> equal or near to the previously requested frequency. This is done
-> because it takes some time to restore the previous frequency while
-> turning-on non-boot cores during exit from SC7(Suspend-to-RAM).
+You can add your version find_elem_cpu() or so. You can do this with a
+set of function pointers which belong to the different type of storage
+the CEC needs, you can do all kinds of fun.
 
-Same here ...
+> I will check this. For CPU, the corrected errors count for a short
+> time period to be checked. Thus old errors outside this period would
+> not be considered and would be cleared. It is not clear to me whether
+> in the current CEC, the count for the old errors outside a time period
+> would be excluded for the threshold check or removed?
 
-Fixes: df320f89359c ("cpufreq: Add Tegra194 cpufreq driver")
+Currently, the CEC decays the errors each time do_spring_cleaning()
+runs, by decrementing DECAY_BITS in the PFN record. Those which get
+DECAY_BITS of 0, get overwritten when the data structure is full.
 
-> 
-> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
-Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
+You can do something similar by halving the error count or something
+more complex like save the error timestamp and eliminate...
 
-Viresh, this is also needed for v5.9.
+You can't know what exactly you wanna do if you don't have a use case
+you're trying to address.
 
-Thanks
-Jon
+> According to the ARM Processor CPER definition the error types
+> reported are Cache Error, TLB Error, Bus Error and micro-architectural
+> Error.
+
+Bus error sounds like not even originating in the CPU but the CPU only
+reporting it. Imagine if that really were the case, and you go disable
+the CPU but the error source is still there. You've just disabled the
+reporting of the error only and now you don't even know anymore that
+you're getting errors.
+
+> Few thoughts on this,
+> 1. Not sure will a CPU core would work/perform as normal after disabling
+> a functional unit?
+
+You can disable parts of caches, etc, so that you can have a somewhat
+functioning CPU until the replacement maintenance can take place.
+
+> 2. Support in the HW to disable a function unit alone may not available.
+
+Yes.
+
+> 3. If it is require to store and retrieve the error count based on
+> functional unit, then CEC will become more complex?
+
+Depends on how it is designed. That's why we're first talking about what
+needs to be done exactly before going off and doing something.
+
+> This requirement is the part of the early fault prediction by taking
+> action when large number of corrected errors reported on a CPU core
+> before it causing serious faults.
+
+And do you know of actual real-life examples where this is really the
+case? Do you have any users who report a large error count on ARM CPUs,
+originating from the caches and that something like that would really
+help?
+
+Because from my x86 CPUs limited experience, the cache arrays are mostly
+fine and errors reported there are not something that happens very
+frequently so we don't even need to collect and count those.
+
+So is this something which you need to have in order to check a box
+somewhere that there is some functionality or is there an actual
+real-life use case behind it which a customer has requested?
+
+> We are mainly looking for disable CPU core on large number of L1/L2
+> cache corrected errors reported on a CPU core. Can we add atleast
+> removing CPU core for the CPU cache corrected errors filtering out
+> other error types?
+
+See above.
 
 -- 
-nvpublic
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
