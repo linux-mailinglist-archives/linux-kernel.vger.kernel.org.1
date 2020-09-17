@@ -2,73 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBFD726DA55
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA05626DA48
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:33:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726820AbgIQLfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 07:35:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58800 "EHLO
+        id S1726815AbgIQLdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 07:33:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726799AbgIQL1t (ORCPT
+        with ESMTP id S1726796AbgIQL1x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 07:27:49 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66214C061788
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 04:27:31 -0700 (PDT)
+        Thu, 17 Sep 2020 07:27:53 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7FC8C06178A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 04:27:50 -0700 (PDT)
 Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4BsZSd26GKz9sTp; Thu, 17 Sep 2020 21:27:29 +1000 (AEST)
+        id 4BsZSl0HLFz9sVf; Thu, 17 Sep 2020 21:27:34 +1000 (AEST)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        christophe.leroy@c-s.fr, mpe@ellerman.id.au
-Cc:     mikey@neuling.org, pedromfc@linux.ibm.com, paulus@samba.org,
-        naveen.n.rao@linux.vnet.ibm.com, linuxppc-dev@lists.ozlabs.org,
-        rogealve@linux.ibm.com, jniethe5@gmail.com,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20200902042945.129369-1-ravi.bangoria@linux.ibm.com>
-References: <20200902042945.129369-1-ravi.bangoria@linux.ibm.com>
-Subject: Re: [PATCH v6 0/8] powerpc/watchpoint: Bug fixes plus new feature flag
-Message-Id: <160034200951.3339803.694776749712911885.b4-ty@ellerman.id.au>
-Date:   Thu, 17 Sep 2020 21:27:29 +1000 (AEST)
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Oliver OHalloran <oliveroh@au1.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Michael Neuling <mikey@linux.ibm.com>,
+        Michael Ellerman <michaele@au1.ibm.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Anton Blanchard <anton@au1.ibm.com>,
+        Nick Piggin <npiggin@au1.ibm.com>
+In-Reply-To: <20200810071834.92514-1-srikar@linux.vnet.ibm.com>
+References: <20200810071834.92514-1-srikar@linux.vnet.ibm.com>
+Subject: Re: [PATCH v5 00/10] Coregroup support on Powerpc
+Message-Id: <160034201134.3339803.10634582499637013510.b4-ty@ellerman.id.au>
+Date:   Thu, 17 Sep 2020 21:27:34 +1000 (AEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Sep 2020 09:59:37 +0530, Ravi Bangoria wrote:
-> Patch #1 fixes issue for quardword instruction on p10 predecessors.
-> Patch #2 fixes issue for vector instructions.
-> Patch #3 fixes a bug about watchpoint not firing when created with
->          ptrace PPC_PTRACE_SETHWDEBUG and CONFIG_HAVE_HW_BREAKPOINT=N.
->          The fix uses HW_BRK_TYPE_PRIV_ALL for ptrace user which, I
->          guess, should be fine because we don't leak any kernel
->          addresses and PRIV_ALL will also help to cover scenarios when
->          kernel accesses user memory.
-> Patch #4,#5 fixes infinite exception bug, again the bug happens only
->          with CONFIG_HAVE_HW_BREAKPOINT=N.
-> Patch #6 fixes two places where we are missing to set hw_len.
-> Patch #7 introduce new feature bit PPC_DEBUG_FEATURE_DATA_BP_ARCH_31
->          which will be set when running on ISA 3.1 compliant machine.
-> Patch #8 finally adds selftest to test scenarios fixed by patch#2,#3
->          and also moves MODE_EXACT tests outside of BP_RANGE condition.
+On Mon, 10 Aug 2020 12:48:24 +0530, Srikar Dronamraju wrote:
+> Changelog v4->v5:
+> v4: http://lore.kernel.org/lkml/20200727053230.19753-1-srikar@linux.vnet.ibm.com/t/#u
+> 
+> Changelog v4 ->v5:
+> powerpc/smp: Optimize start_secondary
+> 	Retain cache domain, no need for generalization
+> 		 (Michael Ellerman, Peter Zijlstra,
+> 		 Valentin Schneider, Gautham R. Shenoy)
 > 
 > [...]
 
 Applied to powerpc/next.
 
-[1/8] powerpc/watchpoint: Fix quadword instruction handling on p10 predecessors
-      https://git.kernel.org/powerpc/c/4759c11ed20454b7b36db4ec15f7d5aa1519af4a
-[2/8] powerpc/watchpoint: Fix handling of vector instructions
-      https://git.kernel.org/powerpc/c/4441eb02333a9b46a0d919aa7a6d3b137b5f2562
-[3/8] powerpc/watchpoint/ptrace: Fix SETHWDEBUG when CONFIG_HAVE_HW_BREAKPOINT=N
-      https://git.kernel.org/powerpc/c/9b6b7c680cc20971444d9f836e49fc98848bcd0a
-[4/8] powerpc/watchpoint: Move DAWR detection logic outside of hw_breakpoint.c
-      https://git.kernel.org/powerpc/c/edc8dd99b29e4d705c45e2a3a6c01b096ee056db
-[5/8] powerpc/watchpoint: Fix exception handling for CONFIG_HAVE_HW_BREAKPOINT=N
-      https://git.kernel.org/powerpc/c/5b905d77987de065bdd3a2906816b5f143df087b
-[6/8] powerpc/watchpoint: Add hw_len wherever missing
-      https://git.kernel.org/powerpc/c/58da5984d2ea6d95f3f9d9e8dd9f7e1b0dddfb3c
-[7/8] powerpc/watchpoint/ptrace: Introduce PPC_DEBUG_FEATURE_DATA_BP_ARCH_31
-      https://git.kernel.org/powerpc/c/fa725cc53d353110f39a9e5b9f60d6acb2c7ff49
-[8/8] selftests/powerpc: Tests for kernel accessing user memory
-      https://git.kernel.org/powerpc/c/ac234524056da4e0c081f682da3ea25cdaab737a
+[01/10] powerpc/smp: Fix a warning under !NEED_MULTIPLE_NODES
+        https://git.kernel.org/powerpc/c/d0fd24bbd27619d7b8d4da26a19a2027931ae9fc
+[02/10] powerpc/smp: Merge Power9 topology with Power topology
+        https://git.kernel.org/powerpc/c/2ef0ca54d97f40f7621d595ac5479bd7fa076bfa
+[03/10] powerpc/smp: Move powerpc_topology above
+        https://git.kernel.org/powerpc/c/5e93f16ae48b728775496429c6db53d0bf8cdd9b
+[04/10] powerpc/smp: Move topology fixups into a new function
+        https://git.kernel.org/powerpc/c/3c6032a8fe99547d31b2b57715e303a67d1b0c66
+[05/10] powerpc/smp: Dont assume l2-cache to be superset of sibling
+        https://git.kernel.org/powerpc/c/f6606cfdfbcda00ce8a6e63c8fc13c93e73ac059
+[06/10] powerpc/smp: Optimize start_secondary
+        https://git.kernel.org/powerpc/c/caa8e29da59926bef099b46ab6280333d583e944
+[07/10] powerpc/numa: Detect support for coregroup
+        https://git.kernel.org/powerpc/c/f9f130ff2ec93c5949576bbfb168cc9530c23649
+[08/10] powerpc/smp: Allocate cpumask only after searching thread group
+        https://git.kernel.org/powerpc/c/6e086302816b2ced602bc99641eb0189c05f018a
+[09/10] powerpc/smp: Create coregroup domain
+        https://git.kernel.org/powerpc/c/72730bfc2a2b91a525f38dfc830f598bdb95f216
+[10/10] powerpc/smp: Implement cpu_to_coregroup_id
+        https://git.kernel.org/powerpc/c/fa35e868f9ddcbb7984fd5ab7f91aef924fa8543
 
 cheers
