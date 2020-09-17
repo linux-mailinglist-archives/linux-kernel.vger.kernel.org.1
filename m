@@ -2,152 +2,415 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F04A26E715
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 23:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B202A26E716
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 23:07:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726526AbgIQVGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 17:06:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45134 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726234AbgIQVGx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 17:06:53 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0044F208E4;
-        Thu, 17 Sep 2020 21:06:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600376813;
-        bh=wnOPfgDD7ID92jdZ56dwprdvFTRV3EVbC9ypZsfycMg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=QT4/jqKXPcV61aUPTXkopvnqF5kR7iijgukjgu1Dfj8xtY30xDG933p4mGkYhDwCa
-         pHgWA1isBxcJzvE2fcKKRoWHU+UngTaUN1B1iOPh9vchbjYXt24AIf6qX1JZVIrx79
-         DVxtPmjKIo932TTLPMlsiW/G5xh1FoHs0htwS8ZQ=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id C06773522887; Thu, 17 Sep 2020 14:06:52 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 14:06:52 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        alexei.starovoitov@gmail.com, daniel@iogearbox.net,
-        jolsa@redhat.com, bpf@vger.kernel.org, sfr@canb.auug.org.au
-Subject: Re: [PATCH RFC tip/core/rcu 0/4] Accelerate RCU Tasks Trace updates
-Message-ID: <20200917210652.GA31242@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200910201956.GA24190@paulmck-ThinkPad-P72>
+        id S1726551AbgIQVHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 17:07:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725900AbgIQVHi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 17:07:38 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 426B1C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 14:07:38 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id lo4so5197641ejb.8
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 14:07:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gateworks-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZLPIFqmOpuZBruUHp3l18k9PeqDA8K70keqtKFWuBvA=;
+        b=qUbqArMtLnslN4hZE9C58h8tbzqTr8yyZi+vRFRSg+KTFfuoi32APXnvxRVAzUq7H8
+         TkegtlEnpSCi39iG84+u0h8FXMj/X+DwuuuO3ZjrnyJ769DS8QvneZR+4SvathuoBvEr
+         C29NAKj4jUJ7MuRDpZ8TKqnmdrORAVZlwVCFAHf2/EiT7Iyd6Zhox0pawAkY7oxBHlqF
+         6GmsnbigIWDvGw0QqJjNj3a/uc1xP44SnXqfbVs0vPVT3kdLEnEyMWBvCnK0BwERjPsa
+         gr+Aqb87wGNRlsk1EqfO7a/LiSHXHillYs9jNNeFpiKwiBwPV0fNsDl0CWWPSeUOP+IU
+         BZdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZLPIFqmOpuZBruUHp3l18k9PeqDA8K70keqtKFWuBvA=;
+        b=ITCN/2DukMIuwi6WBR3SV171hgspH0dCQviRcBcemHWHaF16OnStsqq/hdj19SPyPQ
+         nUtfi+PjRKWMW+zo3G+WGXiesp/IISdoMVwRw4X899hIA5f67Si2ZNjDTaHJ48RDS61a
+         Mb1w+TMFqH+aAQQO9gtHhY6BX0NlTk8NWzFmAC4RtXpW71XK5Yh5DTJasivvSEsPr281
+         i7s+QiV9ibxZVijz45MAJg82dJFSkAkLBs8wNfSmz5T6KyOKufWxPA3VvNnfgut1922k
+         nPCCpk+/vesOMqdJu0pgBzLCUtw8/uWbRBSn5DRP937pFjIvEnbsu8ddt41qza9G6570
+         KOLg==
+X-Gm-Message-State: AOAM533C7o9OG/VsBsB23SzL4PshCHSrWi5a+SEQCJJuDr83wYZWBqaY
+        sYMrvBNeLi/A1hu2hFGJxX39SYEAlK40nVAy+tqkcg==
+X-Google-Smtp-Source: ABdhPJwK/n3WP8r/2NUFgW+dV6PxseRxCw4pWewYNRtqxRfV3pPkA5e6kuui17/rlKB70eHybGKbXTUJifHkOw3E8Js=
+X-Received: by 2002:a17:906:eb11:: with SMTP id mb17mr32020191ejb.255.1600376856595;
+ Thu, 17 Sep 2020 14:07:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200910201956.GA24190@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200917185449.5687-1-krzk@kernel.org>
+In-Reply-To: <20200917185449.5687-1-krzk@kernel.org>
+From:   Tim Harvey <tharvey@gateworks.com>
+Date:   Thu, 17 Sep 2020 14:07:24 -0700
+Message-ID: <CAJ+vNU189235n+ucj3O+zArkRkWAzK2Zr5RLtw4j+VvBXivFkQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] ARM: dts: imx6qdl-gw5xxx: correct interrupt flags
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Adam Ford <aford173@gmail.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Jacky Bai <ping.bai@nxp.com>, Robin Gong <yibin.gong@nxp.com>,
+        Peter Chen <peter.chen@nxp.com>,
+        Device Tree Mailing List <devicetree@vger.kernel.org>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On Thu, Sep 17, 2020 at 11:54 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> GPIO_ACTIVE_x flags are not correct in the context of interrupt flags.
+> These are simple defines so they could be used in DTS but they will not
+> have the same meaning:
+> 1. GPIO_ACTIVE_HIGH = 0 = IRQ_TYPE_NONE
+> 2. GPIO_ACTIVE_LOW  = 1 = IRQ_TYPE_EDGE_RISING
+>
+> Correct the interrupt flags, assuming the author of the code wanted same
+> logical behavior behind the name "ACTIVE_xxx", this is:
+>   ACTIVE_LOW  => IRQ_TYPE_LEVEL_LOW
+>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+>
+> ---
+>
+> Not tested on HW.
+>
+> Changes since v1:
+> 1. Correct title
+> ---
+>  arch/arm/boot/dts/imx6qdl-gw51xx.dtsi | 3 ++-
+>  arch/arm/boot/dts/imx6qdl-gw52xx.dtsi | 3 ++-
+>  arch/arm/boot/dts/imx6qdl-gw53xx.dtsi | 3 ++-
+>  arch/arm/boot/dts/imx6qdl-gw54xx.dtsi | 3 ++-
+>  arch/arm/boot/dts/imx6qdl-gw551x.dtsi | 3 ++-
+>  arch/arm/boot/dts/imx6qdl-gw552x.dtsi | 3 ++-
+>  arch/arm/boot/dts/imx6qdl-gw553x.dtsi | 3 ++-
+>  arch/arm/boot/dts/imx6qdl-gw560x.dtsi | 3 ++-
+>  arch/arm/boot/dts/imx6qdl-gw5903.dtsi | 3 ++-
+>  arch/arm/boot/dts/imx6qdl-gw5904.dtsi | 3 ++-
+>  arch/arm/boot/dts/imx6qdl-gw5907.dtsi | 3 ++-
+>  arch/arm/boot/dts/imx6qdl-gw5910.dtsi | 3 ++-
+>  arch/arm/boot/dts/imx6qdl-gw5912.dtsi | 3 ++-
+>  arch/arm/boot/dts/imx6qdl-gw5913.dtsi | 3 ++-
+>  14 files changed, 28 insertions(+), 14 deletions(-)
+>
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw51xx.dtsi b/arch/arm/boot/dts/imx6qdl-gw51xx.dtsi
+> index 4d01c3300b97..3c04b5a4f3cb 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw51xx.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw51xx.dtsi
+> @@ -5,6 +5,7 @@
+>
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+>
+>  / {
+>         /* these are used by bootloader for disabling nodes */
+> @@ -152,7 +153,7 @@
+>                 compatible = "gw,gsc";
+>                 reg = <0x20>;
+>                 interrupt-parent = <&gpio1>;
+> -               interrupts = <4 GPIO_ACTIVE_LOW>;
+> +               interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+>                 interrupt-controller;
+>                 #interrupt-cells = <1>;
+>                 #size-cells = <0>;
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw52xx.dtsi b/arch/arm/boot/dts/imx6qdl-gw52xx.dtsi
+> index f6182a9d201c..736074f1c3ef 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw52xx.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw52xx.dtsi
+> @@ -5,6 +5,7 @@
+>
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+>
+>  / {
+>         /* these are used by bootloader for disabling nodes */
+> @@ -217,7 +218,7 @@
+>                 compatible = "gw,gsc";
+>                 reg = <0x20>;
+>                 interrupt-parent = <&gpio1>;
+> -               interrupts = <4 GPIO_ACTIVE_LOW>;
+> +               interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+>                 interrupt-controller;
+>                 #interrupt-cells = <1>;
+>                 #size-cells = <0>;
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw53xx.dtsi b/arch/arm/boot/dts/imx6qdl-gw53xx.dtsi
+> index a28e79463d0c..8072ed47c6bb 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw53xx.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw53xx.dtsi
+> @@ -5,6 +5,7 @@
+>
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+>
+>  / {
+>         /* these are used by bootloader for disabling nodes */
+> @@ -210,7 +211,7 @@
+>                 compatible = "gw,gsc";
+>                 reg = <0x20>;
+>                 interrupt-parent = <&gpio1>;
+> -               interrupts = <4 GPIO_ACTIVE_LOW>;
+> +               interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+>                 interrupt-controller;
+>                 #interrupt-cells = <1>;
+>                 #size-cells = <0>;
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw54xx.dtsi b/arch/arm/boot/dts/imx6qdl-gw54xx.dtsi
+> index 55f368e192c0..8c9bcdd39830 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw54xx.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw54xx.dtsi
+> @@ -5,6 +5,7 @@
+>
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+>  #include <dt-bindings/sound/fsl-imx-audmux.h>
+>
+>  / {
+> @@ -247,7 +248,7 @@
+>                 compatible = "gw,gsc";
+>                 reg = <0x20>;
+>                 interrupt-parent = <&gpio1>;
+> -               interrupts = <4 GPIO_ACTIVE_LOW>;
+> +               interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+>                 interrupt-controller;
+>                 #interrupt-cells = <1>;
+>                 #address-cells = <1>;
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw551x.dtsi b/arch/arm/boot/dts/imx6qdl-gw551x.dtsi
+> index 1516e2b0bcde..e5d803d023c8 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw551x.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw551x.dtsi
+> @@ -48,6 +48,7 @@
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/media/tda1997x.h>
+>  #include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+>  #include <dt-bindings/sound/fsl-imx-audmux.h>
+>
+>  / {
+> @@ -219,7 +220,7 @@
+>                 compatible = "gw,gsc";
+>                 reg = <0x20>;
+>                 interrupt-parent = <&gpio1>;
+> -               interrupts = <4 GPIO_ACTIVE_LOW>;
+> +               interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+>                 interrupt-controller;
+>                 #interrupt-cells = <1>;
+>                 #size-cells = <0>;
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw552x.dtsi b/arch/arm/boot/dts/imx6qdl-gw552x.dtsi
+> index 0da6e6f7482b..290a607fede9 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw552x.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw552x.dtsi
+> @@ -5,6 +5,7 @@
+>
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+>
+>  / {
+>         /* these are used by bootloader for disabling nodes */
+> @@ -144,7 +145,7 @@
+>                 compatible = "gw,gsc";
+>                 reg = <0x20>;
+>                 interrupt-parent = <&gpio1>;
+> -               interrupts = <4 GPIO_ACTIVE_LOW>;
+> +               interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+>                 interrupt-controller;
+>                 #interrupt-cells = <1>;
+>                 #size-cells = <0>;
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw553x.dtsi b/arch/arm/boot/dts/imx6qdl-gw553x.dtsi
+> index faf9a3ba61b2..c15b9cc63bf8 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw553x.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw553x.dtsi
+> @@ -47,6 +47,7 @@
+>
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+>
+>  / {
+>         /* these are used by bootloader for disabling nodes */
+> @@ -180,7 +181,7 @@
+>                 compatible = "gw,gsc";
+>                 reg = <0x20>;
+>                 interrupt-parent = <&gpio1>;
+> -               interrupts = <4 GPIO_ACTIVE_LOW>;
+> +               interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+>                 interrupt-controller;
+>                 #interrupt-cells = <1>;
+>                 #size-cells = <0>;
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw560x.dtsi b/arch/arm/boot/dts/imx6qdl-gw560x.dtsi
+> index f68f9dada5b0..093a219a77ae 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw560x.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw560x.dtsi
+> @@ -47,6 +47,7 @@
+>
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/input.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+>
+>  / {
+>         /* these are used by bootloader for disabling nodes */
+> @@ -294,7 +295,7 @@
+>                 compatible = "gw,gsc";
+>                 reg = <0x20>;
+>                 interrupt-parent = <&gpio1>;
+> -               interrupts = <4 GPIO_ACTIVE_LOW>;
+> +               interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+>                 interrupt-controller;
+>                 #interrupt-cells = <1>;
+>                 #size-cells = <0>;
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw5903.dtsi b/arch/arm/boot/dts/imx6qdl-gw5903.dtsi
+> index fbe6c32bd756..e1c8dd233cab 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw5903.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw5903.dtsi
+> @@ -47,6 +47,7 @@
+>
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+>
+>  / {
+>         chosen {
+> @@ -235,7 +236,7 @@
+>                 compatible = "gw,gsc";
+>                 reg = <0x20>;
+>                 interrupt-parent = <&gpio1>;
+> -               interrupts = <4 GPIO_ACTIVE_LOW>;
+> +               interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+>                 interrupt-controller;
+>                 #interrupt-cells = <1>;
+>                 #size-cells = <0>;
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw5904.dtsi b/arch/arm/boot/dts/imx6qdl-gw5904.dtsi
+> index 23c6e4047621..3cd2e717c1da 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw5904.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw5904.dtsi
+> @@ -47,6 +47,7 @@
+>
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+>
+>  / {
+>         /* these are used by bootloader for disabling nodes */
+> @@ -257,7 +258,7 @@
+>                 compatible = "gw,gsc";
+>                 reg = <0x20>;
+>                 interrupt-parent = <&gpio1>;
+> -               interrupts = <4 GPIO_ACTIVE_LOW>;
+> +               interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+>                 interrupt-controller;
+>                 #interrupt-cells = <1>;
+>                 #size-cells = <0>;
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw5907.dtsi b/arch/arm/boot/dts/imx6qdl-gw5907.dtsi
+> index b1ff7c859c4d..21c68a55bcb9 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw5907.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw5907.dtsi
+> @@ -5,6 +5,7 @@
+>
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+>
+>  / {
+>         /* these are used by bootloader for disabling nodes */
+> @@ -154,7 +155,7 @@
+>                 compatible = "gw,gsc";
+>                 reg = <0x20>;
+>                 interrupt-parent = <&gpio1>;
+> -               interrupts = <4 GPIO_ACTIVE_LOW>;
+> +               interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+>                 interrupt-controller;
+>                 #interrupt-cells = <1>;
+>                 #size-cells = <0>;
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw5910.dtsi b/arch/arm/boot/dts/imx6qdl-gw5910.dtsi
+> index 6c943a517ad7..ed4e22259959 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw5910.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw5910.dtsi
+> @@ -5,6 +5,7 @@
+>
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+>
+>  / {
+>         /* these are used by bootloader for disabling nodes */
+> @@ -163,7 +164,7 @@
+>                 compatible = "gw,gsc";
+>                 reg = <0x20>;
+>                 interrupt-parent = <&gpio1>;
+> -               interrupts = <4 GPIO_ACTIVE_LOW>;
+> +               interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+>                 interrupt-controller;
+>                 #interrupt-cells = <1>;
+>                 #size-cells = <0>;
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw5912.dtsi b/arch/arm/boot/dts/imx6qdl-gw5912.dtsi
+> index 441d8ce97aa4..797f160249f7 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw5912.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw5912.dtsi
+> @@ -5,6 +5,7 @@
+>
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+>
+>  / {
+>         /* these are used by bootloader for disabling nodes */
+> @@ -158,7 +159,7 @@
+>                 compatible = "gw,gsc";
+>                 reg = <0x20>;
+>                 interrupt-parent = <&gpio1>;
+> -               interrupts = <4 GPIO_ACTIVE_LOW>;
+> +               interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+>                 interrupt-controller;
+>                 #interrupt-cells = <1>;
+>                 #address-cells = <1>;
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw5913.dtsi b/arch/arm/boot/dts/imx6qdl-gw5913.dtsi
+> index d62a8da49367..4cd7d290f5b2 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw5913.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw5913.dtsi
+> @@ -5,6 +5,7 @@
+>
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+>
+>  / {
+>         /* these are used by bootloader for disabling nodes */
+> @@ -139,7 +140,7 @@
+>                 compatible = "gw,gsc";
+>                 reg = <0x20>;
+>                 interrupt-parent = <&gpio1>;
+> -               interrupts = <4 GPIO_ACTIVE_LOW>;
+> +               interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+>                 interrupt-controller;
+>                 #interrupt-cells = <1>;
+>                 #size-cells = <0>;
+> --
+> 2.17.1
+>
 
-This series accelerates RCU Tasks Trace updates, reducing the average
-grace-period latencies from about a second to about 20 milliseconds on my
-x86 laptop.  These are benchmark numbers, based on a previously posted
-patch to rcuscale.c [1] running on my x86 laptop.  Additional patches
-provide a compiler-warning cleanup and fix several race conditions that
-were exposed by the faster grace periods.  The patches in this series
-are as follows:
+for series:
+Acked-By: Tim Harvey <tharvey@gateworks.com>
 
-1.	Prevent complaints of unused show_rcu_tasks_classic_gp_kthread().
-	This is not related to the problem at hand, but it is
-	a pre-existing patch that provides a simple cleanup.
-	The grace-period latency thus remains at 980 milliseconds.
+Thanks Krzysztof
 
-2.	Mark variables static, noted during this effort but otherwise
-	unconnected.  This change has no effect, so that the average
-	grace-period latency remains at 980 milliseconds.
+Tim
 
-3.	Use more aggressive polling for RCU Tasks Trace.  This polling
-	starts at five-millisecond intervals instead of the prior
-	100-millisecond intervals.  As before, the polling interval
-	increases in duration as the grace period ages, and again as
-	before is capped at one second.  This change reduces the
-	average grace-period latency to about 620 milliseconds.
 
-4.	Selectively enable more RCU Tasks Trace IPIs.  This retains
-	the old behavior of suppressing IPIs for grace periods that are
-	younger than 500 milliseconds for CONFIG_TASKS_TRACE_RCU_READ_MB=y
-	kernels, including CONFIG_PREEMPT_RT=y kernels, but allows IPIs
-	immediately on other kernels.  It is quite possible that a more
-	sophisticated decision procedure will be required, and changes
-	to RCU's dyntick-idle code might also be needed.  This change
-	(along with the earlier ones) reduces the average grace-period
-	latency to about 120 milliseconds.
-
-5.	Shorten per-grace-period sleep for RCU Tasks Trace.  The
-	current code sleeps for 100 milliseconds after the end of
-	each grace period, which by itself prevents a back-to-back
-	string of grace-period waits from completing faster than
-	ten per second.  This patch also retains this old behavior
-	for CONFIG_TASKS_TRACE_RCU_READ_MB=y (and again thus also
-	for CONFIG_PREEMPT_RT=y kernels).  For other kernels, this
-	post-grace-period sleep is reduced to five milliseconds.
-	This change (along with the earlier ones) reduced the average
-	grace-period latency to about 18 milliseconds, for an overall
-	factor-of-50 reduction in latency.
-
-6.	Fix a deadlock-inducing race between rcu_read_unlock_trace()
-	and trc_read_check_handler().  The race window was only a few
-	instructions wide, but please see the commit log for the full
-	sad story.  The grace-period speedup made this race 50 times
-	more probable, and thus reduced the rcutorture runtime required
-	to reproduce it from about five months to about four days.
-
-7.	Fix a low-probability race between rcu_read_unlock_trace()
-	and the RCU Tasks Trace CPU stall reporting loop in
-	rcu_tasks_trace_postgp().  This race could result in leaking
-	task_struct structures.
-
-8.	Fix a low-probability race between the RCU Tasks Trace CPU
-	stall reporting loop in rcu_tasks_trace_postgp() and task exit.
-	This race could result in use-after-free errors.
-
-Alexei Starovoitov benchmarked an earlier patch [2], producing results
-that are roughly consistent with the above reduction in latency [3].
-
-Changes since last week's RFC version:
-
-o	Added patch #1, which cleans up a compiler warning.
-
-o	Renumbered patches 1-4 to 2-5.
-
-o	Add Ccs to patches 3, 4, and 5.
-
-o	Add patches 6-8 to fix race conditions exposed by 50x faster
-	grace periods.	These are either rare on the one hand or both
-	rare and occurring only during an RCU Tasks Trace CPU stall
-	warning -and- rare on the other.  Still, they need to be fixed.
-
-o	This series maintains the sub-20-millisecond update-side
-	grace-period delays of the RFC series.
-	
-o	Fixing the first of the race conditions required that a
-	compiler barrier be added to rcu_read_lock_trace() and that
-	another compiler barrier along with a WRITE_ONCE() be added to
-	rcu_read_unlock_trace().  This fix therefore adds a fraction of
-	a nanosecond to read-side overhead.  On my laptop, the increase
-	is from about 2.6 nanoseconds to about 3 nanoseconds.  This
-	small increase should not cause noticeable problems.
-
-							Thanx, Paul
-
-[1] https://lore.kernel.org/bpf/20200909193900.GK29330@paulmck-ThinkPad-P72/
-[2] https://lore.kernel.org/bpf/20200910052727.GA4351@paulmck-ThinkPad-P72/
-[3] https://lore.kernel.org/bpf/619554b2-4746-635e-22f3-7f0f09d97760@fb.com/
-
-------------------------------------------------------------------------
-
- include/linux/rcupdate_trace.h |    4 +
- kernel/rcu/tasks.h             |   92 +++++++++++++++++++++++++++++++----------
- 2 files changed, 75 insertions(+), 21 deletions(-)
+Tim
