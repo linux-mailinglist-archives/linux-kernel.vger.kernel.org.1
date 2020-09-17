@@ -2,117 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E968426E327
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DDDE26E360
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:18:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726551AbgIQSFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 14:05:11 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:50500 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726452AbgIQSEy (ORCPT
+        id S1726361AbgIQSMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 14:12:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726576AbgIQSLf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 14:04:54 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08HI4Pwo132430;
-        Thu, 17 Sep 2020 18:04:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=AgmV/y+LF8mXPDnVjEBzoGjKPMcGmk0BeS1TT7N1nXQ=;
- b=J3kw/L3t1HES2NX9hsXCa/y7nyYfKql3XreB51IpzdGc/I+YTgq4uDzz7k+wTt9nOJXc
- TrxsCWUaD2bpZ7LWI95LBshOH6KMpPU+uH0i+4FtjOGE+tzP/DdWPjBCZ/DHfQzskcGd
- I8P+NNZ3ywTllionkEjjkMB+KfeizPAh01Rh2nvRi3b+Qu5tsM1YZBgSZButSqrpqCTR
- ms43NfmZ8JzNTGTku0ziuXAXXsVGlH2VygBg1ZVadRxsd2O4V1V0fbk5/VnHSOmTIGAO
- AxEWpuUMrpbZwdu9nojfahpX4vmVL+6hSwhbsVPk4dk3fQu8ruKe6SiY41tKBJzaY5ZC 8Q== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 33j91dvjh5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 17 Sep 2020 18:04:49 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08HHxv6g009853;
-        Thu, 17 Sep 2020 18:04:49 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 33hm359ngk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 17 Sep 2020 18:04:48 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08HI4lV4024534;
-        Thu, 17 Sep 2020 18:04:47 GMT
-Received: from [10.74.106.99] (/10.74.106.99)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 17 Sep 2020 18:04:47 +0000
-Subject: Re: [PATCH] dt-bindings: soc: ti: ti,pruss: fix schema ID
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Roger Quadros <rogerq@ti.com>,
-        Suman Anna <s-anna@ti.com>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20200917070543.19064-1-krzk@kernel.org>
- <CAMxfBF5WWQX3ZH0YcRZ_N8q4njTdG-RA4eM+zyQwmK7tYvw6DQ@mail.gmail.com>
- <CAJKOXPfd9iWHDNo9v=COroD_wuYL0xmOkRt-63WS_7G3As=kXQ@mail.gmail.com>
-From:   santosh.shilimkar@oracle.com
-Organization: Oracle Corporation
-Message-ID: <e022fdc2-f33d-da13-fb35-b3c04d38e736@oracle.com>
-Date:   Thu, 17 Sep 2020 11:04:45 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.9.0
+        Thu, 17 Sep 2020 14:11:35 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B0DC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 11:11:31 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id w11so3231039lfn.2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 11:11:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CvhYrXTQ7P1PpPJneriFY/N4fH6cu5PCNfejoxCMfjU=;
+        b=ebZpe94emC58OChvJb6ZM/Lfv6J4RQjpddoqdFXFgpn5nQwns+cim1TIIPoMi913bU
+         pPqAGC9UjlAo4pGFpVTz9MAzxmkQYqgUthKSwOP5an1HSaD/lIhSFVjOxv+pKuMqxBXu
+         QPJtWnomu+ikDHtTtN2WJd+Q8J1NFpOyixo9E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CvhYrXTQ7P1PpPJneriFY/N4fH6cu5PCNfejoxCMfjU=;
+        b=uIszgT36v3optH1JGlz88O4DfpYYAV56b89G+/mI7rsQFVVYaDu/ScSvBlYNSv+3D1
+         lYBJeA9CFHOkhRIedzhcXDiZ7fBOCNA/t2IC8DoYRynsabXpd0bA9diuj900MfrAdBRj
+         erf6foIg9CH9j5HtsB2wf3SUueJ/XacjWFbPfRh5/Kix3wZ2Ydjxw+GP8xCQX8I4zLED
+         F6bXfvT682IZwoWzr2qcX6PZWIY+sItj34T1DcMm1WBqq7Pu1nUIirFlqBo2JdIL6paK
+         /AcWVdkx9OnqumlqZLvv1nwMEFJ1wXIa+5p6+JJ/NeIkRZ6yH/uMfJn4oVIrLcDwYpu7
+         rigw==
+X-Gm-Message-State: AOAM532e0H8J122mrFa4ACwiyrAgrdib6U2TbaU4FBkNhIX6M6iZaJW1
+        8ZbM9gfnognoxGsAzrfXc2eLdS/IbeYD1w==
+X-Google-Smtp-Source: ABdhPJwj8c5z+ztHWsGSQ4jMp7Ca7DZxcQrXzsPyAbppU06WXiYlbr8wAEn/A0TdJO950oPiQfi/CQ==
+X-Received: by 2002:a05:6512:31c4:: with SMTP id j4mr8972709lfe.323.1600366289214;
+        Thu, 17 Sep 2020 11:11:29 -0700 (PDT)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
+        by smtp.gmail.com with ESMTPSA id 73sm58009lff.125.2020.09.17.11.11.23
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Sep 2020 11:11:23 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id z19so3219894lfr.4
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 11:11:23 -0700 (PDT)
+X-Received: by 2002:ac2:4ec7:: with SMTP id p7mr8604753lfr.352.1600366282941;
+ Thu, 17 Sep 2020 11:11:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAJKOXPfd9iWHDNo9v=COroD_wuYL0xmOkRt-63WS_7G3As=kXQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9747 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxlogscore=999
- malwarescore=0 mlxscore=0 phishscore=0 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009170134
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9747 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
- priorityscore=1501 malwarescore=0 suspectscore=0 mlxlogscore=999
- clxscore=1011 adultscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009170135
+References: <20200915145040.GA2949@xz-x1> <20200915160553.GJ1221970@ziepe.ca>
+ <20200915182933.GM1221970@ziepe.ca> <20200915191346.GD2949@xz-x1>
+ <20200915193838.GN1221970@ziepe.ca> <20200915213330.GE2949@xz-x1>
+ <20200915232238.GO1221970@ziepe.ca> <e6c352f8-7ee9-0702-10a4-122d2c4422fc@nvidia.com>
+ <20200916174804.GC8409@ziepe.ca> <20200916184619.GB40154@xz-x1> <20200917112538.GD8409@ziepe.ca>
+In-Reply-To: <20200917112538.GD8409@ziepe.ca>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 17 Sep 2020 11:11:06 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjtfjB3TqTFRzVmOrB9Mii6Yzc-=wKq0fu4ruDE6AsJgg@mail.gmail.com>
+Message-ID: <CAHk-=wjtfjB3TqTFRzVmOrB9Mii6Yzc-=wKq0fu4ruDE6AsJgg@mail.gmail.com>
+Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Peter Xu <peterx@redhat.com>, John Hubbard <jhubbard@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Maya B . Gokhale" <gokhale2@llnl.gov>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Marty Mcfadden <mcfadden8@llnl.gov>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/17/20 1:35 AM, Krzysztof Kozlowski wrote:
-> On Thu, 17 Sep 2020 at 10:32, Grzegorz Jaszczyk
-> <grzegorz.jaszczyk@linaro.org> wrote:
->>
->> On Thu, 17 Sep 2020 at 09:05, Krzysztof Kozlowski <krzk@kernel.org> wrote:
->>>
->>> Add missing '#' to fix schema errors:
->>>
->>>    $id: 'https://urldefense.com/v3/__http://devicetree.org/schemas/soc/ti/ti,pruss.yaml__;!!GqivPVa7Brio!NF67-KbyQr0smc7iM86dsdgoOaQrQRN4F2aNdLndleTjLn6BhqrmDBL4ekWiVIG6IBFwLA$ ' does not match 'https://urldefense.com/v3/__http://devicetree.org/schemas/.**A5C*5C.yaml*__;KiUlIw!!GqivPVa7Brio!NF67-KbyQr0smc7iM86dsdgoOaQrQRN4F2aNdLndleTjLn6BhqrmDBL4ekWiVIGpNPP7ig$ '
->>>    $schema: 'https://urldefense.com/v3/__http://devicetree.org/meta-schemas/core.yaml__;!!GqivPVa7Brio!NF67-KbyQr0smc7iM86dsdgoOaQrQRN4F2aNdLndleTjLn6BhqrmDBL4ekWiVIEdWH0Bzw$ ' is not one of ['https://urldefense.com/v3/__http://devicetree.org/meta-schemas/core.yaml*__;Iw!!GqivPVa7Brio!NF67-KbyQr0smc7iM86dsdgoOaQrQRN4F2aNdLndleTjLn6BhqrmDBL4ekWiVIHcNI2bOQ$ ', 'https://urldefense.com/v3/__http://devicetree.org/meta-schemas/base.yaml*__;Iw!!GqivPVa7Brio!NF67-KbyQr0smc7iM86dsdgoOaQrQRN4F2aNdLndleTjLn6BhqrmDBL4ekWiVIFH0HvA-g$ ']
->>>    Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml: ignoring, error in schema: $id
->>>
->>> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
->>> ---
->>>   Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml | 4 ++--
->>>   1 file changed, 2 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml b/Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
->>> index cf7dc83f724f..037c51b2f972 100644
->>> --- a/Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
->>> +++ b/Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
->>> @@ -1,8 +1,8 @@
->>>   # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->>>   %YAML 1.2
->>>   ---
->>> -$id: https://urldefense.com/v3/__http://devicetree.org/schemas/soc/ti/ti,pruss.yaml__;!!GqivPVa7Brio!NF67-KbyQr0smc7iM86dsdgoOaQrQRN4F2aNdLndleTjLn6BhqrmDBL4ekWiVIG6IBFwLA$
->>> -$schema: https://urldefense.com/v3/__http://devicetree.org/meta-schemas/core.yaml__;!!GqivPVa7Brio!NF67-KbyQr0smc7iM86dsdgoOaQrQRN4F2aNdLndleTjLn6BhqrmDBL4ekWiVIEdWH0Bzw$
->>> +$id: https://urldefense.com/v3/__http://devicetree.org/schemas/soc/ti/ti,pruss.yaml*__;Iw!!GqivPVa7Brio!NF67-KbyQr0smc7iM86dsdgoOaQrQRN4F2aNdLndleTjLn6BhqrmDBL4ekWiVIHAb7bLvA$
->>> +$schema: https://urldefense.com/v3/__http://devicetree.org/meta-schemas/core.yaml*__;Iw!!GqivPVa7Brio!NF67-KbyQr0smc7iM86dsdgoOaQrQRN4F2aNdLndleTjLn6BhqrmDBL4ekWiVIHcNI2bOQ$
->>
->> I've double checked and "#" was present in the original patch sent and
->> ack for upstream: https://urldefense.com/v3/__https://patchwork.kernel.org/patch/11729649/__;!!GqivPVa7Brio!NF67-KbyQr0smc7iM86dsdgoOaQrQRN4F2aNdLndleTjLn6BhqrmDBL4ekWiVIEaRPpx1g$
->> It seems like something got wrong on linux-next but this is the only
->> diff between original patch and one found in linux-next. Thank you for
->> taking care of it.
-> 
-> Indeed that's weird. It must get lost when applying...
-> 
-These URLs get mangled sometimes and I needed to fix them. Will fix the
-original commit. Thanks for reporting.
+> I botched the last version of the patch, here is something a bit
+> better.
+
+So I'd like to understand why this problem happens.
+
+Myt argument to Hugh a few weeks ago was that page pinning should take
+care of all this:
+
+ (a) if the pinner is going to change the page, it will have to get
+the pin with FOLL_WRITE in addition to FOLL_PIN
+
+ (b) that means it will do the COW and mark the page writable and dirty
+
+ (c) the whole _point_ of the FOLL_PIN is that subsequent operations
+shouldn't make it non-writable any more (ie it can't be unmapped, and
+we should synchronize on fork etc)
+
+So I get the strong feeling that this whole approach to "fix" COW is
+really papering over the real problem.
+
+To me, the whole point of pinning is to avoid issues like this. If it
+didn't fix this issue, then why did we go to all the effort of
+treating pinned pages differently?
+
+Your patch may avoid the problem, but I think it implies things are
+horribly horribly broken in pinning land.
+
+I also note that the _only_ user of page_maybe_dma_pinned() right now
+is a debug check in gup_benchmark. I think your patch may _work_, and
+I think that thanks to page_maybe_dma_pinned() it might even avoid the
+horrible case, but I feel we should just truly fix pinning to be
+meaningful instead.
+
+IOW, in addition to keeping the page mapped, it should keep the page writable.
+
+Why isn't it?
+
+                     Linus
