@@ -2,92 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F8526D712
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E684A26D714
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726591AbgIQIsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 04:48:35 -0400
-Received: from lb1-smtp-cloud8.xs4all.net ([194.109.24.21]:40765 "EHLO
-        lb1-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726576AbgIQIsa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 04:48:30 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id IpaZkLCWrPTBMIpaaklCZD; Thu, 17 Sep 2020 10:48:24 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1600332504; bh=FGGfh7jhrNlQmwwZoXn5URUJwAP31ZNmRR24iAOJumo=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=JvNYembFkkAhGAZ8dN+vXmDFZsHMHNmic8W0rbLg6fJNrTrsSd+ot7Jjz6P0mhT5o
-         IAZWe/FEbfl9JvTwgcXv/ENPPcZ1rYtqm820WfYZDuoaMGx+HALyiwXDXfr2Wbqi5U
-         M00javSYvNRyeuAJWWRiJ8W2zRs/lXIUs1yTIvuAgTAWK+cT+YFWg7E9BR1il0g988
-         Met91hPCmxFEcuAt4+aic+Tc15qZdfI4hR/O3amqgvidJWV+3qeSBRqSHyoTskCJId
-         MsKLayrGEJzq3OwKRXZKdyqyjUQYpCZ3N61OOrbf9BnRFVOwV1E9xO0MY1Rj1tB4hP
-         YTDtZGR0CkouA==
-Subject: Re: [PATCH] media: s5p-mfc: set V4L2_BUF_FLAG_LAST flag on final
- buffer
-To:     Andriy Gelman <andriy.gelman@gmail.com>
-Cc:     Kyungmin Park <kyungmin.park@samsung.com>,
-        Kamil Debski <kamil@wypas.org>,
-        Jeongtae Park <jtp.park@samsung.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Nicolas Dufresne <nicolas@ndufresne.ca>
-References: <20200502194052.485-1-andriy.gelman@gmail.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <0210ef98-b075-322d-dc3a-adf3dccd3a92@xs4all.nl>
-Date:   Thu, 17 Sep 2020 10:48:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726526AbgIQIsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 04:48:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41632 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726593AbgIQIsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 04:48:37 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0F85E206A1;
+        Thu, 17 Sep 2020 08:48:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600332516;
+        bh=yi+ytAgx6za/19uH7XwF6woib4Fz9kTbekZjb7IPr4w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZUZI0GKwdBeRxsYmtgk3CU2wo8gn25Nzi6q4xzvhuzEfHX5IIxJTrvnSI/YfwkJcK
+         TxhnlM8C/8cAUAILAy0z4Vc/fdfzRxThnS0smPwfpRQ5VrK+OPBW1hDNnhbUPgyXmV
+         4vDNFiRFVns1MBqYnoretp4PK/SiOsyxXrSUU1kA=
+Date:   Thu, 17 Sep 2020 09:48:31 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Hou Tao <houtao1@huawei.com>
+Cc:     peterz@infradead.org, Oleg Nesterov <oleg@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.cz>
+Subject: Re: [RFC PATCH] locking/percpu-rwsem: use this_cpu_{inc|dec}() for
+ read_count
+Message-ID: <20200917084831.GA29295@willie-the-truck>
+References: <20200915140750.137881-1-houtao1@huawei.com>
+ <20200915150610.GC2674@hirez.programming.kicks-ass.net>
+ <20200915153113.GA6881@redhat.com>
+ <20200915155150.GD2674@hirez.programming.kicks-ass.net>
+ <20200915160344.GH35926@hirez.programming.kicks-ass.net>
+ <b885ce8e-4b0b-8321-c2cc-ee8f42de52d4@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20200502194052.485-1-andriy.gelman@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfEUIpir7Ikuif51JPR0IdmdnmoQrwFeVAxZVhJd5QweV3UW944PQu8Mh5b9o6+gH+RkTZyICGmRrFMScfWc4FUFklaDZosxGds04g0NiPTdlwRlXu/rj
- k/lTU4TPJkR1r/3srOG2CsdU/zJvlHQ0SXylvNpc5Grvbbl5UQFpEsmoihDju9Wuvy4O72v18pKVRXHHoxWmUZTrIZA34zh70AhRiQmGU83dyTxXu9c2MqKa
- cTcnCiL7S0QDgE9u9sEbnYNsbpy3TQ2wvys7RbGlzmLg1SlZ1yXUKYuUALFkDup43MA/6BfSZZ/ndTB5cLs5MfyvMUkef4sLQG8MraK76Acjhr3J89mXvngf
- TdwkRs/RuxINL8GRDSViHLCiLq5utINYMow1METgqj88eubOC3dpwfrAwGqRTCP2zi4EGItg5BExVqicpcRaooTeAjZ5lfr7ZB8Q4BihfpmQFe6jUkOVZsgk
- uNhKrMiYixObA6SEH1wQ9mVVupJgzV7+Jn89+iuNcmqbGvA3ugLCQdEjkaXokyQQpbhIJ+DEXBWzQMEAIXcOG2z7iPB+9agCgepgnRdgbesnLCZwK/kKKaC5
- GfgAmMQw/nyvexYwQS4RGB6GBVQgDziM5uTubrdzOH+sSVrdObvu3A4pk9MkVE7wkU0=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b885ce8e-4b0b-8321-c2cc-ee8f42de52d4@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added Sylwester and Tomasz.
-
-I'd like to have an Ack of a driver maintainer before merging.
-
-Regards,
-
-	Hans
-
-On 02/05/2020 21:40, Andriy Gelman wrote:
-> From: Andriy Gelman <andriy.gelman@gmail.com>
+On Wed, Sep 16, 2020 at 08:32:20PM +0800, Hou Tao wrote:
+> > Subject: locking/percpu-rwsem: Use this_cpu_{inc,dec}() for read_count
+> > From: Hou Tao <houtao1@huawei.com>
+> > Date: Tue, 15 Sep 2020 22:07:50 +0800
+> > 
+> > From: Hou Tao <houtao1@huawei.com>
+> > 
+> > The __this_cpu*() accessors are (in general) IRQ-unsafe which, given
+> > that percpu-rwsem is a blocking primitive, should be just fine.
+> > 
+> > However, file_end_write() is used from IRQ context and will cause
+> > load-store issues.
+> > 
+> > Fixing it by using the IRQ-safe this_cpu_*() for operations on
+> > read_count. This will generate more expensive code on a number of
+> > platforms, which might cause a performance regression for some of the
+> > other percpu-rwsem users.
+> > 
+> > If any such is reported, we can consider alternative solutions.
+> > 
+> I have simply test the performance impact on both x86 and aarch64.
 > 
-> As per V4L2 api, the final buffer should set V4L2_BUF_FLAG_LAST flag.
+> There is no degradation under x86 (2 sockets, 18 core per sockets, 2 threads per core)
 > 
-> Signed-off-by: Andriy Gelman <andriy.gelman@gmail.com>
-> ---
->  drivers/media/platform/s5p-mfc/s5p_mfc.c | 1 +
->  1 file changed, 1 insertion(+)
+> v5.8.9
+> no writer, reader cn                               | 18        | 36        | 72
+> the rate of down_read/up_read per second           | 231423957 | 230737381 | 109943028
+> the rate of down_read/up_read per second (patched) | 232864799 | 233555210 | 109768011
 > 
-> diff --git a/drivers/media/platform/s5p-mfc/s5p_mfc.c b/drivers/media/platform/s5p-mfc/s5p_mfc.c
-> index 5c2a23b953a4..b3d9b3a523fe 100644
-> --- a/drivers/media/platform/s5p-mfc/s5p_mfc.c
-> +++ b/drivers/media/platform/s5p-mfc/s5p_mfc.c
-> @@ -614,6 +614,7 @@ static void s5p_mfc_handle_stream_complete(struct s5p_mfc_ctx *ctx)
->  		list_del(&mb_entry->list);
->  		ctx->dst_queue_cnt--;
->  		vb2_set_plane_payload(&mb_entry->b->vb2_buf, 0, 0);
-> +		mb_entry->b->flags |= V4L2_BUF_FLAG_LAST;
->  		vb2_buffer_done(&mb_entry->b->vb2_buf, VB2_BUF_STATE_DONE);
->  	}
->  
+> However the performance degradation is huge under aarch64 (4 sockets, 24 core per sockets): nearly 60% lost.
 > 
+> v4.19.111
+> no writer, reader cn                               | 24        | 48        | 72        | 96
+> the rate of down_read/up_read per second           | 166129572 | 166064100 | 165963448 | 165203565
+> the rate of down_read/up_read per second (patched) |  63863506 |  63842132 |  63757267 |  63514920
+> 
+> I will test the aarch64 host by using v5.8 tomorrow.
 
+Thanks. We did improve the preempt_count() munging a bit since 4.19 (I
+think), so maybe 5.8 will be a bit better. Please report back!
+
+Will
