@@ -2,102 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26D3F26DF15
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 17:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BA7826DF1E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 17:08:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727868AbgIQPGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 11:06:41 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:56080 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727786AbgIQPE4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 11:04:56 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600355096; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=QuOovRlqqQ4imLlh/3CVPxCw7KlkSP4GZEYANQVrcVc=; b=v1Lgt083Euy6q+zW9VPK9XH7/M8FVy35NCT5dEoHTsIr2+s6m8AIZw8GlAnrBOH0ZrtqVN6f
- bxA4ZS94T8hA5KmUhWQQz4Uv4pcJYxoFmP43UTxBQyYZczkvwSIYhx55xExenPWu1u5ybOnW
- 8e8IttAkiTIzZyDXRJdZr3ZilVQ=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5f637af60915d30357e88d46 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Sep 2020 15:04:22
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D40F4C433CA; Thu, 17 Sep 2020 15:04:21 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AA653C433F1;
-        Thu, 17 Sep 2020 15:04:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AA653C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Colin Ian King <colin.king@canonical.com>
-Cc:     Carl Huang <cjhuang@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, ath11k@lists.infradead.org,
-        "linux-wireless\@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        netdev@vger.kernel.org,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: ath11k: initialize wmi config based on hw_params
-References: <480d8984-a5fb-be1b-b553-e01609601059@canonical.com>
-Date:   Thu, 17 Sep 2020 18:04:16 +0300
-In-Reply-To: <480d8984-a5fb-be1b-b553-e01609601059@canonical.com> (Colin Ian
-        King's message of "Wed, 19 Aug 2020 12:05:17 +0100")
-Message-ID: <875z8ch2bz.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S1727927AbgIQPII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 11:08:08 -0400
+Received: from mga03.intel.com ([134.134.136.65]:21774 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727793AbgIQPHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 11:07:44 -0400
+IronPort-SDR: sR4dr4Rr9xQb43Mg4CjjWfnnfcT9Nw8H1iG6uPW7gipBuls2TFwaFhtbXywjTCmnSU4UXMFY86
+ xiTeoVgcNMDA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="159769203"
+X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
+   d="scan'208";a="159769203"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 08:06:13 -0700
+IronPort-SDR: 3Abfnlj2zcLUEH0QXrR0WLXGrLd90ZvG7MuNMqU0U2dPiyXQ5MS5Ab/ENlth3SZ3Uf+RCrgoGF
+ CMRpZrMsm7Ug==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
+   d="scan'208";a="507715035"
+Received: from lkp-server01.sh.intel.com (HELO a05db971c861) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 17 Sep 2020 08:06:11 -0700
+Received: from kbuild by a05db971c861 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kIvUB-00003G-6n; Thu, 17 Sep 2020 15:06:11 +0000
+Date:   Thu, 17 Sep 2020 23:04:43 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2020.09.16a] BUILD SUCCESS
+ 37f202d6cbf3dd42bde5fe1c253940b36d5fd140
+Message-ID: <5f637b0b.UVNrvWajBXHs1bB7%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Colin Ian King <colin.king@canonical.com> writes:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.09.16a
+branch HEAD: 37f202d6cbf3dd42bde5fe1c253940b36d5fd140  rcu: Prevent RCU_LOCKDEP_WARN() from swallowing the condition
 
-> Hi,
->
-> static analysis with Coverity has detected a duplicated assignment issue
-> with the following commit:
->
-> commit 2d4bcbed5b7d53e19fc158885e7340b464b64507
-> Author: Carl Huang <cjhuang@codeaurora.org>
-> Date:   Mon Aug 17 13:31:51 2020 +0300
->
->     ath11k: initialize wmi config based on hw_params
->
-> The analysis is as follows:
->
->
->  74        config->beacon_tx_offload_max_vdev = 0x2;
->  75        config->num_multicast_filter_entries = 0x20;
->  76        config->num_wow_filters = 0x16;
->
-> Unused value (UNUSED_VALUE)
-> assigned_value: Assigning value 1U to config->num_keep_alive_pattern
-> here, but that stored value is overwritten before it can be used.
->  77        config->num_keep_alive_pattern = 0x1;
->
-> value_overwrite: Overwriting previous write to
-> config->num_keep_alive_pattern with value 0U.
->
->  78        config->num_keep_alive_pattern = 0;
->
->
-> I'm not sure if one of these assignments is redundant, or perhaps one of
-> the assignments is meant to be setting a different structure element.
+elapsed time: 725m
 
-0x1 assignment should be removed, I'll send a patch.
+configs tested: 117
+configs skipped: 2
 
--- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm64                               defconfig
+mips                        omega2p_defconfig
+arm                         lubbock_defconfig
+arm                           spitz_defconfig
+powerpc                        warp_defconfig
+sh                        dreamcast_defconfig
+parisc                           allyesconfig
+m68k                          hp300_defconfig
+powerpc                      mgcoge_defconfig
+powerpc                 mpc832x_mds_defconfig
+arm                            u300_defconfig
+m68k                             allyesconfig
+arm                        mvebu_v7_defconfig
+powerpc                       eiger_defconfig
+powerpc                     tqm8548_defconfig
+sh                         ecovec24_defconfig
+powerpc                       maple_defconfig
+m68k                          amiga_defconfig
+riscv                            alldefconfig
+mips                     loongson1c_defconfig
+arc                     nsimosci_hs_defconfig
+riscv                          rv32_defconfig
+powerpc                      chrp32_defconfig
+mips                     cu1830-neo_defconfig
+nios2                         3c120_defconfig
+powerpc                      bamboo_defconfig
+arm                      integrator_defconfig
+arm                           efm32_defconfig
+arm                             mxs_defconfig
+arc                            hsdk_defconfig
+arm                           u8500_defconfig
+mips                     decstation_defconfig
+powerpc                   lite5200b_defconfig
+sh                           sh2007_defconfig
+sh                        sh7757lcr_defconfig
+powerpc                  iss476-smp_defconfig
+arm                       omap2plus_defconfig
+sh                           se7712_defconfig
+powerpc                      katmai_defconfig
+arm                         lpc18xx_defconfig
+mips                           rs90_defconfig
+arm                        vexpress_defconfig
+mips                         rt305x_defconfig
+powerpc                 mpc832x_rdb_defconfig
+arm                   milbeaut_m10v_defconfig
+mips                    maltaup_xpa_defconfig
+parisc                generic-32bit_defconfig
+riscv                             allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20200917
+i386                 randconfig-a006-20200917
+i386                 randconfig-a003-20200917
+i386                 randconfig-a001-20200917
+i386                 randconfig-a002-20200917
+i386                 randconfig-a005-20200917
+x86_64               randconfig-a014-20200917
+x86_64               randconfig-a011-20200917
+x86_64               randconfig-a016-20200917
+x86_64               randconfig-a012-20200917
+x86_64               randconfig-a015-20200917
+x86_64               randconfig-a013-20200917
+i386                 randconfig-a015-20200917
+i386                 randconfig-a014-20200917
+i386                 randconfig-a011-20200917
+i386                 randconfig-a013-20200917
+i386                 randconfig-a016-20200917
+i386                 randconfig-a012-20200917
+riscv                            allyesconfig
+riscv                               defconfig
+riscv                            allmodconfig
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a006-20200917
+x86_64               randconfig-a004-20200917
+x86_64               randconfig-a003-20200917
+x86_64               randconfig-a002-20200917
+x86_64               randconfig-a001-20200917
+x86_64               randconfig-a005-20200917
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
