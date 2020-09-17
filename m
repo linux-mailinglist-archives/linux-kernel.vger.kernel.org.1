@@ -2,172 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EC1A26D012
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 02:40:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D14626D014
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 02:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726198AbgIQAkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 20:40:45 -0400
-Received: from mga07.intel.com ([134.134.136.100]:17741 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725858AbgIQAkb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 20:40:31 -0400
-X-Greylist: delayed 427 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 20:40:30 EDT
-IronPort-SDR: nC5ark3m55yVhP9UL1nzoH4UFpvAd3CUotlynV1KnDqiIehPsBVC5E/P/lFUD3htqPTEtvofn1
- I7mH4kfdLw4Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="223776507"
-X-IronPort-AV: E=Sophos;i="5.76,434,1592895600"; 
-   d="scan'208";a="223776507"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 17:33:21 -0700
-IronPort-SDR: Bwn0ODfEHbq9zqA5JteQfCHSNWJMmIFeHhb1BNCi6R2Xc5+gHVbMXx1mnM4rh4B0n2ZuzoGFDi
- zWAC8rL36QyA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,434,1592895600"; 
-   d="scan'208";a="380354389"
-Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
-  by orsmga001.jf.intel.com with ESMTP; 16 Sep 2020 17:33:17 -0700
-From:   "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-To:     miquel.raynal@bootlin.com, linux-kernel@vger.kernel.org
-Cc:     linux-mtd@lists.infradead.org, richard@nod.at, vigneshr@ti.com,
-        boris.brezillon@collabora.com, christophe.kerello@st.com,
-        piotrs@cadence.com, robert.jarzmik@free.fr,
-        brendanhiggins@google.com, devicetree@vger.kernel.org,
-        tglx@linutronix.de, hauke.mehrtens@intel.com, robh+dt@kernel.org,
-        linux-mips@vger.kernel.org, arnd@arndb.de,
-        andriy.shevchenko@intel.com, cheol.yong.kim@intel.com,
-        qi-ming.wu@intel.com,
-        Ramuthevar Vadivel Murugan 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Subject: [PATCH v13 1/2] dt-bindings: mtd: Add Nand Flash Controller support for Intel LGM SoC
-Date:   Thu, 17 Sep 2020 08:33:07 +0800
-Message-Id: <20200917003308.57038-2-vadivel.muruganx.ramuthevar@linux.intel.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200917003308.57038-1-vadivel.muruganx.ramuthevar@linux.intel.com>
-References: <20200917003308.57038-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+        id S1726219AbgIQAlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 20:41:08 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:42045 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725858AbgIQAlG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 20:41:06 -0400
+X-Greylist: delayed 450 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 20:41:03 EDT
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 2EEDA5C0C9D;
+        Wed, 16 Sep 2020 20:33:31 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Wed, 16 Sep 2020 20:33:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm3; bh=nitlheN0IsLIrcvvbSsvp3wovHOQpfw
+        gG1F9+OPBH+M=; b=Pj1cVpkv+TXoltLKj77sDn+NzDQJ1ZTckutBgtoDUOUNEWa
+        TzJ14uJ9hBTQRnuR0b0cv4lHfWERaQjNkF5vpOp59DsVXjUxL+F+4tSkAofngHm+
+        mvgfNChrj3MKgOl8DwimAUbzvN+NKW2urssktHTlf1jMMOX0bSW2kzc0oDxrrfqJ
+        4/LdwHJXKpQkuY2jbc7YPHgtSgrzSYS3xE1UCIux2IkiA3Kcp4g6HpET24wc/YHu
+        CckJG13bYLJ6ysp/eIBvNTB0322DGrPJhebiedrTaXWA0y+VyirRPq07lnm9H5aU
+        VvMDKtdssrBShdPOTtDsan4e+D/L3aWDkkQzlIg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=nitlhe
+        N0IsLIrcvvbSsvp3wovHOQpfwgG1F9+OPBH+M=; b=GLF+i8ktV0YKu27g4QYc+Y
+        /rNY9EDg5tpFMGFI5/WaW+PXWB21QSLrKzUCgDrJ30cp+c04J4xQj+1exuU2Xl0t
+        FvW2DUxXNvZdubp8PPqxIyAgObbbqwkX9ujV5Eo5HNuiRjPEQYZfA8fEl9WeRUsh
+        RaW74PF1URcmwJJ0g8pwHsZLSiglCXjVtb7hz2aZUs2T8h92z5TQ5dgFWBPLsfBB
+        qoqoDr+LJTvX94B8JJc3gNxGptnWw6H9kDjc/3jEljnIYBYCImdYZuOb+PmreRxb
+        9ao4x5sXBHp4TJm/UL5an8KAuDQtQ/MqakTRmygSIrVb8DGV2fJ1LqW6o7oMJNuA
+        ==
+X-ME-Sender: <xms:2q5iX3xh5q7gaj3fKjMgVDAiYg2Zt1Igwtnyw7cYxXEIYeL_Nc1f5g>
+    <xme:2q5iX_QF8yGZ8iLhTWhPZZ8IRqQ16hvcl325GtqjSBOH1GMTMXhme6ZS1Sq5nhn7v
+    rP4EOntaWA-3gq6JA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrtdefgdefhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderreejnecuhfhrohhmpedftehnughr
+    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
+    htthgvrhhnpedutddtkeeugeegvddttdeukeeiuddtgfeuuddtfeeiueetfeeileettedv
+    tdfhieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grnhgurhgvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:2q5iXxUZI9hkWQ5zOKi8KR-M8falIWTKEjpHTWUoOrPTC2syiGxw-Q>
+    <xmx:2q5iXxj4uSmznpQIRjJ5tpcrnu9fJCsUIVf4qtqQfBVn9deZJ64Zag>
+    <xmx:2q5iX5D2d5uTzaHuTBybNmA59sCSc3eiKtF31kMXFxQoKtiuWSCwuQ>
+    <xmx:265iX09Ms89duDK2ZOAmLv22D9KOXSonoDUqGp8AXLLYW4yUaOkWPw>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 89E9FE00D1; Wed, 16 Sep 2020 20:33:29 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.3.0-324-g0f99587-fm-20200916.004-g0f995879
+Mime-Version: 1.0
+Message-Id: <61537381-b1ea-48d3-b445-a33e355f8338@www.fastmail.com>
+In-Reply-To: <20200916155651.GA90122@roeck-us.net>
+References: <20200914122811.3295678-1-andrew@aj.id.au>
+ <20200914122811.3295678-3-andrew@aj.id.au>
+ <71067b18-c4bc-533a-0069-f21069c5fd0d@roeck-us.net>
+ <48962472-b025-4b0d-90e9-60469bebf206@www.fastmail.com>
+ <20200916155651.GA90122@roeck-us.net>
+Date:   Thu, 17 Sep 2020 10:03:09 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Guenter Roeck" <linux@roeck-us.net>
+Cc:     linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org,
+        "Jean Delvare" <jdelvare@suse.com>, wsa@kernel.org,
+        "Joel Stanley" <joel@jms.id.au>, linux-kernel@vger.kernel.org
+Subject: =?UTF-8?Q?Re:_[RFC_PATCH_2/2]_hwmon:_(pmbus/ucd9000)_Throttle_SMBus_tran?=
+ =?UTF-8?Q?sfers_to_avoid_poor_behaviour?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
 
-Add YAML file for dt-bindings to support NAND Flash Controller
-on Intel's Lightning Mountain SoC.
 
-Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- .../devicetree/bindings/mtd/intel,lgm-nand.yaml    | 99 ++++++++++++++++++++++
- 1 file changed, 99 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
+On Thu, 17 Sep 2020, at 01:26, Guenter Roeck wrote:
+> > I've had a look at these two examples. As you suggest the delays in zl6100.c 
+> > look pretty similar to what this series implements in the i2c core. I'm finding 
+> > it hard to dislodge the feeling that open-coding the waits is error prone, but 
+> > to avoid that and not implement the waits in the i2c core means having almost 
+> > duplicate implementations of handlers for i2c_smbus_{read,write}*() and 
+> > pmbus_{read,write}*() calls in the driver.
+> > 
+> 
+> Not sure I can follow you here. Anyway, it seems to me that you are set on
+> an implementation in the i2c core. I personally don't like that approach,
 
-diff --git a/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
-new file mode 100644
-index 000000000000..313daec4d783
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
-@@ -0,0 +1,99 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/intel,lgm-nand.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Intel LGM SoC NAND Controller Device Tree Bindings
-+
-+allOf:
-+  - $ref: "nand-controller.yaml"
-+
-+maintainers:
-+  - Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-+
-+properties:
-+  compatible:
-+    const: intel,lgm-nand
-+
-+  reg:
-+    maxItems: 6
-+
-+  reg-names:
-+    items:
-+       - const: ebunand
-+       - const: hsnand
-+       - const: nand_cs0
-+       - const: nand_cs1
-+       - const: addr_sel0
-+       - const: addr_sel1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  dmas:
-+    maxItems: 2
-+
-+  dma-names:
-+    items:
-+      - const: tx
-+      - const: rx
-+
-+  "#address-cells":
-+    const: 1
-+
-+  "#size-cells":
-+    const: 0
-+
-+patternProperties:
-+  "^nand@[a-f0-9]+$":
-+    type: object
-+    properties:
-+      reg:
-+        minimum: 0
-+        maximum: 7
-+
-+      nand-ecc-mode: true
-+
-+      nand-ecc-algo:
-+        const: hw
-+
-+    additionalProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - clocks
-+  - dmas
-+  - dma-names
-+  - "#address-cells"
-+  - "#size-cells"
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    nand-controller@e0f00000 {
-+      compatible = "intel,lgm-nand";
-+      reg = <0xe0f00000 0x100>,
-+            <0xe1000000 0x300>,
-+            <0xe1400000 0x8000>,
-+            <0xe1c00000 0x1000>,
-+            <0x17400000 0x4>,
-+            <0x17c00000 0x4>;
-+      reg-names = "ebunand", "hsnand", "nand_cs0", "nand_cs1",
-+        "addr_sel0", "addr_sel1";
-+      clocks = <&cgu0 125>;
-+      dmas = <&dma0 8>, <&dma0 9>;
-+      dma-names = "tx", "rx";
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      nand@0 {
-+        reg = <0>;
-+        nand-ecc-mode = "hw";
-+      };
-+    };
-+
-+...
--- 
-2.11.0
+Not really set on it, but it does seem convenient. I'm looking at whether 
+delays resolve the issues we have with the max31785 as well (I have a bunch of 
+patches that introduce retries under the various circumstances we've hit poor 
+behaviour).
 
+> but I'll accept a change in the ucd9000 driver to make use of it. Please
+> leave the zl6100 code alone, though - it took me long enough to get that
+> working, and I won't have time to test any changes.
+
+No worries. If you don't have time to test changes it reduces the motivation to 
+find a general approach, and so maybe isolating the work-arounds to the ucd9000 
+is the way to go.
+
+Thanks for the feedback.
+
+Andrew
