@@ -2,93 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB1B426E991
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 01:43:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 259DD26E993
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 01:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726101AbgIQXna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 19:43:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60162 "EHLO
+        id S1726245AbgIQXnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 19:43:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725886AbgIQXn3 (ORCPT
+        with ESMTP id S1726104AbgIQXnt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 19:43:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B82FC06174A;
-        Thu, 17 Sep 2020 16:43:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=+QooxsRPLy4jqdonZqXT/xWaR2mYqwJaHtHqYhdaYX0=; b=RKsRpsBgrvEUJYxCzE0Z0nrivI
-        IsQ902HTw9JOSWpoS0kcKymTAkWeUKlQ6xVMu/iEvYp0RLyBGxCffC7hPS3dAWybwadDQjbBW22Si
-        fTkIJoxFkGERqF0Xu5eTJ4I9lo2yk3ddJM59dLOZD2dm2piJNNJga/ObeVSEeBEYfZe+lYkrcKXoH
-        ecRTVrg4O8JTaIb3mFIH4aNN5GldrGJdKHFucpwRkFCjDEqoeqUxB2Ko5dNIWTwsSnnZZDOR9oxP5
-        s2EnSAjq+cDx6N8L7QgCkteR/uauic3snm8oys6pLRAqlGSoq4J8+Qy2YlJlavwF9LtAfgfhkz2rF
-        axFKh2ww==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kJ3Yk-0000zj-7L; Thu, 17 Sep 2020 23:43:26 +0000
-Subject: Re: [PATCH v4 0/5] Add shared workqueue support for idxd driver
-To:     Dave Jiang <dave.jiang@intel.com>, vkoul@kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dan.j.williams@intel.com, tony.luck@intel.com, jing.lin@intel.com,
-        ashok.raj@intel.com, sanjay.k.kumar@intel.com,
-        fenghua.yu@intel.com, kevin.tian@intel.com
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <160037680630.3777.16356270178889649944.stgit@djiang5-desk3.ch.intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <e178a1ae-0ce2-70bc-54b9-9e2fae837f06@infradead.org>
-Date:   Thu, 17 Sep 2020 16:43:21 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <160037680630.3777.16356270178889649944.stgit@djiang5-desk3.ch.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        Thu, 17 Sep 2020 19:43:49 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C27BC06174A;
+        Thu, 17 Sep 2020 16:43:49 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 8878713662ADD;
+        Thu, 17 Sep 2020 16:27:01 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 16:43:47 -0700 (PDT)
+Message-Id: <20200917.164347.604470783719487724.davem@davemloft.net>
+To:     mkubecek@suse.cz
+Cc:     kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] ethtool: add and use message type for tunnel info
+ reply
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200916230410.34FCE6074F@lion.mk-sys.cz>
+References: <20200916230410.34FCE6074F@lion.mk-sys.cz>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Thu, 17 Sep 2020 16:27:01 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Michal Kubecek <mkubecek@suse.cz>
+Date: Thu, 17 Sep 2020 01:04:10 +0200 (CEST)
 
-On 9/17/20 2:15 PM, Dave Jiang wrote:
+> Tunnel offload info code uses ETHTOOL_MSG_TUNNEL_INFO_GET message type (cmd
+> field in genetlink header) for replies to tunnel info netlink request, i.e.
+> the same value as the request have. This is a problem because we are using
+> two separate enums for userspace to kernel and kernel to userspace message
+> types so that this ETHTOOL_MSG_TUNNEL_INFO_GET (28) collides with
+> ETHTOOL_MSG_CABLE_TEST_TDR_NTF which is what message type 28 means for
+> kernel to userspace messages.
 > 
-> ---
+> As the tunnel info request reached mainline in 5.9 merge window, we should
+> still be able to fix the reply message type without breaking backward
+> compatibility.
 > 
-> Dave Jiang (5):
->       x86/asm: move the raw asm in iosubmit_cmds512() to special_insns.h
->       x86/asm: add enqcmds() to support ENQCMDS instruction
->       dmaengine: idxd: add shared workqueue support
->       dmaengine: idxd: clean up descriptors with fault error
->       dmaengine: idxd: add ABI documentation for shared wq
-> 
+> Fixes: c7d759eb7b12 ("ethtool: add tunnel info interface")
+> Signed-off-by: Michal Kubecek <mkubecek@suse.cz>
 
-I don't see patch 3/5 in my inbox nor at https://lore.kernel.org/dmaengine/
-
-Did the email monster eat it?
-
-thanks.
-
-> 
->  Documentation/ABI/stable/sysfs-driver-dma-idxd |   14 ++
->  arch/x86/include/asm/io.h                      |   46 +++++---
->  arch/x86/include/asm/special_insns.h           |   17 +++
->  drivers/dma/Kconfig                            |   10 ++
->  drivers/dma/idxd/cdev.c                        |   49 ++++++++
->  drivers/dma/idxd/device.c                      |   91 ++++++++++++++-
->  drivers/dma/idxd/dma.c                         |    9 --
->  drivers/dma/idxd/idxd.h                        |   33 +++++-
->  drivers/dma/idxd/init.c                        |   92 ++++++++++++---
->  drivers/dma/idxd/irq.c                         |  143 ++++++++++++++++++++++--
->  drivers/dma/idxd/registers.h                   |   14 ++
->  drivers/dma/idxd/submit.c                      |   33 +++++-
->  drivers/dma/idxd/sysfs.c                       |  127 +++++++++++++++++++++
->  13 files changed, 608 insertions(+), 70 deletions(-)
-> 
-> --
-> 
-
--- 
-~Randy
-
+Applied, thank you.
