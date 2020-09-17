@@ -2,234 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BF8C26E603
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 22:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6EE826E63A
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 22:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726594AbgIQUA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 16:00:58 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:53241 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1726333AbgIQUA6 (ORCPT
+        id S1726501AbgIQUGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 16:06:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726236AbgIQUGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 16:00:58 -0400
-X-Greylist: delayed 396 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 16:00:57 EDT
-Received: (qmail 1101981 invoked by uid 1000); 17 Sep 2020 15:54:16 -0400
-Date:   Thu, 17 Sep 2020 15:54:16 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-usb@vger.kernel.org, Bastien Nocera <hadess@hadess.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        devicetree@vger.kernel.org,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Peter Chen <peter.chen@nxp.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH v2 2/2] USB: misc: Add onboard_usb_hub driver
-Message-ID: <20200917195416.GA1099735@rowland.harvard.edu>
-References: <20200917114600.v2.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
- <20200917114600.v2.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
+        Thu, 17 Sep 2020 16:06:40 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A4BEC061355
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 13:06:40 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id j3so1651778qvi.7
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 13:06:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3Q1qejjjhezfyiurKJRhlDxB+DXAgXxFnb9TedTa7L4=;
+        b=lcRgZ5GzpJ04pDPiF882GvGQfA2klPwdj72TcNSCwqEw7IIEOzRf1pXGmBCRxdByGn
+         ZWILbFyH5h5Ta8bppvRX+L9ZRICb1mWgtPJygZk1EKPsj6r/MAzLelBVl8cLBeYtHyH3
+         /3vsvX2OX8dryVJtfjjDzZvTbdEwkpwD59PpIZbA/E6lJO6me1kJwS3tyKHzxBiAIwfJ
+         Pe/e2mKvSQH0zN04VtLbscoqrBNtuoKgeObD+sjm+uwH+XFb7qPHR4wQSzhsg6E+ZoYb
+         Rlm7sR59h57IQ3F+Hja05Bmrnqm/3RwZyUn2nQRoejUm1fTynhjzSShvJScutXEAm/SJ
+         jaXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3Q1qejjjhezfyiurKJRhlDxB+DXAgXxFnb9TedTa7L4=;
+        b=lKDNSR02E/wqBeADx32mZ6QMTtiRv/KJqr1saPNYY4lPZ/Oy2BS92Gkqv6qdxgd3FA
+         9F6mEX5BIlirGQ9YS30NwtZR9AOoO9otN6t5NHGOS471SCWqlPpwElqIDQcm+9HmJUWQ
+         KxVYiDBZPv8Bwnjc9ncqNTN830rFiRFZuTLC6zDZSPm+Pzl+anlEz76VUfTYOUw9XR/B
+         kPHPMABgKssUcJTA4iqX9BDmnpEh1SeztVkSjnIFe/B/Bcc88t4l/oWRDSy0lxUyX1nK
+         0faQW5WCG4rElKrkNlenqT3wDhp+cWF84hhtMyvI1FhlrHLMtMtV6AsDNpfB3q/eUEaX
+         YaFg==
+X-Gm-Message-State: AOAM532Zmhsaol8xnk2VXjkZFMLGsxIwKLhuxfnSEkj8uCdv6bHk1cNG
+        lZphW8p9uxCq7U7fq5NYVhKh4g==
+X-Google-Smtp-Source: ABdhPJxuZnt5wzjBKuVgR/rcdMf+nNahk7ll2ZTJLpD1Brk0GLK2cYvnAB3V+7hnzlBYIm81lj3K7g==
+X-Received: by 2002:a0c:d443:: with SMTP id r3mr30442508qvh.20.1600373199344;
+        Thu, 17 Sep 2020 13:06:39 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id w59sm574671qtd.1.2020.09.17.13.06.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 13:06:38 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kJ0Aw-000lCJ-5W; Thu, 17 Sep 2020 17:06:38 -0300
+Date:   Thu, 17 Sep 2020 17:06:38 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Peter Xu <peterx@redhat.com>, John Hubbard <jhubbard@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Maya B . Gokhale" <gokhale2@llnl.gov>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Marty Mcfadden <mcfadden8@llnl.gov>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
+Message-ID: <20200917200638.GM8409@ziepe.ca>
+References: <20200915213330.GE2949@xz-x1>
+ <20200915232238.GO1221970@ziepe.ca>
+ <e6c352f8-7ee9-0702-10a4-122d2c4422fc@nvidia.com>
+ <20200916174804.GC8409@ziepe.ca>
+ <20200916184619.GB40154@xz-x1>
+ <20200917112538.GD8409@ziepe.ca>
+ <20200917181411.GA133226@xz-x1>
+ <CAHk-=wgMVPAhD7C24ipe03+MScgp6F=zMS-roOznvxJ+hOGfSA@mail.gmail.com>
+ <20200917190332.GB133226@xz-x1>
+ <CAHk-=wgw3GNyF_6euymOFxM62Y3B=C=f2iUJn8Py-u5YELJ5JA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200917114600.v2.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAHk-=wgw3GNyF_6euymOFxM62Y3B=C=f2iUJn8Py-u5YELJ5JA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 11:46:22AM -0700, Matthias Kaehlcke wrote:
-> The main issue this driver addresses is that a USB hub needs to be
-> powered before it can be discovered. For onboard hubs this is often
-> solved by supplying the hub with an 'always-on' regulator, which is
-> kind of a hack. Some onboard hubs may require further initialization
-> steps, like changing the state of a GPIO or enabling a clock, which
-> requires further hacks. This driver creates a platform device
-> representing the hub which performs the necessary initialization.
-> Currently it only supports switching on a single regulator, support
-> for multiple regulators or other actions can be added as needed.
-> Different initialization sequences can be supported based on the
-> compatible string.
-> 
-> Besides performing the initialization the driver can be configured
-> to power the hub off during system suspend. This can help to extend
-> battery life on battery powered devices which have no requirements
-> to keep the hub powered during suspend. The driver can also be
-> configured to leave the hub powered when a wakeup capable USB device
-> is connected when suspending, and power it off otherwise.
-> 
-> Technically the driver consists of two drivers, the platform driver
-> described above and a very thin USB driver that subclasses the
-> generic driver. The purpose of this driver is to provide the platform
-> driver with the USB devices corresponding to the hub(s) (a hub
-> controller may provide multiple 'logical' hubs, e.g. one to support
-> USB 2.0 and another for USB 3.x).
-> 
-> Co-developed-by: Ravi Chandra Sadineni <ravisadineni@chromium.org>
-> Signed-off-by: Ravi Chandra Sadineni <ravisadineni@chromium.org>
-> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+On Thu, Sep 17, 2020 at 12:42:11PM -0700, Linus Torvalds wrote:
 
-> +config USB_ONBOARD_HUB
-> +	tristate "Onboard USB hub support"
-> +	depends on OF
-> +	help
-> +	  Say Y here if you want to support onboard USB hubs. The driver
-> +	  powers supported hubs on and may perform other initialization
-> +	  steps.
+> Because the whole "do page pinning without MADV_DONTFORK and then fork
+> the area" is I feel a very very invalid load. It sure as hell isn't
+> something we should care about performance for, and in fact it is
+> something we should very well warn for exactly to let people know
+> "this process is doing bad things".
 
-I have a nagging feeling that this description may be too vague for a
-lot of people to understand.  Does everybody know what an "onboard"
-USB hub is?
+It is easy for things like iouring that can just allocate the queue
+memory they care about and MADV_DONTFORK it.
 
-Consider for example that Intel's current EHCI host controllers all
-come with a USB hub built into the chipset.  That built-in hub
-certainly could be considered "onboard", but it doesn't need this
-driver.
+Other things work more like O_DIRECT - the data it is working on is
+arbtiary app memory, not controlled in anyway.
 
-Maybe also give some examples of devices that require this driver, to
-help make the idea clear to readers.
+In RDMA we have this ugly scheme were we automatically call
+MADV_DONTFORK on the virtual address and hope it doesn't explode. It
+is very hard to call MADV_DONTFORK if you don't control the
+allocation. Don't want to break huge pages, have to hope really really
+hard that a fork doesn't need that memory. Hope you don't run out of
+vmas beause it causes a vma split. So ugly. So much overhead.
 
+Considering almost anything can do a fork() - we've seen app authors
+become confused. They say stuff is busted, support folks ask if they
+use fork, author says no.. Investigation later shows some hidden
+library did system() or whatever.
 
-> +static int __maybe_unused onboard_hub_suspend(struct device *dev)
-> +{
-> +	struct onboard_hub *hub = dev_get_drvdata(dev);
-> +	struct udev_node *node;
-> +	int rc = 0;
-> +
-> +	hub->has_wakeup_capable_descendants = false;
-> +
-> +	if (!hub->power_off_in_suspend)
-> +		return 0;
-> +
-> +	mutex_lock(&hub->lock);
-> +
-> +	list_for_each_entry(node, &hub->udev_list, list) {
-> +		if (!device_may_wakeup(node->udev->bus->controller))
-> +			break;
+In this case the tests that found this failed because they were
+written in Python and buried in there was some subprocess.call().
 
-You're assuming that node->udev->bus->controller is going to be the
-same for the nodes on the list, right?
+I would prefer the kernel consider it a valid work load with the
+semantics the sketch patch shows..
 
-> +
-> +		if (usb_wakeup_enabled_descendants(node->udev)) {
-> +			hub->has_wakeup_capable_descendants = true;
-> +			break;
-> +		}
-> +	}
-> +
-> +	mutex_unlock(&hub->lock);
-> +
-> +	if (!hub->has_wakeup_capable_descendants)
-> +		rc = onboard_hub_power_off(hub);
-> +
-> +	return rc;
-> +}
-> +
-> +static int __maybe_unused onboard_hub_resume(struct device *dev)
-> +{
-> +	struct onboard_hub *hub = dev_get_drvdata(dev);
-> +	int rc = 0;
-> +
-> +	if (hub->power_off_in_suspend && !hub->has_wakeup_capable_descendants)
+> Is there possibly somethign else we can filter on than just
+> GUP_PIN_COUNTING_BIAS? Because it could be as simple as just marking
+> the vma itself and saying "this vma has had a page pinning event done
+> on it".
 
-Instead of this cumbersome two-condition test, how about simply
-having a hub->is_powered_on flag?  Then
-hub->has_wakeup_capable_descendants wouldn't be needed.
+We'd have to give up pin_user_pages_fast() to do that as we can't fast
+walk and get vmas?
 
-> +		rc = onboard_hub_power_on(hub);
-> +
-> +	return rc;
-> +}
+Hmm, there are many users. I remember that the hfi1 folks really
+wanted the fast version for some reason..
 
-> +static int onboard_hub_remove_usbdev(struct onboard_hub *hub, struct usb_device *udev)
-> +{
-> +	struct udev_node *node;
-> +
-> +	mutex_lock(&hub->lock);
-> +
-> +	list_for_each_entry(node, &hub->udev_list, list) {
-> +		if (node->udev == udev) {
-> +			list_del(&node->list);
-> +			devm_kfree(hub->dev, node);
+> Because if we only start copying the page *iff* the vma is marked by
+> that "this vma had page pinning" _and_ the page count is bigger than
+> GUP_PIN_COUNTING_BIAS, than I think we can rest pretty easily knowing
+> that we aren't going to hit some regular old-fashioned UNIX server
+> cases with a lot of forks..
 
-Why have an explicit kfree here but not anywhere else?  And if you do
-have an explicit kfree, why use devm_kzalloc rather than plain kzalloc?
+Agree
 
-> +			break;
-> +		}
-> +	}
-> +
-> +	mutex_unlock(&hub->lock);
-> +
-> +	if (node == NULL)
-> +		return -EINVAL;
+Given that this is a user visible regression, it is nearly rc6, what
+do you prefer for next steps? 
 
-This test is wrong.  Look at the definition of list_for_each_entry;
-node will never be NULL.  Probably the best approach is to use a local
-"ret" variable.
+Sorting out this for fork, especially if it has the vma change is
+probably more than a weeks time.
 
-> +
-> +	return 0;
-> +}
+Revert this patch and try again next cycle?
 
-> +static int onboard_hub_remove(struct platform_device *pdev)
-> +{
-> +	struct onboard_hub *hub = dev_get_drvdata(&pdev->dev);
-> +
-> +	sysfs_remove_file(&pdev->dev.kobj, &dev_attr_power_off_in_suspend.attr);
-> +
-> +	return onboard_hub_power_off(hub);
-> +}
-
-Shouldn't this routine unbind the onboard_hub_usbdev driver from all
-the associated devices?  Otherwise you end up with more-or-less
-dangling references to hub (I say more-or-less because with the devm
-allocations, the structures will hang around as zombies for a while).
-
-Relying on the onboard_hub_power_off call to do this for you isn't a
-great idea, because the effect won't happen immediately.
-
-> +static int onboard_hub_usbdev_probe(struct usb_device *udev)
-> +{
-> +	struct device *dev = &udev->dev;
-> +	struct onboard_hub *hub;
-> +
-> +	/* ignore supported hubs without device tree node */
-> +	if (!dev->of_node)
-> +		return -ENODEV;
-> +
-> +	hub = _find_onboard_hub(dev);
-> +	if (IS_ERR(hub))
-> +		return PTR_ERR(dev);
-> +
-> +	dev_set_drvdata(dev, hub);
-> +
-> +	onboard_hub_add_usbdev(hub, udev);
-
-Ignoring the return code?  Then why does that routine return int rather
-than void?
-
-> +
-> +	return 0;
-> +}
-> +
-> +static void onboard_hub_usbdev_disconnect(struct usb_device *udev)
-> +{
-> +	struct onboard_hub *hub = dev_get_drvdata(&udev->dev);
-> +
-> +	onboard_hub_remove_usbdev(hub, udev);
-
-Ditto.
-
-> +
-> +	put_device(hub->dev);
-
-Is there a matching get_device somewhere (like in _find_onboard_hub)?
-If so, I didn't see it.  And I don't see any reason for it.
-
-Alan Stern
+Thanks,
+Jason
