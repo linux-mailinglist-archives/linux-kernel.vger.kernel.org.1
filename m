@@ -2,128 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E68326D0F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 04:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE5DE26D0F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 04:05:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726130AbgIQCDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 22:03:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725886AbgIQCDC (ORCPT
+        id S1726178AbgIQCFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 22:05:46 -0400
+Received: from mx.aristanetworks.com ([162.210.129.12]:48774 "EHLO
+        smtp.aristanetworks.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725886AbgIQCFp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 22:03:02 -0400
-X-Greylist: delayed 554 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 22:03:01 EDT
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC09AC06174A;
-        Wed, 16 Sep 2020 18:53:44 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id r8so607969qtp.13;
-        Wed, 16 Sep 2020 18:53:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UtmGdVHh9HT6IPtBW8yCBnrUkzJN7a2tNcA0ehwWLwU=;
-        b=tgq6SoVkArsejIzixZBMCCoh8Ya0roIEAYVt5HSPQaL7+ccY0qHP9iyLAGz/wEDXwn
-         VFT6TWee6L4HlqGBCwibDhaORFejfCpCGT0WaWqc8s9MAeVo4iXB6geQZsyJUMr6dfg3
-         gwJh2waJkcgVR1nvmYdLFsvdebVvEgoa0Sx7c0gPCEAvP3JxHACrquZ0eq5C7n/Q4gb5
-         CsPRkLm5eWYBiFY02l1Mokx+E2rKHDMpRMHKXe6flM1I+5Bv4smy5RjfUfNnghiV9870
-         tPyp35MPknkFL9BHpe1Zy1+Qy7Xr1szclzGWDy7mMCv3BvewN8MMzwbzKVRy24gn6fHR
-         p7kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UtmGdVHh9HT6IPtBW8yCBnrUkzJN7a2tNcA0ehwWLwU=;
-        b=duWOZ0ySn7nXaSUgkFLSxkIcnKz596oLc/T5TwL937bHPn1oPbtINmIPMW7v3uxbnG
-         /38RfO2oXZ4P9lEoMMoF8cKEvvsOgejtLin3grlDarqrgs3SnZYk5jhRvxWDkwWEdzXW
-         37TbqDW0qZ8OqkKCoMzv8KMZTxrXcYLv1RFqwWopEZc9RRyxmm8xSXqmLSka1p3gKPIe
-         KZJq6iHyx7+mZI9WMIZZ7GPSdn9WHmmtrFcjn5lERHv+DknCeqBsfPBNin9jEwBA2dGM
-         VtYMI75YHzpC42eGIAeJ2FeTYjxDDk2rbqAYXaxGBHDNxy4oftstbAyNZwQAtTXmFEE1
-         cGXA==
-X-Gm-Message-State: AOAM530c9xWoBThg7tpqfEechOgi/qSxLAYklApjtOxpXVFbQnVv0q8u
-        4W2TEZK3VS4WF6vNilVb0XGieSdk5no=
-X-Google-Smtp-Source: ABdhPJzzP8lWy8OkwpRxUV7hqKi88Iaub292BVV/Esx7P6uCT2gTOpHN19BMC7VJsmaz1QYIb4TQ8A==
-X-Received: by 2002:aed:278a:: with SMTP id a10mr13826998qtd.261.1600307624137;
-        Wed, 16 Sep 2020 18:53:44 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id k20sm28513qtm.44.2020.09.16.18.53.42
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 16 Sep 2020 18:53:42 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailauth.nyi.internal (Postfix) with ESMTP id EF7B927C0054;
-        Wed, 16 Sep 2020 21:53:41 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 16 Sep 2020 21:53:41 -0400
-X-ME-Sender: <xms:pcFiX85WGTpyN-_vNQcz2_sydNqBvfQPeMRen4xuqsiuqe93bZgoqg>
-    <xme:pcFiX94lpXLlyilk24MY9BQgLTLttwcPjsd8N2RjzIHyRJ_fdYBaAwek2RgwBQe1s
-    mE-tc46vlJjKTvAfg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrtdefgdehudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
-    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
-    gvrhhnpedvleeigedugfegveejhfejveeuveeiteejieekvdfgjeefudehfefhgfegvdeg
-    jeenucfkphephedvrdduheehrdduuddurdejudenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghr
-    shhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvg
-    hngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:pcFiX7frXpRN5U18R_Efx7EzjBFoO3nArgi2NXSTGUaQvFC6PPuuqg>
-    <xmx:pcFiXxIzyLcBSDfxAbp5_ryniZ3cli8se7VRmzVHHYUFYlYYX7t14g>
-    <xmx:pcFiXwKv-wrrvF0e7gI5FV8r27PJyS9DojhSNgc2MVKJIzXjXzenXg>
-    <xmx:pcFiX48L4jOfrFHdOOGwLEUFz2a3W2Rsg9vVHNXEZVmxqPHCXORRmA>
-Received: from localhost (unknown [52.155.111.71])
-        by mail.messagingengine.com (Postfix) with ESMTPA id EAF7C3280059;
-        Wed, 16 Sep 2020 21:53:40 -0400 (EDT)
-Date:   Thu, 17 Sep 2020 09:53:39 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Qian Cai <cai@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Waiman Long <longman@redhat.com>
-Subject: Re: [RFC v7 11/19] lockdep: Fix recursive read lock related
- safe->unsafe detection
-Message-ID: <20200917015339.GE127490@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
-References: <20200807074238.1632519-1-boqun.feng@gmail.com>
- <20200807074238.1632519-12-boqun.feng@gmail.com>
- <17343f6f7f2438fc376125384133c5ba70c2a681.camel@redhat.com>
- <20200916081046.GC127490@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
- <20200916161404.GD127490@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
- <607c446bc8d3a0cc6e96aa9792e075913ad6b2c6.camel@redhat.com>
-MIME-Version: 1.0
+        Wed, 16 Sep 2020 22:05:45 -0400
+X-Greylist: delayed 323 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 22:05:45 EDT
+Received: from us180.sjc.aristanetworks.com (us180.sjc.aristanetworks.com [10.243.128.7])
+        by smtp.aristanetworks.com (Postfix) with ESMTP id 2AF3A402016;
+        Wed, 16 Sep 2020 19:00:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arista.com;
+        s=Arista-A; t=1600308021;
+        bh=SvKZ8Kw+7/Bi01muC9TH1YqAsEfXrFdMBkoXYal1lOs=;
+        h=Date:To:Subject:From:From;
+        b=1kI4KZdkY+YqXhUYEhHQBgob2rVjUyakuHf0KPaqggchgPsjFOO2JnxBMDha4jalu
+         6NQHa6Sl3VatjzyEqa4GZFRB1irUGQDWGBhqRnFmL+g9xk8qNfAS5Avz1fyxyM4fvg
+         I40LMqaG2cuBGIYHVbKqGCPmIQvV491c4gqGz+JQg/BZN0fVGsTDdK2MhoDp9V9eDQ
+         58tj0qaaKj2cilXo2xgIUfsIOydqXVlEaXBR12ZVMODkg+GqiptMQZtH4Tc2rbL7ga
+         JQFAVJdisg8cfUgbrNIFgrhJZV3w8Ew+Rp6GLj1HJk8H6ikrDH4cGTSaK9bH6+IzoL
+         Gf2vz40DJjqiw==
+Received: by us180.sjc.aristanetworks.com (Postfix, from userid 10189)
+        id 0860995C06B9; Wed, 16 Sep 2020 19:00:20 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 19:00:20 -0700
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        xiyou.wangcong@gmail.com, ap420073@gmail.com, andriin@fb.com,
+        edumazet@google.com, jiri@mellanox.com, ast@kernel.org,
+        kuba@kernel.org, davem@davemloft.net, fruggeri@arista.com
+Subject: [PATCH] net: make netdev_wait_allrefs wake-able
+User-Agent: Heirloom mailx 12.5 7/5/10
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <607c446bc8d3a0cc6e96aa9792e075913ad6b2c6.camel@redhat.com>
+Content-Transfer-Encoding: 7bit
+Message-Id: <20200917020021.0860995C06B9@us180.sjc.aristanetworks.com>
+From:   fruggeri@arista.com (Francesco Ruggeri)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 05:11:59PM -0400, Qian Cai wrote:
-> On Thu, 2020-09-17 at 00:14 +0800, Boqun Feng wrote:
-> > Found a way to resolve this while still keeping the BFS. Every time when
-> > we want to enqueue a lock_list, we basically enqueue a whole dep list of
-> > entries from the previous lock_list, so we can use a trick here: instead
-> > enqueue all the entries, we only enqueue the first entry and we can
-> > fetch other silbing entries with list_next_or_null_rcu(). Patch as
-> > below, I also took the chance to clear the code up and add more
-> > comments. I could see this number (in /proc/lockdep_stats):
-> > 
-> > 	max bfs queue depth:                   201
-> > 
-> > down to (after apply this patch)
-> > 
-> > 	max bfs queue depth:                   61
-> > 
-> > with x86_64_defconfig along with lockdep and selftest configs.
-> > 
-> > Qian, could you give it a try?
-> 
-> It works fine as the number went down from around 3000 to 500 on our workloads.
-> 
+The combination of aca_free_rcu, introduced in commit 2384d02520ff
+("net/ipv6: Add anycast addresses to a global hashtable"), and
+fib6_info_destroy_rcu, introduced in commit 9b0a8da8c4c6 ("net/ipv6:
+respect rcu grace period before freeing fib6_info"), can result in
+an extra rcu grace period being needed when deleting an interface,
+with the result that netdev_wait_allrefs ends up hitting the msleep(250),
+which is considerably longer than the required grace period.
+This can result in long delays when deleting a large number of interfaces,
+and it can be observed with this script:
 
-Thanks, let me send a proper patch. I will add a Reported-by tag from
-you.
+ns=dummy-ns
+NIFS=100
 
-Regards,
-Boqun
+ip netns add $ns
+ip netns exec $ns ip link set lo up
+ip netns exec $ns sysctl net.ipv6.conf.default.disable_ipv6=0
+ip netns exec $ns sysctl net.ipv6.conf.default.forwarding=1
+
+for ((i=0; i<$NIFS; i++))
+do
+        if=eth$i
+        ip netns exec $ns ip link add $if type dummy
+        ip netns exec $ns ip link set $if up
+        ip netns exec $ns ip -6 addr add 2021:$i::1/120 dev $if
+done
+
+for ((i=0; i<$NIFS; i++))
+do
+        if=eth$i
+        ip netns exec $ns ip link del $if
+done
+
+ip netns del $ns
+
+This patch converts the msleep(250) into a wake-able wait,
+allowing dev_put to wake up netdev_wait_allrefs.
+
+Time with this patch on a 5.4 kernel:
+
+real	0m7.494s
+user	0m0.403s
+sys	0m1.197s
+
+Time without this patch:
+
+real	0m31.522s
+user	0m0.438s
+sys	0m1.156s
+
+Signed-off-by: Francesco Ruggeri <fruggeri@arista.com>
+
+---
+ include/linux/netdevice.h | 6 ++++++
+ net/core/dev.c            | 5 ++++-
+ 2 files changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index b0e303f6603f..3bbae238c11d 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -1795,6 +1795,7 @@ enum netdev_priv_flags {
+  *
+  *	@needs_free_netdev:	Should unregister perform free_netdev?
+  *	@priv_destructor:	Called from unregister
++ *	@destroy_task:		Task waiting for refcount to drop to 0
+  *	@npinfo:		XXX: need comments on this one
+  * 	@nd_net:		Network namespace this network device is inside
+  *
+@@ -2089,6 +2090,7 @@ struct net_device {
+ 
+ 	bool needs_free_netdev;
+ 	void (*priv_destructor)(struct net_device *dev);
++	struct task_struct	*destroy_task;
+ 
+ #ifdef CONFIG_NETPOLL
+ 	struct netpoll_info __rcu	*npinfo;
+@@ -3873,7 +3875,11 @@ void netdev_run_todo(void);
+  */
+ static inline void dev_put(struct net_device *dev)
+ {
++	struct task_struct *destroy_task = dev->destroy_task;
++
+ 	this_cpu_dec(*dev->pcpu_refcnt);
++	if (destroy_task)
++		wake_up_process(destroy_task);
+ }
+ 
+ /**
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 4086d335978c..795c3d39e807 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -9994,6 +9994,7 @@ static void netdev_wait_allrefs(struct net_device *dev)
+ 	linkwatch_forget_dev(dev);
+ 
+ 	rebroadcast_time = warning_time = jiffies;
++	dev->destroy_task = current;
+ 	refcnt = netdev_refcnt_read(dev);
+ 
+ 	while (refcnt != 0) {
+@@ -10023,7 +10024,8 @@ static void netdev_wait_allrefs(struct net_device *dev)
+ 			rebroadcast_time = jiffies;
+ 		}
+ 
+-		msleep(250);
++		set_current_state(TASK_UNINTERRUPTIBLE);
++		schedule_timeout(HZ/4);
+ 
+ 		refcnt = netdev_refcnt_read(dev);
+ 
+@@ -10033,6 +10035,7 @@ static void netdev_wait_allrefs(struct net_device *dev)
+ 			warning_time = jiffies;
+ 		}
+ 	}
++	dev->destroy_task = NULL;
+ }
+ 
+ /* The sequence is:
+-- 
+2.28.0
+
+
