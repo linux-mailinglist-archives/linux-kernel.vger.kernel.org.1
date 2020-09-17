@@ -2,93 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39B5126E5E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83C4B26E5FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 22:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726934AbgIQT6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 15:58:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726392AbgIQT57 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 15:57:59 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91CA3C061223;
-        Thu, 17 Sep 2020 12:46:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Date:Message-ID:Subject:From:To:Sender:Reply-To:Cc:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=f1R3VqxnNoImr58s5Ei6XYjbvhxFKPOcc7dIvuhbrlk=; b=PZGDndu5AS2FRze2eHvet2zuzo
-        cmdlFZAEpwsPBLMOzBqyUaDNZk7t2ToNmb+1AW/mBqBvRCp3p4HrF9F83r4BQPBZdeA9K7EK5lgeE
-        jWe6HJGT9ns8/h3ymoxMQimvbU4N8kjKwj88ARAW35nEOcq2jB6wBzStkn0jHWONvQEFnRMeOsgQa
-        4200ap5xB0AUCC/MHgli9L7ZnBxtf3bKZUg7BLfnvk3rdmb8312swauZpsUbI/BnRhlxm0nvMJfgK
-        g92/x9EGihCuiwaiaMihocH3zzHHWTmfFjUwain8psOQnfi16CP/FYBmg1NRWQsAF2qbzn/I2Bo5l
-        lgIjYYSA==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIzqs-0003P2-P6; Thu, 17 Sep 2020 19:45:55 +0000
-To:     virtualization@lists.linux-foundation.org,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH v2 -next] vdpa: mlx5: change Kconfig depends to fix build
- errors
-Message-ID: <22a2bd60-d895-2bfb-50be-4ac3d131ed82@infradead.org>
-Date:   Thu, 17 Sep 2020 12:45:51 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726658AbgIQUAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 16:00:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59860 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726353AbgIQUAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 16:00:30 -0400
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 92990206CA;
+        Thu, 17 Sep 2020 19:46:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600371978;
+        bh=vLUDDjwECCEPbdewF2TSzCzX/HPHD5QUcQcBoQGzVgo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=WKi4jiJfXfTUoPhYSWcv/ZqFLRG3+Pz9kZWZYqNS5Ybk9qZvSWOguuRaPoWreIpAS
+         pQHExGGitHyN2uJKQh60lG+2dyrkRnTp2yamG7LazxfMfJ3kJEW0Jpv3uEUfWpY3OG
+         b49Ljutu97sGVGjQ11QTkTTWKmRN4Ppr+93BhbXc=
+Received: by mail-ed1-f46.google.com with SMTP id n13so3697623edo.10;
+        Thu, 17 Sep 2020 12:46:18 -0700 (PDT)
+X-Gm-Message-State: AOAM5305TK+n29is3nKu9vUmSaW0l9PCmHhVhiOIFi4oweYV+msz8zl3
+        5PU8Cv+sNDIM2oIA4RIEUHFBiWf02/j0a7s359k=
+X-Google-Smtp-Source: ABdhPJy0Ys3CvLAf9kCxBAt3LTp0VLr/+5ZI1NsvVnqTGE96KBjLVf7ItbKInpyfZEA7zM2TNM9Ra1FAXZ+tr6VOFZ0=
+X-Received: by 2002:aa7:da16:: with SMTP id r22mr35659897eds.132.1600371977177;
+ Thu, 17 Sep 2020 12:46:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200914061353.17535-1-lukas.bulwahn@gmail.com>
+ <20200916165357.GA18287@kozik-lap> <alpine.DEB.2.21.2009162140130.14568@felia>
+In-Reply-To: <alpine.DEB.2.21.2009162140130.14568@felia>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Thu, 17 Sep 2020 21:46:05 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPeSeo5dL1+=Jf1bY=xNmBpPk7jVN2x1o9N=Pr-FWPHhKg@mail.gmail.com>
+Message-ID: <CAJKOXPeSeo5dL1+=Jf1bY=xNmBpPk7jVN2x1o9N=Pr-FWPHhKg@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: mark linux-samsung-soc list non-moderated
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
+        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+On Wed, 16 Sep 2020 at 21:46, Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+>
+>
+>
+> On Wed, 16 Sep 2020, Krzysztof Kozlowski wrote:
+>
+> > On Mon, Sep 14, 2020 at 08:13:53AM +0200, Lukas Bulwahn wrote:
+> > > In fifteen entries mentioning linux-samsung-soc@vger.kernel.org in
+> > > MAINTAINERS, seven entries mention the list being moderated for
+> > > non-subscribers and eight entries do not. Clearly only one can be right,
+> > > though.
+> > >
+> > > Joe Perches suggested that all vger.kernel.org are not moderated for
+> > > non-subscribers.
+> > >
+> > > Remove all the remarks from the entries following Joe's suggestion.
+> > >
+> > > Link: https://lore.kernel.org/lkml/da6f30896a8fd78635b3ca454d77a5292a9aa76d.camel@perches.com/
+> > > Suggested-by: Joe Perches <joe@perches.com>
+> > > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> > > ---
+> > > applies cleanly on v5.9-rc5 and next-20200911
+> > >
+> > > Krzysztof, please pick this minor non-urgent cleanup patch.
+> > >
+> > > This patch submission will also show me if linux-samsung-soc is moderated
+> > > or not. I have not subscribed to linux-samsung-soc and if it shows up
+> > > quickly in the archive, the list is probably not moderated, and hence,
+> > > validating the patch.
+> >
+> > Please use scripts/get_maintainers.pl (for example on files in modified
+> > maintainers section) to get the addresses of people.  This mail missed
+> > all my filters and got archived immediately because you sent it to
+> > unusual address (how did you get this address, BTW? It does not appear
+> > in the sources since few years).
+> >
+>
+> Sorry, I usually do use ./scripts/get_maintainers.pl and you are right
+> there is no way one could pick up that email address from the repository.
+>
+> It was difficult to recall where I got the address from, but then I
+> finally remembered.
+>
+> I wanted to know who is responsible for the linus-samsung-soc mailing
+> list for this patch. So I went to:
+>
+> https://patchwork.kernel.org/project/linux-samsung-soc/
+>
+> And there in 'About this project', it still lists your gmail address. I
+> did not crosscheck that mail address with .mailmap, get_maintainers.pl
+> etc., but just send the patch out.
 
-drivers/vdpa/mlx5/ uses vhost_iotlb*() interfaces, so add a dependency
-on VHOST to eliminate build errors.
+Oh, thanks, I will try to update it.
 
-ld: drivers/vdpa/mlx5/core/mr.o: in function `add_direct_chain':
-mr.c:(.text+0x106): undefined reference to `vhost_iotlb_itree_first'
-ld: mr.c:(.text+0x1cf): undefined reference to `vhost_iotlb_itree_next'
-ld: mr.c:(.text+0x30d): undefined reference to `vhost_iotlb_itree_first'
-ld: mr.c:(.text+0x3e8): undefined reference to `vhost_iotlb_itree_next'
-ld: drivers/vdpa/mlx5/core/mr.o: in function `_mlx5_vdpa_create_mr':
-mr.c:(.text+0x908): undefined reference to `vhost_iotlb_itree_first'
-ld: mr.c:(.text+0x9e6): undefined reference to `vhost_iotlb_itree_next'
-ld: drivers/vdpa/mlx5/core/mr.o: in function `mlx5_vdpa_handle_set_map':
-mr.c:(.text+0xf1d): undefined reference to `vhost_iotlb_itree_first'
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Jason Wang <jasowang@redhat.com>
-Cc: virtualization@lists.linux-foundation.org
-Cc: Saeed Mahameed <saeedm@nvidia.com>
-Cc: Leon Romanovsky <leonro@nvidia.com>
-Cc: netdev@vger.kernel.org
----
-v2: change from select to depends (Saeed)
-
- drivers/vdpa/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- linux-next-20200917.orig/drivers/vdpa/Kconfig
-+++ linux-next-20200917/drivers/vdpa/Kconfig
-@@ -31,7 +31,7 @@ config IFCVF
- 
- config MLX5_VDPA
- 	bool "MLX5 VDPA support library for ConnectX devices"
--	depends on MLX5_CORE
-+	depends on VHOST && MLX5_CORE
- 	default n
- 	help
- 	  Support library for Mellanox VDPA drivers. Provides code that is
-
+Best regards,
+Krzysztof
