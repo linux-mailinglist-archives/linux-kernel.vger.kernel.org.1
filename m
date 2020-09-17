@@ -2,119 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0246826E0E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 18:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B3926E0F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 18:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728583AbgIQQid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 12:38:33 -0400
-Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:55649 "EHLO
-        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728439AbgIQQhZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 12:37:25 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id EC4FE51A;
-        Thu, 17 Sep 2020 12:37:06 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 17 Sep 2020 12:37:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=h7SdjkeO3jNCS/5ABpoNoHTBuVI
-        Z3+T7KqCv1t/PuWo=; b=iunaG6uxOLgrPGy5e1t5auTmohTM2aMxt+pmo9zphB0
-        +QetciHJjVU67aEz6qt+EDLFGLhFeV6zFqRYlE6y4GBcxbHarrdRZc2SC3SJepEl
-        v9KQg0skJ3vnwHL1mssEcPvwTEsKYy4cuga4XHo0bCeXrF+bW7SUEg6iwPy58amA
-        G+tgIQUgGF5f49lnM0/pZ5KyOOquD37Mfboopf/DGhsL+ZtQG7LD8QJp8ktUJuG/
-        i4QSbWtrJJZNNuKuREq7QHCW2j5LsIeQMBYA2PccxKliGGAmW7cvDyHZw8tiM4LW
-        a65xwzLRfFpleP+aoLWhKFgvppMe3KodNMx8vRKxgDA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=h7Sdjk
-        eO3jNCS/5ABpoNoHTBuVIZ3+T7KqCv1t/PuWo=; b=frqEve+JtHqY12AuwrEwxh
-        HnX+5Y92mJ/21XRmYMhsqQ2L0DeFx/k1Zhdek1+NP7BFjW+hDLa2871RTY2zB8NT
-        VsQyo6NkhsUH2Xr83oM4b3days2UrCrVATFTepf5led3mI8bkO1fE8apAZLdnFj1
-        yua9J2eu109zOm7EPKWw/gENPmzmkz4W3ysbGMsgQaJmuUNN/weDdsubl/m2obc5
-        /O0nFJi+k/orbJWdKsWG1Tlh9Lwe/eqOTdvDTHGKXvXvTG+ipvf5ejYmNOAGoQZw
-        1xJ4LM3L3saUutpggCGyiU8ea0JtilO1dDHYkzjYX99ivfMWBub0EHr87roR40KQ
-        ==
-X-ME-Sender: <xms:sJBjX-IKEuWTVO7Qio1L6WurpElaajG3D7Ydfq3_KtuK2mHVqWKOug>
-    <xme:sJBjX2LKwwoUCoP1ddG7z47ayNpCf3sFd_629ZIJ0Cc5PfawthFNliWbYkZSnZlkj
-    WFVGWcamJ0oury_Xf8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrtdeggddutdehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:sJBjX-uP6QI4ZALAlssAnYzInWG63vVmd-Bq9khQJlvdySn1NwAjvw>
-    <xmx:sJBjXzbVRtCyuBwP07l_AEduK8w922Rx1VgF9lxaybUAD1So8YyEzA>
-    <xmx:sJBjX1YQw-84on2q8v0dku-kcJw-qsIqc-8SK-NjfskYHQwqI0AJyg>
-    <xmx:spBjXyRkBp7WnVSGxiez1mEWwAdlOjDICJUmX_uKGwXllvIRETSfx3W5pog>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 241163280065;
-        Thu, 17 Sep 2020 12:37:04 -0400 (EDT)
-Date:   Thu, 17 Sep 2020 18:37:01 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Jernej Skrabec <jernej.skrabec@siol.net>, wens@csie.org,
-        paul.kocialkowski@bootlin.com, mchehab@kernel.org,
-        robh+dt@kernel.org, gregkh@linuxfoundation.org,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com
-Subject: Re: [PATCH 0/5] ARM: dts: sun8i: r40: Enable video decoder
-Message-ID: <20200917163701.vmxbxpaztm4kyduf@gilmour.lan>
-References: <20200825173523.1289379-1-jernej.skrabec@siol.net>
- <20200827151914.copcle3xjn3ek6p4@gilmour.lan>
- <e9d108ee-29c8-7a34-16c0-f9fb2b788f25@xs4all.nl>
+        id S1728579AbgIQQlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 12:41:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45916 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728581AbgIQQiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 12:38:11 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA182214D8;
+        Thu, 17 Sep 2020 16:38:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600360691;
+        bh=ZbFCcq9rxKOm2jqLy5LrwzzDX3URSfmspDs7nsDj/b4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rCNJ+LLShql7CSA8MK8XMSJoU5yHqPOcvX8RSdZ+Uy3bucYkDG2A2umXzQ/ST1PV/
+         /0LPrLjM8Pt6GJD9ZrU6VfiL5Ngoy4wpLfZs1Ataa/2ZcT5gCwDbo03z3Cigdp5rDI
+         0KuJFk2+UryYS9MrZGDGM2ChDfW8zB+iEppMSgcM=
+Date:   Thu, 17 Sep 2020 18:38:43 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Cc:     b.zolnierkie@samsung.com, linux-fbdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        corbet@lwn.net, rdunlap@infradead.org, daniel@ffwll.ch,
+        yuanmingbuaa@gmail.com, w@1wt.eu, nopitydays@gmail.com,
+        zhangyunhai@nsfocus.com, luto@amacapital.net,
+        torvalds@linux-foundation.org
+Subject: Re: [PATCH v4 0/4] docs: fb: Removed framebuffer scrollback related
+ documentations
+Message-ID: <20200917163843.GA721081@kroah.com>
+References: <cover.1600333774.git.unixbhaskar@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="wnnnti5ad3adpfz3"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e9d108ee-29c8-7a34-16c0-f9fb2b788f25@xs4all.nl>
+In-Reply-To: <cover.1600333774.git.unixbhaskar@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 17, 2020 at 03:56:11PM +0530, Bhaskar Chowdhury wrote:
+> 
+> In this patch series, documentation get in sync with the code removal
+> of scrollback,by this commit 50145474f6ef ("fbcon: remove soft scrollback code"),
+> by eliminating the information related to it.
 
---wnnnti5ad3adpfz3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Much nicer, thanks for sticking with it:
 
-On Thu, Sep 17, 2020 at 10:33:39AM +0200, Hans Verkuil wrote:
-> Hi Maxime,
->=20
-> On 27/08/2020 17:19, Maxime Ripard wrote:
-> > On Tue, Aug 25, 2020 at 07:35:18PM +0200, Jernej Skrabec wrote:
-> >> Allwinner R40 SoC contains video engine very similar to that in A33.
-> >>
-> >> First two patches add system controller nodes and the rest of them
-> >> add support for Cedrus VPU.
-> >>
-> >> Please take a look.
-> >=20
-> > Applied all 5 patches, thanks
->=20
-> Just to confirm: you've taken patches 3 and 4 as well? If so, then I
-> can mark them as done in patchwork.
-
-Uh... Yeah, I did, but they were definitely not mine to take... I'm
-sorry, I'll drop them and you can merge totally merge them :)
-
-Maxime
-
---wnnnti5ad3adpfz3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX2OQrQAKCRDj7w1vZxhR
-xWGiAP44ziQw20tV2YoN0wiBPi77hkH/koRrpfYtnYTwmUEV6AD/euikZFS19Mu7
-DfzMBKBAPCIolO1Cbon5d/3aOTFhmQA=
-=eTc6
------END PGP SIGNATURE-----
-
---wnnnti5ad3adpfz3--
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
