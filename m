@@ -2,83 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63ACC26E2F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DF3926E2F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:52:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726633AbgIQRxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 13:53:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726290AbgIQRwC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 13:52:02 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F3DDC061756;
-        Thu, 17 Sep 2020 10:52:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Date:Message-ID:Subject:From:Cc:To:Sender:Reply-To:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=pGkfsVyYFjM6wbe1xMrt8vihG2zoZEqiWnoR3qBkdNg=; b=r1gCnVlt4vYnAWkwa/wKKHMJuk
-        M/9XNRpTvcWG3orOH+ly4yA0waoICNPUIB8xPwcWuzjCwOcnuaQflyDAv3bWha/HZIlu2hJ9rYp7/
-        vBwOUbsqVgH25sQUBzoq8h4dtoOuJuBOaZOYfKeM+H4Zcz9TdsFrUCZD92r/vQB4a3GU0RqTtrKT/
-        5ZIPRaea0rJX2hDHoMgvV05m9G9kP6074oWk69zq50N0nEy3pyREIw0IDGlHCwFjr/lYYiTMFFQP8
-        iqeZDh8hjsXnyLnyu+08E82E/UHusDjQvRWfv2358r1N7bk9j/zBG2llkrdY+Sjx3u3lv20rkxE2a
-        fcG506Vg==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIy4U-00046d-Gx; Thu, 17 Sep 2020 17:51:51 +0000
-To:     LKML <linux-kernel@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>
-Cc:     Li Yin <yin1.li@intel.com>,
-        Vadivel Murugan R <vadivel.muruganx.ramuthevar@linux.intel.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH -next] phy: fix USB_LGM_PHY warning & build errors
-Message-ID: <d1dd0ddd-3143-5777-1c63-195e1a32f237@infradead.org>
-Date:   Thu, 17 Sep 2020 10:51:47 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726614AbgIQRwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 13:52:46 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34268 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726358AbgIQRwY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 13:52:24 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=cantorsusede;
+        t=1600365141;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7ACZ1i9L0eM7pFjFd6XaMh+LP19pdesYPnrbce9bvdE=;
+        b=m9qgQiSVGElQlgS9Y1bmW4eQ8wF71jXeVpuMDzMUgwElV7P1mbCwz/Zv/UkQGU9Q0wpoUk
+        O9BwIm4LqU4fpPS20ikdrS6Z3FNw0MALD5/aJkkPfSxSyM2DPL+8v18XO9O1uy9STJDw7W
+        SmroQcsO1DBGXMthvakPKGk8BQimldnSyHzyXKsAPdspi96E2kWUsLTGIQOBOBi/9Em76k
+        T/+UL+topOL0WxGchvg7SIQi3D49aiZiPWhZedfJfqFFqJJSrdwPwbiq9SnTy3+/O7SjIV
+        dvSBzs/ORRMDWWa5zipmgYvF8xU+YoLJswYD4KVt9DV6r/lVuzgUjI/Q7rZMXA==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id ACFF4B0BE;
+        Thu, 17 Sep 2020 17:52:54 +0000 (UTC)
+Date:   Thu, 17 Sep 2020 19:52:17 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vijay Balakrishna <vijayb@linux.microsoft.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Allen Pais <apais@microsoft.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [v4] mm: khugepaged: avoid overriding min_free_kbytes set by user
+Message-ID: <20200917175217.GD29887@dhcp22.suse.cz>
+References: <1600324779-6782-1-git-send-email-vijayb@linux.microsoft.com>
+ <20200917092805.GA29887@dhcp22.suse.cz>
+ <21c4788c-2516-2e47-5885-486c352c2b6e@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <21c4788c-2516-2e47-5885-486c352c2b6e@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+On Thu 17-09-20 10:27:16, Vijay Balakrishna wrote:
+> 
+> 
+> On 9/17/2020 2:28 AM, Michal Hocko wrote:
+> > On Wed 16-09-20 23:39:39, Vijay Balakrishna wrote:
+> > > set_recommended_min_free_kbytes need to honor min_free_kbytes set by the
+> > > user.  Post start-of-day THP enable or memory hotplug operations can
+> > > lose user specified min_free_kbytes, in particular when it is higher than
+> > > calculated recommended value.
+> > 
+> > I was about to recommend a more detailed explanation when I have
+> > realized that this patch is not really needed after all. Unless I am
+> > missing something.
+> > 
+> > init_per_zone_wmark_min ignores the newly calculated min_free_kbytes if
+> > it is lower than user_min_free_kbytes. So calculated min_free_kbytes >=
+> > user_min_free_kbytes.
+> > 
+> > Except for value clamping when the value is reduced and this likely
+> > needs fixing. But set_recommended_min_free_kbytes should be fine.
+> > 
+> 
+> IIUC, after start-of-day if a user performs
+> - THP disable
+> - modifies min_free_bytes
+> - THP enable
+> above sequence currently wouldn't result in calling init_per_zone_wmark_min.
 
-Fix a Kconfig warning that is causing lots of build errors
-when USB_SUPPORT is not set.
+I will not, but why do you think this matters? All we should care about
+is that auto-tuning shouldn't reduce user provided value [1] and that
+the memory hotplug should be consistent with the boot time heuristic.
+init_per_zone_wmark_min should make sure that the user value is not
+reduced and thp heuristic makes sure it will not reduce this value.
+So the property should be transitive with the existing code (modulo the
+problem I have highlighted).
 
-USB_PHY depends on USB_SUPPORT but "select" doesn't care about
-dependencies, so this driver should also depend on USB_SUPPORT.
-It should not select USB_SUPPORT.
-
-WARNING: unmet direct dependencies detected for USB_PHY
-  Depends on [n]: USB_SUPPORT [=n]
-  Selected by [m]:
-  - USB_LGM_PHY [=m]
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Li Yin <yin1.li@intel.com>
-Cc: Vadivel Murugan R <vadivel.muruganx.ramuthevar@linux.intel.com>
-Cc: Kishon Vijay Abraham I <kishon@ti.com>
-Cc: Vinod Koul <vkoul@kernel.org>
----
- drivers/phy/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
-
---- linux-next-20200917.orig/drivers/phy/Kconfig
-+++ linux-next-20200917/drivers/phy/Kconfig
-@@ -51,6 +51,7 @@ config PHY_XGENE
- 
- config USB_LGM_PHY
- 	tristate "INTEL Lightning Mountain USB PHY Driver"
-+	depends on USB_SUPPORT
- 	select USB_PHY
- 	select REGULATOR
- 	select REGULATOR_FIXED_VOLTAGE
-
+[1] one could argue that it shouldn't even increase the value strictly
+speaking because an admin might have a very good reason to decrease the
+value but this has never been the semantic and changing it now might be
+problematic
+-- 
+Michal Hocko
+SUSE Labs
