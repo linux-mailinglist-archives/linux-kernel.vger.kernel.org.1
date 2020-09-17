@@ -2,117 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B57D326D100
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 04:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1EAA26D113
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 04:24:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726198AbgIQCN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 22:13:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726098AbgIQCNA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 22:13:00 -0400
-X-Greylist: delayed 462 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 22:13:00 EDT
-Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C25C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 19:05:15 -0700 (PDT)
-Received: by mail-oo1-xc43.google.com with SMTP id g26so181951ooa.9
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 19:05:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=FvBdfI3/8JYEzHDwTJchNGznx9TCTfOWN6nMTk+cWRg=;
-        b=SxAIwAWl1MqxQGVya1/LLGYLyQUf80qPgV3UgTzda0zs4xtGvK+4t42qChTNnUsQp2
-         iidBl3RcjWjxLEf3TZErhnJNVVQbN7kfMfUmVvIATlXjukaBN+biw4DGFEtwxso0eFH3
-         U57Zvvxg6m/kE5XelTs1/4GU+7H9JXM071r8m/4ZtDTvnHENVfGtnySAZv4kOHTr0OEO
-         nGgEa2imdIkbWGjE4w2eJKI3i7opSAcSjM4lAf/eWxB03Q2LwB/TXuLJwne9YkNYXg0u
-         /h/dWj2zkQOOZ9HHYhSHhoHJtjkFEXp5gat/GmMoyC4Tw0RZhLUvTdQyQRkgrx/gGf3i
-         dp5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=FvBdfI3/8JYEzHDwTJchNGznx9TCTfOWN6nMTk+cWRg=;
-        b=f7W+M2RV3OiWb7eHHwz6N/TTGyURB5rIlAC37GbUVTWPx6jnnF1kMna39zV3K81rqd
-         KkohOzSd8AI18bdiG5s0WJhKVMRT4BIgDMO2yXYRiVk2xnlCWaZKdnL4ZvTxnFQ9Gs9b
-         XoZKjPJ5JmbdC4UFG2yqPePcwaJ14VDjtvBHdyEJDNXFW1tDzJOmu5qHOv76BerdryoL
-         cBJRPxbbt8S4sX/ZcQPvXzR/3lnBSwF+71Vt/ZKiX4N9GF+oAIw6ALS3p/u8zcMzJAhl
-         4V68VcMSmOXnBp5BnizPSuCQzFRMJqHG/6p4V3A52C6ykx7pKa9sCfSL6w7rGjC47oes
-         KmOw==
-X-Gm-Message-State: AOAM5335QJk+ashS8e0j2XVWKrLwdMqvTnCE3g/+KkKL5Z/kJOFmLSVj
-        MJqPRPYl2h2ro/Lo0NbUdfufmw==
-X-Google-Smtp-Source: ABdhPJwlHAL814Qbgr+EScHD+loUynWF6I3FcBxRyuexwIjAE/FXXv9TKSXjo79ezbsysUHb+aAFHw==
-X-Received: by 2002:a4a:c541:: with SMTP id j1mr19671594ooq.13.1600308314725;
-        Wed, 16 Sep 2020 19:05:14 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id a4sm8527275oif.3.2020.09.16.19.05.09
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Wed, 16 Sep 2020 19:05:11 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 19:04:46 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Dave Chinner <david@fromorbit.com>
-cc:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Theodore Tso <tytso@mit.edu>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Qiuyang Sun <sunqiuyang@huawei.com>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, nborisov@suse.de
-Subject: Re: More filesystem need this fix (xfs: use MMAPLOCK around
- filemap_map_pages())
-In-Reply-To: <20200917014454.GZ12131@dread.disaster.area>
-Message-ID: <alpine.LSU.2.11.2009161853220.2087@eggly.anvils>
-References: <20200623052059.1893966-1-david@fromorbit.com> <CAOQ4uxh0dnVXJ9g+5jb3q72RQYYqTLPW_uBqHPKn6AJZ2DNPOQ@mail.gmail.com> <20200916155851.GA1572@quack2.suse.cz> <20200917014454.GZ12131@dread.disaster.area>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        id S1726065AbgIQCYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 22:24:24 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12805 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725858AbgIQCYW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 22:24:22 -0400
+X-Greylist: delayed 969 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 22:24:21 EDT
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id AA4D2DF177FD101B59EF;
+        Thu, 17 Sep 2020 10:08:10 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Thu, 17 Sep 2020
+ 10:08:04 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
+CC:     <mpe@ellerman.id.au>, <benh@kernel.crashing.org>,
+        <christophe.leroy@csgroup.eu>, <yangyingliang@huawei.com>
+Subject: [PATCH -next v2] powerpc/book3s64: fix link error with CONFIG_PPC_RADIX_MMU=n
+Date:   Thu, 17 Sep 2020 10:06:43 +0800
+Message-ID: <20200917020643.90375-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Sep 2020, Dave Chinner wrote:
-> 
-> So....
-> 
-> P0					p1
-> 
-> hole punch starts
->   takes XFS_MMAPLOCK_EXCL
->   truncate_pagecache_range()
->     unmap_mapping_range(start, end)
->       <clears ptes>
-> 					<read fault>
-> 					do_fault_around()
-> 					  ->map_pages
-> 					    filemap_map_pages()
-> 					      page mapping valid,
-> 					      page is up to date
-> 					      maps PTEs
-> 					<fault done>
->     truncate_inode_pages_range()
->       truncate_cleanup_page(page)
->         invalidates page
->       delete_from_page_cache_batch(page)
->         frees page
-> 					<pte now points to a freed page>
+Fix link error when CONFIG_PPC_RADIX_MMU is disabled:
+powerpc64-linux-gnu-ld: arch/powerpc/platforms/pseries/lpar.o:(.toc+0x0): undefined reference to `mmu_pid_bits'
 
-No.  filemap_map_pages() checks page->mapping after trylock_page(),
-before setting up the pte; and truncate_cleanup_page() does a one-page
-unmap_mapping_range() if page_mapped(), while holding page lock.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+  v2:
+    - enclose radix_init_pseries with CONFIG_PPC_RADIX_MMU
+    - remove CONFIG_PPC_RADIX_MMU in radix__init_new_context()
+---
+ arch/powerpc/platforms/pseries/lpar.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-(Of course, there's a different thread, in which less reliance on
-page lock is being discussed, but that would be a future thing.)
+diff --git a/arch/powerpc/platforms/pseries/lpar.c b/arch/powerpc/platforms/pseries/lpar.c
+index baf24eacd268..764170fdb0f7 100644
+--- a/arch/powerpc/platforms/pseries/lpar.c
++++ b/arch/powerpc/platforms/pseries/lpar.c
+@@ -1724,6 +1724,7 @@ void __init hpte_init_pseries(void)
+ 		pseries_lpar_register_process_table(0, 0, 0);
+ }
+ 
++#ifdef CONFIG_PPC_RADIX_MMU
+ void radix_init_pseries(void)
+ {
+ 	pr_info("Using radix MMU under hypervisor\n");
+@@ -1731,6 +1732,7 @@ void radix_init_pseries(void)
+ 	pseries_lpar_register_process_table(__pa(process_tb),
+ 						0, PRTB_SIZE_SHIFT - 12);
+ }
++#endif
+ 
+ #ifdef CONFIG_PPC_SMLPAR
+ #define CMO_FREE_HINT_DEFAULT 1
+-- 
+2.25.1
 
-Hugh
