@@ -2,132 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E681026DDA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 065B626DDC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727376AbgIQOMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 10:12:06 -0400
-Received: from vps.xff.cz ([195.181.215.36]:33788 "EHLO vps.xff.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727096AbgIQOKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 10:10:48 -0400
-X-Greylist: delayed 568 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 10:10:47 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
-        t=1600351277; bh=qnHYhaaKVCCwO/ktdRKTzt/AgnNkQWX8+dKtOxokgRg=;
-        h=Date:From:To:Cc:Subject:References:X-My-GPG-KeyId:From;
-        b=hLZ44t05ZmSFhok+LIFpDP7ZwXbyXheWfWYKIsYp4atU0ouWzSERQn/ZtReSUQ5hB
-         gsfAyEsohXkb4W2IR+gGoTMEb0LP3gKztArv/hoUrQWI9BUN1OzngrNVdwaanLjuSd
-         m1e+uSO33pzUbZuhdz1MbF1q26H0M23HYm/IQu5k=
-Date:   Thu, 17 Sep 2020 16:01:17 +0200
-From:   =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     linux-sunxi@googlegroups.com, Lee Jones <lee.jones@linaro.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        "moderated list:ARM/Allwinner sunXi SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mfd: sun4i-gpadc: Interrupt numbers should start from 1
-Message-ID: <20200917140117.jowpyurs5pjyr2if@core.my.home>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        Maxime Ripard <maxime@cerno.tech>, linux-sunxi@googlegroups.com,
-        Lee Jones <lee.jones@linaro.org>, Chen-Yu Tsai <wens@csie.org>,
-        "moderated list:ARM/Allwinner sunXi SoC support" <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200912112200.226530-1-megous@megous.com>
- <20200917131904.d7yqpa2sucerg2nm@gilmour.lan>
+        id S1727177AbgIQOPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 10:15:52 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:53259 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727338AbgIQOLY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 10:11:24 -0400
+X-Greylist: delayed 396 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 10:11:22 EDT
+Received: from mail-qk1-f172.google.com ([209.85.222.172]) by
+ mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MzQbw-1kezk02V1c-00vT3E; Thu, 17 Sep 2020 16:01:44 +0200
+Received: by mail-qk1-f172.google.com with SMTP id w12so2272381qki.6;
+        Thu, 17 Sep 2020 07:01:44 -0700 (PDT)
+X-Gm-Message-State: AOAM5304ot5kHZJGBuPfXXyEVYJz8pFJs/lOsn8EqzaW5hHUtHPcAlhv
+        G51303jxTG3cAMoantkRutHn42/6JqqP4xjlvjk=
+X-Google-Smtp-Source: ABdhPJypvKt5K6vsRgjllHkNp0imyN+bOqaU9zpMG48JdwZ9KbFYFADzd403hy36sDpE2nZf6WeaV+/92apRwmmxTPo=
+X-Received: by 2002:a37:a495:: with SMTP id n143mr28117696qke.394.1600351303235;
+ Thu, 17 Sep 2020 07:01:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917131904.d7yqpa2sucerg2nm@gilmour.lan>
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
+References: <20200916074214.995128-1-Tony.Ambardar@gmail.com>
+ <20200917000757.1232850-1-Tony.Ambardar@gmail.com> <87363gpqhz.fsf@mpe.ellerman.id.au>
+In-Reply-To: <87363gpqhz.fsf@mpe.ellerman.id.au>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 17 Sep 2020 16:01:27 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3FVoDzNb1TOA6cRQDdEc+st7KkBL70t0FeStEziQG4+A@mail.gmail.com>
+Message-ID: <CAK8P3a3FVoDzNb1TOA6cRQDdEc+st7KkBL70t0FeStEziQG4+A@mail.gmail.com>
+Subject: Re: [PATCH v2] powerpc: fix EDEADLOCK redefinition error in uapi/asm/errno.h
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Tony Ambardar <tony.ambardar@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Rosen Penev <rosenp@gmail.com>,
+        linux-arch <linux-arch@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:BiDI7RSugMs1bexsxNS7YdcLk/DPBsz4XJ9rjWVFJysPhzJ6DqT
+ 2XQbp5EiiavA/xv3Yb1leIcOlkzG1yJV/ShPE6IGfIIqfGHbgZ8UDvALmjcNVvJvBza0wtC
+ YNGjeYLC+LX8QDbxbTuk3g6R1N55bR8nMJZp997Qjl7gckYG0HrUKYD8Mau5dvuL6z4zm7e
+ 8fzVYGR6nqAnUv4z4Ac+Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:OiyOedjSjEE=:kPQxdXO/jYk+i7pGOq+NOs
+ 8iBpb46yH7KUPvnmxE48dZZ6h9ntMxYgASzNzDIS78c95nZkGrhBcfqrZFKAlnanMeB/6T5sb
+ 1K838KThHOXS9Tkz7NGxHANEUrHUnuXuQxVG8oYWY3Q6RRhr6bO2vHaAUvKaTtc7vLZsJ/gcG
+ DH7Hg0rSy4YUZx+u3esU/BuNzP8w3MTRIVcX84c4Oz1awHe5kheWcw+ZEwXjoj7Bl/whbMnTr
+ tHynzRcu3zUs5qSEbhwHSsRR6xEuQ+pR2vVKr2gTaUuX1qhZiEp51YmM9QonAb6F9kRdivWae
+ rv4TFkHhICzJzafoRfdcomlctOy010EsRtECtBMCyLEILkPwtTAz9LrTeXj5KKLwSQSNlWVvE
+ 4qMHT0rEwYJovG1Cbs934v+BlZIiH/z19D5FnZl1Njspon87n+oIjlBOJKuoMJgJoiiN1zi6+
+ s9SWURInct36SwarZ9xOylGKZxprzwO2/DTxUOk0vswFJwpOze6qknmwAu6CGXh0m0uYV5SOl
+ lejU7G778zSvllGPGASW/6L8UUyV31kZncqlYGzV60YKMQhumjz0lEfV88L/jybqfQll+TfKa
+ zbkwgOMDN+OiT011b+VI9Z9Hku8J3TVS792YmWkG/fB2daVHx8G9X0eFegK+ESmiIsMTyZwsT
+ I/oHZjKsEvAuo2w/fYQQbaWQFTsqYWshuF9QOcikoIhtfz6d2K7/NlrwmO6mV6VHX92rPEu8W
+ +4sWHHAZp24Cof3U8w2G0y98vNhOF5kymYr3ko4M0PLr6H9rAEiLpCkXMarurBiAuxkiOhqeC
+ KD6k1NBw9RvYkEbfUofAVgwsXdg5CSyA3mw7kANq0lRqrjEvz1DPZXwLEY5Ygl9lX8mCQ02
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Maxime,
+On Thu, Sep 17, 2020 at 1:55 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
+>
+> [ Cc += linux-arch & Arnd ]
+>
+> Hi Tony,
+>
+> This looks OK to me, but I'm always a bit nervous about changes in uapi.
+> I've Cc'ed linux-arch and Arnd who look after the asm-generic headers,
+> which this is slightly related to, just in case.
+>
+> One minor comment below.
+>
+> Tony Ambardar <tony.ambardar@gmail.com> writes:
+> > A few archs like powerpc have different errno.h values for macros
+> > EDEADLOCK and EDEADLK. In code including both libc and linux versions of
+> > errno.h, this can result in multiple definitions of EDEADLOCK in the
+> > include chain. Definitions to the same value (e.g. seen with mips) do
+> > not raise warnings, but on powerpc there are redefinitions changing the
+> > value, which raise warnings and errors (if using "-Werror").
+> >
+> > Guard against these redefinitions to avoid build errors like the following,
+> > first seen cross-compiling libbpf v5.8.9 for powerpc using GCC 8.4.0 with
+> > musl 1.1.24:
+> >
+> >   In file included from ../../arch/powerpc/include/uapi/asm/errno.h:5,
+> >                    from ../../include/linux/err.h:8,
+> >                    from libbpf.c:29:
+> >   ../../include/uapi/asm-generic/errno.h:40: error: "EDEADLOCK" redefined [-Werror]
+> >    #define EDEADLOCK EDEADLK
+> >
+> >   In file included from toolchain-powerpc_8540_gcc-8.4.0_musl/include/errno.h:10,
+> >                    from libbpf.c:26:
+> >   toolchain-powerpc_8540_gcc-8.4.0_musl/include/bits/errno.h:58: note: this is the location of the previous definition
+> >    #define EDEADLOCK       58
+> >
+> >   cc1: all warnings being treated as errors
+> >
+> > Fixes: 95f28190aa01 ("tools include arch: Grab a copy of errno.h for arch's supported by perf")
+> > Fixes: c3617f72036c ("UAPI: (Scripted) Disintegrate arch/powerpc/include/asm")
+>
+> I suspect that's not the right commit to tag. It just moved errno.h from
+> arch/powerpc/include/asm to arch/powerpc/include/uapi/asm. It's content
+> was almost identical, and entirely identical as far as EDEADLOCK was
+> concerned.
+>
+> Prior to that the file lived in asm-powerpc/errno.h, eg:
+>
+> $ git cat-file -p b8b572e1015f^:include/asm-powerpc/errno.h
+>
+> Before that it was include/asm-ppc64/errno.h, content still the same.
+>
+> To go back further we'd have to look at the historical git trees, which
+> is probably overkill. I'm pretty sure it's always had this problem.
+>
+> So we should probably drop the Fixes tags and just Cc: stable, that
+> means please backport it as far back as possible.
 
-On Thu, Sep 17, 2020 at 03:19:04PM +0200, Maxime Ripard wrote:
-> Hi,
-> 
-> On Sat, Sep 12, 2020 at 01:22:00PM +0200, Ondrej Jirman wrote:
-> > mfd: sun4i-gpadc: Interrupt numbers should start from 1
-> 
-> Why? An hwirq with 0 is totally fine
-> 
-> > This avoids a warning:
-> > 
-> > [    2.891592] ------------[ cut here ]------------
-> > [    2.895052] WARNING: CPU: 0 PID: 149 at drivers/base/platform.c:317 __platform_get_irq_byname+0x7c/0x8c
-> > [    2.903212] usb 1-1: new high-speed USB device number 2 using ehci-platform
-> > [    2.908930] 0 is an invalid IRQ number
-> > [    2.911425] Modules linked in: sun4i_gpadc_iio(+) r8188eu(C) lib80211 ohci_platform ohci_hcd ehci_platform ehci_hcd cyttsp4_i2c cyttsp_i2c_common cyttsp4_core g_cdc usb_f_acm u_serial usb_f_ecm u_ether libcomposite sunxi phy_generic musb_hdrc udc_core usbcore sun5ieink
-> > [    2.934048] CPU: 0 PID: 149 Comm: tablet-init Tainted: G         C        5.8.0-rc2-00316-gc6a5213fdeba-dirty #8
-> > [    2.943027] Hardware name: Allwinner sun4i/sun5i Families
-> > [    2.947204] [<c010c080>] (unwind_backtrace) from [<c0109ee4>] (show_stack+0x10/0x14)
-> > [    2.953714] [<c0109ee4>] (show_stack) from [<c012cd04>] (__warn+0xc0/0xd8)
-> > [    2.959364] [<c012cd04>] (__warn) from [<c012cda0>] (warn_slowpath_fmt+0x84/0x94)
-> > [    2.965599] [<c012cda0>] (warn_slowpath_fmt) from [<c0592a60>] (__platform_get_irq_byname+0x7c/0x8c)
-> > [    2.973480] [<c0592a60>] (__platform_get_irq_byname) from [<c0592a80>] (platform_get_irq_byname+0x10/0x48)
-> > [    2.981896] [<c0592a80>] (platform_get_irq_byname) from [<bf1142f0>] (sun4i_irq_init+0x38/0xe0 [sun4i_gpadc_iio])
-> > [    2.990923] [<bf1142f0>] (sun4i_irq_init [sun4i_gpadc_iio]) from [<bf1145cc>] (sun4i_gpadc_probe+0x234/0x308 [sun4i_gpadc_iio])
-> > [    3.001152] [<bf1145cc>] (sun4i_gpadc_probe [sun4i_gpadc_iio]) from [<c0592edc>] (platform_drv_probe+0x48/0x98)
-> > [    3.010051] [<c0592edc>] (platform_drv_probe) from [<c0591074>] (really_probe+0x1e0/0x348)
-> > [    3.017152] [<c0591074>] (really_probe) from [<c05912e8>] (driver_probe_device+0x5c/0xb4)
-> > [    3.024081] [<c05912e8>] (driver_probe_device) from [<c05914e0>] (device_driver_attach+0x58/0x60)
-> > [    3.031696] [<c05914e0>] (device_driver_attach) from [<c0591540>] (__driver_attach+0x58/0xcc)
-> > [    3.038966] [<c0591540>] (__driver_attach) from [<c058f418>] (bus_for_each_dev+0x64/0x90)
-> > [    3.045886] [<c058f418>] (bus_for_each_dev) from [<c0590490>] (bus_add_driver+0x15c/0x1e0)
-> > [    3.052892] [<c0590490>] (bus_add_driver) from [<c0591dc4>] (driver_register+0x7c/0x114)
-> > [    3.059731] [<c0591dc4>] (driver_register) from [<c0101674>] (do_one_initcall+0x44/0x194)
-> > [    3.066696] [<c0101674>] (do_one_initcall) from [<c01946e8>] (do_init_module+0x5c/0x220)
-> > [    3.073568] [<c01946e8>] (do_init_module) from [<c0196a3c>] (load_module+0x20ec/0x2380)
-> > [    3.080340] [<c0196a3c>] (load_module) from [<c0196e04>] (sys_init_module+0x134/0x154)
-> > [    3.087020] [<c0196e04>] (sys_init_module) from [<c0100060>] (ret_fast_syscall+0x0/0x54)
-> > [    3.093852] Exception stack(0xc8ea7fa8 to 0xc8ea7ff0)
-> > [    3.097649] 7fa0:                   00000000 00000000 b6fe2000 00003b14 00031284 00000005
-> > [    3.104596] 7fc0: 00000000 00000000 b6fe2000 00000080 00052220 be9fd940 00052246 0000002e
-> > [    3.111626] 7fe0: be9fd79c be9fd780 00015bd0 0001dcf4
-> > [    3.115468] ---[ end trace df4dd47fb61bf5a4 ]---
-> 
-> In which situation?
+I can see that the two numbers (35 and 58) were consistent across
+multiple architectures (i386, m68k, ppc32) up to linux-2.0.1, while
+other architectures had two unique numbers (alpha, mips, sparc)
+at the time, and sparc had BSD and Solaris compatible numbers
+in addition.
 
-During boot.
+In linux-2.0.2, alpha and i386 got changed to use 35 for both,
+but the other architectures remained unchanged. All later
+architectures followed x86 in using the same number for both.
 
-It's a new check added in Linux 5.8. https://elixir.bootlin.com/linux/latest/source/drivers/base/platform.c#L317
+I foudn a message about tcl breaking at compile time when
+it changed:
+http://lkml.iu.edu/hypermail/linux/kernel/9607.3/0500.html
 
-> > Signed-off-by: Ondrej Jirman <megous@megous.com>
-> > ---
-> >  include/linux/mfd/sun4i-gpadc.h | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/include/linux/mfd/sun4i-gpadc.h b/include/linux/mfd/sun4i-gpadc.h
-> > index ea0ccf33a459..021f820f9d52 100644
-> > --- a/include/linux/mfd/sun4i-gpadc.h
-> > +++ b/include/linux/mfd/sun4i-gpadc.h
-> > @@ -81,8 +81,8 @@
-> >  #define SUN4I_GPADC_TEMP_DATA				0x20
-> >  #define SUN4I_GPADC_DATA				0x24
-> >  
-> > -#define SUN4I_GPADC_IRQ_FIFO_DATA			0
-> > -#define SUN4I_GPADC_IRQ_TEMP_DATA			1
-> > +#define SUN4I_GPADC_IRQ_FIFO_DATA			1
-> > +#define SUN4I_GPADC_IRQ_TEMP_DATA			2
-> 
-> Where is it coming from, and why is it the proper fix?
+The errno man page says they are supposed to be synonyms,
+and glibc defines it that way, while musl uses the numbers
+from the kernel.
 
-Actual numbers seem irrelevant. It's just an index into this array:
-
-https://elixir.bootlin.com/linux/latest/source/drivers/mfd/sun4i-gpadc.c#L27
-
-The array will get sparse, but that doesn't seem like an issue to me,
-because the irq code handles the holes in the list if mask is 0.
-
-Not sure it's the best fix.
-
-regards,
-	o.
-
-> Maxime
-
-
+        Arnd
