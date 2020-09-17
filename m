@@ -2,126 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8983026DE27
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:24:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79B1E26DD93
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 16:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727522AbgIQOYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 10:24:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727046AbgIQNym (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 09:54:42 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F847C061354;
-        Thu, 17 Sep 2020 06:44:15 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id 7so1373187pgm.11;
-        Thu, 17 Sep 2020 06:44:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=i0fffCi1SMnNr+HUj3+gDyb2KPUiiYt5n+nlScEWZ2k=;
-        b=pIBiH2Ynfmf0sUsWxAudRvC6Ica8ZMgHeCjvLLvQzl5XihplMOzmelHMdbcIIYon8p
-         2qQgZaLT4ha8wo57MbqZ8GAaShD2gtiYZK2FV3HLWu8oS8ltzsSJnIh2tdcNs/46A9UU
-         tkw4+hSqDOcA+qGRI6sKcAnl4+O9IP0P42czQdB6csgNFmZviwST//FkoMnrpHF2W9U6
-         PmE7QZCXoviH4xl2MQjR6wATbZAxcHMsATGGo0ZMSaA7Vtqs1kXEq7/Byw6RPssX/gKP
-         XDtCWj9cE04sQUUeSeiD+GBFiVaUHv0169WzHMK/tDGjSsn7NZTmFqdq7rY0C7QMjW5e
-         SzZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=i0fffCi1SMnNr+HUj3+gDyb2KPUiiYt5n+nlScEWZ2k=;
-        b=A9MVioF2aXTlEhiV4i0I5QfY69rIrpQw+Jf7g3uEBxhjxLFyJyi183ah5uBqp/eOg9
-         PVihbQrrLlotw6tWyRVjd8myl8UNjMY6iPNDhMstc6HTMtoC+kEdcTuqCNeF6DeMhwE6
-         dCt1AW6e4qpiWlCqd8P+g3i7/DYINehwyl9ZpcDjM01OxHUZGxp7tXLQQP1WvYbXdVLE
-         ayCiyxVb4An+3EwIzBxkZ1zy9D08b6OLs/R3m+htbGCQpt8HA+5yVLAQ4x3/8aixYPAO
-         Uj/fZLKXJgEUaNOX8x8Z5TaA8eN+phpd+qv7lAn87wPBXqmp0hFzBruK0MCoL3zpjc51
-         6GaQ==
-X-Gm-Message-State: AOAM532RHTxelK5rRrhj71nU0lMJkykreNIeF9xpXoxU+BBdsskeFejL
-        GZRQ288gEq0qpuUqi/PesVQ=
-X-Google-Smtp-Source: ABdhPJz4bQ+UnL63L1lNm8jdeHcLxmxEj7pKavpOiDjibYwac+RnNqw5l/h9x0ZQxQ8ml1mp5p2BCw==
-X-Received: by 2002:a65:418c:: with SMTP id a12mr23438677pgq.322.1600350254536;
-        Thu, 17 Sep 2020 06:44:14 -0700 (PDT)
-Received: from masabert (p8847031-ipngnfx01marunouchi.tokyo.ocn.ne.jp. [114.156.71.31])
-        by smtp.gmail.com with ESMTPSA id s28sm21238859pfd.111.2020.09.17.06.44.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 06:44:13 -0700 (PDT)
-Received: by masabert (Postfix, from userid 1000)
-        id DD53C236035E; Thu, 17 Sep 2020 22:44:09 +0900 (JST)
-From:   Masanari Iida <standby24x7@gmail.com>
-To:     corbet@lwn.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, aryabinin@virtuozzo.com,
-        glider@google.com, dvyukov@google.com, catalin.marinas@arm.com,
-        andreyknvl@google.com, rdunlap@infradead.org
-Cc:     Masanari Iida <standby24x7@gmail.com>
-Subject: [PATCH linux-next] docs:dev-tools: Fix typo in Documentation/dev-tools
-Date:   Thu, 17 Sep 2020 22:44:07 +0900
-Message-Id: <20200917134407.63487-1-standby24x7@gmail.com>
-X-Mailer: git-send-email 2.25.0
+        id S1727245AbgIQOIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 10:08:44 -0400
+Received: from mga01.intel.com ([192.55.52.88]:29235 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727183AbgIQN7w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 09:59:52 -0400
+X-Greylist: delayed 556 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 09:59:33 EDT
+IronPort-SDR: aoQ2yfbA+VB18GNHhXTVEkHpmlrsMj1gABpColDFG0Vd/DN59+uIPHBuXISNoiAd7380gQjLc3
+ HAEN8KT8WNmw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="177791956"
+X-IronPort-AV: E=Sophos;i="5.76,437,1592895600"; 
+   d="scan'208";a="177791956"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 06:46:22 -0700
+IronPort-SDR: zT5iIOf4unlK1SgFAVXPYQucFc18m7rBc3aM8BzyqSheN9QbAo/2NDoF1iqeRll4O/PJAXdUZE
+ 76KarLVxtjvw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,437,1592895600"; 
+   d="scan'208";a="307471975"
+Received: from mylly.fi.intel.com (HELO [10.237.72.153]) ([10.237.72.153])
+  by orsmga006.jf.intel.com with ESMTP; 17 Sep 2020 06:46:18 -0700
+Subject: Re: [PATCH v2 2/4] i2c: designware: Ensure tx_buf_len is nonzero for
+ SMBus block reads
+To:     Sultan Alsawaf <sultan@kerneltoast.com>, linux-i2c@vger.kernel.org
+Cc:     jikos@kernel.org, aaron.ma@canonical.com, admin@kryma.net,
+        andriy.shevchenko@linux.intel.com, benjamin.tissoires@redhat.com,
+        hdegoede@redhat.com, hn.chen@weidahitech.com,
+        kai.heng.feng@canonical.com, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mika.westerberg@linux.intel.com,
+        vicamo.yang@canonical.com, wsa@kernel.org
+References: <20200917052256.5770-1-sultan@kerneltoast.com>
+ <20200917052256.5770-3-sultan@kerneltoast.com>
+From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Message-ID: <4698b23c-7af6-3f44-975d-b1f692ae3f00@linux.intel.com>
+Date:   Thu, 17 Sep 2020 16:44:18 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200917052256.5770-3-sultan@kerneltoast.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes some spelling typos found in
-Documentation/dev-tools.
+On 9/17/20 8:22 AM, Sultan Alsawaf wrote:
+> From: Sultan Alsawaf <sultan@kerneltoast.com>
+> 
+> The point of adding a byte to len in i2c_dw_recv_len() is to make sure
+> that tx_buf_len is nonzero, so that i2c_dw_xfer_msg() can let the i2c
+> controller know that the i2c transaction can end. Otherwise, the i2c
+> controller will think that the transaction can never end for block
+> reads, which results in the stop-detection bit never being set and thus
+> the transaction timing out.
+> 
+> Adding a byte to len is not a reliable way to do this though; sometimes
+> it lets tx_buf_len become zero, which results in the scenario described
+> above. Therefore, just directly ensure tx_buf_len cannot be zero to fix
+> the issue.
+> 
+> Fixes: c3ae106050b9 ("i2c: designware: Implement support for SMBus block read and write")
+> Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
+> ---
+>   drivers/i2c/busses/i2c-designware-master.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+Were other patches in series dropped somewhere? I received only this.
 
-Signed-off-by: Masanari Iida <standby24x7@gmail.com>
----
- Documentation/dev-tools/kasan.rst    | 4 ++--
- Documentation/dev-tools/kcov.rst     | 2 +-
- Documentation/dev-tools/kmemleak.rst | 2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
-index c09c9ca2ff1c..49ec0ab6cfc7 100644
---- a/Documentation/dev-tools/kasan.rst
-+++ b/Documentation/dev-tools/kasan.rst
-@@ -328,7 +328,7 @@ using something like insmod or modprobe. The module is called ``test_kasan``.
- ~~~~~~~~~~~~~
- 
- With ``CONFIG_KUNIT`` built-in, ``CONFIG_KASAN_KUNIT_TEST`` can be built-in
--on any architecure that supports KASAN. These and any other KUnit
-+on any architecture that supports KASAN. These and any other KUnit
- tests enabled will run and print the results at boot as a late-init
- call.
- 
-@@ -349,5 +349,5 @@ converted to KUnit. These tests can be run only as a module with
- ``CONFIG_KASAN`` built-in. The type of error expected and the
- function being run is printed before the expression expected to give
- an error. Then the error is printed, if found, and that test
--should be interpretted to pass only if the error was the one expected
-+should be interpreted to pass only if the error was the one expected
- by the test.
-diff --git a/Documentation/dev-tools/kcov.rst b/Documentation/dev-tools/kcov.rst
-index 8548b0b04e43..d2c4c27e1702 100644
---- a/Documentation/dev-tools/kcov.rst
-+++ b/Documentation/dev-tools/kcov.rst
-@@ -243,7 +243,7 @@ handles as they don't belong to a particular subsystem. The bytes 4-7 are
- currently reserved and must be zero. In the future the number of bytes
- used for the subsystem or handle ids might be increased.
- 
--When a particular userspace proccess collects coverage via a common
-+When a particular userspace process collects coverage via a common
- handle, kcov will collect coverage for each code section that is annotated
- to use the common handle obtained as kcov_handle from the current
- task_struct. However non common handles allow to collect coverage
-diff --git a/Documentation/dev-tools/kmemleak.rst b/Documentation/dev-tools/kmemleak.rst
-index a41a2d238af2..1c935f41cd3a 100644
---- a/Documentation/dev-tools/kmemleak.rst
-+++ b/Documentation/dev-tools/kmemleak.rst
-@@ -229,7 +229,7 @@ Testing with kmemleak-test
- 
- To check if you have all set up to use kmemleak, you can use the kmemleak-test
- module, a module that deliberately leaks memory. Set CONFIG_DEBUG_KMEMLEAK_TEST
--as module (it can't be used as bult-in) and boot the kernel with kmemleak
-+as module (it can't be used as built-in) and boot the kernel with kmemleak
- enabled. Load the module and perform a scan with::
- 
-         # modprobe kmemleak-test
--- 
-2.28.0.497.g54e85e7af1ac
-
+Jarkko
