@@ -2,120 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 798AC26D81E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 11:53:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE2EC26D821
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 11:53:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726541AbgIQJvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 05:51:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726343AbgIQJve (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 05:51:34 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66FA7C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 02:51:33 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id t10so1362122wrv.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 02:51:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=1z0Dzoz+hRHyGT5fLUrVWCjo5PxPXHMObR+QlG59yhI=;
-        b=G2R7ulBTU9c5dYXtC3MYccrDA+Ffcx8heJQxw6ZGWY0f4Jf/wKoCDPwFEJdPQjqJY7
-         3hJgJ6hVTXPVmQENRP7Sd81Q78EXP1mZlytu3a3+Sdl1VZr7D5mqqfDcRbWRhKlZhjaM
-         1/lUceDIrEzfG75yh9QwFu3x24GH6fu1csNQboGJ8TZc7Onv6MTafL682UNedHWLHoPb
-         loIDKYpSlWYPPDFE6D0n89acqNQtqzDkJSfX3uDPdeO9OgG1J5VUGDLsei4BTMfN8UVW
-         bBuNjg0zDtYDRoDh3jrGHaRvvAyW64d3s/v/NGlSIid8oAAthGBjywiebwB0Nbn4Xz17
-         3udQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1z0Dzoz+hRHyGT5fLUrVWCjo5PxPXHMObR+QlG59yhI=;
-        b=rzz0Dn2MqNdHVjG8B7nfJNG1LTwd9wsCnxeZgPVRd9N8PT3nl4HExOj33JGsdUz2GD
-         YXa801rWCKFD6m4o/8jyUCSDmvdKrLQhUqtTjQO8EgvfSNJ6DWMDFEbCH9As6R7HPIti
-         op5QR3CBn6Q8oyPh0D4O00bt+o5fU//VBodOtSsJM0KTsAt8ZRuSL6/vheiDqk/FG3bd
-         bp3g8CRSAQzdYjKRj74zCT/aKeswbATYxPwWTlMQmC7GikAdjSznC5a8yel21aKn6dBW
-         uu8K2BqJo5byTtPUTUBc/HuxS8VoJx9KDIf9LWuV43TWJ4ksOVcav0NIJLr6GNRPWpxu
-         m/6A==
-X-Gm-Message-State: AOAM530Fz6eEdxUTW75UjTR/DLtTBRK/mErKTKDhVVKHn4+dguBPiHNV
-        OfHRhLfEKrlLWo1xW5UrL+OzNS+YyUGo2GLVuHLC+w==
-X-Google-Smtp-Source: ABdhPJxp3caZkciDO+kZlUmnf4BVgA4nM2LwzCMfmtO8IXe8l0MGsqh3S+LXbtGEI7UMy2c4M0H9WHgAwQUzzWRYWQQ=
-X-Received: by 2002:adf:e312:: with SMTP id b18mr8525505wrj.372.1600336291198;
- Thu, 17 Sep 2020 02:51:31 -0700 (PDT)
+        id S1726574AbgIQJvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 05:51:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50024 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726343AbgIQJvk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 05:51:40 -0400
+Received: from mail.kernel.org (ip5f5ad5d2.dynamic.kabel-deutschland.de [95.90.213.210])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C1E7720838;
+        Thu, 17 Sep 2020 09:51:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600336300;
+        bh=QlHe+U52015mxf4TFIS9GCufQdr91cOPdMVOcyksJ/4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Vwe8vPSXg+JzrX7NmBx/Z4rc4J2su5QZPBA56MAmAHulv3BmhjAEVzrFhaQtkYpZa
+         oJ4ojy25hPtM0/99ISosQBhhlKypJWvIAPk/J0roFMSqAHvvHbbbGwzctp2Z+Bf1Do
+         E2V5xiJHOX4IPQENhKdkbjee76BKq8y/6lJ6XKok=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kIqZl-0055p9-82; Thu, 17 Sep 2020 11:51:37 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: [PATCH 1/2] media: vidtv: cleanup the logic which estimates buffer size
+Date:   Thu, 17 Sep 2020 11:51:35 +0200
+Message-Id: <87e2446460f3feed58c89954529151645b959b19.1600336293.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200915132046.3332537-1-elver@google.com> <20200915132046.3332537-6-elver@google.com>
- <alpine.DEB.2.22.394.2009170938030.1492@www.lameter.com>
-In-Reply-To: <alpine.DEB.2.22.394.2009170938030.1492@www.lameter.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Thu, 17 Sep 2020 11:51:19 +0200
-Message-ID: <CAG_fn=W1CqBgCqpYBNgYE7V+i4iqK4iyVydJyz7K4Zfc0zZvEw@mail.gmail.com>
-Subject: Re: [PATCH v2 05/10] mm, kfence: insert KFENCE hooks for SLUB
-To:     Christopher Lameter <cl@linux.com>
-Cc:     Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dmitriy Vyukov <dvyukov@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jonathan.Cameron@huawei.com, Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Kees Cook <keescook@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, Qian Cai <cai@lca.pw>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Will Deacon <will@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 11:40 AM Christopher Lameter <cl@linux.com> wrote:
->
-> On Tue, 15 Sep 2020, Marco Elver wrote:
->
-> >  void *kmem_cache_alloc(struct kmem_cache *s, gfp_t gfpflags)
-> >  {
-> > -     void *ret =3D slab_alloc(s, gfpflags, _RET_IP_);
-> > +     void *ret =3D slab_alloc(s, gfpflags, _RET_IP_, s->object_size);
->
-> The additional size parameter is a part of a struct kmem_cache that is
-> already passed to the function. Why does the parameter list need to be
-> expanded?
+There's no need to use u64 over there. In a matter of fact,
+the div is not even needed, as it is multiplying by 1000 and
+dividing by 1000.
 
-See my response to the similar question about the SLAB allocator:
-https://lore.kernel.org/linux-arm-kernel/CAG_fn=3DXMc8NPZPFtUE=3DrdoR=3DXJH=
-4F+TxZs-w5n4VuaWKTjcasw@mail.gmail.com/
+So, simplify the logic.
 
+While here, constrain the buffer size to a certain range
+(between the current value and 10 times it)
 
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ .../media/test-drivers/vidtv/vidtv_bridge.c   | 20 ++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
---=20
-Alexander Potapenko
-Software Engineer
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_bridge.c b/drivers/media/test-drivers/vidtv/vidtv_bridge.c
+index fe4e496acc34..74b054947bbe 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_bridge.c
++++ b/drivers/media/test-drivers/vidtv/vidtv_bridge.c
+@@ -106,26 +106,28 @@ static unsigned int mux_buf_sz_pkts;
+ module_param(mux_buf_sz_pkts, uint, 0);
+ MODULE_PARM_DESC(mux_buf_sz_pkts, "Size for the internal mux buffer in multiples of 188 bytes");
+ 
++#define MUX_BUF_MIN_SZ 90164
++#define MUX_BUF_MAX_SZ (MUX_BUF_MIN_SZ * 10)
++
+ static u32 vidtv_bridge_mux_buf_sz_for_mux_rate(void)
+ {
+-	u64 max_elapsed_time_msecs =  VIDTV_MAX_SLEEP_USECS / 1000;
++	u32 max_elapsed_time_msecs =  VIDTV_MAX_SLEEP_USECS / USEC_PER_MSEC;
+ 	u32 nbytes_expected;
+ 	u32 mux_buf_sz = mux_buf_sz_pkts * TS_PACKET_LEN;
+-	u32 slack;
+ 
+-	nbytes_expected = div64_u64(mux_rate_kbytes_sec * 1000, MSEC_PER_SEC);
++	nbytes_expected = mux_rate_kbytes_sec;
+ 	nbytes_expected *= max_elapsed_time_msecs;
+ 
+ 	mux_buf_sz = roundup(nbytes_expected, TS_PACKET_LEN);
+-	slack = mux_buf_sz / 10;
++	mux_buf_sz += mux_buf_sz / 10;
+ 
+-	//if (mux_buf_sz < MUX_BUF_MIN_SZ)
+-	//	mux_buf_sz = MUX_BUF_MIN_SZ;
++	if (mux_buf_sz < MUX_BUF_MIN_SZ)
++		mux_buf_sz = MUX_BUF_MIN_SZ;
+ 
+-	//if (mux_buf_sz > MUX_BUF_MAX_SZ)
+-	//	mux_buf_sz = MUX_BUF_MAX_SZ;
++	if (mux_buf_sz > MUX_BUF_MAX_SZ)
++		mux_buf_sz = MUX_BUF_MAX_SZ;
+ 
+-	return mux_buf_sz + slack;
++	return mux_buf_sz;
+ }
+ 
+ static bool vidtv_bridge_check_demod_lock(struct vidtv_dvb *dvb, u32 n)
+-- 
+2.26.2
 
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
-
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
