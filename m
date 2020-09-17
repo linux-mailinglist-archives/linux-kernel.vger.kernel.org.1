@@ -2,79 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B73B326E6E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 22:48:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1413226E6F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 22:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726678AbgIQUr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 16:47:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726180AbgIQUr7 (ORCPT
+        id S1726496AbgIQUzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 16:55:22 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:8875 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726180AbgIQUzV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 16:47:59 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB3FC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 13:47:59 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id v123so3755753qkd.9
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 13:47:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=lCEuifrXNBJR2RXDLzYRqd6rWThqodFNE/B/8/e6FCo=;
-        b=BMvJaOE08sKp4cbKESDzN+KbtJLb332vgYme/GXpRWM9fJ8lUZOfV5N2S34Aq/0QgH
-         J91ZnVOZutDuH79jmUBOzo4u6GxuYMx3wMXqGbXquddg6njn6ccgVMGgmhtwTVywQBEs
-         6X0l7NiuZEsY1CMb6AksOE5RIlF2hD8cstBg5RW/jEMujVAmqR/SZCMqyEO77C4SEzNF
-         sBvMLty/k+Vpi0fqKANyu8vsRbHDmZCETNFneJp5e6Txs0KodavGWxQVumx4nHpumfkF
-         FXN4QXE9hjXEL32Ag9mf2TtlvA6T0WQm19g8d2ZlSFurFehskaJeb6teX9oDi7xnn+cB
-         kpkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=lCEuifrXNBJR2RXDLzYRqd6rWThqodFNE/B/8/e6FCo=;
-        b=mht2CBVDIfbcnRAGnMHbETB9CSg1KON1JSHRHdA0xe02j75A6qsgRSn4YBjk9HEjzX
-         yOAwyo7yCqdY5TNL5V6BBpgvir2dLR2aEUjBTNlFF2sK3p8skO8XU55PXdmF5xjGe9yA
-         aKwIM7zUihg4igJH12OA9kWjiaR0pjC9wXM77Z1Jo00FZSqpmbOGMvu+rZHWmUYxiEtD
-         HiEn4CJiNsm1Uy7zDDeRcnQfPkr1FlXf5CBfwbOqBQsR02cJ+4KO8PFc0HUwzZgcVPHZ
-         QJkO6UG88n3RVkZ6dTcImtip+aTKd+4CDB2WjbMleahBN4O99SWQXtxwcWEuuY6hXJ8A
-         thwA==
-X-Gm-Message-State: AOAM533fVcPgUJurAHxOOUvafMZ8ksU2/YLKwwrmNmARLv9Y04LxqX43
-        CMGgO54o4my4mgn6Met9cGhXAnht9imaSlpA2fE=
-X-Google-Smtp-Source: ABdhPJyPa/1PhZFqqEdeyHeSrDNSBkFT9T8g9ywxA6fcNWSTba8ZEtigVY3KkbI52SDeiZMdFsaJE+YwXTglAj6k9Qw=
-X-Received: by 2002:ae9:eb42:: with SMTP id b63mr29547439qkg.106.1600375678460;
- Thu, 17 Sep 2020 13:47:58 -0700 (PDT)
+        Thu, 17 Sep 2020 16:55:21 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f63cd2c0002>; Thu, 17 Sep 2020 13:55:08 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 17 Sep 2020 13:55:21 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 17 Sep 2020 13:55:21 -0700
+Received: from [10.2.173.225] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 17 Sep
+ 2020 20:55:16 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: Re: [PATCH] mm/migrate: correct thp migration stats.
+Date:   Thu, 17 Sep 2020 16:55:14 -0400
+X-Mailer: MailMate (1.13.1r5705)
+Message-ID: <70175233-F250-4072-AEF4-659DF73F9F7C@nvidia.com>
+In-Reply-To: <20200917205912.fljcyldna6bg7m4l@ca-dmjordan1.us.oracle.com>
+References: <20200917202729.1460743-1-zi.yan@sent.com>
+ <20200917205912.fljcyldna6bg7m4l@ca-dmjordan1.us.oracle.com>
 MIME-Version: 1.0
-References: <20200601091037.3794172-1-chengzhihao1@huawei.com>
- <CAFLxGvxA9pw8D6Q8GbBD0SUP+EHhOsZmRMSPxrW4sq0gYi9N9Q@mail.gmail.com> <b82cd435-437d-e384-c95e-a7e031559c7e@huawei.com>
-In-Reply-To: <b82cd435-437d-e384-c95e-a7e031559c7e@huawei.com>
-From:   Richard Weinberger <richard.weinberger@gmail.com>
-Date:   Thu, 17 Sep 2020 22:47:46 +0200
-Message-ID: <CAFLxGvxXE_jb7nGMn9XOzaFb6SELspQ2Dvdc7zs5i5G8XK3UfQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] ubifs: xattr: Fix some potential memory leaks while
- iterating entries
-To:     Zhihao Cheng <chengzhihao1@huawei.com>
-Cc:     linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
-        Richard Weinberger <richard@nod.at>,
-        "zhangyi (F)" <yi.zhang@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: multipart/signed;
+        boundary="=_MailMate_AB6C36DA-A6A6-4127-B6B8-6BD347044092_=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600376108; bh=YvADe2ZL90eoOWfjmzJTDfz7rKtmDxYSNyCrdCAx3kc=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:X-Mailer:Message-ID:
+         In-Reply-To:References:MIME-Version:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type;
+        b=MQPydcNWJEUPiYdzWav0XURQ5C6jZf7w49Os0xHgSdXpo4txmgYnl2UkHpt2Yj5Y2
+         8lVyFAdWkljBK4tnTj7/cmXe0W82kXydnZQfhRBAHISbnOPJRGsN5kVVq2I46XBMJV
+         ipdigaOLzf+sOyokI5W1cZ3q0de6HCh6CoEpbgG69keLYYzpKhosWPAvDUaoFXCdfq
+         YD86M9yPLA1mdJGv5i7JhxXbb08bYNutTyUH2qpKcxv3jziAZTFPvjan0drqc2/WIs
+         LwwTZ/UtB3kivi+djCZrHGcAX2DLxmiBQRafpbwHEgtagZTGZIOZMbiuueENJU3O9M
+         c5c9dWN/RFJ/w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 5:25 AM Zhihao Cheng <chengzhihao1@huawei.com> wrot=
-e:
-> =E5=9C=A8 2020/9/14 3:08, Richard Weinberger =E5=86=99=E9=81=93:
-> > On Mon, Jun 1, 2020 at 11:11 AM Zhihao Cheng <chengzhihao1@huawei.com> =
-wrote:
-> The kill_xattrs process is more intuitive without the pxent. However,
-> the release process for the memory (stores xent->name) is similar to
-> 'pxent'. If you think it's better than v1, I will send v2.
+--=_MailMate_AB6C36DA-A6A6-4127-B6B8-6BD347044092_=
+Content-Type: text/plain; charset="UTF-8"; markup=markdown
+Content-Transfer-Encoding: quoted-printable
 
-You are right. We don't gain much. So I'll take v1.
-Thanks a lot for fixing!
+On 17 Sep 2020, at 16:59, Daniel Jordan wrote:
 
---=20
-Thanks,
-//richard
+> On Thu, Sep 17, 2020 at 04:27:29PM -0400, Zi Yan wrote:
+>> From: Zi Yan <ziy@nvidia.com>
+>>
+>> PageTransHuge returns true for both thp and hugetlb, so thp stats was
+>> counting both thp and hugetlb migrations. Exclude hugetlb migration by=
+
+>> setting is_thp variable right.
+>
+> Yeah, shoot.
+>
+>> Fixes: 1a5bae25e3cf ("mm/vmstat: add events for THP migration without =
+split")
+>> Signed-off-by: Zi Yan <ziy@nvidia.com>
+>
+> Reviewed-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+
+Thanks.
+
+>
+> If you wanted, you could also do this.
+>
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index d1ad964165e5..6bc9559afc70 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -1471,7 +1471,7 @@ int migrate_pages(struct list_head *from, new_pag=
+e_t get_new_page,
+>  				 * we encounter them after the rest of the list
+>  				 * is processed.
+>  				 */
+> -				if (PageTransHuge(page) && !PageHuge(page)) {
+> +				if (is_thp) {
+>  					lock_page(page);
+>  					rc =3D split_huge_page_to_list(page, from);
+>  					unlock_page(page);
+> @@ -1480,8 +1480,7 @@ int migrate_pages(struct list_head *from, new_pag=
+e_t get_new_page,
+>  						nr_thp_split++;
+>  						goto retry;
+>  					}
+> -				}
+> -				if (is_thp) {
+> +
+>  					nr_thp_failed++;
+>  					nr_failed +=3D nr_subpages;
+>  					goto out;
+
+Yeah, makes sense to me. Let me send V2 to include this.
+
+=E2=80=94
+Best Regards,
+Yan Zi
+
+--=_MailMate_AB6C36DA-A6A6-4127-B6B8-6BD347044092_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl9jzTIPHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqKnysQAKMogiBkhHXHcsYRoMTuXzPAcuvY7YdD8Vi6
+j7RLsGNeZ/Sb+meTDrRaBRZiSAETgYCDiQUTJw7BJGDE9D4KVtoqccAugoEeO4+2
+YT4Yg4/sVlZpZ4kXv9kc5VAIsKgilfB+UVA31p4xJVF/6a667SehXkAlfRtjEPhH
+o7CHggVYaPMhEk+1CnzSA47en8Xh1Q1+FAxnZc5+bUxN2s6xzH92DqfW9irpYNXr
+1TkVBKwPRBc8FgDeDV1iEnXMv7frxFFNomkNMzr5mBf8xJQdxcUtilaYxedflb6i
+2ROw3cTQ35ndFAKlJl0KKICL3xhe/yLA6vyXnyw8z1gNDPQC5WcP1pJ3xmrrHASX
+CYrRzeZJI6JTOOqEo3eoU4HE43CQlFxxMLwZv8qjTnL7dSTdf8cTRAWjQ1DnvRyB
+fmJ91QUmYQ4WGB6BFkG9SAGiV1w8eWKj6qJQ8xQAjg5ZQphsS/Prr9gK/auxmSc5
+p0HLzNFtZvzH40Gkv+GRMstcBgZj9jjsVt+RFHX+blr7ux6QZq8OCE+KgPlHO6xd
+WzeglXTA7DRSUKYAUEvQHalLK2YSekqMfZqxaIWdzbKZEAoF3YIHh6Qj2gWEuyzj
+PgvRha9oekAYaN2/AwCL3EBr5UVX9n77Q25eMfeiuurJ25BT5/JA7PZ2bvRnWx8i
+k5dTUmQY
+=iPpR
+-----END PGP SIGNATURE-----
+
+--=_MailMate_AB6C36DA-A6A6-4127-B6B8-6BD347044092_=--
