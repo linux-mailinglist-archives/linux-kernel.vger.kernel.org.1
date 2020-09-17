@@ -2,92 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B21026D263
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 06:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4C4026D261
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 06:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726157AbgIQEXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 00:23:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725858AbgIQEW7 (ORCPT
+        id S1726198AbgIQEWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 00:22:13 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:54824 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725858AbgIQEWJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 00:22:59 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71889C06174A;
-        Wed, 16 Sep 2020 21:16:16 -0700 (PDT)
-Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4BsNtv1s87z9sSn; Thu, 17 Sep 2020 14:15:59 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1600316167;
-        bh=E4XTRIY2Yg5zL9/EFXMuDBdNiIOZtiHl+cuCUmjJXGw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=dnMJXdBQiQhKQ4LlvkTFq7q1SWmi7Eb4zYRGEE9QQcaZauuZnnT20J4dFS2U/Fzi+
-         GZL3ChfHLiOflz3xxaPzo4gxvBDzXYh6+HeaSkYEh7IsF5//BOq438Rc0DwZufsa8X
-         s8mn7sZfXaMhyNEqA9re1rC/d8sEycbRwpOI2TFRMFPLBYZ/ij34H/KB5+vKps8Ph0
-         Yrxqzr5ki4lWVaA/vjkdj0eao/gTxUmZVdKw5aD8nv5GJhkl65Q8MtVQW//x/n/bS6
-         cNE9Ew0z9EL18ZIAj0GG5K4MxRkLjshyC5B5bNJdEhsmcbuIErvZbstSHE+BgFPAmT
-         4ywo/8iLBpXUA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     keescook@chromium.org
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jcmvbkbc@gmail.com
-Subject: [PATCH] selftests/harness: Flush stdout before forking
-Date:   Thu, 17 Sep 2020 14:15:19 +1000
-Message-Id: <20200917041519.3284582-1-mpe@ellerman.id.au>
-X-Mailer: git-send-email 2.25.1
+        Thu, 17 Sep 2020 00:22:09 -0400
+Received: from [192.168.0.121] (unknown [209.134.121.133])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 85C0120B7178;
+        Wed, 16 Sep 2020 21:22:07 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 85C0120B7178
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1600316528;
+        bh=aHUbevYdWmKrFZGfOI0mJZjZ/P3yx7HaG2fed8pEhpk=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=C2TUWasXDiSCaF5VxUH5Hq4626eyjfTM+sqWFATYgD2rP17oNZdor5lCOpfq1I97z
+         aDS+qPb1gxwATfCAea4kohOytxw5Pcofx7vASeoRLOVSKMQq0CKYQ7tYKIts8xRWWo
+         EyNkMtYxVghHzItOeDK4QxhB2ihd9qlQD/EOoPrk=
+Subject: Re: [v3 2/2] mm: khugepaged: avoid overriding min_free_kbytes set by
+ user
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Allen Pais <apais@microsoft.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <1600305709-2319-1-git-send-email-vijayb@linux.microsoft.com>
+ <1600305709-2319-3-git-send-email-vijayb@linux.microsoft.com>
+From:   Vijay Balakrishna <vijayb@linux.microsoft.com>
+Message-ID: <a9b53080-9dc3-c1ee-8126-eaf8e38ce736@linux.microsoft.com>
+Date:   Wed, 16 Sep 2020 21:22:06 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1600305709-2319-3-git-send-email-vijayb@linux.microsoft.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The test harness forks() a child to run each test. Both the parent and
-the child print to stdout using libc functions. That can lead to
-duplicated (or more) output if the libc buffers are not flushed before
-forking.
+Please ignore this patch.  I forgot to run scripts/checkpatch.pl and see
 
-It's generally not seen when running programs directly, because stdout
-will usually be line buffered when it's pointing to a terminal.
+CHECK: Alignment should match open parenthesis
+#30: FILE: mm/khugepaged.c:2287:
++       if (recommended_min > min_free_kbytes ||
++               recommended_min > user_min_free_kbytes) {
 
-This was noticed when running the seccomp_bpf test, eg:
+ERROR: do not initialise globals to 0
+#43: FILE: mm/page_alloc.c:318:
++int user_min_free_kbytes = 0;
 
-  $ ./seccomp_bpf | tee test.log
-  $ grep -c "TAP version 13" test.log
-  2
+Sorry for trouble, I will send a new version.
 
-But we only expect the TAP header to appear once.
+Vijay
 
-It can be exacerbated using stdbuf to increase the buffer size:
-
-  $ stdbuf -o 1MB ./seccomp_bpf > test.log
-  $ grep -c "TAP version 13" test.log
-  13
-
-The fix is simple, we just flush stdout & stderr before fork. Usually
-stderr is unbuffered, but that can be changed, so flush it as well
-just to be safe.
-
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
----
- tools/testing/selftests/kselftest_harness.h | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/tools/testing/selftests/kselftest_harness.h b/tools/testing/selftests/kselftest_harness.h
-index 4f78e4805633..f19804df244c 100644
---- a/tools/testing/selftests/kselftest_harness.h
-+++ b/tools/testing/selftests/kselftest_harness.h
-@@ -971,6 +971,11 @@ void __run_test(struct __fixture_metadata *f,
- 
- 	ksft_print_msg(" RUN           %s%s%s.%s ...\n",
- 	       f->name, variant->name[0] ? "." : "", variant->name, t->name);
-+
-+	/* Make sure output buffers are flushed before fork */
-+	fflush(stdout);
-+	fflush(stderr);
-+
- 	t->pid = fork();
- 	if (t->pid < 0) {
- 		ksft_print_msg("ERROR SPAWNING TEST CHILD\n");
--- 
-2.25.1
-
+On 9/16/2020 6:21 PM, Vijay Balakrishna wrote:
+> set_recommended_min_free_kbytes need to honor min_free_kbytes set by the
+> user.  Post start-of-day THP enable or memory hotplug operations can
+> lose user specified min_free_kbytes, in particular when it is higher than
+> calculated recommended value.  user_min_free_kbytes initialized to 0
+> to avoid undesired result when comparing with  "unsigned long" type.
+> 
+> Signed-off-by: Vijay Balakrishna <vijayb@linux.microsoft.com>
+> Cc: stable@vger.kernel.org
+> Reviewed-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+> ---
+>   mm/khugepaged.c | 3 ++-
+>   mm/page_alloc.c | 2 +-
+>   2 files changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+> index 4f7107476a6f..3c1147816d12 100644
+> --- a/mm/khugepaged.c
+> +++ b/mm/khugepaged.c
+> @@ -2283,7 +2283,8 @@ static void set_recommended_min_free_kbytes(void)
+>   			      (unsigned long) nr_free_buffer_pages() / 20);
+>   	recommended_min <<= (PAGE_SHIFT-10);
+>   
+> -	if (recommended_min > min_free_kbytes) {
+> +	if (recommended_min > min_free_kbytes ||
+> +		recommended_min > user_min_free_kbytes) {
+>   		if (user_min_free_kbytes >= 0)
+>   			pr_info("raising min_free_kbytes from %d to %lu to help transparent hugepage allocations\n",
+>   				min_free_kbytes, recommended_min);
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index fab5e97dc9ca..7b81fb139034 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -315,7 +315,7 @@ compound_page_dtor * const compound_page_dtors[NR_COMPOUND_DTORS] = {
+>   };
+>   
+>   int min_free_kbytes = 1024;
+> -int user_min_free_kbytes = -1;
+> +int user_min_free_kbytes = 0;
+>   #ifdef CONFIG_DISCONTIGMEM
+>   /*
+>    * DiscontigMem defines memory ranges as separate pg_data_t even if the ranges
+> 
