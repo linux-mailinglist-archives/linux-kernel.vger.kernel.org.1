@@ -2,177 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 946A826D755
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 11:03:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D3BE26D747
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 11:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726447AbgIQJC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 05:02:59 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:39361 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726433AbgIQJC4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 05:02:56 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200917085404euoutp028969d4a347c12477e38871aa31e0e70c~1hj40zLBA2456824568euoutp02W
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 08:54:04 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200917085404euoutp028969d4a347c12477e38871aa31e0e70c~1hj40zLBA2456824568euoutp02W
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1600332844;
-        bh=m4UP/i//3GAkZfp1ImTn473rw4qBRCZqFac37IxmfG0=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=TMd9+3meh7rjXtu2gdMVqFHXOrTUc+dTAxNeT9K8VBXNxDT6uVhBlMLzbo5MloJiC
-         1bjmY0XKZSUY1UIhnhCYEzb8cqgZpuJ3wTb3qBNbo8XuTiSJLItWaeSa8KKvyStYDP
-         gagTtH5NB699Gu273VA+4RTar3BXCiHgPR/3bQ5k=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200917085403eucas1p14cb0cd829f1f07e2be0d92e0145b45b8~1hj4NhGQe2857828578eucas1p1P;
-        Thu, 17 Sep 2020 08:54:03 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 2E.96.06456.B24236F5; Thu, 17
-        Sep 2020 09:54:03 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200917085403eucas1p137a621fd292f8f6d4ea36c9e1584ab7d~1hj3yIpoO2050620506eucas1p19;
-        Thu, 17 Sep 2020 08:54:03 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200917085403eusmtrp29d6bbb75252248443ffefcbea39253dc~1hj3xNjWx2476724767eusmtrp2q;
-        Thu, 17 Sep 2020 08:54:03 +0000 (GMT)
-X-AuditID: cbfec7f2-7efff70000001938-e6-5f63242b1c8c
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id E7.B0.06017.B24236F5; Thu, 17
-        Sep 2020 09:54:03 +0100 (BST)
-Received: from [106.210.88.143] (unknown [106.210.88.143]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200917085402eusmtip175d8054f62dfef0e3fcf2314307b3365~1hj2uyDVI2770527705eusmtip1_;
-        Thu, 17 Sep 2020 08:54:02 +0000 (GMT)
-Subject: Re: [PATCH v3 08/16] irqchip/gic: Configure SGIs as standard
- interrupts
-To:     Jon Hunter <jonathanh@nvidia.com>, Marc Zyngier <maz@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>,
-        kernel-team@android.com, Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King <linux@arm.linux.org.uk>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Saravana Kannan <saravanak@google.com>,
-        Andrew Lunn <andrew@lunn.ch>,
+        id S1726400AbgIQJAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 05:00:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46148 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726211AbgIQJAr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 05:00:47 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C15D4206A2;
+        Thu, 17 Sep 2020 09:00:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600333246;
+        bh=YUpRAK2hv+ZY1z1wbFM4JkS3zRWCKMAo84o8MPgEdMQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bFHSbW5XHotn8JY5ZnNn9TTbo2v6ZKKSh9rAJoC2UJ7zPFR9YEc0twYS9BVjaxD2d
+         0Ss3X7SUKCXfsanrIt1RQCTKYkHv3eIDttPkH5CFIT8aju8WbiOAZ7oC11xn9lzm+d
+         +4cYKUx/dtIFP1IJnAlq/Hv8zV6GSvWAITQvDPBE=
+Date:   Thu, 17 Sep 2020 10:00:38 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     bpf@vger.kernel.org, ardb@kernel.org, naresh.kamboju@linaro.org,
+        xi.wang@gmail.com, luke.r.nels@gmail.com,
+        Jiri Olsa <jolsa@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <4645f636-e7cc-6983-a3b7-897c20ec5096@samsung.com>
-Date:   Thu, 17 Sep 2020 10:54:01 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.12.0
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] arm64: bpf: Fix branch offset in JIT
+Message-ID: <20200917090037.GA29556@willie-the-truck>
+References: <20200917084925.177348-1-ilias.apalodimas@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <e317b2fe-52e3-8ce7-ba77-43d2708d660f@nvidia.com>
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0hTcRTH++3e3V2l1a/p8GBltNIoyTJLfj2wl9AtijKIIipbebFQl2zN
-        Mommk9SpPbShLsmS1CVqNnP5Qmw9xKStVKSHJmkULTTTHhhaOW+W/33O93zP73sO/FhKls94
-        s8dVJ3m1ShmtYNxp6+MRx1L/hUfDl+sH5xNHt40id3Jvi8nn4gxEfg48lJB8czxJvNlOk2RT
-        IU1q7nkSh6NSQq6MloiIpa9TTNrr8hmS62gUkbSvJoa8bpeS2vwWMTHYxhhS0XiBIVUWI0Xu
-        FYxQJLlr1QY5Z623irmya2WIS9ZnMNy1sgSu1tQt4a5btJylNI3hdE0OmuvqbGC4AbtdwlXd
-        PMfV1gyLuEz9AMNduFuKuGGLz66Z+93XRfDRx+N49bKQw+7HnFUXJbFN+PSTlA8SHbJLDciN
-        BbwSeusfIQNyZ2XYjKCg/g0jFF8RpJh7REIxjMBalMpMjpiznBMswyUI3rTSgukzguHOHtrV
-        8MC7oTv9MnKxJw6FpN5ysctE4RwGLIODEyYGB4Kh3zDxkhSHgC1vlHIxjX3B/F1gOT4Ej5/0
-        0oJnFrTkvRtnlnUb96cXnXHJFJ4H+uqrlMBe8OpdwcTWgJ+xkGXsp4StQ+HB5ZcSgT3A2Xz3
-        L8+B37WTA3oEb+3lEqHIQNCelIsE11rosv9kXMkUXgy365YJ8kZwphaJXTLgGfCif5awxAzI
-        suZQgiyF1PMywe0HpuaKf7H3n7VRl5DCNOUy05RzTFPOMf3PvY7oUuTFazUxkbwmUMWfCtAo
-        YzRaVWTA0RMxFjT+Z1t/NQ/VoG9tR2wIs0gxXVopPxIuEyvjNPExNgQspfCUbnraekgmjVDG
-        n+HVJ8LV2mheY0OzWVrhJQ0q/HhQhiOVJ/kono/l1ZNdEevmrUPGyh+B8r7t5rAF3d51qqDc
-        ROPsamvl3rEDQ/seBsyPam25FRD8vNPZt7e0o5xdvXbLjfWXQvotc311qWG6inTeVh1kMHYs
-        ci5384/+kqWPypMHZ/ut8RkzfEtI130a3ZbZEzHt7IIVQ+89fOk7O2OzCwd2FF9kbc2ba/DW
-        hv17tCsVtOaYMnAJpdYo/wA6Q6mfrwMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRiA+XbOzo7i6DQnfpg3DkmiNJu6+VkmEhEHgq4QoaUuPajknJ2z
-        VatA00E51+xipctplJaZmW06tYvZEMMs92MkUe5HJVhiKzBKwy6bM/Dfw8vzvPDCS2KSLmEE
-        WVKmZbkyVSlNBONjf5571ieuLcjbMHk3GLk8Tgw9aLgvRF9vmQD65R0WoaZ2PTrd6saRwXID
-        R/19UuRydYtQ/eJtAbJ9nBAi98MmAjW4BgWo5ruFQO/cYjTQNCpERudvAnUNmglkt13GUF/L
-        AoYMk4qsMMbxyCFkOps7AWOoNhFMc+dJZsDiETHXbTrG1lFDMJVDLpyZnHhMMN7xcRFjb61g
-        BvrnBMy5ai/BmHs6ADNni961KluWwWl0Wja2WMNrN9M5cpQsk6cjWXJqukyeknZwY7KCTsrM
-        KGRLS46yXFJmvqx4xl4nKh+ijr84My2qBONiIwgiIZUK2y/OEH6WUG0AVjn0gXkkHL1SKQxw
-        KFycMPqcYJ/zBUDDRetSEErtgZ7aC8DPUmorrPpwT+iXMMpKwLlPZjxQeHB4Y9gr8FsEJYfG
-        L8alWkxlQmfjIuZnnIqD7T8CHEblwpemT8vOajjaOOVbRJJBPr+27YR/jFFK2Gx/jwU4Blb3
-        XlvmcPh2qkVwHkgsK2rLisSyIrGsSK4DvANIWR2vLlLzyTJepeZ1ZUWyAo3aBny/4hhZ6OkH
-        Ru9eJ6BIQIeIu8MO5UmEqqO8Xu0EkMRoqXjLq7FcibhQpT/Bcpo8TlfK8k6g8N12AYsIK9D4
-        Pq9MmydXyNNQujwtJS1Fiehw8Vnq2QEJVaTSsodZtpzl/ncCMiiiEnCzSjo7t/PNzSxYxUXv
-        jlnTzU6/GvxmrghXRu08Mn9qLzerT7qUiCcolQ4zE3LVRCs8RZtS/g7Fxa5rdOx/HbnPfac+
-        PXLA6m5Nte7v+4xEo5FZOSMFp3aMxUb9MKEn25MO59t/hsyUG3rn6o4V2tviG2bog9vujpOz
-        8fNPh2mcL1bJEzCOV/0DLOzW60EDAAA=
-X-CMS-MailID: 20200917085403eucas1p137a621fd292f8f6d4ea36c9e1584ab7d
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200914130601eucas1p23ce276d168dee37909b22c75499e68da
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200914130601eucas1p23ce276d168dee37909b22c75499e68da
-References: <20200901144324.1071694-1-maz@kernel.org>
-        <20200901144324.1071694-9-maz@kernel.org>
-        <CGME20200914130601eucas1p23ce276d168dee37909b22c75499e68da@eucas1p2.samsung.com>
-        <a917082d-4bfd-a6fd-db88-36e75f5f5921@samsung.com>
-        <933bc43e-3cd7-10ec-b9ec-58afaa619fb7@nvidia.com>
-        <3378cd07b92e87a24f1db75f708424ee@kernel.org>
-        <CACRpkdYvqQUJaReD1yNTwiHhaZpQ9h5Z9DgdqbKkCexnM7cWNw@mail.gmail.com>
-        <049d62ac7de32590cb170714b47fb87d@kernel.org>
-        <a88528cd-eb76-367a-77d6-7ae20bd28304@nvidia.com>
-        <81cb16323baa1c81e7bc1e8156fa47b8@kernel.org>
-        <e317b2fe-52e3-8ce7-ba77-43d2708d660f@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917084925.177348-1-ilias.apalodimas@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jon,
+On Thu, Sep 17, 2020 at 11:49:25AM +0300, Ilias Apalodimas wrote:
+> Running the eBPF test_verifier leads to random errors looking like this:
+> 
+> [ 6525.735488] Unexpected kernel BRK exception at EL1
+> [ 6525.735502] Internal error: ptrace BRK handler: f2000100 [#1] SMP
+> [ 6525.741609] Modules linked in: nls_utf8 cifs libdes libarc4 dns_resolver fscache binfmt_misc nls_ascii nls_cp437 vfat fat aes_ce_blk crypto_simd cryptd aes_ce_cipher ghash_ce gf128mul efi_pstore sha2_ce sha256_arm64 sha1_ce evdev efivars efivarfs ip_tables x_tables autofs4 btrfs blake2b_generic xor xor_neon zstd_compress raid6_pq libcrc32c crc32c_generic ahci xhci_pci libahci xhci_hcd igb libata i2c_algo_bit nvme realtek usbcore nvme_core scsi_mod t10_pi netsec mdio_devres of_mdio gpio_keys fixed_phy libphy gpio_mb86s7x
+> [ 6525.787760] CPU: 3 PID: 7881 Comm: test_verifier Tainted: G        W         5.9.0-rc1+ #47
+> [ 6525.796111] Hardware name: Socionext SynQuacer E-series DeveloperBox, BIOS build #1 Jun  6 2020
+> [ 6525.804812] pstate: 20000005 (nzCv daif -PAN -UAO BTYPE=--)
+> [ 6525.810390] pc : bpf_prog_c3d01833289b6311_F+0xc8/0x9f4
+> [ 6525.815613] lr : bpf_prog_d53bb52e3f4483f9_F+0x38/0xc8c
+> [ 6525.820832] sp : ffff8000130cbb80
+> [ 6525.824141] x29: ffff8000130cbbb0 x28: 0000000000000000
+> [ 6525.829451] x27: 000005ef6fcbf39b x26: 0000000000000000
+> [ 6525.834759] x25: ffff8000130cbb80 x24: ffff800011dc7038
+> [ 6525.840067] x23: ffff8000130cbd00 x22: ffff0008f624d080
+> [ 6525.845375] x21: 0000000000000001 x20: ffff800011dc7000
+> [ 6525.850682] x19: 0000000000000000 x18: 0000000000000000
+> [ 6525.855990] x17: 0000000000000000 x16: 0000000000000000
+> [ 6525.861298] x15: 0000000000000000 x14: 0000000000000000
+> [ 6525.866606] x13: 0000000000000000 x12: 0000000000000000
+> [ 6525.871913] x11: 0000000000000001 x10: ffff8000000a660c
+> [ 6525.877220] x9 : ffff800010951810 x8 : ffff8000130cbc38
+> [ 6525.882528] x7 : 0000000000000000 x6 : 0000009864cfa881
+> [ 6525.887836] x5 : 00ffffffffffffff x4 : 002880ba1a0b3e9f
+> [ 6525.893144] x3 : 0000000000000018 x2 : ffff8000000a4374
+> [ 6525.898452] x1 : 000000000000000a x0 : 0000000000000009
+> [ 6525.903760] Call trace:
+> [ 6525.906202]  bpf_prog_c3d01833289b6311_F+0xc8/0x9f4
+> [ 6525.911076]  bpf_prog_d53bb52e3f4483f9_F+0x38/0xc8c
+> [ 6525.915957]  bpf_dispatcher_xdp_func+0x14/0x20
+> [ 6525.920398]  bpf_test_run+0x70/0x1b0
+> [ 6525.923969]  bpf_prog_test_run_xdp+0xec/0x190
+> [ 6525.928326]  __do_sys_bpf+0xc88/0x1b28
+> [ 6525.932072]  __arm64_sys_bpf+0x24/0x30
+> [ 6525.935820]  el0_svc_common.constprop.0+0x70/0x168
+> [ 6525.940607]  do_el0_svc+0x28/0x88
+> [ 6525.943920]  el0_sync_handler+0x88/0x190
+> [ 6525.947838]  el0_sync+0x140/0x180
+> [ 6525.951154] Code: d4202000 d4202000 d4202000 d4202000 (d4202000)
+> [ 6525.957249] ---[ end trace cecc3f93b14927e2 ]---
+> 
+> The reason is the offset[] creation and later usage, while building
+> the eBPF body. The code currently omits the first instruction, since
+> build_insn() will increase our ctx->idx before saving it.
+> That was fine up until bounded eBPF loops were introduced. After that
+> introduction, offset[0] must be the offset of the end of prologue which
+> is the start of the 1st insn while, offset[n] holds the
+> offset of the end of n-th insn.
+> 
+> When "taken loop with back jump to 1st insn" test runs, it will
+> eventually call bpf2a64_offset(-1, 2, ctx). Since negative indexing is
+> permitted, the current outcome depends on the value stored in
+> ctx->offset[-1], which has nothing to do with our array.
+> If the value happens to be 0 the tests will work. If not this error
+> triggers.
+> 
+> commit 7c2e988f400e ("bpf: fix x64 JIT code generation for jmp to 1st insn")
+> fixed an indentical bug on x86 when eBPF bounded loops were introduced.
+> 
+> So let's fix it by creating the ctx->offset[] differently. Track the
+> beginning of instruction and account for the extra instruction while
+> calculating the arm instruction offsets.
+> 
+> Fixes: 2589726d12a1 ("bpf: introduce bounded loops")
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Reported-by: Jiri Olsa <jolsa@kernel.org>
+> Co-developed-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> Co-developed-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+> Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+> Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
 
-On 17.09.2020 10:49, Jon Hunter wrote:
-> On 17/09/2020 09:45, Marc Zyngier wrote:
->> On 2020-09-17 08:54, Jon Hunter wrote:
->>> On 17/09/2020 08:50, Marc Zyngier wrote:
->>>> On 2020-09-17 08:40, Linus Walleij wrote:
->>>>> On Wed, Sep 16, 2020 at 5:11 PM Marc Zyngier <maz@kernel.org> wrote:
->>>>>
->>>>>> Can you try the patch below and let me know?
->>>>> I tried this patch and now Ux500 WORKS. So this patch is definitely
->>>>> something you should apply.
->>>>>
->>>>>> -                       if (is_frankengic())
->>>>>> -                               set_sgi_intid(irqstat);
->>>>>> +                       this_cpu_write(sgi_intid, intid);
->>>>> This needs changing to irqstat to compile as pointed out by Jon.
->>>>>
->>>>> With that:
->>>>> Tested-by: Linus Walleij <linus.walleij@linaro.org>
->>>> Thanks a lot for that.
->>>>
->>>> Still need to understand why some of Jon's systems are left unbootable,
->>>> despite having similar GIC implementations (Tegra194 and Tegra210 use
->>>> the same GIC-400, and yet only one of the two boots correctly...).
->>> So far, I have only tested this patch on Tegra20. Let me try the other
->>> failing boards this morning and see if those still fail.
->> Tegra20 (if I remember well) is a dual A9 with the same GIC implementation
->> as Ux500, hence requiring the source CPU bits to be written back. So this
->> patch should have cured it, but didn't...
->>
->> /me puzzled.
-> Me too. Maybe there just happens to be something else also going wrong
-> in next. I am doing a bit more testing to see if applying the fix
-> directly on top of this change fixes it to try and eliminate anything
-> else in -next.
->
-> Linus, what -next are you testing on? I am using next-20200916.
+Acked-by: Will Deacon <will@kernel.org>
 
-next-20200916 completely broken on ARM and ARM64. Please check 
-next-20200915 + the mentioned fix or just check 
-https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/log/?h=irq/ipi-as-irq
+Catalin -- do you want to take this as a fix?
 
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+Will
