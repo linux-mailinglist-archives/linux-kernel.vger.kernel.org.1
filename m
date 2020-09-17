@@ -2,110 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5999A26D06B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 03:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 785DC26D084
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 03:21:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726139AbgIQBLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Sep 2020 21:11:00 -0400
-Received: from albireo.enyo.de ([37.24.231.21]:38836 "EHLO albireo.enyo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726022AbgIQBKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Sep 2020 21:10:10 -0400
-X-Greylist: delayed 347 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 21:10:08 EDT
-Received: from [172.17.203.2] (helo=deneb.enyo.de)
-        by albireo.enyo.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1kIiLL-0001Q0-41; Thu, 17 Sep 2020 01:04:11 +0000
-Received: from fw by deneb.enyo.de with local (Exim 4.92)
-        (envelope-from <fw@deneb.enyo.de>)
-        id 1kIiLK-0001qn-R0; Thu, 17 Sep 2020 03:04:10 +0200
-From:   Florian Weimer <fw@deneb.enyo.de>
-To:     madvenka@linux.microsoft.com
-Cc:     kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, oleg@redhat.com,
-        x86@kernel.org, libffi-discuss@sourceware.org
-Subject: Re: [PATCH v2 0/4] [RFC] Implement Trampoline File Descriptor
-References: <20200916150826.5990-1-madvenka@linux.microsoft.com>
-Date:   Thu, 17 Sep 2020 03:04:10 +0200
-In-Reply-To: <20200916150826.5990-1-madvenka@linux.microsoft.com> (madvenka's
-        message of "Wed, 16 Sep 2020 10:08:22 -0500")
-Message-ID: <87v9gdz01h.fsf@mid.deneb.enyo.de>
+        id S1726149AbgIQBU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Sep 2020 21:20:58 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:44052 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726011AbgIQBUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Sep 2020 21:20:54 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id C82E18A2BAD876DB442E;
+        Thu, 17 Sep 2020 09:05:30 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 17 Sep
+ 2020 09:05:28 +0800
+Subject: Re: [PATCH] erofs: remove unneeded parameter
+To:     Gao Xiang <hsiangkao@redhat.com>, Chao Yu <chao@kernel.org>
+CC:     <linux-erofs@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
+References: <20200916140604.3799-1-chao@kernel.org>
+ <20200916143304.GA23176@xiangao.remote.csb>
+ <20200916143648.GA23921@xiangao.remote.csb>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <72eab76b-0b05-2e0e-d711-8961a254a49a@huawei.com>
+Date:   Thu, 17 Sep 2020 09:05:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20200916143648.GA23921@xiangao.remote.csb>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* madvenka:
+Hi Xiang,
 
-> Examples of trampolines
-> =======================
->
-> libffi (A Portable Foreign Function Interface Library):
->
-> libffi allows a user to define functions with an arbitrary list of
-> arguments and return value through a feature called "Closures".
-> Closures use trampolines to jump to ABI handlers that handle calling
-> conventions and call a target function. libffi is used by a lot
-> of different applications. To name a few:
->
-> 	- Python
-> 	- Java
-> 	- Javascript
-> 	- Ruby FFI
-> 	- Lisp
-> 	- Objective C
-
-libffi does not actually need this.  It currently collocates
-trampolines and the data they need on the same page, but that's
-actually unecessary.  It's possible to avoid doing this just by
-changing libffi, without any kernel changes.
-
-I think this has already been done for the iOS port.
-
-> The code for trampoline X in the trampoline table is:
+On 2020/9/16 22:36, Gao Xiang wrote:
+> On Wed, Sep 16, 2020 at 10:33:04PM +0800, Gao Xiang wrote:
+>> Hi Chao,
+>>
+>> On Wed, Sep 16, 2020 at 10:06:04PM +0800, Chao Yu wrote:
+>>> From: Chao Yu <yuchao0@huawei.com>
+>>>
+>>> In below call path, no page will be cached into @pagepool list
+>>> or grabbed from @pagepool list:
+>>> - z_erofs_readpage
+>>>   - z_erofs_do_read_page
+>>>    - preload_compressed_pages
+>>>    - erofs_allocpage
+>>>
+>>> Let's get rid of this unneeded parameter.
+>>
+>> That would be unneeded after .readahead() is introduced recently
+>> (so add_to_page_cache_lru() is also moved to mm code), so I agree
+>> with you on it.
 > 
-> 	load	&code_table[X], code_reg
-> 	load	(code_reg), code_reg
-> 	load	&data_table[X], data_reg
-> 	load	(data_reg), data_reg
-> 	jump	code_reg
+> (cont.)
 > 
-> The addresses &code_table[X] and &data_table[X] are baked into the
-> trampoline code. So, PC-relative data references are not needed. The user
-> can modify code_table[X] and data_table[X] dynamically.
+> ... also it'd be better to add such historical reason to the commit
+> message... since it was of some use before...
 
-You can put this code into the libffi shared object and map it from
-there, just like the rest of the libffi code.  To get more
-trampolines, you can map the page containing the trampolines multiple
-times, each instance preceded by a separate data page with the control
-information.
+No problem, let me revise it in v2. :)
 
-I think the previous patch submission has also resulted in several
-comments along those lines, so I'm not sure why you are reposting
-this.
+Thanks,
 
-> libffi
-> ======
->
-> I have implemented my solution for libffi and provided the changes for
-> X86 and ARM, 32-bit and 64-bit. Here is the reference patch:
->
-> http://linux.microsoft.com/~madvenka/libffi/libffi.v2.txt
-
-The URL does not appear to work, I get a 403 error.
-
-> If the trampfd patchset gets accepted, I will send the libffi changes
-> to the maintainers for a review. BTW, I have also successfully executed
-> the libffi self tests.
-
-I have not seen your libffi changes, but I expect that the complexity
-is about the same as a userspace-only solution.
-
-
-Cc:ing libffi upstream for awareness.  The start of the thread is
-here:
-
-<https://lore.kernel.org/linux-api/20200916150826.5990-1-madvenka@linux.microsoft.com/>
+> 
+> Thanks,
+> Gao Xiang
+> 
+> .
+> 
