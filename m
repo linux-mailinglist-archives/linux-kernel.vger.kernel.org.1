@@ -2,84 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5E3D26D629
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE1526D596
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 10:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726383AbgIQIN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 04:13:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726348AbgIQIAv (ORCPT
+        id S1726273AbgIQIFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 04:05:00 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:42653 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726153AbgIQIBp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 04:00:51 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20166C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 01:00:48 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f1053007b81a97eebdb4df7.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:5300:7b81:a97e:ebdb:4df7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A510C1EC0286;
-        Thu, 17 Sep 2020 10:00:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600329646;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=QepYPUrdCQfPP7ZtEtvksFM9JlQkCdq+XWMcdWXauHA=;
-        b=NYFZlaLSjWG3vFlwDqNKfpMsuv2dgJFjZsUt4zYY88iKRBlLDNJvwhbc0GF8omxpQrA/M1
-        ZXK83b6UAkrbbr7vs0QfUzSekqKBwEnMLaBVfviuvKS4xeu+FCMYC7gJl6M9i18LoWs5o4
-        gqsnTf673/tD4FwIa+T1Wbrv7gPBRYc=
-Date:   Thu, 17 Sep 2020 10:00:44 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Philip Li <philip.li@intel.com>
-Cc:     kernel test robot <lkp@intel.com>,
-        Rong Chen <rong.a.chen@intel.com>, x86-ml <x86@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [tip:x86/pti] BUILD SUCCESS WITH WARNING
- 767d46ab566dd489733666efe48732d523c8c332
-Message-ID: <20200917080044.GD31960@zn.tnic>
-References: <5f62b7f2.Q9ixRaxJwQpWTURd%lkp@intel.com>
- <20200917061220.GB31960@zn.tnic>
- <20200917073620.GA4946@intel.com>
+        Thu, 17 Sep 2020 04:01:45 -0400
+Received: by mail-lj1-f196.google.com with SMTP id k25so1188917ljg.9;
+        Thu, 17 Sep 2020 01:01:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=keP0zGyPB/h0gT6DXrHCTVCk7Uuvvtj1dSD5Jl+0+N0=;
+        b=F6+LE53zPxKw9QWvfldBWUywHIZ9ZrD/f5tCI3QKAk5CUA9LhQFeGcCkz4AtDNY+Yh
+         egEmZa56AdX+TmhCOR2UbSxi0BFXsrR1fXZETvnVwQotRPi39tFyhBk4lyfxnx+FWEYR
+         phxapkLW3GGi7KDXhTlrW1W786LVd0se17LZ5Bxin0UkMI4N/9KiOo3CaCqkVH4OgZlW
+         tBNVgc2z1XkpN9wf3EJtUD74IveA0MHCe/LUBHf3L8lxaeMb4uJe93W1wDEcaOZNjGPj
+         Pt4xi0LAhk1Irs+wTq7miaV9zg/kwqcukwUUVfl+q30NPhM3NP7cSftijQ0J/RFFo0S0
+         o43g==
+X-Gm-Message-State: AOAM530+Uh8h2Hu1+qeuqfoT4/yy2zRT9ODwtuYnRbubBMnW6l3wa1Sq
+        hWJJFMt3MEYGDzHp6MwrZ3Y=
+X-Google-Smtp-Source: ABdhPJyHEOnNIjjQS5xiARJQyMZoabABxUOGIlLqJvGTDlk5JEi4O9myrdmeoyrb3/EjDLQf1QvS4w==
+X-Received: by 2002:a2e:91cd:: with SMTP id u13mr8786118ljg.421.1600329698968;
+        Thu, 17 Sep 2020 01:01:38 -0700 (PDT)
+Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
+        by smtp.gmail.com with ESMTPSA id b72sm5001856lfd.299.2020.09.17.01.01.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 01:01:35 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 11:01:27 +0300
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com,
+        linux-watchdog@vger.kernel.org
+Subject: [PATCH v1 0/6] Support ROHM BD9576MUF and BD9573MUF PMICs
+Message-ID: <cover.1600329307.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200917073620.GA4946@intel.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 03:36:20PM +0800, Philip Li wrote:
-> The 2nd type is this one, which is a summarized report of head
-> to provide an overview. Most of time, repo owner can receive the
-> bisected mail. For this time, the issue is reported against peterz-queue
-> repo which has this 767d46ab56 head firstly. Since the head later appears
-> in tip, we just gather all issues and send the summary to tip related
-> recipients. But no more bisected mail.
+Initial support for ROHM BD9576MUF and BD9573MUF PMICs.
 
-Yeah, but that second report is not very helpful because nowhere it says
-it is a summary and nowhere it has that link you pasted above so that
-some other maintainer can go look.
+These PMICs are primarily intended to be used to power the R-Car family
+processors. BD9576MUF includes some additional safety features the
+BD9573MUF does not have. This initial version of drivers does not
+utilize these features and for now the SW behaviour is identical.
 
-Always put yourself in the recipient's shoes and ask yourself: "what can
-the recipient do with this report and does it have everything in there
-required to be able to reproduce the issue?"
+Please note that this version of drivers is only tested on BD9576MUF
+but according to the data-sheets the relevant parts of registers should
+be same so drivers should also work on BD9573MUF.
 
-If not, then it needs changing.
+This patch series includes MFD, watchdog and regulator drivers with
+basic functionality such as:
 
-> We will consider how to show useful produce info in summary report as
-> the feedback here, which is quite useful, such like pointing to the
-> bisected mail. This would take some time, and we will add to our TODO
-> as high priority.
+- Enabling and pinging the watchdog
+- configuring watchog timeout / window from device-tree
+- reading regulator states/voltages
+- enabling/disabling VOUT1 (VD50) when control mode B is used.
 
-Yes, that would be much appreciated. You can also tag your reports with
-a unique hash which is then in an URL so that one can go and download the
-.config and what else is needed. For example...
+This patch series does not bring interrupt support. BD9576MUF and BD9573MUF
+are designed to keep the IRQ line low for whole duration of error
+condition. IRQ can't be 'acked'. So proper IRQ support would require
+some IRQ limiter implementation (delayed unmask?) in order to not hog
+the CPU.
 
-Thx.
+---
+
+
+Matti Vaittinen (6):
+  dt_bindings: mfd: Add ROHM BD9576MUF and BD9573MUF PMICs
+  dt_bindings: regulator: Add ROHM BD9576MUF and BD9573MUF PMICs
+  mfd: Support ROHM BD9576MUF and BD9573MUF
+  wdt: Support wdt on ROHM BD9576MUF and BD9573MUF
+  regulator: Support ROHM BD9576MUF and BD9573MUF
+  MAINTAINERS: Add ROHM BD9576MUF and BD9573MUF drivers
+
+ .../bindings/mfd/rohm,bd9576-pmic.yaml        | 129 +++++++
+ .../regulator/rohm,bd9576-regulator.yaml      |  33 ++
+ MAINTAINERS                                   |   4 +
+ drivers/mfd/Kconfig                           |  11 +
+ drivers/mfd/Makefile                          |   1 +
+ drivers/mfd/rohm-bd9576.c                     | 130 +++++++
+ drivers/regulator/Kconfig                     |  10 +
+ drivers/regulator/Makefile                    |   1 +
+ drivers/regulator/bd9576-regulator.c          | 337 ++++++++++++++++++
+ drivers/watchdog/Kconfig                      |  13 +
+ drivers/watchdog/Makefile                     |   1 +
+ drivers/watchdog/bd9576_wdt.c                 | 295 +++++++++++++++
+ include/linux/mfd/rohm-bd957x.h               |  61 ++++
+ include/linux/mfd/rohm-generic.h              |   2 +
+ 14 files changed, 1028 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mfd/rohm,bd9576-pmic.yaml
+ create mode 100644 Documentation/devicetree/bindings/regulator/rohm,bd9576-regulator.yaml
+ create mode 100644 drivers/mfd/rohm-bd9576.c
+ create mode 100644 drivers/regulator/bd9576-regulator.c
+ create mode 100644 drivers/watchdog/bd9576_wdt.c
+ create mode 100644 include/linux/mfd/rohm-bd957x.h
+
+
+base-commit: f4d51dffc6c01a9e94650d95ce0104964f8ae822
+-- 
+2.21.0
+
 
 -- 
-Regards/Gruss,
-    Boris.
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
 
-https://people.kernel.org/tglx/notes-about-netiquette
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
