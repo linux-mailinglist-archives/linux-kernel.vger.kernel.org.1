@@ -2,504 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 981E626E362
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F070726E363
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 20:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726664AbgIQSSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 14:18:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726576AbgIQSOI (ORCPT
+        id S1726582AbgIQSTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 14:19:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43485 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726548AbgIQSQM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 14:14:08 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 664CEC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 11:13:55 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id e190so2942719ybf.18
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 11:13:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=9Wik/JeTDacaC0oFCbpTunMwEMIdrdX0311qhCimp9g=;
-        b=mP42vJsb57js1hKiY2YcWmfP7vhJSpWs6Zugce2sggHwzN6gZ9andjilKZRJGZ5YKK
-         XEkDJBbKq4JWf6fKYaAeL01hqGA8gryWwa8IEUrrF0+M+c2aSd11qGFP9WIr7H/T/IEI
-         imlzLF7CjmB3Hvi8oGXOMfh2c/e5z0JYRea+JvNP3Y7VAZRxosaR3XySyZtk9gHbTDkj
-         BJwe8OV7jMp9MFUfE/5p/thHb+32K17l6fBNsiXca4zyjFbhHlMRQd0gQTwg1lCfJ95X
-         eIhxzepRVPRvucXsGn4UCFv/cFdea6QwcaZy2ADx+53ZVk7tw2y/D9LzKQuRzvoWyX4g
-         wHPQ==
+        Thu, 17 Sep 2020 14:16:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600366562;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IF4zecc5wQDOc5a4udeGDriTmJ5wV4OM9czOL0eJzpw=;
+        b=L1f4dyT+vzEkk+wN33KVEv0zsZKEOlrsb7qvfFJKGGRmwNqh4pLW05z7aQuCtOjVEeRczv
+        B3R075UATzjlwC6f5oGqXPLC+dXtawpQoe1IgcqAoqFOIMdVaYQpcNwViqfhyYdJVtbi2f
+        8vDXnknggX/+5vVPgQCYkVW5VHdhFgE=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-248-xw1q3ReIPS2SRm6cOBwC0g-1; Thu, 17 Sep 2020 14:14:15 -0400
+X-MC-Unique: xw1q3ReIPS2SRm6cOBwC0g-1
+Received: by mail-qt1-f198.google.com with SMTP id b39so2472537qta.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 11:14:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=9Wik/JeTDacaC0oFCbpTunMwEMIdrdX0311qhCimp9g=;
-        b=hG5ZyMYFQxm47z75b3KBtHWMQ+we8+Wq5x0y61r9c4FFG07dPabBppSRxpHVXklcfH
-         hSzeTS0hXy1ky2dhNCb9KTLHhDVixapDdp8+xlkVc3vaQ2gikAYFFDDxj4Bu+UcxFtmZ
-         hOI+ENG/4BKzNb/SElo0vqVcK6scvoxYTNLKTWV4y/qKJzma0CFd/MYSsvzpa+pjdT5I
-         kO5qcYcpGF06f/S9wEI1MtyGQPuLv5DF1IkJzRjzYpExgBlLHDYwV6sD1aNLBd3YsuiK
-         mf8WY+uYl/iFjOOn1dGQAoxqq41vnOOAHsZ2QBgP6NRi3AGgQYuRSz/ILHlHQa/K+dqa
-         V9Sg==
-X-Gm-Message-State: AOAM530lfeXkCUoh0glNe8RVYDgbB5HYYUfZCc06kgGdHGET3c3GcYPu
-        gbA05C9UkqMFtB2vZkoj8VHWtUczNYhGkoHgI1GX
-X-Google-Smtp-Source: ABdhPJzLMOaZB/z5X0/6bTpb2VNS3agN05GocGzHCy7rOs4cYaFPxRZ8/yNGDw4SuWCSZ7NBLR3QMJwDcxZ4Nx0f/BTY
-X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:f693:9fff:feef:c8f8])
- (user=axelrasmussen job=sendgmr) by 2002:a25:5a56:: with SMTP id
- o83mr40461289ybb.55.1600366434467; Thu, 17 Sep 2020 11:13:54 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 11:13:47 -0700
-Message-Id: <20200917181347.1359365-1-axelrasmussen@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
-Subject: [PATCH] mmap_lock: add tracepoints around lock acquisition
-From:   Axel Rasmussen <axelrasmussen@google.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michel Lespinasse <walken@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Davidlohr Bueso <dbueso@suse.de>
-Cc:     Yafang Shao <laoar.shao@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Axel Rasmussen <axelrasmussen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IF4zecc5wQDOc5a4udeGDriTmJ5wV4OM9czOL0eJzpw=;
+        b=by8qcNLJB0VphRxGsvJKc0KVY0iW354Y6ZWsX7IAPoAKKnk22aznYL+j4iJtJD14ef
+         D9hvg783POmsfKCIpQog8/Kf5CVyYzmsmR44kEb0cR+LUYe2Oa5TdppDBqBJC0Wx/eUB
+         ECxuXS/glcygex0FOejbENIdx4mFpKLuy0Fe5egNe2Kj4x8yYSUJd1jF4V2vJ87D8DV6
+         mTJYBMdgzKZ9X5pngLqFTqhXc4h1EQnHUf15mG6xa4TQmwMkeKmTjRlG2AShYqPX+ocS
+         fLHWS2sCq8rEZNarlOuLPWYhEezZouTumlAKaJgv5VZALnOGDGytai0YaeqzpyvVZ/ER
+         zCXw==
+X-Gm-Message-State: AOAM531+GWxcTpEowma3xfmsL/5+PChN58d3KlZkdA87p4qHMIMI+UUC
+        1W2DekHeYKpblJTcW340Z3pcGsR4IyDcPG69Oifujjlu1vVMTDWT702297ZZrCuVjam0uTmov5w
+        Mn2n6L0h+suYaC1njfki3maCl
+X-Received: by 2002:a37:c09:: with SMTP id 9mr29971953qkm.471.1600366454422;
+        Thu, 17 Sep 2020 11:14:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxv+J6l0noy++KbjYYrO9rRxKBnRnBapSN5CJf/NTEn4xMRix6ZnaYZiOgo9+y0BQm/lnN4XA==
+X-Received: by 2002:a37:c09:: with SMTP id 9mr29971913qkm.471.1600366454043;
+        Thu, 17 Sep 2020 11:14:14 -0700 (PDT)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
+        by smtp.gmail.com with ESMTPSA id m6sm362823qkh.106.2020.09.17.11.14.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 11:14:13 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 14:14:11 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Maya B . Gokhale" <gokhale2@llnl.gov>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Marty Mcfadden <mcfadden8@llnl.gov>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
+Message-ID: <20200917181411.GA133226@xz-x1>
+References: <20200915160553.GJ1221970@ziepe.ca>
+ <20200915182933.GM1221970@ziepe.ca>
+ <20200915191346.GD2949@xz-x1>
+ <20200915193838.GN1221970@ziepe.ca>
+ <20200915213330.GE2949@xz-x1>
+ <20200915232238.GO1221970@ziepe.ca>
+ <e6c352f8-7ee9-0702-10a4-122d2c4422fc@nvidia.com>
+ <20200916174804.GC8409@ziepe.ca>
+ <20200916184619.GB40154@xz-x1>
+ <20200917112538.GD8409@ziepe.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200917112538.GD8409@ziepe.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The goal of these tracepoints is to be able to debug lock contention
-issues. This lock is acquired on most (all?) mmap / munmap / page fault
-operations, so a multi-threaded process which does a lot of these can
-experience significant contention.
+On Thu, Sep 17, 2020 at 08:25:38AM -0300, Jason Gunthorpe wrote:
+> On Wed, Sep 16, 2020 at 02:46:19PM -0400, Peter Xu wrote:
+> 
+> > My understanding is this may only work for the case when the fork()ed child
+> > quitted before we reach here (so we still have mapcount==1 for the
+> > page).  
+> 
+> Yes
+> 
+> > What if not?  Then mapcount will be greater than 1, and cow will
+> > still trigger.  Is that what we want?
+> 
+> That doesn't work today anyhow, so it is fine continuing to be broken.
+> 
+> > Another problem is that, aiui, one of the major change previous patch proposed
+> > is to avoid using lock_page() so that we never block in this path.
+> 
+> I saw you mention this before, but it looks like the change was to
+> lift some of the atomc_reads out of the lock and avoid the lock if
+> they indicate failure, checking also for page_maybe_dma_pinned()
+> outside the lock just means the rare case of FOLL_PIN we will take the
+> lock again.
 
-We trace just before we start acquisition, when the acquisition returns
-(whether it succeeded or not), and when the lock is released (or
-downgraded). The events are broken out by lock type (read / write).
+Sorry to be unclear.  What I meant was that iiuc if we want to guarantee the
+pinned page will be reused, then try_lock_page() could be too weak, and we may
+still need lock_page().  E.g., an race on another thread who locked the page
+accidentally which fails the try_lock_page() can trigger unexpected cow for the
+pinned pages.
 
-The events are also broken out by memcg path. For container-based
-workloads, users often think of several processes in a memcg as a single
-logical "task", so collecting statistics at this level is useful.
+> 
+> > Maybe even more complicated, because "correctness" should be even harder
+> > than "best effort reuse" since it can cause data corruption if we didn't do it
+> > right...
+> 
+> The only correct way is for the application to avoid write protect on
+> FOLL_PIN pages. The purpose here is to allow applications that hadn't
+> hit "bad luck" and failed to keep working.
+> 
+> Another thought is to insert a warning print here as well that the
+> program is working improperly? At least it would give a transition
+> period to evaluate the extent of the problem.
+> 
+> We are thinking it is going to be a notable regression.
+> 
+> I botched the last version of the patch, here is something a bit
+> better.
+> 
+> Does it seem like it could be OK? I know very little about this part
+> of the kernel
 
-These events *do not* include latency bucket information, which means
-for a proper latency histogram users will need to use BPF instead of
-event histograms. The benefit we get from this is simpler code.
+In my humble opinion, the real solution is still to use MADV_DONTFORK properly
+so we should never share the DMA pages with others when we know the fact.
 
-This patch is a no-op if the Kconfig option is not enabled. If it is,
-tracepoints are still disabled by default (configurable at runtime);
-the only fixed cost here is un-inlining a few functions. As best as
-I've been able to measure, the overhead this introduces is a small
-fraction of 1%. Actually hooking up the tracepoints to BPF introduces
-additional overhead, depending on exactly what the BPF program is
-collecting.
----
- include/linux/mmap_lock.h        |  28 +++-
- include/trace/events/mmap_lock.h |  73 ++++++++++
- mm/Kconfig                       |  17 +++
- mm/Makefile                      |   1 +
- mm/mmap_lock.c                   | 224 +++++++++++++++++++++++++++++++
- 5 files changed, 342 insertions(+), 1 deletion(-)
- create mode 100644 include/trace/events/mmap_lock.h
- create mode 100644 mm/mmap_lock.c
+The apps may work with the old kernels, but IMHO they just work by accident
+because the DMA pages were luckily not shared due to any other reason when the
+write-protect page fault happens. E.g., the parent did waitpid() on the childs
+so it is guaranteed that there will only be one user of the page then it'll be
+reused as long as we check the mapcounts. But that's kind of a "workaround" at
+least to me, since I'd say the sharing should not happen at all at the first
+place, right after we know it's a DMA page.
 
-diff --git a/include/linux/mmap_lock.h b/include/linux/mmap_lock.h
-index 0707671851a8..d12aa2ff6c05 100644
---- a/include/linux/mmap_lock.h
-+++ b/include/linux/mmap_lock.h
-@@ -1,11 +1,35 @@
- #ifndef _LINUX_MMAP_LOCK_H
- #define _LINUX_MMAP_LOCK_H
- 
-+#include <linux/lockdep.h>
-+#include <linux/mm_types.h>
- #include <linux/mmdebug.h>
-+#include <linux/rwsem.h>
-+#include <linux/types.h>
- 
- #define MMAP_LOCK_INITIALIZER(name) \
- 	.mmap_lock = __RWSEM_INITIALIZER((name).mmap_lock),
- 
-+#ifdef CONFIG_MMAP_LOCK_STATS
-+
-+void mmap_init_lock(struct mm_struct *mm);
-+void mmap_write_lock(struct mm_struct *mm);
-+void mmap_write_lock_nested(struct mm_struct *mm, int subclass);
-+int mmap_write_lock_killable(struct mm_struct *mm);
-+bool mmap_write_trylock(struct mm_struct *mm);
-+void mmap_write_unlock(struct mm_struct *mm);
-+void mmap_write_downgrade(struct mm_struct *mm);
-+void mmap_read_lock(struct mm_struct *mm);
-+int mmap_read_lock_killable(struct mm_struct *mm);
-+bool mmap_read_trylock(struct mm_struct *mm);
-+void mmap_read_unlock(struct mm_struct *mm);
-+bool mmap_read_trylock_non_owner(struct mm_struct *mm);
-+void mmap_read_unlock_non_owner(struct mm_struct *mm);
-+void mmap_assert_locked(struct mm_struct *mm);
-+void mmap_assert_write_locked(struct mm_struct *mm);
-+
-+#else /* !CONFIG_MMAP_LOCK_STATS */
-+
- static inline void mmap_init_lock(struct mm_struct *mm)
- {
- 	init_rwsem(&mm->mmap_lock);
-@@ -63,7 +87,7 @@ static inline void mmap_read_unlock(struct mm_struct *mm)
- 
- static inline bool mmap_read_trylock_non_owner(struct mm_struct *mm)
- {
--	if (down_read_trylock(&mm->mmap_lock)) {
-+	if (mmap_read_trylock(mm)) {
- 		rwsem_release(&mm->mmap_lock.dep_map, _RET_IP_);
- 		return true;
- 	}
-@@ -87,4 +111,6 @@ static inline void mmap_assert_write_locked(struct mm_struct *mm)
- 	VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_lock), mm);
- }
- 
-+#endif /* CONFIG_MMAP_LOCK_STATS */
-+
- #endif /* _LINUX_MMAP_LOCK_H */
-diff --git a/include/trace/events/mmap_lock.h b/include/trace/events/mmap_lock.h
-new file mode 100644
-index 000000000000..549c662e6ed8
---- /dev/null
-+++ b/include/trace/events/mmap_lock.h
-@@ -0,0 +1,73 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM mmap_lock
-+
-+#if !defined(_TRACE_MMAP_LOCK_H) || defined(TRACE_HEADER_MULTI_READ)
-+#define _TRACE_MMAP_LOCK_H
-+
-+#include <linux/tracepoint.h>
-+#include <linux/types.h>
-+
-+struct mm_struct;
-+
-+DECLARE_EVENT_CLASS(
-+	mmap_lock_template,
-+
-+	TP_PROTO(struct mm_struct *mm, const char *memcg_path, u64 duration,
-+		bool write, bool success),
-+
-+	TP_ARGS(mm, memcg_path, duration, write, success),
-+
-+	TP_STRUCT__entry(
-+		__field(struct mm_struct *, mm)
-+		__string(memcg_path, memcg_path)
-+		__field(u64, duration)
-+		__field(bool, write)
-+		__field(bool, success)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->mm = mm;
-+		__assign_str(memcg_path, memcg_path);
-+		__entry->duration = duration;
-+		__entry->write = write;
-+		__entry->success = success;
-+	),
-+
-+	TP_printk(
-+		"mm=%p memcg_path=%s duration=%llu write=%s success=%s\n",
-+		__entry->mm,
-+		__get_str(memcg_path),
-+		__entry->duration,
-+		__entry->write ? "true" : "false",
-+		__entry->success ? "true" : "false")
-+	);
-+
-+DEFINE_EVENT(mmap_lock_template, mmap_lock_start_locking,
-+
-+	TP_PROTO(struct mm_struct *mm, const char *memcg_path, u64 duration,
-+		bool write, bool success),
-+
-+	TP_ARGS(mm, memcg_path, duration, write, success)
-+);
-+
-+DEFINE_EVENT(mmap_lock_template, mmap_lock_acquire_returned,
-+
-+	TP_PROTO(struct mm_struct *mm, const char *memcg_path, u64 duration,
-+		bool write, bool success),
-+
-+	TP_ARGS(mm, memcg_path, duration, write, success)
-+);
-+
-+DEFINE_EVENT(mmap_lock_template, mmap_lock_released,
-+
-+	TP_PROTO(struct mm_struct *mm, const char *memcg_path, u64 duration,
-+		bool write, bool success),
-+
-+	TP_ARGS(mm, memcg_path, duration, write, success)
-+);
-+
-+#endif /* _TRACE_MMAP_LOCK_H */
-+
-+/* This part must be outside protection */
-+#include <trace/define_trace.h>
-diff --git a/mm/Kconfig b/mm/Kconfig
-index 6c974888f86f..b602df8bcee0 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -818,6 +818,23 @@ config DEVICE_PRIVATE
- config FRAME_VECTOR
- 	bool
- 
-+config MMAP_LOCK_STATS
-+	bool "mmap_lock stats / instrumentation"
-+	select HISTOGRAM
-+	default n
-+
-+	help
-+	  Enables tracepoints around mmap_lock (start aquiring, acquire
-+	  returned, and released), which are off by default + controlled at
-+	  runtime. These can be used for deeper debugging of contention
-+	  issues, via e.g. BPF.
-+
-+	  This option has a small (small fraction of 1%) fixed overhead
-+	  even if tracepoints aren't actually in use at runtime, since it
-+	  requires un-inlining some functions.
-+
-+	  If unsure, say "n".
-+
- config ARCH_USES_HIGH_VMA_FLAGS
- 	bool
- config ARCH_HAS_PKEYS
-diff --git a/mm/Makefile b/mm/Makefile
-index d5649f1c12c0..eb6ed855a002 100644
---- a/mm/Makefile
-+++ b/mm/Makefile
-@@ -121,3 +121,4 @@ obj-$(CONFIG_MEMFD_CREATE) += memfd.o
- obj-$(CONFIG_MAPPING_DIRTY_HELPERS) += mapping_dirty_helpers.o
- obj-$(CONFIG_PTDUMP_CORE) += ptdump.o
- obj-$(CONFIG_PAGE_REPORTING) += page_reporting.o
-+obj-$(CONFIG_MMAP_LOCK_STATS) += mmap_lock.o
-diff --git a/mm/mmap_lock.c b/mm/mmap_lock.c
-new file mode 100644
-index 000000000000..1624f90164c0
---- /dev/null
-+++ b/mm/mmap_lock.c
-@@ -0,0 +1,224 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define CREATE_TRACE_POINTS
-+#include <trace/events/mmap_lock.h>
-+
-+#include <linux/cgroup.h>
-+#include <linux/memcontrol.h>
-+#include <linux/mmap_lock.h>
-+#include <linux/percpu.h>
-+#include <linux/smp.h>
-+#include <linux/trace_events.h>
-+#include <linux/sched/clock.h>
-+
-+#ifdef CONFIG_MEMCG
-+
-+DEFINE_PER_CPU(char[MAX_FILTER_STR_VAL], trace_memcg_path);
-+
-+/*
-+ * Write the given mm_struct's memcg path to a percpu buffer, and return a
-+ * pointer to it. If the path cannot be determined, the buffer will contain the
-+ * empty string.
-+ *
-+ * Note: buffers are allocated per-cpu to avoid locking, so preemption must be
-+ * disabled by the caller before calling us, and re-enabled only after the
-+ * caller is done with the pointer.
-+ */
-+static const char *get_mm_memcg_path(struct mm_struct *mm)
-+{
-+	struct mem_cgroup *memcg = get_mem_cgroup_from_mm(mm);
-+
-+	if (memcg != NULL && likely(memcg->css.cgroup != NULL)) {
-+		char *buf = this_cpu_ptr(trace_memcg_path);
-+
-+		cgroup_path(memcg->css.cgroup, buf, MAX_FILTER_STR_VAL);
-+		return buf;
-+	}
-+	return "";
-+}
-+
-+#define TRACE_MMAP_LOCK_EVENT(type, mm, ...)                                   \
-+	do {                                                                   \
-+		if (trace_mmap_lock_##type##_enabled()) {                      \
-+			get_cpu();                                             \
-+			trace_mmap_lock_##type(mm, get_mm_memcg_path(mm),      \
-+					       ##__VA_ARGS__);                 \
-+			put_cpu();                                             \
-+		}                                                              \
-+	} while (0)
-+
-+#else /* !CONFIG_MEMCG */
-+
-+#define TRACE_MMAP_LOCK_EVENT(type, mm, ...)                                   \
-+	trace_mmap_lock_##type(mm, "", ##__VA_ARGS__)
-+
-+#endif /* CONFIG_MEMCG */
-+
-+/*
-+ * Trace calls must be in a separate file, as otherwise there's a circuclar
-+ * dependency between linux/mmap_lock.h and trace/events/mmap_lock.h.
-+ */
-+
-+static void trace_start_locking(struct mm_struct *mm, bool write)
-+{
-+	TRACE_MMAP_LOCK_EVENT(start_locking, mm, 0, write, true);
-+}
-+
-+static void trace_acquire_returned(struct mm_struct *mm, u64 start_time_ns,
-+				   bool write, bool success)
-+{
-+	TRACE_MMAP_LOCK_EVENT(acquire_returned, mm,
-+			      sched_clock() - start_time_ns, write, success);
-+}
-+
-+static void trace_released(struct mm_struct *mm, bool write)
-+{
-+	TRACE_MMAP_LOCK_EVENT(released, mm, 0, write, true);
-+}
-+
-+static bool trylock_impl(struct mm_struct *mm,
-+			 int (*trylock)(struct rw_semaphore *), bool write)
-+{
-+	bool ret;
-+
-+	trace_start_locking(mm, write);
-+	ret = trylock(&mm->mmap_lock) != 0;
-+	/* Avoid calling sched_clock() for trylocks; assume duration = 0. */
-+	TRACE_MMAP_LOCK_EVENT(acquire_returned, mm, 0, write, ret);
-+	return ret;
-+}
-+
-+static inline void lock_impl(struct mm_struct *mm,
-+			     void (*lock)(struct rw_semaphore *), bool write)
-+{
-+	u64 start_time_ns;
-+
-+	trace_start_locking(mm, write);
-+	start_time_ns = sched_clock();
-+	lock(&mm->mmap_lock);
-+	trace_acquire_returned(mm, start_time_ns, write, true);
-+}
-+
-+static inline int lock_return_impl(struct mm_struct *mm,
-+				   int (*lock)(struct rw_semaphore *),
-+				   bool write)
-+{
-+	u64 start_time_ns;
-+	int ret;
-+
-+	trace_start_locking(mm, write);
-+	start_time_ns = sched_clock();
-+	ret = lock(&mm->mmap_lock);
-+	trace_acquire_returned(mm, start_time_ns, write, ret == 0);
-+	return ret;
-+}
-+
-+static inline void unlock_impl(struct mm_struct *mm,
-+			       void (*unlock)(struct rw_semaphore *),
-+			       bool write)
-+{
-+	unlock(&mm->mmap_lock);
-+	trace_released(mm, write);
-+}
-+
-+void mmap_init_lock(struct mm_struct *mm)
-+{
-+	init_rwsem(&mm->mmap_lock);
-+}
-+
-+void mmap_write_lock(struct mm_struct *mm)
-+{
-+	lock_impl(mm, down_write, true);
-+}
-+EXPORT_SYMBOL(mmap_write_lock);
-+
-+void mmap_write_lock_nested(struct mm_struct *mm, int subclass)
-+{
-+	u64 start_time_ns;
-+
-+	trace_start_locking(mm, true);
-+	start_time_ns = sched_clock();
-+	down_write_nested(&mm->mmap_lock, subclass);
-+	trace_acquire_returned(mm, start_time_ns, true, true);
-+}
-+EXPORT_SYMBOL(mmap_write_lock_nested);
-+
-+int mmap_write_lock_killable(struct mm_struct *mm)
-+{
-+	return lock_return_impl(mm, down_write_killable, true);
-+}
-+EXPORT_SYMBOL(mmap_write_lock_killable);
-+
-+bool mmap_write_trylock(struct mm_struct *mm)
-+{
-+	return trylock_impl(mm, down_write_trylock, true);
-+}
-+EXPORT_SYMBOL(mmap_write_trylock);
-+
-+void mmap_write_unlock(struct mm_struct *mm)
-+{
-+	unlock_impl(mm, up_write, true);
-+}
-+EXPORT_SYMBOL(mmap_write_unlock);
-+
-+void mmap_write_downgrade(struct mm_struct *mm)
-+{
-+	downgrade_write(&mm->mmap_lock);
-+	TRACE_MMAP_LOCK_EVENT(acquire_returned, mm, 0, false, true);
-+}
-+EXPORT_SYMBOL(mmap_write_downgrade);
-+
-+void mmap_read_lock(struct mm_struct *mm)
-+{
-+	lock_impl(mm, down_read, false);
-+}
-+EXPORT_SYMBOL(mmap_read_lock);
-+
-+int mmap_read_lock_killable(struct mm_struct *mm)
-+{
-+	return lock_return_impl(mm, down_read_killable, false);
-+}
-+EXPORT_SYMBOL(mmap_read_lock_killable);
-+
-+bool mmap_read_trylock(struct mm_struct *mm)
-+{
-+	return trylock_impl(mm, down_read_trylock, false);
-+}
-+EXPORT_SYMBOL(mmap_read_trylock);
-+
-+void mmap_read_unlock(struct mm_struct *mm)
-+{
-+	unlock_impl(mm, up_read, false);
-+}
-+EXPORT_SYMBOL(mmap_read_unlock);
-+
-+bool mmap_read_trylock_non_owner(struct mm_struct *mm)
-+{
-+	if (mmap_read_trylock(mm)) {
-+		rwsem_release(&mm->mmap_lock.dep_map, _RET_IP_);
-+		trace_released(mm, false);
-+		return true;
-+	}
-+	return false;
-+}
-+EXPORT_SYMBOL(mmap_read_trylock_non_owner);
-+
-+void mmap_read_unlock_non_owner(struct mm_struct *mm)
-+{
-+	up_read_non_owner(&mm->mmap_lock);
-+	trace_released(mm, false);
-+}
-+EXPORT_SYMBOL(mmap_read_unlock_non_owner);
-+
-+void mmap_assert_locked(struct mm_struct *mm)
-+{
-+	lockdep_assert_held(&mm->mmap_lock);
-+	VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_lock), mm);
-+}
-+EXPORT_SYMBOL(mmap_assert_locked);
-+
-+void mmap_assert_write_locked(struct mm_struct *mm)
-+{
-+	lockdep_assert_held_write(&mm->mmap_lock);
-+	VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_lock), mm);
-+}
-+EXPORT_SYMBOL(mmap_assert_write_locked);
+It would be good if Linus or Andrea could share their thoughts, or anyone who
+knows better (I'd bet a plenty of.. :).
+
+Thanks,
+
+> 
+> Thanks,
+> Jason
+> 
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 469af373ae76e1..332de777854f8b 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -2889,6 +2889,24 @@ static vm_fault_t wp_page_shared(struct vm_fault *vmf)
+>  	return ret;
+>  }
+>  
+> +static bool cow_needed(struct vm_fault *vmf)
+> +{
+> +	int total_map_swapcount;
+> +
+> +	if (!reuse_swap_page(vmf->page, &total_map_swapcount))
+> +		return true;
+> +
+> +	if (total_map_swapcount == 1) {
+> +		/*
+> +		 * The page is all ours. Move it to our anon_vma so the rmap
+> +		 * code will not search our parent or siblings.  Protected
+> +		 * against the rmap code by the page lock.
+> +		 */
+> +		page_move_anon_rmap(vmf->page, vmf->vma);
+> +	}
+> +	return false;
+> +}
+> +
+>  /*
+>   * This routine handles present pages, when users try to write
+>   * to a shared page. It is done by copying the page to a new address
+> @@ -2942,13 +2960,27 @@ static vm_fault_t do_wp_page(struct vm_fault *vmf)
+>  		struct page *page = vmf->page;
+>  
+>  		/* PageKsm() doesn't necessarily raise the page refcount */
+> -		if (PageKsm(page) || page_count(page) != 1)
+> +		if (PageKsm(page))
+>  			goto copy;
+> +		if (page_count(page) != 1) {
+> +			/*
+> +			 * If the page is DMA pinned we can't rely on the
+> +			 * above to know if there are other CPU references as
+> +			 * page_count() will be elevated by the
+> +			 * pin. Needlessly copying the page will cause the DMA
+> +			 * pin to break, try harder to avoid that.
+> +			 */
+> +			if (!page_maybe_dma_pinned(page))
+> +				goto copy;
+> +		}
+> +
+>  		if (!trylock_page(page))
+>  			goto copy;
+>  		if (PageKsm(page) || page_mapcount(page) != 1 || page_count(page) != 1) {
+> -			unlock_page(page);
+> -			goto copy;
+> +			if (cow_needed(vmf)) {
+> +				unlock_page(page);
+> +				goto copy;
+> +			}
+>  		}
+>  		/*
+>  		 * Ok, we've got the only map reference, and the only
+> 
+
 -- 
-2.28.0.618.gf4bc123cb7-goog
+Peter Xu
 
