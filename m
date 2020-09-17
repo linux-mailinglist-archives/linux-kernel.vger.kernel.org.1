@@ -2,109 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7D926E241
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA45926E25B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 19:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726438AbgIQRXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 13:23:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726390AbgIQRXX (ORCPT
+        id S1726587AbgIQR16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 13:27:58 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:43456 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726544AbgIQR1J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 13:23:23 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C94B0C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:23:14 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id z26so3309697oih.12
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 10:23:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=F86p0ud99YSiTMCN0ZfJJse9lFQfi+WRyzF06l3LfwA=;
-        b=Oe+9XFyi4XwSdp0c08MIQlmhrPw1Z8ltKB2S7V3IMBblrL34HKoK0b4blCy3ZHSJxj
-         7IaJJ0RwaRrjJztcw/95TWgK1iToMprnqvda3Cw5Rs+2ciTDAeh8nMCt44s2ulVhn6KN
-         6sAVjFYZRVuJFjONKZdpeD53O77tF58gs1uyI=
+        Thu, 17 Sep 2020 13:27:09 -0400
+Received: by mail-oi1-f194.google.com with SMTP id i17so3339062oig.10;
+        Thu, 17 Sep 2020 10:26:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=F86p0ud99YSiTMCN0ZfJJse9lFQfi+WRyzF06l3LfwA=;
-        b=iYvHEOo+NPuNfKMDZGAcPIAGtQPBEx9qMVG7jju+i3ZAYZEmi+aKZiot3hpKSqnY85
-         61+v2EJLAJ3kcXPA5e1VFSuEruUmtouPRb/ksJrY3GQpjGweVQJlwhbrRU7GIw5p++ql
-         PmDMSRJ8KsivnnFyKPqH4DPv/hgvvr35l8YPYPS7sR8nNw0vbjHhp7DGdJ9XZmRT0D6n
-         BxkzEwSavr5bvCh1tjfIH9Y8QoWYcq6Utq3W8XUbVUZsdkDEIXYLGXiIrzKzZrGhhF7u
-         LWwowbv2QXKKEym0pdaVRjGS06rbKaDFu9cxy1Bo7hh4V/9KHbmvnAt+oTQILF96lnPk
-         DheQ==
-X-Gm-Message-State: AOAM532a0Qw0u8K5N07B8FK3inHbRu9Uuai+J3LadnjJxVRGR14GLtj7
-        kpubuoP5QDk/ZvuKmyQ0PcPp4+SXQj3NzFd5Z0oKwQ==
-X-Google-Smtp-Source: ABdhPJwF3dNmQNnc08BdxH8My7DtOBpKWMR10LzO7dt3VFCMGmJE1UwcTFFGHLsdQ5ho5h5wrPc5sUf6w5ZuU6y8//k=
-X-Received: by 2002:aca:6083:: with SMTP id u125mr7050119oib.14.1600363394219;
- Thu, 17 Sep 2020 10:23:14 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=ti1DSc22l1OTXWw3UqGRGhr/gUl2umii2yhtCBxuHDg=;
+        b=mW/dK8jQGFhBKHyOVFHzgvFJStShWozFsTX18/lU7wXogFmqz5mveGy9lGV7qQyZVz
+         lxP4+2J/m1VXNoNqPSxQEExwloUk/fac39/nokwUZZ2SwWomIxfW5Q37oJqmUuKYFyAL
+         VJmeETJo9UVA9FiN6v/P5O2c8g99Fsmfr14XvL/7ivMIkRlgn9p4YlIN64UKDcuhOewm
+         YdW8h48Ks09vK56FeZuyhGoMuPd7SSfi6fXFaZXMpJZ/kOtzf/xddQoEQ/jZzjOpDiQ6
+         wBMA0MV7Het1Rvip6R3dugQeuEg/vao3dMD0Fa1Ej5rRT2WBNPK+rCVUiJFNEDNsSnUA
+         25RQ==
+X-Gm-Message-State: AOAM530sq6gIXcibpL6WNtUHXGTY3FnXn1cMnU0oU7xN5sG7MDSm08QN
+        fhaeiZTTaYQ1BV74vNhlVgOpAfjTOCvoppsu6ys=
+X-Google-Smtp-Source: ABdhPJyxWcNaiYYx/PgKQVmfX9UkChVN7amPa6jbDo4mZp02WYuGpLkS7XSRAAssnMS4AZvrpL/9pXv3g76gc1DAJ3I=
+X-Received: by 2002:aca:df84:: with SMTP id w126mr7311183oig.103.1600363614359;
+ Thu, 17 Sep 2020 10:26:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAKMK7uE=UqZD3PVC8XZAXrgGH-VsUF_-YQD3MLV8KK1kpxO4yQ@mail.gmail.com>
- <20200917113110.GE8409@ziepe.ca> <6fd74b84-959c-8b3b-c27b-e9fbf66396c7@gmail.com>
- <20200917121858.GF8409@ziepe.ca> <d82f08ee-2dec-18e8-fb06-d26f18ed777a@gmail.com>
- <20200917143551.GG8409@ziepe.ca> <5b330920-c789-fac7-e9b1-49f3bc1097a8@gmail.com>
- <20200917152456.GH8409@ziepe.ca> <CAKMK7uHQLAHXC_aBZZco0e3tbAqnNuW8QdJk=-V-yM2khw5e=Q@mail.gmail.com>
- <b9e65f47-b5c8-db09-117a-a8e22a5b6c71@amd.com> <20200917163907.GI8409@ziepe.ca>
-In-Reply-To: <20200917163907.GI8409@ziepe.ca>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Thu, 17 Sep 2020 19:23:03 +0200
-Message-ID: <CAKMK7uHrQ13-0oxTGZERQeoJ7jQES9jeDf0FhY3qW-NHdZvZ4w@mail.gmail.com>
-Subject: Re: [Linaro-mm-sig] Changing vma->vm_file in dma_buf_mmap()
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>, Linux MM <linux-mm@kvack.org>,
+References: <20200917165720.3285256-1-hch@lst.de> <20200917165720.3285256-12-hch@lst.de>
+In-Reply-To: <20200917165720.3285256-12-hch@lst.de>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 17 Sep 2020 19:26:43 +0200
+Message-ID: <CAJZ5v0gF1_JLP6B6Ecnax1w72GxRUUhPxs0q7ciT=Q2U=LQD9Q@mail.gmail.com>
+Subject: Re: [PATCH 11/14] PM: rewrite is_hibernate_resume_dev to not require
+ an inode
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Josef Bacik <josef@toxicpanda.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Stefan Haberland <sth@linux.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.ibm.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        nbd@other.debian.org,
+        "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
+        <linux-ide@vger.kernel.org>, linux-s390@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-block@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 6:39 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+On Thu, Sep 17, 2020 at 7:24 PM Christoph Hellwig <hch@lst.de> wrote:
 >
-> On Thu, Sep 17, 2020 at 06:06:14PM +0200, Christian K=C3=B6nig wrote:
-> > > > If it is already taking a page fault I'm not sure the extra functio=
-n
-> > > > call indirection is going to be a big deal. Having a uniform VMA
-> > > > sounds saner than every driver custom rolling something.
-> > > >
-> > > > When I unwound a similar mess in RDMA all the custom VMA stuff in t=
-he
-> > > > drivers turned out to be generally buggy, at least.
-> > > >
-> > > > Is vma->vm_file->private_data universally a dma_buf pointer at leas=
-t?
-> > > Nope. I think if you want this without some large scale rewrite of a
-> > > lot of code we'd need a vmops->get_dmabuf or similar. Not pretty, but
-> > > would get the job done.
-> >
-> > Yeah, agree that sounds like the simplest approach.
+> Just check the dev_t to help simplifying the code.
 >
-> I don't think that will fly, it is clearly only papering over a mess
-> inside DRM/dma buf :\
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-dma-buf started out as something to paper over the disjoint mess of
-allocators, since it was pretty clear to anyone involved we're not
-going to unify them anytime soon, if ever. So the mess pretty much is
-bound to stay.
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-I think most reasonable thing would be to throw a common vmops in
-there somehow, but even that means some large scale surgery across
-every driver/subsystem involved in dma-buf. It wouldn't unify
-anything, all it would give you is a constant vma->vm_ops to do some
-kind of upcasting. And that would still only give you a slightly less
-opaque pointer with a callback to upcast to a dma-buf in some
-driver/subsystem specific way.
--Daniel
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+> ---
+>  fs/block_dev.c          |  2 +-
+>  include/linux/suspend.h |  4 ++--
+>  kernel/power/user.c     | 12 ++++++------
+>  3 files changed, 9 insertions(+), 9 deletions(-)
+>
+> diff --git a/fs/block_dev.c b/fs/block_dev.c
+> index 1a9325f4315769..2898d69be6b3e4 100644
+> --- a/fs/block_dev.c
+> +++ b/fs/block_dev.c
+> @@ -1885,7 +1885,7 @@ ssize_t blkdev_write_iter(struct kiocb *iocb, struct iov_iter *from)
+>         if (bdev_read_only(I_BDEV(bd_inode)))
+>                 return -EPERM;
+>
+> -       if (IS_SWAPFILE(bd_inode) && !is_hibernate_resume_dev(bd_inode))
+> +       if (IS_SWAPFILE(bd_inode) && !is_hibernate_resume_dev(bd_inode->i_rdev))
+>                 return -ETXTBSY;
+>
+>         if (!iov_iter_count(from))
+> diff --git a/include/linux/suspend.h b/include/linux/suspend.h
+> index cb9afad82a90c8..8af13ba60c7e45 100644
+> --- a/include/linux/suspend.h
+> +++ b/include/linux/suspend.h
+> @@ -473,9 +473,9 @@ static inline int hibernate_quiet_exec(int (*func)(void *data), void *data) {
+>  #endif /* CONFIG_HIBERNATION */
+>
+>  #ifdef CONFIG_HIBERNATION_SNAPSHOT_DEV
+> -int is_hibernate_resume_dev(const struct inode *);
+> +int is_hibernate_resume_dev(dev_t dev);
+>  #else
+> -static inline int is_hibernate_resume_dev(const struct inode *i) { return 0; }
+> +static inline int is_hibernate_resume_dev(dev_t dev) { return 0; }
+>  #endif
+>
+>  /* Hibernation and suspend events */
+> diff --git a/kernel/power/user.c b/kernel/power/user.c
+> index d5eedc2baa2a10..b5815685b944fe 100644
+> --- a/kernel/power/user.c
+> +++ b/kernel/power/user.c
+> @@ -35,12 +35,12 @@ static struct snapshot_data {
+>         bool ready;
+>         bool platform_support;
+>         bool free_bitmaps;
+> -       struct inode *bd_inode;
+> +       dev_t dev;
+>  } snapshot_state;
+>
+> -int is_hibernate_resume_dev(const struct inode *bd_inode)
+> +int is_hibernate_resume_dev(dev_t dev)
+>  {
+> -       return hibernation_available() && snapshot_state.bd_inode == bd_inode;
+> +       return hibernation_available() && snapshot_state.dev == dev;
+>  }
+>
+>  static int snapshot_open(struct inode *inode, struct file *filp)
+> @@ -101,7 +101,7 @@ static int snapshot_open(struct inode *inode, struct file *filp)
+>         data->frozen = false;
+>         data->ready = false;
+>         data->platform_support = false;
+> -       data->bd_inode = NULL;
+> +       data->dev = 0;
+>
+>   Unlock:
+>         unlock_system_sleep();
+> @@ -117,7 +117,7 @@ static int snapshot_release(struct inode *inode, struct file *filp)
+>
+>         swsusp_free();
+>         data = filp->private_data;
+> -       data->bd_inode = NULL;
+> +       data->dev = 0;
+>         free_all_swap_pages(data->swap);
+>         if (data->frozen) {
+>                 pm_restore_gfp_mask();
+> @@ -245,7 +245,7 @@ static int snapshot_set_swap_area(struct snapshot_data *data,
+>         if (data->swap < 0)
+>                 return -ENODEV;
+>
+> -       data->bd_inode = bdev->bd_inode;
+> +       data->dev = bdev->bd_dev;
+>         bdput(bdev);
+>         return 0;
+>  }
+> --
+> 2.28.0
+>
