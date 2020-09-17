@@ -2,64 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71F1426D9C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA14526D9CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 13:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726597AbgIQLCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 07:02:31 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12828 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726185AbgIQLAd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 07:00:33 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 0F39CFD5A10E084A1EA4;
-        Thu, 17 Sep 2020 19:00:29 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Thu, 17 Sep 2020
- 19:00:19 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <hannes@cmpxchg.org>, <mhocko@kernel.org>,
-        <vdavydov.dev@gmail.com>, <akpm@linux-foundation.org>
-CC:     <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <linmiaohe@huawei.com>
-Subject: [PATCH v2] mm: memcontrol: remove obsolete comment of mem_cgroup_unmark_under_oom()
-Date:   Thu, 17 Sep 2020 06:59:00 -0400
-Message-ID: <20200917105900.4337-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        id S1726362AbgIQLEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 07:04:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726380AbgIQLAk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 07:00:40 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEC58C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 04:00:33 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id d9so993055pfd.3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 04:00:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HgzwSyCKKLf4qD/4NKqd5WMkMMq1Xoo1+QGWfkY+Z8k=;
+        b=Lnwc//+zYgv01F6ATSNmEBvPwfpGzZYhXCnL3LnezmqnG/MEc0ilUAWqhoMcVD7OkQ
+         j5qvk9ABadIZpl9+J5ebm35H97iBADCAuWuccrYn7sVScfqv5boA3XoiKC5w5NBgmaIz
+         i+SkiayNw2NzxZ2aQHiJ9dTPWPwexo6rnbIbA5hmXG1wsWUbZOman/x4SKgqE+6wHaAF
+         1GVsRZUY9co3S77thjgiGEJHWIBK2X10qXOdb5dBss0Lb0n3QGb/PrDJjxK8JyxLNLhX
+         Yvq9F2SMxKAr9qh5/Pxq2LFMQyuRlK+ExIo3AoY+F3SZ5R8VqCdIdYq6jIwmOFr4+vJA
+         I39w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HgzwSyCKKLf4qD/4NKqd5WMkMMq1Xoo1+QGWfkY+Z8k=;
+        b=F+hndVkvek2CRK3LvRGayuYll7JsvG0TL7nJvwe7ElgqpLlUH0Swm5E9uWlcAeEZg/
+         NtWFP4lWMhjia6xR0xVSPis6FcxH0/odFnPuN4Iw2XzRRDA0uyTzHlSo6lSB5ZF57aB4
+         x9xGXiGkG4h+M8UgKmta1B57Q7SKCPI86PqAum17XyxevbuXTaBQ5hY8pNIfUlnxjfJO
+         /U//F35hb40+zvn+aTfIbtUziSfWoQXxq/ph+bptSdNsl+jfMWCqxufyYHFKZCkpfVpH
+         fcRWFSIYwdFB5RbPAcwRBG3EMnxLHktNwd+dIutY1Qpt+OXLf5c7jZiedDCaiRgFI8f9
+         HsYQ==
+X-Gm-Message-State: AOAM531XtmDK5X8pkY6kb2ZXCOvU+sAfk4DbRIyHlUN0FBaItxLJP/5J
+        qWGRbncdGzoN6BAhNlREwtA=
+X-Google-Smtp-Source: ABdhPJwRA/dhSuBajZpU2if3GKD//1RBOuQmfoaAL0Fd6dQpgD+slpeeyVZSkcdxTKvYCWZWSQ7DEw==
+X-Received: by 2002:a63:6fc6:: with SMTP id k189mr21465070pgc.165.1600340432684;
+        Thu, 17 Sep 2020 04:00:32 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id m188sm21160330pfd.56.2020.09.17.04.00.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 04:00:31 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 20:00:28 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Leo Yan <leo.yan@linaro.org>, Marc Zyngier <maz@kernel.org>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCHv3] perf kvm: add kvm-stat for arm64
+Message-ID: <20200917110028.GB3049@jagdpanzerIV.localdomain>
+References: <20200917003645.689665-1-sergey.senozhatsky@gmail.com>
+ <20200917100950.GC12548@leoy-ThinkPad-X240s>
+ <20200917101219.GD12548@leoy-ThinkPad-X240s>
+ <652f10660f09bd608b825233713f775a@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <652f10660f09bd608b825233713f775a@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 79dfdaccd1d5 ("memcg: make oom_lock 0 and 1 based rather than
-counter"), the mem_cgroup_unmark_under_oom() is added and the comment of
-the mem_cgroup_oom_unlock() is moved here. But this comment make no sense
-here because mem_cgroup_oom_lock() does not operate on under_oom field.
+On (20/09/17 11:21), Marc Zyngier wrote:
+> > > On Arm64, ftrace tracepoint "kvm_entry" doesn't contain the field "id"
+> > > or field "vcpu_id", thus it always reads out the "id" is 0 and it is
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- mm/memcontrol.c | 4 ----
- 1 file changed, 4 deletions(-)
+Right, Leo, I saw that. I put "id", because there is ... well, there is
+nothing we can put there. The trace points on arm64, unlike on s390 or x86,
+don't contain info which can let us map trace-event to vcpu_id (even
+(void *)vcpu would have been rather helpful).
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index cd5f83de9a6f..e44f5afaf78b 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1848,10 +1848,6 @@ static void mem_cgroup_unmark_under_oom(struct mem_cgroup *memcg)
- {
- 	struct mem_cgroup *iter;
- 
--	/*
--	 * When a new child is created while the hierarchy is under oom,
--	 * mem_cgroup_oom_lock() may not be called. Watch for underflow.
--	 */
- 	spin_lock(&memcg_oom_lock);
- 	for_each_mem_cgroup_tree(iter, memcg)
- 		if (iter->under_oom > 0)
--- 
-2.19.1
+> > > Essentially, this issue is caused by different archs using different
+> > > format for ftrace event "kvm_entry", on x86 it contains feild
+> > > "vcpu_id" but arm64 only just records "vcpu_pc".
 
+Exactly. I wish trace-points were less of pain-points.
+
+So 'perf kvm stat' on arm64 works, but it's not as feature rich as on other
+platforms; at the same it's better than nothing, I suppose.
+
+	-ss
