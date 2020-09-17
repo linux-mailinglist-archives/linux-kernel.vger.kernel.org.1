@@ -2,159 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BFEA26DB92
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A517526DBAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 14:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726822AbgIQMbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 08:31:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726799AbgIQM3B (ORCPT
+        id S1726749AbgIQMdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 08:33:15 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:40647 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726794AbgIQMbk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 08:29:01 -0400
-X-Greylist: delayed 370 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 17 Sep 2020 05:28:59 PDT
-Received: from smtp.ungleich.ch (smtp.ungleich.ch [IPv6:2a0a:e5c0:0:2:400:b3ff:fe39:7956])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9418C06178A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 05:28:59 -0700 (PDT)
-Received: from bridge.localdomain (localhost [IPv6:::1])
-        by smtp.ungleich.ch (Postfix) with ESMTP id E27731FD7E;
-        Thu, 17 Sep 2020 14:22:42 +0200 (CEST)
-Received: by bridge.localdomain (Postfix, from userid 1000)
-        id 0C6E01A60327; Thu, 17 Sep 2020 14:22:57 +0200 (CEST)
-References: <20200910112701.13853-1-linux@rasmusvillemoes.dk>
- <20200917065615.18843-1-linux@rasmusvillemoes.dk>
-User-agent: mu4e 1.4.13; emacs 27.1
-From:   Nico Schottelius <nico-linuxsetlocalversion@schottelius.org>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Brian Norris <briannorris@chromium.org>,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Nico Schottelius <nico-linuxsetlocalversion@schottelius.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] scripts/setlocalversion: make git describe output
- more reliable
-In-reply-to: <20200917065615.18843-1-linux@rasmusvillemoes.dk>
-Date:   Thu, 17 Sep 2020 14:22:57 +0200
-Message-ID: <87pn6k384e.fsf@ungleich.ch>
+        Thu, 17 Sep 2020 08:31:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600345881;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EpwSRZwF6kCzeEsY4bUVgEiUx1sx1UhSc53TJLpGhZc=;
+        b=ROMZB3XFafPtD8EK8gU+2i3iKuXzFvvuLRPxVE2rmswPCx67DVzXokWAqtSqV7x45cMUIR
+        kXdvh9MuXXob/tGcAFsgyZNwGlkwIzO83P1bRb9h4iMC8jTmGjsBi0ntH0d4LneNr03zPF
+        vufW5clIYiY7YOfYhcWD6+ulzP8/4S0=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-490-VMRKAMtaOxmxkVQo_FgJkA-1; Thu, 17 Sep 2020 08:23:15 -0400
+X-MC-Unique: VMRKAMtaOxmxkVQo_FgJkA-1
+Received: by mail-ej1-f69.google.com with SMTP id m24so794098ejx.22
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 05:23:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EpwSRZwF6kCzeEsY4bUVgEiUx1sx1UhSc53TJLpGhZc=;
+        b=Ek4kBBbLg/6prVTewiu/+mzyNfsJfpMhFleo6x39EL7D0hzetdapLaWJei8JVffUcN
+         ZsCLND/s+BR1arGgaju7F24Bk19672oNGDvGpxONGEY2d7GFdp3iJKOMdAwxqGlOZzd2
+         WiisPNcY16wt5E9CmXMvWSUh+TSGWGlp2LpuSRiKKIBRc8vLZZEzz3e8r4c86JiIbrqa
+         i25XxUiaewWWdLZynCo61KnvzXSSkni20YbWsxgy22B8SOt7RiuY9BpuqASwDCulqtRR
+         zfR3hxbjcU5yjz98NlascsrOi6cOQrwhvIWsqJaSXuo9mu4l4+u1ZGvigZFlKxpQXqUr
+         ePOw==
+X-Gm-Message-State: AOAM532suHVUsw++Fd9AR7AxEN8010KQ7OSQtNZ75mvzLWikTYn6lVWP
+        Dy74guGCiiL9yqnoVwRUf6DeJ1xZJztX/suvBkBnn3EjNGt8OefBwxoC3R4L6rrjaOoKC/+TvNJ
+        O0u1x/vl9+fozvFnfvMXwrqe5
+X-Received: by 2002:a17:906:7d5:: with SMTP id m21mr13155776ejc.538.1600345394017;
+        Thu, 17 Sep 2020 05:23:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxEPoMFT7XB6P070flyc8A8/xwSwiaeGfTUgNTZRGcyvkspku8nczgnWd/GoC6eG+3j8Wo7Yg==
+X-Received: by 2002:a17:906:7d5:: with SMTP id m21mr13155751ejc.538.1600345393714;
+        Thu, 17 Sep 2020 05:23:13 -0700 (PDT)
+Received: from x1.localdomain ([2a0e:5700:4:11:334c:7e36:8d57:40cb])
+        by smtp.gmail.com with ESMTPSA id nh1sm14681428ejb.21.2020.09.17.05.23.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Sep 2020 05:23:13 -0700 (PDT)
+Subject: Re: [PATCH] platform/x86: asus-wmi: Add support for SW_TABLET_MODE on
+ UX360
+To:     =?UTF-8?Q?Samuel_=c4=8cavoj?= <samuel@cavoj.net>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Corentin Chary <corentin.chary@gmail.com>
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200916191232.1020318-1-samuel@cavoj.net>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <206d51c4-401d-e73b-b81a-fc57346a47ee@redhat.com>
+Date:   Thu, 17 Sep 2020 14:23:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20200916191232.1020318-1-samuel@cavoj.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-Thanks for the patch Rasmus. Overall it looks good to me, be aligned to
-the stable patch submission rules makes sense. A tiny thing though:
-
-I did not calculate the exact collision probability with 12 characters
-and it does not make sense to even discuss this, if this is a current
-rule for stable patches. However we have a couple of 12's scattered in
-the code. And if the submission rule changes in the future, we should
-have a single location to update it.
-
-So I suggest you introduce something on the line of:
-
-...
-num_chars=12
-...
---abbrev=$num_chars
-...
-
-I guess you get the picture.
-
-Greetings from the sunny mountains,
-
-Nico
-
-
-Rasmus Villemoes <linux@rasmusvillemoes.dk> writes:
-
-> When building for an embedded target using Yocto, we're sometimes
-> observing that the version string that gets built into vmlinux (and
-> thus what uname -a reports) differs from the path under /lib/modules/
-> where modules get installed in the rootfs, but only in the length of
-> the -gabc123def suffix. Hence modprobe always fails.
->
-> The problem is that Yocto has the concept of "sstate" (shared state),
-> which allows different developers/buildbots/etc. to share build
-> artifacts, based on a hash of all the metadata that went into building
-> that artifact - and that metadata includes all dependencies (e.g. the
-> compiler used etc.). That normally works quite well; usually a clean
-> build (without using any sstate cache) done by one developer ends up
-> being binary identical to a build done on another host. However, one
-> thing that can cause two developers to end up with different builds
-> [and thus make one's vmlinux package incompatible with the other's
-> kernel-dev package], which is not captured by the metadata hashing, is
-> this `git describe`: The output of that can be affected by
->
-> (1) git version: before 2.11 git defaulted to a minimum of 7, since
-> 2.11 (git.git commit e6c587) the default is dynamic based on the
-> number of objects in the repo
-> (2) hence even if both run the same git version, the output can differ
-> based on how many remotes are being tracked (or just lots of local
-> development branches or plain old garbage)
-> (3) and of course somebody could have a core.abbrev config setting in
-> ~/.gitconfig
->
-> So in order to avoid `uname -a` output relying on such random details
-> of the build environment which are rather hard to ensure are
-> consistent between developers and buildbots, make sure the abbreviated
-> sha1 always consists of exactly 12 hex characters. That is consistent
-> with the current rule for -stable patches, and is almost always enough
-> to identify the head commit unambigously - in the few cases where it
-> does not, the v5.4.3-00021- prefix would certainly nail it down.
->
-> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+On 9/16/20 9:12 PM, Samuel Čavoj wrote:
+> The UX360CA has a WMI device id 0x00060062, which reports whether the
+> lid is flipped in tablet mode (1) or in normal laptop mode (0).
+> 
+> This commit adds a quirk (quirk_asus_use_lid_flip_devid) for devices on
+> which this WMI device should be used to figure out the SW_TABLET_MODE
+> state, as opposed to the quirk_asus_use_kbd_dock_devid.
+> 
+> It is assumed other UX360* models have the same WMI device. As such, the
+> quirk is applied to devices with DMI_MATCH(DMI_PRODUCT_NAME, "UX360").
+> More devices with this feature need to be tested and added accordingly.
+> 
+> The reason for using a whitelist via the quirk mechanism is that the new
+> WMI device (0x00060062) is also present on some models which do not have
+> a 360 degree hinge (at least FX503VD and GL503VD from Hans' DSTS
+> collection) and therefore its presence cannot be relied on.
+> 
+> This patch is a followup to "platform/x86: asus-wmi: Fix SW_TABLET_MODE
+> always reporting 1 on many different models" by Hans de Goede.
+> 
+> Signed-off-by: Samuel Čavoj <samuel@cavoj.net>
+> Cc: Hans de Goede <hdegoede@redhat.com>
 > ---
-> v2: use 12 instead of 15, and ensure that the result does have exactly
-> 12 hex chars.
->
->  scripts/setlocalversion | 21 ++++++++++++++++-----
->  1 file changed, 16 insertions(+), 5 deletions(-)
->
-> diff --git a/scripts/setlocalversion b/scripts/setlocalversion
-> index 20f2efd57b11..bb709eda96cd 100755
-> --- a/scripts/setlocalversion
-> +++ b/scripts/setlocalversion
-> @@ -45,7 +45,7 @@ scm_version()
->
->  	# Check for git and a git repo.
->  	if test -z "$(git rev-parse --show-cdup 2>/dev/null)" &&
-> -	   head=$(git rev-parse --verify --short HEAD 2>/dev/null); then
-> +	   head=$(git rev-parse --verify HEAD 2>/dev/null); then
->
->  		# If we are at a tagged commit (like "v2.6.30-rc6"), we ignore
->  		# it, because this version is defined in the top level Makefile.
-> @@ -59,11 +59,22 @@ scm_version()
->  			fi
->  			# If we are past a tagged commit (like
->  			# "v2.6.30-rc5-302-g72357d5"), we pretty print it.
-> -			if atag="$(git describe 2>/dev/null)"; then
-> -				echo "$atag" | awk -F- '{printf("-%05d-%s", $(NF-1),$(NF))}'
-> -
-> -			# If we don't have a tag at all we print -g{commitish}.
-> +			#
-> +			# Ensure the abbreviated sha1 has exactly 12
-> +			# hex characters, to make the output
-> +			# independent of git version, local
-> +			# core.abbrev settings and/or total number of
-> +			# objects in the current repository - passing
-> +			# --abbrev=12 ensures a minimum of 12, and the
-> +			# awk substr() then picks the 'g' and first 12
-> +			# hex chars.
-> +			if atag="$(git describe --abbrev=12 2>/dev/null)"; then
-> +				echo "$atag" | awk -F- '{printf("-%05d-%s", $(NF-1),substr($(NF),0,13))}'
+>   drivers/platform/x86/asus-nb-wmi.c         | 14 +++++++++++++
+>   drivers/platform/x86/asus-wmi.c            | 23 ++++++++++++++++++++++
+>   drivers/platform/x86/asus-wmi.h            |  1 +
+>   include/linux/platform_data/x86/asus-wmi.h |  1 +
+>   4 files changed, 39 insertions(+)
+> 
+> diff --git a/drivers/platform/x86/asus-nb-wmi.c b/drivers/platform/x86/asus-nb-wmi.c
+> index 345bd224494b..ae5501e07712 100644
+> --- a/drivers/platform/x86/asus-nb-wmi.c
+> +++ b/drivers/platform/x86/asus-nb-wmi.c
+> @@ -119,6 +119,10 @@ static struct quirk_entry quirk_asus_use_kbd_dock_devid = {
+>   	.use_kbd_dock_devid = true,
+>   };
+>   
+> +static struct quirk_entry quirk_asus_use_lid_flip_devid = {
+> +	.use_lid_flip_devid = true,
+
+
+Note the default (quirk_asus_unknown) quirks set:
+
+         .wmi_backlight_set_devstate = true,
+
+So you're changing that to false for all devices using that
+quirk now.  I did not set this quirk for the transformer devices,
+since the quirk has to do with the handling of Fn + F7 (display off hotkey)
+by the embedded-controller. Since on transformer devices the keyboard is
+an USB device and not handled by the embedded-controller they do not need
+the wmi_backlight_set_devstate quirk, so I left it out. Chances are that
+your UX360 does need it. The purpose of the quirk is to make the embbedded
+controller send a KEY_DISPLAY_OFF event on FN + F7 and have it not do anything
+else (like turning off the backlight by itself).
+
+TL;DR: you should probably add:         .wmi_backlight_set_devstate = true,
+to your new quirk_asus_use_lid_flip_devid quirk.
+
+
+
+> +};
 > +
-> +			# If we don't have a tag at all we print -g{commitish},
-> +			# again using exactly 12 hex chars.
->  			else
-> +				head="$(echo $head | cut -c1-12)"
->  				printf '%s%s' -g $head
->  			fi
->  		fi
+>   static int dmi_matched(const struct dmi_system_id *dmi)
+>   {
+>   	pr_info("Identified laptop model '%s'\n", dmi->ident);
+> @@ -520,6 +524,16 @@ static const struct dmi_system_id asus_quirks[] = {
+>   		},
+>   		.driver_data = &quirk_asus_use_kbd_dock_devid,
+>   	},
+> +	{
+> +		.callback = dmi_matched,
+> +		.ident = "ASUS ZenBook Flip UX360",
+> +		.matches = {
+> +			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> +			/* Match UX360* */
+> +			DMI_MATCH(DMI_PRODUCT_NAME, "UX360"),
+> +		},
+> +		.driver_data = &quirk_asus_use_lid_flip_devid,
+> +	},
+>   	{},
+>   };
+>   
+> diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
+> index ae6289d37faf..a628a7d9e066 100644
+> --- a/drivers/platform/x86/asus-wmi.c
+> +++ b/drivers/platform/x86/asus-wmi.c
+> @@ -63,6 +63,7 @@ MODULE_LICENSE("GPL");
+>   #define NOTIFY_KBD_BRTTOGGLE		0xc7
+>   #define NOTIFY_KBD_FBM			0x99
+>   #define NOTIFY_KBD_TTP			0xae
+> +#define NOTIFY_LID_FLIP			0xfa
+>   
+>   #define ASUS_WMI_FNLOCK_BIOS_DISABLED	BIT(0)
+>   
+> @@ -375,6 +376,18 @@ static int asus_wmi_input_init(struct asus_wmi *asus)
+>   		}
+>   	}
+>   
+> +	if (asus->driver->quirks->use_lid_flip_devid) {
+> +		result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_LID_FLIP);
+> +		if (result >= 0) {
+> +			input_set_capability(asus->inputdev, EV_SW, SW_TABLET_MODE);
+> +			input_report_switch(asus->inputdev, SW_TABLET_MODE, result);
+> +		} else if (result == -ENODEV) {
+> +			pr_err("This device has lid_flip quirk but got ENODEV checking it. This is a bug.");
+> +		} else {
+> +			pr_err("Error checking for lid-flip: %d\n", result);
+> +		}
+> +	}
+> +
+>   	err = input_register_device(asus->inputdev);
+>   	if (err)
+>   		goto err_free_dev;
+> @@ -2127,6 +2140,16 @@ static void asus_wmi_handle_event_code(int code, struct asus_wmi *asus)
+>   		return;
+>   	}
+>   
+> +	if (asus->driver->quirks->use_lid_flip_devid && code == NOTIFY_LID_FLIP) {
+> +		result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_LID_FLIP);
+> +
+> +		if (result >= 0) {
+> +			input_report_switch(asus->inputdev, SW_TABLET_MODE, result);
+> +			input_sync(asus->inputdev);
+> +		}
+> +		return;
+> +	}
+> +
+>   	if (asus->fan_boost_mode_available && code == NOTIFY_KBD_FBM) {
+>   		fan_boost_mode_switch_next(asus);
+>   		return;
+> diff --git a/drivers/platform/x86/asus-wmi.h b/drivers/platform/x86/asus-wmi.h
+> index 1a95c172f94b..b302415bf1d9 100644
+> --- a/drivers/platform/x86/asus-wmi.h
+> +++ b/drivers/platform/x86/asus-wmi.h
+> @@ -34,6 +34,7 @@ struct quirk_entry {
+>   	bool wmi_backlight_set_devstate;
+>   	bool wmi_force_als_set;
+>   	bool use_kbd_dock_devid;
+> +	bool use_lid_flip_devid;
+>   	int wapf;
+>   	/*
+>   	 * For machines with AMD graphic chips, it will send out WMI event
+> diff --git a/include/linux/platform_data/x86/asus-wmi.h b/include/linux/platform_data/x86/asus-wmi.h
+> index 897b8332a39f..2f274cf52805 100644
+> --- a/include/linux/platform_data/x86/asus-wmi.h
+> +++ b/include/linux/platform_data/x86/asus-wmi.h
+> @@ -62,6 +62,7 @@
+>   
+>   /* Misc */
+>   #define ASUS_WMI_DEVID_CAMERA		0x00060013
+> +#define ASUS_WMI_DEVID_LID_FLIP		0x00060062
+>   
+>   /* Storage */
+>   #define ASUS_WMI_DEVID_CARDREADER	0x00080013
+> 
 
+Otherwise the patch looks good to me, thank you for the patch.
 
---
-Modern, affordable, Swiss Virtual Machines. Visit www.datacenterlight.ch
+Regards,
+
+Hans
+
