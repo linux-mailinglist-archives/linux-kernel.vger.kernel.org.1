@@ -2,158 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B05426E541
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB83B26E54D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 21:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726493AbgIQTQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 15:16:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727816AbgIQQSo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 12:18:44 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA41C06121D
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 09:09:37 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id q21so2394418ota.8
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 09:09:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EpwgO2gE232MQ8MlmE9oGUJ2SqqC1OkAKiHLBPpysXo=;
-        b=CREaOxf0kmFXuOoQR8BoDazJ9PauASn2hhUtueJmHKUzGZIMo3Ku0zwjy+44ikxHGQ
-         jk37ySD4ZiQ8GQGyARaRhw2O94qzKeXxNsXdu6FyyGVPw2XPEV1xk7oxHJ+ZlP+gcWVP
-         OgLYU81pbMSjlgquQ2oHnYV9j7hwL/zoyF4JsVKImTcm3348Gqh4eLshHr1H0VXGdwOW
-         rfpBHNBInXkrYmadwYOl4Rs22EPCVy5JTaI+niPxnBnsw/LY38yTEw8UDFxgk9XUtRqj
-         jTz2qkmmeGX7qm7n2/cqzU/gSmD2PE5LbO5BTpG3Yc+x1bss77NWd0rn4PrS6oKO71hI
-         hpNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EpwgO2gE232MQ8MlmE9oGUJ2SqqC1OkAKiHLBPpysXo=;
-        b=hoWiroMTN3rFRcgLRvq27/r+Nf/0zzDG4zd/D7FVgY8atwBoBZO6BaRQDCwSoIh1JH
-         U2NsN4qQef1ir8alCjP+StlPw48wKFGdr2gc4Cq398F9vqvN7gu4XGnJVP69+RNmEZGy
-         bOL380Z2cnQG8bYUIKlqVTXR+/AujbraffwW5qAvc1Nlq65TsT2MjMMtm4rKLEYV9Zly
-         ZYdf1HpJuD9Pj6TCVGZD0ACSicO5L4PxMY7FoMZLKCG/2RYO5jOgdz5zGLA21KE5gQhm
-         3h07omI9ETK0+cHh1Aj3HLMitdv3KHjjQF7ISClehbKGOc9AMlvusb7kgZiXMEfbdTTF
-         kqig==
-X-Gm-Message-State: AOAM531lnY0DXKk70MHHhAlzKiwqyZf+Ydmoojg7lFpQA58aisru9KCO
-        uVsBIrfdtw4R3DNXDR+qkeN1Rw==
-X-Google-Smtp-Source: ABdhPJz6dpPUOs9zY2r2UAdlGLE+UGCQulYBlk4T3lLoPIPgRjUzAdpgzKBUersByMvs+M3l/UuKsg==
-X-Received: by 2002:a05:6830:1518:: with SMTP id k24mr19291103otp.21.1600358977119;
-        Thu, 17 Sep 2020 09:09:37 -0700 (PDT)
-Received: from yoga ([2605:6000:e5cb:c100:7cad:6eff:fec8:37e4])
-        by smtp.gmail.com with ESMTPSA id c14sm241959ooi.9.2020.09.17.09.09.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 09:09:36 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 11:09:32 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Alexandre Courbot <acourbot@chromium.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        "open list:REMOTE PROCESSOR REMOTEPROC SUBSYSTEM" 
-        <linux-remoteproc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ezequiel Garcia <ezequiel@collabora.com>
-Subject: Re: [PATCH RESEND RESEND] remoteproc: scp: add COMPILE_TEST
- dependency
-Message-ID: <20200917160932.GP1893@yoga>
-References: <20200915012911.489820-1-acourbot@chromium.org>
- <20200915032529.GA7762@uller>
- <CAPBb6MXGGn-QGZvCycfMNO-PW_pBhi+B0QWoa=iESBp1P-eZrw@mail.gmail.com>
- <20200917141320.1a1bb9df@coco.lan>
+        id S1726367AbgIQTTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 15:19:42 -0400
+Received: from mga02.intel.com ([134.134.136.20]:20787 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728277AbgIQQR1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 12:17:27 -0400
+IronPort-SDR: UtgzDv6uhSynXL1KJBrA75X0OfX4RZZvwbhFS6hYk0+E45c9w808362+Xqecq38TV3s5mgdqTz
+ cYeokyTNcABA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="147424427"
+X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
+   d="scan'208";a="147424427"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 09:11:40 -0700
+IronPort-SDR: 2IvSOp2DGDUp0NJPU/N1ucVV6d2TAuY3TScq5Xr8NAcaY6qiLx+dq52cUFwWYxJI3UaNdsdLmb
+ 5OMhNHAa0afA==
+X-IronPort-AV: E=Sophos;i="5.77,271,1596524400"; 
+   d="scan'208";a="287636163"
+Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 09:11:38 -0700
+Date:   Thu, 17 Sep 2020 09:11:36 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Jim Mattson <jmattson@google.com>,
+        Borislav Petkov <bp@alien8.de>, Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Subject: Re: [PATCH 1/1] KVM: x86: fix MSR_IA32_TSC read for nested migration
+Message-ID: <20200917161135.GC13522@sjchrist-ice>
+References: <20200917110723.820666-1-mlevitsk@redhat.com>
+ <20200917110723.820666-2-mlevitsk@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200917141320.1a1bb9df@coco.lan>
+In-Reply-To: <20200917110723.820666-2-mlevitsk@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 17 Sep 07:13 CDT 2020, Mauro Carvalho Chehab wrote:
+On Thu, Sep 17, 2020 at 02:07:23PM +0300, Maxim Levitsky wrote:
+> MSR reads/writes should always access the L1 state, since the (nested)
+> hypervisor should intercept all the msrs it wants to adjust, and these
+> that it doesn't should be read by the guest as if the host had read it.
+> 
+> However IA32_TSC is an exception.Even when not intercepted, guest still
 
-> Em Tue, 15 Sep 2020 12:43:26 +0900
-> Alexandre Courbot <acourbot@chromium.org> escreveu:
-> 
-> > On Tue, Sep 15, 2020 at 12:25 PM Bjorn Andersson
-> > <bjorn.andersson@linaro.org> wrote:
-> > >
-> > > On Tue 15 Sep 01:29 UTC 2020, Alexandre Courbot wrote:
-> > >  
-> > > > This will improve this driver's build coverage.
-> > > >
-> > > > Reported-by: Ezequiel Garcia <ezequiel@collabora.com>
-> > > > Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
-> > > > ---
-> > > > Hi remoteproc maintainers,
-> > > >
-> > > > Second resend as I got no reaction for almost 1 month on this one-liner.  
-> > >
-> > > Sorry about that. I fell behind on my inbox and have missed your
-> > > previous attempts.
-> > >
-> > > This has now been applied.  
-> > 
-> > No worries, thanks for the quick response.
-> > 
-> > Mauro, the patch is applied on
-> > https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git/commit/?id=5185e3a9dc2d68bb52e3e12400428aa060b87733,
-> > will it work for you to merge this into the media tree and apply the
-> > pull request on top?
-> > 
-> > >
-> > > Regards,
-> > > Bjorn
-> > >  
-> > > > Pretty please?
-> > > >
-> > > > As explained in
-> > > > https://www.spinics.net/lists/linux-media/msg175991.html, we need this
-> > > > patch in order to merge a driver series in the media tree. If that
-> > > > looks ok to you, can we pull it in the media tree along with the series
-> > > > that depends on it?
-> > > >
-> > > >  drivers/remoteproc/Kconfig | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
-> > > > index c6659dfea7c7..d1fcada71017 100644
-> > > > --- a/drivers/remoteproc/Kconfig
-> > > > +++ b/drivers/remoteproc/Kconfig
-> > > > @@ -43,7 +43,7 @@ config INGENIC_VPU_RPROC
-> > > >
-> > > >  config MTK_SCP
-> > > >       tristate "Mediatek SCP support"
-> > > > -     depends on ARCH_MEDIATEK
-> > > > +     depends on ARCH_MEDIATEK || COMPILE_TEST
-> > > >       select RPMSG_MTK_SCP
-> > > >       help
-> > > >         Say y here to support Mediatek's System Companion Processor (SCP) via
-> 
-> Bjorn/Alexandre,
-> 
-> Can I just cherry-pick the patch from:
-> 
-> 	https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git/commit/?id=5185e3a9dc2d68bb52e3e12400428aa060b87733
-> 
-> Adding it on my tree before the patches that require it?
-> 
-> If aren't there any other changes for "config MTK_SCP",
-> this is the easiest way for me, as I won't need to pull from
-> a stable branch from your tree and wait for your patches to
-> reach upstream, before sending a tree branch with such changes.
-> 
+Missing a space after the period.
 
-I don't see anything that would cause a merge conflicts here, so that
-should be fine. And perhaps we should just have picked it through your
-tree from the beginning then.
+> reads the value + TSC offset.
+> The write however does not take any TSC offset in the account.
 
-Feel free to add my:
+s/in the/into
 
-Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> This is documented in Intel's PRM and seems also to happen on AMD as well.
 
-Regards,
-Bjorn
+Ideally we'd get confirmation from AMD that this is the correct behavior.
+
+> This creates a problem when userspace wants to read the IA32_TSC value and then
+> write it. (e.g for migration)
+> 
+> In this case it reads L2 value but write is interpreted as an L1 value.
+
+It _may_ read the L2 value, e.g. it's not going to read the L2 value if L1
+is active.
+
+> To fix this make the userspace initiated reads of IA32_TSC return L1 value
+> as well.
+> 
+> Huge thanks to Dave Gilbert for helping me understand this very confusing
+> semantic of MSR writes.
+> 
+> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> ---
+>  arch/x86/kvm/x86.c | 19 ++++++++++++++++++-
+>  1 file changed, 18 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 17f4995e80a7e..d10d5c6add359 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -2025,6 +2025,11 @@ u64 kvm_read_l1_tsc(struct kvm_vcpu *vcpu, u64 host_tsc)
+>  }
+>  EXPORT_SYMBOL_GPL(kvm_read_l1_tsc);
+>  
+> +static u64 kvm_read_l2_tsc(struct kvm_vcpu *vcpu, u64 host_tsc)
+
+This is definitely not L2 specific.  I would vote to just omit the helper so
+that we don't need to come up with a name that is correct across the board,
+e.g. "raw" is also not quite correct.
+
+An alternative would be to do:
+
+	u64 tsc_offset = msr_info->host_initiated ? vcpu->arch.l1_tsc_offset :
+						    vcpu->arch.tsc_offset;
+
+	msr_info->data = kvm_scale_tsc(vcpu, rdtsc()) + tsc_offset;
+
+Which I kind of like because the behavioral difference is a bit more obvious.
+
+> +{
+> +	return vcpu->arch.tsc_offset + kvm_scale_tsc(vcpu, host_tsc);
+> +}
+> +
+>  static void kvm_vcpu_write_tsc_offset(struct kvm_vcpu *vcpu, u64 offset)
+>  {
+>  	vcpu->arch.l1_tsc_offset = offset;
+> @@ -3220,7 +3225,19 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>  		msr_info->data = vcpu->arch.msr_ia32_power_ctl;
+>  		break;
+>  	case MSR_IA32_TSC:
+> -		msr_info->data = kvm_scale_tsc(vcpu, rdtsc()) + vcpu->arch.tsc_offset;
+> +		/*
+> +		 * Intel PRM states that MSR_IA32_TSC read adds the TSC offset
+> +		 * even when not intercepted. AMD manual doesn't define this
+> +		 * but appears to behave the same
+> +		 *
+> +		 * However when userspace wants to read this MSR, return its
+> +		 * real L1 value so that its restore will be correct
+> +		 *
+
+Extra line is unnecessary.
+
+> +		 */
+> +		if (msr_info->host_initiated)
+> +			msr_info->data = kvm_read_l1_tsc(vcpu, rdtsc());
+> +		else
+> +			msr_info->data = kvm_read_l2_tsc(vcpu, rdtsc());
+>  		break;
+>  	case MSR_MTRRcap:
+>  	case 0x200 ... 0x2ff:
+> -- 
+> 2.26.2
+> 
