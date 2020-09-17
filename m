@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F6926D2EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 07:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F0C926D2EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 07:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726186AbgIQFNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 01:13:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57182 "EHLO
+        id S1726151AbgIQFQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 01:16:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726152AbgIQFNA (ORCPT
+        with ESMTP id S1725267AbgIQFQi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 01:13:00 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D6E5C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 22:12:59 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id n14so466936pff.6
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 22:12:59 -0700 (PDT)
+        Thu, 17 Sep 2020 01:16:38 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6457C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 22:16:37 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id l126so475744pfd.5
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Sep 2020 22:16:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:mail-followup-to:references
          :mime-version:content-disposition:in-reply-to;
-        bh=qXMpYhecBeuqzUAGr3eBH/btIMT72oL1vXttuRwPdRY=;
-        b=DXzS5r2SFx2p77SvZs2InZJEGQXoE1vqORBwq2kF+4I7EwKAd4j3PBJtq54LAWbPf1
-         yxQxJ8h3MppjKq7XlcRLy0J1krhqIBvDj/2ZqN3VGafiBPI3+WeZQTM/QT3ig8J7s+XU
-         NG4SIzEi5bSlYgrIkSJZkEB0UIkOuSevuGNzNu2ZOebE7AoXlLmBzIs+vl+lwuR8TUUC
-         o1LZpHnHu6mnH4owGH4PpOD2aJu0vxsJ/fu/hA8wWOvUW8Pi5ar1zEVITVI327r9Svwb
-         a9wOOUh+fTNCMFJz0U6EY/ol5JbOo2n6ZqtCuZt/PB/yR1RMjcW/axgXuWNTDlWYbLwa
-         ho0Q==
+        bh=9XtLHYVfm+BR9OEJ4f29pIKtgyhVRfQbh1PSyFLI3vA=;
+        b=I9VN5VlYuRIPT/7Ruux2nCuo4TmsRtOPHlYQTDi2ovbDj3kQ+P5lc+aGIJ8TC7PL+L
+         3z4i399IHJWHRUPuCBUTzyHo+P5stkGymiMgB30y6PFkPoNNijOlb1GDfG51jfeWtEow
+         iK4kluMiAycen1zBJ28BGdGncBMAM9m9gGKk0/prJnQ842p/StLRDanPJUwq6PbkzUiC
+         Hif1Luc9/srxP00ljK+cfGL8FtkxsqYc5iA6mSvsEk9yFKOrMSwQn2j+c0awQSdO01No
+         Jh+FLvsVdASpd2r3/QW6rVpmOsXXUFpd+tzRbtnGUP6XMriTw9boNsMU9zeL+/x3NUDH
+         YjVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id
          :mail-followup-to:references:mime-version:content-disposition
          :in-reply-to;
-        bh=qXMpYhecBeuqzUAGr3eBH/btIMT72oL1vXttuRwPdRY=;
-        b=fc+1bZ734jvwReNv0Lsg6nH572JA5TcT2nAPc9DNCjggbGKQBJXL6v8VlL8NspmSoQ
-         DDT6LH+Y4xLkG0pSEkP96+l5t5yxX7R4K8+DU8CELmT6HI2YB2SQl5M9z+M/tUfcdg13
-         92+fAaYuVH1Tor54RpuoiKg1Yz4oPyztEKaDBQnw7sQHuMVphmsff3WX9nwT3jpoTzCd
-         1VFly75iWjn/60pHl3SRGCHBGhEw3ZPSCPdafMsT19NTKAh0wioBeIGxfktzUs7buMoD
-         FbKOsFYeypmOCTaX3zICI8LISkofpGmyBGNFnC6Spzs5Ml49MvAH+nAIVL0XiJCNrOO0
-         6a0w==
-X-Gm-Message-State: AOAM533yL28134J1kKw0yweaq6SXKd8pR4sHHNJJL/o4DGAT1wwfbD+c
-        eNEloDOTKLes4Xql7nWyVxrMzw==
-X-Google-Smtp-Source: ABdhPJyBF9JQoD+adDRDl69cLFop7DNj+CsII5Ioo20OPT+VjA1wn9rq2QZZoqj22m1CiXvs7hkadw==
-X-Received: by 2002:a63:4102:: with SMTP id o2mr21108868pga.354.1600319578460;
-        Wed, 16 Sep 2020 22:12:58 -0700 (PDT)
+        bh=9XtLHYVfm+BR9OEJ4f29pIKtgyhVRfQbh1PSyFLI3vA=;
+        b=RhAzYiyuQC1k4x85T/hksdfR66majx/x+T0plKMEAVpp/SlI+kfBKq9tecvw1f/A9b
+         tKNZGMEEDL+n0Oq499W/rmouZerQL8hctUvJkytKE31upfi7zQJd5901V2VIS+wDCVXy
+         bLOivecQISAYSKJN/5L22sCwxy7Lmn2x+xlBWBLyCrtl/CtYyN51SI2P3MT6nrbFAQwe
+         L4/dS9an0AZXZ1y5uNShFxcVvFkP4YGmvk9Wyp7/lgO4AstaP1uq/lN3R8YrtKiJgl2Z
+         G6D9x85REAxqXS58Z+baRETqsOQ6d5XaTpvsvB+mOkSua6fykQjqCRMj42Iqqho7m0WM
+         NsDQ==
+X-Gm-Message-State: AOAM530q2vdSQTnuNFBay+yppBG4kGAWbIPMu4HvLW3EH4KrztwnI+i/
+        /lYAQxF3s9j78BryhO7kjkpbAg==
+X-Google-Smtp-Source: ABdhPJyWeKpsNo04BwT9GyrSz9bi95i7kaOExulgDBaktfJRO+b0s1dg4qc4VfTMOVlk9dpBkd4/Vg==
+X-Received: by 2002:a63:3645:: with SMTP id d66mr1853058pga.167.1600319797345;
+        Wed, 16 Sep 2020 22:16:37 -0700 (PDT)
 Received: from laputa (p784a66b9.tkyea130.ap.so-net.ne.jp. [120.74.102.185])
-        by smtp.gmail.com with ESMTPSA id q198sm15866801pfq.185.2020.09.16.22.12.55
+        by smtp.gmail.com with ESMTPSA id kf10sm4352858pjb.2.2020.09.16.22.16.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 22:12:57 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 14:12:53 +0900
+        Wed, 16 Sep 2020 22:16:36 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 14:16:32 +0900
 From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
 To:     Adrian Hunter <adrian.hunter@intel.com>
 Cc:     Ben Chuang <benchuanggli@gmail.com>, ulf.hansson@linaro.org,
@@ -57,7 +57,7 @@ Cc:     Ben Chuang <benchuanggli@gmail.com>, ulf.hansson@linaro.org,
         ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
 Subject: Re: [RFC PATCH V3 12/21] mmc: sdhci: UHS-II support, add hooks for
  additional operations
-Message-ID: <20200917051253.GA3094018@laputa>
+Message-ID: <20200917051632.GB3094018@laputa>
 Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
         Adrian Hunter <adrian.hunter@intel.com>,
         Ben Chuang <benchuanggli@gmail.com>, ulf.hansson@linaro.org,
@@ -65,213 +65,174 @@ Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
         ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
 References: <20200710111054.29562-1-benchuanggli@gmail.com>
  <9fa17d60-a540-d0d8-7b2c-0016c3b5c532@intel.com>
+ <20200916080558.GA2978867@laputa>
+ <6bf86b26-391a-0699-1818-d070357b9ddc@intel.com>
+ <20200917023113.GB3071249@laputa>
+ <255e030e-98e3-713a-a8fe-9f4c470c630f@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9fa17d60-a540-d0d8-7b2c-0016c3b5c532@intel.com>
+In-Reply-To: <255e030e-98e3-713a-a8fe-9f4c470c630f@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adrian, Ben,
-
-Regarding _reset() function,
-
-On Fri, Aug 21, 2020 at 05:08:32PM +0300, Adrian Hunter wrote:
-> On 10/07/20 2:10 pm, Ben Chuang wrote:
-> > From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+On Thu, Sep 17, 2020 at 07:52:03AM +0300, Adrian Hunter wrote:
+> On 17/09/20 5:31 am, AKASHI Takahiro wrote:
+> > Adrian,
 > > 
-> > In this commit, UHS-II related operations will be called via a function
-> > pointer array, sdhci_uhs2_ops, in order to make UHS-II support as
-> > a kernel module.
-> > This array will be initialized only if CONFIG_MMC_SDHCI_UHS2 is enabled
-> > and when the UHS-II module is loaded. Otherwise, all the functions
-> > stay void.
+> > On Wed, Sep 16, 2020 at 01:00:35PM +0300, Adrian Hunter wrote:
+> >> On 16/09/20 11:05 am, AKASHI Takahiro wrote:
+> >>> Adrian,
+> >>>
+> >>> Your comments are scattered over various functions, and so
+> >>> I would like to address them in separate replies.
+> >>>
+> >>> First, I'd like to discuss sdhci_[add|remove]_host().
+> >>>
+> >>> On Fri, Aug 21, 2020 at 05:08:32PM +0300, Adrian Hunter wrote:
+> >>>> On 10/07/20 2:10 pm, Ben Chuang wrote:
+> >>>>> From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+> >>>>>
+> >>>>> In this commit, UHS-II related operations will be called via a function
+> >>>>> pointer array, sdhci_uhs2_ops, in order to make UHS-II support as
+> >>>>> a kernel module.
+> >>>>> This array will be initialized only if CONFIG_MMC_SDHCI_UHS2 is enabled
+> >>>>> and when the UHS-II module is loaded. Otherwise, all the functions
+> >>>>> stay void.
+> >>>>>
+> >>>>> Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+> >>>>> Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
+> >>>>> ---
+> >>>
+> >>>  (snip)
+> >>>
+> >>>>>  		if (intmask & (SDHCI_INT_CARD_INSERT | SDHCI_INT_CARD_REMOVE)) {
+> >>>>>  			u32 present = sdhci_readl(host, SDHCI_PRESENT_STATE) &
+> >>>>>  				      SDHCI_CARD_PRESENT;
+> >>>>> @@ -4717,6 +4812,14 @@ int sdhci_setup_host(struct sdhci_host *host)
+> >>>>>  		/* This may alter mmc->*_blk_* parameters */
+> >>>>>  		sdhci_allocate_bounce_buffer(host);
+> >>>>>  
+> >>>>> +	if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
+> >>>>> +	    host->version >= SDHCI_SPEC_400 &&
+> >>>>> +	    sdhci_uhs2_ops.add_host) {
+> >>>>> +		ret = sdhci_uhs2_ops.add_host(host, host->caps1);
+> >>>>> +		if (ret)
+> >>>>> +			goto unreg;
+> >>>>> +	}
+> >>>>> +
+> >>>>
+> >>>> I think you should look at creating uhs2_add_host() instead
+> >>>>
+> >>>>>  	return 0;
+> >>>>>  
+> >>>>>  unreg:
+> >>>>> @@ -4738,6 +4841,8 @@ void sdhci_cleanup_host(struct sdhci_host *host)
+> >>>>>  {
+> >>>>>  	struct mmc_host *mmc = host->mmc;
+> >>>>>  
+> >>>>> +	/* FIXME: Do we have to do some cleanup for UHS2 here? */
+> >>>>> +
+> >>>>>  	if (!IS_ERR(mmc->supply.vqmmc))
+> >>>>>  		regulator_disable(mmc->supply.vqmmc);
+> >>>>>  
+> >>>>> @@ -4766,6 +4871,14 @@ int __sdhci_add_host(struct sdhci_host *host)
+> >>>>>  		mmc->cqe_ops = NULL;
+> >>>>>  	}
+> >>>>>  
+> >>>>> +	if ((mmc->caps & MMC_CAP_UHS2) && !host->v4_mode) {
+> >>>>> +		/* host doesn't want to enable UHS2 support */
+> >>>>> +		mmc->caps &= ~MMC_CAP_UHS2;
+> >>>>> +		mmc->flags &= ~MMC_UHS2_SUPPORT;
+> >>>>> +
+> >>>>> +		/* FIXME: Do we have to do some cleanup here? */
+> >>>>> +	}
+> >>>>> +
+> >>>>>  	host->complete_wq = alloc_workqueue("sdhci", flags, 0);
+> >>>>>  	if (!host->complete_wq)
+> >>>>>  		return -ENOMEM;
+> >>>>> @@ -4812,6 +4925,9 @@ int __sdhci_add_host(struct sdhci_host *host)
+> >>>>>  unled:
+> >>>>>  	sdhci_led_unregister(host);
+> >>>>>  unirq:
+> >>>>> +	if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
+> >>>>> +	    sdhci_uhs2_ops.remove_host)
+> >>>>> +		sdhci_uhs2_ops.remove_host(host, 0);
+> >>>>>  	sdhci_do_reset(host, SDHCI_RESET_ALL);
+> >>>>>  	sdhci_writel(host, 0, SDHCI_INT_ENABLE);
+> >>>>>  	sdhci_writel(host, 0, SDHCI_SIGNAL_ENABLE);
+> >>>>> @@ -4869,6 +4985,10 @@ void sdhci_remove_host(struct sdhci_host *host, int dead)
+> >>>>>  
+> >>>>>  	sdhci_led_unregister(host);
+> >>>>>  
+> >>>>> +	if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
+> >>>>> +	    sdhci_uhs2_ops.remove_host)
+> >>>>> +		sdhci_uhs2_ops.remove_host(host, dead);
+> >>>>> +
+> >>>>
+> >>>> I think you should look at creating uhs2_remove_host() instead
+> >>>
+> >>> You suggest that we will have separate sdhci_uhs2_[add|remove]_host(),
+> >>> but I don't think it's always convenient.
+> >>>
+> >>> UHS-II capable host will be set to call sdhci_uhs2_add_host() explicitly,
+> >>> but we can't do that in case of pci and pltfm based drivers as they utilize
+> >>> common helper functions, sdhci_pci_probe() and sdhci_pltfm_register(),
+> >>> respectively.
+> >>
+> >> sdhci-pci has an add_host op
+> >>
+> >> sdhci_pltfm_init can be used instead of sdhci_pltfm_register
+> >>
+> >>
+> >>> Therefore, we inevitably have to call sdhci_uhs2_add_host() there.
+> >>>
+> >>> If so, why should we distinguish sdhci_uhs2_add_host from sdhci_uhs_add_host?
+> >>> I don't see any good reason.
+> >>> Moreover, as a result, there exists a mixed usage of sdhci_ interfaces
+> >>> and sdhci_uhs2_ interfaces in sdhci-pci-core.c and sdhci-pltfm.c.
+> >>>
+> >>> It sounds odd to me.
+> >>
+> >> It is already done that way for cqhci.
 > > 
-> > Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
-> > Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
-> > ---
-> >  drivers/mmc/host/sdhci.c | 152 ++++++++++++++++++++++++++++++++++-----
-> >  1 file changed, 136 insertions(+), 16 deletions(-)
-> > 
-
-  (snip)
-
-> >  	if (host->ops->platform_send_init_74_clocks)
-> >  		host->ops->platform_send_init_74_clocks(host, ios->power_mode);
-> >  
-> > @@ -2331,7 +2411,7 @@ void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
-> >  	}
-> >  
-> >  	if (host->version >= SDHCI_SPEC_300) {
-> > -		u16 clk, ctrl_2;
-> > +		u16 clk;
-> >  
-> >  		if (!host->preset_enabled) {
-> >  			sdhci_writeb(host, ctrl, SDHCI_HOST_CONTROL);
-> > @@ -3173,11 +3253,19 @@ static bool sdhci_request_done(struct sdhci_host *host)
-> >  			/* This is to force an update */
-> >  			host->ops->set_clock(host, host->clock);
-> >  
-> > -		/* Spec says we should do both at the same time, but Ricoh
-> > -		   controllers do not like that. */
-> > -		sdhci_do_reset(host, SDHCI_RESET_CMD);
-> > -		sdhci_do_reset(host, SDHCI_RESET_DATA);
-> > -
-> > +		if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > +		    host->mmc->flags & MMC_UHS2_INITIALIZED) {
-> > +			if (sdhci_uhs2_ops.reset)
-> > +				sdhci_uhs2_ops.reset(host,
-> > +						     SDHCI_UHS2_SW_RESET_SD);
-> > +		} else {
-> > +			/*
-> > +			 * Spec says we should do both at the same time, but
-> > +			 * Ricoh controllers do not like that.
-> > +			 */
-> > +			sdhci_do_reset(host, SDHCI_RESET_CMD);
-> > +			sdhci_do_reset(host, SDHCI_RESET_DATA);
-> > +		}
+> > Okay, if it is your policy, I will follow that.
+> > Then, I'm going to add
+> > - remove_host field to struct sdhci_pci_fixes
+> > - a controller specific helper function to each driver (only pci-gli for now)
+> >   even though it looks quite generic.
 > 
-> Please look at using the existing ->reset() sdhci host op instead.
+> If they seem generic then consider naming them
+> sdhci_pci_uhs2_[add|remove]_host and putting them in sdhci-pci-core.c
 
-Well, the second argument to those reset functions is a bit-wise value
-to different "reset" registers, SDHCI_SOFTWARE_RESET and SDHCI_UHS2_SW_RESET,
-respectively.
-
-This fact raises a couple of questions to me:
-
-1) Does it make sense to merge two functionality into one, i.e.
-   sdhci_do_reset(), which is set to call ->reset hook?
-
-        -> Adrian
-
-2) UHS2_SW_RESET_SD is done only at this place while there are many callsites
-   of reset(RESET_CMD|RESET_DATA) in sdhci.c.
-   Why does the current code work?
-
-   I found, in sdhci-pci-gli.c,
-   sdhci_gl9755_reset()
-        /* reset sd-tran on UHS2 mode if need to reset cmd/data */
-        if ((mask & SDHCI_RESET_CMD) | (mask & SDHCI_RESET_DATA))
-                gl9755_uhs2_reset_sd_tran(host);
-
-   Is this the trick to avoid the issue?
-   (It looks redundant in terms of the hack above in sdhci_request_done()
-   and even quite dirty to me. Moreover, no corresponding code for gl9750
-   and gl9763.)
-
-        -> Ben
-
-3) (More or less SD specification issue)
-   In UHS-II mode, do we have to call reset(SHCI_RESET_ALL) along with
-   reset(UHS2_SW_RESET_FULL)?
-   Under the current implementation, both will be called at the end.
-
-        -> Adrian, Ben
-
-4) (Not directly linked to UHS-II support)
-  In some places, we see the sequence:
-        sdhci_do_reset(host, SDHCI_RESET_CMD);
-        sdhci_do_reset(host, SDHCI_RESET_DATA);
-  while in other places,
-        sdhci_do_reset(host, SDHCI_RESET_CMD | SDHCI_RESET_DATA);
-
-  If the statement below is true,
-> > -		/* Spec says we should do both at the same time, but Ricoh
-> > -		   controllers do not like that. */
-  the latter should be wrong.
-
-        -> Adrian
+So you don't mind that UHS-I and UHS-II code are mixed in sdhci-pci-core.c,
+do you?
 
 -Takahiro Akashi
 
-
-
-> >  		host->pending_reset = false;
-> >  	}
-> >  
-> > @@ -3532,6 +3620,13 @@ static irqreturn_t sdhci_irq(int irq, void *dev_id)
-> >  				  SDHCI_INT_BUS_POWER);
-> >  		sdhci_writel(host, mask, SDHCI_INT_STATUS);
-> >  
-> > +		if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > +		    intmask & SDHCI_INT_ERROR &&
-> > +		    host->mmc->flags & MMC_UHS2_SUPPORT) {
-> > +			if (sdhci_uhs2_ops.irq)
-> > +				sdhci_uhs2_ops.irq(host);
-> > +		}
-> > +
-> 
-> Please look at using the existing ->irq() sdhci host op instead
-> 
-> >  		if (intmask & (SDHCI_INT_CARD_INSERT | SDHCI_INT_CARD_REMOVE)) {
-> >  			u32 present = sdhci_readl(host, SDHCI_PRESENT_STATE) &
-> >  				      SDHCI_CARD_PRESENT;
-> > @@ -4717,6 +4812,14 @@ int sdhci_setup_host(struct sdhci_host *host)
-> >  		/* This may alter mmc->*_blk_* parameters */
-> >  		sdhci_allocate_bounce_buffer(host);
-> >  
-> > +	if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > +	    host->version >= SDHCI_SPEC_400 &&
-> > +	    sdhci_uhs2_ops.add_host) {
-> > +		ret = sdhci_uhs2_ops.add_host(host, host->caps1);
-> > +		if (ret)
-> > +			goto unreg;
-> > +	}
-> > +
-> 
-> I think you should look at creating uhs2_add_host() instead
-> 
-> >  	return 0;
-> >  
-> >  unreg:
-> > @@ -4738,6 +4841,8 @@ void sdhci_cleanup_host(struct sdhci_host *host)
-> >  {
-> >  	struct mmc_host *mmc = host->mmc;
-> >  
-> > +	/* FIXME: Do we have to do some cleanup for UHS2 here? */
-> > +
-> >  	if (!IS_ERR(mmc->supply.vqmmc))
-> >  		regulator_disable(mmc->supply.vqmmc);
-> >  
-> > @@ -4766,6 +4871,14 @@ int __sdhci_add_host(struct sdhci_host *host)
-> >  		mmc->cqe_ops = NULL;
-> >  	}
-> >  
-> > +	if ((mmc->caps & MMC_CAP_UHS2) && !host->v4_mode) {
-> > +		/* host doesn't want to enable UHS2 support */
-> > +		mmc->caps &= ~MMC_CAP_UHS2;
-> > +		mmc->flags &= ~MMC_UHS2_SUPPORT;
-> > +
-> > +		/* FIXME: Do we have to do some cleanup here? */
-> > +	}
-> > +
-> >  	host->complete_wq = alloc_workqueue("sdhci", flags, 0);
-> >  	if (!host->complete_wq)
-> >  		return -ENOMEM;
-> > @@ -4812,6 +4925,9 @@ int __sdhci_add_host(struct sdhci_host *host)
-> >  unled:
-> >  	sdhci_led_unregister(host);
-> >  unirq:
-> > +	if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > +	    sdhci_uhs2_ops.remove_host)
-> > +		sdhci_uhs2_ops.remove_host(host, 0);
-> >  	sdhci_do_reset(host, SDHCI_RESET_ALL);
-> >  	sdhci_writel(host, 0, SDHCI_INT_ENABLE);
-> >  	sdhci_writel(host, 0, SDHCI_SIGNAL_ENABLE);
-> > @@ -4869,6 +4985,10 @@ void sdhci_remove_host(struct sdhci_host *host, int dead)
-> >  
-> >  	sdhci_led_unregister(host);
-> >  
-> > +	if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > +	    sdhci_uhs2_ops.remove_host)
-> > +		sdhci_uhs2_ops.remove_host(host, dead);
-> > +
-> 
-> I think you should look at creating uhs2_remove_host() instead
-> 
-> >  	if (!dead)
-> >  		sdhci_do_reset(host, SDHCI_RESET_ALL);
-> >  
 > > 
+> >   sdhci_gli_[add|remove]_host(struct sdhci_pci_slot *slot)
+> >   {
+> >       return sdhci_uhs2_[add|remove]_host(slot->host);
+> >   }
+> > 
+> > # Or do you want to create a file like sdhci-uhs2-pci.c for those functions?
+> 
+> No
+> 
+> > 
+> > -Takahiro Akashi
+> > 
+> >>>
+> >>> -Takahiro Akashi
+> >>>
+> >>>
+> >>>>
+> >>>>>  	if (!dead)
+> >>>>>  		sdhci_do_reset(host, SDHCI_RESET_ALL);
+> >>>>>  
+> >>>>>
+> >>>>
+> >>
 > 
