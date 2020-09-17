@@ -2,114 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A10B326D40B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 08:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90A7726D3FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Sep 2020 08:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726217AbgIQG6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 02:58:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52590 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726142AbgIQG62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 02:58:28 -0400
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9DA8C21D41;
-        Thu, 17 Sep 2020 06:58:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600325906;
-        bh=nPSrDuBIqK++Cs2Yf8watCT9FKUAvE8l/UEvBK+iyoI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=R8+Zxy8DVnHIGDtj/rxH1HYE7+ZI7x6ClAOFZg+v/22EvmPQmS0iR+V1m6PRFpW3X
-         X873efb8X9+8WoporP624GJXUCGLxqPWvml5scUjhzOAEvZNxJr7BjL3kGMyKIHRIa
-         H25+QiYH6WFTG3Sh7e7uJRiq2cQfj0Qetv1YjJ4k=
-Received: by mail-ed1-f43.google.com with SMTP id n22so1324522edt.4;
-        Wed, 16 Sep 2020 23:58:26 -0700 (PDT)
-X-Gm-Message-State: AOAM533xf7kos8Rcs+nf+MxotAttzjoFfbIq9U+TD7aKPz2l89rq5mbZ
-        qhys+waoSlxfQM72s1cF7a4C95/G/ii+VuZdo4c=
-X-Google-Smtp-Source: ABdhPJw6oBjGfpKJpPCFXBca1WTyVw1bjowRIiOkT6Iq1M84hhnCUG0jSC0ArmHu21bBl/Bc3OMUftiIy2mZoqPT59s=
-X-Received: by 2002:a50:e78f:: with SMTP id b15mr31833332edn.104.1600325905101;
- Wed, 16 Sep 2020 23:58:25 -0700 (PDT)
+        id S1726210AbgIQGzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 02:55:43 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12814 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726106AbgIQGzh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 02:55:37 -0400
+X-Greylist: delayed 436 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 02:55:35 EDT
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id D5AEC96FAD640423BE27;
+        Thu, 17 Sep 2020 14:55:32 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Thu, 17 Sep 2020
+ 14:55:23 +0800
+From:   Liu Shixin <liushixin2@huawei.com>
+To:     Green Wan <green.wan@sifive.com>, Vinod Koul <vkoul@kernel.org>,
+        "Dan Williams" <dan.j.williams@intel.com>
+CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Liu Shixin <liushixin2@huawei.com>
+Subject: [PATCH -next] dmaengine: sf-pdma: Remove set but not used variable "desc"
+Date:   Thu, 17 Sep 2020 15:17:56 +0800
+Message-ID: <20200917071756.1915449-1-liushixin2@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20200916162250.16098-1-krzk@kernel.org> <20200916162250.16098-3-krzk@kernel.org>
- <CAMuHMdUS134fokz9Xus_pnL6tVYvgQE_uAS4Q-+B4r77VeY=xg@mail.gmail.com>
-In-Reply-To: <CAMuHMdUS134fokz9Xus_pnL6tVYvgQE_uAS4Q-+B4r77VeY=xg@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Thu, 17 Sep 2020 08:58:13 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPeTTbrz5Ja8Y=qeCx_vbUub9sBzQqQY1yNa8dWN0nafGg@mail.gmail.com>
-Message-ID: <CAJKOXPeTTbrz5Ja8Y=qeCx_vbUub9sBzQqQY1yNa8dWN0nafGg@mail.gmail.com>
-Subject: Re: [PATCH 2/8] dt-bindings: gpio: include common schema in GPIO controllers
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Sungbo Eo <mans0n@gorani.run>, Stefan Agner <stefan@agner.ch>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Yash Shah <yash.shah@sifive.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-unisoc@lists.infradead.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.32]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Sep 2020 at 08:40, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Krzysztof,
->
-> On Wed, Sep 16, 2020 at 6:23 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> > Include the common GPIO schema in GPIO controllers to be sure all common
-> > properties are properly validated.
-> >
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
->
-> Thanks for your patch!
->
-> > ---
-> >  .../devicetree/bindings/gpio/brcm,xgs-iproc-gpio.yaml          | 3 +++
-> >  Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml       | 3 +++
-> >  Documentation/devicetree/bindings/gpio/gpio-mxs.yaml           | 3 +++
-> >  Documentation/devicetree/bindings/gpio/gpio-pca9570.yaml       | 3 +++
-> >  Documentation/devicetree/bindings/gpio/gpio-rda.yaml           | 3 +++
-> >  Documentation/devicetree/bindings/gpio/gpio-vf610.yaml         | 3 +++
-> >  Documentation/devicetree/bindings/gpio/mrvl-gpio.yaml          | 1 +
-> >  Documentation/devicetree/bindings/gpio/qcom,wcd934x-gpio.yaml  | 3 +++
-> >  Documentation/devicetree/bindings/gpio/renesas,em-gio.yaml     | 3 +++
-> >  Documentation/devicetree/bindings/gpio/renesas,rcar-gpio.yaml  | 3 +++
-> >  Documentation/devicetree/bindings/gpio/sifive,gpio.yaml        | 3 +++
-> >  .../devicetree/bindings/gpio/socionext,uniphier-gpio.yaml      | 3 +++
-> >  Documentation/devicetree/bindings/gpio/xylon,logicvc-gpio.yaml | 3 +++
-> >  13 files changed, 37 insertions(+)
->
-> There are more binding files describing GPIO controllers outside the
-> Documentation/devicetree/bindings/gpio/ subdirectory, cfr.
-> 'git grep gpio-controller:.true -- "Doc*yaml"'
+Fixes gcc '-Wunused-but-set-variable' warning:
 
-Oh, indeed. Thanks for spotting these. I will check them and send a follow up.
+drivers/dma/sf-pdma/sf-pdma.c: In function 'sf_pdma_donebh_tasklet':
+drivers/dma/sf-pdma/sf-pdma.c:287:23: warning: unused variable 'desc' [-Wunused-variable]
 
-Best regards,
-Krzysztof
+After commit 8f6b6d060602 ("dmaengine: sf-pdma: Fix an error that calls callback twice"),
+variable 'desc' is never used. Remove it to avoid build warning.
+
+Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+---
+ drivers/dma/sf-pdma/sf-pdma.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/dma/sf-pdma/sf-pdma.c b/drivers/dma/sf-pdma/sf-pdma.c
+index 754994087e5f..1e66c6990d81 100644
+--- a/drivers/dma/sf-pdma/sf-pdma.c
++++ b/drivers/dma/sf-pdma/sf-pdma.c
+@@ -284,7 +284,6 @@ static void sf_pdma_free_desc(struct virt_dma_desc *vdesc)
+ static void sf_pdma_donebh_tasklet(unsigned long arg)
+ {
+ 	struct sf_pdma_chan *chan = (struct sf_pdma_chan *)arg;
+-	struct sf_pdma_desc *desc = chan->desc;
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&chan->lock, flags);
+-- 
+2.25.1
+
