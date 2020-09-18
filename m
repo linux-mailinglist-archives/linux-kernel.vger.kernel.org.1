@@ -2,99 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0363526F9E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 12:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 221B426F9EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 12:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726187AbgIRKH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 06:07:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725882AbgIRKH5 (ORCPT
+        id S1726458AbgIRKIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 06:08:50 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:57043 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726239AbgIRKIu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 06:07:57 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D505BC06174A;
-        Fri, 18 Sep 2020 03:07:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=XzBING0RVqy6DwPzZA42LOJqO0/ETIdbqaGA73DICbI=; b=X9ro1ToOCaMy9lcez/FyZ/GeQj
-        7C5CXExsAMS9EyWiJI/LtZWHB8JySVqVmOLavXLW6GkOvCysxjs8majl+BwhYYLXHME3wSy+EuYoY
-        LrdP8bEJo87NWTn0c4EE72DWUzV9CM1apG/+BXf/vC47qI1OXwLrhApf3T4ASVFBamx1EWXr6wGS/
-        7ZI3xEub9TyyVIMvFMvgE+YvEn2IQGfdQjybGlSTUBRpUH6SZygLdLff1ScT/8udawuTaTqn0JMLZ
-        AZBn1qvPb0GPeyc+TYwdhjBA0oXAW2npNHgbPMewtBFkXxs3CPK9RziUlEvkXgx6yUccuxcuoWphi
-        6KaMNZNw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kJDIu-0006iZ-0E; Fri, 18 Sep 2020 10:07:44 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9CB41307697;
-        Fri, 18 Sep 2020 12:07:43 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8B7AB203EB182; Fri, 18 Sep 2020 12:07:43 +0200 (CEST)
-Date:   Fri, 18 Sep 2020 12:07:43 +0200
-From:   peterz@infradead.org
-To:     Jan Kara <jack@suse.cz>
-Cc:     Oleg Nesterov <oleg@redhat.com>, Boaz Harrosh <boaz@plexistor.com>,
-        Hou Tao <houtao1@huawei.com>, Ingo Molnar <mingo@redhat.com>,
-        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC PATCH] locking/percpu-rwsem: use this_cpu_{inc|dec}() for
- read_count
-Message-ID: <20200918100743.GK35926@hirez.programming.kicks-ass.net>
-References: <20200915150610.GC2674@hirez.programming.kicks-ass.net>
- <20200915153113.GA6881@redhat.com>
- <20200915155150.GD2674@hirez.programming.kicks-ass.net>
- <20200915160344.GH35926@hirez.programming.kicks-ass.net>
- <b885ce8e-4b0b-8321-c2cc-ee8f42de52d4@huawei.com>
- <ddd5d732-06da-f8f2-ba4a-686c58297e47@plexistor.com>
- <20200917120132.GA5602@redhat.com>
- <20200918090702.GB18920@quack2.suse.cz>
- <20200918100112.GN1362448@hirez.programming.kicks-ass.net>
- <20200918100432.GJ35926@hirez.programming.kicks-ass.net>
+        Fri, 18 Sep 2020 06:08:50 -0400
+Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
+ (mreue009 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1MNbtD-1k98Bu3muZ-00P8yi; Fri, 18 Sep 2020 12:08:34 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     linux-fbdev@vger.kernel.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc:     dri-devel@lists.freedesktop.org, hch@lst.de,
+        linux-kernel@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 0/3] fbdev: stop using compat_alloc_user_space
+Date:   Fri, 18 Sep 2020 12:08:10 +0200
+Message-Id: <20200918100812.1447443-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918100432.GJ35926@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:HqcSX/i6GHoFmyY01bRB6CKtbn8MaB27UT0Ol1JC5D61FuBVEpu
+ UPtbHHIjZAKhvhQIb6QZpWTk7Cvz8P5eKYlnmDMJqr7FJvy1X67irWQrLyhQzU6E69ytquW
+ ZfAToXAayZQo4NyFOk8sxVZoPPCvYtC28GytZbVhFJdZO9GwqVdM8lxXViaenpLZT7/zWSE
+ 0tFo8ku0w0LaTGLKnXUzQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:UrDYAkK+Umc=:a8nXlg0sB7/GhQzgWi+SsZ
+ lUXCGAR/C4+Rc2dXCEk+vaOsRWhG/8SIvdeULI4waJyV6JpwNBRYWhqi0Z/Lybz+NfALjbM/R
+ ho4Nut4YdSvqVaRb8piiiFGKLex2y4CBM0dHk9UFSgQ83stdJrUtOHCZyedrAJobxLntYAkiP
+ 4a0nWVh8AKiuFIxWR94vmvsFx7wVEmTK4sSMHp01Sf5S4g89HGK1Cy/O9CpXGf0Y1y6B7TNa3
+ F1JMSVbftE+XOD77JMPtIK71qd5A51I7jTepdSCimQpmCcHWNKV27vavkd955E6zAynJkY5xC
+ N19IQhykPAUvUzBaeOv+iSp0z3QLBnAdVMD/THQ41mXwQp4eHKwUK6Hr0igt72WTJTxTBXpqX
+ x9XlpodOvv3fUPa2/n25x5Q5EgQTxTeG98AS9WfZzrA/OhprUesO9HNqnhUIpCNWULsDErLks
+ KXKc4UlSfxXymJDvptP82+KjZaCoQVWeXFMWTO/a2QI/87Eqz1CAicQVkKrbmP4TfJ+Aafp/l
+ cdZQFBmk4is/W/5d7Wyyxlvqx2NWvhMeNS3CbL1Pvr9eKIVd8upoco07WtDcznT0h/MM4cmR1
+ 9tm9ZlbszPUHsbEkUZIpJy9HuS4NA8kQVfn7JIgsv14MBt/j4m6NByHExJqO8RNoHBKikMCdO
+ X7Fpe3gduQ8h77quEA9flECZSaY1c0HMToCL0ya/elolj6a/CTwSbEoYzClC1GtDwe1ntmdUt
+ nRyE6wROL/9ODIncDUHmuAoLfTrE6tUGVEdzkGxyK+Y7z/kc4mhbSQeRZ6xjs2U2BJvqYamQk
+ z4aGgt1JMLwtriYPKcYrjBRxzjjUFGlh0mPlbuL+UpnzGgAAxAQn6w7NpOLKvs8Lf/Mjxk6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 12:04:32PM +0200, peterz@infradead.org wrote:
-> On Fri, Sep 18, 2020 at 12:01:12PM +0200, peterz@infradead.org wrote:
-> > @@ -198,7 +198,9 @@ EXPORT_SYMBOL_GPL(__percpu_down_read);
-> >   */
-> >  static bool readers_active_check(struct percpu_rw_semaphore *sem)
-> >  {
-> > -	if (per_cpu_sum(*sem->read_count) != 0)
-> > +	u64 sum = per_cpu_sum(*(u64 *)sem->read_count);
-> > +
-> > +	if (sum + (sum >> 32))
-> 
-> That obviously wants to be:
-> 
-> 	if ((u32)(sum + (sum >> 32)))
-> 
-> >  		return false;
-> >  
-> >  	/*
+The fbdev code uses compat_alloc_user_space in a few of its
+compat_ioctl handlers, which tends to be a bit more complicated
+and error-prone than calling the underlying handlers directly,
+so I would like to remove it completely.
 
-I suppose an alternative way of writing that would be something like:
+This modifies two such functions in fbdev, and removes another
+one that is completely unused.
 
-	union {
-		u64 sum;
-		struct {
-			u32 a, b;
-		};
-	} var;
+    Arnd
 
-	var.sum = per_cpu_sum(*(u64 *)sem->read_count);
+Arnd Bergmann (3):
+  fbdev: simplify fb_getput_cmap()
+  fbdev: sbuslib: remove unused FBIOSCURSOR32 helper
+  fbdev: sbuslib: remove compat_alloc_user_space usage
 
-	if (var.a + var.b)
-		return false;
+ drivers/video/fbdev/core/fbmem.c |  44 +++++------
+ drivers/video/fbdev/sbuslib.c    | 124 ++++++++++++++++++-------------
+ 2 files changed, 90 insertions(+), 78 deletions(-)
 
-which is more verbose, but perhaps easier to read.
+-- 
+2.27.0
+
