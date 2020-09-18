@@ -2,106 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9425E270125
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 17:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93EED27012A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 17:36:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726168AbgIRPfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 11:35:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726044AbgIRPfx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 11:35:53 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6CD1C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 08:35:53 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id k13so3185735plk.3
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 08:35:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QcopGDK9hSIqTxMAksLRcaCuxtkJfGidWzxvqmPC0LQ=;
-        b=rF1V+JFDa5AQPi3fis7yf6icTw5fAdLTA7IvNSYm5Jg7mKZcqMwY6CpvJ08/7xYEiE
-         0gt5PxOVHldqv/dlf1h/yTTAC/VDW9gfnuSvGI6WwlOihhLsYyYjRuYo81xpg1WDxEz7
-         1fqiM15pGYTN3gyOVg40BpunAltKQd3snX0+BN3bSTiNTN2suNE89iHboOR32eysWA5Y
-         3k6SbPV5/HLvo2IgqZZWEBkDc80sNaVOcFeBQ/0CFTgzQsr2D4+DSA0CwA4LURjDAP1F
-         Bz5ohMbUGOzvov/LH0Dg3tHEOl2qGF+hjC2IApFZGFyyg3rDhC+esG8jPClg20eNCI4a
-         XQXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QcopGDK9hSIqTxMAksLRcaCuxtkJfGidWzxvqmPC0LQ=;
-        b=YlSs7Mjfx7zIamA6Ibgbvcojv5We7vj2S3XreNb/+PrEEDZLX3leY0E4wkOFhzBouB
-         0v/GqXlJj6Mg5R6tMuCBnar126YtWCGBFYKhhDS1/4U13T+SsVuHm40jRFHmPSEHMNwd
-         36eiEdlJ/fUMO63Kt2buP8/45u0b+TPXK/qXP3MObv9EIMCMUaJ3yyUCGRLf3kVu/vk5
-         YpaDL6Og45kBw72vQFmagX9uZmjZNm+jWs/n18Qy+pKxTOBQsY394meeLWObW/yLWR7x
-         Lxu7ZP8ekCU717nzcFtver9nUz0PfeyeOkzn+kbsxGjvlfqtN0FwvpMdbKB4aQYRwAMl
-         8BXA==
-X-Gm-Message-State: AOAM530jx6m/BlioWQCZXADDj4k6rCss24UXJG9EFkpKfKOkDJ83qwA8
-        ifQ2lrvpa4Y3KEaEIc90VBw=
-X-Google-Smtp-Source: ABdhPJzf9qo2foejLIFjrh+UevPzj8GAcsp6eUOrgT9WNBxjFVSQufeSbDF2kyFeL6TpUXSVny/74Q==
-X-Received: by 2002:a17:902:8306:b029:d0:cbe1:e7aa with SMTP id bd6-20020a1709028306b02900d0cbe1e7aamr33728872plb.27.1600443353096;
-        Fri, 18 Sep 2020 08:35:53 -0700 (PDT)
-Received: from localhost.localdomain ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id y29sm4047910pfq.207.2020.09.18.08.35.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 08:35:52 -0700 (PDT)
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Subject: [PATCH] arm64: ipi_teardown() should depend on HOTPLUG_CPU
-Date:   Sat, 19 Sep 2020 00:35:48 +0900
-Message-Id: <20200918153548.836986-1-sergey.senozhatsky@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        id S1726262AbgIRPgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 11:36:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43076 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726044AbgIRPgO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 11:36:14 -0400
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1DBB222208;
+        Fri, 18 Sep 2020 15:36:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600443373;
+        bh=ioSr4RUMgwEtF4GQs3qxG3d4Z1XOMNstf8JGn9xlT2Q=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=WbjlpD5LTq9k7Sf1N0QWRfTO8VlU7eKkf+5KC2IneiZfgtGbJBsQPPczIfqBPTOaK
+         YeQMal8rvoXk08cPbK2JBR1vo4UZz/cehqqlD+NiLjztk8EjNZmG81oN2MP/gcBrMw
+         VeihVvj9Ni4CQYKBajgT0Mbx66VUl4f/om8RxKbI=
+Received: by mail-oo1-f48.google.com with SMTP id s17so1522600ooe.6;
+        Fri, 18 Sep 2020 08:36:13 -0700 (PDT)
+X-Gm-Message-State: AOAM531qvkywFHGt/fziAqi837EXC/dl4bzU7IiwdeAkhzBxp1Yd+CZv
+        mL8mfag7Gk10hWIo9zjHiBsF9HUnuhYTJaKMUQ==
+X-Google-Smtp-Source: ABdhPJwaNmplyhbL9ZZkhg3gsZ4yWwcfCyiPNhijxsnAzD2PsWil/W/tZCTbumQWjh0J1DxfW0sB1xIJ+ijilzOi29k=
+X-Received: by 2002:a4a:d306:: with SMTP id g6mr24544764oos.25.1600443372327;
+ Fri, 18 Sep 2020 08:36:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200911154004.28354-1-post@lespocky.de> <20200911154004.28354-4-post@lespocky.de>
+ <20200915203735.GB2453633@bogus> <4676987.BC07iakZNo@ada>
+In-Reply-To: <4676987.BC07iakZNo@ada>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 18 Sep 2020 09:35:59 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq++aTK=Us1_z0qh_q_iS8UJHnOLHzgzey3KZMSMSo9jzw@mail.gmail.com>
+Message-ID: <CAL_Jsq++aTK=Us1_z0qh_q_iS8UJHnOLHzgzey3KZMSMSo9jzw@mail.gmail.com>
+Subject: Re: [PATCH v4 3/3] dt-bindings: leds: Convert pwm to yaml
+To:     Alexander Dahl <ada@thorsis.com>
+Cc:     Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Alexander Dahl <post@lespocky.de>, devicetree@vger.kernel.org,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ipi_teardown() is used only when CONFIG_HOTPLUG_CPU is set.
+On Fri, Sep 18, 2020 at 9:12 AM Alexander Dahl <ada@thorsis.com> wrote:
+>
+> Hello Rob,
+>
+> thanks for your feedback. I have some questions/remarks on this new yaml
+> binding stuff before sending v5 (which will also replace patch 1/3 with a
+> different approach btw).
+>
+> Am Dienstag, 15. September 2020, 22:37:35 CEST schrieb Rob Herring:
+> > On Fri, Sep 11, 2020 at 05:40:04PM +0200, Alexander Dahl wrote:
+> > > The example was adapted slightly to make use of the 'function' and
+> > > 'color' properties.  License discussed with the original author.
+> > >
+> > > Suggested-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+> > > Signed-off-by: Alexander Dahl <post@lespocky.de>
+> > > Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+> > > Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> > > ---
+> > >
+> > > Notes:
+> > >     v3 -> v4:
+> > >       * added Cc to original author of the binding
+> > >
+> > >     v2 -> v3:
+> > >       * changed license identifier to recommended one
+> > >       * added Acked-by
+> > >
+> > >     v2:
+> > >       * added this patch to series (Suggested-by: Jacek Anaszewski)
+> > >
+> > >  .../devicetree/bindings/leds/leds-pwm.txt     | 50 -----------
+> > >  .../devicetree/bindings/leds/leds-pwm.yaml    | 85 +++++++++++++++++=
+++
+> > >  2 files changed, 85 insertions(+), 50 deletions(-)
+> > >  delete mode 100644 Documentation/devicetree/bindings/leds/leds-pwm.t=
+xt
+> > >  create mode 100644 Documentation/devicetree/bindings/leds/leds-pwm.y=
+aml
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/leds/leds-pwm.txt
+> > > b/Documentation/devicetree/bindings/leds/leds-pwm.txt deleted file mo=
+de
+> > > 100644
+> > > index 6c6583c35f2f..000000000000
+> > > --- a/Documentation/devicetree/bindings/leds/leds-pwm.txt
+> > > +++ /dev/null
+> > > @@ -1,50 +0,0 @@
+> > > -LED connected to PWM
+> > > -
+> > > -Required properties:
+> > > -- compatible : should be "pwm-leds".
+> > > -
+> > > -Each LED is represented as a sub-node of the pwm-leds device.  Each
+> > > -node's name represents the name of the corresponding LED.
+> > > -
+> > > -LED sub-node properties:
+> > > -- pwms : PWM property to point to the PWM device (phandle)/port (id)=
+ and
+> > > to -  specify the period time to be used: <&phandle id period_ns>;
+> > > -- pwm-names : (optional) Name to be used by the PWM subsystem for th=
+e PWM
+> > > device -  For the pwms and pwm-names property please refer to:
+> > > -  Documentation/devicetree/bindings/pwm/pwm.txt
+> > > -- max-brightness : Maximum brightness possible for the LED
+> > > -- active-low : (optional) For PWMs where the LED is wired to supply
+> > > -  rather than ground.
+> > > -- label :  (optional)
+> > > -  see Documentation/devicetree/bindings/leds/common.txt
+> > > -- linux,default-trigger :  (optional)
+> > > -  see Documentation/devicetree/bindings/leds/common.txt
+> > > -
+> > > -Example:
+> > > -
+> > > -twl_pwm: pwm {
+> > > -   /* provides two PWMs (id 0, 1 for PWM1 and PWM2) */
+> > > -   compatible =3D "ti,twl6030-pwm";
+> > > -   #pwm-cells =3D <2>;
+> > > -};
+> > > -
+> > > -twl_pwmled: pwmled {
+> > > -   /* provides one PWM (id 0 for Charing indicator LED) */
+> > > -   compatible =3D "ti,twl6030-pwmled";
+> > > -   #pwm-cells =3D <2>;
+> > > -};
+> > > -
+> > > -pwmleds {
+> > > -   compatible =3D "pwm-leds";
+> > > -   kpad {
+> > > -           label =3D "omap4::keypad";
+> > > -           pwms =3D <&twl_pwm 0 7812500>;
+> > > -           max-brightness =3D <127>;
+> > > -   };
+> > > -
+> > > -   charging {
+> > > -           label =3D "omap4:green:chrg";
+> > > -           pwms =3D <&twl_pwmled 0 7812500>;
+> > > -           max-brightness =3D <255>;
+> > > -   };
+> > > -};
+> > > diff --git a/Documentation/devicetree/bindings/leds/leds-pwm.yaml
+> > > b/Documentation/devicetree/bindings/leds/leds-pwm.yaml new file mode
+> > > 100644
+> > > index 000000000000..c74867492424
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/leds/leds-pwm.yaml
+> > > @@ -0,0 +1,85 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/leds/leds-pwm.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: LEDs connected to PWM
+> > > +
+> > > +maintainers:
+> > > +  - Pavel Machek <pavel@ucw.cz>
+> > > +
+> > > +description:
+> > > +  Each LED is represented as a sub-node of the pwm-leds device.  Eac=
+h
+> > > +  node's name represents the name of the corresponding LED.
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    const: pwm-leds
+> > > +
+> > > +patternProperties:
+> >
+> > > +  "^pwm-led-([0-9a-f])$":
+> > '^led-([0-9a-f])' would be my preference. A bit more on that below.
+>
+> Fine for me.
+>
+> > What about a single child case?
+>
+> One child or multiple childs.  I found .dts files with one to four sub-no=
+des
+> of the pwm-leds device in current master.
 
-Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
----
- arch/arm64/kernel/smp.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+For the single child case, you need to allow for just 'led' then. So
+this I think: '^led(-[0-9a-f]+)?$'
 
-diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-index b6bde2675ccc..82e75fc2c903 100644
---- a/arch/arm64/kernel/smp.c
-+++ b/arch/arm64/kernel/smp.c
-@@ -82,9 +82,9 @@ static int nr_ipi __read_mostly = NR_IPI;
- static struct irq_desc *ipi_desc[NR_IPI] __read_mostly;
- 
- static void ipi_setup(int cpu);
--static void ipi_teardown(int cpu);
- 
- #ifdef CONFIG_HOTPLUG_CPU
-+static void ipi_teardown(int cpu);
- static int op_cpu_kill(unsigned int cpu);
- #else
- static inline int op_cpu_kill(unsigned int cpu)
-@@ -964,6 +964,7 @@ static void ipi_setup(int cpu)
- 		enable_percpu_irq(ipi_irq_base + i, 0);
- }
- 
-+#ifdef CONFIG_HOTPLUG_CPU
- static void ipi_teardown(int cpu)
- {
- 	int i;
-@@ -974,6 +975,7 @@ static void ipi_teardown(int cpu)
- 	for (i = 0; i < nr_ipi; i++)
- 		disable_percpu_irq(ipi_irq_base + i);
- }
-+#endif
- 
- void __init set_smp_ipi_range(int ipi_base, int n)
- {
--- 
-2.28.0
+> > > +    type: object
+> > > +
+> > > +    $ref: common.yaml#
+> > > +
+> > > +    properties:
+> > > +      pwms:
+> > > +        description:
+> > > +          "PWM property to point to the PWM device (phandle)/port (i=
+d)
+> > > +          and to specify the period time to be used:
+> > > +          <&phandle id period_ns>;"
+> >
+> > No need to redefine a common property.
+>
+> Should this look like in 'Documentation/devicetree/bindings/leds/backligh=
+t/
+> pwm-backlight.yaml' then?
 
+Yes.
+
+>
+> > What is needed is how many pwms? I'd assume 1 only: 'maxItems: 1'
+>
+> Yes, one pwm channel per LED.
+>
+> > > +
+> > > +      pwm-names:
+> > > +        description:
+> > > +          "Name to be used by the PWM subsystem for the PWM device F=
+or
+> > > +          the pwms and pwm-names property please refer to:
+> > > +          Documentation/devicetree/bindings/pwm/pwm.txt"
+> >
+> > Same here.
+> >
+> > > +
+> > > +      max-brightness:
+> > > +        description:
+> > > +          Maximum brightness possible for the LED
+> >
+> > Needs a type $ref.
+>
+> fwnode_property_read_u32() is used to read this.
+
+$ref: /schemas/types.yaml#/definitions/uint32
+
+>
+> >
+> > > +
+> > > +      active-low:
+> > > +        description:
+> > > +          For PWMs where the LED is wired to supply rather than grou=
+nd.
+> >
+> > type: boolean
+> >
+> > > +
+> > > +    required:
+> > > +      - pwms
+> > > +      - max-brightness
+> >
+> > additionalProperties: false
+> >
+> > That will cause errors if child node names were not consistent (no one
+> > checked, so they won't be). We could just allow anything, but I prefer
+> > to move things to be consistent yet try to capture any existing pattern=
+.
+>
+> Child node names follow no scheme at all currently as far as I could see,
+> examples from real current .dts files:
+>
+>   panel, led-red, blueled, kpad, front, green, pwm_blue, ds1, network_red=
+,
+> alarm-brightness, pmu_stat, overo, heartbeat, power, =E2=80=A6
+
+So you can do this to allow any child node name:
+
+additonalProperties:
+  type: object
+  $ref: common.yaml#
+
+  ... everything you have under pwm-led-*
+
+Or how gpio-keys.yaml was done also works.
+
+Rob
