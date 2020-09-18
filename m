@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6432726F2EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:03:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 781B826F2EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728282AbgIRDC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 23:02:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53366 "EHLO mail.kernel.org"
+        id S1730531AbgIRDCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 23:02:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727472AbgIRCFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:05:13 -0400
+        id S1727502AbgIRCFS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:05:18 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5179C23718;
-        Fri, 18 Sep 2020 02:05:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D3B5F23718;
+        Fri, 18 Sep 2020 02:05:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394712;
-        bh=E350A/ai66N1iyvBYmzJeu358jXKJGXYFP/kPyZJ50Y=;
+        s=default; t=1600394718;
+        bh=1mIj69/AdI66ecJ3kzCGsxsb13fML65mPCSlmdkpGvE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y4K3AlcUu93pfR3PzXwm14J2zELssw3IEClIuJjT7334dkRimjVena0C1qAmREKYx
-         Zcl+wiBOB9zsSgS9qOa0W94uZOShQe41mpYdGvmM1/WTZDkjyRhJTz4edN/VQiz4Bk
-         oixKCutxSja/5AJQ04KFKvtrbyrkKkoSiaZ81wxg=
+        b=Oa22KzgkC5FUx3BEwtIBu+GyabC1Ya5xkW1AxuC78IQWsN6zCUZwX0ZsWhqA2+Lo4
+         cdnadsWiwp7F90a2q9N/7vYk6Zl9PaYYrMu7VMEgUiwktUJ0vwTebTkk+P0Jz1zWS/
+         qfKRWf5bVdLCZlw2e/30g/Dn6eZGZ1MZqCvAIQr8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Gabriel Ravier <gabravier@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+Cc:     Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 197/330] tools: gpio-hammer: Avoid potential overflow in main
-Date:   Thu, 17 Sep 2020 21:58:57 -0400
-Message-Id: <20200918020110.2063155-197-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 202/330] proc: Use new infrastructure to fix deadlocks in execve
+Date:   Thu, 17 Sep 2020 21:59:02 -0400
+Message-Id: <20200918020110.2063155-202-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -42,57 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gabriel Ravier <gabravier@gmail.com>
+From: Bernd Edlinger <bernd.edlinger@hotmail.de>
 
-[ Upstream commit d1ee7e1f5c9191afb69ce46cc7752e4257340a31 ]
+[ Upstream commit 2db9dbf71bf98d02a0bf33e798e5bfd2a9944696 ]
 
-If '-o' was used more than 64 times in a single invocation of gpio-hammer,
-this could lead to an overflow of the 'lines' array. This commit fixes
-this by avoiding the overflow and giving a proper diagnostic back to the
-user
+This changes lock_trace to use the new exec_update_mutex
+instead of cred_guard_mutex.
 
-Signed-off-by: Gabriel Ravier <gabravier@gmail.com>
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+This fixes possible deadlocks when the trace is accessing
+/proc/$pid/stack for instance.
+
+This should be safe, as the credentials are only used for reading,
+and task->mm is updated on execve under the new exec_update_mutex.
+
+Signed-off-by: Bernd Edlinger <bernd.edlinger@hotmail.de>
+Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/gpio/gpio-hammer.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+ fs/proc/base.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/gpio/gpio-hammer.c b/tools/gpio/gpio-hammer.c
-index 0e0060a6eb346..083399d276e4e 100644
---- a/tools/gpio/gpio-hammer.c
-+++ b/tools/gpio/gpio-hammer.c
-@@ -135,7 +135,14 @@ int main(int argc, char **argv)
- 			device_name = optarg;
- 			break;
- 		case 'o':
--			lines[i] = strtoul(optarg, NULL, 10);
-+			/*
-+			 * Avoid overflow. Do not immediately error, we want to
-+			 * be able to accurately report on the amount of times
-+			 * '-o' was given to give an accurate error message
-+			 */
-+			if (i < GPIOHANDLES_MAX)
-+				lines[i] = strtoul(optarg, NULL, 10);
-+
- 			i++;
- 			break;
- 		case '?':
-@@ -143,6 +150,14 @@ int main(int argc, char **argv)
- 			return -1;
- 		}
- 	}
-+
-+	if (i >= GPIOHANDLES_MAX) {
-+		fprintf(stderr,
-+			"Only %d occurences of '-o' are allowed, %d were found\n",
-+			GPIOHANDLES_MAX, i + 1);
-+		return -1;
-+	}
-+
- 	nlines = i;
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index ebea9501afb84..4fdfe4faa74ee 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -403,11 +403,11 @@ print0:
  
- 	if (!device_name || !nlines) {
+ static int lock_trace(struct task_struct *task)
+ {
+-	int err = mutex_lock_killable(&task->signal->cred_guard_mutex);
++	int err = mutex_lock_killable(&task->signal->exec_update_mutex);
+ 	if (err)
+ 		return err;
+ 	if (!ptrace_may_access(task, PTRACE_MODE_ATTACH_FSCREDS)) {
+-		mutex_unlock(&task->signal->cred_guard_mutex);
++		mutex_unlock(&task->signal->exec_update_mutex);
+ 		return -EPERM;
+ 	}
+ 	return 0;
+@@ -415,7 +415,7 @@ static int lock_trace(struct task_struct *task)
+ 
+ static void unlock_trace(struct task_struct *task)
+ {
+-	mutex_unlock(&task->signal->cred_guard_mutex);
++	mutex_unlock(&task->signal->exec_update_mutex);
+ }
+ 
+ #ifdef CONFIG_STACKTRACE
 -- 
 2.25.1
 
