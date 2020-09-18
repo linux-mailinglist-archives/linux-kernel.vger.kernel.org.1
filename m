@@ -2,84 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 689FE26F0D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3245B26EFCB
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:38:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730276AbgIRCqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:46:38 -0400
-Received: from mga12.intel.com ([192.55.52.136]:31936 "EHLO mga12.intel.com"
+        id S1730120AbgIRCiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:38:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728370AbgIRCJv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:09:51 -0400
-IronPort-SDR: bORU1zvJR/JQw82R2v53a3kaBXp12yg42rry5d1mblBZTNkDJWy0AzHu66MtiL8mPLluC3qtpw
- HweWkdO+YgyA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="139337419"
-X-IronPort-AV: E=Sophos;i="5.77,273,1596524400"; 
-   d="scan'208";a="139337419"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 19:09:46 -0700
-IronPort-SDR: G9KvBwy6V2uVOVk3tYQOh0Ifnm8hTAnrhmaSt2F5hjw+Lq0hrVb+eto6gRVk9I5sM8WCmZIAYJ
- ntx+nlL77N9g==
-X-IronPort-AV: E=Sophos;i="5.77,273,1596524400"; 
-   d="scan'208";a="307701014"
-Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 19:09:43 -0700
-Date:   Thu, 17 Sep 2020 19:09:40 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Haitao Huang <haitao.huang@linux.intel.com>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jethro Beekman <jethro@fortanix.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Seth Moore <sethmo@google.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 13/24] x86/sgx: Add SGX_IOC_ENCLAVE_ADD_PAGES
-Message-ID: <20200918020940.GA14678@sjchrist-ice>
-References: <20200915110522.893152-1-jarkko.sakkinen@linux.intel.com>
- <20200915110522.893152-14-jarkko.sakkinen@linux.intel.com>
- <op.0q2prldowjvjmi@mqcpg7oapc828.gar.corp.intel.com>
- <20200917160206.GF8530@linux.intel.com>
- <op.0q3pw0stwjvjmi@mqcpg7oapc828.gar.corp.intel.com>
+        id S1726841AbgIRCM0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:12:26 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3EABB2388D;
+        Fri, 18 Sep 2020 02:12:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600395142;
+        bh=GqACB4be1R3889Po8RnRysPSKKYnh/7Y2Rmgh6Hv12U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=dQADWAe0gKPkKEyXkAJj4ou3IsdwTUChGckO1SNdY3N8X+uA9gEoEQGm/IeJRKqQ6
+         kFpA03/57rBpDAlmrUpCVwf7YytLXCUzigHLzcMzACwjcTGdb3ncVBU0mx/5qyvNdT
+         nfE4EBcDUnHs/2us4LD9rXM6bVdMcbGuaVKcVC3Y=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Jia He <justin.he@arm.com>, Yibo Cai <Yibo.Cai@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>, linux-mm@kvack.org
+Subject: [PATCH AUTOSEL 4.14 001/127] mm: fix double page fault on arm64 if PTE_AF is cleared
+Date:   Thu, 17 Sep 2020 22:10:14 -0400
+Message-Id: <20200918021220.2066485-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <op.0q3pw0stwjvjmi@mqcpg7oapc828.gar.corp.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 01:35:10PM -0500, Haitao Huang wrote:
-> On Thu, 17 Sep 2020 11:02:06 -0500, Jarkko Sakkinen
-> <jarkko.sakkinen@linux.intel.com> wrote:
-> > 
-> > Right, I do get the OOM case but wouldn't in that case the reasonable
-> > thing to do destroy the enclave that is not even running? I mean that
-> > means that we are globally out of EPC.
-> > 
-> 
-> I would say it could be a policy, but not the only one. If it does not make
-> much difference to kernel, IMHO we should  not set it in stone now.
-> Debugging is also huge benefit to me.
+From: Jia He <justin.he@arm.com>
 
-Agreed, an EPC cgroup is the proper way to define/enforce what happens when
-there is EPC pressure.  E.g. if process A is consuming 99% of the EPC, then
-it doesn't make sense to unconditionally kill enclaves from process B.  If
-the admin wants to give process A priority, so be it, but such a decision
-shouldn't be baked into the kernel.
+[ Upstream commit 83d116c53058d505ddef051e90ab27f57015b025 ]
 
-This series obviously doesn't provide an EPC cgroup, but that doesn't mean
-we can't make decisions that will play nice with a cgroup in the future.
+When we tested pmdk unit test [1] vmmalloc_fork TEST3 on arm64 guest, there
+will be a double page fault in __copy_from_user_inatomic of cow_user_page.
+
+To reproduce the bug, the cmd is as follows after you deployed everything:
+make -C src/test/vmmalloc_fork/ TEST_TIME=60m check
+
+Below call trace is from arm64 do_page_fault for debugging purpose:
+[  110.016195] Call trace:
+[  110.016826]  do_page_fault+0x5a4/0x690
+[  110.017812]  do_mem_abort+0x50/0xb0
+[  110.018726]  el1_da+0x20/0xc4
+[  110.019492]  __arch_copy_from_user+0x180/0x280
+[  110.020646]  do_wp_page+0xb0/0x860
+[  110.021517]  __handle_mm_fault+0x994/0x1338
+[  110.022606]  handle_mm_fault+0xe8/0x180
+[  110.023584]  do_page_fault+0x240/0x690
+[  110.024535]  do_mem_abort+0x50/0xb0
+[  110.025423]  el0_da+0x20/0x24
+
+The pte info before __copy_from_user_inatomic is (PTE_AF is cleared):
+[ffff9b007000] pgd=000000023d4f8003, pud=000000023da9b003,
+               pmd=000000023d4b3003, pte=360000298607bd3
+
+As told by Catalin: "On arm64 without hardware Access Flag, copying from
+user will fail because the pte is old and cannot be marked young. So we
+always end up with zeroed page after fork() + CoW for pfn mappings. we
+don't always have a hardware-managed access flag on arm64."
+
+This patch fixes it by calling pte_mkyoung. Also, the parameter is
+changed because vmf should be passed to cow_user_page()
+
+Add a WARN_ON_ONCE when __copy_from_user_inatomic() returns error
+in case there can be some obscure use-case (by Kirill).
+
+[1] https://github.com/pmem/pmdk/tree/master/src/test/vmmalloc_fork
+
+Signed-off-by: Jia He <justin.he@arm.com>
+Reported-by: Yibo Cai <Yibo.Cai@arm.com>
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ mm/memory.c | 104 ++++++++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 89 insertions(+), 15 deletions(-)
+
+diff --git a/mm/memory.c b/mm/memory.c
+index e9bce27bc18c3..07188929a30a1 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -117,6 +117,18 @@ int randomize_va_space __read_mostly =
+ 					2;
+ #endif
+ 
++#ifndef arch_faults_on_old_pte
++static inline bool arch_faults_on_old_pte(void)
++{
++	/*
++	 * Those arches which don't have hw access flag feature need to
++	 * implement their own helper. By default, "true" means pagefault
++	 * will be hit on old pte.
++	 */
++	return true;
++}
++#endif
++
+ static int __init disable_randmaps(char *s)
+ {
+ 	randomize_va_space = 0;
+@@ -2324,32 +2336,82 @@ static inline int pte_unmap_same(struct mm_struct *mm, pmd_t *pmd,
+ 	return same;
+ }
+ 
+-static inline void cow_user_page(struct page *dst, struct page *src, unsigned long va, struct vm_area_struct *vma)
++static inline bool cow_user_page(struct page *dst, struct page *src,
++				 struct vm_fault *vmf)
+ {
++	bool ret;
++	void *kaddr;
++	void __user *uaddr;
++	bool force_mkyoung;
++	struct vm_area_struct *vma = vmf->vma;
++	struct mm_struct *mm = vma->vm_mm;
++	unsigned long addr = vmf->address;
++
+ 	debug_dma_assert_idle(src);
+ 
++	if (likely(src)) {
++		copy_user_highpage(dst, src, addr, vma);
++		return true;
++	}
++
+ 	/*
+ 	 * If the source page was a PFN mapping, we don't have
+ 	 * a "struct page" for it. We do a best-effort copy by
+ 	 * just copying from the original user address. If that
+ 	 * fails, we just zero-fill it. Live with it.
+ 	 */
+-	if (unlikely(!src)) {
+-		void *kaddr = kmap_atomic(dst);
+-		void __user *uaddr = (void __user *)(va & PAGE_MASK);
++	kaddr = kmap_atomic(dst);
++	uaddr = (void __user *)(addr & PAGE_MASK);
++
++	/*
++	 * On architectures with software "accessed" bits, we would
++	 * take a double page fault, so mark it accessed here.
++	 */
++	force_mkyoung = arch_faults_on_old_pte() && !pte_young(vmf->orig_pte);
++	if (force_mkyoung) {
++		pte_t entry;
++
++		vmf->pte = pte_offset_map_lock(mm, vmf->pmd, addr, &vmf->ptl);
++		if (!likely(pte_same(*vmf->pte, vmf->orig_pte))) {
++			/*
++			 * Other thread has already handled the fault
++			 * and we don't need to do anything. If it's
++			 * not the case, the fault will be triggered
++			 * again on the same address.
++			 */
++			ret = false;
++			goto pte_unlock;
++		}
+ 
++		entry = pte_mkyoung(vmf->orig_pte);
++		if (ptep_set_access_flags(vma, addr, vmf->pte, entry, 0))
++			update_mmu_cache(vma, addr, vmf->pte);
++	}
++
++	/*
++	 * This really shouldn't fail, because the page is there
++	 * in the page tables. But it might just be unreadable,
++	 * in which case we just give up and fill the result with
++	 * zeroes.
++	 */
++	if (__copy_from_user_inatomic(kaddr, uaddr, PAGE_SIZE)) {
+ 		/*
+-		 * This really shouldn't fail, because the page is there
+-		 * in the page tables. But it might just be unreadable,
+-		 * in which case we just give up and fill the result with
+-		 * zeroes.
++		 * Give a warn in case there can be some obscure
++		 * use-case
+ 		 */
+-		if (__copy_from_user_inatomic(kaddr, uaddr, PAGE_SIZE))
+-			clear_page(kaddr);
+-		kunmap_atomic(kaddr);
+-		flush_dcache_page(dst);
+-	} else
+-		copy_user_highpage(dst, src, va, vma);
++		WARN_ON_ONCE(1);
++		clear_page(kaddr);
++	}
++
++	ret = true;
++
++pte_unlock:
++	if (force_mkyoung)
++		pte_unmap_unlock(vmf->pte, vmf->ptl);
++	kunmap_atomic(kaddr);
++	flush_dcache_page(dst);
++
++	return ret;
+ }
+ 
+ static gfp_t __get_fault_gfp_mask(struct vm_area_struct *vma)
+@@ -2503,7 +2565,19 @@ static int wp_page_copy(struct vm_fault *vmf)
+ 				vmf->address);
+ 		if (!new_page)
+ 			goto oom;
+-		cow_user_page(new_page, old_page, vmf->address, vma);
++
++		if (!cow_user_page(new_page, old_page, vmf)) {
++			/*
++			 * COW failed, if the fault was solved by other,
++			 * it's fine. If not, userspace would re-fault on
++			 * the same address and we will handle the fault
++			 * from the second attempt.
++			 */
++			put_page(new_page);
++			if (old_page)
++				put_page(old_page);
++			return 0;
++		}
+ 	}
+ 
+ 	if (mem_cgroup_try_charge(new_page, mm, GFP_KERNEL, &memcg, false))
+-- 
+2.25.1
+
