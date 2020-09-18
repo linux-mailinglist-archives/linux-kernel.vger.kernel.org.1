@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F1426EB04
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FD5126EB01
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726806AbgIRCCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:02:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47698 "EHLO mail.kernel.org"
+        id S1726115AbgIRCCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:02:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47702 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726752AbgIRCCa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:02:30 -0400
+        id S1726746AbgIRCC3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:02:29 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4746F2371F;
-        Fri, 18 Sep 2020 02:02:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C91F323741;
+        Fri, 18 Sep 2020 02:02:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394545;
-        bh=uLyab3reV9Cbu2r3VvlqvXJIVfiUsg5LorqQCGrHO9U=;
+        s=default; t=1600394547;
+        bh=gIhC3ilpTfqrolrhepjUWk2QSeVf3R4QWY5CuNHCfWE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C7u4CnfpBS7T6jYpzgHQzWelVgo5zboB+DB6Dq5o7kSy/4JKiXWfIwkp30Hwq/8cu
-         vRVCDOZPrqa7ihBKIqdU3TMgO+XZzFTPsCSfOPku77h9eAGGxmOAf3+9P1PfUC+r8O
-         OMKptyNRMQA2PMi0DzEtBpaFY0PC/pk1bgP12op0=
+        b=LOO6QKLYLr+xCVL7uFXInMt1joP5edQIJgjXgL65MsZFwzRwxA20BdOPyJtlqfuqf
+         SjndfXVgQAUT26vyPFq7xCqMoGbmLKxiBe5uKR0iudcv38w41+GVOcEJCxh0FS1Mgm
+         tMHZQO6F2Mpn3z7rWmwvwsC9i379ySgVs6u+EL4k=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Markus Elfring <elfring@users.sourceforge.net>,
-        Steve French <stfrench@microsoft.com>,
-        Sasha Levin <sashal@kernel.org>, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org
-Subject: [PATCH AUTOSEL 5.4 062/330] CIFS: Use common error handling code in smb2_ioctl_query_info()
-Date:   Thu, 17 Sep 2020 21:56:42 -0400
-Message-Id: <20200918020110.2063155-62-sashal@kernel.org>
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>, Ramon Pantin <pantin@google.com>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: [PATCH AUTOSEL 5.4 064/330] f2fs: stop GC when the victim becomes fully valid
+Date:   Thu, 17 Sep 2020 21:56:44 -0400
+Message-Id: <20200918020110.2063155-64-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -43,92 +42,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
+From: Jaegeuk Kim <jaegeuk@kernel.org>
 
-[ Upstream commit 2b1116bbe898aefdf584838448c6869f69851e0f ]
+[ Upstream commit 803e74be04b32f7785742dcabfc62116718fbb06 ]
 
-Move the same error code assignments so that such exception handling
-can be better reused at the end of this function.
+We must stop GC, once the segment becomes fully valid. Otherwise, it can
+produce another dirty segments by moving valid blocks in the segment partially.
 
-This issue was detected by using the Coccinelle software.
+Ramon hit no free segment panic sometimes and saw this case happens when
+validating reliable file pinning feature.
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Signed-off-by: Ramon Pantin <pantin@google.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/smb2ops.c | 45 +++++++++++++++++++++++----------------------
- 1 file changed, 23 insertions(+), 22 deletions(-)
+ fs/f2fs/gc.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
-index 7ccbfc6564787..318d805e74d40 100644
---- a/fs/cifs/smb2ops.c
-+++ b/fs/cifs/smb2ops.c
-@@ -1565,35 +1565,32 @@ smb2_ioctl_query_info(const unsigned int xid,
- 		if (le32_to_cpu(io_rsp->OutputCount) < qi.input_buffer_length)
- 			qi.input_buffer_length = le32_to_cpu(io_rsp->OutputCount);
- 		if (qi.input_buffer_length > 0 &&
--		    le32_to_cpu(io_rsp->OutputOffset) + qi.input_buffer_length > rsp_iov[1].iov_len) {
--			rc = -EFAULT;
--			goto iqinf_exit;
--		}
--		if (copy_to_user(&pqi->input_buffer_length, &qi.input_buffer_length,
--				 sizeof(qi.input_buffer_length))) {
--			rc = -EFAULT;
--			goto iqinf_exit;
--		}
-+		    le32_to_cpu(io_rsp->OutputOffset) + qi.input_buffer_length
-+		    > rsp_iov[1].iov_len)
-+			goto e_fault;
-+
-+		if (copy_to_user(&pqi->input_buffer_length,
-+				 &qi.input_buffer_length,
-+				 sizeof(qi.input_buffer_length)))
-+			goto e_fault;
-+
- 		if (copy_to_user((void __user *)pqi + sizeof(struct smb_query_info),
- 				 (const void *)io_rsp + le32_to_cpu(io_rsp->OutputOffset),
--				 qi.input_buffer_length)) {
--			rc = -EFAULT;
--			goto iqinf_exit;
--		}
-+				 qi.input_buffer_length))
-+			goto e_fault;
- 	} else {
- 		pqi = (struct smb_query_info __user *)arg;
- 		qi_rsp = (struct smb2_query_info_rsp *)rsp_iov[1].iov_base;
- 		if (le32_to_cpu(qi_rsp->OutputBufferLength) < qi.input_buffer_length)
- 			qi.input_buffer_length = le32_to_cpu(qi_rsp->OutputBufferLength);
--		if (copy_to_user(&pqi->input_buffer_length, &qi.input_buffer_length,
--				 sizeof(qi.input_buffer_length))) {
--			rc = -EFAULT;
--			goto iqinf_exit;
--		}
--		if (copy_to_user(pqi + 1, qi_rsp->Buffer, qi.input_buffer_length)) {
--			rc = -EFAULT;
--			goto iqinf_exit;
--		}
-+		if (copy_to_user(&pqi->input_buffer_length,
-+				 &qi.input_buffer_length,
-+				 sizeof(qi.input_buffer_length)))
-+			goto e_fault;
-+
-+		if (copy_to_user(pqi + 1, qi_rsp->Buffer,
-+				 qi.input_buffer_length))
-+			goto e_fault;
- 	}
+diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
+index e611d768efde3..a78aa5480454f 100644
+--- a/fs/f2fs/gc.c
++++ b/fs/f2fs/gc.c
+@@ -1012,8 +1012,14 @@ next_step:
+ 		block_t start_bidx;
+ 		nid_t nid = le32_to_cpu(entry->nid);
  
-  iqinf_exit:
-@@ -1609,6 +1606,10 @@ smb2_ioctl_query_info(const unsigned int xid,
- 	free_rsp_buf(resp_buftype[1], rsp_iov[1].iov_base);
- 	free_rsp_buf(resp_buftype[2], rsp_iov[2].iov_base);
- 	return rc;
-+
-+e_fault:
-+	rc = -EFAULT;
-+	goto iqinf_exit;
- }
+-		/* stop BG_GC if there is not enough free sections. */
+-		if (gc_type == BG_GC && has_not_enough_free_secs(sbi, 0, 0))
++		/*
++		 * stop BG_GC if there is not enough free sections.
++		 * Or, stop GC if the segment becomes fully valid caused by
++		 * race condition along with SSR block allocation.
++		 */
++		if ((gc_type == BG_GC && has_not_enough_free_secs(sbi, 0, 0)) ||
++				get_valid_blocks(sbi, segno, false) ==
++							sbi->blocks_per_seg)
+ 			return submitted;
  
- static ssize_t
+ 		if (check_valid_map(sbi, segno, off) == 0)
 -- 
 2.25.1
 
