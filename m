@@ -2,93 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9104426FCC0
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12C3526FCC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726445AbgIRMmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726547AbgIRMmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 08:42:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726455AbgIRMmI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 18 Sep 2020 08:42:08 -0400
-Received: from mga06.intel.com ([134.134.136.31]:51066 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725955AbgIRMmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 08:42:07 -0400
-IronPort-SDR: P+R7o6vUiPwg2ztVB4Bl6NGA1altU1K4ufd19k764z0BTSq5RXNEj036NRSmvJfZw4PqTbyfBE
- r7nMbT3qxQSA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="221483497"
-X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
-   d="scan'208";a="221483497"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 05:42:06 -0700
-IronPort-SDR: GSuMos98CwJ7VIRQPmMN9n0J29vwQjETsA+YfVUC259OSN1ws9GfxVs0zQXKoV08he8PFS9gMr
- BY7EboO4nZQw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
-   d="scan'208";a="336791627"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 18 Sep 2020 05:42:03 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kJFiC-00Ha71-8X; Fri, 18 Sep 2020 15:42:00 +0300
-Date:   Fri, 18 Sep 2020 15:42:00 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Sakari Ailus <sakari.ailus@iki.fi>
-Cc:     Dan Scally <djrscally@gmail.com>, gregkh@linuxfoundation.org,
-        rafael@kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, heikki.krogerus@linux.intel.com,
-        kieran.bingham@ideasonboard.com, jorhand@linux.microsoft.com,
-        kitakar@gmail.com
-Subject: Re: [PATCH v2] software_node: Add support for fwnode_graph*() family
- of functions
-Message-ID: <20200918124200.GY3956970@smile.fi.intel.com>
-References: <20200915232827.3416-1-djrscally@gmail.com>
- <20200916091707.GL834@valkosipuli.retiisi.org.uk>
- <7b81d743-736d-62d1-7072-d08759a0d5d7@gmail.com>
- <20200918062237.GP834@valkosipuli.retiisi.org.uk>
- <294db5cf-4c95-d56c-0a42-60ca95393c06@gmail.com>
- <20200918073433.GR834@valkosipuli.retiisi.org.uk>
- <9cdd8073-430b-773a-6aa7-4698110a5416@gmail.com>
- <20200918075741.GS834@valkosipuli.retiisi.org.uk>
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6A7EC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 05:42:07 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id c18so5473466wrm.9
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 05:42:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SOcYopzpVA91Ur8JOndAUuW5kC5KQpU+aqaU8ciX7/I=;
+        b=XJthRxMj7p5FVQ8UB8QHPjpkyrZ1DYRAiW2zVjRAhJUW0e0QzTxX9S0LywyZSJEGAX
+         oQ6rcMf41/DYJXO67/Xq8aoMk84qRFYHTNdeA/7L9sScQbt/SEfZaJSlI5KxMxxR+CIT
+         M/6Aec09cMTtIOtfSD5s3TkOo40GHFODxElv0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=SOcYopzpVA91Ur8JOndAUuW5kC5KQpU+aqaU8ciX7/I=;
+        b=hSPL2yiK/w/E2KOMkYYXI3M/cwzzrYP8d7Yrov05z0M7jVKvlLyLXUiFr2WeI8/kyH
+         J95XKSXTjhePcaZvJHXzCD3rZ3qP3ZVfnjwR3wJ2VQ/5l5utKMRnS1haEklY7af8H1/D
+         +L2him7ZRER3pnX1KwezishatepST0/taZEdGok3QHiKx8+WBuZm0c/BH/rYg8Fi8o1f
+         LaiQAsGrzQsc9zRtNDnHeJxPMuUojMskTgWhDkkv0mdW+30boQkn4cRm5/1tmddqZ7Lt
+         tfXbrQ65VTWFPCVs/L37Li6pWQ0Ybi+SR/u4APIXk5mpBrbtGTdzHiqcIiYfuR27BI4s
+         gemQ==
+X-Gm-Message-State: AOAM5338EzDViy4l5CgrhNoXUcs075A04If3xVYBaxIZvmcfBZwS7XqO
+        zqSIVl4/KX8z7wYUshYSOxl8bw==
+X-Google-Smtp-Source: ABdhPJzrTC3CW6AB1dTSGBrjqUS3H6j44ck9bWQgvGGmKSFb26qrBxqU+OHgoRbREA252KDgVlNEww==
+X-Received: by 2002:a5d:4a49:: with SMTP id v9mr41100529wrs.153.1600432926218;
+        Fri, 18 Sep 2020 05:42:06 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id d2sm5156057wro.34.2020.09.18.05.42.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 05:42:05 -0700 (PDT)
+Date:   Fri, 18 Sep 2020 14:42:03 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Vaibhav Gupta <vaibhavgupta40@gmail.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Andres Salomon <dilinger@queued.net>,
+        Antonino Daplas <adaplas@gmail.com>,
+        linux-fbdev@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-geode@lists.infradead.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v1] fbdev: aty: remove CONFIG_PM container
+Message-ID: <20200918124203.GY438822@phenom.ffwll.local>
+Mail-Followup-To: Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sam Ravnborg <sam@ravnborg.org>, Paul Mackerras <paulus@samba.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Andres Salomon <dilinger@queued.net>,
+        Antonino Daplas <adaplas@gmail.com>, linux-fbdev@vger.kernel.org,
+        kernel test robot <lkp@intel.com>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-geode@lists.infradead.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20200917115313.725622-1-vaibhavgupta40@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200918075741.GS834@valkosipuli.retiisi.org.uk>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200917115313.725622-1-vaibhavgupta40@gmail.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 10:57:41AM +0300, Sakari Ailus wrote:
-> On Fri, Sep 18, 2020 at 08:46:52AM +0100, Dan Scally wrote:
-> > On 18/09/2020 08:34, Sakari Ailus wrote:
-> > > On Fri, Sep 18, 2020 at 07:49:31AM +0100, Dan Scally wrote:
-
-...
-
-> > > The secondary field is there for this purpose. But it may be not all fwnode
-> > > interface functions operate on fwnode->secondary?
-> > Let me test it; it might just require some changes to
-> > software_node_graph_get_port_parent() to check if the parent fwnode is a
-> > secondary, and if it is to return the primary instead.
+On Thu, Sep 17, 2020 at 05:23:14PM +0530, Vaibhav Gupta wrote:
+> The changes made in below mentioned commit removed CONFIG_PM containers
+> from drivers/video/fbdev/aty/atyfb_base.c but not from
+> drivers/video/fbdev/aty/atyfb.h for respective callbacks.
 > 
-> Ah, indeed. I forgot this part. I wonder if it'd cause issues to return the
-> primary if you've got the secondary swnode.
+> This resulted in error for implicit declaration for those callbacks.
 > 
-> Heikki, any idea?
+> Fixes: 348b2956d5e6 ("fbdev: aty: use generic power management")
 > 
-> Code elsewhere (e.g. V4L2 fwnode framework + drivers) assume a device is
-> identified by a single fwnode, not two --- currently the swnode graph
-> function returning port parent returns the secondary so there's no match
-> with the primary fwnode.
+> Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+> Reported-by: kernel test robot <lkp@intel.com>
 
-At least recently I made a patch (114dbb4fa7c4) to support secondary in
-device_get_next_child_node(). I'm not sure how we can do it on fwnode level.
+Applied, thanks.
+-Daniel
 
-And now I'm thinking that above mentioned change is just particular case, but
-doesn't really move entire device property API to that.
+> ---
+>  drivers/video/fbdev/aty/atyfb.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/video/fbdev/aty/atyfb.h b/drivers/video/fbdev/aty/atyfb.h
+> index a7833bc98225..551372f9b9aa 100644
+> --- a/drivers/video/fbdev/aty/atyfb.h
+> +++ b/drivers/video/fbdev/aty/atyfb.h
+> @@ -287,8 +287,8 @@ static inline void aty_st_8(int regindex, u8 val, const struct atyfb_par *par)
+>  #endif
+>  }
+>  
+> -#if defined(CONFIG_PM) || defined(CONFIG_PMAC_BACKLIGHT) || \
+> -defined (CONFIG_FB_ATY_GENERIC_LCD) || defined (CONFIG_FB_ATY_BACKLIGHT)
+> +#if defined(CONFIG_PMAC_BACKLIGHT) || defined (CONFIG_FB_ATY_GENERIC_LCD) || \
+> +defined (CONFIG_FB_ATY_BACKLIGHT)
+>  extern void aty_st_lcd(int index, u32 val, const struct atyfb_par *par);
+>  extern u32 aty_ld_lcd(int index, const struct atyfb_par *par);
+>  #endif
+> -- 
+> 2.28.0
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
