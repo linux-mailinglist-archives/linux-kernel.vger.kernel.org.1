@@ -2,90 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7E0B2708D9
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 00:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9685F2708DE
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 00:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgIRWPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 18:15:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54082 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726064AbgIRWP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 18:15:29 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 27B8C21481;
-        Fri, 18 Sep 2020 22:15:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600467329;
-        bh=E5JKXqiDmun1+oTjYUTLAStPF2gHvSooZGuOGfFiGQA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=JJFm0VxhNtdTjkxfX05cAR8JOyLbe7IG8ov6BPxX5eHXTXguwQusWMIWrT6RGGJAZ
-         AxbPkLf8NaCXBE4dRzr2Dc1YFgZAx9RSw+TYk5vq6goBpFKQ/70WQj3cpeyxeWj6rk
-         cdk1l8gr7MvT+v5Fd/PAmCX3mxLkF7q5Pu/K6X70=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id F06373523242; Fri, 18 Sep 2020 15:15:28 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 15:15:28 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 0/4] kvfree_rcu() and _LOCK_NESTING/_PREEMPT_RT
-Message-ID: <20200918221528.GX29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200918194817.48921-1-urezki@gmail.com>
+        id S1726154AbgIRWRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 18:17:12 -0400
+Received: from smtprelay0081.hostedemail.com ([216.40.44.81]:37876 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726064AbgIRWRK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 18:17:10 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id B478F180A9F5C;
+        Fri, 18 Sep 2020 22:17:09 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3351:3622:3865:3867:3868:3873:3874:4321:5007:6119:9010:10004:10400:10848:11232:11658:11914:12043:12295:12296:12297:12679:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:14777:21080:21433:21451:21627:21819:30003:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: fuel96_17095382712e
+X-Filterd-Recvd-Size: 1749
+Received: from XPS-9350 (unknown [172.58.22.179])
+        (Authenticated sender: joe@perches.com)
+        by omf15.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 18 Sep 2020 22:17:07 +0000 (UTC)
+Message-ID: <db060a64c2499fc497d50ee480696b1450c07125.camel@perches.com>
+Subject: Re: [PATCH] MAINTAINERS: fix KERNEL_BUILD entry
+From:   Joe Perches <joe@perches.com>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-kbuild@vger.kernel.org,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>
+Date:   Fri, 18 Sep 2020 15:17:05 -0700
+In-Reply-To: <20200918220431.251873-1-pierre-louis.bossart@linux.intel.com>
+References: <20200918220431.251873-1-pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918194817.48921-1-urezki@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 09:48:13PM +0200, Uladzislau Rezki (Sony) wrote:
-> Hello, folk!
+On Fri, 2020-09-18 at 17:04 -0500, Pierre-Louis Bossart wrote:
+> the get_maintainer.pl script throws the following errors:
 > 
-> This is another iteration of fixing kvfree_rcu() issues related
-> to CONFIG_PROVE_RAW_LOCK_NESTING and CONFIG_PREEMPT_RT configs.
+> Unmatched () '(open list:KERNEL BUILD + files below scripts/ (unless
+> mai...)' '' at /usr/lib/git-core/git-send-email line 546.
 > 
-> The first discussion is here https://lkml.org/lkml/2020/8/9/195.
+> error: unable to extract a valid address from:
+> linux-kbuild@vger.kernel.org (open list:KERNEL BUILD + files below
+> scripts/ (unless mai...)
 > 
-> - As an outcome of it, there was a proposal from Peter, instead of
-> using a speciall "lock-less" flag it is better to move lock-less
-> access to the pcplist to the separate function.
-> 
-> - To add a special worker thread that does prefetching of pages
-> if a per-cpu page cache is depleted(what is absolutely normal). 
-> 
-> As usual, thank you for paying attention to it and your help!
-> 
-> Uladzislau Rezki (Sony) (4):
->   rcu/tree: Add a work to allocate pages from regular context
->   mm: Add __rcu_alloc_page_lockless() func.
->   rcu/tree: use __rcu_alloc_page_lockless() func.
->   rcu/tree: Use schedule_delayed_work() instead of WQ_HIGHPRI queue
+> Removing parentheses and adding dash separators makes this go away.
 
-Thank you, Uladzislau!
+That's the git send-email program, not get_maintainer.pl.
 
-I have pulled this into -rcu for review and testing.  I have not yet
-assigned it to an intended release.
+btw: you should add --norolestats to get_maintainer.pl if and when
+you use --to-cmd or --cc-cmd for git send-email.
 
-							Thanx, Paul
 
->  include/linux/gfp.h |  1 +
->  kernel/rcu/tree.c   | 90 ++++++++++++++++++++++++---------------------
->  mm/page_alloc.c     | 82 +++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 132 insertions(+), 41 deletions(-)
-> 
-> -- 
-> 2.20.1
-> 
