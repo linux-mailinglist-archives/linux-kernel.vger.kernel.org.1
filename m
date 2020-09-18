@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8BA026EF8E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:37:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E364B26EF74
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:36:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729901AbgIRCg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:36:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39634 "EHLO mail.kernel.org"
+        id S1728865AbgIRCNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:13:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726878AbgIRCMy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:12:54 -0400
+        id S1728846AbgIRCM4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:12:56 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A07923787;
-        Fri, 18 Sep 2020 02:12:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C3E4523447;
+        Fri, 18 Sep 2020 02:12:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600395173;
-        bh=a88otNJhDTJyCx7NRds2kgdy21mZiyTTfLnXkegmgek=;
+        s=default; t=1600395175;
+        bh=IYgW8OLb/zFdIVzPPnLWfOpXT3c9vVAyrn9uipSSn7U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=08kagoJTzV9Ib33KFMUeJ1AWW8zB0Dj8HPznbH/vBjao3/CdfU3wPIAQ2Elk7emWN
-         Xg4jCMXcv38Lj71KrtS08/pu9zI9hwb3R4g2BHhqy38B168+tQqtMIQuJylTmYtIAG
-         rEUPPGcSp8La1DL9Kkwi9xU9jpeVfd8ncWr22yds=
+        b=i4EZBL5BTufdV5u2KYVKR0Kjy32JqjzWZRclOwyn5oUhtzcF4CWU5Es2aiLGZ2h4v
+         qfq6g6JvaIlRwrscXS/lbNBkKiGS7HNztbCWxA8crqvNxKz8yDSIT/GwrpzzBeQ20w
+         tCtdIv1jczk6uNJe4rVoNxV0AwZjkv4MS5P8b0yU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-efi@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 029/127] efi/arm: Defer probe of PCIe backed efifb on DT systems
-Date:   Thu, 17 Sep 2020 22:10:42 -0400
-Message-Id: <20200918021220.2066485-29-sashal@kernel.org>
+Cc:     Oliver O'Halloran <oohall@gmail.com>,
+        Sam Bobroff <sbobroff@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH AUTOSEL 4.14 031/127] powerpc/eeh: Only dump stack once if an MMIO loop is detected
+Date:   Thu, 17 Sep 2020 22:10:44 -0400
+Message-Id: <20200918021220.2066485-31-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918021220.2066485-1-sashal@kernel.org>
 References: <20200918021220.2066485-1-sashal@kernel.org>
@@ -43,166 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: Oliver O'Halloran <oohall@gmail.com>
 
-[ Upstream commit 64c8a0cd0a535891d5905c3a1651150f0f141439 ]
+[ Upstream commit 4e0942c0302b5ad76b228b1a7b8c09f658a1d58a ]
 
-The new of_devlink support breaks PCIe probing on ARM platforms booting
-via UEFI if the firmware exposes a EFI framebuffer that is backed by a
-PCI device. The reason is that the probing order gets reversed,
-resulting in a resource conflict on the framebuffer memory window when
-the PCIe probes last, causing it to give up entirely.
+Many drivers don't check for errors when they get a 0xFFs response from an
+MMIO load. As a result after an EEH event occurs a driver can get stuck in
+a polling loop unless it some kind of internal timeout logic.
 
-Given that we rely on PCI quirks to deal with EFI framebuffers that get
-moved around in memory, we cannot simply drop the memory reservation, so
-instead, let's use the device link infrastructure to register this
-dependency, and force the probing to occur in the expected order.
+Currently EEH tries to detect and report stuck drivers by dumping a stack
+trace after eeh_dev_check_failure() is called EEH_MAX_FAILS times on an
+already frozen PE. The value of EEH_MAX_FAILS was chosen so that a dump
+would occur every few seconds if the driver was spinning in a loop. This
+results in a lot of spurious stack traces in the kernel log.
 
-Co-developed-by: Saravana Kannan <saravanak@google.com>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Saravana Kannan <saravanak@google.com>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20200113172245.27925-9-ardb@kernel.org
+Fix this by limiting it to printing one stack trace for each PE freeze. If
+the driver is truely stuck the kernel's hung task detector is better suited
+to reporting the probelm anyway.
+
+Signed-off-by: Oliver O'Halloran <oohall@gmail.com>
+Reviewed-by: Sam Bobroff <sbobroff@linux.ibm.com>
+Tested-by: Sam Bobroff <sbobroff@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20191016012536.22588-1-oohall@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/efi/arm-init.c | 107 ++++++++++++++++++++++++++++++--
- 1 file changed, 103 insertions(+), 4 deletions(-)
+ arch/powerpc/kernel/eeh.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/firmware/efi/arm-init.c b/drivers/firmware/efi/arm-init.c
-index 312f9f32e1683..7d4cb9583bf4f 100644
---- a/drivers/firmware/efi/arm-init.c
-+++ b/drivers/firmware/efi/arm-init.c
-@@ -14,10 +14,12 @@
- #define pr_fmt(fmt)	"efi: " fmt
- 
- #include <linux/efi.h>
-+#include <linux/fwnode.h>
- #include <linux/init.h>
- #include <linux/memblock.h>
- #include <linux/mm_types.h>
- #include <linux/of.h>
-+#include <linux/of_address.h>
- #include <linux/of_fdt.h>
- #include <linux/platform_device.h>
- #include <linux/screen_info.h>
-@@ -271,15 +273,112 @@ void __init efi_init(void)
- 		efi_memmap_unmap();
- }
- 
-+static bool efifb_overlaps_pci_range(const struct of_pci_range *range)
-+{
-+	u64 fb_base = screen_info.lfb_base;
-+
-+	if (screen_info.capabilities & VIDEO_CAPABILITY_64BIT_BASE)
-+		fb_base |= (u64)(unsigned long)screen_info.ext_lfb_base << 32;
-+
-+	return fb_base >= range->cpu_addr &&
-+	       fb_base < (range->cpu_addr + range->size);
-+}
-+
-+static struct device_node *find_pci_overlap_node(void)
-+{
-+	struct device_node *np;
-+
-+	for_each_node_by_type(np, "pci") {
-+		struct of_pci_range_parser parser;
-+		struct of_pci_range range;
-+		int err;
-+
-+		err = of_pci_range_parser_init(&parser, np);
-+		if (err) {
-+			pr_warn("of_pci_range_parser_init() failed: %d\n", err);
-+			continue;
-+		}
-+
-+		for_each_of_pci_range(&parser, &range)
-+			if (efifb_overlaps_pci_range(&range))
-+				return np;
-+	}
-+	return NULL;
-+}
-+
-+/*
-+ * If the efifb framebuffer is backed by a PCI graphics controller, we have
-+ * to ensure that this relation is expressed using a device link when
-+ * running in DT mode, or the probe order may be reversed, resulting in a
-+ * resource reservation conflict on the memory window that the efifb
-+ * framebuffer steals from the PCIe host bridge.
-+ */
-+static int efifb_add_links(const struct fwnode_handle *fwnode,
-+			   struct device *dev)
-+{
-+	struct device_node *sup_np;
-+	struct device *sup_dev;
-+
-+	sup_np = find_pci_overlap_node();
-+
-+	/*
-+	 * If there's no PCI graphics controller backing the efifb, we are
-+	 * done here.
-+	 */
-+	if (!sup_np)
-+		return 0;
-+
-+	sup_dev = get_dev_from_fwnode(&sup_np->fwnode);
-+	of_node_put(sup_np);
-+
-+	/*
-+	 * Return -ENODEV if the PCI graphics controller device hasn't been
-+	 * registered yet.  This ensures that efifb isn't allowed to probe
-+	 * and this function is retried again when new devices are
-+	 * registered.
-+	 */
-+	if (!sup_dev)
-+		return -ENODEV;
-+
-+	/*
-+	 * If this fails, retrying this function at a later point won't
-+	 * change anything. So, don't return an error after this.
-+	 */
-+	if (!device_link_add(dev, sup_dev, 0))
-+		dev_warn(dev, "device_link_add() failed\n");
-+
-+	put_device(sup_dev);
-+
-+	return 0;
-+}
-+
-+static const struct fwnode_operations efifb_fwnode_ops = {
-+	.add_links = efifb_add_links,
-+};
-+
-+static struct fwnode_handle efifb_fwnode = {
-+	.ops = &efifb_fwnode_ops,
-+};
-+
- static int __init register_gop_device(void)
- {
--	void *pd;
-+	struct platform_device *pd;
-+	int err;
- 
- 	if (screen_info.orig_video_isVGA != VIDEO_TYPE_EFI)
- 		return 0;
- 
--	pd = platform_device_register_data(NULL, "efi-framebuffer", 0,
--					   &screen_info, sizeof(screen_info));
--	return PTR_ERR_OR_ZERO(pd);
-+	pd = platform_device_alloc("efi-framebuffer", 0);
-+	if (!pd)
-+		return -ENOMEM;
-+
-+	if (IS_ENABLED(CONFIG_PCI))
-+		pd->dev.fwnode = &efifb_fwnode;
-+
-+	err = platform_device_add_data(pd, &screen_info, sizeof(screen_info));
-+	if (err)
-+		return err;
-+
-+	return platform_device_add(pd);
- }
- subsys_initcall(register_gop_device);
+diff --git a/arch/powerpc/kernel/eeh.c b/arch/powerpc/kernel/eeh.c
+index d2ba7936d0d33..7b46576962bfd 100644
+--- a/arch/powerpc/kernel/eeh.c
++++ b/arch/powerpc/kernel/eeh.c
+@@ -506,7 +506,7 @@ int eeh_dev_check_failure(struct eeh_dev *edev)
+ 	rc = 1;
+ 	if (pe->state & EEH_PE_ISOLATED) {
+ 		pe->check_count++;
+-		if (pe->check_count % EEH_MAX_FAILS == 0) {
++		if (pe->check_count == EEH_MAX_FAILS) {
+ 			dn = pci_device_to_OF_node(dev);
+ 			if (dn)
+ 				location = of_get_property(dn, "ibm,loc-code",
 -- 
 2.25.1
 
