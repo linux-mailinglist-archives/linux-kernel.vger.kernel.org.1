@@ -2,95 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C138526EA65
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 03:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 888B626EA66
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 03:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726134AbgIRBUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 21:20:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46872 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726040AbgIRBUl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 21:20:41 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A7BC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 18:20:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=pf8sGJi3GTL/XA1LmGKqZqDEtcNgbydr7OLlpO9nbMU=; b=ck9FapdJeNSbBflKZdwpcNqs8I
-        LhBNuGV7eKX00VofYUdBoBjXgwhMRT2XDZ2lvGXZAxLs8wHNgXQWajNPtXCq7uqXLQMubMwvwHcop
-        NpoewbCCSDGObM6C99M9nUOSBKDgVJiwVXFgiyVXzfJOvleDurUCiSkeoGTLR9u7RsD1z/wdTo8aW
-        W+RkdCkYQBGJV1cgtfSOJjep4Rt0LpZBY8cOvQk19LotK6EFcYJfeA1GJ7AldCQa+Gjwn3KXf2Ish
-        Nbx79Rzz0oGgtDI+r7Mu9XmpS/2BhVMrkSTv7nh3TOjaYH9H/+BI0LTnzO/jCGqDd+KBP3eiQzTaM
-        sjzwxy0w==;
-Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kJ54p-0007th-0c; Fri, 18 Sep 2020 01:20:39 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        linux-ntfs-dev@lists.sourceforge.net,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH RESEND] ntfs: drop unneeded semi-colons
-Date:   Thu, 17 Sep 2020 18:20:34 -0700
-Message-Id: <20200918012034.6305-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        id S1726183AbgIRBVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 21:21:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37998 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725886AbgIRBVE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 21:21:04 -0400
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 89AFF2087D;
+        Fri, 18 Sep 2020 01:21:03 +0000 (UTC)
+Date:   Thu, 17 Sep 2020 21:21:01 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Marco Elver <elver@google.com>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH] random32: Use rcuidle variant for tracepoint
+Message-ID: <20200917212101.53287f29@rorschach.local.home>
+In-Reply-To: <20200821153532.GA3205540@elver.google.com>
+References: <20200821063043.1949509-1-elver@google.com>
+        <20200821085907.GJ1362448@hirez.programming.kicks-ass.net>
+        <CANn89i+1MQRCSRVg-af758en5e9nwQBes3aBSjQ6BY1pV5+HdQ@mail.gmail.com>
+        <20200821153532.GA3205540@elver.google.com>
+X-Mailer: Claws Mail 3.17.4git76 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Coccinelle scripts report:
 
-fs/ntfs/lcnalloc.c:902:2-3: Unneeded semicolon
-fs/ntfs/super.c:1615:2-3: Unneeded semicolon
-fs/ntfs/super.c:1684:2-3: Unneeded semicolon
+[ Late reply, due to Plumbers followed by a much needed vacation and
+  then drowning in 3 weeks of unread email! ]
 
-so remove the extraneous semicolons.
+On Fri, 21 Aug 2020 17:35:32 +0200
+Marco Elver <elver@google.com> wrote:
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Anton Altaparmakov <anton@tuxera.com>
-Cc: linux-ntfs-dev@lists.sourceforge.net
-Cc: Andrew Morton <akpm@linux-foundation.org>
----
-Adding Andrew to recipients, otherwise this patch is lost/ignored.
+> So, if the _rcuidle() variant here doesn't break your usecase, there
+> should be no harm in using the _rcuidle() variant. This also lifts the
+> restriction on where prandom_u32() is usable to what it was before,
+> which should be any context.
+> 
+> Steven, Peter: What's the downside to of _rcuidle()?
 
- fs/ntfs/lcnalloc.c |    2 +-
- fs/ntfs/super.c    |    4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+_rcuidle() only has a slightly more overhead in the tracing path (it's
+no different when not tracing). There's not a issue with _rcuidle()
+itself. The issue is that we need to have it. We'd like it to be that
+rcu *is* watching always except for a very minimal locations when
+switching context (kernel to and from user and running to and from
+idle), and then we just don't let tracing or anything that needs rcu in
+those locations.
 
---- linux-next-20200917.orig/fs/ntfs/lcnalloc.c
-+++ linux-next-20200917/fs/ntfs/lcnalloc.c
-@@ -899,7 +899,7 @@ s64 __ntfs_cluster_free(ntfs_inode *ni,
- 		}
- 		/* We have freed @to_free real clusters. */
- 		real_freed = to_free;
--	};
-+	}
- 	/* Go to the next run and adjust the number of clusters left to free. */
- 	++rl;
- 	if (count >= 0)
---- linux-next-20200917.orig/fs/ntfs/super.c
-+++ linux-next-20200917/fs/ntfs/super.c
-@@ -1612,7 +1612,7 @@ read_partial_attrdef_page:
- 		memcpy((u8*)vol->attrdef + (index++ << PAGE_SHIFT),
- 				page_address(page), size);
- 		ntfs_unmap_page(page);
--	};
-+	}
- 	if (size == PAGE_SIZE) {
- 		size = i_size & ~PAGE_MASK;
- 		if (size)
-@@ -1681,7 +1681,7 @@ read_partial_upcase_page:
- 		memcpy((char*)vol->upcase + (index++ << PAGE_SHIFT),
- 				page_address(page), size);
- 		ntfs_unmap_page(page);
--	};
-+	}
- 	if (size == PAGE_SIZE) {
- 		size = i_size & ~PAGE_MASK;
- 		if (size)
+But for your patch:
+
+Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+
+-- Steve
