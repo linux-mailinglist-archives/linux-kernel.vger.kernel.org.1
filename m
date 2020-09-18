@@ -2,114 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC05C26FFF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 16:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E927270002
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 16:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726770AbgIROeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 10:34:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726126AbgIROeD (ORCPT
+        id S1726681AbgIROgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 10:36:33 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:47568 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725955AbgIROgc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 10:34:03 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D013AC0613CE;
-        Fri, 18 Sep 2020 07:34:02 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id a8so6450004ilk.1;
-        Fri, 18 Sep 2020 07:34:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sKMONdieCxgxCroaWyWNO0AqXSg8A8t7H/Pr77coN9c=;
-        b=RiziH461xgq1/ogIkGyo/fb1MNBKdYf+l0MPBLrBKnwFoPrvSSgFs4rhma6yuofTWn
-         N92UQgMYQCxQz8JJ6SrfXX4ixkksbun724CUmGq4DK3MSGdEDAQ78moUi7WNCPo6woH9
-         OH5IrCRQ5BacTxD+BXXCWmjI5FWCRRpnnf3SK93w3p+h4J2nE1bu8ST8UWaifdWYbElP
-         wQZUe5PMgee5GALdq8u+y/msfizcIZ84u3DWvR9xEIpZGL1LKOZRCIKR4Zo6GAACs4KQ
-         KOyRF+xB2Y0LeQKZKiTucaSRd9yj23IoqMCbGF9VP7ZYIxL7ZSLGWAzZdgCEoHA7wBw+
-         /3KA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sKMONdieCxgxCroaWyWNO0AqXSg8A8t7H/Pr77coN9c=;
-        b=OLZFplgFyiUc7RV62NN3pntJDr6ajJvJ0r44zb0pJ4X0UeA8Ymz7WDZMSsQW735eOl
-         Z2dnESCElEV270z81x2z1Un8AMwHF7h1GKsfq0VctIM+ANyGd9/7N2hOeaEXv2Llk3KS
-         CRxOfIHrA9FslCuuh7cTO5B5Bwk3HgGRAqvWgUJF4K2O3C7CBUcmXAKY53Q8/LPqPjur
-         Q/CWoMywSN5BpPo+OvZiDf8KPzEmcP/p/tPr4v3qBUceQGVW8xO93kU4HEDhzBcPQvb7
-         Maj9pp9dhkHPCRDd+6bP3H0ygB4WUzgj/jyj5DktW38KgvhRPyPskggV6Ls2sIF6/7iz
-         tbAw==
-X-Gm-Message-State: AOAM530XGyU8HLieogdgZK92o3XZ6/TjKmDGjmsD+t24djdd/3o+D0Lb
-        w1JIv6s+3/qSImMeJqMjy3Lme7rRkKE=
-X-Google-Smtp-Source: ABdhPJwQAnskCg/xJN+CaLDsSZ335h7fGubZ/bsN2TIRm77rN59CfJ9NX/iZ+avFft5btaMzbXkgpA==
-X-Received: by 2002:a92:6b0b:: with SMTP id g11mr26085925ilc.62.1600439641735;
-        Fri, 18 Sep 2020 07:34:01 -0700 (PDT)
-Received: from aford-OptiPlex-7050.logicpd.com ([174.46.170.158])
-        by smtp.gmail.com with ESMTPSA id s2sm1744657ili.49.2020.09.18.07.34.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 07:34:01 -0700 (PDT)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-input@vger.kernel.org
-Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] Input: ili210x:  Enable suspend/resume functions
-Date:   Fri, 18 Sep 2020 09:33:52 -0500
-Message-Id: <20200918143352.93135-1-aford173@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 18 Sep 2020 10:36:32 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08IEXkRn045952;
+        Fri, 18 Sep 2020 14:36:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=rlQ+LZaYgJGtJpEry/0h8n+m3Iqcym6BQ6YDma7gB3g=;
+ b=FHAsrGXv3QQ19lxFmk013373NlHLEuNtiGP3oUlCWsfYRljvyTbdj+cRU3SrVW58TsNW
+ V8N+yOtdmxQGttbeMDtUx5ZNXbsPEPezS3UDZzf38yyhH7CxQe6d0ZY6apPOU2aFpwoE
+ JWWnVDqRsbaMByuRSK/bDzkvG7dr+d5dy4J9ywNBEywuWf3yA92h0N1QCCuh7wD8CTRT
+ VhNgFF8T1gpo3pkOagpdLC3TP9+agEJO2MpPa35Gx/LU19EXo2iASkg2CScbXQlckF/N
+ TOur4JU+0E9R8s+ZLISF6qaGKZp9mvBg405twXVr9O7TA7nG3GQDrlgjC+w7YJTX8DW3 eA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 33gnrrfkn3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 18 Sep 2020 14:36:26 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08IETchf112571;
+        Fri, 18 Sep 2020 14:34:25 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 33h88epdjn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 18 Sep 2020 14:34:25 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08IEYOlD032693;
+        Fri, 18 Sep 2020 14:34:24 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 18 Sep 2020 14:34:11 +0000
+Date:   Fri, 18 Sep 2020 17:34:05 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] misc: hisi_hikey_usb: delete a stray tab
+Message-ID: <20200918143405.GF909725@mwanda>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9747 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 adultscore=0
+ suspectscore=0 phishscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009180118
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9747 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0
+ lowpriorityscore=0 malwarescore=0 mlxscore=0 bulkscore=0 suspectscore=0
+ clxscore=1011 mlxlogscore=999 adultscore=0 priorityscore=1501
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009180119
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some people may wish to wake their system from sleep, so this
-patch enables a suspend and resume function which enables
-and disables IRQ wake functions.
+This return statement is indented one tab too far.
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/misc/hisi_hikey_usb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/input/touchscreen/ili210x.c b/drivers/input/touchscreen/ili210x.c
-index 199cf3daec10..9b1a61447054 100644
---- a/drivers/input/touchscreen/ili210x.c
-+++ b/drivers/input/touchscreen/ili210x.c
-@@ -474,6 +474,28 @@ static int ili210x_i2c_probe(struct i2c_client *client,
- 	return 0;
- }
+diff --git a/drivers/misc/hisi_hikey_usb.c b/drivers/misc/hisi_hikey_usb.c
+index 2ddd4072788d..0913509d2628 100644
+--- a/drivers/misc/hisi_hikey_usb.c
++++ b/drivers/misc/hisi_hikey_usb.c
+@@ -163,7 +163,7 @@ static int hisi_hikey_usb_parse_kirin970(struct platform_device *pdev,
+ 		dev_err(&pdev->dev,
+ 			"get hub-vdd-supply failed with error %ld\n",
+ 			PTR_ERR(regulator));
+-			return PTR_ERR(regulator);
++		return PTR_ERR(regulator);
+ 	}
+ 	hisi_hikey_usb->regulator = regulator;
  
-+static int __maybe_unused ili210x_i2c_suspend(struct device *dev)
-+{
-+	struct i2c_client *client = to_i2c_client(dev);
-+
-+	if (device_may_wakeup(&client->dev))
-+		enable_irq_wake(client->irq);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused ili210x_i2c_resume(struct device *dev)
-+{
-+	struct i2c_client *client = to_i2c_client(dev);
-+
-+	if (device_may_wakeup(&client->dev))
-+		disable_irq_wake(client->irq);
-+
-+	return 0;
-+}
-+
-+static SIMPLE_DEV_PM_OPS(ili210x_i2c_pm, ili210x_i2c_suspend, ili210x_i2c_resume);
-+
- static const struct i2c_device_id ili210x_i2c_id[] = {
- 	{ "ili210x", (long)&ili210x_chip },
- 	{ "ili2117", (long)&ili211x_chip },
-@@ -495,6 +517,7 @@ MODULE_DEVICE_TABLE(of, ili210x_dt_ids);
- static struct i2c_driver ili210x_ts_driver = {
- 	.driver = {
- 		.name = "ili210x_i2c",
-+		.pm = &ili210x_i2c_pm,
- 		.of_match_table = ili210x_dt_ids,
- 	},
- 	.id_table = ili210x_i2c_id,
 -- 
-2.25.1
+2.28.0
 
