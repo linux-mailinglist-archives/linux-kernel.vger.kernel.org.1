@@ -2,147 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8E426F7D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:16:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5AC26F7D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726376AbgIRIQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 04:16:38 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:39958 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726102AbgIRIQi (ORCPT
+        id S1726383AbgIRIR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 04:17:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725941AbgIRIRz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 04:16:38 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08I8F2p2070722;
-        Fri, 18 Sep 2020 08:16:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=XZIYm24yndlWZXI5R5Yn+Q8BksLATNq+z3yjFm3AtHA=;
- b=YUz17olhIiyfVpmLPeUEvUXXTHm+DPpH6IRUD1lcgVzol0cilLunRafThRgfumbumdr+
- UiXy6Pi95Gwx1Yi7zv2j0JpOcOEf8NGzOYpgMIw6vBlNVTWMVDJAGi1lvGlHfbJUNz3n
- UAlmcADOI/wYQisZZ6qCEB5GLixnD+KFuxSzCsOdXtPOOe2XM3WNBN/QxL5vCeSn8fmx
- Bby4JNT3jKL4c2RbapJdgyvyPpilx7G17FlXjK3f+a+dSvXO+CfMkaCETdUTJ+O26t0+
- e0o5D8nGnkuApKk6njKVp4FhSD0rQuxG2Z0PnjfutDkIRkimakPLLNcrvdZrTIlfmpGc pQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 33gp9mnn63-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 18 Sep 2020 08:16:24 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08I8G1hN106137;
-        Fri, 18 Sep 2020 08:16:24 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 33hm36dvus-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Sep 2020 08:16:24 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08I8GKxn007685;
-        Fri, 18 Sep 2020 08:16:20 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 18 Sep 2020 08:16:20 +0000
-Date:   Fri, 18 Sep 2020 11:16:09 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     devel@driverdev.osuosl.org, robh@kernel.org, mchehab@kernel.org,
-        jorhand@linux.microsoft.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, kieran.bingham@ideasonboard.com,
-        Daniel Scally <djrscally@gmail.com>, kitakar@gmail.com,
-        yong.zhi@intel.com, bingbu.cao@intel.com,
-        andriy.shevchenko@linux.intel.com, davem@davemloft.net,
-        tian.shu.qiu@intel.com, linux-media@vger.kernel.org
-Subject: Re: [RFC PATCH] Add bridge driver to connect sensors to CIO2 device
- via software nodes on ACPI platforms
-Message-ID: <20200918081609.GR18329@kadam>
-References: <20200916213618.8003-1-djrscally@gmail.com>
- <20200917103343.GW26842@paasikivi.fi.intel.com>
- <20200917104941.GP4282@kadam>
- <20200918064043.GE26842@paasikivi.fi.intel.com>
+        Fri, 18 Sep 2020 04:17:55 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32D08C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 01:17:55 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id o5so4658389wrn.13
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 01:17:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=336DK+gr8bWeArYbXXeTUATGYeu4M+ZLn03audwBSjI=;
+        b=P6hxU2ONsTj0tWsHoNwvfnSTvSCvHbA8sFwBTqHKDj+/wnfCSR6f37OyiP9P/BGuiY
+         YlR7GkEXKyvELr7ERB7LBUyiwHh12AxmKVKClz5RGWfRg2BXjgtk7XgJq0LRwWJP1DkZ
+         K0mU2vYlc5nfpqFT0BRlX9husFktvYox9/03lY6KbV/CEl7TMnZYCjhQaAh/xhvLqNGA
+         s7vPhWrevFlzWBNBZZmdwJgACoQ7VicfnJrXHzhayBxqnqV9P+hVc2lICKhGOMD0RATj
+         qR9Boez3eP+M1mNPpWfZx1CdNlAtvpyZWFdVQ2ZMmjJexuymGOT8bnRZOmn2BAwIfKto
+         8EhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=336DK+gr8bWeArYbXXeTUATGYeu4M+ZLn03audwBSjI=;
+        b=L+3PR5Lgs19afakWLT5oGU8RiFpqLct68E6TMHrn7+Yi3kVxfj/EmjBiD4/XvGe95x
+         6a4+p/FheEMitFk9dACT+iq6CI1Zo/MojeoQN6tFqxS1ohFYZ/SINBf4D/43tcJsw2iA
+         7WMceWegdSwJ2OCcYlJc3xMH3Qn9ivl6kZB8E2lWbWtI+mWbqfRkI3k5L6btjGx0B8PB
+         s7PkR4cSld8ckpOzSsXZS1VcFtNz/h+JNWr+s6Y4rXxAKUYYWTlFeOJeZCNSPc0QJ5vc
+         zqIHipDNYeDeRU3YsRKRVMTRjQDAnFhiYAkG/dUuQ0PZ47Ketas0rB/Co6lKK7qdPYmt
+         06TQ==
+X-Gm-Message-State: AOAM530YBFiA0dVY/PwNPE4y4XxokmObK0HfnAtSmT+9dV9ZwD5WR/9i
+        uDxupSQ0ZwivDhYTWHvgxIqR73gQIw0xh2PGj93X+A==
+X-Google-Smtp-Source: ABdhPJwVuS5KBOyJsrvk5LUfGguAb+QpQ29tKswCawYdjjDY7nZkbxoog228YB/l/wtYWXDOlxUMcvjxCKk4qsa8ecw=
+X-Received: by 2002:a5d:60d0:: with SMTP id x16mr35980678wrt.196.1600417073613;
+ Fri, 18 Sep 2020 01:17:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918064043.GE26842@paasikivi.fi.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9747 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxlogscore=999
- malwarescore=0 mlxscore=0 phishscore=0 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009180069
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9747 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
- spamscore=0 priorityscore=1501 suspectscore=0 impostorscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009180069
+References: <cover.1600204505.git.andreyknvl@google.com> <88c275dc4eef13c8bcbe74ecec661733dcbc67b8.1600204505.git.andreyknvl@google.com>
+In-Reply-To: <88c275dc4eef13c8bcbe74ecec661733dcbc67b8.1600204505.git.andreyknvl@google.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Fri, 18 Sep 2020 10:17:42 +0200
+Message-ID: <CAG_fn=Vuu-hiaACaoyvpo7RCzvk4faz=AANX=oyAKEJdHDSxEg@mail.gmail.com>
+Subject: Re: [PATCH v2 07/37] kasan: split out shadow.c from common.c
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 09:40:43AM +0300, Sakari Ailus wrote:
-> Hi Dan,
-> 
-> On Thu, Sep 17, 2020 at 01:49:41PM +0300, Dan Carpenter wrote:
-> > On Thu, Sep 17, 2020 at 01:33:43PM +0300, Sakari Ailus wrote:
-> > > > +static int connect_supported_devices(void)
-> > > > +{
-> > > > +	struct acpi_device *adev;
-> > > > +	struct device *dev;
-> > > > +	struct sensor_bios_data ssdb;
-> > > > +	struct sensor *sensor;
-> > > > +	struct property_entry *sensor_props;
-> > > > +	struct property_entry *cio2_props;
-> > > > +	struct fwnode_handle *fwnode;
-> > > > +	struct software_node *nodes;
-> > > > +	struct v4l2_subdev *sd;
-> > > > +	int i, ret;
-> > > 
-> > > unsigned int i
-> > > 
-> > 
-> > Why?
-> > 
-> > For list iterators then "int i;" is best...  For sizes then unsigned is
-> > sometimes best.  Or if it's part of the hardware spec or network spec
-> > unsigned is best.  Otherwise unsigned variables cause a ton of bugs.
-> > They're not as intuitive as signed variables.  Imagine if there is an
-> > error in this loop and you want to unwind.  With a signed variable you
-> > can do:
-> > 
-> > 	while (--i >= 0)
-> > 		cleanup(&bridge.sensors[i]);
-> > 
-> > There are very few times where raising the type maximum from 2 billion
-> > to 4 billion fixes anything.
-> 
-> There's simply no need for the negative integers here. Sizes (as it's a
-> size here) are unsigned, too, so you'd be comparing signed and unsigned
-> numbers later in the function.
+> diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
+> new file mode 100644
+> index 000000000000..4888084ecdfc
+> --- /dev/null
+> +++ b/mm/kasan/shadow.c
+> @@ -0,0 +1,509 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * This file contains KASAN shadow runtime code.
 
-I'm not trying to be rude, I'm honestly puzzled by this...
+I think it will be nice to mention here which KASAN modes are going to
+use this file.
 
-The "i" variable is not a size, it's an iterator...  Comparing signed
-and unsigned isn't necessarily a problem, but the only comparison in
-this case is here:
 
-   253          struct property_entry *cio2_props;
-   254          struct fwnode_handle *fwnode;
-   255          struct software_node *nodes;
-   256          struct v4l2_subdev *sd;
-   257          int i, ret;
-   258  
-   259          for (i = 0; i < ARRAY_SIZE(supported_devices); i++) {
-                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-That's obviously fine.  The compiler knows at compile time the value of
-ARRAY_SIZE().  I feel like there must be a static checker which
-complains about this?  ARRAY_SIZE() is size_t.
 
-   260                  adev = acpi_dev_get_first_match_dev(supported_devices[i],
-   261                                                      NULL, -1);
-   262  
-   263                  if (!adev)
-   264                          continue;
-   265  
+> +#undef memset
+> +void *memset(void *addr, int c, size_t len)
+> +{
+> +       if (!check_memory_region((unsigned long)addr, len, true, _RET_IP_))
+> +               return NULL;
+> +
+> +       return __memset(addr, c, len);
+> +}
+> +
 
-regards,
-dan carpenter
+OOC, don't we need memset and memmove implementations in the
+hardware-based mode as well?
 
+
+> +       region_start = ALIGN(start, PAGE_SIZE * KASAN_GRANULE_SIZE);
+> +       region_end = ALIGN_DOWN(end, PAGE_SIZE * KASAN_GRANULE_SIZE);
+
+"PAGE_SIZE * KASAN_GRANULE_SIZE" seems to be a common thing, can we
+give it a name?
