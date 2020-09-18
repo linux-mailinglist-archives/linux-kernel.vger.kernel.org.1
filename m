@@ -2,85 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0FA927005F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 17:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E2626FFEC
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 16:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726764AbgIRPA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 11:00:27 -0400
-Received: from mail1.windriver.com ([147.11.146.13]:61950 "EHLO
-        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgIRPA0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 11:00:26 -0400
-X-Greylist: delayed 7316 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Sep 2020 11:00:12 EDT
-Received: from ALA-HCB.corp.ad.wrs.com (ala-hcb.corp.ad.wrs.com [147.11.189.41])
-        by mail1.windriver.com (8.15.2/8.15.2) with ESMTPS id 08ICvm7X029634
-        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
-        Fri, 18 Sep 2020 05:57:49 -0700 (PDT)
-Received: from pek-lpg-core2.corp.ad.wrs.com (128.224.153.41) by
- ALA-HCB.corp.ad.wrs.com (147.11.189.41) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 18 Sep 2020 05:57:27 -0700
-From:   <zhe.he@windriver.com>
-To:     <bfields@fieldses.org>, <chuck.lever@oracle.com>,
-        <trond.myklebust@hammerspace.com>, <anna.schumaker@netapp.com>,
-        <davem@davemloft.net>, <kuba@kernel.org>,
-        <linux-nfs@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <zhe.he@windriver.com>
-Subject: [PATCH] SUNRPC: Flush dcache only when receiving more seeking
-Date:   Fri, 18 Sep 2020 20:50:52 +0800
-Message-ID: <20200918125052.2493006-1-zhe.he@windriver.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726683AbgIROcA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 18 Sep 2020 10:32:00 -0400
+Received: from mgw-01.mpynet.fi ([82.197.21.90]:45898 "EHLO mgw-01.mpynet.fi"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726129AbgIROcA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 10:32:00 -0400
+Received: from pps.filterd (mgw-01.mpynet.fi [127.0.0.1])
+        by mgw-01.mpynet.fi (8.16.0.42/8.16.0.42) with SMTP id 08IDjvx1105182;
+        Fri, 18 Sep 2020 16:51:17 +0300
+Received: from ex13.tuxera.com (ex13.tuxera.com [178.16.184.72])
+        by mgw-01.mpynet.fi with ESMTP id 33mx0hr07u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Fri, 18 Sep 2020 16:51:16 +0300
+Received: from tuxera-exch.ad.tuxera.com (10.20.48.11) by
+ tuxera-exch.ad.tuxera.com (10.20.48.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 18 Sep 2020 16:51:15 +0300
+Received: from tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789]) by
+ tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789%12]) with mapi id
+ 15.00.1497.006; Fri, 18 Sep 2020 16:51:15 +0300
+From:   Anton Altaparmakov <anton@tuxera.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+CC:     LKML <linux-kernel@vger.kernel.org>,
+        "linux-ntfs-dev@lists.sourceforge.net" 
+        <linux-ntfs-dev@lists.sourceforge.net>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH RESEND] ntfs: drop unneeded semi-colons
+Thread-Topic: [PATCH RESEND] ntfs: drop unneeded semi-colons
+Thread-Index: AQHWjVnswLx9rgGqKE+C2Won5QI6nqluOI0A
+Date:   Fri, 18 Sep 2020 13:51:14 +0000
+Message-ID: <D97E170A-13E7-4263-B590-32D7F85B9AC6@tuxera.com>
+References: <20200918012034.6305-1-rdunlap@infradead.org>
+In-Reply-To: <20200918012034.6305-1-rdunlap@infradead.org>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [86.162.107.15]
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <6F51FD6D1C4537498A1ABF9928B4181B@ex13.tuxera.com>
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-18_14:2020-09-16,2020-09-18 signatures=0
+X-Proofpoint-Spam-Details: rule=mpy_notspam policy=mpy score=0 mlxlogscore=999 adultscore=0
+ suspectscore=0 malwarescore=0 mlxscore=0 bulkscore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009180113
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: He Zhe <zhe.he@windriver.com>
+Hi Randy,
 
-commit ca07eda33e01 ("SUNRPC: Refactor svc_recvfrom()") introduces
-svc_flush_bvec to after sock_recvmsg, but sometimes we receive less than we
-seek, which triggers the following warning.
+Sorry, I don't know how I missed those originally.
 
-WARNING: CPU: 0 PID: 18266 at include/linux/bvec.h:101 bvec_iter_advance+0x44/0xa8
-Attempted to advance past end of bvec iter
-Modules linked in: sch_fq_codel openvswitch nsh nf_conncount nf_nat
-nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4
-CPU: 1 PID: 18266 Comm: nfsd Not tainted 5.9.0-rc5 #1
-Hardware name: Xilinx Zynq Platform
-[<80112ec0>] (unwind_backtrace) from [<8010c3a8>] (show_stack+0x18/0x1c)
-[<8010c3a8>] (show_stack) from [<80755214>] (dump_stack+0x9c/0xd0)
-[<80755214>] (dump_stack) from [<80125e64>] (__warn+0xdc/0xf4)
-[<80125e64>] (__warn) from [<80126244>] (warn_slowpath_fmt+0x84/0xac)
-[<80126244>] (warn_slowpath_fmt) from [<80c88514>] (bvec_iter_advance+0x44/0xa8)
-[<80c88514>] (bvec_iter_advance) from [<80c88940>] (svc_tcp_read_msg+0x10c/0x1bc)
-[<80c88940>] (svc_tcp_read_msg) from [<80c895d4>] (svc_tcp_recvfrom+0x98/0x63c)
-[<80c895d4>] (svc_tcp_recvfrom) from [<80c97bf4>] (svc_handle_xprt+0x48c/0x4f8)
-[<80c97bf4>] (svc_handle_xprt) from [<80c98038>] (svc_recv+0x94/0x1e0)
-[<80c98038>] (svc_recv) from [<804747cc>] (nfsd+0xf0/0x168)
-[<804747cc>] (nfsd) from [<80148a0c>] (kthread+0x144/0x154)
-[<80148a0c>] (kthread) from [<80100114>] (ret_from_fork+0x14/0x20)
+Andrew, please could you add this to your tree for merging with Linus as well?
 
-Fixes: ca07eda33e01 ("SUNRPC: Refactor svc_recvfrom()")
-Cc: <stable@vger.kernel.org> # 5.8+
-Signed-off-by: He Zhe <zhe.he@windriver.com>
----
- net/sunrpc/svcsock.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+And again, please feel free to add: Acked-by: Anton Altaparmakov <anton@tuxera.com>
 
-diff --git a/net/sunrpc/svcsock.c b/net/sunrpc/svcsock.c
-index d5805fa1d066..ea3bc9635448 100644
---- a/net/sunrpc/svcsock.c
-+++ b/net/sunrpc/svcsock.c
-@@ -277,7 +277,7 @@ static ssize_t svc_tcp_read_msg(struct svc_rqst *rqstp, size_t buflen,
- 		buflen -= seek;
- 	}
- 	len = sock_recvmsg(svsk->sk_sock, &msg, MSG_DONTWAIT);
--	if (len > 0)
-+	if (len > (seek & PAGE_MASK))
- 		svc_flush_bvec(bvec, len, seek);
- 
- 	/* If we read a full record, then assume there may be more
+Thanks a lot!
+
+Best regards,
+
+	Anton
+
+> On 18 Sep 2020, at 02:20, Randy Dunlap <rdunlap@infradead.org> wrote:
+> 
+> Coccinelle scripts report:
+> 
+> fs/ntfs/lcnalloc.c:902:2-3: Unneeded semicolon
+> fs/ntfs/super.c:1615:2-3: Unneeded semicolon
+> fs/ntfs/super.c:1684:2-3: Unneeded semicolon
+> 
+> so remove the extraneous semicolons.
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Anton Altaparmakov <anton@tuxera.com>
+> Cc: linux-ntfs-dev@lists.sourceforge.net
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> ---
+> Adding Andrew to recipients, otherwise this patch is lost/ignored.
+> 
+> fs/ntfs/lcnalloc.c |    2 +-
+> fs/ntfs/super.c    |    4 ++--
+> 2 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> --- linux-next-20200917.orig/fs/ntfs/lcnalloc.c
+> +++ linux-next-20200917/fs/ntfs/lcnalloc.c
+> @@ -899,7 +899,7 @@ s64 __ntfs_cluster_free(ntfs_inode *ni,
+> 		}
+> 		/* We have freed @to_free real clusters. */
+> 		real_freed = to_free;
+> -	};
+> +	}
+> 	/* Go to the next run and adjust the number of clusters left to free. */
+> 	++rl;
+> 	if (count >= 0)
+> --- linux-next-20200917.orig/fs/ntfs/super.c
+> +++ linux-next-20200917/fs/ntfs/super.c
+> @@ -1612,7 +1612,7 @@ read_partial_attrdef_page:
+> 		memcpy((u8*)vol->attrdef + (index++ << PAGE_SHIFT),
+> 				page_address(page), size);
+> 		ntfs_unmap_page(page);
+> -	};
+> +	}
+> 	if (size == PAGE_SIZE) {
+> 		size = i_size & ~PAGE_MASK;
+> 		if (size)
+> @@ -1681,7 +1681,7 @@ read_partial_upcase_page:
+> 		memcpy((char*)vol->upcase + (index++ << PAGE_SHIFT),
+> 				page_address(page), size);
+> 		ntfs_unmap_page(page);
+> -	};
+> +	}
+> 	if (size == PAGE_SIZE) {
+> 		size = i_size & ~PAGE_MASK;
+> 		if (size)
+
+
 -- 
-2.17.1
+Anton Altaparmakov <anton at tuxera.com> (replace at with @)
+Lead in File System Development, Tuxera Inc., http://www.tuxera.com/
+Linux NTFS maintainer
 
