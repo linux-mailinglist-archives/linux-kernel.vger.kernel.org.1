@@ -2,93 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C8AC26FBC3
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 13:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B722F26FBC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 13:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726494AbgIRLpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 07:45:16 -0400
-Received: from foss.arm.com ([217.140.110.172]:40078 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726115AbgIRLpP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 07:45:15 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C5B7B11D4;
-        Fri, 18 Sep 2020 04:45:14 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5B2F13F73B;
-        Fri, 18 Sep 2020 04:45:13 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 12:45:08 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>, bhelgaas@google.com
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        George Cherian <george.cherian@marvell.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        linux-pci@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 0/3] Fix pci_iounmap() on !CONFIG_GENERIC_IOMAP
-Message-ID: <20200918114508.GA20110@e121166-lin.cambridge.arm.com>
-References: <20200915093203.16934-1-lorenzo.pieralisi@arm.com>
- <cover.1600254147.git.lorenzo.pieralisi@arm.com>
+        id S1726376AbgIRLrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 07:47:37 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:46050 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726121AbgIRLrh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 07:47:37 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08IBlLvI055055;
+        Fri, 18 Sep 2020 06:47:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600429641;
+        bh=r7lWb4Yfy9eEgjb/19AC0jLQoO5CNUwNrKO9yWFpfZw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=hem+CTSTR2BRTa3mSxtuac+ZR+kz2UsN+cIlw5uOf5d6rClzPd0/XqdRd7TUZzcnv
+         wiPIAhuS+yFakVv8j4MRL5VFK5Bp5qF5yo2oubKt1SOM7bbxrSUkonlF//g8UEcINj
+         +k0ObhLBxAtCae3fPBLfmWwoZ2BC4FOO85MQSfBA=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08IBlKeM028774
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 18 Sep 2020 06:47:21 -0500
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 18
+ Sep 2020 06:47:20 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 18 Sep 2020 06:47:20 -0500
+Received: from [10.250.35.164] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08IBlKPk128830;
+        Fri, 18 Sep 2020 06:47:20 -0500
+Subject: Re: [PATCH leds v2 15/50] leds: lm3697: cosmetic change: use helper
+ variable, reverse christmas tree
+To:     =?UTF-8?Q?Marek_Beh=c3=ban?= <marek.behun@nic.cz>,
+        <linux-leds@vger.kernel.org>
+CC:     Pavel Machek <pavel@ucw.cz>,
+        =?UTF-8?Q?Ond=c5=99ej_Jirman?= <megous@megous.com>,
+        <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        <devicetree@vger.kernel.org>
+References: <20200917223338.14164-1-marek.behun@nic.cz>
+ <20200917223338.14164-16-marek.behun@nic.cz>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <7d91fc92-0b56-afd6-a948-c25be9bfed38@ti.com>
+Date:   Fri, 18 Sep 2020 06:47:20 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1600254147.git.lorenzo.pieralisi@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200917223338.14164-16-marek.behun@nic.cz>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 12:06:55PM +0100, Lorenzo Pieralisi wrote:
-> v2 of a previous posting.
-> 
-> v1->v2:
-> 	- Added additional patch to remove sparc32 useless __KERNEL__
-> 	  guard
-> 
-> v1: https://lore.kernel.org/lkml/20200915093203.16934-1-lorenzo.pieralisi@arm.com
-> 
-> Original cover letter
-> ---
-> 
-> Fix the empty pci_iounmap() implementation that is causing memory leaks on
-> !CONFIG_GENERIC_IOMAP configs relying on asm-generic/io.h.
-> 
-> A small tweak is required on sparc32 to pull in some declarations,
-> hopefully nothing problematic, subject to changes as requested.
-> 
-> Previous tentatives:
-> https://lore.kernel.org/lkml/20200905024811.74701-1-yangyingliang@huawei.com
-> https://lore.kernel.org/lkml/20200824132046.3114383-1-george.cherian@marvell.com
-> 
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: George Cherian <george.cherian@marvell.com>
-> Cc: Yang Yingliang <yangyingliang@huawei.com>
-> 
-> Lorenzo Pieralisi (3):
->   sparc32: Remove useless io_32.h __KERNEL__ preprocessor guard
->   sparc32: Move ioremap/iounmap declaration before asm-generic/io.h
->     include
->   asm-generic/io.h: Fix !CONFIG_GENERIC_IOMAP pci_iounmap()
->     implementation
-> 
->  arch/sparc/include/asm/io_32.h | 17 ++++++---------
->  include/asm-generic/io.h       | 39 +++++++++++++++++++++++-----------
->  2 files changed, 34 insertions(+), 22 deletions(-)
+Marek
 
-Arnd, David, Bjorn,
+On 9/17/20 5:33 PM, Marek Behún wrote:
+> Use helper variable dev instead of always writing &client->dev, or
+> &priv->client->dev, or even &led->priv->client->dev.
+>
+> With one more line moved reverse christmas tree is also achieved.
 
-I have got review/test tags, is it OK if we merge this series please ?
+Reviewed-by: Dan Murphy <dmurphy@ti.com>
 
-Can we pull it in the PCI tree or you want it to go via a different
-route upstream ?
 
-Please let me know.
-
-Thanks,
-Lorenzo
