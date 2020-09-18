@@ -2,47 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 876DC26F550
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 07:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E29B26F556
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 07:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726424AbgIRFKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 01:10:34 -0400
-Received: from verein.lst.de ([213.95.11.211]:59111 "EHLO verein.lst.de"
+        id S1726389AbgIRFR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 01:17:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726126AbgIRFKe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 01:10:34 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 9FD6A68B02; Fri, 18 Sep 2020 07:10:30 +0200 (CEST)
-Date:   Fri, 18 Sep 2020 07:10:30 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Tony Lindgren <tony@atomide.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH 3/4] ARM/dma-mapping: don't handle NULL devices in
- dma-direct.h
-Message-ID: <20200918051030.GA21261@lst.de>
-References: <20200917173229.3311382-1-hch@lst.de> <20200917173229.3311382-4-hch@lst.de> <20200917185009.GB1559@shell.armlinux.org.uk>
+        id S1726222AbgIRFR4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 01:17:56 -0400
+Received: from localhost (unknown [136.185.124.244])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DE33F21D43;
+        Fri, 18 Sep 2020 05:17:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600406275;
+        bh=YX/IjhRwKaeUYwIYimZuhaCzEubqiwx+Y8BcqNSb48g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=V484eNC7n0mQlhgy5pLQAIrZkmL6ilomd8f00UlQJH7UueT9RGg6w1NV6glZui7hN
+         bAA4jOdfiNAMVPEI4Q2/jl0rsed7vwVwmPZco/MR+kn2BlNEey36aFNMwfvXH+4DUj
+         +vJ0nRtk+19Up/T+wDrym1WtyX7TYmChfql7QNHs=
+Date:   Fri, 18 Sep 2020 10:47:51 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Swapnil Jakhade <sjakhade@cadence.com>
+Cc:     kishon@ti.com, robh+dt@kernel.org, p.zabel@pengutronix.de,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        mparab@cadence.com, yamonkar@cadence.com, tomi.valkeinen@ti.com,
+        jsarha@ti.com, nsekhar@ti.com
+Subject: Re: [PATCH v3 00/13] PHY: Add support for multilink configurations
+ in Cadence Torrent PHY driver
+Message-ID: <20200918051751.GC2968@vkoul-mobl>
+References: <1600327846-9733-1-git-send-email-sjakhade@cadence.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200917185009.GB1559@shell.armlinux.org.uk>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <1600327846-9733-1-git-send-email-sjakhade@cadence.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 07:50:10PM +0100, Russell King - ARM Linux admin wrote:
-> On Thu, Sep 17, 2020 at 07:32:28PM +0200, Christoph Hellwig wrote:
-> > The DMA API removed support for not passing in a device a long time
-> > ago, so remove the NULL checks.
+On 17-09-20, 09:30, Swapnil Jakhade wrote:
+> Cadence Torrent PHY is a multiprotocol PHY supporting different multilink
+> PHY configurations including DisplayPort, PCIe, USB, SGMII, QSGMII etc.
+> This patch series extends functionality of Torrent PHY driver to support
+> following configurations:
+> - Single link PCIe configuration
+> - PCIe + SGMII/QSGMII Unique SSC multilink configuration
+> - Single link SGMII/QSGMII configuration
+> - Single link USB configuration
+> - PCIe + USB Unique SSC multilink configuration
+> - USB + SGMII/QSGMII multilink configuration
 > 
-> What happens with ISA devices?
+> The changes have been validated on TI J7200 platform.
 
-For actual drivers they've been switched to struct isa_driver, which
-provides a struct device.  For some of the special case like the
-arch/arm/kernel/dma-isa.c we now use static struct device instances.
+Applied, thanks
+
+-- 
+~Vinod
