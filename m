@@ -2,119 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F379726F4BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 276CF26F4C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbgIRDdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 23:33:21 -0400
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:16874 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726102AbgIRDdU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 23:33:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1600400001; x=1631936001;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=GJp5n8jVa0gSejTEvB+IYZIdJiYFQosoJaDX7d0g+9M=;
-  b=VurZkonFNRXhLjY4DuCSEXTS5gkkjxTu05NdYNZVtDSA2/gNW4tXQdXG
-   wobzWHPFtPs13XO331n6Xv6ohSg/RBBmrO28jB8DCILizeO/VhpDy1+ju
-   Wg38WuSo/g0ZmYF83cepub282tW2oBy4//TBDyhLmR03W8vtBaqlPvZmc
-   0=;
-X-IronPort-AV: E=Sophos;i="5.77,273,1596499200"; 
-   d="scan'208";a="75965978"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 18 Sep 2020 03:33:18 +0000
-Received: from EX13MTAUWA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com (Postfix) with ESMTPS id 7BBCCA242C;
-        Fri, 18 Sep 2020 03:33:15 +0000 (UTC)
-Received: from EX13D01UWA002.ant.amazon.com (10.43.160.74) by
- EX13MTAUWA001.ant.amazon.com (10.43.160.58) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 18 Sep 2020 03:33:14 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (10.43.61.77) by
- EX13d01UWA002.ant.amazon.com (10.43.160.74) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 18 Sep 2020 03:33:14 +0000
-Received: from dev-dsk-csbisa-2a-37939146.us-west-2.amazon.com (172.19.34.216)
- by mail-relay.amazon.com (10.43.61.169) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Fri, 18 Sep 2020 03:33:13 +0000
-Received: by dev-dsk-csbisa-2a-37939146.us-west-2.amazon.com (Postfix, from userid 800212)
-        id 55B562C0; Fri, 18 Sep 2020 03:33:12 +0000 (UTC)
-Date:   Fri, 18 Sep 2020 03:33:12 +0000
-From:   Clint Sbisa <csbisa@amazon.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Clint Sbisa <csbisa@amazon.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "Jason Gunthorpe" <jgg@nvidia.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Subject: [PATCH v2] arm64: Enable PCI write-combine resources under sysfs
-Message-ID: <20200918033312.ddfpibgfylfjpex2@amazon.com>
+        id S1726422AbgIRDhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 23:37:41 -0400
+Received: from ozlabs.org ([203.11.71.1]:45173 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726260AbgIRDhl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 23:37:41 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bt0035J9Yz9sRR;
+        Fri, 18 Sep 2020 13:37:39 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1600400259;
+        bh=f+WI+4Y5FqCAKO5vI/9vI4pfQazkTL/VYPrdXvYY8fc=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=d/6/w5s6c9CO1f97Mol+q4eV4zfmEBkZqG2s4JuhiDKVhnNJWc5BrI+ZbKp2yPZXm
+         rLb+teRkc65mrjjFi+LJg8GF0cteV4C/iDp1HzFSLeUK/dNWZ3umckQ0LclSP5GfeG
+         waXRmi+DsFeLUFM7gpHcWFKIe9HGtH6ZDQe9EAnZM07N5jAVZCuKaHCqI8KjRYysWi
+         yVQZJJEDSU7s3+hfcQvRZdbs+BJ0EtylUCIAncVEyAzhORUMv9qVlvP2du5Im7ucvi
+         TlSUp4EMTrAqCyJPK066nR0sZ0PVZ+VvAODpl4clbLW+MKNT7nn8a0aWOfx6Rk0ZOW
+         b2AGwACZctcDw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Shuah Khan <skhan@linuxfoundation.org>,
+        Max Filippov <jcmvbkbc@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kselftest@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH] selftests/harness: Flush stdout before forking
+In-Reply-To: <e24df908-c50d-59ef-563c-9db24c819248@linuxfoundation.org>
+References: <20200917041519.3284582-1-mpe@ellerman.id.au> <CAMo8BfJ5j4nG0z1Bk00J=3xPM++J68Hp2idJ-D5aHT84-vOzsQ@mail.gmail.com> <e24df908-c50d-59ef-563c-9db24c819248@linuxfoundation.org>
+Date:   Fri, 18 Sep 2020 13:37:33 +1000
+Message-ID: <87o8m3oiv6.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change exposes write-combine mappings under sysfs for
-prefetchable PCI resources on arm64.
+Shuah Khan <skhan@linuxfoundation.org> writes:
+> On 9/16/20 10:53 PM, Max Filippov wrote:
+>> On Wed, Sep 16, 2020 at 9:16 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
+>>>
+>>> The test harness forks() a child to run each test. Both the parent and
+>>> the child print to stdout using libc functions. That can lead to
+>>> duplicated (or more) output if the libc buffers are not flushed before
+>>> forking.
+>>>
+>>> It's generally not seen when running programs directly, because stdout
+>>> will usually be line buffered when it's pointing to a terminal.
+>>>
+>>> This was noticed when running the seccomp_bpf test, eg:
+>>>
+>>>    $ ./seccomp_bpf | tee test.log
+>>>    $ grep -c "TAP version 13" test.log
+>>>    2
+>>>
+>>> But we only expect the TAP header to appear once.
+>>>
+>>> It can be exacerbated using stdbuf to increase the buffer size:
+>>>
+>>>    $ stdbuf -o 1MB ./seccomp_bpf > test.log
+>>>    $ grep -c "TAP version 13" test.log
+>>>    13
+>>>
+>>> The fix is simple, we just flush stdout & stderr before fork. Usually
+>>> stderr is unbuffered, but that can be changed, so flush it as well
+>>> just to be safe.
+>>>
+>>> Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+>>> ---
+>>>   tools/testing/selftests/kselftest_harness.h | 5 +++++
+>>>   1 file changed, 5 insertions(+)
+>> 
+>> Tested-by: Max Filippov <jcmvbkbc@gmail.com>
+>
+> Thank you both. Applying to linux-kselftest fixes for 5.9-rc7
 
-Originally, the usage of "write combine" here was driven by the x86
-definition of write combine. This definition is specific to x86 and
-does not generalize to other architectures. However, the usage of WC
-has mutated to "write combine" semantics, which is implemented
-differently on each arch.
+It can wait for v5.10 IMHO, but up to you.
 
-Generally, prefetchable BARs are accepted to allow speculative
-accesses, write combining, and re-ordering-- from the PCI perspective,
-this means there are no read side effects. (This contradicts the PCI
-spec which allows prefetchable BARs to have read side effects, but
-this definition is ill-advised as it is impossible to meet.) On x86,
-prefetchable BARs are mapped as WC as originally defined (with some
-conditionals on arch features). On arm64, WC is taken to mean normal
-non-cacheable memory.
-
-In practice, write combine semantics are used to minimize write
-operations. A common usage of this is minimizing PCI TLPs which can
-significantly improve performance with PCI devices. In order to
-provide the same benefits to userspace, we need to allow userspace to
-map prefetchable BARs with write combine semantics. The resourceX_wc
-mapping is used today by userspace programs and libraries.
-
-While this model is flawed as "write combine" is very ill-defined, it
-is already used by multiple non-x86 archs to expose write combine
-semantics to user space. We enable this on arm64 to give userspace on
-arm64 an equivalent mechanism for utilizing write combining with PCI
-devices.
-
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Signed-off-by: Clint Sbisa <csbisa@amazon.com>
----
-Changes in v2:
-  - Rewrote the commit message.
-
- arch/arm64/include/asm/pci.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm64/include/asm/pci.h b/arch/arm64/include/asm/pci.h
-index 70b323cf8300..b33ca260e3c9 100644
---- a/arch/arm64/include/asm/pci.h
-+++ b/arch/arm64/include/asm/pci.h
-@@ -17,6 +17,7 @@
- #define pcibios_assign_all_busses() \
- 	(pci_has_flag(PCI_REASSIGN_ALL_BUS))
- 
-+#define arch_can_pci_mmap_wc() 1
- #define ARCH_GENERIC_PCI_MMAP_RESOURCE	1
- 
- extern int isa_dma_bridge_buggy;
--- 
-2.23.3
-
+cheers
