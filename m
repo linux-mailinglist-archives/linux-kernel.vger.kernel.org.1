@@ -2,101 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB6A926FAE6
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 12:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 127BE26FAEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 12:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726388AbgIRKse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 06:48:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42184 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726115AbgIRKse (ORCPT
+        id S1726249AbgIRKt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 06:49:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726115AbgIRKt4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 06:48:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600426112;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=R1chLQYyqvdYMEdkQJ5aLl7aSBAy8CC1WIB+Xh754Tw=;
-        b=Sq99/oHwuOCqotrL/joQ50TIn17H9UUfCgiE/97SUxfmR1+TYUQ7etnfjP4vuZ83OMxdTZ
-        ycTg4QFu207Ltp+fJrN5AggJMgqqrX/BS9KRFen7gMNq1nGtCJdNgbRwtye5YErWp0WVYw
-        qLxGlXjIKIfEV2ksooxpi2AKI2PffGs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-237-SrCELimjN-W__2WG3SIN9A-1; Fri, 18 Sep 2020 06:48:31 -0400
-X-MC-Unique: SrCELimjN-W__2WG3SIN9A-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 15A38640A0;
-        Fri, 18 Sep 2020 10:48:29 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.193.72])
-        by smtp.corp.redhat.com (Postfix) with SMTP id F32135DEBF;
-        Fri, 18 Sep 2020 10:48:25 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Fri, 18 Sep 2020 12:48:28 +0200 (CEST)
-Date:   Fri, 18 Sep 2020 12:48:24 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     peterz@infradead.org
-Cc:     Jan Kara <jack@suse.cz>, Boaz Harrosh <boaz@plexistor.com>,
-        Hou Tao <houtao1@huawei.com>, Ingo Molnar <mingo@redhat.com>,
-        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC PATCH] locking/percpu-rwsem: use this_cpu_{inc|dec}() for
- read_count
-Message-ID: <20200918104824.GA23469@redhat.com>
-References: <20200915150610.GC2674@hirez.programming.kicks-ass.net>
- <20200915153113.GA6881@redhat.com>
- <20200915155150.GD2674@hirez.programming.kicks-ass.net>
- <20200915160344.GH35926@hirez.programming.kicks-ass.net>
- <b885ce8e-4b0b-8321-c2cc-ee8f42de52d4@huawei.com>
- <ddd5d732-06da-f8f2-ba4a-686c58297e47@plexistor.com>
- <20200917120132.GA5602@redhat.com>
- <20200918090702.GB18920@quack2.suse.cz>
- <20200918100112.GN1362448@hirez.programming.kicks-ass.net>
- <20200918101216.GL35926@hirez.programming.kicks-ass.net>
+        Fri, 18 Sep 2020 06:49:56 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF37AC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 03:49:56 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id bw23so122827pjb.2
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 03:49:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S8srl7JTOHY4H9N4k8WT8uX/+x+VBfYA5c5ucCNG/qc=;
+        b=JXLL7mSrrYXNp0hvx4cxXl6T/RMwuV17wRZstxrboAkz6rkZtK/X8mrs8pgpZXUJUJ
+         qUdwyx4YlBsqjgY6//zXsxvyJ7THeM2iDLMkBjXnZR3pHeo8bEfxy4NETqJ8tA7vIcAC
+         kz5gI16PzSbLcSFcP79kl3pBVy3Olqe7bTBf0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S8srl7JTOHY4H9N4k8WT8uX/+x+VBfYA5c5ucCNG/qc=;
+        b=h7Zxamc8os+9uq20Z2m9eM+PTw4OGklqFoe5avKLs2GnuZVmLlwmRugvB1Gz0ygvCq
+         BU9SAlg4ZH2/bqACYE462+ROi9F46iBZKSea68EKfbNcwp+eW6j61xTXUSQHedi/Rtqb
+         9wyNSggqwTVm8lvFxsYEbG0ZmKAadXvcEgz19xAJkpbPSgh+nIxVMEsArKUHHiZ3pZIO
+         3beiv0mXcmd0C9HS7tRN+Nn0iSbRnFq7WesEUPc3Y9CHybbucAHhtmSB2WEd7VnuPP+9
+         5Glr1UK2WzobndPWLf/mz/g3RreCpopluq2IqO6Ear+m2E4QBit6EZS4Bs4rxRc4hgbY
+         f6dg==
+X-Gm-Message-State: AOAM532wrh+tsjMpEUuNNXyjG/kb4+zg7v9oDuB3iI/6+qDrPi7fSpFL
+        W6MEhYYM863//3ObK+VMon6Jyw==
+X-Google-Smtp-Source: ABdhPJyD97UGHfsogcOBzNaFIl0HRacR4ZV4wrQp6+MgiwWtlCWJ8oEp9uqEA+QBSn4ljKsYNHaMmQ==
+X-Received: by 2002:a17:90a:648d:: with SMTP id h13mr8805516pjj.151.1600426196261;
+        Fri, 18 Sep 2020 03:49:56 -0700 (PDT)
+Received: from shiro.work (p532183-ipngn200506sizuokaden.shizuoka.ocn.ne.jp. [153.199.2.183])
+        by smtp.googlemail.com with ESMTPSA id 131sm2857634pfy.5.2020.09.18.03.49.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 03:49:55 -0700 (PDT)
+From:   Daniel Palmer <daniel@0x0f.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     devicetree@vger.kernel.org, mark-pk.tsai@mediatek.com,
+        arnd@arndb.de, maz@kernel.org, linux-kernel@vger.kernel.org,
+        Daniel Palmer <daniel@0x0f.com>
+Subject: [PATCH 0/3] ARM: mstar: wire up interrupt controllers
+Date:   Fri, 18 Sep 2020 19:49:46 +0900
+Message-Id: <20200918104949.3260823-1-daniel@0x0f.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918101216.GL35926@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/18, Peter Zijlstra wrote:
->
-> On Fri, Sep 18, 2020 at 12:01:12PM +0200, peterz@infradead.org wrote:
-> > +	u64 sum = per_cpu_sum(*(u64 *)sem->read_count);
->
-> Moo, that doesn't work, we have to do two separate sums.
+Mark-PK Tsai's driver for the MStar interrupt
+controller should be going into 5.10[0].
 
-Or we can re-introduce "atomic_t slow_read_ctr".
+This small series selects the driver when building
+support for MStar/SigmaStar Arm v7 SoCs, adds the
+instances of it to the base dtsi and wires up the
+interrupt for pm_uart.
 
-	percpu_up_read_irqsafe(sem)
-	{
-		preempt_disable();
-		atomic_dec_release(&sem->slow_read_ctr);
-		if (!rcu_sync_is_idle(&sem->rss))
-			rcuwait_wake_up(&sem->writer);
-		preempt_enable();
-	}
+0 - https://lore.kernel.org/linux-arm-kernel/87lfhdr7l6.wl-maz@kernel.org/
 
-	readers_active_check(sem)
-	{
-		unsigned int sum = per_cpu_sum(*sem->read_count) +
-			(unsigned int)atomic_read(&sem->slow_read_ctr);
-		if (sum)
-			return false;
-		...
-	}
+Daniel Palmer (3):
+  ARM: mstar: Select MStar intc
+  ARM: mstar: Add interrupt controller to base dtsi
+  ARM: mstar: Add interrupt to pm_uart
 
-Of course, this assumes that atomic_t->counter underflows "correctly", just
-like "unsigned int".
+ arch/arm/boot/dts/mstar-v7.dtsi | 20 ++++++++++++++++++++
+ arch/arm/mach-mstar/Kconfig     |  1 +
+ 2 files changed, 21 insertions(+)
 
-But again, do we really want this?
-
-Oleg.
+-- 
+2.27.0
 
