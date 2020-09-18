@@ -2,82 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A3426EFCC
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:38:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 689FE26F0D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730126AbgIRCi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:38:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38818 "EHLO mail.kernel.org"
+        id S1730276AbgIRCqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:46:38 -0400
+Received: from mga12.intel.com ([192.55.52.136]:31936 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728764AbgIRCMZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:12:25 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BFB7323447;
-        Fri, 18 Sep 2020 02:12:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600395136;
-        bh=Suje01sTHXjtr2Mbt1BEurSgvN9caH/Qk6Ts4WpiS1I=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=COCpVlj37we7JfVVyEhvZQoRlrD3Q9EDBPizLn5l+bewEAbGaJhOpjPd6qeBWvyBV
-         tjeNEHRP3S0veJL/x5wYePE3ee9GOEiWBntYZGRuKerVwRKw4V1bRbZ5iW/Z6EjRlf
-         Mfhe4KYRlbmsuUBNoB6IM+CYIfiPtWfdRkcHxFy8=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tonghao Zhang <xiangxia.m.yue@gmail.com>,
-        kbuild test robot <lkp@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        dev@openvswitch.org
-Subject: [PATCH AUTOSEL 4.19 205/206] net: openvswitch: use div_u64() for 64-by-32 divisions
-Date:   Thu, 17 Sep 2020 22:08:01 -0400
-Message-Id: <20200918020802.2065198-205-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
-References: <20200918020802.2065198-1-sashal@kernel.org>
+        id S1728370AbgIRCJv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:09:51 -0400
+IronPort-SDR: bORU1zvJR/JQw82R2v53a3kaBXp12yg42rry5d1mblBZTNkDJWy0AzHu66MtiL8mPLluC3qtpw
+ HweWkdO+YgyA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="139337419"
+X-IronPort-AV: E=Sophos;i="5.77,273,1596524400"; 
+   d="scan'208";a="139337419"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 19:09:46 -0700
+IronPort-SDR: G9KvBwy6V2uVOVk3tYQOh0Ifnm8hTAnrhmaSt2F5hjw+Lq0hrVb+eto6gRVk9I5sM8WCmZIAYJ
+ ntx+nlL77N9g==
+X-IronPort-AV: E=Sophos;i="5.77,273,1596524400"; 
+   d="scan'208";a="307701014"
+Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 19:09:43 -0700
+Date:   Thu, 17 Sep 2020 19:09:40 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Haitao Huang <haitao.huang@linux.intel.com>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 13/24] x86/sgx: Add SGX_IOC_ENCLAVE_ADD_PAGES
+Message-ID: <20200918020940.GA14678@sjchrist-ice>
+References: <20200915110522.893152-1-jarkko.sakkinen@linux.intel.com>
+ <20200915110522.893152-14-jarkko.sakkinen@linux.intel.com>
+ <op.0q2prldowjvjmi@mqcpg7oapc828.gar.corp.intel.com>
+ <20200917160206.GF8530@linux.intel.com>
+ <op.0q3pw0stwjvjmi@mqcpg7oapc828.gar.corp.intel.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <op.0q3pw0stwjvjmi@mqcpg7oapc828.gar.corp.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+On Thu, Sep 17, 2020 at 01:35:10PM -0500, Haitao Huang wrote:
+> On Thu, 17 Sep 2020 11:02:06 -0500, Jarkko Sakkinen
+> <jarkko.sakkinen@linux.intel.com> wrote:
+> > 
+> > Right, I do get the OOM case but wouldn't in that case the reasonable
+> > thing to do destroy the enclave that is not even running? I mean that
+> > means that we are globally out of EPC.
+> > 
+> 
+> I would say it could be a policy, but not the only one. If it does not make
+> much difference to kernel, IMHO we should  not set it in stone now.
+> Debugging is also huge benefit to me.
 
-[ Upstream commit 659d4587fe7233bfdff303744b20d6f41ad04362 ]
+Agreed, an EPC cgroup is the proper way to define/enforce what happens when
+there is EPC pressure.  E.g. if process A is consuming 99% of the EPC, then
+it doesn't make sense to unconditionally kill enclaves from process B.  If
+the admin wants to give process A priority, so be it, but such a decision
+shouldn't be baked into the kernel.
 
-Compile the kernel for arm 32 platform, the build warning found.
-To fix that, should use div_u64() for divisions.
-| net/openvswitch/meter.c:396: undefined reference to `__udivdi3'
-
-[add more commit msg, change reported tag, and use div_u64 instead
-of do_div by Tonghao]
-
-Fixes: e57358873bb5d6ca ("net: openvswitch: use u64 for meter bucket")
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
-Tested-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- net/openvswitch/meter.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/openvswitch/meter.c b/net/openvswitch/meter.c
-index 6f5131d1074b0..5ea2471ffc03f 100644
---- a/net/openvswitch/meter.c
-+++ b/net/openvswitch/meter.c
-@@ -256,7 +256,7 @@ static struct dp_meter *dp_meter_create(struct nlattr **a)
- 		 * Start with a full bucket.
- 		 */
- 		band->bucket = (band->burst_size + band->rate) * 1000ULL;
--		band_max_delta_t = band->bucket / band->rate;
-+		band_max_delta_t = div_u64(band->bucket, band->rate);
- 		if (band_max_delta_t > meter->max_delta_t)
- 			meter->max_delta_t = band_max_delta_t;
- 		band++;
--- 
-2.25.1
-
+This series obviously doesn't provide an EPC cgroup, but that doesn't mean
+we can't make decisions that will play nice with a cgroup in the future.
