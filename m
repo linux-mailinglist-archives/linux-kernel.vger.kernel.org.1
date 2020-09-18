@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7CE826EFBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D24126EFBC
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730109AbgIRCh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:37:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38976 "EHLO mail.kernel.org"
+        id S1730107AbgIRCht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:37:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727561AbgIRCMb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:12:31 -0400
+        id S1728791AbgIRCMd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:12:33 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2490D235F7;
-        Fri, 18 Sep 2020 02:12:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7B159208E4;
+        Fri, 18 Sep 2020 02:12:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600395150;
-        bh=oqfgm3QiMflCw7HWafNqLL+eZ5LDEC54GAEMgL79QS0=;
+        s=default; t=1600395153;
+        bh=tcuUKKILO72swrjqzzeVh0J2bi9hs49yfJ+0qZsSLU4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fZIWKxHjMDiDwvL4WblKeMCP4QNZKfPuA1eEQ+eKxgXF5BEM69HMx5HpuBl4uKhZa
-         h+Su8hl0B0BfrwLtYzoqqKz1aFQyiJVWwqk1DTDTKY9FkfZ+RK/O86/Ip7/KLGke1w
-         WOnD04zOMeX7leLd6nRBw4xDaFUoArBSuZhpzTzE=
+        b=wHvjeKuxarqd2iCxL860fYoNG7zjB/FpMo25ErnbjK5q4DavUUMW/mZAh5HH1AxfJ
+         ZQgCRLGK0VhqLG66q0epRGLb4MWsQooaGmHDk+5LnIfuKK0g7T6SIFPs5wGLxvMfIR
+         EuXlgt0bNODYhHyVxeh7hTJgenQDSkI6nywvwens=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Pan Bian <bianpan2016@163.com>, Satish Kharat <satishkh@cisco.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 009/127] scsi: fnic: fix use after free
-Date:   Thu, 17 Sep 2020 22:10:22 -0400
-Message-Id: <20200918021220.2066485-9-sashal@kernel.org>
+Cc:     Hou Tao <houtao1@huawei.com>, Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Sasha Levin <sashal@kernel.org>, linux-mtd@lists.infradead.org
+Subject: [PATCH AUTOSEL 4.14 011/127] mtd: cfi_cmdset_0002: don't free cfi->cfiq in error path of cfi_amdstd_setup()
+Date:   Thu, 17 Sep 2020 22:10:24 -0400
+Message-Id: <20200918021220.2066485-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918021220.2066485-1-sashal@kernel.org>
 References: <20200918021220.2066485-1-sashal@kernel.org>
@@ -42,38 +42,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pan Bian <bianpan2016@163.com>
+From: Hou Tao <houtao1@huawei.com>
 
-[ Upstream commit ec990306f77fd4c58c3b27cc3b3c53032d6e6670 ]
+[ Upstream commit 03976af89e3bd9489d542582a325892e6a8cacc0 ]
 
-The memory chunk io_req is released by mempool_free. Accessing
-io_req->start_time will result in a use after free bug. The variable
-start_time is a backup of the timestamp. So, use start_time here to
-avoid use after free.
+Else there may be a double-free problem, because cfi->cfiq will
+be freed by mtd_do_chip_probe() if both the two invocations of
+check_cmd_set() return failure.
 
-Link: https://lore.kernel.org/r/1572881182-37664-1-git-send-email-bianpan2016@163.com
-Signed-off-by: Pan Bian <bianpan2016@163.com>
-Reviewed-by: Satish Kharat <satishkh@cisco.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+Reviewed-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/fnic/fnic_scsi.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/mtd/chips/cfi_cmdset_0002.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/scsi/fnic/fnic_scsi.c b/drivers/scsi/fnic/fnic_scsi.c
-index d79ac0b24f5af..04c25ca2be45f 100644
---- a/drivers/scsi/fnic/fnic_scsi.c
-+++ b/drivers/scsi/fnic/fnic_scsi.c
-@@ -1034,7 +1034,8 @@ static void fnic_fcpio_icmnd_cmpl_handler(struct fnic *fnic,
- 		atomic64_inc(&fnic_stats->io_stats.io_completions);
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index 1f0d83086cb09..870d1f1331b18 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -726,7 +726,6 @@ static struct mtd_info *cfi_amdstd_setup(struct mtd_info *mtd)
+ 	kfree(mtd->eraseregions);
+ 	kfree(mtd);
+ 	kfree(cfi->cmdset_priv);
+-	kfree(cfi->cfiq);
+ 	return NULL;
+ }
  
- 
--	io_duration_time = jiffies_to_msecs(jiffies) - jiffies_to_msecs(io_req->start_time);
-+	io_duration_time = jiffies_to_msecs(jiffies) -
-+						jiffies_to_msecs(start_time);
- 
- 	if(io_duration_time <= 10)
- 		atomic64_inc(&fnic_stats->io_stats.io_btw_0_to_10_msec);
 -- 
 2.25.1
 
