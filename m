@@ -2,76 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D041270739
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:42:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3672727077E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726440AbgIRUmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 16:42:13 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36241 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726187AbgIRUmM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 16:42:12 -0400
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 08IKg8qd028653
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Sep 2020 16:42:08 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id D318342003C; Fri, 18 Sep 2020 16:42:07 -0400 (EDT)
-Date:   Fri, 18 Sep 2020 16:42:07 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
-Subject: Re: [PATCH] random: initialize ChaCha20 constants with correct
- endianness
-Message-ID: <20200918204207.GC80112@mit.edu>
-References: <20200916045013.142179-1-ebiggers@kernel.org>
+        id S1726417AbgIRUvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 16:51:54 -0400
+Received: from sauhun.de ([88.99.104.3]:48582 "EHLO pokefinder.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726267AbgIRUvy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 16:51:54 -0400
+X-Greylist: delayed 377 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Sep 2020 16:51:53 EDT
+Received: from localhost (router.4pisysteme.de [80.79.225.122])
+        by pokefinder.org (Postfix) with ESMTPSA id 73B1B2C079A;
+        Fri, 18 Sep 2020 22:45:35 +0200 (CEST)
+Date:   Fri, 18 Sep 2020 22:45:35 +0200
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     qii.wang@mediatek.com, linux-i2c <linux-i2c@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        Leilk Liu <leilk.liu@mediatek.com>
+Subject: Re: [PATCH] i2c: mediatek: Fix generic definitions for bus
+ frequencies
+Message-ID: <20200918204535.GA52206@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>, qii.wang@mediatek.com,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        Leilk Liu <leilk.liu@mediatek.com>
+References: <1599890246-21191-1-git-send-email-qii.wang@mediatek.com>
+ <CAHp75VeBuR4fkVk0z=+d7EonHz0h=4=eRj3Wfe8R_8T=eyHaeA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="FCuugMFkClbJLl1L"
 Content-Disposition: inline
-In-Reply-To: <20200916045013.142179-1-ebiggers@kernel.org>
+In-Reply-To: <CAHp75VeBuR4fkVk0z=+d7EonHz0h=4=eRj3Wfe8R_8T=eyHaeA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 09:50:13PM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> On big endian CPUs, the ChaCha20-based CRNG is using the wrong
-> endianness for the ChaCha20 constants.
-> 
-> This doesn't matter cryptographically, but technically it means it's not
-> ChaCha20 anymore.  Fix it to always use the standard constants.
 
-I'll note that we're not technically ChaCha20 in terms of how we
-handle the IV.  ChaCha20 is defined as having a 96 bit IV and a 32-bit
-counter.  The counter is "usually initialized to be zero or one" (per
-RFC 7539) and the counter is defined to be Little Endian.
+--FCuugMFkClbJLl1L
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-We're currently not bothering to deal with Endian conversions with the
-counter, and we're using a 64-bit counter, instead of a 32-bit
-counter.  We also twiddle 32-bits of the state (crng->state[14]) by
-XOR'ing it with RDRAND if available at each round, which is also a
-spec violation.
 
-WE also initialize the counter to be a random value, using the
-input_pool or the primary crng state (if we are initializing the
-secondary state), but given that the specification says _usually_ zero
-or one, that's not an out-and-out spec violation.
+> > -       if (target_speed > I2C_MAX_FAST_MODE_PLUS_FREQ)
+> > -               target_speed =3D I2C_MAX_FAST_MODE_PLUS_FREQ;
+> > +       if (target_speed > I2C_MAX_HIGH_SPEED_MODE_FREQ)
+> > +               target_speed =3D I2C_MAX_HIGH_SPEED_MODE_FREQ;
+>=20
+> Thanks for fixing this. Indeed, somehow I messed these up.
 
-As far as the other deviations / "spec violations" from ChaCha-20 are
-concerned...  I'm "sorry not sorry".  :-)
+I read this as Rev-by for v2. Thanks!
 
-I have no objections to changing things so that the first 4 words of
-the crng state are more ChaCha-20-like, on the theory that most of the
-cryptoanlysis work (both positive and negative) have been done with
-the little-endian version of "expand 32-byte k".  I don't think it
-really makes a difference, either positively or negatively.  But
-technically we'd *still* not be using ChaCha20.  We could say that
-we're using the ChaCha20 block function, regardless.
 
-Cheers,
+--FCuugMFkClbJLl1L
+Content-Type: application/pgp-signature; name="signature.asc"
 
-						- Ted
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9lHGsACgkQFA3kzBSg
+Kbb8+Q//d12J/hP68UWUVx1wF2vUsU24vGA8FJZMSyvSlrcOD6QZRalGsA6LR8k1
+w6G70LEDSRlDVe1Q/9NuYJT6enGqXhGKs2up0qnGHAB14N6S5WS7hMQJXSFvc6Mm
+xXnNV4gFGcXfcqZMRgl3er6mDeMKJh+Sa5mnmaDhViT11VegGYkAr+VjFOyg5qLh
+EzR4ZO8NoMCi/hvTkiIu3MQNyKPQy33Xq4SdQqGC/x1ew7DWAwopPmQsooL7zQv2
+dqYd7X4FN6qcd/oF0K6tMyY6bbUVf/XiCfruyJjRf7hSESw/fc8HkFjF4oN8oIKR
+x/sVPceOiMjHpu186UGBK8ieupBQduP5PgewXmFM6Xgsj2hOBV/lwIFF2JoV7wO4
+ETFZJVJUNbLb8XjavbTVRbfaVSHTEa4pR1dGjOARj5sUdpEV6jOGY1ziRGntUh0u
+7DTZK0uZym8qms+6SB2dmHakkkXISGeAi/RNjx7vrmhShh1C4auluXWO8/SbIkGU
+Nm6lrKP4hmEXTAdvAcivMwnLHHZ+MgaWGaAZtSJv3EfqoYpnZRSNTCkFTLiRyAh/
+nkZn0naZnd5tO7jMr7U/43ZSHi7sTDBcPNnmx+e/qE+EZakkDBTXO107YHnks69E
+CQRE6DyZ3jdjeTjG301Y65dMW3n+gJq7ZlpE+pUJZVQUyW9zyz0=
+=/Aw9
+-----END PGP SIGNATURE-----
+
+--FCuugMFkClbJLl1L--
