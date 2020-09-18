@@ -2,108 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91CDB26F7D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B82826F7B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726402AbgIRISC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 04:18:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726388AbgIRISC (ORCPT
+        id S1726200AbgIRIKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 04:10:15 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:52939 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726102AbgIRIKO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 04:18:02 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D67E2C061797;
-        Fri, 18 Sep 2020 01:09:40 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id k18so4585907wmj.5;
-        Fri, 18 Sep 2020 01:09:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=gIrm1k0wpBO+eG/xwOUwVK1CI6UvN3iLydbukNax9ZE=;
-        b=jtE79XAVK5733uuedxsF172ExqK61Iq/tIYkEbK22R/GQJ15ULvPNA88TJx4Vg5kxu
-         dUOVOh1VWe5yU5c6fdiBHZmu8RcVYTmnMg8IHx4SCoTxkhERu4iiuBilqG/KDHirNoQ8
-         aXSI0aqdZmoM28b9brmY/VnOPfT5hpMtG7ensFCr/wHab8o0RxrYFpa38BqagGuO0OD+
-         z88WHZ+Xe+uvPLQqr26relcJxObDz4Kvi+54kCUNrZbLCZEhsWJOQV3bP/Ics+Tt5+5H
-         r1jy7C6RrgAVW0/4GpibBZ2vwT9nP5Lwtt+8dUpF2rTKEYLOLVWBxvGhDT2a2b0yI4+b
-         gwHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=gIrm1k0wpBO+eG/xwOUwVK1CI6UvN3iLydbukNax9ZE=;
-        b=en2CJg8snyCrhoQmjN5xWowpJv8fNv7I/K41o3vydH8HnlqlfKFgneZOdsf1SFehdf
-         7ZrnfxM1Ye0cuepKQUAcglNdQsWnZyS5gsxVybaUN7peyr/GtWp8MqOdhQBfd61Eg1x6
-         j/82CghuWG6Wqh93/YPKxSi3r/hnHISbscncnLYzYoeEYywXzzX3tTI/fwP8I9iAcmu2
-         vx10wsLdkP3kNJRC440D9PMWwLPbrv5lBAgVyQCk4C9ihVXOIjFEPaj3Riss6aTsiEWo
-         siA/BIKV/AYe+IB82rIKRtxamyQncz41AdZjZW1BrqknTlsvzW28yMIjZZplR+BWmOPX
-         auzA==
-X-Gm-Message-State: AOAM530xb295paa83BbncaXmCt3OPsFQig/+xYj2p8L5nwEt9Iv09DsN
-        gA9UeDi+lrj/0JTdBWQ1Eaw9xpXZGnpVKQK2
-X-Google-Smtp-Source: ABdhPJxJ0IwUFY6Xv/t+mR5ajPysGzi/rS/mCDNnoE1QdqD15G5LwitAj581stJGotZV+zRvcolD5g==
-X-Received: by 2002:a1c:bbd7:: with SMTP id l206mr15100540wmf.185.1600416579489;
-        Fri, 18 Sep 2020 01:09:39 -0700 (PDT)
-Received: from [192.168.1.211] ([2.29.208.34])
-        by smtp.gmail.com with ESMTPSA id 63sm4053820wrh.71.2020.09.18.01.09.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Sep 2020 01:09:38 -0700 (PDT)
-Subject: Re: [RFC PATCH] Add bridge driver to connect sensors to CIO2 device
- via software nodes on ACPI platforms
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     yong.zhi@intel.com, sakari.ailus@linux.intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org, davem@davemloft.net, robh@kernel.org,
-        devel@driverdev.osuosl.org, jorhand@linux.microsoft.com,
-        kieran.bingham@ideasonboard.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, kitakar@gmail.com
-References: <20200916213618.8003-1-djrscally@gmail.com>
- <20200918080335.GT4282@kadam>
-From:   Dan Scally <djrscally@gmail.com>
-Message-ID: <e9d19d97-7733-04aa-2c61-e7e367a97baa@gmail.com>
-Date:   Fri, 18 Sep 2020 09:09:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200918080335.GT4282@kadam>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        Fri, 18 Sep 2020 04:10:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600416613;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=nn4mVXfrUSRgOT8MEs6N754ehCpTZG1A7BrNmYlopGM=;
+        b=ZFI5K/L0kXUX0kWSgZnFu5VkAmJ0LXf7TU3f3hKO8PbtqRerJRYByi+TbUFbEc1SnTKYRw
+        qqI1vUxxtviKB5kCIkkoSzZOPzEgdFe/dHGhDNEP6j17zEXfbtwap+N1Wn7v8zh8IqDe7o
+        71HCuXbqbjlYVK54QmdaBvFyz+RHQIo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-359-mPr4_xyANSi0M-pHjPS2EA-1; Fri, 18 Sep 2020 04:10:07 -0400
+X-MC-Unique: mPr4_xyANSi0M-pHjPS2EA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2006510A7AE4;
+        Fri, 18 Sep 2020 08:10:06 +0000 (UTC)
+Received: from localhost.localdomain.com (ovpn-12-22.pek2.redhat.com [10.72.12.22])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C23A91001281;
+        Fri, 18 Sep 2020 08:10:01 +0000 (UTC)
+From:   Lianbo Jiang <lijiang@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     bhe@redhat.com, corbet@lwn.net, kexec@lists.infradead.org,
+        linux-doc@vger.kernel.org, vgoyal@redhat.com
+Subject: [PATCH] docs: admin-guide: update kdump documentation due to change of crash URL
+Date:   Fri, 18 Sep 2020 16:09:58 +0800
+Message-Id: <20200918080958.19841-1-lijiang@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ah, shoot - good spot, thanks
+Since crash utility has moved to github, the original URL is no longer
+available. Let's update it accordingly.
 
-On 18/09/2020 09:03, Dan Carpenter wrote:
-> I ran Smatch over the code and it spotted an off by one.
->
-> On Wed, Sep 16, 2020 at 10:36:18PM +0100, Daniel Scally wrote:
->> +#define MAX_CONNECTED_DEVICES			4
->> +#define SWNODE_SENSOR_HID			0
->> +#define SWNODE_SENSOR_PORT			1
->> +#define SWNODE_SENSOR_ENDPOINT			2
->> +#define SWNODE_CIO2_PORT			3
->> +#define SWNODE_CIO2_ENDPOINT			4
->> +#define SWNODE_NULL_TERMINATOR			5
->    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
->
->> +struct sensor {
->> +	struct device *dev;
->> +	struct software_node swnodes[5];
->                              ^^^^^^^^^^
-> This needs to be 6 instead of 5 to prevent memory corruption.
->
->> +	struct property_entry sensor_props[6];
->> +	struct property_entry cio2_props[3];
->> +	struct fwnode_handle *fwnode;
->> +};
->
->> +		nodes[SWNODE_NULL_TERMINATOR]   = SOFTWARE_NODE_NULL;
->                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> Here.
->
-> regards,
-> dan carpenter
->
+Suggested-by: Dave Young <dyoung@redhat.com>
+Signed-off-by: Lianbo Jiang <lijiang@redhat.com>
+---
+ Documentation/admin-guide/kdump/kdump.rst | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
+index 2da65fef2a1c..75a9dd98e76e 100644
+--- a/Documentation/admin-guide/kdump/kdump.rst
++++ b/Documentation/admin-guide/kdump/kdump.rst
+@@ -509,9 +509,12 @@ ELF32-format headers using the --elf32-core-headers kernel option on the
+ dump kernel.
+ 
+ You can also use the Crash utility to analyze dump files in Kdump
+-format. Crash is available on Dave Anderson's site at the following URL:
++format. Crash is available at the following URL:
+ 
+-   http://people.redhat.com/~anderson/
++   https://github.com/crash-utility/crash
++
++Crash document can be found at:
++   https://crash-utility.github.io/
+ 
+ Trigger Kdump on WARN()
+ =======================
+-- 
+2.17.1
+
