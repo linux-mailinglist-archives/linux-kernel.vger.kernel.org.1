@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8000B26EFAC
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35DFB26EFA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730091AbgIRCh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:37:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39152 "EHLO mail.kernel.org"
+        id S1729748AbgIRChW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:37:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727519AbgIRCMh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:12:37 -0400
+        id S1728083AbgIRCMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:12:40 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D3BE723787;
-        Fri, 18 Sep 2020 02:12:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3423123899;
+        Fri, 18 Sep 2020 02:12:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600395156;
-        bh=3vBTzXUaXv8QpU9S1PyLEvtsVMDHzihXUIKh1IVL9eo=;
+        s=default; t=1600395159;
+        bh=yi+/pdPy4RirCx/0FCAt/gOicqPPenTfDRwNaYVViCY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nuKoagXwk7a5H81lyhSWcGewnEUP4051Uz/QS9YtQDY3qSvhgTFWateSeRmP+CH04
-         QGTcSUZBNi4Uzr0bWD0mxcjxSwd6uiAs0gbT+2et77OsR1Vh7WY8EKboRAvdSLZlr6
-         cv5crgPxCrHFPSTkD4vbbnh/gq8+px1MI/Bc4qTE=
+        b=MMH4uQd25c4YM7VcpCpdoNDGtXv3ZwMBRFEhXAaX9RUnKglC/xqBtdcgCTKQF4pQU
+         0APbNT23MeRslj5wEdlg/sJP1377L7Z41eUGRptmRAP0nIFuFBQ97gLx9kdi3x/I9A
+         lNVC+ymaIy6XxyDzjVQihkBCiWl3Z/u6G6rUUfYQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Divya Indi <divya.indi@oracle.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.14 014/127] tracing: Adding NULL checks for trace_array descriptor pointer
-Date:   Thu, 17 Sep 2020 22:10:27 -0400
-Message-Id: <20200918021220.2066485-14-sashal@kernel.org>
+Cc:     Brian Foster <bfoster@redhat.com>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, xfs@oss.sgi.com
+Subject: [PATCH AUTOSEL 4.14 017/127] xfs: fix attr leaf header freemap.size underflow
+Date:   Thu, 17 Sep 2020 22:10:30 -0400
+Message-Id: <20200918021220.2066485-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918021220.2066485-1-sashal@kernel.org>
 References: <20200918021220.2066485-1-sashal@kernel.org>
@@ -42,51 +42,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Divya Indi <divya.indi@oracle.com>
+From: Brian Foster <bfoster@redhat.com>
 
-[ Upstream commit 953ae45a0c25e09428d4a03d7654f97ab8a36647 ]
+[ Upstream commit 2a2b5932db67586bacc560cc065d62faece5b996 ]
 
-As part of commit f45d1225adb0 ("tracing: Kernel access to Ftrace
-instances") we exported certain functions. Here, we are adding some additional
-NULL checks to ensure safe usage by users of these APIs.
+The leaf format xattr addition helper xfs_attr3_leaf_add_work()
+adjusts the block freemap in a couple places. The first update drops
+the size of the freemap that the caller had already selected to
+place the xattr name/value data. Before the function returns, it
+also checks whether the entries array has encroached on a freemap
+range by virtue of the new entry addition. This is necessary because
+the entries array grows from the start of the block (but end of the
+block header) towards the end of the block while the name/value data
+grows from the end of the block in the opposite direction. If the
+associated freemap is already empty, however, size is zero and the
+subtraction underflows the field and causes corruption.
 
-Link: http://lkml.kernel.org/r/1565805327-579-4-git-send-email-divya.indi@oracle.com
+This is reproduced rarely by generic/070. The observed behavior is
+that a smaller sized freemap is aligned to the end of the entries
+list, several subsequent xattr additions land in larger freemaps and
+the entries list expands into the smaller freemap until it is fully
+consumed and then underflows. Note that it is not otherwise a
+corruption for the entries array to consume an empty freemap because
+the nameval list (i.e. the firstused pointer in the xattr header)
+starts beyond the end of the corrupted freemap.
 
-Signed-off-by: Divya Indi <divya.indi@oracle.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Update the freemap size modification to account for the fact that
+the freemap entry can be empty and thus stale.
+
+Signed-off-by: Brian Foster <bfoster@redhat.com>
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/trace.c        | 3 +++
- kernel/trace/trace_events.c | 2 ++
- 2 files changed, 5 insertions(+)
+ fs/xfs/libxfs/xfs_attr_leaf.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 95ede1f7ffdf3..22759f5607192 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -3035,6 +3035,9 @@ int trace_array_printk(struct trace_array *tr,
- 	if (!(global_trace.trace_flags & TRACE_ITER_PRINTK))
- 		return 0;
- 
-+	if (!tr)
-+		return -ENOENT;
-+
- 	va_start(ap, fmt);
- 	ret = trace_array_vprintk(tr, ip, fmt, ap);
- 	va_end(ap);
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index e72a44ecb81da..d69c79ac97986 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -799,6 +799,8 @@ static int ftrace_set_clr_event(struct trace_array *tr, char *buf, int set)
- 	char *event = NULL, *sub = NULL, *match;
- 	int ret;
- 
-+	if (!tr)
-+		return -ENOENT;
- 	/*
- 	 * The buf format can be <subsystem>:<event-name>
- 	 *  *:<event-name> means any event by that name.
+diff --git a/fs/xfs/libxfs/xfs_attr_leaf.c b/fs/xfs/libxfs/xfs_attr_leaf.c
+index 73a541755d5b7..4a27e2ab5b067 100644
+--- a/fs/xfs/libxfs/xfs_attr_leaf.c
++++ b/fs/xfs/libxfs/xfs_attr_leaf.c
+@@ -1335,7 +1335,9 @@ xfs_attr3_leaf_add_work(
+ 	for (i = 0; i < XFS_ATTR_LEAF_MAPSIZE; i++) {
+ 		if (ichdr->freemap[i].base == tmp) {
+ 			ichdr->freemap[i].base += sizeof(xfs_attr_leaf_entry_t);
+-			ichdr->freemap[i].size -= sizeof(xfs_attr_leaf_entry_t);
++			ichdr->freemap[i].size -=
++				min_t(uint16_t, ichdr->freemap[i].size,
++						sizeof(xfs_attr_leaf_entry_t));
+ 		}
+ 	}
+ 	ichdr->usedbytes += xfs_attr_leaf_entsize(leaf, args->index);
 -- 
 2.25.1
 
