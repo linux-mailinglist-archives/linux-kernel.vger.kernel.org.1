@@ -2,159 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A95F26F59B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 08:00:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 480D026F5B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 08:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbgIRGAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 02:00:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32979 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725886AbgIRGAf (ORCPT
+        id S1726492AbgIRGGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 02:06:34 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:10576 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726469AbgIRGGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 02:00:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600408833;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7GjiLePj2d/62yENu9Rruo7vO63aApraxg0iEhjHAYE=;
-        b=ZB3D+Qt+Wf5vONbhbTIr/Z+//lfCYlUfQpCwFbA3SDlQEk6d68EKkHwXJR8vuLOCbsuQTj
-        jKGYRS3XitpymKv/taJ8t2Q8sMcoDVXmJ7X/8y3LKsEpviJmweq/eJbtg8rJNyfcRcgeCP
-        +3LDgw4T0RkACOUL+r3r6Uj2NMUNFhc=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-324-BGvCzAg6NbyIYQ0BWeSdIA-1; Fri, 18 Sep 2020 02:00:31 -0400
-X-MC-Unique: BGvCzAg6NbyIYQ0BWeSdIA-1
-Received: by mail-wr1-f71.google.com with SMTP id f18so1717057wrv.19
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 23:00:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7GjiLePj2d/62yENu9Rruo7vO63aApraxg0iEhjHAYE=;
-        b=FJQyh0MolUaxRV0t8mkFeXCmoem1slD2zLx0n7sZ23tl1MIwnyZQl7PJXsCFyyN+qQ
-         uvsLV4TG0RwUxPxYKrrMRQyRqoiel3MNzkhRXmZyk5ByA/Mn08K/mhw85Rw5JnYn1Zlc
-         mlC6U9AXronrT5UyPPskj5OIvnu4gDeSM3h4PLs/PeZ3TtKyPT+usqzBitoiLIHdYImx
-         KKl2JN60WZsb8de1FJZbfRrdqvDFya5MiPOiPedE/of9iyNF87sVNL23NDvj8SeB/Y/c
-         1y/WzEDtxO8bnNOTAfr7zsRm69+G1q8lifkTmivUiRECIJLFOEpC4YnlkMhos4G0iq5w
-         pE9g==
-X-Gm-Message-State: AOAM532jCCjhTKzJPOMcAC+BQrT//tEAQ28qwXY/+pILnwkcj//qiZuZ
-        BjOH+kBkTmza9VDne/XFL/On6N3ksKyXj8aFUpeqpzXGqYem2AUsThPphgvb637H4u8OXAnfpps
-        v96iX5kVZgp7+4/Fklhn4jlLk
-X-Received: by 2002:adf:e80b:: with SMTP id o11mr34185436wrm.118.1600408829955;
-        Thu, 17 Sep 2020 23:00:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzoqnTuZodlmFvt9lTgsfrU4+rzaDRF8WKHlDBwrxsBe1ffEfW5zGPP4d2/ftQ4bFWqoBQC+g==
-X-Received: by 2002:adf:e80b:: with SMTP id o11mr34185414wrm.118.1600408829691;
-        Thu, 17 Sep 2020 23:00:29 -0700 (PDT)
-Received: from localhost.localdomain ([151.29.184.101])
-        by smtp.gmail.com with ESMTPSA id a5sm3175493wrp.37.2020.09.17.23.00.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 23:00:28 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 08:00:26 +0200
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Simmons <msimmons@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/deadline: Unthrottle PI boosted threads while
- enqueuing
-Message-ID: <20200918060026.GC261845@localhost.localdomain>
-References: <5076e003450835ec74e6fa5917d02c4fa41687e6.1600170294.git.bristot@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5076e003450835ec74e6fa5917d02c4fa41687e6.1600170294.git.bristot@redhat.com>
+        Fri, 18 Sep 2020 02:06:34 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600409194; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=lGV2hx35OB+wkZdH46JM2MKBQLWUa4ptpNDwYKwWuvc=; b=JCyiOrOa6LgQAOx+GkR/8sN928efYLY98Qoe/XB9E9HIXBjd6zA72krth8HPWae9tkoZeBtz
+ GFZxlV5It+RL+9i/0HrhpECh+tmqJ8BMUdcm+EA+cY8Mk3bYpQJsGlmSH5eho3pZKG8MQPPq
+ OUdsmhUBehAB3PZqLJCg/QH3NQ0=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5f644e0ffda7475ccaf3cf2d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Sep 2020 06:05:03
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0F614C433FF; Fri, 18 Sep 2020 06:05:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EB125C433CA;
+        Fri, 18 Sep 2020 06:04:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EB125C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Subject: [PATCH v6 0/5] Qualcomm's lpass-hdmi ASoC driver to support audio over dp port
+Date:   Fri, 18 Sep 2020 11:34:39 +0530
+Message-Id: <1600409084-29093-1-git-send-email-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+These patches are to support audio over DP port on Qualcomm's SC7180 LPASS Asoc.
+It includes machine driver, cpu driver, platform driver updates for HDMI path support, 
+device tree documention, lpass variant structure optimization and configuration changes.
+These patches depends on the DP patch series 
+https://patchwork.kernel.org/project/dri-devel/list/?series=332029
 
-On 16/09/20 09:06, Daniel Bristot de Oliveira wrote:
-> stress-ng has a test (stress-ng --cyclic) that creates a set of threads
-> under SCHED_DEADLINE with the following parameters:
-> 
->     dl_runtime   =  10000 (10 us)
->     dl_deadline  = 100000 (100 us)
->     dl_period    = 100000 (100 us)
-> 
-> These parameters are very aggressive. When using a system without HRTICK
-> set, these threads can easily execute longer than the dl_runtime because
-> the throttling happens with 1/HZ resolution.
-> 
-> During the main part of the test, the system works just fine because
-> the workload does not try to run over the 10 us. The problem happens at
-> the end of the test, on the exit() path. During exit(), the threads need
-> to do some cleanups that require real-time mutex locks, mainly those
-> related to memory management, resulting in this scenario:
-> 
-> Note: locks are rt_mutexes...
->  ------------------------------------------------------------------------
->     TASK A:		TASK B:				TASK C:
->     activation
-> 							activation
-> 			activation
-> 
->     lock(a): OK!	lock(b): OK!
->     			<overrun runtime>
->     			lock(a)
->     			-> block (task A owns it)
-> 			  -> self notice/set throttled
->  +--<			  -> arm replenished timer
->  |    			switch-out
->  |    							lock(b)
->  |    							-> <C prio > B prio>
->  |    							-> boost TASK B
->  |  unlock(a)						switch-out
->  |  -> handle lock a to B
->  |    -> wakeup(B)
->  |      -> B is throttled:
->  |        -> do not enqueue
->  |     switch-out
->  |
->  |
->  +---------------------> replenishment timer
-> 			-> TASK B is boosted:
-> 			  -> do not enqueue
->  ------------------------------------------------------------------------
-> 
-> BOOM: TASK B is runnable but !enqueued, holding TASK C: the system
-> crashes with hung task C.
-> 
-> This problem is avoided by removing the throttle state from the boosted
-> thread while boosting it (by TASK A in the example above), allowing it to
-> be queued and run boosted.
-> 
-> The next replenishment will take care of the runtime overrun, pushing
-> the deadline further away. See the "while (dl_se->runtime <= 0)" on
-> replenish_dl_entity() for more information.
-> 
-> Signed-off-by: Daniel Bristot de Oliveira <bristot@redhat.com>
-> Reported-by: Mark Simmons <msimmons@redhat.com>
-> Reviewed-by: Juri Lelli <juri.lelli@redhat.com>
-> Tested-by: Mark Simmons <msimmons@redhat.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ben Segall <bsegall@google.com>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-> Cc: linux-kernel@vger.kernel.org
-> 
-> ---
+changes since V5:
+    -- Removed unused struct regmap *map in lpass_platform_alloc_hdmidmactl_fields.
+    -- DMA alloc and free API signature change in lpass-apq8016.c, lpass-ipq806x.c 
+    -- Keeping API "irqreturn_t lpass_platform_hdmiif_irq" under ifdef macro
+Changes Since v4:
+    -- Updated with single compatible node for both I2S and HDMI.
+Changes Since v3:
+    -- Removed id in lpass variant structure and used snd_soc_dai_driver id.
+Changes Since v2:
+	-- Audio buffer size(i.e. LPASS_PLATFORM_BUFFER_SIZE) in lpass-platform.c increased.
+Changes Since v1:
+	-- Commit messages are updated
+	-- Addressed Rob Herring review comments
 
-Thanks for this fix.
+V Sujith Kumar Reddy (5):
+  ASoC: Add sc7180-lpass binding header hdmi define
+  ASoC: dt-bindings: Add dt binding for lpass hdmi
+  Asoc:qcom:lpass-cpu:Update dts property read API
+  ASoC: qcom: Add support for lpass hdmi driver
+  ASoC: qcom: sc7180: Add support for audio over DP
 
-Acked-by: Juri Lelli <juri.lelli@redhat.com>
+ .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  |  74 ++-
+ include/dt-bindings/sound/sc7180-lpass.h           |   1 +
+ sound/soc/qcom/Kconfig                             |   5 +
+ sound/soc/qcom/Makefile                            |   2 +
+ sound/soc/qcom/lpass-apq8016.c                     |   4 +-
+ sound/soc/qcom/lpass-cpu.c                         |  39 +-
+ sound/soc/qcom/lpass-hdmi.c                        | 596 +++++++++++++++++++++
+ sound/soc/qcom/lpass-hdmi.h                        | 129 +++++
+ sound/soc/qcom/lpass-ipq806x.c                     |   4 +-
+ sound/soc/qcom/lpass-lpaif-reg.h                   |  52 +-
+ sound/soc/qcom/lpass-platform.c                    | 468 ++++++++++++----
+ sound/soc/qcom/lpass-sc7180.c                      | 116 +++-
+ sound/soc/qcom/lpass.h                             | 119 +++-
+ 13 files changed, 1451 insertions(+), 158 deletions(-)
+ create mode 100644 sound/soc/qcom/lpass-hdmi.c
+ create mode 100644 sound/soc/qcom/lpass-hdmi.h
 
-Best,
-Juri
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
