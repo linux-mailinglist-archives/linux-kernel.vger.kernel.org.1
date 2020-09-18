@@ -2,50 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE1A270859
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 23:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 281C927085C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 23:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726379AbgIRVef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 17:34:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37074 "EHLO
+        id S1726394AbgIRVfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 17:35:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726281AbgIRVee (ORCPT
+        with ESMTP id S1726187AbgIRVfP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 17:34:34 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC35FC0613CE;
-        Fri, 18 Sep 2020 14:34:34 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 4FFC5159F5F91;
-        Fri, 18 Sep 2020 14:17:47 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 14:34:33 -0700 (PDT)
-Message-Id: <20200918.143433.896733921093595476.davem@davemloft.net>
-To:     luobin9@huawei.com
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        luoxianjun@huawei.com, yin.yinshi@huawei.com,
-        cloud.wangxiaoyun@huawei.com, chiqijun@huawei.com,
-        zengweiliang.zengweiliang@huawei.com
-Subject: Re: [PATCH net-next] hinic: modify irq name
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200918092322.3058-1-luobin9@huawei.com>
-References: <20200918092322.3058-1-luobin9@huawei.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Fri, 18 Sep 2020 14:17:47 -0700 (PDT)
+        Fri, 18 Sep 2020 17:35:15 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 007E6C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 14:35:14 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id t7so3852441pjd.3
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 14:35:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OsXO9Vng0uZ8zdPlCQEPUkvMN685QAvewZuZv3id6Vk=;
+        b=Qm/FmtT5Dnyrxf4BCgQpgqbDw7sS/zTtWsVgCPYD/Z8fGcfQ5xbRlGReuouD+SHCd9
+         dZJK4vmeSlLB9LbvCFrufdgXKAOEcR0Sj+Z6M4GjiMmOMsAqZazgwvwTj14O7ZQgEo98
+         fFyktTytinUg2oHTwmTXsDyGhM3irl/3gs0Oc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OsXO9Vng0uZ8zdPlCQEPUkvMN685QAvewZuZv3id6Vk=;
+        b=l7Aw/Pba+TXMLjHPEx3rAUiVdYzugt2MocUxDABsz3s/5sV0V2Mf2zJ802nbFubyaI
+         +EeoOxXdrsssy6ZUIgjI0ZqVFa4oUERXejhvQG37+6kc1q0Yv1Jr9gSb3JCHnN5/HlXr
+         orhYsJj8qhbzgDP8kBPc2L2vkNMlbjdleqf0JiB2fJjFwPaOohBMYiK3RIaKkpvXLWi/
+         N2FHL2EN62z68zLODrYrRZJ+HpSN7IdxZO6SzbBRo9R54nlrEcA1cF/kF7ZWkYYAwYls
+         g0ZYtiV6yQmsxG3vwVNfAqlZty0p8sJStwzJ3K3ptTo2oN8+6iTlJVZdb5hzM2+KxdMe
+         ZUWw==
+X-Gm-Message-State: AOAM533zC9cgsApVMn3h6R/7vedn3JS7fpy7rm9BLpUCl43veW0Zb3XC
+        1hzYBD/Whj+sjqvwKNWDnYOTeg==
+X-Google-Smtp-Source: ABdhPJyK4NrndRd3u8+tWx5b+nRCti5n/xaxbJJsCKhy+21AIJjWUWUQo+BNLBjVu3tDwrR5itradw==
+X-Received: by 2002:a17:90a:156:: with SMTP id z22mr14965929pje.140.1600464914535;
+        Fri, 18 Sep 2020 14:35:14 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id f19sm4097785pfj.25.2020.09.18.14.35.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 14:35:13 -0700 (PDT)
+Date:   Fri, 18 Sep 2020 14:35:12 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     John Wood <john.wood@gmx.com>
+Cc:     kernel-hardening@lists.openwall.com, Jann Horn <jannh@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [RFC PATCH 6/6] security/fbfam: Mitigate a fork brute force
+ attack
+Message-ID: <202009181433.EAF237C36@keescook>
+References: <20200910202107.3799376-1-keescook@chromium.org>
+ <20200910202107.3799376-7-keescook@chromium.org>
+ <202009101649.2A0BF95@keescook>
+ <20200918152116.GB3229@ubuntu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200918152116.GB3229@ubuntu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luo bin <luobin9@huawei.com>
-Date: Fri, 18 Sep 2020 17:23:22 +0800
-
-> Make a distinction between different irqs by netdev name or pci name.
+On Fri, Sep 18, 2020 at 06:02:16PM +0200, John Wood wrote:
+> On Thu, Sep 10, 2020 at 04:56:19PM -0700, Kees Cook wrote:
+> > On Thu, Sep 10, 2020 at 01:21:07PM -0700, Kees Cook wrote:
+> > > +		pr_warn("fbfam: Offending process with PID %d killed\n",
+> > > +			p->pid);
+> >
+> > I'd make this ratelimited (along with Jann's suggestions).
 > 
-> Signed-off-by: Luo bin <luobin9@huawei.com>
+> Sorry, but I don't understand what you mean with "make this ratelimited".
+> A clarification would be greatly appreciated.
 
-Applied.
+Ah! Yes, sorry for not being more clear. There are ratelimit helpers for
+the pr_*() family of functions, e.g.:
+
+	pr_warn_ratelimited("brute: Offending process with PID...
+
+-- 
+Kees Cook
