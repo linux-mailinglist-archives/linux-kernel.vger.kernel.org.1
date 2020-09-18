@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEBE926EC83
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD56A26EC87
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728309AbgIRCM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:12:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38808 "EHLO mail.kernel.org"
+        id S1728806AbgIRCMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:12:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728761AbgIRCM0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:12:26 -0400
+        id S1728789AbgIRCMc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:12:32 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 742D723977;
-        Fri, 18 Sep 2020 02:12:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 46C1D2388D;
+        Fri, 18 Sep 2020 02:12:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600395143;
-        bh=7p7+Lf4Pujre5C2tXVbcmu/TnsLE817xpJM5PPadfA4=;
+        s=default; t=1600395152;
+        bh=FTn1Kzua1foQM2Tm0+Dr/bPtM5tkJRU8+Es3JWSissk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0zhA0QTMAIPuSRLcdPxy5S5nnIlva97nTstcSnXSKfL0rGEXQjqF6srxhqtyAIR/1
-         kQYPWpgnjOoM66XVaXzuqRuKTuTfU8XwR8o+THbr4QeKPcztsAJkKe3Lrull1aCS+s
-         W9sOy2IlLxBbwnVEa79msccFyqgM1fNbYF0vvBXk=
+        b=AprAKJoTPLn0wZXYdOw7VMlCjSdurGrTB3imyaagP+0Ll5nldCPQI23Gb4Fuo634o
+         +QIG1ztaUDxlQ3t+iKrBzuLPxoEMFQvCcMCLxQKdQhYTNZ24WEO1I26ZAxHpAhxSr2
+         sTcoVCIC3blAr70ZqScy81RIKz4IXsIcdenHFG4k=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Balsundar P <balsundar.p@microsemi.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 002/127] scsi: aacraid: fix illegal IO beyond last LBA
-Date:   Thu, 17 Sep 2020 22:10:15 -0400
-Message-Id: <20200918021220.2066485-2-sashal@kernel.org>
+Cc:     Stephen Kitt <steve@sk2.org>, Tony Lindgren <tony@atomide.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-omap@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 010/127] clk/ti/adpll: allocate room for terminating null
+Date:   Thu, 17 Sep 2020 22:10:23 -0400
+Message-Id: <20200918021220.2066485-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918021220.2066485-1-sashal@kernel.org>
 References: <20200918021220.2066485-1-sashal@kernel.org>
@@ -42,57 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Balsundar P <balsundar.p@microsemi.com>
+From: Stephen Kitt <steve@sk2.org>
 
-[ Upstream commit c86fbe484c10b2cd1e770770db2d6b2c88801c1d ]
+[ Upstream commit 7f6ac72946b88b89ee44c1c527aa8591ac5ffcbe ]
 
-The driver fails to handle data when read or written beyond device reported
-LBA, which triggers kernel panic
+The buffer allocated in ti_adpll_clk_get_name doesn't account for the
+terminating null. This patch switches to devm_kasprintf to avoid
+overflowing.
 
-Link: https://lore.kernel.org/r/1571120524-6037-2-git-send-email-balsundar.p@microsemi.com
-Signed-off-by: Balsundar P <balsundar.p@microsemi.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Stephen Kitt <steve@sk2.org>
+Link: https://lkml.kernel.org/r/20191019140634.15596-1-steve@sk2.org
+Acked-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/aacraid/aachba.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/clk/ti/adpll.c | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/scsi/aacraid/aachba.c b/drivers/scsi/aacraid/aachba.c
-index 7173ae53c5260..ba11313568810 100644
---- a/drivers/scsi/aacraid/aachba.c
-+++ b/drivers/scsi/aacraid/aachba.c
-@@ -2322,13 +2322,13 @@ static int aac_read(struct scsi_cmnd * scsicmd)
- 		scsicmd->result = DID_OK << 16 | COMMAND_COMPLETE << 8 |
- 			SAM_STAT_CHECK_CONDITION;
- 		set_sense(&dev->fsa_dev[cid].sense_data,
--			  HARDWARE_ERROR, SENCODE_INTERNAL_TARGET_FAILURE,
-+			  ILLEGAL_REQUEST, SENCODE_LBA_OUT_OF_RANGE,
- 			  ASENCODE_INTERNAL_TARGET_FAILURE, 0, 0);
- 		memcpy(scsicmd->sense_buffer, &dev->fsa_dev[cid].sense_data,
- 		       min_t(size_t, sizeof(dev->fsa_dev[cid].sense_data),
- 			     SCSI_SENSE_BUFFERSIZE));
- 		scsicmd->scsi_done(scsicmd);
--		return 1;
-+		return 0;
+diff --git a/drivers/clk/ti/adpll.c b/drivers/clk/ti/adpll.c
+index d6036c788fab8..2738ecb1511b1 100644
+--- a/drivers/clk/ti/adpll.c
++++ b/drivers/clk/ti/adpll.c
+@@ -193,15 +193,8 @@ static const char *ti_adpll_clk_get_name(struct ti_adpll_data *d,
+ 		if (err)
+ 			return NULL;
+ 	} else {
+-		const char *base_name = "adpll";
+-		char *buf;
+-
+-		buf = devm_kzalloc(d->dev, 8 + 1 + strlen(base_name) + 1 +
+-				    strlen(postfix), GFP_KERNEL);
+-		if (!buf)
+-			return NULL;
+-		sprintf(buf, "%08lx.%s.%s", d->pa, base_name, postfix);
+-		name = buf;
++		name = devm_kasprintf(d->dev, GFP_KERNEL, "%08lx.adpll.%s",
++				      d->pa, postfix);
  	}
  
- 	dprintk((KERN_DEBUG "aac_read[cpu %d]: lba = %llu, t = %ld.\n",
-@@ -2414,13 +2414,13 @@ static int aac_write(struct scsi_cmnd * scsicmd)
- 		scsicmd->result = DID_OK << 16 | COMMAND_COMPLETE << 8 |
- 			SAM_STAT_CHECK_CONDITION;
- 		set_sense(&dev->fsa_dev[cid].sense_data,
--			  HARDWARE_ERROR, SENCODE_INTERNAL_TARGET_FAILURE,
-+			  ILLEGAL_REQUEST, SENCODE_LBA_OUT_OF_RANGE,
- 			  ASENCODE_INTERNAL_TARGET_FAILURE, 0, 0);
- 		memcpy(scsicmd->sense_buffer, &dev->fsa_dev[cid].sense_data,
- 		       min_t(size_t, sizeof(dev->fsa_dev[cid].sense_data),
- 			     SCSI_SENSE_BUFFERSIZE));
- 		scsicmd->scsi_done(scsicmd);
--		return 1;
-+		return 0;
- 	}
- 
- 	dprintk((KERN_DEBUG "aac_write[cpu %d]: lba = %llu, t = %ld.\n",
+ 	return name;
 -- 
 2.25.1
 
