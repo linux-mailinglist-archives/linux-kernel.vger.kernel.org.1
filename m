@@ -2,64 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E86D270574
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 21:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91AE227057D
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 21:26:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726918AbgIRTYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 15:24:41 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:44310 "EHLO vps0.lunn.ch"
+        id S1726492AbgIRTZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 15:25:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726249AbgIRTYj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 15:24:39 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kJLzm-00FHIA-4H; Fri, 18 Sep 2020 21:24:34 +0200
-Date:   Fri, 18 Sep 2020 21:24:34 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     davem@davemloft.net, f.fainelli@gmail.com, hkallweit1@gmail.com,
-        mkubecek@suse.cz, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 1/3] ethtool: Add 100base-FX link mode entries
-Message-ID: <20200918192434.GA3640666@lunn.ch>
-References: <20200918191453.13914-1-dmurphy@ti.com>
- <20200918191453.13914-2-dmurphy@ti.com>
+        id S1726187AbgIRTZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 15:25:10 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EE722221EC;
+        Fri, 18 Sep 2020 19:25:08 +0000 (UTC)
+Date:   Fri, 18 Sep 2020 15:25:07 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc:     uclinux-h8-devel@lists.sourceforge.jp,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Richard Weinberger <richard@sigma-star.at>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] h8300: Make irq disable and enable a compiler barrier
+Message-ID: <20200918152507.711865ce@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918191453.13914-2-dmurphy@ti.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 02:14:51PM -0500, Dan Murphy wrote:
-> Add entries for the 100base-FX full and half duplex supported modes.
-> 
-> $ ethtool eth0
->         Supported ports: [ FIBRE ]
->         Supported link modes:  100baseFX/Half 100baseFX/Full
->         Supported pause frame use: Symmetric Receive-only
->         Supports auto-negotiation: No
->         Supported FEC modes: Not reported
->         Advertised link modes: 100baseFX/Half 100baseFX/Full
->         Advertised pause frame use: No
->         Advertised auto-negotiation: No
->         Advertised FEC modes: Not reported
->         Speed: 100Mb/s
->         Duplex: Full
->         Auto-negotiation: off
->         Port: MII
->         PHYAD: 1
->         Transceiver: external
->         Supports Wake-on: gs
->         Wake-on: d
->         SecureOn password: 00:00:00:00:00:00
->         Current message level: 0x00000000 (0)
-> 
->         Link detected: yes
-> 
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+In a conversation on #linux-rt, it was asked if the irq disabling and
+enabling functions were a compiler barrier, and reads wont happen outside
+these functions from where they were in the call.
 
-    Andrew
+I stated that they most definitely need to be, otherwise we would have bugs
+all over the place if not. And just to confirm, I looked at the
+implementation on x86 which had "memory" as a constraint to the asm, and
+that is a compiler barrier. As that was just one arch, I looked at others,
+and all the other archs do the same but one. H8300 seems to fail here. And
+that is most definitely a bug.
+
+Add the compiler barrier to the enabling and disabling of interrupts on
+H8300. As this is a really critical bug, I'm starting to wonder how much
+this arch is really used. Let's see how quickly this patch gets added to
+the arch, and if it is not applied or responded to within a month, I think
+we can safely state that this arch is not maintained.
+
+Reported-by: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+diff --git a/arch/h8300/include/asm/irqflags.h b/arch/h8300/include/asm/irqflags.h
+index 48756b7f405e..477cb9d7785f 100644
+--- a/arch/h8300/include/asm/irqflags.h
++++ b/arch/h8300/include/asm/irqflags.h
+@@ -15,12 +15,12 @@ static inline h8300flags arch_local_save_flags(void)
+ 
+ static inline void arch_local_irq_disable(void)
+ {
+-	__asm__ volatile ("orc  #0xc0,ccr");
++	__asm__ volatile ("orc  #0xc0,ccr" : : : "memory");
+ }
+ 
+ static inline void arch_local_irq_enable(void)
+ {
+-	__asm__ volatile ("andc #0x3f,ccr");
++	__asm__ volatile ("andc #0x3f,ccr" : : : "memory");
+ }
+ 
+ static inline h8300flags arch_local_irq_save(void)
+@@ -28,13 +28,13 @@ static inline h8300flags arch_local_irq_save(void)
+ 	h8300flags flags;
+ 
+ 	__asm__ volatile ("stc ccr,%w0\n\t"
+-		      "orc  #0xc0,ccr" : "=r" (flags));
++		      "orc  #0xc0,ccr" : "=r" (flags) : : "memory");
+ 	return flags;
+ }
+ 
+ static inline void arch_local_irq_restore(h8300flags flags)
+ {
+-	__asm__ volatile ("ldc %w0,ccr" : : "r" (flags) : "cc");
++	__asm__ volatile ("ldc %w0,ccr" : : "r" (flags) : "memory", "cc");
+ }
+ 
+ static inline int arch_irqs_disabled_flags(unsigned long flags)
+@@ -55,13 +55,13 @@ static inline h8300flags arch_local_save_flags(void)
+ 
+ static inline void arch_local_irq_disable(void)
+ {
+-	__asm__ volatile ("orc #0x80,ccr\n\t");
++	__asm__ volatile ("orc #0x80,ccr\n\t" : : : "memory");
+ }
+ 
+ static inline void arch_local_irq_enable(void)
+ {
+ 	__asm__ volatile ("andc #0x7f,ccr\n\t"
+-		      "andc #0xf0,exr\n\t");
++		      "andc #0xf0,exr\n\t" : : : "memory");
+ }
+ 
+ static inline h8300flags arch_local_irq_save(void)
+@@ -71,7 +71,7 @@ static inline h8300flags arch_local_irq_save(void)
+ 	__asm__ volatile ("stc ccr,%w0\n\t"
+ 		      "stc exr,%x0\n\t"
+ 		      "orc  #0x80,ccr\n\t"
+-		      : "=r" (flags));
++		      : "=r" (flags) : : "memory");
+ 	return flags;
+ }
+ 
+@@ -79,7 +79,7 @@ static inline void arch_local_irq_restore(h8300flags flags)
+ {
+ 	__asm__ volatile ("ldc %w0,ccr\n\t"
+ 		      "ldc %x0,exr"
+-		      : : "r" (flags) : "cc");
++		      : : "r" (flags) : "memory", "cc");
+ }
+ 
+ static inline int arch_irqs_disabled_flags(h8300flags flags)
