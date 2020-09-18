@@ -2,243 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E1926F5AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 08:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63C3A26F5B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 08:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726419AbgIRGF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 02:05:58 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:21340 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726112AbgIRGF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 02:05:58 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600409157; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=7Sm5zlmuS6dtNCaEUMlHA+OIjhjC9XiXWyfX26b/NUQ=; b=nRzjneA1/8ve20JMo/IGKUxgSAVAAbSCGURSnK7g5tQrJf/NBkmQRqsm7b51BSZ8Yhcv9P4H
- LJIiKzcTFFxXhaxa9AiNOlDAM80W5xGoXnIqkKAz5YmP9BrEp66HvRn91geVEu4dRucdchM8
- BFBMFYBs3V2YdgaQJGN4B+EB/rU=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5f644e2b6fe64d5a7f7038e5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Sep 2020 06:05:31
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7BF5BC43385; Fri, 18 Sep 2020 06:05:30 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7938BC433CA;
-        Fri, 18 Sep 2020 06:05:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7938BC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
-        Srinivasa Rao <srivasam@codeaurora.org>
-Subject: [PATCH v6 5/5] ASoC: qcom: sc7180: Add support for audio over DP
-Date:   Fri, 18 Sep 2020 11:34:44 +0530
-Message-Id: <1600409084-29093-6-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1600409084-29093-1-git-send-email-srivasam@codeaurora.org>
-References: <1600409084-29093-1-git-send-email-srivasam@codeaurora.org>
+        id S1726554AbgIRGGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 02:06:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726406AbgIRGGf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 02:06:35 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCED2C06174A;
+        Thu, 17 Sep 2020 23:06:35 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id f2so2849619pgd.3;
+        Thu, 17 Sep 2020 23:06:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9IFI2q/VcKdQGp4crDlbzIC5tqBlL4St+qrZycUxeYs=;
+        b=CYrbE2c6FkdAXnOE4bvLfoUfh7aUoL/IeIy7ivLodJCoXnx7fZsFzc30SD8g9H5vce
+         FdisasNvFxhmJjcH3yzzf6QEbsBbJau8Tj8VCTr7vPScRJ7S7sVv4NlFjVBIOpgnvBoA
+         CIQnu2OMZ2/gEc/F+cI4iUZMp/Q6Wgi7hytrDXvpnSsTP15FUPlntJnG0JCbSOvJZ+yh
+         GjCEH9nc4v2hIWC/oVlNGTLwx4+vKK2YAtXs5hCUkpkQSr1ouc+F2avwCJ/hA5G282Md
+         3bZj/zIz6/j/CZPAaTHOh1doGRUFq4ejziJ6PqknaXK1i6LJnaQDtby/+nyleoGNeXFo
+         oCfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9IFI2q/VcKdQGp4crDlbzIC5tqBlL4St+qrZycUxeYs=;
+        b=jelyYJHAMTWYO7jOFchWODbmVx6wYfd4lsc7/w9IreXKeagqJj8r3EoakemZ0Lec0k
+         yaOodEiEzqaswp5zNEjOvu+ap0uFsDnJuLER7/0aBh9BZ4GjN1Z280m2NArb5JGQozRI
+         E4jL0DtA/DM+OVEBrO4Vu/z/m+4Q5Jqkyh92mc5Z8CrUn//zWHzHo4E8Zp1RoW3FNigU
+         M3Wu0e8MdKPGBxCOZMn+iRkosRLI0W/x9K0aZp0MQij5VCVUjxht4qX0yA1hNE0IL07o
+         2RZbZOS1XzwVJrd/Q2w9MHsv8xpv8UW+JGDwqHUHrDMKbQWPC6qNN+fCoHS1YrUJGQRQ
+         Kmew==
+X-Gm-Message-State: AOAM532i2uI6t1dYBdX0cMwZV1/iN7xKwg4ffyUyzLPTTIcrLtvkzjLM
+        2mn6b8NL797LeouSLm0eLNI=
+X-Google-Smtp-Source: ABdhPJz+tLJIDGwGDR6rzW1gHPMSK6DUMjSndI15swpaNkFj6SdwuJPnxt4PcmGsitmAuSog6diRgw==
+X-Received: by 2002:aa7:941a:0:b029:142:2501:35d1 with SMTP id x26-20020aa7941a0000b0290142250135d1mr14257831pfo.49.1600409195331;
+        Thu, 17 Sep 2020 23:06:35 -0700 (PDT)
+Received: from localhost.localdomain ([47.242.129.156])
+        by smtp.gmail.com with ESMTPSA id l79sm1737273pfd.210.2020.09.17.23.06.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 23:06:34 -0700 (PDT)
+From:   Herrington <hankinsea@gmail.com>
+To:     Richard Cochran <richardcochran@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hankinsea@gmail.com
+Subject: [PATCH] [PATCH v2]ptp: mark symbols static where possible
+Date:   Fri, 18 Sep 2020 14:05:50 +0800
+Message-Id: <20200918060550.1904-1-hankinsea@gmail.com>
+X-Mailer: git-send-email 2.18.4
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+We get 1 warning when building kernel with W=1:
+drivers/ptp/ptp_pch.c:182:5: warning: no previous prototype for ‘pch_ch_control_read’ [-Wmissing-prototypes]
+ u32 pch_ch_control_read(struct pci_dev *pdev)
+drivers/ptp/ptp_pch.c:193:6: warning: no previous prototype for ‘pch_ch_control_write’ [-Wmissing-prototypes]
+ void pch_ch_control_write(struct pci_dev *pdev, u32 val)
+drivers/ptp/ptp_pch.c:201:5: warning: no previous prototype for ‘pch_ch_event_read’ [-Wmissing-prototypes]
+ u32 pch_ch_event_read(struct pci_dev *pdev)
+drivers/ptp/ptp_pch.c:212:6: warning: no previous prototype for ‘pch_ch_event_write’ [-Wmissing-prototypes]
+ void pch_ch_event_write(struct pci_dev *pdev, u32 val)
+drivers/ptp/ptp_pch.c:220:5: warning: no previous prototype for ‘pch_src_uuid_lo_read’ [-Wmissing-prototypes]
+ u32 pch_src_uuid_lo_read(struct pci_dev *pdev)
+drivers/ptp/ptp_pch.c:231:5: warning: no previous prototype for ‘pch_src_uuid_hi_read’ [-Wmissing-prototypes]
+ u32 pch_src_uuid_hi_read(struct pci_dev *pdev)
+drivers/ptp/ptp_pch.c:242:5: warning: no previous prototype for ‘pch_rx_snap_read’ [-Wmissing-prototypes]
+ u64 pch_rx_snap_read(struct pci_dev *pdev)
+drivers/ptp/ptp_pch.c:259:5: warning: no previous prototype for ‘pch_tx_snap_read’ [-Wmissing-prototypes]
+ u64 pch_tx_snap_read(struct pci_dev *pdev)
+drivers/ptp/ptp_pch.c:300:5: warning: no previous prototype for ‘pch_set_station_address’ [-Wmissing-prototypes]
+ int pch_set_station_address(u8 *addr, struct pci_dev *pdev)
 
-Add support for audio playback over DP in lpass sc7180 platform driver.
-Update lpass_variant structure for hdmi data configuaration.
-
-Signed-off-by: Srinivasa Rao <srivasam@codeaurora.org>
-Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+Signed-off-by: Herrington <hankinsea@gmail.com>
 ---
- sound/soc/qcom/lpass-sc7180.c | 116 +++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 102 insertions(+), 14 deletions(-)
+ drivers/ptp/ptp_pch.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/qcom/lpass-sc7180.c b/sound/soc/qcom/lpass-sc7180.c
-index 167bf2c..59f115e 100644
---- a/sound/soc/qcom/lpass-sc7180.c
-+++ b/sound/soc/qcom/lpass-sc7180.c
-@@ -60,38 +60,65 @@ static struct snd_soc_dai_driver sc7180_lpass_cpu_dai_driver[] = {
- 		.probe	= &asoc_qcom_lpass_cpu_dai_probe,
- 		.ops    = &asoc_qcom_lpass_cpu_dai_ops,
- 	},
-+	[LPASS_DP_RX] = {
-+		.id = LPASS_DP_RX,
-+		.name = "Hdmi",
-+		.playback = {
-+			.stream_name = "Hdmi Playback",
-+			.formats	= SNDRV_PCM_FMTBIT_S24,
-+			.rates = SNDRV_PCM_RATE_48000,
-+			.rate_min	= 48000,
-+			.rate_max	= 48000,
-+			.channels_min	= 2,
-+			.channels_max	= 2,
-+		},
-+		.ops    = &asoc_qcom_lpass_hdmi_dai_ops,
-+	},
- };
- 
- static int sc7180_lpass_alloc_dma_channel(struct lpass_data *drvdata,
--					   int direction)
-+					   int direction, unsigned int dai_id)
- {
- 	struct lpass_variant *v = drvdata->variant;
- 	int chan = 0;
- 
--	if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
--		chan = find_first_zero_bit(&drvdata->dma_ch_bit_map,
--					v->rdma_channels);
-+	if (dai_id == LPASS_DP_RX) {
-+		if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+			chan = find_first_zero_bit(&drvdata->hdmi_dma_ch_bit_map,
-+						v->hdmi_rdma_channels);
-+
-+			if (chan >= v->hdmi_rdma_channels)
-+				return -EBUSY;
-+		}
-+		set_bit(chan, &drvdata->hdmi_dma_ch_bit_map);
-+	} else {
-+		if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+			chan = find_first_zero_bit(&drvdata->dma_ch_bit_map,
-+						v->rdma_channels);
- 
- 		if (chan >= v->rdma_channels)
- 			return -EBUSY;
--	} else {
--		chan = find_next_zero_bit(&drvdata->dma_ch_bit_map,
-+		} else {
-+			chan = find_next_zero_bit(&drvdata->dma_ch_bit_map,
- 					v->wrdma_channel_start +
- 					v->wrdma_channels,
- 					v->wrdma_channel_start);
- 
--		if (chan >=  v->wrdma_channel_start + v->wrdma_channels)
--			return -EBUSY;
--	}
--
--	set_bit(chan, &drvdata->dma_ch_bit_map);
-+			if (chan >=  v->wrdma_channel_start + v->wrdma_channels)
-+				return -EBUSY;
-+		}
- 
-+		set_bit(chan, &drvdata->dma_ch_bit_map);
-+	}
- 	return chan;
+diff --git a/drivers/ptp/ptp_pch.c b/drivers/ptp/ptp_pch.c
+index ce10ecd41ba0..70eee68e8dfc 100644
+--- a/drivers/ptp/ptp_pch.c
++++ b/drivers/ptp/ptp_pch.c
+@@ -179,7 +179,7 @@ static inline void pch_block_reset(struct pch_dev *chip)
+ 	iowrite32(val, (&chip->regs->control));
  }
  
--static int sc7180_lpass_free_dma_channel(struct lpass_data *drvdata, int chan)
-+static int sc7180_lpass_free_dma_channel(struct lpass_data *drvdata, int chan, unsigned int dai_id)
+-u32 pch_ch_control_read(struct pci_dev *pdev)
++static u32 pch_ch_control_read(struct pci_dev *pdev)
  {
--	clear_bit(chan, &drvdata->dma_ch_bit_map);
-+	if (dai_id == LPASS_DP_RX)
-+		clear_bit(chan, &drvdata->hdmi_dma_ch_bit_map);
-+	else
-+		clear_bit(chan, &drvdata->dma_ch_bit_map);
- 
- 	return 0;
+ 	struct pch_dev *chip = pci_get_drvdata(pdev);
+ 	u32 val;
+@@ -190,6 +190,7 @@ u32 pch_ch_control_read(struct pci_dev *pdev)
  }
-@@ -144,6 +171,9 @@ static struct lpass_variant sc7180_data = {
- 	.rdma_reg_base		= 0xC000,
- 	.rdma_reg_stride	= 0x1000,
- 	.rdma_channels		= 5,
-+	.hdmi_rdma_reg_base		= 0x64000,
-+	.hdmi_rdma_reg_stride	= 0x1000,
-+	.hdmi_rdma_channels		= 4,
- 	.dmactl_audif_start	= 1,
- 	.wrdma_reg_base		= 0x18000,
- 	.wrdma_reg_stride	= 0x1000,
-@@ -163,7 +193,7 @@ static struct lpass_variant sc7180_data = {
- 	.rdma_dyncclk		= REG_FIELD_ID(0xC000, 21, 21, 5, 0x1000),
- 	.rdma_bursten		= REG_FIELD_ID(0xC000, 20, 20, 5, 0x1000),
- 	.rdma_wpscnt		= REG_FIELD_ID(0xC000, 16, 19, 5, 0x1000),
--	.rdma_intf		= REG_FIELD_ID(0xC000, 12, 15, 5, 0x1000),
-+	.rdma_intf			= REG_FIELD_ID(0xC000, 12, 15, 5, 0x1000),
- 	.rdma_fifowm		= REG_FIELD_ID(0xC000, 1, 5, 5, 0x1000),
- 	.rdma_enable		= REG_FIELD_ID(0xC000, 0, 0, 5, 0x1000),
+ EXPORT_SYMBOL(pch_ch_control_read);
  
-@@ -174,6 +204,64 @@ static struct lpass_variant sc7180_data = {
- 	.wrdma_fifowm		= REG_FIELD_ID(0x18000, 1, 5, 4, 0x1000),
- 	.wrdma_enable		= REG_FIELD_ID(0x18000, 0, 0, 4, 0x1000),
++void pch_ch_control_write(struct pci_dev *pdev, u32 val);
+ void pch_ch_control_write(struct pci_dev *pdev, u32 val)
+ {
+ 	struct pch_dev *chip = pci_get_drvdata(pdev);
+@@ -198,6 +199,7 @@ void pch_ch_control_write(struct pci_dev *pdev, u32 val)
+ }
+ EXPORT_SYMBOL(pch_ch_control_write);
  
-+	.hdmi_tx_ctl_addr	= 0x1000,
-+	.hdmi_legacy_addr	= 0x1008,
-+	.hdmi_vbit_addr		= 0x610c0,
-+	.hdmi_ch_lsb_addr	= 0x61048,
-+	.hdmi_ch_msb_addr	= 0x6104c,
-+	.ch_stride		= 0x8,
-+	.hdmi_parity_addr	= 0x61034,
-+	.hdmi_dmactl_addr	= 0x61038,
-+	.hdmi_dma_stride	= 0x4,
-+	.hdmi_DP_addr		= 0x610c8,
-+	.hdmi_sstream_addr	= 0x6101c,
-+	.hdmi_irq_reg_base		= 0x63000,
-+	.hdmi_irq_ports		= 1,
-+
-+	.hdmi_rdma_dyncclk		= REG_FIELD_ID(0x64000, 14, 14, 4, 0x1000),
-+	.hdmi_rdma_bursten		= REG_FIELD_ID(0x64000, 13, 13, 4, 0x1000),
-+	.hdmi_rdma_burst8		= REG_FIELD_ID(0x64000, 15, 15, 4, 0x1000),
-+	.hdmi_rdma_burst16		= REG_FIELD_ID(0x64000, 16, 16, 4, 0x1000),
-+	.hdmi_rdma_dynburst		= REG_FIELD_ID(0x64000, 18, 18, 4, 0x1000),
-+	.hdmi_rdma_wpscnt		= REG_FIELD_ID(0x64000, 10, 12, 4, 0x1000),
-+	.hdmi_rdma_fifowm		= REG_FIELD_ID(0x64000, 1, 5, 4, 0x1000),
-+	.hdmi_rdma_enable		= REG_FIELD_ID(0x64000, 0, 0, 4, 0x1000),
-+
-+	.sstream_en		= REG_FIELD(0x6101c, 0, 0),
-+	.dma_sel			= REG_FIELD(0x6101c, 1, 2),
-+	.auto_bbit_en	= REG_FIELD(0x6101c, 3, 3),
-+	.layout			= REG_FIELD(0x6101c, 4, 4),
-+	.layout_sp		= REG_FIELD(0x6101c, 5, 8),
-+	.set_sp_on_en	= REG_FIELD(0x6101c, 10, 10),
-+	.dp_audio		= REG_FIELD(0x6101c, 11, 11),
-+	.dp_staffing_en	= REG_FIELD(0x6101c, 12, 12),
-+	.dp_sp_b_hw_en	= REG_FIELD(0x6101c, 13, 13),
-+
-+	.mute			= REG_FIELD(0x610c8, 0, 0),
-+	.as_sdp_cc		= REG_FIELD(0x610c8, 1, 3),
-+	.as_sdp_ct		= REG_FIELD(0x610c8, 4, 7),
-+	.aif_db4			= REG_FIELD(0x610c8, 8, 15),
-+	.frequency		= REG_FIELD(0x610c8, 16, 21),
-+	.mst_index		= REG_FIELD(0x610c8, 28, 29),
-+	.dptx_index		= REG_FIELD(0x610c8, 30, 31),
-+
-+	.soft_reset		= REG_FIELD(0x1000, 31, 31),
-+	.force_reset	= REG_FIELD(0x1000, 30, 30),
-+
-+	.use_hw_chs		= REG_FIELD(0x61038, 0, 0),
-+	.use_hw_usr		= REG_FIELD(0x61038, 1, 1),
-+	.hw_chs_sel		= REG_FIELD(0x61038, 2, 4),
-+	.hw_usr_sel		= REG_FIELD(0x61038, 5, 6),
-+
-+	.replace_vbit	= REG_FIELD(0x610c0, 0, 0),
-+	.vbit_stream	= REG_FIELD(0x610c0, 1, 1),
-+
-+	.legacy_en		=  REG_FIELD(0x1008, 0, 0),
-+	.calc_en		=  REG_FIELD(0x61034, 0, 0),
-+	.lsb_bits		=  REG_FIELD(0x61048, 0, 31),
-+	.msb_bits		=  REG_FIELD(0x6104c, 0, 31),
-+
-+
- 	.clk_name		= (const char*[]) {
- 				   "pcnoc-sway-clk",
- 				   "audio-core",
++u32 pch_ch_event_read(struct pci_dev *pdev);
+ u32 pch_ch_event_read(struct pci_dev *pdev)
+ {
+ 	struct pch_dev *chip = pci_get_drvdata(pdev);
+@@ -209,6 +211,7 @@ u32 pch_ch_event_read(struct pci_dev *pdev)
+ }
+ EXPORT_SYMBOL(pch_ch_event_read);
+ 
++void pch_ch_event_write(struct pci_dev *pdev, u32 val);
+ void pch_ch_event_write(struct pci_dev *pdev, u32 val)
+ {
+ 	struct pch_dev *chip = pci_get_drvdata(pdev);
+@@ -217,6 +220,7 @@ void pch_ch_event_write(struct pci_dev *pdev, u32 val)
+ }
+ EXPORT_SYMBOL(pch_ch_event_write);
+ 
++u32 pch_src_uuid_lo_read(struct pci_dev *pdev);
+ u32 pch_src_uuid_lo_read(struct pci_dev *pdev)
+ {
+ 	struct pch_dev *chip = pci_get_drvdata(pdev);
+@@ -228,6 +232,7 @@ u32 pch_src_uuid_lo_read(struct pci_dev *pdev)
+ }
+ EXPORT_SYMBOL(pch_src_uuid_lo_read);
+ 
++u32 pch_src_uuid_hi_read(struct pci_dev *pdev);
+ u32 pch_src_uuid_hi_read(struct pci_dev *pdev)
+ {
+ 	struct pch_dev *chip = pci_get_drvdata(pdev);
+@@ -239,6 +244,7 @@ u32 pch_src_uuid_hi_read(struct pci_dev *pdev)
+ }
+ EXPORT_SYMBOL(pch_src_uuid_hi_read);
+ 
++u64 pch_rx_snap_read(struct pci_dev *pdev);
+ u64 pch_rx_snap_read(struct pci_dev *pdev)
+ {
+ 	struct pch_dev *chip = pci_get_drvdata(pdev);
+@@ -256,6 +262,7 @@ u64 pch_rx_snap_read(struct pci_dev *pdev)
+ }
+ EXPORT_SYMBOL(pch_rx_snap_read);
+ 
++u64 pch_tx_snap_read(struct pci_dev *pdev);
+ u64 pch_tx_snap_read(struct pci_dev *pdev)
+ {
+ 	struct pch_dev *chip = pci_get_drvdata(pdev);
+@@ -297,6 +304,7 @@ static void pch_reset(struct pch_dev *chip)
+  *				    traffic on the  ethernet interface
+  * @addr:	dress which contain the column separated address to be used.
+  */
++int pch_set_station_address(u8 *addr, struct pci_dev *pdev);
+ int pch_set_station_address(u8 *addr, struct pci_dev *pdev)
+ {
+ 	s32 i;
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.18.1
 
