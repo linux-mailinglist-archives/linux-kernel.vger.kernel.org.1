@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1767A26EF70
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3175126EF6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730049AbgIRCfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:35:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39998 "EHLO mail.kernel.org"
+        id S1730044AbgIRCfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:35:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728882AbgIRCNH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:13:07 -0400
+        id S1728876AbgIRCNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:13:10 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 560002388D;
-        Fri, 18 Sep 2020 02:13:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B8F5A208DB;
+        Fri, 18 Sep 2020 02:13:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600395187;
-        bh=Ms8lENlLnFZ6YwfFPHM65qrhWiEu1s7AEcXco8pP22w=;
+        s=default; t=1600395189;
+        bh=LJr5lMTFye2vxGi0Lfw2VYCci9SKwWK0bBAKI4s7QuI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ar4a0FoMD9TlGRNN8aKHIo1TI4K9TybOaqngd2za/hA9E+rq5xIms8aEEgE9kB/sV
-         Xr+xlF/9Jgf270CHnHzLOk5EeVG0Kg87F8DUWvwHGRFxjMhVneESScaQfxBF2AcvlQ
-         sURacDwesSdHRBVQZ+5FNkllgDOD3mlCRJ53S8R4=
+        b=emvbVLbN+tImPAJjNyFkGWgm3ExfE5FJ7cGKAdZdHeG3/Ufx/WocLX9FBVEa6pPG5
+         urPvcyAeriQKGZc/6JY3fC0VwvYH5eISIjimv2s5+RSsYQNBO+XhFOub/yxRnTBW0u
+         zfpKcthI2XziGtiZpY21543tBAA7bDq8x0TABWLM=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hillf Danton <hdanton@sina.com>,
-        syzbot+c3c5bdea7863886115dc@syzkaller.appspotmail.com,
-        Manish Mandlik <mmandlik@google.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 039/127] Bluetooth: prefetch channel before killing sock
-Date:   Thu, 17 Sep 2020 22:10:52 -0400
-Message-Id: <20200918021220.2066485-39-sashal@kernel.org>
+Cc:     Mohan Kumar <mkumard@nvidia.com>,
+        Viswanath L <viswanathl@nvidia.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+        alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 4.14 041/127] ALSA: hda: Clear RIRB status before reading WP
+Date:   Thu, 17 Sep 2020 22:10:54 -0400
+Message-Id: <20200918021220.2066485-41-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918021220.2066485-1-sashal@kernel.org>
 References: <20200918021220.2066485-1-sashal@kernel.org>
@@ -45,58 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hillf Danton <hdanton@sina.com>
+From: Mohan Kumar <mkumard@nvidia.com>
 
-[ Upstream commit 2a154903cec20fb64ff4d7d617ca53c16f8fd53a ]
+[ Upstream commit 6d011d5057ff88ee556c000ac6fe0be23bdfcd72 ]
 
-Prefetch channel before killing sock in order to fix UAF like
+RIRB interrupt status getting cleared after the write pointer is read
+causes a race condition, where last response(s) into RIRB may remain
+unserviced by IRQ, eventually causing azx_rirb_get_response to fall
+back to polling mode. Clearing the RIRB interrupt status ahead of
+write pointer access ensures that this condition is avoided.
 
- BUG: KASAN: use-after-free in l2cap_sock_release+0x24c/0x290 net/bluetooth/l2cap_sock.c:1212
- Read of size 8 at addr ffff8880944904a0 by task syz-fuzzer/9751
-
-Reported-by: syzbot+c3c5bdea7863886115dc@syzkaller.appspotmail.com
-Fixes: 6c08fc896b60 ("Bluetooth: Fix refcount use-after-free issue")
-Cc: Manish Mandlik <mmandlik@google.com>
-Signed-off-by: Hillf Danton <hdanton@sina.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Mohan Kumar <mkumard@nvidia.com>
+Signed-off-by: Viswanath L <viswanathl@nvidia.com>
+Link: https://lore.kernel.org/r/1580983853-351-1-git-send-email-viswanathl@nvidia.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/l2cap_sock.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ sound/pci/hda/hda_controller.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/net/bluetooth/l2cap_sock.c b/net/bluetooth/l2cap_sock.c
-index a5e618add17f4..511a1da6ca971 100644
---- a/net/bluetooth/l2cap_sock.c
-+++ b/net/bluetooth/l2cap_sock.c
-@@ -1191,6 +1191,7 @@ static int l2cap_sock_release(struct socket *sock)
- {
- 	struct sock *sk = sock->sk;
- 	int err;
-+	struct l2cap_chan *chan;
+diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
+index fa261b27d8588..8198d2e53b7df 100644
+--- a/sound/pci/hda/hda_controller.c
++++ b/sound/pci/hda/hda_controller.c
+@@ -1169,16 +1169,23 @@ irqreturn_t azx_interrupt(int irq, void *dev_id)
+ 		if (snd_hdac_bus_handle_stream_irq(bus, status, stream_update))
+ 			active = true;
  
- 	BT_DBG("sock %p, sk %p", sock, sk);
+-		/* clear rirb int */
+ 		status = azx_readb(chip, RIRBSTS);
+ 		if (status & RIRB_INT_MASK) {
++			/*
++			 * Clearing the interrupt status here ensures that no
++			 * interrupt gets masked after the RIRB wp is read in
++			 * snd_hdac_bus_update_rirb. This avoids a possible
++			 * race condition where codec response in RIRB may
++			 * remain unserviced by IRQ, eventually falling back
++			 * to polling mode in azx_rirb_get_response.
++			 */
++			azx_writeb(chip, RIRBSTS, RIRB_INT_MASK);
+ 			active = true;
+ 			if (status & RIRB_INT_RESPONSE) {
+ 				if (chip->driver_caps & AZX_DCAPS_CTX_WORKAROUND)
+ 					udelay(80);
+ 				snd_hdac_bus_update_rirb(bus);
+ 			}
+-			azx_writeb(chip, RIRBSTS, RIRB_INT_MASK);
+ 		}
+ 	} while (active && ++repeat < 10);
  
-@@ -1200,15 +1201,16 @@ static int l2cap_sock_release(struct socket *sock)
- 	bt_sock_unlink(&l2cap_sk_list, sk);
- 
- 	err = l2cap_sock_shutdown(sock, 2);
-+	chan = l2cap_pi(sk)->chan;
- 
--	l2cap_chan_hold(l2cap_pi(sk)->chan);
--	l2cap_chan_lock(l2cap_pi(sk)->chan);
-+	l2cap_chan_hold(chan);
-+	l2cap_chan_lock(chan);
- 
- 	sock_orphan(sk);
- 	l2cap_sock_kill(sk);
- 
--	l2cap_chan_unlock(l2cap_pi(sk)->chan);
--	l2cap_chan_put(l2cap_pi(sk)->chan);
-+	l2cap_chan_unlock(chan);
-+	l2cap_chan_put(chan);
- 
- 	return err;
- }
 -- 
 2.25.1
 
