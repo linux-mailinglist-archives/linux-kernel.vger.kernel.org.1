@@ -2,271 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 659AE270324
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 19:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61BEB270322
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 19:22:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726380AbgIRRW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 13:22:28 -0400
-Received: from m42-11.mailgun.net ([69.72.42.11]:42416 "EHLO
-        m42-11.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726115AbgIRRW0 (ORCPT
+        id S1726280AbgIRRWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 13:22:17 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:46058 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726115AbgIRRWQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 13:22:26 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600449744; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=Woj0sl3f7DtTsZsi48erw1OdygzAEhvADHrhiVWysRE=; b=LCb/T7OPxKcynth7Cpwlx1XJAgcKrcUrpFQnnOIPxBUKFilRDbzFVjHAXx/igfPzxuIC+W6E
- XSRXQrehWExJ9fYaJxxNSpQXulR3xL/5iqFQwe2ru82k76Xy2bYj1cZtKNJhYEAykcUURSXC
- n7UAPgJxoj8LAJ6qM36NxT6WnyM=
-X-Mailgun-Sending-Ip: 69.72.42.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5f64eccf6ace44cacc09c5cd (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Sep 2020 17:22:23
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 56E65C43385; Fri, 18 Sep 2020 17:22:22 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from rishabhb-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rishabhb)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F0C17C433C8;
-        Fri, 18 Sep 2020 17:22:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F0C17C433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rishabhb@codeaurora.org
-From:   Rishabh Bhatnagar <rishabhb@codeaurora.org>
-To:     bjorn.andersson@linaro.org, ohad@wizery.com
-Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tsoni@codeaurora.org, psodagud@codeaurora.org,
-        sidgup@codeaurora.org, Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Subject: [PATCH v5 2/2] remoteproc: Move recovery configuration to sysfs
-Date:   Fri, 18 Sep 2020 10:22:11 -0700
-Message-Id: <1600449731-3056-3-git-send-email-rishabhb@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1600449731-3056-1-git-send-email-rishabhb@codeaurora.org>
-References: <1600449731-3056-1-git-send-email-rishabhb@codeaurora.org>
+        Fri, 18 Sep 2020 13:22:16 -0400
+Received: by mail-io1-f65.google.com with SMTP id y74so7591742iof.12;
+        Fri, 18 Sep 2020 10:22:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=k1EuzziNIfH0W9CSUnyG0xJ1k0k5Ooz2vHssxk2DGNg=;
+        b=gLG8ulC101sKttSx3DgEzmn98sQGBlbE/dsYSe15VCyFy65ICmWoK0L7KmxaHmSvyx
+         jOQKVrMVFyeS0FczvNTFM9kIKwtcMM75H9Y9QRb+w+BgrpIonPMeTSjrok6sBP56u2a8
+         4oOKxof6+XnTqFlC0ygPMNx8fXWd1ztWffBmvXTHGoEZ1AIwB2qTDln6LlKNc/O8pspK
+         UTnLOLyaIBlEA0HQyyISnZ7ukc+DCBZiWQGRoVKVv8MxoKEpiLU6TsOqYcPmtItPUFwS
+         ZLx1QrXyrK8TqeJ1i/fuUAzlYA/7pHxMf4B2rsE9TxXyLzImmyqxufqqWQ4/VJXgipXK
+         3hyg==
+X-Gm-Message-State: AOAM5320ut/kXkM8PnM0K9un6824vy6kaS7qtLdnW6gFH9d+D6SkWZyJ
+        D2cDcWXp1HH3IMDdTXo6Ng==
+X-Google-Smtp-Source: ABdhPJyQYDqPtxJjRsCHOk/fAO1lChIYLchpwd80CVr4QRmooFnYH09UJNLWHrWhP4xDTqTNalzTzw==
+X-Received: by 2002:a5e:890c:: with SMTP id k12mr27741896ioj.75.1600449735309;
+        Fri, 18 Sep 2020 10:22:15 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id s85sm2060631ilk.35.2020.09.18.10.22.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 10:22:14 -0700 (PDT)
+Received: (nullmailer pid 3817633 invoked by uid 1000);
+        Fri, 18 Sep 2020 17:22:13 -0000
+Date:   Fri, 18 Sep 2020 11:22:13 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 1/2] dt-bindings: Add bindings for BrcmSTB SCMI
+ mailbox driver
+Message-ID: <20200918172213.GA3813066@bogus>
+References: <20200915193109.16034-1-james.quinlan@broadcom.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915193109.16034-1-james.quinlan@broadcom.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move recovery configuration from debugfs to sysfs.This will
-allow usage of this configuration feature in production
-devices where access to debugfs might be limited.
+On Tue, Sep 15, 2020 at 03:31:04PM -0400, Jim Quinlan wrote:
+> Bindings are added.  Only one interrupt is needed because
+> we do not yet employ the SCMI p2a channel.
+> 
+> Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
+> ---
+>  .../bindings/mailbox/brcm,brcmstb-mbox.yaml   | 39 +++++++++++++++++++
+>  1 file changed, 39 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mailbox/brcm,brcmstb-mbox.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/mailbox/brcm,brcmstb-mbox.yaml b/Documentation/devicetree/bindings/mailbox/brcm,brcmstb-mbox.yaml
+> new file mode 100644
+> index 000000000000..c2359f3a2b13
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mailbox/brcm,brcmstb-mbox.yaml
+> @@ -0,0 +1,39 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +$id: http://devicetree.org/schemas/mailbox/brcm,brcmstb-mbox.yaml#
+> +
+> +title: Broadcom STB SCMI mailbox driver bindings
 
-Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
----
- Documentation/ABI/testing/sysfs-class-remoteproc | 20 ++++++
- drivers/remoteproc/remoteproc_debugfs.c          | 78 ------------------------
- drivers/remoteproc/remoteproc_sysfs.c            | 56 +++++++++++++++++
- 3 files changed, 76 insertions(+), 78 deletions(-)
+I thought SCMI was a mailbox consumer, not provider?
 
-diff --git a/Documentation/ABI/testing/sysfs-class-remoteproc b/Documentation/ABI/testing/sysfs-class-remoteproc
-index f6c44fa..7368b50 100644
---- a/Documentation/ABI/testing/sysfs-class-remoteproc
-+++ b/Documentation/ABI/testing/sysfs-class-remoteproc
-@@ -82,3 +82,23 @@ Description:	Remote processor coredump configuration
- 		all data is read by usersapce.
- 
- 		"disabled" means no dump will be collected.
-+
-+What:		/sys/class/remoteproc/.../recovery
-+Date:		July 2020
-+Contact:	Bjorn Andersson <bjorn.andersson@linaro.org>, Ohad Ben-Cohen <ohad@wizery.com>
-+Description:	Remote processor recovery mechanism
-+
-+		Reports the recovery mechanism of the remote processor,
-+		which will be one of:
-+
-+		"enabled"
-+		"disabled"
-+
-+		"enabled" means, the remote processor will be automatically
-+		recovered whenever it crashes. Moreover, if the remote
-+		processor crashes while recovery is disabled, it will
-+		be automatically recovered too as soon as recovery is enabled.
-+
-+		"disabled" means, a remote processor will remain in a crashed
-+		state if it crashes. This is useful for debugging purposes;
-+		without it, debugging a crash is substantially harder.
-diff --git a/drivers/remoteproc/remoteproc_debugfs.c b/drivers/remoteproc/remoteproc_debugfs.c
-index 732770e..c505f0e 100644
---- a/drivers/remoteproc/remoteproc_debugfs.c
-+++ b/drivers/remoteproc/remoteproc_debugfs.c
-@@ -84,82 +84,6 @@ static const struct file_operations rproc_name_ops = {
- 	.llseek	= generic_file_llseek,
- };
- 
--/* expose recovery flag via debugfs */
--static ssize_t rproc_recovery_read(struct file *filp, char __user *userbuf,
--				   size_t count, loff_t *ppos)
--{
--	struct rproc *rproc = filp->private_data;
--	char *buf = rproc->recovery_disabled ? "disabled\n" : "enabled\n";
--
--	return simple_read_from_buffer(userbuf, count, ppos, buf, strlen(buf));
--}
--
--/*
-- * By writing to the 'recovery' debugfs entry, we control the behavior of the
-- * recovery mechanism dynamically. The default value of this entry is "enabled".
-- *
-- * The 'recovery' debugfs entry supports these commands:
-- *
-- * enabled:	When enabled, the remote processor will be automatically
-- *		recovered whenever it crashes. Moreover, if the remote
-- *		processor crashes while recovery is disabled, it will
-- *		be automatically recovered too as soon as recovery is enabled.
-- *
-- * disabled:	When disabled, a remote processor will remain in a crashed
-- *		state if it crashes. This is useful for debugging purposes;
-- *		without it, debugging a crash is substantially harder.
-- *
-- * recover:	This function will trigger an immediate recovery if the
-- *		remote processor is in a crashed state, without changing
-- *		or checking the recovery state (enabled/disabled).
-- *		This is useful during debugging sessions, when one expects
-- *		additional crashes to happen after enabling recovery. In this
-- *		case, enabling recovery will make it hard to debug subsequent
-- *		crashes, so it's recommended to keep recovery disabled, and
-- *		instead use the "recover" command as needed.
-- */
--static ssize_t
--rproc_recovery_write(struct file *filp, const char __user *user_buf,
--		     size_t count, loff_t *ppos)
--{
--	struct rproc *rproc = filp->private_data;
--	char buf[10];
--	int ret;
--
--	if (count < 1 || count > sizeof(buf))
--		return -EINVAL;
--
--	ret = copy_from_user(buf, user_buf, count);
--	if (ret)
--		return -EFAULT;
--
--	/* remove end of line */
--	if (buf[count - 1] == '\n')
--		buf[count - 1] = '\0';
--
--	if (!strncmp(buf, "enabled", count)) {
--		/* change the flag and begin the recovery process if needed */
--		rproc->recovery_disabled = false;
--		rproc_trigger_recovery(rproc);
--	} else if (!strncmp(buf, "disabled", count)) {
--		rproc->recovery_disabled = true;
--	} else if (!strncmp(buf, "recover", count)) {
--		/* begin the recovery process without changing the flag */
--		rproc_trigger_recovery(rproc);
--	} else {
--		return -EINVAL;
--	}
--
--	return count;
--}
--
--static const struct file_operations rproc_recovery_ops = {
--	.read = rproc_recovery_read,
--	.write = rproc_recovery_write,
--	.open = simple_open,
--	.llseek = generic_file_llseek,
--};
--
- /* expose the crash trigger via debugfs */
- static ssize_t
- rproc_crash_write(struct file *filp, const char __user *user_buf,
-@@ -329,8 +253,6 @@ void rproc_create_debug_dir(struct rproc *rproc)
- 
- 	debugfs_create_file("name", 0400, rproc->dbg_dir,
- 			    rproc, &rproc_name_ops);
--	debugfs_create_file("recovery", 0600, rproc->dbg_dir,
--			    rproc, &rproc_recovery_ops);
- 	debugfs_create_file("crash", 0200, rproc->dbg_dir,
- 			    rproc, &rproc_crash_ops);
- 	debugfs_create_file("resource_table", 0400, rproc->dbg_dir,
-diff --git a/drivers/remoteproc/remoteproc_sysfs.c b/drivers/remoteproc/remoteproc_sysfs.c
-index 40949a0..2508eca 100644
---- a/drivers/remoteproc/remoteproc_sysfs.c
-+++ b/drivers/remoteproc/remoteproc_sysfs.c
-@@ -10,6 +10,61 @@
- 
- #define to_rproc(d) container_of(d, struct rproc, dev)
- 
-+static ssize_t recovery_show(struct device *dev,
-+			     struct device_attribute *attr, char *buf)
-+{
-+	struct rproc *rproc = to_rproc(dev);
-+
-+	return sprintf(buf, "%s", rproc->recovery_disabled ? "disabled\n" : "enabled\n");
-+}
-+
-+/*
-+ * By writing to the 'recovery' sysfs entry, we control the behavior of the
-+ * recovery mechanism dynamically. The default value of this entry is "enabled".
-+ *
-+ * The 'recovery' sysfs entry supports these commands:
-+ *
-+ * enabled:	When enabled, the remote processor will be automatically
-+ *		recovered whenever it crashes. Moreover, if the remote
-+ *		processor crashes while recovery is disabled, it will
-+ *		be automatically recovered too as soon as recovery is enabled.
-+ *
-+ * disabled:	When disabled, a remote processor will remain in a crashed
-+ *		state if it crashes. This is useful for debugging purposes;
-+ *		without it, debugging a crash is substantially harder.
-+ *
-+ * recover:	This function will trigger an immediate recovery if the
-+ *		remote processor is in a crashed state, without changing
-+ *		or checking the recovery state (enabled/disabled).
-+ *		This is useful during debugging sessions, when one expects
-+ *		additional crashes to happen after enabling recovery. In this
-+ *		case, enabling recovery will make it hard to debug subsequent
-+ *		crashes, so it's recommended to keep recovery disabled, and
-+ *		instead use the "recover" command as needed.
-+ */
-+static ssize_t recovery_store(struct device *dev,
-+			      struct device_attribute *attr,
-+			      const char *buf, size_t count)
-+{
-+	struct rproc *rproc = to_rproc(dev);
-+
-+	if (sysfs_streq(buf, "enabled")) {
-+		/* change the flag and begin the recovery process if needed */
-+		rproc->recovery_disabled = false;
-+		rproc_trigger_recovery(rproc);
-+	} else if (sysfs_streq(buf, "disabled")) {
-+		rproc->recovery_disabled = true;
-+	} else if (sysfs_streq(buf, "recover")) {
-+		/* begin the recovery process without changing the flag */
-+		rproc_trigger_recovery(rproc);
-+	} else {
-+		return -EINVAL;
-+	}
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(recovery);
-+
- /*
-  * A coredump-configuration-to-string lookup table, for exposing a
-  * human readable configuration via sysfs. Always keep in sync with
-@@ -202,6 +257,7 @@ static DEVICE_ATTR_RO(name);
- 
- static struct attribute *rproc_attrs[] = {
- 	&dev_attr_coredump.attr,
-+	&dev_attr_recovery.attr,
- 	&dev_attr_firmware.attr,
- 	&dev_attr_state.attr,
- 	&dev_attr_name.attr,
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+> +
+> +maintainers:
+> +  - Jim Quinlan <james.quinlan@broadcom.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - brcm,brcmstb-mbox
+> +
+> +  interrupts:
+> +    items:
+> +      - description: SCMI a2p return interrupt
+> +
+> +  "#mbox-cells":
+> +    const: 1
+> +
+> +required:
+> +  - compatible
+> +  - interrupts
+> +  - "#mbox-cells"
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    mailbox0: mailbox@0 {
+
+Drop the label and unit-address.
+
+Run 'make dt_binding_check' as it will tell you the latter.
+
+> +      compatible = "brcm,brcmstb-mailbox";
+> +      #mbox-cells = <1>;
+> +      interrupts = <GIC_SPI 0xc6 IRQ_TYPE_LEVEL_HIGH>;
+> +    };
+> +...
+> -- 
+> 2.17.1
+> 
+
 
