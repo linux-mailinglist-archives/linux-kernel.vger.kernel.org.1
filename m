@@ -2,89 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE0626F269
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D856726F28B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:01:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728717AbgIRC6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:58:47 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13286 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726705AbgIRC6l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:58:41 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 92998A3469232E76FC6F;
-        Fri, 18 Sep 2020 10:58:39 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.213) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 18 Sep
- 2020 10:58:36 +0800
-Subject: Re: [PATCH 6/9] f2fs: zstd: Switch to the zstd-1.4.6 API
-To:     Eric Biggers <ebiggers@kernel.org>
-CC:     Nick Terrell <terrelln@fb.com>, Johannes Weiner <jweiner@fb.com>,
-        "Nick Terrell" <nickrterrell@gmail.com>, Yann Collet <cyan@fb.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        Petr Malat <oss@malat.biz>, "Chris Mason" <clm@fb.com>,
-        Kernel Team <Kernel-team@fb.com>, Niket Agarwal <niketa@fb.com>
-References: <20200916034307.2092020-1-nickrterrell@gmail.com>
- <20200916034307.2092020-9-nickrterrell@gmail.com>
- <28bf92f1-1246-a840-6195-0e230e517e6d@huawei.com>
- <C8517011-9B6F-499F-BEC6-25BF1F0794AC@fb.com>
- <f7b19bc6-e57f-b4d8-b1f7-89c428b79cdf@huawei.com>
- <C327820B-5BD8-4739-AE4E-04EF27BE8150@fb.com>
- <9589E483-A94B-4AF6-8C03-B0763715B40A@fb.com>
- <a8b6e21d-fb51-1a50-8f2a-045f3a496c12@huawei.com>
- <20200918025627.GA3518637@gmail.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <6eb268c8-7276-5859-e5b0-ce0a541e27e7@huawei.com>
-Date:   Fri, 18 Sep 2020 10:58:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1729726AbgIRC7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:59:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57978 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726156AbgIRC7B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:59:01 -0400
+Received: from gmail.com (unknown [104.132.1.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E4DAB2083B;
+        Fri, 18 Sep 2020 02:59:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600397941;
+        bh=UxyESt/K75+rUqzJRmabdg0mnMv1VHXCfyIK+f5CqpE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uO19MVTx3NWJ9usXy2oKKEIPkmosZEXtgFGOe6IEnE3qkk4VXDca0g/Z9bOhX3W/9
+         2VfiWBgEYVCbm9UsWLG0XDoHFFvdK4qPQtPCzp3/bbSfQHYaNmfbliTMlnA7lLUN07
+         /P37UsqT9PPJF9YTBQT4K/8fX84LKNaKv2DigGmk=
+Date:   Thu, 17 Sep 2020 19:58:59 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 4.19 059/206] ext4: make dioread_nolock the
+ default
+Message-ID: <20200918025859.GB3518637@gmail.com>
+References: <20200918020802.2065198-1-sashal@kernel.org>
+ <20200918020802.2065198-59-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200918025627.GA3518637@gmail.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200918020802.2065198-59-sashal@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/9/18 10:56, Eric Biggers wrote:
-> On Fri, Sep 18, 2020 at 09:47:32AM +0800, Chao Yu wrote:
->> Ah, I got it.
->>
->> Step of enabling compressed inode is not correct, we should touch an empty
->> file, and then use 'chattr +c' on that file to enable compression, otherwise
->> the race condition could be complicated to handle. So we need below diff to
->> disallow setting compression flag on an non-empty file:
->>
->> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
->> index 8a422400e824..b462db7898fd 100644
->> --- a/fs/f2fs/file.c
->> +++ b/fs/f2fs/file.c
->> @@ -1836,6 +1836,8 @@ static int f2fs_setflags_common(struct inode *inode, u32 iflags, u32 mask)
->>   		if (iflags & F2FS_COMPR_FL) {
->>   			if (!f2fs_may_compress(inode))
->>   				return -EINVAL;
->> +			if (get_dirty_pages(inode) || fi->i_compr_blocks)
->> +				return  -EINVAL;
->>
->>   			set_compress_context(inode);
->>   		}
+On Thu, Sep 17, 2020 at 10:05:35PM -0400, Sasha Levin wrote:
+> From: Theodore Ts'o <tytso@mit.edu>
 > 
-> Why not:
+> [ Upstream commit 244adf6426ee31a83f397b700d964cff12a247d3 ]
 > 
-> 	if (inode->i_size)
-> 		return -EINVAL;
-
-Yeah, I noticed that after replying this email, I've prepared the new patch
-which including the i_size check.
-
-Thanks for noticing this.
-
-Thanks,
-
-> .
+> This fixes the direct I/O versus writeback race which can reveal stale
+> data, and it improves the tail latency of commits on slow devices.
 > 
+> Link: https://lore.kernel.org/r/20200125022254.1101588-1-tytso@mit.edu
+> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+
+Any particular reason to be backporting this?  I thought I saw some fixes for
+dioread_nolock go by, after it was made the default.  Are you getting all of
+those fixes too?
+
+- Eric
