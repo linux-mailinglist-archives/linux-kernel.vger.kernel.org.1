@@ -2,97 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC0B327029F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD7262702A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726507AbgIRQxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 12:53:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726304AbgIRQxi (ORCPT
+        id S1726309AbgIRQyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 12:54:47 -0400
+Received: from plasma31.jpberlin.de ([80.241.56.82]:33153 "EHLO
+        plasma31.jpberlin.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726115AbgIRQyr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 12:53:38 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57FD2C0613CE;
-        Fri, 18 Sep 2020 09:53:38 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id o8so9001639ejb.10;
-        Fri, 18 Sep 2020 09:53:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=t4UNWRw3XtjaYPT1Tohvguum4En79LX5R37iA+oLJ0A=;
-        b=H82+wAJgm2/HJXACILHMrIK39S3n8alrwnjBXhCk+vwg9VSlNsBRp4ICEKf2XNxCSe
-         ut3AV73svZ9T/d97O8LXGNT30NI9iTsFA99zY70cIRgujDlHMve/IBLq2713Oae6OINK
-         WM9z+Qlm9a8/tpfORt9A43LPVER6ejaUv+A/uZbcHZDra0urMSvHjcYNZrVJIMyPKgdR
-         SKuS9lP+45ISXCbrI1ngJoBY72aLQu+m2N9kcw1S/NzXFWX5GFpMSmdvG7bnjV849085
-         82lR9OCUElD4XF3mG+F5xa6haTQZskautC3hFikdWAzw/uNmYEvofVqvYbt11YVYIeVs
-         Uzyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=t4UNWRw3XtjaYPT1Tohvguum4En79LX5R37iA+oLJ0A=;
-        b=AXFYlNHPNSOYKBw+rP5Ff6R6a7y5s9uO0zPPOxJJ8W5VCR10ImqmGqVr8UyGsPgN5A
-         auhZV9hwpRUyWXIMB+lhjF4vzHxgx/RjXNsMiW+sdjQ7Qe3fhXeIkQFfjeGMKoA68pN+
-         suYXeYXYYCjahA2JNg4k4TyRAVgLl4EjaXUNR5pvxcOwvHa+auFkVJije6gKufLopf8p
-         bCV6CURbAV1vSB7DZnQs+LlFuDbofQ+6UkYZZOO3DEgVBiY3POIH7YQPFEOW+9tA0cVa
-         cLY8Bg7QSSg8crH/EsQGvGeid7Yr4btiPnLbP2nJZRmjWckYXDS3z+Sno86BFdO9u75v
-         W4vA==
-X-Gm-Message-State: AOAM532iLtd62vEDkOIl7h9WicFbpEfXV7opVgbg/TurDEDmNekQHJor
-        Fk2J2euoKtMcMHk1qUDN7Vg=
-X-Google-Smtp-Source: ABdhPJw/qQ1CFM15zpGleITT62o8jtVWAf0d3CugqJMzbgDFfTt7Xf33FX+TUfrq/i/jLiahu8ig6g==
-X-Received: by 2002:a17:907:2506:: with SMTP id y6mr35175644ejl.265.1600448016964;
-        Fri, 18 Sep 2020 09:53:36 -0700 (PDT)
-Received: from debian64.daheim (p5b0d776c.dip0.t-ipconnect.de. [91.13.119.108])
-        by smtp.gmail.com with ESMTPSA id ce14sm2678057edb.25.2020.09.18.09.53.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 09:53:36 -0700 (PDT)
-Received: from localhost.daheim ([127.0.0.1])
-        by debian64.daheim with esmtp (Exim 4.94)
-        (envelope-from <chunkeey@gmail.com>)
-        id 1kJJdb-002nB9-9i; Fri, 18 Sep 2020 18:53:35 +0200
-Subject: Re: [PATCH 2/2] dt: bindings: ath10k: Document qcom,
- ath10k-pre-calibration-data-mtd
-To:     Ansuel Smith <ansuelsmth@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>
-Cc:     devicetree@vger.kernel.org, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ath10k@lists.infradead.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-mtd@lists.infradead.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-References: <20200918162928.14335-1-ansuelsmth@gmail.com>
- <20200918162928.14335-2-ansuelsmth@gmail.com>
-From:   Christian Lamparter <chunkeey@gmail.com>
-Message-ID: <8f886e3d-e2ee-cbf8-a676-28ebed4977aa@gmail.com>
-Date:   Fri, 18 Sep 2020 18:53:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 18 Sep 2020 12:54:47 -0400
+Received: from spamfilter04.heinlein-hosting.de (spamfilter04.heinlein-hosting.de [80.241.56.122])
+        by plasma.jpberlin.de (Postfix) with ESMTP id CD9AE1018B5;
+        Fri, 18 Sep 2020 18:54:42 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from plasma.jpberlin.de ([80.241.56.76])
+        by spamfilter04.heinlein-hosting.de (spamfilter04.heinlein-hosting.de [80.241.56.122]) (amavisd-new, port 10030)
+        with ESMTP id dKLDcAmeklFh; Fri, 18 Sep 2020 18:54:41 +0200 (CEST)
+Received: from webmail.opensynergy.com (unknown [217.66.60.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (Client CN "*.opensynergy.com", Issuer "Starfield Secure Certificate Authority - G2" (not verified))
+        (Authenticated sender: opensynergy@jpberlin.de)
+        by plasma.jpberlin.de (Postfix) with ESMTPSA id 6BE50100E7E;
+        Fri, 18 Sep 2020 18:54:41 +0200 (CEST)
+From:   Peter Hilber <peter.hilber@opensynergy.com>
+To:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>
+CC:     Rob Herring <robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <sudeep.holla@arm.com>, <souvik.chakravarty@arm.com>,
+        <alex.bennee@linaro.org>, <jean-philippe@linaro.org>,
+        <igor.skalkin@opensynergy.com>, <mikhail.golubev@opensynergy.com>,
+        <anton.yakovlev@opensynergy.com>,
+        Peter Hilber <peter.hilber@opensynergy.com>
+Subject: [RFC PATCH 3/7] firmware: arm_scmi: Add op to override max message #
+Date:   Fri, 18 Sep 2020 18:53:50 +0200
+Message-ID: <20200918165350.256878-1-peter.hilber@opensynergy.com>
+In-Reply-To: <20200918162311.254564-1-peter.hilber@opensynergy.com>
+References: <20200918162311.254564-1-peter.hilber@opensynergy.com>
 MIME-Version: 1.0
-In-Reply-To: <20200918162928.14335-2-ansuelsmth@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: de-DE
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: SR-MAIL-01.open-synergy.com (10.26.10.21) To
+ SR-MAIL-01.open-synergy.com (10.26.10.21)
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -3.70 / 15.00 / 15.00
+X-Rspamd-Queue-Id: CD9AE1018B5
+X-Rspamd-UID: 9ad3d5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-18 18:29, Ansuel Smith wrote:
-> Document use of qcom,ath10k-pre-calibration-data-mtd bindings used to
-> define from where the driver will load the pre-cal data in the defined
-> mtd partition.
-> 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+From: Igor Skalkin <igor.skalkin@opensynergy.com>
 
-Q: Doesn't mtd now come with nvmem support from the get go? So
-the MAC-Addresses and pre-caldata could be specified as a
-nvmem-node in the devicetree? I remember seeing that this was
-worked on or was this mtd->nvmem dropped?
+The number of messages that the upcoming scmi-virtio transport can
+support depends on the virtio device (SCMI platform) and can differ for
+each channel. (The scmi-virtio transport does only have one tx and at
+most 1 rx channel.)
 
-Cheers,
-Christian
+Add an optional transport op so that scmi-virtio can report the actual
+max message # for each channel type. Respect these new limits.
+
+Co-developed-by: Peter Hilber <peter.hilber@opensynergy.com>
+Signed-off-by: Peter Hilber <peter.hilber@opensynergy.com>
+Signed-off-by: Igor Skalkin <igor.skalkin@opensynergy.com>
+---
+ drivers/firmware/arm_scmi/common.h |  8 ++++-
+ drivers/firmware/arm_scmi/driver.c | 49 ++++++++++++++++++++++--------
+ 2 files changed, 43 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
+index 4cc78eb27f14..0f1540cb2d84 100644
+--- a/drivers/firmware/arm_scmi/common.h
++++ b/drivers/firmware/arm_scmi/common.h
+@@ -201,6 +201,9 @@ struct scmi_chan_info {
+  * @chan_available: Callback to check if channel is available or not
+  * @chan_setup: Callback to allocate and setup a channel
+  * @chan_free: Callback to free a channel
++ * @get_max_msg: Optional callback to provide max_msg dynamically
++ * 	@max_msg: Maximum number of messages for the channel type (tx or rx)
++ * 		that can be pending simultaneously in the system
+  * @send_message: Callback to send a message
+  * @mark_txdone: Callback to mark tx as done
+  * @fetch_response: Callback to fetch response
+@@ -213,6 +216,8 @@ struct scmi_transport_ops {
+ 	int (*chan_setup)(struct scmi_chan_info *cinfo, struct device *dev,
+ 			  bool tx);
+ 	int (*chan_free)(int id, void *p, void *data);
++	int (*get_max_msg)(bool tx, struct scmi_chan_info *base_cinfo,
++			   int *max_msg);
+ 	int (*send_message)(struct scmi_chan_info *cinfo,
+ 			    struct scmi_xfer *xfer);
+ 	void (*mark_txdone)(struct scmi_chan_info *cinfo, int ret);
+@@ -230,7 +235,8 @@ struct scmi_transport_ops {
+  * @ops: Pointer to the transport specific ops structure
+  * @max_rx_timeout_ms: Timeout for communication with SoC (in Milliseconds)
+  * @max_msg: Maximum number of messages for a channel type (tx or rx) that can
+- *	be pending simultaneously in the system
++ *	be pending simultaneously in the system. May be overridden by the
++ *	get_max_msg op.
+  * @max_msg_size: Maximum size of data per message that can be handled.
+  */
+ struct scmi_desc {
+diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+index d070687cf2f6..d66f19b27c44 100644
+--- a/drivers/firmware/arm_scmi/driver.c
++++ b/drivers/firmware/arm_scmi/driver.c
+@@ -61,11 +61,13 @@ static atomic_t transfer_last_id;
+  *	Index of this bitmap table is also used for message
+  *	sequence identifier.
+  * @xfer_lock: Protection for message allocation
++ * @max_msg: Maximum number of messages that can be pending
+  */
+ struct scmi_xfers_info {
+ 	struct scmi_xfer *xfer_block;
+ 	unsigned long *xfer_alloc_table;
+ 	spinlock_t xfer_lock;
++	int max_msg;
+ };
+ 
+ /**
+@@ -157,13 +159,11 @@ static struct scmi_xfer *scmi_xfer_get(const struct scmi_handle *handle,
+ 	u16 xfer_id;
+ 	struct scmi_xfer *xfer;
+ 	unsigned long flags, bit_pos;
+-	struct scmi_info *info = handle_to_scmi_info(handle);
+ 
+ 	/* Keep the locked section as small as possible */
+ 	spin_lock_irqsave(&minfo->xfer_lock, flags);
+-	bit_pos = find_first_zero_bit(minfo->xfer_alloc_table,
+-				      info->desc->max_msg);
+-	if (bit_pos == info->desc->max_msg) {
++	bit_pos = find_first_zero_bit(minfo->xfer_alloc_table, minfo->max_msg);
++	if (bit_pos == minfo->max_msg) {
+ 		spin_unlock_irqrestore(&minfo->xfer_lock, flags);
+ 		return ERR_PTR(-ENOMEM);
+ 	}
+@@ -594,32 +594,44 @@ int scmi_handle_put(const struct scmi_handle *handle)
+ }
+ 
+ static int __scmi_xfer_info_init(struct scmi_info *sinfo,
+-				 struct scmi_xfers_info *info)
++				 struct scmi_xfers_info *info,
++				 bool tx,
++				 struct scmi_chan_info *base_cinfo)
+ {
+ 	int i;
+ 	struct scmi_xfer *xfer;
+ 	struct device *dev = sinfo->dev;
+ 	const struct scmi_desc *desc = sinfo->desc;
+ 
++	info->max_msg = desc->max_msg;
++
++	if (desc->ops->get_max_msg) {
++		int ret =
++			desc->ops->get_max_msg(tx, base_cinfo, &info->max_msg);
++
++		if (ret)
++			return ret;
++	}
++
+ 	/* Pre-allocated messages, no more than what hdr.seq can support */
+-	if (WARN_ON(desc->max_msg >= MSG_TOKEN_MAX)) {
++	if (WARN_ON(info->max_msg >= MSG_TOKEN_MAX)) {
+ 		dev_err(dev, "Maximum message of %d exceeds supported %ld\n",
+-			desc->max_msg, MSG_TOKEN_MAX);
++			info->max_msg, MSG_TOKEN_MAX);
+ 		return -EINVAL;
+ 	}
+ 
+-	info->xfer_block = devm_kcalloc(dev, desc->max_msg,
++	info->xfer_block = devm_kcalloc(dev, info->max_msg,
+ 					sizeof(*info->xfer_block), GFP_KERNEL);
+ 	if (!info->xfer_block)
+ 		return -ENOMEM;
+ 
+-	info->xfer_alloc_table = devm_kcalloc(dev, BITS_TO_LONGS(desc->max_msg),
++	info->xfer_alloc_table = devm_kcalloc(dev, BITS_TO_LONGS(info->max_msg),
+ 					      sizeof(long), GFP_KERNEL);
+ 	if (!info->xfer_alloc_table)
+ 		return -ENOMEM;
+ 
+ 	/* Pre-initialize the buffer pointer to pre-allocated buffers */
+-	for (i = 0, xfer = info->xfer_block; i < desc->max_msg; i++, xfer++) {
++	for (i = 0, xfer = info->xfer_block; i < info->max_msg; i++, xfer++) {
+ 		xfer->rx.buf = devm_kcalloc(dev, sizeof(u8), desc->max_msg_size,
+ 					    GFP_KERNEL);
+ 		if (!xfer->rx.buf)
+@@ -636,10 +648,21 @@ static int __scmi_xfer_info_init(struct scmi_info *sinfo,
+ 
+ static int scmi_xfer_info_init(struct scmi_info *sinfo)
+ {
+-	int ret = __scmi_xfer_info_init(sinfo, &sinfo->tx_minfo);
++	int ret;
++	struct scmi_chan_info *base_tx_cinfo;
++	struct scmi_chan_info *base_rx_cinfo;
++
++	base_tx_cinfo = idr_find(&sinfo->tx_idr, SCMI_PROTOCOL_BASE);
++	if (unlikely(!base_tx_cinfo))
++		return -EINVAL;
++
++	ret = __scmi_xfer_info_init(sinfo, &sinfo->tx_minfo, true,
++				    base_tx_cinfo);
+ 
+-	if (!ret && idr_find(&sinfo->rx_idr, SCMI_PROTOCOL_BASE))
+-		ret = __scmi_xfer_info_init(sinfo, &sinfo->rx_minfo);
++	base_rx_cinfo = idr_find(&sinfo->rx_idr, SCMI_PROTOCOL_BASE);
++	if (!ret && base_rx_cinfo)
++		ret = __scmi_xfer_info_init(sinfo, &sinfo->rx_minfo, false,
++					    base_rx_cinfo);
+ 
+ 	return ret;
+ }
+-- 
+2.25.1
+
