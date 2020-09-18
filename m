@@ -2,81 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EEDE26FB86
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 13:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA67126FB8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 13:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726531AbgIRLeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 07:34:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56254 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726139AbgIRLd5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 07:33:57 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 37D5D21D92;
-        Fri, 18 Sep 2020 11:33:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600428836;
-        bh=vM9m8zMv8skQhP1SU9+eBixGXC0EckzK9yvz6NaUPos=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WqJF40Tmbbcu+C86lBB7op3aPDfPdDDNQHgJduS0lK7NV0+/M2mK5VtUKFsq1DlaY
-         n2vKuezl/0GFAbDez20C6P+qIKNoogzhinJEn7/cFAK/8PPJMdyIhzIVSAuT7RdhII
-         R4nGgHAha7ASK+jT6y9v54+fR5nJhOnvr7rLRKn0=
-Date:   Fri, 18 Sep 2020 12:33:05 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Camel Guo <camelg@axis.com>
-Cc:     Camel Guo <camel.guo@axis.com>, lgirdwood@gmail.com,
-        tiwai@suse.com, dmurphy@ti.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, kernel@axis.com
-Subject: Re: [PATCH v4] ASoC: tlv320adcx140: Add support for configuring GPIO
- pin
-Message-ID: <20200918113305.GF5703@sirena.org.uk>
-References: <20200918073229.27348-1-camel.guo@axis.com>
- <20200918111823.GE5703@sirena.org.uk>
- <b5cc9041-62ea-d578-db28-c1ab8ec50842@axis.com>
+        id S1726551AbgIRLen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 07:34:43 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:37321 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726548AbgIRLeU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 07:34:20 -0400
+Received: from mail-qt1-f182.google.com ([209.85.160.182]) by
+ mrelayeu.kundenserver.de (mreue011 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MTi9N-1juJGu2Jg5-00TzGO; Fri, 18 Sep 2020 13:34:17 +0200
+Received: by mail-qt1-f182.google.com with SMTP id r8so4592851qtp.13;
+        Fri, 18 Sep 2020 04:34:17 -0700 (PDT)
+X-Gm-Message-State: AOAM5331lbpKJop+RpHXhr+BmIY9mKunn++UU++H33RDSavq4PKO4ChL
+        nd/LKxDmzh+837zwoxDoATT3b6675qXfaRTeZtI=
+X-Google-Smtp-Source: ABdhPJyR7zz5So72V6SYhWYgwZh755GPHRackIOcSX7igL5IA735dwZVSQSG8A3tNsW/k/LOoRgJv264m3fyry8q1/w=
+X-Received: by 2002:aed:31e5:: with SMTP id 92mr23933594qth.18.1600428856277;
+ Fri, 18 Sep 2020 04:34:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="+jhVVhN62yS6hEJ8"
-Content-Disposition: inline
-In-Reply-To: <b5cc9041-62ea-d578-db28-c1ab8ec50842@axis.com>
-X-Cookie: Beware of geeks bearing graft.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200918104949.3260823-1-daniel@0x0f.com>
+In-Reply-To: <20200918104949.3260823-1-daniel@0x0f.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 18 Sep 2020 13:34:00 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0maQhfaerwG4KgFZOrUPwueKOp2+MOeG9C=+8ZNzc2Kg@mail.gmail.com>
+Message-ID: <CAK8P3a0maQhfaerwG4KgFZOrUPwueKOp2+MOeG9C=+8ZNzc2Kg@mail.gmail.com>
+Subject: Re: [PATCH 0/3] ARM: mstar: wire up interrupt controllers
+To:     Daniel Palmer <daniel@0x0f.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        DTML <devicetree@vger.kernel.org>, mark-pk.tsai@mediatek.com,
+        Marc Zyngier <maz@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:ZLTm1dOtWm2PCZmPhXJpOWUvMIa2mQq/w3KitFF+MUsUBHcqSMU
+ x/u2iMUH9q6NpzTNjuKhQpeBIYpdk9rxa6f+5b4a4dhcB6SX4nBH7vX2E0dY3FL4KoAXsOe
+ q4tKtnGAljvEpfW3W1TVJeH/XBuBj4PzSdRMFrKdo4G+p0LYgbM6HtqZBwGKqsuwuDz5ZTH
+ BVtPJC8XkPUieR/9KknoQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:TyPM4WjUnNg=:PQzblxIzVPwuOfqeqXxCUO
+ wOybMMnSk77BkU7l/p7Xjvl1YRY984uBGxM7/L7YSJPu+dlBNN78Zf0RFXqbrp7Zlf3M/iGce
+ cer+nQ2g2nmQpNswHKcyFS2glw2Z2akUTKo0wMUO9HX53zl+2OBnbT4uD6+WOj9LA/gjbwrlQ
+ DZUgd7jP6RrSzAvWCMByoinqU9yxEuCRGf37BLXfWFRcPUHmGcgWKTBVOOH0SQ64MUtChT1+R
+ tgn4gkpY4Yls8+ZtOgVEDD+hciKSFzBb8FQVbvMexztLLECi8ihEpZr38KGcrCpgjT89oCFvL
+ 2mAji43TyaDc+q3F007ESjL2fnUo5ovzBHlrz6inZLTEZ1UP+o5doX4pqN+b9yThhsyuGonxt
+ AH4M8tSc5lTEkdPHEuUhpTRp8ZkToPuY1qJzJNsogekpAQjpuH2Pa1Ig40awDdu4KiI5fhe2r
+ /+3aEQN3yrinaWUZnUXJ1sbOp/VZcGnRrqqoEQs5LZgoN8FwuWEjD7j2dvuI8dS96rrMw4huV
+ ZYL0ACRKhlC3bz5LRq6xOhdtdtSDzQkSWAhs8KRktCk1FqvP901cBoi77vaODG0zGjNBJboy+
+ 2dv+SkvRvLHR5clztDNwgXyRzJgGi2eumFka9AM2mNQvder4qLcQE/mNVgb4Nh6pi/OBSIPTO
+ eqvsUWfSlY6zpYfY3I1lNpH9wpYdQpybqMOKpCrhSZUDzEUMbGG1bNW2Gm7wqi9u3ugCMTMaL
+ xiTNYGWwbK3tN3mlxxWqAHE2augrnd498TV7Gaj3QZ9xGEWvhk/dYaGJ3+7iSIoCTAI6msWI9
+ rc48xvIR3/A4lVSAyMsKD78qesT4kZBnxWbZ8T6x8hPwhUKOiRX9MZ6JK8jrstuHTp1yX4U
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 18, 2020 at 12:49 PM Daniel Palmer <daniel@0x0f.com> wrote:
+>
+> Mark-PK Tsai's driver for the MStar interrupt
+> controller should be going into 5.10[0].
+>
+> This small series selects the driver when building
+> support for MStar/SigmaStar Arm v7 SoCs, adds the
+> instances of it to the base dtsi and wires up the
+> interrupt for pm_uart.
+>
+> 0 - https://lore.kernel.org/linux-arm-kernel/87lfhdr7l6.wl-maz@kernel.org/
 
---+jhVVhN62yS6hEJ8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Whole series,
 
-On Fri, Sep 18, 2020 at 01:27:50PM +0200, Camel Guo wrote:
-> On 9/18/20 1:18 PM, Mark Brown wrote:
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 
-> > This needs a DT bindings update for the new property (I thought there
-> > was one in prior versions)?
+Please send these to soc@kernel.org for inclusion.
 
-> That patch for DT bindings has no change at all. Now I resent it anyway.
+On a different note: I realized too late that the dts files should have been
+named more consistently when we originally merged them. Can you
+also add patches to rename the infinity and mercury files to start
+with "mstar-"?
 
-Any patch series you send should be self-contained, if some patches from
-a previous version of the series are unchanged you should still resend
-them.  Picking some patches out of different versions of a series makes
-everything less clear and more error prone.
-
---+jhVVhN62yS6hEJ8
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9kmvAACgkQJNaLcl1U
-h9BZXAf5AWFad5ytUdPcfO1yq+1w7pPVigXPZmUPIlAbUtoJZj8aKGqd7s70o3sg
-/kVqkaqO7VglpPveiJ5cI0KrJR/tyeWVgUxxJD6nrxoCpSy9Jkv/V/NKTd2TN8QP
-AyMszQLMadRdzOqi7W96k93AuWrlIpU1ZmzW5Ud+RXrvHtSizBbuK/TtYSBsPOVP
-7uqOPI+sUVRChPDVPflMa6XoaOvfRDdtUZibhVWhDWkaeathOpn6AnN+mJwKd9PP
-jila+Bcx2NPVKmUMu4nVS9bWhkszwMRa1vSVCXfJa6fiBHI7LynKkrEaZIfNs+1Y
-4LXZzgYnJv7ARd5iB4AnW5dJuJvTow==
-=1OzC
------END PGP SIGNATURE-----
-
---+jhVVhN62yS6hEJ8--
+    Arnd
