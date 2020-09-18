@@ -2,67 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6168E26F4C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D3D26F4CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726626AbgIRDkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 23:40:53 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:56433 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726306AbgIRDkx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 23:40:53 -0400
-X-UUID: f2ccb9e2603145539f453257b96be52f-20200918
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=NJWqmI9Q+3XKGNwrqS5sBa+WygmHxvHtMA8oZ41d8Zk=;
-        b=oZ81HU/VxH8I4jeR1gBS/Okajoz3Gyi8WPUJOZASUU9aVxXx8fyeJJXKcuJ33c+/8aOfKyA55a2O84NBxZYWV6DBcCfZwhy8DLfLMMlbURXlnQyH5opulRViRLsYvfrxP0EYt63Fu7XRbOM+5GsP2OK4KBgL5pAkobLXDSHzuXU=;
-X-UUID: f2ccb9e2603145539f453257b96be52f-20200918
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 855648462; Fri, 18 Sep 2020 11:40:45 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N1.mediatek.inc
- (172.27.4.75) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 18 Sep
- 2020 11:40:43 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 18 Sep 2020 11:40:43 +0800
-Message-ID: <1600400313.20602.4.camel@mhfsdcap03>
-Subject: Re: [PATCH 1/7] usb: mtu3: convert to
- devm_platform_ioremap_resource_byname
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Felipe Balbi <balbi@kernel.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-Date:   Fri, 18 Sep 2020 11:38:33 +0800
-In-Reply-To: <87d02y1190.fsf@kernel.org>
-References: <1595404275-8449-1-git-send-email-chunfeng.yun@mediatek.com>
-         <87d02y1190.fsf@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S1726603AbgIRDnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 23:43:41 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:50238 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726420AbgIRDnl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 23:43:41 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 7257AA7591A4C09F00A5;
+        Fri, 18 Sep 2020 11:43:39 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Fri, 18 Sep 2020
+ 11:43:32 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <amd-gfx@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+CC:     <alexander.deucher@amd.com>, <yangyingliang@huawei.com>
+Subject: [PATCH -next] drm/amd/display: remove unused variable in amdgpu_dm.c
+Date:   Fri, 18 Sep 2020 11:42:14 +0800
+Message-ID: <20200918034214.2534751-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 0CC168B5AFE69E193055849BE7B64D2C4E5C6D83B9F689EBFDF4440AAEA4FFC72000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.124.27]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgRmVsaXAsDQoNCg0KT24gTW9uLCAyMDIwLTA5LTA3IGF0IDEwOjQyICswMzAwLCBGZWxpcGUg
-QmFsYmkgd3JvdGU6DQo+IEhpLA0KPiANCj4gQ2h1bmZlbmcgWXVuIDxjaHVuZmVuZy55dW5AbWVk
-aWF0ZWsuY29tPiB3cml0ZXM6DQo+ID4gVXNlIGRldm1fcGxhdGZvcm1faW9yZW1hcF9yZXNvdXJj
-ZV9ieW5hbWUoKSB0byBzaW1wbGlmeSBjb2RlDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBDaHVu
-ZmVuZyBZdW4gPGNodW5mZW5nLnl1bkBtZWRpYXRlay5jb20+DQo+IA0KPiB3aHkgaXMgaXQgc28g
-dGhhdCB5b3VyIHBhdGNoZXMgYWx3YXlzIGNvbWUgYmFzZTY0IGVuY29kZWQ/IFRoZXkgbG9vaw0K
-PiBmaW5lIG9uIHRoZSBlbWFpbCBjbGllbnQsIGJ1dCB3aGVuIEkgdHJ5IHRvIHBpcGUgdGhlIG1l
-c3NhZ2UgdG8gZ2l0IGFtDQo+IGl0IGFsd2F5cyBnaXZlcyBtZSBhIGxvdCBvZiB0cm91YmxlIGFu
-ZCBJIGhhdmUgdG8gbWFudWFsbHkgZGVjb2RlIHRoZQ0KPiBib2R5IG9mIHlvdXIgbWVzc2FnZXMg
-YW5kIHJlY29tYmluZSB3aXRoIHRoZSBwYXRjaC4NCj4gDQo+IENhbiB5b3UgdHJ5IHRvIHNlbmQg
-eW91ciBwYXRjaGVzIGFzIGFjdHVhbCBwbGFpbiB0ZXh0IHdpdGhvdXQgZW5jb2RpbmcNCj4gdGhl
-IGJvZHkgd2l0aCBiYXNlNjQ/DQpNaXNzZWQgdGhlIGVtYWlsLg0KDQpTb3JyeSBmb3IgaW5jb252
-ZW5pZW5jZSENCklzIG9ubHkgdGhlIGNvbW1pdCBtZXNzYWdlIGJhc2U2NCBlbmNvZGVkLCBvciBp
-bmNsdWRlcyB0aGUgY29kZXM/DQoNCj4gDQoNCg==
+Fix the compile warning:
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:892:26: warning: variable ‘stream’ set but not used [-Wunused-but-set-variable]
+  struct dc_stream_state *stream;
+                          ^~~~~~
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index bb1bc7f5d149..7d9e8c311879 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -889,7 +889,6 @@ static void amdgpu_check_debugfs_connector_property_change(struct amdgpu_device
+ 	struct drm_connector_state *conn_state;
+ 	struct dm_crtc_state *acrtc_state;
+ 	struct drm_crtc_state *crtc_state;
+-	struct dc_stream_state *stream;
+ 	struct drm_device *dev = adev_to_drm(adev);
+ 
+ 	list_for_each_entry(connector, &dev->mode_config.connector_list, head) {
+@@ -906,8 +905,6 @@ static void amdgpu_check_debugfs_connector_property_change(struct amdgpu_device
+ 		if (!(acrtc_state && acrtc_state->stream))
+ 			continue;
+ 
+-		stream = acrtc_state->stream;
+-
+ 		if (amdgpu_dm_connector->dsc_settings.dsc_force_enable ||
+ 		    amdgpu_dm_connector->dsc_settings.dsc_num_slices_v ||
+ 		    amdgpu_dm_connector->dsc_settings.dsc_num_slices_h ||
+-- 
+2.25.1
 
