@@ -2,99 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60CE92705DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 21:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91CDB270605
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726249AbgIRT6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 15:58:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44794 "EHLO mail.kernel.org"
+        id S1726392AbgIRUJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 16:09:45 -0400
+Received: from mga12.intel.com ([192.55.52.136]:55832 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726118AbgIRT6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 15:58:09 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0C18121D42;
-        Fri, 18 Sep 2020 19:58:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600459088;
-        bh=rwunIzOqp6GWQdQipmI6M8Piyl6p7IBW3RuEHyxgW6s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SVFlfThzUqvTJ1tMe1VP9QD9P1S405SJAaylRtOEHoYox0XY4c1moEauPhDU2+yo/
-         koLGWU8VoLc+tg61ccvXJtL7Nc4obfYLLfraHJMQT4b9abE1wSohKu6c///CZ2dEjL
-         hNG9o5seH2MwnzDYaEyVHayT7bjW/XB5zxBYlSXc=
-Date:   Fri, 18 Sep 2020 15:03:45 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [GIT PULL] percpu fix for v5.9-rc6
-Message-ID: <20200918200344.GB15213@embeddedor>
-References: <20200917204514.GA2880159@google.com>
- <CAHk-=whXpv0KJvpL153dhUaRgSjzT8H4dD85hRw-fAwXvXnKAA@mail.gmail.com>
- <20200918162305.GB25599@embeddedor>
- <CAHk-=wjH+OH08yjp=LpexkUnGp0Ogusk3WX0G7Q+Lh7Anfr21A@mail.gmail.com>
- <20200918193426.GA15213@embeddedor>
- <CAHk-=wg=vvSf3M9O1VkwyYB4D4W6XS2AHVpQn6hEQY+usWrKGg@mail.gmail.com>
+        id S1726384AbgIRUJk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 16:09:40 -0400
+IronPort-SDR: gfcom4Dn9Nin84vgNtsnbtzXlYUL3Rmre38W0IQTtIlfNfIU0+cMbt+ONXGUvUhwX0vyEYa6ZX
+ OFbyNtQfWQcQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9748"; a="139523467"
+X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
+   d="scan'208";a="139523467"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 13:09:36 -0700
+IronPort-SDR: FJ/6JqWmW3mzc9id45K/pUifIhma9iO/tpvqENgotQ7/j0NXCucHsFf52V1O9z0gsd9NnEHi8d
+ RfrPozsiyvKQ==
+X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
+   d="scan'208";a="288094607"
+Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.16])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 13:09:35 -0700
+Subject: [PATCH] dm/dax: Fix table reference counts
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     dm-devel@redhat.com
+Cc:     stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Adrian Huang <ahuang12@lenovo.com>, linux-nvdimm@lists.01.org,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 18 Sep 2020 12:51:15 -0700
+Message-ID: <160045867590.25663.7548541079217827340.stgit@dwillia2-desk3.amr.corp.intel.com>
+User-Agent: StGit/0.18-3-g996c
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wg=vvSf3M9O1VkwyYB4D4W6XS2AHVpQn6hEQY+usWrKGg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 12:37:48PM -0700, Linus Torvalds wrote:
-> On Fri, Sep 18, 2020 at 12:28 PM Gustavo A. R. Silva
-> <gustavoars@kernel.org> wrote:
-> >
-> > OK. It seems that we are talking about two different things here. One thing
-> > is to apply sizeof() to a structure that contains a flexible-array member.
-> > And the other thing is to apply sizeof() to a flexible array. The former
-> > is allowed, the latter is wrong and we already get a build error when that
-> > occurs.
-> 
-> The latter I'm not even interested in, it's such a pointless thing to do.
-> 
-> > Applying sizeof() to a structure containing a flex-array member is allowed,
-> 
-> Yes, and that's wrong and inconsistent, but what else is new about the
-> C standard. It's what allows these kinds of bugs to slip through.
-> 
-> I sent Luc a couple of examples in the hope that maybe sparse could do
-> better, but..
-> 
-> > > Is there some gcc option that I didn't find to help find any questionable cases?
-> >
-> > If the questionable case is the application of sizeof() to a flex-array
-> > member or a flex-array member not occuring last in the containing structure,
-> > then yes, GCC already generates a build error for both cases. And that's
-> > what we want, see at the bottom...
-> 
-> No.
-> 
-> The questionable thing is to do "sizeof(struct-with-flex-array)".
+A recent fix to the dm_dax_supported() flow uncovered a latent bug. When
+dm_get_live_table() fails it is still required to drop the
+srcu_read_lock(). Without this change the lvm2 test-suite triggers this
+warning:
 
-I see now... 
+    # lvm2-testsuite --only pvmove-abort-all.sh
 
-> The point is, it's returning the same thing as if it was just a
-> zero-sized array, which makes the whole flex array entirely pointless
-> from a type safety standpoint.
-> 
-> The *only* thing it protects against is the "must be at the end" case,
-> which is almost entirely pointless and uninteresting.
-> 
+    WARNING: lock held when returning to user space!
+    5.9.0-rc5+ #251 Tainted: G           OE
+    ------------------------------------------------
+    lvm/1318 is leaving the kernel with locks still held!
+    1 lock held by lvm/1318:
+     #0: ffff9372abb5a340 (&md->io_barrier){....}-{0:0}, at: dm_get_live_table+0x5/0xb0 [dm_mod]
 
-But you are missing the point about CONFIG_UBSAN_BOUNDS, which doesn't
-work with zero-lenght and one-element arrays. And we want to be able
-to use that configuration. That's the main reason why we are replacing
-those arrays with a flexible one. I should have made more emphasis on
-that point in my last response.
+...and later on this hang signature:
 
-Thanks
---
-Gustavo
+    INFO: task lvm:1344 blocked for more than 122 seconds.
+          Tainted: G           OE     5.9.0-rc5+ #251
+    "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+    task:lvm             state:D stack:    0 pid: 1344 ppid:     1 flags:0x00004000
+    Call Trace:
+     __schedule+0x45f/0xa80
+     ? finish_task_switch+0x249/0x2c0
+     ? wait_for_completion+0x86/0x110
+     schedule+0x5f/0xd0
+     schedule_timeout+0x212/0x2a0
+     ? __schedule+0x467/0xa80
+     ? wait_for_completion+0x86/0x110
+     wait_for_completion+0xb0/0x110
+     __synchronize_srcu+0xd1/0x160
+     ? __bpf_trace_rcu_utilization+0x10/0x10
+     __dm_suspend+0x6d/0x210 [dm_mod]
+     dm_suspend+0xf6/0x140 [dm_mod]
+
+Fixes: 7bf7eac8d648 ("dax: Arrange for dax_supported check to span multiple devices")
+Cc: <stable@vger.kernel.org>
+Cc: Jan Kara <jack@suse.cz>
+Cc: Alasdair Kergon <agk@redhat.com>
+Cc: Mike Snitzer <snitzer@redhat.com>
+Reported-by: Adrian Huang <ahuang12@lenovo.com>
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+---
+ drivers/md/dm.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+index fb0255d25e4b..4a40df8af7d3 100644
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -1136,15 +1136,16 @@ static bool dm_dax_supported(struct dax_device *dax_dev, struct block_device *bd
+ {
+ 	struct mapped_device *md = dax_get_private(dax_dev);
+ 	struct dm_table *map;
++	bool ret = false;
+ 	int srcu_idx;
+-	bool ret;
+ 
+ 	map = dm_get_live_table(md, &srcu_idx);
+ 	if (!map)
+-		return false;
++		goto out;
+ 
+ 	ret = dm_table_supports_dax(map, device_supports_dax, &blocksize);
+ 
++out:
+ 	dm_put_live_table(md, srcu_idx);
+ 
+ 	return ret;
+
