@@ -2,379 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B6AA26F797
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0D5826F802
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726532AbgIRIBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 04:01:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38840 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726199AbgIRIBq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 04:01:46 -0400
-Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 398C32100A;
-        Fri, 18 Sep 2020 08:01:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600416105;
-        bh=19042zv007EORZtzbvA96Z4avWK1WWxoJ+eVVJEJ4Fo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RApgWE30dnms7WyGrtPa8neVeoELZHZZYTF8BmK1vrKDPk823a383SFO+HqCf0S2I
-         dOII+WnxYEKHPzo8mTCJSGUzVoxpisetvw4fKwROBf19h9LrLXYzzUuVyld4ZxBPOh
-         F2HassD6+0zylxozgRMoa89MI5jLPNql3F+GqNhQ=
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc:     "Frank Ch . Eigler" <fche@redhat.com>,
-        Aaron Merey <amerey@redhat.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] perf probe: Fall back to debuginfod query if debuginfo and source not found
-Date:   Fri, 18 Sep 2020 17:01:41 +0900
-Message-Id: <160041610083.912668.13659563860278615846.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <160041608027.912668.13169810485938551658.stgit@devnote2>
-References: <160041608027.912668.13169810485938551658.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S1726662AbgIRIUR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 18 Sep 2020 04:20:17 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2886 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726064AbgIRIUQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 04:20:16 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id D6418949A7C7C550C067;
+        Fri, 18 Sep 2020 09:04:59 +0100 (IST)
+Received: from localhost (10.52.125.116) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 18 Sep
+ 2020 09:04:59 +0100
+Date:   Fri, 18 Sep 2020 09:03:21 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Gene Chen <gene.chen.richtek@gmail.com>
+CC:     Jonathan Cameron <jic23@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>, <knaack.h@gmx.de>,
+        <lars@metafoo.de>, <pmeerw@pmeerw.net>,
+        <linux-iio@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gene Chen <gene_chen@richtek.com>, <Wilma.Wu@mediatek.com>,
+        <shufan_lee@richtek.com>, <cy_huang@richtek.com>,
+        <benjamin.chao@mediatek.com>,
+        Cristian Pop <cristian.pop@analog.com>
+Subject: Re: [PATCH v4 2/3] Documentation: ABI: testing: mt6360: Add ADC
+ sysfs guideline
+Message-ID: <20200918090321.00007f70@Huawei.com>
+In-Reply-To: <CAE+NS35Pw-6UqcHPNOsUtW0GABPVEHfPineF81+qrS6A18HiyA@mail.gmail.com>
+References: <1600191369-28040-1-git-send-email-gene.chen.richtek@gmail.com>
+        <1600191369-28040-3-git-send-email-gene.chen.richtek@gmail.com>
+        <20200917184256.71328701@archlinux>
+        <CAE+NS35Pw-6UqcHPNOsUtW0GABPVEHfPineF81+qrS6A18HiyA@mail.gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [10.52.125.116]
+X-ClientProxiedBy: lhreml741-chm.china.huawei.com (10.201.108.191) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the perf-probe heavily depends on the debuginfo, debuginfod
-gives us many benefits on the perf probe command on remote machine.
-Especially, this will be helpful for the embedded devices which will
-not have enough storage, or boot with a cross-build kernel whose
-source code is in the host machine.
-This will work as similar to the commit c7a14fdcb3fa ("perf build-ids:
-Fall back to debuginfod query if debuginfo not found")
+On Fri, 18 Sep 2020 15:21:44 +0800
+Gene Chen <gene.chen.richtek@gmail.com> wrote:
 
-Tested with:
+> Jonathan Cameron <jic23@kernel.org> 於 2020年9月18日 週五 上午1:43寫道：
+> >
+> > On Wed, 16 Sep 2020 01:36:08 +0800
+> > Gene Chen <gene.chen.richtek@gmail.com> wrote:
+> >  
+> > > From: Gene Chen <gene_chen@richtek.com>
+> > >
+> > > Add ABI documentation for mt6360 ADC sysfs interfaces.
+> > >
+> > > Signed-off-by: Gene Chen <gene_chen@richtek.com>  
+> > Would you consider using the proposed label attribute for channels?
+> >
+> > https://lore.kernel.org/linux-iio/20200916132115.81795-1-cristian.pop@analog.com/T/#u
+> >
+> > I'm hoping that will remove the need to have ext name used in the majority of
+> > cases and would like to know if it would work for you?
+> > It may not work for this particular case of course.
+> >
+> > Other comments inline.
+> >  
+> 
+> because of ADC layout is fixed, I can't switch channel to specific
+> purpose for userspace.
 
-  (host) $ cd PATH/TO/KBUILD/DIR/
-  (host) $ debuginfod -F .
-  ...
+That patch set doesn't allow userspace to change the purpose. It provides
+a *_label attribute for each channel to allow for identification of the channel.
+That can be provided by ACPI / DT or can be provided by the driver itself.
+The advantage is that it removes the nasty freeform parsing that is needed
+to work out the filenames.
 
-  (remote) # perf probe -L vfs_read
-  Failed to find the path for the kernel: No such file or directory
-    Error: Failed to show lines.
+> 
+> > > ---
+> > >  Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360 | 83 ++++++++++++++++++++++
+> > >  1 file changed, 83 insertions(+)
+> > >  create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360
+> > >
+> > > diff --git a/Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360 b/Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360
+> > > new file mode 100644
+> > > index 0000000..4b1c270
+> > > --- /dev/null
+> > > +++ b/Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360
+> > > @@ -0,0 +1,83 @@
+> > > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_USBID_input  
+> >
+> >
+> > The mixture of case is a bit ugly.  Could we do
+> > in_voltage_usbin_input?
+> >  
+> 
+> ACK
+> 
+> > > +KernelVersion:       5.8.0
+> > > +Contact:     gene_chen@richtek.com
+> > > +Description:
+> > > +             Indicated MT6360 USBID ADC which connected to connector ID pin.
+> > > +             Reading returns voltage in uV
+> > > +
+> > > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_VBUSDIV5_input  
+> >  
+> > > +KernelVersion:       5.8.0
+> > > +Contact:     gene_chen@richtek.com
+> > > +Description:
+> > > +             Indicated MT6360 VBUS ADC with high accuracy
+> > > +             Reading returns voltage in uV  
+> >
+> > Why would we ever read the low accuracy version?
+> >  
+> > > +
+> > > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_VBUSDIV2_input
+> > > +KernelVersion:       5.8.0
+> > > +Contact:     gene_chen@richtek.com
+> > > +Description:
+> > > +             Indicated MT6360 VBUS ADC with low accuracy
+> > > +             Reading returns voltage in uV
+> > > +
+> > > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_VSYS_input
+> > > +KernelVersion:       5.8.0
+> > > +Contact:     gene_chen@richtek.com
+> > > +Description:
+> > > +             Indicated MT6360 VSYS ADC
+> > > +             Reading returns voltage in uV
+> > > +
+> > > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_VBAT_input
+> > > +KernelVersion:       5.8.0
+> > > +Contact:     gene_chen@richtek.com
+> > > +Description:
+> > > +             Indicated MT6360 VBAT ADC
+> > > +             Reading returns voltage in uV
+> > > +
+> > > +What:                /sys/bus/iio/devices/iio:deviceX/in_current_IBUS_input
+> > > +KernelVersion:       5.8.0
+> > > +Contact:     gene_chen@richtek.com
+> > > +Description:
+> > > +             Indicated MT6360 IBUS ADC
+> > > +             Reading returns current in uA  
+> > Given voltage and current are already clear from the channel type,
+> > could we avoid the repetition?
+> >
+> > in_current_bus_input perhaps?
+> >  
+> 
+> ACK
+> 
+> > > +
+> > > +What:                /sys/bus/iio/devices/iio:deviceX/in_current_IBAT_input
+> > > +KernelVersion:       5.8.0
+> > > +Contact:     gene_chen@richtek.com
+> > > +Description:
+> > > +             Indicated MT6360 IBAT ADC
+> > > +             Reading returns current in uA
+> > > +
+> > > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_CHG_VDDP_input
+> > > +KernelVersion:       5.8.0
+> > > +Contact:     gene_chen@richtek.com
+> > > +Description:
+> > > +             Indicated MT6360 CHG_VDDP ADC
+> > > +             Reading returns voltage in uV
+> > > +
+> > > +What:                /sys/bus/iio/devices/iio:deviceX/in_temp_TEMP_JC_input
+> > > +KernelVersion:       5.8.0
+> > > +Contact:     gene_chen@richtek.com
+> > > +Description:
+> > > +             Indicated MT6360 IC junction temperature
+> > > +             Reading returns temperature in degree
+> > > +
+> > > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_VREF_TS_input
+> > > +KernelVersion:       5.8.0
+> > > +Contact:     gene_chen@richtek.com
+> > > +Description:
+> > > +             Indicated MT6360 VREF_TS ADC
+> > > +             Reading returns voltage in uV
+> > > +
+> > > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_TS_input
+> > > +KernelVersion:       5.8.0
+> > > +Contact:     gene_chen@richtek.com
+> > > +Description:
+> > > +             Indicated MT6360 TS ADC
+> > > +             Reading returns voltage in uV
+> > > +
+> > > +What:                /sys/bus/iio/devices/iio:deviceX/timestamp
+> > > +KernelVersion:       5.8.0
+> > > +Contact:     gene_chen@richtek.com
+> > > +Description:
+> > > +             Indicated MT6360 timestamp
+> > > +             Reading returns current timestamp in ms  
+> >
+> > That's an odd bit of ABI.  Why would we want to read the current timestamp from
+> > sysfs?  Timestamps in IIO also tend to be in nano seconds.
+> >
+> >
+> >
+> >  
+> 
+> ACK, I will remove this.
 
-  (remote) # export DEBUGINFOD_URLS="http://$HOST_IP:8002/"
-  (remote) # perf probe -L vfs_read
-  <vfs_read@...>
-        0  ssize_t vfs_read(struct file *file, char __user *buf, size_t count, loff_t *pos)
-           {
-        2         ssize_t ret;
-
-                  if (!(file->f_mode & FMODE_READ))
-                          return -EBADF;
-        6         if (!(file->f_mode & FMODE_CAN_READ))
-                          return -EINVAL;
-        8         if (unlikely(!access_ok(buf, count)))
-                          return -EFAULT;
-
-       11         ret = rw_verify_area(READ, file, pos, count);
-       12         if (ret)
-                          return ret;
-                  if (count > MAX_RW_COUNT)
-  ...
-
-  (remote) # perf probe -a "vfs_read count"
-  Added new event:
-    probe:vfs_read       (on vfs_read with count)
-
-  (remote) # perf probe -l
-    probe:vfs_read       (on vfs_read@ksrc/linux/fs/read_write.c with count)
-
-
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- Changes in v2:
-  - Fix build error when libdebuginfod is not detected.
----
- tools/perf/util/probe-event.c  |   58 +++++++++++++++++++++++++++++++++++++-
- tools/perf/util/probe-finder.c |   61 +++++++++++++++++++++++++++++++++++++---
- tools/perf/util/probe-finder.h |    7 +++--
- 3 files changed, 118 insertions(+), 8 deletions(-)
-
-diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
-index 17831f186ab5..3a1b58a92673 100644
---- a/tools/perf/util/probe-event.c
-+++ b/tools/perf/util/probe-event.c
-@@ -43,6 +43,10 @@
- #include <linux/ctype.h>
- #include <linux/zalloc.h>
- 
-+#ifdef HAVE_DEBUGINFOD_SUPPORT
-+#include <elfutils/debuginfod.h>
-+#endif
-+
- #define PERFPROBE_GROUP "probe"
- 
- bool probe_event_dry_run;	/* Dry run flag */
-@@ -338,6 +342,8 @@ static int kernel_get_module_dso(const char *module, struct dso **pdso)
- 
- 	map = machine__kernel_map(host_machine);
- 	dso = map->dso;
-+	if (!dso->has_build_id)
-+		dso__read_running_kernel_build_id(dso, host_machine);
- 
- 	vmlinux_name = symbol_conf.vmlinux_name;
- 	dso->load_errno = 0;
-@@ -453,6 +459,49 @@ static int get_alternative_line_range(struct debuginfo *dinfo,
- 	return ret;
- }
- 
-+#ifdef HAVE_DEBUGINFOD_SUPPORT
-+static struct debuginfo *open_from_debuginfod(struct dso *dso, struct nsinfo *nsi,
-+					      bool silent)
-+{
-+	debuginfod_client *c = debuginfod_begin();
-+	char sbuild_id[SBUILD_ID_SIZE + 1];
-+	struct debuginfo *ret = NULL;
-+	struct nscookie nsc;
-+	char *path;
-+	int fd;
-+
-+	if (!c)
-+		return NULL;
-+
-+	build_id__sprintf(dso->build_id, BUILD_ID_SIZE, sbuild_id);
-+	fd = debuginfod_find_debuginfo(c, (const unsigned char *)sbuild_id,
-+					0, &path);
-+	if (fd >= 0)
-+		close(fd);
-+	debuginfod_end(c);
-+	if (fd < 0) {
-+		if (!silent)
-+			pr_debug("Failed to find debuginfo in debuginfod.\n");
-+		return NULL;
-+	}
-+	if (!silent)
-+		pr_debug("Load debuginfo from debuginfod (%s)\n", path);
-+
-+	nsinfo__mountns_enter(nsi, &nsc);
-+	ret = debuginfo__new((const char *)path);
-+	nsinfo__mountns_exit(&nsc);
-+	return ret;
-+}
-+#else
-+static inline
-+struct debuginfo *open_from_debuginfod(struct dso *dso __maybe_unused,
-+				       struct nsinfo *nsi __maybe_unused,
-+				       bool silent __maybe_unused)
-+{
-+	return NULL;
-+}
-+#endif
-+
- /* Open new debuginfo of given module */
- static struct debuginfo *open_debuginfo(const char *module, struct nsinfo *nsi,
- 					bool silent)
-@@ -472,6 +521,10 @@ static struct debuginfo *open_debuginfo(const char *module, struct nsinfo *nsi,
- 					strcpy(reason, "(unknown)");
- 			} else
- 				dso__strerror_load(dso, reason, STRERR_BUFSIZE);
-+			if (dso)
-+				ret = open_from_debuginfod(dso, nsi, silent);
-+			if (ret)
-+				return ret;
- 			if (!silent) {
- 				if (module)
- 					pr_err("Module %s is not loaded, please specify its full path name.\n", module);
-@@ -959,6 +1012,7 @@ static int __show_line_range(struct line_range *lr, const char *module,
- 	int ret;
- 	char *tmp;
- 	char sbuf[STRERR_BUFSIZE];
-+	char sbuild_id[SBUILD_ID_SIZE] = "";
- 
- 	/* Search a line range */
- 	dinfo = open_debuginfo(module, NULL, false);
-@@ -971,6 +1025,8 @@ static int __show_line_range(struct line_range *lr, const char *module,
- 		if (!ret)
- 			ret = debuginfo__find_line_range(dinfo, lr);
- 	}
-+	if (dinfo->build_id)
-+		build_id__sprintf(dinfo->build_id, BUILD_ID_SIZE, sbuild_id);
- 	debuginfo__delete(dinfo);
- 	if (ret == 0 || ret == -ENOENT) {
- 		pr_warning("Specified source line is not found.\n");
-@@ -982,7 +1038,7 @@ static int __show_line_range(struct line_range *lr, const char *module,
- 
- 	/* Convert source file path */
- 	tmp = lr->path;
--	ret = get_real_path(tmp, lr->comp_dir, &lr->path);
-+	ret = find_source_path(tmp, sbuild_id, lr->comp_dir, &lr->path);
- 
- 	/* Free old path when new path is assigned */
- 	if (tmp != lr->path)
-diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
-index 659024342e9a..6eddf7be8293 100644
---- a/tools/perf/util/probe-finder.c
-+++ b/tools/perf/util/probe-finder.c
-@@ -31,6 +31,10 @@
- #include "probe-file.h"
- #include "string2.h"
- 
-+#ifdef HAVE_DEBUGINFOD_SUPPORT
-+#include <elfutils/debuginfod.h>
-+#endif
-+
- /* Kprobe tracer basic type is up to u64 */
- #define MAX_BASIC_TYPE_BITS	64
- 
-@@ -51,6 +55,7 @@ static const Dwfl_Callbacks offline_callbacks = {
- static int debuginfo__init_offline_dwarf(struct debuginfo *dbg,
- 					 const char *path)
- {
-+	GElf_Addr dummy;
- 	int fd;
- 
- 	fd = open(path, O_RDONLY);
-@@ -70,6 +75,8 @@ static int debuginfo__init_offline_dwarf(struct debuginfo *dbg,
- 	if (!dbg->dbg)
- 		goto error;
- 
-+	dwfl_module_build_id(dbg->mod, &dbg->build_id, &dummy);
-+
- 	dwfl_report_end(dbg->dwfl, NULL, NULL);
- 
- 	return 0;
-@@ -942,6 +949,7 @@ static int probe_point_lazy_walker(const char *fname, int lineno,
- /* Find probe points from lazy pattern  */
- static int find_probe_point_lazy(Dwarf_Die *sp_die, struct probe_finder *pf)
- {
-+	char sbuild_id[SBUILD_ID_SIZE] = "";
- 	int ret = 0;
- 	char *fpath;
- 
-@@ -949,7 +957,10 @@ static int find_probe_point_lazy(Dwarf_Die *sp_die, struct probe_finder *pf)
- 		const char *comp_dir;
- 
- 		comp_dir = cu_get_comp_dir(&pf->cu_die);
--		ret = get_real_path(pf->fname, comp_dir, &fpath);
-+		if (pf->dbg->build_id)
-+			build_id__sprintf(pf->dbg->build_id,
-+					BUILD_ID_SIZE, sbuild_id);
-+		ret = find_source_path(pf->fname, sbuild_id, comp_dir, &fpath);
- 		if (ret < 0) {
- 			pr_warning("Failed to find source file path.\n");
- 			return ret;
-@@ -1448,7 +1459,7 @@ int debuginfo__find_trace_events(struct debuginfo *dbg,
- 				 struct probe_trace_event **tevs)
- {
- 	struct trace_event_finder tf = {
--			.pf = {.pev = pev, .callback = add_probe_trace_event},
-+			.pf = {.pev = pev, .dbg = dbg, .callback = add_probe_trace_event},
- 			.max_tevs = probe_conf.max_probes, .mod = dbg->mod};
- 	int ret, i;
- 
-@@ -1618,7 +1629,7 @@ int debuginfo__find_available_vars_at(struct debuginfo *dbg,
- 				      struct variable_list **vls)
- {
- 	struct available_var_finder af = {
--			.pf = {.pev = pev, .callback = add_available_vars},
-+			.pf = {.pev = pev, .dbg = dbg, .callback = add_available_vars},
- 			.mod = dbg->mod,
- 			.max_vls = probe_conf.max_probes};
- 	int ret;
-@@ -1973,17 +1984,57 @@ int debuginfo__find_line_range(struct debuginfo *dbg, struct line_range *lr)
- 	return (ret < 0) ? ret : lf.found;
- }
- 
-+#ifdef HAVE_DEBUGINFOD_SUPPORT
-+/* debuginfod doesn't require the comp_dir but buildid is required */
-+static int get_source_from_debuginfod(const char *raw_path,
-+				const char *sbuild_id, char **new_path)
-+{
-+	debuginfod_client *c = debuginfod_begin();
-+	const char *p = raw_path;
-+	int fd;
-+
-+	if (!c)
-+		return -ENOMEM;
-+
-+	fd = debuginfod_find_source(c, (const unsigned char *)sbuild_id,
-+				0, p, new_path);
-+	pr_debug("Search %s from debuginfod -> %d\n", p, fd);
-+	if (fd >= 0)
-+		close(fd);
-+	debuginfod_end(c);
-+	if (fd < 0) {
-+		pr_debug("Failed to find %s in debuginfod (%s)\n",
-+			raw_path, sbuild_id);
-+		return -ENOENT;
-+	}
-+	pr_debug("Got a source %s\n", *new_path);
-+
-+	return 0;
-+}
-+#else
-+static inline int get_source_from_debuginfod(const char *raw_path __maybe_unused,
-+				const char *sbuild_id __maybe_unused,
-+				char **new_path __maybe_unused)
-+{
-+	return -ENOTSUP;
-+}
-+#endif
- /*
-  * Find a src file from a DWARF tag path. Prepend optional source path prefix
-  * and chop off leading directories that do not exist. Result is passed back as
-  * a newly allocated path on success.
-  * Return 0 if file was found and readable, -errno otherwise.
-  */
--int get_real_path(const char *raw_path, const char *comp_dir,
--			 char **new_path)
-+int find_source_path(const char *raw_path, const char *sbuild_id,
-+		const char *comp_dir, char **new_path)
- {
- 	const char *prefix = symbol_conf.source_prefix;
- 
-+	if (sbuild_id && !prefix) {
-+		if (!get_source_from_debuginfod(raw_path, sbuild_id, new_path))
-+			return 0;
-+	}
-+
- 	if (!prefix) {
- 		if (raw_path[0] != '/' && comp_dir)
- 			/* If not an absolute path, try to use comp_dir */
-diff --git a/tools/perf/util/probe-finder.h b/tools/perf/util/probe-finder.h
-index 11be10080613..2febb5875678 100644
---- a/tools/perf/util/probe-finder.h
-+++ b/tools/perf/util/probe-finder.h
-@@ -4,6 +4,7 @@
- 
- #include <stdbool.h>
- #include "intlist.h"
-+#include "build-id.h"
- #include "probe-event.h"
- #include <linux/ctype.h>
- 
-@@ -32,6 +33,7 @@ struct debuginfo {
- 	Dwfl_Module	*mod;
- 	Dwfl		*dwfl;
- 	Dwarf_Addr	bias;
-+	const unsigned char	*build_id;
- };
- 
- /* This also tries to open distro debuginfo */
-@@ -59,11 +61,12 @@ int debuginfo__find_available_vars_at(struct debuginfo *dbg,
- 				      struct variable_list **vls);
- 
- /* Find a src file from a DWARF tag path */
--int get_real_path(const char *raw_path, const char *comp_dir,
--			 char **new_path);
-+int find_source_path(const char *raw_path, const char *sbuild_id,
-+		     const char *comp_dir, char **new_path);
- 
- struct probe_finder {
- 	struct perf_probe_event	*pev;		/* Target probe event */
-+	struct debuginfo	*dbg;
- 
- 	/* Callback when a probe point is found */
- 	int (*callback)(Dwarf_Die *sc_die, struct probe_finder *pf);
 
