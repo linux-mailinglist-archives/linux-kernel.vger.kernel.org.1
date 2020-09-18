@@ -2,89 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D29270710
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7834627072C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726413AbgIRU3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 16:29:36 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:58558 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726205AbgIRU3g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 16:29:36 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08IKOThe008412;
-        Fri, 18 Sep 2020 20:29:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=AGh6GdQ6iGI/ijxVQf3T3UWbsmAoNJYygTOKY8yEQyQ=;
- b=JbCQPhyquJ8ObBCnDfXYqHW6RN5AX5PaioMBpiaVujCkm61wiMhH4n5+QPVe7aTc9iO/
- Zj4DvITCe5IQQTl/WpfhT44J7asZzMhluYK3jXtoA3EuqfH2GGTtr5LVVvkxX+etY1iP
- 0pq8KiOYHTGuXwQmkJ221dINaOEW3yxUdrxsYNpzkCNWDJFI6gMfelzdo4CEPUu0F8Cu
- h+pUhqJdS4xZyWNK11Qyu8jdYJYgjStBZ1P2ZBFuWiNnQQOtxu+eXvwWExWi66t+FNYr
- +x2CVwbwv8sPkxR+maEUlHvsI9TkgAB8AhPrBauE4/MdnvH6CTk/6SLHKdoj0EZxwCAL MA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 33j91e2xg1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 18 Sep 2020 20:29:22 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08IKPdqd175708;
-        Fri, 18 Sep 2020 20:29:21 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 33h88ff85v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Sep 2020 20:29:21 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08IKTJvO010547;
-        Fri, 18 Sep 2020 20:29:19 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 18 Sep 2020 20:29:19 +0000
-Subject: Re: [PATCH V3 6/8] mm: and drivers core: Convert
- hugetlb_report_node_meminfo to sysfs_emit
-To:     Joe Perches <joe@perches.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J.Wysocki" <rafael@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Denis Efremov <efremov@linux.com>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <cover.1600285923.git.joe@perches.com>
- <894b351b82da6013cde7f36ff4b5493cd0ec30d0.1600285923.git.joe@perches.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <ecf4c968-1da3-43a8-23f1-09f8b38cad9e@oracle.com>
-Date:   Fri, 18 Sep 2020 13:29:17 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726309AbgIRUiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 16:38:10 -0400
+Received: from mga09.intel.com ([134.134.136.24]:19952 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726139AbgIRUiJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 16:38:09 -0400
+IronPort-SDR: bQKaNJq//ygkvNt6cc//fLvC6H/BH61kCYKXxLELUc9JJKttaayx83P9W7FpqMRC1BWfT/eNKR
+ FtWUu7IS1Srw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9748"; a="160946666"
+X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
+   d="scan'208";a="160946666"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 13:38:02 -0700
+IronPort-SDR: ilZWPNojwb/+KA4/TyF/2Pu2WPihpr6m9llbqbpJFUsYLzrv17yUSP61lRZgnkUtruszTzSBrs
+ Zq0No1cq1VVg==
+X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
+   d="scan'208";a="381022391"
+Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.16])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 13:38:02 -0700
+Subject: [PATCH v3] dm: Call proper helper to determine dax support
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     linux-nvdimm@lists.01.org
+Cc:     stable@vger.kernel.org, Adrian Huang <ahuang12@lenovo.com>,
+        Jan Kara <jack@suse.cz>, Mike Snitzer <snitzer@redhat.com>,
+        kernel test robot <lkp@intel.com>, dm-devel@redhat.com,
+        linux-kernel@vger.kernel.org, ira.weiny@intel.com,
+        mpatocka@redhat.com, snitzer@redhat.com
+Date:   Fri, 18 Sep 2020 13:19:42 -0700
+Message-ID: <160046028990.22670.15271558589864899328.stgit@dwillia2-desk3.amr.corp.intel.com>
+User-Agent: StGit/0.18-3-g996c
 MIME-Version: 1.0
-In-Reply-To: <894b351b82da6013cde7f36ff4b5493cd0ec30d0.1600285923.git.joe@perches.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9748 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 adultscore=0
- suspectscore=0 phishscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009180165
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9748 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
- priorityscore=1501 malwarescore=0 suspectscore=0 mlxlogscore=999
- clxscore=1011 adultscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009180165
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/16/20 1:40 PM, Joe Perches wrote:
-> Convert the unbound sprintf in hugetlb_report_node_meminfo to use
-> sysfs_emit_at so that no possible overrun of a PAGE_SIZE buf can occur.
-> 
-> Signed-off-by: Joe Perches <joe@perches.com>
+From: Jan Kara <jack@suse.cz>
 
-Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
+DM was calling generic_fsdax_supported() to determine whether a device
+referenced in the DM table supports DAX. However this is a helper for "leaf" device drivers so that
+they don't have to duplicate common generic checks. High level code
+should call dax_supported() helper which that calls into appropriate
+helper for the particular device. This problem manifested itself as
+kernel messages:
 
--- 
-Mike Kravetz
+dm-3: error: dax access failed (-95)
+
+when lvm2-testsuite run in cases where a DM device was stacked on top of
+another DM device.
+
+Fixes: 7bf7eac8d648 ("dax: Arrange for dax_supported check to span multiple devices")
+Cc: <stable@vger.kernel.org>
+Tested-by: Adrian Huang <ahuang12@lenovo.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Acked-by: Mike Snitzer <snitzer@redhat.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+---
+Changes since v2 [1]:
+- Add dummy definitions for dax_read_{lock,unlock} in the CONFIG_DAX=n
+  case (0day robot)
+
+[1]: http://lore.kernel.org/r/160040692945.25320.13233625491405115889.stgit@dwillia2-desk3.amr.corp.intel.com
+
+ drivers/dax/super.c   |    4 ++++
+ drivers/md/dm-table.c |   10 +++++++---
+ include/linux/dax.h   |   22 ++++++++++++++++++++--
+ 3 files changed, 31 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/dax/super.c b/drivers/dax/super.c
+index e5767c83ea23..b6284c5cae0a 100644
+--- a/drivers/dax/super.c
++++ b/drivers/dax/super.c
+@@ -325,11 +325,15 @@ EXPORT_SYMBOL_GPL(dax_direct_access);
+ bool dax_supported(struct dax_device *dax_dev, struct block_device *bdev,
+ 		int blocksize, sector_t start, sector_t len)
+ {
++	if (!dax_dev)
++		return false;
++
+ 	if (!dax_alive(dax_dev))
+ 		return false;
+ 
+ 	return dax_dev->ops->dax_supported(dax_dev, bdev, blocksize, start, len);
+ }
++EXPORT_SYMBOL_GPL(dax_supported);
+ 
+ size_t dax_copy_from_iter(struct dax_device *dax_dev, pgoff_t pgoff, void *addr,
+ 		size_t bytes, struct iov_iter *i)
+diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
+index 5edc3079e7c1..229f461e7def 100644
+--- a/drivers/md/dm-table.c
++++ b/drivers/md/dm-table.c
+@@ -860,10 +860,14 @@ EXPORT_SYMBOL_GPL(dm_table_set_type);
+ int device_supports_dax(struct dm_target *ti, struct dm_dev *dev,
+ 			sector_t start, sector_t len, void *data)
+ {
+-	int blocksize = *(int *) data;
++	int blocksize = *(int *) data, id;
++	bool rc;
+ 
+-	return generic_fsdax_supported(dev->dax_dev, dev->bdev, blocksize,
+-				       start, len);
++	id = dax_read_lock();
++	rc = dax_supported(dev->dax_dev, dev->bdev, blocksize, start, len);
++	dax_read_unlock(id);
++
++	return rc;
+ }
+ 
+ /* Check devices support synchronous DAX */
+diff --git a/include/linux/dax.h b/include/linux/dax.h
+index 6904d4e0b2e0..d0af16b23122 100644
+--- a/include/linux/dax.h
++++ b/include/linux/dax.h
+@@ -130,6 +130,8 @@ static inline bool generic_fsdax_supported(struct dax_device *dax_dev,
+ 	return __generic_fsdax_supported(dax_dev, bdev, blocksize, start,
+ 			sectors);
+ }
++bool dax_supported(struct dax_device *dax_dev, struct block_device *bdev,
++		int blocksize, sector_t start, sector_t len);
+ 
+ static inline void fs_put_dax(struct dax_device *dax_dev)
+ {
+@@ -157,6 +159,13 @@ static inline bool generic_fsdax_supported(struct dax_device *dax_dev,
+ 	return false;
+ }
+ 
++static inline bool dax_supported(struct dax_device *dax_dev,
++		struct block_device *bdev, int blocksize, sector_t start,
++		sector_t len)
++{
++	return false;
++}
++
+ static inline void fs_put_dax(struct dax_device *dax_dev)
+ {
+ }
+@@ -189,14 +198,23 @@ static inline void dax_unlock_page(struct page *page, dax_entry_t cookie)
+ }
+ #endif
+ 
++#ifdef CONFIG_DAX
+ int dax_read_lock(void);
+ void dax_read_unlock(int id);
++#else
++static inline int dax_read_lock(void)
++{
++	return 0;
++}
++
++static inline void dax_read_unlock(int id)
++{
++}
++#endif /* CONFIG_DAX */
+ bool dax_alive(struct dax_device *dax_dev);
+ void *dax_get_private(struct dax_device *dax_dev);
+ long dax_direct_access(struct dax_device *dax_dev, pgoff_t pgoff, long nr_pages,
+ 		void **kaddr, pfn_t *pfn);
+-bool dax_supported(struct dax_device *dax_dev, struct block_device *bdev,
+-		int blocksize, sector_t start, sector_t len);
+ size_t dax_copy_from_iter(struct dax_device *dax_dev, pgoff_t pgoff, void *addr,
+ 		size_t bytes, struct iov_iter *i);
+ size_t dax_copy_to_iter(struct dax_device *dax_dev, pgoff_t pgoff, void *addr,
+
