@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49CB926EB21
+	by mail.lfdr.de (Postfix) with ESMTP id B72D826EB22
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726196AbgIRCDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:03:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49376 "EHLO mail.kernel.org"
+        id S1727070AbgIRCD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:03:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727021AbgIRCDS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:03:18 -0400
+        id S1727044AbgIRCDV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:03:21 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 25AC723119;
-        Fri, 18 Sep 2020 02:03:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5ACEF22211;
+        Fri, 18 Sep 2020 02:03:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394597;
-        bh=siNmCF0S5qqvQt+t7KK/xo8ewwCEw45lmuUYbpGz3rw=;
+        s=default; t=1600394601;
+        bh=C/vWB/HWvbBoRq5OnbqfMnbsQfBPae8evloq2/dctHY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=scNIqh2LE63mdGPFGadbtwkVH+JdfiP5t9bgl2bt9uTWe/yGCmU5+aQWJfJ3xFZFk
-         CvgraBOm3xoVxhGYdKl6dPoXS5A4mc9eJPeL5ISrkKCbR7saBSdNwXuC66Med8w+TM
-         Ju0lZwWghNf1YN+OP1z11WORFzJwSM+sFtaHbejk=
+        b=tJlDyPsY9EwGWOqvSKU0xkrEEcp1kNJqQxJWG3McESt4FwV8QG+NGNeZ+Fvhbvf74
+         mcaQ0eCibnkT4kmCG+cpIT975yrHF8ZrmAqoro14o3yv40in6/72eVcLvcLqFzUTH3
+         gbs9pEudcUTpXNw8Ie2BNut8PQ5UqZdFpA8ljPOI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
-        linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 105/330] ext4: make dioread_nolock the default
-Date:   Thu, 17 Sep 2020 21:57:25 -0400
-Message-Id: <20200918020110.2063155-105-sashal@kernel.org>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Sasha Levin <sashal@kernel.org>, ceph-devel@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 108/330] ceph: ensure we have a new cap before continuing in fill_inode
+Date:   Thu, 17 Sep 2020 21:57:28 -0400
+Message-Id: <20200918020110.2063155-108-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -41,52 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Theodore Ts'o <tytso@mit.edu>
+From: Jeff Layton <jlayton@kernel.org>
 
-[ Upstream commit 244adf6426ee31a83f397b700d964cff12a247d3 ]
+[ Upstream commit 9a6bed4fe0c8bf57785cbc4db9f86086cb9b193d ]
 
-This fixes the direct I/O versus writeback race which can reveal stale
-data, and it improves the tail latency of commits on slow devices.
+If the caller passes in a NULL cap_reservation, and we can't allocate
+one then ensure that we fail gracefully.
 
-Link: https://lore.kernel.org/r/20200125022254.1101588-1-tytso@mit.edu
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/super.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ fs/ceph/inode.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 4aae7e3e89a12..c32b8161ad3e9 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1546,6 +1546,7 @@ static const match_table_t tokens = {
- 	{Opt_auto_da_alloc, "auto_da_alloc"},
- 	{Opt_noauto_da_alloc, "noauto_da_alloc"},
- 	{Opt_dioread_nolock, "dioread_nolock"},
-+	{Opt_dioread_lock, "nodioread_nolock"},
- 	{Opt_dioread_lock, "dioread_lock"},
- 	{Opt_discard, "discard"},
- 	{Opt_nodiscard, "nodiscard"},
-@@ -3750,6 +3751,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 		set_opt(sb, NO_UID32);
- 	/* xattr user namespace & acls are now defaulted on */
- 	set_opt(sb, XATTR_USER);
-+	set_opt(sb, DIOREAD_NOLOCK);
- #ifdef CONFIG_EXT4_FS_POSIX_ACL
- 	set_opt(sb, POSIX_ACL);
- #endif
-@@ -3927,9 +3929,8 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- #endif
+diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
+index c07407586ce87..660a878e20ef2 100644
+--- a/fs/ceph/inode.c
++++ b/fs/ceph/inode.c
+@@ -754,8 +754,11 @@ static int fill_inode(struct inode *inode, struct page *locked_page,
+ 	info_caps = le32_to_cpu(info->cap.caps);
  
- 	if (test_opt(sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA) {
--		printk_once(KERN_WARNING "EXT4-fs: Warning: mounting "
--			    "with data=journal disables delayed "
--			    "allocation and O_DIRECT support!\n");
-+		printk_once(KERN_WARNING "EXT4-fs: Warning: mounting with data=journal disables delayed allocation, dioread_nolock, and O_DIRECT support!\n");
-+		clear_opt(sb, DIOREAD_NOLOCK);
- 		if (test_opt2(sb, EXPLICIT_DELALLOC)) {
- 			ext4_msg(sb, KERN_ERR, "can't mount with "
- 				 "both data=journal and delalloc");
+ 	/* prealloc new cap struct */
+-	if (info_caps && ceph_snap(inode) == CEPH_NOSNAP)
++	if (info_caps && ceph_snap(inode) == CEPH_NOSNAP) {
+ 		new_cap = ceph_get_cap(mdsc, caps_reservation);
++		if (!new_cap)
++			return -ENOMEM;
++	}
+ 
+ 	/*
+ 	 * prealloc xattr data, if it looks like we'll need it.  only
 -- 
 2.25.1
 
