@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CBF126EB02
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3DCD26EB0B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:03:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726785AbgIRCCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:02:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47708 "EHLO mail.kernel.org"
+        id S1726850AbgIRCCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:02:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726753AbgIRCCa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:02:30 -0400
+        id S1726786AbgIRCCe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:02:34 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D789823731;
-        Fri, 18 Sep 2020 02:02:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 580AD208DB;
+        Fri, 18 Sep 2020 02:02:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394548;
-        bh=L/RPD5vnKSQDqRYPSE4OdlONRIwszqPQ8jg7XI6cdII=;
+        s=default; t=1600394553;
+        bh=xwGeazSpi1ZDfxGvFOWivR66MmVOUgjZdfhRepIv7cw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CyoXwP1jSOVifoGU6ru/+ba8p8k5SRpxPz3yJSenh220EhaYr4aZlC7TVR0XWTmFC
-         kItfh6IwSYaatLlINHVe2H1GYSiccf98wmzKLvZjlxRyyrK29G6DF/P/gijtQvPxPn
-         Cs67RLG4Ztbj2ni1stlBIlm10eeuyI7KmCm5MOp4=
+        b=sWY/CqGH0914EBPr/pvJeM1f71kW8A8pE2BeMWQAhdDb+FajyloanAQs1S+22g0wE
+         Mq6X0EqaI0cgoH4tdCxYzhK4g+SaV857pOPJ4Ol5/8cYaHhHl655Jhs52iXBY88dHd
+         +hsND3in9VY4Lfx+eC35qfG2gM0PcwjFzjj6iCRs=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tzung-Bi Shih <tzungbi@google.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.4 065/330] ASoC: max98090: remove msleep in PLL unlocked workaround
-Date:   Thu, 17 Sep 2020 21:56:45 -0400
-Message-Id: <20200918020110.2063155-65-sashal@kernel.org>
+Cc:     Monk Liu <Monk.Liu@amd.com>, Hawking Zhang <Hawking.Zhang@amd.com>,
+        Xiaojie Yuan <xiaojie.yuan@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.4 069/330] drm/amdgpu: fix calltrace during kmd unload(v3)
+Date:   Thu, 17 Sep 2020 21:56:49 -0400
+Message-Id: <20200918020110.2063155-69-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -43,54 +44,327 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tzung-Bi Shih <tzungbi@google.com>
+From: Monk Liu <Monk.Liu@amd.com>
 
-[ Upstream commit acb874a7c049ec49d8fc66c893170fb42c01bdf7 ]
+[ Upstream commit 82a829dc8c2bb03cc9b7e5beb1c5479aa3ba7831 ]
 
-It was observed Baytrail-based chromebooks could cause continuous PLL
-unlocked when using playback stream and capture stream simultaneously.
-Specifically, starting a capture stream after started a playback stream.
-As a result, the audio data could corrupt or turn completely silent.
+issue:
+kernel would report a warning from a double unpin
+during the driver unloading on the CSB bo
 
-As the datasheet suggested, the maximum PLL lock time should be 7 msec.
-The workaround resets the codec softly by toggling SHDN off and on if
-PLL failed to lock for 10 msec.  Notably, there is no suggested hold
-time for SHDN off.
+why:
+we unpin it during hw_fini, and there will be another
+unpin in sw_fini on CSB bo.
 
-On Baytrail-based chromebooks, it would easily happen continuous PLL
-unlocked if there is a 10 msec delay between SHDN off and on.  Removes
-the msleep().
+fix:
+actually we don't need to pin/unpin it during
+hw_init/fini since it is created with kernel pinned,
+we only need to fullfill the CSB again during hw_init
+to prevent CSB/VRAM lost after S3
 
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
-Link: https://lore.kernel.org/r/20191122073114.219945-2-tzungbi@google.com
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+v2:
+get_csb in init_rlc so hw_init() will make CSIB content
+back even after reset or s3
+
+v3:
+use bo_create_kernel instead of bo_create_reserved for CSB
+otherwise the bo_free_kernel() on CSB is not aligned and
+would lead to its internal reserve pending there forever
+
+take care of gfx7/8 as well
+
+Signed-off-by: Monk Liu <Monk.Liu@amd.com>
+Reviewed-by: Hawking Zhang <Hawking.Zhang@amd.com>
+Reviewed-by: Xiaojie Yuan <xiaojie.yuan@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/max98090.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_rlc.c | 10 +----
+ drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c  | 58 +------------------------
+ drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c   |  2 +
+ drivers/gpu/drm/amd/amdgpu/gfx_v8_0.c   | 40 +----------------
+ drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c   | 40 +----------------
+ 5 files changed, 6 insertions(+), 144 deletions(-)
 
-diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index 45da2b51543e7..6b9d326e11b07 100644
---- a/sound/soc/codecs/max98090.c
-+++ b/sound/soc/codecs/max98090.c
-@@ -2112,10 +2112,16 @@ static void max98090_pll_work(struct max98090_priv *max98090)
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_rlc.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_rlc.c
+index c8793e6cc3c5d..6373bfb47d55d 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_rlc.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_rlc.c
+@@ -124,13 +124,12 @@ int amdgpu_gfx_rlc_init_sr(struct amdgpu_device *adev, u32 dws)
+  */
+ int amdgpu_gfx_rlc_init_csb(struct amdgpu_device *adev)
+ {
+-	volatile u32 *dst_ptr;
+ 	u32 dws;
+ 	int r;
  
- 	dev_info_ratelimited(component->dev, "PLL unlocked\n");
+ 	/* allocate clear state block */
+ 	adev->gfx.rlc.clear_state_size = dws = adev->gfx.rlc.funcs->get_csb_size(adev);
+-	r = amdgpu_bo_create_reserved(adev, dws * 4, PAGE_SIZE,
++	r = amdgpu_bo_create_kernel(adev, dws * 4, PAGE_SIZE,
+ 				      AMDGPU_GEM_DOMAIN_VRAM,
+ 				      &adev->gfx.rlc.clear_state_obj,
+ 				      &adev->gfx.rlc.clear_state_gpu_addr,
+@@ -141,13 +140,6 @@ int amdgpu_gfx_rlc_init_csb(struct amdgpu_device *adev)
+ 		return r;
+ 	}
  
-+	/*
-+	 * As the datasheet suggested, the maximum PLL lock time should be
-+	 * 7 msec.  The workaround resets the codec softly by toggling SHDN
-+	 * off and on if PLL failed to lock for 10 msec.  Notably, there is
-+	 * no suggested hold time for SHDN off.
-+	 */
-+
- 	/* Toggle shutdown OFF then ON */
- 	snd_soc_component_update_bits(component, M98090_REG_DEVICE_SHUTDOWN,
- 			    M98090_SHDNN_MASK, 0);
--	msleep(10);
- 	snd_soc_component_update_bits(component, M98090_REG_DEVICE_SHUTDOWN,
- 			    M98090_SHDNN_MASK, M98090_SHDNN_MASK);
+-	/* set up the cs buffer */
+-	dst_ptr = adev->gfx.rlc.cs_ptr;
+-	adev->gfx.rlc.funcs->get_csb_buffer(adev, dst_ptr);
+-	amdgpu_bo_kunmap(adev->gfx.rlc.clear_state_obj);
+-	amdgpu_bo_unpin(adev->gfx.rlc.clear_state_obj);
+-	amdgpu_bo_unreserve(adev->gfx.rlc.clear_state_obj);
+-
+ 	return 0;
+ }
+ 
+diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
+index 19876c90be0e1..d17edc850427a 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
+@@ -993,39 +993,6 @@ static int gfx_v10_0_rlc_init(struct amdgpu_device *adev)
+ 	return 0;
+ }
+ 
+-static int gfx_v10_0_csb_vram_pin(struct amdgpu_device *adev)
+-{
+-	int r;
+-
+-	r = amdgpu_bo_reserve(adev->gfx.rlc.clear_state_obj, false);
+-	if (unlikely(r != 0))
+-		return r;
+-
+-	r = amdgpu_bo_pin(adev->gfx.rlc.clear_state_obj,
+-			AMDGPU_GEM_DOMAIN_VRAM);
+-	if (!r)
+-		adev->gfx.rlc.clear_state_gpu_addr =
+-			amdgpu_bo_gpu_offset(adev->gfx.rlc.clear_state_obj);
+-
+-	amdgpu_bo_unreserve(adev->gfx.rlc.clear_state_obj);
+-
+-	return r;
+-}
+-
+-static void gfx_v10_0_csb_vram_unpin(struct amdgpu_device *adev)
+-{
+-	int r;
+-
+-	if (!adev->gfx.rlc.clear_state_obj)
+-		return;
+-
+-	r = amdgpu_bo_reserve(adev->gfx.rlc.clear_state_obj, true);
+-	if (likely(r == 0)) {
+-		amdgpu_bo_unpin(adev->gfx.rlc.clear_state_obj);
+-		amdgpu_bo_unreserve(adev->gfx.rlc.clear_state_obj);
+-	}
+-}
+-
+ static void gfx_v10_0_mec_fini(struct amdgpu_device *adev)
+ {
+ 	amdgpu_bo_free_kernel(&adev->gfx.mec.hpd_eop_obj, NULL, NULL);
+@@ -1787,25 +1754,7 @@ static void gfx_v10_0_enable_gui_idle_interrupt(struct amdgpu_device *adev,
+ 
+ static int gfx_v10_0_init_csb(struct amdgpu_device *adev)
+ {
+-	int r;
+-
+-	if (adev->in_gpu_reset) {
+-		r = amdgpu_bo_reserve(adev->gfx.rlc.clear_state_obj, false);
+-		if (r)
+-			return r;
+-
+-		r = amdgpu_bo_kmap(adev->gfx.rlc.clear_state_obj,
+-				   (void **)&adev->gfx.rlc.cs_ptr);
+-		if (!r) {
+-			adev->gfx.rlc.funcs->get_csb_buffer(adev,
+-					adev->gfx.rlc.cs_ptr);
+-			amdgpu_bo_kunmap(adev->gfx.rlc.clear_state_obj);
+-		}
+-
+-		amdgpu_bo_unreserve(adev->gfx.rlc.clear_state_obj);
+-		if (r)
+-			return r;
+-	}
++	adev->gfx.rlc.funcs->get_csb_buffer(adev, adev->gfx.rlc.cs_ptr);
+ 
+ 	/* csib */
+ 	WREG32_SOC15(GC, 0, mmRLC_CSIB_ADDR_HI,
+@@ -3774,10 +3723,6 @@ static int gfx_v10_0_hw_init(void *handle)
+ 	int r;
+ 	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
+ 
+-	r = gfx_v10_0_csb_vram_pin(adev);
+-	if (r)
+-		return r;
+-
+ 	if (!amdgpu_emu_mode)
+ 		gfx_v10_0_init_golden_registers(adev);
+ 
+@@ -3865,7 +3810,6 @@ static int gfx_v10_0_hw_fini(void *handle)
+ 	}
+ 	gfx_v10_0_cp_enable(adev, false);
+ 	gfx_v10_0_enable_gui_idle_interrupt(adev, false);
+-	gfx_v10_0_csb_vram_unpin(adev);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c
+index 791ba398f007e..d92e92e5d50b7 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c
+@@ -4554,6 +4554,8 @@ static int gfx_v7_0_hw_init(void *handle)
+ 
+ 	gfx_v7_0_constants_init(adev);
+ 
++	/* init CSB */
++	adev->gfx.rlc.funcs->get_csb_buffer(adev, adev->gfx.rlc.cs_ptr);
+ 	/* init rlc */
+ 	r = adev->gfx.rlc.funcs->resume(adev);
+ 	if (r)
+diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v8_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v8_0.c
+index cc88ba76a8d4a..467ed7fca884d 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gfx_v8_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gfx_v8_0.c
+@@ -1321,39 +1321,6 @@ static int gfx_v8_0_rlc_init(struct amdgpu_device *adev)
+ 	return 0;
+ }
+ 
+-static int gfx_v8_0_csb_vram_pin(struct amdgpu_device *adev)
+-{
+-	int r;
+-
+-	r = amdgpu_bo_reserve(adev->gfx.rlc.clear_state_obj, false);
+-	if (unlikely(r != 0))
+-		return r;
+-
+-	r = amdgpu_bo_pin(adev->gfx.rlc.clear_state_obj,
+-			AMDGPU_GEM_DOMAIN_VRAM);
+-	if (!r)
+-		adev->gfx.rlc.clear_state_gpu_addr =
+-			amdgpu_bo_gpu_offset(adev->gfx.rlc.clear_state_obj);
+-
+-	amdgpu_bo_unreserve(adev->gfx.rlc.clear_state_obj);
+-
+-	return r;
+-}
+-
+-static void gfx_v8_0_csb_vram_unpin(struct amdgpu_device *adev)
+-{
+-	int r;
+-
+-	if (!adev->gfx.rlc.clear_state_obj)
+-		return;
+-
+-	r = amdgpu_bo_reserve(adev->gfx.rlc.clear_state_obj, true);
+-	if (likely(r == 0)) {
+-		amdgpu_bo_unpin(adev->gfx.rlc.clear_state_obj);
+-		amdgpu_bo_unreserve(adev->gfx.rlc.clear_state_obj);
+-	}
+-}
+-
+ static void gfx_v8_0_mec_fini(struct amdgpu_device *adev)
+ {
+ 	amdgpu_bo_free_kernel(&adev->gfx.mec.hpd_eop_obj, NULL, NULL);
+@@ -3917,6 +3884,7 @@ static void gfx_v8_0_enable_gui_idle_interrupt(struct amdgpu_device *adev,
+ 
+ static void gfx_v8_0_init_csb(struct amdgpu_device *adev)
+ {
++	adev->gfx.rlc.funcs->get_csb_buffer(adev, adev->gfx.rlc.cs_ptr);
+ 	/* csib */
+ 	WREG32(mmRLC_CSIB_ADDR_HI,
+ 			adev->gfx.rlc.clear_state_gpu_addr >> 32);
+@@ -4837,10 +4805,6 @@ static int gfx_v8_0_hw_init(void *handle)
+ 	gfx_v8_0_init_golden_registers(adev);
+ 	gfx_v8_0_constants_init(adev);
+ 
+-	r = gfx_v8_0_csb_vram_pin(adev);
+-	if (r)
+-		return r;
+-
+ 	r = adev->gfx.rlc.funcs->resume(adev);
+ 	if (r)
+ 		return r;
+@@ -4958,8 +4922,6 @@ static int gfx_v8_0_hw_fini(void *handle)
+ 		pr_err("rlc is busy, skip halt rlc\n");
+ 	amdgpu_gfx_rlc_exit_safe_mode(adev);
+ 
+-	gfx_v8_0_csb_vram_unpin(adev);
+-
+ 	return 0;
+ }
+ 
+diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
+index 6004fdacc8663..90dcc7afc9c43 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
+@@ -1675,39 +1675,6 @@ static int gfx_v9_0_rlc_init(struct amdgpu_device *adev)
+ 	return 0;
+ }
+ 
+-static int gfx_v9_0_csb_vram_pin(struct amdgpu_device *adev)
+-{
+-	int r;
+-
+-	r = amdgpu_bo_reserve(adev->gfx.rlc.clear_state_obj, false);
+-	if (unlikely(r != 0))
+-		return r;
+-
+-	r = amdgpu_bo_pin(adev->gfx.rlc.clear_state_obj,
+-			AMDGPU_GEM_DOMAIN_VRAM);
+-	if (!r)
+-		adev->gfx.rlc.clear_state_gpu_addr =
+-			amdgpu_bo_gpu_offset(adev->gfx.rlc.clear_state_obj);
+-
+-	amdgpu_bo_unreserve(adev->gfx.rlc.clear_state_obj);
+-
+-	return r;
+-}
+-
+-static void gfx_v9_0_csb_vram_unpin(struct amdgpu_device *adev)
+-{
+-	int r;
+-
+-	if (!adev->gfx.rlc.clear_state_obj)
+-		return;
+-
+-	r = amdgpu_bo_reserve(adev->gfx.rlc.clear_state_obj, true);
+-	if (likely(r == 0)) {
+-		amdgpu_bo_unpin(adev->gfx.rlc.clear_state_obj);
+-		amdgpu_bo_unreserve(adev->gfx.rlc.clear_state_obj);
+-	}
+-}
+-
+ static void gfx_v9_0_mec_fini(struct amdgpu_device *adev)
+ {
+ 	amdgpu_bo_free_kernel(&adev->gfx.mec.hpd_eop_obj, NULL, NULL);
+@@ -2596,6 +2563,7 @@ static void gfx_v9_0_enable_gui_idle_interrupt(struct amdgpu_device *adev,
+ 
+ static void gfx_v9_0_init_csb(struct amdgpu_device *adev)
+ {
++	adev->gfx.rlc.funcs->get_csb_buffer(adev, adev->gfx.rlc.cs_ptr);
+ 	/* csib */
+ 	WREG32_RLC(SOC15_REG_OFFSET(GC, 0, mmRLC_CSIB_ADDR_HI),
+ 			adev->gfx.rlc.clear_state_gpu_addr >> 32);
+@@ -3888,10 +3856,6 @@ static int gfx_v9_0_hw_init(void *handle)
+ 
+ 	gfx_v9_0_constants_init(adev);
+ 
+-	r = gfx_v9_0_csb_vram_pin(adev);
+-	if (r)
+-		return r;
+-
+ 	r = adev->gfx.rlc.funcs->resume(adev);
+ 	if (r)
+ 		return r;
+@@ -3977,8 +3941,6 @@ static int gfx_v9_0_hw_fini(void *handle)
+ 	gfx_v9_0_cp_enable(adev, false);
+ 	adev->gfx.rlc.funcs->stop(adev);
+ 
+-	gfx_v9_0_csb_vram_unpin(adev);
+-
+ 	return 0;
+ }
  
 -- 
 2.25.1
