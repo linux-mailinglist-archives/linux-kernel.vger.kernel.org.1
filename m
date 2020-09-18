@@ -2,85 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A38AC27069E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:16:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 200412706C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726826AbgIRUQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 16:16:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53064 "EHLO
+        id S1726869AbgIRURS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 16:17:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726798AbgIRUQf (ORCPT
+        with ESMTP id S1726420AbgIRURN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 16:16:35 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C91FDC0613D0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:16:34 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id jw11so3594873pjb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:16:34 -0700 (PDT)
+        Fri, 18 Sep 2020 16:17:13 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C37EC0613CE;
+        Fri, 18 Sep 2020 13:17:13 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id m15so3558034pls.8;
+        Fri, 18 Sep 2020 13:17:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QlEobsn16/HZPi69CSqOjUi/Ev9EOUolHVFIEzKh1d0=;
-        b=Cu+BpZsYq8xo9CmZFmG/NdGwNojdzVsgymJ7kwPPrUAXFQPK8a2QUlKtDn7250Ubsq
-         plsZB/YYcLbkYBS8Fq/z2z1q1m9j8gl7aq62B8HS5LW43k9v16edxNqYr+9NzmYfPrwn
-         cq3wH0uW3ZcHD+dQAGFM6XtXz5L8Whz3TAMDYANg0DmI7URKxbbhEg/Z+E3ypziJYKIE
-         Pl3V1a0gu2zK3U7nYqNgIrHK11iAYG9Ab3M+w85rCv4omr4G3nb9vgfmycboh9msEs/J
-         ZHKqAKtRD8ppiRYXdvvVXSOExckJPG6VuiDOsaqYC56jQptk8duFDsF5U/QXHIfEsi3b
-         RWlA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WZFf6ltXN0q6i6KfdkHs41/4zFJI2xjfS0NImoIhVB8=;
+        b=fk3vLF2VSSpAeTi8FDW6tR1CzQJ0c3ULllbkERTtXNmHGHs93EwRcrNWjL0PTYVrma
+         ZpSVBQy5ejTY50kUPt3TKByJ19uzC1YMDEynRRvnDRu4nYyGKYDA82x2UOHskkL9CqIE
+         eRPDRqL38gkpcp8Kh0pKBrjO2smmYy4mEDhupuy1Z5EtVshN3bimkesTLKhsUMuw8s6J
+         h4230k7Sy+FPLrtEeTe6vxZw/o7us4/UQ8m3V3/3GqqN6V3v2JqSJ+HjT2A8uqJM5ZK0
+         +TBkfedRMaAadi4wpV+YJJwxRfWHKbuyEWZgoBs+X9O7Ws4Xx1SRmLjmQf3RUMy62AGD
+         7D/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=QlEobsn16/HZPi69CSqOjUi/Ev9EOUolHVFIEzKh1d0=;
-        b=jFIA9wFhzF+X2piga5qYfV6X0LPEHCF58OeJ//rICQXZdrk4+2wIOvye9weV+PyUC2
-         xj/TgdMw9vEuHTZVANwHVrUDdjopgEP+e66uU4x9Xtr4nG67lHLWTbATWjatFbT0GYxE
-         DkNjgsfjXCZYWBh9vpls/I2xmbILxJdn/H/NUn7/4/vOUUR5j8iuhoe2IvCKun8eRqYI
-         TXHOdeVeK41jNgpafiIvLtNH+ddwMFD73ZFNffVasXzthcxgxBIBTt4ltake/HmK4pkz
-         4iDzQwdLwR5RE5syo5ObOWuOc30zoZBpPwJV1S8frXOh7JE8X5zMIf1+hL7O5SUkPebT
-         9BQQ==
-X-Gm-Message-State: AOAM532In5JgQO6JahEulymZkG0l4Dxc+vt+kc55JJcK7eTL0LjkCFV6
-        Rw45+JZiLXumXK+lyMndmmKbHQ==
-X-Google-Smtp-Source: ABdhPJz9LwXbQGxVwz/aszM2yl3QnXHYgNikKov8IUYXXvcoS7Yqu3Q6wxEn4QOq8Pb1IVtLyoyuUA==
-X-Received: by 2002:a17:90b:117:: with SMTP id p23mr14981324pjz.67.1600460194319;
-        Fri, 18 Sep 2020 13:16:34 -0700 (PDT)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id d25sm4095709pgl.23.2020.09.18.13.16.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 13:16:33 -0700 (PDT)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] MAINTAINERS: drop myself from PM AVS drivers
-Date:   Fri, 18 Sep 2020 13:16:33 -0700
-Message-Id: <20200918201633.27017-1-khilman@baylibre.com>
-X-Mailer: git-send-email 2.28.0
+        bh=WZFf6ltXN0q6i6KfdkHs41/4zFJI2xjfS0NImoIhVB8=;
+        b=MgPpPupiIzmhYUTzV11opiwr7bhrm/mWYgIsVX77xiqORLpEKbfxcm9bhvDfT8ygm3
+         GoyLnQxBnyCizobJTAMjLS4O+1bR8KQS9qybdoaMa6Gg/1OOXWVtygw963zYaF/zWB4p
+         r07Bbi2v5O+hJnHZUOSuiRQJLSb7++lh5uNtQMd+lA0r+5EnHaij1DxUy5BB362upCuq
+         GPUxubNI7rLj9/iG7LB3QYKXSUvKijvia2EhPG1wj4HZjBt3uHeXWpOb9wsr7JulJlQF
+         xCEnhun2x+uaJSh9vEbaK8aU7mS9+1QU9gJfYVE30YjlRMj2cw6Q6hvCBnngV4Gnp1GN
+         Lu9Q==
+X-Gm-Message-State: AOAM532VXiIwVQyhbykeXYbq10fPNJRDYjH2+95oZI4XWgAOg8ibbwXo
+        sv+vPknNYIVoT0qud4czPodL4XcpZe3rdQ==
+X-Google-Smtp-Source: ABdhPJw/GVkj9zbCNxU04b7IYQ3kf0A3z194OFufFFNA8+nzS50hme0yBDpwF7LI3apoN/bLJ/YZ+Q==
+X-Received: by 2002:a17:902:d888:b029:d0:cb2d:f274 with SMTP id b8-20020a170902d888b02900d0cb2df274mr34481802plz.13.1600460232794;
+        Fri, 18 Sep 2020 13:17:12 -0700 (PDT)
+Received: from [10.230.28.120] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id 1sm4600803pfx.126.2020.09.18.13.17.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Sep 2020 13:17:11 -0700 (PDT)
+Subject: Re: [PATCH net-next v2 3/3] net: phy: dp83822: Update the fiber
+ advertisement for speed
+To:     Dan Murphy <dmurphy@ti.com>, davem@davemloft.net, andrew@lunn.ch,
+        hkallweit1@gmail.com
+Cc:     mkubecek@suse.cz, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200918191453.13914-1-dmurphy@ti.com>
+ <20200918191453.13914-4-dmurphy@ti.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <0af1f797-ce97-2111-cff6-15d9deef3b62@gmail.com>
+Date:   Fri, 18 Sep 2020 13:17:10 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200918191453.13914-4-dmurphy@ti.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I haven't had the time or the expertise to adequately review and
-maintain these drivers for awhile, so make it official.
 
-Signed-off-by: Kevin Hilman <khilman@baylibre.com>
----
- MAINTAINERS | 1 -
- 1 file changed, 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index deaafb617361..f1bf6071c438 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5361,7 +5361,6 @@ F:	include/linux/kobj*
- F:	lib/kobj*
- 
- DRIVERS FOR ADAPTIVE VOLTAGE SCALING (AVS)
--M:	Kevin Hilman <khilman@kernel.org>
- M:	Nishanth Menon <nm@ti.com>
- L:	linux-pm@vger.kernel.org
- S:	Maintained
+On 9/18/2020 12:14 PM, Dan Murphy wrote:
+> Update the fiber advertisement for speed and duplex modes with the
+> 100base-FX full and half linkmode entries.
+> 
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-2.28.0
-
+Florian
