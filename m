@@ -2,158 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1628E26FA8E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 12:27:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0742D26FA92
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 12:28:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726412AbgIRK1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 06:27:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46672 "EHLO
+        id S1726472AbgIRK17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 06:27:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726253AbgIRK1X (ORCPT
+        with ESMTP id S1726152AbgIRK17 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 06:27:23 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C993C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 03:27:23 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id y9so5750235ilq.2
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 03:27:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NGiEMA4XCl4K+615B920D7aQUry3FhMY/+Djt+whFqk=;
-        b=BfSusiEEsa1NXeEVIhqZLCV1KtYitRimBhpYQvTDRPjZwA8Niznd44p/mt3fvgqz92
-         TyOI3sUfqBAVzIA5ZyjIsM2Jnv91UbxibfyvI8MEQKlG9rlIkdCILCx3qb6dANANbQMu
-         C9JT8sDI4gKJXulouBx0u0liWJiAy6/Uhjzs+V8dLiXmMZXTA0q36Ze0BOJZ5S0dJoZ/
-         8gocaTvRbHYOvwKYUNbv6uqH+NPCoJnyojRoATvIc5O5eFSHoFNjU34njF/nJItwsu/B
-         uQaCvVr40K27xwOrYgP8X15+qCP8KWx/kVTgTnWbPwj2D+8poiRAcoOFCG11iH5fIB/0
-         8BOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NGiEMA4XCl4K+615B920D7aQUry3FhMY/+Djt+whFqk=;
-        b=bv9NoLmINYZ9WvfCuzoKGTObeQxng7Argb5K6x7JbpMWyxLeO7H6QwqTSVyvxNJA0y
-         9bBUnJ+tLikpPQt3fCvLL7lGnh8vMl9JPMQkceyAF8kduSHAWt84ZmhX733HQ3Cjdz2z
-         +TFU6HDWK1WXtbsjh1ZhBNJdChT6mb1Oy8gcTwONzVo/N3utBN49aTi05VuJ3OAOZwWW
-         0Exb34JBxE+kOurqgUqnFzaYbG1HCsgtP3E4bPd28DPeq/Q0VwHda8ldQdlxqcx30/Un
-         gBVoTUvmMJ2iaHGW8j0TGHxLPJyXAxCmmZ1G16ih3uzb+EZrFnP7hnpDigLOBj5JbbAD
-         hYsQ==
-X-Gm-Message-State: AOAM531QXs7Eai0cl4PGpNgNgG1Fu/OwnbaUwFk9veOM2+ldOLEizj5P
-        6B8nIHzQ6fe3IIAlz3vF2+q2ww==
-X-Google-Smtp-Source: ABdhPJxD0fEoDDQySb9R9MBT2QbJBYq3F8vY/USPXDVLW8g54ZvBe7hDoB8Np6nohaIm2+1S9MjsUg==
-X-Received: by 2002:a92:98c5:: with SMTP id a66mr29173637ill.50.1600424842237;
-        Fri, 18 Sep 2020 03:27:22 -0700 (PDT)
-Received: from google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
-        by smtp.gmail.com with ESMTPSA id i14sm1422014ilb.28.2020.09.18.03.27.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 03:27:20 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 04:27:13 -0600
-From:   Yu Zhao <yuzhao@google.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Huang Ying <ying.huang@intel.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Konstantin Khlebnikov <koct9i@gmail.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Jaewon Kim <jaewon31.kim@samsung.com>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/13] mm: use page_off_lru()
-Message-ID: <20200918102713.GB1004594@google.com>
-References: <20200918030051.650890-1-yuzhao@google.com>
- <20200918030051.650890-3-yuzhao@google.com>
- <20200918073700.GE28827@dhcp22.suse.cz>
+        Fri, 18 Sep 2020 06:27:59 -0400
+Received: from tartarus.angband.pl (tartarus.angband.pl [IPv6:2001:41d0:602:dbe::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CAC1C06174A;
+        Fri, 18 Sep 2020 03:27:59 -0700 (PDT)
+Received: from kilobyte by tartarus.angband.pl with local (Exim 4.92)
+        (envelope-from <kilobyte@angband.pl>)
+        id 1kJDcM-0002VN-JV; Fri, 18 Sep 2020 12:27:50 +0200
+Date:   Fri, 18 Sep 2020 12:27:50 +0200
+From:   Adam Borowski <kilobyte@angband.pl>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Yuan Ming <yuanmingbuaa@gmail.com>, Willy Tarreau <w@1wt.eu>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        NopNop Nop <nopitydays@gmail.com>,
+        =?utf-8?B?5byg5LqR5rW3?= <zhangyunhai@nsfocus.com>,
+        Andy Lutomirski <luto@amacapital.net>
+Subject: Re: fbcon: remove soft scrollback code (missing Doc. patch)
+Message-ID: <20200918102750.GA27828@angband.pl>
+References: <git-mailbomb-linux-master-50145474f6ef4a9c19205b173da6264a644c7489@kernel.org>
+ <c9cd22ec-60dc-d761-b488-d3a1392708c0@infradead.org>
+ <CAHk-=wiNTWpqUF0HgzoyPGEaaAjxD-Bor+EE3DbJ52S30cfCWg@mail.gmail.com>
+ <20200916205434.GA10389@duo.ucw.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200918073700.GE28827@dhcp22.suse.cz>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200916205434.GA10389@duo.ucw.cz>
+X-Junkbait: aaron@angband.pl, zzyx@angband.pl
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: kilobyte@angband.pl
+X-SA-Exim-Scanned: No (on tartarus.angband.pl); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 09:37:00AM +0200, Michal Hocko wrote:
-> On Thu 17-09-20 21:00:40, Yu Zhao wrote:
-> > This patch replaces the only open-coded __ClearPageActive() with
-> > page_off_lru(). There is no open-coded __ClearPageUnevictable()s.
+On Wed, Sep 16, 2020 at 10:54:34PM +0200, Pavel Machek wrote:
+> On Mon 2020-09-14 18:28:34, Linus Torvalds wrote:
+> > Note that scrollback hasn't actually gone away entirely - the original
+> > scrollback supported by _hardware_ still exists.
 > > 
-> > Before this patch, we have:
-> > 	__ClearPageActive()
-> > 	add_page_to_lru_list()
-> > 
-> > After this patch, we have:
-> > 	page_off_lru()
-> > 		if PageUnevictable()
-> > 			__ClearPageUnevictable()
-> > 		else if PageActive()
-> > 			__ClearPageActive()
-> > 	add_page_to_lru_list()
-> > 
-> > Checking PageUnevictable() shouldn't be a problem because these two
-> > flags are mutually exclusive. Leaking either will trigger bad_page().
+> > Of course, that's really just the old-fashioned text VGA console, but
+> > that one actually scrolls not by moving any bytes around, but by
+> > moving the screen start address. And the scrollback similarly isn't
+> > about any software buffering, but about the ability of moving back
+> > that screen start address.
+
+> Could we pause this madness? Scrollback is still useful. I needed it
+> today... it was too small, so command results I was looking for
+> already scrolled away, but... life will be really painful with 0 scrollback.
 > 
-> I am sorry but the changelog is really hard to grasp. What are you
-> trying to achieve, why and why it is safe. This should be a general
-> outline for any patch. I have already commented on the previous patch
-> and asked you for the explanation why removing __ClearPageActive from
-> this path is desirable and safe. I have specifically asked to clarify
-> the compound page situation as that is using its oen destructor in the
-> freeing path and that might result in page_off_lru to be not called.
+> You'll need it, too... as soon as you get oops and will want to see
+> errors just prior to that oops.
 
-Haven't I explained we are NOT removing __ClearPageActive()? Is my
-notion of the code structure above confusing you? Or 'open-coded'
-could mean different things?
+I concur -- this a serious usability regression for regular users.  Linus:
+you have a serial cable on your main dev machine, so do I, but hardly any
+regular people do -- that's restricted to mostly IPMI and such.
 
-And I have asked this before: why does 'the compound page situation'
-even matter here? Perhaps if you could give a concrete example related
-to the code change and help me understand your concern?
+And without some kind of scrollback, there's no way of knowing why eg.
+your rootfs failed to mount (there was some oops, but its reason was at
+the beginning...).  Or, any other problem the user would be able to solve,
+or pass the error messages to someone more knowledgeable.
 
-> > Signed-off-by: Yu Zhao <yuzhao@google.com>
-> > ---
-> >  mm/vmscan.c | 6 +-----
-> >  1 file changed, 1 insertion(+), 5 deletions(-)
-> > 
-> > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > index 503fc5e1fe32..f257d2f61574 100644
-> > --- a/mm/vmscan.c
-> > +++ b/mm/vmscan.c
-> > @@ -1845,7 +1845,6 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
-> >  	int nr_pages, nr_moved = 0;
-> >  	LIST_HEAD(pages_to_free);
-> >  	struct page *page;
-> > -	enum lru_list lru;
-> >  
-> >  	while (!list_empty(list)) {
-> >  		page = lru_to_page(list);
-> > @@ -1860,14 +1859,11 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
-> >  		lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> >  
-> >  		SetPageLRU(page);
-> > -		lru = page_lru(page);
-> > -
-> >  		add_page_to_lru_list(page, lruvec, lru);
-> >  
-> >  		if (put_page_testzero(page)) {
-> >  			__ClearPageLRU(page);
-> > -			__ClearPageActive(page);
-> > -			del_page_from_lru_list(page, lruvec, lru);
-> > +			del_page_from_lru_list(page, lruvec, page_off_lru(page));
-> >  
-> >  			if (unlikely(PageCompound(page))) {
-> >  				spin_unlock_irq(&pgdat->lru_lock);
-> > -- 
-> > 2.28.0.681.g6f77f65b4e-goog
-> 
-> -- 
-> Michal Hocko
-> SUSE Labs
+I also wonder why did you choose to remove softscrollback which is actually
+useful, yet leave hardscrollback which doesn't come to use on any
+non-ancient hardware:
+* on !x86 there's no vgacon at all
+* on x86, in-tree drivers for GPUs by Intel, nVidia and AMD (others are
+  dead) default to switching away from vgacon
+* EFI wants its own earlycon
+... thus, the only niche left is nVidia proprietary drivers which, the last
+time I looked, still used CGA text mode.
+
+> If it means I get to maintain it... I'm not happy about it but that's
+> better than no scrollback.
+
+That'd be greatly appreciated.  There are also some simplifications/rewrites
+that could be done, like getting rid of redundant 1-byte/4-byte storage (or
+even the code for 1-byte...).  Hard scrollback could be axed altogether (it
+provides only a small amount of scroll).  Etc...
+
+>  Kernel is now very verbose, so important messages
+>  during bootup scroll away. It is way bigger deal when you can no
+>  longer get to them using shift-pageup.
+
+Thus hard scrollback is inadequate in the rare cases it's even present.
+
+
+Meow!
+-- 
+⢀⣴⠾⠻⢶⣦⠀
+⣾⠁⢠⠒⠀⣿⡁ in the beginning was the boot and root floppies and they were good.
+⢿⡄⠘⠷⠚⠋⠀                                       -- <willmore> on #linux-sunxi
+⠈⠳⣄⠀⠀⠀⠀
