@@ -2,56 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9808E26F90D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:17:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA6726F919
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726308AbgIRJRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 05:17:49 -0400
-Received: from 8bytes.org ([81.169.241.247]:45216 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726109AbgIRJRs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 05:17:48 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id B48F8396; Fri, 18 Sep 2020 11:17:46 +0200 (CEST)
-Date:   Fri, 18 Sep 2020 11:17:45 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        mlevitsk@redhat.com, Joao Martins <joao.m.martins@oracle.com>
-Subject: Re: [PATCH v2] iommu/amd: Restore IRTE.RemapEn bit for
- amd_iommu_activate_guest_mode
-Message-ID: <20200918091745.GN31590@8bytes.org>
-References: <20200916111720.43913-1-suravee.suthikulpanit@amd.com>
+        id S1726590AbgIRJV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 05:21:58 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13298 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726126AbgIRJV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 05:21:58 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 368553497E705AC97713;
+        Fri, 18 Sep 2020 17:21:55 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Fri, 18 Sep 2020
+ 17:21:52 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
+CC:     <gregkh@linuxfoundation.org>
+Subject: [PATCH -next] tty: hvc: fix link error with CONFIG_SERIAL_CORE_CONSOLE=n
+Date:   Fri, 18 Sep 2020 17:20:30 +0800
+Message-ID: <20200918092030.3855438-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916111720.43913-1-suravee.suthikulpanit@amd.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 11:17:20AM +0000, Suravee Suthikulpanit wrote:
-> Commit e52d58d54a32 ("iommu/amd: Use cmpxchg_double() when updating
-> 128-bit IRTE") removed an assumption that modify_irte_ga always set
-> the valid bit, which requires the callers to set the appropriate value
-> for the struct irte_ga.valid bit before calling the function.
-> 
-> Similar to the commit 26e495f34107 ("iommu/amd: Restore IRTE.RemapEn
-> bit after programming IRTE"), which is for the function
-> amd_iommu_deactivate_guest_mode().
-> 
-> The same change is also needed for the amd_iommu_activate_guest_mode().
-> Otherwise, this could trigger IO_PAGE_FAULT for the VFIO based VMs with
-> AVIC enabled.
-> 
-> Reported-by: Maxim Levitsky <mlevitsk@redhat.com>
-> Tested-by: Maxim Levitsky <mlevitsk@redhat.com>
-> Cc: Joao Martins <joao.m.martins@oracle.com>
-> Fixes: e52d58d54a321 ("iommu/amd: Use cmpxchg_double() when updating 128-bit IRTE")
-> Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-> ---
->  drivers/iommu/amd/iommu.c | 4 ++++
->  1 file changed, 4 insertions(+)
+Fix the link error by selecting SERIAL_CORE_CONSOLE.
 
-Applied for v5.9, thanks.
+aarch64-linux-gnu-ld: drivers/tty/hvc/hvc_dcc.o: in function `dcc_early_write':
+hvc_dcc.c:(.text+0x164): undefined reference to `uart_console_write'
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ drivers/tty/hvc/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/tty/hvc/Kconfig b/drivers/tty/hvc/Kconfig
+index d1b27b0522a3..8d60e0ff67b4 100644
+--- a/drivers/tty/hvc/Kconfig
++++ b/drivers/tty/hvc/Kconfig
+@@ -81,6 +81,7 @@ config HVC_DCC
+ 	bool "ARM JTAG DCC console"
+ 	depends on ARM || ARM64
+ 	select HVC_DRIVER
++	select SERIAL_CORE_CONSOLE
+ 	help
+ 	  This console uses the JTAG DCC on ARM to create a console under the HVC
+ 	  driver. This console is used through a JTAG only on ARM. If you don't have
+-- 
+2.25.1
+
