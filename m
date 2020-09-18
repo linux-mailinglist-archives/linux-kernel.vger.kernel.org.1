@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8902827065E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03DCE270669
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726657AbgIRUPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 16:15:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52960 "EHLO
+        id S1726681AbgIRUPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 16:15:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726619AbgIRUPc (ORCPT
+        with ESMTP id S1726660AbgIRUPi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 16:15:32 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AD3BC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:15:32 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id e6so6110556qtg.13
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:15:32 -0700 (PDT)
+        Fri, 18 Sep 2020 16:15:38 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDCB6C0613D5
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:15:34 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id l5so6092402qtu.20
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:15:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=X2rJBbb/dAb+yfnrEjkjEFh1Qlc3T9c6r5OVY+2F28Q=;
-        b=UfHLbm8nbc7nF4Jo2yUgHO34FEnYwaE+D6WpRyYM9fua/f1c+fZ8kF6HsVdGT3ZStz
-         DIioQeeYjH1vQBjYBq6RWn1tj8Ze0d8QdJv/5ZoCfD/OJopHg281EA0NzxBu0bnxaWZh
-         gx+JUnvc4+vXR4wjKioKlFelZxpe0ui4Lh1MT956XxN4Ky84dI7eVbp7usD/4ORebyXi
-         CldVhYDtXNAYA4NGIwtBdJpXhE9cy2RjWHBM1Uc8TjKab8xO1nXAuOuk6CkQAwAWw4AW
-         +5M/W/XGQlX5ApQtgCjOdjNKX53WnhGd309U+vDRlJPdbYtPQkUcz7FocAivoRqNyi4G
-         Nh3w==
+        bh=Aq4KaYtXPvsIFu2w9Cb9+vNMYXxmfrCDkI2ZzAJ/U8w=;
+        b=YYDR5W+pWvCCMlsLuxLz2kP7xV+uq2FmsovV4iGNvno67WC358C4PSNmTbdGHW6cZy
+         Xr2bfek6oOyIlLCqqcmz58AwsnwR59RRO+p9vcpDdt33YhN8IrJ/O6OhGAnZkSzVXUBi
+         juaZEaotR1IoDS52HcVfmR1tV9lf6hMZtKDYu+gLSSBc5p2YM9N18q2UMIgXTdzr3uIq
+         Fm8Rp3KBn78V9C/U0MxUKT6AZU9wjegUqE9FD6bezlPI8xyTBnsPinaduX3IiPx/NQx9
+         CiLebwGjfIl4ZFQ0mM3lJvlbPYemZFWx56rfr5kUCzWThPFDwAshAHrFrPtMZk+I/w6c
+         LAyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=X2rJBbb/dAb+yfnrEjkjEFh1Qlc3T9c6r5OVY+2F28Q=;
-        b=RETLt9CbGa8pWPV7UNX49dHALsNcciDoK/1rutB/XIRnrMJNVDcNHHoG80kigaW6I1
-         8TqMPBy36dhmLZCxXV4UtdlzBRbwYjHslFfzBW0rLBnqnyrmC367FnFnYM/Aj5H1hjui
-         Ypyl1KeAHJINP9ivJFq5u2qiXSg+VmpHszaMcigEWsi/Y2rxE1DjyWM+nBeqSgHAT8Jx
-         gmxRsgwg6bgSbPVWEECA7V3U+THq18zNIUVGBjVagRxHWz4Hb9lbEgIQPf4809/4aEN/
-         O7TP2dsNhVrDhlSXTFxyL7AdnCyuAfzFv7iDeEfn7ht8itYI7zjhazF52io6TYciOBV5
-         NQXw==
-X-Gm-Message-State: AOAM532q2+nCebzHe6go/MsTdDMm+J6M5U+SP+twNcfxyYQc6YHRsujS
-        pd53DYr2oo8OmywpcceQQp3e+aTleNo+BuvpVvQ=
-X-Google-Smtp-Source: ABdhPJzo4LTM6y/+DCzOvBKNO4aVvzGwT/r1d/eIrsPqlXmeiMn37vjIcaP3n6Xyzc5vYh3xJFK8sACdwTT13Li7Iew=
+        bh=Aq4KaYtXPvsIFu2w9Cb9+vNMYXxmfrCDkI2ZzAJ/U8w=;
+        b=tHs3FDzvaXWdMYoPGY/mDWx6oaKJpeyMC5v8B5YxvXwOI/Vcl2hCEgdawH3JA5JbSG
+         W9npr06OcxqVjdAr6tNjdlTSKYpt/6vnGC1vlxwegt+spPAMvyhPALCluEySxmUxSfOs
+         j30TigYxyTiKt7xmbygY/z39gk5L6+nb2ovSA17Go1gIXggWjtG3Obi7N1r6duCyh6KO
+         elKPpD05fxFyjyPhVxWUnn/3B1rkyK3dezN69zPmNJYFDZaWg40eJ6Vym1lYLXsD13sT
+         LOUtFugg/6Zno46GztMnSh/dq7U2cD8JxZBnSvKhDd+KXRtX5+h3pS44xGMzNN8exfom
+         AEyw==
+X-Gm-Message-State: AOAM532BADu9Zs6K0w4JWp49g3CQwI5fhOlIQYHtfQlTsgFlWaoxGops
+        dfI1O5G+B9WEUxUSm8HdAEooVyinhsnCNubFp7w=
+X-Google-Smtp-Source: ABdhPJzXb8qZ74hw7N+WHo8RG9mWCgQryKG+Dq+aV9VBYLvnlICCRjFkSfcNOp4lq06uZySFvKcVSM3OKhDJkRKVbys=
 Sender: "samitolvanen via sendgmr" 
         <samitolvanen@samitolvanen1.mtv.corp.google.com>
 X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:f693:9fff:fef4:1b6d])
- (user=samitolvanen job=sendgmr) by 2002:ad4:5a0e:: with SMTP id
- ei14mr20725499qvb.15.1600460131755; Fri, 18 Sep 2020 13:15:31 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 13:14:28 -0700
+ (user=samitolvanen job=sendgmr) by 2002:ad4:4d87:: with SMTP id
+ cv7mr19182556qvb.49.1600460134116; Fri, 18 Sep 2020 13:15:34 -0700 (PDT)
+Date:   Fri, 18 Sep 2020 13:14:29 -0700
 In-Reply-To: <20200918201436.2932360-1-samitolvanen@google.com>
-Message-Id: <20200918201436.2932360-23-samitolvanen@google.com>
+Message-Id: <20200918201436.2932360-24-samitolvanen@google.com>
 Mime-Version: 1.0
 References: <20200918201436.2932360-1-samitolvanen@google.com>
 X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
-Subject: [PATCH v3 22/30] efi/libstub: disable LTO
+Subject: [PATCH v3 23/30] drivers/misc/lkdtm: disable LTO for rodata.o
 From:   Sami Tolvanen <samitolvanen@google.com>
 To:     Masahiro Yamada <masahiroy@kernel.org>,
         Will Deacon <will@kernel.org>
@@ -73,29 +73,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With CONFIG_LTO_CLANG, we produce LLVM bitcode instead of ELF object
-files. Since LTO is not really needed here and the Makefile assumes we
-produce an object file, disable LTO for libstub.
+Disable LTO for rodata.o to allow objcopy to be used to
+manipulate sections.
 
 Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Acked-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/firmware/efi/libstub/Makefile | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/misc/lkdtm/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
-index 296b18fbd7a2..0ea5aa52c7fa 100644
---- a/drivers/firmware/efi/libstub/Makefile
-+++ b/drivers/firmware/efi/libstub/Makefile
-@@ -35,6 +35,8 @@ KBUILD_CFLAGS			:= $(cflags-y) -Os -DDISABLE_BRANCH_PROFILING \
+diff --git a/drivers/misc/lkdtm/Makefile b/drivers/misc/lkdtm/Makefile
+index c70b3822013f..dd4c936d4d73 100644
+--- a/drivers/misc/lkdtm/Makefile
++++ b/drivers/misc/lkdtm/Makefile
+@@ -13,6 +13,7 @@ lkdtm-$(CONFIG_LKDTM)		+= cfi.o
  
- # remove SCS flags from all objects in this directory
- KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_SCS), $(KBUILD_CFLAGS))
-+# disable LTO
-+KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_LTO), $(KBUILD_CFLAGS))
+ KASAN_SANITIZE_stackleak.o	:= n
+ KCOV_INSTRUMENT_rodata.o	:= n
++CFLAGS_REMOVE_rodata.o		+= $(CC_FLAGS_LTO)
  
- GCOV_PROFILE			:= n
- # Sanitizer runtimes are unavailable and cannot be linked here.
+ OBJCOPYFLAGS :=
+ OBJCOPYFLAGS_rodata_objcopy.o	:= \
 -- 
 2.28.0.681.g6f77f65b4e-goog
 
