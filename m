@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB61626F36E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB82326F365
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728733AbgIRDGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 23:06:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50888 "EHLO mail.kernel.org"
+        id S1728613AbgIRDGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 23:06:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727196AbgIRCEB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:04:01 -0400
+        id S1727210AbgIRCEC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:04:02 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C199A235FD;
-        Fri, 18 Sep 2020 02:03:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 250CE23600;
+        Fri, 18 Sep 2020 02:04:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394639;
-        bh=16tazY5VJe08ylA+XFDUXd9D+yYNp9RB/kAuN2PirUA=;
+        s=default; t=1600394641;
+        bh=66wCMHHAgYvFPF/NiM4KDxXT/ObaN+P40iilFXq/40w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=apEpPylLy3NJSCSRZ2OmPijoi4wUhfPSJLSz36IYwrLsxehPJVv6APxL9VWIRmJWX
-         +QtfDUJBAVMC49t+5EKISdPLI3jU0LNckzgsg8+7O97mdxO2rKFlb4tHZSnCtvcQng
-         fO/m20l6ghdI85t2Z6e1brz28KlhrG8UzSnNcNfs=
+        b=zegF19mH9Col/8Ty8e6K90Zjg7UkDgUKAGm4aitD3lIl9rp/Amd4ECPWs/fubWXnE
+         K8wXXWwyGpR0cXPt4k2WTIg4sxDlUMNgNnUTtZXKIkbJCOWG1lz1Db6zGkNpl+VOhn
+         BWsag8LBmEjnfXv+Gn8tYdKIQ4WpIjA3Qx4RyLwE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 138/330] x86/pkeys: Add check for pkey "overflow"
-Date:   Thu, 17 Sep 2020 21:57:58 -0400
-Message-Id: <20200918020110.2063155-138-sashal@kernel.org>
+Cc:     Amelie Delaunay <amelie.delaunay@st.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.4 140/330] dmaengine: stm32-dma: use vchan_terminate_vdesc() in .terminate_all
+Date:   Thu, 17 Sep 2020 21:58:00 -0400
+Message-Id: <20200918020110.2063155-140-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -43,78 +42,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Hansen <dave.hansen@linux.intel.com>
+From: Amelie Delaunay <amelie.delaunay@st.com>
 
-[ Upstream commit 16171bffc829272d5e6014bad48f680cb50943d9 ]
+[ Upstream commit d80cbef35bf89b763f06e03bb4ff8f933bf012c5 ]
 
-Alex Shi reported the pkey macros above arch_set_user_pkey_access()
-to be unused.  They are unused, and even refer to a nonexistent
-CONFIG option.
+To avoid race with vchan_complete, use the race free way to terminate
+running transfer.
 
-But, they might have served a good use, which was to ensure that
-the code does not try to set values that would not fit in the
-PKRU register.  As it stands, a too-large 'pkey' value would
-be likely to silently overflow the u32 new_pkru_bits.
+Move vdesc->node list_del in stm32_dma_start_transfer instead of in
+stm32_mdma_chan_complete to avoid another race in vchan_dma_desc_free_list.
 
-Add a check to look for overflows.  Also add a comment to remind
-any future developer to closely examine the types used to store
-pkey values if arch_max_pkey() ever changes.
-
-This boots and passes the x86 pkey selftests.
-
-Reported-by: Alex Shi <alex.shi@linux.alibaba.com>
-Signed-off-by: Dave Hansen <dave.hansen@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20200122165346.AD4DA150@viggo.jf.intel.com
+Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
+Link: https://lore.kernel.org/r/20200129153628.29329-9-amelie.delaunay@st.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/include/asm/pkeys.h | 5 +++++
- arch/x86/kernel/fpu/xstate.c | 9 +++++++--
- 2 files changed, 12 insertions(+), 2 deletions(-)
+ drivers/dma/stm32-dma.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/include/asm/pkeys.h b/arch/x86/include/asm/pkeys.h
-index 19b137f1b3beb..2ff9b98812b76 100644
---- a/arch/x86/include/asm/pkeys.h
-+++ b/arch/x86/include/asm/pkeys.h
-@@ -4,6 +4,11 @@
+diff --git a/drivers/dma/stm32-dma.c b/drivers/dma/stm32-dma.c
+index 5989b08935211..6c5771de32c67 100644
+--- a/drivers/dma/stm32-dma.c
++++ b/drivers/dma/stm32-dma.c
+@@ -488,8 +488,10 @@ static int stm32_dma_terminate_all(struct dma_chan *c)
  
- #define ARCH_DEFAULT_PKEY	0
+ 	spin_lock_irqsave(&chan->vchan.lock, flags);
  
-+/*
-+ * If more than 16 keys are ever supported, a thorough audit
-+ * will be necessary to ensure that the types that store key
-+ * numbers and masks have sufficient capacity.
-+ */
- #define arch_max_pkey() (boot_cpu_has(X86_FEATURE_OSPKE) ? 16 : 1)
+-	if (chan->busy) {
+-		stm32_dma_stop(chan);
++	if (chan->desc) {
++		vchan_terminate_vdesc(&chan->desc->vdesc);
++		if (chan->busy)
++			stm32_dma_stop(chan);
+ 		chan->desc = NULL;
+ 	}
  
- extern int arch_set_user_pkey_access(struct task_struct *tsk, int pkey,
-diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index 755eb26cbec04..735d1f1bbabc7 100644
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -895,8 +895,6 @@ const void *get_xsave_field_ptr(int xfeature_nr)
+@@ -545,6 +547,8 @@ static void stm32_dma_start_transfer(struct stm32_dma_chan *chan)
+ 		if (!vdesc)
+ 			return;
  
- #ifdef CONFIG_ARCH_HAS_PKEYS
- 
--#define NR_VALID_PKRU_BITS (CONFIG_NR_PROTECTION_KEYS * 2)
--#define PKRU_VALID_MASK (NR_VALID_PKRU_BITS - 1)
- /*
-  * This will go out and modify PKRU register to set the access
-  * rights for @pkey to @init_val.
-@@ -915,6 +913,13 @@ int arch_set_user_pkey_access(struct task_struct *tsk, int pkey,
- 	if (!boot_cpu_has(X86_FEATURE_OSPKE))
- 		return -EINVAL;
- 
-+	/*
-+	 * This code should only be called with valid 'pkey'
-+	 * values originating from in-kernel users.  Complain
-+	 * if a bad value is observed.
-+	 */
-+	WARN_ON_ONCE(pkey >= arch_max_pkey());
++		list_del(&vdesc->node);
 +
- 	/* Set the bits we need in PKRU:  */
- 	if (init_val & PKEY_DISABLE_ACCESS)
- 		new_pkru_bits |= PKRU_AD_BIT;
+ 		chan->desc = to_stm32_dma_desc(vdesc);
+ 		chan->next_sg = 0;
+ 	}
+@@ -622,7 +626,6 @@ static void stm32_dma_handle_chan_done(struct stm32_dma_chan *chan)
+ 		} else {
+ 			chan->busy = false;
+ 			if (chan->next_sg == chan->desc->num_sgs) {
+-				list_del(&chan->desc->vdesc.node);
+ 				vchan_cookie_complete(&chan->desc->vdesc);
+ 				chan->desc = NULL;
+ 			}
 -- 
 2.25.1
 
