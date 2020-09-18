@@ -2,333 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C837C26FC1B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8188226FC2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726448AbgIRMJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 08:09:58 -0400
-Received: from mx0b-0014ca01.pphosted.com ([208.86.201.193]:9378 "EHLO
-        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726121AbgIRMJ6 (ORCPT
+        id S1726670AbgIRMLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 08:11:14 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:55079 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726064AbgIRMLN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 08:09:58 -0400
-Received: from pps.filterd (m0042333.ppops.net [127.0.0.1])
-        by mx0b-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08IC8qUx006988;
-        Fri, 18 Sep 2020 05:09:37 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=proofpoint;
- bh=N8JMFGqFMKNXZsHa3hkDiZukJz+JpMaumuBzMP+aKsI=;
- b=ai5J5usUVQb9eNcHiiVUE54i07SuaX6RfNrBlciqyeJCK5xLJ0VHwwtVFAdmhmdFvZd3
- UIH78OJHzquY3jh9HIMsDMopahBTZw4Ce6rDhQUQtR+n0vg9pR0QS/HiDPuMyndTBu3l
- +cnQkc5zgdWKTCkjr0TIdTKIzURYMvpu7QDQ23drDlzmpjS0MlZqbk+zu0usd4k9TiW0
- mlq/Y2N4k1WPELJy1acjOSymiIbwwGnKnKfqSm09NoF+lk1odiblCoHkvscHPBWBezPP
- uvmUzTVCrV1GLwY9BZ61PvWoEoihANlVlYADmig96Z1oqza2p5S8t7fCmSiRsqsDaeAF ig== 
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2103.outbound.protection.outlook.com [104.47.55.103])
-        by mx0b-0014ca01.pphosted.com with ESMTP id 33k5nk3ym6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Sep 2020 05:09:37 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HacMIfnvNeHzRX15SKUEEXu3PiTs4DUf+1jqOL5s5ZeTE3QumYMY700LJvJT7v66pFsJHrJvgwJdWbQ2yeaM4a/ZCoy0FS5fffB94KxG8DLe94KpPbRL0pS7LX0ih+mqabKfXZi+Fk7tHQijWrbNdi/6lqeDKqBCB5/LFjl6WVfkq6ZomxM2Ak2skaHpsWECDxbqzv+LEx9d/ALzeHmsX4Y3VdO9Yhf8A5YWKdbVQwd2mvOcOapzQog+dcDmxTpos37fG51/gHRbBPM73wC/eRo+qQDwtCnF8yRL+cvvUhWYjo4L7iCX2joi/XqiorD9B51ODmObJzjGPSKVOD1KAQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=N8JMFGqFMKNXZsHa3hkDiZukJz+JpMaumuBzMP+aKsI=;
- b=bTzVqTHSF+/cn/SbQhe+/fNug/H7ixSHk8lSuKpVK2rd80DhzGJ+/QQrigF4DWXbcwIS/+cA68uXWF7D7I2M88jFCKn4UB+G0Uf3RB42AL3Xckiv3LG/al+YQfWOVk3Vg2bCxdtR9VZdBvQOPNdB5U9AUSLoxYdqaS8HViEGXlUwPGDqZDZUA2bZIyJKk1mxoC4qi1/+G8ZEwGL8pHM1A3wS4YpENVM0x+NKIvqdeJF8LDvbLNYqSeY3h+mDWYjyvwKqQIGyFPG5LpDW/oSsNYFSHG8oHQPAjb8HYVPuw5sn+wUXQC+I6wwxm+4LwABqFSxlPhxrF4R4AaKPF7S0Og==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 64.207.220.244) smtp.rcpttodomain=baylibre.com smtp.mailfrom=cadence.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=N8JMFGqFMKNXZsHa3hkDiZukJz+JpMaumuBzMP+aKsI=;
- b=A3HRHxTwHgZLTcgTl46f/rUc4zhf1weCWG2FTAJ0WOnBblp5eW0569w5DoL2jTUdeGXNKeZ5vnMRAYy/0ih/2haGjWqYYLS/ZLZoJMHdqlll5ifv/EWKbHtzER/u5AlLwwb4redlPA0ckb25bvObBxGr0Ru4csZN/OuDrQLrSsg=
-Received: from BN3PR03CA0111.namprd03.prod.outlook.com (2603:10b6:400:4::29)
- by SN6PR07MB4941.namprd07.prod.outlook.com (2603:10b6:805:a7::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Fri, 18 Sep
- 2020 12:09:34 +0000
-Received: from BN8NAM12FT044.eop-nam12.prod.protection.outlook.com
- (2603:10b6:400:4:cafe::30) by BN3PR03CA0111.outlook.office365.com
- (2603:10b6:400:4::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.13 via Frontend
- Transport; Fri, 18 Sep 2020 12:09:34 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 64.207.220.244)
- smtp.mailfrom=cadence.com; baylibre.com; dkim=none (message not signed)
- header.d=none;baylibre.com; dmarc=pass action=none header.from=cadence.com;
-Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
- 64.207.220.244 as permitted sender) receiver=protection.outlook.com;
- client-ip=64.207.220.244; helo=wcmailrelayl01.cadence.com;
-Received: from wcmailrelayl01.cadence.com (64.207.220.244) by
- BN8NAM12FT044.mail.protection.outlook.com (10.13.183.59) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3412.6 via Frontend Transport; Fri, 18 Sep 2020 12:09:32 +0000
-Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
-        by wcmailrelayl01.cadence.com (8.14.7/8.14.4) with ESMTP id 08IC9RGt092496
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=OK);
-        Fri, 18 Sep 2020 05:09:31 -0700
-X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
-Received: from maileu3.global.cadence.com (10.160.88.99) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3; Fri, 18 Sep 2020 14:09:27 +0200
-Received: from vleu-orange.cadence.com (10.160.88.83) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3 via Frontend Transport; Fri, 18 Sep 2020 14:09:27 +0200
-Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
-        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 08IC9R2P023804;
-        Fri, 18 Sep 2020 14:09:27 +0200
-Received: (from sjakhade@localhost)
-        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 08IC9Rub023803;
-        Fri, 18 Sep 2020 14:09:27 +0200
-From:   Swapnil Jakhade <sjakhade@cadence.com>
-To:     <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <Laurent.pinchart@ideasonboard.com>, <robh+dt@kernel.org>,
-        <a.hajda@samsung.com>, <narmstrong@baylibre.com>,
-        <jonas@kwiboo.se>, <jernej.skrabec@siol.net>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <mparab@cadence.com>, <sjakhade@cadence.com>,
-        <yamonkar@cadence.com>, <tomi.valkeinen@ti.com>, <jsarha@ti.com>,
-        <nsekhar@ti.com>, <praneeth@ti.com>, <nikhil.nd@ti.com>,
-        <vkoul@kernel.org>
-Subject: [PATCH v11 3/3] drm: bridge: cdns-mhdp8546: Add TI J721E wrapper
-Date:   Fri, 18 Sep 2020 14:09:23 +0200
-Message-ID: <1600430963-23753-4-git-send-email-sjakhade@cadence.com>
-X-Mailer: git-send-email 2.4.5
-In-Reply-To: <1600430963-23753-1-git-send-email-sjakhade@cadence.com>
-References: <1600430963-23753-1-git-send-email-sjakhade@cadence.com>
+        Fri, 18 Sep 2020 08:11:13 -0400
+Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
+ (mreue010 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1MHo6Y-1kEHQL3GCc-00EsgF; Fri, 18 Sep 2020 14:10:43 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Balsundar P <balsundar.p@microsemi.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@lst.de>,
+        Zou Wei <zou_wei@huawei.com>, Hannes Reinecke <hare@suse.de>,
+        Sagar Biradar <Sagar.Biradar@microchip.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/3] scsi: aacraid: improve compat_ioctl handlers
+Date:   Fri, 18 Sep 2020 14:09:31 +0200
+Message-Id: <20200918120955.1465510-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-OrganizationHeadersPreserved: maileu3.global.cadence.com
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 182c6120-b021-4e7c-f4f1-08d85bcbb3dd
-X-MS-TrafficTypeDiagnostic: SN6PR07MB4941:
-X-Microsoft-Antispam-PRVS: <SN6PR07MB494199CBF9FC20BB7F5A485BC53F0@SN6PR07MB4941.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7IyLKBHxvfwvEHQNjuTKOpIeP4/NMdZKJsoXvesh0AgzKmi9ax95A0m89Xcp0JUou9lEB4mgJEeOMoiOBuwC0Mqr5kh5X+x44RzrN6vZRB/vZUNPwQ9PBzymLf4TKWbU1R3YXB0FG3j/iXMzZTegmhwMHjXBchu59PZDonIxce4V3335odaXrS8l5wnSrw39mR5SEgathUHrQ0r20xRsVkzjen4W2Lv1hMoN6qOwAjsMyD5PILEIxqQMGTfjJIg58AoWjvA2MsYVgZWmBrW0SbQdRpVyQL0rn2l4yMz/GRZUXRQTuPzOBMXUpnImNsBRNtC82oxlNaMI8k8QToElj7A9sqCKUpf6/UZE1LanFL1urBYx/x3tW/gQt+4y+4bPc+gSj0DbFP7cwyFB2uTOzG2D1zP2s9w/kgqs7ciDUYuNu9YAPo4qLLIp3E7n9Zx8gCakJeDZ8AwcWON4ob2azhEl1qsoTMbXMDRMaPGcrzl29A4Wuh2kslhw/D377CytTECNupdMl4I/KOmycM8primxIf/ryoS0G7DXpy1lxcWfgzXDZtitSm8CUNg9aN2f
-X-Forefront-Antispam-Report: CIP:64.207.220.244;CTRY:CN;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:wcmailrelayl01.cadence.com;PTR:ErrorRetry;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(376002)(39860400002)(36092001)(46966005)(336012)(86362001)(426003)(5660300002)(4326008)(82310400003)(70206006)(966005)(83380400001)(42186006)(36756003)(6666004)(478600001)(8676002)(36906005)(316002)(2616005)(8936002)(186003)(70586007)(110136005)(26005)(2906002)(82740400003)(47076004)(7416002)(356005)(81166007)(54906003)(921003)(2101003)(83996005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2020 12:09:32.5502
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 182c6120-b021-4e7c-f4f1-08d85bcbb3dd
-X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[64.207.220.244];Helo=[wcmailrelayl01.cadence.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM12FT044.eop-nam12.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR07MB4941
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-18_14:2020-09-16,2020-09-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 malwarescore=0
- bulkscore=0 spamscore=0 mlxlogscore=999 phishscore=0 lowpriorityscore=0
- clxscore=1015 priorityscore=1501 suspectscore=0 adultscore=0
- impostorscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009180101
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:turuYngxuWvvZGlQIzIUIkI/5MIDwtOTRRsAxoSfubHLS0nafsT
+ Ztq8Y/VdxVa+9rY3KO9F62a+NgYuMeLRsnF/UU/rJOZsZYgi7EXR1Qy8Hvd6KErlRCqg9XD
+ yp4ZT71D/sOpvi9fB00rCDvh6RQczR66k2/OZ+3TNFGF4mvGbFQZ9dbPCY7q1+JI02ovJ9T
+ 5vrJTwTT7r88+K3jXP9gA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3zo151Kxg3s=:X2HIUpg2rTwqsEIOSufltD
+ 8zomUTVMWKzIyXKlScb+anMjCDM8HdXU+fAOIvvuUXkvEdW1GIw0O2Go1hggHc7jsYz+AJHBS
+ HwMAwUaB27wcw2Yt6AiTYQTjz68bH+8e4q43HyDh7lGWp2jItDYXGVsH8ZmU9l2cxB91pPKP2
+ S2HDgNUnYZp2Z6I0+x0/ZxZxlm1GpZqR5nX2NyGy5dcCmhqA/hyX2lEjtR7VEzjd6a2oDKc6W
+ 3F0AwfJcNjNFVg7DGTiANbQ/z0ZnNDq4O/oNYvXTtLNDOJJ8DYzjdQ1qb8Tly8qv/lD6TbJDZ
+ Em7wH6L3gNTK+oO1pfzEpw5t68jj3x7yxWGbEYIvC8MSmNNatGm9Ut4IbesDXu2ZZaAD4Tcz/
+ m2ndkyhjXEAX84nVUog2EeCL7cmON02zCOleY/IOw2fNjQC+f2gbWz2oyaUqB5budJ0j4V4HU
+ +4ptcW/t+muED3n025+OAgleerkQaPwRgf0x4Ienw8if9/kfbyCIdLweGUnwPh2mZS8CN8f5y
+ vnqxSQ6kqSOtJLG++OIukIR0TxIfHzUbHfKHyujGfbisyjAM2jYkIYhoPocJuYXOcdopTjRuH
+ df3JfBRh02X3p7phs0CWXyh/x0IY091tv47GEAnTxo9NG06myL/yGXnYbPg5XUg5VHflulSx/
+ FuhYap4y3IlHCzxYz32eQADWZkhzW8BITew2dIc/u/m3yWMDibY/fWm0jXieMtTUo3of1Mg32
+ JRUegL66alKkjH8d1m+x1UddE2rgtBS19o4HazSxnwWJopif36qo6c3T5Hbg/CQyU+teLvP18
+ Nol6YEq2H4miMIVOetA3v4WF7OKSEas0zCvpOAF2gBZVIw+WGDmm3wyf7SGN/8dHuUky/Zh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add J721E wrapper for mhdp, which sets up the clock and data muxes.
+The use of compat_alloc_user_space() can be easily replaced by
+handling compat arguments in the regular handler, and this will
+make it work for big-endian kernels as well, which at the moment
+get an invalid indirect pointer argument.
 
-Signed-off-by: Jyri Sarha <jsarha@ti.com>
-Signed-off-by: Yuti Amonkar <yamonkar@cadence.com>
-Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
-Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Calling aac_ioctl() instead of aac_compat_do_ioctl() means the
+compat and native code paths behave the same way again, which
+they stopped when the adapter health check was added only
+in the native function.
+
+Fixes: 572ee53a9bad ("scsi: aacraid: check adapter health")
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/gpu/drm/bridge/cadence/Kconfig        | 13 ++++
- drivers/gpu/drm/bridge/cadence/Makefile       |  1 +
- .../drm/bridge/cadence/cdns-mhdp8546-core.c   | 10 +++
- .../drm/bridge/cadence/cdns-mhdp8546-core.h   |  1 +
- .../drm/bridge/cadence/cdns-mhdp8546-j721e.c  | 78 +++++++++++++++++++
- .../drm/bridge/cadence/cdns-mhdp8546-j721e.h  | 19 +++++
- 6 files changed, 122 insertions(+)
- create mode 100644 drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-j721e.c
- create mode 100644 drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-j721e.h
+ drivers/scsi/aacraid/commctrl.c | 22 ++++++++++--
+ drivers/scsi/aacraid/linit.c    | 61 ++-------------------------------
+ 2 files changed, 22 insertions(+), 61 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/cadence/Kconfig b/drivers/gpu/drm/bridge/cadence/Kconfig
-index f49d77eb7814..511d67b16d14 100644
---- a/drivers/gpu/drm/bridge/cadence/Kconfig
-+++ b/drivers/gpu/drm/bridge/cadence/Kconfig
-@@ -9,3 +9,16 @@ config DRM_CDNS_MHDP8546
- 	  bridge and is meant to be directly embedded in a SoC.
- 	  It takes a DPI stream as input and outputs it encoded
- 	  in DP format.
-+
-+if DRM_CDNS_MHDP8546
-+
-+config DRM_CDNS_MHDP8546_J721E
-+	depends on ARCH_K3_J721E_SOC || COMPILE_TEST
-+	bool "J721E Cadence DPI/DP wrapper support"
-+	default y
-+	help
-+	  Support J721E Cadence DPI/DP wrapper. This is a wrapper
-+	  which adds support for J721E related platform ops. It
-+	  initializes the J721E Display Port and sets up the
-+	  clock and data muxes.
-+endif
-diff --git a/drivers/gpu/drm/bridge/cadence/Makefile b/drivers/gpu/drm/bridge/cadence/Makefile
-index 676739cdf5e6..8f647991b374 100644
---- a/drivers/gpu/drm/bridge/cadence/Makefile
-+++ b/drivers/gpu/drm/bridge/cadence/Makefile
-@@ -1,3 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0-only
- obj-$(CONFIG_DRM_CDNS_MHDP8546) += cdns-mhdp8546.o
- cdns-mhdp8546-y := cdns-mhdp8546-core.o
-+cdns-mhdp8546-$(CONFIG_DRM_CDNS_MHDP8546_J721E) += cdns-mhdp8546-j721e.o
-diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
-index 7b1bd5d10923..621ebdbff8a3 100644
---- a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
-+++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
-@@ -50,6 +50,8 @@
+diff --git a/drivers/scsi/aacraid/commctrl.c b/drivers/scsi/aacraid/commctrl.c
+index 59e82a832042..3588360211e0 100644
+--- a/drivers/scsi/aacraid/commctrl.c
++++ b/drivers/scsi/aacraid/commctrl.c
+@@ -25,6 +25,7 @@
+ #include <linux/completion.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/blkdev.h>
++#include <linux/compat.h>
+ #include <linux/delay.h> /* ssleep prototype */
+ #include <linux/kthread.h>
+ #include <linux/uaccess.h>
+@@ -226,6 +227,12 @@ static int open_getadapter_fib(struct aac_dev * dev, void __user *arg)
+ 	return status;
+ }
  
- #include "cdns-mhdp8546-core.h"
- 
-+#include "cdns-mhdp8546-j721e.h"
++struct compat_fib_ioctl {
++	u32	fibctx;
++	s32	wait;
++	compat_uptr_t fib;
++};
 +
- static int cdns_mhdp_mailbox_read(struct cdns_mhdp_device *mhdp)
+ /**
+  *	next_getadapter_fib	-	get the next fib
+  *	@dev: adapter to use
+@@ -243,8 +250,19 @@ static int next_getadapter_fib(struct aac_dev * dev, void __user *arg)
+ 	struct list_head * entry;
+ 	unsigned long flags;
+ 
+-	if(copy_from_user((void *)&f, arg, sizeof(struct fib_ioctl)))
+-		return -EFAULT;
++	if (in_compat_syscall()) {
++		struct compat_fib_ioctl cf;
++
++		if (copy_from_user(&cf, arg, sizeof(struct compat_fib_ioctl)))
++			return -EFAULT;
++
++		f.fibctx = cf.fibctx;
++		f.wait = cf.wait;
++		f.fib = compat_ptr(cf.fib);
++	} else {
++		if (copy_from_user(&f, arg, sizeof(struct fib_ioctl)))
++			return -EFAULT;
++	}
+ 	/*
+ 	 *	Verify that the HANDLE passed in was a valid AdapterFibContext
+ 	 *
+diff --git a/drivers/scsi/aacraid/linit.c b/drivers/scsi/aacraid/linit.c
+index 8588da0a0655..8c0f55845138 100644
+--- a/drivers/scsi/aacraid/linit.c
++++ b/drivers/scsi/aacraid/linit.c
+@@ -1182,63 +1182,6 @@ static long aac_cfg_ioctl(struct file *file,
+ 	return aac_do_ioctl(aac, cmd, (void __user *)arg);
+ }
+ 
+-#ifdef CONFIG_COMPAT
+-static long aac_compat_do_ioctl(struct aac_dev *dev, unsigned cmd, unsigned long arg)
+-{
+-	long ret;
+-	switch (cmd) {
+-	case FSACTL_MINIPORT_REV_CHECK:
+-	case FSACTL_SENDFIB:
+-	case FSACTL_OPEN_GET_ADAPTER_FIB:
+-	case FSACTL_CLOSE_GET_ADAPTER_FIB:
+-	case FSACTL_SEND_RAW_SRB:
+-	case FSACTL_GET_PCI_INFO:
+-	case FSACTL_QUERY_DISK:
+-	case FSACTL_DELETE_DISK:
+-	case FSACTL_FORCE_DELETE_DISK:
+-	case FSACTL_GET_CONTAINERS:
+-	case FSACTL_SEND_LARGE_FIB:
+-		ret = aac_do_ioctl(dev, cmd, (void __user *)arg);
+-		break;
+-
+-	case FSACTL_GET_NEXT_ADAPTER_FIB: {
+-		struct fib_ioctl __user *f;
+-
+-		f = compat_alloc_user_space(sizeof(*f));
+-		ret = 0;
+-		if (clear_user(f, sizeof(*f)))
+-			ret = -EFAULT;
+-		if (copy_in_user(f, (void __user *)arg, sizeof(struct fib_ioctl) - sizeof(u32)))
+-			ret = -EFAULT;
+-		if (!ret)
+-			ret = aac_do_ioctl(dev, cmd, f);
+-		break;
+-	}
+-
+-	default:
+-		ret = -ENOIOCTLCMD;
+-		break;
+-	}
+-	return ret;
+-}
+-
+-static int aac_compat_ioctl(struct scsi_device *sdev, unsigned int cmd,
+-			    void __user *arg)
+-{
+-	struct aac_dev *dev = (struct aac_dev *)sdev->host->hostdata;
+-	if (!capable(CAP_SYS_RAWIO))
+-		return -EPERM;
+-	return aac_compat_do_ioctl(dev, cmd, (unsigned long)arg);
+-}
+-
+-static long aac_compat_cfg_ioctl(struct file *file, unsigned cmd, unsigned long arg)
+-{
+-	if (!capable(CAP_SYS_RAWIO))
+-		return -EPERM;
+-	return aac_compat_do_ioctl(file->private_data, cmd, arg);
+-}
+-#endif
+-
+ static ssize_t aac_show_model(struct device *device,
+ 			      struct device_attribute *attr, char *buf)
  {
- 	int ret, empty;
-@@ -2496,6 +2498,14 @@ static int cdns_mhdp_remove(struct platform_device *pdev)
- 
- static const struct of_device_id mhdp_ids[] = {
- 	{ .compatible = "cdns,mhdp8546", },
-+#ifdef CONFIG_DRM_CDNS_MHDP8546_J721E
-+	{ .compatible = "ti,j721e-mhdp8546",
-+	  .data = &(const struct cdns_mhdp_platform_info) {
-+		  .timings = &mhdp_ti_j721e_bridge_timings,
-+		  .ops = &mhdp_ti_j721e_ops,
-+	  },
-+	},
-+#endif
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, mhdp_ids);
-diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.h b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.h
-index c0fff78d15be..5897a85e3159 100644
---- a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.h
-+++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.h
-@@ -341,6 +341,7 @@ struct cdns_mhdp_platform_info {
- 
- struct cdns_mhdp_device {
- 	void __iomem *regs;
-+	void __iomem *j721e_regs;
- 
- 	struct device *dev;
- 	struct clk *clk;
-diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-j721e.c b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-j721e.c
-new file mode 100644
-index 000000000000..dfe1b59514f7
---- /dev/null
-+++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-j721e.c
-@@ -0,0 +1,78 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * TI j721e Cadence MHDP8546 DP wrapper
-+ *
-+ * Copyright (C) 2020 Texas Instruments Incorporated - http://www.ti.com/
-+ * Author: Jyri Sarha <jsarha@ti.com>
-+ */
-+
-+#include <linux/io.h>
-+#include <linux/platform_device.h>
-+
-+#include "cdns-mhdp8546-j721e.h"
-+
-+#define	REVISION			0x00
-+#define	DPTX_IPCFG			0x04
-+#define	ECC_MEM_CFG			0x08
-+#define	DPTX_DSC_CFG			0x0c
-+#define	DPTX_SRC_CFG			0x10
-+#define	DPTX_VIF_SECURE_MODE_CFG	0x14
-+#define	DPTX_VIF_CONN_STATUS		0x18
-+#define	PHY_CLK_STATUS			0x1c
-+
-+#define DPTX_SRC_AIF_EN			BIT(16)
-+#define DPTX_SRC_VIF_3_IN30B		BIT(11)
-+#define DPTX_SRC_VIF_2_IN30B		BIT(10)
-+#define DPTX_SRC_VIF_1_IN30B		BIT(9)
-+#define DPTX_SRC_VIF_0_IN30B		BIT(8)
-+#define DPTX_SRC_VIF_3_SEL_DPI5		BIT(7)
-+#define DPTX_SRC_VIF_3_SEL_DPI3		0
-+#define DPTX_SRC_VIF_2_SEL_DPI4		BIT(6)
-+#define DPTX_SRC_VIF_2_SEL_DPI2		0
-+#define DPTX_SRC_VIF_1_SEL_DPI3		BIT(5)
-+#define DPTX_SRC_VIF_1_SEL_DPI1		0
-+#define DPTX_SRC_VIF_0_SEL_DPI2		BIT(4)
-+#define DPTX_SRC_VIF_0_SEL_DPI0		0
-+#define DPTX_SRC_VIF_3_EN		BIT(3)
-+#define DPTX_SRC_VIF_2_EN		BIT(2)
-+#define DPTX_SRC_VIF_1_EN		BIT(1)
-+#define DPTX_SRC_VIF_0_EN		BIT(0)
-+
-+/* TODO turn DPTX_IPCFG fw_mem_clk_en at pm_runtime_suspend. */
-+
-+static int cdns_mhdp_j721e_init(struct cdns_mhdp_device *mhdp)
-+{
-+	struct platform_device *pdev = to_platform_device(mhdp->dev);
-+
-+	mhdp->j721e_regs = devm_platform_ioremap_resource(pdev, 1);
-+	return PTR_ERR_OR_ZERO(mhdp->j721e_regs);
-+}
-+
-+static void cdns_mhdp_j721e_enable(struct cdns_mhdp_device *mhdp)
-+{
-+	/*
-+	 * Enable VIF_0 and select DPI2 as its input. DSS0 DPI0 is connected
-+	 * to eDP DPI2. This is the only supported SST configuration on
-+	 * J721E.
-+	 */
-+	writel(DPTX_SRC_VIF_0_EN | DPTX_SRC_VIF_0_SEL_DPI2,
-+	       mhdp->j721e_regs + DPTX_SRC_CFG);
-+}
-+
-+static void cdns_mhdp_j721e_disable(struct cdns_mhdp_device *mhdp)
-+{
-+	/* Put everything to defaults  */
-+	writel(0, mhdp->j721e_regs + DPTX_DSC_CFG);
-+}
-+
-+const struct mhdp_platform_ops mhdp_ti_j721e_ops = {
-+	.init = cdns_mhdp_j721e_init,
-+	.enable = cdns_mhdp_j721e_enable,
-+	.disable = cdns_mhdp_j721e_disable,
-+};
-+
-+const struct drm_bridge_timings mhdp_ti_j721e_bridge_timings = {
-+	.input_bus_flags = DRM_BUS_FLAG_PIXDATA_SAMPLE_NEGEDGE |
-+			   DRM_BUS_FLAG_SYNC_SAMPLE_NEGEDGE |
-+			   DRM_BUS_FLAG_DE_HIGH,
-+};
-diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-j721e.h b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-j721e.h
-new file mode 100644
-index 000000000000..97d20d115a24
---- /dev/null
-+++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-j721e.h
-@@ -0,0 +1,19 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * TI j721e Cadence MHDP8546 DP wrapper
-+ *
-+ * Copyright (C) 2020 Texas Instruments Incorporated - http://www.ti.com/
-+ * Author: Jyri Sarha <jsarha@ti.com>
-+ */
-+
-+#ifndef CDNS_MHDP8546_J721E_H
-+#define CDNS_MHDP8546_J721E_H
-+
-+#include "cdns-mhdp8546-core.h"
-+
-+struct mhdp_platform_ops;
-+
-+extern const struct mhdp_platform_ops mhdp_ti_j721e_ops;
-+extern const struct drm_bridge_timings mhdp_ti_j721e_bridge_timings;
-+
-+#endif /* !CDNS_MHDP8546_J721E_H */
+@@ -1523,7 +1466,7 @@ static const struct file_operations aac_cfg_fops = {
+ 	.owner		= THIS_MODULE,
+ 	.unlocked_ioctl	= aac_cfg_ioctl,
+ #ifdef CONFIG_COMPAT
+-	.compat_ioctl   = aac_compat_cfg_ioctl,
++	.compat_ioctl   = aac_cfg_ioctl,
+ #endif
+ 	.open		= aac_cfg_open,
+ 	.llseek		= noop_llseek,
+@@ -1536,7 +1479,7 @@ static struct scsi_host_template aac_driver_template = {
+ 	.info				= aac_info,
+ 	.ioctl				= aac_ioctl,
+ #ifdef CONFIG_COMPAT
+-	.compat_ioctl			= aac_compat_ioctl,
++	.compat_ioctl			= aac_ioctl,
+ #endif
+ 	.queuecommand			= aac_queuecommand,
+ 	.bios_param			= aac_biosparm,
 -- 
-2.26.1
+2.27.0
 
