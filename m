@@ -2,125 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACFC026F2C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CDFB26F3E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728919AbgIRDB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 23:01:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49843 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727656AbgIRDBb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 23:01:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600398090;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=08vvKo7W8fzgKzRki0M2Us+rPrn1t1DRF38EQBkZbD0=;
-        b=eSJuMCtkXZrmpN/kNUii8n6HvywtgU2Mc98OAyjCXxYknXmKNZjZwkeIighrthjZPghX9Q
-        Mi6cWItw3DjUTtIzc882QJCS1pgPkFOJAwNmzV7a+J5iUWAtMZoUqsFbjS8K6N1NFjDGl5
-        nc8exgfMFZFRmUH0pHg0+gpAf3x3y/Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-357-CC16NPrCO_q5BV3RSOZkzw-1; Thu, 17 Sep 2020 23:01:28 -0400
-X-MC-Unique: CC16NPrCO_q5BV3RSOZkzw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F283910060C2;
-        Fri, 18 Sep 2020 03:01:24 +0000 (UTC)
-Received: from dhcp-128-65.nay.redhat.com (ovpn-13-81.pek2.redhat.com [10.72.13.81])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BA00455766;
-        Fri, 18 Sep 2020 03:01:15 +0000 (UTC)
-Date:   Fri, 18 Sep 2020 11:01:12 +0800
-From:   Dave Young <dyoung@redhat.com>
-To:     Chen Zhou <chenzhou10@huawei.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com,
-        tglx@linutronix.de, mingo@redhat.com, bhe@redhat.com,
-        corbet@lwn.net, John.P.donnelly@oracle.com,
-        prabhakar.pkin@gmail.com, bhsharma@redhat.com, horms@verge.net.au,
-        robh+dt@kernel.org, arnd@arndb.de, nsaenzjulienne@suse.de,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kexec@lists.infradead.org, linux-doc@vger.kernel.org,
-        guohanjun@huawei.com, xiexiuqi@huawei.com, huawei.libin@huawei.com,
-        wangkefeng.wang@huawei.com
-Subject: Re: [PATCH v12 3/9] x86: kdump: use macro CRASH_ADDR_LOW_MAX in
- functions reserve_crashkernel[_low]()
-Message-ID: <20200918030112.GA3356@dhcp-128-65.nay.redhat.com>
-References: <20200907134745.25732-1-chenzhou10@huawei.com>
- <20200907134745.25732-4-chenzhou10@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200907134745.25732-4-chenzhou10@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+        id S1730692AbgIRDK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 23:10:27 -0400
+Received: from mail.fudan.edu.cn ([202.120.224.73]:45203 "EHLO fudan.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726786AbgIRDKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 23:10:17 -0400
+X-Greylist: delayed 369 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 23:10:15 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id; bh=ombxFY+WtHzRTIMahcPDgE9Yl8BvDDN9V7y66FFXn+M=; b=J
+        gNgaRnLpT6kT6Q/wzRgKmdsAot0xgW/JCCHEsvyQU93c6Bc/loQ//oIwdkFIc6BY
+        OshXylupO2b1G1Hgs3Q3/m8eUJ3p4D7OSy3h98G9o3mevzl7ESwTz7LCMYagQ/Sb
+        8d0tTMPb4wD9d9FBGfMJK6lYmiGa0ABKxLro9ZePVI=
+Received: from localhost.localdomain (unknown [10.162.140.61])
+        by app2 (Coremail) with SMTP id XQUFCgCnbAiJI2Rfrd9VBQ--.17995S3;
+        Fri, 18 Sep 2020 11:03:37 +0800 (CST)
+From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
+To:     Marek Lindner <mareklindner@neomailbox.ch>,
+        Simon Wunderlich <sw@simonwunderlich.de>,
+        Antonio Quartulli <a@unstable.cc>,
+        Sven Eckelmann <sven@narfation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        b.a.t.m.a.n@lists.open-mesh.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     yuanxzhang@fudan.edu.cn, kjlu@umn.edu,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>
+Subject: [PATCH] batman-adv: Fix orig node refcnt leak when creating neigh node
+Date:   Fri, 18 Sep 2020 11:03:19 +0800
+Message-Id: <1600398200-8198-1-git-send-email-xiyuyang19@fudan.edu.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: XQUFCgCnbAiJI2Rfrd9VBQ--.17995S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7WrWfCr1DuFW5Aw1DJF43Wrg_yoW8WFWDpw
+        1fK3y5Cr95t3WkGFWkt34ruryUJa1qyr4jyrZ5u3WayryDX3savr4F9r4UCF1rJFWkWryj
+        qr1093ZIvF1DCFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9G14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26rxl
+        6s0DM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
+        YxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxkIecxEwVCm-wCF04k20xvY0x0EwIxGrwCFx2
+        IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v2
+        6r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67
+        AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IY
+        s7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxV
+        W8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbHa0DUUUUU==
+X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/07/20 at 09:47pm, Chen Zhou wrote:
-> To make the functions reserve_crashkernel[_low]() as generic,
-> replace some hard-coded numbers with macro CRASH_ADDR_LOW_MAX.
-> 
-> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-> ---
->  arch/x86/kernel/setup.c | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> index d7fd90c52dae..71a6a6e7ca5b 100644
-> --- a/arch/x86/kernel/setup.c
-> +++ b/arch/x86/kernel/setup.c
-> @@ -430,7 +430,7 @@ static int __init reserve_crashkernel_low(void)
->  	unsigned long total_low_mem;
->  	int ret;
->  
-> -	total_low_mem = memblock_mem_size(1UL << (32 - PAGE_SHIFT));
-> +	total_low_mem = memblock_mem_size(CRASH_ADDR_LOW_MAX >> PAGE_SHIFT);
+batadv_neigh_node_create() is used to create a neigh node object, whose
+fields will be initialized with the specific object. When a new
+reference of the specific object is created during the initialization,
+its refcount should be increased.
 
-total_low_mem != CRASH_ADDR_LOW_MAX
+However, when "neigh_node" object initializes its orig_node field with
+the "orig_node" object, the function forgets to hold the refcount of the
+"orig_node", causing a potential refcount leak and use-after-free issue
+for the reason that the object can be freed in other places.
 
->  
->  	/* crashkernel=Y,low */
->  	ret = parse_crashkernel_low(boot_command_line, total_low_mem, &low_size, &base);
+Fix this issue by increasing the refcount of orig_node object during the
+initialization and adding corresponding batadv_orig_node_put() in
+batadv_neigh_node_release().
 
-The param total_low_mem is for dynamically change crash_size according
-to system ram size.
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+---
+ net/batman-adv/originator.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Is above change a must for your arm64 patches?
-
-> @@ -451,7 +451,7 @@ static int __init reserve_crashkernel_low(void)
->  			return 0;
->  	}
->  
-> -	low_base = memblock_find_in_range(CRASH_ALIGN, 1ULL << 32, low_size, CRASH_ALIGN);
-> +	low_base = memblock_find_in_range(CRASH_ALIGN, CRASH_ADDR_LOW_MAX, low_size, CRASH_ALIGN);
->  	if (!low_base) {
->  		pr_err("Cannot reserve %ldMB crashkernel low memory, please try smaller size.\n",
->  		       (unsigned long)(low_size >> 20));
-> @@ -504,8 +504,9 @@ static void __init reserve_crashkernel(void)
->  	if (!crash_base) {
->  		/*
->  		 * Set CRASH_ADDR_LOW_MAX upper bound for crash memory,
-> -		 * crashkernel=x,high reserves memory over 4G, also allocates
-> -		 * 256M extra low memory for DMA buffers and swiotlb.
-> +		 * crashkernel=x,high reserves memory over CRASH_ADDR_LOW_MAX,
-> +		 * also allocates 256M extra low memory for DMA buffers
-> +		 * and swiotlb.
->  		 * But the extra memory is not required for all machines.
->  		 * So try low memory first and fall back to high memory
->  		 * unless "crashkernel=size[KMG],high" is specified.
-> @@ -539,7 +540,7 @@ static void __init reserve_crashkernel(void)
->  		return;
->  	}
->  
-> -	if (crash_base >= (1ULL << 32) && reserve_crashkernel_low()) {
-> +	if (crash_base >= CRASH_ADDR_LOW_MAX && reserve_crashkernel_low()) {
->  		memblock_free(crash_base, crash_size);
->  		return;
->  	}
-> -- 
-> 2.20.1
-> 
+diff --git a/net/batman-adv/originator.c b/net/batman-adv/originator.c
+index 805d8969bdfb..d6c2296f8e35 100644
+--- a/net/batman-adv/originator.c
++++ b/net/batman-adv/originator.c
+@@ -306,6 +306,8 @@ static void batadv_neigh_node_release(struct kref *ref)
+ 
+ 	batadv_hardif_put(neigh_node->if_incoming);
+ 
++	batadv_orig_node_put(neigh_node->orig_node);
++
+ 	kfree_rcu(neigh_node, rcu);
+ }
+ 
+@@ -685,6 +687,7 @@ batadv_neigh_node_create(struct batadv_orig_node *orig_node,
+ 	kref_get(&hard_iface->refcount);
+ 	ether_addr_copy(neigh_node->addr, neigh_addr);
+ 	neigh_node->if_incoming = hard_iface;
++	kref_get(&orig_node->refcount);
+ 	neigh_node->orig_node = orig_node;
+ 	neigh_node->last_seen = jiffies;
+ 
+-- 
+2.7.4
 
