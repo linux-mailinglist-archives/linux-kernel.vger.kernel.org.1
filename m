@@ -2,81 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB36527060A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30C79270618
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:14:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726314AbgIRUME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 16:12:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52276 "EHLO
+        id S1726305AbgIRUOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 16:14:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726245AbgIRUMD (ORCPT
+        with ESMTP id S1726241AbgIRUOk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 16:12:03 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CDDCC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:12:03 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id bw23so910469pjb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:12:03 -0700 (PDT)
+        Fri, 18 Sep 2020 16:14:40 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA37EC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:14:39 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id u35so852076ybd.13
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:14:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=WYax7v4NuEypPEvd+V/vHx29fv7IIwQqylMWYbQJGb4=;
-        b=g2nFX6vYp55iT9QkeDSx3oS1z2dptOcTFIaCgSCPj9ilpajYlt1BQD81Og5YUnR4Y+
-         XPil1W1fK1i2p1puAc5IWOIVCs15vliGXNejHzd9xjUQKCzUEX1V42FizDovyDQ/sLy2
-         Qj6rA5BIktF0J3kXMbgq8L25B0tQxU/nQsZgqtf8/3H4VoXLgzeJlmFQcjo4qlJSahap
-         58kOrc6zn1uLyOfDitW6o5GLwSVm6WlE5/X+TtGpWPlo+d4G3UR4wW2HCZ5ekK3/czw9
-         uqXWD2RadIBCXo8mgSvQwVv7/XSmVXuUMyRzvizhBeeT/bkNWLriRAEVz6/k+PDTopZY
-         +99Q==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=m9GgocfY8+01Ep0T8Ve9tfyfiZGzmhYAiMkUJNd91bc=;
+        b=PXIGbZNrMi3O++j+2+mThPHZHdw4qWSb0EcHQqCin6s/3LvNDxQywk7QchWre77VGW
+         py8Oea7kZq0JTTq1g8GzG2PNdWRayPiz1bsuYEe5XcyX7INwDaUOR8ceuZEnBfQJIOAj
+         +YKdoezMGmg6neVUK6W+mt5gFKPC1gi9KCTD3dz/GtJE8k0azm1XJcCzbBJOsJeBOKgV
+         lCS0ZTpQ6+rsPRYGjqTbaAnABk+U+kR8ck8vElEPnDH26Ayf92ZlHEex10LGGT9h7rRa
+         ZUpvCNbsqvvqna3QgJr5cS7VCmbdVfrYe96DrzrmG0sE4foBdeJPazCyLBjAIHYVjnvi
+         PVnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=WYax7v4NuEypPEvd+V/vHx29fv7IIwQqylMWYbQJGb4=;
-        b=eUNSaM9Gg2eIp9u79L4jZlbiAEtKcCZUCOB9wYKq4RKiHPoJ/2D4OaReTVjVQtUq8Q
-         uIUuHr6ug/czbcaiIKcIfxkZdQYh+1zQuIeqzmBvwSkgxTYSBYf3Xup01DUfPKRg0kpo
-         XNFQONd9tQR9b5U2nFqGYX1V4PlF4QQd3Xva+KEKGXfmJcXiLYJhDQpbgC6+SKg+0wbZ
-         gqOtLe1K9kXDUaO3X+7sr76s5un7Feb9L9ybgEwXxI5UkyhYIFTikHRll3h3dK7E1o7T
-         4J78LHOSN9FT5VTrGlLZR50iGWgpctyIwm38yOjIK8Z8HVUxx41PHvkZ0ayAMVh40269
-         /2Rw==
-X-Gm-Message-State: AOAM531hxeWNpVqXg2ewFiIrkJlB47GdB1iADzAAhQm2UDcJAyARE6f+
-        n4CvrUIJQ8zhKTeemhapQ3evNQ==
-X-Google-Smtp-Source: ABdhPJwSY0Hzmg5C+Z/FHs4BwlJgD3AAS3rxUQWe3xi7RXPELvqajT4QHxfxQkQWHWg43jTmhbkMfQ==
-X-Received: by 2002:a17:902:c206:b029:d1:e598:3fff with SMTP id 6-20020a170902c206b02900d1e5983fffmr17975673pll.57.1600459922118;
-        Fri, 18 Sep 2020 13:12:02 -0700 (PDT)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id p68sm4330181pfb.40.2020.09.18.13.12.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 13:12:01 -0700 (PDT)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liu Shixin <liushixin2@huawei.com>
-Cc:     Niklas Cassel <nks@flawful.org>, Andy Gross <agross@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>, Nishanth Menon <nm@ti.com>,
-        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH -next] power: avs: qcom-cpr: simplify the return expression of cpr_disable()
-In-Reply-To: <20200915031714.GA670377@yoga>
-References: <20200915032629.1772569-1-liushixin2@huawei.com> <20200915031714.GA670377@yoga>
-Date:   Fri, 18 Sep 2020 13:12:00 -0700
-Message-ID: <7hwo0qdeun.fsf@baylibre.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=m9GgocfY8+01Ep0T8Ve9tfyfiZGzmhYAiMkUJNd91bc=;
+        b=cv0ylziXUaCWDy6fbL+R05vbyyiASYGSKbTSQh/8QFRalXXhzK7tyvVGMyZDAQrmYC
+         nC8iKKSY8PZnYyWdi/U28/odWMa4XffjyZFmqOychEWqwO4uUmAobgMoAU/4cXkMLA8R
+         SStW3njf1b0H/sP8FF1M7HJ5kpdCHtGpRLSnAgFuGwA3zD8D6yUvZnwWaTmSAP2PY0Au
+         ZcL1jS2rhxs4aJTGFSI9a6/AEdLLg48U8o4szNswaP5MjxXz+sRyTTcG31eg3Rz3dFy7
+         1X0vFkEz/nJClwPZM6pG1VK/DHjQNyCoey+yT8Qs9aYpx6jKQfSiFRAjzTDZr/hB6Fju
+         QDXg==
+X-Gm-Message-State: AOAM5310t8EaL0GwXZajx/paMgY6CsGM0uHqerv25M+F11IRxB+xFJLy
+        CkEJwm/XqWaXqYQVjf1RhLzwnYYPx5Y5LOPGMFI=
+X-Google-Smtp-Source: ABdhPJyQqcI0bIyy5SutKhtAX50K/BXluMhOWTRFyo41B4zMWT3FgwUcl8/Yz6H5y9TMP2bFvT9SvE5mYq69VqEz2rs=
+Sender: "samitolvanen via sendgmr" 
+        <samitolvanen@samitolvanen1.mtv.corp.google.com>
+X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:f693:9fff:fef4:1b6d])
+ (user=samitolvanen job=sendgmr) by 2002:a5b:652:: with SMTP id
+ o18mr17602824ybq.121.1600460078808; Fri, 18 Sep 2020 13:14:38 -0700 (PDT)
+Date:   Fri, 18 Sep 2020 13:14:06 -0700
+Message-Id: <20200918201436.2932360-1-samitolvanen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
+Subject: [PATCH v3 00/30] Add support for Clang LTO
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        x86@kernel.org, Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bjorn Andersson <bjorn.andersson@linaro.org> writes:
+This patch series adds support for building x86_64 and arm64 kernels
+with Clang's Link Time Optimization (LTO).
 
-> On Mon 14 Sep 22:26 CDT 2020, Liu Shixin wrote:
->
->> Simplify the return expression.
->> 
->> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
->
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+In addition to performance, the primary motivation for LTO is
+to allow Clang's Control-Flow Integrity (CFI) to be used in the
+kernel. Google has shipped millions of Pixel devices running three
+major kernel versions with LTO+CFI since 2018.
 
-Acked-by: Kevin Hilman <khilman@baylibre.com>
+Most of the patches are build system changes for handling LLVM
+bitcode, which Clang produces with LTO instead of ELF object files,
+postponing ELF processing until a later stage, and ensuring initcall
+ordering.
 
-Rafael, please apply directly.
+Note that patches 1-5 are not directly related to LTO, but are
+needed to compile LTO kernels with ToT Clang, so I'm including them
+in the series for your convenience:
+
+ - Patches 1-3 fix build issues with LLVM and they are already in
+   linux-next.
+
+ - Patch 4 fixes x86 builds with LLVM IAS, but it hasn't yet been
+   picked up by maintainers.
+
+ - Patch 5 is from Masahiro's kbuild tree and makes the LTO linker
+   script changes much cleaner.
+
+---
+Changes in v3:
+
+  - Added a separate patch to remove the unused DISABLE_LTO treewide,
+    as filtering out CC_FLAGS_LTO instead is preferred.
+
+  - Updated the Kconfig help to explain why LTO is behind a choice
+    and disabled by default.
+
+  - Dropped CC_FLAGS_LTO_CLANG, compiler-specific LTO flags are now
+    appended directly to CC_FLAGS_LTO.
+
+  - Updated $(AR) flags as KBUILD_ARFLAGS was removed earlier.
+
+  - Fixed ThinLTO cache handling for external module builds.
+
+  - Rebased on top of Masahiro's patch for preprocessing modules.lds,
+    and moved the contents of module-lto.lds to modules.lds.S.
+
+  - Moved objtool_args to Makefile.lib to avoid duplication of the
+    command line parameters in Makefile.modfinal.
+
+  - Clarified in the commit message for the initcall ordering patch
+    that the initcall order remains the same as without LTO.
+
+  - Changed link-vmlinux.sh to use jobserver-exec to control the
+    number of jobs started by generate_initcall_ordering.pl.
+
+  - Dropped the x86/relocs patch to whitelist L4_PAGE_OFFSET as it's
+    no longer needed with ToT kernel.
+
+  - Disabled LTO for arch/x86/power/cpu.c to work around a Clang bug
+    with stack protector attributes.
+
+Changes in v2:
+
+  - Fixed -Wmissing-prototypes warnings with W=1.
+
+  - Dropped cc-option from -fsplit-lto-unit and added .thinlto-cache
+    scrubbing to make distclean.
+
+  - Added a comment about Clang >=11 being required.
+
+  - Added a patch to disable LTO for the arm64 KVM nVHE code.
+
+  - Disabled objtool's noinstr validation with LTO unless enabled.
+
+  - Included Peter's proposed objtool mcount patch in the series
+    and replaced recordmcount with the objtool pass to avoid
+    whitelisting relocations that are not calls.
+
+  - Updated several commit messages with better explanations.
+
+
+Arvind Sankar (2):
+  x86/boot/compressed: Disable relocation relaxation
+  x86/asm: Replace __force_order with memory clobber
+
+Luca Stefani (1):
+  RAS/CEC: Fix cec_init() prototype
+
+Masahiro Yamada (1):
+  kbuild: preprocess module linker script
+
+Nick Desaulniers (1):
+  lib/string.c: implement stpcpy
+
+Peter Zijlstra (1):
+  objtool: Add a pass for generating __mcount_loc
+
+Sami Tolvanen (24):
+  objtool: Don't autodetect vmlinux.o
+  kbuild: add support for objtool mcount
+  x86, build: use objtool mcount
+  treewide: remove DISABLE_LTO
+  kbuild: add support for Clang LTO
+  kbuild: lto: fix module versioning
+  kbuild: lto: postpone objtool
+  kbuild: lto: limit inlining
+  kbuild: lto: merge module sections
+  kbuild: lto: remove duplicate dependencies from .mod files
+  init: lto: ensure initcall ordering
+  init: lto: fix PREL32 relocations
+  PCI: Fix PREL32 relocations for LTO
+  modpost: lto: strip .lto from module names
+  scripts/mod: disable LTO for empty.c
+  efi/libstub: disable LTO
+  drivers/misc/lkdtm: disable LTO for rodata.o
+  arm64: export CC_USING_PATCHABLE_FUNCTION_ENTRY
+  arm64: vdso: disable LTO
+  KVM: arm64: disable LTO for the nVHE directory
+  arm64: allow LTO_CLANG and THINLTO to be selected
+  x86, vdso: disable LTO only for vDSO
+  x86, cpu: disable LTO for cpu.c
+  x86, build: allow LTO_CLANG and THINLTO to be selected
+
+ .gitignore                                    |   1 +
+ Makefile                                      |  74 ++++-
+ arch/Kconfig                                  |  68 +++++
+ arch/arm/Makefile                             |   4 -
+ .../module.lds => include/asm/module.lds.h}   |   2 +
+ arch/arm64/Kconfig                            |   2 +
+ arch/arm64/Makefile                           |   5 +-
+ .../module.lds => include/asm/module.lds.h}   |   2 +
+ arch/arm64/kernel/vdso/Makefile               |   4 +-
+ arch/arm64/kvm/hyp/nvhe/Makefile              |   4 +-
+ arch/ia64/Makefile                            |   1 -
+ .../{module.lds => include/asm/module.lds.h}  |   0
+ arch/m68k/Makefile                            |   1 -
+ .../module.lds => include/asm/module.lds.h}   |   0
+ arch/powerpc/Makefile                         |   1 -
+ .../module.lds => include/asm/module.lds.h}   |   0
+ arch/riscv/Makefile                           |   3 -
+ .../module.lds => include/asm/module.lds.h}   |   3 +-
+ arch/sparc/vdso/Makefile                      |   2 -
+ arch/um/include/asm/Kbuild                    |   1 +
+ arch/x86/Kconfig                              |   3 +
+ arch/x86/Makefile                             |   5 +
+ arch/x86/boot/compressed/Makefile             |   2 +
+ arch/x86/boot/compressed/pgtable_64.c         |   9 -
+ arch/x86/entry/vdso/Makefile                  |   5 +-
+ arch/x86/include/asm/special_insns.h          |  28 +-
+ arch/x86/kernel/cpu/common.c                  |   4 +-
+ arch/x86/power/Makefile                       |   4 +
+ drivers/firmware/efi/libstub/Makefile         |   2 +
+ drivers/misc/lkdtm/Makefile                   |   1 +
+ drivers/ras/cec.c                             |   9 +-
+ include/asm-generic/Kbuild                    |   1 +
+ include/asm-generic/module.lds.h              |  10 +
+ include/asm-generic/vmlinux.lds.h             |  11 +-
+ include/linux/init.h                          |  79 ++++-
+ include/linux/pci.h                           |  19 +-
+ kernel/Makefile                               |   3 -
+ kernel/trace/Kconfig                          |   5 +
+ lib/string.c                                  |  24 ++
+ scripts/.gitignore                            |   1 +
+ scripts/Makefile                              |   3 +
+ scripts/Makefile.build                        |  69 +++--
+ scripts/Makefile.lib                          |  17 +-
+ scripts/Makefile.modfinal                     |  29 +-
+ scripts/Makefile.modpost                      |  22 +-
+ scripts/generate_initcall_order.pl            | 270 ++++++++++++++++++
+ scripts/link-vmlinux.sh                       |  95 +++++-
+ scripts/mod/Makefile                          |   1 +
+ scripts/mod/modpost.c                         |  16 +-
+ scripts/mod/modpost.h                         |   9 +
+ scripts/mod/sumversion.c                      |   6 +-
+ scripts/{module-common.lds => module.lds.S}   |  31 ++
+ scripts/package/builddeb                      |   2 +-
+ tools/objtool/builtin-check.c                 |  13 +-
+ tools/objtool/builtin.h                       |   2 +-
+ tools/objtool/check.c                         |  83 ++++++
+ tools/objtool/check.h                         |   1 +
+ tools/objtool/objtool.h                       |   1 +
+ 58 files changed, 919 insertions(+), 154 deletions(-)
+ rename arch/arm/{kernel/module.lds => include/asm/module.lds.h} (72%)
+ rename arch/arm64/{kernel/module.lds => include/asm/module.lds.h} (76%)
+ rename arch/ia64/{module.lds => include/asm/module.lds.h} (100%)
+ rename arch/m68k/{kernel/module.lds => include/asm/module.lds.h} (100%)
+ rename arch/powerpc/{kernel/module.lds => include/asm/module.lds.h} (100%)
+ rename arch/riscv/{kernel/module.lds => include/asm/module.lds.h} (84%)
+ create mode 100644 include/asm-generic/module.lds.h
+ create mode 100755 scripts/generate_initcall_order.pl
+ rename scripts/{module-common.lds => module.lds.S} (59%)
+
+
+base-commit: 92ab97adeefccf375de7ebaad9d5b75d4125fe8b
+-- 
+2.28.0.681.g6f77f65b4e-goog
+
