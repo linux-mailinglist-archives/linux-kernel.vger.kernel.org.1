@@ -2,84 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7CD226EA8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 03:34:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25CF226EA90
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 03:36:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726121AbgIRBec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 21:34:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726055AbgIRBeb (ORCPT
+        id S1726139AbgIRBgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 21:36:08 -0400
+Received: from smtprelay0209.hostedemail.com ([216.40.44.209]:49280 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725886AbgIRBgI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 21:34:31 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC3DC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 18:34:31 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id j2so4922290ioj.7
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 18:34:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wMfYmzq61BMVuIay6MAmJ92sX7yw34AC1En4dJC49nM=;
-        b=ExnwxyuOZ5QMOqFjrHje1iqNp6G4EN6OIn/hhbVXhERcc2Hj8jQQiDqUgfcjXqbKJR
-         nJC6Iap4LGotN7XE+YqDuuwkJusdLs1MoPK67eMhwgsxsxdb9iVWcyUiJxWREwjcA3BQ
-         2D7GL9kz6Uw4uAtVWDLsPTZO6/5Vei+rvdiA8Fmit419cA8HElorA4GgkoWcfxv5knOe
-         c8JqlY1WTGcOHnr0Fa8ouqQd0wNtZEgRFFMHM80XqZ3sgimqtx20knjoAmd9Fj16mckd
-         5hhZoUa1rs/NlRAVfzkDmNM+D8g9FPIcEXYyGYmM6NzLkl13Xkt5M99Ds5lDAe9gS99E
-         xHrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wMfYmzq61BMVuIay6MAmJ92sX7yw34AC1En4dJC49nM=;
-        b=hVE0bppxCOJAv6m2mXc28D7pF/BGPwCtMQl3I8pu05iKJRmAxvK6z+SL9I+RI+7ONe
-         As5Zn4vqtYNTEA/LbtvtXD5sur0hMtTIFBsTngAwNb0mxmOYOyKuvBVI9tF9cPy1Lccw
-         KrKHcNjLIGmO77tVNmlsb1K+a2GNDJ9D26Gn0I9G/+r7ItX6yweC2jWWrwOBIcCPbwlT
-         53LajePCnvruNkVj89oITPcSzkOqHRbRVE6egnXHH72VMOGrGgeWkjJXe40oIta5lvMu
-         bNDchrrzZHfREuuHQuJXeN2HaukXdfHp4sS8sEytnGT6SfcBi0oGnbUkRT2JGixGollh
-         uhDA==
-X-Gm-Message-State: AOAM532SxndBNmui2AQ9WL9ClYFq3WzlHS9wXDfw5iaHr0sKwW0w8XHY
-        eALC/noo9fWm8cdH+bgHuM9kONRiMAisi156FhoPKw==
-X-Google-Smtp-Source: ABdhPJw66SDlFRYI+47lgkH0zEhjVFqIUONt1+UdZYGerOhsCrn5ST22s+desHXe8eF/5qzEZsphVeuuWKzN1TY5lIg=
-X-Received: by 2002:a02:605c:: with SMTP id d28mr28107291jaf.12.1600392870588;
- Thu, 17 Sep 2020 18:34:30 -0700 (PDT)
+        Thu, 17 Sep 2020 21:36:08 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 6C077182CF66A;
+        Fri, 18 Sep 2020 01:36:07 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3870:3873:4321:5007:8660:10004:10400:10848:11026:11232:11473:11658:11914:12043:12296:12297:12438:12679:12740:12760:12895:13069:13148:13230:13311:13357:13439:14181:14659:14721:21080:21451:21611:21627:21740:21939:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: home77_5210bfa27127
+X-Filterd-Recvd-Size: 2929
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf13.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 18 Sep 2020 01:36:03 +0000 (UTC)
+Message-ID: <ce5aa7a4881411836f16693a482d756be7bc79ca.camel@perches.com>
+Subject: Re: [PATCH v2] nfs: remove incorrect fallthrough label
+From:   Joe Perches <joe@perches.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "Gustavo A . R . Silva" <gustavo@embeddedor.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Hongxiang Lou <louhongxiang@huawei.com>,
+        Miaohe Lin <linmiaohe@huawei.com>, linux-nfs@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Date:   Thu, 17 Sep 2020 18:36:01 -0700
+In-Reply-To: <CAKwvOdm84xCFq_KVQcNws2QveJdOM_uRrH9s023Gv8sp8V79JA@mail.gmail.com>
+References: <9441ed0f247d0cac6e85f3847e1b4c32a199dd8f.camel@perches.com>
+         <20200916200255.1382086-1-ndesaulniers@google.com>
+         <ce28bb9bc25cb3f1197f75950a0cfe14947f9002.camel@perches.com>
+         <CAKwvOdm84xCFq_KVQcNws2QveJdOM_uRrH9s023Gv8sp8V79JA@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-References: <20200917063047.2875693-1-pihsun@chromium.org>
-In-Reply-To: <20200917063047.2875693-1-pihsun@chromium.org>
-From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Fri, 18 Sep 2020 09:34:19 +0800
-Message-ID: <CA+Px+wVLBgzXm7FucaPpHRZ4+XeH629fPZYBZ33RtPSkaN9Fsg@mail.gmail.com>
-Subject: Re: [PATCH] remoteproc/mediatek: Add support for mt8192 SCP
-To:     Pi-Hsun Shih <pihsun@chromium.org>
-Cc:     Tzung-Bi Shih <tzungbi@chromium.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
-        <linux-remoteproc@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 2:31 PM Pi-Hsun Shih <pihsun@chromium.org> wrote:
->
-> Add support for mt8192 SCP.
->
-> Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
+On Thu, 2020-09-17 at 14:41 -0700, Nick Desaulniers wrote:
+> On Wed, Sep 16, 2020 at 1:19 PM Joe Perches <joe@perches.com> wrote:
+> > On Wed, 2020-09-16 at 13:02 -0700, Nick Desaulniers wrote:
+> > > * (call of function with __attribute__(__noreturn__))
+> > 
+> > I guess panic counts.  I count 11 of those.
+> > 
+> > Are there any other uses of functions with __noreturn
+> > in switch/case label blocks?
+> 
+> If you look at global_noreturns in tools/objtool/check.c:
+>  145   static const char * const global_noreturns[] = {
+>  146     "__stack_chk_fail",
+>  147     "panic",
+>  148     "do_exit",
+>  149     "do_task_dead",
+>  150     "__module_put_and_exit",
+>  151     "complete_and_exit",
+>  152     "__reiserfs_panic",
+>  153     "lbug_with_loc",
+>  154     "fortify_panic",
+>  155     "usercopy_abort",
+>  156     "machine_real_restart",
+>  157     "rewind_stack_do_exit",
+>  158     "kunit_try_catch_throw",
+>  159   };
+> 
+> Whether they occur or not at the position you ask; I haven't checked.
 
-Has done 1 round review on: https://crrev.com/c/2297082
+Just fyi:
 
-> +#define MT8192_CORE0_R_GPR1            0x30044
-> +#define MT8192_CORE0_R_GPR2            0x30048
+Other than the 11 instances of panic, I found only a
+single use of any other function above in a switch/case:
 
-Remove them because these 2 macros are unused now.
+drivers/pnp/pnpbios/core.c:163:			complete_and_exit(&unload_sem, 0);
+		case PNP_SYSTEM_NOT_DOCKED:
 
-With that,
-Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
+Found with:
+
+$ grep-2.5.4 -rP --include=*.[ch] -n '\b(?:__stack_chk_fail|panic|do_exit|do_task_dead|__module_put_and_exit|complete_and_exit|__reiserfs_panic|lbug_with_loc|fortify_panic|usercopy_abort|machine_real_restart|rewind_stack_do_exit|kunit_try_catch_throw)\s*(?:\([^\)]*\))?\s*;\s*(case\s+\w+|default)\s*:' *
+
+
