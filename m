@@ -2,122 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4658F26F4EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 06:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E02026F4F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 06:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726593AbgIREN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 00:13:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56222 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726198AbgIREN5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 00:13:57 -0400
-Received: from localhost (unknown [104.132.1.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5573123770;
-        Fri, 18 Sep 2020 04:13:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600402436;
-        bh=Dzx2SgdN6Jiki5P08sC+O9f4HKaRJsQSU/WYw/7w1cs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VPyBFZNwGNGNEVVrc8IUbtRybiul5rxNJIusgPICS+h2n6vjSU2lhGgJYML5FJjIR
-         T7Ga6ErZGPHu1DVa3/7RhU8Wri8lMfGf0ZaneDoUia1H3F+5LNZTFxVKa1RdDWQHU1
-         88O5imM089P1bYcVpUdQ8gZ6XvR/EGe1UYtN/vDA=
-Date:   Thu, 17 Sep 2020 21:13:55 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Can Guo <cang@codeaurora.org>
-Cc:     Bean Huo <huobean@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>
-Subject: Re: [PATCH 5/6] scsi: ufs: show ufs part info in error case
-Message-ID: <20200918041355.GB3300389@google.com>
-References: <20200915204532.1672300-1-jaegeuk@kernel.org>
- <20200915204532.1672300-5-jaegeuk@kernel.org>
- <bdc48d03dae86abef158aa33468f6c2f8e669ce8.camel@gmail.com>
- <20200916160533.GA1011272@google.com>
- <06eb20588007cf87181446ab3946e8b2@codeaurora.org>
+        id S1726433AbgIRETH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 00:19:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726102AbgIRETH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 00:19:07 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A73BC06174A;
+        Thu, 17 Sep 2020 21:19:07 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id c3so2301137plz.5;
+        Thu, 17 Sep 2020 21:19:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=uf0XaWxmSBWPs5Ykw52VMS2PajAcQCq1xNqnxZFMyic=;
+        b=jmFM5Hk0uI1NV5zSmzm/rM5GMZnWpZNWRRVoGKaPVl9lvOS2eCjrtzS+6z8u19qAgd
+         sDTmAtyKcKBy06InOtgbTb4X4PyMhqiMocmFrX0qvXPVrm1krkpyMVj2Rc099XEYRg8a
+         8tDLZ4PQsuimizomOQJRZ2C5l4UWsPY35hg3IB5pzLWkR+OXNmwx48yAtPQ1HJa3jURB
+         QZJBfzF971iHAG1Y5/v1cd2O3WvfuUzK7qRBVCPlj0aJJpcyj8D7x8hJqdLHOtVy7Ns3
+         p2ksQWCSyqxpTv2Emz4KefLL+HH9ZIIr7refP2C/I9oBemQPvmiCj1yskQYAb27T6svY
+         E6hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=uf0XaWxmSBWPs5Ykw52VMS2PajAcQCq1xNqnxZFMyic=;
+        b=M/fargzO8ckqYGK7PGnVMQHAbEfUb0smdmGMqIehSZor1B9G3sIyV609RmYWJJiqGw
+         D/kHuTue27Q/bYVQp0iPtuT4xiDysCfXFE8wpRcWZYHBd25cToe3oM4sDK1/i2X0AIq4
+         h25OLeKm4ayGYnJ/0lzTCp5kAHdtL9HjgOGAL4v9yVIEjyPIvZzpjORjk2pnGJckvSQz
+         zxmkLbZAoyDdIiQTun6qv5/Hty3jvQ0xZGwqadgb54KtPIvgh38gWAdGXtJhd9Dw3wz5
+         qVHqzNKLn3BoGluk09MkruNV5d1tJw13caHx6MJui89EPr/EaxDnkKDzJ+aYBqHPkM+b
+         bfJA==
+X-Gm-Message-State: AOAM532c40m90lIqzh+xkBM+E/GJvr+ErGHFyBYjLHePdFcHRqwPWwC2
+        lA1pMYFNjr1gGjuEEB8F/9Y=
+X-Google-Smtp-Source: ABdhPJyTMd0Gg5Oqyr+rhgTmOWmBD6MN+kyK6wNEcYWw7fpphO5ZfvEVBe4QGl3Mhi+fBlLXTDQBqA==
+X-Received: by 2002:a17:902:c40c:b029:d1:9bc8:1624 with SMTP id k12-20020a170902c40cb02900d19bc81624mr30237552plk.1.1600402746335;
+        Thu, 17 Sep 2020 21:19:06 -0700 (PDT)
+Received: from taoren-ubuntu-R90MNF91 (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
+        by smtp.gmail.com with ESMTPSA id c24sm1326854pfd.24.2020.09.17.21.19.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 17 Sep 2020 21:19:05 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 21:18:59 -0700
+From:   Tao Ren <rentao.bupt@gmail.com>
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Joel Stanley <joel@jms.id.au>, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org, Tao Ren <taoren@fb.com>
+Subject: Re: [PATCH] gpio: aspeed: fix ast2600 bank properties
+Message-ID: <20200918041858.GA14246@taoren-ubuntu-R90MNF91>
+References: <20200916204216.9423-1-rentao.bupt@gmail.com>
+ <60f9f14a-c9be-45ac-b3a8-516ab73d9bee@www.fastmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <06eb20588007cf87181446ab3946e8b2@codeaurora.org>
+In-Reply-To: <60f9f14a-c9be-45ac-b3a8-516ab73d9bee@www.fastmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/17, Can Guo wrote:
-> On 2020-09-17 00:05, Jaegeuk Kim wrote:
-> > On 09/16, Bean Huo wrote:
-> > > On Tue, 2020-09-15 at 13:45 -0700, Jaegeuk Kim wrote:
-> > > > Cc: Avri Altman <avri.altman@wdc.com>
-> > > > Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
-> > > > ---
-> > > >  drivers/scsi/ufs/ufshcd.c | 8 ++++++++
-> > > >  1 file changed, 8 insertions(+)
-> > > >
-> > > > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> > > > index bdc82cc3824aa..b81c116b976ff 100644
-> > > > --- a/drivers/scsi/ufs/ufshcd.c
-> > > > +++ b/drivers/scsi/ufs/ufshcd.c
-> > > > @@ -500,6 +500,14 @@ static void ufshcd_print_tmrs(struct ufs_hba
-> > > > *hba, unsigned long bitmap)
-> > > >  static void ufshcd_print_host_state(struct ufs_hba *hba)
-> > > >  {
-> > > >         dev_err(hba->dev, "UFS Host state=%d\n", hba->ufshcd_state);
-> > > > +       if (hba->sdev_ufs_device) {
-> > > > +               dev_err(hba->dev, " vendor = %.8s\n",
-> > > > +                                       hba->sdev_ufs_device-
-> > > > >vendor);
-> > > > +               dev_err(hba->dev, " model = %.16s\n",
-> > > > +                                       hba->sdev_ufs_device->model);
-> > > > +               dev_err(hba->dev, " rev = %.4s\n",
-> > > > +                                       hba->sdev_ufs_device->rev);
-> > > > +       }
-> > > 
-> > > Hi Jaegeuk
-> > > these prints have been added since this change:
-> > > 
-> > > commit 3f8af6044713 ("scsi: ufs: Add some debug information to
-> > > ufshcd_print_host_state()")
-> > > 
-> > > https://patchwork.kernel.org/patch/11694371/
+On Thu, Sep 17, 2020 at 08:42:27AM +0930, Andrew Jeffery wrote:
+> 
+> 
+> On Thu, 17 Sep 2020, at 06:12, rentao.bupt@gmail.com wrote:
+> > From: Tao Ren <rentao.bupt@gmail.com>
 > > 
-> > Cool, thank you for pointing this out. BTW, which branch can I see the
-> > -next
-> > patches?
+> > GPIO_U is mapped to the least significant byte of input/output mask, and
+> > the byte in "output" mask should be 0 because GPIO_U is input only. All
+> > the other bits need to be 1 because GPIO_V/W/X support both input and
+> > output modes.
 > > 
+> > Similarly, GPIO_Y/Z are mapped to the 2 least significant bytes, and the
+> > according bits need to be 1 because GPIO_Y/Z support both input and
+> > output modes.
+> > 
+> > Fixes: ab4a85534c3e ("gpio: aspeed: Add in ast2600 details to Aspeed driver")
+> > Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
 > 
-> Hi Jaegeuk,
+> Thanks Tao,
 > 
-> This patch comes from a series of changes trying to fix and simplify
-> the UFS error handling. You can find the whole series here - they are
-> picked up on scsi-queue-5.10
-> 
-> https://lore.kernel.org/linux-scsi/1596975355-39813-10-git-send-email-cang@codeaurora.org/
-> 
-> Besides, several more fixes for error handling based on above series are
-> 
-> https://lore.kernel.org/patchwork/patch/1290405/
-> &
-> https://lore.kernel.org/linux-scsi/159961731708.5787.8825955850640714260.b4-ty@oracle.com/
-> 
-> I've mainline all above changes to Android12-5.4 and Android11-5.4.
+> Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
 
-I've seen the patches in Android branches. Thank you for the explanation.
+Thanks Andrew for the quick review.
 
-> 
-> Moreover, there are 2 more fixes on the way for error handling, I
-> will push them soon.
+Cheers,
 
-BTW, could you please take a look at these patches?
-
-Thanks,
-
-> 
-> Thanks,
-> 
-> Can Guo.
-> 
-> > > 
-> > > Thanks,
-> > > Bean
+Tao
