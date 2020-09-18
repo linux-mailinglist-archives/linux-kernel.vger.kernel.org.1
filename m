@@ -2,214 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C6A26F974
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:40:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B892026F97A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:42:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726600AbgIRJk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 05:40:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45064 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726109AbgIRJk1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 05:40:27 -0400
-Received: from coco.lan (ip5f5ad5d2.dynamic.kabel-deutschland.de [95.90.213.210])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E7BA621973;
-        Fri, 18 Sep 2020 09:40:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600422027;
-        bh=JEO9vjwBuQ6Zi3z0GE1BJYqfFToSd0zOu/hoFWxXemA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=UJlD56RObZe0dUkYz3ZGNzJRKEN1+2QE0kuzfmT6J5hpsJk54yCXqDVnv75O0cIzU
-         iyxwoDQVwE1l0JpJ1J5vcRDxmL+WNjT1x9XNHFgMo1NFqW4YxIZxgyrdYujtc9JSX3
-         B9m4Trh5V19cVU4HbxgHLZzoJsTAeinNH7huwkAY=
-Date:   Fri, 18 Sep 2020 11:40:21 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Felipe Balbi <balbi@kernel.org>, Linuxarm <linuxarm@huawei.com>,
-        mauro.chehab@huawei.com, John Stultz <john.stultz@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] dt-bindings: document a new quirk for dwc3
-Message-ID: <20200918114021.5c67610e@coco.lan>
-In-Reply-To: <CAL_JsqLucKWwgBVAoyXpm1mCD5-OvFj2pM_q2+tcyA+K9fCnKg@mail.gmail.com>
-References: <cover.1599549364.git.mchehab+huawei@kernel.org>
-        <cb821a8b5ef2d44ce32c8ce1d01c34b7afb70eb2.1599549364.git.mchehab+huawei@kernel.org>
-        <20200915163814.GA2084568@bogus>
-        <20200917091821.0de18caa@coco.lan>
-        <CAL_JsqLucKWwgBVAoyXpm1mCD5-OvFj2pM_q2+tcyA+K9fCnKg@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1726159AbgIRJl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 05:41:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726009AbgIRJl5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 05:41:57 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3C52C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 02:41:56 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id s13so4659817wmh.4
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 02:41:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=shufKx5eku0Isd8JdGv9o7lMkOjjIZQhALDCFPr9wG8=;
+        b=jMjmQEvjgFFIcifb5X5DfDKjDwBe6m9GSre09/+c42/6Z/Xo0iBf5ninjNVTic+xcJ
+         tZy1xj5BMJ18HIQniE9IIJS4ruoVeNBNA0h00ZfLWLQjDiEEfQC1430Vg9CrX7F75Gsj
+         JoPotqJfb7TtpX80wlRpDbIl+eBS2tRSyEATK6nwZHTK3D8EMVmjKjTlop1gatdvOKvr
+         O+02BtJLzf1KNGglp4wMMbebM+SGyOu0omhSg2Mc1Hx+aGxMTJfspKFv0t6+tfJIZP+8
+         GfLbIfw2mvBfDtDYISN/RWSQJBRG4sSN02kqbjnohdLSbpDfgeXomb/DzkIjH2Rd/2UW
+         QHWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=shufKx5eku0Isd8JdGv9o7lMkOjjIZQhALDCFPr9wG8=;
+        b=HdzjioPV1EY+igvQdTffJIz7O0ref6ueHFp3lSEM2XK7Y9zEl0hADX4IVhFKlW4BCX
+         ZJOX3KbFd9PTYlCT4ktzS6+bMCaKpXQbmdtCVf065vEUGwUGuRQIkrikdpLIcMB0dPRT
+         rygverhO/CnL+AtH5Q7Upovn9k4UV9COdSRlE+2G8DcOjxVrb8SATwRVGIHGTAyWY3kG
+         HSS2X8et+aDN2/mJsPOvBJgf0BjH1IDjJj5JtV2OxsYa8hxhh6JQACUsxCGwRAT8Vr+l
+         SctxkOlw0jX+KZlU3UEpUy6yQyHALkFt5yYUK6/9bGzMmXNmE54WPjonebrOTOJat5vp
+         wRMw==
+X-Gm-Message-State: AOAM533dBeQ8BobiiyHgxDjSVLGG9tt4IUAP3v8qWpC20nc9aOWrb+qs
+        XxRZk2jEP7kgIob/+eSiR3pySHTP1mi8F5MUuAmFfg==
+X-Google-Smtp-Source: ABdhPJzAPvLFupR3Bbk2V9wPg73c33btEOd57AZPcmiW9SKeMtRpvi87yFJ2Z2vgKFd4kRqMDJxW4EWDIAUJ22BGbj8=
+X-Received: by 2002:a1c:b388:: with SMTP id c130mr14511635wmf.175.1600422115149;
+ Fri, 18 Sep 2020 02:41:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+References: <cover.1600204505.git.andreyknvl@google.com> <28d17537bbd029104cf7de4f7ca92246449efa50.1600204505.git.andreyknvl@google.com>
+In-Reply-To: <28d17537bbd029104cf7de4f7ca92246449efa50.1600204505.git.andreyknvl@google.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Fri, 18 Sep 2020 11:41:43 +0200
+Message-ID: <CAG_fn=UACdKuiKq7qkTNM=QHcZ=u4nwfn7ESSPMeWmFXidAVag@mail.gmail.com>
+Subject: Re: [PATCH v2 20/37] kasan: rename tags.c to tags_sw.c
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, 17 Sep 2020 08:47:48 -0600
-Rob Herring <robh@kernel.org> escreveu:
+On Tue, Sep 15, 2020 at 11:17 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> This is a preparatory commit for the upcoming addition of a new hardware
+> tag-based (MTE-based) KASAN mode.
+>
+> Hardware tag-based KASAN will also be using tag-based approach, so rename
+> tags.c to tags_sw.c and report_tags.c to report_tags_sw.c to avoid
+> confusion once the new mode is added
 
-> On Thu, Sep 17, 2020 at 1:18 AM Mauro Carvalho Chehab
-> <mchehab+huawei@kernel.org> wrote:
-> >
-> > Em Tue, 15 Sep 2020 10:38:14 -0600
-> > Rob Herring <robh@kernel.org> escreveu:
-> > =20
-> > > On Tue, Sep 08, 2020 at 09:20:57AM +0200, Mauro Carvalho Chehab wrote=
-: =20
-> > > > At Hikey 970, setting the SPLIT disable at the General
-> > > > User Register 3 is required.
-> > > >
-> > > > Without that, the URBs generated by the usbhid driver
-> > > > return -EPROTO errors. That causes the code at
-> > > > hid-core.c to call hid_io_error(), which schedules
-> > > > a reset_work, causing a call to hid_reset().
-> > > >
-> > > > In turn, the code there will call:
-> > > >
-> > > >     usb_queue_reset_device(usbhid->intf);
-> > > >
-> > > > The net result is that the input devices won't work, and
-> > > > will be reset on every 0.5 seconds:
-> > > >
-> > > >     [   33.122384] hub 1-1:1.0: state 7 ports 4 chg 0000 evt 0002
-> > > >     [   33.378220] usb 1-1.1: reset low-speed USB device number 3 u=
-sing xhci-hcd
-> > > >     [   33.698394] hub 1-1:1.0: state 7 ports 4 chg 0000 evt 0000
-> > > >     [   34.882365] hub 1-1:1.0: state 7 ports 4 chg 0000 evt 0002
-> > > >     [   35.138217] usb 1-1.1: reset low-speed USB device number 3 u=
-sing xhci-hcd
-> > > >     [   35.458617] hub 1-1:1.0: state 7 ports 4 chg 0000 evt 0000
-> > > >     [   36.642392] hub 1-1:1.0: state 7 ports 4 chg 0000 evt 0002
-> > > >     [   36.898207] usb 1-1.1: reset low-speed USB device number 3 u=
-sing xhci-hcd
-> > > >     [   37.218598] hub 1-1:1.0: state 7 ports 4 chg 0000 evt 0000
-> > > >     [   38.402368] hub 1-1:1.0: state 7 ports 4 chg 0000 evt 0002
-> > > >     [   38.658174] usb 1-1.1: reset low-speed USB device number 3 u=
-sing xhci-hcd
-> > > >     [   38.978594] hub 1-1:1.0: state 7 ports 4 chg 0000 evt 0000
-> > > >     [   40.162361] hub 1-1:1.0: state 7 ports 4 chg 0000 evt 0002
-> > > >     [   40.418148] usb 1-1.1: reset low-speed USB device number 3 u=
-sing xhci-hcd
-> > > >     ...
-> > > >     [  397.698132] usb 1-1.1: reset low-speed USB device number 3 u=
-sing xhci-hcd
-> > > >
-> > > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > > > ---
-> > > >  Documentation/devicetree/bindings/usb/dwc3.txt | 3 +++
-> > > >  1 file changed, 3 insertions(+)
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/usb/dwc3.txt b/Docum=
-entation/devicetree/bindings/usb/dwc3.txt
-> > > > index d03edf9d3935..1aae2b6160c1 100644
-> > > > --- a/Documentation/devicetree/bindings/usb/dwc3.txt
-> > > > +++ b/Documentation/devicetree/bindings/usb/dwc3.txt
-> > > > @@ -78,6 +78,9 @@ Optional properties:
-> > > >                     park mode are disabled.
-> > > >   - snps,dis_metastability_quirk: when set, disable metastability w=
-orkaround.
-> > > >                     CAUTION: use only if you are absolutely sure of=
- it.
-> > > > + - snps,dis-split-quirk: when set, change the way URBs are handled=
- by the
-> > > > +                    driver. Needed to avoid -EPROTO errors with us=
-bhid
-> > > > +                    on some devices (Hikey 970). =20
-> > >
-> > > Can't this be implied by the compatible string? Yes we have quirk
-> > > properties already, but the problem with them is you can't address th=
-em
-> > > without a DT change. =20
-> >
-> > Short answer:
-> >
-> > While technically doable, I don't think that this would be a good idea.
-> >
-> > -
-> >
-> > Long answer:
-> >
-> > The first thing is related to the compatible namespace: should such
-> > quirk be added at SoC level or at board level?
-> >
-> > I don't know if the need to disable split mode came from a different
-> > dwc3 variant used by the Kirin 970 SoC, or if this is due to the way
-> > USB is wired at the Hikey 970 board. =20
->=20
-> If board specific, then I agree that a separate property makes sense.
-> This doesn't really sound board specific though.
-
-Yeah, I agree that the higher chance is that this would be SoC specific,
-but I can't discard being board-specific either, as, on this board,
-all the output ports are all connected via an USB GPIO hub provided
-on a different chipset. Funny enough, setting this is only required
-for HID. The USB ports work fine either with split mode enabled or
-disabled for USB sticks. So, I guess this affects only INT (and maybe
-ISOC) URB transfers. So I wouldn't doubt that such quirk would be
-required due to some limitation at the USB GPIO hub.
-
-> > 2) Because this specific device uses the dwc3-of-simple driver,
-> > the actual DT binding is:
-> >
-> >         usb3: hisi_dwc3 {
-> >                 compatible =3D "hisilicon,hi3670-dwc3";
-> >         ...
-> >                 dwc3: dwc3@ff100000 {
-> >                         compatible =3D "snps,dwc3";
-> >         ...
-> >                 };
-> >         }; =20
->=20
-> This parent child split should never have happened for the cases that
-> don't have 'wrapper registers'. We should have had on node here with
-> just:
->=20
-> compatible =3D "hisilicon,hi3670-dwc3", "snps,dwc3";
-
-I tried to do that, but the ARM CPU panics:
-
-	https://lore.kernel.org/linux-usb/731e13f9fbba3a81bedb39f1c1deaf41200acd0c=
-.1599559004.git.mchehab+huawei@kernel.org/
-
-=46rom my tests, it sounds that this is due to some (minor) differences on=20
-how the power clocks are enabled/suspended when using dwc3-of-simple as
-the parent node.=20
-
-It sounds that, if the PM clocks are not stable yet by the time
-dwc3 tries to initialize, the CPU crashes.
-=09
-> > For boards that use dwc3-of-simple drivers, we could add a hack
-> > at the dwc3 core that would seek for the parent's device's
-> > compatible string with something like (not tested):
-> >
-> >         if (of_device_is_compatible(pdev->parent->dev.of_node,
-> >                                    "hisilicon,hi3670-dwc3"))
-> >                 dwc->dis_split_quirk =3D true; =20
->=20
-> This is what I'd do. You could have a match table instead as that
-> would scale better.
-
-Not sure if a match table would work here, because we need to
-enforce that the parent node will be called before dwc3, as
-otherwise the panic() will occur.
-
-> > It should be noticed that both platform_data and pdev->parent
-> > alternatives will only work for boards using dwc3-of-simple driver.
-> > This could limit this quirk usage on future devices.
-> >
-> > -
-> >
-> > IMO, adding a new quirk is cleaner, and adopts the same solution
-> > that it is currently used by other drivers with Designware IP. =20
->=20
-> We already have a bunch of quirk properties. What's one more, sigh. So
-> if that's what you want, fine.
-
-Ok, thanks!
-
-Thanks,
-Mauro
+I find it a bit excessive renaming the same file twice in the same
+patch series (tags_report.c -> report_tags.c -> report_tags_sw.c)
