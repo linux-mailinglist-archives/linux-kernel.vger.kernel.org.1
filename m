@@ -2,87 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4595270731
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:40:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 887DA270730
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726332AbgIRUkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726369AbgIRUkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 18 Sep 2020 16:40:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56800 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726154AbgIRUj7 (ORCPT
+        with ESMTP id S1726249AbgIRUj7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 18 Sep 2020 16:39:59 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74063C0613CE
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F6A5C0613D0
         for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:39:59 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id jw11so3622458pjb.0
+Received: by mail-pf1-x444.google.com with SMTP id f18so4170364pfa.10
         for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:39:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=7AneX3Q6t9WnVcMWg3z8DFQA8bgEvGwpeuWE77g6/FQ=;
-        b=E4qKAGZaO0N1RaSvlxcy0M2gkjiUws0KeGww0wt94xT8okM+bO5at02o4hbHtGicp/
-         1kghus1KDRJvmh7+OXI0eXr1mPlL3l19ovwWEEZsP4aL81XuS2SQIJrRJ5RmjOr4umwL
-         Ixp0S0vYX0oMNfhY3hXjUDz+KGUr2R70Z8J/zhOFOF15+6z2Pjbn0Lwb8vizESYfRiYY
-         yZyDJouBXPmDZ05u5LMb3C3vSEIhoJMdFK2ZtmIhWVjtV+qKcxU9cOhHQg8faCc0a/3D
-         r2jvPXuQFMheuZ6qma+Vc7w4aJMt/ampCp6XINorY67gF8ajSADtN4ODVoe/lfHCFFC4
-         9sfw==
+        bh=0fmRn2g5BrFJHO9DbWyRy8DsUXY0bsMT/zVu/iCfx28=;
+        b=C3FMMHryX4w/Eoq3d71K/IbeMCK+8a4DuC/vM88BYodyxLOnc+wAYGfIerEO8KBjf1
+         f1RINcWhWEQDkAF+HvOzymCJYGNHb0o/zzYsHmp4bC90sa2uwRERZaU8MX+7Fz1OrYcW
+         R6++RCw1ms3Pvbn84yh0bbtGol9/3oOh+gpvdt2pWI4x1D6qzDQfn2si/fdQSK1mEExe
+         0uH0/xaOWG9/7bk2fm6SLGuD6EXcHK+mfiR24jq4N0ogdBjdZpdSw6VEQfmMYzKE8uYW
+         9OZqQVZp9wo10gaj8cv2w1KAoWc+NJaWzlVR09lxmqx5yTlZsIQPI6qddvPw41SdBBsC
+         JIXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=7AneX3Q6t9WnVcMWg3z8DFQA8bgEvGwpeuWE77g6/FQ=;
-        b=PkLnB4H+geLmeQgNsy+eRUr6IMWRoWOJNYIBpSuecfa02PsYTez7JXAlOrFKphCwvh
-         MZ1v6mUJ87agz6zurKJ6jkq3HdSNAAIZ8iW2E+PA7NJKvr4YKnQxfdhFmHwwfoqc2GEP
-         ZEU9oPnWH8bIb0old5H82Z2bPA5V+rLk/RtTqNWwp+pGIgSgW01JPZtAlh3Nd/fEVqNh
-         sUY55zZVO/+SOsPmmi/+lz8tMLWEIVG0UMUsvmQLd0tAPiAhi0FsToAlcF4N9Nw6/At1
-         thMxgMG+yXxY6+IAUQOkslOBvlKOeb8wtne8WVCT/bEiEW5RgkSl6+jrUpAosJozKFiC
-         bjfw==
-X-Gm-Message-State: AOAM533zV42yllkgLTrVmZak0LKYb8PScw+8n1N/FY/THAm2ezfDFopR
-        LICnVNJcHFO9L/P+1RRZYz42MQ==
-X-Google-Smtp-Source: ABdhPJz8hk0ivJdLpk6wnP0zzcjbIGe9NnuofGDnq+q1egBRoYW2uCgOtoPsSPkLfDc+AvYJ4ZVyQQ==
-X-Received: by 2002:a17:90a:4802:: with SMTP id a2mr14094057pjh.5.1600461597809;
-        Fri, 18 Sep 2020 13:39:57 -0700 (PDT)
+        bh=0fmRn2g5BrFJHO9DbWyRy8DsUXY0bsMT/zVu/iCfx28=;
+        b=BnXdz7g1EPkeMH8AWvV0e64Tt3+laitbaYTHpjeBSzmWzdEauAsm25IY8S+uK4Npmc
+         OuWYrV3vwjUH/gZdnf6h/Zl2mc3MksNwFZjzqpN8nuknX+btB3mGXuya1s/rbiTQfJoP
+         t7Wo8F7E3ZzZn98TQFCAAV4o9f2z8CY3OClNjG10OmCboiarJebbfhfIXh+JLB09X9Jw
+         StT3crXw9taUma2/to0LWiMuR8ZYuHi7gRU8qReNMbhecSJ/5DbksfrdFlmR78vb+dGq
+         56F+uRAtDpfIsemidzx8T9ondF56jzwK3SpmW+pvqu92QlHA00SRNLJqIwhLa0a37455
+         ngvg==
+X-Gm-Message-State: AOAM5329SIiV8uUgQQGvG5pNpi3z6Fgo23JqjnLlCWzeOLKgunnd4BRa
+        nj0GBOJcdtqVce+axrJ4Wc/SNA==
+X-Google-Smtp-Source: ABdhPJxf7pw4SsIj98qaw2E1WmIktjbeW77TUqAefjrsz31jaQx0Qwe98HQKFmjlYBU1hBtpf29vUg==
+X-Received: by 2002:aa7:8249:0:b029:142:2501:39dd with SMTP id e9-20020aa782490000b0290142250139ddmr17389707pfn.44.1600461599016;
+        Fri, 18 Sep 2020 13:39:59 -0700 (PDT)
 Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id k7sm3687272pjs.9.2020.09.18.13.39.56
+        by smtp.gmail.com with ESMTPSA id j18sm3979209pgm.30.2020.09.18.13.39.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 13:39:57 -0700 (PDT)
+        Fri, 18 Sep 2020 13:39:58 -0700 (PDT)
 From:   Kevin Hilman <khilman@baylibre.com>
-To:     Jerome Brunet <jbrunet@baylibre.com>
-Cc:     linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 0/2] arm64: dts: meson: add aml-s905x-cc v2 support
-Date:   Fri, 18 Sep 2020 13:39:55 -0700
-Message-Id: <160046158476.39596.11410761986578760376.b4-ty@baylibre.com>
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     christianshewitt@gmail.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        tobetter@hardkernel.com
+Subject: Re: [PATCH v2 0/3] arm64: dts: meson: add support for ODROID-N2+
+Date:   Fri, 18 Sep 2020 13:39:56 -0700
+Message-Id: <160046158476.39596.3643985967347076144.b4-ty@baylibre.com>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915141921.57258-1-jbrunet@baylibre.com>
-References: <20200915141921.57258-1-jbrunet@baylibre.com>
+In-Reply-To: <20200915152432.30616-1-narmstrong@baylibre.com>
+References: <20200915152432.30616-1-narmstrong@baylibre.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Sep 2020 16:19:19 +0200, Jerome Brunet wrote:
-> This patchset adds initial support for the libretech aml-s905x-cc v2.
+On Tue, 15 Sep 2020 17:24:29 +0200, Neil Armstrong wrote:
+> This series splits the existing meson-g12b-odroid-n2.dts into a common
+> dtsi and dts, and then adds new bindings and dts for the ODROID-N2+
+> which uses an Amlogic S922X rev.C chip that Hardkernel supports with
+> the same OPPs as the A311D.
 > 
-> Jerome Brunet (2):
->   dt-bindings: arm: amlogic: add support for libretch s905x cc v2
->   arm64: dts: meson: initial support for aml-s905x-cc v2
+> Changes since v1 at [1]:
+> - rebase on khilman's v5.10/dt64
+> - get all review tags from v1
+> - use the A311D OPPs, after review of Vendor kernel, the Rev, C uses the same OPPs (freq + voltage)
+> 	as the A311D SoC of the same family
 > 
->  .../devicetree/bindings/arm/amlogic.yaml      |   1 +
->  arch/arm64/boot/dts/amlogic/Makefile          |   1 +
->  .../meson-gxl-s905x-libretech-cc-v2.dts       | 318 ++++++++++++++++++
->  3 files changed, 320 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/amlogic/meson-gxl-s905x-libretech-cc-v2.dts
+> [...]
 
 Applied, thanks!
 
-[1/2] dt-bindings: arm: amlogic: add support for libretch s905x cc v2
-      commit: 0748c77fc8dc6bb20f9af395872ea35d8ac85998
-[2/2] arm64: dts: meson: initial support for aml-s905x-cc v2
-      commit: 63fafc5a046b1e21756de691b48f0c70c25e1426
+[1/3] arm64: dts: meson: convert ODROID-N2 to dtsi
+      commit: ef599f5f3e10bf1979d8ece29fd7fa511fedd59d
+[2/3] dt-bindings: arm: amlogic: add support for the ODROID-N2+
+      commit: 88ba71cdc5497390350c87e68ce35688e88be3e8
+[3/3] arm64: dts: meson: add support for the ODROID-N2+
+      commit: 98d24896ee117b1f0969405476c943e9307e30d4
 
 Best regards,
 -- 
