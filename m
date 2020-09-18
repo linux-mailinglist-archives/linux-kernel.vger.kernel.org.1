@@ -2,131 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9901270009
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 16:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06C8C27000D
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 16:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgIROlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 10:41:03 -0400
-Received: from foss.arm.com ([217.140.110.172]:44134 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726126AbgIROlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 10:41:03 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 079E51045;
-        Fri, 18 Sep 2020 07:41:03 -0700 (PDT)
-Received: from [10.57.47.84] (unknown [10.57.47.84])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D8A923F718;
-        Fri, 18 Sep 2020 07:41:01 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] iommu/iova: Free global iova rcache on iova alloc
- failure
-To:     vjitta@codeaurora.org, joro@8bytes.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Cc:     vinmenon@codeaurora.org, kernel-team@android.com
-References: <1597927761-24441-1-git-send-email-vjitta@codeaurora.org>
- <1597927761-24441-2-git-send-email-vjitta@codeaurora.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <2f20160a-b9da-4fa3-3796-ed90c6175ebe@arm.com>
-Date:   Fri, 18 Sep 2020 15:41:00 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        id S1726673AbgIROlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 10:41:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726129AbgIROlf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 10:41:35 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87D4DC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 07:41:34 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id k25so5330366ljk.0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 07:41:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=N2cRR1bqs+5tj1of0U4CpX6EeJBhHim3bgiMhmU8VOo=;
+        b=KObaMNjFxWPqr7Yolymu/lxSRIV3+LdKNPu5BVTKaKfS3JC/SvZK97LM5SFXPuloxR
+         dIYlXIyuM+cU4LRoy9FdsB6dGbA8BPWUAqZsJRmXNbYzL8arCQgN7U9mAFRq6DtS8DsY
+         DsVvP0Yz7lKzDni31/zz0akHosXS56jJ39JsQTFRmz+DFSt347VuiiVGlPMMw3ONChGB
+         cw6RW7+ECDAcmwEjlepcBajumhOhX37zEtjRPqMD+owhuMNnE+HP4HceQ0PAMhqh7YkX
+         0mN75Slaj6aPWOlHt0Lmxwwwrr0rCX2ia65LaFKX0oL9P0UeWL0eFhQrEhysgG/rEOAV
+         9E2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=N2cRR1bqs+5tj1of0U4CpX6EeJBhHim3bgiMhmU8VOo=;
+        b=izl0ViqM58NdsRR56554uyLadykOutSY29Kqzxs7yRv2HWCxWOZX2CVS5sajsAFaWV
+         wn+u3urVj04rS3xggQHk+oflwd7FltN4cnpVf2rEMii1zaXxAivw/meX1/unNu2Q+ra0
+         kWVgPF7Z8L3ZRDbx4IGsE7E5MvHa/CP8UtN1d42uEfGhtsPqk8jCDlH3P9JZWMFeR7BQ
+         n1Emo7+GdAlzU2vePTCQbJ1lW/3GS3ZctxOV/4tJ/NjgEvxD+fbeEcroJ3vZeR9hYUE0
+         TqY57T17zgBaYwYNUWVL+XN5qzvhetPO7WRVq2bIw/Gn8l+zVzdqlddFeXoael6STDew
+         C3CQ==
+X-Gm-Message-State: AOAM531fWdggXkWitIbE5oFkcJz8KChM0FwGSdjcAWXWiVRAHgPHsjhQ
+        VFajYw2/Z6fU/KM7PxPTaHaF8DpgE5g6VA==
+X-Google-Smtp-Source: ABdhPJz8InSl5HtAfRczk5FmvB0um+7TuFkwaNvrgPKaDbWpm3HfUfDODOZNA744WeQ6w/XBO13HHw==
+X-Received: by 2002:a2e:9b15:: with SMTP id u21mr8180298lji.283.1600440092720;
+        Fri, 18 Sep 2020 07:41:32 -0700 (PDT)
+Received: from jade (h-249-223.A175.priv.bahnhof.se. [98.128.249.223])
+        by smtp.gmail.com with ESMTPSA id m20sm633031ljp.132.2020.09.18.07.41.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 07:41:32 -0700 (PDT)
+Date:   Fri, 18 Sep 2020 16:41:30 +0200
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+To:     arm@kernel.org, soc@kernel.org
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        op-tee@lists.trustedfirmware.org,
+        Sudeep Holla <sudeep.holla@arm.com>
+Subject: [GIT PULL] tee dev cleanup for v5.10
+Message-ID: <20200918144130.GB1219771@jade>
 MIME-Version: 1.0
-In-Reply-To: <1597927761-24441-2-git-send-email-vjitta@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-20 13:49, vjitta@codeaurora.org wrote:
-> From: Vijayanand Jitta <vjitta@codeaurora.org>
-> 
-> When ever an iova alloc request fails we free the iova
-> ranges present in the percpu iova rcaches and then retry
-> but the global iova rcache is not freed as a result we could
-> still see iova alloc failure even after retry as global
-> rcache is holding the iova's which can cause fragmentation.
-> So, free the global iova rcache as well and then go for the
-> retry.
-> 
-> Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
-> ---
->   drivers/iommu/iova.c | 23 +++++++++++++++++++++++
->   include/linux/iova.h |  6 ++++++
->   2 files changed, 29 insertions(+)
-> 
-> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
-> index 4e77116..5836c87 100644
-> --- a/drivers/iommu/iova.c
-> +++ b/drivers/iommu/iova.c
-> @@ -442,6 +442,7 @@ struct iova *find_iova(struct iova_domain *iovad, unsigned long pfn)
->   		flush_rcache = false;
->   		for_each_online_cpu(cpu)
->   			free_cpu_cached_iovas(cpu, iovad);
-> +		free_global_cached_iovas(iovad);
->   		goto retry;
->   	}
->   
-> @@ -1055,5 +1056,27 @@ void free_cpu_cached_iovas(unsigned int cpu, struct iova_domain *iovad)
->   	}
->   }
->   
-> +/*
-> + * free all the IOVA ranges of global cache
-> + */
-> +void free_global_cached_iovas(struct iova_domain *iovad)
+Hello arm-soc maintainers,
 
-As John pointed out last time, this should be static and the header 
-changes dropped.
+Please pull this small cleanup in tee driver registration. There are no
+changes in behaviour, just a reduction in number of lines due to
+improved usage of the device driver framework.
 
-(TBH we should probably register our own hotplug notifier instance for a 
-flush queue, so that external code has no need to poke at the per-CPU 
-caches either)
+Thanks,
+Jens
 
-Robin.
+The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
 
-> +{
-> +	struct iova_rcache *rcache;
-> +	unsigned long flags;
-> +	int i, j;
-> +
-> +	for (i = 0; i < IOVA_RANGE_CACHE_MAX_SIZE; ++i) {
-> +		rcache = &iovad->rcaches[i];
-> +		spin_lock_irqsave(&rcache->lock, flags);
-> +		for (j = 0; j < rcache->depot_size; ++j) {
-> +			iova_magazine_free_pfns(rcache->depot[j], iovad);
-> +			iova_magazine_free(rcache->depot[j]);
-> +			rcache->depot[j] = NULL;
-> +		}
-> +		rcache->depot_size = 0;
-> +		spin_unlock_irqrestore(&rcache->lock, flags);
-> +	}
-> +}
-> +
->   MODULE_AUTHOR("Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>");
->   MODULE_LICENSE("GPL");
-> diff --git a/include/linux/iova.h b/include/linux/iova.h
-> index a0637ab..a905726 100644
-> --- a/include/linux/iova.h
-> +++ b/include/linux/iova.h
-> @@ -163,6 +163,7 @@ int init_iova_flush_queue(struct iova_domain *iovad,
->   struct iova *split_and_remove_iova(struct iova_domain *iovad,
->   	struct iova *iova, unsigned long pfn_lo, unsigned long pfn_hi);
->   void free_cpu_cached_iovas(unsigned int cpu, struct iova_domain *iovad);
-> +void free_global_cached_iovas(struct iova_domain *iovad);
->   #else
->   static inline int iova_cache_get(void)
->   {
-> @@ -270,6 +271,11 @@ static inline void free_cpu_cached_iovas(unsigned int cpu,
->   					 struct iova_domain *iovad)
->   {
->   }
-> +
-> +static inline void free_global_cached_iovas(struct iova_domain *iovad)
-> +{
-> +}
-> +
->   #endif
->   
->   #endif
-> 
+  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
+
+are available in the Git repository at:
+
+  git://git.linaro.org:/people/jens.wiklander/linux-tee.git tags/tee-dev-cleanup-for-v5.10
+
+for you to fetch changes up to 8c05f50fe8452f9d3220efad77bef42c7b498193:
+
+  tee: avoid explicit sysfs_create/delete_group by initialising dev->groups (2020-09-18 10:44:45 +0200)
+
+----------------------------------------------------------------
+Simplify tee_device_register() and friends
+
+Uses cdev_device_add() instead of the cdev_add() device_add()
+combination.
+
+Initializes dev->groups instead of direct calls to sysfs_create_group()
+and friends.
+
+----------------------------------------------------------------
+Sudeep Holla (2):
+      tee: replace cdev_add + device_add with cdev_device_add
+      tee: avoid explicit sysfs_create/delete_group by initialising dev->groups
+
+ drivers/tee/tee_core.c | 40 +++++++---------------------------------
+ 1 file changed, 7 insertions(+), 33 deletions(-)
