@@ -2,159 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40D0026F65B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 08:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB0126F65E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 08:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726595AbgIRG4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 02:56:22 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:47122 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726456AbgIRG4W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 02:56:22 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 08I6tHVY1023639, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
-        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 08I6tHVY1023639
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 18 Sep 2020 14:55:17 +0800
-Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
- RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Fri, 18 Sep 2020 14:55:17 +0800
-Received: from RTEXMB04.realtek.com.tw (172.21.6.97) by
- RTEXMB01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Fri, 18 Sep 2020 14:55:16 +0800
-Received: from RTEXMB04.realtek.com.tw ([fe80::3477:84c0:6ac8:dfee]) by
- RTEXMB04.realtek.com.tw ([fe80::3477:84c0:6ac8:dfee%3]) with mapi id
- 15.01.2044.006; Fri, 18 Sep 2020 14:55:16 +0800
-From:   =?big5?B?vEKwtsV2?= <willy.liu@realtek.com>
-To:     Serge Semin <fancer.lancer@gmail.com>
-CC:     "andrew@lunn.ch" <andrew@lunn.ch>,
-        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ryan Kao <ryankao@realtek.com>,
-        Kyle Evans <kevans@FreeBSD.org>,
-        Joe Hershberger <joe.hershberger@ni.com>,
-        Peter Robinson <pbrobinson@gmail.com>
-Subject: RE: [PATCH] net: phy: realtek: fix rtl8211e rx/tx delay config
-Thread-Topic: [PATCH] net: phy: realtek: fix rtl8211e rx/tx delay config
-Thread-Index: AQHWjJSIgE9wGMLbJkqAPItOTw6viqlsFkuAgAHOTXA=
-Date:   Fri, 18 Sep 2020 06:55:16 +0000
-Message-ID: <87c4ebf4b1fe48a7a10b27d0ba0b333c@realtek.com>
-References: <1600307253-3538-1-git-send-email-willy.liu@realtek.com>
- <20200917101035.uwajg4m524g4lz5o@mobilestation>
-In-Reply-To: <20200917101035.uwajg4m524g4lz5o@mobilestation>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.179.211]
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
+        id S1726618AbgIRG5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 02:57:25 -0400
+Received: from mga09.intel.com ([134.134.136.24]:16007 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726290AbgIRG5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 02:57:24 -0400
+IronPort-SDR: +H/DtMPrJAQ23wNxqypfZ2HHwfvozuAUjA/O8194IWcdofJZy9bOoxt7sw5/8Q3Frm3Fk/NZdj
+ ibx9YE9pT3kg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="160794754"
+X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
+   d="scan'208";a="160794754"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 23:57:23 -0700
+IronPort-SDR: apw7X2tvrgEQ7JKnAgRMaAoUZeIxL1xJNnaI32NwBvFJSn0GcYXTmUdp3i9V/rNOnOk5/eMijP
+ QVwGYzN+AxOA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
+   d="scan'208";a="410196068"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga001.fm.intel.com with ESMTP; 17 Sep 2020 23:57:22 -0700
+Received: from [10.249.68.124] (vramuthx-MOBL1.gar.corp.intel.com [10.249.68.124])
+        by linux.intel.com (Postfix) with ESMTP id 94A7958053A;
+        Thu, 17 Sep 2020 23:57:17 -0700 (PDT)
+Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
+Subject: Re: [PATCH v13 2/2] mtd: rawnand: Add NAND controller support on
+ Intel LGM SoC
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     miquel.raynal@bootlin.com, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, richard@nod.at, vigneshr@ti.com,
+        boris.brezillon@collabora.com, christophe.kerello@st.com,
+        piotrs@cadence.com, robert.jarzmik@free.fr,
+        brendanhiggins@google.com, devicetree@vger.kernel.org,
+        tglx@linutronix.de, hauke.mehrtens@intel.com, robh+dt@kernel.org,
+        linux-mips@vger.kernel.org, arnd@arndb.de,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com
+References: <20200917003308.57038-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20200917003308.57038-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20200917130523.GM3956970@smile.fi.intel.com>
+From:   "Ramuthevar, Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Message-ID: <bb8606e9-e102-916d-359c-5ce7a94cc4e4@linux.intel.com>
+Date:   Fri, 18 Sep 2020 14:57:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <20200917130523.GM3956970@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgU2VyZ2UsDQpUaGFua3MgZm9yIHlvdXIgcmVwbHkuIFRoZXJlIGlzIGEgY29uZmlkZW50aWFs
-IGlzc3VlIHRoYXQgcmVhbHRlayBkb2Vzbid0IG9mZmVyIHRoZSBkZXRhaWwgb2YgYSBmdWxsIHJl
-Z2lzdGVyIGxheW91dCBmb3IgY29uZmlndXJhdGlvbiByZWdpc3Rlci4gDQoNClRoZSBkZWZhdWx0
-IHNldHRpbmcgZm9yIHRoaXMgY29uZmlndXJhdGlvbiByZWdpc3RlciBzaG91bGQgYmUgMHg4MTQ4
-LiBCYXNpY2FsbHksIG5vIG5lZWQgdG8gY2hhbmdlIGl0LiBJZiB5b3UgbmVlZCB0byBlbmFibGUg
-UkdNSUkgUlggRGVsYXkgb3IgUkdNSUkgVFggRGVsYXkgdmlhIHJlZ2lzdGVyIHNldHRpbmcsIHlv
-dSBhbHNvIG5lZWQgdG8gZW5hYmxlIEZvcmNlIFR4IFJYIERlbGF5IGNvbnRyb2xsZWQgYXMgd2Vs
-bC4NCjEzID0gZm9yY2UgVHggUlggRGVsYXkgY29udHJvbGxlZCBieSBiaXQxMiBiaXQxMQ0KMTIg
-PSBUeCBEZWxheQ0KMTEgPSBSeCBEZWxheSANCg0KQ3VycmVudCBjb2RlIGluIFUtYm9vdCBjb3Vs
-ZCBjaGFuZ2UgdGhlIHJlZ2lzdGVyIHZhbHVlIGZyb20gMHg4MTQ4IHRvIDB4YjU0OCAoMHg4MTQ4
-fDB4YjQwMCkuIEJpdDEyIGFuZCBCaXQxMyBhcmUgc2V0LCBhbmQgIFJHTUlJIFRYIGRlbGF5IGVu
-YWJsZWQuDQpodHRwczovL2VsaXhpci5ib290bGluLmNvbS91LWJvb3QvdjIwMjAuMTAtcmM0L3Nv
-dXJjZS9kcml2ZXJzL25ldC9waHkvcmVhbHRlay5jDQoJDQpJIGhvcGUgdGhpcyBpbmZvcm1hdGlv
-biBjb3VsZCBoZWxwIGEgYml0Lg0KQi5SLg0KV2lsbHkNCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdl
-LS0tLS0NCkZyb206IFNlcmdlIFNlbWluIDxmYW5jZXIubGFuY2VyQGdtYWlsLmNvbT4gDQpTZW50
-OiBUaHVyc2RheSwgU2VwdGVtYmVyIDE3LCAyMDIwIDY6MTEgUE0NClRvOiC8QrC2xXYgPHdpbGx5
-LmxpdUByZWFsdGVrLmNvbT4NCkNjOiBhbmRyZXdAbHVubi5jaDsgaGthbGx3ZWl0MUBnbWFpbC5j
-b207IGxpbnV4QGFybWxpbnV4Lm9yZy51azsgZGF2ZW1AZGF2ZW1sb2Z0Lm5ldDsga3ViYUBrZXJu
-ZWwub3JnOyBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwu
-b3JnOyBSeWFuIEthbyA8cnlhbmthb0ByZWFsdGVrLmNvbT47IEt5bGUgRXZhbnMgPGtldmFuc0BG
-cmVlQlNELm9yZz47IEpvZSBIZXJzaGJlcmdlciA8am9lLmhlcnNoYmVyZ2VyQG5pLmNvbT47IFBl
-dGVyIFJvYmluc29uIDxwYnJvYmluc29uQGdtYWlsLmNvbT4NClN1YmplY3Q6IFJlOiBbUEFUQ0hd
-IG5ldDogcGh5OiByZWFsdGVrOiBmaXggcnRsODIxMWUgcngvdHggZGVsYXkgY29uZmlnDQoNCkhl
-bGxvIFdpbGx5LA0KVGhhbmtzIGZvciB0aGUgcGF0Y2guIE15IGNvbW1lbnRzIGFyZSBiZWxvdy4N
-Cg0KSSd2ZSBDYydlZCB0aGUgVS1ib290L0ZyZWVCU0QsIHdobyBtaWdodCBiZSBhbHNvIGludGVy
-ZXN0ZWQgaW4gdGhlIHNvbHV0aW9uIHlvdSd2ZSBwcm92aWRlZC4NCg0KT24gVGh1LCBTZXAgMTcs
-IDIwMjAgYXQgMDk6NDc6MzNBTSArMDgwMCwgV2lsbHkgTGl1IHdyb3RlOg0KPiBSR01JSSBSWCBE
-ZWxheSBhbmQgVFggRGVsYXkgc2V0dGluZ3Mgd2lsbCBub3QgYXBwbGllZCBpZiBGb3JjZSBUWCBS
-WCANCj4gRGVsYXkgQ29udHJvbCBiaXQgaXMgbm90IHNldC4NCj4gUmVnaXN0ZXIgYml0IGZvciBj
-b25maWd1cmF0aW9uIHBpbnM6DQo+IDEzID0gZm9yY2UgVHggUlggRGVsYXkgY29udHJvbGxlZCBi
-eSBiaXQxMiBiaXQxMQ0KPiAxMiA9IFR4IERlbGF5DQo+IDExID0gUnggRGVsYXkNCg0KVGhpcyBp
-cyBhIHZlcnkgdXNlZnVsIGluZm9ybWF0aW9uLCBidXQgaXQgY29udHJhZGljdHMgYSBiaXQgdG8g
-d2hhdCBrbm93bGVkZ2Ugd2UndmUgY3VycmVudGx5IGdvdCBhYm91dCB0aGF0IG1hZ2ljYWwgcmVn
-aXN0ZXIuIEN1cnJlbnQgY29kZSBpbiBVLWJvb3QgZG9lcyB0aGUgZGVsYXlzIGNvbmZpZ3VyYXRp
-b24gYnkgbWVhbnMgb2YgYW5vdGhlciBiaXRzOg0KaHR0cHM6Ly9lbGl4aXIuYm9vdGxpbi5jb20v
-dS1ib290L3YyMDIwLjEwLXJjNC9zb3VyY2UvZHJpdmVycy9uZXQvcGh5L3JlYWx0ZWsuYw0KDQpD
-b3VsZCB5b3UgcHJvdmlkZSBhIGZ1bGwgcmVnaXN0ZXIgbGF5b3V0LCBzbyB3ZSdkIGtub3cgZm9y
-IHN1cmUgd2hhdCB0aGF0IHJlZ2lzdGVyIHJlYWxseSBkb2VzIGFuZCBmaW5hbGx5IGNsb3NlIHRo
-ZSBxdWVzdGlvbiBmb3IgZ29vZD8NCg0KPiANCj4gRml4ZXM6IGY4MWRhZGJjZjdmZCAoIm5ldDog
-cGh5OiByZWFsdGVrOiBBZGQgcnRsODIxMWUgcngvdHggZGVsYXlzIA0KPiBjb25maWciKQ0KPiBT
-aWduZWQtb2ZmLWJ5OiBXaWxseSBMaXUgPHdpbGx5LmxpdUByZWFsdGVrLmNvbT4NCj4gLS0tDQo+
-ICBkcml2ZXJzL25ldC9waHkvcmVhbHRlay5jIHwgMjAgKysrKysrKysrKy0tLS0tLS0tLS0NCj4g
-IDEgZmlsZSBjaGFuZ2VkLCAxMCBpbnNlcnRpb25zKCspLCAxMCBkZWxldGlvbnMoLSkgIG1vZGUg
-Y2hhbmdlIDEwMDY0NCANCj4gPT4gMTAwNzU1IGRyaXZlcnMvbmV0L3BoeS9yZWFsdGVrLmMNCj4g
-DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9waHkvcmVhbHRlay5jIGIvZHJpdmVycy9uZXQv
-cGh5L3JlYWx0ZWsuYyBvbGQgDQo+IG1vZGUgMTAwNjQ0IG5ldyBtb2RlIDEwMDc1NSBpbmRleCA5
-NWRiZTVlLi4zZmRkZDU3DQo+IC0tLSBhL2RyaXZlcnMvbmV0L3BoeS9yZWFsdGVrLmMNCj4gKysr
-IGIvZHJpdmVycy9uZXQvcGh5L3JlYWx0ZWsuYw0KPiBAQCAtMzIsOSArMzIsOSBAQA0KPiAgI2Rl
-ZmluZSBSVEw4MjExRl9UWF9ERUxBWQkJCUJJVCg4KQ0KPiAgI2RlZmluZSBSVEw4MjExRl9SWF9E
-RUxBWQkJCUJJVCgzKQ0KPiAgDQoNCj4gLSNkZWZpbmUgUlRMODIxMUVfVFhfREVMQVkJCQlCSVQo
-MSkNCj4gLSNkZWZpbmUgUlRMODIxMUVfUlhfREVMQVkJCQlCSVQoMikNCj4gLSNkZWZpbmUgUlRM
-ODIxMUVfTU9ERV9NSUlfR01JSQkJCUJJVCgzKQ0KPiArI2RlZmluZSBSVEw4MjExRV9DVFJMX0RF
-TEFZCQkJQklUKDEzKQ0KPiArI2RlZmluZSBSVEw4MjExRV9UWF9ERUxBWQkJCUJJVCgxMikNCj4g
-KyNkZWZpbmUgUlRMODIxMUVfUlhfREVMQVkJCQlCSVQoMTEpDQoNClNvLCB3aGF0IGRvIEJJVCgx
-KSBhbmQgQklUKDIpIGNvbnRyb2wgdGhlbj8gQ291bGQgeW91IGV4cGxhaW4/DQoNCj4gIA0KPiAg
-I2RlZmluZSBSVEw4MjAxRl9JU1IJCQkJMHgxZQ0KPiAgI2RlZmluZSBSVEw4MjAxRl9JRVIJCQkJ
-MHgxMw0KPiBAQCAtMjQ5LDEzICsyNDksMTMgQEAgc3RhdGljIGludCBydGw4MjExZV9jb25maWdf
-aW5pdChzdHJ1Y3QgcGh5X2RldmljZSAqcGh5ZGV2KQ0KPiAgCQl2YWwgPSAwOw0KPiAgCQlicmVh
-azsNCj4gIAljYXNlIFBIWV9JTlRFUkZBQ0VfTU9ERV9SR01JSV9JRDoNCj4gLQkJdmFsID0gUlRM
-ODIxMUVfVFhfREVMQVkgfCBSVEw4MjExRV9SWF9ERUxBWTsNCj4gKwkJdmFsID0gUlRMODIxMUVf
-Q1RSTF9ERUxBWSB8IFJUTDgyMTFFX1RYX0RFTEFZIHwgUlRMODIxMUVfUlhfREVMQVk7DQo+ICAJ
-CWJyZWFrOw0KPiAgCWNhc2UgUEhZX0lOVEVSRkFDRV9NT0RFX1JHTUlJX1JYSUQ6DQo+IC0JCXZh
-bCA9IFJUTDgyMTFFX1JYX0RFTEFZOw0KPiArCQl2YWwgPSBSVEw4MjExRV9DVFJMX0RFTEFZIHwg
-UlRMODIxMUVfUlhfREVMQVk7DQo+ICAJCWJyZWFrOw0KPiAgCWNhc2UgUEhZX0lOVEVSRkFDRV9N
-T0RFX1JHTUlJX1RYSUQ6DQo+IC0JCXZhbCA9IFJUTDgyMTFFX1RYX0RFTEFZOw0KPiArCQl2YWwg
-PSBSVEw4MjExRV9DVFJMX0RFTEFZIHwgUlRMODIxMUVfVFhfREVMQVk7DQo+ICAJCWJyZWFrOw0K
-PiAgCWRlZmF1bHQ6IC8qIHRoZSByZXN0IG9mIHRoZSBtb2RlcyBpbXBseSBsZWF2aW5nIGRlbGF5
-cyBhcyBpcy4gKi8NCj4gIAkJcmV0dXJuIDA7DQo+IEBAIC0yNjUsOSArMjY1LDggQEAgc3RhdGlj
-IGludCBydGw4MjExZV9jb25maWdfaW5pdChzdHJ1Y3QgcGh5X2RldmljZSAqcGh5ZGV2KQ0KPiAg
-CSAqIDB4YTQgZXh0ZW5zaW9uIHBhZ2UgKDB4NykgbGF5b3V0LiBJdCBjYW4gYmUgdXNlZCB0byBk
-aXNhYmxlL2VuYWJsZQ0KPiAgCSAqIHRoZSBSWC9UWCBkZWxheXMgb3RoZXJ3aXNlIGNvbnRyb2xs
-ZWQgYnkgUlhETFkvVFhETFkgcGlucy4gSXQgY2FuDQo+ICAJICogYWxzbyBiZSB1c2VkIHRvIGN1
-c3RvbWl6ZSB0aGUgd2hvbGUgY29uZmlndXJhdGlvbiByZWdpc3RlcjoNCg0KPiAtCSAqIDg6NiA9
-IFBIWSBBZGRyZXNzLCA1OjQgPSBBdXRvLU5lZ290aWF0aW9uLCAzID0gSW50ZXJmYWNlIE1vZGUg
-U2VsZWN0LA0KPiAtCSAqIDIgPSBSWCBEZWxheSwgMSA9IFRYIERlbGF5LCAwID0gU0VMUkdWIChz
-ZWUgb3JpZ2luYWwgUEhZIGRhdGFzaGVldA0KPiAtCSAqIGZvciBkZXRhaWxzKS4NCj4gKwkgKiAx
-MyA9IEZvcmNlIFR4IFJYIERlbGF5IGNvbnRyb2xsZWQgYnkgYml0MTIgYml0MTEsDQo+ICsJICog
-MTIgPSBSWCBEZWxheSwgMTEgPSBUWCBEZWxheQ0KDQpIZXJlIHlvdSd2ZSByZW1vdmVkIHRoZSBy
-ZWdpc3RlciBsYXlvdXQgZGVzY3JpcHRpb24gYW5kIHJlcGxhY2VkIGl0IHdpdGgganVzdCB0aHJl
-ZSBiaXRzIGluZm8uIFNvIGZyb20gbm93IHRoZSB0ZXh0IGFib3ZlIGRvZXNuJ3QgcmVhbGx5IGNv
-cnJlc3BvbmRzIHRvIHdoYXQgZm9sbG93cy4NCg0KSSBtaWdodCBoYXZlIGZvcmdvdHRlbiBzb21l
-dGhpbmcsIGJ1dCBBRkFJUiB0aGF0IHJlZ2lzdGVyIGJpdHMgc3RhdGUgbWFwcGVkIHdlbGwgdG8g
-d2hhdCB3YXMgYXZhaWxhYmxlIG9uIHRoZSBjb3JyZXNwb25kaW5nIGV4dGVybmFsIHBpbnMuIFNv
-IGlmIHlvdSd2ZSBnb3QgYSBzYWNyZWQga25vd2xlZGdlIHdoYXQgY29uZmlncyBhcmUgcmVhbGx5
-IGhpZGRlbiBiZWhpbmQgdGhhdCByZWdpc3RlciwgcGxlYXNlIG9wZW4gaXQgdXAuIFRoaXMgaW4t
-Y29kZSBjb21tZW50IHdvdWxkIGJlIGEgZ29vZCBwbGFjZSB0byBwcm92aWRlIHRoZSBmdWxsIHJl
-Z2lzdGVyIGRlc2NyaXB0aW9uLg0KDQotU2VyZ2V5DQoNCj4gIAkgKi8NCj4gIAlvbGRwYWdlID0g
-cGh5X3NlbGVjdF9wYWdlKHBoeWRldiwgMHg3KTsNCj4gIAlpZiAob2xkcGFnZSA8IDApDQo+IEBA
-IC0yNzcsNyArMjc2LDggQEAgc3RhdGljIGludCBydGw4MjExZV9jb25maWdfaW5pdChzdHJ1Y3Qg
-cGh5X2RldmljZSAqcGh5ZGV2KQ0KPiAgCWlmIChyZXQpDQo+ICAJCWdvdG8gZXJyX3Jlc3RvcmVf
-cGFnZTsNCj4gIA0KPiAtCXJldCA9IF9fcGh5X21vZGlmeShwaHlkZXYsIDB4MWMsIFJUTDgyMTFF
-X1RYX0RFTEFZIHwgUlRMODIxMUVfUlhfREVMQVksDQo+ICsJcmV0ID0gX19waHlfbW9kaWZ5KHBo
-eWRldiwgMHgxYywgUlRMODIxMUVfQ1RSTF9ERUxBWQ0KPiArCQkJICAgfCBSVEw4MjExRV9UWF9E
-RUxBWSB8IFJUTDgyMTFFX1JYX0RFTEFZLA0KPiAgCQkJICAgdmFsKTsNCj4gIA0KPiAgZXJyX3Jl
-c3RvcmVfcGFnZToNCj4gLS0NCj4gMS45LjENCj4gDQoNCi0tLS0tLVBsZWFzZSBjb25zaWRlciB0
-aGUgZW52aXJvbm1lbnQgYmVmb3JlIHByaW50aW5nIHRoaXMgZS1tYWlsLg0K
+Hi Andy,
+
+  Thank you for the review comments...
+
+On 17/9/2020 9:05 pm, Andy Shevchenko wrote:
+> On Thu, Sep 17, 2020 at 08:33:08AM +0800, Ramuthevar,Vadivel MuruganX wrote:
+>> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+>>
+>> This patch adds the new IP of Nand Flash Controller(NFC) support
+>> on Intel's Lightning Mountain(LGM) SoC.
+>>
+>> DMA is used for burst data transfer operation, also DMA HW supports
+>> aligned 32bit memory address and aligned data access by default.
+>> DMA burst of 8 supported. Data register used to support the read/write
+>> operation from/to device.
+>>
+>> NAND controller driver implements ->exec_op() to replace legacy hooks,
+>> these specific call-back method to execute NAND operations.
+> 
+> ...
+> 
+>> +#include <linux/clk.h>
+>> +#include <linux/completion.h>
+>> +#include <linux/dmaengine.h>
+>> +#include <linux/dma-direction.h>
+>> +#include <linux/dma-mapping.h>
+>> +#include <linux/err.h>
+>> +#include <linux/init.h>
+> 
+>> +#include <linux/io.h>
+>> +#include <linux/iopoll.h>
+> 
+> io.h is guaranteed to be included by iopoll.h.
+Noted
+> 
+>> +#include <linux/kernel.h>
+>> +#include <linux/platform_device.h>
+>> +#include <linux/module.h>
+> 
+>> +#include <linux/mtd/mtd.h>
+>> +#include <linux/mtd/rawnand.h>
+>> +#include <linux/mtd/nand_ecc.h>
+>> +#include <linux/mtd/nand.h>
+> 
+> Since mtd is a hosting framework for this driver, I would move this group of headers after more generic ones with a blank line in between.
+okay, noted
+> 
+> 
+>> +#include <linux/resource.h>
+> 
+> And this I think is guaranteed to be included by io.h.
+Sure, will check and update.
+> 
+>> +#include <linux/sched.h>
+>> +#include <linux/slab.h>
+>> +#include <linux/types.h>
+> 
+>> +#include <linux/platform_device.h>
+> 
+> Dup? It's exactly the reason how alphabetical order can help.
+Good catch
+> 
+> ...
+> 
+>> +#define EBU_ADDR_SEL(n)		(0x20 + (n) * 4)
+> 
+> I think 0x20 is an offset here, and better to have it as 0x020 to be consistent
+> with all other offsets.
+> 
+> ...
+> 
+>> +#define EBU_BUSCON(n)		(0x60 + (n) * 4)
+> 
+> Ditto.
+Noted, will update
+> 
+> ...
+> 
+>> +static void ebu_nand_setup_timing(struct ebu_nand_controller *ctrl,
+>> +				  const struct nand_sdr_timings *timings)
+>> +{
+>> +	unsigned int rate = clk_get_rate(ctrl->clk) / 1000000;
+> 
+> HZ_PER_MHZ?
+yes, you're right we can use it.
+> 
+>> +	unsigned int period = DIV_ROUND_UP(1000000, rate);
+> 
+> USEC_PER_SEC?
+yes, you're right we can use it.
+> 
+>> +	u32 trecov, thold, twrwait, trdwait;
+>> +	u32 reg = 0;
+>> +
+>> +	trecov = DIV_ROUND_UP(max(timings->tREA_max, timings->tREH_min),
+>> +			      period);
+>> +	reg |= EBU_BUSCON_RECOVC(trecov);
+>> +
+>> +	thold = DIV_ROUND_UP(max(timings->tDH_min, timings->tDS_min), period);
+>> +	reg |= EBU_BUSCON_HOLDC(thold);
+>> +
+>> +	trdwait = DIV_ROUND_UP(max(timings->tRC_min, timings->tREH_min),
+>> +			       period);
+>> +	reg |= EBU_BUSCON_WAITRDC(trdwait);
+>> +
+>> +	twrwait = DIV_ROUND_UP(max(timings->tWC_min, timings->tWH_min), period);
+>> +	reg |= EBU_BUSCON_WAITWRC(twrwait);
+>> +
+>> +	reg |= EBU_BUSCON_CMULT_V4 | EBU_BUSCON_BCGEN_CS | EBU_BUSCON_ALEC |
+>> +		EBU_BUSCON_SETUP_EN;
+>> +
+>> +	writel(reg, ctrl->ebu + EBU_BUSCON(ctrl->cs_num));
+>> +}
+> 
+> ...
+> 
+>> +	if (oob_required) {
+>> +		reg = (chip->oob_poi[3] << 24) | (chip->oob_poi[2] << 16) |
+>> +			(chip->oob_poi[1] << 8) | chip->oob_poi[0];
+> 
+> get_unligned_le32()?
+last time seen system crash ,so I left it.
+> 
+> ...
+> 
+>> +		reg = (chip->oob_poi[7] << 24) | (chip->oob_poi[6] << 16) |
+>> +			(chip->oob_poi[5] << 8) | chip->oob_poi[4];
+> 
+> Ditto.
+Let me double check will add it, keep the same if not
+> 
+> ...
+> 
+>> +	ret = readl_poll_timeout_atomic(int_sta, val,
+>> +					!(val & HSNAND_INT_STA_WR_C), 10, 1000);
+> 
+> Slightly better (logically split between lines):
+> 
+> 	ret = readl_poll_timeout_atomic(int_sta, val, !(val & HSNAND_INT_STA_WR_C),
+> 					10, 1000);
+Thanks!, will update
+> 
+> 
+>> +	if (ret)
+>> +		return ret;
+> 
+> ...
+> 
+>> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ebunand");
+>> +	ebu_host->ebu = devm_ioremap_resource(&pdev->dev, res);
+> 
+> Why not to use
+> 
+> 	ebu_host->ebu = devm_platform_ioremap_resource_byname(&pdev->dev, "ebunand");
+As Boris mtd-maintainer suggested me to split into 2 API's, thanks!.
+> 
+> ?
+> 
+>> +	if (IS_ERR(ebu_host->ebu))
+>> +		return PTR_ERR(ebu_host->ebu);
+>> +
+>> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "hsnand");
+>> +	ebu_host->hsnand = devm_ioremap_resource(&pdev->dev, res);
+> 
+> Ditto.
+> 
+>> +	if (IS_ERR(ebu_host->hsnand))
+>> +		return PTR_ERR(ebu_host->hsnand);
+> 
+> ...
+> 
+> 
+>> +	for (i = 0; i < MAX_CS; i++) {
+>> +		resname = devm_kasprintf(dev, GFP_KERNEL, "nand_cs%d", i);
+>> +		res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+>> +						   resname);
+> 
+>> +		if (!res)
+>> +			return -EINVAL;
+> 
+> Redundant check.
+> 
+>> +		ebu_host->cs[i].chipaddr = devm_ioremap_resource(dev, res);
+> 
+> Ditto (see above).
+Noted
+> 
+>> +		ebu_host->cs[i].nand_pa = res->start;
+>> +		if (IS_ERR(ebu_host->cs[i].chipaddr))
+>> +			return PTR_ERR(ebu_host->cs[i].chipaddr);
+>> +	}
+> 
+> ...
+> 
+>> +	ebu_host->clk = devm_clk_get(dev, NULL);
+>> +	if (IS_ERR(ebu_host->clk)) {
+> 
+>> +		ret = PTR_ERR(ebu_host->clk);
+>> +		dev_err(dev, "failed to get clock: %d\n", ret);
+>> +		return ret;
+> 
+> 	return dev_err_probe() ?
+Noted, will add it.
+> 
+>> +	}
+> 
+> ...
+> 
+>> +	ebu_host->dma_tx = dma_request_chan(dev, "tx");
+>> +	if (IS_ERR(ebu_host->dma_tx)) {
+> 
+>> +		ret = PTR_ERR(ebu_host->dma_tx);
+>> +		dev_err(dev, "DMA tx channel request fail!.\n");
+>> +		goto err_cleanup_dma;
+> 
+> Ditto. On top why !. ???
+sorry missed it,Noted
+> 
+>> +	}
+>> +
+>> +	ebu_host->dma_rx = dma_request_chan(dev, "rx");
+>> +	if (IS_ERR(ebu_host->dma_rx)) {
+> 
+>> +		ret = PTR_ERR(ebu_host->dma_rx);
+>> +		dev_err(dev, "DMA rx channel request fail!.\n");
+>> +		goto err_cleanup_dma;
+> 
+> Ditto.
+Noted
+
+Regards
+Vadivel
+> 
+>> +	}
+> 
