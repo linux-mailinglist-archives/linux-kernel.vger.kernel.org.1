@@ -2,74 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C778026FE27
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 15:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23B3026FE2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 15:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726659AbgIRNVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 09:21:06 -0400
-Received: from sonic301-2.consmr.mail.bf2.yahoo.com ([74.6.129.41]:34957 "EHLO
-        sonic301-2.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726312AbgIRNVF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 09:21:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1600435264; bh=k1yl2EIxSlw7hhqSSNsyo3JWxJqHL9iqJXZc99K49Wc=; h=Date:From:Reply-To:Subject:References:From:Subject; b=gwqnm5qnXiWGXElz74SKP1/8xhiGHXVd56YcggwpvDJybuSEFQnVHm6e26cqfP/6/ny+WCv10/rnPO4mEGEVBPWLwsSXYIjwW1T6/qxmajk0dGHYdT4486vbv9EQ3w5rLwQQ4gARa3zCZ9dVxgiQHoDl3h6obr8FPV1/duVU6Tjgla2n7Mq5gqR+N8J6raHbRFE3RLjtu0X3z9gjrYu3iAh/+3GAp3qrGUVz0DPa+JAk7bYn5UfDiFnZYrhUmHZXeePDR2iOLc8FoAG/tNPMYXJvZcMjgusnMPZNb1GQn6YDB24hvuGGTcaaDRwad8BqQSbu/xtZ509AX2rexkWiUg==
-X-YMail-OSG: iobhTKIVM1nMMoSKB9wNgBgXcgIXaRRla5uVimfYOT_O4gNOzF8TDd6k6lUfjYp
- SRGMxozHSdSx1.Di5Zj02pGfy7wjVoItDEdNDf.dzdLy932aOXFsenG5DfBN81bto2gxHYnlenB3
- N_5QRQ8FZtuUUzYxtuu0SNtDK88ewsnnJozvdBBu3.7WIkULzlSavVU1yDU_VeaVPaNWGhBLc4OC
- l8ck4pzQTUg7rdQIq452YeaTSU3LDYlGn632qQaNQp6VELnoJ38UsR16eJfFdGTheOfBYypdZCV4
- noIiVpImLShS8azO8ue1IXam0y_AUbgm0tI4WcuwD5VUhXAwTC_zIcCXnqXVF6GB4F._JchvQiM7
- VFJTLu8QJBR0.hpXxudUsGWQObArMFnfkzrUiIchtGdeGUhAZOTVCZ8S_2JdlWqQhpWGEM5p9AqB
- CKKn6PldbjHdUX9scgM9m.p55of4.vwYT8nJMVieY6b0bKQ1TYAPL9jc.NTB9bpuP8gTUxbZeguB
- 9NQL_KRrl7USXyydd_iL1OuOlUMz0gqGdGjHdG7F_KPS3KdDjwIGY_aIUt3fasSKDhClpkV72SkX
- iFdhjWgQvi8ToXnnOnbAByNkGEaw.hgWa0k4LatOM_BmeVyQ6qIvyKvVL4_jILRcezIDX2_babg2
- h83yImmQqSTuUx8EOgLoJ5QRt64qvXQ.3O5QkteUxkZXMM0pvkeNjsKGJJN.bTrWnNrqbFuMy1i3
- 1wwULeShqmzefJm8y2hpSZEQDB9VXwUhTIQEJBXCM8wASe9CpwsmRj0wHZxGHHKbIylrWG9KQVPN
- RnKXLLQG10Wt2.VWWBabwBLGCWjypgv2yOuJaE48fsN6qN817tUN2hldxJyLabi81LiJsUvjU7yE
- rnYkVbuW6ITToX7.4xqGHwbafkKiTH5UQbkYrNeos7KLgEjBUV8l8vlfR1rbmT2dT2bLD2Iq6m9c
- 96dD.lazTT4XZRm1PUwi_7z.vhwvRx7ZlBXb4Z98Gqv_ZPb5Z4XY2rYo5q6MVzxTecXz31MFkaFH
- NPx_E9DJM9pWooRUQ9uRj_d8MVoEbEv.zuRDRqXUz9jgY42WRg8evR0z5k55HZLnS.muXp90BiEN
- Pxj6HvHBcQVEMj.2AMe9dtaFAOVfYWyXPUtAc1h6X4OjMvtwAtzqrdIIAqhsmCfTGuu_3R9B8S5p
- EZO6W3KuhffPDsCBor4FF9SCZIiJUiY05Md.JXl8Bz0rvHbHY4Hbd275.ienL0cbh9KkYb_dw3F2
- xIUOe9aGwkLjR9HFxsEazpJYZIYoI0aBm1FFFLukghsXeECiyGrepPpqBg51kf2HWr8c_AuysZu8
- yiNT4AyPbn36ixpwk_Zfb72iDFVrTtNuZmv0xBa2Q_cbaTIMbOn50JJAhOlALQPmL.d8H2DYzO0_
- YGvhkE8pRtxaVwO_rFgCgF7fLBZbS01ZiXXNUup_TOL7amLIWvy5OOV2wPCYW45dB0HrrlB86QFl
- YFy_BixTI
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic301.consmr.mail.bf2.yahoo.com with HTTP; Fri, 18 Sep 2020 13:21:04 +0000
-Date:   Fri, 18 Sep 2020 13:21:02 +0000 (UTC)
-From:   "Dr. Aisha Gaddafi" <aishagaddaf0dr@gmail.com>
-Reply-To: aishagaddafi2dr@gmail.com
-Message-ID: <1257779947.3550321.1600435262546@mail.yahoo.com>
-Subject: I WANT TO INVEST IN YOUR COUNTRY
+        id S1726711AbgIRNV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 09:21:56 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:43334 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726121AbgIRNV4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 09:21:56 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kJGKh-00FElo-Rb; Fri, 18 Sep 2020 15:21:47 +0200
+Date:   Fri, 18 Sep 2020 15:21:47 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: phy: realtek: enable ALDPS to save power
+ for RTL8211F
+Message-ID: <20200918132147.GB3631014@lunn.ch>
+References: <20200918104756.557f9129@xhacker.debian>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <1257779947.3550321.1600435262546.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16583 YMailNodin Mozilla/5.0 (Windows NT 5.1; rv:52.0) Gecko/20100101 Firefox/52.0
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200918104756.557f9129@xhacker.debian>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 18, 2020 at 10:47:56AM +0800, Jisheng Zhang wrote:
+> Enable ALDPS function to save power when link down.
 
+Hi Jisheng
 
-I WANT TO INVEST IN YOUR COUNTRY
+It would be nice to give a hint what ALDPS means. It is not one of the
+standard acronyms i know of, so it could be Realtek specific.
 
-Dear Friend (Assalamu Alaikum),
+> 
+> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+> ---
+>  drivers/net/phy/realtek.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/net/phy/realtek.c b/drivers/net/phy/realtek.c
+> index 95dbe5e8e1d8..961570186822 100644
+> --- a/drivers/net/phy/realtek.c
+> +++ b/drivers/net/phy/realtek.c
+> @@ -39,6 +39,10 @@
+>  #define RTL8201F_ISR				0x1e
+>  #define RTL8201F_IER				0x13
+>  
+> +#define RTL8211F_ALDPS_PLL_OFF			BIT(1)
+> +#define RTL8211F_ALDPS_ENABLE			BIT(2)
+> +#define RTL8211F_ALDPS_XTAL_OFF			BIT(12)
+> +
+>  #define RTL8366RB_POWER_SAVE			0x15
+>  #define RTL8366RB_POWER_SAVE_ON			BIT(12)
+>  
+> @@ -178,8 +182,12 @@ static int rtl8211f_config_init(struct phy_device *phydev)
+>  {
+>  	struct device *dev = &phydev->mdio.dev;
+>  	u16 val_txdly, val_rxdly;
+> +	u16 val;
+>  	int ret;
+>  
+> +	val = RTL8211F_ALDPS_ENABLE | RTL8211F_ALDPS_PLL_OFF | RTL8211F_ALDPS_XTAL_OFF;
+> +	phy_modify_paged_changed(phydev, 0xa43, 0x18, val, val);
 
-Please after reading this mail try and make sure you reply and contact me with this my private email address: {aaisihagaddafi@gmail.com}
+Could we avoid some of these magic numbers? The datasheet seems to
+call 0x18 PHYCR1, etc.
 
-I came across your e-mail contact prior a private search while in need of your assistance. My name is Aisha Al-Qaddafi a single Mother and a Widow with three Children. I am the only biological Daughter of late Libyan President (Late Colonel Muammar Gaddafi).
-
-I have investment funds worth Twenty Seven Million Five Hundred Thousand United State Dollar ($27.500.000.00 ) and i need a trusted investment Manager/Partner because of my current refugee status, however, I am interested in you for investment project assistance in your country, may be from there, we can build business relationship in the nearest future.
-
-I am willing to negotiate investment/business profit sharing ratio with you base on the future investment earning profits.
-
-If you are willing to handle this project on my behalf kindly reply urgent to enable me provide you more information about the investment funds.
-
-Please after reading this mail try and make sure you reply and contact me with this my private email address: {aaisihagaddafi@gmail.com}
-
-so that I will see your mail and reply you without delaying, please note once again that it is necessary that you reply me through this my private email address: { aaisihagaddafi@gmail.com } if you really want me to see your respond and interest concerning this transaction
-
-
-Best Regards
-Mrs Aisha Al-Qaddafi
+     Andrew
