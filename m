@@ -2,243 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 208B827018F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDCD5270193
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726269AbgIRQFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 12:05:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54034 "EHLO mail.kernel.org"
+        id S1726312AbgIRQFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 12:05:43 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:21600 "EHLO nat-hk.nvidia.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725955AbgIRQFg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 12:05:36 -0400
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B24F23888;
-        Fri, 18 Sep 2020 16:05:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600445135;
-        bh=/jtGzaSFhcML7gFvXOyrFp8wXpuiZ4YoqvXopimAccI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GLtkFh5wrmceJ7iejRuEt1MN9S2gXSwvTcrTICrtpxNVkFqquRJaLisDl1nL2UIcP
-         htZZ/V6gga3tFmVGNcDV/FOxCtQ4jn0IFIJ/LtdSNXl8JGWEF35Ln1cXMOCQjk8G1V
-         qipgCUE1mCP4GjdxlfBt4vI5gmK6dPM153uvMX+o=
-Received: by mail-oi1-f170.google.com with SMTP id y6so7619233oie.5;
-        Fri, 18 Sep 2020 09:05:35 -0700 (PDT)
-X-Gm-Message-State: AOAM531QxreOGsselNmvVINVHeiENMtxIwwOob3DEEnIKxFQg3YTB3/O
-        LlN4sHtYcysjicBNm5IReer1fOwpmwXozCf7sA==
-X-Google-Smtp-Source: ABdhPJwnYBIiziuhSIY6yUU90RmySa/cL8llmX10i6r7vnjVrfFCaxstEbq1Bz9fJdOwUsoKCn42Ro80P1onG6ooQdY=
-X-Received: by 2002:aca:4d58:: with SMTP id a85mr9246503oib.147.1600445134520;
- Fri, 18 Sep 2020 09:05:34 -0700 (PDT)
+        id S1725955AbgIRQFl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 12:05:41 -0400
+Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f64dad10000>; Sat, 19 Sep 2020 00:05:37 +0800
+Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL102.nvidia.com
+ (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 18 Sep
+ 2020 16:05:36 +0000
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.174)
+ by HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 18 Sep 2020 16:05:36 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eNgVwrIzupHcJLIim/mC/HShkdxN27S40N15K+bcWPnWgPUalwLI/K/z8OzYEnSKI3C+dU9UHNrEtfDhZ6TcYvC0ZkgyUbsTby4plR3efndhSORfYhFu9tqHV4/JcQ0u9i+o3mI/sks1zKaYomF5oX36AgNIVOnO/9jD6Cd+GvOYyzA3ekrECuOxq+ioFRgc5ocoTe0/C6T2PeQXXYzWKUeUWiyTSbj0e0ciy26NJpFPMfJFpHe8jeDgtRiSuXIbxHi9p9I41xsaoOjllWYBrlNdp9ES9lEzPIJlRhdGE88iDSMa3QLn9owjV+P3qaMeaUCx2NBKNd4HGQKaPElYtw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KujWuG2+JW5Zt4HdwPmSHgN+ZyKFZnA4oJVFMElPYOs=;
+ b=iikmvuzdBriIskTLr25CRpB0mgHpp6PHLHZdEbkrhjIHWLfmiSqYB3zDnoObnqBdiCJXjo+eG/GccvZCvIl+hZroiI4uK5iGlrM7CF1MyTzydYIy8hfCW8liOAtNUhMnV+3uAbZtVvCfOSQjNef9ZTgJtgGpW+hhl2MBUTDbDe0kK4b6bo8t9SK6k+Ybd+KcfJwGhGM0hCtrX3dSrXEcK35c5lwr3xmFL8UzGxH/sxr+jS+BUfpMHsHNXRDOncHKerZva5tQC0zIsnUBZCDwpVk1KuCnpdRt2XB4GYM1LwNGZdBhpdfcE37wsyqhIxfntESLv3q7TA1o4M7r2uwGsg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3308.namprd12.prod.outlook.com (2603:10b6:5:182::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14; Fri, 18 Sep
+ 2020 16:05:34 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3391.011; Fri, 18 Sep 2020
+ 16:05:34 +0000
+Date:   Fri, 18 Sep 2020 13:05:32 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Artemy Kovalyov <artemyko@mellanox.com>,
+        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        Moni Shoua <monis@mellanox.com>,
+        Yishai Hadas <yishaih@mellanox.com>
+Subject: Re: [PATCH rdma-next 0/5] Reorganize mlx5 UMR creation flow
+Message-ID: <20200918160532.GA320440@nvidia.com>
+References: <20200914112653.345244-1-leon@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200914112653.345244-1-leon@kernel.org>
+X-ClientProxiedBy: BL0PR02CA0063.namprd02.prod.outlook.com
+ (2603:10b6:207:3d::40) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-References: <20200914112716.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
- <20200915142145.GA1861636@bogus> <20200916000008.GG2771744@google.com>
-In-Reply-To: <20200916000008.GG2771744@google.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 18 Sep 2020 10:05:21 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLN=+icsQiyBJ98S2nGcRueUfkeRsR16o1zAQ36+DvAkg@mail.gmail.com>
-Message-ID: <CAL_JsqLN=+icsQiyBJ98S2nGcRueUfkeRsR16o1zAQ36+DvAkg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: usb: Add binding for onboard USB hubs
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>, devicetree@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Peter Chen <peter.chen@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR02CA0063.namprd02.prod.outlook.com (2603:10b6:207:3d::40) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14 via Frontend Transport; Fri, 18 Sep 2020 16:05:33 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kJItA-001LN5-7W; Fri, 18 Sep 2020 13:05:32 -0300
+X-Originating-IP: [156.34.48.30]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cffb3238-4e23-497e-c638-08d85becac82
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3308:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB33081FA24CC191E5FC15F448C23F0@DM6PR12MB3308.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VTgibcQ7xAxVh8yX6d/qSfd4dVDtbYQAyZaU4xB0SJBVBtsJOLyq2X7mgFZZOKTAW3G98A4aqdHIoKZt0Xmr5TxvQO0lfsBamk4aHk4ursSMJ/g4FcGFBRh5bK3gElUiuURTgbyl0vKE5FijWM0SekZl8RUESewkS7rYu3Rwb0nZoyir6o6CJFiKTA30QhCGGaUDUuQRFle21nZw668o7wnb8pGrNledaVYLI/UG3PhJJji+7IaaKb58GtjsE0fzHn+NW+CTuKKOEeu57aa4S9VqInFpxPqjabRBosurGG90jW7ndolJqC7FaNWw0oeIo40uTmnMRueFUWk5cPB3/fG8gduQncExdfyQw35bNTBJkkZ+WSdzinN2h5ufsbwx
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(346002)(396003)(39860400002)(136003)(54906003)(66946007)(66556008)(8936002)(66476007)(26005)(6916009)(8676002)(186003)(33656002)(36756003)(4326008)(107886003)(2906002)(86362001)(2616005)(9746002)(1076003)(9786002)(83380400001)(5660300002)(4744005)(316002)(478600001)(426003)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: lxCxGt3P0H7RSszgIfCp6KWI6mztGO/EgOZttULbghtbi+FEkb2jSX1GmGZmUepR1G7K41QC2E9fbPRfI+bIlOykM9S4sZXvc8mGBWhXGYqW0ycLmhd/Ir5hsr3QvqUxI3Q8P+qSB2/zn5W5MZUxwgoMqP5TcI97qi7l7n0OouB/37W1Iljv9EXdNaZIOI5d4gcObYaop9l/TXYi/cjRTFfNpICXUd504SGwsdP8O5ZmCxAduTRSPhmjZ6dTkS1IsDuQLXCxi+7KRAeeJzdhT3lsYqqdosxVxV6//R1yBzcLSC5bMdAnHxKixukY282m6MjQ+uHRgoo+BjrFn6QUL4MMpCTxBlwiGRdlGRzYMGAVNjnkRNVrmHk/839ztN/dsRzW+okwlrGMcol9s0Y85Hcy6C3qEIP5Nh+SnJyq6J6EFPGMaXt+uT6wsIb7JOKO6b3ezpfw4u2PEiwn34+4ySPGwUSoBZzi8fsbM38kr/2gVcA35UzmSvdrXHNKjHLznOqTh6CptM+zCqib5TFbkLFCeYn21dz1838yPPrfQgz6znUUrqG07VFc5RYO4hxYSCCFfnZ4s6H7uKJJpTuGY9ZvyongqhQ1Rdto7MReEUMbJXviSpgaNUH52k+axfQkhRGWdS1xseEZKVB7MMBtaA==
+X-MS-Exchange-CrossTenant-Network-Message-Id: cffb3238-4e23-497e-c638-08d85becac82
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2020 16:05:34.6631
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: a0H3l3DB+KAtJYnQH38pAUO9X/yYfLEiglrwykgHLjg/kqrWtRBWTw1BeLUtiJqT
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3308
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600445137; bh=KujWuG2+JW5Zt4HdwPmSHgN+ZyKFZnA4oJVFMElPYOs=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:
+         Authentication-Results:Date:From:To:CC:Subject:Message-ID:
+         References:Content-Type:Content-Disposition:In-Reply-To:
+         X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
+         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
+         X-MS-TrafficTypeDiagnostic:X-MS-Exchange-Transport-Forked:
+         X-Microsoft-Antispam-PRVS:X-MS-Oob-TLC-OOBClassifiers:
+         X-MS-Exchange-SenderADCheck:X-Microsoft-Antispam:
+         X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
+         X-MS-Exchange-AntiSpam-MessageData:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+         X-MS-Exchange-CrossTenant-FromEntityHeader:
+         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+         X-MS-Exchange-CrossTenant-UserPrincipalName:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=HWXQd0Ka+mcsgm3cOIoPBkj/5Y0qM1T8kdou9zIDrAjxgVUFKug12qKXP0nZGQLcI
+         HqW/c+3DS96VbJvM4hmRfYVtmRl5RIDXrcowLBnPqd4J9g2xZ7/NXo2b2Wo4sqI+Af
+         pjxbZ1OGeQ2SzFn1mdSMxQOJmnzoJeBct9v9PDrhLFZLsZR1QgxbW5vjJLvxKl2UTa
+         iLFC6jq47BeJhFXaRnghAx9cV2M0TTC3H+W7PzNt6CHw71ZIDJ+H+ROIQCrFRJc+h2
+         cRLt4AtgXD+Fj7CzrjIuAEo+l2BgKainrNEIZoZzL7m5hZ2XRPMTqHwJNRiGqmb4fE
+         FgoL40n44Kc1Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Florian
+On Mon, Sep 14, 2020 at 02:26:48PM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> This flow has become crufty and confusing. Revise it so that the rules
+> on how UMR is used with MRs is much clearer and more correct.
+> 
+> Fixes a few minor bugs in ODP and rereg_mr where disallowed things were
+> not properly blocked.
+> 
+> Thanks
+> 
+> Jason Gunthorpe (5):
+>   RDMA/mlx5: Remove dead check for EAGAIN after alloc_mr_from_cache()
+>   RDMA/mlx5: Use set_mkc_access_pd_addr_fields() in reg_create()
+>   RDMA/mlx5: Make mkeys always owned by the kernel's PD when not enabled
+>   RDMA/mlx5: Disable IB_DEVICE_MEM_MGT_EXTENSIONS if IB_WR_REG_MR can't
+>     work
+>   RDMA/mlx5: Clarify what the UMR is for when creating MRs
 
-On Tue, Sep 15, 2020 at 6:00 PM Matthias Kaehlcke <mka@chromium.org> wrote:
->
-> Hi Rob,
->
-> On Tue, Sep 15, 2020 at 08:21:45AM -0600, Rob Herring wrote:
-> > On Mon, Sep 14, 2020 at 11:27:48AM -0700, Matthias Kaehlcke wrote:
-> > > Onboard USB hubs need to be powered and may require initiaization of
-> > > other resources (like GPIOs or clocks) to work properly. This adds
-> > > a device tree binding for these hubs.
-> >
-> > We already have bindings for these. 2 in fact as I2C controlled hubs are
-> > often described under the I2C bus.
->
-> Yes, these are I2C controlled hubs, which need hub specific drivers. This
-> driver is for hubs without an additional bus that share similar
-> initialization requirements and can benefit from common functionality.
-
-Yes, as I said, there's already 2 ways to do this. The second is
-defining the USB bus under the USB host. I'm sure there's some
-examples in the tree.
-
-> > > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> > > ---
-> > >
-> > >  .../bindings/usb/onboard_usb_hub.yaml         | 70 +++++++++++++++++++
-> > >  1 file changed, 70 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml b/Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml
-> > > new file mode 100644
-> > > index 000000000000..f82d8f459eed
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml
-> > > @@ -0,0 +1,70 @@
-> > > +# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/usb/onboard_usb_hub.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Binding for onboard USB hubs
-> > > +
-> > > +maintainers:
-> > > +  - Matthias Kaehlcke <mka@chromium.org>
-> > > +
-> > > +allOf:
-> > > +  - $ref: /schemas/usb/onboard_usb_hub.yaml#
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    enum:
-> > > +      - onboard-usb-hub
-> > > +      - realtek,rts5411
-> > > +
-> > > +  power-off-in-suspend:
-> > > +    description:
-> > > +      The hub should be powered off during system suspend. When the
-> > > +      "wakeup-source" property is also provided the hub is only powered
-> > > +      off during suspend when no wakeup capable descendants are connected.
-> > > +    type: boolean
-> > > +
-> > > +  vdd-supply:
-> > > +    description:
-> > > +      phandle to the regulator that provides power to the hub.
-> > > +
-> > > +  wakeup-source:
-> > > +    description:
-> > > +      Wakeup capable USB devices connected to this hub can be used as
-> > > +      wakeup source.
-> > > +    type: boolean
-> > > +
-> > > +required:
-> > > +  - compatible
-> > > +  - vdd-supply
-> > > +
-> > > +examples:
-> > > +  - |
-> > > +    usb_hub: usb-hub {
-> > > +        compatible = "realtek,rts5411", "onboard-usb-hub";
-> > > +        vdd-supply = <&pp3300_hub>;
-> > > +        power-off-in-suspend;
-> > > +        wakeup-source;
-> >
-> > This is the hub device?
->
-> This is the physical hub device on the platform bus, which is the
-
-How is a USB hub connected to the 'platform bus'? There's no such
-thing as 'platform bus' in DT.
-
-> equivalent to this entry for a usb2512b hub on an I2C bus:
->
->     usb2512b@2c {
->         compatible = "microchip,usb2512b";
->         reg = <0x2c>;
->         reset-gpios = <&gpio1 4 GPIO_ACTIVE_LOW>;
->     };
->
-> (source: Documentation/devicetree/bindings/usb/usb251xb.txt)
->
-> It doesn't have an I2C, SPI or other bus, hence the platform bus is
-> used.
->
-> > > +    };
-> > > +
-> > > +    &usb_1_dwc3 {
-> > > +   dr_mode = "host";
-> > > +   #address-cells = <1>;
-> > > +   #size-cells = <0>;
-> > > +
-> > > +   /* 2.0 hub on port 1 */
-> > > +   hub@1 {
-> > > +           compatible = "usbbda,5411";
-> > > +           reg = <1>;
-> > > +           hub = <&usb_hub>;
-> >
-> > Or this node is?
->
-> It is the USB 2.0 part of the hub. The device is instantiated by
-> Linux even without this node, but the system associates the node
-> with the device, which suggests it 'exists'.
->
-> The usb2512b mentioned above implicitly also has a node here, it just
-> isn't specified since the USB controller autodetects it.
-
-Like other probe-able buses, we describe the devices in DT when they
-have extra resources/config which are not probe-able.
-
-> > > +   };
-> > > +
-> > > +   /* 3.0 hub on port 2 */
-> > > +   hub@2 {
-> > > +           compatible = "usbbda,411";
-> > > +           reg = <2>;
-> > > +           hub = <&usb_hub>;
-> >
-> > Or this node is?
->
-> It is the USB 3.0 part of the hub.
->
-> > The hub node belongs here.
->
-> The platform device isn't probed when the node is inside the USB
-> controller node. I haven't investigated why that's the case.
-
-It shouldn't be a platform device, but associating a device_node with
-the usb device. I think at least that is there in the kernel.
-
-Though if you need setup to happen before the device is probe-able
-which appears to be the case here, then that is a common problem which
-isn't really a solved issue. There's the mmc-pwrseq stuff, but I don't
-want to see a repeat of that. There was an #armlinux irc discussion I
-had with Florian on this just 2 days ago[1]. If the only thing you
-have to configure is 'reset-gpios', then you probably can do that
-generically scanning all the child USB DT devices and deassert reset.
-But as soon as you have device specific things and need specific
-ordering and timing, then you'll need device specific code to handle
-it.
-
->
-> > If you really have it connected to 2 upstream ports, then just do
-> > one node with 'reg = <1 2>;'.
->
-> Yes, it is connected to two upstream ports. The platform driver needs a
-> reference to both/all hubs, to be able to determine whether to keep the
-> hub powered during system suspend or not.
->
-> Technically the hub with product id 0x5411 is connected to port 1 and the
-> one with product id 0x411 to port 2, so I would say the above is more
-> accurate than pretending one of the hubs is connected to both ports.
->
-> I would argue that the two hub nodes are similar to a SDIO BT/WiFi combo,
-> where you have one chip/module with multiple functions. The DT has entries
-> for both functions, even though they reside in the same chip and share the
-> same bus.
-
-That has generally worked because little is shared between BT and WiFi
-and what is shared is refcounted (clks for example). That could work
-here, we just have to be careful.
-
-Rob
-
-[1] https://pastebin.com/iepyfe9c
+Applied to for-next
+ 
+Jason
