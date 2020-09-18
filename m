@@ -2,106 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3A2C270768
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:50:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E1A7270771
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726611AbgIRUtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 16:49:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58342 "EHLO
+        id S1726454AbgIRUuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 16:50:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726118AbgIRUtt (ORCPT
+        with ESMTP id S1726118AbgIRUuQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 16:49:49 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C218AC0613CE;
-        Fri, 18 Sep 2020 13:49:48 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id y5so6630162otg.5;
-        Fri, 18 Sep 2020 13:49:48 -0700 (PDT)
+        Fri, 18 Sep 2020 16:50:16 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 016ECC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:50:16 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id z23so9753422ejr.13
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:50:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6KkfOlKQIaWtyfOevhupH1s1bYyIC6ABSgltqbmoQw4=;
-        b=lluK4FaljicIdmBLv5XPthHLdZHhXfmeV/Qc234slm/ZfarEuhTN753e4x4KaadLIu
-         YyhwhsI/0/EGYkCmJ6uYlQsCszjY0OU+lBdxeeMz7nPjA1bxCf8HM9nYAmN13MrZkNcU
-         Ez5juY+erebiXtgIbwUqlMalo/0fsbdDfb1G/L1yT8Enh1UXYCN6joQzpDW3uGck5qg8
-         ilgXOScKmJk9yu5wIMbvO7NAq3aHNKwdHfXpXIiz1KLt/pPYW70NRdn6visVo5HfB1PP
-         M4UiYeSiYhstwkV3Be7i1ubE0zrHOQv/3i5qdbE/FNBUCL44E0e8Sd2nt8yzsH+Kxq5s
-         fYWw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=f4okZ/7bct4uSKwZ6O3z2m5KyitVLtU4XG9WgtUAxwc=;
+        b=TxBH8AyvU6HWp66ncdZqEtoRFWD/YTji6mddQAC1tx4KXEeHFtGLdS3R9syxDOr/gw
+         EJ35wyT17gb2NJYLGzLi6nzgB21j9JTRzpSNH6ko4dn+slxaKb4IH8Ki7QRFsqI7v9aA
+         S87ydkbPm8kuIhgWoL3lKfaG0SLalSIBz1ahIC+ONuQXK7GoSVTs2pnZksirb/CgEcGJ
+         dda7cH+5KO+boQPBNW5nn7bmDiexjhjP2RtZPQz3JvCcezgV03AKeN1igjv/uW0ePsfq
+         kEgfrqOrvUv6gNdwmh3rNp+rjsPflT1TKKMgiRyTccCH7ogTg/un4wxhA9XtkrhpxfY7
+         o61Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6KkfOlKQIaWtyfOevhupH1s1bYyIC6ABSgltqbmoQw4=;
-        b=l1CJV3kr/eP3JGm605qTFQTjIOrAAEV157SYIaMu5de+UrLVYcYfW/4ROWOdmxsodh
-         8bSthUtPwyf5NvqWZEY08Bgh3413qdOzTYXOQJb8cpUwBDofs5RdKxflMD2ARluf1MlY
-         6Vngjqdqo6omktD6yzAMEb0JJ7hdA2WgRCDViZ49raljy1jywGRafkOuQrBPvaLTLK4U
-         rwoaPjSfdZ1Pu1BtFRRhj/ovA+PEhlnM7/4MoGzpSKnB5XTHfMfiv0mWYumBWJd1vILA
-         JK5XQNXkEmwFTfWdGQD5vo/bHXTc+LbUubJaoh05jLCznIA2rl7WTEHjNiLBcjolCxtI
-         NLnA==
-X-Gm-Message-State: AOAM532ln25lbQFDnNRnj2K/kyTTgp3+zyZXXy2+VGP5ElfEOiTcEmP6
-        mU1fQ94CDe2XSu8Wb63UYIA=
-X-Google-Smtp-Source: ABdhPJyrRulMsjoBfIFbzGiOD1bug6oJnhrXMm7Ik8OTUigZ259cK92WVZxrLufHpUW7QZoqOByqoQ==
-X-Received: by 2002:a9d:65d1:: with SMTP id z17mr24610562oth.79.1600462188234;
-        Fri, 18 Sep 2020 13:49:48 -0700 (PDT)
-Received: from localhost.localdomain (cpe-24-31-245-230.kc.res.rr.com. [24.31.245.230])
-        by smtp.gmail.com with ESMTPSA id k16sm3592839oij.56.2020.09.18.13.49.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Sep 2020 13:49:47 -0700 (PDT)
-Sender: Larry Finger <larry.finger@gmail.com>
-Subject: Re: [PATCH -next 9/9] rtlwifi: rtl8723be: fix comparison to bool
- warning in hw.c
-To:     Zheng Bin <zhengbin13@huawei.com>, pkshih@realtek.com,
-        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     yi.zhang@huawei.com
-References: <20200918102505.16036-1-zhengbin13@huawei.com>
- <20200918102505.16036-10-zhengbin13@huawei.com>
-From:   Larry Finger <Larry.Finger@lwfinger.net>
-Message-ID: <09ee4bfd-d010-a185-7050-702a9e9d8bd7@lwfinger.net>
-Date:   Fri, 18 Sep 2020 15:49:46 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=f4okZ/7bct4uSKwZ6O3z2m5KyitVLtU4XG9WgtUAxwc=;
+        b=NmQQU0iQZjLa+a3JtQVfIW7/vTylbjtHfMAj71mhe/UMz99cnUD7GGBxCqumYio0vG
+         V5tISitz6ALm0c0+BDVfP9UuHKv4dJFGFmZJl2tyuDfVSOmKl0mMeYzQzf4qEAvFGQrK
+         qFMOz5gMoiqFf0h35JiCm/x9I7qHA8YiE54LinMSWu5xh0moFpWtpE3v9xVoKztNNCMa
+         iPuyM0l/BHAqHWG3/1WoPuIRd+nR5mPNlT8dGvoLLJVWnwRVFDjEGbDaNxao/yHAatBt
+         Rp2MDO+ffOd7Sisq10OegVNuXAY4udlFRnYIAP7BWVlI/U9u9CdhM/FkWvTet7nILcYN
+         hB8w==
+X-Gm-Message-State: AOAM532SBOF4uYKX6o2fphFXUeJ41XFaGk+3x1N+nvtVJxosZM/IL1gN
+        ZUWlARl/TQwRp/r1TykvRp3pXcDH3ZYmFoARbgAAfQ==
+X-Google-Smtp-Source: ABdhPJxlmp9BJajUv0E4cVIdv3SYp0wheOk/nOpDB3mBZ4a/wfqp4uUfhfc+2gKB4vscqXhsi0M+J+iTaTW/5sPlq3g=
+X-Received: by 2002:a17:906:454e:: with SMTP id s14mr38862035ejq.137.1600462214260;
+ Fri, 18 Sep 2020 13:50:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200918102505.16036-10-zhengbin13@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200918201436.2932360-1-samitolvanen@google.com> <CA+icZUW1MYSUz8jwOaVpi6ib1dyCv1VmG5priw6TTzXGSh_8Gg@mail.gmail.com>
+In-Reply-To: <CA+icZUW1MYSUz8jwOaVpi6ib1dyCv1VmG5priw6TTzXGSh_8Gg@mail.gmail.com>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Fri, 18 Sep 2020 13:50:03 -0700
+Message-ID: <CABCJKueyWvNB2MQw_PCLtZb8F1+sA1QOLJi_5qMKwdFCcwSMGg@mail.gmail.com>
+Subject: Re: [PATCH v3 00/30] Add support for Clang LTO
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org,
+        X86 ML <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/18/20 5:25 AM, Zheng Bin wrote:
-> Fixes coccicheck warning:
-> 
-> drivers/net/wireless/realtek/rtlwifi/rtl8723be/hw.c:861:6-35: WARNING: Comparison to bool
-> 
-> Signed-off-by: Zheng Bin <zhengbin13@huawei.com>
-> ---
->   drivers/net/wireless/realtek/rtlwifi/rtl8723be/hw.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+On Fri, Sep 18, 2020 at 1:22 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+>
+> On Fri, Sep 18, 2020 at 10:14 PM 'Sami Tolvanen' via Clang Built Linux
+> <clang-built-linux@googlegroups.com> wrote:
+> >
+> > This patch series adds support for building x86_64 and arm64 kernels
+> > with Clang's Link Time Optimization (LTO).
+> >
+> > In addition to performance, the primary motivation for LTO is
+> > to allow Clang's Control-Flow Integrity (CFI) to be used in the
+> > kernel. Google has shipped millions of Pixel devices running three
+> > major kernel versions with LTO+CFI since 2018.
+> >
+> > Most of the patches are build system changes for handling LLVM
+> > bitcode, which Clang produces with LTO instead of ELF object files,
+> > postponing ELF processing until a later stage, and ensuring initcall
+> > ordering.
+> >
+> > Note that patches 1-5 are not directly related to LTO, but are
+> > needed to compile LTO kernels with ToT Clang, so I'm including them
+> > in the series for your convenience:
+> >
+> >  - Patches 1-3 fix build issues with LLVM and they are already in
+> >    linux-next.
+> >
+> >  - Patch 4 fixes x86 builds with LLVM IAS, but it hasn't yet been
+> >    picked up by maintainers.
+> >
+> >  - Patch 5 is from Masahiro's kbuild tree and makes the LTO linker
+> >    script changes much cleaner.
+> >
+>
+> Hi Sami,
+>
+> might be good to point to your GitHub tree and corresponding
+> release-tag for easy fetching.
 
-Acked-by: Larry Finger <Larry.Finger@lwfinger.net>
+Ah, true. You can also pull this series from
 
-Larry
+  https://github.com/samitolvanen/linux.git lto-v3
 
-> 
-> diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8723be/hw.c b/drivers/net/wireless/realtek/rtlwifi/rtl8723be/hw.c
-> index 3c7ba8214daf..0748aedce2ad 100644
-> --- a/drivers/net/wireless/realtek/rtlwifi/rtl8723be/hw.c
-> +++ b/drivers/net/wireless/realtek/rtlwifi/rtl8723be/hw.c
-> @@ -858,7 +858,7 @@ static bool _rtl8723be_init_mac(struct ieee80211_hw *hw)
->   	rtl_write_word(rtlpriv, REG_CR, 0x2ff);
-> 
->   	if (!rtlhal->mac_func_enable) {
-> -		if (_rtl8723be_llt_table_init(hw) == false)
-> +		if (!_rtl8723be_llt_table_init(hw))
->   			return false;
->   	}
-> 
-> --
-> 2.26.0.106.g9fadedd
-> 
-
+Sami
