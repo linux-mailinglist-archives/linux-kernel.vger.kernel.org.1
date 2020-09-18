@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6B026F272
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C13726F286
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726931AbgIRCGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:06:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54274 "EHLO mail.kernel.org"
+        id S1727682AbgIRCF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:05:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726984AbgIRCF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727001AbgIRCF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 17 Sep 2020 22:05:56 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F06122388B;
-        Fri, 18 Sep 2020 02:05:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 248FE2395B;
+        Fri, 18 Sep 2020 02:05:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394754;
-        bh=9P09pX9CSmsoGNHoVEW3b11httRKm6P+siZpoeibr/g=;
+        s=default; t=1600394756;
+        bh=j47Y/OmtPQBlLz+805C+9tGJZUihfnFkicJQ1q/pSBY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Re3jG2nGHOTwgjJ690a6isM6VaYZuoTHURWoj2KY4AXByI2RJyDI82gC7tG5SH4mh
-         97dbEAcBINRH+XN0d+1/LNtnz5N6vbqBBeQmklL4UTYTuAsXIGX3qCqoCitrJwSMIn
-         lO3SPlfKcdxrU/11TZ/D2w2ncUhdMiRpNIdI6fN0=
+        b=Rbn49Y7Rstp81HcX5AJiesFhzMG8x7fscFwwrrFcWPFW68ebfKOh+iUgXGUU2c37D
+         T4LtnomveXOyqCnNemL8qxBFIZvfNemVJaMujIvREA1bWr2PPpln0rNCT0xE2Rh7em
+         vOPlAtdwujtQ80/yiag0SFqg5sh4Hgg577IU+XGo=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jack Zhang <Jack.Zhang1@amd.com>, Monk Liu <monk.liu@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.4 232/330] drm/amdgpu/sriov add amdgpu_amdkfd_pre_reset in gpu reset
-Date:   Thu, 17 Sep 2020 21:59:32 -0400
-Message-Id: <20200918020110.2063155-232-sashal@kernel.org>
+Cc:     Jaewon Kim <jaewon31.kim@samsung.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michel Lespinasse <walken@google.com>,
+        Borislav Petkov <bp@suse.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>, linux-mm@kvack.org
+Subject: [PATCH AUTOSEL 5.4 233/330] mm/mmap.c: initialize align_offset explicitly for vm_unmapped_area
+Date:   Thu, 17 Sep 2020 21:59:33 -0400
+Message-Id: <20200918020110.2063155-233-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -43,68 +46,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Zhang <Jack.Zhang1@amd.com>
+From: Jaewon Kim <jaewon31.kim@samsung.com>
 
-[ Upstream commit 04bef61e5da18c2b301c629a209ccdba4d4c6fbb ]
+[ Upstream commit 09ef5283fd96ac424ef0e569626f359bf9ab86c9 ]
 
-kfd_pre_reset will free mem_objs allocated by kfd_gtt_sa_allocate
+On passing requirement to vm_unmapped_area, arch_get_unmapped_area and
+arch_get_unmapped_area_topdown did not set align_offset.  Internally on
+both unmapped_area and unmapped_area_topdown, if info->align_mask is 0,
+then info->align_offset was meaningless.
 
-Without this change, sriov tdr code path will never free those allocated
-memories and get memory leak.
+But commit df529cabb7a2 ("mm: mmap: add trace point of
+vm_unmapped_area") always prints info->align_offset even though it is
+uninitialized.
 
-v2:add a bugfix for kiq ring test fail
+Fix this uninitialized value issue by setting it to 0 explicitly.
 
-Signed-off-by: Jack Zhang <Jack.Zhang1@amd.com>
-Reviewed-by: Monk Liu <monk.liu@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Before:
+  vm_unmapped_area: addr=0x755b155000 err=0 total_vm=0x15aaf0 flags=0x1 len=0x109000 lo=0x8000 hi=0x75eed48000 mask=0x0 ofs=0x4022
+
+After:
+  vm_unmapped_area: addr=0x74a4ca1000 err=0 total_vm=0x168ab1 flags=0x1 len=0x9000 lo=0x8000 hi=0x753d94b000 mask=0x0 ofs=0x0
+
+Signed-off-by: Jaewon Kim <jaewon31.kim@samsung.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Michel Lespinasse <walken@google.com>
+Cc: Borislav Petkov <bp@suse.de>
+Link: http://lkml.kernel.org/r/20200409094035.19457-1-jaewon31.kim@samsung.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v10.c | 3 +++
- drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c  | 3 +++
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c         | 2 ++
- 3 files changed, 8 insertions(+)
+ mm/mmap.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v10.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v10.c
-index d10f483f5e273..ce30d4e8bf25f 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v10.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v10.c
-@@ -644,6 +644,9 @@ static int kgd_hqd_destroy(struct kgd_dev *kgd, void *mqd,
- 	uint32_t temp;
- 	struct v10_compute_mqd *m = get_mqd(mqd);
+diff --git a/mm/mmap.c b/mm/mmap.c
+index a3584a90c55c2..ba78f1f1b1bd1 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -2126,6 +2126,7 @@ arch_get_unmapped_area(struct file *filp, unsigned long addr,
+ 	info.low_limit = mm->mmap_base;
+ 	info.high_limit = mmap_end;
+ 	info.align_mask = 0;
++	info.align_offset = 0;
+ 	return vm_unmapped_area(&info);
+ }
+ #endif
+@@ -2167,6 +2168,7 @@ arch_get_unmapped_area_topdown(struct file *filp, unsigned long addr,
+ 	info.low_limit = max(PAGE_SIZE, mmap_min_addr);
+ 	info.high_limit = arch_get_mmap_base(addr, mm->mmap_base);
+ 	info.align_mask = 0;
++	info.align_offset = 0;
+ 	addr = vm_unmapped_area(&info);
  
-+	if (amdgpu_sriov_vf(adev) && adev->in_gpu_reset)
-+		return 0;
-+
- #if 0
- 	unsigned long flags;
- 	int retry;
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c
-index e262f2ac07a35..92754cfb98086 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c
-@@ -540,6 +540,9 @@ int kgd_gfx_v9_hqd_destroy(struct kgd_dev *kgd, void *mqd,
- 	uint32_t temp;
- 	struct v9_mqd *m = get_mqd(mqd);
- 
-+	if (amdgpu_sriov_vf(adev) && adev->in_gpu_reset)
-+		return 0;
-+
- 	if (adev->in_gpu_reset)
- 		return -EIO;
- 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-index 5e1dce4241547..4105fbf571674 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-@@ -3466,6 +3466,8 @@ static int amdgpu_device_reset_sriov(struct amdgpu_device *adev,
- 	if (r)
- 		return r;
- 
-+	amdgpu_amdkfd_pre_reset(adev);
-+
- 	/* Resume IP prior to SMC */
- 	r = amdgpu_device_ip_reinit_early_sriov(adev);
- 	if (r)
+ 	/*
 -- 
 2.25.1
 
