@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55B6F26F793
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A4026F795
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:01:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726359AbgIRIBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 04:01:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38662 "EHLO mail.kernel.org"
+        id S1726473AbgIRIBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 04:01:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726192AbgIRIBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 04:01:25 -0400
+        id S1726199AbgIRIBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 04:01:35 -0400
 Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0B60121481;
-        Fri, 18 Sep 2020 08:01:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C9D372100A;
+        Fri, 18 Sep 2020 08:01:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600416085;
-        bh=c6ijB4BvIwzi7vJzyQ2v957duak7/yv+gqofCzrmM+M=;
-        h=From:To:Cc:Subject:Date:From;
-        b=qK3a9XQhW2pIfjCjXEv1P14tqj1JUrLGPfSf2O7MqokTWnEEDp2GmmFdyiTXnPh/n
-         WfTlXl4FwbECEmsPAlISUaDrABQLVFRaUYYoZc0vcwC11SA5B6r2zyCIUUdTKmJTCv
-         AYDw2TgUuzIAOQL73aYaeG45Au2EVpe7wr/hA41o=
+        s=default; t=1600416095;
+        bh=wcXEqefbWl+ElaYYetd1g5zIjxCBnRNwbjRpvB/Dg60=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=somj8kd5ro1JdBxJ0QN1BgrtQcHUdbQKMfLmQnV4X09TaSFFt9XZnpwquHOjKzHam
+         4TDuZ303vlI7QurkX6cOrZhRDiJ+S19KsVgUT5kM8iDd4pFj2XKtTvLucPxb3kweB2
+         ntMOPV3v33QVm0wu5E0r+0PUrseeOO4Xsz4p1ac8=
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>
@@ -31,10 +31,12 @@ Cc:     "Frank Ch . Eigler" <fche@redhat.com>,
         Daniel Thompson <daniel.thompson@linaro.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/2] perf probe: Support debuginfod client
-Date:   Fri, 18 Sep 2020 17:01:20 +0900
-Message-Id: <160041608027.912668.13169810485938551658.stgit@devnote2>
+Subject: [PATCH v2 1/2] perf probe: Fix to adjust symbol address with correct reloc_sym address
+Date:   Fri, 18 Sep 2020 17:01:30 +0900
+Message-Id: <160041609047.912668.14314639291419159274.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <160041608027.912668.13169810485938551658.stgit@devnote2>
+References: <160041608027.912668.13169810485938551658.stgit@devnote2>
 User-Agent: StGit/0.19
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -43,78 +45,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Perf probe uses ref_reloc_sym to adjust symbol offset address
+from debuginfo address or ref_reloc_sym based address, but
+that is misused the reloc_sym->addr and reloc_sym->unrelocated_addr.
+If map is not relocated (map->reloc == 0), we can use reloc_sym->addr
+as unrelocated address instead of reloc_sym->unrelocated_addr.
 
-Here is the 2nd version of a series to enable debuginfod support on
-perf probe command. This allows users to access debuginfo binary
-from remote device. 
+This usually may not happen. If we have a non-stripped elf
+binary, we will use it for map and debuginfo, if not, we use only
+kallsyms without debuginfo. Thus, the map is always relocated (elf
+and dwarf binary) or not relocated (kallsyms).
 
-In this version I fixed a build error when libdebuginfod is not
-installed ([2/2]).
+However, if we will allow the combination of debuginfo and kallsyms
+based map (like using debuginfod), we have to check the map->reloc
+and choose the collect address of reloc_sym.
 
-
-Since the perf-probe heavily depends on the debuginfo, debuginfod
-gives us many benefits on the perf probe command on remote
-machine, especially for the embedded devices.
-
-Here is an example (copied from [2/2])
-
-1. at first you need to start debuginfod on the host machine.
-   -F option scans local debuginfo binary. (You don't need to pass
-   the source tree, but you must keep the source tree untouched)
-
-  (host) $ cd PATH/TO/KBUILD/DIR/
-  (host) $ debuginfod -F .
-  ...
-
-2. In the remote machine, you need to set DEBUGINFOD_URLS.
-   debuginfod uses 8002 tcp port.
-
-  (remote) # export DEBUGINFOD_URLS="http://$HOST_IP:8002/"
-
-3. Then you can use the perf probe (it can refer the source code)
-
-  (remote) # perf probe -L vfs_read
-  <vfs_read@...>
-        0  ssize_t vfs_read(struct file *file, char __user *buf, size_t count, loff_t *pos)
-           {
-        2         ssize_t ret;
-
-                  if (!(file->f_mode & FMODE_READ))
-                          return -EBADF;
-        6         if (!(file->f_mode & FMODE_CAN_READ))
-                          return -EINVAL;
-        8         if (unlikely(!access_ok(buf, count)))
-                          return -EFAULT;
-
-       11         ret = rw_verify_area(READ, file, pos, count);
-       12         if (ret)
-                          return ret;
-                  if (count > MAX_RW_COUNT)
-  ...
-
-  (remote) # perf probe -a "vfs_read count"
-  Added new event:
-    probe:vfs_read       (on vfs_read with count)
-
-  (remote) # perf probe -l
-    probe:vfs_read       (on vfs_read@ksrc/linux/fs/read_write.c with count)
-
-
-
-Thank you,
-
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
+ tools/perf/util/probe-event.c |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-Masami Hiramatsu (2):
-      perf probe: Fix to adjust symbol address with correct reloc_sym address
-      perf probe: Fall back to debuginfod query if debuginfo and source not found
+diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
+index 99d36ac77c08..17831f186ab5 100644
+--- a/tools/perf/util/probe-event.c
++++ b/tools/perf/util/probe-event.c
+@@ -129,9 +129,10 @@ static int kernel_get_symbol_address_by_name(const char *name, u64 *addr,
+ 	struct map *map;
+ 
+ 	/* ref_reloc_sym is just a label. Need a special fix*/
+-	reloc_sym = kernel_get_ref_reloc_sym(NULL);
++	reloc_sym = kernel_get_ref_reloc_sym(&map);
+ 	if (reloc_sym && strcmp(name, reloc_sym->name) == 0)
+-		*addr = (reloc) ? reloc_sym->addr : reloc_sym->unrelocated_addr;
++		*addr = (!map->reloc || reloc) ? reloc_sym->addr :
++			reloc_sym->unrelocated_addr;
+ 	else {
+ 		sym = machine__find_kernel_symbol_by_name(host_machine, name, &map);
+ 		if (!sym)
+@@ -795,7 +796,8 @@ post_process_kernel_probe_trace_events(struct probe_trace_event *tevs,
+ 			free(tevs[i].point.symbol);
+ 		tevs[i].point.symbol = tmp;
+ 		tevs[i].point.offset = tevs[i].point.address -
+-				       reloc_sym->unrelocated_addr;
++			(map->reloc ? reloc_sym->unrelocated_addr :
++				      reloc_sym->addr);
+ 	}
+ 	return skipped;
+ }
 
-
- tools/perf/util/probe-event.c  |   66 ++++++++++++++++++++++++++++++++++++++--
- tools/perf/util/probe-finder.c |   61 ++++++++++++++++++++++++++++++++++---
- tools/perf/util/probe-finder.h |    7 +++-
- 3 files changed, 123 insertions(+), 11 deletions(-)
-
---
-Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
