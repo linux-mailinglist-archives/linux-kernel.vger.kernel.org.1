@@ -2,140 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17D2326F768
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 09:52:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED22526F76C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 09:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726847AbgIRHwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 03:52:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50800 "EHLO
+        id S1726865AbgIRHwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 03:52:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726711AbgIRHwa (ORCPT
+        with ESMTP id S1726711AbgIRHwc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 03:52:30 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C62B1C06174A;
-        Fri, 18 Sep 2020 00:52:30 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id o8so4592549otl.4;
-        Fri, 18 Sep 2020 00:52:30 -0700 (PDT)
+        Fri, 18 Sep 2020 03:52:32 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 911CEC06174A;
+        Fri, 18 Sep 2020 00:52:32 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id n14so2916564pff.6;
+        Fri, 18 Sep 2020 00:52:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=S2eNoZYJBbRdDL+9Rn83UkdafaYmPioHl03HTHvdQG0=;
-        b=fO0ZculQNiNNXJ+GZ4XJ+Izjls+aHWlLkPNgFCkYk+T4lrNk7okIWBhRv8aPZ7YnRU
-         yWmecYPz7JpgdFFby2UJOV+G1HX6r9Va6HM9/nOoRxu0+aSY1ZDJzT+KIV+hLlMKIIN1
-         w6WxP82H9u6RYNFrh5Fzt8r9ozMRUZ1ZZCjaHtyEuwLsoI3zyWl+hUh3asYRUOdT0pVn
-         isRpZ3GYvfejEndmnWnnrq7WiQ2WxtgBuhwKo/HbP5kcDNEkirlFKW8syexCFtoRZSqM
-         cxQmDcjHLdDdOgUqnk2PF4PFUuECcVinfxvfalrwXNRmNpMP+qmYjTgCkNI/+ZEZu6PZ
-         6ZDw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=V4OYn/8zk+E0CEL1hG/OgZr+hLyP355J5jl0t4p8ZjQ=;
+        b=YnxWsHp/7uG41OYw9V8WvuZ8pDWfZmtAioUVIWA2Mg8USLqFp2jfWDTFbcf5QjFdbl
+         7cPjTdfZ5rW0URXBU4Of2PpwO4ofS9p3DFQivUbW2wfNMNUwp4jQK+kumFaZdBCzgB3Q
+         BIl+b1JLCxg0wVo91S1wsNalaWuYG1W1X/AVOuKWsr9JMkN87GIVuR0fDA/x7ynxeAc3
+         CSOUODRJfIZYsPVT5dHHdcr2fD6t1PIoJhdHeNZ2F4A2rsPqLZQdbgQJei5UBkmKC2ke
+         uCn64UMu1zF81nz7Fkl2kZ/AgHANRAYzw3Jon70fRmIX3yJ2vCU4l2dVU46zfu/XRK5q
+         o/jQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=S2eNoZYJBbRdDL+9Rn83UkdafaYmPioHl03HTHvdQG0=;
-        b=sFEd2QlV1XYA3Q7MAgDgX1ZOlLTfl3UteH6UH2eeB1NVpuVukXne3fK/C116UchLaO
-         8vMBAVxKTA9qhjjOGGHBzDeU/oBmoGf5f8qGmVcTjHqJTDxC6Wckm9PUiinoHbnVfoyV
-         d+NohSbEozlcloanb76UXsyg2gPhWPu5YO810V2lbkHQT+yEjXtfuqUWX/3VyM8/vcKi
-         uhrha8bnjBDrj8R24DDJ92bg4MYEL2O+2otRqtBc0tN8HEbSIJpxBy0pIgsKF/1Wu3bD
-         kof70WeGGvBhR/tj5pbAQtNnNw78jwvigawhDQWqLhQk/m2a0a9J+wW33/8Bw7+UyhZs
-         rq8w==
-X-Gm-Message-State: AOAM533ekjx57n85xXc8rlaisTwPDbbT92+IJP+VJX65I7UPxpysNePA
-        m6/86ipLs5bBBLT3HXjifnzUNvRFH2GrQDYHkrs=
-X-Google-Smtp-Source: ABdhPJyuZa4aaOHbJ4KcquqeOW73BYpH7VvGe3VxVVFyF5vKx1u35OqPT0RQOJtMKbnV/Z8+HMnZE6+poiphw4Tj38I=
-X-Received: by 2002:a9d:67c3:: with SMTP id c3mr23645453otn.9.1600415549857;
- Fri, 18 Sep 2020 00:52:29 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=V4OYn/8zk+E0CEL1hG/OgZr+hLyP355J5jl0t4p8ZjQ=;
+        b=Avm0ckFIlcLoE16OK60BMOKHpI79vP0hqdrQPfmnpI+t1Ma42Vmm4+8rtwWZQcIvvg
+         xr2aExkIscEUYXRZOaX6evjflaHJaa7IjIW/CDDzTkilYn18/5nFuN86NyBVOxhmUe74
+         bVor4mVM6cbnbAf/SP/XQCMk3vLmlTZVJ7Ulc+z+vjFACRqTiw1IvttHUZAcIWrQoz5c
+         wC5dt2krYl8GHwaKrsBendXcF+j/MC7GcwctKcuWQ+f7ZDXLOkvxeJ4RVPRMK8+6dhQH
+         d4WUWQ57C1Qg7rweTw4d1YjDQdJ9pKYOSTmH+40SHvciJ0yxwX1/rZ0Epk+Caxafi3Md
+         OtSg==
+X-Gm-Message-State: AOAM5302AKETKPIIA1Shvy1t3fGuYeIMwKAjMX7qokGWMvsjzoxOc6k3
+        xzgzzYyEAO74Xgr1kY1cXJWw8S7Qb4c=
+X-Google-Smtp-Source: ABdhPJzR3d/Cek3Ss0qb1HLGa+ief4j67CSYrJGjjosbc0hg2g2ILRm2z8iSsNw5BVTsB9Pqj5UUfw==
+X-Received: by 2002:a63:4f17:: with SMTP id d23mr7790393pgb.319.1600415552095;
+        Fri, 18 Sep 2020 00:52:32 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id l9sm2204147pgg.29.2020.09.18.00.52.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 00:52:31 -0700 (PDT)
+Date:   Fri, 18 Sep 2020 16:52:30 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the v4l-dvb-fixes tree
+Message-ID: <20200918075230.GD3049@jagdpanzerIV.localdomain>
+References: <20200918172106.4a924556@canb.auug.org.au>
 MIME-Version: 1.0
-References: <cover.1600401668.git.riteshh@linux.ibm.com> <88e795d8a4d5cd22165c7ebe857ba91d68d8813e.1600401668.git.riteshh@linux.ibm.com>
-In-Reply-To: <88e795d8a4d5cd22165c7ebe857ba91d68d8813e.1600401668.git.riteshh@linux.ibm.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 18 Sep 2020 09:52:18 +0200
-Message-ID: <CA+icZUXvhDR2TFEemfGyt=twxHBcu0_9b0H1j5cwGPG5kGA+TA@mail.gmail.com>
-Subject: Re: [PATCHv3 1/1] ext4: Optimize file overwrites
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu, jack@suse.cz,
-        dan.j.williams@intel.com, anju@linux.vnet.ibm.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200918172106.4a924556@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 7:09 AM Ritesh Harjani <riteshh@linux.ibm.com> wrote:
->
-> In case if the file already has underlying blocks/extents allocated
-> then we don't need to start a journal txn and can directly return
-> the underlying mapping. Currently ext4_iomap_begin() is used by
-> both DAX & DIO path. We can check if the write request is an
-> overwrite & then directly return the mapping information.
->
-> This could give a significant perf boost for multi-threaded writes
-> specially random overwrites.
-> On PPC64 VM with simulated pmem(DAX) device, ~10x perf improvement
-> could be seen in random writes (overwrite). Also bcoz this optimizes
-> away the spinlock contention during jbd2 slab cache allocation
-> (jbd2_journal_handle). On x86 VM, ~2x perf improvement was observed.
->
-> Reported-by: Dan Williams <dan.j.williams@intel.com>
-> Suggested-by: Jan Kara <jack@suse.cz>
-> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+On (20/09/18 17:21), Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the v4l-dvb-fixes tree, today's linux-next build (htmldocs)
+> produced this warning:
+> 
+> Documentation/userspace-api/media/v4l/buffer.rst:692: WARNING: The "flat-table" directive is empty; content required.
+> 
+> .. flat-table::
+>     :header-rows:  0
+>     :stub-columns: 0
+>     :widths:       3 1 4
 
-I have applied your patch on top of recent Linus Git and boot-tested on x86-64.
+Thanks. I think there is a patch for this already.
+Will hit linux-next soon.
 
-Here I have LTP installed.
-If you have a LTP filesystem test-/use-case you know for testing,
-please let me know.
-
-Yes, I have seen the FIO config in the cover-letter.
-Maybe you have a different FIO config - 16G AFAIK is too big here.
-
-Feel free to add...
-
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com> # Compile and boot on
-x86-64 Debian/unstable
-
-Thanks.
-
-- Sedat -
-
-> ---
->  fs/ext4/inode.c | 18 +++++++++++++++---
->  1 file changed, 15 insertions(+), 3 deletions(-)
->
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 10dd470876b3..6eae17758ece 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -3437,14 +3437,26 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
->         map.m_len = min_t(loff_t, (offset + length - 1) >> blkbits,
->                           EXT4_MAX_LOGICAL_BLOCK) - map.m_lblk + 1;
->
-> -       if (flags & IOMAP_WRITE)
-> +       if (flags & IOMAP_WRITE) {
-> +               /*
-> +                * We check here if the blocks are already allocated, then we
-> +                * don't need to start a journal txn and we can directly return
-> +                * the mapping information. This could boost performance
-> +                * especially in multi-threaded overwrite requests.
-> +                */
-> +               if (offset + length <= i_size_read(inode)) {
-> +                       ret = ext4_map_blocks(NULL, inode, &map, 0);
-> +                       if (ret > 0 && (map.m_flags & EXT4_MAP_MAPPED))
-> +                               goto out;
-> +               }
->                 ret = ext4_iomap_alloc(inode, &map, flags);
-> -       else
-> +       } else {
->                 ret = ext4_map_blocks(NULL, inode, &map, 0);
-> +       }
->
->         if (ret < 0)
->                 return ret;
-> -
-> +out:
->         ext4_set_iomap(inode, iomap, &map, offset, length);
->
->         return 0;
-> --
-> 2.26.2
->
+	-ss
