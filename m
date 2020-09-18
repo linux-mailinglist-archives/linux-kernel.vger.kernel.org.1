@@ -2,234 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C36826F6A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 09:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D4426F6AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 09:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726343AbgIRHWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 03:22:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46010 "EHLO
+        id S1726276AbgIRHX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 03:23:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726022AbgIRHV7 (ORCPT
+        with ESMTP id S1726054AbgIRHX1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 03:21:59 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75036C06174A;
-        Fri, 18 Sep 2020 00:21:59 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id g128so5759877iof.11;
-        Fri, 18 Sep 2020 00:21:59 -0700 (PDT)
+        Fri, 18 Sep 2020 03:23:27 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B64A0C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 00:23:26 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id k18so4461514wmj.5
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 00:23:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Ju0TrxIs6FJ7xW3Z7H2xcox4RM+XbSHCtVVVywc+J3U=;
-        b=D1hAU194FOUNNK3xN6BVA5UEh6cmkI4coh/bY3oUGjv2g5B1UPKStEj7aDce50HTSs
-         reqEMLSZP3Si+OWqovmffFtQqGesmdeNnwY+kbtaSQugpsNRZgXOpJEGDiNRpihrjLG4
-         hprwG222jyoiThqFbCLYtaqU8yqOnK6mJVQxxoYnw4TY/dh3cIYysMDls68PL+C8pExp
-         kxfQlWxpu2r7bWWYpsi/hsIlq01sqEBOaUqG27Hnmdv13oYjw8tE5pDP4ZkygqqZ2C2E
-         0imCirahv95O1NQDRZVfDPf+XoZ1A4/Ad4c6idUSuBoKof7KEtv21Uj2tOdBRRaiGCHi
-         ILmw==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=RQ7gnUfY4nhZ+gVPdKyTHLwffxTEzNolrhRA7Trzg3U=;
+        b=GMVZHzfpn7FPNp+uRofQNKSf5c2EI+ZbBCrEYYg2O/vhCQkmhgzkkjAPNNJkK+iMRc
+         644bzNMav/TC9cbtP9Q/BO0UTW+quJvp9O34tixO2KM/zxl7VhEkaJpGxpHxmM5hSHmg
+         fMliEBE9W7C1XwsUR4L+xTIGbfMvEvhYq0aBhzSW1SYxleozUUOJAyaXg1CRcqxQu3Rk
+         Oit3SfVVhbyGTDxuWVZICH7nHBZEkX7SDclQqzC3BKXeNQuqYbDZDBoKhk1VUfjkwRIf
+         l6j+m2MoB42FHSxM23fYXYB5BBNLc2GWq0BLc8RTDVpYTnxVY4QhP/lIMTXFQ9IZMPT4
+         l8tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Ju0TrxIs6FJ7xW3Z7H2xcox4RM+XbSHCtVVVywc+J3U=;
-        b=fcq+mHCqAcp0DZZXqPdOc2Cdc+oQBGbhrMf9RbTfxqBxDBVb0TTDstNMSVsq8HlCoZ
-         iaZR7XPAqt7QfUBgnrQ13b24Vrp8IYjE1c+gqEq7TVRIBx33fZG5L+Dmq+DpbvuFLMFZ
-         lvCAi8AiqAcuiz4sn++nOvZ4i6kyBCDBptadsJFZzKAZ/3KJjvmQ8Scj9nVLPfzm5r1I
-         Y/zCs9NGE3kj7QdrTDtOyf2R6lKHuolmkkabgSUL5EXLrNpjty+pKQppc6tn4Wh4+/X+
-         SGxz4EeW8RS0QnhpFisHhQxtmFnQDwNq7BG8Tyx3NXg5kSPvcLYEHdQQV1cf3m2DQCwq
-         +VlA==
-X-Gm-Message-State: AOAM533pV6ysgDNn5va0Zylz5TfgCBuUZbPuIj5T7hSTjoyLgxxWgBTn
-        KFfOBAm9Xu7NdVjrtrS1TMh5EtEfcGiCrO1OoXM=
-X-Google-Smtp-Source: ABdhPJwqcSkueCL7FLHnuStVDeja8i2Qt8zOn2Xu7ScPuOCLAgvoImXvNC5T9JzSZr2CsBY3QpgPcmFL4IyV+AaVF6s=
-X-Received: by 2002:a5e:8e0a:: with SMTP id a10mr26830525ion.200.1600413718688;
- Fri, 18 Sep 2020 00:21:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <1600191369-28040-1-git-send-email-gene.chen.richtek@gmail.com>
- <1600191369-28040-3-git-send-email-gene.chen.richtek@gmail.com> <20200917184256.71328701@archlinux>
-In-Reply-To: <20200917184256.71328701@archlinux>
-From:   Gene Chen <gene.chen.richtek@gmail.com>
-Date:   Fri, 18 Sep 2020 15:21:44 +0800
-Message-ID: <CAE+NS35Pw-6UqcHPNOsUtW0GABPVEHfPineF81+qrS6A18HiyA@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] Documentation: ABI: testing: mt6360: Add ADC sysfs guideline
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>, knaack.h@gmx.de,
-        lars@metafoo.de, pmeerw@pmeerw.net, linux-iio@vger.kernel.org,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com, Cristian Pop <cristian.pop@analog.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=RQ7gnUfY4nhZ+gVPdKyTHLwffxTEzNolrhRA7Trzg3U=;
+        b=UywLyDWZd1hxaqoVARZqwwu/5pMDDkH6E1M9qCeTKgES16EyQQ9wxne+5KzqOxKaB+
+         SPiUkEu3Q0Oj3TbzxXyOJoW0pWY7l5jll2s0jwWlvfNG3zlXsj6sQIjiLY9SANtszJ//
+         BsZ5Xb8C4pQzYjtP6t7jGMhN2j80Ke3djqowuNItRkc1KMS8iFexewTBbYn9TYXX+OEh
+         ndYWwqQ8iwQrbIRP1Mbc39tucnP1eD1NEOK7OoBmgqoWZZG0HU2y+F3OClC/OqU9kJRM
+         pZ24YRs2nFk81jAr+twOKsnyLidF4tq5ntshtivvfDziKONYvy8DGZEuQLhSd2T6tih5
+         YSGw==
+X-Gm-Message-State: AOAM532wqhx5hUerNzi/rU+LA9msj9RPuZjnv57QmI9SBsF/Aj2jVJ8V
+        oDweYKWd+TcRnHBubo6ggJvujA==
+X-Google-Smtp-Source: ABdhPJxiv+H66NLT1UIcB9KXcKY70fuZprDSp7iz4U0uXUTkU7jt9814Cn/SkzPf3bNntf6LFFV3kw==
+X-Received: by 2002:a7b:c095:: with SMTP id r21mr14972472wmh.133.1600413805385;
+        Fri, 18 Sep 2020 00:23:25 -0700 (PDT)
+Received: from localhost.localdomain ([51.15.160.169])
+        by smtp.googlemail.com with ESMTPSA id z19sm3349546wmi.3.2020.09.18.00.23.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 18 Sep 2020 00:23:24 -0700 (PDT)
+From:   Corentin Labbe <clabbe@baylibre.com>
+To:     davem@davemloft.net, herbert@gondor.apana.org.au,
+        mripard@kernel.org, wens@csie.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
+        Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH v7 00/17] crypto: allwinner: add xRNG and hashes
+Date:   Fri, 18 Sep 2020 07:22:58 +0000
+Message-Id: <1600413795-39256-1-git-send-email-clabbe@baylibre.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jonathan Cameron <jic23@kernel.org> =E6=96=BC 2020=E5=B9=B49=E6=9C=8818=E6=
-=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=881:43=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On Wed, 16 Sep 2020 01:36:08 +0800
-> Gene Chen <gene.chen.richtek@gmail.com> wrote:
->
-> > From: Gene Chen <gene_chen@richtek.com>
-> >
-> > Add ABI documentation for mt6360 ADC sysfs interfaces.
-> >
-> > Signed-off-by: Gene Chen <gene_chen@richtek.com>
-> Would you consider using the proposed label attribute for channels?
->
-> https://lore.kernel.org/linux-iio/20200916132115.81795-1-cristian.pop@ana=
-log.com/T/#u
->
-> I'm hoping that will remove the need to have ext name used in the majorit=
-y of
-> cases and would like to know if it would work for you?
-> It may not work for this particular case of course.
->
-> Other comments inline.
->
+Hello
 
-because of ADC layout is fixed, I can't switch channel to specific
-purpose for userspace.
+The main goal of this serie is to add support for TRNG, PRNG and hashes
+to the sun8i-ss/sun8i-ce driver.
+The whole serie is tested with CRYPTO_EXTRA_TESTS enabled and loading
+tcrypt.
+The PRNG and TRNG are tested with rngtest.
+Both LE and BE kernel are tested.
 
-> > ---
-> >  Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360 | 83 ++++++++++++++=
-++++++++
-> >  1 file changed, 83 insertions(+)
-> >  create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360
-> >
-> > diff --git a/Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360 b/Docum=
-entation/ABI/testing/sysfs-bus-iio-adc-mt6360
-> > new file mode 100644
-> > index 0000000..4b1c270
-> > --- /dev/null
-> > +++ b/Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360
-> > @@ -0,0 +1,83 @@
-> > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_USBID=
-_input
->
->
-> The mixture of case is a bit ugly.  Could we do
-> in_voltage_usbin_input?
->
+This serie was tested on:
+- sun50i-a64-pine64
+- sun8i-a83t-bananapi-m3
+- sun8i-r40-bananapi-m2-ultra
+- sun50i-h5-libretech-all-h3-cc
+- sun8i-h3-orangepi-pc
 
-ACK
+Regards
 
-> > +KernelVersion:       5.8.0
-> > +Contact:     gene_chen@richtek.com
-> > +Description:
-> > +             Indicated MT6360 USBID ADC which connected to connector I=
-D pin.
-> > +             Reading returns voltage in uV
-> > +
-> > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_VBUSD=
-IV5_input
->
-> > +KernelVersion:       5.8.0
-> > +Contact:     gene_chen@richtek.com
-> > +Description:
-> > +             Indicated MT6360 VBUS ADC with high accuracy
-> > +             Reading returns voltage in uV
->
-> Why would we ever read the low accuracy version?
->
-> > +
-> > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_VBUSD=
-IV2_input
-> > +KernelVersion:       5.8.0
-> > +Contact:     gene_chen@richtek.com
-> > +Description:
-> > +             Indicated MT6360 VBUS ADC with low accuracy
-> > +             Reading returns voltage in uV
-> > +
-> > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_VSYS_=
-input
-> > +KernelVersion:       5.8.0
-> > +Contact:     gene_chen@richtek.com
-> > +Description:
-> > +             Indicated MT6360 VSYS ADC
-> > +             Reading returns voltage in uV
-> > +
-> > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_VBAT_=
-input
-> > +KernelVersion:       5.8.0
-> > +Contact:     gene_chen@richtek.com
-> > +Description:
-> > +             Indicated MT6360 VBAT ADC
-> > +             Reading returns voltage in uV
-> > +
-> > +What:                /sys/bus/iio/devices/iio:deviceX/in_current_IBUS_=
-input
-> > +KernelVersion:       5.8.0
-> > +Contact:     gene_chen@richtek.com
-> > +Description:
-> > +             Indicated MT6360 IBUS ADC
-> > +             Reading returns current in uA
-> Given voltage and current are already clear from the channel type,
-> could we avoid the repetition?
->
-> in_current_bus_input perhaps?
->
+Change since v1:
+- removed _crypto_rng_cast patch
 
-ACK
+Change since v2:
+- cleaned unused variables from sun8i-ce-prng
+- added some missing memzero_explicit
 
-> > +
-> > +What:                /sys/bus/iio/devices/iio:deviceX/in_current_IBAT_=
-input
-> > +KernelVersion:       5.8.0
-> > +Contact:     gene_chen@richtek.com
-> > +Description:
-> > +             Indicated MT6360 IBAT ADC
-> > +             Reading returns current in uA
-> > +
-> > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_CHG_V=
-DDP_input
-> > +KernelVersion:       5.8.0
-> > +Contact:     gene_chen@richtek.com
-> > +Description:
-> > +             Indicated MT6360 CHG_VDDP ADC
-> > +             Reading returns voltage in uV
-> > +
-> > +What:                /sys/bus/iio/devices/iio:deviceX/in_temp_TEMP_JC_=
-input
-> > +KernelVersion:       5.8.0
-> > +Contact:     gene_chen@richtek.com
-> > +Description:
-> > +             Indicated MT6360 IC junction temperature
-> > +             Reading returns temperature in degree
-> > +
-> > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_VREF_=
-TS_input
-> > +KernelVersion:       5.8.0
-> > +Contact:     gene_chen@richtek.com
-> > +Description:
-> > +             Indicated MT6360 VREF_TS ADC
-> > +             Reading returns voltage in uV
-> > +
-> > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_TS_in=
-put
-> > +KernelVersion:       5.8.0
-> > +Contact:     gene_chen@richtek.com
-> > +Description:
-> > +             Indicated MT6360 TS ADC
-> > +             Reading returns voltage in uV
-> > +
-> > +What:                /sys/bus/iio/devices/iio:deviceX/timestamp
-> > +KernelVersion:       5.8.0
-> > +Contact:     gene_chen@richtek.com
-> > +Description:
-> > +             Indicated MT6360 timestamp
-> > +             Reading returns current timestamp in ms
->
-> That's an odd bit of ABI.  Why would we want to read the current timestam=
-p from
-> sysfs?  Timestamps in IIO also tend to be in nano seconds.
->
->
->
->
+Change since v3:
+- rebased on latest next
+- removed useless cpu_to_le32() in sun8i-ss
+- added 2 last patches
+- add handle endianness of t_common_ctl patch
 
-ACK, I will remove this.
+Change since v4:
+- added a style issue patch
+
+Changes since v5:
+- handle failure pattern of pm_runtime_get_sync
+- Add missing linux/dma-mapping.h
+
+Changes since v6:
+- fix sparse error in sun8i-ce-cipher.c
+
+Corentin Labbe (17):
+  crypto: sun8i-ss: Add SS_START define
+  crypto: sun8i-ss: Add support for the PRNG
+  crypto: sun8i-ss: support hash algorithms
+  crypto: sun8i-ss: fix a trivial typo
+  crypto: sun8i-ss: Add more comment on some structures
+  crypto: sun8i-ss: better debug printing
+  crypto: sun8i-ce: handle endianness of t_common_ctl
+  crypto: sun8i-ce: move iv data to request context
+  crypto: sun8i-ce: split into prepare/run/unprepare
+  crypto: sun8i-ce: handle different error registers
+  crypto: sun8i-ce: rename has_t_dlen_in_bytes to cipher_t_dlen_in_bytes
+  crypto: sun8i-ce: support hash algorithms
+  crypto: sun8i-ce: Add stat_bytes debugfs
+  crypto: sun8i-ce: Add support for the PRNG
+  crypto: sun8i-ce: Add support for the TRNG
+  crypto: sun8i-ce: fix comparison of integer expressions of different
+    signedness
+  crypto: sun8i-ss: fix comparison of integer expressions of different
+    signedness
+
+ drivers/crypto/allwinner/Kconfig              |  43 ++
+ drivers/crypto/allwinner/sun8i-ce/Makefile    |   3 +
+ .../allwinner/sun8i-ce/sun8i-ce-cipher.c      | 116 +++--
+ .../crypto/allwinner/sun8i-ce/sun8i-ce-core.c | 381 ++++++++++++++-
+ .../crypto/allwinner/sun8i-ce/sun8i-ce-hash.c | 413 ++++++++++++++++
+ .../crypto/allwinner/sun8i-ce/sun8i-ce-prng.c | 164 +++++++
+ .../crypto/allwinner/sun8i-ce/sun8i-ce-trng.c | 127 +++++
+ drivers/crypto/allwinner/sun8i-ce/sun8i-ce.h  | 139 +++++-
+ drivers/crypto/allwinner/sun8i-ss/Makefile    |   2 +
+ .../crypto/allwinner/sun8i-ss/sun8i-ss-core.c | 205 +++++++-
+ .../crypto/allwinner/sun8i-ss/sun8i-ss-hash.c | 444 ++++++++++++++++++
+ .../crypto/allwinner/sun8i-ss/sun8i-ss-prng.c | 173 +++++++
+ drivers/crypto/allwinner/sun8i-ss/sun8i-ss.h  |  89 +++-
+ 13 files changed, 2240 insertions(+), 59 deletions(-)
+ create mode 100644 drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
+ create mode 100644 drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
+ create mode 100644 drivers/crypto/allwinner/sun8i-ce/sun8i-ce-trng.c
+ create mode 100644 drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
+ create mode 100644 drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c
+
+-- 
+2.26.2
+
