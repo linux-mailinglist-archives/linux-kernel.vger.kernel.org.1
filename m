@@ -2,114 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C357E26F8E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9980526F8ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726260AbgIRJFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 05:05:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35530 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726102AbgIRJFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 05:05:39 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E677D20684;
-        Fri, 18 Sep 2020 09:05:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600419939;
-        bh=8bbkGB04wpb31wFP8bwL1MzqYlfmTRKDty4Y+cqJkqs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RW9Go77Wx9GYu/FTIOjFFIKGYaoJQirk92/zZmytjdUrm67V87Lxb3ZtGXddUhikA
-         y0b+5uBv4Qb+wfOCqKhzOzwoifzGdX575HxGkW8mgmedHIXMHX44v/XngCe+JAGMS7
-         UimHKWTCG8MVKk0k7OI0G4qumwIfcUNQgpQyH1uE=
-Date:   Fri, 18 Sep 2020 10:05:33 +0100
-From:   Will Deacon <will@kernel.org>
-To:     David Brazdil <dbrazdil@google.com>
-Cc:     kvmarm@lists.cs.columbia.edu,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, Andrew Scull <ascull@google.com>
-Subject: Re: [PATCH v3 05/11] kvm: arm64: Remove hyp_adr/ldr_this_cpu
-Message-ID: <20200918090533.GE30834@willie-the-truck>
-References: <20200916173439.32265-1-dbrazdil@google.com>
- <20200916173439.32265-6-dbrazdil@google.com>
+        id S1726541AbgIRJHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 05:07:09 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:38860 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725874AbgIRJHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 05:07:07 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 88B488C1D3F7D245D2D1;
+        Fri, 18 Sep 2020 17:07:04 +0800 (CST)
+Received: from [10.174.176.220] (10.174.176.220) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 18 Sep 2020 17:06:38 +0800
+Subject: Re: [PATCH v12 3/9] x86: kdump: use macro CRASH_ADDR_LOW_MAX in
+ functions reserve_crashkernel[_low]()
+To:     Baoquan He <bhe@redhat.com>
+References: <20200907134745.25732-1-chenzhou10@huawei.com>
+ <20200907134745.25732-4-chenzhou10@huawei.com>
+ <20200918072526.GD25604@MiWiFi-R3L-srv>
+ <fa6634dd-4438-4e5d-f350-fc19d5fa7d97@huawei.com>
+CC:     <catalin.marinas@arm.com>, <will@kernel.org>,
+        <james.morse@arm.com>, <tglx@linutronix.de>, <mingo@redhat.com>,
+        <dyoung@redhat.com>, <corbet@lwn.net>,
+        <John.P.donnelly@oracle.com>, <prabhakar.pkin@gmail.com>,
+        <bhsharma@redhat.com>, <horms@verge.net.au>, <robh+dt@kernel.org>,
+        <arnd@arndb.de>, <nsaenzjulienne@suse.de>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>,
+        <linux-doc@vger.kernel.org>, <guohanjun@huawei.com>,
+        <xiexiuqi@huawei.com>, <huawei.libin@huawei.com>,
+        <wangkefeng.wang@huawei.com>, <rppt@linux.ibm.com>
+From:   chenzhou <chenzhou10@huawei.com>
+Message-ID: <14e22d92-1601-fc1c-a1c8-e3936d63db42@huawei.com>
+Date:   Fri, 18 Sep 2020 17:06:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916173439.32265-6-dbrazdil@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <fa6634dd-4438-4e5d-f350-fc19d5fa7d97@huawei.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.220]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 06:34:33PM +0100, David Brazdil wrote:
-> The hyp_adr/ldr_this_cpu helpers were introduced for use in hyp code
-> because they always needed to use TPIDR_EL2 for base, while
-> adr/ldr_this_cpu from kernel proper would select between TPIDR_EL2 and
-> _EL1 based on VHE/nVHE.
-> 
-> Simplify this now that the hyp mode case can be handled using the
-> __KVM_VHE/NVHE_HYPERVISOR__ macros.
-> 
-> Acked-by: Andrew Scull <ascull@google.com>
-> Signed-off-by: David Brazdil <dbrazdil@google.com>
-> ---
->  arch/arm64/include/asm/assembler.h | 27 +++++++++++++++++----------
->  arch/arm64/include/asm/kvm_asm.h   | 14 +-------------
->  arch/arm64/kvm/hyp/hyp-entry.S     |  2 +-
->  3 files changed, 19 insertions(+), 24 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
-> index 54d181177656..f79231a0f949 100644
-> --- a/arch/arm64/include/asm/assembler.h
-> +++ b/arch/arm64/include/asm/assembler.h
-> @@ -218,6 +218,21 @@ lr	.req	x30		// link register
->  	str	\src, [\tmp, :lo12:\sym]
->  	.endm
->  
-> +	/*
-> +	 * @dst: destination register (32 or 64 bit wide)
-> +	 */
-> +	.macro	this_cpu_offset, dst
-> +#if defined(__KVM_NVHE_HYPERVISOR__) || defined(__KVM_VHE_HYPERVISOR__)
-> +	mrs	\dst, tpidr_el2
-> +#else
-> +alternative_if_not ARM64_HAS_VIRT_HOST_EXTN
-> +	mrs	\dst, tpidr_el1
-> +alternative_else
-> +	mrs	\dst, tpidr_el2
-> +alternative_endif
-> +#endif
+Hi Catalin,
 
-Cosmetic, but I think it would be cleaner just to define two variants of the
-macro here:
 
-#if defined(__KVM_NVHE_HYPERVISOR__) || defined(__KVM_VHE_HYPERVISOR__)
-	.macro  this_cpu_offset, dst
-	mrs     \dst, tpidr_el2
-	.endm
-#else
-	.macro  this_cpu_offset, dst
-alternative_if_not ARM64_HAS_VIRT_HOST_EXTN
-	mrs     \dst, tpidr_el1
-alternative_else
-	mrs     \dst, tpidr_el2
-alternative_endif
-	.endm
-#endif
+On 2020/9/18 16:59, chenzhou wrote:
+> Hi Baoquan,
+>
+> On 2020/9/18 15:25, Baoquan He wrote:
+>> Hi,
+>>
+>> On 09/07/20 at 09:47pm, Chen Zhou wrote:
+>>> To make the functions reserve_crashkernel[_low]() as generic,
+>>> replace some hard-coded numbers with macro CRASH_ADDR_LOW_MAX.
+>>>
+>>> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
+>>> ---
+>>>  arch/x86/kernel/setup.c | 11 ++++++-----
+>>>  1 file changed, 6 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+>>> index d7fd90c52dae..71a6a6e7ca5b 100644
+>>> --- a/arch/x86/kernel/setup.c
+>>> +++ b/arch/x86/kernel/setup.c
+>>> @@ -430,7 +430,7 @@ static int __init reserve_crashkernel_low(void)
+>>>  	unsigned long total_low_mem;
+>>>  	int ret;
+>>>  
+>>> -	total_low_mem = memblock_mem_size(1UL << (32 - PAGE_SHIFT));
+>>> +	total_low_mem = memblock_mem_size(CRASH_ADDR_LOW_MAX >> PAGE_SHIFT);
+>> Just note that the replacement has been done in another patch from Mike
+>> Rapoport, partially. He seems to have done reserve_crashkernel_low()
+>> part, there's one left in reserve_crashkernel(), you might want to check
+>> that. 
+>>
+>> Mike's patch which is from a patchset has been merged into Andrew's next
+>> tree.
+>>
+>> commit 6e50f7672ffa362e9bd4bc0c0d2524ed872828c5
+>> Author: Mike Rapoport <rppt@linux.ibm.com>
+>> Date:   Wed Aug 26 15:22:32 2020 +1000
+>>
+>>     x86/setup: simplify reserve_crashkernel()
+As Baoquan said, some functions have been changed in the next tree,
+if i need to rebase on top of the next tree.
 
-(and should we have a shorthand __HYPERVISOR define to avoid the NVHE || VHE
-logic?)
+Thanks,
+Chen Zhou
+> Yeah, the function reserve_crashkernel() has been changed in the next tree.
+> Thanks for your review and reminder.
+>
+> Thanks,
+> Chen Zhou
+>>>  
+>>>  	/* crashkernel=Y,low */
+>>>  	ret = parse_crashkernel_low(boot_command_line, total_low_mem, &low_size, &base);
+>>> @@ -451,7 +451,7 @@ static int __init reserve_crashkernel_low(void)
+>>>  			return 0;
+>>>  	}
+>>>  
+>>> -	low_base = memblock_find_in_range(CRASH_ALIGN, 1ULL << 32, low_size, CRASH_ALIGN);
+>>> +	low_base = memblock_find_in_range(CRASH_ALIGN, CRASH_ADDR_LOW_MAX, low_size, CRASH_ALIGN);
+>>>  	if (!low_base) {
+>>>  		pr_err("Cannot reserve %ldMB crashkernel low memory, please try smaller size.\n",
+>>>  		       (unsigned long)(low_size >> 20));
+>>> @@ -504,8 +504,9 @@ static void __init reserve_crashkernel(void)
+>>>  	if (!crash_base) {
+>>>  		/*
+>>>  		 * Set CRASH_ADDR_LOW_MAX upper bound for crash memory,
+>>> -		 * crashkernel=x,high reserves memory over 4G, also allocates
+>>> -		 * 256M extra low memory for DMA buffers and swiotlb.
+>>> +		 * crashkernel=x,high reserves memory over CRASH_ADDR_LOW_MAX,
+>>> +		 * also allocates 256M extra low memory for DMA buffers
+>>> +		 * and swiotlb.
+>>>  		 * But the extra memory is not required for all machines.
+>>>  		 * So try low memory first and fall back to high memory
+>>>  		 * unless "crashkernel=size[KMG],high" is specified.
+>>> @@ -539,7 +540,7 @@ static void __init reserve_crashkernel(void)
+>>>  		return;
+>>>  	}
+>>>  
+>>> -	if (crash_base >= (1ULL << 32) && reserve_crashkernel_low()) {
+>>> +	if (crash_base >= CRASH_ADDR_LOW_MAX && reserve_crashkernel_low()) {
+>>>  		memblock_free(crash_base, crash_size);
+>>>  		return;
+>>>  	}
+>>> -- 
+>>> 2.20.1
+>>>
+>> .
+>>
 
-With that:
-
-Acked-by: Will Deacon <will@kernel.org>
-
-Will
