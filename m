@@ -2,93 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C020A26FACB
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 12:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4450326FACF
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 12:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726262AbgIRKm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 06:42:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48970 "EHLO
+        id S1726305AbgIRKnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 06:43:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725882AbgIRKmX (ORCPT
+        with ESMTP id S1725882AbgIRKnG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 06:42:23 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2003CC06174A;
-        Fri, 18 Sep 2020 03:42:23 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id u13so3251725pgh.1;
-        Fri, 18 Sep 2020 03:42:23 -0700 (PDT)
+        Fri, 18 Sep 2020 06:43:06 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3D4EC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 03:43:05 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id mm21so2948702pjb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 03:43:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BFicauIeUOrnsvlqKGsQXozub1xATSeMYMtEaHTT4g0=;
-        b=e0N7ia3fLHfHAR649eYTpypJn7blOCM9GO7orPVtX4EmgoJ/6YjpkWeMy/qKEWECAm
-         0fRLFnhHrZB5dzFkDp7ZQEmmfJrXL3zjd+yv6/3X7SQRMDiL/hVr+YX4Jskk4kupex5I
-         jl6iqE9LF8APZdFtexoFdPB8M99bnRBA/Av4O8h0X/1jCGyW+7CxJ4OxdNQaqWK2WZ34
-         FgiMj88af5Ia7E1mwPln+bLBuEZpsmZweBi11knwlFnyq48APTgQeVNi/l7E+nImmDvp
-         h9Fu42sVf3gSaCedHj+Qeq4ixte0Iq2g02tqvhmh0An8V4FlsdpxN0wCdDHDN9QIz9jN
-         yevg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=S9SAa/84nB2osuzsORgaf8qh3oxqH7rlg5G0FU1VaYc=;
+        b=bOdZjXxZzVq4s0SnOu+DbuuuURLjZvDMVtq68Kdysi/LsqJT5ZqeV/O6fxQ1Qua4Q/
+         0kTy/EkFE6ZfQf4ix6rjGEI72DFpD78mLP9D3T38+vMHRqqj9xkAR479LnB9B2438GCD
+         8+zTgr7mtdCyy/yEu/1AS4VFNQcko2XvnSvgL+ArDr49S/zLPxkm3rqiFACZeVuqsbk/
+         7iEtinsw93RoKVrkPs0hshAjmdxc5Zt+TRfm8w6hl2EK9U40DrMGJe9+eXJyAw+ukxfH
+         BhslAbOsKnUueXu7CHGG6kDwz2AlwjNC5SfvuJsxYFaMCGAJMDpZxuVDkquwgNCPRDRk
+         WhRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BFicauIeUOrnsvlqKGsQXozub1xATSeMYMtEaHTT4g0=;
-        b=EHOcfp2yPuKaEsGDQE8/kERDjeJKInNW8W1vp4QwCp14AQqW4M+kZ7QRBxXn/Sn/QD
-         h5/niJLR79gcmbuq1NU2kGbaJQGIVI0mciRWGrzqDgvIbcGQz+v/4t8uybrc2sl7PEtt
-         pcibFb2y+B6xZ5eFrkY9CQO8kSZRIdg35VIFIIf/XGSxrF2BICicn95gwb12AqqcJpkB
-         Ntsd1O2ozjV80CNYgjNPVyTMDf3JPf5Z0s3Vt3N9HIcK3R//E3lPxlnqNLB8YUZSvIbN
-         dpTFxiXi0rt6h2udVgK2XBj2HsOHARDUGVGdUI6XmHpsX9uRj2uc3vD3hhC8SiDkjoTO
-         cWpg==
-X-Gm-Message-State: AOAM532Zeg5Dsr3xDyFi3lMnpOT9RHbw97tijW8AF0WD0zmxWHDtXi3G
-        zDwmUFwcfQMFogu4DugA9k/p+Eb6ZMY=
-X-Google-Smtp-Source: ABdhPJxmkSH2bsqdT6f0XKAxVeedtX4lm17YBE1bMJENRq8W21F6cXNJfF18OFoYIYusjEAAEH7J5Q==
-X-Received: by 2002:a65:42c2:: with SMTP id l2mr5480207pgp.61.1600425742614;
-        Fri, 18 Sep 2020 03:42:22 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id bj2sm2492747pjb.20.2020.09.18.03.42.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 03:42:21 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 19:42:20 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linux-media@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: uAPI: buffer.rst: remove a left-over documentation
-Message-ID: <20200918104220.GF3049@jagdpanzerIV.localdomain>
-References: <2fd3e12d82de1e0a1ee2f96dedc4d4cbe771c979.1600327262.git.mchehab+huawei@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S9SAa/84nB2osuzsORgaf8qh3oxqH7rlg5G0FU1VaYc=;
+        b=fGuUO6q+Q0EMqbPJLbYCGWDuv4JuEa7r8hq2Qj+mN7cH2ImVqVDKQMXPpP5hDHc9hv
+         RGkZevNBlLd2k8X/D4Fj8vRvpEYGcAvL0gJA5EeQ2gBgmn3THdexkj+kie/w8k20os20
+         nXOzqYThRDwLhXuMAJHWLngN/NMo39Kr8dvZ0RORzDQ/IGM4+3sOlAq+IDVErX5Dyzak
+         uIgTx7eipNnuRLHg9nNEXHAfRAQWoGkyuxg2LTIDWEpwgtz2j4I+r35hWTxy9BmKQWJQ
+         SUBLd2rN6o3WunhSFMyVnp4YCOZtInaEf+oe2EODHy4OpRDh8++maaVDkZaUB9srVv7k
+         4Jfw==
+X-Gm-Message-State: AOAM533oqI9D3eKt1zzeCdbEtS8js2NUOfwfKHrK02Jh9qKpElP67BxS
+        py8/WeQVLxQCIERe3GlP4e91wCdZ52Keh1240bI42w==
+X-Google-Smtp-Source: ABdhPJxnrOgYw6qA2+D5NTJzUs1S3dk64U3zd0IVWXcN8DbrU/MiRk37vG/5/VNgFairvaplpO+hAqFfw8eBXXDL2JM=
+X-Received: by 2002:a17:902:b117:b029:d1:e5e7:bdf5 with SMTP id
+ q23-20020a170902b117b02900d1e5e7bdf5mr14202673plr.85.1600425785327; Fri, 18
+ Sep 2020 03:43:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2fd3e12d82de1e0a1ee2f96dedc4d4cbe771c979.1600327262.git.mchehab+huawei@kernel.org>
+References: <cover.1600204505.git.andreyknvl@google.com> <0d1862fec200eec644bbf0e2d5969fb94d2e923e.1600204505.git.andreyknvl@google.com>
+ <CAG_fn=X8uQoZUXM0cU8NwF41znWiFQS1GjSNtrh5-xM02-nnJw@mail.gmail.com>
+In-Reply-To: <CAG_fn=X8uQoZUXM0cU8NwF41znWiFQS1GjSNtrh5-xM02-nnJw@mail.gmail.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Fri, 18 Sep 2020 12:42:54 +0200
+Message-ID: <CAAeHK+y__nEtGeS2iQ5Uj+tUB6AwFDg3u3FdF7kcTgmq73OGpA@mail.gmail.com>
+Subject: Re: [PATCH v2 05/37] kasan: rename KASAN_SHADOW_* to KASAN_GRANULE_*
+To:     Alexander Potapenko <glider@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/09/17 09:21), Mauro Carvalho Chehab wrote:
-> Changeset 129134e5415d ("media: media/v4l2: remove V4L2_FLAG_MEMORY_NON_CONSISTENT flag")
-> reverted an uAPI flag, but it kept some left-overs at the documentation.
-> 
-> Drop them too. This should solve this warning:
-> 
-> 	Documentation/userspace-api/media/v4l/buffer.rst:692: WARNING: The "flat-table" directive is empty; content required.
-> 
-> 	.. flat-table::
-> 	    :header-rows:  0
-> 	    :stub-columns: 0
-> 	    :widths:       3 1 4
-> 
-> Fixes: 129134e5415d ("media: media/v4l2: remove V4L2_FLAG_MEMORY_NON_CONSISTENT flag")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+On Fri, Sep 18, 2020 at 10:04 AM 'Alexander Potapenko' via kasan-dev
+<kasan-dev@googlegroups.com> wrote:
+>
+> On Tue, Sep 15, 2020 at 11:16 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+> >
+> > This is a preparatory commit for the upcoming addition of a new hardware
+> > tag-based (MTE-based) KASAN mode.
+> >
+> > The new mode won't be using shadow memory, but will still use the concept
+> > of memory granules.
+>
+> KASAN documentation doesn't seem to explain this concept anywhere (I
+> also checked the "kasan: add documentation for hardware tag-based
+> mode" patch), looks like it's only mentioned in MTE documentation.
+> Could you please elaborate on what we consider a granule in each of KASAN modes?
 
-Thanks for fixing this up.
-
-FWIW,
-Reviewed-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-
-	-ss
+Sure, will do in v3, thanks!
