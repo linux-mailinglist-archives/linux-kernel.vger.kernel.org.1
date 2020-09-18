@@ -2,426 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBAD8270421
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 20:32:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19D80270400
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 20:31:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726478AbgIRSc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 14:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36924 "EHLO
+        id S1726253AbgIRSbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 14:31:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726454AbgIRScT (ORCPT
+        with ESMTP id S1726115AbgIRSbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 14:32:19 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C50EBC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 11:32:18 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id v106so6383973ybi.6
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 11:32:18 -0700 (PDT)
+        Fri, 18 Sep 2020 14:31:23 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51BB1C0613CE;
+        Fri, 18 Sep 2020 11:31:23 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id z9so6501328wmk.1;
+        Fri, 18 Sep 2020 11:31:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=F8bCD50iXV9Z9O4p1imguTXbT98l8nZxhgs6nNCkXG8=;
-        b=Hfm78dE172Bx2rF63Uymcxe4biCYv59pvXc023t2uHFLXXMAgvFNHMVRENNWWCMJW/
-         MKjbSKtWM1jwd5I671X7QHa0DzzlUl0PuaA0lByuA3q2Jrxmz0o47pjjWDcl3FWy5EVS
-         RYxrsjHT8ZvUUxYRPqslr5/3Ijwq8XMao1QB0jijeMzY2sfWOo4i3mWylwhfowC5AjKN
-         PfWJilbs6WSPnBhVNzZIMZrcajkHObXDJ7yWO02Ck9hINznoRTtph1g/02qYHE4gZ640
-         eG+12TDdDn+9yv48/2XuFhF6kb+KZAOdmPI3pVYu8IBGByB8vsGgVrAsGM5Uq+E79cBb
-         UQ5A==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:references:in-reply-to:subject:date:message-id
+         :mime-version:content-transfer-encoding:thread-index
+         :content-language;
+        bh=aq4S41RXE1vAQKwL/QYWeFUP5HTyFU3O/6rS50qdZsE=;
+        b=fTNJQYUPRjCv2jqehMXxCqoGu4qw4qcHntIzB6h/UkQq6e+wiXyKftBV4EgCPvHw53
+         LJzF6I7V2XJNSiiyZIQiTDyTuX+oey6c9gME8nBPQ3jpc3A+DsjTWkq16BC7SMYywtEd
+         7HroLi6axJlnSoWmbbkU+JHcZOwpWdfnSyagXLieeDNXPKJYgpI2xgEshv/URf4HCyc8
+         nI1WCxEBuxh7sfUEKHeng/28wAEP5EzruotnCQ5XFbizYjfuwfPyjCguXwQLaFDsWOPi
+         Um2/1v0Sip/meE/W1PMmB6KHrCrQ4HlvDihF362x19MMyR26WSLNJNA1kCySf4dH60+N
+         QmSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=F8bCD50iXV9Z9O4p1imguTXbT98l8nZxhgs6nNCkXG8=;
-        b=KovSi1HXO4GgqdbN0H87CJs01m3haslh2U7uxrV7KJoRk2FdgWo9D8gkyA095ltE6f
-         vqePdNSLw40XeFJ/YSxOz0apjIjVqIPwdlUONEwAbhOLdgMWYUbJZLjojcwYiCFLJNtR
-         At7TnRuwtf1zaRppytQdAnqfEO54SdHFnICAB/zmvHsCD5/NXAx/Tgkp1JUTs8rwC2q1
-         /gmZRsYsi/n1KBfx8X+oEehxaqrEajxGPd5FnMFbCve1HXpeKerrJYMSMzAzp79Xbked
-         LZD1CxJ56zGP3SjtCxz/KZr1tJ3CtHJC9HIcxbJHjxJI1fHRNeY0KD7DSFhp0OOw/rlU
-         eWSA==
-X-Gm-Message-State: AOAM531I1miJX+pD8Xuj+62YN3EegWgRj//Y2ouTbHlCw0DTKDI0+XTs
-        U5KTUVHcLrhqFIzUTmgWneyum7F1caoGsA==
-X-Google-Smtp-Source: ABdhPJzerFWj9XJaQ8C3lUgEGIFO/KfPfdNhnInTinPShmgihj+GaD+6/hG7gTdYeNYLVeZz/6kl0kHZm3XKvA==
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a28c:fdff:fee3:28c6])
- (user=dlatypov job=sendgmr) by 2002:a25:cb88:: with SMTP id
- b130mr43488480ybg.521.1600453937975; Fri, 18 Sep 2020 11:32:17 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 11:31:14 -0700
-In-Reply-To: <20200918183114.2571146-1-dlatypov@google.com>
-Message-Id: <20200918183114.2571146-13-dlatypov@google.com>
-Mime-Version: 1.0
-References: <20200918183114.2571146-1-dlatypov@google.com>
-X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
-Subject: [RFC v1 12/12] kunit: mock: implement nice, strict and naggy mock distinctions
-From:   Daniel Latypov <dlatypov@google.com>
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        David Gow <davidgow@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Cc:     kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Felix Guo <felixguoxiuping@gmail.com>,
-        Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:references:in-reply-to:subject:date
+         :message-id:mime-version:content-transfer-encoding:thread-index
+         :content-language;
+        bh=aq4S41RXE1vAQKwL/QYWeFUP5HTyFU3O/6rS50qdZsE=;
+        b=huQJx6kb7nsqVQf989CYTg1VITUSxOqndOB00kvi6jjNW/AeOezGG8PlmiboBN5PGx
+         odQlcAh0IuqXDNVkVPN/J5TbugF0DNf1f4dTt/tw1ZB86a1HJcZqY+rC6AAPdc4n5sOD
+         VOmd7Yy0sZ8R+LiZCnSL/pFIp4uIN05RUvq0XtOpRXm7aG+OTZwfssdYjPCYmp5ipr4k
+         GpJpqsFhA1Qy99MLbP0oS/IQsexJhc40P2+IjZC4Yp7sP4QSfrJXDmC/QuSWkOvYzMX9
+         YgM06npkfnopAzjckc/QUYHuFsK0GHWH2gIILCQ8OpfZkh27BO1AR8mtCruO/QPyJXOc
+         D+8w==
+X-Gm-Message-State: AOAM5314scLH2t3VkJd0ASC63QB0r8Bpd317LF4Efa6cM7aKxEbH2tGS
+        /WyaZbmMH/RTrzG55p1OcsM=
+X-Google-Smtp-Source: ABdhPJy3Ubjg/Kg+A3AeGariVlXaUlhZ7Hiy38mgi+9UBFB8tesMKZR+49HLkc2mbq7LGh/ZOWVzwA==
+X-Received: by 2002:a7b:c3c8:: with SMTP id t8mr16894073wmj.101.1600453881837;
+        Fri, 18 Sep 2020 11:31:21 -0700 (PDT)
+Received: from AnsuelXPS (93-39-149-95.ip76.fastwebnet.it. [93.39.149.95])
+        by smtp.gmail.com with ESMTPSA id d9sm61650wmb.30.2020.09.18.11.31.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 18 Sep 2020 11:31:20 -0700 (PDT)
+From:   <ansuelsmth@gmail.com>
+To:     "'Christian Lamparter'" <chunkeey@gmail.com>,
+        "'Kalle Valo'" <kvalo@codeaurora.org>
+Cc:     <devicetree@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <ath10k@lists.infradead.org>,
+        "'David S. Miller'" <davem@davemloft.net>,
+        "'Rob Herring'" <robh+dt@kernel.org>,
+        "'Jakub Kicinski'" <kuba@kernel.org>,
+        <linux-mtd@lists.infradead.org>,
+        "'Srinivas Kandagatla'" <srinivas.kandagatla@linaro.org>,
+        "'Bartosz Golaszewski'" <bgolaszewski@baylibre.com>
+References: <20200918162928.14335-1-ansuelsmth@gmail.com> <20200918162928.14335-2-ansuelsmth@gmail.com> <8f886e3d-e2ee-cbf8-a676-28ebed4977aa@gmail.com>
+In-Reply-To: <8f886e3d-e2ee-cbf8-a676-28ebed4977aa@gmail.com>
+Subject: R: [PATCH 2/2] dt: bindings: ath10k: Document qcom, ath10k-pre-calibration-data-mtd
+Date:   Fri, 18 Sep 2020 20:31:18 +0200
+Message-ID: <000001d68de9$e7916450$b6b42cf0$@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQJEWVdigiv7VEZfce04PgG7d9c+lQHuGaaaAYeoZCCod3HyIA==
+Content-Language: it
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brendan Higgins <brendanhiggins@google.com>
 
-Nice mocks only fail when there is an expectation on a method, but none
-match a given call. Strict mocks only pass when there is a matching
-expectation for every call. Naggy mocks have the same pass/fail behavior
-as nice, but report a warning in any case a strict mock would fail.
 
-Signed-off-by: Felix Guo <felixguoxiuping@gmail.com>
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
----
- include/kunit/mock.h  |  63 ++++++++++++++++
- lib/kunit/mock-test.c | 171 ++++++++++++++++++++++++++++++++++++++++++
- lib/kunit/mock.c      |  10 ++-
- 3 files changed, 242 insertions(+), 2 deletions(-)
+> -----Messaggio originale-----
+> Da: Christian Lamparter <chunkeey@gmail.com>
+> Inviato: venerd=C3=AC 18 settembre 2020 18:54
+> A: Ansuel Smith <ansuelsmth@gmail.com>; Kalle Valo
+> <kvalo@codeaurora.org>
+> Cc: devicetree@vger.kernel.org; netdev@vger.kernel.org; linux-
+> wireless@vger.kernel.org; linux-kernel@vger.kernel.org;
+> ath10k@lists.infradead.org; David S. Miller <davem@davemloft.net>; Rob
+> Herring <robh+dt@kernel.org>; Jakub Kicinski <kuba@kernel.org>; linux-
+> mtd@lists.infradead.org; Srinivas Kandagatla
+> <srinivas.kandagatla@linaro.org>; Bartosz Golaszewski
+> <bgolaszewski@baylibre.com>
+> Oggetto: Re: [PATCH 2/2] dt: bindings: ath10k: Document qcom, ath10k-
+> pre-calibration-data-mtd
+>=20
+> On 2020-09-18 18:29, Ansuel Smith wrote:
+> > Document use of qcom,ath10k-pre-calibration-data-mtd bindings used =
+to
+> > define from where the driver will load the pre-cal data in the =
+defined
+> > mtd partition.
+> >
+> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+>=20
+> Q: Doesn't mtd now come with nvmem support from the get go? So
+> the MAC-Addresses and pre-caldata could be specified as a
+> nvmem-node in the devicetree? I remember seeing that this was
+> worked on or was this mtd->nvmem dropped?
+>=20
+> Cheers,
+> Christian
 
-diff --git a/include/kunit/mock.h b/include/kunit/mock.h
-index 4a03f0627afa..955c4267d726 100644
---- a/include/kunit/mock.h
-+++ b/include/kunit/mock.h
-@@ -95,10 +95,17 @@ struct mock_method {
- 	struct list_head expectations;
- };
- 
-+enum mock_type {
-+	MOCK_TYPE_NICE,
-+	MOCK_TYPE_NAGGY,
-+	MOCK_TYPE_STRICT
-+};
-+
- struct mock {
- 	struct kunit_post_condition parent;
- 	struct kunit *test;
- 	struct list_head methods;
-+	enum mock_type type;
- 	/* TODO(brendanhiggins@google.com): add locking to do_expect. */
- 	const void *(*do_expect)(struct mock *mock,
- 				 const char *method_name,
-@@ -108,6 +115,8 @@ struct mock {
- 				 int len);
- };
- 
-+#define DEFAULT_MOCK_TYPE MOCK_TYPE_NAGGY
-+
- void mock_init_ctrl(struct kunit *test, struct mock *mock);
- 
- void mock_validate_expectations(struct mock *mock);
-@@ -125,6 +134,60 @@ struct mock_expectation *mock_add_matcher(struct mock *mock,
- 
- #define MOCK(name) name##_mock
- 
-+/**
-+ * STRICT_MOCK() - sets the mock to be strict and returns the mock
-+ * @mock: the mock
-+ *
-+ * For an example, see ``The Nice, the Strict, and the Naggy`` under
-+ * ``Using KUnit``.
-+ */
-+#define STRICT_MOCK(mock) \
-+({ \
-+	mock_get_ctrl(mock)->type = MOCK_TYPE_STRICT; \
-+	mock; \
-+})
-+
-+static inline bool is_strict_mock(struct mock *mock)
-+{
-+	return mock->type == MOCK_TYPE_STRICT;
-+}
-+
-+/**
-+ * NICE_MOCK() - sets the mock to be nice and returns the mock
-+ * @mock: the mock
-+ *
-+ * For an example, see ``The Nice, the Strict, and the Naggy`` under
-+ * ``Using KUnit``.
-+ */
-+#define NICE_MOCK(mock) \
-+({ \
-+	mock_get_ctrl(mock)->type = MOCK_TYPE_NICE; \
-+	mock; \
-+})
-+
-+static inline bool is_nice_mock(struct mock *mock)
-+{
-+	return mock->type == MOCK_TYPE_NICE;
-+}
-+
-+/**
-+ * NAGGY_MOCK() - sets the mock to be naggy and returns the mock
-+ * @mock: the mock
-+ *
-+ * For an example, see ``The Nice, the Strict, and the Naggy`` under
-+ * ``Using KUnit``.
-+ */
-+#define NAGGY_MOCK(mock) \
-+({ \
-+	mock_get_ctrl(mock)->type = MOCK_TYPE_NAGGY; \
-+	mock; \
-+})
-+
-+static inline bool is_naggy_mock(struct mock *mock)
-+{
-+	return mock->type == MOCK_TYPE_NAGGY;
-+}
-+
- /**
-  * KUNIT_EXPECT_CALL() - Declares a *call expectation* on a mock function.
-  * @expectation_call: a mocked method or function with parameters replaced with
-diff --git a/lib/kunit/mock-test.c b/lib/kunit/mock-test.c
-index df0969b43ade..1c2aa2aa9c1b 100644
---- a/lib/kunit/mock-test.c
-+++ b/lib/kunit/mock-test.c
-@@ -243,6 +243,50 @@ static void mock_test_do_expect_default_return(struct kunit *test)
- 	KUNIT_EXPECT_EQ(test, 0, expectation->times_called);
- }
- 
-+/**
-+ * DOC: Testing the failure condition of different mock types.
-+ *
-+ * The following tests will test the behaviour of expectations under different
-+ * conditions. For example, what happens when an expectation:
-+ * - is not satisfied at the end of the test
-+ * - is fulfilled but the expected function is called again
-+ * - a function is called without expectations set on it
-+ *
-+ * For each of these conditions, there may be variations between the different
-+ * types of mocks: nice mocks, naggy mocks (the default) and strict mocks.
-+ *
-+ * More information about these mocks can be found in the kernel documentation
-+ * under Documentation/test/api/class-and-function-mocking
-+ */
-+
-+/* Method called on strict mock with no expectations will fail */
-+static void mock_test_strict_no_expectations_will_fail(struct kunit *test)
-+{
-+	struct mock_test_context *ctx = test->priv;
-+	struct kunit *failing_test = ctx->failing_test;
-+	struct mock *mock = ctx->mock;
-+	int param0 = 5, param1 = -5;
-+	static const char * const two_param_types[] = {"int", "int"};
-+	const void *two_params[] = {&param0, &param1};
-+
-+	mock->type = MOCK_TYPE_STRICT;
-+
-+	mock_set_default_action(mock,
-+				"add",
-+				mock_add,
-+				kunit_int_return(failing_test, -4));
-+
-+	mock->do_expect(mock,
-+			"add",
-+			mock_add,
-+			two_param_types,
-+			two_params,
-+			ARRAY_SIZE(two_params));
-+	mock_validate_expectations(mock);
-+
-+	KUNIT_EXPECT_FALSE(test, failing_test->success);
-+}
-+
- /*
-  * Method called on naggy mock with no expectations will not fail, but will show
-  * a warning message
-@@ -257,6 +301,8 @@ static void mock_test_naggy_no_expectations_no_fail(struct kunit *test)
- 	static const char * const two_param_types[] = {"int", "int"};
- 	const void *two_params[] = {&param0, &param1};
- 
-+	mock->type = MOCK_TYPE_NAGGY;
-+
- 	mock_set_default_action(mock,
- 				"add",
- 				real_add,
-@@ -282,6 +328,77 @@ static void mock_test_naggy_no_expectations_no_fail(struct kunit *test)
- 	KUNIT_EXPECT_FALSE(test, failing_test->success);
- }
- 
-+/* Method called on nice mock with no expectations will do nothing. */
-+static void mock_test_nice_no_expectations_do_nothing(struct kunit *test)
-+{
-+	struct mock_test_context *ctx = test->priv;
-+	struct kunit *failing_test = ctx->failing_test;
-+	struct mock *mock = ctx->mock;
-+	int param0 = 5, param1 = -5;
-+	static const char * const two_param_types[] = {"int", "int"};
-+	const void *two_params[] = {&param0, &param1};
-+
-+	mock->type = MOCK_TYPE_NICE;
-+
-+	mock->do_expect(mock,
-+			"add",
-+			mock_add,
-+			two_param_types,
-+			two_params,
-+			ARRAY_SIZE(two_params));
-+	mock_validate_expectations(mock);
-+
-+	KUNIT_EXPECT_TRUE(test, failing_test->success);
-+}
-+
-+/* Test that method called on a mock (of any type) with no matching expectations
-+ * will fail test and print all the tried expectations.
-+ */
-+static void
-+run_method_called_but_no_matching_expectation_test(struct kunit *test,
-+						   enum mock_type mock_type)
-+{
-+	struct mock_test_context *ctx = test->priv;
-+	struct kunit *failing_test = ctx->failing_test;
-+	struct mock *mock = ctx->mock;
-+	int param0 = 5, param1 = -5;
-+	static const char * const two_param_types[] = {"int", "int"};
-+	const void *two_params[] = {&param0, &param1};
-+	struct mock_param_matcher *two_matchers[] = {
-+		kunit_int_eq(failing_test, 100),
-+		kunit_int_eq(failing_test, 100)
-+	};
-+
-+	mock_add_matcher(mock, "add", mock_add, two_matchers,
-+			 ARRAY_SIZE(two_matchers));
-+
-+	mock->type = mock_type;
-+
-+	mock->do_expect(mock, "add", mock_add, two_param_types, two_params,
-+			ARRAY_SIZE(two_params));
-+
-+	/* Even nice mocks should fail if there's an unmet expectation. */
-+	KUNIT_EXPECT_FALSE(test, failing_test->success);
-+}
-+
-+static void mock_test_naggy_no_matching_expectations_fail(struct kunit *test)
-+{
-+	run_method_called_but_no_matching_expectation_test(test,
-+							   MOCK_TYPE_NAGGY);
-+}
-+
-+static void mock_test_strict_no_matching_expectations_fail(struct kunit *test)
-+{
-+	run_method_called_but_no_matching_expectation_test(test,
-+							   MOCK_TYPE_STRICT);
-+}
-+
-+static void mock_test_nice_no_matching_expectations_fail(struct kunit *test)
-+{
-+	run_method_called_but_no_matching_expectation_test(test,
-+							   MOCK_TYPE_NICE);
-+}
-+
- static void mock_test_mock_validate_expectations(struct kunit *test)
- {
- 	struct mock_test_context *ctx = test->priv;
-@@ -309,6 +426,54 @@ static void mock_test_mock_validate_expectations(struct kunit *test)
- 	KUNIT_EXPECT_FALSE(test, failing_test->success);
- }
- 
-+static void mock_test_validate_clears_expectations(struct kunit *test)
-+{
-+	struct mock_test_context *ctx = test->priv;
-+	struct kunit *failing_test = ctx->failing_test;
-+	struct mock *mock = ctx->mock;
-+	struct mock_param_matcher *matchers[] = {
-+		kunit_int_eq(failing_test, 5),
-+		kunit_int_eq(failing_test, -4)
-+	};
-+	int param0 = 5, param1 = -4;
-+	static const char * const two_param_types[] = {"int", "int"};
-+	const void *two_params[] = {&param0, &param1};
-+
-+	struct mock_expectation *expectation;
-+
-+	mock->type = MOCK_TYPE_STRICT;
-+
-+	/* Add an arbitrary matcher for 0 calls */
-+	expectation = mock_add_matcher(mock, "add", mock_add,
-+				       matchers, ARRAY_SIZE(matchers));
-+	expectation->times_called = 0;
-+	expectation->min_calls_expected = 0;
-+	expectation->max_calls_expected = 0;
-+
-+	/* Should have 0 calls and should clear the previous expectation */
-+	mock_validate_expectations(mock);
-+
-+	/* Add a new matcher for 1 call */
-+	expectation = mock_add_matcher(mock, "add", mock_add,
-+				       matchers, ARRAY_SIZE(matchers));
-+	expectation->times_called = 0;
-+	expectation->min_calls_expected = 1;
-+	expectation->max_calls_expected = 1;
-+
-+	/* Satisfy previous matcher */
-+	mock->do_expect(mock, "add", mock_add, two_param_types, two_params,
-+			ARRAY_SIZE(two_params));
-+
-+	/*
-+	 * Validate previous satisfy; if we didn't clear the previous
-+	 * expectation, it would fail the mock_test.
-+	 */
-+	mock_validate_expectations(mock);
-+
-+	/* If all goes well, shouldn't fail the test. */
-+	KUNIT_EXPECT_TRUE(test, failing_test->success);
-+}
-+
- static int mock_test_init(struct kunit *test)
- {
- 	struct mock_test_context *ctx;
-@@ -346,7 +511,13 @@ static struct kunit_case mock_test_cases[] = {
- 	KUNIT_CASE(mock_test_failed_expect_call_fails_test),
- 	KUNIT_CASE(mock_test_do_expect_default_return),
- 	KUNIT_CASE(mock_test_mock_validate_expectations),
-+	KUNIT_CASE(mock_test_strict_no_expectations_will_fail),
- 	KUNIT_CASE(mock_test_naggy_no_expectations_no_fail),
-+	KUNIT_CASE(mock_test_nice_no_expectations_do_nothing),
-+	KUNIT_CASE(mock_test_strict_no_matching_expectations_fail),
-+	KUNIT_CASE(mock_test_naggy_no_matching_expectations_fail),
-+	KUNIT_CASE(mock_test_nice_no_matching_expectations_fail),
-+	KUNIT_CASE(mock_test_validate_clears_expectations),
- 	{}
- };
- 
-diff --git a/lib/kunit/mock.c b/lib/kunit/mock.c
-index 12fb88899451..f1fa7a5b9dd4 100644
---- a/lib/kunit/mock.c
-+++ b/lib/kunit/mock.c
-@@ -85,6 +85,7 @@ void mock_init_ctrl(struct kunit *test, struct mock *mock)
- 	mock->test = test;
- 	INIT_LIST_HEAD(&mock->methods);
- 	mock->do_expect = mock_do_expect;
-+	mock->type = DEFAULT_MOCK_TYPE;
- 	mock->parent.validate = mock_validate_wrapper;
- 	list_add_tail(&mock->parent.node, &test->post_conditions);
- }
-@@ -283,7 +284,12 @@ static struct mock_expectation *mock_apply_expectations(
- 		mock_add_method_expectation_error(test, stream,
- 			"Method was called with no expectations declared: ",
- 			mock, method, type_names, params, len);
--		kunit_stream_commit(stream);
-+		if (is_strict_mock(mock))
-+			fail_and_flush(test, stream);
-+		else if (is_naggy_mock(mock))
-+			kunit_stream_commit(stream);
-+		else
-+			kunit_stream_clear(stream);
- 		return NULL;
- 	}
- 
-@@ -313,7 +319,7 @@ static struct mock_expectation *mock_apply_expectations(
- 		}
- 	}
- 
--	if (expectations_all_saturated) {
-+	if (expectations_all_saturated && !is_nice_mock(mock)) {
- 		mock_add_method_expectation_error(test, stream,
- 			"Method was called with fully saturated expectations: ",
- 			mock, method, type_names, params, len);
--- 
-2.28.0.681.g6f77f65b4e-goog
+Sorry a lot for the double email... I think I found what you are talking =
+about.
+It looks like the code was merged but not the documentation.
+Will do some test and check if this works.
+
+This should be the related patch.
+https://patchwork.ozlabs.org/project/linux-mtd/patch/1521933899-362-4-git=
+-send-email-albeu@free.fr/
+
 
