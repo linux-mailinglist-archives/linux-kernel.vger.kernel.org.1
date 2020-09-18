@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 779F726EB83
+	by mail.lfdr.de (Postfix) with ESMTP id E74A026EB84
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727633AbgIRCFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:05:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54172 "EHLO mail.kernel.org"
+        id S1727648AbgIRCFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:05:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727531AbgIRCFm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:05:42 -0400
+        id S1726357AbgIRCFn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:05:43 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 41DB223600;
-        Fri, 18 Sep 2020 02:05:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A7015235FD;
+        Fri, 18 Sep 2020 02:05:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394741;
-        bh=HcWzcq35jh/C3lXqHajszrBmo6BU0mltpavpAsqVF70=;
+        s=default; t=1600394742;
+        bh=o6s7ulN4ST66l2nBYhHeONyLKRBRDAvQpNO7rRxRfBM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tScIUIorpI43JZWu2fZIiCob0OfJpWaoi44LyStrzKl+BKkbY/Jd1wV5KTuk8QqqK
-         fe9WrgG+NA7tipGyAgL+aKBgi4WGGk2SRHy86HHQsCpFcue0WUJ3MXazsTzwfYQvro
-         16VDMtsavad5AZGVUn0CtsPsMFIysKyswMMpALoQ=
+        b=wXLpdrO6tvbKjvwJrLtBzY73ahb2o8SUQUuYu3tjMNEb3363YK4LfEUUa7UowhSTJ
+         ZuGCM9Aj1uSiCTzKDpt6RdLhLk2ehnzPXuApGruLlB/WchioZIr1QPZ+Cn7xOkxxYD
+         ySRYzIXkTGZfLsfNnpu0FY9GWzicxkd0R842Kfmg=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Stuart Hayes <stuart.w.hayes@gmail.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Sasha Levin <sashal@kernel.org>, linux-pci@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 221/330] PCI: pciehp: Fix MSI interrupt race
-Date:   Thu, 17 Sep 2020 21:59:21 -0400
-Message-Id: <20200918020110.2063155-221-sashal@kernel.org>
+Cc:     Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Sasha Levin <sashal@kernel.org>, linux-nfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 222/330] NFS: Fix races nfs_page_group_destroy() vs nfs_destroy_unlinked_subrequests()
+Date:   Thu, 17 Sep 2020 21:59:22 -0400
+Message-Id: <20200918020110.2063155-222-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -44,113 +41,168 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stuart Hayes <stuart.w.hayes@gmail.com>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-[ Upstream commit 8edf5332c39340b9583cf9cba659eb7ec71f75b5 ]
+[ Upstream commit 08ca8b21f760c0ed5034a5c122092eec22ccf8f4 ]
 
-Without this commit, a PCIe hotplug port can stop generating interrupts on
-hotplug events, so device adds and removals will not be seen:
+When a subrequest is being detached from the subgroup, we want to
+ensure that it is not holding the group lock, or in the process
+of waiting for the group lock.
 
-The pciehp interrupt handler pciehp_isr() reads the Slot Status register
-and then writes back to it to clear the bits that caused the interrupt.  If
-a different interrupt event bit gets set between the read and the write,
-pciehp_isr() returns without having cleared all of the interrupt event
-bits.  If this happens when the MSI isn't masked (which by default it isn't
-in handle_edge_irq(), and which it will never be when MSI per-vector
-masking is not supported), we won't get any more hotplug interrupts from
-that device.
-
-That is expected behavior, according to the PCIe Base Spec r5.0, section
-6.7.3.4, "Software Notification of Hot-Plug Events".
-
-Because the Presence Detect Changed and Data Link Layer State Changed event
-bits can both get set at nearly the same time when a device is added or
-removed, this is more likely to happen than it might seem.  The issue was
-found (and can be reproduced rather easily) by connecting and disconnecting
-an NVMe storage device on at least one system model where the NVMe devices
-were being connected to an AMD PCIe port (PCI device 0x1022/0x1483).
-
-Fix the issue by modifying pciehp_isr() to loop back and re-read the Slot
-Status register immediately after writing to it, until it sees that all of
-the event status bits have been cleared.
-
-[lukas: drop loop count limitation, write "events" instead of "status",
-don't loop back in INTx and poll modes, tweak code comment & commit msg]
-Link: https://lore.kernel.org/r/78b4ced5072bfe6e369d20e8b47c279b8c7af12e.1582121613.git.lukas@wunner.de
-Tested-by: Stuart Hayes <stuart.w.hayes@gmail.com>
-Signed-off-by: Stuart Hayes <stuart.w.hayes@gmail.com>
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Reviewed-by: Joerg Roedel <jroedel@suse.de>
+Fixes: 5b2b5187fa85 ("NFS: Fix nfs_page_group_destroy() and nfs_lock_and_join_requests() race cases")
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/hotplug/pciehp_hpc.c | 26 ++++++++++++++++++++------
- 1 file changed, 20 insertions(+), 6 deletions(-)
+ fs/nfs/pagelist.c        | 67 +++++++++++++++++++++++++++-------------
+ fs/nfs/write.c           | 10 ++++--
+ include/linux/nfs_page.h |  2 ++
+ 3 files changed, 55 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/pci/hotplug/pciehp_hpc.c b/drivers/pci/hotplug/pciehp_hpc.c
-index 356786a3b7f4b..88b996764ff95 100644
---- a/drivers/pci/hotplug/pciehp_hpc.c
-+++ b/drivers/pci/hotplug/pciehp_hpc.c
-@@ -529,7 +529,7 @@ static irqreturn_t pciehp_isr(int irq, void *dev_id)
- 	struct controller *ctrl = (struct controller *)dev_id;
- 	struct pci_dev *pdev = ctrl_dev(ctrl);
- 	struct device *parent = pdev->dev.parent;
--	u16 status, events;
-+	u16 status, events = 0;
+diff --git a/fs/nfs/pagelist.c b/fs/nfs/pagelist.c
+index b736912098eee..f4407dd426bf0 100644
+--- a/fs/nfs/pagelist.c
++++ b/fs/nfs/pagelist.c
+@@ -133,47 +133,70 @@ nfs_async_iocounter_wait(struct rpc_task *task, struct nfs_lock_context *l_ctx)
+ EXPORT_SYMBOL_GPL(nfs_async_iocounter_wait);
  
- 	/*
- 	 * Interrupts only occur in D3hot or shallower and only if enabled
-@@ -554,6 +554,7 @@ static irqreturn_t pciehp_isr(int irq, void *dev_id)
+ /*
+- * nfs_page_group_lock - lock the head of the page group
+- * @req - request in group that is to be locked
++ * nfs_page_set_headlock - set the request PG_HEADLOCK
++ * @req: request that is to be locked
+  *
+- * this lock must be held when traversing or modifying the page
+- * group list
++ * this lock must be held when modifying req->wb_head
+  *
+  * return 0 on success, < 0 on error
+  */
+ int
+-nfs_page_group_lock(struct nfs_page *req)
++nfs_page_set_headlock(struct nfs_page *req)
+ {
+-	struct nfs_page *head = req->wb_head;
+-
+-	WARN_ON_ONCE(head != head->wb_head);
+-
+-	if (!test_and_set_bit(PG_HEADLOCK, &head->wb_flags))
++	if (!test_and_set_bit(PG_HEADLOCK, &req->wb_flags))
+ 		return 0;
+ 
+-	set_bit(PG_CONTENDED1, &head->wb_flags);
++	set_bit(PG_CONTENDED1, &req->wb_flags);
+ 	smp_mb__after_atomic();
+-	return wait_on_bit_lock(&head->wb_flags, PG_HEADLOCK,
++	return wait_on_bit_lock(&req->wb_flags, PG_HEADLOCK,
+ 				TASK_UNINTERRUPTIBLE);
+ }
+ 
+ /*
+- * nfs_page_group_unlock - unlock the head of the page group
+- * @req - request in group that is to be unlocked
++ * nfs_page_clear_headlock - clear the request PG_HEADLOCK
++ * @req: request that is to be locked
+  */
+ void
+-nfs_page_group_unlock(struct nfs_page *req)
++nfs_page_clear_headlock(struct nfs_page *req)
+ {
+-	struct nfs_page *head = req->wb_head;
+-
+-	WARN_ON_ONCE(head != head->wb_head);
+-
+ 	smp_mb__before_atomic();
+-	clear_bit(PG_HEADLOCK, &head->wb_flags);
++	clear_bit(PG_HEADLOCK, &req->wb_flags);
+ 	smp_mb__after_atomic();
+-	if (!test_bit(PG_CONTENDED1, &head->wb_flags))
++	if (!test_bit(PG_CONTENDED1, &req->wb_flags))
+ 		return;
+-	wake_up_bit(&head->wb_flags, PG_HEADLOCK);
++	wake_up_bit(&req->wb_flags, PG_HEADLOCK);
++}
++
++/*
++ * nfs_page_group_lock - lock the head of the page group
++ * @req: request in group that is to be locked
++ *
++ * this lock must be held when traversing or modifying the page
++ * group list
++ *
++ * return 0 on success, < 0 on error
++ */
++int
++nfs_page_group_lock(struct nfs_page *req)
++{
++	int ret;
++
++	ret = nfs_page_set_headlock(req);
++	if (ret || req->wb_head == req)
++		return ret;
++	return nfs_page_set_headlock(req->wb_head);
++}
++
++/*
++ * nfs_page_group_unlock - unlock the head of the page group
++ * @req: request in group that is to be unlocked
++ */
++void
++nfs_page_group_unlock(struct nfs_page *req)
++{
++	if (req != req->wb_head)
++		nfs_page_clear_headlock(req->wb_head);
++	nfs_page_clear_headlock(req);
+ }
+ 
+ /*
+diff --git a/fs/nfs/write.c b/fs/nfs/write.c
+index 58c8317dd7d88..613c3ef23e07b 100644
+--- a/fs/nfs/write.c
++++ b/fs/nfs/write.c
+@@ -425,22 +425,28 @@ nfs_destroy_unlinked_subrequests(struct nfs_page *destroy_list,
+ 		destroy_list = (subreq->wb_this_page == old_head) ?
+ 				   NULL : subreq->wb_this_page;
+ 
++		/* Note: lock subreq in order to change subreq->wb_head */
++		nfs_page_set_headlock(subreq);
+ 		WARN_ON_ONCE(old_head != subreq->wb_head);
+ 
+ 		/* make sure old group is not used */
+ 		subreq->wb_this_page = subreq;
++		subreq->wb_head = subreq;
+ 
+ 		clear_bit(PG_REMOVE, &subreq->wb_flags);
+ 
+ 		/* Note: races with nfs_page_group_destroy() */
+ 		if (!kref_read(&subreq->wb_kref)) {
+ 			/* Check if we raced with nfs_page_group_destroy() */
+-			if (test_and_clear_bit(PG_TEARDOWN, &subreq->wb_flags))
++			if (test_and_clear_bit(PG_TEARDOWN, &subreq->wb_flags)) {
++				nfs_page_clear_headlock(subreq);
+ 				nfs_free_request(subreq);
++			} else
++				nfs_page_clear_headlock(subreq);
+ 			continue;
  		}
- 	}
++		nfs_page_clear_headlock(subreq);
  
-+read_status:
- 	pcie_capability_read_word(pdev, PCI_EXP_SLTSTA, &status);
- 	if (status == (u16) ~0) {
- 		ctrl_info(ctrl, "%s: no response from device\n", __func__);
-@@ -566,24 +567,37 @@ static irqreturn_t pciehp_isr(int irq, void *dev_id)
- 	 * Slot Status contains plain status bits as well as event
- 	 * notification bits; right now we only want the event bits.
- 	 */
--	events = status & (PCI_EXP_SLTSTA_ABP | PCI_EXP_SLTSTA_PFD |
--			   PCI_EXP_SLTSTA_PDC | PCI_EXP_SLTSTA_CC |
--			   PCI_EXP_SLTSTA_DLLSC);
-+	status &= PCI_EXP_SLTSTA_ABP | PCI_EXP_SLTSTA_PFD |
-+		  PCI_EXP_SLTSTA_PDC | PCI_EXP_SLTSTA_CC |
-+		  PCI_EXP_SLTSTA_DLLSC;
+-		subreq->wb_head = subreq;
+ 		nfs_release_request(old_head);
  
- 	/*
- 	 * If we've already reported a power fault, don't report it again
- 	 * until we've done something to handle it.
- 	 */
- 	if (ctrl->power_fault_detected)
--		events &= ~PCI_EXP_SLTSTA_PFD;
-+		status &= ~PCI_EXP_SLTSTA_PFD;
+ 		if (test_and_clear_bit(PG_INODE_REF, &subreq->wb_flags)) {
+diff --git a/include/linux/nfs_page.h b/include/linux/nfs_page.h
+index 0bbd587fac6a9..7e9419d74b86b 100644
+--- a/include/linux/nfs_page.h
++++ b/include/linux/nfs_page.h
+@@ -142,6 +142,8 @@ extern	void nfs_unlock_and_release_request(struct nfs_page *);
+ extern int nfs_page_group_lock(struct nfs_page *);
+ extern void nfs_page_group_unlock(struct nfs_page *);
+ extern bool nfs_page_group_sync_on_bit(struct nfs_page *, unsigned int);
++extern	int nfs_page_set_headlock(struct nfs_page *req);
++extern void nfs_page_clear_headlock(struct nfs_page *req);
+ extern bool nfs_async_iocounter_wait(struct rpc_task *, struct nfs_lock_context *);
  
-+	events |= status;
- 	if (!events) {
- 		if (parent)
- 			pm_runtime_put(parent);
- 		return IRQ_NONE;
- 	}
- 
--	pcie_capability_write_word(pdev, PCI_EXP_SLTSTA, events);
-+	if (status) {
-+		pcie_capability_write_word(pdev, PCI_EXP_SLTSTA, events);
-+
-+		/*
-+		 * In MSI mode, all event bits must be zero before the port
-+		 * will send a new interrupt (PCIe Base Spec r5.0 sec 6.7.3.4).
-+		 * So re-read the Slot Status register in case a bit was set
-+		 * between read and write.
-+		 */
-+		if (pci_dev_msi_enabled(pdev) && !pciehp_poll_mode)
-+			goto read_status;
-+	}
-+
- 	ctrl_dbg(ctrl, "pending interrupts %#06x from Slot Status\n", events);
- 	if (parent)
- 		pm_runtime_put(parent);
+ /*
 -- 
 2.25.1
 
