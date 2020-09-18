@@ -2,119 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A83E26FFF0
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 16:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 299E326FFF5
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 16:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726757AbgIROcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 10:32:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726461AbgIROcR (ORCPT
+        id S1726572AbgIROdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 10:33:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20280 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726126AbgIROdo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 10:32:17 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A04C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 07:32:16 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id m12so5587512otr.0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 07:32:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sYJpr/JTfAc7wYRPBb4gv+TaUOt5dcnyH7jSr7tuCpM=;
-        b=OizUltZ1LFId+L2XPadEiLoGsJia3Vb4yFpDK5KEcNWLrJW6Aem2AEybtF8cy3U+QY
-         eoMGUf6mI0+wEijASIk6eboEjhmANetheAdBPBnm6rd+VaguUpkAbTzIdq2VelitR6BK
-         syRnG+eDr/eNUK7FH0sWgDhnT/m+Rg3Nl1p4M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sYJpr/JTfAc7wYRPBb4gv+TaUOt5dcnyH7jSr7tuCpM=;
-        b=XeyKv+U/1rFpeJUoSgmheLofwZFjeujLsTxpG6UGvzt+n18UiVLFeFRKUUemjIpGDo
-         HXsuzfllKY2eK4yZkMxUJvCmwBrdDET8/H68hr7Ze8fNkF/6fP9gg31nuSFDG9fVxfoM
-         WZd8sLBKY0RpR+NSwtZW8KFVe2VZVGRSD1HFyEqeLy6HbmWUlhqc5459epaIXHtATplf
-         Y6Ew8dLyKBcTOQcpBaQxK+IvrnerFyhJcE9FtU4S/a6G3CTaC9k+gYTnFZIejaaJ/+5n
-         jFnebA9/LKPOnmLGFY2PcN0vtOeywVgKI/+THJdTowR8nIxKmcM/uy3ZK+eyRK3VLjaL
-         tFbQ==
-X-Gm-Message-State: AOAM530dQXjWxmdfHOhAQ7QG4VptEvgMe2+HarEjfpD2ZOhC5yvM89tP
-        LuE83x20ObExYWDPfiB/EbQ1dA==
-X-Google-Smtp-Source: ABdhPJwswgZZxJoiRvH2rrmYQ1+FhmfcvUHyo8hVgSClH0jsk2AP5r/jo1ZLkWNCjw6q/XZ7vxlnEg==
-X-Received: by 2002:a05:6830:118b:: with SMTP id u11mr23775978otq.261.1600439535424;
-        Fri, 18 Sep 2020 07:32:15 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id q14sm2347601ota.41.2020.09.18.07.32.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Sep 2020 07:32:14 -0700 (PDT)
-Subject: Re: [PATCH] selftests/harness: Flush stdout before forking
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Max Filippov <jcmvbkbc@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>, linux-kselftest@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20200917041519.3284582-1-mpe@ellerman.id.au>
- <CAMo8BfJ5j4nG0z1Bk00J=3xPM++J68Hp2idJ-D5aHT84-vOzsQ@mail.gmail.com>
- <e24df908-c50d-59ef-563c-9db24c819248@linuxfoundation.org>
- <87o8m3oiv6.fsf@mpe.ellerman.id.au>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <b610e625-159d-cdf8-373e-47f0b56412a3@linuxfoundation.org>
-Date:   Fri, 18 Sep 2020 08:32:13 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 18 Sep 2020 10:33:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600439623;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Lc1gdBcSlwW1Myg1j82ImIPmW/PKiG30x2XN4oGwKHM=;
+        b=JMfksy8sawvjzuQ4O1vedj4n4U2ae+7m0dEvb/h813QvhmcDrE+zEXZAoyZvBnfjQV4yR2
+        QFwq0NlU8SWLfB7/+j+xNJ0JFiY/be1Php0w0qrGsgQIqHmRUgXStXXk9u/SsfnMaK5ylV
+        b2zoQTvs0nDE4ZeK6STDB0Mng2YeeBA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-364-313U2Tk8MHy_GT9nKyn5qg-1; Fri, 18 Sep 2020 10:33:38 -0400
+X-MC-Unique: 313U2Tk8MHy_GT9nKyn5qg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EBEC4802B69;
+        Fri, 18 Sep 2020 14:33:35 +0000 (UTC)
+Received: from krava (ovpn-114-24.ams2.redhat.com [10.36.114.24])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 42B0C5D9E4;
+        Fri, 18 Sep 2020 14:33:32 +0000 (UTC)
+Date:   Fri, 18 Sep 2020 16:33:31 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Raphael Gault <raphael.gault@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Ian Rogers <irogers@google.com>, honnappa.nagarahalli@arm.com
+Subject: Re: [PATCH v3 05/10] libperf: Add libperf_evsel__mmap()
+Message-ID: <20200918143331.GF2626435@krava>
+References: <20200911215118.2887710-1-robh@kernel.org>
+ <20200911215118.2887710-6-robh@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <87o8m3oiv6.fsf@mpe.ellerman.id.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200911215118.2887710-6-robh@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/17/20 9:37 PM, Michael Ellerman wrote:
-> Shuah Khan <skhan@linuxfoundation.org> writes:
->> On 9/16/20 10:53 PM, Max Filippov wrote:
->>> On Wed, Sep 16, 2020 at 9:16 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
->>>>
->>>> The test harness forks() a child to run each test. Both the parent and
->>>> the child print to stdout using libc functions. That can lead to
->>>> duplicated (or more) output if the libc buffers are not flushed before
->>>> forking.
->>>>
->>>> It's generally not seen when running programs directly, because stdout
->>>> will usually be line buffered when it's pointing to a terminal.
->>>>
->>>> This was noticed when running the seccomp_bpf test, eg:
->>>>
->>>>     $ ./seccomp_bpf | tee test.log
->>>>     $ grep -c "TAP version 13" test.log
->>>>     2
->>>>
->>>> But we only expect the TAP header to appear once.
->>>>
->>>> It can be exacerbated using stdbuf to increase the buffer size:
->>>>
->>>>     $ stdbuf -o 1MB ./seccomp_bpf > test.log
->>>>     $ grep -c "TAP version 13" test.log
->>>>     13
->>>>
->>>> The fix is simple, we just flush stdout & stderr before fork. Usually
->>>> stderr is unbuffered, but that can be changed, so flush it as well
->>>> just to be safe.
->>>>
->>>> Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
->>>> ---
->>>>    tools/testing/selftests/kselftest_harness.h | 5 +++++
->>>>    1 file changed, 5 insertions(+)
->>>
->>> Tested-by: Max Filippov <jcmvbkbc@gmail.com>
->>
->> Thank you both. Applying to linux-kselftest fixes for 5.9-rc7
+On Fri, Sep 11, 2020 at 03:51:13PM -0600, Rob Herring wrote:
+> In order to support usersapce access, an event must be mmapped. While
+> there's already mmap support for evlist, the usecase is a bit different
+> than the self monitoring with userspace access. So let's add a new
+> perf_evsel__mmap() function to mmap an evsel. This allows implementing
+> userspace access as a fastpath for perf_evsel__read().
 > 
-> It can wait for v5.10 IMHO, but up to you.
+> The mmapped address is returned by perf_evsel__mmap() primarily for
+> users/tests to check if userspace access is enabled.
 > 
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+> v3:
+>  - New patch split out from user access patch
+> ---
+>  tools/lib/perf/Documentation/libperf.txt |  1 +
+>  tools/lib/perf/evsel.c                   | 31 ++++++++++++++++++++++++
+>  tools/lib/perf/include/internal/evsel.h  |  2 ++
+>  tools/lib/perf/include/perf/evsel.h      |  2 ++
+>  tools/lib/perf/libperf.map               |  1 +
+>  5 files changed, 37 insertions(+)
+> 
+> diff --git a/tools/lib/perf/Documentation/libperf.txt b/tools/lib/perf/Documentation/libperf.txt
+> index 0c74c30ed23a..0b4694ce42b9 100644
+> --- a/tools/lib/perf/Documentation/libperf.txt
+> +++ b/tools/lib/perf/Documentation/libperf.txt
+> @@ -136,6 +136,7 @@ SYNOPSIS
+>                         struct perf_thread_map *threads);
+>    void perf_evsel__close(struct perf_evsel *evsel);
+>    void perf_evsel__close_cpu(struct perf_evsel *evsel, int cpu);
+> +  void *perf_evsel__mmap(struct perf_evsel *evsel, size_t length);
+>    int perf_evsel__read(struct perf_evsel *evsel, int cpu, int thread,
+>                         struct perf_counts_values *count);
+>    int perf_evsel__enable(struct perf_evsel *evsel);
+> diff --git a/tools/lib/perf/evsel.c b/tools/lib/perf/evsel.c
+> index 4dc06289f4c7..99fa53dc0887 100644
+> --- a/tools/lib/perf/evsel.c
+> +++ b/tools/lib/perf/evsel.c
+> @@ -11,10 +11,12 @@
+>  #include <stdlib.h>
+>  #include <internal/xyarray.h>
+>  #include <internal/cpumap.h>
+> +#include <internal/mmap.h>
+>  #include <internal/threadmap.h>
+>  #include <internal/lib.h>
+>  #include <linux/string.h>
+>  #include <sys/ioctl.h>
+> +#include <sys/mman.h>
+>  
+>  void perf_evsel__init(struct perf_evsel *evsel, struct perf_event_attr *attr)
+>  {
+> @@ -156,6 +158,35 @@ void perf_evsel__close_cpu(struct perf_evsel *evsel, int cpu)
+>  	perf_evsel__close_fd_cpu(evsel, cpu);
+>  }
+>  
+> +void *perf_evsel__mmap(struct perf_evsel *evsel, size_t length)
+> +{
 
-Good to know. I will send this for 5.10-rc1 then.
+could you rather use 'int pages' insted of length as we
+do in perf_evlist__mmap, so we keep the same interface
+
+  len = (pages + 1) * page_size
 
 thanks,
--- Shuah
+jirka
 
