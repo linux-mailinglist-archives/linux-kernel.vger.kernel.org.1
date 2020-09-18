@@ -2,175 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EA4126FE8A
+	by mail.lfdr.de (Postfix) with ESMTP id ED6ED26FE8B
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 15:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726653AbgIRNb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 09:31:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37507 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726126AbgIRNb5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 09:31:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600435915;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ncMAkUGj6RVEFkBElvUjnFBlBpNaTyc6eD0LmUBKC4E=;
-        b=XfPENFPzVrtBxp4hGyzVfmEn4xgn2rz66sflaDQ6v6uGdbyekUJQ/nbhlghlcjNS5IqzUD
-        9FAes+v/bbXgCKdndLSJYHrmdg5gAOgrg+RCe3cG8ou2EN1T15RXEaHHm3PdIdGcDPDobe
-        8cFeKfEWWPBDzbIaXZADKB/gJ3IO+XI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-498-c09jnrsZNxiB40MAi6pksw-1; Fri, 18 Sep 2020 09:31:53 -0400
-X-MC-Unique: c09jnrsZNxiB40MAi6pksw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726475AbgIRNcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 09:32:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35364 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725955AbgIRNcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 09:32:53 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 96ED080F055;
-        Fri, 18 Sep 2020 13:31:49 +0000 (UTC)
-Received: from krava (ovpn-114-24.ams2.redhat.com [10.36.114.24])
-        by smtp.corp.redhat.com (Postfix) with SMTP id C8D411002382;
-        Fri, 18 Sep 2020 13:31:46 +0000 (UTC)
-Date:   Fri, 18 Sep 2020 15:31:45 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCH 1/4] perf evsel: Add evsel__clone() function
-Message-ID: <20200918133145.GA2626435@krava>
-References: <20200916063129.1061487-1-namhyung@kernel.org>
- <20200916063129.1061487-2-namhyung@kernel.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 48A2F206DB;
+        Fri, 18 Sep 2020 13:32:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600435972;
+        bh=7hSwap25GA/Oqj6EwHSwuf9ZnYrwESdX+SdscU52A/E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vYYfC+obikaqOheGC8najvfwzxvdJlg83XySo0o42UNQCvEiTknnak9ifvGjFH213
+         5Cj60G9Oqb01lt0SVOdj9Oq2JEOD/we6NIhMI2/IoWAGDpFKzq6L6AhFuhP+ejlLo/
+         Av1PuCER2V9qQ3umUUe2CkfWJl7d0vvBVrtgsGUc=
+Date:   Fri, 18 Sep 2020 14:32:02 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        paul@pgazz.com, jeho@cs.utexas.edu
+Subject: Re: [PATCH] ASoC: fix kconfig dependency warnings for SND_SOC_WM8731
+Message-ID: <20200918133202.GH5703@sirena.org.uk>
+References: <20200918131257.5860-1-fazilyildiran@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="AqCDj3hiknadvR6t"
 Content-Disposition: inline
-In-Reply-To: <20200916063129.1061487-2-namhyung@kernel.org>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20200918131257.5860-1-fazilyildiran@gmail.com>
+X-Cookie: Beware of geeks bearing graft.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 03:31:26PM +0900, Namhyung Kim wrote:
 
-SNIP
+--AqCDj3hiknadvR6t
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> +struct evsel *evsel__clone(struct evsel *orig)
-> +{
-> +	struct evsel *evsel;
-> +	struct evsel_config_term *pos, *tmp;
-> +
-> +	BUG_ON(orig->core.fd);
-> +	BUG_ON(orig->counts);
-> +	BUG_ON(orig->priv);
-> +	BUG_ON(orig->per_pkg_mask);
-> +
-> +	/* cannot handle BPF objects for now */
-> +	if (orig->bpf_obj)
-> +		return NULL;
-> +
-> +	evsel = evsel__new(&orig->core.attr);
-> +	if (evsel == NULL)
-> +		return NULL;
-> +
-> +	evsel->core.cpus = perf_cpu_map__get(orig->core.cpus);
-> +	evsel->core.own_cpus = perf_cpu_map__get(orig->core.own_cpus);
-> +	evsel->core.threads = perf_thread_map__get(orig->core.threads);
-> +	evsel->core.nr_members = orig->core.nr_members;
-> +	evsel->core.system_wide = orig->core.system_wide;
-> +
-> +	if (orig->name)
-> +		evsel->name = strdup(orig->name);
-> +	if (orig->group_name)
-> +		evsel->group_name = strdup(orig->group_name);
-> +	if (orig->pmu_name)
-> +		evsel->pmu_name = strdup(orig->pmu_name);
-> +	if (orig->filter)
-> +		evsel->filter = strdup(orig->filter);
+On Fri, Sep 18, 2020 at 04:12:58PM +0300, Necip Fazil Yildiran wrote:
+> SND_SOC_WM8731 was made visible and dependent on other symbols with commit
+> 1291e14175e6 ("ASoC: codecs: Make OF supported CODECs visible in Kconfig").
+> To this respect, the symbols selecting SND_SOC_WM8731 turned out to be
+> overlooking its dependencies.
 
-we should check those strdup results
+> Switch reverse dependencies on SND_SOC_WM8731 to normal dependencies.
 
-> +	evsel->cgrp = cgroup__get(orig->cgrp);
-> +	evsel->tp_format = orig->tp_format;
-> +	evsel->handler = orig->handler;
-> +	evsel->leader = orig->leader;
-> +
-> +	evsel->max_events = orig->max_events;
-> +	evsel->tool_event = orig->tool_event;
-> +	evsel->unit = orig->unit;
-> +	evsel->scale = orig->scale;
-> +	evsel->snapshot = orig->snapshot;
-> +	evsel->per_pkg = orig->per_pkg;
-> +	evsel->percore = orig->percore;
-> +	evsel->precise_max = orig->precise_max;
-> +	evsel->use_uncore_alias = orig->use_uncore_alias;
-> +	evsel->is_libpfm_event = orig->is_libpfm_event;
-> +
-> +	evsel->exclude_GH = orig->exclude_GH;
-> +	evsel->sample_read = orig->sample_read;
-> +	evsel->auto_merge_stats = orig->auto_merge_stats;
-> +	evsel->collect_stat = orig->collect_stat;
-> +	evsel->weak_group = orig->weak_group;
+No, this is very user hostile - users shouldn't have to know exactly
+which chips a given machine driver needs to figure out how to get the
+config option visible.  Please fix the selects in the machine driver
+instead.
 
-so all those evsel's members are possibly defined in parse time right?
-perhaps we should separate them in the struct? and make some note about
-evsel__clone function that new members should be considered for copy
-in evsel__close.. or something like that
+--AqCDj3hiknadvR6t
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> +
-> +	list_for_each_entry(pos, &orig->config_terms, list) {
-> +		tmp = malloc(sizeof(*tmp));
-> +		if (tmp == NULL) {
-> +			evsel__delete(evsel);
-> +			evsel = NULL;
-> +			break;
-> +		}
-> +
-> +		*tmp = *pos;
-> +		if (tmp->free_str) {
-> +			tmp->val.str = strdup(pos->val.str);
-> +			if (tmp->val.str == NULL) {
-> +				evsel__delete(evsel);
-> +				evsel = NULL;
-> +				free(tmp);
-> +				break;
-> +			}
-> +		}
-> +		list_add_tail(&tmp->list, &evsel->config_terms);
-> +	}
+-----BEGIN PGP SIGNATURE-----
 
-could this go in separate function? copy_terms
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9kttEACgkQJNaLcl1U
+h9CkYAf9Ej630ZUjUIRfV2vJy5PY4LKnfppP92Ok6d+55eRBEh96EpC32AtBpzjw
+J8fpK7kY+iamF25PKb0SJ/VZmMn9VleExTrT8v36f31FQIrcHpK0kmut8gdyI2oO
+RccdBojyI5NQMpkj8rW7DFuPhj9d+lLemlToyRrCFyA8zBv8wyJKGiVzuZ3yPqLH
+QZgwULLoeFpTH5nLmZw/MP3RBrOYJ95iFvcTGwKjY9PjmtEHnXtHj58RpThTqYEU
+XS9qyLfH66TqHXrs0JKBgGu8GcDsvVtU6Zgc4qDSHzY8teYA+9nzntFDEQpDo34a
+9+KfrurcST827/JyTd/SyWNVJoJjvQ==
+=WAW4
+-----END PGP SIGNATURE-----
 
-thanks,
-jirka
-
-> +
-> +	return evsel;
-> +}
-> +
->  /*
->   * Returns pointer with encoded error via <linux/err.h> interface.
->   */
-> diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-> index 35e3f6d66085..507c31d6a389 100644
-> --- a/tools/perf/util/evsel.h
-> +++ b/tools/perf/util/evsel.h
-> @@ -169,6 +169,7 @@ static inline struct evsel *evsel__new(struct perf_event_attr *attr)
->  	return evsel__new_idx(attr, 0);
->  }
->  
-> +struct evsel *evsel__clone(struct evsel *orig);
->  struct evsel *evsel__newtp_idx(const char *sys, const char *name, int idx);
->  
->  /*
-> -- 
-> 2.28.0.618.gf4bc123cb7-goog
-> 
-
+--AqCDj3hiknadvR6t--
