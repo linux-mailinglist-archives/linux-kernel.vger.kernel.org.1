@@ -2,106 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDDE126F7AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:06:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EC9926F7A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:04:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726867AbgIRIGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 04:06:07 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:38598 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726280AbgIRIGH (ORCPT
+        id S1726778AbgIRIEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 04:04:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726040AbgIRIEB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 04:06:07 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08I83mvt192647;
-        Fri, 18 Sep 2020 08:05:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=FwzhrR6pIZT+ddO5HaCmr7glfRurUVeHrfqvesMmzJA=;
- b=OjUABHgStFfv1CkX6AQwRtXJUXjBH0AkIeV0zBZrDu+Ryz3eHaqiUi/wTGLWwAkme4mi
- Jntda+uCcBDcdtGph54CcMENWADtFDlzI3Gwhc0Tk3xa7jUT8b/NjeodkN0R8FroMrfE
- V4EfxU8H8Iy0WzyNA1kXqrKPdAJdloMYv7syCm4A9hoNw5w0muNaqUd+VKI4hVFgRqbA
- Ed47cP7Ix/k8LBfO/yKP74fMVey4y3SUtAiPNs8MvxUZArrfMmStHdLzWhRQ0iBLJiyT
- 7Rp4JFt4gdusisIY4wJYD5zP/SneygwYvq2ic56xV0W4BZ1Hr3xQUQVDwTo6BCWUKTIt 9A== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 33gnrrdnx4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 18 Sep 2020 08:05:48 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08I80tFr079657;
-        Fri, 18 Sep 2020 08:03:48 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 33megaxe6x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Sep 2020 08:03:48 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08I83iix026517;
-        Fri, 18 Sep 2020 08:03:44 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 18 Sep 2020 08:03:44 +0000
-Date:   Fri, 18 Sep 2020 11:03:35 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     yong.zhi@intel.com, sakari.ailus@linux.intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org, davem@davemloft.net, robh@kernel.org,
-        devel@driverdev.osuosl.org, jorhand@linux.microsoft.com,
-        kieran.bingham@ideasonboard.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, kitakar@gmail.com
-Subject: Re: [RFC PATCH] Add bridge driver to connect sensors to CIO2 device
- via software nodes on ACPI platforms
-Message-ID: <20200918080335.GT4282@kadam>
-References: <20200916213618.8003-1-djrscally@gmail.com>
+        Fri, 18 Sep 2020 04:04:01 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1206C06174A;
+        Fri, 18 Sep 2020 01:04:01 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bt5vL1h8Fz9sRf;
+        Fri, 18 Sep 2020 18:03:58 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1600416238;
+        bh=D0vBWMKUoUPz5oaDuCJEe23hA4kclVJqXs/yN0B5IMc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=sahsUf6Hidwz4jlvRBGDztZ1LQYDVI4sRf1Qu/Q3bzSwIbsGKADbmXWkAdkx6nKpO
+         zKg7+UaBOZUMT5IYIfbJaSsGQlYVZuEvxzN+9zaDcmpVnT5uBphLvHHya5JRFULFi8
+         ES4bpwlma/g7m3RpkAivDvdfDm8V9UO8w6o/+0U3TKmUW86L59Wo6o2KNp/cbDEuVl
+         6bvArJDMEOI/uBUd3ojHxtf8dfgoLg3wj7uXq6phJDQzyGJiPjsVJXSDylhLfqJybV
+         j6jZ7jAmtCg/9AK33EoYyU+AEMg9gOKsNobBaoI6fWLd4r6ylcWBeGkiDaWvVOzWQW
+         0MUsVSUcXqwvQ==
+Date:   Fri, 18 Sep 2020 18:03:57 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the v4l-dvb-fixes tree
+Message-ID: <20200918180357.3afadbda@canb.auug.org.au>
+In-Reply-To: <20200918075230.GD3049@jagdpanzerIV.localdomain>
+References: <20200918172106.4a924556@canb.auug.org.au>
+        <20200918075230.GD3049@jagdpanzerIV.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916213618.8003-1-djrscally@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9747 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 spamscore=0
- mlxlogscore=999 adultscore=0 bulkscore=0 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009180067
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9747 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0
- lowpriorityscore=0 malwarescore=0 mlxscore=0 bulkscore=0 suspectscore=0
- clxscore=1015 mlxlogscore=999 adultscore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009180067
+Content-Type: multipart/signed; boundary="Sig_/WOFu_GdiJwpJW/Zvy5Nyu6z";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I ran Smatch over the code and it spotted an off by one.
+--Sig_/WOFu_GdiJwpJW/Zvy5Nyu6z
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 16, 2020 at 10:36:18PM +0100, Daniel Scally wrote:
-> +#define MAX_CONNECTED_DEVICES			4
-> +#define SWNODE_SENSOR_HID			0
-> +#define SWNODE_SENSOR_PORT			1
-> +#define SWNODE_SENSOR_ENDPOINT			2
-> +#define SWNODE_CIO2_PORT			3
-> +#define SWNODE_CIO2_ENDPOINT			4
-> +#define SWNODE_NULL_TERMINATOR			5
-   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Hi Sergey,
 
-> +struct sensor {
-> +	struct device *dev;
-> +	struct software_node swnodes[5];
-                             ^^^^^^^^^^
-This needs to be 6 instead of 5 to prevent memory corruption.
+On Fri, 18 Sep 2020 16:52:30 +0900 Sergey Senozhatsky <sergey.senozhatsky@g=
+mail.com> wrote:
+>
+> On (20/09/18 17:21), Stephen Rothwell wrote:
+> > After merging the v4l-dvb-fixes tree, today's linux-next build (htmldoc=
+s)
+> > produced this warning:
+> >=20
+> > Documentation/userspace-api/media/v4l/buffer.rst:692: WARNING: The "fla=
+t-table" directive is empty; content required.
+> >=20
+> > .. flat-table::
+> >     :header-rows:  0
+> >     :stub-columns: 0
+> >     :widths:       3 1 4 =20
+>=20
+> Thanks. I think there is a patch for this already.
+> Will hit linux-next soon.
 
-> +	struct property_entry sensor_props[6];
-> +	struct property_entry cio2_props[3];
-> +	struct fwnode_handle *fwnode;
-> +};
+Excellent, thanks.
 
+--=20
+Cheers,
+Stephen Rothwell
 
-> +		nodes[SWNODE_NULL_TERMINATOR]   = SOFTWARE_NODE_NULL;
-                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Here.
+--Sig_/WOFu_GdiJwpJW/Zvy5Nyu6z
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-regards,
-dan carpenter
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9kae0ACgkQAVBC80lX
+0Gw4Ugf+LY9lUDJO0vtA8itrwISD8lp4eKQmo19lFa+o0nuAKfAOTbiwQdwGiYrE
+6u/zgC/SQkTBNOqu9e0plZhJ4AB9dsKsfNQayuz/nRALOQoHou+rnkou4+cKLrpA
+fKHrIGsQ0g8dEegzQ7f9RdGd66qlC4QOcNiHaRlh8p0oYoCs/zyObuTNY9xmyt7e
+0IPl1U4sS/bnIxdHplT4ZPk2bvAvkjT3XQ6H/RH143FpXQCjxW6dt0YRdRjWSlTC
+kHlI91Y59ETa6SZ0rvN5vH08vlt5vDsYpkjwneyuPT71cPYTEEh1NmDgOLBlqSIx
+PxFdRv35LIKGcBJV0dvY3milYDx7wg==
+=fWKl
+-----END PGP SIGNATURE-----
+
+--Sig_/WOFu_GdiJwpJW/Zvy5Nyu6z--
