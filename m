@@ -2,77 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BCD42703D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 20:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4032703F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 20:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726267AbgIRSS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 14:18:56 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:35286 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726199AbgIRSSz (ORCPT
+        id S1726394AbgIRSZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 14:25:37 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:50823 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726382AbgIRSZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 14:18:55 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08IIIjBs071479;
-        Fri, 18 Sep 2020 13:18:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600453125;
-        bh=cFGQg+1KZ4pDx/j/j43AbBotFhKCYoUkrHxGwcXbl9A=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=PKCVUz27D3PoAfNXE7rtm2L1nq7bPsZDlB4vsdff/DFAAwOR0iESG/7QDK7rCjFrT
-         TOxxlctXXtWlgF5YKb7jRDTWtrqRQ++h+hKUynBv5Gqo4HKao6Pc2Rz/armkI7+Kbf
-         KBut5vPJFiB6MCJE/EZW+6KArZ8XVujiJ0S6TK5o=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08IIIjvf110052
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 18 Sep 2020 13:18:45 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 18
- Sep 2020 13:18:44 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 18 Sep 2020 13:18:44 -0500
-Received: from [10.250.35.164] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08IIIice000609;
-        Fri, 18 Sep 2020 13:18:44 -0500
-Subject: Re: [PATCH 1/2] ASoC: tas2770: Fix calling reset in probe
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
-References: <20200918161842.4451-1-dmurphy@ti.com>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <8bf4ae51-6cf7-aa43-e00b-c875ea5a0548@ti.com>
-Date:   Fri, 18 Sep 2020 13:18:39 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200918161842.4451-1-dmurphy@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+        Fri, 18 Sep 2020 14:25:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600453532;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eg/2C71vV3EBvxwezzmYF9acSvHgEEsLNSCT9Xp2Ew0=;
+        b=copdo0IU+G3QmqasVpbRGg2GoEg0FGz4yvS7q1C0mMAT7BJrFQDrrNby8KPUX7ILg7YEjA
+        dIwV5UanJP1vnzwrsJLtxDmItI4nu8ENsXnR8WEt6CIcrU6rmCoBQfJLUtEi6AR9xEk3SR
+        W8R5fBGRpi6ktRVMwZDdGGsIW55YVO8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-453-kfXmF_4QNlaAc1bwQzkdqA-1; Fri, 18 Sep 2020 14:25:28 -0400
+X-MC-Unique: kfXmF_4QNlaAc1bwQzkdqA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3D64F9CC08;
+        Fri, 18 Sep 2020 18:25:23 +0000 (UTC)
+Received: from ovpn-113-208.rdu2.redhat.com (ovpn-113-208.rdu2.redhat.com [10.10.113.208])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7F3425D9D5;
+        Fri, 18 Sep 2020 18:25:15 +0000 (UTC)
+Message-ID: <fdd0240c187f974fccc553acea895f638d5e822a.camel@redhat.com>
+Subject: Re: [PATCH v5 0/5] mm: introduce memfd_secret system call to create
+ "secret" memory areas
+From:   Qian Cai <cai@redhat.com>
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-riscv@lists.infradead.org, x86@kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-next@vger.kernel.org
+Date:   Fri, 18 Sep 2020 14:25:15 -0400
+In-Reply-To: <5d97da4d86db258fdc9b20be3c12588089e17da2.camel@redhat.com>
+References: <20200916073539.3552-1-rppt@kernel.org>
+         <5d97da4d86db258fdc9b20be3c12588089e17da2.camel@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All
+On Thu, 2020-09-17 at 09:27 -0400, Qian Cai wrote:
+> On Wed, 2020-09-16 at 10:35 +0300, Mike Rapoport wrote:
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> > 
+> > Hi,
+> > 
+> > This is an implementation of "secret" mappings backed by a file descriptor. 
+> > I've dropped the boot time reservation patch for now as it is not strictly
+> > required for the basic usage and can be easily added later either with or
+> > without CMA.
+> 
+> On powerpc: https://gitlab.com/cailca/linux-mm/-/blob/master/powerpc.config
+> 
+> There is a compiling warning from the today's linux-next:
+> 
+> <stdin>:1532:2: warning: #warning syscall memfd_secret not implemented [-Wcpp]
 
-On 9/18/20 11:18 AM, Dan Murphy wrote:
-> tas2770_reset is called during i2c probe. The reset calls the
-> snd_soc_component_write which depends on the tas2770->component being
-> available. The component pointer is not set until codec_probe so move
-> the reset to the codec_probe after the pointer is set.
+This should silence the warning:
 
-I have been updating the tas2770 to add another device to the driver and 
-I have quite a few unexpected patches on top of these.
-
-I am not even sure how this driver is even working at the moment.
-
-I will re-submit the complete set of patches as Mark pointed out in 
-another email chain.
-
-So please ignore these patches for now plus the DT binding patch.
-
-Dan
+diff --git a/scripts/checksyscalls.sh b/scripts/checksyscalls.sh
+index a18b47695f55..b7609958ee36 100755
+--- a/scripts/checksyscalls.sh
++++ b/scripts/checksyscalls.sh
+@@ -40,6 +40,10 @@ cat << EOF
+ #define __IGNORE_setrlimit	/* setrlimit */
+ #endif
+ 
++#ifndef __ARCH_WANT_MEMFD_SECRET
++#define __IGNORE_memfd_secret
++#endif
++
+ /* Missing flags argument */
+ #define __IGNORE_renameat	/* renameat2 */
 
