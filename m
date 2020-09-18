@@ -2,75 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D60226F96E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19C2E26F970
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726413AbgIRJhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 05:37:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43836 "EHLO mx2.suse.de"
+        id S1726371AbgIRJjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 05:39:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726109AbgIRJhw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 05:37:52 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 818A5AE4B;
-        Fri, 18 Sep 2020 09:38:25 +0000 (UTC)
-Subject: Re: [RFC 3/5] mm, page_alloc(): remove setup_pageset()
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        David Hildenbrand <david@redhat.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-References: <20200907163628.26495-1-vbabka@suse.cz>
- <20200907163628.26495-4-vbabka@suse.cz> <20200910092307.GD2285@linux>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <2c38b1f8-4e60-39f8-66c7-c0bbdb9df3cc@suse.cz>
-Date:   Fri, 18 Sep 2020 11:37:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726109AbgIRJjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 05:39:20 -0400
+Received: from gaia (unknown [31.124.44.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5ED6F21D20;
+        Fri, 18 Sep 2020 09:39:17 +0000 (UTC)
+Date:   Fri, 18 Sep 2020 10:39:14 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 27/37] arm64: mte: Switch GCR_EL1 in kernel entry and
+ exit
+Message-ID: <20200918093914.GC6335@gaia>
+References: <cover.1600204505.git.andreyknvl@google.com>
+ <c801517c8c6c0b14ac2f5d9e189ff86fdbf1d495.1600204505.git.andreyknvl@google.com>
+ <20200917165221.GF10662@gaia>
+ <c7cb0642-8e20-b478-96bf-87807a29fc71@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20200910092307.GD2285@linux>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c7cb0642-8e20-b478-96bf-87807a29fc71@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/20 11:23 AM, Oscar Salvador wrote:
-> On Mon, Sep 07, 2020 at 06:36:26PM +0200, Vlastimil Babka wrote:
->> We initialize boot-time pagesets with setup_pageset(), which sets high and
->> batch values that effectively disable pcplists.
->> 
->> We can remove this wrapper if we just set these values for all pagesets in
->> pageset_init(). Non-boot pagesets then subsequently update them to specific
->> values.
->> 
->> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+On Thu, Sep 17, 2020 at 07:47:59PM +0100, Vincenzo Frascino wrote:
+> On 9/17/20 5:52 PM, Catalin Marinas wrote:
+> >> +void mte_init_tags(u64 max_tag)
+> >> +{
+> >> +	u64 incl = GENMASK(max_tag & MTE_TAG_MAX, 0);
+> >> +
+> >> +	gcr_kernel_excl = ~incl & SYS_GCR_EL1_EXCL_MASK;
+> >> +}
+> > Do we need to set the actual GCR_EL1 register here? We may not get an
+> > exception by the time KASAN starts using it.
 > 
-> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+> It is ok not setting it here because to get exceptions cpuframework mte enable
+> needs to be executed first. In that context we set even the register.
 
-Thanks!
+OK, that should do for now. If we ever add stack tagging, we'd have to
+rethink the GCR_EL1 initialisation.
 
-> Just one question below:
-> 
->> -static void setup_pageset(struct per_cpu_pageset *p)
->> -{
->> -	pageset_init(p);
->> -	pageset_update(&p->pcp, 0, 1);
->> +	/*
->> +	 * Set batch and high values safe for a boot pageset. Proper pageset's
->> +	 * initialization will update them.
->> +	 */
->> +	pcp->high = 0;
->> +	pcp->batch  = 1;
-> 
-> pageset_update was manipulating these values with barriers in between.
-> I guess we do not care here because we are not really updating but
-> initializing them, right?
-
-Sure. We just initialized all the list heads, so there can be no concurrent
-access at this point. But I'll mention it in the comment.
-
-
+-- 
+Catalin
