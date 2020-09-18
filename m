@@ -2,85 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68A8A26F4A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:21:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB0926F4AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:23:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726321AbgIRDVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 23:21:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726201AbgIRDVW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 23:21:22 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73C59C06174A;
-        Thu, 17 Sep 2020 20:21:22 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BszdC2n6bz9sSf;
-        Fri, 18 Sep 2020 13:21:19 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600399280;
-        bh=QWFtksh3yjkMB75ctEQqaVu/gD65BkYee5+lrSINvXA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=lzfuRkfPorPRcXQOep5u2HpjA7fKRG66HrBKFgf1ZN6w07H9SFsvkUILIBMJsiS5t
-         AYFEI+h7+KE3zXGcsMnT1eaffPAx5go1Tje3lHe7grjjc2BbZsILHISenfmk/dKGde
-         bC0qa5ZR7vupueUf8es/+GM2z0khz6sivDGREQrwcz02YPZOW6cjvq/34AFVdgFiNH
-         gYUFwSiLNSMjAm8GeuH9sItIY59ELARGu3BTe3CP7+nUGHXOpSxGucMvoeICH446im
-         DlI+Yiv6z1FTh/U4OTO1L2jTbmsYNHi5bmmPEcQuPEgEFesPJluwhiup+t3lWJU7zu
-         fyN+GBX+iUUXg==
-Date:   Fri, 18 Sep 2020 13:21:18 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Iulian Olaru <iulianolaru249@yahoo.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: linux-next: build warning after merge of the sound-asoc tree
-Message-ID: <20200918132118.1e753aeb@canb.auug.org.au>
+        id S1726250AbgIRDXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 23:23:24 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:40604 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726121AbgIRDXY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 23:23:24 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 65EED8DBBF3B60304858;
+        Fri, 18 Sep 2020 11:23:22 +0800 (CST)
+Received: from [10.174.177.116] (10.174.177.116) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 18 Sep 2020 11:23:19 +0800
+Subject: Re: [PATCH -next] RDMA/mlx5: fix type warning of sizeof in
+ __mlx5_ib_alloc_counters()
+To:     Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>
+References: <20200917082926.GA869610@unreal>
+ <20200917091008.2309158-1-liushixin2@huawei.com>
+ <20200917090810.GB869610@unreal> <20200917123806.GA114613@nvidia.com>
+ <20200917170511.GI869610@unreal> <20200917172451.GK8409@ziepe.ca>
+ <20200917173346.GK869610@unreal>
+CC:     Doug Ledford <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+From:   Liu Shixin <liushixin2@huawei.com>
+Message-ID: <59dfb43f-04a7-b02a-1619-81d92ca69278@huawei.com>
+Date:   Fri, 18 Sep 2020 11:23:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/7vql5BJ46rqF4b2ptGYxYrD";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20200917173346.GK869610@unreal>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.116]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/7vql5BJ46rqF4b2ptGYxYrD
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 2020/9/18 1:33, Leon Romanovsky wrote:
+> On Thu, Sep 17, 2020 at 02:24:51PM -0300, Jason Gunthorpe wrote:
+>> On Thu, Sep 17, 2020 at 08:05:11PM +0300, Leon Romanovsky wrote:
+>>> On Thu, Sep 17, 2020 at 09:38:06AM -0300, Jason Gunthorpe wrote:
+>>>> On Thu, Sep 17, 2020 at 12:08:10PM +0300, Leon Romanovsky wrote:
+>>>>> On Thu, Sep 17, 2020 at 05:10:08PM +0800, Liu Shixin wrote:
+>>>>>> sizeof() when applied to a pointer typed expression should give the
+>>>>>> size of the pointed data, even if the data is a pointer.
+>>>>>>
+>>>>>> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+>>>> Needs a fixes line
+>>>>
+>>>>>>  	if (!cnts->names)
+>>>>>>  		return -ENOMEM;
+>>>>>>
+>>>>>>  	cnts->offsets = kcalloc(num_counters,
+>>>>>> -				sizeof(cnts->offsets), GFP_KERNEL);
+>>>>>> +				sizeof(*cnts->offsets), GFP_KERNEL);
+>>>>> This is not.
+>>>> Why not?
+>>> cnts->offsets is array of pointers that we will set later.
+>>> The "sizeof(*cnts->offsets)" will return the size of size_t, while we
+>>> need to get "size_t *".
+>> Then why isn't a pointer to size **?
+>>
+>> Something is rotten here
+> No problem, I'll check.
+I think cnts->offsets is an array pointer whose element is size_t rathen than pointer,
+so the patch description does not correspond.
+And I think it should be modified to sizeof(*cnts->offsets) with other description.
+>
+>> Jason
+> .
+>
 
-Hi all,
-
-After merging the sound-asoc tree, today's linux-next build (x86_64
-allmodconfig) produced this warning:
-
-WARNING: modpost: missing MODULE_LICENSE() in sound/soc/sof/imx/imx-common.o
-
-Introduced by commit
-
-  18ebffe4d043 ("ASoC: SOF: imx: Add debug support for imx platforms")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/7vql5BJ46rqF4b2ptGYxYrD
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9kJ64ACgkQAVBC80lX
-0GwSCQf9GQ457RX88RtL5Zkj7If+py1ZSAEACLgK7jpmznG36hSMUDOX4hiDnbCI
-LviE1fWKk8HHKKDFC1JCNfgbOk1uGoN1cKtpvSjdO1aCERsosdq1NeuPhMe/0/qW
-qesrLP5rDyRvxKA+J6Dqnaz1Biq/uSDVxE0JwBAY2/dTIckxoyRzJoG2KUKzcf98
-+obMCnFXCmwRg2EuB/cH8i0ggPqXFqKn+RkeP/7kU3HsgPMVHkXprOo19oZMHKdU
-zHaCCX+FMG3TeFyO97eRH5N4vII1hfqP9k94W47H5uph2oAj6lbOW1uaII2O64oZ
-hPqdaqMnarc1/u6qq+9Ze+NVWTdm1Q==
-=L998
------END PGP SIGNATURE-----
-
---Sig_/7vql5BJ46rqF4b2ptGYxYrD--
