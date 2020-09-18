@@ -2,87 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B3E26F808
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C0426F80F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726314AbgIRIWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 04:22:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47458 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726064AbgIRIWv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 04:22:51 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 77A472176B;
-        Fri, 18 Sep 2020 08:22:49 +0000 (UTC)
-Date:   Fri, 18 Sep 2020 11:22:45 +0300
-From:   Leon Romanovsky <leonro@nvidia.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     virtualization@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH v3 -next] vdpa: mlx5: change Kconfig depends to fix build
- errors
-Message-ID: <20200918082245.GP869610@unreal>
-References: <73f7e48b-8d16-6b20-07d3-41dee0e3d3bd@infradead.org>
+        id S1726392AbgIRIX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 04:23:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725874AbgIRIXz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 04:23:55 -0400
+Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C529C06174A;
+        Fri, 18 Sep 2020 01:23:55 -0700 (PDT)
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id 9A728C6366; Fri, 18 Sep 2020 09:23:52 +0100 (BST)
+Date:   Fri, 18 Sep 2020 09:23:52 +0100
+From:   Sean Young <sean@mess.org>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc:     "mchehab@kernel.org" <mchehab@kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: Re: [PATCH] media: rc: gpio-ir-recv: add QoS support for cpuidle
+ system
+Message-ID: <20200918082352.GA32346@gofer.mess.org>
+References: <20200915150202.24165-1-qiangqing.zhang@nxp.com>
+ <20200915093342.GA24139@gofer.mess.org>
+ <DB8PR04MB6795CB9F519D2BD277654B29E63E0@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <20200917204336.GA21441@gofer.mess.org>
+ <DB8PR04MB6795D5228426C7D93AF08081E63F0@DB8PR04MB6795.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <73f7e48b-8d16-6b20-07d3-41dee0e3d3bd@infradead.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <DB8PR04MB6795D5228426C7D93AF08081E63F0@DB8PR04MB6795.eurprd04.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 07:35:03PM -0700, Randy Dunlap wrote:
-> From: Randy Dunlap <rdunlap@infradead.org>
->
-> drivers/vdpa/mlx5/ uses vhost_iotlb*() interfaces, so add a dependency
-> on VHOST to eliminate build errors.
->
-> ld: drivers/vdpa/mlx5/core/mr.o: in function `add_direct_chain':
-> mr.c:(.text+0x106): undefined reference to `vhost_iotlb_itree_first'
-> ld: mr.c:(.text+0x1cf): undefined reference to `vhost_iotlb_itree_next'
-> ld: mr.c:(.text+0x30d): undefined reference to `vhost_iotlb_itree_first'
-> ld: mr.c:(.text+0x3e8): undefined reference to `vhost_iotlb_itree_next'
-> ld: drivers/vdpa/mlx5/core/mr.o: in function `_mlx5_vdpa_create_mr':
-> mr.c:(.text+0x908): undefined reference to `vhost_iotlb_itree_first'
-> ld: mr.c:(.text+0x9e6): undefined reference to `vhost_iotlb_itree_next'
-> ld: drivers/vdpa/mlx5/core/mr.o: in function `mlx5_vdpa_handle_set_map':
-> mr.c:(.text+0xf1d): undefined reference to `vhost_iotlb_itree_first'
->
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: "Michael S. Tsirkin" <mst@redhat.com>
-> Cc: Jason Wang <jasowang@redhat.com>
-> Cc: virtualization@lists.linux-foundation.org
-> Cc: Saeed Mahameed <saeedm@nvidia.com>
-> Cc: Leon Romanovsky <leonro@nvidia.com>
-> Cc: netdev@vger.kernel.org
-> ---
-> v2: change from select to depends on VHOST (Saeed)
-> v3: change to depends on VHOST_IOTLB (Jason)
->
->  drivers/vdpa/Kconfig |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> --- linux-next-20200917.orig/drivers/vdpa/Kconfig
-> +++ linux-next-20200917/drivers/vdpa/Kconfig
-> @@ -31,7 +31,7 @@ config IFCVF
->
->  config MLX5_VDPA
->  	bool "MLX5 VDPA support library for ConnectX devices"
-> -	depends on MLX5_CORE
-> +	depends on VHOST_IOTLB && MLX5_CORE
->  	default n
+Hi Joakim,
 
-While we are here, can anyone who apply this patch delete the "default n" line?
-It is by default "n".
+On Fri, Sep 18, 2020 at 01:42:15AM +0000, Joakim Zhang wrote:
+> > -----Original Message-----
+> > From: Sean Young <sean@mess.org>
+> > Sent: 2020年9月18日 4:44
+> > To: Joakim Zhang <qiangqing.zhang@nxp.com>
+> > Cc: mchehab@kernel.org; linux-media@vger.kernel.org;
+> > linux-kernel@vger.kernel.org; dl-linux-imx <linux-imx@nxp.com>
+> > Subject: Re: [PATCH] media: rc: gpio-ir-recv: add QoS support for cpuidle
+> > system
 
-Thanks
+-snip-
 
->  	help
->  	  Support library for Mellanox VDPA drivers. Provides code that is
->
+> > > Autosuspend delay should be fixed value, should be set to gpio device timeout
+> > value, which is 125ms.
+> > 
+> > So the idea was that cpuidle is only enabled while IR frames are being received,
+> > that's why I suggested it.
+> 
+> May be a typo, "cpuidle is only DISABLED while IR frames are being receive,", this is not I want to implement, experiments have also shown poor results.
+
+Sorry, yes I got this wrong. You are right.
+
+> > If you set the autosuspend delay to 125ms, then the cpuidle will not be enabled
+> > between IR frames. Maybe this is what you want, but it does mean cpuidle is
+> > totally suspended while anyone is pressing buttons on a remote.
+> 
+> Yes, this is what I want, cpuidle is totally disabled while pressing buttons, disable cpuidle at the first frame then keep disabled until there is no activity for a while.
+> So that we only can not decode the first frame, such as, if transmitting 4 frames once, we can correctly decode 3 times.
+> 
+> I also try your suggestion, set autosuspend delay time to protocol's timeout value, but the result is terrible. If transmitting 4 frames once, we can't correctly decode 3 times,
+> even can't decode it sometime. The sequence is, cpu in idle state when the first frame coming, then disable cpu idle until protocols' timeout, cpu in idle state again, the first frame can't be decoded.
+> The second frame coming, it will repeat the behavior of the first frame, may cause the second frame can't be decode......
+> 
+> Can you take account of I have done in the first version, autosuspend delay time is set to 125ms?
+
+Yes, in retrospect you are right. Trying to shorten the cpuidle suspended
+period will not work. I am sorry about this.
+
+How about setting the autosuspend period in devicetree, and 0 will turn
+this feature off completely?
+
+Thanks,
+
+Sean
