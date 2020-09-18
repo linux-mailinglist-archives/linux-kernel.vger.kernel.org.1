@@ -2,67 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DB6526FE84
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 15:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA4126FE8A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 15:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726541AbgIRNbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 09:31:09 -0400
-Received: from smtprelay0050.hostedemail.com ([216.40.44.50]:40246 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726126AbgIRNbI (ORCPT
+        id S1726653AbgIRNb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 09:31:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37507 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726126AbgIRNb5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 09:31:08 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 822A5181D303C;
-        Fri, 18 Sep 2020 13:31:07 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:1981:2194:2199:2393:2553:2559:2562:2693:2828:3138:3139:3140:3141:3142:3167:3352:3622:3865:3867:3868:3870:3871:3872:4321:5007:10004:10400:10848:11026:11232:11658:11914:12296:12297:12438:12740:12760:12895:13069:13255:13311:13357:13439:14659:14721:21080:21627:30025:30041:30054:30070:30083:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: rail18_290ab6c2712b
-X-Filterd-Recvd-Size: 1742
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf04.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 18 Sep 2020 13:31:06 +0000 (UTC)
-Message-ID: <6f6be4f64a016c5be82b1fd21ce2402653a8961b.camel@perches.com>
-Subject: Re: [PATCH v2] EDAC/mc_sysfs: Add missing newlines when printing
- {max,dimm}_location
-From:   Joe Perches <joe@perches.com>
-To:     Borislav Petkov <bp@alien8.de>,
-        Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Cc:     mchehab@kernel.org, tony.luck@intel.com,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 18 Sep 2020 06:31:04 -0700
-In-Reply-To: <20200918071227.GA6585@zn.tnic>
-References: <1600051734-8993-1-git-send-email-wangxiongfeng2@huawei.com>
-         <20200916170052.GO2643@zn.tnic>
-         <591e613e-0b53-028f-08fd-3d62a35b8c4f@huawei.com>
-         <20200917162537.GL31960@zn.tnic>
-         <8ac6d481-e1c4-108e-dbec-b1e86b2d0e86@huawei.com>
-         <20200918071227.GA6585@zn.tnic>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Fri, 18 Sep 2020 09:31:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600435915;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ncMAkUGj6RVEFkBElvUjnFBlBpNaTyc6eD0LmUBKC4E=;
+        b=XfPENFPzVrtBxp4hGyzVfmEn4xgn2rz66sflaDQ6v6uGdbyekUJQ/nbhlghlcjNS5IqzUD
+        9FAes+v/bbXgCKdndLSJYHrmdg5gAOgrg+RCe3cG8ou2EN1T15RXEaHHm3PdIdGcDPDobe
+        8cFeKfEWWPBDzbIaXZADKB/gJ3IO+XI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-498-c09jnrsZNxiB40MAi6pksw-1; Fri, 18 Sep 2020 09:31:53 -0400
+X-MC-Unique: c09jnrsZNxiB40MAi6pksw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 96ED080F055;
+        Fri, 18 Sep 2020 13:31:49 +0000 (UTC)
+Received: from krava (ovpn-114-24.ams2.redhat.com [10.36.114.24])
+        by smtp.corp.redhat.com (Postfix) with SMTP id C8D411002382;
+        Fri, 18 Sep 2020 13:31:46 +0000 (UTC)
+Date:   Fri, 18 Sep 2020 15:31:45 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH 1/4] perf evsel: Add evsel__clone() function
+Message-ID: <20200918133145.GA2626435@krava>
+References: <20200916063129.1061487-1-namhyung@kernel.org>
+ <20200916063129.1061487-2-namhyung@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916063129.1061487-2-namhyung@kernel.org>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-09-18 at 09:12 +0200, Borislav Petkov wrote:
-> On Fri, Sep 18, 2020 at 10:37:28AM +0800, Xiongfeng Wang wrote:
-> > Thansk a lot. I will send another version. Also I will change the
-> > 'snprintf' in 'dimmdev_location_show()' to 'scnprintf'
+On Wed, Sep 16, 2020 at 03:31:26PM +0900, Namhyung Kim wrote:
+
+SNIP
+
+> +struct evsel *evsel__clone(struct evsel *orig)
+> +{
+> +	struct evsel *evsel;
+> +	struct evsel_config_term *pos, *tmp;
+> +
+> +	BUG_ON(orig->core.fd);
+> +	BUG_ON(orig->counts);
+> +	BUG_ON(orig->priv);
+> +	BUG_ON(orig->per_pkg_mask);
+> +
+> +	/* cannot handle BPF objects for now */
+> +	if (orig->bpf_obj)
+> +		return NULL;
+> +
+> +	evsel = evsel__new(&orig->core.attr);
+> +	if (evsel == NULL)
+> +		return NULL;
+> +
+> +	evsel->core.cpus = perf_cpu_map__get(orig->core.cpus);
+> +	evsel->core.own_cpus = perf_cpu_map__get(orig->core.own_cpus);
+> +	evsel->core.threads = perf_thread_map__get(orig->core.threads);
+> +	evsel->core.nr_members = orig->core.nr_members;
+> +	evsel->core.system_wide = orig->core.system_wide;
+> +
+> +	if (orig->name)
+> +		evsel->name = strdup(orig->name);
+> +	if (orig->group_name)
+> +		evsel->group_name = strdup(orig->group_name);
+> +	if (orig->pmu_name)
+> +		evsel->pmu_name = strdup(orig->pmu_name);
+> +	if (orig->filter)
+> +		evsel->filter = strdup(orig->filter);
+
+we should check those strdup results
+
+> +	evsel->cgrp = cgroup__get(orig->cgrp);
+> +	evsel->tp_format = orig->tp_format;
+> +	evsel->handler = orig->handler;
+> +	evsel->leader = orig->leader;
+> +
+> +	evsel->max_events = orig->max_events;
+> +	evsel->tool_event = orig->tool_event;
+> +	evsel->unit = orig->unit;
+> +	evsel->scale = orig->scale;
+> +	evsel->snapshot = orig->snapshot;
+> +	evsel->per_pkg = orig->per_pkg;
+> +	evsel->percore = orig->percore;
+> +	evsel->precise_max = orig->precise_max;
+> +	evsel->use_uncore_alias = orig->use_uncore_alias;
+> +	evsel->is_libpfm_event = orig->is_libpfm_event;
+> +
+> +	evsel->exclude_GH = orig->exclude_GH;
+> +	evsel->sample_read = orig->sample_read;
+> +	evsel->auto_merge_stats = orig->auto_merge_stats;
+> +	evsel->collect_stat = orig->collect_stat;
+> +	evsel->weak_group = orig->weak_group;
+
+so all those evsel's members are possibly defined in parse time right?
+perhaps we should separate them in the struct? and make some note about
+evsel__clone function that new members should be considered for copy
+in evsel__close.. or something like that
+
+> +
+> +	list_for_each_entry(pos, &orig->config_terms, list) {
+> +		tmp = malloc(sizeof(*tmp));
+> +		if (tmp == NULL) {
+> +			evsel__delete(evsel);
+> +			evsel = NULL;
+> +			break;
+> +		}
+> +
+> +		*tmp = *pos;
+> +		if (tmp->free_str) {
+> +			tmp->val.str = strdup(pos->val.str);
+> +			if (tmp->val.str == NULL) {
+> +				evsel__delete(evsel);
+> +				evsel = NULL;
+> +				free(tmp);
+> +				break;
+> +			}
+> +		}
+> +		list_add_tail(&tmp->list, &evsel->config_terms);
+> +	}
+
+could this go in separate function? copy_terms
+
+thanks,
+jirka
+
+> +
+> +	return evsel;
+> +}
+> +
+>  /*
+>   * Returns pointer with encoded error via <linux/err.h> interface.
+>   */
+> diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+> index 35e3f6d66085..507c31d6a389 100644
+> --- a/tools/perf/util/evsel.h
+> +++ b/tools/perf/util/evsel.h
+> @@ -169,6 +169,7 @@ static inline struct evsel *evsel__new(struct perf_event_attr *attr)
+>  	return evsel__new_idx(attr, 0);
+>  }
+>  
+> +struct evsel *evsel__clone(struct evsel *orig);
+>  struct evsel *evsel__newtp_idx(const char *sys, const char *name, int idx);
+>  
+>  /*
+> -- 
+> 2.28.0.618.gf4bc123cb7-goog
 > 
-> No need to send another one - I have everything locally and just amended
-> it.
-
-A generic question about sysfs is whether or not the
-PAGE_SIZE buf output should be newline terminated or
-not if an the buffer is completely filled and the
-desired output cannot be newline terminated.
-
-Likely not.
-
-NUL termination without newline should be enough to
-indicate overrun.
-
 
