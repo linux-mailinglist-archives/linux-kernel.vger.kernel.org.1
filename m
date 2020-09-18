@@ -2,93 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C540F26EF67
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6E5C26EFB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730041AbgIRCfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:35:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729007AbgIRCfN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:35:13 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45252C061756;
-        Thu, 17 Sep 2020 19:35:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Date:Message-ID:Subject:From:Cc:To:Sender:Reply-To:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=QJeoeycPVxxZMTrfzw0igZH4dtI7KPvHhdR8nUBXkhs=; b=uqJt1Q1spjpNzNKPUe9pdcrwHG
-        LtIO3MrmBx7nXo7fwQ/L1usJCo/nzztlb5ziYdOGVMYT2VOzH4rXKHMnp+RHbqm27LE01Ffg4vgGD
-        F8DakgDhvy9PfzDzTIxOQpc4kHJ8P3jEDSOIHJhLHMfvuZQoCKyLmm7qWlngNxmzIfc9SJUHrTqDR
-        /Pq4SZo+ILeRo5CVHXv0sm2/WXAyJWViFTjQUaTP7RQj0nWmCO7I+sweILe/k4HVN1Rnr6XLv1D4t
-        lRX6CO5DNCqG1NvkWhsrj3Nj1gG5ktywNT02QfbZ1jBrpi+C7rDSJX74QWvhSWrmPVmCQX6jn9OH5
-        jDFqlqcA==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kJ6Es-0003co-91; Fri, 18 Sep 2020 02:35:06 +0000
-To:     virtualization@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH v3 -next] vdpa: mlx5: change Kconfig depends to fix build
- errors
-Message-ID: <73f7e48b-8d16-6b20-07d3-41dee0e3d3bd@infradead.org>
-Date:   Thu, 17 Sep 2020 19:35:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729373AbgIRChi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:37:38 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13283 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726333AbgIRChe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:37:34 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 8BFCC36520A4953305A4;
+        Fri, 18 Sep 2020 10:37:31 +0800 (CST)
+Received: from [10.174.178.16] (10.174.178.16) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 18 Sep 2020 10:37:28 +0800
+Subject: Re: [PATCH v2] EDAC/mc_sysfs: Add missing newlines when printing
+ {max,dimm}_location
+To:     Borislav Petkov <bp@alien8.de>
+CC:     <mchehab@kernel.org>, <tony.luck@intel.com>,
+        <linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1600051734-8993-1-git-send-email-wangxiongfeng2@huawei.com>
+ <20200916170052.GO2643@zn.tnic>
+ <591e613e-0b53-028f-08fd-3d62a35b8c4f@huawei.com>
+ <20200917162537.GL31960@zn.tnic>
+From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Message-ID: <8ac6d481-e1c4-108e-dbec-b1e86b2d0e86@huawei.com>
+Date:   Fri, 18 Sep 2020 10:37:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20200917162537.GL31960@zn.tnic>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.16]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
 
-drivers/vdpa/mlx5/ uses vhost_iotlb*() interfaces, so add a dependency
-on VHOST to eliminate build errors.
 
-ld: drivers/vdpa/mlx5/core/mr.o: in function `add_direct_chain':
-mr.c:(.text+0x106): undefined reference to `vhost_iotlb_itree_first'
-ld: mr.c:(.text+0x1cf): undefined reference to `vhost_iotlb_itree_next'
-ld: mr.c:(.text+0x30d): undefined reference to `vhost_iotlb_itree_first'
-ld: mr.c:(.text+0x3e8): undefined reference to `vhost_iotlb_itree_next'
-ld: drivers/vdpa/mlx5/core/mr.o: in function `_mlx5_vdpa_create_mr':
-mr.c:(.text+0x908): undefined reference to `vhost_iotlb_itree_first'
-ld: mr.c:(.text+0x9e6): undefined reference to `vhost_iotlb_itree_next'
-ld: drivers/vdpa/mlx5/core/mr.o: in function `mlx5_vdpa_handle_set_map':
-mr.c:(.text+0xf1d): undefined reference to `vhost_iotlb_itree_first'
+On 2020/9/18 0:25, Borislav Petkov wrote:
+> On Thu, Sep 17, 2020 at 07:38:57PM +0800, Xiongfeng Wang wrote:
+>> I am not sure if snprintf will return a value larger than its second input
+>> paramter 'size'.
+> 
+> The comment over snprintf() says
+> 
+>  * The return value is the number of characters which would be
+>  * generated for the given input, excluding the trailing null,
+>  * as per ISO C99.  If the return is greater than or equal to
+>  * @size, the resulting string is truncated.
+> 
+> And let's try it, see diff at the end. Now look what that produces:
+> 
+> [    2.594796] kernel_init: len: 16, str: [A lo]
+> 
+> it returns 16 for len even though the buffer is 5 chars long. So in our
+> patch, we'd increment by 16 which would be wrong.
+> 
+> Now let's use scnprintf():
+> 
+> [    2.700142] kernel_init: len: 4, str: [A lo]
+> 
+> Much better. Lemme do that.
+> 
+>> Not sure whether we need to check 'len' equals to 0.
+>> if (len <= 0) ?
+> 
+> Yeah, lemme fix that too, so we have now incrementally ontop:
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Jason Wang <jasowang@redhat.com>
-Cc: virtualization@lists.linux-foundation.org
-Cc: Saeed Mahameed <saeedm@nvidia.com>
-Cc: Leon Romanovsky <leonro@nvidia.com>
-Cc: netdev@vger.kernel.org
----
-v2: change from select to depends on VHOST (Saeed)
-v3: change to depends on VHOST_IOTLB (Jason)
 
- drivers/vdpa/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thansk a lot. I will send another version. Also I will change the 'snprintf' in
+'dimmdev_location_show()' to 'scnprintf'
 
---- linux-next-20200917.orig/drivers/vdpa/Kconfig
-+++ linux-next-20200917/drivers/vdpa/Kconfig
-@@ -31,7 +31,7 @@ config IFCVF
- 
- config MLX5_VDPA
- 	bool "MLX5 VDPA support library for ConnectX devices"
--	depends on MLX5_CORE
-+	depends on VHOST_IOTLB && MLX5_CORE
- 	default n
- 	help
- 	  Support library for Mellanox VDPA drivers. Provides code that is
+Thanks,
+Xiongfeng
 
+> 
+> ---
+> diff --git a/drivers/edac/edac_mc_sysfs.c b/drivers/edac/edac_mc_sysfs.c
+> index fa0551c81e63..c56e0004b39e 100644
+> --- a/drivers/edac/edac_mc_sysfs.c
+> +++ b/drivers/edac/edac_mc_sysfs.c
+> @@ -822,18 +822,17 @@ static ssize_t mci_max_location_show(struct device *dev,
+>  	int i, n;
+>  
+>  	for (i = 0; i < mci->n_layers; i++) {
+> -		n = snprintf(p, len, "%s %d ",
+> -			     edac_layer_name[mci->layers[i].type],
+> -			     mci->layers[i].size - 1);
+> -
+> +		n = scnprintf(p, len, "%s %d ",
+> +			      edac_layer_name[mci->layers[i].type],
+> +			      mci->layers[i].size - 1);
+>  		len -= n;
+> -		if (len < 0)
+> +		if (len <= 0)
+>  			goto out;
+>  
+>  		p += n;
+>  	}
+>  
+> -	p += snprintf(p, len, "\n");
+> +	p += scnprintf(p, len, "\n");
+>  out:
+>  	return p - data;
+>  }
+> ---
+> 
+> Test diff:
+> 
+> ---
+> diff --git a/init/main.c b/init/main.c
+> index ae78fb68d231..e2d6110d3a3d 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -1397,7 +1397,8 @@ void __weak free_initmem(void)
+>  
+>  static int __ref kernel_init(void *unused)
+>  {
+> -	int ret;
+> +	char str[5];
+> +	int ret, len;
+>  
+>  	kernel_init_freeable();
+>  	/* need to finish all async __init code before freeing the memory */
+> @@ -1419,6 +1420,11 @@ static int __ref kernel_init(void *unused)
+>  
+>  	do_sysctl_args();
+>  
+> +	len = snprintf(str, 5, "A longer string\n");
+> +
+> +	pr_info("%s: len: %d, str: [%s]\n",
+> +		__func__, len, str);
+> +
+>  	if (ramdisk_execute_command) {
+>  		ret = run_init_process(ramdisk_execute_command);
+>  		if (!ret)
+> 
