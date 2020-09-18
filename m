@@ -2,126 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F18F26F85C
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B550E26F856
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726798AbgIRIcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 04:32:00 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:37706 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726743AbgIRIbz (ORCPT
+        id S1726775AbgIRIbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 04:31:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726743AbgIRIbn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 04:31:55 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08I87k8R074586;
-        Fri, 18 Sep 2020 04:31:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=OVwmFcDXD14Sj/el2nOYFGLk1fFCIlWriAqJljEUo+g=;
- b=f+HiGThgP4uwy/48e0sVNC+ByHLIedn9Im1NJzlCPDbf3cO2sWSf9JWtgQ8i8fdt6moK
- WxxQgA3/lBvy86scsw1iPi23TZKgtOQYIe4dEVkum5u2qm+2q7Il4Ie6eEZ4sY8/MOU0
- UMQVTqPsd3FyGfYbJUOqjFfz5Dr9303ZKQOqpgCnMMkWotXFAgw0NTHTnwh/ID+B/MqC
- VB+tzs7lrxUvHJRB2pI10HgANK7mkW99b7t3gJ/zaSbzDuK1K500LT1SYUrHBzf+EcuG
- ht9CX8iUh73UsOsJwnayqwP5eMEjbTPLA0Z7jsYIkmYgZmAK4lXGRWYiFIWoBAqh/aSF qg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33mrut1cpg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Sep 2020 04:31:31 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08I839bt058396;
-        Fri, 18 Sep 2020 04:31:31 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33mrut1cnq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Sep 2020 04:31:31 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08I8S312002386;
-        Fri, 18 Sep 2020 08:31:29 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 33k9geatfd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Sep 2020 08:31:29 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08I8VQ7T30736842
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Sep 2020 08:31:26 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5D2B411C04A;
-        Fri, 18 Sep 2020 08:31:26 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AB0A411C050;
-        Fri, 18 Sep 2020 08:31:23 +0000 (GMT)
-Received: from [9.199.44.250] (unknown [9.199.44.250])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 18 Sep 2020 08:31:23 +0000 (GMT)
-Subject: Re: [PATCH v6 0/8] powerpc/watchpoint: Bug fixes plus new feature
- flag
-To:     Rogerio Alves <rcardoso@linux.ibm.com>
-Cc:     mpe@ellerman.id.au, christophe.leroy@c-s.fr, mikey@neuling.org,
-        jniethe5@gmail.com, pedromfc@linux.ibm.com,
-        linux-kernel@vger.kernel.org, paulus@samba.org,
-        rogealve@linux.ibm.com, naveen.n.rao@linux.vnet.ibm.com,
-        linuxppc-dev@lists.ozlabs.org,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-References: <20200902042945.129369-1-ravi.bangoria@linux.ibm.com>
- <6927523d-de63-910a-e789-5fab424c7eb9@linux.ibm.com>
-From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Message-ID: <339e69c6-947c-031b-8018-f590afe8569e@linux.ibm.com>
-Date:   Fri, 18 Sep 2020 14:01:22 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Fri, 18 Sep 2020 04:31:43 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85CC2C061788
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 01:31:43 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id a9so2787805pjg.1
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 01:31:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=WhcfZzUawu7IGCGdEVtnYYchZjnf9bfpM7EHLtCGyWY=;
+        b=HAjR/a3E0C2jC7NrUpZ9xj59sZPMOz27K/Kdvjiz9t8WwPWDenQ6XauQVUNFx3kO8I
+         K8PXTTV4jNU/f5mPOWsbWK7WzxICQ8rC1X1iUKDFeVQYFi6YjDY9rgiVZpL9C82Iy5Ae
+         N+5JHwtH/iZu5U4jmeEHe1Kwwu+EkYTmW7DDs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=WhcfZzUawu7IGCGdEVtnYYchZjnf9bfpM7EHLtCGyWY=;
+        b=ZhSzoQvQP5plS6X78hK2hFhEU1X5lSenuLoA7oENIYx/b9FXKoKjr9v5eAvnnb1JWA
+         XdZFblT5KMLACaO698UO9PC4FMvwabgZ2FPiF9qEyKU6NgIToN7dTX34WaxxfSO6KgFb
+         JmzNOpvtZAgoNJ7HVoaDuCRgQ72M1K9MQrY4BKYMJBverkn2ezUhw/bJ6NbllbM41BGb
+         1x09UFSC7JKcEAzyJpFUG0xdWVBEMBsbD/zieoLSC8OoMcjXdib/spAMxM3XwU167f59
+         qSrRyNTc/Icx0PendpXUFcTHYMWSy41Ue+7MMg3y0rswEWNqzhR7HYFRfr2KxDoq6HDt
+         o3fQ==
+X-Gm-Message-State: AOAM532HvB+FTEDNsxhKXQ9QZccyUtrlK4moghQxJmSQ20e2TIE4dj32
+        Li93vuK+nPYprpFa6KGUGb2aaw==
+X-Google-Smtp-Source: ABdhPJx762UucxyaZ+w3YSAoNix0FtNYzia6auJ1wmsqxmDPSBJ1DH8Rvp53SOa+u1Mdzj1EiZyJDg==
+X-Received: by 2002:a17:902:9343:b029:d1:f3e1:c190 with SMTP id g3-20020a1709029343b02900d1f3e1c190mr9661647plp.2.1600417903054;
+        Fri, 18 Sep 2020 01:31:43 -0700 (PDT)
+Received: from ikjn-p920.tpe.corp.google.com ([2401:fa00:1:10:f693:9fff:fef4:a8fc])
+        by smtp.gmail.com with ESMTPSA id g206sm2193172pfb.178.2020.09.18.01.31.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 01:31:42 -0700 (PDT)
+From:   Ikjoon Jang <ikjn@chromium.org>
+To:     Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
+        devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-mtd@lists.infradead.org
+Cc:     Ikjoon Jang <ikjn@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH v2 5/5] spi: spi-mtk-nor: Add power management support
+Date:   Fri, 18 Sep 2020 16:31:23 +0800
+Message-Id: <20200918162834.v2.5.I68983b582d949a91866163bab588ff3c2a0d0275@changeid>
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
+In-Reply-To: <20200918083124.3921207-1-ikjn@chromium.org>
+References: <20200918083124.3921207-1-ikjn@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <6927523d-de63-910a-e789-5fab424c7eb9@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-18_06:2020-09-16,2020-09-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
- malwarescore=0 mlxlogscore=999 mlxscore=0 priorityscore=1501
- suspectscore=0 lowpriorityscore=0 spamscore=0 impostorscore=0 adultscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009180062
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch adds dev_pm_ops to mtk-nor to support suspend/resume,
+auto suspend delay is set to -1 by default.
 
+Accessing registers are delayed after enabling clocks
+to deal with unknown state of clocks at probe time,
 
-On 9/17/20 6:54 PM, Rogerio Alves wrote:
-> On 9/2/20 1:29 AM, Ravi Bangoria wrote:
->> Patch #1 fixes issue for quardword instruction on p10 predecessors.
->> Patch #2 fixes issue for vector instructions.
->> Patch #3 fixes a bug about watchpoint not firing when created with
->>           ptrace PPC_PTRACE_SETHWDEBUG and CONFIG_HAVE_HW_BREAKPOINT=N.
->>           The fix uses HW_BRK_TYPE_PRIV_ALL for ptrace user which, I
->>           guess, should be fine because we don't leak any kernel
->>           addresses and PRIV_ALL will also help to cover scenarios when
->>           kernel accesses user memory.
->> Patch #4,#5 fixes infinite exception bug, again the bug happens only
->>           with CONFIG_HAVE_HW_BREAKPOINT=N.
->> Patch #6 fixes two places where we are missing to set hw_len.
->> Patch #7 introduce new feature bit PPC_DEBUG_FEATURE_DATA_BP_ARCH_31
->>           which will be set when running on ISA 3.1 compliant machine.
->> Patch #8 finally adds selftest to test scenarios fixed by patch#2,#3
->>           and also moves MODE_EXACT tests outside of BP_RANGE condition.
->>
-[...]
+Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+---
 
-> 
-> Tested this patch set for:
-> - SETHWDEBUG when CONFIG_HAVE_HW_BREAKPOINT=N = OK
-> - Fix exception handling for CONFIG_HAVE_HW_BREAKPOINT=N = OK
-> - Check for PPC_DEBUG_FEATURE_DATA_BP_ARCH_31 = OK
-> - Fix quarword instruction handling on p10 predecessors = OK
-> - Fix handling of vector instructions = OK
-> 
-> Also tested for:
-> - Set second watchpoint (P10 Mambo) = OK
-> - Infinity loop on sc instruction = OK
+ drivers/spi/spi-mtk-nor.c | 105 +++++++++++++++++++++++++++++---------
+ 1 file changed, 80 insertions(+), 25 deletions(-)
 
-Thanks Rogerio!
+diff --git a/drivers/spi/spi-mtk-nor.c b/drivers/spi/spi-mtk-nor.c
+index 99dd5dca744e..5dcd575998d9 100644
+--- a/drivers/spi/spi-mtk-nor.c
++++ b/drivers/spi/spi-mtk-nor.c
+@@ -14,6 +14,7 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/of_device.h>
++#include <linux/pm_runtime.h>
+ #include <linux/spi/spi.h>
+ #include <linux/spi/spi-mem.h>
+ #include <linux/string.h>
+@@ -551,22 +552,15 @@ static int mtk_nor_enable_clk(struct mtk_nor *sp)
+ 	return 0;
+ }
+ 
+-static int mtk_nor_init(struct mtk_nor *sp)
++static void mtk_nor_init(struct mtk_nor *sp)
+ {
+-	int ret;
+-
+-	ret = mtk_nor_enable_clk(sp);
+-	if (ret)
+-		return ret;
+-
+-	sp->spi_freq = clk_get_rate(sp->spi_clk);
++	writel(0, sp->base + MTK_NOR_REG_IRQ_EN);
++	writel(MTK_NOR_IRQ_MASK, sp->base + MTK_NOR_REG_IRQ_STAT);
+ 
+ 	writel(MTK_NOR_ENABLE_SF_CMD, sp->base + MTK_NOR_REG_WP);
+ 	mtk_nor_rmw(sp, MTK_NOR_REG_CFG2, MTK_NOR_WR_CUSTOM_OP_EN, 0);
+ 	mtk_nor_rmw(sp, MTK_NOR_REG_CFG3,
+ 		    MTK_NOR_DISABLE_WREN | MTK_NOR_DISABLE_SR_POLL, 0);
+-
+-	return ret;
+ }
+ 
+ static irqreturn_t mtk_nor_irq_handler(int irq, void *data)
+@@ -630,6 +624,11 @@ static int mtk_nor_probe(struct platform_device *pdev)
+ 	if (IS_ERR(ctlr_clk))
+ 		return PTR_ERR(ctlr_clk);
+ 
++	irq = platform_get_irq_optional(pdev, 0);
++
++	if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(36)))
++		dev_warn(&pdev->dev, "failed to set dma mask(36)\n");
++
+ 	buffer = devm_kmalloc(&pdev->dev,
+ 			      MTK_NOR_BOUNCE_BUF_SIZE + MTK_NOR_DMA_ALIGN,
+ 			      GFP_KERNEL);
+@@ -661,6 +660,7 @@ static int mtk_nor_probe(struct platform_device *pdev)
+ 	ctlr->num_chipselect = 1;
+ 	ctlr->setup = mtk_nor_setup;
+ 	ctlr->transfer_one_message = mtk_nor_transfer_one_message;
++	ctlr->auto_runtime_pm = true;
+ 
+ 	dev_set_drvdata(&pdev->dev, ctlr);
+ 
+@@ -678,12 +678,17 @@ static int mtk_nor_probe(struct platform_device *pdev)
+ 	if (!sp->buffer)
+ 		return -ENOMEM;
+ 
+-	irq = platform_get_irq_optional(pdev, 0);
++	ret = mtk_nor_enable_clk(sp);
++	if (ret < 0)
++		return ret;
++
++	sp->spi_freq = clk_get_rate(sp->spi_clk);
++
++	mtk_nor_init(sp);
++
+ 	if (irq < 0) {
+ 		dev_warn(sp->dev, "IRQ not available.");
+ 	} else {
+-		writel(MTK_NOR_IRQ_MASK, base + MTK_NOR_REG_IRQ_STAT);
+-		writel(0, base + MTK_NOR_REG_IRQ_EN);
+ 		ret = devm_request_irq(sp->dev, irq, mtk_nor_irq_handler, 0,
+ 				       pdev->name, sp);
+ 		if (ret < 0) {
+@@ -694,26 +699,41 @@ static int mtk_nor_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	ret = mtk_nor_init(sp);
+-	if (ret < 0) {
+-		kfree(ctlr);
+-		dma_free_coherent(&pdev->dev, MTK_NOR_BOUNCE_BUF_SIZE,
+-				  sp->buffer, sp->buffer_dma);
+-		return ret;
+-	}
++	pm_runtime_set_autosuspend_delay(&pdev->dev, -1);
++	pm_runtime_use_autosuspend(&pdev->dev);
++	pm_runtime_set_active(&pdev->dev);
++	pm_runtime_enable(&pdev->dev);
++	pm_runtime_get_noresume(&pdev->dev);
++
++	ret = devm_spi_register_controller(&pdev->dev, ctlr);
++	if (ret < 0)
++		goto err_probe;
++
++	pm_runtime_mark_last_busy(&pdev->dev);
++	pm_runtime_put_autosuspend(&pdev->dev);
+ 
+ 	dev_info(&pdev->dev, "spi frequency: %d Hz\n", sp->spi_freq);
+ 
+-	return devm_spi_register_controller(&pdev->dev, ctlr);
++	return 0;
++
++err_probe:
++	pm_runtime_disable(&pdev->dev);
++	pm_runtime_set_suspended(&pdev->dev);
++	pm_runtime_dont_use_autosuspend(&pdev->dev);
++
++	mtk_nor_disable_clk(sp);
++
++	return ret;
+ }
+ 
+ static int mtk_nor_remove(struct platform_device *pdev)
+ {
+-	struct spi_controller *ctlr;
+-	struct mtk_nor *sp;
++	struct spi_controller *ctlr = dev_get_drvdata(&pdev->dev);
++	struct mtk_nor *sp = spi_controller_get_devdata(ctlr);
+ 
+-	ctlr = dev_get_drvdata(&pdev->dev);
+-	sp = spi_controller_get_devdata(ctlr);
++	pm_runtime_disable(&pdev->dev);
++	pm_runtime_set_suspended(&pdev->dev);
++	pm_runtime_dont_use_autosuspend(&pdev->dev);
+ 
+ 	mtk_nor_disable_clk(sp);
+ 
+@@ -722,10 +742,45 @@ static int mtk_nor_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static int __maybe_unused mtk_nor_runtime_suspend(struct device *dev)
++{
++	struct spi_controller *ctlr = dev_get_drvdata(dev);
++	struct mtk_nor *sp = spi_controller_get_devdata(ctlr);
++
++	mtk_nor_disable_clk(sp);
++
++	return 0;
++}
++
++static int __maybe_unused mtk_nor_runtime_resume(struct device *dev)
++{
++	struct spi_controller *ctlr = dev_get_drvdata(dev);
++	struct mtk_nor *sp = spi_controller_get_devdata(ctlr);
++
++	return mtk_nor_enable_clk(sp);
++}
++
++static int __maybe_unused mtk_nor_suspend(struct device *dev)
++{
++	return pm_runtime_force_suspend(dev);
++}
++
++static int __maybe_unused mtk_nor_resume(struct device *dev)
++{
++	return pm_runtime_force_resume(dev);
++}
++
++static const struct dev_pm_ops mtk_nor_pm_ops = {
++	SET_RUNTIME_PM_OPS(mtk_nor_runtime_suspend,
++			   mtk_nor_runtime_resume, NULL)
++	SET_SYSTEM_SLEEP_PM_OPS(mtk_nor_suspend, mtk_nor_resume)
++};
++
+ static struct platform_driver mtk_nor_driver = {
+ 	.driver = {
+ 		.name = DRIVER_NAME,
+ 		.of_match_table = mtk_nor_match,
++		.pm = &mtk_nor_pm_ops,
+ 	},
+ 	.probe = mtk_nor_probe,
+ 	.remove = mtk_nor_remove,
+-- 
+2.28.0.681.g6f77f65b4e-goog
 
-Ravi
