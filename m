@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DFE526F137
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:49:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6041226F147
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:50:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728181AbgIRCIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:08:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60356 "EHLO mail.kernel.org"
+        id S1730273AbgIRCuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:50:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728163AbgIRCIt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:08:49 -0400
+        id S1728166AbgIRCIu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:08:50 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BFCC8238E3;
-        Fri, 18 Sep 2020 02:08:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E577723770;
+        Fri, 18 Sep 2020 02:08:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394928;
-        bh=nnaW84s0ksnm0uWprDCOIlfvStGE40uUbmvnVaQENs8=;
+        s=default; t=1600394930;
+        bh=d8LIBh664EMJWKVMgi4PoXqUWKA6nfR5sn8VKK1DXo8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i5NJOQfO4iFu00NIfaUzf2O558oPvIFRTadbaI5jIKkZyxB2ZhDkXGjgcPbuzC7R6
-         aJ4ylS1T5CEJridXlbiFyZz5bKNnit2GWJlrVWA9OC2kxps4hNZpGcZIA7dpadltD5
-         oHR66uLbnY1V15G8PaMJ+TrcSc1BgYLYPqaKWO+o=
+        b=02SGQqrTntLeC+6QIzMQm/XNGHO48Y+bdHzHoz5iWul7MmKodpQbis5RhP2ZPXslo
+         zeEvM4svXpg/ZGE7PLmJet7nQzFn4GZH8ILpEtHYzApTbghZYawICjmWutQOiRlXpf
+         sFaCXyLfXh/8bJL+LSYhnH41vf5nBA0x3hV7jqtg=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tzung-Bi Shih <tzungbi@google.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 4.19 039/206] ASoC: max98090: remove msleep in PLL unlocked workaround
-Date:   Thu, 17 Sep 2020 22:05:15 -0400
-Message-Id: <20200918020802.2065198-39-sashal@kernel.org>
+Cc:     Joe Perches <joe@perches.com>, Dan Carpenter <error27@gmail.com>,
+        Julia Lawall <julia.lawall@lip6.fr>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 040/206] kernel/sys.c: avoid copying possible padding bytes in copy_to_user
+Date:   Thu, 17 Sep 2020 22:05:16 -0400
+Message-Id: <20200918020802.2065198-40-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
 References: <20200918020802.2065198-1-sashal@kernel.org>
@@ -43,55 +46,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tzung-Bi Shih <tzungbi@google.com>
+From: Joe Perches <joe@perches.com>
 
-[ Upstream commit acb874a7c049ec49d8fc66c893170fb42c01bdf7 ]
+[ Upstream commit 5e1aada08cd19ea652b2d32a250501d09b02ff2e ]
 
-It was observed Baytrail-based chromebooks could cause continuous PLL
-unlocked when using playback stream and capture stream simultaneously.
-Specifically, starting a capture stream after started a playback stream.
-As a result, the audio data could corrupt or turn completely silent.
+Initialization is not guaranteed to zero padding bytes so use an
+explicit memset instead to avoid leaking any kernel content in any
+possible padding bytes.
 
-As the datasheet suggested, the maximum PLL lock time should be 7 msec.
-The workaround resets the codec softly by toggling SHDN off and on if
-PLL failed to lock for 10 msec.  Notably, there is no suggested hold
-time for SHDN off.
-
-On Baytrail-based chromebooks, it would easily happen continuous PLL
-unlocked if there is a 10 msec delay between SHDN off and on.  Removes
-the msleep().
-
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
-Link: https://lore.kernel.org/r/20191122073114.219945-2-tzungbi@google.com
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: http://lkml.kernel.org/r/dfa331c00881d61c8ee51577a082d8bebd61805c.camel@perches.com
+Signed-off-by: Joe Perches <joe@perches.com>
+Cc: Dan Carpenter <error27@gmail.com>
+Cc: Julia Lawall <julia.lawall@lip6.fr>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Kees Cook <keescook@chromium.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/max98090.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ kernel/sys.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index 89b6e187ac235..a5b0c40ee545f 100644
---- a/sound/soc/codecs/max98090.c
-+++ b/sound/soc/codecs/max98090.c
-@@ -2130,10 +2130,16 @@ static void max98090_pll_work(struct max98090_priv *max98090)
+diff --git a/kernel/sys.c b/kernel/sys.c
+index 096932a450466..baf60a3aa34b7 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -1275,11 +1275,13 @@ SYSCALL_DEFINE1(uname, struct old_utsname __user *, name)
  
- 	dev_info_ratelimited(component->dev, "PLL unlocked\n");
+ SYSCALL_DEFINE1(olduname, struct oldold_utsname __user *, name)
+ {
+-	struct oldold_utsname tmp = {};
++	struct oldold_utsname tmp;
  
-+	/*
-+	 * As the datasheet suggested, the maximum PLL lock time should be
-+	 * 7 msec.  The workaround resets the codec softly by toggling SHDN
-+	 * off and on if PLL failed to lock for 10 msec.  Notably, there is
-+	 * no suggested hold time for SHDN off.
-+	 */
+ 	if (!name)
+ 		return -EFAULT;
+ 
++	memset(&tmp, 0, sizeof(tmp));
 +
- 	/* Toggle shutdown OFF then ON */
- 	snd_soc_component_update_bits(component, M98090_REG_DEVICE_SHUTDOWN,
- 			    M98090_SHDNN_MASK, 0);
--	msleep(10);
- 	snd_soc_component_update_bits(component, M98090_REG_DEVICE_SHUTDOWN,
- 			    M98090_SHDNN_MASK, M98090_SHDNN_MASK);
- 
+ 	down_read(&uts_sem);
+ 	memcpy(&tmp.sysname, &utsname()->sysname, __OLD_UTS_LEN);
+ 	memcpy(&tmp.nodename, &utsname()->nodename, __OLD_UTS_LEN);
 -- 
 2.25.1
 
