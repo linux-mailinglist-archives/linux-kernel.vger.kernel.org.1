@@ -2,83 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 127BE26FAEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 12:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C1A26FAEC
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 12:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726249AbgIRKt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 06:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50172 "EHLO
+        id S1726304AbgIRKuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 06:50:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726115AbgIRKt4 (ORCPT
+        with ESMTP id S1726115AbgIRKt7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 06:49:56 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF37AC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 03:49:56 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id bw23so122827pjb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 03:49:56 -0700 (PDT)
+        Fri, 18 Sep 2020 06:49:59 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 537BBC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 03:49:59 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id s65so3258693pgb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 03:49:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=0x0f.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S8srl7JTOHY4H9N4k8WT8uX/+x+VBfYA5c5ucCNG/qc=;
-        b=JXLL7mSrrYXNp0hvx4cxXl6T/RMwuV17wRZstxrboAkz6rkZtK/X8mrs8pgpZXUJUJ
-         qUdwyx4YlBsqjgY6//zXsxvyJ7THeM2iDLMkBjXnZR3pHeo8bEfxy4NETqJ8tA7vIcAC
-         kz5gI16PzSbLcSFcP79kl3pBVy3Olqe7bTBf0=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=6W9k3ndaa9cRCwcQ1M/asEuo1OK8FOTIyDJ+tvTfSmU=;
+        b=n2ydSm+7ddUwC2Ld9ZS1KciG6GPQvVJj/GCzCnVuylYK7y5jH/cv47ZNeJgab4lyRX
+         Eulik6P5RMjcTYvrE2870Kq3B31FifCYq6VZHHo4SI79NUzqc7omtxaeO+79cu+XojAN
+         fsLXtvXzrrZF1jWefDNCGCYF8zB58Ye70Qtks=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S8srl7JTOHY4H9N4k8WT8uX/+x+VBfYA5c5ucCNG/qc=;
-        b=h7Zxamc8os+9uq20Z2m9eM+PTw4OGklqFoe5avKLs2GnuZVmLlwmRugvB1Gz0ygvCq
-         BU9SAlg4ZH2/bqACYE462+ROi9F46iBZKSea68EKfbNcwp+eW6j61xTXUSQHedi/Rtqb
-         9wyNSggqwTVm8lvFxsYEbG0ZmKAadXvcEgz19xAJkpbPSgh+nIxVMEsArKUHHiZ3pZIO
-         3beiv0mXcmd0C9HS7tRN+Nn0iSbRnFq7WesEUPc3Y9CHybbucAHhtmSB2WEd7VnuPP+9
-         5Glr1UK2WzobndPWLf/mz/g3RreCpopluq2IqO6Ear+m2E4QBit6EZS4Bs4rxRc4hgbY
-         f6dg==
-X-Gm-Message-State: AOAM532wrh+tsjMpEUuNNXyjG/kb4+zg7v9oDuB3iI/6+qDrPi7fSpFL
-        W6MEhYYM863//3ObK+VMon6Jyw==
-X-Google-Smtp-Source: ABdhPJyD97UGHfsogcOBzNaFIl0HRacR4ZV4wrQp6+MgiwWtlCWJ8oEp9uqEA+QBSn4ljKsYNHaMmQ==
-X-Received: by 2002:a17:90a:648d:: with SMTP id h13mr8805516pjj.151.1600426196261;
-        Fri, 18 Sep 2020 03:49:56 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=6W9k3ndaa9cRCwcQ1M/asEuo1OK8FOTIyDJ+tvTfSmU=;
+        b=r8bMGyyjdfWQzpWZyK1q05Lcc7V6h11NNKKquQNrRO/Z84T8eV1FNCsNpLSnrMfSc3
+         UttLp1nV7wohIW09crinYEYx8yzDo7i2KQPVSr5bxDHfJA82ZVhlGOJNQ8TjgN5Y4eXE
+         TkYQ1MdgdtdPtYCijHjDYzgvE+bD/BncalugUO6aW/axHPytirfxX+RzOU51bmJuW6pI
+         d21x8lnuRT067AzbtDjckXAIcYD+Ww9GqreHMq4Tqt32LdXGFeBFfBx8NBIRxZTehivY
+         +qWGW3QBEESMH5U8CbUFnHZb9+pQCtQatJBQaI4svUb0glfJKWO6ziRCk6tD3n5In7/8
+         MgHg==
+X-Gm-Message-State: AOAM532uY+FCEGrC+bK4JoaloIiV22a1uKmNm7/D3Dawi9+yOiHRkTTe
+        3IBAs7Ad2eMa8joOVkZNe+XJqQ==
+X-Google-Smtp-Source: ABdhPJynwrKmtSuRYqDXyegk2R40XjWezA9fHh5970NfD8b9O6/r4n09jzKoHCriDD+Jj3q6Wtr+hQ==
+X-Received: by 2002:aa7:9522:0:b029:142:2501:3986 with SMTP id c2-20020aa795220000b029014225013986mr15493774pfp.75.1600426198861;
+        Fri, 18 Sep 2020 03:49:58 -0700 (PDT)
 Received: from shiro.work (p532183-ipngn200506sizuokaden.shizuoka.ocn.ne.jp. [153.199.2.183])
-        by smtp.googlemail.com with ESMTPSA id 131sm2857634pfy.5.2020.09.18.03.49.53
+        by smtp.googlemail.com with ESMTPSA id 131sm2857634pfy.5.2020.09.18.03.49.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 03:49:55 -0700 (PDT)
+        Fri, 18 Sep 2020 03:49:58 -0700 (PDT)
 From:   Daniel Palmer <daniel@0x0f.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     devicetree@vger.kernel.org, mark-pk.tsai@mediatek.com,
         arnd@arndb.de, maz@kernel.org, linux-kernel@vger.kernel.org,
         Daniel Palmer <daniel@0x0f.com>
-Subject: [PATCH 0/3] ARM: mstar: wire up interrupt controllers
-Date:   Fri, 18 Sep 2020 19:49:46 +0900
-Message-Id: <20200918104949.3260823-1-daniel@0x0f.com>
+Subject: [PATCH 1/3] ARM: mstar: Select MStar intc
+Date:   Fri, 18 Sep 2020 19:49:47 +0900
+Message-Id: <20200918104949.3260823-2-daniel@0x0f.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200918104949.3260823-1-daniel@0x0f.com>
+References: <20200918104949.3260823-1-daniel@0x0f.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mark-PK Tsai's driver for the MStar interrupt
-controller should be going into 5.10[0].
+MediaTek recently introduced support for the MStar interrupt
+controller that is also present in some of their chips as well
+as the MStar/Sigmastar chips.
 
-This small series selects the driver when building
-support for MStar/SigmaStar Arm v7 SoCs, adds the
-instances of it to the base dtsi and wires up the
-interrupt for pm_uart.
+Almost all of the peripheral interrupts go through an instance of
+this controller in MStar/SigmaStar Arm v7 chips so we want to select
+it if CONFIG_ARCH_MSTARV7 is selected.
 
-0 - https://lore.kernel.org/linux-arm-kernel/87lfhdr7l6.wl-maz@kernel.org/
+Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+---
+ arch/arm/mach-mstar/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-Daniel Palmer (3):
-  ARM: mstar: Select MStar intc
-  ARM: mstar: Add interrupt controller to base dtsi
-  ARM: mstar: Add interrupt to pm_uart
-
- arch/arm/boot/dts/mstar-v7.dtsi | 20 ++++++++++++++++++++
- arch/arm/mach-mstar/Kconfig     |  1 +
- 2 files changed, 21 insertions(+)
-
+diff --git a/arch/arm/mach-mstar/Kconfig b/arch/arm/mach-mstar/Kconfig
+index 52744fe32368..576d1ab293c8 100644
+--- a/arch/arm/mach-mstar/Kconfig
++++ b/arch/arm/mach-mstar/Kconfig
+@@ -3,6 +3,7 @@ menuconfig ARCH_MSTARV7
+ 	depends on ARCH_MULTI_V7
+ 	select ARM_GIC
+ 	select ARM_HEAVY_MB
++	select MST_IRQ
+ 	help
+ 	  Support for newer MStar/Sigmastar SoC families that are
+ 	  based on Armv7 cores like the Cortex A7 and share the same
 -- 
 2.27.0
 
