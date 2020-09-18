@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3B7026EC38
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB3126EC3A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:11:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728486AbgIRCKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:10:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35374 "EHLO mail.kernel.org"
+        id S1728512AbgIRCKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:10:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728473AbgIRCKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:10:37 -0400
+        id S1728484AbgIRCKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:10:42 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9D1B421582;
-        Fri, 18 Sep 2020 02:10:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AA52D235F9;
+        Fri, 18 Sep 2020 02:10:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600395036;
-        bh=Tt6DnYGiWAjDPqOMfhauHSXDFE4oJt7VPHo/MIsFYJg=;
+        s=default; t=1600395041;
+        bh=ti6HRQ/IcV2A2YJFoLnGunt84o8zR3wRKUG8qEzCUk4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TEwAGEJfQjBu41svsv2Y4W+7qHbZlTJXOqD3jBY5cY7yM7IxSA4RaavNqQJSyh4sc
-         Zce201OkZddF2OXKWpzg1zSOTwm47vtiq1X2LJGkbD0bytoIxjWeNzgWQgV6ujwKji
-         kgUmBabwCXUaR79Pfxe7FrcfFWFt5KeNfjF93Xl4=
+        b=skIevvTD/GIezT9Z5pLXQOyyha6vwCgrNNqzGaI37v/rEIoMt5JsMpUOHDSpDS/st
+         gHEF+uAha8sBcYbBMhqpN0iUMe8sQqk7aXTu+WItkwZJU32JNWNYpH78gBbQsdW2Rs
+         kikAj5A9NWBAJ5EbSRzolsiU/eycHodzllXPZIZs=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Israel Rukshin <israelr@mellanox.com>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Keith Busch <kbusch@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-nvme@lists.infradead.org
-Subject: [PATCH AUTOSEL 4.19 127/206] nvme: Fix controller creation races with teardown flow
-Date:   Thu, 17 Sep 2020 22:06:43 -0400
-Message-Id: <20200918020802.2065198-127-sashal@kernel.org>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, linux-nfs@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 131/206] svcrdma: Fix leak of transport addresses
+Date:   Thu, 17 Sep 2020 22:06:47 -0400
+Message-Id: <20200918020802.2065198-131-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
 References: <20200918020802.2065198-1-sashal@kernel.org>
@@ -44,67 +42,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Israel Rukshin <israelr@mellanox.com>
+From: Chuck Lever <chuck.lever@oracle.com>
 
-[ Upstream commit ce1518139e6976cf19c133b555083354fdb629b8 ]
+[ Upstream commit 1a33d8a284b1e85e03b8c7b1ea8fb985fccd1d71 ]
 
-Calling nvme_sysfs_delete() when the controller is in the middle of
-creation may cause several bugs. If the controller is in NEW state we
-remove delete_controller file and don't delete the controller. The user
-will not be able to use nvme disconnect command on that controller again,
-although the controller may be active. Other bugs may happen if the
-controller is in the middle of create_ctrl callback and
-nvme_do_delete_ctrl() starts. For example, freeing I/O tagset at
-nvme_do_delete_ctrl() before it was allocated at create_ctrl callback.
+Kernel memory leak detected:
 
-To fix all those races don't allow the user to delete the controller
-before it was fully created.
+unreferenced object 0xffff888849cdf480 (size 8):
+  comm "kworker/u8:3", pid 2086, jiffies 4297898756 (age 4269.856s)
+  hex dump (first 8 bytes):
+    30 00 cd 49 88 88 ff ff                          0..I....
+  backtrace:
+    [<00000000acfc370b>] __kmalloc_track_caller+0x137/0x183
+    [<00000000a2724354>] kstrdup+0x2b/0x43
+    [<0000000082964f84>] xprt_rdma_format_addresses+0x114/0x17d [rpcrdma]
+    [<00000000dfa6ed00>] xprt_setup_rdma_bc+0xc0/0x10c [rpcrdma]
+    [<0000000073051a83>] xprt_create_transport+0x3f/0x1a0 [sunrpc]
+    [<0000000053531a8e>] rpc_create+0x118/0x1cd [sunrpc]
+    [<000000003a51b5f8>] setup_callback_client+0x1a5/0x27d [nfsd]
+    [<000000001bd410af>] nfsd4_process_cb_update.isra.7+0x16c/0x1ac [nfsd]
+    [<000000007f4bbd56>] nfsd4_run_cb_work+0x4c/0xbd [nfsd]
+    [<0000000055c5586b>] process_one_work+0x1b2/0x2fe
+    [<00000000b1e3e8ef>] worker_thread+0x1a6/0x25a
+    [<000000005205fb78>] kthread+0xf6/0xfb
+    [<000000006d2dc057>] ret_from_fork+0x3a/0x50
 
-Signed-off-by: Israel Rukshin <israelr@mellanox.com>
-Reviewed-by: Max Gurtovoy <maxg@mellanox.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Keith Busch <kbusch@kernel.org>
+Introduce a call to xprt_rdma_free_addresses() similar to the way
+that the TCP backchannel releases a transport's peer address
+strings.
+
+Fixes: 5d252f90a800 ("svcrdma: Add class for RDMA backwards direction transport")
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/core.c | 5 +++++
- drivers/nvme/host/nvme.h | 1 +
- 2 files changed, 6 insertions(+)
+ net/sunrpc/xprtrdma/svc_rdma_backchannel.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 4b182ac15687e..faa7feebb6095 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -2856,6 +2856,10 @@ static ssize_t nvme_sysfs_delete(struct device *dev,
+diff --git a/net/sunrpc/xprtrdma/svc_rdma_backchannel.c b/net/sunrpc/xprtrdma/svc_rdma_backchannel.c
+index b9827665ff355..d183d4aee822c 100644
+--- a/net/sunrpc/xprtrdma/svc_rdma_backchannel.c
++++ b/net/sunrpc/xprtrdma/svc_rdma_backchannel.c
+@@ -256,6 +256,7 @@ xprt_rdma_bc_put(struct rpc_xprt *xprt)
  {
- 	struct nvme_ctrl *ctrl = dev_get_drvdata(dev);
+ 	dprintk("svcrdma: %s: xprt %p\n", __func__, xprt);
  
-+	/* Can't delete non-created controllers */
-+	if (!ctrl->created)
-+		return -EBUSY;
-+
- 	if (device_remove_file_self(dev, attr))
- 		nvme_delete_ctrl_sync(ctrl);
- 	return count;
-@@ -3576,6 +3580,7 @@ void nvme_start_ctrl(struct nvme_ctrl *ctrl)
- 		queue_work(nvme_wq, &ctrl->async_event_work);
- 		nvme_start_queues(ctrl);
- 	}
-+	ctrl->created = true;
++	xprt_rdma_free_addresses(xprt);
+ 	xprt_free(xprt);
+ 	module_put(THIS_MODULE);
  }
- EXPORT_SYMBOL_GPL(nvme_start_ctrl);
- 
-diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
-index 31c1496f938fb..a70b997060e68 100644
---- a/drivers/nvme/host/nvme.h
-+++ b/drivers/nvme/host/nvme.h
-@@ -206,6 +206,7 @@ struct nvme_ctrl {
- 	struct nvme_command ka_cmd;
- 	struct work_struct fw_act_work;
- 	unsigned long events;
-+	bool created;
- 
- #ifdef CONFIG_NVME_MULTIPATH
- 	/* asymmetric namespace access: */
 -- 
 2.25.1
 
