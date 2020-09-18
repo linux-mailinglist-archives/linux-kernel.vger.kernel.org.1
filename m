@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D9FE26EC44
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C381026EC47
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728578AbgIRCLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:11:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36126 "EHLO mail.kernel.org"
+        id S1727676AbgIRCLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:11:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728547AbgIRCK7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:10:59 -0400
+        id S1728577AbgIRCLL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:11:11 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C360523730;
-        Fri, 18 Sep 2020 02:10:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5E52D208E4;
+        Fri, 18 Sep 2020 02:11:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600395058;
-        bh=PlbMTgELfMRDsocIUTTiiLZI4p00Hr9pXfwZwKyCaNA=;
+        s=default; t=1600395069;
+        bh=lDDGUL4kvJ5mex8eDO//IqOW71j0i6XZXgohdWZWS0A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kwuh0aHjxc+jAaEl158ImcZz7/AkMhrhVpybJqHAkk9TW4BtJO8yr9HJH6p+w6WGw
-         vfjxawG90GTD/z1bK6SmQ2snGrRw22BneFRbYmAqemF1hPPytnjqTagYPh7a7wmCBu
-         4G66Dq3ocQHI216IjeMDmfKzy14RHG6qrCW8iGBY=
+        b=gOjOZKHbCoAKYVsHqEpAiODRO25RwxfL73QojcjirY5mXizb+8Pce8ivL+GPr7Xi+
+         AJzqjDHhsC6ekK5Q4Es6fgETS/g4Vt/EHtU0+k7FQBBOYAlvCTgzrhUJXJ/v+KO3HN
+         kT7qPGfXG4YGJAitXigiSMGUANx5D/mXUW0d4+QA=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 145/206] perf stat: Force error in fallback on :k events
-Date:   Thu, 17 Sep 2020 22:07:01 -0400
-Message-Id: <20200918020802.2065198-145-sashal@kernel.org>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Jonathan Bakker <xc-racer2@live.ca>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 154/206] dt-bindings: sound: wm8994: Correct required supplies based on actual implementaion
+Date:   Thu, 17 Sep 2020 22:07:10 -0400
+Message-Id: <20200918020802.2065198-154-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
 References: <20200918020802.2065198-1-sashal@kernel.org>
@@ -47,117 +43,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephane Eranian <eranian@google.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit bec49a9e05db3dbdca696fa07c62c52638fb6371 ]
+[ Upstream commit 8c149b7d75e53be47648742f40fc90d9fc6fa63a ]
 
-When it is not possible for a non-privilege perf command to monitor at
-the kernel level (:k), the fallback code forces a :u. That works if the
-event was previously monitoring both levels.  But if the event was
-already constrained to kernel only, then it does not make sense to
-restrict it to user only.
+The required supplies in bindings were actually not matching
+implementation making the bindings incorrect and misleading.  The Linux
+kernel driver requires all supplies to be present.  Also for wlf,wm8994
+uses just DBVDD-supply instead of DBVDDn-supply (n: <1,3>).
 
-Given the code works by exclusion, a kernel only event would have:
-
-  attr->exclude_user = 1
-
-The fallback code would add:
-
-  attr->exclude_kernel = 1
-
-In the end the end would not monitor in either the user level or kernel
-level. In other words, it would count nothing.
-
-An event programmed to monitor kernel only cannot be switched to user
-only without seriously warning the user.
-
-This patch forces an error in this case to make it clear the request
-cannot really be satisfied.
-
-Behavior with paranoid 1:
-
-  $ sudo bash -c "echo 1 > /proc/sys/kernel/perf_event_paranoid"
-  $ perf stat -e cycles:k sleep 1
-
-   Performance counter stats for 'sleep 1':
-
-           1,520,413      cycles:k
-
-         1.002361664 seconds time elapsed
-
-         0.002480000 seconds user
-         0.000000000 seconds sys
-
-Old behavior with paranoid 2:
-
-  $ sudo bash -c "echo 2 > /proc/sys/kernel/perf_event_paranoid"
-  $ perf stat -e cycles:k sleep 1
-   Performance counter stats for 'sleep 1':
-
-                   0      cycles:ku
-
-         1.002358127 seconds time elapsed
-
-         0.002384000 seconds user
-         0.000000000 seconds sys
-
-New behavior with paranoid 2:
-
-  $ sudo bash -c "echo 2 > /proc/sys/kernel/perf_event_paranoid"
-  $ perf stat -e cycles:k sleep 1
-  Error:
-  You may not have permission to collect stats.
-
-  Consider tweaking /proc/sys/kernel/perf_event_paranoid,
-  which controls use of the performance events system by
-  unprivileged users (without CAP_PERFMON or CAP_SYS_ADMIN).
-
-  The current value is 2:
-
-    -1: Allow use of (almost) all events by all users
-        Ignore mlock limit after perf_event_mlock_kb without CAP_IPC_LOCK
-  >= 0: Disallow ftrace function tracepoint by users without CAP_PERFMON or CAP_SYS_ADMIN
-        Disallow raw tracepoint access by users without CAP_SYS_PERFMON or CAP_SYS_ADMIN
-  >= 1: Disallow CPU event access by users without CAP_PERFMON or CAP_SYS_ADMIN
-  >= 2: Disallow kernel profiling by users without CAP_PERFMON or CAP_SYS_ADMIN
-
-  To make this setting permanent, edit /etc/sysctl.conf too, e.g.:
-
-          kernel.perf_event_paranoid = -1
-
-v2 of this patch addresses the review feedback from jolsa@redhat.com.
-
-Signed-off-by: Stephane Eranian <eranian@google.com>
-Reviewed-by: Ian Rogers <irogers@google.com>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/20200414161550.225588-1-irogers@google.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Reported-by: Jonathan Bakker <xc-racer2@live.ca>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Link: https://lore.kernel.org/r/20200501133534.6706-1-krzk@kernel.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/evsel.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ .../devicetree/bindings/sound/wm8994.txt       | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index 68c5ab0e1800b..e8586957562b3 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -2796,6 +2796,10 @@ bool perf_evsel__fallback(struct perf_evsel *evsel, int err,
- 		char *new_name;
- 		const char *sep = ":";
+diff --git a/Documentation/devicetree/bindings/sound/wm8994.txt b/Documentation/devicetree/bindings/sound/wm8994.txt
+index 68cccc4653ba3..367b58ce1bb92 100644
+--- a/Documentation/devicetree/bindings/sound/wm8994.txt
++++ b/Documentation/devicetree/bindings/sound/wm8994.txt
+@@ -14,9 +14,15 @@ Required properties:
+   - #gpio-cells : Must be 2. The first cell is the pin number and the
+     second cell is used to specify optional parameters (currently unused).
  
-+		/* If event has exclude user then don't exclude kernel. */
-+		if (evsel->core.attr.exclude_user)
-+			return false;
-+
- 		/* Is there already the separator in the name. */
- 		if (strchr(name, '/') ||
- 		    strchr(name, ':'))
+-  - AVDD2-supply, DBVDD1-supply, DBVDD2-supply, DBVDD3-supply, CPVDD-supply,
+-    SPKVDD1-supply, SPKVDD2-supply : power supplies for the device, as covered
+-    in Documentation/devicetree/bindings/regulator/regulator.txt
++  - power supplies for the device, as covered in
++    Documentation/devicetree/bindings/regulator/regulator.txt, depending
++    on compatible:
++    - for wlf,wm1811 and wlf,wm8958:
++      AVDD1-supply, AVDD2-supply, DBVDD1-supply, DBVDD2-supply, DBVDD3-supply,
++      DCVDD-supply, CPVDD-supply, SPKVDD1-supply, SPKVDD2-supply
++    - for wlf,wm8994:
++      AVDD1-supply, AVDD2-supply, DBVDD-supply, DCVDD-supply, CPVDD-supply,
++      SPKVDD1-supply, SPKVDD2-supply
+ 
+ Optional properties:
+ 
+@@ -73,11 +79,11 @@ wm8994: codec@1a {
+ 
+ 	lineout1-se;
+ 
++	AVDD1-supply = <&regulator>;
+ 	AVDD2-supply = <&regulator>;
+ 	CPVDD-supply = <&regulator>;
+-	DBVDD1-supply = <&regulator>;
+-	DBVDD2-supply = <&regulator>;
+-	DBVDD3-supply = <&regulator>;
++	DBVDD-supply = <&regulator>;
++	DCVDD-supply = <&regulator>;
+ 	SPKVDD1-supply = <&regulator>;
+ 	SPKVDD2-supply = <&regulator>;
+ };
 -- 
 2.25.1
 
