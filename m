@@ -2,160 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5ADB26F967
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:36:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6BE326F969
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726627AbgIRJgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 05:36:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726109AbgIRJgi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 05:36:38 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3643FC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 02:36:38 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id u6so6111046iow.9
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 02:36:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ofKvXByFD2eTX9fI7pI8+9B6s6meAkUWiXIy9ZfC+QY=;
-        b=QxoMVdbJPeqrTlkx5f/73dhtxLUkgkyN+VruQyO1/DVhy0/tFaAQ+h9OKo3iWOdoAm
-         //wddD5q8p90+WGg+WpJ94zSSO7WSg8M7myvdhtMW/wPMxjbFaUz/VVwVUtohFRSSNzk
-         1vP3YbOMqaWT/Y8Qpd4XoChQlpnn/p4KVxLPWfl4+D4iZGVaorta3oTQbrw19jtEzHcO
-         aSM/mYkvKe/uZTa17hL1VogxRTEkxyUKkzzpjeZ8MZk1SbbnJ5s5a0WQmGjIpQMkQNJV
-         +bXdtgXRwCXPz/37ckHEp0MSHu3ks74ZlOBL4iTA1vT8q1rReyNciaVTNptTCYHYonx5
-         GR3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ofKvXByFD2eTX9fI7pI8+9B6s6meAkUWiXIy9ZfC+QY=;
-        b=Ghz9n0vnkfptPAl2bHujULhSdkMsfnGWGc1WR/ig0vFNsDED1wKWaOlK5dR4yZOYI/
-         0ItCxAfuAGtySv4IcUJ2yVGkkEUogbRHlhNjPYLY53REqLMbIVsR0cGbw0BNoOmWH4Au
-         oYBWzIVCRNZQ16+XbTZQmy4rHMktH+6JSDzgroxhW+cd11vfXnvrrfqMhztei6LBY+PJ
-         n4Nz0sR3mGIXMQjNtHZkUVIN+LdhNyJQAA+VZrfzHgNQVLnwdxKqDDUZ+8VGVFPziA+D
-         SKW8W0KgylS/LTXF/CjHOy7cg7yoIgWraeJRb6409qHpyT3jv42mCJNEo3s0i+WiFntW
-         EOxA==
-X-Gm-Message-State: AOAM5311+cTOfYXvbZNcLvh2CADoJJ3C9lrlUdjrBcmtUrOuLrhxGWtk
-        DsMUWkHTrVYYvovPV6uzE2GWtg==
-X-Google-Smtp-Source: ABdhPJwAlkZO19slkH+E5oDOsW1m+REbN+IIcJ/oxJ2gQ8D4+tsQbVUGfeR7TiaIlDVMQVppOKvA1g==
-X-Received: by 2002:a6b:590c:: with SMTP id n12mr27341321iob.25.1600421797222;
-        Fri, 18 Sep 2020 02:36:37 -0700 (PDT)
-Received: from google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
-        by smtp.gmail.com with ESMTPSA id x3sm1295974ilq.81.2020.09.18.02.36.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 02:36:36 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 03:36:31 -0600
-From:   Yu Zhao <yuzhao@google.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Huang Ying <ying.huang@intel.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Konstantin Khlebnikov <koct9i@gmail.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Jaewon Kim <jaewon31.kim@samsung.com>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/13] mm: clean up some lru related pieces
-Message-ID: <20200918093631.GA987554@google.com>
-References: <20200918030051.650890-1-yuzhao@google.com>
- <20200918074549.GG28827@dhcp22.suse.cz>
+        id S1726645AbgIRJhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 05:37:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43688 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726126AbgIRJhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 05:37:03 -0400
+Received: from gaia (unknown [31.124.44.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B0C1C21973;
+        Fri, 18 Sep 2020 09:36:59 +0000 (UTC)
+Date:   Fri, 18 Sep 2020 10:36:57 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 22/37] arm64: mte: Add in-kernel MTE helpers
+Message-ID: <20200918093656.GB6335@gaia>
+References: <cover.1600204505.git.andreyknvl@google.com>
+ <4ac1ed624dd1b0851d8cf2861b4f4aac4d2dbc83.1600204505.git.andreyknvl@google.com>
+ <20200917134653.GB10662@gaia>
+ <7904f7c2-cf3b-315f-8885-e8709c232718@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200918074549.GG28827@dhcp22.suse.cz>
+In-Reply-To: <7904f7c2-cf3b-315f-8885-e8709c232718@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 09:45:49AM +0200, Michal Hocko wrote:
-> On Thu 17-09-20 21:00:38, Yu Zhao wrote:
-> > Hi Andrew,
+On Thu, Sep 17, 2020 at 03:21:41PM +0100, Vincenzo Frascino wrote:
+> On 9/17/20 2:46 PM, Catalin Marinas wrote:
+> > On Tue, Sep 15, 2020 at 11:16:04PM +0200, Andrey Konovalov wrote:
+> >> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+> >> index 52a0638ed967..e238ffde2679 100644
+> >> --- a/arch/arm64/kernel/mte.c
+> >> +++ b/arch/arm64/kernel/mte.c
+> >> @@ -72,6 +74,52 @@ int memcmp_pages(struct page *page1, struct page *page2)
+> >>  	return ret;
+> >>  }
+> >>  
+> >> +u8 mte_get_mem_tag(void *addr)
+> >> +{
+> >> +	if (system_supports_mte())
+> >> +		asm volatile(ALTERNATIVE("ldr %0, [%0]",
+> >> +					 __MTE_PREAMBLE "ldg %0, [%0]",
+> >> +					 ARM64_MTE)
+> >> +			     : "+r" (addr));
 > > 
-> > I see you have taken this:
-> >   mm: use add_page_to_lru_list()/page_lru()/page_off_lru()
-> > Do you mind dropping it?
-> > 
-> > Michal asked to do a bit of additional work. So I thought I probably
-> > should create a series to do more cleanups I've been meaning to.
-> > 
-> > This series contains the change in the patch above and goes a few
-> > more steps farther. It's intended to improve readability and should
-> > not have any performance impacts. There are minor behavior changes in
-> > terms of debugging and error reporting, which I have all highlighted
-> > in the individual patches. All patches were properly tested on 5.8
-> > running Chrome OS, with various debug options turned on.
-> > 
-> > Michal,
-> > 
-> > Do you mind taking a looking at the entire series?
+> > This doesn't do what you think it does. LDG indeed reads the tag from
+> > memory but LDR loads the actual data at that address. Instead of the
+> > first LDR, you may want something like "mov %0, #0xf << 56" (and use
+> > some macros to avoid the hard-coded 56).
 > 
-> I have stopped at patch 3 as all patches until then are really missing
-> any justification. What is the point for all this to be done? The code
-> is far from trivial and just shifting around sounds like a risk. You are
+> The result of the load should never be used since it is meaningful only if
+> system_supports_mte(). It should be only required for compilation purposes.
+> 
+> Said that, I think I like more your solution hence I am going to adopt it.
 
-I appreciate your caution, and if you let me know what exactly your
-concerns are, we could probably work them out together.
+Forgot to mention, please remove the system_supports_mte() if you use
+ALTERNATIVE, we don't need both. I think the first asm instruction can
+be a NOP since the kernel addresses without KASAN_HW or ARM64_MTE have
+the top byte 0xff.
 
-> removing ~50 LOC which is always nice but I am not sure the resulting
-> code is better maintainble or easier to read and understand. Just
-> consider __ClearPageLRU moving to page_off_lru patch. What is the
-> additional value of having the flag moved and burry it into a function
-> to have even more side effects? I found the way how __ClearPageLRU is
+> >> +
+> >> +	return 0xF0 | mte_get_ptr_tag(addr);
+> >> +}
+> >> +
+> >> +u8 mte_get_random_tag(void)
+> >> +{
+> >> +	u8 tag = 0xF;
+> >> +	u64 addr = 0;
+> >> +
+> >> +	if (system_supports_mte()) {
+> >> +		asm volatile(ALTERNATIVE("add %0, %0, %0",
+> >> +					 __MTE_PREAMBLE "irg %0, %0",
+> >> +					 ARM64_MTE)
+> >> +			     : "+r" (addr));
+> > 
+> > What was the intention here? The first ADD doubles the pointer value and
+> > gets a tag out of it (possibly doubled as well, depends on the carry
+> > from bit 55). Better use something like "orr %0, %0, #0xf << 56".
+> 
+> Same as above but I will use the orr in the next version.
 
-Mind elaborating the side effects?
+I wonder whether system_supports_mte() makes more sense here than the
+alternative:
 
-> nicely close to removing it from LRU easier to follow. This is likely
-> subjective and other might think differently but as it is not clear what
-> is your actual goal here it is hard to judge pros and cons.
+	if (!system_supports_mte())
+		return 0xff;
 
-I like this specific example from patch 3. Here is what it does: we
-have three places using the same boilerplate, i.e., page_off_lru() +
-__ClearPageLRU(), the patch moves __ClearPageLRU() into page_off_lru(),
-which already does __ClearPageActive() and __ClearPageUnevictable().
-Later on, we rename page_off_lru() to __clear_page_lru_flags() (patch
-8).
+	... mte irg stuff ...
 
-Its point seems quite clear to me. Why would *anybody* want to use
-two helper functions *repeatedly* when the job can be done with just
-one? Nobody is paid by the number of lines they add, right? :) And
-for that matter, why would anybody want any boilerplate to be open
-coded from the same group of helper functions arranged in various
-ways? I don't think the answer is subjective, but I don't expect
-everybody to agree with me.
+(you could do the same for the mte_get_mem_tag() function)
 
-Now back to your general question: what's the point of this series?
-Readability -- less error prone and easier to maintain. This series
-consolidate open-coded boilerplate like the following in many places.
-Take lru_lazyfree_fn() as an example:
+> >> +
+> >> +		tag = mte_get_ptr_tag(addr);
+> >> +	}
+> >> +
+> >> +	return 0xF0 | tag;
+> > 
+> > This function return seems inconsistent with the previous one. I'd
+> > prefer the return line to be the same in both.
+> 
+> The reason why it is different is that in this function extracting the tag from
+> the address makes sense only if irg is executed.
+> 
+> I can initialize addr to 0xf << 56 and make them the same.
 
--		bool active = PageActive(page);
- 		int nr_pages = thp_nr_pages(page);
- 
--		del_page_from_lru_list(page, lruvec,
--				       LRU_INACTIVE_ANON + active);
-+		del_page_from_lru_list(page, lruvec);
- 		ClearPageActive(page);
- 		ClearPageReferenced(page);
-		<snipped>
- 		ClearPageSwapBacked(page);
--		add_page_to_lru_list(page, lruvec, LRU_INACTIVE_FILE);
-+		add_page_to_lru_list(page, lruvec);
+I think you are right, they can be different. But see my comment above
+about not doing the unnecessary shifting when all you want is to return
+0xff with !MTE.
 
-I hope this helps, but if it doesn't, I'd be more than happy to have
-more discussions on the details. And not that I don't appreciate your
-review, but please be more specific than 'sounds like a risk' or 'have
-even more side effects' so I can address your concerns effectively.
+-- 
+Catalin
