@@ -2,103 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B51C9270085
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 17:07:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 393AC270089
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 17:08:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726236AbgIRPHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 11:07:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33694 "EHLO
+        id S1726250AbgIRPIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 11:08:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726159AbgIRPHi (ORCPT
+        with ESMTP id S1726121AbgIRPIK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 11:07:38 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A80FC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 08:07:38 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id k25so5240601qtu.4
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 08:07:38 -0700 (PDT)
+        Fri, 18 Sep 2020 11:08:10 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C84AC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 08:08:10 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id z19so3614059pfn.8
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 08:08:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bGY4rCor0u5Eau3BIdTI66aGuODEp9MaPnc5641O2v8=;
-        b=XNRpSCLwXj4NAp4FBvi62kqhkQyhovgO/zvc5JHOD0QjULR+UHeJlbWdO6SuG5jPYw
-         OKqtnZrGU1aYU9Nf2VWgdKZ1G7e7UmQxPQs3tSlGc/eC83enTIa9iVGqNuDZzVFCh2h7
-         QK7Cerqj60OmlIQLAHSFE02ez+t49mdJAkZaekEsTj7WrFBU0nflv649z21ncc8QNdPf
-         ho8gG/vtn6AuN2+wsRwUErjLWQp3A96FmMI/bQAEi2hJtlNmdeWHl3yQVlf83xwRdurQ
-         IkuhMeo9fbUvK42I64u1yaiaZgsFtBi31hKwSNWUBVOKu7qXTedc2JslpFHMW34e21FL
-         eQLg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hGGCKEp4K9GjwoPVxOOO2axTbNb8r7W1/g/yQhmQlPs=;
+        b=a/D8P1Joz0DA0/FJh9vDYtQUzeMAdc0qggLrzY6jWIOxmNO2DvPj/y49Qvh4eTgLQc
+         bHF2P/99KpphHSf7/FeTwW6wBzd37N1UWctbMT0kH2/zDNYcbd/ci/UZOo0DZt9Hl1pn
+         r8Th90dKi/UOmpJXHM+IOw+LX3JZunRHgbWNozufbitsON+c+VT5kQN4uTYN0AQ9GPqp
+         BamwWKePpMPAc7L7cbPD0emuHbw86qwA76uswgdArU9NZ88r+YMDRaF76feiH2ra3HXF
+         yNd6d7MMReV1w+uuMa19crlNfhXWMLDIV6xXdfpSp/QhLYcH4PleWzMx0IgZFckRFyJ5
+         1aqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bGY4rCor0u5Eau3BIdTI66aGuODEp9MaPnc5641O2v8=;
-        b=eo+mbw64l0kyLUHCKwDgqFTcmJPHn9n8RdHkPDU+nRx0pXDVt1w7Ty/F/noPc7dMGJ
-         xvzK49OWZAllJ5iDDSvNdxrx0mcB31oBeOL1kvy5h90mJt7pG8gBL+d4uDi8bIUT6SBk
-         oy67pcwF6734ruaLqRSnOqAjSa5ni2nMRF1jPKPUoyB5Gd0Ix92F4HhRd1+hZfQUfiYp
-         uWbB7fNH6OeyU+NzHPxSd0kIKfLhvnNZHdaQO/nn0uCpW2s7ujZVX4FIAwkAj18g+KRM
-         JAC0vzDnc2jDzhJuEuE7BNs4nbO5g3nt97WhkESQmiRXD1yLWHldRwmeRyugWwAzVcB3
-         0WMw==
-X-Gm-Message-State: AOAM530hfwkTRI1+1DhONoKxstwLXfE878ncWCTtdKDvFNQvXaCANa95
-        9hSTZmUhE+HiBbKUcPmHEKGymMoc+miRsV2Q
-X-Google-Smtp-Source: ABdhPJwy5uvRu/OK3ajL4mx0YmxSA+e7kwb8stYYtaHEg8B5tNNmlKiChdKwjuYw/79vtP8EG43gmA==
-X-Received: by 2002:ac8:1b92:: with SMTP id z18mr32542508qtj.265.1600441657528;
-        Fri, 18 Sep 2020 08:07:37 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id x43sm1290604qtx.40.2020.09.18.08.07.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 08:07:36 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kJHz5-001IJ3-Ul; Fri, 18 Sep 2020 12:07:35 -0300
-Date:   Fri, 18 Sep 2020 12:07:35 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Oded Gabbay <oded.gabbay@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, izur@habana.ai,
-        Gal Pressman <galpress@amazon.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-rdma@vger.kernel.org, Olof Johansson <olof@lixom.net>
-Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
-Message-ID: <20200918150735.GV8409@ziepe.ca>
-References: <20200918121621.GQ8409@ziepe.ca>
- <CAFCwf12YBaka2w2cnTxyX9L=heMnaM6QN1_oJ7h7DxHDmy2Xng@mail.gmail.com>
- <20200918125014.GR8409@ziepe.ca>
- <CAFCwf12oK4RXYhgzXiN_YvXvjoW1Fwx1xBzR3Y5E4RLvzn_vhA@mail.gmail.com>
- <20200918132645.GS8409@ziepe.ca>
- <CAFCwf109t5=GuNvqTqLUCiYbjLC6o2xVoLY5C-SBqbN66f6wxg@mail.gmail.com>
- <20200918135915.GT8409@ziepe.ca>
- <CAFCwf13rJgb4=as7yW-2ZHvSnUd2NK1GP0UKKjyMfkB3vsnE5w@mail.gmail.com>
- <20200918141909.GU8409@ziepe.ca>
- <CAFCwf121_UNivhfPfO6uFoHbF+2Odeb1c3+482bOXeOZUsEnug@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hGGCKEp4K9GjwoPVxOOO2axTbNb8r7W1/g/yQhmQlPs=;
+        b=ByaaPtLZGsmG3k+sHpuvZ0J43NTvk9T+t1pjxWwmf2c4d1LAOf/ZJITByusntTA+rH
+         Dsm6glTXy9/vXnK2NYVkg5zUPqp9QtE8q6XE9SVLt6X8bWN2tyB1xonMkBh6emQb5/it
+         8Zk29U02EkYGiOs2ssIfaTs2iyudQriT7zECBmaeXQO9HXCT3gnv3pqu7sqPUiEF8Y3j
+         5umDzfmA3KyoAn0NE6bMzRwAcqkfxY81i3SGVRz3HuQHWxbZXMuirkkyRHxkOsZ/aFlp
+         2Y9F8USLD/UdBEg3pjRTdFHY1y+kMRn3+jbokdQmsC09wATQNaC31aKi/jN2mxgZrHJA
+         bd7Q==
+X-Gm-Message-State: AOAM531z5Npfi3UBFZYa5xfdN7BjNoj7rGxSeIKXzu0n6iEgZcrdDv5Q
+        kMwJkurFyxeVgmHOyd+WhhB0fVVm5Uxf2z8ZhNGa2g==
+X-Google-Smtp-Source: ABdhPJxnj8meNJtzWdHLvtJvvdc2zevWc/WQjbDuyOCDAV/XyUh7CPXZXHlH43Q95yZABuWM1LRrGutx0uprTGvbu3Y=
+X-Received: by 2002:a63:5d07:: with SMTP id r7mr14529655pgb.440.1600441689365;
+ Fri, 18 Sep 2020 08:08:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFCwf121_UNivhfPfO6uFoHbF+2Odeb1c3+482bOXeOZUsEnug@mail.gmail.com>
+References: <cover.1600204505.git.andreyknvl@google.com> <0a35b29d161bf2559d6e16fbd903e49351c7f6b8.1600204505.git.andreyknvl@google.com>
+ <20200918105206.GB2384246@elver.google.com>
+In-Reply-To: <20200918105206.GB2384246@elver.google.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Fri, 18 Sep 2020 17:07:58 +0200
+Message-ID: <CAAeHK+wqzZJWWh+u3HaLvSAt=4SxaFT4JUgTqzMYcPNGhBFFBg@mail.gmail.com>
+Subject: Re: [PATCH v2 31/37] kasan, x86, s390: update undef CONFIG_KASAN
+To:     Marco Elver <elver@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 05:45:21PM +0300, Oded Gabbay wrote:
+On Fri, Sep 18, 2020 at 12:52 PM Marco Elver <elver@google.com> wrote:
+>
+> On Tue, Sep 15, 2020 at 11:16PM +0200, Andrey Konovalov wrote:
+> [...]
+> >  arch/s390/boot/string.c         | 1 +
+> >  arch/x86/boot/compressed/misc.h | 1 +
+> >  2 files changed, 2 insertions(+)
+> >
+> > diff --git a/arch/s390/boot/string.c b/arch/s390/boot/string.c
+> > index b11e8108773a..faccb33b462c 100644
+> > --- a/arch/s390/boot/string.c
+> > +++ b/arch/s390/boot/string.c
+> > @@ -3,6 +3,7 @@
+> >  #include <linux/kernel.h>
+> >  #include <linux/errno.h>
+> >  #undef CONFIG_KASAN
+> > +#undef CONFIG_KASAN_GENERIC
+>
+> Is CONFIG_KASAN still used to guard instrumented versions of functions?
+>
+> It looks like #undef CONFIG_KASAN is no longer needed -- at least
+> <linux/string.h> no longer mentions it.
 
-> Any access by the device's engines to the host memory is done via our
-> device's MMU. Our MMU supports multiple ASIDs - Address Space IDs. The
-> kernel driver is assigned ASID 0, while the user is assigned ASID 1.
-> We can support up to 1024 ASIDs, but because we limit the user to have
-> a single application, we only use ASID 0 and 1.
-
-If the QP/WQ/etc is HW bound to an ASID then that binding is called a
-PD and the ASID is acting in the PD role.
-
-If the ASID is translating from on the wire IOVA to DMA PA, then it is
-acting in the MR role as well.
-
-Bundling those two things together is not as flexible as standards
-based RDMA, but it is not as far away as you are making things out to
-be.
-
-Jason
+I'm pretty sure this is still necessary (something didn't work when I
+forgot to make this change), but I'll check again.
