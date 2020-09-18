@@ -2,97 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1110C26FF62
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 16:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67F3A26FF65
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 16:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726915AbgIRN7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 09:59:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51272 "EHLO
+        id S1726121AbgIRN7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 09:59:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726253AbgIRN7K (ORCPT
+        with ESMTP id S1726253AbgIRN7R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 09:59:10 -0400
-Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F230CC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 06:59:09 -0700 (PDT)
-Received: by mail-vk1-xa42.google.com with SMTP id a16so1283921vke.3
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 06:59:09 -0700 (PDT)
+        Fri, 18 Sep 2020 09:59:17 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28A34C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 06:59:17 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id z2so4969258qtv.12
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 06:59:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yZx4kJcNFEjGr4SDJUskmqm2bu+XUaenHe1fGMPrn78=;
-        b=lYx6gFCUgc1VTSHP5PLNZP54DR80Q6CK2e/EdfEDUk7E69mE+ebuqQm1OJW4ypV1cE
-         TMIbDp9vCVl0fSbB/Aoaq0Hgm2akeSa+Zbv+NBsd9lcl+T5zSJSbdajbhcUAfqBYNdhm
-         WvLwJ2X4e+ScmVFy4f2N+n6AmyCTkLe7jvwk0=
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iDzy1sMgIGxVws9oU0uRMBwks6chpSBoUJBA5ZAPs6Y=;
+        b=dZS+Pz8uPa7xZedC6ywyuba3H9rxNa8iD2FLUWjM9LYjV/vp0Nnwuxl4sIAH/WzJmo
+         Z71YmWaPcUeza3JssOVlprHU4cGQ3yjZxah7wyneWO2mh86SvelVUNGd45Cqk9Yie1oG
+         617Nev2Z7twgiRUh132ng7fDDjipACTM4bU0rYD4M+AA9ZUYUyf0U4tF3fwh8UPfh7cR
+         ijQl8xM6r/btbx2DzAHfRisLO48r+cfseEBb/dQ/NLLKA9FIWvNEWjokBXGDc2fndUqW
+         ScKssfiqwnp2XUoY0uD9YyQ4SnhhADwwA+/HFxDHtK2d76LmBhaSyZ9tPLqOZUnoOxnr
+         5sUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yZx4kJcNFEjGr4SDJUskmqm2bu+XUaenHe1fGMPrn78=;
-        b=DgSatSnhUMTCF6YOUeGhECnDnbQnqfaCTkE5IWp5QWc8xfSr+0edVbvQSinfu7BckJ
-         7QXGCdUfMTlkTJpYG1up0EMKTKLoiPdEf5aSSPF2ZkAxfP83rWYvqA9CYwUu4efTL+GC
-         +8bEuCBp59iQfUA3DuC3LO068ev4HABPovRu4je3hQZjleTLgbdU9ZX4IHd+vSpZTkFD
-         3M0VXMIQhLeQA75IlgEoEs7UgJESq7/dC8wfPy/ZTRk/D3cNka+9K75alpHTJAHrKadU
-         tXKiJuv85ZlEG2yEugP6Iqe7oVpyaGdd65YS2bOinr8JCoxuh9bHbPSFZrUDsXM8E1/t
-         o52A==
-X-Gm-Message-State: AOAM530+2+FQ1XmBdYXPvtditK2JqPa1VMmSM4NRgv/+xYsEcSOL3eSW
-        niqCBGN0v/Qm0eu250bhxmPc15tOeZcEgw==
-X-Google-Smtp-Source: ABdhPJzYTh8BtolA//h6t0fR1RXbNt/rwYDq/DJbMpVdwlt6IFli9194ySKJuk+GfrlC5EQzn1jfFw==
-X-Received: by 2002:a1f:2492:: with SMTP id k140mr11111154vkk.15.1600437548773;
-        Fri, 18 Sep 2020 06:59:08 -0700 (PDT)
-Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com. [209.85.217.53])
-        by smtp.gmail.com with ESMTPSA id 6sm481037vkt.16.2020.09.18.06.59.07
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Sep 2020 06:59:07 -0700 (PDT)
-Received: by mail-vs1-f53.google.com with SMTP id q13so3604597vsj.13
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 06:59:07 -0700 (PDT)
-X-Received: by 2002:a67:8bc2:: with SMTP id n185mr12030703vsd.49.1600437546889;
- Fri, 18 Sep 2020 06:59:06 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iDzy1sMgIGxVws9oU0uRMBwks6chpSBoUJBA5ZAPs6Y=;
+        b=iTEUPUa+r0GpBrGEIeFEZZtq1+fyJ7niCn/17XlbNEUJWk/L09tpMWbWd+sExqYyZH
+         yGgdbRkxFUYng6ToTgK9huc9PToDWl55r1TWvAIgSI6GdAdwmKrMDZctjq/57P2ye9lv
+         nQs8IarDEg5LSYYlTgvifI9VvnoooaH79FK+UkzVcPWs5Zl0v20xSevePoGHsBphK2QY
+         iH1Y8VbLvD4P24+RHOjv+0613O+/6cLtsb0+DGRFJk2wR9auzNPhIvbGlByd2McrCTzK
+         K4MIod3MW6OWCnf+fynCTdwrIz7eq7gQpr8F4eIMFevNPRhAhLmp3AqaGHs2zxaMNZfn
+         g/9g==
+X-Gm-Message-State: AOAM5314GucVaHgAdsbO8EQgwYG7HyIpiYuE+L3Q8h+mDyr/kkq6pBZh
+        cQbAhq2KIqCFXRXMj2PVOo++Fg==
+X-Google-Smtp-Source: ABdhPJxJEjIjl7tbKTQubndOek+3OibCxEDhsqhs1uDEM/H/kHLq/g77HjdghQ/1oNTy7EDlsPqX1w==
+X-Received: by 2002:ac8:6e90:: with SMTP id c16mr33479531qtv.17.1600437556361;
+        Fri, 18 Sep 2020 06:59:16 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id v18sm2144966qtq.15.2020.09.18.06.59.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 06:59:15 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kJGux-001HHG-3h; Fri, 18 Sep 2020 10:59:15 -0300
+Date:   Fri, 18 Sep 2020 10:59:15 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Oded Gabbay <oded.gabbay@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, izur@habana.ai,
+        Gal Pressman <galpress@amazon.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-rdma@vger.kernel.org, Olof Johansson <olof@lixom.net>
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+Message-ID: <20200918135915.GT8409@ziepe.ca>
+References: <20200917171833.GJ8409@ziepe.ca>
+ <0b21db8d-1061-6453-960b-8043951b3bad@amazon.com>
+ <20200918115601.GP8409@ziepe.ca>
+ <CAFCwf12G4FnhjzijZLh_=n59SQMcTnULTqp8DOeQGyX6_q_ayA@mail.gmail.com>
+ <20200918121621.GQ8409@ziepe.ca>
+ <CAFCwf12YBaka2w2cnTxyX9L=heMnaM6QN1_oJ7h7DxHDmy2Xng@mail.gmail.com>
+ <20200918125014.GR8409@ziepe.ca>
+ <CAFCwf12oK4RXYhgzXiN_YvXvjoW1Fwx1xBzR3Y5E4RLvzn_vhA@mail.gmail.com>
+ <20200918132645.GS8409@ziepe.ca>
+ <CAFCwf109t5=GuNvqTqLUCiYbjLC6o2xVoLY5C-SBqbN66f6wxg@mail.gmail.com>
 MIME-Version: 1.0
-References: <1600435026-1876-1-git-send-email-srivasam@codeaurora.org>
-In-Reply-To: <1600435026-1876-1-git-send-email-srivasam@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 18 Sep 2020 06:58:55 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=WtSEB6-M8x564t=RuSEKHwH3YvcmuZ9VGpxY+5kcL7rA@mail.gmail.com>
-Message-ID: <CAD=FV=WtSEB6-M8x564t=RuSEKHwH3YvcmuZ9VGpxY+5kcL7rA@mail.gmail.com>
-Subject: Re: [PATCH v3] arm64: dts: qcom: sc7180: Add lpass cpu node for I2S driver
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Ajit Pandey <ajitp@codeaurora.org>,
-        Cheng-Yi Chiang <cychiang@chromium.org>,
-        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFCwf109t5=GuNvqTqLUCiYbjLC6o2xVoLY5C-SBqbN66f6wxg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Sep 18, 2020 at 04:49:25PM +0300, Oded Gabbay wrote:
+> On Fri, Sep 18, 2020 at 4:26 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > On Fri, Sep 18, 2020 at 04:02:24PM +0300, Oded Gabbay wrote:
+> >
+> > > The problem with MR is that the API doesn't let us return a new VA. It
+> > > forces us to use the original VA that the Host OS allocated.
+> >
+> > If using the common MR API you'd have to assign a unique linear range
+> > in the single device address map and record both the IOVA and the MMU
+> > VA in the kernel struct.
+> >
+> > Then when submitting work using that MR lkey the kernel will adjust
+> > the work VA using the equation (WORK_VA - IOVA) + MMU_VA before
+> > forwarding to HW.
+> >
+> We can't do that. That will kill the performance. If for every
+> submission I need to modify the packet's contents, the throughput will
+> go downhill.
 
-On Fri, Sep 18, 2020 at 6:18 AM Srinivasa Rao Mandadapu
-<srivasam@codeaurora.org> wrote:
->
-> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> @@ -1742,6 +1742,45 @@
->                                 };
->                         };
->
-> +                       sec_mi2s_active: sec-mi2s-active {
-> +                               pinmux {
-> +                                       pins = "gpio49", "gpio50", "gpio51";
-> +                                       function = "mi2s_1";
-> +                               };
-> +
-> +                               pinconf {
-> +                                       pins = "gpio49", "gpio50", "gpio51";;
+You clearly didn't read where I explained there is a fast path and
+slow path expectation.
 
-There are still two ";" on the above line.
+> Also, submissions to our RDMA qmans are coupled with submissions to
+> our DMA/Compute QMANs. We can't separate those to different API calls.
+> That will also kill performance and in addition, will prevent us from
+> synchronizing all the engines.
+
+Not sure I see why this is a problem. I already explained the fast
+device specific path. 
+
+As long as the kernel maintains proper security when it processes
+submissions the driver can allow objects to cross between the two
+domains.
+
+Jason
