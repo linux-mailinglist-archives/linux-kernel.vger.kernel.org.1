@@ -2,71 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB95270183
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1745C270184
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbgIRQBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 12:01:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52592 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726115AbgIRQBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 12:01:35 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A4C812388B;
-        Fri, 18 Sep 2020 16:01:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600444894;
-        bh=+y08LIMjQWBttNhnxoOfklDMRBTpk6CDyAXUosBciKM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tFfkBv9SEhD1t424jZjepHDiEoxrb7S+Q65VatFgmqPC2PJ7yZF+5zJ50G1QaK5TT
-         8DoRW/+/9FpdO9bwB4RBLjt1hINS8BgKyKD+Dn1OYdTqvmiFurq8rpV+D3qrsKd0xQ
-         r7HhSjDfXXDetlxFrpdTv6alu2Nm0ctAjnX6XF4U=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kJIpI-00D3Kp-J6; Fri, 18 Sep 2020 17:01:32 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     catalin.marinas@arm.com, YueHaibing <yuehaibing@huawei.com>,
-        will@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] arm64: Fix -Wunused-function warning
-Date:   Fri, 18 Sep 2020 17:01:29 +0100
-Message-Id: <160044487333.1302416.595224309717788435.b4-ty@kernel.org>
+        id S1726327AbgIRQBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 12:01:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726115AbgIRQBs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 12:01:48 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73333C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 09:01:48 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id d15so6653706lfq.11
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 09:01:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tSk+YlDCjGoukvgJMkBk/WrFVc0NKEjKrwScxDLtmew=;
+        b=Ycxqx3VC0OTdID4Ifzex+FgT5vRjS8++a/n4GrAC02k2k0vj4qgFrycBIhoL7DFyC2
+         EbE9bNXAvZtz3nhRLTRkTi9KWpIYIlYEhAoq/XFN19q3SCIHh4xc4ncuruM0I9+Dm4sk
+         2ExMHT7VBsENLH2LYGsZjWeDQ2zTWUuNWT661lvwnTP1uBreTT1SJ+yWTCivWnyNBnog
+         AhtKHrBNey7rN8cWU7jWaWmS3a2pvA6GEKzYKQUU8WqMl/qiYUTm8dZJwNIJQbnZ7zbW
+         E57vMrQWbGdCFqSzmUnNqE4X8eH/Pfhw1ICFi1Em7vA8LshkhMfT1uCjC4cbvOfCnoYO
+         nWTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tSk+YlDCjGoukvgJMkBk/WrFVc0NKEjKrwScxDLtmew=;
+        b=K+6rgAWlUaou+v1JOf+C7FVfQJ70N70fT5B7bVEbYE9BqN8ZyJ4Kmv9yCUFQL6x29s
+         +49uyJdmCuMLaggkwpMNywGfI7ArnykukiKCHFgOfR2kf/3eXXowcMIjV3Xa4K1OiV+Y
+         +Os8W9m1pGgQdEPKmm9J65yNEv1PJntDjimvCgXa85jPtLQjIQKcgGJ+vkPyUhVCL9Yb
+         R1wLQwwcKUtetggxOdMAjDxEWaFWrrtFfnNN7uQTmXrEDEfqFcXpCZBGoMQsuTKKaaMM
+         0+m4VbTjYgxcLttT4pFcPMwoV7787nzDfr8fCiIN6V5T5wDFeXf3a3spYc7KzGnPwhmS
+         Ik/A==
+X-Gm-Message-State: AOAM531x/LzgM1/oZ6jDOv7F8bhdJHQxlYEe+Wv47A0kx7A7LJAPeYoV
+        E9JRETzLc65kPRpQ3B+IoqRF+JBwzpzSoQ==
+X-Google-Smtp-Source: ABdhPJzIjcdJwTpNamSYQ4DBWTtzTaNU33f+VI37W6l5C0sYPfHSUYqVND0gHl5LgIbz1UaUWvNF+w==
+X-Received: by 2002:a19:650a:: with SMTP id z10mr9726020lfb.9.1600444905032;
+        Fri, 18 Sep 2020 09:01:45 -0700 (PDT)
+Received: from eriador.lan ([94.25.229.20])
+        by smtp.gmail.com with ESMTPSA id s11sm681267ljh.56.2020.09.18.09.01.43
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 09:01:44 -0700 (PDT)
+From:   Dmitry Baryshkov <dbaryshkov@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Subject: [PATCH] mailmap: add map all old entries to me
+Date:   Fri, 18 Sep 2020 19:01:42 +0300
+Message-Id: <20200918160142.2984348-1-dbaryshkov@gmail.com>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200918123318.23764-1-yuehaibing@huawei.com>
-References: <20200918123318.23764-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: catalin.marinas@arm.com, yuehaibing@huawei.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Sep 2020 20:33:18 +0800, YueHaibing wrote:
-> If CONFIG_HOTPLUG_CPU is n, gcc warns:
-> 
-> arch/arm64/kernel/smp.c:967:13: warning: ‘ipi_teardown’ defined but not used [-Wunused-function]
->  static void ipi_teardown(int cpu)
->              ^~~~~~~~~~~~
-> 
-> Use #ifdef guard this.
+Change back surname to new (old) one. Map several odd entries to main
+identity.
 
-Applied to irq/irqchip-next, thanks!
+Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+---
+ .mailmap | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-[1/1] arm64: Fix -Wunused-function warning when !CONFIG_HOTPLUG_CPU
-      commit: 9d9edb962e910552c9c008800ec907293a47852e
-
-Cheers,
-
-	M.
+diff --git a/.mailmap b/.mailmap
+index a780211468e4..3bcfa33fc268 100644
+--- a/.mailmap
++++ b/.mailmap
+@@ -81,7 +81,10 @@ Dengcheng Zhu <dzhu@wavecomp.com> <dengcheng.zhu@gmail.com>
+ Dengcheng Zhu <dzhu@wavecomp.com> <dengcheng.zhu@imgtec.com>
+ Dengcheng Zhu <dzhu@wavecomp.com> <dengcheng.zhu@mips.com>
+ <dev.kurt@vandijck-laurijssen.be> <kurt.van.dijck@eia.be>
+-Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
++Dmitry Baryshkov <dbaryshkov@gmail.com>
++Dmitry Baryshkov <dbaryshkov@gmail.com> <[dbaryshkov@gmail.com]>
++Dmitry Baryshkov <dbaryshkov@gmail.com> <dmitry_baryshkov@mentor.com>
++Dmitry Baryshkov <dbaryshkov@gmail.com> <dmitry_eremin@mentor.com>
+ Dmitry Safonov <0x7f454c46@gmail.com> <dima@arista.com>
+ Dmitry Safonov <0x7f454c46@gmail.com> <d.safonov@partner.samsung.com>
+ Dmitry Safonov <0x7f454c46@gmail.com> <dsafonov@virtuozzo.com>
 -- 
-Without deviation from the norm, progress is not possible.
-
+2.28.0
 
