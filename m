@@ -2,131 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E46732702D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 19:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D6A22702F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 19:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726394AbgIRREF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 13:04:05 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:34928 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726273AbgIRREE (ORCPT
+        id S1726327AbgIRRJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 13:09:50 -0400
+Received: from so254-54.mailgun.net ([198.61.254.54]:23230 "EHLO
+        so254-54.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726239AbgIRRJu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 13:04:04 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08IH0lp8171942;
-        Fri, 18 Sep 2020 13:04:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=aYfAfNsZADDse3HgNhHndOnu4LfuAkhcLvK463qpQgg=;
- b=UvqlHwHdTUhAO2SJP6YobnmQFiORdouvjHj+TAHYotYNofN8/JW8StFG2FyuROAKwp1N
- JEB/sWkprInwcyjA2CR5aEwPQfzcXRK89SKm6e6t7fL0bZray7ShShkrV0UspwAL0Rza
- 8K1sGjb+o4OGedbTNUn1Ws/x6CNLVzpJS401fpcdVi6Z0Cl0bzXC4Jrzh2/+7TXwGbDx
- PPBgW6PcBB7Re0q2YYEMiA1dGvxfGH95qoAuOz6qBk1FvuHUT3VpJdEfroCl+BBA9WA8
- K+GPe+FU2V4DyNPqIhET2hLNHhmPd9bk/mCPHGHVlIrlIOW8Z3u8UKDFtMJ83lH65atG RQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33myrn25h3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Sep 2020 13:04:02 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08IH0lvg171936;
-        Fri, 18 Sep 2020 13:04:02 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33myrn25gq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Sep 2020 13:04:01 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08IGvnXt005489;
-        Fri, 18 Sep 2020 17:04:01 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma05wdc.us.ibm.com with ESMTP id 33k6q1dg8n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Sep 2020 17:04:01 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08IH3wUx45875474
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Sep 2020 17:03:58 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 39B0B6A047;
-        Fri, 18 Sep 2020 17:03:58 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A6BBA6A057;
-        Fri, 18 Sep 2020 17:03:56 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.128.188])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri, 18 Sep 2020 17:03:56 +0000 (GMT)
-Subject: Re: [PATCH v10 06/16] s390/vfio-ap: introduce shadow APCB
-To:     Cornelia Huck <cohuck@redhat.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
-        mjrosato@linux.ibm.com, pasic@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com
-References: <20200821195616.13554-1-akrowiak@linux.ibm.com>
- <20200821195616.13554-7-akrowiak@linux.ibm.com>
- <20200917162242.1941772a.cohuck@redhat.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <49b0dd56-0c5b-9096-91d1-aacb5ec886d1@linux.ibm.com>
-Date:   Fri, 18 Sep 2020 13:03:55 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Fri, 18 Sep 2020 13:09:50 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600448989; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=thyujIIB3eiKeskRUDzOVjH6lcM4CSCxYjc4gLe9/ZU=;
+ b=NIrcTZCNQ0xrqojuf0/GDKxDroVSFVMWQ9VgV1U+ZbJ5mu6E+WVpRWWCj3kmiV4EX/LvBfah
+ uaw8y45vU+NvKzJGfROJVg02X2AZg5o6MXeNxHg+4FEfOBRvJttMUOylwXN+2Oh6HYdRPsXK
+ vOuCXBq9NuoNUAyfP+Hl3Wg3FzU=
+X-Mailgun-Sending-Ip: 198.61.254.54
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5f64e99c4ab73023a70f57b3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Sep 2020 17:08:44
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0E77EC433FE; Fri, 18 Sep 2020 17:08:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 86C4CC433CB;
+        Fri, 18 Sep 2020 17:08:43 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20200917162242.1941772a.cohuck@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-18_15:2020-09-16,2020-09-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- impostorscore=0 adultscore=0 clxscore=1015 mlxscore=0 phishscore=0
- suspectscore=0 priorityscore=1501 lowpriorityscore=0 mlxlogscore=999
- spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009180135
+Date:   Fri, 18 Sep 2020 10:08:43 -0700
+From:   bbhatt@codeaurora.org
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     manivannan.sadhasivam@linaro.org, linux-arm-msm@vger.kernel.org,
+        hemantk@codeaurora.org, jhugo@codeaurora.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/3] bus: mhi: core: Introduce debugfs entries for MHI
+In-Reply-To: <bf24b8fe-8ff3-4ff3-a1f0-c276dcc5832c@infradead.org>
+References: <1600381176-37604-1-git-send-email-bbhatt@codeaurora.org>
+ <1600381176-37604-3-git-send-email-bbhatt@codeaurora.org>
+ <bf24b8fe-8ff3-4ff3-a1f0-c276dcc5832c@infradead.org>
+Message-ID: <59df7b450303542c498ff845ea171be4@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/17/20 10:22 AM, Cornelia Huck wrote:
-> On Fri, 21 Aug 2020 15:56:06 -0400
-> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->
->> The APCB is a field within the CRYCB that provides the AP configuration
->> to a KVM guest. Let's introduce a shadow copy of the KVM guest's APCB and
->> maintain it for the lifespan of the guest.
->>
->> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
->> ---
->>   drivers/s390/crypto/vfio_ap_ops.c     | 32 ++++++++++++++++++++++-----
->>   drivers/s390/crypto/vfio_ap_private.h |  2 ++
->>   2 files changed, 29 insertions(+), 5 deletions(-)
-> (...)
->
->> @@ -1202,13 +1223,12 @@ static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
->>   	if (ret)
->>   		return NOTIFY_DONE;
->>   
->> -	/* If there is no CRYCB pointer, then we can't copy the masks */
->> -	if (!matrix_mdev->kvm->arch.crypto.crycbd)
->> +	if (!vfio_ap_mdev_has_crycb(matrix_mdev))
->>   		return NOTIFY_DONE;
->>   
->> -	kvm_arch_crypto_set_masks(matrix_mdev->kvm, matrix_mdev->matrix.apm,
->> -				  matrix_mdev->matrix.aqm,
->> -				  matrix_mdev->matrix.adm);
->> +	memcpy(&matrix_mdev->shadow_apcb, &matrix_mdev->matrix,
->> +	       sizeof(matrix_mdev->shadow_apcb));
->> +	vfio_ap_mdev_commit_crycb(matrix_mdev);
-> We are sure that the shadow APCB always matches up as we are the only
-> ones manipulating the APCB in the CRYCB, right?
-
-Yes
-
->
->>   
->>   	return NOTIFY_OK;
->>   }
-
+On 2020-09-17 16:36, Randy Dunlap wrote:
+> On 9/17/20 3:19 PM, Bhaumik Bhatt wrote:
+>> diff --git a/drivers/bus/mhi/Kconfig b/drivers/bus/mhi/Kconfig
+>> index a8bd9bd..ae68347 100644
+>> --- a/drivers/bus/mhi/Kconfig
+>> +++ b/drivers/bus/mhi/Kconfig
+>> @@ -12,3 +12,11 @@ config MHI_BUS
+>>  	 communication protocol used by the host processors to control
+>>  	 and communicate with modem devices over a high speed peripheral
+>>  	 bus or shared memory.
+>> +
+>> +config MHI_BUS_DEBUG
+>> +       bool "Debugfs support for the MHI bus"
+>> +       depends on MHI_BUS && DEBUG_FS
+>> +       help
+>> +	 Enable debugfs support for use with the MHI transport. Allows
+>> +	 reading and/or modifying some values within the MHI controller
+>> +	 for debug and test purposes.
+> 
+> from Documentation/process/coding-style.rst:
+> 
+> """For all of the Kconfig* configuration files throughout the source 
+> tree,
+> the indentation is somewhat different.  Lines under a ``config`` 
+> definition
+> are indented with one tab, while help text is indented an additional 
+> two
+> spaces."""
+> 
+> Several lines above use spaces instead of one tab...
+Thank you for pointing out. I will fix this.
