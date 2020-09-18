@@ -2,204 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2528626EE8A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:29:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1F1A26F27D
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728114AbgIRC3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:29:15 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:41822 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728638AbgIRC3I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:29:08 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R301e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0U9GoJOP_1600396142;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U9GoJOP_1600396142)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 18 Sep 2020 10:29:02 +0800
-Date:   Fri, 18 Sep 2020 10:29:02 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-acpi@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Mike Rapoport <rppt@kernel.org>,
-        Scott Cheloha <cheloha@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH RFC 3/4] mm/page_alloc: always move pages to the tail of
- the freelist in unset_migratetype_isolate()
-Message-ID: <20200918022902.GD54754@L-31X9LVDL-1304.local>
-Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
-References: <20200916183411.64756-1-david@redhat.com>
- <20200916183411.64756-4-david@redhat.com>
+        id S1727610AbgIRCFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:05:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53772 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727531AbgIRCF2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:05:28 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1F0E5238E4;
+        Fri, 18 Sep 2020 02:05:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600394727;
+        bh=n9uYGRl08kDvHUfxAKaTg+k73v4fIxF3D6A/0fMjQjs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=hlVCvkjWSWNZLn4v114Ienf4zEUoh+pVOkxP6x0UKS8EM34naWVL6CZSIAj0yiwyr
+         QFW+NyKO5VDq19Kb1M97oO3eXrIITI4CWPdQ3RphLLPKCJ//0RAElnOJNfcKhfaDBE
+         bpJN4/odrtsivHoaueoBw73f8gANyDIXnmkTO3gI=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Zhu Yanjun <yanjunz@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 210/330] RDMA/rxe: Set sys_image_guid to be aligned with HW IB devices
+Date:   Thu, 17 Sep 2020 21:59:10 -0400
+Message-Id: <20200918020110.2063155-210-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
+References: <20200918020110.2063155-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916183411.64756-4-david@redhat.com>
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 08:34:10PM +0200, David Hildenbrand wrote:
->Page isolation doesn't actually touch the pages, it simply isolates
->pageblocks and moves all free pages to the MIGRATE_ISOLATE freelist.
->
->We already place pages to the tail of the freelists when undoing
->isolation via __putback_isolated_page(), let's do it in any case
->(e.g., if order == pageblock_order) and document the behavior.
->
->This change results in all pages getting onlined via online_pages() to
->be placed to the tail of the freelist.
+From: Zhu Yanjun <yanjunz@mellanox.com>
 
-I am sorry to not follow again. unset_migratetype_isolate() is used in
-__offline_pages if my understanding is correct. How does it contribute on
-online_pages? 
+[ Upstream commit d0ca2c35dd15a3d989955caec02beea02f735ee6 ]
 
->
->Cc: Andrew Morton <akpm@linux-foundation.org>
->Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
->Cc: Mel Gorman <mgorman@techsingularity.net>
->Cc: Michal Hocko <mhocko@kernel.org>
->Cc: Dave Hansen <dave.hansen@intel.com>
->Cc: Vlastimil Babka <vbabka@suse.cz>
->Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
->Cc: Oscar Salvador <osalvador@suse.de>
->Cc: Mike Rapoport <rppt@kernel.org>
->Cc: Scott Cheloha <cheloha@linux.ibm.com>
->Cc: Michael Ellerman <mpe@ellerman.id.au>
->Signed-off-by: David Hildenbrand <david@redhat.com>
->---
-> include/linux/page-isolation.h |  2 ++
-> mm/page_alloc.c                | 36 +++++++++++++++++++++++++++++-----
-> mm/page_isolation.c            |  8 ++++++--
-> 3 files changed, 39 insertions(+), 7 deletions(-)
->
->diff --git a/include/linux/page-isolation.h b/include/linux/page-isolation.h
->index 572458016331..a36be2cf4dbb 100644
->--- a/include/linux/page-isolation.h
->+++ b/include/linux/page-isolation.h
->@@ -38,6 +38,8 @@ struct page *has_unmovable_pages(struct zone *zone, struct page *page,
-> void set_pageblock_migratetype(struct page *page, int migratetype);
-> int move_freepages_block(struct zone *zone, struct page *page,
-> 				int migratetype, int *num_movable);
->+int move_freepages_block_tail(struct zone *zone, struct page *page,
->+			      int migratetype);
-> 
-> /*
->  * Changes migrate type in [start_pfn, end_pfn) to be MIGRATE_ISOLATE.
->diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->index bba9a0f60c70..75b0f49b4022 100644
->--- a/mm/page_alloc.c
->+++ b/mm/page_alloc.c
->@@ -899,6 +899,15 @@ static inline void move_to_free_list(struct page *page, struct zone *zone,
-> 	list_move(&page->lru, &area->free_list[migratetype]);
-> }
-> 
->+/* Used for pages which are on another list */
->+static inline void move_to_free_list_tail(struct page *page, struct zone *zone,
->+					  unsigned int order, int migratetype)
->+{
->+	struct free_area *area = &zone->free_area[order];
->+
->+	list_move_tail(&page->lru, &area->free_list[migratetype]);
->+}
->+
-> static inline void del_page_from_free_list(struct page *page, struct zone *zone,
-> 					   unsigned int order)
-> {
->@@ -2323,7 +2332,7 @@ static inline struct page *__rmqueue_cma_fallback(struct zone *zone,
->  */
-> static int move_freepages(struct zone *zone,
-> 			  struct page *start_page, struct page *end_page,
->-			  int migratetype, int *num_movable)
->+			  int migratetype, int *num_movable, bool to_tail)
-> {
-> 	struct page *page;
-> 	unsigned int order;
->@@ -2354,7 +2363,10 @@ static int move_freepages(struct zone *zone,
-> 		VM_BUG_ON_PAGE(page_zone(page) != zone, page);
-> 
-> 		order = page_order(page);
->-		move_to_free_list(page, zone, order, migratetype);
->+		if (to_tail)
->+			move_to_free_list_tail(page, zone, order, migratetype);
->+		else
->+			move_to_free_list(page, zone, order, migratetype);
-> 		page += 1 << order;
-> 		pages_moved += 1 << order;
-> 	}
->@@ -2362,8 +2374,9 @@ static int move_freepages(struct zone *zone,
-> 	return pages_moved;
-> }
-> 
->-int move_freepages_block(struct zone *zone, struct page *page,
->-				int migratetype, int *num_movable)
->+static int __move_freepages_block(struct zone *zone, struct page *page,
->+				  int migratetype, int *num_movable,
->+				  bool to_tail)
-> {
-> 	unsigned long start_pfn, end_pfn;
-> 	struct page *start_page, *end_page;
->@@ -2384,7 +2397,20 @@ int move_freepages_block(struct zone *zone, struct page *page,
-> 		return 0;
-> 
-> 	return move_freepages(zone, start_page, end_page, migratetype,
->-								num_movable);
->+			      num_movable, to_tail);
->+}
->+
->+int move_freepages_block(struct zone *zone, struct page *page,
->+			 int migratetype, int *num_movable)
->+{
->+	return __move_freepages_block(zone, page, migratetype, num_movable,
->+				      false);
->+}
->+
->+int move_freepages_block_tail(struct zone *zone, struct page *page,
->+			      int migratetype)
->+{
->+	return __move_freepages_block(zone, page, migratetype, NULL, true);
-> }
-> 
-> static void change_pageblock_range(struct page *pageblock_page,
->diff --git a/mm/page_isolation.c b/mm/page_isolation.c
->index abfe26ad59fd..84aa1d14751d 100644
->--- a/mm/page_isolation.c
->+++ b/mm/page_isolation.c
->@@ -83,7 +83,7 @@ static void unset_migratetype_isolate(struct page *page, unsigned migratetype)
-> 	 * Because freepage with more than pageblock_order on isolated
-> 	 * pageblock is restricted to merge due to freepage counting problem,
-> 	 * it is possible that there is free buddy page.
->-	 * move_freepages_block() doesn't care of merge so we need other
->+	 * move_freepages_block*() don't care about merging, so we need another
-> 	 * approach in order to merge them. Isolation and free will make
-> 	 * these pages to be merged.
-> 	 */
->@@ -106,9 +106,13 @@ static void unset_migratetype_isolate(struct page *page, unsigned migratetype)
-> 	 * If we isolate freepage with more than pageblock_order, there
-> 	 * should be no freepage in the range, so we could avoid costly
-> 	 * pageblock scanning for freepage moving.
->+	 *
->+	 * We didn't actually touch any of the isolated pages, so place them
->+	 * to the tail of the freelists. This is especially relevant during
->+	 * memory onlining.
-> 	 */
-> 	if (!isolated_page) {
->-		nr_pages = move_freepages_block(zone, page, migratetype, NULL);
->+		nr_pages = move_freepages_block_tail(zone, page, migratetype);
-> 		__mod_zone_freepage_state(zone, nr_pages, migratetype);
-> 	}
-> 	set_pageblock_migratetype(page, migratetype);
->-- 
->2.26.2
+The RXE driver doesn't set sys_image_guid and user space applications see
+zeros. This causes to pyverbs tests to fail with the following traceback,
+because the IBTA spec requires to have valid sys_image_guid.
 
+ Traceback (most recent call last):
+   File "./tests/test_device.py", line 51, in test_query_device
+     self.verify_device_attr(attr)
+   File "./tests/test_device.py", line 74, in verify_device_attr
+     assert attr.sys_image_guid != 0
+
+In order to fix it, set sys_image_guid to be equal to node_guid.
+
+Before:
+ 5: rxe0: ... node_guid 5054:00ff:feaa:5363 sys_image_guid
+ 0000:0000:0000:0000
+
+After:
+ 5: rxe0: ... node_guid 5054:00ff:feaa:5363 sys_image_guid
+ 5054:00ff:feaa:5363
+
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+Link: https://lore.kernel.org/r/20200323112800.1444784-1-leon@kernel.org
+Signed-off-by: Zhu Yanjun <yanjunz@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/infiniband/sw/rxe/rxe.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
+index a8c11b5e1e943..a92aca1745c16 100644
+--- a/drivers/infiniband/sw/rxe/rxe.c
++++ b/drivers/infiniband/sw/rxe/rxe.c
+@@ -116,6 +116,8 @@ static void rxe_init_device_param(struct rxe_dev *rxe)
+ 	rxe->attr.max_fast_reg_page_list_len	= RXE_MAX_FMR_PAGE_LIST_LEN;
+ 	rxe->attr.max_pkeys			= RXE_MAX_PKEYS;
+ 	rxe->attr.local_ca_ack_delay		= RXE_LOCAL_CA_ACK_DELAY;
++	addrconf_addr_eui48((unsigned char *)&rxe->attr.sys_image_guid,
++			rxe->ndev->dev_addr);
+ 
+ 	rxe->max_ucontext			= RXE_MAX_UCONTEXT;
+ }
 -- 
-Wei Yang
-Help you, Help me
+2.25.1
+
