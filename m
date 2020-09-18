@@ -2,92 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CEE42705D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 21:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC1882705DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 21:58:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726249AbgIRTv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 15:51:58 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:45268 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726154AbgIRTv6 (ORCPT
+        id S1726174AbgIRT5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 15:57:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53618 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726118AbgIRT5r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 15:51:58 -0400
-Received: by mail-pf1-f194.google.com with SMTP id k15so4090756pfc.12;
-        Fri, 18 Sep 2020 12:51:57 -0700 (PDT)
+        Fri, 18 Sep 2020 15:57:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600459065;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/g7ZSNROlpJMrEUtWDRpRe5vjuvZ4Kcl9hqq8QxtxyA=;
+        b=i/Tn5CQ16xbxaiYs6VntWtxbL9yMvfNa3w2rFt+/F841302X3X5d82iW2jOtkcr0rBEb3C
+        SDDaKcc5mSIHykUyiKHcii7lUxi+YIZUm2s6t7qZ3cAM5c7UiYwPvgFPmBt0+1czHCSZqI
+        4pb6ihp6xNmQPmylEE/FJticu8LeK8Y=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-521-35SujhhWNs-ckbv6cKddhg-1; Fri, 18 Sep 2020 15:57:43 -0400
+X-MC-Unique: 35SujhhWNs-ckbv6cKddhg-1
+Received: by mail-qv1-f70.google.com with SMTP id p20so4589440qvl.4
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 12:57:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jwJFqifRVAKIV7cNFiI3hJtWYZIgH2Laudl3kyC7pSQ=;
-        b=Y79Ylw6oXwBBMLQ86h1WCITPSyTZJ3RXHZPjTOpk4VMfVHFWXc8c51OwkqM1YuHqED
-         fWFNXfAOHWgFhjxvei6XKX7mXLmXOg814XAg8/RLDMObZhKjSLWWXy9/c4+ogTYRbrBt
-         plf3L4Fd7iOfLu2vmkdehHdnPNbNjuHRpfip5BkJUqSiAXfeDBezEJsIooDBaHctMvEs
-         rCtybvsK1qRiQY7FtuvUH5LvUFCf0Yn6TSH3Rs5puTiygPJMsuwvgE8I+IYyXjhItzVU
-         RIwgzjpHp6cExQxYAoacw0yIJah+wfV+uH7QdR8b8gU7PhswDknyb8JRQ8XT1PzBawEP
-         87nA==
-X-Gm-Message-State: AOAM530koaCMAOnM1nli5NJvKdWWQZOECbq3gU06IcG6ALFDDCYW+wuc
-        p3yoZTDNIL0FDspIHQMtb7M=
-X-Google-Smtp-Source: ABdhPJzVciLn/oCo2sInI+EDeWE+Is9ojVhKgRldY01jQsB/CIJFydhY6sB7tPTYZUe7oqZr2zXqgA==
-X-Received: by 2002:a62:8607:0:b029:13c:1611:6593 with SMTP id x7-20020a6286070000b029013c16116593mr32701757pfd.16.1600458717129;
-        Fri, 18 Sep 2020 12:51:57 -0700 (PDT)
-Received: from [192.168.50.110] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id k28sm4002499pfh.196.2020.09.18.12.51.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Sep 2020 12:51:55 -0700 (PDT)
-Subject: Re: [PATCH v11 0/4] scsi: ufs: Add Host Performance Booster Support
-To:     Christoph Hellwig <hch@infradead.org>,
-        Daejun Park <daejun7.park@samsung.com>
-Cc:     "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-References: <231786897.01599016802080.JavaMail.epsvc@epcpadp1>
- <CGME20200902031713epcms2p664cebf386ba19d3d05895fec89aaf4fe@epcms2p3>
- <231786897.01600211401846.JavaMail.epsvc@epcpadp1>
- <20200916052208.GB12923@infradead.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <2aecb02b-f845-b860-facd-e31bd964ac64@acm.org>
-Date:   Fri, 18 Sep 2020 12:51:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/g7ZSNROlpJMrEUtWDRpRe5vjuvZ4Kcl9hqq8QxtxyA=;
+        b=ipkytUOMZ5RixL8p4p6dA6ldaBd4cThmfLvS13SfvtN64f5kUqWnVKKXb6uHo1DNFu
+         79ZpV6XxKI2TyJeIxSj54RO9XiQSADshQIqGDVW36rKyL3jhSv7Wh3o0gX66uRF3aYd0
+         0lo34IbyUAr/XaSGuHxxWSQlqQgbW1JmUQ2x7m7Q7JQyme54y3HasBnWa71gZMUiSS9D
+         vBxE680hpJV1OcwTf2R9xGnCCWZnMCQQEwpQezuA2weGXQKAeJR+djSlW/Xy2zutb+45
+         LcrLCuuo+dYx0gHGNifJkwAGdAYz3bPb308jEOQsreHJBor0Q0Q8DTjgh/pj4zXSvH6p
+         1N5Q==
+X-Gm-Message-State: AOAM531EHUGDCvV2YrTqIvstOvw6HQj1mh2AmQSG5lkbo6fwuJsDlaHu
+        UpKR66BnPg+8MRmGy5gopwp4l4ki5jo1xBBsjGe2W/vizSLpSVv0Bm9eY4Oi1iFEvzWD9PClBh9
+        bS+uanAXtPC5UoSp4Pe03W/XX
+X-Received: by 2002:a37:aca:: with SMTP id 193mr35797831qkk.149.1600459062901;
+        Fri, 18 Sep 2020 12:57:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzrSCIo7RHMYY3CDjs/ANl3bd11aNIAfLAaxeB9KNGSSGUQAU8xnC5IuWMh44vt17aA9xbXdg==
+X-Received: by 2002:a37:aca:: with SMTP id 193mr35797817qkk.149.1600459062592;
+        Fri, 18 Sep 2020 12:57:42 -0700 (PDT)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
+        by smtp.gmail.com with ESMTPSA id n7sm2919885qtf.27.2020.09.18.12.57.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 12:57:41 -0700 (PDT)
+Date:   Fri, 18 Sep 2020 15:57:40 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Maya B . Gokhale" <gokhale2@llnl.gov>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Marty Mcfadden <mcfadden8@llnl.gov>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
+Message-ID: <20200918195740.GB5962@xz-x1>
+References: <20200915232238.GO1221970@ziepe.ca>
+ <e6c352f8-7ee9-0702-10a4-122d2c4422fc@nvidia.com>
+ <20200916174804.GC8409@ziepe.ca>
+ <20200916184619.GB40154@xz-x1>
+ <20200917112538.GD8409@ziepe.ca>
+ <CAHk-=wjtfjB3TqTFRzVmOrB9Mii6Yzc-=wKq0fu4ruDE6AsJgg@mail.gmail.com>
+ <20200917193824.GL8409@ziepe.ca>
+ <CAHk-=wiY_g+SSjncZi8sO=LrxXmMox0NO7K34-Fs653XVXheGg@mail.gmail.com>
+ <20200918164032.GA5962@xz-x1>
+ <CAHk-=whL44VySgScXjvCQ4VkeaW3nOcPMn0UwnY03iOE=1T7VQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200916052208.GB12923@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whL44VySgScXjvCQ4VkeaW3nOcPMn0UwnY03iOE=1T7VQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/20 10:22 PM, Christoph Hellwig wrote:
-> On Wed, Sep 16, 2020 at 08:05:17AM +0900, Daejun Park wrote:
->> Hi All,
->>
->> I want to know how to improve this patch.
+On Fri, Sep 18, 2020 at 10:16:19AM -0700, Linus Torvalds wrote:
+> The only change I'd make is to make it a "int" and put it next to the
+> "int map_count", since that will pack better on 64-bit (assuming you
+> don't do the randomize_layout thing, in which case it's all moot).
+
+Will do.
+
+[...]
+
+> > One issue is when we charge for cgroup we probably can't do that onto the new
+> > mm/task, since copy_namespaces() is called after copy_mm().
 > 
-> Drop it and fix the actual UFS feature to not be so horrible?
+> That cannot possibly matter as far as I can see.
+> 
+> Copying the page in between those two calls is already possible since
+> we've already dropped the mmap_lock by the time copy_namespaces() is
+> called. So if the parent was threaded, and another thread did a write
+> access, the parent would have caused that COW that we did early.
+> 
+> And any page copying cost should be to the parent anyway, since that
+> is who did the pinning that caused the copy in the first place.
+> 
+> So for both of those reasons - the COW can already happen between
+> copy_mm() and copy_namespaces(), *and* charging it to the parent
+> namespace is proper anyway - I think your cgroup worry is not
+> relevant.
+> 
+> I'm not even sure anything relevant to accounting is created, but my
+> point is that even if it is, I don't see how it could be an issue.
 
-A new UFS specification could be defined and could be implemented for future UFS
-devices. I think this patch series is intended to support the millions of UFS
-devices that are already in use, e.g. in Android smartphones.
+The parent process should be fine to do any COW and do its accounting right,
+which I agree.  But the new COW that we're adding here is for the child process
+rather than the parent.
 
-Thanks,
+I'm just afraid the parent process's accounting number could go very high after
+it pinned some pages and fork()ed a few more times, since those extra
+accountings will accumulate even after the children die, if I'm not wrong...
 
-Bart.
+Actually I tend to move copy_namespaces() to be before copy_mm() now..  I know
+nothing about namespaces, however I see that copy_namespaces() seems to be
+quite self-contained.  But I'm always ready for a "no, you can't"...
 
+> 
+> > The other thing is on how to fail.  E.g., when COW failed due to either
+> > charging of cgroup or ENOMEM, ideally we should fail fork() too.  Though that
+> > might need more changes - current patch silently kept the shared page for
+> > simplicity.
+> 
+> We already can fail forkind due to memory allocations failing. Again,
+> not an issue. It happens.
+
+Yes.  I didn't change this only because I thought it could save quite a few
+lines of codes.  However after I notice the fact that this patch will probably
+grow bigger no matter what, I'm kind of not worrying on this any more..
+
+-- 
+Peter Xu
 
