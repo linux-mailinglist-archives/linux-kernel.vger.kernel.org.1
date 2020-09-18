@@ -2,104 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07D627032D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 19:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6261E27032F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 19:24:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726273AbgIRRYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 13:24:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726007AbgIRRYU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 13:24:20 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D411C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 10:24:20 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id b22so6901147lfs.13
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 10:24:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e6vHhMkaPtX++PGx5jiUYCnfKpKOltu478EtiJp8yLA=;
-        b=ZU2+5L8SZkXq9a5GNzvsy1XCOuVkPArF8Zqy936bPpKXMZldfada0mBjSt7MQx+6lc
-         hYyTkDFpSYfmoKq4BrQNoWe8ScDPcMbZZLLS8RgckiPRICdnSxnbOytIyrECsy8fwWFD
-         7uim5Lw1FtAv+RIDbrGb0N9ZMJMlQ+VCnOjAs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e6vHhMkaPtX++PGx5jiUYCnfKpKOltu478EtiJp8yLA=;
-        b=COAbSHJ/66ExopOAzyVEZLaFoNXqMowVcBhgwwkKTO9VcQsROLeDJsiB9JYCJY4GNC
-         EcIjD+trf0lPh84ve1hmgF/rMBjL8pppnNhDwIlTKAFjLCykuswdtUAhFOhpxzexKqPY
-         FcX5ILkBm3yXH+mlGte88mMlOYwxwTzJwhxvSN/ZWUwaE/YqkFvFjh0TA0AjK+IKEZ6I
-         rxDJGxu1JPwiSN5fhCQ+cD7vfM/IQbEa3KmFihnNqEQt/9CUT5TtKHBlWuxzQxi+ev6g
-         lxQsvAIkQJ35qlhnLAHfaq62eU8v3xWUTNjmT9373gF2OcmO8mtIdlYo/JKtvTvEb41W
-         zh/g==
-X-Gm-Message-State: AOAM532FtdbbG+6PpJUpcwQfzzgIIu44oWsxdaF2k+32X4XpetD3v/BF
-        c3aNqnMYahsBq1N+FTQFOr9F+e7QIAihDg==
-X-Google-Smtp-Source: ABdhPJwjzzvqCZHm0yxLjiAN8UBms3fXdYvNvcirrqIteNwa32dCnm8on11rV4MoxVeBFf0bniX48w==
-X-Received: by 2002:a05:6512:2030:: with SMTP id s16mr10580433lfs.277.1600449857958;
-        Fri, 18 Sep 2020 10:24:17 -0700 (PDT)
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
-        by smtp.gmail.com with ESMTPSA id l4sm707479lfg.296.2020.09.18.10.24.10
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Sep 2020 10:24:11 -0700 (PDT)
-Received: by mail-lj1-f170.google.com with SMTP id s205so5706805lja.7
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 10:24:10 -0700 (PDT)
-X-Received: by 2002:a05:651c:32e:: with SMTP id b14mr11309516ljp.314.1600449850596;
- Fri, 18 Sep 2020 10:24:10 -0700 (PDT)
+        id S1726333AbgIRRYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 13:24:32 -0400
+Received: from mga02.intel.com ([134.134.136.20]:20560 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726007AbgIRRYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 13:24:32 -0400
+IronPort-SDR: z7VMRBb7oF37TGj2Nmwp2Xvbr6V4gXRqKauMF+hdZyaf0H//HbmJossukABs//6J6hwZ3o+m9C
+ ZGx/5f+ZQZUw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9748"; a="147671534"
+X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
+   d="scan'208";a="147671534"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 10:24:28 -0700
+IronPort-SDR: rr9f3VCLLmOjz9hSvF10aX5G17aKu+w6kiEVPPxj6fmpFYwliE+msfw5gaIXAy7ffw00MoPXAF
+ vHMwD0c575Bg==
+X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
+   d="scan'208";a="347074562"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 10:24:27 -0700
+Date:   Fri, 18 Sep 2020 10:26:30 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Jacob Pan <jacob.pan.linux@gmail.com>,
+        iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>, Wu Hao <hao.wu@intel.com>,
+        Yi Sun <yi.y.sun@intel.com>, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH v9 0/7] IOMMU user API enhancement
+Message-ID: <20200918102630.6d592442@jacob-builder>
+In-Reply-To: <20200918100235.GQ31590@8bytes.org>
+References: <1599861476-53416-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <20200918100235.GQ31590@8bytes.org>
+Organization: OTC
+X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20200917204514.GA2880159@google.com> <CAHk-=whXpv0KJvpL153dhUaRgSjzT8H4dD85hRw-fAwXvXnKAA@mail.gmail.com>
- <20200918162305.GB25599@embeddedor>
-In-Reply-To: <20200918162305.GB25599@embeddedor>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 18 Sep 2020 10:23:54 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjH+OH08yjp=LpexkUnGp0Ogusk3WX0G7Q+Lh7Anfr21A@mail.gmail.com>
-Message-ID: <CAHk-=wjH+OH08yjp=LpexkUnGp0Ogusk3WX0G7Q+Lh7Anfr21A@mail.gmail.com>
-Subject: Re: [GIT PULL] percpu fix for v5.9-rc6
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 9:17 AM Gustavo A. R. Silva
-<gustavoars@kernel.org> wrote:
->
-> This bug could have been prevented by either adopting better
-> coding practices or through the use[3] of the recent struct_size() helper.
+Hi Joerg,
 
-Well, my unspoken point was that coding practices are just
-theoretical. Coding practices don't help - actual *checking* of them
-helps.
+On Fri, 18 Sep 2020 12:02:36 +0200, Joerg Roedel <joro@8bytes.org> wrote:
 
-I realize that structures with flexible-array member are allowed to
-use sizeof() in standard C, but if we want to make sure this doesn't
-happen, we would need to have a stricter model than that. But a quick
-google didn't find any flag to enable such a stricter mode.
+> Hi Jacob,
+> 
+> On Fri, Sep 11, 2020 at 02:57:49PM -0700, Jacob Pan wrote:
+> > IOMMU user API header was introduced to support nested DMA translation
+> > and related fault handling. The current UAPI data structures consist of
+> > three areas that cover the interactions between host kernel and guest:
+> >  - fault handling
+> >  - cache invalidation
+> >  - bind guest page tables, i.e. guest PASID
+> > 
+> > Future extensions are likely to support more architectures and vIOMMU
+> > features.
+> > 
+> > In the previous discussion, using user-filled data size and feature
+> > flags is made a preferred approach over a unified version number.
+> > https://lkml.org/lkml/2020/1/29/45
+> > 
+> > In addition to introduce argsz field to data structures, this patchset
+> > is also trying to document the UAPI design, usage, and extension rules.
+> > VT-d driver changes to utilize the new argsz field is included, VFIO
+> > usage is to follow.
+> > 
+> > This set is available at:
+> > https://github.com/jacobpan/linux.git vsva_v5.9_uapi_v9  
+> 
+> This changes user visible structs in incompatible ways, are you sure
+> those are not used yet anywhere?
+> 
+These structs are not used yet in that IOMMU UAPI does not provide
+direct user IOCTLs. For guest SVA of assigned devices, VFIO is used. Yi's
+companion patches are here.
+https://lore.kernel.org/linux-iommu/5dd95fbf-054c-3bbc-e76b-2d5636214ff2@redhat.com/T/#t
 
-I guess a sparse warning would work, but sparse already has too many
-warnings and as a result most people don't care - even if they were to
-run sparse in the first place.
+These user structs can also be used by other framework in the future, such
+as vDPA.
 
-Is there some gcc option that I didn't find to help find any questionable cases?
+> Please address Randy's comments on patch 1 and my comment about the
+> build-time checking and repost with linux-api@vger.kernel.org on Cc.
+> 
+Will do.
 
-Because if we have a coding practice that you should use
-'struct_size()', then we should also have a way to _verify_ that.
+> Regards,
+> 
+> 	Joerg
 
-The whole - and really ONLY - point of using flexible arrays was that
-it would protect against these things. And as things are now, it
-simply doesn't. It's not an actual improvement over just using a
-zero-sized array.
 
-(Slightly related: copying a struct has the exact same issue. A
-flexible array is no better than a zero-sized array, and generates the
-same code and the same lack of any warnings, afaik).
+Thanks,
 
-               Linus
+Jacob
