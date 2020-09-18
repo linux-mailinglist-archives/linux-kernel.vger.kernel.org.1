@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB84B26EFEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:39:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B552626EFED
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:39:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728721AbgIRCMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:12:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37862 "EHLO mail.kernel.org"
+        id S1728709AbgIRCL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:11:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728174AbgIRCLy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:11:54 -0400
+        id S1727526AbgIRCLz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:11:55 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3035F235F7;
-        Fri, 18 Sep 2020 02:11:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 679C92376E;
+        Fri, 18 Sep 2020 02:11:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600395114;
-        bh=x8otqe658uFEM+ovxAz7zRbLHXxEy6UTkVWx/+qbFLo=;
+        s=default; t=1600395115;
+        bh=XVGbZGXzyGzRewPWKVp/MbziheKaRme8wTSbBriuDLQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z9dMj9qMvX9IiXdxpT3uiVeUqyH4A93SCiTH1k0/N7+GMXGpM2/8Y4xBBCsCvbH/x
-         ZNG0RD9aLPlFJReUf2cTHc6mOEpvTbCdIA+PC9QELFYGszd82C9xdGURHQrFSEMwOR
-         kPUJCBwYmWbn05xFDn2iaOzBT4DsEhSX6gDnpotA=
+        b=xsfuO+3vGdhAdBEVEVy1gr76n22Jvi9XKYhuB2l5/EGop+jHNEdJ/mhpxDhOhEDRG
+         w9b4g5m+o+JBz3FJKGo79/sXAkHQPSLtj1zJFViIetOYfyNR1DvA9B9FSkfRzj9o1X
+         TQLQNZC6iGil7XszaUh6ATCtx7GrsXYJzkh5rg7A=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Tony Lindgren <tony@atomide.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 187/206] wlcore: fix runtime pm imbalance in wlcore_regdomain_config
-Date:   Thu, 17 Sep 2020 22:07:43 -0400
-Message-Id: <20200918020802.2065198-187-sashal@kernel.org>
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Sasha Levin <sashal@kernel.org>, linux-mtd@lists.infradead.org
+Subject: [PATCH AUTOSEL 4.19 188/206] mtd: rawnand: omap_elm: Fix runtime PM imbalance on error
+Date:   Thu, 17 Sep 2020 22:07:44 -0400
+Message-Id: <20200918020802.2065198-188-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
 References: <20200918020802.2065198-1-sashal@kernel.org>
@@ -46,37 +44,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit 282a04bf1d8029eb98585cb5db3fd70fe8bc91f7 ]
+[ Upstream commit 37f7212148cf1d796135cdf8d0c7fee13067674b ]
 
 pm_runtime_get_sync() increments the runtime PM usage counter even
-the call returns an error code. Thus a pairing decrement is needed
-on the error handling path to keep the counter balanced.
+when it returns an error code. Thus a pairing decrement is needed on
+the error handling path to keep the counter balanced.
 
 Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Acked-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200520124649.10848-1-dinghao.liu@zju.edu.cn
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20200522104008.28340-1-dinghao.liu@zju.edu.cn
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ti/wlcore/main.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/omap_elm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/ti/wlcore/main.c b/drivers/net/wireless/ti/wlcore/main.c
-index 2ca5658bbc2ab..43c7b37dec0c9 100644
---- a/drivers/net/wireless/ti/wlcore/main.c
-+++ b/drivers/net/wireless/ti/wlcore/main.c
-@@ -3671,8 +3671,10 @@ void wlcore_regdomain_config(struct wl1271 *wl)
- 		goto out;
- 
- 	ret = pm_runtime_get_sync(wl->dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put_autosuspend(wl->dev);
- 		goto out;
-+	}
- 
- 	ret = wlcore_cmd_regdomain_config_locked(wl);
- 	if (ret < 0) {
+diff --git a/drivers/mtd/nand/raw/omap_elm.c b/drivers/mtd/nand/raw/omap_elm.c
+index a3f32f939cc17..6736777a41567 100644
+--- a/drivers/mtd/nand/raw/omap_elm.c
++++ b/drivers/mtd/nand/raw/omap_elm.c
+@@ -421,6 +421,7 @@ static int elm_probe(struct platform_device *pdev)
+ 	pm_runtime_enable(&pdev->dev);
+ 	if (pm_runtime_get_sync(&pdev->dev) < 0) {
+ 		ret = -EINVAL;
++		pm_runtime_put_sync(&pdev->dev);
+ 		pm_runtime_disable(&pdev->dev);
+ 		dev_err(&pdev->dev, "can't enable clock\n");
+ 		return ret;
 -- 
 2.25.1
 
