@@ -2,115 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C14626EDA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D59626ED54
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727009AbgIRCWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:22:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26505 "EHLO
+        id S1729371AbgIRCSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:18:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34261 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729505AbgIRCRK (ORCPT
+        by vger.kernel.org with ESMTP id S1729372AbgIRCST (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:17:10 -0400
+        Thu, 17 Sep 2020 22:18:19 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600395428;
+        s=mimecast20190719; t=1600395499;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Ku+sICGKzWJ9hbk/lDryotAHNAcONZujUxBnYspdRTU=;
-        b=R77uLUoOKad2WFiiuIkiJVwmx34ntgsjcuSE/1RiM3Sgn2XQK58CTB2cUQpqivFvAUAd/F
-        B1EhYVPc0c6DfrAgj9XzqynG5pQLy7B7hW22vK2UjQIsREyHipwILI2t0GAI/QYBFHdlr/
-        arcrnwg/MMthyZ9Kg6XlVkAGs4VGHqs=
+        bh=fScXCn92Z2M4f5AGmAC2C4Z0ZYGJptb/Xy5j5iRbW78=;
+        b=ByDmbHL3FHuSOEdaWNdsHFKLmGA48ZtOti1gA9+mnYc6u/UBznam2+dWqayBKLTvJN1vOE
+        k6ywfMb9h6r51OPNZwJRKyKnSEljFAY/m/GlzrUS/tuwOb0IK/XyWfAFWgazjZoT/0zlE1
+        0J+r1FtIAHg7JFkfhrrkt2VpF6ZOj8A=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-137-wx2RmR3bNLelwWeZZ_RbzQ-1; Thu, 17 Sep 2020 22:17:06 -0400
-X-MC-Unique: wx2RmR3bNLelwWeZZ_RbzQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+ us-mta-87-PPTSZXiXN8q1jnpCMVT9Rg-1; Thu, 17 Sep 2020 22:18:16 -0400
+X-MC-Unique: PPTSZXiXN8q1jnpCMVT9Rg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3B88110BBEE6;
-        Fri, 18 Sep 2020 02:17:05 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C417C10BBED9;
+        Fri, 18 Sep 2020 02:18:15 +0000 (UTC)
 Received: from [10.72.13.167] (ovpn-13-167.pek2.redhat.com [10.72.13.167])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4314510013C1;
-        Fri, 18 Sep 2020 02:16:58 +0000 (UTC)
-Subject: Re: [PATCH v2 -next] vdpa: mlx5: change Kconfig depends to fix build
- errors
-To:     Randy Dunlap <rdunlap@infradead.org>,
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 63F0555765;
+        Fri, 18 Sep 2020 02:18:08 +0000 (UTC)
+Subject: Re: [vhost next 0/2] mlx5 vdpa fix netdev status
+To:     Eli Cohen <elic@nvidia.com>, mst@redhat.com,
         virtualization@lists.linux-foundation.org,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>
-References: <22a2bd60-d895-2bfb-50be-4ac3d131ed82@infradead.org>
+        linux-kernel@vger.kernel.org
+Cc:     lulu@redhat.com
+References: <20200917121320.GA98085@mtl-vdi-166.wap.labs.mlnx>
 From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <f306fbfb-2984-d52d-b7be-7d65db643955@redhat.com>
-Date:   Fri, 18 Sep 2020 10:16:57 +0800
+Message-ID: <c3b9f21c-11ae-b192-be5b-4a3bc0338712@redhat.com>
+Date:   Fri, 18 Sep 2020 10:18:06 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <22a2bd60-d895-2bfb-50be-4ac3d131ed82@infradead.org>
+In-Reply-To: <20200917121320.GA98085@mtl-vdi-166.wap.labs.mlnx>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 2020/9/18 上午3:45, Randy Dunlap wrote:
-> From: Randy Dunlap <rdunlap@infradead.org>
+On 2020/9/17 下午8:13, Eli Cohen wrote:
+> Hi Michael,
 >
-> drivers/vdpa/mlx5/ uses vhost_iotlb*() interfaces, so add a dependency
-> on VHOST to eliminate build errors.
+> the following two patches aim to fix a failure to set the vdpa driver
+> status bit VIRTIO_NET_S_LINK_UP thus causing failure to bring the link
+> up. I break it to two patches:
 >
-> ld: drivers/vdpa/mlx5/core/mr.o: in function `add_direct_chain':
-> mr.c:(.text+0x106): undefined reference to `vhost_iotlb_itree_first'
-> ld: mr.c:(.text+0x1cf): undefined reference to `vhost_iotlb_itree_next'
-> ld: mr.c:(.text+0x30d): undefined reference to `vhost_iotlb_itree_first'
-> ld: mr.c:(.text+0x3e8): undefined reference to `vhost_iotlb_itree_next'
-> ld: drivers/vdpa/mlx5/core/mr.o: in function `_mlx5_vdpa_create_mr':
-> mr.c:(.text+0x908): undefined reference to `vhost_iotlb_itree_first'
-> ld: mr.c:(.text+0x9e6): undefined reference to `vhost_iotlb_itree_next'
-> ld: drivers/vdpa/mlx5/core/mr.o: in function `mlx5_vdpa_handle_set_map':
-> mr.c:(.text+0xf1d): undefined reference to `vhost_iotlb_itree_first'
+> 1. Introduce proper mlx5 API to set 16 bit status fields per virtio
+> requirements.
+> 2. Fix the failure to set the bit
 >
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: "Michael S. Tsirkin" <mst@redhat.com>
-> Cc: Jason Wang <jasowang@redhat.com>
-> Cc: virtualization@lists.linux-foundation.org
-> Cc: Saeed Mahameed <saeedm@nvidia.com>
-> Cc: Leon Romanovsky <leonro@nvidia.com>
-> Cc: netdev@vger.kernel.org
-> ---
-> v2: change from select to depends (Saeed)
+> Eli Cohen (2):
+>    vdpa/mlx5: Make use of a specific 16 bit endianness API
+>    vdpa/mlx5: Fix failure to bring link up
 >
->   drivers/vdpa/Kconfig |    2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> --- linux-next-20200917.orig/drivers/vdpa/Kconfig
-> +++ linux-next-20200917/drivers/vdpa/Kconfig
-> @@ -31,7 +31,7 @@ config IFCVF
->   
->   config MLX5_VDPA
->   	bool "MLX5 VDPA support library for ConnectX devices"
-> -	depends on MLX5_CORE
-> +	depends on VHOST && MLX5_CORE
+>   drivers/vdpa/mlx5/net/mlx5_vnet.c | 9 +++++++--
+>   1 file changed, 7 insertions(+), 2 deletions(-)
 
 
-It looks to me that depending on VHOST is too heavyweight.
+Acked-by: Jason Wang <jasowang@redhat.com>
 
-I guess what it really needs is VHOST_IOTLB. So we can use select 
-VHOST_IOTLB here.
-
-Thanks
-
-
->   	default n
->   	help
->   	  Support library for Mellanox VDPA drivers. Provides code that is
->
 
