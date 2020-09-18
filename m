@@ -2,145 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A1C26F850
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F18F26F85C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726753AbgIRIbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 04:31:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726739AbgIRIbn (ORCPT
+        id S1726798AbgIRIcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 04:32:00 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:37706 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726743AbgIRIbz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 04:31:43 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5057CC06178C
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 01:31:41 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id md22so3992676pjb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 01:31:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=V6QA5rlwQIgAumyCtY/vC8OZHPGW9fkvmobEZ61e3iw=;
-        b=RLCsRbGEIvBCMUuhsoukaG9neeZlgVgZbHJD1ivveD5GumnlluwtLd2WdZ/jIC/XVi
-         OVDwap9KXfLe1ucenLJ2xRDya+7cBCILx/fCyOEwcmdCfmTxCKCmDmCrU93XhmBaJmfn
-         QGkSidPS6H6/ySwK04ULnFvBcvusmSA0Vbsog=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=V6QA5rlwQIgAumyCtY/vC8OZHPGW9fkvmobEZ61e3iw=;
-        b=PkqQ0J+Wh68/UBcBT9g6hhtyOGMhyZ/OX8L7gLn3Tbp6uDJM10XAmz/LILwEELhaSj
-         h+IHXKHKRjF+pxBhpq0tTwpv51uHZ3BxzKvHK8vimd59S8EiRa5wEYroIYCaVtVowxGJ
-         tQh0fcFZ36V6HFpeCEhXY7pFsTr8Hmamy4Jv95bHE/eA6/Q2AikJO549+tf6UnvPmAxg
-         G7wz/YHefrYrRD8o2UBTpAmtPihFfIrzQRhRdKEvYvEOlg+8YdtsDLelrpDoTKzzitYM
-         eXi7OOyP2yWDxhjt5RxDDdzOun1W4t9xj/Mm1hfH5svp6YfCLk0KV0RZ9+B8RVVrPm/c
-         oIEA==
-X-Gm-Message-State: AOAM533CDJbugHVtj+uJ7I9ABHUgLOySfap0NuFNChy7QYKJAwtzPcRl
-        /KHPCBxPUcDZVRaxrjhZyXCE3A==
-X-Google-Smtp-Source: ABdhPJygqgBey434xgCtbPNom+Nm5OBIq9zcYixgGAlrzs7AOfK44AeJ1z3uv1szI1z/iQNJZqhoBQ==
-X-Received: by 2002:a17:90b:1642:: with SMTP id il2mr11671416pjb.93.1600417900741;
-        Fri, 18 Sep 2020 01:31:40 -0700 (PDT)
-Received: from ikjn-p920.tpe.corp.google.com ([2401:fa00:1:10:f693:9fff:fef4:a8fc])
-        by smtp.gmail.com with ESMTPSA id g206sm2193172pfb.178.2020.09.18.01.31.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 01:31:40 -0700 (PDT)
-From:   Ikjoon Jang <ikjn@chromium.org>
-To:     Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
-        devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-mtd@lists.infradead.org
-Cc:     Ikjoon Jang <ikjn@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH v2 4/5] spi: spi-mtk-nor: support 36bit dma addressing to mediatek
-Date:   Fri, 18 Sep 2020 16:31:22 +0800
-Message-Id: <20200918162834.v2.4.Id1cb208392928afc7ceed4de06924243c7858cd0@changeid>
-X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
-In-Reply-To: <20200918083124.3921207-1-ikjn@chromium.org>
-References: <20200918083124.3921207-1-ikjn@chromium.org>
+        Fri, 18 Sep 2020 04:31:55 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08I87k8R074586;
+        Fri, 18 Sep 2020 04:31:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=OVwmFcDXD14Sj/el2nOYFGLk1fFCIlWriAqJljEUo+g=;
+ b=f+HiGThgP4uwy/48e0sVNC+ByHLIedn9Im1NJzlCPDbf3cO2sWSf9JWtgQ8i8fdt6moK
+ WxxQgA3/lBvy86scsw1iPi23TZKgtOQYIe4dEVkum5u2qm+2q7Il4Ie6eEZ4sY8/MOU0
+ UMQVTqPsd3FyGfYbJUOqjFfz5Dr9303ZKQOqpgCnMMkWotXFAgw0NTHTnwh/ID+B/MqC
+ VB+tzs7lrxUvHJRB2pI10HgANK7mkW99b7t3gJ/zaSbzDuK1K500LT1SYUrHBzf+EcuG
+ ht9CX8iUh73UsOsJwnayqwP5eMEjbTPLA0Z7jsYIkmYgZmAK4lXGRWYiFIWoBAqh/aSF qg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33mrut1cpg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Sep 2020 04:31:31 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08I839bt058396;
+        Fri, 18 Sep 2020 04:31:31 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33mrut1cnq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Sep 2020 04:31:31 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08I8S312002386;
+        Fri, 18 Sep 2020 08:31:29 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 33k9geatfd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Sep 2020 08:31:29 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08I8VQ7T30736842
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 18 Sep 2020 08:31:26 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5D2B411C04A;
+        Fri, 18 Sep 2020 08:31:26 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AB0A411C050;
+        Fri, 18 Sep 2020 08:31:23 +0000 (GMT)
+Received: from [9.199.44.250] (unknown [9.199.44.250])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 18 Sep 2020 08:31:23 +0000 (GMT)
+Subject: Re: [PATCH v6 0/8] powerpc/watchpoint: Bug fixes plus new feature
+ flag
+To:     Rogerio Alves <rcardoso@linux.ibm.com>
+Cc:     mpe@ellerman.id.au, christophe.leroy@c-s.fr, mikey@neuling.org,
+        jniethe5@gmail.com, pedromfc@linux.ibm.com,
+        linux-kernel@vger.kernel.org, paulus@samba.org,
+        rogealve@linux.ibm.com, naveen.n.rao@linux.vnet.ibm.com,
+        linuxppc-dev@lists.ozlabs.org,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+References: <20200902042945.129369-1-ravi.bangoria@linux.ibm.com>
+ <6927523d-de63-910a-e789-5fab424c7eb9@linux.ibm.com>
+From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Message-ID: <339e69c6-947c-031b-8018-f590afe8569e@linux.ibm.com>
+Date:   Fri, 18 Sep 2020 14:01:22 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
+In-Reply-To: <6927523d-de63-910a-e789-5fab424c7eb9@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-18_06:2020-09-16,2020-09-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
+ malwarescore=0 mlxlogscore=999 mlxscore=0 priorityscore=1501
+ suspectscore=0 lowpriorityscore=0 spamscore=0 impostorscore=0 adultscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009180062
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch enables 36bit dma address support to spi-mtk-nor.
-Currently 36bit dma addressing is enabled only for mt8192-nor.
 
-Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
----
 
-(no changes since v1)
+On 9/17/20 6:54 PM, Rogerio Alves wrote:
+> On 9/2/20 1:29 AM, Ravi Bangoria wrote:
+>> Patch #1 fixes issue for quardword instruction on p10 predecessors.
+>> Patch #2 fixes issue for vector instructions.
+>> Patch #3 fixes a bug about watchpoint not firing when created with
+>>           ptrace PPC_PTRACE_SETHWDEBUG and CONFIG_HAVE_HW_BREAKPOINT=N.
+>>           The fix uses HW_BRK_TYPE_PRIV_ALL for ptrace user which, I
+>>           guess, should be fine because we don't leak any kernel
+>>           addresses and PRIV_ALL will also help to cover scenarios when
+>>           kernel accesses user memory.
+>> Patch #4,#5 fixes infinite exception bug, again the bug happens only
+>>           with CONFIG_HAVE_HW_BREAKPOINT=N.
+>> Patch #6 fixes two places where we are missing to set hw_len.
+>> Patch #7 introduce new feature bit PPC_DEBUG_FEATURE_DATA_BP_ARCH_31
+>>           which will be set when running on ISA 3.1 compliant machine.
+>> Patch #8 finally adds selftest to test scenarios fixed by patch#2,#3
+>>           and also moves MODE_EXACT tests outside of BP_RANGE condition.
+>>
+[...]
 
- drivers/spi/spi-mtk-nor.c | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+> 
+> Tested this patch set for:
+> - SETHWDEBUG when CONFIG_HAVE_HW_BREAKPOINT=N = OK
+> - Fix exception handling for CONFIG_HAVE_HW_BREAKPOINT=N = OK
+> - Check for PPC_DEBUG_FEATURE_DATA_BP_ARCH_31 = OK
+> - Fix quarword instruction handling on p10 predecessors = OK
+> - Fix handling of vector instructions = OK
+> 
+> Also tested for:
+> - Set second watchpoint (P10 Mambo) = OK
+> - Infinity loop on sc instruction = OK
 
-diff --git a/drivers/spi/spi-mtk-nor.c b/drivers/spi/spi-mtk-nor.c
-index e14798a6e7d0..99dd5dca744e 100644
---- a/drivers/spi/spi-mtk-nor.c
-+++ b/drivers/spi/spi-mtk-nor.c
-@@ -78,6 +78,8 @@
- #define MTK_NOR_REG_DMA_FADR		0x71c
- #define MTK_NOR_REG_DMA_DADR		0x720
- #define MTK_NOR_REG_DMA_END_DADR	0x724
-+#define MTK_NOR_REG_DMA_DADR_HB		0x738
-+#define MTK_NOR_REG_DMA_END_DADR_HB	0x73c
- 
- #define MTK_NOR_PRG_MAX_SIZE		6
- // Reading DMA src/dst addresses have to be 16-byte aligned
-@@ -102,6 +104,7 @@ struct mtk_nor {
- 	unsigned int spi_freq;
- 	bool wbuf_en;
- 	bool has_irq;
-+	bool high_dma;
- 	struct completion op_done;
- };
- 
-@@ -291,6 +294,11 @@ static int read_dma(struct mtk_nor *sp, u32 from, unsigned int length,
- 	writel(dma_addr, sp->base + MTK_NOR_REG_DMA_DADR);
- 	writel(dma_addr + length, sp->base + MTK_NOR_REG_DMA_END_DADR);
- 
-+	if (sp->high_dma) {
-+		writel(dma_addr >> 32, sp->base + MTK_NOR_REG_DMA_DADR_HB);
-+		writel((dma_addr + length) >> 32, sp->base + MTK_NOR_REG_DMA_END_DADR_HB);
-+	}
-+
- 	if (sp->has_irq) {
- 		reinit_completion(&sp->op_done);
- 		mtk_nor_rmw(sp, MTK_NOR_REG_IRQ_EN, MTK_NOR_IRQ_DMA, 0);
-@@ -594,7 +602,8 @@ static const struct spi_controller_mem_ops mtk_nor_mem_ops = {
- };
- 
- static const struct of_device_id mtk_nor_match[] = {
--	{ .compatible = "mediatek,mt8173-nor" },
-+	{ .compatible = "mediatek,mt8192-nor", .data = (void *)36 },
-+	{ .compatible = "mediatek,mt8173-nor", .data = (void *)32 },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, mtk_nor_match);
-@@ -607,6 +616,7 @@ static int mtk_nor_probe(struct platform_device *pdev)
- 	u8 *buffer;
- 	struct clk *spi_clk, *ctlr_clk;
- 	int ret, irq;
-+	unsigned long dma_bits;
- 
- 	base = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(base))
-@@ -623,6 +633,13 @@ static int mtk_nor_probe(struct platform_device *pdev)
- 	buffer = devm_kmalloc(&pdev->dev,
- 			      MTK_NOR_BOUNCE_BUF_SIZE + MTK_NOR_DMA_ALIGN,
- 			      GFP_KERNEL);
-+
-+	dma_bits = (unsigned long)of_device_get_match_data(&pdev->dev);
-+	if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(dma_bits))) {
-+		dev_err(&pdev->dev, "failed to set dma mask(%lu)\n", dma_bits);
-+		return -EINVAL;
-+	}
-+
- 	if (!buffer)
- 		return -ENOMEM;
- 
--- 
-2.28.0.681.g6f77f65b4e-goog
+Thanks Rogerio!
 
+Ravi
