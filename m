@@ -2,131 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF3922707A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B7F82707AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726483AbgIRU44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 16:56:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20513 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726252AbgIRU4x (ORCPT
+        id S1726281AbgIRU7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 16:59:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726139AbgIRU7i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 16:56:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600462611;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+JyKabsxJ3Nm9swpkvGUAC1THbgtwTk2m6inzHilA8A=;
-        b=WkvhKBmDyUGwe1XMMAyBhXIELoVYNhnFbfNFgOxNKdk6N2/L0GWUPVyuC5tarcoTftw8Fc
-        b1YAfp3uoFHoUpDso9rPgl9ZylfT0UWGIaoKSnJqHjAjgxwGKrm4k8GhuMoiu4KvJtI36P
-        ebDLvK0tpCb8Chm9PsmKqYDSPeq9Aes=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-534-bwABePACM8eJw37-xBA8ug-1; Fri, 18 Sep 2020 16:56:47 -0400
-X-MC-Unique: bwABePACM8eJw37-xBA8ug-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 92B1E6416B;
-        Fri, 18 Sep 2020 20:56:45 +0000 (UTC)
-Received: from treble (ovpn-112-141.rdu2.redhat.com [10.10.112.141])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C50BF78822;
-        Fri, 18 Sep 2020 20:56:43 +0000 (UTC)
-Date:   Fri, 18 Sep 2020 15:56:41 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Julien Thierry <jthierry@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org, mbenes@suse.cz,
-        raphael.gault@arm.com, benh@kernel.crashing.org
-Subject: Re: [PATCH 1/3] objtool: check: Fully validate the stack frame
-Message-ID: <20200918205641.6nvnsib2paqa6xyn@treble>
-References: <20200915081204.9204-1-jthierry@redhat.com>
- <20200915081204.9204-2-jthierry@redhat.com>
+        Fri, 18 Sep 2020 16:59:38 -0400
+X-Greylist: delayed 166 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 18 Sep 2020 13:59:38 PDT
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [IPv6:2a00:da80:fff0:2::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00739C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:59:37 -0700 (PDT)
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 265431C0B85; Fri, 18 Sep 2020 22:59:34 +0200 (CEST)
+Date:   Fri, 18 Sep 2020 22:59:33 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+Subject: Re: [PATCH v12 1/8] x86/cet/ibt: Add Kconfig option for user-mode
+ Indirect Branch Tracking
+Message-ID: <20200918205933.GB4304@duo.ucw.cz>
+References: <20200918192312.25978-1-yu-cheng.yu@intel.com>
+ <20200918192312.25978-2-yu-cheng.yu@intel.com>
+ <ce2524cc-081b-aec9-177a-11c7431cb20d@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="2B/JsCI69OhZNC5r"
 Content-Disposition: inline
-In-Reply-To: <20200915081204.9204-2-jthierry@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <ce2524cc-081b-aec9-177a-11c7431cb20d@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 09:12:02AM +0100, Julien Thierry wrote:
-> A valid stack frame should contain both the return address and the
-> previous frame pointer value.
-> 
-> On x86, the return value is placed on the stack by the calling
-> instructions. On other architectures, the callee need to explicitly
-> save the return value on the stack.
 
-s/return value/return address/g
+--2B/JsCI69OhZNC5r
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> Add the necessary checks to verify a function properly sets up the all
+On Fri 2020-09-18 13:24:13, Randy Dunlap wrote:
+> Hi,
+>=20
+> If you do another version of this:
+>=20
+> On 9/18/20 12:23 PM, Yu-cheng Yu wrote:
+> > Introduce Kconfig option X86_INTEL_BRANCH_TRACKING_USER.
+> >=20
+> > Indirect Branch Tracking (IBT) provides protection against CALL-/JMP-
+> > oriented programming attacks.  It is active when the kernel has this
+> > feature enabled, and the processor and the application support it.
+> > When this feature is enabled, legacy non-IBT applications continue to
+> > work, but without IBT protection.
+> >=20
+> > Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+> > ---
+> > v10:
+> > - Change build-time CET check to config depends on.
+> >=20
+> >  arch/x86/Kconfig | 16 ++++++++++++++++
+> >  1 file changed, 16 insertions(+)
+> >=20
+> > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> > index 6b6dad011763..b047e0a8d1c2 100644
+> > --- a/arch/x86/Kconfig
+> > +++ b/arch/x86/Kconfig
+> > @@ -1963,6 +1963,22 @@ config X86_INTEL_SHADOW_STACK_USER
+> > =20
+> >  	  If unsure, say y.
+> > =20
+> > +config X86_INTEL_BRANCH_TRACKING_USER
+> > +	prompt "Intel Indirect Branch Tracking for user-mode"
+> > +	def_bool n
+> > +	depends on CPU_SUP_INTEL && X86_64
+> > +	depends on $(cc-option,-fcf-protection)
+> > +	select X86_INTEL_CET
+> > +	help
+> > +	  Indirect Branch Tracking (IBT) provides protection against
+> > +	  CALL-/JMP-oriented programming attacks.  It is active when
+> > +	  the kernel has this feature enabled, and the processor and
+> > +	  the application support it.  When this feature is enabled,
+> > +	  legacy non-IBT applications continue to work, but without
+> > +	  IBT protection.
+> > +
+> > +	  If unsure, say y
+>=20
+> 	  If unsure, say y.
 
-s/the all/all the/
+Actually, it would be "If unsure, say Y.", to be consistent with the
+rest of the Kconfig.
 
-> the elements of the stack frame.
-> 
-> Signed-off-by: Julien Thierry <jthierry@redhat.com>
-> ---
->  tools/objtool/arch/x86/include/cfi_regs.h |  4 ++++
->  tools/objtool/check.c                     | 17 +++++++++++++----
->  2 files changed, 17 insertions(+), 4 deletions(-)
-> 
-> diff --git a/tools/objtool/arch/x86/include/cfi_regs.h b/tools/objtool/arch/x86/include/cfi_regs.h
-> index 79bc517efba8..19b75b8b8439 100644
-> --- a/tools/objtool/arch/x86/include/cfi_regs.h
-> +++ b/tools/objtool/arch/x86/include/cfi_regs.h
-> @@ -22,4 +22,8 @@
->  #define CFI_RA			16
->  #define CFI_NUM_REGS		17
->  
-> +#define CFA_SIZE	16
+But I wonder if Yes by default is good idea. Only very new CPUs will
+support this, right? Are they even available at the market? Should the
+help text say "if your CPU is Whatever Lake or newer, ...." :-) ?
 
-If I remember correctly, CFA (stolen from DWARF) is "Caller Frame
-Address".  It's the stack address of the caller, before the call.
+Best regards,
+									Pavel
 
-I get the feeling CFA_SIZE is the wrong name, because CFA is an address,
-and its size isn't 16 bytes.  But I'm not quite sure what this is
-supposed to represent.  Is it supposed to be the size of the frame
-pointer + return address?  Isn't that always going to be 16 bytes for
-both arches?
 
-> +#define CFA_BP_OFFSET	-16
-> +#define CFA_RA_OFFSET	-8
-> +
->  #endif /* _OBJTOOL_CFI_REGS_H */
-> diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-> index 500f63b3dcff..7db6761d28c2 100644
-> --- a/tools/objtool/check.c
-> +++ b/tools/objtool/check.c
-> @@ -1669,12 +1669,20 @@ static bool has_modified_stack_frame(struct instruction *insn, struct insn_state
->  	return false;
->  }
->  
-> +static bool check_reg_frame_pos(const struct cfi_reg *reg, int cfa_start,
-> +				int expected_offset)
-> +{
-> +	return reg->base == CFI_CFA &&
-> +	       reg->offset == cfa_start + expected_offset;
-> +}
-> +
->  static bool has_valid_stack_frame(struct insn_state *state)
->  {
->  	struct cfi_state *cfi = &state->cfi;
->  
-> -	if (cfi->cfa.base == CFI_BP && cfi->regs[CFI_BP].base == CFI_CFA &&
-> -	    cfi->regs[CFI_BP].offset == -16)
-> +	if (cfi->cfa.base == CFI_BP && cfi->cfa.offset >= CFA_SIZE &&
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
 
-Why '>=' rather than '=='?
+--2B/JsCI69OhZNC5r
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> +	    check_reg_frame_pos(&cfi->regs[CFI_BP], -cfi->cfa.offset + CFA_SIZE, CFA_BP_OFFSET) &&
-> +	    check_reg_frame_pos(&cfi->regs[CFI_RA], -cfi->cfa.offset + CFA_SIZE, CFA_RA_OFFSET))
+-----BEGIN PGP SIGNATURE-----
 
-Isn't '-cfi->cfa.offset + CFA_SIZE' always going to be zero?
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX2UftQAKCRAw5/Bqldv6
+8plYAJ9nFyHsUzbiZhQ7o33UQI7cxDzUEACgqU4q1tgLMV+pvALHfe+r2VShpJA=
+=M20A
+-----END PGP SIGNATURE-----
 
--- 
-Josh
-
+--2B/JsCI69OhZNC5r--
