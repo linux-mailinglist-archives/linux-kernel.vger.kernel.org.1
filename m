@@ -2,64 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8296D270315
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 19:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2526A270317
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 19:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726367AbgIRRTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 13:19:05 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:52360 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725955AbgIRRTD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 13:19:03 -0400
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 08IHIwEN007851
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Sep 2020 13:18:59 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 4850A42003C; Fri, 18 Sep 2020 13:18:58 -0400 (EDT)
-Date:   Fri, 18 Sep 2020 13:18:58 -0400
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 4.19 059/206] ext4: make dioread_nolock the
- default
-Message-ID: <20200918171858.GA80112@mit.edu>
-References: <20200918020802.2065198-1-sashal@kernel.org>
- <20200918020802.2065198-59-sashal@kernel.org>
- <20200918025859.GB3518637@gmail.com>
+        id S1726290AbgIRRTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 13:19:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35334 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725955AbgIRRTU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 13:19:20 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 85D8921707;
+        Fri, 18 Sep 2020 17:19:19 +0000 (UTC)
+Date:   Fri, 18 Sep 2020 13:19:17 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        "Frank A. Cancio Bello" <frank@generalsoftwareinc.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Subject: Re: [PATCH v3 2/2] docs: trace: ring-buffer-design.rst: use the new
+ SPDX tag
+Message-ID: <20200918131917.13d9f570@gandalf.local.home>
+In-Reply-To: <dbc9bd9ab30c6862e465343239e82102cbdc0f39.1599628249.git.mchehab+huawei@kernel.org>
+References: <cover.1599628249.git.mchehab+huawei@kernel.org>
+        <dbc9bd9ab30c6862e465343239e82102cbdc0f39.1599628249.git.mchehab+huawei@kernel.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918025859.GB3518637@gmail.com>
-/From:  "Theodore Y. Ts'o" <tytso@mit.edu>
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 07:58:59PM -0700, Eric Biggers wrote:
-> On Thu, Sep 17, 2020 at 10:05:35PM -0400, Sasha Levin wrote:
-> > From: Theodore Ts'o <tytso@mit.edu>
-> > 
-> > [ Upstream commit 244adf6426ee31a83f397b700d964cff12a247d3 ]
-> > 
-> > This fixes the direct I/O versus writeback race which can reveal stale
-> > data, and it improves the tail latency of commits on slow devices.
-> > 
-> > Link: https://lore.kernel.org/r/20200125022254.1101588-1-tytso@mit.edu
-> > Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-> > Signed-off-by: Sasha Levin <sashal@kernel.org>I
+On Wed,  9 Sep 2020 07:14:33 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+
+> SPDX v3.10 gained support for GFDL-1.2 with no invariant sections:
 > 
-> Any particular reason to be backporting this?  I thought I saw some fixes for
-> dioread_nolock go by, after it was made the default.  Are you getting all of
-> those fixes too?
+> 	https://spdx.org/licenses/GFDL-1.2-no-invariants-only.html
+> 
+> Let's use it, instead of keeping a license text for this file.
 
-Agreed, making dioread_nolock the default has enough issues that it's
-not something that I'd suggest backporting at this point.  It's a
-fundamental behavioral change that it's not something we should change
-in a stable kernel.
+Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-						- Ted
+-- Steve
