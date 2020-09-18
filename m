@@ -2,94 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2355826F8EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 061A726F8EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726368AbgIRJHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 05:07:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38864 "EHLO mx2.suse.de"
+        id S1726556AbgIRJHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 05:07:32 -0400
+Received: from 8bytes.org ([81.169.241.247]:45194 "EHLO theia.8bytes.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725874AbgIRJHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 05:07:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EA1ECAE09;
-        Fri, 18 Sep 2020 09:07:36 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 7145D1E12E1; Fri, 18 Sep 2020 11:07:02 +0200 (CEST)
-Date:   Fri, 18 Sep 2020 11:07:02 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     Boaz Harrosh <boaz@plexistor.com>, Hou Tao <houtao1@huawei.com>,
-        peterz@infradead.org, Ingo Molnar <mingo@redhat.com>,
-        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Jan Kara <jack@suse.cz>
-Subject: Re: [RFC PATCH] locking/percpu-rwsem: use this_cpu_{inc|dec}() for
- read_count
-Message-ID: <20200918090702.GB18920@quack2.suse.cz>
-References: <20200915140750.137881-1-houtao1@huawei.com>
- <20200915150610.GC2674@hirez.programming.kicks-ass.net>
- <20200915153113.GA6881@redhat.com>
- <20200915155150.GD2674@hirez.programming.kicks-ass.net>
- <20200915160344.GH35926@hirez.programming.kicks-ass.net>
- <b885ce8e-4b0b-8321-c2cc-ee8f42de52d4@huawei.com>
- <ddd5d732-06da-f8f2-ba4a-686c58297e47@plexistor.com>
- <20200917120132.GA5602@redhat.com>
+        id S1725874AbgIRJHc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 05:07:32 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 99E44396; Fri, 18 Sep 2020 11:07:30 +0200 (CEST)
+Date:   Fri, 18 Sep 2020 11:07:29 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     krzk@kernel.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-tegra@vger.kernel.org,
+        jonathanh@nvidia.com, vdumpa@nvidia.com, thierry.reding@gmail.com
+Subject: Re: [RESEND][PATCH 0/2] iommu/tegra-smmu: Fix TLB line for Tegra210
+Message-ID: <20200918090728.GL31590@8bytes.org>
+References: <20200917113155.13438-1-nicoleotsuka@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200917120132.GA5602@redhat.com>
+In-Reply-To: <20200917113155.13438-1-nicoleotsuka@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 17-09-20 14:01:33, Oleg Nesterov wrote:
-> On 09/17, Boaz Harrosh wrote:
-> >
-> > On 16/09/2020 15:32, Hou Tao wrote:
-> > <>
-> > >However the performance degradation is huge under aarch64 (4 sockets, 24 core per sockets): nearly 60% lost.
-> > >
-> > >v4.19.111
-> > >no writer, reader cn                               | 24        | 48        | 72        | 96
-> > >the rate of down_read/up_read per second           | 166129572 | 166064100 | 165963448 | 165203565
-> > >the rate of down_read/up_read per second (patched) |  63863506 |  63842132 |  63757267 |  63514920
-> > >
-> >
-> > I believe perhaps Peter Z's suggestion of an additional
-> > percpu_down_read_irqsafe() API and let only those in IRQ users pay the
-> > penalty.
-> >
-> > Peter Z wrote:
-> > >My leading alternative was adding: percpu_down_read_irqsafe() /
-> > >percpu_up_read_irqsafe(), which use local_irq_save() instead of
-> > >preempt_disable().
+On Thu, Sep 17, 2020 at 04:31:53AM -0700, Nicolin Chen wrote:
+> These two patches fix ACTIVE_TLB_LINES field setting in tegra-smmu
+> driver for Tegra210 platforms.
 > 
-> This means that __sb_start/end_write() and probably more users in fs/super.c
-> will have to use this API, not good.
+> This resend in series groups two previous seperate changes that're
+> corelated, being pointed out by Thierry. Also adding his Acked-by.
 > 
-> IIUC, file_end_write() was never IRQ safe (at least if !CONFIG_SMP), even
-> before 8129ed2964 ("change sb_writers to use percpu_rw_semaphore"), but this
-> doesn't matter...
+> Nicolin Chen (2):
+>   iommu/tegra-smmu: Fix tlb_mask
+>   memory: tegra: Correct num_tlb_lines for tegra210
 > 
-> Perhaps we can change aio.c, io_uring.c and fs/overlayfs/file.c to avoid
-> file_end_write() in IRQ context, but I am not sure it's worth the trouble.
+>  drivers/iommu/tegra-smmu.c      | 2 +-
+>  drivers/memory/tegra/tegra210.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 
-Well, that would be IMO rather difficult. We need to do file_end_write()
-after the IO has completed so if we don't want to do it in IRQ context,
-we'd have to queue a work to a workqueue or something like that. And that's
-going to be expensive compared to pure per-cpu inc/dec...
-
-If people really wanted to avoid irq-safe inc/dec for archs where it is
-more expensive, one idea I had was that we could add 'read_count_in_irq' to
-percpu_rw_semaphore. So callers in normal context would use read_count and
-callers in irq context would use read_count_in_irq. And the writer side
-would sum over both but we don't care about performance of that one much.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Applied, thanks.
