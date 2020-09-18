@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 300FE26F158
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1C7A26F165
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:51:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727461AbgIRCIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:08:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59930 "EHLO mail.kernel.org"
+        id S1727258AbgIRCvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:51:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728069AbgIRCIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:08:32 -0400
+        id S1726799AbgIRCIg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:08:36 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7E568238A1;
-        Fri, 18 Sep 2020 02:08:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A89F4239D1;
+        Fri, 18 Sep 2020 02:08:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394907;
-        bh=kXiBFLPXfbltYOYkIjUF8bZhx7YJNIxV8jyvFjFZf5k=;
+        s=default; t=1600394909;
+        bh=9bhT+d2wplmQhS13aydpn+rwKaCtCinfXPFFZPyzACM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JVSvC46snZFNMKjdlg24oC92e8HkHMATBkAb1Qlsnd+9Re5YmvzvdH6ped6iatIxq
-         eHluxor07XTZN8Mk1JzmYFI9IoWzlnNGyC8S+XQjTI/E8zPiqON8hSw4APh5U/jT4j
-         Aoxqo2OTdl1ylHqxyR4Ln5al4bCbOkNkqr4C9AHg=
+        b=00HVCMF/9iW68L+fyasIJTLodXY5qDkOMG4GHwsq1awdzYB6WAxNkFlaQNOzFI8IC
+         S8TG9koasXtQwzs05hWlmoi+PE+biS5L3kNOyB4/taCd0jF/EojJmeZP/6wgMSY5z8
+         /xiOmGpfsDjMgjto0ZsY1vBfInN1St0aOySUz5fE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hou Tao <houtao1@huawei.com>, Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Sasha Levin <sashal@kernel.org>, linux-mtd@lists.infradead.org
-Subject: [PATCH AUTOSEL 4.19 020/206] mtd: cfi_cmdset_0002: don't free cfi->cfiq in error path of cfi_amdstd_setup()
-Date:   Thu, 17 Sep 2020 22:04:56 -0400
-Message-Id: <20200918020802.2065198-20-sashal@kernel.org>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Evan Quan <evan.quan@amd.com>, Sasha Levin <sashal@kernel.org>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 4.19 022/206] drm/amdgpu/powerplay/smu7: fix AVFS handling with custom powerplay table
+Date:   Thu, 17 Sep 2020 22:04:58 -0400
+Message-Id: <20200918020802.2065198-22-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
 References: <20200918020802.2065198-1-sashal@kernel.org>
@@ -42,34 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+From: Alex Deucher <alexander.deucher@amd.com>
 
-[ Upstream commit 03976af89e3bd9489d542582a325892e6a8cacc0 ]
+[ Upstream commit 901245624c7812b6c95d67177bae850e783b5212 ]
 
-Else there may be a double-free problem, because cfi->cfiq will
-be freed by mtd_do_chip_probe() if both the two invocations of
-check_cmd_set() return failure.
+When a custom powerplay table is provided, we need to update
+the OD VDDC flag to avoid AVFS being enabled when it shouldn't be.
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
-Reviewed-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+Bug: https://bugzilla.kernel.org/show_bug.cgi?id=205393
+Reviewed-by: Evan Quan <evan.quan@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/chips/cfi_cmdset_0002.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 1dbc9554a0786..3ab75d3e2ce32 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -727,7 +727,6 @@ static struct mtd_info *cfi_amdstd_setup(struct mtd_info *mtd)
- 	kfree(mtd->eraseregions);
- 	kfree(mtd);
- 	kfree(cfi->cmdset_priv);
--	kfree(cfi->cfiq);
- 	return NULL;
- }
+diff --git a/drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c b/drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c
+index 219440bebd052..420f7d15511a7 100644
+--- a/drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c
++++ b/drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c
+@@ -3969,6 +3969,13 @@ static int smu7_set_power_state_tasks(struct pp_hwmgr *hwmgr, const void *input)
+ 			"Failed to populate and upload SCLK MCLK DPM levels!",
+ 			result = tmp_result);
  
++	/*
++	 * If a custom pp table is loaded, set DPMTABLE_OD_UPDATE_VDDC flag.
++	 * That effectively disables AVFS feature.
++	 */
++	if (hwmgr->hardcode_pp_table != NULL)
++		data->need_update_smu7_dpm_table |= DPMTABLE_OD_UPDATE_VDDC;
++
+ 	tmp_result = smu7_update_avfs(hwmgr);
+ 	PP_ASSERT_WITH_CODE((0 == tmp_result),
+ 			"Failed to update avfs voltages!",
 -- 
 2.25.1
 
