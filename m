@@ -2,31 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A9226F867
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:32:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23E0A26F869
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:35:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726830AbgIRIca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 04:32:30 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13253 "EHLO huawei.com"
+        id S1726307AbgIRIfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 04:35:01 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13295 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726304AbgIRIca (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 04:32:30 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 43E1D56B5A0EC57846F3;
-        Fri, 18 Sep 2020 16:32:28 +0800 (CST)
-Received: from huawei.com (10.175.124.27) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Fri, 18 Sep 2020
- 16:32:17 +0800
+        id S1726109AbgIRIfB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 04:35:01 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id BC9EAA1EEE72563EFB9D;
+        Fri, 18 Sep 2020 16:34:56 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Fri, 18 Sep 2020
+ 16:34:48 +0800
 From:   Wang ShaoBo <bobo.shaobowang@huawei.com>
 CC:     <cj.chengjian@huawei.com>, <huawei.libin@huawei.com>,
-        <Jonathan.Cameron@huawei.com>, <fabrice.gasnier@st.com>,
-        <linux-iio@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
+        <jroedel@suse.de>, <linux-rockchip@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH -next] iio: adc: stm32-dfsdm: Use devm_platform_get_and_ioremap_resource()
-Date:   Fri, 18 Sep 2020 16:31:42 +0800
-Message-ID: <20200918083142.32816-1-bobo.shaobowang@huawei.com>
+Subject: [PATCH -next] iommu/rockchip: Use devm_platform_ioremap_resource()
+Date:   Fri, 18 Sep 2020 16:34:15 +0800
+Message-ID: <20200918083415.33024-1-bobo.shaobowang@huawei.com>
 X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -37,40 +35,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make use of devm_platform_get_and_ioremap_resource() provided by
-driver core platform instead of duplicated analogue, dev_err() is
-removed because it has been done in devm_ioremap_resource().
+Make use of devm_platform_ioremap_resource() provided by driver
+core platform instead of duplicated analogue.
 
 Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
 ---
- drivers/iio/adc/stm32-dfsdm-core.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ drivers/iommu/rockchip-iommu.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/iio/adc/stm32-dfsdm-core.c b/drivers/iio/adc/stm32-dfsdm-core.c
-index 0b8bea88b011..42a7377704a4 100644
---- a/drivers/iio/adc/stm32-dfsdm-core.c
-+++ b/drivers/iio/adc/stm32-dfsdm-core.c
-@@ -226,16 +226,13 @@ static int stm32_dfsdm_parse_of(struct platform_device *pdev,
- 	if (!node)
- 		return -EINVAL;
+diff --git a/drivers/iommu/rockchip-iommu.c b/drivers/iommu/rockchip-iommu.c
+index e5d86b7177de..cc4b654be2cc 100644
+--- a/drivers/iommu/rockchip-iommu.c
++++ b/drivers/iommu/rockchip-iommu.c
+@@ -1126,7 +1126,6 @@ static int rk_iommu_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+ 	struct rk_iommu *iommu;
+-	struct resource *res;
+ 	int num_res = pdev->num_resources;
+ 	int err, i;
  
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!res) {
--		dev_err(&pdev->dev, "Failed to get memory resource\n");
--		return -ENODEV;
--	}
--	priv->dfsdm.phys_base = res->start;
--	priv->dfsdm.base = devm_ioremap_resource(&pdev->dev, res);
-+	priv->dfsdm.base = devm_platform_get_and_ioremap_resource(pdev, 0,
-+							&res);
- 	if (IS_ERR(priv->dfsdm.base))
- 		return PTR_ERR(priv->dfsdm.base);
+@@ -1144,10 +1143,7 @@ static int rk_iommu_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
  
-+	priv->dfsdm.phys_base = res->start;
-+
- 	/*
- 	 * "dfsdm" clock is mandatory for DFSDM peripheral clocking.
- 	 * "dfsdm" or "audio" clocks can be used as source clock for
+ 	for (i = 0; i < num_res; i++) {
+-		res = platform_get_resource(pdev, IORESOURCE_MEM, i);
+-		if (!res)
+-			continue;
+-		iommu->bases[i] = devm_ioremap_resource(&pdev->dev, res);
++		iommu->bases[i] = devm_platform_ioremap_resource(pdev, i);
+ 		if (IS_ERR(iommu->bases[i]))
+ 			continue;
+ 		iommu->num_mmu++;
 -- 
 2.17.1
 
