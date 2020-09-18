@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F6B026F84D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CBD526F851
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726732AbgIRIbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 04:31:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57006 "EHLO
+        id S1726762AbgIRIbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 04:31:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726718AbgIRIbg (ORCPT
+        with ESMTP id S1726733AbgIRIbj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 04:31:36 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C6EAC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 01:31:36 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id l71so3059523pge.4
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 01:31:36 -0700 (PDT)
+        Fri, 18 Sep 2020 04:31:39 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA953C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 01:31:38 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id md22so3992642pjb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 01:31:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=PtgT8oGdi7tJWYrZylWP5X+Qu5mtWrTjssOMjWBLBio=;
-        b=gIWNzXXI/65W9lRuW4rM4ZuoKImgBcadG9k1ZTZdlozcVR0w6y7VHSw5ovnfxV+y4s
-         me4YUC5KA0N/CovI2zxVtNEXpQ8aXA1C+c8tsuTUo/mPKvhbcVunwTsO8sq35KVqV2wP
-         tRlaD2cHR/DshX6cxwuMkOhzPkx4cdjcbJxpY=
+        bh=mxzc9a+AIt4XaKyopJ42uaLRgvLPMA2J58JJPLPnlzc=;
+        b=aKWzQy2E785EwAM3zf48FJb9SNxM9DqZ/gBRc2hdvGt4wpySSDDXJpsjYmHjGtfHFg
+         Pef8sAkwLXdKucFl0JVcA28XlPywjWT6DIOd/jU30Y3A7jt6NOFX2NGxl2v6yHSy8XPy
+         U0V84UjZArDqeNq+9eUQ3y6A7X+a2w20XBgfY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=PtgT8oGdi7tJWYrZylWP5X+Qu5mtWrTjssOMjWBLBio=;
-        b=KEc8Z0C4O67I6HU4P/dJyGdN00jFMUefKFkNCvwqxQA2X6ns9j2SRrnqHItyiwdSlS
-         IAac8SLsaEF996PDTniqJh6394h+fDY7uPEEuEuwyXseEn8fUNKDkXDwGVkjJ9jqjFHb
-         SBBiWlkKUpZ+sYN0jdpaXgTe3ecnVJbnPysxC/0yXOnBszmqOAdSR42pmk4Cp4OJ2b4m
-         5nfr9ZKlTW+HUQ1Te/f8PmLsiauLpsXgkOlLdvUKBA7ZxN9eLZx/jLC7eN0yQ2zbifht
-         n+MJFUuukjBVZaWO9hxOaroJFRoDaODfJayYdjOtn4BeGvLGpYCE0PPABEc4yjGxNNb/
-         iFYA==
-X-Gm-Message-State: AOAM530bEePk1AolsjXOAVSIPtD4Om6Z1F8FenyOYgQDw12DUTzLONQm
-        lmwZXqBuCATaR8/7BIucn1NmHA==
-X-Google-Smtp-Source: ABdhPJylLeVr7aTAeXl/TquJqTgllezEHHoyI6zJ5/+F2fB1EMgD/15lCBC8Kt+Lo/SC0WxayecFLQ==
-X-Received: by 2002:aa7:934e:0:b029:13f:d056:593 with SMTP id 14-20020aa7934e0000b029013fd0560593mr25187131pfn.15.1600417896081;
-        Fri, 18 Sep 2020 01:31:36 -0700 (PDT)
+        bh=mxzc9a+AIt4XaKyopJ42uaLRgvLPMA2J58JJPLPnlzc=;
+        b=f6mz3JuMrsHkXqJnqVWCUXF2DKaeijNcbH3XRYNMzcX2093cMIQL4mS6OciDzHNZsp
+         SyR9q+po//gylyiLZ297jo6LiMydTk4aTb8ZlfX/ygItL9DXxSHZzMy7610atKs32pHj
+         BwPzu3ZKqX/KMqWPfmEQQF67DXg3s9eZc38FSWMgeH3hsHatsObQZfqLY0PIWMUY2Vm4
+         QUW8RFqtwGn0Grja0+7gJUusI7YmaryiY0IqX4oi9FSQG64889kd7jRUTdFAdCr1OyZW
+         z4Vbc1Yz1l6nYSxZOFEiiI1fmdrjYeJgQD2vkknwtr/h9shLs+sCAdLGgOUUKtqsUPj1
+         VZ6g==
+X-Gm-Message-State: AOAM530nyjrWg5rIjXvSNZ2PobhsuwjD6FUnuvpmvpEQHtz6cvAMJUGB
+        2nIrZ4Ha3AP2Tbm/zWW9w3LfVw==
+X-Google-Smtp-Source: ABdhPJzBVKAVejjumP8o+IHhjgLXqk+sE9Xn+VoGTnsSVjmfSDXZ5WjU6KJ+Men/NRjcjzHizH5IhA==
+X-Received: by 2002:a17:90a:858a:: with SMTP id m10mr11441620pjn.185.1600417898406;
+        Fri, 18 Sep 2020 01:31:38 -0700 (PDT)
 Received: from ikjn-p920.tpe.corp.google.com ([2401:fa00:1:10:f693:9fff:fef4:a8fc])
-        by smtp.gmail.com with ESMTPSA id g206sm2193172pfb.178.2020.09.18.01.31.34
+        by smtp.gmail.com with ESMTPSA id g206sm2193172pfb.178.2020.09.18.01.31.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 01:31:35 -0700 (PDT)
+        Fri, 18 Sep 2020 01:31:37 -0700 (PDT)
 From:   Ikjoon Jang <ikjn@chromium.org>
 To:     Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
         devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
@@ -53,9 +53,9 @@ Cc:     Ikjoon Jang <ikjn@chromium.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-mediatek@lists.infradead.org
-Subject: [PATCH v2 2/5] spi: spi-mtk-nor: fix mishandled logics in checking SPI memory operation
-Date:   Fri, 18 Sep 2020 16:31:20 +0800
-Message-Id: <20200918162834.v2.2.I3de2918f09b817cc2ae6d324f1ece62779ecc7cf@changeid>
+Subject: [PATCH v2 3/5] spi: spi-mtk-nor: use dma_alloc_coherent() for bounce buffer
+Date:   Fri, 18 Sep 2020 16:31:21 +0800
+Message-Id: <20200918162834.v2.3.I06cb65401ab5ad63ea30c4788d26633928d80f38@changeid>
 X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
 In-Reply-To: <20200918083124.3921207-1-ikjn@chromium.org>
 References: <20200918083124.3921207-1-ikjn@chromium.org>
@@ -65,126 +65,147 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix a simple bug which can limits its transfer size,
-and add a simple helper function for code cleanups.
+Use dma_alloc_coherent() for bounce buffer instead of kmalloc.
 
-Fixes: a59b2c7c56bf ("spi: spi-mtk-nor: support standard spi properties")
 Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
 
 ---
 
 (no changes since v1)
 
- drivers/spi/spi-mtk-nor.c | 62 ++++++++++++++++++++++++---------------
- 1 file changed, 38 insertions(+), 24 deletions(-)
+ drivers/spi/spi-mtk-nor.c | 60 +++++++++++++++++++++++----------------
+ 1 file changed, 35 insertions(+), 25 deletions(-)
 
 diff --git a/drivers/spi/spi-mtk-nor.c b/drivers/spi/spi-mtk-nor.c
-index 6e6ca2b8e6c8..54b2c0fde95b 100644
+index 54b2c0fde95b..e14798a6e7d0 100644
 --- a/drivers/spi/spi-mtk-nor.c
 +++ b/drivers/spi/spi-mtk-nor.c
-@@ -167,52 +167,63 @@ static bool mtk_nor_match_read(const struct spi_mem_op *op)
- 	return false;
+@@ -96,6 +96,7 @@ struct mtk_nor {
+ 	struct device *dev;
+ 	void __iomem *base;
+ 	u8 *buffer;
++	dma_addr_t buffer_dma;
+ 	struct clk *spi_clk;
+ 	struct clk *ctlr_clk;
+ 	unsigned int spi_freq;
+@@ -275,19 +276,16 @@ static void mtk_nor_setup_bus(struct mtk_nor *sp, const struct spi_mem_op *op)
+ 	mtk_nor_rmw(sp, MTK_NOR_REG_BUSCFG, reg, MTK_NOR_BUS_MODE_MASK);
  }
  
--static int mtk_nor_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
-+static bool need_bounce(void *cpu_addr, unsigned long len)
+-static int mtk_nor_read_dma(struct mtk_nor *sp, u32 from, unsigned int length,
+-			    u8 *buffer)
++static int read_dma(struct mtk_nor *sp, u32 from, unsigned int length,
++		    dma_addr_t dma_addr)
  {
--	size_t len;
-+	return !!(((uintptr_t)cpu_addr) & MTK_NOR_DMA_ALIGN_MASK);
-+}
+ 	int ret = 0;
+ 	ulong delay;
+ 	u32 reg;
+-	dma_addr_t dma_addr;
  
-+static int mtk_nor_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
-+{
- 	if (!op->data.nbytes)
- 		return 0;
+-	dma_addr = dma_map_single(sp->dev, buffer, length, DMA_FROM_DEVICE);
+-	if (dma_mapping_error(sp->dev, dma_addr)) {
+-		dev_err(sp->dev, "failed to map dma buffer.\n");
++	if (WARN_ON((length & MTK_NOR_DMA_ALIGN_MASK) ||
++		    (dma_addr & MTK_NOR_DMA_ALIGN_MASK)))
+ 		return -EINVAL;
+-	}
  
- 	if ((op->addr.nbytes == 3) || (op->addr.nbytes == 4)) {
--		if ((op->data.dir == SPI_MEM_DATA_IN) &&
--		    mtk_nor_match_read(op)) {
-+		switch (op->data.dir) {
-+		case SPI_MEM_DATA_IN:
-+			if (!mtk_nor_match_read(op))
-+				return -EINVAL;
-+			/* check if it's DMAable */
- 			if ((op->addr.val & MTK_NOR_DMA_ALIGN_MASK) ||
--			    (op->data.nbytes < MTK_NOR_DMA_ALIGN))
-+			    (op->data.nbytes < MTK_NOR_DMA_ALIGN)) {
- 				op->data.nbytes = 1;
--			else if (!((ulong)(op->data.buf.in) &
--				   MTK_NOR_DMA_ALIGN_MASK))
-+			} else {
-+				if (need_bounce(op->data.buf.in, op->data.nbytes) &&
-+				    (op->data.nbytes > MTK_NOR_BOUNCE_BUF_SIZE))
-+					op->data.nbytes = MTK_NOR_BOUNCE_BUF_SIZE;
- 				op->data.nbytes &= ~MTK_NOR_DMA_ALIGN_MASK;
--			else if (op->data.nbytes > MTK_NOR_BOUNCE_BUF_SIZE)
--				op->data.nbytes = MTK_NOR_BOUNCE_BUF_SIZE;
--			return 0;
--		} else if (op->data.dir == SPI_MEM_DATA_OUT) {
-+			}
-+			break;
-+		case SPI_MEM_DATA_OUT:
- 			if (op->data.nbytes >= MTK_NOR_PP_SIZE)
- 				op->data.nbytes = MTK_NOR_PP_SIZE;
- 			else
- 				op->data.nbytes = 1;
--			return 0;
-+			break;
-+		default:
-+			break;
- 		}
-+	} else {
-+		u8 len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
-+
-+		if (len > MTK_NOR_PRG_MAX_SIZE)
-+			return -EINVAL;
-+		if (op->data.nbytes && !(MTK_NOR_PRG_MAX_SIZE - len))
-+			return -EINVAL;
-+		if (op->data.nbytes > (MTK_NOR_PRG_MAX_SIZE - len))
-+			op->data.nbytes = MTK_NOR_PRG_MAX_SIZE - len;
+ 	writel(from, sp->base + MTK_NOR_REG_DMA_FADR);
+ 	writel(dma_addr, sp->base + MTK_NOR_REG_DMA_DADR);
+@@ -312,30 +310,39 @@ static int mtk_nor_read_dma(struct mtk_nor *sp, u32 from, unsigned int length,
+ 					 (delay + 1) * 100);
  	}
  
--	len = MTK_NOR_PRG_MAX_SIZE - op->cmd.nbytes - op->addr.nbytes -
--	      op->dummy.nbytes;
--	if (op->data.nbytes > len)
--		op->data.nbytes = len;
--
+-	dma_unmap_single(sp->dev, dma_addr, length, DMA_FROM_DEVICE);
+ 	if (ret < 0)
+ 		dev_err(sp->dev, "dma read timeout.\n");
+ 
+ 	return ret;
+ }
+ 
+-static int mtk_nor_read_bounce(struct mtk_nor *sp, u32 from,
+-			       unsigned int length, u8 *buffer)
++static int mtk_nor_read_dma(struct mtk_nor *sp, u32 from,
++			    unsigned int length, u8 *buffer)
+ {
+-	unsigned int rdlen;
+ 	int ret;
++	dma_addr_t dma_addr;
++	bool bounce = need_bounce(buffer, length);
+ 
+-	if (length & MTK_NOR_DMA_ALIGN_MASK)
+-		rdlen = (length + MTK_NOR_DMA_ALIGN) & ~MTK_NOR_DMA_ALIGN_MASK;
+-	else
+-		rdlen = length;
++	if (!bounce) {
++		dma_addr = dma_map_single(sp->dev, buffer, length,
++					  DMA_FROM_DEVICE);
++		if (dma_mapping_error(sp->dev, dma_addr)) {
++			dev_err(sp->dev, "failed to map dma buffer.\n");
++			return -EINVAL;
++		}
++	} else {
++		dma_addr = sp->buffer_dma;
++	}
+ 
+-	ret = mtk_nor_read_dma(sp, from, rdlen, sp->buffer);
+-	if (ret)
+-		return ret;
++	ret = read_dma(sp, from, length, dma_addr);
+ 
+-	memcpy(buffer, sp->buffer, length);
+-	return 0;
++	if (!bounce)
++		dma_unmap_single(sp->dev, dma_addr, length,
++				 DMA_FROM_DEVICE);
++	else
++		memcpy(buffer, sp->buffer, length);
++
++	return ret;
+ }
+ 
+ static int mtk_nor_read_pio(struct mtk_nor *sp, const struct spi_mem_op *op)
+@@ -439,11 +446,6 @@ static int mtk_nor_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+ 		if (op->data.nbytes == 1) {
+ 			mtk_nor_set_addr(sp, op);
+ 			return mtk_nor_read_pio(sp, op);
+-		} else if (((ulong)(op->data.buf.in) &
+-			    MTK_NOR_DMA_ALIGN_MASK)) {
+-			return mtk_nor_read_bounce(sp, op->addr.val,
+-						   op->data.nbytes,
+-						   op->data.buf.in);
+ 		} else {
+ 			return mtk_nor_read_dma(sp, op->addr.val,
+ 						op->data.nbytes,
+@@ -654,6 +656,10 @@ static int mtk_nor_probe(struct platform_device *pdev)
+ 	sp->dev = &pdev->dev;
+ 	sp->spi_clk = spi_clk;
+ 	sp->ctlr_clk = ctlr_clk;
++	sp->buffer = dma_alloc_coherent(&pdev->dev, MTK_NOR_BOUNCE_BUF_SIZE,
++					&sp->buffer_dma, GFP_KERNEL);
++	if (!sp->buffer)
++		return -ENOMEM;
+ 
+ 	irq = platform_get_irq_optional(pdev, 0);
+ 	if (irq < 0) {
+@@ -674,6 +680,8 @@ static int mtk_nor_probe(struct platform_device *pdev)
+ 	ret = mtk_nor_init(sp);
+ 	if (ret < 0) {
+ 		kfree(ctlr);
++		dma_free_coherent(&pdev->dev, MTK_NOR_BOUNCE_BUF_SIZE,
++				  sp->buffer, sp->buffer_dma);
+ 		return ret;
+ 	}
+ 
+@@ -692,6 +700,8 @@ static int mtk_nor_remove(struct platform_device *pdev)
+ 
+ 	mtk_nor_disable_clk(sp);
+ 
++	dma_free_coherent(&pdev->dev, MTK_NOR_BOUNCE_BUF_SIZE,
++			  sp->buffer, sp->buffer_dma);
  	return 0;
  }
  
- static bool mtk_nor_supports_op(struct spi_mem *mem,
- 				const struct spi_mem_op *op)
- {
--	size_t len;
--
- 	if (op->cmd.buswidth != 1)
- 		return false;
- 
- 	if ((op->addr.nbytes == 3) || (op->addr.nbytes == 4)) {
--		switch(op->data.dir) {
-+		switch (op->data.dir) {
- 		case SPI_MEM_DATA_IN:
- 			if (!mtk_nor_match_read(op))
- 				return false;
-@@ -226,11 +237,14 @@ static bool mtk_nor_supports_op(struct spi_mem *mem,
- 		default:
- 			break;
- 		}
-+	} else {
-+		u8 len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
-+
-+		if (len > MTK_NOR_PRG_MAX_SIZE)
-+			return false;
-+		if (op->data.nbytes && !(MTK_NOR_PRG_MAX_SIZE - len))
-+			return false;
- 	}
--	len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
--	if ((len > MTK_NOR_PRG_MAX_SIZE) ||
--	    ((op->data.nbytes) && (len == MTK_NOR_PRG_MAX_SIZE)))
--		return false;
- 
- 	return spi_mem_default_supports_op(mem, op);
- }
 -- 
 2.28.0.681.g6f77f65b4e-goog
 
