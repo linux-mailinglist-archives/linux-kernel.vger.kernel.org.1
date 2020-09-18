@@ -2,253 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9CDF270099
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 17:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 151B027009C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 17:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726250AbgIRPMv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 18 Sep 2020 11:12:51 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2894 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725955AbgIRPMv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 11:12:51 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id E6489D2902C38F6ACE7A;
-        Fri, 18 Sep 2020 16:12:49 +0100 (IST)
-Received: from localhost (10.227.96.57) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 18 Sep
- 2020 16:12:49 +0100
-Date:   Fri, 18 Sep 2020 16:12:48 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@huawei.com>
-To:     Gene Chen <gene.chen.richtek@gmail.com>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>, <knaack.h@gmx.de>,
-        <lars@metafoo.de>, <pmeerw@pmeerw.net>,
-        <linux-iio@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gene Chen <gene_chen@richtek.com>, <Wilma.Wu@mediatek.com>,
-        <shufan_lee@richtek.com>, <cy_huang@richtek.com>,
-        <benjamin.chao@mediatek.com>,
-        Cristian Pop <cristian.pop@analog.com>
-Subject: Re: [PATCH v4 2/3] Documentation: ABI: testing: mt6360: Add ADC
- sysfs guideline
-Message-ID: <20200918161248.00005d18@huawei.com>
-In-Reply-To: <CAE+NS36T+8Ec4y3NBeoX3DOEOMa4mMu38OBgFvyPYw8su-X4Yg@mail.gmail.com>
-References: <1600191369-28040-1-git-send-email-gene.chen.richtek@gmail.com>
-        <1600191369-28040-3-git-send-email-gene.chen.richtek@gmail.com>
-        <20200917184256.71328701@archlinux>
-        <CAE+NS35Pw-6UqcHPNOsUtW0GABPVEHfPineF81+qrS6A18HiyA@mail.gmail.com>
-        <20200918090321.00007f70@Huawei.com>
-        <CAE+NS36T+8Ec4y3NBeoX3DOEOMa4mMu38OBgFvyPYw8su-X4Yg@mail.gmail.com>
-Organization: Huawei tech. R&D (UK)  Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1726305AbgIRPNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 11:13:25 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:51223 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726044AbgIRPNZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 11:13:25 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200918151323euoutp0123aa6f886a15570d7e83d400494806ae~16YWyxQYe2958129581euoutp01A
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 15:13:23 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200918151323euoutp0123aa6f886a15570d7e83d400494806ae~16YWyxQYe2958129581euoutp01A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1600442003;
+        bh=SZbHVV2JypCryt9GVj8eUqjOJnnk5VyYDZFqjnLzPdA=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=JTFat9C0WXn81ciROxXFIIcowHMhlvZRdjq59LEqVPJHlJZz/h+jE3sW8fhkbMUUf
+         zrz9Lq5reWgDIi/o0d664y65AQWogMlifALxhxPMCvhVSbfYRh9JQ4atYBuv/9UA/K
+         +7PD6bOm303iF+bVH3MJVI8bifoU8uAbpF63BJEU=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200918151322eucas1p154435b3ed506dda02cbde20320f59e9d~16YWSYSP81330713307eucas1p1D;
+        Fri, 18 Sep 2020 15:13:22 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id BE.94.06318.29EC46F5; Fri, 18
+        Sep 2020 16:13:22 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200918151322eucas1p236126959c3cc725132450b228701ee72~16YV6FGzN2444524445eucas1p2S;
+        Fri, 18 Sep 2020 15:13:22 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200918151322eusmtrp2fd051ad885278f61b4ae44c30dc2a27d~16YV49JF20618906189eusmtrp2S;
+        Fri, 18 Sep 2020 15:13:22 +0000 (GMT)
+X-AuditID: cbfec7f5-371ff700000018ae-d9-5f64ce927644
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 35.52.06017.19EC46F5; Fri, 18
+        Sep 2020 16:13:21 +0100 (BST)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200918151320eusmtip2208d181453ed3ef09a4f43c068dcffaa~16YUdkdOB0469904699eusmtip24;
+        Fri, 18 Sep 2020 15:13:20 +0000 (GMT)
+Subject: Re: [PATCH 00/18] Convert arch/arm to use iommu-dma
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+To:     Robin Murphy <robin.murphy@arm.com>, hch@lst.de, joro@8bytes.org,
+        linux@armlinux.org.uk
+Cc:     will@kernel.org, inki.dae@samsung.com, sw0312.kim@samsung.com,
+        kyungmin.park@samsung.com, agross@kernel.org,
+        bjorn.andersson@linaro.org, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, vdumpa@nvidia.com, digetx@gmail.com,
+        matthias.bgg@gmail.com, yong.wu@mediatek.com,
+        geert+renesas@glider.be, magnus.damm@gmail.com, t-kristo@ti.com,
+        s-anna@ti.com, laurent.pinchart@ideasonboard.com,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org,
+        linux-samsung-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Message-ID: <693f4d91-7dd3-31e6-92b6-7ffa84dd3226@samsung.com>
+Date:   Fri, 18 Sep 2020 17:13:22 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [10.227.96.57]
-X-ClientProxiedBy: lhreml746-chm.china.huawei.com (10.201.108.196) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+In-Reply-To: <bf32cdea-ee5b-1431-3b97-c0889acdacc6@samsung.com>
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0yTZxTG9373Emo+ipMzXNjWuCWaiCKavYmE3ZN3f5gsiybGRFi3fkEU
+        KuknOuaWVcBJO0VbM8Ci1SDGDbwwLpV7Q7V2BSkCiuhgdcLmysRiwE1B3Ww/2Pjvd55znpzz
+        vHkFWnOVixcyDTsko0GXpeWiGOflx/7lNr8+faXzQDz2j8wwuMt1n8HVD0YQvvYwxOFj5TaE
+        f6j2UNgWOMTgE661uNBewWBzeQ2Pu/Pv8dhsreRx7cgAi62ubh73Nx/l8P6aBhb3F/QiXNbT
+        TmHzlJ3D7u/aEL5dPc7h/MJk3DExyuK26XYWlx0OcrjytyIOP252MLi47WNcOLQGB2x1zNsJ
+        ZLTDQZEzjjOI9A/00sTavZw02Yd5Ul50hCW1VWaODA20ciTwrZcidZVfk8ODpxFpuWniSKHP
+        xZADBfc5UlxfhYh38AL1UcymqBS9lJW5UzKuSP0kakvD30tyQos+7+zrpUyoQ2NBKgHE1WCu
+        LqEsKErQiN8jmLzxiFaKKQQB0wSjFJMIDpb8RM9ZJjpLZxunEYz1HJ21hBDM7B1hw1OxYgp4
+        eu9GHJyYBJZxCxfmheJmmG58wocNtNjKgskWYMINtZgKp1pqIsyIr8Mvx5oi/KKYBpc778zO
+        xIDvyOhzFgSV+Bb86IoOy7T4ChQ0lNMKx8Gt0eORQCCWqsC37xKrnP0+NJ5roBSOhTFvPa/w
+        y/BP05yhAMGv/rO8UuxH0J9fhpSptTDkn+bCm2lxKZxvXqHI74BnuDUig7gABsdjlCMWgM1Z
+        SiuyGoq+mX3sN8DuPfff2o6rffQhpLXPS2afF8c+L479/70nEFOF4qRcOTtDkpMN0q5EWZct
+        5xoyEj/bnl2Lnv/zrmfeh42o/cmnbiQKSBut/sOhT9ewup1yXrYbgUBrF6rf7e5K06j1urwv
+        JOP2dGNuliS70WKB0capkyuCmzVihm6HtE2SciTjXJcSVPEmpDrVZmi2rHd6Uto148OrdoXe
+        vLd1z0FH13WNGzlbSOzJnoRLX+7WvSenvXY24avFVyouBH/PGby959WYnLtBhy9+Xf3G4zPr
+        3Bf3Pc3c2JpXetL351ZPUmjpJHk0pR37C1le+rAuWPUB9BVbz6cyiSUbeJ+18oU1q/U3on+2
+        ZdzEWMvIW3RJy2ijrPsX0InXyeMDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRjHe8/OOTtGi9Na9TK6cVIIoVOb6R5rmtWHTtCHLtSHrGy4w6yc
+        k3NmZBTNHKGzJI3Ktlo3LdI+mJdM09YsMzMLM5aFaeEig7wUWXRBU1fgtx/P8/898MCfUajf
+        UVpmT5pdlNJMqRw9lWwdae5eUvjMnLTs9GF41vubhFbfAAllX3oRvBwepOGCpxDBjbImAgp7
+        TpJwybcSnO4rJOR6ypXQdvSzEnILipVQ0RugoMDXpoSOuvM0HC+vpqAjux1B0fN7BOR+c9PQ
+        eLoBwbuyfhqOOqPAPxSkoOHXPQqKTn2iofhDDg0/67wk5DdsBmdXNPQUVpIJ84Wg30sIN703
+        kdARaFcIBW1LhFr3W6XgyTlHCRWlubTQFainhZ68ZkKoLD4inOq8joS7rx204GzxkcKJ7AFa
+        yK8qRUJzZw2xccZ23ijZMuziwhSbbI/jEnWg53WxwOuXx/K6KMPOFfpobmm80Sym7tkvSkvj
+        d/Mp1T/C0wdnH3jyop1wIL/ahcIYzC7HQ0/Oki40lVGzJQg7L2crQou5uOWMgwrxTPwn4KJD
+        oX6E60b6iPHFTNaIm9o/Tgg0q8Ou/vFQGKNhd+Jv18smWMHWU7ikXxuS7yN8dfTKhKxi43HJ
+        3XJynEk2AndfqJ3gWewu/PR4Hx3KzMAt54Jjc4YJY1fhW75poZsx2Fv5XhHiBTi72vOP5+A3
+        wYvESaR2T7LdkxT3JMU9SbmEyFKkETNkq8Uq63nZZJUz0ix8ss1agcbadfvRz6o7yDWwpRGx
+        DOKmqfq85iQ1ZdovZ1obEWYUnEa1pq11l1plNmUeFCVbkpSRKsqNKHrstwKFdlaybayrafYk
+        XbTOALE6Q5QhKga4Oaoc1r9DzVpMdnGfKKaL0n+PYMK0DrS4atHuZO4V72ww67v1XYPd0x8Y
+        /X+k0b1r7eWRlhvVs0s9ZJ4U3HYm3JlXkxnewTpWboW5QwHNvPrECG1Wa+Kh4WtNceSUT/cj
+        uc5lPz4WRaTHDA0/tGy2H6kZ3PT98Rrj+pIN7n1fdxxbN7ot/2Fn1peY1bUJI/m8hkjIYuIM
+        HCmnmHSRCkk2/QUeyKrJcwMAAA==
+X-CMS-MailID: 20200918151322eucas1p236126959c3cc725132450b228701ee72
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200820150857eucas1p18f5f2ad87703a68b6ed20a090f7c1c57
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200820150857eucas1p18f5f2ad87703a68b6ed20a090f7c1c57
+References: <CGME20200820150857eucas1p18f5f2ad87703a68b6ed20a090f7c1c57@eucas1p1.samsung.com>
+        <cover.1597931875.git.robin.murphy@arm.com>
+        <bf32cdea-ee5b-1431-3b97-c0889acdacc6@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Sep 2020 18:33:06 +0800
-Gene Chen <gene.chen.richtek@gmail.com> wrote:
+Hi all,
 
-> Jonathan Cameron <Jonathan.Cameron@huawei.com> 於 2020年9月18日 週五 下午4:05寫道：
-> >
-> > On Fri, 18 Sep 2020 15:21:44 +0800
-> > Gene Chen <gene.chen.richtek@gmail.com> wrote:
-> >  
-> > > Jonathan Cameron <jic23@kernel.org> 於 2020年9月18日 週五 上午1:43寫道：  
-> > > >
-> > > > On Wed, 16 Sep 2020 01:36:08 +0800
-> > > > Gene Chen <gene.chen.richtek@gmail.com> wrote:
-> > > >  
-> > > > > From: Gene Chen <gene_chen@richtek.com>
-> > > > >
-> > > > > Add ABI documentation for mt6360 ADC sysfs interfaces.
-> > > > >
-> > > > > Signed-off-by: Gene Chen <gene_chen@richtek.com>  
-> > > > Would you consider using the proposed label attribute for channels?
-> > > >
-> > > > https://lore.kernel.org/linux-iio/20200916132115.81795-1-cristian.pop@analog.com/T/#u
-> > > >
-> > > > I'm hoping that will remove the need to have ext name used in the majority of
-> > > > cases and would like to know if it would work for you?
-> > > > It may not work for this particular case of course.
-> > > >
-> > > > Other comments inline.
-> > > >  
-> > >
-> > > because of ADC layout is fixed, I can't switch channel to specific
-> > > purpose for userspace.  
-> >
-> > That patch set doesn't allow userspace to change the purpose. It provides
-> > a *_label attribute for each channel to allow for identification of the channel.
-> > That can be provided by ACPI / DT or can be provided by the driver itself.
-> > The advantage is that it removes the nasty freeform parsing that is needed
-> > to work out the filenames.
-> >  
-> 
-> May I ask how to get this patch for test the labels?
+On 24.08.2020 13:40, Marek Szyprowski wrote:
+> On 20.08.2020 17:08, Robin Murphy wrote:
+>> After 5 years or so of intending to get round to this, finally the
+>> time comes! The changes themselves actualy turn out to be relatively
+>> mechanical; the bigger concern appears to be how to get everything
+>> merged across about 5 diffferent trees given the dependencies.
+>>
+>> I've lightly boot-tested things on Rockchip RK3288 and Exynos 4412
+>> (Odroid-U3), to the degree that their display drivers should be using
+>> IOMMU-backed buffers and don't explode (the Odroid doesn't manage to
+>> send a working HDMI signal to the one monitor I have that it actually
+>> detects, but that's a pre-existing condition...) Confirmation that the
+>> Mediatek, OMAP and Tegra changes work will be most welcome.
+>>
+>> Patches are based on 5.9-rc1, branch available here:
+>>
+>>    git://linux-arm.org/linux-rm arm/dma
+>
+> Well, my first proposal for the ARM and ARM64 DMA-mapping unification 
+> has been posted long time ago: https://lkml.org/lkml/2016/2/19/79
+>
+> Thanks for resurrecting it! :)
+>
+> I've tested this patchset on various ARM32bit Exynos based boards (not 
+> only Exynos4412) and most of them works fine after your conversion. 
+> However there are issues you cannot learn from the code.
+>
+> Conversion of the Exynos DRM was straightforward (thanks!), but there 
+> are other Exynos drivers that depends on the old ARM implementation. 
+> The S5P-MFC (only for the v5 hardware) and Exynos4 FIMC-ISP drivers 
+> depends on the first-fit IOVA allocation algorithm in the old ARM 
+> DMA-mapping. This was the main reason I've didn't continue my initial 
+> conversion attempt.
+>
+> Both drivers allocate a buffer for their firmware and then in the 
+> hardware registers address video buffers as an offset from the 
+> begginning of the firmware. This doesn't work when underlying 
+> DMA-mapping allocates IOVA with the last-fit algorithm, what the 
+> drivers/iommu/dma-iommu.c does. So far I didn't find a good solution 
+> for that issue.
+>
+> I'm open for suggestions. One more limitation for the S5P-MFC driver 
+> is that the hardware is capable only for addressing 128MiB. They will 
+> probably need to call IOMMU API directly, but I would like to keep as 
+> much from the IOMMU/DMA-mapping code as possible.
 
-You should be able to use the link above then click on "raw" next to the from line.
-That will download you a patch that you can apply with git am.
+Just for the record. I've finally managed to add needed workarounds to 
+the both problematic Exynos4 drivers, so they work fine with this 
+patchset. It turned out that it wasn't that hard:
 
-> I supposed userspace catch meanings by iio device sysfs node name.
+https://lore.kernel.org/linux-samsung-soc/20200918144833.14618-1-m.szyprowski@samsung.com/T/#t
 
-That is the idea.
+So from my side you have a green light to go ahead and switch ARM 32bit 
+to generic code. Time to say good bye to the one of my biggest 
+architecture related things merged once to mainline Linux. ;)
 
-> The label defined in DT means it can be modified. But actually shouldn't.
-
-In your case, I agree that they are fixed in the hardware so the driver should
-provide a read_label callback that simply prints the relevant const string when
-requested for a particular channel.
-
-For more general devices, the idea is that DT or similar can provide naming to
-indicate that a particular board uses this channel to measure the bus voltage
-or things like that. Here we don't need that flexibility.
-
-Jonathan
-
-> 
-> > >  
-> > > > > ---
-> > > > >  Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360 | 83 ++++++++++++++++++++++
-> > > > >  1 file changed, 83 insertions(+)
-> > > > >  create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360
-> > > > >
-> > > > > diff --git a/Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360 b/Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360
-> > > > > new file mode 100644
-> > > > > index 0000000..4b1c270
-> > > > > --- /dev/null
-> > > > > +++ b/Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360
-> > > > > @@ -0,0 +1,83 @@
-> > > > > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_USBID_input  
-> > > >
-> > > >
-> > > > The mixture of case is a bit ugly.  Could we do
-> > > > in_voltage_usbin_input?
-> > > >  
-> > >
-> > > ACK
-> > >  
-> > > > > +KernelVersion:       5.8.0
-> > > > > +Contact:     gene_chen@richtek.com
-> > > > > +Description:
-> > > > > +             Indicated MT6360 USBID ADC which connected to connector ID pin.
-> > > > > +             Reading returns voltage in uV
-> > > > > +
-> > > > > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_VBUSDIV5_input  
-> > > >  
-> > > > > +KernelVersion:       5.8.0
-> > > > > +Contact:     gene_chen@richtek.com
-> > > > > +Description:
-> > > > > +             Indicated MT6360 VBUS ADC with high accuracy
-> > > > > +             Reading returns voltage in uV  
-> > > >
-> > > > Why would we ever read the low accuracy version?
-> > > >  
-> 
-> VBUSDIV5 with lower accuracy(+-75mA) higher measure range(1~22V)
-> VBUSDIV2 with higher accracy (+-30mA) lower measure range(1~9.76V)
-> I will fix the description
-
-Great.
-
-> 
-> > > > > +
-> > > > > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_VBUSDIV2_input
-> > > > > +KernelVersion:       5.8.0
-> > > > > +Contact:     gene_chen@richtek.com
-> > > > > +Description:
-> > > > > +             Indicated MT6360 VBUS ADC with low accuracy
-> > > > > +             Reading returns voltage in uV
-> > > > > +
-> > > > > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_VSYS_input
-> > > > > +KernelVersion:       5.8.0
-> > > > > +Contact:     gene_chen@richtek.com
-> > > > > +Description:
-> > > > > +             Indicated MT6360 VSYS ADC
-> > > > > +             Reading returns voltage in uV
-> > > > > +
-> > > > > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_VBAT_input
-> > > > > +KernelVersion:       5.8.0
-> > > > > +Contact:     gene_chen@richtek.com
-> > > > > +Description:
-> > > > > +             Indicated MT6360 VBAT ADC
-> > > > > +             Reading returns voltage in uV
-> > > > > +
-> > > > > +What:                /sys/bus/iio/devices/iio:deviceX/in_current_IBUS_input
-> > > > > +KernelVersion:       5.8.0
-> > > > > +Contact:     gene_chen@richtek.com
-> > > > > +Description:
-> > > > > +             Indicated MT6360 IBUS ADC
-> > > > > +             Reading returns current in uA  
-> > > > Given voltage and current are already clear from the channel type,
-> > > > could we avoid the repetition?
-> > > >
-> > > > in_current_bus_input perhaps?
-> > > >  
-> > >
-> > > ACK
-> > >  
-> > > > > +
-> > > > > +What:                /sys/bus/iio/devices/iio:deviceX/in_current_IBAT_input
-> > > > > +KernelVersion:       5.8.0
-> > > > > +Contact:     gene_chen@richtek.com
-> > > > > +Description:
-> > > > > +             Indicated MT6360 IBAT ADC
-> > > > > +             Reading returns current in uA
-> > > > > +
-> > > > > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_CHG_VDDP_input
-> > > > > +KernelVersion:       5.8.0
-> > > > > +Contact:     gene_chen@richtek.com
-> > > > > +Description:
-> > > > > +             Indicated MT6360 CHG_VDDP ADC
-> > > > > +             Reading returns voltage in uV
-> > > > > +
-> > > > > +What:                /sys/bus/iio/devices/iio:deviceX/in_temp_TEMP_JC_input
-> > > > > +KernelVersion:       5.8.0
-> > > > > +Contact:     gene_chen@richtek.com
-> > > > > +Description:
-> > > > > +             Indicated MT6360 IC junction temperature
-> > > > > +             Reading returns temperature in degree
-> > > > > +
-> > > > > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_VREF_TS_input
-> > > > > +KernelVersion:       5.8.0
-> > > > > +Contact:     gene_chen@richtek.com
-> > > > > +Description:
-> > > > > +             Indicated MT6360 VREF_TS ADC
-> > > > > +             Reading returns voltage in uV
-> > > > > +
-> > > > > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_TS_input
-> > > > > +KernelVersion:       5.8.0
-> > > > > +Contact:     gene_chen@richtek.com
-> > > > > +Description:
-> > > > > +             Indicated MT6360 TS ADC
-> > > > > +             Reading returns voltage in uV
-> > > > > +
-> > > > > +What:                /sys/bus/iio/devices/iio:deviceX/timestamp
-> > > > > +KernelVersion:       5.8.0
-> > > > > +Contact:     gene_chen@richtek.com
-> > > > > +Description:
-> > > > > +             Indicated MT6360 timestamp
-> > > > > +             Reading returns current timestamp in ms  
-> > > >
-> > > > That's an odd bit of ABI.  Why would we want to read the current timestamp from
-> > > > sysfs?  Timestamps in IIO also tend to be in nano seconds.
-> > > >
-> > > >
-> > > >
-> > > >  
-> > >
-> > > ACK, I will remove this.  
-> >
-> >  
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
