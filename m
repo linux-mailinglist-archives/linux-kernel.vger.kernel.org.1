@@ -2,75 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B82826F7B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B049026F800
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726200AbgIRIKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 04:10:15 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:52939 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726102AbgIRIKO (ORCPT
+        id S1726650AbgIRIUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 04:20:12 -0400
+Received: from mail-m1272.qiye.163.com ([115.236.127.2]:55746 "EHLO
+        mail-m1272.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726064AbgIRIUL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 04:10:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600416613;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=nn4mVXfrUSRgOT8MEs6N754ehCpTZG1A7BrNmYlopGM=;
-        b=ZFI5K/L0kXUX0kWSgZnFu5VkAmJ0LXf7TU3f3hKO8PbtqRerJRYByi+TbUFbEc1SnTKYRw
-        qqI1vUxxtviKB5kCIkkoSzZOPzEgdFe/dHGhDNEP6j17zEXfbtwap+N1Wn7v8zh8IqDe7o
-        71HCuXbqbjlYVK54QmdaBvFyz+RHQIo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-359-mPr4_xyANSi0M-pHjPS2EA-1; Fri, 18 Sep 2020 04:10:07 -0400
-X-MC-Unique: mPr4_xyANSi0M-pHjPS2EA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2006510A7AE4;
-        Fri, 18 Sep 2020 08:10:06 +0000 (UTC)
-Received: from localhost.localdomain.com (ovpn-12-22.pek2.redhat.com [10.72.12.22])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C23A91001281;
-        Fri, 18 Sep 2020 08:10:01 +0000 (UTC)
-From:   Lianbo Jiang <lijiang@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     bhe@redhat.com, corbet@lwn.net, kexec@lists.infradead.org,
-        linux-doc@vger.kernel.org, vgoyal@redhat.com
-Subject: [PATCH] docs: admin-guide: update kdump documentation due to change of crash URL
-Date:   Fri, 18 Sep 2020 16:09:58 +0800
-Message-Id: <20200918080958.19841-1-lijiang@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        Fri, 18 Sep 2020 04:20:11 -0400
+X-Greylist: delayed 503 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Sep 2020 04:20:02 EDT
+Received: from ubuntu.localdomain (unknown [58.250.176.229])
+        by mail-m1272.qiye.163.com (Hmail) with ESMTPA id 897C6B0163A;
+        Fri, 18 Sep 2020 16:11:35 +0800 (CST)
+From:   Bailu Lin <bailu.lin@vivo.com>
+To:     catalin.marinas@arm.com, will@kernel.org, corbet@lwn.net,
+        harryxiyou@gmail.com, alex.shi@linux.alibaba.com,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     bailu.lin@vivo.com, kernel@vivo.com
+Subject: [PATCH v3] doc: zh_CN: index files in arm64 subdirectory
+Date:   Fri, 18 Sep 2020 01:11:26 -0700
+Message-Id: <20200918081126.20765-1-bailu.lin@vivo.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200916130714.42438-1-bailu.lin@vivo.com>
+References: <20200916130714.42438-1-bailu.lin@vivo.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZTkpJGEgdGEIaSx5NVkpNS0tPSk1NQk5CQ0JVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKSkNITVVKS0tZBg++
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Nww6Mhw4PT8pHgo*ERAwHS4T
+        D0IaCRNVSlVKTUtLT0pNTUJNT0hMVTMWGhIXVRkaEhcOVRcSFTsNEg0UVRgUFkVZV1kSC1lBWU5D
+        VUlOS1VKTE1VSUlCWVdZCAFZQUhLQkM3Bg++
+X-HM-Tid: 0a74a044c65598b7kuuu897c6b0163a
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since crash utility has moved to github, the original URL is no longer
-available. Let's update it accordingly.
+Add arm64 subdirectory into the table of Contents for zh_CN,
+then add other translations in arm64 conveniently.
 
-Suggested-by: Dave Young <dyoung@redhat.com>
-Signed-off-by: Lianbo Jiang <lijiang@redhat.com>
+Signed-off-by: Bailu Lin <bailu.lin@vivo.com>
 ---
- Documentation/admin-guide/kdump/kdump.rst | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Changes in v3:
+ - Correct email encoding format.
+Changes in v2:
+ - Fix patch description.
+---
+ Documentation/arm64/index.rst                    |  4 ++++
+ Documentation/translations/zh_CN/arm64/index.rst | 16 ++++++++++++++++
+ Documentation/translations/zh_CN/index.rst       |  1 +
+ 3 files changed, 21 insertions(+)
+ create mode 100644 Documentation/translations/zh_CN/arm64/index.rst
 
-diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
-index 2da65fef2a1c..75a9dd98e76e 100644
---- a/Documentation/admin-guide/kdump/kdump.rst
-+++ b/Documentation/admin-guide/kdump/kdump.rst
-@@ -509,9 +509,12 @@ ELF32-format headers using the --elf32-core-headers kernel option on the
- dump kernel.
- 
- You can also use the Crash utility to analyze dump files in Kdump
--format. Crash is available on Dave Anderson's site at the following URL:
-+format. Crash is available at the following URL:
- 
--   http://people.redhat.com/~anderson/
-+   https://github.com/crash-utility/crash
+diff --git a/Documentation/arm64/index.rst b/Documentation/arm64/index.rst
+index d9665d83c53a..907cda9c0f71 100644
+--- a/Documentation/arm64/index.rst
++++ b/Documentation/arm64/index.rst
+@@ -1,3 +1,7 @@
++.. SPDX-License-Identifier: GPL-2.0
 +
-+Crash document can be found at:
-+   https://crash-utility.github.io/
++.. _arm64_index:
++
+ ==================
+ ARM64 Architecture
+ ==================
+diff --git a/Documentation/translations/zh_CN/arm64/index.rst b/Documentation/translations/zh_CN/arm64/index.rst
+new file mode 100644
+index 000000000000..c236b648740d
+--- /dev/null
++++ b/Documentation/translations/zh_CN/arm64/index.rst
+@@ -0,0 +1,16 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++.. include:: ../disclaimer-zh_CN.rst
++
++:Original: :ref:`Documentation/arm64/index.rst <arm64_index>`
++:Translator: Bailu Lin <bailu.lin@vivo.com>
++
++.. _cn_arm64_index:
++
++
++==========
++ARM64 架构
++==========
++
++.. toctree::
++    :maxdepth: 2
+diff --git a/Documentation/translations/zh_CN/index.rst b/Documentation/translations/zh_CN/index.rst
+index 85643e46e308..be6f11176200 100644
+--- a/Documentation/translations/zh_CN/index.rst
++++ b/Documentation/translations/zh_CN/index.rst
+@@ -19,6 +19,7 @@
+    admin-guide/index
+    process/index
+    filesystems/index
++   arm64/index
  
- Trigger Kdump on WARN()
- =======================
+ 目录和表格
+ ----------
 -- 
-2.17.1
+2.20.1
 
