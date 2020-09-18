@@ -2,104 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF611270356
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 19:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFBFA270341
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 19:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726497AbgIRR3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 13:29:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41368 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726454AbgIRR3D (ORCPT
+        id S1726290AbgIRR2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 13:28:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726115AbgIRR2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 13:29:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600450141;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z/9npi5Fcll908WPlmB0OPngkHkpNIVEY0DiOg3OylY=;
-        b=H5iHbS6RPpdJ1A8UY/Zo8mEbnvBoscUSS3+VO8W8djN8eCc7NDqqrKs33x+OvnRpdwEwbB
-        JELNNM1iooSw5j8+uheCh3Oqk8nBPkk0bCT8jw2ssKgUc0UGZvrCPIKmZhghEnOfCdU1+T
-        VnoVNVV4h5M+zgYrcpj41U32MvtpqDA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-348-YkdcG9ISNDKUa8I7lMjTmw-1; Fri, 18 Sep 2020 13:27:54 -0400
-X-MC-Unique: YkdcG9ISNDKUa8I7lMjTmw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D0C118064BA;
-        Fri, 18 Sep 2020 17:27:51 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (ovpn-113-62.phx2.redhat.com [10.3.113.62])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 73C321C4;
-        Fri, 18 Sep 2020 17:27:47 +0000 (UTC)
-Date:   Fri, 18 Sep 2020 13:27:45 -0400
-From:   Phil Auld <pauld@redhat.com>
-To:     peterz@infradead.org
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>, mingo@redhat.com,
-        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        linux-kernel@vger.kernel.org, valentin.schneider@arm.com,
-        Jirka Hladky <jhladky@redhat.com>
-Subject: Re: [PATCH 0/4] sched/fair: Improve fairness between cfs tasks
-Message-ID: <20200918172745.GI55398@lorien.usersys.redhat.com>
-References: <20200914100340.17608-1-vincent.guittot@linaro.org>
- <20200914114202.GQ1362448@hirez.programming.kicks-ass.net>
- <20200918163928.GG55398@lorien.usersys.redhat.com>
+        Fri, 18 Sep 2020 13:28:02 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81E94C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 10:28:02 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id b2so5724046qtp.8
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 10:28:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=HpgmTVIIkaIr3dSnikVjv7Tpc8Gx5M8NJIa6ariAHEw=;
+        b=eR3SindTOzOE/HYpwlC4rPxH0J+/1FR2eXkGVhIaE7Y82Y13PeNvODp48JgW4VWykk
+         Yiectqcq08xzhB8zkF7JUK5tULcZ3uCgqOJdDPj6FFCWqly+xJHVEIGeeP7ir5SKVzyP
+         HCFtjTVjpBDhZmnpc7oWcJyivMAjcjCxI351uvx6lVukWrbOVJSfe2wY0aWIXM4CMkXQ
+         p/qistFshUPtCsT0jor3S8STm/elfGgSNJNngK9ibEXgo4YVcj+v0wGWwoWJHsAhZvf2
+         OXMdwDinyLUQSjCvj+UGMp0Ao2IPde8WZQzZOGP3DiHBblOSCPhy4u0eoNLGlPqaYXmq
+         /FhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=HpgmTVIIkaIr3dSnikVjv7Tpc8Gx5M8NJIa6ariAHEw=;
+        b=jXRaiUi9msxP4Yg7c3D+9EXTUzzo2W/IUHvwEHU9v1XfDkNH5uHr5lkCUySgosc8Le
+         YM3VsQirOl/nfr5rhb4kumveNWNQvBMEDQJayZ+s5J24/qiX96t2Os+6e3pQERvbkRBF
+         TaFd9BsdJsgPXySsTlb818r7m983M/OggfhEj+XFwcBtcDnMPfb+JIC9L8SRvFMfqxrN
+         92NxI1qgvdH+j+qLWCGzImbWXlTH/kCDNikWfTRju7ej+uUujutNIrSizxw4GG5B9+UC
+         gjvJWfRSKasbUGzQC2H/VcjizUbcOVOCeg1C4bsP/lWa8yclIT0XPpU6bFqzgQGHGdZs
+         Ewkg==
+X-Gm-Message-State: AOAM533tnZzC6SOSlJExAEmFQuGyiFjiwos/O72a8amULlViLdYEQgR7
+        BOEtidsF4f43XyemW0UBMGU=
+X-Google-Smtp-Source: ABdhPJwAz8e/yE636I1OD5gKWM1Sl6NqkwJtEDnW3uVFhVf47Kk10HfoD8zBobZxsfY5ql/mscV7rg==
+X-Received: by 2002:ac8:3836:: with SMTP id q51mr21827862qtb.41.1600450081614;
+        Fri, 18 Sep 2020 10:28:01 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:602a])
+        by smtp.gmail.com with ESMTPSA id y73sm2437539qkb.23.2020.09.18.10.28.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 10:28:00 -0700 (PDT)
+Date:   Fri, 18 Sep 2020 13:27:59 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Rik van Riel <riel@surriel.com>
+Subject: sched: rq->nr_iowait transiently going negative after the recent
+ p->on_cpu optimization
+Message-ID: <20200918172759.GA4247@mtj.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200918163928.GG55398@lorien.usersys.redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 12:39:28PM -0400 Phil Auld wrote:
-> Hi Peter,
-> 
-> On Mon, Sep 14, 2020 at 01:42:02PM +0200 peterz@infradead.org wrote:
-> > On Mon, Sep 14, 2020 at 12:03:36PM +0200, Vincent Guittot wrote:
-> > > Vincent Guittot (4):
-> > >   sched/fair: relax constraint on task's load during load balance
-> > >   sched/fair: reduce minimal imbalance threshold
-> > >   sched/fair: minimize concurrent LBs between domain level
-> > >   sched/fair: reduce busy load balance interval
-> > 
-> > I see nothing objectionable there, a little more testing can't hurt, but
-> > I'm tempted to apply them.
-> > 
-> > Phil, Mel, any chance you can run them through your respective setups?
-> > 
-> 
-> Sorry for the delay. Things have been backing up...
-> 
-> We tested with tis series and found there was no performance change in
-> our test suites. (We don't have a good way to share the actual numbers
-> outside right now, but since they aren't really different it probably
-> doesn't matter much here.)
-> 
-> The difference we did see was a slight decrease in the number of tasks
-> moved around at higher loads.  That seems to be a good thing even though
-> it didn't directly show time-based performance benefits (and was pretty
-> minor).
-> 
-> So if this helps other use cases we've got no problems with it.
->
+Hello,
 
-Feel free to add a
+Peter, I noticed /proc/stat::procs_blocked going U64_MAX transiently once in
+the blue moon without any other persistent issues. After looking at the code
+with Rik for a bit, the culprit seems to be c6e7bd7afaeb ("sched/core:
+Optimize ttwu() spinning on p->on_cpu") - it changed where ttwu dec's
+nr_iowait and it looks like that can happen before the target task gets to
+inc.
 
-Reviewed-by: Phil Auld <pauld@redhat.com>
-
-Jirka did the actual testing so he can speak up with a Tested-by if he
-wants to.
-
-
-> Thanks,
-> Phil
-> 
-> -- 
-> 
+Thanks.
 
 -- 
-
+tejun
