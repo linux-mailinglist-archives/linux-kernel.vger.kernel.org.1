@@ -2,84 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF9D27022A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8973D270280
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:46:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726554AbgIRQ3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 12:29:55 -0400
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:53499 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726253AbgIRQ3i (ORCPT
+        id S1726495AbgIRQqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 12:46:47 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:57582 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726421AbgIRQqr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 12:29:38 -0400
-X-Greylist: delayed 325 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Sep 2020 12:29:36 EDT
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 13FFE822EC;
-        Fri, 18 Sep 2020 19:29:35 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1600446575;
-        bh=3JQT+w9/Hsgc+km87u8z17muCt7VlyH5lVmvIBMEwMk=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=qusXzOEfnkBwmhOqSMWKkUHHm5C0fhsnDuHsMi0emaW72b662oBL2sXTF1dhnC/0+
-         NM3zIDsfH91GwrXZCXkfrsPVniCMl4R/rt5TyZNh7szKLmyCq4NQhrmDK9Am0jO9te
-         0/+Tbsb1TgDTrCmott5VLLoHHEqS7MEK3pa6jJe8=
-Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Fri, 18 Sep 2020 19:29:34 +0300
-Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
- by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%6]) with mapi
- id 15.01.1847.003; Fri, 18 Sep 2020 19:29:34 +0300
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     Joe Perches <joe@perches.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-CC:     "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pali@kernel.org" <pali@kernel.org>,
-        "dsterba@suse.cz" <dsterba@suse.cz>,
-        "aaptel@suse.com" <aaptel@suse.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "mark@harmstone.com" <mark@harmstone.com>,
-        "nborisov@suse.com" <nborisov@suse.com>
-Subject: RE: [PATCH v5 03/10] fs/ntfs3: Add bitmap
-Thread-Topic: [PATCH v5 03/10] fs/ntfs3: Add bitmap
-Thread-Index: AQHWiEVLqTuLvbWOTEKMmELjfZa26KlmuM8AgAfn8LA=
-Date:   Fri, 18 Sep 2020 16:29:34 +0000
-Message-ID: <5b2fbfee0a9d4ee59c0e624844560413@paragon-software.com>
-References: <20200911141018.2457639-1-almaz.alexandrovich@paragon-software.com>
-         <20200911141018.2457639-4-almaz.alexandrovich@paragon-software.com>
- <d1dc86f2792d3e64d1281fc2b5fddaca5fa17b5a.camel@perches.com>
-In-Reply-To: <d1dc86f2792d3e64d1281fc2b5fddaca5fa17b5a.camel@perches.com>
-Accept-Language: ru-RU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.30.8.36]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Fri, 18 Sep 2020 12:46:47 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08IFck4t117018;
+        Fri, 18 Sep 2020 10:38:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600443526;
+        bh=WxwKsniN95GxFXt38joTOrhR5U6EWbgf2dDdlx0+WD8=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=jSOnU8gjoHFaBcJcKRMODaCtBZRN6silWN8qnzIWx8B3jAroQzSB8u1BlL1voLFzz
+         NV45AmXv7xnbmN4LkBK1ZuIDB+pzRnMCAuSsZL1L39TUa1/Oj9RFWhMMYUGUJayrH+
+         PZMBtE3swDs5u7lC+XgkmBNcOccVN+wSqPF04/5U=
+Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08IFckBk056323;
+        Fri, 18 Sep 2020 10:38:46 -0500
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 18
+ Sep 2020 10:38:46 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 18 Sep 2020 10:38:45 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08IFciCk026243;
+        Fri, 18 Sep 2020 10:38:45 -0500
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     Tero Kristo <t-kristo@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        Nishanth Menon <nm@ti.com>
+CC:     Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Suman Anna <s-anna@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: [PATCH v3 1/4] arm64: dts: ti: k3-j7200: add DMA support
+Date:   Fri, 18 Sep 2020 18:38:26 +0300
+Message-ID: <20200918153829.14686-2-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200918153829.14686-1-grygorii.strashko@ti.com>
+References: <20200918153829.14686-1-grygorii.strashko@ti.com>
 MIME-Version: 1.0
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogSm9lIFBlcmNoZXMgPGpvZUBwZXJjaGVzLmNvbT4NClNlbnQ6IFN1bmRheSwgU2VwdGVt
-YmVyIDEzLCAyMDIwIDk6NDQgUE0NCj4gDQo+IE9uIEZyaSwgMjAyMC0wOS0xMSBhdCAxNzoxMCAr
-MDMwMCwgS29uc3RhbnRpbiBLb21hcm92IHdyb3RlOg0KPiA+IFRoaXMgYWRkcyBiaXRtYXANCj4g
-DQo+ICQgbWFrZSBmcy9udGZzMy8NCj4gICBTWU5DICAgIGluY2x1ZGUvY29uZmlnL2F1dG8uY29u
-Zi5jbWQNCj4gICBDQUxMICAgIHNjcmlwdHMvY2hlY2tzeXNjYWxscy5zaA0KPiAgIENBTEwgICAg
-c2NyaXB0cy9hdG9taWMvY2hlY2stYXRvbWljcy5zaA0KPiAgIERFU0NFTkQgIG9ianRvb2wNCj4g
-ICBDQyAgICAgIGZzL250ZnMzL2JpdGZ1bmMubw0KPiAgIENDICAgICAgZnMvbnRmczMvYml0bWFw
-Lm8NCj4gZnMvbnRmczMvYml0bWFwLmM6IEluIGZ1bmN0aW9uIOKAmHduZF9yZXNjYW7igJk6DQo+
-IGZzL250ZnMzL2JpdG1hcC5jOjU1Njo0OiBlcnJvcjogaW1wbGljaXQgZGVjbGFyYXRpb24gb2Yg
-ZnVuY3Rpb24g4oCYcGFnZV9jYWNoZV9yZWFkYWhlYWRfdW5ib3VuZGVk4oCZOyBkaWQgeW91IG1l
-YW4NCj4g4oCYcGFnZV9jYWNoZV9yYV91bmJvdW5kZWTigJk/IFstV2Vycm9yPWltcGxpY2l0LWZ1
-bmN0aW9uLWRlY2xhcmF0aW9uXQ0KPiAgIDU1NiB8ICAgIHBhZ2VfY2FjaGVfcmVhZGFoZWFkX3Vu
-Ym91bmRlZCgNCj4gICAgICAgfCAgICBefn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn4NCj4g
-ICAgICAgfCAgICBwYWdlX2NhY2hlX3JhX3VuYm91bmRlZA0KPiBjYzE6IHNvbWUgd2FybmluZ3Mg
-YmVpbmcgdHJlYXRlZCBhcyBlcnJvcnMNCj4gbWFrZVsyXTogKioqIFtzY3JpcHRzL01ha2VmaWxl
-LmJ1aWxkOjI4MzogZnMvbnRmczMvYml0bWFwLm9dIEVycm9yIDENCj4gbWFrZVsxXTogKioqIFtz
-Y3JpcHRzL01ha2VmaWxlLmJ1aWxkOjUwMDogZnMvbnRmczNdIEVycm9yIDINCj4gbWFrZTogKioq
-IFtNYWtlZmlsZToxNzkyOiBmc10gRXJyb3IgMg0KPiANCkhpIEpvZSEgRG9lc24ndCBzZWVtIHRv
-IGJlIGFuIGlzc3VlIGZvciA1LjlfcmM1LiBXaGljaCByZXBvIHNob3VsZCd2ZQ0KYmVlbiB1c2Vk
-IHRvIHJlcHJvZHVjZT8NCg0KVGhhbmtzLg0K
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+
+Add the intr, inta, ringacc and udmap nodes for main and mcu NAVSS.
+
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Tested-by: Kishon Vijay Abraham I <kishon@ti.com>
+---
+ arch/arm64/boot/dts/ti/k3-j7200-main.dtsi     | 36 +++++++++++++++
+ .../boot/dts/ti/k3-j7200-mcu-wakeup.dtsi      | 44 +++++++++++++++++++
+ 2 files changed, 80 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+index 3df49577b06a..c5015df58cd4 100644
+--- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+@@ -93,6 +93,42 @@
+ 			interrupt-names = "rx_011";
+ 			interrupts = <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>;
+ 		};
++
++		main_ringacc: ringacc@3c000000 {
++			compatible = "ti,am654-navss-ringacc";
++			reg =	<0x0 0x3c000000 0x0 0x400000>,
++				<0x0 0x38000000 0x0 0x400000>,
++				<0x0 0x31120000 0x0 0x100>,
++				<0x0 0x33000000 0x0 0x40000>;
++			reg-names = "rt", "fifos", "proxy_gcfg", "proxy_target";
++			ti,num-rings = <1024>;
++			ti,sci-rm-range-gp-rings = <0x1>; /* GP ring range */
++			ti,sci = <&dmsc>;
++			ti,sci-dev-id = <211>;
++			msi-parent = <&main_udmass_inta>;
++		};
++
++		main_udmap: dma-controller@31150000 {
++			compatible = "ti,j721e-navss-main-udmap";
++			reg =	<0x0 0x31150000 0x0 0x100>,
++				<0x0 0x34000000 0x0 0x100000>,
++				<0x0 0x35000000 0x0 0x100000>;
++			reg-names = "gcfg", "rchanrt", "tchanrt";
++			msi-parent = <&main_udmass_inta>;
++			#dma-cells = <1>;
++
++			ti,sci = <&dmsc>;
++			ti,sci-dev-id = <212>;
++			ti,ringacc = <&main_ringacc>;
++
++			ti,sci-rm-range-tchan = <0x0d>, /* TX_CHAN */
++						<0x0f>, /* TX_HCHAN */
++						<0x10>; /* TX_UHCHAN */
++			ti,sci-rm-range-rchan = <0x0a>, /* RX_CHAN */
++						<0x0b>, /* RX_HCHAN */
++						<0x0c>; /* RX_UHCHAN */
++			ti,sci-rm-range-rflow = <0x00>; /* GP RFLOW */
++		};
+ 	};
+ 
+ 	main_pmx0: pinctrl@11c000 {
+diff --git a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
+index ec2745e0768e..7ecdfdb46436 100644
+--- a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
+@@ -92,4 +92,48 @@
+ 		ti,sci-dev-id = <137>;
+ 		ti,interrupt-ranges = <16 960 16>;
+ 	};
++
++	cbass_mcu_navss: navss@28380000 {
++		compatible = "simple-mfd";
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++		dma-coherent;
++		dma-ranges;
++		ti,sci-dev-id = <232>;
++
++		mcu_ringacc: ringacc@2b800000 {
++			compatible = "ti,am654-navss-ringacc";
++			reg =	<0x0 0x2b800000 0x0 0x400000>,
++				<0x0 0x2b000000 0x0 0x400000>,
++				<0x0 0x28590000 0x0 0x100>,
++				<0x0 0x2a500000 0x0 0x40000>;
++			reg-names = "rt", "fifos", "proxy_gcfg", "proxy_target";
++			ti,num-rings = <286>;
++			ti,sci-rm-range-gp-rings = <0x1>; /* GP ring range */
++			ti,sci = <&dmsc>;
++			ti,sci-dev-id = <235>;
++			msi-parent = <&main_udmass_inta>;
++		};
++
++		mcu_udmap: dma-controller@285c0000 {
++			compatible = "ti,j721e-navss-mcu-udmap";
++			reg =	<0x0 0x285c0000 0x0 0x100>,
++				<0x0 0x2a800000 0x0 0x40000>,
++				<0x0 0x2aa00000 0x0 0x40000>;
++			reg-names = "gcfg", "rchanrt", "tchanrt";
++			msi-parent = <&main_udmass_inta>;
++			#dma-cells = <1>;
++
++			ti,sci = <&dmsc>;
++			ti,sci-dev-id = <236>;
++			ti,ringacc = <&mcu_ringacc>;
++
++			ti,sci-rm-range-tchan = <0x0d>, /* TX_CHAN */
++						<0x0f>; /* TX_HCHAN */
++			ti,sci-rm-range-rchan = <0x0a>, /* RX_CHAN */
++						<0x0b>; /* RX_HCHAN */
++			ti,sci-rm-range-rflow = <0x00>; /* GP RFLOW */
++		};
++	};
+ };
+-- 
+2.17.1
+
