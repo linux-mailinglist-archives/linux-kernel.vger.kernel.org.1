@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81FBD26F9AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7079626F9AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726312AbgIRJzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 05:55:09 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:46163 "EHLO
+        id S1726420AbgIRJzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 05:55:13 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:50789 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726149AbgIRJzJ (ORCPT
+        with ESMTP id S1726134AbgIRJzJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 18 Sep 2020 05:55:09 -0400
 Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
  (mreue109 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1M597q-1kI7Am0ZlM-001EGb; Fri, 18 Sep 2020 11:54:52 +0200
+ 1MZCSt-1jxbbx2VX7-00V5LE; Fri, 18 Sep 2020 11:54:52 +0200
 From:   Arnd Bergmann <arnd@arndb.de>
 To:     linux-rpi-kernel@lists.infradead.org, nsaenzjulienne@suse.de
 Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
@@ -23,56 +23,244 @@ Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
         jamal.k.shareef@gmail.com, gregkh@linuxfoundation.org,
         stefan.wahren@i2se.com, inf.braun@fau.de, hch@lst.de,
         Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 0/5] staging: vchiq: stop using compat_alloc_user_space
-Date:   Fri, 18 Sep 2020 11:54:36 +0200
-Message-Id: <20200918095441.1446041-1-arnd@arndb.de>
+Subject: [PATCH 1/5] staging: vchiq: rework compat handling
+Date:   Fri, 18 Sep 2020 11:54:37 +0200
+Message-Id: <20200918095441.1446041-2-arnd@arndb.de>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200918095441.1446041-1-arnd@arndb.de>
+References: <20200918095441.1446041-1-arnd@arndb.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:RIMQCO9sg3s7Q8uUPOZE8Q3ZaERCR8FzdWbwg646liLFhy7ixQA
- 2jT7XzbAVGuaTErny+Vn/YxqDlCJk+rupKSMEl3Wf2thyWaXOONIcRbLmrVXD0IzHZavQKu
- UOUJPU4NYOTyZLFwZHHMQYqfUudD8RWjvAKgXbUk+iWiRIqOJuor2tB0WGRMP5NWxF2lRcn
- l+LCNOW5M0kDOb4MYZSCw==
+X-Provags-ID: V03:K1:AXDyUvFJw2DyJsOPhLYVgH/4OvJMTVEn+LtheYL0JPjwAHUp0Du
+ +vAy5Q2G6zyNv7kxlcE6R6Dj9BG6c4YA4EwD3JYS64j/PJwTEsvrexvnOxMkmqQxLRdxK6T
+ QZcxsWVEMnqHmtr++uZsCLntjAay1e+ZkQszrXYEX88CrCfoxtVPgloLoB8eWuTiGueP2s/
+ vwaRLl9DGj1xCTUVbYWfw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:0u4mE8JqKjw=:6Y0WvuNn4FoaFfGM/Jqg70
- Yb0XhB2dy3ufIBhZqj+aYi+QcfbtjOjAvvmu9htz615k9TWylT3xGtqk+SAlHtCYgXiyoq5Cm
- StEv/hF84Q57nt6rB36m0yLtnMjUnF+ey71eeAbWVRBYHRXgagevMIXn/696sHxzdlciv0gdr
- tt1wO26rP9JkfX/QhhxvQQPuBJIxuYdXk9vyGNeTukiwVCPAtQIMMxw6aDnxehTuc4mr2/m3v
- 7qmgHxIc44kADlaEifJFS0fDbX1UivPBOTLVDfZ8g42+73Ut9m5XCDBLp7W2uOl1MtA1kmDaU
- 6y4N6ih/ED9ZM6Wc7qcP6wwwPJOVLwO1vFgqhlqSCntFLDp9cR+H54Q3GVnRa825NDLRVnl5g
- 8DnFUFEE5FHs7a9h3HXAPj8SXtg1cjqNd0OP/EkTnIf9TsP5vzw9yE9G+zZ4D564ZXbxBxNWh
- W36Go+I0Qmp1hjb4cZBxnPI1uqK9ZjrK9VaDUtQ+XXaZICqantajSs4oEfs3Y82iACCu008zp
- eKxOVgiFOwAXmzuifLeyyePq39Ja2wNBXPxteE+mht0mkjShFsOems1eEyZplhSE5ut4sGz/L
- SxxGIqzFJ33v6P2MPHs9PxQEyQG3ymLwdooIZf39lnM5UebR1Di4GH0OEIavaDAMLiDrlDoXT
- kVXXBfyUyMsDw374X3NBiutwHv7+mskcp5h8wTmBNBiIOGObx2YLd+TMXhh2CZoarlImR46zI
- IlL0/NwLpiyHLxXstgJ7PTfpUl0S9Z+ajChN6Cf3QUgmd9PDTy/87vqr29W96gOmudmBwR3ci
- CpOMk0lEHLlHzrJ3Az20i2Na2Ci11VdjSWMk1U5wHALh1eeuJaJFaKn8dEbOrLLFe90g1Yl
+X-UI-Out-Filterresults: notjunk:1;V03:K0:hncp2bSKLws=:88OagQPM7B75K8RNpdMKx8
+ JiTt1Ww4rF4Ilx5rugsUk7vxZuHsMDsn3nL/E4chBg0r9Tk8wo5Z7xN4a4NbAoQ6ifXfRrLqs
+ AKQhgTWwn9SdljJaMumjOF07WUMg4NbRMz5ueHhYNQy9KPf+3bVXNp7g7RMvEBq6crrBwQCz7
+ 1IYxw+qo+VtQzMwtrz+oCxsfO9b87lUFuwn6Mw3ZFXD0df4J9jty74Yrb346vlNTditskRC56
+ FbHoK/79WrZHqWzlFZ9M+CCmgibl6I9N9LEPj+W8H23xUVj8JgKCrF7u/NurwRBof+TqdZ8Pu
+ 21xs2XJ9wOKpuLjUpz61hnwRjuVgCZuPC8FX+wXTeV9rUw1qxS+XdsKXmSliXGX83NEG5qs1m
+ 6jT/5ir4hir4WwLqyLLlHrwyzNhlgOzhALw7l6staPfGz2COcqxHNc72vPy5RrhzsY5EdMr0Y
+ Jd4yxml0DYvt7Ll7WN5oTrZklU/b7Rm7FNk4EusebTttWuiN3TGbLdHjQXu7ZgGYyjiRfDcDX
+ 2D/PHMNgNRhGfXVF5ugl0Pqkbt6n5lRzqDGPWjoACuS0ooi2SzC85wJOenYM9jaoonolqYUTR
+ Tp7NDjpvLgXVWPQCQFzk/tuAxfR+whBh6tPMpsctDmp73kmYYVlZcGfwmUW+sBMmgFiadMBXj
+ avAYO/Mb1tMggM/l+4J/pAXdlV8N9H6ndnaC5YYEyMu0LuW5+VhYyW3UjzVFK9zujKLbxgWKs
+ 5l9DozeHVO06VuK+REUiwA0clhnVJIvGh7BCDO+rkCDeFT0wjRqBO2CBTtTFI881HhGHIlUg0
+ HPauzL39bvgpaBDsDemduwCdQsF1sWdW1sVGDoVz8gU04tE1ha53/InuFiw9KcKhTUQNrZq
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver is one of only a few remaining files using
-compat_alloc_user_space() and copy_in_user() to implement the compat_ioctl
-handlers.
+The compat handlers for VCHIQ_IOC_QUEUE_MESSAGE32 and
+VCHIQ_IOC_GET_CONFIG32 can simply call the underlying implementations
+that are already separate functions rather than using copy_in_user to
+simulate the native 64-bit interface for the full ioctl handler.
 
-Change it to be more like the other drivers, calling the underlying
-implementation directly, which is generally simpler and less
-error-prone.
+vchiq_ioc_queue_message gets a small update to the calling
+conventions to simplify the compat version by directly
+returning a normal errno value.
 
-This is only build tested so far.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ .../interface/vchiq_arm/vchiq_arm.c           | 109 +++++++++---------
+ 1 file changed, 56 insertions(+), 53 deletions(-)
 
-    Arnd
-
-Arnd Bergmann (5):
-  staging: vchiq: rework compat handling
-  staging: vchiq: convert compat create_service
-  staging: vchiq: convert compat dequeue_message
-  staging: vchiq: convert compat bulk transfer
-  staging: vchiq: convert compat await_completion
-
- .../interface/vchiq_arm/vchiq_arm.c           | 1194 ++++++++---------
- 1 file changed, 551 insertions(+), 643 deletions(-)
-
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+index d4d811884861..56a38bec848a 100644
+--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+@@ -765,12 +765,13 @@ static ssize_t vchiq_ioc_copy_element_data(void *context, void *dest,
+  *   vchiq_ioc_queue_message
+  *
+  **************************************************************************/
+-static enum vchiq_status
++static int
+ vchiq_ioc_queue_message(unsigned int handle,
+ 			struct vchiq_element *elements,
+ 			unsigned long count)
+ {
+ 	struct vchiq_io_copy_callback_context context;
++	enum vchiq_status status = VCHIQ_SUCCESS;
+ 	unsigned long i;
+ 	size_t total_size = 0;
+ 
+@@ -785,8 +786,14 @@ vchiq_ioc_queue_message(unsigned int handle,
+ 		total_size += elements[i].size;
+ 	}
+ 
+-	return vchiq_queue_message(handle, vchiq_ioc_copy_element_data,
+-				   &context, total_size);
++	status = vchiq_queue_message(handle, vchiq_ioc_copy_element_data,
++				     &context, total_size);
++
++	if (status == VCHIQ_ERROR)
++		return -EIO;
++	else if (status == VCHIQ_RETRY)
++		return -EINTR;
++	return 0;
+ }
+ 
+ /****************************************************************************
+@@ -1020,9 +1027,8 @@ vchiq_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 
+ 			if (copy_from_user(elements, args.elements,
+ 				args.count * sizeof(struct vchiq_element)) == 0)
+-				status = vchiq_ioc_queue_message
+-					(args.handle,
+-					elements, args.count);
++				ret = vchiq_ioc_queue_message(args.handle, elements,
++							      args.count);
+ 			else
+ 				ret = -EFAULT;
+ 		} else {
+@@ -1550,55 +1556,53 @@ struct vchiq_queue_message32 {
+ static long
+ vchiq_compat_ioctl_queue_message(struct file *file,
+ 				 unsigned int cmd,
+-				 unsigned long arg)
++				 struct vchiq_queue_message32 __user *arg)
+ {
+-	struct vchiq_queue_message __user *args;
+-	struct vchiq_element __user *elements;
++	struct vchiq_queue_message args;
+ 	struct vchiq_queue_message32 args32;
+-	unsigned int count;
+-
+-	if (copy_from_user(&args32,
+-			   (struct vchiq_queue_message32 __user *)arg,
+-			   sizeof(args32)))
+-		return -EFAULT;
+-
+-	args = compat_alloc_user_space(sizeof(*args) +
+-				       (sizeof(*elements) * MAX_ELEMENTS));
++	struct vchiq_service *service;
++	int ret;
+ 
+-	if (!args)
++	if (copy_from_user(&args32, arg, sizeof(args32)))
+ 		return -EFAULT;
+ 
+-	if (put_user(args32.handle, &args->handle) ||
+-	    put_user(args32.count, &args->count) ||
+-	    put_user(compat_ptr(args32.elements), &args->elements))
+-		return -EFAULT;
++	args = (struct vchiq_queue_message) {
++		.handle   = args32.handle,
++		.count    = args32.count,
++		.elements = compat_ptr(args32.elements),
++	};
+ 
+ 	if (args32.count > MAX_ELEMENTS)
+ 		return -EINVAL;
+ 
+-	if (args32.elements && args32.count) {
+-		struct vchiq_element32 tempelement32[MAX_ELEMENTS];
++	service = find_service_for_instance(file->private_data, args.handle);
++	if (!service)
++		return -EINVAL;
+ 
+-		elements = (struct vchiq_element __user *)(args + 1);
++	if (args32.elements && args32.count) {
++		struct vchiq_element32 element32[MAX_ELEMENTS];
++		struct vchiq_element elements[MAX_ELEMENTS];
++		unsigned int count;
+ 
+-		if (copy_from_user(&tempelement32,
+-				   compat_ptr(args32.elements),
+-				   sizeof(tempelement32)))
++		if (copy_from_user(&element32, args.elements,
++				   sizeof(element32))) {
++			unlock_service(service);
+ 			return -EFAULT;
++		}
+ 
+ 		for (count = 0; count < args32.count; count++) {
+-			if (put_user(compat_ptr(tempelement32[count].data),
+-				     &elements[count].data) ||
+-			    put_user(tempelement32[count].size,
+-				     &elements[count].size))
+-				return -EFAULT;
++			elements[count].data =
++				compat_ptr(element32[count].data);
++			elements[count].size = element32[count].size;
+ 		}
+-
+-		if (put_user(elements, &args->elements))
+-			return -EFAULT;
++		ret = vchiq_ioc_queue_message(args.handle, elements,
++					      args.count);
++	} else {
++		ret = -EINVAL;
+ 	}
++	unlock_service(service);
+ 
+-	return vchiq_ioctl(file, VCHIQ_IOC_QUEUE_MESSAGE, (unsigned long)args);
++	return ret;
+ }
+ 
+ struct vchiq_queue_bulk_transfer32 {
+@@ -1866,35 +1870,34 @@ struct vchiq_get_config32 {
+ static long
+ vchiq_compat_ioctl_get_config(struct file *file,
+ 			      unsigned int cmd,
+-			      unsigned long arg)
++			      struct vchiq_get_config32 __user *arg)
+ {
+-	struct vchiq_get_config __user *args;
+ 	struct vchiq_get_config32 args32;
++	struct vchiq_config config;
++	void __user *ptr;
+ 
+-	args = compat_alloc_user_space(sizeof(*args));
+-	if (!args)
+-		return -EFAULT;
+-
+-	if (copy_from_user(&args32,
+-			   (struct vchiq_get_config32 __user *)arg,
+-			   sizeof(args32)))
++	if (copy_from_user(&args32, arg, sizeof(args32)))
+ 		return -EFAULT;
++	if (args32.config_size > sizeof(config))
++		return -EINVAL;
+ 
+-	if (put_user(args32.config_size, &args->config_size) ||
+-	    put_user(compat_ptr(args32.pconfig), &args->pconfig))
++	vchiq_get_config(&config);
++	ptr = compat_ptr(args32.pconfig);
++	if (copy_to_user(ptr, &config, args32.config_size))
+ 		return -EFAULT;
+ 
+-	return vchiq_ioctl(file, VCHIQ_IOC_GET_CONFIG, (unsigned long)args);
++	return 0;
+ }
+ 
+ static long
+ vchiq_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ {
++	void __user *argp = compat_ptr(arg);
+ 	switch (cmd) {
+ 	case VCHIQ_IOC_CREATE_SERVICE32:
+ 		return vchiq_compat_ioctl_create_service(file, cmd, arg);
+ 	case VCHIQ_IOC_QUEUE_MESSAGE32:
+-		return vchiq_compat_ioctl_queue_message(file, cmd, arg);
++		return vchiq_compat_ioctl_queue_message(file, cmd, argp);
+ 	case VCHIQ_IOC_QUEUE_BULK_TRANSMIT32:
+ 	case VCHIQ_IOC_QUEUE_BULK_RECEIVE32:
+ 		return vchiq_compat_ioctl_queue_bulk(file, cmd, arg);
+@@ -1903,9 +1906,9 @@ vchiq_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 	case VCHIQ_IOC_DEQUEUE_MESSAGE32:
+ 		return vchiq_compat_ioctl_dequeue_message(file, cmd, arg);
+ 	case VCHIQ_IOC_GET_CONFIG32:
+-		return vchiq_compat_ioctl_get_config(file, cmd, arg);
++		return vchiq_compat_ioctl_get_config(file, cmd, argp);
+ 	default:
+-		return vchiq_ioctl(file, cmd, arg);
++		return vchiq_ioctl(file, cmd, (unsigned long)argp);
+ 	}
+ }
+ 
 -- 
 2.27.0
 
