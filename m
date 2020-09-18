@@ -2,62 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C148526FBF4
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 403E626FBF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726627AbgIRMAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 08:00:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39210 "EHLO mail.kernel.org"
+        id S1726637AbgIRMAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 08:00:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726199AbgIRMAi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 08:00:38 -0400
-Received: from localhost (unknown [136.185.124.244])
+        id S1726168AbgIRMAu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 08:00:50 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1E0D32100A;
-        Fri, 18 Sep 2020 12:00:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 23D332072E;
+        Fri, 18 Sep 2020 12:00:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600430437;
-        bh=EWVOPeAE3w06YdnOUsiNsI6p2M/jMN2L8S5LmGhKJ1Y=;
+        s=default; t=1600430450;
+        bh=I3H/gm1g/hyAxhRCcYKSEHmYZeKOlQUJYHZFfgz+YQA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rxaUP3bxi6YazO+nKhUVEDqcmNGmSMmf0FYq8u6M2kOgMBfKNlY20s3BivxBXagk1
-         7kv3wMTIy/xsKf8AI1YR/yuja9tzR0KllrUsTOYSgPIuRS1LeB7PrxeUrKKsabflUF
-         qKPfTfImwsxCh7ECh7p5ddnN/qvzKUhOZOWVHO70=
-Date:   Fri, 18 Sep 2020 17:30:34 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, jank@cadence.com,
-        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        mengdong.lin@intel.com, bard.liao@intel.com
-Subject: Re: [PATCH] soundwire: Add generic bandwidth allocation algorithm
-Message-ID: <20200918120034.GP2968@vkoul-mobl>
-References: <20200908131520.5712-1-yung-chuan.liao@linux.intel.com>
+        b=R6FJM1GR9moczcLCnPkVOGoJiHnqyJJNElwhuj4HWhIp7YN+fwrBtRu/GdLjJoBn4
+         3W17b9y4SjtpGZ9+kyBtboSyqiGjpfJMAtrdnV4+Yg0RG4TNwRrz9BG+hMJSnQ3tL7
+         wIc9awOFCRUGttRK8ruoYtiyksBJoNq5aTvNpD2Y=
+Date:   Fri, 18 Sep 2020 13:00:44 +0100
+From:   Will Deacon <will@kernel.org>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 09/11] kvm: arm64: Mark hyp stack pages reserved
+Message-ID: <20200918120044.GC31096@willie-the-truck>
+References: <20200916173439.32265-1-dbrazdil@google.com>
+ <20200916173439.32265-10-dbrazdil@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200908131520.5712-1-yung-chuan.liao@linux.intel.com>
+In-Reply-To: <20200916173439.32265-10-dbrazdil@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08-09-20, 21:15, Bard Liao wrote:
-> This algorithm computes bus parameters like clock frequency, frame
-> shape and port transport parameters based on active stream(s) running
-> on the bus.
-> 
-> Developers can also implement their own .compute_params() callback for
-> specific resource management algorithm, and set if before calling
-> sdw_add_bus_master()
-> 
-> Credits: this patch is based on an earlier internal contribution by
-> Vinod Koul, Sanyog Kale, Shreyas Nc and Hardik Shah. All hard-coded
-> values were removed from the initial contribution to use BIOS
-> information instead.
+On Wed, Sep 16, 2020 at 06:34:37PM +0100, David Brazdil wrote:
+> In preparation for unmapping hyp pages from host stage-2, allocate/free hyp
+> stack using new helpers which automatically mark the pages reserved.
 
-Applied, thanks
+Given that this series doesn't get us that the point of having a stage-2 for
+the host, I don't see why we need this part yet.
 
--- 
-~Vinod
+Will
