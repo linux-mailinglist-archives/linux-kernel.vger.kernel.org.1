@@ -2,179 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9226B26F7C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB4E826F7B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726311AbgIRINB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 04:13:01 -0400
-Received: from mx1.tq-group.com ([62.157.118.193]:5163 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726154AbgIRINA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 04:13:00 -0400
-X-Greylist: delayed 367 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Sep 2020 04:12:59 EDT
-IronPort-SDR: Tj5PpekTCSDUGI6qp58za9xUdVnv8QfrskXiee7JYAezdrga31XU7L9vZXGWR8PdpXrMRup+aL
- 0DlqOWxsjJia+eoFf9apYPnbRDWnpDu98rAVFDwLmeGs8D7kyU/DYVcyNO4i28BhpHSmBec1Pv
- rxVWg82MDRGr/KBKhdMigGUOvviLYTHS4/iQGDYHPAJgHRZtxBmPw1N0UrVr8U6woPMyutMuZg
- s5wlTJRGWNNz39snlLzd1f/qrkZXMituP6C/ArvC18BcJ082/2CJrOgDS9pbUoz2pKuoY0rjYe
- aW0=
-X-IronPort-AV: E=Sophos;i="5.77,274,1596492000"; 
-   d="scan'208";a="13919670"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 18 Sep 2020 10:06:51 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Fri, 18 Sep 2020 10:06:51 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Fri, 18 Sep 2020 10:06:51 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1600416411; x=1631952411;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=wyZzvMMDTWnpQFctSpVvEtrwx5dWh5GhDZNJNn8DXGY=;
-  b=OKpSv9KipQLGvLhaisXve1f4YdtGBCECRLzjV4cJDdUEw9Inz3pY1rAq
-   rfvaZgp1NpMXwcEY9SBZPGJlGEJ3cb35oE1d0U3ojr052RU/GbEZv/W0i
-   FQgoAttuWT+NIzIj0jdab8kh95dtHGrw3Lzt1iczheS+kuBbql9pV0LIr
-   jl0yahfROKIcZZnmbV5T1imxfLvYntd+NjWFvEFL7n7hZRqdNhTUmqdtE
-   YyV+r3gS0wG57gbFSihdSovV6Xw2PA9q6UuRufDOjftvE3I2P+dBlJSPs
-   0LApeuRbNWVdGEHb1dnd4Mf+pJs+Qtgb96IBZipoElUUh2h8Z+azMJGCk
-   g==;
-IronPort-SDR: bEUj7A7obHd7zLLR1KFO4CAosz0TkLyVtyu2gPZcuStNxCLv7LuaPMtjKx6/zakGxXVOUiRtNo
- LhxEVcWzeBKluruXosnkzXIKfkcftngLBIvFU1DQ5nNbPdF7rEB2qzlvyktG5UMZsNLCXgOEAB
- LkND/kdJzuOEflD2Q465t9FC/mzjddbHPqkrL+iqn4WeG501TvrCP1OR+CKkMHIv6gXGwnpe1m
- kRnaGAUInaOZH+bQ9VzA41ucPHfWS01NxLSd61yalLcmgcWotFBnssWaWrnGzoyU/FeA1FJfuB
- 3Js=
-X-IronPort-AV: E=Sophos;i="5.77,274,1596492000"; 
-   d="scan'208";a="13919669"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 18 Sep 2020 10:06:51 +0200
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.48.12])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 1EE5A280070;
-        Fri, 18 Sep 2020 10:06:51 +0200 (CEST)
-Message-ID: <e9c9b62425bcf83b59540deaa0fbdf1ec617020e.camel@ew.tq-group.com>
-Subject: Re: [PATCH] drm: fsl-dcu: enable PIXCLK on LS1021A
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Stefan Agner <stefan@agner.ch>, sboyd@kernel.org,
-        mturquette@baylibre.com
-Cc:     Alison Wang <alison.wang@nxp.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Date:   Fri, 18 Sep 2020 10:06:48 +0200
-In-Reply-To: <0321e3b1a9def003322b71f2a5fdfe08@agner.ch>
-References: <20200820105832.22331-1-matthias.schiffer@ew.tq-group.com>
-         <0321e3b1a9def003322b71f2a5fdfe08@agner.ch>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1726676AbgIRIHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 04:07:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726185AbgIRIHC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 04:07:02 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E89C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 01:07:02 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id w2so4406412wmi.1
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 01:07:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tgDf+8aovxjwoFqw2pAtXyIqTcZuyQ4tZIemMpo6x5g=;
+        b=waJaW8Mte9D9mu7wVneZdTaseFBahkj505vErBuQBlQdpJCv75cCAvwDEWNFUdX0yw
+         vYzf5M/L1eh5a+L0kuixVIG7B/rrBkqi9HSe10xnQGCX0q2eVFVVU0cLlhyGWAdNMc7L
+         dXQBDU/znPYpMoRmNtBz8CktfjhKqXMdmgeqAfrLx9i7wlrwgkd31B5QiSOjjLSBwkzV
+         zilkLklpmyL1MOZuZ3hw6WhcgZy0qw5zi/nT35DeJM0MCuoa0y+0ztiQHZxanmwOVTJn
+         g/EpZ23RO+2tZsx9k9JwZ/FAn9YMTUN5othT0vqOf8E1E+FnGLkaoOj6G3nkYHEg7THo
+         vknw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tgDf+8aovxjwoFqw2pAtXyIqTcZuyQ4tZIemMpo6x5g=;
+        b=rGhQvIuOt0tTs56/N0hDWxansT1QLmyR32kX5J2Zqc2rPtaOMwYdl8RQkPrTwCJ3fV
+         WdNeNFB5B2OJZIC4ROLj+pDCxsVvl6igVmTv+ITj/URbaNkcRfyMm6DvHP7GWOsqOXsv
+         scdWfR42up2iY+yyY+mEgyxNdVZqvINaKINqpdUM2OTYyOEfyZAAnX4/jNxtFEf4UDUi
+         g31PWNVH3xHzRU6pBMr+0N5nJawMGdnEZkrMjqg7Ath5pUMAlZ9p5WbZOsf+4bXS3ZK+
+         U6qeoeFn267pxkpVSuRmdtgOPY1xAOxk17iBbS2AWUWXN+d4gxU415ii7QUPhQcSCCMf
+         /waw==
+X-Gm-Message-State: AOAM531O9/3qbh3aXParBeCFosI7+PrnLHScAWY6uzQ8Mg7MLwhPwErL
+        RAqh2zPWhEwB6J457BQE+4ex/g==
+X-Google-Smtp-Source: ABdhPJzLuGCkjX50uDxEUgN+LexVakjf3B5xC2tQu09Z2pdTpH6+Pd24cnvL3XO8Yfc9PLw9FvZOnw==
+X-Received: by 2002:a7b:c4d9:: with SMTP id g25mr14060379wmk.15.1600416421193;
+        Fri, 18 Sep 2020 01:07:01 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id r15sm3524860wmn.24.2020.09.18.01.06.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 01:07:00 -0700 (PDT)
+Date:   Fri, 18 Sep 2020 10:06:58 +0200
+From:   LABBE Corentin <clabbe@baylibre.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     arnd@arndb.de, davem@davemloft.net, mripard@kernel.org,
+        wens@csie.org, linux-arm-kernel@lists.infradead.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4/7] crypto: sun4i-ss: handle BigEndian for cipher
+Message-ID: <20200918080658.GA22656@Red>
+References: <1600367758-28589-1-git-send-email-clabbe@baylibre.com>
+ <1600367758-28589-5-git-send-email-clabbe@baylibre.com>
+ <20200918073128.GA24168@gondor.apana.org.au>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200918073128.GA24168@gondor.apana.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-08-21 at 15:41 +0200, Stefan Agner wrote:
-> Hi Matthias,
-> 
-> On 2020-08-20 12:58, Matthias Schiffer wrote:
-> > The PIXCLK needs to be enabled in SCFG before accessing the DCU on LS1021A,
-> > or the access will hang.
-> 
-> Hm, this seems a rather ad-hoc access to SCFG from the DCU. We do
-> support a pixel clock in the device tree bindings of fsl-dcu, so ideally
-> we should enable the pixel clock through the clock framework.
-> 
-> On the other hand, I guess that would mean adding a clock driver to flip
-> a single bit, which seems a bit excessive too.
-> 
-> I'd like a second opinion on that. Adding clk framework maintainers.
-> 
-> --
-> Stefan
-
-How do we proceed with this patch?
-
-Kind regards,
-Matthias
-
-
-
-> 
+On Fri, Sep 18, 2020 at 05:31:28PM +1000, Herbert Xu wrote:
+> On Thu, Sep 17, 2020 at 06:35:55PM +0000, Corentin Labbe wrote:
+> > Ciphers produce invalid results on BE.
+> > Key and IV need to be written in LE.
+> > Furthermore, the non-optimized function is too complicated to convert,
+> > let's simply fallback on BE for the moment.
 > > 
-> > Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+> > Fixes: 6298e948215f2 ("crypto: sunxi-ss - Add Allwinner Security System crypto accelerator")
+> > Cc: <stable@vger.kernel.org>
+> > Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 > > ---
-> >  drivers/gpu/drm/fsl-dcu/Kconfig           |  1 +
-> >  drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.c | 25 +++++++++++++++++++++++
-> >  drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.h |  3 +++
-> >  3 files changed, 29 insertions(+)
-> > 
-> > diff --git a/drivers/gpu/drm/fsl-dcu/Kconfig b/drivers/gpu/drm/fsl-dcu/Kconfig
-> > index d7dd8ba90e3a..9e5a35e7c00c 100644
-> > --- a/drivers/gpu/drm/fsl-dcu/Kconfig
-> > +++ b/drivers/gpu/drm/fsl-dcu/Kconfig
-> > @@ -8,6 +8,7 @@ config DRM_FSL_DCU
-> >  	select DRM_PANEL
-> >  	select REGMAP_MMIO
-> >  	select VIDEOMODE_HELPERS
-> > +	select MFD_SYSCON if SOC_LS1021A
-> >  	help
-> >  	  Choose this option if you have an Freescale DCU chipset.
-> >  	  If M is selected the module will be called fsl-dcu-drm.
-> > diff --git a/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.c
-> > b/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.c
-> > index abbc1ddbf27f..8a7556655581 100644
-> > --- a/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.c
-> > +++ b/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.c
-> > @@ -51,6 +51,23 @@ static const struct regmap_config fsl_dcu_regmap_config = {
-> >  	.volatile_reg = fsl_dcu_drm_is_volatile_reg,
-> >  };
-> >  
-> > +static int fsl_dcu_scfg_config_ls1021a(struct device_node *np)
-> > +{
-> > +	struct regmap *scfg;
-> > +
-> > +	scfg = syscon_regmap_lookup_by_compatible("fsl,ls1021a-scfg");
-> > +	if (IS_ERR(scfg))
-> > +		return PTR_ERR(scfg);
-> > +
-> > +	/*
-> > +	 * For simplicity, enable the PIXCLK unconditionally. It might
-> > +	 * be possible to disable the clock in PM or on unload as a future
-> > +	 * improvement.
-> > +	 */
-> > +	return regmap_update_bits(scfg, SCFG_PIXCLKCR, SCFG_PIXCLKCR_PXCEN,
-> > +				  SCFG_PIXCLKCR_PXCEN);
-> > +}
-> > +
-> >  static void fsl_dcu_irq_uninstall(struct drm_device *dev)
-> >  {
-> >  	struct fsl_dcu_drm_device *fsl_dev = dev->dev_private;
-> > @@ -70,6 +87,14 @@ static int fsl_dcu_load(struct drm_device *dev,
-> > unsigned long flags)
-> >  		return ret;
-> >  	}
-> >  
-> > +	if (of_device_is_compatible(fsl_dev->np, "fsl,ls1021a-dcu")) {
-> > +		ret = fsl_dcu_scfg_config_ls1021a(fsl_dev->np);
-> > +		if (ret < 0) {
-> > +			dev_err(dev->dev, "failed to enable pixclk\n");
-> > +			goto done;
-> > +		}
-> > +	}
-> > +
-> >  	ret = drm_vblank_init(dev, dev->mode_config.num_crtc);
-> >  	if (ret < 0) {
-> >  		dev_err(dev->dev, "failed to initialize vblank\n");
-> > diff --git a/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.h
-> > b/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.h
-> > index e2049a0e8a92..566396013c04 100644
-> > --- a/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.h
-> > +++ b/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.h
-> > @@ -160,6 +160,9 @@
-> >  #define FSL_DCU_ARGB4444		12
-> >  #define FSL_DCU_YUV422			14
-> >  
-> > +#define SCFG_PIXCLKCR			0x28
-> > +#define SCFG_PIXCLKCR_PXCEN		BIT(31)
-> > +
-> >  #define VF610_LAYER_REG_NUM		9
-> >  #define LS1021A_LAYER_REG_NUM		10
+> >  .../crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c | 17 +++++++++++------
+> >  1 file changed, 11 insertions(+), 6 deletions(-)
+> 
+> Does the BE failure get caught by the selftest?
+> 
 
+Yes, selftest found it.
+
+> If so please just leave it enabled so that it can be fixed properly.
+
+Not sure to leave it enabled is a good idea.
+A least, leaving it failing probably will not annoy any user (according to my readings of #linux-sunxi, nobody use BE).
+
+But I think only me will see it and since I already have this on my TODO list, I dont see any interest to leave it failing.
+Furthermore, having a clean BE boot will permit to enable BE boots for thoses SoCs on kernelCI.
+
+Regards
