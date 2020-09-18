@@ -2,105 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90D1026F9BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:58:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F4C026F9BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726290AbgIRJ6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 05:58:39 -0400
-Received: from mga01.intel.com ([192.55.52.88]:8132 "EHLO mga01.intel.com"
+        id S1726311AbgIRJ64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 05:58:56 -0400
+Received: from foss.arm.com ([217.140.110.172]:37714 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726115AbgIRJ6i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 05:58:38 -0400
-IronPort-SDR: xo7Dkotoieh324yOb8EuIfQaISSC1ppYU+XGhLu6dFrNZNBcBM6u4MgIhqLnxuNJPhGoUsqKbl
- WXQR9QZDkSrw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="177994163"
-X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
-   d="scan'208";a="177994163"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 02:58:37 -0700
-IronPort-SDR: DM20wbBrmnoRBgQ0MDZp4J4CXwPRFPXD8sJB+wqEsS0O65H4KHh/Oe1K/7Yo0CyhbYM2YRrZpa
- jAH1COn3YC4Q==
-X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
-   d="scan'208";a="344694904"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 02:58:31 -0700
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id DD46A20815; Fri, 18 Sep 2020 12:57:59 +0300 (EEST)
-Date:   Fri, 18 Sep 2020 12:57:59 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Marek Behun <marek.behun@nic.cz>
-Cc:     linux-leds@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        Dan Murphy <dmurphy@ti.com>,
-        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH leds v2 05/50] leds: various: guard of_match_table member
- value with of_match_ptr
-Message-ID: <20200918095759.GG26842@paasikivi.fi.intel.com>
-References: <20200917223338.14164-1-marek.behun@nic.cz>
- <20200917223338.14164-6-marek.behun@nic.cz>
- <20200918061500.GD26842@paasikivi.fi.intel.com>
- <20200918112058.6d3b0d5d@nic.cz>
+        id S1725941AbgIRJ6z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 05:58:55 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 31C7711D4;
+        Fri, 18 Sep 2020 02:58:55 -0700 (PDT)
+Received: from [172.16.1.113] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F30363F73B;
+        Fri, 18 Sep 2020 02:58:52 -0700 (PDT)
+Subject: Re: [PATCH v3 08/16] irqchip/gic: Configure SGIs as standard
+ interrupts
+To:     Marc Zyngier <maz@kernel.org>, jonathanh@nvidia.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Sumit Garg <sumit.garg@linaro.org>, kernel-team@android.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Saravana Kannan <saravanak@google.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+References: <20200901144324.1071694-1-maz@kernel.org>
+ <20200901144324.1071694-9-maz@kernel.org>
+From:   James Morse <james.morse@arm.com>
+Message-ID: <f3af8930-b61d-4945-475c-b49e326cd24f@arm.com>
+Date:   Fri, 18 Sep 2020 10:58:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200918112058.6d3b0d5d@nic.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200901144324.1071694-9-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 11:20:58AM +0200, Marek Behun wrote:
-> On Fri, 18 Sep 2020 09:15:00 +0300
-> Sakari Ailus <sakari.ailus@linux.intel.com> wrote:
-> 
-> > Hi Marek,
-> > 
-> > On Fri, Sep 18, 2020 at 12:32:53AM +0200, Marek Behún wrote:
-> > > Change
-> > >   .of_match_table = xxx,
-> > > to
-> > >   .of_match_table = of_match_ptr(xxx),
-> > > in various drivers.
-> > > 
-> > > This should be standard even for drivers that depend on OF.  
-> > 
-> > After this patch, none of these drivers will work on ACPI systems anymore.
+Hi Marc,
 
-^
+(CC: +Jon)
 
-If CONFIG_OF is disabled, that is.
+On 01/09/2020 15:43, Marc Zyngier wrote:
+> Change the way we deal with GIC SGIs by turning them into proper
+> IRQs, and calling into the arch code to register the interrupt range
+> instead of a callback.
 
-> 
-> Hi Sakari,
-> 
-> I don't understand. Why not? Does ACPI subsystem parse of_match_table
-> as well?
+Your comment "This only works because we don't nest SGIs..." on this thread tripped some
+bad memories from adding the irq-stack. Softirq causes us to nest irqs, but only once.
 
-It does. The compatible string is used the same way as in DT for matching
-devices with "PRP0001" _HID or _CID.
 
-Please read Documentation/firmware-guide/acpi/enumeration.rst .
+(I've messed with the below diff to remove the added stuff:)
 
-IOW, you can safely do the above only for drivers that depend on OF in
-Kconfig. Otherwise you'll probably break something.
+> diff --git a/drivers/irqchip/irq-gic.c b/drivers/irqchip/irq-gic.c
+> index 4ffd62af888f..4be2b62f816f 100644
+> --- a/drivers/irqchip/irq-gic.c
+> +++ b/drivers/irqchip/irq-gic.c
+> @@ -335,31 +335,22 @@ static void __exception_irq_entry gic_handle_irq(struct pt_regs *regs)
+>  		irqstat = readl_relaxed(cpu_base + GIC_CPU_INTACK);
+>  		irqnr = irqstat & GICC_IAR_INT_ID_MASK;
+>  
+> -		if (likely(irqnr > 15 && irqnr < 1020)) {
+> -			if (static_branch_likely(&supports_deactivate_key))
+> -				writel_relaxed(irqstat, cpu_base + GIC_CPU_EOI);
+> -			isb();
+> -			handle_domain_irq(gic->domain, irqnr, regs);
+> -			continue;
+> -		}
+> -		if (irqnr < 16) {
+>  			writel_relaxed(irqstat, cpu_base + GIC_CPU_EOI);
+> -			if (static_branch_likely(&supports_deactivate_key))
+> -				writel_relaxed(irqstat, cpu_base + GIC_CPU_DEACTIVATE);
+> -#ifdef CONFIG_SMP
+> -			/*
+> -			 * Ensure any shared data written by the CPU sending
+> -			 * the IPI is read after we've read the ACK register
+> -			 * on the GIC.
+> -			 *
+> -			 * Pairs with the write barrier in gic_raise_softirq
+> -			 */
+>  			smp_rmb();
+> -			handle_IPI(irqnr, regs);
 
--- 
-Sakari Ailus
+If I read this right, previously we would EOI the interrupt before calling handle_IPI().
+Where as now with the version of this series in your tree, we stuff the to-be-EOId value
+in a percpu variable, which is only safe if these don't nest.
+
+Hidden in irq_exit(), kernel/softirq.c::__irq_exit_rcu() has this:
+|	preempt_count_sub(HARDIRQ_OFFSET);
+|	if (!in_interrupt() && local_softirq_pending())
+|		invoke_softirq();
+
+The arch code doesn't raise the preempt counter by HARDIRQ, so once __irq_exit_rcu() has
+dropped it, in_interrupt() returns false, and we invoke_softirq().
+
+invoke_softirq() -> __do_softirq() -> local_irq_enable()!
+
+Fortunately, __do_softirq() raises the softirq count first using __local_bh_disable_ip(),
+which in-interrupt() checks too, so this can only happen once per IRQ.
+
+Now the irq_exit() has moved from handle_IPI(), which ran after EOI, into
+handle_domain_irq(), which runs before. I think its possible SGIs nest, and the new percpu
+variable becomes corrupted.
+
+Presumably this isn't a problem for regular IRQ, as they don't need the sending-CPU in
+order to EOI, which is why it wasn't a problem before.
+
+Adding anything to preempt-count around the whole thing upsets RCU, and softirq seems to
+expect this nesting, but evidently the gic does not. I'm not sure what the right thing to
+do would be. A dirty hack like [0] would confirm the theory.
+
+/me runs
+
+Thanks,
+
+James
+
+
+
+[0] A dirty hack
+-----------%<-----------
+diff --git a/kernel/softirq.c b/kernel/softirq.c
+index bf88d7f62433..50e14d8cbec3 100644
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -376,7 +376,7 @@ static inline void invoke_softirq(void)
+        if (ksoftirqd_running(local_softirq_pending()))
+                return;
+
+-       if (!force_irqthreads) {
++       if (false) {
+ #ifdef CONFIG_HAVE_IRQ_EXIT_ON_IRQ_STACK
+                /*
+                 * We can safely execute softirq on the current stack if
+@@ -393,6 +393,7 @@ static inline void invoke_softirq(void)
+                do_softirq_own_stack();
+ #endif
+        } else {
++               /* hack: force this */
+                wakeup_softirqd();
+        }
+ }
+-----------%<-----------
