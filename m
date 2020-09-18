@@ -2,80 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3228326F7E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B6F26F793
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726548AbgIRITI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 04:19:08 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:58456 "EHLO inva021.nxp.com"
+        id S1726359AbgIRIBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 04:01:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726473AbgIRITA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 04:19:00 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 23808201136;
-        Fri, 18 Sep 2020 10:09:05 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 26C94201126;
-        Fri, 18 Sep 2020 10:08:58 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id A22B24029A;
-        Fri, 18 Sep 2020 10:08:49 +0200 (CEST)
-From:   Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
-To:     linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        robh+dt@kernel.org, lorenzo.pieralisi@arm.com, bhelgaas@google.com,
-        shawnguo@kernel.org, kishon@ti.com, leoyang.li@nxp.com,
-        gustavo.pimentel@synopsys.com, arnd@arndb.de,
-        gregkh@linuxfoundation.org, andrew.murray@arm.com
-Cc:     minghuan.Lian@nxp.com, mingkai.hu@nxp.com, roy.zang@nxp.com,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-Subject: [PATCHv8 12/12] misc: pci_endpoint_test: Add driver data for Layerscape PCIe controllers
-Date:   Fri, 18 Sep 2020 16:00:24 +0800
-Message-Id: <20200918080024.13639-13-Zhiqiang.Hou@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200918080024.13639-1-Zhiqiang.Hou@nxp.com>
-References: <20200918080024.13639-1-Zhiqiang.Hou@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726192AbgIRIBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 04:01:25 -0400
+Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B60121481;
+        Fri, 18 Sep 2020 08:01:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600416085;
+        bh=c6ijB4BvIwzi7vJzyQ2v957duak7/yv+gqofCzrmM+M=;
+        h=From:To:Cc:Subject:Date:From;
+        b=qK3a9XQhW2pIfjCjXEv1P14tqj1JUrLGPfSf2O7MqokTWnEEDp2GmmFdyiTXnPh/n
+         WfTlXl4FwbECEmsPAlISUaDrABQLVFRaUYYoZc0vcwC11SA5B6r2zyCIUUdTKmJTCv
+         AYDw2TgUuzIAOQL73aYaeG45Au2EVpe7wr/hA41o=
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc:     "Frank Ch . Eigler" <fche@redhat.com>,
+        Aaron Merey <amerey@redhat.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] perf probe: Support debuginfod client
+Date:   Fri, 18 Sep 2020 17:01:20 +0900
+Message-Id: <160041608027.912668.13169810485938551658.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+Hi,
 
-The commit 0a121f9bc3f5 ("misc: pci_endpoint_test: Use streaming DMA
-APIs for buffer allocation") changed to use streaming DMA APIs, however,
-dma_map_single() might not return a 4KB aligned address, so add the
-default_data as driver data for Layerscape PCIe controllers to make it
-4KB aligned.
+Here is the 2nd version of a series to enable debuginfod support on
+perf probe command. This allows users to access debuginfo binary
+from remote device. 
 
-Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-Acked-by: Rob Herring <robh@kernel.org>
+In this version I fixed a build error when libdebuginfod is not
+installed ([2/2]).
+
+
+Since the perf-probe heavily depends on the debuginfo, debuginfod
+gives us many benefits on the perf probe command on remote
+machine, especially for the embedded devices.
+
+Here is an example (copied from [2/2])
+
+1. at first you need to start debuginfod on the host machine.
+   -F option scans local debuginfo binary. (You don't need to pass
+   the source tree, but you must keep the source tree untouched)
+
+  (host) $ cd PATH/TO/KBUILD/DIR/
+  (host) $ debuginfod -F .
+  ...
+
+2. In the remote machine, you need to set DEBUGINFOD_URLS.
+   debuginfod uses 8002 tcp port.
+
+  (remote) # export DEBUGINFOD_URLS="http://$HOST_IP:8002/"
+
+3. Then you can use the perf probe (it can refer the source code)
+
+  (remote) # perf probe -L vfs_read
+  <vfs_read@...>
+        0  ssize_t vfs_read(struct file *file, char __user *buf, size_t count, loff_t *pos)
+           {
+        2         ssize_t ret;
+
+                  if (!(file->f_mode & FMODE_READ))
+                          return -EBADF;
+        6         if (!(file->f_mode & FMODE_CAN_READ))
+                          return -EINVAL;
+        8         if (unlikely(!access_ok(buf, count)))
+                          return -EFAULT;
+
+       11         ret = rw_verify_area(READ, file, pos, count);
+       12         if (ret)
+                          return ret;
+                  if (count > MAX_RW_COUNT)
+  ...
+
+  (remote) # perf probe -a "vfs_read count"
+  Added new event:
+    probe:vfs_read       (on vfs_read with count)
+
+  (remote) # perf probe -l
+    probe:vfs_read       (on vfs_read@ksrc/linux/fs/read_write.c with count)
+
+
+
+Thank you,
+
 ---
-V8:
- - No change.
 
- drivers/misc/pci_endpoint_test.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+Masami Hiramatsu (2):
+      perf probe: Fix to adjust symbol address with correct reloc_sym address
+      perf probe: Fall back to debuginfod query if debuginfo and source not found
 
-diff --git a/drivers/misc/pci_endpoint_test.c b/drivers/misc/pci_endpoint_test.c
-index 4a17f08de60f..70a790cd14c5 100644
---- a/drivers/misc/pci_endpoint_test.c
-+++ b/drivers/misc/pci_endpoint_test.c
-@@ -946,8 +946,12 @@ static const struct pci_device_id pci_endpoint_test_tbl[] = {
- 	{ PCI_DEVICE(PCI_VENDOR_ID_TI, PCI_DEVICE_ID_TI_DRA72x),
- 	  .driver_data = (kernel_ulong_t)&default_data,
- 	},
--	{ PCI_DEVICE(PCI_VENDOR_ID_FREESCALE, 0x81c0) },
--	{ PCI_DEVICE(PCI_VENDOR_ID_FREESCALE, PCI_DEVICE_ID_LS1088A) },
-+	{ PCI_DEVICE(PCI_VENDOR_ID_FREESCALE, 0x81c0),
-+	  .driver_data = (kernel_ulong_t)&default_data,
-+	},
-+	{ PCI_DEVICE(PCI_VENDOR_ID_FREESCALE, PCI_DEVICE_ID_LS1088A),
-+	  .driver_data = (kernel_ulong_t)&default_data,
-+	},
- 	{ PCI_DEVICE_DATA(SYNOPSYS, EDDA, NULL) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_TI, PCI_DEVICE_ID_TI_AM654),
- 	  .driver_data = (kernel_ulong_t)&am654_data
--- 
-2.17.1
 
+ tools/perf/util/probe-event.c  |   66 ++++++++++++++++++++++++++++++++++++++--
+ tools/perf/util/probe-finder.c |   61 ++++++++++++++++++++++++++++++++++---
+ tools/perf/util/probe-finder.h |    7 +++-
+ 3 files changed, 123 insertions(+), 11 deletions(-)
+
+--
+Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
