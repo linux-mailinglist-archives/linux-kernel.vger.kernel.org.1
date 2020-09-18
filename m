@@ -2,234 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1DFF26FEC0
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 15:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42C1D26FEA4
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 15:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727013AbgIRNhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 09:37:12 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:47928 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727000AbgIRNhH (ORCPT
+        id S1726855AbgIRNe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 09:34:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56685 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726526AbgIRNew (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 09:37:07 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08IDYSB5098506;
-        Fri, 18 Sep 2020 13:36:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=ZhaLBzd1KV98w3PtqMh8j2UxgI04oBz55DdQJUhX1Cw=;
- b=lZ5nyhtsxiyJeGfCR5iR1JWDFmEP9zA+iO925O8INRWOxE+Pooacbh5HB6UXfMoCJQBP
- SjWOrd6yydQdhGWOar8wvaJws+Iu5VVsNeMiUVtijIOGQIkmHrTStJqF9aSzVyA0ExCr
- hjIVueWYMnLtkVRSblKxY8OKE0+nlB6CXf05m7iz8oPIGaZwrzmlVWwLJPWzRJGbuew+
- GVfVNLNeQ9msdrw/iJauvmhmOCFRPvKcgo1Xd3au9iOr+xQwbZWOhBzP4Rgp8PfT33LH
- QV7CZqBws4eDPbUGRZ5inTRqtrsv7gON7IeokReHM7DuYsTecDWQ3n1U/zjJD3vQbiOS cA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 33j91e0ux9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 18 Sep 2020 13:36:12 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08IDa9NO161206;
-        Fri, 18 Sep 2020 13:36:11 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 33khppqfgh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Sep 2020 13:36:11 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08IDa4MB030233;
-        Fri, 18 Sep 2020 13:36:04 GMT
-Received: from localhost.uk.oracle.com (/10.175.217.104)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 18 Sep 2020 13:35:59 +0000
-From:   Alan Maguire <alan.maguire@oracle.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andriin@fb.com, yhs@fb.com
-Cc:     linux@rasmusvillemoes.dk, andriy.shevchenko@linux.intel.com,
-        pmladek@suse.com, kafai@fb.com, songliubraving@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org, shuah@kernel.org,
-        rdna@fb.com, scott.branden@broadcom.com, quentin@isovalent.com,
-        cneirabustos@gmail.com, jakub@cloudflare.com, mingo@redhat.com,
-        rostedt@goodmis.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        acme@kernel.org, Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH v5 bpf-next 6/6] selftests/bpf: add test for bpf_seq_btf_write helper
-Date:   Fri, 18 Sep 2020 14:34:35 +0100
-Message-Id: <1600436075-2961-7-git-send-email-alan.maguire@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1600436075-2961-1-git-send-email-alan.maguire@oracle.com>
-References: <1600436075-2961-1-git-send-email-alan.maguire@oracle.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9747 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=2
- mlxlogscore=999 phishscore=0 mlxscore=0 adultscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009180111
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9747 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
- priorityscore=1501 malwarescore=0 suspectscore=2 mlxlogscore=999
- clxscore=1015 adultscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009180110
+        Fri, 18 Sep 2020 09:34:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600436091;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YN8GaQ8TV4sFrBpi6XN0z9f0qTT9ES4Iedyq0dk3o+A=;
+        b=NuY2o/w/2mHgQntSRn8IAU1FGi31arsI7v3tdVCJ89ohqUQ6n2nXu+Een3N8FkmO87boBu
+        JrcJWTlWwrcaEEOdBgs1gxSNyNg2hW4aJEgwFR0ZypPToH2+DwkUtVX5zovK43lLkcBc1Z
+        fCKe7QtdhOdCGPSIQqQL7BMz2Z/r6W0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-367-KlS48hkNMc-Xii0KmdWJjA-1; Fri, 18 Sep 2020 09:34:47 -0400
+X-MC-Unique: KlS48hkNMc-Xii0KmdWJjA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 824C0AFD63;
+        Fri, 18 Sep 2020 13:34:45 +0000 (UTC)
+Received: from krava (ovpn-114-24.ams2.redhat.com [10.36.114.24])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 0200C1002D46;
+        Fri, 18 Sep 2020 13:34:40 +0000 (UTC)
+Date:   Fri, 18 Sep 2020 15:34:39 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH 2/4] perf stat: Add --for-each-cgroup option
+Message-ID: <20200918133439.GB2626435@krava>
+References: <20200916063129.1061487-1-namhyung@kernel.org>
+ <20200916063129.1061487-3-namhyung@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916063129.1061487-3-namhyung@kernel.org>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a test verifying iterating over tasks and displaying BTF
-representation of data succeeds.  Note here that we do not display
-the task_struct itself, as it will overflow the PAGE_SIZE limit on seq
-data; instead we write task->fs (a struct fs_struct).
+On Wed, Sep 16, 2020 at 03:31:27PM +0900, Namhyung Kim wrote:
 
-Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
----
- tools/testing/selftests/bpf/prog_tests/bpf_iter.c  | 66 ++++++++++++++++++++++
- .../selftests/bpf/progs/bpf_iter_task_btf.c        | 49 ++++++++++++++++
- 2 files changed, 115 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_task_btf.c
+SNIP
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-index fe1a83b9..b9f13f9 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-@@ -7,6 +7,7 @@
- #include "bpf_iter_task.skel.h"
- #include "bpf_iter_task_stack.skel.h"
- #include "bpf_iter_task_file.skel.h"
-+#include "bpf_iter_task_btf.skel.h"
- #include "bpf_iter_tcp4.skel.h"
- #include "bpf_iter_tcp6.skel.h"
- #include "bpf_iter_udp4.skel.h"
-@@ -167,6 +168,69 @@ static void test_task_file(void)
- 	bpf_iter_task_file__destroy(skel);
- }
- 
-+#define FSBUFSZ		8192
-+
-+static char fsbuf[FSBUFSZ];
-+
-+static void do_btf_read(struct bpf_program *prog)
-+{
-+	int iter_fd = -1, len = 0, bufleft = FSBUFSZ;
-+	struct bpf_link *link;
-+	char *buf = fsbuf;
-+
-+	link = bpf_program__attach_iter(prog, NULL);
-+	if (CHECK(IS_ERR(link), "attach_iter", "attach_iter failed\n"))
-+		return;
-+
-+	iter_fd = bpf_iter_create(bpf_link__fd(link));
-+	if (CHECK(iter_fd < 0, "create_iter", "create_iter failed\n"))
-+		goto free_link;
-+
-+	do {
-+		len = read(iter_fd, buf, bufleft);
-+		if (len > 0) {
-+			buf += len;
-+			bufleft -= len;
-+		}
-+	} while (len > 0);
-+
-+	if (CHECK(len < 0, "read", "read failed: %s\n", strerror(errno)))
-+		goto free_link;
-+
-+	CHECK(strstr(fsbuf, "(struct fs_struct)") == NULL,
-+	      "check for btf representation of fs_struct in iter data",
-+	      "struct fs_struct not found");
-+free_link:
-+	if (iter_fd > 0)
-+		close(iter_fd);
-+	bpf_link__destroy(link);
-+}
-+
-+static void test_task_btf(void)
-+{
-+	struct bpf_iter_task_btf__bss *bss;
-+	struct bpf_iter_task_btf *skel;
-+
-+	skel = bpf_iter_task_btf__open_and_load();
-+	if (CHECK(!skel, "bpf_iter_task_btf__open_and_load",
-+		  "skeleton open_and_load failed\n"))
-+		return;
-+
-+	bss = skel->bss;
-+
-+	do_btf_read(skel->progs.dump_task_fs_struct);
-+
-+	if (CHECK(bss->tasks == 0, "check if iterated over tasks",
-+		  "no task iteration, did BPF program run?\n"))
-+		goto cleanup;
-+
-+	CHECK(bss->seq_err != 0, "check for unexpected err",
-+	      "bpf_seq_btf_write returned %ld", bss->seq_err);
-+
-+cleanup:
-+	bpf_iter_task_btf__destroy(skel);
-+}
-+
- static void test_tcp4(void)
- {
- 	struct bpf_iter_tcp4 *skel;
-@@ -957,6 +1021,8 @@ void test_bpf_iter(void)
- 		test_task_stack();
- 	if (test__start_subtest("task_file"))
- 		test_task_file();
-+	if (test__start_subtest("task_btf"))
-+		test_task_btf();
- 	if (test__start_subtest("tcp4"))
- 		test_tcp4();
- 	if (test__start_subtest("tcp6"))
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_btf.c b/tools/testing/selftests/bpf/progs/bpf_iter_task_btf.c
-new file mode 100644
-index 0000000..0451682
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_task_btf.c
-@@ -0,0 +1,49 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020, Oracle and/or its affiliates. */
-+#include "bpf_iter.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <errno.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+long tasks = 0;
-+long seq_err = 0;
-+
-+/* struct task_struct's BTF representation will overflow PAGE_SIZE so cannot
-+ * be used here; instead dump a structure associated with each task.
-+ */
-+SEC("iter/task")
-+int dump_task_fs_struct(struct bpf_iter__task *ctx)
-+{
-+	static const char fs_type[] = "struct fs_struct";
-+	struct seq_file *seq = ctx->meta->seq;
-+	struct task_struct *task = ctx->task;
-+	struct fs_struct *fs = (void *)0;
-+	static struct btf_ptr ptr = { };
-+	long ret;
-+
-+	if (task)
-+		fs = task->fs;
-+
-+	ptr.type = fs_type;
-+	ptr.ptr = fs;
-+
-+	if (ctx->meta->seq_num == 0)
-+		BPF_SEQ_PRINTF(seq, "Raw BTF fs_struct per task\n");
-+
-+	ret = bpf_seq_btf_write(seq, &ptr, sizeof(ptr), 0);
-+	switch (ret) {
-+	case 0:
-+		tasks++;
-+		break;
-+	case -ERANGE:
-+		/* NULL task or task->fs, don't count it as an error. */
-+		break;
-+	default:
-+		seq_err = ret;
-+		break;
-+	}
-+
-+	return 0;
-+}
--- 
-1.8.3.1
+> +int evlist__expand_cgroup(struct evlist *evlist, const char *str)
+> +{
+> +	struct evlist *orig_list, *tmp_list;
+> +	struct evsel *pos, *evsel, *leader;
+> +	struct cgroup *cgrp = NULL;
+> +	const char *p, *e, *eos = str + strlen(str);
+> +	int ret = -1;
+> +
+> +	if (evlist->core.nr_entries == 0) {
+> +		fprintf(stderr, "must define events before cgroups\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	orig_list = evlist__new();
+> +	tmp_list = evlist__new();
+> +	if (orig_list == NULL || tmp_list == NULL) {
+> +		fprintf(stderr, "memory allocation failed\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	/* save original events and init evlist */
+> +	perf_evlist__splice_list_tail(orig_list, &evlist->core.entries);
+> +	evlist->core.nr_entries = 0;
+> +
+> +	for (;;) {
+> +		p = strchr(str, ',');
+> +		e = p ? p : eos;
+> +
+> +		/* allow empty cgroups, i.e., skip */
+> +		if (e - str) {
+> +			/* termination added */
+> +			char *name = strndup(str, e - str);
+> +			if (!name)
+> +				break;
+> +
+> +			cgrp = cgroup__new(name);
+> +			free(name);
+> +			if (cgrp == NULL)
+> +				break;
+> +		} else {
+> +			cgrp = NULL;
+> +		}
+> +
+> +		leader = NULL;
+> +		evlist__for_each_entry(orig_list, pos) {
+> +			evsel = evsel__clone(pos);
+
+missing check on evsel == NULL
+
+jirka
+
+> +			cgroup__put(evsel->cgrp);
+> +			evsel->cgrp = cgroup__get(cgrp);
+> +
+> +			if (evsel__is_group_leader(pos))
+> +				leader = evsel;
+> +			evsel->leader = leader;
+> +
+> +			evlist__add(tmp_list, evsel);
+> +		}
+> +		/* cgroup__new() has a refcount, release it here */
+> +		cgroup__put(cgrp);
+> +		nr_cgroups++;
+> +
+> +		perf_evlist__splice_list_tail(evlist, &tmp_list->core.entries);
+> +		tmp_list->core.nr_entries = 0;
+> +
+> +		if (!p) {
+> +			ret = 0;
+> +			break;
+> +		}
+> +		str = p+1;
+> +	}
+> +	evlist__delete(orig_list);
+> +	evlist__delete(tmp_list);
+> +
+> +	return ret;
+> +}
+
+SNIP
 
