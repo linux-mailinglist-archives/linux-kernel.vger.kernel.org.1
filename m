@@ -2,91 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C1D326FAB7
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 12:37:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16B8C26FB03
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 12:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726200AbgIRKhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 06:37:33 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:48420 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725941AbgIRKhd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 06:37:33 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id DCCD93B05D18F5165875;
-        Fri, 18 Sep 2020 18:37:30 +0800 (CST)
-Received: from [10.174.179.63] (10.174.179.63) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 18 Sep 2020 18:37:24 +0800
-Subject: Re: [PATCH -next] i2c: efm32: Use
- devm_platform_get_and_ioremap_resource()
-To:     Yicong Yang <yangyicong@hisilicon.com>
-CC:     <cj.chengjian@huawei.com>, <huawei.libin@huawei.com>,
-        <wsa@kernel.org>, <u.kleine-koenig@pengutronix.de>,
-        <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20200918082508.32427-1-bobo.shaobowang@huawei.com>
- <961c1feb-f818-f98c-f618-57c643bac04c@hisilicon.com>
-From:   "Wangshaobo (bobo)" <bobo.shaobowang@huawei.com>
-Message-ID: <01032e87-f334-c586-2baa-78919310d736@huawei.com>
-Date:   Fri, 18 Sep 2020 18:37:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.0
+        id S1726308AbgIRK5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 06:57:10 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:35010 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725882AbgIRK5K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 06:57:10 -0400
+X-Greylist: delayed 1037 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Sep 2020 06:57:08 EDT
+Received: from mail-lf1-f69.google.com ([209.85.167.69])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <po-hsu.lin@canonical.com>)
+        id 1kJDnx-00071Q-DZ
+        for linux-kernel@vger.kernel.org; Fri, 18 Sep 2020 10:39:49 +0000
+Received: by mail-lf1-f69.google.com with SMTP id 23so930542lfy.15
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 03:39:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8TQIpEkK3UURZSuTWdFxaxjlA5aeVAZ+3spWA7nEMrY=;
+        b=qJXKpkfyx6C/o+4enVrZ0szHg+BmNuQw/ZZ0UN/LwSNkYmVBne7Su745oUmpC/okYb
+         xh0/WJB209rIratxSE9+ZyJheQ3SHnsQqnHfmpMqjZEpUWziOFTdsJMv+wu8O1h6LryK
+         +7Dg8fsGTuCUeqRg48Cvt9VX8ZRcPAyysy1sjKzYpX9Z7FD5ES9L1MZD/jtcG4YmNTYT
+         tYahivtiMy1ZPNeFGYVk30+DaAbU5Zf2OVF7yGQrklBwJvc8CF+z8pJIiUimbuJ/z9L6
+         VgaHtpU9yTrXYYHTEz55hLT+gLRt8FUa+efFbWxLZiFTb6DkSkTvuwCi9Ulx8LLcxCZx
+         ilwQ==
+X-Gm-Message-State: AOAM531TUIUnBqcylC6W+8SVhtlBELvl60LLwm3TBy1uuy6vj/aphLLD
+        9HF9YJrmRY2+oR66BoYpTZ1HMvDw2w6K7dNy92ZDBhT2YEIwM8e6HRMzAeONO8sL1be2eppJ288
+        Mr9MDNeBFzBIMGSqKXmEVMU+uFRmbqTG56GDEY85qWEz1nCZ5gUcdqoUG
+X-Received: by 2002:a2e:9a0c:: with SMTP id o12mr12181067lji.191.1600425588776;
+        Fri, 18 Sep 2020 03:39:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyjdifQSj/on5KrMw8Uc/IRsfoxNs9Bf+W2IqpozLJMGxB4ZcAjvQ0UDDusCs6H/dI1hVNWjY2TLNHtYxHpBrY=
+X-Received: by 2002:a2e:9a0c:: with SMTP id o12mr12181057lji.191.1600425588488;
+ Fri, 18 Sep 2020 03:39:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <961c1feb-f818-f98c-f618-57c643bac04c@hisilicon.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.63]
-X-CFilter-Loop: Reflected
+References: <20200907035010.9154-1-po-hsu.lin@canonical.com>
+ <20200907131217.61643ada@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <CAMy_GT-kaqkcdR+0q5eKoW3CJn7dZSCfr+UxRf6e5iRzZMiKTA@mail.gmail.com>
+In-Reply-To: <CAMy_GT-kaqkcdR+0q5eKoW3CJn7dZSCfr+UxRf6e5iRzZMiKTA@mail.gmail.com>
+From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
+Date:   Fri, 18 Sep 2020 18:39:37 +0800
+Message-ID: <CAMy_GT-0ad7dnWZ=sVt7kZQSMeKQ-9AXdxTe+LqD4uuFnVd+Vw@mail.gmail.com>
+Subject: Re: [PATCHv3] selftests: rtnetlink: load fou module for
+ kci_test_encap_fou() test
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     David Miller <davem@davemloft.net>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello folks,
 
-在 2020/9/18 18:01, Yicong Yang 写道:
-> On 2020/9/18 16:25, Wang ShaoBo wrote:
->> Make use of devm_platform_get_and_ioremap_resource() provided by
->> driver core platform instead of duplicated analogue. dev_err() is
->> removed because it has been done in devm_ioremap_resource().
->>
->> Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
->> ---
->>   drivers/i2c/busses/i2c-efm32.c | 12 +++---------
->>   1 file changed, 3 insertions(+), 9 deletions(-)
->>
->> diff --git a/drivers/i2c/busses/i2c-efm32.c b/drivers/i2c/busses/i2c-efm32.c
->> index 838ce0947191..f6e13ceeb2b3 100644
->> --- a/drivers/i2c/busses/i2c-efm32.c
->> +++ b/drivers/i2c/busses/i2c-efm32.c
->> @@ -332,21 +332,15 @@ static int efm32_i2c_probe(struct platform_device *pdev)
->>   		return ret;
->>   	}
->>   
->> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> -	if (!res) {
->> -		dev_err(&pdev->dev, "failed to determine base address\n");
->> -		return -ENODEV;
->> -	}
->> +	ddata->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
->> +	if (IS_ERR(ddata->base))
->> +		return PTR_ERR(ddata->base);
->>   
->>   	if (resource_size(res) < 0x42) {
-> res is not assigned. should it be removed?
+any thoughts on this patch?
+It can make the test pass and reduce the failure numbers in
+kselftests, it will be great to have this applied.
 
-I am not sure what you want to ask, but devm_platform_get_and_ioremap_resource() will
-assign variable res a value, if it is NULL, internal devm_ioremap_resource() will return error
-at the begining, so at this time if(IS_ERR(ddata->base)) true and terminate the process,
-which is as same as the original sentences work.
+Thanks
+PHLin
 
->>   		dev_err(&pdev->dev, "memory resource too small\n");
->>   		return -EINVAL;
->>   	}
->>   
->> -	ddata->base = devm_ioremap_resource(&pdev->dev, res);
->> -	if (IS_ERR(ddata->base))
->> -		return PTR_ERR(ddata->base);
->> -
->>   	ret = platform_get_irq(pdev, 0);
->>   	if (ret <= 0) {
->>   		if (!ret)
-> .
+
+On Tue, Sep 8, 2020 at 2:57 PM Po-Hsu Lin <po-hsu.lin@canonical.com> wrote:
+>
+> On Tue, Sep 8, 2020 at 4:12 AM Jakub Kicinski <kuba@kernel.org> wrote:
+> >
+> > On Mon,  7 Sep 2020 11:50:10 +0800 Po-Hsu Lin wrote:
+> > > The kci_test_encap_fou() test from kci_test_encap() in rtnetlink.sh
+> > > needs the fou module to work. Otherwise it will fail with:
+> > >
+> > >   $ ip netns exec "$testns" ip fou add port 7777 ipproto 47
+> > >   RTNETLINK answers: No such file or directory
+> > >   Error talking to the kernel
+> > >
+> > > Add the CONFIG_NET_FOU into the config file as well. Which needs at
+> > > least to be set as a loadable module.
+> > >
+> > > Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+> >
+> > > diff --git a/tools/testing/selftests/net/rtnetlink.sh b/tools/testing/selftests/net/rtnetlink.sh
+> > > index 7c38a90..a711b3e 100755
+> > > --- a/tools/testing/selftests/net/rtnetlink.sh
+> > > +++ b/tools/testing/selftests/net/rtnetlink.sh
+> > > @@ -520,6 +520,11 @@ kci_test_encap_fou()
+> > >               return $ksft_skip
+> > >       fi
+> > >
+> > > +     if ! /sbin/modprobe -q -n fou; then
+> > > +             echo "SKIP: module fou is not found"
+> > > +             return $ksft_skip
+> > > +     fi
+> > > +     /sbin/modprobe -q fou
+> > >       ip -netns "$testns" fou add port 7777 ipproto 47 2>/dev/null
+> > >       if [ $? -ne 0 ];then
+> > >               echo "FAIL: can't add fou port 7777, skipping test"
+> > > @@ -540,6 +545,7 @@ kci_test_encap_fou()
+> > >               return 1
+> > >       fi
+> > >
+> > > +     /sbin/modprobe -q -r fou
+> >
+> > I think the common practice is to not remove the module at the end of
+> > the test. It may be used by something else than the test itself.
+> >
+> Hello Jakub,
+> Thanks for your feedback.
+>
+> For this case I think it's safe to remove the module here, as it was
+> never loaded before and thus causing this test to fail.
+> If other tests in this rtnetlink.sh need this fou module, we should be
+> able to spot those failures too, however this is the only failure as I
+> can see.
+> (pmtu.sh will need fou module to run as well, but it will be loaded there.)
+>
+> Shouldn't we insert the required module whenever the test needs it? So
+> that we can run the test itself directly, without depending on other
+> tests.
+> Also, I can see modules for tests were being unloaded in other tests as well.
+>
+> Thanks
+>
+> > >       echo "PASS: fou"
+> > >  }
+> > >
+> >
