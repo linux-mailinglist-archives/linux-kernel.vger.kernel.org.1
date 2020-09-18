@@ -2,528 +2,594 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90C3326F7A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F096C26F7A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726788AbgIRIET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 04:04:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52676 "EHLO
+        id S1726814AbgIRIE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 04:04:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726040AbgIRIES (ORCPT
+        with ESMTP id S1726185AbgIRIEz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 04:04:18 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A7D6C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 01:04:18 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id c18so4623650wrm.9
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 01:04:18 -0700 (PDT)
+        Fri, 18 Sep 2020 04:04:55 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE47EC06174A;
+        Fri, 18 Sep 2020 01:04:55 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id j2so5890235ioj.7;
+        Fri, 18 Sep 2020 01:04:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=sN6WRoJbr99xIOpz0jJ0Fxcd65Efp6vGcy18bVZTF7Y=;
-        b=PZk5MVq76PLb8voUjCoMzWs1XoGAO4ZR887R7Cg/2rnSwE/SL1XhtlKCPq0pHBebvU
-         AATshxx4m63RPPaLKbwcuf7QmnlquoaPOzyY5l4QguAWt+Z/37pBOhMeN1vgfhVC/RZC
-         7FArP7g8OJ/5iu2UGvFqpsZgUW8LHuRuh2G5i4YSbizCeD5qwzOJw3sih4+d6Q/T/b4j
-         wQ+FiOBLnG/byVFS5KzTPaSRAKxJflAJgR8XSw6Bn9e6jjww5+7MqNSHpz55GMeX8oXy
-         7PDe9TUZMHpTYt9Bim/jB1KNI41IXQKKEnvxw+p7K9K4Ww9UYPs7QzFJStR38HrVGmrT
-         qRPg==
+        bh=isHcJ3zrzwSEOolO9s/LiG2XNCyu5EB1SRmS2POrm34=;
+        b=Su81ia6pIxlwQBXOnK5g2OHW4d9yNkVfSNehJlxrQNH5YSpD3t764L2jnq8oHk16RV
+         ZywcOyRpDXI2mjXWJiJyLG48cG1PR2y98aSNwUybSgg1qPLfZjP+2mX80nWF9xfNaAH5
+         BInwumSAZhU8YTGPHQuOpW8w08vbAPyN1uLjlgsvs36qnUPOkc3PUo3YRao9H2EWWkEd
+         82HohF9K9lOiH/GbxZlnm25LGxGe6Ivsnv5fpm0O8ErgmmftLdUzHoFuGblr8gY/p3Mg
+         K+PrLP+Y4ozrER5TJndfdnb+ZBy63JMPSChfnZUUCGiwcl5hpzrkY8uNEPrt78Lr0M8q
+         rOZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=sN6WRoJbr99xIOpz0jJ0Fxcd65Efp6vGcy18bVZTF7Y=;
-        b=FUtqkWHUSUPOhl8nxsozDxEjEFEiYCMPX0kUbcskDA4bkbspjgZ9n5f4t797J7yx1r
-         yw+BJhQjwAmp2LgOPr36SvpugNkqlvuXg8eL/V4Np74lWcrcWyHyZWImq6wSVKqxqriX
-         P+LxzwFF+C0nXhv+iwHoRZd8tux6OCxlppVSynbk7ySfqzgtykpLM/y41uUgzdYmcVre
-         rMy02bcqL3WIjA/NoktwJfb+Nmd68ODzb9ly3jfFwhlZ1csmOWiyGcqh/3HLULy3XOvJ
-         eZok1mTdzI7zfW1QuMfefpeVXFH899pAAoc+LPhWCt+ASt4sW4XKxLnYoB2Pnvwil5W3
-         iPAQ==
-X-Gm-Message-State: AOAM530GKnPNsJGoL86qgcLWaj89GkuMndxpogww9Wdscy1g2xaFVp1g
-        z+Cfvns/c2ZupvEmhPMGxwpo4O1HAFgZcU9qC547wA==
-X-Google-Smtp-Source: ABdhPJzHAMDajviQ9mONFnxn+IlAqn5XzYVWfQcO/oFLSPbcSbkEX0G2yKHTsoqXKmDxliOnnbFPKA+ldsGsNwKI2Aw=
-X-Received: by 2002:adf:e312:: with SMTP id b18mr14018593wrj.372.1600416256553;
- Fri, 18 Sep 2020 01:04:16 -0700 (PDT)
+        bh=isHcJ3zrzwSEOolO9s/LiG2XNCyu5EB1SRmS2POrm34=;
+        b=ZZNmFAZLgzfoPzS3JUKRmzfQd6PYfWs/s7F77UI2hy1Y7f4NSASHbH0eJnEfgSqmdv
+         BDGF0ipfek5J6Uk6JF+5DaO82KBMTl8r8zNKg3oSmbLPFU9Me5nh8wpEvYc5/1j69yuz
+         fu1XryJEHvOKuOCjoI3qek9qBF8DeYT7/2oVa5Oxw9CjmQVeIiBrGD/I4IyBObDtmZwb
+         t35nel3/+esA/7T6nYGlh4XK8KHkhlvy/QXDdIK+Ljwy+x5xjunzN8RBqHuVOT1Um6y2
+         Nq7GmxSE7y4VTfSNPTAaKt6kjd1zmh7pwCXSgcGIaS7EbgXJ7/ywwv3jsG7Jp14nqTLS
+         ZtZQ==
+X-Gm-Message-State: AOAM533zjx5I+7MCHJKObJ/ai4avwGh1ew8uacAGH0nLRvOXVp+XwwfL
+        +1pSJntnCfl1biyNDaagAmLLkywJhwaSpl4SSZo=
+X-Google-Smtp-Source: ABdhPJz1+JtF8SaQd90mMz7vu+5uGM1paAeZyWjCpdJVmKi6xEADdoyTZXSj2qYId5uoKAb2LkGeVlYqQnpZO5cnyXM=
+X-Received: by 2002:a02:9a0e:: with SMTP id b14mr30235177jal.22.1600416294851;
+ Fri, 18 Sep 2020 01:04:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1600204505.git.andreyknvl@google.com> <0d1862fec200eec644bbf0e2d5969fb94d2e923e.1600204505.git.andreyknvl@google.com>
-In-Reply-To: <0d1862fec200eec644bbf0e2d5969fb94d2e923e.1600204505.git.andreyknvl@google.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Fri, 18 Sep 2020 10:04:05 +0200
-Message-ID: <CAG_fn=X8uQoZUXM0cU8NwF41znWiFQS1GjSNtrh5-xM02-nnJw@mail.gmail.com>
-Subject: Re: [PATCH v2 05/37] kasan: rename KASAN_SHADOW_* to KASAN_GRANULE_*
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <1600191369-28040-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1600191369-28040-4-git-send-email-gene.chen.richtek@gmail.com> <20200917185327.761f7e5a@archlinux>
+In-Reply-To: <20200917185327.761f7e5a@archlinux>
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+Date:   Fri, 18 Sep 2020 16:04:43 +0800
+Message-ID: <CAE+NS35RkbHOqrFoEE2MS109hTKowZO3jmT_oTpSmCRnY-87Lg@mail.gmail.com>
+Subject: Re: [PATCH v4 3/3] iio: adc: mt6360: Add ADC driver for MT6360
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>, knaack.h@gmx.de,
+        lars@metafoo.de, pmeerw@pmeerw.net, linux-iio@vger.kernel.org,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 11:16 PM Andrey Konovalov <andreyknvl@google.com> w=
-rote:
+Jonathan Cameron <jic23@kernel.org> =E6=96=BC 2020=E5=B9=B49=E6=9C=8818=E6=
+=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=881:53=E5=AF=AB=E9=81=93=EF=BC=9A
 >
-> This is a preparatory commit for the upcoming addition of a new hardware
-> tag-based (MTE-based) KASAN mode.
+> On Wed, 16 Sep 2020 01:36:09 +0800
+> Gene Chen <gene.chen.richtek@gmail.com> wrote:
 >
-> The new mode won't be using shadow memory, but will still use the concept
-> of memory granules.
-
-KASAN documentation doesn't seem to explain this concept anywhere (I
-also checked the "kasan: add documentation for hardware tag-based
-mode" patch), looks like it's only mentioned in MTE documentation.
-Could you please elaborate on what we consider a granule in each of KASAN m=
-odes?
-
-> Rename KASAN_SHADOW_SCALE_SIZE to KASAN_GRANULE_SIZE,
-> and KASAN_SHADOW_MASK to KASAN_GRANULE_MASK.
+> > From: Gene Chen <gene_chen@richtek.com>
+> >
+> > Add MT6360 ADC driver include Charger Current, Voltage, and
+> > Temperature.
+> >
+> > Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> Comments inline.
 >
-> Also use MASK when used as a mask, otherwise use SIZE.
+> > ---
+> >  drivers/iio/adc/Kconfig      |  11 ++
+> >  drivers/iio/adc/Makefile     |   1 +
+> >  drivers/iio/adc/mt6360-adc.c | 357 +++++++++++++++++++++++++++++++++++=
+++++++++
+> >  3 files changed, 369 insertions(+)
+> >  create mode 100644 drivers/iio/adc/mt6360-adc.c
+> >
+> > diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
+> > index 66d9cc0..8d36b66 100644
+> > --- a/drivers/iio/adc/Kconfig
+> > +++ b/drivers/iio/adc/Kconfig
+> > @@ -703,6 +703,17 @@ config MCP3911
+> >         This driver can also be built as a module. If so, the module wi=
+ll be
+> >         called mcp3911.
+> >
+> > +config MEDIATEK_MT6360_ADC
+> > +     tristate "Mediatek MT6360 ADC driver"
+> > +     depends on MFD_MT6360
+> > +     select IIO_BUFFER
+> > +     select IIO_TRIGGERED_BUFFER
+> > +     help
+> > +       Say Y here to enable MT6360 ADC support.
+> > +       Integrated for System Monitoring includes
+> > +       is used in smartphones and tablets and supports a 11 channel
+> > +       general purpose ADC.
+> > +
+> >  config MEDIATEK_MT6577_AUXADC
+> >       tristate "MediaTek AUXADC driver"
+> >       depends on ARCH_MEDIATEK || COMPILE_TEST
+> > diff --git a/drivers/iio/adc/Makefile b/drivers/iio/adc/Makefile
+> > index 90f94ad..5fca90a 100644
+> > --- a/drivers/iio/adc/Makefile
+> > +++ b/drivers/iio/adc/Makefile
+> > @@ -65,6 +65,7 @@ obj-$(CONFIG_MAX9611) +=3D max9611.o
+> >  obj-$(CONFIG_MCP320X) +=3D mcp320x.o
+> >  obj-$(CONFIG_MCP3422) +=3D mcp3422.o
+> >  obj-$(CONFIG_MCP3911) +=3D mcp3911.o
+> > +obj-$(CONFIG_MEDIATEK_MT6360_ADC) +=3D mt6360-adc.o
+> >  obj-$(CONFIG_MEDIATEK_MT6577_AUXADC) +=3D mt6577_auxadc.o
+> >  obj-$(CONFIG_MEN_Z188_ADC) +=3D men_z188_adc.o
+> >  obj-$(CONFIG_MESON_SARADC) +=3D meson_saradc.o
+> > diff --git a/drivers/iio/adc/mt6360-adc.c b/drivers/iio/adc/mt6360-adc.=
+c
+> > new file mode 100644
+> > index 0000000..b256d0a
+> > --- /dev/null
+> > +++ b/drivers/iio/adc/mt6360-adc.c
+> > @@ -0,0 +1,357 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +#include <linux/delay.h>
+> > +#include <linux/irq.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/ktime.h>
+> > +#include <linux/module.h>
+> > +#include <linux/mutex.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/regmap.h>
+> > +
+> > +#include <linux/iio/buffer.h>
+> > +#include <linux/iio/iio.h>
+> > +#include <linux/iio/trigger_consumer.h>
+> > +#include <linux/iio/triggered_buffer.h>
+> > +
+> > +#define MT6360_REG_PMUCHGCTRL3       0x313
+> > +#define MT6360_REG_PMUADCCFG 0x356
+> > +#define MT6360_REG_PMUADCIDLET       0x358
+> > +#define MT6360_REG_PMUADCRPT1        0x35A
+> > +
+> > +/* PMUCHGCTRL3 0x313 */
+> > +#define MT6360_AICR_MASK     GENMASK(7, 2)
+> > +#define MT6360_AICR_SHFT     2
+> > +#define MT6360_AICR_400MA    0x6
+> > +/* PMUADCCFG 0x356 */
+> > +#define MT6360_ADCEN_MASK    0x8000
+> > +/* PMUADCRPT1 0x35A */
+> > +#define MT6360_PREFERCH_MASK GENMASK(7, 4)
+> > +#define MT6360_PREFERCH_SHFT 4
+> > +#define MT6360_RPTCH_MASK    GENMASK(3, 0)
+> > +#define MT6360_NO_PREFER     15
+> > +
+> > +/* Time in ms */
+> > +#define ADC_WAIT_TIME_MS     25
+> > +
+> > +enum {
+> > +     MT6360_CHAN_USBID =3D 0,
+> > +     MT6360_CHAN_VBUSDIV5,
+> > +     MT6360_CHAN_VBUSDIV2,
+> > +     MT6360_CHAN_VSYS,
+> > +     MT6360_CHAN_VBAT,
+> > +     MT6360_CHAN_IBUS,
+> > +     MT6360_CHAN_IBAT,
+> > +     MT6360_CHAN_CHG_VDDP,
+> > +     MT6360_CHAN_TEMP_JC,
+> > +     MT6360_CHAN_VREF_TS,
+> > +     MT6360_CHAN_TS,
+> > +     MT6360_CHAN_MAX
+> > +};
+> > +
+> > +struct mt6360_adc_data {
+> > +     struct device *dev;
+> > +     struct regmap *regmap;
+> > +     struct mutex adc_lock;
 >
-> No functional changes.
->
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> ---
-> Change-Id: Iac733e2248aa9d29f6fc425d8946ba07cca73ecf
-> ---
->  Documentation/dev-tools/kasan.rst |  2 +-
->  lib/test_kasan.c                  |  2 +-
->  mm/kasan/common.c                 | 39 ++++++++++++++++---------------
->  mm/kasan/generic.c                | 14 +++++------
->  mm/kasan/generic_report.c         |  8 +++----
->  mm/kasan/init.c                   |  8 +++----
->  mm/kasan/kasan.h                  |  4 ++--
->  mm/kasan/report.c                 | 10 ++++----
->  mm/kasan/tags_report.c            |  2 +-
->  9 files changed, 45 insertions(+), 44 deletions(-)
->
-> diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/=
-kasan.rst
-> index 38fd5681fade..a3030fc6afe5 100644
-> --- a/Documentation/dev-tools/kasan.rst
-> +++ b/Documentation/dev-tools/kasan.rst
-> @@ -264,7 +264,7 @@ Most mappings in vmalloc space are small, requiring l=
-ess than a full
->  page of shadow space. Allocating a full shadow page per mapping would
->  therefore be wasteful. Furthermore, to ensure that different mappings
->  use different shadow pages, mappings would have to be aligned to
-> -``KASAN_SHADOW_SCALE_SIZE * PAGE_SIZE``.
-> +``KASAN_GRANULE_SIZE * PAGE_SIZE``.
->
->  Instead, we share backing space across multiple mappings. We allocate
->  a backing page when a mapping in vmalloc space uses a particular page
-> diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-> index 53e953bb1d1d..ddd0b80f24a1 100644
-> --- a/lib/test_kasan.c
-> +++ b/lib/test_kasan.c
-> @@ -25,7 +25,7 @@
->
->  #include "../mm/kasan/kasan.h"
->
-> -#define OOB_TAG_OFF (IS_ENABLED(CONFIG_KASAN_GENERIC) ? 0 : KASAN_SHADOW=
-_SCALE_SIZE)
-> +#define OOB_TAG_OFF (IS_ENABLED(CONFIG_KASAN_GENERIC) ? 0 : KASAN_GRANUL=
-E_SIZE)
->
->  /*
->   * We assign some test results to these globals to make sure the tests
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index 65933b27df81..c9daf2c33651 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -111,7 +111,7 @@ void *memcpy(void *dest, const void *src, size_t len)
->
->  /*
->   * Poisons the shadow memory for 'size' bytes starting from 'addr'.
-> - * Memory addresses should be aligned to KASAN_SHADOW_SCALE_SIZE.
-> + * Memory addresses should be aligned to KASAN_GRANULE_SIZE.
->   */
->  void kasan_poison_memory(const void *address, size_t size, u8 value)
->  {
-> @@ -143,13 +143,13 @@ void kasan_unpoison_memory(const void *address, siz=
-e_t size)
->
->         kasan_poison_memory(address, size, tag);
->
-> -       if (size & KASAN_SHADOW_MASK) {
-> +       if (size & KASAN_GRANULE_MASK) {
->                 u8 *shadow =3D (u8 *)kasan_mem_to_shadow(address + size);
->
->                 if (IS_ENABLED(CONFIG_KASAN_SW_TAGS))
->                         *shadow =3D tag;
->                 else
-> -                       *shadow =3D size & KASAN_SHADOW_MASK;
-> +                       *shadow =3D size & KASAN_GRANULE_MASK;
->         }
->  }
->
-> @@ -301,7 +301,7 @@ void kasan_unpoison_object_data(struct kmem_cache *ca=
-che, void *object)
->  void kasan_poison_object_data(struct kmem_cache *cache, void *object)
->  {
->         kasan_poison_memory(object,
-> -                       round_up(cache->object_size, KASAN_SHADOW_SCALE_S=
-IZE),
-> +                       round_up(cache->object_size, KASAN_GRANULE_SIZE),
->                         KASAN_KMALLOC_REDZONE);
->  }
->
-> @@ -373,7 +373,7 @@ static inline bool shadow_invalid(u8 tag, s8 shadow_b=
-yte)
->  {
->         if (IS_ENABLED(CONFIG_KASAN_GENERIC))
->                 return shadow_byte < 0 ||
-> -                       shadow_byte >=3D KASAN_SHADOW_SCALE_SIZE;
-> +                       shadow_byte >=3D KASAN_GRANULE_SIZE;
->
->         /* else CONFIG_KASAN_SW_TAGS: */
->         if ((u8)shadow_byte =3D=3D KASAN_TAG_INVALID)
-> @@ -412,7 +412,7 @@ static bool __kasan_slab_free(struct kmem_cache *cach=
-e, void *object,
->                 return true;
->         }
->
-> -       rounded_up_size =3D round_up(cache->object_size, KASAN_SHADOW_SCA=
-LE_SIZE);
-> +       rounded_up_size =3D round_up(cache->object_size, KASAN_GRANULE_SI=
-ZE);
->         kasan_poison_memory(object, rounded_up_size, KASAN_KMALLOC_FREE);
->
->         if ((IS_ENABLED(CONFIG_KASAN_GENERIC) && !quarantine) ||
-> @@ -445,9 +445,9 @@ static void *__kasan_kmalloc(struct kmem_cache *cache=
-, const void *object,
->                 return NULL;
->
->         redzone_start =3D round_up((unsigned long)(object + size),
-> -                               KASAN_SHADOW_SCALE_SIZE);
-> +                               KASAN_GRANULE_SIZE);
->         redzone_end =3D round_up((unsigned long)object + cache->object_si=
-ze,
-> -                               KASAN_SHADOW_SCALE_SIZE);
-> +                               KASAN_GRANULE_SIZE);
->
->         if (IS_ENABLED(CONFIG_KASAN_SW_TAGS))
->                 tag =3D assign_tag(cache, object, false, keep_tag);
-> @@ -491,7 +491,7 @@ void * __must_check kasan_kmalloc_large(const void *p=
-tr, size_t size,
->
->         page =3D virt_to_page(ptr);
->         redzone_start =3D round_up((unsigned long)(ptr + size),
-> -                               KASAN_SHADOW_SCALE_SIZE);
-> +                               KASAN_GRANULE_SIZE);
->         redzone_end =3D (unsigned long)ptr + page_size(page);
->
->         kasan_unpoison_memory(ptr, size);
-> @@ -589,8 +589,8 @@ static int __meminit kasan_mem_notifier(struct notifi=
-er_block *nb,
->         shadow_size =3D nr_shadow_pages << PAGE_SHIFT;
->         shadow_end =3D shadow_start + shadow_size;
->
-> -       if (WARN_ON(mem_data->nr_pages % KASAN_SHADOW_SCALE_SIZE) ||
-> -               WARN_ON(start_kaddr % (KASAN_SHADOW_SCALE_SIZE << PAGE_SH=
-IFT)))
-> +       if (WARN_ON(mem_data->nr_pages % KASAN_GRANULE_SIZE) ||
-> +               WARN_ON(start_kaddr % (KASAN_GRANULE_SIZE << PAGE_SHIFT))=
-)
->                 return NOTIFY_BAD;
->
->         switch (action) {
-> @@ -748,7 +748,7 @@ void kasan_poison_vmalloc(const void *start, unsigned=
- long size)
->         if (!is_vmalloc_or_module_addr(start))
->                 return;
->
-> -       size =3D round_up(size, KASAN_SHADOW_SCALE_SIZE);
-> +       size =3D round_up(size, KASAN_GRANULE_SIZE);
->         kasan_poison_memory(start, size, KASAN_VMALLOC_INVALID);
->  }
->
-> @@ -861,22 +861,22 @@ void kasan_release_vmalloc(unsigned long start, uns=
-igned long end,
->         unsigned long region_start, region_end;
->         unsigned long size;
->
-> -       region_start =3D ALIGN(start, PAGE_SIZE * KASAN_SHADOW_SCALE_SIZE=
-);
-> -       region_end =3D ALIGN_DOWN(end, PAGE_SIZE * KASAN_SHADOW_SCALE_SIZ=
-E);
-> +       region_start =3D ALIGN(start, PAGE_SIZE * KASAN_GRANULE_SIZE);
-> +       region_end =3D ALIGN_DOWN(end, PAGE_SIZE * KASAN_GRANULE_SIZE);
->
->         free_region_start =3D ALIGN(free_region_start,
-> -                                 PAGE_SIZE * KASAN_SHADOW_SCALE_SIZE);
-> +                                 PAGE_SIZE * KASAN_GRANULE_SIZE);
->
->         if (start !=3D region_start &&
->             free_region_start < region_start)
-> -               region_start -=3D PAGE_SIZE * KASAN_SHADOW_SCALE_SIZE;
-> +               region_start -=3D PAGE_SIZE * KASAN_GRANULE_SIZE;
->
->         free_region_end =3D ALIGN_DOWN(free_region_end,
-> -                                    PAGE_SIZE * KASAN_SHADOW_SCALE_SIZE)=
-;
-> +                                    PAGE_SIZE * KASAN_GRANULE_SIZE);
->
->         if (end !=3D region_end &&
->             free_region_end > region_end)
-> -               region_end +=3D PAGE_SIZE * KASAN_SHADOW_SCALE_SIZE;
-> +               region_end +=3D PAGE_SIZE * KASAN_GRANULE_SIZE;
->
->         shadow_start =3D kasan_mem_to_shadow((void *)region_start);
->         shadow_end =3D kasan_mem_to_shadow((void *)region_end);
-> @@ -902,7 +902,8 @@ int kasan_module_alloc(void *addr, size_t size)
->         unsigned long shadow_start;
->
->         shadow_start =3D (unsigned long)kasan_mem_to_shadow(addr);
-> -       scaled_size =3D (size + KASAN_SHADOW_MASK) >> KASAN_SHADOW_SCALE_=
-SHIFT;
-> +       scaled_size =3D (size + KASAN_GRANULE_SIZE - 1) >>
-> +                               KASAN_SHADOW_SCALE_SHIFT;
->         shadow_size =3D round_up(scaled_size, PAGE_SIZE);
->
->         if (WARN_ON(!PAGE_ALIGNED(shadow_start)))
-> diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-> index 4b5f905198d8..f6d68aa9872f 100644
-> --- a/mm/kasan/generic.c
-> +++ b/mm/kasan/generic.c
-> @@ -51,7 +51,7 @@ static __always_inline bool memory_is_poisoned_1(unsign=
-ed long addr)
->         s8 shadow_value =3D *(s8 *)kasan_mem_to_shadow((void *)addr);
->
->         if (unlikely(shadow_value)) {
-> -               s8 last_accessible_byte =3D addr & KASAN_SHADOW_MASK;
-> +               s8 last_accessible_byte =3D addr & KASAN_GRANULE_MASK;
->                 return unlikely(last_accessible_byte >=3D shadow_value);
->         }
->
-> @@ -67,7 +67,7 @@ static __always_inline bool memory_is_poisoned_2_4_8(un=
-signed long addr,
->          * Access crosses 8(shadow size)-byte boundary. Such access maps
->          * into 2 shadow bytes, so we need to check them both.
->          */
-> -       if (unlikely(((addr + size - 1) & KASAN_SHADOW_MASK) < size - 1))
-> +       if (unlikely(((addr + size - 1) & KASAN_GRANULE_MASK) < size - 1)=
-)
->                 return *shadow_addr || memory_is_poisoned_1(addr + size -=
- 1);
->
->         return memory_is_poisoned_1(addr + size - 1);
-> @@ -78,7 +78,7 @@ static __always_inline bool memory_is_poisoned_16(unsig=
-ned long addr)
->         u16 *shadow_addr =3D (u16 *)kasan_mem_to_shadow((void *)addr);
->
->         /* Unaligned 16-bytes access maps into 3 shadow bytes. */
-> -       if (unlikely(!IS_ALIGNED(addr, KASAN_SHADOW_SCALE_SIZE)))
-> +       if (unlikely(!IS_ALIGNED(addr, KASAN_GRANULE_SIZE)))
->                 return *shadow_addr || memory_is_poisoned_1(addr + 15);
->
->         return *shadow_addr;
-> @@ -139,7 +139,7 @@ static __always_inline bool memory_is_poisoned_n(unsi=
-gned long addr,
->                 s8 *last_shadow =3D (s8 *)kasan_mem_to_shadow((void *)las=
-t_byte);
->
->                 if (unlikely(ret !=3D (unsigned long)last_shadow ||
-> -                       ((long)(last_byte & KASAN_SHADOW_MASK) >=3D *last=
-_shadow)))
-> +                       ((long)(last_byte & KASAN_GRANULE_MASK) >=3D *las=
-t_shadow)))
->                         return true;
->         }
->         return false;
-> @@ -205,7 +205,7 @@ void kasan_cache_shutdown(struct kmem_cache *cache)
->
->  static void register_global(struct kasan_global *global)
->  {
-> -       size_t aligned_size =3D round_up(global->size, KASAN_SHADOW_SCALE=
-_SIZE);
-> +       size_t aligned_size =3D round_up(global->size, KASAN_GRANULE_SIZE=
-);
->
->         kasan_unpoison_memory(global->beg, global->size);
->
-> @@ -279,10 +279,10 @@ EXPORT_SYMBOL(__asan_handle_no_return);
->  /* Emitted by compiler to poison alloca()ed objects. */
->  void __asan_alloca_poison(unsigned long addr, size_t size)
->  {
-> -       size_t rounded_up_size =3D round_up(size, KASAN_SHADOW_SCALE_SIZE=
-);
-> +       size_t rounded_up_size =3D round_up(size, KASAN_GRANULE_SIZE);
->         size_t padding_size =3D round_up(size, KASAN_ALLOCA_REDZONE_SIZE)=
- -
->                         rounded_up_size;
-> -       size_t rounded_down_size =3D round_down(size, KASAN_SHADOW_SCALE_=
-SIZE);
-> +       size_t rounded_down_size =3D round_down(size, KASAN_GRANULE_SIZE)=
-;
->
->         const void *left_redzone =3D (const void *)(addr -
->                         KASAN_ALLOCA_REDZONE_SIZE);
-> diff --git a/mm/kasan/generic_report.c b/mm/kasan/generic_report.c
-> index a38c7a9e192a..4dce1633b082 100644
-> --- a/mm/kasan/generic_report.c
-> +++ b/mm/kasan/generic_report.c
-> @@ -39,7 +39,7 @@ void *find_first_bad_addr(void *addr, size_t size)
->         void *p =3D addr;
->
->         while (p < addr + size && !(*(u8 *)kasan_mem_to_shadow(p)))
-> -               p +=3D KASAN_SHADOW_SCALE_SIZE;
-> +               p +=3D KASAN_GRANULE_SIZE;
->         return p;
->  }
->
-> @@ -51,14 +51,14 @@ static const char *get_shadow_bug_type(struct kasan_a=
-ccess_info *info)
->         shadow_addr =3D (u8 *)kasan_mem_to_shadow(info->first_bad_addr);
->
->         /*
-> -        * If shadow byte value is in [0, KASAN_SHADOW_SCALE_SIZE) we can=
- look
-> +        * If shadow byte value is in [0, KASAN_GRANULE_SIZE) we can look
->          * at the next shadow byte to determine the type of the bad acces=
-s.
->          */
-> -       if (*shadow_addr > 0 && *shadow_addr <=3D KASAN_SHADOW_SCALE_SIZE=
- - 1)
-> +       if (*shadow_addr > 0 && *shadow_addr <=3D KASAN_GRANULE_SIZE - 1)
->                 shadow_addr++;
->
->         switch (*shadow_addr) {
-> -       case 0 ... KASAN_SHADOW_SCALE_SIZE - 1:
-> +       case 0 ... KASAN_GRANULE_SIZE - 1:
->                 /*
->                  * In theory it's still possible to see these shadow valu=
-es
->                  * due to a data race in the kernel code.
-> diff --git a/mm/kasan/init.c b/mm/kasan/init.c
-> index fe6be0be1f76..754b641c83c7 100644
-> --- a/mm/kasan/init.c
-> +++ b/mm/kasan/init.c
-> @@ -447,8 +447,8 @@ void kasan_remove_zero_shadow(void *start, unsigned l=
-ong size)
->         end =3D addr + (size >> KASAN_SHADOW_SCALE_SHIFT);
->
->         if (WARN_ON((unsigned long)start %
-> -                       (KASAN_SHADOW_SCALE_SIZE * PAGE_SIZE)) ||
-> -           WARN_ON(size % (KASAN_SHADOW_SCALE_SIZE * PAGE_SIZE)))
-> +                       (KASAN_GRANULE_SIZE * PAGE_SIZE)) ||
-> +           WARN_ON(size % (KASAN_GRANULE_SIZE * PAGE_SIZE)))
->                 return;
->
->         for (; addr < end; addr =3D next) {
-> @@ -482,8 +482,8 @@ int kasan_add_zero_shadow(void *start, unsigned long =
-size)
->         shadow_end =3D shadow_start + (size >> KASAN_SHADOW_SCALE_SHIFT);
->
->         if (WARN_ON((unsigned long)start %
-> -                       (KASAN_SHADOW_SCALE_SIZE * PAGE_SIZE)) ||
-> -           WARN_ON(size % (KASAN_SHADOW_SCALE_SIZE * PAGE_SIZE)))
-> +                       (KASAN_GRANULE_SIZE * PAGE_SIZE)) ||
-> +           WARN_ON(size % (KASAN_GRANULE_SIZE * PAGE_SIZE)))
->                 return -EINVAL;
->
->         ret =3D kasan_populate_early_shadow(shadow_start, shadow_end);
-> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-> index 03450d3b31f7..c31e2c739301 100644
-> --- a/mm/kasan/kasan.h
-> +++ b/mm/kasan/kasan.h
-> @@ -5,8 +5,8 @@
->  #include <linux/kasan.h>
->  #include <linux/stackdepot.h>
->
-> -#define KASAN_SHADOW_SCALE_SIZE (1UL << KASAN_SHADOW_SCALE_SHIFT)
-> -#define KASAN_SHADOW_MASK       (KASAN_SHADOW_SCALE_SIZE - 1)
-> +#define KASAN_GRANULE_SIZE     (1UL << KASAN_SHADOW_SCALE_SHIFT)
-> +#define KASAN_GRANULE_MASK     (KASAN_GRANULE_SIZE - 1)
->
->  #define KASAN_TAG_KERNEL       0xFF /* native kernel pointers tag */
->  #define KASAN_TAG_INVALID      0xFE /* inaccessible memory tag */
-> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-> index 4f49fa6cd1aa..7c025d792e2f 100644
-> --- a/mm/kasan/report.c
-> +++ b/mm/kasan/report.c
-> @@ -317,24 +317,24 @@ static bool __must_check get_address_stack_frame_in=
-fo(const void *addr,
->                 return false;
->
->         aligned_addr =3D round_down((unsigned long)addr, sizeof(long));
-> -       mem_ptr =3D round_down(aligned_addr, KASAN_SHADOW_SCALE_SIZE);
-> +       mem_ptr =3D round_down(aligned_addr, KASAN_GRANULE_SIZE);
->         shadow_ptr =3D kasan_mem_to_shadow((void *)aligned_addr);
->         shadow_bottom =3D kasan_mem_to_shadow(end_of_stack(current));
->
->         while (shadow_ptr >=3D shadow_bottom && *shadow_ptr !=3D KASAN_ST=
-ACK_LEFT) {
->                 shadow_ptr--;
-> -               mem_ptr -=3D KASAN_SHADOW_SCALE_SIZE;
-> +               mem_ptr -=3D KASAN_GRANULE_SIZE;
->         }
->
->         while (shadow_ptr >=3D shadow_bottom && *shadow_ptr =3D=3D KASAN_=
-STACK_LEFT) {
->                 shadow_ptr--;
-> -               mem_ptr -=3D KASAN_SHADOW_SCALE_SIZE;
-> +               mem_ptr -=3D KASAN_GRANULE_SIZE;
->         }
->
->         if (shadow_ptr < shadow_bottom)
->                 return false;
->
-> -       frame =3D (const unsigned long *)(mem_ptr + KASAN_SHADOW_SCALE_SI=
-ZE);
-> +       frame =3D (const unsigned long *)(mem_ptr + KASAN_GRANULE_SIZE);
->         if (frame[0] !=3D KASAN_CURRENT_STACK_FRAME_MAGIC) {
->                 pr_err("KASAN internal error: frame info validation faile=
-d; invalid marker: %lu\n",
->                        frame[0]);
-> @@ -572,6 +572,6 @@ void kasan_non_canonical_hook(unsigned long addr)
->         else
->                 bug_type =3D "maybe wild-memory-access";
->         pr_alert("KASAN: %s in range [0x%016lx-0x%016lx]\n", bug_type,
-> -                orig_addr, orig_addr + KASAN_SHADOW_MASK);
-> +                orig_addr, orig_addr + KASAN_GRANULE_SIZE - 1);
->  }
->  #endif
-> diff --git a/mm/kasan/tags_report.c b/mm/kasan/tags_report.c
-> index bee43717d6f0..6ddb55676a7c 100644
-> --- a/mm/kasan/tags_report.c
-> +++ b/mm/kasan/tags_report.c
-> @@ -81,7 +81,7 @@ void *find_first_bad_addr(void *addr, size_t size)
->         void *end =3D p + size;
->
->         while (p < end && tag =3D=3D *(u8 *)kasan_mem_to_shadow(p))
-> -               p +=3D KASAN_SHADOW_SCALE_SIZE;
-> +               p +=3D KASAN_GRANULE_SIZE;
->         return p;
->  }
->
-> --
-> 2.28.0.618.gf4bc123cb7-goog
+> Please add a comment to document what the scope of the lock is.
 >
 
+ACK
 
---=20
-Alexander Potapenko
-Software Engineer
+> > +     ktime_t last_off_timestamps[MT6360_CHAN_MAX];
+> > +};
+> > +
+> > +static int mt6360_adc_read_channel(struct mt6360_adc_data *mad, int ch=
+annel, int *val)
+> > +{
+> > +     __be16 adc_enable;
+> > +     u8 rpt[3];
+> > +     ktime_t start_t, predict_end_t;
+> > +     unsigned int pre_wait_time;
+> > +     int ret;
+> > +
+> > +     mutex_lock(&mad->adc_lock);
+> > +
+> > +     /* Select the preferred ADC channel */
+> > +     ret =3D regmap_update_bits(mad->regmap, MT6360_REG_PMUADCRPT1, MT=
+6360_PREFERCH_MASK,
+> > +                              channel << MT6360_PREFERCH_SHFT);
+> > +     if (ret)
+> > +             goto out_adc_lock;
+> > +
+> > +     adc_enable =3D cpu_to_be16(MT6360_ADCEN_MASK | BIT(channel));
+> > +     ret =3D regmap_raw_write(mad->regmap, MT6360_REG_PMUADCCFG, (void=
+ *)&adc_enable,
+>
+> Shouldn't be any need to cast a pointer explicitly to void *
+>
 
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
+ACK
 
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+> > +                            sizeof(__be16));
+>
+> sizeof(adc_enable) preferred.
+>
+
+ACK
+
+> > +     if (ret)
+> > +             goto out_adc_lock;
+> > +
+> > +     start_t =3D ktime_get();
+> > +     predict_end_t =3D ktime_add_ms(mad->last_off_timestamps[channel],=
+ 2 * ADC_WAIT_TIME_MS);
+> > +
+> > +     if (ktime_after(start_t, predict_end_t))
+> > +             pre_wait_time =3D ADC_WAIT_TIME_MS;
+> > +     else
+> > +             pre_wait_time =3D 3 * ADC_WAIT_TIME_MS;
+> > +
+> > +     msleep(pre_wait_time);
+> > +
+> > +     while (true) {
+> > +             ret =3D regmap_raw_read(mad->regmap, MT6360_REG_PMUADCRPT=
+1, rpt, sizeof(rpt));
+> > +             if (ret)
+> > +                     goto out_adc_conv;
+> > +
+> > +             /*
+> > +              * There are two functions, ZCV and TypeC OTP, running AD=
+C VBAT and TS in
+> > +              * background, and ADC samples are taken on a fixed frequ=
+ency no matter read the
+> > +              * previous one or not.
+> > +              * To avoid conflict, We set minimum time threshold after=
+ enable ADC and
+> > +              * check report channel is the same.
+> > +              * The worst case is run the same ADC twice and backgroun=
+d function is also running,
+> > +              * ADC conversion sequence is desire channel before start=
+ ADC, background ADC,
+> > +              * desire channel after start ADC.
+> > +              * So the minimum correct data is three times of typical =
+conversion time.
+> > +              */
+> > +             if ((rpt[0] & MT6360_RPTCH_MASK) =3D=3D channel)
+> > +                     break;
+> > +
+> > +             msleep(ADC_WAIT_TIME_MS);
+> > +     }
+> > +
+> > +     /* rpt[1]: ADC_HI_BYTE, rpt[2]: ADC_LOW_BYTE */
+> > +     *val =3D be16_to_cpup((__be16 *)(rpt + 1));
+>
+> To be entirely safe, probably need that to be an unaligned read?
+>
+
+Maybe I can change to "*val =3D rpt[1] << 8 | rpt[2];".
+It's more abvious.
+
+> > +     ret =3D IIO_VAL_INT;
+> > +
+> > +out_adc_conv:
+> > +     /* Only keep ADC enable */
+> > +     adc_enable =3D cpu_to_be16(MT6360_ADCEN_MASK);
+> > +     regmap_raw_write(mad->regmap, MT6360_REG_PMUADCCFG, (void *)&adc_=
+enable, sizeof(__be16));
+>
+> sizeof(adc_enable)
+>
+
+ACK
+
+> > +     mad->last_off_timestamps[channel] =3D ktime_get();
+> > +     /* Config prefer channel to NO_PREFER */
+> > +     regmap_update_bits(mad->regmap, MT6360_REG_PMUADCRPT1, MT6360_PRE=
+FERCH_MASK,
+> > +                        MT6360_NO_PREFER << MT6360_PREFERCH_SHFT);
+> > +out_adc_lock:
+> > +     mutex_unlock(&mad->adc_lock);
+> > +
+> > +     return ret;
+> > +}
+> > +
+> > +static int mt6360_adc_read_scale(struct mt6360_adc_data *mad, int chan=
+nel, int *val, int *val2)
+> > +{
+> > +     unsigned int regval;
+> > +     int ret;
+> > +
+> > +     switch (channel) {
+> > +     case MT6360_CHAN_USBID:
+> > +             fallthrough;
+>
+> I don't think we need fallthrough for cases
+> with nothing in them.
+>
+
+Every channel needs set " *val =3D 2500" for scale.
+Do you mean change as below?
+
+        switch (channel) {
+        case MT6360_CHAN_USBID:
+        case MT6360_CHAN_VSYS:
+        case MT6360_CHAN_VBAT:
+        case MT6360_CHAN_CHG_VDDP:
+        case MT6360_CHAN_VREF_TS:
+                fallthrough;
+        case MT6360_CHAN_TS:
+                *val =3D 1250;
+                return IIO_VAL_INT;
+
+> > +     case MT6360_CHAN_USBID:
+
+> > +     case MT6360_CHAN_VSYS:
+> > +             fallthrough;
+> > +     case MT6360_CHAN_VBAT:
+> > +             fallthrough;
+> > +     case MT6360_CHAN_CHG_VDDP:
+> > +             fallthrough;
+> > +     case MT6360_CHAN_VREF_TS:
+> > +             fallthrough;
+> > +     case MT6360_CHAN_TS:
+> > +             *val =3D 1250;
+> > +             return IIO_VAL_INT;
+> > +     case MT6360_CHAN_VBUSDIV5:
+> > +             *val =3D 6250;
+> > +             return IIO_VAL_INT;
+> > +     case MT6360_CHAN_VBUSDIV2:
+> > +             fallthrough;
+> > +     case MT6360_CHAN_IBUS:
+> > +             fallthrough;
+> > +     case MT6360_CHAN_IBAT:
+> > +             *val =3D 2500;
+> > +
+> > +             if (channel =3D=3D MT6360_CHAN_IBUS) {
+> > +                     /* IBUS will be affected by input current limit f=
+or the different Ron */
+> > +                     /* Check whether the config is <400mA or not */
+> > +                     ret =3D regmap_read(mad->regmap, MT6360_REG_PMUCH=
+GCTRL3, &regval);
+> > +                     if (ret)
+> > +                             return ret;
+> > +
+> > +                     regval =3D (regval & MT6360_AICR_MASK) >> MT6360_=
+AICR_SHFT;
+> > +                     if (regval < MT6360_AICR_400MA)
+> > +                             *val =3D 1900;
+> > +             }
+> > +
+> > +             return IIO_VAL_INT;
+> > +     case MT6360_CHAN_TEMP_JC:
+> > +             *val =3D 105;
+> > +             *val2 =3D 100;
+> > +             return IIO_VAL_FRACTIONAL;
+> > +     }
+> > +
+> > +     return -EINVAL;
+> > +}
+> > +
+> > +static int mt6360_adc_read_offset(struct mt6360_adc_data *mad, int cha=
+nnel, int *val)
+> > +{
+> > +     *val =3D (channel =3D=3D MT6360_CHAN_TEMP_JC) ? -80 : 0;
+> > +     return IIO_VAL_INT;
+> > +
+> > +}
+> > +
+> > +static int mt6360_adc_read_raw(struct iio_dev *iio_dev, const struct i=
+io_chan_spec *chan,
+> > +                            int *val, int *val2, long mask)
+> > +{
+> > +     struct mt6360_adc_data *mad =3D iio_priv(iio_dev);
+> > +
+> > +     switch (mask) {
+> > +     case IIO_CHAN_INFO_RAW:
+> > +             return mt6360_adc_read_channel(mad, chan->channel, val);
+> > +     case IIO_CHAN_INFO_SCALE:
+> > +             return mt6360_adc_read_scale(mad, chan->channel, val, val=
+2);
+> > +     case IIO_CHAN_INFO_OFFSET:
+> > +             return mt6360_adc_read_offset(mad, chan->channel, val);
+> > +     }
+> > +
+> > +     return -EINVAL;
+> > +}
+> > +
+> > +static const struct iio_info mt6360_adc_iio_info =3D {
+> > +     .read_raw =3D mt6360_adc_read_raw,
+> > +};
+> > +
+> > +#define MT6360_ADC_CHAN(_idx, _type) {                               \
+> > +     .type =3D _type,                                          \
+> > +     .channel =3D MT6360_CHAN_##_idx,                          \
+> > +     .scan_index =3D MT6360_CHAN_##_idx,                       \
+> > +     .extend_name =3D #_idx,                                   \
+> > +     .datasheet_name =3D #_idx,                                \
+> > +     .scan_type =3D  {                                         \
+> > +             .sign =3D 'u',                                    \
+> > +             .realbits =3D 16,                                 \
+> > +             .storagebits =3D 16,                              \
+> > +             .endianness =3D IIO_CPU,                          \
+> > +     },                                                      \
+> > +     .info_mask_separate =3D BIT(IIO_CHAN_INFO_RAW) |          \
+>
+> Docs in patch 1 need to reflect this change. Currently they have
+> processed channels.
+>
+
+ACK
+
+> > +                             BIT(IIO_CHAN_INFO_SCALE) |      \
+> > +                             BIT(IIO_CHAN_INFO_OFFSET),      \
+> > +}
+> > +
+> > +static const struct iio_chan_spec mt6360_adc_channels[] =3D {
+> > +     MT6360_ADC_CHAN(USBID, IIO_VOLTAGE),
+> > +     MT6360_ADC_CHAN(VBUSDIV5, IIO_VOLTAGE),
+> > +     MT6360_ADC_CHAN(VBUSDIV2, IIO_VOLTAGE),
+> > +     MT6360_ADC_CHAN(VSYS, IIO_VOLTAGE),
+> > +     MT6360_ADC_CHAN(VBAT, IIO_VOLTAGE),
+> > +     MT6360_ADC_CHAN(IBUS, IIO_CURRENT),
+> > +     MT6360_ADC_CHAN(IBAT, IIO_CURRENT),
+> > +     MT6360_ADC_CHAN(CHG_VDDP, IIO_VOLTAGE),
+> > +     MT6360_ADC_CHAN(TEMP_JC, IIO_TEMP),
+> > +     MT6360_ADC_CHAN(VREF_TS, IIO_VOLTAGE),
+> > +     MT6360_ADC_CHAN(TS, IIO_VOLTAGE),
+> > +     IIO_CHAN_SOFT_TIMESTAMP(MT6360_CHAN_MAX),
+> > +};
+> > +
+> > +static irqreturn_t mt6360_adc_trigger_handler(int irq, void *p)
+> > +{
+> > +     struct iio_poll_func *pf =3D p;
+> > +     struct iio_dev *indio_dev =3D pf->indio_dev;
+> > +     struct mt6360_adc_data *mad =3D iio_priv(indio_dev);
+> > +     struct {
+> > +             u16 values[MT6360_CHAN_MAX];
+>
+> There is a hole in here I think? (MT6360_CHAN_MAX is 11?)
+> If so we need to explicitly memset the structure to avoid any
+> risk of kernel data leakage to userspace.
+>
+> > +             int64_t timestamp;
+> > +     } data;
+>
+> I guess we know this is on a platform with 64bit alignment for int64_t's
+> (unlike x86_64 for example)
+>
+
+Do you mean change as below?
+struct {
+    u16 values[MT6360_CHAN_MAX];
+    int64_t timestamp; __aligned(8)
+} data;
+
+> > +     int i =3D 0, bit, val, ret;
+> > +
+> > +     for_each_set_bit(bit, indio_dev->active_scan_mask, indio_dev->mas=
+klength) {
+> > +             ret =3D mt6360_adc_read_channel(mad, bit, &val);
+> > +             if (ret < 0) {
+> > +                     dev_warn(&indio_dev->dev, "Failed to get channel =
+%d conversion val\n", bit);
+> > +                     goto out;
+> > +             }
+> > +
+> > +             data.values[i++] =3D val;
+> > +     }
+> > +     iio_push_to_buffers_with_timestamp(indio_dev, &data, iio_get_time=
+_ns(indio_dev));
+> > +out:
+> > +     iio_trigger_notify_done(indio_dev->trig);
+> > +
+> > +     return IRQ_HANDLED;
+> > +}
+> > +
+> > +static inline int mt6360_adc_reset(struct mt6360_adc_data *info)
+> > +{
+> > +     __be16 adc_enable;
+> > +     ktime_t all_off_time;
+> > +     int i, ret;
+> > +
+> > +     /* Clear ADC idle wait time to 0 */
+> > +     ret =3D regmap_write(info->regmap, MT6360_REG_PMUADCIDLET, 0);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     /* Only keep ADC enable, but keep all channels off */
+> > +     adc_enable =3D cpu_to_be16(MT6360_ADCEN_MASK);
+> > +     ret =3D regmap_raw_write(info->regmap, MT6360_REG_PMUADCCFG, (voi=
+d *)&adc_enable,
+> > +                            sizeof(__be16));
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     /* Reset all channel off time to the current one */
+> > +     all_off_time =3D ktime_get();
+> > +     for (i =3D 0; i < MT6360_CHAN_MAX; i++)
+> > +             info->last_off_timestamps[i] =3D all_off_time;
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static int mt6360_adc_probe(struct platform_device *pdev)
+> > +{
+> > +     struct mt6360_adc_data *mad;
+> > +     struct regmap *regmap;
+> > +     struct iio_dev *indio_dev;
+> > +     int ret;
+> > +
+> > +     regmap =3D dev_get_regmap(pdev->dev.parent, NULL);
+> > +     if (!regmap) {
+> > +             dev_err(&pdev->dev, "Failed to get parent regmap\n");
+> > +             return -ENODEV;
+> > +     }
+> > +
+> > +     indio_dev =3D devm_iio_device_alloc(&pdev->dev, sizeof(*mad));
+> > +     if (!indio_dev)
+> > +             return -ENOMEM;
+> > +
+> > +     mad =3D iio_priv(indio_dev);
+> > +     mad->dev =3D &pdev->dev;
+> > +     mad->regmap =3D regmap;
+> > +     mutex_init(&mad->adc_lock);
+> > +
+> > +     ret =3D mt6360_adc_reset(mad);
+> > +     if (ret < 0) {
+> > +             dev_err(&pdev->dev, "Failed to reset adc\n");
+> > +             return ret;
+> > +     }
+> > +
+> > +     indio_dev->name =3D dev_name(&pdev->dev);
+> > +     indio_dev->dev.parent =3D &pdev->dev;
+> > +     indio_dev->info =3D &mt6360_adc_iio_info;
+> > +     indio_dev->modes =3D INDIO_DIRECT_MODE;
+> > +     indio_dev->channels =3D mt6360_adc_channels;
+> > +     indio_dev->num_channels =3D ARRAY_SIZE(mt6360_adc_channels);
+> > +
+> > +     ret =3D devm_iio_triggered_buffer_setup(&pdev->dev, indio_dev, NU=
+LL,
+> > +                                           mt6360_adc_trigger_handler,=
+ NULL);
+> > +     if (ret) {
+> > +             dev_err(&pdev->dev, "Failed to allocate iio trigger buffe=
+r\n");
+> > +             return ret;
+> > +     }
+> > +
+> > +     return devm_iio_device_register(&pdev->dev, indio_dev);
+> > +}
+> > +
+> > +static const struct of_device_id __maybe_unused mt6360_adc_of_id[] =3D=
+ {
+> > +     { .compatible =3D "mediatek,mt6360-adc", },
+> > +     {}
+> > +};
+> > +MODULE_DEVICE_TABLE(of, mt6360_adc_of_id);
+> > +
+> > +static struct platform_driver mt6360_adc_driver =3D {
+> > +     .driver =3D {
+> > +             .name =3D "mt6360-adc",
+> > +             .of_match_table =3D mt6360_adc_of_id,
+> > +     },
+> > +     .probe =3D mt6360_adc_probe,
+> > +};
+> > +module_platform_driver(mt6360_adc_driver);
+> > +
+> > +MODULE_AUTHOR("Gene Chen <gene_chen@richtek.com>");
+> > +MODULE_DESCRIPTION("MT6360 ADC Driver");
+> > +MODULE_LICENSE("GPL v2");
+>
