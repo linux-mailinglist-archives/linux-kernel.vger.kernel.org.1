@@ -2,89 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1745C270184
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48FCD270185
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726327AbgIRQBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 12:01:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726115AbgIRQBs (ORCPT
+        id S1726371AbgIRQCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 12:02:12 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:33602 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726115AbgIRQCL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 12:01:48 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73333C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 09:01:48 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id d15so6653706lfq.11
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 09:01:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tSk+YlDCjGoukvgJMkBk/WrFVc0NKEjKrwScxDLtmew=;
-        b=Ycxqx3VC0OTdID4Ifzex+FgT5vRjS8++a/n4GrAC02k2k0vj4qgFrycBIhoL7DFyC2
-         EbE9bNXAvZtz3nhRLTRkTi9KWpIYIlYEhAoq/XFN19q3SCIHh4xc4ncuruM0I9+Dm4sk
-         2ExMHT7VBsENLH2LYGsZjWeDQ2zTWUuNWT661lvwnTP1uBreTT1SJ+yWTCivWnyNBnog
-         AhtKHrBNey7rN8cWU7jWaWmS3a2pvA6GEKzYKQUU8WqMl/qiYUTm8dZJwNIJQbnZ7zbW
-         E57vMrQWbGdCFqSzmUnNqE4X8eH/Pfhw1ICFi1Em7vA8LshkhMfT1uCjC4cbvOfCnoYO
-         nWTg==
+        Fri, 18 Sep 2020 12:02:11 -0400
+Received: by mail-oi1-f196.google.com with SMTP id m7so7616436oie.0;
+        Fri, 18 Sep 2020 09:02:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tSk+YlDCjGoukvgJMkBk/WrFVc0NKEjKrwScxDLtmew=;
-        b=K+6rgAWlUaou+v1JOf+C7FVfQJ70N70fT5B7bVEbYE9BqN8ZyJ4Kmv9yCUFQL6x29s
-         +49uyJdmCuMLaggkwpMNywGfI7ArnykukiKCHFgOfR2kf/3eXXowcMIjV3Xa4K1OiV+Y
-         +Os8W9m1pGgQdEPKmm9J65yNEv1PJntDjimvCgXa85jPtLQjIQKcgGJ+vkPyUhVCL9Yb
-         R1wLQwwcKUtetggxOdMAjDxEWaFWrrtFfnNN7uQTmXrEDEfqFcXpCZBGoMQsuTKKaaMM
-         0+m4VbTjYgxcLttT4pFcPMwoV7787nzDfr8fCiIN6V5T5wDFeXf3a3spYc7KzGnPwhmS
-         Ik/A==
-X-Gm-Message-State: AOAM531x/LzgM1/oZ6jDOv7F8bhdJHQxlYEe+Wv47A0kx7A7LJAPeYoV
-        E9JRETzLc65kPRpQ3B+IoqRF+JBwzpzSoQ==
-X-Google-Smtp-Source: ABdhPJzIjcdJwTpNamSYQ4DBWTtzTaNU33f+VI37W6l5C0sYPfHSUYqVND0gHl5LgIbz1UaUWvNF+w==
-X-Received: by 2002:a19:650a:: with SMTP id z10mr9726020lfb.9.1600444905032;
-        Fri, 18 Sep 2020 09:01:45 -0700 (PDT)
-Received: from eriador.lan ([94.25.229.20])
-        by smtp.gmail.com with ESMTPSA id s11sm681267ljh.56.2020.09.18.09.01.43
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 09:01:44 -0700 (PDT)
-From:   Dmitry Baryshkov <dbaryshkov@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Subject: [PATCH] mailmap: add map all old entries to me
-Date:   Fri, 18 Sep 2020 19:01:42 +0300
-Message-Id: <20200918160142.2984348-1-dbaryshkov@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CLWLadygFzbacUrStlzsUwiQts54prWGYIH+pDEwe0A=;
+        b=dYrQVj2rSXLlWEWNr3I6U+LMUuW6xJDLNKqC4E7FszQEKpmQFodheM4yINYXSj//4h
+         NM1YRX+jum28PBQ41gM6/AMWC6ktoTFS+vbC0ZsBf0C4IZ81/JqC5U2qN3teCiFXUYF5
+         aMclzO4ylo+9ObumQp7O9zxoLga6nGnBAjVLRmBYZpb/W4WDJqFpCAqekLFudl8uIdrm
+         iZUoM+rZjj0dL8lXgqx86r2BiWszlUMFR0hF+gMXinVjoY1ajYGpU2/qz0vmVrtWtfIe
+         8vjRzXOjFrQek3EfiMKb3Z/THPKF02ZimCEIjh1aIrjZpTT3i80ps+NArBlU9whzMuCi
+         Hx5A==
+X-Gm-Message-State: AOAM532srrIyMv6hz9hJYp9Xi/nPRaCXHbVFToX9G1562zLHtuxhlyrr
+        u1M6ZZNVFkSe2LSw/75VDYwvB4h7zT4a159QT1I=
+X-Google-Smtp-Source: ABdhPJygTxTyjBXaRmjiZjnzUB9+LiiCBE3DDYWxmdEXB/AZO3s12ola6t96FwD5p8jaLrRmcTTRjtSYPzdoh/tzvoc=
+X-Received: by 2002:aca:df84:: with SMTP id w126mr10401882oig.103.1600444930764;
+ Fri, 18 Sep 2020 09:02:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200917165720.3285256-1-hch@lst.de> <20200917165720.3285256-14-hch@lst.de>
+In-Reply-To: <20200917165720.3285256-14-hch@lst.de>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 18 Sep 2020 18:01:59 +0200
+Message-ID: <CAJZ5v0jAQnEHedZs7kQmfHx4KTw9G1wrObuEpid_m5uVk5qoJQ@mail.gmail.com>
+Subject: Re: [PATCH 13/14] PM: mm: cleanup swsusp_swap_check
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Josef Bacik <josef@toxicpanda.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Stefan Haberland <sth@linux.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.ibm.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        nbd@other.debian.org,
+        "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
+        <linux-ide@vger.kernel.org>, linux-s390@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-block@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change back surname to new (old) one. Map several odd entries to main
-identity.
+On Thu, Sep 17, 2020 at 7:39 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> Use blkdev_get_by_dev instead of bdget + blkdev_get.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
----
- .mailmap | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-diff --git a/.mailmap b/.mailmap
-index a780211468e4..3bcfa33fc268 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -81,7 +81,10 @@ Dengcheng Zhu <dzhu@wavecomp.com> <dengcheng.zhu@gmail.com>
- Dengcheng Zhu <dzhu@wavecomp.com> <dengcheng.zhu@imgtec.com>
- Dengcheng Zhu <dzhu@wavecomp.com> <dengcheng.zhu@mips.com>
- <dev.kurt@vandijck-laurijssen.be> <kurt.van.dijck@eia.be>
--Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-+Dmitry Baryshkov <dbaryshkov@gmail.com>
-+Dmitry Baryshkov <dbaryshkov@gmail.com> <[dbaryshkov@gmail.com]>
-+Dmitry Baryshkov <dbaryshkov@gmail.com> <dmitry_baryshkov@mentor.com>
-+Dmitry Baryshkov <dbaryshkov@gmail.com> <dmitry_eremin@mentor.com>
- Dmitry Safonov <0x7f454c46@gmail.com> <dima@arista.com>
- Dmitry Safonov <0x7f454c46@gmail.com> <d.safonov@partner.samsung.com>
- Dmitry Safonov <0x7f454c46@gmail.com> <dsafonov@virtuozzo.com>
--- 
-2.28.0
-
+> ---
+>  kernel/power/swap.c | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
+>
+> diff --git a/kernel/power/swap.c b/kernel/power/swap.c
+> index 9d3ffbfe08dbf6..71385bedcc3a49 100644
+> --- a/kernel/power/swap.c
+> +++ b/kernel/power/swap.c
+> @@ -343,12 +343,10 @@ static int swsusp_swap_check(void)
+>                 return res;
+>         root_swap = res;
+>
+> -       hib_resume_bdev = bdget(swsusp_resume_device);
+> -       if (!hib_resume_bdev)
+> -               return -ENOMEM;
+> -       res = blkdev_get(hib_resume_bdev, FMODE_WRITE, NULL);
+> -       if (res)
+> -               return res;
+> +       hib_resume_bdev = blkdev_get_by_dev(swsusp_resume_device, FMODE_WRITE,
+> +                       NULL);
+> +       if (IS_ERR(hib_resume_bdev))
+> +               return PTR_ERR(hib_resume_bdev);
+>
+>         res = set_blocksize(hib_resume_bdev, PAGE_SIZE);
+>         if (res < 0)
+> --
+> 2.28.0
+>
