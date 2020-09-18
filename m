@@ -2,88 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7FFB26FCB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F7E26FC93
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgIRMkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 08:40:14 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:9722 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726121AbgIRMkK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 08:40:10 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08IBc0g3028190;
-        Fri, 18 Sep 2020 13:47:43 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : subject :
- date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=6pOVws/I6cfHaGqYL8/y2lOPLnCLBYUUlSxVz/K1gjM=;
- b=e9strKYH1RVbhGaSdNeP0lL68WlXd+P0e9ZElZby+ED7SUMgXfMlGEc2h+PHRIH4EVEJ
- IHhALjste9W9q+YXbNCHU/pQtReSUwf/hma3pNSr8F/4bL/FDbMdpD0Q5riqAxJLH8Vn
- hhYzL9Ab+tiAr60XpD+9xNdJC7281ISlS5G1whOcxAu83fN6sJ6EYaeQtIvdyiLg6QBs
- Xu+vWAgvLFOCpbLVxudNiyETP21FLMldYPqcWboDXIvI9GQuiaf614Qr7pYG5woRV5aM
- aEVJ87qT6eDb4DXwpK25glBIGS7Q+rDD2MQ3lQ0V3j+5tsRVPbqSB70vvn9GSyU+jQkJ tg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 33k695qtvc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Sep 2020 13:47:42 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7127810002A;
-        Fri, 18 Sep 2020 13:47:42 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag6node1.st.com [10.75.127.16])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7754021FEB3;
-        Fri, 18 Sep 2020 13:47:39 +0200 (CEST)
-Received: from localhost (10.75.127.47) by SFHDAG6NODE1.st.com (10.75.127.16)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 18 Sep 2020 13:47:38
- +0200
-From:   Yannick Fertre <yannick.fertre@st.com>
-To:     Yannick Fertre <yannick.fertre@st.com>,
-        Philippe Cornu <philippe.cornu@st.com>,
-        Antonio Borneo <antonio.borneo@st.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] drm/panel: rm68200: allow using non-continuous dsi clock
-Date:   Fri, 18 Sep 2020 13:47:36 +0200
-Message-ID: <20200918114736.11322-1-yannick.fertre@st.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726645AbgIRMdk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 18 Sep 2020 08:33:40 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3546 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726064AbgIRMdk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 08:33:40 -0400
+X-Greylist: delayed 924 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Sep 2020 08:33:40 EDT
+Received: from dggemi406-hub.china.huawei.com (unknown [172.30.72.55])
+        by Forcepoint Email with ESMTP id 9A48BA5AE5313591991A;
+        Fri, 18 Sep 2020 20:18:14 +0800 (CST)
+Received: from DGGEMI522-MBS.china.huawei.com ([169.254.8.78]) by
+ dggemi406-hub.china.huawei.com ([10.3.17.144]) with mapi id 14.03.0487.000;
+ Fri, 18 Sep 2020 20:18:04 +0800
+From:   lushenming <lushenming@huawei.com>
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Wanghaibin (D)" <wanghaibin.wang@huawei.com>,
+        yuzenghui <yuzenghui@huawei.com>
+Subject: RE: [PATCH] irqchip/gic-v4.1: Optimize the delay time of the poll
+ on the GICR_VPENDBASER.Dirty bit
+Thread-Topic: [PATCH] irqchip/gic-v4.1: Optimize the delay time of the poll
+ on the GICR_VPENDBASER.Dirty bit
+Thread-Index: AdaLYvuHeQKSQv5lQ9G9IAytgjmwLv//klKA//55OFCAArI6AP/8SMLg
+Date:   Fri, 18 Sep 2020 12:18:03 +0000
+Message-ID: <343E0E168479F04FACCB176989D12DE7EE333B@dggemi522-mbs.china.huawei.com>
+References: <343E0E168479F04FACCB176989D12DE7EE1D2D@dggemi522-mbs.china.huawei.com>
+ <a87d26bc52b25247dd23e5cb1cd56bad@kernel.org>
+ <343E0E168479F04FACCB176989D12DE7EE3206@dggemi522-mbs.china.huawei.com>
+ <8c9f4731295af025302e084ba546b74b@kernel.org>
+In-Reply-To: <8c9f4731295af025302e084ba546b74b@kernel.org>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.187.99]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG6NODE1.st.com
- (10.75.127.16)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-18_14:2020-09-16,2020-09-18 signatures=0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The panel is able to work when dsi clock is non-continuous, thus
-the system power consumption can be reduced using such feature.
+Hi, Marc,
 
-Add MIPI_DSI_CLOCK_NON_CONTINUOUS to panel's mode_flags.
+I measured the time from vcpu_load() (include it) to __guest_enter() on Kunpeng 920. On average, It takes 2.55 microseconds (not first run && the VPT is empty). So waiting for 10 microseconds in 
+vcpu scheduling really hurts performance.
 
-Signed-off-by: Antonio Borneo <antonio.borneo@st.com>
-Signed-off-by: Yannick Fertre <yannick.fertre@st.com>
----
- drivers/gpu/drm/panel/panel-raydium-rm68200.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+And I agree that delaying the execution of its_wait_vpt_parse_complete() might be a  viable solution.
 
-diff --git a/drivers/gpu/drm/panel/panel-raydium-rm68200.c b/drivers/gpu/drm/panel/panel-raydium-rm68200.c
-index f908eeafb1af..2b9e48b0a491 100644
---- a/drivers/gpu/drm/panel/panel-raydium-rm68200.c
-+++ b/drivers/gpu/drm/panel/panel-raydium-rm68200.c
-@@ -391,7 +391,7 @@ static int rm68200_probe(struct mipi_dsi_device *dsi)
- 	dsi->lanes = 2;
- 	dsi->format = MIPI_DSI_FMT_RGB888;
- 	dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
--			  MIPI_DSI_MODE_LPM;
-+			  MIPI_DSI_MODE_LPM | MIPI_DSI_CLOCK_NON_CONTINUOUS;
- 
- 	drm_panel_init(&ctx->panel, dev, &rm68200_drm_funcs,
- 		       DRM_MODE_CONNECTOR_DSI);
--- 
-2.17.1
+-----Original Message-----
+From: Marc Zyngier [mailto:maz@kernel.org] 
+Sent: 2020-09-16 16:40
+To: lushenming <lushenming@huawei.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>; Jason Cooper <jason@lakedaemon.net>; linux-kernel@vger.kernel.org; Wanghaibin (D) <wanghaibin.wang@huawei.com>; yuzenghui <yuzenghui@huawei.com>
+Subject: Re: [PATCH] irqchip/gic-v4.1: Optimize the delay time of the poll on the GICR_VPENDBASER.Dirty bit
 
+On 2020-09-16 08:04, lushenming wrote:
+> Hi,
+> 
+> Our team just discussed this issue again and consulted our GIC 
+> hardware design team. They think the RD can afford busy waiting. So we 
+> still think maybe 0 is better, at least for our hardware.
+> 
+> In addition, if not 0, as I said before, in our measurement, it takes 
+> only hundreds of nanoseconds, or 1~2 microseconds, to finish parsing 
+> the VPT in most cases. So maybe 1 microseconds, or smaller, is more 
+> appropriate.
+> Anyway, 10 microseconds is too much.
+> 
+> But it has to be said that it does depend on the hardware 
+> implementation.
+
+Exactly. And given that the only publicly available implementation is a software model, I am reluctant to change "performance" related things based on benchmarks that can't be verified and appears to me as a micro optimization.
+
+> Besides, I'm not sure where are the start and end point of the total 
+> scheduling latency of a vcpu you said, which includes many events. Is 
+> the parse time of the VPT not clear enough?
+
+Measure the time it takes from kvm_vcpu_load() to the point where the vcpu enters the guest. How much, in proportion, do these 1/2/10ms represent?
+
+Also, a better(?) course of action would maybe to consider whether we should split the its_vpe_schedule() call into two distinct operations: one that programs the VPE to be resident, and another that poll the Dirty bit *much
+later* on the entry path, giving the GIC a chance to work in parallel with the CPU on the entry path.
+
+If your HW is a quick as you say it is, it would pretty much guarantee a clear read of GICR_VPENDBASER without waiting.
+
+         M.
+--
+Jazz is not dead. It just smells funny...
