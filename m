@@ -2,158 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9228726F5FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 08:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69BCE26F600
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 08:40:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726426AbgIRGiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 02:38:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726290AbgIRGit (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 02:38:49 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 905C0C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 23:38:49 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id s65so2898332pgb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 23:38:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Vl6jNoOplI86V62k3aLjP+X1+cXsvJOTqcdV8LtO++E=;
-        b=XGf1OxO8Spx6wBdop0Fb5o8Yt8lcdLCALFBWJeKtDcszm+84YDUFBCnha2coa4emAJ
-         DshYC3htBRarytp7JbZOvUiJE0rft3nE35mVSWB4r4EcHxHnXF/TCtZSK+QU5LnRHPgh
-         q1sUOg2XTA/ILQIsb9rosD20ZG/q6Rt91+MPKd4cEivb3Q1E1TbBlRvN4MlSBLwXA/RG
-         QBlKX2ph1cKd0RbRxOoMgHJc46CL+bz8lkQWq1MsQCgg22T6r6hXL8PTGA7kDlubOXdI
-         SMzT9Zz4VmHAMlQ05tpESSqQOAXIuKFQHsZnNhSdTLIHId0KAqGNFWvbNM7jHxP+GJ/U
-         wouQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=Vl6jNoOplI86V62k3aLjP+X1+cXsvJOTqcdV8LtO++E=;
-        b=rrY1mnidRjCIkVG5ADbvtBPY0SG7LW+2LTrdkygxLLYpBw+EsinyXFzYYYXdsFcUbD
-         i2LK+BcRDo6TqRdg1xNu+YtBTCVR6wz6fVinqKUIn4BcalGxpmW94kdPZDGxcVOaof3s
-         RtCkTkgdqlPtbnQXPY99i/ULWm8oGUqy9flOwwaWR3FUcGG+W+HQfwFwS5FXODz3WwlX
-         2afdb4RGdMV5NzSA5EpwxtW9Wmlw2D/uKtVwcHVXwnYR3BGM6xKFKhz2w4EdcOn+wMYo
-         uYdcMCEouxgUfhLvI0WeyxuQRrbS/RxMxdBzW0MCFXBeJTTm2Ydv0blRdCqPdTotq8Dn
-         QbPg==
-X-Gm-Message-State: AOAM531vSoYCuF4J13gp8A8YpM+4VBeDJ6yCya2s2aatWKx0OK2GVIhq
-        n1snUhiAbvUVrObPWn1N/24EHg==
-X-Google-Smtp-Source: ABdhPJymxPAcjmEyJ7McVWYRUU7G9HylU5c8RCkdiLgdzmc/bDSrgFT1SY+OH/zmOtZkHEkfP/sejQ==
-X-Received: by 2002:a63:c9:: with SMTP id 192mr26237011pga.37.1600411128917;
-        Thu, 17 Sep 2020 23:38:48 -0700 (PDT)
-Received: from laputa (p784a66b9.tkyea130.ap.so-net.ne.jp. [120.74.102.185])
-        by smtp.gmail.com with ESMTPSA id 203sm1832822pfz.131.2020.09.17.23.38.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 23:38:48 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 15:38:43 +0900
-From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Ben Chuang <benchuanggli@gmail.com>, ulf.hansson@linaro.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
-Subject: Re: [RFC PATCH V3 12/21] mmc: sdhci: UHS-II support, add hooks for
- additional operations
-Message-ID: <20200918063843.GA46229@laputa>
-Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ben Chuang <benchuanggli@gmail.com>, ulf.hansson@linaro.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
-References: <20200710111054.29562-1-benchuanggli@gmail.com>
- <9fa17d60-a540-d0d8-7b2c-0016c3b5c532@intel.com>
+        id S1726419AbgIRGkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 02:40:51 -0400
+Received: from mga02.intel.com ([134.134.136.20]:30753 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726119AbgIRGku (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 02:40:50 -0400
+IronPort-SDR: TGq/yEMe3kL4dwKTfg9urBP3+sG2Hu79wwhciY9OjO7KtoH0HzLtFs+tfAAFRwCG8Taif3fmqu
+ 6W/liCuD6C8g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="147555658"
+X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
+   d="scan'208";a="147555658"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 23:40:49 -0700
+IronPort-SDR: /eF7IF2j1x7n1JHSe18rHooFEKh3iBpe6c6o7ZFey4vATigNWf85BIqU9ZIQAdLQ+RY6897kLT
+ EThJEbfk+/aA==
+X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
+   d="scan'208";a="307770713"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 23:40:45 -0700
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id 25BDB20815; Fri, 18 Sep 2020 09:40:43 +0300 (EEST)
+Date:   Fri, 18 Sep 2020 09:40:43 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Daniel Scally <djrscally@gmail.com>, devel@driverdev.osuosl.org,
+        robh@kernel.org, andriy.shevchenko@linux.intel.com,
+        jorhand@linux.microsoft.com, linux-media@vger.kernel.org,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        kieran.bingham@ideasonboard.com, kitakar@gmail.com,
+        bingbu.cao@intel.com, mchehab@kernel.org, davem@davemloft.net,
+        tian.shu.qiu@intel.com, yong.zhi@intel.com
+Subject: Re: [RFC PATCH] Add bridge driver to connect sensors to CIO2 device
+ via software nodes on ACPI platforms
+Message-ID: <20200918064043.GE26842@paasikivi.fi.intel.com>
+References: <20200916213618.8003-1-djrscally@gmail.com>
+ <20200917103343.GW26842@paasikivi.fi.intel.com>
+ <20200917104941.GP4282@kadam>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9fa17d60-a540-d0d8-7b2c-0016c3b5c532@intel.com>
+In-Reply-To: <20200917104941.GP4282@kadam>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adrian, Ben,
+Hi Dan,
 
-Regarding _set_ios() function,
-
-On Fri, Aug 21, 2020 at 05:08:32PM +0300, Adrian Hunter wrote:
-> On 10/07/20 2:10 pm, Ben Chuang wrote:
-> > From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+On Thu, Sep 17, 2020 at 01:49:41PM +0300, Dan Carpenter wrote:
+> On Thu, Sep 17, 2020 at 01:33:43PM +0300, Sakari Ailus wrote:
+> > > +static int connect_supported_devices(void)
+> > > +{
+> > > +	struct acpi_device *adev;
+> > > +	struct device *dev;
+> > > +	struct sensor_bios_data ssdb;
+> > > +	struct sensor *sensor;
+> > > +	struct property_entry *sensor_props;
+> > > +	struct property_entry *cio2_props;
+> > > +	struct fwnode_handle *fwnode;
+> > > +	struct software_node *nodes;
+> > > +	struct v4l2_subdev *sd;
+> > > +	int i, ret;
 > > 
-> > In this commit, UHS-II related operations will be called via a function
-> > pointer array, sdhci_uhs2_ops, in order to make UHS-II support as
-> > a kernel module.
-> > This array will be initialized only if CONFIG_MMC_SDHCI_UHS2 is enabled
-> > and when the UHS-II module is loaded. Otherwise, all the functions
-> > stay void.
+> > unsigned int i
 > > 
-> > Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
-> > Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
-
-  (snip)
-
-> > @@ -2261,6 +2324,7 @@ void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
-> >  {
-> >  	struct sdhci_host *host = mmc_priv(mmc);
-> >  	u8 ctrl;
-> > +	u16 ctrl_2;
-> >  
-> >  	if (ios->power_mode == MMC_POWER_UNDEFINED)
-> >  		return;
-> > @@ -2287,6 +2351,10 @@ void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
-> >  		sdhci_enable_preset_value(host, false);
-> >  
-> >  	if (!ios->clock || ios->clock != host->clock) {
-> > +		if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > +		    ios->timing == MMC_TIMING_UHS2)
-> > +			host->timing = ios->timing;
-> > +
-> >  		host->ops->set_clock(host, ios->clock);
-> >  		host->clock = ios->clock;
-> >  
-> > @@ -2308,6 +2376,18 @@ void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
-> >  	else
-> >  		sdhci_set_power(host, ios->power_mode, ios->vdd);
-> >  
-> > +	/* 4.0 host support */
-> > +	if (host->version >= SDHCI_SPEC_400) {
-> > +		/* UHS2 Support */
-> > +		if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > +		    host->mmc->flags & MMC_UHS2_SUPPORT &&
-> > +		    host->mmc->caps & MMC_CAP_UHS2) {
-> > +			if (sdhci_uhs2_ops.do_set_ios)
-> > +				sdhci_uhs2_ops.do_set_ios(host, ios);
-> > +			return;
-> > +		}
-> > +	}
-> > +
 > 
-> Please look at using existing callbacks instead, maybe creating uhs2_set_ios(), uhs2_set_clock(), uhs2_set_power()
+> Why?
+> 
+> For list iterators then "int i;" is best...  For sizes then unsigned is
+> sometimes best.  Or if it's part of the hardware spec or network spec
+> unsigned is best.  Otherwise unsigned variables cause a ton of bugs.
+> They're not as intuitive as signed variables.  Imagine if there is an
+> error in this loop and you want to unwind.  With a signed variable you
+> can do:
+> 
+> 	while (--i >= 0)
+> 		cleanup(&bridge.sensors[i]);
+> 
+> There are very few times where raising the type maximum from 2 billion
+> to 4 billion fixes anything.
 
-I think that we will create uhs2_set_ios() (and uhs2_set_power()
-as we discussed on patch#15/21), but not uhs_set_clock().
+There's simply no need for the negative integers here. Sizes (as it's a
+size here) are unsigned, too, so you'd be comparing signed and unsigned
+numbers later in the function.
 
-Since we have a hook only in struct mmc_host_ops, but not in struct
-sdhci_ops, all the drivers who want to support UHS-II need to
-set host->mmc_host_ops->set_ios to sdhci_uhs2_set_ios explicitly
-in their own init (or probe) function.
-(Again, sdhci_uhs2_set_ios() seems to be generic though.)
+-- 
+Regards,
 
-Is this okay for you?
-        -> Adrian
-
-During refactoring the code, I found that sdhci_set_power() is called
-twice in sdhci_set_ios():
-        sdhci_set_ios(host, power_mode, vdd1, -1); in sdhci_set_ios(), and
-        sdhci_set_ios(host, power_mode, vdd1, vdd2) in ush2_do_set_ios()
-
-Can you please confirm that those are redundant?
-        -> Ben
-
-I also wonder why we need spin locks in uhs2_do_set_ios() while
-not in sdhci_set_ios().
-
-        -> Ben
-
--Takahiro Akashi
+Sakari Ailus
