@@ -2,37 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D7DF26ECB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 137DE26EEC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:30:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729059AbgIRCOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:14:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41896 "EHLO mail.kernel.org"
+        id S1729086AbgIRCOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:14:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728666AbgIRCOF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:14:05 -0400
+        id S1728190AbgIRCOP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:14:15 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BDCAC2376E;
-        Fri, 18 Sep 2020 02:14:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AACF8239E5;
+        Fri, 18 Sep 2020 02:14:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600395244;
-        bh=IYQ2allU1mwNxloo47xz+ovSbQ6yYNtlQiE/RPVests=;
+        s=default; t=1600395254;
+        bh=/XHGCzAB/FTa+gGNhK2elMfk4FIE+JYjTVaK8RQbqr0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Wwd+gWvwgzafp3R+Jw5X54q4dNTcrxxwr/SBfcO61VU/hiV3pAfL+uNRniib/oghj
-         LnhSKEEMkaUZ5eumKBzRBHH9XksLQndFmrcvJjC+KCreZJoVOGR6MBeAaL2H3Mx6LT
-         ZeSYej1Wit6HJvMQDdXkHXRt5gUPcXqxbEF7261s=
+        b=DGsUuKeWLuBTrV5Ij1bU71e76rfVBJ15RwNAMVFBzGaT/0+eh1O/nn57zQBjj56+V
+         ztLEOo3AI7iRmFg1F772yuL3FWicao0CVX5rT/vI4H+zWR3cozFnTGFR9zNSF3zKs7
+         SYOlkR3Csv2K+dAjQ6YYj3G20AZ4oggcRuYW3WUY=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Steve Rutherford <srutherford@google.com>,
-        Jon Cargille <jcargill@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, kvm@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 087/127] KVM: Remove CREATE_IRQCHIP/SET_PIT2 race
-Date:   Thu, 17 Sep 2020 22:11:40 -0400
-Message-Id: <20200918021220.2066485-87-sashal@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>, Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stephane Eranian <eranian@google.com>,
+        clang-built-linux@googlegroups.com,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 095/127] perf parse-events: Fix memory leaks found on parse_events
+Date:   Thu, 17 Sep 2020 22:11:48 -0400
+Message-Id: <20200918021220.2066485-95-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918021220.2066485-1-sashal@kernel.org>
 References: <20200918021220.2066485-1-sashal@kernel.org>
@@ -44,62 +50,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steve Rutherford <srutherford@google.com>
+From: Ian Rogers <irogers@google.com>
 
-[ Upstream commit 7289fdb5dcdbc5155b5531529c44105868a762f2 ]
+[ Upstream commit e8dfb81838b14f82521968343884665b996646ef ]
 
-Fixes a NULL pointer dereference, caused by the PIT firing an interrupt
-before the interrupt table has been initialized.
+Fix a memory leak found by applying LLVM's libfuzzer on parse_events().
 
-SET_PIT2 can race with the creation of the IRQchip. In particular,
-if SET_PIT2 is called with a low PIT timer period (after the creation of
-the IOAPIC, but before the instantiation of the irq routes), the PIT can
-fire an interrupt at an uninitialized table.
-
-Signed-off-by: Steve Rutherford <srutherford@google.com>
-Signed-off-by: Jon Cargille <jcargill@google.com>
-Reviewed-by: Jim Mattson <jmattson@google.com>
-Message-Id: <20200416191152.259434-1-jcargill@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Ian Rogers <irogers@google.com>
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Leo Yan <leo.yan@linaro.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Stephane Eranian <eranian@google.com>
+Cc: clang-built-linux@googlegroups.com
+Link: http://lore.kernel.org/lkml/20200319023101.82458-1-irogers@google.com
+[ split from a larger patch, use zfree() ]
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/x86.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ tools/perf/util/parse-events.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 3aed03942d7d4..79fa55de635cc 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -4370,10 +4370,13 @@ long kvm_arch_vm_ioctl(struct file *filp,
- 		r = -EFAULT;
- 		if (copy_from_user(&u.ps, argp, sizeof u.ps))
- 			goto out;
-+		mutex_lock(&kvm->lock);
- 		r = -ENXIO;
- 		if (!kvm->arch.vpit)
--			goto out;
-+			goto set_pit_out;
- 		r = kvm_vm_ioctl_set_pit(kvm, &u.ps);
-+set_pit_out:
-+		mutex_unlock(&kvm->lock);
- 		break;
- 	}
- 	case KVM_GET_PIT2: {
-@@ -4393,10 +4396,13 @@ long kvm_arch_vm_ioctl(struct file *filp,
- 		r = -EFAULT;
- 		if (copy_from_user(&u.ps2, argp, sizeof(u.ps2)))
- 			goto out;
-+		mutex_lock(&kvm->lock);
- 		r = -ENXIO;
- 		if (!kvm->arch.vpit)
--			goto out;
-+			goto set_pit2_out;
- 		r = kvm_vm_ioctl_set_pit2(kvm, &u.ps2);
-+set_pit2_out:
-+		mutex_unlock(&kvm->lock);
- 		break;
- 	}
- 	case KVM_REINJECT_CONTROL: {
+diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+index 096c52f296d77..2733cdfdf04c6 100644
+--- a/tools/perf/util/parse-events.c
++++ b/tools/perf/util/parse-events.c
+@@ -1258,6 +1258,7 @@ static int __parse_events_add_pmu(struct parse_events_state *parse_state,
+ 
+ 		list_for_each_entry_safe(pos, tmp, &config_terms, list) {
+ 			list_del_init(&pos->list);
++			zfree(&pos->val.str);
+ 			free(pos);
+ 		}
+ 		return -EINVAL;
 -- 
 2.25.1
 
