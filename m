@@ -2,122 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0F6126F041
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:42:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD28426EF4E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:34:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728749AbgIRCmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:42:05 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:54714 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728575AbgIRCLO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:11:14 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0U9Gue2N_1600395067;
-Received: from JosephdeMacBook-Pro.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0U9Gue2N_1600395067)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 18 Sep 2020 10:11:07 +0800
-Subject: Re: [PATCH 09/14] ocfs2: cleanup o2hb_region_dev_store
-To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Stefan Haberland <sth@linux.ibm.com>,
-        Jan Hoeppner <hoeppner@linux.ibm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, nbd@other.debian.org,
-        linux-ide@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        linux-pm@vger.kernel.org, linux-mm@kvack.org,
-        linux-block@vger.kernel.org
-References: <20200917165720.3285256-1-hch@lst.de>
- <20200917165720.3285256-10-hch@lst.de>
-From:   Joseph Qi <joseph.qi@linux.alibaba.com>
-Message-ID: <1c8a3a5a-aa59-f30e-4865-6777436c4225@linux.alibaba.com>
-Date:   Fri, 18 Sep 2020 10:11:07 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        id S1729751AbgIRCet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:34:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40742 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728930AbgIRCN2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:13:28 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E2816208DB;
+        Fri, 18 Sep 2020 02:13:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600395207;
+        bh=lFCzPiwrwZi+2I/qPpv079tYMk9JTossO09i+z/sBqQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=TqKu+4nhks9QxzsavxVQx3+QLN0+F5dV9F+/Q9nz5HvFp1IbnK6Ls8HzM77BJDJ6d
+         rigsD6LaMveBtZ4FxwCp+LA4D/hjzs7KU/lgAqlvXBmmyKadXjoWdavRip/63HK0No
+         wzoS2+FE2uTlZNFuNWCNfuBRXwMmQ3tn6/LfDPc8=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Alain Michaud <alainm@chromium.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 056/127] Bluetooth: guard against controllers sending zero'd events
+Date:   Thu, 17 Sep 2020 22:11:09 -0400
+Message-Id: <20200918021220.2066485-56-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200918021220.2066485-1-sashal@kernel.org>
+References: <20200918021220.2066485-1-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200917165720.3285256-10-hch@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Alain Michaud <alainm@chromium.org>
 
+[ Upstream commit 08bb4da90150e2a225f35e0f642cdc463958d696 ]
 
-On 2020/9/18 00:57, Christoph Hellwig wrote:
-> Use blkdev_get_by_dev instead of igrab (aka open coded bdgrab) +
-> blkdev_get.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+Some controllers have been observed to send zero'd events under some
+conditions.  This change guards against this condition as well as adding
+a trace to facilitate diagnosability of this condition.
 
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+Signed-off-by: Alain Michaud <alainm@chromium.org>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ net/bluetooth/hci_event.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-> ---
->  fs/ocfs2/cluster/heartbeat.c | 28 ++++++++++------------------
->  1 file changed, 10 insertions(+), 18 deletions(-)
-> 
-> diff --git a/fs/ocfs2/cluster/heartbeat.c b/fs/ocfs2/cluster/heartbeat.c
-> index 89d13e0705fe7b..0179a73a3fa2c4 100644
-> --- a/fs/ocfs2/cluster/heartbeat.c
-> +++ b/fs/ocfs2/cluster/heartbeat.c
-> @@ -1766,7 +1766,6 @@ static ssize_t o2hb_region_dev_store(struct config_item *item,
->  	int sectsize;
->  	char *p = (char *)page;
->  	struct fd f;
-> -	struct inode *inode;
->  	ssize_t ret = -EINVAL;
->  	int live_threshold;
->  
-> @@ -1793,20 +1792,16 @@ static ssize_t o2hb_region_dev_store(struct config_item *item,
->  	    reg->hr_block_bytes == 0)
->  		goto out2;
->  
-> -	inode = igrab(f.file->f_mapping->host);
-> -	if (inode == NULL)
-> +	if (!S_ISBLK(f.file->f_mapping->host->i_mode))
->  		goto out2;
->  
-> -	if (!S_ISBLK(inode->i_mode))
-> -		goto out3;
-> -
-> -	reg->hr_bdev = I_BDEV(f.file->f_mapping->host);
-> -	ret = blkdev_get(reg->hr_bdev, FMODE_WRITE | FMODE_READ, NULL);
-> -	if (ret) {
-> +	reg->hr_bdev = blkdev_get_by_dev(f.file->f_mapping->host->i_rdev,
-> +					 FMODE_WRITE | FMODE_READ, NULL);
-> +	if (IS_ERR(reg->hr_bdev)) {
-> +		ret = PTR_ERR(reg->hr_bdev);
->  		reg->hr_bdev = NULL;
-> -		goto out3;
-> +		goto out2;
->  	}
-> -	inode = NULL;
->  
->  	bdevname(reg->hr_bdev, reg->hr_dev_name);
->  
-> @@ -1909,16 +1904,13 @@ static ssize_t o2hb_region_dev_store(struct config_item *item,
->  		       config_item_name(&reg->hr_item), reg->hr_dev_name);
->  
->  out3:
-> -	iput(inode);
-> +	if (ret < 0) {
-> +		blkdev_put(reg->hr_bdev, FMODE_READ | FMODE_WRITE);
-> +		reg->hr_bdev = NULL;
-> +	}
->  out2:
->  	fdput(f);
->  out:
-> -	if (ret < 0) {
-> -		if (reg->hr_bdev) {
-> -			blkdev_put(reg->hr_bdev, FMODE_READ|FMODE_WRITE);
-> -			reg->hr_bdev = NULL;
-> -		}
-> -	}
->  	return ret;
->  }
->  
-> 
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index 70b8e2de40cf4..1d2f439043669 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -5257,6 +5257,11 @@ void hci_event_packet(struct hci_dev *hdev, struct sk_buff *skb)
+ 	u8 status = 0, event = hdr->evt, req_evt = 0;
+ 	u16 opcode = HCI_OP_NOP;
+ 
++	if (!event) {
++		bt_dev_warn(hdev, "Received unexpected HCI Event 00000000");
++		goto done;
++	}
++
+ 	if (hdev->sent_cmd && bt_cb(hdev->sent_cmd)->hci.req_event == event) {
+ 		struct hci_command_hdr *cmd_hdr = (void *) hdev->sent_cmd->data;
+ 		opcode = __le16_to_cpu(cmd_hdr->opcode);
+@@ -5468,6 +5473,7 @@ void hci_event_packet(struct hci_dev *hdev, struct sk_buff *skb)
+ 		req_complete_skb(hdev, status, opcode, orig_skb);
+ 	}
+ 
++done:
+ 	kfree_skb(orig_skb);
+ 	kfree_skb(skb);
+ 	hdev->stat.evt_rx++;
+-- 
+2.25.1
+
