@@ -2,143 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6499E26FA32
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 12:14:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A3C26FA7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 12:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726361AbgIRKOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 06:14:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58740 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgIRKOm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 06:14:42 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6F658AFAC;
-        Fri, 18 Sep 2020 10:15:14 +0000 (UTC)
-Subject: Re: [PATCH -next v2] bcache: Convert to DEFINE_SHOW_ATTRIBUTE
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200917122326.99080-1-miaoqinglang@huawei.com>
-From:   Coly Li <colyli@suse.de>
-Autocrypt: addr=colyli@suse.de; keydata=
- mQINBFYX6S8BEAC9VSamb2aiMTQREFXK4K/W7nGnAinca7MRuFUD4JqWMJ9FakNRd/E0v30F
- qvZ2YWpidPjaIxHwu3u9tmLKqS+2vnP0k7PRHXBYbtZEMpy3kCzseNfdrNqwJ54A430BHf2S
- GMVRVENiScsnh4SnaYjFVvB8SrlhTsgVEXEBBma5Ktgq9YSoy5miatWmZvHLFTQgFMabCz/P
- j5/xzykrF6yHo0rHZtwzQzF8rriOplAFCECp/t05+OeHHxjSqSI0P/G79Ll+AJYLRRm9til/
- K6yz/1hX5xMToIkYrshDJDrUc8DjEpISQQPhG19PzaUf3vFpmnSVYprcWfJWsa2wZyyjRFkf
- J51S82WfclafNC6N7eRXedpRpG6udUAYOA1YdtlyQRZa84EJvMzW96iSL1Gf+ZGtRuM3k49H
- 1wiWOjlANiJYSIWyzJjxAd/7Xtiy/s3PRKL9u9y25ftMLFa1IljiDG+mdY7LyAGfvdtIkanr
- iBpX4gWXd7lNQFLDJMfShfu+CTMCdRzCAQ9hIHPmBeZDJxKq721CyBiGAhRxDN+TYiaG/UWT
- 7IB7LL4zJrIe/xQ8HhRO+2NvT89o0LxEFKBGg39yjTMIrjbl2ZxY488+56UV4FclubrG+t16
- r2KrandM7P5RjR+cuHhkKseim50Qsw0B+Eu33Hjry7YCihmGswARAQABtBhDb2x5IExpIDxj
- b2x5bGlAc3VzZS5kZT6JAlYEEwEIAEACGyMHCwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgBYh
- BOo+RS/0+Uhgjej60Mc5B5Nrffj8BQJcR84dBQkY++fuAAoJEMc5B5Nrffj8ixcP/3KAKg1X
- EcoW4u/0z+Ton5rCyb/NpAww8MuRjNW82UBUac7yCi1y3OW7NtLjuBLw5SaVG5AArb7IF3U0
- qTOobqfl5XHsT0o5wFHZaKUrnHb6y7V3SplsJWfkP3JmOooJsQB3z3K96ZTkFelsNb0ZaBRu
- gV+LA4MomhQ+D3BCDR1it1OX/tpvm2uaDF6s/8uFtcDEM9eQeqATN/QAJ49nvU/I8zDSY9rc
- 0x9mP0x+gH4RccbnoPu/rUG6Fm1ZpLrbb6NpaYBBJ/V1BC4lIOjnd24bsoQrQmnJn9dSr60X
- 1MY60XDszIyzRw7vbJcUn6ZzPNFDxFFT9diIb+wBp+DD8ZlD/hnVpl4f921ZbvfOSsXAJrKB
- 1hGY17FPwelp1sPcK2mDT+pfHEMV+OQdZzD2OCKtza/5IYismJJm3oVUYMogb5vDNAw9X2aP
- XgwUuG+FDEFPamFMUwIfzYHcePfqf0mMsaeSgtA/xTxzx/0MLjUJHl46Bc0uKDhv7QUyGz0j
- Ywgr2mHTvG+NWQ/mDeHNGkcnsnp3IY7koDHnN2xMFXzY4bn9m8ctqKo2roqjCzoxD/njoAhf
- KBzdybLHATqJG/yiZSbCxDA1n/J4FzPyZ0rNHUAJ/QndmmVspE9syFpFCKigvvyrzm016+k+
- FJ59Q6RG4MSy/+J565Xj+DNY3/dCuQINBFYX6S8BEADZP+2cl4DRFaSaBms08W8/smc5T2CO
- YhAoygZn71rB7Djml2ZdvrLRjR8Qbn0Q/2L2gGUVc63pJnbrjlXSx2LfAFE0SlfYIJ11aFdF
- 9w7RvqWByQjDJor3Z0fWvPExplNgMvxpD0U0QrVT5dIGTx9hadejCl/ug09Lr6MPQn+a4+qs
- aRWwgCSHaIuDkH3zI1MJXiqXXFKUzJ/Fyx6R72rqiMPHH2nfwmMu6wOXAXb7+sXjZz5Po9GJ
- g2OcEc+rpUtKUJGyeQsnCDxUcqJXZDBi/GnhPCcraQuqiQ7EGWuJfjk51vaI/rW4bZkA9yEP
- B9rBYngbz7cQymUsfxuTT8OSlhxjP3l4ZIZFKIhDaQeZMj8pumBfEVUyiF6KVSfgfNQ/5PpM
- R4/pmGbRqrAAElhrRPbKQnCkGWDr8zG+AjN1KF6rHaFgAIO7TtZ+F28jq4reLkur0N5tQFww
- wFwxzROdeLHuZjL7eEtcnNnzSkXHczLkV4kQ3+vr/7Gm65mQfnVpg6JpwpVrbDYQeOFlxZ8+
- GERY5Dag4KgKa/4cSZX2x/5+KkQx9wHwackw5gDCvAdZ+Q81nm6tRxEYBBiVDQZYqO73stgT
- ZyrkxykUbQIy8PI+g7XMDCMnPiDncQqgf96KR3cvw4wN8QrgA6xRo8xOc2C3X7jTMQUytCz9
- 0MyV1QARAQABiQI8BBgBCAAmAhsMFiEE6j5FL/T5SGCN6PrQxzkHk2t9+PwFAlxHziAFCRj7
- 5/EACgkQxzkHk2t9+PxgfA//cH5R1DvpJPwraTAl24SUcG9EWe+NXyqveApe05nk15zEuxxd
- e4zFEjo+xYZilSveLqYHrm/amvQhsQ6JLU+8N60DZHVcXbw1Eb8CEjM5oXdbcJpXh1/1BEwl
- 4phsQMkxOTns51bGDhTQkv4lsZKvNByB9NiiMkT43EOx14rjkhHw3rnqoI7ogu8OO7XWfKcL
- CbchjJ8t3c2XK1MUe056yPpNAT2XPNF2EEBPG2Y2F4vLgEbPv1EtpGUS1+JvmK3APxjXUl5z
- 6xrxCQDWM5AAtGfM/IswVjbZYSJYyH4BQKrShzMb0rWUjkpXvvjsjt8rEXpZEYJgX9jvCoxt
- oqjCKiVLpwje9WkEe9O9VxljmPvxAhVqJjX62S+TGp93iD+mvpCoHo3+CcvyRcilz+Ko8lfO
- hS9tYT0HDUiDLvpUyH1AR2xW9RGDevGfwGTpF0K6cLouqyZNdhlmNciX48tFUGjakRFsxRmX
- K0Jx4CEZubakJe+894sX6pvNFiI7qUUdB882i5GR3v9ijVPhaMr8oGuJ3kvwBIA8lvRBGVGn
- 9xvzkQ8Prpbqh30I4NMp8MjFdkwCN6znBKPHdjNTwE5PRZH0S9J0o67IEIvHfH0eAWAsgpTz
- +jwc7VKH7vkvgscUhq/v1/PEWCAqh9UHy7R/jiUxwzw/288OpgO+i+2l11Y=
-Message-ID: <e559cd50-4e74-d585-183f-b164ab7a294c@suse.de>
-Date:   Fri, 18 Sep 2020 18:14:36 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        id S1726174AbgIRKUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 06:20:42 -0400
+Received: from mail-dm6nam10on2128.outbound.protection.outlook.com ([40.107.93.128]:53217
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725882AbgIRKUl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 06:20:41 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UHCCPzKjoJZ8F61DOqhV4v2NCoGM8VSqY7OcRyUNRXC8rzgzNwGwwyEzYKmc2yhOROLl7qglN5tuytGk6WTsY5Qyh4hrgGyQRk60U2fm0CVXSD9dQYUw3jDlXg6xan5Q/j7mHLaUFa6m3qgwPA3ZBRGz/VKPW735rbb33mkeQxyEpEtA8h9NT873EcR3U22G3eedjoy9E0of8jzMVnrThsdZhihVA4yAv5B5Ze0mgAckkPdVxjjVDZNBh5Y91BXC2jAAd2dSt6tHZl/1amxPk6ghX9B+bPcJt8bjCFXgCteaXzHCph8WMEtxD0jr47aFuSTHLeBo5k3d3uOh6NhzSw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nZhlc7jzBwVNIYmd2xAMmyD9JrveXlLu+ZNIynDF2kU=;
+ b=DnLfVDl/5OzK6CeKeKysFhPVXNOosx+QA1YKQ9EQ+0Omf6uFL4K7K8YxDuySaDKttQeiqkchXw5LzVpNVSGrmCABZMufW/y1mBqmZWZekdU9v8maGzTHrlincqyrmnhIvnEgAfzNLginhTAOpUoKTU8jZ2Z48sTB2y4/TpGQKh78YQfHRo7IChpptEA8aZMahxKGaONPENozq85RY9PRAlp7TYR5yGBiPVbPQU0ScBJYwEMiCn8ppfPCV9BBoU4HT4EpgAFAgLXw5ECIlQNsbKAVPIjOYqPyu2vZvqpn6Q4DyNh5EP/avQFr7Pl4frELfcJGUk+uiJZtr6LQmZytQA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
+ header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nZhlc7jzBwVNIYmd2xAMmyD9JrveXlLu+ZNIynDF2kU=;
+ b=fKYe5GajoE3uR4xZp1YUAhJ70owRpcon8q4YaarAxgT3nl0tavKuYsia532m9p4JeGAGiRZtdr6z3hSkqsk6arOib7zkVjkh+tndBg09j6I815vbJcjTKnCqpGd9iM7Ol+CeSTEKYLm+H0SdtbaMrhpHrE/qYf+cPMkhc8zXHAw=
+Authentication-Results: analogixsemi.com; dkim=none (message not signed)
+ header.d=none;analogixsemi.com; dmarc=none action=none
+ header.from=analogixsemi.com;
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
+ by BYAPR04MB4582.namprd04.prod.outlook.com (2603:10b6:a03:13::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.18; Fri, 18 Sep
+ 2020 10:20:37 +0000
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::1dc0:7d4b:9820:e68]) by BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::3c04:982f:7d75:779e%7]) with mapi id 15.20.3370.019; Fri, 18 Sep 2020
+ 10:20:37 +0000
+Date:   Fri, 18 Sep 2020 18:18:19 +0800
+From:   Xin Ji <xji@analogixsemi.com>
+To:     devel@driverdev.osuosl.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Sheng Pan <span@analogixsemi.com>
+Subject: [PATCH v17 0/2] Add initial support for slimport anx7625
+Message-ID: <cover.1600423931.git.xji@analogixsemi.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-ClientProxiedBy: HK0PR01CA0070.apcprd01.prod.exchangelabs.com
+ (2603:1096:203:a6::34) To BY5PR04MB6739.namprd04.prod.outlook.com
+ (2603:10b6:a03:229::8)
 MIME-Version: 1.0
-In-Reply-To: <20200917122326.99080-1-miaoqinglang@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pc-user (114.247.245.146) by HK0PR01CA0070.apcprd01.prod.exchangelabs.com (2603:1096:203:a6::34) with Microsoft SMTP Server (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.20.3391.14 via Frontend Transport; Fri, 18 Sep 2020 10:20:36 +0000
+X-Originating-IP: [114.247.245.146]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e5eca7a3-e998-468d-0e02-08d85bbc7c30
+X-MS-TrafficTypeDiagnostic: BYAPR04MB4582:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR04MB458257C41EAFE24D5D642F78C73F0@BYAPR04MB4582.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fnmNgGUueYPIjJuEQD8ggpM/5Uuq1d67Dl+oJJWeogfTgUug/N/w4gdtyFqQMoXnJzlaopN3R5Yrahnot3VG44b3ksoaADHSsf882QD8NIWMcnUtBENGHu7uHnSo19UdGfy27PDICZ5qB3hRIUf0z3YVyFzcQWYjgeFjlctGl8r9ohBzMAWpBh/YKKbnP024cZ3L/ddhL1Bz0KyvAh5jB6Zaeo8FOsVHEAGGfAxVLN2btGuY5dUriRx9613QfSLGPy1HM2s+wfMrx15ru1ksL1QQo0hWZkEu8lWCY1pqspq3khoIRZN7pn6qiKX/i632
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39840400004)(346002)(396003)(376002)(136003)(2906002)(5660300002)(52116002)(956004)(2616005)(7416002)(16526019)(478600001)(6496006)(4326008)(186003)(26005)(54906003)(6486002)(110136005)(83380400001)(8676002)(107886003)(6666004)(8936002)(316002)(66556008)(36756003)(66946007)(66476007)(86362001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: VNFGPccqQJzLbbZ8B3dwL+00wiTWgAff3O1EOCkDKI8ClHIHU5cA96SJFHUKZ4o8rWw+Td3JHIu1V9s4s3V888Z6byv5Y7X8FlKbYufPqAL7ahWunndmSsTrZg15aLaQt/mD09vK/WMGwD0vebHR6cxyfG0Vx6z8GCm/2eOu9AZeiV3+WfQxHUmSYVsYaIX/AZwRgn+1K3dVuxZ+SdUlMwuJnNit9wFLt/HMXPpMByA7vyHUyvRAMi8Ti5/+gNNydMQR6gcURMUzDMWVHS30l3GY7L3jEU7Glp06tsbisyEl7MtXipSSMN/jZiptDC3prZ2kWDvaMQUmKwrnW4nS5PKpyhwUkeCVQ9tChbXYnGdr2RPQj4yN7wEGhXHUPdrhX/DelNYUIDdGpmYIpkVjerhDfPYYnrgGakus31Qy1ffgIFFuAhVjvNtOL/9/u6CT1qhBaKAOsQIqW9xNXKJuUbapHZ6hg4gAkF/7YIc0HaIMHgNjzclFNUOYgwHa6K7r8di9/qw325BPcp8GYUUgzxWcAIoQxhhYKWq7y39FoTIfTgqFyXm8wbJCIxqfVOLSRq+ZVCuXacLPo+6kQa8TyENFFujviPXRN6L79OC7/FqrlwO2759RRs+n5GEdN2zUeADWgkz/A7r7/Z1i/zCvpw==
+X-OriginatorOrg: analogixsemi.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e5eca7a3-e998-468d-0e02-08d85bbc7c30
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2020 10:20:37.0987
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: iLc90AOdPW3aGPgnjub1Ej91BlmcXX5Vk5IBi5A+tzraB81CAH/5cH7NBoa+fvu6CIVA2Z/boKU3ijDZTtDcgw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB4582
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/9/17 20:23, Qinglang Miao wrote:
-> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
-> 
-> As inode->iprivate equals to third parameter of
-> debugfs_create_file() which is NULL. So it's equivalent
-> to original code logic.
-> 
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-> ---
-> v2: based on linux-next(20200917), and can be applied to
->     mainline cleanly now.
+Hi all,
+
+The following series add support for the Slimport ANX7625 transmitter, a
+ultra-low power Full-HD 4K MIPI to DP transmitter designed for portable device.
 
 
-Added into my test queue. Thanks.
+This is the v17 version, any mistakes, please let me know, I will fix it in
+the next series.
 
-Coly Li
+Change history:
+v17: Fix comments from Dan
+ - Fix possible memory leak of 'edid'
+
+v16: Fix compile error
+ - Fix compiling error of incompitible interface of ".mode_valid()"
+
+v15: Fix comments from Sam and Hsin-Yi Wang
+ - Remove connector
+ - Allocate memory for edid at ".get_edid()"
+
+v14: Fix comments from Sam and Nicolas
+ - Check flags at drm_bridge_attach
+ - Use panel_bridge instead of drm_panel
+ - Fix not correct return value
+
+v13: Fix comments from Launrent Pinchart and Rob Herring
+ - Picked up Rob's Reviewed-By
+ - Add .detect and .get_edid interface in bridge funcs.
+
+v12: Fix comments from Hsin-Yi Wang
+ - Rebase the code on kernel 5.7, fix DRM interface not match issue.
+
+v11: Fix comments from Rob Herring
+ - Update commit message.
+ - Remove unused label.
+
+v10: Fix comments from Rob Herring, Daniel.
+ - Fix dt_binding_check warning.
+ - Update description.
+
+v9: Fix comments from Sam, Nicolas, Daniel
+ - Remove extcon interface.
+ - Remove DPI support.
+ - Fix dt_binding_check complains.
+ - Code clean up and update description.
+
+v8: Fix comments from Nicolas.
+ - Fix several coding format.
+ - Update description.
+
+v7:
+ - Fix critical timing(eg:odd hfp/hbp) in "mode_fixup" interface,
+   enhance MIPI RX tolerance by setting register MIPI_DIGITAL_ADJ_1 to 0x3D.
 
 
-> 
->  drivers/md/bcache/closure.c | 16 +++-------------
->  1 file changed, 3 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/md/bcache/closure.c b/drivers/md/bcache/closure.c
-> index 0164a1fe9..d8d9394a6 100644
-> --- a/drivers/md/bcache/closure.c
-> +++ b/drivers/md/bcache/closure.c
-> @@ -159,7 +159,7 @@ void closure_debug_destroy(struct closure *cl)
->  
->  static struct dentry *closure_debug;
->  
-> -static int debug_seq_show(struct seq_file *f, void *data)
-> +static int debug_show(struct seq_file *f, void *data)
->  {
->  	struct closure *cl;
->  
-> @@ -188,17 +188,7 @@ static int debug_seq_show(struct seq_file *f, void *data)
->  	return 0;
->  }
->  
-> -static int debug_seq_open(struct inode *inode, struct file *file)
-> -{
-> -	return single_open(file, debug_seq_show, NULL);
-> -}
-> -
-> -static const struct file_operations debug_ops = {
-> -	.owner		= THIS_MODULE,
-> -	.open		= debug_seq_open,
-> -	.read		= seq_read,
-> -	.release	= single_release
-> -};
-> +DEFINE_SHOW_ATTRIBUTE(debug);
->  
->  void  __init closure_debug_init(void)
->  {
-> @@ -209,7 +199,7 @@ void  __init closure_debug_init(void)
->  		 * about this.
->  		 */
->  		closure_debug = debugfs_create_file(
-> -			"closures", 0400, bcache_debug, NULL, &debug_ops);
-> +			"closures", 0400, bcache_debug, NULL, &debug_fops);
->  }
->  #endif
->  
-> 
+Xin Ji (2):
+  dt-bindings: drm/bridge: anx7625: MIPI to DP transmitter DT schema
+  drm/bridge: anx7625: Add anx7625 MIPI DSI/DPI to DP
+
+ .../bindings/display/bridge/analogix,anx7625.yaml  |   95 +
+ drivers/gpu/drm/bridge/analogix/Kconfig            |    9 +
+ drivers/gpu/drm/bridge/analogix/Makefile           |    1 +
+ drivers/gpu/drm/bridge/analogix/anx7625.c          | 1850 ++++++++++++++++++++
+ drivers/gpu/drm/bridge/analogix/anx7625.h          |  390 +++++
+ 5 files changed, 2345 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+ create mode 100644 drivers/gpu/drm/bridge/analogix/anx7625.c
+ create mode 100644 drivers/gpu/drm/bridge/analogix/anx7625.h
+
+-- 
+2.7.4
 
