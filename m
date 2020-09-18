@@ -2,110 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43D4D26F89E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 077BC26F8A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726440AbgIRIsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 04:48:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59666 "EHLO
+        id S1725900AbgIRItP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 04:49:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbgIRIsi (ORCPT
+        with ESMTP id S1726586AbgIRItM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 04:48:38 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9250EC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 01:48:38 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 10:48:35 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600418917;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xrwqb8emfg0+zuovHZmra52ub5Ax38TjifDBCV568B0=;
-        b=ida0nrdDFonfiLuCxJmFLP4bivtBsw0uoBoGMfVH7wu0CIVPXpqAm/OIQJyKNkeWieBMZO
-        2DjmNRMieSpCE76FwXZDV5QaoT6LejXN141CgS11ku7+durukade4JrGFYPajhkz3k9Cwa
-        6avFtTxaqzgnX9hmeTNgvG2teMrCs7UVjF4NsG+vPLCvKQz316EHOSo4PQv+5qKMwyPd7l
-        WpSO2HDvppfTpK5k2QdkjaYbyJo1aqUCcJF6cV7RYetmsW4kKwQvTsOFvsEY8ebHBCTT4a
-        7Bd0fG08v73xs43mSjZXcDbnU3ugPwXn9OSGET3ne2690bxeioj8FyjTkREPMw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600418917;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xrwqb8emfg0+zuovHZmra52ub5Ax38TjifDBCV568B0=;
-        b=RPM+nJIN4jAivhtmkd8e0Vts2mcE8pUhauujQVwEoqXb7bTBDCHeA23ObBkRGaNhybpLxT
-        UYpmeWkne0xmilBw==
-From:   Sebastian Siewior <bigeasy@linutronix.de>
-To:     peterz@infradead.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Scott Wood <swood@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>
-Subject: Re: [patch 09/10] sched/core: Add migrate_disable/enable()
-Message-ID: <20200918084835.onjipzofxac5epe2@linutronix.de>
-References: <20200917094202.301694311@linutronix.de>
- <20200917101624.813835219@linutronix.de>
- <20200917142438.GH1362448@hirez.programming.kicks-ass.net>
- <20200917143850.25akkvr32ojtwohy@linutronix.de>
- <20200917144937.GI1362448@hirez.programming.kicks-ass.net>
- <20200917151341.2ilqamtnc6hperix@linutronix.de>
- <20200917155410.GK1362448@hirez.programming.kicks-ass.net>
- <20200917163001.5ksl5vjwi35ozzsv@linutronix.de>
- <20200918082232.GL1362448@hirez.programming.kicks-ass.net>
+        Fri, 18 Sep 2020 04:49:12 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B46C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 01:49:11 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id y74so5969370iof.12
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 01:49:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zd1jhv/T3kcDC553A5pAypkXnK/ZBy2X+jzUifOaM48=;
+        b=AyuvtH0RwjdMZ5Tl6te/gkgk6AO0aLBpflUi2nwFEzXkajFqLz7dtn7ATziE8T+xya
+         BldPcMnBXe5OYziY0u90Uqf1Ut6w9IGmai7svZh8RUrgiTdF+XvehWVWXweFPa1iVpHq
+         00R4yp8QfAjoLGjtFVNO2SDnhVHmtAQbGFQEJdyKMUGIZL0LW95dRIoHW/4QcejRyH8T
+         30tLjHHSPV4XRH8/C+S+9R/jymO7kC2ME+jD4SKtB76272pacplDpQ4Z3Fg5R73zzg4t
+         DvZp1Hjor1z32CgyJ5izRiFyGl41/jxx+G9fqJqN7YvSvoEYbft9pWzJgmpLn69JXS6K
+         Kuhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zd1jhv/T3kcDC553A5pAypkXnK/ZBy2X+jzUifOaM48=;
+        b=o6XNabt43HSLDYAXrMwGqfsbyIiv6e/7zjHitjTuzsHKtB/JC2FK6GTQ7eRnvF+hUf
+         ZBxzODG9ZFhgEv9ikkA9sTqFJnzgW1oi205wNmzTbjq40KS5GceteboYnOi0J1gJhAmW
+         7DMgXWzMX8lpH1os288a1pH2VEc/aFfn1kN/O3wnbnPPQcEb9FZ8DHjUSASSjNg5FCCF
+         aSFP82MIoYNg/0HcN3RKkiazxtAudTfGozzbSxY2kMUwd281VfKzwUefXE8I+Oqw6/4P
+         W217AA9Jg8nCNsO+/jKL7BnEP5d8c3gQr1QrDsnJvA0vmLFk3uE+XXUVaAAYww497OtC
+         dYZQ==
+X-Gm-Message-State: AOAM532qO7BnJd9+HGjB/XaiChhfx+XDRHvvPgq2vhktdC3GFgF3Gty2
+        AB7AmAwUXAy7ofA7116BP4j9LRB9l4Sk138ou+f7wQ==
+X-Google-Smtp-Source: ABdhPJxOCGq/PtoZytYf2+juQY2pZPQJv5wiBFxOJUlDdtxITb6spucxCaiOSdA4h7cxwfMvqVhNRfessxTzuWdhcNA=
+X-Received: by 2002:a6b:b386:: with SMTP id c128mr26156023iof.157.1600418950960;
+ Fri, 18 Sep 2020 01:49:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200918082232.GL1362448@hirez.programming.kicks-ass.net>
+References: <20200917234953.CB1D295C0A69@us180.sjc.aristanetworks.com>
+In-Reply-To: <20200917234953.CB1D295C0A69@us180.sjc.aristanetworks.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Fri, 18 Sep 2020 10:48:59 +0200
+Message-ID: <CANn89iJCm9Rw2U1bK9hAQAzdwebggsWh0DFkHpJF=4OZ2JiSOw@mail.gmail.com>
+Subject: Re: [PATCH v3] net: use exponential backoff in netdev_wait_allrefs
+To:     Francesco Ruggeri <fruggeri@arista.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-18 10:22:32 [+0200], peterz@infradead.org wrote:
-> > > One reason for not allowing migrate_disable() to sleep was: FPU code.
-> > >=20
-> > > Could it be it does something like:
-> > >=20
-> > > 	preempt_disable();
-> > > 	spin_lock();
-> > >=20
-> > > 	spin_unlock();
-> > > 	preempt_enable();
-> > >=20
-> > > Where we'll never get preempted while migrate_disable()'d and thus ne=
-ver
-> > > trigger any of the sleep paths?
-> >=20
-> > I try to get rid of something like that. This doesn't work either way
-> > because the spin_lock() may block which it can't with disabled
-> > preemption.
->=20
-> Yeah, that obviously should have been migrate_disable/enable instead of
-> spin_lock/unlock :/
+On Fri, Sep 18, 2020 at 1:49 AM Francesco Ruggeri <fruggeri@arista.com> wrote:
+>
+> The combination of aca_free_rcu, introduced in commit 2384d02520ff
+> ("net/ipv6: Add anycast addresses to a global hashtable"), and
+> fib6_info_destroy_rcu, introduced in commit 9b0a8da8c4c6 ("net/ipv6:
+> respect rcu grace period before freeing fib6_info"), can result in
+> an extra rcu grace period being needed when deleting an interface,
+> with the result that netdev_wait_allrefs ends up hitting the msleep(250),
+> which is considerably longer than the required grace period.
+> This can result in long delays when deleting a large number of interfaces,
+> and it can be observed with this script:
+>
+> ns=dummy-ns
+> NIFS=100
+>
+> ip netns add $ns
+> ip netns exec $ns ip link set lo up
+> ip netns exec $ns sysctl net.ipv6.conf.default.disable_ipv6=0
+> ip netns exec $ns sysctl net.ipv6.conf.default.forwarding=1
+>
+> for ((i=0; i<$NIFS; i++))
+> do
+>         if=eth$i
+>         ip netns exec $ns ip link add $if type dummy
+>         ip netns exec $ns ip link set $if up
+>         ip netns exec $ns ip -6 addr add 2021:$i::1/120 dev $if
+> done
+>
+> for ((i=0; i<$NIFS; i++))
+> do
+>         if=eth$i
+>         ip netns exec $ns ip link del $if
+> done
+>
+> ip netns del $ns
+>
+> This patch uses exponential backoff instead of the fixed msleep(250)
+> to get out of the loop faster.
+>
+> Time with this patch on a 5.4 kernel:
+>
+> real    0m8.199s
+> user    0m0.402s
+> sys     0m1.213s
+>
+> Time without this patch:
+>
+> real    0m31.522s
+> user    0m0.438s
+> sys     0m1.156s
+>
+> v2: use exponential backoff instead of trying to wake up
+>     netdev_wait_allrefs.
+> v3: preserve reverse christmas tree ordering of local variables
+>
+> Signed-off-by: Francesco Ruggeri <fruggeri@arista.com>
+> ---
+>  net/core/dev.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index 4086d335978c..e5fa60cb8832 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -9986,9 +9986,12 @@ EXPORT_SYMBOL(netdev_refcnt_read);
+>   * We can get stuck here if buggy protocols don't correctly
+>   * call dev_put.
+>   */
+> +#define MIN_MSLEEP     ((unsigned int)16)
+> +#define MAX_MSLEEP     ((unsigned int)250)
 
-Ah. Me stupid. fpregs_lock() does
 
-	preempt_disable();
-	local_bh_disable();
+No need for a cast, also I would use names less likely to collide with
+include files, and I would start at 1 ms.
 
-which is more or less the "official" pattern. As of today
-local_bh_disable() does migrate_disable() / spin_lock(). Not sure what
-we end up with for local_bh_disable() in the end.
-We used not have a BLK here on RT but ended up in all kind of locking
-problems because vanilla treats local_bh_disable() as a BLK and uses it
-for locking.
-Today we have a per-CPU spinlock_t in local_bh_disable() to emulate the
-BKL. But this pattern above isn't working due to the atomic part=E2=80=A6
+#define WAIT_REFS_MIN_MSECS 1
+#define WAIT_REFS_MAX_MSECS 250
 
-Sebastian
+>
+>  static void netdev_wait_allrefs(struct net_device *dev)
+>  {
+>         unsigned long rebroadcast_time, warning_time;
+> +       unsigned int wait = MIN_MSLEEP;
+
+
+int wait =  WAIT_REFS_MIN_MSECS;
+
+>
+>         int refcnt;
+>
+>         linkwatch_forget_dev(dev);
+> @@ -10023,7 +10026,8 @@ static void netdev_wait_allrefs(struct net_device *dev)
+>                         rebroadcast_time = jiffies;
+>                 }
+>
+> -               msleep(250);
+> +               msleep(wait);
+> +               wait = min(wait << 1, MAX_MSLEEP);
+
+
+
+wait = min(wait << 1,  WAIT_REFS_MAX_MSECS);
+
+>
+>
+>                 refcnt = netdev_refcnt_read(dev);
+>
+> --
+> 2.28.0
+
+
+
+Also, I would try using synchronize_rcu() instead of the first
+msleep(), this might avoid all msleep() calls in your case.
+
+Patch without the macros to see the general idea :
+
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 266073e300b5fc21440ea8f8ffc9306a1fc9f370..2d3b65034bc0dd99017dea846e6c0a966f1207ee
+100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -9989,7 +9989,7 @@ EXPORT_SYMBOL(netdev_refcnt_read);
+ static void netdev_wait_allrefs(struct net_device *dev)
+ {
+        unsigned long rebroadcast_time, warning_time;
+-       int refcnt;
++       int wait = 0, refcnt;
+
+        linkwatch_forget_dev(dev);
+
+@@ -10023,8 +10023,13 @@ static void netdev_wait_allrefs(struct net_device *dev)
+                        rebroadcast_time = jiffies;
+                }
+
+-               msleep(250);
+-
++               if (!wait) {
++                       synchronize_rcu();
++                       wait = 1;
++               } else {
++                       msleep(wait);
++                       wait = min(wait << 1, 250);
++               }
+                refcnt = netdev_refcnt_read(dev);
+
+                if (refcnt && time_after(jiffies, warning_time + 10 * HZ)) {
