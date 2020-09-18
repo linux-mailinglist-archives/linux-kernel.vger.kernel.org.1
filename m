@@ -2,80 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59FAA26FC59
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D8B26FC5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:19:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726416AbgIRMSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 08:18:50 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:57113 "EHLO ozlabs.org"
+        id S1726544AbgIRMTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 08:19:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726064AbgIRMSu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 08:18:50 -0400
-X-Greylist: delayed 87808 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Sep 2020 08:18:48 EDT
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1726064AbgIRMTL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 08:19:11 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BtCYK40Jjz9sT5;
-        Fri, 18 Sep 2020 22:18:45 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1600431526;
-        bh=eZsLlZGMKeQkS+03FKo604w9V86XaFWLGzm8pTD5+uI=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=mDA5YloOUUj1YlrkqhB+NWmP7C+oK2/lEb51pnY0pmK1q+xi+YZdJF9hhzLw5ssGQ
-         5vsW8B/AbgZLkyYtLDnDusK8tTY7tnBUCe4RArSx6pTDEhm9wVpRd05HuuBAxdlGzv
-         q3xStD52WpU801nnx+2eiKW4wL9M2IuTDP8yKJJiHVgJnP29Wlvxjc2hG4FL9b8n+V
-         EQCPIKrQRI/VIOiFlLt9gv3zsRcuTbu8sqKgEppJ2TKcEsreQ6q172d2ktOnyrkxW7
-         JeHMrR3RHMLBvdj9QS6Ee3N4/3EwF9bulqzLN+rYEgbu8Mga9FBrr/HEdUT7ehUqmg
-         U/rIeVSqeMwbQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Nicholas Piggin <npiggin@gmail.com>, peterz@infradead.org
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-arch@vger.kernel.org,
-        "linux-mm \@ kvack . org" <linux-mm@kvack.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@amacapital.net>,
-        Dave Hansen <dave.hansen@intel.com>,
-        sparclinux@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v2 1/4] mm: fix exec activate_mm vs TLB shootdown and lazy tlb switching race
-In-Reply-To: <1600137586.nypnz3sbcl.astroid@bobo.none>
-References: <20200914045219.3736466-1-npiggin@gmail.com> <20200914045219.3736466-2-npiggin@gmail.com> <20200914105617.GP1362448@hirez.programming.kicks-ass.net> <1600137586.nypnz3sbcl.astroid@bobo.none>
-Date:   Fri, 18 Sep 2020 22:18:44 +1000
-Message-ID: <87a6xn6zx7.fsf@mpe.ellerman.id.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id 3A03A2084C;
+        Fri, 18 Sep 2020 12:19:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600431550;
+        bh=pg/92e9l6l20yCVFypzeQFvcz/mqbud4nyPwE7kW0fc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=K7nUd/Y8LQjGDmEFr8W3uSRy5lcb9aStbjLCWuq/r3686mEQpcIX/uQKXzeqks5uu
+         9SvtR1Nep3pFWOPI0E+pz4MjcWD9eKuXDt0KUqy6K4d63Vxoxnn9OdMpW+DGmBCJsp
+         /8TNsudRlDb276fTdLAlU8mmWBNKerphOocErPZw=
+Date:   Fri, 18 Sep 2020 15:19:05 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Oded Gabbay <oded.gabbay@gmail.com>
+Cc:     Gal Pressman <galpress@amazon.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+Message-ID: <20200918121905.GU869610@unreal>
+References: <20200915171022.10561-1-oded.gabbay@gmail.com>
+ <20200915133556.21268811@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAFCwf12XZRxLYifSfuB+RGhuiKBytzsUTOnEa6FqfJHYvcVJPQ@mail.gmail.com>
+ <20200917171833.GJ8409@ziepe.ca>
+ <0b21db8d-1061-6453-960b-8043951b3bad@amazon.com>
+ <20200918115227.GR869610@unreal>
+ <CAFCwf10C1zm91e=tqPVGOX8kZD7o=AR2EW-P9VwCF4rcvnEJnA@mail.gmail.com>
+ <20200918120340.GT869610@unreal>
+ <CAFCwf12VPuyGFqFJK5D19zcKFQJ=fmzjwscdPG82tfR_v_h3Kg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFCwf12VPuyGFqFJK5D19zcKFQJ=fmzjwscdPG82tfR_v_h3Kg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nicholas Piggin <npiggin@gmail.com> writes:
-> Excerpts from peterz@infradead.org's message of September 14, 2020 8:56 pm:
->> On Mon, Sep 14, 2020 at 02:52:16PM +1000, Nicholas Piggin wrote:
->>> Reading and modifying current->mm and current->active_mm and switching
->>> mm should be done with irqs off, to prevent races seeing an intermediate
->>> state.
-...
->>> 
->>> This is a bit ugly, but in the interest of fixing the bug and backporting
->>> before all architectures are converted this is a compromise.
->>> 
->>> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
->> 
->> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
->> 
->> I'm thinking we want this selected on x86 as well. Andy?
+On Fri, Sep 18, 2020 at 03:07:19PM +0300, Oded Gabbay wrote:
+> On Fri, Sep 18, 2020 at 3:03 PM Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> > On Fri, Sep 18, 2020 at 02:56:09PM +0300, Oded Gabbay wrote:
+> > > On Fri, Sep 18, 2020 at 2:52 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > > >
+> > > > On Fri, Sep 18, 2020 at 02:36:10PM +0300, Gal Pressman wrote:
+> > > > > On 17/09/2020 20:18, Jason Gunthorpe wrote:
+> > > > > > On Tue, Sep 15, 2020 at 11:46:58PM +0300, Oded Gabbay wrote:
+> > > > > >> infrastructure for communication between multiple accelerators. Same
+> > > > > >> as Nvidia uses NVlink, we use RDMA that we have inside our ASIC.
+> > > > > >> The RDMA implementation we did does NOT support some basic RDMA
+> > > > > >> IBverbs (such as MR and PD) and therefore, we can't use the rdma-core
+> > > > > >> library or to connect to the rdma infrastructure in the kernel.
+> > > > > >
+> > > > > > You can't create a parallel RDMA subsystem in netdev, or in misc, and
+> > > > > > you can't add random device offloads as IOCTL to nedevs.
+> > > > > >
+> > > > > > RDMA is the proper home for all the networking offloads that don't fit
+> > > > > > into netdev.
+> > > > > >
+> > > > > > EFA was able to fit into rdma-core/etc and it isn't even RoCE at
+> > > > > > all. I'm sure this can too.
+> > > > >
+> > > > > Well, EFA wasn't welcomed to the RDMA subsystem with open arms ;), initially it
+> > > > > was suggested to go through the vfio subsystem instead.
+> > > > >
+> > > > > I think this comes back to the discussion we had when EFA was upstreamed, which
+> > > > > is what's the bar to get accepted to the RDMA subsystem.
+> > > > > IIRC, what we eventually agreed on is having a userspace rdma-core provider and
+> > > > > ibv_{ud,rc}_pingpong working (or just supporting one of the IB spec's QP types?).
+> > > > >
+> > > > > Does GAUDI fit these requirements? If not, should it be in a different subsystem
+> > > > > or should we open the "what qualifies as an RDMA device" question again?
+> > > >
+> > > > I want to remind you that rdma-core requirement came to make sure that
+> > > > anything exposed from the RDMA to the userspace is strict with proper
+> > > > UAPI header hygiene.
+> > > >
+> > > > I doubt that Havana's ioctls are backed by anything like this.
+> > > >
+> > > > Thanks
+> > >
+> > > Why do you doubt that ? Have you looked at our code ?
+> > > Our uapi and IOCTLs interface is based on drm subsystem uapi interface
+> > > and it is very safe and protected.
+> >
+> > Yes, I looked and didn't find open-source users of your UAPI headers.
+> > It is not related to being safe or protected by to the common request
+> > to present userspace that relies on those exported interfaces.
+> >
+> > > Otherwise Greg would have never allowed me to go upstream in the first place.
+> >
+> > Nice, can we get a link?
+> >
+> > >
+> > > We have a single function which is the entry point for all the IOCTLs
+> > > of our drivers (only one IOCTL is RDMA related, all the others are
+> > > compute related).
+> > > That function is almost 1:1 copy of the function in drm.
+> >
+> > DRM has same rules as RDMA, no kernel code will be merged without seeing
+> > open-source userspace.
+> >
+> > Thanks
+> >
+> > >
+> > > Thanks,
+> > > Oded
 >
-> Thanks for the ack. The plan was to take it through the powerpc tree,
-> but if you'd want x86 to select it, maybe a topic branch?
+> So we do have an open-source library called hl-thunk, which uses our
+> driver and indeed that was part of the requirement.
+> It is similar to libdrm.
+> Here is the link:
+> https://github.com/HabanaAI/hl-thunk
 
-I've put this series in a topic branch based on v5.9-rc2:
+Are you kidding?
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git/log/?h=topic/irqs-off-activate-mm
+This is mirror of some internal repository that looks like dumpster
+with ChangeId, internal bug tracker numbers, not part of major OS
+distributions.
 
-I plan to merge it into the powerpc/next tree for v5.10, but if anyone
-else wants to merge it that's fine too.
+It is not open-source library and shows very clear why you chose
+to upstream your driver through driver/misc/ tree.
 
-cheers
+Thanks
