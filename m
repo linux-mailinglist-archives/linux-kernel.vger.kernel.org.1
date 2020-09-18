@@ -2,139 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC36426FCC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9222C26FCC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726417AbgIRMnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 08:43:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39500 "EHLO
+        id S1726520AbgIRMoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 08:44:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726154AbgIRMnw (ORCPT
+        with ESMTP id S1726121AbgIRMoP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 08:43:52 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62E6BC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 05:43:50 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id q9so5207298wmj.2
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 05:43:50 -0700 (PDT)
+        Fri, 18 Sep 2020 08:44:15 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F188C06174A;
+        Fri, 18 Sep 2020 05:44:15 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id c3so2932536plz.5;
+        Fri, 18 Sep 2020 05:44:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IQfmsBiXwX2Es8GDES7bQUFNVTPhBrL2A0QXzeBgz/I=;
-        b=UDK3HdbI0cXRlxDUsemZ+pnULj6vEFVLk+iiN2KIdATS7YIWMLOXRnNd4xoGd3idMe
-         I3XtsNxgNeh5qUVPfSshLfYMEvuXy5UR1rMR9kiuarIh3ygUwiehnKTt6dgOY1hDT9oV
-         i7PavFuiplJdlVUf8kDYJ42VNvqCyEDjGjGZQ=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CV8lbT4hNvISevl0YDPpkGjO0PydmbsCz1V4dqdiUGA=;
+        b=W/TfL5RwGfoOnqu19aAF8kIG1aWOAWIXfPnbkRNZlJTyvL102BxgWU9A3ANFOaA1Kf
+         sXv5CvDMZCw1Wzl+O1MpaV0ZBMRSWcM2dqyELVVEQsjn1TBrJdReyEHriqEmOpft1RIc
+         74ICzqa7bi0g3KYn7r1l+k4hYj0VuFRtxyI7T4iM6s/lqdkBLf/L8+/6TTagsBH5tIG5
+         3FO2wUDJqPE9UO8ZtmZz479AtObEhIhDDGI5oM51yYQXKLQl5GAWwT0OelbfVy+EJOfv
+         wee3bNuXJvSTvhYyibeGNi2TfCcUmPIVmjJWYnzPADRUPHxDKc18qr4T2ZrfZCbCdCCO
+         niIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=IQfmsBiXwX2Es8GDES7bQUFNVTPhBrL2A0QXzeBgz/I=;
-        b=HedTQomInyjoGThjJJxbk2iRLbje9dky17Bae/jw6qt2u22OXODgVZHwLlp7DfH6aV
-         64YRj8kIJ/ty2cucoDMf71/KcqqHGfMzbJLB2DDqpp/+V8VQ2pyVCLcfHp9chUTx1QWd
-         dZq3G5BQgvvDD4aOCjm9Cc5cQspVLhz1jBG5gFMK84u88hoY26MNnBvDkCnvIaJ5mI90
-         Jt9oOIdKvFu09N0YK8m+l8N5C7J+WfyUXIi4GFT6GGIL5iR8PMy6Hlgax+2NaSU/2PEy
-         35zHcxqmsFm+Bhaj4HDiAh69AjwSZUfPNMGcDSgUQeuBzTaU8fU1PMUvwwZbOd4HPvTF
-         3mqw==
-X-Gm-Message-State: AOAM530F6qPRd5Q+Mg8bHKbnqSgLDMpAyY1/Jcqu0OenJqZB6/V/z9GT
-        Ma7WYaW7O/BQ9xhZNivJ3cRBHzXTV9kWD/uW
-X-Google-Smtp-Source: ABdhPJzhzhGMpyvkb890HEdyRSEQK5FynG/CTfFDdSBz/5TJ+zjC3MVLkcodfQHLYw1wf6ov1b18xQ==
-X-Received: by 2002:a1c:4e0a:: with SMTP id g10mr15997863wmh.71.1600433028952;
-        Fri, 18 Sep 2020 05:43:48 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id c25sm4808543wml.31.2020.09.18.05.43.47
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CV8lbT4hNvISevl0YDPpkGjO0PydmbsCz1V4dqdiUGA=;
+        b=TSXM+vNylGq/pTAktfknxoy3mnWForU02SURsqx1ErBYOhV0Lf30oWnlQx5Nhh+dud
+         4/lEJ5HNZy6sdWVhaKIxQCfxT6KidUCN3FzkhqRT6RvVb8bQo1DosjFo28uH6Yzolzcl
+         gPgYhr/5Zm4Y18YqufHFQyp5b1+Dc8OExWehI5AjzZb7G+xLaKqBk5z4ddLw5Qazcm2R
+         CZ3P5UGAX6UMR4HbcKRhZ/0fcXd0wERT4jGNjAUtIeGA+k/n5LomxZs/yfLPX0TRKjw0
+         7/pjiPKlPHEsOOFv9MfWHEwtKD6sRV3NYvuMV+AKHjpcTACK6hN2XKkUXA0+dvB7DByN
+         x6sg==
+X-Gm-Message-State: AOAM5315O9bf8sZGajevxwqfzaUYGSFEBY3J2fr4Y77WnmrF299ArWGc
+        XwSk0nDshHXCxLyvUmfyMwM=
+X-Google-Smtp-Source: ABdhPJwc01PjkF3QQADTtUnMrlPTRMGKfbMkhAYq8TdSNfZg3114EXYTDNvY+0aaGDfTiEL3KtLTYw==
+X-Received: by 2002:a17:90b:2345:: with SMTP id ms5mr12442494pjb.202.1600433054677;
+        Fri, 18 Sep 2020 05:44:14 -0700 (PDT)
+Received: from sol (106-69-189-59.dyn.iinet.net.au. [106.69.189.59])
+        by smtp.gmail.com with ESMTPSA id w6sm2945630pjj.33.2020.09.18.05.44.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 05:43:48 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 14:43:46 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
-Cc:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        b.zolnierkie@samsung.com, gregkh@linuxfoundation.org,
-        daniel.vetter@ffwll.ch, jirislaby@kernel.org,
-        ndesaulniers@google.com, natechancellor@gmail.com,
-        george.kennedy@oracle.com, peda@axentia.se,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fbcon: Remove the superfluous break
-Message-ID: <20200918124346.GZ438822@phenom.ffwll.local>
-Mail-Followup-To: Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        b.zolnierkie@samsung.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, ndesaulniers@google.com,
-        natechancellor@gmail.com, george.kennedy@oracle.com,
-        peda@axentia.se, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200917131515.147029-1-jingxiangfeng@huawei.com>
- <86015b42-1f87-9f0c-cb34-9d30e8da98a4@embeddedor.com>
- <5F6404B2.3080602@huawei.com>
+        Fri, 18 Sep 2020 05:44:13 -0700 (PDT)
+Date:   Fri, 18 Sep 2020 20:44:08 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v8 09/20] gpiolib: cdev: support edge detection for uAPI
+ v2
+Message-ID: <20200918124408.GB24657@sol>
+References: <20200909102640.1657622-1-warthog618@gmail.com>
+ <20200909102640.1657622-10-warthog618@gmail.com>
+ <CAHp75VcyuPYqXTk7-yBd1dR3BitXQnz1YVkD+PuJRWVOu+1ueQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5F6404B2.3080602@huawei.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <CAHp75VcyuPYqXTk7-yBd1dR3BitXQnz1YVkD+PuJRWVOu+1ueQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 08:52:02AM +0800, Jing Xiangfeng wrote:
+On Tue, Sep 15, 2020 at 01:39:41PM +0300, Andy Shevchenko wrote:
+> On Wed, Sep 9, 2020 at 1:33 PM Kent Gibson <warthog618@gmail.com> wrote:
+> >
+> > Add support for edge detection to lines requested using
+> > GPIO_V2_GET_LINE_IOCTL.
+> >
+> > The edge_detector implementation is based on the v1 lineevent
+> > implementation.
 > 
 > 
-> On 2020/9/18 2:52, Gustavo A. R. Silva wrote:
-> > 
-> > 
-> > On 9/17/20 08:15, Jing Xiangfeng wrote:
-> > > Remove the superfuous break, as there is a 'return' before it.
-> > > 
-> > > Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-> > 
-> > Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> > 
-> > Also, the following Fixes tag should be included in the changelog text:
-> > 
-> > Fixes: bad07ff74c32 ("fbcon: smart blitter usage for scrolling")
-> 
-> OK, I'll send a v2 with this tag.
 
-Please also collect all the r-b tags you received so I can just apply
-everything.
--Daniel
+Hi Andy,
 
-> 
-> > 
-> > Thanks
-> > --
-> > Gustavo
-> > 
-> > > ---
-> > >   drivers/video/fbdev/core/fbcon.c | 2 --
-> > >   1 file changed, 2 deletions(-)
-> > > 
-> > > diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-> > > index 0b49b0f44edf..623359aadd1e 100644
-> > > --- a/drivers/video/fbdev/core/fbcon.c
-> > > +++ b/drivers/video/fbdev/core/fbcon.c
-> > > @@ -1727,7 +1727,6 @@ static bool fbcon_scroll(struct vc_data *vc, unsigned int t, unsigned int b,
-> > >   				    vc->vc_video_erase_char,
-> > >   				    vc->vc_size_row * count);
-> > >   			return true;
-> > > -			break;
-> > > 
-> > >   		case SCROLL_WRAP_MOVE:
-> > >   			if (b - t - count > 3 * vc->vc_rows >> 2) {
-> > > @@ -1818,7 +1817,6 @@ static bool fbcon_scroll(struct vc_data *vc, unsigned int t, unsigned int b,
-> > >   				    vc->vc_video_erase_char,
-> > >   				    vc->vc_size_row * count);
-> > >   			return true;
-> > > -			break;
-> > > 
-> > >   		case SCROLL_WRAP_MOVE:
-> > >   			if (b - t - count > 3 * vc->vc_rows >> 2) {
-> > > 
-> > .
-> > 
+Thanks for all the review comments.  I'm hoping to address them and get
+a v9 out in the next few days.  Do you have any comments for the
+remaining patches - particularly 10-12 that complete the kernel
+implementation?
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Thanks,
+Kent.
