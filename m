@@ -2,104 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FAC026F4C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:37:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6168E26F4C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgIRDh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 23:37:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51072 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726260AbgIRDh4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 23:37:56 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8394721D24;
-        Fri, 18 Sep 2020 03:37:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600400275;
-        bh=RzOwyfu72IHm0AgVL34AlxS885cvVoyeaPAXXAeXSXY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Pjt+aRBc6ipVrHhQ5zRRsJ+FIG36cVrAvWaMS4Qjg7Q6QNmbEyU16AdhnrZrL0OjB
-         ek6zdN1lWEV3IMIwbgg6pgxvRyi/uYIAXihC9qtcaIA6AAeeIiN30lQHVHIPgCxUEd
-         V/iUbrLcNIOwQoRSnH7JArP3imlf9XBrWGvnO/9U=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 507D93522B5A; Thu, 17 Sep 2020 20:37:55 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 20:37:55 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Hou Tao <houtao1@huawei.com>
-Cc:     Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [PATCH 1/2] locktorture: doesn't check nreaders_stress when no
- readlock support
-Message-ID: <20200918033755.GS29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200917135910.137389-1-houtao1@huawei.com>
- <20200917135910.137389-2-houtao1@huawei.com>
- <20200917165817.GK29330@paulmck-ThinkPad-P72>
- <86bc5a54-5dfa-4320-9e10-9660a25724d0@huawei.com>
+        id S1726626AbgIRDkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 23:40:53 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:56433 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726306AbgIRDkx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 23:40:53 -0400
+X-UUID: f2ccb9e2603145539f453257b96be52f-20200918
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=NJWqmI9Q+3XKGNwrqS5sBa+WygmHxvHtMA8oZ41d8Zk=;
+        b=oZ81HU/VxH8I4jeR1gBS/Okajoz3Gyi8WPUJOZASUU9aVxXx8fyeJJXKcuJ33c+/8aOfKyA55a2O84NBxZYWV6DBcCfZwhy8DLfLMMlbURXlnQyH5opulRViRLsYvfrxP0EYt63Fu7XRbOM+5GsP2OK4KBgL5pAkobLXDSHzuXU=;
+X-UUID: f2ccb9e2603145539f453257b96be52f-20200918
+Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 855648462; Fri, 18 Sep 2020 11:40:45 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N1.mediatek.inc
+ (172.27.4.75) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 18 Sep
+ 2020 11:40:43 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 18 Sep 2020 11:40:43 +0800
+Message-ID: <1600400313.20602.4.camel@mhfsdcap03>
+Subject: Re: [PATCH 1/7] usb: mtu3: convert to
+ devm_platform_ioremap_resource_byname
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Felipe Balbi <balbi@kernel.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Date:   Fri, 18 Sep 2020 11:38:33 +0800
+In-Reply-To: <87d02y1190.fsf@kernel.org>
+References: <1595404275-8449-1-git-send-email-chunfeng.yun@mediatek.com>
+         <87d02y1190.fsf@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <86bc5a54-5dfa-4320-9e10-9660a25724d0@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-TM-SNTS-SMTP: 0CC168B5AFE69E193055849BE7B64D2C4E5C6D83B9F689EBFDF4440AAEA4FFC72000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 09:13:14AM +0800, Hou Tao wrote:
-> Hi Paul,
-> 
-> On 2020/9/18 0:58, Paul E. McKenney wrote:
-> > On Thu, Sep 17, 2020 at 09:59:09PM +0800, Hou Tao wrote:
-> >> To ensure there is always at least one locking thread.
-> >>
-> >> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> >> ---
-> >>  kernel/locking/locktorture.c | 3 ++-
-> >>  1 file changed, 2 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-> >> index 9cfa5e89cff7f..bebdf98e6cd78 100644
-> >> --- a/kernel/locking/locktorture.c
-> >> +++ b/kernel/locking/locktorture.c
-> >> @@ -868,7 +868,8 @@ static int __init lock_torture_init(void)
-> >>  		goto unwind;
-> >>  	}
-> >>  
-> >> -	if (nwriters_stress == 0 && nreaders_stress == 0) {
-> >> +	if (nwriters_stress == 0 &&
-> >> +	    (!cxt.cur_ops->readlock || nreaders_stress == 0)) {
-> > 
-> > You lost me on this one.  How does it help to allow tests with zero
-> > writers on exclusive locks?  Or am I missing something subtle here?
-> > 
-> The purpose is to prohibit test with only readers on exclusive locks, not allow it.
-> 
-> So if the module parameters are "torture_type=mutex_lock nwriters_stress=0 nreaders_stress=3",
-> locktorture can fail early instead of continuing but doing nothing useful.
+SGkgRmVsaXAsDQoNCg0KT24gTW9uLCAyMDIwLTA5LTA3IGF0IDEwOjQyICswMzAwLCBGZWxpcGUg
+QmFsYmkgd3JvdGU6DQo+IEhpLA0KPiANCj4gQ2h1bmZlbmcgWXVuIDxjaHVuZmVuZy55dW5AbWVk
+aWF0ZWsuY29tPiB3cml0ZXM6DQo+ID4gVXNlIGRldm1fcGxhdGZvcm1faW9yZW1hcF9yZXNvdXJj
+ZV9ieW5hbWUoKSB0byBzaW1wbGlmeSBjb2RlDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBDaHVu
+ZmVuZyBZdW4gPGNodW5mZW5nLnl1bkBtZWRpYXRlay5jb20+DQo+IA0KPiB3aHkgaXMgaXQgc28g
+dGhhdCB5b3VyIHBhdGNoZXMgYWx3YXlzIGNvbWUgYmFzZTY0IGVuY29kZWQ/IFRoZXkgbG9vaw0K
+PiBmaW5lIG9uIHRoZSBlbWFpbCBjbGllbnQsIGJ1dCB3aGVuIEkgdHJ5IHRvIHBpcGUgdGhlIG1l
+c3NhZ2UgdG8gZ2l0IGFtDQo+IGl0IGFsd2F5cyBnaXZlcyBtZSBhIGxvdCBvZiB0cm91YmxlIGFu
+ZCBJIGhhdmUgdG8gbWFudWFsbHkgZGVjb2RlIHRoZQ0KPiBib2R5IG9mIHlvdXIgbWVzc2FnZXMg
+YW5kIHJlY29tYmluZSB3aXRoIHRoZSBwYXRjaC4NCj4gDQo+IENhbiB5b3UgdHJ5IHRvIHNlbmQg
+eW91ciBwYXRjaGVzIGFzIGFjdHVhbCBwbGFpbiB0ZXh0IHdpdGhvdXQgZW5jb2RpbmcNCj4gdGhl
+IGJvZHkgd2l0aCBiYXNlNjQ/DQpNaXNzZWQgdGhlIGVtYWlsLg0KDQpTb3JyeSBmb3IgaW5jb252
+ZW5pZW5jZSENCklzIG9ubHkgdGhlIGNvbW1pdCBtZXNzYWdlIGJhc2U2NCBlbmNvZGVkLCBvciBp
+bmNsdWRlcyB0aGUgY29kZXM/DQoNCj4gDQoNCg==
 
-Very good!
-
-Now please make that clear in the commit log.  (Your English looks to
-me to be more than equal to that challenge.)
-
-In this commit log, please first state what is wrong.  Then what the
-change is and how it improves things.
-
-							Thanx, Paul
-
-> Regards,
-> Tao
-> 
-> > 							Thanx, Paul
-> > 
-> >>  		pr_alert("lock-torture: must run at least one locking thread\n");
-> >>  		firsterr = -EINVAL;
-> >>  		goto unwind;
-> >> -- 
-> >> 2.25.0.4.g0ad7144999
-> >>
-> > .
-> > 
