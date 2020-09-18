@@ -2,114 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91CDB270605
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F9722705EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726392AbgIRUJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 16:09:45 -0400
-Received: from mga12.intel.com ([192.55.52.136]:55832 "EHLO mga12.intel.com"
+        id S1726301AbgIRUDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 16:03:40 -0400
+Received: from mga12.intel.com ([192.55.52.136]:55347 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726384AbgIRUJk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 16:09:40 -0400
-IronPort-SDR: gfcom4Dn9Nin84vgNtsnbtzXlYUL3Rmre38W0IQTtIlfNfIU0+cMbt+ONXGUvUhwX0vyEYa6ZX
- OFbyNtQfWQcQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9748"; a="139523467"
+        id S1726139AbgIRUDk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 16:03:40 -0400
+IronPort-SDR: 7LyqZMwK8io+MvJcN8xNbzxdOY7uTgYMwtFSOE9AQ4UPHjWX6f8iFMeYuTeOseu/dmS5TOuFEp
+ yoD/mo9kUHEg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9748"; a="139519428"
 X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
-   d="scan'208";a="139523467"
+   d="scan'208";a="139519428"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 13:09:36 -0700
-IronPort-SDR: FJ/6JqWmW3mzc9id45K/pUifIhma9iO/tpvqENgotQ7/j0NXCucHsFf52V1O9z0gsd9NnEHi8d
- RfrPozsiyvKQ==
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 12:58:36 -0700
+IronPort-SDR: CdozuX/OD++iyTLRl/RlCw3GXWbaM3hct99mLAvRS4Z8QHwf3WKyRJQQ3aJpvt8v/9uERs/wkx
+ UUBqRvgu9oBw==
 X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
-   d="scan'208";a="288094607"
-Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.16])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 13:09:35 -0700
-Subject: [PATCH] dm/dax: Fix table reference counts
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     dm-devel@redhat.com
-Cc:     stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Adrian Huang <ahuang12@lenovo.com>, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 18 Sep 2020 12:51:15 -0700
-Message-ID: <160045867590.25663.7548541079217827340.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: StGit/0.18-3-g996c
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+   d="scan'208";a="303453422"
+Received: from pbashab-mobl2.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.254.127.73])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 12:58:36 -0700
+From:   sathyanarayanan.kuppuswamy@linux.intel.com
+To:     bhelgaas@google.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ashok.raj@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: [PATCH v9 1/5] PCI: Conditionally initialize host bridge native_* members
+Date:   Fri, 18 Sep 2020 12:58:30 -0700
+Message-Id: <a640e9043db50f5adee8e38f5c60ff8423f3f598.1600457297.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <cover.1600457297.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+References: <cover.1600457297.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A recent fix to the dm_dax_supported() flow uncovered a latent bug. When
-dm_get_live_table() fails it is still required to drop the
-srcu_read_lock(). Without this change the lvm2 test-suite triggers this
-warning:
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 
-    # lvm2-testsuite --only pvmove-abort-all.sh
+If CONFIG_PCIEPORTBUS is not enabled in kernel then initialing
+struct pci_host_bridge PCIe specific native_* members to "1" is
+incorrect. So protect the PCIe specific member initialization
+with CONFIG_PCIEPORTBUS.
 
-    WARNING: lock held when returning to user space!
-    5.9.0-rc5+ #251 Tainted: G           OE
-    ------------------------------------------------
-    lvm/1318 is leaving the kernel with locks still held!
-    1 lock held by lvm/1318:
-     #0: ffff9372abb5a340 (&md->io_barrier){....}-{0:0}, at: dm_get_live_table+0x5/0xb0 [dm_mod]
-
-...and later on this hang signature:
-
-    INFO: task lvm:1344 blocked for more than 122 seconds.
-          Tainted: G           OE     5.9.0-rc5+ #251
-    "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-    task:lvm             state:D stack:    0 pid: 1344 ppid:     1 flags:0x00004000
-    Call Trace:
-     __schedule+0x45f/0xa80
-     ? finish_task_switch+0x249/0x2c0
-     ? wait_for_completion+0x86/0x110
-     schedule+0x5f/0xd0
-     schedule_timeout+0x212/0x2a0
-     ? __schedule+0x467/0xa80
-     ? wait_for_completion+0x86/0x110
-     wait_for_completion+0xb0/0x110
-     __synchronize_srcu+0xd1/0x160
-     ? __bpf_trace_rcu_utilization+0x10/0x10
-     __dm_suspend+0x6d/0x210 [dm_mod]
-     dm_suspend+0xf6/0x140 [dm_mod]
-
-Fixes: 7bf7eac8d648 ("dax: Arrange for dax_supported check to span multiple devices")
-Cc: <stable@vger.kernel.org>
-Cc: Jan Kara <jack@suse.cz>
-Cc: Alasdair Kergon <agk@redhat.com>
-Cc: Mike Snitzer <snitzer@redhat.com>
-Reported-by: Adrian Huang <ahuang12@lenovo.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 ---
- drivers/md/dm.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/pci/probe.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/md/dm.c b/drivers/md/dm.c
-index fb0255d25e4b..4a40df8af7d3 100644
---- a/drivers/md/dm.c
-+++ b/drivers/md/dm.c
-@@ -1136,15 +1136,16 @@ static bool dm_dax_supported(struct dax_device *dax_dev, struct block_device *bd
- {
- 	struct mapped_device *md = dax_get_private(dax_dev);
- 	struct dm_table *map;
-+	bool ret = false;
- 	int srcu_idx;
--	bool ret;
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index 03d37128a24f..0da0fc034413 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -588,12 +588,14 @@ static void pci_init_host_bridge(struct pci_host_bridge *bridge)
+ 	 * may implement its own AER handling and use _OSC to prevent the
+ 	 * OS from interfering.
+ 	 */
++#ifdef CONFIG_PCIEPORTBUS
+ 	bridge->native_aer = 1;
+ 	bridge->native_pcie_hotplug = 1;
+-	bridge->native_shpc_hotplug = 1;
+ 	bridge->native_pme = 1;
+-	bridge->native_ltr = 1;
+ 	bridge->native_dpc = 1;
++#endif
++	bridge->native_ltr = 1;
++	bridge->native_shpc_hotplug = 1;
  
- 	map = dm_get_live_table(md, &srcu_idx);
- 	if (!map)
--		return false;
-+		goto out;
- 
- 	ret = dm_table_supports_dax(map, device_supports_dax, &blocksize);
- 
-+out:
- 	dm_put_live_table(md, srcu_idx);
- 
- 	return ret;
+ 	device_initialize(&bridge->dev);
+ }
+-- 
+2.17.1
 
