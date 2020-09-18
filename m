@@ -2,90 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB01B270916
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 01:13:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 269BD270922
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 01:25:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726168AbgIRXNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 19:13:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726009AbgIRXNW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 19:13:22 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC3A3C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 16:13:22 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id t7so3955054pjd.3
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 16:13:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=s7PXdt2kMEYDe4HDLKhBUhtN3g8fguL1/b90XNuCWWE=;
-        b=tM2VWi/a53wSnklq0Ml+EfOEwzsS1kvhwnUEVm/hESztj83CgH3UpsozwvNrEYcEiq
-         F2v5Ir5px4xOF5bJugXxJrNr2KiU3SfuwG80wnjo4lu4U+JQ1h1a57SYJjxDly4wRJtt
-         s9296WYgSB5XGORipaMzy7NiPJShrohCm9fVV7GdlRcsvwrmB7EhbrE9p6CEYWV7uw7m
-         5pqw1EkxdCkeNOvK0fISqtxYMu/ETw74A/gckmIzbSvGYkNNVib01R916lyN7B6FMnyf
-         bnT/I8GLBfnVzmKJ13xGIwsLzwHmJ/6UK/ONLIqWd33PDCy/+qNSwb+eOHOymwjpzUa4
-         rTbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=s7PXdt2kMEYDe4HDLKhBUhtN3g8fguL1/b90XNuCWWE=;
-        b=MSdS7kMnJWioOprJdTcVpMLrz4CoSNTjDNoLM3J+rc7BKERO8v1rAlkbRnHElTKtsf
-         JA5ZBbIh2RPxUMLF1vvyrFLuaUg28cjkYBeads/7tOrVT6LOTQWxpux3ZW3neeVaL4LF
-         X0QBfzjcbRk1RVz54o9MyGKSNzZEMEuQ9pGWsAhzoXWjhkpkpVa0JqYMmkYkOCCpR1Mo
-         CPZ4CYvOQiGF0PHTHf3qtRHOapNAC0BdhkeGEiVZsTrtBqzKgD38b6G6eBs84Stk8vmQ
-         L5UOwBml9G10/ukQPnb0EYzoyhWl2A7F90odKdhDSXFwv6AUImg5piLbSvDVeWfKmsq/
-         i7xQ==
-X-Gm-Message-State: AOAM5301iTKeyJUiD6T6qClCB1RUtDDIclpE4DHv/qWNwD/4/RV8PF6C
-        sRE3oZp87XSWGf4qMrCGC8E=
-X-Google-Smtp-Source: ABdhPJxTHekRd2qpelsTmXR0LALte6YsbAw+W6ZakLzKsIAiVPO6pZ4tZbKK108Bgt4iEN8oz1FJqw==
-X-Received: by 2002:a17:90a:e10:: with SMTP id v16mr15045769pje.84.1600470802152;
-        Fri, 18 Sep 2020 16:13:22 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id y4sm4237418pfq.215.2020.09.18.16.13.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 16:13:20 -0700 (PDT)
-Date:   Sat, 19 Sep 2020 08:13:18 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: ipi_teardown() should depend on HOTPLUG_CPU
-Message-ID: <20200918231318.GA598@jagdpanzerIV.localdomain>
-References: <20200918153548.836986-1-sergey.senozhatsky@gmail.com>
- <20200918154125.GB31676@willie-the-truck>
- <bcd145134c399f10baf6d51d77133026@kernel.org>
+        id S1726151AbgIRXZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 19:25:20 -0400
+Received: from mga11.intel.com ([192.55.52.93]:32638 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726009AbgIRXZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 19:25:20 -0400
+IronPort-SDR: qSksG/9yLCgvd3Gxdw3DYCD0lXRxcUr/6e3YTtxTc0PCsio/6p2MgxiSALV5BcPtgKmizDSMLP
+ 4NhzbzI/CRnA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9748"; a="157444944"
+X-IronPort-AV: E=Sophos;i="5.77,276,1596524400"; 
+   d="scan'208";a="157444944"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 16:25:09 -0700
+IronPort-SDR: bwQl4yFHMgKEVeADmPLf3YddIA9jvYk9OyDQiQiin4hc6P/CFDEWDJIJlPKkoifvB7h/HuS3xt
+ xZ7bK1/tc/YA==
+X-IronPort-AV: E=Sophos;i="5.77,276,1596524400"; 
+   d="scan'208";a="484421587"
+Received: from pbaltus-mobl.ger.corp.intel.com (HELO localhost) ([10.252.48.234])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 16:25:02 -0700
+Date:   Sat, 19 Sep 2020 02:24:58 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, linux-sgx@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        asapek@google.com, Borislav Petkov <bp@alien8.de>,
+        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
+        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Huang, Haitao" <haitao.huang@intel.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
+        Christian Ludloff <ludloff@google.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Patrick Uiterwijk <puiterwijk@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
+Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()'
+Message-ID: <20200918232458.GA6175@linux.intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-11-jarkko.sakkinen@linux.intel.com>
+ <CALCETrX9T1ZUug=M5ba9g4H5B7kV=yL5RzuTaeAEdy3uAieN_A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bcd145134c399f10baf6d51d77133026@kernel.org>
+In-Reply-To: <CALCETrX9T1ZUug=M5ba9g4H5B7kV=yL5RzuTaeAEdy3uAieN_A@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/09/18 17:07), Marc Zyngier wrote:
-> On 2020-09-18 16:41, Will Deacon wrote:
-> > On Sat, Sep 19, 2020 at 12:35:48AM +0900, Sergey Senozhatsky wrote:
-> > > ipi_teardown() is used only when CONFIG_HOTPLUG_CPU is set.
-> > > 
-> > > Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-> > > ---
-> > >  arch/arm64/kernel/smp.c | 4 +++-
-> > >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > 
-> > I think this is a duplicate of:
-> > 
-> > https://lore.kernel.org/r/20200918123318.23764-1-yuehaibing@huawei.com
-> > 
-> > which Marc is aware of (and I'm assuming he'll fix it in his series).
+On Fri, Sep 18, 2020 at 08:09:04AM -0700, Andy Lutomirski wrote:
+> On Tue, Sep 15, 2020 at 4:28 AM Jarkko Sakkinen
+> <jarkko.sakkinen@linux.intel.com> wrote:
+> >
+> > From: Sean Christopherson <sean.j.christopherson@intel.com>
+> >
+> > Add vm_ops()->mprotect() for additional constraints for a VMA.
+> >
+> > Intel Software Guard eXtensions (SGX) will use this callback to add two
+> > constraints:
+> >
+> > 1. Verify that the address range does not have holes: each page address
+> >    must be filled with an enclave page.
+> > 2. Verify that VMA permissions won't surpass the permissions of any enclave
+> >    page within the address range. Enclave cryptographically sealed
+> >    permissions for each page address that set the upper limit for possible
+> >    VMA permissions. Not respecting this can cause #GP's to be emitted.
 > 
-> Indeed. Applied and pushed out. Thanks though!
+> It's been awhile since I looked at this.  Can you remind us: is this
+> just preventing userspace from shooting itself in the foot or is this
+> something more important?
+> 
+> --Andy
 
-Oh, cool. Thanks.
+Haitao found this:
 
-	-ss
+https://patchwork.kernel.org/patch/10978327/
+
+The way I understand it, for an LSM hook it makes sense that the
+mprotect() can deduce a single permission for an enclave address range.
+With those constraints it is possible.
+
+/Jarkko
