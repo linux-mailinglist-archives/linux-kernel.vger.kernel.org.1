@@ -2,75 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F13D27019B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:07:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE8A27019E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726344AbgIRQHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 12:07:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55004 "EHLO mail.kernel.org"
+        id S1726370AbgIRQIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 12:08:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725955AbgIRQHh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 12:07:37 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725955AbgIRQIF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 12:08:05 -0400
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB23D206A4;
-        Fri, 18 Sep 2020 16:07:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 06D37238E6;
+        Fri, 18 Sep 2020 16:08:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600445256;
-        bh=9dixanff130eaXiQ/oKff1vm5kBZz8PrkSFuCp87TdE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=cJRspX+gs4ekjAWEiL+MdJyJ1KLF/sfTO5eqRi+/u3M/ruwYrajsk898cgAaI5g7s
-         pkwYIyfppu9842J2xhEZaHx24yEFNh4cfckHE+NtFynBZrWd6RRzDfvcTTc6nAcYWo
-         Lzl418l+fGjnzFyweH4hiLW4xNOVLe65rOpCHhwE=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kJIv8-00D3Qo-Ty; Fri, 18 Sep 2020 17:07:35 +0100
+        s=default; t=1600445284;
+        bh=HsD1zmlNgcDp2ntiGGXDt1Iu4ADx6rxNh/Bto2esBP8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=emUrEqNiAaIypaaqR0DFyojY3bKTuLzedv4LJNpN6r92gOZux9m/t+i1gDj1JpGUw
+         XdzfnJhSce31jn8yRunVP1TffGoAH3jyT3yCKqPfFryCodyr5Ku1NvsvKOnpWwHFs+
+         9mXeIHyvZEiaP3nGp2V20W14pf9i4HBfMJMoBQV8=
+Received: by mail-ot1-f51.google.com with SMTP id u25so5877282otq.6;
+        Fri, 18 Sep 2020 09:08:04 -0700 (PDT)
+X-Gm-Message-State: AOAM533VSNj/ijoXeEHV4diRaslxHgYQJaDG1LQjeSCoSjFU+0cEtVnv
+        oXZfNFot6kvZII9E/Dc75CcNNHuM3pyBL6RUNA==
+X-Google-Smtp-Source: ABdhPJwgdQQ94kk1CAJVTaLgyAzK5jSLiZzPbGFE5cSpTlp+14Bb87D1OUAiLGeIZ3x+kwKNZ39GOoJ1D5VzhOMWVEw=
+X-Received: by 2002:a05:6830:1008:: with SMTP id a8mr21705872otp.107.1600445283255;
+ Fri, 18 Sep 2020 09:08:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 18 Sep 2020 17:07:34 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Will Deacon <will@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: ipi_teardown() should depend on HOTPLUG_CPU
-In-Reply-To: <20200918154125.GB31676@willie-the-truck>
-References: <20200918153548.836986-1-sergey.senozhatsky@gmail.com>
- <20200918154125.GB31676@willie-the-truck>
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <bcd145134c399f10baf6d51d77133026@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: will@kernel.org, sergey.senozhatsky@gmail.com, catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20200905080920.13396-1-yong.wu@mediatek.com> <20200905080920.13396-2-yong.wu@mediatek.com>
+ <20200914232204.GA457962@bogus> <1600148980.25043.11.camel@mhfsdcap03>
+In-Reply-To: <1600148980.25043.11.camel@mhfsdcap03>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 18 Sep 2020 10:07:51 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKj+-_vvZfoLiJ-ox255cFaAD4SPmrk2qCusGWAs-b+XQ@mail.gmail.com>
+Message-ID: <CAL_JsqKj+-_vvZfoLiJ-ox255cFaAD4SPmrk2qCusGWAs-b+XQ@mail.gmail.com>
+Subject: Re: [PATCH v2 01/23] dt-bindings: iommu: mediatek: Convert IOMMU to
+ DT schema
+To:     Yong Wu <yong.wu@mediatek.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Tomasz Figa <tfiga@google.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        Youlin Pei <youlin.pei@mediatek.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Anan Sun <anan.sun@mediatek.com>,
+        Chao Hao <chao.hao@mediatek.com>,
+        Ming-Fan Chen <ming-fan.chen@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-18 16:41, Will Deacon wrote:
-> On Sat, Sep 19, 2020 at 12:35:48AM +0900, Sergey Senozhatsky wrote:
->> ipi_teardown() is used only when CONFIG_HOTPLUG_CPU is set.
->> 
->> Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
->> ---
->>  arch/arm64/kernel/smp.c | 4 +++-
->>  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> I think this is a duplicate of:
-> 
->   
-> https://lore.kernel.org/r/20200918123318.23764-1-yuehaibing@huawei.com
-> 
-> which Marc is aware of (and I'm assuming he'll fix it in his series).
+On Mon, Sep 14, 2020 at 11:51 PM Yong Wu <yong.wu@mediatek.com> wrote:
+>
+> On Mon, 2020-09-14 at 17:22 -0600, Rob Herring wrote:
+> > On Sat, Sep 05, 2020 at 04:08:58PM +0800, Yong Wu wrote:
+> > > Convert MediaTek IOMMU to DT schema.
+> > >
+> > > Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> > > ---
+>
+> [...]
+>
+> > > +properties:
+> > > +  compatible:
+> > > +    enum:
+> > > +      - mediatek,mt2701-m4u #mt2701 generation one HW
+> > > +      - mediatek,mt2712-m4u #mt2712 generation two HW
+> > > +      - mediatek,mt6779-m4u #mt6779 generation two HW
+> > > +      - mediatek,mt7623-m4u, mediatek,mt2701-m4u #mt7623 generation one HW
+> >
+> > This is not right.
+> >
+> > items:
+> >   - const: mediatek,mt7623-m4u
+> >   - const: mediatek,mt2701-m4u
+> >
+> > And that has to be under a 'oneOf' with the rest of this.
+>
+> Thanks for the review. Is this OK?
+>
+>   compatible:
+>     oneOf:
+>       - const: mediatek,mt2701-m4u # mt2701 generation one HW
+>       - const: mediatek,mt2712-m4u # mt2712 generation two HW
+>       - const: mediatek,mt6779-m4u # mt6779 generation two HW
+>       - const: mediatek,mt8173-m4u # mt8173 generation two HW
+>       - const: mediatek,mt8183-m4u # mt8183 generation two HW
+>       - const: mediatek,mt8192-m4u # mt8192 generation two HW
 
-Indeed. Applied and pushed out. Thanks though!
+It is correct, but I prefer all these to be a single enum. So 'oneOf'
+would have 2 entries.
 
-         M. (about to fix the same issue with arch/arm...)
--- 
-Jazz is not dead. It just smells funny...
+>       - description: mt7623 generation one HW
+>         items:
+>           - const: mediatek,mt7623-m4u
+>           - const: mediatek,mt2701-m4u
+>
+> >
+> > > +      - mediatek,mt8173-m4u #mt8173 generation two HW
+> > > +      - mediatek,mt8183-m4u #mt8183 generation two HW
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+>
+> [snip]
