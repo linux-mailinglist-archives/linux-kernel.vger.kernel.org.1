@@ -2,90 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9222C26FCC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:44:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47F4F26FCC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726520AbgIRMoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 08:44:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726121AbgIRMoP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 08:44:15 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F188C06174A;
-        Fri, 18 Sep 2020 05:44:15 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id c3so2932536plz.5;
-        Fri, 18 Sep 2020 05:44:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CV8lbT4hNvISevl0YDPpkGjO0PydmbsCz1V4dqdiUGA=;
-        b=W/TfL5RwGfoOnqu19aAF8kIG1aWOAWIXfPnbkRNZlJTyvL102BxgWU9A3ANFOaA1Kf
-         sXv5CvDMZCw1Wzl+O1MpaV0ZBMRSWcM2dqyELVVEQsjn1TBrJdReyEHriqEmOpft1RIc
-         74ICzqa7bi0g3KYn7r1l+k4hYj0VuFRtxyI7T4iM6s/lqdkBLf/L8+/6TTagsBH5tIG5
-         3FO2wUDJqPE9UO8ZtmZz479AtObEhIhDDGI5oM51yYQXKLQl5GAWwT0OelbfVy+EJOfv
-         wee3bNuXJvSTvhYyibeGNi2TfCcUmPIVmjJWYnzPADRUPHxDKc18qr4T2ZrfZCbCdCCO
-         niIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CV8lbT4hNvISevl0YDPpkGjO0PydmbsCz1V4dqdiUGA=;
-        b=TSXM+vNylGq/pTAktfknxoy3mnWForU02SURsqx1ErBYOhV0Lf30oWnlQx5Nhh+dud
-         4/lEJ5HNZy6sdWVhaKIxQCfxT6KidUCN3FzkhqRT6RvVb8bQo1DosjFo28uH6Yzolzcl
-         gPgYhr/5Zm4Y18YqufHFQyp5b1+Dc8OExWehI5AjzZb7G+xLaKqBk5z4ddLw5Qazcm2R
-         CZ3P5UGAX6UMR4HbcKRhZ/0fcXd0wERT4jGNjAUtIeGA+k/n5LomxZs/yfLPX0TRKjw0
-         7/pjiPKlPHEsOOFv9MfWHEwtKD6sRV3NYvuMV+AKHjpcTACK6hN2XKkUXA0+dvB7DByN
-         x6sg==
-X-Gm-Message-State: AOAM5315O9bf8sZGajevxwqfzaUYGSFEBY3J2fr4Y77WnmrF299ArWGc
-        XwSk0nDshHXCxLyvUmfyMwM=
-X-Google-Smtp-Source: ABdhPJwc01PjkF3QQADTtUnMrlPTRMGKfbMkhAYq8TdSNfZg3114EXYTDNvY+0aaGDfTiEL3KtLTYw==
-X-Received: by 2002:a17:90b:2345:: with SMTP id ms5mr12442494pjb.202.1600433054677;
-        Fri, 18 Sep 2020 05:44:14 -0700 (PDT)
-Received: from sol (106-69-189-59.dyn.iinet.net.au. [106.69.189.59])
-        by smtp.gmail.com with ESMTPSA id w6sm2945630pjj.33.2020.09.18.05.44.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 05:44:13 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 20:44:08 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v8 09/20] gpiolib: cdev: support edge detection for uAPI
- v2
-Message-ID: <20200918124408.GB24657@sol>
-References: <20200909102640.1657622-1-warthog618@gmail.com>
- <20200909102640.1657622-10-warthog618@gmail.com>
- <CAHp75VcyuPYqXTk7-yBd1dR3BitXQnz1YVkD+PuJRWVOu+1ueQ@mail.gmail.com>
+        id S1726553AbgIRMot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 08:44:49 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:49656 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726121AbgIRMos (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 08:44:48 -0400
+Received: from zn.tnic (p200300ec2f0c260019740fa9eb38b2dc.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:2600:1974:fa9:eb38:b2dc])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0CBF51EC032C;
+        Fri, 18 Sep 2020 14:44:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600433087;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=0lmOLysLQ+g/n9VuSWmaXFxfGPTJZgJcmn67WgVbx/0=;
+        b=rPJL6Xtb1kMyeFqMJKaVO0B5d0L5tzpJQdZHLU2aujxhAVKH09FIHwaIIArrPPZM0hHf9D
+        /1BBOeITxJ1GZoZg4Q7tkg29RGdIP+JAbER8a3gQrAyaniZ+merMb+jT44LOvOFEKBb1x4
+        zp1O8L+0fhq+F074E/orFhvOhKmWI3o=
+Date:   Fri, 18 Sep 2020 14:44:45 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
+Message-ID: <20200918124445.GE6585@zn.tnic>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-11-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAHp75VcyuPYqXTk7-yBd1dR3BitXQnz1YVkD+PuJRWVOu+1ueQ@mail.gmail.com>
+In-Reply-To: <20200915112842.897265-11-jarkko.sakkinen@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 01:39:41PM +0300, Andy Shevchenko wrote:
-> On Wed, Sep 9, 2020 at 1:33 PM Kent Gibson <warthog618@gmail.com> wrote:
-> >
-> > Add support for edge detection to lines requested using
-> > GPIO_V2_GET_LINE_IOCTL.
-> >
-> > The edge_detector implementation is based on the v1 lineevent
-> > implementation.
+On Tue, Sep 15, 2020 at 02:28:28PM +0300, Jarkko Sakkinen wrote:
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
 > 
+> Add vm_ops()->mprotect() for additional constraints for a VMA.
 > 
+> Intel Software Guard eXtensions (SGX) will use this callback to add two
+> constraints:
+> 
+> 1. Verify that the address range does not have holes: each page address
+>    must be filled with an enclave page.
+> 2. Verify that VMA permissions won't surpass the permissions of any enclave
+>    page within the address range. Enclave cryptographically sealed
+>    permissions for each page address that set the upper limit for possible
+>    VMA permissions. Not respecting this can cause #GP's to be emitted.
+> 
+> Cc: linux-mm@kvack.org
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Acked-by: Jethro Beekman <jethro@fortanix.com>
+> Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Co-developed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> ---
+>  include/linux/mm.h | 3 +++
+>  mm/mprotect.c      | 5 ++++-
+>  2 files changed, 7 insertions(+), 1 deletion(-)
 
-Hi Andy,
+Needs an ACK from an mm person.
 
-Thanks for all the review comments.  I'm hoping to address them and get
-a v9 out in the next few days.  Do you have any comments for the
-remaining patches - particularly 10-12 that complete the kernel
-implementation?
+-- 
+Regards/Gruss,
+    Boris.
 
-Thanks,
-Kent.
+https://people.kernel.org/tglx/notes-about-netiquette
