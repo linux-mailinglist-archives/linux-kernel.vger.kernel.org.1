@@ -2,73 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A80CF26FDEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 15:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D72626FE04
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 15:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726701AbgIRNNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 09:13:22 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39982 "EHLO mx2.suse.de"
+        id S1726781AbgIRNPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 09:15:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726541AbgIRNNT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 09:13:19 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2A077ABF4;
-        Fri, 18 Sep 2020 13:13:52 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id ABB001E12E1; Fri, 18 Sep 2020 15:13:17 +0200 (CEST)
-Date:   Fri, 18 Sep 2020 15:13:17 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Mikulas Patocka <mpatocka@redhat.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Eric Sandeen <esandeen@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: the "read" syscall sees partial effects of the "write" syscall
-Message-ID: <20200918131317.GH18920@quack2.suse.cz>
-References: <CAPcyv4gh=QaDB61_9_QTgtt-pZuTFdR6td0orE0VMH6=6SA2vw@mail.gmail.com>
- <alpine.LRH.2.02.2009151216050.16057@file01.intranet.prod.int.rdu2.redhat.com>
- <alpine.LRH.2.02.2009151332280.3851@file01.intranet.prod.int.rdu2.redhat.com>
- <alpine.LRH.2.02.2009160649560.20720@file01.intranet.prod.int.rdu2.redhat.com>
- <CAPcyv4gW6AvR+RaShHdQzOaEPv9nrq5myXDmywuoCTYDZxk-hw@mail.gmail.com>
- <alpine.LRH.2.02.2009161254400.745@file01.intranet.prod.int.rdu2.redhat.com>
- <CAPcyv4gD0ZFkfajKTDnJhEEjf+5Av-GH+cHRFoyhzGe8bNEgAA@mail.gmail.com>
- <alpine.LRH.2.02.2009161451140.21915@file01.intranet.prod.int.rdu2.redhat.com>
- <CAPcyv4gFz6vBVVp_aiX4i2rL+8fps3gTQGj5cYw8QESCf7=DfQ@mail.gmail.com>
- <alpine.LRH.2.02.2009180509370.19302@file01.intranet.prod.int.rdu2.redhat.com>
+        id S1726392AbgIRNPZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 09:15:25 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 652CB23719;
+        Fri, 18 Sep 2020 13:15:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600434924;
+        bh=FwUV2XVOFCWTnaBpapY1oJ3Zg02BuffjgARpsBxmqoQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nwvzmWtiFqN0tqhMrt/XquikEhcaZ4PFRdM/zLSzcz4zIfYVEDQ6XBQeLEXaBrgEw
+         6M1CQfPhLjMOBoVEDyB3Mnq0c/0UbwntCb8zlI8hoGcdmFTMr4siSvErwDdbTw3TAg
+         U1CsDpIDU8XtQnWQkBxF8mFpOC37EJqa5B2yRTcc=
+Date:   Fri, 18 Sep 2020 14:14:34 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] regmap: fix return of unintialized value in
+ variable ret
+Message-ID: <20200918131434.GG5703@sirena.org.uk>
+References: <20200918131158.24083-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="+sHJum3is6Tsg7/J"
 Content-Disposition: inline
-In-Reply-To: <alpine.LRH.2.02.2009180509370.19302@file01.intranet.prod.int.rdu2.redhat.com>
+In-Reply-To: <20200918131158.24083-1-colin.king@canonical.com>
+X-Cookie: Beware of geeks bearing graft.
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 18-09-20 08:25:28, Mikulas Patocka wrote:
-> I'd like to ask about this problem: when we write to a file, the kernel 
-> takes the write inode lock. When we read from a file, no lock is taken - 
-> thus the read syscall can read data that are halfway modified by the write 
-> syscall.
-> 
-> The standard specifies the effects of the write syscall are atomic - see 
-> this:
-> https://pubs.opengroup.org/onlinepubs/9699919799/functions/V2_chap02.html#tag_15_09_07
 
-Yes, but no Linux filesystem (except for XFS AFAIK) follows the POSIX spec
-in this regard. Mostly because the mixed read-write performance sucks when
-you follow it (not that it would absolutely have to suck - you can use
-clever locking with range locks but nobody does it currently). In practice,
-the read-write atomicity works on Linux only on per-page basis for buffered
-IO.
+--+sHJum3is6Tsg7/J
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-								Honza
+On Fri, Sep 18, 2020 at 02:11:58PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+>=20
+> A recent commit removed the intialization of ret and now the !config
+> error return path returns a bogus uninitialized value in ret. Fix
+> this by explicitly setting ret to -EINVAL for this error exit path.
 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+I already applied a patch for this.
+
+--+sHJum3is6Tsg7/J
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9ksrkACgkQJNaLcl1U
+h9BZggf/X73CVmpulLjsNipt985pXNKkibPt9bWqQsWTiwbhU9j06StCCD1axGQR
+fZdX2Lk+kb9aVd7BSc7V4Ri5GRAJoi4y/mbypUEQszMuvq63LpLPvjzhbMc36md1
+5aDhaPEQbtQTVpmTPkdtZO0nFnZfrUSQCRk03F+oHVM1iXt3Ua6ftOnWgjzVtlOA
+jCYhkmeLBmD9PdWlfK/H90VHaKDyw2h/d8sCsSFOtWAkUwtLHxU0sqJLh6qVGFLB
+TP7IUipcCOpGxQw3gxFOptLogC8L4G+xHeUulrnT0fxjDxNHVvMRjevc3ZiW4o4w
+7xgoGuso1q5asbs3KKBz940WN6E5ig==
+=ng5Z
+-----END PGP SIGNATURE-----
+
+--+sHJum3is6Tsg7/J--
