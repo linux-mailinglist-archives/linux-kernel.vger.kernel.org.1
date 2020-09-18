@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CBFE26F296
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4202B26F292
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727850AbgIRC7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:59:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54476 "EHLO mail.kernel.org"
+        id S1730429AbgIRC7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:59:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54512 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727647AbgIRCFt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:05:49 -0400
+        id S1727651AbgIRCFv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:05:51 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B9FC22388E;
-        Fri, 18 Sep 2020 02:05:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 195CB2389E;
+        Fri, 18 Sep 2020 02:05:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394748;
-        bh=vrHzzj0NJ4cs62aCcsnRTYbtKwEJBxuDPemCWbUZoIw=;
+        s=default; t=1600394750;
+        bh=wHtZbueycTbbLB8Awk689Ik5odqLTvQrjtKqrNYh7fc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v1C6OeIqjeJ1Fa+8R4+GvcsiR7aBsVsAuUUqj9pPpXNY+z9wjYH9dMONnbAAh+yrL
-         FREMVPwUCAPpKvDB/psTLPptbCVEDTx+hLIIxj/w1M4pfHAm+uIs9uRXrnkCqQGvxc
-         9YT7C9B42CtrQjmkcEz5qIUL7EZKXCJNB5FeBGBA=
+        b=rl0u8xyvEeKphSl7o00IdO6tTL1Np7/ptJ3fp4uNQuRv9AgQmgAyqbpkRmKdEUZ30
+         rBCpogRWi66AMiJ6pqCDPSMfO7Y5LuNuVSuZZqNXBpc2vil6L/MZo5Q85s57DbChal
+         2IAlSO9pr4clHB0CMu47RXurgNmJuzuOtZ20YZfk=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Qian Cai <cai@lca.pw>, Andrew Morton <akpm@linux-foundation.org>,
         Marco Elver <elver@google.com>,
-        Hugh Dickins <hughd@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>, linux-mm@kvack.org
-Subject: [PATCH AUTOSEL 5.4 227/330] mm/swapfile: fix data races in try_to_unuse()
-Date:   Thu, 17 Sep 2020 21:59:27 -0400
-Message-Id: <20200918020110.2063155-227-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 228/330] mm/vmscan.c: fix data races using kswapd_classzone_idx
+Date:   Thu, 17 Sep 2020 21:59:28 -0400
+Message-Id: <20200918020110.2063155-228-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -46,92 +46,199 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Qian Cai <cai@lca.pw>
 
-[ Upstream commit 218209487c3da2f6d861b236c11226b6eca7b7b7 ]
+[ Upstream commit 5644e1fbbfe15ad06785502bbfe5751223e5841d ]
 
-si->inuse_pages could be accessed concurrently as noticed by KCSAN,
+pgdat->kswapd_classzone_idx could be accessed concurrently in
+wakeup_kswapd().  Plain writes and reads without any lock protection
+result in data races.  Fix them by adding a pair of READ|WRITE_ONCE() as
+well as saving a branch (compilers might well optimize the original code
+in an unintentional way anyway).  While at it, also take care of
+pgdat->kswapd_order and non-kswapd threads in allow_direct_reclaim().  The
+data races were reported by KCSAN,
 
- write to 0xffff98b00ebd04dc of 4 bytes by task 82262 on cpu 92:
-  swap_range_free+0xbe/0x230
-  swap_range_free at mm/swapfile.c:719
-  swapcache_free_entries+0x1be/0x250
-  free_swap_slot+0x1c8/0x220
-  __swap_entry_free.constprop.19+0xa3/0xb0
-  free_swap_and_cache+0x53/0xa0
-  unmap_page_range+0x7e0/0x1ce0
-  unmap_single_vma+0xcd/0x170
-  unmap_vmas+0x18b/0x220
-  exit_mmap+0xee/0x220
-  mmput+0xe7/0x240
-  do_exit+0x598/0xfd0
-  do_group_exit+0x8b/0x180
-  get_signal+0x293/0x13d0
-  do_signal+0x37/0x5d0
-  prepare_exit_to_usermode+0x1b7/0x2c0
-  ret_from_intr+0x32/0x42
+ BUG: KCSAN: data-race in wakeup_kswapd / wakeup_kswapd
 
- read to 0xffff98b00ebd04dc of 4 bytes by task 82499 on cpu 46:
-  try_to_unuse+0x86b/0xc80
-  try_to_unuse at mm/swapfile.c:2185
-  __x64_sys_swapoff+0x372/0xd40
-  do_syscall_64+0x91/0xb05
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+ write to 0xffff9f427ffff2dc of 4 bytes by task 7454 on cpu 13:
+  wakeup_kswapd+0xf1/0x400
+  wakeup_kswapd at mm/vmscan.c:3967
+  wake_all_kswapds+0x59/0xc0
+  wake_all_kswapds at mm/page_alloc.c:4241
+  __alloc_pages_slowpath+0xdcc/0x1290
+  __alloc_pages_slowpath at mm/page_alloc.c:4512
+  __alloc_pages_nodemask+0x3bb/0x450
+  alloc_pages_vma+0x8a/0x2c0
+  do_anonymous_page+0x16e/0x6f0
+  __handle_mm_fault+0xcd5/0xd40
+  handle_mm_fault+0xfc/0x2f0
+  do_page_fault+0x263/0x6f9
+  page_fault+0x34/0x40
 
-The plain reads in try_to_unuse() are outside si->lock critical section
-which result in data races that could be dangerous to be used in a loop.
-Fix them by adding READ_ONCE().
+ 1 lock held by mtest01/7454:
+  #0: ffff9f425afe8808 (&mm->mmap_sem#2){++++}, at:
+ do_page_fault+0x143/0x6f9
+ do_user_addr_fault at arch/x86/mm/fault.c:1405
+ (inlined by) do_page_fault at arch/x86/mm/fault.c:1539
+ irq event stamp: 6944085
+ count_memcg_event_mm+0x1a6/0x270
+ count_memcg_event_mm+0x119/0x270
+ __do_softirq+0x34c/0x57c
+ irq_exit+0xa2/0xc0
+
+ read to 0xffff9f427ffff2dc of 4 bytes by task 7472 on cpu 38:
+  wakeup_kswapd+0xc8/0x400
+  wake_all_kswapds+0x59/0xc0
+  __alloc_pages_slowpath+0xdcc/0x1290
+  __alloc_pages_nodemask+0x3bb/0x450
+  alloc_pages_vma+0x8a/0x2c0
+  do_anonymous_page+0x16e/0x6f0
+  __handle_mm_fault+0xcd5/0xd40
+  handle_mm_fault+0xfc/0x2f0
+  do_page_fault+0x263/0x6f9
+  page_fault+0x34/0x40
+
+ 1 lock held by mtest01/7472:
+  #0: ffff9f425a9ac148 (&mm->mmap_sem#2){++++}, at:
+ do_page_fault+0x143/0x6f9
+ irq event stamp: 6793561
+ count_memcg_event_mm+0x1a6/0x270
+ count_memcg_event_mm+0x119/0x270
+ __do_softirq+0x34c/0x57c
+ irq_exit+0xa2/0xc0
+
+ BUG: KCSAN: data-race in kswapd / wakeup_kswapd
+
+ write to 0xffff90973ffff2dc of 4 bytes by task 820 on cpu 6:
+  kswapd+0x27c/0x8d0
+  kthread+0x1e0/0x200
+  ret_from_fork+0x27/0x50
+
+ read to 0xffff90973ffff2dc of 4 bytes by task 6299 on cpu 0:
+  wakeup_kswapd+0xf3/0x450
+  wake_all_kswapds+0x59/0xc0
+  __alloc_pages_slowpath+0xdcc/0x1290
+  __alloc_pages_nodemask+0x3bb/0x450
+  alloc_pages_vma+0x8a/0x2c0
+  do_anonymous_page+0x170/0x700
+  __handle_mm_fault+0xc9f/0xd00
+  handle_mm_fault+0xfc/0x2f0
+  do_page_fault+0x263/0x6f9
+  page_fault+0x34/0x40
 
 Signed-off-by: Qian Cai <cai@lca.pw>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
 Cc: Marco Elver <elver@google.com>
-Cc: Hugh Dickins <hughd@google.com>
-Link: http://lkml.kernel.org/r/1582578903-29294-1-git-send-email-cai@lca.pw
+Cc: Matthew Wilcox <willy@infradead.org>
+Link: http://lkml.kernel.org/r/1582749472-5171-1-git-send-email-cai@lca.pw
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/swapfile.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ mm/vmscan.c | 45 ++++++++++++++++++++++++++-------------------
+ 1 file changed, 26 insertions(+), 19 deletions(-)
 
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 646fd0a8e3202..2f59495782dd4 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -2132,7 +2132,7 @@ int try_to_unuse(unsigned int type, bool frontswap,
- 	swp_entry_t entry;
- 	unsigned int i;
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 7fde5f904c8d3..d0404d8b37254 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -3160,8 +3160,9 @@ static bool allow_direct_reclaim(pg_data_t *pgdat)
  
--	if (!si->inuse_pages)
-+	if (!READ_ONCE(si->inuse_pages))
- 		return 0;
+ 	/* kswapd must be awake if processes are being throttled */
+ 	if (!wmark_ok && waitqueue_active(&pgdat->kswapd_wait)) {
+-		pgdat->kswapd_classzone_idx = min(pgdat->kswapd_classzone_idx,
+-						(enum zone_type)ZONE_NORMAL);
++		if (READ_ONCE(pgdat->kswapd_classzone_idx) > ZONE_NORMAL)
++			WRITE_ONCE(pgdat->kswapd_classzone_idx, ZONE_NORMAL);
++
+ 		wake_up_interruptible(&pgdat->kswapd_wait);
+ 	}
  
- 	if (!frontswap)
-@@ -2148,7 +2148,7 @@ retry:
+@@ -3793,9 +3794,9 @@ out:
+ static enum zone_type kswapd_classzone_idx(pg_data_t *pgdat,
+ 					   enum zone_type prev_classzone_idx)
+ {
+-	if (pgdat->kswapd_classzone_idx == MAX_NR_ZONES)
+-		return prev_classzone_idx;
+-	return pgdat->kswapd_classzone_idx;
++	enum zone_type curr_idx = READ_ONCE(pgdat->kswapd_classzone_idx);
++
++	return curr_idx == MAX_NR_ZONES ? prev_classzone_idx : curr_idx;
+ }
  
- 	spin_lock(&mmlist_lock);
- 	p = &init_mm.mmlist;
--	while (si->inuse_pages &&
-+	while (READ_ONCE(si->inuse_pages) &&
- 	       !signal_pending(current) &&
- 	       (p = p->next) != &init_mm.mmlist) {
+ static void kswapd_try_to_sleep(pg_data_t *pgdat, int alloc_order, int reclaim_order,
+@@ -3839,8 +3840,11 @@ static void kswapd_try_to_sleep(pg_data_t *pgdat, int alloc_order, int reclaim_o
+ 		 * the previous request that slept prematurely.
+ 		 */
+ 		if (remaining) {
+-			pgdat->kswapd_classzone_idx = kswapd_classzone_idx(pgdat, classzone_idx);
+-			pgdat->kswapd_order = max(pgdat->kswapd_order, reclaim_order);
++			WRITE_ONCE(pgdat->kswapd_classzone_idx,
++				   kswapd_classzone_idx(pgdat, classzone_idx));
++
++			if (READ_ONCE(pgdat->kswapd_order) < reclaim_order)
++				WRITE_ONCE(pgdat->kswapd_order, reclaim_order);
+ 		}
  
-@@ -2177,7 +2177,7 @@ retry:
- 	mmput(prev_mm);
+ 		finish_wait(&pgdat->kswapd_wait, &wait);
+@@ -3917,12 +3921,12 @@ static int kswapd(void *p)
+ 	tsk->flags |= PF_MEMALLOC | PF_SWAPWRITE | PF_KSWAPD;
+ 	set_freezable();
  
- 	i = 0;
--	while (si->inuse_pages &&
-+	while (READ_ONCE(si->inuse_pages) &&
- 	       !signal_pending(current) &&
- 	       (i = find_next_to_unuse(si, i, frontswap)) != 0) {
+-	pgdat->kswapd_order = 0;
+-	pgdat->kswapd_classzone_idx = MAX_NR_ZONES;
++	WRITE_ONCE(pgdat->kswapd_order, 0);
++	WRITE_ONCE(pgdat->kswapd_classzone_idx, MAX_NR_ZONES);
+ 	for ( ; ; ) {
+ 		bool ret;
  
-@@ -2219,7 +2219,7 @@ retry:
- 	 * been preempted after get_swap_page(), temporarily hiding that swap.
- 	 * It's easy and robust (though cpu-intensive) just to keep retrying.
- 	 */
--	if (si->inuse_pages) {
-+	if (READ_ONCE(si->inuse_pages)) {
- 		if (!signal_pending(current))
- 			goto retry;
- 		retval = -EINTR;
+-		alloc_order = reclaim_order = pgdat->kswapd_order;
++		alloc_order = reclaim_order = READ_ONCE(pgdat->kswapd_order);
+ 		classzone_idx = kswapd_classzone_idx(pgdat, classzone_idx);
+ 
+ kswapd_try_sleep:
+@@ -3930,10 +3934,10 @@ kswapd_try_sleep:
+ 					classzone_idx);
+ 
+ 		/* Read the new order and classzone_idx */
+-		alloc_order = reclaim_order = pgdat->kswapd_order;
++		alloc_order = reclaim_order = READ_ONCE(pgdat->kswapd_order);
+ 		classzone_idx = kswapd_classzone_idx(pgdat, classzone_idx);
+-		pgdat->kswapd_order = 0;
+-		pgdat->kswapd_classzone_idx = MAX_NR_ZONES;
++		WRITE_ONCE(pgdat->kswapd_order, 0);
++		WRITE_ONCE(pgdat->kswapd_classzone_idx, MAX_NR_ZONES);
+ 
+ 		ret = try_to_freeze();
+ 		if (kthread_should_stop())
+@@ -3977,20 +3981,23 @@ void wakeup_kswapd(struct zone *zone, gfp_t gfp_flags, int order,
+ 		   enum zone_type classzone_idx)
+ {
+ 	pg_data_t *pgdat;
++	enum zone_type curr_idx;
+ 
+ 	if (!managed_zone(zone))
+ 		return;
+ 
+ 	if (!cpuset_zone_allowed(zone, gfp_flags))
+ 		return;
++
+ 	pgdat = zone->zone_pgdat;
++	curr_idx = READ_ONCE(pgdat->kswapd_classzone_idx);
++
++	if (curr_idx == MAX_NR_ZONES || curr_idx < classzone_idx)
++		WRITE_ONCE(pgdat->kswapd_classzone_idx, classzone_idx);
++
++	if (READ_ONCE(pgdat->kswapd_order) < order)
++		WRITE_ONCE(pgdat->kswapd_order, order);
+ 
+-	if (pgdat->kswapd_classzone_idx == MAX_NR_ZONES)
+-		pgdat->kswapd_classzone_idx = classzone_idx;
+-	else
+-		pgdat->kswapd_classzone_idx = max(pgdat->kswapd_classzone_idx,
+-						  classzone_idx);
+-	pgdat->kswapd_order = max(pgdat->kswapd_order, order);
+ 	if (!waitqueue_active(&pgdat->kswapd_wait))
+ 		return;
+ 
 -- 
 2.25.1
 
