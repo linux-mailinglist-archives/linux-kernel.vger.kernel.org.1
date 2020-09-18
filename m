@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ECCA26EC4B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F4DF26EC63
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728613AbgIRCLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:11:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36658 "EHLO mail.kernel.org"
+        id S1728266AbgIRCLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:11:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36732 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728600AbgIRCLQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:11:16 -0400
+        id S1728609AbgIRCLU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:11:20 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 31DD523444;
-        Fri, 18 Sep 2020 02:11:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 767B9235F8;
+        Fri, 18 Sep 2020 02:11:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600395075;
-        bh=LiQ50zNWaDoqN8dsTtDdIN6nIuc4ml902OZuUoJUDJA=;
+        s=default; t=1600395079;
+        bh=2FhpMM7YK2Frh/1hidyqqdIo9NYXx5rasKpjyI38Hmc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bYPqQOGr7+DGbuqud+g1dQA8sODzKpKj97UCPB1qZMeB8F7LEaI/fZWKhOv1Zs6jV
-         rsBmXM8Ty2aATeiR7AoQU6QGu7rcAkD/6d6IFd8uK0bmIgPNQRT3rQDcXhsKXBKb5Z
-         4FPmp/BFIaPZBYqmDcDCvxw0YjkWrQ7cdxS8pOEA=
+        b=OIYvstmwNx1kNPOdEyX2LOHFK1s0y0y0SPeXjMrO2AZXk8kMGys5xpWqqKVgfRYKN
+         JBURXvQYmuOJ9+O1fh62BbpNrUW0T0jLyizT89dnT+t/oKXBLICz6/kFxe/fwfJnss
+         Cf7VkPZM+yy3BwJdU1k5p0ly0zMrts3n/vifD8xI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jonathan Bakker <xc-racer2@live.ca>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 159/206] phy: samsung: s5pv210-usb2: Add delay after reset
-Date:   Thu, 17 Sep 2020 22:07:15 -0400
-Message-Id: <20200918020802.2065198-159-sashal@kernel.org>
+Cc:     Tuong Lien <tuong.t.lien@dektech.com.au>,
+        Ying Xue <ying.xue@windriver.com>,
+        Jon Maloy <jmaloy@redhat.com>,
+        Thang Ngo <thang.h.ngo@dektech.com.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net
+Subject: [PATCH AUTOSEL 4.19 162/206] tipc: fix memory leak in service subscripting
+Date:   Thu, 17 Sep 2020 22:07:18 -0400
+Message-Id: <20200918020802.2065198-162-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
 References: <20200918020802.2065198-1-sashal@kernel.org>
@@ -42,41 +46,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Bakker <xc-racer2@live.ca>
+From: Tuong Lien <tuong.t.lien@dektech.com.au>
 
-[ Upstream commit 05942b8c36c7eb5d3fc5e375d4b0d0c49562e85d ]
+[ Upstream commit 0771d7df819284d46cf5cfb57698621b503ec17f ]
 
-The USB phy takes some time to reset, so make sure we give it to it. The
-delay length was taken from the 4x12 phy driver.
+Upon receipt of a service subscription request from user via a topology
+connection, one 'sub' object will be allocated in kernel, so it will be
+able to send an event of the service if any to the user correspondingly
+then. Also, in case of any failure, the connection will be shutdown and
+all the pertaining 'sub' objects will be freed.
 
-This manifested in issues with the DWC2 driver since commit fe369e1826b3
-("usb: dwc2: Make dwc2_readl/writel functions endianness-agnostic.")
-where the endianness check would read the DWC ID as 0 due to the phy still
-resetting, resulting in the wrong endian mode being chosen.
+However, there is a race condition as follows resulting in memory leak:
 
-Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>
-Link: https://lore.kernel.org/r/BN6PR04MB06605D52502816E500683553A3D10@BN6PR04MB0660.namprd04.prod.outlook.com
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+       receive-work       connection        send-work
+              |                |                |
+        sub-1 |<------//-------|                |
+        sub-2 |<------//-------|                |
+              |                |<---------------| evt for sub-x
+        sub-3 |<------//-------|                |
+              :                :                :
+              :                :                :
+              |       /--------|                |
+              |       |        * peer closed    |
+              |       |        |                |
+              |       |        |<-------X-------| evt for sub-y
+              |       |        |<===============|
+        sub-n |<------/        X    shutdown    |
+    -> orphan |                                 |
+
+That is, the 'receive-work' may get the last subscription request while
+the 'send-work' is shutting down the connection due to peer close.
+
+We had a 'lock' on the connection, so the two actions cannot be carried
+out simultaneously. If the last subscription is allocated e.g. 'sub-n',
+before the 'send-work' closes the connection, there will be no issue at
+all, the 'sub' objects will be freed. In contrast the last subscription
+will become orphan since the connection was closed, and we released all
+references.
+
+This commit fixes the issue by simply adding one test if the connection
+remains in 'connected' state right after we obtain the connection lock,
+then a subscription object can be created as usual, otherwise we ignore
+it.
+
+Acked-by: Ying Xue <ying.xue@windriver.com>
+Acked-by: Jon Maloy <jmaloy@redhat.com>
+Reported-by: Thang Ngo <thang.h.ngo@dektech.com.au>
+Signed-off-by: Tuong Lien <tuong.t.lien@dektech.com.au>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/phy/samsung/phy-s5pv210-usb2.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ net/tipc/topsrv.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/phy/samsung/phy-s5pv210-usb2.c b/drivers/phy/samsung/phy-s5pv210-usb2.c
-index f6f72339bbc32..bb7fdf491c1c2 100644
---- a/drivers/phy/samsung/phy-s5pv210-usb2.c
-+++ b/drivers/phy/samsung/phy-s5pv210-usb2.c
-@@ -142,6 +142,10 @@ static void s5pv210_phy_pwr(struct samsung_usb2_phy_instance *inst, bool on)
- 		udelay(10);
- 		rst &= ~rstbits;
- 		writel(rst, drv->reg_phy + S5PV210_UPHYRST);
-+		/* The following delay is necessary for the reset sequence to be
-+		 * completed
-+		 */
-+		udelay(80);
- 	} else {
- 		pwr = readl(drv->reg_phy + S5PV210_UPHYPWR);
- 		pwr |= phypwr;
+diff --git a/net/tipc/topsrv.c b/net/tipc/topsrv.c
+index 41f4464ac6cc5..ec9a7137d2677 100644
+--- a/net/tipc/topsrv.c
++++ b/net/tipc/topsrv.c
+@@ -407,7 +407,9 @@ static int tipc_conn_rcv_from_sock(struct tipc_conn *con)
+ 		return -EWOULDBLOCK;
+ 	if (ret == sizeof(s)) {
+ 		read_lock_bh(&sk->sk_callback_lock);
+-		ret = tipc_conn_rcv_sub(srv, con, &s);
++		/* RACE: the connection can be closed in the meantime */
++		if (likely(connected(con)))
++			ret = tipc_conn_rcv_sub(srv, con, &s);
+ 		read_unlock_bh(&sk->sk_callback_lock);
+ 		if (!ret)
+ 			return 0;
 -- 
 2.25.1
 
