@@ -2,112 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34674270227
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF9D27022A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726573AbgIRQ36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 12:29:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726473AbgIRQ3j (ORCPT
+        id S1726554AbgIRQ3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 12:29:55 -0400
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:53499 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726253AbgIRQ3i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 12:29:39 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD2B7C0613CE;
-        Fri, 18 Sep 2020 09:29:38 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id x23so5889499wmi.3;
-        Fri, 18 Sep 2020 09:29:38 -0700 (PDT)
+        Fri, 18 Sep 2020 12:29:38 -0400
+X-Greylist: delayed 325 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Sep 2020 12:29:36 EDT
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 13FFE822EC;
+        Fri, 18 Sep 2020 19:29:35 +0300 (MSK)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+ALrwdNETU2MxK86SGthSKgE8MUMcPyrI0lP0CVqjQI=;
-        b=Il95zl7ds9a5Wa/+A3ecWvYzrSZ+BLTqfj6ec6fYPbvqhhdmJVYxEZzqRc9s9v/yP2
-         4m4R4HC+r9fa7HBll/1tev5GP4Bjq/AaAPYaGzfbpTCEF7ibb/gsMgFbIbQ/WBJcC5ee
-         woI+46IAtNgGvB/Nj6BfLGomZmU5ngVz+pqPO02a1iVbRydvRydQqCj7Jby1G6R3yCb1
-         /WScm3GI19p5i0BhBzU7+4GN6PDp9B8Rm1iEcS6qckXfU6hf621shoGLV2zYv/gfIqS9
-         w3YMCAa/ZdDbPiPz957p3OFF83IzcNHRrAWKezqElxGFg5UDXiYgO3LlVaZ7iudwLXkO
-         MfvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+ALrwdNETU2MxK86SGthSKgE8MUMcPyrI0lP0CVqjQI=;
-        b=XbxGB2ilTCyB3uYiEGJLXI4UoavwEA7TvQMlfWhdXqw4/HPJY6YVPHFkgufJJzGqWl
-         2RX8PcHLWVqz4sG+jDUnjO/MCkWIInCbVyt0jXDiu/Fe3EarHpp89QRECdjshpMcTyJ7
-         5UTdgdFZtAhTjFlewRVNKQyibarpa1OamiGXZpCMuSoTAOXFvr2JkUWCWSnIxQ5VK5zw
-         dJcO82a8RIoAGEQHP56jldXyI7INXZ1y5Q7ESIZLOX1IH86b+pTKPRWLLeefz8Ec9nBK
-         caFgMDwdCixiVGZMSPBH8uj+Qhax2D2RRkqe9beNFQjWjgiGDxLzfd6iZFTrum6j2s2l
-         I0lA==
-X-Gm-Message-State: AOAM530AVTw5fcErBJ7pXzJHyFeUzr/3AZt8EGtCx4W+LkgTeKfW7oDW
-        dRvXc/vhZl9qqdGnpHJ3fiY=
-X-Google-Smtp-Source: ABdhPJwhMLFx/NFsWruwmp6xyVAv5jlnAK8e/0Ui5smBeskjIRpqc6rufsaW1nM9w8xzSUglIbmcnQ==
-X-Received: by 2002:a7b:cc8f:: with SMTP id p15mr16559476wma.18.1600446577309;
-        Fri, 18 Sep 2020 09:29:37 -0700 (PDT)
-Received: from Ansuel-XPS.localdomain (93-39-149-95.ip76.fastwebnet.it. [93.39.149.95])
-        by smtp.googlemail.com with ESMTPSA id b11sm6028921wrt.38.2020.09.18.09.29.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 09:29:36 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ath10k@lists.infradead.org
-Subject: [PATCH 2/2] dt: bindings: ath10k: Document qcom,ath10k-pre-calibration-data-mtd
-Date:   Fri, 18 Sep 2020 18:29:28 +0200
-Message-Id: <20200918162928.14335-2-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200918162928.14335-1-ansuelsmth@gmail.com>
-References: <20200918162928.14335-1-ansuelsmth@gmail.com>
+        d=paragon-software.com; s=mail; t=1600446575;
+        bh=3JQT+w9/Hsgc+km87u8z17muCt7VlyH5lVmvIBMEwMk=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=qusXzOEfnkBwmhOqSMWKkUHHm5C0fhsnDuHsMi0emaW72b662oBL2sXTF1dhnC/0+
+         NM3zIDsfH91GwrXZCXkfrsPVniCMl4R/rt5TyZNh7szKLmyCq4NQhrmDK9Am0jO9te
+         0/+Tbsb1TgDTrCmott5VLLoHHEqS7MEK3pa6jJe8=
+Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Fri, 18 Sep 2020 19:29:34 +0300
+Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
+ by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%6]) with mapi
+ id 15.01.1847.003; Fri, 18 Sep 2020 19:29:34 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     Joe Perches <joe@perches.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+CC:     "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "pali@kernel.org" <pali@kernel.org>,
+        "dsterba@suse.cz" <dsterba@suse.cz>,
+        "aaptel@suse.com" <aaptel@suse.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "mark@harmstone.com" <mark@harmstone.com>,
+        "nborisov@suse.com" <nborisov@suse.com>
+Subject: RE: [PATCH v5 03/10] fs/ntfs3: Add bitmap
+Thread-Topic: [PATCH v5 03/10] fs/ntfs3: Add bitmap
+Thread-Index: AQHWiEVLqTuLvbWOTEKMmELjfZa26KlmuM8AgAfn8LA=
+Date:   Fri, 18 Sep 2020 16:29:34 +0000
+Message-ID: <5b2fbfee0a9d4ee59c0e624844560413@paragon-software.com>
+References: <20200911141018.2457639-1-almaz.alexandrovich@paragon-software.com>
+         <20200911141018.2457639-4-almaz.alexandrovich@paragon-software.com>
+ <d1dc86f2792d3e64d1281fc2b5fddaca5fa17b5a.camel@perches.com>
+In-Reply-To: <d1dc86f2792d3e64d1281fc2b5fddaca5fa17b5a.camel@perches.com>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.30.8.36]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document use of qcom,ath10k-pre-calibration-data-mtd bindings used to
-define from where the driver will load the pre-cal data in the defined
-mtd partition.
-
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
----
- .../devicetree/bindings/net/wireless/qcom,ath10k.txt | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-index b61c2d5a0..568364243 100644
---- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-+++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-@@ -15,9 +15,9 @@ and also uses most of the properties defined in this doc (except
- "qcom,ath10k-calibration-data"). It uses "qcom,ath10k-pre-calibration-data"
- to carry pre calibration data.
- 
--In general, entry "qcom,ath10k-pre-calibration-data" and
--"qcom,ath10k-calibration-data" conflict with each other and only one
--can be provided per device.
-+In general, entry "qcom,ath10k-pre-calibration-data",
-+"qcom,ath10k-calibration-data-mtd" and "qcom,ath10k-calibration-data" conflict with
-+each other and only one can be provided per device.
- 
- SNOC based devices (i.e. wcn3990) uses compatible string "qcom,wcn3990-wifi".
- 
-@@ -63,6 +63,12 @@ Optional properties:
- 				 hw versions.
- - qcom,ath10k-pre-calibration-data : pre calibration data as an array,
- 				     the length can vary between hw versions.
-+- qcom,ath10k-pre-calibration-data-mtd :
-+	Usage: optional
-+	Value type: <phandle offset size>
-+	Definition: pre calibration data read from mtd partition. Take 3 value, the
-+		    mtd to read data from, the offset in the mtd partition and the
-+		    size of data to read.
- - <supply-name>-supply: handle to the regulator device tree node
- 			   optional "supply-name" are "vdd-0.8-cx-mx",
- 			   "vdd-1.8-xo", "vdd-1.3-rfa", "vdd-3.3-ch0",
--- 
-2.27.0
-
+RnJvbTogSm9lIFBlcmNoZXMgPGpvZUBwZXJjaGVzLmNvbT4NClNlbnQ6IFN1bmRheSwgU2VwdGVt
+YmVyIDEzLCAyMDIwIDk6NDQgUE0NCj4gDQo+IE9uIEZyaSwgMjAyMC0wOS0xMSBhdCAxNzoxMCAr
+MDMwMCwgS29uc3RhbnRpbiBLb21hcm92IHdyb3RlOg0KPiA+IFRoaXMgYWRkcyBiaXRtYXANCj4g
+DQo+ICQgbWFrZSBmcy9udGZzMy8NCj4gICBTWU5DICAgIGluY2x1ZGUvY29uZmlnL2F1dG8uY29u
+Zi5jbWQNCj4gICBDQUxMICAgIHNjcmlwdHMvY2hlY2tzeXNjYWxscy5zaA0KPiAgIENBTEwgICAg
+c2NyaXB0cy9hdG9taWMvY2hlY2stYXRvbWljcy5zaA0KPiAgIERFU0NFTkQgIG9ianRvb2wNCj4g
+ICBDQyAgICAgIGZzL250ZnMzL2JpdGZ1bmMubw0KPiAgIENDICAgICAgZnMvbnRmczMvYml0bWFw
+Lm8NCj4gZnMvbnRmczMvYml0bWFwLmM6IEluIGZ1bmN0aW9uIOKAmHduZF9yZXNjYW7igJk6DQo+
+IGZzL250ZnMzL2JpdG1hcC5jOjU1Njo0OiBlcnJvcjogaW1wbGljaXQgZGVjbGFyYXRpb24gb2Yg
+ZnVuY3Rpb24g4oCYcGFnZV9jYWNoZV9yZWFkYWhlYWRfdW5ib3VuZGVk4oCZOyBkaWQgeW91IG1l
+YW4NCj4g4oCYcGFnZV9jYWNoZV9yYV91bmJvdW5kZWTigJk/IFstV2Vycm9yPWltcGxpY2l0LWZ1
+bmN0aW9uLWRlY2xhcmF0aW9uXQ0KPiAgIDU1NiB8ICAgIHBhZ2VfY2FjaGVfcmVhZGFoZWFkX3Vu
+Ym91bmRlZCgNCj4gICAgICAgfCAgICBefn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn4NCj4g
+ICAgICAgfCAgICBwYWdlX2NhY2hlX3JhX3VuYm91bmRlZA0KPiBjYzE6IHNvbWUgd2FybmluZ3Mg
+YmVpbmcgdHJlYXRlZCBhcyBlcnJvcnMNCj4gbWFrZVsyXTogKioqIFtzY3JpcHRzL01ha2VmaWxl
+LmJ1aWxkOjI4MzogZnMvbnRmczMvYml0bWFwLm9dIEVycm9yIDENCj4gbWFrZVsxXTogKioqIFtz
+Y3JpcHRzL01ha2VmaWxlLmJ1aWxkOjUwMDogZnMvbnRmczNdIEVycm9yIDINCj4gbWFrZTogKioq
+IFtNYWtlZmlsZToxNzkyOiBmc10gRXJyb3IgMg0KPiANCkhpIEpvZSEgRG9lc24ndCBzZWVtIHRv
+IGJlIGFuIGlzc3VlIGZvciA1LjlfcmM1LiBXaGljaCByZXBvIHNob3VsZCd2ZQ0KYmVlbiB1c2Vk
+IHRvIHJlcHJvZHVjZT8NCg0KVGhhbmtzLg0K
