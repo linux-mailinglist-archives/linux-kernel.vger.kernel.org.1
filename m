@@ -2,92 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 236B926F83E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB3C426F847
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726245AbgIRIbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 04:31:17 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:32840 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726552AbgIRIbC (ORCPT
+        id S1726700AbgIRIbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 04:31:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726688AbgIRIba (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 04:31:02 -0400
-Date:   Fri, 18 Sep 2020 08:30:59 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600417860;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5/lIViaoHLNUxC0C4//BMN+h9Q6KReEAfsk7sUvBHgc=;
-        b=jHBSvPZzDbjJxLOLBASg8kXYDkXAFWxjEnCh43+tiy65Z9Dqocsvli/lGDVXqliDoHP67X
-        fLLcCKf3FqKv1m+xTPnwZs4uLyB6kwZwrFg/HIv5IPV8UrmNiu1+33pzGLzoEiX1wpglLO
-        Y8F5A5Bj+CRypFjuGKkI76mMFDxSTLh7vroXkZx7e25Avz/Af8hsqGD09JT0j93a8eSVx9
-        MFvn0QGTGp7CvpnKAcuqWE5mCrM3WyZF2Tj/7tX5kE10skn61BTIEWJ3kV2tBrKOwXmi/F
-        Vl7hJrYr2V/qK7VN40DjRoyW4oEd3CAT+bqUCu7IJElUbptRE5IY85e9tUJApw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600417860;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5/lIViaoHLNUxC0C4//BMN+h9Q6KReEAfsk7sUvBHgc=;
-        b=YRbDE3xJkaHKT/oQueyzgPQyCYTbd7pI6djw/VMvXeOgESzhTZgYlSfPpvVSdGNQYwvWhv
-        JFgC912Lv4X3WBAg==
-From:   "tip-bot2 for Atish Patra" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: efi/core] include: pe.h: Add RISC-V related PE definition
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200415195422.19866-3-atish.patra@wdc.com>
-References: <20200415195422.19866-3-atish.patra@wdc.com>
+        Fri, 18 Sep 2020 04:31:30 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD3B5C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 01:31:29 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id k13so2475752pfg.1
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 01:31:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7g3/3HRNTSbPMO+XtztpkLjskFShJd05xhi/n73t2b4=;
+        b=J3Jq/M3KnJTcWXxQ/OmDCmtw9TKMVom83ObJCwfMadXSAPRuA4l/Jm2QB0eR4ojdNs
+         fPQo5XjYTFreg2ms90MvHm4DvWmPFmn67LMERc9pHP3vJ0cCl4LLTglj56jPBMAbtfpq
+         rB5yxrY/2z7aI/sV6h7qHpU7ZHO+WQxXuMtTM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7g3/3HRNTSbPMO+XtztpkLjskFShJd05xhi/n73t2b4=;
+        b=S9UB2G66F2YCKNJIEHr3Kcxu/YAShPzoJoFVgDXt+jKjEaKRSe6MqsbE9uSkQrJ4RH
+         l0gZevXf2ZguiuqA2O+mnfTZqXGnjD1gl6ptUBUJ2Cg+/DRLL/dZgV5t7HJkie78TiNN
+         XiKtFTSo3/kJ48Phcmr173QSMpXZiM1FhgellY4O5F4ZzVO7njf83170aaA7IjJc5H0W
+         eW1GjEqrzpOVQm53E7LXQURetbzMf1o0TZQP0Gs1TkMfGLrrTEG2QLJuh9E4mZCDmr3P
+         Vwaer1K0goi4phCH7oG183akOMozwD9JukTQ5rmEWUVjkSRBycTyarxUNe98utqL0tnn
+         MUOw==
+X-Gm-Message-State: AOAM532gefkmnuGWtLY2wCqLbrZZTOurulIOJCd1fZThVQDZZG6rXoh7
+        9mgUl+H1eBOtT4KDye/GlcTqog==
+X-Google-Smtp-Source: ABdhPJyo5ajOR3Sys6kLV1edGsPyxX+u0k7ZFoM2H/iELQtDmH1lb8MEP86ne6oEPQdxsCBI364jDQ==
+X-Received: by 2002:a62:3585:0:b029:142:2501:3985 with SMTP id c127-20020a6235850000b029014225013985mr15239835pfa.74.1600417889074;
+        Fri, 18 Sep 2020 01:31:29 -0700 (PDT)
+Received: from ikjn-p920.tpe.corp.google.com ([2401:fa00:1:10:f693:9fff:fef4:a8fc])
+        by smtp.gmail.com with ESMTPSA id g206sm2193172pfb.178.2020.09.18.01.31.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 01:31:28 -0700 (PDT)
+From:   Ikjoon Jang <ikjn@chromium.org>
+To:     Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
+        devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-mtd@lists.infradead.org
+Cc:     Ikjoon Jang <ikjn@chromium.org>,
+        Bayi Cheng <bayi.cheng@mediatek.com>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH v2 0/5] spi: spi-mtk-nor: Add mt8192 support.
+Date:   Fri, 18 Sep 2020 16:31:18 +0800
+Message-Id: <20200918083124.3921207-1-ikjn@chromium.org>
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
 MIME-Version: 1.0
-Message-ID: <160041785944.15536.6458913813753159065.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the efi/core branch of tip:
+This patchset adds 36bit dma address and power management
+supports for mt8192-nor.
 
-Commit-ID:     6d0fd536183034953bf84826fecb37e47779d24b
-Gitweb:        https://git.kernel.org/tip/6d0fd536183034953bf84826fecb37e47779d24b
-Author:        Atish Patra <atish.patra@wdc.com>
-AuthorDate:    Fri, 28 Aug 2020 10:20:31 -07:00
-Committer:     Ard Biesheuvel <ardb@kernel.org>
-CommitterDate: Fri, 11 Sep 2020 09:30:01 +03:00
+Changes in v2:
+- Add power management support
+- Fix bugs in checking spi memory operation.
+- use dma_alloc_coherent for allocating bounce buffer
+- code cleanups
 
-include: pe.h: Add RISC-V related PE definition
+Ikjoon Jang (5):
+  dt-bindings: spi: add mt8192-nor compatible string
+  spi: spi-mtk-nor: fix mishandled logics in checking SPI memory
+    operation
+  spi: spi-mtk-nor: use dma_alloc_coherent() for bounce buffer
+  spi: spi-mtk-nor: support 36bit dma addressing to mediatek
+  spi: spi-mtk-nor: Add power management support
 
-Define RISC-V related machine types.
+ .../bindings/spi/mediatek,spi-mtk-nor.yaml    |   1 +
+ drivers/spi/spi-mtk-nor.c                     | 242 ++++++++++++------
+ 2 files changed, 170 insertions(+), 73 deletions(-)
 
-Signed-off-by: Atish Patra <atish.patra@wdc.com>
-Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-Link: https://lore.kernel.org/r/20200415195422.19866-3-atish.patra@wdc.com
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- include/linux/pe.h | 3 +++
- 1 file changed, 3 insertions(+)
+-- 
+2.28.0.681.g6f77f65b4e-goog
 
-diff --git a/include/linux/pe.h b/include/linux/pe.h
-index 8ad71d7..daf09ff 100644
---- a/include/linux/pe.h
-+++ b/include/linux/pe.h
-@@ -55,6 +55,9 @@
- #define	IMAGE_FILE_MACHINE_POWERPC	0x01f0
- #define	IMAGE_FILE_MACHINE_POWERPCFP	0x01f1
- #define	IMAGE_FILE_MACHINE_R4000	0x0166
-+#define	IMAGE_FILE_MACHINE_RISCV32	0x5032
-+#define	IMAGE_FILE_MACHINE_RISCV64	0x5064
-+#define	IMAGE_FILE_MACHINE_RISCV128	0x5128
- #define	IMAGE_FILE_MACHINE_SH3		0x01a2
- #define	IMAGE_FILE_MACHINE_SH3DSP	0x01a3
- #define	IMAGE_FILE_MACHINE_SH3E		0x01a4
