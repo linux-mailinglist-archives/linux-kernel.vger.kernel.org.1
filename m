@@ -2,166 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D3752701DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:16:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3DF27020D
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726369AbgIRQPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 12:15:22 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:55237 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726307AbgIRQN5 (ORCPT
+        id S1726376AbgIRQZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 12:25:45 -0400
+Received: from mx0b-00010702.pphosted.com ([148.163.158.57]:54744 "EHLO
+        mx0b-00010702.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726115AbgIRQZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 12:13:57 -0400
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from moshe@mellanox.com)
-        with SMTP; 18 Sep 2020 19:07:12 +0300
-Received: from dev-l-vrt-135.mtl.labs.mlnx (dev-l-vrt-135.mtl.labs.mlnx [10.234.135.1])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 08IG7C1i025171;
-        Fri, 18 Sep 2020 19:07:12 +0300
-Received: from dev-l-vrt-135.mtl.labs.mlnx (localhost [127.0.0.1])
-        by dev-l-vrt-135.mtl.labs.mlnx (8.15.2/8.15.2/Debian-10) with ESMTP id 08IG7CbD031177;
-        Fri, 18 Sep 2020 19:07:12 +0300
-Received: (from moshe@localhost)
-        by dev-l-vrt-135.mtl.labs.mlnx (8.15.2/8.15.2/Submit) id 08IG7Ca0031176;
-        Fri, 18 Sep 2020 19:07:12 +0300
-From:   Moshe Shemesh <moshe@mellanox.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Moshe Shemesh <moshe@mellanox.com>
-Subject: [PATCH net-next RFC v5 15/15] devlink: Add Documentation/networking/devlink/devlink-reload.rst
-Date:   Fri, 18 Sep 2020 19:06:51 +0300
-Message-Id: <1600445211-31078-16-git-send-email-moshe@mellanox.com>
-X-Mailer: git-send-email 1.8.4.3
-In-Reply-To: <1600445211-31078-1-git-send-email-moshe@mellanox.com>
-References: <1600445211-31078-1-git-send-email-moshe@mellanox.com>
+        Fri, 18 Sep 2020 12:25:44 -0400
+X-Greylist: delayed 1265 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Sep 2020 12:25:43 EDT
+Received: from pps.filterd (m0098778.ppops.net [127.0.0.1])
+        by mx0b-00010702.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 08IG4dCW002298;
+        Fri, 18 Sep 2020 11:07:30 -0500
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2170.outbound.protection.outlook.com [104.47.55.170])
+        by mx0b-00010702.pphosted.com with ESMTP id 33k5nasgh0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Sep 2020 11:07:29 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LMXdgn/LAY7fTnDkf1bz2Q7mzWW2ruuSWcz25NoqIaseqrjPMtK34v6rBcvzsGwz0DDcEepiFE1kos4pViRW8NJ8ppmOWN40DU4Eqh41tdYHtg1BoU2K2Stbx4/HYR/jaqwKcP7Dzqgb4i2FhP6dQOQktD87dvqB9tLTDwiHGC0eWdticFsooU2fZjLBUzl3Jt+Gg7BFsI10ObsR6ag9GZbcuWhZugY01lQXxsMqqiz4l02+xkTz5gMdoMKrVUHLoxbqTcsTlBmw4MBplFz3zYidkXUYlzuHcFHKY0xTMRbw7Tec0y4XDnFU2zPa5T/mBKbFwh7g0KqomzfqCTVEyA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h2H3t61ZbGkKEw0Ho5AxZ1vsD/qKCltAUtrSbl7W50o=;
+ b=F3rXFMfS4ptiA6wUPpvH7PqJg46H4074BP21HKoKYhdfxhYr5Um9gjvU6eOqiNhbolwMtT3nqZngh/r2icRFetLLhI4UFuA8gjpv8EGuPIzr6uSDS/lX+6W/CCvloft/2AMEj3YstGXbcUleLSH9S1Z4PyTt7YKbLr7K6z3X1FfzGE7YzvrOI4AVe1NxeqfblkLw2D7EqdVYPJeOTnRhcybScVs7b+RSIa7tpLyAT8JWb7a7/1GuSRI0ceOlqEGVJp0BvPbyT8+QGsiCOfCszfUI9vAMxxkdt6cB6dfZdAIVRKZdsaHZWRtoOqxmP79QPFE53XO19sXKazqvUKGecQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=ni.com; dmarc=pass action=none header.from=ni.com; dkim=pass
+ header.d=ni.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=nio365.onmicrosoft.com; s=selector2-nio365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h2H3t61ZbGkKEw0Ho5AxZ1vsD/qKCltAUtrSbl7W50o=;
+ b=OMzh0QSFvGXCDxtO6IATF+dkJ/LRzJXxkRyOtfL/3hn2Umeu98s+I5HMKfgJ6iAReTU7zFrXiKOVda+Ji5kfZymECqnmfijzyZMqUmCKfBIfs4VlSwDAKp13qvCKwNpBepoj1n9/YZSpD8BZ7HX0tvpE3m8BxmcCvM8qO35O9NA=
+Authentication-Results: xilinx.com; dkim=none (message not signed)
+ header.d=none;xilinx.com; dmarc=none action=none header.from=ni.com;
+Received: from DM5PR0401MB3639.namprd04.prod.outlook.com (2603:10b6:4:77::34)
+ by DM6PR04MB5243.namprd04.prod.outlook.com (2603:10b6:5:10f::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.17; Fri, 18 Sep
+ 2020 16:07:28 +0000
+Received: from DM5PR0401MB3639.namprd04.prod.outlook.com
+ ([fe80::d98c:c98a:dd45:36c3]) by DM5PR0401MB3639.namprd04.prod.outlook.com
+ ([fe80::d98c:c98a:dd45:36c3%6]) with mapi id 15.20.3391.014; Fri, 18 Sep 2020
+ 16:07:28 +0000
+Date:   Fri, 18 Sep 2020 11:07:21 -0500
+From:   Michael Auchter <michael.auchter@ni.com>
+To:     Ben Levinsky <BLEVINSK@xilinx.com>
+Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Message-ID: <20200918160721.GD15530@xaphan>
+References: <20200917194341.16272-1-ben.levinsky@xilinx.com>
+ <20200917194341.16272-6-ben.levinsky@xilinx.com>
+ <20200917221120.GA15530@xaphan>
+ <BYAPR02MB44073E7A3BEA401FF4684E95B53E0@BYAPR02MB4407.namprd02.prod.outlook.com>
+ <BYAPR02MB4407A552ECBA907DFC3CEC91B53E0@BYAPR02MB4407.namprd02.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BYAPR02MB4407A552ECBA907DFC3CEC91B53E0@BYAPR02MB4407.namprd02.prod.outlook.com>
+X-ClientProxiedBy: SN4PR0801CA0021.namprd08.prod.outlook.com
+ (2603:10b6:803:29::31) To DM5PR0401MB3639.namprd04.prod.outlook.com
+ (2603:10b6:4:77::34)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (2605:a601:ab6f:2000:2739:a39e:9b12:ab20) by SN4PR0801CA0021.namprd08.prod.outlook.com (2603:10b6:803:29::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.15 via Frontend Transport; Fri, 18 Sep 2020 16:07:27 +0000
+X-Originating-IP: [2605:a601:ab6f:2000:2739:a39e:9b12:ab20]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1a3b29aa-3d52-4262-5241-08d85becf083
+X-MS-TrafficTypeDiagnostic: DM6PR04MB5243:
+X-Microsoft-Antispam-PRVS: <DM6PR04MB5243B35E2A0539A17E4B03CF873F0@DM6PR04MB5243.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jvZFBGFEMrMBnnh86zJ5TWL4qVajLKV84g/vLB2xKZz9LjA5c6OmLe0muHcnG2GCCc4+vT1asXH59dyTwKAjCpRV+46P85tkrEgO38ZV+jSTTV/x0LSNurDkjVLn0+bfJtMG7pWtyil8uZrJGsZ4rf5g+Ag3Za1GfbRx2SdFbgPFn8JCILRBwa+JpBjeU8GQYJPxPFguq3TNMvkS+RzAh4YQdtAPCqOtr8femNO15wm1/EjRl9/6d/G0pvUkveL2bgJTDnBP+6aok9q3ZY+PrZIeVc9dQZO2E1vp6nI7x4ICJC6NTpThZYiQQVzGNfcHztP2jyyTFPMVBdpzUDXvfg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0401MB3639.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(346002)(396003)(39860400002)(366004)(136003)(376002)(5660300002)(6666004)(316002)(86362001)(66476007)(33656002)(66946007)(1076003)(66556008)(8676002)(44832011)(2906002)(8936002)(33716001)(54906003)(16526019)(186003)(9686003)(4744005)(6916009)(6496006)(4326008)(6486002)(52116002)(478600001)(83380400001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: 2/Ulg79XaIj9SR0buic+v9Cv+mcer3/fKXbG4Jy12THKHE0evKhwVHDP9ngXZr+e8dciSFDwGSdixv50p+QzJgnP5I8+EKjBH5/f9KnBPe4ZWEN7kTNSO08eVSG4frhh3Q9EkclEq7C+CnhNdoRfvxJSBheX8J0VzaIz6mGj7ZlO174kOSs6xcmOpusinJAxBQsLNYxPaHEh839NRNi4xAQWUivh+WeGmym0GxYlpZbTe5DbMupRZnlGw0IIrs5nEQ9v9lLRo2SBnbxyO23mD3LyM2XiZwd3bO40S8cdyYcnlanEa51I043cOwn2M+SofRWeCoAvX2yJEWS0ITV4VaNXDIfoauyEe6n3iadQt1s0wpXMU3wEzQzvyLq+3BNVtHGpBqbrbd4OfUrmFRfY2F22SEkCOw5sODpOxeUNBwGsaVufKxU77/rmI5iZnGcnlfIT4FhXjFBK+yZtCRHHH1JSUb59u7q+eolymBfJq1C/mj3elSVl4E3q32dsmMY+Z1LpXrdZzaNi6Ddha7d7C0P5rUiUxczmjrz1vgZ/wIPKRqv+3HakaRbcM/sveohHAUaDwqynQI2CbOyj/S1bsbu5Y0g4K6RFSTLWF5Ymro6jBg5cvvByBMpzXvNovEZ6ZqUhMzzDdHmL0Md8W5R2dgKyN0H3m7NSmOi0WRA2R4KnjRb/cZ4Mic/zdOdDI1RNq0m0SSFxpS6YM+6AOsPVQw==
+X-OriginatorOrg: ni.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1a3b29aa-3d52-4262-5241-08d85becf083
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR0401MB3639.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2020 16:07:28.0581
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 87ba1f9a-44cd-43a6-b008-6fdb45a5204e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: SP8IWcQrt4HA9OlOykEaahzEtX8oKYicxEuVsznqX3hTFlxTcLxMWDdIjtWjJMKuZIFR0m1tTIr0HvrbZeoEtA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB5243
+Subject: Re: RE: [PATCH v14 5/5] remoteproc: Add initial zynqmp R5 remoteproc driver
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-18_15:2020-09-16,2020-09-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_policy_notspam policy=outbound_policy score=30
+ priorityscore=1501 lowpriorityscore=0 mlxscore=0 bulkscore=0 spamscore=0
+ impostorscore=0 adultscore=0 malwarescore=0 suspectscore=1 clxscore=1015
+ mlxlogscore=999 phishscore=0 classifier=spam adjust=30 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2009180130
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add devlink reload rst documentation file.
-Update index file to include it.
+On Thu, Sep 17, 2020 at 10:50:42PM +0000, Ben Levinsky wrote:
+> In addition to device tree, is there particular linker script you use
+> for your R5 application? For example with OCM? As presently this
+> driver only has DDR and TCM as supported regions to load into 
 
-Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
----
-v4 -> v5:
-- Rephrase namespace chnage section
-- Rephrase note on actions performed
-v3 -> v4:
-- Remove reload action fw_activate_no_reset
-- Add reload actions limit levels and document the no_reset limit level
-  constrains
-v2 -> v3:
-- Devlink reload returns the actions done
-- Replace fw_live_patch action by fw_activate_no_reset
-- Explain fw_activate meaning
-v1 -> v2:
-- Instead of reload levels driver,fw_reset,fw_live_patch have reload
-  actions driver_reinit,fw_activate,fw_live_patch
----
- .../networking/devlink/devlink-reload.rst     | 79 +++++++++++++++++++
- Documentation/networking/devlink/index.rst    |  1 +
- 2 files changed, 80 insertions(+)
- create mode 100644 Documentation/networking/devlink/devlink-reload.rst
+The firmware is being loaded to TCM.
 
-diff --git a/Documentation/networking/devlink/devlink-reload.rst b/Documentation/networking/devlink/devlink-reload.rst
-new file mode 100644
-index 000000000000..ffc72c0f635f
---- /dev/null
-+++ b/Documentation/networking/devlink/devlink-reload.rst
-@@ -0,0 +1,79 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+==============
-+Devlink Reload
-+==============
-+
-+``devlink-reload`` provides mechanism to either reinit driver entities,
-+applying ``devlink-params`` and ``devlink-resources`` new values or firmware
-+activation depends on reload action selected.
-+
-+Reload actions
-+==============
-+
-+User may select a reload action.
-+By default ``driver_reinit`` action is selected.
-+
-+.. list-table:: Possible reload actions
-+   :widths: 5 90
-+
-+   * - Name
-+     - Description
-+   * - ``driver-reinit``
-+     - Devlink driver entities re-initialization, including applying
-+       new values to devlink entities which are used during driver
-+       load such as ``devlink-params`` in configuration mode
-+       ``driverinit`` or ``devlink-resources``
-+   * - ``fw_activate``
-+     - Firmware activate. Activates new firmware if such image is stored and
-+       pending activation. This action involves firmware reset, if no new image
-+       pending this action will reload current firmware image.
-+
-+Note that even though user asks for a specific action, the driver
-+implementation might require to perform another action alongside with
-+it. For example, some driver do not support driver reinitialization
-+being performed without fw activation. Therefore, the devlink reload
-+command return the list of actions which were actrually performed.
-+
-+Reload action limit levels
-+==========================
-+
-+By default reload actions are not limited and driver implementation may
-+include reset or downtime as needed to perform the actions.
-+
-+However, some drivers support action limit levels, which limits the action
-+implementation to specific constrains.
-+
-+.. list-table:: Possible reload action limit levels
-+   :widths: 5 90
-+
-+   * - Name
-+     - Description
-+   * - ``no_reset``
-+     - No reset allowed, no down time allowed, no link flap and no
-+       configuration is lost.
-+
-+Change namespace
-+================
-+
-+The netns option allow user to be able to move devlink instances into
-+namespaces during devlink reload operation.
-+By default all devlink instances are created in init_net and stay there.
-+
-+example usage
-+-------------
-+
-+.. code:: shell
-+
-+    $ devlink dev reload help
-+    $ devlink dev reload DEV [ netns { PID | NAME | ID } ] [ action { driver_reinit | fw_activate } ] [limit_level no_reset]
-+
-+    # Run reload command for devlink driver entities re-initialization:
-+    $ devlink dev reload pci/0000:82:00.0 action driver_reinit
-+    reload_actions_performed:
-+      driver_reinit
-+
-+    # Run reload command to activate firmware:
-+    # Note that mlx5 driver reloads the driver while activating firmware
-+    $ devlink dev reload pci/0000:82:00.0 action fw_activate
-+    reload_actions_performed:
-+      driver_reinit fw_activate
-diff --git a/Documentation/networking/devlink/index.rst b/Documentation/networking/devlink/index.rst
-index 7684ae5c4a4a..d82874760ae2 100644
---- a/Documentation/networking/devlink/index.rst
-+++ b/Documentation/networking/devlink/index.rst
-@@ -20,6 +20,7 @@ general.
-    devlink-params
-    devlink-region
-    devlink-resource
-+   devlink-reload
-    devlink-trap
- 
- Driver-specific documentation
--- 
-2.17.1
+I'm able to use this driver to load and run my firmware on both R5
+cores, but only after I change the incorrect:
+
+	rpu_mode = lockstep_mode
+
+assignment to:
+
+	rpu_mode = lockstep_mode ? PM_RPU_MODE_LOCKSTEP
+				 : PM_RPU_MODE_SPLIT;
 
