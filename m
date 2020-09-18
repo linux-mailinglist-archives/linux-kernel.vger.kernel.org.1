@@ -2,147 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35B4E26F9E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 12:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 961DE26F9E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 12:07:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726544AbgIRKFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 06:05:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46185 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725874AbgIRKFv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 06:05:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600423549;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WkpClEmXxT84vDpjsqvB+DVNHu1sfbMIG8xOfJiWTAw=;
-        b=Jm8CClHRXErCdm8OJgF0D2EuboYXFOZ+CcqyWJdEOPqgkm4pVDV+1rjzFG6S6oQRvWhSDA
-        xRdkiF6WX6EqtY6hZL05mFLvKT2UMB6fm8DDsOzhNyvyXL0wB7WFNg1dGwm1OCOohB3jg3
-        TU5J4ygYGficVlFwVGP/7b3D3JGQD3Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-379-pG7bMC-GPxaN-W1VdCndGg-1; Fri, 18 Sep 2020 06:05:47 -0400
-X-MC-Unique: pG7bMC-GPxaN-W1VdCndGg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726617AbgIRKGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 06:06:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51190 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726009AbgIRKGs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 06:06:48 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6FA621891E81;
-        Fri, 18 Sep 2020 10:05:45 +0000 (UTC)
-Received: from krava (ovpn-114-24.ams2.redhat.com [10.36.114.24])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 5A90D55771;
-        Fri, 18 Sep 2020 10:05:43 +0000 (UTC)
-Date:   Fri, 18 Sep 2020 12:05:42 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Seth Forshee <seth.forshee@canonical.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: resolve_btfids breaks kernel cross-compilation
-Message-ID: <20200918100542.GD2514666@krava>
-References: <20200916194733.GA4820@ubuntu-x1>
- <20200917080452.GB2411168@krava>
- <20200917083809.GE2411168@krava>
- <20200917091406.GF2411168@krava>
- <20200917125450.GC4820@ubuntu-x1>
+        by mail.kernel.org (Postfix) with ESMTPSA id 278E1208B8;
+        Fri, 18 Sep 2020 10:06:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600423607;
+        bh=V1UR/oMfYclAQFVbLCQej+74LjNSUS6YHHIZUTJOjvQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kJOegUPRHafH1Q8GTSSJwmwNgPiPKBaaXPF3RUU6RQj7JIWS+jXfLkRVaNjQBHp55
+         6SsbYecbaeXFn5DMNW+kKT0pFn5iQAY2pxoF0W+l3I1vCcYjGrie/GkHXukEk1nn5z
+         dtRh/A536DgIlixmtv5NI8XjoGDG3PCbjBeB/gS4=
+Date:   Fri, 18 Sep 2020 11:05:57 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Shane Chien <shane.chien@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        devicetree@vger.kernel.org, wsd_upstream@mediatek.com,
+        jiaxin.yu@mediatek.com, eason.yen@mediatek.com
+Subject: Re: [PATCH 0/1] Use memset_io to access I/O memory
+Message-ID: <20200918100557.GC5703@sirena.org.uk>
+References: <1600423219-29058-1-git-send-email-shane.chien@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="s9fJI615cBHmzTOP"
 Content-Disposition: inline
-In-Reply-To: <20200917125450.GC4820@ubuntu-x1>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <1600423219-29058-1-git-send-email-shane.chien@mediatek.com>
+X-Cookie: Beware of geeks bearing graft.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 07:54:50AM -0500, Seth Forshee wrote:
-> On Thu, Sep 17, 2020 at 11:14:06AM +0200, Jiri Olsa wrote:
-> > On Thu, Sep 17, 2020 at 10:38:12AM +0200, Jiri Olsa wrote:
-> > > On Thu, Sep 17, 2020 at 10:04:55AM +0200, Jiri Olsa wrote:
-> > > > On Wed, Sep 16, 2020 at 02:47:33PM -0500, Seth Forshee wrote:
-> > > > > The requirement to build resolve_btfids whenever CONFIG_DEBUG_INFO_BTF
-> > > > > is enabled breaks some cross builds. For example, when building a 64-bit
-> > > > > powerpc kernel on amd64 I get:
-> > > > > 
-> > > > >  Auto-detecting system features:
-> > > > >  ...                        libelf: [ [32mon[m  ]
-> > > > >  ...                          zlib: [ [32mon[m  ]
-> > > > >  ...                           bpf: [ [31mOFF[m ]
-> > > > >  
-> > > > >  BPF API too old
-> > > > >  make[6]: *** [Makefile:295: bpfdep] Error 1
-> > > > > 
-> > > > > The contents of tools/bpf/resolve_btfids/feature/test-bpf.make.output:
-> > > > > 
-> > > > >  In file included from /home/sforshee/src/u-k/unstable/tools/arch/powerpc/include/uapi/asm/bitsperlong.h:11,
-> > > > >                   from /usr/include/asm-generic/int-ll64.h:12,
-> > > > >                   from /usr/include/asm-generic/types.h:7,
-> > > > >                   from /usr/include/x86_64-linux-gnu/asm/types.h:1,
-> > > > >                   from /home/sforshee/src/u-k/unstable/tools/include/linux/types.h:10,
-> > > > >                   from /home/sforshee/src/u-k/unstable/tools/include/uapi/linux/bpf.h:11,
-> > > > >                   from test-bpf.c:3:
-> > > > >  /home/sforshee/src/u-k/unstable/tools/include/asm-generic/bitsperlong.h:14:2: error: #error Inconsistent word size. Check asm/bitsperlong.h
-> > > > >     14 | #error Inconsistent word size. Check asm/bitsperlong.h
-> > > > >        |  ^~~~~
-> > > > > 
-> > > > > This is because tools/arch/powerpc/include/uapi/asm/bitsperlong.h sets
-> > > > > __BITS_PER_LONG based on the predefinied compiler macro __powerpc64__,
-> > > > > which is not defined by the host compiler. What can we do to get cross
-> > > > > builds working again?
-> > > > 
-> > > > could you please share the command line and setup?
-> > > 
-> > > I just reproduced.. checking on fix
-> > 
-> > I still need to check on few things, but patch below should help
-> 
-> It does help with the word size problem, thanks.
-> 
-> > we might have a problem for cross builds with different endianity
-> > than the host because libbpf does not support reading BTF data
-> > with different endianity, and we get:
-> > 
-> >   BTFIDS  vmlinux
-> > libbpf: non-native ELF endianness is not supported
-> 
-> Yes, I see this now when cross building for s390.
 
-Andrii,
-I read you might be already working on this?
-  https://lore.kernel.org/bpf/CAEf4Bza9tZ-Jj0dj9Ne0fmxa95t=9XxxJR+Ce=6hDmw_d8uVFA@mail.gmail.com/
+--s9fJI615cBHmzTOP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-thanks,
-jirka
+On Fri, Sep 18, 2020 at 06:00:18PM +0800, Shane Chien wrote:
+> From: "Shane.Chien" <shane.chien@mediatek.com>
+>=20
+> Use memset_io to access I/O memory, instead of
+> memset.
 
-> 
-> Thanks,
-> Seth
-> 
-> > 
-> > jirka
-> > 
-> > 
-> > ---
-> > diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
-> > index a88cd4426398..d3c818b8d8d3 100644
-> > --- a/tools/bpf/resolve_btfids/Makefile
-> > +++ b/tools/bpf/resolve_btfids/Makefile
-> > @@ -1,5 +1,6 @@
-> >  # SPDX-License-Identifier: GPL-2.0-only
-> >  include ../../scripts/Makefile.include
-> > +include ../../scripts/Makefile.arch
-> >  
-> >  ifeq ($(srctree),)
-> >  srctree := $(patsubst %/,%,$(dir $(CURDIR)))
-> > @@ -29,6 +30,7 @@ endif
-> >  AR       = $(HOSTAR)
-> >  CC       = $(HOSTCC)
-> >  LD       = $(HOSTLD)
-> > +ARCH     = $(HOSTARCH)
-> >  
-> >  OUTPUT ?= $(srctree)/tools/bpf/resolve_btfids/
-> >  
-> > 
-> 
+Please don't send cover letters for single patches, if there is anything
+that needs saying put it in the changelog of the patch or after the ---
+if it's administrative stuff.  This reduces mail volume and ensures that=20
+any important information is recorded in the changelog rather than being
+lost.=20
 
+--s9fJI615cBHmzTOP
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9khoQACgkQJNaLcl1U
+h9DtOwf/WTTtgps3JFXuBDzVizur5HrnD6gYOcj1TkF0zTEjc6nIYk1whl18GX2U
+VAwmX8EzHwafKucWuQDRbB0bYN6Zrlo1Lm9OCJAUaAHgKeajlo1DcT2Jgryo9IGK
+Dn3V8g736VJNJhxhc7yFwS+lEaKhHceVtFbjyDH9zYeD9B4zOc6E1pHHIJGEGNPb
++ebRwCOPzRJGb0St9GqtFEwaTLc8KWxNSDGt7BzQWpx6X82QcxO5JfQEPrwxFhGH
+E2JPvzmisE3hNtY6Sb54Wq6tNoulmC9X6QKALIPD/6v3OIEePwzQSlNRI8qNegSM
+uAXb3kdPY/j1FQbnVXl4RidsWKoSiw==
+=1WN4
+-----END PGP SIGNATURE-----
+
+--s9fJI615cBHmzTOP--
