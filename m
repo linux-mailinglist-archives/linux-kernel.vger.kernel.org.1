@@ -2,103 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0DB2702AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ACEE2702B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726157AbgIRQzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 12:55:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726044AbgIRQzF (ORCPT
+        id S1726361AbgIRQzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 12:55:40 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:50760 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726044AbgIRQzj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 12:55:05 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E10BC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 09:55:04 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id n13so6683515edo.10
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 09:55:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yxwRMmZAvscI9qLISrOKxKWDWXBsK0Qiq++otHhpMpM=;
-        b=vW9xAgzLdO0QTngXP251avBoOv0g0D8jITnPZCJ5/Gugk+FHUHF/kvs6N/4BGb4yRp
-         kwWQrpEvWarWlY6oGD1By4fOTSpcnfY6T5RGy1jX3cdIMv/EEDhvGn5NMNtptRwMLdk9
-         TeIAV3rz/9S3/Lu+cwsk0KqQ/wvILgP0cetKg5Ci454hEpq8RvIg4WXN774E5PSIoMHa
-         DsJC9VcCZV4SAA+etDYxCrS/HmvNAGtSF0KuTLpB/dl9CdoduF6NOwxzGVgG6ZJCJvpV
-         bIXTRwy1i/WvQl4YY+EbOK5NGuWUtetdeY9jGfArhxhr2VbmzVU9ho3TRx2nE6NTGkEk
-         2xTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yxwRMmZAvscI9qLISrOKxKWDWXBsK0Qiq++otHhpMpM=;
-        b=BFDldmeDO6+kM9pg4w4GrcL/6o+OGHoXENrL9rfZcSoO0KUmy4K/TpWUnmISVi2Wug
-         1ZecypM8C6cOjPlpqjjK/jeffd+QKkXiyp4MX0wtb71HEoJMvCC2bJs7Nt7WLGjBCV8a
-         xatDDKcSxk6iYKDgTMAcFOnHrNKGUlyN56+GjtGPkFVdrjR9Uf2eT/FaMHSAj5J/c5sJ
-         wncmI98kdgM5b2H/eSJzhHVsF9XpWC8jEp/hi2Ap4fkZ/OMLkG5cxVzYyuAAps/HmEGO
-         zZvmfJH9kdYQDArBAXwlkRASkmna+keR+k2p6h/sm6aHmP1Dupq9VZsU4H4lOZyxCvft
-         eeyA==
-X-Gm-Message-State: AOAM530Ev6cZocUFCHcn2J1u7TJwVNkbsBo9K+JOEyRsAt3w7cgb1Tip
-        M7BMiwHoJGuJjKsSS2xWvR4GJ/jh9w8bauI/JO+rUw==
-X-Google-Smtp-Source: ABdhPJxcLHTp2HmWlgI7Su041TxmNFgVD/jngcdBcxMjvp5IOfJeNJy8OR2y4k4Bfa6ELWveIGOQjFysEqiHQiktakY=
-X-Received: by 2002:aa7:c511:: with SMTP id o17mr40445469edq.300.1600448103080;
- Fri, 18 Sep 2020 09:55:03 -0700 (PDT)
+        Fri, 18 Sep 2020 12:55:39 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08IGtSFe031511;
+        Fri, 18 Sep 2020 11:55:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600448128;
+        bh=dnBBdBAJkrSU9mR6n8dkW+xkv8/EHY+JavGeJ3J8HS0=;
+        h=From:To:CC:Subject:Date;
+        b=Zj2XpPaWnkRn/SrR8zK+9qULZOzS/nbS0pLie9aCUY+TvM8Xc4RvCXJUBIRQa1bL9
+         ipZ2deeSmyK8V5gyycqcIj8+TfGpOiORTOe2KdsvRqXIbSAEmkn8meDGuwfSTe718q
+         rd8+v2bTjqG+4JW0FtkeTtM9fmaF5WPDIp9ARq/U=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08IGtSl2039017;
+        Fri, 18 Sep 2020 11:55:28 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 18
+ Sep 2020 11:55:27 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 18 Sep 2020 11:55:27 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08IGtQDc106420;
+        Fri, 18 Sep 2020 11:55:27 -0500
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        <linux-pm@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+CC:     Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        <linux-kernel@vger.kernel.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: [PATCH] pm: runtime: fix timer_expires on 32bits arch
+Date:   Fri, 18 Sep 2020 19:55:18 +0300
+Message-ID: <20200918165518.23246-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <160040692945.25320.13233625491405115889.stgit@dwillia2-desk3.amr.corp.intel.com>
- <20200918153041.GN7954@magnolia>
-In-Reply-To: <20200918153041.GN7954@magnolia>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Fri, 18 Sep 2020 09:54:51 -0700
-Message-ID: <CAPcyv4ii+NWnJhLWwz=Z+2aAJ=DdjwQoqPC+hO88CsM2ub5FEw@mail.gmail.com>
-Subject: Re: [dm-devel] [PATCH v2] dm: Call proper helper to determine dax support
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     linux-nvdimm <linux-nvdimm@lists.01.org>, Jan Kara <jack@suse.cz>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        device-mapper development <dm-devel@redhat.com>,
-        Adrian Huang <ahuang12@lenovo.com>,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        "Weiny, Ira" <ira.weiny@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 8:31 AM Darrick J. Wong <darrick.wong@oracle.com> wrote:
->
-> On Thu, Sep 17, 2020 at 10:30:03PM -0700, Dan Williams wrote:
-> > From: Jan Kara <jack@suse.cz>
-> >
-> > DM was calling generic_fsdax_supported() to determine whether a device
-> > referenced in the DM table supports DAX. However this is a helper for "leaf" device drivers so that
-> > they don't have to duplicate common generic checks. High level code
-> > should call dax_supported() helper which that calls into appropriate
-> > helper for the particular device. This problem manifested itself as
-> > kernel messages:
-> >
-> > dm-3: error: dax access failed (-95)
-> >
-> > when lvm2-testsuite run in cases where a DM device was stacked on top of
-> > another DM device.
->
-> Is there somewhere where it is documented which of:
->
-> bdev_dax_supported, generic_fsdax_supported, and dax_supported
->
-> one is supposed to use for a given circumstance?
+The commit 8234f6734c5d ("PM-runtime: Switch autosuspend over to using
+hrtimers") switched PM runtime autosuspend to use hrtimers and all related
+time accounting in ns, but missed update the struct
+dev_pm_info->timer_expires to u64. This causes timer_expires value to be
+truncated on 32bits architectures when assignment is done from u64 values:
 
-generic_fsdax_supported should be private to device drivers populating
-their dax_operations. I think it deserves a rename at this point.
-dax_supported() knows how to route through multiple layers of stacked
-block-devices to ask the "is dax supported" question at each level.
+rpm_suspend()
+|- dev->power.timer_expires = expires;
 
-> I guess the last two can test a given range w/ blocksize; the first one
-> only does blocksize; and the middle one also checks with whatever fs
-> might be mounted? <shrug>
->
-> (I ask because it took me a while to figure out how to revert correctly
-> the brokenness in rc3-5 that broke my nightly dax fstesting.)
+Hence, fix it by changing timer_expires type to u64.
 
-Again, apologies for that.
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Fixes: 8234f6734c5d ("PM-runtime: Switch autosuspend over to using hrtimers")
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+---
+ include/linux/pm.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/pm.h b/include/linux/pm.h
+index a30a4b54df52..47aca6bac1d6 100644
+--- a/include/linux/pm.h
++++ b/include/linux/pm.h
+@@ -590,7 +590,7 @@ struct dev_pm_info {
+ #endif
+ #ifdef CONFIG_PM
+ 	struct hrtimer		suspend_timer;
+-	unsigned long		timer_expires;
++	u64			timer_expires;
+ 	struct work_struct	work;
+ 	wait_queue_head_t	wait_queue;
+ 	struct wake_irq		*wakeirq;
+-- 
+2.17.1
+
