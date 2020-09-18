@@ -2,149 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1142F26F88B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCE6B26F88D
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgIRIlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 04:41:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58492 "EHLO
+        id S1726511AbgIRImK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 04:42:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726511AbgIRIlE (ORCPT
+        with ESMTP id S1726201AbgIRImK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 04:41:04 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49EBFC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 01:41:04 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id n25so4415123ljj.4
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 01:41:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=02PV3oHiwrDr+3qeV9iVgUcXInPW363IN1EVnL1zAwE=;
-        b=hoeQRPyhmK9FHzNzhrxuSWjlaSbbSEY3KdFZTBj5IGlYToCPzbPPDpiXKRklfU//jL
-         SPq0HfaC1arMvb9YXZv6VbjPu+AftzcDRc3mkRd6732lkGXyYp0WeCdQc4ROGLdUIGhE
-         dbvWmrHNn+XWprwmZ7I6UdxiFkvoeEe72XStLWDGLBeVenmmJwVYtbUKwUHI+4yVKDZf
-         Dy+7cLExhHFWpyHbFCfFiYJtKc3/Yq9ElGM/8/4MjgTF5Xo0BTQz6Lfb1HN8C1TgCIUj
-         29nHFM8Zpkd/SivL56eKF86P1iDTNlkgzfGmtvl395VhB0vUIdM0GeQqIIij4XaDMwqz
-         JLiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=02PV3oHiwrDr+3qeV9iVgUcXInPW363IN1EVnL1zAwE=;
-        b=K8vMi7m9I5XPckY5jsvgQRS/idFB4/KToal9e5k9HxDiQ+aF0HE3nQru8PElBess9u
-         s8S4Rtrcdx4Hoq+u3gw3ng/eS6akecJLXvB9uOmYiWqvR6lCYOq5TizEYABtsvsVH/+J
-         1Yook/mGY+H7o5p/g4BSb+M7wbgqL9/KULK3AhUKg/r86mE3Vrm0BiDwJeGTsGceDPCD
-         1sJ0abCnJep7lssvDJw0Rhh0KBag47716g7IS6yO/CWIBQ5x50hMH54jHGGifV5gc1Vj
-         hzuCArb30PyXN7MeQx2BLTqbdNErg60b5jQhrDm8RTLMvDklT3xPjc8s+WBBpnDrZLTA
-         5kCA==
-X-Gm-Message-State: AOAM532kmgswJ4gMVDeKvmKma66dkeaXWe0lxrx0ZeuDwXYd6k2Mqbf+
-        1QM2pZyfG2SUvYsLCtMZC1uEsUbZ+W3l6Q==
-X-Google-Smtp-Source: ABdhPJyMKL0v2VCgjZwfKbqACGWyl/aATGhPTcPD0hYYfZ6MTj1aw5qE0eF0BSUdHN9ipp2unAMgjA==
-X-Received: by 2002:a2e:b52c:: with SMTP id z12mr10238941ljm.437.1600418462619;
-        Fri, 18 Sep 2020 01:41:02 -0700 (PDT)
-Received: from jade (h-249-223.A175.priv.bahnhof.se. [98.128.249.223])
-        by smtp.gmail.com with ESMTPSA id f22sm455228lfc.240.2020.09.18.01.41.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 01:41:02 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 10:41:00 +0200
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org
-Subject: Re: [PATCH 1/2] tee: replace cdev_add + device_add with
- cdev_device_add
-Message-ID: <20200918084100.GA1219771@jade>
-References: <20200901103335.685-1-sudeep.holla@arm.com>
+        Fri, 18 Sep 2020 04:42:10 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E57DBC06174A;
+        Fri, 18 Sep 2020 01:42:09 -0700 (PDT)
+Date:   Fri, 18 Sep 2020 08:42:07 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600418528;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=x6SBoJ5EetJoOSSECb0DXtN7B2rR7aqkSaGgwV3hXh0=;
+        b=kZJfZ8J978I2fHKg5lEFuzZzHs4JuI5z+1mrF4n1sEcw224olHYSFARNWbRB3/SQVHVLv4
+        Rb4h9D7PwMUucCYbyAyS8Mvpt3od30kVaJ1VYfhLxIht3tGp1TPfzCyQusMEQf9j2pmlrR
+        QUA/MAlJT+0J/7cndEc0IuwnzakrAM99hwNBT+EnLRosTQEnjY12LtAcJstgkoDTBUGAWN
+        NhgZ+UYTKD9ishlKmXLnT+/P4424hkFueYTi9wUV0Y/qx0pJ6pf7T+xbYAxPXeJviql4bt
+        7NlnxiAZQRMczFY6oYjGfl6o5iMG6iBTayVB3vfk9y0PUt1f3xs3UFD6AfreeA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600418528;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=x6SBoJ5EetJoOSSECb0DXtN7B2rR7aqkSaGgwV3hXh0=;
+        b=JnEbgLaoyAc86HY+12UmQalbMinKG8UHMJG1UndrFwy1FWlw5DZAMWxEycEixHdX9LDUEA
+        eP+qfoxBqt+aCiDw==
+From:   "tip-bot2 for peterz@infradead.org" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] seqlock: Unbreak lockdep
+Cc:     Qian Cai <cai@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200915143028.GB2674@hirez.programming.kicks-ass.net>
+References: <20200915143028.GB2674@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200901103335.685-1-sudeep.holla@arm.com>
+Message-ID: <160041852742.15536.14750436211146195940.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 11:33:34AM +0100, Sudeep Holla wrote:
-> Commit 233ed09d7fda ("chardev: add helper function to register char devs
-> with a struct device") added a helper function 'cdev_device_add'.
-> 
-> Make use of cdev_device_add in tee_device_register to replace cdev_add
-> and device_add. Since cdev_device_add takes care of setting the
-> kobj->parent, drop explicit initialisation in tee_device_alloc.
-> 
-> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> ---
->  drivers/tee/tee_core.c | 21 ++++-----------------
->  1 file changed, 4 insertions(+), 17 deletions(-)
+The following commit has been merged into the locking/core branch of tip:
 
-Thanks for the nice cleanups. I'm picking up this patch and
-"[PATCH 2/2] tee: avoid explicit sysfs_create/delete_group by
-initialising dev->groups".
+Commit-ID:     267580db047ef428a70bef8287ca62c5a450c139
+Gitweb:        https://git.kernel.org/tip/267580db047ef428a70bef8287ca62c5a450c139
+Author:        peterz@infradead.org <peterz@infradead.org>
+AuthorDate:    Tue, 15 Sep 2020 16:30:28 +02:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Wed, 16 Sep 2020 16:26:58 +02:00
 
-Cheers,
-Jens
+seqlock: Unbreak lockdep
 
-> 
-> diff --git a/drivers/tee/tee_core.c b/drivers/tee/tee_core.c
-> index 64637e09a095..b4a8b362d78f 100644
-> --- a/drivers/tee/tee_core.c
-> +++ b/drivers/tee/tee_core.c
-> @@ -917,7 +917,6 @@ struct tee_device *tee_device_alloc(const struct tee_desc *teedesc,
->  
->  	cdev_init(&teedev->cdev, &tee_fops);
->  	teedev->cdev.owner = teedesc->owner;
-> -	teedev->cdev.kobj.parent = &teedev->dev.kobj;
->  
->  	dev_set_drvdata(&teedev->dev, driver_data);
->  	device_initialize(&teedev->dev);
-> @@ -985,24 +984,15 @@ int tee_device_register(struct tee_device *teedev)
->  		return -EINVAL;
->  	}
->  
-> -	rc = cdev_add(&teedev->cdev, teedev->dev.devt, 1);
-> +	rc = cdev_device_add(&teedev->cdev, &teedev->dev);
->  	if (rc) {
->  		dev_err(&teedev->dev,
-> -			"unable to cdev_add() %s, major %d, minor %d, err=%d\n",
-> +			"unable to cdev_device_add() %s, major %d, minor %d, err=%d\n",
->  			teedev->name, MAJOR(teedev->dev.devt),
->  			MINOR(teedev->dev.devt), rc);
->  		return rc;
->  	}
->  
-> -	rc = device_add(&teedev->dev);
-> -	if (rc) {
-> -		dev_err(&teedev->dev,
-> -			"unable to device_add() %s, major %d, minor %d, err=%d\n",
-> -			teedev->name, MAJOR(teedev->dev.devt),
-> -			MINOR(teedev->dev.devt), rc);
-> -		goto err_device_add;
-> -	}
-> -
->  	rc = sysfs_create_group(&teedev->dev.kobj, &tee_dev_group);
->  	if (rc) {
->  		dev_err(&teedev->dev,
-> @@ -1014,9 +1004,7 @@ int tee_device_register(struct tee_device *teedev)
->  	return 0;
->  
->  err_sysfs_create_group:
-> -	device_del(&teedev->dev);
-> -err_device_add:
-> -	cdev_del(&teedev->cdev);
-> +	cdev_device_del(&teedev->cdev, &teedev->dev);
->  	return rc;
->  }
->  EXPORT_SYMBOL_GPL(tee_device_register);
-> @@ -1062,8 +1050,7 @@ void tee_device_unregister(struct tee_device *teedev)
->  
->  	if (teedev->flags & TEE_DEVICE_FLAG_REGISTERED) {
->  		sysfs_remove_group(&teedev->dev.kobj, &tee_dev_group);
-> -		cdev_del(&teedev->cdev);
-> -		device_del(&teedev->dev);
-> +		cdev_device_del(&teedev->cdev, &teedev->dev);
->  	}
->  
->  	tee_device_put(teedev);
-> -- 
-> 2.17.1
-> 
+seqcount_LOCKNAME_init() needs to be a macro due to the lockdep
+annotation in seqcount_init(). Since a macro cannot define another
+macro, we need to effectively revert commit: e4e9ab3f9f91 ("seqlock:
+Fold seqcount_LOCKNAME_init() definition").
+
+Fixes: e4e9ab3f9f91 ("seqlock: Fold seqcount_LOCKNAME_init() definition")
+Reported-by: Qian Cai <cai@redhat.com>
+Debugged-by: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Tested-by: Qian Cai <cai@redhat.com>
+Link: https://lkml.kernel.org/r/20200915143028.GB2674@hirez.programming.kicks-ass.net
+---
+ include/linux/seqlock.h | 22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
+
+diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
+index f73c7eb..76e44e6 100644
+--- a/include/linux/seqlock.h
++++ b/include/linux/seqlock.h
+@@ -173,6 +173,19 @@ static inline void seqcount_lockdep_reader_access(const seqcount_t *s)
+  * @lock:	Pointer to the associated lock
+  */
+ 
++#define seqcount_LOCKNAME_init(s, _lock, lockname)			\
++	do {								\
++		seqcount_##lockname##_t *____s = (s);			\
++		seqcount_init(&____s->seqcount);			\
++		__SEQ_LOCK(____s->lock = (_lock));			\
++	} while (0)
++
++#define seqcount_raw_spinlock_init(s, lock)	seqcount_LOCKNAME_init(s, lock, raw_spinlock)
++#define seqcount_spinlock_init(s, lock)		seqcount_LOCKNAME_init(s, lock, spinlock)
++#define seqcount_rwlock_init(s, lock)		seqcount_LOCKNAME_init(s, lock, rwlock);
++#define seqcount_mutex_init(s, lock)		seqcount_LOCKNAME_init(s, lock, mutex);
++#define seqcount_ww_mutex_init(s, lock)		seqcount_LOCKNAME_init(s, lock, ww_mutex);
++
+ /*
+  * SEQCOUNT_LOCKNAME()	- Instantiate seqcount_LOCKNAME_t and helpers
+  * seqprop_LOCKNAME_*()	- Property accessors for seqcount_LOCKNAME_t
+@@ -190,13 +203,6 @@ typedef struct seqcount_##lockname {					\
+ 	__SEQ_LOCK(locktype	*lock);					\
+ } seqcount_##lockname##_t;						\
+ 									\
+-static __always_inline void						\
+-seqcount_##lockname##_init(seqcount_##lockname##_t *s, locktype *lock)	\
+-{									\
+-	seqcount_init(&s->seqcount);					\
+-	__SEQ_LOCK(s->lock = lock);					\
+-}									\
+-									\
+ static __always_inline seqcount_t *					\
+ __seqprop_##lockname##_ptr(seqcount_##lockname##_t *s)			\
+ {									\
+@@ -284,8 +290,8 @@ SEQCOUNT_LOCKNAME(ww_mutex,     struct ww_mutex, true,     &s->lock->base, ww_mu
+ 	__SEQ_LOCK(.lock	= (assoc_lock))				\
+ }
+ 
+-#define SEQCNT_SPINLOCK_ZERO(name, lock)	SEQCOUNT_LOCKNAME_ZERO(name, lock)
+ #define SEQCNT_RAW_SPINLOCK_ZERO(name, lock)	SEQCOUNT_LOCKNAME_ZERO(name, lock)
++#define SEQCNT_SPINLOCK_ZERO(name, lock)	SEQCOUNT_LOCKNAME_ZERO(name, lock)
+ #define SEQCNT_RWLOCK_ZERO(name, lock)		SEQCOUNT_LOCKNAME_ZERO(name, lock)
+ #define SEQCNT_MUTEX_ZERO(name, lock)		SEQCOUNT_LOCKNAME_ZERO(name, lock)
+ #define SEQCNT_WW_MUTEX_ZERO(name, lock) 	SEQCOUNT_LOCKNAME_ZERO(name, lock)
