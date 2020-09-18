@@ -2,88 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2907726FFFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 16:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66B6E270000
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 16:36:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbgIROeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 10:34:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56774 "EHLO
+        id S1726613AbgIROfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 10:35:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726126AbgIROeQ (ORCPT
+        with ESMTP id S1726126AbgIROfy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 10:34:16 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C65D9C0613CE;
-        Fri, 18 Sep 2020 07:34:15 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id 34so3573484pgo.13;
-        Fri, 18 Sep 2020 07:34:15 -0700 (PDT)
+        Fri, 18 Sep 2020 10:35:54 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5307C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 07:35:53 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id q9so5567348wmj.2
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 07:35:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ehNLFgOehS2khvMlIukM1gipxnVRhru9elJLFFfgkak=;
-        b=oYxeoYnBKch1Aje0z2U2aDGmtKIiBXABtgAlWyJPzIkhv/ostG5OgBj3VwAw94rZn9
-         0GWJmpaVgsf7N4FfyW8DJZKTWDCSJkqhd8UaWQipy3V5JfOTNhUx14gY4/iJ1cDrYJY1
-         ldDVp8WZQznZy1QHBcP0kk0HauTsB+3dDM9E2IgB40z/COCeudd/Wd9eYmxmPxOV2lZj
-         RBdWwbmfuKSMymPfMVs9ibM3oGIAcXgSWTwHYJdIMD8aJTgmZxWMSp+KnAcXAKcWquT5
-         YX5zMtnBDL0x0sSMYQxVKNkGEkERKuyjuY1wl1gFMV+ujbsFup8gh75S6UZ5azYUqzWD
-         q3zA==
+        d=googlemail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=T3sstV3ZPKGqOzfwr4c/woq8OqWF4H3bHOX6f88+4eA=;
+        b=EfIOVhFIHIxUarE2g7KgsvI1jjVyg8SF6yZWQUqakWLXED80cjpPmbw4IUW2Au6hLw
+         6WO9zZfiwpVGKZhLxdBDE+EHzRuEm9AJky4I2QnVsWqZ2vumNMhDCmfWp6byQLFgZkMG
+         9GSHRlTUyY13zuSoXaV4g5fSd6E3DFD3oKhGpwDBGdr4LnHseEFTqIkU5oc4SP0OJtYx
+         ACXjEvBdTmaEzA0aCtUIFInH2aA+MMJSepOPr2XvQ2GtWmSbDnfO9sBdcLOhKqUiTI7e
+         alCesEg/4YqYA43awGuTnm/XluqGkg3sxHf0t8HnLctWKHFkyI93EkXMG1AIQO9c2o/U
+         87UA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ehNLFgOehS2khvMlIukM1gipxnVRhru9elJLFFfgkak=;
-        b=caeRSguExBjR2keO7CyZeTHmbtdmZ5K6F0oOCARseCLVZ/Dh2u/OveIJGABPHA/L/o
-         c/ZSS7mowByiWzNfMgV4MsTnTkc7056BnF/7R8dj1ltiPz+BFfb/OUTk4HZxUJrnsNEq
-         3l35QPQbDtbOC6KAbrus2rDGln2OinNvsRo98ny62AwUC8wR3uURVKT4OGRdq5tmMbaY
-         jBbjag5Vzp/fnHF7nly8y2bP8Qh0RRdfYm2XzwdfbjOTTe+LvVmmWe3g/GzXPyFE24GJ
-         E11TClG6zn+bVH3ppAsKKqGX/Wp71N6n1iTCDfwHWckkwmB+Ob80aGIOCiFaBYXJPkk/
-         78oQ==
-X-Gm-Message-State: AOAM530hMWpdnTnMLy/418M4j48yfzWzV889ub2u+Wid4snwCc4w6cfr
-        17Yuu+7Qz+a5LvoTQ1AP6As=
-X-Google-Smtp-Source: ABdhPJzDF9lRYLRj0s6ccVVV7B8TgmkiEd7RYbcfJTBfud5WgKdgJTk2HyKoJqDlssIU+2KeW5H7UQ==
-X-Received: by 2002:aa7:8ec7:0:b029:13e:d13d:a137 with SMTP id b7-20020aa78ec70000b029013ed13da137mr32547044pfr.31.1600439655322;
-        Fri, 18 Sep 2020 07:34:15 -0700 (PDT)
-Received: from hoboy (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
-        by smtp.gmail.com with ESMTPSA id l1sm3600902pfc.164.2020.09.18.07.34.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 07:34:14 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 07:34:12 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Herrington <hankinsea@gmail.com>
-Cc:     leonro@nvidia.com, netdev@vger.kernel.org,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=T3sstV3ZPKGqOzfwr4c/woq8OqWF4H3bHOX6f88+4eA=;
+        b=YbbqLtpYxD0avuDxk/m1peSUVpF+QMLxjMh1ffEf3TOqb1sfW4c9qOFxQreNt6XOZI
+         CFTS07aHGisr4zwTGb50A3Jxx95k7xpTReZ6CrjtRXljsEyZ/yhwGbg2aygHW8H8c8wh
+         a2SPUknbBDobF2KyeLfvm/YOySq0vrB5zR/97m7YifIe3EabxJb3CUZbGKlwcjJfuh7y
+         8YOlY2JV6B9NAX+6I213XDCjnsVvvTcXLy9oRhec0s+VIDm5p2qNCOW+9drWxojyA6Bj
+         /TMKaMBmIH6ovovDFkAGaDwMFkH7kE/ux9NjAZEwS+pm8tPl7xWx3kyAydtpI/PBcUG0
+         libA==
+X-Gm-Message-State: AOAM532ZVd8xg39YbHN21fUppWaDKOE8DNThTFlusBf/h4KL5HWxI9z1
+        UMpISt634GbI+rX0SCaVDcl0rJDvjKw=
+X-Google-Smtp-Source: ABdhPJwpc769Bp4kEBM7SAuo3cxxSHzcAt66NZx74LS21oM4MlFwUXZ9X5iVsKw8WIhpzI75chUVoQ==
+X-Received: by 2002:a1c:a551:: with SMTP id o78mr15985812wme.4.1600439751600;
+        Fri, 18 Sep 2020 07:35:51 -0700 (PDT)
+Received: from [192.168.1.20] (host81-151-13-9.range81-151.btcentralplus.com. [81.151.13.9])
+        by smtp.googlemail.com with ESMTPSA id o4sm5303271wru.55.2020.09.18.07.35.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Sep 2020 07:35:50 -0700 (PDT)
+Subject: Re: [PATCH] misc: rtsx: do not setting OC_POWER_DOWN reg in
+ rtsx_pci_init_ocp()
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     ricky_wu@realtek.com, arnd@arndb.de, bhelgaas@google.com,
+        vaibhavgupta40@gmail.com, rui_feng@realsil.com.cn, kdlnx@doth.eu,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] ptp: mark symbols static where possible
-Message-ID: <20200918143412.GC25831@hoboy>
-References: <20200918100943.1740-1-hankinsea@gmail.com>
+References: <20200824030006.30033-1-ricky_wu@realtek.com>
+ <c06d7691-01ab-303c-e687-dd8c51a8a9c5@gmail.com>
+ <20200914155830.GA3525000@kroah.com>
+From:   Chris Clayton <chris2553@googlemail.com>
+Message-ID: <e52d7258-e760-81ac-9093-abe7c3504ee2@googlemail.com>
+Date:   Fri, 18 Sep 2020 15:35:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918100943.1740-1-hankinsea@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200914155830.GA3525000@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 06:09:43PM +0800, Herrington wrote:
-> diff --git a/include/linux/ptp_clock_kernel.h b/include/linux/ptp_clock_kernel.h
-> index d3e8ba5c7125..5db4b8891b22 100644
-> --- a/include/linux/ptp_clock_kernel.h
-> +++ b/include/linux/ptp_clock_kernel.h
-> @@ -307,4 +307,13 @@ static inline void ptp_read_system_postts(struct ptp_system_timestamp *sts)
->  		ktime_get_real_ts64(&sts->post_ts);
->  }
->  
-> +void pch_ch_control_write(struct pci_dev *pdev, u32 val);
-> +u32 pch_ch_event_read(struct pci_dev *pdev);
-> +void pch_ch_event_write(struct pci_dev *pdev, u32 val);
-> +u32 pch_src_uuid_lo_read(struct pci_dev *pdev);
-> +u32 pch_src_uuid_hi_read(struct pci_dev *pdev);
-> +u64 pch_rx_snap_read(struct pci_dev *pdev);
-> +u64 pch_tx_snap_read(struct pci_dev *pdev);
-> +int pch_set_station_address(u8 *addr, struct pci_dev *pdev);
+Mmm, gmail on android seems to have snuck some html into my reply, so here goes again...
 
-NAK.  Please see Jacob's comment on the origin patch.
+On 14/09/2020 16:58, Greg KH wrote:
+> On Sun, Sep 13, 2020 at 09:40:56AM +0100, Chris Clayton wrote:
+>> Hi Greg and Arnd,
+>>
+>> On 24/08/2020 04:00, ricky_wu@realtek.com wrote:
+>>> From: Ricky Wu <ricky_wu@realtek.com>
+>>>
+>>> this power saving action in rtsx_pci_init_ocp() cause INTEL-NUC6 platform
+>>> missing card reader
+>>>
+>>
+>> In his changelog above, Ricky didn't mention that this patch fixes a regression that was introduced (in 5.1) by commit
+>> bede03a579b3.
+>>
+>> The patch that I posted to LKML contained the appropriate Fixes, etc tags. After discussion, the patch was changed to
+>> remove the code that effectively disables the RTS5229 cardreader on (at least some) Intel NUC boxes. I prepared the
+>> patch that Ricky submitted but he didn't include my Signed-off-by or the Fixes tag. I think the following needs to be
+>> added to the changelog.
+>>
+>> Fixes: bede03a579b3 ("misc: rtsx: Enable OCP for rts522a rts524a rts525a rts5260")
+>> Link: https://marc.info/?l=linux-kernel&m=159105912832257
+>> Link: https://bugzilla.kernel.org/show_bug.cgi?id=204003
+>> Signed-off-by: Chris Clayton <chris2553@googlemail.com>
+>>
+>> bede03a579b3 introduced a bug which leaves the rts5229 PCI Express card reader on the Intel NUC6CAYH box.
+>>
+>> My main point, however, is that the patch is also needed in the 5.4 (longterm) and 5.8 (stable) series kernels.
+> 
+> It's too late to change the commit log now that it is in my tree, but
+> once it hits Linus's tree for 5.9-rc1, I can backport it to those stable
+> trees if someone reminds me :)
+> 
 
-Thanks,
-Richard
+Thanks, Greg. I'll send the reminder.
+
+Chris
+> thanks,
+> 
+> greg k-h
+> 
