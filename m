@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D079F27040D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 20:32:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C42270411
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 20:32:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726335AbgIRScB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 14:32:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36842 "EHLO
+        id S1726389AbgIRScH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 14:32:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726316AbgIRScA (ORCPT
+        with ESMTP id S1726360AbgIRScB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 14:32:00 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3EDAC0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 11:31:59 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id y6so6372470ybi.11
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 11:31:59 -0700 (PDT)
+        Fri, 18 Sep 2020 14:32:01 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F69EC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 11:32:01 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id r184so5263224qka.21
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 11:32:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=6j9u1FoP2f0YImnHuabzWtMZNqpaUUCvlMhNCAR76JU=;
-        b=jDjmNJ3KSjUg3aa2pfGH6CUYyYGAFArBEZZ1q/Tv+a+dfnBIYuV1XXDlylS5aE4y8U
-         WO1UYuqBLmyj+k5wRntFsQ3bEH1WCZspbUxL/burLyyD4Dn6XJPB4d8VpnCEySdG7IXY
-         ZYa6j5yEnprmhDU1vuXUvpDL1zB2Z/1tE1BKrfSynNYOXnQa4+0HBNBTSQ/5XIehuaUf
-         ad7PyGX8YJF27WDgEWiVnDYzUHW5HmB5swPoT58rXdtoEdH24gFbi3eFxGQkBE8oWQxw
-         wW5YFTniST+xPuOrdLrBU8QCD5dGYujxkpwLXxwfA/loh9zuRC2JJw8vFZoRGRbJalCB
-         rfyw==
+        bh=8lrYz9+XqmT3DNwQQN81Dm2XDHT7obawXs7obsyAAUM=;
+        b=YHk5UEF2zHq+CqvGtomS6PVaGEKk0ZCZLm2obeiC3EPYEa6RPibodtrWWu3OxGtL/i
+         fs5c5BCjVAM/tVd7XYs6enAqJBe+rvI+FJVQdizUyiirpGdDZeYsDF+35cndDIM1f7ba
+         XcHolyTJqRGRU4rdt2L7Spb72uJTwCKIhOXIZjmN/Jbh4rNBon4KuU8iu44Hx6zOH7u4
+         tlYGUr4mGrG2zvfqhCtz9tY9ej2wpWSmseoRgTpBllAYFRqBU/HCIEAuwNewpPnIjdJi
+         Xj0vlQZvAzCpCsXS4GyJZOSgPVodRCYwd6/hXRpR0A595+cPdKTGU8tXCpCz6nQ5/bke
+         Me2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=6j9u1FoP2f0YImnHuabzWtMZNqpaUUCvlMhNCAR76JU=;
-        b=fBPoAK0IbW3zogTYbNk7WwdejgOSa5oL6THqMpgbFx2EJE8VGzxAf7UUWtdCkW5Ttb
-         uF2RWi6CuTGwq2DqRHH8kblYikbNRhBz3ThBp+UhoKQXcZWlUrVBmD7foOXQ6HPb1BXG
-         OJGpnqcQPXeS6vvCWJ2wvBlKG+MdNqKj04Fa5l/lwzFkw5Hv2gDaU+K1WNiI8OdtkdJH
-         9CQkeK8j+j733YISHPV0K6hIIajzrSK0ehQHfPCpFNPNlKUgFWhYC77FT3hkF106egpY
-         HpdNeCcu+4i2v7mz1OA2iLyz7nHIM63wcqf0BrsJXZ+kDLjXqgTR6MZ7sbAuzMnIg6M1
-         6bEA==
-X-Gm-Message-State: AOAM530fpbDKgYEP2sFfpT9a6LpitXf8WpGvXQMb71PBIp0bveKFHVmS
-        AxDj2bmtj9nOeTzwmY42yKDiizHMDj6rAQ==
-X-Google-Smtp-Source: ABdhPJwSKO0Xmi7ZdVdGxwSqjplGIFXXa2v0SvgpaWFgjL3kkLAAaO0/pZnF0v65UTjDjem62JeMBrGHZTNwNw==
+        bh=8lrYz9+XqmT3DNwQQN81Dm2XDHT7obawXs7obsyAAUM=;
+        b=kcSiPg+Mfajn+hZDgBk49KVVjDhKsrn0bxrcmE+BLSYe8V5zx2WMqJdDU8Rux9/U1h
+         UaySqK8Akpa1VO7c/BoVhhFsH06iBQTzCiR58nB+j7Wjb0yzqer0HX6Lh73KlLtVwxI5
+         0jD46DV07QIGEOflUUWU97X0fYyYz73HPSYL6Q9jEHT+L/ixFmWdUSk3nK+V5inQY80X
+         xAM5mwJWt5XJQ5J5ZYjFBwTsL49WHhXWpypNtQWffzowNI5o4O2A156TL12+oGIWUXbL
+         r0lBAACv5ZZHbC5gwGhVvI1R8e8NGo1+EunYgGihUYAHQxJlgPc9MEl8yku3zZBma3nq
+         8kuw==
+X-Gm-Message-State: AOAM532tMrAaEIiQYG1/5JddsOjyUeP0uPCYTqiy3G9SclOhKEbhnlHO
+        uOmQX9ZEExr7jiHnVFWoN53V23NC6H0M4Q==
+X-Google-Smtp-Source: ABdhPJxBwq9XhV3QktoFeTn2knMlvdBKuSi9OTuEaTPjrBRksk85oB8YC0d/iGwkk7KhGwnuO67cGjdRIv3Zjw==
 X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a28c:fdff:fee3:28c6])
- (user=dlatypov job=sendgmr) by 2002:a25:6a06:: with SMTP id
- f6mr12076185ybc.334.1600453918948; Fri, 18 Sep 2020 11:31:58 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 11:31:05 -0700
+ (user=dlatypov job=sendgmr) by 2002:a0c:b3dd:: with SMTP id
+ b29mr18601200qvf.59.1600453920686; Fri, 18 Sep 2020 11:32:00 -0700 (PDT)
+Date:   Fri, 18 Sep 2020 11:31:06 -0700
 In-Reply-To: <20200918183114.2571146-1-dlatypov@google.com>
-Message-Id: <20200918183114.2571146-4-dlatypov@google.com>
+Message-Id: <20200918183114.2571146-5-dlatypov@google.com>
 Mime-Version: 1.0
 References: <20200918183114.2571146-1-dlatypov@google.com>
 X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
-Subject: [RFC v1 03/12] kunit: test: add concept of post conditions
+Subject: [RFC v1 04/12] checkpatch: add support for struct MOCK(foo) syntax
 From:   Daniel Latypov <dlatypov@google.com>
 To:     Brendan Higgins <brendanhiggins@google.com>,
         David Gow <davidgow@google.com>,
@@ -69,69 +69,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Brendan Higgins <brendanhiggins@google.com>
 
-Add a way to specify that certain conditions must be met at the end of a
-test case.
+KUnit will soon add macros for generating mocks from types, the
+generated mock types are named like `struct MOCK(foo)` (where the base
+type is struct foo).
+
+Add `struct MOCK(foo)` as a NonptrType so that it is recognized
+correctly in declarations.
 
 Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
 Signed-off-by: Daniel Latypov <dlatypov@google.com>
 ---
- include/kunit/test.h |  6 ++++++
- lib/kunit/test.c     | 11 +++++++++++
- 2 files changed, 17 insertions(+)
+ scripts/checkpatch.pl | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/include/kunit/test.h b/include/kunit/test.h
-index 687782fa44d9..0eb3abb00da4 100644
---- a/include/kunit/test.h
-+++ b/include/kunit/test.h
-@@ -190,6 +190,11 @@ struct kunit_suite {
- 	char *log;
- };
- 
-+struct kunit_post_condition {
-+	struct list_head node;
-+	void (*validate)(struct kunit_post_condition *condition);
-+};
-+
- /**
-  * struct kunit - represents a running instance of a test.
-  *
-@@ -223,6 +228,7 @@ struct kunit {
- 	 * protect it with some type of lock.
- 	 */
- 	struct list_head resources; /* Protected by lock. */
-+	struct list_head post_conditions;
- };
- 
- void kunit_init_test(struct kunit *test, const char *name, char *log);
-diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-index 670d1cc9c105..4e8c74c89073 100644
---- a/lib/kunit/test.c
-+++ b/lib/kunit/test.c
-@@ -228,6 +228,7 @@ void kunit_init_test(struct kunit *test, const char *name, char *log)
- {
- 	spin_lock_init(&test->lock);
- 	INIT_LIST_HEAD(&test->resources);
-+	INIT_LIST_HEAD(&test->post_conditions);
- 	test->name = name;
- 	test->log = log;
- 	if (test->log)
-@@ -269,6 +270,16 @@ static void kunit_case_internal_cleanup(struct kunit *test)
- static void kunit_run_case_cleanup(struct kunit *test,
- 				   struct kunit_suite *suite)
- {
-+	struct kunit_post_condition *condition, *condition_safe;
-+
-+	list_for_each_entry_safe(condition,
-+				 condition_safe,
-+				 &test->post_conditions,
-+				 node) {
-+		condition->validate(condition);
-+		list_del(&condition->node);
-+	}
-+
- 	if (suite->exit)
- 		suite->exit(test);
- 
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 504d2e431c60..b40a68e7bc25 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -796,6 +796,10 @@ sub build_types {
+ 			(?:
+ 				(?:typeof|__typeof__)\s*\([^\)]*\)|
+ 				(?:$typeTypedefs\b)|
++				# Matching a \b breaks struct MOCK(foo) syntax,
++				# so we need to have it not lumped in with the
++				# types in @typeList.
++				(?:struct\s+MOCK\($Ident\))|
+ 				(?:${all}\b)
+ 			)
+ 			(?:\s+$Modifier|\s+const)*
 -- 
 2.28.0.681.g6f77f65b4e-goog
 
