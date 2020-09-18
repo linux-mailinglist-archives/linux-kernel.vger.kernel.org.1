@@ -2,36 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8114E26EC0D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA9426EC10
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728271AbgIRCJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:09:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32828 "EHLO mail.kernel.org"
+        id S1728292AbgIRCJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:09:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728262AbgIRCJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:09:17 -0400
+        id S1728273AbgIRCJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:09:25 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1F23E23976;
-        Fri, 18 Sep 2020 02:09:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 16D412389E;
+        Fri, 18 Sep 2020 02:09:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394956;
-        bh=JYuoka6Dcpa7rPPX+K0pgm8y9LHlMras/8gA7lLYGAY=;
+        s=default; t=1600394964;
+        bh=cSiETaOBpIVW8HiynNuhSKyL08OZPxS1OwjuM5Z8U4w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JpNlqPiTCgUm2WmrTfFSnl33FR0dGLbN2HHgsmJ4Gz+e4tsTHtqE8ceN1S3t5hatS
-         UjPrAevXFfRX3DlO6Y4Jq8u4qF6s2pSx2R5mmSfwVnXDuGlFuW2EH+n8sJKGLD77lK
-         EbwsZUN39xGaUO/RJXIJY9R3Casz7s51QlqtEThc=
+        b=aLAHA6GXAaXKq18/BxzCtX7Kbzz0VMxqUPaT2wJd5zQnZUvlGkuhzKaJvP+DbiKO2
+         XACvu0hkLjf14ndakNTtO2R8a36lAqgS9SDd7HjFDVj1BGdekwtUwFbmj99RDzM2Or
+         2dD1T3J8h+1gFAIUqQ/YZrvQpOPFcId1bcV1M2fo=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sven Schnelle <svens@linux.ibm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, linux-api@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 063/206] selftests/ftrace: fix glob selftest
-Date:   Thu, 17 Sep 2020 22:05:39 -0400
-Message-Id: <20200918020802.2065198-63-sashal@kernel.org>
+Cc:     Steven Price <steven.price@arm.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexandre Ghiti <alex@ghiti.fr>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Hogan <jhogan@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        "Liang, Kan" <kan.liang@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Burton <paul.burton@mips.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Will Deacon <will@kernel.org>, Zong Li <zong.li@sifive.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>, linux-mm@kvack.org
+Subject: [PATCH AUTOSEL 4.19 067/206] mm: pagewalk: fix termination condition in walk_pte_range()
+Date:   Thu, 17 Sep 2020 22:05:43 -0400
+Message-Id: <20200918020802.2065198-67-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
 References: <20200918020802.2065198-1-sashal@kernel.org>
@@ -43,37 +72,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Schnelle <svens@linux.ibm.com>
+From: Steven Price <steven.price@arm.com>
 
-[ Upstream commit af4ddd607dff7aabd466a4a878e01b9f592a75ab ]
+[ Upstream commit c02a98753e0a36ba65a05818626fa6adeb4e7c97 ]
 
-test.d/ftrace/func-filter-glob.tc is failing on s390 because it has
-ARCH_INLINE_SPIN_LOCK and friends set to 'y'. So the usual
-__raw_spin_lock symbol isn't in the ftrace function list. Change
-'*aw*lock' to '*spin*lock' which would hopefully match some of the
-locking functions on all platforms.
+If walk_pte_range() is called with a 'end' argument that is beyond the
+last page of memory (e.g.  ~0UL) then the comparison between 'addr' and
+'end' will always fail and the loop will be infinite.  Instead change the
+comparison to >= while accounting for overflow.
 
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Link: http://lkml.kernel.org/r/20191218162402.45610-15-steven.price@arm.com
+Signed-off-by: Steven Price <steven.price@arm.com>
+Cc: Albert Ou <aou@eecs.berkeley.edu>
+Cc: Alexandre Ghiti <alex@ghiti.fr>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: James Hogan <jhogan@kernel.org>
+Cc: James Morse <james.morse@arm.com>
+Cc: Jerome Glisse <jglisse@redhat.com>
+Cc: "Liang, Kan" <kan.liang@linux.intel.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Paul Burton <paul.burton@mips.com>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Vineet Gupta <vgupta@synopsys.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Zong Li <zong.li@sifive.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../testing/selftests/ftrace/test.d/ftrace/func-filter-glob.tc  | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/pagewalk.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-glob.tc b/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-glob.tc
-index 27a54a17da65d..f4e92afab14b2 100644
---- a/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-glob.tc
-+++ b/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-glob.tc
-@@ -30,7 +30,7 @@ ftrace_filter_check '*schedule*' '^.*schedule.*$'
- ftrace_filter_check 'schedule*' '^schedule.*$'
+diff --git a/mm/pagewalk.c b/mm/pagewalk.c
+index c3084ff2569d2..3c0930d94a295 100644
+--- a/mm/pagewalk.c
++++ b/mm/pagewalk.c
+@@ -15,9 +15,9 @@ static int walk_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
+ 		err = walk->pte_entry(pte, addr, addr + PAGE_SIZE, walk);
+ 		if (err)
+ 		       break;
+-		addr += PAGE_SIZE;
+-		if (addr == end)
++		if (addr >= end - PAGE_SIZE)
+ 			break;
++		addr += PAGE_SIZE;
+ 		pte++;
+ 	}
  
- # filter by *mid*end
--ftrace_filter_check '*aw*lock' '.*aw.*lock$'
-+ftrace_filter_check '*pin*lock' '.*pin.*lock$'
- 
- # filter by start*mid*
- ftrace_filter_check 'mutex*try*' '^mutex.*try.*'
 -- 
 2.25.1
 
