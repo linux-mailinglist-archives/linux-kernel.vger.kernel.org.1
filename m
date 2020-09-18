@@ -2,144 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3143A2707AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 23:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D4A2707AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 23:01:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726354AbgIRVAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 17:00:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726139AbgIRVAx (ORCPT
+        id S1726333AbgIRVBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 17:01:21 -0400
+Received: from mail-io1-f77.google.com ([209.85.166.77]:42668 "EHLO
+        mail-io1-f77.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726139AbgIRVBV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 17:00:53 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31FDC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 14:00:53 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id cy2so3704979qvb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 14:00:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZJ8zmvc17bX9xj6+//ug0LM49mqv1RsrDk1L3tNk8ec=;
-        b=iy16vZfUztyOxKq/IfHgI7kJQtwerpgo53nlcxG4i0DEjyExYJZzcnvYLRZ7dv41C/
-         uaQhCPGAqENb++afLCD1je++48JWOwmrzYv5ZAFoyTwgXdm9/MfkK+nNwmlrqsPEUIFS
-         zpCLZ5gN6euxSAl7cguwqsDnmWIOHXSTa7tWW9LroF3wpSYyN9+nqnEuCdJHyxsWH8b4
-         B3L5cm6Ix6jRaOz5BL3uee+vaatoD1sR8m0nUX1jABVjFRbamQg1/5dhtEb+DPXQbdfa
-         CXkwTnbSwjfJoV7dqbHFgbgUyf/wpRRr1YFNZiUoCyNmUm7jcQCOJ/xUpUVxo8z42uUm
-         p+Ig==
+        Fri, 18 Sep 2020 17:01:21 -0400
+Received: by mail-io1-f77.google.com with SMTP id w3so5654041iou.9
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 14:01:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=ZJ8zmvc17bX9xj6+//ug0LM49mqv1RsrDk1L3tNk8ec=;
-        b=nT3k7oD0Tml6S9O9a2xlvYPzCjVzidxMXSTkqoswdUc8T742etVV8/xpMXbfQcinm8
-         e+pMQygpbflA1Me4p+dd1n7VW1hbH6DO860UBukmN2gTJJHbUlSMWaPTdqkV7DvWt36N
-         ia6j52io/ancPAW+myEPU0x5MTVOlYOmWKdawK7V6KcAryacv9VknEng0yNF466mygz2
-         F0WXD6uSL44soYXipvcOPLB8UZ3L+5lnkO9RTSPEYemnp/o/PQI3UbVpXDynkRISvXkL
-         v0DZIpd3aKSayLJCm/rHaHCvj9hjazVpWwMsKIO3OU/XR/r2S4ujIRzGeOX0IH7anku1
-         BKRg==
-X-Gm-Message-State: AOAM532UNq7l4gWi80CxCT6iFVI3C71ZIm3yFPOpZuquDRE/l+gHxIzH
-        VTXkhB76vH/iohTS/3Ch/m0=
-X-Google-Smtp-Source: ABdhPJzjxkT9OR9uM81+L5YyaGQDJOqg7HbRZA/dBjiHRdtdxqwZ4ZxPjLW83OKSBGbwtd/RgqjGbA==
-X-Received: by 2002:a0c:8246:: with SMTP id h64mr19332976qva.54.1600462852729;
-        Fri, 18 Sep 2020 14:00:52 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id y69sm2877429qkb.52.2020.09.18.14.00.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 14:00:52 -0700 (PDT)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Fri, 18 Sep 2020 17:00:50 -0400
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [GIT PULL] percpu fix for v5.9-rc6
-Message-ID: <20200918210050.GA2953017@rani.riverdale.lan>
-References: <20200917204514.GA2880159@google.com>
- <CAHk-=whXpv0KJvpL153dhUaRgSjzT8H4dD85hRw-fAwXvXnKAA@mail.gmail.com>
- <20200918162305.GB25599@embeddedor>
- <CAHk-=wjH+OH08yjp=LpexkUnGp0Ogusk3WX0G7Q+Lh7Anfr21A@mail.gmail.com>
- <20200918193426.GA15213@embeddedor>
- <CAHk-=wg=vvSf3M9O1VkwyYB4D4W6XS2AHVpQn6hEQY+usWrKGg@mail.gmail.com>
- <20200918200252.GH32101@casper.infradead.org>
- <CAHk-=wiNjJGhAMBwYixwkADpNharvcuOG-AMCdii1q_Xo_Ky_A@mail.gmail.com>
- <20200918202909.GA2946008@rani.riverdale.lan>
- <CAHk-=wh-ryuY7KBNWr1n+kgQ5_CHB3-X+od-djBV4W-1kQFokA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=oCfiGkVYIcxw3idzkPicrwPwIAKvGq4KaTSwFBtjQWU=;
+        b=BM6KJxxyof+EWKYGWsUTuF3/hPrT5zfNq8QvCTBr3yq36rFlQ6wq276fm+JJqojgQY
+         0CtkScM0NLqeHylyqpkAmjLWasfwYTuV3wpdQfmSiE8kf0km2yLBmrzQjX8RSgAhHx8J
+         uHh1WtQwJ8dn0nqxL0OVSVkm1Xv4iixyqYEXvXmftE7bFaRFUmlyyHflq8iaX99lmM8p
+         LthN7QvCc5KmH+W4/itG4DksszSekcJadGsmEJLBSvAylaNb3n7eqWqYvSEy/Cm5QZo8
+         oTO7dksrsy80H7QCJhtaiJnyhEXk97HgLwWRbyYoDSmIpvJZUwSs65dBDWbXVH86PG22
+         MeMA==
+X-Gm-Message-State: AOAM531u/lWeVq0u2fQd1oOtEa4TjHFlpOuM1UmmvT+GwNT8GuuB3JZo
+        +EIJXu9EckWlvlBBDm5e8fG6R38JuIiykdJDGLIgVSv8sYUb
+X-Google-Smtp-Source: ABdhPJyU/RpAOYWZ+94evTfjS1EcCwtmcUxAWWBxwgIfHt8YgUaCIAo5N4I1aCctsfksxUqXtMsLp9GyK3bI2+D+++PDsKGu6vKS
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wh-ryuY7KBNWr1n+kgQ5_CHB3-X+od-djBV4W-1kQFokA@mail.gmail.com>
+X-Received: by 2002:a92:9408:: with SMTP id c8mr28212311ili.61.1600462880384;
+ Fri, 18 Sep 2020 14:01:20 -0700 (PDT)
+Date:   Fri, 18 Sep 2020 14:01:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000762dee05af9ccd01@google.com>
+Subject: WARNING in ex_handler_uaccess
+From:   syzbot <syzbot+ea3a78a71705faf41d77@syzkaller.appspotmail.com>
+To:     bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        linux-kernel@vger.kernel.org, luto@kernel.org, mingo@redhat.com,
+        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 01:40:44PM -0700, Linus Torvalds wrote:
-> On Fri, Sep 18, 2020 at 1:29 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
-> >
-> > In general (i.e. outside the implementation of the macro itself), what
-> > is the preferred way of getting the size of just the header?
-> >   1) offsetof(typeof(s),flex)
-> >   2) struct_size(s, flex, 0)
-> 
-> I think those two should end up being equivalent.
+Hello,
 
-Yeah, but it would be good to standardize on one of them.
+syzbot found the following issue on:
 
-> 
-> >   3) sizeof(s)
-> 
-> This works right now, but exactly *because* it works, we're not seeing
-> the questionable cases.
-> 
-> Of course, _also_ exactly because it just silently works, I also don't
-> know if there may be thousands of perfectly fine uses where people
-> really do want the header, and a "sizeof()" is simpler than
-> alternatives 1-2.
-> 
-> It's possible that there really are a lot of "I want to know just the
-> header size" cases. It sounds odd, but I could _imagine_ situations
-> like that, even though no actual case comes to mind.
+HEAD commit:    10b82d51 Merge branch 'for-5.9-fixes' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13fb6b07900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=773ee8ece5f19a24
+dashboard link: https://syzkaller.appspot.com/bug?extid=ea3a78a71705faf41d77
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+userspace arch: i386
 
-I'm asking because I just added an instance of (3) and want to know if I
-should change it :)
+Unfortunately, I don't have any reproducer for this issue yet.
 
-The case was when you have a function that got passed a pointer and a
-size, and wants to verify that the size covers the structure before
-accessing its fields. If the function only needs the "fixed" fields, it
-feels a little unnatural to use (1) or (2) when the flex member is
-otherwise not going be accessed at all.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ea3a78a71705faf41d77@syzkaller.appspotmail.com
 
-> 
-> >   4) new macro that's easier to read than 1 or 2, but makes it clear
-> >      what you're doing?
-> 
-> I don't think this would have any real advantage, would it?
+WARNING: CPU: 2 PID: 6875 at arch/x86/mm/extable.c:77 ex_handler_uaccess+0xba/0xe0 arch/x86/mm/extable.c:77
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 2 PID: 6875 Comm: io_uring-sq Not tainted 5.9.0-rc5-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ panic+0x382/0x7fb kernel/panic.c:231
+ __warn.cold+0x20/0x4b kernel/panic.c:600
+ report_bug+0x1bd/0x210 lib/bug.c:198
+ handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:ex_handler_uaccess+0xba/0xe0 arch/x86/mm/extable.c:77
+Code: 1d 5c 30 fa 09 31 ff 89 de e8 e2 ae 40 00 84 db 75 80 e8 b9 b2 40 00 48 c7 c7 e0 1a 69 88 c6 05 3c 30 fa 09 01 e8 a8 ee 10 00 <0f> 0b e9 61 ff ff ff 48 89 df e8 87 7a 81 00 eb 87 e8 10 7b 81 00
+RSP: 0018:ffffc9000e03f6c8 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff88801b420400 RSI: ffffffff815f5a85 RDI: fffff52001c07ecb
+RBP: ffffc9000e03f7b8 R08: 0000000000000001 R09: ffffffff8ce2daef
+R10: 000000000000143b R11: 0000000000000000 R12: ffffffff89b3f410
+R13: 000000000000000d R14: 0000000000000000 R15: 0000000000000000
+ fixup_exception+0x9a/0xca arch/x86/mm/extable.c:166
+ __exc_general_protection arch/x86/kernel/traps.c:557 [inline]
+ exc_general_protection+0xeb/0x2e0 arch/x86/kernel/traps.c:524
+ asm_exc_general_protection+0x1e/0x30 arch/x86/include/asm/idtentry.h:532
+RIP: 0010:check_zeroed_user+0xd7/0x260 lib/usercopy.c:65
+Code: ab 00 00 00 e8 6a 61 d4 fd 48 89 ee 48 89 df e8 5f 5d d4 fd 48 39 eb 0f 87 92 00 00 00 e8 51 61 d4 fd 0f 01 cb 0f ae e8 31 ed <49> 8b 1e 31 ff 89 ee e8 9d 5d d4 fd 85 ed 75 6d e8 34 61 d4 fd 31
+RSP: 0018:ffffc9000e03f860 EFLAGS: 00050246
+RAX: 0000000000000000 RBX: 2000024020012545 RCX: ffffffff83a1de61
+RDX: ffff88801b420400 RSI: ffffffff83a1de6f RDI: 0000000000000006
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff8b34a68f
+R10: 2000024020012545 R11: 0000000000000000 R12: 0000000000000000
+R13: 000000000001232d R14: 2000024020000218 R15: 0000000000000000
+ copy_struct_from_user include/linux/uaccess.h:310 [inline]
+ io_openat2_prep fs/io_uring.c:3560 [inline]
+ io_openat2_prep+0x142/0x1a0 fs/io_uring.c:3547
+ io_issue_sqe+0x1932/0x61e0 fs/io_uring.c:5850
+ __io_queue_sqe+0x280/0x1160 fs/io_uring.c:6150
+ io_queue_sqe+0x692/0xfa0 fs/io_uring.c:6229
+ io_submit_sqe fs/io_uring.c:6299 [inline]
+ io_submit_sqes+0x1761/0x2400 fs/io_uring.c:6496
+ io_sq_thread+0x3ac/0xe00 fs/io_uring.c:6633
+ kthread+0x3b5/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
-The advantage is documenting that you do mean the header size, i.e.
-something like struct_header_size(s).
 
-> 
-> Now what might be good is if we can make "struct_size()" also actually
-> verify that the member that is passed in is that last non-sized
-> member. I'm not sure how to do that.
-> 
-> I know how to check that it's *not* that last unsized member (just do
-> "sizeof(s->flex)", and it should error), but I don't see how to assert
-> the reverse of that).
-> 
-> Because that kind of "yes, we actually pass in the right member" check
-> would be good to have too.
-> 
->               Linus
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-You could just assert that offsetof(typeof(s),flex) == sizeof(s), no? It
-would also make sure that someone doesn't try to use struct_size() with
-a 1-sized array member.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
