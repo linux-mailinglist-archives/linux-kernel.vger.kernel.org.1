@@ -2,87 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16DA926E9E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 02:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC50E26E9E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 02:18:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726156AbgIRARc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 20:17:32 -0400
-Received: from 95-31-39-132.broadband.corbina.ru ([95.31.39.132]:47940 "EHLO
-        blackbox.su" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725886AbgIRARc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 20:17:32 -0400
-Received: from metabook.localnet (metabook.metanet [192.168.2.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by blackbox.su (Postfix) with ESMTPSA id A2B868195C;
-        Fri, 18 Sep 2020 03:17:59 +0300 (MSK)
-From:   Sergej Bauer <sbauer@blackbox.su>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Bryan Whitehead <bryan.whitehead@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH] add virtual PHY for PHY-less devices
-Date:   Fri, 18 Sep 2020 03:17:14 +0300
-Message-ID: <1680322.qRJ2Tc3Qy1@metabook>
-In-Reply-To: <20200917221547.GD3598897@lunn.ch>
-References: <20200917214030.646-1-sbauer@blackbox.su> <20200917221547.GD3598897@lunn.ch>
+        id S1726189AbgIRASj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 20:18:39 -0400
+Received: from mga17.intel.com ([192.55.52.151]:54648 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725886AbgIRASj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 20:18:39 -0400
+IronPort-SDR: DsD2NMz/rMXqzbF6UtL8KCLF2wGeI92cjD4dwrIJb9lr1DmqdaQQoD8AXp2TzOX0cFLfPUkFf/
+ KRccVwzVdIrg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="139826890"
+X-IronPort-AV: E=Sophos;i="5.77,272,1596524400"; 
+   d="scan'208";a="139826890"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 17:18:31 -0700
+IronPort-SDR: oBFqb4YbfThDQSPvVhMngQr4M0ZrdPrz1qiALEIgDPGX6PxJshbgVFbECZAfuO1AWpfbvp8jfM
+ /DLyhVxPdEpw==
+X-IronPort-AV: E=Sophos;i="5.77,272,1596524400"; 
+   d="scan'208";a="483964775"
+Received: from shao2-debian.sh.intel.com (HELO [10.239.13.3]) ([10.239.13.3])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 17:18:27 -0700
+Subject: Re: [kbuild-all] Re: include/linux/spinlock.h:346:2: error: invalid
+ type argument of unary (have 'spinlock_t' {aka 'struct spinlock'})
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        kernel test robot <lkp@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
+References: <202009161552.irOZaEej%lkp@intel.com>
+ <20200916072733.gyrpbsttn53hscbc@linutronix.de>
+From:   Rong Chen <rong.a.chen@intel.com>
+Message-ID: <698b171b-9099-bd38-3dcc-a0af5f78093c@intel.com>
+Date:   Fri, 18 Sep 2020 08:17:47 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20200916072733.gyrpbsttn53hscbc@linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew
-
-  To tell the truth, I thought that fixed_phy is only for devices with a Device
-Trees and I never met DTS on x86 machines... 
-
-So it looks like there realy no any significant advantage _except_ of
-ability to use ethtool and ioctl to set speed and rx-all/fcs flags without
-removing module. That was most wanted request from HW designers as they are
-wanted to change registers of virtual PHY on-the-fly with ethtool either custom
-tool (using SIOCSMIIREG ioctl) for controling PHY registers.
-
-p.s. And that's my bad, the original driver was developed year ago (for 
-linux-5.2.15),
-but I had no time before this moment.
 
 
-p.p.s. sorry for long time to answer but it's far behind the midnight in my 
-region.
+On 9/16/20 3:27 PM, Sebastian Andrzej Siewior wrote:
+> On 2020-09-16 15:18:56 [+0800], kernel test robot wrote:
+>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>> head:   fc4f28bb3daf3265d6bc5f73b497306985bb23ab
+>> commit: de8f5e4f2dc1f032b46afda0a78cab5456974f89 lockdep: Introduce wait-type checks
+>> date:   6 months ago
+>> config: mips-randconfig-r011-20200916 (attached as .config)
+>> compiler: mipsel-linux-gcc (GCC) 9.3.0
+>> reproduce (this is a W=1 build):
+>>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>>          chmod +x ~/bin/make.cross
+>>          git checkout de8f5e4f2dc1f032b46afda0a78cab5456974f89
+>>          # save the attached .config to linux build tree
+>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=mips
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>>
+>> All errors (new ones prefixed by >>):
+>>
+>>     In file included from drivers/pcmcia/vrc4173_cardu.c:41:
+> This driver does not compile even before this commit.
+> Yes, it is still broken and yes it has nothing to do with this commit.
 
--- 
-                                        Sergej
+Hi Sebastian,
+
+Only the errors prefixed by '>>' are from this commit, other errors are 
+for reference only.
+
+>> include/linux/spinlock.h:346:2: error: invalid type argument of unary '*' (have 'spinlock_t' {aka 'struct spinlock'})
+
+      346 |  *(_lock) = __SPIN_LOCK_UNLOCKED(_lock); \
 
 
-On Friday, September 18, 2020 1:15:47 AM MSK Andrew Lunn wrote:
-> On Fri, Sep 18, 2020 at 12:40:10AM +0300, Sergej Bauer wrote:
-> > From: sbauer@blackbox.su
-> > 
-> >     Here is a kernel related part of my work which was helps to develop
-> >     brand
-> > 
-> > new PHY device.
-> > 
-> >     It is migth be helpful for developers work with PHY-less lan743x
-> > 
-> > (7431:0011 in my case). It's just a fake virtual PHY which can change
-> > speed of network card processing as a loopback device. Baud rate can be
-> > tuned with ethtool from command line or by means of SIOCSMIIREG ioctl.
-> > Duplex mode not configurable and it's allways DUPLEX_FULL.
-> 
-> Hi Sergej
-> 
-> What is the advantage of this over using driver/net/phy/fixed_phy.c
-> which also emulates a standard PHY?
-> 
->       Andrew
-
-
-
-
+Best Regards,
+Rong Chen
