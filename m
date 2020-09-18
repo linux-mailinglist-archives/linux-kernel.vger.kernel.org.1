@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 360CB26F1FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2663026F1F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730183AbgIRCzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:55:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57250 "EHLO mail.kernel.org"
+        id S1730261AbgIRCzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:55:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727861AbgIRCHJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:07:09 -0400
+        id S1727889AbgIRCHN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:07:13 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 881E623888;
-        Fri, 18 Sep 2020 02:07:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 99E0A238E6;
+        Fri, 18 Sep 2020 02:07:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394828;
-        bh=6XU8vPkSLEwOa1GUgEOWTxPjC+wNJ5n4jec0uDYGkig=;
+        s=default; t=1600394832;
+        bh=RuOcHj6Pq7vRFqIp9YPlvoYdwRZ5RcdJnj7QOiZtsFU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ekjKictkpoTkboZo996yLByJxagU2d6HgXaSQ2c6WwG75URHdmTuohjlRfZn5u4Y0
-         1ut/zXmDcyaxTF39vHOtJfMqW2Jni/Nvdka0gDt0Ewws2vjbGaJj1vj4sO0PVsMHin
-         FZbGjhq4/qcuED2UkiutNkpY9RtveP7vqteuBPco=
+        b=EuUtszqAycdmRfxftOmObHVi5HYtx2B8nqiJ4FZWi6cdOyPmg82YJqyEtMt2l5N1k
+         jQKFChHoCNaI6thLYKaFyizSGbdLDO5Eo02Yo2+8wVheD3wwd88RlnHyl24kYQ6MXL
+         C/+tmPeZwWx5JhQGdZGBhCYt4z15O5FZD2b6e4AQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ian Rogers <irogers@google.com>, Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 292/330] perf evsel: Fix 2 memory leaks
-Date:   Thu, 17 Sep 2020 22:00:32 -0400
-Message-Id: <20200918020110.2063155-292-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 294/330] perf stat: Fix duration_time value for higher intervals
+Date:   Thu, 17 Sep 2020 22:00:34 -0400
+Message-Id: <20200918020110.2063155-294-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -49,39 +48,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ian Rogers <irogers@google.com>
+From: Jiri Olsa <jolsa@kernel.org>
 
-[ Upstream commit 3efc899d9afb3d03604f191a0be9669eabbfc4aa ]
+[ Upstream commit ea9eb1f456a08c18feb485894185f7a4e31cc8a4 ]
 
-If allocated, perf_pkg_mask and metric_events need freeing.
+Joakim reported wrong duration_time value for interval bigger
+than 4000 [1].
 
-Signed-off-by: Ian Rogers <irogers@google.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
+The problem is in the interval value we pass to update_stats
+function, which is typed as 'unsigned int' and overflows when
+we get over 2^32 (happens between intervals 4000 and 5000).
+
+Retyping the passed value to unsigned long long.
+
+[1] https://www.spinics.net/lists/linux-perf-users/msg11777.html
+
+Fixes: b90f1333ef08 ("perf stat: Update walltime_nsecs_stats in interval mode")
+Reported-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Michael Petlan <mpetlan@redhat.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Stephane Eranian <eranian@google.com>
-Link: http://lore.kernel.org/lkml/20200512235918.10732-1-irogers@google.com
+Link: http://lore.kernel.org/lkml/20200518131445.3745083-1-jolsa@kernel.org
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/evsel.c | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/perf/builtin-stat.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index 12b1755b136d3..9dd9e3f4ef591 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -1255,6 +1255,8 @@ void perf_evsel__exit(struct evsel *evsel)
- 	zfree(&evsel->group_name);
- 	zfree(&evsel->name);
- 	zfree(&evsel->pmu_name);
-+	zfree(&evsel->per_pkg_mask);
-+	zfree(&evsel->metric_events);
- 	perf_evsel__object.fini(evsel);
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index 468fc49420ce1..ac2feddc75fdd 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -351,7 +351,7 @@ static void process_interval(void)
+ 	}
+ 
+ 	init_stats(&walltime_nsecs_stats);
+-	update_stats(&walltime_nsecs_stats, stat_config.interval * 1000000);
++	update_stats(&walltime_nsecs_stats, stat_config.interval * 1000000ULL);
+ 	print_counters(&rs, 0, NULL);
  }
  
 -- 
