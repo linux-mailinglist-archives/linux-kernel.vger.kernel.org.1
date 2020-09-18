@@ -2,79 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E67D226F987
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB68C26F99D
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:52:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726276AbgIRJqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 05:46:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725874AbgIRJqN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 05:46:13 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EAC2C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 02:46:13 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id k15so4932997wrn.10
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 02:46:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XgPTd8GJDPNaoiWfgXmr6X5TAsaC/3AQihdlF5dTIOI=;
-        b=qqhCH+vkGBp6YZSODpBl+ykCrFasu1vfprL2nycyIhNjHPUV7ySJpsDabxXJsyrBJe
-         43CB2zqs/djSdJMfzd1nKkOAw9kxDUJZ6l5+QvZWrdCGxrasbp/afVvkSW/nFZWiAvTV
-         eNX3pbWirs5zIdt0XnFKFTS2n41cETV7pnB81hO3ftQKFVApTJyQPypSgOwpItX1hjXY
-         zLN5rWDVLcWx+zNyxBm4+W3G1yAp5+ov34msaSYEt2r2zzPh1iMM+qGez/n8/YxJ09Z0
-         3l/IJNmZ5UN5xIN1BewwYPYZgxqfmdfjVBQ3bsSpz+VGrkceVBWMIyW6oNT7WTMbWpAB
-         QIUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XgPTd8GJDPNaoiWfgXmr6X5TAsaC/3AQihdlF5dTIOI=;
-        b=KBSgvEpvTTJGgBwi61eMMhRjUUlItbuM1CI1IHrWDlPt5gl694ZrggsoGNBPu8Rkd9
-         cxzYDuxFSPXiDz+fXB30A1lmLCxavUPxfY+xx8ld4tYJjVcICb/J+ovHKJJW92YMo7jb
-         ojQ1PAD+G7cXBEd19jbWmT6NEyl0GFXuc7Dd3pNvQohqt9mSq6oIoXAvoNxN+AuwPEab
-         Ekp4NOjI9A8D0Lnja7a3Y+aFk/DpqCvpb87hcRgjoj5K7Ncp7RRydiA9T2+Kv83OoF1O
-         Zw5glowN9+XB/MNqx+fa/Y1JUOpZMyC5zCW7yoiRYpYQYqoN66sYHnC0udtmeorSc8id
-         8ZYg==
-X-Gm-Message-State: AOAM533cNAteZNO/aRikwliXZFRw1cybtzjJr/jnX8nbEwBuYo6Xo+TP
-        E+NQHULOZfIhrCf9r22B8UZIOfDLqWTjTcpd1y/HDQ==
-X-Google-Smtp-Source: ABdhPJz0jOiQsriiNYEfJ+pE5eUwdvbpZPECY1GZun6q57sZypArkv+Sx/04wqxBCoSj7MWqFfka1wEaaXu/ecayX5U=
-X-Received: by 2002:a5d:60d0:: with SMTP id x16mr36360211wrt.196.1600422371731;
- Fri, 18 Sep 2020 02:46:11 -0700 (PDT)
+        id S1726221AbgIRJwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 05:52:14 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58042 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726115AbgIRJwN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 05:52:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B2D05B170;
+        Fri, 18 Sep 2020 09:52:45 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id AF9491E12E1; Fri, 18 Sep 2020 11:52:10 +0200 (CEST)
+Date:   Fri, 18 Sep 2020 11:52:10 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu, jack@suse.cz,
+        dan.j.williams@intel.com, anju@linux.vnet.ibm.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv3 1/1] ext4: Optimize file overwrites
+Message-ID: <20200918095210.GE18920@quack2.suse.cz>
+References: <cover.1600401668.git.riteshh@linux.ibm.com>
+ <88e795d8a4d5cd22165c7ebe857ba91d68d8813e.1600401668.git.riteshh@linux.ibm.com>
 MIME-Version: 1.0
-References: <cover.1600204505.git.andreyknvl@google.com> <28d17537bbd029104cf7de4f7ca92246449efa50.1600204505.git.andreyknvl@google.com>
- <CAG_fn=UACdKuiKq7qkTNM=QHcZ=u4nwfn7ESSPMeWmFXidAVag@mail.gmail.com> <CAG_fn=V2MT9EfS1j-qkRX-TdH4oQxRbRcBYr8G+PV11KJBO26g@mail.gmail.com>
-In-Reply-To: <CAG_fn=V2MT9EfS1j-qkRX-TdH4oQxRbRcBYr8G+PV11KJBO26g@mail.gmail.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Fri, 18 Sep 2020 11:46:00 +0200
-Message-ID: <CAG_fn=WpOoAf4t1iKrWcD+LBaCvL6tf_QYeqoX65UWPi92h=6Q@mail.gmail.com>
-Subject: Re: [PATCH v2 20/37] kasan: rename tags.c to tags_sw.c
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <88e795d8a4d5cd22165c7ebe857ba91d68d8813e.1600401668.git.riteshh@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Also, as we are going to have CONFIG_KASAN_{SW,HW}_TAGS, won't it be
-> better to call the files {report_,}tags_{sw,hw}.c ?
+On Fri 18-09-20 10:36:35, Ritesh Harjani wrote:
+> In case if the file already has underlying blocks/extents allocated
+> then we don't need to start a journal txn and can directly return
+> the underlying mapping. Currently ext4_iomap_begin() is used by
+> both DAX & DIO path. We can check if the write request is an
+> overwrite & then directly return the mapping information.
+> 
+> This could give a significant perf boost for multi-threaded writes
+> specially random overwrites.
+> On PPC64 VM with simulated pmem(DAX) device, ~10x perf improvement
+> could be seen in random writes (overwrite). Also bcoz this optimizes
+> away the spinlock contention during jbd2 slab cache allocation
+> (jbd2_journal_handle). On x86 VM, ~2x perf improvement was observed.
+> 
+> Reported-by: Dan Williams <dan.j.williams@intel.com>
+> Suggested-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
 
-Sorry for the typo, I meant "{report_,}{sw,hw}_tags.c, mirroring the
-config names.
+The patch looks good to me. You can add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  fs/ext4/inode.c | 18 +++++++++++++++---
+>  1 file changed, 15 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 10dd470876b3..6eae17758ece 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -3437,14 +3437,26 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+>  	map.m_len = min_t(loff_t, (offset + length - 1) >> blkbits,
+>  			  EXT4_MAX_LOGICAL_BLOCK) - map.m_lblk + 1;
+>  
+> -	if (flags & IOMAP_WRITE)
+> +	if (flags & IOMAP_WRITE) {
+> +		/*
+> +		 * We check here if the blocks are already allocated, then we
+> +		 * don't need to start a journal txn and we can directly return
+> +		 * the mapping information. This could boost performance
+> +		 * especially in multi-threaded overwrite requests.
+> +		 */
+> +		if (offset + length <= i_size_read(inode)) {
+> +			ret = ext4_map_blocks(NULL, inode, &map, 0);
+> +			if (ret > 0 && (map.m_flags & EXT4_MAP_MAPPED))
+> +				goto out;
+> +		}
+>  		ret = ext4_iomap_alloc(inode, &map, flags);
+> -	else
+> +	} else {
+>  		ret = ext4_map_blocks(NULL, inode, &map, 0);
+> +	}
+>  
+>  	if (ret < 0)
+>  		return ret;
+> -
+> +out:
+>  	ext4_set_iomap(inode, iomap, &map, offset, length);
+>  
+>  	return 0;
+> -- 
+> 2.26.2
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
