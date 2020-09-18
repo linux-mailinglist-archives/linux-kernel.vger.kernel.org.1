@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 105E426F2C0
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC8B26F2C1
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727334AbgIRDBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 23:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34302 "EHLO
+        id S1730525AbgIRDBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 23:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730508AbgIRDBR (ORCPT
+        with ESMTP id S1730513AbgIRDBR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 17 Sep 2020 23:01:17 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9257C061224
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 20:01:14 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id q131so3389431qke.22
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 20:01:14 -0700 (PDT)
+Received: from mail-il1-x14a.google.com (mail-il1-x14a.google.com [IPv6:2607:f8b0:4864:20::14a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 379DAC061226
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 20:01:16 -0700 (PDT)
+Received: by mail-il1-x14a.google.com with SMTP id m10so3467607ild.5
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 20:01:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=wq04R7kZnQOtaC6LIn5FEyAUuNq1+kFsvgljt2u93LM=;
-        b=gMRyeCTkVNljPnLMYO/c5iwSUJPLZYnD8yVlrpNnYNQl+BUx4Gp6/CVq2UXghQXGL0
-         DsDMaadax8KWE8X5qaIMvpG6T690scGvd3Umzz2c8LXQDxhE5P42VbtJwYEG5wO+jFGZ
-         L1gYoNlhdLpsUUd9kzHg0DoMrL069TOq4UpyUgaStksAyD4JM0446iezsZlMDIKjXeVJ
-         K+15ABfhWQghGRPSS5tivLNMvFtAiisjVBtwvc/dxiDYVE6hCRMbnimrwIAZSPG1X0g0
-         7Db4ovJPLWWGZgL8IdeKqCGHLlA8tr+98Io6ncueImMNiVlVOpsrvmFQY4NauP0wGXb6
-         Swbg==
+        bh=xN4oCimHvtKPjnmxoot3/TeH/iRIHwliUhH4EqN3ncs=;
+        b=fU4u9XAvUyFqc0FXzkoK3nY8UyYBJi56mVd5IZCcXi/06TGZR06LJCa+NOPHM3hx5H
+         8Vi3W7LOmppBEorAX04u1pMD7lMDWoBkZcEincebTf9bbeQxEh8HW9PUgpnfbnIiTN68
+         9o3rBJyuwDc99b0fhHU1oNUDG0h0Xw75vzSSkA7/1SEM82CPXoLce4PfkqRWQAge/aP1
+         Rr3vbi5Ff/5NyfDZijt1PVK9pMQ3ZenSPV/g81k0fLtiRMiEN9M2k+0pcyo20SO7gWLn
+         f1YuRnutJIYrgSOmdTnSMQMra+rHNsxOPkCkC5iCVj4JFgIYvEDVqVZbRoBajtVwrWsH
+         Lc7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=wq04R7kZnQOtaC6LIn5FEyAUuNq1+kFsvgljt2u93LM=;
-        b=mGI5b1NVIoUryOiesZgVqBl5Q8XqtOG1+SkCAMbmnXo0e5j8PLRFcPq+Tx0BNYDXZ5
-         KuY1kKt9gGYn7OrsLiGDBYmT/buoJTg7Re0jcns2YnVMD41QEQgN99XbOrc4pDfP1qQg
-         7ljNab0Tj0Z1JgEQ3d+0R66pO5skbda0tagpP51K+VEGTiu+RHXxuigrkQlDULZhYCgG
-         HwXX0Bd2BTY4CqezRLqZuRrSNO/sXe+ryL8Dtq8wYTkZ2RZVLjvVziDaYyjQY9RFoMrl
-         k+Znx0j0194KHppM+8ZwOrWEEjDz4UEm3JCZD8Pcn/vZSD/AjNpe2w+52z2CVrNDRtdu
-         85Bg==
-X-Gm-Message-State: AOAM530PfkYfw8s3a/VTwPcGpS9w7t0byd/NQ+O7VtxMfW/TrlyxQZQH
-        Ia04BL1PsgeymiVfu8sweHiWVhgk/Vc=
-X-Google-Smtp-Source: ABdhPJxaysxGdARme+9yjmforBPIN7Zkq7S72PiA++g2NnAT+54HUXkrR7L5CWXZOP3wm2phDI5l8TxTG5E=
+        bh=xN4oCimHvtKPjnmxoot3/TeH/iRIHwliUhH4EqN3ncs=;
+        b=UcnxGo5qY4ttHgFUatNXg0ViLAGyD5HRu7avGo2c/EXdwJsSMyS8+rS4bTJLv+njXO
+         BMu6ykR4/GpgFIfpFQvNdKQi5Aqc/qnGcmgpzJ5Ne/rVH2VU1rXI6CTOfRSwAXuJ71LS
+         S69iXNi0XMgU5cMYQEDXbw9GJrOgWX3fOwqjY1SXkJdzDXmpOguaWwx5gZ9gJ18ZQp0p
+         gzzbmrN/DuiyuGZyq9cSJl/uwud5qArNcuPD42Al2T4wuVfDsjtwkne++QbLMyUTPzdp
+         EFRQT1xVReozdzLpHeCXwUufE56L63mTI/YrI5nTRPGpM+bbmFROM0ZBndo2sjuyzmzR
+         mVTg==
+X-Gm-Message-State: AOAM531QIXrsFGgjnKUDBEh6ddFVnAintYu3gDFxNuGAhhqS7RI0PP1Y
+        jDbbYcqUerW+E5mMv3ymM/VBflvhti8=
+X-Google-Smtp-Source: ABdhPJxoASGjkRdX7gV5owKUKpPt2SzP5/4sSvfrQT5kIgM3rBNQPtBrjsZo7vBQgv022JrvE7jKBpKaBVw=
 X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
- (user=yuzhao job=sendgmr) by 2002:a0c:aed5:: with SMTP id n21mr32541779qvd.20.1600398074007;
- Thu, 17 Sep 2020 20:01:14 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 21:00:49 -0600
+ (user=yuzhao job=sendgmr) by 2002:a92:1fd9:: with SMTP id f86mr27888282ilf.250.1600398075411;
+ Thu, 17 Sep 2020 20:01:15 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 21:00:50 -0600
 In-Reply-To: <20200918030051.650890-1-yuzhao@google.com>
-Message-Id: <20200918030051.650890-12-yuzhao@google.com>
+Message-Id: <20200918030051.650890-13-yuzhao@google.com>
 Mime-Version: 1.0
 References: <20200918030051.650890-1-yuzhao@google.com>
 X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
-Subject: [PATCH 11/13] mm: inline __update_lru_size()
+Subject: [PATCH 12/13] mm: make lruvec_lru_size() static
 From:   Yu Zhao <yuzhao@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Michal Hocko <mhocko@kernel.org>
@@ -79,42 +79,43 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 All other references to the function were removed after
-commit a892cb6b977f ("mm/vmscan.c: use update_lru_size() in update_lru_sizes()")
+commit b910718a948a ("mm: vmscan: detect file thrashing at the reclaim root")
 
 This change should have no side effects.
 
 Signed-off-by: Yu Zhao <yuzhao@google.com>
 ---
- include/linux/mm_inline.h | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+ include/linux/mmzone.h | 2 --
+ mm/vmscan.c            | 3 ++-
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/mm_inline.h b/include/linux/mm_inline.h
-index 7183c7a03f09..355ea1ee32bd 100644
---- a/include/linux/mm_inline.h
-+++ b/include/linux/mm_inline.h
-@@ -24,7 +24,7 @@ static inline int page_is_file_lru(struct page *page)
- 	return !PageSwapBacked(page);
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index 8379432f4f2f..c2b1f1d363cc 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -842,8 +842,6 @@ static inline struct pglist_data *lruvec_pgdat(struct lruvec *lruvec)
+ #endif
  }
  
--static __always_inline void __update_lru_size(struct lruvec *lruvec,
-+static __always_inline void update_lru_size(struct lruvec *lruvec,
- 				enum lru_list lru, enum zone_type zid,
- 				int nr_pages)
- {
-@@ -33,13 +33,6 @@ static __always_inline void __update_lru_size(struct lruvec *lruvec,
- 	__mod_lruvec_state(lruvec, NR_LRU_BASE + lru, nr_pages);
- 	__mod_zone_page_state(&pgdat->node_zones[zid],
- 				NR_ZONE_LRU_BASE + lru, nr_pages);
--}
+-extern unsigned long lruvec_lru_size(struct lruvec *lruvec, enum lru_list lru, int zone_idx);
 -
--static __always_inline void update_lru_size(struct lruvec *lruvec,
--				enum lru_list lru, enum zone_type zid,
--				int nr_pages)
--{
--	__update_lru_size(lruvec, lru, zid, nr_pages);
- #ifdef CONFIG_MEMCG
- 	mem_cgroup_update_lru_size(lruvec, lru, zid, nr_pages);
- #endif
+ #ifdef CONFIG_HAVE_MEMORYLESS_NODES
+ int local_memory_node(int node_id);
+ #else
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 4688e495c242..367843296c21 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -312,7 +312,8 @@ unsigned long zone_reclaimable_pages(struct zone *zone)
+  * @lru: lru to use
+  * @zone_idx: zones to consider (use MAX_NR_ZONES for the whole LRU list)
+  */
+-unsigned long lruvec_lru_size(struct lruvec *lruvec, enum lru_list lru, int zone_idx)
++static unsigned long lruvec_lru_size(struct lruvec *lruvec, enum lru_list lru,
++				     int zone_idx)
+ {
+ 	unsigned long size = 0;
+ 	int zid;
 -- 
 2.28.0.681.g6f77f65b4e-goog
 
