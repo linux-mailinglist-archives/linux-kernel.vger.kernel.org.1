@@ -2,44 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7FB226F7FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2348E26F803
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726637AbgIRIUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 04:20:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726109AbgIRIUC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 04:20:02 -0400
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 516BDC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 01:20:02 -0700 (PDT)
-Received: from [2a02:fe0:c700:2:687c:e90d:da70:b07d] (port=63904)
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id S1726309AbgIRIUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 04:20:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46602 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726064AbgIRIUj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 04:20:39 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 276B720789;
+        Fri, 18 Sep 2020 08:20:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600417239;
+        bh=LeUVi8N0SXoGjKelLIuhUz/0LftupivSYLHHOImTsdw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=bEUVJA28ZofZc6ZaTybGGXdfTKWgLhbCsy93Hbg9SRSz0Rm565ywR75PyCqWRuHwL
+         Wqnspu+1xIhgp8l3Yb4XIOOVpceGVjx28EOV6FYM53ZSQ+26Rv+vSL9SAkc/FBevrE
+         Mv0eWbylwHcI8M1woJoSg4RtW8YDYIgz5fWNnuHc=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.92)
-        (envelope-from <Yw_Carl@bit-cube.eu>)
-        id 1kJBce-0000In-Id
-        for linux-kernel@vger.kernel.org; Fri, 18 Sep 2020 10:20:00 +0200
-From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Yw_Carl@bit-cube.eu>
-Subject: Re: Computername: La HAQ, with NUR-X
-To:     linux-kernel@vger.kernel.org
-References: <d7720f88-14f3-0f38-8915-6a6386e5d065@bit-cube.eu>
-Message-ID: <71ecb308-94cf-f102-7a73-55e2669ab8d8@bit-cube.eu>
-Date:   Fri, 18 Sep 2020 10:19:52 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        (envelope-from <maz@kernel.org>)
+        id 1kJBdF-00Cvpk-71; Fri, 18 Sep 2020 09:20:37 +0100
 MIME-Version: 1.0
-In-Reply-To: <d7720f88-14f3-0f38-8915-6a6386e5d065@bit-cube.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Fri, 18 Sep 2020 09:20:37 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCHv3] perf kvm: add kvm-stat for arm64
+In-Reply-To: <20200918003219.GC3049@jagdpanzerIV.localdomain>
+References: <20200917003645.689665-1-sergey.senozhatsky@gmail.com>
+ <20200917100950.GC12548@leoy-ThinkPad-X240s>
+ <20200917101219.GD12548@leoy-ThinkPad-X240s>
+ <652f10660f09bd608b825233713f775a@kernel.org>
+ <20200917114231.GE12548@leoy-ThinkPad-X240s>
+ <ca309fcda71944455a8c6c1b308886ba@kernel.org>
+ <20200918003219.GC3049@jagdpanzerIV.localdomain>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <f60758eeacb4e94db698d98d6d447939@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: sergey.senozhatsky@gmail.com, leo.yan@linaro.org, acme@kernel.org, mark.rutland@arm.com, peterz@infradead.org, will@kernel.org, john.garry@huawei.com, mathieu.poirier@linaro.org, namhyung@kernel.org, suleiman@google.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On second thought I changed this to La HAQ. (One has to use this).
-> Summary: 
-> https://www.youtube.com/playlist?list=PLlAQSGchksxbMk7KHTxuYTHo9ngF9Gp0h
->
-> Serenity!
-> Y.C.
+On 2020-09-18 01:32, Sergey Senozhatsky wrote:
+> On (20/09/17 12:53), Marc Zyngier wrote:
+>> Feel free to add a *new* tracepoint instead.
+> 
+> Wouldn't we want a whole bunch of new tracepoints in this case?
+
+Yes. I don't have a better solution as long as tracepoints are ABI.
+Get someone to sign-off on it, and I'll happily change them.
+
+> (almost all of the existing ones with the extra vcpu_id field).
+> Right now we have 3 types of events:
+> - events with no vcpu at all        // nil
+> - events with vcpu_pc               // "0x%016lx", __entry->vcpu_pc
+> - events with (void *)vcpu          // "vcpu: %p", __entry->vcpu
+> 
+> It might be helpful if we could filter out events by vcpu_id.
+> But this, basically, doubles the number of events in the ringbuffer.
+
+Only if you enable them both, right? You define new tracepoints that
+do whatever you need them to do (hopefully in a cross-architecture
+compliant way), and have perf to only use the new ones on arm64.
+How would that double the number of events in the buffer?
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
