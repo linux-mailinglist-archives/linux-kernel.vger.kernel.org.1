@@ -2,320 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08387270906
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 00:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E220F270913
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 01:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726129AbgIRWuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 18:50:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48776 "EHLO
+        id S1726236AbgIRXK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 19:10:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725874AbgIRWuz (ORCPT
+        with ESMTP id S1726119AbgIRXK1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 18:50:55 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36013C0613CE;
-        Fri, 18 Sep 2020 15:50:55 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id q9so6693218wmj.2;
-        Fri, 18 Sep 2020 15:50:54 -0700 (PDT)
+        Fri, 18 Sep 2020 19:10:27 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A99C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 16:10:26 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id v14so3773358pjd.4
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 16:10:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=idMbHdqE5RSEL1+PYj6diJYT02GB4Z1nCCZPgrHPta8=;
-        b=Vckwe6xI+A2C9eCp+WMph4qWQrfTlLHpa/4Y4LcF58WPWCTf/ZHeH2RfuXQtP7J6C1
-         aiaOaBaC7RR8SZnurM9CSGq9Ik5ovliFaK+fr/Ipcyeg/UMsJ4i3a+2OSTHJFOSTswAS
-         Ejy+wr8tZXZUYLPwo3viLSmcfe0Zn2hSSH7RWuaZa3wTNr0/0cEJC08FTKPxyVXaWN74
-         /XuXaAD/ErGKs1jYCUkO0cYJYR2W/FDvJIAknyNtTo5r0kgD7QVsdeym95tNUccXEMr3
-         vmm+XD1GvGDu+anKwVRMu2p+WN/VbAPSAKJuUMvTDjthRGE+wNmGj7aJR5C+DqshkclM
-         HZIQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dpdVLtoWDhg/MgaG2lrr/KNN32VwIq3tdEbOR5a5awQ=;
+        b=Q7dCujlVPAYtZ0fMm1A3gP2IYnHgCJbnYp29dE0P+rjbeW6M06xO4QXPN66FHMQGgr
+         d77rWBphdT/MKGwyXNx3b9aM4rTs+sCEAifBOuW67woBEb5XqLKpnSq9I+KxPhtpvlAK
+         rnqcyFjzdc0UyoLzhQ14w6O9uOmNL/96WZWcWvA+dIPg38ijt9yuEiV1sVNTXWkFV8E3
+         CwiC47daA9vlqbzpcm3b6YoLxZ6bE0UYcNQIxKX+B5A6b3YmSLuPBo7fO0LfFXDnjDzl
+         hJp+soHcjPApnVvSJO12Mh0vmPzNEHgef0GESiW4GwCdMmjLG5KRQaSyn8VBgBnshK6x
+         +4/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=idMbHdqE5RSEL1+PYj6diJYT02GB4Z1nCCZPgrHPta8=;
-        b=Z0Qghxgp9Q6UZW+7MfTwur4buV51Kb9gU6K67oSfcD0cn+sQ5GvW8PJmX9OepstaNo
-         mI76NJw/986R7CINvcWi+/vBl5zhbTElgwb6o1ZJFzydJq8gUVZWwO0x+hA7Kz/0doyk
-         lxYNKK88FcbHg/7p/5sz/NX1Ixg6zf4exb25538G47UzSP5BV+UnA6p7vApGdXZl1iWy
-         ntg9MCx2LU68yF24DVnOp+42czRsdLNZ1BLI3br3y/xfPLE47ZJZzI2r8CQpgyosUp62
-         TQqjGl+niqJmzAsrH2aUhyxAK0L+pumzNvFsc0J+J7HpS8iFyXTbFklWXga5mq4P03Pp
-         gn+w==
-X-Gm-Message-State: AOAM533/Ql2ftsafZOTlRH7zMewIQgP2z9bRalJPGY8D8o8tu/MTSuB4
-        r9HA8Uw/BEnXTlu0toKeyHM=
-X-Google-Smtp-Source: ABdhPJwjf4jXNqYTyGVIF3CtQIUJQDErVPkzZsagv3DdXcCRd8jzDPcLVTuvuBWHdOemvSRbNZgvMQ==
-X-Received: by 2002:a1c:9cd3:: with SMTP id f202mr17665842wme.148.1600469453514;
-        Fri, 18 Sep 2020 15:50:53 -0700 (PDT)
-Received: from [192.168.1.211] ([2.29.208.34])
-        by smtp.gmail.com with ESMTPSA id c14sm7462056wrv.12.2020.09.18.15.50.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Sep 2020 15:50:52 -0700 (PDT)
-From:   Dan Scally <djrscally@gmail.com>
-Subject: Re: [RFC PATCH] Add bridge driver to connect sensors to CIO2 device
- via software nodes on ACPI platforms
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     yong.zhi@intel.com, sakari.ailus@linux.intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org, davem@davemloft.net, robh@kernel.org,
-        devel@driverdev.osuosl.org, jorhand@linux.microsoft.com,
-        kieran.bingham@ideasonboard.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, kitakar@gmail.com
-References: <20200916213618.8003-1-djrscally@gmail.com>
- <20200917093407.GK4282@kadam>
-Message-ID: <8d19e234-2e87-693a-c3e7-a8433ae83d61@gmail.com>
-Date:   Fri, 18 Sep 2020 23:50:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dpdVLtoWDhg/MgaG2lrr/KNN32VwIq3tdEbOR5a5awQ=;
+        b=Kiaf0YarhL8nrp4WDx9XG9y5/DScAXX6thdagNIF23QON5X91ocoWqbLgcGq6ZE3bo
+         egDHxkJKjmztViw92fA1gqeEHv0iAFSs/VaB0UEgiQaxdpyecDZJFq0aC8w2YJoydxUa
+         /4QSw84XYqeK7NUeOrvvq7dYSgvLwqn23GyTWyPNm8AYJEyJkDWgUjKMBsJtbbMQkJEx
+         F0FXBLgnEWJl7U5GEQbgNGNa0JplpHEJoLDXaKh+2CsnS4eGYHDs3PonZtoAy6NEk8rL
+         hOIEfqQ6TnrxsOjeSlxyV1ECpgrmvVKBWUoQIi8aYrok/pXwEHKpWCxdls6903/7wi90
+         8wIg==
+X-Gm-Message-State: AOAM533A8GPBkUYNmpcDI3xAEhRNku7s2LyRFlNhVEQswSkQg2jpzRlY
+        +FEzXrnGmuz9kDIhyotmSQiQWQ==
+X-Google-Smtp-Source: ABdhPJxk0JqxsU4ppA2/wMlCC7pjRsW9DW2LULP68dBcAFuqQa5XOebg8e9odeJU+SDNjSKwfKTk+g==
+X-Received: by 2002:a17:90a:71c7:: with SMTP id m7mr15710591pjs.190.1600470626119;
+        Fri, 18 Sep 2020 16:10:26 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id a74sm4381005pfa.16.2020.09.18.16.10.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 16:10:24 -0700 (PDT)
+Date:   Fri, 18 Sep 2020 17:10:23 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        guennadi.liakhovetski@linux.intel.com
+Subject: Re: [PATCH v2 5/8] rpmsg: introduce reserved rpmsg driver for ns
+ announcement
+Message-ID: <20200918231023.GA209991@xps15>
+References: <20200825164907.3642-1-arnaud.pouliquen@st.com>
+ <20200825164907.3642-6-arnaud.pouliquen@st.com>
 MIME-Version: 1.0
-In-Reply-To: <20200917093407.GK4282@kadam>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200825164907.3642-6-arnaud.pouliquen@st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dan -  thanks for all your comments. Sorry it took a while to get to
-yours.
+Hey Arnaud,
 
-On 17/09/2020 10:34, Dan Carpenter wrote:
-> On Wed, Sep 16, 2020 at 10:36:18PM +0100, Daniel Scally wrote:
->> diff --git a/drivers/media/pci/intel/ipu3/ipu3-cio2.c b/drivers/media/pci/intel/ipu3/ipu3-cio2.c
->> index 92f5eadf2c99..fd941d2c7581 100644
->> --- a/drivers/media/pci/intel/ipu3/ipu3-cio2.c
->> +++ b/drivers/media/pci/intel/ipu3/ipu3-cio2.c
->> @@ -1719,6 +1719,59 @@ static void cio2_queues_exit(struct cio2_device *cio2)
->>  		cio2_queue_exit(cio2, &cio2->queue[i]);
->>  }
->>  
->> +static int cio2_probe_can_progress(struct pci_dev *pci_dev)
->> +{
->> +	void *sensor;
->> +
->> +	/*
->> +	 * On ACPI platforms, we need to probe _after_ sensors wishing to connect
->> +	 * to cio2 have added a device link. If there are no consumers yet, then
->> +	 * we need to defer. The .sync_state() callback will then be called after
->> +	 * all linked sensors have probed
->> +	 */
->> +
->> +	if (IS_ENABLED(CONFIG_ACPI)) {
-> Reverse this condition.
->
-> 	if (!IS_ENABLED(CONFIG_ACPI))
-> 		return 0;
->
->
-Yeah, much better.
->> +		sensor = (struct device *)list_first_entry_or_null(
->> +								&pci_dev->dev.links.consumers,
->> +								struct dev_links_info,
->> +								consumers);
->> +
->> +		if (!sensor)
->> +			return -EPROBE_DEFER;
-> Get rid of the cast.
->
-> 	if (list_empty(&pci_dev->dev.links.consumers))
-> 		return -EPROBE_DEFER;
->
-> 	return 0;
->
-Also much better, though I think possibly this whole section will be
-going away now after some of the other pointers...
->> +		cio2 = dev_get_drvdata(dev);
->> +
->> +		if (!cio2) {
-> Delete the blank line between the call and the test.  They're part of
-> the same step.  "cio2" can't be NULL anyway, so delete the test.
-Thanks - I'll skip blank lines in that situation in future
->> +
->> +	if (ret < 0) {
->> +		dev_err(dev, "Failed to fetch SSDB data\n");
->> +		return ret;
->> +	}
->> +
->> +	sensor->link = sensor_data.link;
->> +	sensor->lanes = sensor_data.lanes;
->> +	sensor->mclkspeed = sensor_data.mclkspeed;
->> +
->> +	return 0;
->> +}
->> +
->> +static int create_endpoint_properties(struct device *dev,
->> +				      struct sensor_bios_data *ssdb,
->> +				      struct property_entry *sensor_props,
->> +				      struct property_entry *cio2_props)
->> +{
->> +		u32 *data_lanes;
->> +		int i;
-> Indented too far.
->
->> +
->> +		data_lanes = devm_kmalloc(dev, sizeof(u32) * (int)ssdb->lanes,
-> No need for the cast.  Use devm_kmalloc_array().
-Ah - TIL that that exists, thanks.
->> +					  GFP_KERNEL);
->> +
->> +		if (!data_lanes) {
->> +			dev_err(dev,
->> +				"Couldn't allocate memory for data lanes array\n");
-> Delete the error message (checkpatch.pl --strict).
-And that too - I wasn't using the --strict flag, I'll do that next time
->> +
->> +		sensor_props[0] = PROPERTY_ENTRY_U32("clock-frequency",
->> +						     ssdb->mclkspeed);
->> +		sensor_props[1] = PROPERTY_ENTRY_U32("bus-type", 5);
->> +		sensor_props[2] = PROPERTY_ENTRY_U32("clock-lanes", 0);
->> +		sensor_props[3] = PROPERTY_ENTRY_U32_ARRAY_LEN("data-lanes",
->> +							       data_lanes,
->> +							       (int)ssdb->lanes);
->> +		sensor_props[4] = remote_endpoints[(bridge.n_sensors * 2) + ENDPOINT_SENSOR];
->> +		sensor_props[5] = PROPERTY_ENTRY_NULL;
->> +
->> +		cio2_props[0] = PROPERTY_ENTRY_U32_ARRAY_LEN("data-lanes",
->> +							     data_lanes,
->> +							     (int)ssdb->lanes);
->> +		cio2_props[1] = remote_endpoints[(bridge.n_sensors * 2) + ENDPOINT_CIO2];
->> +		cio2_props[2] = PROPERTY_ENTRY_NULL;
->> +
->> +		return 0;
->> +}
->> +
->> +static int connect_supported_devices(void)
->> +{
->> +	struct acpi_device *adev;
->> +	struct device *dev;
->> +	struct sensor_bios_data ssdb;
->> +	struct sensor *sensor;
->> +	struct property_entry *sensor_props;
->> +	struct property_entry *cio2_props;
->> +	struct fwnode_handle *fwnode;
->> +	struct software_node *nodes;
->> +	struct v4l2_subdev *sd;
->> +	int i, ret;
->> +
->> +	for (i = 0; i < ARRAY_SIZE(supported_devices); i++) {
->> +		adev = acpi_dev_get_first_match_dev(supported_devices[i],
->> +						    NULL, -1);
->> +
->> +		if (!adev)
->> +			continue;
->> +
->> +		dev = bus_find_device_by_acpi_dev(&i2c_bus_type, adev);
->> +
->> +		if (!dev) {
->> +			pr_info("ACPI match for %s, but it has no i2c device\n",
->> +				supported_devices[i]);
->> +			continue;
->> +		}
->> +
->> +		if (!dev->driver_data) {
->> +			pr_info("ACPI match for %s, but it has no driver\n",
->> +				supported_devices[i]);
-> put_device(dev);
-Good catch, thank you.
->> +	}
->> +
->> +	ret = connect_supported_devices();
->> +
->> +	if ((ret < 0) || (bridge.n_sensors <= 0)) {
->> +		pr_err("cio2_bridge: Failed to connect any devices\n");
->> +		goto out;
-> If (bridge.n_sensors <= 0) is true then we need to set ret = -EINVAL
-> or something.  Really .n_sensors can't be negative.
->
-> The name "out" is a crappy label name because it doesn't say what the
-> goto does.  When I scroll down then it turns out that "goto out;" calls
-> a free_everything() function.  That kind of error handling is always
-> buggy.
->
-> There are several typical bugs.  1) Something leaks because the error
-> handling style is too complicated to be audited.  2)  Dereferencing
-> uninitialized pointers.  3)  Undoing something which hasn't been done.
->
-> I believe that in this case one bug is with the handling of the
-> bridge.cio2_fwnode.  We "restore" it back to the original state
-> as soon as we have a non-NULL bridge.cio2 instead of waiting until we
-> have stored the original state.
->
-> The best way to do error handling is this.
->
-> Every function cleans up after itself.  The connect_supported_devices()
-> function is a bit special because it's a loop.  I would would write it
-> so that if it fails then it cleans up the partial loop iteration and
-> then at the end it cleans up all the failed loop iterations.
->
-> 	for (i = 0; i < ARRAY_SIZE(supported_devices); i++) {
-> 		a = frob();
-> 		if (!a)
-> 			goto unwind;
-> 		b = frob();
-> 		if (!b) {
-> 			free(a);
-> 			goto unwind;
-> 		}
-> 		...
-> 	}
->
-> 	return 0;
->
-> unwind:
-> 	for (i = 0; i < bridge.n_sensors; i++) {
-> 		free(b);
-> 		free(a);
-> 	}
-> 	bridge.n_sensors = 0;
->
-> 	return ret;
->
-> The problem with cio2_bridge_unregister_sensors() is that it doesn't
-> clean up partial iterations through the loop.  (Missing calls to
-> put_device(dev)).
->
-> Loops are complicated but the rest is simple.  1) Every allocation
-> function needs a matching cleanup function.  2) Use good label names
-> which say what the goto does.  3)  The goto should free the most recent
-> successful allocation.
->
-> 	a = frob();
-> 	if (!a)
-> 		return -ENOMEM;
->
-> 	b = frob();
-> 	if (!b) {
-> 		ret = -ENOMEM;
-> 		goto free_a;
-> 	}
->
-> 	c = frob();
-> 	if (!c) {
-> 		ret = -ENOMEM;
-> 		goto free_b;
-> 	}
->
-> 	return 0;
->
-> free_b:
-> 	free(b);
-> free_a:
-> 	free(a);
->
-> 	return ret;
->
-> The free function doesn't have any if statements.
->
-> void free_function()
-> {
-> 	free(c);
-> 	free(b);
-> 	free(a);
-> }
->
-> The reviewer only needs to keep track of the most recent allocation
-> and verify that the goto free_foo matches what should be freed.  This
-> system means the code is auditable (no leaks), you never free anything
-> which wasn't allocated.
->
-This  section and the other comments on error handling was really
-helpful - I appreciate you taking the time to explain so thoroughly.
+On Tue, Aug 25, 2020 at 06:49:04PM +0200, Arnaud Pouliquen wrote:
+> The name service announcement should not be linked to the RPMsg virtio bus
+> but to the RPMsg protocol itself.
+> 
+> This patch proposes to break the dependency with the RPmsg virtio bus by
+> the introduction of the reserved RPMsg name service driver which will be in
+> charge of managing the RPMsg name service announcement.
+> 
+> This first patch only implements the probe and the RPMsg endpoint to
+> manage create and release channels remote requests.
+> 
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+> ---
+>  drivers/rpmsg/Kconfig          |   8 ++
+>  drivers/rpmsg/Makefile         |   1 +
+>  drivers/rpmsg/rpmsg_internal.h |  17 +++++
+>  drivers/rpmsg/rpmsg_ns.c       | 135 +++++++++++++++++++++++++++++++++
+>  4 files changed, 161 insertions(+)
+>  create mode 100644 drivers/rpmsg/rpmsg_ns.c
+> 
+> diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
+> index f96716893c2a..c3fc75e6514b 100644
+> --- a/drivers/rpmsg/Kconfig
+> +++ b/drivers/rpmsg/Kconfig
+> @@ -15,6 +15,14 @@ config RPMSG_CHAR
+>  	  in /dev. They make it possible for user-space programs to send and
+>  	  receive rpmsg packets.
+>  
+> +config RPMSG_NS
+> +	tristate "RPMSG name service announcement"
+> +	depends on RPMSG
+> +	help
+> +	  Say Y here to enable the support of the name service announcement
+> +	  channel that probes the associated RPMsg device on remote endpoint
+> +	  service announcement.
+> +
+>  config RPMSG_MTK_SCP
+>  	tristate "MediaTek SCP"
+>  	depends on MTK_SCP
+> diff --git a/drivers/rpmsg/Makefile b/drivers/rpmsg/Makefile
+> index ffe932ef6050..8d452656f0ee 100644
+> --- a/drivers/rpmsg/Makefile
+> +++ b/drivers/rpmsg/Makefile
+> @@ -1,6 +1,7 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  obj-$(CONFIG_RPMSG)		+= rpmsg_core.o
+>  obj-$(CONFIG_RPMSG_CHAR)	+= rpmsg_char.o
+> +obj-$(CONFIG_RPMSG_NS)		+= rpmsg_ns.o
+>  obj-$(CONFIG_RPMSG_MTK_SCP)	+= mtk_rpmsg.o
+>  qcom_glink-objs			:= qcom_glink_native.o qcom_glink_ssr.o
+>  obj-$(CONFIG_RPMSG_QCOM_GLINK) += qcom_glink.o
+> diff --git a/drivers/rpmsg/rpmsg_internal.h b/drivers/rpmsg/rpmsg_internal.h
+> index d5ab286d0e5e..641b48f6bf2a 100644
+> --- a/drivers/rpmsg/rpmsg_internal.h
+> +++ b/drivers/rpmsg/rpmsg_internal.h
+> @@ -102,4 +102,21 @@ static inline int rpmsg_chrdev_register_device(struct rpmsg_device *rpdev)
+>  	return rpmsg_register_device(rpdev);
+>  }
+>  
+> +/**
+> + * rpmsg_ns_register_device() - register name service device based on rpdev
+> + * @rpdev: prepared rpdev to be used for creating endpoints
+> + *
+> + * This function wraps rpmsg_register_device() preparing the rpdev for use as
+> + * basis for the rpmsg name service device.
+> + */
+> +static inline int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
+> +{
+> +	strcpy(rpdev->id.name, "rpmsg_ns");
+> +	rpdev->driver_override = "rpmsg_ns";
+> +	rpdev->src = RPMSG_NS_ADDR;
+> +	rpdev->dst = RPMSG_NS_ADDR;
+> +
+> +	return rpmsg_register_device(rpdev);
+> +}
+> +
+>  #endif
+> diff --git a/drivers/rpmsg/rpmsg_ns.c b/drivers/rpmsg/rpmsg_ns.c
+> new file mode 100644
+> index 000000000000..3c929b6976a6
+> --- /dev/null
+> +++ b/drivers/rpmsg/rpmsg_ns.c
+> @@ -0,0 +1,135 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) STMicroelectronics 2020 - All Rights Reserved
+> + */
+> +#include <linux/device.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/slab.h>
+> +#include "rpmsg_internal.h"
+> +
+> +/**
+> + * enum rpmsg_ns_flags - dynamic name service announcement flags
+> + *
+> + * @RPMSG_NS_CREATE: a new remote service was just created
+> + * @RPMSG_NS_DESTROY: a known remote service was just destroyed
+> + */
+> +enum rpmsg_ns_flags {
+> +	RPMSG_NS_CREATE		= 0,
+> +	RPMSG_NS_DESTROY	= 1,
+> +};
+> +
+> +/**
+> + * struct rpmsg_ns_msg - dynamic name service announcement message
+> + * @name: name of remote service that is published
+> + * @addr: address of remote service that is published
+> + * @flags: indicates whether service is created or destroyed
+> + *
+> + * This message is sent across to publish a new service, or announce
+> + * about its removal. When we receive these messages, an appropriate
+> + * rpmsg channel (i.e device) is created/destroyed. In turn, the ->probe()
+> + * or ->remove() handler of the appropriate rpmsg driver will be invoked
+> + * (if/as-soon-as one is registered).
+> + */
+> +struct rpmsg_ns_msg {
+> +	char name[RPMSG_NAME_SIZE];
+> +	__le32 addr;
+> +	__le32 flags;
+> +} __packed;
+> +
+> +/* Invoked when a name service announcement arrives */
+> +static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void *data, int len,
+> +		       void *priv, u32 src)
+> +{
+> +	struct rpmsg_ns_msg *msg = data;
+> +	struct rpmsg_device *newch;
+> +	struct rpmsg_channel_info chinfo;
+> +	struct device *dev = &rpdev->dev;
+> +	unsigned int flags = le32_to_cpu(msg->flags);
+> +	int ret;
+> +
+> +#if defined(CONFIG_DYNAMIC_DEBUG)
+> +	dynamic_hex_dump("NS announcement: ", DUMP_PREFIX_NONE, 16, 1,
+> +			 data, len, true);
+> +#endif
+> +
+> +	if (len != sizeof(*msg)) {
+> +		dev_err(dev, "malformed ns msg (%d)\n", len);
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* Don't trust the remote processor for null terminating the name */
+> +	msg->name[RPMSG_NAME_SIZE - 1] = '\0';
+> +
+> +	strncpy(chinfo.name, msg->name, sizeof(chinfo.name));
+> +	chinfo.src = RPMSG_ADDR_ANY;
+> +	chinfo.dst = le32_to_cpu(msg->addr);
 
+As I said in an earlier comment I would like to avoid redefining structures that
+already exist.  With this patch [1] we made structure rpmsg_hdr and rpmsg_ns_msg
+virtIO specific, which in hindsight, wasn't the best move forward.  After taking
+another look at this set and keeping Guennadi's work in mind it is probably best
+to keep rpmsg_hdr and rpmsg_ns_msg generic and do the byte conversion based on
+the transport layer used by the rpmsg_device.  Taking the above as an example we
+would have:
+
+        chinfo.dst = rpmsg32_to_cpu(rpdev, msg->addr);
+
+Where rpmsg32_to_cpu() would be defined as follow:
+
+u32 rpmsg32_to_cpu(struct rpmsg_device *rpdev, u32 val)
+{
+        return rpdev->ops->transport32_to_cpu(rpdev, val); 
+}
+
+And in the case of a virtIO based rpmsg_device like we currently have:
+
+u32 virtio_transport32_to_cpu(struct rpmsg_device *rpdev, u32 val)
+{
+        struct virtio_rpmsg_channel *vch = to_virtio_rpmsg_channel(rpdev);
+        struct virtproc_info *vrp = vch->vrp;
+
+        return virtio32_to_cpu(vrp->vdev, val);
+}
+
+That would allow the virtualisation people (and anyone else) to use the RPMSG
+common code without modification and split up RPMSG name service from the
+transport layer, as you're doing in this patch.
+
+We need to fix the current code before moving further with either
+patchset (yours and Guennadi's).  I started working on a patchset that does that
+but I'll need to merge it with yours on Monday (I'm out of time for today).
+
+Thanks,
+Mathieu 
+
+[1]. 111d1089700c rpmsg: virtio: add endianness conversions
+
+> +
+> +	dev_info(dev, "%sing channel %s addr 0x%x\n",
+> +		 (flags & RPMSG_NS_DESTROY) ? "destroy" : "creat",
+> +		 msg->name, chinfo.dst);
+> +
+> +	if (flags & RPMSG_NS_DESTROY) {
+> +		ret = rpmsg_release_channel(rpdev, &chinfo);
+> +		if (ret)
+> +			dev_err(dev, "rpmsg_destroy_channel failed: %d\n", ret);
+> +	} else {
+> +		newch = rpmsg_create_channel(rpdev, &chinfo);
+> +		if (!newch)
+> +			dev_err(dev, "rpmsg_create_channel failed\n");
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int rpmsg_ns_probe(struct rpmsg_device *rpdev)
+> +{
+> +	struct rpmsg_channel_info ns_chinfo;
+> +	struct rpmsg_endpoint *ns_ept;
+> +
+> +	ns_chinfo.src = RPMSG_NS_ADDR;
+> +	ns_chinfo.dst = RPMSG_NS_ADDR;
+> +	strcpy(ns_chinfo.name, "name_service");
+> +
+> +	/*
+> +	 * Create the NS announcement service endpoint associated to the RPMsg
+> +	 * device. The endpoint will be automatically destroyed when the RPMsg
+> +	 * device will be deleted.
+> +	 */
+> +	ns_ept = rpmsg_create_ept(rpdev, rpmsg_ns_cb, NULL, ns_chinfo);
+> +	if (!ns_ept) {
+> +		dev_err(&rpdev->dev, "failed to create the ns ept\n");
+> +		return -ENOMEM;
+> +	}
+> +	rpdev->ept = ns_ept;
+> +
+> +	return 0;
+> +}
+> +
+> +static struct rpmsg_driver rpmsg_ns_driver = {
+> +	.drv.name = "rpmsg_ns",
+> +	.probe = rpmsg_ns_probe,
+> +};
+> +
+> +static int rpmsg_ns_init(void)
+> +{
+> +	int ret;
+> +
+> +	ret = register_rpmsg_driver(&rpmsg_ns_driver);
+> +	if (ret < 0)
+> +		pr_err("%s: Failed to register rpmsg driver\n", __func__);
+> +
+> +	return ret;
+> +}
+> +postcore_initcall(rpmsg_ns_init);
+> +
+> +static void rpmsg_ns_exit(void)
+> +{
+> +	unregister_rpmsg_driver(&rpmsg_ns_driver);
+> +}
+> +module_exit(rpmsg_ns_exit);
+> +
+> +MODULE_DESCRIPTION("Name service announcement rpmsg Driver");
+> +MODULE_AUTHOR("Arnaud Pouliquen <arnaud.pouliquen@st.com>");
+> +MODULE_ALIAS("rpmsg_ns");
+> +MODULE_LICENSE("GPL v2");
+> -- 
+> 2.17.1
+> 
