@@ -2,95 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3991E26F55F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 07:27:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90FE326F57C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 07:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726484AbgIRF1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 01:27:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29175 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726344AbgIRF1W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 01:27:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600406841;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=x/q3gUore7zMYpWMNytQTNB0y+piFCSTZflyi2KzLVc=;
-        b=OBR8QHs0O4UY3V7rgRk+0X/fSY7O19bkstLVAfOu2rhEbzIuxhxMUMwSp0TBuBd/enNiSK
-        nEA2SBU4HYaJa7Vt2x98fbPU0jSHzvy3ZDdIGLIuYrwF/oo+dr0St0gGbEdnvUzdFKoTIh
-        WhFQhMxgOcVK/7JGnAmvwV/f/Txpdgc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-274-pRgiR_Y6MHShvn_qENIzvA-1; Fri, 18 Sep 2020 01:27:17 -0400
-X-MC-Unique: pRgiR_Y6MHShvn_qENIzvA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 63BC6801AAB;
-        Fri, 18 Sep 2020 05:27:14 +0000 (UTC)
-Received: from dhcp-128-65.nay.redhat.com (ovpn-13-81.pek2.redhat.com [10.72.13.81])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 00D125576E;
-        Fri, 18 Sep 2020 05:27:00 +0000 (UTC)
-Date:   Fri, 18 Sep 2020 13:26:57 +0800
-From:   Dave Young <dyoung@redhat.com>
-To:     chenzhou <chenzhou10@huawei.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com,
-        tglx@linutronix.de, mingo@redhat.com, bhe@redhat.com,
-        corbet@lwn.net, John.P.donnelly@oracle.com,
-        prabhakar.pkin@gmail.com, bhsharma@redhat.com, horms@verge.net.au,
-        robh+dt@kernel.org, arnd@arndb.de, nsaenzjulienne@suse.de,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kexec@lists.infradead.org, linux-doc@vger.kernel.org,
-        guohanjun@huawei.com, xiexiuqi@huawei.com, huawei.libin@huawei.com,
-        wangkefeng.wang@huawei.com
-Subject: Re: [PATCH v12 3/9] x86: kdump: use macro CRASH_ADDR_LOW_MAX in
- functions reserve_crashkernel[_low]()
-Message-ID: <20200918052657.GA35322@dhcp-128-65.nay.redhat.com>
-References: <20200907134745.25732-1-chenzhou10@huawei.com>
- <20200907134745.25732-4-chenzhou10@huawei.com>
- <20200918030112.GA3356@dhcp-128-65.nay.redhat.com>
- <d4296985-7296-b5c9-45f3-b03d28bc7bd8@huawei.com>
+        id S1726666AbgIRFs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 01:48:26 -0400
+Received: from mga18.intel.com ([134.134.136.126]:38475 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726646AbgIRFs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 01:48:26 -0400
+IronPort-SDR: GwBhKS+nXw7o55ORNPlVfxLRFJ5W+tDGuTQBAlcEJuLEvF0ZXB6odL0rnsXMRlr4tvIr0mdunz
+ usycN/D9of8Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="147613085"
+X-IronPort-AV: E=Sophos;i="5.77,273,1596524400"; 
+   d="scan'208";a="147613085"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 22:48:23 -0700
+IronPort-SDR: GicbUj+0BIsf+0SPSiw/Cz69GqY/w+rt5x1H733jaMHzxCjrfqS0A9V72u8KVzBwj1DyEJSbZO
+ L8IrY05x0srw==
+X-IronPort-AV: E=Sophos;i="5.77,273,1596524400"; 
+   d="scan'208";a="344628508"
+Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.16])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 22:48:22 -0700
+Subject: [PATCH v2] dm: Call proper helper to determine dax support
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     linux-nvdimm@lists.01.org
+Cc:     stable@vger.kernel.org, Adrian Huang <ahuang12@lenovo.com>,
+        Jan Kara <jack@suse.cz>, Mike Snitzer <snitzer@redhat.com>,
+        dm-devel@redhat.com, linux-kernel@vger.kernel.org,
+        ira.weiny@intel.com, mpatocka@redhat.com, snitzer@redhat.com
+Date:   Thu, 17 Sep 2020 22:30:03 -0700
+Message-ID: <160040692945.25320.13233625491405115889.stgit@dwillia2-desk3.amr.corp.intel.com>
+User-Agent: StGit/0.18-3-g996c
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d4296985-7296-b5c9-45f3-b03d28bc7bd8@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/18/20 at 11:57am, chenzhou wrote:
-> Hi Dave,
-> 
-> 
-> On 2020/9/18 11:01, Dave Young wrote:
-> > On 09/07/20 at 09:47pm, Chen Zhou wrote:
-> >> To make the functions reserve_crashkernel[_low]() as generic,
-> >> replace some hard-coded numbers with macro CRASH_ADDR_LOW_MAX.
-> >>
-> >> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-> >> ---
-> >>  arch/x86/kernel/setup.c | 11 ++++++-----
-> >>  1 file changed, 6 insertions(+), 5 deletions(-)
-> >>
-> >> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> >> index d7fd90c52dae..71a6a6e7ca5b 100644
-> >> --- a/arch/x86/kernel/setup.c
-> >> +++ b/arch/x86/kernel/setup.c
-> >> @@ -430,7 +430,7 @@ static int __init reserve_crashkernel_low(void)
-> >>  	unsigned long total_low_mem;
-> >>  	int ret;
-> >>  
-> >> -	total_low_mem = memblock_mem_size(1UL << (32 - PAGE_SHIFT));
-> >> +	total_low_mem = memblock_mem_size(CRASH_ADDR_LOW_MAX >> PAGE_SHIFT);
-> > total_low_mem != CRASH_ADDR_LOW_MAX
-> I just replace the magic number with macro, no other change.
-> Besides, function memblock_mem_size(limit_pfn) will compute the memory size
-> according to the actual system ram.
-> 
+From: Jan Kara <jack@suse.cz>
 
-Ok, it is not obvious in patch this is 64bit only, I'm fine with this
-then.
+DM was calling generic_fsdax_supported() to determine whether a device
+referenced in the DM table supports DAX. However this is a helper for "leaf" device drivers so that
+they don't have to duplicate common generic checks. High level code
+should call dax_supported() helper which that calls into appropriate
+helper for the particular device. This problem manifested itself as
+kernel messages:
+
+dm-3: error: dax access failed (-95)
+
+when lvm2-testsuite run in cases where a DM device was stacked on top of
+another DM device.
+
+Fixes: 7bf7eac8d648 ("dax: Arrange for dax_supported check to span multiple devices")
+Cc: <stable@vger.kernel.org>
+Tested-by: Adrian Huang <ahuang12@lenovo.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Acked-by: Mike Snitzer <snitzer@redhat.com>
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+---
+Changes since v1 [1]:
+- Add missing dax_read_lock() around dax_supported()
+
+[1]: http://lore.kernel.org/r/20200916151445.450-1-jack@suse.cz
+
+ drivers/dax/super.c   |    4 ++++
+ drivers/md/dm-table.c |   10 +++++++---
+ include/linux/dax.h   |   11 +++++++++--
+ 3 files changed, 20 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/dax/super.c b/drivers/dax/super.c
+index e5767c83ea23..b6284c5cae0a 100644
+--- a/drivers/dax/super.c
++++ b/drivers/dax/super.c
+@@ -325,11 +325,15 @@ EXPORT_SYMBOL_GPL(dax_direct_access);
+ bool dax_supported(struct dax_device *dax_dev, struct block_device *bdev,
+ 		int blocksize, sector_t start, sector_t len)
+ {
++	if (!dax_dev)
++		return false;
++
+ 	if (!dax_alive(dax_dev))
+ 		return false;
+ 
+ 	return dax_dev->ops->dax_supported(dax_dev, bdev, blocksize, start, len);
+ }
++EXPORT_SYMBOL_GPL(dax_supported);
+ 
+ size_t dax_copy_from_iter(struct dax_device *dax_dev, pgoff_t pgoff, void *addr,
+ 		size_t bytes, struct iov_iter *i)
+diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
+index 5edc3079e7c1..229f461e7def 100644
+--- a/drivers/md/dm-table.c
++++ b/drivers/md/dm-table.c
+@@ -860,10 +860,14 @@ EXPORT_SYMBOL_GPL(dm_table_set_type);
+ int device_supports_dax(struct dm_target *ti, struct dm_dev *dev,
+ 			sector_t start, sector_t len, void *data)
+ {
+-	int blocksize = *(int *) data;
++	int blocksize = *(int *) data, id;
++	bool rc;
+ 
+-	return generic_fsdax_supported(dev->dax_dev, dev->bdev, blocksize,
+-				       start, len);
++	id = dax_read_lock();
++	rc = dax_supported(dev->dax_dev, dev->bdev, blocksize, start, len);
++	dax_read_unlock(id);
++
++	return rc;
+ }
+ 
+ /* Check devices support synchronous DAX */
+diff --git a/include/linux/dax.h b/include/linux/dax.h
+index 6904d4e0b2e0..9f916326814a 100644
+--- a/include/linux/dax.h
++++ b/include/linux/dax.h
+@@ -130,6 +130,8 @@ static inline bool generic_fsdax_supported(struct dax_device *dax_dev,
+ 	return __generic_fsdax_supported(dax_dev, bdev, blocksize, start,
+ 			sectors);
+ }
++bool dax_supported(struct dax_device *dax_dev, struct block_device *bdev,
++		int blocksize, sector_t start, sector_t len);
+ 
+ static inline void fs_put_dax(struct dax_device *dax_dev)
+ {
+@@ -157,6 +159,13 @@ static inline bool generic_fsdax_supported(struct dax_device *dax_dev,
+ 	return false;
+ }
+ 
++static inline bool dax_supported(struct dax_device *dax_dev,
++		struct block_device *bdev, int blocksize, sector_t start,
++		sector_t len)
++{
++	return false;
++}
++
+ static inline void fs_put_dax(struct dax_device *dax_dev)
+ {
+ }
+@@ -195,8 +204,6 @@ bool dax_alive(struct dax_device *dax_dev);
+ void *dax_get_private(struct dax_device *dax_dev);
+ long dax_direct_access(struct dax_device *dax_dev, pgoff_t pgoff, long nr_pages,
+ 		void **kaddr, pfn_t *pfn);
+-bool dax_supported(struct dax_device *dax_dev, struct block_device *bdev,
+-		int blocksize, sector_t start, sector_t len);
+ size_t dax_copy_from_iter(struct dax_device *dax_dev, pgoff_t pgoff, void *addr,
+ 		size_t bytes, struct iov_iter *i);
+ size_t dax_copy_to_iter(struct dax_device *dax_dev, pgoff_t pgoff, void *addr,
 
