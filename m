@@ -2,121 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D7D326EA68
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 03:21:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC4FC26EA6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 03:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726196AbgIRBVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 21:21:38 -0400
-Received: from mga04.intel.com ([192.55.52.120]:62750 "EHLO mga04.intel.com"
+        id S1726199AbgIRBWf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 17 Sep 2020 21:22:35 -0400
+Received: from smtp.h3c.com ([60.191.123.56]:17903 "EHLO h3cspam01-ex.h3c.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725886AbgIRBVi (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 21:21:38 -0400
-IronPort-SDR: YnJxwXYTJ4lORONpDNVzAsat0SF74NcgpwYaIeqTwAxPgV9PLEs1hjR0KbIZQoRXITLSBnA6yC
- tOVAEkV32hdw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="157215920"
-X-IronPort-AV: E=Sophos;i="5.77,273,1596524400"; 
-   d="scan'208";a="157215920"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 18:21:33 -0700
-IronPort-SDR: vXUNcEFSqy2OWFuk6SZi+9xvIiTpHw2DjXVCXTlv+HPfBkIJj177JWUZw3mthx3BPOT1ESgeWj
- /Jd4PqPypNXg==
-X-IronPort-AV: E=Sophos;i="5.77,273,1596524400"; 
-   d="scan'208";a="483979420"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.5.239]) ([10.238.5.239])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 18:21:30 -0700
-Subject: Re: [PATCH 0/2] Update CascadelakeX and SkylakeX events list
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <Linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>, kan.liang@intel.com,
-        "Jin, Yao" <yao.jin@intel.com>,
-        Stephane Eranian <eranian@google.com>
-References: <20200603021818.27028-1-yao.jin@linux.intel.com>
- <911b4132-d1a1-f3c4-a2ed-2fcfe9a28fc6@linux.intel.com>
- <CAP-5=fW3OCuVkQ8csYfHXj5c_pCSY5-6vDrj2r=MNDZmpo0f8g@mail.gmail.com>
- <c7edd282-f58a-4efe-5961-6c1369b6b77b@linux.intel.com>
- <20200616193856.GC6393@kernel.org>
- <681a333b-e4dc-9481-715e-a65a34e10f83@linux.intel.com>
- <82271c45-4a7d-d892-eccd-ed042b86a333@linux.intel.com>
-Message-ID: <8ed53667-8241-1c58-ac2c-ecc9e9870afd@linux.intel.com>
-Date:   Fri, 18 Sep 2020 09:21:27 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1725886AbgIRBWe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 21:22:34 -0400
+Received: from DAG2EX01-BASE.srv.huawei-3com.com ([10.8.0.64])
+        by h3cspam01-ex.h3c.com with ESMTPS id 08I1Lb7C092671
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 18 Sep 2020 09:21:37 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
+ DAG2EX01-BASE.srv.huawei-3com.com (10.8.0.64) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 18 Sep 2020 09:21:38 +0800
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
+ by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
+ mapi id 15.01.1713.004; Fri, 18 Sep 2020 09:21:37 +0800
+From:   Tianxianting <tian.xianting@h3c.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+CC:     "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] tracing: use __this_cpu_read() in
+ trace_buffered_event_enable()
+Thread-Topic: [PATCH] tracing: use __this_cpu_read() in
+ trace_buffered_event_enable()
+Thread-Index: AQHWcWW/lUMuTErgSEmeCDizYMhoyqltPS+AgACT0gA=
+Date:   Fri, 18 Sep 2020 01:21:37 +0000
+Message-ID: <87803c1d960c4b17b59eb39346fdb028@h3c.com>
+References: <20200813112803.12256-1-tian.xianting@h3c.com>
+ <20200917203127.091e23f2@rorschach.local.home>
+In-Reply-To: <20200917203127.091e23f2@rorschach.local.home>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.99.141.128]
+x-sender-location: DAG2
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-In-Reply-To: <82271c45-4a7d-d892-eccd-ed042b86a333@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-DNSRBL: 
+X-MAIL: h3cspam01-ex.h3c.com 08I1Lb7C092671
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
+Hi Steven,
+Thanks for your reply:)
 
-On 9/7/2020 4:01 PM, Jin, Yao wrote:
-> Hi Arnaldo,
+-----Original Message-----
+From: Steven Rostedt [mailto:rostedt@goodmis.org] 
+Sent: Friday, September 18, 2020 8:31 AM
+To: tianxianting (RD) <tian.xianting@h3c.com>
+Cc: mingo@redhat.com; linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tracing: use __this_cpu_read() in trace_buffered_event_enable()
+
+Sorry for the late reply (been busy with Linux Plumbers, took a vacation, and then trying to catch up on all my email for the last two
+months!)
+
+But I just wanted to let you know that I added this to my queue.
+
+Thanks!
+
+-- Steve
+
+
+On Thu, 13 Aug 2020 19:28:03 +0800
+Xianting Tian <tian.xianting@h3c.com> wrote:
+
+> The code is executed with preemption disabled, so it's safe to use 
+> __this_cpu_read().
 > 
-> On 7/17/2020 2:06 PM, Jin, Yao wrote:
->> Hi,
->>
->> On 6/17/2020 3:38 AM, Arnaldo Carvalho de Melo wrote:
->>> Em Tue, Jun 16, 2020 at 02:27:40PM +0800, Jin, Yao escreveu:
->>>> On 6/16/2020 2:16 PM, Ian Rogers wrote:
->>>>> On Mon, Jun 15, 2020 at 6:00 PM Jin, Yao <yao.jin@linux.intel.com> wrote:
->>>>>> Can I get an ACK for this patchset?
->>>>>> On 6/3/2020 10:18 AM, Jin Yao wrote:
->>>>>>> This patchset updates CascadelakeX events to v1.08 and
->>>>>>> updates SkylakeX events to v1.21.
->>>
->>>>>>> The events have been tested on CascadelakeX and SkylakeX
->>>>>>> servers with latest perf/core branch.
->>>
->>>>> could you rebase this on Arnaldo's tmp.perf/core tree?
->>>>> https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/log/?h=tmp.perf/core
->>>>> I tried using git am but get:
->>>>> Applying: perf vendor events: Update CascadelakeX events to v1.08
->>>>> error: patch fragment without header at line 279: @@ -213,14 +220,14 @@
->>>>> error: could not build fake ancestor
->>>>> Patch failed at 0001 perf vendor events: Update CascadelakeX events to v1.08
->>>>>
->>>>> Thanks,
->>>>> Ian
->>>>>
->>>>
->>>> The patchset are applied OK on perf/core branch.
->>>>
->>>> As far as I understand, the patch for posting should be based on perf/core branch, is it right?
->>>
->>> Sorry, I've been testing with using tmp.perf/core as a way to more
->>> quickly make available what I've processed, before I test it thoroughly
->>> both with container builds and with manual testing, so the bleeding edge
->>> is there, perf/core becoming a bit more stable, as I'll try not to
->>> rebase it like before.
->>>
->>> - Arnaldo
->>>
->>
->> Can this event update be accepted?
->>
->> Thanks
->> Jin Yao
+> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+> ---
+>  kernel/trace/trace.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Can this event list update be accepted?
-> 
-> Thanks
-> Jin Yao
+> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c index 
+> bb6226972..7d0d71ce9 100644
+> --- a/kernel/trace/trace.c
+> +++ b/kernel/trace/trace.c
+> @@ -2514,7 +2514,7 @@ void trace_buffered_event_enable(void)
+>  
+>  		preempt_disable();
+>  		if (cpu == smp_processor_id() &&
+> -		    this_cpu_read(trace_buffered_event) !=
+> +		    __this_cpu_read(trace_buffered_event) !=
+>  		    per_cpu(trace_buffered_event, cpu))
+>  			WARN_ON_ONCE(1);
+>  		preempt_enable();
 
-Ping again. :)
-
-Can this event update patchset be accepted?
-
-@Ian, I remembered you had tried this patchset and it's OK right?
-
-Thanks
-Jin Yao
