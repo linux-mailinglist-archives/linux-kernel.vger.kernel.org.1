@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D7A126F493
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:15:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48C0426F491
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:15:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730433AbgIRDPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 23:15:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45444 "EHLO mail.kernel.org"
+        id S1726908AbgIRDP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 23:15:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726201AbgIRCBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:01:19 -0400
+        id S1726370AbgIRCB3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:01:29 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 223C921707;
-        Fri, 18 Sep 2020 02:01:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8C8AF21D40;
+        Fri, 18 Sep 2020 02:01:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394479;
-        bh=ZWXCHAIhOxLvBohGGN9gIS4oL85Z+wVf83WCgrQzrfI=;
+        s=default; t=1600394486;
+        bh=H8WaB6BrPJvOK0/+mDoNVBymGhqmdOHaFv38C5S0Xow=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KBZtwxDmCyiu3Dwwu7j6hBUw13b/Ao8djJ/WCUjbedcbZDdwGhXwMvH/6K4MLG4iV
-         QjFoD0+PDKCee6Mt2c8kmvpWNfGwWiFGszINg60V0APtJIB88/EHyalk8/VSPEmYx/
-         Idy+pxojTMifM2y5ZQmE+c1OtTnqPPlcJaGVCSSI=
+        b=fzCm7hv8XcKg1CxHjHJSHazN685HAqZZvNrpSg74aL9ffiCCJWFi1FMk+/srpwrN1
+         ASDK2F0K2/niRsWPN9FLrlyjCvXnEFawAygmDwaUKI3V3cUZWrYcs9jjx0sjX5aP1L
+         HsmeLbQPM21wzaiDTbj9PEnFB9ixkM6+LSLsdDhE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     zhengbin <zhengbin13@huawei.com>, Hulk Robot <hulkci@huawei.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 006/330] media: mc-device.c: fix memleak in media_device_register_entity
-Date:   Thu, 17 Sep 2020 21:55:46 -0400
-Message-Id: <20200918020110.2063155-6-sashal@kernel.org>
+Cc:     Miaoqing Pan <miaoqing@codeaurora.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 012/330] ath10k: fix memory leak for tpc_stats_final
+Date:   Thu, 17 Sep 2020 21:55:52 -0400
+Message-Id: <20200918020110.2063155-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -43,112 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhengbin <zhengbin13@huawei.com>
+From: Miaoqing Pan <miaoqing@codeaurora.org>
 
-[ Upstream commit 713f871b30a66dc4daff4d17b760c9916aaaf2e1 ]
+[ Upstream commit 486a8849843455298d49e694cca9968336ce2327 ]
 
-In media_device_register_entity, if media_graph_walk_init fails,
-need to free the previously memory.
+The memory of ar->debug.tpc_stats_final is reallocated every debugfs
+reading, it should be freed in ath10k_debug_destroy() for the last
+allocation.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: zhengbin <zhengbin13@huawei.com>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Tested HW: QCA9984
+Tested FW: 10.4-3.9.0.2-00035
+
+Signed-off-by: Miaoqing Pan <miaoqing@codeaurora.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/mc/mc-device.c | 65 ++++++++++++++++++------------------
- 1 file changed, 33 insertions(+), 32 deletions(-)
+ drivers/net/wireless/ath/ath10k/debug.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/media/mc/mc-device.c b/drivers/media/mc/mc-device.c
-index e19df5165e78c..da80883511352 100644
---- a/drivers/media/mc/mc-device.c
-+++ b/drivers/media/mc/mc-device.c
-@@ -575,6 +575,38 @@ static void media_device_release(struct media_devnode *devnode)
- 	dev_dbg(devnode->parent, "Media device released\n");
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 40baf25ac99f3..04c50a26a4f47 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -2532,6 +2532,7 @@ void ath10k_debug_destroy(struct ath10k *ar)
+ 	ath10k_debug_fw_stats_reset(ar);
+ 
+ 	kfree(ar->debug.tpc_stats);
++	kfree(ar->debug.tpc_stats_final);
  }
  
-+static void __media_device_unregister_entity(struct media_entity *entity)
-+{
-+	struct media_device *mdev = entity->graph_obj.mdev;
-+	struct media_link *link, *tmp;
-+	struct media_interface *intf;
-+	unsigned int i;
-+
-+	ida_free(&mdev->entity_internal_idx, entity->internal_idx);
-+
-+	/* Remove all interface links pointing to this entity */
-+	list_for_each_entry(intf, &mdev->interfaces, graph_obj.list) {
-+		list_for_each_entry_safe(link, tmp, &intf->links, list) {
-+			if (link->entity == entity)
-+				__media_remove_intf_link(link);
-+		}
-+	}
-+
-+	/* Remove all data links that belong to this entity */
-+	__media_entity_remove_links(entity);
-+
-+	/* Remove all pads that belong to this entity */
-+	for (i = 0; i < entity->num_pads; i++)
-+		media_gobj_destroy(&entity->pads[i].graph_obj);
-+
-+	/* Remove the entity */
-+	media_gobj_destroy(&entity->graph_obj);
-+
-+	/* invoke entity_notify callbacks to handle entity removal?? */
-+
-+	entity->graph_obj.mdev = NULL;
-+}
-+
- /**
-  * media_device_register_entity - Register an entity with a media device
-  * @mdev:	The media device
-@@ -632,6 +664,7 @@ int __must_check media_device_register_entity(struct media_device *mdev,
- 		 */
- 		ret = media_graph_walk_init(&new, mdev);
- 		if (ret) {
-+			__media_device_unregister_entity(entity);
- 			mutex_unlock(&mdev->graph_mutex);
- 			return ret;
- 		}
-@@ -644,38 +677,6 @@ int __must_check media_device_register_entity(struct media_device *mdev,
- }
- EXPORT_SYMBOL_GPL(media_device_register_entity);
- 
--static void __media_device_unregister_entity(struct media_entity *entity)
--{
--	struct media_device *mdev = entity->graph_obj.mdev;
--	struct media_link *link, *tmp;
--	struct media_interface *intf;
--	unsigned int i;
--
--	ida_free(&mdev->entity_internal_idx, entity->internal_idx);
--
--	/* Remove all interface links pointing to this entity */
--	list_for_each_entry(intf, &mdev->interfaces, graph_obj.list) {
--		list_for_each_entry_safe(link, tmp, &intf->links, list) {
--			if (link->entity == entity)
--				__media_remove_intf_link(link);
--		}
--	}
--
--	/* Remove all data links that belong to this entity */
--	__media_entity_remove_links(entity);
--
--	/* Remove all pads that belong to this entity */
--	for (i = 0; i < entity->num_pads; i++)
--		media_gobj_destroy(&entity->pads[i].graph_obj);
--
--	/* Remove the entity */
--	media_gobj_destroy(&entity->graph_obj);
--
--	/* invoke entity_notify callbacks to handle entity removal?? */
--
--	entity->graph_obj.mdev = NULL;
--}
--
- void media_device_unregister_entity(struct media_entity *entity)
- {
- 	struct media_device *mdev = entity->graph_obj.mdev;
+ int ath10k_debug_register(struct ath10k *ar)
 -- 
 2.25.1
 
