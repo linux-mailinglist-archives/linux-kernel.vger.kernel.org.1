@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3548A26F06A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:44:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19ED126F06C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728557AbgIRCni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:43:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35776 "EHLO mail.kernel.org"
+        id S1729077AbgIRCnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:43:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727779AbgIRCKu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728467AbgIRCKu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 17 Sep 2020 22:10:50 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7EE3A23719;
-        Fri, 18 Sep 2020 02:10:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BAEA1235FC;
+        Fri, 18 Sep 2020 02:10:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600395047;
-        bh=0LrM5zFtDMDKUYhqhX2N7sngP1jag7D1RZSI4wh543E=;
+        s=default; t=1600395049;
+        bh=r9GNCN1mMZ2mmSrYMyvHpFT99P4cCcj33Ml0g7pgzCo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=duPUlYcJpevdiwM9cCO1U8R6xHKjLbDPQPfXG0T5+JyK0VxHr4zktNZ8darDKif5R
-         ehpoQxq0zYTN9MAcLhQm14zthbSSImiLiKlJBFdzkCN+13wGLZG3VUppKQcpJzcLFq
-         ai53+YZFSqn9AN8GBQAzqkMTct/NoMnnOL92TLo0=
+        b=EZpFCBnN91bHAE0SsvZJpgsT/wJxHMmlq491NSRtgSTu87ImTDXtbqRvKDCPxuYUD
+         7hDQKA5WRklY0Zr/m/asDdEuIBBZEHJ0xCBaA4RAwIxD+NhDooQcFrqdukurGQZHrz
+         k/E6q7YYAFlMX9r4EQfitYQQm7Kz1gTNHHMdcF9c=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Sasha Levin <sashal@kernel.org>, linux-nfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 136/206] NFS: Fix races nfs_page_group_destroy() vs nfs_destroy_unlinked_subrequests()
-Date:   Thu, 17 Sep 2020 22:06:52 -0400
-Message-Id: <20200918020802.2065198-136-sashal@kernel.org>
+Cc:     Xianting Tian <xianting_tian@126.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        yubin@h3c.com, Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>, linux-mm@kvack.org
+Subject: [PATCH AUTOSEL 4.19 138/206] mm/filemap.c: clear page error before actual read
+Date:   Thu, 17 Sep 2020 22:06:54 -0400
+Message-Id: <20200918020802.2065198-138-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
 References: <20200918020802.2065198-1-sashal@kernel.org>
@@ -41,168 +44,145 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Xianting Tian <xianting_tian@126.com>
 
-[ Upstream commit 08ca8b21f760c0ed5034a5c122092eec22ccf8f4 ]
+[ Upstream commit faffdfa04fa11ccf048cebdde73db41ede0679e0 ]
 
-When a subrequest is being detached from the subgroup, we want to
-ensure that it is not holding the group lock, or in the process
-of waiting for the group lock.
+Mount failure issue happens under the scenario: Application forked dozens
+of threads to mount the same number of cramfs images separately in docker,
+but several mounts failed with high probability.  Mount failed due to the
+checking result of the page(read from the superblock of loop dev) is not
+uptodate after wait_on_page_locked(page) returned in function cramfs_read:
 
-Fixes: 5b2b5187fa85 ("NFS: Fix nfs_page_group_destroy() and nfs_lock_and_join_requests() race cases")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+   wait_on_page_locked(page);
+   if (!PageUptodate(page)) {
+      ...
+   }
+
+The reason of the checking result of the page not uptodate: systemd-udevd
+read the loopX dev before mount, because the status of loopX is Lo_unbound
+at this time, so loop_make_request directly trigger the calling of io_end
+handler end_buffer_async_read, which called SetPageError(page).  So It
+caused the page can't be set to uptodate in function
+end_buffer_async_read:
+
+   if(page_uptodate && !PageError(page)) {
+      SetPageUptodate(page);
+   }
+
+Then mount operation is performed, it used the same page which is just
+accessed by systemd-udevd above, Because this page is not uptodate, it
+will launch a actual read via submit_bh, then wait on this page by calling
+wait_on_page_locked(page).  When the I/O of the page done, io_end handler
+end_buffer_async_read is called, because no one cleared the page
+error(during the whole read path of mount), which is caused by
+systemd-udevd reading, so this page is still in "PageError" status, which
+can't be set to uptodate in function end_buffer_async_read, then caused
+mount failure.
+
+But sometimes mount succeed even through systemd-udeved read loopX dev
+just before, The reason is systemd-udevd launched other loopX read just
+between step 3.1 and 3.2, the steps as below:
+
+1, loopX dev default status is Lo_unbound;
+2, systemd-udved read loopX dev (page is set to PageError);
+3, mount operation
+   1) set loopX status to Lo_bound;
+   ==>systemd-udevd read loopX dev<==
+   2) read loopX dev(page has no error)
+   3) mount succeed
+
+As the loopX dev status is set to Lo_bound after step 3.1, so the other
+loopX dev read by systemd-udevd will go through the whole I/O stack, part
+of the call trace as below:
+
+   SYS_read
+      vfs_read
+          do_sync_read
+              blkdev_aio_read
+                 generic_file_aio_read
+                     do_generic_file_read:
+                        ClearPageError(page);
+                        mapping->a_ops->readpage(filp, page);
+
+here, mapping->a_ops->readpage() is blkdev_readpage.  In latest kernel,
+some function name changed, the call trace as below:
+
+   blkdev_read_iter
+      generic_file_read_iter
+         generic_file_buffered_read:
+            /*
+             * A previous I/O error may have been due to temporary
+             * failures, eg. mutipath errors.
+             * Pg_error will be set again if readpage fails.
+             */
+            ClearPageError(page);
+            /* Start the actual read. The read will unlock the page*/
+            error=mapping->a_ops->readpage(flip, page);
+
+We can see ClearPageError(page) is called before the actual read,
+then the read in step 3.2 succeed.
+
+This patch is to add the calling of ClearPageError just before the actual
+read of read path of cramfs mount.  Without the patch, the call trace as
+below when performing cramfs mount:
+
+   do_mount
+      cramfs_read
+         cramfs_blkdev_read
+            read_cache_page
+               do_read_cache_page:
+                  filler(data, page);
+                  or
+                  mapping->a_ops->readpage(data, page);
+
+With the patch, the call trace as below when performing mount:
+
+   do_mount
+      cramfs_read
+         cramfs_blkdev_read
+            read_cache_page:
+               do_read_cache_page:
+                  ClearPageError(page); <== new add
+                  filler(data, page);
+                  or
+                  mapping->a_ops->readpage(data, page);
+
+With the patch, mount operation trigger the calling of
+ClearPageError(page) before the actual read, the page has no error if no
+additional page error happen when I/O done.
+
+Signed-off-by: Xianting Tian <xianting_tian@126.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Jan Kara <jack@suse.cz>
+Cc: <yubin@h3c.com>
+Link: http://lkml.kernel.org/r/1583318844-22971-1-git-send-email-xianting_tian@126.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/pagelist.c        | 67 +++++++++++++++++++++++++++-------------
- fs/nfs/write.c           | 10 ++++--
- include/linux/nfs_page.h |  2 ++
- 3 files changed, 55 insertions(+), 24 deletions(-)
+ mm/filemap.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/fs/nfs/pagelist.c b/fs/nfs/pagelist.c
-index 5dae7c85d9b6e..2c7d76b4c5e18 100644
---- a/fs/nfs/pagelist.c
-+++ b/fs/nfs/pagelist.c
-@@ -132,47 +132,70 @@ nfs_async_iocounter_wait(struct rpc_task *task, struct nfs_lock_context *l_ctx)
- EXPORT_SYMBOL_GPL(nfs_async_iocounter_wait);
- 
- /*
-- * nfs_page_group_lock - lock the head of the page group
-- * @req - request in group that is to be locked
-+ * nfs_page_set_headlock - set the request PG_HEADLOCK
-+ * @req: request that is to be locked
-  *
-- * this lock must be held when traversing or modifying the page
-- * group list
-+ * this lock must be held when modifying req->wb_head
-  *
-  * return 0 on success, < 0 on error
-  */
- int
--nfs_page_group_lock(struct nfs_page *req)
-+nfs_page_set_headlock(struct nfs_page *req)
- {
--	struct nfs_page *head = req->wb_head;
--
--	WARN_ON_ONCE(head != head->wb_head);
--
--	if (!test_and_set_bit(PG_HEADLOCK, &head->wb_flags))
-+	if (!test_and_set_bit(PG_HEADLOCK, &req->wb_flags))
- 		return 0;
- 
--	set_bit(PG_CONTENDED1, &head->wb_flags);
-+	set_bit(PG_CONTENDED1, &req->wb_flags);
- 	smp_mb__after_atomic();
--	return wait_on_bit_lock(&head->wb_flags, PG_HEADLOCK,
-+	return wait_on_bit_lock(&req->wb_flags, PG_HEADLOCK,
- 				TASK_UNINTERRUPTIBLE);
- }
- 
- /*
-- * nfs_page_group_unlock - unlock the head of the page group
-- * @req - request in group that is to be unlocked
-+ * nfs_page_clear_headlock - clear the request PG_HEADLOCK
-+ * @req: request that is to be locked
-  */
- void
--nfs_page_group_unlock(struct nfs_page *req)
-+nfs_page_clear_headlock(struct nfs_page *req)
- {
--	struct nfs_page *head = req->wb_head;
--
--	WARN_ON_ONCE(head != head->wb_head);
--
- 	smp_mb__before_atomic();
--	clear_bit(PG_HEADLOCK, &head->wb_flags);
-+	clear_bit(PG_HEADLOCK, &req->wb_flags);
- 	smp_mb__after_atomic();
--	if (!test_bit(PG_CONTENDED1, &head->wb_flags))
-+	if (!test_bit(PG_CONTENDED1, &req->wb_flags))
- 		return;
--	wake_up_bit(&head->wb_flags, PG_HEADLOCK);
-+	wake_up_bit(&req->wb_flags, PG_HEADLOCK);
-+}
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 45f1c6d73b5b0..f2e777003b901 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2889,6 +2889,14 @@ filler:
+ 		unlock_page(page);
+ 		goto out;
+ 	}
 +
-+/*
-+ * nfs_page_group_lock - lock the head of the page group
-+ * @req: request in group that is to be locked
-+ *
-+ * this lock must be held when traversing or modifying the page
-+ * group list
-+ *
-+ * return 0 on success, < 0 on error
-+ */
-+int
-+nfs_page_group_lock(struct nfs_page *req)
-+{
-+	int ret;
-+
-+	ret = nfs_page_set_headlock(req);
-+	if (ret || req->wb_head == req)
-+		return ret;
-+	return nfs_page_set_headlock(req->wb_head);
-+}
-+
-+/*
-+ * nfs_page_group_unlock - unlock the head of the page group
-+ * @req: request in group that is to be unlocked
-+ */
-+void
-+nfs_page_group_unlock(struct nfs_page *req)
-+{
-+	if (req != req->wb_head)
-+		nfs_page_clear_headlock(req->wb_head);
-+	nfs_page_clear_headlock(req);
- }
++	/*
++	 * A previous I/O error may have been due to temporary
++	 * failures.
++	 * Clear page error before actual read, PG_error will be
++	 * set again if read page fails.
++	 */
++	ClearPageError(page);
+ 	goto filler;
  
- /*
-diff --git a/fs/nfs/write.c b/fs/nfs/write.c
-index 63d20308a9bb7..d419d89b91f7c 100644
---- a/fs/nfs/write.c
-+++ b/fs/nfs/write.c
-@@ -416,22 +416,28 @@ nfs_destroy_unlinked_subrequests(struct nfs_page *destroy_list,
- 		destroy_list = (subreq->wb_this_page == old_head) ?
- 				   NULL : subreq->wb_this_page;
- 
-+		/* Note: lock subreq in order to change subreq->wb_head */
-+		nfs_page_set_headlock(subreq);
- 		WARN_ON_ONCE(old_head != subreq->wb_head);
- 
- 		/* make sure old group is not used */
- 		subreq->wb_this_page = subreq;
-+		subreq->wb_head = subreq;
- 
- 		clear_bit(PG_REMOVE, &subreq->wb_flags);
- 
- 		/* Note: races with nfs_page_group_destroy() */
- 		if (!kref_read(&subreq->wb_kref)) {
- 			/* Check if we raced with nfs_page_group_destroy() */
--			if (test_and_clear_bit(PG_TEARDOWN, &subreq->wb_flags))
-+			if (test_and_clear_bit(PG_TEARDOWN, &subreq->wb_flags)) {
-+				nfs_page_clear_headlock(subreq);
- 				nfs_free_request(subreq);
-+			} else
-+				nfs_page_clear_headlock(subreq);
- 			continue;
- 		}
-+		nfs_page_clear_headlock(subreq);
- 
--		subreq->wb_head = subreq;
- 		nfs_release_request(old_head);
- 
- 		if (test_and_clear_bit(PG_INODE_REF, &subreq->wb_flags)) {
-diff --git a/include/linux/nfs_page.h b/include/linux/nfs_page.h
-index ad69430fd0eb5..5162fc1533c2f 100644
---- a/include/linux/nfs_page.h
-+++ b/include/linux/nfs_page.h
-@@ -142,6 +142,8 @@ extern	void nfs_unlock_and_release_request(struct nfs_page *);
- extern int nfs_page_group_lock(struct nfs_page *);
- extern void nfs_page_group_unlock(struct nfs_page *);
- extern bool nfs_page_group_sync_on_bit(struct nfs_page *, unsigned int);
-+extern	int nfs_page_set_headlock(struct nfs_page *req);
-+extern void nfs_page_clear_headlock(struct nfs_page *req);
- extern bool nfs_async_iocounter_wait(struct rpc_task *, struct nfs_lock_context *);
- 
- /*
+ out:
 -- 
 2.25.1
 
