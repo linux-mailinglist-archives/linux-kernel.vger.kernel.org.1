@@ -2,76 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6642226F67B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 09:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 098C526F681
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 09:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726465AbgIRHKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 03:10:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46620 "EHLO mail.kernel.org"
+        id S1726541AbgIRHLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 03:11:31 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:57522 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726170AbgIRHKu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 03:10:50 -0400
-Received: from localhost (unknown [136.185.124.244])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 349012067C;
-        Fri, 18 Sep 2020 07:10:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600413050;
-        bh=UcFYRiojSL4wjmOqdsdUtVNUDrkP8yA+FquGKhTMmMg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vut+RtHhYZhvozfiLBoHsSxyTjcIT1/9PjLXqwo2o/qNkudvWcRrhMwK5SB119O4L
-         HW2OZZkG2JLDDkDFU01WMt9EBvfJSEY0oHBH4y0b5Ec2xakNqmTYY9jfMbhkNDroES
-         VdyC+Ni/GVjxZQpzx7O2tBGBaNKsjGV7mZ/l2mHQ=
-Date:   Fri, 18 Sep 2020 12:40:46 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Liu Shixin <liushixin2@huawei.com>
-Cc:     Green Wan <green.wan@sifive.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] dmaengine: sf-pdma: Remove set but not used
- variable "desc"
-Message-ID: <20200918071046.GI2968@vkoul-mobl>
-References: <20200917071756.1915449-1-liushixin2@huawei.com>
+        id S1726134AbgIRHLb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 03:11:31 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kJAY4-0002wX-Ou; Fri, 18 Sep 2020 17:11:13 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 18 Sep 2020 17:11:12 +1000
+Date:   Fri, 18 Sep 2020 17:11:12 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Meng Yu <yumeng18@huawei.com>
+Cc:     davem@davemloft.net, linux-crypto@vger.kernel.org,
+        xuzaibo@huawei.com, wangzhou1@hisilicon.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] crypto: hisilicon/hpre - fix a bug in dh algorithm
+Message-ID: <20200918071112.GA9883@gondor.apana.org.au>
+References: <1599737122-20734-1-git-send-email-yumeng18@huawei.com>
+ <1599737122-20734-4-git-send-email-yumeng18@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200917071756.1915449-1-liushixin2@huawei.com>
+In-Reply-To: <1599737122-20734-4-git-send-email-yumeng18@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17-09-20, 15:17, Liu Shixin wrote:
-> Fixes gcc '-Wunused-but-set-variable' warning:
-> 
-> drivers/dma/sf-pdma/sf-pdma.c: In function 'sf_pdma_donebh_tasklet':
-> drivers/dma/sf-pdma/sf-pdma.c:287:23: warning: unused variable 'desc' [-Wunused-variable]
-> 
-> After commit 8f6b6d060602 ("dmaengine: sf-pdma: Fix an error that calls callback twice"),
-> variable 'desc' is never used. Remove it to avoid build warning.
+On Thu, Sep 10, 2020 at 07:25:22PM +0800, Meng Yu wrote:
+>
+> diff --git a/drivers/crypto/hisilicon/hpre/hpre_crypto.c b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
+> index 0cbe99a1..2d91593 100644
+> --- a/drivers/crypto/hisilicon/hpre/hpre_crypto.c
+> +++ b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
+> @@ -528,6 +528,8 @@ static int hpre_dh_compute_value(struct kpp_request *req)
+>  		ret = hpre_hw_data_init(hpre_req, req->src, req->src_len, 1, 1);
+>  		if (unlikely(ret))
+>  			goto clear_all;
+> +	} else {
+> +		msg->in = cpu_to_le64((u64)ctx->dh.dma_g);
 
-This was already reported by SFR and patch posted, so picked that one
+Why do you need the u64 cast?
 
-> 
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> ---
->  drivers/dma/sf-pdma/sf-pdma.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/dma/sf-pdma/sf-pdma.c b/drivers/dma/sf-pdma/sf-pdma.c
-> index 754994087e5f..1e66c6990d81 100644
-> --- a/drivers/dma/sf-pdma/sf-pdma.c
-> +++ b/drivers/dma/sf-pdma/sf-pdma.c
-> @@ -284,7 +284,6 @@ static void sf_pdma_free_desc(struct virt_dma_desc *vdesc)
->  static void sf_pdma_donebh_tasklet(unsigned long arg)
->  {
->  	struct sf_pdma_chan *chan = (struct sf_pdma_chan *)arg;
-> -	struct sf_pdma_desc *desc = chan->desc;
->  	unsigned long flags;
->  
->  	spin_lock_irqsave(&chan->lock, flags);
-> -- 
-> 2.25.1
-
+Cheers,
 -- 
-~Vinod
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
