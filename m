@@ -2,74 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15CD827042F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 20:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A085270431
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 20:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726174AbgIRSjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 14:39:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52456 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726115AbgIRSjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 14:39:03 -0400
-Received: from dhcp-10-100-145-180.wdl.wdc.com (unknown [199.255.45.60])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2170421534;
-        Fri, 18 Sep 2020 18:39:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600454342;
-        bh=eQ/mXtuCe+QeGTc/RHYTchYYCdqA6wa/fyMARmJkKYI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yRQhO426pkSn/S1aW1IFu5mAljw7OTAJ7e2YYg4sKk/I02XDBTab9dLY4Dl/AaUU3
-         sL1kHZ3tuieW5XOvQQiX5uXyXVB4WsTKsViE6yn6MisLANKeeDXlx/8ndAVd91Eqtm
-         lZ2s979pBBxWqn4eD7/EnsoEVjPFKsIUE8wFPYiM=
-Date:   Fri, 18 Sep 2020 11:38:59 -0700
-From:   Keith Busch <kbusch@kernel.org>
-To:     Tong Zhang <ztong0001@gmail.com>
-Cc:     Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] nvme: fix NULL pointer dereference
-Message-ID: <20200918183859.GA4030639@dhcp-10-100-145-180.wdl.wdc.com>
-References: <20200916153648.5475-1-ztong0001@gmail.com>
- <20200916165433.GA3675881@dhcp-10-100-145-180.wdl.wdc.com>
- <CAA5qM4B-KpRvFuf+5YR4iOqNzic=fuYm=_seqwLoLp9+_xOqdA@mail.gmail.com>
- <20200917171437.GB3766534@dhcp-10-100-145-180.wdl.wdc.com>
- <CAA5qM4Bj3BqYt-J=YqWKMWLFxDaMwQa4qAqPibyikpX5FBSzRQ@mail.gmail.com>
- <CAA5qM4ADbaO25t7GzC7jqB_jamHgegUyuNMvpo5h1+h=rir2mA@mail.gmail.com>
+        id S1726249AbgIRSj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 14:39:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726115AbgIRSj1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 14:39:27 -0400
+Received: from the.earth.li (the.earth.li [IPv6:2a00:1098:86:4d:c0ff:ee:15:900d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A69AC0613CF;
+        Fri, 18 Sep 2020 11:39:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=earth.li;
+         s=the; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject
+        :Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=wBs2XakhO2bKgWJ7UG5nJK64qnPI9aNOtXXnkZJGonM=; b=aRAPwiwZFtVlEL6VaLzZcZzbS4
+        0nMZsnWHLNFYzhb1CQVmdbM+FCYzKGRxkG+DkmKysnictu9BCTTzVixvUkon/PNlqQVgK7jywV/WO
+        Hi5YSe7bt8zG1xHBK52sjPEFRlaHvjKSxBHa/DFwXMGyqojRYpZEuxvLchxJR3oWpboqrvPfdoIbO
+        e4x+sxPSoi7RZ+0EPWOBobZGxG3bL20bwZYyWGxNRvx8fReFsNgBzNHkdKuef3IPvNia3cm2DYjmY
+        yRfOl1YPRQQLvUlOBqito+9QT5yBsvT2K19YAO2s38w0WGG2cn/WIcbYu4T3g4odV91NLMqGBmafd
+        Fpi5SZ2A==;
+Received: from noodles by the.earth.li with local (Exim 4.92)
+        (envelope-from <noodles@earth.li>)
+        id 1kJLHz-0005Ha-Ja; Fri, 18 Sep 2020 19:39:19 +0100
+Date:   Fri, 18 Sep 2020 19:39:19 +0100
+From:   Jonathan McDowell <noodles@earth.li>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Thomas Pedersen <twp@codeaurora.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        dmaengine@vger.kernel.org
+Subject: Re: [PATCH] dmaengine: qcom: Add ADM driver
+Message-ID: <20200918183919.GQ3411@earth.li>
+References: <20200916064326.GA13963@earth.li>
+ <20200918113443.GN2968@vkoul-mobl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAA5qM4ADbaO25t7GzC7jqB_jamHgegUyuNMvpo5h1+h=rir2mA@mail.gmail.com>
+In-Reply-To: <20200918113443.GN2968@vkoul-mobl>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 11:32:12PM -0400, Tong Zhang wrote:
-> Please correct me if I am wrong.
-> After a bit more digging I found out that it is indeed command_id got
-> corrupted is causing this problem. Although the tag and command_id
-> range is checked like you said, the elements in rqs cannot be
-> guaranteed to be not NULL. thus although the range check is passed,
-> blk_mq_tag_to_rq() can still return NULL. 
+On Fri, Sep 18, 2020 at 05:04:43PM +0530, Vinod Koul wrote:
+> Hello Jonathan
+> 
+> On 16-09-20, 07:43, Jonathan McDowell wrote:
+> > From: Andy Gross <agross@codeaurora.org>
+> > 
+> > (I'm not sure how best to attribute this. It's originally from Andy
+> > Gross, the version I picked up was a later version from Thomas Pedersen,
+> > and I can't find clear indication of why the latest version wasn't
+> > applied. The device tree details were added back in September 2014. The
+> > driver is the missing piece in mainline for IPQ8064 NAND support and
+> > I've been using it successfully with my RB3011 device on 5.8+)
+> 
+> Yeah not sure why the driver was missed :(
+> Btw this note is helpful but not great for log, you should add it after
+> sob lines.
 
-I think your describing a sequence problem in initialization. We
-shouldn't have interrupts wired up to uninitialized tagsets.
+Noted, I'll move it for v2.
 
-A more appropriate sequence would setup request_irq() after the tagset
-is ready. It makes handling a failed irq setup a bit weird for io
-queues, though.
+> > diff --git a/drivers/dma/qcom/Kconfig b/drivers/dma/qcom/Kconfig
+> > index 3bcb689162c6..75ee112ccea9 100644
+> > --- a/drivers/dma/qcom/Kconfig
+> > +++ b/drivers/dma/qcom/Kconfig
+> > @@ -28,3 +28,13 @@ config QCOM_HIDMA
+> >  	  (user to kernel, kernel to kernel, etc.).  It only supports
+> >  	  memcpy interface. The core is not intended for general
+> >  	  purpose slave DMA.
+> > +
+> > +config QCOM_ADM
+> 
+> alphabetical sort please
 
-> It is clear that the current sanitization is not enough and there's
-> more implication about this -- when all rqs got populated, a corrupted
-> command_id may silently corrupt other data not belonging to the
-> current command.
+Ok.
 
-The block layer doesn't do anything with requests that haven't been
-started, so if your controller completes non-existent commands, then
-nothing particular will happen with the rqs.
+> > +	tristate "Qualcomm ADM support"
+> > +	depends on ARCH_QCOM || (COMPILE_TEST && OF && ARM)
+> 
+> Why COMPILE_TEST && OF? just COMPILE_TEST should be fine
 
-If the request had been started and the controller provides a corrupted
-completion, then the fault lies entirely with the controller and you
-should raise that issue with your vendor. There's no way the driver can
-distinguish a genuine completion from a corrupted one.
+Turns out (ARCH_QCOM || COMPILE_TEST) && !64BIT is sufficient.
+
+> > +	select DMA_ENGINE
+> > +	select DMA_VIRTUAL_CHANNELS
+> > +	---help---
+> > +	  Enable support for the Qualcomm ADM DMA controller.  This controller
+> > +	  provides DMA capabilities for both general purpose and on-chip
+> > +	  peripheral devices.
+> > diff --git a/drivers/dma/qcom/Makefile b/drivers/dma/qcom/Makefile
+> > index 1ae92da88b0c..98a021fc6fe5 100644
+> > --- a/drivers/dma/qcom/Makefile
+> > +++ b/drivers/dma/qcom/Makefile
+> > @@ -4,3 +4,4 @@ obj-$(CONFIG_QCOM_HIDMA_MGMT) += hdma_mgmt.o
+> >  hdma_mgmt-objs	 := hidma_mgmt.o hidma_mgmt_sys.o
+> >  obj-$(CONFIG_QCOM_HIDMA) +=  hdma.o
+> >  hdma-objs        := hidma_ll.o hidma.o hidma_dbg.o
+> > +obj-$(CONFIG_QCOM_ADM) += qcom_adm.o
+> 
+> alphabetical sort please
+
+Ok.
+
+> > +/* channel conf */
+> > +#define ADM_CH_CONF_SHADOW_EN		BIT(12)
+> > +#define ADM_CH_CONF_MPU_DISABLE		BIT(11)
+> > +#define ADM_CH_CONF_PERM_MPU_CONF	BIT(9)
+> > +#define ADM_CH_CONF_FORCE_RSLT_EN	BIT(7)
+> > +#define ADM_CH_CONF_SEC_DOMAIN(ee)	(((ee & 0x3) << 4) | ((ee & 0x4) << 11))
+> 
+> USE FIELD_PREP for this?
+
+I can't see a way to neatly use FIELD_PREP for a split field; am I
+missing something?
+
+(other pieces fixed up for v2 as well; I'd run checkpatch but not with
+--strict. Will post once I've actually tested it.)
+
+J.
+
+-- 
+ Minorities are the foundation of  |  .''`.  Debian GNU/Linux Developer
+             society.              | : :' :  Happy to accept PGP signed
+                                   | `. `'   or encrypted mail - RSA
+                                   |   `-    key on the keyservers.
