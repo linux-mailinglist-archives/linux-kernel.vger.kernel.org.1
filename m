@@ -2,113 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10C6D270799
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD14527074B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:46:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726247AbgIRU42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 16:56:28 -0400
-Received: from mga01.intel.com ([192.55.52.88]:62248 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726139AbgIRU41 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 16:56:27 -0400
-IronPort-SDR: ddgolQSSA2Ex4auK9fTXwDNB4KuL7qcsdi2O7APi0Uu1g3sEJ2elehu/SwWFlOwwOiZDcLR1RI
- NIi6TOgkptig==
-X-IronPort-AV: E=McAfee;i="6000,8403,9748"; a="178120917"
-X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
-   d="scan'208";a="178120917"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 13:46:31 -0700
-IronPort-SDR: /W71CSV7HTPPsufRn/8lv7wvqc/uP+yw0lluNhqkLmM7k6ve0djrZIfCJ4rLH8HTUAkM8BoXlw
- rMRXunqnX3nA==
-X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
-   d="scan'208";a="484366852"
-Received: from xsunzhou-mobl.amr.corp.intel.com (HELO arch-ashland-svkelley.intel.com) ([10.251.153.106])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 13:46:31 -0700
-From:   Sean V Kelley <sean.v.kelley@intel.com>
-To:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
-        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
-        tony.luck@intel.com, sathyanarayanan.kuppuswamy@intel.com,
-        qiuxu.zhuo@intel.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean V Kelley <sean.v.kelley@intel.com>
-Subject: [PATCH v5 09/10] PCI/PME: Add pcie_walk_rcec() to RCEC PME handling
-Date:   Fri, 18 Sep 2020 13:46:02 -0700
-Message-Id: <20200918204603.62100-10-sean.v.kelley@intel.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200918204603.62100-1-sean.v.kelley@intel.com>
-References: <20200918204603.62100-1-sean.v.kelley@intel.com>
+        id S1726343AbgIRUq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 16:46:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726247AbgIRUqz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 16:46:55 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8431FC0613CE;
+        Fri, 18 Sep 2020 13:46:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=DvBn9yNEqOp/ycwDKoc7SiHgVUGQxPxJpjYJFyRGnGs=; b=LFExuychVfgthbqOhvgRAOQT91
+        bJf4xa+OuBxQ5RRkr6/0gPyrrSWcC+QqsQOCOGKYFniUjPEplhqja9HYglXqQof3DzHl0WwpO0z8J
+        Qq7FrrZyq/i7sL2MMXrT/qKPCM+FLsUkI10fEZZAPX83LatPySScyi8K1m0yRsFYfYyYYZ5ulECvq
+        hm/CdlEOs+tmNUPKd3mXRWuNar+vI5BC8CQxigZeqx237ziJed14OqWaEtJ8sAifrsZsiD4ufx8Qo
+        2T43JAdXsnjxpYDQJtUx4GmMyL3NllycC3xp6U6Q61T2r5LlmgwdNpi2G134dIX5kZVj9dE+NETta
+        foBneOXA==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kJNHM-0007eT-B4; Fri, 18 Sep 2020 20:46:48 +0000
+Subject: Re: linux-next: Tree for Sep 17 (net/ipv4/devinet.c)
+To:     nicolas.dichtel@6wind.com, Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+References: <20200917202313.143f66f3@canb.auug.org.au>
+ <0b592973-55d6-b318-ed38-1d5fbd706e7a@infradead.org>
+ <42a4f790-6175-2835-2022-cbfcbe1e5504@6wind.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <15e457d1-e3a1-9cbc-0589-2033b67a24c5@infradead.org>
+Date:   Fri, 18 Sep 2020 13:46:45 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <42a4f790-6175-2835-2022-cbfcbe1e5504@6wind.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Root Complex Event Collectors(RCEC) appear as peers of Root Ports
-and also have the PME capability. As with AER, there is a need to be
-able to walk the RCiEPs associated with their RCEC for purposes of
-acting upon them with callbacks. So add RCEC support through the use
-of pcie_walk_rcec() to the current PME service driver and attach the
-PME service driver to the RCEC device.
+On 9/18/20 1:25 AM, Nicolas Dichtel wrote:
+> Le 17/09/2020 à 22:45, Randy Dunlap a écrit :
+>> On 9/17/20 3:23 AM, Stephen Rothwell wrote:
+>>> Hi all,
+>>>
+>>> Changes since 20200916:
+>>>
+>>
+>>
+>> Maybe some older versions of gcc just can't handle IS_ENABLED() inside an
+>> if (expression) very well.
+>>
+>>> gcc --version
+>> gcc (SUSE Linux) 7.5.0
 
-Co-developed-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
----
- drivers/pci/pcie/pme.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/pci/pcie/pme.c b/drivers/pci/pcie/pme.c
-index 6a32970bb731..87799166c96a 100644
---- a/drivers/pci/pcie/pme.c
-+++ b/drivers/pci/pcie/pme.c
-@@ -310,7 +310,10 @@ static int pcie_pme_can_wakeup(struct pci_dev *dev, void *ign)
- static void pcie_pme_mark_devices(struct pci_dev *port)
- {
- 	pcie_pme_can_wakeup(port, NULL);
--	if (port->subordinate)
-+
-+	if (pci_pcie_type(port) == PCI_EXP_TYPE_RC_EC)
-+		pcie_walk_rcec(port, pcie_pme_can_wakeup, NULL);
-+	else if (port->subordinate)
- 		pci_walk_bus(port->subordinate, pcie_pme_can_wakeup, NULL);
- }
- 
-@@ -320,10 +323,15 @@ static void pcie_pme_mark_devices(struct pci_dev *port)
-  */
- static int pcie_pme_probe(struct pcie_device *srv)
- {
--	struct pci_dev *port;
-+	struct pci_dev *port = srv->port;
- 	struct pcie_pme_service_data *data;
- 	int ret;
- 
-+	/* Limit to Root Ports or Root Complex Event Collectors */
-+	if ((pci_pcie_type(port) != PCI_EXP_TYPE_RC_EC) &&
-+	    (pci_pcie_type(port) != PCI_EXP_TYPE_ROOT_PORT))
-+		return -ENODEV;
-+
- 	data = kzalloc(sizeof(*data), GFP_KERNEL);
- 	if (!data)
- 		return -ENOMEM;
-@@ -333,7 +341,6 @@ static int pcie_pme_probe(struct pcie_device *srv)
- 	data->srv = srv;
- 	set_service_data(srv, data);
- 
--	port = srv->port;
- 	pcie_pme_interrupt_enable(port, false);
- 	pcie_clear_root_pme_status(port);
- 
-@@ -445,7 +452,7 @@ static void pcie_pme_remove(struct pcie_device *srv)
- 
- static struct pcie_port_service_driver pcie_pme_driver = {
- 	.name		= "pcie_pme",
--	.port_type	= PCI_EXP_TYPE_ROOT_PORT,
-+	.port_type	= PCIE_ANY_PORT,
- 	.service	= PCIE_PORT_SERVICE_PME,
- 
- 	.probe		= pcie_pme_probe,
+> I tried with a (very old) gcc and I did not reproduce this error:
+> $ gcc --version
+> gcc (Debian 4.9.2-10+deb8u2) 4.9.2
+> 
+
+OK, no problem then.
+I cannot reproduce it now either (I just tried 3-4 times).
+We can forget about it. Sorry for the noise.
+
+> 
+>>
+>> This patch:
+>>
+>> commit 9efd6a3cecdde984d67e63d17fe6af53c7c50968
+>> Author: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+>> Date:   Wed May 13 15:58:43 2020 +0200
+>>
+>>     netns: enable to inherit devconf from current netns
+>>
+>> causes a build error:
+>>
+>> ../net/ipv4/devinet.c: In function ‘devinet_init_net’:
+>> ../net/ipv4/devinet.c:2672:7: error: ‘sysctl_devconf_inherit_init_net’ undeclared (first use in this function); did you mean ‘devinet_init_net’?
+>>        sysctl_devconf_inherit_init_net == 3) {
+>>        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>        devinet_init_net
+>> ../net/ipv4/devinet.c:2672:7: note: each undeclared identifier is reported only
+>>
+>>
+
+thanks.
 -- 
-2.28.0
+~Randy
 
