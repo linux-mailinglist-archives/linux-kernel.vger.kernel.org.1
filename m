@@ -2,91 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47CAF27071C
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4595270731
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:40:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726369AbgIRUbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 16:31:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55532 "EHLO
+        id S1726332AbgIRUkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 16:40:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726174AbgIRUbj (ORCPT
+        with ESMTP id S1726154AbgIRUj7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 16:31:39 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E1DEC0613CE;
-        Fri, 18 Sep 2020 13:31:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=o9/imEnW9/JE981eQ7g+rdek3o0kI3zgkkujwrqFQ5I=; b=uDbL0HEBNBVE3o7olUIpMaBLYQ
-        rA+e3k9vQopqp7W66Ikv6hHym5E/XrfaZldc/HRXU4U/AnaY8Qg2jUg9h9ydIVzHHkFX7frMswbYi
-        KXLVDb5PppxYwwkgr6kN3m3/JWKm7PPj54xmVsm5uK3VGQaTiCiuhUnix2NgPfSUtR9Alu1R0ShKx
-        fWFUTKTN5dSEUkH4HcguiGdwS6bVo4MYX7sJ7c/tbOmBpK1t9NZjA0TEV/Aj3BRXDHXds/KFIyEzT
-        tOnTNqJStfxd+cSJzQaeBwlXhj1Q+12TJi54P5RYqEhyr8jOBX/lMVCv4LJumW/VbI+/K+3ie1STz
-        SfNm7rFQ==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kJN2f-0006iy-5k; Fri, 18 Sep 2020 20:31:37 +0000
-Subject: Re: [PATCH v3 1/3] bus: mhi: Fix entries based on Kconfig coding
- style
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
-References: <1600457992-18448-1-git-send-email-bbhatt@codeaurora.org>
- <1600457992-18448-2-git-send-email-bbhatt@codeaurora.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <200e7b72-cb62-b21d-72a6-767b4159353b@infradead.org>
-Date:   Fri, 18 Sep 2020 13:31:34 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 18 Sep 2020 16:39:59 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74063C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:39:59 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id jw11so3622458pjb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:39:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=7AneX3Q6t9WnVcMWg3z8DFQA8bgEvGwpeuWE77g6/FQ=;
+        b=E4qKAGZaO0N1RaSvlxcy0M2gkjiUws0KeGww0wt94xT8okM+bO5at02o4hbHtGicp/
+         1kghus1KDRJvmh7+OXI0eXr1mPlL3l19ovwWEEZsP4aL81XuS2SQIJrRJ5RmjOr4umwL
+         Ixp0S0vYX0oMNfhY3hXjUDz+KGUr2R70Z8J/zhOFOF15+6z2Pjbn0Lwb8vizESYfRiYY
+         yZyDJouBXPmDZ05u5LMb3C3vSEIhoJMdFK2ZtmIhWVjtV+qKcxU9cOhHQg8faCc0a/3D
+         r2jvPXuQFMheuZ6qma+Vc7w4aJMt/ampCp6XINorY67gF8ajSADtN4ODVoe/lfHCFFC4
+         9sfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=7AneX3Q6t9WnVcMWg3z8DFQA8bgEvGwpeuWE77g6/FQ=;
+        b=PkLnB4H+geLmeQgNsy+eRUr6IMWRoWOJNYIBpSuecfa02PsYTez7JXAlOrFKphCwvh
+         MZ1v6mUJ87agz6zurKJ6jkq3HdSNAAIZ8iW2E+PA7NJKvr4YKnQxfdhFmHwwfoqc2GEP
+         ZEU9oPnWH8bIb0old5H82Z2bPA5V+rLk/RtTqNWwp+pGIgSgW01JPZtAlh3Nd/fEVqNh
+         sUY55zZVO/+SOsPmmi/+lz8tMLWEIVG0UMUsvmQLd0tAPiAhi0FsToAlcF4N9Nw6/At1
+         thMxgMG+yXxY6+IAUQOkslOBvlKOeb8wtne8WVCT/bEiEW5RgkSl6+jrUpAosJozKFiC
+         bjfw==
+X-Gm-Message-State: AOAM533zV42yllkgLTrVmZak0LKYb8PScw+8n1N/FY/THAm2ezfDFopR
+        LICnVNJcHFO9L/P+1RRZYz42MQ==
+X-Google-Smtp-Source: ABdhPJz8hk0ivJdLpk6wnP0zzcjbIGe9NnuofGDnq+q1egBRoYW2uCgOtoPsSPkLfDc+AvYJ4ZVyQQ==
+X-Received: by 2002:a17:90a:4802:: with SMTP id a2mr14094057pjh.5.1600461597809;
+        Fri, 18 Sep 2020 13:39:57 -0700 (PDT)
+Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
+        by smtp.gmail.com with ESMTPSA id k7sm3687272pjs.9.2020.09.18.13.39.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 13:39:57 -0700 (PDT)
+From:   Kevin Hilman <khilman@baylibre.com>
+To:     Jerome Brunet <jbrunet@baylibre.com>
+Cc:     linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 0/2] arm64: dts: meson: add aml-s905x-cc v2 support
+Date:   Fri, 18 Sep 2020 13:39:55 -0700
+Message-Id: <160046158476.39596.11410761986578760376.b4-ty@baylibre.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200915141921.57258-1-jbrunet@baylibre.com>
+References: <20200915141921.57258-1-jbrunet@baylibre.com>
 MIME-Version: 1.0
-In-Reply-To: <1600457992-18448-2-git-send-email-bbhatt@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/18/20 12:39 PM, Bhaumik Bhatt wrote:
-> Kconfig coding style mandates use of tabs for the configuration
-> definition and an additional two spaces for the help text. Make the
-> required changes to the MHI Kconfig adhering to those guidelines.
+On Tue, 15 Sep 2020 16:19:19 +0200, Jerome Brunet wrote:
+> This patchset adds initial support for the libretech aml-s905x-cc v2.
 > 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
-> ---
->  drivers/bus/mhi/Kconfig | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+> Jerome Brunet (2):
+>   dt-bindings: arm: amlogic: add support for libretch s905x cc v2
+>   arm64: dts: meson: initial support for aml-s905x-cc v2
 > 
-> diff --git a/drivers/bus/mhi/Kconfig b/drivers/bus/mhi/Kconfig
-> index a8bd9bd..6677ccc 100644
-> --- a/drivers/bus/mhi/Kconfig
-> +++ b/drivers/bus/mhi/Kconfig
-> @@ -6,9 +6,9 @@
->  #
->  
->  config MHI_BUS
-> -       tristate "Modem Host Interface (MHI) bus"
-> -       help
-> -	 Bus driver for MHI protocol. Modem Host Interface (MHI) is a
-> -	 communication protocol used by the host processors to control
-> -	 and communicate with modem devices over a high speed peripheral
-> -	 bus or shared memory.
-> +	tristate "Modem Host Interface (MHI) bus"
-> +	help
-> +	  Bus driver for MHI protocol. Modem Host Interface (MHI) is a
-> +	  communication protocol used by the host processors to control
-> +	  and communicate with modem devices over a high speed peripheral
-> +	  bus or shared memory.
-> 
+>  .../devicetree/bindings/arm/amlogic.yaml      |   1 +
+>  arch/arm64/boot/dts/amlogic/Makefile          |   1 +
+>  .../meson-gxl-s905x-libretech-cc-v2.dts       | 318 ++++++++++++++++++
+>  3 files changed, 320 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/amlogic/meson-gxl-s905x-libretech-cc-v2.dts
 
+Applied, thanks!
 
+[1/2] dt-bindings: arm: amlogic: add support for libretch s905x cc v2
+      commit: 0748c77fc8dc6bb20f9af395872ea35d8ac85998
+[2/2] arm64: dts: meson: initial support for aml-s905x-cc v2
+      commit: 63fafc5a046b1e21756de691b48f0c70c25e1426
+
+Best regards,
 -- 
-~Randy
+Kevin Hilman <khilman@baylibre.com>
