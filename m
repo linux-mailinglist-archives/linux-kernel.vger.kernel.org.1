@@ -2,68 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4A5526F689
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 09:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C6FF26F688
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 09:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726380AbgIRHPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 03:15:30 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:44344 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726285AbgIRHPa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 03:15:30 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id E75347899970DD5820D7;
-        Fri, 18 Sep 2020 15:15:26 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 18 Sep 2020 15:15:19 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <mporter@kernel.crashing.org>, <alex.bou9@gmail.com>,
-        <linux-kernel@vger.kernel.org>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] rapidio: Remove set but not used variable 'rc'
-Date:   Fri, 18 Sep 2020 15:16:13 +0800
-Message-ID: <20200918071613.19630-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726253AbgIRHPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 03:15:24 -0400
+Received: from muru.com ([72.249.23.125]:44814 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726009AbgIRHPY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 03:15:24 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 823FC8005;
+        Fri, 18 Sep 2020 07:15:24 +0000 (UTC)
+Date:   Fri, 18 Sep 2020 10:16:13 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable <stable@vger.kernel.org>
+Subject: Re: [PATCH 2/2] serial: core: fix console port-lock regression
+Message-ID: <20200918071613.GL7101@atomide.com>
+References: <20200909143101.15389-1-johan@kernel.org>
+ <20200909143101.15389-3-johan@kernel.org>
+ <20200909154815.GD1891694@smile.fi.intel.com>
+ <20200910073527.GC24441@localhost>
+ <20200910092715.GM1891694@smile.fi.intel.com>
+ <20200914080916.GI7101@atomide.com>
+ <20200916122324.GG3956970@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916122324.GG3956970@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes gcc '-Wunused-but-set-variable' warning:
+* Andy Shevchenko <andriy.shevchenko@linux.intel.com> [200916 12:34]:
+> On Mon, Sep 14, 2020 at 11:09:16AM +0300, Tony Lindgren wrote:
+> > * Andy Shevchenko <andriy.shevchenko@linux.intel.com> [200910 09:27]:
+> > > +Cc: Tony, let me add Tony to the discussion.
+> > > 
+> > > On Thu, Sep 10, 2020 at 09:35:27AM +0200, Johan Hovold wrote:
+> > > > And what about power management
+> > > > which was the reason for wanting this on OMAP in the first place; tty
+> > > > core never calls shutdown() for a console port, not even when it's been
+> > > > detached using the new interface.
+> > > 
+> > > That is interesting... Tony, do we have OMAP case working because of luck?
+> > 
+> > 8250_omap won't do anything unless autosuspend_timeout is configured for
+> > the uart(s). If configured, then the 8250_omap will idle when console is
+> > detached and the PM runtime usage count held by console is decremented, and
+> > the configured autosuspend_timeout expires.
+> > 
+> > The console is still kept open by getty, so I don't see why shutdown() would
+> > be called for the console port. But maybe I don't follow what you're
+> > concerned about, let me know if you want me to check something :)
+> 
+> Is it possible to test configuration when you have kernel console enabled but
+> no getty is run on it (perhaps something with ssh enabled access)?
+> 
+> Then kernel console should call ->shutdown on detaching, right?
 
-drivers/rapidio/rio_cm.c: In function rio_txcq_handler:
-drivers/rapidio/rio_cm.c:673:7: warning: variable ‘rc’ set but not used [-Wunused-but-set-variable]
+I gave this a quick try and Johan is right, shutdown is not called on console
+uart still even if detached and no getty running on that uart. I could not
+figure out easily where exactly this gets blocked.. So far I did try setting
+port->console = 0 on detach, then init it again on attach.
 
-rc is never used, so remove it.
+Regards,
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- drivers/rapidio/rio_cm.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/rapidio/rio_cm.c b/drivers/rapidio/rio_cm.c
-index 50ec53d67a4c..545693bd86a3 100644
---- a/drivers/rapidio/rio_cm.c
-+++ b/drivers/rapidio/rio_cm.c
-@@ -670,12 +670,11 @@ static void rio_txcq_handler(struct cm_dev *cm, int slot)
- 	 */
- 	if (!list_empty(&cm->tx_reqs) && (cm->tx_cnt < RIOCM_TX_RING_SIZE)) {
- 		struct tx_req *req, *_req;
--		int rc;
- 
- 		list_for_each_entry_safe(req, _req, &cm->tx_reqs, node) {
- 			list_del(&req->node);
- 			cm->tx_buf[cm->tx_slot] = req->buffer;
--			rc = rio_add_outb_message(cm->mport, req->rdev, cmbox,
-+			rio_add_outb_message(cm->mport, req->rdev, cmbox,
- 						  req->buffer, req->len);
- 			kfree(req->buffer);
- 			kfree(req);
--- 
-2.17.1
-
+Tony
