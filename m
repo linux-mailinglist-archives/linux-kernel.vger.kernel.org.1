@@ -2,53 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB0BB26F2D3
+	by mail.lfdr.de (Postfix) with ESMTP id 5C41F26F2D2
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727778AbgIRDCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 23:02:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34236 "EHLO
+        id S1729773AbgIRDCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 23:02:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730470AbgIRDBA (ORCPT
+        with ESMTP id S1730476AbgIRDBB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 23:01:00 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF9EC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 20:00:59 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id w126so3444993qka.5
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 20:00:59 -0700 (PDT)
+        Thu, 17 Sep 2020 23:01:01 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9114C06178A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 20:01:00 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 207so3983990ybd.13
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 20:01:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=MShH3I1oLcjvEJbj3NYW9C342mvg+PbbBJCOoSH1HSQ=;
-        b=CDRIysijqlvkYU+kfz4ExesE+3SJEmw3l9qWCAyu0Yl6J6QfFZHDzRMn2cts4G/GOz
-         due2AZm8uZnE02XEz5UeXJrQLnFVWnnCS9C/pPkMQNrCt04NXlx25xEYkfo0PmopvTxC
-         6Mc1ISZvlBE8hm/TYls84q50iEmrO8OTSwUfAOYHWxvmq5G4q3tHrvddW6BfGlAJaXXa
-         7jtZbfY4KCbYKA922DT7v4HaAYQlRavyHrrpgTJ650wUBUgxocGjlFGX5ZdwB2iFOxvt
-         Sb0vnDNEX8KpkSdUPfi9dXotay6ssMYaQk9GrMx5bqH0g6TjEErAVqtu1pf7rtwPgd1d
-         LRRw==
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=qvnHHsvBI3sH+b5g6Iv8RJ5s4+ZnaHU0vmrrO4o5gi4=;
+        b=lqyqyA8BFWcwFuv/9+MGNQiOru0sKjIbm0eSJ1ByXF6JVc9vr8FDv47rnqSsdyTs7t
+         S3NxZnk+2iO6CRHdaA4UalB3w3yZF3qC28jCD2uRk5cxex4zVBD5qDQbnTRcrAf07Nsc
+         ygcQl37PtmLBFqLAL8rbF46ASLQ1gAydzClOP5DevnlAsHwK/PfIrGSFDMam+ySaujJT
+         hanmi+54Txv+6VjCu9U3o7d4IJIv2iwSEqK4D9aDrbo1zTg7iqka8SpMD+NpS6lHugQs
+         AtUjhjYt1eOv7g1ZT8k0bRjvxL28/U/JID1UhXh/ggjhBucFBF095ClBMUlEnjXVJwfd
+         7itA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=MShH3I1oLcjvEJbj3NYW9C342mvg+PbbBJCOoSH1HSQ=;
-        b=ecNemADDemBNepCqCxucWM3kMguMuwUNwIA1rdCX8sazdfXk62AHr7Ni4FEtbqZYlN
-         kuyxvOH0Mba/nvUEwM/h/Thpj/+PEmIhdDLZh3+VCPFWVH3sr2hrDJV5hdfm2y4NJXeC
-         /hRZu/QLtDs9UXDtAJPqGKm4Otpimjpeg2TuWGBLYDS5GgZr9ItJGHiC4t8IrVpFI0hw
-         nIwtmpQ9OWZRd9a7y4QzImN5gUoifP4RvX1APKCLOPnpvWhCKCN0hHUBvQxWRjloZsxM
-         6ICewEiqQiAL/dM3cEMISQa1ebjXz5FYY1B4mJEAG6Lp/BKSH8jizGLoa6LKfv05rjaJ
-         mR8Q==
-X-Gm-Message-State: AOAM533JMi5ZzKOFtve3vsr0y1S+5G61AWsTi71JRpg6Zl/F4rkj96im
-        gXa8EMucNI8ZaGtjKQN9r/1LcIslC18=
-X-Google-Smtp-Source: ABdhPJx5px4YCOzuxVaL63VwwQLE+zcsL6qsTZcmWHgsANcGMolFMRqq/fwgx6MIzZ049mi7yH0PVbKuSkw=
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=qvnHHsvBI3sH+b5g6Iv8RJ5s4+ZnaHU0vmrrO4o5gi4=;
+        b=JjhX6iIz5HUi1MAIkoWJmy6AkV9PHId/cs2rcutbMogVYPOd5EhmHrUXdAMrmchhsx
+         42I9KT0sL/4kf3zWxJTtaYonqBjgIJs9NhmzYZzuasaAUJUmIa9fGvCl6D953fRxzRDK
+         b3Ey/TYTsZ0s8g1ASwhttjEAzY/BeSrYRIuMPdhgzFBUM496xKg7CHL1KZNh6gyG1Zip
+         2ZXOdw7hNX+/jJ/GhgaU42c4zHvaOcb2rjaAPc9vpqQmbgquPFBejGSh8DITNOLcvLuQ
+         jIPBNaqgCqhS7qXJA+m5zelHQKbzhPGIXLytb5iRftbXFckz40yal+Hd83OSFWZ8r3Qb
+         K+Yg==
+X-Gm-Message-State: AOAM531z4y/nH6RnG71YKEfWxQl+8icC40CkvFuW65bGqbNuqamPum7o
+        YLOVT2tZFWkmLMk7jG5ExU6BK2nmYj0=
+X-Google-Smtp-Source: ABdhPJyA4fGWHBfcQZD/N2EVVdQdNHe3Em/oy/TsXnSZ8yngh1zsEqbYH+EijegunexsuYkqKBR265IH8Wg=
 X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
- (user=yuzhao job=sendgmr) by 2002:a0c:b21b:: with SMTP id x27mr31580996qvd.12.1600398058666;
- Thu, 17 Sep 2020 20:00:58 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 21:00:38 -0600
-Message-Id: <20200918030051.650890-1-yuzhao@google.com>
+ (user=yuzhao job=sendgmr) by 2002:a25:ad16:: with SMTP id y22mr6703066ybi.331.1600398060014;
+ Thu, 17 Sep 2020 20:01:00 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 21:00:39 -0600
+In-Reply-To: <20200918030051.650890-1-yuzhao@google.com>
+Message-Id: <20200918030051.650890-2-yuzhao@google.com>
 Mime-Version: 1.0
+References: <20200918030051.650890-1-yuzhao@google.com>
 X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
-Subject: [PATCH 00/13] mm: clean up some lru related pieces
+Subject: [PATCH 01/13] mm: use add_page_to_lru_list()
 From:   Yu Zhao <yuzhao@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Michal Hocko <mhocko@kernel.org>
@@ -75,55 +78,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+This patch replaces the only open-coded lru list addition with
+add_page_to_lru_list().
 
-I see you have taken this:
-  mm: use add_page_to_lru_list()/page_lru()/page_off_lru()
-Do you mind dropping it?
+Before this patch, we have:
+	update_lru_size()
+	list_move()
 
-Michal asked to do a bit of additional work. So I thought I probably
-should create a series to do more cleanups I've been meaning to.
+After this patch, we have:
+	list_del()
+	add_page_to_lru_list()
+		update_lru_size()
+		list_add()
 
-This series contains the change in the patch above and goes a few
-more steps farther. It's intended to improve readability and should
-not have any performance impacts. There are minor behavior changes in
-terms of debugging and error reporting, which I have all highlighted
-in the individual patches. All patches were properly tested on 5.8
-running Chrome OS, with various debug options turned on.
+The only side effect is that page->lru is temporarily poisoned
+after a page is deleted from its old list, which shouldn't be a
+problem.
 
-Michal,
+Signed-off-by: Yu Zhao <yuzhao@google.com>
+---
+ mm/vmscan.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-Do you mind taking a looking at the entire series?
-
-Thank you.
-
-Yu Zhao (13):
-  mm: use add_page_to_lru_list()
-  mm: use page_off_lru()
-  mm: move __ClearPageLRU() into page_off_lru()
-  mm: shuffle lru list addition and deletion functions
-  mm: don't pass enum lru_list to lru list addition functions
-  mm: don't pass enum lru_list to trace_mm_lru_insertion()
-  mm: don't pass enum lru_list to del_page_from_lru_list()
-  mm: rename page_off_lru() to __clear_page_lru_flags()
-  mm: inline page_lru_base_type()
-  mm: VM_BUG_ON lru page flags
-  mm: inline __update_lru_size()
-  mm: make lruvec_lru_size() static
-  mm: enlarge the int parameter of update_lru_size()
-
- include/linux/memcontrol.h     |  14 ++--
- include/linux/mm_inline.h      | 115 ++++++++++++++-------------------
- include/linux/mmzone.h         |   2 -
- include/linux/vmstat.h         |   2 +-
- include/trace/events/pagemap.h |  11 ++--
- mm/compaction.c                |   2 +-
- mm/memcontrol.c                |  10 +--
- mm/mlock.c                     |   2 +-
- mm/swap.c                      |  53 ++++++---------
- mm/vmscan.c                    |  28 +++-----
- 10 files changed, 95 insertions(+), 144 deletions(-)
-
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 9727dd8e2581..503fc5e1fe32 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -1850,8 +1850,8 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
+ 	while (!list_empty(list)) {
+ 		page = lru_to_page(list);
+ 		VM_BUG_ON_PAGE(PageLRU(page), page);
++		list_del(&page->lru);
+ 		if (unlikely(!page_evictable(page))) {
+-			list_del(&page->lru);
+ 			spin_unlock_irq(&pgdat->lru_lock);
+ 			putback_lru_page(page);
+ 			spin_lock_irq(&pgdat->lru_lock);
+@@ -1862,9 +1862,7 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
+ 		SetPageLRU(page);
+ 		lru = page_lru(page);
+ 
+-		nr_pages = thp_nr_pages(page);
+-		update_lru_size(lruvec, lru, page_zonenum(page), nr_pages);
+-		list_move(&page->lru, &lruvec->lists[lru]);
++		add_page_to_lru_list(page, lruvec, lru);
+ 
+ 		if (put_page_testzero(page)) {
+ 			__ClearPageLRU(page);
+@@ -1878,6 +1876,7 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
+ 			} else
+ 				list_add(&page->lru, &pages_to_free);
+ 		} else {
++			nr_pages = thp_nr_pages(page);
+ 			nr_moved += nr_pages;
+ 			if (PageActive(page))
+ 				workingset_age_nonresident(lruvec, nr_pages);
 -- 
 2.28.0.681.g6f77f65b4e-goog
 
