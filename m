@@ -2,77 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 249F7270470
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 20:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84E20270485
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 21:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726305AbgIRSzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 14:55:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55536 "EHLO mail.kernel.org"
+        id S1726252AbgIRTB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 15:01:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726174AbgIRSzu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 14:55:50 -0400
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+        id S1726115AbgIRTB6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 15:01:58 -0400
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B42E221D7F;
-        Fri, 18 Sep 2020 18:55:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AE02222208;
+        Fri, 18 Sep 2020 19:01:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600455349;
-        bh=ihI+7BKGkkYmKR73JMuy1SHqDYxONOS9ajlx6wIRavI=;
+        s=default; t=1600455717;
+        bh=rS84A/OaBg23yNAtPTq3plT5X3kOb7286omQM12f1Fk=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=kHGs21LjRsgm28Qa+KeanX9BjuQuudufV+XoGsDt75JdTSZZHLKXBu5oWyvrczFmt
-         GxqZ9ihO15nysNNipKsqNsYD+yDH0l/JM+3tNiByRAo5sGPE9KZJTsCXRTod8zxSag
-         tL7gmzydlKuszNKet0jQ3e7KGQ/n4y6A1fAlCZEc=
-Received: by mail-ot1-f51.google.com with SMTP id q21so6325129ota.8;
-        Fri, 18 Sep 2020 11:55:49 -0700 (PDT)
-X-Gm-Message-State: AOAM532m4Z7vwHTyTqN2DX6p+Tq72cl5tmVhj/kg1np+0bjcp0/XT4Fi
-        CUyZVf1bP7Mcf0UPUxQzyLPxHpqHQNNL5yIMPQ==
-X-Google-Smtp-Source: ABdhPJwfcYWEDoDMqrgG2knzf4aCim7g04Lemlql1hss4d1AAsDpNE9H9/loKt4hRFPQvgrTjJ8xkBXNZeco4XovUP4=
-X-Received: by 2002:a9d:6ada:: with SMTP id m26mr10131043otq.192.1600455349030;
- Fri, 18 Sep 2020 11:55:49 -0700 (PDT)
+        b=lBQ48smIRQIhIDWuplFGl2mJEcnYqMPakqetKj4pW2yatfyCMH9c1wXgyli7z/ZWn
+         d39s0E0thPumFHv24BQtFlkwIcPw+9x6/8zHIf3wONcRQKvVaYgCAcAnNhkzELO5Ha
+         C8pkBB5efZA4/zZ+GSLRZGH835T6n/Un3UenVLJ8=
+Received: by mail-ot1-f42.google.com with SMTP id q21so6340787ota.8;
+        Fri, 18 Sep 2020 12:01:57 -0700 (PDT)
+X-Gm-Message-State: AOAM531Jb/tm6KXclqaZDWkbJ2BJma/eMT9KBJlFxRdIktggCP9VRyLt
+        pW+AkTVm6W0i660/j08UDyysUqQET85EG6fMwA==
+X-Google-Smtp-Source: ABdhPJy5SRe4iLnIuK1LSlYLAhKMK7cdeAyXWOah9n6KqXUDNjHoxqZWwPaLaSunMfwZS1MlOrEAELY5ORhtsHG4Pek=
+X-Received: by 2002:a9d:6ada:: with SMTP id m26mr10145370otq.192.1600455716990;
+ Fri, 18 Sep 2020 12:01:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200903120504.2308-1-thunder.leizhen@huawei.com>
- <20200903120504.2308-2-thunder.leizhen@huawei.com> <20200914203110.GA185427@bogus>
- <4873e234-d06c-930e-6645-a832164e18ea@huawei.com> <0928ac6a-2295-4e87-5191-4fd4580f87b5@huawei.com>
-In-Reply-To: <0928ac6a-2295-4e87-5191-4fd4580f87b5@huawei.com>
+References: <cover.1598939393.git.nguyenb@codeaurora.org> <0a9d395dc38433501f9652a9236856d0ac840b77.1598939393.git.nguyenb@codeaurora.org>
+ <20200914183505.GA357@bogus> <d332e61cea4fef237507f1404efa724a@codeaurora.org>
+In-Reply-To: <d332e61cea4fef237507f1404efa724a@codeaurora.org>
 From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 18 Sep 2020 12:55:37 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqK3635vQGK+mw+GKz5Sj2YKEt6+sj8MNo0d3hFESbfUKw@mail.gmail.com>
-Message-ID: <CAL_JsqK3635vQGK+mw+GKz5Sj2YKEt6+sj8MNo0d3hFESbfUKw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: interrupt-controller: add Hisilicon
- SD5203 vector interrupt controller
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
+Date:   Fri, 18 Sep 2020 13:01:45 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+YV-GjAhVVHtgNz6xFR=bEgSwWKY+QGixRQJ5Ov75pag@mail.gmail.com>
+Message-ID: <CAL_Jsq+YV-GjAhVVHtgNz6xFR=bEgSwWKY+QGixRQJ5Ov75pag@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] scsi: dt-bindings: ufs: Add vcc-voltage-level for UFS
+To:     "Bao D. Nguyen" <nguyenb@codeaurora.org>
+Cc:     Can Guo <cang@codeaurora.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        SCSI <linux-scsi@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Avri Altman <Avri.Altman@wdc.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 9:30 PM Leizhen (ThunderTown)
-<thunder.leizhen@huawei.com> wrote:
+On Tue, Sep 15, 2020 at 2:10 AM <nguyenb@codeaurora.org> wrote:
 >
->
->
-> On 2020/9/15 14:12, Leizhen (ThunderTown) wrote:
-> >
-> >
-> > On 2020/9/15 4:31, Rob Herring wrote:
-> >> On Thu, Sep 03, 2020 at 08:05:03PM +0800, Zhen Lei wrote:
-> >>> Add DT bindings for the Hisilicon SD5203 vector interrupt controller.
-> >>>
-> >>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> >>> ---
-> >>>  .../hisilicon,sd5203-vic.txt                  | 27 +++++++++++++++++++
+> On 2020-09-14 11:35, Rob Herring wrote:
+> > On Mon, Aug 31, 2020 at 11:00:47PM -0700, Bao D. Nguyen wrote:
+> >> UFS's specifications supports a range of Vcc operating
+> >> voltage levels. Add documentation for the UFS's Vcc voltage
+> >> levels setting.
 > >>
-> >> Bindings should be in DT schema format now.
->
-> Do I need to change the existing "snps,dw-apb-ictl.txt" to DT schema format?
+> >> Signed-off-by: Can Guo <cang@codeaurora.org>
+> >> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+> >> Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
+> >> ---
+> >>  Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt | 2 ++
+> >>  1 file changed, 2 insertions(+)
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
+> >> b/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
+> >> index 415ccdd..7257b32 100644
+> >> --- a/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
+> >> +++ b/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
+> >> @@ -23,6 +23,8 @@ Optional properties:
+> >>                            with "phys" attribute, provides phandle to
+> >> UFS PHY node
+> >>  - vdd-hba-supply        : phandle to UFS host controller supply
+> >> regulator node
+> >>  - vcc-supply            : phandle to VCC supply regulator node
+> >> +- vcc-voltage-level     : specifies voltage levels for VCC supply.
+> >> +                          Should be specified in pairs (min, max),
+> >> units uV.
+> >
+> > The expectation is the regulator pointed to by 'vcc-supply' has the
+> > voltage constraints. Those constraints are supposed to be the board
+> > constraints, not the regulator operating design constraints. If that
+> > doesn't work for your case, then it should be addressed in a common way
+> > for the regulator binding.
+> The UFS regulator has a min_uV and max_uV limits. Currently, the min and
+> max are hardcoded
+> to UFS2.1 Spec allowed values of 2.7V and 3.6V respectively.
+> With this change, I am trying to fix a couple issues:
+> 1. The 2.7V min value only applies to UFS2.1 devices. with UFS3.0+
+> devices, the VCC min should be 2.4V.
+> Hardcoding the min_uV to 2.7V does not work for UFS3.0+ devices.
 
-That would be nice, but not necessary for minor changes.
+Don't you know the device version attached and can adjust the voltage
+based on that? Or you have to set the voltage first?
+
+> 2. Allow users to select a different Vcc voltage within the allowed
+> range.
+> Using the min value, the UFS device is operating at marginal Vcc
+> voltage.
+> In addition the PMIC and the board designs may add some variables
+> especially at extreme
+> temperatures. We observe stability issues when using the min Vcc
+> voltage.
+
+Again, we have standard regulator properties for this already that you
+can tune per board.
 
 Rob
