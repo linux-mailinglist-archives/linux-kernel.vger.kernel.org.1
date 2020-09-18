@@ -2,115 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 335E5270381
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 19:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85939270391
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 19:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726281AbgIRRqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 13:46:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726007AbgIRRqT (ORCPT
+        id S1726192AbgIRRxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 13:53:51 -0400
+Received: from so254-54.mailgun.net ([198.61.254.54]:29389 "EHLO
+        so254-54.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725955AbgIRRxv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 13:46:19 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C11BAC0613CE;
-        Fri, 18 Sep 2020 10:46:18 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 17:46:13 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600451175;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IhB0NcX0HOm3WMSDpWGptMP1AutOeAlQCpBK85KN/zE=;
-        b=ytLnUvCkOEXDpwqRWEtzejMS/URwkOfqjZwgjh93rXAXkaUVSiJiD1QT2yhipnY+U3KPdN
-        ckXANTB+4w6N+qpXlaH8lGwTNTUk+jZNqZ2aU2yy8HJgPs+6dN222rECQf+dXitV218PEy
-        mHbvroT933qQhvUylp3OTCupu7Cc/IfDysBDxXIiah9bwpAn4RUq5fRNrafLNymsr5HbeV
-        wJUGvRTljYTHxsuY3Gmj/E1B/jDjNFNZZEtcpvy8Jbpo70MU42oqYuXohJlB7qd6/72xVA
-        W8ERDsRVRGT4zNFRsUJwlUDoMhBJ+N++U2MNSVLpdXaWJLNzdyj+tgMtsFYgiw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600451175;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IhB0NcX0HOm3WMSDpWGptMP1AutOeAlQCpBK85KN/zE=;
-        b=llc8pe7KuyQCQJNibu4oe/gSU2C+nQou6p5fOCrwgz/rVjy69Y9WmkfIPX1Q8YG7H0Gbdt
-        1ooaUaFAi8UKTWCw==
-From:   "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/urgent] objtool: Fix noreturn detection for ignored functions
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Borislav Petkov <bp@suse.de>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <5b1e2536cdbaa5246b60d7791b76130a74082c62.1599751464.git.jpoimboe@redhat.com>
-References: <5b1e2536cdbaa5246b60d7791b76130a74082c62.1599751464.git.jpoimboe@redhat.com>
+        Fri, 18 Sep 2020 13:53:51 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600451630; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=7lylX8MQHlGZ8MSNHOfJfe7J/XsAMSY6kQActmiQXxs=; b=mrbmyyoJe4GmkkZdwuif9SuaASIQ9B0ye6Oi2vc7hwOfNqVtFsSNlfjlna7r/bnQO3RcoUBY
+ OXgSVyMuXT/SS8x8FQrQDakDUNguxfg2d5dLyUcNY635ycXVJgvfiEtasId1fZCvSfOsYzIt
+ HRRbvPKgtazlt6gALQ/Q/Gckgac=
+X-Mailgun-Sending-Ip: 198.61.254.54
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5f64f42d0915d3035782c6b5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Sep 2020 17:53:49
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3364DC433CA; Fri, 18 Sep 2020 17:53:49 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.8 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 40CB3C433C8;
+        Fri, 18 Sep 2020 17:53:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 40CB3C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
+Subject: Re: [PATCH v6 4/4] bus: mhi: Add userspace client interface driver
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     manivannan.sadhasivam@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jhugo@codeaurora.org,
+        bbhatt@codeaurora.org
+References: <1600286167-4432-1-git-send-email-hemantk@codeaurora.org>
+ <1600286167-4432-5-git-send-email-hemantk@codeaurora.org>
+ <20200917164047.GB721081@kroah.com>
+From:   Hemant Kumar <hemantk@codeaurora.org>
+Message-ID: <c936a8fc-19e4-ff97-3905-2a84c81176f1@codeaurora.org>
+Date:   Fri, 18 Sep 2020 10:53:47 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Message-ID: <160045117381.15536.17047493759448999988.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20200917164047.GB721081@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the objtool/urgent branch of tip:
+Hi Greg,
 
-Commit-ID:     db6c6a0df840e3f52c84cc302cc1a08ba11a4416
-Gitweb:        https://git.kernel.org/tip/db6c6a0df840e3f52c84cc302cc1a08ba11a4416
-Author:        Josh Poimboeuf <jpoimboe@redhat.com>
-AuthorDate:    Thu, 10 Sep 2020 10:24:57 -05:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Fri, 18 Sep 2020 19:37:51 +02:00
+On 9/17/20 9:40 AM, Greg KH wrote:
+> On Wed, Sep 16, 2020 at 12:56:07PM -0700, Hemant Kumar wrote:
+>> +/**
+>> + * struct uci_dev - MHI uci device
+>> + * @minor: uci device node minor number
+>> + * @mhi_dev: associated mhi device object
+>> + * @chan: MHI channel name
+>> + * @lock: mutex lock
+>> + * @ul_chan: uplink uci channel object
+>> + * @dl_chan: downlink uci channel object
+>> + * @mtu: max tx buffer length
+>> + * @actual_mtu: maximum size of incoming buffer
+>> + * @open: open called for device node
+>> + * @enabled: uci device probed
+>> + * @ref_count: uci_dev reference count
+>> + */
+>> +struct uci_dev {
+>> +	unsigned int minor;
+>> +	struct mhi_device *mhi_dev;
+>> +	const char *chan;
+>> +
+>> +	/* protects uci_dev struct members */
+>> +	struct mutex lock;
+>> +
+>> +	struct uci_chan ul_chan;
+>> +	struct uci_chan dl_chan;
+>> +	size_t mtu;
+>> +	size_t actual_mtu;
+>> +	bool enabled;
+>> +	struct kref ref_count;
+>> +};
+> 
+> I don't think you actually made the kernel documentation based on these
+> lines.
+> 
+> Or if you did, you ignored the warnings :(
+> 
+> Please test build your patches before sending them out...
+Thanks for pointing out the kernel doc, it was a miss. i will fix it.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-objtool: Fix noreturn detection for ignored functions
-
-When a function is annotated with STACK_FRAME_NON_STANDARD, objtool
-doesn't validate its code paths.  It also skips sibling call detection
-within the function.
-
-But sibling call detection is actually needed for the case where the
-ignored function doesn't have any return instructions.  Otherwise
-objtool naively marks the function as implicit static noreturn, which
-affects the reachability of its callers, resulting in "unreachable
-instruction" warnings.
-
-Fix it by just enabling sibling call detection for ignored functions.
-The 'insn->ignore' check in add_jump_destinations() is no longer needed
-after
-
-  e6da9567959e ("objtool: Don't use ignore flag for fake jumps").
-
-Fixes the following warning:
-
-  arch/x86/kvm/vmx/vmx.o: warning: objtool: vmx_handle_exit_irqoff()+0x142: unreachable instruction
-
-which triggers on an allmodconfig with CONFIG_GCOV_KERNEL unset.
-
-Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Linus Torvalds <torvalds@linux-foundation.org>
-Link: https://lkml.kernel.org/r/5b1e2536cdbaa5246b60d7791b76130a74082c62.1599751464.git.jpoimboe@redhat.com
----
- tools/objtool/check.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index e034a8f..90a6689 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -619,7 +619,7 @@ static int add_jump_destinations(struct objtool_file *file)
- 		if (!is_static_jump(insn))
- 			continue;
- 
--		if (insn->ignore || insn->offset == FAKE_JUMP_OFFSET)
-+		if (insn->offset == FAKE_JUMP_OFFSET)
- 			continue;
- 
- 		reloc = find_reloc_by_dest_range(file->elf, insn->sec,
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
