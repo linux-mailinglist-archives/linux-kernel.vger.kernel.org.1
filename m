@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 391D226EB66
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77E6426EB6B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727408AbgIRCE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:04:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52578 "EHLO mail.kernel.org"
+        id S1726714AbgIRCFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:05:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727392AbgIRCEv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:04:51 -0400
+        id S1727423AbgIRCFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:05:01 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 03F7C23600;
-        Fri, 18 Sep 2020 02:04:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2923D2344C;
+        Fri, 18 Sep 2020 02:05:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394690;
-        bh=edvpvBXgzkA1HGw8xxSPpBS1Btl6werh9kXB01ts0TM=;
+        s=default; t=1600394700;
+        bh=cy6Vb+w8dw3c/JpKeFygjW4q0sjZBzO0mk4wcmcKE64=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LOgOuLGNtK0lt/eN91s32G4fGuTD+sBixN3Gl0pmuhmhvEObUWgUCK0G1dKEbiltZ
-         1uZ8SwwwjXasnPpDc5GthRmlWKVIVPMEDuSW+/bpXsvWee/kf2YmL4C6XXww2QFxgL
-         2JxFjCNUPi6VnXokMWDOX/OVvKbvHZoGPJ0tLZCM=
+        b=xhwoS+HDOLJPbDKBAjEarxv5rMLa3kdoYCIUEvOwqRn1VE9fxPHfirFMNAZOuSh/J
+         Guv7cMSNTBDJ/DRKjYXs2qo+8HdhuHWZVyGAI6RiCYLjXmOinx2cUg4mEwbVbLtn8D
+         +/eXwO7W2BxKT7b8dhPRVi7HdlNMuAkkUmWwRdVs=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 179/330] intel_th: Disallow multi mode on devices where it's broken
-Date:   Thu, 17 Sep 2020 21:58:39 -0400
-Message-Id: <20200918020110.2063155-179-sashal@kernel.org>
+Cc:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 187/330] btrfs: do not init a reloc root if we aren't relocating
+Date:   Thu, 17 Sep 2020 21:58:47 -0400
+Message-Id: <20200918020110.2063155-187-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -43,121 +42,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+From: Josef Bacik <josef@toxicpanda.com>
 
-[ Upstream commit 397c7729665a3b07a7b4ce7215173df8e9112809 ]
+[ Upstream commit 2abc726ab4b83db774e315c660ab8da21477092f ]
 
-Some versions of Intel TH have an issue that prevents the multi mode of
-MSU from working correctly, resulting in no trace data and potentially
-stuck MSU pipeline.
+We previously were checking if the root had a dead root before accessing
+root->reloc_root in order to avoid a use-after-free type bug.  However
+this scenario happens after we've unset the reloc control, so we would
+have been saved if we'd simply checked for fs_info->reloc_control.  At
+this point during relocation we no longer need to be creating new reloc
+roots, so simply move this check above the reloc_root checks to avoid
+any future races and confusion.
 
-Disable multi mode on such devices.
-
-Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Link: https://lore.kernel.org/r/20200317062215.15598-2-alexander.shishkin@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwtracing/intel_th/intel_th.h |  2 ++
- drivers/hwtracing/intel_th/msu.c      | 11 +++++++++--
- drivers/hwtracing/intel_th/pci.c      |  8 ++++++--
- 3 files changed, 17 insertions(+), 4 deletions(-)
+ fs/btrfs/relocation.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/hwtracing/intel_th/intel_th.h b/drivers/hwtracing/intel_th/intel_th.h
-index 6f4f5486fe6dc..5fe694708b7a3 100644
---- a/drivers/hwtracing/intel_th/intel_th.h
-+++ b/drivers/hwtracing/intel_th/intel_th.h
-@@ -47,11 +47,13 @@ struct intel_th_output {
- /**
-  * struct intel_th_drvdata - describes hardware capabilities and quirks
-  * @tscu_enable:	device needs SW to enable time stamping unit
-+ * @multi_is_broken:	device has multiblock mode is broken
-  * @has_mintctl:	device has interrupt control (MINTCTL) register
-  * @host_mode_only:	device can only operate in 'host debugger' mode
-  */
- struct intel_th_drvdata {
- 	unsigned int	tscu_enable        : 1,
-+			multi_is_broken    : 1,
- 			has_mintctl        : 1,
- 			host_mode_only     : 1;
- };
-diff --git a/drivers/hwtracing/intel_th/msu.c b/drivers/hwtracing/intel_th/msu.c
-index 255f8f41c8ff7..3cd2489d398c5 100644
---- a/drivers/hwtracing/intel_th/msu.c
-+++ b/drivers/hwtracing/intel_th/msu.c
-@@ -157,7 +157,8 @@ struct msc {
- 	/* config */
- 	unsigned int		enabled : 1,
- 				wrap	: 1,
--				do_irq	: 1;
-+				do_irq	: 1,
-+				multi_is_broken : 1;
- 	unsigned int		mode;
- 	unsigned int		burst_len;
- 	unsigned int		index;
-@@ -1665,7 +1666,7 @@ static int intel_th_msc_init(struct msc *msc)
- {
- 	atomic_set(&msc->user_count, -1);
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index af3605a0bf2e0..1313506a7ecb5 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -1468,6 +1468,10 @@ int btrfs_init_reloc_root(struct btrfs_trans_handle *trans,
+ 	int clear_rsv = 0;
+ 	int ret;
  
--	msc->mode = MSC_MODE_MULTI;
-+	msc->mode = msc->multi_is_broken ? MSC_MODE_SINGLE : MSC_MODE_MULTI;
- 	mutex_init(&msc->buf_mutex);
- 	INIT_LIST_HEAD(&msc->win_list);
- 	INIT_LIST_HEAD(&msc->iter_list);
-@@ -1877,6 +1878,9 @@ mode_store(struct device *dev, struct device_attribute *attr, const char *buf,
- 	return -EINVAL;
- 
- found:
-+	if (i == MSC_MODE_MULTI && msc->multi_is_broken)
-+		return -EOPNOTSUPP;
++	if (!rc || !rc->create_reloc_tree ||
++	    root->root_key.objectid == BTRFS_TREE_RELOC_OBJECTID)
++		return 0;
 +
- 	mutex_lock(&msc->buf_mutex);
- 	ret = 0;
+ 	/*
+ 	 * The subvolume has reloc tree but the swap is finished, no need to
+ 	 * create/update the dead reloc tree
+@@ -1481,10 +1485,6 @@ int btrfs_init_reloc_root(struct btrfs_trans_handle *trans,
+ 		return 0;
+ 	}
  
-@@ -2083,6 +2087,9 @@ static int intel_th_msc_probe(struct intel_th_device *thdev)
- 	if (!res)
- 		msc->do_irq = 1;
- 
-+	if (INTEL_TH_CAP(to_intel_th(thdev), multi_is_broken))
-+		msc->multi_is_broken = 1;
+-	if (!rc || !rc->create_reloc_tree ||
+-	    root->root_key.objectid == BTRFS_TREE_RELOC_OBJECTID)
+-		return 0;
+-
+ 	if (!trans->reloc_reserved) {
+ 		rsv = trans->block_rsv;
+ 		trans->block_rsv = rc->block_rsv;
+@@ -2336,6 +2336,18 @@ static noinline_for_stack int merge_reloc_root(struct reloc_control *rc,
+ 			trans = NULL;
+ 			goto out;
+ 		}
 +
- 	msc->index = thdev->id;
++		/*
++		 * At this point we no longer have a reloc_control, so we can't
++		 * depend on btrfs_init_reloc_root to update our last_trans.
++		 *
++		 * But that's ok, we started the trans handle on our
++		 * corresponding fs_root, which means it's been added to the
++		 * dirty list.  At commit time we'll still call
++		 * btrfs_update_reloc_root() and update our root item
++		 * appropriately.
++		 */
++		reloc_root->last_trans = trans->transid;
+ 		trans->block_rsv = rc->block_rsv;
  
- 	msc->thdev = thdev;
-diff --git a/drivers/hwtracing/intel_th/pci.c b/drivers/hwtracing/intel_th/pci.c
-index 0d26484d67955..21fdf0b935166 100644
---- a/drivers/hwtracing/intel_th/pci.c
-+++ b/drivers/hwtracing/intel_th/pci.c
-@@ -120,6 +120,10 @@ static void intel_th_pci_remove(struct pci_dev *pdev)
- 	pci_free_irq_vectors(pdev);
- }
- 
-+static const struct intel_th_drvdata intel_th_1x_multi_is_broken = {
-+	.multi_is_broken	= 1,
-+};
-+
- static const struct intel_th_drvdata intel_th_2x = {
- 	.tscu_enable	= 1,
- 	.has_mintctl	= 1,
-@@ -152,7 +156,7 @@ static const struct pci_device_id intel_th_pci_id_table[] = {
- 	{
- 		/* Kaby Lake PCH-H */
- 		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0xa2a6),
--		.driver_data = (kernel_ulong_t)0,
-+		.driver_data = (kernel_ulong_t)&intel_th_1x_multi_is_broken,
- 	},
- 	{
- 		/* Denverton */
-@@ -207,7 +211,7 @@ static const struct pci_device_id intel_th_pci_id_table[] = {
- 	{
- 		/* Comet Lake PCH-V */
- 		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0xa3a6),
--		.driver_data = (kernel_ulong_t)&intel_th_2x,
-+		.driver_data = (kernel_ulong_t)&intel_th_1x_multi_is_broken,
- 	},
- 	{
- 		/* Ice Lake NNPI */
+ 		replaced = 0;
 -- 
 2.25.1
 
