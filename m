@@ -2,101 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74A5626FB29
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 13:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E462326FB33
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 13:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726252AbgIRLJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 07:09:18 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59446 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725941AbgIRLJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 07:09:18 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600427356;
+        id S1726269AbgIRLOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 07:14:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726044AbgIRLOZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 07:14:25 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA005C06174A;
+        Fri, 18 Sep 2020 04:14:24 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 5087022EEB;
+        Fri, 18 Sep 2020 13:14:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1600427660;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=oLMBMFXjeRjM8sse2MwoiIZCDWhxj5hdGhG2mv+8ZfM=;
-        b=aCy12HXaLpMFm3wWBWPRD4Mau7bVtBzZ4QC0hZ//7Ai72QDZ/Ppx0fmC2hUo65dnEhtIvI
-        fJlNYu79u38CAVGOsY+KQjSXAL4qyJ22dK6LTePMfrzBgN37bR4BmL71zl5JMp2KJ1+qbf
-        CPVZlgErUmwP5U34x2epVjvUBELhQyo=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5ABFCABC4;
-        Fri, 18 Sep 2020 11:09:50 +0000 (UTC)
-Date:   Fri, 18 Sep 2020 13:09:14 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Huang Ying <ying.huang@intel.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Konstantin Khlebnikov <koct9i@gmail.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Jaewon Kim <jaewon31.kim@samsung.com>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/13] mm: use page_off_lru()
-Message-ID: <20200918110914.GK28827@dhcp22.suse.cz>
-References: <20200918030051.650890-1-yuzhao@google.com>
- <20200918030051.650890-3-yuzhao@google.com>
- <20200918073700.GE28827@dhcp22.suse.cz>
- <20200918102713.GB1004594@google.com>
+        bh=+q2FbH/6HLJq2ZY1omvh24W3dfvOqburdvJY0MvQ/JE=;
+        b=JZRKyXdPsyE0atHA8l+5b9oWb9t3hrGfZ2oqKUuV9l0BgHin3YtMVzV9Zl1+0T2CRTLnYs
+        zpsaVuHUihejlte2Oj7GLfHq5FtQn1Y4vv89ycCTtuoH/Q9ONZce3P0JepKBBPSAGpi/5X
+        L6g0CaMF0rtvpIM1srpjTP50my974js=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918102713.GB1004594@google.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 18 Sep 2020 13:14:20 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     "Z.q. Hou" <zhiqiang.hou@nxp.com>
+Cc:     Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        PCI <linux-pci@vger.kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH] PCI: dwc: Added link up check in map_bus of
+ dw_child_pcie_ops
+In-Reply-To: <HE1PR0402MB3371F8191538F47E8249F048843F0@HE1PR0402MB3371.eurprd04.prod.outlook.com>
+References: <20200916054130.8685-1-Zhiqiang.Hou@nxp.com>
+ <CAL_JsqJwgNUpWFTq2YWowDUigndSOB4rUcVm0a_U=FEpEmk94Q@mail.gmail.com>
+ <HE1PR0402MB3371F8191538F47E8249F048843F0@HE1PR0402MB3371.eurprd04.prod.outlook.com>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <cb8b32463679c208b394879636451c77@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 18-09-20 04:27:13, Yu Zhao wrote:
-> On Fri, Sep 18, 2020 at 09:37:00AM +0200, Michal Hocko wrote:
-> > On Thu 17-09-20 21:00:40, Yu Zhao wrote:
-> > > This patch replaces the only open-coded __ClearPageActive() with
-> > > page_off_lru(). There is no open-coded __ClearPageUnevictable()s.
-> > > 
-> > > Before this patch, we have:
-> > > 	__ClearPageActive()
-> > > 	add_page_to_lru_list()
-> > > 
-> > > After this patch, we have:
-> > > 	page_off_lru()
-> > > 		if PageUnevictable()
-> > > 			__ClearPageUnevictable()
-> > > 		else if PageActive()
-> > > 			__ClearPageActive()
-> > > 	add_page_to_lru_list()
-> > > 
-> > > Checking PageUnevictable() shouldn't be a problem because these two
-> > > flags are mutually exclusive. Leaking either will trigger bad_page().
-> > 
-> > I am sorry but the changelog is really hard to grasp. What are you
-> > trying to achieve, why and why it is safe. This should be a general
-> > outline for any patch. I have already commented on the previous patch
-> > and asked you for the explanation why removing __ClearPageActive from
-> > this path is desirable and safe. I have specifically asked to clarify
-> > the compound page situation as that is using its oen destructor in the
-> > freeing path and that might result in page_off_lru to be not called.
-> 
-> Haven't I explained we are NOT removing __ClearPageActive()? Is my
-> notion of the code structure above confusing you? Or 'open-coded'
-> could mean different things?
+Hi Zhiqiang,
 
-Please read through my reply carefuly. I am not saying what you are
-doing is wrong. I am expressing a lack of justification which is the
-case throughout this patch series. You do not explain why we need it and
-why reviewers should spend time on this. Because the review is not as
-trivial as looking at the diff.
--- 
-Michal Hocko
-SUSE Labs
+> So the alternative solution seems to correct the PCIe enumeration, I 
+> will submit
+> a patch to let the first access only read the Vendor ID.
+
+Please put me on CC of that patch.
+
+Thanks,
+-michael
