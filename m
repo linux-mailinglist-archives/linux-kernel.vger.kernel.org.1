@@ -2,255 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80ABD26F645
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 08:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CA0C26F625
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 08:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726729AbgIRGpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 02:45:51 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:47364 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726484AbgIRGpu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 02:45:50 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08I6jdH5017057;
-        Fri, 18 Sep 2020 01:45:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600411539;
-        bh=4Fz6/znawPVT5Re4ej/ysxXwiAWhNVKJ7aypY2BXCzQ=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=mVxwBxqwGtRZgIAHkivTPqF/U/ubKRhnIOMmhlolmOzQnoFUQGlVGAV+8QgUcZD2M
-         obN11TQc/sd9OXrkADV9LKobO/HDEeoFi8GjRhkWPSD8aOSacp1r6+TXNCxBhIfHks
-         XK0L++DEqTmHC8uVZgVjmbbQTHXkks04P/MZ2L1o=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08I6jdkk126815
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 18 Sep 2020 01:45:39 -0500
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 18
- Sep 2020 01:45:38 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 18 Sep 2020 01:45:38 -0500
-Received: from a0393678-ssd.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08I6gUCb094595;
-        Fri, 18 Sep 2020 01:45:33 -0500
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>,
-        Tom Joseph <tjoseph@cadence.com>, Rob Herring <robh@kernel.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-pci@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-ntb@googlegroups.com>
-Subject: [PATCH v5 17/17] Documentation: PCI: Add userguide for PCI endpoint NTB function
-Date:   Fri, 18 Sep 2020 12:12:27 +0530
-Message-ID: <20200918064227.1463-18-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200918064227.1463-1-kishon@ti.com>
-References: <20200918064227.1463-1-kishon@ti.com>
+        id S1726621AbgIRGoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 02:44:30 -0400
+Received: from mail-mw2nam10on2088.outbound.protection.outlook.com ([40.107.94.88]:48857
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726612AbgIRGo0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 02:44:26 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NyVFmkkAQtFqj5scMq5TSoJZC2A1kVDZCmGJcW2bS0nqgNRYcigmG2CdSyHQ7yjyDYqX5mqTRWVk1dkimbLdO+zy7IeLznVL62qjxZjVkpI8BzCWE64y0hD/2P9viDv4H5k3VQ1KtnyGAyuc86g1tpq1RDr2uhKWRlKnHm9vhoMORuDAlItWUU1GKXsipBnmL2HWcrno7DLDqXOe5LZcTLepKiJ0NZp++MXp3dOpSFENO9elSezvQnsjQNhYKUxMy0sUPJzLCvblwQ6fgnNZaPKpXyMYnK9zInBnZTGxjb7QWf1+D8uubF1diXQiadQGQLFvsDddcc5OV9ONNekS9A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JIyJMdxjv7WeLGnppWcaCiVgM6J/joZLHcLPSGzdTms=;
+ b=n2rhi5XIG7zliJ2auwcybCF8UWx6CsK+ZHecdirlyunzuRDkuD70rHlUej2YzvmemuZC8fye6uCk+TJsJZBX/2/3TUErd8XwHUDiofPZxHp9z2thoi4o8dKD4nqxVsCxEYPDIy3/LoH5Om51SGJqmMtTDhzgXGljDG8z2mkySzkxneglvAzyMmLHU3/JGp4iZLF+MS6m/OiAIdPk1H0PTe47ztvlSfDeee/fxE9ciuU3kjWaPdPmG2MC3YIS0qPFxSQfCHPCs/5mg26gDYj/e8VsynoYfI1jVcDr0IjxQCuBKTqI1aDW3aEUcSvcctllVPyVQ8K6PdZs3JVrgsQBiA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JIyJMdxjv7WeLGnppWcaCiVgM6J/joZLHcLPSGzdTms=;
+ b=GLuVfYK6SuUmPQ+I1xtflnOc7T36KN3Onp0TS/QPhZt0S3q/wYv+76uGpHOAmStNvPd2U9I8DMvGA5OjP0l71AVGLhfGv8GB9Lhv873x2HnECTdKSbEUWXeFSKlaT8VcSTK8IDXtc84kv+d9oYIfCLa37N0rzWXKvIkFyfJSYOg=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=windriver.com;
+Received: from BY5PR11MB4241.namprd11.prod.outlook.com (2603:10b6:a03:1ca::13)
+ by BYAPR11MB3815.namprd11.prod.outlook.com (2603:10b6:a03:fa::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Fri, 18 Sep
+ 2020 06:44:23 +0000
+Received: from BY5PR11MB4241.namprd11.prod.outlook.com
+ ([fe80::8d64:f85b:1cce:a1c0]) by BY5PR11MB4241.namprd11.prod.outlook.com
+ ([fe80::8d64:f85b:1cce:a1c0%5]) with mapi id 15.20.3370.019; Fri, 18 Sep 2020
+ 06:44:22 +0000
+Subject: Re: [PATCH v2] sched, mm: Optimize current_gfp_context()
+To:     Waiman Long <longman@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Michel Lespinasse <walken@google.com>,
+        linux-kernel@vger.kernel.org
+References: <20200618212936.9776-1-longman@redhat.com>
+ <20200811152921.1d43e34ad7aff928c6c1267f@linux-foundation.org>
+From:   "Xu, Yanfei" <yanfei.xu@windriver.com>
+Message-ID: <a5b29e4d-cc9e-a422-e7b4-e68e0dee37c7@windriver.com>
+Date:   Fri, 18 Sep 2020 14:44:15 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+In-Reply-To: <20200811152921.1d43e34ad7aff928c6c1267f@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: HK2PR0302CA0004.apcprd03.prod.outlook.com
+ (2603:1096:202::14) To BY5PR11MB4241.namprd11.prod.outlook.com
+ (2603:10b6:a03:1ca::13)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [128.224.162.160] (60.247.85.82) by HK2PR0302CA0004.apcprd03.prod.outlook.com (2603:1096:202::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.8 via Frontend Transport; Fri, 18 Sep 2020 06:44:20 +0000
+X-Originating-IP: [60.247.85.82]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 76833633-60f1-40f1-c58b-08d85b9e46da
+X-MS-TrafficTypeDiagnostic: BYAPR11MB3815:
+X-Microsoft-Antispam-PRVS: <BYAPR11MB381560E565B81C6A142E978DE43F0@BYAPR11MB3815.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: a8CBQUzTUqms10zvSrvLy2wo7PNiHzTwaQFXVk2Wb/cQQ3agOzG57dgxCXkzw0L0hJP/P7kmLZjAg1rXIanE35UY9ODBx/4EPKIvnOOo/2ktS7l61FNJab+JuSnwP3s8fu7VcVUvLWycbahr8Ws75r8jX/hRsgvYRCLyoV/6MZCY1ABC+Jay6KUncz+iKMwF1tSrWYQFWhmzzWi+kaXnnFdXPTwI3j5wm8G4pD77ub3X3Rm9Ir1fWd/WgxNleFWs6HgKlgop7hNfixKD/7htsNuW89TewJgB7zSP1FSe7IBrwwnX0nZBgb2yX3ZihLInKD+uK18+DipN8llzeEX7sQi+6vCt/V5UDPzzeJ2jXK7FOlo+mFdECsi8Dsc0056ZcYHe4NbvTRNs73pKsMxong==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4241.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(39850400004)(366004)(136003)(346002)(83380400001)(8676002)(6916009)(31686004)(6486002)(66476007)(66556008)(6666004)(6706004)(956004)(2616005)(54906003)(36756003)(52116002)(16526019)(5660300002)(8936002)(186003)(66946007)(2906002)(316002)(86362001)(26005)(16576012)(4326008)(478600001)(31696002)(53546011)(78286007)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: CBAKaz5OcZ6uYxyXjvct+Qzo1Tk8KwYDZEHDhjS5e6eftKQd6VV8O6FF8sRbEChKUteX/JnhmUGuNiy+VxynLFWgYKY1Bq8JzZByEgiGEnOP5rGnVUqUTAIFwk8G3StNK0kmrJKhhX8nmn4P1CXgHdZ3FT5z0lMgcN6kGIlYAqA2PCxPNufJVr3mjaMZLB/+m3l8xn6oJvRpCMF89VuUYRqaVICV/9Jd854M1EthbOzv+C25weg4YBY6wP9KH3jWxLV+SVak9RZewPWvtDMgu4WpiPO9VsLsR/Pbq5unozymTlQIa8i3MjrS702DAKLdX/MrTvBORr5HyxzqB1YT9M8UuvNT6db1en1K8O3k9R7Mi+j0CNOylRwJd/8vMo4ZW5reIQ+fEE4esS1bWCr5tdkrt+amlX99jDY30uU/mbtA0eHE2INaTujbPlYMddMPeBLGS3wNma1hhRJhlApEWLwQwVhMsrEyz+JH2sq7SlEY5kGSOCgKcvGv9L4S7gK2ocsaiLvXsUTc8s4YjtNV9JzdHy22PLsxXBhpuMk5VQ7hb5JE4bS+ru6ajRQcoP2ERCozW1yK5TQk/BkGyR1n1Ip46LP9M6F+GSR9lAEa7ARziHHDO1Qa3NGT5kUNn6YLiICcT6UbuoHdcljobNAZ9A==
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 76833633-60f1-40f1-c58b-08d85b9e46da
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4241.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2020 06:44:22.6706
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NDUw5unkCYi3xgk9HvpfMg0R96YthX7BF7Y9rxZRFtq25oRaNQmsTmCNJ/bfcAl5XHqx1JyrqBJINTu8V+C/9Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3815
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add documentation to help users use pci-epf-ntb function driver and
-existing host side NTB infrastructure for NTB functionality.
+Hi Waiman,
 
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
----
- Documentation/PCI/endpoint/index.rst         |   1 +
- Documentation/PCI/endpoint/pci-ntb-howto.rst | 160 +++++++++++++++++++
- 2 files changed, 161 insertions(+)
- create mode 100644 Documentation/PCI/endpoint/pci-ntb-howto.rst
+On 8/12/20 6:29 AM, Andrew Morton wrote:
+> On Thu, 18 Jun 2020 17:29:36 -0400 Waiman Long <longman@redhat.com> wrote:
+> 
+>> The current_gfp_context() converts a number of PF_MEMALLOC_* per-process
+>> flags into the corresponding GFP_* flags for memory allocation. In
+>> that function, current->flags is accessed 3 times. That may lead to
+>> duplicated access of the same memory location.
+>>
+I have a puzzle about this comment, what's the meaning about "That may
+lead to duplicated access of the same memory location". After using
+variable 'pflags', will it not duplicated access the same memory
+location?
+Looking forward to your reply :)
 
-diff --git a/Documentation/PCI/endpoint/index.rst b/Documentation/PCI/endpoint/index.rst
-index 9cb6e5f3c4d5..38ea1f604b6d 100644
---- a/Documentation/PCI/endpoint/index.rst
-+++ b/Documentation/PCI/endpoint/index.rst
-@@ -12,6 +12,7 @@ PCI Endpoint Framework
-    pci-test-function
-    pci-test-howto
-    pci-ntb-function
-+   pci-ntb-howto
- 
-    function/binding/pci-test
-    function/binding/pci-ntb
-diff --git a/Documentation/PCI/endpoint/pci-ntb-howto.rst b/Documentation/PCI/endpoint/pci-ntb-howto.rst
-new file mode 100644
-index 000000000000..b6e1073c9a39
---- /dev/null
-+++ b/Documentation/PCI/endpoint/pci-ntb-howto.rst
-@@ -0,0 +1,160 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+===================================================================
-+PCI Non-Transparent Bridge (NTB) Endpoint Function (EPF) User Guide
-+===================================================================
-+
-+:Author: Kishon Vijay Abraham I <kishon@ti.com>
-+
-+This document is a guide to help users use pci-epf-ntb function driver
-+and ntb_hw_epf host driver for NTB functionality. The list of steps to
-+be followed in the host side and EP side is given below. For the hardware
-+configuration and internals of NTB using configurable endpoints see
-+Documentation/PCI/endpoint/pci-ntb-function.rst
-+
-+Endpoint Device
-+===============
-+
-+Endpoint Controller Devices
-+---------------------------
-+
-+For implementing NTB functionality at least two endpoint controller devices
-+are required.
-+To find the list of endpoint controller devices in the system::
-+
-+        # ls /sys/class/pci_epc/
-+          2900000.pcie-ep  2910000.pcie-ep
-+
-+If PCI_ENDPOINT_CONFIGFS is enabled::
-+
-+	# ls /sys/kernel/config/pci_ep/controllers
-+	  2900000.pcie-ep  2910000.pcie-ep
-+
-+
-+Endpoint Function Drivers
-+-------------------------
-+
-+To find the list of endpoint function drivers in the system::
-+
-+	# ls /sys/bus/pci-epf/drivers
-+	  pci_epf_ntb   pci_epf_ntb
-+
-+If PCI_ENDPOINT_CONFIGFS is enabled::
-+
-+	# ls /sys/kernel/config/pci_ep/functions
-+	  pci_epf_ntb   pci_epf_ntb
-+
-+
-+Creating pci-epf-ntb Device
-+----------------------------
-+
-+PCI endpoint function device can be created using the configfs. To create
-+pci-epf-ntb device, the following commands can be used::
-+
-+	# mount -t configfs none /sys/kernel/config
-+	# cd /sys/kernel/config/pci_ep/
-+	# mkdir functions/pci_epf_ntb/func1
-+
-+The "mkdir func1" above creates the pci-epf-ntb function device that will
-+be probed by pci_epf_ntb driver.
-+
-+The PCI endpoint framework populates the directory with the following
-+configurable fields::
-+
-+	# ls functions/pci_epf_ntb/func1
-+          baseclass_code    deviceid          msi_interrupts    pci-epf-ntb.0
-+          progif_code       secondary         subsys_id         vendorid
-+          cache_line_size   interrupt_pin     msix_interrupts   primary
-+          revid             subclass_code     subsys_vendor_id
-+
-+The PCI endpoint function driver populates these entries with default values
-+when the device is bound to the driver. The pci-epf-ntb driver populates
-+vendorid with 0xffff and interrupt_pin with 0x0001::
-+
-+	# cat functions/pci_epf_ntb/func1/vendorid
-+	  0xffff
-+	# cat functions/pci_epf_ntb/func1/interrupt_pin
-+	  0x0001
-+
-+
-+Configuring pci-epf-ntb Device
-+-------------------------------
-+
-+The user can configure the pci-epf-ntb device using its configfs entry. In order
-+to change the vendorid and the deviceid, the following
-+commands can be used::
-+
-+	# echo 0x104c > functions/pci_epf_ntb/func1/vendorid
-+	# echo 0xb00d > functions/pci_epf_ntb/func1/deviceid
-+
-+In order to configure NTB specific attributes, a new sub-directory to func1
-+should be created::
-+
-+	# mkdir functions/pci_epf_ntb/func1/pci_epf_ntb.0/
-+
-+The NTB function driver will populate this directory with various attributes
-+that can be configured by the user::
-+
-+	# ls functions/pci_epf_ntb/func1/pci_epf_ntb.0/
-+          db_count    mw1         mw2         mw3         mw4         num_mws
-+          spad_count
-+
-+A sample configuration for NTB function is given below::
-+
-+	# echo 4 > functions/pci_epf_ntb/func1/pci_epf_ntb.0/db_count
-+	# echo 128 > functions/pci_epf_ntb/func1/pci_epf_ntb.0/spad_count
-+	# echo 2 > functions/pci_epf_ntb/func1/pci_epf_ntb.0/num_mws
-+	# echo 0x100000 > functions/pci_epf_ntb/func1/pci_epf_ntb.0/mw1
-+	# echo 0x100000 > functions/pci_epf_ntb/func1/pci_epf_ntb.0/mw2
-+
-+Binding pci-epf-ntb Device to EP Controller
-+--------------------------------------------
-+
-+NTB function device should be attached to two PCIe endpoint controllers
-+connected to the two hosts. Use the 'primary' and 'secondary' entries
-+inside NTB function device to attach one PCIe endpoint controller to
-+primary interface and the other PCIe endpoint controller to the secondary
-+interface. ::
-+
-+        # ln -s controllers/2900000.pcie-ep/ functions/pci-epf-ntb/func1/primary
-+        # ln -s controllers/2910000.pcie-ep/ functions/pci-epf-ntb/func1/secondary
-+
-+Once the above step is completed, both the PCI endpoint controllers are ready to
-+establish a link with the host.
-+
-+
-+Start the Link
-+--------------
-+
-+In order for the endpoint device to establish a link with the host, the _start_
-+field should be populated with '1'. For NTB, both the PCIe endpoint controllers
-+should establish link with the host::
-+
-+        #echo 1 > controllers/2900000.pcie-ep/start
-+        #echo 1 > controllers/2910000.pcie-ep/start
-+
-+
-+RootComplex Device
-+==================
-+
-+lspci Output
-+------------
-+
-+Note that the devices listed here correspond to the values populated in
-+"Creating pci-epf-ntb Device" section above::
-+
-+        # lspci
-+        0000:00:00.0 PCI bridge: Texas Instruments Device b00d
-+        0000:01:00.0 RAM memory: Texas Instruments Device b00d
-+
-+
-+Using ntb_hw_epf Device
-+-----------------------
-+
-+The host side software follows the standard NTB software architecture in Linux.
-+All the existing client side NTB utilities like NTB Transport Client and NTB
-+Netdev, NTB Ping Pong Test Client and NTB Tool Test Client can be used with NTB
-+function device.
-+
-+For more information on NTB see
-+:doc:`Non-Transparent Bridge <../../driver-api/ntb>`
--- 
-2.17.1
+Thanks,
+Yanfei
 
+>> This is not usually a problem with minimal debug config options on as the
+>> compiler can optimize away the duplicated memory accesses.  With most
+>> of the debug config options on, however, that may not be the case.
+>> For example, the x86-64 object size of the __need_fs_reclaim() in a
+>> debug kernel that calls current_gfp_context() was 309 bytes. With this
+>> patch applied, the object size is reduced to 202 bytes. This is a saving
+>> of 107 bytes and will probably be slightly faster too.
+>>
+>> ...
+>>
+>> --- a/include/linux/sched/mm.h
+>> +++ b/include/linux/sched/mm.h
+>> @@ -181,18 +181,20 @@ static inline bool in_vfork(struct task_struct *tsk)
+>>    */
+>>   static inline gfp_t current_gfp_context(gfp_t flags)
+>>   {
+>> -	if (unlikely(current->flags &
+>> +	unsigned int pflags = READ_ONCE(current->flags);
+> 
+> Why use READ_ONCE() here?
+> 
+>> +	if (unlikely(pflags &
+>>   		     (PF_MEMALLOC_NOIO | PF_MEMALLOC_NOFS | PF_MEMALLOC_NOCMA))) {
+>>   		/*
+>>   		 * NOIO implies both NOIO and NOFS and it is a weaker context
+>>   		 * so always make sure it makes precedence
+>>   		 */
+>> -		if (current->flags & PF_MEMALLOC_NOIO)
+>> +		if (pflags & PF_MEMALLOC_NOIO)
+>>   			flags &= ~(__GFP_IO | __GFP_FS);
+>> -		else if (current->flags & PF_MEMALLOC_NOFS)
+>> +		else if (pflags & PF_MEMALLOC_NOFS)
+>>   			flags &= ~__GFP_FS;
+>>   #ifdef CONFIG_CMA
+>> -		if (current->flags & PF_MEMALLOC_NOCMA)
+>> +		if (pflags & PF_MEMALLOC_NOCMA)
+>>   			flags &= ~__GFP_MOVABLE;
+>>   #endif
+>>   	}
+> 
