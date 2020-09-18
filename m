@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AAC726EBFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1D4626EC01
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728193AbgIRCIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:08:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60492 "EHLO mail.kernel.org"
+        id S1728213AbgIRCJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:09:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727569AbgIRCIy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:08:54 -0400
+        id S1728198AbgIRCI6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:08:58 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CD35B2395C;
-        Fri, 18 Sep 2020 02:08:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1B52F235F9;
+        Fri, 18 Sep 2020 02:08:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394933;
-        bh=Aw4kfHxzkUH0lo6F2KmkpkhVf7og8us621qGC8fWFQA=;
+        s=default; t=1600394938;
+        bh=yUK0HLYKdN07FEPz7f+8FoTS9YClMk7ZefkhznqXA5w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jXiq1MYT4NYFUgBLAEHZYZXvSKmfyh8Ax5jk0NGfkxWm4TL9eyykUZvf8ThSEUppY
-         GW4qWUYpw6OhoAPVhOOtWUdra6iCiZf0Zgnfy6u/EN70KZGRctT6666bZ9FpHCOely
-         PQBNeg89PQrdzmj1WetE4mGx/XbRB0tkVjRg4Sjo=
+        b=S0iEBykGmilsKOWzCn+SPfKppMjcREqwCVOxzYagZxB5UmBn1y76tk/FSnjvQZ9Q1
+         cv2DJt1n22EzI2BP140xD6FnwBcX0NFzFv0ShwXtFXs59g7PXObHD7ISrm6cyi6cNB
+         K358sfj7XQl1W7xH9tYy9PvCgwUITVeslH8rprk4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Vasily Averin <vvs@virtuozzo.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 043/206] neigh_stat_seq_next() should increase position index
-Date:   Thu, 17 Sep 2020 22:05:19 -0400
-Message-Id: <20200918020802.2065198-43-sashal@kernel.org>
+Cc:     Nikhil Devshatwar <nikhil.nd@ti.com>,
+        Benoit Parrot <bparrot@ti.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 047/206] media: ti-vpe: cal: Restrict DMA to avoid memory corruption
+Date:   Thu, 17 Sep 2020 22:05:23 -0400
+Message-Id: <20200918020802.2065198-47-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
 References: <20200918020802.2065198-1-sashal@kernel.org>
@@ -42,32 +44,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Averin <vvs@virtuozzo.com>
+From: Nikhil Devshatwar <nikhil.nd@ti.com>
 
-[ Upstream commit 1e3f9f073c47bee7c23e77316b07bc12338c5bba ]
+[ Upstream commit 6e72eab2e7b7a157d554b8f9faed7676047be7c1 ]
 
-if seq_file .next fuction does not change position index,
-read after some lseek can generate unexpected output.
+When setting DMA for video capture from CSI channel, if the DMA size
+is not given, it ends up writing as much data as sent by the camera.
 
-https://bugzilla.kernel.org/show_bug.cgi?id=206283
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+This may lead to overwriting the buffers causing memory corruption.
+Observed green lines on the default framebuffer.
+
+Restrict the DMA to maximum height as specified in the S_FMT ioctl.
+
+Signed-off-by: Nikhil Devshatwar <nikhil.nd@ti.com>
+Signed-off-by: Benoit Parrot <bparrot@ti.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/neighbour.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/media/platform/ti-vpe/cal.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/net/core/neighbour.c b/net/core/neighbour.c
-index bf738ec68cb53..6e890f51b7d86 100644
---- a/net/core/neighbour.c
-+++ b/net/core/neighbour.c
-@@ -2844,6 +2844,7 @@ static void *neigh_stat_seq_next(struct seq_file *seq, void *v, loff_t *pos)
- 		*pos = cpu+1;
- 		return per_cpu_ptr(tbl->stats, cpu);
- 	}
-+	(*pos)++;
- 	return NULL;
+diff --git a/drivers/media/platform/ti-vpe/cal.c b/drivers/media/platform/ti-vpe/cal.c
+index be3155275a6ba..d945323fc437d 100644
+--- a/drivers/media/platform/ti-vpe/cal.c
++++ b/drivers/media/platform/ti-vpe/cal.c
+@@ -684,12 +684,13 @@ static void pix_proc_config(struct cal_ctx *ctx)
  }
+ 
+ static void cal_wr_dma_config(struct cal_ctx *ctx,
+-			      unsigned int width)
++			      unsigned int width, unsigned int height)
+ {
+ 	u32 val;
+ 
+ 	val = reg_read(ctx->dev, CAL_WR_DMA_CTRL(ctx->csi2_port));
+ 	set_field(&val, ctx->csi2_port, CAL_WR_DMA_CTRL_CPORT_MASK);
++	set_field(&val, height, CAL_WR_DMA_CTRL_YSIZE_MASK);
+ 	set_field(&val, CAL_WR_DMA_CTRL_DTAG_PIX_DAT,
+ 		  CAL_WR_DMA_CTRL_DTAG_MASK);
+ 	set_field(&val, CAL_WR_DMA_CTRL_MODE_CONST,
+@@ -1315,7 +1316,8 @@ static int cal_start_streaming(struct vb2_queue *vq, unsigned int count)
+ 	csi2_lane_config(ctx);
+ 	csi2_ctx_config(ctx);
+ 	pix_proc_config(ctx);
+-	cal_wr_dma_config(ctx, ctx->v_fmt.fmt.pix.bytesperline);
++	cal_wr_dma_config(ctx, ctx->v_fmt.fmt.pix.bytesperline,
++			  ctx->v_fmt.fmt.pix.height);
+ 	cal_wr_dma_addr(ctx, addr);
+ 	csi2_ppi_enable(ctx);
  
 -- 
 2.25.1
