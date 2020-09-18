@@ -2,121 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C7C426F929
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:24:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8814326F930
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726518AbgIRJYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 05:24:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38912 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726316AbgIRJYH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 05:24:07 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 238A120DD4;
-        Fri, 18 Sep 2020 09:24:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600421046;
-        bh=5BPFCutNa5VNQMibpDHHB+qvvOTgQcOE09RubxpF1GI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xU5lzR1Ga0PcfhABCdoUUHXJd6dN4fDFAU+RJC4XjY97A6xGaeDusE+AIxQe09UUe
-         cjDXcplObHW/R0vJ/QWHVnEYHNiAmMG2eH98/7f5xG9jUnkaKa5fMSVYDlcCKKQY1K
-         3J3oarxI8eW8I9yOa/ZZSSr5YNbR3x/6bNNhLGVY=
-Date:   Fri, 18 Sep 2020 10:24:01 +0100
-From:   Will Deacon <will@kernel.org>
-To:     David Brazdil <dbrazdil@google.com>
-Cc:     kvmarm@lists.cs.columbia.edu,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 06/11] kvm: arm64: Add helpers for accessing nVHE hyp
- per-cpu vars
-Message-ID: <20200918092400.GF30834@willie-the-truck>
-References: <20200916173439.32265-1-dbrazdil@google.com>
- <20200916173439.32265-7-dbrazdil@google.com>
+        id S1726492AbgIRJZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 05:25:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726126AbgIRJZZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 05:25:25 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4880C06174A;
+        Fri, 18 Sep 2020 02:25:24 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id o6so4799361ota.2;
+        Fri, 18 Sep 2020 02:25:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YVFRxeNLYf6L8EcunJ8pjid4VzkzkBkIL4g7gPwuFYA=;
+        b=Y9/zVImEnOWiJc+AM8C1K/HdaQ5nzPS++qqHRkRelfoJzDhfYcapvW08+9YJGDzbUu
+         ej92kxaaSf7INCMCdgp/9l7GSAr1oEhbQj6cnvD9TXRa4NeSdTaWVVffGzYw52dd1wNi
+         GHyfS8T7/PBOSi27Xkza5yfMY2v9Qb5Ee3nduFFTUX1qIq29gBPoAEoa+9AKA/kV45ZP
+         7oxoSPA8wCdy+skRHhtAxQQ/U6B+j+9H3NAJw1FOOUK70MfYUikic4AqhDzOVvWGsmbY
+         a5ZH0cc4m84skuJJqpl6siYPhdrH1KPEdQPhsMT62AjGtCRbQNPgMRPa5UijDAwhxiMg
+         vieQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YVFRxeNLYf6L8EcunJ8pjid4VzkzkBkIL4g7gPwuFYA=;
+        b=WemxEZWbz78j2Kxq0xa2oGFCNkd874aIlJKr02IcDJkHAgcIojYArOlMz/UjmCodTv
+         Yi+DlhAHjgy7tfoGf+VK4eoWWODKJu8DYCByuQQM/0GH2rDNXOCFiapG9d2ebytilrQK
+         aUVQTTpdPdfL8liTQuJ2wFQmfdoFy8mrQastWbfNZcFmmMCkgERX9EnkFFNyeYwv1VDC
+         AjrusVetfEedhgvjU5ELFe+ujB29nsx65wRiguNeqBGEn7vWtRwuB4x9FNcbxBGD4ZNi
+         nPGdGMMEBN60AH77PswLAehhgl50i1VEANir7VLf1Amcg8zj8IhpCLWStjamO1+Y452d
+         aWUQ==
+X-Gm-Message-State: AOAM530HVXWCqNFrD8C0nMGTh59E/5+XmrZrqV4Kg/D5GqL0GnQ1ImFv
+        tpXiDLQGrDIJjKHrt9rVAdL8UkXVPCs/pQpmdKThBTWm/Ps=
+X-Google-Smtp-Source: ABdhPJwsMau6u9U382UKAUKP8YnNcmvuEP86sjd2GoXlSIKXrGb0qNiGxaDcaY2Sk+as6Q/Sb1E2S3xQGEP0giPDAUw=
+X-Received: by 2002:a9d:7095:: with SMTP id l21mr22995177otj.224.1600421124085;
+ Fri, 18 Sep 2020 02:25:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916173439.32265-7-dbrazdil@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200917125951.861-1-alexandru.ardelean@analog.com>
+ <20200917181626.59eb84c8@archlinux> <CA+U=DspN3WYX5_1MZpRPzUcC5NV4=iSekQ9jNSehad1jfi2bQw@mail.gmail.com>
+ <20200917185559.7d6971e3@archlinux>
+In-Reply-To: <20200917185559.7d6971e3@archlinux>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Fri, 18 Sep 2020 12:25:13 +0300
+Message-ID: <CA+U=Dsp8Y+t=YM9KM2At7-PhqomXZ1W=QwHx=7rHxwyb74b2Ng@mail.gmail.com>
+Subject: Re: [PATCH] iio: buffer: split buffer sysfs creation to take buffer
+ as primary arg
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 06:34:34PM +0100, David Brazdil wrote:
-> Defining a per-CPU variable in hyp/nvhe will result in its name being
-> prefixed with __kvm_nvhe_. Add helpers for declaring these variables
-> in kernel proper and accessing them with this_cpu_ptr and per_cpu_ptr.
-> 
-> Signed-off-by: David Brazdil <dbrazdil@google.com>
-> ---
->  arch/arm64/include/asm/kvm_asm.h | 25 +++++++++++++++++++++++--
->  1 file changed, 23 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/kvm_asm.h b/arch/arm64/include/asm/kvm_asm.h
-> index cf9456663289..abc03f386b40 100644
-> --- a/arch/arm64/include/asm/kvm_asm.h
-> +++ b/arch/arm64/include/asm/kvm_asm.h
-> @@ -54,9 +54,21 @@
->  	DECLARE_KVM_VHE_SYM(sym);		\
->  	DECLARE_KVM_NVHE_SYM(sym)
->  
-> +#define DECLARE_KVM_VHE_PER_CPU(type, sym)	\
-> +	DECLARE_PER_CPU(type, sym)
-> +#define DECLARE_KVM_NVHE_PER_CPU(type, sym)	\
-> +	DECLARE_PER_CPU(type, kvm_nvhe_sym(sym))
-> +
-> +#define DECLARE_KVM_HYP_PER_CPU(type, sym)	\
-> +	DECLARE_KVM_VHE_PER_CPU(type, sym);	\
-> +	DECLARE_KVM_NVHE_PER_CPU(type, sym)
-> +
->  #define CHOOSE_VHE_SYM(sym)	sym
->  #define CHOOSE_NVHE_SYM(sym)	kvm_nvhe_sym(sym)
->  
-> +#define this_cpu_ptr_nvhe(sym)		this_cpu_ptr(&kvm_nvhe_sym(sym))
-> +#define per_cpu_ptr_nvhe(sym, cpu)	per_cpu_ptr(&kvm_nvhe_sym(sym), cpu)
+On Thu, Sep 17, 2020 at 8:56 PM Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Thu, 17 Sep 2020 20:41:08 +0300
+> Alexandru Ardelean <ardeleanalex@gmail.com> wrote:
+>
+> > On Thu, Sep 17, 2020 at 8:18 PM Jonathan Cameron <jic23@kernel.org> wrote:
+> > >
+> > > On Thu, 17 Sep 2020 15:59:51 +0300
+> > > Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+> > >
+> > > > Currently the iio_buffer_{alloc,free}_sysfs_and_mask() take 'indio_dev' as
+> > > > primary argument. This change splits the main logic into a private function
+> > > > that takes an IIO buffer as primary argument.
+> > > >
+> > > > That way, the functions can be extended to configure the sysfs for multiple
+> > > > buffers.
+> > > >
+> > > > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> > >
+> > > One comment inline.  Whilst I think it is safe as you have it, I'd
+> > > rather avoid the minor change in logic if we don't need to make it.
+> > >
+> > > Thanks,
+> > >
+> > > Jonathan
+> Applied to the togreg branch of iio.git.
+>
+> See below for my pathetic Diff confused me excuse :)
+>
+> Jonathan
+>
+> > >
+> > >
+> > > > ---
+> > > >  drivers/iio/industrialio-buffer.c | 46 ++++++++++++++++++++-----------
+> > > >  1 file changed, 30 insertions(+), 16 deletions(-)
+> > > >
+> > > > diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+> > > > index a7d7e5143ed2..a4f6bb96d4f4 100644
+> > > > --- a/drivers/iio/industrialio-buffer.c
+> > > > +++ b/drivers/iio/industrialio-buffer.c
+> > > > @@ -1264,26 +1264,14 @@ static struct attribute *iio_buffer_attrs[] = {
+> > > >       &dev_attr_data_available.attr,
+> > > >  };
+> > > >
+> > > > -int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
+> > > > +static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
+> > > > +                                          struct iio_dev *indio_dev)
+> > > >  {
+> > > >       struct iio_dev_attr *p;
+> > > >       struct attribute **attr;
+> > > > -     struct iio_buffer *buffer = indio_dev->buffer;
+> > > >       int ret, i, attrn, attrcount;
+> > > >       const struct iio_chan_spec *channels;
+> > > >
+> > > > -     channels = indio_dev->channels;
+> > > > -     if (channels) {
+> > > > -             int ml = indio_dev->masklength;
+> > > > -
+> > > > -             for (i = 0; i < indio_dev->num_channels; i++)
+> > > > -                     ml = max(ml, channels[i].scan_index + 1);
+> > > > -             indio_dev->masklength = ml;
+> > > > -     }
+> > > > -
+> > > > -     if (!buffer)
+> > > > -             return 0;
+> > > > -
+> > > >       attrcount = 0;
+> > > >       if (buffer->attrs) {
+> > > >               while (buffer->attrs[attrcount] != NULL)
+> > > > @@ -1367,19 +1355,45 @@ int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
+> > > >       return ret;
+> > > >  }
+> > > >
+> > > > -void iio_buffer_free_sysfs_and_mask(struct iio_dev *indio_dev)
+> > > > +int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
+> > > >  {
+> > > >       struct iio_buffer *buffer = indio_dev->buffer;
+> > > > +     const struct iio_chan_spec *channels;
+> > > > +     int i;
+> > > > +
+> > > > +     channels = indio_dev->channels;
+> > > > +     if (channels) {
+> > > > +             int ml = indio_dev->masklength;
+> > > > +
+> > > > +             for (i = 0; i < indio_dev->num_channels; i++)
+> > > > +                     ml = max(ml, channels[i].scan_index + 1);
+> > > > +             indio_dev->masklength = ml;
+> > > > +     }
+> > >
+> > > I've not really figured out if it matters, but this is a logic change.
+> > > Previously we didn't compute masklength if there was no buffer provided.
+> > > Now we do.  It's probably better to move the if (!buffer) check above
+> > > this block or at least mention this change in the patch description.
+> > >
+> >
+> > Umm, are you referring that this patch is a logic change or you are
+> > suggesting a logic change?
+> > The "if (!buffer)" check was positioned after the masklength
+> > computation even in the old code.
+> >
+> Got you.  Diff confused me :)
 
-nit: I'd probably stick a _sym suffix on these macros, to make it clear
-that they're just munging the symbol name rather than doing some completely
-different pcpu implementation.
+Yeah.
+Happens to me to with some git diffs.
 
-THat said, do you expect these to be used outside of the pcpu
-implementation? If not, I suggest some underscores as a prefix as well.
-
->  #ifndef __KVM_NVHE_HYPERVISOR__
->  /*
->   * BIG FAT WARNINGS:
-> @@ -69,12 +81,21 @@
->   * - Don't let the nVHE hypervisor have access to this, as it will
->   *   pick the *wrong* symbol (yes, it runs at EL2...).
->   */
-> -#define CHOOSE_HYP_SYM(sym)	(is_kernel_in_hyp_mode() ? CHOOSE_VHE_SYM(sym) \
-> +#define CHOOSE_HYP_SYM(sym)		(is_kernel_in_hyp_mode()	\
-> +					   ? CHOOSE_VHE_SYM(sym)	\
->  					   : CHOOSE_NVHE_SYM(sym))
-> +#define this_cpu_ptr_hyp(sym)		(is_kernel_in_hyp_mode()	\
-> +					   ? this_cpu_ptr(&sym)		\
-> +					   : this_cpu_ptr_nvhe(sym))
-> +#define per_cpu_ptr_hyp(sym, cpu)	(is_kernel_in_hyp_mode()	\
-> +					   ? per_cpu_ptr(&sym, cpu)	\
-> +					   : per_cpu_ptr_nvhe(sym, cpu))
-
-is_kernel_in_hyp_mode() reads a system register to determine the current
-exception level, so this doesn't seem like something we should be doing
-everytime here. Perhaps is_kernel_in_hyp_mode() should avoid read_sysreg()
-and instead use a non-volatile asm to allow the result to be cached by
-the compiler. Hmm.
-
-But I think that can be tackled as a future patch, so with the naming nits
-resolved:
-
-Acked-by: Will Deacon <will@kernel.org>
-
-Will
+>
+>
+> > >
+> > > >
+> > > >       if (!buffer)
+> > > > -             return;
+> > > > +             return 0;
+> > > > +
+> > > > +     return __iio_buffer_alloc_sysfs_and_mask(buffer, indio_dev);
+> > > > +}
+> > > >
+> > > > +static void __iio_buffer_free_sysfs_and_mask(struct iio_buffer *buffer)
+> > > > +{
+> > > >       bitmap_free(buffer->scan_mask);
+> > > >       kfree(buffer->buffer_group.attrs);
+> > > >       kfree(buffer->scan_el_group.attrs);
+> > > >       iio_free_chan_devattr_list(&buffer->scan_el_dev_attr_list);
+> > > >  }
+> > > >
+> > > > +void iio_buffer_free_sysfs_and_mask(struct iio_dev *indio_dev)
+> > > > +{
+> > > > +     struct iio_buffer *buffer = indio_dev->buffer;
+> > > > +
+> > > > +     if (!buffer)
+> > > > +             return;
+> > > > +
+> > > > +     __iio_buffer_free_sysfs_and_mask(buffer);
+> > > > +}
+> > > > +
+> > > >  /**
+> > > >   * iio_validate_scan_mask_onehot() - Validates that exactly one channel is selected
+> > > >   * @indio_dev: the iio device
+> > >
+>
