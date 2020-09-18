@@ -2,151 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0D526EAB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 03:53:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A16126EAB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 03:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726185AbgIRBxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 21:53:32 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:34080 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726040AbgIRBxb (ORCPT
+        id S1726205AbgIRBxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 21:53:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726104AbgIRBxy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 21:53:31 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0U9GXrdc_1600394005;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U9GXrdc_1600394005)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 18 Sep 2020 09:53:26 +0800
-Date:   Fri, 18 Sep 2020 09:53:25 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-acpi@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Mike Rapoport <rppt@kernel.org>
-Subject: Re: [PATCH RFC 1/4] mm/page_alloc: convert "report" flag of
- __free_one_page() to a proper flag
-Message-ID: <20200918015325.GA54754@L-31X9LVDL-1304.local>
-Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
-References: <20200916183411.64756-1-david@redhat.com>
- <20200916183411.64756-2-david@redhat.com>
+        Thu, 17 Sep 2020 21:53:54 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 177E1C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 18:53:54 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id e23so5947161eja.3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 18:53:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GC2uboF6NMZuC9/ZByaXp1KFBIoZjwLF73X8h59tMWs=;
+        b=0n1kgcoBcO/MRG9AAQs28nlby+4uxxdWNINGwW2Okw2teha+5tUcRRM1S51DHvxjbe
+         R8Cq+ItKHDbs5yC2r01vwPHgrzycwMkOBbRrsESuJbMdrF8xDKW+v6w7S1lQVw6CX4P9
+         M9/7dgueosqWOddYA7f6ndQv2GVxNDfUmiVHE9QYX1uxi2bJty6xyL5m9lsyI5Tr0Ip5
+         vxRKjnhcKMG6MwVZlo/19T+6Z8bhvWhZgkjv7bAiYeodgKLsWm9r4VxuokZiIFVcibHq
+         AM6HBNJxSr8ACewbKnPZO1qmqRKpaxVJT1GKpdKqb7WgNxAmeZKt4bXcW8QyoirezqiZ
+         fWug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GC2uboF6NMZuC9/ZByaXp1KFBIoZjwLF73X8h59tMWs=;
+        b=iYLeN8GDAiMuHtBokwiogo7YUalpPOogPZiHqkqajHy9+b5orJ2xja9BJ5JY9WdjEz
+         ceLB2j6V7F8Ww0vPEFjkkDKGfCnrFs48b3J/sT8dXYNHpyuS86p0nX0gRb+kOFXVYX42
+         Hyvzcz0i1ZFp01F+MbAaNwx84QYNOrHLcz+x/2rZC31JuRIjj3zMG3Ra9F6D8T+MACad
+         dCc2L0/dOfmKPSvznfkDpvUwj4UR3mJTT/sGtUdgxLcioCfOqMLTaA2zIFe/VjV3gPou
+         G74oiyklp8cRVH6+dYziNddF1XnQ1/TirrhURhIIP6xwVhtTYT+5jsGz0ADPfhm4bRoE
+         bM5g==
+X-Gm-Message-State: AOAM53021XDYEr1pwF0XLw+MuFrY77eqX1CrzFO49ozBXFU5lJC63VnO
+        lGlURBD2tSkALXqS8S+8IomCVs6oxYchwWLtfmMUxg==
+X-Google-Smtp-Source: ABdhPJy7DFdMdaS97xMoxRqS6WmXgsRrt5dbwajDW1OzguEa9uaz85Fv52jSvKPNcbb4yTlLVhfIEfhmycxKE179n6U=
+X-Received: by 2002:a17:906:8143:: with SMTP id z3mr33115785ejw.323.1600394032604;
+ Thu, 17 Sep 2020 18:53:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916183411.64756-2-david@redhat.com>
+References: <alpine.LRH.2.02.2009140852030.22422@file01.intranet.prod.int.rdu2.redhat.com>
+ <CAPcyv4gh=QaDB61_9_QTgtt-pZuTFdR6td0orE0VMH6=6SA2vw@mail.gmail.com>
+ <alpine.LRH.2.02.2009151216050.16057@file01.intranet.prod.int.rdu2.redhat.com>
+ <alpine.LRH.2.02.2009151332280.3851@file01.intranet.prod.int.rdu2.redhat.com>
+ <alpine.LRH.2.02.2009160649560.20720@file01.intranet.prod.int.rdu2.redhat.com>
+ <CAPcyv4gW6AvR+RaShHdQzOaEPv9nrq5myXDmywuoCTYDZxk-hw@mail.gmail.com>
+ <alpine.LRH.2.02.2009161254400.745@file01.intranet.prod.int.rdu2.redhat.com>
+ <CAPcyv4gD0ZFkfajKTDnJhEEjf+5Av-GH+cHRFoyhzGe8bNEgAA@mail.gmail.com> <alpine.LRH.2.02.2009161451140.21915@file01.intranet.prod.int.rdu2.redhat.com>
+In-Reply-To: <alpine.LRH.2.02.2009161451140.21915@file01.intranet.prod.int.rdu2.redhat.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 17 Sep 2020 18:53:41 -0700
+Message-ID: <CAPcyv4gFz6vBVVp_aiX4i2rL+8fps3gTQGj5cYw8QESCf7=DfQ@mail.gmail.com>
+Subject: Re: [PATCH] pmem: fix __copy_user_flushcache
+To:     Mikulas Patocka <mpatocka@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Eric Sandeen <esandeen@redhat.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        "Kani, Toshi" <toshi.kani@hpe.com>,
+        "Norton, Scott J" <scott.norton@hpe.com>,
+        "Tadakamadla, Rajesh (DCIG/CDI/HPS Perf)" 
+        <rajesh.tadakamadla@hpe.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 08:34:08PM +0200, David Hildenbrand wrote:
->Let's prepare for additional flags and avoid long parameter lists of bools.
->Follow-up patches will also make use of the flags in __free_pages_ok(),
->however, I wasn't able to come up with a better name for the type - should
->be good enough for internal purposes.
+On Wed, Sep 16, 2020 at 11:57 AM Mikulas Patocka <mpatocka@redhat.com> wrote:
 >
->Cc: Andrew Morton <akpm@linux-foundation.org>
->Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
->Cc: Mel Gorman <mgorman@techsingularity.net>
->Cc: Michal Hocko <mhocko@kernel.org>
->Cc: Dave Hansen <dave.hansen@intel.com>
->Cc: Vlastimil Babka <vbabka@suse.cz>
->Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
->Cc: Oscar Salvador <osalvador@suse.de>
->Cc: Mike Rapoport <rppt@kernel.org>
->Signed-off-by: David Hildenbrand <david@redhat.com>
->---
-> mm/page_alloc.c | 28 ++++++++++++++++++++--------
-> 1 file changed, 20 insertions(+), 8 deletions(-)
 >
->diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->index 6b699d273d6e..91cefb8157dd 100644
->--- a/mm/page_alloc.c
->+++ b/mm/page_alloc.c
->@@ -77,6 +77,18 @@
-> #include "shuffle.h"
-> #include "page_reporting.h"
-> 
->+/* Free One Page flags: for internal, non-pcp variants of free_pages(). */
->+typedef int __bitwise fop_t;
->+
->+/* No special request */
->+#define FOP_NONE		((__force fop_t)0)
->+
->+/*
->+ * Skip free page reporting notification after buddy merging (will *not* mark
+>
+> On Wed, 16 Sep 2020, Dan Williams wrote:
+>
+> > On Wed, Sep 16, 2020 at 10:24 AM Mikulas Patocka <mpatocka@redhat.com> wrote:
+> > >
+> > >
+> > >
+> > > On Wed, 16 Sep 2020, Dan Williams wrote:
+> > >
+> > > > On Wed, Sep 16, 2020 at 3:57 AM Mikulas Patocka <mpatocka@redhat.com> wrote:
+> > > > >
+> > > > >
+> > > > >
+> > > > > I'm submitting this patch that adds the required exports (so that we could
+> > > > > use __copy_from_user_flushcache on x86, arm64 and powerpc). Please, queue
+> > > > > it for the next merge window.
+> > > >
+> > > > Why? This should go with the first user, and it's not clear that it
+> > > > needs to be relative to the current dax_operations export scheme.
+> > >
+> > > Before nvfs gets included in the kernel, I need to distribute it as a
+> > > module. So, it would make my maintenance easier. But if you don't want to
+> > > export it now, no problem, I can just copy __copy_user_flushcache from the
+> > > kernel to the module.
+> >
+> > That sounds a better plan than exporting symbols with no in-kernel consumer.
+>
+> BTW, this function is buggy. Here I'm submitting the patch.
+>
+>
+>
+> From: Mikulas Patocka <mpatocka@redhat.com>
+>
+> If we copy less than 8 bytes and if the destination crosses a cache line,
+> __copy_user_flushcache would invalidate only the first cache line. This
+> patch makes it invalidate the second cache line as well.
 
-__free_one_page() may not merge buddy when its buddy is not available.
+Good catch.
 
-Would this comment be a little confusing?
+> Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+> Cc: stable@vger.kernel.org
+>
+> ---
+>  arch/x86/lib/usercopy_64.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> Index: linux-2.6/arch/x86/lib/usercopy_64.c
+> ===================================================================
+> --- linux-2.6.orig/arch/x86/lib/usercopy_64.c   2020-09-05 10:01:27.000000000 +0200
+> +++ linux-2.6/arch/x86/lib/usercopy_64.c        2020-09-16 20:48:31.000000000 +0200
+> @@ -120,7 +120,7 @@ long __copy_user_flushcache(void *dst, c
+>          */
+>         if (size < 8) {
+>                 if (!IS_ALIGNED(dest, 4) || size != 4)
+> -                       clean_cache_range(dst, 1);
+> +                       clean_cache_range(dst, size);
+>         } else {
+>                 if (!IS_ALIGNED(dest, 8)) {
+>                         dest = ALIGN(dest, boot_cpu_data.x86_clflush_size);
+>
 
->+ * the page reported, only skip the notification).
->+ */
->+#define FOP_SKIP_REPORT_NOTIFY	((__force fop_t)BIT(0))
->+
-> /* prevent >1 _updater_ of zone percpu pageset ->high and ->batch fields */
-> static DEFINE_MUTEX(pcp_batch_high_lock);
-> #define MIN_PERCPU_PAGELIST_FRACTION	(8)
->@@ -948,10 +960,9 @@ buddy_merge_likely(unsigned long pfn, unsigned long buddy_pfn,
->  * -- nyc
->  */
-> 
->-static inline void __free_one_page(struct page *page,
->-		unsigned long pfn,
->-		struct zone *zone, unsigned int order,
->-		int migratetype, bool report)
->+static inline void __free_one_page(struct page *page, unsigned long pfn,
->+				   struct zone *zone, unsigned int order,
->+				   int migratetype, fop_t fop_flags)
-> {
-> 	struct capture_control *capc = task_capc(zone);
-> 	unsigned long buddy_pfn;
->@@ -1038,7 +1049,7 @@ static inline void __free_one_page(struct page *page,
-> 		add_to_free_list(page, zone, order, migratetype);
-> 
-> 	/* Notify page reporting subsystem of freed page */
->-	if (report)
->+	if (!(fop_flags & FOP_SKIP_REPORT_NOTIFY))
-> 		page_reporting_notify_free(order);
-> }
-> 
->@@ -1368,7 +1379,7 @@ static void free_pcppages_bulk(struct zone *zone, int count,
-> 		if (unlikely(isolated_pageblocks))
-> 			mt = get_pageblock_migratetype(page);
-> 
->-		__free_one_page(page, page_to_pfn(page), zone, 0, mt, true);
->+		__free_one_page(page, page_to_pfn(page), zone, 0, mt, FOP_NONE);
-> 		trace_mm_page_pcpu_drain(page, 0, mt);
-> 	}
-> 	spin_unlock(&zone->lock);
->@@ -1384,7 +1395,7 @@ static void free_one_page(struct zone *zone,
-> 		is_migrate_isolate(migratetype))) {
-> 		migratetype = get_pfnblock_migratetype(page, pfn);
-> 	}
->-	__free_one_page(page, pfn, zone, order, migratetype, true);
->+	__free_one_page(page, pfn, zone, order, migratetype, FOP_NONE);
-> 	spin_unlock(&zone->lock);
-> }
-> 
->@@ -3277,7 +3288,8 @@ void __putback_isolated_page(struct page *page, unsigned int order, int mt)
-> 	lockdep_assert_held(&zone->lock);
-> 
-> 	/* Return isolated page to tail of freelist. */
->-	__free_one_page(page, page_to_pfn(page), zone, order, mt, false);
->+	__free_one_page(page, page_to_pfn(page), zone, order, mt,
->+			FOP_SKIP_REPORT_NOTIFY);
-> }
-> 
-> /*
->-- 
->2.26.2
+You can add:
 
--- 
-Wei Yang
-Help you, Help me
+Fixes: 0aed55af8834 ("x86, uaccess: introduce
+copy_from_iter_flushcache for pmem / cache-bypass operations")
+Reviewed-by: Dan Williams <dan.j.wiilliams@intel.com>
