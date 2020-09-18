@@ -2,173 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05E9226F9FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 12:11:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA7F26FA17
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 12:12:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726332AbgIRKLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 06:11:20 -0400
-Received: from mga06.intel.com ([134.134.136.31]:40596 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725874AbgIRKLT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 06:11:19 -0400
-IronPort-SDR: PxYFcvXh/HIPZDK/o+khfAn2SXGFCgs3saT/ALoZtrWVvl6CHUM82N+p+cLGA6qCreA+X3FDeM
- vU0UOjIsyxZQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="221463771"
-X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
-   d="scan'208";a="221463771"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 03:11:17 -0700
-IronPort-SDR: 3sVqC0iYKsT3iYZpfF9OgQCMQw2gfiK2ymtINliV/V7SLJrIueH2Uug4UalU2M9BjtnEN3M04x
- hMdvgz/M9Jkg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
-   d="scan'208";a="303288964"
-Received: from lkp-server01.sh.intel.com (HELO a05db971c861) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 18 Sep 2020 03:11:16 -0700
-Received: from kbuild by a05db971c861 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kJDMJ-0000VB-Mq; Fri, 18 Sep 2020 10:11:15 +0000
-Date:   Fri, 18 Sep 2020 18:10:43 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rcu/next] BUILD SUCCESS
- 4ad1536d5b19b769f326a2ef9f9572a0084ebefe
-Message-ID: <5f6487a3.fvlaTWmtP4ssLl7L%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726756AbgIRKMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 06:12:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726718AbgIRKM3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 06:12:29 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F7EBC06174A;
+        Fri, 18 Sep 2020 03:12:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2l+gXFpnZHzuk7NSeFYdJJ/yNRYkbW64rAwKN3DxjKA=; b=jUzYMtaK5+GrJ9HNVahLDOhK/8
+        Rrp7tSho8cuH9+dL3+KG/BYAl3UEvh6zbmhgpfWUWJqgMoLZdCejGZMhcaWVEkgCzQy52+tQpgF+0
+        HAd7wLoDUcxYCh+l6m0pKFFbXd4jL8vfddR20nDQUYsM3e2wA0rj3ryFrcO3jvLbMg0/VTEprwSIh
+        hJGsxZvM6rQStB8BJjTVWtlUc1GCADL1m7F5dhpn89M2DZ+oMQLCfl0RXq9uPu8dPwT0c1bLv+cs4
+        NAmRB8kMfsQO6U80S19CDuzvl+Baa9GL2prfUPen9nU76dGRwFurDanmpGwyHQJvnE7V41r4Pk4Tq
+        QSCX+uhg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kJDNL-0004Cy-Ki; Fri, 18 Sep 2020 10:12:19 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6C846303A02;
+        Fri, 18 Sep 2020 12:12:16 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CD69620D4DC9F; Fri, 18 Sep 2020 12:12:16 +0200 (CEST)
+Date:   Fri, 18 Sep 2020 12:12:16 +0200
+From:   peterz@infradead.org
+To:     Jan Kara <jack@suse.cz>
+Cc:     Oleg Nesterov <oleg@redhat.com>, Boaz Harrosh <boaz@plexistor.com>,
+        Hou Tao <houtao1@huawei.com>, Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC PATCH] locking/percpu-rwsem: use this_cpu_{inc|dec}() for
+ read_count
+Message-ID: <20200918101216.GL35926@hirez.programming.kicks-ass.net>
+References: <20200915140750.137881-1-houtao1@huawei.com>
+ <20200915150610.GC2674@hirez.programming.kicks-ass.net>
+ <20200915153113.GA6881@redhat.com>
+ <20200915155150.GD2674@hirez.programming.kicks-ass.net>
+ <20200915160344.GH35926@hirez.programming.kicks-ass.net>
+ <b885ce8e-4b0b-8321-c2cc-ee8f42de52d4@huawei.com>
+ <ddd5d732-06da-f8f2-ba4a-686c58297e47@plexistor.com>
+ <20200917120132.GA5602@redhat.com>
+ <20200918090702.GB18920@quack2.suse.cz>
+ <20200918100112.GN1362448@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200918100112.GN1362448@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/next
-branch HEAD: 4ad1536d5b19b769f326a2ef9f9572a0084ebefe  rcutorture: Adjust scenarios SRCU-t and SRCU-u to make kconfig happy
+On Fri, Sep 18, 2020 at 12:01:12PM +0200, peterz@infradead.org wrote:
+> +	u64 sum = per_cpu_sum(*(u64 *)sem->read_count);
 
-elapsed time: 725m
-
-configs tested: 109
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arc                      axs103_smp_defconfig
-powerpc               mpc834x_itxgp_defconfig
-xtensa                              defconfig
-powerpc                        cell_defconfig
-mips                           ip22_defconfig
-powerpc                     akebono_defconfig
-arc                 nsimosci_hs_smp_defconfig
-powerpc                     rainier_defconfig
-mips                       capcella_defconfig
-powerpc                     kilauea_defconfig
-arm                         ebsa110_defconfig
-sh                        edosk7760_defconfig
-sparc64                          alldefconfig
-m68k                          multi_defconfig
-sh                        edosk7705_defconfig
-mips                  cavium_octeon_defconfig
-nios2                         10m50_defconfig
-powerpc                        fsp2_defconfig
-mips                       lemote2f_defconfig
-powerpc                       maple_defconfig
-sh                          rsk7269_defconfig
-sh                          sdk7780_defconfig
-powerpc                     sbc8548_defconfig
-powerpc                 mpc837x_rdb_defconfig
-sh                                  defconfig
-sh                        sh7763rdp_defconfig
-powerpc                mpc7448_hpc2_defconfig
-mips                      loongson3_defconfig
-sh                            migor_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20200917
-i386                 randconfig-a006-20200917
-i386                 randconfig-a003-20200917
-i386                 randconfig-a001-20200917
-i386                 randconfig-a002-20200917
-i386                 randconfig-a005-20200917
-x86_64               randconfig-a014-20200917
-x86_64               randconfig-a011-20200917
-x86_64               randconfig-a016-20200917
-x86_64               randconfig-a012-20200917
-x86_64               randconfig-a015-20200917
-x86_64               randconfig-a013-20200917
-i386                 randconfig-a015-20200917
-i386                 randconfig-a014-20200917
-i386                 randconfig-a011-20200917
-i386                 randconfig-a013-20200917
-i386                 randconfig-a016-20200917
-i386                 randconfig-a012-20200917
-i386                 randconfig-a015-20200918
-i386                 randconfig-a011-20200918
-i386                 randconfig-a014-20200918
-i386                 randconfig-a013-20200918
-i386                 randconfig-a012-20200918
-i386                 randconfig-a016-20200918
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a006-20200917
-x86_64               randconfig-a004-20200917
-x86_64               randconfig-a003-20200917
-x86_64               randconfig-a002-20200917
-x86_64               randconfig-a001-20200917
-x86_64               randconfig-a005-20200917
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Moo, that doesn't work, we have to do two separate sums. I shouldn't try
+to be clever on a Friday I suppose :-(
