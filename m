@@ -2,68 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 888B626EA66
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 03:21:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D7D326EA68
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 03:21:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726183AbgIRBVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 21:21:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37998 "EHLO mail.kernel.org"
+        id S1726196AbgIRBVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 21:21:38 -0400
+Received: from mga04.intel.com ([192.55.52.120]:62750 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725886AbgIRBVE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 21:21:04 -0400
-Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89AFF2087D;
-        Fri, 18 Sep 2020 01:21:03 +0000 (UTC)
-Date:   Thu, 17 Sep 2020 21:21:01 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Eric Dumazet <edumazet@google.com>,
+        id S1725886AbgIRBVi (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 21:21:38 -0400
+IronPort-SDR: YnJxwXYTJ4lORONpDNVzAsat0SF74NcgpwYaIeqTwAxPgV9PLEs1hjR0KbIZQoRXITLSBnA6yC
+ tOVAEkV32hdw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="157215920"
+X-IronPort-AV: E=Sophos;i="5.77,273,1596524400"; 
+   d="scan'208";a="157215920"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 18:21:33 -0700
+IronPort-SDR: vXUNcEFSqy2OWFuk6SZi+9xvIiTpHw2DjXVCXTlv+HPfBkIJj177JWUZw3mthx3BPOT1ESgeWj
+ /Jd4PqPypNXg==
+X-IronPort-AV: E=Sophos;i="5.77,273,1596524400"; 
+   d="scan'208";a="483979420"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.5.239]) ([10.238.5.239])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 18:21:30 -0700
+Subject: Re: [PATCH 0/2] Update CascadelakeX and SkylakeX events list
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH] random32: Use rcuidle variant for tracepoint
-Message-ID: <20200917212101.53287f29@rorschach.local.home>
-In-Reply-To: <20200821153532.GA3205540@elver.google.com>
-References: <20200821063043.1949509-1-elver@google.com>
-        <20200821085907.GJ1362448@hirez.programming.kicks-ass.net>
-        <CANn89i+1MQRCSRVg-af758en5e9nwQBes3aBSjQ6BY1pV5+HdQ@mail.gmail.com>
-        <20200821153532.GA3205540@elver.google.com>
-X-Mailer: Claws Mail 3.17.4git76 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <Linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>, kan.liang@intel.com,
+        "Jin, Yao" <yao.jin@intel.com>,
+        Stephane Eranian <eranian@google.com>
+References: <20200603021818.27028-1-yao.jin@linux.intel.com>
+ <911b4132-d1a1-f3c4-a2ed-2fcfe9a28fc6@linux.intel.com>
+ <CAP-5=fW3OCuVkQ8csYfHXj5c_pCSY5-6vDrj2r=MNDZmpo0f8g@mail.gmail.com>
+ <c7edd282-f58a-4efe-5961-6c1369b6b77b@linux.intel.com>
+ <20200616193856.GC6393@kernel.org>
+ <681a333b-e4dc-9481-715e-a65a34e10f83@linux.intel.com>
+ <82271c45-4a7d-d892-eccd-ed042b86a333@linux.intel.com>
+Message-ID: <8ed53667-8241-1c58-ac2c-ecc9e9870afd@linux.intel.com>
+Date:   Fri, 18 Sep 2020 09:21:27 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <82271c45-4a7d-d892-eccd-ed042b86a333@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Arnaldo,
 
-[ Late reply, due to Plumbers followed by a much needed vacation and
-  then drowning in 3 weeks of unread email! ]
-
-On Fri, 21 Aug 2020 17:35:32 +0200
-Marco Elver <elver@google.com> wrote:
-
-> So, if the _rcuidle() variant here doesn't break your usecase, there
-> should be no harm in using the _rcuidle() variant. This also lifts the
-> restriction on where prandom_u32() is usable to what it was before,
-> which should be any context.
+On 9/7/2020 4:01 PM, Jin, Yao wrote:
+> Hi Arnaldo,
 > 
-> Steven, Peter: What's the downside to of _rcuidle()?
+> On 7/17/2020 2:06 PM, Jin, Yao wrote:
+>> Hi,
+>>
+>> On 6/17/2020 3:38 AM, Arnaldo Carvalho de Melo wrote:
+>>> Em Tue, Jun 16, 2020 at 02:27:40PM +0800, Jin, Yao escreveu:
+>>>> On 6/16/2020 2:16 PM, Ian Rogers wrote:
+>>>>> On Mon, Jun 15, 2020 at 6:00 PM Jin, Yao <yao.jin@linux.intel.com> wrote:
+>>>>>> Can I get an ACK for this patchset?
+>>>>>> On 6/3/2020 10:18 AM, Jin Yao wrote:
+>>>>>>> This patchset updates CascadelakeX events to v1.08 and
+>>>>>>> updates SkylakeX events to v1.21.
+>>>
+>>>>>>> The events have been tested on CascadelakeX and SkylakeX
+>>>>>>> servers with latest perf/core branch.
+>>>
+>>>>> could you rebase this on Arnaldo's tmp.perf/core tree?
+>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/log/?h=tmp.perf/core
+>>>>> I tried using git am but get:
+>>>>> Applying: perf vendor events: Update CascadelakeX events to v1.08
+>>>>> error: patch fragment without header at line 279: @@ -213,14 +220,14 @@
+>>>>> error: could not build fake ancestor
+>>>>> Patch failed at 0001 perf vendor events: Update CascadelakeX events to v1.08
+>>>>>
+>>>>> Thanks,
+>>>>> Ian
+>>>>>
+>>>>
+>>>> The patchset are applied OK on perf/core branch.
+>>>>
+>>>> As far as I understand, the patch for posting should be based on perf/core branch, is it right?
+>>>
+>>> Sorry, I've been testing with using tmp.perf/core as a way to more
+>>> quickly make available what I've processed, before I test it thoroughly
+>>> both with container builds and with manual testing, so the bleeding edge
+>>> is there, perf/core becoming a bit more stable, as I'll try not to
+>>> rebase it like before.
+>>>
+>>> - Arnaldo
+>>>
+>>
+>> Can this event update be accepted?
+>>
+>> Thanks
+>> Jin Yao
+> 
+> Can this event list update be accepted?
+> 
+> Thanks
+> Jin Yao
 
-_rcuidle() only has a slightly more overhead in the tracing path (it's
-no different when not tracing). There's not a issue with _rcuidle()
-itself. The issue is that we need to have it. We'd like it to be that
-rcu *is* watching always except for a very minimal locations when
-switching context (kernel to and from user and running to and from
-idle), and then we just don't let tracing or anything that needs rcu in
-those locations.
+Ping again. :)
 
-But for your patch:
+Can this event update patchset be accepted?
 
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+@Ian, I remembered you had tried this patchset and it's OK right?
 
--- Steve
+Thanks
+Jin Yao
