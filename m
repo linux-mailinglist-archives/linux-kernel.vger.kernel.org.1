@@ -2,90 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 412EB2701F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78D4A2701F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726497AbgIRQSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 12:18:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726250AbgIRQSB (ORCPT
+        id S1726379AbgIRQS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 12:18:58 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:47648 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726192AbgIRQS5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 12:18:01 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 503CAC0613CE;
-        Fri, 18 Sep 2020 09:18:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=pMf3yFiIumdNcekeEz4Oor/d6RhvmD0GihZ6qnHJHTY=; b=X4vERyHqnHEBEA94wF51qqW4HX
-        NghotAlu3GSor0pxZlvBGiNHhbRiNdC+NjJDY4gArxz+EQUb3Q3FMg3dbMRZhdvSQtuAswZWTTp2/
-        T4L2vgVfjT/fQsbGttNjeAMsOEO+XCxpWTnlvq4WVVpXsXoQWIhIFtLA6Y66rhs4JZ8S9Lzen/gF8
-        G24akz24Y6oR5qETilCtbC0nH3dpd6HdyZeSghodHIqRU9I/zwIN7FLro4RHyCHaTrqUJkHKAoLYG
-        ZEluqruYgGD8oIGk0KLS9Uj3GNXuzmb6RRfluQqNZ+mArW3/cZr3FmyuntTySR2v+b/wpvpTU8ef0
-        Z7x+YLlA==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kJJ5D-0005VP-4v; Fri, 18 Sep 2020 16:17:59 +0000
-Subject: Re: [PATCH v5 12/17] PCI: endpoint: Add EP function driver to provide
- NTB functionality
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>,
-        Tom Joseph <tjoseph@cadence.com>, Rob Herring <robh@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-pci@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-ntb@googlegroups.com
-References: <20200918064227.1463-1-kishon@ti.com>
- <20200918064227.1463-13-kishon@ti.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <31985ad8-2e9b-99d8-55ef-4ae90103e499@infradead.org>
-Date:   Fri, 18 Sep 2020 09:17:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 18 Sep 2020 12:18:57 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08IGIiZ3039579;
+        Fri, 18 Sep 2020 11:18:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600445924;
+        bh=CoXhZYsCP8vlZjkExtcfpn4Zh4jMPI7Jl8YtUqogz7E=;
+        h=From:To:CC:Subject:Date;
+        b=Q+SJAmhCY5JwhhSSU2942DsvrHGOXq7b24Ul2kC4wBy5npbePCEnOA61l6lneRkFR
+         kD9n6nuRMfULrt8vTAFj/L7smcogmxFG2dprJtVqAYJ5STlZvZOumIAn/JFDN+l9cy
+         oZGyb5P4D+uqS/vqx3MxxG9MhRPEYToFK82hVfWk=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08IGIipr053207
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 18 Sep 2020 11:18:44 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 18
+ Sep 2020 11:18:44 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 18 Sep 2020 11:18:43 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08IGIhY1110655;
+        Fri, 18 Sep 2020 11:18:43 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <tiwai@suse.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH 1/2] ASoC: tas2770: Fix calling reset in probe
+Date:   Fri, 18 Sep 2020 11:18:41 -0500
+Message-ID: <20200918161842.4451-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20200918064227.1463-13-kishon@ti.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/17/20 11:42 PM, Kishon Vijay Abraham I wrote:
-> diff --git a/drivers/pci/endpoint/functions/Kconfig b/drivers/pci/endpoint/functions/Kconfig
-> index 8820d0f7ec77..55ac7bb2d469 100644
-> --- a/drivers/pci/endpoint/functions/Kconfig
-> +++ b/drivers/pci/endpoint/functions/Kconfig
-> @@ -12,3 +12,15 @@ config PCI_EPF_TEST
->  	   for PCI Endpoint.
->  
->  	   If in doubt, say "N" to disable Endpoint test driver.
-> +
-> +config PCI_EPF_NTB
-> +	tristate "PCI Endpoint NTB driver"
-> +	depends on PCI_ENDPOINT
-> +	help
-> +	   Select this configuration option to enable the NTB driver
-> +	   for PCI Endpoint. NTB driver implements NTB controller
-> +	   functionality using multiple PCIe endpoint instances. It
-> +	   can support NTB endpoint function devices created using
-> +	   device tree.
+tas2770_reset is called during i2c probe. The reset calls the
+snd_soc_component_write which depends on the tas2770->component being
+available. The component pointer is not set until codec_probe so move
+the reset to the codec_probe after the pointer is set.
 
-Indent help text with one tab + 2 spaces...
-according to coding-style.rst.
+Fixes: 1a476abc723e6 ("tas2770: add tas2770 smart PA kernel driver")
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ sound/soc/codecs/tas2770.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-
-> +
-> +	   If in doubt, say "N" to disable Endpoint NTB driver.
-
-
-thanks.
+diff --git a/sound/soc/codecs/tas2770.c b/sound/soc/codecs/tas2770.c
+index c09851834395..03d7ad1885b8 100644
+--- a/sound/soc/codecs/tas2770.c
++++ b/sound/soc/codecs/tas2770.c
+@@ -575,6 +575,8 @@ static int tas2770_codec_probe(struct snd_soc_component *component)
+ 
+ 	tas2770->component = component;
+ 
++	tas2770_reset(tas2770);
++
+ 	return 0;
+ }
+ 
+@@ -771,8 +773,6 @@ static int tas2770_i2c_probe(struct i2c_client *client,
+ 	tas2770->channel_size = 0;
+ 	tas2770->slot_width = 0;
+ 
+-	tas2770_reset(tas2770);
+-
+ 	result = tas2770_register_codec(tas2770);
+ 	if (result)
+ 		dev_err(tas2770->dev, "Register codec failed.\n");
 -- 
-~Randy
+2.28.0
 
