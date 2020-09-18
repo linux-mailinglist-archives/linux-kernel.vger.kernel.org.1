@@ -2,117 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8462706AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:16:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C0802706CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726845AbgIRUQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 16:16:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53076 "EHLO
+        id S1726874AbgIRUR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 16:17:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726728AbgIRUP5 (ORCPT
+        with ESMTP id S1726409AbgIRUOu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 16:15:57 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8379C0613DA
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:15:52 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id d15so6783794ybk.0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:15:52 -0700 (PDT)
+        Fri, 18 Sep 2020 16:14:50 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9353C0613D2;
+        Fri, 18 Sep 2020 13:14:49 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id v14so3577730pjd.4;
+        Fri, 18 Sep 2020 13:14:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=o2DL67IOGBCnkKLJVmvx6mUhLGuExASqR4QZ4OZyxOY=;
-        b=BCRPev+rE/eCdhTRad14OxKPRC759YffFhBrw/j99zRl+XMk2SeRH2Ro57Q+fpYAoY
-         41dQCr5nRdN1nuAqPl79eRYF7Et/K4hrYua59TnFUm5Qft7hifOftA32AELoX+E867b9
-         2jVvQFpvTUQ2M35PWVTe002iSNw0bKhWwMU3J5xh89MftQHJTF8aTjqfy5S8odXPfmkR
-         B2V75MstoeJ9GqBepGfubW5/qhE+jhI/WYG/r7dM4O293zVEla547bOEPQpSKmz7YdJU
-         wGZC1Jet9cEIKlifpza3a2tLHND8kbzGrtrT3REGXctWnfeV7IsjeRGJP72+hJcsyY8w
-         zCoQ==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IvbpL2kRFTPNxXj1C+N6SPyFmZryvUU4YqZvGmqgRFA=;
+        b=IJhVRUA/qjrWlGaO2xpKEsecyOoMvKcv863pEaFYqycBIaYKAXvBG335Zkl7E7lZqC
+         sIVv7kZTgibOAPpjtAELcS9iOD0qarEqexKBCHuGCBpxZQW+dEW6+VR5h023gEyyQmtR
+         UQ8uSoZztJ2q90JA6wBh20f/7uxi0tqgBH29hyv/yZRnqeoUUoX4uMPitlgP8sRhDyfm
+         FzuC6gXvacMhEpd85kLcjyTOEmXUutLX8TMh4e2RK9GxpRYHE+1hUmp3pZdW8Mt71+bZ
+         5u5AZVzMDhqJcGap+MmdxzeZdr3mBmU2b3o5DOL6ZK+GPlkYHlTKsjHafZH8L/raV9q7
+         4J4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=o2DL67IOGBCnkKLJVmvx6mUhLGuExASqR4QZ4OZyxOY=;
-        b=Vq0XygC4a5R3g7mjswXHYDYwEr8G5wSk9/ALr+j2xtmxAHD6K4cbV9JcOV0z8mQILU
-         lx7n2wKzPXGeMAst7Ei0gYjVrIfyYzhDpnsq7FnYAdn6amhjZaRgNGdjFtINFzeZDcer
-         YAaDe/iFlLmYhwXXEX6bSt5Z6BSzX8Hmvik3/btVrm1zXyJjskZODA3KJzvp63TPLsfd
-         nyO+dfd1tHM5vu76xdN/4lWT46eS5VymlvnQRejCSeNWmcxselR4oXJs11lqlzwmyajH
-         6DcQeYmt7cebssgIWG5w7H2P8YwYtvbtrXvfqpEVrkjQVPzZ1k1P3cj9a/22S5n7xy6B
-         sVqg==
-X-Gm-Message-State: AOAM530dc5dm/5DuonErAdEWcM74cj2DyIEca64qDvhziW+oqJJz3J7F
-        xcBCu8tn/oU26ta+hE4P5IwtytjrcCbA0IaabpM=
-X-Google-Smtp-Source: ABdhPJwrzpZNvpYit1QmzfPWE8TC9Luw0JQEd0AJRVJCA8aClr3KtmTNrVIGHe8CNeT/kpakU/IVCxd5qz42yc0kkDA=
-Sender: "samitolvanen via sendgmr" 
-        <samitolvanen@samitolvanen1.mtv.corp.google.com>
-X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:f693:9fff:fef4:1b6d])
- (user=samitolvanen job=sendgmr) by 2002:a25:887:: with SMTP id
- 129mr35650576ybi.513.1600460151944; Fri, 18 Sep 2020 13:15:51 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 13:14:36 -0700
-In-Reply-To: <20200918201436.2932360-1-samitolvanen@google.com>
-Message-Id: <20200918201436.2932360-31-samitolvanen@google.com>
-Mime-Version: 1.0
-References: <20200918201436.2932360-1-samitolvanen@google.com>
-X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
-Subject: [PATCH v3 30/30] x86, build: allow LTO_CLANG and THINLTO to be selected
-From:   Sami Tolvanen <samitolvanen@google.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        x86@kernel.org, Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IvbpL2kRFTPNxXj1C+N6SPyFmZryvUU4YqZvGmqgRFA=;
+        b=GpcQ3N+mmVZBNyQV5r0kXtf80juiMBnpyNNzPKdHzha+LIFbREReHXchlsmB1UDhOH
+         kTy6Am5ABDmd/BTu/DE6tWGCrdJ9gDz5i72Wt4MiZ3B4w6TF3fuE4rWvPKfyzuHG0i7d
+         0hPpSvECCqs+f+4i2yvHe52Ab2kca09yDdJh2JUlouKe5QPhJzRzqg3HJwr1Oevdw57E
+         gKWAX833KXePV1qFUNxBgxaN7i0rEd1uoh8PQUa60pT4CjymmSqjPkQrQBPGAbaraZNY
+         10jYR2TymkY9lTIQyEJE4nhxWcbZrvWzOkTForj5Vn4WDoaSezDxuwYG8b0OI7DArRDQ
+         wwjA==
+X-Gm-Message-State: AOAM533YrIBVB4Tyul47AaitmXvkPK2Kt9kioWWwdwFBt+AKavzFkSNM
+        U6rn9fbfnFLMHb59o26MldluhYzmxbTdbQ==
+X-Google-Smtp-Source: ABdhPJzHRQ/hHUcsgPAgbWWw7Bk5MiJqqml6/j7xIDTjp4RPMHiusWWxUHDNcr++oDYVrqXNF1ev7Q==
+X-Received: by 2002:a17:90a:49c8:: with SMTP id l8mr13903352pjm.24.1600460089114;
+        Fri, 18 Sep 2020 13:14:49 -0700 (PDT)
+Received: from [10.230.28.120] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id gj6sm3603465pjb.10.2020.09.18.13.14.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Sep 2020 13:14:48 -0700 (PDT)
+Subject: Re: [PATCH net-next v2 1/3] ethtool: Add 100base-FX link mode entries
+To:     Dan Murphy <dmurphy@ti.com>, davem@davemloft.net, andrew@lunn.ch,
+        hkallweit1@gmail.com
+Cc:     mkubecek@suse.cz, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200918191453.13914-1-dmurphy@ti.com>
+ <20200918191453.13914-2-dmurphy@ti.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <c0d54d0d-8c60-e0e6-ade2-b06737a31663@gmail.com>
+Date:   Fri, 18 Sep 2020 13:14:46 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.2.2
+MIME-Version: 1.0
+In-Reply-To: <20200918191453.13914-2-dmurphy@ti.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pass code model and stack alignment to the linker as these are
-not stored in LLVM bitcode, and allow both CONFIG_LTO_CLANG and
-CONFIG_THINLTO to be selected.
 
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
----
- arch/x86/Kconfig  | 2 ++
- arch/x86/Makefile | 5 +++++
- 2 files changed, 7 insertions(+)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 6de2e5c0bdba..0a49008c2363 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -92,6 +92,8 @@ config X86
- 	select ARCH_SUPPORTS_ACPI
- 	select ARCH_SUPPORTS_ATOMIC_RMW
- 	select ARCH_SUPPORTS_NUMA_BALANCING	if X86_64
-+	select ARCH_SUPPORTS_LTO_CLANG		if X86_64
-+	select ARCH_SUPPORTS_THINLTO		if X86_64
- 	select ARCH_USE_BUILTIN_BSWAP
- 	select ARCH_USE_QUEUED_RWLOCKS
- 	select ARCH_USE_QUEUED_SPINLOCKS
-diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index 4346ffb2e39f..49e3b8674eb5 100644
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -173,6 +173,11 @@ ifeq ($(ACCUMULATE_OUTGOING_ARGS), 1)
- 	KBUILD_CFLAGS += $(call cc-option,-maccumulate-outgoing-args,)
- endif
- 
-+ifdef CONFIG_LTO_CLANG
-+KBUILD_LDFLAGS	+= -plugin-opt=-code-model=kernel \
-+		   -plugin-opt=-stack-alignment=$(if $(CONFIG_X86_32),4,8)
-+endif
-+
- # Workaround for a gcc prelease that unfortunately was shipped in a suse release
- KBUILD_CFLAGS += -Wno-sign-compare
- #
+On 9/18/2020 12:14 PM, Dan Murphy wrote:
+> Add entries for the 100base-FX full and half duplex supported modes.
+> 
+> $ ethtool eth0
+>          Supported ports: [ FIBRE ]
+>          Supported link modes:  100baseFX/Half 100baseFX/Full
+>          Supported pause frame use: Symmetric Receive-only
+>          Supports auto-negotiation: No
+>          Supported FEC modes: Not reported
+>          Advertised link modes: 100baseFX/Half 100baseFX/Full
+>          Advertised pause frame use: No
+>          Advertised auto-negotiation: No
+>          Advertised FEC modes: Not reported
+>          Speed: 100Mb/s
+>          Duplex: Full
+>          Auto-negotiation: off
+>          Port: MII
+>          PHYAD: 1
+>          Transceiver: external
+>          Supports Wake-on: gs
+>          Wake-on: d
+>          SecureOn password: 00:00:00:00:00:00
+>          Current message level: 0x00000000 (0)
+> 
+>          Link detected: yes
+> 
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-2.28.0.681.g6f77f65b4e-goog
-
+Florian
