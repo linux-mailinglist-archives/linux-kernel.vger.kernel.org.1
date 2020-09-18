@@ -2,88 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC4FA27001A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 16:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22439270036
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 16:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726796AbgIROq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 10:46:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726588AbgIROq0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 10:46:26 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9E52C0613CE;
-        Fri, 18 Sep 2020 07:46:26 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id 67so3590314pgd.12;
-        Fri, 18 Sep 2020 07:46:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=O2gKBbjWeOUkcv+S6dyzsOFS6GQkgFkqNOlDLf528KI=;
-        b=PRyXB/v06JWW/jjQrBtLKBRDF5ULq3jwiUkJXCc+xg9NWxBsgS2p6S8riGC2VtVb0T
-         4+umuO0rdo/OJYloVdJ0Vn/8HarelyIPzMI/ok4RDRdQ07C9h/2vWyR451p0Z3CAh3l3
-         MGbdammsOH3hOHr+ZBeId/pu2B4YQwaLYPRLA/RF5sOciTQFjOzhVcvgWQQD3/Y9zOtF
-         WDrTGfKemfvpkFH67pJGX/VTyFju7j/f8CoxG6h5K/P3ZeTETBb8lo2ToT16Buj74hbG
-         VL1+ku4i2qa0/t7ThPXuFwaWPtkfCIQTkParrQJkCi6rFj8HR5isExBdeLdl2i3YseoW
-         QyCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=O2gKBbjWeOUkcv+S6dyzsOFS6GQkgFkqNOlDLf528KI=;
-        b=maXgEWkg1DDIQfEruvf60DxlH8ZtM/6xycT08VvF/tfwBO2wqFrPPc35miT/sHVu2r
-         IvWW2OeewRxw6eCdRPYmuLbe1wkmElk8A99gjqyHxBRqv4OgogXPVYCu2XAkV4WCVGv9
-         xHpgP8RyL6vRsL03YYgirHLxjjarstnq8pTwJBXf+Wy0xjQKyxEahACxOCh+FL/DMqPo
-         xuHYV9rgqAZ3Ak4A2kw6WfMuwS1BXFUfq9RstRmNegikZe6QuwQ3mjPBGdCAXnrDnUcQ
-         Ds8qIvSUL3YhE8iwr+FNlDf2tH2b8651H3TuZxfzcVl4pQfh0a3v2vCSTRaB0A9t/nHn
-         Dy4Q==
-X-Gm-Message-State: AOAM532kOXdAYWAgG+3DmnnWlOCugOMkop2k+V5Hbd//go3oDUEl7gca
-        4S0SchrijM0EQHEcree+eN0=
-X-Google-Smtp-Source: ABdhPJz4CI4TCh/puGQapmXeVYctrnDdDOVVqoI68FbGBp0ftdovIvo6SkLSDQNG4grnPI9Tp23Fcw==
-X-Received: by 2002:aa7:9635:0:b029:142:2501:3980 with SMTP id r21-20020aa796350000b029014225013980mr16298544pfg.69.1600440386234;
-        Fri, 18 Sep 2020 07:46:26 -0700 (PDT)
-Received: from google.com ([2620:15c:211:1:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id e16sm3397040pgv.81.2020.09.18.07.46.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 07:46:24 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 07:46:23 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Douglas Anderson <dianders@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Nitin Gupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        sonnyrao@chromium.org, Jens Axboe <axboe@kernel.dk>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] zram: Failing to decompress is WARN_ON worthy
-Message-ID: <20200918144623.GA748396@google.com>
-References: <20200917174059.1.If09c882545dbe432268f7a67a4d4cfcb6caace4f@changeid>
+        id S1726807AbgIROwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 10:52:09 -0400
+Received: from mout.gmx.net ([212.227.17.20]:51529 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726518AbgIROwI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 10:52:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1600440654;
+        bh=X9r1LJ5IHB4tO+eevCHgqRIcUhzs90X3pMd15oLbV50=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=MvyM9dGSaE2Qu4OxCRARDpeLQCEXLTiK9oWdL7+oNHDfKrbRxI241Bl8y7JwT9yFh
+         2G8/6yithT+HbJ45GkJq9W0y+bIf3n+oy6tA0WcW4ggnI8gc3/0eQE/D1GRsRlIEk9
+         O5aCL87AGwcFomuc8PuPDS9NabEghLaahZFaQCCk=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ubuntu ([79.150.73.70]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MI5UN-1kEfQv1PvD-00FAwA; Fri, 18
+ Sep 2020 16:50:54 +0200
+Date:   Fri, 18 Sep 2020 16:50:28 +0200
+From:   John Wood <john.wood@gmx.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     John Wood <john.wood@gmx.com>, Jann Horn <jannh@google.com>,
+        kernel-hardening@lists.openwall.com,
+        Matthew Wilcox <willy@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [RFC PATCH 1/6] security/fbfam: Add a Kconfig to enable the
+ fbfam feature
+Message-ID: <20200918145028.GA3229@ubuntu>
+References: <20200910202107.3799376-1-keescook@chromium.org>
+ <20200910202107.3799376-2-keescook@chromium.org>
+ <202009101615.8566BA3967@keescook>
+ <20200917175146.GB3637@ubuntu>
+ <202009171504.841FA53@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200917174059.1.If09c882545dbe432268f7a67a4d4cfcb6caace4f@changeid>
+In-Reply-To: <202009171504.841FA53@keescook>
+X-Provags-ID: V03:K1:gY8Y4R4sUuHKWJ2jglvTEjE03vqvwuBSnyOAPZP94GoGFbF5pda
+ HLgTCJKuuFDOqcy9VoPpcxtTv/1G/BitFmn4E12fNb5xqU8cOZblAYVzc0yFrmvbmNT2EwM
+ AruRuILQu31D7wG/0dIZEZEHIk/fKkgBanEErZE8OmLX7eH8Ih3tny2TK/upzt4mDcFzjNM
+ FK4DlIEJYAvs5m4Fe8vEA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:lV5Pm0nCUho=:97X2iu6Z5hsHdOIz7eNxRD
+ czB3AqEbHZm4J9lfbEzGO7ZDawxEem1Btuh+QH/EkSsFrPHMofUyHCuSd0oQPIK5Rd/UU+4m5
+ 3IjGlIfN34mU2ze9v0O7u6RdubiIcKR12h0eHc5mCerXdq/DrvV0wbpcdQUvupdAnyyOVe3Q2
+ 3kzhI4E99pq9omIYKWLirT98twXmVJJNwJ+IPcAU7FMXIEqni0T5E6ykoYaeWjuw+u/QTRzlO
+ UErBPu0fDPw3eKGRDaWDI1pbOxc/Cdpc0N/g3Kp8ECIxIXKoznH6SKA3FL3ounyHvGwuERBEp
+ PZYDrlC0f2T3m1miVJJvtmt3ZIoORR3sg/QKMety6iNBtj2CnOZ3kq1KjcLVoFBp5glSA7s6U
+ 4REjHHWgmb06wI1qvS+OgNIGQe4m/F/jry/xs4Pi92oroC0z77j4hoxu87FfaFAZ5hIiTP1q0
+ 3LAEoVe1gunEJtoRGf7SjiyNXv+Oba+/dPVDhLobYAV4VO9fLfUTQi2SRwAy3jL1RT2kqjbK6
+ SNWeb2moNbXraNIpImIlij0OlQn6Cx4GC/w7z1/dz+bSJ1AwFtUOUd0AlsgKVlpXAayf2qbOl
+ Wx2ZZR+4EI/DezRYXX4xtYpIJtHKHFMwhk7ZvrHp0W3+iOK5FwSeSMUSax7kKvJXFhtjLOvXM
+ g32RUwQO7ibXHMNhkJbgURguq+HnQ15jRQmZnTboX9dkBBWPPOmRvTlll7L1DxdvQDRmHH8xY
+ cEUiP/5f6drXSq1YJEaV9H+efh69NmJNwlH6S0i55acQO9cZpf88sC/P+8zT0M49p0CW5Ynqo
+ D3fAvq+zvdwWLwO/Y7EQ42bfQIspwjpcjbuWdc22nVzVglunmsk18OHPFgwwadfW5bNauH/p9
+ og8fbMR7GRkUqkhKJoZFEaaSODRBg/4+wtRQFDI0AOAtHWv7LiQ5A5guxYO38594xfwvf8GGN
+ ebcm0N0HNpmISbIdGmXFOpWvbwNSZ4SGhGI0Rp7rAHGj6TIrlXbP2Rr1jnae5j8iZ0GToYInO
+ +MSyqE5rHdUMc/Vq1HNu7rk7kKhGx49Srz26I4gANX41pxK9PDwVPEc52iRs6ENy4ITjiIoQw
+ HkeVABLJGLHwu1dfoPBVR71mVVh/YevtUXolIfKaVtDb6vcWFkzas6VzF9oMooji5oXA6rOGM
+ aUFUNaIPjc0g4zi2q6KXL/8j5iDO8MYgxZildGCfJq/lBfqc4t+1d6zfnSjTQHJI20kawaIig
+ 38KlcxAFATvyLsE0IJa/RPoTLzPoRbitcjehl9g==
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 05:41:20PM -0700, Douglas Anderson wrote:
-> If we fail to decompress in zram it's a pretty serious problem.  We
-> were entrusted to be able to decompress the old data but we failed.
-> Either we've got some crazy bug in the compression code or we've got
-> memory corruption.
-> 
-> At the moment, when this happens the log looks like this:
-> 
->   ERR kernel: [ 1833.099861] zram: Decompression failed! err=-22, page=336112
->   ERR kernel: [ 1833.099881] zram: Decompression failed! err=-22, page=336112
->   ALERT kernel: [ 1833.099886] Read-error on swap-device (253:0:2688896)
-> 
-> It is true that we have an "ALERT" level log in there, but (at least
-> to me) it feels like even this isn't enough to impart the seriousness
-> of this error.  Let's convert to a WARN_ON.  Note that WARN_ON is
-> automatically "unlikely" so we can simply replace the old annotation
-> with the new one.
-> 
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Acked-by: Minchan Kim <minchan@kernel.org>
+On Thu, Sep 17, 2020 at 03:05:18PM -0700, Kees Cook wrote:
+> On Thu, Sep 17, 2020 at 08:40:06PM +0200, John Wood wrote:
+> > > To jump on the bikeshed: how about just calling this
+> > > FORK_BRUTE_FORCE_DETECTION or FORK_BRUTE, and the directory could be
+> > > "brute", etc. "fbfam" doesn't tell anyone anything.
+> >
+> > Understood. But how about use the fbfam abbreviation in the code? Like=
+ as
+> > function name prefix, struct name prefix, ... It would be better to us=
+e a
+> > more descriptive name in this scenario? It is not clear to me.
+>
+> I don't feel too strongly, but I think having the CONFIG roughly match
+> the directory name, roughly match the function prefixes should be best.
+> Maybe call the directory and function prefix "brute"?
+
+Thanks for the clarification.
+
+> --
+> Kees Cook
+
+Regards,
+John Wood
