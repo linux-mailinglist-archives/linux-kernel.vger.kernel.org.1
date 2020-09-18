@@ -2,152 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8871E2700E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 17:28:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B50842700F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 17:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726285AbgIRP2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 11:28:00 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:54949 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726262AbgIRP17 (ORCPT
+        id S1726304AbgIRP24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 11:28:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726044AbgIRP2y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 11:27:59 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200918152758euoutp0193fcf236183450661b3c6bde9539e6fe~16lFyJ8Jf0766807668euoutp01W
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 15:27:58 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200918152758euoutp0193fcf236183450661b3c6bde9539e6fe~16lFyJ8Jf0766807668euoutp01W
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1600442878;
-        bh=7q9X4ht4qg068rhMEDk1IiNVl8/FCQE3QBqkeITjINg=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=fBSvv4lc4JCkZitGCS7vdIUeJ44i2IUFD50Ef0+x8erXllOg/Skj2qeSNVMsIGQ1V
-         VbxyL8cVa1M+xU90Rw0DbCiFz61seZpumK8Qv90y0mUnxb3yKfO8y37kgVWjFhh/Yq
-         Qie6L1RE+gC3aqEXrN7iZ2u9qPkTkGXJyvV/itE4=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200918152757eucas1p2caaa036bd15c31b1a9af65e0be48240d~16lFmJ4pF0966909669eucas1p2k;
-        Fri, 18 Sep 2020 15:27:57 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 75.36.06318.DF1D46F5; Fri, 18
-        Sep 2020 16:27:57 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200918152757eucas1p282c4f6b559ed7df4d44e219828be29b1~16lFTbObG0966909669eucas1p2j;
-        Fri, 18 Sep 2020 15:27:57 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200918152757eusmtrp1b91f716957e263bf509cd6d2efee5f35~16lFS0cAX1120811208eusmtrp17;
-        Fri, 18 Sep 2020 15:27:57 +0000 (GMT)
-X-AuditID: cbfec7f5-38bff700000018ae-e5-5f64d1fd06a5
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id C8.62.06314.DF1D46F5; Fri, 18
-        Sep 2020 16:27:57 +0100 (BST)
-Received: from [106.210.88.143] (unknown [106.210.88.143]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200918152757eusmtip14cf039ee57707354f7eff0dbd19456a6~16lExQzil0520505205eusmtip1I;
-        Fri, 18 Sep 2020 15:27:56 +0000 (GMT)
-Subject: Re: [PATCH] iommu/exynos: add missing put_device() call in
- exynos_iommu_of_xlate()
-To:     Yu Kuai <yukuai3@huawei.com>, joro@8bytes.org, kgene@kernel.org,
-        krzk@kernel.org
-Cc:     iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <9f5b25ee-3dad-1798-fe55-9c1af9cde513@samsung.com>
-Date:   Fri, 18 Sep 2020 17:27:59 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.12.0
+        Fri, 18 Sep 2020 11:28:54 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 596DAC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 08:28:54 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id n133so6457270qkn.11
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 08:28:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=87exJI9IxcsmEwjFodxzp48tvLwR0SvkIumnx6ayv20=;
+        b=GS37Kps2Y7cepRmntyF2JhjXN55pywjVB6NfRKm3IDQZUIbc3SnfOM2dBj10vSzVP9
+         9MyByCmtgFQozubkaMoNBtDr54DeBh095RjmM8RbXmt5biYJ7EaaPWFP/UJ9b5yRyGh/
+         c5mfDT8B+oNsdlnSuxpqlgb8Uxiu3i7kpM5Jt5pcu5tMBC0N/wStqQz/tQMRU3KPDF4o
+         SGttK2J6uCx/4SSr9m0eWrGhYQtlkPEdz1vLjlV1G3WStrIXmg/fTjUUOuiixJ7owRZd
+         CSXWxD4+bsduuRrKVYwTGdw/xxz8y0NvcYFLTXWihUYdvmEJ2M7yJ8Yyr8JI5xzSy71C
+         0fVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=87exJI9IxcsmEwjFodxzp48tvLwR0SvkIumnx6ayv20=;
+        b=gIQgVlaSigQcCWNk5AC0fd+LziiEQn98ROJjfF6KqPTL4Zlu/OtngyuAuG1lTgMEvc
+         zmo5boNf4CKEFsbMoXaRSUJkZSlaU2haAvMwc8g3+ihmToVNWSt7QdEZsI8D94Pw2oHT
+         7zSX3ufLzTPkzHOQU/XARpgDG92g6BZd+xoiIvmJ9lQLcwYPPQoVaL0VyD15qfB5x+jy
+         QRNtp6gSLaYW9ByMzzi49tgpX/6mK9+lmeguxLYwY/8SwIxdpMrMdaGSq+eFI3t4kJfa
+         QTEHgRo8UHprlwIH1mxIExNJlijIZI9U+Zwd7BVjJ5JExy2BGLHf9fVVC/TlNCOMUTU6
+         ksrQ==
+X-Gm-Message-State: AOAM532BTw6nZ9vphBjKC8bpso/RLX+RRcMTy2wEZXRWNYxWdTb4yARt
+        OZkpIgousMgmJZTYZdSwpwEtew==
+X-Google-Smtp-Source: ABdhPJxtfdYczByA+wq6Dy80t6ZWfoGQ/n9DkJW66Fk8Bud2jQd+D9ALLnqX4eZSIcD/6lD6QRePAw==
+X-Received: by 2002:a37:7d87:: with SMTP id y129mr34623123qkc.108.1600442933623;
+        Fri, 18 Sep 2020 08:28:53 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id f8sm2272544qtx.81.2020.09.18.08.28.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 08:28:52 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kJIJg-001JgL-2m; Fri, 18 Sep 2020 12:28:52 -0300
+Date:   Fri, 18 Sep 2020 12:28:52 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Oded Gabbay <oded.gabbay@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, izur@habana.ai,
+        Gal Pressman <galpress@amazon.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-rdma@vger.kernel.org, Olof Johansson <olof@lixom.net>
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+Message-ID: <20200918152852.GW8409@ziepe.ca>
+References: <20200918125014.GR8409@ziepe.ca>
+ <CAFCwf12oK4RXYhgzXiN_YvXvjoW1Fwx1xBzR3Y5E4RLvzn_vhA@mail.gmail.com>
+ <20200918132645.GS8409@ziepe.ca>
+ <CAFCwf109t5=GuNvqTqLUCiYbjLC6o2xVoLY5C-SBqbN66f6wxg@mail.gmail.com>
+ <20200918135915.GT8409@ziepe.ca>
+ <CAFCwf13rJgb4=as7yW-2ZHvSnUd2NK1GP0UKKjyMfkB3vsnE5w@mail.gmail.com>
+ <20200918141909.GU8409@ziepe.ca>
+ <CAFCwf121_UNivhfPfO6uFoHbF+2Odeb1c3+482bOXeOZUsEnug@mail.gmail.com>
+ <20200918150735.GV8409@ziepe.ca>
+ <CAFCwf13y1VVy90zAoBPC-Gfj6mwMVbefh3fxKDVneuscp4esqA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200918011335.909141-1-yukuai3@huawei.com>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrKKsWRmVeSWpSXmKPExsWy7djP87p/L6bEGzQtN7VYsN/aonP2BnaL
-        /sevmS3OnweyNj2+xmpxedccNosZ5/cxWVx7d4bNYs5CNgdOjycH5zF5tBx5y+qxaVUnm8fm
-        JfUek28sZ/T4vEkugC2KyyYlNSezLLVI3y6BK+Nrt3bBda6K1W+MGhiPc3QxcnJICJhIdN9f
-        z9LFyMUhJLCCUWLlzGWsEM4XRonLn6awQzifGSWeTP3BCNOy5ccZRojEckaJF017mCGc94wS
-        lyb2MYNUCQvESuy69xesQ0QgTGLahi9gc5kFljBKzJqzkR0kwSZgKNH1tosNxOYVsJOYsu8S
-        mM0ioCqx+el2sEGiAnESx049YoGoEZQ4OfMJkM3BwSlgKfH+dCBImFlAXmL72znMELa4xK0n
-        85kgLt3HLvH2gTOE7SIx+88TZghbWOLV8S3sELaMxOnJPeAAkBBoZpR4eG4tO4TTAwyAphlQ
-        P1tL3Dn3iw1kMbOApsT6XfoQYUeJA9uawe6REOCTuPFWEOIGPolJ26YzQ4R5JTrahCCq1SRm
-        HV8Ht/bghUvMExiVZiF5bBaSb2Yh+WYWwt4FjCyrGMVTS4tz01OLjfNSy/WKE3OLS/PS9ZLz
-        czcxAhPT6X/Hv+5g3Pcn6RCjAAejEg/vi3kp8UKsiWXFlbmHGCU4mJVEeJ3Ono4T4k1JrKxK
-        LcqPLyrNSS0+xCjNwaIkzmu86GWskEB6YklqdmpqQWoRTJaJg1OqgdHlQjXD86gzvicd5PzO
-        VXW1ijdc/j0p7YH+hNcSsjtt/iWZMdvuOXnh5fZoRi9Xv2VaBwv2KdtYFYpNKn3zxTzvf/CK
-        m0vXXOZrfNw++dnqH/fqcu12TmlouW7i0ipqsi/h5bdFR3yD841XrNzL2fld5HVdyGY9YdlX
-        2vkl3/4siHQ4ffHyxK1KLMUZiYZazEXFiQC421h7SAMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrOIsWRmVeSWpSXmKPExsVy+t/xu7p/L6bEG1y7q2yxYL+1RefsDewW
-        /Y9fM1ucPw9kbXp8jdXi8q45bBYzzu9jsrj27gybxZyFbA6cHk8OzmPyaDnyltVj06pONo/N
-        S+o9Jt9YzujxeZNcAFuUnk1RfmlJqkJGfnGJrVK0oYWRnqGlhZ6RiaWeobF5rJWRqZK+nU1K
-        ak5mWWqRvl2CXsbXbu2C61wVq98YNTAe5+hi5OSQEDCR2PLjDGMXIxeHkMBSRol/m3pZIRIy
-        EienNUDZwhJ/rnWxQRS9ZZS40zWbGSQhLBArseveX6BuDg4RgTCJlRuyQGqYBZYwSuw+sIEV
-        oqEHyJm1kQ2kgU3AUKLrbReYzStgJzFl3yUwm0VAVWLz0+1gQ0UF4iTO9LyAqhGUODnzCQvI
-        Ak4BS4n3pwNBwswCZhLzNj9khrDlJba/nQNli0vcejKfaQKj0Cwk3bOQtMxC0jILScsCRpZV
-        jCKppcW56bnFhnrFibnFpXnpesn5uZsYgZG47djPzTsYL20MPsQowMGoxMP7Yl5KvBBrYllx
-        Ze4hRgkOZiURXqezp+OEeFMSK6tSi/Lji0pzUosPMZoC/TaRWUo0OR+YJPJK4g1NDc0tLA3N
-        jc2NzSyUxHk7BA7GCAmkJ5akZqemFqQWwfQxcXBKNTBOXt0+syf7zXkRFY3eWY+8Dv88ZdBk
-        aF6ucDPgZIpvWINo8Zlkvj4x2TupDHVqZZM15R0+dc1uKOdjzlx3QG7905y1s03vlgR+E31x
-        sGGF7kqNk7lS9V+YzdaJ7vn8m2fvQoF+j73S7Nn/05nuec34GTH5Wt8k6T6t4+qXvivsnuTB
-        EmbV56jEUpyRaKjFXFScCAAYuaPQ2gIAAA==
-X-CMS-MailID: 20200918152757eucas1p282c4f6b559ed7df4d44e219828be29b1
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200918011240eucas1p1e16e5b1b11a4ea6c078ffeceaf554966
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200918011240eucas1p1e16e5b1b11a4ea6c078ffeceaf554966
-References: <CGME20200918011240eucas1p1e16e5b1b11a4ea6c078ffeceaf554966@eucas1p1.samsung.com>
-        <20200918011335.909141-1-yukuai3@huawei.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFCwf13y1VVy90zAoBPC-Gfj6mwMVbefh3fxKDVneuscp4esqA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Fri, Sep 18, 2020 at 06:15:52PM +0300, Oded Gabbay wrote:
 
-On 18.09.2020 03:13, Yu Kuai wrote:
-> if of_find_device_by_node() succeed, exynos_iommu_of_xlate() doesn't have
-> a corresponding put_device(). Thus add put_device() to fix the exception
-> handling for this function implementation.
->
-> Fixes: aa759fd376fb ("iommu/exynos: Add callback for initializing devices from device tree")
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> I'm sorry, but you won't be able to convince me here that I need to
+> "enslave" my entire code to RDMA, just because my ASIC "also" has some
+> RDMA ports.
 
-Thanks for the fix!
+You can't recreate common shared subsystems in a driver just because
+you don't want to work with the subsystem.
 
-Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
+I don't care what else the ASIC has. In Linux the netdev part is
+exposed through netdev, the RDMA part through RDMA, the
+totally-not-a-GPU part through drivers/misc.
 
-> ---
->   drivers/iommu/exynos-iommu.c | 8 ++++++--
->   1 file changed, 6 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/iommu/exynos-iommu.c b/drivers/iommu/exynos-iommu.c
-> index bad3c0ce10cb..de324b4eedfe 100644
-> --- a/drivers/iommu/exynos-iommu.c
-> +++ b/drivers/iommu/exynos-iommu.c
-> @@ -1295,13 +1295,17 @@ static int exynos_iommu_of_xlate(struct device *dev,
->   		return -ENODEV;
->   
->   	data = platform_get_drvdata(sysmmu);
-> -	if (!data)
-> +	if (!data) {
-> +		put_device(&sysmmu->dev);
->   		return -ENODEV;
-> +	}
->   
->   	if (!owner) {
->   		owner = kzalloc(sizeof(*owner), GFP_KERNEL);
-> -		if (!owner)
-> +		if (!owner) {
-> +			put_device(&sysmmu->dev);
->   			return -ENOMEM;
-> +		}
->   
->   		INIT_LIST_HEAD(&owner->controllers);
->   		mutex_init(&owner->rpm_lock);
+It is always been this way. Chelsio didn't get to rebuild the SCSI
+stack in their driver just because "storage is a small part of their
+device"
 
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+Drivers are not allowed to re-implement I2C/SPI/etc without re-using
+the comon code for that just because "I2C is a small part of their
+device"
 
+Exposing to userspace the creation of RoCE QPs and their related
+objects are unambiguously a RDMA subsystem task. I don't even know how
+you think you can argue it is not. It is your company proudly claiming
+the device has 100G RoCE ports in all the marketing literature, after
+all.
+
+It is too bad the device has a non-standards compliant implementation
+of RoCE so this will be a bit hard for you. Oh well.
+
+Jason
