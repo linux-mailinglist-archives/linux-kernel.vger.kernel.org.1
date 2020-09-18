@@ -2,70 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D5D126FBA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 13:37:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C8AC26FBC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 13:45:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726490AbgIRLhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 07:37:40 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13259 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726115AbgIRLhj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 07:37:39 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 6D142A4D0735F1DBFD98;
-        Fri, 18 Sep 2020 19:37:35 +0800 (CST)
-Received: from huawei.com (10.90.53.225) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Fri, 18 Sep 2020
- 19:37:29 +0800
-From:   Hou Tao <houtao1@huawei.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-CC:     Josh Triplett <josh@joshtriplett.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        <linux-kernel@vger.kernel.org>, <rcu@vger.kernel.org>,
-        <houtao1@huawei.com>
-Subject: [PATCH v2 1/2] locktorture: doesn't check nreaders_stress when no readlock support
-Date:   Fri, 18 Sep 2020 19:44:24 +0800
-Message-ID: <20200918114424.100852-1-houtao1@huawei.com>
-X-Mailer: git-send-email 2.25.0.4.g0ad7144999
-In-Reply-To: <20200918033755.GS29330@paulmck-ThinkPad-P72>
-References: <20200918033755.GS29330@paulmck-ThinkPad-P72>
+        id S1726494AbgIRLpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 07:45:16 -0400
+Received: from foss.arm.com ([217.140.110.172]:40078 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726115AbgIRLpP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 07:45:15 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C5B7B11D4;
+        Fri, 18 Sep 2020 04:45:14 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5B2F13F73B;
+        Fri, 18 Sep 2020 04:45:13 -0700 (PDT)
+Date:   Fri, 18 Sep 2020 12:45:08 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>, bhelgaas@google.com
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        George Cherian <george.cherian@marvell.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        linux-pci@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 0/3] Fix pci_iounmap() on !CONFIG_GENERIC_IOMAP
+Message-ID: <20200918114508.GA20110@e121166-lin.cambridge.arm.com>
+References: <20200915093203.16934-1-lorenzo.pieralisi@arm.com>
+ <cover.1600254147.git.lorenzo.pieralisi@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.90.53.225]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1600254147.git.lorenzo.pieralisi@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When do locktorture for exclusive lock which doesn't have readlock
-support, the following module parameters will be considered as valid:
+On Wed, Sep 16, 2020 at 12:06:55PM +0100, Lorenzo Pieralisi wrote:
+> v2 of a previous posting.
+> 
+> v1->v2:
+> 	- Added additional patch to remove sparc32 useless __KERNEL__
+> 	  guard
+> 
+> v1: https://lore.kernel.org/lkml/20200915093203.16934-1-lorenzo.pieralisi@arm.com
+> 
+> Original cover letter
+> ---
+> 
+> Fix the empty pci_iounmap() implementation that is causing memory leaks on
+> !CONFIG_GENERIC_IOMAP configs relying on asm-generic/io.h.
+> 
+> A small tweak is required on sparc32 to pull in some declarations,
+> hopefully nothing problematic, subject to changes as requested.
+> 
+> Previous tentatives:
+> https://lore.kernel.org/lkml/20200905024811.74701-1-yangyingliang@huawei.com
+> https://lore.kernel.org/lkml/20200824132046.3114383-1-george.cherian@marvell.com
+> 
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: George Cherian <george.cherian@marvell.com>
+> Cc: Yang Yingliang <yangyingliang@huawei.com>
+> 
+> Lorenzo Pieralisi (3):
+>   sparc32: Remove useless io_32.h __KERNEL__ preprocessor guard
+>   sparc32: Move ioremap/iounmap declaration before asm-generic/io.h
+>     include
+>   asm-generic/io.h: Fix !CONFIG_GENERIC_IOMAP pci_iounmap()
+>     implementation
+> 
+>  arch/sparc/include/asm/io_32.h | 17 ++++++---------
+>  include/asm-generic/io.h       | 39 +++++++++++++++++++++++-----------
+>  2 files changed, 34 insertions(+), 22 deletions(-)
 
- torture_type=mutex_lock nwriters_stress=0 nreaders_stress=1
+Arnd, David, Bjorn,
 
-But locktorture will do nothing useful, so instead of permitting
-these useless parameters, let's reject these parameters by returning
--EINVAL during module init.
+I have got review/test tags, is it OK if we merge this series please ?
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- kernel/locking/locktorture.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Can we pull it in the PCI tree or you want it to go via a different
+route upstream ?
 
-diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-index 9cfa5e89cff7f..bebdf98e6cd78 100644
---- a/kernel/locking/locktorture.c
-+++ b/kernel/locking/locktorture.c
-@@ -868,7 +868,8 @@ static int __init lock_torture_init(void)
- 		goto unwind;
- 	}
- 
--	if (nwriters_stress == 0 && nreaders_stress == 0) {
-+	if (nwriters_stress == 0 &&
-+	    (!cxt.cur_ops->readlock || nreaders_stress == 0)) {
- 		pr_alert("lock-torture: must run at least one locking thread\n");
- 		firsterr = -EINVAL;
- 		goto unwind;
--- 
-2.25.0.4.g0ad7144999
+Please let me know.
 
+Thanks,
+Lorenzo
