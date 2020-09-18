@@ -2,116 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7910426F7F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4976B26F7FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726606AbgIRITn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 04:19:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45884 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726109AbgIRITm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 04:19:42 -0400
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7788121D20;
-        Fri, 18 Sep 2020 08:19:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600417181;
-        bh=BJGVXo9LuBYkG/UJ83GT4URHLbNRNG+Zxm/NJ71KpQM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=EJFz3tnFnXVUibC3YjJ/aDnX9vkiw9iq4EOtKW9AY1UzHJjf1IKzyYfw1N2p1QO8m
-         P6M8ES8lJXTghi6n/cG7hjYZ3GeO1N7Fc/cTU7jR211u/HsFoqwjlmyBMdPFS3JgdU
-         2ERcli34bBFhjIO+FPo08NLHVYa3E8zGl3lcg3RA=
-Received: by mail-wr1-f45.google.com with SMTP id t10so4702422wrv.1;
-        Fri, 18 Sep 2020 01:19:41 -0700 (PDT)
-X-Gm-Message-State: AOAM5316qZap81LiF3C5fHOFDBXKQVafkq/HmSAVfuaWsTE/G+89jpzb
-        FZPaQv6FmMXI3dfhJ+u80SFuLBZHIZ+LyMMUNbE=
-X-Google-Smtp-Source: ABdhPJxjVFR3dSbIHpxy/vgZ/bWImIgEGLUaIDHRxTPfiF/dL+umHl5OoO3hY+yZN6dZjAPUxX/KLimMiPWxT50m8Xg=
-X-Received: by 2002:a17:907:724f:: with SMTP id ds15mr33866016ejc.119.1600417177168;
- Fri, 18 Sep 2020 01:19:37 -0700 (PDT)
+        id S1726623AbgIRITy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 04:19:54 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:60932 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726109AbgIRITx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 04:19:53 -0400
+Date:   Fri, 18 Sep 2020 08:19:49 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600417190;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4dw99OjleOPqUN3QggAPJrNX40sLG3KUrNIRbmz5Rjg=;
+        b=OWhi05WBstVtE+CXo3CSXBxac2vrSHeS5UZYyOWXcqi28CnG1s+bOZx6fOFLjbISXHf3wW
+        u0ukN4eQXXkGlzaWaJ9NQwuEEauY+lSWPdnhwq2DP79pdMGg+AOktclN+WyJOGf3Bf7EqO
+        ZKvHfGS7ZVMCmIMM/6TKk2nlqPDL6qiAcvv8UJ2Mlm3oOPb386hBfgTk9+obPupl+Pyznw
+        ovPx/TUL1iymcTweI04eNn3TKDfUzsvmPS62JmsDfNYGBx9NPqLfSwzoxYqAXAV6jpfQF1
+        IDYmYiDeyXcNDXrWKrZorgdJM2OgLVCoC0rfzu4/KERVhYSJp1yS7Ctk3vFJEg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600417190;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4dw99OjleOPqUN3QggAPJrNX40sLG3KUrNIRbmz5Rjg=;
+        b=wLGPjceIesBopBoEVauKhqC3cC/5KB9tRwaJvDv87w3TkBj96N8qspexAnLb14ox2YfKeI
+        Dedcx2HLjB5CEdDA==
+From:   "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/unwind/fp: Fix FP unwinding in ret_from_fork
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Borislav Petkov <bp@suse.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <f366bbf5a8d02e2318ee312f738112d0af74d16f.1600103007.git.jpoimboe@redhat.com>
+References: <f366bbf5a8d02e2318ee312f738112d0af74d16f.1600103007.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
-References: <20200917165301.23100-1-krzk@kernel.org> <20200917165301.23100-10-krzk@kernel.org>
- <20200917201204.GG3969@pendragon.ideasonboard.com>
-In-Reply-To: <20200917201204.GG3969@pendragon.ideasonboard.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Fri, 18 Sep 2020 10:19:25 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPdB0mxQ8+UhCGU6B2DS_9DCDc=i9cFmdr8avKqQcLi3GQ@mail.gmail.com>
-Message-ID: <CAJKOXPdB0mxQ8+UhCGU6B2DS_9DCDc=i9cFmdr8avKqQcLi3GQ@mail.gmail.com>
-Subject: Re: [PATCH v2 09/13] dt-bindings: pinctrl: include common schema in
- GPIO controllers
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Hoan Tran <hoan@os.amperecomputing.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Sungbo Eo <mans0n@gorani.run>, Stefan Agner <stefan@agner.ch>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Yash Shah <yash.shah@sifive.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        - <patches@opensource.cirrus.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Amelie Delaunay <amelie.delaunay@st.com>,
-        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Andy Teng <andy.teng@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Sricharan R <sricharan@codeaurora.org>,
-        Chris Brandt <chris.brandt@renesas.com>,
-        Jaroslav Kysela <perex@perex.cz>, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <160041718943.15536.685517727562060677.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Sep 2020 at 22:12, Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> Hi Krzysztof,
->
-> Thank you for the patch.
->
-> On Thu, Sep 17, 2020 at 06:52:57PM +0200, Krzysztof Kozlowski wrote:
-> > Include the common GPIO schema in GPIO controllers to be sure all common
-> > properties are properly validated.
->
-> Shouldn't we delete the properties that are now redundant from these
-> schemas ?
+The following commit has been merged into the x86/urgent branch of tip:
 
-Good point. However not with "additionalPropeties: false". Schema
-requires all properties to be mentioned. I would need to use
-"unevaluatedProperties: false" in each file.
+Commit-ID:     6f9885a36c006d798319661fa849f9c2922223b9
+Gitweb:        https://git.kernel.org/tip/6f9885a36c006d798319661fa849f9c2922223b9
+Author:        Josh Poimboeuf <jpoimboe@redhat.com>
+AuthorDate:    Mon, 14 Sep 2020 12:04:22 -05:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 18 Sep 2020 09:59:40 +02:00
 
-What is preferred?
+x86/unwind/fp: Fix FP unwinding in ret_from_fork
 
-Best regards,
-Krzysztof
+There have been some reports of "bad bp value" warnings printed by the
+frame pointer unwinder:
+
+  WARNING: kernel stack regs at 000000005bac7112 in sh:1014 has bad 'bp' value 0000000000000000
+
+This warning happens when unwinding from an interrupt in
+ret_from_fork(). If entry code gets interrupted, the state of the
+frame pointer (rbp) may be undefined, which can confuse the unwinder,
+resulting in warnings like the above.
+
+There's an in_entry_code() check which normally silences such
+warnings for entry code. But in this case, ret_from_fork() is getting
+interrupted. It recently got moved out of .entry.text, so the
+in_entry_code() check no longer works.
+
+It could be moved back into .entry.text, but that would break the
+noinstr validation because of the call to schedule_tail().
+
+Instead, initialize each new task's RBP to point to the task's entry
+regs via an encoded frame pointer.  That will allow the unwinder to
+reach the end of the stack gracefully.
+
+Fixes: b9f6976bfb94 ("x86/entry/64: Move non entry code into .text section")
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Reported-by: Logan Gunthorpe <logang@deltatee.com>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lkml.kernel.org/r/f366bbf5a8d02e2318ee312f738112d0af74d16f.1600103007.git.jpoimboe@redhat.com
+---
+ arch/x86/include/asm/frame.h | 19 +++++++++++++++++++
+ arch/x86/kernel/process.c    |  3 ++-
+ 2 files changed, 21 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/include/asm/frame.h b/arch/x86/include/asm/frame.h
+index 296b346..fb42659 100644
+--- a/arch/x86/include/asm/frame.h
++++ b/arch/x86/include/asm/frame.h
+@@ -60,12 +60,26 @@
+ #define FRAME_END "pop %" _ASM_BP "\n"
+ 
+ #ifdef CONFIG_X86_64
++
+ #define ENCODE_FRAME_POINTER			\
+ 	"lea 1(%rsp), %rbp\n\t"
++
++static inline unsigned long encode_frame_pointer(struct pt_regs *regs)
++{
++	return (unsigned long)regs + 1;
++}
++
+ #else /* !CONFIG_X86_64 */
++
+ #define ENCODE_FRAME_POINTER			\
+ 	"movl %esp, %ebp\n\t"			\
+ 	"andl $0x7fffffff, %ebp\n\t"
++
++static inline unsigned long encode_frame_pointer(struct pt_regs *regs)
++{
++	return (unsigned long)regs & 0x7fffffff;
++}
++
+ #endif /* CONFIG_X86_64 */
+ 
+ #endif /* __ASSEMBLY__ */
+@@ -83,6 +97,11 @@
+ 
+ #define ENCODE_FRAME_POINTER
+ 
++static inline unsigned long encode_frame_pointer(struct pt_regs *regs)
++{
++	return 0;
++}
++
+ #endif
+ 
+ #define FRAME_BEGIN
+diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+index 13ce616..ba4593a 100644
+--- a/arch/x86/kernel/process.c
++++ b/arch/x86/kernel/process.c
+@@ -42,6 +42,7 @@
+ #include <asm/spec-ctrl.h>
+ #include <asm/io_bitmap.h>
+ #include <asm/proto.h>
++#include <asm/frame.h>
+ 
+ #include "process.h"
+ 
+@@ -133,7 +134,7 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
+ 	fork_frame = container_of(childregs, struct fork_frame, regs);
+ 	frame = &fork_frame->frame;
+ 
+-	frame->bp = 0;
++	frame->bp = encode_frame_pointer(childregs);
+ 	frame->ret_addr = (unsigned long) ret_from_fork;
+ 	p->thread.sp = (unsigned long) fork_frame;
+ 	p->thread.io_bitmap = NULL;
