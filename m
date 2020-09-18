@@ -2,118 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D4A2707AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 23:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E97192707B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 23:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726333AbgIRVBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 17:01:21 -0400
-Received: from mail-io1-f77.google.com ([209.85.166.77]:42668 "EHLO
-        mail-io1-f77.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726139AbgIRVBV (ORCPT
+        id S1726381AbgIRVBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 17:01:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726118AbgIRVBd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 17:01:21 -0400
-Received: by mail-io1-f77.google.com with SMTP id w3so5654041iou.9
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 14:01:20 -0700 (PDT)
+        Fri, 18 Sep 2020 17:01:33 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4037C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 14:01:32 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id t13so7650493ile.9
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 14:01:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gK5XsFJwjR3oBOvG/qkXacDHUsWYEbBlXXhB7nU1Ags=;
+        b=pcN7Q//IQygz5FJBITdJVrxJvWq0Vm0gpULffWDjradPmXmYqjFqKoWw5t5ym2b7WF
+         5JwcUs9TGqqN+OKKYQOm7jmsFNoZTsG4999NWYiG1ZduRlD77SAh7ijt3RZoAYnJEU4c
+         nGEQ2urcqmq68lZxEHpgpfGGRC5HISEn+1orSu9d/3bwgdZ9iYImNwTG+rrmnJBRoCrs
+         pwZOYq55fGt4kJen3gnpAOUJ0GLWS7rFcbW3aOuYQnl/6jpxy/KSviHHupyLJ6sdyzws
+         iy8uqFFL6WbcHU7//Cme8yFxA/phGZ4gbCrDmXiJ84kbRWOfRnSTaA9CJ0bsQZlsCXVW
+         K67A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=oCfiGkVYIcxw3idzkPicrwPwIAKvGq4KaTSwFBtjQWU=;
-        b=BM6KJxxyof+EWKYGWsUTuF3/hPrT5zfNq8QvCTBr3yq36rFlQ6wq276fm+JJqojgQY
-         0CtkScM0NLqeHylyqpkAmjLWasfwYTuV3wpdQfmSiE8kf0km2yLBmrzQjX8RSgAhHx8J
-         uHh1WtQwJ8dn0nqxL0OVSVkm1Xv4iixyqYEXvXmftE7bFaRFUmlyyHflq8iaX99lmM8p
-         LthN7QvCc5KmH+W4/itG4DksszSekcJadGsmEJLBSvAylaNb3n7eqWqYvSEy/Cm5QZo8
-         oTO7dksrsy80H7QCJhtaiJnyhEXk97HgLwWRbyYoDSmIpvJZUwSs65dBDWbXVH86PG22
-         MeMA==
-X-Gm-Message-State: AOAM531u/lWeVq0u2fQd1oOtEa4TjHFlpOuM1UmmvT+GwNT8GuuB3JZo
-        +EIJXu9EckWlvlBBDm5e8fG6R38JuIiykdJDGLIgVSv8sYUb
-X-Google-Smtp-Source: ABdhPJyU/RpAOYWZ+94evTfjS1EcCwtmcUxAWWBxwgIfHt8YgUaCIAo5N4I1aCctsfksxUqXtMsLp9GyK3bI2+D+++PDsKGu6vKS
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gK5XsFJwjR3oBOvG/qkXacDHUsWYEbBlXXhB7nU1Ags=;
+        b=WeuMzZiRsyiYYpPROX28JLAEDPvlK1/PvoMuVsiQSqD4n5mZI2q58mfX6VTwEipeVl
+         +bcPbcCOLa66X7QVE4Dn//mJ3EYghg5UpkIe5UWRzipfank+qL/i7lZc9UriB/GJeSnO
+         zl8Ipd2jtEEXiP22NV8Wc6T76IDcHF0fg/o9YmKhCQC1gpHy24O8xYcNRCT2D0qghOwd
+         wC2YxMonQ6xkB+tVpzt9t4Z5+Gzr0b8jl5PODSxc4DhY85WQYw6cJzyceKfzl4z7qiZK
+         ECJmYTBlQ4ZaRieclaosA7vB/Lm6c3xplZlG+bYGEP33G/fbkHHxrLmApEli1DkdKGYi
+         VpZw==
+X-Gm-Message-State: AOAM530+raK5lUenN/CFRXITBVUhC/zhepwUFNLGF3UKmkSekyR4zFaF
+        +6I5gexUZAmjE99yukZjboSuLQ==
+X-Google-Smtp-Source: ABdhPJzVnVuLlyjiuxOoFIg1EIYFneo1FDyst+YvS4rLzDGzl3letx9XWjVpMFScZNn64/p2AGTd8g==
+X-Received: by 2002:a92:c750:: with SMTP id y16mr1187041ilp.277.1600462891719;
+        Fri, 18 Sep 2020 14:01:31 -0700 (PDT)
+Received: from google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
+        by smtp.gmail.com with ESMTPSA id j20sm2243158ilq.6.2020.09.18.14.01.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 14:01:30 -0700 (PDT)
+Date:   Fri, 18 Sep 2020 15:01:26 -0600
+From:   Yu Zhao <yuzhao@google.com>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Huang Ying <ying.huang@intel.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Konstantin Khlebnikov <koct9i@gmail.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Jaewon Kim <jaewon31.kim@samsung.com>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/13] mm: clean up some lru related pieces
+Message-ID: <20200918210126.GA1118730@google.com>
+References: <20200918030051.650890-1-yuzhao@google.com>
+ <alpine.LSU.2.11.2009181317350.11298@eggly.anvils>
 MIME-Version: 1.0
-X-Received: by 2002:a92:9408:: with SMTP id c8mr28212311ili.61.1600462880384;
- Fri, 18 Sep 2020 14:01:20 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 14:01:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000762dee05af9ccd01@google.com>
-Subject: WARNING in ex_handler_uaccess
-From:   syzbot <syzbot+ea3a78a71705faf41d77@syzkaller.appspotmail.com>
-To:     bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, luto@kernel.org, mingo@redhat.com,
-        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.11.2009181317350.11298@eggly.anvils>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Sep 18, 2020 at 01:46:59PM -0700, Hugh Dickins wrote:
+> On Thu, 17 Sep 2020, Yu Zhao wrote:
+> 
+> > Hi Andrew,
+> > 
+> > I see you have taken this:
+> >   mm: use add_page_to_lru_list()/page_lru()/page_off_lru()
+> > Do you mind dropping it?
+> > 
+> > Michal asked to do a bit of additional work. So I thought I probably
+> > should create a series to do more cleanups I've been meaning to.
+> > 
+> > This series contains the change in the patch above and goes a few
+> > more steps farther. It's intended to improve readability and should
+> > not have any performance impacts. There are minor behavior changes in
+> > terms of debugging and error reporting, which I have all highlighted
+> > in the individual patches. All patches were properly tested on 5.8
+> > running Chrome OS, with various debug options turned on.
+> > 
+> > Michal,
+> > 
+> > Do you mind taking a looking at the entire series?
+> > 
+> > Thank you.
+> > 
+> > Yu Zhao (13):
+> >   mm: use add_page_to_lru_list()
+> >   mm: use page_off_lru()
+> >   mm: move __ClearPageLRU() into page_off_lru()
+> >   mm: shuffle lru list addition and deletion functions
+> >   mm: don't pass enum lru_list to lru list addition functions
+> >   mm: don't pass enum lru_list to trace_mm_lru_insertion()
+> >   mm: don't pass enum lru_list to del_page_from_lru_list()
+> >   mm: rename page_off_lru() to __clear_page_lru_flags()
+> >   mm: inline page_lru_base_type()
+> >   mm: VM_BUG_ON lru page flags
+> >   mm: inline __update_lru_size()
+> >   mm: make lruvec_lru_size() static
+> >   mm: enlarge the int parameter of update_lru_size()
+> > 
+> >  include/linux/memcontrol.h     |  14 ++--
+> >  include/linux/mm_inline.h      | 115 ++++++++++++++-------------------
+> >  include/linux/mmzone.h         |   2 -
+> >  include/linux/vmstat.h         |   2 +-
+> >  include/trace/events/pagemap.h |  11 ++--
+> >  mm/compaction.c                |   2 +-
+> >  mm/memcontrol.c                |  10 +--
+> >  mm/mlock.c                     |   2 +-
+> >  mm/swap.c                      |  53 ++++++---------
+> >  mm/vmscan.c                    |  28 +++-----
+> >  10 files changed, 95 insertions(+), 144 deletions(-)
+> > 
+> > -- 
+> > 2.28.0.681.g6f77f65b4e-goog
+> 
+> Sorry, Yu, I may be out-of-line in sending this: but as you know,
+> Alex Shi has a long per-memcg lru_lock series playing in much the
+> same area (particularly conflicting in mm/swap.c and mm/vmscan.c):
+> a patchset that makes useful changes, that I'm very keen to help
+> into mmotm a.s.a.p (but not before I've completed diligence).
+> 
+> We've put a lot of effort into its testing, I'm currently reviewing
+> it patch by patch (my general silence indicating that I'm busy on that,
+> but slow as ever): so I'm a bit discouraged to have its stability
+> potentially undermined by conflicting cleanups at this stage.
+> 
+> If there's general agreement that your cleanups are safe and welcome
+> (Michal's initial reaction sheds some doubt on that), great: I hope
+> that Andrew can fast-track them into mmotm, then Alex rebase on top
+> of them, and I then re-test and re-review.
+> 
+> But if that quick agreement is not forthcoming, may I ask you please
+> to hold back, and resend based on top of Alex's next posting?
 
-syzbot found the following issue on:
+The per-memcg lru lock series seems a high priority, and I have
+absolutely no problem accommodate your request.
 
-HEAD commit:    10b82d51 Merge branch 'for-5.9-fixes' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13fb6b07900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=773ee8ece5f19a24
-dashboard link: https://syzkaller.appspot.com/bug?extid=ea3a78a71705faf41d77
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-userspace arch: i386
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ea3a78a71705faf41d77@syzkaller.appspotmail.com
-
-WARNING: CPU: 2 PID: 6875 at arch/x86/mm/extable.c:77 ex_handler_uaccess+0xba/0xe0 arch/x86/mm/extable.c:77
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 2 PID: 6875 Comm: io_uring-sq Not tainted 5.9.0-rc5-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- panic+0x382/0x7fb kernel/panic.c:231
- __warn.cold+0x20/0x4b kernel/panic.c:600
- report_bug+0x1bd/0x210 lib/bug.c:198
- handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
- exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-RIP: 0010:ex_handler_uaccess+0xba/0xe0 arch/x86/mm/extable.c:77
-Code: 1d 5c 30 fa 09 31 ff 89 de e8 e2 ae 40 00 84 db 75 80 e8 b9 b2 40 00 48 c7 c7 e0 1a 69 88 c6 05 3c 30 fa 09 01 e8 a8 ee 10 00 <0f> 0b e9 61 ff ff ff 48 89 df e8 87 7a 81 00 eb 87 e8 10 7b 81 00
-RSP: 0018:ffffc9000e03f6c8 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff88801b420400 RSI: ffffffff815f5a85 RDI: fffff52001c07ecb
-RBP: ffffc9000e03f7b8 R08: 0000000000000001 R09: ffffffff8ce2daef
-R10: 000000000000143b R11: 0000000000000000 R12: ffffffff89b3f410
-R13: 000000000000000d R14: 0000000000000000 R15: 0000000000000000
- fixup_exception+0x9a/0xca arch/x86/mm/extable.c:166
- __exc_general_protection arch/x86/kernel/traps.c:557 [inline]
- exc_general_protection+0xeb/0x2e0 arch/x86/kernel/traps.c:524
- asm_exc_general_protection+0x1e/0x30 arch/x86/include/asm/idtentry.h:532
-RIP: 0010:check_zeroed_user+0xd7/0x260 lib/usercopy.c:65
-Code: ab 00 00 00 e8 6a 61 d4 fd 48 89 ee 48 89 df e8 5f 5d d4 fd 48 39 eb 0f 87 92 00 00 00 e8 51 61 d4 fd 0f 01 cb 0f ae e8 31 ed <49> 8b 1e 31 ff 89 ee e8 9d 5d d4 fd 85 ed 75 6d e8 34 61 d4 fd 31
-RSP: 0018:ffffc9000e03f860 EFLAGS: 00050246
-RAX: 0000000000000000 RBX: 2000024020012545 RCX: ffffffff83a1de61
-RDX: ffff88801b420400 RSI: ffffffff83a1de6f RDI: 0000000000000006
-RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff8b34a68f
-R10: 2000024020012545 R11: 0000000000000000 R12: 0000000000000000
-R13: 000000000001232d R14: 2000024020000218 R15: 0000000000000000
- copy_struct_from_user include/linux/uaccess.h:310 [inline]
- io_openat2_prep fs/io_uring.c:3560 [inline]
- io_openat2_prep+0x142/0x1a0 fs/io_uring.c:3547
- io_issue_sqe+0x1932/0x61e0 fs/io_uring.c:5850
- __io_queue_sqe+0x280/0x1160 fs/io_uring.c:6150
- io_queue_sqe+0x692/0xfa0 fs/io_uring.c:6229
- io_submit_sqe fs/io_uring.c:6299 [inline]
- io_submit_sqes+0x1761/0x2400 fs/io_uring.c:6496
- io_sq_thread+0x3ac/0xe00 fs/io_uring.c:6633
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+In return, may I ask you or Alex to review this series after you
+have finished with per-memcg lru lock (to make sure that I resolve
+all the conflicts correctly at least)?
