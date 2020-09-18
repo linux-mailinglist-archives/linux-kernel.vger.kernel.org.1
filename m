@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 521A026F44F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C8B26F449
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727369AbgIRDN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 23:13:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46754 "EHLO mail.kernel.org"
+        id S1726652AbgIRCCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:02:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726594AbgIRCB6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:01:58 -0400
+        id S1726618AbgIRCCF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:02:05 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A066421582;
-        Fri, 18 Sep 2020 02:01:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 69EE8235F9;
+        Fri, 18 Sep 2020 02:02:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394518;
-        bh=KBXbAQqY+WESxYY3ikEmMr5gH9BlQ2Cc19yj1heB7fk=;
+        s=default; t=1600394525;
+        bh=S2yWY6GVlUKNXC6TiofSvJRC76+LiIQlEzBMael9vcE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c+41q03om3HMOj5GxU0Sc4CRr5udUKnIqe22LTF7jW4+aUIkYXrUknoPFyT2zu8oL
-         ooaRTtZ3TA1PJg9N/o7VhNL7SEuA4CzIqWS2N29TUESnTKpJDET4oJ0R8KigXoGIOq
-         FxNEIB25RQJUZPHo01tMGiTRdSiAcmWXWaOYSsCw=
+        b=PSulnH6vMTx/LJPCmJlPhlvYmnYCu9u/EWTO4EIksc0dYOcfYZTnVPU0PuCzM9yB9
+         mCDGRDCGkEhxi52rywR5qyMWLRpaRAWuYbkMLlz2IqhFufFZOcGmL94YOyvdEdzkbD
+         i9q94qXWU4qFuxJGaiGdhWO2FY/7CLAG1ZDH5b7g=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        Evan Quan <evan.quan@amd.com>, Sasha Levin <sashal@kernel.org>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.4 040/330] drm/amdgpu/powerplay/smu7: fix AVFS handling with custom powerplay table
-Date:   Thu, 17 Sep 2020 21:56:20 -0400
-Message-Id: <20200918020110.2063155-40-sashal@kernel.org>
+Cc:     Satendra Singh Thakur <sst2005@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.4 046/330] dmaengine: mediatek: hsdma_probe: fixed a memory leak when devm_request_irq fails
+Date:   Thu, 17 Sep 2020 21:56:26 -0400
+Message-Id: <20200918020110.2063155-46-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -42,39 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Deucher <alexander.deucher@amd.com>
+From: Satendra Singh Thakur <sst2005@gmail.com>
 
-[ Upstream commit 901245624c7812b6c95d67177bae850e783b5212 ]
+[ Upstream commit 1ff95243257fad07290dcbc5f7a6ad79d6e703e2 ]
 
-When a custom powerplay table is provided, we need to update
-the OD VDDC flag to avoid AVFS being enabled when it shouldn't be.
+When devm_request_irq fails, currently, the function
+dma_async_device_unregister gets called. This doesn't free
+the resources allocated by of_dma_controller_register.
+Therefore, we have called of_dma_controller_free for this purpose.
 
-Bug: https://bugzilla.kernel.org/show_bug.cgi?id=205393
-Reviewed-by: Evan Quan <evan.quan@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Satendra Singh Thakur <sst2005@gmail.com>
+Link: https://lore.kernel.org/r/20191109113523.6067-1-sst2005@gmail.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/dma/mediatek/mtk-hsdma.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c b/drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c
-index e6da53e9c3f46..edd6d4912edeb 100644
---- a/drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c
-+++ b/drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c
-@@ -3986,6 +3986,13 @@ static int smu7_set_power_state_tasks(struct pp_hwmgr *hwmgr, const void *input)
- 			"Failed to populate and upload SCLK MCLK DPM levels!",
- 			result = tmp_result);
+diff --git a/drivers/dma/mediatek/mtk-hsdma.c b/drivers/dma/mediatek/mtk-hsdma.c
+index 1a2028e1c29e9..4c58da7421432 100644
+--- a/drivers/dma/mediatek/mtk-hsdma.c
++++ b/drivers/dma/mediatek/mtk-hsdma.c
+@@ -997,7 +997,7 @@ static int mtk_hsdma_probe(struct platform_device *pdev)
+ 	if (err) {
+ 		dev_err(&pdev->dev,
+ 			"request_irq failed with err %d\n", err);
+-		goto err_unregister;
++		goto err_free;
+ 	}
  
-+	/*
-+	 * If a custom pp table is loaded, set DPMTABLE_OD_UPDATE_VDDC flag.
-+	 * That effectively disables AVFS feature.
-+	 */
-+	if (hwmgr->hardcode_pp_table != NULL)
-+		data->need_update_smu7_dpm_table |= DPMTABLE_OD_UPDATE_VDDC;
-+
- 	tmp_result = smu7_update_avfs(hwmgr);
- 	PP_ASSERT_WITH_CODE((0 == tmp_result),
- 			"Failed to update avfs voltages!",
+ 	platform_set_drvdata(pdev, hsdma);
+@@ -1006,6 +1006,8 @@ static int mtk_hsdma_probe(struct platform_device *pdev)
+ 
+ 	return 0;
+ 
++err_free:
++	of_dma_controller_free(pdev->dev.of_node);
+ err_unregister:
+ 	dma_async_device_unregister(dd);
+ 
 -- 
 2.25.1
 
