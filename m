@@ -2,44 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8D7A26F108
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:48:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0427026F0E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729038AbgIRCsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:48:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32938 "EHLO mail.kernel.org"
+        id S1727079AbgIRCJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:09:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727322AbgIRCJV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:09:21 -0400
+        id S1727723AbgIRCJ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:09:28 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8B2FD235F9;
-        Fri, 18 Sep 2020 02:09:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E2302311A;
+        Fri, 18 Sep 2020 02:09:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394960;
-        bh=v1ywKTL+i+a9hYdP9thlSZcryxbdVaiCgD/tpqVL3/Y=;
+        s=default; t=1600394967;
+        bh=JdGKnrKgVrS82jelt82RoU0NMX8FAQBMcd6SRp/cdtE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tZx48ntY1nd+7gkqSOEbYir5UafqSuVAN3MAFwSy+LBKMPb8ox6q4DUsRASu8dhV6
-         AEGoq3NtNGD6HSyUSXUyFCgUIX7xIQfANgXOTmDodzHDDzxaFlk9+iisCQCFS5OSxe
-         ESUI6B/GiK7tfs5qYZBGPMGFEgwjuylkFM/guoXc=
+        b=2abot1491vavOXMlNZOSCUuF2saJj/g29/Ubw5GKRf7gaRqZoTQuFpcvii/d+lAZM
+         c9Tq1MxFcXm42KG3mn2y/wFxIZCDob1707SOBWpgDbTS4KTEIsySqE8TUptU1ESvZW
+         tbVDa9l5zRp/MsP1GPiVnWnVjHj+Ad1hqcf3VzHc=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Vasily Averin <vvs@virtuozzo.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jann Horn <jannh@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Hugh Dickins <hughd@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>, linux-mm@kvack.org
-Subject: [PATCH AUTOSEL 4.19 066/206] mm/swapfile.c: swap_next should increase position index
-Date:   Thu, 17 Sep 2020 22:05:42 -0400
-Message-Id: <20200918020802.2065198-66-sashal@kernel.org>
+Cc:     Zhuang Yanying <ann.zhuangyanying@huawei.com>,
+        LinFeng <linfeng23@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, kvm@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 069/206] KVM: fix overflow of zero page refcount with ksm running
+Date:   Thu, 17 Sep 2020 22:05:45 -0400
+Message-Id: <20200918020802.2065198-69-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
 References: <20200918020802.2065198-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -47,74 +44,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Averin <vvs@virtuozzo.com>
+From: Zhuang Yanying <ann.zhuangyanying@huawei.com>
 
-[ Upstream commit 10c8d69f314d557d94d74ec492575ae6a4f1eb1c ]
+[ Upstream commit 7df003c85218b5f5b10a7f6418208f31e813f38f ]
 
-If seq_file .next fuction does not change position index, read after
-some lseek can generate unexpected output.
+We are testing Virtual Machine with KSM on v5.4-rc2 kernel,
+and found the zero_page refcount overflow.
+The cause of refcount overflow is increased in try_async_pf
+(get_user_page) without being decreased in mmu_set_spte()
+while handling ept violation.
+In kvm_release_pfn_clean(), only unreserved page will call
+put_page. However, zero page is reserved.
+So, as well as creating and destroy vm, the refcount of
+zero page will continue to increase until it overflows.
 
-In Aug 2018 NeilBrown noticed commit 1f4aace60b0e ("fs/seq_file.c:
-simplify seq_file iteration code and interface") "Some ->next functions
-do not increment *pos when they return NULL...  Note that such ->next
-functions are buggy and should be fixed.  A simple demonstration is
+step1:
+echo 10000 > /sys/kernel/pages_to_scan/pages_to_scan
+echo 1 > /sys/kernel/pages_to_scan/run
+echo 1 > /sys/kernel/pages_to_scan/use_zero_pages
 
-  dd if=/proc/swaps bs=1000 skip=1
+step2:
+just create several normal qemu kvm vms.
+And destroy it after 10s.
+Repeat this action all the time.
 
-Choose any block size larger than the size of /proc/swaps.  This will
-always show the whole last line of /proc/swaps"
+After a long period of time, all domains hang because
+of the refcount of zero page overflow.
 
-Described problem is still actual.  If you make lseek into middle of
-last output line following read will output end of last line and whole
-last line once again.
+Qemu print error log as follow:
+ â€¦
+ error: kvm run failed Bad address
+ EAX=00006cdc EBX=00000008 ECX=80202001 EDX=078bfbfd
+ ESI=ffffffff EDI=00000000 EBP=00000008 ESP=00006cc4
+ EIP=000efd75 EFL=00010002 [-------] CPL=0 II=0 A20=1 SMM=0 HLT=0
+ ES =0010 00000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+ CS =0008 00000000 ffffffff 00c09b00 DPL=0 CS32 [-RA]
+ SS =0010 00000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+ DS =0010 00000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+ FS =0010 00000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+ GS =0010 00000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+ LDT=0000 00000000 0000ffff 00008200 DPL=0 LDT
+ TR =0000 00000000 0000ffff 00008b00 DPL=0 TSS32-busy
+ GDT=     000f7070 00000037
+ IDT=     000f70ae 00000000
+ CR0=00000011 CR2=00000000 CR3=00000000 CR4=00000000
+ DR0=0000000000000000 DR1=0000000000000000 DR2=0000000000000000 DR3=0000000000000000
+ DR6=00000000ffff0ff0 DR7=0000000000000400
+ EFER=0000000000000000
+ Code=00 01 00 00 00 e9 e8 00 00 00 c7 05 4c 55 0f 00 01 00 00 00 <8b> 35 00 00 01 00 8b 3d 04 00 01 00 b8 d8 d3 00 00 c1 e0 08 0c ea a3 00 00 01 00 c7 05 04
+ â€¦
 
-  $ dd if=/proc/swaps bs=1  # usual output
-  Filename				Type		Size	Used	Priority
-  /dev/dm-0                               partition	4194812	97536	-2
-  104+0 records in
-  104+0 records out
-  104 bytes copied
+Meanwhile, a kernel warning is departed.
 
-  $ dd if=/proc/swaps bs=40 skip=1    # last line was generated twice
-  dd: /proc/swaps: cannot skip to specified offset
-  v/dm-0                               partition	4194812	97536	-2
-  /dev/dm-0                               partition	4194812	97536	-2
-  3+1 records in
-  3+1 records out
-  131 bytes copied
+ [40914.836375] WARNING: CPU: 3 PID: 82067 at ./include/linux/mm.h:987 try_get_page+0x1f/0x30
+ [40914.836412] CPU: 3 PID: 82067 Comm: CPU 0/KVM Kdump: loaded Tainted: G           OE     5.2.0-rc2 #5
+ [40914.836415] RIP: 0010:try_get_page+0x1f/0x30
+ [40914.836417] Code: 40 00 c3 0f 1f 84 00 00 00 00 00 48 8b 47 08 a8 01 75 11 8b 47 34 85 c0 7e 10 f0 ff 47 34 b8 01 00 00 00 c3 48 8d 78 ff eb e9 <0f> 0b 31 c0 c3 66 90 66 2e 0f 1f 84 00 0
+ 0 00 00 00 48 8b 47 08 a8
+ [40914.836418] RSP: 0018:ffffb4144e523988 EFLAGS: 00010286
+ [40914.836419] RAX: 0000000080000000 RBX: 0000000000000326 RCX: 0000000000000000
+ [40914.836420] RDX: 0000000000000000 RSI: 00004ffdeba10000 RDI: ffffdf07093f6440
+ [40914.836421] RBP: ffffdf07093f6440 R08: 800000424fd91225 R09: 0000000000000000
+ [40914.836421] R10: ffff9eb41bfeebb8 R11: 0000000000000000 R12: ffffdf06bbd1e8a8
+ [40914.836422] R13: 0000000000000080 R14: 800000424fd91225 R15: ffffdf07093f6440
+ [40914.836423] FS:  00007fb60ffff700(0000) GS:ffff9eb4802c0000(0000) knlGS:0000000000000000
+ [40914.836425] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ [40914.836426] CR2: 0000000000000000 CR3: 0000002f220e6002 CR4: 00000000003626e0
+ [40914.836427] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+ [40914.836427] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+ [40914.836428] Call Trace:
+ [40914.836433]  follow_page_pte+0x302/0x47b
+ [40914.836437]  __get_user_pages+0xf1/0x7d0
+ [40914.836441]  ? irq_work_queue+0x9/0x70
+ [40914.836443]  get_user_pages_unlocked+0x13f/0x1e0
+ [40914.836469]  __gfn_to_pfn_memslot+0x10e/0x400 [kvm]
+ [40914.836486]  try_async_pf+0x87/0x240 [kvm]
+ [40914.836503]  tdp_page_fault+0x139/0x270 [kvm]
+ [40914.836523]  kvm_mmu_page_fault+0x76/0x5e0 [kvm]
+ [40914.836588]  vcpu_enter_guest+0xb45/0x1570 [kvm]
+ [40914.836632]  kvm_arch_vcpu_ioctl_run+0x35d/0x580 [kvm]
+ [40914.836645]  kvm_vcpu_ioctl+0x26e/0x5d0 [kvm]
+ [40914.836650]  do_vfs_ioctl+0xa9/0x620
+ [40914.836653]  ksys_ioctl+0x60/0x90
+ [40914.836654]  __x64_sys_ioctl+0x16/0x20
+ [40914.836658]  do_syscall_64+0x5b/0x180
+ [40914.836664]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ [40914.836666] RIP: 0033:0x7fb61cb6bfc7
 
-https://bugzilla.kernel.org/show_bug.cgi?id=206283
-
-Link: http://lkml.kernel.org/r/bd8cfd7b-ac95-9b91-f9e7-e8438bd5047d@virtuozzo.com
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Jann Horn <jannh@google.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Hugh Dickins <hughd@google.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: LinFeng <linfeng23@huawei.com>
+Signed-off-by: Zhuang Yanying <ann.zhuangyanying@huawei.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/swapfile.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ virt/kvm/kvm_main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 0047dcaf93697..c3684cfa9534e 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -2738,10 +2738,10 @@ static void *swap_next(struct seq_file *swap, void *v, loff_t *pos)
- 	else
- 		type = si->type + 1;
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 2155b52b17eca..595502f8d4a27 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -169,6 +169,7 @@ bool kvm_is_reserved_pfn(kvm_pfn_t pfn)
+ 	 */
+ 	if (pfn_valid(pfn))
+ 		return PageReserved(pfn_to_page(pfn)) &&
++		       !is_zero_pfn(pfn) &&
+ 		       !kvm_is_zone_device_pfn(pfn);
  
-+	++(*pos);
- 	for (; (si = swap_type_to_swap_info(type)); type++) {
- 		if (!(si->flags & SWP_USED) || !si->swap_map)
- 			continue;
--		++*pos;
- 		return si;
- 	}
- 
+ 	return true;
 -- 
 2.25.1
 
