@@ -2,106 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B50526E9A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 01:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE8CC26E9B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 02:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726178AbgIQX4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 19:56:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726040AbgIQX4J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 19:56:09 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 677EAC06174A;
-        Thu, 17 Sep 2020 16:56:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=qLkUz/wGrNt/88Ha+h+Kz8s+E0LsPfpK9gkn8CAhG28=; b=odxn3Jaa81ConedWtWX7gdVN8z
-        VL91AOAkk0TdCauhiahDnRxGk10Q+ek3WaMdS51moylz1ydynS9FGNOiAFx5xumowvw3rheys09kP
-        /AvtTIVO/8GJNIzrLYDCwCPKeGXB++Hk20GoU83/DviUTWgEUGmduDdKg6nleyT/a/vTR0sBd562E
-        HRyLQpae0LmYyq9Lng2mAU8K5ICzmjmulSLVirIXDazw5jDiQkOgDrMD/T44JJPhTRTSDiGfWy7Cg
-        AXS06m3/e5wniZbCH9jA29z8FRduT9p7L7l+8zueolDJyNVNGJSAmWqW++3FPitks9hKX+97KAbpm
-        TxSO3ogg==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kJ3l1-0001jZ-EL; Thu, 17 Sep 2020 23:56:07 +0000
-Subject: Re: [PATCH v4 0/5] Add shared workqueue support for idxd driver
-To:     Dave Jiang <dave.jiang@intel.com>, vkoul@kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dan.j.williams@intel.com, tony.luck@intel.com, jing.lin@intel.com,
-        ashok.raj@intel.com, sanjay.k.kumar@intel.com,
-        fenghua.yu@intel.com, kevin.tian@intel.com
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <160037680630.3777.16356270178889649944.stgit@djiang5-desk3.ch.intel.com>
- <e178a1ae-0ce2-70bc-54b9-9e2fae837f06@infradead.org>
- <84e1ec28-4a89-963a-49f6-3bbf1d276603@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <3b4d8c50-8a82-9110-bc6c-ffb6b50e6c0c@infradead.org>
-Date:   Thu, 17 Sep 2020 16:56:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726149AbgIRAAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 20:00:25 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:52861 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726009AbgIRAAZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 20:00:25 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bsv9L51KCz9sRf;
+        Fri, 18 Sep 2020 10:00:22 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1600387222;
+        bh=av0Qkoc0K3cVyYRKgm8VeC/8t+na5neqYt0ktSZe2Mw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=FVIk/YpYJNDnxhiaG1FK9+2PmUT2OI+2z/LjyoTmISErENIxMhbDcs2769iUTEW1R
+         Y4GOA7qBbLtXBtxh5jScCN/Wc043tBwgcufbcpIxYdkNm6J4nKojM/3eAVgMUjVC7s
+         DyAYwfuNQUjS7Yl+SrVsaWwpefPv4k6iElZWP8uiI0kc9uHdb4kUEcTjueIh1eel26
+         JQQMz2RJuv+fwhPUiUhZ7f/NWhQ2pIWjqyIxdhCcwlatxyFEgyNhCnV/syMCSplHdD
+         XDp1F7+sjSIjjCIBo9a9WO527LfdMbON8qsvHe7ma/DaOqOmsxyCcn3umRWIGH8dpQ
+         V/AbmdCos+B+Q==
+Date:   Fri, 18 Sep 2020 10:00:19 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the rcu tree
+Message-ID: <20200918100019.6bf0053d@canb.auug.org.au>
+In-Reply-To: <20200917220145.GQ29330@paulmck-ThinkPad-P72>
+References: <20200917151909.01fa6684@canb.auug.org.au>
+        <20200917220145.GQ29330@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-In-Reply-To: <84e1ec28-4a89-963a-49f6-3bbf1d276603@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/DD0guL027BVH7Hlb/Q8mJCj";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/17/20 4:51 PM, Dave Jiang wrote:
-> 
-> 
-> On 9/17/2020 4:43 PM, Randy Dunlap wrote:
->> Hi,
->>
->> On 9/17/20 2:15 PM, Dave Jiang wrote:
->>>
->>> ---
->>>
->>> Dave Jiang (5):
->>>        x86/asm: move the raw asm in iosubmit_cmds512() to special_insns.h
->>>        x86/asm: add enqcmds() to support ENQCMDS instruction
->>>        dmaengine: idxd: add shared workqueue support
->>>        dmaengine: idxd: clean up descriptors with fault error
->>>        dmaengine: idxd: add ABI documentation for shared wq
->>>
->>
->> I don't see patch 3/5 in my inbox nor at https://lore.kernel.org/dmaengine/
->>
->> Did the email monster eat it?
-> 
-> Grrrrrr looks like Intel email server ate it. Everyone on cc list got it. But does not look like it made it to any of the mailing lists. I'll resend 3/5.
+--Sig_/DD0guL027BVH7Hlb/Q8mJCj
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Got it. Thanks.
+Hi Paul,
 
->>
->> thanks.
->>
->>>
->>>   Documentation/ABI/stable/sysfs-driver-dma-idxd |   14 ++
->>>   arch/x86/include/asm/io.h                      |   46 +++++---
->>>   arch/x86/include/asm/special_insns.h           |   17 +++
->>>   drivers/dma/Kconfig                            |   10 ++
->>>   drivers/dma/idxd/cdev.c                        |   49 ++++++++
->>>   drivers/dma/idxd/device.c                      |   91 ++++++++++++++-
->>>   drivers/dma/idxd/dma.c                         |    9 --
->>>   drivers/dma/idxd/idxd.h                        |   33 +++++-
->>>   drivers/dma/idxd/init.c                        |   92 ++++++++++++---
->>>   drivers/dma/idxd/irq.c                         |  143 ++++++++++++++++++++++--
->>>   drivers/dma/idxd/registers.h                   |   14 ++
->>>   drivers/dma/idxd/submit.c                      |   33 +++++-
->>>   drivers/dma/idxd/sysfs.c                       |  127 +++++++++++++++++++++
->>>   13 files changed, 608 insertions(+), 70 deletions(-)
->>>
->>> -- 
->>>
->>
+On Thu, 17 Sep 2020 15:01:45 -0700 "Paul E. McKenney" <paulmck@kernel.org> =
+wrote:
+>
+> On Thu, Sep 17, 2020 at 03:19:09PM +1000, Stephen Rothwell wrote:
+> > Hi all,
+> >=20
+> > After merging the rcu tree, today's linux-next build (powerpc
+> > ppc64_defconfig) failed like this:
+> >=20
+> > In file included from kernel/rcu/update.c:578:
+> > kernel/rcu/tasks.h:601:20: error: static declaration of 'show_rcu_tasks=
+_classic_gp_kthread' follows non-static declaration
+> >   601 | static inline void show_rcu_tasks_classic_gp_kthread(void) { }
+> >       |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > In file included from kernel/rcu/update.c:49:
+> > kernel/rcu/rcu.h:537:6: note: previous declaration of 'show_rcu_tasks_c=
+lassic_gp_kthread' was here
+> >   537 | void show_rcu_tasks_classic_gp_kthread(void);
+> >       |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >=20
+> > Caused by commit
+> >=20
+> >   675d3ca52626 ("rcutorture: Make grace-period kthread report match RCU=
+ flavor being tested")
+> >=20
+> > I have used the rcu tree from next-20200916 for today. =20
+>=20
+> Please accept my apologies for the hassle!  I believe that I finally
+> have this straightened out.
+>=20
+> Please ignore if you already pulled -rcu for today, as I previously
+> set rcu/next back to a commit preceding the offending one.
 
+No worries, I have the new one.
 
--- 
-~Randy
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/DD0guL027BVH7Hlb/Q8mJCj
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9j+JMACgkQAVBC80lX
+0Gyzmgf/WMV4EFR23rztXLLazfHOz4zjdvzqRJUoHlfvpd/+H44UHEoBePPeabF9
+hDs1JYEMGLRaDJB7qa3kTk+wx8Xf6/8aW6WrkdHNZ30JCw4HNJiJSSUT5zRUdxQ8
+RrJrxk5rYFyA/lwJN2d5vyatMTtvyO+X6kVGrkp5xgeVsnGPfWVEtWbhCs6441YO
+3Ipx1HAUCCUHrGIzpJao1D/H3fg2akT59cyn0sX808Y5cMJp0/KjhtDSR5c0hUNU
+TWTUqgDa7e9ycC8yB4pLmgt8ZNTpCpys+dUshPeIW0VRa4BhYpXwkpaZtyurhk5P
++U74j4yRPsadrp1lkCgnoHpVaZImYA==
+=JsXm
+-----END PGP SIGNATURE-----
+
+--Sig_/DD0guL027BVH7Hlb/Q8mJCj--
