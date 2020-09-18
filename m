@@ -2,113 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 842F12707C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 23:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0C42707C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 23:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726381AbgIRVGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 17:06:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726118AbgIRVGi (ORCPT
+        id S1726333AbgIRVGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 17:06:25 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:1768 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726118AbgIRVGY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 17:06:38 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8AEDC0613CE;
-        Fri, 18 Sep 2020 14:06:38 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id y74so8460856iof.12;
-        Fri, 18 Sep 2020 14:06:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MvHhXjI9PINmG+l6DCDjKQZbsTRKGGMkTBP5zN5aSFQ=;
-        b=IWLwt/JbdMSRpT6Wv3WAyCBN9qFCREgWtJcF0R1RIzLVY0SISm4RFwHsdcXIdL5d4E
-         Yy7/2s+LDlk/87c0Fp+tQVi0zmDpn6GNtT8zIFczwsT7f4zqRnFy453Wbrx2aO+2VbVj
-         vdaq2zhFJLmSjCLU0mocGAmtZoaaUK6RKO8Qz0A7yeJUTDJbRPhXHIh5ZOcHlXUvXFk3
-         LUOd/Bi9DKb0KWJIFqeinsKHmFCXFee6BbXLTqIXmNkioPBdjnv37wleZo/wrgkqn1NX
-         72vkgJhAipRe1DB64E2Yesd7jEdncu2/Nm2GU5jxRqcToMVoB7Ia5jtjXQAZwflWHYOc
-         Ckjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MvHhXjI9PINmG+l6DCDjKQZbsTRKGGMkTBP5zN5aSFQ=;
-        b=A/WFCEewpv/hVP+yj013d7fyobtZY8fzFKEx4Junlhi7DrYSak7z3b0OLVahYulrHB
-         8NFC6b6mNd7Lg5G6mwHrfT+pLbyzV96qZKN//EwbDgSCAQjNhORLMHUNyS2FKZWIyxJk
-         Fwmrq0DlLMkxwM4DgFZu9OX4Xph7r12OwbM5AZoOtEqeGG3XGY97Wjc5gjc+3+W0d22c
-         MGUl/FltLIoTeJuPOhJrMiqcgdDDTopfSSKUMCyffb5xylQpPxRIkFHanGHhLRqjgDYn
-         K+UNQWnsr1jsKXu+vqb9GW7A8a27SKRn9slONAWBTY9KActvTnBsEwoIXvZer2dGEzu3
-         5Xrw==
-X-Gm-Message-State: AOAM531ceTPCGYCq7GYxVopo4hkPHCdZ4yuRW3CTkWOJHw1eUkvzV73r
-        W/vrN/MLASot8dzmTKH08JwEr2HMjIHIuIuMrXM=
-X-Google-Smtp-Source: ABdhPJz3m6rfOxVGTE582qPYyesCg/UTfBm54/gjoz20D1+b0ua1bBFx46wx6IdHom/D2OhPgwwR2gJWI9CZGMjZWXc=
-X-Received: by 2002:a5e:9e4c:: with SMTP id j12mr29230986ioq.37.1600463197971;
- Fri, 18 Sep 2020 14:06:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200918192312.25978-1-yu-cheng.yu@intel.com> <20200918192312.25978-9-yu-cheng.yu@intel.com>
- <f02b511d-1d48-6dea-d2e6-84d58e21e6cd@intel.com> <20200918210026.GC4304@duo.ucw.cz>
-In-Reply-To: <20200918210026.GC4304@duo.ucw.cz>
-From:   "H.J. Lu" <hjl.tools@gmail.com>
-Date:   Fri, 18 Sep 2020 14:06:02 -0700
-Message-ID: <CAMe9rOrHCE51dKSz3fPXG-ORNim_Ok7rtwQxnudH9et4ecHBRA@mail.gmail.com>
-Subject: Re: [PATCH v12 8/8] x86: Disallow vsyscall emulation when CET is enabled
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Fri, 18 Sep 2020 17:06:24 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f6521430001>; Fri, 18 Sep 2020 14:06:12 -0700
+Received: from [10.2.52.182] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 18 Sep
+ 2020 21:06:23 +0000
+Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
+To:     Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
         Linux-MM <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Maya B . Gokhale" <gokhale2@llnl.gov>,
+        "Yang Shi" <yang.shi@linux.alibaba.com>,
+        Marty Mcfadden <mcfadden8@llnl.gov>,
+        "Kirill Shutemov" <kirill@shutemov.name>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Christoph Hellwig" <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20200915232238.GO1221970@ziepe.ca>
+ <e6c352f8-7ee9-0702-10a4-122d2c4422fc@nvidia.com>
+ <20200916174804.GC8409@ziepe.ca> <20200916184619.GB40154@xz-x1>
+ <20200917112538.GD8409@ziepe.ca>
+ <CAHk-=wjtfjB3TqTFRzVmOrB9Mii6Yzc-=wKq0fu4ruDE6AsJgg@mail.gmail.com>
+ <20200917193824.GL8409@ziepe.ca>
+ <CAHk-=wiY_g+SSjncZi8sO=LrxXmMox0NO7K34-Fs653XVXheGg@mail.gmail.com>
+ <20200918164032.GA5962@xz-x1> <20200918173240.GY8409@ziepe.ca>
+ <20200918204048.GC5962@xz-x1>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <0af8c77e-ff60-cada-7d22-c7cfcf859b19@nvidia.com>
+Date:   Fri, 18 Sep 2020 14:06:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <20200918204048.GC5962@xz-x1>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600463172; bh=EeYfA5vQuzdloR5edxzjymDs6wbsfA1RfZq/g/2zM0E=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=iDmZKip4T8DFhdtzdKAJCCQt7lVpKLnha4ua/0z62dcmNcgryyBs5ZCUp96AOOHzx
+         dIb9rBEiZD6pinrehYKdbKlxbRVJ8nfG9rD2pCy4CxxTB5CHLarS/Q1Q/qQh1NSCIZ
+         j9WYBC/3vg2HKlUvcbnsFJSRWf8G5vjQvxPZLEInuHeg3RdQbNwrLdOshUGn/ajgai
+         Qr9b0lM0aTl/wRUr5jAjs0pMbNOwn6aKpZz2SdnuecHINaHX1+GEg4elEXad5moCBb
+         EJszH0hOYcn3oHpF9PBshmFo07VoEAShacH6jHL2N4erLc9BhfozBAdsY100ACrdRz
+         fzSHOaKH5fc2w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 2:00 PM Pavel Machek <pavel@ucw.cz> wrote:
->
-> On Fri 2020-09-18 12:32:57, Dave Hansen wrote:
-> > On 9/18/20 12:23 PM, Yu-cheng Yu wrote:
-> > > Emulation of the legacy vsyscall page is required by some programs
-> > > built before 2013.  Newer programs after 2013 don't use it.
-> > > Disable vsyscall emulation when Control-flow Enforcement (CET) is
-> > > enabled to enhance security.
-> >
-> > How does this "enhance security"?
-> >
-> > What is the connection between vsyscall emulation and CET?
->
-> Boom.
->
-> We don't break compatibility by default, and you should not tell
-> people to enable CET by default if you plan to do this.
->
+On 9/18/20 1:40 PM, Peter Xu wrote:
+> On Fri, Sep 18, 2020 at 02:32:40PM -0300, Jason Gunthorpe wrote:
+>> On Fri, Sep 18, 2020 at 12:40:32PM -0400, Peter Xu wrote:
+>>
+>>> Firstly in the draft patch mm->has_pinned is introduced and it's written to 1
+>>> as long as FOLL_GUP is called once.  It's never reset after set.
+>>
+>> Worth thinking about also adding FOLL_LONGTERM here, at last as long
+>> as it is not a counter. That further limits the impact.
+> 
+> But theoritically we should also trigger COW here for pages even with PIN &&
+> !LONGTERM, am I right?  Assuming that FOLL_PIN is already a corner case.
+> 
 
-Nothing will be broken.   CET enabled applications don't use/need
-vsyscall emulation.
+This note, plus Linus' comment about "I'm a normal process, I've never
+done any special rdma page pinning", has me a little worried. Because
+page_maybe_dma_pinned() is counting both short- and long-term pins,
+actually. And that includes O_DIRECT callers.
 
+O_DIRECT pins are short-term, and RDMA systems are long-term (and should
+be setting FOLL_LONGTERM). But there's no way right now to discern
+between them, once the initial pin_user_pages*() call is complete. All
+we can do today is to count the number of FOLL_PIN calls, not the number
+of FOLL_PIN | FOLL_LONGTERM calls.
+
+The reason it's that way, is that writeback and such can experience
+problems regardless of the duration of the pin. There are ideas about
+how to deal with the pins, and the filesystem (layout leases...) but
+still disagreement, which is why there's basically no
+page_maybe_dma_pinned() callers yet.
+
+Although I think we're getting closer to using it. There was a recent
+attempt at using this stuff, from Chris Wilson. [1]
+
+
+[1] https://lore.kernel.org/intel-gfx/20200624191417.16735-1-chris%40chris-wilson.co.uk/
+
+
+thanks,
 -- 
-H.J.
+John Hubbard
+NVIDIA
