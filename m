@@ -2,39 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57A0426EAF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D6CA26EAFD
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726696AbgIRCCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:02:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47000 "EHLO mail.kernel.org"
+        id S1726718AbgIRCCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:02:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726611AbgIRCCF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:02:05 -0400
+        id S1726648AbgIRCCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:02:08 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2BBAA208DB;
-        Fri, 18 Sep 2020 02:02:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ABC0721582;
+        Fri, 18 Sep 2020 02:02:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394524;
-        bh=ANl3JrAbLgRoeObtJtIWUNJ2+H7AmOOwkQArMASHwBc=;
+        s=default; t=1600394527;
+        bh=jwTC5H8TW23aEKAnWNTc27pi/TPAGsWxcsEqs/NdVLg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JqGxW7uIoAiPlEZSaQa8sy2VZGjgnNNX/p2PmRFEjFS5sUOiidiyh/ZhcG1xiomDl
-         LVHb/6IqxO5g93rZNpXC2ZV6esekGJHuhjAhf82qglbDUhIokDyOoKXLttkmWemUQQ
-         an25T6LMfn3tkT+UXzLJ++1Vc0liyRYSxVyR/nfo=
+        b=EVYnj3t0BMrSwaxl/6If/azjpTCUio60AGYyOqXedI9p5dRkHd782B9e4R0RYwOTn
+         LPalP380wUGF/UtYYmxKlYI9jqMlBeg9vp+K48Ltvj+t1C4s+9mFkkgtagMMiddqQl
+         CrUo5YkxSkbI6JIAFELfLdiBQfaxgvy6rRRMlUvs=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Guoju Fang <fangguoju@gmail.com>, Coly Li <colyli@suse.de>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
-        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 045/330] bcache: fix a lost wake-up problem caused by mca_cannibalize_lock
-Date:   Thu, 17 Sep 2020 21:56:25 -0400
-Message-Id: <20200918020110.2063155-45-sashal@kernel.org>
+Cc:     Lianbo Jiang <lijiang@redhat.com>, Borislav Petkov <bp@suse.de>,
+        bhe@redhat.com, Dave Young <dyoung@redhat.com>,
+        d.hatayama@fujitsu.com, dhowells@redhat.com, ebiederm@xmission.com,
+        horms@verge.net.au, "H. Peter Anvin" <hpa@zytor.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        =?UTF-8?q?J=C3=BCrgen=20Gross?= <jgross@suse.com>,
+        kexec@lists.infradead.org, Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>, vgoyal@redhat.com,
+        x86-ml <x86@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 047/330] x86/kdump: Always reserve the low 1M when the crashkernel option is specified
+Date:   Thu, 17 Sep 2020 21:56:27 -0400
+Message-Id: <20200918020110.2063155-47-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -42,95 +50,136 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guoju Fang <fangguoju@gmail.com>
+From: Lianbo Jiang <lijiang@redhat.com>
 
-[ Upstream commit 34cf78bf34d48dddddfeeadb44f9841d7864997a ]
+[ Upstream commit 6f599d84231fd27e42f4ca2a786a6641e8cddf00 ]
 
-This patch fix a lost wake-up problem caused by the race between
-mca_cannibalize_lock and bch_cannibalize_unlock.
+On x86, purgatory() copies the first 640K of memory to a backup region
+because the kernel needs those first 640K for the real mode trampoline
+during boot, among others.
 
-Consider two processes, A and B. Process A is executing
-mca_cannibalize_lock, while process B takes c->btree_cache_alloc_lock
-and is executing bch_cannibalize_unlock. The problem happens that after
-process A executes cmpxchg and will execute prepare_to_wait. In this
-timeslice process B executes wake_up, but after that process A executes
-prepare_to_wait and set the state to TASK_INTERRUPTIBLE. Then process A
-goes to sleep but no one will wake up it. This problem may cause bcache
-device to dead.
+However, when SME is enabled, the kernel cannot properly copy the old
+memory to the backup area but reads only its encrypted contents. The
+result is that the crash tool gets invalid pointers when parsing vmcore:
 
-Signed-off-by: Guoju Fang <fangguoju@gmail.com>
-Signed-off-by: Coly Li <colyli@suse.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+  crash> kmem -s|grep -i invalid
+  kmem: dma-kmalloc-512: slab:ffffd77680001c00 invalid freepointer:a6086ac099f0c5a4
+  kmem: dma-kmalloc-512: slab:ffffd77680001c00 invalid freepointer:a6086ac099f0c5a4
+  crash>
+
+So reserve the remaining low 1M memory when the crashkernel option is
+specified (after reserving real mode memory) so that allocated memory
+does not fall into the low 1M area and thus the copying of the contents
+of the first 640k to a backup region in purgatory() can be avoided
+altogether.
+
+This way, it does not need to be included in crash dumps or used for
+anything except the trampolines that must live in the low 1M.
+
+ [ bp: Heavily rewrite commit message, flip check logic in
+   crash_reserve_low_1M().]
+
+Signed-off-by: Lianbo Jiang <lijiang@redhat.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: bhe@redhat.com
+Cc: Dave Young <dyoung@redhat.com>
+Cc: d.hatayama@fujitsu.com
+Cc: dhowells@redhat.com
+Cc: ebiederm@xmission.com
+Cc: horms@verge.net.au
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Jürgen Gross <jgross@suse.com>
+Cc: kexec@lists.infradead.org
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: vgoyal@redhat.com
+Cc: x86-ml <x86@kernel.org>
+Link: https://lkml.kernel.org/r/20191108090027.11082-2-lijiang@redhat.com
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=204793
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/bcache/bcache.h |  1 +
- drivers/md/bcache/btree.c  | 12 ++++++++----
- drivers/md/bcache/super.c  |  1 +
- 3 files changed, 10 insertions(+), 4 deletions(-)
+ arch/x86/include/asm/crash.h |  6 ++++++
+ arch/x86/kernel/crash.c      | 15 +++++++++++++++
+ arch/x86/realmode/init.c     |  2 ++
+ 3 files changed, 23 insertions(+)
 
-diff --git a/drivers/md/bcache/bcache.h b/drivers/md/bcache/bcache.h
-index 217c838a1b405..859567ad3db4e 100644
---- a/drivers/md/bcache/bcache.h
-+++ b/drivers/md/bcache/bcache.h
-@@ -585,6 +585,7 @@ struct cache_set {
- 	 */
- 	wait_queue_head_t	btree_cache_wait;
- 	struct task_struct	*btree_cache_alloc_lock;
-+	spinlock_t		btree_cannibalize_lock;
+diff --git a/arch/x86/include/asm/crash.h b/arch/x86/include/asm/crash.h
+index ef5638f641f2b..88eadd08ad708 100644
+--- a/arch/x86/include/asm/crash.h
++++ b/arch/x86/include/asm/crash.h
+@@ -10,4 +10,10 @@ int crash_setup_memmap_entries(struct kimage *image,
+ 		struct boot_params *params);
+ void crash_smp_send_stop(void);
  
- 	/*
- 	 * When we free a btree node, we increment the gen of the bucket the
-diff --git a/drivers/md/bcache/btree.c b/drivers/md/bcache/btree.c
-index 46556bde032e2..8d06105fc9ff5 100644
---- a/drivers/md/bcache/btree.c
-+++ b/drivers/md/bcache/btree.c
-@@ -886,15 +886,17 @@ out:
++#ifdef CONFIG_KEXEC_CORE
++void __init crash_reserve_low_1M(void);
++#else
++static inline void __init crash_reserve_low_1M(void) { }
++#endif
++
+ #endif /* _ASM_X86_CRASH_H */
+diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
+index eb651fbde92ac..ff25a2ea271cf 100644
+--- a/arch/x86/kernel/crash.c
++++ b/arch/x86/kernel/crash.c
+@@ -24,6 +24,7 @@
+ #include <linux/export.h>
+ #include <linux/slab.h>
+ #include <linux/vmalloc.h>
++#include <linux/memblock.h>
  
- static int mca_cannibalize_lock(struct cache_set *c, struct btree_op *op)
- {
--	struct task_struct *old;
--
--	old = cmpxchg(&c->btree_cache_alloc_lock, NULL, current);
--	if (old && old != current) {
-+	spin_lock(&c->btree_cannibalize_lock);
-+	if (likely(c->btree_cache_alloc_lock == NULL)) {
-+		c->btree_cache_alloc_lock = current;
-+	} else if (c->btree_cache_alloc_lock != current) {
- 		if (op)
- 			prepare_to_wait(&c->btree_cache_wait, &op->wait,
- 					TASK_UNINTERRUPTIBLE);
-+		spin_unlock(&c->btree_cannibalize_lock);
- 		return -EINTR;
- 	}
-+	spin_unlock(&c->btree_cannibalize_lock);
+ #include <asm/processor.h>
+ #include <asm/hardirq.h>
+@@ -39,6 +40,7 @@
+ #include <asm/virtext.h>
+ #include <asm/intel_pt.h>
+ #include <asm/crash.h>
++#include <asm/cmdline.h>
  
- 	return 0;
- }
-@@ -929,10 +931,12 @@ static struct btree *mca_cannibalize(struct cache_set *c, struct btree_op *op,
-  */
- static void bch_cannibalize_unlock(struct cache_set *c)
- {
-+	spin_lock(&c->btree_cannibalize_lock);
- 	if (c->btree_cache_alloc_lock == current) {
- 		c->btree_cache_alloc_lock = NULL;
- 		wake_up(&c->btree_cache_wait);
- 	}
-+	spin_unlock(&c->btree_cannibalize_lock);
+ /* Used while preparing memory map entries for second kernel */
+ struct crash_memmap_data {
+@@ -68,6 +70,19 @@ static inline void cpu_crash_vmclear_loaded_vmcss(void)
+ 	rcu_read_unlock();
  }
  
- static struct btree *mca_alloc(struct cache_set *c, struct btree_op *op,
-diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-index 2cbfcd99b7ee7..63f5ce18311bb 100644
---- a/drivers/md/bcache/super.c
-+++ b/drivers/md/bcache/super.c
-@@ -1798,6 +1798,7 @@ struct cache_set *bch_cache_set_alloc(struct cache_sb *sb)
- 	sema_init(&c->sb_write_mutex, 1);
- 	mutex_init(&c->bucket_lock);
- 	init_waitqueue_head(&c->btree_cache_wait);
-+	spin_lock_init(&c->btree_cannibalize_lock);
- 	init_waitqueue_head(&c->bucket_wait);
- 	init_waitqueue_head(&c->gc_wait);
- 	sema_init(&c->uuid_write_mutex, 1);
++/*
++ * When the crashkernel option is specified, only use the low
++ * 1M for the real mode trampoline.
++ */
++void __init crash_reserve_low_1M(void)
++{
++	if (cmdline_find_option(boot_command_line, "crashkernel", NULL, 0) < 0)
++		return;
++
++	memblock_reserve(0, 1<<20);
++	pr_info("Reserving the low 1M of memory for crashkernel\n");
++}
++
+ #if defined(CONFIG_SMP) && defined(CONFIG_X86_LOCAL_APIC)
+ 
+ static void kdump_nmi_callback(int cpu, struct pt_regs *regs)
+diff --git a/arch/x86/realmode/init.c b/arch/x86/realmode/init.c
+index 7dce39c8c034a..262f83cad3551 100644
+--- a/arch/x86/realmode/init.c
++++ b/arch/x86/realmode/init.c
+@@ -8,6 +8,7 @@
+ #include <asm/pgtable.h>
+ #include <asm/realmode.h>
+ #include <asm/tlbflush.h>
++#include <asm/crash.h>
+ 
+ struct real_mode_header *real_mode_header;
+ u32 *trampoline_cr4_features;
+@@ -34,6 +35,7 @@ void __init reserve_real_mode(void)
+ 
+ 	memblock_reserve(mem, size);
+ 	set_real_mode_mem(mem);
++	crash_reserve_low_1M();
+ }
+ 
+ static void __init setup_real_mode(void)
 -- 
 2.25.1
 
