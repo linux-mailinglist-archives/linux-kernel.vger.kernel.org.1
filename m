@@ -2,91 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49BDF2700C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 17:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA332700C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 17:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726236AbgIRPSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 11:18:38 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:25058 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726044AbgIRPSi (ORCPT
+        id S1726273AbgIRPTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 11:19:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725955AbgIRPTr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 11:18:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600442316;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8ETZHh7FXeQbyxpDjZYV13SKWV6kJy3ncbq86WYzI9Q=;
-        b=eFpw96ZbjXDuJsMPL1zbb02WbvhCVdZ4wv+/FLDIEJj8fjnf2daUto2k6SiFQ1ZzWbWWuN
-        h6msWZwjdfGALjDb2j0vIBOt0AxOJTQwe1+AUgB1dHeHaIoJx7abCjRDTXeapZOvdhH+pJ
-        Nna7HAEggSawbacvqmcgEm8pXRC+mn8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-590-VgCgk5PWNmKv1s7PrTgqKA-1; Fri, 18 Sep 2020 11:18:34 -0400
-X-MC-Unique: VgCgk5PWNmKv1s7PrTgqKA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1E5ED64098;
-        Fri, 18 Sep 2020 15:18:33 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-112-232.rdu2.redhat.com [10.10.112.232])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 428925C225;
-        Fri, 18 Sep 2020 15:18:32 +0000 (UTC)
-Subject: Re: [PATCH v2] sched, mm: Optimize current_gfp_context()
-To:     "Xu, Yanfei" <yanfei.xu@windriver.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Michel Lespinasse <walken@google.com>,
+        Fri, 18 Sep 2020 11:19:47 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D187CC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 08:19:46 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id l9so5960040wme.3
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 08:19:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=LN66O5JSkYCxOmUnEcN+noTfKpC7LQl7RqBfE76tpKc=;
+        b=njwtxF5oKOoIDCTtN7M94k1G+G0/E8GCFJd727PAZrNOP/hvMByvmLc043VdjseTxR
+         WCNJRDar5juEL+QEPBtOF2DJQFYVX9B6QCwDwrnHVmzunwN68Q3ELK3pW+ijCPE3U0/x
+         hmlVC2MSoNOzGlY1hkRqyj9y94hK0Whn6SUd4oy9FgQUeciQxPaUwGXmN9fUWhk5wGPm
+         UJM2yEKaGKfWBQY830rCfu7i128RlgfcYZ59wQShEBO7XCX1APnK3mlhhf5aGO171hUO
+         Y3oAlJKm/T/hNhIe/XOQFwy1nCNayYPk6XYUVt2pRbPAOKY61Gj5mwDwD9iZwXevqhgF
+         JM8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=LN66O5JSkYCxOmUnEcN+noTfKpC7LQl7RqBfE76tpKc=;
+        b=r4OE/32zB3MWjnCuvYEQDPs8sLJy8BqramDfovmQTcHRJzT5RbbyNi1z9mA/zhwhrU
+         VqP1zFsDctlrnFw3jQsco+YL64wPRt54iH1qjSfft+CLrJ5dq6czW8tvMvt3duC+2jxt
+         k6Snux0UKC1oQHIDNq19z3sG7Pe/td0sOkgiE3YzHYwFc8HMoGxgaugpP0WS57tnx6MP
+         Pz45vFqZErd2flhFYqTtDa5QKidhlj8tPMIk4FA3HzylbW+caI95vCj7XAZy2hcjsJOU
+         6GvwW2YfWGEpWKgVHWRWRIdTJ2BJTbFoCla/Ox1vg8aMLrtAv/WzMtDTucm8kWJlCl5T
+         msNw==
+X-Gm-Message-State: AOAM532yglxK4h0rhNNJYiG90tG6J+G6lgYnDoZPl+8OSQsdvrL/4luL
+        uOGdpuKuwfpNJ35HBWBZ3HdPZQ==
+X-Google-Smtp-Source: ABdhPJyQq37a0beUlQ6BSXGA/W7iHrPH98l0i+hBHKR5luytBVxYilwdiT6p59tx580L9FUNOh+i4A==
+X-Received: by 2002:a7b:c085:: with SMTP id r5mr17054390wmh.52.1600442385292;
+        Fri, 18 Sep 2020 08:19:45 -0700 (PDT)
+Received: from elver.google.com ([100.105.32.75])
+        by smtp.gmail.com with ESMTPSA id v128sm5556561wme.2.2020.09.18.08.19.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 08:19:44 -0700 (PDT)
+Date:   Fri, 18 Sep 2020 17:19:39 +0200
+From:   Marco Elver <elver@google.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        kasan-dev@googlegroups.com,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-References: <20200618212936.9776-1-longman@redhat.com>
- <20200811152921.1d43e34ad7aff928c6c1267f@linux-foundation.org>
- <a5b29e4d-cc9e-a422-e7b4-e68e0dee37c7@windriver.com>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <c8f3c589-c4c4-f132-8759-24a44cfa73f4@redhat.com>
-Date:   Fri, 18 Sep 2020 11:18:31 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+Subject: Re: [PATCH v2 33/37] kasan, arm64: implement HW_TAGS runtime
+Message-ID: <20200918151939.GA2465533@elver.google.com>
+References: <cover.1600204505.git.andreyknvl@google.com>
+ <74133d1a57c47cb8fec791dd5d1e6417b0579fc3.1600204505.git.andreyknvl@google.com>
 MIME-Version: 1.0
-In-Reply-To: <a5b29e4d-cc9e-a422-e7b4-e68e0dee37c7@windriver.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <74133d1a57c47cb8fec791dd5d1e6417b0579fc3.1600204505.git.andreyknvl@google.com>
+User-Agent: Mutt/1.14.4 (2020-06-18)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/18/20 2:44 AM, Xu, Yanfei wrote:
-> Hi Waiman,
->
-> On 8/12/20 6:29 AM, Andrew Morton wrote:
->> On Thu, 18 Jun 2020 17:29:36 -0400 Waiman Long <longman@redhat.com> 
->> wrote:
->>
->>> The current_gfp_context() converts a number of PF_MEMALLOC_* 
->>> per-process
->>> flags into the corresponding GFP_* flags for memory allocation. In
->>> that function, current->flags is accessed 3 times. That may lead to
->>> duplicated access of the same memory location.
->>>
-> I have a puzzle about this comment, what's the meaning about "That may
-> lead to duplicated access of the same memory location". After using
-> variable 'pflags', will it not duplicated access the same memory
-> location?
-> Looking forward to your reply :)
+On Tue, Sep 15, 2020 at 11:16PM +0200, Andrey Konovalov wrote:
 
-That condition usually won't happen on a non-debug kernel. However, if 
-certain debugging capability is turned on, access to current will be 
-compiled into a bunch of checks and memory accesses. So if current is 
-used multiple times, the same set of codes will be duplicated the same 
-number of times slowing down the operation and increasing code size. By 
-accessing current once, we avoid this overhead in a debug kernel.
+> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+> index 875bbcedd994..613c9d38eee5 100644
+> --- a/include/linux/kasan.h
+> +++ b/include/linux/kasan.h
+> @@ -184,7 +184,7 @@ static inline void kasan_record_aux_stack(void *ptr) {}
+>  
+>  #endif /* CONFIG_KASAN_GENERIC */
+>  
+> -#ifdef CONFIG_KASAN_SW_TAGS
+> +#if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
+>  
+>  void kasan_init_tags(void);
+>  
+> @@ -193,7 +193,7 @@ void *kasan_reset_tag(const void *addr);
+>  bool kasan_report(unsigned long addr, size_t size,
+>  		bool is_write, unsigned long ip);
+>  
+> -#else /* CONFIG_KASAN_SW_TAGS */
+> +#else /* CONFIG_KASAN_SW_TAGS || CONFIG_KASAN_HW_TAGS */
+>  
+>  static inline void kasan_init_tags(void) { }
+>  
+> @@ -202,7 +202,7 @@ static inline void *kasan_reset_tag(const void *addr)
+>  	return (void *)addr;
+>  }
+>  
+> -#endif /* CONFIG_KASAN_SW_TAGS */
+> +#endif /* CONFIG_KASAN_SW_TAGS || CONFIG_KASAN_HW_TAGS*/
+>  
+>  #ifdef CONFIG_KASAN_VMALLOC
 
-Cheers,
-Longman
+It's not visible by looking at this diff, but there is some
+#ifdef-redundancy that I do not understand where it came from.
 
+This is what I have to fix it:
+
+diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+index 613c9d38eee5..80a0e5b11f2b 100644
+--- a/include/linux/kasan.h
++++ b/include/linux/kasan.h
+@@ -40,6 +40,12 @@ static inline void *kasan_mem_to_shadow(const void *addr)
+ int kasan_add_zero_shadow(void *start, unsigned long size);
+ void kasan_remove_zero_shadow(void *start, unsigned long size);
+ 
++/* Enable reporting bugs after kasan_disable_current() */
++extern void kasan_enable_current(void);
++
++/* Disable reporting bugs for current task */
++extern void kasan_disable_current(void);
++
+ #else /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
+ 
+ static inline int kasan_add_zero_shadow(void *start, unsigned long size)
+@@ -50,18 +56,6 @@ static inline void kasan_remove_zero_shadow(void *start,
+ 					unsigned long size)
+ {}
+ 
+-#endif /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
+-
+-#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+-
+-/* Enable reporting bugs after kasan_disable_current() */
+-extern void kasan_enable_current(void);
+-
+-/* Disable reporting bugs for current task */
+-extern void kasan_disable_current(void);
+-
+-#else /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
+-
+ static inline void kasan_enable_current(void) {}
+ static inline void kasan_disable_current(void) {}
+ 
