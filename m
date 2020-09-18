@@ -2,87 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1D8F26F657
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 08:53:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA2226F65A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 08:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726546AbgIRGxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 02:53:09 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:41809 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726427AbgIRGxI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 02:53:08 -0400
-Received: by mail-lf1-f65.google.com with SMTP id y17so4946344lfa.8;
-        Thu, 17 Sep 2020 23:53:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jEIokPWY8McXPGxPjFui/VeUF3vCcShRe9TmH70vfVc=;
-        b=YvUPjxfekIMCDK7iM6OBhdEw/OwZcMxfdm6hraLyYa6yAduEzCPUPPBImeM1yxpvxd
-         yDrchSA0TFBG5/Yg+Bzzpq+niJ96aFPwq6V2g9ljLcmWttMnsLnSaiMg3AfcTRpFxblm
-         UljLIqgzoiDAvbh6EZ2D6X1xd7WGI5NqkZ2uEEz8ZqdYYLZDitlj72FnxMznotkqbeBM
-         shwCmBMNsvgHLPu4RY9b6pIQbIVcuV5NNoLqVkUNBVS5yMzOur9TPsIqU1NtAhTrMGRC
-         kBbl90QkQLuy5IiVPsGQh+cSD7I/GjusxXLASnDRmRp+m9j3fCYCbZtZUi8J5wv1b1H0
-         ECeA==
-X-Gm-Message-State: AOAM533hr8MkWHySnjr7RJaVtg3DQFCtRrW8hxkMKFKFpIy/XRvZgAgB
-        6dy+9lhzV/lWYGQ6x0fgPVLuqYbXMng=
-X-Google-Smtp-Source: ABdhPJyuh9HtxeBxunoebr024x2ZU8qQdRsKa692WK3UGnrpTGSSOnU8hBPIt0CDHrPpFYpQtkk9Og==
-X-Received: by 2002:ac2:5217:: with SMTP id a23mr9739542lfl.509.1600411986135;
-        Thu, 17 Sep 2020 23:53:06 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id u14sm396413lji.83.2020.09.17.23.53.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 23:53:04 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kJAGS-0005pO-6J; Fri, 18 Sep 2020 08:53:00 +0200
-Date:   Fri, 18 Sep 2020 08:53:00 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.4 041/330] USB: serial: mos7840: fix probe
- error handling
-Message-ID: <20200918065300.GA21896@localhost>
-References: <20200918020110.2063155-1-sashal@kernel.org>
- <20200918020110.2063155-41-sashal@kernel.org>
+        id S1726564AbgIRGzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 02:55:03 -0400
+Received: from mga11.intel.com ([192.55.52.93]:16062 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726456AbgIRGzC (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 02:55:02 -0400
+IronPort-SDR: ne0plUTF0BcPNcm05SBQr5hkkqKerLqygmxT98ehS+9TDyr2OfJFf/r1X0X1GxzH34RePafXK5
+ Znlnq6Og8cpQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="157264721"
+X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
+   d="scan'208";a="157264721"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 23:55:01 -0700
+IronPort-SDR: xLTZvktxiSHXoIH6O7c5dQEXAuSjJl71mQf8hFDHjjQyKj9c4gbHHlryWluvhUgf2KjI7iGVKN
+ Rbr+qmZJJsyw==
+X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
+   d="scan'208";a="484075645"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.5.239]) ([10.238.5.239])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 23:54:58 -0700
+Subject: Re: [PATCH v6 0/7] perf: Stream comparison
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
+References: <20200911080353.13359-1-yao.jin@linux.intel.com>
+ <20200917130556.GA2511679@krava> <20200917201320.GB1431236@kernel.org>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <6bf033e6-56a0-ea20-c46c-364b51952fef@linux.intel.com>
+Date:   Fri, 18 Sep 2020 14:54:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918020110.2063155-41-sashal@kernel.org>
+In-Reply-To: <20200917201320.GB1431236@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 09:56:21PM -0400, Sasha Levin wrote:
-> From: Johan Hovold <johan@kernel.org>
-> 
-> [ Upstream commit 960fbd1ca584a5b4cd818255769769d42bfc6dbe ]
-> 
-> The driver would return success and leave the port structures
-> half-initialised if any of the register accesses during probe fails.
-> 
-> This would specifically leave the port control urb unallocated,
-> something which could trigger a NULL pointer dereference on interrupt
-> events.
-> 
-> Fortunately the interrupt implementation is completely broken and has
-> never even been enabled...
-> 
-> Note that the zero-length-enable register write used to set the zle-flag
-> for all ports is moved to attach.
-> 
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Johan Hovold <johan@kernel.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+Hi Arnaldo,
 
-Please drop this from all stable queues. As the commit message and
-missing stable-cc tag suggests, it's not needed.
+On 9/18/2020 4:13 AM, Arnaldo Carvalho de Melo wrote:
+> Em Thu, Sep 17, 2020 at 03:05:56PM +0200, Jiri Olsa escreveu:
+>> On Fri, Sep 11, 2020 at 04:03:46PM +0800, Jin Yao wrote:
+>>
+>> SNIP
+>>
+>>>                        main div.c:40
+>>>                        main div.c:40
+>>>                        main div.c:39
+>>>
+>>> [ Hot streams in new perf data only ]
+>>>
+>>> hot chain 1:
+>>>                                                       cycles: 4, hits: 4.54%
+>>>                                                   --------------------------
+>>>                                                                main div.c:42
+>>>                                                        compute_flag div.c:28
+>>>
+>>> hot chain 2:
+>>>                                                       cycles: 5, hits: 3.51%
+>>>                                                   --------------------------
+>>>                                                                main div.c:39
+>>>                                                                main div.c:44
+>>>                                                                main div.c:42
+>>>                                                        compute_flag div.c:28
+>>>
+>>>   v6:
+>>>   ---
+>>>   Rebase to perf/core
+>>
+>> it looks good to me
+>>
+>> Acked-by: Jiri Olsa <jolsa@kernel.org>
+> 
+> Jin,
+> 
+> 	I'm sorry I only got to look at this now, there are some issues,
+> I'll try to point them out patch by patch,
+> 
+> Thanks,
+> 
+> - Arnaldo
+> 
 
-Sasha, please stop sending AUTOSEL patches for usb-serial. I think this
-the fourth time I ask you now.
+Thanks so much for looking at this patchset! :)
 
-Johan
+I will fix the issues which you point out in other mail threads. Once the fixes are done, I will 
+post v7.
+
+Thanks
+Jin Yao
