@@ -2,63 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EECEA26F897
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9C8726F89A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726495AbgIRIpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 04:45:10 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:48344 "EHLO huawei.com"
+        id S1726537AbgIRIqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 04:46:32 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2887 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725900AbgIRIpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 04:45:10 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 275CCA90FA84136E5385;
-        Fri, 18 Sep 2020 16:45:05 +0800 (CST)
-Received: from [10.67.103.10] (10.67.103.10) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Fri, 18 Sep 2020
- 16:44:55 +0800
-Subject: Re: [PATCH 3/3] crypto: hisilicon/hpre - fix a bug in dh algorithm
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-References: <1599737122-20734-1-git-send-email-yumeng18@huawei.com>
- <1599737122-20734-4-git-send-email-yumeng18@huawei.com>
- <20200918071112.GA9883@gondor.apana.org.au>
-CC:     <davem@davemloft.net>, <linux-crypto@vger.kernel.org>,
-        <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>,
+        id S1725900AbgIRIqb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 04:46:31 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id 1422599A47038976F689;
+        Fri, 18 Sep 2020 09:46:30 +0100 (IST)
+Received: from localhost (10.52.125.116) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 18 Sep
+ 2020 09:46:29 +0100
+Date:   Fri, 18 Sep 2020 09:44:51 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Sean V Kelley <sean.v.kelley@intel.com>
+CC:     Bjorn Helgaas <helgaas@kernel.org>, <bhelgaas@google.com>,
+        <rjw@rjwysocki.net>, <ashok.raj@intel.com>, <tony.luck@intel.com>,
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        <qiuxu.zhuo@intel.com>, <linux-pci@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-From:   yumeng <yumeng18@huawei.com>
-Message-ID: <25ea9f7b-1a96-6cbe-2154-ba14bf5e5e97@huawei.com>
-Date:   Fri, 18 Sep 2020 16:44:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+Subject: Re: [PATCH V4 00/10] Add RCEC handling to PCI/AER
+Message-ID: <20200918094451.000033cc@Huawei.com>
+In-Reply-To: <39F1C577-2486-43DC-BB65-1F6EDE02B217@intel.com>
+References: <20200917173600.GA1706067@bjorn-Precision-5520>
+        <39F1C577-2486-43DC-BB65-1F6EDE02B217@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <20200918071112.GA9883@gondor.apana.org.au>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.103.10]
+X-Originating-IP: [10.52.125.116]
+X-ClientProxiedBy: lhreml741-chm.china.huawei.com (10.201.108.191) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yes, 'u64' is redundant,  I will resend one!
-                         Thank you!
+On Thu, 17 Sep 2020 10:55:16 -0700
+Sean V Kelley <sean.v.kelley@intel.com> wrote:
+
+> On 17 Sep 2020, at 10:36, Bjorn Helgaas wrote:
+> 
+> > On Thu, Sep 17, 2020 at 09:25:38AM -0700, Sean V Kelley wrote:  
+> >> Changes since v3 [1]:  
+> >
+> > This series claims "V4 00/10", i.e., there should be this cover letter
+> > plus 10 patches, but I only got 3 patches.  I don't know if some got
+> > lost, or if only those 3 patches were updated, or what?  If it's the
+> > latter, it's too hard for me to collect the right versions of
+> > everything into a single series.
+> >
+> > Either way, can you resend the entire series as a V5?
+> >
+> > Bjorn  
+> 
+> That's weird.  I can see all 10 got sent. There's something awry with 
+> the mailer as I got the copies.  You are right.  Lore only shows 3.  I 
+> will see if something happened with the smtp access.  Will resend as V5.
+
+I got all 10.  
+
+May be coincidence but I saw this with a couple of series I was trying
+to pick up with b4 (so from lore.kernel.org). I assumed it was a problem
+at the sender, but that wasn't intel..
+
+Perhaps something more general going on at vger?
+
+Thanks,
+
+Jonathan
+
+> 
+> Thanks,
+> 
+> Sean
 
 
-On 2020/9/18 15:11, Herbert Xu wrote:
-> On Thu, Sep 10, 2020 at 07:25:22PM +0800, Meng Yu wrote:
->>
->> diff --git a/drivers/crypto/hisilicon/hpre/hpre_crypto.c b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
->> index 0cbe99a1..2d91593 100644
->> --- a/drivers/crypto/hisilicon/hpre/hpre_crypto.c
->> +++ b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
->> @@ -528,6 +528,8 @@ static int hpre_dh_compute_value(struct kpp_request *req)
->>  		ret = hpre_hw_data_init(hpre_req, req->src, req->src_len, 1, 1);
->>  		if (unlikely(ret))
->>  			goto clear_all;
->> +	} else {
->> +		msg->in = cpu_to_le64((u64)ctx->dh.dma_g);
->
-> Why do you need the u64 cast?
->
-> Cheers,
->
