@@ -2,88 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC96926FDD1
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 15:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02D5026FDD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 15:09:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726677AbgIRNH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 09:07:56 -0400
-Received: from mga02.intel.com ([134.134.136.20]:62167 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726121AbgIRNH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 09:07:56 -0400
-IronPort-SDR: C2OA7NpBCenW1y6FZBYMjH2X+jmISFQVgiJ35xfDXsbu1zyvuWBZWEqzHjdibfmwIpvfE6Ua1j
- 6q4bDYwTtDQw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="147609378"
-X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
-   d="scan'208";a="147609378"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 06:07:46 -0700
-IronPort-SDR: TTP3YG+cKXV9ElsL7dzw2WsGVKrYrvWw02TGzy1AIner1bX77kh534VhNkH57FNcGHx5Fq0hsk
- Q/wM0fO89XGw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
-   d="scan'208";a="336797326"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 18 Sep 2020 06:07:42 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kJG71-00HaOc-8n; Fri, 18 Sep 2020 16:07:39 +0300
-Date:   Fri, 18 Sep 2020 16:07:39 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Dan Scally <djrscally@gmail.com>, yong.zhi@intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org, davem@davemloft.net, robh@kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        devel@driverdev.osuosl.org, jorhand@linux.microsoft.com,
-        kitakar@gmail.com, kieran.bingham@ideasonboard.com
-Subject: Re: [RFC PATCH] Add bridge driver to connect sensors to CIO2 device
- via software nodes on ACPI platforms
-Message-ID: <20200918130739.GA3956970@smile.fi.intel.com>
-References: <20200916213618.8003-1-djrscally@gmail.com>
- <20200917103343.GW26842@paasikivi.fi.intel.com>
- <8133a57d-ab4c-dccd-4325-9b10e7805648@gmail.com>
- <20200917124514.GK3956970@smile.fi.intel.com>
- <20200918075157.GF26842@paasikivi.fi.intel.com>
+        id S1726599AbgIRNJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 09:09:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50086 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726154AbgIRNJX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 09:09:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600434562;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5B00TpLV9MuFHIh5wpo0AG7OxXn8VMiQgbyCHmPoFsw=;
+        b=HMvnm7DK0i4xu1iqxVLi6SYjp0PT2m9gWLks/ozuTrcUgITgIkitQvwFcjFGJ5sW8iDk22
+        QPlFzV10DBRonU8mR1zy2lKf48UQVnoZq6jZwKm64kzrRy2JvvSELlqAKFoFzfhS5SwafL
+        lKWnJKy3caS3SuKijqhYohWycG/o3wI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-86-mTl8sP_ZO4CBKw9EoTdE-A-1; Fri, 18 Sep 2020 09:09:20 -0400
+X-MC-Unique: mTl8sP_ZO4CBKw9EoTdE-A-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8859E57052;
+        Fri, 18 Sep 2020 13:09:18 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.215])
+        by smtp.corp.redhat.com (Postfix) with SMTP id D37D273660;
+        Fri, 18 Sep 2020 13:09:15 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Fri, 18 Sep 2020 15:09:18 +0200 (CEST)
+Date:   Fri, 18 Sep 2020 15:09:14 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     peterz@infradead.org
+Cc:     Jan Kara <jack@suse.cz>, Boaz Harrosh <boaz@plexistor.com>,
+        Hou Tao <houtao1@huawei.com>, Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC PATCH] locking/percpu-rwsem: use this_cpu_{inc|dec}() for
+ read_count
+Message-ID: <20200918130914.GA26777@redhat.com>
+References: <20200915155150.GD2674@hirez.programming.kicks-ass.net>
+ <20200915160344.GH35926@hirez.programming.kicks-ass.net>
+ <b885ce8e-4b0b-8321-c2cc-ee8f42de52d4@huawei.com>
+ <ddd5d732-06da-f8f2-ba4a-686c58297e47@plexistor.com>
+ <20200917120132.GA5602@redhat.com>
+ <20200918090702.GB18920@quack2.suse.cz>
+ <20200918100112.GN1362448@hirez.programming.kicks-ass.net>
+ <20200918101216.GL35926@hirez.programming.kicks-ass.net>
+ <20200918104824.GA23469@redhat.com>
+ <20200918110310.GO1362448@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200918075157.GF26842@paasikivi.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200918110310.GO1362448@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 10:51:57AM +0300, Sakari Ailus wrote:
-> On Thu, Sep 17, 2020 at 03:45:14PM +0300, Andy Shevchenko wrote:
-> > On Thu, Sep 17, 2020 at 11:52:28AM +0100, Dan Scally wrote:
-> > > On 17/09/2020 11:33, Sakari Ailus wrote:
-> > > > a module and not enlarge everyone's kernel, and the initialisation would at
-> > > > the same time take place before the rest of what the CIO2 driver does in
-> > > > probe.
-> > > I thought of that as well, but wasn't sure which was preferable. I can
-> > > compress it into the CIO2 driver though sure.
-> > 
-> > Sakari, I tend to agree with Dan and have the board file separated from the
-> > driver and even framework.
-> 
-> And it'll be linked to the kernel binary then I suppose?
+On 09/18, Peter Zijlstra wrote:
+>
+> On Fri, Sep 18, 2020 at 12:48:24PM +0200, Oleg Nesterov wrote:
+>
+> > Of course, this assumes that atomic_t->counter underflows "correctly", just
+> > like "unsigned int".
+>
+> We're documented that we do. Lots of code relies on that.
+>
+> See Documentation/atomic_t.txt TYPES
 
-Solely depends to your Kconfig dependencies and declaration.
+Aha, thanks!
 
-From code perspective you may do it before enumeration of the certain device or
-after with reprobe.
+> > But again, do we really want this?
+>
+> I like the two counters better, avoids atomics entirely, some archs
+> hare horridly expensive atomics (*cough* power *cough*).
 
-> I don't have a strong opinion either way, just thought that this will
-> affect anyone using x86 machines, whether or not they have IPU3. I guess it
-> could be compiled in if the ipu3-cio2 driver is enabled?
+I meant... do we really want to introduce percpu_up_read_irqsafe() ?
 
-Of course!
+Perhaps we can live with the fix from Hou? At least until we find a
+"real" performance regression.
 
--- 
-With Best Regards,
-Andy Shevchenko
-
+Oleg.
 
