@@ -2,115 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8CC26FA9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 12:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7A4926FAB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 12:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726126AbgIRKc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 06:32:57 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:40790 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725941AbgIRKc5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 06:32:57 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id EEFE7201194;
-        Fri, 18 Sep 2020 12:32:54 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 7B6DE2014E3;
-        Fri, 18 Sep 2020 12:32:50 +0200 (CEST)
-Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id A982F402AE;
-        Fri, 18 Sep 2020 12:32:44 +0200 (CEST)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: fsl_sai: Instantiate snd_soc_dai_driver
-Date:   Fri, 18 Sep 2020 18:26:00 +0800
-Message-Id: <1600424760-32071-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726281AbgIRKhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 06:37:50 -0400
+Received: from so254-54.mailgun.net ([198.61.254.54]:21011 "EHLO
+        so254-54.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725941AbgIRKht (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 06:37:49 -0400
+X-Greylist: delayed 302 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Sep 2020 06:37:47 EDT
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600425469; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=qb2WoD3uf4Yfjw2dRwpjc0+G2WvhyNMin/XBmb+tRQ4=; b=JIiQXW7kHrfhlMGbH0zzaT3FPxnnOVXY8PkP+9N9lUq1KAvp65vwzp6Z/VrSVfIWEBS/8lOI
+ kjQDNwksE9e/zK7adx36yIGmugiptzpjhiw7Tzu3HHrr8qsuOlNMfvElO32Dz8GgkTETtsvc
+ mS617Cq9shebQK5G9TsnZFvm4dY=
+X-Mailgun-Sending-Ip: 198.61.254.54
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5f648ccdea858627d5e3c9dc (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Sep 2020 10:32:45
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EF4A1C43391; Fri, 18 Sep 2020 10:32:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from charante-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: charante)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 21028C43382;
+        Fri, 18 Sep 2020 10:32:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 21028C43382
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
+From:   Charan Teja Reddy <charante@codeaurora.org>
+To:     sumit.semwal@linaro.org, christian.koenig@amd.com, arnd@arndb.de
+Cc:     linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+        vinmenon@codeaurora.org,
+        Charan Teja Reddy <charante@codeaurora.org>,
+        <stable@vger.kernel.org>
+Subject: [PATCH] dmabuf: fix NULL pointer dereference in dma_buf_release()
+Date:   Fri, 18 Sep 2020 16:02:31 +0530
+Message-Id: <1600425151-27670-1-git-send-email-charante@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instantiate snd_soc_dai_driver for independent symmetric control.
-Otherwise the symmetric setting may be overwritten by other
-instance.
+NULL pointer dereference is observed while exporting the dmabuf but
+failed to allocate the 'struct file' which results into the dropping of
+the allocated dentry corresponding to this file in the dmabuf fs, which
+is ending up in dma_buf_release() and accessing the uninitialzed
+dentry->d_fsdata.
 
-Fixes: 08fdf65e37d5 ("ASoC: fsl_sai: Add asynchronous mode support")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Call stack on 5.4 is below:
+ dma_buf_release+0x2c/0x254 drivers/dma-buf/dma-buf.c:88
+ __dentry_kill+0x294/0x31c fs/dcache.c:584
+ dentry_kill fs/dcache.c:673 [inline]
+ dput+0x250/0x380 fs/dcache.c:859
+ path_put+0x24/0x40 fs/namei.c:485
+ alloc_file_pseudo+0x1a4/0x200 fs/file_table.c:235
+ dma_buf_getfile drivers/dma-buf/dma-buf.c:473 [inline]
+ dma_buf_export+0x25c/0x3ec drivers/dma-buf/dma-buf.c:585
+
+Fix this by checking for the valid pointer in the dentry->d_fsdata.
+
+Fixes: 4ab59c3c638c ("dma-buf: Move dma_buf_release() from fops to dentry_ops")
+Cc: <stable@vger.kernel.org> [5.7+]
+Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
 ---
- sound/soc/fsl/fsl_sai.c | 19 +++++++++++--------
- sound/soc/fsl/fsl_sai.h |  1 +
- 2 files changed, 12 insertions(+), 8 deletions(-)
+ drivers/dma-buf/dma-buf.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 5117c1cd5682..3e5c1eaccd5e 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -725,7 +725,7 @@ static int fsl_sai_dai_probe(struct snd_soc_dai *cpu_dai)
- 	return 0;
- }
+diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+index 58564d82..844967f 100644
+--- a/drivers/dma-buf/dma-buf.c
++++ b/drivers/dma-buf/dma-buf.c
+@@ -59,6 +59,8 @@ static void dma_buf_release(struct dentry *dentry)
+ 	struct dma_buf *dmabuf;
  
--static struct snd_soc_dai_driver fsl_sai_dai = {
-+static struct snd_soc_dai_driver fsl_sai_dai_template = {
- 	.probe = fsl_sai_dai_probe,
- 	.playback = {
- 		.stream_name = "CPU-Playback",
-@@ -1062,12 +1062,15 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 		return ret;
- 	}
+ 	dmabuf = dentry->d_fsdata;
++	if (unlikely(!dmabuf))
++		return;
  
-+	memcpy(&sai->cpu_dai_drv, &fsl_sai_dai_template,
-+	       sizeof(fsl_sai_dai_template));
-+
- 	/* Sync Tx with Rx as default by following old DT binding */
- 	sai->synchronous[RX] = true;
- 	sai->synchronous[TX] = false;
--	fsl_sai_dai.symmetric_rates = 1;
--	fsl_sai_dai.symmetric_channels = 1;
--	fsl_sai_dai.symmetric_samplebits = 1;
-+	sai->cpu_dai_drv.symmetric_rates = 1;
-+	sai->cpu_dai_drv.symmetric_channels = 1;
-+	sai->cpu_dai_drv.symmetric_samplebits = 1;
+ 	BUG_ON(dmabuf->vmapping_counter);
  
- 	if (of_find_property(np, "fsl,sai-synchronous-rx", NULL) &&
- 	    of_find_property(np, "fsl,sai-asynchronous", NULL)) {
-@@ -1084,9 +1087,9 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 		/* Discard all settings for asynchronous mode */
- 		sai->synchronous[RX] = false;
- 		sai->synchronous[TX] = false;
--		fsl_sai_dai.symmetric_rates = 0;
--		fsl_sai_dai.symmetric_channels = 0;
--		fsl_sai_dai.symmetric_samplebits = 0;
-+		sai->cpu_dai_drv.symmetric_rates = 0;
-+		sai->cpu_dai_drv.symmetric_channels = 0;
-+		sai->cpu_dai_drv.symmetric_samplebits = 0;
- 	}
- 
- 	if (of_find_property(np, "fsl,sai-mclk-direction-output", NULL) &&
-@@ -1128,7 +1131,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 	regcache_cache_only(sai->regmap, true);
- 
- 	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_component,
--			&fsl_sai_dai, 1);
-+					      &sai->cpu_dai_drv, 1);
- 	if (ret)
- 		goto err_pm_disable;
- 
-diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
-index ba7425a9e217..4bbcd0dbe8f1 100644
---- a/sound/soc/fsl/fsl_sai.h
-+++ b/sound/soc/fsl/fsl_sai.h
-@@ -267,6 +267,7 @@ struct fsl_sai {
- 	unsigned int bclk_ratio;
- 
- 	const struct fsl_sai_soc_data *soc_data;
-+	struct snd_soc_dai_driver cpu_dai_drv;
- 	struct snd_dmaengine_dai_dma_data dma_params_rx;
- 	struct snd_dmaengine_dai_dma_data dma_params_tx;
- 	struct fsl_sai_verid verid;
 -- 
-2.27.0
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+member of the Code Aurora Forum, hosted by The Linux Foundation
 
