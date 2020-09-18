@@ -2,191 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3372D26F58D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 07:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC92E26F592
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 07:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726593AbgIRFzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 01:55:25 -0400
-Received: from muru.com ([72.249.23.125]:44804 "EHLO muru.com"
+        id S1726646AbgIRF4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 01:56:40 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44914 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725886AbgIRFzZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 01:55:25 -0400
-X-Greylist: delayed 400 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Sep 2020 01:55:24 EDT
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 2880880C2;
-        Fri, 18 Sep 2020 05:48:43 +0000 (UTC)
-Date:   Fri, 18 Sep 2020 08:49:33 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Robin Murphy <robin.murphy@arm.com>,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-usb@vger.kernel.org,
-        Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Subject: Re: [PATCH 1/4] ARM/omap1: switch to use dma_direct_set_offset for
- lbus DMA offsets
-Message-ID: <20200918054933.GK7101@atomide.com>
-References: <20200917173229.3311382-1-hch@lst.de>
- <20200917173229.3311382-2-hch@lst.de>
+        id S1725886AbgIRF4j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 01:56:39 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=cantorsusede;
+        t=1600408598;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PXAQlqj/RUeUbQbFytXImoknEhdO+wRjk0JmiUxm9e0=;
+        b=erccW4++jiukPNVSInhhoAsaB7v4W7V+37WCq+B9fO9yl/l7vx6lS283NdY8pX6aBeMeLW
+        DO58IxhKZpUeDJQQ5u612Jzr+9y8FuskXcjaYEx4ySX8DzWBXhItgfZDph5pNvSDr1aQbV
+        HHtMSvc7tLGt0fpAdv0fk3W/jrUtvLEAjczN5v6vgRkNK/4gv3EhEOGIQ2p7qAD7Eg1TNR
+        si0PL2y2VDAMdsupFihBQ+CWEUufLjfQEqKkZjDlrN4+3qgJIC66/7P0gq8LXGXOtA01MF
+        ePIngCH+uvloZjQAmuc5ePsRk4CfV8giHYJZN3QCd8KoOXP52uftC/jcAmHCRw==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0C5B7AD1B;
+        Fri, 18 Sep 2020 05:57:12 +0000 (UTC)
+Date:   Fri, 18 Sep 2020 07:56:37 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vijay Balakrishna <vijayb@linux.microsoft.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Allen Pais <apais@microsoft.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [v4] mm: khugepaged: avoid overriding min_free_kbytes set by user
+Message-ID: <20200918055637.GB28827@dhcp22.suse.cz>
+References: <1600324779-6782-1-git-send-email-vijayb@linux.microsoft.com>
+ <20200917092805.GA29887@dhcp22.suse.cz>
+ <21c4788c-2516-2e47-5885-486c352c2b6e@linux.microsoft.com>
+ <20200917175217.GD29887@dhcp22.suse.cz>
+ <f2231b44-6d14-fb63-43cd-43aaad02bef1@linux.microsoft.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200917173229.3311382-2-hch@lst.de>
+In-Reply-To: <f2231b44-6d14-fb63-43cd-43aaad02bef1@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Christoph Hellwig <hch@lst.de> [200917 17:37]:
-> Switch the omap1510 platform ohci device to use dma_direct_set_offset
-> to set the DMA offset instead of using direct hooks into the DMA
-> mapping code and remove the now unused hooks.
-
-Looks nice to me :) I still can't test this probably for few more weeks
-though but hopefully Aaro or Janusz (Added to Cc) can test it.
-
-Regards,
-
-Tony
-
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  arch/arm/include/asm/dma-direct.h         | 18 -------------
->  arch/arm/mach-omap1/include/mach/memory.h | 31 -----------------------
->  arch/arm/mach-omap1/usb.c                 | 22 ++++++++++++++++
->  3 files changed, 22 insertions(+), 49 deletions(-)
+On Thu 17-09-20 11:16:55, Vijay Balakrishna wrote:
 > 
-> diff --git a/arch/arm/include/asm/dma-direct.h b/arch/arm/include/asm/dma-direct.h
-> index 436544aeb83405..77fcb7ee5ec907 100644
-> --- a/arch/arm/include/asm/dma-direct.h
-> +++ b/arch/arm/include/asm/dma-direct.h
-> @@ -9,7 +9,6 @@
->   * functions used internally by the DMA-mapping API to provide DMA
->   * addresses. They must not be used by drivers.
->   */
-> -#ifndef __arch_pfn_to_dma
->  static inline dma_addr_t pfn_to_dma(struct device *dev, unsigned long pfn)
->  {
->  	if (dev && dev->dma_range_map)
-> @@ -34,23 +33,6 @@ static inline dma_addr_t virt_to_dma(struct device *dev, void *addr)
->  	return (dma_addr_t)__virt_to_bus((unsigned long)(addr));
->  }
->  
-> -#else
-> -static inline dma_addr_t pfn_to_dma(struct device *dev, unsigned long pfn)
-> -{
-> -	return __arch_pfn_to_dma(dev, pfn);
-> -}
-> -
-> -static inline unsigned long dma_to_pfn(struct device *dev, dma_addr_t addr)
-> -{
-> -	return __arch_dma_to_pfn(dev, addr);
-> -}
-> -
-> -static inline dma_addr_t virt_to_dma(struct device *dev, void *addr)
-> -{
-> -	return __arch_virt_to_dma(dev, addr);
-> -}
-> -#endif
-> -
->  static inline dma_addr_t phys_to_dma(struct device *dev, phys_addr_t paddr)
->  {
->  	unsigned int offset = paddr & ~PAGE_MASK;
-> diff --git a/arch/arm/mach-omap1/include/mach/memory.h b/arch/arm/mach-omap1/include/mach/memory.h
-> index 1142560e0078f5..36bc0000cb6ab8 100644
-> --- a/arch/arm/mach-omap1/include/mach/memory.h
-> +++ b/arch/arm/mach-omap1/include/mach/memory.h
-> @@ -14,42 +14,11 @@
->   * OMAP-1510 bus address is translated into a Local Bus address if the
->   * OMAP bus type is lbus. We do the address translation based on the
->   * device overriding the defaults used in the dma-mapping API.
-> - * Note that the is_lbus_device() test is not very efficient on 1510
-> - * because of the strncmp().
->   */
-> -#if defined(CONFIG_ARCH_OMAP15XX) && !defined(__ASSEMBLER__)
->  
->  /*
->   * OMAP-1510 Local Bus address offset
->   */
->  #define OMAP1510_LB_OFFSET	UL(0x30000000)
->  
-> -#define virt_to_lbus(x)		((x) - PAGE_OFFSET + OMAP1510_LB_OFFSET)
-> -#define lbus_to_virt(x)		((x) - OMAP1510_LB_OFFSET + PAGE_OFFSET)
-> -#define is_lbus_device(dev)	(cpu_is_omap15xx() && dev && (strncmp(dev_name(dev), "ohci", 4) == 0))
-> -
-> -#define __arch_pfn_to_dma(dev, pfn)	\
-> -	({ dma_addr_t __dma = __pfn_to_phys(pfn); \
-> -	   if (is_lbus_device(dev)) \
-> -		__dma = __dma - PHYS_OFFSET + OMAP1510_LB_OFFSET; \
-> -	   __dma; })
-> -
-> -#define __arch_dma_to_pfn(dev, addr)	\
-> -	({ dma_addr_t __dma = addr;				\
-> -	   if (is_lbus_device(dev))				\
-> -		__dma += PHYS_OFFSET - OMAP1510_LB_OFFSET;	\
-> -	   __phys_to_pfn(__dma);				\
-> -	})
-> -
-> -#define __arch_dma_to_virt(dev, addr)	({ (void *) (is_lbus_device(dev) ? \
-> -						lbus_to_virt(addr) : \
-> -						__phys_to_virt(addr)); })
-> -
-> -#define __arch_virt_to_dma(dev, addr)	({ unsigned long __addr = (unsigned long)(addr); \
-> -					   (dma_addr_t) (is_lbus_device(dev) ? \
-> -						virt_to_lbus(__addr) : \
-> -						__virt_to_phys(__addr)); })
-> -
-> -#endif	/* CONFIG_ARCH_OMAP15XX */
-> -
->  #endif
-> diff --git a/arch/arm/mach-omap1/usb.c b/arch/arm/mach-omap1/usb.c
-> index d8e9bbda8f7bdd..ba8566204ea9f4 100644
-> --- a/arch/arm/mach-omap1/usb.c
-> +++ b/arch/arm/mach-omap1/usb.c
-> @@ -9,6 +9,7 @@
->  #include <linux/kernel.h>
->  #include <linux/init.h>
->  #include <linux/platform_device.h>
-> +#include <linux/dma-mapping.h>
->  #include <linux/io.h>
->  
->  #include <asm/irq.h>
-> @@ -542,6 +543,25 @@ static u32 __init omap1_usb2_init(unsigned nwires, unsigned alt_pingroup)
->  /* ULPD_APLL_CTRL */
->  #define APLL_NDPLL_SWITCH	(1 << 0)
->  
-> +static int omap_1510_usb_ohci_notifier(struct notifier_block *nb,
-> +		unsigned long event, void *data)
-> +{
-> +	struct device *dev = data;
-> +
-> +	if (event != BUS_NOTIFY_ADD_DEVICE)
-> +		return NOTIFY_DONE;
-> +
-> +	if (strncmp(dev_name(dev), "ohci", 4) == 0 &&
-> +	    dma_direct_set_offset(dev, PHYS_OFFSET, OMAP1510_LB_OFFSET,
-> +			(u64)-1))
-> +		WARN_ONCE(1, "failed to set DMA offset\n");
-> +	return NOTIFY_OK;
-> +}
-> +
-> +static struct notifier_block omap_1510_usb_ohci_nb = {
-> +	.notifier_call		= omap_1510_usb_ohci_notifier,
-> +};
-> +
->  static void __init omap_1510_usb_init(struct omap_usb_config *config)
->  {
->  	unsigned int val;
-> @@ -600,6 +620,8 @@ static void __init omap_1510_usb_init(struct omap_usb_config *config)
->  	if (config->register_host) {
->  		int status;
->  
-> +		bus_register_notifier(&platform_bus_type,
-> +				      &omap_1510_usb_ohci_nb);
->  		ohci_device.dev.platform_data = config;
->  		status = platform_device_register(&ohci_device);
->  		if (status)
-> -- 
-> 2.28.0
 > 
+> On 9/17/2020 10:52 AM, Michal Hocko wrote:
+> > On Thu 17-09-20 10:27:16, Vijay Balakrishna wrote:
+> > > 
+> > > 
+> > > On 9/17/2020 2:28 AM, Michal Hocko wrote:
+> > > > On Wed 16-09-20 23:39:39, Vijay Balakrishna wrote:
+> > > > > set_recommended_min_free_kbytes need to honor min_free_kbytes set by the
+> > > > > user.  Post start-of-day THP enable or memory hotplug operations can
+> > > > > lose user specified min_free_kbytes, in particular when it is higher than
+> > > > > calculated recommended value.
+> > > > 
+> > > > I was about to recommend a more detailed explanation when I have
+> > > > realized that this patch is not really needed after all. Unless I am
+> > > > missing something.
+> > > > 
+> > > > init_per_zone_wmark_min ignores the newly calculated min_free_kbytes if
+> > > > it is lower than user_min_free_kbytes. So calculated min_free_kbytes >=
+> > > > user_min_free_kbytes.
+> > > > 
+> > > > Except for value clamping when the value is reduced and this likely
+> > > > needs fixing. But set_recommended_min_free_kbytes should be fine.
+> > > > 
+> > > 
+> > > IIUC, after start-of-day if a user performs
+> > > - THP disable
+> > > - modifies min_free_bytes
+> > > - THP enable
+> > > above sequence currently wouldn't result in calling init_per_zone_wmark_min.
+> > 
+> > I will not, but why do you think this matters? All we should care about
+> > is that auto-tuning shouldn't reduce user provided value [1] and that
+> > the memory hotplug should be consistent with the boot time heuristic.
+> > init_per_zone_wmark_min should make sure that the user value is not
+> > reduced and thp heuristic makes sure it will not reduce this value.
+> > So the property should be transitive with the existing code (modulo the
+> > problem I have highlighted).
+> > 
+> > [1] one could argue that it shouldn't even increase the value strictly
+> > speaking because an admin might have a very good reason to decrease the
+> > value but this has never been the semantic and changing it now might be
+> > problematic
+> > 
+> 
+> I made an attempt to address Kirill A. Shutemov's comment.
+
+This is for Kirill to comment on but my take would be that memory
+hotplug really has to alter the user defined min_free_kbytes because it
+is manipulating the amount of memory. There are usecases which are
+adding a lot of memory.
+
+We are trying to not decrease the value which is arguably a weird semantic
+but this is what've been doing for years. We would need to hear a
+specific usecase where this matters (e.g. memory hotremove heavy
+workalod with manually tuned min_free_kbytes) that misbehaves.
+
+> And incrased
+> min_free_kbytes to see the issue in my testing and attempted a fix.  I'm ok
+> leaving as it is.  Do not want introduce any changes that may cause
+> regression.
+
+I would recommend reposting the patch which adds heuristic for THP (if
+THP is enabled) into the hotplug path, arguing with the consistency and
+surprising results when adding memory decreases the value. Your initial
+problem is in sizing as mentioned in other email thread and you should
+be investigating more but this inconsistency might really come as a
+surprise.
+
+All that if Kirill is reconsidering his initial position of course.
+-- 
+Michal Hocko
+SUSE Labs
