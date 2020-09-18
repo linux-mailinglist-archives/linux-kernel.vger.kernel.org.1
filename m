@@ -2,128 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E02DF26FC60
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE4EB26FC66
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:22:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726524AbgIRMUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 08:20:51 -0400
-Received: from ozlabs.org ([203.11.71.1]:51027 "EHLO ozlabs.org"
+        id S1726314AbgIRMW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 08:22:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgIRMUv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 08:20:51 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1726126AbgIRMW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 08:22:26 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BtCbj0rSDz9sTN;
-        Fri, 18 Sep 2020 22:20:49 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1600431649;
-        bh=yFZGkPkkRKTNYitF5ijMjnBBvIwsHCFQoy+CpzqTS6o=;
-        h=From:To:Cc:Subject:Date:From;
-        b=EQfLz7aP8ARy5Ea4CxebiT1bK+6DZOway8OaR52hVhRQTby4vdJFTxC60Ry/q/Onc
-         JrE6M+Uj9phtR4+pMOdcio5B1s91aNVC/tLV8uGmwmMb1GrEbWVebIlBEtrWh3tdfy
-         Z2hmgnvMRw4Pj4Z8GNistMoB2t0R+UigTiMK8G7h9O3eAtbkKxkA3Tu2O+C3XKa+uj
-         LVYmm+kY1QNG/LkcZrIPJepBt/EacliNbrkyf5Yj6Zvkv1/EfKPMtrMW0Q4Sk24hTO
-         0V7CfT/6/QU6qsCah/412vY5gFBG5Tyivfu/B2B0eqdQUwQ7o/Nr4P3XLFMpVO5MoN
-         E7SFClEy89yzQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     aik@ozlabs.ru, aneesh.kumar@linux.ibm.com, ego@linux.vnet.ibm.com,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        vaibhav@linux.ibm.com
-Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.9-5 tag
-Date:   Fri, 18 Sep 2020 22:20:48 +1000
-Message-ID: <877dsr6ztr.fsf@mpe.ellerman.id.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id 97B6F20874;
+        Fri, 18 Sep 2020 12:22:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600431745;
+        bh=Hd7XQn/UXrKDXJIU/D9pWYIKR1CmKZZuKET/jaQFL+0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ho57UfnqY8P+1yT8oCZIsDe/Q/7W66xw2EJkWVGVEJAyDuODSFyV9TpnQgwyWzMMl
+         AKwTNLsIZtglBDp6uG0BFuypVmjBXEapEVZJ4G/n4h8No8bnsssZCQEhjueDlBsPxC
+         1t6ONrexn6uJkKXxmhLEy3WDDjAtswjN7BbMUF7I=
+Date:   Fri, 18 Sep 2020 13:22:20 +0100
+From:   Will Deacon <will@kernel.org>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 10/11] kvm: arm64: Set up hyp percpu data for nVHE
+Message-ID: <20200918122219.GD31096@willie-the-truck>
+References: <20200916173439.32265-1-dbrazdil@google.com>
+ <20200916173439.32265-11-dbrazdil@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916173439.32265-11-dbrazdil@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+On Wed, Sep 16, 2020 at 06:34:38PM +0100, David Brazdil wrote:
+> Add hyp percpu section to linker script and rename the corresponding ELF
+> sections of hyp/nvhe object files. This moves all nVHE-specific percpu
+> variables to the new hyp percpu section.
+> 
+> Allocate sufficient amount of memory for all percpu hyp regions at global KVM
+> init time and create corresponding hyp mappings.
+> 
+> The base addresses of hyp percpu regions are kept in a dynamically allocated
+> array in the kernel.
+> 
+> Add NULL checks in PMU event-reset code as it may run before KVM memory is
+> initialized.
+> 
+> Signed-off-by: David Brazdil <dbrazdil@google.com>
+> ---
+>  arch/arm64/include/asm/kvm_asm.h  | 19 +++++++++--
+>  arch/arm64/include/asm/sections.h |  1 +
+>  arch/arm64/kernel/vmlinux.lds.S   |  9 +++++
+>  arch/arm64/kvm/arm.c              | 56 +++++++++++++++++++++++++++++--
+>  arch/arm64/kvm/hyp/nvhe/hyp.lds.S |  6 ++++
+>  arch/arm64/kvm/pmu.c              |  5 ++-
+>  6 files changed, 90 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_asm.h b/arch/arm64/include/asm/kvm_asm.h
+> index abc03f386b40..e0e1e404f6eb 100644
+> --- a/arch/arm64/include/asm/kvm_asm.h
+> +++ b/arch/arm64/include/asm/kvm_asm.h
+> @@ -66,8 +66,23 @@
+>  #define CHOOSE_VHE_SYM(sym)	sym
+>  #define CHOOSE_NVHE_SYM(sym)	kvm_nvhe_sym(sym)
+>  
+> -#define this_cpu_ptr_nvhe(sym)		this_cpu_ptr(&kvm_nvhe_sym(sym))
+> -#define per_cpu_ptr_nvhe(sym, cpu)	per_cpu_ptr(&kvm_nvhe_sym(sym), cpu)
+> +/* Array of percpu base addresses. Length of the array is nr_cpu_ids. */
+> +extern unsigned long *kvm_arm_hyp_percpu_base;
+> +
+> +/*
+> + * Compute pointer to a symbol defined in nVHE percpu region.
+> + * Returns NULL if percpu memory has not been allocated yet.
+> + */
+> +#define this_cpu_ptr_nvhe(sym)	per_cpu_ptr_nvhe(sym, smp_processor_id())
 
-Hi Linus,
+Don't you run into similar problems here with the pcpu accessors when
+CONFIG_DEBUG_PREEMPT=y? I'm worried we can end up with an unresolved
+reference to debug_smp_processor_id().
 
-Please pull some more powerpc fixes for 5.9:
+> +#define per_cpu_ptr_nvhe(sym, cpu)					\
+> +	({								\
+> +		unsigned long base, off;				\
+> +		base = kvm_arm_hyp_percpu_base				\
+> +			? kvm_arm_hyp_percpu_base[cpu] : 0;		\
+> +		off = (unsigned long)&kvm_nvhe_sym(sym) -		\
+> +		      (unsigned long)&kvm_nvhe_sym(__per_cpu_start);	\
+> +		base ? (typeof(kvm_nvhe_sym(sym))*)(base + off) : NULL;	\
+> +	})
+>  
+>  #ifndef __KVM_NVHE_HYPERVISOR__
+>  /*
+> diff --git a/arch/arm64/include/asm/sections.h b/arch/arm64/include/asm/sections.h
+> index 3994169985ef..5062553a6847 100644
+> --- a/arch/arm64/include/asm/sections.h
+> +++ b/arch/arm64/include/asm/sections.h
+> @@ -18,5 +18,6 @@ extern char __exittext_begin[], __exittext_end[];
+>  extern char __irqentry_text_start[], __irqentry_text_end[];
+>  extern char __mmuoff_data_start[], __mmuoff_data_end[];
+>  extern char __entry_tramp_text_start[], __entry_tramp_text_end[];
+> +extern char __kvm_nvhe___per_cpu_start[], __kvm_nvhe___per_cpu_end[];
+>  
+>  #endif /* __ASM_SECTIONS_H */
+> diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
+> index 0d543570e811..d52e6b5dbfd3 100644
+> --- a/arch/arm64/kernel/vmlinux.lds.S
+> +++ b/arch/arm64/kernel/vmlinux.lds.S
+> @@ -9,6 +9,7 @@
+>  
+>  #include <asm-generic/vmlinux.lds.h>
+>  #include <asm/cache.h>
+> +#include <asm/hyp_image.h>
+>  #include <asm/kernel-pgtable.h>
+>  #include <asm/memory.h>
+>  #include <asm/page.h>
+> @@ -27,8 +28,15 @@ jiffies = jiffies_64;
+>  	__start___kvm_ex_table = .;				\
+>  	*(__kvm_ex_table)					\
+>  	__stop___kvm_ex_table = .;
+> +
+> +#define HYPERVISOR_PERCPU_SECTION				\
+> +	. = ALIGN(PAGE_SIZE);					\
+> +	HYP_SECTION_NAME(.data..percpu) : {			\
+> +		*(HYP_SECTION_NAME(.data..percpu))		\
+> +	}
+>  #else /* CONFIG_KVM */
+>  #define HYPERVISOR_EXTABLE
+> +#define HYPERVISOR_PERCPU_SECTION
+>  #endif
+>  
+>  #define HYPERVISOR_TEXT					\
+> @@ -194,6 +202,7 @@ SECTIONS
+>  	}
+>  
+>  	PERCPU_SECTION(L1_CACHE_BYTES)
+> +	HYPERVISOR_PERCPU_SECTION
+>  
+>  	.rela.dyn : ALIGN(8) {
+>  		*(.rela .rela*)
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index 58d7d614519b..8293319a32e7 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -47,6 +47,7 @@ __asm__(".arch_extension	virt");
+>  #endif
+>  
+>  static DEFINE_PER_CPU(unsigned long, kvm_arm_hyp_stack_page);
+> +unsigned long *kvm_arm_hyp_percpu_base;
+>  
+>  /* The VMID used in the VTTBR */
+>  static atomic64_t kvm_vmid_gen = ATOMIC64_INIT(1);
+> @@ -1258,6 +1259,15 @@ long kvm_arch_vm_ioctl(struct file *filp,
+>  	}
+>  }
+>  
+> +#define kvm_hyp_percpu_base(cpu)	((unsigned long)per_cpu_ptr_nvhe(__per_cpu_start, cpu))
 
-The following changes since commit 4a133eb351ccc275683ad49305d0b04dde903733:
+Having both kvm_arm_hyp_percpu_base and kvm_hyp_percpu_base be so
+completely different is a recipe for disaster! Please can you rename
+one/both of them to make it clearer what they represent?
 
-  powerpc/32s: Disable VMAP stack which CONFIG_ADB_PMU (2020-08-28 12:03:18 +1000)
+> diff --git a/arch/arm64/kvm/pmu.c b/arch/arm64/kvm/pmu.c
+> index 6d80ffe1ebfc..cd653091f213 100644
+> --- a/arch/arm64/kvm/pmu.c
+> +++ b/arch/arm64/kvm/pmu.c
+> @@ -33,7 +33,7 @@ void kvm_set_pmu_events(u32 set, struct perf_event_attr *attr)
+>  {
+>  	struct kvm_host_data *ctx = this_cpu_ptr_hyp(kvm_host_data);
+>  
+> -	if (!kvm_pmu_switch_needed(attr))
+> +	if (!ctx || !kvm_pmu_switch_needed(attr))
+>  		return;
+>  
+>  	if (!attr->exclude_host)
+> @@ -49,6 +49,9 @@ void kvm_clr_pmu_events(u32 clr)
+>  {
+>  	struct kvm_host_data *ctx = this_cpu_ptr_hyp(kvm_host_data);
+>  
+> +	if (!ctx)
+> +		return;
 
-are available in the git repository at:
+I guess this should only happen if KVM failed to initialise or something,
+right? (e.g. if we were booted at EL1). If so, I'm wondering whether it
+would be better to do something like:
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.9-5
+	if (!is_hyp_mode_available())
+		return;
 
-for you to fetch changes up to 0460534b532e5518c657c7d6492b9337d975eaa3:
+	WARN_ON_ONCE(!ctx);
 
-  powerpc/papr_scm: Limit the readability of 'perf_stats' sysfs attribute (2020-09-09 14:44:38 +1000)
+so that any unexpected NULL pointer there screams loudly, rather than causes
+the register switch to be silently ignored. What do you think?
 
-- ------------------------------------------------------------------
-powerpc fixes for 5.9 #5
-
-Opt us out of the DEBUG_VM_PGTABLE support for now as it's causing crashes.
-
-Fix a long standing bug in our DMA mask handling that was hidden until recently,
-and which caused problems with some drivers.
-
-Fix a boot failure on systems with large amounts of RAM, and no hugepage support
-and using Radix MMU, only seen in the lab.
-
-A few other minor fixes.
-
-Thanks to:
-  Alexey Kardashevskiy, Aneesh Kumar K.V, Gautham R. Shenoy, Hari Bathini, Ira
-  Weiny, Nick Desaulniers, Shirisha Ganta, Vaibhav Jain, Vaidyanathan
-  Srinivasan.
-
-- ------------------------------------------------------------------
-Alexey Kardashevskiy (1):
-      powerpc/dma: Fix dma_map_ops::get_required_mask
-
-Aneesh Kumar K.V (2):
-      powerpc/book3s64/radix: Fix boot failure with large amount of guest memory
-      powerpc/mm: Remove DEBUG_VM_PGTABLE support on powerpc
-
-Gautham R. Shenoy (1):
-      cpuidle: pseries: Fix CEDE latency conversion from tb to us
-
-Michael Ellerman (2):
-      selftests/powerpc: Skip PROT_SAO test in guests/LPARS
-      Revert "powerpc/build: vdso linker warning for orphan sections"
-
-Vaibhav Jain (1):
-      powerpc/papr_scm: Limit the readability of 'perf_stats' sysfs attribute
-
-
- Documentation/features/debug/debug-vm-pgtable/arch-support.txt |  2 +-
- arch/powerpc/Kconfig                                           |  1 -
- arch/powerpc/include/asm/book3s/64/mmu.h                       | 10 +++++-----
- arch/powerpc/kernel/dma-iommu.c                                |  3 ++-
- arch/powerpc/kernel/vdso32/Makefile                            |  2 +-
- arch/powerpc/kernel/vdso32/vdso32.lds.S                        |  1 -
- arch/powerpc/kernel/vdso64/Makefile                            |  2 +-
- arch/powerpc/kernel/vdso64/vdso64.lds.S                        |  3 +--
- arch/powerpc/mm/book3s64/radix_pgtable.c                       | 15 ---------------
- arch/powerpc/mm/init_64.c                                      | 11 +++++++++--
- arch/powerpc/platforms/pseries/papr_scm.c                      |  2 +-
- drivers/cpuidle/cpuidle-pseries.c                              | 15 +++++++++++----
- tools/testing/selftests/powerpc/mm/prot_sao.c                  |  9 +++++++--
- 13 files changed, 39 insertions(+), 37 deletions(-)
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAl9kpeIACgkQUevqPMjh
-pYC4aQ/9HwhZgP4aLepJ51l+SajCw7GkDco50MorgjJQLgP2t2Yua/bE2VdB4V4E
-PFKq0ZFXytFRT6/njIFZVDsvrL5RbEyN5vHq7hwrmR3B+VJybQOzdyxncZUBlP7n
-RZAQS/MvMAu+OR2NFG0QLo9zx4FA9QKMEVYbr20Eftw4l613hP6yV+ubxYR/ww/S
-JvZw7JlyBRQfvpH8rb2x2sa1CLtPWGrZyUKWOQx8CTdIClgO7oghMGKAz5PyL+li
-AyaIT5e9QKJw5qNUI7Mv56oat+dBHz0xRKSEhrYhjU9LfJ7HBCK23C7l3Wzw5OQO
-94t3aAaCIa67uPk2TMdblM8aUN75hKxmRHg5GIBfTyhQKlWptb7A4M6BVd9sDm+d
-ggoF+LOZfypoM/xgFPAvVtdyacmRHfhZ+OHILPsTL3IKZRK2Lmr6CgJgY12Dzelk
-HudpQW58Egq/ZxwHH66UN6JzteYq7H6oKW7qmiJFftWm00Z78uSFlwFv9dX6aj1W
-CGVcANquLY5x6WjrYr2HZa5dfU3rnSRNMrTrXz9S6+ctboGl63pkIfWS1dQ4nB/7
-9SmPVivCK/gb1Sdv9LogGYTAgPgBUbC5lYzg1NlR3hOXyWre5P+do68RZFzujCtS
-EO4Phx+h+duzLXth35dQQ3tkhn2u3S7tuuXq0s4KT8ZD2TRWc8I=
-=UdKu
------END PGP SIGNATURE-----
+Will
