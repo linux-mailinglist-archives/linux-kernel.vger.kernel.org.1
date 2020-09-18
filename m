@@ -2,152 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92BCB26FD07
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F9B26FCCD
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726883AbgIRMqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 08:46:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39846 "EHLO
+        id S1726591AbgIRMpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 08:45:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726753AbgIRMpy (ORCPT
+        with ESMTP id S1726126AbgIRMpj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 08:45:54 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29B81C06178A;
-        Fri, 18 Sep 2020 05:45:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=7X3/qUs2y75UUlnvdA2vy1FAPs/IUNMhWXsjmEB0AzE=; b=asfKxViQlq1FD+ot58IVT8gZ94
-        dLEzCslIpXlEHDVY3AVvzeQWEaxRhvHNXoigPkGAIjK5bFpDNasQOxqoNgyABCmM6qqkkt51q64Dy
-        U/CK/Xw07dd/60lKM1KHzeS66iYZd7bcglc4ZdnqLXf8QC6JOmLB6SzsLsGPLZ4sGBlzYzOE9RXSt
-        DxcJwzh9T4OKXpp4G4seXuWqwOoYAwiUhcD6w3brKbgCkdH84kpJRUaaIBc95IuKO6lijNRqToZbP
-        HZ0MF5B2UTpvywzo+XWFmaKqS/cx8n+7oEw8/8/UxjpLmR3ZmNR4wU7av4yWOn2KaD4wu1ecjNXE6
-        nQMpYohw==;
-Received: from [80.122.85.238] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kJFlr-0008Us-Db; Fri, 18 Sep 2020 12:45:47 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
-        io-uring@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org
-Subject: [PATCH 9/9] security/keys: remove compat_keyctl_instantiate_key_iov
-Date:   Fri, 18 Sep 2020 14:45:33 +0200
-Message-Id: <20200918124533.3487701-10-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200918124533.3487701-1-hch@lst.de>
-References: <20200918124533.3487701-1-hch@lst.de>
+        Fri, 18 Sep 2020 08:45:39 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84605C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 05:45:39 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id t10so5514379wrv.1
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 05:45:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mkjGA7pXWKUs0Nfv07SZZRXfgMyaUHALkc311WYJd5c=;
+        b=IjP59USZ4bt/dNbg6oSq65GvWXtsZNBOpmHcvEGwUUe7X+YQ8CuVdvzCJGUW31mYN+
+         kutEcRAjJR4RcIEaSUCQ+2SZ1Rv35nHNuqPRysdFMn9OVDXJ9a8uh6YI7JPIBIExQFFw
+         1nb0o6gG1SpBjtUqoSxsN0I9Nz6cEgQsIpwa8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=mkjGA7pXWKUs0Nfv07SZZRXfgMyaUHALkc311WYJd5c=;
+        b=QLzH3ca/fbPqYbpm2k08gkK+ztxhjjI9B459DL5f8GyZLnugYzqICc0vVAVD1lI4lA
+         FI/9qrg5faoGlQ09Qbv1bWGkxxj/NZU8ro+DZgRt+xbf43ZnfYsNQmTROwe55YXhbWTc
+         0ajm6y/CVJslJJ5dD3g8c5c7fJl365krngbs8jxgexwi27hEsGi6SCRVfBX1oefroR59
+         9N+onH6vgsNabjCq6odddREIA8m8Vd2HziY0w4+71zwUFLGXiAv/tvUoaOccv3LYcjrL
+         EBH2FRE0I8rUUEscELT9SvHXnG5diW4e+ZuJXDFJU+XoGP1NH01/TzUix3eWUVVUK2k0
+         6sfw==
+X-Gm-Message-State: AOAM532ACwwkCAWOw9eoGyJL4edGmIeAnEchvkq7LTIgWqJeAyoni8Ij
+        Ut/fWGecUYJToQZ/5J8qha87Sg==
+X-Google-Smtp-Source: ABdhPJyDK0gDuuHiczv9k6y+Mdkm1lj9HIgPKWCvChWYK5+PoIgy7TapyPO7BGOVyhxEfKVMzA4lGQ==
+X-Received: by 2002:adf:81a3:: with SMTP id 32mr37517353wra.368.1600433138210;
+        Fri, 18 Sep 2020 05:45:38 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id e18sm4912651wrx.50.2020.09.18.05.45.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 05:45:37 -0700 (PDT)
+Date:   Fri, 18 Sep 2020 14:45:35 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
+Cc:     b.zolnierkie@samsung.com, gregkh@linuxfoundation.org,
+        daniel.vetter@ffwll.ch, ndesaulniers@google.com,
+        gustavoars@kernel.org, jirislaby@kernel.org,
+        george.kennedy@oracle.com, natechancellor@gmail.com,
+        peda@axentia.se, krzysztof.h1@wp.pl, akpm@linux-foundation.org,
+        adaplas@gmail.com, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] fbcon: Remove the superfluous break
+Message-ID: <20200918124535.GB438822@phenom.ffwll.local>
+Mail-Followup-To: Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        b.zolnierkie@samsung.com, gregkh@linuxfoundation.org,
+        ndesaulniers@google.com, gustavoars@kernel.org,
+        jirislaby@kernel.org, george.kennedy@oracle.com,
+        natechancellor@gmail.com, peda@axentia.se, krzysztof.h1@wp.pl,
+        akpm@linux-foundation.org, adaplas@gmail.com,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200918010521.69950-1-jingxiangfeng@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200918010521.69950-1-jingxiangfeng@huawei.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that import_iovec handles compat iovecs, the native version of
-keyctl_instantiate_key_iov can be used for the compat case as well.
+On Fri, Sep 18, 2020 at 09:05:21AM +0800, Jing Xiangfeng wrote:
+> Remove the superfluous break, as there is a 'return' before it.
+> 
+> Fixes: bad07ff74c32 ("fbcon: smart blitter usage for scrolling")
+> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- security/keys/compat.c   | 36 ++----------------------------------
- security/keys/internal.h |  5 -----
- security/keys/keyctl.c   |  2 +-
- 3 files changed, 3 insertions(+), 40 deletions(-)
+Applied to drm-misc-next, thanks.
+-Daniel
 
-diff --git a/security/keys/compat.c b/security/keys/compat.c
-index 7ae531db031cf8..1545efdca56227 100644
---- a/security/keys/compat.c
-+++ b/security/keys/compat.c
-@@ -11,38 +11,6 @@
- #include <linux/slab.h>
- #include "internal.h"
- 
--/*
-- * Instantiate a key with the specified compatibility multipart payload and
-- * link the key into the destination keyring if one is given.
-- *
-- * The caller must have the appropriate instantiation permit set for this to
-- * work (see keyctl_assume_authority).  No other permissions are required.
-- *
-- * If successful, 0 will be returned.
-- */
--static long compat_keyctl_instantiate_key_iov(
--	key_serial_t id,
--	const struct compat_iovec __user *_payload_iov,
--	unsigned ioc,
--	key_serial_t ringid)
--{
--	struct iovec iovstack[UIO_FASTIOV], *iov = iovstack;
--	struct iov_iter from;
--	long ret;
--
--	if (!_payload_iov)
--		ioc = 0;
--
--	ret = import_iovec(WRITE, (const struct iovec __user *)_payload_iov,
--			   ioc, ARRAY_SIZE(iovstack), &iov, &from);
--	if (ret < 0)
--		return ret;
--
--	ret = keyctl_instantiate_key_common(id, &from, ringid);
--	kfree(iov);
--	return ret;
--}
--
- /*
-  * The key control system call, 32-bit compatibility version for 64-bit archs
-  */
-@@ -113,8 +81,8 @@ COMPAT_SYSCALL_DEFINE5(keyctl, u32, option,
- 		return keyctl_reject_key(arg2, arg3, arg4, arg5);
- 
- 	case KEYCTL_INSTANTIATE_IOV:
--		return compat_keyctl_instantiate_key_iov(
--			arg2, compat_ptr(arg3), arg4, arg5);
-+		return keyctl_instantiate_key_iov(arg2, compat_ptr(arg3), arg4,
-+						  arg5);
- 
- 	case KEYCTL_INVALIDATE:
- 		return keyctl_invalidate_key(arg2);
-diff --git a/security/keys/internal.h b/security/keys/internal.h
-index 338a526cbfa516..9b9cf3b6fcbb4d 100644
---- a/security/keys/internal.h
-+++ b/security/keys/internal.h
-@@ -262,11 +262,6 @@ extern long keyctl_instantiate_key_iov(key_serial_t,
- 				       const struct iovec __user *,
- 				       unsigned, key_serial_t);
- extern long keyctl_invalidate_key(key_serial_t);
--
--struct iov_iter;
--extern long keyctl_instantiate_key_common(key_serial_t,
--					  struct iov_iter *,
--					  key_serial_t);
- extern long keyctl_restrict_keyring(key_serial_t id,
- 				    const char __user *_type,
- 				    const char __user *_restriction);
-diff --git a/security/keys/keyctl.c b/security/keys/keyctl.c
-index 9febd37a168fd0..e26bbccda7ccee 100644
---- a/security/keys/keyctl.c
-+++ b/security/keys/keyctl.c
-@@ -1164,7 +1164,7 @@ static int keyctl_change_reqkey_auth(struct key *key)
-  *
-  * If successful, 0 will be returned.
-  */
--long keyctl_instantiate_key_common(key_serial_t id,
-+static long keyctl_instantiate_key_common(key_serial_t id,
- 				   struct iov_iter *from,
- 				   key_serial_t ringid)
- {
+> ---
+>  drivers/video/fbdev/core/fbcon.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
+> index 0b49b0f44edf..623359aadd1e 100644
+> --- a/drivers/video/fbdev/core/fbcon.c
+> +++ b/drivers/video/fbdev/core/fbcon.c
+> @@ -1727,7 +1727,6 @@ static bool fbcon_scroll(struct vc_data *vc, unsigned int t, unsigned int b,
+>  				    vc->vc_video_erase_char,
+>  				    vc->vc_size_row * count);
+>  			return true;
+> -			break;
+>  
+>  		case SCROLL_WRAP_MOVE:
+>  			if (b - t - count > 3 * vc->vc_rows >> 2) {
+> @@ -1818,7 +1817,6 @@ static bool fbcon_scroll(struct vc_data *vc, unsigned int t, unsigned int b,
+>  				    vc->vc_video_erase_char,
+>  				    vc->vc_size_row * count);
+>  			return true;
+> -			break;
+>  
+>  		case SCROLL_WRAP_MOVE:
+>  			if (b - t - count > 3 * vc->vc_rows >> 2) {
+> -- 
+> 2.17.1
+> 
+
 -- 
-2.28.0
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
