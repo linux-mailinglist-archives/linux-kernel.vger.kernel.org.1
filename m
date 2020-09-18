@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3A7926EBD2
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4B9D26EBD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:10:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726815AbgIRCH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:07:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57662 "EHLO mail.kernel.org"
+        id S1727297AbgIRCHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:07:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727908AbgIRCHX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:07:23 -0400
+        id S1727924AbgIRCHZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:07:25 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 082AE2389E;
-        Fri, 18 Sep 2020 02:07:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F5A823770;
+        Fri, 18 Sep 2020 02:07:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394842;
-        bh=fO15eBwbnxmL4fI+RPHnRPQiHTZvIx9WsiBnsp2ccqw=;
+        s=default; t=1600394845;
+        bh=OZBRK2VLGNUKvLPFgd5TqEh2BcN//uJryGvXEeZgT54=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RJm6zfo+AWKQXj10w2uqpKDocRzvMtguDGmTzo1I6N91pUOla+xZWYM0mGNRm66Zj
-         xO7GzWTR+PFPpM66Oi87wY0xQOVUnhfuFQuDMKsSIUtpPjDANlV81ukgvziX33hp/h
-         eexNOGryNDk/+BVeLzJJNx91bQR3LvHprJnUSL+I=
+        b=UvoS2XUU2VF77jIoONcIb4idPQTSAqUomTAOb6BJeyP1+Z61gNeRJsdhc0S3y1NAV
+         1XxoIuDHt7/ynUfLa1ZSZh63JAA7C5LKlWpH4EHlhAYSww0MmfsDSAthpn7HeJ9RH7
+         GOUIboTjwBrWyL0nQp1QYTzEvcjsdxEh7A/ise4A=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Tony Lindgren <tony@atomide.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 300/330] wlcore: fix runtime pm imbalance in wl1271_tx_work
-Date:   Thu, 17 Sep 2020 22:00:40 -0400
-Message-Id: <20200918020110.2063155-300-sashal@kernel.org>
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Sasha Levin <sashal@kernel.org>, linux-mtd@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.4 302/330] mtd: rawnand: gpmi: Fix runtime PM imbalance on error
+Date:   Thu, 17 Sep 2020 22:00:42 -0400
+Message-Id: <20200918020110.2063155-302-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -46,34 +44,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit 9604617e998b49f7695fea1479ed82421ef8c9f0 ]
+[ Upstream commit 550e68ea36a6671a96576c0531685ce6e6c0d19d ]
 
-There are two error handling paths in this functon. When
-wlcore_tx_work_locked() returns an error code, we should
-decrease the runtime PM usage counter the same way as the
-error handling path beginning from pm_runtime_get_sync().
+pm_runtime_get_sync() increments the runtime PM usage counter even
+when it returns an error code. Thus a pairing decrement is needed on
+the error handling path to keep the counter balanced.
 
 Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Acked-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200520124241.9931-1-dinghao.liu@zju.edu.cn
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20200522095139.19653-1-dinghao.liu@zju.edu.cn
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ti/wlcore/tx.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ti/wlcore/tx.c b/drivers/net/wireless/ti/wlcore/tx.c
-index 90e56d4c3df3b..e20e18cd04aed 100644
---- a/drivers/net/wireless/ti/wlcore/tx.c
-+++ b/drivers/net/wireless/ti/wlcore/tx.c
-@@ -863,6 +863,7 @@ void wl1271_tx_work(struct work_struct *work)
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+index b9d5d55a5edb9..ef89947ee3191 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+@@ -540,8 +540,10 @@ static int bch_set_geometry(struct gpmi_nand_data *this)
+ 		return ret;
  
- 	ret = wlcore_tx_work_locked(wl);
- 	if (ret < 0) {
-+		pm_runtime_put_noidle(wl->dev);
- 		wl12xx_queue_recovery_work(wl);
- 		goto out;
- 	}
+ 	ret = pm_runtime_get_sync(this->dev);
+-	if (ret < 0)
++	if (ret < 0) {
++		pm_runtime_put_autosuspend(this->dev);
+ 		return ret;
++	}
+ 
+ 	/*
+ 	* Due to erratum #2847 of the MX23, the BCH cannot be soft reset on this
 -- 
 2.25.1
 
