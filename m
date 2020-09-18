@@ -2,246 +2,596 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C860270235
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A25BC270252
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726601AbgIRQaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 12:30:17 -0400
-Received: from mx0b-00010702.pphosted.com ([148.163.158.57]:7016 "EHLO
-        mx0b-00010702.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726417AbgIRQ3y (ORCPT
+        id S1726369AbgIRQgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 12:36:00 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:56256 "EHLO
+        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725955AbgIRQgA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 12:29:54 -0400
-Received: from pps.filterd (m0098779.ppops.net [127.0.0.1])
-        by mx0b-00010702.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 08IFwf16021076;
-        Fri, 18 Sep 2020 11:04:31 -0500
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2172.outbound.protection.outlook.com [104.47.59.172])
-        by mx0b-00010702.pphosted.com with ESMTP id 33k5nt9d5e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Sep 2020 11:04:30 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Xfm10EVD8qVfE1sLaCRxNhwAbYt3zfWB0JKVfMWp3d9XSmwJ5DFJ26i5oFXhjJvK2jHUToD2YjyN7lxrUAD6x8nX1FE2qV8mFw7YJZ64jd2wbNV9uOCjiDY87ZA7XkcNG0gozQupfu3vUl8YxUkLV3yUTaY2gvpuIXPaOhvnXoUXRjOLBlj4D0nFDa4AmyG5K0mtdxcX4PNp6qxETEz1oiejz8p+/F1+N4dnPFovt01bDro3rlliSRgXxTJayQ0Rqx4aHuWA1BYa3+kukMgBvFYjisnnXCTJ22I7LOp4cPf/FOhSQ15Go93+vOSitwAqUDTqgi+kEymEVzSkkbUAUg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tY/aseWf7sHTckCwLC6BTObI1STh49SGkeJR4tkJgQg=;
- b=E7MTsHHK5yjuwyKf9aiEDr8oeOVHVRE9SWZ0vc9tVojf0VZf5yBshLe0AWZF8l+LR7mLYlB5ibrIQGFq8Ql6FJ86yBDMnykZbGmE7F0tN9txaVvVIx+yt1fxjHJKJQ+i2wy8vxGUalp40XUmjTLVXG20yOWrP44GTA3VnkUCQNEnEALPS4yhdnRzbb0dv5OQB9RowTGLSqcrGtNDISWTYDfGagDSECOKnlpuJ3lTzWCPRJki0anNIrrlEkBd+r3umXZiT7iXxtbKMs+z60YFAQcwqUaz4IUP82iDFXusLAtdzn+00JEwkHjYlcoVUXABjY5csa6E5I9jjdmqZfU7jA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=ni.com; dmarc=pass action=none header.from=ni.com; dkim=pass
- header.d=ni.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=nio365.onmicrosoft.com; s=selector2-nio365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tY/aseWf7sHTckCwLC6BTObI1STh49SGkeJR4tkJgQg=;
- b=LoG+/Y8+fttFb4sHs7rW7LyAbx60cCF0CEn8Ve4QJj5nkOPFntt02SJeL3IA4WOrpvg4gaV5N4I+LELWOkf4+KCujGsGeLuPCLyBRb6OgNWr3Wfd5TsuowvDB9ycIZfNp7ijdcv2YZTeCQK9lPLOVeJr9c0d+phf+LrtTJneFj0=
-Authentication-Results: xilinx.com; dkim=none (message not signed)
- header.d=none;xilinx.com; dmarc=none action=none header.from=ni.com;
-Received: from DM5PR0401MB3639.namprd04.prod.outlook.com (2603:10b6:4:77::34)
- by DM5PR04MB0668.namprd04.prod.outlook.com (2603:10b6:3:f9::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.19; Fri, 18 Sep
- 2020 16:04:26 +0000
-Received: from DM5PR0401MB3639.namprd04.prod.outlook.com
- ([fe80::d98c:c98a:dd45:36c3]) by DM5PR0401MB3639.namprd04.prod.outlook.com
- ([fe80::d98c:c98a:dd45:36c3%6]) with mapi id 15.20.3391.014; Fri, 18 Sep 2020
- 16:04:26 +0000
-Date:   Fri, 18 Sep 2020 11:04:19 -0500
-From:   Michael Auchter <michael.auchter@ni.com>
-To:     Ben Levinsky <BLEVINSK@xilinx.com>
-Cc:     "punit1.agrawal@toshiba.co.jp" <punit1.agrawal@toshiba.co.jp>,
-        Stefano Stabellini <stefanos@xilinx.com>,
-        Michal Simek <michals@xilinx.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
-        "Ed T. Mooring" <emooring@xilinx.com>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jiaying Liang <jliang@xilinx.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>, Jason Wu <j.wu@xilinx.com>
-Message-ID: <20200918160419.GC15530@xaphan>
-References: <20200917194341.16272-1-ben.levinsky@xilinx.com>
- <20200917194341.16272-6-ben.levinsky@xilinx.com>
- <20200917221120.GA15530@xaphan>
- <BYAPR02MB44073E7A3BEA401FF4684E95B53E0@BYAPR02MB4407.namprd02.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BYAPR02MB44073E7A3BEA401FF4684E95B53E0@BYAPR02MB4407.namprd02.prod.outlook.com>
-X-ClientProxiedBy: DM5PR06CA0076.namprd06.prod.outlook.com (2603:10b6:3:4::14)
- To DM5PR0401MB3639.namprd04.prod.outlook.com (2603:10b6:4:77::34)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost (2605:a601:ab6f:2000:2739:a39e:9b12:ab20) by DM5PR06CA0076.namprd06.prod.outlook.com (2603:10b6:3:4::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.13 via Frontend Transport; Fri, 18 Sep 2020 16:04:25 +0000
-X-Originating-IP: [2605:a601:ab6f:2000:2739:a39e:9b12:ab20]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a2fdcf6e-c704-4094-2caa-08d85bec8400
-X-MS-TrafficTypeDiagnostic: DM5PR04MB0668:
-X-Microsoft-Antispam-PRVS: <DM5PR04MB066801F3B8DCF9DA97DFE39B873F0@DM5PR04MB0668.namprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wPV6Ug/KG8P582zKCG9exTOfDh3DpgbFVXMG+Kv/SPCbyYiDoNq7Ma+Pj+jNTb0j0BS4xLG5OAIkz+sBhmUVH9MSsJ/UARVEBr5g3/sX0lEpUktsSYw33fz5ccS7GoSMPNVo4V5F5k40pDnO/T4iV4SwyBfs8ux9z0/ZMNAWyQAGGNPGfofq4b0R6zDXTBYKAPwtVhmhtfTWRbapadLD33hnArw7mnQpr9ilYGtdQ5zqQXrphs7A5KFZICVso99FXkndlrTNfOCBJHiyRlqmCe+2PTuzU0bJxfYSMDyQDnyEotE/c42boUjcsYH4qir6kNJDlOxPi6hwbJ1Ep6VwgQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0401MB3639.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(39860400002)(346002)(136003)(396003)(376002)(366004)(66476007)(66556008)(1076003)(33656002)(86362001)(4326008)(6916009)(66946007)(5660300002)(6486002)(9686003)(2906002)(6666004)(83380400001)(6496006)(478600001)(52116002)(8676002)(7416002)(33716001)(44832011)(16526019)(54906003)(316002)(53546011)(8936002)(186003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: iy6Lg57n99AvdS8bpEJfijPL4m/WEnfXWydJj2MWSI1bZqK9Sy/xBiDjMvjzS+fQLdW8jISbBsoj0OBOy2MHAujFMyMI3f+FqKXd9onkazG7vU1aZdimIrhDWjFIDmCMoNKTwEzEjasPpVs5hxAtIyr2YLOd0GLeTMDqUIlolfLxJwWPpkNpfGzyglspF0byWcwqzz9ZdeWCH/9uPFyM3gpgoag8y+6InBJ+XJH/VeVTmIDRbo5CWRKECXuoj/Fg4m4WxIRhNRskgFrHgLRWZu0R2h/BlXZk+Wr5CmvcI6zLY/dfUw6JpkMe5JSmPMRyoUZBGg6/KxbI+9tnafCEOi59X0y0cBZkGuyIOEGDHxQaEPjHYgiGYzsPesL73bjLSeQhNG1asdpemS1lsnMKabml6CbpE7JBLuaVbBVoZNHLQkJTlnFwLyeDzqk/8bsnoWcaeZpEFjerIqL7ULX+PJl+G2ToWGnzMxwzog00BXaCEVrhm5Ot1x0IIu2vrMOXpiQe+bvmHdYO2iAHXYH7h+t+GhcXe6rOcvnguz9NmTC3ZozQF0Ro5D40zGeKdZjc2+GYQP5PitMf8oggoLiRruqkz+rellMbokUEh/3VU/VmzMIZbHV+4vMH5v0Ss8zP4+FnwSamV8gZyYL6rOQ5dq+mPiB/YfUkXCGJMc4UNgo11Aiywh/9NpFHVnQf9SagBFU+W00CSp5Q0lnZSzRMiA==
-X-OriginatorOrg: ni.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a2fdcf6e-c704-4094-2caa-08d85bec8400
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR0401MB3639.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2020 16:04:26.0816
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 87ba1f9a-44cd-43a6-b008-6fdb45a5204e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ym6vM+waDjIdq1c5hxLXH2oTnng322TDfrUK7ZddxrPeCY/rGlZu6ywzJ4Fn3zloqHKrXr5olpvu+4eKBXX+ag==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR04MB0668
-Subject: Re: RE: [PATCH v14 5/5] remoteproc: Add initial zynqmp R5 remoteproc driver
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-18_14:2020-09-16,2020-09-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_policy_notspam policy=outbound_policy score=30 bulkscore=0
- malwarescore=0 spamscore=0 phishscore=0 adultscore=0 lowpriorityscore=0
- clxscore=1015 mlxlogscore=999 mlxscore=0 priorityscore=1501
- impostorscore=0 suspectscore=1 classifier=spam adjust=30 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2009180129
+        Fri, 18 Sep 2020 12:36:00 -0400
+Received: from Internal Mail-Server by MTLPINE1 (envelope-from moshe@mellanox.com)
+        with SMTP; 18 Sep 2020 19:07:08 +0300
+Received: from dev-l-vrt-135.mtl.labs.mlnx (dev-l-vrt-135.mtl.labs.mlnx [10.234.135.1])
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 08IG78eE025128;
+        Fri, 18 Sep 2020 19:07:08 +0300
+Received: from dev-l-vrt-135.mtl.labs.mlnx (localhost [127.0.0.1])
+        by dev-l-vrt-135.mtl.labs.mlnx (8.15.2/8.15.2/Debian-10) with ESMTP id 08IG78iF031148;
+        Fri, 18 Sep 2020 19:07:08 +0300
+Received: (from moshe@localhost)
+        by dev-l-vrt-135.mtl.labs.mlnx (8.15.2/8.15.2/Submit) id 08IG78nW031147;
+        Fri, 18 Sep 2020 19:07:08 +0300
+From:   Moshe Shemesh <moshe@mellanox.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Moshe Shemesh <moshe@mellanox.com>
+Subject: [PATCH net-next RFC v5 01/15] devlink: Add reload action option to devlink reload command
+Date:   Fri, 18 Sep 2020 19:06:37 +0300
+Message-Id: <1600445211-31078-2-git-send-email-moshe@mellanox.com>
+X-Mailer: git-send-email 1.8.4.3
+In-Reply-To: <1600445211-31078-1-git-send-email-moshe@mellanox.com>
+References: <1600445211-31078-1-git-send-email-moshe@mellanox.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 10:18:39PM +0000, Ben Levinsky wrote:
-> Hi Michael,
-> 
-> Thanks for the comments,
-> 
-> > -----Original Message-----
-> > From: Michael Auchter <michael.auchter@ni.com>
-> > Sent: Thursday, September 17, 2020 3:11 PM
-> > To: Ben Levinsky <BLEVINSK@xilinx.com>
-> > Cc: punit1.agrawal@toshiba.co.jp; Stefano Stabellini <stefanos@xilinx.com>;
-> > Michal Simek <michals@xilinx.com>; devicetree@vger.kernel.org;
-> > mathieu.poirier@linaro.org; Ed T. Mooring <emooring@xilinx.com>; linux-
-> > remoteproc@vger.kernel.org; linux-kernel@vger.kernel.org; Jiaying Liang
-> > <jliang@xilinx.com>; robh+dt@kernel.org; linux-arm-
-> > kernel@lists.infradead.org; Jiaying Liang <jliang@xilinx.com>; Michal Simek
-> > <michals@xilinx.com>; Ed T. Mooring <emooring@xilinx.com>; Jason Wu
-> > <j.wu@xilinx.com>
-> > Subject: Re: [PATCH v14 5/5] remoteproc: Add initial zynqmp R5 remoteproc
-> > driver
-> > 
-> > Hey Ben,
-> > 
-> > Split mode is still not functional in this patch series (as was the case
-> > with the last few revisions).
-> > 
-> > Before sending out the next revision, can you _please_ ensure you're
-> > testing all supported configurations?
-> > 
-> [Ben Levinsky]  I will make sure to update in next revision.
-> As per review, I tested on QEMU and hardware firmware loading in split
-> mode on R5 0 split, R5 1 split and R5 lockstep and  was  able to
-> successfully load, start and establish IPC links
-> 
-> That being said, I will update the to reflect the values between the
-> enum for rpu operation mode and the documentation in the binding.
-> 
-> For testing, I can provide a pointer to a publicly available device
-> tree I am using if that helps. If not, can you expand on the testing
-> of supported configurations?
+Add devlink reload action to allow the user to request a specific reload
+action. The action parameter is optional, if not specified then devlink
+driver re-init action is used (backward compatible).
+Note that when required to do firmware activation some drivers may need
+to reload the driver. On the other hand some drivers may need to reset
+the firmware to reinitialize the driver entities. Therefore, the devlink
+reload command returns the actions which were actually performed.
+Reload actions supported are:
+driver_reinit: driver entities re-initialization, applying devlink-param
+               and devlink-resource values.
+fw_activate: firmware activate.
 
-I'm testing exclusively split mode configuration. I load and run
-firmware on R5 0, and then do the same on R5 1.
+command examples:
+$devlink dev reload pci/0000:82:00.0 action driver_reinit
+reload_actions_performed:
+  driver_reinit
 
-Given the logic error, I admit that I'm confused how this could have
-worked in your tests, unless the device tree you used to test split mode
-contained "lockstep-mode = <1>", and the lockstep device tree contained
-"lockstep-mode = <0>".
+$devlink dev reload pci/0000:82:00.0 action fw_activate
+reload_actions_performed:
+  driver_reinit fw_activate
 
-But if that was the case, then that means the device trees used for
-testing changed this property's value between v13 and v14, for seemingly
-no reason.
+Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
+---
+v4 -> v5:
+- Always pass actions_performed to unload_up() instead of checking in
+  each driver
+- Verify returned actions_performed includes the requested action
+- Changed  devlink_reload_actions_verify(devlink) to get ops
+- Changed  devlink_reload_actions_verify() to return bool and rename to
+  devlink_reload_actions_valid()
+-  Only generate the reply if request uses new attributes
+v3 -> v4:
+- Removed fw_activate_no_reset as an action (next patch adds limit
+  levels instead).
+- Renamed actions_done to actions_performed
+v2 -> v3:
+- Replace fw_live_patch action by fw_activate_no_reset
+- Devlink reload returns the actions done over netlink reply
+v1 -> v2:
+- Instead of reload levels driver,fw_reset,fw_live_patch have reload
+  actions driver_reinit,fw_activate,fw_live_patch
+- Remove driver default level, the action driver_reinit is the default
+  action for all drivers
+---
+ drivers/net/ethernet/mellanox/mlx4/main.c     |  13 +-
+ .../net/ethernet/mellanox/mlx5/core/devlink.c |  14 +-
+ drivers/net/ethernet/mellanox/mlxsw/core.c    |  24 +++-
+ drivers/net/netdevsim/dev.c                   |  15 +-
+ include/net/devlink.h                         |   7 +-
+ include/uapi/linux/devlink.h                  |  19 +++
+ net/core/devlink.c                            | 136 ++++++++++++++++--
+ 7 files changed, 192 insertions(+), 36 deletions(-)
 
-> > On Thu, Sep 17, 2020 at 12:43:41PM -0700, Ben Levinsky wrote:
-> > > +/**
-> > > + * RPU core configuration
-> > > + */
-> > > +static enum rpu_oper_mode rpu_mode;
-> > > +
-> > 
-> > <.. snip ..>
-> > 
-> > > +static int zynqmp_r5_remoteproc_probe(struct platform_device *pdev)
-> > > +{
-> > > +	int ret, i = 0;
-> > > +	u32 lockstep_mode;
-> > > +	struct device *dev = &pdev->dev;
-> > > +	struct device_node *nc;
-> > > +
-> > > +	ret = of_property_read_u32(dev->of_node,
-> > > +				   "lockstep-mode",
-> > > +				   &lockstep_mode);
-> > > +	if (ret < 0) {
-> > > +		return ret;
-> > > +	} else if (lockstep_mode != PM_RPU_MODE_LOCKSTEP &&
-> > > +	    lockstep_mode != PM_RPU_MODE_SPLIT) {
-> > > +		dev_err(dev,
-> > > +			"Invalid lockstep-mode %x in %pOF\n",
-> > > +			lockstep_mode, dev->of_node);
-> > > +		return -EINVAL;
-> > > +	}
-> > > +
-> > > +	rpu_mode = lockstep_mode;
-> > > +
-> > > +	dev_dbg(dev, "RPU configuration: %s\n",
-> > > +		lockstep_mode ? "lockstep" : "split");
-> > 
-> > The binding documents lockstep-mode as:
-> > 
-> > > +  lockstep-mode:
-> > > +    description:
-> > > +      R5 core configuration (split is 0 or lock-step and 1)
-> > > +    maxItems: 1
-> > 
-> will update this as you note so that lockstep and split mode are accurately reflected. 
-> 
-> > (Which needs to be reworded, but it looks like the intent was "split is
-> > 0 and lock-step is 1")
-> > 
-> > However, rpu_oper_mode is defined as:
-> > 
-> > > +enum rpu_oper_mode {
-> > > +       PM_RPU_MODE_LOCKSTEP = 0,
-> > > +       PM_RPU_MODE_SPLIT = 1,
-> > > +};
-> > 
-> > so the assignment "rpu_mode = lockstep_mode" is incorrect.
-> > 
-> once the binding is updated, why would this still be incorrect?
-> Assuming the documentation is updated, the above line would be ok,
-> right?
+diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
+index 70cf24ba71e4..1a482120cc0a 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/main.c
++++ b/drivers/net/ethernet/mellanox/mlx4/main.c
+@@ -3946,6 +3946,7 @@ static int mlx4_restart_one_up(struct pci_dev *pdev, bool reload,
+ 			       struct devlink *devlink);
+ 
+ static int mlx4_devlink_reload_down(struct devlink *devlink, bool netns_change,
++				    enum devlink_reload_action action,
+ 				    struct netlink_ext_ack *extack)
+ {
+ 	struct mlx4_priv *priv = devlink_priv(devlink);
+@@ -3962,8 +3963,8 @@ static int mlx4_devlink_reload_down(struct devlink *devlink, bool netns_change,
+ 	return 0;
+ }
+ 
+-static int mlx4_devlink_reload_up(struct devlink *devlink,
+-				  struct netlink_ext_ack *extack)
++static int mlx4_devlink_reload_up(struct devlink *devlink, enum devlink_reload_action action,
++				  struct netlink_ext_ack *extack, unsigned long *actions_performed)
+ {
+ 	struct mlx4_priv *priv = devlink_priv(devlink);
+ 	struct mlx4_dev *dev = &priv->dev;
+@@ -3971,15 +3972,19 @@ static int mlx4_devlink_reload_up(struct devlink *devlink,
+ 	int err;
+ 
+ 	err = mlx4_restart_one_up(persist->pdev, true, devlink);
+-	if (err)
++	if (err) {
+ 		mlx4_err(persist->dev, "mlx4_restart_one_up failed, ret=%d\n",
+ 			 err);
++		return err;
++	}
++	*actions_performed = BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT);
+ 
+-	return err;
++	return 0;
+ }
+ 
+ static const struct devlink_ops mlx4_devlink_ops = {
+ 	.port_type_set	= mlx4_devlink_port_type_set,
++	.supported_reload_actions = BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT),
+ 	.reload_down	= mlx4_devlink_reload_down,
+ 	.reload_up	= mlx4_devlink_reload_up,
+ };
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
+index c709e9a385f6..ffc0525cea64 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
+@@ -89,6 +89,7 @@ mlx5_devlink_info_get(struct devlink *devlink, struct devlink_info_req *req,
+ }
+ 
+ static int mlx5_devlink_reload_down(struct devlink *devlink, bool netns_change,
++				    enum devlink_reload_action action,
+ 				    struct netlink_ext_ack *extack)
+ {
+ 	struct mlx5_core_dev *dev = devlink_priv(devlink);
+@@ -97,12 +98,18 @@ static int mlx5_devlink_reload_down(struct devlink *devlink, bool netns_change,
+ 	return 0;
+ }
+ 
+-static int mlx5_devlink_reload_up(struct devlink *devlink,
+-				  struct netlink_ext_ack *extack)
++static int mlx5_devlink_reload_up(struct devlink *devlink, enum devlink_reload_action action,
++				  struct netlink_ext_ack *extack, unsigned long *actions_performed)
+ {
+ 	struct mlx5_core_dev *dev = devlink_priv(devlink);
++	int err;
+ 
+-	return mlx5_load_one(dev, false);
++	err = mlx5_load_one(dev, false);
++	if (err)
++		return err;
++	*actions_performed = BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT);
++
++	return 0;
+ }
+ 
+ static const struct devlink_ops mlx5_devlink_ops = {
+@@ -118,6 +125,7 @@ static const struct devlink_ops mlx5_devlink_ops = {
+ #endif
+ 	.flash_update = mlx5_devlink_flash_update,
+ 	.info_get = mlx5_devlink_info_get,
++	.supported_reload_actions = BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT),
+ 	.reload_down = mlx5_devlink_reload_down,
+ 	.reload_up = mlx5_devlink_reload_up,
+ };
+diff --git a/drivers/net/ethernet/mellanox/mlxsw/core.c b/drivers/net/ethernet/mellanox/mlxsw/core.c
+index 1bb21fe295b9..19f4486d5faf 100644
+--- a/drivers/net/ethernet/mellanox/mlxsw/core.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/core.c
+@@ -1409,7 +1409,7 @@ mlxsw_devlink_info_get(struct devlink *devlink, struct devlink_info_req *req,
+ 
+ static int
+ mlxsw_devlink_core_bus_device_reload_down(struct devlink *devlink,
+-					  bool netns_change,
++					  bool netns_change, enum devlink_reload_action action,
+ 					  struct netlink_ext_ack *extack)
+ {
+ 	struct mlxsw_core *mlxsw_core = devlink_priv(devlink);
+@@ -1422,15 +1422,23 @@ mlxsw_devlink_core_bus_device_reload_down(struct devlink *devlink,
+ }
+ 
+ static int
+-mlxsw_devlink_core_bus_device_reload_up(struct devlink *devlink,
+-					struct netlink_ext_ack *extack)
++mlxsw_devlink_core_bus_device_reload_up(struct devlink *devlink, enum devlink_reload_action action,
++					struct netlink_ext_ack *extack,
++					unsigned long *actions_performed)
+ {
+ 	struct mlxsw_core *mlxsw_core = devlink_priv(devlink);
++	int err;
+ 
+-	return mlxsw_core_bus_device_register(mlxsw_core->bus_info,
+-					      mlxsw_core->bus,
+-					      mlxsw_core->bus_priv, true,
+-					      devlink, extack);
++	err = mlxsw_core_bus_device_register(mlxsw_core->bus_info,
++					     mlxsw_core->bus,
++					     mlxsw_core->bus_priv, true,
++					     devlink, extack);
++	if (err)
++		return err;
++	*actions_performed = BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT) |
++			     BIT(DEVLINK_RELOAD_ACTION_FW_ACTIVATE);
++
++	return 0;
+ }
+ 
+ static int mlxsw_devlink_flash_update(struct devlink *devlink,
+@@ -1560,6 +1568,8 @@ mlxsw_devlink_trap_policer_counter_get(struct devlink *devlink,
+ }
+ 
+ static const struct devlink_ops mlxsw_devlink_ops = {
++	.supported_reload_actions	= BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT) |
++					  BIT(DEVLINK_RELOAD_ACTION_FW_ACTIVATE),
+ 	.reload_down		= mlxsw_devlink_core_bus_device_reload_down,
+ 	.reload_up		= mlxsw_devlink_core_bus_device_reload_up,
+ 	.port_type_set			= mlxsw_devlink_port_type_set,
+diff --git a/drivers/net/netdevsim/dev.c b/drivers/net/netdevsim/dev.c
+index 32f339fedb21..0eb522f6a718 100644
+--- a/drivers/net/netdevsim/dev.c
++++ b/drivers/net/netdevsim/dev.c
+@@ -697,7 +697,7 @@ static int nsim_dev_reload_create(struct nsim_dev *nsim_dev,
+ static void nsim_dev_reload_destroy(struct nsim_dev *nsim_dev);
+ 
+ static int nsim_dev_reload_down(struct devlink *devlink, bool netns_change,
+-				struct netlink_ext_ack *extack)
++				enum devlink_reload_action action, struct netlink_ext_ack *extack)
+ {
+ 	struct nsim_dev *nsim_dev = devlink_priv(devlink);
+ 
+@@ -713,10 +713,11 @@ static int nsim_dev_reload_down(struct devlink *devlink, bool netns_change,
+ 	return 0;
+ }
+ 
+-static int nsim_dev_reload_up(struct devlink *devlink,
+-			      struct netlink_ext_ack *extack)
++static int nsim_dev_reload_up(struct devlink *devlink, enum devlink_reload_action action,
++			      struct netlink_ext_ack *extack, unsigned long *actions_performed)
+ {
+ 	struct nsim_dev *nsim_dev = devlink_priv(devlink);
++	int err;
+ 
+ 	if (nsim_dev->fail_reload) {
+ 		/* For testing purposes, user set debugfs fail_reload
+@@ -726,7 +727,12 @@ static int nsim_dev_reload_up(struct devlink *devlink,
+ 		return -EINVAL;
+ 	}
+ 
+-	return nsim_dev_reload_create(nsim_dev, extack);
++	err = nsim_dev_reload_create(nsim_dev, extack);
++	if (err)
++		return err;
++	*actions_performed = BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT);
++
++	return 0;
+ }
+ 
+ static int nsim_dev_info_get(struct devlink *devlink,
+@@ -875,6 +881,7 @@ nsim_dev_devlink_trap_policer_counter_get(struct devlink *devlink,
+ }
+ 
+ static const struct devlink_ops nsim_dev_devlink_ops = {
++	.supported_reload_actions = BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT),
+ 	.reload_down = nsim_dev_reload_down,
+ 	.reload_up = nsim_dev_reload_up,
+ 	.info_get = nsim_dev_info_get,
+diff --git a/include/net/devlink.h b/include/net/devlink.h
+index 48b1c1ef1ebd..37abc3e08e9e 100644
+--- a/include/net/devlink.h
++++ b/include/net/devlink.h
+@@ -1014,10 +1014,11 @@ enum devlink_trap_group_generic_id {
+ 	}
+ 
+ struct devlink_ops {
++	unsigned long supported_reload_actions;
+ 	int (*reload_down)(struct devlink *devlink, bool netns_change,
+-			   struct netlink_ext_ack *extack);
+-	int (*reload_up)(struct devlink *devlink,
+-			 struct netlink_ext_ack *extack);
++			   enum devlink_reload_action action, struct netlink_ext_ack *extack);
++	int (*reload_up)(struct devlink *devlink, enum devlink_reload_action action,
++			 struct netlink_ext_ack *extack, unsigned long *actions_performed);
+ 	int (*port_type_set)(struct devlink_port *devlink_port,
+ 			     enum devlink_port_type port_type);
+ 	int (*port_split)(struct devlink *devlink, unsigned int port_index,
+diff --git a/include/uapi/linux/devlink.h b/include/uapi/linux/devlink.h
+index 631f5bdf1707..fdba7ab58a79 100644
+--- a/include/uapi/linux/devlink.h
++++ b/include/uapi/linux/devlink.h
+@@ -274,6 +274,21 @@ enum {
+ 	DEVLINK_ATTR_TRAP_METADATA_TYPE_FA_COOKIE,
+ };
+ 
++/**
++ * enum devlink_reload_action - Reload action.
++ * @DEVLINK_RELOAD_ACTION_DRIVER_REINIT: Driver entities re-instantiation.
++ * @DEVLINK_RELOAD_ACTION_FW_ACTIVATE: FW activate.
++ */
++enum devlink_reload_action {
++	DEVLINK_RELOAD_ACTION_UNSPEC,
++	DEVLINK_RELOAD_ACTION_DRIVER_REINIT,
++	DEVLINK_RELOAD_ACTION_FW_ACTIVATE,
++
++	/* Add new reload actions above */
++	__DEVLINK_RELOAD_ACTION_MAX,
++	DEVLINK_RELOAD_ACTION_MAX = __DEVLINK_RELOAD_ACTION_MAX - 1
++};
++
+ enum devlink_attr {
+ 	/* don't change the order or add anything between, this is ABI! */
+ 	DEVLINK_ATTR_UNSPEC,
+@@ -462,6 +477,10 @@ enum devlink_attr {
+ 
+ 	DEVLINK_ATTR_PORT_EXTERNAL,		/* u8 */
+ 	DEVLINK_ATTR_PORT_CONTROLLER_NUMBER,	/* u32 */
++
++	DEVLINK_ATTR_RELOAD_ACTION,		/* u8 */
++	DEVLINK_ATTR_RELOAD_ACTIONS_PERFORMED,	/* nested */
++
+ 	/* add new attributes above here, update the policy in devlink.c */
+ 
+ 	__DEVLINK_ATTR_MAX,
+diff --git a/net/core/devlink.c b/net/core/devlink.c
+index e5b71f3c2d4d..318ef29f81f2 100644
+--- a/net/core/devlink.c
++++ b/net/core/devlink.c
+@@ -462,6 +462,12 @@ static int devlink_nl_put_handle(struct sk_buff *msg, struct devlink *devlink)
+ 	return 0;
+ }
+ 
++static bool
++devlink_reload_action_is_supported(struct devlink *devlink, enum devlink_reload_action action)
++{
++	return test_bit(action, &devlink->ops->supported_reload_actions);
++}
++
+ static int devlink_nl_fill(struct sk_buff *msg, struct devlink *devlink,
+ 			   enum devlink_command cmd, u32 portid,
+ 			   u32 seq, int flags)
+@@ -2948,11 +2954,11 @@ static void devlink_reload_netns_change(struct devlink *devlink,
+ 				     DEVLINK_CMD_PARAM_NEW);
+ }
+ 
+-static bool devlink_reload_supported(const struct devlink *devlink)
++static bool devlink_reload_supported(const struct devlink_ops *ops)
+ {
+-	return devlink->ops->reload_down && devlink->ops->reload_up;
++	return ops->reload_down && ops->reload_up;
+ }
+-
++
+ static void devlink_reload_failed_set(struct devlink *devlink,
+ 				      bool reload_failed)
+ {
+@@ -2969,32 +2975,79 @@ bool devlink_is_reload_failed(const struct devlink *devlink)
+ EXPORT_SYMBOL_GPL(devlink_is_reload_failed);
+ 
+ static int devlink_reload(struct devlink *devlink, struct net *dest_net,
+-			  struct netlink_ext_ack *extack)
++			  enum devlink_reload_action action, struct netlink_ext_ack *extack,
++			  unsigned long *actions_performed)
+ {
+ 	int err;
+ 
+ 	if (!devlink->reload_enabled)
+ 		return -EOPNOTSUPP;
+ 
+-	err = devlink->ops->reload_down(devlink, !!dest_net, extack);
++	err = devlink->ops->reload_down(devlink, !!dest_net, action, extack);
+ 	if (err)
+ 		return err;
+ 
+ 	if (dest_net && !net_eq(dest_net, devlink_net(devlink)))
+ 		devlink_reload_netns_change(devlink, dest_net);
+ 
+-	err = devlink->ops->reload_up(devlink, extack);
++	err = devlink->ops->reload_up(devlink, action, extack, actions_performed);
+ 	devlink_reload_failed_set(devlink, !!err);
+-	return err;
++	if (err)
++		return err;
++
++	WARN_ON(!test_bit(action, actions_performed));
++	return 0;
++}
++
++static int
++devlink_nl_reload_actions_performed_fill(struct sk_buff *msg,
++					 struct devlink *devlink,
++					 unsigned long actions_performed,
++					 enum devlink_command cmd, u32 portid,
++					 u32 seq, int flags)
++{
++	struct nlattr *actions_performed_attr;
++	void *hdr;
++	int i;
++
++	hdr = genlmsg_put(msg, portid, seq, &devlink_nl_family, flags, cmd);
++	if (!hdr)
++		return -EMSGSIZE;
++
++	if (devlink_nl_put_handle(msg, devlink))
++		goto genlmsg_cancel;
++
++	actions_performed_attr = nla_nest_start(msg, DEVLINK_ATTR_RELOAD_ACTIONS_PERFORMED);
++	if (!actions_performed_attr)
++		goto genlmsg_cancel;
++
++	for (i = 0; i <= DEVLINK_RELOAD_ACTION_MAX; i++) {
++		if (!test_bit(i, &actions_performed))
++			continue;
++		if (nla_put_u8(msg, DEVLINK_ATTR_RELOAD_ACTION, i))
++			goto actions_performed_nest_cancel;
++	}
++	nla_nest_end(msg, actions_performed_attr);
++	genlmsg_end(msg, hdr);
++	return 0;
++
++actions_performed_nest_cancel:
++	nla_nest_cancel(msg, actions_performed_attr);
++genlmsg_cancel:
++	genlmsg_cancel(msg, hdr);
++	return -EMSGSIZE;
+ }
+ 
+ static int devlink_nl_cmd_reload(struct sk_buff *skb, struct genl_info *info)
+ {
+ 	struct devlink *devlink = info->user_ptr[0];
++	enum devlink_reload_action action;
++	unsigned long actions_performed;
+ 	struct net *dest_net = NULL;
++	struct sk_buff *msg;
+ 	int err;
+ 
+-	if (!devlink_reload_supported(devlink))
++	if (!devlink_reload_supported(devlink->ops))
+ 		return -EOPNOTSUPP;
+ 
+ 	err = devlink_resources_validate(devlink, NULL, info);
+@@ -3011,12 +3064,43 @@ static int devlink_nl_cmd_reload(struct sk_buff *skb, struct genl_info *info)
+ 			return PTR_ERR(dest_net);
+ 	}
+ 
+-	err = devlink_reload(devlink, dest_net, info->extack);
++	if (info->attrs[DEVLINK_ATTR_RELOAD_ACTION])
++		action = nla_get_u8(info->attrs[DEVLINK_ATTR_RELOAD_ACTION]);
++	else
++		action = DEVLINK_RELOAD_ACTION_DRIVER_REINIT;
++
++	if (action == DEVLINK_RELOAD_ACTION_UNSPEC) {
++		NL_SET_ERR_MSG_MOD(info->extack, "Invalid reload action");
++		return -EINVAL;
++	} else if (!devlink_reload_action_is_supported(devlink, action)) {
++		NL_SET_ERR_MSG_MOD(info->extack, "Requested reload action is not supported by the driver");
++		return -EOPNOTSUPP;
++	}
++
++	err = devlink_reload(devlink, dest_net, action, info->extack, &actions_performed);
+ 
+ 	if (dest_net)
+ 		put_net(dest_net);
+ 
+-	return err;
++	if (err)
++		return err;
++	/* For backward compatibility generate reply only if attributes used by user */
++	if (!info->attrs[DEVLINK_ATTR_RELOAD_ACTION])
++		return 0;
++
++	msg = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
++	if (!msg)
++		return -ENOMEM;
++
++	err = devlink_nl_reload_actions_performed_fill(msg, devlink, actions_performed,
++						       DEVLINK_CMD_RELOAD, info->snd_portid,
++						       info->snd_seq, 0);
++	if (err) {
++		nlmsg_free(msg);
++		return err;
++	}
++
++	return genlmsg_reply(msg, info);
+ }
+ 
+ static int devlink_nl_flash_update_fill(struct sk_buff *msg,
+@@ -7069,6 +7153,7 @@ static const struct nla_policy devlink_nl_policy[DEVLINK_ATTR_MAX + 1] = {
+ 	[DEVLINK_ATTR_TRAP_POLICER_RATE] = { .type = NLA_U64 },
+ 	[DEVLINK_ATTR_TRAP_POLICER_BURST] = { .type = NLA_U64 },
+ 	[DEVLINK_ATTR_PORT_FUNCTION] = { .type = NLA_NESTED },
++	[DEVLINK_ATTR_RELOAD_ACTION] = { .type = NLA_U8 },
+ };
+ 
+ static const struct genl_ops devlink_nl_ops[] = {
+@@ -7402,6 +7487,20 @@ static struct genl_family devlink_nl_family __ro_after_init = {
+ 	.n_mcgrps	= ARRAY_SIZE(devlink_nl_mcgrps),
+ };
+ 
++static bool devlink_reload_actions_valid(const struct devlink_ops *ops)
++{
++	if (!devlink_reload_supported(ops)) {
++		if (WARN_ON(ops->supported_reload_actions))
++			return false;
++		return true;
++	}
++
++	if (WARN_ON(ops->supported_reload_actions >= BIT(__DEVLINK_RELOAD_ACTION_MAX) ||
++		    ops->supported_reload_actions <= BIT(DEVLINK_RELOAD_ACTION_UNSPEC)))
++		return false;
++	return true;
++}
++
+ /**
+  *	devlink_alloc - Allocate new devlink instance resources
+  *
+@@ -7418,10 +7517,14 @@ struct devlink *devlink_alloc(const struct devlink_ops *ops, size_t priv_size)
+ 	if (WARN_ON(!ops))
+ 		return NULL;
+ 
++	if (!devlink_reload_actions_valid(ops))
++		return NULL;
++
+ 	devlink = kzalloc(sizeof(*devlink) + priv_size, GFP_KERNEL);
+ 	if (!devlink)
+ 		return NULL;
+ 	devlink->ops = ops;
++
+ 	xa_init_flags(&devlink->snapshot_ids, XA_FLAGS_ALLOC);
+ 	__devlink_net_set(devlink, &init_net);
+ 	INIT_LIST_HEAD(&devlink->port_list);
+@@ -7466,7 +7569,7 @@ EXPORT_SYMBOL_GPL(devlink_register);
+ void devlink_unregister(struct devlink *devlink)
+ {
+ 	mutex_lock(&devlink_mutex);
+-	WARN_ON(devlink_reload_supported(devlink) &&
++	WARN_ON(devlink_reload_supported(devlink->ops) &&
+ 		devlink->reload_enabled);
+ 	devlink_notify(devlink, DEVLINK_CMD_DEL);
+ 	list_del(&devlink->list);
+@@ -8503,7 +8606,7 @@ __devlink_param_driverinit_value_set(struct devlink *devlink,
+ int devlink_param_driverinit_value_get(struct devlink *devlink, u32 param_id,
+ 				       union devlink_param_value *init_val)
+ {
+-	if (!devlink_reload_supported(devlink))
++	if (!devlink_reload_supported(devlink->ops))
+ 		return -EOPNOTSUPP;
+ 
+ 	return __devlink_param_driverinit_value_get(&devlink->param_list,
+@@ -8550,7 +8653,7 @@ int devlink_port_param_driverinit_value_get(struct devlink_port *devlink_port,
+ {
+ 	struct devlink *devlink = devlink_port->devlink;
+ 
+-	if (!devlink_reload_supported(devlink))
++	if (!devlink_reload_supported(devlink->ops))
+ 		return -EOPNOTSUPP;
+ 
+ 	return __devlink_param_driverinit_value_get(&devlink_port->param_list,
+@@ -9676,6 +9779,7 @@ int devlink_compat_switch_id_get(struct net_device *dev,
+ 
+ static void __net_exit devlink_pernet_pre_exit(struct net *net)
+ {
++	unsigned long actions_performed;
+ 	struct devlink *devlink;
+ 	int err;
+ 
+@@ -9685,9 +9789,11 @@ static void __net_exit devlink_pernet_pre_exit(struct net *net)
+ 	mutex_lock(&devlink_mutex);
+ 	list_for_each_entry(devlink, &devlink_list, list) {
+ 		if (net_eq(devlink_net(devlink), net)) {
+-			if (WARN_ON(!devlink_reload_supported(devlink)))
++			if (WARN_ON(!devlink_reload_supported(devlink->ops)))
+ 				continue;
+-			err = devlink_reload(devlink, &init_net, NULL);
++			err = devlink_reload(devlink, &init_net,
++					     DEVLINK_RELOAD_ACTION_DRIVER_REINIT,
++					     NULL, &actions_performed);
+ 			if (err && err != -EOPNOTSUPP)
+ 				pr_warn("Failed to reload devlink instance into init_net\n");
+ 		}
+-- 
+2.17.1
 
-It might not be incorrect, depending on how you change the binding.
-
-If you update the binding documentation to say "lockstep-mode: 0 is
-lockstep, 1 is split", then this line would be fine. However, that would
-seem strange to me, as this reads like a boolean: setting this to 0
-would logically indicate that the device is not configured in lockstep
-mode.
-
-I don't think this is what you were proposing, but I'm not sure.
-
-v13 did this correctly, and lockstep-mode == 0 implied split mode:
-
-	of_property_read_u32(dev->of_node, "lockstep-mode", &lockstep_mode);
-
-	if (!lockstep_mode) {
-		rpu_mode = PM_RPU_MODE_SPLIT;
-	} else if (lockstep_mode == 1) {
-		rpu_mode = PM_RPU_MODE_LOCKSTEP;
-	} 
-
-Changing this is what broke v14.
-
-> 
-> Thank you for the review
-> Ben
-> 
-> > - Michael
