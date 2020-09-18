@@ -2,75 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5736B270170
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 17:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD3AA270175
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 17:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726236AbgIRP5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 11:57:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48894 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726199AbgIRP5L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 11:57:11 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 79C622389E;
-        Fri, 18 Sep 2020 15:57:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600444630;
-        bh=vA5PLQQRY/xkPeBiOz82rbt8QOuSuBotaq2VJex7mHM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l6RL7JR2ZsNkzQTluyv0GWIIOr7ekA9QSeYW3P5knpa4kCV/LhgRriDJlUoAIisKR
-         MshF83VRQgX8RM1UrzT2jEtvMR415TDAdhOYRJFG8dsZrYtZin0pO/HLnWA3/0R5Lv
-         8ImBdo4W2hbrIOSYewDE3qLqwr9XHbjl3mnxzs44=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kJIl3-00D3F2-1Y; Fri, 18 Sep 2020 16:57:09 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        kvmarm@lists.cs.columbia.edu, julien.thierry.kdev@gmail.com,
-        Xiaofei Tan <tanxiaofei@huawei.com>,
-        linux-kernel@vger.kernel.org, suzuki.poulose@arm.com,
-        james.morse@arm.com, will@kernel.org, catalin.marinas@arm.com
-Cc:     linuxarm@huawei.com
-Subject: Re: [PATCH v3] KVM: arm64: fix doc warnings in mmu code
-Date:   Fri, 18 Sep 2020 16:57:00 +0100
-Message-Id: <160044458392.1301915.5239370632867337903.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <1600307269-50957-1-git-send-email-tanxiaofei@huawei.com>
-References: <1600307269-50957-1-git-send-email-tanxiaofei@huawei.com>
+        id S1726316AbgIRP5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 11:57:32 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:42243 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726281AbgIRP5c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 11:57:32 -0400
+Received: by mail-ot1-f67.google.com with SMTP id m13so1331612otl.9;
+        Fri, 18 Sep 2020 08:57:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=opjEZ6SLPUR8mQtZMsAA6wmK3fGCNwHrfwNDy0h6zpc=;
+        b=WTwr57nz11hj5UQbiYrA14iVCkc4VW1IRJEbmJEpl47mGP41qrEXLQTN4sbqkXCQqN
+         31C51Rf/vVYsFi5zSEDW6oOnmauqdgjGD3m3dUiyBK6/dWL18WKyA+1K+Di0VVlkPq3w
+         xQs1VMFlqJxZynvEYUbM0xTXt5eguxoE5HOLkBXm7sMDCsn0vDXj2lU07JgnNej+1qEO
+         chNpdYZMtUp9ibVgz6KZXNFFQIbgN2+hmwhMX7DyEJewZ9U+NOZWgKJMpK4i7pg+0TQW
+         VImz/eLhoDHATPpgjjkjPbrqI8jpjZhCD0dU6lrS/F7B+IqnHAtiUA4dmHXF6kw6Fg7v
+         ttrQ==
+X-Gm-Message-State: AOAM533jz1FYC099Od4j7kVMPr7bmuSOIg0DLtkkQDkHJXYyRxOUaDRY
+        Kcav0VNesiXtN7Swsza42mrIdVywm1PDAtckKpPoHgEN5hc=
+X-Google-Smtp-Source: ABdhPJyTSlj2UEeHkynnjnJztlFv5jVdGZEodAYbnE+eq6Udymkz9mK0HHBMCMKLKn9o5ybcwqLsRFm+g2C2h9qJOKM=
+X-Received: by 2002:a05:6830:1f16:: with SMTP id u22mr22331206otg.118.1600444651425;
+ Fri, 18 Sep 2020 08:57:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, alexandru.elisei@arm.com, kvmarm@lists.cs.columbia.edu, julien.thierry.kdev@gmail.com, tanxiaofei@huawei.com, linux-kernel@vger.kernel.org, suzuki.poulose@arm.com, james.morse@arm.com, will@kernel.org, catalin.marinas@arm.com, linuxarm@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 18 Sep 2020 17:57:19 +0200
+Message-ID: <CAJZ5v0h1R51F01za5x3DFEdtWOSKez=FCcqAmGtcE9ANZ-+m9w@mail.gmail.com>
+Subject: [GIT PULL] Power management updates for v5.9-rc6
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Sep 2020 09:47:49 +0800, Xiaofei Tan wrote:
-> Fix following warnings caused by mismatch bewteen function parameters
-> and comments.
-> arch/arm64/kvm/mmu.c:128: warning: Function parameter or member 'mmu' not described in '__unmap_stage2_range'
-> arch/arm64/kvm/mmu.c:128: warning: Function parameter or member 'may_block' not described in '__unmap_stage2_range'
-> arch/arm64/kvm/mmu.c:128: warning: Excess function parameter 'kvm' description in '__unmap_stage2_range'
-> arch/arm64/kvm/mmu.c:499: warning: Function parameter or member 'writable' not described in 'kvm_phys_addr_ioremap'
-> arch/arm64/kvm/mmu.c:538: warning: Function parameter or member 'mmu' not described in 'stage2_wp_range'
-> arch/arm64/kvm/mmu.c:538: warning: Excess function parameter 'kvm' description in 'stage2_wp_range'
+Hi Linus,
 
-Applied to next, thanks!
+Please pull from the tag
 
-[1/1] KVM: arm64: Fix doc warnings in mmu code
-      commit: c9c0279cc02b4e161686de7ccd1973357f29db8c
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ pm-5.9-rc6
 
-Cheers,
+with top-most commit e8dc676e2a35e753fc46664968963f22e6e8af4a
 
-	M.
--- 
-Without deviation from the norm, progress is not possible.
+ Merge branch 'pm-cpuidle'
+
+on top of commit 856deb866d16e29bd65952e0289066f6078af773
+
+ Linux 5.9-rc5
+
+to receive power management updates for 5.9-rc6.
+
+These add a new CPU ID to the RAPL power capping driver and prevent
+the ACPI processor idle driver from triggering RCU-lockdep complaints.
+
+Specifics:
+
+ - Add support for the Lakefield chip to the RAPL power capping
+   driver (Ricardo Neri).
+
+ - Modify the ACPI processor idle driver to prevent it from triggering
+   RCU-lockdep complaints which has started to happen after recent
+   changes in that area (Peter Zijlstra).
+
+Thanks!
 
 
+---------------
+
+Peter Zijlstra (4):
+      ACPI: processor: Use CPUIDLE_FLAG_TIMER_STOP
+      ACPI: processor: Use CPUIDLE_FLAG_TLB_FLUSHED
+      cpuidle: Allow cpuidle drivers to take over RCU-idle
+      ACPI: processor: Take over RCU-idle for C3-BM idle
+
+Ricardo Neri (1):
+      powercap: RAPL: Add support for Lakefield
+
+---------------
+
+ arch/ia64/include/asm/acpi.h         |   2 -
+ arch/x86/include/asm/acpi.h          |   2 -
+ drivers/acpi/processor_idle.c        | 108 +++++++++++++++++++----------------
+ drivers/cpuidle/cpuidle.c            |  15 +++--
+ drivers/powercap/intel_rapl_common.c |   1 +
+ include/linux/cpuidle.h              |   1 +
+ 6 files changed, 72 insertions(+), 57 deletions(-)
