@@ -2,107 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 237B126FF07
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 15:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC39226FF18
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 15:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726306AbgIRNpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 09:45:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47744 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726121AbgIRNpq (ORCPT
+        id S1726625AbgIRNs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 09:48:58 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:37309 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726121AbgIRNs5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 09:45:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600436745;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=efzsaHlUqPH0ci0tLnQf07x4M/ur8etejmLSyfLHLrs=;
-        b=JPYGoxo5wDWbW6h8uvrhcrf3CetDYHJJfU6M0CkA//foptuDpoHnThp0G3rz7Zabi5l3hw
-        lbY076mM1ezvATY/ZzvQ5DoGBCNd4PVTz9kJX1rG7kVW8q5Wf2y/j02PiOFp4Nka4eK3eb
-        eR9LhUxiN0eEkI/nYzzUC8QqkBj8Ea4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-541-IIq6tZdDMRSoEPED1XWKMw-1; Fri, 18 Sep 2020 09:45:42 -0400
-X-MC-Unique: IIq6tZdDMRSoEPED1XWKMw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 63E1518BA285;
-        Fri, 18 Sep 2020 13:45:40 +0000 (UTC)
-Received: from krava (ovpn-114-24.ams2.redhat.com [10.36.114.24])
-        by smtp.corp.redhat.com (Postfix) with SMTP id E6BD21992F;
-        Fri, 18 Sep 2020 13:45:36 +0000 (UTC)
-Date:   Fri, 18 Sep 2020 15:45:35 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        John Garry <john.garry@huawei.com>,
-        Kajol Jain <kjain@linux.ibm.com>
-Subject: Re: [PATCH 3/4] perf tools: Copy metric events properly when expand
- cgroups
-Message-ID: <20200918134535.GC2626435@krava>
-References: <20200916063129.1061487-1-namhyung@kernel.org>
- <20200916063129.1061487-4-namhyung@kernel.org>
+        Fri, 18 Sep 2020 09:48:57 -0400
+Received: from mail-qt1-f172.google.com ([209.85.160.172]) by
+ mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MrPVJ-1knbdq0vFn-00oYej; Fri, 18 Sep 2020 15:48:53 +0200
+Received: by mail-qt1-f172.google.com with SMTP id b2so4955831qtp.8;
+        Fri, 18 Sep 2020 06:48:51 -0700 (PDT)
+X-Gm-Message-State: AOAM531xWIKITHj3YUM+JIXBR8vgsqUe9SWmTjS6i03lCHMTteGlgg9h
+        Gesw4ojO5qB0qfK1QEzYh9lYuf98x4MuwjzO9A0=
+X-Google-Smtp-Source: ABdhPJwdeFcN0FjnibbBFg2qZA4+ButX9r5NAMFGHqmQR0795JOFdGKPWzC17cLOf78yKvN1tKg1lyeC+rdsG229l2M=
+X-Received: by 2002:aed:31e5:: with SMTP id 92mr24508630qth.18.1600436930879;
+ Fri, 18 Sep 2020 06:48:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916063129.1061487-4-namhyung@kernel.org>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20200918124533.3487701-1-hch@lst.de> <20200918124533.3487701-9-hch@lst.de>
+In-Reply-To: <20200918124533.3487701-9-hch@lst.de>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 18 Sep 2020 15:48:35 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a07PbzpGfnVew7VAq2=iD418V-ryvOC94qAQzW0nQAbAA@mail.gmail.com>
+Message-ID: <CAK8P3a07PbzpGfnVew7VAq2=iD418V-ryvOC94qAQzW0nQAbAA@mail.gmail.com>
+Subject: Re: [PATCH 8/9] mm: remove compat_process_vm_{readv,writev}
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        David Howells <dhowells@redhat.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        linux-aio <linux-aio@kvack.org>, io-uring@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Networking <netdev@vger.kernel.org>, keyrings@vger.kernel.org,
+        LSM List <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:Q8EZMOri4TBYhlknoKWRbdN7TbthGP/5lV4QZxZSCS2kXQRegOz
+ crn8YMEG3zY+yUU81E38PaQTIpBOkDxjR4XroOZtmLdN0eDr9iw1sb1kp54wedcGz880ckD
+ nAjWoeEwJOYtLfmGZr3pB0Z3r3MbVnaLhmYg9e1aO5sQM3zkJ/9qk+SG26nsCUabm4GA8jL
+ Uyq9nTZiW2tWCev0Ajn3w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ij/A1rN/o/w=:eG7WsmYKztNl2oiBTrwA9N
+ bmClpWLMGfrlZ0xB2rRAoDFhJWfZmCt9rGFKTWIVdb6akIT8eicEZNNRxekvh1HucS1JjYeXf
+ AXADSd8dc7mKbJD54kRnlhLkF+hbej89KFj7K4VymVWbHFaZ7+wb23NuXTx+U4alP3tI9OwKj
+ T0Kkqfrt4dajkNnZgSIy7AnzhgclR3OrAGSu5TdPjmm7EM+9np4Hlfy1UsezMwL5AK2Q1jvzZ
+ QY9FIKNietOnxaq7YgdI+AxVcpE7ndiWgnuI9Qh63tMthDdt1s5FENryI1Xi0cGlG40XVRBVG
+ b2dNAxA4ecN0TNqDbiKpjnsy3xaGv6wFivTCI2zAyJ5iL5ce+oJIraRzQ8eD5PxClMBhLc3Jz
+ 6Nrdkxzpn0qCFdlpC9OGWaDmFRIru5c5G6dUFfU2BG1k7k8XL6pGcDoJEB/4STmebtKjKhNIp
+ csgqTr3WdS2wmTEsXn+kNIGzFLlluUdw80VgVq+NWNbzMTbK2EH8ggT8yAYdl9uc5Xo7zSlFq
+ KHRRrF3ObPKEb2DM/DFUS38jSC7DqjlZPFSM4K6PfZ8cgJx5706TZRZWX4zPBF+g6rrpyqHOb
+ IU/eDqi5uopbrjeB9HRsy5z1g5qDAG+D9QXuwbSuUgTd5P8i/6SfEl/02nk6fuPd9evP37hwu
+ 7zJElDW1LKs4N6fgQCXBULfYpw/UPJkfXJf1AW4a+n4zV2RR5du9VZnw5B4GwWDw6XHKcQrZH
+ vD46LKuXsBku8nEwphKWy67Z4MTRNYZ6PsxUmJWQ535PEAuGfOBMWd0CHgm4V8jVDxkDK5Hz+
+ 4GR/rb85BpnTuIMfTnZHQWd4F5BT7tBOstX7vHNEbjh0TqNIo/vbPPo6wwqtk2mj1Gy9mMw
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 03:31:28PM +0900, Namhyung Kim wrote:
+On Fri, Sep 18, 2020 at 2:45 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> Now that import_iovec handles compat iovecs, the native syscalls
+> can be used for the compat case as well.
+>
+> diff --git a/arch/x86/entry/syscall_x32.c b/arch/x86/entry/syscall_x32.c
+> index a4840b9d50ad14..f2fe0a33bcfdd5 100644
+> --- a/arch/x86/entry/syscall_x32.c
+> +++ b/arch/x86/entry/syscall_x32.c
+> @@ -17,6 +17,8 @@
+>  #define __x32_sys_getsockopt   __x64_sys_getsockopt
+>  #define __x32_sys_setsockopt   __x64_sys_setsockopt
+>  #define __x32_sys_vmsplice     __x64_sys_vmsplice
+> +#define __x32_sys_process_vm_readv     __x64_sys_process_vm_readv
+> +#define __x32_sys_process_vm_writev    __x64_sys_process_vm_writev
+>
+>  #define __SYSCALL_64(nr, sym)
+>
 
-SNIP
+I forgot this hack existed, and just sent a patch with subject "x86: add
+__X32_COND_SYSCALL() macro" instead.
 
-> +					free(new_expr);
-> +					return -ENOMEM;
-> +				}
-> +
-> +				memcpy(new_expr->metric_refs, old_expr->metric_refs,
-> +				       nr * alloc_size);
-> +			} else {
-> +				new_expr->metric_refs = NULL;
-> +			}
-> +
-> +			/* calculate number of metric_events */
-> +			for (nr = 0; old_expr->metric_events[nr]; nr++)
-> +				continue;
-> +			alloc_size = sizeof(*new_expr->metric_events);
-> +			new_expr->metric_events = calloc(nr + 1, alloc_size);
-> +			if (!new_expr->metric_events) {
-> +				free(new_expr->metric_refs);
-> +				free(new_expr);
-> +				return -ENOMEM;
-> +			}
-> +
-> +			/* copy evsel in the same position */
-> +			for (idx = 0; idx < nr; idx++) {
-> +				evsel = old_expr->metric_events[idx];
-> +				evsel = evlist__get_evsel(evlist, evsel->idx);
+If I understand this right, the macros above should no longer be needed
+once my patch gets merged.
 
-this probably won't happen, but evlist__get_evsel can return NULL
-
-jirka
-
-> +				new_expr->metric_events[idx] = evsel;
-> +			}
-> +
-> +			list_add(&new_expr->nd, &new_me->head);
-> +		}
-> +	}
-> +	return 0;
-> +}
-
-SNIP
-
+        Arnd
