@@ -2,91 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E927270002
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 16:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2907726FFFA
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 16:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726681AbgIROgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 10:36:33 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:47568 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725955AbgIROgc (ORCPT
+        id S1726821AbgIROeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 10:34:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726126AbgIROeQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 10:36:32 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08IEXkRn045952;
-        Fri, 18 Sep 2020 14:36:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=rlQ+LZaYgJGtJpEry/0h8n+m3Iqcym6BQ6YDma7gB3g=;
- b=FHAsrGXv3QQ19lxFmk013373NlHLEuNtiGP3oUlCWsfYRljvyTbdj+cRU3SrVW58TsNW
- V8N+yOtdmxQGttbeMDtUx5ZNXbsPEPezS3UDZzf38yyhH7CxQe6d0ZY6apPOU2aFpwoE
- JWWnVDqRsbaMByuRSK/bDzkvG7dr+d5dy4J9ywNBEywuWf3yA92h0N1QCCuh7wD8CTRT
- VhNgFF8T1gpo3pkOagpdLC3TP9+agEJO2MpPa35Gx/LU19EXo2iASkg2CScbXQlckF/N
- TOur4JU+0E9R8s+ZLISF6qaGKZp9mvBg405twXVr9O7TA7nG3GQDrlgjC+w7YJTX8DW3 eA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 33gnrrfkn3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 18 Sep 2020 14:36:26 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08IETchf112571;
-        Fri, 18 Sep 2020 14:34:25 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 33h88epdjn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Sep 2020 14:34:25 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08IEYOlD032693;
-        Fri, 18 Sep 2020 14:34:24 GMT
-Received: from mwanda (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 18 Sep 2020 14:34:11 +0000
-Date:   Fri, 18 Sep 2020 17:34:05 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] misc: hisi_hikey_usb: delete a stray tab
-Message-ID: <20200918143405.GF909725@mwanda>
+        Fri, 18 Sep 2020 10:34:16 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C65D9C0613CE;
+        Fri, 18 Sep 2020 07:34:15 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id 34so3573484pgo.13;
+        Fri, 18 Sep 2020 07:34:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ehNLFgOehS2khvMlIukM1gipxnVRhru9elJLFFfgkak=;
+        b=oYxeoYnBKch1Aje0z2U2aDGmtKIiBXABtgAlWyJPzIkhv/ostG5OgBj3VwAw94rZn9
+         0GWJmpaVgsf7N4FfyW8DJZKTWDCSJkqhd8UaWQipy3V5JfOTNhUx14gY4/iJ1cDrYJY1
+         ldDVp8WZQznZy1QHBcP0kk0HauTsB+3dDM9E2IgB40z/COCeudd/Wd9eYmxmPxOV2lZj
+         RBdWwbmfuKSMymPfMVs9ibM3oGIAcXgSWTwHYJdIMD8aJTgmZxWMSp+KnAcXAKcWquT5
+         YX5zMtnBDL0x0sSMYQxVKNkGEkERKuyjuY1wl1gFMV+ujbsFup8gh75S6UZ5azYUqzWD
+         q3zA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ehNLFgOehS2khvMlIukM1gipxnVRhru9elJLFFfgkak=;
+        b=caeRSguExBjR2keO7CyZeTHmbtdmZ5K6F0oOCARseCLVZ/Dh2u/OveIJGABPHA/L/o
+         c/ZSS7mowByiWzNfMgV4MsTnTkc7056BnF/7R8dj1ltiPz+BFfb/OUTk4HZxUJrnsNEq
+         3l35QPQbDtbOC6KAbrus2rDGln2OinNvsRo98ny62AwUC8wR3uURVKT4OGRdq5tmMbaY
+         jBbjag5Vzp/fnHF7nly8y2bP8Qh0RRdfYm2XzwdfbjOTTe+LvVmmWe3g/GzXPyFE24GJ
+         E11TClG6zn+bVH3ppAsKKqGX/Wp71N6n1iTCDfwHWckkwmB+Ob80aGIOCiFaBYXJPkk/
+         78oQ==
+X-Gm-Message-State: AOAM530hMWpdnTnMLy/418M4j48yfzWzV889ub2u+Wid4snwCc4w6cfr
+        17Yuu+7Qz+a5LvoTQ1AP6As=
+X-Google-Smtp-Source: ABdhPJzDF9lRYLRj0s6ccVVV7B8TgmkiEd7RYbcfJTBfud5WgKdgJTk2HyKoJqDlssIU+2KeW5H7UQ==
+X-Received: by 2002:aa7:8ec7:0:b029:13e:d13d:a137 with SMTP id b7-20020aa78ec70000b029013ed13da137mr32547044pfr.31.1600439655322;
+        Fri, 18 Sep 2020 07:34:15 -0700 (PDT)
+Received: from hoboy (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
+        by smtp.gmail.com with ESMTPSA id l1sm3600902pfc.164.2020.09.18.07.34.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 07:34:14 -0700 (PDT)
+Date:   Fri, 18 Sep 2020 07:34:12 -0700
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Herrington <hankinsea@gmail.com>
+Cc:     leonro@nvidia.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] ptp: mark symbols static where possible
+Message-ID: <20200918143412.GC25831@hoboy>
+References: <20200918100943.1740-1-hankinsea@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9747 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 adultscore=0
- suspectscore=0 phishscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009180118
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9747 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0
- lowpriorityscore=0 malwarescore=0 mlxscore=0 bulkscore=0 suspectscore=0
- clxscore=1011 mlxlogscore=999 adultscore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009180119
+In-Reply-To: <20200918100943.1740-1-hankinsea@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This return statement is indented one tab too far.
+On Fri, Sep 18, 2020 at 06:09:43PM +0800, Herrington wrote:
+> diff --git a/include/linux/ptp_clock_kernel.h b/include/linux/ptp_clock_kernel.h
+> index d3e8ba5c7125..5db4b8891b22 100644
+> --- a/include/linux/ptp_clock_kernel.h
+> +++ b/include/linux/ptp_clock_kernel.h
+> @@ -307,4 +307,13 @@ static inline void ptp_read_system_postts(struct ptp_system_timestamp *sts)
+>  		ktime_get_real_ts64(&sts->post_ts);
+>  }
+>  
+> +void pch_ch_control_write(struct pci_dev *pdev, u32 val);
+> +u32 pch_ch_event_read(struct pci_dev *pdev);
+> +void pch_ch_event_write(struct pci_dev *pdev, u32 val);
+> +u32 pch_src_uuid_lo_read(struct pci_dev *pdev);
+> +u32 pch_src_uuid_hi_read(struct pci_dev *pdev);
+> +u64 pch_rx_snap_read(struct pci_dev *pdev);
+> +u64 pch_tx_snap_read(struct pci_dev *pdev);
+> +int pch_set_station_address(u8 *addr, struct pci_dev *pdev);
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/misc/hisi_hikey_usb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+NAK.  Please see Jacob's comment on the origin patch.
 
-diff --git a/drivers/misc/hisi_hikey_usb.c b/drivers/misc/hisi_hikey_usb.c
-index 2ddd4072788d..0913509d2628 100644
---- a/drivers/misc/hisi_hikey_usb.c
-+++ b/drivers/misc/hisi_hikey_usb.c
-@@ -163,7 +163,7 @@ static int hisi_hikey_usb_parse_kirin970(struct platform_device *pdev,
- 		dev_err(&pdev->dev,
- 			"get hub-vdd-supply failed with error %ld\n",
- 			PTR_ERR(regulator));
--			return PTR_ERR(regulator);
-+		return PTR_ERR(regulator);
- 	}
- 	hisi_hikey_usb->regulator = regulator;
- 
--- 
-2.28.0
-
+Thanks,
+Richard
