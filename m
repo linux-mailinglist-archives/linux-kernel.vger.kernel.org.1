@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A58626EB3B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:04:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A860626EB51
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:06:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727249AbgIRCEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:04:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50890 "EHLO mail.kernel.org"
+        id S1727235AbgIRCEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:04:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727199AbgIRCEB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727200AbgIRCEB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 17 Sep 2020 22:04:01 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3BFF823718;
-        Fri, 18 Sep 2020 02:03:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 148882388B;
+        Fri, 18 Sep 2020 02:03:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394637;
-        bh=Jb4b+5OTPSm0f+YOgcsf9eXrLB8ukGPqsuUkC1mKNy4=;
+        s=default; t=1600394640;
+        bh=z7GkIRBfIpqHZ8dIEWx/p44xdirXNH0oyPkAC+8qQJg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PHHrEa2LuohVBtd0d2c0FRcouWqrjl2DNEljIwXFeaUuX2C99yhvHHA/JMxbYqqPm
-         OsJr0h9bsKOHlpOBDyGM8UlUpyAM1gNbKMnrAhHpIcKAFTyIRZeGdDUK8XTulBVvRy
-         32NuJS+rQx/+ipDk5QVlVhDyB7ZqHBWkl3qqZ/GQ=
+        b=hELPF3eHOwgMbPLMhDkjlvNB01TTvHoFcXlzEWx5U25a0b17aNa/U0r7AnT5q5pml
+         aYJwxEgcmAcgG3PDjPXWjXjkJ0VI/a0s+hMJqMcFQYEZf+BkjfidIWxBsFMRQ2kZjG
+         wEyyRsQ2all9I8xonizcPlpls6beeLis42wndbfM=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Amelie Delaunay <amelie.delaunay@st.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.4 136/330] dmaengine: stm32-mdma: use vchan_terminate_vdesc() in .terminate_all
-Date:   Thu, 17 Sep 2020 21:57:56 -0400
-Message-Id: <20200918020110.2063155-136-sashal@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 139/330] bpf: Remove recursion prevention from rcu free callback
+Date:   Thu, 17 Sep 2020 21:57:59 -0400
+Message-Id: <20200918020110.2063155-139-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -42,58 +42,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amelie Delaunay <amelie.delaunay@st.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit dfc708812a2acfc0ca56f56233b3c3e7b0d4ffe7 ]
+[ Upstream commit 8a37963c7ac9ecb7f86f8ebda020e3f8d6d7b8a0 ]
 
-To avoid race with vchan_complete, use the race free way to terminate
-running transfer.
+If an element is freed via RCU then recursion into BPF instrumentation
+functions is not a concern. The element is already detached from the map
+and the RCU callback does not hold any locks on which a kprobe, perf event
+or tracepoint attached BPF program could deadlock.
 
-Move vdesc->node list_del in stm32_mdma_start_transfer instead of in
-stm32_mdma_xfer_end to avoid another race in vchan_dma_desc_free_list.
-
-Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
-Link: https://lore.kernel.org/r/20200127085334.13163-7-amelie.delaunay@st.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Link: https://lore.kernel.org/bpf/20200224145643.259118710@linutronix.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/stm32-mdma.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ kernel/bpf/hashtab.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/drivers/dma/stm32-mdma.c b/drivers/dma/stm32-mdma.c
-index 5838311cf9900..ee1cbf3be75d5 100644
---- a/drivers/dma/stm32-mdma.c
-+++ b/drivers/dma/stm32-mdma.c
-@@ -1127,6 +1127,8 @@ static void stm32_mdma_start_transfer(struct stm32_mdma_chan *chan)
- 		return;
- 	}
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 039d64b1bfb7d..728ffec52cf36 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -664,15 +664,7 @@ static void htab_elem_free_rcu(struct rcu_head *head)
+ 	struct htab_elem *l = container_of(head, struct htab_elem, rcu);
+ 	struct bpf_htab *htab = l->htab;
  
-+	list_del(&vdesc->node);
-+
- 	chan->desc = to_stm32_mdma_desc(vdesc);
- 	hwdesc = chan->desc->node[0].hwdesc;
- 	chan->curr_hwdesc = 0;
-@@ -1242,8 +1244,10 @@ static int stm32_mdma_terminate_all(struct dma_chan *c)
- 	LIST_HEAD(head);
+-	/* must increment bpf_prog_active to avoid kprobe+bpf triggering while
+-	 * we're calling kfree, otherwise deadlock is possible if kprobes
+-	 * are placed somewhere inside of slub
+-	 */
+-	preempt_disable();
+-	__this_cpu_inc(bpf_prog_active);
+ 	htab_elem_free(htab, l);
+-	__this_cpu_dec(bpf_prog_active);
+-	preempt_enable();
+ }
  
- 	spin_lock_irqsave(&chan->vchan.lock, flags);
--	if (chan->busy) {
--		stm32_mdma_stop(chan);
-+	if (chan->desc) {
-+		vchan_terminate_vdesc(&chan->desc->vdesc);
-+		if (chan->busy)
-+			stm32_mdma_stop(chan);
- 		chan->desc = NULL;
- 	}
- 	vchan_get_all_descriptors(&chan->vchan, &head);
-@@ -1331,7 +1335,6 @@ static enum dma_status stm32_mdma_tx_status(struct dma_chan *c,
- 
- static void stm32_mdma_xfer_end(struct stm32_mdma_chan *chan)
- {
--	list_del(&chan->desc->vdesc.node);
- 	vchan_cookie_complete(&chan->desc->vdesc);
- 	chan->desc = NULL;
- 	chan->busy = false;
+ static void htab_put_fd_value(struct bpf_htab *htab, struct htab_elem *l)
 -- 
 2.25.1
 
