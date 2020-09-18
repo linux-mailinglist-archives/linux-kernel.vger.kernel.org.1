@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 605AC26EB85
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A41926EB89
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727654AbgIRCFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:05:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54262 "EHLO mail.kernel.org"
+        id S1726956AbgIRCGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:06:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727529AbgIRCFo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:05:44 -0400
+        id S1726915AbgIRCF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:05:56 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A0A9F238A0;
-        Fri, 18 Sep 2020 02:05:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A873123770;
+        Fri, 18 Sep 2020 02:05:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394743;
-        bh=ToJvUGLBo9fJtsumdIgxhCynCagr4lQ5Wy1T4FYb43o=;
+        s=default; t=1600394753;
+        bh=AiRrw4gYZftgvCZFwosYg7/WVjgkagPGraiwlo0q5IA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jl2rBUOM4n/E0r+yqEc66wMJ/Q7GeMEGpD16vlnBGsQh6NkEVZlMkz96US3jbF8TC
-         GgpkT8PUF1aagyEq83SqChNguOHTM0FXyThF2E7G2RAeeFlYyYC+Va982yDT9f/ONj
-         /Y6xHPPfWBcI+I85k1IixxUqks8Je+Y/51Xtd3j8=
+        b=Qybyt9Hr6p2UzoBBBHC3CansEbRL100jUVKJ/jZOy41Pb4Ra++AaEDvOhcLMKrFx+
+         qBeQVAhdyk4kyK/tpDsxvQ5ofCHcETZv9UEvQSwSWa3oFQ5+k6RhaTooLnGAb/+8rC
+         xtooNvp45iLIpERwHHT2asMkY9xRPD8UyFVly7pU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     James Zhu <James.Zhu@amd.com>, Leo Liu <leo.liu@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.4 223/330] drm/amdgpu/vcn2.0: stall DPG when WPTR/RPTR reset
-Date:   Thu, 17 Sep 2020 21:59:23 -0400
-Message-Id: <20200918020110.2063155-223-sashal@kernel.org>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        kernel test robot <lkp@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 231/330] workqueue: Remove the warning in wq_worker_sleeping()
+Date:   Thu, 17 Sep 2020 21:59:31 -0400
+Message-Id: <20200918020110.2063155-231-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -43,78 +44,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Zhu <James.Zhu@amd.com>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-[ Upstream commit ef563ff403404ef2f234abe79bdd9f04ab6481c9 ]
+[ Upstream commit 62849a9612924a655c67cf6962920544aa5c20db ]
 
-Add vcn dpg harware synchronization to fix race condition
-issue between vcn driver and hardware.
+The kernel test robot triggered a warning with the following race:
+   task-ctx A                            interrupt-ctx B
+ worker
+  -> process_one_work()
+    -> work_item()
+      -> schedule();
+         -> sched_submit_work()
+           -> wq_worker_sleeping()
+             -> ->sleeping = 1
+               atomic_dec_and_test(nr_running)
+         __schedule();                *interrupt*
+                                       async_page_fault()
+                                       -> local_irq_enable();
+                                       -> schedule();
+                                          -> sched_submit_work()
+                                            -> wq_worker_sleeping()
+                                               -> if (WARN_ON(->sleeping)) return
+                                          -> __schedule()
+                                            ->  sched_update_worker()
+                                              -> wq_worker_running()
+                                                 -> atomic_inc(nr_running);
+                                                 -> ->sleeping = 0;
 
-Signed-off-by: James Zhu <James.Zhu@amd.com>
-Reviewed-by: Leo Liu <leo.liu@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+      ->  sched_update_worker()
+        -> wq_worker_running()
+          if (!->sleeping) return
+
+In this context the warning is pointless everything is fine.
+An interrupt before wq_worker_sleeping() will perform the ->sleeping
+assignment (0 -> 1 > 0) twice.
+An interrupt after wq_worker_sleeping() will trigger the warning and
+nr_running will be decremented (by A) and incremented once (only by B, A
+will skip it). This is the case until the ->sleeping is zeroed again in
+wq_worker_running().
+
+Remove the WARN statement because this condition may happen. Document
+that preemption around wq_worker_sleeping() needs to be disabled to
+protect ->sleeping and not just as an optimisation.
+
+Fixes: 6d25be5782e48 ("sched/core, workqueues: Distangle worker accounting from rq lock")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Tejun Heo <tj@kernel.org>
+Link: https://lkml.kernel.org/r/20200327074308.GY11705@shao2-debian
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ kernel/sched/core.c | 3 ++-
+ kernel/workqueue.c  | 6 ++++--
+ 2 files changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c b/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c
-index 36ad0c0e8efbc..cd2cbe760e883 100644
---- a/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c
-@@ -1026,6 +1026,10 @@ static int vcn_v2_0_start_dpg_mode(struct amdgpu_device *adev, bool indirect)
- 	tmp = REG_SET_FIELD(tmp, UVD_RBC_RB_CNTL, RB_RPTR_WR_EN, 1);
- 	WREG32_SOC15(UVD, 0, mmUVD_RBC_RB_CNTL, tmp);
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 352239c411a44..79ce22de44095 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -4199,7 +4199,8 @@ static inline void sched_submit_work(struct task_struct *tsk)
+ 	 * it wants to wake up a task to maintain concurrency.
+ 	 * As this function is called inside the schedule() context,
+ 	 * we disable preemption to avoid it calling schedule() again
+-	 * in the possible wakeup of a kworker.
++	 * in the possible wakeup of a kworker and because wq_worker_sleeping()
++	 * requires it.
+ 	 */
+ 	if (tsk->flags & PF_WQ_WORKER) {
+ 		preempt_disable();
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 1a0c224af6fb3..4aa268582a225 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -864,7 +864,8 @@ void wq_worker_running(struct task_struct *task)
+  * @task: task going to sleep
+  *
+  * This function is called from schedule() when a busy worker is
+- * going to sleep.
++ * going to sleep. Preemption needs to be disabled to protect ->sleeping
++ * assignment.
+  */
+ void wq_worker_sleeping(struct task_struct *task)
+ {
+@@ -881,7 +882,8 @@ void wq_worker_sleeping(struct task_struct *task)
  
-+	/* Stall DPG before WPTR/RPTR reset */
-+	WREG32_P(SOC15_REG_OFFSET(UVD, 0, mmUVD_POWER_STATUS),
-+		UVD_POWER_STATUS__STALL_DPG_POWER_UP_MASK,
-+		~UVD_POWER_STATUS__STALL_DPG_POWER_UP_MASK);
- 	/* set the write pointer delay */
- 	WREG32_SOC15(UVD, 0, mmUVD_RBC_RB_WPTR_CNTL, 0);
+ 	pool = worker->pool;
  
-@@ -1048,6 +1052,9 @@ static int vcn_v2_0_start_dpg_mode(struct amdgpu_device *adev, bool indirect)
- 	WREG32_SOC15(UVD, 0, mmUVD_RBC_RB_WPTR,
- 		lower_32_bits(ring->wptr));
+-	if (WARN_ON_ONCE(worker->sleeping))
++	/* Return if preempted before wq_worker_running() was reached */
++	if (worker->sleeping)
+ 		return;
  
-+	/* Unstall DPG */
-+	WREG32_P(SOC15_REG_OFFSET(UVD, 0, mmUVD_POWER_STATUS),
-+		0, ~UVD_POWER_STATUS__STALL_DPG_POWER_UP_MASK);
- 	return 0;
- }
- 
-@@ -1357,8 +1364,13 @@ static int vcn_v2_0_pause_dpg_mode(struct amdgpu_device *adev,
- 					   UVD_DPG_PAUSE__NJ_PAUSE_DPG_ACK_MASK,
- 					   UVD_DPG_PAUSE__NJ_PAUSE_DPG_ACK_MASK, ret_code);
- 
-+				/* Stall DPG before WPTR/RPTR reset */
-+				WREG32_P(SOC15_REG_OFFSET(UVD, 0, mmUVD_POWER_STATUS),
-+					   UVD_POWER_STATUS__STALL_DPG_POWER_UP_MASK,
-+					   ~UVD_POWER_STATUS__STALL_DPG_POWER_UP_MASK);
- 				/* Restore */
- 				ring = &adev->vcn.inst->ring_enc[0];
-+				ring->wptr = 0;
- 				WREG32_SOC15(UVD, 0, mmUVD_RB_BASE_LO, ring->gpu_addr);
- 				WREG32_SOC15(UVD, 0, mmUVD_RB_BASE_HI, upper_32_bits(ring->gpu_addr));
- 				WREG32_SOC15(UVD, 0, mmUVD_RB_SIZE, ring->ring_size / 4);
-@@ -1366,6 +1378,7 @@ static int vcn_v2_0_pause_dpg_mode(struct amdgpu_device *adev,
- 				WREG32_SOC15(UVD, 0, mmUVD_RB_WPTR, lower_32_bits(ring->wptr));
- 
- 				ring = &adev->vcn.inst->ring_enc[1];
-+				ring->wptr = 0;
- 				WREG32_SOC15(UVD, 0, mmUVD_RB_BASE_LO2, ring->gpu_addr);
- 				WREG32_SOC15(UVD, 0, mmUVD_RB_BASE_HI2, upper_32_bits(ring->gpu_addr));
- 				WREG32_SOC15(UVD, 0, mmUVD_RB_SIZE2, ring->ring_size / 4);
-@@ -1374,6 +1387,9 @@ static int vcn_v2_0_pause_dpg_mode(struct amdgpu_device *adev,
- 
- 				WREG32_SOC15(UVD, 0, mmUVD_RBC_RB_WPTR,
- 					   RREG32_SOC15(UVD, 0, mmUVD_SCRATCH2) & 0x7FFFFFFF);
-+				/* Unstall DPG */
-+				WREG32_P(SOC15_REG_OFFSET(UVD, 0, mmUVD_POWER_STATUS),
-+					   0, ~UVD_POWER_STATUS__STALL_DPG_POWER_UP_MASK);
- 
- 				SOC15_WAIT_ON_RREG(UVD, 0, mmUVD_POWER_STATUS,
- 					   UVD_PGFSM_CONFIG__UVDM_UVDU_PWR_ON,
+ 	worker->sleeping = 1;
 -- 
 2.25.1
 
