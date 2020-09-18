@@ -2,99 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D093526F28D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A04126F0FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730425AbgIRC7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:59:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727678AbgIRCF7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:05:59 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4CE2C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 19:05:58 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id o8so5924562ejb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 19:05:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anholt-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ImzYFdv7FV86GEX3X/1tw1hfTU6H6hUSLVTXY/iYER8=;
-        b=Y58xKi1obOp2IninGGVaFXvJGsFdsmII8kZ+jjhOcGrqyYoWPKMSQuXr1fQOhMXDH7
-         ke7OElRKM0lP/hUCKkFBTvxbnmcrdq8oW+XdwHOxwkf7zLpn3V350ZdQZ3wiTro5H1w9
-         NufqIxN544+s5HOUZ91dQ1QSuFHGmjewxAfFYNqCStBz05lQIOYb59kYUSJqfbYpvw32
-         BZ4k3oEBJRlfZ6KTuCgywM3T13KJPRsnM6XZoEtjsTLa6FHTEiarx8PMfGG4PViqHJam
-         3BiziNkfZFVdTo7dd7iTEAAe62jUVzgPBjXCC7cBiMbPzBYm7tv7De5ycK9NdPELUd6g
-         iHXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ImzYFdv7FV86GEX3X/1tw1hfTU6H6hUSLVTXY/iYER8=;
-        b=TUuWuowls59qkNM+iY8zMFp4kJHoKKCqOP3ooAvIm+i++9HkYCn6gxTx3OmH8EvBhH
-         KTbkMemqx+2ogc7nXpp1H0Z6FkTYDmPoyEzOX8YeqWPAvsqrOjG5K7rnYneOHJ+MoJHw
-         H3Zn0dcGO9RVRqkhUN5qUCECwOvgKK8vEUzxykOyfVlN3y77U0wPbyxXVfY9KLFvZsvN
-         10OpKMS7mrlrFmOL6YAwSw6OpLM4w6vTPnZIkkn8xKYNXZQPi6kNAdEUiuAcpLfr1WTc
-         T0poBZzQDc8hrs4AoWCadqqXZlytCqb8P/vniZ3k8JIFkdf0bwIOBa0iAWBOiIoVpYAC
-         IEqA==
-X-Gm-Message-State: AOAM532n48GB8Pml9XIrOdZWER9j8jAX2kEKZ/5yXTXeCyuwKJdiOwS5
-        jro0sOfOoHB6GTHNjJ2qWkxPXWTV0yFFHOOXutqXCw==
-X-Google-Smtp-Source: ABdhPJxlg7ODADz80YFnr6Q7tPZD8jDi9k5Ly/WiLL8uJJ7BSWXenxN/XEM895zONY25h5SaYAzMlKPht9rTnAX/rTA=
-X-Received: by 2002:a17:906:37c6:: with SMTP id o6mr22553734ejc.404.1600394757373;
- Thu, 17 Sep 2020 19:05:57 -0700 (PDT)
+        id S1728667AbgIRCrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:47:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33262 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728295AbgIRCJb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:09:31 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 146FA23770;
+        Fri, 18 Sep 2020 02:09:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600394970;
+        bh=7PWxJ2DjwJblVKEIRQXBa7nuPNBbxj/XlqvELehCn4Q=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=IwSMVCc4yx7sEVZK91dz8l+K9xLbidT0mnWjKTypHyrhrVnOOpcKFdQM5BK3fpCou
+         QDKEDg6aQxmPBKDn/SWtFHW9y2V3YPhIadUkK9TCi69PrPgCJh7cu9Hiq7zkaHgK/m
+         9L7w92CJqSEURC1tDw2dE+AavzYmtt4aIH6grq54=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Steve Grubb <sgrubb@redhat.com>, Paul Moore <paul@paul-moore.com>,
+        Sasha Levin <sashal@kernel.org>, linux-audit@redhat.com
+Subject: [PATCH AUTOSEL 4.19 072/206] audit: CONFIG_CHANGE don't log internal bookkeeping as an event
+Date:   Thu, 17 Sep 2020 22:05:48 -0400
+Message-Id: <20200918020802.2065198-72-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
+References: <20200918020802.2065198-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <20200918020110.2063155-1-sashal@kernel.org>
-In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
-From:   Eric Anholt <eric@anholt.net>
-Date:   Thu, 17 Sep 2020 19:05:46 -0700
-Message-ID: <CADaigPWfTDJ_G6z3ZKm-bqBO8LPthEBkJoqXk=znGqvDhkw3bw@mail.gmail.com>
-Subject: Re: [PATCH AUTOSEL 5.4 001/330] drm/v3d: don't leak bin job if
- v3d_job_init fails.
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
-        Iago Toral Quiroga <itoral@igalia.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 7:01 PM Sasha Levin <sashal@kernel.org> wrote:
->
-> From: Iago Toral Quiroga <itoral@igalia.com>
->
-> [ Upstream commit 0d352a3a8a1f26168d09f7073e61bb4b328e3bb9 ]
->
-> If the initialization of the job fails we need to kfree() it
-> before returning.
->
-> Signed-off-by: Iago Toral Quiroga <itoral@igalia.com>
-> Signed-off-by: Eric Anholt <eric@anholt.net>
-> Link: https://patchwork.freedesktop.org/patch/msgid/20190916071125.5255-1-itoral@igalia.com
-> Fixes: a783a09ee76d ("drm/v3d: Refactor job management.")
-> Reviewed-by: Eric Anholt <eric@anholt.net>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+From: Steve Grubb <sgrubb@redhat.com>
 
-You're double freeing with this patch, the bug is already solved.
+[ Upstream commit 70b3eeed49e8190d97139806f6fbaf8964306cdb ]
 
-> ---
->  drivers/gpu/drm/v3d/v3d_gem.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/gpu/drm/v3d/v3d_gem.c b/drivers/gpu/drm/v3d/v3d_gem.c
-> index 19c092d75266b..6316bf3646af5 100644
-> --- a/drivers/gpu/drm/v3d/v3d_gem.c
-> +++ b/drivers/gpu/drm/v3d/v3d_gem.c
-> @@ -565,6 +565,7 @@ v3d_submit_cl_ioctl(struct drm_device *dev, void *data,
->                 ret = v3d_job_init(v3d, file_priv, &bin->base,
->                                    v3d_job_free, args->in_sync_bcl);
->                 if (ret) {
-> +                       kfree(bin);
->                         v3d_job_put(&render->base);
->                         kfree(bin);
->                         return ret;
-> --
-> 2.25.1
->
+Common Criteria calls out for any action that modifies the audit trail to
+be recorded. That usually is interpreted to mean insertion or removal of
+rules. It is not required to log modification of the inode information
+since the watch is still in effect. Additionally, if the rule is a never
+rule and the underlying file is one they do not want events for, they
+get an event for this bookkeeping update against their wishes.
+
+Since no device/inode info is logged at insertion and no device/inode
+information is logged on update, there is nothing meaningful being
+communicated to the admin by the CONFIG_CHANGE updated_rules event. One
+can assume that the rule was not "modified" because it is still watching
+the intended target. If the device or inode cannot be resolved, then
+audit_panic is called which is sufficient.
+
+The correct resolution is to drop logging config_update events since
+the watch is still in effect but just on another unknown inode.
+
+Signed-off-by: Steve Grubb <sgrubb@redhat.com>
+Signed-off-by: Paul Moore <paul@paul-moore.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ kernel/audit_watch.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/kernel/audit_watch.c b/kernel/audit_watch.c
+index 4f7262eba73d8..50952d6d81209 100644
+--- a/kernel/audit_watch.c
++++ b/kernel/audit_watch.c
+@@ -317,8 +317,6 @@ static void audit_update_watch(struct audit_parent *parent,
+ 			if (oentry->rule.exe)
+ 				audit_remove_mark(oentry->rule.exe);
+ 
+-			audit_watch_log_rule_change(r, owatch, "updated_rules");
+-
+ 			call_rcu(&oentry->rcu, audit_free_rule_rcu);
+ 		}
+ 
+-- 
+2.25.1
+
