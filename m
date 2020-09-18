@@ -2,80 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E32902707D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 23:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CA042707DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 23:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726405AbgIRVJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 17:09:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59548 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726118AbgIRVJO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 17:09:14 -0400
-Received: from localhost (router.4pisysteme.de [80.79.225.122])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726412AbgIRVJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 17:09:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39858 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726118AbgIRVJe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 17:09:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600463373;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=asql0Sq9mQRCwtXwkfvy11Pk1zi8zsCd4+2USFTaNdY=;
+        b=hLzKq7jsyFC7xVmsy1mQjsuBDyoaA2giKREpfoqTfNJHqZGjbPpyfP5LYmA5PTE2EA6U5h
+        gOVr4uV5gcAoF46Legk5QdPOOLty9Z+nZuFrCv9OgHxUzSmFXiYvYRMsAuVAafJXQ7Dxn9
+        e6ZSJiLbpdm2jXEiB/uv/HxeFEE3t3I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-389-TR6Rvtz6O2ygw0S9MH7nfQ-1; Fri, 18 Sep 2020 17:09:31 -0400
+X-MC-Unique: TR6Rvtz6O2ygw0S9MH7nfQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AAFB5221EC;
-        Fri, 18 Sep 2020 21:09:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600463354;
-        bh=n+UT4elTACp2IyAPY5k4F56sxpMOmMeqNATaIpgcUiU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ip9ZYawjZiW5uoDp8jXiLb7vGAyYziChgrnjK2lVFim9AferHupYdO6NEwqaXYDN4
-         C+FC/Aya22BvO7MJ/sgSJJbVRRMsx1S18An9wup2tgf1iwfxTsJYpRBQHSCO6i/4PN
-         yjEEE/m7xb6ZN8W8jtNqJFKDiF6P8L/XD6DY6V/c=
-Date:   Fri, 18 Sep 2020 23:09:11 +0200
-From:   <wsa@kernel.org>
-To:     Tian Tao <tiantao6@hisilicon.com>
-Cc:     <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: Re: [PATCH] i2c: Switch to using the new API kobj_to_dev()
-Message-ID: <20200918210911.GF52206@kunai>
-Mail-Followup-To: <wsa@kernel.org>, Tian Tao <tiantao6@hisilicon.com>,
-        <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>
-References: <1600133898-35883-1-git-send-email-tiantao6@hisilicon.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 865DD1009464;
+        Fri, 18 Sep 2020 21:09:30 +0000 (UTC)
+Received: from treble (ovpn-112-141.rdu2.redhat.com [10.10.112.141])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5CC025D9D5;
+        Fri, 18 Sep 2020 21:09:29 +0000 (UTC)
+Date:   Fri, 18 Sep 2020 16:09:27 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Julien Thierry <jthierry@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org, mbenes@suse.cz,
+        raphael.gault@arm.com, benh@kernel.crashing.org
+Subject: Re: [PATCH 2/3] objtool: check: Support addition to set CFA base
+Message-ID: <20200918210927.eh2tilurtuhc6q4a@treble>
+References: <20200915081204.9204-1-jthierry@redhat.com>
+ <20200915081204.9204-3-jthierry@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="FoLtEtfbNGMjfgrs"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1600133898-35883-1-git-send-email-tiantao6@hisilicon.com>
+In-Reply-To: <20200915081204.9204-3-jthierry@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 15, 2020 at 09:12:03AM +0100, Julien Thierry wrote:
+> Instead of "mov SP, BP", a compiler could simply set BP
+> to SP + constant. Handle changing the CFA base in such cases.
 
---FoLtEtfbNGMjfgrs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Rather than what a compiler _could_ do, it would be good to be specific
+about when this can happen (presumably arm64).
 
+-- 
+Josh
 
->  static inline struct i2c_client *kobj_to_i2c_client(struct kobject *kobj)
->  {
-> -	struct device * const dev = container_of(kobj, struct device, kobj);
-> +	struct device * const dev = kobj_to_dev(kobj);
->  	return to_i2c_client(dev);
-
-Can't we make this a oneliner then merging the last two lines?
-
-
---FoLtEtfbNGMjfgrs
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9lIfcACgkQFA3kzBSg
-KbaX6xAAr7U/NRpiINPvIny3+Pb11V70zfEwH9bMfj4/zLrgmI/+JS+GMAeJOajs
-SxksyEPhbYTZFwSv7NOH7GhcIaB3DPHazF8JlTiBaBeqPOTdxVzbDJdR5tipEROD
-Lp2a+AuPGqMUPwlRBW3z/JKYz9oLHiXTUEHxW+M+l8HrUTidtt2lQnvAoZ1OVrz4
-fn1fL+o/fcCcHo/8WEW9kgnQlm1KiIoh9eM/pWGZcgLaQthusAvyeeCsbNqgtiMp
-wjp206qmF314VABAJNBZqqPUAiyfJJptmfXVUyszSRSAFtA+iVBNz7mpW2++ZvZg
-u6TZcCSfHpKouU8y6NKBnUFfWqGPjdy8DhyROhmz9JgnAMlZAsys1AlBaivsHH0x
-bDK0wNFdK4VLxHiKlRqy6so855X+ry2dzo5BgMVNIidqxKz/zHvneyring4jTHZ+
-YTVSMJhFatfChMtFqbz6PsWglrvro+oUs0S2Ksy8DUQoOaJOBu4J4Vf4oizgRQQy
-Gxqdn/tD2iOjE/TDv2WUFwc6tt+aRaEDKp1YfyXS2jyw8pEcI4DPlYsLun6yUnzN
-e9ZJaig7RKasRWJ8nK6EeYw8vYDpVmsaByiy3D3PzksbLmPnhTC34g2pflWGYNhu
-jNI8XutVMTjOHdPrhu2hZBbSKqFC0gfEbP39uKLkWcEDPFaqLaA=
-=VJ2C
------END PGP SIGNATURE-----
-
---FoLtEtfbNGMjfgrs--
