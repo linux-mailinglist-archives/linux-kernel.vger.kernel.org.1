@@ -2,148 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45ACC26ED1F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C14626EDA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729506AbgIRCRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:17:07 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:45774 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729470AbgIRCRA (ORCPT
+        id S1727009AbgIRCWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:22:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26505 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729505AbgIRCRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:17:00 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R271e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0U9GXwrg_1600395414;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U9GXwrg_1600395414)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 18 Sep 2020 10:16:55 +0800
-Date:   Fri, 18 Sep 2020 10:16:54 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-acpi@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Mike Rapoport <rppt@kernel.org>,
-        Scott Cheloha <cheloha@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH RFC 2/4] mm/page_alloc: place pages to tail in
- __putback_isolated_page()
-Message-ID: <20200918021654.GC54754@L-31X9LVDL-1304.local>
-Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
-References: <20200916183411.64756-1-david@redhat.com>
- <20200916183411.64756-3-david@redhat.com>
+        Thu, 17 Sep 2020 22:17:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600395428;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ku+sICGKzWJ9hbk/lDryotAHNAcONZujUxBnYspdRTU=;
+        b=R77uLUoOKad2WFiiuIkiJVwmx34ntgsjcuSE/1RiM3Sgn2XQK58CTB2cUQpqivFvAUAd/F
+        B1EhYVPc0c6DfrAgj9XzqynG5pQLy7B7hW22vK2UjQIsREyHipwILI2t0GAI/QYBFHdlr/
+        arcrnwg/MMthyZ9Kg6XlVkAGs4VGHqs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-137-wx2RmR3bNLelwWeZZ_RbzQ-1; Thu, 17 Sep 2020 22:17:06 -0400
+X-MC-Unique: wx2RmR3bNLelwWeZZ_RbzQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3B88110BBEE6;
+        Fri, 18 Sep 2020 02:17:05 +0000 (UTC)
+Received: from [10.72.13.167] (ovpn-13-167.pek2.redhat.com [10.72.13.167])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4314510013C1;
+        Fri, 18 Sep 2020 02:16:58 +0000 (UTC)
+Subject: Re: [PATCH v2 -next] vdpa: mlx5: change Kconfig depends to fix build
+ errors
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        virtualization@lists.linux-foundation.org,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>
+References: <22a2bd60-d895-2bfb-50be-4ac3d131ed82@infradead.org>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <f306fbfb-2984-d52d-b7be-7d65db643955@redhat.com>
+Date:   Fri, 18 Sep 2020 10:16:57 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916183411.64756-3-david@redhat.com>
+In-Reply-To: <22a2bd60-d895-2bfb-50be-4ac3d131ed82@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 08:34:09PM +0200, David Hildenbrand wrote:
->__putback_isolated_page() already documents that pages will be placed to
->the tail of the freelist - this is, however, not the case for
->"order >= MAX_ORDER - 2" (see buddy_merge_likely()) - which should be
->the case for all existing users.
->
->This change affects two users:
->- free page reporting
->- page isolation, when undoing the isolation.
->
->This behavior is desireable for pages that haven't really been touched
->lately, so exactly the two users that don't actually read/write page
->content, but rather move untouched pages.
->
->The new behavior is especially desirable for memory onlining, where we
->allow allocation of newly onlined pages via undo_isolate_page_range()
->in online_pages(). Right now, we always place them to the head of the
->free list, resulting in undesireable behavior: Assume we add
->individual memory chunks via add_memory() and online them right away to
->the NORMAL zone. We create a dependency chain of unmovable allocations
->e.g., via the memmap. The memmap of the next chunk will be placed onto
->previous chunks - if the last block cannot get offlined+removed, all
->dependent ones cannot get offlined+removed. While this can already be
->observed with individual DIMMs, it's more of an issue for virtio-mem
->(and I suspect also ppc DLPAR).
->
->Note: If we observe a degradation due to the changed page isolation
->behavior (which I doubt), we can always make this configurable by the
->instance triggering undo of isolation (e.g., alloc_contig_range(),
->memory onlining, memory offlining).
->
->Cc: Andrew Morton <akpm@linux-foundation.org>
->Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
->Cc: Mel Gorman <mgorman@techsingularity.net>
->Cc: Michal Hocko <mhocko@kernel.org>
->Cc: Dave Hansen <dave.hansen@intel.com>
->Cc: Vlastimil Babka <vbabka@suse.cz>
->Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
->Cc: Oscar Salvador <osalvador@suse.de>
->Cc: Mike Rapoport <rppt@kernel.org>
->Cc: Scott Cheloha <cheloha@linux.ibm.com>
->Cc: Michael Ellerman <mpe@ellerman.id.au>
->Signed-off-by: David Hildenbrand <david@redhat.com>
->---
-> mm/page_alloc.c | 10 +++++++++-
-> 1 file changed, 9 insertions(+), 1 deletion(-)
->
->diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->index 91cefb8157dd..bba9a0f60c70 100644
->--- a/mm/page_alloc.c
->+++ b/mm/page_alloc.c
->@@ -89,6 +89,12 @@ typedef int __bitwise fop_t;
->  */
-> #define FOP_SKIP_REPORT_NOTIFY	((__force fop_t)BIT(0))
-> 
->+/*
->+ * Place the freed page to the tail of the freelist after buddy merging. Will
->+ * get ignored with page shuffling enabled.
->+ */
->+#define FOP_TO_TAIL		((__force fop_t)BIT(1))
->+
-> /* prevent >1 _updater_ of zone percpu pageset ->high and ->batch fields */
-> static DEFINE_MUTEX(pcp_batch_high_lock);
-> #define MIN_PERCPU_PAGELIST_FRACTION	(8)
->@@ -1040,6 +1046,8 @@ static inline void __free_one_page(struct page *page, unsigned long pfn,
-> 
-> 	if (is_shuffle_order(order))
-> 		to_tail = shuffle_pick_tail();
->+	else if (fop_flags & FOP_TO_TAIL)
->+		to_tail = true;
 
-Take another look into this part. Maybe we can move this check at top?
+On 2020/9/18 上午3:45, Randy Dunlap wrote:
+> From: Randy Dunlap <rdunlap@infradead.org>
+>
+> drivers/vdpa/mlx5/ uses vhost_iotlb*() interfaces, so add a dependency
+> on VHOST to eliminate build errors.
+>
+> ld: drivers/vdpa/mlx5/core/mr.o: in function `add_direct_chain':
+> mr.c:(.text+0x106): undefined reference to `vhost_iotlb_itree_first'
+> ld: mr.c:(.text+0x1cf): undefined reference to `vhost_iotlb_itree_next'
+> ld: mr.c:(.text+0x30d): undefined reference to `vhost_iotlb_itree_first'
+> ld: mr.c:(.text+0x3e8): undefined reference to `vhost_iotlb_itree_next'
+> ld: drivers/vdpa/mlx5/core/mr.o: in function `_mlx5_vdpa_create_mr':
+> mr.c:(.text+0x908): undefined reference to `vhost_iotlb_itree_first'
+> ld: mr.c:(.text+0x9e6): undefined reference to `vhost_iotlb_itree_next'
+> ld: drivers/vdpa/mlx5/core/mr.o: in function `mlx5_vdpa_handle_set_map':
+> mr.c:(.text+0xf1d): undefined reference to `vhost_iotlb_itree_first'
+>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> Cc: Jason Wang <jasowang@redhat.com>
+> Cc: virtualization@lists.linux-foundation.org
+> Cc: Saeed Mahameed <saeedm@nvidia.com>
+> Cc: Leon Romanovsky <leonro@nvidia.com>
+> Cc: netdev@vger.kernel.org
+> ---
+> v2: change from select to depends (Saeed)
+>
+>   drivers/vdpa/Kconfig |    2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> --- linux-next-20200917.orig/drivers/vdpa/Kconfig
+> +++ linux-next-20200917/drivers/vdpa/Kconfig
+> @@ -31,7 +31,7 @@ config IFCVF
+>   
+>   config MLX5_VDPA
+>   	bool "MLX5 VDPA support library for ConnectX devices"
+> -	depends on MLX5_CORE
+> +	depends on VHOST && MLX5_CORE
 
-For online_page case, currently we have following call flow:
 
-    online_page
-        online_pages_range
-	shuffle_zone
+It looks to me that depending on VHOST is too heavyweight.
 
-This means we would always shuffle the newly added pages. Maybe we don't need
-to do the shuffle when adding them to the free_list?
+I guess what it really needs is VHOST_IOTLB. So we can use select 
+VHOST_IOTLB here.
 
-> 	else
-> 		to_tail = buddy_merge_likely(pfn, buddy_pfn, page, order);
-> 
->@@ -3289,7 +3297,7 @@ void __putback_isolated_page(struct page *page, unsigned int order, int mt)
-> 
-> 	/* Return isolated page to tail of freelist. */
-> 	__free_one_page(page, page_to_pfn(page), zone, order, mt,
->-			FOP_SKIP_REPORT_NOTIFY);
->+			FOP_SKIP_REPORT_NOTIFY | FOP_TO_TAIL);
-> }
-> 
-> /*
->-- 
->2.26.2
+Thanks
 
--- 
-Wei Yang
-Help you, Help me
+
+>   	default n
+>   	help
+>   	  Support library for Mellanox VDPA drivers. Provides code that is
+>
+
