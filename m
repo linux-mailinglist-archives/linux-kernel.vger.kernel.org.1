@@ -2,158 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D567127074D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F10D27074E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726382AbgIRUrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 16:47:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57912 "EHLO
+        id S1726438AbgIRUrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 16:47:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726247AbgIRUrF (ORCPT
+        with ESMTP id S1726247AbgIRUrI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 16:47:05 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E02C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:47:04 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id u126so8553348oif.13
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:47:04 -0700 (PDT)
+        Fri, 18 Sep 2020 16:47:08 -0400
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F7AEC0613CE;
+        Fri, 18 Sep 2020 13:47:08 -0700 (PDT)
+Received: by mail-oo1-xc41.google.com with SMTP id g26so1759640ooa.9;
+        Fri, 18 Sep 2020 13:47:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=2ZugjWO+M2gB8NAEaOpinUsTCy83ITVXPQJJCuUh0tk=;
-        b=WjGWRtLtK/iF2JBGFvAFhBIIWnfYlGitLxgWOb55+90M8NWyeyAYHjMqullm40yEpn
-         lmqlNP/RdMdof/dlgrXD7LIEh4QFBziiZqBFLkYpx6nqO0LhGPGEOc0jUI2Om0ofv1UI
-         S/Hy5kwkEn3elzHAQrdsgG/Q9wGl2K6SM0TmW2KTpFSeBnGKYLHA64mphmfHRP2oHqcu
-         Nw/MpK/R0Xy+kPNtblr1tupxRaInMGtJ8M9fnfZcWJFSLNg21CPbG28w+j/zksLAp7Vl
-         8clu8q+f9R+5RyuSHTYM6Cv81znd/ZP0aNzgFVSvrVYxc8q3XTCLKcwPTT/gq68bMO0y
-         Um1g==
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zqU4dHq3cnc2cyAhM+VlOdSlfj3aXvC5EFVqPqbMfWE=;
+        b=Cv80qOtppzDi4hEsUIIA9NynPwWDXrUWBE7Utl+nRL151JiZFmkaV9mGVuzIivtIYq
+         rSM5wR2W/PVEOn9iPIwGmVKpdq3cbGnXs+a2SEncTq5FSbQiNMOqX96xxENlmRXvjLkS
+         GdqSXCcd7Ls7t06HZYp+m9PnASZ/WUL4M5t6AUW06XuBvTgS/rabJCgs7fJj8kljdVK6
+         NJqlvKMfkIyAidR9rgmcGmGa8o9+MelDUwM67RJnRORKYEqJoOmfH1YHiN6HnDxhbm3h
+         cDCJZW+rUIYtey/+Rg+G+H+wDJYhkurnATe8vuq3enVvfPngePkkzSJCgBoBTxM8Q+fx
+         0Yeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=2ZugjWO+M2gB8NAEaOpinUsTCy83ITVXPQJJCuUh0tk=;
-        b=Zv/rWDsK+J20Mv2+mOCb6yvExkjjR1qTjIAar21G7TfUwmroirjQnrLYCYy8+24SLK
-         IifV8bQXcr9ZCQek/r5OpUxb7whpSR+qrUkSd1vUUhnwaN3qmgrGkigZDvDaxmuzqx+6
-         M9CIu8SP9n19ia6DFnXT5JCmVpogffjkmllR2ENaVaxET9D9+UG65b/XICiC5DnJvXZG
-         cUQhL90e4jp2nQxf36E2sjx3gDoE5fRTuq/G2nlWFIizodDVnbj0ZgabyR4yYYGHiRsE
-         CWYj1BHggiVM2L87I6nEeNwVNcP8ZInHPLIaZX0ybmBy0vP/OevH6jQtUMmItSDbVaPW
-         rGbg==
-X-Gm-Message-State: AOAM530feVqMDQ0L9D6BYO4B0K3KeqtsvhxjXq1Kv30eM8oUsjKhGQsc
-        SplXVBShvSZl2760rcVCxiqnNw==
-X-Google-Smtp-Source: ABdhPJxhcH3QXqNAiG7aPKPSB6t+sNO8rx1LG/17sQfL1FrCEcHVAqnygmkDHVSAZLGwrxyv727Pkg==
-X-Received: by 2002:aca:3e08:: with SMTP id l8mr9960330oia.152.1600462023374;
-        Fri, 18 Sep 2020 13:47:03 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id s5sm3116602otr.42.2020.09.18.13.47.00
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Fri, 18 Sep 2020 13:47:02 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 13:46:59 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Yu Zhao <yuzhao@google.com>
-cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Huang Ying <ying.huang@intel.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Konstantin Khlebnikov <koct9i@gmail.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Jaewon Kim <jaewon31.kim@samsung.com>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/13] mm: clean up some lru related pieces
-In-Reply-To: <20200918030051.650890-1-yuzhao@google.com>
-Message-ID: <alpine.LSU.2.11.2009181317350.11298@eggly.anvils>
-References: <20200918030051.650890-1-yuzhao@google.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zqU4dHq3cnc2cyAhM+VlOdSlfj3aXvC5EFVqPqbMfWE=;
+        b=C1cc8D1RiBElgGF28xw6CScV2PViG5wTT1FCx29KJMYZXd/2rFeW7jZQ+fyYI0uz+O
+         Aen6IzZDHTFguACnEl73PtnCxjyjp5lQtGellsnRmuJjYMxUevmRKiqY7ZB+/LBPNF+8
+         aMygpRIv/TRfu/7emLDfdrMNcdMXWl0Q4vDljy9ZaEjbC8+jFQzdKcMLYuph42PQSFWU
+         eODh37DQ0tngsQLTmzPFMJiGMK4IVDvvhOckPkszB584hm2HeT/E6Yx/Uxa29RkXnug+
+         6ZO08JNmfv5pDqA0Htc9c7jGEVm41DYSHSbPMzwN3KUehENPZgZBljPP7KnvNe8bI1p4
+         v2RA==
+X-Gm-Message-State: AOAM530usWvnI6u5bpbVw+voRX6nteyz+VnmcyBATNUJM8/Elk0BKCVJ
+        lw0HC9P7Fx45jzeVGAi0UGjF7EefsSo=
+X-Google-Smtp-Source: ABdhPJx9MpGLvkaa+tUmwmS/7S0wT0cgHv7CtmeI6rL0ncQopy3U+FcBqkfgQ2Lwbzgs8IPlKywD1A==
+X-Received: by 2002:a4a:c909:: with SMTP id v9mr25290671ooq.43.1600462027463;
+        Fri, 18 Sep 2020 13:47:07 -0700 (PDT)
+Received: from localhost.localdomain (cpe-24-31-245-230.kc.res.rr.com. [24.31.245.230])
+        by smtp.gmail.com with ESMTPSA id l136sm3872514oig.7.2020.09.18.13.47.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Sep 2020 13:47:06 -0700 (PDT)
+Sender: Larry Finger <larry.finger@gmail.com>
+Subject: Re: [PATCH -next 2/9] rtlwifi: rtl8192c: fix comparison to bool
+ warning in phy_common.c
+To:     Zheng Bin <zhengbin13@huawei.com>, pkshih@realtek.com,
+        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     yi.zhang@huawei.com
+References: <20200918102505.16036-1-zhengbin13@huawei.com>
+ <20200918102505.16036-3-zhengbin13@huawei.com>
+From:   Larry Finger <Larry.Finger@lwfinger.net>
+Message-ID: <34dceb4c-8a5d-a0f1-f572-d05a9b8b9b76@lwfinger.net>
+Date:   Fri, 18 Sep 2020 15:47:05 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <20200918102505.16036-3-zhengbin13@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Sep 2020, Yu Zhao wrote:
+On 9/18/20 5:24 AM, Zheng Bin wrote:
+> Fixes coccicheck warning:
+> 
+> drivers/net/wireless/realtek/rtlwifi/rtl8192c/phy_common.c:1106:14-18: WARNING: Comparison to bool
+> 
+> Signed-off-by: Zheng Bin <zhengbin13@huawei.com>
+> ---
+>   drivers/net/wireless/realtek/rtlwifi/rtl8192c/phy_common.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Hi Andrew,
-> 
-> I see you have taken this:
->   mm: use add_page_to_lru_list()/page_lru()/page_off_lru()
-> Do you mind dropping it?
-> 
-> Michal asked to do a bit of additional work. So I thought I probably
-> should create a series to do more cleanups I've been meaning to.
-> 
-> This series contains the change in the patch above and goes a few
-> more steps farther. It's intended to improve readability and should
-> not have any performance impacts. There are minor behavior changes in
-> terms of debugging and error reporting, which I have all highlighted
-> in the individual patches. All patches were properly tested on 5.8
-> running Chrome OS, with various debug options turned on.
-> 
-> Michal,
-> 
-> Do you mind taking a looking at the entire series?
-> 
-> Thank you.
-> 
-> Yu Zhao (13):
->   mm: use add_page_to_lru_list()
->   mm: use page_off_lru()
->   mm: move __ClearPageLRU() into page_off_lru()
->   mm: shuffle lru list addition and deletion functions
->   mm: don't pass enum lru_list to lru list addition functions
->   mm: don't pass enum lru_list to trace_mm_lru_insertion()
->   mm: don't pass enum lru_list to del_page_from_lru_list()
->   mm: rename page_off_lru() to __clear_page_lru_flags()
->   mm: inline page_lru_base_type()
->   mm: VM_BUG_ON lru page flags
->   mm: inline __update_lru_size()
->   mm: make lruvec_lru_size() static
->   mm: enlarge the int parameter of update_lru_size()
-> 
->  include/linux/memcontrol.h     |  14 ++--
->  include/linux/mm_inline.h      | 115 ++++++++++++++-------------------
->  include/linux/mmzone.h         |   2 -
->  include/linux/vmstat.h         |   2 +-
->  include/trace/events/pagemap.h |  11 ++--
->  mm/compaction.c                |   2 +-
->  mm/memcontrol.c                |  10 +--
->  mm/mlock.c                     |   2 +-
->  mm/swap.c                      |  53 ++++++---------
->  mm/vmscan.c                    |  28 +++-----
->  10 files changed, 95 insertions(+), 144 deletions(-)
-> 
-> -- 
-> 2.28.0.681.g6f77f65b4e-goog
+Acked-by: Larry Finger <Larry.Finger@lwfinger.net>
 
-Sorry, Yu, I may be out-of-line in sending this: but as you know,
-Alex Shi has a long per-memcg lru_lock series playing in much the
-same area (particularly conflicting in mm/swap.c and mm/vmscan.c):
-a patchset that makes useful changes, that I'm very keen to help
-into mmotm a.s.a.p (but not before I've completed diligence).
+Larry
 
-We've put a lot of effort into its testing, I'm currently reviewing
-it patch by patch (my general silence indicating that I'm busy on that,
-but slow as ever): so I'm a bit discouraged to have its stability
-potentially undermined by conflicting cleanups at this stage.
+> 
+> diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8192c/phy_common.c b/drivers/net/wireless/realtek/rtlwifi/rtl8192c/phy_common.c
+> index fc6c81291cf5..6a3deca404b9 100644
+> --- a/drivers/net/wireless/realtek/rtlwifi/rtl8192c/phy_common.c
+> +++ b/drivers/net/wireless/realtek/rtlwifi/rtl8192c/phy_common.c
+> @@ -1103,7 +1103,7 @@ static void _rtl92c_phy_path_adda_on(struct ieee80211_hw *hw,
+>   	u32 i;
+> 
+>   	pathon = is_patha_on ? 0x04db25a4 : 0x0b1b25a4;
+> -	if (false == is2t) {
+> +	if (!is2t) {
+>   		pathon = 0x0bdb25a0;
+>   		rtl_set_bbreg(hw, addareg[0], MASKDWORD, 0x0b1b25a0);
+>   	} else {
+> --
+> 2.26.0.106.g9fadedd
+> 
 
-If there's general agreement that your cleanups are safe and welcome
-(Michal's initial reaction sheds some doubt on that), great: I hope
-that Andrew can fast-track them into mmotm, then Alex rebase on top
-of them, and I then re-test and re-review.
-
-But if that quick agreement is not forthcoming, may I ask you please
-to hold back, and resend based on top of Alex's next posting?
-
-Thanks,
-Hugh
