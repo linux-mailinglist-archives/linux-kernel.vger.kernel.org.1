@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8932F26ECA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2E326ECAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728950AbgIRCNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:13:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40698 "EHLO mail.kernel.org"
+        id S1728990AbgIRCNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:13:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728516AbgIRCN1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:13:27 -0400
+        id S1728959AbgIRCNh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:13:37 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 967562389E;
-        Fri, 18 Sep 2020 02:13:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4938F2388D;
+        Fri, 18 Sep 2020 02:13:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600395206;
-        bh=YTi2DVDTYY9Gzpuq/f0hpUTUJ4WQ85KgDRz9QQ36yCU=;
+        s=default; t=1600395216;
+        bh=0NaHK30kRrR6UMyWl9usYfUJLUQ4H0zeHY3L+EQ56yA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RZ2+F+rN3JRrcnkFBHsapyA4y8yGjKe2udBgn4avHxvGnpNpM6Woo+JP90kSDrfhu
-         X9IBjujBTWFKvjxDt0xBYHwaJxKXKqP6LVk0wdYnZR3SM/Inr57MndV+Qqe25sLXuN
-         CP2qs7Wy+jR1P6OcFsO1h2v7mfQuF/x48mJMdU9o=
+        b=UU12DZz7L97yqWjULFaYOedmah/gzdC9B1Din9A1HtYfIxY4B5SA7Pwohu9UaUgmT
+         86sOB1UipNIYKDIOpWbpqobAU1zkOdWWuoggRZkuac0EHy0OEJYiNrO/kinpq6cyNO
+         eRk2vs/A9fdpSYRK1h2niv10wt4ZKyDBr8BKBHb0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Takashi Iwai <tiwai@suse.de>,
-        =?UTF-8?q?Josef=20M=C3=B6llers?= <josef.moellers@suse.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 055/127] media: go7007: Fix URB type for interrupt handling
-Date:   Thu, 17 Sep 2020 22:11:08 -0400
-Message-Id: <20200918021220.2066485-55-sashal@kernel.org>
+Cc:     Howard Chung <howardchung@google.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 063/127] Bluetooth: L2CAP: handle l2cap config request during open state
+Date:   Thu, 17 Sep 2020 22:11:16 -0400
+Message-Id: <20200918021220.2066485-63-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918021220.2066485-1-sashal@kernel.org>
 References: <20200918021220.2066485-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -45,53 +43,173 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Howard Chung <howardchung@google.com>
 
-[ Upstream commit a3ea410cac41b19a5490aad7fe6d9a9a772e646e ]
+[ Upstream commit 96298f640104e4cd9a913a6e50b0b981829b94ff ]
 
-Josef reported that his old-and-good Plextor ConvertX M402U video
-converter spews lots of WARNINGs on the recent kernels, and it turned
-out that the device uses a bulk endpoint for interrupt handling just
-like 2250 board.
+According to Core Spec Version 5.2 | Vol 3, Part A 6.1.5,
+the incoming L2CAP_ConfigReq should be handled during
+OPEN state.
 
-For fixing it, generalize the check with the proper verification of
-the endpoint instead of hard-coded board type check.
+The section below shows the btmon trace when running
+L2CAP/COS/CFD/BV-12-C before and after this change.
 
-Fixes: 7e5219d18e93 ("[media] go7007: Fix 2250 urb type")
-Reported-and-tested-by: Josef Möllers <josef.moellers@suse.com>
-BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1162583
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=206427
+=== Before ===
+...
+> ACL Data RX: Handle 256 flags 0x02 dlen 12                #22
+      L2CAP: Connection Request (0x02) ident 2 len 4
+        PSM: 1 (0x0001)
+        Source CID: 65
+< ACL Data TX: Handle 256 flags 0x00 dlen 16                #23
+      L2CAP: Connection Response (0x03) ident 2 len 8
+        Destination CID: 64
+        Source CID: 65
+        Result: Connection successful (0x0000)
+        Status: No further information available (0x0000)
+< ACL Data TX: Handle 256 flags 0x00 dlen 12                #24
+      L2CAP: Configure Request (0x04) ident 2 len 4
+        Destination CID: 65
+        Flags: 0x0000
+> HCI Event: Number of Completed Packets (0x13) plen 5      #25
+        Num handles: 1
+        Handle: 256
+        Count: 1
+> HCI Event: Number of Completed Packets (0x13) plen 5      #26
+        Num handles: 1
+        Handle: 256
+        Count: 1
+> ACL Data RX: Handle 256 flags 0x02 dlen 16                #27
+      L2CAP: Configure Request (0x04) ident 3 len 8
+        Destination CID: 64
+        Flags: 0x0000
+        Option: Unknown (0x10) [hint]
+        01 00                                            ..
+< ACL Data TX: Handle 256 flags 0x00 dlen 18                #28
+      L2CAP: Configure Response (0x05) ident 3 len 10
+        Source CID: 65
+        Flags: 0x0000
+        Result: Success (0x0000)
+        Option: Maximum Transmission Unit (0x01) [mandatory]
+          MTU: 672
+> HCI Event: Number of Completed Packets (0x13) plen 5      #29
+        Num handles: 1
+        Handle: 256
+        Count: 1
+> ACL Data RX: Handle 256 flags 0x02 dlen 14                #30
+      L2CAP: Configure Response (0x05) ident 2 len 6
+        Source CID: 64
+        Flags: 0x0000
+        Result: Success (0x0000)
+> ACL Data RX: Handle 256 flags 0x02 dlen 20                #31
+      L2CAP: Configure Request (0x04) ident 3 len 12
+        Destination CID: 64
+        Flags: 0x0000
+        Option: Unknown (0x10) [hint]
+        01 00 91 02 11 11                                ......
+< ACL Data TX: Handle 256 flags 0x00 dlen 14                #32
+      L2CAP: Command Reject (0x01) ident 3 len 6
+        Reason: Invalid CID in request (0x0002)
+        Destination CID: 64
+        Source CID: 65
+> HCI Event: Number of Completed Packets (0x13) plen 5      #33
+        Num handles: 1
+        Handle: 256
+        Count: 1
+...
+=== After ===
+...
+> ACL Data RX: Handle 256 flags 0x02 dlen 12               #22
+      L2CAP: Connection Request (0x02) ident 2 len 4
+        PSM: 1 (0x0001)
+        Source CID: 65
+< ACL Data TX: Handle 256 flags 0x00 dlen 16               #23
+      L2CAP: Connection Response (0x03) ident 2 len 8
+        Destination CID: 64
+        Source CID: 65
+        Result: Connection successful (0x0000)
+        Status: No further information available (0x0000)
+< ACL Data TX: Handle 256 flags 0x00 dlen 12               #24
+      L2CAP: Configure Request (0x04) ident 2 len 4
+        Destination CID: 65
+        Flags: 0x0000
+> HCI Event: Number of Completed Packets (0x13) plen 5     #25
+        Num handles: 1
+        Handle: 256
+        Count: 1
+> HCI Event: Number of Completed Packets (0x13) plen 5     #26
+        Num handles: 1
+        Handle: 256
+        Count: 1
+> ACL Data RX: Handle 256 flags 0x02 dlen 16               #27
+      L2CAP: Configure Request (0x04) ident 3 len 8
+        Destination CID: 64
+        Flags: 0x0000
+        Option: Unknown (0x10) [hint]
+        01 00                                            ..
+< ACL Data TX: Handle 256 flags 0x00 dlen 18               #28
+      L2CAP: Configure Response (0x05) ident 3 len 10
+        Source CID: 65
+        Flags: 0x0000
+        Result: Success (0x0000)
+        Option: Maximum Transmission Unit (0x01) [mandatory]
+          MTU: 672
+> HCI Event: Number of Completed Packets (0x13) plen 5     #29
+        Num handles: 1
+        Handle: 256
+        Count: 1
+> ACL Data RX: Handle 256 flags 0x02 dlen 14               #30
+      L2CAP: Configure Response (0x05) ident 2 len 6
+        Source CID: 64
+        Flags: 0x0000
+        Result: Success (0x0000)
+> ACL Data RX: Handle 256 flags 0x02 dlen 20               #31
+      L2CAP: Configure Request (0x04) ident 3 len 12
+        Destination CID: 64
+        Flags: 0x0000
+        Option: Unknown (0x10) [hint]
+        01 00 91 02 11 11                                .....
+< ACL Data TX: Handle 256 flags 0x00 dlen 18               #32
+      L2CAP: Configure Response (0x05) ident 3 len 10
+        Source CID: 65
+        Flags: 0x0000
+        Result: Success (0x0000)
+        Option: Maximum Transmission Unit (0x01) [mandatory]
+          MTU: 672
+< ACL Data TX: Handle 256 flags 0x00 dlen 12               #33
+      L2CAP: Configure Request (0x04) ident 3 len 4
+        Destination CID: 65
+        Flags: 0x0000
+> HCI Event: Number of Completed Packets (0x13) plen 5     #34
+        Num handles: 1
+        Handle: 256
+        Count: 1
+> HCI Event: Number of Completed Packets (0x13) plen 5     #35
+        Num handles: 1
+        Handle: 256
+        Count: 1
+...
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Howard Chung <howardchung@google.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/go7007/go7007-usb.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ net/bluetooth/l2cap_core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/usb/go7007/go7007-usb.c b/drivers/media/usb/go7007/go7007-usb.c
-index ed9bcaf08d5ec..ddfaabd4c0813 100644
---- a/drivers/media/usb/go7007/go7007-usb.c
-+++ b/drivers/media/usb/go7007/go7007-usb.c
-@@ -1052,6 +1052,7 @@ static int go7007_usb_probe(struct usb_interface *intf,
- 	struct go7007_usb *usb;
- 	const struct go7007_usb_board *board;
- 	struct usb_device *usbdev = interface_to_usbdev(intf);
-+	struct usb_host_endpoint *ep;
- 	unsigned num_i2c_devs;
- 	char *name;
- 	int video_pipe, i, v_urb_len;
-@@ -1147,7 +1148,8 @@ static int go7007_usb_probe(struct usb_interface *intf,
- 	if (usb->intr_urb->transfer_buffer == NULL)
- 		goto allocfail;
+diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
+index 97175cddb1e04..c301b9debea7c 100644
+--- a/net/bluetooth/l2cap_core.c
++++ b/net/bluetooth/l2cap_core.c
+@@ -4117,7 +4117,8 @@ static inline int l2cap_config_req(struct l2cap_conn *conn,
+ 		return 0;
+ 	}
  
--	if (go->board_id == GO7007_BOARDID_SENSORAY_2250)
-+	ep = usb->usbdev->ep_in[4];
-+	if (usb_endpoint_type(&ep->desc) == USB_ENDPOINT_XFER_BULK)
- 		usb_fill_bulk_urb(usb->intr_urb, usb->usbdev,
- 			usb_rcvbulkpipe(usb->usbdev, 4),
- 			usb->intr_urb->transfer_buffer, 2*sizeof(u16),
+-	if (chan->state != BT_CONFIG && chan->state != BT_CONNECT2) {
++	if (chan->state != BT_CONFIG && chan->state != BT_CONNECT2 &&
++	    chan->state != BT_CONNECTED) {
+ 		cmd_reject_invalid_cid(conn, cmd->ident, chan->scid,
+ 				       chan->dcid);
+ 		goto unlock;
 -- 
 2.25.1
 
