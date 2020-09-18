@@ -2,129 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95A672706FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B898E270705
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726485AbgIRUY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 16:24:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54466 "EHLO
+        id S1726379AbgIRU02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 16:26:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726118AbgIRUY5 (ORCPT
+        with ESMTP id S1726187AbgIRU01 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 16:24:57 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEBF7C0613CE;
-        Fri, 18 Sep 2020 13:24:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=yAMhSupJBbZkPaKwYOyhZeq16yiQVbhqGBu9I9QwZJ8=; b=RQptF1yKQdaMfvH2IgafRgkWxV
-        mb4GAZQaANOjCgO0bQShHHOeqS2Fcp47TLzLJDI7JZziWojmB1dMU84PNmdHFX1i32Gzma+r59q3u
-        GMwDCEfkbwLX9j/GqqUmQGvVQeEDoFXotxbPGssyVoNds3EbNvzI9g1X7+bPPyGT6enQhQZMr+C3F
-        pt6pAhDnei4+UsHrvmwbIz77O0NrQp9r+A7ma4dnzItBuSqCjJrl+U2ojV0opWzF1X+dzvOk87QG3
-        UTXBWdFVyKRX+mCkCmNvb96C24bp866cQi972lyvXFgg4J0TsaCmL5ee5aYdFV/ivgsIGiYfQFz2H
-        9i++2+3g==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kJMve-0005x8-EQ; Fri, 18 Sep 2020 20:24:22 +0000
-Subject: Re: [PATCH v12 1/8] x86/cet/ibt: Add Kconfig option for user-mode
- Indirect Branch Tracking
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>
-References: <20200918192312.25978-1-yu-cheng.yu@intel.com>
- <20200918192312.25978-2-yu-cheng.yu@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <ce2524cc-081b-aec9-177a-11c7431cb20d@infradead.org>
-Date:   Fri, 18 Sep 2020 13:24:13 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 18 Sep 2020 16:26:27 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7125C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:26:27 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id z13so8374732iom.8
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:26:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zPIiXtAmm1znwy//ZzDO5/qxaCxybnzlRD5TAdxKKpc=;
+        b=A0kw3FLApPzgEKeOvVJgccZvJ8BPv9sXncgcQVLjYXSnBVesfgswX0vOwVQ5OraAcf
+         qwfnN9KpCoX+VPbIJjmDUvZZmsJ7VjbNVfB7VGzU04rZbWEA73ygEhnFoB7UXV5Lv6BE
+         6pYaKpnEWvTeOnL9Oa1K+3V3Eh8eIUzpOJ1FovkBrv1yVFRUnxkkfcD89nUvYE8Z3C1a
+         5ctxS+iZc5vFsJVDvJ+1LuErAMxXJQSEMxXk5W4y72+RkmpylpRCu/gl8iOQOy0vEVeq
+         7hB6Q17XdAk97Plg6IgwLWJ484lBu+m/X34R59KdDR/yKVc3SSpyWnk3y/Bz3q+BzGlL
+         OiZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zPIiXtAmm1znwy//ZzDO5/qxaCxybnzlRD5TAdxKKpc=;
+        b=k6EqLbDs2bKA/zQehBMjuT3sfIaAFS1Fg6RuIUh9XKbt9/yoOGvruEwq1Zl3dV+t2y
+         rD+sYhFtWjJvj0zDUtII4V2DV/6M1lrTux3i59nXKqOsucRzEIJRai2xK1PGJvWkg1gp
+         JnxA38zkV1vQABxy0kLSkX0qr0bhJ6f9q+jc5cs2IOBZ6fenCwEYrKCeuv/0kng3JkyX
+         WoqPq7+HepJj+U5RctmKxSdcjFAs4UFrKdxjRievKHbCyCh7bFhUno5/TSuXXZQrSzum
+         GHq1cOSlgPZjPb+fX43XsKWch1iDAy0yhRBnXLM8X9UfAJEQ50A7ZOSi6NS8/V+TQ9yV
+         eYAg==
+X-Gm-Message-State: AOAM5313MRoHmUo9MZszBQ32OWA8ntfX87BkgMFwwMhpWbnh3d9JYS9f
+        q25my5osV7MNxLa4xSKprhW2mo68Iidxjforz/XnGhzhVpE=
+X-Google-Smtp-Source: ABdhPJxTlh+pfInXhz9Y0Tl4FYMMs30+z+zgXiQAyegJ3rr5nXdw+897yR0nmJsBjl6Wl6w09p8jbAy32YkHaa1MMkM=
+X-Received: by 2002:a05:6602:584:: with SMTP id v4mr29258818iox.195.1600460786710;
+ Fri, 18 Sep 2020 13:26:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200918192312.25978-2-yu-cheng.yu@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200918201902.0931495C0649@us180.sjc.aristanetworks.com>
+In-Reply-To: <20200918201902.0931495C0649@us180.sjc.aristanetworks.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Fri, 18 Sep 2020 22:26:15 +0200
+Message-ID: <CANn89iKOAfFzj0oJiN99_2hUqnB=vu-rYjd_sAxQYucS28wKMQ@mail.gmail.com>
+Subject: Re: [PATCH v4] net: use exponential backoff in netdev_wait_allrefs
+To:     Francesco Ruggeri <fruggeri@arista.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Sep 18, 2020 at 10:19 PM Francesco Ruggeri <fruggeri@arista.com> wrote:
+>
+> The combination of aca_free_rcu, introduced in commit 2384d02520ff
+> ("net/ipv6: Add anycast addresses to a global hashtable"), and
+> fib6_info_destroy_rcu, introduced in commit 9b0a8da8c4c6 ("net/ipv6:
+> respect rcu grace period before freeing fib6_info"), can result in
+> an extra rcu grace period being needed when deleting an interface,
+> with the result that netdev_wait_allrefs ends up hitting the msleep(250),
+> which is considerably longer than the required grace period.
+> This can result in long delays when deleting a large number of interfaces,
+> and it can be observed with this script:
+>
+>
+>
+> Signed-off-by: Francesco Ruggeri <fruggeri@arista.com>
+>
 
-If you do another version of this:
+Reviewed-by: Eric Dumazet <edumazet@google.com>
 
-On 9/18/20 12:23 PM, Yu-cheng Yu wrote:
-> Introduce Kconfig option X86_INTEL_BRANCH_TRACKING_USER.
-> 
-> Indirect Branch Tracking (IBT) provides protection against CALL-/JMP-
-> oriented programming attacks.  It is active when the kernel has this
-> feature enabled, and the processor and the application support it.
-> When this feature is enabled, legacy non-IBT applications continue to
-> work, but without IBT protection.
-> 
-> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-> ---
-> v10:
-> - Change build-time CET check to config depends on.
-> 
->  arch/x86/Kconfig | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 6b6dad011763..b047e0a8d1c2 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -1963,6 +1963,22 @@ config X86_INTEL_SHADOW_STACK_USER
->  
->  	  If unsure, say y.
->  
-> +config X86_INTEL_BRANCH_TRACKING_USER
-> +	prompt "Intel Indirect Branch Tracking for user-mode"
-> +	def_bool n
-> +	depends on CPU_SUP_INTEL && X86_64
-> +	depends on $(cc-option,-fcf-protection)
-> +	select X86_INTEL_CET
-> +	help
-> +	  Indirect Branch Tracking (IBT) provides protection against
-> +	  CALL-/JMP-oriented programming attacks.  It is active when
-> +	  the kernel has this feature enabled, and the processor and
-> +	  the application support it.  When this feature is enabled,
-> +	  legacy non-IBT applications continue to work, but without
-> +	  IBT protection.
-> +
-> +	  If unsure, say y
-
-	  If unsure, say y.
-
-> +
->  config EFI
->  	bool "EFI runtime service support"
->  	depends on ACPI
-> 
-
-
--- 
-~Randy
-
+Thanks !
