@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 018D426EB79
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2422926EB80
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727534AbgIRCF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:05:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53500 "EHLO mail.kernel.org"
+        id S1726846AbgIRCFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:05:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727495AbgIRCFS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:05:18 -0400
+        id S1727529AbgIRCF1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:05:27 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D6D8123772;
-        Fri, 18 Sep 2020 02:05:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0F13B2388A;
+        Fri, 18 Sep 2020 02:05:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394717;
-        bh=ZNSLXRuNGa52uCWoAOHJVDfW8rqDBqg8ZhRQmPT57Hw=;
+        s=default; t=1600394726;
+        bh=EOKQQMvHtGDuToV5vA6NpVz451QxopcYgrV0hmjBlQ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bH49yQSTywvR4Nw1PwDEjaUFl3Q8N5fTtf33Zq0B5dJwhbG701FBLZDK5/2CR2jhi
-         yznNxT2kN+7mBPe3fMFi0QS0FZdlnWhiudVHXSZQI76QeKun8a0cL/S6HA6KMqZwvb
-         s7H/4l8zEZ10ScmvLRGqxzscDfQOKMRCdmQiYOd0=
+        b=z/UXTg97Jr+oop1SAbUNC3MCiqRLf2AzOse60xcZfaf91pESt4XTlpWC/bU4G4Z4w
+         b5gBP4yRDCd9j6JC+ZzgWt8XhzUVeJne8ncPzTprI0umGP34m+R8rbOM6/YKZKJ7oO
+         ATeXtJIEaT0p+8w3J+piy3/gPmS7DR4c+5Q0vRHw=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 201/330] kernel/kcmp.c: Use new infrastructure to fix deadlocks in execve
-Date:   Thu, 17 Sep 2020 21:59:01 -0400
-Message-Id: <20200918020110.2063155-201-sashal@kernel.org>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, xfs@oss.sgi.com
+Subject: [PATCH AUTOSEL 5.4 209/330] xfs: prohibit fs freezing when using empty transactions
+Date:   Thu, 17 Sep 2020 21:59:09 -0400
+Message-Id: <20200918020110.2063155-209-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -42,50 +42,134 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bernd Edlinger <bernd.edlinger@hotmail.de>
+From: "Darrick J. Wong" <darrick.wong@oracle.com>
 
-[ Upstream commit 454e3126cb842388e22df6b3ac3da44062c00765 ]
+[ Upstream commit 27fb5a72f50aa770dd38b0478c07acacef97e3e7 ]
 
-This changes kcmp_epoll_target to use the new exec_update_mutex
-instead of cred_guard_mutex.
+I noticed that fsfreeze can take a very long time to freeze an XFS if
+there happens to be a GETFSMAP caller running in the background.  I also
+happened to notice the following in dmesg:
 
-This should be safe, as the credentials are only used for reading,
-and furthermore ->mm and ->sighand are updated on execve,
-but only under the new exec_update_mutex.
+------------[ cut here ]------------
+WARNING: CPU: 2 PID: 43492 at fs/xfs/xfs_super.c:853 xfs_quiesce_attr+0x83/0x90 [xfs]
+Modules linked in: xfs libcrc32c ip6t_REJECT nf_reject_ipv6 ipt_REJECT nf_reject_ipv4 ip_set_hash_ip ip_set_hash_net xt_tcpudp xt_set ip_set_hash_mac ip_set nfnetlink ip6table_filter ip6_tables bfq iptable_filter sch_fq_codel ip_tables x_tables nfsv4 af_packet [last unloaded: xfs]
+CPU: 2 PID: 43492 Comm: xfs_io Not tainted 5.6.0-rc4-djw #rc4
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.10.2-1ubuntu1 04/01/2014
+RIP: 0010:xfs_quiesce_attr+0x83/0x90 [xfs]
+Code: 7c 07 00 00 85 c0 75 22 48 89 df 5b e9 96 c1 00 00 48 c7 c6 b0 2d 38 a0 48 89 df e8 57 64 ff ff 8b 83 7c 07 00 00 85 c0 74 de <0f> 0b 48 89 df 5b e9 72 c1 00 00 66 90 0f 1f 44 00 00 41 55 41 54
+RSP: 0018:ffffc900030f3e28 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: ffff88802ac54000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff81e4a6f0 RDI: 00000000ffffffff
+RBP: ffff88807859f070 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000010 R12: 0000000000000000
+R13: ffff88807859f388 R14: ffff88807859f4b8 R15: ffff88807859f5e8
+FS:  00007fad1c6c0fc0(0000) GS:ffff88807e000000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0c7d237000 CR3: 0000000077f01003 CR4: 00000000001606a0
+Call Trace:
+ xfs_fs_freeze+0x25/0x40 [xfs]
+ freeze_super+0xc8/0x180
+ do_vfs_ioctl+0x70b/0x750
+ ? __fget_files+0x135/0x210
+ ksys_ioctl+0x3a/0xb0
+ __x64_sys_ioctl+0x16/0x20
+ do_syscall_64+0x50/0x1a0
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
 
-Signed-off-by: Bernd Edlinger <bernd.edlinger@hotmail.de>
-Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
+These two things appear to be related.  The assertion trips when another
+thread initiates a fsmap request (which uses an empty transaction) after
+the freezer waited for m_active_trans to hit zero but before the the
+freezer executes the WARN_ON just prior to calling xfs_log_quiesce.
+
+The lengthy delays in freezing happen because the freezer calls
+xfs_wait_buftarg to clean out the buffer lru list.  Meanwhile, the
+GETFSMAP caller is continuing to grab and release buffers, which means
+that it can take a very long time for the buffer lru list to empty out.
+
+We fix both of these races by calling sb_start_write to obtain freeze
+protection while using empty transactions for GETFSMAP and for metadata
+scrubbing.  The other two users occur during mount, during which time we
+cannot fs freeze.
+
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Dave Chinner <dchinner@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/kcmp.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/xfs/scrub/scrub.c | 9 +++++++++
+ fs/xfs/xfs_fsmap.c   | 9 +++++++++
+ fs/xfs/xfs_trans.c   | 5 +++++
+ 3 files changed, 23 insertions(+)
 
-diff --git a/kernel/kcmp.c b/kernel/kcmp.c
-index a0e3d7a0e8b81..b3ff9288c6cc9 100644
---- a/kernel/kcmp.c
-+++ b/kernel/kcmp.c
-@@ -173,8 +173,8 @@ SYSCALL_DEFINE5(kcmp, pid_t, pid1, pid_t, pid2, int, type,
- 	/*
- 	 * One should have enough rights to inspect task details.
- 	 */
--	ret = kcmp_lock(&task1->signal->cred_guard_mutex,
--			&task2->signal->cred_guard_mutex);
-+	ret = kcmp_lock(&task1->signal->exec_update_mutex,
-+			&task2->signal->exec_update_mutex);
- 	if (ret)
- 		goto err;
- 	if (!ptrace_may_access(task1, PTRACE_MODE_READ_REALCREDS) ||
-@@ -229,8 +229,8 @@ SYSCALL_DEFINE5(kcmp, pid_t, pid1, pid_t, pid2, int, type,
+diff --git a/fs/xfs/scrub/scrub.c b/fs/xfs/scrub/scrub.c
+index 15c8c5f3f688d..720bef5779989 100644
+--- a/fs/xfs/scrub/scrub.c
++++ b/fs/xfs/scrub/scrub.c
+@@ -167,6 +167,7 @@ xchk_teardown(
+ 			xfs_irele(sc->ip);
+ 		sc->ip = NULL;
  	}
++	sb_end_write(sc->mp->m_super);
+ 	if (sc->flags & XCHK_REAPING_DISABLED)
+ 		xchk_start_reaping(sc);
+ 	if (sc->flags & XCHK_HAS_QUOTAOFFLOCK) {
+@@ -489,6 +490,14 @@ xfs_scrub_metadata(
+ 	sc.ops = &meta_scrub_ops[sm->sm_type];
+ 	sc.sick_mask = xchk_health_mask_for_scrub_type(sm->sm_type);
+ retry_op:
++	/*
++	 * If freeze runs concurrently with a scrub, the freeze can be delayed
++	 * indefinitely as we walk the filesystem and iterate over metadata
++	 * buffers.  Freeze quiesces the log (which waits for the buffer LRU to
++	 * be emptied) and that won't happen while checking is running.
++	 */
++	sb_start_write(mp->m_super);
++
+ 	/* Set up for the operation. */
+ 	error = sc.ops->setup(&sc, ip);
+ 	if (error)
+diff --git a/fs/xfs/xfs_fsmap.c b/fs/xfs/xfs_fsmap.c
+index d082143feb5ab..c13754e119be1 100644
+--- a/fs/xfs/xfs_fsmap.c
++++ b/fs/xfs/xfs_fsmap.c
+@@ -895,6 +895,14 @@ xfs_getfsmap(
+ 	info.format_arg = arg;
+ 	info.head = head;
  
- err_unlock:
--	kcmp_unlock(&task1->signal->cred_guard_mutex,
--		    &task2->signal->cred_guard_mutex);
-+	kcmp_unlock(&task1->signal->exec_update_mutex,
-+		    &task2->signal->exec_update_mutex);
- err:
- 	put_task_struct(task1);
- 	put_task_struct(task2);
++	/*
++	 * If fsmap runs concurrently with a scrub, the freeze can be delayed
++	 * indefinitely as we walk the rmapbt and iterate over metadata
++	 * buffers.  Freeze quiesces the log (which waits for the buffer LRU to
++	 * be emptied) and that won't happen while we're reading buffers.
++	 */
++	sb_start_write(mp->m_super);
++
+ 	/* For each device we support... */
+ 	for (i = 0; i < XFS_GETFSMAP_DEVS; i++) {
+ 		/* Is this device within the range the user asked for? */
+@@ -934,6 +942,7 @@ xfs_getfsmap(
+ 
+ 	if (tp)
+ 		xfs_trans_cancel(tp);
++	sb_end_write(mp->m_super);
+ 	head->fmh_oflags = FMH_OF_DEV_T;
+ 	return error;
+ }
+diff --git a/fs/xfs/xfs_trans.c b/fs/xfs/xfs_trans.c
+index f4795fdb7389c..b32a66452d441 100644
+--- a/fs/xfs/xfs_trans.c
++++ b/fs/xfs/xfs_trans.c
+@@ -306,6 +306,11 @@ xfs_trans_alloc(
+  *
+  * Note the zero-length reservation; this transaction MUST be cancelled
+  * without any dirty data.
++ *
++ * Callers should obtain freeze protection to avoid two conflicts with fs
++ * freezing: (1) having active transactions trip the m_active_trans ASSERTs;
++ * and (2) grabbing buffers at the same time that freeze is trying to drain
++ * the buffer LRU list.
+  */
+ int
+ xfs_trans_alloc_empty(
 -- 
 2.25.1
 
