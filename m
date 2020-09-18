@@ -2,79 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E42842708BC
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 00:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 010E82708C2
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 00:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726311AbgIRWEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 18:04:50 -0400
-Received: from mga17.intel.com ([192.55.52.151]:33601 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726154AbgIRWEt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 18:04:49 -0400
-IronPort-SDR: Cw93KdnN/Tvpjnw/SfTYd6VGDVx03PeVyNmQxXRgkvtol/X/IZIyXk+hOKS1Wax+BM0JSYW9/u
- ItJIAQr5SPew==
-X-IronPort-AV: E=McAfee;i="6000,8403,9748"; a="140049743"
-X-IronPort-AV: E=Sophos;i="5.77,276,1596524400"; 
-   d="scan'208";a="140049743"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 15:04:46 -0700
-IronPort-SDR: dIQt1OOvPZKDRVk8qfEIyWcxU4C4lqHRvumPlTRVJ1tk29L3c+cNTgx/Khb4ZCUtzt9RA6ChhK
- TYlZ/CGUr29w==
-X-IronPort-AV: E=Sophos;i="5.77,276,1596524400"; 
-   d="scan'208";a="452936209"
-Received: from ramansri-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com) ([10.213.162.107])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 15:04:45 -0700
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-kbuild@vger.kernel.org,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH] MAINTAINERS: fix KERNEL_BUILD entry
-Date:   Fri, 18 Sep 2020 17:04:15 -0500
-Message-Id: <20200918220431.251873-1-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726250AbgIRWK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 18:10:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726154AbgIRWK6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 18:10:58 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A56C7C0613CE;
+        Fri, 18 Sep 2020 15:10:58 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id F3C9715A1189E;
+        Fri, 18 Sep 2020 14:54:09 -0700 (PDT)
+Date:   Fri, 18 Sep 2020 15:10:55 -0700 (PDT)
+Message-Id: <20200918.151055.62730126907662149.davem@davemloft.net>
+To:     saeed@kernel.org
+Cc:     geert+renesas@glider.be, hkallweit1@gmail.com,
+        f.fainelli@gmail.com, andrew@lunn.ch, kuba@kernel.org,
+        gaku.inami.xh@renesas.com, yoshihiro.shimoda.uh@renesas.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Revert "net: linkwatch: add check for netdevice being
+ present to linkwatch_do_dev"
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <7bfebfdc0d7345c4612124ff00e20eebb0ff6cd9.camel@kernel.org>
+References: <20200901150237.15302-1-geert+renesas@glider.be>
+        <7bfebfdc0d7345c4612124ff00e20eebb0ff6cd9.camel@kernel.org>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Fri, 18 Sep 2020 14:54:10 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-the get_maintainer.pl script throws the following errors:
+From: Saeed Mahameed <saeed@kernel.org>
+Date: Fri, 18 Sep 2020 10:58:49 -0700
 
-Unmatched () '(open list:KERNEL BUILD + files below scripts/ (unless
-mai...)' '' at /usr/lib/git-core/git-send-email line 546.
+> On Tue, 2020-09-01 at 17:02 +0200, Geert Uytterhoeven wrote:
+>> @@ -158,7 +158,7 @@ static void linkwatch_do_dev(struct net_device
+>> *dev)
+>>  	clear_bit(__LINK_STATE_LINKWATCH_PENDING, &dev->state);
+>>  
+>>  	rfc2863_policy(dev);
+>> -	if (dev->flags & IFF_UP && netif_device_present(dev)) {
+>> +	if (dev->flags & IFF_UP) {
+> 
+> So with your issue the devices is both IFF_UP and !present ? how so ?
+> I think you should look into that.
+> 
+> I am ok with removing the "dev present" check from here just because we
+> shouldn't  be expecting IFF_UP && !present .. such thing must be a bug
+> somewhere else.
 
-error: unable to extract a valid address from:
-linux-kbuild@vger.kernel.org (open list:KERNEL BUILD + files below
-scripts/ (unless mai...)
+Indeed, this is why I just asked in another email why a link change event
+is firing for a device which hasn't fully resumed and marked itself as
+"present" yet.
 
-Removing parentheses and adding dash separators makes this go away.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0d0862b19ce5..45934cac3a18 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9471,7 +9471,7 @@ L:	autofs@vger.kernel.org
- S:	Maintained
- F:	fs/autofs/
- 
--KERNEL BUILD + files below scripts/ (unless maintained elsewhere)
-+KERNEL BUILD + files below scripts/ -- unless maintained elsewhere
- M:	Masahiro Yamada <masahiroy@kernel.org>
- M:	Michal Marek <michal.lkml@markovi.net>
- L:	linux-kbuild@vger.kernel.org
--- 
-2.25.1
-
+More and more I think this is a driver or PHY layer bug.
