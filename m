@@ -2,169 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95A3C26FA7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 12:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA7626FA7F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 12:22:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726174AbgIRKUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 06:20:42 -0400
-Received: from mail-dm6nam10on2128.outbound.protection.outlook.com ([40.107.93.128]:53217
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725882AbgIRKUl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 06:20:41 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UHCCPzKjoJZ8F61DOqhV4v2NCoGM8VSqY7OcRyUNRXC8rzgzNwGwwyEzYKmc2yhOROLl7qglN5tuytGk6WTsY5Qyh4hrgGyQRk60U2fm0CVXSD9dQYUw3jDlXg6xan5Q/j7mHLaUFa6m3qgwPA3ZBRGz/VKPW735rbb33mkeQxyEpEtA8h9NT873EcR3U22G3eedjoy9E0of8jzMVnrThsdZhihVA4yAv5B5Ze0mgAckkPdVxjjVDZNBh5Y91BXC2jAAd2dSt6tHZl/1amxPk6ghX9B+bPcJt8bjCFXgCteaXzHCph8WMEtxD0jr47aFuSTHLeBo5k3d3uOh6NhzSw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nZhlc7jzBwVNIYmd2xAMmyD9JrveXlLu+ZNIynDF2kU=;
- b=DnLfVDl/5OzK6CeKeKysFhPVXNOosx+QA1YKQ9EQ+0Omf6uFL4K7K8YxDuySaDKttQeiqkchXw5LzVpNVSGrmCABZMufW/y1mBqmZWZekdU9v8maGzTHrlincqyrmnhIvnEgAfzNLginhTAOpUoKTU8jZ2Z48sTB2y4/TpGQKh78YQfHRo7IChpptEA8aZMahxKGaONPENozq85RY9PRAlp7TYR5yGBiPVbPQU0ScBJYwEMiCn8ppfPCV9BBoU4HT4EpgAFAgLXw5ECIlQNsbKAVPIjOYqPyu2vZvqpn6Q4DyNh5EP/avQFr7Pl4frELfcJGUk+uiJZtr6LQmZytQA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
- header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nZhlc7jzBwVNIYmd2xAMmyD9JrveXlLu+ZNIynDF2kU=;
- b=fKYe5GajoE3uR4xZp1YUAhJ70owRpcon8q4YaarAxgT3nl0tavKuYsia532m9p4JeGAGiRZtdr6z3hSkqsk6arOib7zkVjkh+tndBg09j6I815vbJcjTKnCqpGd9iM7Ol+CeSTEKYLm+H0SdtbaMrhpHrE/qYf+cPMkhc8zXHAw=
-Authentication-Results: analogixsemi.com; dkim=none (message not signed)
- header.d=none;analogixsemi.com; dmarc=none action=none
- header.from=analogixsemi.com;
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
- by BYAPR04MB4582.namprd04.prod.outlook.com (2603:10b6:a03:13::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.18; Fri, 18 Sep
- 2020 10:20:37 +0000
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::1dc0:7d4b:9820:e68]) by BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::3c04:982f:7d75:779e%7]) with mapi id 15.20.3370.019; Fri, 18 Sep 2020
- 10:20:37 +0000
-Date:   Fri, 18 Sep 2020 18:18:19 +0800
-From:   Xin Ji <xji@analogixsemi.com>
-To:     devel@driverdev.osuosl.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        Sheng Pan <span@analogixsemi.com>
-Subject: [PATCH v17 0/2] Add initial support for slimport anx7625
-Message-ID: <cover.1600423931.git.xji@analogixsemi.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-ClientProxiedBy: HK0PR01CA0070.apcprd01.prod.exchangelabs.com
- (2603:1096:203:a6::34) To BY5PR04MB6739.namprd04.prod.outlook.com
- (2603:10b6:a03:229::8)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pc-user (114.247.245.146) by HK0PR01CA0070.apcprd01.prod.exchangelabs.com (2603:1096:203:a6::34) with Microsoft SMTP Server (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.20.3391.14 via Frontend Transport; Fri, 18 Sep 2020 10:20:36 +0000
-X-Originating-IP: [114.247.245.146]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e5eca7a3-e998-468d-0e02-08d85bbc7c30
-X-MS-TrafficTypeDiagnostic: BYAPR04MB4582:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR04MB458257C41EAFE24D5D642F78C73F0@BYAPR04MB4582.namprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fnmNgGUueYPIjJuEQD8ggpM/5Uuq1d67Dl+oJJWeogfTgUug/N/w4gdtyFqQMoXnJzlaopN3R5Yrahnot3VG44b3ksoaADHSsf882QD8NIWMcnUtBENGHu7uHnSo19UdGfy27PDICZ5qB3hRIUf0z3YVyFzcQWYjgeFjlctGl8r9ohBzMAWpBh/YKKbnP024cZ3L/ddhL1Bz0KyvAh5jB6Zaeo8FOsVHEAGGfAxVLN2btGuY5dUriRx9613QfSLGPy1HM2s+wfMrx15ru1ksL1QQo0hWZkEu8lWCY1pqspq3khoIRZN7pn6qiKX/i632
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39840400004)(346002)(396003)(376002)(136003)(2906002)(5660300002)(52116002)(956004)(2616005)(7416002)(16526019)(478600001)(6496006)(4326008)(186003)(26005)(54906003)(6486002)(110136005)(83380400001)(8676002)(107886003)(6666004)(8936002)(316002)(66556008)(36756003)(66946007)(66476007)(86362001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: VNFGPccqQJzLbbZ8B3dwL+00wiTWgAff3O1EOCkDKI8ClHIHU5cA96SJFHUKZ4o8rWw+Td3JHIu1V9s4s3V888Z6byv5Y7X8FlKbYufPqAL7ahWunndmSsTrZg15aLaQt/mD09vK/WMGwD0vebHR6cxyfG0Vx6z8GCm/2eOu9AZeiV3+WfQxHUmSYVsYaIX/AZwRgn+1K3dVuxZ+SdUlMwuJnNit9wFLt/HMXPpMByA7vyHUyvRAMi8Ti5/+gNNydMQR6gcURMUzDMWVHS30l3GY7L3jEU7Glp06tsbisyEl7MtXipSSMN/jZiptDC3prZ2kWDvaMQUmKwrnW4nS5PKpyhwUkeCVQ9tChbXYnGdr2RPQj4yN7wEGhXHUPdrhX/DelNYUIDdGpmYIpkVjerhDfPYYnrgGakus31Qy1ffgIFFuAhVjvNtOL/9/u6CT1qhBaKAOsQIqW9xNXKJuUbapHZ6hg4gAkF/7YIc0HaIMHgNjzclFNUOYgwHa6K7r8di9/qw325BPcp8GYUUgzxWcAIoQxhhYKWq7y39FoTIfTgqFyXm8wbJCIxqfVOLSRq+ZVCuXacLPo+6kQa8TyENFFujviPXRN6L79OC7/FqrlwO2759RRs+n5GEdN2zUeADWgkz/A7r7/Z1i/zCvpw==
-X-OriginatorOrg: analogixsemi.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e5eca7a3-e998-468d-0e02-08d85bbc7c30
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2020 10:20:37.0987
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iLc90AOdPW3aGPgnjub1Ej91BlmcXX5Vk5IBi5A+tzraB81CAH/5cH7NBoa+fvu6CIVA2Z/boKU3ijDZTtDcgw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB4582
+        id S1726421AbgIRKWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 06:22:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58110 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726304AbgIRKWD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 06:22:03 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC3AD208DB;
+        Fri, 18 Sep 2020 10:22:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600424523;
+        bh=Uu+bmGTBgLjg7wVQ/owRSKt7ej5xLC0BHxLGBSXNJFk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HAKa1fFCgkk1s9z9BmartTRBp+oRtYqvpG2VuZDxgJlHF/XXDfCRqqX1wpxO5yHFE
+         QvUvIETGi5Oy0/Al4sDSdP8Adq/A3qIDLQNhiIgRn7Lub+i5RxveP5yDGRXdabPUiW
+         GWC1l5ha0cb3+SaBgg+qbjTbbawS9/cXoKVK/uCo=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kJDWj-00CxiS-0u; Fri, 18 Sep 2020 11:22:01 +0100
+Date:   Fri, 18 Sep 2020 11:21:59 +0100
+Message-ID: <87h7rvqta0.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     James Morse <james.morse@arm.com>
+Cc:     jonathanh@nvidia.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>,
+        kernel-team@android.com, Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Saravana Kannan <saravanak@google.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Subject: Re: [PATCH v3 08/16] irqchip/gic: Configure SGIs as standard interrupts
+In-Reply-To: <f3af8930-b61d-4945-475c-b49e326cd24f@arm.com>
+References: <20200901144324.1071694-1-maz@kernel.org>
+        <20200901144324.1071694-9-maz@kernel.org>
+        <f3af8930-b61d-4945-475c-b49e326cd24f@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 EasyPG/1.0.0 Emacs/26.3
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: james.morse@arm.com, jonathanh@nvidia.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, sumit.garg@linaro.org, kernel-team@android.com, f.fainelli@gmail.com, linux@arm.linux.org.uk, jason@lakedaemon.net, saravanak@google.com, andrew@lunn.ch, catalin.marinas@arm.com, gregory.clement@bootlin.com, tglx@linutronix.de, will@kernel.org, valentin.schneider@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Hi James,
 
-The following series add support for the Slimport ANX7625 transmitter, a
-ultra-low power Full-HD 4K MIPI to DP transmitter designed for portable device.
+On Fri, 18 Sep 2020 10:58:45 +0100,
+James Morse <james.morse@arm.com> wrote:
+> 
+> Hi Marc,
+> 
+> (CC: +Jon)
+> 
+> On 01/09/2020 15:43, Marc Zyngier wrote:
+> > Change the way we deal with GIC SGIs by turning them into proper
+> > IRQs, and calling into the arch code to register the interrupt range
+> > instead of a callback.
+> 
+> Your comment "This only works because we don't nest SGIs..." on this
+> thread tripped some bad memories from adding the irq-stack. Softirq
+> causes us to nest irqs, but only once.
+> 
+> 
+> (I've messed with the below diff to remove the added stuff:)
+> 
+> > diff --git a/drivers/irqchip/irq-gic.c b/drivers/irqchip/irq-gic.c
+> > index 4ffd62af888f..4be2b62f816f 100644
+> > --- a/drivers/irqchip/irq-gic.c
+> > +++ b/drivers/irqchip/irq-gic.c
+> > @@ -335,31 +335,22 @@ static void __exception_irq_entry gic_handle_irq(struct pt_regs *regs)
+> >  		irqstat = readl_relaxed(cpu_base + GIC_CPU_INTACK);
+> >  		irqnr = irqstat & GICC_IAR_INT_ID_MASK;
+> >  
+> > -		if (likely(irqnr > 15 && irqnr < 1020)) {
+> > -			if (static_branch_likely(&supports_deactivate_key))
+> > -				writel_relaxed(irqstat, cpu_base + GIC_CPU_EOI);
+> > -			isb();
+> > -			handle_domain_irq(gic->domain, irqnr, regs);
+> > -			continue;
+> > -		}
+> > -		if (irqnr < 16) {
+> >  			writel_relaxed(irqstat, cpu_base + GIC_CPU_EOI);
+> > -			if (static_branch_likely(&supports_deactivate_key))
+> > -				writel_relaxed(irqstat, cpu_base + GIC_CPU_DEACTIVATE);
+> > -#ifdef CONFIG_SMP
+> > -			/*
+> > -			 * Ensure any shared data written by the CPU sending
+> > -			 * the IPI is read after we've read the ACK register
+> > -			 * on the GIC.
+> > -			 *
+> > -			 * Pairs with the write barrier in gic_raise_softirq
+> > -			 */
+> >  			smp_rmb();
+> > -			handle_IPI(irqnr, regs);
+> 
+> If I read this right, previously we would EOI the interrupt before
+> calling handle_IPI().  Where as now with the version of this series
+> in your tree, we stuff the to-be-EOId value in a percpu variable,
+> which is only safe if these don't nest.
+> 
+> Hidden in irq_exit(), kernel/softirq.c::__irq_exit_rcu() has this:
+> |	preempt_count_sub(HARDIRQ_OFFSET);
+> |	if (!in_interrupt() && local_softirq_pending())
+> |		invoke_softirq();
+> 
+> The arch code doesn't raise the preempt counter by HARDIRQ, so once
+> __irq_exit_rcu() has dropped it, in_interrupt() returns false, and
+> we invoke_softirq().
+> 
+> invoke_softirq() -> __do_softirq() -> local_irq_enable()!
+> 
+> Fortunately, __do_softirq() raises the softirq count first using
+> __local_bh_disable_ip(), which in-interrupt() checks too, so this
+> can only happen once per IRQ.
+> 
+> Now the irq_exit() has moved from handle_IPI(), which ran after EOI,
+> into handle_domain_irq(), which runs before. I think its possible
+> SGIs nest, and the new percpu variable becomes corrupted.
 
+I can't see how. The interrupt is active until we EOI/deactivate it,
+and thus cannot be observed again by the CPU interface until this
+happens.
 
-This is the v17 version, any mistakes, please let me know, I will fix it in
-the next series.
+Furthermore, irq_exit() in __handle_domain_irq() is *after* the EOI
+anyway (generic_handle_irq_() directly calls the flow, which
+immediately EOIs the interrupt). The only material change is that
+irq_enter() happens before EOI. Is that what you are referring to?
 
-Change history:
-v17: Fix comments from Dan
- - Fix possible memory leak of 'edid'
+Thanks,
 
-v16: Fix compile error
- - Fix compiling error of incompitible interface of ".mode_valid()"
-
-v15: Fix comments from Sam and Hsin-Yi Wang
- - Remove connector
- - Allocate memory for edid at ".get_edid()"
-
-v14: Fix comments from Sam and Nicolas
- - Check flags at drm_bridge_attach
- - Use panel_bridge instead of drm_panel
- - Fix not correct return value
-
-v13: Fix comments from Launrent Pinchart and Rob Herring
- - Picked up Rob's Reviewed-By
- - Add .detect and .get_edid interface in bridge funcs.
-
-v12: Fix comments from Hsin-Yi Wang
- - Rebase the code on kernel 5.7, fix DRM interface not match issue.
-
-v11: Fix comments from Rob Herring
- - Update commit message.
- - Remove unused label.
-
-v10: Fix comments from Rob Herring, Daniel.
- - Fix dt_binding_check warning.
- - Update description.
-
-v9: Fix comments from Sam, Nicolas, Daniel
- - Remove extcon interface.
- - Remove DPI support.
- - Fix dt_binding_check complains.
- - Code clean up and update description.
-
-v8: Fix comments from Nicolas.
- - Fix several coding format.
- - Update description.
-
-v7:
- - Fix critical timing(eg:odd hfp/hbp) in "mode_fixup" interface,
-   enhance MIPI RX tolerance by setting register MIPI_DIGITAL_ADJ_1 to 0x3D.
-
-
-Xin Ji (2):
-  dt-bindings: drm/bridge: anx7625: MIPI to DP transmitter DT schema
-  drm/bridge: anx7625: Add anx7625 MIPI DSI/DPI to DP
-
- .../bindings/display/bridge/analogix,anx7625.yaml  |   95 +
- drivers/gpu/drm/bridge/analogix/Kconfig            |    9 +
- drivers/gpu/drm/bridge/analogix/Makefile           |    1 +
- drivers/gpu/drm/bridge/analogix/anx7625.c          | 1850 ++++++++++++++++++++
- drivers/gpu/drm/bridge/analogix/anx7625.h          |  390 +++++
- 5 files changed, 2345 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
- create mode 100644 drivers/gpu/drm/bridge/analogix/anx7625.c
- create mode 100644 drivers/gpu/drm/bridge/analogix/anx7625.h
+	M.
 
 -- 
-2.7.4
-
+Without deviation from the norm, progress is not possible.
