@@ -2,164 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 759D626FBE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 13:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD1BA26FBCE
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 13:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726552AbgIRL5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 07:57:16 -0400
-Received: from m42-11.mailgun.net ([69.72.42.11]:28973 "EHLO
-        m42-11.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726239AbgIRL5N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 07:57:13 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600430232; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=azsUpAi2ZxIp5qSiODfJODHqLAc6+8CcBnmxsKDe3eY=; b=cIlN5Mowe6y8ZQGXfGE/g4ujEIWgguFy4h78YlHawF/IrE7JuhwAYvnqJCmg40Om/58hPGGC
- htQEIbe3P9p3Ga+LCxErPv2MZUhpp8dEYgz6JrAD1t7zQjtmoE8UxRhvxHdLpT0Hxa9XkclD
- zkYI/1PmeHaVRUkaAy+jZ4qoT5A=
-X-Mailgun-Sending-Ip: 69.72.42.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5f649f4ffda7475cca6c1db5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Sep 2020 11:51:43
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 22A4DC433FF; Fri, 18 Sep 2020 11:51:43 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-4.8 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.0
-Received: from [10.131.172.121] (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726344AbgIRLwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 07:52:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35716 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726064AbgIRLwb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 07:52:31 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 670A5C433C8;
-        Fri, 18 Sep 2020 11:51:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 670A5C433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-Subject: Re: [PATCH v2] arm64: dts: qcom: sc7180: Add lpass cpu node for I2S
- driver
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Ajit Pandey <ajitp@codeaurora.org>,
-        Cheng-Yi Chiang <cychiang@chromium.org>
-References: <1599019441-29308-1-git-send-email-srivasam@codeaurora.org>
- <CAD=FV=U1k7T6z=dZHYWFpnAw1bTptPjKXd7z9YuOQOsOFrXp-A@mail.gmail.com>
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Organization: Qualcomm India Private Limited
-Message-ID: <c36dbcd7-4492-3598-68c0-f4aea1c1dabf@codeaurora.org>
-Date:   Fri, 18 Sep 2020 17:21:37 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        by mail.kernel.org (Postfix) with ESMTPSA id A689620DD4;
+        Fri, 18 Sep 2020 11:52:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600429951;
+        bh=TvMPgZK5sOPbg0bfG2ojrK71ZfXtDu5Hgw4HTxKyKQ8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jCiVpWJY4mpXE9A0zT61qXO7YMe2ZOLu/vV089cTp1jeF5tS+EE4wfV5YnaAbrTAH
+         8uI3oU+iLHWwJhC4LYlg+gq5tH41T/oaz9VM2odA9NPUVWyOuEwPgFXkG2V7Q+2E9h
+         0MRGlC6+R2trD2d6Jlz6Vxklrm8bxlWIblk22VOU=
+Date:   Fri, 18 Sep 2020 14:52:27 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Gal Pressman <galpress@amazon.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Oded Gabbay <oded.gabbay@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+Message-ID: <20200918115227.GR869610@unreal>
+References: <20200915171022.10561-1-oded.gabbay@gmail.com>
+ <20200915133556.21268811@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAFCwf12XZRxLYifSfuB+RGhuiKBytzsUTOnEa6FqfJHYvcVJPQ@mail.gmail.com>
+ <20200917171833.GJ8409@ziepe.ca>
+ <0b21db8d-1061-6453-960b-8043951b3bad@amazon.com>
 MIME-Version: 1.0
-In-Reply-To: <CAD=FV=U1k7T6z=dZHYWFpnAw1bTptPjKXd7z9YuOQOsOFrXp-A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0b21db8d-1061-6453-960b-8043951b3bad@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Mr. Doug for your time to review this patch!!
-
-On 9/14/2020 11:11 PM, Doug Anderson wrote:
-> Hi,
+On Fri, Sep 18, 2020 at 02:36:10PM +0300, Gal Pressman wrote:
+> On 17/09/2020 20:18, Jason Gunthorpe wrote:
+> > On Tue, Sep 15, 2020 at 11:46:58PM +0300, Oded Gabbay wrote:
+> >> infrastructure for communication between multiple accelerators. Same
+> >> as Nvidia uses NVlink, we use RDMA that we have inside our ASIC.
+> >> The RDMA implementation we did does NOT support some basic RDMA
+> >> IBverbs (such as MR and PD) and therefore, we can't use the rdma-core
+> >> library or to connect to the rdma infrastructure in the kernel.
+> >
+> > You can't create a parallel RDMA subsystem in netdev, or in misc, and
+> > you can't add random device offloads as IOCTL to nedevs.
+> >
+> > RDMA is the proper home for all the networking offloads that don't fit
+> > into netdev.
+> >
+> > EFA was able to fit into rdma-core/etc and it isn't even RoCE at
+> > all. I'm sure this can too.
 >
-> On Tue, Sep 1, 2020 at 9:04 PM Srinivasa Rao Mandadapu
-> <srivasam@codeaurora.org> wrote:
->> From: Ajit Pandey <ajitp@codeaurora.org>
->>
->> Add the I2S controller node to sc7180 dtsi.
->> Add pinmux for primary and secondary I2S.
->>
->> Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
->> Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
->> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
->> ---
->>
->>   arch/arm64/boot/dts/qcom/sc7180.dtsi | 69 ++++++++++++++++++++++++++++++++++++
->>   1 file changed, 69 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
->> index d46b383..db60ca5 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
->> @@ -676,6 +676,36 @@
->>                          };
->>                  };
->>
->> +               lpass_cpu: lpass@62f00000 {
->> +                       compatible = "qcom,sc7180-lpass-cpu";
->> +
->> +                       reg = <0 0x62f00000 0 0x29000>;
->> +                       reg-names = "lpass-lpaif";
->> +
->> +                       iommus = <&apps_smmu 0x1020 0>;
->> +
->> +                       power-domains = <&lpass_hm LPASS_CORE_HM_GDSCR>;
->> +
->> +                       clocks = <&gcc GCC_LPASS_CFG_NOC_SWAY_CLK>,
->> +                                <&lpasscc LPASS_AUDIO_CORE_CORE_CLK>,
->> +                                <&lpasscc LPASS_AUDIO_CORE_EXT_MCLK0_CLK>,
->> +                                <&lpasscc LPASS_AUDIO_CORE_SYSNOC_MPORT_CORE_CLK>,
->> +                                <&lpasscc LPASS_AUDIO_CORE_LPAIF_PRI_IBIT_CLK>,
->> +                                <&lpasscc LPASS_AUDIO_CORE_LPAIF_SEC_IBIT_CLK>;
->> +
->> +                       clock-names = "pcnoc-sway-clk", "audio-core",
->> +                                       "mclk0", "pcnoc-mport-clk",
->> +                                       "mi2s-bit-clk0", "mi2s-bit-clk1";
->> +
->> +
->> +                       #sound-dai-cells = <1>;
->> +                       #address-cells = <1>;
->> +                       #size-cells = <0>;
->> +
->> +                       interrupts = <GIC_SPI 160 IRQ_TYPE_LEVEL_HIGH>;
->> +                       interrupt-names = "lpass-irq-lpaif";
->> +               };
->> +
->>                  sdhc_1: sdhci@7c4000 {
-> Your node is still sorted incorrectly.  Nodes with unit addresses
-> should be sorted numerically.
+> Well, EFA wasn't welcomed to the RDMA subsystem with open arms ;), initially it
+> was suggested to go through the vfio subsystem instead.
 >
-> The number 0x62f00000 is greater than the number 0x7c4000.  Thus your
-> node should not be placed above "sdhci@7c4000".  It should be placed
-> somewhere further down in the file.
-
-Will place it accordingly.
-
+> I think this comes back to the discussion we had when EFA was upstreamed, which
+> is what's the bar to get accepted to the RDMA subsystem.
+> IIRC, what we eventually agreed on is having a userspace rdma-core provider and
+> ibv_{ud,rc}_pingpong working (or just supporting one of the IB spec's QP types?).
 >
->
->>                          compatible = "qcom,sc7180-sdhci", "qcom,sdhci-msm-v5";
->>                          reg = <0 0x7c4000 0 0x1000>,
->> @@ -1721,6 +1751,45 @@
->>                                  };
->>                          };
->>
->> +                       sec_mi2s_active: sec-mi2s-active {
->> +                               pinmux {
->> +                                       pins = "gpio49", "gpio50", "gpio51";
->> +                                       function = "mi2s_1";
->> +                               };
->> +
->> +                               pinconf {
->> +                                       pins = "gpio49", "gpio50", "gpio51";;
-> nit: double-semi-colon.
+> Does GAUDI fit these requirements? If not, should it be in a different subsystem
+> or should we open the "what qualifies as an RDMA device" question again?
 
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+I want to remind you that rdma-core requirement came to make sure that
+anything exposed from the RDMA to the userspace is strict with proper
+UAPI header hygiene.
 
+I doubt that Havana's ioctls are backed by anything like this.
+
+Thanks
