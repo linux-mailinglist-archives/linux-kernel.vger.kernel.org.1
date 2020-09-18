@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 904B926FB89
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 13:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFC4226FB88
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 13:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726573AbgIRLeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 07:34:23 -0400
-Received: from mx1.tq-group.com ([62.157.118.193]:17964 "EHLO mx1.tq-group.com"
+        id S1726241AbgIRLeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 07:34:20 -0400
+Received: from mx1.tq-group.com ([62.157.118.193]:29647 "EHLO mx1.tq-group.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726497AbgIRLeL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726507AbgIRLeL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 18 Sep 2020 07:34:11 -0400
-IronPort-SDR: G7j0W4fCsT7C3T6UaBY3zZKbSyRGh6sd3ko6ZhVFwyoeW2HAfDhYxWsVbRiyW/p6ybkIz3+K9T
- g9dlSmvyTmnyrRT3vC5puX21sY+wCC2YKDbAILq3xW+8ery9Bt2l+gg2ksI865eMCP+2rraB46
- +rk+1g6m93PMMEL41JHQ9L1izVgDr7gHUtEi5LlUbJATCwa4fgwqErJ+PTD494B6vHJQyUHOLz
- AVB+w7irAB2mSP7NAFiXgIsih/4P03uSa23tzZnbkdl8xeHOKA5RXmHRGhHknLlZc3lDoCXHVM
- Ntw=
+IronPort-SDR: WQX40KStidA4LE1qgAWsKRGLHa778IlO/uDUwhHqCro7NG9ExjARjhwC3wd/q/Z8iEw7+zMgiO
+ r154hYkusxsjPNEIvsF5C6KispK5Fa82Gx6TPPWTqaSzkjrOY+qgICpJCAIIWgC6zR2gNDuAl1
+ e4ltq323JdRxZdOS/AYIDazEF8tJTG4FF7a6uia/mgMXnlov22NSfnB/V7ygAJhdlUU5n0Rc5m
+ XTrsW292LR9Wf0Uog5J5Idjb02NadO1AQ7Rutj7kDO5ynaC5uNqaLarlGvC3mTJXEk6VZfxk1r
+ rSs=
 X-IronPort-AV: E=Sophos;i="5.77,274,1596492000"; 
-   d="scan'208";a="13924494"
+   d="scan'208";a="13924496"
 Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
   by mx1-pgp.tq-group.com with ESMTP; 18 Sep 2020 13:31:14 +0200
 Received: from mx1.tq-group.com ([192.168.6.7])
@@ -30,25 +30,25 @@ DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   t=1600428674; x=1631964674;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references;
-  bh=FoLkcmY127+RUssziJZwJi9JWiupcp2leD+aU+pwW0Y=;
-  b=aQQS0YLlSy7OfH1no9d5YnrKU9JeVyfZ0P7g8bnYLCuJhjsoY/uQXtPd
-   mZ42JLEJIaapG6TX7NECyHOrJ4HpJyTZRAybWpJ9KX94vY/1n4PSrxTta
-   93nqQhCes5IlXShGEfsqX3AwVdEfwcYhHSpuyLT0LxLiIJWAaS+ZfX2/G
-   7qU6wUoUooeN2vHLBrWQ+qigY+yzKv+TDoejvejLFexpAOFn16jkq7XJN
-   PhzPrCfGvJ9TNbQj78aucieRe67CVRHjfEShzFLDYVwwUpx9QkYX9P2PI
-   8nsdUf2nnnkV5s3Y57tFnVI0J4Hf7/QZFerpLxfdf4RR7ljuGwthCfKPs
+  bh=V7NXnPVlHjtu5xGZx1DU3rEG1dtj/O+Su3A/9FPj2QI=;
+  b=ntN61kLLVLy9sn0F2//er8KiDQmK2ne4qQrnogaO6223MACh62y51WaT
+   yA9dAxhxM2zol/oBS2wscrOCxltX8hz2P7UXMvKG3a7V3s/24TOIerm1t
+   a5xWSaap/GYx5lshF2OVzBo2WwVdhVcwUu6YVktpn4L+T1IQIIj+Y1p1G
+   p4Kuyp1ioExmUwIdnxJ77tXlxQePCI1gngn7up5Mq6a0iwyz9Wx10J0uK
+   /yu6IKCKdx88ux6d+7voE26FC4WFX2qzsx1YrHCjr8edRrB78ny8euTT7
+   Hne0CD2t7uXRmu7c82Ny7lJUcnPqR9W1WriS29/Rmg5/qCh/Y7xhPxkTV
    Q==;
-IronPort-SDR: sjxSsLmZQiNzfU+uIBJFif/iFo0vydvvp0Dv4vDDlh/tZUtlCB9ejoLB/ViA9UHpuvfGcqAnV4
- uWYFCNVRxq1nZ9N0O7p9hdOL7ubeCODbqDrnSNW3fGqun6sqZXyn7JkS55CeNUafDVeO/PjYCc
- DnzOnMaWgEK1TQSHIrd8StwynIh27On1MN8n4qyla3wtmUyvB7qsTWfi/RNKSvx0O2ETiCMgHY
- jgHJMK63My5ZXaKilZFsyFTxDuwtuJQzojjPhFYN6DR4Mw7eDMAw0PvvLIE0EFDM3YLpJcoCT+
- ET0=
+IronPort-SDR: ND2awgY5cY5AFXZmwUJ6k2HAAQ3JOwE5Kk5kpvdBLncTTJgLnFspNW+OCElJtN2kNH9PZ421iN
+ VmEO6Q5Vza7DV39TlPFAwxjDm8KJZr2qobGzrAcRV6f+btxuaMkJGFoUFWpA5kKOflm/BxwMpb
+ IJEVyvXiUsbPuqzhEr54AXLchc/fUDi+kJNRf4sRInoWVy6GkuS4xEFmUqAt9OK6pA/zHU1xGq
+ aZybw66J4uCg/PpoBnkKVywhKR/fnYoUttGtBMJznU/2M5XAOewPl7EThyBCTk9/kHFfJNfZ29
+ Uq4=
 X-IronPort-AV: E=Sophos;i="5.77,274,1596492000"; 
-   d="scan'208";a="13924493"
+   d="scan'208";a="13924495"
 Received: from vtuxmail01.tq-net.de ([10.115.0.20])
   by mx1.tq-group.com with ESMTP; 18 Sep 2020 13:31:14 +0200
 Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.48.12])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 23423280070;
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 5B0BB280075;
         Fri, 18 Sep 2020 13:31:14 +0200 (CEST)
 From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
@@ -59,9 +59,9 @@ Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: [PATCH 11/13] ARM: dts: imx7-mba7: enable RS485 on UART7
-Date:   Fri, 18 Sep 2020 13:29:40 +0200
-Message-Id: <20200918112942.1367-11-matthias.schiffer@ew.tq-group.com>
+Subject: [PATCH 12/13] ARM: dts: imx7-mba7: specify USB over-current polarity
+Date:   Fri, 18 Sep 2020 13:29:41 +0200
+Message-Id: <20200918112942.1367-12-matthias.schiffer@ew.tq-group.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200918112942.1367-1-matthias.schiffer@ew.tq-group.com>
 References: <20200918112942.1367-1-matthias.schiffer@ew.tq-group.com>
@@ -69,27 +69,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The UART7 interface is connected to a full-duplex RS485 transceiver.
+Add over-current-active-low to usbotg1.
 
 Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 ---
- arch/arm/boot/dts/imx7-mba7.dtsi | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/arm/boot/dts/imx7-mba7.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/arch/arm/boot/dts/imx7-mba7.dtsi b/arch/arm/boot/dts/imx7-mba7.dtsi
-index f1e50bcd21a5..cd29844bc76b 100644
+index cd29844bc76b..52b8f66f9982 100644
 --- a/arch/arm/boot/dts/imx7-mba7.dtsi
 +++ b/arch/arm/boot/dts/imx7-mba7.dtsi
-@@ -593,6 +593,9 @@
- 	assigned-clocks = <&clks IMX7D_UART7_ROOT_SRC>;
- 	assigned-clock-parents = <&clks IMX7D_OSC_24M_CLK>;
- 	uart-has-rtscts;
-+	linux,rs485-enabled-at-boot-time;
-+	rs485-rts-active-low;
-+	rs485-rx-during-tx;
+@@ -610,6 +610,7 @@
+ 	srp-disable;
+ 	hnp-disable;
+ 	adp-disable;
++	over-current-active-low;
+ 	dr_mode = "host";
  	status = "okay";
  };
- 
 -- 
 2.17.1
 
