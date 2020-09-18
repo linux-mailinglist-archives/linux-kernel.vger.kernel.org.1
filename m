@@ -2,85 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B043826F685
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 09:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8F0126F68B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 09:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726360AbgIRHNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 03:13:44 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13288 "EHLO huawei.com"
+        id S1726470AbgIRHP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 03:15:57 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13289 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726218AbgIRHNo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 03:13:44 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id ADDD1F18D3211D1619B8;
-        Fri, 18 Sep 2020 15:13:38 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 18 Sep 2020 15:13:31 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <James.Bottomley@HansenPartnership.com>,
-        <martin.petersen@oracle.com>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH] scsi: 53c700: Remove set but not used variable
-Date:   Fri, 18 Sep 2020 15:14:22 +0800
-Message-ID: <20200918071422.19566-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726279AbgIRHP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 03:15:56 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id C4E81EF374C192D02997;
+        Fri, 18 Sep 2020 15:15:54 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 18 Sep 2020 15:15:47 +0800
+From:   Zeng Tao <prime.zeng@hisilicon.com>
+To:     <pshelar@ovn.org>, <davem@davemloft.net>
+CC:     Zeng Tao <prime.zeng@hisilicon.com>,
+        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <dev@openvswitch.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] net: openswitch: reuse the helper variable to improve the code readablity
+Date:   Fri, 18 Sep 2020 15:14:30 +0800
+Message-ID: <1600413270-38398-1-git-send-email-prime.zeng@hisilicon.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.138.68]
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes gcc '-Wunused-but-set-variable' warning:
+In the function ovs_ct_limit_exit, there is already a helper vaibale
+which could be reused to improve the readability, so i fix it in this
+patch.
 
-drivers/scsi/53c700.c: In function NCR_700_intr:
-drivers/scsi/53c700.c:1488:27: warning: variable ‘state’ set but not used [-Wunused-but-set-variable]
-
-drivers/scsi/53c700.c: In function NCR_700_queuecommand_lck:
-drivers/scsi/53c700.c:1742:26: warning: variable ‘direction’ set but not used [-Wunused-but-set-variable]
-
-these variable is never used, so remove it.
-
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+Signed-off-by: Zeng Tao <prime.zeng@hisilicon.com>
 ---
- drivers/scsi/53c700.c | 4 ----
- 1 file changed, 4 deletions(-)
+ net/openvswitch/conntrack.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/53c700.c b/drivers/scsi/53c700.c
-index 84b57a8f86bf..b2c2f49f6f7d 100644
---- a/drivers/scsi/53c700.c
-+++ b/drivers/scsi/53c700.c
-@@ -1485,10 +1485,8 @@ NCR_700_intr(int irq, void *dev_id)
- 		__u8 sstat0 = 0, dstat = 0;
- 		__u32 dsp;
- 		struct scsi_cmnd *SCp = hostdata->cmd;
--		enum NCR_700_Host_State state;
- 
- 		handled = 1;
--		state = hostdata->state;
- 		SCp = hostdata->cmd;
- 
- 		if(istat & SCSI_INT_PENDING) {
-@@ -1739,7 +1737,6 @@ NCR_700_queuecommand_lck(struct scsi_cmnd *SCp, void (*done)(struct scsi_cmnd *)
- 	struct NCR_700_Host_Parameters *hostdata = 
- 		(struct NCR_700_Host_Parameters *)SCp->device->host->hostdata[0];
- 	__u32 move_ins;
--	enum dma_data_direction direction;
- 	struct NCR_700_command_slot *slot;
- 
- 	if(hostdata->command_slot_count >= NCR_700_COMMAND_SLOTS_PER_HOST) {
-@@ -1856,7 +1853,6 @@ NCR_700_queuecommand_lck(struct scsi_cmnd *SCp, void (*done)(struct scsi_cmnd *)
+diff --git a/net/openvswitch/conntrack.c b/net/openvswitch/conntrack.c
+index a3f1204..e86b960 100644
+--- a/net/openvswitch/conntrack.c
++++ b/net/openvswitch/conntrack.c
+@@ -1901,8 +1901,8 @@ static void ovs_ct_limit_exit(struct net *net, struct ovs_net *ovs_net)
+ 					 lockdep_ovsl_is_held())
+ 			kfree_rcu(ct_limit, rcu);
  	}
+-	kfree(ovs_net->ct_limit_info->limits);
+-	kfree(ovs_net->ct_limit_info);
++	kfree(info->limits);
++	kfree(info);
+ }
  
- 	/* now build the scatter gather list */
--	direction = SCp->sc_data_direction;
- 	if(move_ins != 0) {
- 		int i;
- 		int sg_count;
+ static struct sk_buff *
 -- 
-2.17.1
+2.8.1
 
