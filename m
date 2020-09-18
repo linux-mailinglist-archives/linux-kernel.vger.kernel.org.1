@@ -2,81 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9B2326FB1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 13:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5942926FB21
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 13:03:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726426AbgIRLDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 07:03:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52276 "EHLO
+        id S1726456AbgIRLD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 07:03:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726390AbgIRLDW (ORCPT
+        with ESMTP id S1726064AbgIRLD3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 07:03:22 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE428C06174A;
-        Fri, 18 Sep 2020 04:03:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=92sFFvsbksd+Q+ekXiuYgLRc7bHpzXKtlRe7taGQ3R4=; b=No0LQr9wd6VpEKjh9PeHsQSz46
-        08Zg0cPPnvi1h/4/oT3HEARgvxxWZFm4j8DbddK73E8n0zd3+z8A6fpLBSGRuoYrJeX55XUQDlTyE
-        4TF6MKskZ7lZNIdtQ30SAJcR1RPXuXSlfoppRQlIRH30xeodU01xNmPuz7EfFA8JAcQLlCCSYli3h
-        b4TgzU5fr0S2IxmRXhgzE7qhefxLHtLFdMdn9Qyz0SrbUVt9xY7ZJWWPX4D9OdTaN2p7r+a9KKJgF
-        CNUkbp90FFtct5VPoA0gazcQHFgQ/OG+wihno2BxPBOFwzKEAGme3/6T+jEEFV52dUY5wTHLihht/
-        SBEPipeA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kJEAa-0008MB-4Y; Fri, 18 Sep 2020 11:03:12 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 680D93060F2;
-        Fri, 18 Sep 2020 13:03:10 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4475720D4DC83; Fri, 18 Sep 2020 13:03:10 +0200 (CEST)
-Date:   Fri, 18 Sep 2020 13:03:10 +0200
-From:   peterz@infradead.org
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     Jan Kara <jack@suse.cz>, Boaz Harrosh <boaz@plexistor.com>,
-        Hou Tao <houtao1@huawei.com>, Ingo Molnar <mingo@redhat.com>,
-        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC PATCH] locking/percpu-rwsem: use this_cpu_{inc|dec}() for
- read_count
-Message-ID: <20200918110310.GO1362448@hirez.programming.kicks-ass.net>
-References: <20200915153113.GA6881@redhat.com>
- <20200915155150.GD2674@hirez.programming.kicks-ass.net>
- <20200915160344.GH35926@hirez.programming.kicks-ass.net>
- <b885ce8e-4b0b-8321-c2cc-ee8f42de52d4@huawei.com>
- <ddd5d732-06da-f8f2-ba4a-686c58297e47@plexistor.com>
- <20200917120132.GA5602@redhat.com>
- <20200918090702.GB18920@quack2.suse.cz>
- <20200918100112.GN1362448@hirez.programming.kicks-ass.net>
- <20200918101216.GL35926@hirez.programming.kicks-ass.net>
- <20200918104824.GA23469@redhat.com>
+        Fri, 18 Sep 2020 07:03:29 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62A61C06174A;
+        Fri, 18 Sep 2020 04:03:29 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id o20so3201368pfp.11;
+        Fri, 18 Sep 2020 04:03:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Nao0/Wr0hBbBHzRTt2lYTcrL2lgJfdqCHe2qLp5Vfbs=;
+        b=ZOOnrumDDELWvuqtf3pLDC3+QT7tIp4eL3dqXtZnnzHnZVCh1e16nMtyEz0fOAXXrx
+         dRSq/FLxBdynsc26VSUZwuYH0q2/+YD2RlF3+VJg4vpFOn2nxTRdfbb3tX6zu03Ykf9O
+         zNVCJ9eyZxdgbEn/ghY+bLLqd6lXTI5DgucL2mnGVdpqVOrkk+pBoKD1rKi+L/YJr65C
+         OdAMPZqRDjWwMLOpH1yviYdHmm7PvSnO/mW0grqcF1BrcOvtZePU5GyRFPZo5SCXlLbu
+         IS0iRHvE6Km+93YcACqjW59zzq0cA1LjQ50d4xh9TVJwDNNKGehJ/1TJiAgsYnELePwp
+         E36A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Nao0/Wr0hBbBHzRTt2lYTcrL2lgJfdqCHe2qLp5Vfbs=;
+        b=VEMLKcnwtujGVilX0OthzzbI3NJqdkG0XQ75qiLSBpcb2wI3wBjpO1vV4jXWEu3tsC
+         8yKcu5RvRr3pKJD1JvIaoGL5Ot4mehjmSzkrkbPqHPS0MYE+qbiHlmM+ucskWa30yvEb
+         jd0v6gfYgV36RwhRwi90Dv94J1KVFmcdUbSx2iABOhDZR4OZcpR91m9udSJW9qJhDUOe
+         pVjJ2gyU5ZNsIv2OivQeOeqweAhjuAk9rhABN/VG7/LcXGiywPpyUeV/Nvvw0G99pIwy
+         fQMoQxKw8+rMNJRyF4hScridg2FEJjh9hX0kFu9Mzgh20Vk0asO+O3Fl9wYEc+wKrBMe
+         BDtg==
+X-Gm-Message-State: AOAM531eXEQ2VmmieK+V2I8tMnBXO91WbtVLNqKWpcSCfVUcN++GDxFN
+        gmhDFTQQXR9WeWvOBq6coIRUwHCgKezNc8KTAuw=
+X-Google-Smtp-Source: ABdhPJwr0+DnowJF2rGQ525MkBbx6O/JnE/mrxsqe4Qz4K48A78m7Pd48JGufEzbgiQQwnMesZiWjKslBt1FZPPDQZQ=
+X-Received: by 2002:aa7:9201:0:b029:13e:d13d:a10c with SMTP id
+ 1-20020aa792010000b029013ed13da10cmr30226423pfo.40.1600427008863; Fri, 18 Sep
+ 2020 04:03:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918104824.GA23469@redhat.com>
+References: <20200915054825.3289105-1-hsinyi@chromium.org>
+In-Reply-To: <20200915054825.3289105-1-hsinyi@chromium.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 18 Sep 2020 14:03:11 +0300
+Message-ID: <CAHp75VetbOewxfr2weG_WJDQ7hNkmBBnL_A-JZV9iTXT2vd-_Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] tty: serial: print earlycon info after match->setup
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Changqi Hu <changqi.hu@mediatek.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Eddie Huang <eddie.huang@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 12:48:24PM +0200, Oleg Nesterov wrote:
+On Tue, Sep 15, 2020 at 8:50 AM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+>
+> 8250 devices may modify iotype in their own earlycon setup. For example:
+> 8250_mtk and 8250_uniphier force iotype to be MMIO32. Print earlycon info
+> after match->setup to reflect actual earlycon info.
 
-> Of course, this assumes that atomic_t->counter underflows "correctly", just
-> like "unsigned int".
+Thanks for an update.
+I prefer to see some flag that tells user that options were forced by
+the kernel itself (something like err > 0 returned from ->setup()),
+but I think it's matter of an additional fix. In principle user can
+check the command line and / or DT/ACPI vs. dmesg, although it will
+require an extra work.
 
-We're documented that we do. Lots of code relies on that.
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> ---
+> Change:
+> v1->v2: rename function
+> ---
+>  drivers/tty/serial/earlycon.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/tty/serial/earlycon.c b/drivers/tty/serial/earlycon.c
+> index 2ae9190b64bb9..b70877932d47d 100644
+> --- a/drivers/tty/serial/earlycon.c
+> +++ b/drivers/tty/serial/earlycon.c
+> @@ -56,7 +56,6 @@ static void __init earlycon_init(struct earlycon_device *device,
+>                                  const char *name)
+>  {
+>         struct console *earlycon = device->con;
+> -       struct uart_port *port = &device->port;
+>         const char *s;
+>         size_t len;
+>
+> @@ -70,6 +69,12 @@ static void __init earlycon_init(struct earlycon_device *device,
+>         len = s - name;
+>         strlcpy(earlycon->name, name, min(len + 1, sizeof(earlycon->name)));
+>         earlycon->data = &early_console_dev;
+> +}
+> +
+> +static void __init earlycon_print_info(struct earlycon_device *device)
+> +{
+> +       struct console *earlycon = device->con;
+> +       struct uart_port *port = &device->port;
+>
+>         if (port->iotype == UPIO_MEM || port->iotype == UPIO_MEM16 ||
+>             port->iotype == UPIO_MEM32 || port->iotype == UPIO_MEM32BE)
+> @@ -140,6 +145,7 @@ static int __init register_earlycon(char *buf, const struct earlycon_id *match)
+>
+>         earlycon_init(&early_console_dev, match->name);
+>         err = match->setup(&early_console_dev, buf);
+> +       earlycon_print_info(&early_console_dev);
+>         if (err < 0)
+>                 return err;
+>         if (!early_console_dev.con->write)
+> @@ -302,6 +308,7 @@ int __init of_setup_earlycon(const struct earlycon_id *match,
+>         }
+>         earlycon_init(&early_console_dev, match->name);
+>         err = match->setup(&early_console_dev, options);
+> +       earlycon_print_info(&early_console_dev);
+>         if (err < 0)
+>                 return err;
+>         if (!early_console_dev.con->write)
+> --
+> 2.28.0.618.gf4bc123cb7-goog
+>
 
-See Documentation/atomic_t.txt TYPES
 
-> But again, do we really want this?
-
-I like the two counters better, avoids atomics entirely, some archs
-hare horridly expensive atomics (*cough* power *cough*).
-
-I just tried to be clever and use a single u64 load (where possible)
-instead of two 32bit loads and got the sum vs split order wrong.
+-- 
+With Best Regards,
+Andy Shevchenko
