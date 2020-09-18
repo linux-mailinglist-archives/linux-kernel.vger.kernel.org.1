@@ -2,47 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D6CA26EAFD
+	by mail.lfdr.de (Postfix) with ESMTP id ABF0F26EAFE
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbgIRCCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:02:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47046 "EHLO mail.kernel.org"
+        id S1726732AbgIRCCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:02:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726648AbgIRCCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:02:08 -0400
+        id S1726682AbgIRCCM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:02:12 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ABC0721582;
-        Fri, 18 Sep 2020 02:02:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E848235F8;
+        Fri, 18 Sep 2020 02:02:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394527;
-        bh=jwTC5H8TW23aEKAnWNTc27pi/TPAGsWxcsEqs/NdVLg=;
+        s=default; t=1600394532;
+        bh=K4nUaNmLvBiaHjCXtJrH4Xt4KeHX2wQF+A7iBLMQEo4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EVYnj3t0BMrSwaxl/6If/azjpTCUio60AGYyOqXedI9p5dRkHd782B9e4R0RYwOTn
-         LPalP380wUGF/UtYYmxKlYI9jqMlBeg9vp+K48Ltvj+t1C4s+9mFkkgtagMMiddqQl
-         CrUo5YkxSkbI6JIAFELfLdiBQfaxgvy6rRRMlUvs=
+        b=xmPxTWLOzdN/DZOTBh8yGY6PAxc+Out6lzfUKlvEglLnrFGzKqm8T22PaAN4UzOMo
+         tOsWqrbR/9yXRTyX3iHslQHSClBrfE2ts+Dlyg036cDLry0qZi62ZtgMbJTLGFWvdQ
+         704M5zLTJyyHeL8cEkid+ELUTtjPtRkP7e02yEos=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Lianbo Jiang <lijiang@redhat.com>, Borislav Petkov <bp@suse.de>,
-        bhe@redhat.com, Dave Young <dyoung@redhat.com>,
-        d.hatayama@fujitsu.com, dhowells@redhat.com, ebiederm@xmission.com,
-        horms@verge.net.au, "H. Peter Anvin" <hpa@zytor.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        =?UTF-8?q?J=C3=BCrgen=20Gross?= <jgross@suse.com>,
-        kexec@lists.infradead.org, Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>, vgoyal@redhat.com,
-        x86-ml <x86@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 047/330] x86/kdump: Always reserve the low 1M when the crashkernel option is specified
-Date:   Thu, 17 Sep 2020 21:56:27 -0400
-Message-Id: <20200918020110.2063155-47-sashal@kernel.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, Sasha Levin <sashal@kernel.org>,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 051/330] fix dget_parent() fastpath race
+Date:   Thu, 17 Sep 2020 21:56:31 -0400
+Message-Id: <20200918020110.2063155-51-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -50,136 +41,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lianbo Jiang <lijiang@redhat.com>
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-[ Upstream commit 6f599d84231fd27e42f4ca2a786a6641e8cddf00 ]
+[ Upstream commit e84009336711d2bba885fc9cea66348ddfce3758 ]
 
-On x86, purgatory() copies the first 640K of memory to a backup region
-because the kernel needs those first 640K for the real mode trampoline
-during boot, among others.
+We are overoptimistic about taking the fast path there; seeing
+the same value in ->d_parent after having grabbed a reference
+to that parent does *not* mean that it has remained our parent
+all along.
 
-However, when SME is enabled, the kernel cannot properly copy the old
-memory to the backup area but reads only its encrypted contents. The
-result is that the crash tool gets invalid pointers when parsing vmcore:
+That wouldn't be a big deal (in the end it is our parent and
+we have grabbed the reference we are about to return), but...
+the situation with barriers is messed up.
 
-  crash> kmem -s|grep -i invalid
-  kmem: dma-kmalloc-512: slab:ffffd77680001c00 invalid freepointer:a6086ac099f0c5a4
-  kmem: dma-kmalloc-512: slab:ffffd77680001c00 invalid freepointer:a6086ac099f0c5a4
-  crash>
+We might have hit the following sequence:
 
-So reserve the remaining low 1M memory when the crashkernel option is
-specified (after reserving real mode memory) so that allocated memory
-does not fall into the low 1M area and thus the copying of the contents
-of the first 640k to a backup region in purgatory() can be avoided
-altogether.
+d is a dentry of /tmp/a/b
+CPU1:					CPU2:
+parent = d->d_parent (i.e. dentry of /tmp/a)
+					rename /tmp/a/b to /tmp/b
+					rmdir /tmp/a, making its dentry negative
+grab reference to parent,
+end up with cached parent->d_inode (NULL)
+					mkdir /tmp/a, rename /tmp/b to /tmp/a/b
+recheck d->d_parent, which is back to original
+decide that everything's fine and return the reference we'd got.
 
-This way, it does not need to be included in crash dumps or used for
-anything except the trampolines that must live in the low 1M.
+The trouble is, caller (on CPU1) will observe dget_parent()
+returning an apparently negative dentry.  It actually is positive,
+but CPU1 has stale ->d_inode cached.
 
- [ bp: Heavily rewrite commit message, flip check logic in
-   crash_reserve_low_1M().]
+Use d->d_seq to see if it has been moved instead of rechecking ->d_parent.
+NOTE: we are *NOT* going to retry on any kind of ->d_seq mismatch;
+we just go into the slow path in such case.  We don't wait for ->d_seq
+to become even either - again, if we are racing with renames, we
+can bloody well go to slow path anyway.
 
-Signed-off-by: Lianbo Jiang <lijiang@redhat.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: bhe@redhat.com
-Cc: Dave Young <dyoung@redhat.com>
-Cc: d.hatayama@fujitsu.com
-Cc: dhowells@redhat.com
-Cc: ebiederm@xmission.com
-Cc: horms@verge.net.au
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Jürgen Gross <jgross@suse.com>
-Cc: kexec@lists.infradead.org
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: vgoyal@redhat.com
-Cc: x86-ml <x86@kernel.org>
-Link: https://lkml.kernel.org/r/20191108090027.11082-2-lijiang@redhat.com
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=204793
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/include/asm/crash.h |  6 ++++++
- arch/x86/kernel/crash.c      | 15 +++++++++++++++
- arch/x86/realmode/init.c     |  2 ++
- 3 files changed, 23 insertions(+)
+ fs/dcache.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/include/asm/crash.h b/arch/x86/include/asm/crash.h
-index ef5638f641f2b..88eadd08ad708 100644
---- a/arch/x86/include/asm/crash.h
-+++ b/arch/x86/include/asm/crash.h
-@@ -10,4 +10,10 @@ int crash_setup_memmap_entries(struct kimage *image,
- 		struct boot_params *params);
- void crash_smp_send_stop(void);
+diff --git a/fs/dcache.c b/fs/dcache.c
+index e88cf0554e659..b2a7f1765f0b1 100644
+--- a/fs/dcache.c
++++ b/fs/dcache.c
+@@ -903,17 +903,19 @@ struct dentry *dget_parent(struct dentry *dentry)
+ {
+ 	int gotref;
+ 	struct dentry *ret;
++	unsigned seq;
  
-+#ifdef CONFIG_KEXEC_CORE
-+void __init crash_reserve_low_1M(void);
-+#else
-+static inline void __init crash_reserve_low_1M(void) { }
-+#endif
-+
- #endif /* _ASM_X86_CRASH_H */
-diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
-index eb651fbde92ac..ff25a2ea271cf 100644
---- a/arch/x86/kernel/crash.c
-+++ b/arch/x86/kernel/crash.c
-@@ -24,6 +24,7 @@
- #include <linux/export.h>
- #include <linux/slab.h>
- #include <linux/vmalloc.h>
-+#include <linux/memblock.h>
- 
- #include <asm/processor.h>
- #include <asm/hardirq.h>
-@@ -39,6 +40,7 @@
- #include <asm/virtext.h>
- #include <asm/intel_pt.h>
- #include <asm/crash.h>
-+#include <asm/cmdline.h>
- 
- /* Used while preparing memory map entries for second kernel */
- struct crash_memmap_data {
-@@ -68,6 +70,19 @@ static inline void cpu_crash_vmclear_loaded_vmcss(void)
+ 	/*
+ 	 * Do optimistic parent lookup without any
+ 	 * locking.
+ 	 */
+ 	rcu_read_lock();
++	seq = raw_seqcount_begin(&dentry->d_seq);
+ 	ret = READ_ONCE(dentry->d_parent);
+ 	gotref = lockref_get_not_zero(&ret->d_lockref);
  	rcu_read_unlock();
- }
- 
-+/*
-+ * When the crashkernel option is specified, only use the low
-+ * 1M for the real mode trampoline.
-+ */
-+void __init crash_reserve_low_1M(void)
-+{
-+	if (cmdline_find_option(boot_command_line, "crashkernel", NULL, 0) < 0)
-+		return;
-+
-+	memblock_reserve(0, 1<<20);
-+	pr_info("Reserving the low 1M of memory for crashkernel\n");
-+}
-+
- #if defined(CONFIG_SMP) && defined(CONFIG_X86_LOCAL_APIC)
- 
- static void kdump_nmi_callback(int cpu, struct pt_regs *regs)
-diff --git a/arch/x86/realmode/init.c b/arch/x86/realmode/init.c
-index 7dce39c8c034a..262f83cad3551 100644
---- a/arch/x86/realmode/init.c
-+++ b/arch/x86/realmode/init.c
-@@ -8,6 +8,7 @@
- #include <asm/pgtable.h>
- #include <asm/realmode.h>
- #include <asm/tlbflush.h>
-+#include <asm/crash.h>
- 
- struct real_mode_header *real_mode_header;
- u32 *trampoline_cr4_features;
-@@ -34,6 +35,7 @@ void __init reserve_real_mode(void)
- 
- 	memblock_reserve(mem, size);
- 	set_real_mode_mem(mem);
-+	crash_reserve_low_1M();
- }
- 
- static void __init setup_real_mode(void)
+ 	if (likely(gotref)) {
+-		if (likely(ret == READ_ONCE(dentry->d_parent)))
++		if (!read_seqcount_retry(&dentry->d_seq, seq))
+ 			return ret;
+ 		dput(ret);
+ 	}
 -- 
 2.25.1
 
