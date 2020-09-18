@@ -2,151 +2,490 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CA0C26F625
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 08:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C93DA26F62E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 08:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726621AbgIRGoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 02:44:30 -0400
-Received: from mail-mw2nam10on2088.outbound.protection.outlook.com ([40.107.94.88]:48857
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726612AbgIRGo0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 02:44:26 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NyVFmkkAQtFqj5scMq5TSoJZC2A1kVDZCmGJcW2bS0nqgNRYcigmG2CdSyHQ7yjyDYqX5mqTRWVk1dkimbLdO+zy7IeLznVL62qjxZjVkpI8BzCWE64y0hD/2P9viDv4H5k3VQ1KtnyGAyuc86g1tpq1RDr2uhKWRlKnHm9vhoMORuDAlItWUU1GKXsipBnmL2HWcrno7DLDqXOe5LZcTLepKiJ0NZp++MXp3dOpSFENO9elSezvQnsjQNhYKUxMy0sUPJzLCvblwQ6fgnNZaPKpXyMYnK9zInBnZTGxjb7QWf1+D8uubF1diXQiadQGQLFvsDddcc5OV9ONNekS9A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JIyJMdxjv7WeLGnppWcaCiVgM6J/joZLHcLPSGzdTms=;
- b=n2rhi5XIG7zliJ2auwcybCF8UWx6CsK+ZHecdirlyunzuRDkuD70rHlUej2YzvmemuZC8fye6uCk+TJsJZBX/2/3TUErd8XwHUDiofPZxHp9z2thoi4o8dKD4nqxVsCxEYPDIy3/LoH5Om51SGJqmMtTDhzgXGljDG8z2mkySzkxneglvAzyMmLHU3/JGp4iZLF+MS6m/OiAIdPk1H0PTe47ztvlSfDeee/fxE9ciuU3kjWaPdPmG2MC3YIS0qPFxSQfCHPCs/5mg26gDYj/e8VsynoYfI1jVcDr0IjxQCuBKTqI1aDW3aEUcSvcctllVPyVQ8K6PdZs3JVrgsQBiA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S1726660AbgIRGom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 02:44:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726638AbgIRGoi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 02:44:38 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD195C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 23:44:38 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id e4so2469933pln.10
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 23:44:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JIyJMdxjv7WeLGnppWcaCiVgM6J/joZLHcLPSGzdTms=;
- b=GLuVfYK6SuUmPQ+I1xtflnOc7T36KN3Onp0TS/QPhZt0S3q/wYv+76uGpHOAmStNvPd2U9I8DMvGA5OjP0l71AVGLhfGv8GB9Lhv873x2HnECTdKSbEUWXeFSKlaT8VcSTK8IDXtc84kv+d9oYIfCLa37N0rzWXKvIkFyfJSYOg=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from BY5PR11MB4241.namprd11.prod.outlook.com (2603:10b6:a03:1ca::13)
- by BYAPR11MB3815.namprd11.prod.outlook.com (2603:10b6:a03:fa::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Fri, 18 Sep
- 2020 06:44:23 +0000
-Received: from BY5PR11MB4241.namprd11.prod.outlook.com
- ([fe80::8d64:f85b:1cce:a1c0]) by BY5PR11MB4241.namprd11.prod.outlook.com
- ([fe80::8d64:f85b:1cce:a1c0%5]) with mapi id 15.20.3370.019; Fri, 18 Sep 2020
- 06:44:22 +0000
-Subject: Re: [PATCH v2] sched, mm: Optimize current_gfp_context()
-To:     Waiman Long <longman@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Michel Lespinasse <walken@google.com>,
-        linux-kernel@vger.kernel.org
-References: <20200618212936.9776-1-longman@redhat.com>
- <20200811152921.1d43e34ad7aff928c6c1267f@linux-foundation.org>
-From:   "Xu, Yanfei" <yanfei.xu@windriver.com>
-Message-ID: <a5b29e4d-cc9e-a422-e7b4-e68e0dee37c7@windriver.com>
-Date:   Fri, 18 Sep 2020 14:44:15 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-In-Reply-To: <20200811152921.1d43e34ad7aff928c6c1267f@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: HK2PR0302CA0004.apcprd03.prod.outlook.com
- (2603:1096:202::14) To BY5PR11MB4241.namprd11.prod.outlook.com
- (2603:10b6:a03:1ca::13)
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EVKdm5Gv+utgZ+5iUsGN0zIu+mBjiU04OhMu3Ey5z1s=;
+        b=cH0y7YYDMA942nNgtMo835r3cF3OF9DML5+N4MPDULlPw92yhYFAwVuipiNBrw1+gx
+         ld1deAIgxJMaW5bhp5bo4BDsed/C5ThKmeQhA5CjG0nbTBhiGjtPqCi5C29iJ3fyOCld
+         AR6RihnPaP3gY64K5KC+GG+0VAoRntIPePXxs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EVKdm5Gv+utgZ+5iUsGN0zIu+mBjiU04OhMu3Ey5z1s=;
+        b=JZ4WHfJb6fKmYb/DC2VEL990la+w85jQ9DWMmVze/dH1JDbwiejYN8tS/9p8wv2HiX
+         QRXpp086cpOIiIY2SWcfB+dR2lbfzDJjkXOa1SWaZLZewuWs53tqjDLc0J1fRYoRKjKC
+         Y9wL+Nu7uELPgVKdffI30+NOnxqiYze0QUyGUtOHdDVQbPmSRBzq1bNRZB3s4+2eJ7Rn
+         eEoLZNR/yZZxgaZAM6o3vFg8AmeQ+76tcCETGdu7yAzLpmW69i4hKCcYVmd6FzzQ1eGo
+         HjkBv2uREAZ8geYPrF3QAJAM/nue2YA7W8g6Cvqt0C3tZBUwaT2x/ffJ1OSR/Ipy7/N1
+         70gg==
+X-Gm-Message-State: AOAM530wb8bE89Xtt5yY6IgjPLwXZ+y1jqM/XgeiVgCTZO/FdDquwRVz
+        FnT9AZ1AavzSEZW9zCl8sj+aQg==
+X-Google-Smtp-Source: ABdhPJzww3FQtvgy7FBYF71lkzO3iZVrBMS4h7JE13BZZtaxlZTbrYKj100H0gWNUki/vKVd+yKc5Q==
+X-Received: by 2002:a17:902:c202:b029:d1:cbf4:c596 with SMTP id 2-20020a170902c202b02900d1cbf4c596mr21036621pll.27.1600411478014;
+        Thu, 17 Sep 2020 23:44:38 -0700 (PDT)
+Received: from kafuu-chino.c.googlers.com.com (105.219.229.35.bc.googleusercontent.com. [35.229.219.105])
+        by smtp.googlemail.com with ESMTPSA id f9sm1646859pjq.26.2020.09.17.23.44.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 23:44:37 -0700 (PDT)
+From:   Pi-Hsun Shih <pihsun@chromium.org>
+Cc:     Pi-Hsun Shih <pihsun@chromium.org>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-remoteproc@vger.kernel.org (open list:REMOTE PROCESSOR
+        (REMOTEPROC) SUBSYSTEM),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support),
+        linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] remoteproc/mediatek: Add support for mt8192 SCP
+Date:   Fri, 18 Sep 2020 14:44:32 +0800
+Message-Id: <20200918064432.3117955-1-pihsun@chromium.org>
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [128.224.162.160] (60.247.85.82) by HK2PR0302CA0004.apcprd03.prod.outlook.com (2603:1096:202::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.8 via Frontend Transport; Fri, 18 Sep 2020 06:44:20 +0000
-X-Originating-IP: [60.247.85.82]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 76833633-60f1-40f1-c58b-08d85b9e46da
-X-MS-TrafficTypeDiagnostic: BYAPR11MB3815:
-X-Microsoft-Antispam-PRVS: <BYAPR11MB381560E565B81C6A142E978DE43F0@BYAPR11MB3815.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: a8CBQUzTUqms10zvSrvLy2wo7PNiHzTwaQFXVk2Wb/cQQ3agOzG57dgxCXkzw0L0hJP/P7kmLZjAg1rXIanE35UY9ODBx/4EPKIvnOOo/2ktS7l61FNJab+JuSnwP3s8fu7VcVUvLWycbahr8Ws75r8jX/hRsgvYRCLyoV/6MZCY1ABC+Jay6KUncz+iKMwF1tSrWYQFWhmzzWi+kaXnnFdXPTwI3j5wm8G4pD77ub3X3Rm9Ir1fWd/WgxNleFWs6HgKlgop7hNfixKD/7htsNuW89TewJgB7zSP1FSe7IBrwwnX0nZBgb2yX3ZihLInKD+uK18+DipN8llzeEX7sQi+6vCt/V5UDPzzeJ2jXK7FOlo+mFdECsi8Dsc0056ZcYHe4NbvTRNs73pKsMxong==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4241.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(39850400004)(366004)(136003)(346002)(83380400001)(8676002)(6916009)(31686004)(6486002)(66476007)(66556008)(6666004)(6706004)(956004)(2616005)(54906003)(36756003)(52116002)(16526019)(5660300002)(8936002)(186003)(66946007)(2906002)(316002)(86362001)(26005)(16576012)(4326008)(478600001)(31696002)(53546011)(78286007)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: CBAKaz5OcZ6uYxyXjvct+Qzo1Tk8KwYDZEHDhjS5e6eftKQd6VV8O6FF8sRbEChKUteX/JnhmUGuNiy+VxynLFWgYKY1Bq8JzZByEgiGEnOP5rGnVUqUTAIFwk8G3StNK0kmrJKhhX8nmn4P1CXgHdZ3FT5z0lMgcN6kGIlYAqA2PCxPNufJVr3mjaMZLB/+m3l8xn6oJvRpCMF89VuUYRqaVICV/9Jd854M1EthbOzv+C25weg4YBY6wP9KH3jWxLV+SVak9RZewPWvtDMgu4WpiPO9VsLsR/Pbq5unozymTlQIa8i3MjrS702DAKLdX/MrTvBORr5HyxzqB1YT9M8UuvNT6db1en1K8O3k9R7Mi+j0CNOylRwJd/8vMo4ZW5reIQ+fEE4esS1bWCr5tdkrt+amlX99jDY30uU/mbtA0eHE2INaTujbPlYMddMPeBLGS3wNma1hhRJhlApEWLwQwVhMsrEyz+JH2sq7SlEY5kGSOCgKcvGv9L4S7gK2ocsaiLvXsUTc8s4YjtNV9JzdHy22PLsxXBhpuMk5VQ7hb5JE4bS+ru6ajRQcoP2ERCozW1yK5TQk/BkGyR1n1Ip46LP9M6F+GSR9lAEa7ARziHHDO1Qa3NGT5kUNn6YLiICcT6UbuoHdcljobNAZ9A==
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 76833633-60f1-40f1-c58b-08d85b9e46da
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4241.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2020 06:44:22.6706
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NDUw5unkCYi3xgk9HvpfMg0R96YthX7BF7Y9rxZRFtq25oRaNQmsTmCNJ/bfcAl5XHqx1JyrqBJINTu8V+C/9Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3815
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Waiman,
+Add support for mt8192 SCP.
 
-On 8/12/20 6:29 AM, Andrew Morton wrote:
-> On Thu, 18 Jun 2020 17:29:36 -0400 Waiman Long <longman@redhat.com> wrote:
-> 
->> The current_gfp_context() converts a number of PF_MEMALLOC_* per-process
->> flags into the corresponding GFP_* flags for memory allocation. In
->> that function, current->flags is accessed 3 times. That may lead to
->> duplicated access of the same memory location.
->>
-I have a puzzle about this comment, what's the meaning about "That may
-lead to duplicated access of the same memory location". After using
-variable 'pflags', will it not duplicated access the same memory
-location?
-Looking forward to your reply :)
+Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
+Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
+---
 
-Thanks,
-Yanfei
+Change since v1:
+* Remove unused register definitions.
 
->> This is not usually a problem with minimal debug config options on as the
->> compiler can optimize away the duplicated memory accesses.  With most
->> of the debug config options on, however, that may not be the case.
->> For example, the x86-64 object size of the __need_fs_reclaim() in a
->> debug kernel that calls current_gfp_context() was 309 bytes. With this
->> patch applied, the object size is reduced to 202 bytes. This is a saving
->> of 107 bytes and will probably be slightly faster too.
->>
->> ...
->>
->> --- a/include/linux/sched/mm.h
->> +++ b/include/linux/sched/mm.h
->> @@ -181,18 +181,20 @@ static inline bool in_vfork(struct task_struct *tsk)
->>    */
->>   static inline gfp_t current_gfp_context(gfp_t flags)
->>   {
->> -	if (unlikely(current->flags &
->> +	unsigned int pflags = READ_ONCE(current->flags);
-> 
-> Why use READ_ONCE() here?
-> 
->> +	if (unlikely(pflags &
->>   		     (PF_MEMALLOC_NOIO | PF_MEMALLOC_NOFS | PF_MEMALLOC_NOCMA))) {
->>   		/*
->>   		 * NOIO implies both NOIO and NOFS and it is a weaker context
->>   		 * so always make sure it makes precedence
->>   		 */
->> -		if (current->flags & PF_MEMALLOC_NOIO)
->> +		if (pflags & PF_MEMALLOC_NOIO)
->>   			flags &= ~(__GFP_IO | __GFP_FS);
->> -		else if (current->flags & PF_MEMALLOC_NOFS)
->> +		else if (pflags & PF_MEMALLOC_NOFS)
->>   			flags &= ~__GFP_FS;
->>   #ifdef CONFIG_CMA
->> -		if (current->flags & PF_MEMALLOC_NOCMA)
->> +		if (pflags & PF_MEMALLOC_NOCMA)
->>   			flags &= ~__GFP_MOVABLE;
->>   #endif
->>   	}
-> 
+---
+ drivers/remoteproc/mtk_common.h  |  32 +++++
+ drivers/remoteproc/mtk_scp.c     | 207 ++++++++++++++++++++++++++-----
+ drivers/remoteproc/mtk_scp_ipi.c |   5 +-
+ 3 files changed, 211 insertions(+), 33 deletions(-)
+
+diff --git a/drivers/remoteproc/mtk_common.h b/drivers/remoteproc/mtk_common.h
+index 0066c83636d0..47b4561443a9 100644
+--- a/drivers/remoteproc/mtk_common.h
++++ b/drivers/remoteproc/mtk_common.h
+@@ -32,6 +32,23 @@
+ #define MT8183_SCP_CACHESIZE_8KB	BIT(8)
+ #define MT8183_SCP_CACHE_CON_WAYEN	BIT(10)
+ 
++#define MT8192_L2TCM_SRAM_PD_0		0x210C0
++#define MT8192_L2TCM_SRAM_PD_1		0x210C4
++#define MT8192_L2TCM_SRAM_PD_2		0x210C8
++#define MT8192_L1TCM_SRAM_PDN		0x2102C
++#define MT8192_CPU0_SRAM_PD		0x21080
++
++#define MT8192_SCP2APMCU_IPC_SET	0x24080
++#define MT8192_SCP2APMCU_IPC_CLR	0x24084
++#define MT8192_SCP_IPC_INT_BIT		BIT(0)
++#define MT8192_SCP2SPM_IPC_CLR		0x24094
++#define MT8192_GIPC_IN_SET		0x24098
++#define MT8192_HOST_IPC_INT_BIT		BIT(0)
++
++#define MT8192_CORE0_SW_RSTN_CLR	0x30000
++#define MT8192_CORE0_SW_RSTN_SET	0x30004
++#define MT8192_CORE0_WDT_CFG		0x30034
++
+ #define SCP_FW_VER_LEN			32
+ #define SCP_SHARE_BUFFER_SIZE		288
+ 
+@@ -50,6 +67,19 @@ struct scp_ipi_desc {
+ 	void *priv;
+ };
+ 
++struct mtk_scp;
++
++struct mtk_scp_of_data {
++	int (*scp_before_load)(struct mtk_scp *scp);
++	void (*scp_irq_handler)(struct mtk_scp *scp);
++	void (*scp_reset_assert)(struct mtk_scp *scp);
++	void (*scp_reset_deassert)(struct mtk_scp *scp);
++	void (*scp_stop)(struct mtk_scp *scp);
++
++	u32 host_to_scp_reg;
++	u32 host_to_scp_int_bit;
++};
++
+ struct mtk_scp {
+ 	struct device *dev;
+ 	struct rproc *rproc;
+@@ -58,6 +88,8 @@ struct mtk_scp {
+ 	void __iomem *sram_base;
+ 	size_t sram_size;
+ 
++	const struct mtk_scp_of_data *data;
++
+ 	struct mtk_share_obj __iomem *recv_buf;
+ 	struct mtk_share_obj __iomem *send_buf;
+ 	struct scp_run run;
+diff --git a/drivers/remoteproc/mtk_scp.c b/drivers/remoteproc/mtk_scp.c
+index ac13e7b046a6..f5f226a7b34c 100644
+--- a/drivers/remoteproc/mtk_scp.c
++++ b/drivers/remoteproc/mtk_scp.c
+@@ -124,9 +124,6 @@ static int scp_ipi_init(struct mtk_scp *scp)
+ 	size_t send_offset = SCP_FW_END - sizeof(struct mtk_share_obj);
+ 	size_t recv_offset = send_offset - sizeof(struct mtk_share_obj);
+ 
+-	/* Disable SCP to host interrupt */
+-	writel(MT8183_SCP_IPC_INT_BIT, scp->reg_base + MT8183_SCP_TO_HOST);
+-
+ 	/* shared buffer initialization */
+ 	scp->recv_buf =
+ 		(struct mtk_share_obj __iomem *)(scp->sram_base + recv_offset);
+@@ -138,7 +135,7 @@ static int scp_ipi_init(struct mtk_scp *scp)
+ 	return 0;
+ }
+ 
+-static void scp_reset_assert(const struct mtk_scp *scp)
++static void mt8183_scp_reset_assert(struct mtk_scp *scp)
+ {
+ 	u32 val;
+ 
+@@ -147,7 +144,7 @@ static void scp_reset_assert(const struct mtk_scp *scp)
+ 	writel(val, scp->reg_base + MT8183_SW_RSTN);
+ }
+ 
+-static void scp_reset_deassert(const struct mtk_scp *scp)
++static void mt8183_scp_reset_deassert(struct mtk_scp *scp)
+ {
+ 	u32 val;
+ 
+@@ -156,17 +153,29 @@ static void scp_reset_deassert(const struct mtk_scp *scp)
+ 	writel(val, scp->reg_base + MT8183_SW_RSTN);
+ }
+ 
+-static irqreturn_t scp_irq_handler(int irq, void *priv)
++static void mt8192_scp_reset_assert(struct mtk_scp *scp)
+ {
+-	struct mtk_scp *scp = priv;
+-	u32 scp_to_host;
+-	int ret;
++	writel(1, scp->reg_base + MT8192_CORE0_SW_RSTN_SET);
++}
+ 
+-	ret = clk_prepare_enable(scp->clk);
+-	if (ret) {
+-		dev_err(scp->dev, "failed to enable clocks\n");
+-		return IRQ_NONE;
+-	}
++static void mt8192_scp_reset_deassert(struct mtk_scp *scp)
++{
++	writel(1, scp->reg_base + MT8192_CORE0_SW_RSTN_CLR);
++}
++
++static void scp_reset_assert(struct mtk_scp *scp)
++{
++	scp->data->scp_reset_assert(scp);
++}
++
++static void scp_reset_deassert(struct mtk_scp *scp)
++{
++	scp->data->scp_reset_deassert(scp);
++}
++
++static void mt8183_scp_irq_handler(struct mtk_scp *scp)
++{
++	u32 scp_to_host;
+ 
+ 	scp_to_host = readl(scp->reg_base + MT8183_SCP_TO_HOST);
+ 	if (scp_to_host & MT8183_SCP_IPC_INT_BIT)
+@@ -177,6 +186,40 @@ static irqreturn_t scp_irq_handler(int irq, void *priv)
+ 	/* SCP won't send another interrupt until we set SCP_TO_HOST to 0. */
+ 	writel(MT8183_SCP_IPC_INT_BIT | MT8183_SCP_WDT_INT_BIT,
+ 	       scp->reg_base + MT8183_SCP_TO_HOST);
++}
++
++static void mt8192_scp_irq_handler(struct mtk_scp *scp)
++{
++	u32 scp_to_host;
++
++	scp_to_host = readl(scp->reg_base + MT8192_SCP2APMCU_IPC_SET);
++
++	if (scp_to_host & MT8192_SCP_IPC_INT_BIT)
++		scp_ipi_handler(scp);
++	else
++		scp_wdt_handler(scp, scp_to_host);
++
++	/*
++	 * SCP won't send another interrupt until we clear
++	 * MT8192_SCP2APMCU_IPC.
++	 */
++	writel(MT8192_SCP_IPC_INT_BIT,
++	       scp->reg_base + MT8192_SCP2APMCU_IPC_CLR);
++}
++
++static irqreturn_t scp_irq_handler(int irq, void *priv)
++{
++	struct mtk_scp *scp = priv;
++	int ret;
++
++	ret = clk_prepare_enable(scp->clk);
++	if (ret) {
++		dev_err(scp->dev, "failed to enable clocks\n");
++		return IRQ_NONE;
++	}
++
++	scp->data->scp_irq_handler(scp);
++
+ 	clk_disable_unprepare(scp->clk);
+ 
+ 	return IRQ_HANDLED;
+@@ -238,20 +281,10 @@ static int scp_elf_load_segments(struct rproc *rproc, const struct firmware *fw)
+ 	return ret;
+ }
+ 
+-static int scp_load(struct rproc *rproc, const struct firmware *fw)
++static int mt8183_scp_before_load(struct mtk_scp *scp)
+ {
+-	const struct mtk_scp *scp = rproc->priv;
+-	struct device *dev = scp->dev;
+-	int ret;
+-
+-	ret = clk_prepare_enable(scp->clk);
+-	if (ret) {
+-		dev_err(dev, "failed to enable clocks\n");
+-		return ret;
+-	}
+-
+-	/* Hold SCP in reset while loading FW. */
+-	scp_reset_assert(scp);
++	/* Clear SCP to host interrupt */
++	writel(MT8183_SCP_IPC_INT_BIT, scp->reg_base + MT8183_SCP_TO_HOST);
+ 
+ 	/* Reset clocks before loading FW */
+ 	writel(0x0, scp->reg_base + MT8183_SCP_CLK_SW_SEL);
+@@ -272,6 +305,67 @@ static int scp_load(struct rproc *rproc, const struct firmware *fw)
+ 	       scp->reg_base + MT8183_SCP_CACHE_CON);
+ 	writel(MT8183_SCP_CACHESIZE_8KB, scp->reg_base + MT8183_SCP_DCACHE_CON);
+ 
++	return 0;
++}
++
++static void mt8192_power_on_sram(void *addr)
++{
++	int i;
++
++	for (i = 31; i >= 0; i--)
++		writel(GENMASK(i, 0), addr);
++	writel(0, addr);
++}
++
++static void mt8192_power_off_sram(void *addr)
++{
++	int i;
++
++	writel(0, addr);
++	for (i = 0; i < 32; i++)
++		writel(GENMASK(i, 0), addr);
++}
++
++static int mt8192_scp_before_load(struct mtk_scp *scp)
++{
++	/* clear SPM interrupt, SCP2SPM_IPC_CLR */
++	writel(0xff, scp->reg_base + MT8192_SCP2SPM_IPC_CLR);
++
++	writel(1, scp->reg_base + MT8192_CORE0_SW_RSTN_SET);
++
++	dsb(sy);
++
++	readl(scp->reg_base + MT8192_CORE0_SW_RSTN_SET);
++
++	/* enable SRAM clock */
++	mt8192_power_on_sram(scp->reg_base + MT8192_L2TCM_SRAM_PD_0);
++	mt8192_power_on_sram(scp->reg_base + MT8192_L2TCM_SRAM_PD_1);
++	mt8192_power_on_sram(scp->reg_base + MT8192_L2TCM_SRAM_PD_2);
++	mt8192_power_on_sram(scp->reg_base + MT8192_L1TCM_SRAM_PDN);
++	mt8192_power_on_sram(scp->reg_base + MT8192_CPU0_SRAM_PD);
++
++	return 0;
++}
++
++static int scp_load(struct rproc *rproc, const struct firmware *fw)
++{
++	struct mtk_scp *scp = rproc->priv;
++	struct device *dev = scp->dev;
++	int ret;
++
++	ret = clk_prepare_enable(scp->clk);
++	if (ret) {
++		dev_err(dev, "failed to enable clocks\n");
++		return ret;
++	}
++
++	/* Hold SCP in reset while loading FW. */
++	scp_reset_assert(scp);
++
++	ret = scp->data->scp_before_load(scp);
++	if (ret < 0)
++		return ret;
++
+ 	ret = scp_elf_load_segments(rproc, fw);
+ 	clk_disable_unprepare(scp->clk);
+ 
+@@ -309,6 +403,7 @@ static int scp_start(struct rproc *rproc)
+ 		dev_err(dev, "wait SCP interrupted by a signal!\n");
+ 		goto stop;
+ 	}
++
+ 	clk_disable_unprepare(scp->clk);
+ 	dev_info(dev, "SCP is ready. FW version %s\n", run->fw_ver);
+ 
+@@ -329,7 +424,7 @@ static void *scp_da_to_va(struct rproc *rproc, u64 da, size_t len)
+ 		offset = da;
+ 		if (offset >= 0 && (offset + len) < scp->sram_size)
+ 			return (void __force *)scp->sram_base + offset;
+-	} else {
++	} else if (scp->dram_size) {
+ 		offset = da - scp->dma_addr;
+ 		if (offset >= 0 && (offset + len) < scp->dram_size)
+ 			return (void __force *)scp->cpu_addr + offset;
+@@ -338,6 +433,25 @@ static void *scp_da_to_va(struct rproc *rproc, u64 da, size_t len)
+ 	return NULL;
+ }
+ 
++static void mt8183_scp_stop(struct mtk_scp *scp)
++{
++	/* Disable SCP watchdog */
++	writel(0, scp->reg_base + MT8183_WDT_CFG);
++}
++
++static void mt8192_scp_stop(struct mtk_scp *scp)
++{
++	/* Disable SRAM clock */
++	mt8192_power_off_sram(scp->reg_base + MT8192_L2TCM_SRAM_PD_0);
++	mt8192_power_off_sram(scp->reg_base + MT8192_L2TCM_SRAM_PD_1);
++	mt8192_power_off_sram(scp->reg_base + MT8192_L2TCM_SRAM_PD_2);
++	mt8192_power_off_sram(scp->reg_base + MT8192_L1TCM_SRAM_PDN);
++	mt8192_power_off_sram(scp->reg_base + MT8192_CPU0_SRAM_PD);
++
++	/* Disable SCP watchdog */
++	writel(0, scp->reg_base + MT8192_CORE0_WDT_CFG);
++}
++
+ static int scp_stop(struct rproc *rproc)
+ {
+ 	struct mtk_scp *scp = (struct mtk_scp *)rproc->priv;
+@@ -350,8 +464,7 @@ static int scp_stop(struct rproc *rproc)
+ 	}
+ 
+ 	scp_reset_assert(scp);
+-	/* Disable SCP watchdog */
+-	writel(0, scp->reg_base + MT8183_WDT_CFG);
++	scp->data->scp_stop(scp);
+ 	clk_disable_unprepare(scp->clk);
+ 
+ 	return 0;
+@@ -443,6 +556,13 @@ static int scp_map_memory_region(struct mtk_scp *scp)
+ 	int ret;
+ 
+ 	ret = of_reserved_mem_device_init(scp->dev);
++
++	/* reserved memory is optional. */
++	if (ret == -ENODEV) {
++		dev_info(scp->dev, "skipping reserved memory initialization.");
++		return 0;
++	}
++
+ 	if (ret) {
+ 		dev_err(scp->dev, "failed to assign memory-region: %d\n", ret);
+ 		return -ENOMEM;
+@@ -460,6 +580,9 @@ static int scp_map_memory_region(struct mtk_scp *scp)
+ 
+ static void scp_unmap_memory_region(struct mtk_scp *scp)
+ {
++	if (scp->dram_size == 0)
++		return;
++
+ 	dma_free_coherent(scp->dev, scp->dram_size, scp->cpu_addr,
+ 			  scp->dma_addr);
+ 	of_reserved_mem_device_release(scp->dev);
+@@ -536,6 +659,7 @@ static int scp_probe(struct platform_device *pdev)
+ 	scp = (struct mtk_scp *)rproc->priv;
+ 	scp->rproc = rproc;
+ 	scp->dev = dev;
++	scp->data = of_device_get_match_data(dev);
+ 	platform_set_drvdata(pdev, scp);
+ 
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "sram");
+@@ -642,8 +766,29 @@ static int scp_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static const struct mtk_scp_of_data mt8183_of_data = {
++	.scp_before_load = mt8183_scp_before_load,
++	.scp_irq_handler = mt8183_scp_irq_handler,
++	.scp_reset_assert = mt8183_scp_reset_assert,
++	.scp_reset_deassert = mt8183_scp_reset_deassert,
++	.scp_stop = mt8183_scp_stop,
++	.host_to_scp_reg = MT8183_HOST_TO_SCP,
++	.host_to_scp_int_bit = MT8183_HOST_IPC_INT_BIT,
++};
++
++static const struct mtk_scp_of_data mt8192_of_data = {
++	.scp_before_load = mt8192_scp_before_load,
++	.scp_irq_handler = mt8192_scp_irq_handler,
++	.scp_reset_assert = mt8192_scp_reset_assert,
++	.scp_reset_deassert = mt8192_scp_reset_deassert,
++	.scp_stop = mt8192_scp_stop,
++	.host_to_scp_reg = MT8192_GIPC_IN_SET,
++	.host_to_scp_int_bit = MT8192_HOST_IPC_INT_BIT,
++};
++
+ static const struct of_device_id mtk_scp_of_match[] = {
+-	{ .compatible = "mediatek,mt8183-scp"},
++	{ .compatible = "mediatek,mt8183-scp", .data = &mt8183_of_data },
++	{ .compatible = "mediatek,mt8192-scp", .data = &mt8192_of_data },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, mtk_scp_of_match);
+diff --git a/drivers/remoteproc/mtk_scp_ipi.c b/drivers/remoteproc/mtk_scp_ipi.c
+index 3d3d87210ef2..fb81df973566 100644
+--- a/drivers/remoteproc/mtk_scp_ipi.c
++++ b/drivers/remoteproc/mtk_scp_ipi.c
+@@ -182,7 +182,7 @@ int scp_ipi_send(struct mtk_scp *scp, u32 id, void *buf, unsigned int len,
+ 			ret = -ETIMEDOUT;
+ 			goto clock_disable;
+ 		}
+-	} while (readl(scp->reg_base + MT8183_HOST_TO_SCP));
++	} while (readl(scp->reg_base + scp->data->host_to_scp_reg));
+ 
+ 	scp_memcpy_aligned(send_obj->share_buf, buf, len);
+ 
+@@ -191,7 +191,8 @@ int scp_ipi_send(struct mtk_scp *scp, u32 id, void *buf, unsigned int len,
+ 
+ 	scp->ipi_id_ack[id] = false;
+ 	/* send the command to SCP */
+-	writel(MT8183_HOST_IPC_INT_BIT, scp->reg_base + MT8183_HOST_TO_SCP);
++	writel(scp->data->host_to_scp_int_bit,
++	       scp->reg_base + scp->data->host_to_scp_reg);
+ 
+ 	if (wait) {
+ 		/* wait for SCP's ACK */
+
+base-commit: 5925fa68fe8244651b3f78a88c4af99190a88f0d
+-- 
+2.28.0.681.g6f77f65b4e-goog
+
