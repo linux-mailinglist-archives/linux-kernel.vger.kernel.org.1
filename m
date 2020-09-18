@@ -2,125 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E057B26F663
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 08:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E613B26F664
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 08:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726314AbgIRG6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 02:58:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39904 "EHLO mail.kernel.org"
+        id S1726528AbgIRG6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 02:58:47 -0400
+Received: from mga03.intel.com ([134.134.136.65]:42264 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726064AbgIRG6j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 02:58:39 -0400
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 12EAA21741;
-        Fri, 18 Sep 2020 06:58:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600412318;
-        bh=mjp2wDE0CPx5yKOwcHLy7u2mCk/dtE5oFHoNPu9lgt0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=2mgmv2TT1Rddp0gW0w5fTvKfGGQn4xNtmmH8NYbXmjZ2ELZwXf6/Gcaz7INVj+CQ9
-         +R8cv4OHrPdMgJdl2fSFdkRkN7cJtUCk6z5FZbZEJeuffRGdMCHY/yry2khNUVMWU9
-         t1izuwNvWQuiAf85mPI3J1vJCj70n+Omw+UUckAk=
-Received: by mail-ej1-f44.google.com with SMTP id nw23so6645020ejb.4;
-        Thu, 17 Sep 2020 23:58:38 -0700 (PDT)
-X-Gm-Message-State: AOAM531H7699Q/s0JhVhgHL67Vosp9ZVQLvGgSXwKcVunU5bNATDZ6pd
-        024dHnEwrWVqv8wV3p0DM57AhmjwD+X8BcwJZ9I=
-X-Google-Smtp-Source: ABdhPJxuUdNI1kI9EGKoX661IH6CqKsTqOJr2EABaLTyHqaGDXbYSQO6uutOU1nYbQDBXfIETEqoXrPjCNQOLRAANdI=
-X-Received: by 2002:a17:906:4a51:: with SMTP id a17mr34126508ejv.381.1600412316471;
- Thu, 17 Sep 2020 23:58:36 -0700 (PDT)
+        id S1726054AbgIRG6q (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 02:58:46 -0400
+IronPort-SDR: 7pCun6oaUXieIV8A/abCmHzlKF10sbquJGHkoa0DMouQCaLPECpSJuqT1A7MgEd7p/UShUQeQI
+ zDYlXZkTk36Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="159930126"
+X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
+   d="scan'208";a="159930126"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 23:58:45 -0700
+IronPort-SDR: NhBC5+hQLcJEqE7MvibANDu5NP9xT0X4A7Cop9EJek12/jzt5TxjojZjcjc0nvI7tWoJY2IM4q
+ U3a7aC5B2Bzw==
+X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
+   d="scan'208";a="484076772"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.5.239]) ([10.238.5.239])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2020 23:58:43 -0700
+Subject: Re: [PATCH v6 7/7] perf diff: Support hot streams comparison
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
+References: <20200911080353.13359-1-yao.jin@linux.intel.com>
+ <20200911080353.13359-8-yao.jin@linux.intel.com>
+ <20200917202608.GF1431236@kernel.org>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <87bb9e8c-a695-1344-0752-735466cfb4ce@linux.intel.com>
+Date:   Fri, 18 Sep 2020 14:58:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200917193754.542-1-krzk@kernel.org> <cf55864a2d9ff7fcd397273b27cb10619029bd58.camel@fi.rohmeurope.com>
-In-Reply-To: <cf55864a2d9ff7fcd397273b27cb10619029bd58.camel@fi.rohmeurope.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Fri, 18 Sep 2020 08:58:24 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPcYquTA8FMFxQ6-ANZdmVJ+Va2VmbudNyqXrmgUx+T=oQ@mail.gmail.com>
-Message-ID: <CAJKOXPcYquTA8FMFxQ6-ANZdmVJ+Va2VmbudNyqXrmgUx+T=oQ@mail.gmail.com>
-Subject: Re: [PATCH v2] dt-bindings: mfd: rohm,bd71837-pmic: Add common properties
-To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-Cc:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200917202608.GF1431236@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Sep 2020 at 07:48, Vaittinen, Matti
-<Matti.Vaittinen@fi.rohmeurope.com> wrote:
->
-> Hi deeee Ho peeps!
->
-> On Thu, 2020-09-17 at 21:37 +0200, Krzysztof Kozlowski wrote:
-> > Add common properties appearing in DTSes (clock-names,
-> > clock-output-names) with the common values (actually used in DTSes)
-> > to
-> > fix dtbs_check warnings like:
-> >
-> >   arch/arm64/boot/dts/freescale/imx8mq-librem5-r2.dt.yaml:
-> >     pmic@4b: 'clock-names', 'clock-output-names', do not match any of
-> > the regexes: 'pinctrl-[0-9]+'
-> >
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> >
-> > ---
-> >
-> > Changes since v1:
-> > 1. Define the names, as used in existing DTS files.
-> > ---
-> >  .../devicetree/bindings/mfd/rohm,bd71837-pmic.yaml          | 6
-> > ++++++
-> >  1 file changed, 6 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/mfd/rohm,bd71837-
-> > pmic.yaml b/Documentation/devicetree/bindings/mfd/rohm,bd71837-
-> > pmic.yaml
-> > index 65018a019e1d..3bfdd33702ad 100644
-> > --- a/Documentation/devicetree/bindings/mfd/rohm,bd71837-pmic.yaml
-> > +++ b/Documentation/devicetree/bindings/mfd/rohm,bd71837-pmic.yaml
-> > @@ -32,9 +32,15 @@ properties:
-> >    clocks:
-> >      maxItems: 1
-> >
-> > +  clock-names:
-> > +    const: osc
->
-> I guess existing board dtses use "osc" then? Ok.
+Hi Arnaldo,
 
-Yes.
+On 9/18/2020 4:26 AM, Arnaldo Carvalho de Melo wrote:
+> Em Fri, Sep 11, 2020 at 04:03:53PM +0800, Jin Yao escreveu:
+>> This patch enables perf-diff with "--stream" option.
+>>
+>> "--stream": Enable hot streams comparison
+>>
+>> Now let's see examples.
+>>
+>> perf record -b ...      Generate perf.data.old with branch data
+>> perf record -b ...      Generate perf.data with branch data
+>> perf diff --stream
+>>
+>> [ Matched hot streams ]
+>>
+>> hot chain pair 1:
+>>              cycles: 1, hits: 27.77%                  cycles: 1, hits: 9.24%
+>>          ---------------------------              --------------------------
+>>                        main div.c:39                           main div.c:39
+>>                        main div.c:44                           main div.c:44
+>>
+>> hot chain pair 2:
+>>             cycles: 34, hits: 20.06%                cycles: 27, hits: 16.98%
+>>          ---------------------------              --------------------------
+>>            __random_r random_r.c:360               __random_r random_r.c:360
+> 
+> Would it be interesting to get the associated source code and show right below
+> these file:number lines?
+> 
+> - Arnaldo
+> 
 
->
-> >    "#clock-cells":
-> >      const: 0
-> >
-> > +  clock-output-names:
-> > +    const: pmic_clk
->
-> This is not a strong opinion but I feel that pmic_clk is a bit too
-> generic name? I mean, what if there is a system with more than one
-> PMICs? (I don't see such use-case with the BD718x7 though - but perhaps
-> this can serve as a misleading example for other PMICs?
+Yes, that would be better. Let me think about the implementation.
 
-I don't expect two PMICs. Sometimes secondary device is added with few
-regulators, e.g. a MUIC. Still only one device can supply the CPU and
-probably this would be called PMIC.
-
-> For example
-> with the ROHM BD96801 family there may be multiple PMICs in one
-> system). Anyways - if Rob is happy with this then please go with it :)
-
-The name was taken from existing DTS files. That was Rob's idea as well.
-
-Best regards,
-Krzysztof
-
->
-> Acked-By: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
->  *
-> Thanks again for improving these bindings! I am constantly struggling
-> with these x_x. Writing the bindings is probably hardest part of PMIC
-> driver development -_-;
->
->
+Thanks
+Jin Yao
