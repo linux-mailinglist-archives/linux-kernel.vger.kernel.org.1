@@ -2,41 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95A2126F348
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9D526F339
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730510AbgIRDFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 23:05:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51804 "EHLO mail.kernel.org"
+        id S1729204AbgIRDFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 23:05:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727312AbgIRCE0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:04:26 -0400
+        id S1726348AbgIRCEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:04:31 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8F1D52344C;
-        Fri, 18 Sep 2020 02:04:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E670B23741;
+        Fri, 18 Sep 2020 02:04:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394665;
-        bh=21Dk2aP0mawlZhSZZ4BdMKCgfu56yphPCl+pNGPepT8=;
+        s=default; t=1600394670;
+        bh=lCmNF/bJl1nytvv2s1UVQv6Cg4ZFuMUODfcoBieSl0U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OBIYWeHUG4TWzIndFwjb02C2wELY1k9LN93p1v1kF6t6AUdUHJfdcx7Jwdmp6eqM8
-         0OCDX3mTmPqlAp9TwmTcj+3KntXrRzERdxcVYWkfnwBimcspTaYs+wOyY+sbHnRUoY
-         lIf0ZvxwbhkKWAJi4kn3+sMkeleKQxlhaeRronmQ=
+        b=zlfJHH7I4VyJyWdHBnTDSbmwjDDbdopgavKB8ARSHKy74fYFfOfSu+RxoNOLXnqby
+         ZMjjPF55O1/s9t5UWB1IP/fd9Vt1V4xWLNa2JR/EuGDD/Qig/OVcCV8g1gc7REJfv6
+         KoIZniqO5PmRPgqDH1NpnQCen6pLFHdDP5Lq6DvY=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tony Lindgren <tony@atomide.com>, Dave Gerlach <d-gerlach@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Keerthy <j-keerthy@ti.com>,
-        Ladislav Michl <ladis@linux-mips.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Tero Kristo <t-kristo@ti.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sasha Levin <sashal@kernel.org>, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.4 159/330] ARM: OMAP2+: Handle errors for cpu_pm
-Date:   Thu, 17 Sep 2020 21:58:19 -0400
-Message-Id: <20200918020110.2063155-159-sashal@kernel.org>
+Cc:     afzal mohammed <afzal.mohd.ma@gmail.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>, linux-s390@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 163/330] s390/irq: replace setup_irq() by request_irq()
+Date:   Thu, 17 Sep 2020 21:58:23 -0400
+Message-Id: <20200918020110.2063155-163-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -48,164 +43,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: afzal mohammed <afzal.mohd.ma@gmail.com>
 
-[ Upstream commit 55be2f50336f67800513b46c5ba6270e4ed0e784 ]
+[ Upstream commit 8719b6d29d2851fa84c4074bb2e5adc022911ab8 ]
 
-We need to check for errors when calling cpu_pm_enter() and
-cpu_cluster_pm_enter(). And we need to bail out on errors as
-otherwise we can enter a deeper idle state when not desired.
+request_irq() is preferred over setup_irq(). Invocations of setup_irq()
+occur after memory allocators are ready.
 
-I'm not aware of the lack of error handling causing issues yet,
-but we need this at least for blocking deeper idle states when
-a GPIO instance has pending interrupts.
+Per tglx[1], setup_irq() existed in olden days when allocators were not
+ready by the time early interrupts were initialized.
 
-Cc: Dave Gerlach <d-gerlach@ti.com>
-Cc: Grygorii Strashko <grygorii.strashko@ti.com>
-Cc: Keerthy <j-keerthy@ti.com>
-Cc: Ladislav Michl <ladis@linux-mips.org>
-Cc: Russell King <rmk+kernel@armlinux.org.uk>
-Cc: Tero Kristo <t-kristo@ti.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Link: https://lore.kernel.org/r/20200304225433.37336-2-tony@atomide.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Hence replace setup_irq() by request_irq().
+
+[1] https://lkml.kernel.org/r/alpine.DEB.2.20.1710191609480.1971@nanos
+
+Signed-off-by: afzal mohammed <afzal.mohd.ma@gmail.com>
+Message-Id: <20200304005049.5291-1-afzal.mohd.ma@gmail.com>
+[heiko.carstens@de.ibm.com: replace pr_err with panic]
+Signed-off-by: Heiko Carstens <heiko.carstens@de.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/mach-omap2/cpuidle34xx.c |  9 +++++++--
- arch/arm/mach-omap2/cpuidle44xx.c | 26 +++++++++++++++++---------
- arch/arm/mach-omap2/pm34xx.c      |  8 ++++++--
- 3 files changed, 30 insertions(+), 13 deletions(-)
+ arch/s390/kernel/irq.c  | 8 ++------
+ drivers/s390/cio/airq.c | 8 ++------
+ drivers/s390/cio/cio.c  | 8 ++------
+ 3 files changed, 6 insertions(+), 18 deletions(-)
 
-diff --git a/arch/arm/mach-omap2/cpuidle34xx.c b/arch/arm/mach-omap2/cpuidle34xx.c
-index 532a3e4b98c6f..090a8aafb25e1 100644
---- a/arch/arm/mach-omap2/cpuidle34xx.c
-+++ b/arch/arm/mach-omap2/cpuidle34xx.c
-@@ -109,6 +109,7 @@ static int omap3_enter_idle(struct cpuidle_device *dev,
- 			    int index)
- {
- 	struct omap3_idle_statedata *cx = &omap3_idle_data[index];
-+	int error;
+diff --git a/arch/s390/kernel/irq.c b/arch/s390/kernel/irq.c
+index 8371855042dc2..da550cb8b31bd 100644
+--- a/arch/s390/kernel/irq.c
++++ b/arch/s390/kernel/irq.c
+@@ -294,11 +294,6 @@ static irqreturn_t do_ext_interrupt(int irq, void *dummy)
+ 	return IRQ_HANDLED;
+ }
  
- 	if (omap_irq_pending() || need_resched())
- 		goto return_sleep_time;
-@@ -125,8 +126,11 @@ static int omap3_enter_idle(struct cpuidle_device *dev,
- 	 * Call idle CPU PM enter notifier chain so that
- 	 * VFP context is saved.
- 	 */
--	if (cx->mpu_state == PWRDM_POWER_OFF)
--		cpu_pm_enter();
-+	if (cx->mpu_state == PWRDM_POWER_OFF) {
-+		error = cpu_pm_enter();
-+		if (error)
-+			goto out_clkdm_set;
-+	}
- 
- 	/* Execute ARM wfi */
- 	omap_sram_idle();
-@@ -139,6 +143,7 @@ static int omap3_enter_idle(struct cpuidle_device *dev,
- 	    pwrdm_read_prev_pwrst(mpu_pd) == PWRDM_POWER_OFF)
- 		cpu_pm_exit();
- 
-+out_clkdm_set:
- 	/* Re-allow idle for C1 */
- 	if (cx->flags & OMAP_CPUIDLE_CX_NO_CLKDM_IDLE)
- 		clkdm_allow_idle(mpu_pd->pwrdm_clkdms[0]);
-diff --git a/arch/arm/mach-omap2/cpuidle44xx.c b/arch/arm/mach-omap2/cpuidle44xx.c
-index fe75d4fa60738..6f5f89711f256 100644
---- a/arch/arm/mach-omap2/cpuidle44xx.c
-+++ b/arch/arm/mach-omap2/cpuidle44xx.c
-@@ -122,6 +122,7 @@ static int omap_enter_idle_coupled(struct cpuidle_device *dev,
- {
- 	struct idle_statedata *cx = state_ptr + index;
- 	u32 mpuss_can_lose_context = 0;
-+	int error;
- 
- 	/*
- 	 * CPU0 has to wait and stay ON until CPU1 is OFF state.
-@@ -159,7 +160,9 @@ static int omap_enter_idle_coupled(struct cpuidle_device *dev,
- 	 * Call idle CPU PM enter notifier chain so that
- 	 * VFP and per CPU interrupt context is saved.
- 	 */
--	cpu_pm_enter();
-+	error = cpu_pm_enter();
-+	if (error)
-+		goto cpu_pm_out;
- 
- 	if (dev->cpu == 0) {
- 		pwrdm_set_logic_retst(mpu_pd, cx->mpu_logic_state);
-@@ -169,13 +172,17 @@ static int omap_enter_idle_coupled(struct cpuidle_device *dev,
- 		 * Call idle CPU cluster PM enter notifier chain
- 		 * to save GIC and wakeupgen context.
- 		 */
--		if (mpuss_can_lose_context)
--			cpu_cluster_pm_enter();
-+		if (mpuss_can_lose_context) {
-+			error = cpu_cluster_pm_enter();
-+			if (error)
-+				goto cpu_cluster_pm_out;
-+		}
- 	}
- 
- 	omap4_enter_lowpower(dev->cpu, cx->cpu_state);
- 	cpu_done[dev->cpu] = true;
- 
-+cpu_cluster_pm_out:
- 	/* Wakeup CPU1 only if it is not offlined */
- 	if (dev->cpu == 0 && cpumask_test_cpu(1, cpu_online_mask)) {
- 
-@@ -197,12 +204,6 @@ static int omap_enter_idle_coupled(struct cpuidle_device *dev,
- 		}
- 	}
- 
--	/*
--	 * Call idle CPU PM exit notifier chain to restore
--	 * VFP and per CPU IRQ context.
--	 */
--	cpu_pm_exit();
+-static struct irqaction external_interrupt = {
+-	.name	 = "EXT",
+-	.handler = do_ext_interrupt,
+-};
 -
- 	/*
- 	 * Call idle CPU cluster PM exit notifier chain
- 	 * to restore GIC and wakeupgen context.
-@@ -210,6 +211,13 @@ static int omap_enter_idle_coupled(struct cpuidle_device *dev,
- 	if (dev->cpu == 0 && mpuss_can_lose_context)
- 		cpu_cluster_pm_exit();
+ void __init init_ext_interrupts(void)
+ {
+ 	int idx;
+@@ -308,7 +303,8 @@ void __init init_ext_interrupts(void)
  
-+	/*
-+	 * Call idle CPU PM exit notifier chain to restore
-+	 * VFP and per CPU IRQ context.
-+	 */
-+	cpu_pm_exit();
-+
-+cpu_pm_out:
- 	tick_broadcast_exit();
+ 	irq_set_chip_and_handler(EXT_INTERRUPT,
+ 				 &dummy_irq_chip, handle_percpu_irq);
+-	setup_irq(EXT_INTERRUPT, &external_interrupt);
++	if (request_irq(EXT_INTERRUPT, do_ext_interrupt, 0, "EXT", NULL))
++		panic("Failed to register EXT interrupt\n");
+ }
  
- fail:
-diff --git a/arch/arm/mach-omap2/pm34xx.c b/arch/arm/mach-omap2/pm34xx.c
-index 54254fc92c2ed..fa66534a7ae22 100644
---- a/arch/arm/mach-omap2/pm34xx.c
-+++ b/arch/arm/mach-omap2/pm34xx.c
-@@ -194,6 +194,7 @@ void omap_sram_idle(void)
- 	int per_next_state = PWRDM_POWER_ON;
- 	int core_next_state = PWRDM_POWER_ON;
- 	u32 sdrc_pwr = 0;
-+	int error;
+ static DEFINE_SPINLOCK(irq_subclass_lock);
+diff --git a/drivers/s390/cio/airq.c b/drivers/s390/cio/airq.c
+index 427b2e24a8cea..cb466ed7eb5ef 100644
+--- a/drivers/s390/cio/airq.c
++++ b/drivers/s390/cio/airq.c
+@@ -105,16 +105,12 @@ static irqreturn_t do_airq_interrupt(int irq, void *dummy)
+ 	return IRQ_HANDLED;
+ }
  
- 	mpu_next_state = pwrdm_read_next_pwrst(mpu_pwrdm);
- 	switch (mpu_next_state) {
-@@ -222,8 +223,11 @@ void omap_sram_idle(void)
- 	pwrdm_pre_transition(NULL);
+-static struct irqaction airq_interrupt = {
+-	.name	 = "AIO",
+-	.handler = do_airq_interrupt,
+-};
+-
+ void __init init_airq_interrupts(void)
+ {
+ 	irq_set_chip_and_handler(THIN_INTERRUPT,
+ 				 &dummy_irq_chip, handle_percpu_irq);
+-	setup_irq(THIN_INTERRUPT, &airq_interrupt);
++	if (request_irq(THIN_INTERRUPT, do_airq_interrupt, 0, "AIO", NULL))
++		panic("Failed to register AIO interrupt\n");
+ }
  
- 	/* PER */
--	if (per_next_state == PWRDM_POWER_OFF)
--		cpu_cluster_pm_enter();
-+	if (per_next_state == PWRDM_POWER_OFF) {
-+		error = cpu_cluster_pm_enter();
-+		if (error)
-+			return;
-+	}
+ static inline unsigned long iv_size(unsigned long bits)
+diff --git a/drivers/s390/cio/cio.c b/drivers/s390/cio/cio.c
+index 18f5458f90e8f..6d716db2a46ab 100644
+--- a/drivers/s390/cio/cio.c
++++ b/drivers/s390/cio/cio.c
+@@ -563,16 +563,12 @@ static irqreturn_t do_cio_interrupt(int irq, void *dummy)
+ 	return IRQ_HANDLED;
+ }
  
- 	/* CORE */
- 	if (core_next_state < PWRDM_POWER_ON) {
+-static struct irqaction io_interrupt = {
+-	.name	 = "I/O",
+-	.handler = do_cio_interrupt,
+-};
+-
+ void __init init_cio_interrupts(void)
+ {
+ 	irq_set_chip_and_handler(IO_INTERRUPT,
+ 				 &dummy_irq_chip, handle_percpu_irq);
+-	setup_irq(IO_INTERRUPT, &io_interrupt);
++	if (request_irq(IO_INTERRUPT, do_cio_interrupt, 0, "I/O", NULL))
++		panic("Failed to register I/O interrupt\n");
+ }
+ 
+ #ifdef CONFIG_CCW_CONSOLE
 -- 
 2.25.1
 
