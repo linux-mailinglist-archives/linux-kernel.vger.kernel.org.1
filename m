@@ -2,133 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6BE326F969
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D60226F96E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726645AbgIRJhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 05:37:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43688 "EHLO mail.kernel.org"
+        id S1726413AbgIRJhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 05:37:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43836 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726126AbgIRJhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 05:37:03 -0400
-Received: from gaia (unknown [31.124.44.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B0C1C21973;
-        Fri, 18 Sep 2020 09:36:59 +0000 (UTC)
-Date:   Fri, 18 Sep 2020 10:36:57 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     Andrey Konovalov <andreyknvl@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 22/37] arm64: mte: Add in-kernel MTE helpers
-Message-ID: <20200918093656.GB6335@gaia>
-References: <cover.1600204505.git.andreyknvl@google.com>
- <4ac1ed624dd1b0851d8cf2861b4f4aac4d2dbc83.1600204505.git.andreyknvl@google.com>
- <20200917134653.GB10662@gaia>
- <7904f7c2-cf3b-315f-8885-e8709c232718@arm.com>
+        id S1726109AbgIRJhw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 05:37:52 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 818A5AE4B;
+        Fri, 18 Sep 2020 09:38:25 +0000 (UTC)
+Subject: Re: [RFC 3/5] mm, page_alloc(): remove setup_pageset()
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        David Hildenbrand <david@redhat.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+References: <20200907163628.26495-1-vbabka@suse.cz>
+ <20200907163628.26495-4-vbabka@suse.cz> <20200910092307.GD2285@linux>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <2c38b1f8-4e60-39f8-66c7-c0bbdb9df3cc@suse.cz>
+Date:   Fri, 18 Sep 2020 11:37:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7904f7c2-cf3b-315f-8885-e8709c232718@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200910092307.GD2285@linux>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 03:21:41PM +0100, Vincenzo Frascino wrote:
-> On 9/17/20 2:46 PM, Catalin Marinas wrote:
-> > On Tue, Sep 15, 2020 at 11:16:04PM +0200, Andrey Konovalov wrote:
-> >> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-> >> index 52a0638ed967..e238ffde2679 100644
-> >> --- a/arch/arm64/kernel/mte.c
-> >> +++ b/arch/arm64/kernel/mte.c
-> >> @@ -72,6 +74,52 @@ int memcmp_pages(struct page *page1, struct page *page2)
-> >>  	return ret;
-> >>  }
-> >>  
-> >> +u8 mte_get_mem_tag(void *addr)
-> >> +{
-> >> +	if (system_supports_mte())
-> >> +		asm volatile(ALTERNATIVE("ldr %0, [%0]",
-> >> +					 __MTE_PREAMBLE "ldg %0, [%0]",
-> >> +					 ARM64_MTE)
-> >> +			     : "+r" (addr));
-> > 
-> > This doesn't do what you think it does. LDG indeed reads the tag from
-> > memory but LDR loads the actual data at that address. Instead of the
-> > first LDR, you may want something like "mov %0, #0xf << 56" (and use
-> > some macros to avoid the hard-coded 56).
+On 9/10/20 11:23 AM, Oscar Salvador wrote:
+> On Mon, Sep 07, 2020 at 06:36:26PM +0200, Vlastimil Babka wrote:
+>> We initialize boot-time pagesets with setup_pageset(), which sets high and
+>> batch values that effectively disable pcplists.
+>> 
+>> We can remove this wrapper if we just set these values for all pagesets in
+>> pageset_init(). Non-boot pagesets then subsequently update them to specific
+>> values.
+>> 
+>> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 > 
-> The result of the load should never be used since it is meaningful only if
-> system_supports_mte(). It should be only required for compilation purposes.
+> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+
+Thanks!
+
+> Just one question below:
 > 
-> Said that, I think I like more your solution hence I am going to adopt it.
-
-Forgot to mention, please remove the system_supports_mte() if you use
-ALTERNATIVE, we don't need both. I think the first asm instruction can
-be a NOP since the kernel addresses without KASAN_HW or ARM64_MTE have
-the top byte 0xff.
-
-> >> +
-> >> +	return 0xF0 | mte_get_ptr_tag(addr);
-> >> +}
-> >> +
-> >> +u8 mte_get_random_tag(void)
-> >> +{
-> >> +	u8 tag = 0xF;
-> >> +	u64 addr = 0;
-> >> +
-> >> +	if (system_supports_mte()) {
-> >> +		asm volatile(ALTERNATIVE("add %0, %0, %0",
-> >> +					 __MTE_PREAMBLE "irg %0, %0",
-> >> +					 ARM64_MTE)
-> >> +			     : "+r" (addr));
-> > 
-> > What was the intention here? The first ADD doubles the pointer value and
-> > gets a tag out of it (possibly doubled as well, depends on the carry
-> > from bit 55). Better use something like "orr %0, %0, #0xf << 56".
+>> -static void setup_pageset(struct per_cpu_pageset *p)
+>> -{
+>> -	pageset_init(p);
+>> -	pageset_update(&p->pcp, 0, 1);
+>> +	/*
+>> +	 * Set batch and high values safe for a boot pageset. Proper pageset's
+>> +	 * initialization will update them.
+>> +	 */
+>> +	pcp->high = 0;
+>> +	pcp->batch  = 1;
 > 
-> Same as above but I will use the orr in the next version.
+> pageset_update was manipulating these values with barriers in between.
+> I guess we do not care here because we are not really updating but
+> initializing them, right?
 
-I wonder whether system_supports_mte() makes more sense here than the
-alternative:
+Sure. We just initialized all the list heads, so there can be no concurrent
+access at this point. But I'll mention it in the comment.
 
-	if (!system_supports_mte())
-		return 0xff;
 
-	... mte irg stuff ...
-
-(you could do the same for the mte_get_mem_tag() function)
-
-> >> +
-> >> +		tag = mte_get_ptr_tag(addr);
-> >> +	}
-> >> +
-> >> +	return 0xF0 | tag;
-> > 
-> > This function return seems inconsistent with the previous one. I'd
-> > prefer the return line to be the same in both.
-> 
-> The reason why it is different is that in this function extracting the tag from
-> the address makes sense only if irg is executed.
-> 
-> I can initialize addr to 0xf << 56 and make them the same.
-
-I think you are right, they can be different. But see my comment above
-about not doing the unnecessary shifting when all you want is to return
-0xff with !MTE.
-
--- 
-Catalin
