@@ -2,101 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F86526EA07
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 02:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58D9526EA0C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 02:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726196AbgIRAl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 20:41:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40752 "EHLO
+        id S1726159AbgIRAnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 20:43:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725886AbgIRAl1 (ORCPT
+        with ESMTP id S1726126AbgIRAnv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 20:41:27 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5659BC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 17:41:27 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id k15so2305310pfc.12
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 17:41:27 -0700 (PDT)
+        Thu, 17 Sep 2020 20:43:51 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99D2BC061788
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 17:43:51 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id c17so3061204ybe.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 17:43:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sa4f3KUKbFfHC9H+o6K9qCWAfNguS2M+cMh+58HiehE=;
-        b=k6rbRnnXtRLDdzxYrZuxmN6E9EH7w5EMuBK9NUM7xUYbL99v6WmllVGt9Mqs/4A5sG
-         NPeHr8XzNBMhovyvB8BhXw6ZsL1TQaBgijSwCjPRq2wKuRU4AZEdCI+aflBK0HBIN/32
-         sDg1BSUWCeMXA2eRgLE28nU/55zr2i3TgqR24=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+Fbuu+N/rr0QMGhmDlrnMnIzun18VD3BLmNAc5Myj9Y=;
+        b=g4Fh/zsrl3iWnIJC8Ych5c8ZwL8DA+JQOLZ71/Jw/2PKET0WMZAuabA2GJafRqKC0/
+         DNXkRuEp9RLUOuUSJxti9u4H8TxKgNFCWlRRv5tRPRiueyN1fKHF1e7mKgpZyi6QqpKM
+         T8Z5DMPR1BzSKK4ZVw0pdud+PlDZWwOZ3I/QEFSHpJjrFOJVeiKVOLMB+KNhHy8RrQwu
+         FNTZjI2uYgom6vvQvv9OkG6H8aLNhew6nhriGYI8zKTgS0DI/aM5RxRG9pSyNpWj4aIq
+         HuN/rhj3Ac5ceZ+8s0PapeKbdFR4MoOEvxwsdpQ0IY7kxAPAG3JVfJM4Y1fUNU4xkEwi
+         ObMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sa4f3KUKbFfHC9H+o6K9qCWAfNguS2M+cMh+58HiehE=;
-        b=Mm+tJqHFeVNlmkGeex3PW/f3qKIsMgNPG4hkJ7zhetsrhtt7FXyYu8NSzZX78XSsF2
-         BrelndE3mwo24qXoElZ6rJ2+CAjWHGgKznNuLzpOtfXss9zzCaMBhpL5lt53IcarPMba
-         N58jXCLg2V2r1VWmJE20Pupe5fIV1WNLbtpZR7h75teNY1DHj1VD9fs5WWaoXEKboCJj
-         TfMcIJtwpgdoLnT+kVwoLeAiQcSsSyH9GcVGn2B9vXCnMNJBpKEWXuxrWev+fvQ/OqtB
-         OAYZsljYhjshoxEi9otI+kGK+tkorVeCMWJ/Tp7Ug19WNlrUAyXEXEe6+p1Y7JdoWv+8
-         XAow==
-X-Gm-Message-State: AOAM532gFGNcot/wAGtJ1LShFA7vkAokL4K5xdDu4whEen/C1ZC+EtBJ
-        Bbm/CBu+QGfYIdBiwla/8wFBgg==
-X-Google-Smtp-Source: ABdhPJwBVfRjKls8EFDAVBlMgl2WqaXPUU8sgH89J6w0jiNm3tnyvZBRW0KpSYh7CUlcwHAaZKV8eQ==
-X-Received: by 2002:a63:d04b:: with SMTP id s11mr24273845pgi.241.1600389686843;
-        Thu, 17 Sep 2020 17:41:26 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
-        by smtp.gmail.com with ESMTPSA id c9sm833613pfn.78.2020.09.17.17.41.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 17:41:26 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Minchan Kim <minchan@kernel.org>, Nitin Gupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Cc:     sonnyrao@chromium.org, Douglas Anderson <dianders@chromium.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] zram: Failing to decompress is WARN_ON worthy
-Date:   Thu, 17 Sep 2020 17:41:20 -0700
-Message-Id: <20200917174059.1.If09c882545dbe432268f7a67a4d4cfcb6caace4f@changeid>
-X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+Fbuu+N/rr0QMGhmDlrnMnIzun18VD3BLmNAc5Myj9Y=;
+        b=L6QRPAsOCnK4tVLdF8Ng9rSq9VzxDYlPRCrXbyo5YqQF4Up3SlHVxiQzY/Bp3RWD5y
+         p/Ckku2CC82xOkbcFmhfaiWTBkjjXlZaziCceinaIRiqFT85/gT711pPPy466Tw5D9P1
+         VRJcf6FTbyj9QR9jU6252d7z6iDhA36eLrCZVhEYKbqQ4ebdK8O4UnYLXDHKE5BcFSLi
+         NOfv9e1f+2XhxJL23gYiJd1cKwaqARX9Eb9LrlVpHi84iGa2+pu5BTnsbWZ+9AibvYaR
+         qPdjTj2KkwVlVi/zZh1LSeTphrkvJaSxpt4d/ricg09FANmnxI0qehh+v11SdlIAerOW
+         f6FQ==
+X-Gm-Message-State: AOAM531wniPq+NASRgH2vODlwsvlit85q/V/qOpN+aFWyqzhcmA7uqgB
+        3m333ej82ywK5msiDMoXxzqpKE0G2xrqYnZiY4rWmA==
+X-Google-Smtp-Source: ABdhPJyN5VchFReE9lSL3fJdNDH+SyMJ1oU3sF0hfnq+46d3nFs9PMZTuIc7VwwpyCoZYngG1ngvU0DhlzbwQpHRoP4=
+X-Received: by 2002:a05:6902:725:: with SMTP id l5mr26247685ybt.346.1600389830440;
+ Thu, 17 Sep 2020 17:43:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200825170152.6434-1-georgi.djakov@linaro.org>
+In-Reply-To: <20200825170152.6434-1-georgi.djakov@linaro.org>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 17 Sep 2020 17:43:14 -0700
+Message-ID: <CAGETcx-N6FHK3dNmq8eSLoBoscBtHjSq=F6cepnCrrJrVuTV9g@mail.gmail.com>
+Subject: Re: [PATCH v3 0/3] Add interconnect sync state support
+To:     Georgi Djakov <georgi.djakov@linaro.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        Mike Tipton <mdtipton@codeaurora.org>, okukatla@codeaurora.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we fail to decompress in zram it's a pretty serious problem.  We
-were entrusted to be able to decompress the old data but we failed.
-Either we've got some crazy bug in the compression code or we've got
-memory corruption.
+Reviewed-by: Saravana Kannan <saravanak@google.com>
 
-At the moment, when this happens the log looks like this:
+to all 3 patches in the series.
 
-  ERR kernel: [ 1833.099861] zram: Decompression failed! err=-22, page=336112
-  ERR kernel: [ 1833.099881] zram: Decompression failed! err=-22, page=336112
-  ALERT kernel: [ 1833.099886] Read-error on swap-device (253:0:2688896)
+-Saravana
 
-It is true that we have an "ALERT" level log in there, but (at least
-to me) it feels like even this isn't enough to impart the seriousness
-of this error.  Let's convert to a WARN_ON.  Note that WARN_ON is
-automatically "unlikely" so we can simply replace the old annotation
-with the new one.
-
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-
- drivers/block/zram/zram_drv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-index 9100ac36670a..a6e2f0980aff 100644
---- a/drivers/block/zram/zram_drv.c
-+++ b/drivers/block/zram/zram_drv.c
-@@ -1268,7 +1268,7 @@ static int __zram_bvec_read(struct zram *zram, struct page *page, u32 index,
- 	zram_slot_unlock(zram, index);
- 
- 	/* Should NEVER happen. Return bio error if it does. */
--	if (unlikely(ret))
-+	if (WARN_ON(ret))
- 		pr_err("Decompression failed! err=%d, page=%u\n", ret, index);
- 
- 	return ret;
--- 
-2.28.0.681.g6f77f65b4e-goog
-
+On Tue, Aug 25, 2020 at 10:01 AM Georgi Djakov <georgi.djakov@linaro.org> wrote:
+>
+> Bootloaders often leave some system resources enabled such as clocks,
+> regulators, interconnects etc. We want to keep these resources enabled
+> until all their consumers are probed. These resources are often shared,
+> so we must wait for all the consumers to come up, before deciding
+> whether to turn them off or change the configuration. This patchset is
+> trying to solve the above problem just for the on-chip interconnects.
+>
+> The problem is solved by allowing the providers to implement the get_bw()
+> function which should return the current average/peak bandwidth. These are
+> used as floor values, that are enforced during boot while the requests from
+> all consumers are being collected. Then the sync_state() callback is used
+> to signal that all consumers have been probed, meaning that the floor
+> bandwidth is not needed anymore and the framework is ready to re-aggregate
+> and process all requests. If get_bw() is not implemented, the framework
+> will use INT_MAX as default bandwidth value.
+>
+> v3:
+> * Go back to introducing the get_bw() function as in v1. (Saravana)
+> * If querying the current bandwidth is not supported, max out the
+>   bandwidth. (Saravana)
+> * Use icc_sync_state also for sc7180.
+>
+> v2: https://lore.kernel.org/r/20200722110139.24778-1-georgi.djakov@linaro.org/
+> * Support initial values for both average and peak bandwidth (Mike)
+> * Skip aggregating/setting for nodes that don't specify initial bw (Mike)
+> * Drop patch 2/4: Add get_bw() callback (Mike)
+> * Squash patches 3 and 4.
+>
+> v1: https://lore.kernel.org/lkml/20200709110705.30359-1-georgi.djakov@linaro.org/
+>
+> Georgi Djakov (3):
+>   interconnect: Add get_bw() callback
+>   interconnect: Add sync state support
+>   interconnect: qcom: Use icc_sync_state
+>
+>  drivers/interconnect/core.c           | 67 +++++++++++++++++++++++++++
+>  drivers/interconnect/qcom/osm-l3.c    |  1 +
+>  drivers/interconnect/qcom/sc7180.c    |  1 +
+>  drivers/interconnect/qcom/sdm845.c    |  1 +
+>  include/linux/interconnect-provider.h |  7 +++
+>  5 files changed, 77 insertions(+)
+>
