@@ -2,97 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5EA726FCAD
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E29926FCBC
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726440AbgIRMiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 08:38:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726129AbgIRMiG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 08:38:06 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37C4DC06174A;
-        Fri, 18 Sep 2020 05:38:06 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id q13so7870145ejo.9;
-        Fri, 18 Sep 2020 05:38:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id;
-        bh=C3L8FHC8pVB+ke5fyumGQXGBhyh3niEL0JqYDFP4IUg=;
-        b=hK4Fhn5Y9TdVvaMfz4AtRVBo7Y83REpfZNwEV+UGzTp5QdfsucZPO+UgzrVnyinhNd
-         vm6Ir8ZokovYeBMciEYP0Re8apuTkOCOPfpkiEs1ZCXUVoIueZ92a429K3z3WRq1xyHJ
-         vJzb3sZk7+ACtOz8RLB4ugzJN0nfrKbtnPV9V817ZJ1tnYwUH62nqQr3McHjiE1wjetJ
-         0ElGoxky1jwn83UCkFQ8Njio0/mOePLvZ0aXJ4Fozit+LhiPDMgaF8OIFopS2IKa2euu
-         /ZI4izaE27PCh1oW1xHqCGWOYoQSu3HAcbFfTu5P8S85XMCKP9QPg8uaRSAXfPYqO9Ax
-         /D1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id;
-        bh=C3L8FHC8pVB+ke5fyumGQXGBhyh3niEL0JqYDFP4IUg=;
-        b=XMxQFtTwa59ywcxUOY9Kn7CeGbJEThj9eIEeCx75aeBmgGVTtd5kDDy5efV8I1kbm3
-         glVSi6QpGJ17GSO+5N3fvWM45hYFVfA9Dsd+FGzf0G6lxf/wWKUIT+kA+WhFloGrnZW1
-         JnyJE0MQIpDKBiPHqr2kXI1daSzybKMUj5xk7yywa+nTo4X+sLgR0W/Mpvsf4bA662Ti
-         9VC2t+ATjMrSgGKtuzj2Azegc7YcPbqZC4u3tTLCT5T0v8HyaXy1NWgWfgTPTqYY6oy2
-         8uhInk6/AxT5fzg6la+Y/E5+yVdVh9S6wZBCtVuq3O2wBlADTFTBuGB43I6/hI7RCUSG
-         mZAg==
-X-Gm-Message-State: AOAM533ei6EwcIR4Lban0LkievOr/6wMyUBlo+dIA8DeQR+DZjODcOn5
-        WlYYqxp81OAVGyFpKpSAInI=
-X-Google-Smtp-Source: ABdhPJzL3EoERf6TmjAo3oDojMrpAPFkGZHMjAxd/QPbR1R96f+ZpYd6SUhl2mZIdDtpA3A2FzKXfw==
-X-Received: by 2002:a17:906:c447:: with SMTP id ck7mr35103009ejb.358.1600432684853;
-        Fri, 18 Sep 2020 05:38:04 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:598:b904:dd4c:75d6:3bdd:1167:483e])
-        by smtp.gmail.com with ESMTPSA id la17sm2244789ejb.62.2020.09.18.05.38.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 05:38:04 -0700 (PDT)
-From:   Bean Huo <huobean@gmail.com>
-To:     songxiaowei@hisilicon.com, wangbinghui@hisilicon.com,
-        lorenzo.pieralisi@arm.com, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        beanhuo@micron.com
-Subject: [PATCH] PCI: kirin: Return -EPROBE_DEFER in case the gpio isn't ready
-Date:   Fri, 18 Sep 2020 14:38:00 +0200
-Message-Id: <20200918123800.19983-1-huobean@gmail.com>
+        id S1726285AbgIRMlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 08:41:42 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13261 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726121AbgIRMll (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 08:41:41 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id AA5805EAE49D8C5F1B8D;
+        Fri, 18 Sep 2020 20:41:38 +0800 (CST)
+Received: from huawei.com (10.175.113.133) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Fri, 18 Sep 2020
+ 20:41:34 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <viro@zeniv.linux.org.uk>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] fs/nsfs.c: Fix 'ns_common' kernel-doc warning in nsfs.c
+Date:   Fri, 18 Sep 2020 20:38:42 +0800
+Message-ID: <20200918123842.73010-1-wanghai38@huawei.com>
 X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.175.113.133]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+Fixes the following W=1 kernel build warning(s):
 
-PCI driver might be probed before the gpiochip, so, of_get_named_gpio()
-can return -EPROBE_DEFER. And let kirin_pcie_probe() directly return
--ENODEV, which will result in the PCIe probe failure and the PCIe
-will not be probed again after the gpiochip driver is loaded.
+fs/nsfs.c:264: warning: Excess function parameter 'ns_common' description in 'ns_match'
 
-Fix the above issue by letting kirin_pcie_probe() return -EPROBE_DEFER in
-such a case.
+Rename ns_common to ns.
 
-Fixes: 6e0832fa432e ("PCI: Collect all native drivers under drivers/pci/controller")
-Signed-off-by: Bean Huo <beanhuo@micron.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
 ---
- drivers/pci/controller/dwc/pcie-kirin.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ fs/nsfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
-index e496f51e0152..74b88d158072 100644
---- a/drivers/pci/controller/dwc/pcie-kirin.c
-+++ b/drivers/pci/controller/dwc/pcie-kirin.c
-@@ -507,8 +507,12 @@ static int kirin_pcie_probe(struct platform_device *pdev)
+diff --git a/fs/nsfs.c b/fs/nsfs.c
+index 800c1d0eb0d0..fffc5206a23a 100644
+--- a/fs/nsfs.c
++++ b/fs/nsfs.c
+@@ -254,7 +254,7 @@ struct file *proc_ns_fget(int fd)
  
- 	kirin_pcie->gpio_id_reset = of_get_named_gpio(dev->of_node,
- 						      "reset-gpios", 0);
--	if (kirin_pcie->gpio_id_reset < 0)
-+	if (kirin_pcie->gpio_id_reset == -EPROBE_DEFER) {
-+		return -EPROBE_DEFER;
-+	} else if (!gpio_is_valid(kirin_pcie->gpio_id_reset)) {
-+		dev_err(dev, "unable to get a valid gpio pin\n");
- 		return -ENODEV;
-+	}
- 
- 	ret = kirin_pcie_power_on(kirin_pcie);
- 	if (ret)
+ /**
+  * ns_match() - Returns true if current namespace matches dev/ino provided.
+- * @ns_common: current ns
++ * @ns: current ns
+  * @dev: dev_t from nsfs that will be matched against current nsfs
+  * @ino: ino_t from nsfs that will be matched against current nsfs
+  *
 -- 
 2.17.1
 
