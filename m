@@ -2,84 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED22526F76C
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 09:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC55426F770
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 09:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726865AbgIRHwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 03:52:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726711AbgIRHwc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 03:52:32 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 911CEC06174A;
-        Fri, 18 Sep 2020 00:52:32 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id n14so2916564pff.6;
-        Fri, 18 Sep 2020 00:52:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=V4OYn/8zk+E0CEL1hG/OgZr+hLyP355J5jl0t4p8ZjQ=;
-        b=YnxWsHp/7uG41OYw9V8WvuZ8pDWfZmtAioUVIWA2Mg8USLqFp2jfWDTFbcf5QjFdbl
-         7cPjTdfZ5rW0URXBU4Of2PpwO4ofS9p3DFQivUbW2wfNMNUwp4jQK+kumFaZdBCzgB3Q
-         BIl+b1JLCxg0wVo91S1wsNalaWuYG1W1X/AVOuKWsr9JMkN87GIVuR0fDA/x7ynxeAc3
-         CSOUODRJfIZYsPVT5dHHdcr2fD6t1PIoJhdHeNZ2F4A2rsPqLZQdbgQJei5UBkmKC2ke
-         uCn64UMu1zF81nz7Fkl2kZ/AgHANRAYzw3Jon70fRmIX3yJ2vCU4l2dVU46zfu/XRK5q
-         o/jQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=V4OYn/8zk+E0CEL1hG/OgZr+hLyP355J5jl0t4p8ZjQ=;
-        b=Avm0ckFIlcLoE16OK60BMOKHpI79vP0hqdrQPfmnpI+t1Ma42Vmm4+8rtwWZQcIvvg
-         xr2aExkIscEUYXRZOaX6evjflaHJaa7IjIW/CDDzTkilYn18/5nFuN86NyBVOxhmUe74
-         bVor4mVM6cbnbAf/SP/XQCMk3vLmlTZVJ7Ulc+z+vjFACRqTiw1IvttHUZAcIWrQoz5c
-         wC5dt2krYl8GHwaKrsBendXcF+j/MC7GcwctKcuWQ+f7ZDXLOkvxeJ4RVPRMK8+6dhQH
-         d4WUWQ57C1Qg7rweTw4d1YjDQdJ9pKYOSTmH+40SHvciJ0yxwX1/rZ0Epk+Caxafi3Md
-         OtSg==
-X-Gm-Message-State: AOAM5302AKETKPIIA1Shvy1t3fGuYeIMwKAjMX7qokGWMvsjzoxOc6k3
-        xzgzzYyEAO74Xgr1kY1cXJWw8S7Qb4c=
-X-Google-Smtp-Source: ABdhPJzR3d/Cek3Ss0qb1HLGa+ief4j67CSYrJGjjosbc0hg2g2ILRm2z8iSsNw5BVTsB9Pqj5UUfw==
-X-Received: by 2002:a63:4f17:: with SMTP id d23mr7790393pgb.319.1600415552095;
-        Fri, 18 Sep 2020 00:52:32 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id l9sm2204147pgg.29.2020.09.18.00.52.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 00:52:31 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 16:52:30 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the v4l-dvb-fixes tree
-Message-ID: <20200918075230.GD3049@jagdpanzerIV.localdomain>
-References: <20200918172106.4a924556@canb.auug.org.au>
+        id S1726889AbgIRHxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 03:53:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37158 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726646AbgIRHxP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 03:53:15 -0400
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 06430235FC;
+        Fri, 18 Sep 2020 07:53:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600415594;
+        bh=zR4pC32CsRwkRMcQjTnnCp339wA8YZYmTzvhc8Ku3wQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cZJCNtkfkHA0r0FeMIAWY7D+QPapfLaH15sFE1WNYM4PKyUdb33JlOgilSdSSTwM4
+         xGabXi2sfwLjYfFwquhkvjT02UVDctUBVqx+oQlovxOMWqP6oSQxOmeXlwiNQh93Do
+         /Vu58+Vdi5m6dZbWmFufI2IgJXtwo+Id3LfJFLZc=
+Received: by mail-ej1-f49.google.com with SMTP id lo4so6816003ejb.8;
+        Fri, 18 Sep 2020 00:53:13 -0700 (PDT)
+X-Gm-Message-State: AOAM5322x9vk1MhUHFVQGQWeaMtCYoBkJFKPRbrvliNpWhinsBqGAiVC
+        iw55FPvy/pQrybbdppR2VvjMxfww1o4jgfX5YsE=
+X-Google-Smtp-Source: ABdhPJz4h58zSa29o5A1o7MhoFoews9vi+zWZmYhOt2gWbPt5yeBvYS4l1uut8tLvrHP24ftCZlb9SA8h3ZMk81xBpI=
+X-Received: by 2002:a17:906:5008:: with SMTP id s8mr36525529ejj.408.1600415590292;
+ Fri, 18 Sep 2020 00:53:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918172106.4a924556@canb.auug.org.au>
+References: <20200917165301.23100-1-krzk@kernel.org> <20200917165301.23100-2-krzk@kernel.org>
+ <20200917200936.GF3969@pendragon.ideasonboard.com>
+In-Reply-To: <20200917200936.GF3969@pendragon.ideasonboard.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Fri, 18 Sep 2020 09:52:57 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPc=o0vtU0VKE5b5Ro3nF=ra-p7UnbFfjj_++onw8MeSKQ@mail.gmail.com>
+Message-ID: <CAJKOXPc=o0vtU0VKE5b5Ro3nF=ra-p7UnbFfjj_++onw8MeSKQ@mail.gmail.com>
+Subject: Re: [PATCH v2 01/13] dt-bindings: gpio: add common schema for GPIO controllers
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Hoan Tran <hoan@os.amperecomputing.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Sungbo Eo <mans0n@gorani.run>, Stefan Agner <stefan@agner.ch>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Yash Shah <yash.shah@sifive.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        - <patches@opensource.cirrus.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Amelie Delaunay <amelie.delaunay@st.com>,
+        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Andy Teng <andy.teng@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Sricharan R <sricharan@codeaurora.org>,
+        Chris Brandt <chris.brandt@renesas.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-unisoc@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-media@vger.kernel.org,
+        alsa-devel@alsa-project.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/09/18 17:21), Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the v4l-dvb-fixes tree, today's linux-next build (htmldocs)
-> produced this warning:
-> 
-> Documentation/userspace-api/media/v4l/buffer.rst:692: WARNING: The "flat-table" directive is empty; content required.
-> 
-> .. flat-table::
->     :header-rows:  0
->     :stub-columns: 0
->     :widths:       3 1 4
+On Thu, 17 Sep 2020 at 22:10, Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Krzysztof,
+>
+> Thank you for the patch.
+>
+> On Thu, Sep 17, 2020 at 06:52:49PM +0200, Krzysztof Kozlowski wrote:
+> > Convert parts of gpio.txt bindings into common dtschema file for GPIO
+> > controllers.
+>
+> How about deleting the part that has been converted from gpio.txt ?
 
-Thanks. I think there is a patch for this already.
-Will hit linux-next soon.
+I did not move everything from the gpio.txt and it is really nicely
+explained there. I think to leave it as it works as a overview/guide
+better than YAML.
 
-	-ss
+>
+> > The schema enforces proper naming of GPIO controller nodes and GPIO
+> > hogs.
+> >
+> > The schema should be included by specific GPIO controllers bindings.
+>
+> Instead of including it manually, could we use a conditional select: to
+> apply the schema automatically when a gpio-controller property is
+> present ?
+
+You mean the same way as generic schema for GPIO controllers work?
+This could be done but the point is to enforce the GPIO controller
+bindings in GPIO controllers, so also in cases when someone forgets to
+add "gpio-controller" property. Although, if given GPIO controller
+schema requires "gpio-controller" then indeed select would work...
+
+Best regards,
+Krzysztof
