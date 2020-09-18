@@ -2,83 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC9C26FC48
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EE7726FC4B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:16:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726545AbgIRMNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 08:13:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52502 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726280AbgIRMNo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 08:13:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600431223;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=t/aXhqWiIrrJX5NNhaAEYok++HqGAIDlzevY0FDzWn0=;
-        b=YQ6X4KEbT5IFK6oEPNIcqG9nYm38yc4TyGjl+D1SfHpZ1VCmLeAyOVEhqC2vanA9hk8IBY
-        Umgkdrh7T9+nrSgUF8ll6AiN7lpLO//3A+VRxBSPnyQItZhg0kmoeZ+OzS2cnnb5N0pnY+
-        6lJhEcZZHxV4SUipyItL/YPl/+MH6ZY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2AEF5AC2F;
-        Fri, 18 Sep 2020 12:14:17 +0000 (UTC)
-Date:   Fri, 18 Sep 2020 14:13:42 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk 2/3] printk: move dictionary keys to
- dev_printk_info
-Message-ID: <20200918121342.GD14605@alley>
-References: <20200917131644.25838-1-john.ogness@linutronix.de>
- <20200917131644.25838-3-john.ogness@linutronix.de>
- <316cf147-0ae2-1c88-7375-07aedc58bd15@rasmusvillemoes.dk>
+        id S1726390AbgIRMPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 08:15:42 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:55367 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726064AbgIRMPm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 08:15:42 -0400
+Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
+ (mreue009 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1MhlCa-1kwiqN2nei-00dnUh; Fri, 18 Sep 2020 14:15:27 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Kashyap Desai <kashyap.desai@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, anand.lodnoor@broadcom.com,
+        megaraidlinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Subject: [PATCH v2 2/3] scsi: megaraid_sas: check user-provided offsets
+Date:   Fri, 18 Sep 2020 14:15:22 +0200
+Message-Id: <20200918121522.1466028-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200918120955.1465510-1-arnd@arndb.de>
+References: <20200918120955.1465510-1-arnd@arndb.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <316cf147-0ae2-1c88-7375-07aedc58bd15@rasmusvillemoes.dk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:6kJPcwuHge9uT864Zf5TyvhQnlmxeK+RpOYT34mVoK7SAncOfq9
+ 1wvhRh03/TO74JK8VdAlLNISWQ5JFsbrhhGN08krYQ5ip4disf1Dbd4f2biDPp+wGScYwrk
+ 2eqIMN9aKY5vKPnBcr335Ny6XSIVuPsdE2ZYCeV/dH1z1t5zLmiLylvjF/EJwebLxJi7oyz
+ c/wyKFRfXQ+XgvvduDU/Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Y1hX+C4mHMY=:43H+a/hVFrzVJMDnWPMiay
+ cx6NyNF/BlpGaJN2VMbhXKnFAUoAFIUL2o8vLIOvto/MOW22o0yxc6vbZrP+4pJ5ClXK0Jo5X
+ pnr1oDmCnyoQr9dx7fzVXeiKj4sGLooEq5wEWP2c5e5zrTV5Sz/dtQU0vV4HsAPmVSeHIDqDv
+ gEjwD7vIHAfesxccLMSReiW+X8cfXePqT5a8dfo6BYewocqUo/vhF+egLvLYZiUghSNzpefRj
+ mWUdAu6vSbciUZaN8RgYVr9F4M1VC0mNRmvzehRL2oxJfgnTkueU0Gp+Ta5U6CbfVPAu+aPFq
+ TxIbLHDZuMy0zd+P2n1ExQccEOoZiBZeZzYFasN6ToW0+01m//yuoNwnc5AsKdI6bDSJqecOx
+ hqdkMmwYfDIkWiEDsi7QsPxbLraN59XYrbDKDO5aijgx/PBqCm2NCuyivOdy03b/X3DG0d/Td
+ aYAhvgCm/KdBURelCzjc9ekESE4IrnNT8ORrcx7vIkSx95SupuvFT033NQ5hd3PkqW9sCSOZb
+ ZkU1n1KGSztPAJj94sTngbby1LrqAM/VowTSXc57ml8oO1HhQoK/rXYXIZgJpSgxOuqmead/N
+ Ssnw5VG1KbXAKySEc53MCZ6c5UQrfmu27A6z3Dt9ZjFq8AJEY+tij/Z0heNxrURLPBAWaAD24
+ qq0ALub2s/SCZxpnf3kfQjYRv/pSioLhmkpWZd6+xZ7rdXVoR577B1aCazF+XXTnIJrDUTU9r
+ iNzuzGiESeQFdIZd732y8c9SLlL26hd1lRDAPgdLIWTV3lob8LDc+HJp7m0TtC6Obl7uRa65f
+ LP0PFw5RPoZFz4asTLDC4Qh9hBlFaMfn/h04eahR7OexB9VNaLfuq+SHRO88FAoTqjRYArz
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2020-09-18 08:16:37, Rasmus Villemoes wrote:
-> On 17/09/2020 15.16, John Ogness wrote:
-> 
-> >  	if (dev->class)
-> >  		subsys = dev->class->name;
-> >  	else if (dev->bus)
-> >  		subsys = dev->bus->name;
-> >  	else
-> > -		return 0;
-> > +		return;
-> >  
-> > -	pos += snprintf(hdr + pos, hdrlen - pos, "SUBSYSTEM=%s", subsys);
-> > -	if (pos >= hdrlen)
-> > -		goto overflow;
-> > +	snprintf(dev_info->subsystem, sizeof(dev_info->subsystem), subsys);
-> 
-> It's unlikely that subsys would contain a %, but this will be yet
-> another place to spend brain cycles ignoring if doing static analysis.
-> So can we not do this. Either of strXcpy() for X=s,l will do the same
-> thing, and likely faster.
+It sounds unwise to let user space pass an unchecked 32-bit
+offset into a kernel structure in an ioctl. This is an unsigned
+variable, so checking the upper bound for the size of the structure
+it points into is sufficient to avoid data corruption, but as
+the pointer might also be unaligned, it has to be written carefully
+as well.
 
-Good point! Better be on the safe size in a generic printk() API.
+While I stumbled over this problem by reading the code, I did not
+continue checking the function for further problems like it.
 
-Well, I am afraid that this would be only small drop in a huge lake.
-class->name and bus->name seems to be passed to %s in so many
-*print*() calls all over the kernel code.
+Cc: <stable@vger.kernel.org> # v2.6.15+
+Fixes: c4a3e0a529ab ("[SCSI] MegaRAID SAS RAID: new driver")
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/scsi/megaraid/megaraid_sas_base.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
-IMHO, this is not the right place to prevent the problem. Dangerous
-names must be prevented when a new bus, class, device is added.
+diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
+index 861f7140f52e..c3de69f3bee8 100644
+--- a/drivers/scsi/megaraid/megaraid_sas_base.c
++++ b/drivers/scsi/megaraid/megaraid_sas_base.c
+@@ -8095,7 +8095,7 @@ megasas_mgmt_fw_ioctl(struct megasas_instance *instance,
+ 	int error = 0, i;
+ 	void *sense = NULL;
+ 	dma_addr_t sense_handle;
+-	unsigned long *sense_ptr;
++	void *sense_ptr;
+ 	u32 opcode = 0;
+ 	int ret = DCMD_SUCCESS;
+ 
+@@ -8218,6 +8218,12 @@ megasas_mgmt_fw_ioctl(struct megasas_instance *instance,
+ 	}
+ 
+ 	if (ioc->sense_len) {
++		/* make sure the pointer is part of the frame */
++		if (ioc->sense_off > (sizeof(union megasas_frame) - sizeof(__le64))) {
++			error = -EINVAL;
++			goto out;
++		}
++
+ 		sense = dma_alloc_coherent(&instance->pdev->dev, ioc->sense_len,
+ 					     &sense_handle, GFP_KERNEL);
+ 		if (!sense) {
+@@ -8225,12 +8231,11 @@ megasas_mgmt_fw_ioctl(struct megasas_instance *instance,
+ 			goto out;
+ 		}
+ 
+-		sense_ptr =
+-		(unsigned long *) ((unsigned long)cmd->frame + ioc->sense_off);
++		sense_ptr = (void *)cmd->frame + ioc->sense_off;
+ 		if (instance->consistent_mask_64bit)
+-			*sense_ptr = cpu_to_le64(sense_handle);
++			put_unaligned_le64(sense_handle, sense_ptr);
+ 		else
+-			*sense_ptr = cpu_to_le32(sense_handle);
++			put_unaligned_le32(sense_handle, sense_ptr);
+ 	}
+ 
+ 	/*
+-- 
+2.27.0
 
-Best Rergards,
-Petr
