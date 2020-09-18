@@ -2,87 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3104A26EA56
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 03:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0037C26EA53
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 03:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726192AbgIRBNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 21:13:22 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13245 "EHLO huawei.com"
+        id S1726121AbgIRBMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 21:12:37 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13244 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725886AbgIRBNW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 21:13:22 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 8301C5BEDA7A68142340;
-        Fri, 18 Sep 2020 09:13:20 +0800 (CST)
-Received: from [10.174.177.167] (10.174.177.167) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 18 Sep 2020 09:13:15 +0800
-Subject: Re: [PATCH 1/2] locktorture: doesn't check nreaders_stress when no
- readlock support
-To:     <paulmck@kernel.org>
-CC:     Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        <linux-kernel@vger.kernel.org>, <rcu@vger.kernel.org>
-References: <20200917135910.137389-1-houtao1@huawei.com>
- <20200917135910.137389-2-houtao1@huawei.com>
- <20200917165817.GK29330@paulmck-ThinkPad-P72>
-From:   Hou Tao <houtao1@huawei.com>
-Message-ID: <86bc5a54-5dfa-4320-9e10-9660a25724d0@huawei.com>
-Date:   Fri, 18 Sep 2020 09:13:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725987AbgIRBMh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 21:12:37 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id CA5C5D147F08C0996032;
+        Fri, 18 Sep 2020 09:12:34 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Fri, 18 Sep 2020
+ 09:12:24 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <m.szyprowski@samsung.com>, <joro@8bytes.org>, <kgene@kernel.org>,
+        <krzk@kernel.org>
+CC:     <iommu@lists.linux-foundation.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
+        <yi.zhang@huawei.com>
+Subject: [PATCH] iommu/exynos: add missing put_device() call in exynos_iommu_of_xlate()
+Date:   Fri, 18 Sep 2020 09:13:35 +0800
+Message-ID: <20200918011335.909141-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-In-Reply-To: <20200917165817.GK29330@paulmck-ThinkPad-P72>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.167]
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+if of_find_device_by_node() succeed, exynos_iommu_of_xlate() doesn't have
+a corresponding put_device(). Thus add put_device() to fix the exception
+handling for this function implementation.
 
-On 2020/9/18 0:58, Paul E. McKenney wrote:
-> On Thu, Sep 17, 2020 at 09:59:09PM +0800, Hou Tao wrote:
->> To ensure there is always at least one locking thread.
->>
->> Signed-off-by: Hou Tao <houtao1@huawei.com>
->> ---
->>  kernel/locking/locktorture.c | 3 ++-
->>  1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
->> index 9cfa5e89cff7f..bebdf98e6cd78 100644
->> --- a/kernel/locking/locktorture.c
->> +++ b/kernel/locking/locktorture.c
->> @@ -868,7 +868,8 @@ static int __init lock_torture_init(void)
->>  		goto unwind;
->>  	}
->>  
->> -	if (nwriters_stress == 0 && nreaders_stress == 0) {
->> +	if (nwriters_stress == 0 &&
->> +	    (!cxt.cur_ops->readlock || nreaders_stress == 0)) {
-> 
-> You lost me on this one.  How does it help to allow tests with zero
-> writers on exclusive locks?  Or am I missing something subtle here?
-> 
-The purpose is to prohibit test with only readers on exclusive locks, not allow it.
+Fixes: aa759fd376fb ("iommu/exynos: Add callback for initializing devices from device tree")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+ drivers/iommu/exynos-iommu.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-So if the module parameters are "torture_type=mutex_lock nwriters_stress=0 nreaders_stress=3",
-locktorture can fail early instead of continuing but doing nothing useful.
+diff --git a/drivers/iommu/exynos-iommu.c b/drivers/iommu/exynos-iommu.c
+index bad3c0ce10cb..de324b4eedfe 100644
+--- a/drivers/iommu/exynos-iommu.c
++++ b/drivers/iommu/exynos-iommu.c
+@@ -1295,13 +1295,17 @@ static int exynos_iommu_of_xlate(struct device *dev,
+ 		return -ENODEV;
+ 
+ 	data = platform_get_drvdata(sysmmu);
+-	if (!data)
++	if (!data) {
++		put_device(&sysmmu->dev);
+ 		return -ENODEV;
++	}
+ 
+ 	if (!owner) {
+ 		owner = kzalloc(sizeof(*owner), GFP_KERNEL);
+-		if (!owner)
++		if (!owner) {
++			put_device(&sysmmu->dev);
+ 			return -ENOMEM;
++		}
+ 
+ 		INIT_LIST_HEAD(&owner->controllers);
+ 		mutex_init(&owner->rpm_lock);
+-- 
+2.25.4
 
-Regards,
-Tao
-
-> 							Thanx, Paul
-> 
->>  		pr_alert("lock-torture: must run at least one locking thread\n");
->>  		firsterr = -EINVAL;
->>  		goto unwind;
->> -- 
->> 2.25.0.4.g0ad7144999
->>
-> .
-> 
