@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A4026F795
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B6AA26F797
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726473AbgIRIBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 04:01:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38752 "EHLO mail.kernel.org"
+        id S1726532AbgIRIBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 04:01:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726199AbgIRIBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 04:01:35 -0400
+        id S1726199AbgIRIBq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 04:01:46 -0400
 Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C9D372100A;
-        Fri, 18 Sep 2020 08:01:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 398C32100A;
+        Fri, 18 Sep 2020 08:01:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600416095;
-        bh=wcXEqefbWl+ElaYYetd1g5zIjxCBnRNwbjRpvB/Dg60=;
+        s=default; t=1600416105;
+        bh=19042zv007EORZtzbvA96Z4avWK1WWxoJ+eVVJEJ4Fo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=somj8kd5ro1JdBxJ0QN1BgrtQcHUdbQKMfLmQnV4X09TaSFFt9XZnpwquHOjKzHam
-         4TDuZ303vlI7QurkX6cOrZhRDiJ+S19KsVgUT5kM8iDd4pFj2XKtTvLucPxb3kweB2
-         ntMOPV3v33QVm0wu5E0r+0PUrseeOO4Xsz4p1ac8=
+        b=RApgWE30dnms7WyGrtPa8neVeoELZHZZYTF8BmK1vrKDPk823a383SFO+HqCf0S2I
+         dOII+WnxYEKHPzo8mTCJSGUzVoxpisetvw4fKwROBf19h9LrLXYzzUuVyld4ZxBPOh
+         F2HassD6+0zylxozgRMoa89MI5jLPNql3F+GqNhQ=
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>
@@ -31,9 +31,9 @@ Cc:     "Frank Ch . Eigler" <fche@redhat.com>,
         Daniel Thompson <daniel.thompson@linaro.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/2] perf probe: Fix to adjust symbol address with correct reloc_sym address
-Date:   Fri, 18 Sep 2020 17:01:30 +0900
-Message-Id: <160041609047.912668.14314639291419159274.stgit@devnote2>
+Subject: [PATCH v2 2/2] perf probe: Fall back to debuginfod query if debuginfo and source not found
+Date:   Fri, 18 Sep 2020 17:01:41 +0900
+Message-Id: <160041610083.912668.13659563860278615846.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <160041608027.912668.13169810485938551658.stgit@devnote2>
 References: <160041608027.912668.13169810485938551658.stgit@devnote2>
@@ -45,51 +45,336 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Perf probe uses ref_reloc_sym to adjust symbol offset address
-from debuginfo address or ref_reloc_sym based address, but
-that is misused the reloc_sym->addr and reloc_sym->unrelocated_addr.
-If map is not relocated (map->reloc == 0), we can use reloc_sym->addr
-as unrelocated address instead of reloc_sym->unrelocated_addr.
+Since the perf-probe heavily depends on the debuginfo, debuginfod
+gives us many benefits on the perf probe command on remote machine.
+Especially, this will be helpful for the embedded devices which will
+not have enough storage, or boot with a cross-build kernel whose
+source code is in the host machine.
+This will work as similar to the commit c7a14fdcb3fa ("perf build-ids:
+Fall back to debuginfod query if debuginfo not found")
 
-This usually may not happen. If we have a non-stripped elf
-binary, we will use it for map and debuginfo, if not, we use only
-kallsyms without debuginfo. Thus, the map is always relocated (elf
-and dwarf binary) or not relocated (kallsyms).
+Tested with:
 
-However, if we will allow the combination of debuginfo and kallsyms
-based map (like using debuginfod), we have to check the map->reloc
-and choose the collect address of reloc_sym.
+  (host) $ cd PATH/TO/KBUILD/DIR/
+  (host) $ debuginfod -F .
+  ...
+
+  (remote) # perf probe -L vfs_read
+  Failed to find the path for the kernel: No such file or directory
+    Error: Failed to show lines.
+
+  (remote) # export DEBUGINFOD_URLS="http://$HOST_IP:8002/"
+  (remote) # perf probe -L vfs_read
+  <vfs_read@...>
+        0  ssize_t vfs_read(struct file *file, char __user *buf, size_t count, loff_t *pos)
+           {
+        2         ssize_t ret;
+
+                  if (!(file->f_mode & FMODE_READ))
+                          return -EBADF;
+        6         if (!(file->f_mode & FMODE_CAN_READ))
+                          return -EINVAL;
+        8         if (unlikely(!access_ok(buf, count)))
+                          return -EFAULT;
+
+       11         ret = rw_verify_area(READ, file, pos, count);
+       12         if (ret)
+                          return ret;
+                  if (count > MAX_RW_COUNT)
+  ...
+
+  (remote) # perf probe -a "vfs_read count"
+  Added new event:
+    probe:vfs_read       (on vfs_read with count)
+
+  (remote) # perf probe -l
+    probe:vfs_read       (on vfs_read@ksrc/linux/fs/read_write.c with count)
+
 
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- tools/perf/util/probe-event.c |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ Changes in v2:
+  - Fix build error when libdebuginfod is not detected.
+---
+ tools/perf/util/probe-event.c  |   58 +++++++++++++++++++++++++++++++++++++-
+ tools/perf/util/probe-finder.c |   61 +++++++++++++++++++++++++++++++++++++---
+ tools/perf/util/probe-finder.h |    7 +++--
+ 3 files changed, 118 insertions(+), 8 deletions(-)
 
 diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
-index 99d36ac77c08..17831f186ab5 100644
+index 17831f186ab5..3a1b58a92673 100644
 --- a/tools/perf/util/probe-event.c
 +++ b/tools/perf/util/probe-event.c
-@@ -129,9 +129,10 @@ static int kernel_get_symbol_address_by_name(const char *name, u64 *addr,
- 	struct map *map;
+@@ -43,6 +43,10 @@
+ #include <linux/ctype.h>
+ #include <linux/zalloc.h>
  
- 	/* ref_reloc_sym is just a label. Need a special fix*/
--	reloc_sym = kernel_get_ref_reloc_sym(NULL);
-+	reloc_sym = kernel_get_ref_reloc_sym(&map);
- 	if (reloc_sym && strcmp(name, reloc_sym->name) == 0)
--		*addr = (reloc) ? reloc_sym->addr : reloc_sym->unrelocated_addr;
-+		*addr = (!map->reloc || reloc) ? reloc_sym->addr :
-+			reloc_sym->unrelocated_addr;
- 	else {
- 		sym = machine__find_kernel_symbol_by_name(host_machine, name, &map);
- 		if (!sym)
-@@ -795,7 +796,8 @@ post_process_kernel_probe_trace_events(struct probe_trace_event *tevs,
- 			free(tevs[i].point.symbol);
- 		tevs[i].point.symbol = tmp;
- 		tevs[i].point.offset = tevs[i].point.address -
--				       reloc_sym->unrelocated_addr;
-+			(map->reloc ? reloc_sym->unrelocated_addr :
-+				      reloc_sym->addr);
- 	}
- 	return skipped;
++#ifdef HAVE_DEBUGINFOD_SUPPORT
++#include <elfutils/debuginfod.h>
++#endif
++
+ #define PERFPROBE_GROUP "probe"
+ 
+ bool probe_event_dry_run;	/* Dry run flag */
+@@ -338,6 +342,8 @@ static int kernel_get_module_dso(const char *module, struct dso **pdso)
+ 
+ 	map = machine__kernel_map(host_machine);
+ 	dso = map->dso;
++	if (!dso->has_build_id)
++		dso__read_running_kernel_build_id(dso, host_machine);
+ 
+ 	vmlinux_name = symbol_conf.vmlinux_name;
+ 	dso->load_errno = 0;
+@@ -453,6 +459,49 @@ static int get_alternative_line_range(struct debuginfo *dinfo,
+ 	return ret;
  }
+ 
++#ifdef HAVE_DEBUGINFOD_SUPPORT
++static struct debuginfo *open_from_debuginfod(struct dso *dso, struct nsinfo *nsi,
++					      bool silent)
++{
++	debuginfod_client *c = debuginfod_begin();
++	char sbuild_id[SBUILD_ID_SIZE + 1];
++	struct debuginfo *ret = NULL;
++	struct nscookie nsc;
++	char *path;
++	int fd;
++
++	if (!c)
++		return NULL;
++
++	build_id__sprintf(dso->build_id, BUILD_ID_SIZE, sbuild_id);
++	fd = debuginfod_find_debuginfo(c, (const unsigned char *)sbuild_id,
++					0, &path);
++	if (fd >= 0)
++		close(fd);
++	debuginfod_end(c);
++	if (fd < 0) {
++		if (!silent)
++			pr_debug("Failed to find debuginfo in debuginfod.\n");
++		return NULL;
++	}
++	if (!silent)
++		pr_debug("Load debuginfo from debuginfod (%s)\n", path);
++
++	nsinfo__mountns_enter(nsi, &nsc);
++	ret = debuginfo__new((const char *)path);
++	nsinfo__mountns_exit(&nsc);
++	return ret;
++}
++#else
++static inline
++struct debuginfo *open_from_debuginfod(struct dso *dso __maybe_unused,
++				       struct nsinfo *nsi __maybe_unused,
++				       bool silent __maybe_unused)
++{
++	return NULL;
++}
++#endif
++
+ /* Open new debuginfo of given module */
+ static struct debuginfo *open_debuginfo(const char *module, struct nsinfo *nsi,
+ 					bool silent)
+@@ -472,6 +521,10 @@ static struct debuginfo *open_debuginfo(const char *module, struct nsinfo *nsi,
+ 					strcpy(reason, "(unknown)");
+ 			} else
+ 				dso__strerror_load(dso, reason, STRERR_BUFSIZE);
++			if (dso)
++				ret = open_from_debuginfod(dso, nsi, silent);
++			if (ret)
++				return ret;
+ 			if (!silent) {
+ 				if (module)
+ 					pr_err("Module %s is not loaded, please specify its full path name.\n", module);
+@@ -959,6 +1012,7 @@ static int __show_line_range(struct line_range *lr, const char *module,
+ 	int ret;
+ 	char *tmp;
+ 	char sbuf[STRERR_BUFSIZE];
++	char sbuild_id[SBUILD_ID_SIZE] = "";
+ 
+ 	/* Search a line range */
+ 	dinfo = open_debuginfo(module, NULL, false);
+@@ -971,6 +1025,8 @@ static int __show_line_range(struct line_range *lr, const char *module,
+ 		if (!ret)
+ 			ret = debuginfo__find_line_range(dinfo, lr);
+ 	}
++	if (dinfo->build_id)
++		build_id__sprintf(dinfo->build_id, BUILD_ID_SIZE, sbuild_id);
+ 	debuginfo__delete(dinfo);
+ 	if (ret == 0 || ret == -ENOENT) {
+ 		pr_warning("Specified source line is not found.\n");
+@@ -982,7 +1038,7 @@ static int __show_line_range(struct line_range *lr, const char *module,
+ 
+ 	/* Convert source file path */
+ 	tmp = lr->path;
+-	ret = get_real_path(tmp, lr->comp_dir, &lr->path);
++	ret = find_source_path(tmp, sbuild_id, lr->comp_dir, &lr->path);
+ 
+ 	/* Free old path when new path is assigned */
+ 	if (tmp != lr->path)
+diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
+index 659024342e9a..6eddf7be8293 100644
+--- a/tools/perf/util/probe-finder.c
++++ b/tools/perf/util/probe-finder.c
+@@ -31,6 +31,10 @@
+ #include "probe-file.h"
+ #include "string2.h"
+ 
++#ifdef HAVE_DEBUGINFOD_SUPPORT
++#include <elfutils/debuginfod.h>
++#endif
++
+ /* Kprobe tracer basic type is up to u64 */
+ #define MAX_BASIC_TYPE_BITS	64
+ 
+@@ -51,6 +55,7 @@ static const Dwfl_Callbacks offline_callbacks = {
+ static int debuginfo__init_offline_dwarf(struct debuginfo *dbg,
+ 					 const char *path)
+ {
++	GElf_Addr dummy;
+ 	int fd;
+ 
+ 	fd = open(path, O_RDONLY);
+@@ -70,6 +75,8 @@ static int debuginfo__init_offline_dwarf(struct debuginfo *dbg,
+ 	if (!dbg->dbg)
+ 		goto error;
+ 
++	dwfl_module_build_id(dbg->mod, &dbg->build_id, &dummy);
++
+ 	dwfl_report_end(dbg->dwfl, NULL, NULL);
+ 
+ 	return 0;
+@@ -942,6 +949,7 @@ static int probe_point_lazy_walker(const char *fname, int lineno,
+ /* Find probe points from lazy pattern  */
+ static int find_probe_point_lazy(Dwarf_Die *sp_die, struct probe_finder *pf)
+ {
++	char sbuild_id[SBUILD_ID_SIZE] = "";
+ 	int ret = 0;
+ 	char *fpath;
+ 
+@@ -949,7 +957,10 @@ static int find_probe_point_lazy(Dwarf_Die *sp_die, struct probe_finder *pf)
+ 		const char *comp_dir;
+ 
+ 		comp_dir = cu_get_comp_dir(&pf->cu_die);
+-		ret = get_real_path(pf->fname, comp_dir, &fpath);
++		if (pf->dbg->build_id)
++			build_id__sprintf(pf->dbg->build_id,
++					BUILD_ID_SIZE, sbuild_id);
++		ret = find_source_path(pf->fname, sbuild_id, comp_dir, &fpath);
+ 		if (ret < 0) {
+ 			pr_warning("Failed to find source file path.\n");
+ 			return ret;
+@@ -1448,7 +1459,7 @@ int debuginfo__find_trace_events(struct debuginfo *dbg,
+ 				 struct probe_trace_event **tevs)
+ {
+ 	struct trace_event_finder tf = {
+-			.pf = {.pev = pev, .callback = add_probe_trace_event},
++			.pf = {.pev = pev, .dbg = dbg, .callback = add_probe_trace_event},
+ 			.max_tevs = probe_conf.max_probes, .mod = dbg->mod};
+ 	int ret, i;
+ 
+@@ -1618,7 +1629,7 @@ int debuginfo__find_available_vars_at(struct debuginfo *dbg,
+ 				      struct variable_list **vls)
+ {
+ 	struct available_var_finder af = {
+-			.pf = {.pev = pev, .callback = add_available_vars},
++			.pf = {.pev = pev, .dbg = dbg, .callback = add_available_vars},
+ 			.mod = dbg->mod,
+ 			.max_vls = probe_conf.max_probes};
+ 	int ret;
+@@ -1973,17 +1984,57 @@ int debuginfo__find_line_range(struct debuginfo *dbg, struct line_range *lr)
+ 	return (ret < 0) ? ret : lf.found;
+ }
+ 
++#ifdef HAVE_DEBUGINFOD_SUPPORT
++/* debuginfod doesn't require the comp_dir but buildid is required */
++static int get_source_from_debuginfod(const char *raw_path,
++				const char *sbuild_id, char **new_path)
++{
++	debuginfod_client *c = debuginfod_begin();
++	const char *p = raw_path;
++	int fd;
++
++	if (!c)
++		return -ENOMEM;
++
++	fd = debuginfod_find_source(c, (const unsigned char *)sbuild_id,
++				0, p, new_path);
++	pr_debug("Search %s from debuginfod -> %d\n", p, fd);
++	if (fd >= 0)
++		close(fd);
++	debuginfod_end(c);
++	if (fd < 0) {
++		pr_debug("Failed to find %s in debuginfod (%s)\n",
++			raw_path, sbuild_id);
++		return -ENOENT;
++	}
++	pr_debug("Got a source %s\n", *new_path);
++
++	return 0;
++}
++#else
++static inline int get_source_from_debuginfod(const char *raw_path __maybe_unused,
++				const char *sbuild_id __maybe_unused,
++				char **new_path __maybe_unused)
++{
++	return -ENOTSUP;
++}
++#endif
+ /*
+  * Find a src file from a DWARF tag path. Prepend optional source path prefix
+  * and chop off leading directories that do not exist. Result is passed back as
+  * a newly allocated path on success.
+  * Return 0 if file was found and readable, -errno otherwise.
+  */
+-int get_real_path(const char *raw_path, const char *comp_dir,
+-			 char **new_path)
++int find_source_path(const char *raw_path, const char *sbuild_id,
++		const char *comp_dir, char **new_path)
+ {
+ 	const char *prefix = symbol_conf.source_prefix;
+ 
++	if (sbuild_id && !prefix) {
++		if (!get_source_from_debuginfod(raw_path, sbuild_id, new_path))
++			return 0;
++	}
++
+ 	if (!prefix) {
+ 		if (raw_path[0] != '/' && comp_dir)
+ 			/* If not an absolute path, try to use comp_dir */
+diff --git a/tools/perf/util/probe-finder.h b/tools/perf/util/probe-finder.h
+index 11be10080613..2febb5875678 100644
+--- a/tools/perf/util/probe-finder.h
++++ b/tools/perf/util/probe-finder.h
+@@ -4,6 +4,7 @@
+ 
+ #include <stdbool.h>
+ #include "intlist.h"
++#include "build-id.h"
+ #include "probe-event.h"
+ #include <linux/ctype.h>
+ 
+@@ -32,6 +33,7 @@ struct debuginfo {
+ 	Dwfl_Module	*mod;
+ 	Dwfl		*dwfl;
+ 	Dwarf_Addr	bias;
++	const unsigned char	*build_id;
+ };
+ 
+ /* This also tries to open distro debuginfo */
+@@ -59,11 +61,12 @@ int debuginfo__find_available_vars_at(struct debuginfo *dbg,
+ 				      struct variable_list **vls);
+ 
+ /* Find a src file from a DWARF tag path */
+-int get_real_path(const char *raw_path, const char *comp_dir,
+-			 char **new_path);
++int find_source_path(const char *raw_path, const char *sbuild_id,
++		     const char *comp_dir, char **new_path);
+ 
+ struct probe_finder {
+ 	struct perf_probe_event	*pev;		/* Target probe event */
++	struct debuginfo	*dbg;
+ 
+ 	/* Callback when a probe point is found */
+ 	int (*callback)(Dwarf_Die *sc_die, struct probe_finder *pf);
 
