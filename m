@@ -2,625 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAFCC26F9B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:55:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FA0226F9B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726483AbgIRJzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 05:55:25 -0400
-Received: from mout.kundenserver.de ([217.72.192.73]:48971 "EHLO
+        id S1726252AbgIRJ5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 05:57:32 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:50841 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726335AbgIRJzO (ORCPT
+        with ESMTP id S1726154AbgIRJ5b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 05:55:14 -0400
+        Fri, 18 Sep 2020 05:57:31 -0400
 Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
- (mreue109 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1MaIvT-1jwVgJ12Yv-00WBGu; Fri, 18 Sep 2020 11:54:54 +0200
+ (mreue010 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1M2Nm2-1kKrpW0cQg-003tS6; Fri, 18 Sep 2020 11:56:48 +0200
 From:   Arnd Bergmann <arnd@arndb.de>
-To:     linux-rpi-kernel@lists.infradead.org, nsaenzjulienne@suse.de
-Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-arm-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com, marcgonzalez@google.com,
-        jamal.k.shareef@gmail.com, gregkh@linuxfoundation.org,
-        stefan.wahren@i2se.com, inf.braun@fau.de, hch@lst.de,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 5/5] staging: vchiq: convert compat await_completion
-Date:   Fri, 18 Sep 2020 11:54:41 +0200
-Message-Id: <20200918095441.1446041-6-arnd@arndb.de>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     hch@lst.de, Arnd Bergmann <arnd@arndb.de>,
+        Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: compat_ioctl: avoid compat_alloc_user_space
+Date:   Fri, 18 Sep 2020 11:56:19 +0200
+Message-Id: <20200918095642.1446243-1-arnd@arndb.de>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200918095441.1446041-1-arnd@arndb.de>
-References: <20200918095441.1446041-1-arnd@arndb.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:wKKXkp3hvdPm2VYsPUfZCLaujAKGHtD3wJ+tamSfbaHgV17ruMe
- W7b119tJpDaGaXBcolWb1km/UKlqSUd5jLuzi2B3wil2alz5C+LAPzAzCIMnN+8TBXdVVyd
- tvZDNMGKuISSvgyTTdf0Ago+gGQDTdFlvZUSxRIB6lHszqTctrMKTI9xdKnbgt66g3gvXUR
- 3QKuiyGo90kJpLTgx80DQ==
+X-Provags-ID: V03:K1:rNdS+a97tkm6jDpBmD5687UbWW7bIFQ+2R1OTRXm1szgDNK2BWK
+ diCKoCgNxs45hEpoAJYTXTN8E4gcdjSvEzkBe/1fvGYxfr6O6zab41bHQLAPRsuOR+4VwZg
+ lv+kpXi6xX6nPJtAZbojypXIb69rFf1hsoef91zEICfO+C6BJhxDkSEp7cR9qE8vKX6tjEJ
+ dZwRmSCy8+2DhWpk7+EKw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:sbPO7rjmmXc=:JXfnVcGnmS7i044wxSmUmW
- +wNPD6q/McBSPFvRgJVCvk0FWP8SbYkSe9hukOjeGxyfEJUaIC6A5exTJ9xjmqSgneFOgA3ID
- XwQv0GPwQMgS2oAaBViUdNa/jiqVKjUiDxwwBLp6GC7EzqHoeA7Ggz//81gkjIiptoc3c2+sJ
- bXi4B9Mh0HHtDzMqCWhO45BYcLJR3mT1ctEGFKd6u66g/ZLURdTB4LQ39e3q/v4OZqN1HBIpz
- dvyX31JVTPqRKRrvGpj0qJv9bdmQuuMzsio5l2vluUj0LBK9LJNm/yhYV3lEQgw1sbqJrO0P9
- NeIJq3ubpNcAx/3UDa4fRydIIjgAn7MoOFuJBWqSmU1PXS5Jc69JD4N+/CAGiZF/4aquM1X5k
- QcCGXsOa/v1I8I0CaOdFkIxDvkixgQth+8VEKGECUBG93hFu6oyL2WaJTgjPVe34MvTGBUSoG
- AY8f8cP+rQku8QWNUw3znB9k7TZYHsplpL4NWW9CchSQe5tPzv7CzFXblfISiSN6Ma1shDEYi
- D6WERC5npMETgw0dgOqG3qBJuCJT5ZPrKp6m1HdXfgkyDrctF+heRqbkn8ISO1a+C6mG67Ln/
- O9ljq3faEtdZryPouMUVl79Gh2MoajQv9UCdNUdYayzIOvRQp4D2/WVb5in91nryMhtd0IPoz
- 72v5+YbFY0zgkxI/6FxextU9qXBuPetzxgzTlkxYpkbLLpbUNWXSaVIEb4hYx2pdRZumUB4Q8
- ldtbmNAOT11n1CMJWCzQldutLNRswzNC+ZOVfuKt/91CEtOBe5Y+usF5N2JVtrgH0d/qxYUOR
- aNZTs11QGxNSKOf1QLEs8FLWoEZ5r1ct5OUFMUlMrbh+BDhZuOtnO2pWR25rvnBk2+YcJxc
+X-UI-Out-Filterresults: notjunk:1;V03:K0:rdH/X9lyGGI=:BaOigkQBTUv7qsKSTqrKln
+ 2BWIK6OsuUywgQu2bvoBDE+DBiKcYaPsEeuSyCy92T0icWEIPAUtaZ1WXtAvagT6PdyC1AQ4F
+ 5p/o9VkCgCSLNQH4airiq4qrinlWfknJlZlh1HGw4ySD9afiwxE6FEovii8Fx3BswdgeJdxfP
+ AcRnMDIGBSoql0z6T5KoHOEfrFLkPaPIbOAYQcJSFm+e/aYhcEjD2Ac4jUMB/lMRTrVEgc0GB
+ b+cz+uVF3xRP/oiS3nNZBFFTamykuw7k+ECAR26zpGpxuMnmm6zWCKKpabyt6W1EQMTmMXrjY
+ EkEQGABH7a2pIjbXlm4TmseZRBYz0b7lFlJK93IPYK0AJd9NbZmt/JsMHoRMJjP/V0XmKT+nE
+ blJFuPXTP2kSjijKNyXW6kA8NW9/mlI/QqOGj6+rPjqAc90WPc3S+BpsUBK8RtB5yJUTiMe/Y
+ XR7vUYxK7cMnK1U4WCyaGxaZJOoIPGuTGv+svV7kjuY07881FKC7/NFRw90RDnw/v6aW3r5Jy
+ 3ubuFowy5GwpNIZ6Z9ReBNKbB9da5OkxhVQPtePRN0Zo0timwfr0YI4WpDZYvoUPrWstlbSDq
+ UaUX7VUvEk/6pDsI2AQ8yvoandElphStpYpZxKy8gNAs5j3hfNbNkNToBKnWt975GQp+dR+aa
+ vh90PpIxji9Qv1pYvjxId+6XAIm3no9dMd8t2wJ25SX0ck6PcIMbsSvNxIgnzTmmS3VtNOUUn
+ OgX45wmgId1Bs4QuZR04ODjWJ6nYS3Kp9KI5f2WImTbLZxfsYlZH3d8PGRsm/PuMjYIKshP2W
+ S5N4P4lQl/YBldmH2imCzkoofE/VhKtKHkARNAUnoFNlnvFVzekBgNdV8dADa4HmSL4WoeF
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Split out the ioctl implementation for VCHIQ_IOC_QUEUE_BULK_TRANSMIT
-into a separate function so it can be shared with the compat
-implementation.
+Using compat_alloc_user_space() tends to add complexity
+to the ioctl handling, so I am trying to remove it everywhere.
 
-This one is the trickiest conversion, as the compat implementation
-is already quite different from the native one. By using a common
-handler, the behavior is changed to be the same again: The
-indirect __user pointer accesses are now handled through helper
-functions that check for compat mode internally.
+The two callers in sound/core can rewritten to just call
+the same code that operates on a kernel pointer as the
+native handler.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- .../interface/vchiq_arm/vchiq_arm.c           | 496 ++++++++----------
- 1 file changed, 205 insertions(+), 291 deletions(-)
+ sound/core/control.c        | 38 ++++++++++++++++++++++++-------------
+ sound/core/control_compat.c | 14 ++++++--------
+ sound/core/hwdep.c          | 27 ++++++++++++++++----------
+ sound/core/hwdep_compat.c   | 23 +++++++---------------
+ 4 files changed, 55 insertions(+), 47 deletions(-)
 
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-index 50af7f4a1b7c..bb0cc9cb96e9 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-@@ -1027,6 +1027,193 @@ static int vchiq_irq_queue_bulk_tx_rx(struct vchiq_instance *instance,
- 	return 0;
+diff --git a/sound/core/control.c b/sound/core/control.c
+index aa0c0cf182af..e014598142df 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -717,22 +717,19 @@ static int snd_ctl_card_info(struct snd_card *card, struct snd_ctl_file * ctl,
  }
  
-+static inline int vchiq_get_user_ptr(void __user **buf, void __user *ubuf, int index)
+ static int snd_ctl_elem_list(struct snd_card *card,
+-			     struct snd_ctl_elem_list __user *_list)
++			     struct snd_ctl_elem_list *list)
+ {
+-	struct snd_ctl_elem_list list;
+ 	struct snd_kcontrol *kctl;
+ 	struct snd_ctl_elem_id id;
+ 	unsigned int offset, space, jidx;
+ 	int err = 0;
+ 
+-	if (copy_from_user(&list, _list, sizeof(list)))
+-		return -EFAULT;
+-	offset = list.offset;
+-	space = list.space;
++	offset = list->offset;
++	space = list->space;
+ 
+ 	down_read(&card->controls_rwsem);
+-	list.count = card->controls_count;
+-	list.used = 0;
++	list->count = card->controls_count;
++	list->used = 0;
+ 	if (space > 0) {
+ 		list_for_each_entry(kctl, &card->controls, list) {
+ 			if (offset >= kctl->count) {
+@@ -741,12 +738,12 @@ static int snd_ctl_elem_list(struct snd_card *card,
+ 			}
+ 			for (jidx = offset; jidx < kctl->count; jidx++) {
+ 				snd_ctl_build_ioff(&id, kctl, jidx);
+-				if (copy_to_user(list.pids + list.used, &id,
++				if (copy_to_user(list->pids + list->used, &id,
+ 						 sizeof(id))) {
+ 					err = -EFAULT;
+ 					goto out;
+ 				}
+-				list.used++;
++				list->used++;
+ 				if (!--space)
+ 					goto out;
+ 			}
+@@ -755,11 +752,26 @@ static int snd_ctl_elem_list(struct snd_card *card,
+ 	}
+  out:
+ 	up_read(&card->controls_rwsem);
+-	if (!err && copy_to_user(_list, &list, sizeof(list)))
+-		err = -EFAULT;
+ 	return err;
+ }
+ 
++static int snd_ctl_elem_list_user(struct snd_card *card,
++				  struct snd_ctl_elem_list __user *_list)
 +{
-+	compat_uptr_t ptr32;
-+	int ret;
++	struct snd_ctl_elem_list list;
++	int err;
 +
-+	if (in_compat_syscall()) {
-+		compat_uptr_t __user *uptr = ubuf;
-+		ret = get_user(ptr32, &uptr[index]);
-+		*buf = compat_ptr(ptr32);
-+	} else {
-+		void __user *__user *uptr = ubuf;
-+		ret = get_user(buf, &uptr[index]);
-+	}
-+	return ret;
-+}
-+
-+struct vchiq_completion_data32 {
-+	enum vchiq_reason reason;
-+	compat_uptr_t header;
-+	compat_uptr_t service_userdata;
-+	compat_uptr_t bulk_userdata;
-+};
-+
-+static int vchiq_put_completion(struct vchiq_completion_data __user *buf,
-+				struct vchiq_completion_data *completion,
-+				int index)
-+{
-+	struct vchiq_completion_data32 __user *buf32 = (void __user *)buf;
-+
-+	if (in_compat_syscall()) {
-+		struct vchiq_completion_data32 tmp = {
-+			.reason		  = buf->reason,
-+			.header		  = ptr_to_compat(buf->header),
-+			.service_userdata = ptr_to_compat(buf->service_userdata),
-+			.bulk_userdata	  = ptr_to_compat(buf->bulk_userdata),
-+		};
-+		if (copy_to_user(&buf32[index], &tmp, sizeof(tmp)))
-+			return -EFAULT;
-+	} else {
-+		if (copy_to_user(&buf[index], completion, sizeof(*completion)))
-+			return -EFAULT;
-+	}
++	if (copy_from_user(&list, _list, sizeof(list)))
++		return -EFAULT;
++	err = snd_ctl_elem_list(card, &list);
++	if (err)
++		return err;
++	if (copy_to_user(_list, &list, sizeof(list)))
++		return -EFAULT;
 +
 +	return 0;
 +}
 +
-+static int vchiq_ioc_await_completion(struct vchiq_instance *instance,
-+				      struct vchiq_await_completion *args,
-+				      int __user *msgbufcountp)
+ /* Check whether the given kctl info is valid */
+ static int snd_ctl_check_elem_info(struct snd_card *card,
+ 				   const struct snd_ctl_elem_info *info)
+@@ -1703,7 +1715,7 @@ static long snd_ctl_ioctl(struct file *file, unsigned int cmd, unsigned long arg
+ 	case SNDRV_CTL_IOCTL_CARD_INFO:
+ 		return snd_ctl_card_info(card, ctl, cmd, argp);
+ 	case SNDRV_CTL_IOCTL_ELEM_LIST:
+-		return snd_ctl_elem_list(card, argp);
++		return snd_ctl_elem_list_user(card, argp);
+ 	case SNDRV_CTL_IOCTL_ELEM_INFO:
+ 		return snd_ctl_elem_info_user(ctl, argp);
+ 	case SNDRV_CTL_IOCTL_ELEM_READ:
+diff --git a/sound/core/control_compat.c b/sound/core/control_compat.c
+index 02df1d7db9a1..1d708aab9c98 100644
+--- a/sound/core/control_compat.c
++++ b/sound/core/control_compat.c
+@@ -22,24 +22,22 @@ struct snd_ctl_elem_list32 {
+ static int snd_ctl_elem_list_compat(struct snd_card *card,
+ 				    struct snd_ctl_elem_list32 __user *data32)
+ {
+-	struct snd_ctl_elem_list __user *data;
++	struct snd_ctl_elem_list data = {};
+ 	compat_caddr_t ptr;
+ 	int err;
+ 
+-	data = compat_alloc_user_space(sizeof(*data));
+-
+ 	/* offset, space, used, count */
+-	if (copy_in_user(data, data32, 4 * sizeof(u32)))
++	if (copy_from_user(&data, data32, 4 * sizeof(u32)))
+ 		return -EFAULT;
+ 	/* pids */
+-	if (get_user(ptr, &data32->pids) ||
+-	    put_user(compat_ptr(ptr), &data->pids))
++	if (get_user(ptr, &data32->pids))
+ 		return -EFAULT;
+-	err = snd_ctl_elem_list(card, data);
++	data.pids = compat_ptr(ptr);
++	err = snd_ctl_elem_list(card, &data);
+ 	if (err < 0)
+ 		return err;
+ 	/* copy the result */
+-	if (copy_in_user(data32, data, 4 * sizeof(u32)))
++	if (copy_to_user(data32, &data, 4 * sizeof(u32)))
+ 		return -EFAULT;
+ 	return 0;
+ }
+diff --git a/sound/core/hwdep.c b/sound/core/hwdep.c
+index 21edb8ac95eb..0c029892880a 100644
+--- a/sound/core/hwdep.c
++++ b/sound/core/hwdep.c
+@@ -203,28 +203,35 @@ static int snd_hwdep_dsp_status(struct snd_hwdep *hw,
+ }
+ 
+ static int snd_hwdep_dsp_load(struct snd_hwdep *hw,
+-			      struct snd_hwdep_dsp_image __user *_info)
++			      struct snd_hwdep_dsp_image *info)
+ {
+-	struct snd_hwdep_dsp_image info;
+ 	int err;
+ 	
+ 	if (! hw->ops.dsp_load)
+ 		return -ENXIO;
+-	memset(&info, 0, sizeof(info));
+-	if (copy_from_user(&info, _info, sizeof(info)))
+-		return -EFAULT;
+-	if (info.index >= 32)
++	if (info->index >= 32)
+ 		return -EINVAL;
+ 	/* check whether the dsp was already loaded */
+-	if (hw->dsp_loaded & (1u << info.index))
++	if (hw->dsp_loaded & (1u << info->index))
+ 		return -EBUSY;
+-	err = hw->ops.dsp_load(hw, &info);
++	err = hw->ops.dsp_load(hw, info);
+ 	if (err < 0)
+ 		return err;
+-	hw->dsp_loaded |= (1u << info.index);
++	hw->dsp_loaded |= (1u << info->index);
+ 	return 0;
+ }
+ 
++static int snd_hwdep_dsp_load_user(struct snd_hwdep *hw,
++				   struct snd_hwdep_dsp_image __user *_info)
 +{
-+	int msgbufcount;
-+	int remove;
-+	int ret;
++	struct snd_hwdep_dsp_image info = {};
 +
-+	DEBUG_INITIALISE(g_state.local)
-+
-+	DEBUG_TRACE(AWAIT_COMPLETION_LINE);
-+	if (!instance->connected) {
-+		return -ENOTCONN;
-+	}
-+
-+	mutex_lock(&instance->completion_mutex);
-+
-+	DEBUG_TRACE(AWAIT_COMPLETION_LINE);
-+	while ((instance->completion_remove ==
-+		instance->completion_insert)
-+		&& !instance->closing) {
-+		int rc;
-+
-+		DEBUG_TRACE(AWAIT_COMPLETION_LINE);
-+		mutex_unlock(&instance->completion_mutex);
-+		rc = wait_for_completion_interruptible(
-+					&instance->insert_event);
-+		mutex_lock(&instance->completion_mutex);
-+		if (rc) {
-+			DEBUG_TRACE(AWAIT_COMPLETION_LINE);
-+			vchiq_log_info(vchiq_arm_log_level,
-+				"AWAIT_COMPLETION interrupted");
-+			ret = -EINTR;
-+			goto out;
-+		}
-+	}
-+	DEBUG_TRACE(AWAIT_COMPLETION_LINE);
-+
-+	msgbufcount = args->msgbufcount;
-+	remove = instance->completion_remove;
-+
-+	for (ret = 0; ret < args->count; ret++) {
-+		struct vchiq_completion_data *completion;
-+		struct vchiq_service *service;
-+		struct user_service *user_service;
-+		struct vchiq_header *header;
-+
-+		if (remove == instance->completion_insert)
-+			break;
-+
-+		completion = &instance->completions[
-+			remove & (MAX_COMPLETIONS - 1)];
-+
-+		/*
-+		 * A read memory barrier is needed to stop
-+		 * prefetch of a stale completion record
-+		 */
-+		rmb();
-+
-+		service = completion->service_userdata;
-+		user_service = service->base.userdata;
-+		completion->service_userdata = user_service->userdata;
-+
-+		header = completion->header;
-+		if (header) {
-+			void __user *msgbuf;
-+			int msglen;
-+
-+			msglen = header->size + sizeof(struct vchiq_header);
-+			/* This must be a VCHIQ-style service */
-+			if (args->msgbufsize < msglen) {
-+				vchiq_log_error(vchiq_arm_log_level,
-+					"header %pK: msgbufsize %x < msglen %x",
-+					header, args->msgbufsize, msglen);
-+				WARN(1, "invalid message size\n");
-+				if (ret == 0)
-+					ret = -EMSGSIZE;
-+				break;
-+			}
-+			if (msgbufcount <= 0)
-+				/* Stall here for lack of a
-+				** buffer for the message. */
-+				break;
-+			/* Get the pointer from user space */
-+			msgbufcount--;
-+			if (vchiq_get_user_ptr(&msgbuf, &args->msgbufs,
-+						msgbufcount)) {
-+				if (ret == 0)
-+					ret = -EFAULT;
-+				break;
-+			}
-+
-+			/* Copy the message to user space */
-+			if (copy_to_user(msgbuf, header, msglen)) {
-+				if (ret == 0)
-+					ret = -EFAULT;
-+				break;
-+			}
-+
-+			/* Now it has been copied, the message
-+			** can be released. */
-+			vchiq_release_message(service->handle, header);
-+
-+			/* The completion must point to the
-+			** msgbuf. */
-+			completion->header =
-+				(struct vchiq_header __force *)msgbuf;
-+		}
-+
-+		if ((completion->reason == VCHIQ_SERVICE_CLOSED) &&
-+		    !instance->use_close_delivered)
-+			unlock_service(service);
-+
-+		if (vchiq_put_completion(args->buf, completion, ret)) {
-+			if (ret == 0)
-+				ret = -EFAULT;
-+			break;
-+		}
-+
-+		/*
-+		 * Ensure that the above copy has completed
-+		 * before advancing the remove pointer.
-+		 */
-+		mb();
-+		remove++;
-+		instance->completion_remove = remove;
-+	}
-+
-+	if (msgbufcount != args->msgbufcount) {
-+		if (put_user(msgbufcount, msgbufcountp))
-+			ret = -EFAULT;
-+	}
-+out:
-+	if (ret)
-+		complete(&instance->remove_event);
-+	mutex_unlock(&instance->completion_mutex);
-+	DEBUG_TRACE(AWAIT_COMPLETION_LINE);
-+
-+	return ret;
++	if (copy_from_user(&info, _info, sizeof(info)))
++		return -EFAULT;
++	return snd_hwdep_dsp_load(hw, &info);
 +}
 +
- /****************************************************************************
- *
- *   vchiq_ioctl
-@@ -1041,8 +1228,6 @@ vchiq_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	long ret = 0;
- 	int i, rc;
- 
--	DEBUG_INITIALISE(g_state.local)
--
- 	vchiq_log_trace(vchiq_arm_log_level,
- 		"%s - instance %pK, cmd %s, arg %lx",
- 		__func__, instance,
-@@ -1225,163 +1410,16 @@ vchiq_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 
- 	case VCHIQ_IOC_AWAIT_COMPLETION: {
- 		struct vchiq_await_completion args;
-+		struct vchiq_await_completion __user *argp;
- 
--		DEBUG_TRACE(AWAIT_COMPLETION_LINE);
--		if (!instance->connected) {
--			ret = -ENOTCONN;
--			break;
--		}
--
--		if (copy_from_user(&args, (const void __user *)arg,
--			sizeof(args))) {
-+		argp = (void __user *)arg;
-+		if (copy_from_user(&args, argp, sizeof(args))) {
- 			ret = -EFAULT;
- 			break;
- 		}
- 
--		mutex_lock(&instance->completion_mutex);
--
--		DEBUG_TRACE(AWAIT_COMPLETION_LINE);
--		while ((instance->completion_remove ==
--			instance->completion_insert)
--			&& !instance->closing) {
--			int rc;
--
--			DEBUG_TRACE(AWAIT_COMPLETION_LINE);
--			mutex_unlock(&instance->completion_mutex);
--			rc = wait_for_completion_interruptible(
--						&instance->insert_event);
--			mutex_lock(&instance->completion_mutex);
--			if (rc) {
--				DEBUG_TRACE(AWAIT_COMPLETION_LINE);
--				vchiq_log_info(vchiq_arm_log_level,
--					"AWAIT_COMPLETION interrupted");
--				ret = -EINTR;
--				break;
--			}
--		}
--		DEBUG_TRACE(AWAIT_COMPLETION_LINE);
--
--		if (ret == 0) {
--			int msgbufcount = args.msgbufcount;
--			int remove = instance->completion_remove;
--
--			for (ret = 0; ret < args.count; ret++) {
--				struct vchiq_completion_data *completion;
--				struct vchiq_service *service;
--				struct user_service *user_service;
--				struct vchiq_header *header;
--
--				if (remove == instance->completion_insert)
--					break;
--
--				completion = &instance->completions[
--					remove & (MAX_COMPLETIONS - 1)];
--
--				/*
--				 * A read memory barrier is needed to stop
--				 * prefetch of a stale completion record
--				 */
--				rmb();
--
--				service = completion->service_userdata;
--				user_service = service->base.userdata;
--				completion->service_userdata =
--					user_service->userdata;
--
--				header = completion->header;
--				if (header) {
--					void __user *msgbuf;
--					int msglen;
--
--					msglen = header->size +
--						sizeof(struct vchiq_header);
--					/* This must be a VCHIQ-style service */
--					if (args.msgbufsize < msglen) {
--						vchiq_log_error(
--							vchiq_arm_log_level,
--							"header %pK: msgbufsize %x < msglen %x",
--							header, args.msgbufsize,
--							msglen);
--						WARN(1, "invalid message "
--							"size\n");
--						if (ret == 0)
--							ret = -EMSGSIZE;
--						break;
--					}
--					if (msgbufcount <= 0)
--						/* Stall here for lack of a
--						** buffer for the message. */
--						break;
--					/* Get the pointer from user space */
--					msgbufcount--;
--					if (copy_from_user(&msgbuf,
--						(const void __user *)
--						&args.msgbufs[msgbufcount],
--						sizeof(msgbuf))) {
--						if (ret == 0)
--							ret = -EFAULT;
--						break;
--					}
--
--					/* Copy the message to user space */
--					if (copy_to_user(msgbuf, header,
--						msglen)) {
--						if (ret == 0)
--							ret = -EFAULT;
--						break;
--					}
--
--					/* Now it has been copied, the message
--					** can be released. */
--					vchiq_release_message(service->handle,
--						header);
--
--					/* The completion must point to the
--					** msgbuf. */
--					completion->header =
--						(struct vchiq_header __force *)
--						msgbuf;
--				}
--
--				if ((completion->reason ==
--					VCHIQ_SERVICE_CLOSED) &&
--					!instance->use_close_delivered)
--					unlock_service(service);
--
--				if (copy_to_user((void __user *)(
--					(size_t)args.buf + ret *
--					sizeof(struct vchiq_completion_data)),
--					completion,
--					sizeof(struct vchiq_completion_data))) {
--						if (ret == 0)
--							ret = -EFAULT;
--					break;
--				}
--
--				/*
--				 * Ensure that the above copy has completed
--				 * before advancing the remove pointer.
--				 */
--				mb();
--				remove++;
--				instance->completion_remove = remove;
--			}
--
--			if (msgbufcount != args.msgbufcount) {
--				if (copy_to_user((void __user *)
--					&((struct vchiq_await_completion *)arg)
--						->msgbufcount,
--					&msgbufcount,
--					sizeof(msgbufcount))) {
--					ret = -EFAULT;
--				}
--			}
--		}
--
--		if (ret)
--			complete(&instance->remove_event);
--		mutex_unlock(&instance->completion_mutex);
--		DEBUG_TRACE(AWAIT_COMPLETION_LINE);
-+		ret = vchiq_ioc_await_completion(instance, &args,
-+						 &argp->msgbufcount);
- 	} break;
- 
- 	case VCHIQ_IOC_DEQUEUE_MESSAGE: {
-@@ -1661,13 +1699,6 @@ vchiq_compat_ioctl_queue_bulk(struct file *file,
- 					  dir, &argp->mode);
- }
- 
--struct vchiq_completion_data32 {
--	enum vchiq_reason reason;
--	compat_uptr_t header;
--	compat_uptr_t service_userdata;
--	compat_uptr_t bulk_userdata;
--};
--
- struct vchiq_await_completion32 {
- 	unsigned int count;
- 	compat_uptr_t buf;
-@@ -1682,141 +1713,24 @@ struct vchiq_await_completion32 {
- static long
- vchiq_compat_ioctl_await_completion(struct file *file,
- 				    unsigned int cmd,
--				    unsigned long arg)
-+				    struct vchiq_await_completion32 *argp)
++
+ static long snd_hwdep_ioctl(struct file * file, unsigned int cmd,
+ 			    unsigned long arg)
  {
--	struct vchiq_await_completion __user *args;
--	struct vchiq_completion_data __user *completion;
--	struct vchiq_completion_data completiontemp;
-+	struct vchiq_await_completion args;
- 	struct vchiq_await_completion32 args32;
--	struct vchiq_completion_data32 completion32;
--	unsigned int __user *msgbufcount32;
--	unsigned int msgbufcount_native;
--	compat_uptr_t msgbuf32;
--	void __user *msgbuf;
--	void * __user *msgbufptr;
--	long ret;
--
--	args = compat_alloc_user_space(sizeof(*args) +
--				       sizeof(*completion) +
--				       sizeof(*msgbufptr));
--	if (!args)
--		return -EFAULT;
--
--	completion = (struct vchiq_completion_data __user *)(args + 1);
--	msgbufptr = (void * __user *)(completion + 1);
--
--	if (copy_from_user(&args32,
--			   (struct vchiq_completion_data32 __user *)arg,
--			   sizeof(args32)))
--		return -EFAULT;
--
--	if (put_user(args32.count, &args->count) ||
--	    put_user(compat_ptr(args32.buf), &args->buf) ||
--	    put_user(args32.msgbufsize, &args->msgbufsize) ||
--	    put_user(args32.msgbufcount, &args->msgbufcount) ||
--	    put_user(compat_ptr(args32.msgbufs), &args->msgbufs))
--		return -EFAULT;
--
--	/* These are simple cases, so just fall into the native handler */
--	if (!args32.count || !args32.buf || !args32.msgbufcount)
--		return vchiq_ioctl(file,
--				   VCHIQ_IOC_AWAIT_COMPLETION,
--				   (unsigned long)args);
--
--	/*
--	 * These are the more complex cases.  Typical applications of this
--	 * ioctl will use a very large count, with a very large msgbufcount.
--	 * Since the native ioctl can asynchronously fill in the returned
--	 * buffers and the application can in theory begin processing messages
--	 * even before the ioctl returns, a bit of a trick is used here.
--	 *
--	 * By forcing both count and msgbufcount to be 1, it forces the native
--	 * ioctl to only claim at most 1 message is available.   This tricks
--	 * the calling application into thinking only 1 message was actually
--	 * available in the queue so like all good applications it will retry
--	 * waiting until all the required messages are received.
--	 *
--	 * This trick has been tested and proven to work with vchiq_test,
--	 * Minecraft_PI, the "hello pi" examples, and various other
--	 * applications that are included in Raspbian.
--	 */
--
--	if (copy_from_user(&msgbuf32,
--			   compat_ptr(args32.msgbufs) +
--			   (sizeof(compat_uptr_t) *
--			   (args32.msgbufcount - 1)),
--			   sizeof(msgbuf32)))
--		return -EFAULT;
--
--	msgbuf = compat_ptr(msgbuf32);
+@@ -238,7 +245,7 @@ static long snd_hwdep_ioctl(struct file * file, unsigned int cmd,
+ 	case SNDRV_HWDEP_IOCTL_DSP_STATUS:
+ 		return snd_hwdep_dsp_status(hw, argp);
+ 	case SNDRV_HWDEP_IOCTL_DSP_LOAD:
+-		return snd_hwdep_dsp_load(hw, argp);
++		return snd_hwdep_dsp_load_user(hw, argp);
+ 	}
+ 	if (hw->ops.ioctl)
+ 		return hw->ops.ioctl(hw, file, cmd, arg);
+diff --git a/sound/core/hwdep_compat.c b/sound/core/hwdep_compat.c
+index bc81db9cb3d4..a0b76706c083 100644
+--- a/sound/core/hwdep_compat.c
++++ b/sound/core/hwdep_compat.c
+@@ -19,26 +19,17 @@ struct snd_hwdep_dsp_image32 {
+ static int snd_hwdep_dsp_load_compat(struct snd_hwdep *hw,
+ 				     struct snd_hwdep_dsp_image32 __user *src)
+ {
+-	struct snd_hwdep_dsp_image __user *dst;
++	struct snd_hwdep_dsp_image info = {};
+ 	compat_caddr_t ptr;
+-	u32 val;
  
--	if (copy_to_user(msgbufptr,
--			 &msgbuf,
--			 sizeof(msgbuf)))
+-	dst = compat_alloc_user_space(sizeof(*dst));
+-
+-	/* index and name */
+-	if (copy_in_user(dst, src, 4 + 64))
 -		return -EFAULT;
--
--	if (copy_to_user(&args->msgbufs,
--			 &msgbufptr,
--			 sizeof(msgbufptr)))
+-	if (get_user(ptr, &src->image) ||
+-	    put_user(compat_ptr(ptr), &dst->image))
 -		return -EFAULT;
--
--	if (put_user(1U, &args->count) ||
--	    put_user(completion, &args->buf) ||
--	    put_user(1U, &args->msgbufcount))
+-	if (get_user(val, &src->length) ||
+-	    put_user(val, &dst->length))
 -		return -EFAULT;
--
--	ret = vchiq_ioctl(file,
--			  VCHIQ_IOC_AWAIT_COMPLETION,
--			  (unsigned long)args);
--
--	/*
--	 * An return value of 0 here means that no messages where available
--	 * in the message queue.  In this case the native ioctl does not
--	 * return any data to the application at all.  Not even to update
--	 * msgbufcount.  This functionality needs to be kept here for
--	 * compatibility.
--	 *
--	 * Of course, < 0 means that an error occurred and no data is being
--	 * returned.
--	 *
--	 * Since count and msgbufcount was forced to 1, that means
--	 * the only other possible return value is 1. Meaning that 1 message
--	 * was available, so that multiple message case does not need to be
--	 * handled here.
--	 */
--	if (ret <= 0)
--		return ret;
--
--	if (copy_from_user(&completiontemp, completion, sizeof(*completion)))
--		return -EFAULT;
--
--	completion32.reason = completiontemp.reason;
--	completion32.header = ptr_to_compat(completiontemp.header);
--	completion32.service_userdata =
--		ptr_to_compat(completiontemp.service_userdata);
--	completion32.bulk_userdata =
--		ptr_to_compat(completiontemp.bulk_userdata);
--
--	if (copy_to_user(compat_ptr(args32.buf),
--			 &completion32,
--			 sizeof(completion32)))
--		return -EFAULT;
--
--	if (get_user(msgbufcount_native, &args->msgbufcount))
-+	if (copy_from_user(&args32, argp, sizeof(args32)))
+-	if (get_user(val, &src->driver_data) ||
+-	    put_user(val, &dst->driver_data))
++	if (copy_from_user(&info, src, 4 + 64) ||
++	    get_user(ptr, &src->image) ||
++	    get_user(info.length, &src->length) ||
++	    get_user(info.driver_data, &src->driver_data))
  		return -EFAULT;
++	info.image = compat_ptr(ptr);
  
--	if (!msgbufcount_native)
--		args32.msgbufcount--;
--
--	msgbufcount32 =
--		&((struct vchiq_await_completion32 __user *)arg)->msgbufcount;
--
--	if (copy_to_user(msgbufcount32,
--			 &args32.msgbufcount,
--			 sizeof(args32.msgbufcount)))
--		return -EFAULT;
-+	args = (struct vchiq_await_completion) {
-+		.count		= args32.count,
-+		.buf		= compat_ptr(args32.buf),
-+		.msgbufsize	= args32.msgbufsize,
-+		.msgbufcount	= args32.msgbufcount,
-+		.msgbufs	= compat_ptr(args32.msgbufs),
-+	};
- 
--	return 1;
-+	return vchiq_ioc_await_completion(file->private_data, &args,
-+					  &argp->msgbufcount);
+-	return snd_hwdep_dsp_load(hw, dst);
++	return snd_hwdep_dsp_load(hw, &info);
  }
  
- struct vchiq_dequeue_message32 {
-@@ -1893,7 +1807,7 @@ vchiq_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	case VCHIQ_IOC_QUEUE_BULK_RECEIVE32:
- 		return vchiq_compat_ioctl_queue_bulk(file, cmd, argp);
- 	case VCHIQ_IOC_AWAIT_COMPLETION32:
--		return vchiq_compat_ioctl_await_completion(file, cmd, arg);
-+		return vchiq_compat_ioctl_await_completion(file, cmd, argp);
- 	case VCHIQ_IOC_DEQUEUE_MESSAGE32:
- 		return vchiq_compat_ioctl_dequeue_message(file, cmd, argp);
- 	case VCHIQ_IOC_GET_CONFIG32:
+ enum {
 -- 
 2.27.0
 
