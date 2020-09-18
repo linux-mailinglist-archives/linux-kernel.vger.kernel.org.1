@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2E326ECAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F09EA26ECB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:16:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728990AbgIRCNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:13:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40986 "EHLO mail.kernel.org"
+        id S1727040AbgIRCOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:14:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728959AbgIRCNh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:13:37 -0400
+        id S1728031AbgIRCNn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:13:43 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4938F2388D;
-        Fri, 18 Sep 2020 02:13:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB2632388D;
+        Fri, 18 Sep 2020 02:13:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600395216;
-        bh=0NaHK30kRrR6UMyWl9usYfUJLUQ4H0zeHY3L+EQ56yA=;
+        s=default; t=1600395222;
+        bh=9vYwt60WtS5kvhi3kyOZocDe+6ndIZqBUPH8QXk1Qus=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UU12DZz7L97yqWjULFaYOedmah/gzdC9B1Din9A1HtYfIxY4B5SA7Pwohu9UaUgmT
-         86sOB1UipNIYKDIOpWbpqobAU1zkOdWWuoggRZkuac0EHy0OEJYiNrO/kinpq6cyNO
-         eRk2vs/A9fdpSYRK1h2niv10wt4ZKyDBr8BKBHb0=
+        b=sj2/EeACZ1lJOAFvi0vxHbPF6ywVVgMozns7otKYUFam207+qEzwexpeUYymAVaqg
+         bw2u7XeRvePevsoPiwL2t6Snpl5iyBieJBfFDWgkjkD5YyU6jHd4RuH5HLc4j6nDMR
+         qrhm742pH95IUDr3FNbgUksAJ0mrXLswNfpf7v5c=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Howard Chung <howardchung@google.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 063/127] Bluetooth: L2CAP: handle l2cap config request during open state
-Date:   Thu, 17 Sep 2020 22:11:16 -0400
-Message-Id: <20200918021220.2066485-63-sashal@kernel.org>
+Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, linux-serial@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 069/127] serial: 8250_port: Don't service RX FIFO if throttled
+Date:   Thu, 17 Sep 2020 22:11:22 -0400
+Message-Id: <20200918021220.2066485-69-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918021220.2066485-1-sashal@kernel.org>
 References: <20200918021220.2066485-1-sashal@kernel.org>
@@ -43,173 +42,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Howard Chung <howardchung@google.com>
+From: Vignesh Raghavendra <vigneshr@ti.com>
 
-[ Upstream commit 96298f640104e4cd9a913a6e50b0b981829b94ff ]
+[ Upstream commit f19c3f6c8109b8bab000afd35580929958e087a9 ]
 
-According to Core Spec Version 5.2 | Vol 3, Part A 6.1.5,
-the incoming L2CAP_ConfigReq should be handled during
-OPEN state.
+When port's throttle callback is called, it should stop pushing any more
+data into TTY buffer to avoid buffer overflow. This means driver has to
+stop HW from receiving more data and assert the HW flow control. For
+UARTs with auto HW flow control (such as 8250_omap) manual assertion of
+flow control line is not possible and only way is to allow RX FIFO to
+fill up, thus trigger auto HW flow control logic.
 
-The section below shows the btmon trace when running
-L2CAP/COS/CFD/BV-12-C before and after this change.
+Therefore make sure that 8250 generic IRQ handler does not drain data
+when port is stopped (i.e UART_LSR_DR is unset in read_status_mask). Not
+servicing, RX FIFO would trigger auto HW flow control when FIFO
+occupancy reaches preset threshold, thus halting RX.
+Since, error conditions in UART_LSR register are cleared just by reading
+the register, data has to be drained in case there are FIFO errors, else
+error information will lost.
 
-=== Before ===
-...
-> ACL Data RX: Handle 256 flags 0x02 dlen 12                #22
-      L2CAP: Connection Request (0x02) ident 2 len 4
-        PSM: 1 (0x0001)
-        Source CID: 65
-< ACL Data TX: Handle 256 flags 0x00 dlen 16                #23
-      L2CAP: Connection Response (0x03) ident 2 len 8
-        Destination CID: 64
-        Source CID: 65
-        Result: Connection successful (0x0000)
-        Status: No further information available (0x0000)
-< ACL Data TX: Handle 256 flags 0x00 dlen 12                #24
-      L2CAP: Configure Request (0x04) ident 2 len 4
-        Destination CID: 65
-        Flags: 0x0000
-> HCI Event: Number of Completed Packets (0x13) plen 5      #25
-        Num handles: 1
-        Handle: 256
-        Count: 1
-> HCI Event: Number of Completed Packets (0x13) plen 5      #26
-        Num handles: 1
-        Handle: 256
-        Count: 1
-> ACL Data RX: Handle 256 flags 0x02 dlen 16                #27
-      L2CAP: Configure Request (0x04) ident 3 len 8
-        Destination CID: 64
-        Flags: 0x0000
-        Option: Unknown (0x10) [hint]
-        01 00                                            ..
-< ACL Data TX: Handle 256 flags 0x00 dlen 18                #28
-      L2CAP: Configure Response (0x05) ident 3 len 10
-        Source CID: 65
-        Flags: 0x0000
-        Result: Success (0x0000)
-        Option: Maximum Transmission Unit (0x01) [mandatory]
-          MTU: 672
-> HCI Event: Number of Completed Packets (0x13) plen 5      #29
-        Num handles: 1
-        Handle: 256
-        Count: 1
-> ACL Data RX: Handle 256 flags 0x02 dlen 14                #30
-      L2CAP: Configure Response (0x05) ident 2 len 6
-        Source CID: 64
-        Flags: 0x0000
-        Result: Success (0x0000)
-> ACL Data RX: Handle 256 flags 0x02 dlen 20                #31
-      L2CAP: Configure Request (0x04) ident 3 len 12
-        Destination CID: 64
-        Flags: 0x0000
-        Option: Unknown (0x10) [hint]
-        01 00 91 02 11 11                                ......
-< ACL Data TX: Handle 256 flags 0x00 dlen 14                #32
-      L2CAP: Command Reject (0x01) ident 3 len 6
-        Reason: Invalid CID in request (0x0002)
-        Destination CID: 64
-        Source CID: 65
-> HCI Event: Number of Completed Packets (0x13) plen 5      #33
-        Num handles: 1
-        Handle: 256
-        Count: 1
-...
-=== After ===
-...
-> ACL Data RX: Handle 256 flags 0x02 dlen 12               #22
-      L2CAP: Connection Request (0x02) ident 2 len 4
-        PSM: 1 (0x0001)
-        Source CID: 65
-< ACL Data TX: Handle 256 flags 0x00 dlen 16               #23
-      L2CAP: Connection Response (0x03) ident 2 len 8
-        Destination CID: 64
-        Source CID: 65
-        Result: Connection successful (0x0000)
-        Status: No further information available (0x0000)
-< ACL Data TX: Handle 256 flags 0x00 dlen 12               #24
-      L2CAP: Configure Request (0x04) ident 2 len 4
-        Destination CID: 65
-        Flags: 0x0000
-> HCI Event: Number of Completed Packets (0x13) plen 5     #25
-        Num handles: 1
-        Handle: 256
-        Count: 1
-> HCI Event: Number of Completed Packets (0x13) plen 5     #26
-        Num handles: 1
-        Handle: 256
-        Count: 1
-> ACL Data RX: Handle 256 flags 0x02 dlen 16               #27
-      L2CAP: Configure Request (0x04) ident 3 len 8
-        Destination CID: 64
-        Flags: 0x0000
-        Option: Unknown (0x10) [hint]
-        01 00                                            ..
-< ACL Data TX: Handle 256 flags 0x00 dlen 18               #28
-      L2CAP: Configure Response (0x05) ident 3 len 10
-        Source CID: 65
-        Flags: 0x0000
-        Result: Success (0x0000)
-        Option: Maximum Transmission Unit (0x01) [mandatory]
-          MTU: 672
-> HCI Event: Number of Completed Packets (0x13) plen 5     #29
-        Num handles: 1
-        Handle: 256
-        Count: 1
-> ACL Data RX: Handle 256 flags 0x02 dlen 14               #30
-      L2CAP: Configure Response (0x05) ident 2 len 6
-        Source CID: 64
-        Flags: 0x0000
-        Result: Success (0x0000)
-> ACL Data RX: Handle 256 flags 0x02 dlen 20               #31
-      L2CAP: Configure Request (0x04) ident 3 len 12
-        Destination CID: 64
-        Flags: 0x0000
-        Option: Unknown (0x10) [hint]
-        01 00 91 02 11 11                                .....
-< ACL Data TX: Handle 256 flags 0x00 dlen 18               #32
-      L2CAP: Configure Response (0x05) ident 3 len 10
-        Source CID: 65
-        Flags: 0x0000
-        Result: Success (0x0000)
-        Option: Maximum Transmission Unit (0x01) [mandatory]
-          MTU: 672
-< ACL Data TX: Handle 256 flags 0x00 dlen 12               #33
-      L2CAP: Configure Request (0x04) ident 3 len 4
-        Destination CID: 65
-        Flags: 0x0000
-> HCI Event: Number of Completed Packets (0x13) plen 5     #34
-        Num handles: 1
-        Handle: 256
-        Count: 1
-> HCI Event: Number of Completed Packets (0x13) plen 5     #35
-        Num handles: 1
-        Handle: 256
-        Count: 1
-...
-
-Signed-off-by: Howard Chung <howardchung@google.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+Link: https://lore.kernel.org/r/20200319103230.16867-2-vigneshr@ti.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/l2cap_core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/tty/serial/8250/8250_port.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
-index 97175cddb1e04..c301b9debea7c 100644
---- a/net/bluetooth/l2cap_core.c
-+++ b/net/bluetooth/l2cap_core.c
-@@ -4117,7 +4117,8 @@ static inline int l2cap_config_req(struct l2cap_conn *conn,
- 		return 0;
- 	}
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+index 07d5925791e1c..9880a50d664fc 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -1865,6 +1865,7 @@ int serial8250_handle_irq(struct uart_port *port, unsigned int iir)
+ 	unsigned char status;
+ 	unsigned long flags;
+ 	struct uart_8250_port *up = up_to_u8250p(port);
++	bool skip_rx = false;
  
--	if (chan->state != BT_CONFIG && chan->state != BT_CONNECT2) {
-+	if (chan->state != BT_CONFIG && chan->state != BT_CONNECT2 &&
-+	    chan->state != BT_CONNECTED) {
- 		cmd_reject_invalid_cid(conn, cmd->ident, chan->scid,
- 				       chan->dcid);
- 		goto unlock;
+ 	if (iir & UART_IIR_NO_INT)
+ 		return 0;
+@@ -1873,7 +1874,20 @@ int serial8250_handle_irq(struct uart_port *port, unsigned int iir)
+ 
+ 	status = serial_port_in(port, UART_LSR);
+ 
+-	if (status & (UART_LSR_DR | UART_LSR_BI)) {
++	/*
++	 * If port is stopped and there are no error conditions in the
++	 * FIFO, then don't drain the FIFO, as this may lead to TTY buffer
++	 * overflow. Not servicing, RX FIFO would trigger auto HW flow
++	 * control when FIFO occupancy reaches preset threshold, thus
++	 * halting RX. This only works when auto HW flow control is
++	 * available.
++	 */
++	if (!(status & (UART_LSR_FIFOE | UART_LSR_BRK_ERROR_BITS)) &&
++	    (port->status & (UPSTAT_AUTOCTS | UPSTAT_AUTORTS)) &&
++	    !(port->read_status_mask & UART_LSR_DR))
++		skip_rx = true;
++
++	if (status & (UART_LSR_DR | UART_LSR_BI) && !skip_rx) {
+ 		if (!up->dma || handle_rx_dma(up, iir))
+ 			status = serial8250_rx_chars(up, status);
+ 	}
 -- 
 2.25.1
 
