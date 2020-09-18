@@ -2,49 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D4A2701F9
+	by mail.lfdr.de (Postfix) with ESMTP id E57182701FA
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726379AbgIRQS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 12:18:58 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:47648 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726192AbgIRQS5 (ORCPT
+        id S1726518AbgIRQTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 12:19:01 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:54038 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726192AbgIRQS6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 12:18:57 -0400
+        Fri, 18 Sep 2020 12:18:58 -0400
 Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08IGIiZ3039579;
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08IGIibu127362;
         Fri, 18 Sep 2020 11:18:44 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
         s=ti-com-17Q1; t=1600445924;
-        bh=CoXhZYsCP8vlZjkExtcfpn4Zh4jMPI7Jl8YtUqogz7E=;
-        h=From:To:CC:Subject:Date;
-        b=Q+SJAmhCY5JwhhSSU2942DsvrHGOXq7b24Ul2kC4wBy5npbePCEnOA61l6lneRkFR
-         kD9n6nuRMfULrt8vTAFj/L7smcogmxFG2dprJtVqAYJ5STlZvZOumIAn/JFDN+l9cy
-         oZGyb5P4D+uqS/vqx3MxxG9MhRPEYToFK82hVfWk=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08IGIipr053207
+        bh=6QokZMF6RjHPEWc7NrsYM8QzQWnzdKBphxV83v/HNCQ=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=HbR3v7+r6RcOZeXd3znZjkqt0+J8qmEw5P6mnitDZ4o+fRAs5o4de/SnyHET9PlUD
+         CQhcauE9seb557szWWO1VaxiV6YzkUqXedL0OaS3u7IIXn9Qio22Ql/8T6w9b9Oz7V
+         V3OdDCBz7CWCkSMg//SN2ypH+jSCFd3Ixz2IXgVo=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08IGIiHs053210
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
         Fri, 18 Sep 2020 11:18:44 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 18
  Sep 2020 11:18:44 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
  Frontend Transport; Fri, 18 Sep 2020 11:18:43 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08IGIhY1110655;
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08IGIhVp037825;
         Fri, 18 Sep 2020 11:18:43 -0500
 From:   Dan Murphy <dmurphy@ti.com>
 To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <tiwai@suse.com>
 CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
         Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH 1/2] ASoC: tas2770: Fix calling reset in probe
-Date:   Fri, 18 Sep 2020 11:18:41 -0500
-Message-ID: <20200918161842.4451-1-dmurphy@ti.com>
+Subject: [PATCH 2/2] ASoC: tas2770: Add missing bias level power states
+Date:   Fri, 18 Sep 2020 11:18:42 -0500
+Message-ID: <20200918161842.4451-2-dmurphy@ti.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200918161842.4451-1-dmurphy@ti.com>
+References: <20200918161842.4451-1-dmurphy@ti.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -53,39 +55,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tas2770_reset is called during i2c probe. The reset calls the
-snd_soc_component_write which depends on the tas2770->component being
-available. The component pointer is not set until codec_probe so move
-the reset to the codec_probe after the pointer is set.
+Add the BIAS_STANDBY and BIAS_PREPARE to the set_bias_level or else the
+driver will return -EINVAL which is not correct as they are valid
+states.
 
 Fixes: 1a476abc723e6 ("tas2770: add tas2770 smart PA kernel driver")
 Signed-off-by: Dan Murphy <dmurphy@ti.com>
 ---
- sound/soc/codecs/tas2770.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/tas2770.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/tas2770.c b/sound/soc/codecs/tas2770.c
-index c09851834395..03d7ad1885b8 100644
+index 03d7ad1885b8..7c6f61946ab3 100644
 --- a/sound/soc/codecs/tas2770.c
 +++ b/sound/soc/codecs/tas2770.c
-@@ -575,6 +575,8 @@ static int tas2770_codec_probe(struct snd_soc_component *component)
- 
- 	tas2770->component = component;
- 
-+	tas2770_reset(tas2770);
-+
- 	return 0;
- }
- 
-@@ -771,8 +773,6 @@ static int tas2770_i2c_probe(struct i2c_client *client,
- 	tas2770->channel_size = 0;
- 	tas2770->slot_width = 0;
- 
--	tas2770_reset(tas2770);
+@@ -57,7 +57,12 @@ static int tas2770_set_bias_level(struct snd_soc_component *component,
+ 			TAS2770_PWR_CTRL_MASK,
+ 			TAS2770_PWR_CTRL_ACTIVE);
+ 		break;
 -
- 	result = tas2770_register_codec(tas2770);
- 	if (result)
- 		dev_err(tas2770->dev, "Register codec failed.\n");
++	case SND_SOC_BIAS_STANDBY:
++	case SND_SOC_BIAS_PREPARE:
++		snd_soc_component_update_bits(component,
++			TAS2770_PWR_CTRL,
++			TAS2770_PWR_CTRL_MASK, TAS2770_PWR_CTRL_MUTE);
++		break;
+ 	case SND_SOC_BIAS_OFF:
+ 		snd_soc_component_update_bits(component,
+ 			TAS2770_PWR_CTRL,
 -- 
 2.28.0
 
