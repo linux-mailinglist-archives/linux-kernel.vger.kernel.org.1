@@ -2,121 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DCF526FBDA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 13:56:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D06126FBE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 13:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbgIRL4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 07:56:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726064AbgIRL4j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 07:56:39 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B40BC06174A;
-        Fri, 18 Sep 2020 04:56:39 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id h17so5141955otr.1;
-        Fri, 18 Sep 2020 04:56:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bKOrvyGUMEvEmOgg/jMWt/EUqVke0/N7VcikSM/zy5E=;
-        b=nT1xkTnBT44HIB5gZBYN1J8G2VdO+OJkIKIhOXeBgLEsONUbEOECgEIBmC+CzOB4fi
-         s2+RJpe+KtnS4Ny1JZ8AkkwfkKPKpZD2lHHco54ucxQO123wIch6Trxm3LEleX5owCNQ
-         N7WNQ64lLwj8qzil+7QMxCj1TZXzeGdescOOEeqDER7fuNIH8FlK+yS3TqtEXUGWW/dY
-         S4+QI2I0wajHSS4iY9bMvXerjQFmdEegIdMNFO9BC727wJ2HJJ0VtbaCkGtQq/3hbx0k
-         53PyzP3ACS78t8wqQQ7NcV9xl/r/EIK0UDehYXZS6w0jb6jVyud4sqR3PWIHAzQVVaKi
-         YIgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bKOrvyGUMEvEmOgg/jMWt/EUqVke0/N7VcikSM/zy5E=;
-        b=fNdbuLPGLdb57fgS43GAqjKpo/u0vTmxP3hMi7y406qT11wV+ViGkdFk7EOvZlahIZ
-         3stxAY+kAKujqNIZ2wPiYarZD9TUTgu9YRvMoFH3kODJm1f8tNEUkJ77VXaWqlehzoje
-         TN1lsI3N2PU2O4yGAdND5iBbnVVoKaYJ8G/IAw3jg9g/KuGWdNXylIuMtG5Tv9jlX3XO
-         iq3rKxm2GAAX+QuY3aG8HU9vyB5CpTygIlikTJPJbsvDCy+9X+fhbD7tXZtwyTHUzvEf
-         ffkhwpmiSN+62rlWuWjFBqCbK6hnMuxYeACC7ywicArwxIfzQCz3wtkAp7UaHsCmGGrp
-         f05g==
-X-Gm-Message-State: AOAM532jwYaIiorKincyPmLQ9beRQIbqvrarxZlQhvv6RvWMR53AxAOR
-        eTvy6r1CqQXGAceeUptrVlTZv+0iFBNb1esy43E=
-X-Google-Smtp-Source: ABdhPJzk5hzh3206q304HnVA4MDalu//mmX4OhC3q96ogtc63dcCtzPNKyFt3Rusp6BT9OtcYeEocHth+XDGyX/528o=
-X-Received: by 2002:a9d:b95:: with SMTP id 21mr6191903oth.143.1600430198690;
- Fri, 18 Sep 2020 04:56:38 -0700 (PDT)
+        id S1726528AbgIRL5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 07:57:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37540 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726064AbgIRL5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 07:57:10 -0400
+Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C7F662100A
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 11:57:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600430229;
+        bh=V54wrBnmpNUu8QyNU3a/ZBi18LV1JMIHDtLqr1Z7Ktg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NXn+xNPA06Qg7a3JljbEx7trfKB9UAzYsGH6XI8viPneTk+I9yvPThDNuQoMu7WFr
+         b4f8PhmhZtVjjWwYLLC/Wl2I6dX4CPaL08lODnwbyqgEWMrjutGQu/M5idkQFAIeRZ
+         7zPImb5qnonHl2sbL+3l/qrYsrNHdGdQor8dcjYw=
+Received: by mail-ot1-f41.google.com with SMTP id q21so5101920ota.8
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 04:57:09 -0700 (PDT)
+X-Gm-Message-State: AOAM533zahoKmsaSraTXo7Zxq4/3hU6TZjMDwc0zLpZyZKHEKKWhYMOw
+        yoJMfABurAiJjX/bxRREtU9zlQKoI2UL7sKqvow=
+X-Google-Smtp-Source: ABdhPJzBQ9JbxrhzFshdG0IRj0syZIVi3e8ZDXv2u/HG8Nb8HAC9vSFKCNmvuQnj8RxAWtEaIvnbVLcMe8o50U16+2o=
+X-Received: by 2002:a9d:6250:: with SMTP id i16mr24057873otk.77.1600430229158;
+ Fri, 18 Sep 2020 04:57:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200915171022.10561-1-oded.gabbay@gmail.com> <20200915133556.21268811@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAFCwf12XZRxLYifSfuB+RGhuiKBytzsUTOnEa6FqfJHYvcVJPQ@mail.gmail.com>
- <20200917171833.GJ8409@ziepe.ca> <0b21db8d-1061-6453-960b-8043951b3bad@amazon.com>
- <20200918115227.GR869610@unreal>
-In-Reply-To: <20200918115227.GR869610@unreal>
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-Date:   Fri, 18 Sep 2020 14:56:09 +0300
-Message-ID: <CAFCwf10C1zm91e=tqPVGOX8kZD7o=AR2EW-P9VwCF4rcvnEJnA@mail.gmail.com>
-Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Gal Pressman <galpress@amazon.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-rdma@vger.kernel.org
+References: <20200918033312.ddfpibgfylfjpex2@amazon.com> <20200918110745.GD6335@gaia>
+In-Reply-To: <20200918110745.GD6335@gaia>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 18 Sep 2020 14:56:57 +0300
+X-Gmail-Original-Message-ID: <CAMj1kXGy7vNHu9sTw7e69qwc6L2_BFYzUG++5UJdrWs+-173EA@mail.gmail.com>
+Message-ID: <CAMj1kXGy7vNHu9sTw7e69qwc6L2_BFYzUG++5UJdrWs+-173EA@mail.gmail.com>
+Subject: Re: [PATCH v2] arm64: Enable PCI write-combine resources under sysfs
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Clint Sbisa <csbisa@amazon.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 2:52 PM Leon Romanovsky <leon@kernel.org> wrote:
+On Fri, 18 Sep 2020 at 14:08, Catalin Marinas <catalin.marinas@arm.com> wrote:
 >
-> On Fri, Sep 18, 2020 at 02:36:10PM +0300, Gal Pressman wrote:
-> > On 17/09/2020 20:18, Jason Gunthorpe wrote:
-> > > On Tue, Sep 15, 2020 at 11:46:58PM +0300, Oded Gabbay wrote:
-> > >> infrastructure for communication between multiple accelerators. Same
-> > >> as Nvidia uses NVlink, we use RDMA that we have inside our ASIC.
-> > >> The RDMA implementation we did does NOT support some basic RDMA
-> > >> IBverbs (such as MR and PD) and therefore, we can't use the rdma-core
-> > >> library or to connect to the rdma infrastructure in the kernel.
-> > >
-> > > You can't create a parallel RDMA subsystem in netdev, or in misc, and
-> > > you can't add random device offloads as IOCTL to nedevs.
-> > >
-> > > RDMA is the proper home for all the networking offloads that don't fit
-> > > into netdev.
-> > >
-> > > EFA was able to fit into rdma-core/etc and it isn't even RoCE at
-> > > all. I'm sure this can too.
+> On Fri, Sep 18, 2020 at 03:33:12AM +0000, Clint Sbisa wrote:
+> > This change exposes write-combine mappings under sysfs for
+> > prefetchable PCI resources on arm64.
 > >
-> > Well, EFA wasn't welcomed to the RDMA subsystem with open arms ;), initially it
-> > was suggested to go through the vfio subsystem instead.
+> > Originally, the usage of "write combine" here was driven by the x86
+> > definition of write combine. This definition is specific to x86 and
+> > does not generalize to other architectures. However, the usage of WC
+> > has mutated to "write combine" semantics, which is implemented
+> > differently on each arch.
 > >
-> > I think this comes back to the discussion we had when EFA was upstreamed, which
-> > is what's the bar to get accepted to the RDMA subsystem.
-> > IIRC, what we eventually agreed on is having a userspace rdma-core provider and
-> > ibv_{ud,rc}_pingpong working (or just supporting one of the IB spec's QP types?).
+> > Generally, prefetchable BARs are accepted to allow speculative
+> > accesses, write combining, and re-ordering-- from the PCI perspective,
+> > this means there are no read side effects. (This contradicts the PCI
+> > spec which allows prefetchable BARs to have read side effects, but
+> > this definition is ill-advised as it is impossible to meet.) On x86,
+> > prefetchable BARs are mapped as WC as originally defined (with some
+> > conditionals on arch features). On arm64, WC is taken to mean normal
+> > non-cacheable memory.
 > >
-> > Does GAUDI fit these requirements? If not, should it be in a different subsystem
-> > or should we open the "what qualifies as an RDMA device" question again?
+> > In practice, write combine semantics are used to minimize write
+> > operations. A common usage of this is minimizing PCI TLPs which can
+> > significantly improve performance with PCI devices. In order to
+> > provide the same benefits to userspace, we need to allow userspace to
+> > map prefetchable BARs with write combine semantics. The resourceX_wc
+> > mapping is used today by userspace programs and libraries.
+> >
+> > While this model is flawed as "write combine" is very ill-defined, it
+> > is already used by multiple non-x86 archs to expose write combine
+> > semantics to user space. We enable this on arm64 to give userspace on
+> > arm64 an equivalent mechanism for utilizing write combining with PCI
+> > devices.
+> >
+> > Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> > Cc: Bjorn Helgaas <helgaas@kernel.org>
+> > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > Cc: Jason Gunthorpe <jgg@nvidia.com>
+> > Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> > Cc: Will Deacon <will@kernel.org>
+> > Signed-off-by: Clint Sbisa <csbisa@amazon.com>
 >
-> I want to remind you that rdma-core requirement came to make sure that
-> anything exposed from the RDMA to the userspace is strict with proper
-> UAPI header hygiene.
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
 >
-> I doubt that Havana's ioctls are backed by anything like this.
->
-> Thanks
 
-Why do you doubt that ? Have you looked at our code ?
-Our uapi and IOCTLs interface is based on drm subsystem uapi interface
-and it is very safe and protected.
-Otherwise Greg would have never allowed me to go upstream in the first place.
-
-We have a single function which is the entry point for all the IOCTLs
-of our drivers (only one IOCTL is RDMA related, all the others are
-compute related).
-That function is almost 1:1 copy of the function in drm.
-
-Thanks,
-Oded
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
