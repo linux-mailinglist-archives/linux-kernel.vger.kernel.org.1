@@ -2,71 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE7CB26FD55
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3939926FD73
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727032AbgIRMrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 08:47:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34888 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726461AbgIRMrN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 08:47:13 -0400
-Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 505E623600;
-        Fri, 18 Sep 2020 12:47:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600433232;
-        bh=T2S8dkpDTSwWKVpBKiH0LOb9Www4+IJXitnPi6pfvQI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=zQlHWti5x0Rtt729xb+cWuja0eA8sW7ZIkA9eO1fi/XzXq48oBvSuSif1C19KU1pw
-         P6YtwpwN8n2MaoEqIdDLIqF2P1KhL+QXPMqAQKlaxYODQLnnrhEJrrCxyYBLs7s52h
-         oNg/fKAS4lDc5rTrWZ2BJKczDaPKFX/h2wF+qFJI=
-Date:   Fri, 18 Sep 2020 07:47:10 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Z.q. Hou" <zhiqiang.hou@nxp.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Michael Walle <michael@walle.cc>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH] PCI: dwc: Added link up check in map_bus of
- dw_child_pcie_ops
-Message-ID: <20200918124710.GA1800067@bjorn-Precision-5520>
+        id S1727124AbgIRMsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 08:48:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726708AbgIRMsS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 08:48:18 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3531FC061351
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 05:48:12 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id x23so5202029wmi.3
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 05:48:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=j6z/UJ7CNrSXR9o7Cfm16LszuY4Y2gIbIznxSeH0B9A=;
+        b=lG981rnRtgZAm6syEr1bZwt4N84LNEPYwI/TtyOO/VThTo/f9Li5vCEwYo6F3ZuutF
+         6Gslyar/X9Ttu77h6dUYdULlgBkFmFESpKnO8YxLOmCCqVxm+xNqSqCSvB8T2cqti2My
+         /HA7oinA8lX9Ie/JT9IPM3+mo8pr5NmmDoZmI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=j6z/UJ7CNrSXR9o7Cfm16LszuY4Y2gIbIznxSeH0B9A=;
+        b=gnA3VT2UvADFNelMNeWAwQbGwVt3tzFIBDjKAK6xiQdb+xOgq7a61d5E93r6E61uXn
+         q+1JFhr6hEcwNzybyTtldy/rgVljveQiBXudgfZoUWe2TZCjdK3iPee6Mx5HWmnfb3fw
+         4Zm2YHNl6fZB91yf2jb/cCheK1JOW5JZHApvHZb1y2h6biLtePvqUnWBDP1vOuM+2cs4
+         nSDXc9xLpYDX3VlO22KrVOJl/rDJtWf9phx2J8kpz/Akg+uoIBFOIpT2R8NZhvY1u0rg
+         nn4csIf+15hjRkS76NGS0gzwbkh2pT1T4z4bp/kz2laPqPmopsm+DmK9sL11ZrCC9KHl
+         W7SA==
+X-Gm-Message-State: AOAM5336S6r9DJ55n53aPuOjr4GLeet2j2vnNYg2PevPt+g6FoIDgDig
+        I3uT2RAFrMD9w1g1oj04sB/46A==
+X-Google-Smtp-Source: ABdhPJyAwBd6mEl7zhhB5tmC68RAnfpPY5rzLITEX8vAOCgabHANhMyPXmiUCR2jm9cGTwuUEaAfOw==
+X-Received: by 2002:a7b:c141:: with SMTP id z1mr15912912wmi.79.1600433290849;
+        Fri, 18 Sep 2020 05:48:10 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id b18sm5415123wrn.21.2020.09.18.05.48.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 05:48:10 -0700 (PDT)
+Date:   Fri, 18 Sep 2020 14:48:08 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-fbdev@vger.kernel.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        "David S . Miller" <davem@davemloft.net>, hch@lst.de,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] fbdev: stop using compat_alloc_user_space
+Message-ID: <20200918124808.GD438822@phenom.ffwll.local>
+Mail-Followup-To: Arnd Bergmann <arnd@arndb.de>,
+        linux-fbdev@vger.kernel.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        "David S . Miller" <davem@davemloft.net>, hch@lst.de,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20200918100812.1447443-1-arnd@arndb.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <HE1PR0402MB3371F8191538F47E8249F048843F0@HE1PR0402MB3371.eurprd04.prod.outlook.com>
+In-Reply-To: <20200918100812.1447443-1-arnd@arndb.de>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 11:02:07AM +0000, Z.q. Hou wrote:
-
-> But now the SError is exactly caused by the first access of the
-> non-existent function, I dug into the kernel enumeration code and
-> found it will fire a 4Byte CFG read transaction to read the Vendor
-> ID and Device ID together, so I suspect the root cause is access the
-> Device ID of a non-existent function triggers SError.
+On Fri, Sep 18, 2020 at 12:08:10PM +0200, Arnd Bergmann wrote:
+> The fbdev code uses compat_alloc_user_space in a few of its
+> compat_ioctl handlers, which tends to be a bit more complicated
+> and error-prone than calling the underlying handlers directly,
+> so I would like to remove it completely.
 > 
-> So the alternative solution seems to correct the PCIe enumeration, I
-> will submit a patch to let the first access only read the Vendor ID.
+> This modifies two such functions in fbdev, and removes another
+> one that is completely unused.
+> 
+>     Arnd
+> 
+> Arnd Bergmann (3):
+>   fbdev: simplify fb_getput_cmap()
+>   fbdev: sbuslib: remove unused FBIOSCURSOR32 helper
+>   fbdev: sbuslib: remove compat_alloc_user_space usage
 
-If it is incorrect for the first access to be a 32-bit read of both
-the Vendor and the Device ID, please cite the relevant section of the
-spec in your patch.
+Looks all good, but we're also kinda looking for a new volunteer for
+handling fbdev patches ... drm-misc commit rights, still not interested?
+-Daniel
 
-I don't like to make changes to generic code to accommodate specific
-pieces of hardware because then we restrict future changes based on
-some device that will soon be obsolete and forgotten.
+> 
+>  drivers/video/fbdev/core/fbmem.c |  44 +++++------
+>  drivers/video/fbdev/sbuslib.c    | 124 ++++++++++++++++++-------------
+>  2 files changed, 90 insertions(+), 78 deletions(-)
+> 
+> -- 
+> 2.27.0
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
-I'm pretty sure the spec language about CRS handling is careful to
-talk about "reads that *include* Vendor ID", not just "reads of Vendor
-ID", so the implication is that it covers 32-bit reads as well as
-16-bit reads.
-
-Bjorn
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
