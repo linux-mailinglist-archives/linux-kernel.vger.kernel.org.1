@@ -2,128 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299E326FFF5
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 16:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC05C26FFF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 16:34:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726572AbgIROdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 10:33:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20280 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726126AbgIROdo (ORCPT
+        id S1726770AbgIROeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 10:34:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726126AbgIROeD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 10:33:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600439623;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Lc1gdBcSlwW1Myg1j82ImIPmW/PKiG30x2XN4oGwKHM=;
-        b=JMfksy8sawvjzuQ4O1vedj4n4U2ae+7m0dEvb/h813QvhmcDrE+zEXZAoyZvBnfjQV4yR2
-        QFwq0NlU8SWLfB7/+j+xNJ0JFiY/be1Php0w0qrGsgQIqHmRUgXStXXk9u/SsfnMaK5ylV
-        b2zoQTvs0nDE4ZeK6STDB0Mng2YeeBA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-364-313U2Tk8MHy_GT9nKyn5qg-1; Fri, 18 Sep 2020 10:33:38 -0400
-X-MC-Unique: 313U2Tk8MHy_GT9nKyn5qg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EBEC4802B69;
-        Fri, 18 Sep 2020 14:33:35 +0000 (UTC)
-Received: from krava (ovpn-114-24.ams2.redhat.com [10.36.114.24])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 42B0C5D9E4;
-        Fri, 18 Sep 2020 14:33:32 +0000 (UTC)
-Date:   Fri, 18 Sep 2020 16:33:31 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Raphael Gault <raphael.gault@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Ian Rogers <irogers@google.com>, honnappa.nagarahalli@arm.com
-Subject: Re: [PATCH v3 05/10] libperf: Add libperf_evsel__mmap()
-Message-ID: <20200918143331.GF2626435@krava>
-References: <20200911215118.2887710-1-robh@kernel.org>
- <20200911215118.2887710-6-robh@kernel.org>
+        Fri, 18 Sep 2020 10:34:03 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D013AC0613CE;
+        Fri, 18 Sep 2020 07:34:02 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id a8so6450004ilk.1;
+        Fri, 18 Sep 2020 07:34:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sKMONdieCxgxCroaWyWNO0AqXSg8A8t7H/Pr77coN9c=;
+        b=RiziH461xgq1/ogIkGyo/fb1MNBKdYf+l0MPBLrBKnwFoPrvSSgFs4rhma6yuofTWn
+         N92UQgMYQCxQz8JJ6SrfXX4ixkksbun724CUmGq4DK3MSGdEDAQ78moUi7WNCPo6woH9
+         OH5IrCRQ5BacTxD+BXXCWmjI5FWCRRpnnf3SK93w3p+h4J2nE1bu8ST8UWaifdWYbElP
+         wQZUe5PMgee5GALdq8u+y/msfizcIZ84u3DWvR9xEIpZGL1LKOZRCIKR4Zo6GAACs4KQ
+         KOyRF+xB2Y0LeQKZKiTucaSRd9yj23IoqMCbGF9VP7ZYIxL7ZSLGWAzZdgCEoHA7wBw+
+         /3KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sKMONdieCxgxCroaWyWNO0AqXSg8A8t7H/Pr77coN9c=;
+        b=OLZFplgFyiUc7RV62NN3pntJDr6ajJvJ0r44zb0pJ4X0UeA8Ymz7WDZMSsQW735eOl
+         Z2dnESCElEV270z81x2z1Un8AMwHF7h1GKsfq0VctIM+ANyGd9/7N2hOeaEXv2Llk3KS
+         CRxOfIHrA9FslCuuh7cTO5B5Bwk3HgGRAqvWgUJF4K2O3C7CBUcmXAKY53Q8/LPqPjur
+         Q/CWoMywSN5BpPo+OvZiDf8KPzEmcP/p/tPr4v3qBUceQGVW8xO93kU4HEDhzBcPQvb7
+         Maj9pp9dhkHPCRDd+6bP3H0ygB4WUzgj/jyj5DktW38KgvhRPyPskggV6Ls2sIF6/7iz
+         tbAw==
+X-Gm-Message-State: AOAM530XGyU8HLieogdgZK92o3XZ6/TjKmDGjmsD+t24djdd/3o+D0Lb
+        w1JIv6s+3/qSImMeJqMjy3Lme7rRkKE=
+X-Google-Smtp-Source: ABdhPJwQAnskCg/xJN+CaLDsSZ335h7fGubZ/bsN2TIRm77rN59CfJ9NX/iZ+avFft5btaMzbXkgpA==
+X-Received: by 2002:a92:6b0b:: with SMTP id g11mr26085925ilc.62.1600439641735;
+        Fri, 18 Sep 2020 07:34:01 -0700 (PDT)
+Received: from aford-OptiPlex-7050.logicpd.com ([174.46.170.158])
+        by smtp.gmail.com with ESMTPSA id s2sm1744657ili.49.2020.09.18.07.34.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 07:34:01 -0700 (PDT)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-input@vger.kernel.org
+Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Input: ili210x:  Enable suspend/resume functions
+Date:   Fri, 18 Sep 2020 09:33:52 -0500
+Message-Id: <20200918143352.93135-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200911215118.2887710-6-robh@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 03:51:13PM -0600, Rob Herring wrote:
-> In order to support usersapce access, an event must be mmapped. While
-> there's already mmap support for evlist, the usecase is a bit different
-> than the self monitoring with userspace access. So let's add a new
-> perf_evsel__mmap() function to mmap an evsel. This allows implementing
-> userspace access as a fastpath for perf_evsel__read().
-> 
-> The mmapped address is returned by perf_evsel__mmap() primarily for
-> users/tests to check if userspace access is enabled.
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-> v3:
->  - New patch split out from user access patch
-> ---
->  tools/lib/perf/Documentation/libperf.txt |  1 +
->  tools/lib/perf/evsel.c                   | 31 ++++++++++++++++++++++++
->  tools/lib/perf/include/internal/evsel.h  |  2 ++
->  tools/lib/perf/include/perf/evsel.h      |  2 ++
->  tools/lib/perf/libperf.map               |  1 +
->  5 files changed, 37 insertions(+)
-> 
-> diff --git a/tools/lib/perf/Documentation/libperf.txt b/tools/lib/perf/Documentation/libperf.txt
-> index 0c74c30ed23a..0b4694ce42b9 100644
-> --- a/tools/lib/perf/Documentation/libperf.txt
-> +++ b/tools/lib/perf/Documentation/libperf.txt
-> @@ -136,6 +136,7 @@ SYNOPSIS
->                         struct perf_thread_map *threads);
->    void perf_evsel__close(struct perf_evsel *evsel);
->    void perf_evsel__close_cpu(struct perf_evsel *evsel, int cpu);
-> +  void *perf_evsel__mmap(struct perf_evsel *evsel, size_t length);
->    int perf_evsel__read(struct perf_evsel *evsel, int cpu, int thread,
->                         struct perf_counts_values *count);
->    int perf_evsel__enable(struct perf_evsel *evsel);
-> diff --git a/tools/lib/perf/evsel.c b/tools/lib/perf/evsel.c
-> index 4dc06289f4c7..99fa53dc0887 100644
-> --- a/tools/lib/perf/evsel.c
-> +++ b/tools/lib/perf/evsel.c
-> @@ -11,10 +11,12 @@
->  #include <stdlib.h>
->  #include <internal/xyarray.h>
->  #include <internal/cpumap.h>
-> +#include <internal/mmap.h>
->  #include <internal/threadmap.h>
->  #include <internal/lib.h>
->  #include <linux/string.h>
->  #include <sys/ioctl.h>
-> +#include <sys/mman.h>
->  
->  void perf_evsel__init(struct perf_evsel *evsel, struct perf_event_attr *attr)
->  {
-> @@ -156,6 +158,35 @@ void perf_evsel__close_cpu(struct perf_evsel *evsel, int cpu)
->  	perf_evsel__close_fd_cpu(evsel, cpu);
->  }
->  
-> +void *perf_evsel__mmap(struct perf_evsel *evsel, size_t length)
-> +{
+Some people may wish to wake their system from sleep, so this
+patch enables a suspend and resume function which enables
+and disables IRQ wake functions.
 
-could you rather use 'int pages' insted of length as we
-do in perf_evlist__mmap, so we keep the same interface
+Signed-off-by: Adam Ford <aford173@gmail.com>
 
-  len = (pages + 1) * page_size
-
-thanks,
-jirka
+diff --git a/drivers/input/touchscreen/ili210x.c b/drivers/input/touchscreen/ili210x.c
+index 199cf3daec10..9b1a61447054 100644
+--- a/drivers/input/touchscreen/ili210x.c
++++ b/drivers/input/touchscreen/ili210x.c
+@@ -474,6 +474,28 @@ static int ili210x_i2c_probe(struct i2c_client *client,
+ 	return 0;
+ }
+ 
++static int __maybe_unused ili210x_i2c_suspend(struct device *dev)
++{
++	struct i2c_client *client = to_i2c_client(dev);
++
++	if (device_may_wakeup(&client->dev))
++		enable_irq_wake(client->irq);
++
++	return 0;
++}
++
++static int __maybe_unused ili210x_i2c_resume(struct device *dev)
++{
++	struct i2c_client *client = to_i2c_client(dev);
++
++	if (device_may_wakeup(&client->dev))
++		disable_irq_wake(client->irq);
++
++	return 0;
++}
++
++static SIMPLE_DEV_PM_OPS(ili210x_i2c_pm, ili210x_i2c_suspend, ili210x_i2c_resume);
++
+ static const struct i2c_device_id ili210x_i2c_id[] = {
+ 	{ "ili210x", (long)&ili210x_chip },
+ 	{ "ili2117", (long)&ili211x_chip },
+@@ -495,6 +517,7 @@ MODULE_DEVICE_TABLE(of, ili210x_dt_ids);
+ static struct i2c_driver ili210x_ts_driver = {
+ 	.driver = {
+ 		.name = "ili210x_i2c",
++		.pm = &ili210x_i2c_pm,
+ 		.of_match_table = ili210x_dt_ids,
+ 	},
+ 	.id_table = ili210x_i2c_id,
+-- 
+2.25.1
 
