@@ -2,146 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3650C270465
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 20:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09FC627046C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 20:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726185AbgIRSyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 14:54:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40270 "EHLO
+        id S1726273AbgIRSzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 14:55:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726121AbgIRSyE (ORCPT
+        with ESMTP id S1726115AbgIRSzh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 14:54:04 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55155C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 11:54:04 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id m17so8048886ioo.1
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 11:54:04 -0700 (PDT)
+        Fri, 18 Sep 2020 14:55:37 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96297C0613CE;
+        Fri, 18 Sep 2020 11:55:36 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id gr14so9533065ejb.1;
+        Fri, 18 Sep 2020 11:55:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UsPKgMSyFpC4dZoU1fh+j1TUaGHxHd0bh9PqbiT/L5U=;
-        b=LkvJaXH+U8mrEYeCNWO2O6kMOoDz/lVdIJf5f58C1MK2fZ4GkvaaL8QNgZTcVMfBfF
-         73gJtRq4j076mbGAa63E1ULzd92YYRBtcOAxN7f00c1xs1UgIPCxpy49sT6ZV7mqADlM
-         2XwZY6l5+A9FAnwiCFApQ/A1gMNRycje9HMh/3CCm5NOa7FIcIopFGD/HzxxvRiLhIN9
-         lIq/f+90PG+yY3bZl5QmkQ+/E1hnXwglFT9YTb79ttaWEiWOFu3pFvAJU/1sObGcXXkt
-         wWzZtd9zOOkddEypESurmueNd9Y5YzVrdSMdZr+n3fzVa8Gvdgb8EotBmgPde/pixweg
-         f9lw==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WNM04UE29uKK3wuddyaGzKe7MOJATBofLHcEB320/PU=;
+        b=kYt7LzIcrvpwqmMbdRI4hVqkpGAD7KxGijYF6mTQ3/5ONN12qgv/k5ziY2mQdb+SeP
+         KNPx1Y/ZVFNZmI2GTqg72XriWkAleHufZsVYNQKU7LFwNFeTh9r7QrEhoWMdbnhUL68U
+         4fbU0Ok6TdApx4BqA+EcEgZnceEYdFgHPcF32rDsfai2DnCUvTWcAaPrKrGr90/uqIHx
+         BGX4f8MFP4WS1LoB1WW0pUONRCPzbPcvTk2IVhYdMPt6DTpVwaz5A+DD5RslYI7dusGB
+         GOFbFLZjf5ueQmvs8M/LO9yIW04SriR7hlArvhBLSJxG3ELdHuFMWlYMGKKJSubN+fDw
+         1G6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UsPKgMSyFpC4dZoU1fh+j1TUaGHxHd0bh9PqbiT/L5U=;
-        b=uD1mnWSNZ2p1SZddxlEDQ3YsH2kQZiTX5K5PoVuQMH6YJqn4ElikkpIk5vZHR8XKg1
-         HFzNRDw+H4VPm9A+mhJipMNvJTtX+08S1jNE5LSdSEGx2Tr9+Uy9Zhf2CCFa7vXHvTKC
-         OJ8P6F4nzBHtUGuLQhGzRD49h4L2FL0zuQ1KReQ+7zBa2ccO29tSBzZuezk7B2ELL44w
-         vINLhTQ31orOmaeOAsYxbCQFTIWOepsdIrV73i/DsQIcxrBOcnTiCkPYJfZIlaKuCvgh
-         +McGmNMtDZfQ8Ol5XjaLoO9SBEGY7HGQWIwuwdBEgpHh5ijilaNQK1wt8+TeK1ow+N0o
-         OVLA==
-X-Gm-Message-State: AOAM5307dVse5mtlPymGo692/knXx5ecj/8WkkfVhStb7xaJD65qot1d
-        eeh1otnksIVtvUlSmMvpjjucJA==
-X-Google-Smtp-Source: ABdhPJxHmVEbRNB4JMGgDW9ScAN70Dh87oJ1EB2DOPXrIlbPlDDplv7VfIepqr80Q87AmEKzD/rypQ==
-X-Received: by 2002:a6b:6d07:: with SMTP id a7mr27628444iod.82.1600455243299;
-        Fri, 18 Sep 2020 11:54:03 -0700 (PDT)
-Received: from google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
-        by smtp.gmail.com with ESMTPSA id c85sm2096858ilg.10.2020.09.18.11.54.01
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WNM04UE29uKK3wuddyaGzKe7MOJATBofLHcEB320/PU=;
+        b=AMPtqjHYiqJdh1ZiK1FZ2YWIm3HXd3Q1DxBst6tHFPyFjrPnffzMoHQPOnxr81MUS6
+         etV+UXcQqDsy3xKc4aj8B7mvtYdzA5itk1ERDqQTb/uoS6Fhjqvlx7GwKYTEB+UxeLLP
+         7E/tVX1yeaCpuFi4DinitTWslxa3LDDS0xdsEpp37KoZJ5HjjonGGlhvROyxLrDR2wFU
+         9FnkgMr2u4/g+MR6iN0Qdpf9yGpBXcVmmi0ItH2NaJnLCpuI0C1PA2O2G1v1OzrxZRFK
+         eBDOOznjTsFNjw90tEHEH/jsW1cDxha+Mrxv1ylyryR1vmYSYV4CSJRQIM8SYlbh8bBI
+         noFg==
+X-Gm-Message-State: AOAM532qlEAlUnU16WWnrCvf7O8qB/bAofxfRlwjrm+4NeDlNdOPG3r2
+        4by6/NVoo/O8ya00oTCvCP4=
+X-Google-Smtp-Source: ABdhPJw6Je8MyCyx1IKpKToYRbax3WHJephEh6KetCjzQlLc6TjZ+XzB332+bwWysX/YLfSGb3jebA==
+X-Received: by 2002:a17:906:4d97:: with SMTP id s23mr38635830eju.157.1600455335218;
+        Fri, 18 Sep 2020 11:55:35 -0700 (PDT)
+Received: from debian64.daheim (p5b0d776c.dip0.t-ipconnect.de. [91.13.119.108])
+        by smtp.gmail.com with ESMTPSA id e15sm2728253eds.5.2020.09.18.11.55.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 11:54:02 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 12:53:58 -0600
-From:   Yu Zhao <yuzhao@google.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Huang Ying <ying.huang@intel.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Konstantin Khlebnikov <koct9i@gmail.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Jaewon Kim <jaewon31.kim@samsung.com>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/13] mm: use page_off_lru()
-Message-ID: <20200918185358.GA1095986@google.com>
-References: <20200918030051.650890-1-yuzhao@google.com>
- <20200918030051.650890-3-yuzhao@google.com>
- <20200918073700.GE28827@dhcp22.suse.cz>
- <20200918102713.GB1004594@google.com>
- <20200918110914.GK28827@dhcp22.suse.cz>
+        Fri, 18 Sep 2020 11:55:34 -0700 (PDT)
+Received: from localhost.daheim ([127.0.0.1])
+        by debian64.daheim with esmtp (Exim 4.94)
+        (envelope-from <chunkeey@gmail.com>)
+        id 1kJLXZ-002oKt-Oq; Fri, 18 Sep 2020 20:55:30 +0200
+Subject: Re: R: [PATCH 2/2] dt: bindings: ath10k: Document qcom,
+ ath10k-pre-calibration-data-mtd
+To:     ansuelsmth@gmail.com, 'Kalle Valo' <kvalo@codeaurora.org>
+Cc:     devicetree@vger.kernel.org, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ath10k@lists.infradead.org,
+        "'David S. Miller'" <davem@davemloft.net>,
+        'Rob Herring' <robh+dt@kernel.org>,
+        'Jakub Kicinski' <kuba@kernel.org>,
+        linux-mtd@lists.infradead.org,
+        'Srinivas Kandagatla' <srinivas.kandagatla@linaro.org>,
+        'Bartosz Golaszewski' <bgolaszewski@baylibre.com>
+References: <20200918162928.14335-1-ansuelsmth@gmail.com>
+ <20200918162928.14335-2-ansuelsmth@gmail.com>
+ <8f886e3d-e2ee-cbf8-a676-28ebed4977aa@gmail.com>
+ <000001d68de9$e7916450$b6b42cf0$@gmail.com>
+From:   Christian Lamparter <chunkeey@gmail.com>
+Message-ID: <ea0efd8f-6dd4-8b46-caeb-d49240882cb2@gmail.com>
+Date:   Fri, 18 Sep 2020 20:55:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918110914.GK28827@dhcp22.suse.cz>
+In-Reply-To: <000001d68de9$e7916450$b6b42cf0$@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: de-DE
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 01:09:14PM +0200, Michal Hocko wrote:
-> On Fri 18-09-20 04:27:13, Yu Zhao wrote:
-> > On Fri, Sep 18, 2020 at 09:37:00AM +0200, Michal Hocko wrote:
-> > > On Thu 17-09-20 21:00:40, Yu Zhao wrote:
-> > > > This patch replaces the only open-coded __ClearPageActive() with
-> > > > page_off_lru(). There is no open-coded __ClearPageUnevictable()s.
-> > > > 
-> > > > Before this patch, we have:
-> > > > 	__ClearPageActive()
-> > > > 	add_page_to_lru_list()
-> > > > 
-> > > > After this patch, we have:
-> > > > 	page_off_lru()
-> > > > 		if PageUnevictable()
-> > > > 			__ClearPageUnevictable()
-> > > > 		else if PageActive()
-> > > > 			__ClearPageActive()
-> > > > 	add_page_to_lru_list()
-> > > > 
-> > > > Checking PageUnevictable() shouldn't be a problem because these two
-> > > > flags are mutually exclusive. Leaking either will trigger bad_page().
-> > > 
-> > > I am sorry but the changelog is really hard to grasp. What are you
-> > > trying to achieve, why and why it is safe. This should be a general
-> > > outline for any patch. I have already commented on the previous patch
-> > > and asked you for the explanation why removing __ClearPageActive from
-> > > this path is desirable and safe. I have specifically asked to clarify
-> > > the compound page situation as that is using its oen destructor in the
-> > > freeing path and that might result in page_off_lru to be not called.
-> > 
-> > Haven't I explained we are NOT removing __ClearPageActive()? Is my
-> > notion of the code structure above confusing you? Or 'open-coded'
-> > could mean different things?
+On 2020-09-18 20:31, ansuelsmth@gmail.com wrote:
 > 
-> Please read through my reply carefuly. I am not saying what you are
-> doing is wrong. I am expressing a lack of justification which is the
-> case throughout this patch series. You do not explain why we need it and
-> why reviewers should spend time on this. Because the review is not as
-> trivial as looking at the diff.
+> 
+>> -----Messaggio originale-----
+>> Da: Christian Lamparter <chunkeey@gmail.com>
+>> Inviato: venerdì 18 settembre 2020 18:54
+>> A: Ansuel Smith <ansuelsmth@gmail.com>; Kalle Valo
+>> <kvalo@codeaurora.org>
+>> Cc: devicetree@vger.kernel.org; netdev@vger.kernel.org; linux-
+>> wireless@vger.kernel.org; linux-kernel@vger.kernel.org;
+>> ath10k@lists.infradead.org; David S. Miller <davem@davemloft.net>; Rob
+>> Herring <robh+dt@kernel.org>; Jakub Kicinski <kuba@kernel.org>; linux-
+>> mtd@lists.infradead.org; Srinivas Kandagatla
+>> <srinivas.kandagatla@linaro.org>; Bartosz Golaszewski
+>> <bgolaszewski@baylibre.com>
+>> Oggetto: Re: [PATCH 2/2] dt: bindings: ath10k: Document qcom, ath10k-
+>> pre-calibration-data-mtd
+>>
+>> On 2020-09-18 18:29, Ansuel Smith wrote:
+>>> Document use of qcom,ath10k-pre-calibration-data-mtd bindings used to
+>>> define from where the driver will load the pre-cal data in the defined
+>>> mtd partition.
+>>>
+>>> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+>>
+>> Q: Doesn't mtd now come with nvmem support from the get go? So
+>> the MAC-Addresses and pre-caldata could be specified as a
+>> nvmem-node in the devicetree? I remember seeing that this was
+>> worked on or was this mtd->nvmem dropped?
+>>
+>> Cheers,
+>> Christian
+> 
+> Sorry a lot for the double email... I think I found what you are talking about.
+> It looks like the code was merged but not the documentation.
+> Will do some test and check if this works.
+> 
+> This should be the related patch.
+> https://patchwork.ozlabs.org/project/linux-mtd/patch/1521933899-362-4-git-send-email-albeu@free.fr/
+> 
 
-I appreciate your time. But if you are looking for some grand
-justification, I'm afraid I won't be able to give one, because, as it's
-titled, this is just a series of cleanup patches.
+Well, I guess the version that was merged:
 
-My questions above are meant to determine which parts are not clear.
-Well, I still don't know. So let's try this. What's your impression upon
-reading the first sentence of this patch?
+|commit c4dfa25ab307a277eafa7067cd927fbe4d9be4ba
+|Author: Alban Bedel <albeu@free.fr>
+|Date:   Tue Nov 13 15:01:10 2018 +0100
+|
+|    mtd: add support for reading MTD devices via the nvmem API
+|
+|    Allow drivers that use the nvmem API to read data stored on MTD devices.
+|    For this the mtd devices are registered as read-only NVMEM providers.
+|
+| >>>We don't support device tree systems for now.<<<
 
-> > > > This patch replaces the only open-coded __ClearPageActive() with
-> > > > page_off_lru().
+answers this. Sorry for the noise. Yee, this likely isn't going to work
+as it is still disabled on purpose.
 
-Here is how I would think when I read it (which is purely subjective
-since I wrote it):
-
-  'replaces the only (an outlier) open-coded (bad) with
-   page_off_lru() (the norm)'
-
-It seems to me it has everything I need to know (or say). Of course I
-could spell them all out for you if that's how you'd prefer. And if
-it's not enough, then please show me some examples and I'll study
-them carefully and try my best to follow them.
+Regards,
+Christian
