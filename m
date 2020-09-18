@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB82326F365
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8385C26F340
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728613AbgIRDGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 23:06:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50936 "EHLO mail.kernel.org"
+        id S1727270AbgIRCET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:04:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727210AbgIRCEC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:04:02 -0400
+        id S1727227AbgIRCEE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:04:04 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 250CE23600;
-        Fri, 18 Sep 2020 02:04:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8AAF921734;
+        Fri, 18 Sep 2020 02:04:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394641;
-        bh=66wCMHHAgYvFPF/NiM4KDxXT/ObaN+P40iilFXq/40w=;
+        s=default; t=1600394644;
+        bh=TJqsiAM/hFr9HnL8UDamF+XdU6EhqsF4svPBJEguVd0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zegF19mH9Col/8Ty8e6K90Zjg7UkDgUKAGm4aitD3lIl9rp/Amd4ECPWs/fubWXnE
-         K8wXXWwyGpR0cXPt4k2WTIg4sxDlUMNgNnUTtZXKIkbJCOWG1lz1Db6zGkNpl+VOhn
-         BWsag8LBmEjnfXv+Gn8tYdKIQ4WpIjA3Qx4RyLwE=
+        b=NtLiRQCEkaDpEB2SCAUChjKOQL7FarsuR9lyY0qkUdSBG9lIAMcHJPb1YtTqKxL5A
+         dYGyV78CFfkcQ0lTHbF5XIxetytuIpdbP//w+QqOYYFQQFW/YlflyboM/vdTytpagD
+         DZt/lyd3eRjlFnt9x0mRmJQIkeikBxxCJDZRsZE4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Amelie Delaunay <amelie.delaunay@st.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.4 140/330] dmaengine: stm32-dma: use vchan_terminate_vdesc() in .terminate_all
-Date:   Thu, 17 Sep 2020 21:58:00 -0400
-Message-Id: <20200918020110.2063155-140-sashal@kernel.org>
+Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 142/330] soundwire: bus: disable pm_runtime in sdw_slave_delete
+Date:   Thu, 17 Sep 2020 21:58:02 -0400
+Message-Id: <20200918020110.2063155-142-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -42,58 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amelie Delaunay <amelie.delaunay@st.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit d80cbef35bf89b763f06e03bb4ff8f933bf012c5 ]
+[ Upstream commit dff70572e9a3a1a01d9dbc2279faa784d95f41b6 ]
 
-To avoid race with vchan_complete, use the race free way to terminate
-running transfer.
+Before removing the slave device, disable pm_runtime to prevent any
+race condition with the resume being executed after the bus and slave
+devices are removed.
 
-Move vdesc->node list_del in stm32_dma_start_transfer instead of in
-stm32_mdma_chan_complete to avoid another race in vchan_dma_desc_free_list.
+Since this pm_runtime_disable() is handled in common routines,
+implementations of Slave drivers do not need to call it in their
+.remove() routine.
 
-Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
-Link: https://lore.kernel.org/r/20200129153628.29329-9-amelie.delaunay@st.com
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200115000844.14695-8-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/stm32-dma.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/soundwire/bus.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/dma/stm32-dma.c b/drivers/dma/stm32-dma.c
-index 5989b08935211..6c5771de32c67 100644
---- a/drivers/dma/stm32-dma.c
-+++ b/drivers/dma/stm32-dma.c
-@@ -488,8 +488,10 @@ static int stm32_dma_terminate_all(struct dma_chan *c)
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index fc53dbe57f854..a90963812357c 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -113,6 +113,8 @@ static int sdw_delete_slave(struct device *dev, void *data)
+ 	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+ 	struct sdw_bus *bus = slave->bus;
  
- 	spin_lock_irqsave(&chan->vchan.lock, flags);
- 
--	if (chan->busy) {
--		stm32_dma_stop(chan);
-+	if (chan->desc) {
-+		vchan_terminate_vdesc(&chan->desc->vdesc);
-+		if (chan->busy)
-+			stm32_dma_stop(chan);
- 		chan->desc = NULL;
- 	}
- 
-@@ -545,6 +547,8 @@ static void stm32_dma_start_transfer(struct stm32_dma_chan *chan)
- 		if (!vdesc)
- 			return;
- 
-+		list_del(&vdesc->node);
++	pm_runtime_disable(dev);
 +
- 		chan->desc = to_stm32_dma_desc(vdesc);
- 		chan->next_sg = 0;
- 	}
-@@ -622,7 +626,6 @@ static void stm32_dma_handle_chan_done(struct stm32_dma_chan *chan)
- 		} else {
- 			chan->busy = false;
- 			if (chan->next_sg == chan->desc->num_sgs) {
--				list_del(&chan->desc->vdesc.node);
- 				vchan_cookie_complete(&chan->desc->vdesc);
- 				chan->desc = NULL;
- 			}
+ 	sdw_slave_debugfs_exit(slave);
+ 
+ 	mutex_lock(&bus->bus_lock);
 -- 
 2.25.1
 
