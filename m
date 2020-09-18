@@ -2,112 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5250A26F8CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D42FE26F8D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726554AbgIRJAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 05:00:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726109AbgIRJAP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 05:00:15 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FD17C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 02:00:15 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id d190so6054787iof.3
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 02:00:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VEcVIKjTQPRY5wW56LKl3iYYM2PdJSTYEi/Boje3RWY=;
-        b=o5rqldtqmWX5hCHBkiWtR7T+Po97/Yz7dFzA/+1Q8xsypztn8I8v61yQKg/7dQXrSK
-         dtBxitR/JDxyy8NAEptSAKDM/g4IFEIX4CDt87Y/mkxGEH9GJ0nQ+cTc4PYy0XcAsk7/
-         S6YAtP7Bl5RsOPZn+dj7q9JjZU7SPOqUxnuUue8HD4STKthWXqZgHgUut3tXa1UrMSsP
-         Ce2GyXlk10zYIc3fthiuoSYWW2Vfl9HIfCy+A/GQ2JH8Ijz1R+5I1+Pyht/DxGya8DuU
-         q1FDJLNPpO4ZUGNao14bhYzDkNJIKNnBq2klmN7ks7K3ikLyGiKghJQTHt0/jD4VedQu
-         EjPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VEcVIKjTQPRY5wW56LKl3iYYM2PdJSTYEi/Boje3RWY=;
-        b=UtKHRva842Q/wD1PW0zM81bdceagsKLR9RarJQX9yAnLJQPAHMHMa+aXpYdYv0/qAt
-         v4Q9nz4l8qy1e+LlBlvGuXEk6TpQGN5EgAV9q2IuRXPl4bjiSnDbBJMtWIiImGNcDsqb
-         uU89tAupmXVJGwE+5d2k33Viw/I8VUiENSU/sXoWX9uJr1rowGcqaxFlmmtO3UPmvYDK
-         bMD+ajfzxvK+vZ2xulLnhp4NkIrFpnMHTof42+LSxlY4WQgwph6T8b3Hw13V9uP1mXhe
-         CEECFCdqLoGkDN/X/mqKB+ihF442QZW12SyIZUXRSGGOYohfdSUfATp6VExG0iQhZiGC
-         2uqw==
-X-Gm-Message-State: AOAM532C5mtUI18IALUA9A1aYRkjCXL54gcLF/qJViOfBXjk8sni9zSl
-        iFWdpF8NCsbAvy7bY7QmYtd6RN7dZcI+Efuc8njTWw==
-X-Google-Smtp-Source: ABdhPJzkK+EPRu3kdIVWMuEjPkQl1ime8bozG9h4Q4OhKWNA3NvfYW2gOtBAS2uk7zvVsM3ZfMR9LpJGguUfIS6qo8c=
-X-Received: by 2002:a6b:3bd3:: with SMTP id i202mr26666506ioa.145.1600419614392;
- Fri, 18 Sep 2020 02:00:14 -0700 (PDT)
+        id S1726379AbgIRJCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 05:02:43 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13297 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725874AbgIRJCn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 05:02:43 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 3D334F8BEB1345A7A03A;
+        Fri, 18 Sep 2020 17:02:41 +0800 (CST)
+Received: from huawei.com (10.175.112.208) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Fri, 18 Sep 2020
+ 17:02:25 +0800
+From:   Wang Wensheng <wangwensheng4@huawei.com>
+To:     <linuxppc-dev@lists.ozlabs.org>
+CC:     <mpe@ellerman.id.au>, <benh@kernel.crashing.org>,
+        <paulus@samba.org>, <aneesh.kumar@linux.ibm.com>,
+        <dan.j.williams@intel.com>, <vaibhav@linux.ibm.com>,
+        <ira.weiny@intel.com>, <santosh@fossix.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] powerpc/papr_scm: Fix warnings about undeclared variable
+Date:   Fri, 18 Sep 2020 08:59:51 +0000
+Message-ID: <20200918085951.44983-1-wangwensheng4@huawei.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-References: <20200917234953.CB1D295C0A69@us180.sjc.aristanetworks.com> <CANn89iJCm9Rw2U1bK9hAQAzdwebggsWh0DFkHpJF=4OZ2JiSOw@mail.gmail.com>
-In-Reply-To: <CANn89iJCm9Rw2U1bK9hAQAzdwebggsWh0DFkHpJF=4OZ2JiSOw@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Fri, 18 Sep 2020 11:00:02 +0200
-Message-ID: <CANn89iJebrj+cE1iVFbFQH0Bso3EFw8Bw0Ep8ozikS_5Ldu2oA@mail.gmail.com>
-Subject: Re: [PATCH v3] net: use exponential backoff in netdev_wait_allrefs
-To:     Francesco Ruggeri <fruggeri@arista.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.112.208]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 10:48 AM Eric Dumazet <edumazet@google.com> wrote:
+Build the kernel with 'make C=2':
+arch/powerpc/platforms/pseries/papr_scm.c:825:1: warning: symbol
+'dev_attr_perf_stats' was not declared. Should it be static?
 
->
->
-> Also, I would try using synchronize_rcu() instead of the first
+Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
+---
+ arch/powerpc/platforms/pseries/papr_scm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-s/synchronize_rcu/rcu_barrier/  of course :/
+diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/platforms/pseries/papr_scm.c
+index 5493bc847bd0..a95aa425e7d4 100644
+--- a/arch/powerpc/platforms/pseries/papr_scm.c
++++ b/arch/powerpc/platforms/pseries/papr_scm.c
+@@ -823,7 +823,7 @@ static ssize_t perf_stats_show(struct device *dev,
+ 	kfree(stats);
+ 	return rc ? rc : (ssize_t)seq_buf_used(&s);
+ }
+-DEVICE_ATTR_ADMIN_RO(perf_stats);
++static DEVICE_ATTR_ADMIN_RO(perf_stats);
+ 
+ static ssize_t flags_show(struct device *dev,
+ 			  struct device_attribute *attr, char *buf)
+-- 
+2.25.0
 
-> msleep(), this might avoid all msleep() calls in your case.
->
-> Patch without the macros to see the general idea :
->
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index 266073e300b5fc21440ea8f8ffc9306a1fc9f370..2d3b65034bc0dd99017dea846e6c0a966f1207ee
-> 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -9989,7 +9989,7 @@ EXPORT_SYMBOL(netdev_refcnt_read);
->  static void netdev_wait_allrefs(struct net_device *dev)
->  {
->         unsigned long rebroadcast_time, warning_time;
-> -       int refcnt;
-> +       int wait = 0, refcnt;
->
->         linkwatch_forget_dev(dev);
->
-> @@ -10023,8 +10023,13 @@ static void netdev_wait_allrefs(struct net_device *dev)
->                         rebroadcast_time = jiffies;
->                 }
->
-> -               msleep(250);
-> -
-> +               if (!wait) {
-> +                       synchronize_rcu();
-
-rcu_barrier();
-
-> +                       wait = 1;
-> +               } else {
-> +                       msleep(wait);
-> +                       wait = min(wait << 1, 250);
-> +               }
->                 refcnt = netdev_refcnt_read(dev);
->
->                 if (refcnt && time_after(jiffies, warning_time + 10 * HZ)) {
