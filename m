@@ -2,37 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6EA126F045
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:42:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E009626F043
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:42:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728719AbgIRCma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:42:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36414 "EHLO mail.kernel.org"
+        id S1728759AbgIRCmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:42:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728567AbgIRCLJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:11:09 -0400
+        id S1728581AbgIRCLM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:11:12 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 369E0235F7;
-        Fri, 18 Sep 2020 02:11:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A9DDD2311C;
+        Fri, 18 Sep 2020 02:11:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600395068;
-        bh=1JLADbqaEHXWXWPMtG9knhz7iiDhgEpDh8j3P0S/HGE=;
+        s=default; t=1600395072;
+        bh=pD1lSLFAG6b1So1oo2wyZIBmPDp7f6PZkZ+p7yZvCAc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0DyK0/1DtOgcbOW8inkLzscLc/HRqE/rlYirgtMtT2zUu4ER6T9g8YqHsw13MRKB+
-         pAmgVt//WhxlGZs+6p9mOLJDL1xs0RlrDq2CoeDQS/+9oN/Fsnn7QKAFnhqHDbkbeP
-         X8G5qsJmhw+6OwS6hDaJIAVPt8Dec66Z39sxwa3U=
+        b=HrtRmBe6e/61kZRXERx7scnNauIKHJgK26ATOtPEMCb5W5cCKVdPh7UUOY8b3Q17v
+         GtkwBciHu3nCNSIdtJLZSVSwb07NO4bgCIUDIYKFxB5ZDE/N+hza+OEiRb9apEejg8
+         z7644TohRWUfL07ISsc8OWfzshsNtGKJjHVfpRDQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Will Deacon <will@kernel.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 4.19 153/206] arm64: cpufeature: Relax checks for AArch32 support at EL[0-2]
-Date:   Thu, 17 Sep 2020 22:07:09 -0400
-Message-Id: <20200918020802.2065198-153-sashal@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>, Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stephane Eranian <eranian@google.com>,
+        clang-built-linux@googlegroups.com,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 156/206] perf parse-events: Fix memory leaks found on parse_events
+Date:   Thu, 17 Sep 2020 22:07:12 -0400
+Message-Id: <20200918020802.2065198-156-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
 References: <20200918020802.2065198-1-sashal@kernel.org>
@@ -44,63 +50,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Will Deacon <will@kernel.org>
+From: Ian Rogers <irogers@google.com>
 
-[ Upstream commit 98448cdfe7060dd5491bfbd3f7214ffe1395d58e ]
+[ Upstream commit e8dfb81838b14f82521968343884665b996646ef ]
 
-We don't need to be quite as strict about mismatched AArch32 support,
-which is good because the friendly hardware folks have been busy
-mismatching this to their hearts' content.
+Fix a memory leak found by applying LLVM's libfuzzer on parse_events().
 
-  * We don't care about EL2 or EL3 (there are silly comments concerning
-    the latter, so remove those)
-
-  * EL1 support is gated by the ARM64_HAS_32BIT_EL1 capability and handled
-    gracefully when a mismatch occurs
-
-  * EL0 support is gated by the ARM64_HAS_32BIT_EL0 capability and handled
-    gracefully when a mismatch occurs
-
-Relax the AArch32 checks to FTR_NONSTRICT.
-
-Tested-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Link: https://lore.kernel.org/r/20200421142922.18950-8-will@kernel.org
-Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Ian Rogers <irogers@google.com>
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Leo Yan <leo.yan@linaro.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Stephane Eranian <eranian@google.com>
+Cc: clang-built-linux@googlegroups.com
+Link: http://lore.kernel.org/lkml/20200319023101.82458-1-irogers@google.com
+[ split from a larger patch, use zfree() ]
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/kernel/cpufeature.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ tools/perf/util/parse-events.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index ac3126aba0368..095dec566275f 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -155,11 +155,10 @@ static const struct arm64_ftr_bits ftr_id_aa64pfr0[] = {
- 	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64PFR0_GIC_SHIFT, 4, 0),
- 	S_ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64PFR0_ASIMD_SHIFT, 4, ID_AA64PFR0_ASIMD_NI),
- 	S_ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64PFR0_FP_SHIFT, 4, ID_AA64PFR0_FP_NI),
--	/* Linux doesn't care about the EL3 */
- 	ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64PFR0_EL3_SHIFT, 4, 0),
--	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64PFR0_EL2_SHIFT, 4, 0),
--	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64PFR0_EL1_SHIFT, 4, ID_AA64PFR0_EL1_64BIT_ONLY),
--	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64PFR0_EL0_SHIFT, 4, ID_AA64PFR0_EL0_64BIT_ONLY),
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64PFR0_EL2_SHIFT, 4, 0),
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64PFR0_EL1_SHIFT, 4, ID_AA64PFR0_EL1_64BIT_ONLY),
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64PFR0_EL0_SHIFT, 4, ID_AA64PFR0_EL0_64BIT_ONLY),
- 	ARM64_FTR_END,
- };
+diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+index 6d087d9acd5ee..cce96b05d24c9 100644
+--- a/tools/perf/util/parse-events.c
++++ b/tools/perf/util/parse-events.c
+@@ -1287,6 +1287,7 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
  
-@@ -671,9 +670,6 @@ void update_cpu_features(int cpu,
- 	taint |= check_update_ftr_reg(SYS_ID_AA64MMFR2_EL1, cpu,
- 				      info->reg_id_aa64mmfr2, boot->reg_id_aa64mmfr2);
- 
--	/*
--	 * EL3 is not our concern.
--	 */
- 	taint |= check_update_ftr_reg(SYS_ID_AA64PFR0_EL1, cpu,
- 				      info->reg_id_aa64pfr0, boot->reg_id_aa64pfr0);
- 	taint |= check_update_ftr_reg(SYS_ID_AA64PFR1_EL1, cpu,
+ 		list_for_each_entry_safe(pos, tmp, &config_terms, list) {
+ 			list_del_init(&pos->list);
++			zfree(&pos->val.str);
+ 			free(pos);
+ 		}
+ 		return -EINVAL;
 -- 
 2.25.1
 
