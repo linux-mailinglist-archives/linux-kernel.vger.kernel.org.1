@@ -2,174 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7834627072C
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5B2F270723
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgIRUiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 16:38:10 -0400
-Received: from mga09.intel.com ([134.134.136.24]:19952 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726139AbgIRUiJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 16:38:09 -0400
-IronPort-SDR: bQKaNJq//ygkvNt6cc//fLvC6H/BH61kCYKXxLELUc9JJKttaayx83P9W7FpqMRC1BWfT/eNKR
- FtWUu7IS1Srw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9748"; a="160946666"
-X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
-   d="scan'208";a="160946666"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 13:38:02 -0700
-IronPort-SDR: ilZWPNojwb/+KA4/TyF/2Pu2WPihpr6m9llbqbpJFUsYLzrv17yUSP61lRZgnkUtruszTzSBrs
- Zq0No1cq1VVg==
-X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
-   d="scan'208";a="381022391"
-Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.16])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 13:38:02 -0700
-Subject: [PATCH v3] dm: Call proper helper to determine dax support
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     linux-nvdimm@lists.01.org
-Cc:     stable@vger.kernel.org, Adrian Huang <ahuang12@lenovo.com>,
-        Jan Kara <jack@suse.cz>, Mike Snitzer <snitzer@redhat.com>,
-        kernel test robot <lkp@intel.com>, dm-devel@redhat.com,
-        linux-kernel@vger.kernel.org, ira.weiny@intel.com,
-        mpatocka@redhat.com, snitzer@redhat.com
-Date:   Fri, 18 Sep 2020 13:19:42 -0700
-Message-ID: <160046028990.22670.15271558589864899328.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: StGit/0.18-3-g996c
+        id S1726281AbgIRUfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 16:35:52 -0400
+Received: from mr85p00im-ztdg06011901.me.com ([17.58.23.198]:41216 "EHLO
+        mr85p00im-ztdg06011901.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726187AbgIRUfw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 16:35:52 -0400
+X-Greylist: delayed 429 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Sep 2020 16:35:52 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+        t=1600460922; bh=T8v6m++2luK52rVt8w2SXku9CeV+sPMKImP6eAvxKTg=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+        b=tWsN7Q8QhjnfkQPA43Pd2eCPIyh4EilOSt27A9IQ9mo273Raic4mbOR3FOasFp3l/
+         UdPCw9Yt54M9DBYWhvawR1wre3DLcvjo5Q1sGE96/gYBgQulajnAzYU6w7yzoVlrXH
+         7sS00zGIvv3bEHSWo5v1iST9obKYbS3qWdUOBlviOUiCO/rK0HN7dUqSsvM8L+sonQ
+         TvYzXd9YHEbnscnohIe15dpARALgCb/oDIpDM9I5pdc9y3dCDiqeUJfjaxMsHUHiK5
+         Tp7IDEoVPCaxpFIfgv4KEJcz2wScWeOJcEP3rlfaeC9VzmfPuPBxqi9b+uBtliBPzP
+         GyAC+8xIZ2h5g==
+Received: from gnbcxl0029.gnb.st.com (101.220.150.77.rev.sfr.net [77.150.220.101])
+        by mr85p00im-ztdg06011901.me.com (Postfix) with ESMTPSA id 3F99DA60AAA;
+        Fri, 18 Sep 2020 20:28:39 +0000 (UTC)
+Date:   Fri, 18 Sep 2020 22:28:35 +0200
+From:   Alain Volmat <avolmat@me.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Olof Johansson <olof@lixom.net>,
+        Nathan Huckleberry <nhuck15@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Enrico Weigelt <info@metux.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Patrice CHOTARD <patrice.chotard@st.com>
+Subject: Re: [PATCH v2 0/2] arm: sti: LL_UART updates & STiH418 addition
+Message-ID: <20200918202834.GA7621@gnbcxl0029.gnb.st.com>
+Mail-Followup-To: Linus Walleij <linus.walleij@linaro.org>,
+        Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Olof Johansson <olof@lixom.net>,
+        Nathan Huckleberry <nhuck15@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Enrico Weigelt <info@metux.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Patrice CHOTARD <patrice.chotard@st.com>
+References: <20200830195748.30221-1-avolmat@me.com>
+ <CACRpkdaMK8xkvGiSXx=kVjncB=BNy_jcvKsQNTCxRwSKGKJ8Lg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdaMK8xkvGiSXx=kVjncB=BNy_jcvKsQNTCxRwSKGKJ8Lg@mail.gmail.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-18_17:2020-09-16,2020-09-18 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2006250000 definitions=main-2009180165
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+Hi Linus
 
-DM was calling generic_fsdax_supported() to determine whether a device
-referenced in the DM table supports DAX. However this is a helper for "leaf" device drivers so that
-they don't have to duplicate common generic checks. High level code
-should call dax_supported() helper which that calls into appropriate
-helper for the particular device. This problem manifested itself as
-kernel messages:
+On Sat, Sep 12, 2020 at 12:13:59PM +0200, Linus Walleij wrote:
+> On Sun, Aug 30, 2020 at 9:58 PM Alain Volmat <avolmat@me.com> wrote:
+> 
+> > This serie update the STi Platform LL_UART code to rely on
+> > DEBUG_UART_PHYS & DEBUG_UART_VIRT and add the STiH418 SoC support.
+> >
+> > Alain Volmat (2):
+> >   arm: use DEBUG_UART_PHYS and DEBUG_UART_VIRT for sti LL_UART
+> >   arm: sti LL_UART: add STiH418 SBC UART0 support
+> 
+> Both patches looks good to me:
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> 
+> I made some patches to the debug UARTs that are pending in Russell's
+> patch tracker:
+> https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=9004/1
+> https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=9005/1
+> https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=9006/1
+> 
+> It doesn't look like these will conflict with your patches but please take
+> a look just to make sure.
 
-dm-3: error: dax access failed (-95)
+I confirm that they do not conflict with my two patches.
 
-when lvm2-testsuite run in cases where a DM device was stacked on top of
-another DM device.
+Alain
 
-Fixes: 7bf7eac8d648 ("dax: Arrange for dax_supported check to span multiple devices")
-Cc: <stable@vger.kernel.org>
-Tested-by: Adrian Huang <ahuang12@lenovo.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Acked-by: Mike Snitzer <snitzer@redhat.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
----
-Changes since v2 [1]:
-- Add dummy definitions for dax_read_{lock,unlock} in the CONFIG_DAX=n
-  case (0day robot)
-
-[1]: http://lore.kernel.org/r/160040692945.25320.13233625491405115889.stgit@dwillia2-desk3.amr.corp.intel.com
-
- drivers/dax/super.c   |    4 ++++
- drivers/md/dm-table.c |   10 +++++++---
- include/linux/dax.h   |   22 ++++++++++++++++++++--
- 3 files changed, 31 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/dax/super.c b/drivers/dax/super.c
-index e5767c83ea23..b6284c5cae0a 100644
---- a/drivers/dax/super.c
-+++ b/drivers/dax/super.c
-@@ -325,11 +325,15 @@ EXPORT_SYMBOL_GPL(dax_direct_access);
- bool dax_supported(struct dax_device *dax_dev, struct block_device *bdev,
- 		int blocksize, sector_t start, sector_t len)
- {
-+	if (!dax_dev)
-+		return false;
-+
- 	if (!dax_alive(dax_dev))
- 		return false;
- 
- 	return dax_dev->ops->dax_supported(dax_dev, bdev, blocksize, start, len);
- }
-+EXPORT_SYMBOL_GPL(dax_supported);
- 
- size_t dax_copy_from_iter(struct dax_device *dax_dev, pgoff_t pgoff, void *addr,
- 		size_t bytes, struct iov_iter *i)
-diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
-index 5edc3079e7c1..229f461e7def 100644
---- a/drivers/md/dm-table.c
-+++ b/drivers/md/dm-table.c
-@@ -860,10 +860,14 @@ EXPORT_SYMBOL_GPL(dm_table_set_type);
- int device_supports_dax(struct dm_target *ti, struct dm_dev *dev,
- 			sector_t start, sector_t len, void *data)
- {
--	int blocksize = *(int *) data;
-+	int blocksize = *(int *) data, id;
-+	bool rc;
- 
--	return generic_fsdax_supported(dev->dax_dev, dev->bdev, blocksize,
--				       start, len);
-+	id = dax_read_lock();
-+	rc = dax_supported(dev->dax_dev, dev->bdev, blocksize, start, len);
-+	dax_read_unlock(id);
-+
-+	return rc;
- }
- 
- /* Check devices support synchronous DAX */
-diff --git a/include/linux/dax.h b/include/linux/dax.h
-index 6904d4e0b2e0..d0af16b23122 100644
---- a/include/linux/dax.h
-+++ b/include/linux/dax.h
-@@ -130,6 +130,8 @@ static inline bool generic_fsdax_supported(struct dax_device *dax_dev,
- 	return __generic_fsdax_supported(dax_dev, bdev, blocksize, start,
- 			sectors);
- }
-+bool dax_supported(struct dax_device *dax_dev, struct block_device *bdev,
-+		int blocksize, sector_t start, sector_t len);
- 
- static inline void fs_put_dax(struct dax_device *dax_dev)
- {
-@@ -157,6 +159,13 @@ static inline bool generic_fsdax_supported(struct dax_device *dax_dev,
- 	return false;
- }
- 
-+static inline bool dax_supported(struct dax_device *dax_dev,
-+		struct block_device *bdev, int blocksize, sector_t start,
-+		sector_t len)
-+{
-+	return false;
-+}
-+
- static inline void fs_put_dax(struct dax_device *dax_dev)
- {
- }
-@@ -189,14 +198,23 @@ static inline void dax_unlock_page(struct page *page, dax_entry_t cookie)
- }
- #endif
- 
-+#ifdef CONFIG_DAX
- int dax_read_lock(void);
- void dax_read_unlock(int id);
-+#else
-+static inline int dax_read_lock(void)
-+{
-+	return 0;
-+}
-+
-+static inline void dax_read_unlock(int id)
-+{
-+}
-+#endif /* CONFIG_DAX */
- bool dax_alive(struct dax_device *dax_dev);
- void *dax_get_private(struct dax_device *dax_dev);
- long dax_direct_access(struct dax_device *dax_dev, pgoff_t pgoff, long nr_pages,
- 		void **kaddr, pfn_t *pfn);
--bool dax_supported(struct dax_device *dax_dev, struct block_device *bdev,
--		int blocksize, sector_t start, sector_t len);
- size_t dax_copy_from_iter(struct dax_device *dax_dev, pgoff_t pgoff, void *addr,
- 		size_t bytes, struct iov_iter *i);
- size_t dax_copy_to_iter(struct dax_device *dax_dev, pgoff_t pgoff, void *addr,
-
+> 
+> Yours,
+> Linus Walleij
