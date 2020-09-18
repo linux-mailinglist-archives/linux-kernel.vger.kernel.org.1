@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19ED126F06C
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C5526F067
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:44:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729077AbgIRCnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:43:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35794 "EHLO mail.kernel.org"
+        id S1729669AbgIRCn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:43:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728467AbgIRCKu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:10:50 -0400
+        id S1726806AbgIRCKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:10:53 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BAEA1235FC;
-        Fri, 18 Sep 2020 02:10:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 797F4208E4;
+        Fri, 18 Sep 2020 02:10:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600395049;
-        bh=r9GNCN1mMZ2mmSrYMyvHpFT99P4cCcj33Ml0g7pgzCo=;
+        s=default; t=1600395052;
+        bh=4jBG96Bvbg2+e4hfZIH9ZZEJ7247lx0uvfBXxfzDYVo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EZpFCBnN91bHAE0SsvZJpgsT/wJxHMmlq491NSRtgSTu87ImTDXtbqRvKDCPxuYUD
-         7hDQKA5WRklY0Zr/m/asDdEuIBBZEHJ0xCBaA4RAwIxD+NhDooQcFrqdukurGQZHrz
-         k/E6q7YYAFlMX9r4EQfitYQQm7Kz1gTNHHMdcF9c=
+        b=X7HEtoNx4/K/8HXUCS1S3WDEwUx6WePNzP9DW/dN74HE+MZvtn0nBEC2DkJT4OUf1
+         903JjV0MJ7D9NbszIXcc3h2oRMy9xMpei2eZol0++Sce4RrrxyljQj1AGxqW3L0OrS
+         BtIrREQM4JIrDRm9lQ3hFlPWHn8Pj578uhWk6hdc=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Xianting Tian <xianting_tian@126.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        yubin@h3c.com, Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>, linux-mm@kvack.org
-Subject: [PATCH AUTOSEL 4.19 138/206] mm/filemap.c: clear page error before actual read
-Date:   Thu, 17 Sep 2020 22:06:54 -0400
-Message-Id: <20200918020802.2065198-138-sashal@kernel.org>
+Cc:     Israel Rukshin <israelr@mellanox.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 140/206] nvmet-rdma: fix double free of rdma queue
+Date:   Thu, 17 Sep 2020 22:06:56 -0400
+Message-Id: <20200918020802.2065198-140-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
 References: <20200918020802.2065198-1-sashal@kernel.org>
@@ -44,145 +43,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xianting Tian <xianting_tian@126.com>
+From: Israel Rukshin <israelr@mellanox.com>
 
-[ Upstream commit faffdfa04fa11ccf048cebdde73db41ede0679e0 ]
+[ Upstream commit 21f9024355e58772ec5d7fc3534aa5e29d72a8b6 ]
 
-Mount failure issue happens under the scenario: Application forked dozens
-of threads to mount the same number of cramfs images separately in docker,
-but several mounts failed with high probability.  Mount failed due to the
-checking result of the page(read from the superblock of loop dev) is not
-uptodate after wait_on_page_locked(page) returned in function cramfs_read:
+In case rdma accept fails at nvmet_rdma_queue_connect(), release work is
+scheduled. Later on, a new RDMA CM event may arrive since we didn't
+destroy the cm-id and call nvmet_rdma_queue_connect_fail(), which
+schedule another release work. This will cause calling
+nvmet_rdma_free_queue twice. To fix this we implicitly destroy the cm_id
+with non-zero ret code, which guarantees that new rdma_cm events will
+not arrive afterwards. Also add a qp pointer to nvmet_rdma_queue
+structure, so we can use it when the cm_id pointer is NULL or was
+destroyed.
 
-   wait_on_page_locked(page);
-   if (!PageUptodate(page)) {
-      ...
-   }
-
-The reason of the checking result of the page not uptodate: systemd-udevd
-read the loopX dev before mount, because the status of loopX is Lo_unbound
-at this time, so loop_make_request directly trigger the calling of io_end
-handler end_buffer_async_read, which called SetPageError(page).  So It
-caused the page can't be set to uptodate in function
-end_buffer_async_read:
-
-   if(page_uptodate && !PageError(page)) {
-      SetPageUptodate(page);
-   }
-
-Then mount operation is performed, it used the same page which is just
-accessed by systemd-udevd above, Because this page is not uptodate, it
-will launch a actual read via submit_bh, then wait on this page by calling
-wait_on_page_locked(page).  When the I/O of the page done, io_end handler
-end_buffer_async_read is called, because no one cleared the page
-error(during the whole read path of mount), which is caused by
-systemd-udevd reading, so this page is still in "PageError" status, which
-can't be set to uptodate in function end_buffer_async_read, then caused
-mount failure.
-
-But sometimes mount succeed even through systemd-udeved read loopX dev
-just before, The reason is systemd-udevd launched other loopX read just
-between step 3.1 and 3.2, the steps as below:
-
-1, loopX dev default status is Lo_unbound;
-2, systemd-udved read loopX dev (page is set to PageError);
-3, mount operation
-   1) set loopX status to Lo_bound;
-   ==>systemd-udevd read loopX dev<==
-   2) read loopX dev(page has no error)
-   3) mount succeed
-
-As the loopX dev status is set to Lo_bound after step 3.1, so the other
-loopX dev read by systemd-udevd will go through the whole I/O stack, part
-of the call trace as below:
-
-   SYS_read
-      vfs_read
-          do_sync_read
-              blkdev_aio_read
-                 generic_file_aio_read
-                     do_generic_file_read:
-                        ClearPageError(page);
-                        mapping->a_ops->readpage(filp, page);
-
-here, mapping->a_ops->readpage() is blkdev_readpage.  In latest kernel,
-some function name changed, the call trace as below:
-
-   blkdev_read_iter
-      generic_file_read_iter
-         generic_file_buffered_read:
-            /*
-             * A previous I/O error may have been due to temporary
-             * failures, eg. mutipath errors.
-             * Pg_error will be set again if readpage fails.
-             */
-            ClearPageError(page);
-            /* Start the actual read. The read will unlock the page*/
-            error=mapping->a_ops->readpage(flip, page);
-
-We can see ClearPageError(page) is called before the actual read,
-then the read in step 3.2 succeed.
-
-This patch is to add the calling of ClearPageError just before the actual
-read of read path of cramfs mount.  Without the patch, the call trace as
-below when performing cramfs mount:
-
-   do_mount
-      cramfs_read
-         cramfs_blkdev_read
-            read_cache_page
-               do_read_cache_page:
-                  filler(data, page);
-                  or
-                  mapping->a_ops->readpage(data, page);
-
-With the patch, the call trace as below when performing mount:
-
-   do_mount
-      cramfs_read
-         cramfs_blkdev_read
-            read_cache_page:
-               do_read_cache_page:
-                  ClearPageError(page); <== new add
-                  filler(data, page);
-                  or
-                  mapping->a_ops->readpage(data, page);
-
-With the patch, mount operation trigger the calling of
-ClearPageError(page) before the actual read, the page has no error if no
-additional page error happen when I/O done.
-
-Signed-off-by: Xianting Tian <xianting_tian@126.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Cc: Jan Kara <jack@suse.cz>
-Cc: <yubin@h3c.com>
-Link: http://lkml.kernel.org/r/1583318844-22971-1-git-send-email-xianting_tian@126.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Israel Rukshin <israelr@mellanox.com>
+Suggested-by: Sagi Grimberg <sagi@grimberg.me>
+Reviewed-by: Max Gurtovoy <maxg@mellanox.com>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/filemap.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/nvme/target/rdma.c | 30 ++++++++++++++++++------------
+ 1 file changed, 18 insertions(+), 12 deletions(-)
 
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 45f1c6d73b5b0..f2e777003b901 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -2889,6 +2889,14 @@ filler:
- 		unlock_page(page);
- 		goto out;
- 	}
-+
-+	/*
-+	 * A previous I/O error may have been due to temporary
-+	 * failures.
-+	 * Clear page error before actual read, PG_error will be
-+	 * set again if read page fails.
-+	 */
-+	ClearPageError(page);
- 	goto filler;
+diff --git a/drivers/nvme/target/rdma.c b/drivers/nvme/target/rdma.c
+index 08f997a390d5d..cfd26437aeaea 100644
+--- a/drivers/nvme/target/rdma.c
++++ b/drivers/nvme/target/rdma.c
+@@ -83,6 +83,7 @@ enum nvmet_rdma_queue_state {
  
- out:
+ struct nvmet_rdma_queue {
+ 	struct rdma_cm_id	*cm_id;
++	struct ib_qp		*qp;
+ 	struct nvmet_port	*port;
+ 	struct ib_cq		*cq;
+ 	atomic_t		sq_wr_avail;
+@@ -471,7 +472,7 @@ static int nvmet_rdma_post_recv(struct nvmet_rdma_device *ndev,
+ 	if (ndev->srq)
+ 		ret = ib_post_srq_recv(ndev->srq, &cmd->wr, NULL);
+ 	else
+-		ret = ib_post_recv(cmd->queue->cm_id->qp, &cmd->wr, NULL);
++		ret = ib_post_recv(cmd->queue->qp, &cmd->wr, NULL);
+ 
+ 	if (unlikely(ret))
+ 		pr_err("post_recv cmd failed\n");
+@@ -510,7 +511,7 @@ static void nvmet_rdma_release_rsp(struct nvmet_rdma_rsp *rsp)
+ 	atomic_add(1 + rsp->n_rdma, &queue->sq_wr_avail);
+ 
+ 	if (rsp->n_rdma) {
+-		rdma_rw_ctx_destroy(&rsp->rw, queue->cm_id->qp,
++		rdma_rw_ctx_destroy(&rsp->rw, queue->qp,
+ 				queue->cm_id->port_num, rsp->req.sg,
+ 				rsp->req.sg_cnt, nvmet_data_dir(&rsp->req));
+ 	}
+@@ -594,7 +595,7 @@ static void nvmet_rdma_read_data_done(struct ib_cq *cq, struct ib_wc *wc)
+ 
+ 	WARN_ON(rsp->n_rdma <= 0);
+ 	atomic_add(rsp->n_rdma, &queue->sq_wr_avail);
+-	rdma_rw_ctx_destroy(&rsp->rw, queue->cm_id->qp,
++	rdma_rw_ctx_destroy(&rsp->rw, queue->qp,
+ 			queue->cm_id->port_num, rsp->req.sg,
+ 			rsp->req.sg_cnt, nvmet_data_dir(&rsp->req));
+ 	rsp->n_rdma = 0;
+@@ -737,7 +738,7 @@ static bool nvmet_rdma_execute_command(struct nvmet_rdma_rsp *rsp)
+ 	}
+ 
+ 	if (nvmet_rdma_need_data_in(rsp)) {
+-		if (rdma_rw_ctx_post(&rsp->rw, queue->cm_id->qp,
++		if (rdma_rw_ctx_post(&rsp->rw, queue->qp,
+ 				queue->cm_id->port_num, &rsp->read_cqe, NULL))
+ 			nvmet_req_complete(&rsp->req, NVME_SC_DATA_XFER_ERROR);
+ 	} else {
+@@ -1020,6 +1021,7 @@ static int nvmet_rdma_create_queue_ib(struct nvmet_rdma_queue *queue)
+ 		pr_err("failed to create_qp ret= %d\n", ret);
+ 		goto err_destroy_cq;
+ 	}
++	queue->qp = queue->cm_id->qp;
+ 
+ 	atomic_set(&queue->sq_wr_avail, qp_attr.cap.max_send_wr);
+ 
+@@ -1048,11 +1050,10 @@ err_destroy_cq:
+ 
+ static void nvmet_rdma_destroy_queue_ib(struct nvmet_rdma_queue *queue)
+ {
+-	struct ib_qp *qp = queue->cm_id->qp;
+-
+-	ib_drain_qp(qp);
+-	rdma_destroy_id(queue->cm_id);
+-	ib_destroy_qp(qp);
++	ib_drain_qp(queue->qp);
++	if (queue->cm_id)
++		rdma_destroy_id(queue->cm_id);
++	ib_destroy_qp(queue->qp);
+ 	ib_free_cq(queue->cq);
+ }
+ 
+@@ -1286,9 +1287,12 @@ static int nvmet_rdma_queue_connect(struct rdma_cm_id *cm_id,
+ 
+ 	ret = nvmet_rdma_cm_accept(cm_id, queue, &event->param.conn);
+ 	if (ret) {
+-		schedule_work(&queue->release_work);
+-		/* Destroying rdma_cm id is not needed here */
+-		return 0;
++		/*
++		 * Don't destroy the cm_id in free path, as we implicitly
++		 * destroy the cm_id here with non-zero ret code.
++		 */
++		queue->cm_id = NULL;
++		goto free_queue;
+ 	}
+ 
+ 	mutex_lock(&nvmet_rdma_queue_mutex);
+@@ -1297,6 +1301,8 @@ static int nvmet_rdma_queue_connect(struct rdma_cm_id *cm_id,
+ 
+ 	return 0;
+ 
++free_queue:
++	nvmet_rdma_free_queue(queue);
+ put_device:
+ 	kref_put(&ndev->ref, nvmet_rdma_free_dev);
+ 
 -- 
 2.25.1
 
