@@ -2,71 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8368526FF24
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 15:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2F126FF31
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 15:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726396AbgIRNvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 09:51:35 -0400
-Received: from foss.arm.com ([217.140.110.172]:42942 "EHLO foss.arm.com"
+        id S1726707AbgIRNyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 09:54:10 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:43438 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726129AbgIRNve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 09:51:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3797330E;
-        Fri, 18 Sep 2020 06:51:34 -0700 (PDT)
-Received: from [10.57.47.84] (unknown [10.57.47.84])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 603C83F718;
-        Fri, 18 Sep 2020 06:51:33 -0700 (PDT)
-Subject: Re: [PATCH] Handle init_iova_flush_queue failure in dma-iommu path
-To:     Joerg Roedel <joro@8bytes.org>, Tom Murphy <murphyt7@tcd.ie>
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-References: <20200910122539.3662-1-murphyt7@tcd.ie>
- <20200918085501.GJ31590@8bytes.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <82d5f9c9-1001-3ed3-05f2-1a3b87ca023d@arm.com>
-Date:   Fri, 18 Sep 2020 14:51:32 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        id S1726121AbgIRNyJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 09:54:09 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kJGpv-00FF2u-D6; Fri, 18 Sep 2020 15:54:03 +0200
+Date:   Fri, 18 Sep 2020 15:54:03 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     =?utf-8?B?5YqJ5YGJ5qyK?= <willy.liu@realtek.com>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ryan Kao <ryankao@realtek.com>,
+        Kyle Evans <kevans@FreeBSD.org>,
+        Joe Hershberger <joe.hershberger@ni.com>,
+        Peter Robinson <pbrobinson@gmail.com>
+Subject: Re: [PATCH] net: phy: realtek: fix rtl8211e rx/tx delay config
+Message-ID: <20200918135403.GC3631014@lunn.ch>
+References: <1600307253-3538-1-git-send-email-willy.liu@realtek.com>
+ <20200917101035.uwajg4m524g4lz5o@mobilestation>
+ <87c4ebf4b1fe48a7a10b27d0ba0b333c@realtek.com>
 MIME-Version: 1.0
-In-Reply-To: <20200918085501.GJ31590@8bytes.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87c4ebf4b1fe48a7a10b27d0ba0b333c@realtek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-18 09:55, Joerg Roedel wrote:
-> On Thu, Sep 10, 2020 at 01:25:38PM +0100, Tom Murphy wrote:
->> init_iova_flush_queue can fail if we run out of memory. Fall back to noflush
->>   queue if it fails.
->>
->> Signed-off-by: Tom Murphy <murphyt7@tcd.ie>
->> ---
->>   drivers/iommu/dma-iommu.c | 7 +++++--
->>   1 file changed, 5 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
->> index 4959f5df21bd..5f69126f3e91 100644
->> --- a/drivers/iommu/dma-iommu.c
->> +++ b/drivers/iommu/dma-iommu.c
->> @@ -343,8 +343,11 @@ static int iommu_dma_init_domain(struct iommu_domain *domain, dma_addr_t base,
->>   
->>   	if (!cookie->fq_domain && !iommu_domain_get_attr(domain,
->>   			DOMAIN_ATTR_DMA_USE_FLUSH_QUEUE, &attr) && attr) {
->> -		cookie->fq_domain = domain;
->> -		init_iova_flush_queue(iovad, iommu_dma_flush_iotlb_all, NULL);
->> +		if (init_iova_flush_queue(iovad, iommu_dma_flush_iotlb_all,
->> +					NULL))
->> +			pr_warn("iova flush queue initialization failed\n");
->> +		else
->> +			cookie->fq_domain = domain;
->>   	}
->>   
->>   	if (!dev)
+On Fri, Sep 18, 2020 at 06:55:16AM +0000, 劉偉權 wrote:
+> Hi Serge,
+
+> Thanks for your reply. There is a confidential issue that realtek
+> doesn't offer the detail of a full register layout for configuration
+> register.
+
+...
+
+> >  	 * 0xa4 extension page (0x7) layout. It can be used to disable/enable
+> >  	 * the RX/TX delays otherwise controlled by RXDLY/TXDLY pins. It can
+> >  	 * also be used to customize the whole configuration register:
 > 
-> Looks good to me, but Robin should also have a look.
+> > -	 * 8:6 = PHY Address, 5:4 = Auto-Negotiation, 3 = Interface Mode Select,
+> > -	 * 2 = RX Delay, 1 = TX Delay, 0 = SELRGV (see original PHY datasheet
+> > -	 * for details).
+> > +	 * 13 = Force Tx RX Delay controlled by bit12 bit11,
+> > +	 * 12 = RX Delay, 11 = TX Delay
+> 
 
-Yup, seems reasonable, thanks Tom!
+> Here you've removed the register layout description and replaced itq
+> with just three bits info. So from now the text above doesn't really
+> corresponds to what follows.
 
-Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+> I might have forgotten something, but AFAIR that register bits
+> stateq mapped well to what was available on the corresponding
+> external pins.
+
+Hi Willy
+
+So it appears bits 3 to 8 have been reverse engineered. Unless you
+know from your confidential datasheet that these are wrong, please
+leave the comment alone.
+
+If you confidential datasheet says that the usage of bits 0-2 is
+wrong, then please do correct that part.
+
+       Andrew
