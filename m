@@ -2,170 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF23270304
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 19:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3CA270310
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 19:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726308AbgIRRQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 13:16:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53540 "EHLO
+        id S1726389AbgIRRRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 13:17:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726139AbgIRRQp (ORCPT
+        with ESMTP id S1726361AbgIRRRt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 13:16:45 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A10C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 10:16:44 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id z17so6883147lfi.12
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 10:16:44 -0700 (PDT)
+        Fri, 18 Sep 2020 13:17:49 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A515C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 10:17:49 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id n61so6046299ota.10
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 10:17:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+w7EhF1DkZ1hqDHXWlBRJ6gXYmxZBjmMIR7/y1ENzF8=;
-        b=JFvaow/4OrxULwRj9GRXoJIA8e0oFwbaG7Tc2sEcxqpzL78d8NqlYerFoVZEmOlQOj
-         Fk6suiHeSSXPzAzoeNSJE7LdWOMLaud90cAItb0UqLSPFrKgj0Mdd0RAwmPHUwcIEZFt
-         AnoZWDKC7vrvH6Hl7hZX37XDwfqaNJqSOmWaI=
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JUqiQSzhllVI057aTXz2PMTFJEWV6FgLZUeHAXitVIA=;
+        b=gWUFB6iOP9XOh7KH05lYOr2sORiin/ancMlcFxzjs0GPW5jOrEW8fo7ksblL+sJm1m
+         TpaYCfBbbuJzGv4J4a6W0q9XEQDcmF61mbfbt3ESUfM/BaGzDbwxnFGUeC0IgPdxTGD+
+         cRmnXsJy3hjUvv8bpt+VI5jdbkh+Bpedkg8Jt+QwoFF0psK1vp0Eq6OYDpHgpcLTzu1L
+         0gIsd+WmaL+lXJxVxkNEdtkrZIqtR5Qb0sXE3ziIjHcKrRJ10QQIAXFy5Q+T86eZ0P9v
+         VwzfrHjUMiTJ4qmCoKidh588lvxxuPIZWWWKzec+K9enitrTv9o9DF2BemvZwNBKYqG4
+         0CLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+w7EhF1DkZ1hqDHXWlBRJ6gXYmxZBjmMIR7/y1ENzF8=;
-        b=KZHLMPr2vm+lt5JV6wmA+sznsmTDm56Oy8owwtG3TDMQT282WfEIKiFML7Ui+AJKW2
-         UjJMzeW2d97SvL/Y3ikdvuntmHJazykl3n5ftR59jCZR3zwy0lY0MweshS+sEdRespp+
-         18ECU3UWQ2Q06z4/IE+JUNwpN1iIdnQePMy7oX/I8Q4cxTtfuFo9k2AsRXhJt+5LUtvm
-         JT6i9oIouTV/PjNjjbuNaT9jwo8N8f3fMegCZxeAGuemYe7s9HOPp62UyeU5w0ctKF32
-         YWI0Et2XG3ihCYuPB/UrLXpqtbt94TA0KtADHHUIMSuyJwCpMrXOjdNCdp1xoXpwKEcx
-         +IPQ==
-X-Gm-Message-State: AOAM531sNFLscEXN9lJ9n6zzn5TNHbUvh/2r6B44qCGecBvScDoaKaU5
-        GoQAWWvR8LXtE2bEBx2VD9rrJ+9zhmVPWw==
-X-Google-Smtp-Source: ABdhPJxJJldfZGtZbPj+z+3/ot1ruOMHleE3sBOtaqAxBwtkEZhA29/np5OmmbFgvfKwukwfJtvPWg==
-X-Received: by 2002:ac2:4c19:: with SMTP id t25mr10410473lfq.375.1600449401975;
-        Fri, 18 Sep 2020 10:16:41 -0700 (PDT)
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
-        by smtp.gmail.com with ESMTPSA id r13sm700221lfe.114.2020.09.18.10.16.36
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JUqiQSzhllVI057aTXz2PMTFJEWV6FgLZUeHAXitVIA=;
+        b=QjIOU+UaqjAfwmCKVKiITQDyzwilOBYrF5SUpqq5dvLl5hQOvZKylE/udqDm4kGbuU
+         HxeAuCIAOvQlly2FxddELGLxNptbrC47/NskRuXsZjRUsHmVUH/Nyibd57X3aWBVu6Go
+         VcNyLFXt84tYv3tACTdRbqsCKnK6i+vZlqQ5bqLtCGU1yvQjmdBpriwomh8YrZ0Xh46o
+         oyzbfEAsrBBp9iav0EQvt0oWyN2EoLehwd3o/at22L/6lEPKHQIA3HwI8+6h/ICs/Yfq
+         qb/3Z9EdTsobM5NU3yoBGuTuRzprK1SLxFP404zN/PlEx73zgM2+nEc/RdhGvo2k7Xum
+         7jKA==
+X-Gm-Message-State: AOAM531fGazBYXGltIf6CWWZTb5p0oYTCeaerMxj0usV0MVDc1tE+Nbt
+        3XPdgfx+A8Bwdzn9zMBGzw69ig==
+X-Google-Smtp-Source: ABdhPJxE46bj0+pPNUe6d6dV6MR0pQn+LjGvUdhHTufrFIzRjscfZ4AfSWYI8+1eQECdOdy9HM+seA==
+X-Received: by 2002:a05:6830:1bf9:: with SMTP id k25mr23890348otb.310.1600449468463;
+        Fri, 18 Sep 2020 10:17:48 -0700 (PDT)
+Received: from [192.168.1.10] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id s5sm2758562otr.42.2020.09.18.10.17.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Sep 2020 10:16:36 -0700 (PDT)
-Received: by mail-lj1-f175.google.com with SMTP id w3so5708677ljo.5
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 10:16:36 -0700 (PDT)
-X-Received: by 2002:a05:651c:514:: with SMTP id o20mr12959868ljp.312.1600449395900;
- Fri, 18 Sep 2020 10:16:35 -0700 (PDT)
+        Fri, 18 Sep 2020 10:17:47 -0700 (PDT)
+Subject: Re: [PATCH] scsi: arcmsr: Remove the superfluous break
+To:     Joe Perches <joe@perches.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Jing Xiangfeng <jingxiangfeng@huawei.com>
+Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        lee.jones@linaro.org, colin.king@canonical.com,
+        mchehab+huawei@kernel.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        kernel-janitors <kernel-janitors@vger.kernel.org>
+References: <20200918093230.49050-1-jingxiangfeng@huawei.com>
+ <20200918145619.GA25599@embeddedor>
+ <e9320543ab6e7c8bd5ceae8cfa9d0912a0e962e0.camel@perches.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <2ce1124d-7f83-d9aa-f62a-519c8914ad98@kernel.dk>
+Date:   Fri, 18 Sep 2020 11:17:46 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200915193838.GN1221970@ziepe.ca> <20200915213330.GE2949@xz-x1>
- <20200915232238.GO1221970@ziepe.ca> <e6c352f8-7ee9-0702-10a4-122d2c4422fc@nvidia.com>
- <20200916174804.GC8409@ziepe.ca> <20200916184619.GB40154@xz-x1>
- <20200917112538.GD8409@ziepe.ca> <CAHk-=wjtfjB3TqTFRzVmOrB9Mii6Yzc-=wKq0fu4ruDE6AsJgg@mail.gmail.com>
- <20200917193824.GL8409@ziepe.ca> <CAHk-=wiY_g+SSjncZi8sO=LrxXmMox0NO7K34-Fs653XVXheGg@mail.gmail.com>
- <20200918164032.GA5962@xz-x1>
-In-Reply-To: <20200918164032.GA5962@xz-x1>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 18 Sep 2020 10:16:19 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whL44VySgScXjvCQ4VkeaW3nOcPMn0UwnY03iOE=1T7VQ@mail.gmail.com>
-Message-ID: <CAHk-=whL44VySgScXjvCQ4VkeaW3nOcPMn0UwnY03iOE=1T7VQ@mail.gmail.com>
-Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Maya B . Gokhale" <gokhale2@llnl.gov>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Marty Mcfadden <mcfadden8@llnl.gov>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <e9320543ab6e7c8bd5ceae8cfa9d0912a0e962e0.camel@perches.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 9:40 AM Peter Xu <peterx@redhat.com> wrote:
->
-> Firstly in the draft patch mm->has_pinned is introduced and it's written to 1
-> as long as FOLL_GUP is called once.  It's never reset after set.
+On 9/18/20 11:13 AM, Joe Perches wrote:
+> On Fri, 2020-09-18 at 09:56 -0500, Gustavo A. R. Silva wrote:
+>> On Fri, Sep 18, 2020 at 05:32:30PM +0800, Jing Xiangfeng wrote:
+>>> Remove the superfluous break, as there is a 'return' before it.
+>>>
+>>
+>> Apparently, the change is correct. Please, just add a proper Fixes tag by
+>> yourself this time.
+> 
+> There's no need for a "Fixes:" here, it's purely cosmetic.
+> 
+> btw:
+> 
+> There are at least 150 instances of
+> 	return foo(...);
+> 	break;
+> still in the kernel tree:
 
-That's fine. That was what I was expecting you to do. It only needs to
-be cleared at mm creation time (fork/exec), and I see you added that
-in mm_init() already.
+A lot of these are false positives, since they follow a pattern of:
 
-Since this only matters for fork(), and is really just a filter for
-the (very) special behavior, and people who _actually_ do the page
-pinning won't likely be mixing that with thousands of forks anyway, it
-really doesn't matter.
+if (some_condition)
+	return func();
+break;
 
-It's literally just about "I'm a normal process, I've never done any
-special rdma page pinning, let me fork a lot with no overhead" flag.
+-- 
+Jens Axboe
 
-The only change I'd make is to make it a "int" and put it next to the
-"int map_count", since that will pack better on 64-bit (assuming you
-don't do the randomize_layout thing, in which case it's all moot).
-
-Even if we were to expand it to an actual page count, I'm not
-convinced we'd ever want anybody to pin more than 2 billion pages.
-That's a minimum of 8 TB of RAM. Even if that were physically possibly
-on some machines, it doesn't seem reasonable.
-
-So even if that flag were to ever become an actual count, more than 32
-bits seems pointless and wrong.
-
-And as a flag, it most certainly doesn't need "unsigned long".
-
-> One more thing (I think) we need to do is to pass the new vma from
-> copy_page_range() down into the end because if we want to start cow during
-> fork() then we need to operate on that new vma too when new page linked to it
-> rather than the parent's.
-
-Ahh. Because you  pass the new vma down to the rmap routines.
-
-I actually think it's unnecessary, because all the rmap routines
-*really* care about is not the vma, but the anonvma associated with
-it. Which will be the same for the parent and the child.
-
-But we'd probably have to change the calling convention for rmap for
-that to be obvious, so your solution seems ok. Maybe not optimal, but
-I think we're going for "let's make things as clear as possible"
-rather than optimal right now.
-
-My main worry here is that it makes the calls really ugly, and we
-generally try to avoid having that many arguments, but it was bad
-before, and these are generally inlined, so changing it to use a
-argument structure wouldn't even help code generation.
-
-So it's not pretty. But it is what it is.
-
-> One issue is when we charge for cgroup we probably can't do that onto the new
-> mm/task, since copy_namespaces() is called after copy_mm().
-
-That cannot possibly matter as far as I can see.
-
-Copying the page in between those two calls is already possible since
-we've already dropped the mmap_lock by the time copy_namespaces() is
-called. So if the parent was threaded, and another thread did a write
-access, the parent would have caused that COW that we did early.
-
-And any page copying cost should be to the parent anyway, since that
-is who did the pinning that caused the copy in the first place.
-
-So for both of those reasons - the COW can already happen between
-copy_mm() and copy_namespaces(), *and* charging it to the parent
-namespace is proper anyway - I think your cgroup worry is not
-relevant.
-
-I'm not even sure anything relevant to accounting is created, but my
-point is that even if it is, I don't see how it could be an issue.
-
-> The other thing is on how to fail.  E.g., when COW failed due to either
-> charging of cgroup or ENOMEM, ideally we should fail fork() too.  Though that
-> might need more changes - current patch silently kept the shared page for
-> simplicity.
-
-We already can fail forkind due to memory allocations failing. Again,
-not an issue. It happens.
-
-The only real thing to worry about would be that this doesn't affect
-normal programs, and that mm flag takes care of that.
-
-               Linus
