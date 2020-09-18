@@ -2,222 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1781C26FEA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 15:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC79726FEAC
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 15:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726805AbgIRNfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 09:35:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47608 "EHLO
+        id S1726700AbgIRNgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 09:36:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726126AbgIRNfo (ORCPT
+        with ESMTP id S1726154AbgIRNgi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 09:35:44 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D108BC0613CE;
-        Fri, 18 Sep 2020 06:35:43 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 2039E29C954
-Message-ID: <8b5f42e17ceacd36c0e3808637cec291dc160ec3.camel@collabora.com>
-Subject: Re: [PATCH v2] media: cedrus: Propagate OUTPUT resolution to CAPTURE
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Chen-Yu Tsai <wens@csie.org>
-Cc:     Ondrej Jirman <megous@megous.com>, linux-media@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 18 Sep 2020 10:35:32 -0300
-In-Reply-To: <a9116365a389e4c163a43a5fca25b9ead2c62b36.camel@collabora.com>
-References: <20200918002751.373984-1-nicolas.dufresne@collabora.com>
-         <a9116365a389e4c163a43a5fca25b9ead2c62b36.camel@collabora.com>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3-1 
+        Fri, 18 Sep 2020 09:36:38 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3952C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 06:36:37 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id z1so5675128wrt.3
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 06:36:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S/H30pVHHooIlFcXrllAM3Wgt1Tegx1zr+aVqYzGTR8=;
+        b=UVNfdPdIw4EtgSlc1VR3c3fJ3rRuj179WECP+H2L419uy/vDaYFnuFJWM4FYt5CkNK
+         lRKn7McLMNu58itgWFnvAej9XnMJfnT58yoAkgrddq2W7xxsPZlVeJSpJ4UTzme3hOP1
+         RVTr8shIwPPv5dNz+rZbdb0XxbDXGC1V7l8/Z3T+7zro76VKP12vRWU8JBs5PzFDPHeH
+         H3zOgaRCQsmPfoLq5NNpfFmh8lSfktqZ+ZEWXMg5JK4adPCcuB/N+YulA4x6NdZVbvQh
+         ZD/9FhMy1NqGV7pnm/OAbUIsH/ui2KYW/gFuUA7m0nlzKp4KjFK5wjUiMT6YRH3Qnif5
+         Rncg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S/H30pVHHooIlFcXrllAM3Wgt1Tegx1zr+aVqYzGTR8=;
+        b=N5CXxlrNSeTT80JylMh1KW4OGkhf023Sac5wJIk9ndIEJdi14bQa+LitqyIkeIJKcw
+         w+73HWIB3xXBzO4rSZ6sEPOwQR/lIY2qHsx0+axOYBNH6Oe/vJXWo/+1OjpxPi1lUJO6
+         9yMhmcTEffEn2MQRQiqgRyDhqdQgrlms9GMzVghJ5qwmP6vEDXRZQ7KVvGdGRUiVz0Hl
+         tcw1TbaU2Pp9p9EQCSm09EQ2rFjBXUL2fAK8/2NgJgrxkt5QuiAghQp5nSsP9hwwowmL
+         E4ldfMGNb+oVy4jQmNMEGJ946HQ+wWmBtN7Rvw7erPtjPIo2dJHZD85RSnGN5Z4QG6sn
+         mrvg==
+X-Gm-Message-State: AOAM531Lx8Pq/Tf9cMZLRHeNZbJKyP3PTqP0hoWOf7/oXvMcStV6FFt5
+        EshXI3AxUC33UlI20yeezTz95Q==
+X-Google-Smtp-Source: ABdhPJxRytQCEVd6fy4QBSu9Wjzif6udtq5twp681wmO/HG+WbU7OEJKIiGimFd5Ugk9Upplop8xvQ==
+X-Received: by 2002:adf:ec82:: with SMTP id z2mr37541782wrn.214.1600436196448;
+        Fri, 18 Sep 2020 06:36:36 -0700 (PDT)
+Received: from localhost (49.222.77.34.bc.googleusercontent.com. [34.77.222.49])
+        by smtp.gmail.com with ESMTPSA id t4sm5455830wrr.26.2020.09.18.06.36.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Sep 2020 06:36:35 -0700 (PDT)
+From:   George-Aurelian Popescu <georgepope@google.com>
+To:     masahiroy@kernel.org, michal.lkml@markovi.net,
+        natechancellor@gmail.com, ndesaulniers@google.com,
+        keescook@chromium.org, akpm@linux-foundation.org, elver@google.com,
+        dvyukov@google.com
+Cc:     peterz@infradead.or, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com, dbrazdil@google.com,
+        George Popescu <georgepope@google.com>,
+        George Popescu <georgepope@android.com>
+Subject: [PATCH] ubsan: introducing CONFIG_UBSAN_BOUNDS_LOCAL for Clang
+Date:   Fri, 18 Sep 2020 13:36:32 +0000
+Message-Id: <20200918133632.4038538-1-georgepope@google.com>
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nicolas,
+From: George Popescu <georgepope@google.com>
 
-On Thu, 2020-09-17 at 20:43 -0400, Nicolas Dufresne wrote:
-> Le jeudi 17 septembre 2020 à 20:27 -0400, Nicolas Dufresne a écrit :
-> > As per spec, the CAPTURE resolution should be automatically set based on
-> > the OTUPUT resolution. This patch properly propagate width/height to the
-> > capture when the OUTPUT format is set and override the user provided
-> > width/height with configured OUTPUT resolution when the CAPTURE fmt is
-> > updated.
-> > 
-> > This also prevents userspace from selecting a CAPTURE resolution that is
-> > too small, avoiding kernel oops.
-> 
-> Just in case it wasn't obvious, this is fully reproducible oops
-> whenever you use GStreamer 1.18. Here's a copy of Ondrej report from
-> today which thankfully allowed me to realized I had never completed
-> this patch. Pretty much all kernel that includes Cedrus are to be
-> affect, though is a staging driver on staging API of course.
-> 
-> ---
-> 
-> I tried testing cedrus with gstreamer 1.18 and it managed to crash the
-> kernel on
-> A64. I used:
-> 
->   gst-launch-1.0 filesrc location=test.mkv ! matroskademux ! queue !
-> h264parse ! v4l2slh264dec ! filesink location=aaa.dat
-> 
-> Unable to handle kernel paging request at virtual address
-> 8080808080808088
-> Mem abort info:
->   ESR = 0x96000044
->   EC = 0x25: DABT (current EL), IL = 32 bits
->   SET = 0, FnV = 0
->   EA = 0, S1PTW = 0
-> Data abort info:
->   ISV = 0, ISS = 0x00000044
->   CM = 0, WnR = 1
-> [8080808080808088] address between user and kernel address ranges
-> Internal error: Oops: 96000044 [#1] SMP
-> Modules linked in: modem_power hci_uart btrtl bluetooth ecdh_generic
-> ecc sunxi_cedrus(C) sun8i_ce crypto_engine snd_soc_bt_sco
-> snd_soc_simple_card snd_soc_simple_card_utils snd_soc_simple_amplifier
-> sun50i_codec_analog sun8i_codec sun8i_adda_pr_regmap snd_soc_ec25
-> sun4i_i2s snd_soc_core snd_pcm_dmaengine snd_pcm snd_timer snd
-> soundcore stk3310 inv_mpu6050_i2c inv_mpu6050 st_magn_i2c
-> st_sensors_i2c st_magn st_sensors industrialio_triggered_buffer
-> kfifo_buf regmap_i2c option usb_wwan usbserial anx7688 ohci_platform
-> ohci_hcd ehci_platform ehci_hcd g_cdc usb_f_acm u_serial usb_f_ecm
-> u_ether libcomposite sunxi phy_generic musb_hdrc udc_core usbcore
-> sun8i_rotate v4l2_mem2mem gc2145 ov5640 sun6i_csi videobuf2_dma_contig
-> v4l2_fwnode videobuf2_memops videobuf2_v4l2 videobuf2_common videodev
-> mc 8723cs(C) cfg80211 rfkill lima gpu_sched goodix
-> CPU: 0 PID: 0 Comm: swapper/0 Tainted: G         C        5.9.0-rc5-
-> 00386-g4fe2ef82bd0b #62
-> Hardware name: Pine64 PinePhone (1.2) (DT)
-> pstate: 80000085 (Nzcv daIf -PAN -UAO BTYPE=--)
-> pc : v4l2_m2m_buf_remove+0x44/0x90 [v4l2_mem2mem]
-> lr : v4l2_m2m_buf_remove+0x18/0x90 [v4l2_mem2mem]
-> sp : ffffffc010c8be20
-> x29: ffffffc010c8be20 x28: ffffffc010bb2fc0 
-> x27: 0000000000000060 x26: ffffffc010935e58 
-> x25: ffffffc010c06a5a x24: 0000000000000080 
-> x23: 0000000000000005 x22: ffffffc010c8bf4c 
-> x21: ffffff806ba0d088 x20: ffffff80687d1800 
-> x19: ffffff8066c40298 x18: 0000000000000000 
-> x17: 0000000000000000 x16: 0000000000000000 
-> x15: 000001b66678fd80 x14: 0000000000000204 
-> x13: 0000000000000001 x12: 0000000000000040 
-> x11: ffffff806f0c0248 x10: ffffff806f0c024a 
-> x9 : ffffffc010bbdac8 x8 : ffffff806f000270 
-> x7 : 0000000000000000 x6 : dead000000000100 
-> x5 : dead000000000122 x4 : 0000000000000000 
-> x3 : 8080808080808080 x2 : 8080808080808080 
-> x1 : ffffff80641327a8 x0 : 0000000000000080 
-> Call trace:
->  v4l2_m2m_buf_remove+0x44/0x90 [v4l2_mem2mem]
->  v4l2_m2m_buf_done_and_job_finish+0x34/0x140 [v4l2_mem2mem]
->  cedrus_irq+0x8c/0xc0 [sunxi_cedrus]
->  __handle_irq_event_percpu+0x54/0x150
->  handle_irq_event+0x4c/0xec
->  handle_fasteoi_irq+0xbc/0x1c0
->  __handle_domain_irq+0x78/0xdc
->  gic_handle_irq+0x50/0xa0
->  el1_irq+0xb8/0x140
->  arch_cpu_idle+0x10/0x14
->  cpu_startup_entry+0x24/0x60
->  rest_init+0xb0/0xbc
->  arch_call_rest_init+0xc/0x14
->  start_kernel+0x690/0x6b0
-> Code: f2fbd5a6 f2fbd5a5 52800004 a9400823 (f9000462) 
-> ---[ end trace 88233b9a76cdb261 ]---
-> Kernel panic - not syncing: Fatal exception in interrupt
-> 
+When the kernel is compiled with Clang, -fsanitize=bounds expands to
+-fsanitize=array-bounds and -fsanitize=local-bounds.
 
-Just FWIW, you could have included the panic backtrace and
-the information about the bug in the patch description.
+Enabling -fsanitize=local-bounds with Clang has the unfortunate
+side-effect of inserting traps; this goes back to its original intent,
+which was as a hardening and not a debugging feature [1]. The same feature
+made its way into -fsanitize=bounds, but the traps remained. For that
+reason, -fsanitize=bounds was split into 'array-bounds' and
+'local-bounds' [2].
 
-The driver is in staging, but still I'd say it's worth
-to have:
+Since 'local-bounds' doesn't behave like a normal sanitizer, enable
+it with Clang only if trapping behaviour was requested by
+CONFIG_UBSAN_TRAP=y.
 
-Cc: stable@vger.kernel.org
-Fixes: 50e761516f2b ("media: platform: Add Cedrus VPU decoder driver")
+Add the UBSAN_BOUNDS_LOCAL config to Kconfig.ubsan to enable the
+'local-bounds' option by default when UBSAN_TRAP is enabled.
 
-Thanks,
-Ezequiel
+[1] http://lists.llvm.org/pipermail/llvm-dev/2012-May/049972.html
+[2] http://lists.llvm.org/pipermail/cfe-commits/Week-of-Mon-20131021/091536.html
 
-> > Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
-> > Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
-> > Acked-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> > Tested-by: Ondrej Jirman <megous@megous.com>
-> > ---
-> >  .../staging/media/sunxi/cedrus/cedrus_video.c | 29 +++++++++++++++++--
-> >  1 file changed, 27 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_video.c b/drivers/staging/media/sunxi/cedrus/cedrus_video.c
-> > index 16d82309e7b6..667b86dde1ee 100644
-> > --- a/drivers/staging/media/sunxi/cedrus/cedrus_video.c
-> > +++ b/drivers/staging/media/sunxi/cedrus/cedrus_video.c
-> > @@ -247,6 +247,8 @@ static int cedrus_try_fmt_vid_cap(struct file *file, void *priv,
-> >  		return -EINVAL;
-> >  
-> >  	pix_fmt->pixelformat = fmt->pixelformat;
-> > +	pix_fmt->width = ctx->src_fmt.width;
-> > +	pix_fmt->height = ctx->src_fmt.height;
-> >  	cedrus_prepare_format(pix_fmt);
-> >  
-> >  	return 0;
-> > @@ -296,10 +298,30 @@ static int cedrus_s_fmt_vid_out(struct file *file, void *priv,
-> >  {
-> >  	struct cedrus_ctx *ctx = cedrus_file2ctx(file);
-> >  	struct vb2_queue *vq;
-> > +	struct vb2_queue *peer_vq;
-> >  	int ret;
-> >  
-> > +	ret = cedrus_try_fmt_vid_out(file, priv, f);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> >  	vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx, f->type);
-> > -	if (vb2_is_busy(vq))
-> > +	/*
-> > +	 * In order to support dynamic resolution change,
-> > +	 * the decoder admits a resolution change, as long
-> > +	 * as the pixelformat remains. Can't be done if streaming.
-> > +	 */
-> > +	if (vb2_is_streaming(vq) || (vb2_is_busy(vq) &&
-> > +	    f->fmt.pix.pixelformat != ctx->src_fmt.pixelformat))
-> > +		return -EBUSY;
-> > +	/*
-> > +	 * Since format change on the OUTPUT queue will reset
-> > +	 * the CAPTURE queue, we can't allow doing so
-> > +	 * when the CAPTURE queue has buffers allocated.
-> > +	 */
-> > +	peer_vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx,
-> > +				  V4L2_BUF_TYPE_VIDEO_CAPTURE);
-> > +	if (vb2_is_busy(peer_vq))
-> >  		return -EBUSY;
-> >  
-> >  	ret = cedrus_try_fmt_vid_out(file, priv, f);
-> > @@ -319,11 +341,14 @@ static int cedrus_s_fmt_vid_out(struct file *file, void *priv,
-> >  		break;
-> >  	}
-> >  
-> > -	/* Propagate colorspace information to capture. */
-> > +	/* Propagate format information to capture. */
-> >  	ctx->dst_fmt.colorspace = f->fmt.pix.colorspace;
-> >  	ctx->dst_fmt.xfer_func = f->fmt.pix.xfer_func;
-> >  	ctx->dst_fmt.ycbcr_enc = f->fmt.pix.ycbcr_enc;
-> >  	ctx->dst_fmt.quantization = f->fmt.pix.quantization;
-> > +	ctx->dst_fmt.width = ctx->src_fmt.width;
-> > +	ctx->dst_fmt.height = ctx->src_fmt.height;
-> > +	cedrus_prepare_format(&ctx->dst_fmt);
-> >  
-> >  	return 0;
-> >  }
+Suggested-by: Marco Elver <elver@google.com>
+Reviewed-by: David Brazdil <dbrazdil@google.com>
+Signed-off-by: George Popescu <georgepope@android.com>
+---
+ lib/Kconfig.ubsan      | 14 ++++++++++++++
+ scripts/Makefile.ubsan | 10 +++++++++-
+ 2 files changed, 23 insertions(+), 1 deletion(-)
 
+diff --git a/lib/Kconfig.ubsan b/lib/Kconfig.ubsan
+index 774315de555a..553bd22e83ee 100644
+--- a/lib/Kconfig.ubsan
++++ b/lib/Kconfig.ubsan
+@@ -47,6 +47,20 @@ config UBSAN_BOUNDS
+ 	  to the {str,mem}*cpy() family of functions (that is addressed
+ 	  by CONFIG_FORTIFY_SOURCE).
+ 
++config UBSAN_BOUNDS_LOCAL
++	bool "Perform array local bounds checking"
++	depends on UBSAN_TRAP
++	depends on CC_IS_CLANG
++	depends on !UBSAN_KCOV_BROKEN
++	help
++	  This option enables -fsanitize=local-bounds which traps when an
++	  exception/error is detected. Therefore, it should be enabled only
++	  if trapping is expected.
++	  Enabling this option detects errors due to accesses through a
++	  pointer that is derived from an object of a statically-known size,
++	  where an added offset (which may not be known statically) is
++	  out-of-bounds.
++
+ config UBSAN_MISC
+ 	bool "Enable all other Undefined Behavior sanity checks"
+ 	default UBSAN
+diff --git a/scripts/Makefile.ubsan b/scripts/Makefile.ubsan
+index 27348029b2b8..4e3fff0745e8 100644
+--- a/scripts/Makefile.ubsan
++++ b/scripts/Makefile.ubsan
+@@ -4,7 +4,15 @@ ifdef CONFIG_UBSAN_ALIGNMENT
+ endif
+ 
+ ifdef CONFIG_UBSAN_BOUNDS
+-      CFLAGS_UBSAN += $(call cc-option, -fsanitize=bounds)
++      ifdef CONFIG_CC_IS_CLANG
++            CFLAGS_UBSAN += -fsanitize=array-bounds
++      else
++            CFLAGS_UBSAN += $(call cc-option, -fsanitize=bounds)
++      endif
++endif
++
++ifdef CONFIG_UBSAN_LOCAL_BOUNDS
++      CFLAGS_UBSAN += -fsanitize=local-bounds
+ endif
+ 
+ ifdef CONFIG_UBSAN_MISC
+-- 
+2.28.0.681.g6f77f65b4e-goog
 
