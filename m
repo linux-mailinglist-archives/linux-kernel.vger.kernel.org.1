@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C64826F1E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3E6C26F1E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729240AbgIRCyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:54:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57638 "EHLO mail.kernel.org"
+        id S1728959AbgIRCyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:54:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727905AbgIRCHW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:07:22 -0400
+        id S1727913AbgIRCHY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:07:24 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 136C7238E5;
-        Fri, 18 Sep 2020 02:07:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 484BA23977;
+        Fri, 18 Sep 2020 02:07:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394841;
-        bh=HRxq0ht/+5yrMdIpMbPQqA0bDRkCKb/DJ6jydnj2H9A=;
+        s=default; t=1600394844;
+        bh=eoF0dWdcNrs2Y2ahm54PqBUOZIWXLcODEYHV/h1kc8Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FxvgzwtEqgWsTY6jiPgdJFapAWW7GkBXHeMVOg/TixZtNdsOJnvHtKbNBvXyLq207
-         j+DhSSUQPEc5rx7Mar9atRRrKG67KBttmont+PHJixjQJnpRO6yEONphWQipeO8DN6
-         7wdbWDMeLE1CvFU4s2x9ipOvi32GGx7YNjoTw9S4=
+        b=p5sBSxkpPUNwqfAlq9xdRzDSGUhO1n4sCUnRoq8Vf4Yl/3M2oDqX/j4HketttmrrF
+         /lsLzurWzw6Y4EB7PfhY/xKdybH/sCs+SuY1smHnExZBjlgQcMQ6Q9pE7neKkxCORR
+         GY/6AMWdOtE04Zvw8HcAVljYxQAiGh3q14+z4COE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.4 299/330] ASoC: img-i2s-out: Fix runtime PM imbalance on error
-Date:   Thu, 17 Sep 2020 22:00:39 -0400
-Message-Id: <20200918020110.2063155-299-sashal@kernel.org>
+        Tony Lindgren <tony@atomide.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 301/330] wlcore: fix runtime pm imbalance in wlcore_regdomain_config
+Date:   Thu, 17 Sep 2020 22:00:41 -0400
+Message-Id: <20200918020110.2063155-301-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -44,48 +46,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit 65bd91dd6957390c42a0491b9622cf31a2cdb140 ]
+[ Upstream commit 282a04bf1d8029eb98585cb5db3fd70fe8bc91f7 ]
 
 pm_runtime_get_sync() increments the runtime PM usage counter even
 the call returns an error code. Thus a pairing decrement is needed
 on the error handling path to keep the counter balanced.
 
 Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Link: https://lore.kernel.org/r/20200529012230.5863-1-dinghao.liu@zju.edu.cn
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Acked-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200520124649.10848-1-dinghao.liu@zju.edu.cn
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/img/img-i2s-out.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ti/wlcore/main.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/img/img-i2s-out.c b/sound/soc/img/img-i2s-out.c
-index 4b18534096336..9c4212f2f7269 100644
---- a/sound/soc/img/img-i2s-out.c
-+++ b/sound/soc/img/img-i2s-out.c
-@@ -347,8 +347,10 @@ static int img_i2s_out_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	chan_control_mask = IMG_I2S_OUT_CHAN_CTL_CLKT_MASK;
+diff --git a/drivers/net/wireless/ti/wlcore/main.c b/drivers/net/wireless/ti/wlcore/main.c
+index 547ad538d8b66..5f74cf821068d 100644
+--- a/drivers/net/wireless/ti/wlcore/main.c
++++ b/drivers/net/wireless/ti/wlcore/main.c
+@@ -3658,8 +3658,10 @@ void wlcore_regdomain_config(struct wl1271 *wl)
+ 		goto out;
  
- 	ret = pm_runtime_get_sync(i2s->dev);
+ 	ret = pm_runtime_get_sync(wl->dev);
 -	if (ret < 0)
 +	if (ret < 0) {
-+		pm_runtime_put_noidle(i2s->dev);
- 		return ret;
++		pm_runtime_put_autosuspend(wl->dev);
+ 		goto out;
 +	}
  
- 	img_i2s_out_disable(i2s);
- 
-@@ -488,8 +490,10 @@ static int img_i2s_out_probe(struct platform_device *pdev)
- 			goto err_pm_disable;
- 	}
- 	ret = pm_runtime_get_sync(&pdev->dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(&pdev->dev);
- 		goto err_suspend;
-+	}
- 
- 	reg = IMG_I2S_OUT_CTL_FRM_SIZE_MASK;
- 	img_i2s_out_writel(i2s, reg, IMG_I2S_OUT_CTL);
+ 	ret = wlcore_cmd_regdomain_config_locked(wl);
+ 	if (ret < 0) {
 -- 
 2.25.1
 
