@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CFDD26F0F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC41B26F0D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:46:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729151AbgIRCre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:47:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33296 "EHLO mail.kernel.org"
+        id S1728354AbgIRCJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:09:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33408 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727403AbgIRCJd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:09:33 -0400
+        id S1728319AbgIRCJh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:09:37 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5EE78235F9;
-        Fri, 18 Sep 2020 02:09:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5BBB92389E;
+        Fri, 18 Sep 2020 02:09:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394973;
-        bh=q1fau9bNkZ6LiM0LKa+WiRcI7VTXUMNlPmohccdDR2Q=;
+        s=default; t=1600394977;
+        bh=eZDc5ObhMHtmYpVYSId1z6YNr6xNx6COQw+PeGTLRM8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vG0PVIFkV6fX4Sfc9/nyleoV/oIhmweZ1ZaoYszFpwK0eoJQ+ABs2/lnoN1m6rn1w
-         iyFx8+q5/oGMq4Xhq/Jga77+RRD4PlQiWgVLtLOrpRiOYwNboAKRgQll1QlbqccJd6
-         UOuJQM9r1jHOdlF0onUCG9wc/Yca0XjtjwH5wUYk=
+        b=IVz013wVnYZniGmzZHjJioGg+gzkXBYrJIh6HgTBOuDx18XUdNMCUOPovyJ58syTK
+         gPmHAuiNfeSiyFSm7WK8mCZ2SkE628pgwzhZBEc9UOZeSBiATLEBTpvMNw7xkfE8Z7
+         XUjmp8GfSDcp0fkcdqVknN+msDVHfeY+cDWRLE+4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     James Smart <jsmart2021@gmail.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 074/206] scsi: lpfc: Fix RQ buffer leakage when no IOCBs available
-Date:   Thu, 17 Sep 2020 22:05:50 -0400
-Message-Id: <20200918020802.2065198-74-sashal@kernel.org>
+Cc:     Dinh Nguyen <dinguyen@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-clk@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 077/206] clk: stratix10: use do_div() for 64-bit calculation
+Date:   Thu, 17 Sep 2020 22:05:53 -0400
+Message-Id: <20200918020802.2065198-77-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
 References: <20200918020802.2065198-1-sashal@kernel.org>
@@ -43,56 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Smart <jsmart2021@gmail.com>
+From: Dinh Nguyen <dinguyen@kernel.org>
 
-[ Upstream commit 39c4f1a965a9244c3ba60695e8ff8da065ec6ac4 ]
+[ Upstream commit cc26ed7be46c5f5fa45f3df8161ed7ca3c4d318c ]
 
-The driver is occasionally seeing the following SLI Port error, requiring
-reset and reinit:
+do_div() macro to perform u64 division and guards against overflow if
+the result is too large for the unsigned long return type.
 
- Port Status Event: ... error 1=0x52004a01, error 2=0x218
-
-The failure means an RQ timeout. That is, the adapter had received
-asynchronous receive frames, ran out of buffer slots to place the frames,
-and the driver did not replenish the buffer slots before a timeout
-occurred. The driver should not be so slow in replenishing buffers that a
-timeout can occur.
-
-When the driver received all the frames of a sequence, it allocates an IOCB
-to put the frames in. In a situation where there was no IOCB available for
-the frame of a sequence, the RQ buffer corresponding to the first frame of
-the sequence was not returned to the FW. Eventually, with enough traffic
-encountering the situation, the timeout occurred.
-
-Fix by releasing the buffer back to firmware whenever there is no IOCB for
-the first frame.
-
-[mkp: typo]
-
-Link: https://lore.kernel.org/r/20200128002312.16346-2-jsmart2021@gmail.com
-Signed-off-by: Dick Kennedy <dick.kennedy@broadcom.com>
-Signed-off-by: James Smart <jsmart2021@gmail.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+Link: https://lkml.kernel.org/r/20200114160726.19771-1-dinguyen@kernel.org
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/lpfc/lpfc_sli.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/clk/socfpga/clk-pll-s10.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
-index a56a939792ac1..2ab351260e815 100644
---- a/drivers/scsi/lpfc/lpfc_sli.c
-+++ b/drivers/scsi/lpfc/lpfc_sli.c
-@@ -17413,6 +17413,10 @@ lpfc_prep_seq(struct lpfc_vport *vport, struct hbq_dmabuf *seq_dmabuf)
- 			list_add_tail(&iocbq->list, &first_iocbq->list);
- 		}
- 	}
-+	/* Free the sequence's header buffer */
-+	if (!first_iocbq)
-+		lpfc_in_buf_free(vport->phba, &seq_dmabuf->dbuf);
+diff --git a/drivers/clk/socfpga/clk-pll-s10.c b/drivers/clk/socfpga/clk-pll-s10.c
+index c4d0b6f6abf2e..fc2e2839fe570 100644
+--- a/drivers/clk/socfpga/clk-pll-s10.c
++++ b/drivers/clk/socfpga/clk-pll-s10.c
+@@ -38,7 +38,9 @@ static unsigned long clk_pll_recalc_rate(struct clk_hw *hwclk,
+ 	/* read VCO1 reg for numerator and denominator */
+ 	reg = readl(socfpgaclk->hw.reg);
+ 	refdiv = (reg & SOCFPGA_PLL_REFDIV_MASK) >> SOCFPGA_PLL_REFDIV_SHIFT;
+-	vco_freq = (unsigned long long)parent_rate / refdiv;
 +
- 	return first_iocbq;
- }
++	vco_freq = parent_rate;
++	do_div(vco_freq, refdiv);
  
+ 	/* Read mdiv and fdiv from the fdbck register */
+ 	reg = readl(socfpgaclk->hw.reg + 0x4);
 -- 
 2.25.1
 
