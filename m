@@ -2,173 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97013270283
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E236727027C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726508AbgIRQqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 12:46:55 -0400
-Received: from plasma31.jpberlin.de ([80.241.56.82]:28081 "EHLO
-        plasma31.jpberlin.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726421AbgIRQqz (ORCPT
+        id S1726485AbgIRQqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 12:46:36 -0400
+Received: from so254-54.mailgun.net ([198.61.254.54]:54792 "EHLO
+        so254-54.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726304AbgIRQqg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 12:46:55 -0400
-Received: from gerste.heinlein-support.de (unknown [80.241.56.124])
-        by plasma.jpberlin.de (Postfix) with ESMTP id 2C2E4100D7A;
-        Fri, 18 Sep 2020 18:46:50 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from plasma.jpberlin.de ([80.241.56.76])
-        by gerste.heinlein-support.de (gerste.heinlein-support.de [91.198.250.173]) (amavisd-new, port 10030)
-        with ESMTP id YVw5KSDCwv_e; Fri, 18 Sep 2020 18:46:48 +0200 (CEST)
-Received: from webmail.opensynergy.com (unknown [217.66.60.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (Client CN "*.opensynergy.com", Issuer "Starfield Secure Certificate Authority - G2" (not verified))
-        (Authenticated sender: opensynergy@jpberlin.de)
-        by plasma.jpberlin.de (Postfix) with ESMTPSA id 313B8100C91;
-        Fri, 18 Sep 2020 18:46:48 +0200 (CEST)
-From:   Peter Hilber <peter.hilber@opensynergy.com>
-To:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <sudeep.holla@arm.com>, <souvik.chakravarty@arm.com>,
-        <alex.bennee@linaro.org>, <jean-philippe@linaro.org>,
-        <igor.skalkin@opensynergy.com>, <mikhail.golubev@opensynergy.com>,
-        <anton.yakovlev@opensynergy.com>,
-        Peter Hilber <peter.hilber@opensynergy.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Jassi Brar <jassisinghbrar@gmail.com>
-Subject: [RFC PATCH 1/7] firmware: arm_scmi, smccc, mailbox: Make shmem based transports optional
-Date:   Fri, 18 Sep 2020 18:46:16 +0200
-Message-ID: <20200918164617.256356-1-peter.hilber@opensynergy.com>
-In-Reply-To: <20200918162311.254564-1-peter.hilber@opensynergy.com>
-References: <20200918162311.254564-1-peter.hilber@opensynergy.com>
+        Fri, 18 Sep 2020 12:46:36 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600447595; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=aDUDmyWvcWkfN3QFAfQxmB92TzviMMAi90RnbNQlrIo=; b=oh4s7VMSSi2E3X87gzzsWrRZusnis0gxA4ZiNC7e/usOMljVrAyqQoV0JCjIf3rcLWOWgLOq
+ k3hzLBNwH4VVHdr0ip75eMU6F3mcV6Vji9bKlfhxoxbq79XBLWsWl/+4jatO6G/YgHUTbSag
+ iW95iJF21CE/rebiXG0f/gy8Vxk=
+X-Mailgun-Sending-Ip: 198.61.254.54
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5f64e464f1e3eb89c71cd392 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Sep 2020 16:46:28
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 91307C433FF; Fri, 18 Sep 2020 16:46:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.8 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.0
+Received: from [10.131.172.121] (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A6DA4C433C8;
+        Fri, 18 Sep 2020 16:46:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A6DA4C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+Subject: Re: [PATCH v3] arm64: dts: qcom: sc7180: Add lpass cpu node for I2S
+ driver
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Ajit Pandey <ajitp@codeaurora.org>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+References: <1600435026-1876-1-git-send-email-srivasam@codeaurora.org>
+ <CAD=FV=WtSEB6-M8x564t=RuSEKHwH3YvcmuZ9VGpxY+5kcL7rA@mail.gmail.com>
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Organization: Qualcomm India Private Limited
+Message-ID: <c55995fa-5233-b1c9-7c4c-13b5cd8fe178@codeaurora.org>
+Date:   Fri, 18 Sep 2020 22:16:21 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: SR-MAIL-01.open-synergy.com (10.26.10.21) To
- SR-MAIL-01.open-synergy.com (10.26.10.21)
-X-MBO-SPAM-Probability: *
-X-Rspamd-Score: 0.94 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 2C2E4100D7A
-X-Rspamd-UID: d174ef
+In-Reply-To: <CAD=FV=WtSEB6-M8x564t=RuSEKHwH3YvcmuZ9VGpxY+5kcL7rA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Igor Skalkin <igor.skalkin@opensynergy.com>
+Thanks Mr. Doug for Review comments!!
 
-Upon adding the virtio transport in this patch series, SCMI will also
-work without shared memory based transports. Also, the mailbox transport
-may not be needed if the smc transport is used.
+On 9/18/2020 7:28 PM, Doug Anderson wrote:
+> Hi,
+>
+> On Fri, Sep 18, 2020 at 6:18 AM Srinivasa Rao Mandadapu
+> <srivasam@codeaurora.org> wrote:
+>> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+>> @@ -1742,6 +1742,45 @@
+>>                                  };
+>>                          };
+>>
+>> +                       sec_mi2s_active: sec-mi2s-active {
+>> +                               pinmux {
+>> +                                       pins = "gpio49", "gpio50", "gpio51";
+>> +                                       function = "mi2s_1";
+>> +                               };
+>> +
+>> +                               pinconf {
+>> +                                       pins = "gpio49", "gpio50", "gpio51";;
+> There are still two ";" on the above line.
+will fix this type error.
 
-- Compile shmem.c only if a shmem based transport is available.
-
-- Remove hard dependency of SCMI on mailbox.
-
-Co-developed-by: Peter Hilber <peter.hilber@opensynergy.com>
-Signed-off-by: Peter Hilber <peter.hilber@opensynergy.com>
-Signed-off-by: Igor Skalkin <igor.skalkin@opensynergy.com>
----
- drivers/firmware/Kconfig           | 9 ++++++++-
- drivers/firmware/arm_scmi/Makefile | 2 +-
- drivers/firmware/arm_scmi/common.h | 2 ++
- drivers/firmware/arm_scmi/driver.c | 2 ++
- drivers/firmware/smccc/Kconfig     | 1 +
- drivers/mailbox/Kconfig            | 1 +
- 6 files changed, 15 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-index afdbebba628a..bdde51adb267 100644
---- a/drivers/firmware/Kconfig
-+++ b/drivers/firmware/Kconfig
-@@ -9,7 +9,7 @@ menu "Firmware Drivers"
- config ARM_SCMI_PROTOCOL
- 	tristate "ARM System Control and Management Interface (SCMI) Message Protocol"
- 	depends on ARM || ARM64 || COMPILE_TEST
--	depends on MAILBOX
-+	depends on ARM_SCMI_HAVE_SHMEM
- 	help
- 	  ARM System Control and Management Interface (SCMI) protocol is a
- 	  set of operating system-independent software interfaces that are
-@@ -27,6 +27,13 @@ config ARM_SCMI_PROTOCOL
- 	  This protocol library provides interface for all the client drivers
- 	  making use of the features offered by the SCMI.
- 
-+config ARM_SCMI_HAVE_SHMEM
-+	bool
-+	default n
-+	help
-+	  This declares whether a shared memory based transport for SCMI is
-+	  available.
-+
- config ARM_SCMI_POWER_DOMAIN
- 	tristate "SCMI power domain driver"
- 	depends on ARM_SCMI_PROTOCOL || (COMPILE_TEST && OF)
-diff --git a/drivers/firmware/arm_scmi/Makefile b/drivers/firmware/arm_scmi/Makefile
-index bc0d54f8e861..3cc7fa40a464 100644
---- a/drivers/firmware/arm_scmi/Makefile
-+++ b/drivers/firmware/arm_scmi/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- scmi-bus-y = bus.o
- scmi-driver-y = driver.o notify.o
--scmi-transport-y = shmem.o
-+scmi-transport-$(CONFIG_ARM_SCMI_HAVE_SHMEM) = shmem.o
- scmi-transport-$(CONFIG_MAILBOX) += mailbox.o
- scmi-transport-$(CONFIG_HAVE_ARM_SMCCC_DISCOVERY) += smc.o
- scmi-protocols-y = base.o clock.o perf.o power.o reset.o sensors.o system.o
-diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
-index 37fb583f1bf5..36c38334a045 100644
---- a/drivers/firmware/arm_scmi/common.h
-+++ b/drivers/firmware/arm_scmi/common.h
-@@ -240,7 +240,9 @@ struct scmi_desc {
- 	int max_msg_size;
- };
- 
-+#ifdef CONFIG_MAILBOX
- extern const struct scmi_desc scmi_mailbox_desc;
-+#endif
- #ifdef CONFIG_HAVE_ARM_SMCCC
- extern const struct scmi_desc scmi_smc_desc;
- #endif
-diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index c5dea87edf8f..d070687cf2f6 100644
---- a/drivers/firmware/arm_scmi/driver.c
-+++ b/drivers/firmware/arm_scmi/driver.c
-@@ -910,7 +910,9 @@ ATTRIBUTE_GROUPS(versions);
- 
- /* Each compatible listed below must have descriptor associated with it */
- static const struct of_device_id scmi_of_match[] = {
-+#ifdef CONFIG_MAILBOX
- 	{ .compatible = "arm,scmi", .data = &scmi_mailbox_desc },
-+#endif
- #ifdef CONFIG_HAVE_ARM_SMCCC_DISCOVERY
- 	{ .compatible = "arm,scmi-smc", .data = &scmi_smc_desc},
- #endif
-diff --git a/drivers/firmware/smccc/Kconfig b/drivers/firmware/smccc/Kconfig
-index 15e7466179a6..69c4d6cabf62 100644
---- a/drivers/firmware/smccc/Kconfig
-+++ b/drivers/firmware/smccc/Kconfig
-@@ -9,6 +9,7 @@ config HAVE_ARM_SMCCC_DISCOVERY
- 	bool
- 	depends on ARM_PSCI_FW
- 	default y
-+	select ARM_SCMI_HAVE_SHMEM
- 	help
- 	 SMCCC v1.0 lacked discoverability and hence PSCI v1.0 was updated
- 	 to add SMCCC discovery mechanism though the PSCI firmware
-diff --git a/drivers/mailbox/Kconfig b/drivers/mailbox/Kconfig
-index 05b1009e2820..5ffe1ab0c869 100644
---- a/drivers/mailbox/Kconfig
-+++ b/drivers/mailbox/Kconfig
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- menuconfig MAILBOX
- 	bool "Mailbox Hardware Support"
-+	select ARM_SCMI_HAVE_SHMEM
- 	help
- 	  Mailbox is a framework to control hardware communication between
- 	  on-chip processors through queued messages and interrupt driven
 -- 
-2.25.1
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
