@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E088A26EBF6
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF4226EBF7
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:10:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728146AbgIRCIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:08:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60176 "EHLO mail.kernel.org"
+        id S1728154AbgIRCIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:08:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728121AbgIRCIk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:08:40 -0400
+        id S1728140AbgIRCIo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:08:44 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9DE872388E;
-        Fri, 18 Sep 2020 02:08:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EDB6523976;
+        Fri, 18 Sep 2020 02:08:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394920;
-        bh=4qTkj4l9xYshPGVL1jFCPD5HFJvEoHurIlP2Z06u938=;
+        s=default; t=1600394923;
+        bh=ngS+1Y2+NKJbTmEutQwT4xsvGK9vpdEfek0alqaCQuo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tMLUAxyvB/zXtFIY96sB+gxk0hBrhZ5Xe06fNfQ8pHUiMJ4r8u4ExNHb9YlGYSLgj
-         GjNaxOY1sqaRcMFAqMvGufXig5Xyw7yJHmtkBRgT7lMB1RbTjNF9cLXWLg92IE8MX0
-         L6sBfDAFVndAkq7xVxpGkNL0p1mvbcOw0DZSjGgA=
+        b=rpQTPqK0tGlW9za6qCmfaDXrelaqNg5BHGHpecpgcF5ct6koO/7c+xw+JfzQ0AZdU
+         ViWQNPTc5OSoVK5V8aBy4159g7RH1enOPXOz3RWfEPYXA6DWH6MAbtG5FCX6HQ9/lv
+         DlEgO49lQWblR/2/aLOZHLJ6Wwr+7D2l1jjs2yyQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 032/206] RDMA/iw_cgxb4: Fix an error handling path in 'c4iw_connect()'
-Date:   Thu, 17 Sep 2020 22:05:08 -0400
-Message-Id: <20200918020802.2065198-32-sashal@kernel.org>
+Cc:     Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, cluster-devel@redhat.com
+Subject: [PATCH AUTOSEL 4.19 035/206] gfs2: clean up iopen glock mess in gfs2_create_inode
+Date:   Thu, 17 Sep 2020 22:05:11 -0400
+Message-Id: <20200918020802.2065198-35-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
 References: <20200918020802.2065198-1-sashal@kernel.org>
@@ -42,42 +42,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Bob Peterson <rpeterso@redhat.com>
 
-[ Upstream commit 9067f2f0b41d7e817fc8c5259bab1f17512b0147 ]
+[ Upstream commit 2c47c1be51fbded1f7baa2ceaed90f97932f79be ]
 
-We should jump to fail3 in order to undo the 'xa_insert_irq()' call.
+Before this patch, gfs2_create_inode had a use-after-free for the
+iopen glock in some error paths because it did this:
 
-Link: https://lore.kernel.org/r/20190923190746.10964-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+	gfs2_glock_put(io_gl);
+fail_gunlock2:
+	if (io_gl)
+		clear_bit(GLF_INODE_CREATING, &io_gl->gl_flags);
+
+In some cases, the io_gl was used for create and only had one
+reference, so the glock might be freed before the clear_bit().
+This patch tries to straighten it out by only jumping to the
+error paths where iopen is properly set, and moving the
+gfs2_glock_put after the clear_bit.
+
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/cxgb4/cm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/gfs2/inode.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
-index 16145b0a14583..3fd3dfa3478b7 100644
---- a/drivers/infiniband/hw/cxgb4/cm.c
-+++ b/drivers/infiniband/hw/cxgb4/cm.c
-@@ -3293,7 +3293,7 @@ int c4iw_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
- 		if (raddr->sin_addr.s_addr == htonl(INADDR_ANY)) {
- 			err = pick_local_ipaddrs(dev, cm_id);
- 			if (err)
--				goto fail2;
-+				goto fail3;
- 		}
+diff --git a/fs/gfs2/inode.c b/fs/gfs2/inode.c
+index d968b5c5df217..a52b8b0dceeb9 100644
+--- a/fs/gfs2/inode.c
++++ b/fs/gfs2/inode.c
+@@ -715,7 +715,7 @@ static int gfs2_create_inode(struct inode *dir, struct dentry *dentry,
  
- 		/* find a route */
-@@ -3315,7 +3315,7 @@ int c4iw_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
- 		if (ipv6_addr_type(&raddr6->sin6_addr) == IPV6_ADDR_ANY) {
- 			err = pick_local_ip6addrs(dev, cm_id);
- 			if (err)
--				goto fail2;
-+				goto fail3;
- 		}
+ 	error = gfs2_trans_begin(sdp, blocks, 0);
+ 	if (error)
+-		goto fail_gunlock2;
++		goto fail_free_inode;
  
- 		/* find a route */
+ 	if (blocks > 1) {
+ 		ip->i_eattr = ip->i_no_addr + 1;
+@@ -726,7 +726,7 @@ static int gfs2_create_inode(struct inode *dir, struct dentry *dentry,
+ 
+ 	error = gfs2_glock_get(sdp, ip->i_no_addr, &gfs2_iopen_glops, CREATE, &io_gl);
+ 	if (error)
+-		goto fail_gunlock2;
++		goto fail_free_inode;
+ 
+ 	BUG_ON(test_and_set_bit(GLF_INODE_CREATING, &io_gl->gl_flags));
+ 
+@@ -735,7 +735,6 @@ static int gfs2_create_inode(struct inode *dir, struct dentry *dentry,
+ 		goto fail_gunlock2;
+ 
+ 	glock_set_object(ip->i_iopen_gh.gh_gl, ip);
+-	gfs2_glock_put(io_gl);
+ 	gfs2_set_iop(inode);
+ 	insert_inode_hash(inode);
+ 
+@@ -768,6 +767,8 @@ static int gfs2_create_inode(struct inode *dir, struct dentry *dentry,
+ 
+ 	mark_inode_dirty(inode);
+ 	d_instantiate(dentry, inode);
++	/* After instantiate, errors should result in evict which will destroy
++	 * both inode and iopen glocks properly. */
+ 	if (file) {
+ 		file->f_mode |= FMODE_CREATED;
+ 		error = finish_open(file, dentry, gfs2_open_common);
+@@ -775,15 +776,15 @@ static int gfs2_create_inode(struct inode *dir, struct dentry *dentry,
+ 	gfs2_glock_dq_uninit(ghs);
+ 	gfs2_glock_dq_uninit(ghs + 1);
+ 	clear_bit(GLF_INODE_CREATING, &io_gl->gl_flags);
++	gfs2_glock_put(io_gl);
+ 	return error;
+ 
+ fail_gunlock3:
+ 	glock_clear_object(io_gl, ip);
+ 	gfs2_glock_dq_uninit(&ip->i_iopen_gh);
+-	gfs2_glock_put(io_gl);
+ fail_gunlock2:
+-	if (io_gl)
+-		clear_bit(GLF_INODE_CREATING, &io_gl->gl_flags);
++	clear_bit(GLF_INODE_CREATING, &io_gl->gl_flags);
++	gfs2_glock_put(io_gl);
+ fail_free_inode:
+ 	if (ip->i_gl) {
+ 		glock_clear_object(ip->i_gl, ip);
 -- 
 2.25.1
 
