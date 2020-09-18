@@ -2,787 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0896A2702BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1EB2702BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726308AbgIRQ5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 12:57:22 -0400
-Received: from plasma31.jpberlin.de ([80.241.56.82]:26065 "EHLO
-        plasma31.jpberlin.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725955AbgIRQ5W (ORCPT
+        id S1726239AbgIRQ7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 12:59:52 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:51230 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725955AbgIRQ7v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 12:57:22 -0400
-Received: from spamfilter02.heinlein-hosting.de (spamfilter02.heinlein-hosting.de [80.241.56.116])
-        by plasma.jpberlin.de (Postfix) with ESMTP id 7AEC31025D1;
-        Fri, 18 Sep 2020 18:57:15 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from plasma.jpberlin.de ([80.241.56.76])
-        by spamfilter02.heinlein-hosting.de (spamfilter02.heinlein-hosting.de [80.241.56.116]) (amavisd-new, port 10030)
-        with ESMTP id z8cxieOR8uCZ; Fri, 18 Sep 2020 18:57:11 +0200 (CEST)
-Received: from webmail.opensynergy.com (unknown [217.66.60.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (Client CN "*.opensynergy.com", Issuer "Starfield Secure Certificate Authority - G2" (not verified))
-        (Authenticated sender: opensynergy@jpberlin.de)
-        by plasma.jpberlin.de (Postfix) with ESMTPSA id A6BCD10271A;
-        Fri, 18 Sep 2020 18:57:11 +0200 (CEST)
-From:   Peter Hilber <peter.hilber@opensynergy.com>
-To:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>,
-        <virtio-dev@lists.oasis-open.org>
-CC:     Rob Herring <robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <sudeep.holla@arm.com>, <souvik.chakravarty@arm.com>,
-        <alex.bennee@linaro.org>, <jean-philippe@linaro.org>,
-        <igor.skalkin@opensynergy.com>, <mikhail.golubev@opensynergy.com>,
-        <anton.yakovlev@opensynergy.com>,
-        Peter Hilber <peter.hilber@opensynergy.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>
-Subject: [RFC PATCH 7/7] firmware: arm_scmi: Add virtio transport
-Date:   Fri, 18 Sep 2020 18:56:33 +0200
-Message-ID: <20200918165634.257150-1-peter.hilber@opensynergy.com>
-In-Reply-To: <20200918162311.254564-1-peter.hilber@opensynergy.com>
-References: <20200918162311.254564-1-peter.hilber@opensynergy.com>
+        Fri, 18 Sep 2020 12:59:51 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08IGxY6V032820;
+        Fri, 18 Sep 2020 11:59:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600448374;
+        bh=8hmuJxsr8dBRMz+X3SS7LKSsdGwra/SsPJeuxeggM8g=;
+        h=From:To:CC:Subject:Date;
+        b=ETCoof/LHJ6M4wfqxwTeQ5OExB4DY7JpIqiW2HYEzS7jhokfnjwvd7B7czt8/H+nW
+         ncIKfQPit/hAW2nChbuROO41L6PI+4cFLv6X1JVJZbV1g1GdLjdTMYMBuiIZywyUZx
+         Q+r5GjhwqE+aQ9zSZKcVQZ0P30NT51+XSnslcqh4=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08IGxYU0044223;
+        Fri, 18 Sep 2020 11:59:34 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 18
+ Sep 2020 11:59:34 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 18 Sep 2020 11:59:33 -0500
+Received: from lta0400828a.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08IGxVq5113405;
+        Fri, 18 Sep 2020 11:59:31 -0500
+From:   Roger Quadros <rogerq@ti.com>
+To:     <peda@axentia.se>, <nm@ti.com>
+CC:     <t-kristo@ti.com>, <nsekhar@ti.com>, <kishon@ti.com>,
+        <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Roger Quadros <rogerq@ti.com>
+Subject: [PATCH v2] arm64: dts: ti: k3-j721e: Rename mux header and update macro names
+Date:   Fri, 18 Sep 2020 19:59:30 +0300
+Message-ID: <20200918165930.2031-1-rogerq@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: SR-MAIL-01.open-synergy.com (10.26.10.21) To
- SR-MAIL-01.open-synergy.com (10.26.10.21)
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -4.66 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 7AEC31025D1
-X-Rspamd-UID: 0e90cb
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Igor Skalkin <igor.skalkin@opensynergy.com>
+We intend to use one header file for SERDES MUX for all
+TI SoCs so rename the header file.
 
-This transport enables accessing an SCMI platform as a virtio device.
+The exsting macros are too generic. Prefix them with SoC name.
 
-Implement an SCMI virtio driver according to the virtio SCMI device spec
-patch v5 [1]. Virtio device id 32 has been reserved for the SCMI device
-[2].
+While at that, add the missing configurations for completeness.
 
-The virtio transport has one tx channel (virtio cmdq, A2P channel) and
-at most one rx channel (virtio eventq, P2A channel).
-
-The following feature bit defined in [1] is not implemented:
-VIRTIO_SCMI_F_SHARED_MEMORY.
-
-After the preparatory patches, implement the virtio transport as
-paraphrased:
-
-Call scmi-virtio init from arm-scmi to probe for the virtio device before
-arm-scmi will call any transport ops.
-
-Use the scmi_xfer tx/rx buffers for data exchange with the virtio device
-in order to avoid redundant maintenance of additional buffers. Allocate
-the buffers in the SCMI transport, and prepend room for a small header
-used by the virtio transport to the tx/rx buffers.
-
-For simplicity, restrict the number of messages which can be pending
-simultaneously according to the virtqueue capacity. (The virtqueue sizes
-are negotiated with the virtio device.)
-
-As soon as rx channel message buffers are allocated or have been read
-out by the arm-scmi driver, feed them to the virtio device.
-
-Since some virtio devices may not have the short response time exhibited
-by SCMI platforms using other transports, set a generous response
-timeout.
-
-Limitations:
-
-Do not adjust the other SCMI timeouts for delayed response and polling
-for now, since these timeouts are only relevant in special cases which
-are not yet deemed relevant for this transport.
-
-To do (as discussed in the cover letter):
-
-- Avoid re-use of buffers still being used by the virtio device on
-  timeouts.
-
-- Avoid race conditions on receiving messages during/after channel free
-  on driver probe failure or remove.
-
-[1] https://lists.oasis-open.org/archives/virtio-comment/202005/msg00096.html
-[2] https://www.oasis-open.org/committees/ballot.php?id=3496
-
-Co-developed-by: Peter Hilber <peter.hilber@opensynergy.com>
-Signed-off-by: Peter Hilber <peter.hilber@opensynergy.com>
-Signed-off-by: Igor Skalkin <igor.skalkin@opensynergy.com>
+Reported-by: Peter Rosin <peda@axentia.se>
+Fixes: b766e3b0d5f6 ("arm64: dts: ti: k3-j721e-main: Add system controller node and SERDES lane mux")
+Signed-off-by: Roger Quadros <rogerq@ti.com>
+Acked-by: Peter Rosin <peda@axentia.se>
 ---
- MAINTAINERS                        |   1 +
- drivers/firmware/Kconfig           |  12 +-
- drivers/firmware/arm_scmi/Makefile |   1 +
- drivers/firmware/arm_scmi/common.h |  14 +
- drivers/firmware/arm_scmi/driver.c |  11 +
- drivers/firmware/arm_scmi/virtio.c | 470 +++++++++++++++++++++++++++++
- include/uapi/linux/virtio_ids.h    |   1 +
- include/uapi/linux/virtio_scmi.h   |  41 +++
- 8 files changed, 550 insertions(+), 1 deletion(-)
- create mode 100644 drivers/firmware/arm_scmi/virtio.c
- create mode 100644 include/uapi/linux/virtio_scmi.h
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index deaafb617361..8df73d6ddfc1 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16772,6 +16772,7 @@ F:	drivers/firmware/arm_scpi.c
- F:	drivers/reset/reset-scmi.c
- F:	include/linux/sc[mp]i_protocol.h
- F:	include/trace/events/scmi.h
-+F:	include/uapi/linux/virtio_scmi.h
- 
- SYSTEM RESET/SHUTDOWN DRIVERS
- M:	Sebastian Reichel <sre@kernel.org>
-diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-index bdde51adb267..c4bdd84f7405 100644
---- a/drivers/firmware/Kconfig
-+++ b/drivers/firmware/Kconfig
-@@ -9,7 +9,7 @@ menu "Firmware Drivers"
- config ARM_SCMI_PROTOCOL
- 	tristate "ARM System Control and Management Interface (SCMI) Message Protocol"
- 	depends on ARM || ARM64 || COMPILE_TEST
--	depends on ARM_SCMI_HAVE_SHMEM
-+	depends on ARM_SCMI_HAVE_SHMEM || VIRTIO_SCMI
- 	help
- 	  ARM System Control and Management Interface (SCMI) protocol is a
- 	  set of operating system-independent software interfaces that are
-@@ -34,6 +34,16 @@ config ARM_SCMI_HAVE_SHMEM
- 	  This declares whether a shared memory based transport for SCMI is
- 	  available.
- 
-+config VIRTIO_SCMI
-+	bool "Virtio transport for SCMI"
-+	default n
-+	depends on VIRTIO
-+	help
-+	  This enables the virtio based transport for SCMI.
-+
-+	  If you want to use the ARM SCMI protocol between the virtio guest and
-+	  a host providing a virtio SCMI device, answer Y.
-+
- config ARM_SCMI_POWER_DOMAIN
- 	tristate "SCMI power domain driver"
- 	depends on ARM_SCMI_PROTOCOL || (COMPILE_TEST && OF)
-diff --git a/drivers/firmware/arm_scmi/Makefile b/drivers/firmware/arm_scmi/Makefile
-index 3cc7fa40a464..25caea5e1969 100644
---- a/drivers/firmware/arm_scmi/Makefile
-+++ b/drivers/firmware/arm_scmi/Makefile
-@@ -4,6 +4,7 @@ scmi-driver-y = driver.o notify.o
- scmi-transport-$(CONFIG_ARM_SCMI_HAVE_SHMEM) = shmem.o
- scmi-transport-$(CONFIG_MAILBOX) += mailbox.o
- scmi-transport-$(CONFIG_HAVE_ARM_SMCCC_DISCOVERY) += smc.o
-+scmi-transport-$(CONFIG_VIRTIO_SCMI) += virtio.o
- scmi-protocols-y = base.o clock.o perf.o power.o reset.o sensors.o system.o
- scmi-module-objs := $(scmi-bus-y) $(scmi-driver-y) $(scmi-protocols-y) \
- 		    $(scmi-transport-y)
-diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
-index c6071ffe4346..865364dea9ea 100644
---- a/drivers/firmware/arm_scmi/common.h
-+++ b/drivers/firmware/arm_scmi/common.h
-@@ -161,6 +161,17 @@ int scmi_base_protocol_init(struct scmi_handle *h);
- int __init scmi_bus_init(void);
- void __exit scmi_bus_exit(void);
- 
-+#ifdef CONFIG_VIRTIO_SCMI
-+int __init virtio_scmi_init(void);
-+void __exit virtio_scmi_exit(void);
-+#else
-+static inline int __init virtio_scmi_init(void)
-+{
-+	return 0;
-+}
-+#define virtio_scmi_exit() do { } while (0)
-+#endif
-+
- #define DECLARE_SCMI_REGISTER_UNREGISTER(func)		\
- 	int __init scmi_##func##_register(void);	\
- 	void __exit scmi_##func##_unregister(void)
-@@ -257,6 +268,9 @@ extern const struct scmi_desc scmi_mailbox_desc;
- #ifdef CONFIG_HAVE_ARM_SMCCC
- extern const struct scmi_desc scmi_smc_desc;
- #endif
-+#ifdef CONFIG_VIRTIO_SCMI
-+extern const struct scmi_desc scmi_virtio_desc;
-+#endif
- 
- void scmi_rx_callback(struct scmi_chan_info *cinfo, u32 msg_hdr);
- void scmi_free_channel(struct scmi_chan_info *cinfo, struct idr *idr, int id);
-diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index 2e25f6f068f5..326f69f2a45a 100644
---- a/drivers/firmware/arm_scmi/driver.c
-+++ b/drivers/firmware/arm_scmi/driver.c
-@@ -947,6 +947,9 @@ static const struct of_device_id scmi_of_match[] = {
- #endif
- #ifdef CONFIG_HAVE_ARM_SMCCC_DISCOVERY
- 	{ .compatible = "arm,scmi-smc", .data = &scmi_smc_desc},
-+#endif
-+#ifdef CONFIG_VIRTIO_SCMI
-+	{ .compatible = "arm,scmi-virtio", .data = &scmi_virtio_desc},
- #endif
- 	{ /* Sentinel */ },
+Changelog:
+v2
+- use _DT_BINDINGS_MUX_TI_SERDES
+- Add unused lane configurations for completeness
+
+ .../dts/ti/k3-j721e-common-proc-board.dts     | 11 +--
+ arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     | 13 ++--
+ include/dt-bindings/mux/mux-j721e-wiz.h       | 53 --------------
+ include/dt-bindings/mux/ti-serdes.h           | 71 +++++++++++++++++++
+ 4 files changed, 84 insertions(+), 64 deletions(-)
+ delete mode 100644 include/dt-bindings/mux/mux-j721e-wiz.h
+ create mode 100644 include/dt-bindings/mux/ti-serdes.h
+
+diff --git a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
+index 8bc1e6ecc50e..493f64ee7a2a 100644
+--- a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
++++ b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
+@@ -404,11 +404,12 @@
  };
-@@ -965,8 +968,14 @@ static struct platform_driver scmi_driver = {
  
- static int __init scmi_driver_init(void)
- {
-+	int ret;
-+
- 	scmi_bus_init();
+ &serdes_ln_ctrl {
+-	idle-states = <SERDES0_LANE0_PCIE0_LANE0>, <SERDES0_LANE1_PCIE0_LANE1>,
+-		      <SERDES1_LANE0_PCIE1_LANE0>, <SERDES1_LANE1_PCIE1_LANE1>,
+-		      <SERDES2_LANE0_PCIE2_LANE0>, <SERDES2_LANE1_PCIE2_LANE1>,
+-		      <SERDES3_LANE0_USB3_0_SWAP>, <SERDES3_LANE1_USB3_0>,
+-		      <SERDES4_LANE0_EDP_LANE0>, <SERDES4_LANE1_EDP_LANE1>, <SERDES4_LANE2_EDP_LANE2>, <SERDES4_LANE3_EDP_LANE3>;
++	idle-states = <J721E_SERDES0_LANE0_PCIE0_LANE0>, <J721E_SERDES0_LANE1_PCIE0_LANE1>,
++		      <J721E_SERDES1_LANE0_PCIE1_LANE0>, <J721E_SERDES1_LANE1_PCIE1_LANE1>,
++		      <J721E_SERDES2_LANE0_PCIE2_LANE0>, <J721E_SERDES2_LANE1_PCIE2_LANE1>,
++		      <J721E_SERDES3_LANE0_USB3_0_SWAP>, <J721E_SERDES3_LANE1_USB3_0>,
++		      <J721E_SERDES4_LANE0_EDP_LANE0>, <J721E_SERDES4_LANE1_EDP_LANE1>,
++		      <J721E_SERDES4_LANE2_EDP_LANE2>, <J721E_SERDES4_LANE3_EDP_LANE3>;
+ };
  
-+	ret = virtio_scmi_init();
-+	if (ret)
-+		return ret;
-+
- 	scmi_clock_register();
- 	scmi_perf_register();
- 	scmi_power_register();
-@@ -989,6 +998,8 @@ static void __exit scmi_driver_exit(void)
- 	scmi_sensors_unregister();
- 	scmi_system_unregister();
+ &serdes_wiz3 {
+diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+index d14060207f00..924c51146d01 100644
+--- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+@@ -6,7 +6,7 @@
+  */
+ #include <dt-bindings/phy/phy.h>
+ #include <dt-bindings/mux/mux.h>
+-#include <dt-bindings/mux/mux-j721e-wiz.h>
++#include <dt-bindings/mux/ti-serdes.h>
  
-+	virtio_scmi_exit();
-+
- 	platform_driver_unregister(&scmi_driver);
- }
- module_exit(scmi_driver_exit);
-diff --git a/drivers/firmware/arm_scmi/virtio.c b/drivers/firmware/arm_scmi/virtio.c
+ &cbass_main {
+ 	msmc_ram: sram@70000000 {
+@@ -38,11 +38,12 @@
+ 					<0x40b0 0x3>, <0x40b4 0x3>, /* SERDES3 lane0/1 select */
+ 					<0x40c0 0x3>, <0x40c4 0x3>, <0x40c8 0x3>, <0x40cc 0x3>;
+ 					/* SERDES4 lane0/1/2/3 select */
+-			idle-states = <SERDES0_LANE0_PCIE0_LANE0>, <SERDES0_LANE1_PCIE0_LANE1>,
+-				      <SERDES1_LANE0_PCIE1_LANE0>, <SERDES1_LANE1_PCIE1_LANE1>,
+-				      <SERDES2_LANE0_PCIE2_LANE0>, <SERDES2_LANE1_PCIE2_LANE1>,
+-				      <MUX_IDLE_AS_IS>, <SERDES3_LANE1_USB3_0>,
+-				      <SERDES4_LANE0_EDP_LANE0>, <SERDES4_LANE1_EDP_LANE1>, <SERDES4_LANE2_EDP_LANE2>, <SERDES4_LANE3_EDP_LANE3>;
++			idle-states = <J721E_SERDES0_LANE0_PCIE0_LANE0>, <J721E_SERDES0_LANE1_PCIE0_LANE1>,
++				      <J721E_SERDES1_LANE0_PCIE1_LANE0>, <J721E_SERDES1_LANE1_PCIE1_LANE1>,
++				      <J721E_SERDES2_LANE0_PCIE2_LANE0>, <J721E_SERDES2_LANE1_PCIE2_LANE1>,
++				      <MUX_IDLE_AS_IS>, <J721E_SERDES3_LANE1_USB3_0>,
++				      <J721E_SERDES4_LANE0_EDP_LANE0>, <J721E_SERDES4_LANE1_EDP_LANE1>,
++				      <J721E_SERDES4_LANE2_EDP_LANE2>, <J721E_SERDES4_LANE3_EDP_LANE3>;
+ 		};
+ 
+ 		usb_serdes_mux: mux-controller@4000 {
+diff --git a/include/dt-bindings/mux/mux-j721e-wiz.h b/include/dt-bindings/mux/mux-j721e-wiz.h
+deleted file mode 100644
+index fd1c4ea9fc7f..000000000000
+--- a/include/dt-bindings/mux/mux-j721e-wiz.h
++++ /dev/null
+@@ -1,53 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/*
+- * This header provides constants for J721E WIZ.
+- */
+-
+-#ifndef _DT_BINDINGS_J721E_WIZ
+-#define _DT_BINDINGS_J721E_WIZ
+-
+-#define SERDES0_LANE0_QSGMII_LANE1	0x0
+-#define SERDES0_LANE0_PCIE0_LANE0	0x1
+-#define SERDES0_LANE0_USB3_0_SWAP	0x2
+-
+-#define SERDES0_LANE1_QSGMII_LANE2	0x0
+-#define SERDES0_LANE1_PCIE0_LANE1	0x1
+-#define SERDES0_LANE1_USB3_0		0x2
+-
+-#define SERDES1_LANE0_QSGMII_LANE3	0x0
+-#define SERDES1_LANE0_PCIE1_LANE0	0x1
+-#define SERDES1_LANE0_USB3_1_SWAP	0x2
+-#define SERDES1_LANE0_SGMII_LANE0	0x3
+-
+-#define SERDES1_LANE1_QSGMII_LANE4	0x0
+-#define SERDES1_LANE1_PCIE1_LANE1	0x1
+-#define SERDES1_LANE1_USB3_1		0x2
+-#define SERDES1_LANE1_SGMII_LANE1	0x3
+-
+-#define SERDES2_LANE0_PCIE2_LANE0	0x1
+-#define SERDES2_LANE0_SGMII_LANE0	0x3
+-#define SERDES2_LANE0_USB3_1_SWAP	0x2
+-
+-#define SERDES2_LANE1_PCIE2_LANE1	0x1
+-#define SERDES2_LANE1_USB3_1		0x2
+-#define SERDES2_LANE1_SGMII_LANE1	0x3
+-
+-#define SERDES3_LANE0_PCIE3_LANE0	0x1
+-#define SERDES3_LANE0_USB3_0_SWAP	0x2
+-
+-#define SERDES3_LANE1_PCIE3_LANE1	0x1
+-#define SERDES3_LANE1_USB3_0		0x2
+-
+-#define SERDES4_LANE0_EDP_LANE0		0x0
+-#define SERDES4_LANE0_QSGMII_LANE5	0x2
+-
+-#define SERDES4_LANE1_EDP_LANE1		0x0
+-#define SERDES4_LANE1_QSGMII_LANE6	0x2
+-
+-#define SERDES4_LANE2_EDP_LANE2		0x0
+-#define SERDES4_LANE2_QSGMII_LANE7	0x2
+-
+-#define SERDES4_LANE3_EDP_LANE3		0x0
+-#define SERDES4_LANE3_QSGMII_LANE8	0x2
+-
+-#endif /* _DT_BINDINGS_J721E_WIZ */
+diff --git a/include/dt-bindings/mux/ti-serdes.h b/include/dt-bindings/mux/ti-serdes.h
 new file mode 100644
-index 000000000000..126c964d9f49
+index 000000000000..146d0685a925
 --- /dev/null
-+++ b/drivers/firmware/arm_scmi/virtio.c
-@@ -0,0 +1,470 @@
-+// SPDX-License-Identifier: GPL-2.0
++++ b/include/dt-bindings/mux/ti-serdes.h
+@@ -0,0 +1,71 @@
++/* SPDX-License-Identifier: GPL-2.0 */
 +/*
-+ * Virtio Transport driver for Arm System Control and Management Interface
-+ * (SCMI).
-+ *
-+ * Copyright (C) 2020 OpenSynergy.
++ * This header provides constants for SERDES MUX for TI SoCs
 + */
 +
-+/**
-+ * DOC: Theory of Operation
-+ *
-+ * The scmi-virtio transport implements a driver for the virtio SCMI device
-+ * proposed in virtio spec patch v5[1].
-+ *
-+ * There is one tx channel (virtio cmdq, A2P channel) and at most one rx
-+ * channel (virtio eventq, P2A channel). Each channel is implemented through a
-+ * virtqueue. Access to each virtqueue is protected by a spinlock.
-+ *
-+ * This SCMI transport uses the scmi_xfer tx/rx buffers for data exchange with
-+ * the virtio device to avoid maintenance of additional buffers.
-+ *
-+ * [1] https://lists.oasis-open.org/archives/virtio-comment/202005/msg00096.html
-+ */
-+
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
-+#include <linux/module.h>
-+#include <linux/slab.h>
-+#include <linux/virtio.h>
-+#include <linux/virtio_config.h>
-+#include <uapi/linux/virtio_ids.h>
-+#include <uapi/linux/virtio_scmi.h>
-+
-+#include "common.h"
-+
-+#define VIRTIO_SCMI_MAX_MSG_SIZE 128 /* Value may be increased. */
-+#define DESCR_PER_TX_MSG 2
-+
-+struct scmi_vio_channel {
-+	spinlock_t lock;
-+	struct virtqueue *vqueue;
-+	struct scmi_chan_info *cinfo;
-+	u8 is_rx;
-+};
-+
-+union virtio_scmi_input {
-+	__virtio32 hdr;
-+	struct virtio_scmi_response response;
-+	struct virtio_scmi_notification notification;
-+};
-+
-+struct scmi_vio_msg {
-+	struct virtio_scmi_request *request;
-+	union virtio_scmi_input *input;
-+	u8 completed;
-+};
-+
-+static int scmi_vio_populate_vq_rx(struct scmi_vio_channel *vioch,
-+				   struct scmi_xfer *xfer)
-+{
-+	struct scatterlist sg_in;
-+	struct scmi_vio_msg *msg = xfer->extra_data;
-+	int rc;
-+
-+	msg->completed = false;
-+
-+	sg_init_one(&sg_in, msg->input,
-+		    sizeof(*msg->input) + VIRTIO_SCMI_MAX_MSG_SIZE);
-+
-+	rc = virtqueue_add_inbuf(vioch->vqueue, &sg_in, 1, xfer, GFP_ATOMIC);
-+	if (rc)
-+		dev_err(vioch->cinfo->dev, "%s() rc=%d\n", __func__, rc);
-+	else
-+		virtqueue_kick(vioch->vqueue);
-+
-+	return rc;
-+}
-+
-+static void scmi_vio_complete_cb(struct virtqueue *vqueue)
-+{
-+	struct scmi_vio_channel *vioch = vqueue->priv;
-+	unsigned long iflags;
-+	unsigned int length;
-+
-+	spin_lock_irqsave(&vioch->lock, iflags);
-+
-+	do {
-+		struct scmi_xfer *xfer;
-+
-+		virtqueue_disable_cb(vqueue);
-+
-+		while ((xfer = virtqueue_get_buf(vqueue, &length))) {
-+			struct scmi_vio_msg *msg = xfer->extra_data;
-+			u32 msg_hdr =
-+				virtio32_to_cpu(vqueue->vdev, msg->input->hdr);
-+			u8 msg_type = MSG_XTRACT_TYPE(msg_hdr);
-+
-+			if (!vioch->is_rx) { /* tx queue response */
-+				msg->completed = true;
-+				xfer->rx.len =
-+					length - sizeof(msg->input->response);
-+				if (!xfer->hdr.poll_completion)
-+					scmi_rx_callback(vioch->cinfo, msg_hdr);
-+				continue;
-+			}
-+
-+			/* rx queue - notification or delayed response */
-+			switch (msg_type) {
-+			case MSG_TYPE_NOTIFICATION:
-+				xfer->rx.len = length -
-+					       sizeof(msg->input->notification);
-+				xfer->rx.buf = msg->input->notification.data;
-+				break;
-+			case MSG_TYPE_DELAYED_RESP:
-+				xfer->rx.len =
-+					length - sizeof(msg->input->response);
-+				xfer->rx.buf = msg->input->response.data;
-+				break;
-+			default:
-+				dev_warn_once(vioch->cinfo->dev,
-+					      "rx: unknown message_type %d\n",
-+					      msg_type);
-+				scmi_vio_populate_vq_rx(vioch, xfer);
-+				continue;
-+			}
-+
-+			scmi_rx_callback(vioch->cinfo, msg_hdr);
-+			scmi_vio_populate_vq_rx(vioch, xfer);
-+		}
-+
-+		if (unlikely(virtqueue_is_broken(vqueue)))
-+			break;
-+	} while (!virtqueue_enable_cb(vqueue));
-+
-+	spin_unlock_irqrestore(&vioch->lock, iflags);
-+}
-+
-+static const char *const scmi_vio_vqueue_names[] = { "tx", "rx" };
-+
-+static vq_callback_t *scmi_vio_complete_callbacks[] = {
-+	scmi_vio_complete_cb,
-+	scmi_vio_complete_cb
-+};
-+
-+static bool virtio_chan_available(struct device *dev, int idx)
-+{
-+	struct platform_device *pdev;
-+	struct virtio_device *vdev;
-+	struct device_node *vioch_node;
-+	struct scmi_vio_channel **vioch;
-+
-+	vioch_node = of_parse_phandle(dev->of_node, "virtio_transport", 0);
-+	if (!vioch_node)
-+		return false;
-+
-+	pdev = of_find_device_by_node(vioch_node);
-+	of_node_put(vioch_node);
-+	if (!pdev)
-+		return false;
-+
-+	vdev = (struct virtio_device *)pdev->dev.driver_data;
-+	if (!vdev)
-+		return false;
-+
-+	vioch = vdev->priv;
-+	if (!vioch)
-+		return false;
-+
-+	return vioch[idx] && vioch[idx]->vqueue;
-+}
-+
-+static int virtio_chan_setup(struct scmi_chan_info *cinfo, struct device *dev,
-+			     bool tx)
-+{
-+	struct platform_device *pdev;
-+	struct virtio_device *vdev;
-+	struct device_node *vioch_node;
-+	struct scmi_vio_channel **vioch;
-+	int vioch_index = tx ? VIRTIO_SCMI_VQ_TX : VIRTIO_SCMI_VQ_RX;
-+
-+	vioch_node =
-+		of_parse_phandle(cinfo->dev->of_node, "virtio_transport", 0);
-+
-+	pdev = of_find_device_by_node(vioch_node);
-+	of_node_put(vioch_node);
-+	if (!pdev) {
-+		dev_err(dev, "virtio_transport device not found\n");
-+		return -1;
-+	}
-+
-+	vdev = (struct virtio_device *)pdev->dev.driver_data;
-+	if (!vdev)
-+		return -1;
-+
-+	vioch = (struct scmi_vio_channel **)vdev->priv;
-+	if (!vioch) {
-+		dev_err(dev, "Data from scmi-virtio probe not found\n");
-+		return -1;
-+	}
-+	cinfo->transport_info = vioch[vioch_index];
-+	vioch[vioch_index]->cinfo = cinfo;
-+
-+	return 0;
-+}
-+
-+static int virtio_chan_free(int id, void *p, void *data)
-+{
-+	struct scmi_chan_info *cinfo = p;
-+	struct scmi_vio_channel *vioch = cinfo->transport_info;
-+
-+	if (vioch) {
-+		cinfo->transport_info = NULL;
-+		kfree(vioch);
-+	}
-+
-+	scmi_free_channel(cinfo, data, id);
-+	return 0;
-+}
-+
-+static int virtio_get_max_msg(bool tx, struct scmi_chan_info *base_cinfo,
-+			      int *max_msg)
-+{
-+	struct scmi_vio_channel *vioch = base_cinfo->transport_info;
-+
-+	*max_msg = virtqueue_get_vring_size(vioch->vqueue);
-+
-+	/* Tx messages need multiple descriptors. */
-+	if (tx)
-+		*max_msg /= DESCR_PER_TX_MSG;
-+
-+	if (*max_msg > MSG_TOKEN_MAX) {
-+		dev_notice(
-+			base_cinfo->dev,
-+			"Only %ld messages can be pending simultaneously, while the virtqueue could hold %d\n",
-+			MSG_TOKEN_MAX, *max_msg);
-+		*max_msg = MSG_TOKEN_MAX;
-+	}
-+
-+	return 0;
-+}
-+
-+static int virtio_xfer_init_buffers(struct scmi_chan_info *cinfo,
-+				    struct scmi_xfer *xfer, int max_msg_size)
-+{
-+	struct scmi_vio_channel *vioch = cinfo->transport_info;
-+	struct scmi_vio_msg *msg;
-+
-+	msg = devm_kzalloc(cinfo->dev, sizeof(*msg), GFP_KERNEL);
-+	if (!msg)
-+		return -ENOMEM;
-+
-+	xfer->extra_data = msg;
-+
-+	if (vioch->is_rx) {
-+		int rc;
-+		unsigned long iflags;
-+
-+		msg->input = devm_kzalloc(cinfo->dev,
-+					  sizeof(*msg->input) + max_msg_size,
-+					  GFP_KERNEL);
-+		if (!msg->input)
-+			return -ENOMEM;
-+
-+		/*
-+		 * xfer->rx.buf will be set to notification or delayed response
-+		 * specific values in the receive callback, according to the
-+		 * type of the received message.
-+		 */
-+
-+		spin_lock_irqsave(&vioch->lock, iflags);
-+		rc = scmi_vio_populate_vq_rx(vioch, xfer);
-+		spin_unlock_irqrestore(&vioch->lock, iflags);
-+		if (rc)
-+			return rc;
-+	} else {
-+		msg->request =
-+			devm_kzalloc(cinfo->dev,
-+				     sizeof(*msg->request) + max_msg_size,
-+				     GFP_KERNEL);
-+		if (!msg->request)
-+			return -ENOMEM;
-+
-+		xfer->tx.buf = msg->request->data;
-+
-+		msg->input = devm_kzalloc(
-+			cinfo->dev, sizeof(msg->input->response) + max_msg_size,
-+			GFP_KERNEL);
-+		if (!msg->input)
-+			return -ENOMEM;
-+
-+		xfer->rx.buf = msg->input->response.data;
-+	}
-+
-+	return 0;
-+}
-+
-+static int scmi_vio_send(struct scmi_vio_channel *vioch, struct scmi_xfer *xfer)
-+{
-+	struct scatterlist sg_out;
-+	struct scatterlist sg_in;
-+	struct scatterlist *sgs[DESCR_PER_TX_MSG] = { &sg_out, &sg_in };
-+	struct scmi_vio_msg *msg = xfer->extra_data;
-+	unsigned long iflags;
-+	int rc;
-+
-+	msg->completed = false;
-+
-+	sg_init_one(&sg_out, msg->request,
-+		    sizeof(*msg->request) + xfer->tx.len);
-+	sg_init_one(&sg_in, &msg->input->response,
-+		    sizeof(msg->input->response) + xfer->rx.len);
-+
-+	spin_lock_irqsave(&vioch->lock, iflags);
-+	rc = virtqueue_add_sgs(vioch->vqueue, sgs, 1, 1, xfer, GFP_ATOMIC);
-+	if (rc)
-+		dev_err(vioch->cinfo->dev, "%s() rc=%d\n", __func__, rc);
-+	else
-+		virtqueue_kick(vioch->vqueue);
-+	spin_unlock_irqrestore(&vioch->lock, iflags);
-+
-+	return rc;
-+}
-+
-+static int virtio_send_message(struct scmi_chan_info *cinfo,
-+			       struct scmi_xfer *xfer)
-+{
-+	uint32_t hdr;
-+	struct scmi_vio_channel *vioch = cinfo->transport_info;
-+	struct virtio_device *vdev = vioch->vqueue->vdev;
-+	struct scmi_vio_msg *msg = xfer->extra_data;
-+
-+	hdr = pack_scmi_header(&xfer->hdr);
-+
-+	msg->request->hdr = cpu_to_virtio32(vdev, hdr);
-+
-+	return scmi_vio_send(vioch, xfer);
-+}
-+
-+static void virtio_fetch_response(struct scmi_chan_info *cinfo,
-+				  struct scmi_xfer *xfer)
-+{
-+	struct scmi_vio_channel *vioch = cinfo->transport_info;
-+	struct scmi_vio_msg *msg = xfer->extra_data;
-+
-+	xfer->hdr.status = virtio32_to_cpu(vioch->vqueue->vdev,
-+					   msg->input->response.status);
-+}
-+
-+static void dummy_fetch_notification(struct scmi_chan_info *cinfo,
-+				     size_t max_len, struct scmi_xfer *xfer)
-+{
-+	(void)cinfo;
-+	(void)max_len;
-+	(void)xfer;
-+}
-+
-+static void dummy_clear_channel(struct scmi_chan_info *cinfo)
-+{
-+	(void)cinfo;
-+}
-+
-+static bool virtio_poll_done(struct scmi_chan_info *cinfo,
-+			     struct scmi_xfer *xfer)
-+{
-+	struct scmi_vio_channel *vioch = cinfo->transport_info;
-+	struct scmi_vio_msg *msg = xfer->extra_data;
-+	unsigned long iflags;
-+	bool completed;
-+
-+	spin_lock_irqsave(&vioch->lock, iflags);
-+	completed = msg->completed;
-+	spin_unlock_irqrestore(&vioch->lock, iflags);
-+
-+	return completed;
-+}
-+
-+static const struct scmi_transport_ops scmi_virtio_ops = {
-+	.chan_available = virtio_chan_available,
-+	.chan_setup = virtio_chan_setup,
-+	.chan_free = virtio_chan_free,
-+	.get_max_msg = virtio_get_max_msg,
-+	.send_message = virtio_send_message,
-+	.fetch_response = virtio_fetch_response,
-+	.fetch_notification = dummy_fetch_notification,
-+	.clear_channel = dummy_clear_channel,
-+	.poll_done = virtio_poll_done,
-+	.xfer_init_buffers = virtio_xfer_init_buffers,
-+};
-+
-+const struct scmi_desc scmi_virtio_desc = {
-+	.ops = &scmi_virtio_ops,
-+	.max_rx_timeout_ms = 60000, /* for non-realtime virtio devices */
-+	.max_msg = 0, /* overridden by virtio_get_max_msg() */
-+	.max_msg_size = VIRTIO_SCMI_MAX_MSG_SIZE,
-+};
-+
-+static int scmi_vio_probe(struct virtio_device *vdev)
-+{
-+	struct device *dev = &vdev->dev;
-+	struct scmi_vio_channel **vioch;
-+	bool have_vq_rx;
-+	int vq_cnt;
-+	int i;
-+	struct virtqueue *vqs[VIRTIO_SCMI_VQ_MAX_CNT];
-+
-+	vioch = devm_kcalloc(dev, VIRTIO_SCMI_VQ_MAX_CNT, sizeof(*vioch),
-+			     GFP_KERNEL);
-+	if (!vioch)
-+		return -ENOMEM;
-+
-+	have_vq_rx = virtio_has_feature(vdev, VIRTIO_SCMI_F_P2A_CHANNELS);
-+	vq_cnt = have_vq_rx ? VIRTIO_SCMI_VQ_MAX_CNT : 1;
-+
-+	for (i = 0; i < vq_cnt; i++) {
-+		vioch[i] = devm_kzalloc(dev, sizeof(**vioch), GFP_KERNEL);
-+		if (!vioch[i])
-+			return -ENOMEM;
-+	}
-+
-+	if (have_vq_rx)
-+		vioch[VIRTIO_SCMI_VQ_RX]->is_rx = true;
-+
-+	if (virtio_find_vqs(vdev, vq_cnt, vqs, scmi_vio_complete_callbacks,
-+			    scmi_vio_vqueue_names, NULL)) {
-+		dev_err(dev, "Failed to get %d virtqueue(s)\n", vq_cnt);
-+		return -1;
-+	}
-+	dev_info(dev, "Found %d virtqueue(s)\n", vq_cnt);
-+
-+	for (i = 0; i < vq_cnt; i++) {
-+		spin_lock_init(&vioch[i]->lock);
-+		vioch[i]->vqueue = vqs[i];
-+		vioch[i]->vqueue->priv = vioch[i];
-+	}
-+
-+	vdev->priv = vioch;
-+
-+	virtio_device_ready(vdev);
-+
-+	return 0;
-+}
-+
-+static unsigned int features[] = {
-+	VIRTIO_SCMI_F_P2A_CHANNELS,
-+};
-+
-+static const struct virtio_device_id id_table[] = {
-+	{ VIRTIO_ID_SCMI, VIRTIO_DEV_ANY_ID },
-+	{ 0 }
-+};
-+
-+static struct virtio_driver virtio_scmi_driver = {
-+	.driver.name = "scmi-virtio",
-+	.driver.owner = THIS_MODULE,
-+	.feature_table = features,
-+	.feature_table_size = ARRAY_SIZE(features),
-+	.id_table = id_table,
-+	.probe = scmi_vio_probe,
-+};
-+
-+int __init virtio_scmi_init(void)
-+{
-+	return register_virtio_driver(&virtio_scmi_driver);
-+}
-+
-+void __exit virtio_scmi_exit(void)
-+{
-+	unregister_virtio_driver(&virtio_scmi_driver);
-+}
-diff --git a/include/uapi/linux/virtio_ids.h b/include/uapi/linux/virtio_ids.h
-index b052355ac7a3..57d233c02720 100644
---- a/include/uapi/linux/virtio_ids.h
-+++ b/include/uapi/linux/virtio_ids.h
-@@ -48,5 +48,6 @@
- #define VIRTIO_ID_FS           26 /* virtio filesystem */
- #define VIRTIO_ID_PMEM         27 /* virtio pmem */
- #define VIRTIO_ID_MAC80211_HWSIM 29 /* virtio mac80211-hwsim */
-+#define VIRTIO_ID_SCMI         32 /* virtio SCMI */
- 
- #endif /* _LINUX_VIRTIO_IDS_H */
-diff --git a/include/uapi/linux/virtio_scmi.h b/include/uapi/linux/virtio_scmi.h
-new file mode 100644
-index 000000000000..9f21b3dbbfe2
---- /dev/null
-+++ b/include/uapi/linux/virtio_scmi.h
-@@ -0,0 +1,41 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
-+/*
-+ * Copyright (C) 2020 OpenSynergy GmbH
-+ */
-+
-+#ifndef _UAPI_LINUX_VIRTIO_SCMI_H
-+#define _UAPI_LINUX_VIRTIO_SCMI_H
-+
-+#include <linux/virtio_types.h>
-+
-+/* Feature bits */
-+
-+/* Device implements some SCMI notifications, or delayed responses. */
-+#define VIRTIO_SCMI_F_P2A_CHANNELS 0
-+
-+/* Device implements any SCMI statistics shared memory region */
-+#define VIRTIO_SCMI_F_SHARED_MEMORY 1
-+
-+/* Virtqueues */
-+
-+#define VIRTIO_SCMI_VQ_TX 0 /* cmdq */
-+#define VIRTIO_SCMI_VQ_RX 1 /* eventq */
-+#define VIRTIO_SCMI_VQ_MAX_CNT 2
-+
-+struct virtio_scmi_request {
-+	__virtio32 hdr;
-+	__u8 data[];
-+};
-+
-+struct virtio_scmi_response {
-+	__virtio32 hdr;
-+	__virtio32 status;
-+	__u8 data[];
-+};
-+
-+struct virtio_scmi_notification {
-+	__virtio32 hdr;
-+	__u8 data[];
-+};
-+
-+#endif /* _UAPI_LINUX_VIRTIO_SCMI_H */
++#ifndef _DT_BINDINGS_MUX_TI_SERDES
++#define _DT_BINDINGS_MUX_TI_SERDES
++
++/* J721E */
++
++#define J721E_SERDES0_LANE0_QSGMII_LANE1	0x0
++#define J721E_SERDES0_LANE0_PCIE0_LANE0		0x1
++#define J721E_SERDES0_LANE0_USB3_0_SWAP		0x2
++#define J721E_SERDES0_LANE0_IP4_UNUSED		0x3
++
++#define J721E_SERDES0_LANE1_QSGMII_LANE2	0x0
++#define J721E_SERDES0_LANE1_PCIE0_LANE1		0x1
++#define J721E_SERDES0_LANE1_USB3_0		0x2
++#define J721E_SERDES0_LANE1_IP4_UNUSED		0x3
++
++#define J721E_SERDES1_LANE0_QSGMII_LANE3	0x0
++#define J721E_SERDES1_LANE0_PCIE1_LANE0		0x1
++#define J721E_SERDES1_LANE0_USB3_1_SWAP		0x2
++#define J721E_SERDES1_LANE0_SGMII_LANE0		0x3
++
++#define J721E_SERDES1_LANE1_QSGMII_LANE4	0x0
++#define J721E_SERDES1_LANE1_PCIE1_LANE1		0x1
++#define J721E_SERDES1_LANE1_USB3_1		0x2
++#define J721E_SERDES1_LANE1_SGMII_LANE1		0x3
++
++#define J721E_SERDES2_LANE0_IP1_UNUSED		0x0
++#define J721E_SERDES2_LANE0_PCIE2_LANE0		0x1
++#define J721E_SERDES2_LANE0_USB3_1_SWAP		0x2
++#define J721E_SERDES2_LANE0_SGMII_LANE0		0x3
++
++#define J721E_SERDES2_LANE1_IP1_UNUSED		0x0
++#define J721E_SERDES2_LANE1_PCIE2_LANE1		0x1
++#define J721E_SERDES2_LANE1_USB3_1		0x2
++#define J721E_SERDES2_LANE1_SGMII_LANE1		0x3
++
++#define J721E_SERDES3_LANE0_IP1_UNUSED		0x0
++#define J721E_SERDES3_LANE0_PCIE3_LANE0		0x1
++#define J721E_SERDES3_LANE0_USB3_0_SWAP		0x2
++#define J721E_SERDES3_LANE0_IP4_UNUSED		0x3
++
++#define J721E_SERDES3_LANE1_IP1_UNUSED		0x0
++#define J721E_SERDES3_LANE1_PCIE3_LANE1		0x1
++#define J721E_SERDES3_LANE1_USB3_0		0x2
++#define J721E_SERDES3_LANE1_IP4_UNUSED		0x3
++
++#define J721E_SERDES4_LANE0_EDP_LANE0		0x0
++#define J721E_SERDES4_LANE0_IP2_UNUSED		0x1
++#define J721E_SERDES4_LANE0_QSGMII_LANE5	0x2
++#define J721E_SERDES4_LANE0_IP4_UNUSED		0x3
++
++#define J721E_SERDES4_LANE1_EDP_LANE1		0x0
++#define J721E_SERDES4_LANE1_IP2_UNUSED		0x1
++#define J721E_SERDES4_LANE1_QSGMII_LANE6	0x2
++#define J721E_SERDES4_LANE1_IP4_UNUSED		0x3
++
++#define J721E_SERDES4_LANE2_EDP_LANE2		0x0
++#define J721E_SERDES4_LANE2_IP2_UNUSED		0x1
++#define J721E_SERDES4_LANE2_QSGMII_LANE7	0x2
++#define J721E_SERDES4_LANE2_IP4_UNUSED		0x3
++
++#define J721E_SERDES4_LANE3_EDP_LANE3		0x0
++#define J721E_SERDES4_LANE3_IP2_UNUSED		0x1
++#define J721E_SERDES4_LANE3_QSGMII_LANE8	0x2
++#define J721E_SERDES4_LANE3_IP4_UNUSED		0x3
++
++#endif /* _DT_BINDINGS_MUX_TI_SERDES */
 -- 
-2.25.1
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
