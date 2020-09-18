@@ -2,119 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AE4F26FBFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:04:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E735426FC0A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726590AbgIRMDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 08:03:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41500 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726064AbgIRMDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 08:03:45 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7247321582;
-        Fri, 18 Sep 2020 12:03:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600430625;
-        bh=EO90FkAcyHdLTcPE+7fKS87YRHUsQQ2e1yJv4hbuiFY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1+anVRzL9lCTOsGOPzkUU2dkPuADzZxYoQ3S4wt1SR2qxmDAFpiat9nznjFrf8CBa
-         VkMKdh34cz9iH/LIpLxn1XFCMzwtcobtRquPt3T2PPKh2HY0kLykUeK90/k7mEdvb3
-         vG5wNuOgk2BhcfBYPGzVXoyX2qRt8yIt6SrlsZ1o=
-Date:   Fri, 18 Sep 2020 15:03:40 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Oded Gabbay <oded.gabbay@gmail.com>
-Cc:     Gal Pressman <galpress@amazon.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
-Message-ID: <20200918120340.GT869610@unreal>
-References: <20200915171022.10561-1-oded.gabbay@gmail.com>
- <20200915133556.21268811@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAFCwf12XZRxLYifSfuB+RGhuiKBytzsUTOnEa6FqfJHYvcVJPQ@mail.gmail.com>
- <20200917171833.GJ8409@ziepe.ca>
- <0b21db8d-1061-6453-960b-8043951b3bad@amazon.com>
- <20200918115227.GR869610@unreal>
- <CAFCwf10C1zm91e=tqPVGOX8kZD7o=AR2EW-P9VwCF4rcvnEJnA@mail.gmail.com>
+        id S1726540AbgIRMFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 08:05:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726064AbgIRMFM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 08:05:12 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B39C06174A;
+        Fri, 18 Sep 2020 05:05:12 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id k14so3342998pgi.9;
+        Fri, 18 Sep 2020 05:05:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DF0IbIRrmgctFIOMM+pP2QIHakaraVxMAyB3OzkI7bk=;
+        b=T9w+PwfLtu9hcKasjN4CLWsdksRHFlp5hTqZ5sYrKXoOOpQdPw3JhaqugmL257radv
+         mkDK4j2QK/OtWBx8TibXQkNhdiTkZNZnoozHhcC5r4XBWWBZcNyqZkwf0xqpnOz+T14o
+         Ytepacm13eQLSq9pl24RjwKsGdni50n4SCSbPG0E0WvvOmrjn3Md0rZrFcpC4dvKv78F
+         8srlpkxOfHY41UHp6GVygbLRCxmJf38s/a5v+F7z6Ge9onhgpqtZsC3wJfV3a0g+rsi8
+         +hTosIqDyDIfZAp0/Xm6FvQYzrST3759GRZ63BHMVEms5dKKyHWLAG9SZh6yBhZqmdCs
+         atHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DF0IbIRrmgctFIOMM+pP2QIHakaraVxMAyB3OzkI7bk=;
+        b=cs8VSxSsQrnPkglNyCq/wo89ebqw8znDK7ePtChc6ULmIApNINPky26zpdlAh+0ZYh
+         M3+xkBfR+G4vezmmKt6uEmYN72Pycq7pEQBMdz2vpv8q4vSYGZlCS8Doc0EKVkRClFsv
+         QkvpzJqYKoyfJBFhFNuZCK0OkZOx1UkT+c9+KjObT9edB6uveD0BbFi4+o5HDGHRMK4r
+         3k9Rd1+2bEQG2SRTlQqSf79eVccFzloR4Vz8+VxiJFXMuCKgSKq9Ufja6nHnJ63ODtP+
+         LI5YQmFMtZPjTw8FE5s5N9shEJ4Td+TMBLUa02FIikfKXqYM2q+T0TeZAibGIIPI35VX
+         V3cg==
+X-Gm-Message-State: AOAM532Rb1vFtTVhdM7pOElUhy1mUehxWpZnOO5JZWY0fmHU2Pc4quwS
+        1rclPfYeqIpKNtQ6mAF9nGg=
+X-Google-Smtp-Source: ABdhPJw3o9wEjT4p/RTkWgC91z3MI+qjjXL2Pvo+vpg8VXH//Dt0R2oGB033vcTS7fn9h0S4/V/fKg==
+X-Received: by 2002:a63:4a19:: with SMTP id x25mr25782744pga.56.1600430711617;
+        Fri, 18 Sep 2020 05:05:11 -0700 (PDT)
+Received: from localhost.localdomain (104.36.148.139.aurocloud.com. [104.36.148.139])
+        by smtp.gmail.com with ESMTPSA id n7sm2966274pfq.114.2020.09.18.05.05.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 05:05:11 -0700 (PDT)
+From:   Rustam Kovhaev <rkovhaev@gmail.com>
+To:     pbonzini@redhat.com, vkuznets@redhat.com, gustavoars@kernel.org,
+        kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        stable@vger.kernel.org, Rustam Kovhaev <rkovhaev@gmail.com>
+Subject: [PATCH] KVM: use struct_size() and flex_array_size() helpers in kvm_io_bus_unregister_dev()
+Date:   Fri, 18 Sep 2020 05:05:00 -0700
+Message-Id: <20200918120500.954436-1-rkovhaev@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFCwf10C1zm91e=tqPVGOX8kZD7o=AR2EW-P9VwCF4rcvnEJnA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 02:56:09PM +0300, Oded Gabbay wrote:
-> On Fri, Sep 18, 2020 at 2:52 PM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > On Fri, Sep 18, 2020 at 02:36:10PM +0300, Gal Pressman wrote:
-> > > On 17/09/2020 20:18, Jason Gunthorpe wrote:
-> > > > On Tue, Sep 15, 2020 at 11:46:58PM +0300, Oded Gabbay wrote:
-> > > >> infrastructure for communication between multiple accelerators. Same
-> > > >> as Nvidia uses NVlink, we use RDMA that we have inside our ASIC.
-> > > >> The RDMA implementation we did does NOT support some basic RDMA
-> > > >> IBverbs (such as MR and PD) and therefore, we can't use the rdma-core
-> > > >> library or to connect to the rdma infrastructure in the kernel.
-> > > >
-> > > > You can't create a parallel RDMA subsystem in netdev, or in misc, and
-> > > > you can't add random device offloads as IOCTL to nedevs.
-> > > >
-> > > > RDMA is the proper home for all the networking offloads that don't fit
-> > > > into netdev.
-> > > >
-> > > > EFA was able to fit into rdma-core/etc and it isn't even RoCE at
-> > > > all. I'm sure this can too.
-> > >
-> > > Well, EFA wasn't welcomed to the RDMA subsystem with open arms ;), initially it
-> > > was suggested to go through the vfio subsystem instead.
-> > >
-> > > I think this comes back to the discussion we had when EFA was upstreamed, which
-> > > is what's the bar to get accepted to the RDMA subsystem.
-> > > IIRC, what we eventually agreed on is having a userspace rdma-core provider and
-> > > ibv_{ud,rc}_pingpong working (or just supporting one of the IB spec's QP types?).
-> > >
-> > > Does GAUDI fit these requirements? If not, should it be in a different subsystem
-> > > or should we open the "what qualifies as an RDMA device" question again?
-> >
-> > I want to remind you that rdma-core requirement came to make sure that
-> > anything exposed from the RDMA to the userspace is strict with proper
-> > UAPI header hygiene.
-> >
-> > I doubt that Havana's ioctls are backed by anything like this.
-> >
-> > Thanks
->
-> Why do you doubt that ? Have you looked at our code ?
-> Our uapi and IOCTLs interface is based on drm subsystem uapi interface
-> and it is very safe and protected.
+Make use of the struct_size() helper to avoid any potential type
+mistakes and protect against potential integer overflows
+Make use of the flex_array_size() helper to calculate the size of a
+flexible array member within an enclosing structure
 
-Yes, I looked and didn't find open-source users of your UAPI headers.
-It is not related to being safe or protected by to the common request
-to present userspace that relies on those exported interfaces.
+Cc: stable@vger.kernel.org
+Suggested-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
+---
+ virt/kvm/kvm_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> Otherwise Greg would have never allowed me to go upstream in the first place.
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index cf88233b819a..68edd25dcb11 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -4350,10 +4350,10 @@ void kvm_io_bus_unregister_dev(struct kvm *kvm, enum kvm_bus bus_idx,
+ 	new_bus = kmalloc(struct_size(bus, range, bus->dev_count - 1),
+ 			  GFP_KERNEL_ACCOUNT);
+ 	if (new_bus) {
+-		memcpy(new_bus, bus, sizeof(*bus) + i * sizeof(struct kvm_io_range));
++		memcpy(new_bus, bus, struct_size(bus, range, i));
+ 		new_bus->dev_count--;
+ 		memcpy(new_bus->range + i, bus->range + i + 1,
+-		       (new_bus->dev_count - i) * sizeof(struct kvm_io_range));
++				flex_array_size(new_bus, range, new_bus->dev_count - i));
+ 	} else {
+ 		pr_err("kvm: failed to shrink bus, removing it completely\n");
+ 		for (j = 0; j < bus->dev_count; j++) {
+-- 
+2.28.0
 
-Nice, can we get a link?
-
->
-> We have a single function which is the entry point for all the IOCTLs
-> of our drivers (only one IOCTL is RDMA related, all the others are
-> compute related).
-> That function is almost 1:1 copy of the function in drm.
-
-DRM has same rules as RDMA, no kernel code will be merged without seeing
-open-source userspace.
-
-Thanks
-
->
-> Thanks,
-> Oded
