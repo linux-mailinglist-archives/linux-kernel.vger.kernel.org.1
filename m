@@ -2,84 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B892026F97A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:42:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1651826F97E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726159AbgIRJl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 05:41:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39712 "EHLO
+        id S1726479AbgIRJnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 05:43:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726009AbgIRJl5 (ORCPT
+        with ESMTP id S1726009AbgIRJnC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 05:41:57 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3C52C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 02:41:56 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id s13so4659817wmh.4
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 02:41:56 -0700 (PDT)
+        Fri, 18 Sep 2020 05:43:02 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C035C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 02:43:02 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id e23so7252166eja.3
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 02:43:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=shufKx5eku0Isd8JdGv9o7lMkOjjIZQhALDCFPr9wG8=;
-        b=jMjmQEvjgFFIcifb5X5DfDKjDwBe6m9GSre09/+c42/6Z/Xo0iBf5ninjNVTic+xcJ
-         tZy1xj5BMJ18HIQniE9IIJS4ruoVeNBNA0h00ZfLWLQjDiEEfQC1430Vg9CrX7F75Gsj
-         JoPotqJfb7TtpX80wlRpDbIl+eBS2tRSyEATK6nwZHTK3D8EMVmjKjTlop1gatdvOKvr
-         O+02BtJLzf1KNGglp4wMMbebM+SGyOu0omhSg2Mc1Hx+aGxMTJfspKFv0t6+tfJIZP+8
-         GfLbIfw2mvBfDtDYISN/RWSQJBRG4sSN02kqbjnohdLSbpDfgeXomb/DzkIjH2Rd/2UW
-         QHWw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yzURNuHz4G++YxGUWeyjPl4/b+EZGSxoT1bXkO8QmdY=;
+        b=TKx+r8PC4YXw/oizLbp+Y7zgi+vq8xswtGQgK3O3+aINvD9kT9ALVSdziB8OOwpuiI
+         BovMwvF4TwC1MnUPbVmhTtFKhYheC2H9OKWdUxgw9xxhQaXLkr0Pms0bkkWHJsm8SC6x
+         mv+Ni7xukxXFNC6IqKLvufGQSmrVu0IoU/2w5D+mmxUd8rsykxZHbEjX9BGXZRcgt4Kr
+         WjH8nJz4eApBDjXqJv/WULUsZCyLLOA30VQqCDSGw5m43YCrlOUlPNIgjNu2dpaZINKW
+         thO//78/Ge6YAJCQgYoB4kpG2d1xvNyeqP4QnzsY/31PK+aXW2rFpU3LyMlNITCNdLjd
+         eFmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=shufKx5eku0Isd8JdGv9o7lMkOjjIZQhALDCFPr9wG8=;
-        b=HdzjioPV1EY+igvQdTffJIz7O0ref6ueHFp3lSEM2XK7Y9zEl0hADX4IVhFKlW4BCX
-         ZJOX3KbFd9PTYlCT4ktzS6+bMCaKpXQbmdtCVf065vEUGwUGuRQIkrikdpLIcMB0dPRT
-         rygverhO/CnL+AtH5Q7Upovn9k4UV9COdSRlE+2G8DcOjxVrb8SATwRVGIHGTAyWY3kG
-         HSS2X8et+aDN2/mJsPOvBJgf0BjH1IDjJj5JtV2OxsYa8hxhh6JQACUsxCGwRAT8Vr+l
-         SctxkOlw0jX+KZlU3UEpUy6yQyHALkFt5yYUK6/9bGzMmXNmE54WPjonebrOTOJat5vp
-         wRMw==
-X-Gm-Message-State: AOAM533dBeQ8BobiiyHgxDjSVLGG9tt4IUAP3v8qWpC20nc9aOWrb+qs
-        XxRZk2jEP7kgIob/+eSiR3pySHTP1mi8F5MUuAmFfg==
-X-Google-Smtp-Source: ABdhPJzAPvLFupR3Bbk2V9wPg73c33btEOd57AZPcmiW9SKeMtRpvi87yFJ2Z2vgKFd4kRqMDJxW4EWDIAUJ22BGbj8=
-X-Received: by 2002:a1c:b388:: with SMTP id c130mr14511635wmf.175.1600422115149;
- Fri, 18 Sep 2020 02:41:55 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yzURNuHz4G++YxGUWeyjPl4/b+EZGSxoT1bXkO8QmdY=;
+        b=iBYUxmvj40giT0j9bhsjGr9dTMYqwrl5gkY1VEzoMlRQJ/xoyH6539/5E9NxDiLERq
+         wDmBJg2S/bxuFMD3Z6urCeppYMhZq927KhZ+UeZYJ3IIlxjVsOOjNN9Hj578/C6QM93U
+         Z1AV7u6KTH85WjFnj4WYy/p4fVnN53ZyYWBhgGMmS18YbQ0CxhfS5L5VAXE4SaiCE+o9
+         Nrp9yS/cp/3mTFqnjvvPa5qXdtFvCHwORliGIvBfHdBLPWF5YcmxPkGNJRK6d0H2uH9h
+         jPkFpHk84hEQql8jQT6y4KElFE4/xaLexuurVSQR1gGyctBPwGClj6zbHaj1kqi/0HVK
+         Q1DA==
+X-Gm-Message-State: AOAM532JX2y1n9mEgyTTu2kKhhccxEs09S4HUmSvUJDtaN203Zj4zInU
+        QRxHIyRx/bK8uO/NIJ8kFHc=
+X-Google-Smtp-Source: ABdhPJx4bwzAn/1/haSTf8TEN3XO5VpGqorkQTRB11qwLjsHvplO6NuOQmWO/V6uY9yy5Z+Uike4yw==
+X-Received: by 2002:a17:906:ce30:: with SMTP id sd16mr34503383ejb.53.1600422180692;
+        Fri, 18 Sep 2020 02:43:00 -0700 (PDT)
+Received: from localhost.localdomain ([85.153.229.188])
+        by smtp.gmail.com with ESMTPSA id dm22sm1798471edb.49.2020.09.18.02.42.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 02:42:59 -0700 (PDT)
+From:   Necip Fazil Yildiran <fazilyildiran@gmail.com>
+To:     fbarrat@linux.ibm.com
+Cc:     mpe@ellerman.id.au, gregkh@linuxfoundation.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        paul@pgazz.com, jeho@cs.utexas.edu,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Subject: [PATCH] ocxl: fix kconfig dependency warning for OCXL
+Date:   Fri, 18 Sep 2020 12:41:49 +0300
+Message-Id: <20200918094148.20525-1-fazilyildiran@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <cover.1600204505.git.andreyknvl@google.com> <28d17537bbd029104cf7de4f7ca92246449efa50.1600204505.git.andreyknvl@google.com>
-In-Reply-To: <28d17537bbd029104cf7de4f7ca92246449efa50.1600204505.git.andreyknvl@google.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Fri, 18 Sep 2020 11:41:43 +0200
-Message-ID: <CAG_fn=UACdKuiKq7qkTNM=QHcZ=u4nwfn7ESSPMeWmFXidAVag@mail.gmail.com>
-Subject: Re: [PATCH v2 20/37] kasan: rename tags.c to tags_sw.c
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 11:17 PM Andrey Konovalov <andreyknvl@google.com> wrote:
->
-> This is a preparatory commit for the upcoming addition of a new hardware
-> tag-based (MTE-based) KASAN mode.
->
-> Hardware tag-based KASAN will also be using tag-based approach, so rename
-> tags.c to tags_sw.c and report_tags.c to report_tags_sw.c to avoid
-> confusion once the new mode is added
+When OCXL is enabled and HOTPLUG_PCI is disabled, it results in the
+following Kbuild warning:
 
-I find it a bit excessive renaming the same file twice in the same
-patch series (tags_report.c -> report_tags.c -> report_tags_sw.c)
+WARNING: unmet direct dependencies detected for HOTPLUG_PCI_POWERNV
+  Depends on [n]: PCI [=y] && HOTPLUG_PCI [=n] && PPC_POWERNV [=y] && EEH [=y]
+  Selected by [y]:
+  - OCXL [=y] && PPC_POWERNV [=y] && PCI [=y] && EEH [=y]
+
+The reason is that OCXL selects HOTPLUG_PCI_POWERNV without depending on
+or selecting HOTPLUG_PCI while HOTPLUG_PCI_POWERNV is subordinate to
+HOTPLUG_PCI.
+
+HOTPLUG_PCI_POWERNV is a visible symbol with a set of dependencies.
+Selecting it will lead to overlooking its other dependencies as well.
+
+Let OCXL depend on HOTPLUG_PCI_POWERNV instead to avoid Kbuild issues.
+
+Fixes: 49ce94b8677c ("ocxl: Add PCI hotplug dependency to Kconfig")
+Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+---
+ drivers/misc/ocxl/Kconfig | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/misc/ocxl/Kconfig b/drivers/misc/ocxl/Kconfig
+index 6551007a066c..947294f6d7f4 100644
+--- a/drivers/misc/ocxl/Kconfig
++++ b/drivers/misc/ocxl/Kconfig
+@@ -9,9 +9,8 @@ config OCXL_BASE
+ 
+ config OCXL
+ 	tristate "OpenCAPI coherent accelerator support"
+-	depends on PPC_POWERNV && PCI && EEH
++	depends on PPC_POWERNV && PCI && EEH && HOTPLUG_PCI_POWERNV
+ 	select OCXL_BASE
+-	select HOTPLUG_PCI_POWERNV
+ 	default m
+ 	help
+ 	  Select this option to enable the ocxl driver for Open
+-- 
+2.25.1
+
