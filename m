@@ -2,198 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 437322701B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:14:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F0152701BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:14:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726475AbgIRQOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 12:14:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726441AbgIRQN7 (ORCPT
+        id S1726548AbgIRQOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 12:14:20 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:15006 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726496AbgIRQOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 12:13:59 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B0BEC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 09:13:58 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0c26009774b294abcb5722.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:2600:9774:b294:abcb:5722])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C0E9E1EC034B;
-        Fri, 18 Sep 2020 18:13:54 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600445634;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=E95if4/ZtWaJyuQ8w8SvlyJSplEHDNOPTkbopuOwKfk=;
-        b=dlO1gwlsIlZbLr7VwlUljAiTals46JtY6lFFBhYt32G9NxIQ3yD5UHqxMNTI5DjMtiirKX
-        tNVjJu5wmVqZHp5/448rbf7JCkPW0YZgNuEwnOyGueJ7xHLWMyvJixkHI3z3UCdGSPxJGa
-        f0jV0gJW/FjPynuOqtCDcn0i+J2rsW8=
-Date:   Fri, 18 Sep 2020 18:13:47 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tony Luck <tony.luck@intel.com>
-Cc:     Youquan Song <youquan.song@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 7/8] x86/mce: Recover from poison found while copying
- from user space
-Message-ID: <20200918161347.GG6585@zn.tnic>
-References: <20200908175519.14223-1-tony.luck@intel.com>
- <20200908175519.14223-8-tony.luck@intel.com>
+        Fri, 18 Sep 2020 12:14:11 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f64dc790000>; Fri, 18 Sep 2020 09:12:41 -0700
+Received: from [10.21.180.237] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 18 Sep
+ 2020 16:14:02 +0000
+Subject: Re: [PATCH net-next RFC v4 04/15] devlink: Add reload actions stats
+ to dev get
+To:     Jiri Pirko <jiri@resnulli.us>
+CC:     Ido Schimmel <idosch@idosch.org>,
+        Moshe Shemesh <moshe@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1600063682-17313-1-git-send-email-moshe@mellanox.com>
+ <1600063682-17313-5-git-send-email-moshe@mellanox.com>
+ <20200914134500.GH2236@nanopsycho.orion> <20200915064519.GA5390@shredder>
+ <20200915074402.GM2236@nanopsycho.orion>
+ <0d6cb0da-761b-b122-f5b1-b82320cfd5c4@nvidia.com>
+ <20200915133406.GQ2236@nanopsycho.orion>
+ <bcd28773-0027-11f5-1fd9-0a793f0a3c3a@nvidia.com>
+From:   Moshe Shemesh <moshe@nvidia.com>
+Message-ID: <bd55e716-7659-c3c4-ded5-c0abbb3d37f3@nvidia.com>
+Date:   Fri, 18 Sep 2020 19:13:59 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200908175519.14223-8-tony.luck@intel.com>
+In-Reply-To: <bcd28773-0027-11f5-1fd9-0a793f0a3c3a@nvidia.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600445561; bh=tutrYqskSHP/WZEd6QH96Eyhuoy+btr3igmkP9lHDXU=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=LuCLWpIvpgAuaeZFTJEk7zliCcZVGCRurmG/lvskz9AcdAv68F/QkrTLjvff3ZKvc
+         s1KVIrg66pQythBhucdVOmY7ctcthkvoTybkWgHBfe70wqbPOXT/QUlVNYUCww0bwS
+         D6Gv1iadF8goI6hlHCd+9mjsvARg6JGsRWeRdLjNZxSGIk0Jw+yRzRGDhdnRXZD0lf
+         u+bvWNpjBjCWumbVb1ofI+nqM3O7NDnllgFU5WeNUOndLAWwoqep1Mcr/ju1ntb7QC
+         B8F9iHFN2ZldUaLbBFhPPVixU+yL/daEAZZIAw2foWJdpHfqV14PfDtn/pHTG5YSjd
+         8dZNKj9+FnzbQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 10:55:18AM -0700, Tony Luck wrote:
-> From: Youquan Song <youquan.song@intel.com>
-> 
-> Existing kernel code can only recover from a machine check on code that
-> tagged in the exception table with a fault handling recovery path.
 
-"is tagged"
+On 9/15/2020 11:33 PM, Moshe Shemesh wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> On 9/15/2020 4:34 PM, Jiri Pirko wrote:
+>> Tue, Sep 15, 2020 at 02:31:38PM CEST, moshe@nvidia.com wrote:
+>>> On 9/15/2020 10:44 AM, Jiri Pirko wrote:
+>>>> Tue, Sep 15, 2020 at 08:45:19AM CEST, idosch@idosch.org wrote:
+>>>>> On Mon, Sep 14, 2020 at 03:45:00PM +0200, Jiri Pirko wrote:
+>>>>>> Mon, Sep 14, 2020 at 08:07:51AM CEST, moshe@mellanox.com wrote:
+>>>>>>> Expose devlink reload actions stats to the user through devlink dev
+>>>>>>> get command.
+>>>>>>>
+>>>>>>> Examples:
+>>>>>>> $ devlink dev show
+>>>>>>> pci/0000:82:00.0:
+>>>>>>> =C2=A0=C2=A0 reload_action_stats:
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 driver_reinit 2
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 fw_activate 1
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 driver_reinit_no_reset 0
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 fw_activate_no_reset 0
+>>>>>>> pci/0000:82:00.1:
+>>>>>>> =C2=A0=C2=A0 reload_action_stats:
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 driver_reinit 1
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 fw_activate 1
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 driver_reinit_no_reset 0
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 fw_activate_no_reset 0
+>>>>>> I would rather have something like:
+>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 stats:
+>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 reload_action:
+>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 driver_reinit 1
+>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fw_activate 1
+>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 driver_reinit_no_re=
+set 0
+>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fw_activate_no_rese=
+t 0
+>>>>>>
+>>>>>> Then we can easily extend and add other stats in the tree.
+>>>
+>>> Sure, I will add it.
+>> Could you please checkout the metrics patchset and figure out how to
+>> merge that with your usecase?
+>>
+>
+> I will check, I will discuss with Ido how it will fit.
+>
 
-> New field in the task structure mce_vaddr is initialized to the
-> user virtual address of the fault. This is so that kill_me_maybe()
-> can provide that information to the user SIGBUS handler.
-> 
-> Add code to recover from a machine check while copying data from user
-> space to the kernel. Action for this case is the same as if the user
-> touched the poison directly; unmap the page and send a SIGBUS to the task.
-> 
-> Signed-off-by: Youquan Song <youquan.song@intel.com>
-> Signed-off-by: Tony Luck <tony.luck@intel.com>
-> ---
->  arch/x86/kernel/cpu/mce/core.c | 51 ++++++++++++++++++++++++++++++++++
->  include/linux/sched.h          |  1 +
->  2 files changed, 52 insertions(+)
-> 
-> diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-> index 5512318a07ae..2a3c42329c3f 100644
-> --- a/arch/x86/kernel/cpu/mce/core.c
-> +++ b/arch/x86/kernel/cpu/mce/core.c
-> @@ -53,6 +53,8 @@
->  #include <asm/mce.h>
->  #include <asm/msr.h>
->  #include <asm/reboot.h>
-> +#include <asm/insn.h>
-> +#include <asm/insn-eval.h>
->  
->  #include "internal.h"
->  
-> @@ -1197,6 +1199,32 @@ static void kill_me_maybe(struct callback_head *cb)
->  	kill_me_now(cb);
->  }
->  
-> +/*
-> + * Decode a kernel instruction that faulted while reading from a user
-> + * address and return the linear address that was being read.
-> + */
-> +static void __user *get_virtual_address(struct pt_regs *regs)
-> +{
-> +	u8 insn_buf[MAX_INSN_SIZE];
-> +	struct insn insn;
-> +
-> +	if (copy_from_kernel_nofault(insn_buf, (void *)regs->ip, MAX_INSN_SIZE))
-> +		return (void __user *)~0ul;
+I have discussed it with Ido, it doesn't fit to merge with metrics:
 
-You're initializing ->mce_vaddr to NULL below but you're returning ~0
-here. You should return NULL here too. If it is NULL, this check from
-your next patch will pass:
+1. These counters are maintained by devlink unlike metrics which are=20
+read by the driver from HW.
 
-	if (p->mce_vaddr != (void __user *)~0ul) {
+2. The metrics counters push string name, while here I use enum.
 
-which would be the wrong thing to do so you need to think about a single
-invalid vaddr value and stick with it.
+However, I did add another level as you suggested here for option to=20
+future stats that may fit.
 
-> +	kernel_insn_init(&insn, insn_buf, MAX_INSN_SIZE);
-> +	insn_get_length(&insn);
-> +	insn_get_modrm(&insn);
-> +	insn_get_sib(&insn);
-
-AFAICT, you need the opcode only so why do all those?
-
-I think you simply need to do:
-
-	insn_get_opcode()
-
-and then check opcode->got because otherwise you might be looking at
-garbage below.
-
-> +
-> +	/*
-> +	 * For MOVS[BWLQ] the source address is in %rsi
-
-Pls end your sentences with a fullstop.
-
-> +	 */
-> +	if (insn.opcode.value == 0xa4 || insn.opcode.value == 0xa5)
-> +		return (void __user *)regs->si;
-
-How do you know just by looking at the opcodes, that the source operand
-in rSI is __user memory?
-
-I see is_copy_from_user() in your next patch so I guess I'll verify that
-there...
-
-> +	else
-> +		return insn_get_addr_ref(&insn, regs);
-> +}
-> +
->  /*
->   * The actual machine check handler. This only handles real
->   * exceptions when something got corrupted coming in through int 18.
-> @@ -1342,6 +1370,7 @@ noinstr void do_machine_check(struct pt_regs *regs)
->  		/* If this triggers there is no way to recover. Die hard. */
->  		BUG_ON(!on_thread_stack() || !user_mode(regs));
->  
-> +		current->mce_vaddr = NULL;
->  		current->mce_addr = m.addr;
->  		current->mce_ripv = !!(m.mcgstatus & MCG_STATUS_RIPV);
->  		current->mce_whole_page = whole_page(&m);
-> @@ -1350,6 +1379,13 @@ noinstr void do_machine_check(struct pt_regs *regs)
->  			current->mce_kill_me.func = kill_me_now;
->  		task_work_add(current, &current->mce_kill_me, true);
->  	} else {
-> +		/*
-> +		 * Before fixing the exception IP, find the user address
-> +		 * in the MCE_IN_KERNEL_COPYIN case
-						   ^
-						   |-- Fullstop
-
-> +		 */
-> +		if (m.kflags & MCE_IN_KERNEL_COPYIN)
-> +			current->mce_vaddr = get_virtual_address(regs);
-> +
->  		/*
->  		 * Handle an MCE which has happened in kernel space but from
->  		 * which the kernel can recover: ex_has_fault_handler() has
-> @@ -1363,6 +1399,21 @@ noinstr void do_machine_check(struct pt_regs *regs)
->  			if (!fixup_exception(regs, X86_TRAP_MC, 0, 0))
->  				mce_panic("Failed kernel mode recovery", &m, msg);
->  		}
-> +
-> +		/*
-> +		 * MCE on user data while copying to kernel. Action here is
-> +		 * very similar to the user hitting the poison themself.
-> +		 * Poison page will be unmapped and signal sent to process.
-> +		 */
-> +		if (m.kflags & MCE_IN_KERNEL_COPYIN) {
-> +			current->mce_addr = m.addr;
-> +			current->mce_ripv = !!(m.mcgstatus & MCG_STATUS_RIPV);
-> +			current->mce_whole_page = whole_page(&m);
-> +			current->mce_kill_me.func = kill_me_maybe;
-> +			if (kill_it)
-> +				current->mce_kill_me.func = kill_me_now;
-> +			task_work_add(current, &current->mce_kill_me, true);
-
-This hunk is mostly copied from the in-user case above. How about a
-"goto recover;" label instead of the duplication?
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+>>>>>> Also, I wonder if these stats could be somehow merged with Ido's=20
+>>>>>> metrics
+>>>>>> work:
+>>>>>> https://github.com/idosch/linux/commits/submit/devlink_metric_rfc_v1
+>>>>>>
+>>>>>> Ido, would it make sense?
+>>>>> I guess. My original idea for devlink-metric was to expose
+>>>>> design-specific metrics to user space where the entity registering=20
+>>>>> the
+>>>>> metrics is the device driver. In this case the entity would be=20
+>>>>> devlink
+>>>>> itself and it would be auto-registered for each device.
+>>>> Yeah, the usecase is different, but it is still stats, right.
+>>>>
+>>>>
+>>>>>>> $ devlink dev show -jp
+>>>>>>> {
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 "dev": {
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "pci/0000:82:00.0"=
+: {
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 "reload_action_stats": [ {
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "driver_reinit": 2
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 },{
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "fw_activate": 1
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 },{
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "driver_reinit_no_re=
+set": 0
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 },{
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "fw_activate_no_rese=
+t": 0
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } ]
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 },
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "pci/0000:82:00.1"=
+: {
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 "reload_action_stats": [ {
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "driver_reinit": 1
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 },{
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "fw_activate": 1
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 },{
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "driver_reinit_no_re=
+set": 0
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 },{
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "fw_activate_no_rese=
+t": 0
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } ]
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 }
+>>>>>>> }
+>>>>>>>
+>>>>>> [..]
