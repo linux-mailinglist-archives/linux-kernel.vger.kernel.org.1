@@ -2,136 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 239F426F71B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 09:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C743626F71F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 09:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726631AbgIRHfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 03:35:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726040AbgIRHfY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 03:35:24 -0400
-Received: from hillosipuli.retiisi.org.uk (hillosipuli.retiisi.org.uk [IPv6:2a01:4f9:c010:4572::81:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A982C06174A;
-        Fri, 18 Sep 2020 00:35:24 -0700 (PDT)
-Received: from valkosipuli.localdomain (valkosipuli.retiisi.org.uk [IPv6:2a01:4f9:c010:4572::80:2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1726702AbgIRHgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 03:36:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60494 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726199AbgIRHgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 03:36:47 -0400
+Received: from localhost (unknown [136.185.124.244])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by hillosipuli.retiisi.org.uk (Postfix) with ESMTPS id DFEEA634C87;
-        Fri, 18 Sep 2020 10:34:32 +0300 (EEST)
-Received: from sailus by valkosipuli.localdomain with local (Exim 4.92)
-        (envelope-from <sakari.ailus@retiisi.org.uk>)
-        id 1kJAuf-00024n-2w; Fri, 18 Sep 2020 10:34:33 +0300
-Date:   Fri, 18 Sep 2020 10:34:33 +0300
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Dan Scally <djrscally@gmail.com>
-Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        heikki.krogerus@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        kieran.bingham@ideasonboard.com, jorhand@linux.microsoft.com,
-        kitakar@gmail.com
-Subject: Re: [PATCH v2] software_node: Add support for fwnode_graph*() family
- of functions
-Message-ID: <20200918073433.GR834@valkosipuli.retiisi.org.uk>
-References: <20200915232827.3416-1-djrscally@gmail.com>
- <20200916091707.GL834@valkosipuli.retiisi.org.uk>
- <7b81d743-736d-62d1-7072-d08759a0d5d7@gmail.com>
- <20200918062237.GP834@valkosipuli.retiisi.org.uk>
- <294db5cf-4c95-d56c-0a42-60ca95393c06@gmail.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 67993208C3;
+        Fri, 18 Sep 2020 07:36:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600414607;
+        bh=tMJIGp6t8urEiQ2aBUoOKPVUceqzRsigcnMd9YF0FSo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tEZ+KEuD3hZrmbk53MT3WkYUZ9D1Ogv5S65S4pQb9gtOHaOmFSs+TcVWHG1e0/PK6
+         zDWVIzHc81iurFyMFWs3HjGuWrS2JuCmn+eDR4GXQVNWXGh4IdgtfW4AcMgIxTkyRb
+         +EQVhc1QbK5YWPeBvPXr7nWrO2+ul9LTxdrdqBLM=
+Date:   Fri, 18 Sep 2020 13:06:43 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Grygorii Strashko <grygorii.strashko@ti.com>
+Cc:     Peter Ujfalusi <peter.ujfalusi@ti.com>, dmaengine@vger.kernel.org,
+        Sekhar Nori <nsekhar@ti.com>, linux-kernel@vger.kernel.org,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH v2] dmaengine: ti: k3-udma-glue: fix channel enable
+ functions
+Message-ID: <20200918073643.GM2968@vkoul-mobl>
+References: <20200916120955.7963-1-grygorii.strashko@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <294db5cf-4c95-d56c-0a42-60ca95393c06@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200916120955.7963-1-grygorii.strashko@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 07:49:31AM +0100, Dan Scally wrote:
-> Good morning
+On 16-09-20, 15:09, Grygorii Strashko wrote:
+> Now the K3 UDMA glue layer enable functions perform RMW operation on UDMA
+> RX/TX RT_CTL registers to set EN bit and enable channel, which is
+> incorrect, because only EN bit has to be set in those registers to enable
+> channel (all other bits should be cleared 0).
+> More over, this causes issues when bootloader leaves UDMA channel RX/TX
+> RT_CTL registers in incorrect state - TDOWN bit set, for example. As
+> result, UDMA channel will just perform teardown right after it's enabled.
 > 
-> On 18/09/2020 07:22, Sakari Ailus wrote:
-> > Hi Dan,
-> >
-> > On Wed, Sep 16, 2020 at 02:22:10PM +0100, Dan Scally wrote:
-> >> Hi Sakari - thanks for the comments
-> >>
-> >> On 16/09/2020 10:17, Sakari Ailus wrote:
-> >>> Moi Daniel and Heikki,
-> >>>
-> >>> On Wed, Sep 16, 2020 at 12:28:27AM +0100, Daniel Scally wrote:
-> >>>> From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> >>>>
-> >>>> This implements the remaining .graph_* callbacks in the
-> >>>> fwnode operations vector for the software nodes. That makes
-> >>>> the fwnode_graph*() functions available in the drivers also
-> >>>> when software nodes are used.
-> >>>>
-> >>>> The implementation tries to mimic the "OF graph" as much as
-> >>>> possible, but there is no support for the "reg" device
-> >>>> property. The ports will need to have the index in their
-> >>>> name which starts with "port" (for example "port0", "port1",
-> >>>> ...) and endpoints will use the index of the software node
-> >>>> that is given to them during creation. The port nodes can
-> >>>> also be grouped under a specially named "ports" subnode,
-> >>>> just like in DT, if necessary.
-> >>>>
-> >>>> The remote-endpoints are reference properties under the
-> >>>> endpoint nodes that are named "remote-endpoint". 
-> >>>>
-> >>>> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> >>>> Co-developed-by: Daniel Scally <djrscally@gmail.com>
-> >>>> Signed-off-by: Daniel Scally <djrscally@gmail.com>
-> >>>> ---
-> >>>> changes in v2:
-> >>>> 	- added software_node_device_is_available
-> >>>> 	- altered software_node_get_next_child to get references
-> >>>> 	- altered software_node_get_next_endpoint to release references
-> >>>> 	to ports and avoid passing invalid combinations of swnodes to
-> >>>> 	software_node_get_next_child
-> >>>> 	- altered swnode_graph_find_next_port to release port rather than
-> >>>> 	old
-> >>>> 	
-> >>>>  drivers/base/swnode.c | 129 +++++++++++++++++++++++++++++++++++++++++-
-> >>>>  1 file changed, 127 insertions(+), 2 deletions(-)
-> >>>>
-> >>>> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
-> >>>> index 010828fc785b..d69034b807e3 100644
-> >>>> --- a/drivers/base/swnode.c
-> >>>> +++ b/drivers/base/swnode.c
-> >>>> @@ -363,6 +363,11 @@ static void software_node_put(struct fwnode_handle *fwnode)
-> >>>>  	kobject_put(&swnode->kobj);
-> >>>>  }
-> >>>>  
-> >>>> +static bool software_node_device_is_available(const struct fwnode_handle *fwnode)
-> >>>> +{
-> >>>> +	return is_software_node(fwnode);
-> >>> This basically tells whether the device is there. Are there software node
-> >>> based devices, i.e. do you need this?
-> >>>
-> >>> If you do really need this, then I guess this could just return true for
-> >>> now as if you somehow get here, the node is a software node anyway.
-> >> I do think its better to include it; I'm targeting using this with
-> >> ipu3-cio2; the cio2_parse_firmware() call there doesn't pass
-> >> FWNODE_GRAPH_DEVICE_DISABLED to fwnode_graph_get_endpoint_by_id() so
-> > I wonder if this has something to do with replacing the device's fwnode
-> > in the cio2-bridge patch.
-> >
-> > It's the device that needs to be enabled, and it's not a software node.
-> >
-> I think it is because of that yes, but I don't see a way around it at
-> the moment - unless there's a way to attach the software_node port and
-> endpoints that cio2-bridge creates to the device's existing firmware
-> instead.
+> Hence, fix it by writing correct values (EN=1) directly in UDMA channel
+> RX/TX RT_CTL registers in k3_udma_glue_enable_tx/rx_chn() functions.
 
-I thought this was how it was meant to be used?
-
-The secondary field is there for this purpose. But it may be not all fwnode
-interface functions operate on fwnode->secondary?
+Applied, thanks
 
 -- 
-Regards,
-
-Sakari Ailus
+~Vinod
