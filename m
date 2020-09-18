@@ -2,76 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 980FD26F760
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 09:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 450F926F764
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 09:52:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726788AbgIRHwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 03:52:05 -0400
-Received: from mga03.intel.com ([134.134.136.65]:47743 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726738AbgIRHwE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 03:52:04 -0400
-IronPort-SDR: 1a3eqCzY0mnDMxYhSTzoUMS5ekCYqeuLPcKZLcl4hdPaCIlmPGjadmTQelFak5y0Iny8FfjP1b
- KEyImH78yVxQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="159936005"
-X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
-   d="scan'208";a="159936005"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 00:52:03 -0700
-IronPort-SDR: aGLIl3MOuejeYag5/MQZNdd9G1WZcYWhHIhn1M+ibBYwpU2kvnetFLi7rJn/wOLZSe9oYFqUbF
- 4IZrxTeb95zA==
-X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
-   d="scan'208";a="287874902"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 00:51:59 -0700
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id AB1B320815; Fri, 18 Sep 2020 10:51:57 +0300 (EEST)
-Date:   Fri, 18 Sep 2020 10:51:57 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Dan Scally <djrscally@gmail.com>, yong.zhi@intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org, davem@davemloft.net, robh@kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        devel@driverdev.osuosl.org, jorhand@linux.microsoft.com,
-        kitakar@gmail.com, kieran.bingham@ideasonboard.com
-Subject: Re: [RFC PATCH] Add bridge driver to connect sensors to CIO2 device
- via software nodes on ACPI platforms
-Message-ID: <20200918075157.GF26842@paasikivi.fi.intel.com>
-References: <20200916213618.8003-1-djrscally@gmail.com>
- <20200917103343.GW26842@paasikivi.fi.intel.com>
- <8133a57d-ab4c-dccd-4325-9b10e7805648@gmail.com>
- <20200917124514.GK3956970@smile.fi.intel.com>
+        id S1726815AbgIRHwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 03:52:10 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:38081 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726738AbgIRHwH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 03:52:07 -0400
+Received: by mail-lf1-f65.google.com with SMTP id y11so5113882lfl.5;
+        Fri, 18 Sep 2020 00:52:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JIGXHwKfHfCJXixJmE7+Do7NXGtiGDBK+l84obZPw4Y=;
+        b=c5Q7V1J7jpxMDo2CT62lRouTNkUBIb2I/cmDSPblrdmRy8TDTcpCALXYfkGd53XLzC
+         5/iw21xj0BNR230JRPWq2I1qFXgiiUo2L4PKeoKKqNqrrTaMYF+2OinREU+K2q/r3ZpF
+         GjuJpihe/qKKo1V8Z4KEiVyMe7+Gg0raxXWyWg4bkbyl2HCE0SX8hqiZoVzMTFXNTxn2
+         1Tj68HZzPsahhpJDxqwMJZycR5gPo3mKVUdywXa7SvLI5gs9iK+hwnt4zhfePr2GjLXl
+         i0wB04tfpNgpkFRFFB2Pvx/fub0O+M1xK/ObOoUzIzpicJk+ojt/45S4t8LKLAs8UoHo
+         UGTw==
+X-Gm-Message-State: AOAM532Hp2LF0CmzYXbgrOo8a55tB83UYlNBwROr7txehJljPwUZQ0re
+        qG91HqHzwAuG5U4SDZZtKb8=
+X-Google-Smtp-Source: ABdhPJwJCsAoQ3MFjL1Z0xIWLLw9TkqspVnlHNYY63eULIqs9sMIrBry02mqFMLggU+exItWxYIh+g==
+X-Received: by 2002:a05:6512:32b1:: with SMTP id q17mr11767958lfe.329.1600415525972;
+        Fri, 18 Sep 2020 00:52:05 -0700 (PDT)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id q11sm431542lfc.309.2020.09.18.00.52.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 00:52:05 -0700 (PDT)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kJBBY-00076W-Sd; Fri, 18 Sep 2020 09:52:00 +0200
+Date:   Fri, 18 Sep 2020 09:52:00 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     William Sung <william.sung@advantech.com.tw>
+Cc:     Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Campion Kang <campion.kang@advantech.com.tw>
+Subject: Re: [PATCH 1/2] usb: serial: option: Fix the lackage for Quectel
+ EG95 LTE modem support
+Message-ID: <20200918075200.GO24441@localhost>
+References: <20200901050022.3319-1-william.sung@advantech.com.tw>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200917124514.GK3956970@smile.fi.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200901050022.3319-1-william.sung@advantech.com.tw>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+On Tue, Sep 01, 2020 at 01:00:21PM +0800, William Sung wrote:
+> * Add reset-resume callback for resetting USB devices after MCU exits
+> from suspend/sleep mode.
 
-On Thu, Sep 17, 2020 at 03:45:14PM +0300, Andy Shevchenko wrote:
-> On Thu, Sep 17, 2020 at 11:52:28AM +0100, Dan Scally wrote:
-> > On 17/09/2020 11:33, Sakari Ailus wrote:
-> > > a module and not enlarge everyone's kernel, and the initialisation would at
-> > > the same time take place before the rest of what the CIO2 driver does in
-> > > probe.
-> > I thought of that as well, but wasn't sure which was preferable. I can
-> > compress it into the CIO2 driver though sure.
+Please split this in it's own patch and argue for why it's needed.
+
+> * Because Quectel EG95 uses USB interface 4 as a USB network device, so
+> return from option_startup() to prevent being used as a USB serial
+> device.
+>
+> Fixes: da6902e5b6db ("USB: serial: option: add Quectel EG95 LTE modem"
 > 
-> Sakari, I tend to agree with Dan and have the board file separated from the
-> driver and even framework.
+> Signed-off-by: William Sung <william.sung@advantech.com.tw>
+> ---
+>  drivers/usb/serial/option.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
+> index 89b3192af326..9de8aec47e5e 100644
+> --- a/drivers/usb/serial/option.c
+> +++ b/drivers/usb/serial/option.c
+> @@ -2069,6 +2069,7 @@ static struct usb_serial_driver option_1port_device = {
+>  #ifdef CONFIG_PM
+>  	.suspend           = usb_wwan_suspend,
+>  	.resume            = usb_wwan_resume,
+> +	.reset_resume      = usb_wwan_resume,
+>  #endif
+>  };
+>  
+> @@ -2104,6 +2105,11 @@ static int option_probe(struct usb_serial *serial,
+>  	if (device_flags & NUMEP2 && iface_desc->bNumEndpoints != 2)
+>  		return -ENODEV;
+>  
+> +	/* Quectel EC25 & EC21 & EG91 & EG95 ... interface 4 can be used as USB network device */
+> +	if (serial->dev->descriptor.idVendor == cpu_to_le16(0x2c7c) &&
+> +		serial->interface->cur_altsetting->desc.bInterfaceNumber >= 4)
+> +		return -ENODEV;
 
-And it'll be linked to the kernel binary then I suppose?
+And please use the normal mechanisms for blacklisting interfaces (e.g.
+the RSVD() macro).
 
-I don't have a strong opinion either way, just thought that this will
-affect anyone using x86 machines, whether or not they have IPU3. I guess it
-could be compiled in if the ipu3-cio2 driver is enabled?
+> +
+>  	/* Store the device flags so we can use them during attach. */
+>  	usb_set_serial_data(serial, (void *)device_flags);
 
--- 
-Sakari Ailus
+Also make sure your patches have distinct and descriptive summaries
+(Subject lines).
+
+Johan
