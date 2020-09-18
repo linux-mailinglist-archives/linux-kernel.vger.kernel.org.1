@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1D9526EBEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1255926EBF2
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:10:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728093AbgIRCI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:08:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59476 "EHLO mail.kernel.org"
+        id S1728100AbgIRCId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:08:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728069AbgIRCIT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:08:19 -0400
+        id S1726799AbgIRCIV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:08:21 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F410C23976;
-        Fri, 18 Sep 2020 02:08:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A773E2395A;
+        Fri, 18 Sep 2020 02:08:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394896;
-        bh=vawbVYzuOVeJn+j5hJ/QMNQt5FhYIupGwnPF8g0WWcY=;
+        s=default; t=1600394901;
+        bh=0PFevT8Ecj189Ns/LRiQZ0G7i1mRuO/gYaYyhY09J34=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nepeQtGo6pCNm9zg1bQOEhscJOr46pZAv9E41WKCYJca0WFQvPHHIc5wrYryz4NJT
-         nu4cdyc5/aZJkvVUYxHW7um4Uh1LrcwWvvOIWAs7wsy/Q08oWqUw4cNVCiGk/MHlE8
-         rmIu4rL6e3hKUqzew+Yk/gyXt1OtfAXhMhUdPml8=
+        b=q2LOwuXT7uk8QSmFbGUj/ItixkTr4oca/JWe2T6RWG/T0bI2dMSGSqaDeeUWTSs4/
+         yOF/DNc6JmKPaCMAiTup+2DY4TQYi9A7/S/defBYep7UOKEbSTRcWYknvXM9e4cIs2
+         mEePzIv3eBVMZN99CtgOfVWvxp3NhvZO7JcVw3+M=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 011/206] media: smiapp: Fix error handling at NVM reading
-Date:   Thu, 17 Sep 2020 22:04:47 -0400
-Message-Id: <20200918020802.2065198-11-sashal@kernel.org>
+Cc:     Pan Bian <bianpan2016@163.com>, Satish Kharat <satishkh@cisco.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 015/206] scsi: fnic: fix use after free
+Date:   Thu, 17 Sep 2020 22:04:51 -0400
+Message-Id: <20200918020802.2065198-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
 References: <20200918020802.2065198-1-sashal@kernel.org>
@@ -42,37 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
+From: Pan Bian <bianpan2016@163.com>
 
-[ Upstream commit a5b1d5413534607b05fb34470ff62bf395f5c8d0 ]
+[ Upstream commit ec990306f77fd4c58c3b27cc3b3c53032d6e6670 ]
 
-If NVM reading failed, the device was left powered on. Fix that.
+The memory chunk io_req is released by mempool_free. Accessing
+io_req->start_time will result in a use after free bug. The variable
+start_time is a backup of the timestamp. So, use start_time here to
+avoid use after free.
 
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Link: https://lore.kernel.org/r/1572881182-37664-1-git-send-email-bianpan2016@163.com
+Signed-off-by: Pan Bian <bianpan2016@163.com>
+Reviewed-by: Satish Kharat <satishkh@cisco.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/smiapp/smiapp-core.c | 3 ++-
+ drivers/scsi/fnic/fnic_scsi.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/i2c/smiapp/smiapp-core.c b/drivers/media/i2c/smiapp/smiapp-core.c
-index 4731e1c72f960..0a434bdce3b3b 100644
---- a/drivers/media/i2c/smiapp/smiapp-core.c
-+++ b/drivers/media/i2c/smiapp/smiapp-core.c
-@@ -2337,11 +2337,12 @@ smiapp_sysfs_nvm_read(struct device *dev, struct device_attribute *attr,
- 		if (rval < 0) {
- 			if (rval != -EBUSY && rval != -EAGAIN)
- 				pm_runtime_set_active(&client->dev);
--			pm_runtime_put(&client->dev);
-+			pm_runtime_put_noidle(&client->dev);
- 			return -ENODEV;
- 		}
+diff --git a/drivers/scsi/fnic/fnic_scsi.c b/drivers/scsi/fnic/fnic_scsi.c
+index 73ffc16ec0225..b521fc7650cb9 100644
+--- a/drivers/scsi/fnic/fnic_scsi.c
++++ b/drivers/scsi/fnic/fnic_scsi.c
+@@ -1034,7 +1034,8 @@ static void fnic_fcpio_icmnd_cmpl_handler(struct fnic *fnic,
+ 		atomic64_inc(&fnic_stats->io_stats.io_completions);
  
- 		if (smiapp_read_nvm(sensor, sensor->nvm)) {
-+			pm_runtime_put(&client->dev);
- 			dev_err(&client->dev, "nvm read failed\n");
- 			return -ENODEV;
- 		}
+ 
+-	io_duration_time = jiffies_to_msecs(jiffies) - jiffies_to_msecs(io_req->start_time);
++	io_duration_time = jiffies_to_msecs(jiffies) -
++						jiffies_to_msecs(start_time);
+ 
+ 	if(io_duration_time <= 10)
+ 		atomic64_inc(&fnic_stats->io_stats.io_btw_0_to_10_msec);
 -- 
 2.25.1
 
