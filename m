@@ -2,82 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA2E42703A1
+	by mail.lfdr.de (Postfix) with ESMTP id 474912703A0
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 20:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726332AbgIRSBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 14:01:25 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:43026 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726118AbgIRSBY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726267AbgIRSBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 18 Sep 2020 14:01:24 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08IHxlJD120269;
-        Fri, 18 Sep 2020 18:00:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=8t9bvmNa7HAbT/T846NG8EsOFIharYS9N7nOuLhuASw=;
- b=Ghs8eMA73OKyFYU2sieQPHJz7IQr2Z0/Kg+q7d8eI5ZxZnxCQ/xud0UxSMOUTH3T5wvC
- 9azCJpe81SMpW5Sp1Vmi7eAFcPewOC2/vDXOle6dOsSK9M9Yo0GMvHQ4x5QO2ROlkaAL
- xrENiDW7hnnyoDw7ycTtWxE9iG3V3SPZEa6GytTZ61CAN96ui+MX4QCUdT3t0F0Y9Jg3
- 53JO0ye4C7zXvcsnXCI3bpAV9utvVlV5OC4743z0NprMIrFvtBFKSCMNWWllRO9+ozQH
- 9ULw6hcAxXd1Ms+NGzeosKXMqan3PQIwuJc4TFlEXPmr6/a2l5ZLKCGWTB736J+S4Mp3 9A== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 33gnrrgpb5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 18 Sep 2020 18:00:51 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08II0APH140452;
-        Fri, 18 Sep 2020 18:00:50 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 33khpq2kxy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Sep 2020 18:00:50 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08II0jFm028734;
-        Fri, 18 Sep 2020 18:00:46 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 18 Sep 2020 18:00:45 +0000
-Date:   Fri, 18 Sep 2020 21:00:37 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Jing Xiangfeng <jingxiangfeng@huawei.com>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, lee.jones@linaro.org,
-        colin.king@canonical.com, axboe@kernel.dk,
-        mchehab+huawei@kernel.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        kernel-janitors <kernel-janitors@vger.kernel.org>
-Subject: Re: [PATCH] scsi: arcmsr: Remove the superfluous break
-Message-ID: <20200918180037.GY4282@kadam>
-References: <20200918093230.49050-1-jingxiangfeng@huawei.com>
- <20200918145619.GA25599@embeddedor>
- <e9320543ab6e7c8bd5ceae8cfa9d0912a0e962e0.camel@perches.com>
+Received: from mail-mw2nam10on2089.outbound.protection.outlook.com ([40.107.94.89]:1633
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726007AbgIRSBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 14:01:22 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dDrd4e202UgWdx+qQpB17IwAniy3Pn/kYFVb+JIDjxS0iky+0LneAleXsc7UkqmkrrpV3QD0Wt8/+7gQ3+dmE5sLQjUvWSSvylA3ZsCiAQFUImiW4PiVQI8kFODaAXdyFJf3YRnermMChBhHUYdiSjIwiD3o3WKRK98x1Lnd2kn+ovR9raKJi+PMMsgtLc0mlHR+V9qT+2WJXNlZLMfP80sJ4ZIcvli23teeZNmB+j05WeWyWA67lAD6RUfKcWTuimc7AxzjUmvdwg4My+7ucmoegGCnW9sXJHY3G5YFJPC1U0OyWaWhpe8xoLyTJqYqRG5QnMYfTm/bejzcXsYH6g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jK6Hp2j6OF0rniuw+TGS7AFTjLXNm3qNtJzX+m+Bi80=;
+ b=hXZuhErp6Jx5PQYj7foBlCBHAuJqqQnBv85ef7NiBWU/RhHJnFSWHq7+VJhpGCVSVydtJKdNYf+KcJUr2CtnIjitLzG7bGJVGF8uYFpwqil7+8swDPbRmwyBdOPZCONgSwygkJqq+DBVMD5/RsmC1Q3EnAwiclA2esRlPNeboCed+DTKTtNqqNJDDMgGMssWp+cshX4cLhWeAsTD0RPaF9tuixEcaJB/Icrg2bvYBabqWSGLpZzeee03QY7kZsPG5CABppI55YQl0A1+77HRdcBPThXXlXP+ALAqYatOs97SxQZjUpR27icQlM3L5IewVRC3URoWwIvyKTqLTtpyTA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
+ dkim=pass header.d=xilinx.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jK6Hp2j6OF0rniuw+TGS7AFTjLXNm3qNtJzX+m+Bi80=;
+ b=XPtmalzSEZqW2CAvICTk/5/GMyN5cgkaXCD+dHc6xz5yG7w2amRwH+JgargQ9MpQT1MSuZyCNcZIsTVS5a3r5ui2RcpE507g2XKm4QoRAdPFa8t9uiNF5w6cnE+z9gBSdcLIXgGTOmwxRNDe77ZMpAER/TgHnpofSdz8lsnErYA=
+Received: from BYAPR02MB4407.namprd02.prod.outlook.com (2603:10b6:a03:55::31)
+ by BY5PR02MB6611.namprd02.prod.outlook.com (2603:10b6:a03:205::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Fri, 18 Sep
+ 2020 18:01:20 +0000
+Received: from BYAPR02MB4407.namprd02.prod.outlook.com
+ ([fe80::b0f6:b3a:6543:26f5]) by BYAPR02MB4407.namprd02.prod.outlook.com
+ ([fe80::b0f6:b3a:6543:26f5%5]) with mapi id 15.20.3391.011; Fri, 18 Sep 2020
+ 18:01:20 +0000
+From:   Ben Levinsky <BLEVINSK@xilinx.com>
+To:     Michael Auchter <michael.auchter@ni.com>,
+        "punit1.agrawal@toshiba.co.jp" <punit1.agrawal@toshiba.co.jp>
+CC:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: RE: RE: [PATCH v14 5/5] remoteproc: Add initial zynqmp R5 remoteproc
+ driver
+Thread-Topic: RE: [PATCH v14 5/5] remoteproc: Add initial zynqmp R5 remoteproc
+ driver
+Thread-Index: AQHWjSzx2v36zrUuJk25DA+tFuTaOqltZJcAgAAAbzCAAAnbcIABIlmAgAAd03A=
+Date:   Fri, 18 Sep 2020 18:01:19 +0000
+Message-ID: <BYAPR02MB44073FBEF86F4AA2379D8A11B53F0@BYAPR02MB4407.namprd02.prod.outlook.com>
+References: <20200917194341.16272-1-ben.levinsky@xilinx.com>
+ <20200917194341.16272-6-ben.levinsky@xilinx.com>
+ <20200917221120.GA15530@xaphan>
+ <BYAPR02MB44073E7A3BEA401FF4684E95B53E0@BYAPR02MB4407.namprd02.prod.outlook.com>
+ <BYAPR02MB4407A552ECBA907DFC3CEC91B53E0@BYAPR02MB4407.namprd02.prod.outlook.com>
+ <20200918160721.GD15530@xaphan>
+In-Reply-To: <20200918160721.GD15530@xaphan>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+authentication-results: ni.com; dkim=none (message not signed)
+ header.d=none;ni.com; dmarc=none action=none header.from=xilinx.com;
+x-originating-ip: [24.5.142.107]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 0117ca30-c783-4a8e-37f5-08d85bfcd8e1
+x-ms-traffictypediagnostic: BY5PR02MB6611:
+x-microsoft-antispam-prvs: <BY5PR02MB661170CE6B0D837DE6B6E2FFB53F0@BY5PR02MB6611.namprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: t7iZhCgRX1CTD7LiWuzyTkfz5xz7Q1yriuk0T0okh5uhkc3Hxr85AlhVhxfgGFn2USNyVP0Ge25fdI2M9IpTJcKS2p6sqTjeQ5SnWVQwE1SVvSW68loLXuiq2bccfgqTRKOI4hxTDys3BmhfO35WlWzLUNMcImScIby2786nv94hmjUAPUTFQ/zz7TApUde8eFN46X1B4mo8AiuO4ncCfWQb7MmCaeAii/ZTsJ/v2QH6fkhHxcFDdVDfGfidE/cq8jgQRXSXjWolbicIcSGd+MIsQqDcdMP5pFVBujJBBc1TO2X+DAUf8+yMqIMyvLeVZiUQmfDqb8miNlcZCzA7ZQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR02MB4407.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(346002)(39860400002)(396003)(376002)(53546011)(52536014)(66946007)(8676002)(6506007)(86362001)(66446008)(9686003)(5660300002)(7696005)(66476007)(71200400001)(54906003)(64756008)(33656002)(66556008)(110136005)(76116006)(316002)(186003)(2906002)(26005)(55016002)(4326008)(478600001)(83380400001)(8936002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: ZdYWWshinkv7vbjqmZjHcy26V95JzzATETRwuNFuHQcLcZ5QAz7zlSrZTLb7/gHS7KNOwkTlzLpKYqJ21vQJU6wKJOeyyVXn8scadLlfoVV6lK6e90JEpZIaRo5uyy95YoADXFqiwcDshKOxcg79J1ZgX6wy1cNHc8njgLv81hL6KVmQ+31App6BoOoTyCD1EWyKDLqATL8lDk0o9/Apg7MfCNE9qOwBq8arG6ssubC11WgRbR2u9ScJOtlPI2BdT1qpfeXlUvZWg4OY2VZt32DGIP45tN0O896ZMNg2mweVh3l6+CxIGjy4jR7+tzAtWeVdYBGk+gcLWcbbmlXcacT15G7IjPoHWTha9hnJoYY+iakAtg8wfSI7NweaMURNB7Rtw1SFhqaGxXWleR6ydrcYg8lrgiCobvahEO2vHJCxKqstU1Ce9TptTVNPtkjde6KgHJQR6LXyF4gpOWGTwDF8cbWaSlNwU2fx/WuVdZi4+fU2yTZcEd84bOgvmWlP2DwetL5YBx3pBc8W7wQng8s93s1vIH+ut1XC3SnnRGWAllAN143ECFBhJeAirmVz2MLP7MlZYQyfmHgy6EEjejRPhsz4kH15zjEY6rdLFA8UtXLxCkoVcAp3y1xGrxqRcGLMZWO2xBw77IKHQFctdA==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e9320543ab6e7c8bd5ceae8cfa9d0912a0e962e0.camel@perches.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9748 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- mlxlogscore=999 phishscore=0 mlxscore=0 adultscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009180147
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9748 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0
- lowpriorityscore=0 malwarescore=0 mlxscore=0 bulkscore=0 suspectscore=0
- clxscore=1011 mlxlogscore=999 adultscore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009180147
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR02MB4407.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0117ca30-c783-4a8e-37f5-08d85bfcd8e1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Sep 2020 18:01:19.9411
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: KfG0bNa6HpGcz6UYwHNz0qsWKX2OSt995FEbhDiQrElMVcQfyHRBBqVH1pAL4mhv3S1YStZ5qccfDeSMjdpjiA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR02MB6611
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Smatch just ignores these because they're often done deliberately.
+Hi Michael, Punit,
 
-regards,
-dan carpenter
+> -----Original Message-----
+> From: Michael Auchter <michael.auchter@ni.com>
+> Sent: Friday, September 18, 2020 9:07 AM
+> To: Ben Levinsky <BLEVINSK@xilinx.com>
+> Cc: devicetree@vger.kernel.org; linux-remoteproc@vger.kernel.org; linux-
+> kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org
+> Subject: Re: RE: [PATCH v14 5/5] remoteproc: Add initial zynqmp R5
+> remoteproc driver
+>=20
+> On Thu, Sep 17, 2020 at 10:50:42PM +0000, Ben Levinsky wrote:
+> > In addition to device tree, is there particular linker script you use
+> > for your R5 application? For example with OCM? As presently this
+> > driver only has DDR and TCM as supported regions to load into
+>=20
+> The firmware is being loaded to TCM.
+>=20
+> I'm able to use this driver to load and run my firmware on both R5
+> cores, but only after I change the incorrect:
+>=20
+> 	rpu_mode =3D lockstep_mode
+>=20
+> assignment to:
+>=20
+> 	rpu_mode =3D lockstep_mode ? PM_RPU_MODE_LOCKSTEP
+> 				 : PM_RPU_MODE_SPLIT;
+There was a point raised by Punit that as "it is possible to set R5 to oper=
+atore in split or lock-step mode dynamically" which is true and can be done=
+ via sysfs and the Xilinx firmware kernel code. A suggestion that might cle=
+an up the driver so that the whole rpu_mode, tcm_mode configuration can be =
+simplified and pulled out of the driver:
+- as Punit suggested, remove the lockstep-mode property
+- the zynqmp_remoteproc_r5 driver ONLY loads firmware and does start/stop.
+- the zynqmp_remoteproc_r5 driver does not configure and memory regions or =
+the RPU. Let the Xilinx firmware sysfs interface handle this.
 
+Few advantages to this:
+1. no extra configuration code in the zynqmp r5 remoteproc probe() for eith=
+er R5 in the RPU cluster
+2. less state to manage in the remoteproc driver
+3. simpler documentation in the device tree binding
+
+Again thank you both for the thoughtful review comments on this
+Thanks
+Ben
