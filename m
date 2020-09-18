@@ -2,55 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25B6E26F82C
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 990EE26F88A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:41:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726381AbgIRI3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 04:29:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725874AbgIRI3q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 04:29:46 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BA3C06174A;
-        Fri, 18 Sep 2020 01:29:45 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 068E5396; Fri, 18 Sep 2020 10:29:42 +0200 (CEST)
-Date:   Fri, 18 Sep 2020 10:29:41 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Fabien Parent <fparent@baylibre.com>
-Cc:     iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, robh+dt@kernel.org,
-        matthias.bgg@gmail.com, yong.wu@mediatek.com,
-        miles.chen@mediatek.com, Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v4 1/3] dt-bindings: iommu: Add binding for MediaTek
- MT8167 IOMMU
-Message-ID: <20200918082941.GE31590@8bytes.org>
-References: <20200907101649.1573134-1-fparent@baylibre.com>
+        id S1726478AbgIRIk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 04:40:56 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:57838 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726201AbgIRIk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 04:40:56 -0400
+X-Greylist: delayed 4302 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Sep 2020 04:40:53 EDT
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kJBSF-0004Ir-TJ; Fri, 18 Sep 2020 18:09:17 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 18 Sep 2020 18:09:15 +1000
+Date:   Fri, 18 Sep 2020 18:09:15 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     LABBE Corentin <clabbe@baylibre.com>
+Cc:     arnd@arndb.de, davem@davemloft.net, mripard@kernel.org,
+        wens@csie.org, linux-arm-kernel@lists.infradead.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4/7] crypto: sun4i-ss: handle BigEndian for cipher
+Message-ID: <20200918080915.GA24549@gondor.apana.org.au>
+References: <1600367758-28589-1-git-send-email-clabbe@baylibre.com>
+ <1600367758-28589-5-git-send-email-clabbe@baylibre.com>
+ <20200918073128.GA24168@gondor.apana.org.au>
+ <20200918080658.GA22656@Red>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200907101649.1573134-1-fparent@baylibre.com>
+In-Reply-To: <20200918080658.GA22656@Red>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 12:16:47PM +0200, Fabien Parent wrote:
-> This commit adds IOMMU binding documentation and larb port definitions
-> for the MT8167 SoC.
-> 
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
-> Acked-by: Rob Herring <robh@kernel.org>
-> ---
-> 
-> V4:
-> 	* Added path to mt8167 larb header file
-> 	* Added Honghui Zhang in copyright header
-> V3: Added mt8167-larb-port.h file for iommu port definitions
-> V2: no change
+On Fri, Sep 18, 2020 at 10:06:58AM +0200, LABBE Corentin wrote:
+>
+> But I think only me will see it and since I already have this on my TODO list, I dont see any interest to leave it failing.
+> Furthermore, having a clean BE boot will permit to enable BE boots for thoses SoCs on kernelCI.
 
-Applied all, thanks.
+I'll happily accept patches that fix the actual bug but not ones
+just papering over it.
 
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
