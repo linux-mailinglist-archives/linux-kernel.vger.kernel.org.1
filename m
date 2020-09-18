@@ -2,132 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E2626FFEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 16:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3EE3270021
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 16:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726683AbgIROcA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 18 Sep 2020 10:32:00 -0400
-Received: from mgw-01.mpynet.fi ([82.197.21.90]:45898 "EHLO mgw-01.mpynet.fi"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726129AbgIROcA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 10:32:00 -0400
-Received: from pps.filterd (mgw-01.mpynet.fi [127.0.0.1])
-        by mgw-01.mpynet.fi (8.16.0.42/8.16.0.42) with SMTP id 08IDjvx1105182;
-        Fri, 18 Sep 2020 16:51:17 +0300
-Received: from ex13.tuxera.com (ex13.tuxera.com [178.16.184.72])
-        by mgw-01.mpynet.fi with ESMTP id 33mx0hr07u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Fri, 18 Sep 2020 16:51:16 +0300
-Received: from tuxera-exch.ad.tuxera.com (10.20.48.11) by
- tuxera-exch.ad.tuxera.com (10.20.48.11) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 18 Sep 2020 16:51:15 +0300
-Received: from tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789]) by
- tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789%12]) with mapi id
- 15.00.1497.006; Fri, 18 Sep 2020 16:51:15 +0300
-From:   Anton Altaparmakov <anton@tuxera.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-CC:     LKML <linux-kernel@vger.kernel.org>,
-        "linux-ntfs-dev@lists.sourceforge.net" 
-        <linux-ntfs-dev@lists.sourceforge.net>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH RESEND] ntfs: drop unneeded semi-colons
-Thread-Topic: [PATCH RESEND] ntfs: drop unneeded semi-colons
-Thread-Index: AQHWjVnswLx9rgGqKE+C2Won5QI6nqluOI0A
-Date:   Fri, 18 Sep 2020 13:51:14 +0000
-Message-ID: <D97E170A-13E7-4263-B590-32D7F85B9AC6@tuxera.com>
-References: <20200918012034.6305-1-rdunlap@infradead.org>
-In-Reply-To: <20200918012034.6305-1-rdunlap@infradead.org>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [86.162.107.15]
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <6F51FD6D1C4537498A1ABF9928B4181B@ex13.tuxera.com>
-Content-Transfer-Encoding: 8BIT
+        id S1726861AbgIROrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 10:47:18 -0400
+Received: from vegas.theobroma-systems.com ([144.76.126.164]:37537 "EHLO
+        mail.theobroma-systems.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726650AbgIROrR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 10:47:17 -0400
+X-Greylist: delayed 1906 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Sep 2020 10:47:16 EDT
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74]:38188 helo=diego.localnet)
+        by mail.theobroma-systems.com with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <heiko.stuebner@theobroma-systems.com>)
+        id 1kJHAT-000451-A1; Fri, 18 Sep 2020 16:15:17 +0200
+From:   Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+To:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Philippe Cornu <philippe.cornu@st.com>,
+        Antonio Borneo <antonio.borneo@st.com>,
+        Yannick Fertre <yannick.fertre@st.com>,
+        Angelo Ribeiro <Angelo.Ribeiro@synopsys.com>,
+        Markus Elfring <elfring@users.sourceforge.net>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Yannick Fertre <yannick.fertre@st.com>
+Subject: Re: [PATCH] drm/bridge/synopsys: dsi: fix initialization sequence
+Date:   Fri, 18 Sep 2020 16:15:16 +0200
+Message-ID: <3406999.krX5sgqVKE@diego>
+Organization: Theobroma Systems
+In-Reply-To: <20200918114653.10932-1-yannick.fertre@st.com>
+References: <20200918114653.10932-1-yannick.fertre@st.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-18_14:2020-09-16,2020-09-18 signatures=0
-X-Proofpoint-Spam-Details: rule=mpy_notspam policy=mpy score=0 mlxlogscore=999 adultscore=0
- suspectscore=0 malwarescore=0 mlxscore=0 bulkscore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009180113
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
+Am Freitag, 18. September 2020, 13:46:53 CEST schrieb Yannick Fertre:
+> The current driver calls drm_bridge_add(), to add the dsi bridge
+> to the global bridge list, in dw_mipi_dsi_host_attach().
+> Thus, it relies on the probing of panel or bridge sub-nodes to
+> trigger the execution of dsi host attach() that will, in turn,
+> call dw_mipi_dsi_host_attach().
+> This causes an incomplete driver initialization if the panel or
+> the next bridge is not present as sub-node, e.g. because it is an
+> i2c device, thus sub-node of the respective i2c controller.
 
-Sorry, I don't know how I missed those originally.
+Actually the drm_of_find_panel_or_bridge() works on of-graph nodes,
+so having an remote-port pointing to the i2c/spi/whatever driver
+should just work - and no need for the driver to be a subnode itself.
 
-Andrew, please could you add this to your tree for merging with Linus as well?
+And while my memory is fuzzy, I think I remember Andrzej requesting
+only registering the bridge once we know something is connected,
+aka when it calls dsi_attach.
 
-And again, please feel free to add: Acked-by: Anton Altaparmakov <anton@tuxera.com>
 
-Thanks a lot!
+Heiko
 
-Best regards,
-
-	Anton
-
-> On 18 Sep 2020, at 02:20, Randy Dunlap <rdunlap@infradead.org> wrote:
 > 
-> Coccinelle scripts report:
+> Move the relevant code from host attach() to probe(), and the
+> corresponding code from detach() to remove().
 > 
-> fs/ntfs/lcnalloc.c:902:2-3: Unneeded semicolon
-> fs/ntfs/super.c:1615:2-3: Unneeded semicolon
-> fs/ntfs/super.c:1684:2-3: Unneeded semicolon
-> 
-> so remove the extraneous semicolons.
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Anton Altaparmakov <anton@tuxera.com>
-> Cc: linux-ntfs-dev@lists.sourceforge.net
-> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Signed-off-by: Antonio Borneo <antonio.borneo@st.com>
+> Signed-off-by: Yannick Fertre <yannick.fertre@st.com>
 > ---
-> Adding Andrew to recipients, otherwise this patch is lost/ignored.
+>  drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 73 ++++++++++++-------
+>  1 file changed, 48 insertions(+), 25 deletions(-)
 > 
-> fs/ntfs/lcnalloc.c |    2 +-
-> fs/ntfs/super.c    |    4 ++--
-> 2 files changed, 3 insertions(+), 3 deletions(-)
+> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+> index 6b268f9445b3..aa74abddc79f 100644
+> --- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+> +++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+> @@ -314,9 +314,7 @@ static int dw_mipi_dsi_host_attach(struct mipi_dsi_host *host,
+>  {
+>  	struct dw_mipi_dsi *dsi = host_to_dsi(host);
+>  	const struct dw_mipi_dsi_plat_data *pdata = dsi->plat_data;
+> -	struct drm_bridge *bridge;
+> -	struct drm_panel *panel;
+> -	int ret;
+> +	int ret = -ENODEV;
+>  
+>  	if (device->lanes > dsi->plat_data->max_data_lanes) {
+>  		dev_err(dsi->dev, "the number of data lanes(%u) is too many\n",
+> @@ -329,22 +327,6 @@ static int dw_mipi_dsi_host_attach(struct mipi_dsi_host *host,
+>  	dsi->format = device->format;
+>  	dsi->mode_flags = device->mode_flags;
+>  
+> -	ret = drm_of_find_panel_or_bridge(host->dev->of_node, 1, 0,
+> -					  &panel, &bridge);
+> -	if (ret)
+> -		return ret;
+> -
+> -	if (panel) {
+> -		bridge = drm_panel_bridge_add_typed(panel,
+> -						    DRM_MODE_CONNECTOR_DSI);
+> -		if (IS_ERR(bridge))
+> -			return PTR_ERR(bridge);
+> -	}
+> -
+> -	dsi->panel_bridge = bridge;
+> -
+> -	drm_bridge_add(&dsi->bridge);
+> -
+>  	if (pdata->host_ops && pdata->host_ops->attach) {
+>  		ret = pdata->host_ops->attach(pdata->priv_data, device);
+>  		if (ret < 0)
+> @@ -367,10 +349,6 @@ static int dw_mipi_dsi_host_detach(struct mipi_dsi_host *host,
+>  			return ret;
+>  	}
+>  
+> -	drm_of_panel_bridge_remove(host->dev->of_node, 1, 0);
+> -
+> -	drm_bridge_remove(&dsi->bridge);
+> -
+>  	return 0;
+>  }
+>  
+> @@ -1105,6 +1083,9 @@ __dw_mipi_dsi_probe(struct platform_device *pdev,
+>  	struct device *dev = &pdev->dev;
+>  	struct reset_control *apb_rst;
+>  	struct dw_mipi_dsi *dsi;
+> +	struct drm_bridge *bridge;
+> +	struct drm_panel *panel;
+> +	int i, nb_endpoints;
+>  	int ret;
+>  
+>  	dsi = devm_kzalloc(dev, sizeof(*dsi), GFP_KERNEL);
+> @@ -1172,8 +1153,7 @@ __dw_mipi_dsi_probe(struct platform_device *pdev,
+>  	ret = mipi_dsi_host_register(&dsi->dsi_host);
+>  	if (ret) {
+>  		dev_err(dev, "Failed to register MIPI host: %d\n", ret);
+> -		dw_mipi_dsi_debugfs_remove(dsi);
+> -		return ERR_PTR(ret);
+> +		goto err_pmr_enable;
+>  	}
+>  
+>  	dsi->bridge.driver_private = dsi;
+> @@ -1182,11 +1162,54 @@ __dw_mipi_dsi_probe(struct platform_device *pdev,
+>  	dsi->bridge.of_node = pdev->dev.of_node;
+>  #endif
+>  
+> +	/* Get number of endpoints */
+> +	nb_endpoints = of_graph_get_endpoint_count(pdev->dev.of_node);
+> +	if (!nb_endpoints) {
+> +		ret = -ENODEV;
+> +		goto err_host_reg;
+> +	}
+> +
+> +	for (i = 1; i < nb_endpoints; i++) {
+> +		ret = drm_of_find_panel_or_bridge(pdev->dev.of_node, i, 0,
+> +						  &panel, &bridge);
+> +		if (!ret)
+> +			break;
+> +		else if (ret == -EPROBE_DEFER)
+> +			goto err_host_reg;
+> +	}
+> +
+> +	/* check if an error is returned >> no panel or bridge detected */
+> +	if (ret)
+> +		goto err_host_reg;
+> +
+> +	if (panel) {
+> +		bridge = drm_panel_bridge_add_typed(panel, DRM_MODE_CONNECTOR_DSI);
+> +		if (IS_ERR(bridge)) {
+> +			ret = PTR_ERR(bridge);
+> +			goto err_host_reg;
+> +		}
+> +	}
+> +
+> +	dsi->panel_bridge = bridge;
+> +
+> +	drm_bridge_add(&dsi->bridge);
+> +
+>  	return dsi;
+> +
+> +err_host_reg:
+> +	mipi_dsi_host_unregister(&dsi->dsi_host);
+> +
+> +err_pmr_enable:
+> +	pm_runtime_disable(dev);
+> +	dw_mipi_dsi_debugfs_remove(dsi);
+> +
+> +	return ERR_PTR(ret);
+>  }
+>  
+>  static void __dw_mipi_dsi_remove(struct dw_mipi_dsi *dsi)
+>  {
+> +	drm_bridge_remove(&dsi->bridge);
+> +	drm_panel_bridge_remove(dsi->panel_bridge);
+>  	mipi_dsi_host_unregister(&dsi->dsi_host);
+>  
+>  	pm_runtime_disable(dsi->dev);
 > 
-> --- linux-next-20200917.orig/fs/ntfs/lcnalloc.c
-> +++ linux-next-20200917/fs/ntfs/lcnalloc.c
-> @@ -899,7 +899,7 @@ s64 __ntfs_cluster_free(ntfs_inode *ni,
-> 		}
-> 		/* We have freed @to_free real clusters. */
-> 		real_freed = to_free;
-> -	};
-> +	}
-> 	/* Go to the next run and adjust the number of clusters left to free. */
-> 	++rl;
-> 	if (count >= 0)
-> --- linux-next-20200917.orig/fs/ntfs/super.c
-> +++ linux-next-20200917/fs/ntfs/super.c
-> @@ -1612,7 +1612,7 @@ read_partial_attrdef_page:
-> 		memcpy((u8*)vol->attrdef + (index++ << PAGE_SHIFT),
-> 				page_address(page), size);
-> 		ntfs_unmap_page(page);
-> -	};
-> +	}
-> 	if (size == PAGE_SIZE) {
-> 		size = i_size & ~PAGE_MASK;
-> 		if (size)
-> @@ -1681,7 +1681,7 @@ read_partial_upcase_page:
-> 		memcpy((char*)vol->upcase + (index++ << PAGE_SHIFT),
-> 				page_address(page), size);
-> 		ntfs_unmap_page(page);
-> -	};
-> +	}
-> 	if (size == PAGE_SIZE) {
-> 		size = i_size & ~PAGE_MASK;
-> 		if (size)
 
 
--- 
-Anton Altaparmakov <anton at tuxera.com> (replace at with @)
-Lead in File System Development, Tuxera Inc., http://www.tuxera.com/
-Linux NTFS maintainer
+
 
