@@ -2,87 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA8726F4BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F379726F4BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:33:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726543AbgIRDcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 23:32:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726201AbgIRDcX (ORCPT
+        id S1726559AbgIRDdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 23:33:21 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:16874 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726102AbgIRDdU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 23:32:23 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A298C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 20:32:23 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id r9so5334554ioa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Sep 2020 20:32:23 -0700 (PDT)
+        Thu, 17 Sep 2020 23:33:20 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FPfn4rdBew7aKFWhRQjD3cboCteJKrBsGnCZeS8Y5jY=;
-        b=cmywM6Jb7lPoDpe6aana4LL4RyOMq8hdEPqtllD8pAM6388lg0hTs6WS3jq09PKFpg
-         /lXsYf3jDOSs1CsDoaSOOOFw/GZOibUdXA5JNiLV/4HKV4V/LltrshVX0i9T3p5Obu5A
-         iIGyV7K3p+FtvZAJBTxqNWjhnHygt7+rhBvbVx/1ygmpdgbTIxNNClCEQ7HxoaIF91uf
-         sUAx2V5q4Um2krAgBz30D1ohEowQGYJG4Q/o1jdWCpsMd8XKatmzKiT989C/a4WQU9UR
-         0v8hZ5vt2qgioSls7Nk0ZmcpsbXc3ToIt7+n7kTI3xRhVu5l6GtE2Y58ilFWMVna78aL
-         qJDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FPfn4rdBew7aKFWhRQjD3cboCteJKrBsGnCZeS8Y5jY=;
-        b=cvG1/eUlpwaqY4+2mApyzN+lQ7fkj1CTW1zyf9fAOAH7JokUG3fT/gKeAjwIE2Dt+H
-         FDDkNSefi790GqLThhK3ggeTmUujYzHL7xph9AWtdWnHjY3UFdHBvtFTWxlnAhQnJNJl
-         8m7noBsv1XKjrbiUNhk1e13p0A7xFWDuKLYjJS3w2itpEZ+zhh+0IaYtaspSGFTbISkX
-         4P34ucOpzmbhK3B1iZoH3ZklFZQolO96UWrcpNakOpvwq2o4OO0zDufYBnh+RARQ0WWL
-         697D6r/JJbqK0afzgQrDBzeGxS/IyaAl1hWAzHCTK02k4SVRo8qtHy5sjCeg5Dn9hDl9
-         iEGg==
-X-Gm-Message-State: AOAM531L45fo3+znHfPRvsiYTGJx7ehNacWAnJEnUHWt1PcIDfHgQ1Ob
-        k9ajM0CvkdSkfJtWhdP46WZ3l470+LAs5222iSA=
-X-Google-Smtp-Source: ABdhPJyxwieaP7FDRYrpmgKiq5RdWWk10z+MLIfwDM6zwC/YS/veccRpviZw8Z8jGyKSsBfC9tEy52kKKdpzZq/OmL0=
-X-Received: by 2002:a02:a615:: with SMTP id c21mr28913596jam.106.1600399942791;
- Thu, 17 Sep 2020 20:32:22 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1600400001; x=1631936001;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=GJp5n8jVa0gSejTEvB+IYZIdJiYFQosoJaDX7d0g+9M=;
+  b=VurZkonFNRXhLjY4DuCSEXTS5gkkjxTu05NdYNZVtDSA2/gNW4tXQdXG
+   wobzWHPFtPs13XO331n6Xv6ohSg/RBBmrO28jB8DCILizeO/VhpDy1+ju
+   Wg38WuSo/g0ZmYF83cepub282tW2oBy4//TBDyhLmR03W8vtBaqlPvZmc
+   0=;
+X-IronPort-AV: E=Sophos;i="5.77,273,1596499200"; 
+   d="scan'208";a="75965978"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 18 Sep 2020 03:33:18 +0000
+Received: from EX13MTAUWA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com (Postfix) with ESMTPS id 7BBCCA242C;
+        Fri, 18 Sep 2020 03:33:15 +0000 (UTC)
+Received: from EX13D01UWA002.ant.amazon.com (10.43.160.74) by
+ EX13MTAUWA001.ant.amazon.com (10.43.160.58) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 18 Sep 2020 03:33:14 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (10.43.61.77) by
+ EX13d01UWA002.ant.amazon.com (10.43.160.74) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 18 Sep 2020 03:33:14 +0000
+Received: from dev-dsk-csbisa-2a-37939146.us-west-2.amazon.com (172.19.34.216)
+ by mail-relay.amazon.com (10.43.61.169) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Fri, 18 Sep 2020 03:33:13 +0000
+Received: by dev-dsk-csbisa-2a-37939146.us-west-2.amazon.com (Postfix, from userid 800212)
+        id 55B562C0; Fri, 18 Sep 2020 03:33:12 +0000 (UTC)
+Date:   Fri, 18 Sep 2020 03:33:12 +0000
+From:   Clint Sbisa <csbisa@amazon.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Clint Sbisa <csbisa@amazon.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "Jason Gunthorpe" <jgg@nvidia.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: [PATCH v2] arm64: Enable PCI write-combine resources under sysfs
+Message-ID: <20200918033312.ddfpibgfylfjpex2@amazon.com>
 MIME-Version: 1.0
-References: <20200916153648.5475-1-ztong0001@gmail.com> <20200916165433.GA3675881@dhcp-10-100-145-180.wdl.wdc.com>
- <CAA5qM4B-KpRvFuf+5YR4iOqNzic=fuYm=_seqwLoLp9+_xOqdA@mail.gmail.com>
- <20200917171437.GB3766534@dhcp-10-100-145-180.wdl.wdc.com> <CAA5qM4Bj3BqYt-J=YqWKMWLFxDaMwQa4qAqPibyikpX5FBSzRQ@mail.gmail.com>
-In-Reply-To: <CAA5qM4Bj3BqYt-J=YqWKMWLFxDaMwQa4qAqPibyikpX5FBSzRQ@mail.gmail.com>
-From:   Tong Zhang <ztong0001@gmail.com>
-Date:   Thu, 17 Sep 2020 23:32:12 -0400
-Message-ID: <CAA5qM4ADbaO25t7GzC7jqB_jamHgegUyuNMvpo5h1+h=rir2mA@mail.gmail.com>
-Subject: Re: [PATCH] nvme: fix NULL pointer dereference
-To:     Keith Busch <kbusch@kernel.org>
-Cc:     Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please correct me if I am wrong.
-After a bit more digging I found out that it is indeed command_id got
-corrupted is causing this problem. Although the tag and command_id
-range is checked like you said, the elements in rqs cannot be
-guaranteed to be not NULL. thus although the range check is passed,
-blk_mq_tag_to_rq() can still return NULL. It is clear that the current
-sanitization is not enough and there's more implication about this --
-when all rqs got populated, a corrupted command_id may silently
-corrupt other data not belonging to the current command.
+This change exposes write-combine mappings under sysfs for
+prefetchable PCI resources on arm64.
 
-- Tong
+Originally, the usage of "write combine" here was driven by the x86
+definition of write combine. This definition is specific to x86 and
+does not generalize to other architectures. However, the usage of WC
+has mutated to "write combine" semantics, which is implemented
+differently on each arch.
 
-On Thu, Sep 17, 2020 at 8:44 PM Tong Zhang <ztong0001@gmail.com> wrote:
->
-> Hmm..Yeah.. I see your point.
-> I was naivly thinking the command_id was the culprit.
->
-> On Thu, Sep 17, 2020 at 1:14 PM Keith Busch <kbusch@kernel.org> wrote:
-> >
-> > On Thu, Sep 17, 2020 at 12:56:59PM -0400, Tong Zhang wrote:
-> > > The command_id in CQE is writable by NVMe controller, driver should
-> > > check its sanity before using it.
-> >
-> > We already do that.
+Generally, prefetchable BARs are accepted to allow speculative
+accesses, write combining, and re-ordering-- from the PCI perspective,
+this means there are no read side effects. (This contradicts the PCI
+spec which allows prefetchable BARs to have read side effects, but
+this definition is ill-advised as it is impossible to meet.) On x86,
+prefetchable BARs are mapped as WC as originally defined (with some
+conditionals on arch features). On arm64, WC is taken to mean normal
+non-cacheable memory.
+
+In practice, write combine semantics are used to minimize write
+operations. A common usage of this is minimizing PCI TLPs which can
+significantly improve performance with PCI devices. In order to
+provide the same benefits to userspace, we need to allow userspace to
+map prefetchable BARs with write combine semantics. The resourceX_wc
+mapping is used today by userspace programs and libraries.
+
+While this model is flawed as "write combine" is very ill-defined, it
+is already used by multiple non-x86 archs to expose write combine
+semantics to user space. We enable this on arm64 to give userspace on
+arm64 an equivalent mechanism for utilizing write combining with PCI
+devices.
+
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Signed-off-by: Clint Sbisa <csbisa@amazon.com>
+---
+Changes in v2:
+  - Rewrote the commit message.
+
+ arch/arm64/include/asm/pci.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/include/asm/pci.h b/arch/arm64/include/asm/pci.h
+index 70b323cf8300..b33ca260e3c9 100644
+--- a/arch/arm64/include/asm/pci.h
++++ b/arch/arm64/include/asm/pci.h
+@@ -17,6 +17,7 @@
+ #define pcibios_assign_all_busses() \
+ 	(pci_has_flag(PCI_REASSIGN_ALL_BUS))
+ 
++#define arch_can_pci_mmap_wc() 1
+ #define ARCH_GENERIC_PCI_MMAP_RESOURCE	1
+ 
+ extern int isa_dma_bridge_buggy;
+-- 
+2.23.3
+
