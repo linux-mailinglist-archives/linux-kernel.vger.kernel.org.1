@@ -2,28 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B4526F68E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 09:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C092226F695
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 09:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726484AbgIRHQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 03:16:36 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:46486 "EHLO huawei.com"
+        id S1726174AbgIRHR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 03:17:59 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13290 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726044AbgIRHQf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 03:16:35 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id D16A17424A1A53C96146;
-        Fri, 18 Sep 2020 15:16:30 +0800 (CST)
+        id S1726159AbgIRHR7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 03:17:59 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 02832A29E2733212CEEA;
+        Fri, 18 Sep 2020 15:17:57 +0800 (CST)
 Received: from ubuntu.network (10.175.138.68) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 18 Sep 2020 15:16:20 +0800
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 18 Sep 2020 15:17:50 +0800
 From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+To:     <davem@davemloft.net>, <UNGLinuxDriver@microchip.com>,
+        <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
 CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
 Subject: [PATCH -next] rapidio: Remove set but not used variable 'rc'
-Date:   Fri, 18 Sep 2020 15:17:13 +0800
-Message-ID: <20200918071713.19706-1-zhengyongjun3@huawei.com>
+Date:   Fri, 18 Sep 2020 15:18:44 +0800
+Message-ID: <20200918071844.19772-1-zhengyongjun3@huawei.com>
 X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
