@@ -2,125 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BEA127044C
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 20:46:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDB77270457
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 20:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726199AbgIRSq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 14:46:26 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:34583 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726115AbgIRSq0 (ORCPT
+        id S1726290AbgIRSsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 14:48:30 -0400
+Received: from m42-11.mailgun.net ([69.72.42.11]:18396 "EHLO
+        m42-11.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726115AbgIRSs3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 14:46:26 -0400
-Received: by mail-pl1-f196.google.com with SMTP id r19so3454805pls.1;
-        Fri, 18 Sep 2020 11:46:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZxDJV2fJCIDNTsf7R64Vg/QpDh1T7h9NcEj6xPqhZnM=;
-        b=HkA6F4WXX9RfqnKCDglnDEximKIhdQLGPrQGKy1Ah8iw22ktluFUnPmgXCnkU/+OGc
-         ih0Bazk+4w/uuD6aEiW7+REidkPEaC24ptQsddmdnYo/FhJVW5YXA3RGZb1AAySh9jV7
-         2pIMvT0n+B6fk7IWLSCeiY2IMfqV2Ge+u5s6e8B1EIQfFWEtZTQBGHJTAPI5MzeAqS0X
-         VdkIRE06jw0TkFWoJFJRIhF8r0Dput8sAEU4kz6wzYxYPMv1iqmvv+hPaR2ofVBo90/y
-         bjKavLGSYuA/pGURcBVwjMpI2AKkkz2zoS/mv5xmuN/qHF/nhid24hDqhrH01Gtt8E7q
-         tD6A==
-X-Gm-Message-State: AOAM532D5tPZJXB3GCm+aO4wEbYnw5/hp1OeB++uyjwAHprLz7AmDNz7
-        yuSRwpgD5z8fACpTaqsLSE0=
-X-Google-Smtp-Source: ABdhPJxBg2A1FGDoSmleWQDmynLttpWsBXjCNrvlj6E6Zdj78d20Ir7/SLYdsxm5CRO3teA3ZbNS7A==
-X-Received: by 2002:a17:90b:1487:: with SMTP id js7mr13919908pjb.187.1600454785353;
-        Fri, 18 Sep 2020 11:46:25 -0700 (PDT)
-Received: from ?IPv6:2601:647:4802:9070:c1f8:eff6:9706:30c? ([2601:647:4802:9070:c1f8:eff6:9706:30c])
-        by smtp.gmail.com with ESMTPSA id gg19sm3424923pjb.49.2020.09.18.11.46.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Sep 2020 11:46:24 -0700 (PDT)
-Subject: Re: [PATCH AUTOSEL 4.19 127/206] nvme: Fix controller creation races
- with teardown flow
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     Israel Rukshin <israelr@mellanox.com>,
-        linux-nvme@lists.infradead.org, Keith Busch <kbusch@kernel.org>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Christoph Hellwig <hch@lst.de>
-References: <20200918020802.2065198-1-sashal@kernel.org>
- <20200918020802.2065198-127-sashal@kernel.org>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <47a9f0da-9fcd-ad17-d2bf-f79767745a39@grimberg.me>
-Date:   Fri, 18 Sep 2020 11:46:22 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 18 Sep 2020 14:48:29 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600454908; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=I15lYOFQgP5KLwMoydnHHG3ATiZuNtYswFCmvUG0xyo=;
+ b=mIPRcPY4CVem1yHATT/hhVWe6GkrD4Cjq/zX2lT2OkrKkSPd+o2QkCa2WP7/lulUspGhRcDB
+ WIYK8FydVXPYdc94n2utKRR/G9C1Qz955BTTqc9FRlfcAVlSpz9180ISwd/y9WYB27vQ8f6k
+ QFs54yg1zD/sxpfWvr6UanuKUWY=
+X-Mailgun-Sending-Ip: 69.72.42.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5f6500f6c4180d293b3726c5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Sep 2020 18:48:22
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5D063C433F1; Fri, 18 Sep 2020 18:48:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 93856C433CA;
+        Fri, 18 Sep 2020 18:48:21 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20200918020802.2065198-127-sashal@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Fri, 18 Sep 2020 11:48:21 -0700
+From:   bbhatt@codeaurora.org
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Jeffrey Hugo <jhugo@codeaurora.org>, linux-arm-msm@vger.kernel.org,
+        hemantk@codeaurora.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/3] bus: mhi: core: Remove warnings for missing
+ MODULE_LICENSE()
+In-Reply-To: <20200918171809.GA3410@Mani-XPS-13-9360>
+References: <1600381176-37604-1-git-send-email-bbhatt@codeaurora.org>
+ <1600381176-37604-2-git-send-email-bbhatt@codeaurora.org>
+ <6f7b6be3-f52d-b082-6065-c75e3d89d252@codeaurora.org>
+ <0e34b5a2562b776ea410c80479107581@codeaurora.org>
+ <20200918171809.GA3410@Mani-XPS-13-9360>
+Message-ID: <4506782e8bb9a50d80b4a40575ae532e@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This causes a regression and was reverted upstream, just FYI.
+On 2020-09-18 10:18, Manivannan Sadhasivam wrote:
+> On Fri, Sep 18, 2020 at 09:49:05AM -0700, bbhatt@codeaurora.org wrote:
+>> On 2020-09-18 07:27, Jeffrey Hugo wrote:
+>> > On 9/17/2020 4:19 PM, Bhaumik Bhatt wrote:
+>> > > When building MHI as a module, missing MODULE_LICENSE() warnings
+>> > > are seen. Avoid them by adding the license and description
+>> > > information for the files where the warnings are seen.
+>> > >
+>> > > Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>> > > ---
+>> > >   drivers/bus/mhi/core/boot.c | 3 +++
+>> > >   drivers/bus/mhi/core/main.c | 3 +++
+>> > >   drivers/bus/mhi/core/pm.c   | 3 +++
+>> > >   3 files changed, 9 insertions(+)
+>> > >
+>> > > diff --git a/drivers/bus/mhi/core/boot.c b/drivers/bus/mhi/core/boot.c
+>> > > index 24422f5..78140cc 100644
+>> > > --- a/drivers/bus/mhi/core/boot.c
+>> > > +++ b/drivers/bus/mhi/core/boot.c
+>> > > @@ -523,3 +523,6 @@ void mhi_fw_load_handler(struct mhi_controller
+>> > > *mhi_cntrl)
+>> > >   error_alloc_fw_table:
+>> > >   	release_firmware(firmware);
+>> > >   }
+>> > > +
+>> > > +MODULE_LICENSE("GPL v2");
+>> > > +MODULE_DESCRIPTION("MHI Host Interface");
+>> > > diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+>> > > index 2cff5dd..172026f 100644
+>> > > --- a/drivers/bus/mhi/core/main.c
+>> > > +++ b/drivers/bus/mhi/core/main.c
+>> > > @@ -1533,3 +1533,6 @@ int mhi_poll(struct mhi_device *mhi_dev, u32
+>> > > budget)
+>> > >   	return ret;
+>> > >   }
+>> > >   EXPORT_SYMBOL_GPL(mhi_poll);
+>> > > +
+>> > > +MODULE_LICENSE("GPL v2");
+>> > > +MODULE_DESCRIPTION("MHI Host Interface");
+>> > > diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+>> > > index ce4d969..72c3dbc 100644
+>> > > --- a/drivers/bus/mhi/core/pm.c
+>> > > +++ b/drivers/bus/mhi/core/pm.c
+>> > > @@ -1150,3 +1150,6 @@ void mhi_device_put(struct mhi_device *mhi_dev)
+>> > >   	read_unlock_bh(&mhi_cntrl->pm_lock);
+>> > >   }
+>> > >   EXPORT_SYMBOL_GPL(mhi_device_put);
+>> > > +
+>> > > +MODULE_LICENSE("GPL v2");
+>> > > +MODULE_DESCRIPTION("MHI Host Interface");
+>> > >
+>> >
+>> > I would expect you only need to add the MODULE_* once per module, in
+>> > which case main.c is probably the only place that needs it.
+>> 
+>> Hi Jeff,
+>> 
+>> I thought so too. This is to fix below warnings seen when building MHI 
+>> as a
+>> MODULE:
+>> 
+>> WARNING: modpost: missing MODULE_LICENSE() in 
+>> drivers/bus/mhi/core/main.o
+>> WARNING: modpost: missing MODULE_LICENSE() in 
+>> drivers/bus/mhi/core/pm.o
+>> WARNING: modpost: missing MODULE_LICENSE() in 
+>> drivers/bus/mhi/core/boot.o
+>> 
+>> We've only had those in init.c so far.
+>> 
+> 
+> Can you please test below diff to see if it fixes the warning?
+> 
+> diff --git a/drivers/bus/mhi/core/Makefile 
+> b/drivers/bus/mhi/core/Makefile
+> index 66e2700c9032..bc1469778cf8 100644
+> --- a/drivers/bus/mhi/core/Makefile
+> +++ b/drivers/bus/mhi/core/Makefile
+> @@ -1,3 +1,3 @@
+> -obj-$(CONFIG_MHI_BUS) := mhi.o
+> +obj-$(CONFIG_MHI_BUS) += mhi.o
+> 
+>  mhi-y := init.o main.o pm.o boot.o
+> 
+> Thanks,
+> Mani
+> 
+>> Thanks,
+>> Bhaumik
+>> 
+>> 'The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
+>> Forum,\na Linux Foundation Collaborative Project'
+Hi Mani,
 
-On 9/17/20 7:06 PM, Sasha Levin wrote:
-> From: Israel Rukshin <israelr@mellanox.com>
-> 
-> [ Upstream commit ce1518139e6976cf19c133b555083354fdb629b8 ]
-> 
-> Calling nvme_sysfs_delete() when the controller is in the middle of
-> creation may cause several bugs. If the controller is in NEW state we
-> remove delete_controller file and don't delete the controller. The user
-> will not be able to use nvme disconnect command on that controller again,
-> although the controller may be active. Other bugs may happen if the
-> controller is in the middle of create_ctrl callback and
-> nvme_do_delete_ctrl() starts. For example, freeing I/O tagset at
-> nvme_do_delete_ctrl() before it was allocated at create_ctrl callback.
-> 
-> To fix all those races don't allow the user to delete the controller
-> before it was fully created.
-> 
-> Signed-off-by: Israel Rukshin <israelr@mellanox.com>
-> Reviewed-by: Max Gurtovoy <maxg@mellanox.com>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Signed-off-by: Keith Busch <kbusch@kernel.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->   drivers/nvme/host/core.c | 5 +++++
->   drivers/nvme/host/nvme.h | 1 +
->   2 files changed, 6 insertions(+)
-> 
-> diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-> index 4b182ac15687e..faa7feebb6095 100644
-> --- a/drivers/nvme/host/core.c
-> +++ b/drivers/nvme/host/core.c
-> @@ -2856,6 +2856,10 @@ static ssize_t nvme_sysfs_delete(struct device *dev,
->   {
->   	struct nvme_ctrl *ctrl = dev_get_drvdata(dev);
->   
-> +	/* Can't delete non-created controllers */
-> +	if (!ctrl->created)
-> +		return -EBUSY;
-> +
->   	if (device_remove_file_self(dev, attr))
->   		nvme_delete_ctrl_sync(ctrl);
->   	return count;
-> @@ -3576,6 +3580,7 @@ void nvme_start_ctrl(struct nvme_ctrl *ctrl)
->   		queue_work(nvme_wq, &ctrl->async_event_work);
->   		nvme_start_queues(ctrl);
->   	}
-> +	ctrl->created = true;
->   }
->   EXPORT_SYMBOL_GPL(nvme_start_ctrl);
->   
-> diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
-> index 31c1496f938fb..a70b997060e68 100644
-> --- a/drivers/nvme/host/nvme.h
-> +++ b/drivers/nvme/host/nvme.h
-> @@ -206,6 +206,7 @@ struct nvme_ctrl {
->   	struct nvme_command ka_cmd;
->   	struct work_struct fw_act_work;
->   	unsigned long events;
-> +	bool created;
->   
->   #ifdef CONFIG_NVME_MULTIPATH
->   	/* asymmetric namespace access: */
-> 
+Yes I was just about to reply. I realized it was due to the Makefile 
+change. I have fixed and
+tested it. The warnings are gone now. I will remove the patch.
+
+Thanks,
+Bhaumik
+
+'The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
+Forum,\na Linux Foundation Collaborative Project'
