@@ -2,600 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D54C26FCA0
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:36:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0A7326FCA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726688AbgIRMfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 08:35:46 -0400
-Received: from mga02.intel.com ([134.134.136.20]:59076 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726154AbgIRMfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 08:35:46 -0400
-IronPort-SDR: ci6L5s8JM6kkXa/Xem4ngglXooSHzVmk/KmibNre+tRKgHS9lnp2HloSVsHXti10UV8L7B1tcV
- rmZrGhE/4Mlg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="147605940"
-X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
-   d="scan'208";a="147605940"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 05:35:42 -0700
-IronPort-SDR: PE5XZXoFk2bBgIToiHAv30S5WJjpbPgvCu3TdyUjsmrkLQ0R//OoEAJrPzK3uifgMEF/l5hfp3
- k64kEMbGPlnQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
-   d="scan'208";a="410277951"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 18 Sep 2020 05:35:40 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 18 Sep 2020 15:35:39 +0300
-Date:   Fri, 18 Sep 2020 15:35:39 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 04/11] usb: typec: tcpci_maxim: Chip level TCPC driver
-Message-ID: <20200918123539.GD1630537@kuha.fi.intel.com>
-References: <20200917101856.3156869-1-badhri@google.com>
- <20200917101856.3156869-4-badhri@google.com>
+        id S1726600AbgIRMgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 08:36:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726154AbgIRMgM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 08:36:12 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81592C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 05:36:11 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1kJFcU-0005b0-0X; Fri, 18 Sep 2020 14:36:06 +0200
+Received: from [IPv6:2a03:f580:87bc:d400:8d0c:cfd0:3f99:a545] (unknown [IPv6:2a03:f580:87bc:d400:8d0c:cfd0:3f99:a545])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
+         client-signature RSA-PSS (4096 bits) client-digest SHA256)
+        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
+        (Authenticated sender: mkl@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 4598756373B;
+        Fri, 18 Sep 2020 12:36:04 +0000 (UTC)
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        "wg@grandegger.com" <wg@grandegger.com>,
+        Pankaj Bansal <pankaj.bansal@nxp.com>,
+        "Pankaj Bansal (OSS)" <pankaj.bansal@oss.nxp.com>,
+        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200918122716.kzxvocxelqwdw7uq@skbuf>
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
+ 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
+Subject: Re: canfdtest on flexcan loopback
+Message-ID: <2b292dde-5385-035d-dc99-031d61ff67c7@pengutronix.de>
+Date:   Fri, 18 Sep 2020 14:35:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917101856.3156869-4-badhri@google.com>
+In-Reply-To: <20200918122716.kzxvocxelqwdw7uq@skbuf>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="LfzhS9LsVJ6Zui1F0NCEf7qMhIhhY1Qjh"
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 03:18:49AM -0700, Badhri Jagan Sridharan wrote:
-> Chip level TCPC driver for Maxim's TCPCI implementation.
-> This TCPC implementation does not support the following
-> commands: COMMAND.SinkVbus, COMMAND.SourceVbusDefaultVoltage,
-> COMMAND.SourceVbusHighVoltage. Instead the sinking and sourcing
-> from vbus is supported by writes to custom registers.
-> 
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--LfzhS9LsVJ6Zui1F0NCEf7qMhIhhY1Qjh
+Content-Type: multipart/mixed; boundary="hk0Ldn7DW8XP9pqB9Y0nCJbDtXD7pF4Ye";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc: Vladimir Oltean <olteanv@gmail.com>, "wg@grandegger.com"
+ <wg@grandegger.com>, Pankaj Bansal <pankaj.bansal@nxp.com>,
+ "Pankaj Bansal (OSS)" <pankaj.bansal@oss.nxp.com>,
+ "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+ Joakim Zhang <qiangqing.zhang@nxp.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <2b292dde-5385-035d-dc99-031d61ff67c7@pengutronix.de>
+Subject: Re: canfdtest on flexcan loopback
+References: <20200918122716.kzxvocxelqwdw7uq@skbuf>
+In-Reply-To: <20200918122716.kzxvocxelqwdw7uq@skbuf>
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+--hk0Ldn7DW8XP9pqB9Y0nCJbDtXD7pF4Ye
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-> ---
-> Changes since v1:
-> - Changing patch version to v6 to fix version number confusion.
-> - Removed setting USB_PSY and terminating description with period as
->   suggested by Randy.
-> 
-> Changes since v6:
-> - Addressed Heikki comments:
->   - Removed TX discarded message
->   - Removed the redundant TCPC_POWER_STATUS_UNINIT check
-> - Cleaned up irq setup routine
-> ---
->  drivers/usb/typec/tcpm/Kconfig       |   5 +
->  drivers/usb/typec/tcpm/Makefile      |  15 +-
->  drivers/usb/typec/tcpm/tcpci.h       |   1 +
->  drivers/usb/typec/tcpm/tcpci_maxim.c | 461 +++++++++++++++++++++++++++
->  4 files changed, 475 insertions(+), 7 deletions(-)
->  create mode 100644 drivers/usb/typec/tcpm/tcpci_maxim.c
-> 
-> diff --git a/drivers/usb/typec/tcpm/Kconfig b/drivers/usb/typec/tcpm/Kconfig
-> index 58a64e1bf627..938ab5615687 100644
-> --- a/drivers/usb/typec/tcpm/Kconfig
-> +++ b/drivers/usb/typec/tcpm/Kconfig
-> @@ -35,6 +35,11 @@ config TYPEC_MT6360
->  	  USB Type-C. It works with Type-C Port Controller Manager
->  	  to provide USB PD and USB Type-C functionalities.
->  
-> +config TYPEC_TCPCI_MAXIM
-> +	tristate "Maxim TCPCI based Type-C chip driver"
-> +	help
-> +	  MAXIM TCPCI based Type-C chip driver.
-> +
->  endif # TYPEC_TCPCI
->  
->  config TYPEC_FUSB302
-> diff --git a/drivers/usb/typec/tcpm/Makefile b/drivers/usb/typec/tcpm/Makefile
-> index 7592ccb8c526..7d499f3569fd 100644
-> --- a/drivers/usb/typec/tcpm/Makefile
-> +++ b/drivers/usb/typec/tcpm/Makefile
-> @@ -1,8 +1,9 @@
->  # SPDX-License-Identifier: GPL-2.0
-> -obj-$(CONFIG_TYPEC_TCPM)	+= tcpm.o
-> -obj-$(CONFIG_TYPEC_FUSB302)	+= fusb302.o
-> -obj-$(CONFIG_TYPEC_WCOVE)	+= typec_wcove.o
-> -typec_wcove-y			:= wcove.o
-> -obj-$(CONFIG_TYPEC_TCPCI)	+= tcpci.o
-> -obj-$(CONFIG_TYPEC_RT1711H)	+= tcpci_rt1711h.o
-> -obj-$(CONFIG_TYPEC_MT6360)	+= tcpci_mt6360.o
-> +obj-$(CONFIG_TYPEC_TCPM)		+= tcpm.o
-> +obj-$(CONFIG_TYPEC_FUSB302)		+= fusb302.o
-> +obj-$(CONFIG_TYPEC_WCOVE)		+= typec_wcove.o
-> +typec_wcove-y				:= wcove.o
-> +obj-$(CONFIG_TYPEC_TCPCI)		+= tcpci.o
-> +obj-$(CONFIG_TYPEC_RT1711H)		+= tcpci_rt1711h.o
-> +obj-$(CONFIG_TYPEC_MT6360)		+= tcpci_mt6360.o
-> +obj-$(CONFIG_TYPEC_TCPCI_MAXIM)		+= tcpci_maxim.o
-> diff --git a/drivers/usb/typec/tcpm/tcpci.h b/drivers/usb/typec/tcpm/tcpci.h
-> index 4d441bdf24d5..82f021a82456 100644
-> --- a/drivers/usb/typec/tcpm/tcpci.h
-> +++ b/drivers/usb/typec/tcpm/tcpci.h
-> @@ -109,6 +109,7 @@
->  
->  #define TCPC_RX_BYTE_CNT		0x30
->  #define TCPC_RX_BUF_FRAME_TYPE		0x31
-> +#define TCPC_RX_BUF_FRAME_TYPE_SOP	0
->  #define TCPC_RX_HDR			0x32
->  #define TCPC_RX_DATA			0x34 /* through 0x4f */
->  
-> diff --git a/drivers/usb/typec/tcpm/tcpci_maxim.c b/drivers/usb/typec/tcpm/tcpci_maxim.c
-> new file mode 100644
-> index 000000000000..91337ddb4962
-> --- /dev/null
-> +++ b/drivers/usb/typec/tcpm/tcpci_maxim.c
-> @@ -0,0 +1,461 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2020, Google LLC
-> + *
-> + * MAXIM TCPCI based TCPC driver
-> + */
-> +
-> +#include <linux/gpio.h>
-> +#include <linux/gpio/consumer.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/i2c.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/of_gpio.h>
-> +#include <linux/regmap.h>
-> +#include <linux/usb/pd.h>
-> +#include <linux/usb/tcpm.h>
-> +#include <linux/usb/typec.h>
-> +
-> +#include "tcpci.h"
-> +
-> +#define PD_ACTIVITY_TIMEOUT_MS				10000
-> +
-> +#define TCPC_VENDOR_ALERT				0x80
-> +
-> +#define TCPC_RECEIVE_BUFFER_COUNT_OFFSET		0
-> +#define TCPC_RECEIVE_BUFFER_FRAME_TYPE_OFFSET		1
-> +#define TCPC_RECEIVE_BUFFER_RX_BYTE_BUF_OFFSET		2
-> +
-> +/*
-> + * LongMessage not supported, hence 32 bytes for buf to be read from RECEIVE_BUFFER.
-> + * DEVICE_CAPABILITIES_2.LongMessage = 0, the value in READABLE_BYTE_COUNT reg shall be
-> + * less than or equal to 31. Since, RECEIVE_BUFFER len = 31 + 1(READABLE_BYTE_COUNT).
-> + */
-> +#define TCPC_RECEIVE_BUFFER_LEN				32
-> +
-> +#define MAX_BUCK_BOOST_SID				0x69
-> +#define MAX_BUCK_BOOST_OP				0xb9
-> +#define MAX_BUCK_BOOST_OFF				0
-> +#define MAX_BUCK_BOOST_SOURCE				0xa
-> +#define MAX_BUCK_BOOST_SINK				0x5
-> +
-> +struct max_tcpci_chip {
-> +	struct tcpci_data data;
-> +	struct tcpci *tcpci;
-> +	struct device *dev;
-> +	struct i2c_client *client;
-> +	struct tcpm_port *port;
-> +};
-> +
-> +static const struct regmap_range max_tcpci_tcpci_range[] = {
-> +	regmap_reg_range(0x00, 0x95)
-> +};
-> +
-> +const struct regmap_access_table max_tcpci_tcpci_write_table = {
-> +	.yes_ranges = max_tcpci_tcpci_range,
-> +	.n_yes_ranges = ARRAY_SIZE(max_tcpci_tcpci_range),
-> +};
-> +
-> +static const struct regmap_config max_tcpci_regmap_config = {
-> +	.reg_bits = 8,
-> +	.val_bits = 8,
-> +	.max_register = 0x95,
-> +	.wr_table = &max_tcpci_tcpci_write_table,
-> +};
-> +
-> +static struct max_tcpci_chip *tdata_to_max_tcpci(struct tcpci_data *tdata)
-> +{
-> +	return container_of(tdata, struct max_tcpci_chip, data);
-> +}
-> +
-> +static int max_tcpci_read16(struct max_tcpci_chip *chip, unsigned int reg, u16 *val)
-> +{
-> +	return regmap_raw_read(chip->data.regmap, reg, val, sizeof(u16));
-> +}
-> +
-> +static int max_tcpci_write16(struct max_tcpci_chip *chip, unsigned int reg, u16 val)
-> +{
-> +	return regmap_raw_write(chip->data.regmap, reg, &val, sizeof(u16));
-> +}
-> +
-> +static int max_tcpci_read8(struct max_tcpci_chip *chip, unsigned int reg, u8 *val)
-> +{
-> +	return regmap_raw_read(chip->data.regmap, reg, val, sizeof(u8));
-> +}
-> +
-> +static int max_tcpci_write8(struct max_tcpci_chip *chip, unsigned int reg, u8 val)
-> +{
-> +	return regmap_raw_write(chip->data.regmap, reg, &val, sizeof(u8));
-> +}
-> +
-> +static void max_tcpci_init_regs(struct max_tcpci_chip *chip)
-> +{
-> +	u16 alert_mask = 0;
-> +	int ret;
-> +
-> +	ret = max_tcpci_write16(chip, TCPC_ALERT, 0xffff);
-> +	if (ret < 0) {
-> +		dev_err(chip->dev, "Error writing to TCPC_ALERT ret:%d\n", ret);
-> +		return;
-> +	}
-> +
-> +	ret = max_tcpci_write16(chip, TCPC_VENDOR_ALERT, 0xffff);
-> +	if (ret < 0) {
-> +		dev_err(chip->dev, "Error writing to TCPC_VENDOR_ALERT ret:%d\n", ret);
-> +		return;
-> +	}
-> +
-> +	alert_mask = TCPC_ALERT_TX_SUCCESS | TCPC_ALERT_TX_DISCARDED | TCPC_ALERT_TX_FAILED |
-> +		TCPC_ALERT_RX_HARD_RST | TCPC_ALERT_RX_STATUS | TCPC_ALERT_CC_STATUS |
-> +		TCPC_ALERT_VBUS_DISCNCT | TCPC_ALERT_RX_BUF_OVF | TCPC_ALERT_POWER_STATUS;
-> +
-> +	ret = max_tcpci_write16(chip, TCPC_ALERT_MASK, alert_mask);
-> +	if (ret < 0) {
-> +		dev_err(chip->dev, "Error writing to TCPC_ALERT_MASK ret:%d\n", ret);
-> +		return;
-> +	}
-> +
-> +	/* Enable vbus voltage monitoring and voltage alerts */
-> +	ret = max_tcpci_write8(chip, TCPC_POWER_CTRL, 0);
-> +	if (ret < 0) {
-> +		dev_err(chip->dev, "Error writing to TCPC_POWER_CTRL ret:%d\n", ret);
-> +		return;
-> +	}
-> +}
-> +
-> +static void process_rx(struct max_tcpci_chip *chip, u16 status)
-> +{
-> +	struct pd_message msg;
-> +	u8 count, frame_type, rx_buf[TCPC_RECEIVE_BUFFER_LEN];
-> +	int ret, payload_index;
-> +	u8 *rx_buf_ptr;
-> +
-> +	/*
-> +	 * READABLE_BYTE_COUNT: Indicates the number of bytes in the RX_BUF_BYTE_x registers
-> +	 * plus one (for the RX_BUF_FRAME_TYPE) Table 4-36.
-> +	 * Read the count and frame type.
-> +	 */
-> +	ret = regmap_raw_read(chip->data.regmap, TCPC_RX_BYTE_CNT, rx_buf, 2);
-> +	if (ret < 0) {
-> +		dev_err(chip->dev, "TCPC_RX_BYTE_CNT read failed ret:%d", ret);
-> +		return;
-> +	}
-> +
-> +	count = rx_buf[TCPC_RECEIVE_BUFFER_COUNT_OFFSET];
-> +	frame_type = rx_buf[TCPC_RECEIVE_BUFFER_FRAME_TYPE_OFFSET];
-> +
-> +	if (count == 0 || frame_type != TCPC_RX_BUF_FRAME_TYPE_SOP) {
-> +		max_tcpci_write16(chip, TCPC_ALERT, TCPC_ALERT_RX_STATUS);
-> +		dev_err(chip->dev, "%s", count ==  0 ? "error: count is 0" :
-> +			"error frame_type is not SOP");
-> +		return;
-> +	}
-> +
-> +	if (count > sizeof(struct pd_message) || count + 1 > TCPC_RECEIVE_BUFFER_LEN) {
-> +		dev_err(chip->dev, "Invalid TCPC_RX_BYTE_CNT %d", count);
-> +		return;
-> +	}
-> +
-> +	/*
-> +	 * Read count + 1 as RX_BUF_BYTE_x is hidden and can only be read through
-> +	 * TCPC_RX_BYTE_CNT
-> +	 */
-> +	count += 1;
-> +	ret = regmap_raw_read(chip->data.regmap, TCPC_RX_BYTE_CNT, rx_buf, count);
-> +	if (ret < 0) {
-> +		dev_err(chip->dev, "Error: TCPC_RX_BYTE_CNT read failed: %d", ret);
-> +		return;
-> +	}
-> +
-> +	rx_buf_ptr = rx_buf + TCPC_RECEIVE_BUFFER_RX_BYTE_BUF_OFFSET;
-> +	msg.header = cpu_to_le16(*(u16 *)rx_buf_ptr);
-> +	rx_buf_ptr = rx_buf_ptr + sizeof(msg.header);
-> +	for (payload_index = 0; payload_index < pd_header_cnt_le(msg.header); payload_index++,
-> +	     rx_buf_ptr += sizeof(msg.payload[0]))
-> +		msg.payload[payload_index] = cpu_to_le32(*(u32 *)rx_buf_ptr);
-> +
-> +	/*
-> +	 * Read complete, clear RX status alert bit.
-> +	 * Clear overflow as well if set.
-> +	 */
-> +	ret = max_tcpci_write16(chip, TCPC_ALERT, status & TCPC_ALERT_RX_BUF_OVF ?
-> +				TCPC_ALERT_RX_STATUS | TCPC_ALERT_RX_BUF_OVF :
-> +				TCPC_ALERT_RX_STATUS);
-> +	if (ret < 0)
-> +		return;
-> +
-> +	tcpm_pd_receive(chip->port, &msg);
-> +}
-> +
-> +static int max_tcpci_set_vbus(struct tcpci *tcpci, struct tcpci_data *tdata, bool source, bool sink)
-> +{
-> +	struct max_tcpci_chip *chip = tdata_to_max_tcpci(tdata);
-> +	u8 buffer_source[2] = {MAX_BUCK_BOOST_OP, MAX_BUCK_BOOST_SOURCE};
-> +	u8 buffer_sink[2] = {MAX_BUCK_BOOST_OP, MAX_BUCK_BOOST_SINK};
-> +	u8 buffer_none[2] = {MAX_BUCK_BOOST_OP, MAX_BUCK_BOOST_OFF};
-> +	struct i2c_client *i2c = chip->client;
-> +	int ret;
-> +
-> +	struct i2c_msg msgs[] = {
-> +		{
-> +			.addr = MAX_BUCK_BOOST_SID,
-> +			.flags = i2c->flags & I2C_M_TEN,
-> +			.len = 2,
-> +			.buf = source ? buffer_source : sink ? buffer_sink : buffer_none,
-> +		},
-> +	};
-> +
-> +	if (source && sink) {
-> +		dev_err(chip->dev, "Both source and sink set\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	ret = i2c_transfer(i2c->adapter, msgs, 1);
-> +
-> +	return  ret < 0 ? ret : 1;
-> +}
-> +
-> +static void process_power_status(struct max_tcpci_chip *chip)
-> +{
-> +	u8 pwr_status;
-> +	int ret;
-> +
-> +	ret = max_tcpci_read8(chip, TCPC_POWER_STATUS, &pwr_status);
-> +	if (ret < 0)
-> +		return;
-> +
-> +	if (pwr_status == 0xff)
-> +		max_tcpci_init_regs(chip);
-> +	else
-> +		tcpm_vbus_change(chip->port);
-> +}
-> +
-> +static void process_tx(struct max_tcpci_chip *chip, u16 status)
-> +{
-> +	if (status & TCPC_ALERT_TX_SUCCESS)
-> +		tcpm_pd_transmit_complete(chip->port, TCPC_TX_SUCCESS);
-> +	else if (status & TCPC_ALERT_TX_DISCARDED)
-> +		tcpm_pd_transmit_complete(chip->port, TCPC_TX_DISCARDED);
-> +	else if (status & TCPC_ALERT_TX_FAILED)
-> +		tcpm_pd_transmit_complete(chip->port, TCPC_TX_FAILED);
-> +
-> +	/* Reinit regs as Hard reset sets them to default value */
-> +	if ((status & TCPC_ALERT_TX_SUCCESS) && (status & TCPC_ALERT_TX_FAILED))
-> +		max_tcpci_init_regs(chip);
-> +}
-> +
-> +static irqreturn_t _max_tcpci_irq(struct max_tcpci_chip *chip, u16 status)
-> +{
-> +	u16 mask;
-> +	int ret;
-> +
-> +	/*
-> +	 * Clear alert status for everything except RX_STATUS, which shouldn't
-> +	 * be cleared until we have successfully retrieved message.
-> +	 */
-> +	if (status & ~TCPC_ALERT_RX_STATUS) {
-> +		mask = status & TCPC_ALERT_RX_BUF_OVF ?
-> +			status & ~(TCPC_ALERT_RX_STATUS | TCPC_ALERT_RX_BUF_OVF) :
-> +			status & ~TCPC_ALERT_RX_STATUS;
-> +		ret = max_tcpci_write16(chip, TCPC_ALERT, mask);
-> +		if (ret < 0) {
-> +			dev_err(chip->dev, "ALERT clear failed\n");
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	if (status & TCPC_ALERT_RX_BUF_OVF && !(status & TCPC_ALERT_RX_STATUS)) {
-> +		ret = max_tcpci_write16(chip, TCPC_ALERT, (TCPC_ALERT_RX_STATUS |
-> +							  TCPC_ALERT_RX_BUF_OVF));
-> +		if (ret < 0) {
-> +			dev_err(chip->dev, "ALERT clear failed\n");
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	if (status & TCPC_ALERT_RX_STATUS)
-> +		process_rx(chip, status);
-> +
-> +	if (status & TCPC_ALERT_VBUS_DISCNCT)
-> +		tcpm_vbus_change(chip->port);
-> +
-> +	if (status & TCPC_ALERT_CC_STATUS)
-> +		tcpm_cc_change(chip->port);
-> +
-> +	if (status & TCPC_ALERT_POWER_STATUS)
-> +		process_power_status(chip);
-> +
-> +	if (status & TCPC_ALERT_RX_HARD_RST) {
-> +		tcpm_pd_hard_reset(chip->port);
-> +		max_tcpci_init_regs(chip);
-> +	}
-> +
-> +	if (status & TCPC_ALERT_TX_SUCCESS || status & TCPC_ALERT_TX_DISCARDED || status &
-> +	    TCPC_ALERT_TX_FAILED)
-> +		process_tx(chip, status);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static irqreturn_t max_tcpci_irq(int irq, void *dev_id)
-> +{
-> +	struct max_tcpci_chip *chip = dev_id;
-> +	u16 status;
-> +	irqreturn_t irq_return;
-> +	int ret;
-> +
-> +	if (!chip->port)
-> +		return IRQ_HANDLED;
-> +
-> +	ret = max_tcpci_read16(chip, TCPC_ALERT, &status);
-> +	if (ret < 0) {
-> +		dev_err(chip->dev, "ALERT read failed\n");
-> +		return ret;
-> +	}
-> +	while (status) {
-> +		irq_return = _max_tcpci_irq(chip, status);
-> +		/* Do not return if the ALERT is already set. */
-> +		ret = max_tcpci_read16(chip, TCPC_ALERT, &status);
-> +		if (ret < 0)
-> +			break;
-> +	}
-> +
-> +	return irq_return;
-> +}
-> +
-> +static irqreturn_t max_tcpci_isr(int irq, void *dev_id)
-> +{
-> +	struct max_tcpci_chip *chip = dev_id;
-> +
-> +	pm_wakeup_event(chip->dev, PD_ACTIVITY_TIMEOUT_MS);
-> +
-> +	if (!chip->port)
-> +		return IRQ_HANDLED;
-> +
-> +	return IRQ_WAKE_THREAD;
-> +}
-> +
-> +static int max_tcpci_init_alert(struct max_tcpci_chip *chip, struct i2c_client *client)
-> +{
-> +	int ret;
-> +
-> +	ret = devm_request_threaded_irq(chip->dev, client->irq, max_tcpci_isr, max_tcpci_irq,
-> +					(IRQF_TRIGGER_LOW | IRQF_ONESHOT), dev_name(chip->dev),
-> +					chip);
-> +
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	enable_irq_wake(client->irq);
-> +	return 0;
-> +}
-> +
-> +static int max_tcpci_start_toggling(struct tcpci *tcpci, struct tcpci_data *tdata,
-> +				    enum typec_cc_status cc)
-> +{
-> +	struct max_tcpci_chip *chip = tdata_to_max_tcpci(tdata);
-> +
-> +	max_tcpci_init_regs(chip);
-> +
-> +	return 0;
-> +}
-> +
-> +static int tcpci_init(struct tcpci *tcpci, struct tcpci_data *data)
-> +{
-> +	/*
-> +	 * Generic TCPCI overwrites the regs once this driver initializes
-> +	 * them. Prevent this by returning -1.
-> +	 */
-> +	return -1;
-> +}
-> +
-> +static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id *i2c_id)
-> +{
-> +	int ret;
-> +	struct max_tcpci_chip *chip;
-> +	u8 power_status;
-> +
-> +	chip = devm_kzalloc(&client->dev, sizeof(*chip), GFP_KERNEL);
-> +	if (!chip)
-> +		return -ENOMEM;
-> +
-> +	chip->client = client;
-> +	chip->data.regmap = devm_regmap_init_i2c(client, &max_tcpci_regmap_config);
-> +	if (IS_ERR(chip->data.regmap)) {
-> +		dev_err(&client->dev, "Regmap init failed\n");
-> +		return PTR_ERR(chip->data.regmap);
-> +	}
-> +
-> +	chip->dev = &client->dev;
-> +	i2c_set_clientdata(client, chip);
-> +
-> +	ret = max_tcpci_read8(chip, TCPC_POWER_STATUS, &power_status);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	/* Chip level tcpci callbacks */
-> +	chip->data.set_vbus = max_tcpci_set_vbus;
-> +	chip->data.start_drp_toggling = max_tcpci_start_toggling;
-> +	chip->data.TX_BUF_BYTE_x_hidden = true;
-> +	chip->data.init = tcpci_init;
-> +
-> +	max_tcpci_init_regs(chip);
-> +	chip->tcpci = tcpci_register_port(chip->dev, &chip->data);
-> +	if (IS_ERR_OR_NULL(chip->tcpci)) {
-> +		dev_err(&client->dev, "TCPCI port registration failed");
-> +		ret = PTR_ERR(chip->tcpci);
-> +		return PTR_ERR(chip->tcpci);
-> +	}
-> +	chip->port = tcpci_get_tcpm_port(chip->tcpci);
-> +	ret = max_tcpci_init_alert(chip, client);
-> +	if (ret < 0)
-> +		goto unreg_port;
-> +
-> +	device_init_wakeup(chip->dev, true);
-> +	return 0;
-> +
-> +unreg_port:
-> +	tcpci_unregister_port(chip->tcpci);
-> +
-> +	return ret;
-> +}
-> +
-> +static int max_tcpci_remove(struct i2c_client *client)
-> +{
-> +	struct max_tcpci_chip *chip = i2c_get_clientdata(client);
-> +
-> +	if (!IS_ERR_OR_NULL(chip->tcpci))
-> +		tcpci_unregister_port(chip->tcpci);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct i2c_device_id max_tcpci_id[] = {
-> +	{ "maxtcpc", 0 },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(i2c, max_tcpci_id);
-> +
-> +#ifdef CONFIG_OF
-> +static const struct of_device_id max_tcpci_of_match[] = {
-> +	{ .compatible = "maxim,tcpc", },
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, max_tcpci_of_match);
-> +#endif
-> +
-> +static struct i2c_driver max_tcpci_i2c_driver = {
-> +	.driver = {
-> +		.name = "maxtcpc",
-> +		.of_match_table = of_match_ptr(max_tcpci_of_match),
-> +	},
-> +	.probe = max_tcpci_probe,
-> +	.remove = max_tcpci_remove,
-> +	.id_table = max_tcpci_id,
-> +};
-> +module_i2c_driver(max_tcpci_i2c_driver);
-> +
-> +MODULE_AUTHOR("Badhri Jagan Sridharan <badhri@google.com>");
-> +MODULE_DESCRIPTION("Maxim TCPCI based USB Type-C Port Controller Interface Driver");
-> +MODULE_LICENSE("GPL v2");
-> -- 
-> 2.28.0.618.gf4bc123cb7-goog
+On 9/18/20 2:27 PM, Vladimir Oltean wrote:
+>> Is there a bug in v5.4.3? v5.4.66 is current latest v5.4.x
 
-thanks,
+> commit 63d5320a0c9b9867628a3a5a12e7f11d4cc109c2
+> Author: Paolo Abeni <pabeni@redhat.com>
+> Date:   Tue Feb 18 18:15:44 2020 +0100
+>=20
+>     Revert "net: dev: introduce support for sch BYPASS for lockless qdi=
+sc"
+>=20
+>     [ Upstream commit 379349e9bc3b42b8b2f8f7a03f64a97623fff323 ]
+>=20
+>     This reverts commit ba27b4cdaaa66561aaedb2101876e563738d36fe
+>=20
+>     Ahmed reported ouf-of-order issues bisected to commit ba27b4cdaaa6
 
--- 
-heikki
+yes, that's probably the the issue.
+
+This concluded into using an old LTS kernel, is worse than using the late=
+st
+kernel :)
+
+>     ("net: dev: introduce support for sch BYPASS for lockless qdisc").
+>     I can't find any working solution other than a plain revert.
+>=20
+>     This will introduce some minor performance regressions for
+>     pfifo_fast qdisc. I plan to address them in net-next with more
+>     indirect call wrapper boilerplate for qdiscs.
+>=20
+>     Reported-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+>     Fixes: ba27b4cdaaa6 ("net: dev: introduce support for sch BYPASS fo=
+r lockless qdisc")
+>     Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+>     Signed-off-by: David S. Miller <davem@davemloft.net>
+>     Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>=20
+>  net/core/dev.c | 22 ++--------------------
+>  1 file changed, 2 insertions(+), 20 deletions(-)
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+
+--hk0Ldn7DW8XP9pqB9Y0nCJbDtXD7pF4Ye--
+
+--LfzhS9LsVJ6Zui1F0NCEf7qMhIhhY1Qjh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl9kqa8ACgkQqclaivrt
+76lEjwf9HFUyM6VU8q3AUA53OFjMGsprJnLQQVYZ6l38/C3GbUjueUDAoqTHV1n4
+qbY8FQDTybo/jqQ51+xk1Khjan37WcbGBIrM9lzAe/DQnEvzeMhyGTM5myv0xOz1
+3dJ4tApTPastx9xuUq6hxAQ4s7YQc2JsR0l807KytDoyVGDvyxoSwl1C2xf2i6EG
+n3g6Nt/9YMeIV/7U/vgIZIKmXAndobu6ACXAF+PXQD8bPUfq2G1hvuQUJ8ULBbB1
+/oPP/cYynXGlFPgipDYbbilq1VwA5NE5Ku9CDtXCUlc6EAW2PEWL5TCq/Lo34Btz
+TkCG6hyTy9WNkZSgBAkZw7gge8yZew==
+=oRDQ
+-----END PGP SIGNATURE-----
+
+--LfzhS9LsVJ6Zui1F0NCEf7qMhIhhY1Qjh--
