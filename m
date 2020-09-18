@@ -2,50 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1726926F87C
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA8EA26F87E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726628AbgIRIiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 04:38:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726134AbgIRIiS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 04:38:18 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07796C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 01:38:18 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 9FC36396; Fri, 18 Sep 2020 10:38:16 +0200 (CEST)
-Date:   Fri, 18 Sep 2020 10:38:15 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: Re: [PATCH] iommu: Kconfig: Update help description for IPMMU_VMSA
- config
-Message-ID: <20200918083815.GG31590@8bytes.org>
-References: <20200911101912.20701-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S1726646AbgIRIi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 04:38:57 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:40842 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726109AbgIRIi5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 04:38:57 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 969FC7390C3D0E5E2409;
+        Fri, 18 Sep 2020 16:38:54 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 18 Sep 2020 16:38:45 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <fmanlunas@marvell.com>, <sburla@marvell.com>,
+        <dchickles@marvell.com>, <davem@davemloft.net>, <kuba@kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH net-next] net: ethernet: Remove set but not used variable
+Date:   Fri, 18 Sep 2020 16:39:38 +0800
+Message-ID: <20200918083938.21046-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200911101912.20701-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 11:19:12AM +0100, Lad Prabhakar wrote:
-> ipmmu-vmsa driver is also used on Renesas RZ/G{1,2} Soc's, update the
-> same to reflect the help description for IPMMU_VMSA config.
-> 
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
-> ---
->  drivers/iommu/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Fixes gcc '-Wunused-but-set-variable' warning:
 
-Applied, thanks.
+drivers/net/ethernet/cavium/liquidio/octeon_device.c: In function lio_pci_readq:
+drivers/net/ethernet/cavium/liquidio/octeon_device.c:1327:6: warning: variable ‘val32’ set but not used [-Wunused-but-set-variable]
+
+drivers/net/ethernet/cavium/liquidio/octeon_device.c: In function lio_pci_writeq:
+drivers/net/ethernet/cavium/liquidio/octeon_device.c:1358:6: warning: variable ‘val32’ set but not used [-Wunused-but-set-variable]
+
+these variable is never used, so remove it.
+
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ drivers/net/ethernet/cavium/liquidio/octeon_device.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/ethernet/cavium/liquidio/octeon_device.c b/drivers/net/ethernet/cavium/liquidio/octeon_device.c
+index ac32facaa427..fbde7c58c4db 100644
+--- a/drivers/net/ethernet/cavium/liquidio/octeon_device.c
++++ b/drivers/net/ethernet/cavium/liquidio/octeon_device.c
+@@ -1324,7 +1324,7 @@ u64 lio_pci_readq(struct octeon_device *oct, u64 addr)
+ {
+ 	u64 val64;
+ 	unsigned long flags;
+-	u32 val32, addrhi;
++	u32 addrhi;
+ 
+ 	spin_lock_irqsave(&oct->pci_win_lock, flags);
+ 
+@@ -1339,10 +1339,10 @@ u64 lio_pci_readq(struct octeon_device *oct, u64 addr)
+ 	writel(addrhi, oct->reg_list.pci_win_rd_addr_hi);
+ 
+ 	/* Read back to preserve ordering of writes */
+-	val32 = readl(oct->reg_list.pci_win_rd_addr_hi);
++	readl(oct->reg_list.pci_win_rd_addr_hi);
+ 
+ 	writel(addr & 0xffffffff, oct->reg_list.pci_win_rd_addr_lo);
+-	val32 = readl(oct->reg_list.pci_win_rd_addr_lo);
++	readl(oct->reg_list.pci_win_rd_addr_lo);
+ 
+ 	val64 = readq(oct->reg_list.pci_win_rd_data);
+ 
+@@ -1355,7 +1355,6 @@ void lio_pci_writeq(struct octeon_device *oct,
+ 		    u64 val,
+ 		    u64 addr)
+ {
+-	u32 val32;
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&oct->pci_win_lock, flags);
+@@ -1365,7 +1364,7 @@ void lio_pci_writeq(struct octeon_device *oct,
+ 	/* The write happens when the LSB is written. So write MSB first. */
+ 	writel(val >> 32, oct->reg_list.pci_win_wr_data_hi);
+ 	/* Read the MSB to ensure ordering of writes. */
+-	val32 = readl(oct->reg_list.pci_win_wr_data_hi);
++	readl(oct->reg_list.pci_win_wr_data_hi);
+ 
+ 	writel(val & 0xffffffff, oct->reg_list.pci_win_wr_data_lo);
+ 
+-- 
+2.17.1
 
