@@ -2,260 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B550E26F856
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5A9226F867
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726775AbgIRIbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 04:31:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726743AbgIRIbn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 04:31:43 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85CC2C061788
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 01:31:43 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id a9so2787805pjg.1
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 01:31:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=WhcfZzUawu7IGCGdEVtnYYchZjnf9bfpM7EHLtCGyWY=;
-        b=HAjR/a3E0C2jC7NrUpZ9xj59sZPMOz27K/Kdvjiz9t8WwPWDenQ6XauQVUNFx3kO8I
-         K8PXTTV4jNU/f5mPOWsbWK7WzxICQ8rC1X1iUKDFeVQYFi6YjDY9rgiVZpL9C82Iy5Ae
-         N+5JHwtH/iZu5U4jmeEHe1Kwwu+EkYTmW7DDs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WhcfZzUawu7IGCGdEVtnYYchZjnf9bfpM7EHLtCGyWY=;
-        b=ZhSzoQvQP5plS6X78hK2hFhEU1X5lSenuLoA7oENIYx/b9FXKoKjr9v5eAvnnb1JWA
-         XdZFblT5KMLACaO698UO9PC4FMvwabgZ2FPiF9qEyKU6NgIToN7dTX34WaxxfSO6KgFb
-         JmzNOpvtZAgoNJ7HVoaDuCRgQ72M1K9MQrY4BKYMJBverkn2ezUhw/bJ6NbllbM41BGb
-         1x09UFSC7JKcEAzyJpFUG0xdWVBEMBsbD/zieoLSC8OoMcjXdib/spAMxM3XwU167f59
-         qSrRyNTc/Icx0PendpXUFcTHYMWSy41Ue+7MMg3y0rswEWNqzhR7HYFRfr2KxDoq6HDt
-         o3fQ==
-X-Gm-Message-State: AOAM532HvB+FTEDNsxhKXQ9QZccyUtrlK4moghQxJmSQ20e2TIE4dj32
-        Li93vuK+nPYprpFa6KGUGb2aaw==
-X-Google-Smtp-Source: ABdhPJx762UucxyaZ+w3YSAoNix0FtNYzia6auJ1wmsqxmDPSBJ1DH8Rvp53SOa+u1Mdzj1EiZyJDg==
-X-Received: by 2002:a17:902:9343:b029:d1:f3e1:c190 with SMTP id g3-20020a1709029343b02900d1f3e1c190mr9661647plp.2.1600417903054;
-        Fri, 18 Sep 2020 01:31:43 -0700 (PDT)
-Received: from ikjn-p920.tpe.corp.google.com ([2401:fa00:1:10:f693:9fff:fef4:a8fc])
-        by smtp.gmail.com with ESMTPSA id g206sm2193172pfb.178.2020.09.18.01.31.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 01:31:42 -0700 (PDT)
-From:   Ikjoon Jang <ikjn@chromium.org>
-To:     Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
-        devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-mtd@lists.infradead.org
-Cc:     Ikjoon Jang <ikjn@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH v2 5/5] spi: spi-mtk-nor: Add power management support
-Date:   Fri, 18 Sep 2020 16:31:23 +0800
-Message-Id: <20200918162834.v2.5.I68983b582d949a91866163bab588ff3c2a0d0275@changeid>
-X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
-In-Reply-To: <20200918083124.3921207-1-ikjn@chromium.org>
-References: <20200918083124.3921207-1-ikjn@chromium.org>
+        id S1726830AbgIRIca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 04:32:30 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13253 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726304AbgIRIca (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 04:32:30 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 43E1D56B5A0EC57846F3;
+        Fri, 18 Sep 2020 16:32:28 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Fri, 18 Sep 2020
+ 16:32:17 +0800
+From:   Wang ShaoBo <bobo.shaobowang@huawei.com>
+CC:     <cj.chengjian@huawei.com>, <huawei.libin@huawei.com>,
+        <Jonathan.Cameron@huawei.com>, <fabrice.gasnier@st.com>,
+        <linux-iio@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH -next] iio: adc: stm32-dfsdm: Use devm_platform_get_and_ioremap_resource()
+Date:   Fri, 18 Sep 2020 16:31:42 +0800
+Message-ID: <20200918083142.32816-1-bobo.shaobowang@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.124.27]
+X-CFilter-Loop: Reflected
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds dev_pm_ops to mtk-nor to support suspend/resume,
-auto suspend delay is set to -1 by default.
+Make use of devm_platform_get_and_ioremap_resource() provided by
+driver core platform instead of duplicated analogue, dev_err() is
+removed because it has been done in devm_ioremap_resource().
 
-Accessing registers are delayed after enabling clocks
-to deal with unknown state of clocks at probe time,
-
-Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
 ---
+ drivers/iio/adc/stm32-dfsdm-core.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
- drivers/spi/spi-mtk-nor.c | 105 +++++++++++++++++++++++++++++---------
- 1 file changed, 80 insertions(+), 25 deletions(-)
-
-diff --git a/drivers/spi/spi-mtk-nor.c b/drivers/spi/spi-mtk-nor.c
-index 99dd5dca744e..5dcd575998d9 100644
---- a/drivers/spi/spi-mtk-nor.c
-+++ b/drivers/spi/spi-mtk-nor.c
-@@ -14,6 +14,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/of_device.h>
-+#include <linux/pm_runtime.h>
- #include <linux/spi/spi.h>
- #include <linux/spi/spi-mem.h>
- #include <linux/string.h>
-@@ -551,22 +552,15 @@ static int mtk_nor_enable_clk(struct mtk_nor *sp)
- 	return 0;
- }
+diff --git a/drivers/iio/adc/stm32-dfsdm-core.c b/drivers/iio/adc/stm32-dfsdm-core.c
+index 0b8bea88b011..42a7377704a4 100644
+--- a/drivers/iio/adc/stm32-dfsdm-core.c
++++ b/drivers/iio/adc/stm32-dfsdm-core.c
+@@ -226,16 +226,13 @@ static int stm32_dfsdm_parse_of(struct platform_device *pdev,
+ 	if (!node)
+ 		return -EINVAL;
  
--static int mtk_nor_init(struct mtk_nor *sp)
-+static void mtk_nor_init(struct mtk_nor *sp)
- {
--	int ret;
--
--	ret = mtk_nor_enable_clk(sp);
--	if (ret)
--		return ret;
--
--	sp->spi_freq = clk_get_rate(sp->spi_clk);
-+	writel(0, sp->base + MTK_NOR_REG_IRQ_EN);
-+	writel(MTK_NOR_IRQ_MASK, sp->base + MTK_NOR_REG_IRQ_STAT);
- 
- 	writel(MTK_NOR_ENABLE_SF_CMD, sp->base + MTK_NOR_REG_WP);
- 	mtk_nor_rmw(sp, MTK_NOR_REG_CFG2, MTK_NOR_WR_CUSTOM_OP_EN, 0);
- 	mtk_nor_rmw(sp, MTK_NOR_REG_CFG3,
- 		    MTK_NOR_DISABLE_WREN | MTK_NOR_DISABLE_SR_POLL, 0);
--
--	return ret;
- }
- 
- static irqreturn_t mtk_nor_irq_handler(int irq, void *data)
-@@ -630,6 +624,11 @@ static int mtk_nor_probe(struct platform_device *pdev)
- 	if (IS_ERR(ctlr_clk))
- 		return PTR_ERR(ctlr_clk);
- 
-+	irq = platform_get_irq_optional(pdev, 0);
-+
-+	if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(36)))
-+		dev_warn(&pdev->dev, "failed to set dma mask(36)\n");
-+
- 	buffer = devm_kmalloc(&pdev->dev,
- 			      MTK_NOR_BOUNCE_BUF_SIZE + MTK_NOR_DMA_ALIGN,
- 			      GFP_KERNEL);
-@@ -661,6 +660,7 @@ static int mtk_nor_probe(struct platform_device *pdev)
- 	ctlr->num_chipselect = 1;
- 	ctlr->setup = mtk_nor_setup;
- 	ctlr->transfer_one_message = mtk_nor_transfer_one_message;
-+	ctlr->auto_runtime_pm = true;
- 
- 	dev_set_drvdata(&pdev->dev, ctlr);
- 
-@@ -678,12 +678,17 @@ static int mtk_nor_probe(struct platform_device *pdev)
- 	if (!sp->buffer)
- 		return -ENOMEM;
- 
--	irq = platform_get_irq_optional(pdev, 0);
-+	ret = mtk_nor_enable_clk(sp);
-+	if (ret < 0)
-+		return ret;
-+
-+	sp->spi_freq = clk_get_rate(sp->spi_clk);
-+
-+	mtk_nor_init(sp);
-+
- 	if (irq < 0) {
- 		dev_warn(sp->dev, "IRQ not available.");
- 	} else {
--		writel(MTK_NOR_IRQ_MASK, base + MTK_NOR_REG_IRQ_STAT);
--		writel(0, base + MTK_NOR_REG_IRQ_EN);
- 		ret = devm_request_irq(sp->dev, irq, mtk_nor_irq_handler, 0,
- 				       pdev->name, sp);
- 		if (ret < 0) {
-@@ -694,26 +699,41 @@ static int mtk_nor_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	ret = mtk_nor_init(sp);
--	if (ret < 0) {
--		kfree(ctlr);
--		dma_free_coherent(&pdev->dev, MTK_NOR_BOUNCE_BUF_SIZE,
--				  sp->buffer, sp->buffer_dma);
--		return ret;
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (!res) {
+-		dev_err(&pdev->dev, "Failed to get memory resource\n");
+-		return -ENODEV;
 -	}
-+	pm_runtime_set_autosuspend_delay(&pdev->dev, -1);
-+	pm_runtime_use_autosuspend(&pdev->dev);
-+	pm_runtime_set_active(&pdev->dev);
-+	pm_runtime_enable(&pdev->dev);
-+	pm_runtime_get_noresume(&pdev->dev);
-+
-+	ret = devm_spi_register_controller(&pdev->dev, ctlr);
-+	if (ret < 0)
-+		goto err_probe;
-+
-+	pm_runtime_mark_last_busy(&pdev->dev);
-+	pm_runtime_put_autosuspend(&pdev->dev);
+-	priv->dfsdm.phys_base = res->start;
+-	priv->dfsdm.base = devm_ioremap_resource(&pdev->dev, res);
++	priv->dfsdm.base = devm_platform_get_and_ioremap_resource(pdev, 0,
++							&res);
+ 	if (IS_ERR(priv->dfsdm.base))
+ 		return PTR_ERR(priv->dfsdm.base);
  
- 	dev_info(&pdev->dev, "spi frequency: %d Hz\n", sp->spi_freq);
- 
--	return devm_spi_register_controller(&pdev->dev, ctlr);
-+	return 0;
++	priv->dfsdm.phys_base = res->start;
 +
-+err_probe:
-+	pm_runtime_disable(&pdev->dev);
-+	pm_runtime_set_suspended(&pdev->dev);
-+	pm_runtime_dont_use_autosuspend(&pdev->dev);
-+
-+	mtk_nor_disable_clk(sp);
-+
-+	return ret;
- }
- 
- static int mtk_nor_remove(struct platform_device *pdev)
- {
--	struct spi_controller *ctlr;
--	struct mtk_nor *sp;
-+	struct spi_controller *ctlr = dev_get_drvdata(&pdev->dev);
-+	struct mtk_nor *sp = spi_controller_get_devdata(ctlr);
- 
--	ctlr = dev_get_drvdata(&pdev->dev);
--	sp = spi_controller_get_devdata(ctlr);
-+	pm_runtime_disable(&pdev->dev);
-+	pm_runtime_set_suspended(&pdev->dev);
-+	pm_runtime_dont_use_autosuspend(&pdev->dev);
- 
- 	mtk_nor_disable_clk(sp);
- 
-@@ -722,10 +742,45 @@ static int mtk_nor_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static int __maybe_unused mtk_nor_runtime_suspend(struct device *dev)
-+{
-+	struct spi_controller *ctlr = dev_get_drvdata(dev);
-+	struct mtk_nor *sp = spi_controller_get_devdata(ctlr);
-+
-+	mtk_nor_disable_clk(sp);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused mtk_nor_runtime_resume(struct device *dev)
-+{
-+	struct spi_controller *ctlr = dev_get_drvdata(dev);
-+	struct mtk_nor *sp = spi_controller_get_devdata(ctlr);
-+
-+	return mtk_nor_enable_clk(sp);
-+}
-+
-+static int __maybe_unused mtk_nor_suspend(struct device *dev)
-+{
-+	return pm_runtime_force_suspend(dev);
-+}
-+
-+static int __maybe_unused mtk_nor_resume(struct device *dev)
-+{
-+	return pm_runtime_force_resume(dev);
-+}
-+
-+static const struct dev_pm_ops mtk_nor_pm_ops = {
-+	SET_RUNTIME_PM_OPS(mtk_nor_runtime_suspend,
-+			   mtk_nor_runtime_resume, NULL)
-+	SET_SYSTEM_SLEEP_PM_OPS(mtk_nor_suspend, mtk_nor_resume)
-+};
-+
- static struct platform_driver mtk_nor_driver = {
- 	.driver = {
- 		.name = DRIVER_NAME,
- 		.of_match_table = mtk_nor_match,
-+		.pm = &mtk_nor_pm_ops,
- 	},
- 	.probe = mtk_nor_probe,
- 	.remove = mtk_nor_remove,
+ 	/*
+ 	 * "dfsdm" clock is mandatory for DFSDM peripheral clocking.
+ 	 * "dfsdm" or "audio" clocks can be used as source clock for
 -- 
-2.28.0.681.g6f77f65b4e-goog
+2.17.1
 
