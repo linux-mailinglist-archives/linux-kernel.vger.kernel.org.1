@@ -2,55 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 098C526F681
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 09:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 977C626F683
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 09:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726541AbgIRHLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 03:11:31 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:57522 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726134AbgIRHLb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 03:11:31 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1kJAY4-0002wX-Ou; Fri, 18 Sep 2020 17:11:13 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 18 Sep 2020 17:11:12 +1000
-Date:   Fri, 18 Sep 2020 17:11:12 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Meng Yu <yumeng18@huawei.com>
-Cc:     davem@davemloft.net, linux-crypto@vger.kernel.org,
-        xuzaibo@huawei.com, wangzhou1@hisilicon.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] crypto: hisilicon/hpre - fix a bug in dh algorithm
-Message-ID: <20200918071112.GA9883@gondor.apana.org.au>
-References: <1599737122-20734-1-git-send-email-yumeng18@huawei.com>
- <1599737122-20734-4-git-send-email-yumeng18@huawei.com>
+        id S1726290AbgIRHMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 03:12:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726044AbgIRHMg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 03:12:36 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 944CBC06174A;
+        Fri, 18 Sep 2020 00:12:36 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0c2600a65c515d56d1ce56.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:2600:a65c:515d:56d1:ce56])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 011451EC027A;
+        Fri, 18 Sep 2020 09:12:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600413155;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=iHhrIzMeq+aky6lIVbBEUoaSgS50cLMuKK4BEhmeBR0=;
+        b=Vhyv3nuwlfSPig8HX0b/WRfrutaXNI4//og2ZTkvD6TrOyB3dSdw41SaRfLXyxXMXy+JYH
+        3ujobSFWDCCvbzsYU9alzOwQO+kxYeAH/Egpowk7vjT+ofPLrIdDE/opxws7DG3ooffwu+
+        rUE8d9aKTDDZUdxFjiwEudiBVxLaI5U=
+Date:   Fri, 18 Sep 2020 09:12:27 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Cc:     mchehab@kernel.org, tony.luck@intel.com,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] EDAC/mc_sysfs: Add missing newlines when printing
+ {max,dimm}_location
+Message-ID: <20200918071227.GA6585@zn.tnic>
+References: <1600051734-8993-1-git-send-email-wangxiongfeng2@huawei.com>
+ <20200916170052.GO2643@zn.tnic>
+ <591e613e-0b53-028f-08fd-3d62a35b8c4f@huawei.com>
+ <20200917162537.GL31960@zn.tnic>
+ <8ac6d481-e1c4-108e-dbec-b1e86b2d0e86@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1599737122-20734-4-git-send-email-yumeng18@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <8ac6d481-e1c4-108e-dbec-b1e86b2d0e86@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 07:25:22PM +0800, Meng Yu wrote:
->
-> diff --git a/drivers/crypto/hisilicon/hpre/hpre_crypto.c b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-> index 0cbe99a1..2d91593 100644
-> --- a/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-> +++ b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-> @@ -528,6 +528,8 @@ static int hpre_dh_compute_value(struct kpp_request *req)
->  		ret = hpre_hw_data_init(hpre_req, req->src, req->src_len, 1, 1);
->  		if (unlikely(ret))
->  			goto clear_all;
-> +	} else {
-> +		msg->in = cpu_to_le64((u64)ctx->dh.dma_g);
+On Fri, Sep 18, 2020 at 10:37:28AM +0800, Xiongfeng Wang wrote:
+> Thansk a lot. I will send another version. Also I will change the
+> 'snprintf' in 'dimmdev_location_show()' to 'scnprintf'
 
-Why do you need the u64 cast?
+No need to send another one - I have everything locally and just amended
+it.
 
-Cheers,
+Thx.
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
