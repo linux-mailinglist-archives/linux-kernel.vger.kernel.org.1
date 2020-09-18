@@ -2,65 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 977C626F683
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 09:12:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B043826F685
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 09:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726290AbgIRHMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 03:12:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726044AbgIRHMg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 03:12:36 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 944CBC06174A;
-        Fri, 18 Sep 2020 00:12:36 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0c2600a65c515d56d1ce56.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:2600:a65c:515d:56d1:ce56])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 011451EC027A;
-        Fri, 18 Sep 2020 09:12:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600413155;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=iHhrIzMeq+aky6lIVbBEUoaSgS50cLMuKK4BEhmeBR0=;
-        b=Vhyv3nuwlfSPig8HX0b/WRfrutaXNI4//og2ZTkvD6TrOyB3dSdw41SaRfLXyxXMXy+JYH
-        3ujobSFWDCCvbzsYU9alzOwQO+kxYeAH/Egpowk7vjT+ofPLrIdDE/opxws7DG3ooffwu+
-        rUE8d9aKTDDZUdxFjiwEudiBVxLaI5U=
-Date:   Fri, 18 Sep 2020 09:12:27 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Cc:     mchehab@kernel.org, tony.luck@intel.com,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] EDAC/mc_sysfs: Add missing newlines when printing
- {max,dimm}_location
-Message-ID: <20200918071227.GA6585@zn.tnic>
-References: <1600051734-8993-1-git-send-email-wangxiongfeng2@huawei.com>
- <20200916170052.GO2643@zn.tnic>
- <591e613e-0b53-028f-08fd-3d62a35b8c4f@huawei.com>
- <20200917162537.GL31960@zn.tnic>
- <8ac6d481-e1c4-108e-dbec-b1e86b2d0e86@huawei.com>
+        id S1726360AbgIRHNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 03:13:44 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13288 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726218AbgIRHNo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 03:13:44 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id ADDD1F18D3211D1619B8;
+        Fri, 18 Sep 2020 15:13:38 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 18 Sep 2020 15:13:31 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <James.Bottomley@HansenPartnership.com>,
+        <martin.petersen@oracle.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH] scsi: 53c700: Remove set but not used variable
+Date:   Fri, 18 Sep 2020 15:14:22 +0800
+Message-ID: <20200918071422.19566-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <8ac6d481-e1c4-108e-dbec-b1e86b2d0e86@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 10:37:28AM +0800, Xiongfeng Wang wrote:
-> Thansk a lot. I will send another version. Also I will change the
-> 'snprintf' in 'dimmdev_location_show()' to 'scnprintf'
+Fixes gcc '-Wunused-but-set-variable' warning:
 
-No need to send another one - I have everything locally and just amended
-it.
+drivers/scsi/53c700.c: In function NCR_700_intr:
+drivers/scsi/53c700.c:1488:27: warning: variable ‘state’ set but not used [-Wunused-but-set-variable]
 
-Thx.
+drivers/scsi/53c700.c: In function NCR_700_queuecommand_lck:
+drivers/scsi/53c700.c:1742:26: warning: variable ‘direction’ set but not used [-Wunused-but-set-variable]
 
+these variable is never used, so remove it.
+
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ drivers/scsi/53c700.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/drivers/scsi/53c700.c b/drivers/scsi/53c700.c
+index 84b57a8f86bf..b2c2f49f6f7d 100644
+--- a/drivers/scsi/53c700.c
++++ b/drivers/scsi/53c700.c
+@@ -1485,10 +1485,8 @@ NCR_700_intr(int irq, void *dev_id)
+ 		__u8 sstat0 = 0, dstat = 0;
+ 		__u32 dsp;
+ 		struct scsi_cmnd *SCp = hostdata->cmd;
+-		enum NCR_700_Host_State state;
+ 
+ 		handled = 1;
+-		state = hostdata->state;
+ 		SCp = hostdata->cmd;
+ 
+ 		if(istat & SCSI_INT_PENDING) {
+@@ -1739,7 +1737,6 @@ NCR_700_queuecommand_lck(struct scsi_cmnd *SCp, void (*done)(struct scsi_cmnd *)
+ 	struct NCR_700_Host_Parameters *hostdata = 
+ 		(struct NCR_700_Host_Parameters *)SCp->device->host->hostdata[0];
+ 	__u32 move_ins;
+-	enum dma_data_direction direction;
+ 	struct NCR_700_command_slot *slot;
+ 
+ 	if(hostdata->command_slot_count >= NCR_700_COMMAND_SLOTS_PER_HOST) {
+@@ -1856,7 +1853,6 @@ NCR_700_queuecommand_lck(struct scsi_cmnd *SCp, void (*done)(struct scsi_cmnd *)
+ 	}
+ 
+ 	/* now build the scatter gather list */
+-	direction = SCp->sc_data_direction;
+ 	if(move_ins != 0) {
+ 		int i;
+ 		int sg_count;
 -- 
-Regards/Gruss,
-    Boris.
+2.17.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
