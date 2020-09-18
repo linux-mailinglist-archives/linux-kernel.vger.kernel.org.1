@@ -2,39 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3182526EBEE
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B635126EBED
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728087AbgIRCIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:08:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58712 "EHLO mail.kernel.org"
+        id S1728080AbgIRCIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:08:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728015AbgIRCH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:07:56 -0400
+        id S1728020AbgIRCH5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:07:57 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 86405238A1;
-        Fri, 18 Sep 2020 02:07:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1865323770;
+        Fri, 18 Sep 2020 02:07:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394875;
-        bh=F54G469FFZBl8VA47b1OkQvsJsjS5tT4Y+JSvZv5ZAk=;
+        s=default; t=1600394876;
+        bh=6JSglhZ8wTAzwbZlUymn5+InbH5SDe6l4YfVkyfb++Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n0OCyrMrh09SQvaam+6EIS0TEH1cFBCIcWtaZWyyIxkYyixnh4W8jF1s4KWxlX1Pe
-         cL5ap2IWIfLj76LpR55t2eC+sFb63mTFS8zhJ/RN/WvOGahK9yyQW83Na2Uazn8VY7
-         lgRK+CDz+MPahNjr8h6hP6yfmec6uB4bmSc7rWQ0=
+        b=jnan5oY2WxlRnnQhR0/uhkDbc7YgHondUy3ycyn9IL+TC/StPcGCsI70XAxFGB9KO
+         reoiDTeP3hs5vq4UeD7MmWhu1N6KKc3n8GHmaNmzGNHHrpR952ML1By4rFgGyeXhtY
+         TDCVPjarsYNpbGo3kPnU6bmCCkxGjrF+7lOA5/do=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jin Yao <yao.jin@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>, Jin Yao <yao.jin@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 326/330] perf parse-events: Use strcmp() to compare the PMU name
-Date:   Thu, 17 Sep 2020 22:01:06 -0400
-Message-Id: <20200918020110.2063155-326-sashal@kernel.org>
+Cc:     Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+        alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 5.4 327/330] ALSA: hda: Always use jackpoll helper for jack update after resume
+Date:   Thu, 17 Sep 2020 22:01:07 -0400
+Message-Id: <20200918020110.2063155-327-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -46,78 +41,134 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jin Yao <yao.jin@linux.intel.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 8510895bafdbf7c4dd24c22946d925691135c2b2 ]
+[ Upstream commit 8d6762af302d69f76fa788a277a56a9d9cd275d5 ]
 
-A big uncore event group is split into multiple small groups which only
-include the uncore events from the same PMU. This has been supported in
-the commit 3cdc5c2cb924a ("perf parse-events: Handle uncore event
-aliases in small groups properly").
+HD-audio codec driver applies a tricky procedure to forcibly perform
+the runtime resume by mimicking the usage count even if the device has
+been runtime-suspended beforehand.  This was needed to assure to
+trigger the jack detection update after the system resume.
 
-If the event's PMU name starts to repeat, it must be a new event.
-That can be used to distinguish the leader from other members.
-But now it only compares the pointer of pmu_name
-(leader->pmu_name == evsel->pmu_name).
+And recently we also applied the similar logic to the HD-audio
+controller side.  However this seems leading to some inconsistency,
+and eventually PCI controller gets screwed up.
 
-If we use "perf stat -M LLC_MISSES.PCIE_WRITE -a" on cascadelakex,
-the event list is:
+This patch is an attempt to fix and clean up those behavior: instead
+of the tricky runtime resume procedure, the existing jackpoll work is
+scheduled when such a forced codec resume is required.  The jackpoll
+work will power up the codec, and this alone should suffice for the
+jack status update in usual cases.  If the extra polling is requested
+(by checking codec->jackpoll_interval), the manual update is invoked
+after that, and the codec is powered down again.
 
-  evsel->name					evsel->pmu_name
-  ---------------------------------------------------------------
-  unc_iio_data_req_of_cpu.mem_write.part0		uncore_iio_4 (as leader)
-  unc_iio_data_req_of_cpu.mem_write.part0		uncore_iio_2
-  unc_iio_data_req_of_cpu.mem_write.part0		uncore_iio_0
-  unc_iio_data_req_of_cpu.mem_write.part0		uncore_iio_5
-  unc_iio_data_req_of_cpu.mem_write.part0		uncore_iio_3
-  unc_iio_data_req_of_cpu.mem_write.part0		uncore_iio_1
-  unc_iio_data_req_of_cpu.mem_write.part1		uncore_iio_4
-  ......
+Also, we filter the spurious wake up of the codec from the controller
+runtime resume by checking codec->relaxed_resume flag.  If this flag
+is set, basically we don't need to wake up explicitly, but it's
+supposed to be done via the audio component notifier.
 
-For the event "unc_iio_data_req_of_cpu.mem_write.part1" with
-"uncore_iio_4", it should be the event from PMU "uncore_iio_4".
-It's not a new leader for this PMU.
-
-But if we use "(leader->pmu_name == evsel->pmu_name)", the check
-would be failed and the event is stored to leaders[] as a new
-PMU leader.
-
-So this patch uses strcmp to compare the PMU name between events.
-
-Fixes: d4953f7ef1a2 ("perf parse-events: Fix 3 use after frees found with clang ASAN")
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Jin Yao <yao.jin@intel.com>
-Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/20200430003618.17002-1-yao.jin@linux.intel.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: c4c8dd6ef807 ("ALSA: hda: Skip controller resume if not needed")
+Link: https://lore.kernel.org/r/20200422203744.26299-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/parse-events.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/pci/hda/hda_codec.c | 28 +++++++++++++++++-----------
+ sound/pci/hda/hda_intel.c | 17 ++---------------
+ 2 files changed, 19 insertions(+), 26 deletions(-)
 
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index f16748cfcb262..3fb9d53666d15 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -1507,12 +1507,11 @@ parse_events__set_leader_for_uncore_aliase(char *name, struct list_head *list,
- 		 * event. That can be used to distinguish the leader from
- 		 * other members, even they have the same event name.
- 		 */
--		if ((leader != evsel) && (leader->pmu_name == evsel->pmu_name)) {
-+		if ((leader != evsel) &&
-+		    !strcmp(leader->pmu_name, evsel->pmu_name)) {
- 			is_leader = false;
- 			continue;
- 		}
--		/* The name is always alias name */
--		WARN_ON(strcmp(leader->name, evsel->name));
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 12da263fb02ba..6da296def283e 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -641,8 +641,18 @@ static void hda_jackpoll_work(struct work_struct *work)
+ 	struct hda_codec *codec =
+ 		container_of(work, struct hda_codec, jackpoll_work.work);
  
- 		/* Store the leader event for each PMU */
- 		leaders[nr_pmu++] = (uintptr_t) evsel;
+-	snd_hda_jack_set_dirty_all(codec);
+-	snd_hda_jack_poll_all(codec);
++	/* for non-polling trigger: we need nothing if already powered on */
++	if (!codec->jackpoll_interval && snd_hdac_is_power_on(&codec->core))
++		return;
++
++	/* the power-up/down sequence triggers the runtime resume */
++	snd_hda_power_up_pm(codec);
++	/* update jacks manually if polling is required, too */
++	if (codec->jackpoll_interval) {
++		snd_hda_jack_set_dirty_all(codec);
++		snd_hda_jack_poll_all(codec);
++	}
++	snd_hda_power_down_pm(codec);
+ 
+ 	if (!codec->jackpoll_interval)
+ 		return;
+@@ -2958,18 +2968,14 @@ static int hda_codec_runtime_resume(struct device *dev)
+ static int hda_codec_force_resume(struct device *dev)
+ {
+ 	struct hda_codec *codec = dev_to_hda_codec(dev);
+-	bool forced_resume = hda_codec_need_resume(codec);
+ 	int ret;
+ 
+-	/* The get/put pair below enforces the runtime resume even if the
+-	 * device hasn't been used at suspend time.  This trick is needed to
+-	 * update the jack state change during the sleep.
+-	 */
+-	if (forced_resume)
+-		pm_runtime_get_noresume(dev);
+ 	ret = pm_runtime_force_resume(dev);
+-	if (forced_resume)
+-		pm_runtime_put(dev);
++	/* schedule jackpoll work for jack detection update */
++	if (codec->jackpoll_interval ||
++	    (pm_runtime_suspended(dev) && hda_codec_need_resume(codec)))
++		schedule_delayed_work(&codec->jackpoll_work,
++				      codec->jackpoll_interval);
+ 	return ret;
+ }
+ 
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index a6e8aaa091c7d..754e4d1a86b57 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1002,7 +1002,8 @@ static void __azx_runtime_resume(struct azx *chip, bool from_rt)
+ 
+ 	if (status && from_rt) {
+ 		list_for_each_codec(codec, &chip->bus)
+-			if (status & (1 << codec->addr))
++			if (!codec->relaxed_resume &&
++			    (status & (1 << codec->addr)))
+ 				schedule_delayed_work(&codec->jackpoll_work,
+ 						      codec->jackpoll_interval);
+ 	}
+@@ -1041,9 +1042,7 @@ static int azx_suspend(struct device *dev)
+ static int azx_resume(struct device *dev)
+ {
+ 	struct snd_card *card = dev_get_drvdata(dev);
+-	struct hda_codec *codec;
+ 	struct azx *chip;
+-	bool forced_resume = false;
+ 
+ 	if (!azx_is_pm_ready(card))
+ 		return 0;
+@@ -1055,19 +1054,7 @@ static int azx_resume(struct device *dev)
+ 	if (azx_acquire_irq(chip, 1) < 0)
+ 		return -EIO;
+ 
+-	/* check for the forced resume */
+-	list_for_each_codec(codec, &chip->bus) {
+-		if (hda_codec_need_resume(codec)) {
+-			forced_resume = true;
+-			break;
+-		}
+-	}
+-
+-	if (forced_resume)
+-		pm_runtime_get_noresume(dev);
+ 	pm_runtime_force_resume(dev);
+-	if (forced_resume)
+-		pm_runtime_put(dev);
+ 	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
+ 
+ 	trace_azx_resume(chip);
 -- 
 2.25.1
 
