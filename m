@@ -2,66 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F36B26FE28
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 15:22:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C778026FE27
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 15:22:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726733AbgIRNVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 09:21:19 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:42780 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726130AbgIRNVT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 09:21:19 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id E9F6F61319B4D8AFBF44;
-        Fri, 18 Sep 2020 21:21:17 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Fri, 18 Sep 2020
- 21:21:14 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <jmaloy@redhat.com>, <ying.xue@windriver.com>,
-        <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <tipc-discussion@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next] net: tipc: Supply missing udp_media.h include file
-Date:   Fri, 18 Sep 2020 21:18:19 +0800
-Message-ID: <20200918131819.28062-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726659AbgIRNVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 09:21:06 -0400
+Received: from sonic301-2.consmr.mail.bf2.yahoo.com ([74.6.129.41]:34957 "EHLO
+        sonic301-2.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726312AbgIRNVF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 09:21:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1600435264; bh=k1yl2EIxSlw7hhqSSNsyo3JWxJqHL9iqJXZc99K49Wc=; h=Date:From:Reply-To:Subject:References:From:Subject; b=gwqnm5qnXiWGXElz74SKP1/8xhiGHXVd56YcggwpvDJybuSEFQnVHm6e26cqfP/6/ny+WCv10/rnPO4mEGEVBPWLwsSXYIjwW1T6/qxmajk0dGHYdT4486vbv9EQ3w5rLwQQ4gARa3zCZ9dVxgiQHoDl3h6obr8FPV1/duVU6Tjgla2n7Mq5gqR+N8J6raHbRFE3RLjtu0X3z9gjrYu3iAh/+3GAp3qrGUVz0DPa+JAk7bYn5UfDiFnZYrhUmHZXeePDR2iOLc8FoAG/tNPMYXJvZcMjgusnMPZNb1GQn6YDB24hvuGGTcaaDRwad8BqQSbu/xtZ509AX2rexkWiUg==
+X-YMail-OSG: iobhTKIVM1nMMoSKB9wNgBgXcgIXaRRla5uVimfYOT_O4gNOzF8TDd6k6lUfjYp
+ SRGMxozHSdSx1.Di5Zj02pGfy7wjVoItDEdNDf.dzdLy932aOXFsenG5DfBN81bto2gxHYnlenB3
+ N_5QRQ8FZtuUUzYxtuu0SNtDK88ewsnnJozvdBBu3.7WIkULzlSavVU1yDU_VeaVPaNWGhBLc4OC
+ l8ck4pzQTUg7rdQIq452YeaTSU3LDYlGn632qQaNQp6VELnoJ38UsR16eJfFdGTheOfBYypdZCV4
+ noIiVpImLShS8azO8ue1IXam0y_AUbgm0tI4WcuwD5VUhXAwTC_zIcCXnqXVF6GB4F._JchvQiM7
+ VFJTLu8QJBR0.hpXxudUsGWQObArMFnfkzrUiIchtGdeGUhAZOTVCZ8S_2JdlWqQhpWGEM5p9AqB
+ CKKn6PldbjHdUX9scgM9m.p55of4.vwYT8nJMVieY6b0bKQ1TYAPL9jc.NTB9bpuP8gTUxbZeguB
+ 9NQL_KRrl7USXyydd_iL1OuOlUMz0gqGdGjHdG7F_KPS3KdDjwIGY_aIUt3fasSKDhClpkV72SkX
+ iFdhjWgQvi8ToXnnOnbAByNkGEaw.hgWa0k4LatOM_BmeVyQ6qIvyKvVL4_jILRcezIDX2_babg2
+ h83yImmQqSTuUx8EOgLoJ5QRt64qvXQ.3O5QkteUxkZXMM0pvkeNjsKGJJN.bTrWnNrqbFuMy1i3
+ 1wwULeShqmzefJm8y2hpSZEQDB9VXwUhTIQEJBXCM8wASe9CpwsmRj0wHZxGHHKbIylrWG9KQVPN
+ RnKXLLQG10Wt2.VWWBabwBLGCWjypgv2yOuJaE48fsN6qN817tUN2hldxJyLabi81LiJsUvjU7yE
+ rnYkVbuW6ITToX7.4xqGHwbafkKiTH5UQbkYrNeos7KLgEjBUV8l8vlfR1rbmT2dT2bLD2Iq6m9c
+ 96dD.lazTT4XZRm1PUwi_7z.vhwvRx7ZlBXb4Z98Gqv_ZPb5Z4XY2rYo5q6MVzxTecXz31MFkaFH
+ NPx_E9DJM9pWooRUQ9uRj_d8MVoEbEv.zuRDRqXUz9jgY42WRg8evR0z5k55HZLnS.muXp90BiEN
+ Pxj6HvHBcQVEMj.2AMe9dtaFAOVfYWyXPUtAc1h6X4OjMvtwAtzqrdIIAqhsmCfTGuu_3R9B8S5p
+ EZO6W3KuhffPDsCBor4FF9SCZIiJUiY05Md.JXl8Bz0rvHbHY4Hbd275.ienL0cbh9KkYb_dw3F2
+ xIUOe9aGwkLjR9HFxsEazpJYZIYoI0aBm1FFFLukghsXeECiyGrepPpqBg51kf2HWr8c_AuysZu8
+ yiNT4AyPbn36ixpwk_Zfb72iDFVrTtNuZmv0xBa2Q_cbaTIMbOn50JJAhOlALQPmL.d8H2DYzO0_
+ YGvhkE8pRtxaVwO_rFgCgF7fLBZbS01ZiXXNUup_TOL7amLIWvy5OOV2wPCYW45dB0HrrlB86QFl
+ YFy_BixTI
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic301.consmr.mail.bf2.yahoo.com with HTTP; Fri, 18 Sep 2020 13:21:04 +0000
+Date:   Fri, 18 Sep 2020 13:21:02 +0000 (UTC)
+From:   "Dr. Aisha Gaddafi" <aishagaddaf0dr@gmail.com>
+Reply-To: aishagaddafi2dr@gmail.com
+Message-ID: <1257779947.3550321.1600435262546@mail.yahoo.com>
+Subject: I WANT TO INVEST IN YOUR COUNTRY
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.113.133]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <1257779947.3550321.1600435262546.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16583 YMailNodin Mozilla/5.0 (Windows NT 5.1; rv:52.0) Gecko/20100101 Firefox/52.0
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the header file containing a function's prototype isn't included by
-the sourcefile containing the associated function, the build system
-complains of missing prototypes.
 
-Fixes the following W=1 kernel build warning(s):
 
-net/tipc/udp_media.c:446:5: warning: no previous prototype for ‘tipc_udp_nl_dump_remoteip’ [-Wmissing-prototypes]
-net/tipc/udp_media.c:532:5: warning: no previous prototype for ‘tipc_udp_nl_add_bearer_data’ [-Wmissing-prototypes]
-net/tipc/udp_media.c:614:5: warning: no previous prototype for ‘tipc_udp_nl_bearer_add’ [-Wmissing-prototypes]
+I WANT TO INVEST IN YOUR COUNTRY
 
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
----
- net/tipc/udp_media.c | 1 +
- 1 file changed, 1 insertion(+)
+Dear Friend (Assalamu Alaikum),
 
-diff --git a/net/tipc/udp_media.c b/net/tipc/udp_media.c
-index 911d13cd2e67..1d17f4470ee2 100644
---- a/net/tipc/udp_media.c
-+++ b/net/tipc/udp_media.c
-@@ -52,6 +52,7 @@
- #include "bearer.h"
- #include "netlink.h"
- #include "msg.h"
-+#include "udp_media.h"
- 
- /* IANA assigned UDP port */
- #define UDP_PORT_DEFAULT	6118
--- 
-2.17.1
+Please after reading this mail try and make sure you reply and contact me with this my private email address: {aaisihagaddafi@gmail.com}
 
+I came across your e-mail contact prior a private search while in need of your assistance. My name is Aisha Al-Qaddafi a single Mother and a Widow with three Children. I am the only biological Daughter of late Libyan President (Late Colonel Muammar Gaddafi).
+
+I have investment funds worth Twenty Seven Million Five Hundred Thousand United State Dollar ($27.500.000.00 ) and i need a trusted investment Manager/Partner because of my current refugee status, however, I am interested in you for investment project assistance in your country, may be from there, we can build business relationship in the nearest future.
+
+I am willing to negotiate investment/business profit sharing ratio with you base on the future investment earning profits.
+
+If you are willing to handle this project on my behalf kindly reply urgent to enable me provide you more information about the investment funds.
+
+Please after reading this mail try and make sure you reply and contact me with this my private email address: {aaisihagaddafi@gmail.com}
+
+so that I will see your mail and reply you without delaying, please note once again that it is necessary that you reply me through this my private email address: { aaisihagaddafi@gmail.com } if you really want me to see your respond and interest concerning this transaction
+
+
+Best Regards
+Mrs Aisha Al-Qaddafi
