@@ -2,68 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98E2426FC22
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:10:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9257C26FC2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:12:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbgIRMK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 08:10:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44124 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgIRMK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 08:10:27 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B12DE21582;
-        Fri, 18 Sep 2020 12:10:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600431027;
-        bh=jyB2TyUpI81SJwQVpbwWyHtiuHuyBzI5MEJhLBibCqs=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=L8yu8nvOEqfFSi3/nVfSdE1YKowGsG2pkLUCxjdX4tI0cr3QlG0R/JmTrNpAAfL7S
-         lUp3Hh+pNOzVW+IiirHmDVdctd3xC15jBOBD8XiS5zdolIO6h3SmwdWDm1kdAo/19A
-         KbgmeECLtfyIo229x+kOYFf3jR+6OzWBbw82oRzg=
-Date:   Fri, 18 Sep 2020 13:09:36 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc:     patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
-        dan.carpenter@oracle.com
-In-Reply-To: <20200918112002.15216-1-ckeepax@opensource.cirrus.com>
-References: <20200918112002.15216-1-ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH] regmap: debugfs: Add back in erroneously removed initialisation of ret
-Message-Id: <160043097646.49190.10255254268410310518.b4-ty@kernel.org>
+        id S1726646AbgIRMKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 08:10:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726609AbgIRMKd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 08:10:33 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EC5DC06174A;
+        Fri, 18 Sep 2020 05:10:33 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id c13so6711506oiy.6;
+        Fri, 18 Sep 2020 05:10:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SYs4bLPxf5U2CwN351Fz3pz8c3JiFvsCwPJ6TwddRl4=;
+        b=pFwgS1qcP5TdlQh/DggXtyCercGMIyQsPcGNK6psa0D/K1kVTHV6WumorJe2Jh/MrX
+         UAHlrMuM63qB3vkYBJMijQrbhco9qUaalqgQjqe41ymFtE9dT94vieD+aivqr2te1pto
+         NS3SPsIdAKo56Eu4TmdsdH04eTmXaPPLAj+r6jVStWcL3+UH3d++a+WtyNpQueZdUrQC
+         6hVssYPRrT3ezGLazrcpllkU5Bel/ubWwPJrYdavkTd094cJgb5JRq8Zp5EBfgmBjzj5
+         llcAxwZ8y/4SF8EWnbpx3mIMRfafi18LBKizTigzxZPITpwimqj7N5d4Tas6SRmhZnAD
+         hUXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SYs4bLPxf5U2CwN351Fz3pz8c3JiFvsCwPJ6TwddRl4=;
+        b=b73wk0RzWbMymfCiCpvgn7DCAiUg+vqXeENLMMGSiGlmcvGEGLHXJoxi/CMFtpiNqB
+         yBFVIsDKbNcaR52F69Dd/FVI0V6vPZZdinJxdPeZDwf7TRMLXaJPscFtymabic4SUmma
+         RU4Gw38PbfoQmDEMFwgJm7y9Qz5JneCb4BkvFwQtM7Nnc7gLXgmYaD+JLgBnQGYNXwPT
+         we+CiEHH/o+25Hk+YIPVPf9Rgpj/vIPAk1U3I/c+NeODGjG74dbXYLd86uaUY35tS2kQ
+         R97x8GwtVbfwxKvbMpCA7c7Oa/wWFifkw8BCdbHGFB1zAPi1Y0PU9VQLum7dAuD8Flj2
+         fsjQ==
+X-Gm-Message-State: AOAM532GNyM8WwuSQju0gxhcx0Mal4EmFnfMXqhHMv27JqbsW/2JFuhu
+        Iz1oxyOOs7XAb175dTqHRRC23AoEFvsJUxkyyG8=
+X-Google-Smtp-Source: ABdhPJxNxx2D7fuNrVCtnNmgpSYF6DQqlUBcTKoMe4qovKAbwwcQNRKtzTN2TQjwjDDlutUE7S31384fyvqr9q/Ye9M=
+X-Received: by 2002:a05:6808:a05:: with SMTP id n5mr9364376oij.154.1600431032320;
+ Fri, 18 Sep 2020 05:10:32 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200915171022.10561-1-oded.gabbay@gmail.com> <20200915133556.21268811@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAFCwf12XZRxLYifSfuB+RGhuiKBytzsUTOnEa6FqfJHYvcVJPQ@mail.gmail.com>
+ <20200917171833.GJ8409@ziepe.ca> <0b21db8d-1061-6453-960b-8043951b3bad@amazon.com>
+In-Reply-To: <0b21db8d-1061-6453-960b-8043951b3bad@amazon.com>
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+Date:   Fri, 18 Sep 2020 15:10:03 +0300
+Message-ID: <CAFCwf12B4vCCwmfA7+VTUYUgJ9EHAtvg6F0bMYnsSCUBST+aWA@mail.gmail.com>
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+To:     izur@habana.ai
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Jakub Kicinski <kuba@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-rdma@vger.kernel.org, Gal Pressman <galpress@amazon.com>,
+        Leon Romanovsky <leon@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Sep 2020 12:20:02 +0100, Charles Keepax wrote:
-> 
+On Fri, Sep 18, 2020 at 2:36 PM Gal Pressman <galpress@amazon.com> wrote:
+>
+> On 17/09/2020 20:18, Jason Gunthorpe wrote:
+> > On Tue, Sep 15, 2020 at 11:46:58PM +0300, Oded Gabbay wrote:
+> >> infrastructure for communication between multiple accelerators. Same
+> >> as Nvidia uses NVlink, we use RDMA that we have inside our ASIC.
+> >> The RDMA implementation we did does NOT support some basic RDMA
+> >> IBverbs (such as MR and PD) and therefore, we can't use the rdma-core
+> >> library or to connect to the rdma infrastructure in the kernel.
+> >
+> > You can't create a parallel RDMA subsystem in netdev, or in misc, and
+> > you can't add random device offloads as IOCTL to nedevs.
+> >
+> > RDMA is the proper home for all the networking offloads that don't fit
+> > into netdev.
+> >
+> > EFA was able to fit into rdma-core/etc and it isn't even RoCE at
+> > all. I'm sure this can too.
+>
+> Well, EFA wasn't welcomed to the RDMA subsystem with open arms ;), initially it
+> was suggested to go through the vfio subsystem instead.
+>
+> I think this comes back to the discussion we had when EFA was upstreamed, which
+> is what's the bar to get accepted to the RDMA subsystem.
+> IIRC, what we eventually agreed on is having a userspace rdma-core provider and
+> ibv_{ud,rc}_pingpong working (or just supporting one of the IB spec's QP types?).
+>
+> Does GAUDI fit these requirements? If not, should it be in a different subsystem
+> or should we open the "what qualifies as an RDMA device" question again?
 
-
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
-
-Thanks!
-
-[1/1] regmap: debugfs: Add back in erroneously removed initialisation of ret
-      commit: d36cb0205f034e943aa29e35b59c6a441f0056b5
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
+Hi Itay,
+Please see the above comments/questions.
 Thanks,
-Mark
+Oded
