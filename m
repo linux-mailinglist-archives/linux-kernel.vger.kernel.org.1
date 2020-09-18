@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AADDD270219
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 499B027021B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:29:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726463AbgIRQ3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726440AbgIRQ3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 18 Sep 2020 12:29:33 -0400
-Received: from relayfre-01.paragon-software.com ([176.12.100.13]:47990 "EHLO
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:47986 "EHLO
         relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726416AbgIRQ3c (ORCPT
+        by vger.kernel.org with ESMTP id S1726414AbgIRQ3c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 18 Sep 2020 12:29:32 -0400
 Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 88C211F93;
-        Fri, 18 Sep 2020 19:24:14 +0300 (MSK)
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 4A38B1F95;
+        Fri, 18 Sep 2020 19:24:16 +0300 (MSK)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1600446254;
-        bh=00aH0BjeMemCOoskpPqm4Os6i/+FniDwXIgB4I9xrX8=;
+        d=paragon-software.com; s=mail; t=1600446256;
+        bh=RxSw7X+wpmeQ6G1EAUiYigbd/zeYyHKp/Ps36UFhmJM=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=rTIzO4BPyRSnuGpM72sXNu3FKQGGN683Rg6XtskIyvSZ+dr3tQobQ7+7u+cgDqYcM
-         ipJ/OAsPDrCpo1WtkauR9tb/Ba7524HkSxFuzdCQednSvF9NMnYuBGXjBVpFWTNep1
-         YvhfLae/dBPgHVzI1hMQC4HevVQxLfGfOhAN7jvM=
+        b=JVwIldYEvWmg+m4icp3FO89GStfWHs21m6jpHfQDEe3RETtE2H2O0OB/1ACRRpmV5
+         SIAIrsDlBgaOIj6hK+gDbQ82euqajzbE175ka72h3OKirL2TMD/B8vfMCr15L0rJR0
+         vZhUJP5t4eBPpI7oa4H8Ubfz1QgDugOSElXqzHxo=
 Received: from fsd-lkpg.ufsd.paragon-software.com (172.30.114.105) by
  vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Fri, 18 Sep 2020 19:24:13 +0300
+ 15.1.1847.3; Fri, 18 Sep 2020 19:24:14 +0300
 From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 To:     <linux-fsdevel@vger.kernel.org>
 CC:     <viro@zeniv.linux.org.uk>, <linux-kernel@vger.kernel.org>,
@@ -33,9 +33,9 @@ CC:     <viro@zeniv.linux.org.uk>, <linux-kernel@vger.kernel.org>,
         <willy@infradead.org>, <rdunlap@infradead.org>, <joe@perches.com>,
         <mark@harmstone.com>, <nborisov@suse.com>,
         Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Subject: [PATCH v6 08/10] fs/ntfs3: Add Kconfig, Makefile and doc
-Date:   Fri, 18 Sep 2020 19:22:02 +0300
-Message-ID: <20200918162204.3706029-9-almaz.alexandrovich@paragon-software.com>
+Subject: [PATCH v6 10/10] fs/ntfs3: Add MAINTAINERS
+Date:   Fri, 18 Sep 2020 19:22:04 +0300
+Message-ID: <20200918162204.3706029-11-almaz.alexandrovich@paragon-software.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20200918162204.3706029-1-almaz.alexandrovich@paragon-software.com>
 References: <20200918162204.3706029-1-almaz.alexandrovich@paragon-software.com>
@@ -49,177 +49,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds Kconfig, Makefile and doc
+This adds MAINTAINERS
 
 Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 ---
- Documentation/filesystems/ntfs3.rst | 107 ++++++++++++++++++++++++++++
- fs/ntfs3/Kconfig                    |  23 ++++++
- fs/ntfs3/Makefile                   |  11 +++
- 3 files changed, 141 insertions(+)
- create mode 100644 Documentation/filesystems/ntfs3.rst
- create mode 100644 fs/ntfs3/Kconfig
- create mode 100644 fs/ntfs3/Makefile
+ MAINTAINERS | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/Documentation/filesystems/ntfs3.rst b/Documentation/filesystems/ntfs3.rst
-new file mode 100644
-index 000000000000..7b7d71b26c95
---- /dev/null
-+++ b/Documentation/filesystems/ntfs3.rst
-@@ -0,0 +1,107 @@
-+.. SPDX-License-Identifier: GPL-2.0
+diff --git a/MAINTAINERS b/MAINTAINERS
+index d746519253c3..b7637734a39f 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -12378,6 +12378,13 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/aia21/ntfs.git
+ F:	Documentation/filesystems/ntfs.rst
+ F:	fs/ntfs/
+ 
++NTFS3 FILESYSTEM
++M:	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
++S:	Supported
++W:	http://www.paragon-software.com/
++F:	Documentation/filesystems/ntfs3.rst
++F:	fs/ntfs3/
 +
-+=====
-+NTFS3
-+=====
-+
-+
-+Summary and Features
-+====================
-+
-+NTFS3 is fully functional NTFS Read-Write driver. The driver works with
-+NTFS versions up to 3.1, normal/compressed/sparse files
-+and journal replaying. File system type to use on mount is 'ntfs3'.
-+
-+- This driver implements NTFS read/write support for normal, sparse and
-+  compressed files.
-+  NOTE: Operations with compressed files require increased memory consumption;
-+- Supports native journal replaying;
-+- Supports extended attributes;
-+- Supports NFS export of mounted NTFS volumes.
-+
-+Mount Options
-+=============
-+
-+The list below describes mount options supported by NTFS3 driver in addition to
-+generic ones.
-+
-+===============================================================================
-+
-+nls=name		This option informs the driver how to interpret path
-+			strings and translate them to Unicode and back. If
-+			this option is not set, the default codepage will be
-+			used (CONFIG_NLS_DEFAULT).
-+			Examples:
-+				'nls=utf8'
-+
-+nls_alt=name		This option extends "nls". It will be used to translate
-+			path string to Unicode if primary nls failed.
-+			Examples:
-+				'nls_alt=cp1251'
-+
-+uid=
-+gid=
-+umask=			Controls the default permissions for files/directories created
-+			after the NTFS volume is mounted.
-+
-+fmask=
-+dmask=			Instead of specifying umask which applies both to
-+			files and directories, fmask applies only to files and
-+			dmask only to directories.
-+
-+nohidden		Files with the Windows-specific HIDDEN (FILE_ATTRIBUTE_HIDDEN)
-+			attribute will not be shown under Linux.
-+
-+sys_immutable		Files with the Windows-specific SYSTEM
-+			(FILE_ATTRIBUTE_SYSTEM) attribute will be marked as system
-+			immutable files.
-+
-+discard			Enable support of the TRIM command for improved performance
-+			on delete operations, which is recommended for use with the
-+			solid-state drives (SSD).
-+
-+force			Forces the driver to mount partitions even if 'dirty' flag
-+			(volume dirty) is set. Not recommended for use.
-+
-+sparse			Create new files as "sparse".
-+
-+showmeta		Use this parameter to show all meta-files (System Files) on
-+			a mounted NTFS partition.
-+			By default, all meta-files are hidden.
-+
-+prealloc		Preallocate space for files excessively when file size is
-+			increasing on writes. Decreases fragmentation in case of
-+			parallel write operations to different files.
-+
-+no_acs_rules		"No access rules" mount option sets access rights for
-+			files/folders to 777 and owner/group to root. This mount
-+			option absorbs all other permissions:
-+			- permissions change for files/folders will be reported
-+				as successful, but they will remain 777;
-+			- owner/group change will be reported as successful, but
-+				they will stay as root
-+
-+acl			Support POSIX ACLs (Access Control Lists). Effective if
-+			supported by Kernel. Not to be confused with NTFS ACLs.
-+			The option specified as acl enables support for POSIX ACLs.
-+
-+noatime			All files and directories will not update their last access
-+			time attribute if a partition is mounted with this parameter.
-+			This option can speed up file system operation.
-+
-+===============================================================================
-+
-+ToDo list
-+=========
-+
-+- Full journaling support (currently journal replaying is supported) over JBD.
-+
-+
-+References
-+==========
-+https://www.paragon-software.com/home/ntfs-linux-professional/
-+	- Commercial version of the NTFS driver for Linux.
-+
-+almaz.alexandrovich@paragon-software.com
-+	- Direct e-mail address for feedback and requests on the NTFS3 implementation.
-+
-diff --git a/fs/ntfs3/Kconfig b/fs/ntfs3/Kconfig
-new file mode 100644
-index 000000000000..92a9c68008c8
---- /dev/null
-+++ b/fs/ntfs3/Kconfig
-@@ -0,0 +1,23 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+config NTFS3_FS
-+	tristate "NTFS Read-Write file system support"
-+	select NLS
-+	help
-+	  Windows OS native file system (NTFS) support up to NTFS version 3.1.
-+
-+	  Y or M enables the NTFS3 driver with full features enabled (read,
-+	  write, journal replaying, sparse/compressed files support).
-+	  File system type to use on mount is "ntfs3". Module name (M option)
-+	  is also "ntfs3".
-+
-+	  Documentation: <file:Documentation/filesystems/ntfs3.rst>
-+
-+config NTFS3_64BIT_CLUSTER
-+	bool "64 bits per NTFS clusters"
-+	depends on NTFS3_FS && 64BIT
-+	help
-+	  Windows implementation of ntfs.sys uses 32 bits per clusters.
-+	  If activated 64 bits per clusters you will be able to use 4k cluster
-+	  for 16T+ volumes. Windows will not be able to mount such volumes.
-+
-+	  It is recommended to say N here.
-diff --git a/fs/ntfs3/Makefile b/fs/ntfs3/Makefile
-new file mode 100644
-index 000000000000..4d4fe198b8b8
---- /dev/null
-+++ b/fs/ntfs3/Makefile
-@@ -0,0 +1,11 @@
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Makefile for the ntfs3 filesystem support.
-+#
-+
-+obj-$(CONFIG_NTFS3_FS) += ntfs3.o
-+
-+ntfs3-objs := bitfunc.o bitmap.o inode.o fsntfs.o frecord.o \
-+	    index.o attrlist.o record.o attrib.o run.o xattr.o\
-+	    upcase.o super.o file.o dir.o namei.o lznt.o\
-+	    fslog.o
+ NUBUS SUBSYSTEM
+ M:	Finn Thain <fthain@telegraphics.com.au>
+ L:	linux-m68k@lists.linux-m68k.org
 -- 
 2.25.4
 
