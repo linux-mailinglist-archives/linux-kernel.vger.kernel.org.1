@@ -2,70 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87377270882
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 23:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DA4F270885
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 23:47:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726321AbgIRVre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 17:47:34 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50874 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726157AbgIRVrd (ORCPT
+        id S1726354AbgIRVry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 17:47:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32465 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726157AbgIRVry (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 17:47:33 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kJOE8-0004eE-21; Fri, 18 Sep 2020 21:47:32 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devel@driverdev.osuosl.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging/emxx_udc: fix indenting issue on a couple of statements
-Date:   Fri, 18 Sep 2020 22:47:31 +0100
-Message-Id: <20200918214731.48750-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        Fri, 18 Sep 2020 17:47:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600465673;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mw/AeF/Twtz7+K8++365XUZ8mckpv04utY/MhiDyDwQ=;
+        b=gyycIXWTS2NV4ywE90rLbZAREIoKxPadWl1obTtaqj+wr8cc2EnG5GGvc1cmeNV44XqavM
+        z8DmInFw29bwhIWNC2fgC5Nf6diiIKvXzwES/+58bJFwyN8dRmk485cnds7Tmla5hVQSXj
+        y7PzwCBbU/xeHnYRakv/9sXHQubzkVY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-27-6W9gkoLNP6iAnBwILLVWow-1; Fri, 18 Sep 2020 17:47:49 -0400
+X-MC-Unique: 6W9gkoLNP6iAnBwILLVWow-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3511C1008558;
+        Fri, 18 Sep 2020 21:47:48 +0000 (UTC)
+Received: from treble (ovpn-112-141.rdu2.redhat.com [10.10.112.141])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 902019CBA;
+        Fri, 18 Sep 2020 21:47:47 +0000 (UTC)
+Date:   Fri, 18 Sep 2020 16:47:45 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Julien Thierry <jthierry@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org, mbenes@suse.cz
+Subject: Re: [PATCH 0/3] objtool: Miscellaneous cleanup/fixes
+Message-ID: <20200918214745.knkssfci5wi2izmj@treble>
+References: <20200915075318.7336-1-jthierry@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200915075318.7336-1-jthierry@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Tue, Sep 15, 2020 at 08:53:15AM +0100, Julien Thierry wrote:
+> Hi,
+> 
+> These patches provide some simple cleanup or lift small limitations
+> found while working on the arm64 port.
+> 
+> They should apply on current tip/objtool/core branch
 
-A couple of statements are indented too deeply, remove the
-extraneous tabs.
+I've got patches 1 & 2 queued up in jpoimboe/objtool/core.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/staging/emxx_udc/emxx_udc.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/staging/emxx_udc/emxx_udc.c b/drivers/staging/emxx_udc/emxx_udc.c
-index 4ceaf1ead123..a30b4f5b199b 100644
---- a/drivers/staging/emxx_udc/emxx_udc.c
-+++ b/drivers/staging/emxx_udc/emxx_udc.c
-@@ -2163,8 +2163,8 @@ static int _nbu2ss_enable_controller(struct nbu2ss_udc *udc)
- 
- 	_nbu2ss_writel(&udc->p_regs->AHBSCTR, WAIT_MODE);
- 
--		_nbu2ss_writel(&udc->p_regs->AHBMCTR,
--			       HBUSREQ_MODE | HTRANS_MODE | WBURST_TYPE);
-+	_nbu2ss_writel(&udc->p_regs->AHBMCTR,
-+		       HBUSREQ_MODE | HTRANS_MODE | WBURST_TYPE);
- 
- 	while (!(_nbu2ss_readl(&udc->p_regs->EPCTR) & PLL_LOCK)) {
- 		waitcnt++;
-@@ -2175,7 +2175,7 @@ static int _nbu2ss_enable_controller(struct nbu2ss_udc *udc)
- 		}
- 	}
- 
--		_nbu2ss_bitset(&udc->p_regs->UTMI_CHARACTER_1, USB_SQUSET);
-+	_nbu2ss_bitset(&udc->p_regs->UTMI_CHARACTER_1, USB_SQUSET);
- 
- 	_nbu2ss_bitset(&udc->p_regs->USB_CONTROL, (INT_SEL | SOF_RCV));
- 
 -- 
-2.27.0
+Josh
 
