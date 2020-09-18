@@ -2,146 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C2026FC6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68D2226FC5E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726335AbgIRMY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 08:24:57 -0400
-Received: from mga05.intel.com ([192.55.52.43]:55411 "EHLO mga05.intel.com"
+        id S1726368AbgIRMUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 08:20:39 -0400
+Received: from mga04.intel.com ([192.55.52.120]:32713 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725955AbgIRMY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 08:24:57 -0400
-IronPort-SDR: +Em5LBh7D+Ae3TkVqFnjFKRCspsw6mzjK2Bv0+VCTlB+n2UzgvwbuzRqOyRGA2dkP/oJnPvR3O
- J4Z+egc3mYzQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="244758112"
+        id S1726064AbgIRMUj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 08:20:39 -0400
+IronPort-SDR: nHFyFrVsCQjWUdLTDEZrGRiuGHcOYHThmV2kyWH1X6PgV5eqORvd62HYALoyu7+8NxEDtzI7QB
+ 8+fICJU2D6VQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="157308566"
 X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
-   d="scan'208";a="244758112"
+   d="scan'208";a="157308566"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 05:24:56 -0700
-IronPort-SDR: Su8fdFmcA3/oHfW7dwfrBVBZ5nPDpHh2UfBATeDBd5RZdgyftr9w2pkedjNDSbwRoeTSm7Zxfy
- /wLgwMkP6GbA==
-X-ExtLoop1: 1
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 05:20:38 -0700
+IronPort-SDR: 26rsxlzkUjoyWfUmXaZhnh2gPThhOxPT3/XeacRReQtDQdLNBYTz63w2ET9nCxMHSQdAgMNpPF
+ yUmCSzt3mRiA==
 X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
-   d="scan'208";a="336787905"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 18 Sep 2020 05:24:53 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1kJFNN-00HZtB-Sl; Fri, 18 Sep 2020 15:20:29 +0300
+   d="scan'208";a="484182929"
+Received: from dlos-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.48.212])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 05:20:31 -0700
 Date:   Fri, 18 Sep 2020 15:20:29 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     "Reddy, MallikarjunaX" <mallikarjunax.reddy@linux.intel.com>
-Cc:     dmaengine@vger.kernel.org, vkoul@kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, chuanhua.lei@linux.intel.com,
-        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
-        malliamireddy009@gmail.com, peter.ujfalusi@ti.com
-Subject: Re: [PATCH v6 2/2] Add Intel LGM soc DMA support.
-Message-ID: <20200918122029.GX3956970@smile.fi.intel.com>
-References: <cover.1599605765.git.mallikarjunax.reddy@linux.intel.com>
- <748370a51af0ab768e542f1537d1aa3aeefebe8a.1599605765.git.mallikarjunax.reddy@linux.intel.com>
- <20200909111424.GQ1891694@smile.fi.intel.com>
- <36a42016-3260-3933-bbf9-9203c4124115@linux.intel.com>
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Haitao Huang <haitao.huang@linux.intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 13/24] x86/sgx: Add SGX_IOC_ENCLAVE_ADD_PAGES
+Message-ID: <20200918122029.GA27028@linux.intel.com>
+References: <20200915110522.893152-1-jarkko.sakkinen@linux.intel.com>
+ <20200915110522.893152-14-jarkko.sakkinen@linux.intel.com>
+ <op.0q2prldowjvjmi@mqcpg7oapc828.gar.corp.intel.com>
+ <20200917160206.GF8530@linux.intel.com>
+ <op.0q3pw0stwjvjmi@mqcpg7oapc828.gar.corp.intel.com>
+ <20200918020940.GA14678@sjchrist-ice>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <36a42016-3260-3933-bbf9-9203c4124115@linux.intel.com>
+In-Reply-To: <20200918020940.GA14678@sjchrist-ice>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 11:42:54AM +0800, Reddy, MallikarjunaX wrote:
-> On 9/9/2020 7:14 PM, Andy Shevchenko wrote:
-> > On Wed, Sep 09, 2020 at 07:07:34AM +0800, Amireddy Mallikarjuna reddy wrote:
-
-...
-
-> > > +	help
-> > > +	  Enable support for intel Lightning Mountain SOC DMA controllers.
-> > > +	  These controllers provide DMA capabilities for a variety of on-chip
-> > > +	  devices such as SSC, HSNAND and GSWIP.
-> > And how module will be called?
->  are you expecting to include 'default y' ?
-
-I'm expecting to see something like "if you choose M the module will be called
-bla-foo-bar." Look at the existing examples in the kernel.
-
-...
-
-> > > +ldma_update_bits(struct ldma_dev *d, u32 mask, u32 val, u32 ofs)
-> > > +{
-> > > +	u32 old_val, new_val;
-> > > +
-> > > +	old_val = readl(d->base +  ofs);
-> > > +	new_val = (old_val & ~mask) | (val & mask);
-> > With bitfield.h you will have this as u32_replace_bits().
-> -  new_val = (old_val & ~mask) | (val & mask);
-> + new_val = old_val;
-> + u32_replace_bits(new_val, val, mask);
+On Thu, Sep 17, 2020 at 07:09:40PM -0700, Sean Christopherson wrote:
+> On Thu, Sep 17, 2020 at 01:35:10PM -0500, Haitao Huang wrote:
+> > On Thu, 17 Sep 2020 11:02:06 -0500, Jarkko Sakkinen
+> > <jarkko.sakkinen@linux.intel.com> wrote:
+> > > 
+> > > Right, I do get the OOM case but wouldn't in that case the reasonable
+> > > thing to do destroy the enclave that is not even running? I mean that
+> > > means that we are globally out of EPC.
+> > > 
+> > 
+> > I would say it could be a policy, but not the only one. If it does not make
+> > much difference to kernel, IMHO we should  not set it in stone now.
+> > Debugging is also huge benefit to me.
 > 
-> I think in this function we cant use this because of compilation issues
-> thrown by bitfield.h . Expecting 2nd and 3rd arguments as constant numbers
-> not as type variables.
+> Agreed, an EPC cgroup is the proper way to define/enforce what happens when
+> there is EPC pressure.  E.g. if process A is consuming 99% of the EPC, then
+> it doesn't make sense to unconditionally kill enclaves from process B.  If
+> the admin wants to give process A priority, so be it, but such a decision
+> shouldn't be baked into the kernel.
 > 
-> ex:
-> 	u32_replace_bits(val, 0, IPA_REG_ENDP_ROUTER_HASH_MSK_ALL);
+> This series obviously doesn't provide an EPC cgroup, but that doesn't mean
+> we can't make decisions that will play nice with a cgroup in the future.
 
-How comes these are constants? In the above you have a function which does
-r-m-w approach to the register. It should be something like
+Here's the core issue why the API "as is used to be" does not work:
 
-	old = read();
-	new = u32_replace_bits(old, ...);
-	write(new);
+	if (ret == -EIO) {
+		mutex_lock(&encl->lock);
+		sgx_encl_destroy(encl);
+		mutex_unlock(&encl->lock);
+	}
 
-> ./include/linux/bitfield.h:131:3: error: call to '__field_overflow' declared
-> with attribute error: value doesn't fit into mask
->    __field_overflow();     \
->    ^~~~~~~~~~~~~~~~~~
-> 
-> ./include/linux/bitfield.h:119:3: error: call to '__bad_mask' declared with
-> attribute error: bad bitfield mask
->    __bad_mask();
->    ^~~~~~~~~~~~
+It would be better to instead whitelist *when* the enclave is preserved.
 
-So, even with constants u32_replace_bits() must work. Maybe you didn't get how?
+	if (ret != -ENOMEM) {
+		mutex_lock(&encl->lock);
+		sgx_encl_destroy(encl);
+		mutex_unlock(&encl->lock);
+	}
 
-> > > +	if (new_val != old_val)
-> > > +		writel(new_val, d->base + ofs);
-> > > +}
+That is the information we *deterministically* want to know. Otherwise,
+we will live in ultimate chaos.
 
-...
+Only this way can caller know when there are means to continue, and when
+to quit. I.e. the code is whitelisting wrong way around currently.
 
-> > > +	/* High 4 bits */
-> > Why only 4?
-> this is higher 4 bits of 36 bit addressing..
-
-Make it clear in the comment.
-
-...
-
-> > > +device_initcall(intel_ldma_init);
-> > Each _initcall() in general should be explained.
-> ok. is it fine?
-> 
-> /* Perform this driver as device_initcall to make sure initialization
-> happens
->  * before its dma clients of some are platform specific. make sure to
-> provice
->  * registered dma channels and dma capabilities to client before their
->  * initialization.
->  */
-
-/*
- * Just follow proper multi-line comment style.
- * And use dma -> DMA.
- */
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+/Jarkko
