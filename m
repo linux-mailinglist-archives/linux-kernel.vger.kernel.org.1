@@ -2,135 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3917726F47E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EED1C26F313
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:04:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726412AbgIRCBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:01:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45688 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726328AbgIRCB1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:01:27 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 02313208DB;
-        Fri, 18 Sep 2020 02:01:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394486;
-        bh=omgJdr9rYdiavda9kyztPIqnnlNbQrY7gB2yWZZ7+D0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=IfFGJD8zOP6+jXdWAKpMi5YaZWJGQkD3DgAhYluCpFd+VA/0F5qX8BnsSu0jjqZGd
-         U5ZM5TwTgsc6dfNEwgRO/pR/ks8yJD4P1QgQv8yppq1uowm0z1Ry5qnIfDBJDZBQyx
-         wKefZbLbVfTS/AAWplcPHRrpZGRJrwkuB3QD2IBk=
-Date:   Fri, 18 Sep 2020 11:01:22 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Chengming Zhou <zhouchengming@bytedance.com>
-Subject: Re: [PATCH] kprobes: Do not disarm disabled ftrace kprobe
-Message-Id: <20200918110122.b77b5658bd0ae1e28f03f5af@kernel.org>
-In-Reply-To: <20200917191754.0a2f8e46@gandalf.local.home>
-References: <20200917191754.0a2f8e46@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1730458AbgIRDD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 23:03:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727407AbgIRCE4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:04:56 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06957C06174A;
+        Thu, 17 Sep 2020 19:04:55 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id a2so3958599otr.11;
+        Thu, 17 Sep 2020 19:04:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to;
+        bh=JgBAyZtv1KdUHX/gAQyyrYj55BDEy/By7Xa7DxmA1yI=;
+        b=Fk2j1F/6itl71FwnA+DrSNdR2Wl4XO0gb/aUDB6WAYUFedng0MONlpyMhjVjTT+fS3
+         HHbvyIUosrWw6yeLdAbDpHhFPwI/pfas9exYY5AYf+IAMXcaIxXycpQGmb90dhc7oC3R
+         PJ8gwax+R+1fF8h6nfEqb4/T17sW5eDgFk8JWLJ45KtLLe1NnJnIwfOc0NNWMhotA22J
+         bJPi4MlWu426BIRZFiUVJBL580KjnKTeUm+VR88DMK4MYMr1wHFhSv0ej3L8lYTAvd7G
+         JHX8sI40oTjDbOuEKs+sefx5kpQXlWs4XYu6yDiS4idYdEb2ektkFpl2Y9pF5obKAxTM
+         OD0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to;
+        bh=JgBAyZtv1KdUHX/gAQyyrYj55BDEy/By7Xa7DxmA1yI=;
+        b=RcF3E3aXXorEGCRXI6jycoVikpSnU7LfmxlkiNZjRkiHA7SIyI3KMaLPPNXqRPuuy7
+         zcjECYKNd93r1fQSFLsyhymyw0aTJsXt+8FjwgeCd0JJDQi+qRnVSWxC9ui2JkgozwUe
+         9rCH2YlbCCdGf8bBgs70ncACD86DxfORM1n3L/WSC45LINjWzMbFXK6sSWbOw6sSrgbr
+         QJMcGIbQJ6meazwoIZUn1fs1RsxiSSbOFgahI6TCec9iG0wNIcsjLBSZPk2g1Ye69qBT
+         cftjTUwtaM+VeI6DIwPzFzoQ0b4DAZAymiT1oZudUWoz7LQ4Ji+R8anS9SsMPFgY+uZk
+         77ZA==
+X-Gm-Message-State: AOAM531UVrF2IqxfeuTFOkTLxfjZNpQwy/5+4hAvyzkC83HToVhYUWF3
+        b/ZwGUPYex5vZgNnlNNUHjqtjqSpl1g=
+X-Google-Smtp-Source: ABdhPJxSH5SMmhGU7Eiwux8Xtw+fyQLP+N+Rn6/6zrWE/sT42KA/mudBE3nDiZtNdbRd2Co0MVISMw==
+X-Received: by 2002:a9d:7459:: with SMTP id p25mr20537769otk.234.1600394695181;
+        Thu, 17 Sep 2020 19:04:55 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 91sm1214705ott.55.2020.09.17.19.04.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Sep 2020 19:04:53 -0700 (PDT)
+Subject: Re: [PATCH 3/3] hwmon: (lm75) Add regulator support
+To:     Mark Brown <broonie@kernel.org>, Alban Bedel <alban.bedel@aerq.com>
+Cc:     linux-hwmon@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200917101819.32045-1-alban.bedel@aerq.com>
+ <20200917101819.32045-4-alban.bedel@aerq.com>
+ <20200917110053.GA4755@sirena.org.uk>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <e5863e71-2531-b0de-c432-4bc2967d56c8@roeck-us.net>
+Date:   Thu, 17 Sep 2020 19:04:51 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200917110053.GA4755@sirena.org.uk>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="oNLHzmw1I7aHb2xcXcXGZxEdnGQCFEQkp"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steve,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--oNLHzmw1I7aHb2xcXcXGZxEdnGQCFEQkp
+Content-Type: multipart/mixed; boundary="npx1QPJMHHXPGiElNcnf2YFJTuHRgqEye"
 
-Ah, this seems to fix same issue which I sent.
+--npx1QPJMHHXPGiElNcnf2YFJTuHRgqEye
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-https://lkml.kernel.org/r/159888672694.1411785.5987998076694782591.stgit@devnote2
+On 9/17/20 4:00 AM, Mark Brown wrote:
+> On Thu, Sep 17, 2020 at 12:18:19PM +0200, Alban Bedel wrote:
+>=20
+>> +	data->vs =3D devm_regulator_get_optional(dev, "vs");
+>> +	if (IS_ERR(data->vs)) {
+>=20
+> Unless the device can work without power you should not be using
+> regulator_get_optional().
+>=20
 
-Could you confirm it?
+The driver works today without regulator, and needs to continue
+doing so.
 
-Thank you,
-
-On Thu, 17 Sep 2020 19:17:54 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> From: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> 
-> Only disable a ftrace probe if it is enabled, otherwise:
-> 
-> The following triggers a warning:
-> 
->   # modprobe trace_printk
->   # echo "p:kprobes1/event1 trace_printk:trace_printk_irq_work" > /sys/kernel/tracing/kprobe_events
->   # rmmod trace_printk
-> 
->  ------------[ cut here ]------------
->  Failed to disarm kprobe-ftrace at trace_printk_irq_work+0x0/0x76 [trace_printk] (-2)
->  WARNING: CPU: 5 PID: 4852 at kernel/kprobes.c:1100 __disarm_kprobe_ftrace.isra.0+0x78/0xa0
->  Modules linked in: trace_printk(-) [..] [last unloaded: trace_printk]
->  CPU: 5 PID: 4852 Comm: rmmod Tainted: G        W         5.9.0-rc4-test+ #506
->  Hardware name: Hewlett-Packard HP Compaq Pro 6300 SFF/339A, BIOS K01 v03.03 07/14/2016
->  RIP: 0010:__disarm_kprobe_ftrace.isra.0+0x78/0xa0
->  Code: 8b 03 eb cb 80 3d 5d 95 58 01 00 75 de 48 8b 75 00 89 c2 89 44 24 04 48 c7 c7 38 e3 33 8b c6 05 43 95 58 01 01 e8 c8 1d ef ff <0f> 0b 8b 44 24 04 eb b9 89 c6 48 c7 c7 08 e3 33 8b 89 44 24 04 e8
->  RSP: 0018:ffff971ce04b7e38 EFLAGS: 00010282
->  RAX: 0000000000000000 RBX: ffffffff8c900b30 RCX: 0000000000000000
->  RDX: 0000000000000001 RSI: ffffffff8a16c5af RDI: ffffffff8a16c5af
->  RBP: ffff971cf2722440 R08: 0000000000000001 R09: 0000000000000001
->  R10: 0000000000000000 R11: 0000000000000046 R12: ffffffff8b7b33a0
->  R13: ffffffff8c901eb0 R14: 0000000000000000 R15: 0000000000000000
->  FS:  00007f4fe349b740(0000) GS:ffff971d5ab40000(0000) knlGS:0000000000000000
->  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->  CR2: 000055d07b0148b8 CR3: 00000000b76cc006 CR4: 00000000001706e0
->  Call Trace:
->   kprobes_module_callback+0x1b3/0x3c0
->   notifier_call_chain+0x47/0x70
->   blocking_notifier_call_chain+0x43/0x60
->   __x64_sys_delete_module+0x161/0x2a0
->   do_syscall_64+0x33/0x40
->   entry_SYSCALL_64_after_hwframe+0x44/0xa9
->  RIP: 0033:0x7f4fe35cb00b
->  Code: 73 01 c3 48 8b 0d 7d fe 0b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa b8 b0 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 4d fe 0b 00 f7 d8 64 89 01 48
->  RSP: 002b:00007ffe820f9888 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
->  RAX: ffffffffffffffda RBX: 000055d07b00a800 RCX: 00007f4fe35cb00b
->  RDX: 000000000000000a RSI: 0000000000000800 RDI: 000055d07b00a868
->  RBP: 00007ffe820f98e8 R08: 0000000000000000 R09: 0000000000000000
->  R10: 00007f4fe363eac0 R11: 0000000000000206 R12: 00007ffe820f9ab0
->  R13: 00007ffe820fb223 R14: 000055d07b00a2a0 R15: 000055d07b00a800
->  irq event stamp: 7463
->  hardirqs last  enabled at (7489): [<ffffffff8a1ab4cd>] __tick_nohz_task_switch+0xad/0xc0
->  hardirqs last disabled at (7510): [<ffffffff8a1ab4d4>] __tick_nohz_task_switch+0xb4/0xc0
->  softirqs last  enabled at (7530): [<ffffffff8ae003b4>] __do_softirq+0x3b4/0x501
->  softirqs last disabled at (7545): [<ffffffff8ac01072>] asm_call_on_stack+0x12/0x20
->  ---[ end trace 71f3303cdebb63e3 ]---
-> 
-> As well as the following two ftrace selftests fail:
-> 
->  test.d/kprobe/kprobe_module.tc
->  test.d/kprobe/kretprobe_args.tc
-> 
-> This is because we are trying to remove a probe that is not enabled or
-> registered with ftrace, but exists in the kprobe tables.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 0cb2f1372baa ("kprobes: Fix NULL pointer dereference at kprobe_ftrace_handler")
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
-> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> index 287b263c9cb9..7557883771f9 100644
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -1088,6 +1088,9 @@ static int __disarm_kprobe_ftrace(struct kprobe *p, struct ftrace_ops *ops,
->  {
->  	int ret = 0;
->  
-> +	if (kprobe_disabled(p))
-> +		return ret;
-> +
->  	if (*cnt == 1) {
->  		ret = unregister_ftrace_function(ops);
->  		if (WARN(ret < 0, "Failed to unregister kprobe-ftrace (%d)\n", ret))
+Guenter
 
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+--npx1QPJMHHXPGiElNcnf2YFJTuHRgqEye--
+
+--oNLHzmw1I7aHb2xcXcXGZxEdnGQCFEQkp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEiHPvMQj9QTOCiqgVyx8mb86fmYEFAl9kFcMACgkQyx8mb86f
+mYFkCRAApbWUrLrU34NeN2pqWh8G1DFeWcrTFJHjcEO4jFDbX/nsgcNR2GCK/JS5
+uQ4/zrbbz0QudxFS79L9xjr7YTOoolp0nGsAfv6hXmum1ljGiS1iOk6PeeFC47zg
+xzJzxfjsOucXH+QwOqisD9iBX/ITl+iIc8enxvehhVKWJjgDw+e6xT6XNhgb7IGh
+uZNrp1kOYgvrFRS2fe6RO6pid1ZLiiPiG3UaydUP7N11nVXL3XUAKKuP9Bk2f1qR
+96CJ1OgQqs4wz6iAXq4zayB6RPa8vmtMqHEK710aYqhWNcnz1c8A/UdRwLx6uOXC
+xAc6IDqXEADQU0oDUGzPe64A7W9/5MFBsMrNcQ2f6oQ09NzH/fQkb0KTB5tEw4y8
+57Uqbh3CsywaybRYDzmyCy+WhafDyDy07ZL/KvlZgf+qJuZYi0bIGfFxi0ipMxU4
+0qq2Xz7TRQwTPikSG/Fo96/wmQpQkhV/01I1yUDHAbPnbZf8xpCQocisd9BQKnFm
+dHjN19iPkDrhMfEsTscRAm5ldw0toBDdk9zV3j8oV3INkfuKeXXimrSi8aMoKLJY
+CtxRMlodBvZ/0x8G5JUDjsyNBW4tVEm0fjYZghlHEryP3YIgT4RxHyKyb0NffGg1
+Z7TFnrfCTqve+5kg0XjrIJBeONjmiJCQpthGJRiQF288j6lv/+U=
+=Zv+s
+-----END PGP SIGNATURE-----
+
+--oNLHzmw1I7aHb2xcXcXGZxEdnGQCFEQkp--
