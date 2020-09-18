@@ -2,242 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4498226FDDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 15:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C995126FDE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 15:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726702AbgIRNJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 09:09:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726576AbgIRNJm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 09:09:42 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4989BC06174A;
-        Fri, 18 Sep 2020 06:09:42 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id x18so3695451ila.7;
-        Fri, 18 Sep 2020 06:09:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AwYmmTDlWSbIST63rvxFGjm3o83wHP5Fmvwxfhe27kQ=;
-        b=m/vw0UX8Eh7f2b7XnK7E4lSCV8SX39EKwxoKBcMzWuhvqZgtda8lj9tjTkOiyFbHpL
-         hjqz/1qteZTTTzuiE8H8iAzWEN/9+LD/nvg1dWxcStxfCyng2YlCdzxmV6gpXTlhOupK
-         traOX3UvkdRM3VnjXYDccdvhelU2E1dI7JsvVfcOY4O7uA+UCO971IB//rLsmeHxXE5a
-         8Of+uFqA6vDmAzbWAmZFlzOnLcCAbrqwGJo7qCj8nytrRAi7cCBAFJre9p01uJ0susqZ
-         0F2GoOiRpJ9vvMmT9+V+MbcIIIW1F5BhuTlJFalrYDP0FD5BIQKLaTzAzavokqc+2GwY
-         sOOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AwYmmTDlWSbIST63rvxFGjm3o83wHP5Fmvwxfhe27kQ=;
-        b=OQ3Veq+rB/0a+P+BHaTTZZ3KM8Sy0ibAq57rQkqPHJbA4mUd57HN5s2SiK17ebNwqV
-         SbqpFKvIaE9bs4UsKdG0FoXFaYvc3epdmBWB8YkSJ6qNcNdyPrLdxooFRGwvgtrzSSUu
-         wU918ecVwbAGern5mdtNPdIulXwTOjk7WnyPMuz34bfj2UymNvcW2OEBfxSMwd4Lnjxn
-         eX3kR0/XldCrvXgZcBnyB22nQfEJlQ5MuZ8mCAEYBiH9q8m+iiG4T15bR172fr6/ApMA
-         JryKPo0Q0WxHeuxz81yvBxp6hGLlIZPdb2ayU8B2M0IzrWdt8jIyKwFxbG2ULo3ycUsd
-         JDfg==
-X-Gm-Message-State: AOAM530+Xd0YzoKiQB1D77kK2oEpX0yK2kPBTeMr19PHSCvD1lwl5aZd
-        KTLPEyqvDUrCB8nQyY70GLMbsNvh+R75byXL264=
-X-Google-Smtp-Source: ABdhPJzxEIe2mEpThaSZt59Gp6X4dtBHZvPS/ySQQqJ+IhxBYPEiVmEp8osLZw3/wabTdwpQ9/oyZTBuGPGFccSOn8Y=
-X-Received: by 2002:a92:c10c:: with SMTP id p12mr4596560ile.274.1600434581511;
- Fri, 18 Sep 2020 06:09:41 -0700 (PDT)
+        id S1726762AbgIRNKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 09:10:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45750 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726406AbgIRNKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 09:10:00 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F411F235FD;
+        Fri, 18 Sep 2020 13:09:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600434599;
+        bh=AIZsqDKqusAtAp+ep4BDpo81voa/dxE7UpcixUilc7E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kAtu/1Ee3pTjZ52xAindcmZEXpXE8sOUqD6IxxhqIH55IIRyVudrWbeGPZPvDP3pV
+         IrP1QVx5Xy28erE/fy1kVpwTc2m6Ujq0kzpOcF2BImirLm1Cy+/gbdnm8DaOOLpG4X
+         +PEthXnn3++NGWHK1umO2tMJASDlrM03vX102Lnw=
+Date:   Fri, 18 Sep 2020 16:09:55 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Oded Gabbay <oded.gabbay@gmail.com>
+Cc:     Gal Pressman <galpress@amazon.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-rdma@vger.kernel.org, izur@habana.ai,
+        Olof Johansson <olof@lixom.net>
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+Message-ID: <20200918130955.GV869610@unreal>
+References: <20200915133556.21268811@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAFCwf12XZRxLYifSfuB+RGhuiKBytzsUTOnEa6FqfJHYvcVJPQ@mail.gmail.com>
+ <20200917171833.GJ8409@ziepe.ca>
+ <0b21db8d-1061-6453-960b-8043951b3bad@amazon.com>
+ <20200918115227.GR869610@unreal>
+ <CAFCwf10C1zm91e=tqPVGOX8kZD7o=AR2EW-P9VwCF4rcvnEJnA@mail.gmail.com>
+ <20200918120340.GT869610@unreal>
+ <CAFCwf12VPuyGFqFJK5D19zcKFQJ=fmzjwscdPG82tfR_v_h3Kg@mail.gmail.com>
+ <20200918121905.GU869610@unreal>
+ <CAFCwf12KEa=chCZCWWkJ5bvGDeRCrmBcY9fB8CrtzjOknRQ5Qg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200918083124.3921207-1-ikjn@chromium.org> <20200918162834.v2.2.I3de2918f09b817cc2ae6d324f1ece62779ecc7cf@changeid>
-In-Reply-To: <20200918162834.v2.2.I3de2918f09b817cc2ae6d324f1ece62779ecc7cf@changeid>
-From:   Chuanhong Guo <gch981213@gmail.com>
-Date:   Fri, 18 Sep 2020 21:09:29 +0800
-Message-ID: <CAJsYDV+Um3aEsgW-829BsZSaiVCp3O2LkrTmgCthhFv4fuEnLg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] spi: spi-mtk-nor: fix mishandled logics in
- checking SPI memory operation
-To:     Ikjoon Jang <ikjn@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-spi@vger.kernel.org,
-        linux-mtd@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFCwf12KEa=chCZCWWkJ5bvGDeRCrmBcY9fB8CrtzjOknRQ5Qg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On Fri, Sep 18, 2020 at 03:31:51PM +0300, Oded Gabbay wrote:
+> On Fri, Sep 18, 2020 at 3:19 PM Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> > On Fri, Sep 18, 2020 at 03:07:19PM +0300, Oded Gabbay wrote:
+> > > On Fri, Sep 18, 2020 at 3:03 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > > >
+> > > > On Fri, Sep 18, 2020 at 02:56:09PM +0300, Oded Gabbay wrote:
+> > > > > On Fri, Sep 18, 2020 at 2:52 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > > > > >
+> > > > > > On Fri, Sep 18, 2020 at 02:36:10PM +0300, Gal Pressman wrote:
+> > > > > > > On 17/09/2020 20:18, Jason Gunthorpe wrote:
+> > > > > > > > On Tue, Sep 15, 2020 at 11:46:58PM +0300, Oded Gabbay wrote:
+> > > > > > > >> infrastructure for communication between multiple accelerators. Same
+> > > > > > > >> as Nvidia uses NVlink, we use RDMA that we have inside our ASIC.
+> > > > > > > >> The RDMA implementation we did does NOT support some basic RDMA
+> > > > > > > >> IBverbs (such as MR and PD) and therefore, we can't use the rdma-core
+> > > > > > > >> library or to connect to the rdma infrastructure in the kernel.
+> > > > > > > >
+> > > > > > > > You can't create a parallel RDMA subsystem in netdev, or in misc, and
+> > > > > > > > you can't add random device offloads as IOCTL to nedevs.
+> > > > > > > >
+> > > > > > > > RDMA is the proper home for all the networking offloads that don't fit
+> > > > > > > > into netdev.
+> > > > > > > >
+> > > > > > > > EFA was able to fit into rdma-core/etc and it isn't even RoCE at
+> > > > > > > > all. I'm sure this can too.
+> > > > > > >
+> > > > > > > Well, EFA wasn't welcomed to the RDMA subsystem with open arms ;), initially it
+> > > > > > > was suggested to go through the vfio subsystem instead.
+> > > > > > >
+> > > > > > > I think this comes back to the discussion we had when EFA was upstreamed, which
+> > > > > > > is what's the bar to get accepted to the RDMA subsystem.
+> > > > > > > IIRC, what we eventually agreed on is having a userspace rdma-core provider and
+> > > > > > > ibv_{ud,rc}_pingpong working (or just supporting one of the IB spec's QP types?).
+> > > > > > >
+> > > > > > > Does GAUDI fit these requirements? If not, should it be in a different subsystem
+> > > > > > > or should we open the "what qualifies as an RDMA device" question again?
+> > > > > >
+> > > > > > I want to remind you that rdma-core requirement came to make sure that
+> > > > > > anything exposed from the RDMA to the userspace is strict with proper
+> > > > > > UAPI header hygiene.
+> > > > > >
+> > > > > > I doubt that Havana's ioctls are backed by anything like this.
+> > > > > >
+> > > > > > Thanks
+> > > > >
+> > > > > Why do you doubt that ? Have you looked at our code ?
+> > > > > Our uapi and IOCTLs interface is based on drm subsystem uapi interface
+> > > > > and it is very safe and protected.
+> > > >
+> > > > Yes, I looked and didn't find open-source users of your UAPI headers.
+> > > > It is not related to being safe or protected by to the common request
+> > > > to present userspace that relies on those exported interfaces.
+> > > >
+> > > > > Otherwise Greg would have never allowed me to go upstream in the first place.
+> > > >
+> > > > Nice, can we get a link?
+> > > >
+> > > > >
+> > > > > We have a single function which is the entry point for all the IOCTLs
+> > > > > of our drivers (only one IOCTL is RDMA related, all the others are
+> > > > > compute related).
+> > > > > That function is almost 1:1 copy of the function in drm.
+> > > >
+> > > > DRM has same rules as RDMA, no kernel code will be merged without seeing
+> > > > open-source userspace.
+> > > >
+> > > > Thanks
+> > > >
+> > > > >
+> > > > > Thanks,
+> > > > > Oded
+> > >
+> > > So we do have an open-source library called hl-thunk, which uses our
+> > > driver and indeed that was part of the requirement.
+> > > It is similar to libdrm.
+> > > Here is the link:
+> > > https://github.com/HabanaAI/hl-thunk
+> >
+> > Are you kidding?
+> >
+> > This is mirror of some internal repository that looks like dumpster
+> > with ChangeId, internal bug tracker numbers, not part of major OS
+> > distributions.
+> >
+> > It is not open-source library and shows very clear why you chose
+> > to upstream your driver through driver/misc/ tree.
+> >
+> > Thanks
+>
+> Adding Olof here.
+>
+> No, usually not.
+> But are you kidding ?
+> What did you exactly expect to find ? Is there an open-source project
+> somewhere that encapsulates Deep-learning accelerators which I could
+> connect to ?
 
-On Fri, Sep 18, 2020 at 4:34 PM Ikjoon Jang <ikjn@chromium.org> wrote:
->
-> Fix a simple bug which can limits its transfer size,
-> and add a simple helper function for code cleanups.
->
-> Fixes: a59b2c7c56bf ("spi: spi-mtk-nor: support standard spi properties")
-> Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
->
-> ---
->
-> (no changes since v1)
->
->  drivers/spi/spi-mtk-nor.c | 62 ++++++++++++++++++++++++---------------
->  1 file changed, 38 insertions(+), 24 deletions(-)
->
-> diff --git a/drivers/spi/spi-mtk-nor.c b/drivers/spi/spi-mtk-nor.c
-> index 6e6ca2b8e6c8..54b2c0fde95b 100644
-> --- a/drivers/spi/spi-mtk-nor.c
-> +++ b/drivers/spi/spi-mtk-nor.c
-> @@ -167,52 +167,63 @@ static bool mtk_nor_match_read(const struct spi_mem_op *op)
->         return false;
->  }
->
-> -static int mtk_nor_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
-> +static bool need_bounce(void *cpu_addr, unsigned long len)
->  {
-> -       size_t len;
-> +       return !!(((uintptr_t)cpu_addr) & MTK_NOR_DMA_ALIGN_MASK);
-> +}
+I would expect certain level of code quality, collaboration and review
+that distros require for inclusion. It is not the case for the github
+repo you presented.
 
-parameter 'len' isn't used in this function.
+> AFAIK, the only thing remotely relevant is CUDA and that is
+> closed-source (strange to hear lectures about open-source from NVIDIA
+> people here...)
+
+Please check git log statistics to estimate Nvidia/Mellanox/Cumulus
+contributions to the Linux kernel and the open-source. You will be
+surprised.
 
 >
-> +static int mtk_nor_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
-> +{
->         if (!op->data.nbytes)
->                 return 0;
+> So we are trying to give to the community such an open source library,
+> or at least an example. Hopefully one day, when more companies
+> upstream their drivers for deep-learning accelerators we could do
+> something like libdrm or rdma-core, but for now, it's just our driver.
+
+AFAIR, your driver is not unique, HiSilicon tried to submit something
+similar years ago (warpdrive) and they are not alone.
+
 >
->         if ((op->addr.nbytes == 3) || (op->addr.nbytes == 4)) {
-> -               if ((op->data.dir == SPI_MEM_DATA_IN) &&
-> -                   mtk_nor_match_read(op)) {
+> I have been in this community since 2013 with AMD and then RedHat, and
+> I come with good intentions and a desire to open source and upstream
+> as much as I can. I don't think I deserve this kind of response.
 
-I think replacing a if/else if with a two-case switch is more
-of a personal code preference rather than code cleanup.
-I'd prefer only adding need_bounce to replace alignment
-check using a separated commit and leave other stuff
-untouched because:
-1. This "cleanup" made unintended logic changes (see below)
-2. The "cleanup" itself actually becomes the major part of
-    this patch, while the actual fix mentioned in commit
-    message is the minor part.
-3. A fix commit should contain the fix itself. It shouldn't
-    mix with these code changes.
+There is no need to take it personal. It was you who posted a link
+to the github repo. What did you expect?
 
-> +               switch (op->data.dir) {
-> +               case SPI_MEM_DATA_IN:
-> +                       if (!mtk_nor_match_read(op))
-> +                               return -EINVAL;
-
-You are changing the code logic here.
-mtk_nor_match_read checks if the operation can be executed
-using controller PIO/DMA reading. Even if it's not supported,
-we can still use PRG mode to execute the operation.
-One example of such an operation is SPI NOR SFDP reading.
-Your change breaks that which then breaks 1_2_2 and 1_4_4
-reading capability because spi-nor driver parses these op formats
-from SFDP table.
-
-> +                       /* check if it's DMAable */
->                         if ((op->addr.val & MTK_NOR_DMA_ALIGN_MASK) ||
-> -                           (op->data.nbytes < MTK_NOR_DMA_ALIGN))
-> +                           (op->data.nbytes < MTK_NOR_DMA_ALIGN)) {
->                                 op->data.nbytes = 1;
-> -                       else if (!((ulong)(op->data.buf.in) &
-> -                                  MTK_NOR_DMA_ALIGN_MASK))
-> +                       } else {
-> +                               if (need_bounce(op->data.buf.in, op->data.nbytes) &&
-> +                                   (op->data.nbytes > MTK_NOR_BOUNCE_BUF_SIZE))
-> +                                       op->data.nbytes = MTK_NOR_BOUNCE_BUF_SIZE;
->                                 op->data.nbytes &= ~MTK_NOR_DMA_ALIGN_MASK;
-> -                       else if (op->data.nbytes > MTK_NOR_BOUNCE_BUF_SIZE)
-> -                               op->data.nbytes = MTK_NOR_BOUNCE_BUF_SIZE;
-
-data length alignment is intentionally done only for DMA reading
-without the bounce buffer.
-My intention here:
-If we use the bounce buffer, we can read more data than needed to.
-Say we want 25 bytes of data, reading 32 bytes using DMA and
-bounce buffer should be faster than reading 16 bytes with DMA
-and another 9 bytes with PIO, because for every single byte of PIO
-reading, adjust_op_size and exec_op is called once, we
-program controller with new cmd/address, and controller need
-to send extra cmd/address to flash.
-I noticed that you removed this part of logic from DMA reading
-execution in 3/5 as well. Please revert the logic change here
-add in DMA reading function (see later comment in 3/5).
-
-> -                       return 0;
-> -               } else if (op->data.dir == SPI_MEM_DATA_OUT) {
-> +                       }
-> +                       break;
-> +               case SPI_MEM_DATA_OUT:
->                         if (op->data.nbytes >= MTK_NOR_PP_SIZE)
->                                 op->data.nbytes = MTK_NOR_PP_SIZE;
->                         else
->                                 op->data.nbytes = 1;
-> -                       return 0;
-> +                       break;
-> +               default:
-> +                       break;
->                 }
-> +       } else {
-> +               u8 len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
-> +
-> +               if (len > MTK_NOR_PRG_MAX_SIZE)
-> +                       return -EINVAL;
-> +               if (op->data.nbytes && !(MTK_NOR_PRG_MAX_SIZE - len))
-> +                       return -EINVAL;
-> +               if (op->data.nbytes > (MTK_NOR_PRG_MAX_SIZE - len))
-> +                       op->data.nbytes = MTK_NOR_PRG_MAX_SIZE - len;
->         }
 >
-> -       len = MTK_NOR_PRG_MAX_SIZE - op->cmd.nbytes - op->addr.nbytes -
-> -             op->dummy.nbytes;
-> -       if (op->data.nbytes > len)
-> -               op->data.nbytes = len;
-> -
->         return 0;
->  }
->
->  static bool mtk_nor_supports_op(struct spi_mem *mem,
->                                 const struct spi_mem_op *op)
->  {
-> -       size_t len;
-> -
->         if (op->cmd.buswidth != 1)
->                 return false;
->
->         if ((op->addr.nbytes == 3) || (op->addr.nbytes == 4)) {
-> -               switch(op->data.dir) {
-> +               switch (op->data.dir) {
->                 case SPI_MEM_DATA_IN:
->                         if (!mtk_nor_match_read(op))
->                                 return false;
-> @@ -226,11 +237,14 @@ static bool mtk_nor_supports_op(struct spi_mem *mem,
->                 default:
->                         break;
->                 }
-> +       } else {
-> +               u8 len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
-> +
-> +               if (len > MTK_NOR_PRG_MAX_SIZE)
-> +                       return false;
-> +               if (op->data.nbytes && !(MTK_NOR_PRG_MAX_SIZE - len))
-> +                       return false;
->         }
-> -       len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
-> -       if ((len > MTK_NOR_PRG_MAX_SIZE) ||
-> -           ((op->data.nbytes) && (len == MTK_NOR_PRG_MAX_SIZE)))
-> -               return false;
->
->         return spi_mem_default_supports_op(mem, op);
->  }
-> --
-> 2.28.0.681.g6f77f65b4e-goog
->
+> The bottom line is that we had this discussion with Greg and Olof and
+> DRM people almost 2 years ago and if there was some open-source
+> project in user-space or some subsystem in the kernel we could connect
+> to, we would have done that instead of what we did, but the fact of
+> the matter there isn't such thing. Olof tried and is trying to create
+> a h/w accelerator subsystem but it still hasn't got up from the ground
+> yet.
 
+Maybe it is a time to do it right.
 
--- 
-Regards,
-Chuanhong Guo
+>
+> Oded
