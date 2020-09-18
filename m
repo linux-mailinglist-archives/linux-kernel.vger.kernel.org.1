@@ -2,106 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 424BC26F4AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0ACE26F4AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726400AbgIRDYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 23:24:37 -0400
-Received: from foss.arm.com ([217.140.110.172]:59610 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726112AbgIRDYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 23:24:37 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6822830E;
-        Thu, 17 Sep 2020 20:24:36 -0700 (PDT)
-Received: from [10.163.74.228] (unknown [10.163.74.228])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 888843F73B;
-        Thu, 17 Sep 2020 20:24:34 -0700 (PDT)
-Subject: Re: [PATCH v2] mm/migrate: correct thp migration stats.
-To:     Zi Yan <ziy@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Daniel Jordan <daniel.m.jordan@oracle.com>
-References: <20200917210413.1462975-1-zi.yan@sent.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <50eb6f68-40be-89ee-3431-e382cf94f7c5@arm.com>
-Date:   Fri, 18 Sep 2020 08:53:54 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1726421AbgIRDZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 23:25:58 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:40595 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726139AbgIRDZ6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 23:25:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600399557;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type;
+        bh=c4VwO85A9+mp2WVd9k1jCoZ5nINLwE7TYvBJh3ITwsc=;
+        b=Mj5qhOHsdC7TlnuAKUfy3jcDwziSw2zexpI747L4HsPOefBIYYlX7pws4DqOZR9V4LYt1D
+        y43BPPyJjleBCDq+gYbr/M5GC0abCb69cEHBPamliDb70Q7vRutUDyRgJG6Xbm+AJLGdqv
+        0rXXXmmq/1ePN8go9Ju1Tf1O9yI6Yhg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-449-amqInmCUM3OsoF9jT9LLFg-1; Thu, 17 Sep 2020 23:25:53 -0400
+X-MC-Unique: amqInmCUM3OsoF9jT9LLFg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 01900188C12D;
+        Fri, 18 Sep 2020 03:25:52 +0000 (UTC)
+Received: from dhcp-128-65.nay.redhat.com (ovpn-13-81.pek2.redhat.com [10.72.13.81])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 970EF78806;
+        Fri, 18 Sep 2020 03:25:49 +0000 (UTC)
+Date:   Fri, 18 Sep 2020 11:25:46 +0800
+From:   Dave Young <dyoung@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>, bhe@redhat.com,
+        Eric Biederman <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org, kexec@lists.infradead.org
+Subject: [PATCH] Only allow to set crash_kexec_post_notifiers on boot time
+Message-ID: <20200918032546.GA4180@dhcp-128-65.nay.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200917210413.1462975-1-zi.yan@sent.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zi,
+crash_kexec_post_notifiers enables running various panic notifier
+before kdump kernel booting. This increases risks of kdump failure.
+It is well documented in kernel-parameters.txt. We do not suggest
+people to enable it together with kdump unless he/she is really sure.
+This is also not suggested to be enabled by default when users are
+not aware in distributions.
 
-On 09/18/2020 02:34 AM, Zi Yan wrote:
-> From: Zi Yan <ziy@nvidia.com>
-> 
-> PageTransHuge returns true for both thp and hugetlb, so thp stats was
-> counting both thp and hugetlb migrations. Exclude hugetlb migration by
-> setting is_thp variable right.
+But unfortunately it is enabled by default in systemd, see below
+discussions in a systemd report, we can not convince systemd to change
+it:
+https://github.com/systemd/systemd/issues/16661
 
-Coincidentally, I had just detected this problem last evening and was
-in the process of sending a patch this morning :) Nonetheless, thanks
-for the patch.
+Actually we have got reports about kdump kernel hangs in both s390x
+and powerpcle cases caused by the systemd change,  also some x86 cases
+could also be caused by the same (although that is in Hyper-V code
+instead of systemd, that need to be addressed separately).
 
-Earlier there was a similar THP-HugeTLB ambiguity down the error path
-as well. In hindsight, I should have noticed or remembered about this
-earlier fix during the THP stats patch.
+Thus to avoid the auto enablement here just disable the param writable
+permission in sysfs.
 
-e6112fc30070 (mm/migrate.c: split only transparent huge pages when allocation fails)
+Signed-off-by: Dave Young <dyoung@redhat.com>
+---
+ kernel/panic.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 
-> Clean up thp handling code too when we are there.
-> 
-> Fixes: 1a5bae25e3cf ("mm/vmstat: add events for THP migration without split")
-> Signed-off-by: Zi Yan <ziy@nvidia.com>
-> Reviewed-by: Daniel Jordan <daniel.m.jordan@oracle.com>
-> Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  mm/migrate.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index 941b89383cf3..6bc9559afc70 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -1445,7 +1445,7 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
->  			 * Capture required information that might get lost
->  			 * during migration.
->  			 */
-> -			is_thp = PageTransHuge(page);
-> +			is_thp = PageTransHuge(page) && !PageHuge(page);
->  			nr_subpages = thp_nr_pages(page);
->  			cond_resched();
->  
-> @@ -1471,7 +1471,7 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
->  				 * we encounter them after the rest of the list
->  				 * is processed.
->  				 */
-> -				if (PageTransHuge(page) && !PageHuge(page)) {
-> +				if (is_thp) {
->  					lock_page(page);
->  					rc = split_huge_page_to_list(page, from);
->  					unlock_page(page);
-> @@ -1480,8 +1480,7 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
->  						nr_thp_split++;
->  						goto retry;
->  					}
-> -				}
-> -				if (is_thp) {
-> +
->  					nr_thp_failed++;
->  					nr_failed += nr_subpages;
->  					goto out;
-> 
+diff --git a/kernel/panic.c b/kernel/panic.c
+index aef8872ba843..bea44fc4eb3b 100644
+--- a/kernel/panic.c
++++ b/kernel/panic.c
+@@ -695,7 +695,7 @@ core_param(panic, panic_timeout, int, 0644);
+ core_param(panic_print, panic_print, ulong, 0644);
+ core_param(pause_on_oops, pause_on_oops, int, 0644);
+ core_param(panic_on_warn, panic_on_warn, int, 0644);
+-core_param(crash_kexec_post_notifiers, crash_kexec_post_notifiers, bool, 0644);
++core_param(crash_kexec_post_notifiers, crash_kexec_post_notifiers, bool, 0444);
+ 
+ static int __init oops_setup(char *s)
+ {
+-- 
+2.26.2
 
-Moving the failure path inside the split path makes sense, now
-that it is already established that the page is indeed a THP.
-
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
