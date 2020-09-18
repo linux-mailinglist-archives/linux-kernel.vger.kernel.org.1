@@ -2,171 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B04B27036D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 19:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 689C5270377
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 19:43:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726253AbgIRReY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 13:34:24 -0400
-Received: from so254-54.mailgun.net ([198.61.254.54]:41518 "EHLO
-        so254-54.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726115AbgIRReX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 13:34:23 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600450463; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=q2e9iINiXn4aOr/7k6nZrE8i9XGigJzoqBndAZHpgGE=; b=l/Kg1ZvPuQfdctfLhaIIkEb0idWtn96kBr1SkzP76gD0CXCwOTGXjYtkz4OGkNQKatHzG4Co
- MFGoQAuR/VDC0117kLUWoii62qOnXIBnw1ea1WCO+udPMtFo9N/oh8UrJA8OKpeZqiBhJgTp
- v94EJNpyw3k/YP19k2j8duhSvEY=
-X-Mailgun-Sending-Ip: 198.61.254.54
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5f64ef8b6fe64d5a7fcb3abe (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Sep 2020 17:34:03
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 28489C433F1; Fri, 18 Sep 2020 17:34:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S1726187AbgIRRng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 13:43:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45924 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725955AbgIRRng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 13:43:36 -0400
+Received: from lt-jalone-7480.mtl.com (c-24-6-56-119.hsd1.ca.comcast.net [24.6.56.119])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 43923C433CA;
-        Fri, 18 Sep 2020 17:33:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 43923C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rohitkr@codeaurora.org,
-        srinivas.kandagatla@linaro.org
-Cc:     Ajit Pandey <ajitp@codeaurora.org>,
-        Cheng-Yi Chiang <cychiang@chromium.org>,
-        V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Subject: [PATCH v4] arm64: dts: qcom: sc7180: Add lpass cpu node for I2S driver
-Date:   Fri, 18 Sep 2020 23:03:46 +0530
-Message-Id: <1600450426-14063-1-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        by mail.kernel.org (Postfix) with ESMTPSA id 4EA5E21707;
+        Fri, 18 Sep 2020 17:43:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600451015;
+        bh=ntAJibKjZjceVsHkZnqQPsOnz+8GOgKGWmMUTDStI1E=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=CkCun1EIOwnX/QjKXTP5/sTnq/gTQPIHqqi/CInvJUuhin6TTpb6x/wDcwCj49IJ8
+         ZJTZKMwxk3ANqbwxuAoPm1ZRxG4eiEmIZwgG7J++4PTBtygLoNAs5bD+r3H8pI5a1Z
+         EcqPiIxZgsT3gz3v5w2jesbyUR1YL71Q+QArlAN8=
+Message-ID: <f7209360006203a0f93eb50962d7274f1226f0b6.camel@kernel.org>
+Subject: Re: [PATCH net-next] net: hns3: Supply missing hclge_dcb.h include
+ file
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Wang Hai <wanghai38@huawei.com>, yisen.zhuang@huawei.com,
+        salil.mehta@huawei.com, davem@davemloft.net, kuba@kernel.org,
+        tanhuazhong@huawei.com, liaoguojia@huawei.com,
+        liuyonglong@huawei.com, linyunsheng@huawei.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 18 Sep 2020 10:43:34 -0700
+In-Reply-To: <20200918130653.20064-1-wanghai38@huawei.com>
+References: <20200918130653.20064-1-wanghai38@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ajit Pandey <ajitp@codeaurora.org>
+On Fri, 2020-09-18 at 21:06 +0800, Wang Hai wrote:
+> If the header file containing a function's prototype isn't included
+> by
+> the sourcefile containing the associated function, the build system
+> complains of missing prototypes.
+> 
+> Fixes the following W=1 kernel build warning(s):
+> 
+> drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c:453:6:
+> warning: no previous prototype for ‘hclge_dcb_ops_set’ [-Wmissing-
+> prototypes]
+> 
+> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+> ---
 
-Add the I2S controller node to sc7180 dtsi.
-Add pinmux for primary and secondary I2S.
+Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
 
-Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
-Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
-Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
----
-Changes since v3:
-   -- The typo error fix
-Changes since v2:
-   -- The plement of lpass_cpu node is changed
-Changes since v1:
-   -- Updated I2S pin control nodes  with grouping common pin controls
-   -- Updated lpass_cpu node with proper control names
-
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 69 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 69 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index 6678f1e..427a4bf 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -1742,6 +1742,45 @@
- 				};
- 			};
- 
-+			sec_mi2s_active: sec-mi2s-active {
-+				pinmux {
-+					pins = "gpio49", "gpio50", "gpio51";
-+					function = "mi2s_1";
-+				};
-+
-+				pinconf {
-+					pins = "gpio49", "gpio50", "gpio51";
-+					drive-strength = <8>;
-+					bias-pull-up;
-+				};
-+			};
-+
-+			pri_mi2s_active: pri-mi2s-active {
-+				pinmux {
-+					pins = "gpio53", "gpio54", "gpio55", "gpio56";
-+					function = "mi2s_0";
-+				};
-+
-+				pinconf {
-+					pins = "gpio53", "gpio54", "gpio55", "gpio56";
-+					drive-strength = <8>;
-+					bias-pull-up;
-+				};
-+			};
-+
-+			pri_mi2s_mclk_active: pri-mi2s-mclk-active {
-+				pinmux {
-+					pins = "gpio57";
-+					function = "lpass_ext";
-+				};
-+
-+				pinconf {
-+					pins = "gpio57";
-+					drive-strength = <8>;
-+					bias-pull-up;
-+				};
-+			};
-+
- 			sdc1_on: sdc1-on {
- 				pinconf-clk {
- 					pins = "sdc1_clk";
-@@ -3389,6 +3428,36 @@
- 			#power-domain-cells = <1>;
- 		};
- 
-+		lpass_cpu: lpass@62f00000 {
-+			compatible = "qcom,sc7180-lpass-cpu";
-+
-+			reg = <0 0x62f00000 0 0x29000>;
-+			reg-names = "lpass-lpaif";
-+
-+			iommus = <&apps_smmu 0x1020 0>;
-+
-+			power-domains = <&lpass_hm LPASS_CORE_HM_GDSCR>;
-+
-+			clocks = <&gcc GCC_LPASS_CFG_NOC_SWAY_CLK>,
-+				 <&lpasscc LPASS_AUDIO_CORE_CORE_CLK>,
-+				 <&lpasscc LPASS_AUDIO_CORE_EXT_MCLK0_CLK>,
-+				 <&lpasscc LPASS_AUDIO_CORE_SYSNOC_MPORT_CORE_CLK>,
-+				 <&lpasscc LPASS_AUDIO_CORE_LPAIF_PRI_IBIT_CLK>,
-+				 <&lpasscc LPASS_AUDIO_CORE_LPAIF_SEC_IBIT_CLK>;
-+
-+			clock-names = "pcnoc-sway-clk", "audio-core",
-+					"mclk0", "pcnoc-mport-clk",
-+					"mi2s-bit-clk0", "mi2s-bit-clk1";
-+
-+
-+			#sound-dai-cells = <1>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			interrupts = <GIC_SPI 160 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "lpass-irq-lpaif";
-+		};
-+
- 		lpass_hm: clock-controller@63000000 {
- 			compatible = "qcom,sc7180-lpasshm";
- 			reg = <0 0x63000000 0 0x28>;
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
