@@ -2,99 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393AC270089
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 17:08:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA78727008B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 17:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726250AbgIRPIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 11:08:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726121AbgIRPIK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 11:08:10 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C84AC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 08:08:10 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id z19so3614059pfn.8
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 08:08:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hGGCKEp4K9GjwoPVxOOO2axTbNb8r7W1/g/yQhmQlPs=;
-        b=a/D8P1Joz0DA0/FJh9vDYtQUzeMAdc0qggLrzY6jWIOxmNO2DvPj/y49Qvh4eTgLQc
-         bHF2P/99KpphHSf7/FeTwW6wBzd37N1UWctbMT0kH2/zDNYcbd/ci/UZOo0DZt9Hl1pn
-         r8Th90dKi/UOmpJXHM+IOw+LX3JZunRHgbWNozufbitsON+c+VT5kQN4uTYN0AQ9GPqp
-         BamwWKePpMPAc7L7cbPD0emuHbw86qwA76uswgdArU9NZ88r+YMDRaF76feiH2ra3HXF
-         yNd6d7MMReV1w+uuMa19crlNfhXWMLDIV6xXdfpSp/QhLYcH4PleWzMx0IgZFckRFyJ5
-         1aqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hGGCKEp4K9GjwoPVxOOO2axTbNb8r7W1/g/yQhmQlPs=;
-        b=ByaaPtLZGsmG3k+sHpuvZ0J43NTvk9T+t1pjxWwmf2c4d1LAOf/ZJITByusntTA+rH
-         Dsm6glTXy9/vXnK2NYVkg5zUPqp9QtE8q6XE9SVLt6X8bWN2tyB1xonMkBh6emQb5/it
-         8Zk29U02EkYGiOs2ssIfaTs2iyudQriT7zECBmaeXQO9HXCT3gnv3pqu7sqPUiEF8Y3j
-         5umDzfmA3KyoAn0NE6bMzRwAcqkfxY81i3SGVRz3HuQHWxbZXMuirkkyRHxkOsZ/aFlp
-         2Y9F8USLD/UdBEg3pjRTdFHY1y+kMRn3+jbokdQmsC09wATQNaC31aKi/jN2mxgZrHJA
-         bd7Q==
-X-Gm-Message-State: AOAM531z5Npfi3UBFZYa5xfdN7BjNoj7rGxSeIKXzu0n6iEgZcrdDv5Q
-        kMwJkurFyxeVgmHOyd+WhhB0fVVm5Uxf2z8ZhNGa2g==
-X-Google-Smtp-Source: ABdhPJxnj8meNJtzWdHLvtJvvdc2zevWc/WQjbDuyOCDAV/XyUh7CPXZXHlH43Q95yZABuWM1LRrGutx0uprTGvbu3Y=
-X-Received: by 2002:a63:5d07:: with SMTP id r7mr14529655pgb.440.1600441689365;
- Fri, 18 Sep 2020 08:08:09 -0700 (PDT)
+        id S1726253AbgIRPJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 11:09:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58798 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725941AbgIRPJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 11:09:18 -0400
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E5F422395C
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 15:09:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600441758;
+        bh=IkOqknM/pgGLyHstRYRh+yvQ8FdTpYzJtOj13eKOQoo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=wQ81rRBmz55lhQkw2ePr88cuYBKO/mwDLRArD0Dl8vrCF5JXRSXioBz0uBj1vbe70
+         7ubHe+MaHqxq7vYXgkIa4718PY9E1caLN8k+OyQ/4Lw3jA7BY/kHAtCbuaiqUdqiDw
+         K0rCTSxm+b5VRI6PUTZSoBTMiyAMIGCPrMWMoFt4=
+Received: by mail-wr1-f52.google.com with SMTP id w5so5980591wrp.8
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 08:09:17 -0700 (PDT)
+X-Gm-Message-State: AOAM5334J84JhAvZGmN5yGcP42jLUaihLWFwROy1umeXOFpQ/DaLD9tV
+        SFtaWhRIUSZtFizsJpHNeBr/3XUr97sUZ/fBnstBtw==
+X-Google-Smtp-Source: ABdhPJxGmXBOztEznChCx1zDcy87QF70YtkyM1AXgQnapl+jEklF6uBqSKjj6yAkDzuf8mO6n3/eki81+OiGt2xlp30=
+X-Received: by 2002:a5d:5111:: with SMTP id s17mr37934142wrt.70.1600441756359;
+ Fri, 18 Sep 2020 08:09:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1600204505.git.andreyknvl@google.com> <0a35b29d161bf2559d6e16fbd903e49351c7f6b8.1600204505.git.andreyknvl@google.com>
- <20200918105206.GB2384246@elver.google.com>
-In-Reply-To: <20200918105206.GB2384246@elver.google.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Fri, 18 Sep 2020 17:07:58 +0200
-Message-ID: <CAAeHK+wqzZJWWh+u3HaLvSAt=4SxaFT4JUgTqzMYcPNGhBFFBg@mail.gmail.com>
-Subject: Re: [PATCH v2 31/37] kasan, x86, s390: update undef CONFIG_KASAN
-To:     Marco Elver <elver@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com> <20200915112842.897265-11-jarkko.sakkinen@linux.intel.com>
+In-Reply-To: <20200915112842.897265-11-jarkko.sakkinen@linux.intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 18 Sep 2020 08:09:04 -0700
+X-Gmail-Original-Message-ID: <CALCETrX9T1ZUug=M5ba9g4H5B7kV=yL5RzuTaeAEdy3uAieN_A@mail.gmail.com>
+Message-ID: <CALCETrX9T1ZUug=M5ba9g4H5B7kV=yL5RzuTaeAEdy3uAieN_A@mail.gmail.com>
+Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     X86 ML <x86@kernel.org>, linux-sgx@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Linux-MM <linux-mm@kvack.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        asapek@google.com, Borislav Petkov <bp@alien8.de>,
+        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
+        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Huang, Haitao" <haitao.huang@intel.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
+        Christian Ludloff <ludloff@google.com>,
+        Andrew Lutomirski <luto@kernel.org>,
+        Neil Horman <nhorman@redhat.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Patrick Uiterwijk <puiterwijk@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 12:52 PM Marco Elver <elver@google.com> wrote:
+On Tue, Sep 15, 2020 at 4:28 AM Jarkko Sakkinen
+<jarkko.sakkinen@linux.intel.com> wrote:
 >
-> On Tue, Sep 15, 2020 at 11:16PM +0200, Andrey Konovalov wrote:
-> [...]
-> >  arch/s390/boot/string.c         | 1 +
-> >  arch/x86/boot/compressed/misc.h | 1 +
-> >  2 files changed, 2 insertions(+)
-> >
-> > diff --git a/arch/s390/boot/string.c b/arch/s390/boot/string.c
-> > index b11e8108773a..faccb33b462c 100644
-> > --- a/arch/s390/boot/string.c
-> > +++ b/arch/s390/boot/string.c
-> > @@ -3,6 +3,7 @@
-> >  #include <linux/kernel.h>
-> >  #include <linux/errno.h>
-> >  #undef CONFIG_KASAN
-> > +#undef CONFIG_KASAN_GENERIC
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
 >
-> Is CONFIG_KASAN still used to guard instrumented versions of functions?
+> Add vm_ops()->mprotect() for additional constraints for a VMA.
 >
-> It looks like #undef CONFIG_KASAN is no longer needed -- at least
-> <linux/string.h> no longer mentions it.
+> Intel Software Guard eXtensions (SGX) will use this callback to add two
+> constraints:
+>
+> 1. Verify that the address range does not have holes: each page address
+>    must be filled with an enclave page.
+> 2. Verify that VMA permissions won't surpass the permissions of any enclave
+>    page within the address range. Enclave cryptographically sealed
+>    permissions for each page address that set the upper limit for possible
+>    VMA permissions. Not respecting this can cause #GP's to be emitted.
 
-I'm pretty sure this is still necessary (something didn't work when I
-forgot to make this change), but I'll check again.
+It's been awhile since I looked at this.  Can you remind us: is this
+just preventing userspace from shooting itself in the foot or is this
+something more important?
+
+--Andy
