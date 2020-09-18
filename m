@@ -2,173 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47DC8270166
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 17:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E506827016C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 17:55:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726205AbgIRPy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 11:54:29 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:42480 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725941AbgIRPy3 (ORCPT
+        id S1726327AbgIRPzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 11:55:12 -0400
+Received: from esa1.mentor.iphmx.com ([68.232.129.153]:31468 "EHLO
+        esa1.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726157AbgIRPzL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 11:54:29 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08IFsPkr015228;
-        Fri, 18 Sep 2020 10:54:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600444465;
-        bh=mZca12QdjutSUgtx8i6xeoCkiMtA63bYwdbL9ND/Ui0=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=zCkQlQBmP1WGWVxHxUeRJXlNhgJwa7S+sTMMH3KVActX5V0VkA7y0l1eaosEL3RZE
-         k24RlvTLEl2C0RxfwYruopXVRyc0FKz1VtyNkGL78xDphYa9H18jHwEuppmktDxjN8
-         0UMqUHdjV/mOxGAbIRQzHsC0wVruncQGbqZwuLQM=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08IFsPYw081290;
-        Fri, 18 Sep 2020 10:54:25 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 18
- Sep 2020 10:54:25 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 18 Sep 2020 10:54:25 -0500
-Received: from [10.250.66.210] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08IFsOQC044792;
-        Fri, 18 Sep 2020 10:54:24 -0500
-Subject: Re: [PATCH v3 3/4] arm64: dts: ti: k3-j7200-mcu: add mcu cpsw nuss
- node
-To:     Grygorii Strashko <grygorii.strashko@ti.com>,
-        Tero Kristo <t-kristo@ti.com>,
-        Rob Herring <robh+dt@kernel.org>, Nishanth Menon <nm@ti.com>
-CC:     Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-References: <20200918153829.14686-1-grygorii.strashko@ti.com>
- <20200918153829.14686-4-grygorii.strashko@ti.com>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <e63ec6f1-d4f0-2b14-5513-eb3eeb3f6fe2@ti.com>
-Date:   Fri, 18 Sep 2020 10:54:24 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 18 Sep 2020 11:55:11 -0400
+IronPort-SDR: 88NLjcZ2LU44SCB6G5G/Rm53O76fHqtikVi58AQMI+zKzSEyDsYHLtEFioUhnNXEHT9KcSrQVd
+ eZZtbtuRFJw9N37Q/H3QNygZWeSyZ52xxHGcXzgPAAfYznh1zWBIIWFtu6JCr4NdgWimMmQDzi
+ MSfn2mOAq4n0FCszfCWySiM3ltHr7OTlhPT5OSLP4UDzCXz6Jw9WfsqbPcQJuz1Nx6XaEvVoB7
+ HQFnEElvMyGbQE2+IxqYUCRRwDVIPdx600IRSxILWd4hgvWVpq6hcDX1YL2b+U5vRnV490Fkaf
+ faU=
+X-IronPort-AV: E=Sophos;i="5.77,274,1596528000"; 
+   d="scan'208";a="55268387"
+Received: from orw-gwy-02-in.mentorg.com ([192.94.38.167])
+  by esa1.mentor.iphmx.com with ESMTP; 18 Sep 2020 07:55:10 -0800
+IronPort-SDR: LpnePGDtGl7gaSb8r6VuNMfQrs7OS5+o3AOnbhR8HT7nyNYK0IXEiOeWMj6RY30NDH4zA+82wN
+ lEF2W1mry2OdNRwnVlg7FVq1j3VIrH/EGfUZCx7nrIPq9vvY6mZ1htG9QWq4TYvMtR02/Yi8iG
+ lSgg0vfIotXrBiwy7pKMfj/GMTwiL34vX9Tmzh5AYdgeUW50bhrxnu57Q6yOKIknq0CH2OdCQO
+ J+l6XPXio5+0U0iNUzat1Azkn8/Y0UkJ4b2SE7AgJNepsgy7LR8YLT8g2aLVE/Kku3puCQl8iM
+ OOM=
+Subject: Re: [PATCH v2 2/2] Input: atmel_mxt_ts - wake mXT1386 from deep-sleep
+ mode
+To:     Dmitry Osipenko <digetx@gmail.com>, <nick@shmanahar.org>,
+        <dmitry.torokhov@gmail.com>, <robh+dt@kernel.org>
+CC:     <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <andy.shevchenko@gmail.com>, <erosca@de.adit-jv.com>,
+        <Andrew_Gabbasov@mentor.com>
+References: <20200918125601.8210-1-jiada_wang@mentor.com>
+ <20200918125601.8210-2-jiada_wang@mentor.com>
+ <2c3e093a-dc75-d315-519d-9b8fbab9b41b@gmail.com>
+From:   "Wang, Jiada" <jiada_wang@mentor.com>
+Message-ID: <d0d8dffe-be52-992e-af2b-020d4b159747@mentor.com>
+Date:   Sat, 19 Sep 2020 00:55:05 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200918153829.14686-4-grygorii.strashko@ti.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <2c3e093a-dc75-d315-519d-9b8fbab9b41b@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SVR-ORW-MBX-05.mgc.mentorg.com (147.34.90.205) To
+ svr-orw-mbx-01.mgc.mentorg.com (147.34.90.201)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/18/20 10:38 AM, Grygorii Strashko wrote:
-> Add DT node for The TI j7200 MCU SoC Gigabit Ethernet two ports Switch
-> subsystem (MCU CPSW NUSS).
+Hi Dmitry
 
-nit, %s/j7200/J7200/ on this patch and the next.
+Thanks for your quick comments
 
-regards
-Suman
-
+On 2020/09/18 22:32, Dmitry Osipenko wrote:
+> 18.09.2020 15:56, Jiada Wang пишет:
+>> According to datasheet, mXT1386 chip has a WAKE line, it is used
+>> to wake the chip up from deep sleep mode before communicating with
+>> it via the I2C-compatible interface.
+>>
+>> if the WAKE line is connected to a GPIO line, the line must be
+>> asserted 25 ms before the host attempts to communicate with the mXT1386.
+>> If the WAKE line is connected to the SCL pin, the mXT1386 will send a
+>> NACK on the first attempt to address it, the host must then retry 25 ms
+>> later.
+>>
+>> This patch introduces mxt_wake() which does a dummy i2c read, follows
+>> with a 25 ms sleep for mXT1386 chip. mxt_wake() is added to
+>> mxt_initialize(), mxt_load_fw() and mxt_start() to ensure before any
+>> actual i2c transfer, mxt_wake() can be executed.
+>>
+>> Added new compatible string "atmel,mXT1386".
+>>
+>> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
 > 
-> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-> Tested-by: Kishon Vijay Abraham I <kishon@ti.com>
-> ---
->  .../boot/dts/ti/k3-j7200-mcu-wakeup.dtsi      | 74 +++++++++++++++++++
->  1 file changed, 74 insertions(+)
+> Hello, Jiada!
 > 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-> index 7ecdfdb46436..a994276a8b3d 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-> @@ -34,6 +34,20 @@
->  		};
->  	};
->  
-> +	mcu_conf: syscon@40f00000 {
-> +		compatible = "syscon", "simple-mfd";
-> +		reg = <0x0 0x40f00000 0x0 0x20000>;
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		ranges = <0x0 0x0 0x40f00000 0x20000>;
-> +
-> +		phy_gmii_sel: phy@4040 {
-> +			compatible = "ti,am654-phy-gmii-sel";
-> +			reg = <0x4040 0x4>;
-> +			#phy-cells = <1>;
-> +		};
-> +	};
-> +
->  	chipid@43000014 {
->  		compatible = "ti,am654-chipid";
->  		reg = <0x00 0x43000014 0x00 0x4>;
-> @@ -136,4 +150,64 @@
->  			ti,sci-rm-range-rflow = <0x00>; /* GP RFLOW */
->  		};
->  	};
-> +
-> +	mcu_cpsw: ethernet@46000000 {
-> +		compatible = "ti,j721e-cpsw-nuss";
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		reg = <0x0 0x46000000 0x0 0x200000>;
-> +		reg-names = "cpsw_nuss";
-> +		ranges = <0x0 0x0 0x0 0x46000000 0x0 0x200000>;
-> +		dma-coherent;
-> +		clocks = <&k3_clks 18 21>;
-> +		clock-names = "fck";
-> +		power-domains = <&k3_pds 18 TI_SCI_PD_EXCLUSIVE>;
-> +
-> +		dmas = <&mcu_udmap 0xf000>,
-> +		       <&mcu_udmap 0xf001>,
-> +		       <&mcu_udmap 0xf002>,
-> +		       <&mcu_udmap 0xf003>,
-> +		       <&mcu_udmap 0xf004>,
-> +		       <&mcu_udmap 0xf005>,
-> +		       <&mcu_udmap 0xf006>,
-> +		       <&mcu_udmap 0xf007>,
-> +		       <&mcu_udmap 0x7000>;
-> +		dma-names = "tx0", "tx1", "tx2", "tx3",
-> +			    "tx4", "tx5", "tx6", "tx7",
-> +			    "rx";
-> +
-> +		ethernet-ports {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +
-> +			cpsw_port1: port@1 {
-> +				reg = <1>;
-> +				ti,mac-only;
-> +				label = "port1";
-> +				ti,syscon-efuse = <&mcu_conf 0x200>;
-> +				phys = <&phy_gmii_sel 1>;
-> +			};
-> +		};
-> +
-> +		davinci_mdio: mdio@f00 {
-> +			compatible = "ti,cpsw-mdio","ti,davinci_mdio";
-> +			reg = <0x0 0xf00 0x0 0x100>;
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			clocks = <&k3_clks 18 21>;
-> +			clock-names = "fck";
-> +			bus_freq = <1000000>;
-> +		};
-> +
-> +		cpts@3d000 {
-> +			compatible = "ti,am65-cpts";
-> +			reg = <0x0 0x3d000 0x0 0x400>;
-> +			clocks = <&k3_clks 18 2>;
-> +			clock-names = "cpts";
-> +			interrupts-extended = <&gic500 GIC_SPI 858 IRQ_TYPE_LEVEL_HIGH>;
-> +			interrupt-names = "cpts";
-> +			ti,cpts-ext-ts-inputs = <4>;
-> +			ti,cpts-periodic-outputs = <2>;
-> +		};
-> +	};
->  };
+> This not critical, but yours suggested-by tag always should be the last
+> line of the commit message. It's like you're signing all the words that
+> were written by you.
 > 
+>> Suggested-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>   drivers/input/touchscreen/atmel_mxt_ts.c | 27 ++++++++++++++++++++++++
+>>   1 file changed, 27 insertions(+)
+>>
+>> diff --git a/drivers/input/touchscreen/atmel_mxt_ts.c b/drivers/input/touchscreen/atmel_mxt_ts.c
+>> index a2189739e30f..d580050a237f 100644
+>> --- a/drivers/input/touchscreen/atmel_mxt_ts.c
+>> +++ b/drivers/input/touchscreen/atmel_mxt_ts.c
+>> @@ -196,6 +196,7 @@ enum t100_type {
+>>   #define MXT_CRC_TIMEOUT		1000	/* msec */
+>>   #define MXT_FW_RESET_TIME	3000	/* msec */
+>>   #define MXT_FW_CHG_TIMEOUT	300	/* msec */
+>> +#define MXT_WAKEUP_TIME     25  /* msec */
+>>   
+>>   /* Command to unlock bootloader */
+>>   #define MXT_UNLOCK_CMD_MSB	0xaa
+>> @@ -2099,12 +2100,33 @@ static void mxt_config_cb(const struct firmware *cfg, void *ctx)
+>>   	release_firmware(cfg);
+>>   }
+>>   
+>> +static void mxt_wake(struct mxt_data *data)
+>> +{
+>> +	struct i2c_client *client = data->client;
+>> +	struct device *dev = &data->client->dev;
+>> +	struct device_node *np = dev->of_node;
+>> +	union i2c_smbus_data dummy;
+>> +
+>> +	if (!of_device_is_compatible(np, "atmel,mXT1386"))
+>> +		return;
+> I'm not sure whether you misses the previous answers from Dmitry
+> Torokhov and Rob Herring, but they suggested to add a new device-tree
+> property which should specify the atmel,wakeup-method.
+> 
+I think Rob Herring prefers for the compatible solution than property.
 
+> There are 3 possible variants:
+> 
+>    - NONE
+>    - GPIO
+>    - I2C-SCL
+> 
+> Hence we should bail out from mxt_wake() if method is set to NONE or GPIO.
+> 
+for "GPIO", we still need 25 ms sleep. but rather than a dummy read, 
+WAKE line need to be asserted before sleep.
+
+> Perhaps we could even skip the GPIO method entirely by not mentioning it
+> anywhere, since this method isn't needed for now.
+> 
+> Nevertheless, I think it will be good to add DT compatible for the
+> "atmel,mXT1386", hence this part is good to me.
+>
+>> +	/* TODO: add WAKE-GPIO support */
+>> +
+>> +	i2c_smbus_xfer(client->adapter, client->addr,
+>> +		       0, I2C_SMBUS_READ, 0, I2C_SMBUS_BYTE,
+>> +		       &dummy);
+>> +
+> 
+> There is no need to sleep if there was no I2C error, meaning that device
+> wasn't in a deep-sleep mode. Please add a check for the value returned
+> by i2c_smbus_xfer() and invoke the msleep() only in a case of the I2C
+> error condition.
+> 
+OK. will do this
+
+>> +	msleep(MXT_WAKEUP_TIME);
+>> +}
+>> +
+>>   static int mxt_initialize(struct mxt_data *data)
+>>   {
+>>   	struct i2c_client *client = data->client;
+>>   	int recovery_attempts = 0;
+>>   	int error;
+>>   
+>> +	mxt_wake(data);
+>> +
+>>   	while (1) {
+> 
+> I assume the mxt_wake() should be placed here, since there is a 3
+> seconds timeout in the end of the while-loop, meaning that device may
+> get back into deep-sleep on a retry.
+> 
+Can you elaborate a little more why exit from bootload mode after sleep 
+for 3 second could enter deep-sleep mode.
+
+>>   		error = mxt_read_info_block(data);
+>>   		if (!error)
+>> @@ -2787,6 +2809,8 @@ static int mxt_load_fw(struct device *dev, const char *fn)
+>>   	if (ret)
+>>   		goto release_firmware;
+>>   
+>> +	mxt_wake(data);
+>> +
+>>   	if (!data->in_bootloader) {
+>>   		/* Change to the bootloader mode */
+>>   		data->in_bootloader = true;
+>> @@ -2928,6 +2952,7 @@ static const struct attribute_group mxt_attr_group = {
+>>   
+>>   static void mxt_start(struct mxt_data *data)
+>>   {
+>> +	mxt_wake(data);
+> 
+> Shouldn't the mxt_wake() be under the MXT_SUSPEND_DEEP_SLEEP switch? The
+> wake-up should be needed only for waking from deep-sleep mode.
+OK, I will move it under MXT_SUSPEND_DEEP_SLEEP
+
+Thanks,
+Jiada
+> 
+>>   	switch (data->suspend_mode) {
+>>   	case MXT_SUSPEND_T9_CTRL:
+>>   		mxt_soft_reset(data);
+>> @@ -3185,6 +3210,7 @@ static SIMPLE_DEV_PM_OPS(mxt_pm_ops, mxt_suspend, mxt_resume);
+>>   
+>>   static const struct of_device_id mxt_of_match[] = {
+>>   	{ .compatible = "atmel,maxtouch", },
+>> +	{ .compatible = "atmel,mXT1386", },
+>>   	/* Compatibles listed below are deprecated */
+>>   	{ .compatible = "atmel,qt602240_ts", },
+>>   	{ .compatible = "atmel,atmel_mxt_ts", },
+>> @@ -3209,6 +3235,7 @@ static const struct i2c_device_id mxt_id[] = {
+>>   	{ "atmel_mxt_tp", 0 },
+>>   	{ "maxtouch", 0 },
+>>   	{ "mXT224", 0 },
+>> +	{ "mXT1386", 0 },
+>>   	{ }
+>>   };
+>>   MODULE_DEVICE_TABLE(i2c, mxt_id);
+>>
+> 
