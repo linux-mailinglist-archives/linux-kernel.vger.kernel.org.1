@@ -2,140 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E952706D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF8D02706E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbgIRUTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 16:19:03 -0400
-Received: from mx.aristanetworks.com ([162.210.129.12]:20188 "EHLO
-        smtp.aristanetworks.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726159AbgIRUTD (ORCPT
+        id S1726301AbgIRUVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 16:21:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726174AbgIRUVC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 16:19:03 -0400
-Received: from us180.sjc.aristanetworks.com (us180.sjc.aristanetworks.com [10.243.128.7])
-        by smtp.aristanetworks.com (Postfix) with ESMTP id 2B65E40200F;
-        Fri, 18 Sep 2020 13:19:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arista.com;
-        s=Arista-A; t=1600460342;
-        bh=pi2k3C/WWjrjESveZ2nlqFAMuefDSn9zTY7FzKz4zwk=;
-        h=Date:To:Subject:From:From;
-        b=eY5QXGJ7y3dab3HHMdy6N0RHk+Pf9UZV3p6pnRWBZVPGDdrb+f4D6FKfjx7cD9xom
-         +9qqU+fCif67TTVv1a2H2r8xbK+kNgpUPo1xttTT3QQxAOdFtwHSlOEsFDZ8Z053qq
-         8eNn+2V5eJQBgoquEL7KCwvTS43bA2YsnFId5mmKKZIVxU63KepkWoCCAu5JCmk5XX
-         OCbKGDaQ0Ip5Lqs2xUxy9aTcQrfeCSdbAUKCCTfAgH64RS3T7D5sWU983jxv8kZ+uj
-         MejyGgUGOjpAXIaLeOtXoFJvDLY32jm9OeG0bg4WqfVWZXBIz6A3NEZG0uGmzBTC0e
-         op8atrAkms2Xg==
-Received: by us180.sjc.aristanetworks.com (Postfix, from userid 10189)
-        id 0931495C0649; Fri, 18 Sep 2020 13:19:01 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 13:19:01 -0700
-To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        xiyou.wangcong@gmail.com, ap420073@gmail.com, andriin@fb.com,
-        edumazet@google.com, jiri@mellanox.com, ast@kernel.org,
-        kuba@kernel.org, davem@davemloft.net, fruggeri@arista.com
-Subject: [PATCH v4] net: use exponential backoff in netdev_wait_allrefs
-User-Agent: Heirloom mailx 12.5 7/5/10
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Message-Id: <20200918201902.0931495C0649@us180.sjc.aristanetworks.com>
-From:   fruggeri@arista.com (Francesco Ruggeri)
+        Fri, 18 Sep 2020 16:21:02 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A35AEC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:21:02 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id j2so8349190ioj.7
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:21:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Gfig0mzAlJaPnbwPG2ndnN/ke6uDHaqhq3zr7HC85pA=;
+        b=aHphpi0lYBZrG5SwR3zA6j47tjwA3IFz/1lv9Q1YzAeZJ0ruLVOoCGhj6r3uLlfyqk
+         FSkVnYTGFg5Hj6zdj1ADRrOlOu6JbrwDGaDOZ6YW0URo8rk6IwRUjLPk7HBmufZSo4CU
+         Id0j0JXSxKXuLwW9rJ7svN+ezFPoLvXprwegQ1YamMTC4P0WfiAeBadCGBWUPq1sTmBx
+         zrbGIjbWS89Aup+3l08sli8yjOfyOwK0trSuEJIZnFBY1XxsRRURJI5L3drECod7VhzZ
+         iOsL5vxRAxHs1APjlqlFgd56Mn5kq8aFhFFFtA4ShJF4moO34nP4ncUpX+tRyjfGlZGB
+         7sZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Gfig0mzAlJaPnbwPG2ndnN/ke6uDHaqhq3zr7HC85pA=;
+        b=uFaeRk4aSSO6vOqPFSc1U/2x6qsG8NxYgjoF5bq1NNMaf5Q8oIz7qtSvDIGzFD5oic
+         ZeJgxAhUI6Fh2zF9y52n01d5MROyATAtBK/kd01y+YeEtKDd8sAIw+o+tahJoNLoW3bI
+         Mb4WisIEufiGrxCvkhg1VDC4VVQeH5d8vlHFTp/GdEIx7tpa2k1/dQThZO1DJE/x2eMy
+         UXrW3zVaBhukp5y8qZGfOyqEtdE/pFKleYlTm98E/Zp6hW+ba8q05rK2+C3F6/6U6ox2
+         Rn4A2Jmdghfg6XZpCySF5LAcLB7C+ux1QPNG63cHxmwvz1umTilqfFl/56truj19uLgn
+         2Kjw==
+X-Gm-Message-State: AOAM530dIfuBEHh+Hfc4P6o9Awr4NTcahT3J9JT2bck7SkyFdrCfFaQZ
+        eXPazjM0wN0S6HUMgPs6ryTWv1x/Gy0zeBf6A3cODw==
+X-Google-Smtp-Source: ABdhPJznCrMerWd7RxXkanBXIr5zeV+S2EftTdo5ViYZNZHe4okH4/3nmpXzWouRHQDNJgGYo2EjlwzLLu5qx4yl9LI=
+X-Received: by 2002:a02:c60b:: with SMTP id i11mr2041563jan.82.1600460461816;
+ Fri, 18 Sep 2020 13:21:01 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200910172826.3074357-1-enric.balletbo@collabora.com> <20200910172826.3074357-4-enric.balletbo@collabora.com>
+In-Reply-To: <20200910172826.3074357-4-enric.balletbo@collabora.com>
+From:   Fabien Parent <fparent@baylibre.com>
+Date:   Fri, 18 Sep 2020 22:20:50 +0200
+Message-ID: <CAOwMV_z9OBpNqStCH+HEcwAK-TwPVeMH4LwJbp78T1P=t9bEKg@mail.gmail.com>
+Subject: Re: [PATCH 03/12] arm64: dts: mediatek: Add mt8173 power domain controller
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        drinkcat@chromium.org, hsinyi@chromium.org, weiyi.lu@mediatek.com,
+        Rob Herring <robh+dt@kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The combination of aca_free_rcu, introduced in commit 2384d02520ff
-("net/ipv6: Add anycast addresses to a global hashtable"), and
-fib6_info_destroy_rcu, introduced in commit 9b0a8da8c4c6 ("net/ipv6:
-respect rcu grace period before freeing fib6_info"), can result in
-an extra rcu grace period being needed when deleting an interface,
-with the result that netdev_wait_allrefs ends up hitting the msleep(250),
-which is considerably longer than the required grace period.
-This can result in long delays when deleting a large number of interfaces,
-and it can be observed with this script:
+Hi Enric,
 
-ns=dummy-ns
-NIFS=100
+> -               scpsys: power-controller@10006000 {
+> -                       compatible = "mediatek,mt8173-scpsys";
+> -                       #power-domain-cells = <1>;
 
-ip netns add $ns
-ip netns exec $ns ip link set lo up
-ip netns exec $ns sysctl net.ipv6.conf.default.disable_ipv6=0
-ip netns exec $ns sysctl net.ipv6.conf.default.forwarding=1
+This change generates a lot of warning when compiling the MT8173 device-trees.
 
-for ((i=0; i<$NIFS; i++))
-do
-        if=eth$i
-        ip netns exec $ns ip link add $if type dummy
-        ip netns exec $ns ip link set $if up
-        ip netns exec $ns ip -6 addr add 2021:$i::1/120 dev $if
-done
-
-for ((i=0; i<$NIFS; i++))
-do
-        if=eth$i
-        ip netns exec $ns ip link del $if
-done
-
-ip netns del $ns
-
-Instead of using a fixed msleep(250), this patch tries an extra
-rcu_barrier() followed by an exponential backoff.
-
-Time with this patch on a 5.4 kernel:
-
-real	0m7.704s
-user	0m0.385s
-sys	0m1.230s
-
-Time without this patch:
-
-real    0m31.522s
-user    0m0.438s
-sys     0m1.156s
-
-v2: use exponential backoff instead of trying to wake up
-    netdev_wait_allrefs.
-v3: preserve reverse christmas tree ordering of local variables
-v4: try an extra rcu_barrier before the backoff, plus some
-    cosmetic changes.
-
-Signed-off-by: Francesco Ruggeri <fruggeri@arista.com>
----
- net/core/dev.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 4086d335978c..cef4a5ea24d0 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -9986,10 +9986,12 @@ EXPORT_SYMBOL(netdev_refcnt_read);
-  * We can get stuck here if buggy protocols don't correctly
-  * call dev_put.
-  */
-+#define WAIT_REFS_MIN_MSECS 1
-+#define WAIT_REFS_MAX_MSECS 250
- static void netdev_wait_allrefs(struct net_device *dev)
- {
- 	unsigned long rebroadcast_time, warning_time;
--	int refcnt;
-+	int wait = 0, refcnt;
- 
- 	linkwatch_forget_dev(dev);
- 
-@@ -10023,7 +10025,13 @@ static void netdev_wait_allrefs(struct net_device *dev)
- 			rebroadcast_time = jiffies;
- 		}
- 
--		msleep(250);
-+		if (!wait) {
-+			rcu_barrier();
-+			wait = WAIT_REFS_MIN_MSECS;
-+		} else {
-+			msleep(wait);
-+			wait = min(wait << 1, WAIT_REFS_MAX_MSECS);
-+		}
- 
- 		refcnt = netdev_refcnt_read(dev);
- 
--- 
-2.28.0
-
-
+Warning (power_domains_property): /soc/mutex@14020000: Missing
+property '#power-domain-cells' in node /soc/syscon@10006000 or bad
+phandle (referred from power-domains[0])
