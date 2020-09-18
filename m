@@ -2,288 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3945626FC4E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:16:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F09926FC51
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:16:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726460AbgIRMQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 08:16:04 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:37225 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726064AbgIRMQD (ORCPT
+        id S1726465AbgIRMQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 08:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726455AbgIRMQY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 08:16:03 -0400
-Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
- (mreue012 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1MC0HF-1kBnB91zTx-00CUmb; Fri, 18 Sep 2020 14:15:46 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     Kashyap Desai <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-Cc:     Christoph Hellwig <hch@infradead.org>, anand.lodnoor@broadcom.com,
-        megaraidlinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v2 3/3] scsi: megaraid_sas: simplify compat_ioctl handling
-Date:   Fri, 18 Sep 2020 14:15:43 +0200
-Message-Id: <20200918121543.1466090-1-arnd@arndb.de>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200918120955.1465510-1-arnd@arndb.de>
-References: <20200918120955.1465510-1-arnd@arndb.de>
+        Fri, 18 Sep 2020 08:16:24 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3291DC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 05:16:24 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id h1so2702723qvo.9
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 05:16:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hLNnX79G9nX+k+EVGGBz2aG4Mw+aUk0GIJq895hnjbI=;
+        b=EpbAzbUNcX04Odo/GcQwU5ayGQ+p5PYbGV/k7n/wHFcUZ6gkJAZyRA5Kv6+xhrYyAA
+         kW/Rws6ZJXNK1GrX6Jz9abd7y6ZQQjWkdnpVHcekqFZWGvRIH15NwfS1D4uI3qJ+n4wo
+         iyKBU006H28WCKESyGl0JdtADbLGWisxEkMJ9U+BMdhzRMzMXGj9iY99Dlb/MXiCCFGY
+         15qaIglSCN2hbaMLF2HLsnIz43low1k84Ae30uVKNXbwVqZNPj1Y75yi3+fxkZfz15ep
+         6Ze1y+Ol8azNg2GnVSZjDCffvYw4LgnX6jCPn6+qtreFX1ONKAvQSu8q43ahPxhvrzsN
+         fyyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hLNnX79G9nX+k+EVGGBz2aG4Mw+aUk0GIJq895hnjbI=;
+        b=MZa4bs3IurFGesRN+Je/qDk/OO/o8XLmlvkmOpPGQTn1yp4KSUBtqG7sONvpJjDICN
+         4qfqt5jA2zdIPPveo/k53weaC/ICI3rIvbWUIqznXmRNiaPngG+Buo6XPh5DZc1W4M5K
+         aMPCE1qvgYFfWB0OEXXHSNJ7UBpfS7Fyv0mVlbmcpOeDpPc60kzcCyvWBbdh2dpaYvl6
+         +3m3NZB0wjCVH1P/AG3k83wcK8y1yzGOeRCzcu8GycLN8+Hlr2IH++J4YhoyO3BbtarQ
+         mbShXQww6rnskmMdWr9jJoCkq0oZ2xp+dDxO9REgVlWq7tR4x2ppxxFxSVgEvzEB9yNT
+         zlWA==
+X-Gm-Message-State: AOAM530wTk/K6xEZ17+SQNKe7UnCMdW+ATUC8/wj5DD4LTMJIeGc1i8z
+        m5+UySZtM2zWB+X7d9rD7kGMH8Y7YM4GUPA3
+X-Google-Smtp-Source: ABdhPJwjJqP/kFe9m2MXchpGykfXMrwjGnGS79iJqA6ru+cxesW4ytuzUOvJU92XWp9WTtKORAHjng==
+X-Received: by 2002:a0c:ee6a:: with SMTP id n10mr15996854qvs.45.1600431383221;
+        Fri, 18 Sep 2020 05:16:23 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id s18sm1915204qks.44.2020.09.18.05.16.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 05:16:22 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kJFJN-000x3I-DB; Fri, 18 Sep 2020 09:16:21 -0300
+Date:   Fri, 18 Sep 2020 09:16:21 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Oded Gabbay <oded.gabbay@gmail.com>
+Cc:     Gal Pressman <galpress@amazon.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+Message-ID: <20200918121621.GQ8409@ziepe.ca>
+References: <20200915171022.10561-1-oded.gabbay@gmail.com>
+ <20200915133556.21268811@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAFCwf12XZRxLYifSfuB+RGhuiKBytzsUTOnEa6FqfJHYvcVJPQ@mail.gmail.com>
+ <20200917171833.GJ8409@ziepe.ca>
+ <0b21db8d-1061-6453-960b-8043951b3bad@amazon.com>
+ <20200918115601.GP8409@ziepe.ca>
+ <CAFCwf12G4FnhjzijZLh_=n59SQMcTnULTqp8DOeQGyX6_q_ayA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:z9AIGG+qS63xAkhNlR+tgy9b3xlu4k/PonUBJLNH95P0Poita0W
- fWz2zaCv8oJCc8irsoaaVWIZqh6Z461i52DpIZsRIBRmm2Matu8bljNwTZuEp6pAayFItl7
- MscbRKByL+0oLuwzRa9WN9NnJ3++ret0seWRJWKn1brE4BuXX/1jKinvZYv1k99Tkd1D9ua
- ncUevfikahluC74aHNQsw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:AERzY+NEGTU=:Dkbr3VlSvDqGNAeMasPAMr
- lK6edekI1h9ORqVKN2vq84L8Dat+Wpk0sT6UZBkAbyDcq/GisyUuYVQAHU5GAqtULUxdmWDlZ
- pDOID+4rJJLII9OSid3H2K8OTJ0/L0fwEJ8dOOqAp/jFmWWS/DpO0xumOcM1vAvHZgtStiY5v
- /6WVS5wWydkXEVotqWfoZBWzupLwRUfa1eSNgURal+1XlpUSU+la8iSaCh1ErXUU0i0dwQGjB
- wREHC0y62hjY0CpUrN8XusrdrQ0neU+k0fPiJAjyVIp05Vc3klTMiU3ppZ0eFz72Lb3KQMZSL
- uhLPkqaug1raIIcXQVOd99sv7JlmaRfZ19axnBGWcwVdOWPXXc6F1lzdhUqI3/Om24rgcg31U
- rq+zua5VhWMMGqEvamUl8PiHaq9jSyBprh4IA7Om3PnCqJSW+oq1N0c1td9P/NN+RuGvi/cqf
- fLG9v3/95mdTlzOV93YAIMoU83uxHufG/g35xLOZ/WE8j8YqOn0OwDC1BQHnnsJhtktiLs+fa
- 6iBwMLCXxAwfLU2rHrnZzHrzD8u+lNUILwuLu3NaPsNrZJ67nJbpObkZdiBaqT9FOVNbFk4Iu
- QWTDa9JicFrikkowRz+PU1mpTQCoMzFbso7ehTlEL7uu/Wzcl77/AxvHDtl+LpZLuvy4ShCdl
- oC7epELAtUu3I8o65e6SOql6NaJEOHd5pSpvdF77U50flJh6lzibSzq9GdknUs1IGu86dzGEp
- c5mBuLaTsZLspUlvCr5SpcNaCUFOJQ1WLWFPjvWOM0Ox9+EQyLvUax2MaValN/nAISBagSoqR
- R6mYPfJ8/UjOSzqy+b89IBllvc4V/cQ8Smfbpx4KjcdIajgZZKMgdM2mrA7uZju409QTcMz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFCwf12G4FnhjzijZLh_=n59SQMcTnULTqp8DOeQGyX6_q_ayA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There have been several attempts to fix serious problems
-in the compat handling in megasas_mgmt_compat_ioctl_fw(),
-and it also uses the compat_alloc_user_space() function.
+On Fri, Sep 18, 2020 at 02:59:28PM +0300, Oded Gabbay wrote:
+> On Fri, Sep 18, 2020 at 2:56 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > On Fri, Sep 18, 2020 at 02:36:10PM +0300, Gal Pressman wrote:
+> > > On 17/09/2020 20:18, Jason Gunthorpe wrote:
+> > > > On Tue, Sep 15, 2020 at 11:46:58PM +0300, Oded Gabbay wrote:
+> > > >> infrastructure for communication between multiple accelerators. Same
+> > > >> as Nvidia uses NVlink, we use RDMA that we have inside our ASIC.
+> > > >> The RDMA implementation we did does NOT support some basic RDMA
+> > > >> IBverbs (such as MR and PD) and therefore, we can't use the rdma-core
+> > > >> library or to connect to the rdma infrastructure in the kernel.
+> > > >
+> > > > You can't create a parallel RDMA subsystem in netdev, or in misc, and
+> > > > you can't add random device offloads as IOCTL to nedevs.
+> > > >
+> > > > RDMA is the proper home for all the networking offloads that don't fit
+> > > > into netdev.
+> > > >
+> > > > EFA was able to fit into rdma-core/etc and it isn't even RoCE at
+> > > > all. I'm sure this can too.
+> > >
+> > > Well, EFA wasn't welcomed to the RDMA subsystem with open arms ;), initially it
+> > > was suggested to go through the vfio subsystem instead.
+> > >
+> > > I think this comes back to the discussion we had when EFA was upstreamed, which
+> > > is what's the bar to get accepted to the RDMA subsystem.
+> > > IIRC, what we eventually agreed on is having a userspace rdma-core provider and
+> > > ibv_{ud,rc}_pingpong working (or just supporting one of the IB spec's QP types?).
+> >
+> > That is more or less where we ended up, yes.
+> >
+> > I'm most worried about this lack of PD and MR.
+> >
+> > Kernel must provide security for apps doing user DMA, PD and MR do
+> > this. If the device doesn't have PD/MR then it is hard to see how a WQ
+> > could ever be exposed directly to userspace, regardless of subsystem.
+> 
+> Hi Jason,
+> What you say here is very true and we handle that with different
+> mechanisms. I will start working on a dedicated patch-set of the RDMA
+> code in the next few weeks with MUCH MORE details in the commit
+> messages. That will explain exactly how we expose stuff and protect.
+> 
+> For example, regarding isolating between applications, we only support
+> a single application opening our file descriptor.
 
-Folding the compat handling into the regular ioctl
-function with in_compat_syscall() simplifies it a lot and
-avoids some of the remaining problems:
+Then the driver has a special PD create that requires the misc file
+descriptor to authorize RDMA access to the resources in that security
+context.
 
-- missing handling of unaligned pointers
-- overflowing the ioc->frame.raw array from
-  invalid input
-- compat_alloc_user_space()
+> Another example is that the submission of WQ is done through our QMAN
+> mechanism and is NOT mapped to userspace (due to the restrictions you
+> mentioned above and other restrictions).
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-v2: address review comments from hch
----
- drivers/scsi/megaraid/megaraid_sas.h      |   2 -
- drivers/scsi/megaraid/megaraid_sas_base.c | 117 +++++++++-------------
- include/linux/compat.h                    |  10 +-
- 3 files changed, 50 insertions(+), 79 deletions(-)
+Sure, other RDMA drivers also require a kernel ioctl for command
+execution.
 
-diff --git a/drivers/scsi/megaraid/megaraid_sas.h b/drivers/scsi/megaraid/megaraid_sas.h
-index 5e4137f10e0e..0f808d63580e 100644
---- a/drivers/scsi/megaraid/megaraid_sas.h
-+++ b/drivers/scsi/megaraid/megaraid_sas.h
-@@ -2605,7 +2605,6 @@ struct megasas_aen {
- 	u32 class_locale_word;
- } __attribute__ ((packed));
- 
--#ifdef CONFIG_COMPAT
- struct compat_megasas_iocpacket {
- 	u16 host_no;
- 	u16 __pad1;
-@@ -2621,7 +2620,6 @@ struct compat_megasas_iocpacket {
- } __attribute__ ((packed));
- 
- #define MEGASAS_IOC_FIRMWARE32	_IOWR('M', 1, struct compat_megasas_iocpacket)
--#endif
- 
- #define MEGASAS_IOC_FIRMWARE	_IOWR('M', 1, struct megasas_iocpacket)
- #define MEGASAS_IOC_GET_AEN	_IOW('M', 3, struct megasas_aen)
-diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
-index c3de69f3bee8..d91951ee16ab 100644
---- a/drivers/scsi/megaraid/megaraid_sas_base.c
-+++ b/drivers/scsi/megaraid/megaraid_sas_base.c
-@@ -8279,16 +8279,18 @@ megasas_mgmt_fw_ioctl(struct megasas_instance *instance,
- 	 * copy out the sense
- 	 */
- 	if (ioc->sense_len) {
-+		void __user *uptr;
- 		/*
- 		 * sense_ptr points to the location that has the user
- 		 * sense buffer address
- 		 */
--		sense_ptr = (unsigned long *) ((unsigned long)ioc->frame.raw +
--				ioc->sense_off);
-+		sense_ptr = (void *)ioc->frame.raw + ioc->sense_off;
-+		if (in_compat_syscall())
-+			uptr = compat_ptr(get_unaligned((u32 *)sense_ptr));
-+		else
-+			uptr = get_unaligned((void __user **)sense_ptr);
- 
--		if (copy_to_user((void __user *)((unsigned long)
--				 get_unaligned((unsigned long *)sense_ptr)),
--				 sense, ioc->sense_len)) {
-+		if (copy_to_user(uptr, sense, ioc->sense_len)) {
- 			dev_err(&instance->pdev->dev, "Failed to copy out to user "
- 					"sense data\n");
- 			error = -EFAULT;
-@@ -8331,6 +8333,38 @@ megasas_mgmt_fw_ioctl(struct megasas_instance *instance,
- 	return error;
- }
- 
-+static struct megasas_iocpacket *
-+megasas_compat_iocpacket_get_user(void __user *arg)
-+{
-+	struct megasas_iocpacket *ioc;
-+	struct compat_megasas_iocpacket __user *cioc = arg;
-+	size_t size;
-+	int err = -EFAULT;
-+	int i;
-+
-+	ioc = kzalloc(sizeof(*ioc), GFP_KERNEL);
-+	if (!ioc)
-+		return ERR_PTR(-ENOMEM);
-+	size = offsetof(struct megasas_iocpacket, frame) + sizeof(ioc->frame);
-+	if (copy_from_user(ioc, arg, size))
-+		goto out;
-+
-+	for (i = 0; i < MAX_IOCTL_SGE; i++) {
-+		compat_uptr_t iov_base;
-+		if (get_user(iov_base, &cioc->sgl[i].iov_base) ||
-+		    get_user(ioc->sgl[i].iov_len, &cioc->sgl[i].iov_len)) {
-+			goto out;
-+		}
-+		ioc->sgl[i].iov_base = compat_ptr(iov_base);
-+	}
-+
-+	return ioc;
-+out:
-+	kfree(ioc);
-+
-+	return ERR_PTR(err);
-+}
-+
- static int megasas_mgmt_ioctl_fw(struct file *file, unsigned long arg)
- {
- 	struct megasas_iocpacket __user *user_ioc =
-@@ -8339,7 +8373,11 @@ static int megasas_mgmt_ioctl_fw(struct file *file, unsigned long arg)
- 	struct megasas_instance *instance;
- 	int error;
- 
--	ioc = memdup_user(user_ioc, sizeof(*ioc));
-+	if (in_compat_syscall())
-+		ioc = megasas_compat_iocpacket_get_user(user_ioc);
-+	else
-+		ioc = memdup_user(user_ioc, sizeof(struct megasas_iocpacket));
-+
- 	if (IS_ERR(ioc))
- 		return PTR_ERR(ioc);
- 
-@@ -8444,78 +8482,13 @@ megasas_mgmt_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- }
- 
- #ifdef CONFIG_COMPAT
--static int megasas_mgmt_compat_ioctl_fw(struct file *file, unsigned long arg)
--{
--	struct compat_megasas_iocpacket __user *cioc =
--	    (struct compat_megasas_iocpacket __user *)arg;
--	struct megasas_iocpacket __user *ioc =
--	    compat_alloc_user_space(sizeof(struct megasas_iocpacket));
--	int i;
--	int error = 0;
--	compat_uptr_t ptr;
--	u32 local_sense_off;
--	u32 local_sense_len;
--	u32 user_sense_off;
--
--	if (clear_user(ioc, sizeof(*ioc)))
--		return -EFAULT;
--
--	if (copy_in_user(&ioc->host_no, &cioc->host_no, sizeof(u16)) ||
--	    copy_in_user(&ioc->sgl_off, &cioc->sgl_off, sizeof(u32)) ||
--	    copy_in_user(&ioc->sense_off, &cioc->sense_off, sizeof(u32)) ||
--	    copy_in_user(&ioc->sense_len, &cioc->sense_len, sizeof(u32)) ||
--	    copy_in_user(ioc->frame.raw, cioc->frame.raw, 128) ||
--	    copy_in_user(&ioc->sge_count, &cioc->sge_count, sizeof(u32)))
--		return -EFAULT;
--
--	/*
--	 * The sense_ptr is used in megasas_mgmt_fw_ioctl only when
--	 * sense_len is not null, so prepare the 64bit value under
--	 * the same condition.
--	 */
--	if (get_user(local_sense_off, &ioc->sense_off) ||
--		get_user(local_sense_len, &ioc->sense_len) ||
--		get_user(user_sense_off, &cioc->sense_off))
--		return -EFAULT;
--
--	if (local_sense_off != user_sense_off)
--		return -EINVAL;
--
--	if (local_sense_len) {
--		void __user **sense_ioc_ptr =
--			(void __user **)((u8 *)((unsigned long)&ioc->frame.raw) + local_sense_off);
--		compat_uptr_t *sense_cioc_ptr =
--			(compat_uptr_t *)(((unsigned long)&cioc->frame.raw) + user_sense_off);
--		if (get_user(ptr, sense_cioc_ptr) ||
--		    put_user(compat_ptr(ptr), sense_ioc_ptr))
--			return -EFAULT;
--	}
--
--	for (i = 0; i < MAX_IOCTL_SGE; i++) {
--		if (get_user(ptr, &cioc->sgl[i].iov_base) ||
--		    put_user(compat_ptr(ptr), &ioc->sgl[i].iov_base) ||
--		    copy_in_user(&ioc->sgl[i].iov_len,
--				 &cioc->sgl[i].iov_len, sizeof(compat_size_t)))
--			return -EFAULT;
--	}
--
--	error = megasas_mgmt_ioctl_fw(file, (unsigned long)ioc);
--
--	if (copy_in_user(&cioc->frame.hdr.cmd_status,
--			 &ioc->frame.hdr.cmd_status, sizeof(u8))) {
--		printk(KERN_DEBUG "megasas: error copy_in_user cmd_status\n");
--		return -EFAULT;
--	}
--	return error;
--}
--
- static long
- megasas_mgmt_compat_ioctl(struct file *file, unsigned int cmd,
- 			  unsigned long arg)
- {
- 	switch (cmd) {
- 	case MEGASAS_IOC_FIRMWARE32:
--		return megasas_mgmt_compat_ioctl_fw(file, arg);
-+		return megasas_mgmt_ioctl_fw(file, arg);
- 	case MEGASAS_IOC_GET_AEN:
- 		return megasas_mgmt_ioctl_aen(file, arg);
- 	}
-diff --git a/include/linux/compat.h b/include/linux/compat.h
-index 1a530e1aa15a..a7a5a0ff59ef 100644
---- a/include/linux/compat.h
-+++ b/include/linux/compat.h
-@@ -91,6 +91,11 @@
- 	static inline long __do_compat_sys##name(__MAP(x,__SC_DECL,__VA_ARGS__))
- #endif /* COMPAT_SYSCALL_DEFINEx */
- 
-+struct compat_iovec {
-+	compat_uptr_t	iov_base;
-+	compat_size_t	iov_len;
-+};
-+
- #ifdef CONFIG_COMPAT
- 
- #ifndef compat_user_stack_pointer
-@@ -248,11 +253,6 @@ typedef struct compat_siginfo {
- 	} _sifields;
- } compat_siginfo_t;
- 
--struct compat_iovec {
--	compat_uptr_t	iov_base;
--	compat_size_t	iov_len;
--};
--
- struct compat_rlimit {
- 	compat_ulong_t	rlim_cur;
- 	compat_ulong_t	rlim_max;
--- 
-2.27.0
+In this model the MR can be a software construct, again representing a
+security authorization:
 
+- A 'full process' MR, in which case the kernel command excution
+  handles dma map and pinning at command execution time
+- A 'normal' MR, in which case the DMA list is pre-created and the
+  command execution just re-uses this data
+
+The general requirement for RDMA is the same as DRM, you must provide
+enough code in rdma-core to show how the device works, and minimally
+test it. EFA uses ibv_ud_pingpong, and some pyverbs tests IIRC.
+
+So you'll want to arrange something where the default MR and PD
+mechanisms do something workable on this device, like auto-open the
+misc FD when building the PD, and support the 'normal' MR flow for
+command execution.
+
+Jason
