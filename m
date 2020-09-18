@@ -2,101 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06C8C27000D
+	by mail.lfdr.de (Postfix) with ESMTP id 72FBF27000E
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 16:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726673AbgIROlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 10:41:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726129AbgIROlf (ORCPT
+        id S1726746AbgIROl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 10:41:57 -0400
+Received: from so254-54.mailgun.net ([198.61.254.54]:15113 "EHLO
+        so254-54.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726696AbgIROl5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 10:41:35 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87D4DC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 07:41:34 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id k25so5330366ljk.0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 07:41:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=N2cRR1bqs+5tj1of0U4CpX6EeJBhHim3bgiMhmU8VOo=;
-        b=KObaMNjFxWPqr7Yolymu/lxSRIV3+LdKNPu5BVTKaKfS3JC/SvZK97LM5SFXPuloxR
-         dIYlXIyuM+cU4LRoy9FdsB6dGbA8BPWUAqZsJRmXNbYzL8arCQgN7U9mAFRq6DtS8DsY
-         DsVvP0Yz7lKzDni31/zz0akHosXS56jJ39JsQTFRmz+DFSt347VuiiVGlPMMw3ONChGB
-         cw6RW7+ECDAcmwEjlepcBajumhOhX37zEtjRPqMD+owhuMNnE+HP4HceQ0PAMhqh7YkX
-         0mN75Slaj6aPWOlHt0Lmxwwwrr0rCX2ia65LaFKX0oL9P0UeWL0eFhQrEhysgG/rEOAV
-         9E2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=N2cRR1bqs+5tj1of0U4CpX6EeJBhHim3bgiMhmU8VOo=;
-        b=izl0ViqM58NdsRR56554uyLadykOutSY29Kqzxs7yRv2HWCxWOZX2CVS5sajsAFaWV
-         wn+u3urVj04rS3xggQHk+oflwd7FltN4cnpVf2rEMii1zaXxAivw/meX1/unNu2Q+ra0
-         kWVgPF7Z8L3ZRDbx4IGsE7E5MvHa/CP8UtN1d42uEfGhtsPqk8jCDlH3P9JZWMFeR7BQ
-         n1Emo7+GdAlzU2vePTCQbJ1lW/3GS3ZctxOV/4tJ/NjgEvxD+fbeEcroJ3vZeR9hYUE0
-         TqY57T17zgBaYwYNUWVL+XN5qzvhetPO7WRVq2bIw/Gn8l+zVzdqlddFeXoael6STDew
-         C3CQ==
-X-Gm-Message-State: AOAM531fWdggXkWitIbE5oFkcJz8KChM0FwGSdjcAWXWiVRAHgPHsjhQ
-        VFajYw2/Z6fU/KM7PxPTaHaF8DpgE5g6VA==
-X-Google-Smtp-Source: ABdhPJz8InSl5HtAfRczk5FmvB0um+7TuFkwaNvrgPKaDbWpm3HfUfDODOZNA744WeQ6w/XBO13HHw==
-X-Received: by 2002:a2e:9b15:: with SMTP id u21mr8180298lji.283.1600440092720;
-        Fri, 18 Sep 2020 07:41:32 -0700 (PDT)
-Received: from jade (h-249-223.A175.priv.bahnhof.se. [98.128.249.223])
-        by smtp.gmail.com with ESMTPSA id m20sm633031ljp.132.2020.09.18.07.41.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 07:41:32 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 16:41:30 +0200
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-To:     arm@kernel.org, soc@kernel.org
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        op-tee@lists.trustedfirmware.org,
-        Sudeep Holla <sudeep.holla@arm.com>
-Subject: [GIT PULL] tee dev cleanup for v5.10
-Message-ID: <20200918144130.GB1219771@jade>
+        Fri, 18 Sep 2020 10:41:57 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600440116; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=/Aa/WjjWk1ufZ8KJvR0ADmWUbZ4ou8nNCagks2bnfgU=; b=mhE6hg7TWrvaMtkqMGrEQtJ6qVM7tjgpbzEv5Clu3r7NmLWICIqbhpHfwYsQ1Mop3WhF5pJi
+ 1juOGHiawwl3ibbFwNbSVcmLkvgn4uClt9255KdKmt55dAFbPtDcVpYuZqL6z28/m5S3aAaI
+ RP/F3aJebGBVp4MSglgjJwYwnCY=
+X-Mailgun-Sending-Ip: 198.61.254.54
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5f64c734f1e3eb89c7c9cd2d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Sep 2020 14:41:56
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7A9ECC433FE; Fri, 18 Sep 2020 14:41:55 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3D9DBC433CA;
+        Fri, 18 Sep 2020 14:41:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3D9DBC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Zhang Changzhong <zhangchangzhong@huawei.com>
+Cc:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, linux-wireless@vger.kernel.org
+Subject: Re: [PATCH net-next] net: brcmfmac: check return value of driver_for_each_device()
+References: <1600429068-28003-1-git-send-email-zhangchangzhong@huawei.com>
+Date:   Fri, 18 Sep 2020 17:41:48 +0300
+In-Reply-To: <1600429068-28003-1-git-send-email-zhangchangzhong@huawei.com>
+        (Zhang Changzhong's message of "Fri, 18 Sep 2020 19:37:48 +0800")
+Message-ID: <87lfh7b103.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello arm-soc maintainers,
++ linux-wireless
 
-Please pull this small cleanup in tee driver registration. There are no
-changes in behaviour, just a reduction in number of lines due to
-improved usage of the device driver framework.
+Zhang Changzhong <zhangchangzhong@huawei.com> writes:
 
-Thanks,
-Jens
+> Fixes the following W=1 kernel build warning(s):
+>
+> drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c:1576:6: warning:
+>  variable 'ret' set but not used [-Wunused-but-set-variable]
+>   1576 |  int ret;
+>        |      ^~~
+>
+> driver_for_each_device() has been declared with __must_check, so the
+> return value should be checked.
+>
+> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
+Please cc linux-wireless on all wireless patches. Otherwise our
+patchwork won't see it and I can't apply it. So please resend as v2.
 
-  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
-
-are available in the Git repository at:
-
-  git://git.linaro.org:/people/jens.wiklander/linux-tee.git tags/tee-dev-cleanup-for-v5.10
-
-for you to fetch changes up to 8c05f50fe8452f9d3220efad77bef42c7b498193:
-
-  tee: avoid explicit sysfs_create/delete_group by initialising dev->groups (2020-09-18 10:44:45 +0200)
-
-----------------------------------------------------------------
-Simplify tee_device_register() and friends
-
-Uses cdev_device_add() instead of the cdev_add() device_add()
-combination.
-
-Initializes dev->groups instead of direct calls to sysfs_create_group()
-and friends.
-
-----------------------------------------------------------------
-Sudeep Holla (2):
-      tee: replace cdev_add + device_add with cdev_device_add
-      tee: avoid explicit sysfs_create/delete_group by initialising dev->groups
-
- drivers/tee/tee_core.c | 40 +++++++---------------------------------
- 1 file changed, 7 insertions(+), 33 deletions(-)
+-- 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
