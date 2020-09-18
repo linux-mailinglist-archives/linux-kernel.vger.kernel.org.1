@@ -2,110 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68D2226FC5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E02DF26FC60
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726368AbgIRMUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 08:20:39 -0400
-Received: from mga04.intel.com ([192.55.52.120]:32713 "EHLO mga04.intel.com"
+        id S1726524AbgIRMUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 08:20:51 -0400
+Received: from ozlabs.org ([203.11.71.1]:51027 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726064AbgIRMUj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 08:20:39 -0400
-IronPort-SDR: nHFyFrVsCQjWUdLTDEZrGRiuGHcOYHThmV2kyWH1X6PgV5eqORvd62HYALoyu7+8NxEDtzI7QB
- 8+fICJU2D6VQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9747"; a="157308566"
-X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
-   d="scan'208";a="157308566"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 05:20:38 -0700
-IronPort-SDR: 26rsxlzkUjoyWfUmXaZhnh2gPThhOxPT3/XeacRReQtDQdLNBYTz63w2ET9nCxMHSQdAgMNpPF
- yUmCSzt3mRiA==
-X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
-   d="scan'208";a="484182929"
-Received: from dlos-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.48.212])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 05:20:31 -0700
-Date:   Fri, 18 Sep 2020 15:20:29 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Haitao Huang <haitao.huang@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jethro Beekman <jethro@fortanix.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Seth Moore <sethmo@google.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 13/24] x86/sgx: Add SGX_IOC_ENCLAVE_ADD_PAGES
-Message-ID: <20200918122029.GA27028@linux.intel.com>
-References: <20200915110522.893152-1-jarkko.sakkinen@linux.intel.com>
- <20200915110522.893152-14-jarkko.sakkinen@linux.intel.com>
- <op.0q2prldowjvjmi@mqcpg7oapc828.gar.corp.intel.com>
- <20200917160206.GF8530@linux.intel.com>
- <op.0q3pw0stwjvjmi@mqcpg7oapc828.gar.corp.intel.com>
- <20200918020940.GA14678@sjchrist-ice>
+        id S1726130AbgIRMUv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 08:20:51 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BtCbj0rSDz9sTN;
+        Fri, 18 Sep 2020 22:20:49 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1600431649;
+        bh=yFZGkPkkRKTNYitF5ijMjnBBvIwsHCFQoy+CpzqTS6o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EQfLz7aP8ARy5Ea4CxebiT1bK+6DZOway8OaR52hVhRQTby4vdJFTxC60Ry/q/Onc
+         JrE6M+Uj9phtR4+pMOdcio5B1s91aNVC/tLV8uGmwmMb1GrEbWVebIlBEtrWh3tdfy
+         Z2hmgnvMRw4Pj4Z8GNistMoB2t0R+UigTiMK8G7h9O3eAtbkKxkA3Tu2O+C3XKa+uj
+         LVYmm+kY1QNG/LkcZrIPJepBt/EacliNbrkyf5Yj6Zvkv1/EfKPMtrMW0Q4Sk24hTO
+         0V7CfT/6/QU6qsCah/412vY5gFBG5Tyivfu/B2B0eqdQUwQ7o/Nr4P3XLFMpVO5MoN
+         E7SFClEy89yzQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     aik@ozlabs.ru, aneesh.kumar@linux.ibm.com, ego@linux.vnet.ibm.com,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        vaibhav@linux.ibm.com
+Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.9-5 tag
+Date:   Fri, 18 Sep 2020 22:20:48 +1000
+Message-ID: <877dsr6ztr.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918020940.GA14678@sjchrist-ice>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 07:09:40PM -0700, Sean Christopherson wrote:
-> On Thu, Sep 17, 2020 at 01:35:10PM -0500, Haitao Huang wrote:
-> > On Thu, 17 Sep 2020 11:02:06 -0500, Jarkko Sakkinen
-> > <jarkko.sakkinen@linux.intel.com> wrote:
-> > > 
-> > > Right, I do get the OOM case but wouldn't in that case the reasonable
-> > > thing to do destroy the enclave that is not even running? I mean that
-> > > means that we are globally out of EPC.
-> > > 
-> > 
-> > I would say it could be a policy, but not the only one. If it does not make
-> > much difference to kernel, IMHO we should  not set it in stone now.
-> > Debugging is also huge benefit to me.
-> 
-> Agreed, an EPC cgroup is the proper way to define/enforce what happens when
-> there is EPC pressure.  E.g. if process A is consuming 99% of the EPC, then
-> it doesn't make sense to unconditionally kill enclaves from process B.  If
-> the admin wants to give process A priority, so be it, but such a decision
-> shouldn't be baked into the kernel.
-> 
-> This series obviously doesn't provide an EPC cgroup, but that doesn't mean
-> we can't make decisions that will play nice with a cgroup in the future.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
-Here's the core issue why the API "as is used to be" does not work:
+Hi Linus,
 
-	if (ret == -EIO) {
-		mutex_lock(&encl->lock);
-		sgx_encl_destroy(encl);
-		mutex_unlock(&encl->lock);
-	}
+Please pull some more powerpc fixes for 5.9:
 
-It would be better to instead whitelist *when* the enclave is preserved.
+The following changes since commit 4a133eb351ccc275683ad49305d0b04dde903733:
 
-	if (ret != -ENOMEM) {
-		mutex_lock(&encl->lock);
-		sgx_encl_destroy(encl);
-		mutex_unlock(&encl->lock);
-	}
+  powerpc/32s: Disable VMAP stack which CONFIG_ADB_PMU (2020-08-28 12:03:18 +1000)
 
-That is the information we *deterministically* want to know. Otherwise,
-we will live in ultimate chaos.
+are available in the git repository at:
 
-Only this way can caller know when there are means to continue, and when
-to quit. I.e. the code is whitelisting wrong way around currently.
+  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.9-5
 
-/Jarkko
+for you to fetch changes up to 0460534b532e5518c657c7d6492b9337d975eaa3:
+
+  powerpc/papr_scm: Limit the readability of 'perf_stats' sysfs attribute (2020-09-09 14:44:38 +1000)
+
+- ------------------------------------------------------------------
+powerpc fixes for 5.9 #5
+
+Opt us out of the DEBUG_VM_PGTABLE support for now as it's causing crashes.
+
+Fix a long standing bug in our DMA mask handling that was hidden until recently,
+and which caused problems with some drivers.
+
+Fix a boot failure on systems with large amounts of RAM, and no hugepage support
+and using Radix MMU, only seen in the lab.
+
+A few other minor fixes.
+
+Thanks to:
+  Alexey Kardashevskiy, Aneesh Kumar K.V, Gautham R. Shenoy, Hari Bathini, Ira
+  Weiny, Nick Desaulniers, Shirisha Ganta, Vaibhav Jain, Vaidyanathan
+  Srinivasan.
+
+- ------------------------------------------------------------------
+Alexey Kardashevskiy (1):
+      powerpc/dma: Fix dma_map_ops::get_required_mask
+
+Aneesh Kumar K.V (2):
+      powerpc/book3s64/radix: Fix boot failure with large amount of guest memory
+      powerpc/mm: Remove DEBUG_VM_PGTABLE support on powerpc
+
+Gautham R. Shenoy (1):
+      cpuidle: pseries: Fix CEDE latency conversion from tb to us
+
+Michael Ellerman (2):
+      selftests/powerpc: Skip PROT_SAO test in guests/LPARS
+      Revert "powerpc/build: vdso linker warning for orphan sections"
+
+Vaibhav Jain (1):
+      powerpc/papr_scm: Limit the readability of 'perf_stats' sysfs attribute
+
+
+ Documentation/features/debug/debug-vm-pgtable/arch-support.txt |  2 +-
+ arch/powerpc/Kconfig                                           |  1 -
+ arch/powerpc/include/asm/book3s/64/mmu.h                       | 10 +++++-----
+ arch/powerpc/kernel/dma-iommu.c                                |  3 ++-
+ arch/powerpc/kernel/vdso32/Makefile                            |  2 +-
+ arch/powerpc/kernel/vdso32/vdso32.lds.S                        |  1 -
+ arch/powerpc/kernel/vdso64/Makefile                            |  2 +-
+ arch/powerpc/kernel/vdso64/vdso64.lds.S                        |  3 +--
+ arch/powerpc/mm/book3s64/radix_pgtable.c                       | 15 ---------------
+ arch/powerpc/mm/init_64.c                                      | 11 +++++++++--
+ arch/powerpc/platforms/pseries/papr_scm.c                      |  2 +-
+ drivers/cpuidle/cpuidle-pseries.c                              | 15 +++++++++++----
+ tools/testing/selftests/powerpc/mm/prot_sao.c                  |  9 +++++++--
+ 13 files changed, 39 insertions(+), 37 deletions(-)
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAl9kpeIACgkQUevqPMjh
+pYC4aQ/9HwhZgP4aLepJ51l+SajCw7GkDco50MorgjJQLgP2t2Yua/bE2VdB4V4E
+PFKq0ZFXytFRT6/njIFZVDsvrL5RbEyN5vHq7hwrmR3B+VJybQOzdyxncZUBlP7n
+RZAQS/MvMAu+OR2NFG0QLo9zx4FA9QKMEVYbr20Eftw4l613hP6yV+ubxYR/ww/S
+JvZw7JlyBRQfvpH8rb2x2sa1CLtPWGrZyUKWOQx8CTdIClgO7oghMGKAz5PyL+li
+AyaIT5e9QKJw5qNUI7Mv56oat+dBHz0xRKSEhrYhjU9LfJ7HBCK23C7l3Wzw5OQO
+94t3aAaCIa67uPk2TMdblM8aUN75hKxmRHg5GIBfTyhQKlWptb7A4M6BVd9sDm+d
+ggoF+LOZfypoM/xgFPAvVtdyacmRHfhZ+OHILPsTL3IKZRK2Lmr6CgJgY12Dzelk
+HudpQW58Egq/ZxwHH66UN6JzteYq7H6oKW7qmiJFftWm00Z78uSFlwFv9dX6aj1W
+CGVcANquLY5x6WjrYr2HZa5dfU3rnSRNMrTrXz9S6+ctboGl63pkIfWS1dQ4nB/7
+9SmPVivCK/gb1Sdv9LogGYTAgPgBUbC5lYzg1NlR3hOXyWre5P+do68RZFzujCtS
+EO4Phx+h+duzLXth35dQQ3tkhn2u3S7tuuXq0s4KT8ZD2TRWc8I=
+=UdKu
+-----END PGP SIGNATURE-----
