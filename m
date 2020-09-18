@@ -2,114 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 875F82707C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 23:07:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3143A2707AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 23:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726393AbgIRVHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 17:07:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32870 "EHLO
+        id S1726354AbgIRVAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 17:00:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726118AbgIRVHY (ORCPT
+        with ESMTP id S1726139AbgIRVAx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 17:07:24 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 447AEC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 14:07:24 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id y17so7567146lfa.8
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 14:07:24 -0700 (PDT)
+        Fri, 18 Sep 2020 17:00:53 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31FDC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 14:00:53 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id cy2so3704979qvb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 14:00:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RxtbCThgxVa45d8lwoZdOST6U19+8PapeOdnxsf30mE=;
-        b=Aeps+abbSb6m7OScrhyrKQIBoDCeK+uzMrv3p7Vi8SJ/tda0vxPKmQPaOM4yNIEufz
-         8DkpaRbmCzpsE1w2i3cUoaPaMb/XdqKl6aUzuP4YN1olvJC/m4GdtmBzz4kr19naytiB
-         dlWxRm+0+lXXCrm1ySrIDJpp+J+NIirt0APGg=
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZJ8zmvc17bX9xj6+//ug0LM49mqv1RsrDk1L3tNk8ec=;
+        b=iy16vZfUztyOxKq/IfHgI7kJQtwerpgo53nlcxG4i0DEjyExYJZzcnvYLRZ7dv41C/
+         uaQhCPGAqENb++afLCD1je++48JWOwmrzYv5ZAFoyTwgXdm9/MfkK+nNwmlrqsPEUIFS
+         zpCLZ5gN6euxSAl7cguwqsDnmWIOHXSTa7tWW9LroF3wpSYyN9+nqnEuCdJHyxsWH8b4
+         B3L5cm6Ix6jRaOz5BL3uee+vaatoD1sR8m0nUX1jABVjFRbamQg1/5dhtEb+DPXQbdfa
+         CXkwTnbSwjfJoV7dqbHFgbgUyf/wpRRr1YFNZiUoCyNmUm7jcQCOJ/xUpUVxo8z42uUm
+         p+Ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RxtbCThgxVa45d8lwoZdOST6U19+8PapeOdnxsf30mE=;
-        b=MKSpw/1HCfent1+e0SlW2lEF83fElWiPIQidVnFoaUlRbkKkJq1hl3334dF3rd7fNy
-         x5bL1DwDCyl16AfSN+SIoQVsoFYJc3u+Q3jo6wAF4Jk6utYi5us/Uq0ybmm6vr1rwb+7
-         PHDnt819vsanViwDcGT0V4FPTpi+i9FlB5Aga2b70JV/3WJS2G4g6JnwsEwDXfcbNhiz
-         E7p9MCICqn2XXfMIHZI7igFh+V0WMIdyw1BaysFeuvK+RBGDqqOxOQLNE5dWXqV+bUnL
-         vPi+/FmHbM466+UObUOwT7HDPbn/F5s2hnwWY0TDHW4p2aG9ZRHq3jCbne0tAhcGTxXP
-         FjWQ==
-X-Gm-Message-State: AOAM533qXGj3K58L7L5+c0ifSF+kRss1WFiM2DGVeXRpGEuUcaIkI/80
-        X2/GdcaUEvtT8xGf+yWeww2ukYb7m9Fodg==
-X-Google-Smtp-Source: ABdhPJzc9LZ2hJ9pXDtuu+5kP/LiqHodE5dKDz15ft7K8qM8X7y8RTSpNSnl68qbIAsaeQUhOqedpg==
-X-Received: by 2002:a19:4c87:: with SMTP id z129mr12260630lfa.189.1600463242422;
-        Fri, 18 Sep 2020 14:07:22 -0700 (PDT)
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
-        by smtp.gmail.com with ESMTPSA id 140sm819638lfj.146.2020.09.18.14.07.22
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Sep 2020 14:07:22 -0700 (PDT)
-Received: by mail-lj1-f182.google.com with SMTP id r24so6187302ljm.3
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 14:07:22 -0700 (PDT)
-X-Received: by 2002:a19:8907:: with SMTP id l7mr11107210lfd.105.1600462797703;
- Fri, 18 Sep 2020 13:59:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200915232238.GO1221970@ziepe.ca> <e6c352f8-7ee9-0702-10a4-122d2c4422fc@nvidia.com>
- <20200916174804.GC8409@ziepe.ca> <20200916184619.GB40154@xz-x1>
- <20200917112538.GD8409@ziepe.ca> <CAHk-=wjtfjB3TqTFRzVmOrB9Mii6Yzc-=wKq0fu4ruDE6AsJgg@mail.gmail.com>
- <20200917193824.GL8409@ziepe.ca> <CAHk-=wiY_g+SSjncZi8sO=LrxXmMox0NO7K34-Fs653XVXheGg@mail.gmail.com>
- <20200918164032.GA5962@xz-x1> <20200918173240.GY8409@ziepe.ca> <20200918204048.GC5962@xz-x1>
-In-Reply-To: <20200918204048.GC5962@xz-x1>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 18 Sep 2020 13:59:41 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiF03A3X0FoE68yXWDqO19ofgXq=21kWcRAe5+uN-WHXw@mail.gmail.com>
-Message-ID: <CAHk-=wiF03A3X0FoE68yXWDqO19ofgXq=21kWcRAe5+uN-WHXw@mail.gmail.com>
-Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=ZJ8zmvc17bX9xj6+//ug0LM49mqv1RsrDk1L3tNk8ec=;
+        b=nT3k7oD0Tml6S9O9a2xlvYPzCjVzidxMXSTkqoswdUc8T742etVV8/xpMXbfQcinm8
+         e+pMQygpbflA1Me4p+dd1n7VW1hbH6DO860UBukmN2gTJJHbUlSMWaPTdqkV7DvWt36N
+         ia6j52io/ancPAW+myEPU0x5MTVOlYOmWKdawK7V6KcAryacv9VknEng0yNF466mygz2
+         F0WXD6uSL44soYXipvcOPLB8UZ3L+5lnkO9RTSPEYemnp/o/PQI3UbVpXDynkRISvXkL
+         v0DZIpd3aKSayLJCm/rHaHCvj9hjazVpWwMsKIO3OU/XR/r2S4ujIRzGeOX0IH7anku1
+         BKRg==
+X-Gm-Message-State: AOAM532UNq7l4gWi80CxCT6iFVI3C71ZIm3yFPOpZuquDRE/l+gHxIzH
+        VTXkhB76vH/iohTS/3Ch/m0=
+X-Google-Smtp-Source: ABdhPJzjxkT9OR9uM81+L5YyaGQDJOqg7HbRZA/dBjiHRdtdxqwZ4ZxPjLW83OKSBGbwtd/RgqjGbA==
+X-Received: by 2002:a0c:8246:: with SMTP id h64mr19332976qva.54.1600462852729;
+        Fri, 18 Sep 2020 14:00:52 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id y69sm2877429qkb.52.2020.09.18.14.00.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 14:00:52 -0700 (PDT)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Fri, 18 Sep 2020 17:00:50 -0400
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
         Linux-MM <linux-mm@kvack.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Maya B . Gokhale" <gokhale2@llnl.gov>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Marty Mcfadden <mcfadden8@llnl.gov>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [GIT PULL] percpu fix for v5.9-rc6
+Message-ID: <20200918210050.GA2953017@rani.riverdale.lan>
+References: <20200917204514.GA2880159@google.com>
+ <CAHk-=whXpv0KJvpL153dhUaRgSjzT8H4dD85hRw-fAwXvXnKAA@mail.gmail.com>
+ <20200918162305.GB25599@embeddedor>
+ <CAHk-=wjH+OH08yjp=LpexkUnGp0Ogusk3WX0G7Q+Lh7Anfr21A@mail.gmail.com>
+ <20200918193426.GA15213@embeddedor>
+ <CAHk-=wg=vvSf3M9O1VkwyYB4D4W6XS2AHVpQn6hEQY+usWrKGg@mail.gmail.com>
+ <20200918200252.GH32101@casper.infradead.org>
+ <CAHk-=wiNjJGhAMBwYixwkADpNharvcuOG-AMCdii1q_Xo_Ky_A@mail.gmail.com>
+ <20200918202909.GA2946008@rani.riverdale.lan>
+ <CAHk-=wh-ryuY7KBNWr1n+kgQ5_CHB3-X+od-djBV4W-1kQFokA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wh-ryuY7KBNWr1n+kgQ5_CHB3-X+od-djBV4W-1kQFokA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 1:41 PM Peter Xu <peterx@redhat.com> wrote:
->
-> What would be the result if we simply use GFP_ATOMIC?  Would there be too many
-> pages to allocate in bulk for ATOMIC?
+On Fri, Sep 18, 2020 at 01:40:44PM -0700, Linus Torvalds wrote:
+> On Fri, Sep 18, 2020 at 1:29 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+> >
+> > In general (i.e. outside the implementation of the macro itself), what
+> > is the preferred way of getting the size of just the header?
+> >   1) offsetof(typeof(s),flex)
+> >   2) struct_size(s, flex, 0)
+> 
+> I think those two should end up being equivalent.
 
-It's very easy to run out of memory with GFP_ATOMIC, and also cause
-various nasty issues with networking (ie when you've depleted atomic
-memory, networking starts losing packets etc).
+Yeah, but it would be good to standardize on one of them.
 
-So yeah, this code should not use GFP_ATOMIC, I think it just needs to
-drop and re-take the paeg table lock.
+> 
+> >   3) sizeof(s)
+> 
+> This works right now, but exactly *because* it works, we're not seeing
+> the questionable cases.
+> 
+> Of course, _also_ exactly because it just silently works, I also don't
+> know if there may be thousands of perfectly fine uses where people
+> really do want the header, and a "sizeof()" is simpler than
+> alternatives 1-2.
+> 
+> It's possible that there really are a lot of "I want to know just the
+> header size" cases. It sounds odd, but I could _imagine_ situations
+> like that, even though no actual case comes to mind.
 
-Which is easy enough to do: returning a zero 'entry.val' already does
-that for other reasons, there's nothing magical about holding the lock
-here, there's no larger page table lock requirement.
+I'm asking because I just added an instance of (3) and want to know if I
+should change it :)
 
-The main annoyance is that I think it means that copy_pte_range()
-would also have to have a special "preallocation page" thing for this
-case, so that it can drop the lock, do the allocation, and then take
-the lock again and return 0 (to repeat - now with the preallocation
-filled).
+The case was when you have a function that got passed a pointer and a
+size, and wants to verify that the size covers the structure before
+accessing its fields. If the function only needs the "fixed" fields, it
+feels a little unnatural to use (1) or (2) when the flex member is
+otherwise not going be accessed at all.
 
-Honestly, if we had a completely *reliable* sign of "this page is
-pinned", then I think the much nicer option would be to just say
-"pinned pages will not be copied at all". Kind of an implicit
-VM_DONTCOPY.
+> 
+> >   4) new macro that's easier to read than 1 or 2, but makes it clear
+> >      what you're doing?
+> 
+> I don't think this would have any real advantage, would it?
 
-(Or we'd do the reverse, and say "pinned pages stay pinned even in the child").
+The advantage is documenting that you do mean the header size, i.e.
+something like struct_header_size(s).
 
-But that's not an option when the pinning test is a "maybe". Oh well.
+> 
+> Now what might be good is if we can make "struct_size()" also actually
+> verify that the member that is passed in is that last non-sized
+> member. I'm not sure how to do that.
+> 
+> I know how to check that it's *not* that last unsized member (just do
+> "sizeof(s->flex)", and it should error), but I don't see how to assert
+> the reverse of that).
+> 
+> Because that kind of "yes, we actually pass in the right member" check
+> would be good to have too.
+> 
+>               Linus
 
-             Linus
+You could just assert that offsetof(typeof(s),flex) == sizeof(s), no? It
+would also make sure that someone doesn't try to use struct_size() with
+a 1-sized array member.
