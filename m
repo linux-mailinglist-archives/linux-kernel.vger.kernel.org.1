@@ -2,79 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF95A26FC82
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 655D326FC8B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:33:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726437AbgIRMan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 08:30:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725955AbgIRMam (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 08:30:42 -0400
-Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40856C06174A;
-        Fri, 18 Sep 2020 05:30:42 -0700 (PDT)
-Received: by nautica.notk.org (Postfix, from userid 1001)
-        id 58A7FC01D; Fri, 18 Sep 2020 14:30:40 +0200 (CEST)
-Date:   Fri, 18 Sep 2020 14:30:25 +0200
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-cifs@vger.kernel.org,
-        Richard Weinberger <richard@nod.at>, ecryptfs@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-mtd@lists.infradead.org,
-        v9fs-developer@lists.sourceforge.net, ceph-devel@vger.kernel.org,
-        linux-afs@lists.infradead.org
-Subject: Re: [V9fs-developer] [PATCH 02/13] 9p: Tell the VFS that readpage
- was synchronous
-Message-ID: <20200918123025.GA735@nautica>
+        id S1726580AbgIRMct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 08:32:49 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35484 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726064AbgIRMcs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 08:32:48 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F36C8B2BC;
+        Fri, 18 Sep 2020 12:33:20 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 98324DA6E0; Fri, 18 Sep 2020 14:31:33 +0200 (CEST)
+Date:   Fri, 18 Sep 2020 14:31:33 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     syzbot <syzbot+4cfe71a4da060be47502@syzkaller.appspotmail.com>
+Cc:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: WARNING in close_fs_devices (2)
+Message-ID: <20200918123133.GD6756@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        syzbot <syzbot+4cfe71a4da060be47502@syzkaller.appspotmail.com>,
+        clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+References: <0000000000008fbadb05af94b61e@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200918111916.GA32101@casper.infradead.org>
- <20200917151050.5363-3-willy@infradead.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <0000000000008fbadb05af94b61e@google.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox (Oracle) wrote on Thu, Sep 17, 2020:
-> The 9p readpage implementation was already synchronous, so use
-> AOP_UPDATED_PAGE to avoid cycling the page lock.
+On Fri, Sep 18, 2020 at 04:22:16AM -0700, syzbot wrote:
+> Hello,
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-
-Acked-by: Dominique Martinet <asmadeus@codewreck.org>
-
-(I assume it'll be merged together with the rest)
-
-> > What I'm curious about is the page used to be both unlocked and put, but
-> > now isn't either and the return value hasn't changed for the caller to
-> > make a difference on write_begin / I don't see any code change in the
-> > vfs  to handle that.
-> > What did I miss?
+> syzbot found the following issue on:
 > 
-> The page cache is kind of subtle.  The grab_cache_page_write_begin()
-> will return a Locked page with an increased refcount.  If it's Uptodate,
-> that's exactly what we want, and we return it.  If we have to read the
-> page, readpage used to unlock the page before returning, and rather than
-> re-lock it, we would drop the reference to the page and look it up again.
-> It's possible that after dropping the lock on that page that the page
-> was replaced in the page cache and so we'd get a different page.
+> HEAD commit:    e4c26faa Merge tag 'usb-5.9-rc5' of git://git.kernel.org/p..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=15bf1621900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=c61610091f4ca8c4
+> dashboard link: https://syzkaller.appspot.com/bug?extid=4cfe71a4da060be47502
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+4cfe71a4da060be47502@syzkaller.appspotmail.com
+> 
+> ------------[ cut here ]------------
+> WARNING: CPU: 1 PID: 3612 at fs/btrfs/volumes.c:1166 close_fs_devices.part.0+0x607/0x800 fs/btrfs/volumes.c:1166
 
-Thanks for the explanation, I didn't realize the page already is
-gotten/locked at the PageUptodate goto out.
+1152 static int close_fs_devices(struct btrfs_fs_devices *fs_devices)
+1153 {
+1154         struct btrfs_device *device, *tmp;
+1155
+1156         if (--fs_devices->opened > 0)
+1157                 return 0;
+1158
+1159         mutex_lock(&fs_devices->device_list_mutex);
+1160         list_for_each_entry_safe(device, tmp, &fs_devices->devices, dev_list) {
+1161                 btrfs_close_one_device(device);
+1162         }
+1163         mutex_unlock(&fs_devices->device_list_mutex);
+1164
+1165         WARN_ON(fs_devices->open_devices);
+1166         WARN_ON(fs_devices->rw_devices);
 
-> Anyway, now (unless fscache is involved), v9fs_fid_readpage will return
-> the page without unlocking it.  So we don't need to do the dance of
-> dropping the lock, putting the refcount and looking the page back up
-> again.  We can just return the page.  The VFS doesn't need a special
-> return code because nothing has changed from the VFS's point of view --
-> it asked you to get a page and you got the page.
+1167         fs_devices->opened = 0;
+1168         fs_devices->seeding = false;
+1169
+1170         return 0;
+1171 }
 
-Yes, looks good to me.
+It's the 2nd warning, rw_devices > 0 .
 
-Cheers,
--- 
-Dominique
+> Kernel panic - not syncing: panic_on_warn set ...
+> CPU: 1 PID: 3612 Comm: syz-executor.2 Not tainted 5.9.0-rc4-syzkaller #0
+
+5.9-rc4, we've had some changes around device locking but no idea which
+one it could be.
