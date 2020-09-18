@@ -2,94 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2A3826F95D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54D7326F95F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726586AbgIRJda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 05:33:30 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:50439 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726159AbgIRJd3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 05:33:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600421608;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YyxvQapKO8cJ+h1msTh4Bn1k/c9vh0JXpNMN+TtY/Sw=;
-        b=ahAFF1i7fMzT8xjFRQLAOL+w1Mvw5o0mCjlI2GNpje+SkkEcMcAar7PTgchXmrBMULCwlx
-        +yi55h+ULht+PyR0Qgi6LtUchbOSVYhGysGB0hk9+cb+4qC/md+ab+4nPSEeienloDhiP7
-        Dp8r/gDS1gxfQTDK6Y4xvU4mw3zK8Bg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-585-DO35AFk4Nsq_aFG1fRQDGA-1; Fri, 18 Sep 2020 05:33:22 -0400
-X-MC-Unique: DO35AFk4Nsq_aFG1fRQDGA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4AB5F1091066;
-        Fri, 18 Sep 2020 09:33:21 +0000 (UTC)
-Received: from sirius.home.kraxel.org (ovpn-112-85.ams2.redhat.com [10.36.112.85])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 672E519D6C;
-        Fri, 18 Sep 2020 09:33:14 +0000 (UTC)
-Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
-        id 943F516E0A; Fri, 18 Sep 2020 11:33:13 +0200 (CEST)
-Date:   Fri, 18 Sep 2020 11:33:13 +0200
-From:   Gerd Hoffmann <kraxel@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Peter Xu <peterx@redhat.com>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Julia Suvorova <jsuvorov@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andrew Jones <drjones@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] KVM: x86: KVM_MEM_PCI_HOLE memory
-Message-ID: <20200918093313.7qfsgi7o46imqunc@sirius.home.kraxel.org>
-References: <20200807141232.402895-1-vkuznets@redhat.com>
- <20200825212526.GC8235@xz-x1>
- <87eenlwoaa.fsf@vitty.brq.redhat.com>
- <20200901200021.GB3053@xz-x1>
- <877dtcpn9z.fsf@vitty.brq.redhat.com>
- <20200904061210.GA22435@sjchrist-ice>
- <20200904072905.vbkiq3h762fyzds6@sirius.home.kraxel.org>
- <20200907065054-mutt-send-email-mst@kernel.org>
+        id S1726192AbgIRJe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 05:34:28 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13299 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726119AbgIRJe2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 05:34:28 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 62A12F0BF20DA5957E2B;
+        Fri, 18 Sep 2020 17:34:26 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.253) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Fri, 18 Sep 2020
+ 17:34:19 +0800
+Subject: Re: [PATCH v2 7/9] clocksource: sp804: add support for Hisilicon
+ sp804 timer
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Libin <huawei.libin@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Jianguo Chen <chenjianguo3@huawei.com>
+References: <20200912114536.2910-1-thunder.leizhen@huawei.com>
+ <20200912114536.2910-8-thunder.leizhen@huawei.com>
+ <5efc0de3-754b-2b48-7769-d9ac7f5e21b0@linaro.org>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <9fc18476-48a7-27d4-c1c7-cd6566696f3a@huawei.com>
+Date:   Fri, 18 Sep 2020 17:34:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200907065054-mutt-send-email-mst@kernel.org>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <5efc0de3-754b-2b48-7769-d9ac7f5e21b0@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.253]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  Hi,
 
-> > We could probably wire up ecam (arm/virt style) for pcie support, once
-> > the acpi support for mictovm finally landed (we need acpi for that
-> > because otherwise the kernel wouldn't find the pcie bus).
-> > 
-> > Question is whenever there is a good reason to do so.  Why would someone
-> > prefer microvm with pcie support over q35?
+
+On 2020/9/18 16:53, Daniel Lezcano wrote:
+> On 12/09/2020 13:45, Zhen Lei wrote:
+>> The ARM SP804 supports a maximum of 32-bit counter, but Hisilicon extends
+>> it to 64-bit. That means, the registers: TimerXload, TimerXValue and
+>> TimerXBGLoad are 64bits, all other registers are the same as those in the
+>> SP804. The driver code can be completely reused except that the register
+>> offset is different.
+>>
+>> Use compatible = "hisilicon,sp804" mark as Hisilicon sp804 timer.
+>>
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>> ---
+>>  drivers/clocksource/timer-sp.h    | 12 ++++++++++++
+>>  drivers/clocksource/timer-sp804.c | 15 +++++++++++++++
+>>  2 files changed, 27 insertions(+)
+>>
+>> diff --git a/drivers/clocksource/timer-sp.h b/drivers/clocksource/timer-sp.h
+>> index 1ab75cbed0e0..6ca8d82e8544 100644
+>> --- a/drivers/clocksource/timer-sp.h
+>> +++ b/drivers/clocksource/timer-sp.h
+>> @@ -31,6 +31,18 @@
+>>  #define TIMER_MIS	0x14			/*  CVR ro */
+>>  #define TIMER_BGLOAD	0x18			/*  CVR rw */
+>>  
+>> +
+>> +#define HISI_TIMER_1_BASE	0x00
+>> +#define HISI_TIMER_2_BASE	0x40
+>> +#define HISI_TIMER_LOAD		0x00
+>> +#define HISI_TIMER_VALUE	0x08
+>> +#define HISI_TIMER_CTRL		0x10
+>> +#define HISI_TIMER_INTCLR	0x14
+>> +#define HISI_TIMER_RIS		0x18
+>> +#define HISI_TIMER_MIS		0x1c
+>> +#define HISI_TIMER_BGLOAD	0x20
 > 
-> The usual reasons to use pcie apply to microvm just the same.
-> E.g.: pass through of pcie devices?
+> Why not put them in timer-sp804.c directly ?
 
-Playground:
-  https://git.kraxel.org/cgit/qemu/log/?h=sirius/microvm-usb
+I just want to put them together with TIMER_xxx, but ignore that HISI_TIMER_xxx
+is used only in file timer-sp804.c
 
-Adds support for usb and pcie (use -machine microvm,usb=on,pcie=on
-to enable).  Reuses the gpex used on arm/aarch64.  Seems to work ok
-on a quick test.
+OK, I will move them into timer-sp804.c
 
-Not fully sure how to deal correctly with ioports.  The gpex device
-has a mmio window for the io address space.  Will that approach work
-on x86 too?  Anyway, just not having a ioport range seems to be a
-valid configuation, so I've just disabled them for now ...
-
-take care,
-  Gerd
+> 
+> [ ... ]
+> 
 
