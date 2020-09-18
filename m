@@ -2,68 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF84626FE65
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 15:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79EDC26FE6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 15:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726935AbgIRNZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 09:25:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56158 "EHLO mail.kernel.org"
+        id S1726714AbgIRN0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 09:26:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56530 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726759AbgIRNZh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 09:25:37 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 33A512078D;
-        Fri, 18 Sep 2020 13:25:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600435536;
-        bh=G/e6nP7tB6JJ82T2l/UuOlCcHfU2ER69cUanXqbjBxg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HW6HKqFGe7Z5pCz/n5ZkbXUtRvTv007S/C8TwIQO71BqAcIyQ3HI/hkiY22ytTEYK
-         5Dgwr7at7I7AKw6qJN61hf05N6sZusKncE8FchIzLC8dEX1jaY3Sn0EkflGotjdxNA
-         nV2845SvAVNG9d2b9LuaCDSEIA0bWRalVtgBfQTs=
-Date:   Fri, 18 Sep 2020 14:25:31 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Bailu Lin <bailu.lin@vivo.com>
-Cc:     catalin.marinas@arm.com, corbet@lwn.net, harryxiyou@gmail.com,
-        alex.shi@linux.alibaba.com, linux-arm-kernel@lists.infradead.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@vivo.com
-Subject: Re: [PATCH v3] doc: zh_CN: index files in arm64 subdirectory
-Message-ID: <20200918132530.GA31232@willie-the-truck>
-References: <20200916130714.42438-1-bailu.lin@vivo.com>
- <20200918081126.20765-1-bailu.lin@vivo.com>
+        id S1726130AbgIRN0i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 09:26:38 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5FF75B03F;
+        Fri, 18 Sep 2020 13:27:10 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id A45CC1E12E1; Fri, 18 Sep 2020 15:26:35 +0200 (CEST)
+Date:   Fri, 18 Sep 2020 15:26:35 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     peterz@infradead.org, Jan Kara <jack@suse.cz>,
+        Boaz Harrosh <boaz@plexistor.com>,
+        Hou Tao <houtao1@huawei.com>, Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC PATCH] locking/percpu-rwsem: use this_cpu_{inc|dec}() for
+ read_count
+Message-ID: <20200918132635.GI18920@quack2.suse.cz>
+References: <20200915160344.GH35926@hirez.programming.kicks-ass.net>
+ <b885ce8e-4b0b-8321-c2cc-ee8f42de52d4@huawei.com>
+ <ddd5d732-06da-f8f2-ba4a-686c58297e47@plexistor.com>
+ <20200917120132.GA5602@redhat.com>
+ <20200918090702.GB18920@quack2.suse.cz>
+ <20200918100112.GN1362448@hirez.programming.kicks-ass.net>
+ <20200918101216.GL35926@hirez.programming.kicks-ass.net>
+ <20200918104824.GA23469@redhat.com>
+ <20200918110310.GO1362448@hirez.programming.kicks-ass.net>
+ <20200918130914.GA26777@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200918081126.20765-1-bailu.lin@vivo.com>
+In-Reply-To: <20200918130914.GA26777@redhat.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 01:11:26AM -0700, Bailu Lin wrote:
-> Add arm64 subdirectory into the table of Contents for zh_CN,
-> then add other translations in arm64 conveniently.
+On Fri 18-09-20 15:09:14, Oleg Nesterov wrote:
+> On 09/18, Peter Zijlstra wrote:
+> > > But again, do we really want this?
+> >
+> > I like the two counters better, avoids atomics entirely, some archs
+> > hare horridly expensive atomics (*cough* power *cough*).
 > 
-> Signed-off-by: Bailu Lin <bailu.lin@vivo.com>
-> ---
-> Changes in v3:
->  - Correct email encoding format.
-> Changes in v2:
->  - Fix patch description.
-> ---
->  Documentation/arm64/index.rst                    |  4 ++++
->  Documentation/translations/zh_CN/arm64/index.rst | 16 ++++++++++++++++
->  Documentation/translations/zh_CN/index.rst       |  1 +
->  3 files changed, 21 insertions(+)
->  create mode 100644 Documentation/translations/zh_CN/arm64/index.rst
+> I meant... do we really want to introduce percpu_up_read_irqsafe() ?
+> 
+> Perhaps we can live with the fix from Hou? At least until we find a
+> "real" performance regression.
 
-Acked-by: Will Deacon <will@kernel.org>
+I can say that for users of percpu rwsem in filesystems the cost of atomic
+inc/dec is unlikely to matter. The lock hold times there are long enough
+that it would be just lost in the noise.
 
-I'm assuming Jon will pick this one up.
+For other stuff using them like get_online_cpus() or get_online_mems() I'm
+not so sure...
 
-Cheers,
+								Honza
 
-Will
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
