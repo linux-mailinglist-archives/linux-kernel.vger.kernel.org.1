@@ -2,116 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27856270392
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 19:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 335E5270381
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 19:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726205AbgIRRzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 13:55:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59426 "EHLO
+        id S1726281AbgIRRqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 13:46:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725955AbgIRRzQ (ORCPT
+        with ESMTP id S1726007AbgIRRqT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 13:55:16 -0400
-X-Greylist: delayed 556 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 18 Sep 2020 10:55:16 PDT
-Received: from magratgarlick.emantor.de (magratgarlick.emantor.de [IPv6:2a01:4f8:c17:c88::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A120DC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 10:55:16 -0700 (PDT)
-Received: by magratgarlick.emantor.de (Postfix, from userid 114)
-        id B2FCBE493E; Fri, 18 Sep 2020 19:45:58 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on
-        magratgarlick.emantor.de
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.2
-Received: from localhost (dynamic-046-114-140-035.46.114.pool.telefonica.de [46.114.140.35])
-        by magratgarlick.emantor.de (Postfix) with ESMTPSA id C310FE493C;
-        Fri, 18 Sep 2020 19:45:55 +0200 (CEST)
-From:   Rouven Czerwinski <r.czerwinski@pengutronix.de>
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     kernel@pengutronix.de,
-        Rouven Czerwinski <r.czerwinski@pengutronix.de>,
-        op-tee@lists.trustedfirmware.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] tee: optee: replace might_sleep with cond_resched
-Date:   Fri, 18 Sep 2020 19:45:43 +0200
-Message-Id: <20200918174543.13108-1-r.czerwinski@pengutronix.de>
-X-Mailer: git-send-email 2.28.0
+        Fri, 18 Sep 2020 13:46:19 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C11BAC0613CE;
+        Fri, 18 Sep 2020 10:46:18 -0700 (PDT)
+Date:   Fri, 18 Sep 2020 17:46:13 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600451175;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IhB0NcX0HOm3WMSDpWGptMP1AutOeAlQCpBK85KN/zE=;
+        b=ytLnUvCkOEXDpwqRWEtzejMS/URwkOfqjZwgjh93rXAXkaUVSiJiD1QT2yhipnY+U3KPdN
+        ckXANTB+4w6N+qpXlaH8lGwTNTUk+jZNqZ2aU2yy8HJgPs+6dN222rECQf+dXitV218PEy
+        mHbvroT933qQhvUylp3OTCupu7Cc/IfDysBDxXIiah9bwpAn4RUq5fRNrafLNymsr5HbeV
+        wJUGvRTljYTHxsuY3Gmj/E1B/jDjNFNZZEtcpvy8Jbpo70MU42oqYuXohJlB7qd6/72xVA
+        W8ERDsRVRGT4zNFRsUJwlUDoMhBJ+N++U2MNSVLpdXaWJLNzdyj+tgMtsFYgiw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600451175;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IhB0NcX0HOm3WMSDpWGptMP1AutOeAlQCpBK85KN/zE=;
+        b=llc8pe7KuyQCQJNibu4oe/gSU2C+nQou6p5fOCrwgz/rVjy69Y9WmkfIPX1Q8YG7H0Gbdt
+        1ooaUaFAi8UKTWCw==
+From:   "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: objtool/urgent] objtool: Fix noreturn detection for ignored functions
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Borislav Petkov <bp@suse.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <5b1e2536cdbaa5246b60d7791b76130a74082c62.1599751464.git.jpoimboe@redhat.com>
+References: <5b1e2536cdbaa5246b60d7791b76130a74082c62.1599751464.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <160045117381.15536.17047493759448999988.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Kernels with CONFIG_PREEMPT_NONE might_sleep() is not enough to force
-rescheduling, replace it with a resched check and cond_resched. Fixes
-the following stall:
+The following commit has been merged into the objtool/urgent branch of tip:
 
-  [  572.945146] rcu: INFO: rcu_sched self-detected stall on CPU
-  [  572.949275] rcu:     0-....: (2099 ticks this GP) idle=572/1/0x40000002 softirq=7412/7412 fqs=974
-  [  572.957964]  (t=2100 jiffies g=10393 q=21)
-  [  572.962054] NMI backtrace for cpu 0
-  [  572.965540] CPU: 0 PID: 165 Comm: xtest Not tainted 5.8.7 #1
-  [  572.971188] Hardware name: STM32 (Device Tree Support)
-  [  572.976354] [<c011163c>] (unwind_backtrace) from [<c010b7f8>] (show_stack+0x10/0x14)
-  [  572.984080] [<c010b7f8>] (show_stack) from [<c0511e4c>] (dump_stack+0xc4/0xd8)
-  [  572.991300] [<c0511e4c>] (dump_stack) from [<c0519abc>] (nmi_cpu_backtrace+0x90/0xc4)
-  [  572.999130] [<c0519abc>] (nmi_cpu_backtrace) from [<c0519bdc>] (nmi_trigger_cpumask_backtrace+0xec/0x130)
-  [  573.008706] [<c0519bdc>] (nmi_trigger_cpumask_backtrace) from [<c01a5184>] (rcu_dump_cpu_stacks+0xe8/0x110)
-  [  573.018453] [<c01a5184>] (rcu_dump_cpu_stacks) from [<c01a4234>] (rcu_sched_clock_irq+0x7fc/0xa88)
-  [  573.027416] [<c01a4234>] (rcu_sched_clock_irq) from [<c01acdd0>] (update_process_times+0x30/0x8c)
-  [  573.036291] [<c01acdd0>] (update_process_times) from [<c01bfb90>] (tick_sched_timer+0x4c/0xa8)
-  [  573.044905] [<c01bfb90>] (tick_sched_timer) from [<c01adcc8>] (__hrtimer_run_queues+0x174/0x358)
-  [  573.053696] [<c01adcc8>] (__hrtimer_run_queues) from [<c01aea2c>] (hrtimer_interrupt+0x118/0x2bc)
-  [  573.062573] [<c01aea2c>] (hrtimer_interrupt) from [<c09ad664>] (arch_timer_handler_virt+0x28/0x30)
-  [  573.071536] [<c09ad664>] (arch_timer_handler_virt) from [<c0190f50>] (handle_percpu_devid_irq+0x8c/0x240)
-  [  573.081109] [<c0190f50>] (handle_percpu_devid_irq) from [<c018ab8c>] (generic_handle_irq+0x34/0x44)
-  [  573.090156] [<c018ab8c>] (generic_handle_irq) from [<c018b194>] (__handle_domain_irq+0x5c/0xb0)
-  [  573.098857] [<c018b194>] (__handle_domain_irq) from [<c052ac50>] (gic_handle_irq+0x4c/0x90)
-  [  573.107209] [<c052ac50>] (gic_handle_irq) from [<c0100b0c>] (__irq_svc+0x6c/0x90)
-  [  573.114682] Exception stack(0xd90dfcf8 to 0xd90dfd40)
-  [  573.119732] fce0:                                                       ffff0004 00000000
-  [  573.127917] fd00: 00000000 00000000 00000000 00000000 00000000 00000000 d93493cc ffff0000
-  [  573.136098] fd20: d2bc39c0 be926998 d90dfd58 d90dfd48 c09f3384 c01151f0 400d0013 ffffffff
-  [  573.144281] [<c0100b0c>] (__irq_svc) from [<c01151f0>] (__arm_smccc_smc+0x10/0x20)
-  [  573.151854] [<c01151f0>] (__arm_smccc_smc) from [<c09f3384>] (optee_smccc_smc+0x3c/0x44)
-  [  573.159948] [<c09f3384>] (optee_smccc_smc) from [<c09f4170>] (optee_do_call_with_arg+0xb8/0x154)
-  [  573.168735] [<c09f4170>] (optee_do_call_with_arg) from [<c09f4638>] (optee_invoke_func+0x110/0x190)
-  [  573.177786] [<c09f4638>] (optee_invoke_func) from [<c09f1ebc>] (tee_ioctl+0x10b8/0x11c0)
-  [  573.185879] [<c09f1ebc>] (tee_ioctl) from [<c029f62c>] (ksys_ioctl+0xe0/0xa4c)
-  [  573.193101] [<c029f62c>] (ksys_ioctl) from [<c0100060>] (ret_fast_syscall+0x0/0x54)
-  [  573.200750] Exception stack(0xd90dffa8 to 0xd90dfff0)
-  [  573.205803] ffa0:                   be926bf4 be926a78 00000003 8010a403 be926908 004e3cf8
-  [  573.213987] ffc0: be926bf4 be926a78 00000000 00000036 be926908 be926918 be9269b0 bffdf0f8
-  [  573.222162] ffe0: b6d76fb0 be9268fc b6d66621 b6c7e0d8
+Commit-ID:     db6c6a0df840e3f52c84cc302cc1a08ba11a4416
+Gitweb:        https://git.kernel.org/tip/db6c6a0df840e3f52c84cc302cc1a08ba11a4416
+Author:        Josh Poimboeuf <jpoimboe@redhat.com>
+AuthorDate:    Thu, 10 Sep 2020 10:24:57 -05:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 18 Sep 2020 19:37:51 +02:00
 
-seen on STM32 DK2.
+objtool: Fix noreturn detection for ignored functions
 
-Signed-off-by: Rouven Czerwinski <r.czerwinski@pengutronix.de>
+When a function is annotated with STACK_FRAME_NON_STANDARD, objtool
+doesn't validate its code paths.  It also skips sibling call detection
+within the function.
+
+But sibling call detection is actually needed for the case where the
+ignored function doesn't have any return instructions.  Otherwise
+objtool naively marks the function as implicit static noreturn, which
+affects the reachability of its callers, resulting in "unreachable
+instruction" warnings.
+
+Fix it by just enabling sibling call detection for ignored functions.
+The 'insn->ignore' check in add_jump_destinations() is no longer needed
+after
+
+  e6da9567959e ("objtool: Don't use ignore flag for fake jumps").
+
+Fixes the following warning:
+
+  arch/x86/kvm/vmx/vmx.o: warning: objtool: vmx_handle_exit_irqoff()+0x142: unreachable instruction
+
+which triggers on an allmodconfig with CONFIG_GCOV_KERNEL unset.
+
+Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Linus Torvalds <torvalds@linux-foundation.org>
+Link: https://lkml.kernel.org/r/5b1e2536cdbaa5246b60d7791b76130a74082c62.1599751464.git.jpoimboe@redhat.com
 ---
- drivers/tee/optee/call.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ tools/objtool/check.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
-index 20b6fd7383c5..83b73b1d52f0 100644
---- a/drivers/tee/optee/call.c
-+++ b/drivers/tee/optee/call.c
-@@ -8,6 +8,7 @@
- #include <linux/errno.h>
- #include <linux/mm.h>
- #include <linux/slab.h>
-+#include <linux/sched.h>
- #include <linux/tee_drv.h>
- #include <linux/types.h>
- #include <linux/uaccess.h>
-@@ -148,7 +149,8 @@ u32 optee_do_call_with_arg(struct tee_context *ctx, phys_addr_t parg)
- 			 */
- 			optee_cq_wait_for_completion(&optee->call_queue, &w);
- 		} else if (OPTEE_SMC_RETURN_IS_RPC(res.a0)) {
--			might_sleep();
-+			if(need_resched())
-+				cond_resched();
- 			param.a0 = res.a0;
- 			param.a1 = res.a1;
- 			param.a2 = res.a2;
--- 
-2.28.0
-
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index e034a8f..90a6689 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -619,7 +619,7 @@ static int add_jump_destinations(struct objtool_file *file)
+ 		if (!is_static_jump(insn))
+ 			continue;
+ 
+-		if (insn->ignore || insn->offset == FAKE_JUMP_OFFSET)
++		if (insn->offset == FAKE_JUMP_OFFSET)
+ 			continue;
+ 
+ 		reloc = find_reloc_by_dest_range(file->elf, insn->sec,
