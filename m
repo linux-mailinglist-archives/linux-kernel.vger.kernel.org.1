@@ -2,144 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42C1D26FEA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 15:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DCF926FEA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 15:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726855AbgIRNe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 09:34:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56685 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726526AbgIRNew (ORCPT
+        id S1726886AbgIRNfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 09:35:16 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:34462 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726126AbgIRNfQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 09:34:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600436091;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Fri, 18 Sep 2020 09:35:16 -0400
+Date:   Fri, 18 Sep 2020 13:35:13 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600436114;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=YN8GaQ8TV4sFrBpi6XN0z9f0qTT9ES4Iedyq0dk3o+A=;
-        b=NuY2o/w/2mHgQntSRn8IAU1FGi31arsI7v3tdVCJ89ohqUQ6n2nXu+Een3N8FkmO87boBu
-        JrcJWTlWwrcaEEOdBgs1gxSNyNg2hW4aJEgwFR0ZypPToH2+DwkUtVX5zovK43lLkcBc1Z
-        fCKe7QtdhOdCGPSIQqQL7BMz2Z/r6W0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-367-KlS48hkNMc-Xii0KmdWJjA-1; Fri, 18 Sep 2020 09:34:47 -0400
-X-MC-Unique: KlS48hkNMc-Xii0KmdWJjA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 824C0AFD63;
-        Fri, 18 Sep 2020 13:34:45 +0000 (UTC)
-Received: from krava (ovpn-114-24.ams2.redhat.com [10.36.114.24])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 0200C1002D46;
-        Fri, 18 Sep 2020 13:34:40 +0000 (UTC)
-Date:   Fri, 18 Sep 2020 15:34:39 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCH 2/4] perf stat: Add --for-each-cgroup option
-Message-ID: <20200918133439.GB2626435@krava>
-References: <20200916063129.1061487-1-namhyung@kernel.org>
- <20200916063129.1061487-3-namhyung@kernel.org>
+        bh=rK3lS4IY7ZktPpReXIKTgyey3lWUsewgdHql5ETQv6A=;
+        b=nZu0WCPtiIXMJVowo3FeGpxhAgzSGnjDN540F8N5mimVRCWspYE00bOzTsa40g4MltY6IM
+        1Lg1V4F/LSVtLnaUnbXAsbb5iLMzxJnF1PSyh6Sj/JM9U+FwCRXsj9SwmscCa0WpN8Xsxy
+        T8JIlqDWXW4/Kl95vK0iCOg2HH9viwIlDyrX8Eo9cOBSSrOlItPQDnvD2os0FgFaBVlUgm
+        pm5wq8vwEeGzRPvD0pd4uZy+g5kQDIBCV/+Dyp6rvVho4MOc9Obhv2Qzo/2t5qFx13njOU
+        dtzzWsBJyH7VpwpPbMYqw6PAse+Araj439rW2oANy+5AniAJ61MAOHKjbtQb3g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600436114;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rK3lS4IY7ZktPpReXIKTgyey3lWUsewgdHql5ETQv6A=;
+        b=Gr6wJLqNzQl4jvv+BPjyMU72j7/sUc8KAf6Fu3R/vIvVpmJn/4PUX25up02T5ohc8V2zrL
+        PSr8CAiIWeNDOVCA==
+From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: ras/core] x86/mce: Annotate mce_rd/wrmsrl() with noinstr
+Cc:     Borislav Petkov <bp@suse.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200915194020.28807-1-bp@alien8.de>
+References: <20200915194020.28807-1-bp@alien8.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916063129.1061487-3-namhyung@kernel.org>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Message-ID: <160043611320.15536.8690718726101063839.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 03:31:27PM +0900, Namhyung Kim wrote:
+The following commit has been merged into the ras/core branch of tip:
 
-SNIP
+Commit-ID:     e100777016fdf6ec3a9d7c1773b15a2b5eca6c55
+Gitweb:        https://git.kernel.org/tip/e100777016fdf6ec3a9d7c1773b15a2b5eca6c55
+Author:        Borislav Petkov <bp@suse.de>
+AuthorDate:    Mon, 14 Sep 2020 19:21:28 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 18 Sep 2020 15:21:11 +02:00
 
-> +int evlist__expand_cgroup(struct evlist *evlist, const char *str)
-> +{
-> +	struct evlist *orig_list, *tmp_list;
-> +	struct evsel *pos, *evsel, *leader;
-> +	struct cgroup *cgrp = NULL;
-> +	const char *p, *e, *eos = str + strlen(str);
-> +	int ret = -1;
-> +
-> +	if (evlist->core.nr_entries == 0) {
-> +		fprintf(stderr, "must define events before cgroups\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	orig_list = evlist__new();
-> +	tmp_list = evlist__new();
-> +	if (orig_list == NULL || tmp_list == NULL) {
-> +		fprintf(stderr, "memory allocation failed\n");
-> +		return -ENOMEM;
-> +	}
-> +
-> +	/* save original events and init evlist */
-> +	perf_evlist__splice_list_tail(orig_list, &evlist->core.entries);
-> +	evlist->core.nr_entries = 0;
-> +
-> +	for (;;) {
-> +		p = strchr(str, ',');
-> +		e = p ? p : eos;
-> +
-> +		/* allow empty cgroups, i.e., skip */
-> +		if (e - str) {
-> +			/* termination added */
-> +			char *name = strndup(str, e - str);
-> +			if (!name)
-> +				break;
-> +
-> +			cgrp = cgroup__new(name);
-> +			free(name);
-> +			if (cgrp == NULL)
-> +				break;
-> +		} else {
-> +			cgrp = NULL;
-> +		}
-> +
-> +		leader = NULL;
-> +		evlist__for_each_entry(orig_list, pos) {
-> +			evsel = evsel__clone(pos);
+x86/mce: Annotate mce_rd/wrmsrl() with noinstr
 
-missing check on evsel == NULL
+They do get called from the #MC handler which is already marked
+"noinstr".
 
-jirka
+Commit
 
-> +			cgroup__put(evsel->cgrp);
-> +			evsel->cgrp = cgroup__get(cgrp);
-> +
-> +			if (evsel__is_group_leader(pos))
-> +				leader = evsel;
-> +			evsel->leader = leader;
-> +
-> +			evlist__add(tmp_list, evsel);
-> +		}
-> +		/* cgroup__new() has a refcount, release it here */
-> +		cgroup__put(cgrp);
-> +		nr_cgroups++;
-> +
-> +		perf_evlist__splice_list_tail(evlist, &tmp_list->core.entries);
-> +		tmp_list->core.nr_entries = 0;
-> +
-> +		if (!p) {
-> +			ret = 0;
-> +			break;
-> +		}
-> +		str = p+1;
-> +	}
-> +	evlist__delete(orig_list);
-> +	evlist__delete(tmp_list);
-> +
-> +	return ret;
-> +}
+  e2def7d49d08 ("x86/mce: Make mce_rdmsrl() panic on an inaccessible MSR")
 
-SNIP
+already got rid of the instrumentation in the MSR accessors, fix the
+annotation now too, in order to get rid of:
 
+  vmlinux.o: warning: objtool: do_machine_check()+0x4a: call to mce_rdmsrl() leaves .noinstr.text section
+
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20200915194020.28807-1-bp@alien8.de
+---
+ arch/x86/kernel/cpu/mce/core.c | 27 +++++++++++++++++++++------
+ 1 file changed, 21 insertions(+), 6 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 5b1d5f3..11b6697 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -392,16 +392,25 @@ __visible bool ex_handler_rdmsr_fault(const struct exception_table_entry *fixup,
+ }
+ 
+ /* MSR access wrappers used for error injection */
+-static u64 mce_rdmsrl(u32 msr)
++static noinstr u64 mce_rdmsrl(u32 msr)
+ {
+ 	DECLARE_ARGS(val, low, high);
+ 
+ 	if (__this_cpu_read(injectm.finished)) {
+-		int offset = msr_to_offset(msr);
++		int offset;
++		u64 ret;
+ 
++		instrumentation_begin();
++
++		offset = msr_to_offset(msr);
+ 		if (offset < 0)
+-			return 0;
+-		return *(u64 *)((char *)this_cpu_ptr(&injectm) + offset);
++			ret = 0;
++		else
++			ret = *(u64 *)((char *)this_cpu_ptr(&injectm) + offset);
++
++		instrumentation_end();
++
++		return ret;
+ 	}
+ 
+ 	/*
+@@ -437,15 +446,21 @@ __visible bool ex_handler_wrmsr_fault(const struct exception_table_entry *fixup,
+ 	return true;
+ }
+ 
+-static void mce_wrmsrl(u32 msr, u64 v)
++static noinstr void mce_wrmsrl(u32 msr, u64 v)
+ {
+ 	u32 low, high;
+ 
+ 	if (__this_cpu_read(injectm.finished)) {
+-		int offset = msr_to_offset(msr);
++		int offset;
+ 
++		instrumentation_begin();
++
++		offset = msr_to_offset(msr);
+ 		if (offset >= 0)
+ 			*(u64 *)((char *)this_cpu_ptr(&injectm) + offset) = v;
++
++		instrumentation_end();
++
+ 		return;
+ 	}
+ 
