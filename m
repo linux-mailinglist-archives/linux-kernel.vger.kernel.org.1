@@ -2,166 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9419E27092F
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 01:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FAFC27094C
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 01:54:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726134AbgIRXjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 19:39:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726009AbgIRXjG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 19:39:06 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6DACC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 16:39:06 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id z13so8869968iom.8
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 16:39:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uE/cayLTRj4o6VbdtS1FiP9bUXCTNIrB9/N0MCrOtfo=;
-        b=im4xm9S+CB1bk+rTchpPTBu234oDgOXS0c6CizqgqQSILhVrGvpR2NrL6FsCo8urns
-         p+h+lTo3ZeERwuDd/OQ3olVB4P3xQruG1OxeD1KmG4RxXly6GNL9N4JMnmm13f5Jet/M
-         d1Nz+DkEY44BwXgGnUIrOQMk3ERMThORhA5PE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uE/cayLTRj4o6VbdtS1FiP9bUXCTNIrB9/N0MCrOtfo=;
-        b=IQX0IcheeM+YAnFhFzBgvlyHg5YwnP/VQoNm+TmYLPL2p7BtqF0iiNfjDFvv97XoMj
-         3qQT4GQHyVwe1GjNLcUn/0cpMrZ43KHtVybRn1fubcSGdYVoNEcJfskrRlSm85wB0WqJ
-         k1Zu3am4WokDZMnebEVDjboGN2vpvtc88l6DkIwj7ga90rfTL/4qMzyPy43MMhJD344z
-         /Mzk6c2t6+4/2AP3YY741TltwLcR84lQ4bB6gz7aYwqw2E5qrdWIgJhs6DyV4rDxXYLq
-         0mNCXOdscQ1dxBTgB2inw7GQHZpguV9b3Mm2IUd+Uay4XIosi/U7zstvu8lLrX3n03Gq
-         orlQ==
-X-Gm-Message-State: AOAM532hWzSRY8S+uLfY6ioQUc1TWie+HJpfd/71KVEWmPD4VSH7H0k0
-        ybrPTSkLmfMYX32tB7q59soDEokl5zm8SIR8rHJZ7Q==
-X-Google-Smtp-Source: ABdhPJx8gLoUjR0Ap8mewfR2t8s4cOhUrrYbG0HDoOWOITfbtbz2bGM93p5sQM9HOx3L6yoALSoU6Ynr1vifO4D+b9U=
-X-Received: by 2002:a02:8805:: with SMTP id r5mr33544712jai.52.1600472345877;
- Fri, 18 Sep 2020 16:39:05 -0700 (PDT)
+        id S1726192AbgIRXxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 19:53:46 -0400
+Received: from mga09.intel.com ([134.134.136.24]:33797 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726009AbgIRXxq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 19:53:46 -0400
+IronPort-SDR: w88lfMPgP8nXs6QNBM3G9+SRjZ14xkOCZ5XgA13OPSP9X04b0sjDBzC0nzr1DkG4NMrOIrcm8e
+ GdoUPGxCptDA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9748"; a="160973147"
+X-IronPort-AV: E=Sophos;i="5.77,276,1596524400"; 
+   d="scan'208";a="160973147"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 16:53:41 -0700
+IronPort-SDR: 7Tx3tHHwo1WoVwkybdZU7HNvtlLMmqX3VW0acb1K3sujhz8PdF+fzQtAi4QgCRrc9FtFlGDduE
+ oOSShv2q69YQ==
+X-IronPort-AV: E=Sophos;i="5.77,276,1596524400"; 
+   d="scan'208";a="381080557"
+Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 16:53:38 -0700
+Date:   Fri, 18 Sep 2020 16:53:37 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        X86 ML <x86@kernel.org>, linux-sgx@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        asapek@google.com, Borislav Petkov <bp@alien8.de>,
+        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
+        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Huang, Haitao" <haitao.huang@intel.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
+        Christian Ludloff <ludloff@google.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Patrick Uiterwijk <puiterwijk@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
+Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
+Message-ID: <20200918235337.GA21189@sjchrist-ice>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-11-jarkko.sakkinen@linux.intel.com>
+ <CALCETrX9T1ZUug=M5ba9g4H5B7kV=yL5RzuTaeAEdy3uAieN_A@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200903095415.2572049-1-pmalani@chromium.org>
- <1e2de378-5f5b-939e-39d8-00d6cc5ab6c8@collabora.com> <CACeCKaeNbhcoxCUkTJ1=jxGff5tNsSm4w7NdPe9=7dhUE7baqA@mail.gmail.com>
-In-Reply-To: <CACeCKaeNbhcoxCUkTJ1=jxGff5tNsSm4w7NdPe9=7dhUE7baqA@mail.gmail.com>
-From:   Gwendal Grignou <gwendal@chromium.org>
-Date:   Fri, 18 Sep 2020 16:38:53 -0700
-Message-ID: <CAPUE2usvG43vTNGipQp8Q5DsvJqXKLggZ-TH4m+vkMi249v_nA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] platform/chrome: cros_ec_proto: Update
- cros_ec_cmd_xfer() call-sites
-To:     Prashant Malani <pmalani@chromium.org>
-Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALCETrX9T1ZUug=M5ba9g4H5B7kV=yL5RzuTaeAEdy3uAieN_A@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 4:29 PM Prashant Malani <pmalani@chromium.org> wrote:
->
-> Thanks Enric,
->
-> On Mon, Sep 7, 2020 at 3:48 AM Enric Balletbo i Serra
-> <enric.balletbo@collabora.com> wrote:
+On Fri, Sep 18, 2020 at 08:09:04AM -0700, Andy Lutomirski wrote:
+> On Tue, Sep 15, 2020 at 4:28 AM Jarkko Sakkinen
+> <jarkko.sakkinen@linux.intel.com> wrote:
 > >
-> > Hi Prashant,
+> > From: Sean Christopherson <sean.j.christopherson@intel.com>
 > >
-> > Thank you for your patch.
+> > Add vm_ops()->mprotect() for additional constraints for a VMA.
 > >
-> > On 3/9/20 11:54, Prashant Malani wrote:
-> > > Since all the other call-sites of cros_ec_cmd_xfer() have been converted
-> > > to use cros_ec_cmd_xfer_status() instead, update the remaining
-> > > call-sites to prepare for the merge of cros_ec_cmd_xfer() into
-> > > cros_ec_cmd_xfer_status().
-> > >
-> > > As part of this update, change the error handling inside
-> > > cros_ec_get_sensor_count() such that the legacy LPC interface is tried
-> > > on all error values, not just when msg->result != EC_RESULT_SUCCESS.
-> > >
-> > > Signed-off-by: Prashant Malani <pmalani@chromium.org>
-Reviewed-by: Gwendal Grignou <gwendal@chromium.org>
-Tested-by: Gwendal Grignou <gwendal@chromium.org>
+> > Intel Software Guard eXtensions (SGX) will use this callback to add two
+> > constraints:
+> >
+> > 1. Verify that the address range does not have holes: each page address
+> >    must be filled with an enclave page.
+> > 2. Verify that VMA permissions won't surpass the permissions of any enclave
+> >    page within the address range. Enclave cryptographically sealed
+> >    permissions for each page address that set the upper limit for possible
+> >    VMA permissions. Not respecting this can cause #GP's to be emitted.
 
-There is a slight change in API in cros_ec_get_sensor_count(): it will
-return a negative number of sensors when there
-are no sensors on arm platform when MOTIONSENSE_CMD_DUMP is not
-supported (typical for sensorless chromebook) instead of 0.
-However, this is not a problem when probing the EC as we ignore errors
-only looking for cros_ec_get_sensor_count() returning a positive
-number of sensors.
+Side note, #GP is wrong.  EPCM violations are #PFs.  Skylake CPUs #GP, but
+that's technically an errata.  But this isn't the real motivation, e.g.
+userspace can already trigger #GP/#PF by reading/writing a bad address, SGX
+simply adds another flavor.
 
-> >
-> > Gwendal, I'd like to hear from you regarding this patch as you're the one that
-> > know most about the corner cases for the sensors in different hardware. Could
-> > you take a look and give us your Reviewed tag if all is good?
-> >
-> Gwendal, could you kindly take a look? Thanks!
->
-> > Thanks,
-> >
-> >  Enric
-> >
-> > > ---
-> > >  drivers/platform/chrome/cros_ec_proto.c | 15 ++++-----------
-> > >  1 file changed, 4 insertions(+), 11 deletions(-)
-> > >
-> > > diff --git a/drivers/platform/chrome/cros_ec_proto.c b/drivers/platform/chrome/cros_ec_proto.c
-> > > index dda182132a6a..2cb1defcdd13 100644
-> > > --- a/drivers/platform/chrome/cros_ec_proto.c
-> > > +++ b/drivers/platform/chrome/cros_ec_proto.c
-> > > @@ -650,7 +650,7 @@ static int get_next_event_xfer(struct cros_ec_device *ec_dev,
-> > >       msg->insize = size;
-> > >       msg->outsize = 0;
-> > >
-> > > -     ret = cros_ec_cmd_xfer(ec_dev, msg);
-> > > +     ret = cros_ec_cmd_xfer_status(ec_dev, msg);
-> > >       if (ret > 0) {
-> > >               ec_dev->event_size = ret - 1;
-> > >               ec_dev->event_data = *event;
-> > > @@ -694,7 +694,7 @@ static int get_keyboard_state_event(struct cros_ec_device *ec_dev)
-> > >       msg->insize = sizeof(ec_dev->event_data.data);
-> > >       msg->outsize = 0;
-> > >
-> > > -     ec_dev->event_size = cros_ec_cmd_xfer(ec_dev, msg);
-> > > +     ec_dev->event_size = cros_ec_cmd_xfer_status(ec_dev, msg);
-> > >       ec_dev->event_data.event_type = EC_MKBP_EVENT_KEY_MATRIX;
-> > >       memcpy(&ec_dev->event_data.data, msg->data,
-> > >              sizeof(ec_dev->event_data.data));
-> > > @@ -883,11 +883,9 @@ int cros_ec_get_sensor_count(struct cros_ec_dev *ec)
-> > >       params = (struct ec_params_motion_sense *)msg->data;
-> > >       params->cmd = MOTIONSENSE_CMD_DUMP;
-> > >
-> > > -     ret = cros_ec_cmd_xfer(ec->ec_dev, msg);
-> > > +     ret = cros_ec_cmd_xfer_status(ec->ec_dev, msg);
-> > >       if (ret < 0) {
-> > >               sensor_count = ret;
-> > > -     } else if (msg->result != EC_RES_SUCCESS) {
-> > > -             sensor_count = -EPROTO;
-> > >       } else {
-> > >               resp = (struct ec_response_motion_sense *)msg->data;
-> > >               sensor_count = resp->dump.sensor_count;
-> > > @@ -898,9 +896,7 @@ int cros_ec_get_sensor_count(struct cros_ec_dev *ec)
-> > >        * Check legacy mode: Let's find out if sensors are accessible
-> > >        * via LPC interface.
-> > >        */
-> > > -     if (sensor_count == -EPROTO &&
-> > > -         ec->cmd_offset == 0 &&
-> > > -         ec_dev->cmd_readmem) {
-> > > +     if (sensor_count < 0 && ec->cmd_offset == 0 && ec_dev->cmd_readmem) {
-> > >               ret = ec_dev->cmd_readmem(ec_dev, EC_MEMMAP_ACC_STATUS,
-> > >                               1, &status);
-> > >               if (ret >= 0 &&
-> > > @@ -915,9 +911,6 @@ int cros_ec_get_sensor_count(struct cros_ec_dev *ec)
-> > >                        */
-> > >                       sensor_count = 0;
-> > >               }
-> > > -     } else if (sensor_count == -EPROTO) {
-> > > -             /* EC responded, but does not understand DUMP command. */
-> > > -             sensor_count = 0;
-> > >       }
-> > >       return sensor_count;
-> > >  }
-> > >
+> It's been awhile since I looked at this.  Can you remind us: is this
+> just preventing userspace from shooting itself in the foot or is this
+> something more important?
+
+Something more important, it's used to prevent userspace from circumventing
+a noexec filesystem by loading code into an enclave, and to give the kernel the
+option of adding enclave specific LSM policies in the future.
+
+The source file (if one exists) for the enclave is long gone when the enclave
+is actually mmap()'d and mprotect()'d.  To enforce noexec, the requested
+permissions for a given page are snapshotted when the page is added to the
+enclave, i.e. when the enclave is built.  Enclave pages that will be executable
+must originate from an a MAYEXEC VMA, e.g. the source page can't come from a
+noexec file system.
+
+The ->mprotect() hook allows SGX to reject mprotect() if userspace is declaring
+permissions beyond what are allowed, e.g. trying to map an enclave page with
+EXEC permissions when the page was added to the enclave without EXEC.
+
+Future LSM policies have a similar need due to vm_file always pointing at
+/dev/sgx/enclave, e.g. policies couldn't be attached to a specific enclave.
+->mprotect() again allows enforcing permissions at map time that were checked
+at enclave build time, e.g. via an LSM hook.
+
+Deferring ->mprotect() until LSM support is added (if it ever is) would be
+problematic due to SGX2.  With SGX2, userspace can extend permissions of an
+enclave page (for the CPU's EPC Map entry, not the kernel's page tables)
+without bouncing through the kernel.  Without ->mprotect () enforcement.
+userspace could do EADD(RW) -> mprotect(RWX) -> EMODPE(X) to gain W+X.  We
+want to disallow such a flow now, i.e. force userspace to do EADD(RW,X), so
+that the hypothetical LSM hook would have all information at EADD(), i.e.
+would be aware of the EXEC permission, without creating divergent behavior
+based on whether or not an LSM is active.
