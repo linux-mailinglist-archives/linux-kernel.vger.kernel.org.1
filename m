@@ -2,42 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7D5A26F0BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 355E026F0C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729505AbgIRCqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:46:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34058 "EHLO mail.kernel.org"
+        id S1727970AbgIRCqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:46:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34264 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728379AbgIRCJ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:09:57 -0400
+        id S1728391AbgIRCKD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:10:03 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 80570238A1;
-        Fri, 18 Sep 2020 02:09:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E197A238A1;
+        Fri, 18 Sep 2020 02:10:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394996;
-        bh=AShoZ/zcsQ+0JyFsrrHuJ43dI7sw9OdznJeA6RIcGJQ=;
+        s=default; t=1600395003;
+        bh=JowzN/bIxpyOXVHhRnnXQMBRiOFn8vAfZy4Obc1DDjg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NaTp9c1jujR+AcyiBkVbsK8kbWltASObltQo+4H6cWwBo7+GUzhJqwzs1oceGSIfa
-         y4qXNK78ofu7VV6LEgHd6Yzsub+cwsVlLVTWzIixWJnnQZJnQo5/Eu36hZ9RUpl6TS
-         GUDzOtXDOUwrBELNZZCUGP69l+7sF+5kYzgtFbnw=
+        b=WKZK8QdbRi+sReTREx6VdWMvo7NdMN4c42wGOgL14GOmLB6Hb/5RW49yW2GlQsf0+
+         mc4yvnUlJ/9oxd2+4B0UlrChWcOM5t2gIOiMc+naIv7SZQqiZyzaoCide9Mi2+A5JE
+         AY9Pe4z9I7U2DxYIfQQeOSWPMc6gn9+1+RqZXj6c=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Takashi Iwai <tiwai@suse.de>,
-        =?UTF-8?q?Josef=20M=C3=B6llers?= <josef.moellers@suse.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 094/206] media: go7007: Fix URB type for interrupt handling
-Date:   Thu, 17 Sep 2020 22:06:10 -0400
-Message-Id: <20200918020802.2065198-94-sashal@kernel.org>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Jeff Moyer <jmoyer@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Justin He <Justin.He@arm.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>, linux-mm@kvack.org
+Subject: [PATCH AUTOSEL 4.19 099/206] mm: avoid data corruption on CoW fault into PFN-mapped VMA
+Date:   Thu, 17 Sep 2020 22:06:15 -0400
+Message-Id: <20200918020802.2065198-99-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
 References: <20200918020802.2065198-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -45,53 +47,133 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: "Kirill A. Shutemov" <kirill@shutemov.name>
 
-[ Upstream commit a3ea410cac41b19a5490aad7fe6d9a9a772e646e ]
+[ Upstream commit c3e5ea6ee574ae5e845a40ac8198de1fb63bb3ab ]
 
-Josef reported that his old-and-good Plextor ConvertX M402U video
-converter spews lots of WARNINGs on the recent kernels, and it turned
-out that the device uses a bulk endpoint for interrupt handling just
-like 2250 board.
+Jeff Moyer has reported that one of xfstests triggers a warning when run
+on DAX-enabled filesystem:
 
-For fixing it, generalize the check with the proper verification of
-the endpoint instead of hard-coded board type check.
+	WARNING: CPU: 76 PID: 51024 at mm/memory.c:2317 wp_page_copy+0xc40/0xd50
+	...
+	wp_page_copy+0x98c/0xd50 (unreliable)
+	do_wp_page+0xd8/0xad0
+	__handle_mm_fault+0x748/0x1b90
+	handle_mm_fault+0x120/0x1f0
+	__do_page_fault+0x240/0xd70
+	do_page_fault+0x38/0xd0
+	handle_page_fault+0x10/0x30
 
-Fixes: 7e5219d18e93 ("[media] go7007: Fix 2250 urb type")
-Reported-and-tested-by: Josef Möllers <josef.moellers@suse.com>
-BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1162583
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=206427
+The warning happens on failed __copy_from_user_inatomic() which tries to
+copy data into a CoW page.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+This happens because of race between MADV_DONTNEED and CoW page fault:
+
+	CPU0					CPU1
+ handle_mm_fault()
+   do_wp_page()
+     wp_page_copy()
+       do_wp_page()
+					madvise(MADV_DONTNEED)
+					  zap_page_range()
+					    zap_pte_range()
+					      ptep_get_and_clear_full()
+					      <TLB flush>
+	 __copy_from_user_inatomic()
+	 sees empty PTE and fails
+	 WARN_ON_ONCE(1)
+	 clear_page()
+
+The solution is to re-try __copy_from_user_inatomic() under PTL after
+checking that PTE is matches the orig_pte.
+
+The second copy attempt can still fail, like due to non-readable PTE, but
+there's nothing reasonable we can do about, except clearing the CoW page.
+
+Reported-by: Jeff Moyer <jmoyer@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Tested-by: Jeff Moyer <jmoyer@redhat.com>
+Cc: <stable@vger.kernel.org>
+Cc: Justin He <Justin.He@arm.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Link: http://lkml.kernel.org/r/20200218154151.13349-1-kirill.shutemov@linux.intel.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/go7007/go7007-usb.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ mm/memory.c | 35 +++++++++++++++++++++++++++--------
+ 1 file changed, 27 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/media/usb/go7007/go7007-usb.c b/drivers/media/usb/go7007/go7007-usb.c
-index 19c6a0354ce00..b84a6f6548610 100644
---- a/drivers/media/usb/go7007/go7007-usb.c
-+++ b/drivers/media/usb/go7007/go7007-usb.c
-@@ -1052,6 +1052,7 @@ static int go7007_usb_probe(struct usb_interface *intf,
- 	struct go7007_usb *usb;
- 	const struct go7007_usb_board *board;
- 	struct usb_device *usbdev = interface_to_usbdev(intf);
-+	struct usb_host_endpoint *ep;
- 	unsigned num_i2c_devs;
- 	char *name;
- 	int video_pipe, i, v_urb_len;
-@@ -1148,7 +1149,8 @@ static int go7007_usb_probe(struct usb_interface *intf,
- 	if (usb->intr_urb->transfer_buffer == NULL)
- 		goto allocfail;
+diff --git a/mm/memory.c b/mm/memory.c
+index fcad8a0d943d3..eeae63bd95027 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -2353,7 +2353,7 @@ static inline bool cow_user_page(struct page *dst, struct page *src,
+ 	bool ret;
+ 	void *kaddr;
+ 	void __user *uaddr;
+-	bool force_mkyoung;
++	bool locked = false;
+ 	struct vm_area_struct *vma = vmf->vma;
+ 	struct mm_struct *mm = vma->vm_mm;
+ 	unsigned long addr = vmf->address;
+@@ -2378,11 +2378,11 @@ static inline bool cow_user_page(struct page *dst, struct page *src,
+ 	 * On architectures with software "accessed" bits, we would
+ 	 * take a double page fault, so mark it accessed here.
+ 	 */
+-	force_mkyoung = arch_faults_on_old_pte() && !pte_young(vmf->orig_pte);
+-	if (force_mkyoung) {
++	if (arch_faults_on_old_pte() && !pte_young(vmf->orig_pte)) {
+ 		pte_t entry;
  
--	if (go->board_id == GO7007_BOARDID_SENSORAY_2250)
-+	ep = usb->usbdev->ep_in[4];
-+	if (usb_endpoint_type(&ep->desc) == USB_ENDPOINT_XFER_BULK)
- 		usb_fill_bulk_urb(usb->intr_urb, usb->usbdev,
- 			usb_rcvbulkpipe(usb->usbdev, 4),
- 			usb->intr_urb->transfer_buffer, 2*sizeof(u16),
+ 		vmf->pte = pte_offset_map_lock(mm, vmf->pmd, addr, &vmf->ptl);
++		locked = true;
+ 		if (!likely(pte_same(*vmf->pte, vmf->orig_pte))) {
+ 			/*
+ 			 * Other thread has already handled the fault
+@@ -2406,18 +2406,37 @@ static inline bool cow_user_page(struct page *dst, struct page *src,
+ 	 * zeroes.
+ 	 */
+ 	if (__copy_from_user_inatomic(kaddr, uaddr, PAGE_SIZE)) {
++		if (locked)
++			goto warn;
++
++		/* Re-validate under PTL if the page is still mapped */
++		vmf->pte = pte_offset_map_lock(mm, vmf->pmd, addr, &vmf->ptl);
++		locked = true;
++		if (!likely(pte_same(*vmf->pte, vmf->orig_pte))) {
++			/* The PTE changed under us. Retry page fault. */
++			ret = false;
++			goto pte_unlock;
++		}
++
+ 		/*
+-		 * Give a warn in case there can be some obscure
+-		 * use-case
++		 * The same page can be mapped back since last copy attampt.
++		 * Try to copy again under PTL.
+ 		 */
+-		WARN_ON_ONCE(1);
+-		clear_page(kaddr);
++		if (__copy_from_user_inatomic(kaddr, uaddr, PAGE_SIZE)) {
++			/*
++			 * Give a warn in case there can be some obscure
++			 * use-case
++			 */
++warn:
++			WARN_ON_ONCE(1);
++			clear_page(kaddr);
++		}
+ 	}
+ 
+ 	ret = true;
+ 
+ pte_unlock:
+-	if (force_mkyoung)
++	if (locked)
+ 		pte_unmap_unlock(vmf->pte, vmf->ptl);
+ 	kunmap_atomic(kaddr);
+ 	flush_dcache_page(dst);
 -- 
 2.25.1
 
