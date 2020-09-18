@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F342126F3DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F48726F3F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726902AbgIRCC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:02:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48170 "EHLO mail.kernel.org"
+        id S1730470AbgIRDKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 23:10:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726826AbgIRCCn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:02:43 -0400
+        id S1726858AbgIRCCu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:02:50 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C7F2B2376F;
-        Fri, 18 Sep 2020 02:02:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 21EF722211;
+        Fri, 18 Sep 2020 02:02:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394562;
-        bh=7LXURWva2hr25lWX5PhgyRYZqNDi63uIDEJvA5/Ru90=;
+        s=default; t=1600394564;
+        bh=kvljy/+dKd5hVOBCgeK3ADPEBHeF/kDaMYGcYzXQcjA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tG6Sf7Y0KBnNreRQwrQZRhAb5pMNAv1tPzEa7YGbMMqqNdqIayZ0eeTykLz8FlcRT
-         wcsseMWqkrH2/skflNi/bHuqX6k/d2+0IhlvfwvUszVNa1f+6lS6eu0vP2Emz27Uzf
-         QeTEBqpDU9bICF61aQLClbx2Hn1WpmpsplMYA6OU=
+        b=h2M8ZSs8dPKaXlTLyyqTSsGcztx/u+DBwbR4YMLdG6fuDvwcK6Kyb+/+SfovXKFu+
+         1dOKpJ7jLpcTY4oL1HLSz5LQmjVYeaVhhDfmBe7lsK1M+BqV56oOi5fNwemUKyWuvs
+         quve2Hk4vh/sty9gVDcSRF2ljJ5ZPVqmTFNeDGsA=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Divya Indi <divya.indi@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 075/330] module: Remove accidental change of module_enable_x()
-Date:   Thu, 17 Sep 2020 21:56:55 -0400
-Message-Id: <20200918020110.2063155-75-sashal@kernel.org>
+Cc:     Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+        alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 5.4 077/330] ALSA: hda: enable regmap internal locking
+Date:   Thu, 17 Sep 2020 21:56:57 -0400
+Message-Id: <20200918020110.2063155-77-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -44,51 +42,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-[ Upstream commit af74262337faa65d5ac2944553437d3f5fb29123 ]
+[ Upstream commit 8e85def5723eccea30ebf22645673692ab8cb3e2 ]
 
-When pulling in Divya Indi's patch, I made a minor fix to remove unneeded
-braces. I commited my fix up via "git commit -a --amend". Unfortunately, I
-didn't realize I had some changes I was testing in the module code, and
-those changes were applied to Divya's patch as well.
+This reverts commit 42ec336f1f9d ("ALSA: hda: Disable regmap
+internal locking").
 
-This reverts the accidental updates to the module code.
+Without regmap locking, there is a race between snd_hda_codec_amp_init()
+and PM callbacks issuing regcache_sync(). This was caught by
+following kernel warning trace:
 
-Cc: Jessica Yu <jeyu@kernel.org>
-Cc: Divya Indi <divya.indi@oracle.com>
-Reported-by: Peter Zijlstra <peterz@infradead.org>
-Fixes: e585e6469d6f ("tracing: Verify if trace array exists before destroying it.")
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+<4> [358.080081] WARNING: CPU: 2 PID: 4157 at drivers/base/regmap/regcache.c:498 regcache_cache_only+0xf5/0x130
+[...]
+<4> [358.080148] Call Trace:
+<4> [358.080158]  snd_hda_codec_amp_init+0x4e/0x100 [snd_hda_codec]
+<4> [358.080169]  snd_hda_codec_amp_init_stereo+0x40/0x80 [snd_hda_codec]
+
+Suggested-by: Takashi Iwai <tiwai@suse.de>
+BugLink: https://gitlab.freedesktop.org/drm/intel/issues/592
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Link: https://lore.kernel.org/r/20200108180856.5194-1-kai.vehmanen@linux.intel.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/module.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ sound/hda/hdac_regmap.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/kernel/module.c b/kernel/module.c
-index 0e3743dd3a568..819c5d3b4c295 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -3753,6 +3753,7 @@ static int complete_formation(struct module *mod, struct load_info *info)
+diff --git a/sound/hda/hdac_regmap.c b/sound/hda/hdac_regmap.c
+index 2596a881186fa..49780399c2849 100644
+--- a/sound/hda/hdac_regmap.c
++++ b/sound/hda/hdac_regmap.c
+@@ -363,7 +363,6 @@ static const struct regmap_config hda_regmap_cfg = {
+ 	.reg_write = hda_reg_write,
+ 	.use_single_read = true,
+ 	.use_single_write = true,
+-	.disable_locking = true,
+ };
  
- 	module_enable_ro(mod, false);
- 	module_enable_nx(mod);
-+	module_enable_x(mod);
- 
- 	/* Mark state as coming so strong_try_module_get() ignores us,
- 	 * but kallsyms etc. can see us. */
-@@ -3775,11 +3776,6 @@ static int prepare_coming_module(struct module *mod)
- 	if (err)
- 		return err;
- 
--	/* Make module executable after ftrace is enabled */
--	mutex_lock(&module_mutex);
--	module_enable_x(mod);
--	mutex_unlock(&module_mutex);
--
- 	blocking_notifier_call_chain(&module_notify_list,
- 				     MODULE_STATE_COMING, mod);
- 	return 0;
+ /**
 -- 
 2.25.1
 
