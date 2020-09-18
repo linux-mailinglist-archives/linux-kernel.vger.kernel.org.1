@@ -2,123 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94156270876
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 23:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BB9F27087B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 23:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726205AbgIRVn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 17:43:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53652 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726139AbgIRVn1 (ORCPT
+        id S1726262AbgIRVqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 17:46:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726159AbgIRVqs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 17:43:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600465406;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ibBVe9XWamlvD+LShn+aQH8WeaCxGv/MaF5KwAhNyIk=;
-        b=DhtBHG1jdGFxvFlrH/9//kbjfgxaPAW85Gk51e6iaPvfevwuZz/F9bP65uKmd8B70N+bE2
-        yZ1y+GgziJO3mf5vFgJRfLVJf086B8W+HjX41yawMO2ZPn38KSu3jfEfelLY2TCj+gn1Zn
-        XmYYNCQBLh3QuyaeIRzfNqLwIBX/Op8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-431-MOPrzJKDOrW9DmZulLAmhQ-1; Fri, 18 Sep 2020 17:43:22 -0400
-X-MC-Unique: MOPrzJKDOrW9DmZulLAmhQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 51DE41882FB5;
-        Fri, 18 Sep 2020 21:43:21 +0000 (UTC)
-Received: from treble (ovpn-112-141.rdu2.redhat.com [10.10.112.141])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9842E10016DA;
-        Fri, 18 Sep 2020 21:43:20 +0000 (UTC)
-Date:   Fri, 18 Sep 2020 16:43:18 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Julien Thierry <jthierry@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org, mbenes@suse.cz,
-        raphael.gault@arm.com, benh@kernel.crashing.org
-Subject: Re: [PATCH 3/3] objtool: check: Make SP memory operation match
- PUSH/POP semantics
-Message-ID: <20200918214318.2d7msla53ysxkbaz@treble>
-References: <20200915081204.9204-1-jthierry@redhat.com>
- <20200915081204.9204-4-jthierry@redhat.com>
+        Fri, 18 Sep 2020 17:46:48 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C04E1C0613CE;
+        Fri, 18 Sep 2020 14:46:48 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id s88so7771895ilb.6;
+        Fri, 18 Sep 2020 14:46:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tEtbTCyG2rnV0biaFUft9F3G7S1Bq/fIXdfXEt6SoFU=;
+        b=tfndcyVD0M/bXUGTAbsmnIWMQiyXNfjabqa9SSP2Hj1voEfSH6Z1MBJtiAMWa2TGv1
+         6tPXBXrMNbJHxQlz5BVy8hna39lXHstRkN8uusvJjUOobFqCmqY69qlv4qoZjp4oM/Zw
+         AVfbqa7IsxoEtMrYPIZIEDgWpIYIN1vuiJ96DlCPb1wYHvs9X0OsYUZH+MG+QTQiDOXi
+         4pyhof/Z1GDu5FqNz9E6GBuXXHjDu3lqtyxxc0njesBymBEY79/Uak2H0YczKaky8WAh
+         YvMFt+FCI98OuqvIsX5aZ9Zkv0Evmzet9eK6ZwqgjBXEXvJG5s0LEA7jBUBLuxH4fdup
+         xCAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tEtbTCyG2rnV0biaFUft9F3G7S1Bq/fIXdfXEt6SoFU=;
+        b=XqBJkbBpDdKihL9jXeZrotCk8vzzzkgZ5zbgfmVl5KiKUvetxE1q9qZceQfGNQIf0U
+         mGT8PRfW0gNaWWeCcQxvb4p0Qx7VKhBELxrxOXionnbe3hM0Gu8bu0Ef0vVjnkW46DAv
+         Qey7k+6CQLm9YDUYBttcQnup2HRW2D4yCFIlmGZwGOZbxHGVLaIa2BPxK5ajfHUkvaJ0
+         BkLDZLSe6XekvTrwnTYPKTTUs1rmIkqKjGS3nL62fJlS5XyHjXaMGvDtsdsJ+gq5umfX
+         vSLTQtLTDwG1dXDSApztiZEo2wCDjPacw8PDHIk5p0XnM8NZkp99yXRVcZCmpw/VYmv1
+         j2FQ==
+X-Gm-Message-State: AOAM530yGf4QhIxmjzKyDoXV3n6UKMfK3goaNNdfoZbeRtSFIkPVnvFL
+        JhnXH1BpYW9cJu1956aWhIhgxVQYy5usVaUtlTY=
+X-Google-Smtp-Source: ABdhPJwqRKc2lDEZUy74lLjvsye0RI/hv+bCAqYBBOF/2360WuZAZQ/oPtM7F2ODkpRnbVa9LomvtJnyqwSVzG9Pgx8=
+X-Received: by 2002:a92:c9c4:: with SMTP id k4mr8200166ilq.292.1600465608096;
+ Fri, 18 Sep 2020 14:46:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200915081204.9204-4-jthierry@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <20200918192312.25978-1-yu-cheng.yu@intel.com> <20200918192312.25978-2-yu-cheng.yu@intel.com>
+ <ce2524cc-081b-aec9-177a-11c7431cb20d@infradead.org> <20200918205933.GB4304@duo.ucw.cz>
+ <019b5e45-b116-7f3d-f1f2-3680afbd676c@intel.com> <20200918214020.GF4304@duo.ucw.cz>
+In-Reply-To: <20200918214020.GF4304@duo.ucw.cz>
+From:   "H.J. Lu" <hjl.tools@gmail.com>
+Date:   Fri, 18 Sep 2020 14:46:12 -0700
+Message-ID: <CAMe9rOrmq-7mZkp=O+wRRX+wGa=1dopUhXRbCJBJQUdGA3N=7w@mail.gmail.com>
+Subject: Re: [PATCH v12 1/8] x86/cet/ibt: Add Kconfig option for user-mode
+ Indirect Branch Tracking
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 09:12:04AM +0100, Julien Thierry wrote:
-> Architectures without PUSH/POP instructions will always access the stack
-> though memory operations (SRC/DEST_INDIRECT). Make those operations have
-> the same effect on the CFA as PUSH/POP, with no stack pointer
-> modification.
-> 
-> Signed-off-by: Julien Thierry <jthierry@redhat.com>
-> ---
->  tools/objtool/check.c | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
-> 
-> diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-> index f45991c2db41..7ff87fa3caec 100644
-> --- a/tools/objtool/check.c
-> +++ b/tools/objtool/check.c
-> @@ -2005,6 +2005,13 @@ static int update_cfi_state(struct instruction *insn, struct cfi_state *cfi,
->  			break;
->  
->  		case OP_SRC_REG_INDIRECT:
-> +			if (!cfi->drap && op->dest.reg == cfa->base) {
+On Fri, Sep 18, 2020 at 2:40 PM Pavel Machek <pavel@ucw.cz> wrote:
+>
+> On Fri 2020-09-18 14:25:12, Yu, Yu-cheng wrote:
+> > On 9/18/2020 1:59 PM, Pavel Machek wrote:
+> > > On Fri 2020-09-18 13:24:13, Randy Dunlap wrote:
+> > > > Hi,
+> > > >
+> > > > If you do another version of this:
+> > > >
+> > > > On 9/18/20 12:23 PM, Yu-cheng Yu wrote:
+> > > > > Introduce Kconfig option X86_INTEL_BRANCH_TRACKING_USER.
+> > > > >
+> > > > > Indirect Branch Tracking (IBT) provides protection against CALL-/JMP-
+> > > > > oriented programming attacks.  It is active when the kernel has this
+> > > > > feature enabled, and the processor and the application support it.
+> > > > > When this feature is enabled, legacy non-IBT applications continue to
+> > > > > work, but without IBT protection.
+> > > > >
+> > > > > Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+> > > > > ---
+> > > > > v10:
+> > > > > - Change build-time CET check to config depends on.
+> > > > >
+> > > > >   arch/x86/Kconfig | 16 ++++++++++++++++
+> > > > >   1 file changed, 16 insertions(+)
+> > > > >
+> > > > > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> > > > > index 6b6dad011763..b047e0a8d1c2 100644
+> > > > > --- a/arch/x86/Kconfig
+> > > > > +++ b/arch/x86/Kconfig
+> > > > > @@ -1963,6 +1963,22 @@ config X86_INTEL_SHADOW_STACK_USER
+> > > > >           If unsure, say y.
+> > > > > +config X86_INTEL_BRANCH_TRACKING_USER
+> > > > > +       prompt "Intel Indirect Branch Tracking for user-mode"
+> > > > > +       def_bool n
+> > > > > +       depends on CPU_SUP_INTEL && X86_64
+> > > > > +       depends on $(cc-option,-fcf-protection)
+> > > > > +       select X86_INTEL_CET
+> > > > > +       help
+> > > > > +         Indirect Branch Tracking (IBT) provides protection against
+> > > > > +         CALL-/JMP-oriented programming attacks.  It is active when
+> > > > > +         the kernel has this feature enabled, and the processor and
+> > > > > +         the application support it.  When this feature is enabled,
+> > > > > +         legacy non-IBT applications continue to work, but without
+> > > > > +         IBT protection.
+> > > > > +
+> > > > > +         If unsure, say y
+> > > >
+> > > >     If unsure, say y.
+> > >
+> > > Actually, it would be "If unsure, say Y.", to be consistent with the
+> > > rest of the Kconfig.
+> > >
+> > > But I wonder if Yes by default is good idea. Only very new CPUs will
+> > > support this, right? Are they even available at the market? Should the
+> > > help text say "if your CPU is Whatever Lake or newer, ...." :-) ?
+> >
+> > I will revise the wording if there is another version.  But a CET-capable
+> > kernel can run on legacy systems.  We have been testing that combination.
+>
+> Yes, but enabling CET is unneccessary overhead on older systems. And
+> Kconfig is great place to explain that.
+>
 
-&& op->dest.reg == CFI_BP ?
-
-> +
-> +				/* mov disp(%rsp), %rbp */
-> +				cfa->base = CFI_SP;
-> +				cfa->offset = cfi->stack_size;
-> +			}
-> +
->  			if (cfi->drap && op->src.reg == CFI_BP &&
->  			    op->src.offset == cfi->drap_offset) {
->  
-> @@ -2026,6 +2033,11 @@ static int update_cfi_state(struct instruction *insn, struct cfi_state *cfi,
->  				/* mov disp(%rbp), %reg */
->  				/* mov disp(%rsp), %reg */
->  				restore_reg(cfi, op->dest.reg);
-> +			} else if (op->src.reg == CFI_SP &&
-
-An empty line above the else would help readability.
-
-> +				   op->src.offset == regs[op->dest.reg].offset + cfi->stack_size) {
-> +
-> +				/* mov disp(%rsp), %reg */
-> +				restore_reg(cfi, op->dest.reg);
-
->  			}
->  
->  			break;
-> @@ -2103,6 +2115,11 @@ static int update_cfi_state(struct instruction *insn, struct cfi_state *cfi,
->  			/* mov reg, disp(%rsp) */
->  			save_reg(cfi, op->src.reg, CFI_CFA,
->  				 op->dest.offset - cfi->cfa.offset);
-> +		} else if (op->dest.reg == CFI_SP) {
-
-Same here.
-
-> +
-> +			/* mov reg, disp(%rsp) */
-> +			save_reg(cfi, op->src.reg, CFI_CFA,
-> +				 op->dest.offset - cfi->stack_size);
->  		}
->  
->  		break;
-> -- 
-> 2.21.3
-> 
+I can't tell any visible CET kernel overhead on my non-CET machines.
 
 -- 
-Josh
-
+H.J.
