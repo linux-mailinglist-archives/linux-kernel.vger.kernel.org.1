@@ -2,281 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93EED27012A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 17:36:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCED727012D
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 17:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726262AbgIRPgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 11:36:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43076 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726044AbgIRPgO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 11:36:14 -0400
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1DBB222208;
-        Fri, 18 Sep 2020 15:36:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600443373;
-        bh=ioSr4RUMgwEtF4GQs3qxG3d4Z1XOMNstf8JGn9xlT2Q=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WbjlpD5LTq9k7Sf1N0QWRfTO8VlU7eKkf+5KC2IneiZfgtGbJBsQPPczIfqBPTOaK
-         YeQMal8rvoXk08cPbK2JBR1vo4UZz/cehqqlD+NiLjztk8EjNZmG81oN2MP/gcBrMw
-         VeihVvj9Ni4CQYKBajgT0Mbx66VUl4f/om8RxKbI=
-Received: by mail-oo1-f48.google.com with SMTP id s17so1522600ooe.6;
-        Fri, 18 Sep 2020 08:36:13 -0700 (PDT)
-X-Gm-Message-State: AOAM531qvkywFHGt/fziAqi837EXC/dl4bzU7IiwdeAkhzBxp1Yd+CZv
-        mL8mfag7Gk10hWIo9zjHiBsF9HUnuhYTJaKMUQ==
-X-Google-Smtp-Source: ABdhPJwaNmplyhbL9ZZkhg3gsZ4yWwcfCyiPNhijxsnAzD2PsWil/W/tZCTbumQWjh0J1DxfW0sB1xIJ+ijilzOi29k=
-X-Received: by 2002:a4a:d306:: with SMTP id g6mr24544764oos.25.1600443372327;
- Fri, 18 Sep 2020 08:36:12 -0700 (PDT)
+        id S1726290AbgIRPg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 11:36:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726126AbgIRPg2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 11:36:28 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF66C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 08:36:28 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id x69so7482787oia.8
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 08:36:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+HOkTaJCWTKIpK+3x2SmmkvtVfO2tEwf9L1qfcnwH58=;
+        b=MSGZJCQTueSyBkbGaTvUK+9fmTVvVaEsaP2HRwsVahJHE/eiRWOEtGM9gLA4RqPW3j
+         JjKRkp1O03VrNP3Kx5bibC3TAvTzNnTykdABAdedoXgp8aNaymEM0WYdZGplKuL4F5to
+         lKiEcDD6Ys+v7ml1ZKJnumtEjCzqvCAQVNuPvSbG5XoNXM3z4Kj7hKaLPjI/hXtYkHFR
+         EuYIvheMCqyGlcDTCb9QGoC2sYY54u9gH41v7ALWW9olmGCw/fY7sopO5xVhff1LgOx3
+         zcFHiyS5oYLF4YtoTpAcU75kHczcKzKyh7/afT2Bi2IseFMOqPby+r5wXkLih5Rx2OaX
+         IqzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+HOkTaJCWTKIpK+3x2SmmkvtVfO2tEwf9L1qfcnwH58=;
+        b=bH+WbqLffsweqvHarBbugS3UWsEBrpsFHem4b+ymcUvR53ob2p6IAVEIE5ascnCGCa
+         hPcz7fbNIeyOaI/lFh44KfftuSMWoE/wOw0dynTJ+mwIoHEMoIQ6aZxljnCb41Z7zksR
+         Bz0IMWCH/cKC7IoT5fMQLeE0r9Yo+M+fYXvYMvHnbfxtTxN/aTcKvwK/3CjBG/BTCQoC
+         H3wIZ7S3fCt1bxm8hswHKqK8/WBg7uHyBMzEbXwGZBKhquKpoVklQ38glnOZtK8tis6e
+         t31KHXNBjbDBWeOb4U2K8t5U0A57r8v3kheQ4QVZILDwhA54npQ6gFLfQVcL7gZq4P8e
+         wC2Q==
+X-Gm-Message-State: AOAM531Ol++UgCotp/38h2LDwJGBCVj+4tpk7S1/Pa2c94h0uNb8QC8i
+        ZMYhuuBL824KousSO83gy/vgxNz4Em/Ncy887BVUJA==
+X-Google-Smtp-Source: ABdhPJycDxki73QRk6YNewS2d6puW0XKYyUxUjwLmPM/TGzjNjKjIoHd8iB0G0aOGmeO0UG5zTvBivPJqmtPFr5qgpI=
+X-Received: by 2002:aca:5158:: with SMTP id f85mr10175640oib.121.1600443387052;
+ Fri, 18 Sep 2020 08:36:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200911154004.28354-1-post@lespocky.de> <20200911154004.28354-4-post@lespocky.de>
- <20200915203735.GB2453633@bogus> <4676987.BC07iakZNo@ada>
-In-Reply-To: <4676987.BC07iakZNo@ada>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 18 Sep 2020 09:35:59 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq++aTK=Us1_z0qh_q_iS8UJHnOLHzgzey3KZMSMSo9jzw@mail.gmail.com>
-Message-ID: <CAL_Jsq++aTK=Us1_z0qh_q_iS8UJHnOLHzgzey3KZMSMSo9jzw@mail.gmail.com>
-Subject: Re: [PATCH v4 3/3] dt-bindings: leds: Convert pwm to yaml
-To:     Alexander Dahl <ada@thorsis.com>
-Cc:     Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Alexander Dahl <post@lespocky.de>, devicetree@vger.kernel.org,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>
+References: <cover.1600204505.git.andreyknvl@google.com> <329ece34759c5208ae32a126dc5c978695ab1776.1600204505.git.andreyknvl@google.com>
+ <20200918123249.GC2384246@elver.google.com> <CAAeHK+wF_tkBqHd7ESSa5jOy50AW1WfzSAM-qNf_+iMkLwptTQ@mail.gmail.com>
+In-Reply-To: <CAAeHK+wF_tkBqHd7ESSa5jOy50AW1WfzSAM-qNf_+iMkLwptTQ@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Fri, 18 Sep 2020 17:36:15 +0200
+Message-ID: <CANpmjNNrBX624GJWY3GK6YR9xoYX8BwstXaRYXJT1QgSFORSaQ@mail.gmail.com>
+Subject: Re: [PATCH v2 21/37] kasan: introduce CONFIG_KASAN_HW_TAGS
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 9:12 AM Alexander Dahl <ada@thorsis.com> wrote:
+On Fri, 18 Sep 2020 at 17:06, 'Andrey Konovalov' via kasan-dev
+<kasan-dev@googlegroups.com> wrote:
 >
-> Hello Rob,
->
-> thanks for your feedback. I have some questions/remarks on this new yaml
-> binding stuff before sending v5 (which will also replace patch 1/3 with a
-> different approach btw).
->
-> Am Dienstag, 15. September 2020, 22:37:35 CEST schrieb Rob Herring:
-> > On Fri, Sep 11, 2020 at 05:40:04PM +0200, Alexander Dahl wrote:
-> > > The example was adapted slightly to make use of the 'function' and
-> > > 'color' properties.  License discussed with the original author.
+> On Fri, Sep 18, 2020 at 2:32 PM Marco Elver <elver@google.com> wrote:
+> >
+> > On Tue, Sep 15, 2020 at 11:16PM +0200, Andrey Konovalov wrote:
+> > > This patch adds a configuration option for a new KASAN mode called
+> > > hardware tag-based KASAN. This mode uses the memory tagging approach
+> > > like the software tag-based mode, but relies on arm64 Memory Tagging
+> > > Extension feature for tag management and access checking.
 > > >
-> > > Suggested-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-> > > Signed-off-by: Alexander Dahl <post@lespocky.de>
-> > > Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-> > > Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > > Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 > > > ---
+> > > Change-Id: I246c2def9fffa6563278db1bddfbe742ca7bdefe
+> > > ---
+> > >  lib/Kconfig.kasan | 56 +++++++++++++++++++++++++++++++++--------------
+> > >  1 file changed, 39 insertions(+), 17 deletions(-)
 > > >
-> > > Notes:
-> > >     v3 -> v4:
-> > >       * added Cc to original author of the binding
+> > > diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
+> > > index b4cf6c519d71..17c9ecfaecb9 100644
+> > > --- a/lib/Kconfig.kasan
+> > > +++ b/lib/Kconfig.kasan
+> > > @@ -6,7 +6,10 @@ config HAVE_ARCH_KASAN
+> > >  config HAVE_ARCH_KASAN_SW_TAGS
+> > >       bool
 > > >
-> > >     v2 -> v3:
-> > >       * changed license identifier to recommended one
-> > >       * added Acked-by
+> > > -config       HAVE_ARCH_KASAN_VMALLOC
+> > > +config HAVE_ARCH_KASAN_HW_TAGS
+> > > +     bool
+> > > +
+> > > +config HAVE_ARCH_KASAN_VMALLOC
+> > >       bool
 > > >
-> > >     v2:
-> > >       * added this patch to series (Suggested-by: Jacek Anaszewski)
+> > >  config CC_HAS_KASAN_GENERIC
+> > > @@ -20,10 +23,11 @@ config CC_HAS_WORKING_NOSANITIZE_ADDRESS
 > > >
-> > >  .../devicetree/bindings/leds/leds-pwm.txt     | 50 -----------
-> > >  .../devicetree/bindings/leds/leds-pwm.yaml    | 85 +++++++++++++++++=
-++
-> > >  2 files changed, 85 insertions(+), 50 deletions(-)
-> > >  delete mode 100644 Documentation/devicetree/bindings/leds/leds-pwm.t=
-xt
-> > >  create mode 100644 Documentation/devicetree/bindings/leds/leds-pwm.y=
-aml
+> > >  menuconfig KASAN
+> > >       bool "KASAN: runtime memory debugger"
+> > > -     depends on (HAVE_ARCH_KASAN && CC_HAS_KASAN_GENERIC) || \
+> > > -                (HAVE_ARCH_KASAN_SW_TAGS && CC_HAS_KASAN_SW_TAGS)
+> > > +     depends on (((HAVE_ARCH_KASAN && CC_HAS_KASAN_GENERIC) || \
+> > > +                  (HAVE_ARCH_KASAN_SW_TAGS && CC_HAS_KASAN_SW_TAGS)) && \
+> > > +                 CC_HAS_WORKING_NOSANITIZE_ADDRESS) || \
+> > > +                HAVE_ARCH_KASAN_HW_TAGS
+> > >       depends on (SLUB && SYSFS) || (SLAB && !DEBUG_SLAB)
+> > > -     depends on CC_HAS_WORKING_NOSANITIZE_ADDRESS
+> > >       select SLUB_DEBUG if SLUB
+> >
+> > Is SLUB_DEBUG necessary with HW_TAGS?
+>
+> I'll check and drop it if it's unnecessary.
+>
+> > >       select CONSTRUCTORS
+> > >       select STACKDEPOT
+> > > @@ -38,13 +42,18 @@ choice
+> > >       prompt "KASAN mode"
+> > >       default KASAN_GENERIC
+> > >       help
+> > > -       KASAN has two modes: generic KASAN (similar to userspace ASan,
+> > > -       x86_64/arm64/xtensa, enabled with CONFIG_KASAN_GENERIC) and
+> > > -       software tag-based KASAN (a version based on software memory
+> > > -       tagging, arm64 only, similar to userspace HWASan, enabled with
+> > > -       CONFIG_KASAN_SW_TAGS).
+> > > +       KASAN has three modes:
+> > > +       1. generic KASAN (similar to userspace ASan,
+> > > +          x86_64/arm64/xtensa, enabled with CONFIG_KASAN_GENERIC),
+> > > +       2. software tag-based KASAN (arm64 only, based on software
+> > > +          memory tagging (similar to userspace HWASan), enabled with
+> > > +          CONFIG_KASAN_SW_TAGS), and
+> > > +       3. hardware tag-based KASAN (arm64 only, based on hardware
+> > > +          memory tagging, enabled with CONFIG_KASAN_HW_TAGS).
 > > >
-> > > diff --git a/Documentation/devicetree/bindings/leds/leds-pwm.txt
-> > > b/Documentation/devicetree/bindings/leds/leds-pwm.txt deleted file mo=
-de
-> > > 100644
-> > > index 6c6583c35f2f..000000000000
-> > > --- a/Documentation/devicetree/bindings/leds/leds-pwm.txt
-> > > +++ /dev/null
-> > > @@ -1,50 +0,0 @@
-> > > -LED connected to PWM
+> > > -       Both generic and tag-based KASAN are strictly debugging features.
+> > > +       All KASAN modes are strictly debugging features.
+> > > +
+> > > +       For better error detection enable CONFIG_STACKTRACE.
+> >
+> > I don't think CONFIG_STACKTRACE improves error detection, right? It only
+> > makes the reports more readable
+>
+> Yes, will fix.
+>
+> > >
+> > >  config KASAN_GENERIC
+> > >       bool "Generic mode"
+> > > @@ -61,8 +70,6 @@ config KASAN_GENERIC
+> > >         and introduces an overhead of ~x1.5 for the rest of the allocations.
+> > >         The performance slowdown is ~x3.
+> > >
+> > > -       For better error detection enable CONFIG_STACKTRACE.
 > > > -
-> > > -Required properties:
-> > > -- compatible : should be "pwm-leds".
+> > >         Currently CONFIG_KASAN_GENERIC doesn't work with CONFIG_DEBUG_SLAB
+> > >         (the resulting kernel does not boot).
+> > >
+> > > @@ -72,9 +79,11 @@ config KASAN_SW_TAGS
+> > >       help
+> > >         Enables software tag-based KASAN mode.
+> > >
+> > > -       This mode requires Top Byte Ignore support by the CPU and therefore
+> > > -       is only supported for arm64. This mode requires Clang version 7.0.0
+> > > -       or later.
+> > > +       This mode require software memory tagging support in the form of
+> > > +       HWASan-like compiler instrumentation.
+> > > +
+> > > +       Currently this mode is only implemented for arm64 CPUs and relies on
+> > > +       Top Byte Ignore. This mode requires Clang version 7.0.0 or later.
+> > >
+> > >         This mode consumes about 1/16th of available memory at kernel start
+> > >         and introduces an overhead of ~20% for the rest of the allocations.
+> > > @@ -82,15 +91,27 @@ config KASAN_SW_TAGS
+> > >         casting and comparison, as it embeds tags into the top byte of each
+> > >         pointer.
+> > >
+> > > -       For better error detection enable CONFIG_STACKTRACE.
 > > > -
-> > > -Each LED is represented as a sub-node of the pwm-leds device.  Each
-> > > -node's name represents the name of the corresponding LED.
-> > > -
-> > > -LED sub-node properties:
-> > > -- pwms : PWM property to point to the PWM device (phandle)/port (id)=
- and
-> > > to -  specify the period time to be used: <&phandle id period_ns>;
-> > > -- pwm-names : (optional) Name to be used by the PWM subsystem for th=
-e PWM
-> > > device -  For the pwms and pwm-names property please refer to:
-> > > -  Documentation/devicetree/bindings/pwm/pwm.txt
-> > > -- max-brightness : Maximum brightness possible for the LED
-> > > -- active-low : (optional) For PWMs where the LED is wired to supply
-> > > -  rather than ground.
-> > > -- label :  (optional)
-> > > -  see Documentation/devicetree/bindings/leds/common.txt
-> > > -- linux,default-trigger :  (optional)
-> > > -  see Documentation/devicetree/bindings/leds/common.txt
-> > > -
-> > > -Example:
-> > > -
-> > > -twl_pwm: pwm {
-> > > -   /* provides two PWMs (id 0, 1 for PWM1 and PWM2) */
-> > > -   compatible =3D "ti,twl6030-pwm";
-> > > -   #pwm-cells =3D <2>;
-> > > -};
-> > > -
-> > > -twl_pwmled: pwmled {
-> > > -   /* provides one PWM (id 0 for Charing indicator LED) */
-> > > -   compatible =3D "ti,twl6030-pwmled";
-> > > -   #pwm-cells =3D <2>;
-> > > -};
-> > > -
-> > > -pwmleds {
-> > > -   compatible =3D "pwm-leds";
-> > > -   kpad {
-> > > -           label =3D "omap4::keypad";
-> > > -           pwms =3D <&twl_pwm 0 7812500>;
-> > > -           max-brightness =3D <127>;
-> > > -   };
-> > > -
-> > > -   charging {
-> > > -           label =3D "omap4:green:chrg";
-> > > -           pwms =3D <&twl_pwmled 0 7812500>;
-> > > -           max-brightness =3D <255>;
-> > > -   };
-> > > -};
-> > > diff --git a/Documentation/devicetree/bindings/leds/leds-pwm.yaml
-> > > b/Documentation/devicetree/bindings/leds/leds-pwm.yaml new file mode
-> > > 100644
-> > > index 000000000000..c74867492424
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/leds/leds-pwm.yaml
-> > > @@ -0,0 +1,85 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/leds/leds-pwm.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > >         Currently CONFIG_KASAN_SW_TAGS doesn't work with CONFIG_DEBUG_SLAB
+> > >         (the resulting kernel does not boot).
+> > >
+> > > +config KASAN_HW_TAGS
+> > > +     bool "Hardware tag-based mode"
+> > > +     depends on HAVE_ARCH_KASAN_HW_TAGS
+> > > +     depends on SLUB
+> > > +     help
+> > > +       Enables hardware tag-based KASAN mode.
 > > > +
-> > > +title: LEDs connected to PWM
+> > > +       This mode requires hardware memory tagging support, and can be used
+> > > +       by any architecture that provides it.
 > > > +
-> > > +maintainers:
-> > > +  - Pavel Machek <pavel@ucw.cz>
+> > > +       Currently this mode is only implemented for arm64 CPUs starting from
+> > > +       ARMv8.5 and relies on Memory Tagging Extension and Top Byte Ignore.
 > > > +
-> > > +description:
-> > > +  Each LED is represented as a sub-node of the pwm-leds device.  Eac=
-h
-> > > +  node's name represents the name of the corresponding LED.
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    const: pwm-leds
-> > > +
-> > > +patternProperties:
+> > >  endchoice
+> > >
+> > >  choice
+> > >       prompt "Instrumentation type"
+> > > +     depends on KASAN_GENERIC || KASAN_SW_TAGS
+> > >       default KASAN_OUTLINE
+> > >
+> > >  config KASAN_OUTLINE
+> > > @@ -114,6 +135,7 @@ endchoice
+> > >
+> > >  config KASAN_STACK_ENABLE
+> > >       bool "Enable stack instrumentation (unsafe)" if CC_IS_CLANG && !COMPILE_TEST
+> > > +     depends on KASAN_GENERIC || KASAN_SW_TAGS
+> > >       help
+> > >         The LLVM stack address sanitizer has a know problem that
+> > >         causes excessive stack usage in a lot of functions, see
 > >
-> > > +  "^pwm-led-([0-9a-f])$":
-> > '^led-([0-9a-f])' would be my preference. A bit more on that below.
+> > How about something like the below change (introduce KASAN_INSTRUMENTED
+> > Kconfig var) to avoid the repeated "KASAN_GENERIC || KASAN_SW_TAGS".
+> > This could then also be used in the various .c/.h files (and make some
+> > of the code more readable hopefully).
 >
-> Fine for me.
->
-> > What about a single child case?
->
-> One child or multiple childs.  I found .dts files with one to four sub-no=
-des
-> of the pwm-leds device in current master.
+> I tried doing that initially, but it didn't really look good. The
+> reason is that we actually have two properties that are currently
+> common for the software modes, but aren't actually tied to each other:
+> instrumentation and shadow memory. Therefore we will end up with two
+> new configs: KASAN_INSTRUMENTED and KASAN_USES_SHADOW (or something),
+> and things get quite confusing. I think it's better to keep
+> KASAN_GENERIC || KASAN_SW_TAGS everywhere.
 
-For the single child case, you need to allow for just 'led' then. So
-this I think: '^led(-[0-9a-f]+)?$'
+Ah, I see. So in some cases the reason the #ifdef exists is because of
+instrumentation, in other cases because there is some shadow memory
+(right?).
 
-> > > +    type: object
-> > > +
-> > > +    $ref: common.yaml#
-> > > +
-> > > +    properties:
-> > > +      pwms:
-> > > +        description:
-> > > +          "PWM property to point to the PWM device (phandle)/port (i=
-d)
-> > > +          and to specify the period time to be used:
-> > > +          <&phandle id period_ns>;"
-> >
-> > No need to redefine a common property.
->
-> Should this look like in 'Documentation/devicetree/bindings/leds/backligh=
-t/
-> pwm-backlight.yaml' then?
+The only other option I see is to call it what it is ("KASAN_SW" or
+"KASAN_SOFTWARE"), but other than that, I don't mind if it stays
+as-is.
 
-Yes.
-
->
-> > What is needed is how many pwms? I'd assume 1 only: 'maxItems: 1'
->
-> Yes, one pwm channel per LED.
->
-> > > +
-> > > +      pwm-names:
-> > > +        description:
-> > > +          "Name to be used by the PWM subsystem for the PWM device F=
-or
-> > > +          the pwms and pwm-names property please refer to:
-> > > +          Documentation/devicetree/bindings/pwm/pwm.txt"
-> >
-> > Same here.
-> >
-> > > +
-> > > +      max-brightness:
-> > > +        description:
-> > > +          Maximum brightness possible for the LED
-> >
-> > Needs a type $ref.
->
-> fwnode_property_read_u32() is used to read this.
-
-$ref: /schemas/types.yaml#/definitions/uint32
-
->
-> >
-> > > +
-> > > +      active-low:
-> > > +        description:
-> > > +          For PWMs where the LED is wired to supply rather than grou=
-nd.
-> >
-> > type: boolean
-> >
-> > > +
-> > > +    required:
-> > > +      - pwms
-> > > +      - max-brightness
-> >
-> > additionalProperties: false
-> >
-> > That will cause errors if child node names were not consistent (no one
-> > checked, so they won't be). We could just allow anything, but I prefer
-> > to move things to be consistent yet try to capture any existing pattern=
-.
->
-> Child node names follow no scheme at all currently as far as I could see,
-> examples from real current .dts files:
->
->   panel, led-red, blueled, kpad, front, green, pwm_blue, ds1, network_red=
-,
-> alarm-brightness, pmu_stat, overo, heartbeat, power, =E2=80=A6
-
-So you can do this to allow any child node name:
-
-additonalProperties:
-  type: object
-  $ref: common.yaml#
-
-  ... everything you have under pwm-led-*
-
-Or how gpio-keys.yaml was done also works.
-
-Rob
+Thanks,
+-- Marco
