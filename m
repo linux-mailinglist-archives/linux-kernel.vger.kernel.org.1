@@ -2,141 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9980526F8ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2355826F8EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726541AbgIRJHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 05:07:09 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:38860 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725874AbgIRJHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 05:07:07 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 88B488C1D3F7D245D2D1;
-        Fri, 18 Sep 2020 17:07:04 +0800 (CST)
-Received: from [10.174.176.220] (10.174.176.220) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 18 Sep 2020 17:06:38 +0800
-Subject: Re: [PATCH v12 3/9] x86: kdump: use macro CRASH_ADDR_LOW_MAX in
- functions reserve_crashkernel[_low]()
-To:     Baoquan He <bhe@redhat.com>
-References: <20200907134745.25732-1-chenzhou10@huawei.com>
- <20200907134745.25732-4-chenzhou10@huawei.com>
- <20200918072526.GD25604@MiWiFi-R3L-srv>
- <fa6634dd-4438-4e5d-f350-fc19d5fa7d97@huawei.com>
-CC:     <catalin.marinas@arm.com>, <will@kernel.org>,
-        <james.morse@arm.com>, <tglx@linutronix.de>, <mingo@redhat.com>,
-        <dyoung@redhat.com>, <corbet@lwn.net>,
-        <John.P.donnelly@oracle.com>, <prabhakar.pkin@gmail.com>,
-        <bhsharma@redhat.com>, <horms@verge.net.au>, <robh+dt@kernel.org>,
-        <arnd@arndb.de>, <nsaenzjulienne@suse.de>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>,
-        <linux-doc@vger.kernel.org>, <guohanjun@huawei.com>,
-        <xiexiuqi@huawei.com>, <huawei.libin@huawei.com>,
-        <wangkefeng.wang@huawei.com>, <rppt@linux.ibm.com>
-From:   chenzhou <chenzhou10@huawei.com>
-Message-ID: <14e22d92-1601-fc1c-a1c8-e3936d63db42@huawei.com>
-Date:   Fri, 18 Sep 2020 17:06:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S1726368AbgIRJHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 05:07:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38864 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725874AbgIRJHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 05:07:05 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id EA1ECAE09;
+        Fri, 18 Sep 2020 09:07:36 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 7145D1E12E1; Fri, 18 Sep 2020 11:07:02 +0200 (CEST)
+Date:   Fri, 18 Sep 2020 11:07:02 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Boaz Harrosh <boaz@plexistor.com>, Hou Tao <houtao1@huawei.com>,
+        peterz@infradead.org, Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Jan Kara <jack@suse.cz>
+Subject: Re: [RFC PATCH] locking/percpu-rwsem: use this_cpu_{inc|dec}() for
+ read_count
+Message-ID: <20200918090702.GB18920@quack2.suse.cz>
+References: <20200915140750.137881-1-houtao1@huawei.com>
+ <20200915150610.GC2674@hirez.programming.kicks-ass.net>
+ <20200915153113.GA6881@redhat.com>
+ <20200915155150.GD2674@hirez.programming.kicks-ass.net>
+ <20200915160344.GH35926@hirez.programming.kicks-ass.net>
+ <b885ce8e-4b0b-8321-c2cc-ee8f42de52d4@huawei.com>
+ <ddd5d732-06da-f8f2-ba4a-686c58297e47@plexistor.com>
+ <20200917120132.GA5602@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <fa6634dd-4438-4e5d-f350-fc19d5fa7d97@huawei.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.220]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917120132.GA5602@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Catalin,
+On Thu 17-09-20 14:01:33, Oleg Nesterov wrote:
+> On 09/17, Boaz Harrosh wrote:
+> >
+> > On 16/09/2020 15:32, Hou Tao wrote:
+> > <>
+> > >However the performance degradation is huge under aarch64 (4 sockets, 24 core per sockets): nearly 60% lost.
+> > >
+> > >v4.19.111
+> > >no writer, reader cn                               | 24        | 48        | 72        | 96
+> > >the rate of down_read/up_read per second           | 166129572 | 166064100 | 165963448 | 165203565
+> > >the rate of down_read/up_read per second (patched) |  63863506 |  63842132 |  63757267 |  63514920
+> > >
+> >
+> > I believe perhaps Peter Z's suggestion of an additional
+> > percpu_down_read_irqsafe() API and let only those in IRQ users pay the
+> > penalty.
+> >
+> > Peter Z wrote:
+> > >My leading alternative was adding: percpu_down_read_irqsafe() /
+> > >percpu_up_read_irqsafe(), which use local_irq_save() instead of
+> > >preempt_disable().
+> 
+> This means that __sb_start/end_write() and probably more users in fs/super.c
+> will have to use this API, not good.
+> 
+> IIUC, file_end_write() was never IRQ safe (at least if !CONFIG_SMP), even
+> before 8129ed2964 ("change sb_writers to use percpu_rw_semaphore"), but this
+> doesn't matter...
+> 
+> Perhaps we can change aio.c, io_uring.c and fs/overlayfs/file.c to avoid
+> file_end_write() in IRQ context, but I am not sure it's worth the trouble.
 
+Well, that would be IMO rather difficult. We need to do file_end_write()
+after the IO has completed so if we don't want to do it in IRQ context,
+we'd have to queue a work to a workqueue or something like that. And that's
+going to be expensive compared to pure per-cpu inc/dec...
 
-On 2020/9/18 16:59, chenzhou wrote:
-> Hi Baoquan,
->
-> On 2020/9/18 15:25, Baoquan He wrote:
->> Hi,
->>
->> On 09/07/20 at 09:47pm, Chen Zhou wrote:
->>> To make the functions reserve_crashkernel[_low]() as generic,
->>> replace some hard-coded numbers with macro CRASH_ADDR_LOW_MAX.
->>>
->>> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
->>> ---
->>>  arch/x86/kernel/setup.c | 11 ++++++-----
->>>  1 file changed, 6 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
->>> index d7fd90c52dae..71a6a6e7ca5b 100644
->>> --- a/arch/x86/kernel/setup.c
->>> +++ b/arch/x86/kernel/setup.c
->>> @@ -430,7 +430,7 @@ static int __init reserve_crashkernel_low(void)
->>>  	unsigned long total_low_mem;
->>>  	int ret;
->>>  
->>> -	total_low_mem = memblock_mem_size(1UL << (32 - PAGE_SHIFT));
->>> +	total_low_mem = memblock_mem_size(CRASH_ADDR_LOW_MAX >> PAGE_SHIFT);
->> Just note that the replacement has been done in another patch from Mike
->> Rapoport, partially. He seems to have done reserve_crashkernel_low()
->> part, there's one left in reserve_crashkernel(), you might want to check
->> that. 
->>
->> Mike's patch which is from a patchset has been merged into Andrew's next
->> tree.
->>
->> commit 6e50f7672ffa362e9bd4bc0c0d2524ed872828c5
->> Author: Mike Rapoport <rppt@linux.ibm.com>
->> Date:   Wed Aug 26 15:22:32 2020 +1000
->>
->>     x86/setup: simplify reserve_crashkernel()
-As Baoquan said, some functions have been changed in the next tree,
-if i need to rebase on top of the next tree.
+If people really wanted to avoid irq-safe inc/dec for archs where it is
+more expensive, one idea I had was that we could add 'read_count_in_irq' to
+percpu_rw_semaphore. So callers in normal context would use read_count and
+callers in irq context would use read_count_in_irq. And the writer side
+would sum over both but we don't care about performance of that one much.
 
-Thanks,
-Chen Zhou
-> Yeah, the function reserve_crashkernel() has been changed in the next tree.
-> Thanks for your review and reminder.
->
-> Thanks,
-> Chen Zhou
->>>  
->>>  	/* crashkernel=Y,low */
->>>  	ret = parse_crashkernel_low(boot_command_line, total_low_mem, &low_size, &base);
->>> @@ -451,7 +451,7 @@ static int __init reserve_crashkernel_low(void)
->>>  			return 0;
->>>  	}
->>>  
->>> -	low_base = memblock_find_in_range(CRASH_ALIGN, 1ULL << 32, low_size, CRASH_ALIGN);
->>> +	low_base = memblock_find_in_range(CRASH_ALIGN, CRASH_ADDR_LOW_MAX, low_size, CRASH_ALIGN);
->>>  	if (!low_base) {
->>>  		pr_err("Cannot reserve %ldMB crashkernel low memory, please try smaller size.\n",
->>>  		       (unsigned long)(low_size >> 20));
->>> @@ -504,8 +504,9 @@ static void __init reserve_crashkernel(void)
->>>  	if (!crash_base) {
->>>  		/*
->>>  		 * Set CRASH_ADDR_LOW_MAX upper bound for crash memory,
->>> -		 * crashkernel=x,high reserves memory over 4G, also allocates
->>> -		 * 256M extra low memory for DMA buffers and swiotlb.
->>> +		 * crashkernel=x,high reserves memory over CRASH_ADDR_LOW_MAX,
->>> +		 * also allocates 256M extra low memory for DMA buffers
->>> +		 * and swiotlb.
->>>  		 * But the extra memory is not required for all machines.
->>>  		 * So try low memory first and fall back to high memory
->>>  		 * unless "crashkernel=size[KMG],high" is specified.
->>> @@ -539,7 +540,7 @@ static void __init reserve_crashkernel(void)
->>>  		return;
->>>  	}
->>>  
->>> -	if (crash_base >= (1ULL << 32) && reserve_crashkernel_low()) {
->>> +	if (crash_base >= CRASH_ADDR_LOW_MAX && reserve_crashkernel_low()) {
->>>  		memblock_free(crash_base, crash_size);
->>>  		return;
->>>  	}
->>> -- 
->>> 2.20.1
->>>
->> .
->>
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
