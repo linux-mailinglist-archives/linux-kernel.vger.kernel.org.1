@@ -2,85 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1622B26F9CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 12:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D446E26F9CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 12:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726380AbgIRKB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 06:01:58 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:51878 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726152AbgIRKB6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 06:01:58 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id C8F42C6C54B982B532C2;
-        Fri, 18 Sep 2020 18:01:55 +0800 (CST)
-Received: from [10.65.58.147] (10.65.58.147) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Fri, 18 Sep 2020
- 18:01:46 +0800
-Subject: Re: [PATCH -next] i2c: efm32: Use
- devm_platform_get_and_ioremap_resource()
-To:     Wang ShaoBo <bobo.shaobowang@huawei.com>
-References: <20200918082508.32427-1-bobo.shaobowang@huawei.com>
-CC:     <cj.chengjian@huawei.com>, <huawei.libin@huawei.com>,
-        <wsa@kernel.org>, <u.kleine-koenig@pengutronix.de>,
-        <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-From:   Yicong Yang <yangyicong@hisilicon.com>
-Message-ID: <961c1feb-f818-f98c-f618-57c643bac04c@hisilicon.com>
-Date:   Fri, 18 Sep 2020 18:01:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S1726247AbgIRKCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 06:02:39 -0400
+Received: from 8bytes.org ([81.169.241.247]:45262 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725941AbgIRKCi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 06:02:38 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 91457293; Fri, 18 Sep 2020 12:02:37 +0200 (CEST)
+Date:   Fri, 18 Sep 2020 12:02:36 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Jacob Pan <jacob.pan.linux@gmail.com>
+Cc:     iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>, Wu Hao <hao.wu@intel.com>,
+        Yi Sun <yi.y.sun@intel.com>
+Subject: Re: [PATCH v9 0/7] IOMMU user API enhancement
+Message-ID: <20200918100235.GQ31590@8bytes.org>
+References: <1599861476-53416-1-git-send-email-jacob.jun.pan@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200918082508.32427-1-bobo.shaobowang@huawei.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.65.58.147]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1599861476-53416-1-git-send-email-jacob.jun.pan@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/9/18 16:25, Wang ShaoBo wrote:
-> Make use of devm_platform_get_and_ioremap_resource() provided by
-> driver core platform instead of duplicated analogue. dev_err() is
-> removed because it has been done in devm_ioremap_resource().
->
-> Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
-> ---
->  drivers/i2c/busses/i2c-efm32.c | 12 +++---------
->  1 file changed, 3 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/i2c/busses/i2c-efm32.c b/drivers/i2c/busses/i2c-efm32.c
-> index 838ce0947191..f6e13ceeb2b3 100644
-> --- a/drivers/i2c/busses/i2c-efm32.c
-> +++ b/drivers/i2c/busses/i2c-efm32.c
-> @@ -332,21 +332,15 @@ static int efm32_i2c_probe(struct platform_device *pdev)
->  		return ret;
->  	}
->  
-> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -	if (!res) {
-> -		dev_err(&pdev->dev, "failed to determine base address\n");
-> -		return -ENODEV;
-> -	}
-> +	ddata->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
-> +	if (IS_ERR(ddata->base))
-> +		return PTR_ERR(ddata->base);
->  
->  	if (resource_size(res) < 0x42) {
+Hi Jacob,
 
-res is not assigned. should it be removed?
+On Fri, Sep 11, 2020 at 02:57:49PM -0700, Jacob Pan wrote:
+> IOMMU user API header was introduced to support nested DMA translation and
+> related fault handling. The current UAPI data structures consist of three
+> areas that cover the interactions between host kernel and guest:
+>  - fault handling
+>  - cache invalidation
+>  - bind guest page tables, i.e. guest PASID
+> 
+> Future extensions are likely to support more architectures and vIOMMU features.
+> 
+> In the previous discussion, using user-filled data size and feature flags is
+> made a preferred approach over a unified version number.
+> https://lkml.org/lkml/2020/1/29/45
+> 
+> In addition to introduce argsz field to data structures, this patchset is also
+> trying to document the UAPI design, usage, and extension rules. VT-d driver
+> changes to utilize the new argsz field is included, VFIO usage is to follow.
+> 
+> This set is available at:
+> https://github.com/jacobpan/linux.git vsva_v5.9_uapi_v9
 
+This changes user visible structs in incompatible ways, are you sure
+those are not used yet anywhere?
 
->  		dev_err(&pdev->dev, "memory resource too small\n");
->  		return -EINVAL;
->  	}
->  
-> -	ddata->base = devm_ioremap_resource(&pdev->dev, res);
-> -	if (IS_ERR(ddata->base))
-> -		return PTR_ERR(ddata->base);
-> -
->  	ret = platform_get_irq(pdev, 0);
->  	if (ret <= 0) {
->  		if (!ret)
+Please address Randy's comments on patch 1 and my comment about the
+build-time checking and repost with linux-api@vger.kernel.org on Cc.
 
+Regards,
+
+	Joerg
