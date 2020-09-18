@@ -2,132 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D3F26F392
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:10:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6327726F410
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 05:12:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728403AbgIRDHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 23:07:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730668AbgIRDHT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 23:07:19 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBBC3C06174A;
-        Thu, 17 Sep 2020 20:07:18 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1728590AbgIRDLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 23:11:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38732 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726755AbgIRDL2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 23:11:28 -0400
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BszJv65FpzB3vJ;
-        Fri, 18 Sep 2020 13:07:11 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600398434;
-        bh=jY+10yJmYJ3kdSdFgZdAN0Xv69kt3UN2C8TV6HNN/HI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ub528vZ8lrn0PXGMfjXAd3k1iQvDRcQbEto+2Fxaq9atjs19rCWMrAxcjmcOWGy+D
-         VoE1FQ/qKcLKYOZGQIh4wI2nHMVSbEZHlFzQJJs8znfsPYRsJn3f6AsLdh0WKDtEpC
-         osj8etrZN028OuKsdiroJ0SH5IKvbIpxTRmzMz9tDJGIx22OR2NieL8oAX+ib8w3rA
-         MNTDGToTEvYLLeJnrO928g0Y2Y0RR1FUOU6kscBAPBTuLjTWfYX9j0k65E3MypD3AP
-         KcPWUKIIjMr1mVwRmzVrsmMjyYtow1Fsbna2PXOy4npt4Ka8IjfMy6bSZzpsn84akh
-         yN+KTEtb5E1iA==
-Date:   Fri, 18 Sep 2020 13:07:10 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <seanpaul@chromium.org>,
-        Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: manual merge of the drm-msm tree with the drm tree
-Message-ID: <20200918130710.3a9b1ed4@canb.auug.org.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id 4779920678;
+        Fri, 18 Sep 2020 03:11:26 +0000 (UTC)
+Date:   Thu, 17 Sep 2020 23:11:24 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Chengming Zhou <zhouchengming@bytedance.com>
+Subject: Re: [PATCH] kprobes: Do not disarm disabled ftrace kprobe
+Message-ID: <20200917231124.53063fa7@rorschach.local.home>
+In-Reply-To: <20200918110122.b77b5658bd0ae1e28f03f5af@kernel.org>
+References: <20200917191754.0a2f8e46@gandalf.local.home>
+        <20200918110122.b77b5658bd0ae1e28f03f5af@kernel.org>
+X-Mailer: Claws Mail 3.17.4git76 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/gob71Wiro0O.6W+bBsbntBf";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/gob71Wiro0O.6W+bBsbntBf
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, 18 Sep 2020 11:01:22 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-Hi all,
+> Hi Steve,
+> 
+> Ah, this seems to fix same issue which I sent.
+> 
+> https://lkml.kernel.org/r/159888672694.1411785.5987998076694782591.stgit@devnote2
+> 
+> Could you confirm it?
 
-Today's linux-next merge of the drm-msm tree got a conflict in:
+Ah, OK. I'm going through my backlog (which was created by Linux
+Plumbers, and then me going on vacation for 10 days) and I'm only at
+Aug 19th :-p
 
-  drivers/gpu/drm/msm/msm_gem.c
+If that patch fixes the issue, I'll drop mine in favor of yours.
 
-between commit:
+Thanks, and sorry for the noise.
 
-  7690a33f22ab ("drm: msm: fix common struct sg_table related issues")
-
-from the drm tree and commit:
-
-  e1bf29e022fb ("drm/msm: drop cache sync hack")
-
-from the drm-msm tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/gpu/drm/msm/msm_gem.c
-index e47958c3704a,3cb7aeb93fd3..000000000000
---- a/drivers/gpu/drm/msm/msm_gem.c
-+++ b/drivers/gpu/drm/msm/msm_gem.c
-@@@ -52,23 -52,16 +52,14 @@@ static void sync_for_device(struct msm_
-  {
-  	struct device *dev =3D msm_obj->base.dev->dev;
- =20
-- 	if (get_dma_ops(dev) && IS_ENABLED(CONFIG_ARM64)) {
-- 		dma_sync_sgtable_for_device(dev, msm_obj->sgt,
-- 					    DMA_BIDIRECTIONAL);
-- 	} else {
-- 		dma_map_sgtable(dev, msm_obj->sgt, DMA_BIDIRECTIONAL, 0);
-- 	}
- -	dma_map_sg(dev, msm_obj->sgt->sgl,
- -		msm_obj->sgt->nents, DMA_BIDIRECTIONAL);
-++	dma_map_sgtable(dev, msm_obj->sgt, DMA_BIDIRECTIONAL, 0);
-  }
- =20
-  static void sync_for_cpu(struct msm_gem_object *msm_obj)
-  {
-  	struct device *dev =3D msm_obj->base.dev->dev;
- =20
-- 	if (get_dma_ops(dev) && IS_ENABLED(CONFIG_ARM64)) {
-- 		dma_sync_sgtable_for_cpu(dev, msm_obj->sgt, DMA_BIDIRECTIONAL);
-- 	} else {
-- 		dma_unmap_sgtable(dev, msm_obj->sgt, DMA_BIDIRECTIONAL, 0);
-- 	}
- -	dma_unmap_sg(dev, msm_obj->sgt->sgl,
- -		msm_obj->sgt->nents, DMA_BIDIRECTIONAL);
-++	dma_unmap_sgtable(dev, msm_obj->sgt, DMA_BIDIRECTIONAL, 0);
-  }
- =20
-  /* allocate pages from VRAM carveout, used when no IOMMU: */
-
---Sig_/gob71Wiro0O.6W+bBsbntBf
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9kJF4ACgkQAVBC80lX
-0Gyt9gf+Me9wSB1yIYylZjcbmnaO4xWyxULvze67Us1z7gXJN+qoSyuAU9RFLaoL
-T5tw7Sz+cj5r5XorgmKZFppg3Z0G5/8e77ZNCbgKR2ofrDn2mepLJI9nDNEHtnIt
-R88vkolt0drrA9vWaPW4DAEKu8ekOVVuZZ9DyPfWHxLT1XhoeBajNFF7hmaEobQR
-1UFLNExXyjXBqjLCYxChp/sYMMkIYeAmjzoUVkLYUC13ZrFXzZgLbVJi5hUidHIz
-fuM9YWaxB/sWQAE5zTWvkiaelvz58p8nVjnl9DoxgQWGXp9kH7trVKUYczQ+H2f3
-yl5Ed8uEUZi7o9wA9YpjgqwIOKKk4Q==
-=Whbl
------END PGP SIGNATURE-----
-
---Sig_/gob71Wiro0O.6W+bBsbntBf--
+-- Steve
