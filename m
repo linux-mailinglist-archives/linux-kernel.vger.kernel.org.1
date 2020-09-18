@@ -2,152 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3588427003A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 16:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89DE1270042
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 16:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726830AbgIROwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 10:52:15 -0400
-Received: from m42-11.mailgun.net ([69.72.42.11]:23644 "EHLO
-        m42-11.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726566AbgIROwM (ORCPT
+        id S1726299AbgIROzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 10:55:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726126AbgIROzu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 10:52:12 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600440731; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=VCaK/PjSr2IoSDpVniOKKKF8ojfJ6Hs8WRbfiUdiwk8=; b=a/7Srh3fMgDevoBPOGWXa5HKk/UpyMehwk7gK5FgYw9c5BWYC8vXv5jPNR8xd6uyLUtDfO/H
- nOjSE4QrGkrmsPI6Elrmlqb5BqA9sEeVg+U/tOMWm7wBWsjEk+voGlNz66sDovgwkMXBqH8W
- HgZmS0wA68XO3uvZmaBvxh4/U4k=
-X-Mailgun-Sending-Ip: 69.72.42.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5f64c9774a8a578ddc320166 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Sep 2020 14:51:35
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 08CD9C433C8; Fri, 18 Sep 2020 14:51:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0F58FC433C8;
-        Fri, 18 Sep 2020 14:51:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0F58FC433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rohitkr@codeaurora.org,
-        srinivas.kandagatla@linaro.org
-Cc:     Ajit Pandey <ajitp@codeaurora.org>,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Subject: [PATCH] arm64: dts: qcom: sc7180-trogdor: Add lpass dai link for I2S driver
-Date:   Fri, 18 Sep 2020 20:21:18 +0530
-Message-Id: <1600440678-2137-1-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Fri, 18 Sep 2020 10:55:50 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0248FC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 07:55:49 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id k15so5930753wrn.10
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 07:55:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=z3dW688qENJW8v47iZvvhvhPKK/yGjEUH8Eu+wx3dcI=;
+        b=hRpHFUiCcG7Gi3kj+fr5O0595M4eBZNAFLSknVYmIwpL852cKZ/LtOxsANbtBJBLyu
+         6d/bwK0TB3Ht3xk1MmkkG42PniVPDYeyVMXqXK+KCenphtzEIVGHK+tkrM6NsmdeXmwO
+         sFNWACPuFOZxwL6BrVy/EHOd18Jw/ajbfPvt1WfoarOkkyyIIdh6gWRkpBFR7HrhalsL
+         NJfJ5A1ef0h/Aqntpff0xHBgMqO65KenSPKD6QdjIREJWIUCHrN/FZqv8bbTJpGtjmIE
+         scNlz7swY2V5MqxB1dQxBLlhSbUIVMLifj/FJ3JznYPZ2mpLk5JfgstcnCSKiXjcnQaK
+         UIZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=z3dW688qENJW8v47iZvvhvhPKK/yGjEUH8Eu+wx3dcI=;
+        b=RxJLLuzc9+V9D8lwLv0JjEht9TrO16dofltHoMBRy/ef7WzbP8eTFOn9jsEEJrYSCY
+         XsbobOYRrqawvvDfqAHxla60K1KfdujOCMXKXehRSO5K3iYqhf+2EaqX3MhXrIFvGvLs
+         fBa8rZLFz3bpd3jz/Qxri4oJtLawv5HS6a7C8EG2qZ4Mc5K8GJQNEs0mFExXH+KaMkTz
+         uJvMJE696tZfa3jPRaC7nu/04ykti11RIqN947ZEcAuK+fWL3VHrmTkzRnIOlOFWrS0Y
+         H2knpCl8DS3hohK3PGkV5NQJy0frozUR2KsNiO4mjzG6AJWasTv69x9RON2tVlsAxeij
+         LDzg==
+X-Gm-Message-State: AOAM530tc2zXgKdQ12qJpKzgq4lZ0coNiATb47BeJqngDocxMdyRYTKS
+        OuLrSmMyAv4GMljAjgGPwxWPiA==
+X-Google-Smtp-Source: ABdhPJxyrtUGrRfhz+6SFZnO4tJiJgk6Op4RFkuAA4SwNbdBYxTaGK6F9CgdAGr3EhD1gaa/DkU78w==
+X-Received: by 2002:adf:f50a:: with SMTP id q10mr37861563wro.319.1600440948316;
+        Fri, 18 Sep 2020 07:55:48 -0700 (PDT)
+Received: from elver.google.com ([100.105.32.75])
+        by smtp.gmail.com with ESMTPSA id n4sm5659779wrp.61.2020.09.18.07.55.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 07:55:47 -0700 (PDT)
+Date:   Fri, 18 Sep 2020 16:55:41 +0200
+From:   Marco Elver <elver@google.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        kasan-dev@googlegroups.com,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/35] kasan: shadow declarations only for software modes
+Message-ID: <20200918145541.GA2458536@elver.google.com>
+References: <cover.1597425745.git.andreyknvl@google.com>
+ <272b331db9919432cd6467a0bd5ce73ffc46fc97.1597425745.git.andreyknvl@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <272b331db9919432cd6467a0bd5ce73ffc46fc97.1597425745.git.andreyknvl@google.com>
+User-Agent: Mutt/1.14.4 (2020-06-18)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ajit Pandey <ajitp@codeaurora.org>
+On Fri, Aug 14, 2020 at 07:26PM +0200, Andrey Konovalov wrote:
+> This is a preparatory commit for the upcoming addition of a new hardware
+> tag-based (MTE-based) KASAN mode.
+> 
+> Group shadow-related KASAN function declarations and only define them
+> for the two existing software modes.
+> 
+> No functional changes for software modes.
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> ---
+>  include/linux/kasan.h | 44 ++++++++++++++++++++++++++-----------------
+>  1 file changed, 27 insertions(+), 17 deletions(-)
+> 
+> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+> index bd5b4965a269..44a9aae44138 100644
+> --- a/include/linux/kasan.h
+> +++ b/include/linux/kasan.h
+[...]
+> +static inline int kasan_add_zero_shadow(void *start, unsigned long size)
+> +{
+> +	return 0;
+> +}
+> +static inline void kasan_remove_zero_shadow(void *start,
+> +					unsigned long size)
+> +{}
 
-Add dai link for supporting lpass I2S driver, which is used
-for audio capture and playback.
-Add lpass-cpu node with  pin controls and i2s primary
-and secondary dai-links
+Readability suggestion (latest checkpatch.pl allows up to 100 cols):
 
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 59 ++++++++++++++++++++++++++++
- 1 file changed, 59 insertions(+)
+-static inline void kasan_remove_zero_shadow(void *start,
+-					unsigned long size)
+-{}
++static inline void kasan_remove_zero_shadow(void *start, unsigned long size) {}
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-index bf87558..5724982 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-@@ -220,6 +220,44 @@
- 			max-brightness = <1023>;
- 		};
- 	};
-+
-+	sound {
-+		compatible = "qcom,sc7180-sndcard";
-+		model = "sc7180-snd-card";
-+
-+		audio-routing =
-+			"Headphone Jack", "HPOL",
-+			"Headphone Jack", "HPOR";
-+
-+		audio-jack = <&alc5682>;
-+
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		dai-link@0 {
-+			link-name = "MultiMedia0";
-+			reg = <0>;
-+			cpu {
-+				sound-dai = <&lpass_cpu 0>;
-+			};
-+
-+			codec {
-+				sound-dai = <&alc5682 0>;
-+			};
-+		};
-+
-+		dai-link@1 {
-+			link-name = "MultiMedia1";
-+			reg = <1>;
-+			cpu {
-+				sound-dai = <&lpass_cpu 1>;
-+			};
-+
-+			codec {
-+				sound-dai = <&max98357a>;
-+			};
-+		};
-+	};
- };
- 
- &qfprom {
-@@ -725,6 +763,27 @@ hp_i2c: &i2c9 {
- 	modem-init;
- };
- 
-+&lpass_cpu {
-+	status = "okay";
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&sec_mi2s_active &pri_mi2s_active &pri_mi2s_mclk_active>;
-+
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	mi2s-primary@0 {
-+		reg = <MI2S_PRIMARY>;
-+		qcom,playback-sd-lines = <1>;
-+		qcom,capture-sd-lines = <0>;
-+	};
-+
-+	mi2s-secondary@1 {
-+		reg = <MI2S_SECONDARY>;
-+		qcom,playback-sd-lines = <0>;
-+	};
-+};
-+
- &mdp {
- 	status = "okay";
- };
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+Thanks,
+-- Marco
