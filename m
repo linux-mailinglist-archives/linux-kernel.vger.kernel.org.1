@@ -2,54 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 288FA2707E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 23:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5976F2707E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 23:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726276AbgIRVLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 17:11:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726157AbgIRVLe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 17:11:34 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1674C0613CE;
-        Fri, 18 Sep 2020 14:11:34 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 7E45B159CF670;
-        Fri, 18 Sep 2020 13:54:46 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 14:11:32 -0700 (PDT)
-Message-Id: <20200918.141132.678366062831598469.davem@davemloft.net>
-To:     luobin9@huawei.com
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        luoxianjun@huawei.com, yin.yinshi@huawei.com,
-        cloud.wangxiaoyun@huawei.com, chiqijun@huawei.com,
-        zengweiliang.zengweiliang@huawei.com
-Subject: Re: [PATCH net] hinic: fix sending pkts from core while self
- testing
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200918040938.20177-1-luobin9@huawei.com>
-References: <20200918040938.20177-1-luobin9@huawei.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Fri, 18 Sep 2020 13:54:46 -0700 (PDT)
+        id S1726299AbgIRVNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 17:13:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60100 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726118AbgIRVNo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 17:13:44 -0400
+Received: from localhost (router.4pisysteme.de [80.79.225.122])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8197620773;
+        Fri, 18 Sep 2020 21:13:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600463624;
+        bh=lJEoJiKb+a1XP0tPhq92KH2rBuS5HXXEbZAD3e1rGrI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=U072NaANahVKQEmGwebUdmaSqBZ66YNMyMwq0vnaLZGbXhpy0lIc+Tvbp6bj7FNeo
+         TJ12N8UxYDAuk3tRHbAmaskkrTuClo87fMSO7X49qE7I2Pk5OBvMlYfU2dZqUv5hqs
+         rjexnOp75lufY2HWWNvosEZheQA//jtjmxKPQXfE=
+Date:   Fri, 18 Sep 2020 23:13:40 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] i2c: mxs: use MXS_DMA_CTRL_WAIT4END instead of
+ DMA_CTRL_ACK
+Message-ID: <20200918211340.GG52206@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20200911150139.13690-1-matthias.schiffer@ew.tq-group.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="lQSB8Tqijvu1+4Ba"
+Content-Disposition: inline
+In-Reply-To: <20200911150139.13690-1-matthias.schiffer@ew.tq-group.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luo bin <luobin9@huawei.com>
-Date: Fri, 18 Sep 2020 12:09:38 +0800
 
-> Call netif_tx_disable firstly before starting doing self-test to
-> avoid sending packet from networking core and self-test packet
-> simultaneously which may cause self-test failure or hw abnormal.
-> 
-> Fixes: 4aa218a4fe77 ("hinic: add self test support")
-> Signed-off-by: Luo bin <luobin9@huawei.com>
+--lQSB8Tqijvu1+4Ba
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Applied.
+On Fri, Sep 11, 2020 at 05:01:39PM +0200, Matthias Schiffer wrote:
+> The driver-specific usage of the DMA_CTRL_ACK flag was replaced with a
+> custom flag in commit ceeeb99cd821 ("dmaengine: mxs: rename custom flag"),
+> but i2c-mxs was not updated to use the new flag, completely breaking I2C
+> transactions using DMA.
+>=20
+> Fixes: ceeeb99cd821 ("dmaengine: mxs: rename custom flag")
+> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+
+Applied to for-current, thanks!
+
+
+--lQSB8Tqijvu1+4Ba
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9lIwQACgkQFA3kzBSg
+KbZ7Hg/5AceyOo2aZs4KCc0X7bKW0jsp/FCiQso+pUUdZqsFlfFftc2VXDxJ6jl6
+BoGfvzvEWO0RkOwspm0hi27rpYOhjMwyl4DVM/uJvmS6kUfE1U1pALuiUJ5KVvb+
+Ho8Xq7AV6Tbc/Ujtc3QdxQk0nCNIfbDHMaN4SbC39Mr54YiZsfeTa8jLws6ggFSI
+Kez+DBYnwrVvEwE7VrJMmetCZdPKXyi61rvtwgpVU4gEzlGYkdciZRR+3mP7PlWm
+KRUD5w1R/Lb55hrXf5jVoTB38yY6u2vDsRTkTkrOXuoOKdlHJF85dVmqfOiXtoDt
+X90A+ntSP72161iHn9ImkAV/a0OObuDVLqrAoRt+sYsDcQcNgqi3I1BvOGWtYVlq
+At/D/6qPf2/1wBovpJ5Zp5uQPm4+4VyOLxrYeByKJw3sQwlojg90r6Ck+Whr9IRp
+GWcfQ+al9p2JrqQQMHspwNIJjVSTRovqNi2XIfJM0DvBdre0IsG6WJOCgIthjfKu
+z0b41DQqRtM2eL/STnJt24z6VgWYR/HI1huUUhRroV6eZiFGRZegbGfmBPo1zf8M
+EugbckJqQ/Ywn8253KlH5EW3d1lPqgoi5ZYGdrLrpHjqA9tZ4XOMYvJ6z2IfrULa
+z6JnL4SMIic0E6i1o3La1Z4i4t8Pc92fDb2psrUEziQaWsiy3H8=
+=uKjB
+-----END PGP SIGNATURE-----
+
+--lQSB8Tqijvu1+4Ba--
