@@ -2,272 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DF6426FADF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 12:48:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB6A926FAE6
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 12:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726366AbgIRKrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 06:47:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725941AbgIRKru (ORCPT
+        id S1726388AbgIRKse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 06:48:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42184 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726115AbgIRKse (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 06:47:50 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA8C9C061788;
-        Fri, 18 Sep 2020 03:47:49 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id q9so4868942wmj.2;
-        Fri, 18 Sep 2020 03:47:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=RXEWTobRs9s4LJElS8zg1xI5BJD4hPEpT7/WyMI0e3E=;
-        b=tLIzLF1385PXg1qesSX6Ao/H78e7i6GpdmrAz11ynssT3DtTjFVN2OJ5aykNxkqPVD
-         1wdd0ygyRWN03W9bYycXGfGflKa2zAulQT3+TFSXAr3G8XVwSgFoCNp4GtudmijXbVkQ
-         vXA4XqqaH/0+v5dfDffV7dwV08iwMe8lg45Gt9hacm8RaQKM6pGKgx4dvhpyg/4IkKDn
-         zT4OXsSSaMl3MSutU2MfWNZlKeuwCV/mBH4Uoum0XYJeuCWvnygWWshK1A7lJPGD4oDT
-         ITsb1PYfO17ipwV6UaekjbQAg6RZHvN76urKQjGUWDok5r2yevKby5vgYefS9VHz8vGy
-         XWig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=RXEWTobRs9s4LJElS8zg1xI5BJD4hPEpT7/WyMI0e3E=;
-        b=hRO7wvBHdPENMz+ONCVoWeg8qrwnH3yR7cdLkBF2dGo/tlHhJiEfOQEnyn74F5cdjg
-         wITEInsUly0uRFlWNugwBGWhY3iHrfXuepoRgNfTTGeCZnzwY5cralt3foFVtX5C7aGt
-         AkmtLK9QMXbn/71zxero8rbHPmwJZ2weRzZn/C8HX7p+JndR30l7LN8slsUfdvpYSHxZ
-         I30lAutPBxtTAQWfqJfGKXPMzQZDLJ7cAMf1T3VDOA7zRw84sW6BdnKpvhOVGJ8omAG2
-         dqZlhzPu8+/h3Vff1UfnDXIgLuFxIACnc+Pl4lN0co5O8BfmEkHl+tNKYIDELlAqXj1F
-         /GTA==
-X-Gm-Message-State: AOAM5306Q6ZO/YK2XeYveDK3k5Nea5FSHtmkT89RCPus+DYQpASnZFEE
-        hsu1bGJoz/Uy50ovr7E6dzI=
-X-Google-Smtp-Source: ABdhPJx+JMAvI8aS57FSOrkxf9jA7gU15ImEW1d0y0N9Gei37t0QRZBKOUQzrhl5UZIy8UQvPwZ93A==
-X-Received: by 2002:a7b:c210:: with SMTP id x16mr14534401wmi.37.1600426068480;
-        Fri, 18 Sep 2020 03:47:48 -0700 (PDT)
-Received: from trantor.home (cpc153975-seac28-2-0-cust722.7-2.cable.virginm.net. [81.109.38.211])
-        by smtp.gmail.com with ESMTPSA id h4sm5197846wrm.54.2020.09.18.03.47.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 03:47:48 -0700 (PDT)
-From:   Boyan Karatotev <boian4o1@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Boyan Karatotev <boian4o1@gmail.com>,
-        Boyan Karatotev <boyan.karatotev@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Vincenzo Frascino <Vincenzo.Frascino@arm.com>,
-        Amit Daniel Kachhap <amit.kachhap@arm.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH v3 4/4] kselftests/arm64: add PAuth tests for single threaded consistency and differently initialized keys
-Date:   Fri, 18 Sep 2020 11:47:15 +0100
-Message-Id: <20200918104715.182310-5-boian4o1@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200918104715.182310-1-boian4o1@gmail.com>
-References: <20200918104715.182310-1-boian4o1@gmail.com>
+        Fri, 18 Sep 2020 06:48:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600426112;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=R1chLQYyqvdYMEdkQJ5aLl7aSBAy8CC1WIB+Xh754Tw=;
+        b=Sq99/oHwuOCqotrL/joQ50TIn17H9UUfCgiE/97SUxfmR1+TYUQ7etnfjP4vuZ83OMxdTZ
+        ycTg4QFu207Ltp+fJrN5AggJMgqqrX/BS9KRFen7gMNq1nGtCJdNgbRwtye5YErWp0WVYw
+        qLxGlXjIKIfEV2ksooxpi2AKI2PffGs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-237-SrCELimjN-W__2WG3SIN9A-1; Fri, 18 Sep 2020 06:48:31 -0400
+X-MC-Unique: SrCELimjN-W__2WG3SIN9A-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 15A38640A0;
+        Fri, 18 Sep 2020 10:48:29 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.193.72])
+        by smtp.corp.redhat.com (Postfix) with SMTP id F32135DEBF;
+        Fri, 18 Sep 2020 10:48:25 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Fri, 18 Sep 2020 12:48:28 +0200 (CEST)
+Date:   Fri, 18 Sep 2020 12:48:24 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     peterz@infradead.org
+Cc:     Jan Kara <jack@suse.cz>, Boaz Harrosh <boaz@plexistor.com>,
+        Hou Tao <houtao1@huawei.com>, Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC PATCH] locking/percpu-rwsem: use this_cpu_{inc|dec}() for
+ read_count
+Message-ID: <20200918104824.GA23469@redhat.com>
+References: <20200915150610.GC2674@hirez.programming.kicks-ass.net>
+ <20200915153113.GA6881@redhat.com>
+ <20200915155150.GD2674@hirez.programming.kicks-ass.net>
+ <20200915160344.GH35926@hirez.programming.kicks-ass.net>
+ <b885ce8e-4b0b-8321-c2cc-ee8f42de52d4@huawei.com>
+ <ddd5d732-06da-f8f2-ba4a-686c58297e47@plexistor.com>
+ <20200917120132.GA5602@redhat.com>
+ <20200918090702.GB18920@quack2.suse.cz>
+ <20200918100112.GN1362448@hirez.programming.kicks-ass.net>
+ <20200918101216.GL35926@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200918101216.GL35926@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Boyan Karatotev <boyan.karatotev@arm.com>
+On 09/18, Peter Zijlstra wrote:
+>
+> On Fri, Sep 18, 2020 at 12:01:12PM +0200, peterz@infradead.org wrote:
+> > +	u64 sum = per_cpu_sum(*(u64 *)sem->read_count);
+>
+> Moo, that doesn't work, we have to do two separate sums.
 
-PAuth adds 5 different keys that can be used to sign addresses.
+Or we can re-introduce "atomic_t slow_read_ctr".
 
-Add a test that verifies that the kernel initializes them to different
-values and preserves them across context switches.
+	percpu_up_read_irqsafe(sem)
+	{
+		preempt_disable();
+		atomic_dec_release(&sem->slow_read_ctr);
+		if (!rcu_sync_is_idle(&sem->rss))
+			rcuwait_wake_up(&sem->writer);
+		preempt_enable();
+	}
 
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Reviewed-by: Vincenzo Frascino <Vincenzo.Frascino@arm.com>
-Reviewed-by: Amit Daniel Kachhap <amit.kachhap@arm.com>
-Acked-by: Shuah Khan <skhan@linuxfoundation.org>
-Signed-off-by: Boyan Karatotev <boyan.karatotev@arm.com>
----
- tools/testing/selftests/arm64/pauth/pac.c | 123 ++++++++++++++++++++++
- 1 file changed, 123 insertions(+)
+	readers_active_check(sem)
+	{
+		unsigned int sum = per_cpu_sum(*sem->read_count) +
+			(unsigned int)atomic_read(&sem->slow_read_ctr);
+		if (sum)
+			return false;
+		...
+	}
 
-diff --git a/tools/testing/selftests/arm64/pauth/pac.c b/tools/testing/selftests/arm64/pauth/pac.c
-index b363ad6a0b50..592fe538506e 100644
---- a/tools/testing/selftests/arm64/pauth/pac.c
-+++ b/tools/testing/selftests/arm64/pauth/pac.c
-@@ -1,11 +1,14 @@
- // SPDX-License-Identifier: GPL-2.0
- // Copyright (C) 2020 ARM Limited
- 
-+#define _GNU_SOURCE
-+
- #include <sys/auxv.h>
- #include <sys/types.h>
- #include <sys/wait.h>
- #include <signal.h>
- #include <setjmp.h>
-+#include <sched.h>
- 
- #include "../../kselftest_harness.h"
- #include "helper.h"
-@@ -17,6 +20,7 @@
-  * The VA space size is 48 bits. Bigger is opt-in.
-  */
- #define PAC_MASK (~0xff80ffffffffffff)
-+#define ARBITRARY_VALUE (0x1234)
- #define ASSERT_PAUTH_ENABLED() \
- do { \
- 	unsigned long hwcaps = getauxval(AT_HWCAP); \
-@@ -61,13 +65,37 @@ int n_same(struct signatures *old, struct signatures *new, int nkeys)
- 	return res;
- }
- 
-+int n_same_single_set(struct signatures *sign, int nkeys)
-+{
-+	size_t vals[nkeys];
-+	int same = 0;
-+
-+	vals[0] = sign->keyia & PAC_MASK;
-+	vals[1] = sign->keyib & PAC_MASK;
-+	vals[2] = sign->keyda & PAC_MASK;
-+	vals[3] = sign->keydb & PAC_MASK;
-+
-+	if (nkeys >= 4)
-+		vals[4] = sign->keyg & PAC_MASK;
-+
-+	for (int i = 0; i < nkeys - 1; i++) {
-+		for (int j = i + 1; j < nkeys; j++) {
-+			if (vals[i] == vals[j])
-+				same += 1;
-+		}
-+	}
-+	return same;
-+}
-+
- int exec_sign_all(struct signatures *signed_vals, size_t val)
- {
- 	int new_stdin[2];
- 	int new_stdout[2];
- 	int status;
-+	int i;
- 	ssize_t ret;
- 	pid_t pid;
-+	cpu_set_t mask;
- 
- 	ret = pipe(new_stdin);
- 	if (ret == -1) {
-@@ -81,6 +109,20 @@ int exec_sign_all(struct signatures *signed_vals, size_t val)
- 		return -1;
- 	}
- 
-+	/*
-+	 * pin this process and all its children to a single CPU, so it can also
-+	 * guarantee a context switch with its child
-+	 */
-+	sched_getaffinity(0, sizeof(mask), &mask);
-+
-+	for (i = 0; i < sizeof(cpu_set_t); i++)
-+		if (CPU_ISSET(i, &mask))
-+			break;
-+
-+	CPU_ZERO(&mask);
-+	CPU_SET(i, &mask);
-+	sched_setaffinity(0, sizeof(mask), &mask);
-+
- 	pid = fork();
- 	// child
- 	if (pid == 0) {
-@@ -205,6 +247,44 @@ TEST(pac_instructions_not_nop_generic)
- 	ASSERT_NE(0, keyg)  TH_LOG("keyg instructions did nothing");
- }
- 
-+TEST(single_thread_different_keys)
-+{
-+	int same = 10;
-+	int nkeys = NKEYS;
-+	int tmp;
-+	struct signatures signed_vals;
-+	unsigned long hwcaps = getauxval(AT_HWCAP);
-+
-+	/* generic and data key instructions are not in NOP space. This prevents a SIGILL */
-+	ASSERT_NE(0, hwcaps & HWCAP_PACA) TH_LOG("PAUTH not enabled");
-+	if (!(hwcaps & HWCAP_PACG)) {
-+		TH_LOG("WARNING: Generic PAUTH not enabled. Skipping generic key checks");
-+		nkeys = NKEYS - 1;
-+	}
-+
-+	/*
-+	 * In Linux the PAC field can be up to 7 bits wide. Even if keys are
-+	 * different, there is about 5% chance for PACs to collide with
-+	 * different addresses. This chance rapidly increases with fewer bits
-+	 * allocated for the PAC (e.g. wider address). A comparison of the keys
-+	 * directly will be more reliable.
-+	 * All signed values need to be different at least once out of n
-+	 * attempts to be certain that the keys are different
-+	 */
-+	for (int i = 0; i < PAC_COLLISION_ATTEMPTS; i++) {
-+		if (nkeys == NKEYS)
-+			sign_all(&signed_vals, i);
-+		else
-+			sign_specific(&signed_vals, i);
-+
-+		tmp = n_same_single_set(&signed_vals, nkeys);
-+		if (tmp < same)
-+			same = tmp;
-+	}
-+
-+	ASSERT_EQ(0, same) TH_LOG("%d keys clashed every time", same);
-+}
-+
- /*
-  * fork() does not change keys. Only exec() does so call a worker program.
-  * Its only job is to sign a value and report back the resutls
-@@ -242,4 +322,47 @@ TEST(exec_changed_keys)
- 	ASSERT_EQ(0, same) TH_LOG("exec() did not change %d keys", same);
- }
- 
-+TEST(context_switch_keep_keys)
-+{
-+	int ret;
-+	struct signatures trash;
-+	struct signatures before;
-+	struct signatures after;
-+
-+	ASSERT_PAUTH_ENABLED();
-+
-+	sign_specific(&before, ARBITRARY_VALUE);
-+
-+	/* will context switch with a process with different keys at least once */
-+	ret = exec_sign_all(&trash, ARBITRARY_VALUE);
-+	ASSERT_EQ(0, ret) TH_LOG("failed to run worker");
-+
-+	sign_specific(&after, ARBITRARY_VALUE);
-+
-+	ASSERT_EQ(before.keyia, after.keyia) TH_LOG("keyia changed after context switching");
-+	ASSERT_EQ(before.keyib, after.keyib) TH_LOG("keyib changed after context switching");
-+	ASSERT_EQ(before.keyda, after.keyda) TH_LOG("keyda changed after context switching");
-+	ASSERT_EQ(before.keydb, after.keydb) TH_LOG("keydb changed after context switching");
-+}
-+
-+TEST(context_switch_keep_keys_generic)
-+{
-+	int ret;
-+	struct signatures trash;
-+	size_t before;
-+	size_t after;
-+
-+	ASSERT_GENERIC_PAUTH_ENABLED();
-+
-+	before = keyg_sign(ARBITRARY_VALUE);
-+
-+	/* will context switch with a process with different keys at least once */
-+	ret = exec_sign_all(&trash, ARBITRARY_VALUE);
-+	ASSERT_EQ(0, ret) TH_LOG("failed to run worker");
-+
-+	after = keyg_sign(ARBITRARY_VALUE);
-+
-+	ASSERT_EQ(before, after) TH_LOG("keyg changed after context switching");
-+}
-+
- TEST_HARNESS_MAIN
--- 
-2.28.0
+Of course, this assumes that atomic_t->counter underflows "correctly", just
+like "unsigned int".
+
+But again, do we really want this?
+
+Oleg.
 
