@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4D3326F837
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:31:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DFBC26F83A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726572AbgIRIbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 04:31:01 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:32800 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726260AbgIRIa4 (ORCPT
+        id S1726545AbgIRIbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 04:31:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726434AbgIRIa4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 18 Sep 2020 04:30:56 -0400
-Date:   Fri, 18 Sep 2020 08:30:52 -0000
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D80C061756;
+        Fri, 18 Sep 2020 01:30:55 -0700 (PDT)
+Date:   Fri, 18 Sep 2020 08:30:53 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600417852;
+        s=2020; t=1600417854;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=QE/5B7dj01i2I9UZfCU2VmfiCY8RmeCkd5rPOvCgnFo=;
-        b=x4LOLHVVN1MJptVao9iGtkdcCIbAhdsVgrNPaWkm7hBaXMf2QeCRCmpjJROmSoO3LJKSdF
-        SZUZINcLZ656Tek4AmVYCdwVf48KO3/HiK6x0SMhgDydKQ/TAdjI15Gbswq7uTNC81dxak
-        CqPOUdZNdOUtYYiqurOWNapA6viVhGSsss6vyE02q1AaWheAwMvoBZ5XxHuk+WUsqMPZq+
-        9pXHgyP9gY+ibqr2FEBQvHFq0JyFqgwPj8ZDs+1l8CeZQ4E7J3F6KzDylconoTVCVd+p3G
-        oD19fWoxwbxrrcb7+CLvMe/MOC4ffutELAhllnkOJUC7jwBVg6n1tQBGrn9dsA==
+        bh=bu8hCDfmfONQdGPMFOoROjhn29gXANXvs04IakJ+o8g=;
+        b=mGj/65zSbf3czpGOgOWBhCOv/T0cEIlOHKzIwIZdQqnir348KIhh3AC0VgvuvNVpqraOR3
+        hUMTx1C3z1DrFGYeI+pyqedXJyVe7rj+FYSM4m91bT3xJfixLrQ/o4eiyXiCmPs9juEDFR
+        xlZI6YTSDuiw85e3OxnfYirRn+J168ymoYSvdphk8Oa/bdeD7l6NWMF2NjT4avGql5loIk
+        hZnTXqkj4x8xa/rMoONiEYiCiosNTHU8OhnssApLna704gh4Th0Fri255XjITXSCojw/zE
+        WVxZFTt0Jo6ERa5/03Tp9ZlSjDm+27rGN2iKKqF/Y4yJnpGvSnPY8xxRHic7TA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600417852;
+        s=2020e; t=1600417854;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=QE/5B7dj01i2I9UZfCU2VmfiCY8RmeCkd5rPOvCgnFo=;
-        b=GJw4S9qxY+MsGU+Y6PgeqJNen3LQQ0ZL1Zs/gqM1xSHVNOPDKU3Ytc1SorUS9+RZbFYWMA
-        xuesjTX9YZVlYvAw==
-From:   "tip-bot2 for Arvind Sankar" <tip-bot2@linutronix.de>
+        bh=bu8hCDfmfONQdGPMFOoROjhn29gXANXvs04IakJ+o8g=;
+        b=v321Kd9GbGgX1CW/QgJBT/O8ykC5I+2EK2Fj9q+uRBtZeu+13KcZqRx5/5b8sPhm0CJsqX
+        hsu2SJHrMo5TaWCw==
+From:   "tip-bot2 for Lenny Szubowicz" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: efi/core] efi/x86: Add a quirk to support command line
- arguments on Dell EFI firmware
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Jacobo Pantoja <jacobopantoja@gmail.com>,
+Subject: [tip: efi/core] integrity: Load certs from the EFI MOK config table
+Cc:     Lenny Szubowicz <lszubowi@redhat.com>,
         Ard Biesheuvel <ardb@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200914213535.933454-2-nivedita@alum.mit.edu>
-References: <20200914213535.933454-2-nivedita@alum.mit.edu>
+In-Reply-To: <20200905013107.10457-4-lszubowi@redhat.com>
+References: <20200905013107.10457-4-lszubowi@redhat.com>
 MIME-Version: 1.0
-Message-ID: <160041785206.15536.7281676695549733276.tip-bot2@tip-bot2>
+Message-ID: <160041785349.15536.8943726923312699440.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,228 +60,79 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the efi/core branch of tip:
 
-Commit-ID:     d2778b4891fb600e38c910cb4fe3b4d6e00981e7
-Gitweb:        https://git.kernel.org/tip/d2778b4891fb600e38c910cb4fe3b4d6e00981e7
-Author:        Arvind Sankar <nivedita@alum.mit.edu>
-AuthorDate:    Mon, 14 Sep 2020 17:35:35 -04:00
+Commit-ID:     726bd8965a5f112d9601f7ce68effa1e46e02bf2
+Gitweb:        https://git.kernel.org/tip/726bd8965a5f112d9601f7ce68effa1e46e02bf2
+Author:        Lenny Szubowicz <lszubowi@redhat.com>
+AuthorDate:    Fri, 04 Sep 2020 21:31:07 -04:00
 Committer:     Ard Biesheuvel <ardb@kernel.org>
 CommitterDate: Wed, 16 Sep 2020 18:53:42 +03:00
 
-efi/x86: Add a quirk to support command line arguments on Dell EFI firmware
+integrity: Load certs from the EFI MOK config table
 
-At least some versions of Dell EFI firmware pass the entire
-EFI_LOAD_OPTION descriptor, rather than just the OptionalData part, to
-the loaded image. This was verified with firmware revision 2.15.0 on a
-Dell Precision T3620 by Jacobo Pontaja.
+Because of system-specific EFI firmware limitations, EFI volatile
+variables may not be capable of holding the required contents of
+the Machine Owner Key (MOK) certificate store when the certificate
+list grows above some size. Therefore, an EFI boot loader may pass
+the MOK certs via a EFI configuration table created specifically for
+this purpose to avoid this firmware limitation.
 
-To handle this, add a quirk to check if the options look like a valid
-EFI_LOAD_OPTION descriptor, and if so, use the OptionalData part as the
-command line.
+An EFI configuration table is a much more primitive mechanism
+compared to EFI variables and is well suited for one-way passage
+of static information from a pre-OS environment to the kernel.
 
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-Reported-by: Jacobo Pantoja <jacobopantoja@gmail.com>
-Link: https://lore.kernel.org/linux-efi/20200907170021.GA2284449@rani.riverdale.lan/
-Link: https://lore.kernel.org/r/20200914213535.933454-2-nivedita@alum.mit.edu
+This patch adds the support to load certs from the MokListRT
+entry in the MOK variable configuration table, if it's present.
+The pre-existing support to load certs from the MokListRT EFI
+variable remains and is used if the EFI MOK configuration table
+isn't present or can't be successfully used.
+
+Signed-off-by: Lenny Szubowicz <lszubowi@redhat.com>
+Link: https://lore.kernel.org/r/20200905013107.10457-4-lszubowi@redhat.com
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- drivers/firmware/efi/libstub/efi-stub-helper.c | 101 +++++++++++++++-
- drivers/firmware/efi/libstub/efistub.h         |  31 +++++-
- drivers/firmware/efi/libstub/file.c            |   5 +-
- 3 files changed, 135 insertions(+), 2 deletions(-)
+ security/integrity/platform_certs/load_uefi.c | 22 ++++++++++++++++++-
+ 1 file changed, 22 insertions(+)
 
-diff --git a/drivers/firmware/efi/libstub/efi-stub-helper.c b/drivers/firmware/efi/libstub/efi-stub-helper.c
-index 6bca70b..4dbf04c 100644
---- a/drivers/firmware/efi/libstub/efi-stub-helper.c
-+++ b/drivers/firmware/efi/libstub/efi-stub-helper.c
-@@ -231,6 +231,102 @@ efi_status_t efi_parse_options(char const *cmdline)
- }
- 
- /*
-+ * The EFI_LOAD_OPTION descriptor has the following layout:
-+ *	u32 Attributes;
-+ *	u16 FilePathListLength;
-+ *	u16 Description[];
-+ *	efi_device_path_protocol_t FilePathList[];
-+ *	u8 OptionalData[];
+diff --git a/security/integrity/platform_certs/load_uefi.c b/security/integrity/platform_certs/load_uefi.c
+index c1c622b..ee4b4c6 100644
+--- a/security/integrity/platform_certs/load_uefi.c
++++ b/security/integrity/platform_certs/load_uefi.c
+@@ -71,16 +71,38 @@ static __init void *get_cert_list(efi_char16_t *name, efi_guid_t *guid,
+  * Load the certs contained in the UEFI MokListRT database into the
+  * platform trusted keyring.
+  *
++ * This routine checks the EFI MOK config table first. If and only if
++ * that fails, this routine uses the MokListRT ordinary UEFI variable.
 + *
-+ * This function validates and unpacks the variable-size data fields.
-+ */
-+static
-+bool efi_load_option_unpack(efi_load_option_unpacked_t *dest,
-+			    const efi_load_option_t *src, size_t size)
-+{
-+	const void *pos;
-+	u16 c;
-+	efi_device_path_protocol_t header;
-+	const efi_char16_t *description;
-+	const efi_device_path_protocol_t *file_path_list;
-+
-+	if (size < offsetof(efi_load_option_t, variable_data))
-+		return false;
-+	pos = src->variable_data;
-+	size -= offsetof(efi_load_option_t, variable_data);
-+
-+	if ((src->attributes & ~EFI_LOAD_OPTION_MASK) != 0)
-+		return false;
-+
-+	/* Scan description. */
-+	description = pos;
-+	do {
-+		if (size < sizeof(c))
-+			return false;
-+		c = *(const u16 *)pos;
-+		pos += sizeof(c);
-+		size -= sizeof(c);
-+	} while (c != L'\0');
-+
-+	/* Scan file_path_list. */
-+	file_path_list = pos;
-+	do {
-+		if (size < sizeof(header))
-+			return false;
-+		header = *(const efi_device_path_protocol_t *)pos;
-+		if (header.length < sizeof(header))
-+			return false;
-+		if (size < header.length)
-+			return false;
-+		pos += header.length;
-+		size -= header.length;
-+	} while ((header.type != EFI_DEV_END_PATH && header.type != EFI_DEV_END_PATH2) ||
-+		 (header.sub_type != EFI_DEV_END_ENTIRE));
-+	if (pos != (const void *)file_path_list + src->file_path_list_length)
-+		return false;
-+
-+	dest->attributes = src->attributes;
-+	dest->file_path_list_length = src->file_path_list_length;
-+	dest->description = description;
-+	dest->file_path_list = file_path_list;
-+	dest->optional_data_size = size;
-+	dest->optional_data = size ? pos : NULL;
-+
-+	return true;
-+}
-+
-+/*
-+ * At least some versions of Dell firmware pass the entire contents of the
-+ * Boot#### variable, i.e. the EFI_LOAD_OPTION descriptor, rather than just the
-+ * OptionalData field.
-+ *
-+ * Detect this case and extract OptionalData.
-+ */
-+void efi_apply_loadoptions_quirk(const void **load_options, int *load_options_size)
-+{
-+	const efi_load_option_t *load_option = *load_options;
-+	efi_load_option_unpacked_t load_option_unpacked;
-+
-+	if (!IS_ENABLED(CONFIG_X86))
-+		return;
-+	if (!load_option)
-+		return;
-+	if (*load_options_size < sizeof(*load_option))
-+		return;
-+	if ((load_option->attributes & ~EFI_LOAD_OPTION_BOOT_MASK) != 0)
-+		return;
-+
-+	if (!efi_load_option_unpack(&load_option_unpacked, load_option, *load_options_size))
-+		return;
-+
-+	efi_warn_once(FW_BUG "LoadOptions is an EFI_LOAD_OPTION descriptor\n");
-+	efi_warn_once(FW_BUG "Using OptionalData as a workaround\n");
-+
-+	*load_options = load_option_unpacked.optional_data;
-+	*load_options_size = load_option_unpacked.optional_data_size;
-+}
-+
-+/*
-  * Convert the unicode UEFI command line to ASCII to pass to kernel.
-  * Size of memory allocated return in *cmd_line_len.
-  * Returns NULL on error.
-@@ -239,12 +335,15 @@ char *efi_convert_cmdline(efi_loaded_image_t *image, int *cmd_line_len)
+  * Return:	Status
+  */
+ static int __init load_moklist_certs(void)
  {
- 	const u16 *s2;
- 	unsigned long cmdline_addr = 0;
--	int options_chars = efi_table_attr(image, load_options_size) / 2;
-+	int options_chars = efi_table_attr(image, load_options_size);
- 	const u16 *options = efi_table_attr(image, load_options);
- 	int options_bytes = 0, safe_options_bytes = 0;  /* UTF-8 bytes */
- 	bool in_quote = false;
++	struct efi_mokvar_table_entry *mokvar_entry;
+ 	efi_guid_t mok_var = EFI_SHIM_LOCK_GUID;
+ 	void *mok;
+ 	unsigned long moksize;
  	efi_status_t status;
+ 	int rc;
  
-+	efi_apply_loadoptions_quirk((const void **)&options, &options_chars);
-+	options_chars /= sizeof(*options);
++	/* First try to load certs from the EFI MOKvar config table.
++	 * It's not an error if the MOKvar config table doesn't exist
++	 * or the MokListRT entry is not found in it.
++	 */
++	mokvar_entry = efi_mokvar_entry_find("MokListRT");
++	if (mokvar_entry) {
++		rc = parse_efi_signature_list("UEFI:MokListRT (MOKvar table)",
++					      mokvar_entry->data,
++					      mokvar_entry->data_size,
++					      get_handler_for_db);
++		/* All done if that worked. */
++		if (!rc)
++			return rc;
 +
- 	if (options) {
- 		s2 = options;
- 		while (options_bytes < COMMAND_LINE_SIZE && options_chars--) {
-diff --git a/drivers/firmware/efi/libstub/efistub.h b/drivers/firmware/efi/libstub/efistub.h
-index 9ea87a2..2d7abcd 100644
---- a/drivers/firmware/efi/libstub/efistub.h
-+++ b/drivers/firmware/efi/libstub/efistub.h
-@@ -708,6 +708,35 @@ union efi_load_file_protocol {
- 	} mixed_mode;
- };
- 
-+typedef struct {
-+	u32 attributes;
-+	u16 file_path_list_length;
-+	u8 variable_data[];
-+	// efi_char16_t description[];
-+	// efi_device_path_protocol_t file_path_list[];
-+	// u8 optional_data[];
-+} __packed efi_load_option_t;
++		pr_err("Couldn't parse MokListRT signatures from EFI MOKvar config table: %d\n",
++		       rc);
++	}
 +
-+#define EFI_LOAD_OPTION_ACTIVE		0x0001U
-+#define EFI_LOAD_OPTION_FORCE_RECONNECT	0x0002U
-+#define EFI_LOAD_OPTION_HIDDEN		0x0008U
-+#define EFI_LOAD_OPTION_CATEGORY	0x1f00U
-+#define   EFI_LOAD_OPTION_CATEGORY_BOOT	0x0000U
-+#define   EFI_LOAD_OPTION_CATEGORY_APP	0x0100U
-+
-+#define EFI_LOAD_OPTION_BOOT_MASK \
-+	(EFI_LOAD_OPTION_ACTIVE|EFI_LOAD_OPTION_HIDDEN|EFI_LOAD_OPTION_CATEGORY)
-+#define EFI_LOAD_OPTION_MASK (EFI_LOAD_OPTION_FORCE_RECONNECT|EFI_LOAD_OPTION_BOOT_MASK)
-+
-+typedef struct {
-+	u32 attributes;
-+	u16 file_path_list_length;
-+	const efi_char16_t *description;
-+	const efi_device_path_protocol_t *file_path_list;
-+	size_t optional_data_size;
-+	const void *optional_data;
-+} efi_load_option_unpacked_t;
-+
- void efi_pci_disable_bridge_busmaster(void);
- 
- typedef efi_status_t (*efi_exit_boot_map_processing)(
-@@ -750,6 +779,8 @@ __printf(1, 2) int efi_printk(char const *fmt, ...);
- 
- void efi_free(unsigned long size, unsigned long addr);
- 
-+void efi_apply_loadoptions_quirk(const void **load_options, int *load_options_size);
-+
- char *efi_convert_cmdline(efi_loaded_image_t *image, int *cmd_line_len);
- 
- efi_status_t efi_get_memory_map(struct efi_boot_memmap *map);
-diff --git a/drivers/firmware/efi/libstub/file.c b/drivers/firmware/efi/libstub/file.c
-index 630caa6..4e81c60 100644
---- a/drivers/firmware/efi/libstub/file.c
-+++ b/drivers/firmware/efi/libstub/file.c
-@@ -136,7 +136,7 @@ efi_status_t handle_cmdline_files(efi_loaded_image_t *image,
- 				  unsigned long *load_size)
- {
- 	const efi_char16_t *cmdline = image->load_options;
--	int cmdline_len = image->load_options_size / 2;
-+	int cmdline_len = image->load_options_size;
- 	unsigned long efi_chunk_size = ULONG_MAX;
- 	efi_file_protocol_t *volume = NULL;
- 	efi_file_protocol_t *file;
-@@ -148,6 +148,9 @@ efi_status_t handle_cmdline_files(efi_loaded_image_t *image,
- 	if (!load_addr || !load_size)
- 		return EFI_INVALID_PARAMETER;
- 
-+	efi_apply_loadoptions_quirk((const void **)&cmdline, &cmdline_len);
-+	cmdline_len /= sizeof(*cmdline);
-+
- 	if (IS_ENABLED(CONFIG_X86) && !efi_nochunk)
- 		efi_chunk_size = EFI_READ_CHUNK_SIZE;
- 
+ 	/* Get MokListRT. It might not exist, so it isn't an error
+ 	 * if we can't get it.
+ 	 */
