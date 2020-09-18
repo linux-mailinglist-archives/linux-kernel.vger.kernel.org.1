@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC41B26F0D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 637A926F0E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:47:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728354AbgIRCJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:09:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33408 "EHLO mail.kernel.org"
+        id S1730297AbgIRCrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:47:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728319AbgIRCJh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:09:37 -0400
+        id S1727299AbgIRCJk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:09:40 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5BBB92389E;
-        Fri, 18 Sep 2020 02:09:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 792892395C;
+        Fri, 18 Sep 2020 02:09:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394977;
-        bh=eZDc5ObhMHtmYpVYSId1z6YNr6xNx6COQw+PeGTLRM8=;
+        s=default; t=1600394979;
+        bh=lQcexyaZjXVoeH73AvKNhcfC2KEiQeqKqtVo1iyGMso=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IVz013wVnYZniGmzZHjJioGg+gzkXBYrJIh6HgTBOuDx18XUdNMCUOPovyJ58syTK
-         gPmHAuiNfeSiyFSm7WK8mCZ2SkE628pgwzhZBEc9UOZeSBiATLEBTpvMNw7xkfE8Z7
-         XUjmp8GfSDcp0fkcdqVknN+msDVHfeY+cDWRLE+4=
+        b=zH/WIS7SM34UKClyiA23KA3J5ftMBEyZFTlAqWWEc75GnD5c3zYH/aXLfUIiWa2cr
+         4fNRnH8brTv01Zn9MdniDMZStblswAehMHFgvTlEaG3qA6beaxJqPOGPN9258pLdmG
+         Fx3hsvkLSgwhEk2ibDa3NVATE6MJIj93o/Dh8wN8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dinh Nguyen <dinguyen@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-clk@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 077/206] clk: stratix10: use do_div() for 64-bit calculation
-Date:   Thu, 17 Sep 2020 22:05:53 -0400
-Message-Id: <20200918020802.2065198-77-sashal@kernel.org>
+Cc:     Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 4.19 079/206] mt76: clear skb pointers from rx aggregation reorder buffer during cleanup
+Date:   Thu, 17 Sep 2020 22:05:55 -0400
+Message-Id: <20200918020802.2065198-79-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
 References: <20200918020802.2065198-1-sashal@kernel.org>
@@ -41,36 +43,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinh Nguyen <dinguyen@kernel.org>
+From: Felix Fietkau <nbd@nbd.name>
 
-[ Upstream commit cc26ed7be46c5f5fa45f3df8161ed7ca3c4d318c ]
+[ Upstream commit 9379df2fd9234e3b67a23101c2370c99f6af6d77 ]
 
-do_div() macro to perform u64 division and guards against overflow if
-the result is too large for the unsigned long return type.
+During the cleanup of the aggregation session, a rx handler (or release timer)
+on another CPU might still hold a pointer to the reorder buffer and could
+attempt to release some packets.
+Clearing pointers during cleanup avoids a theoretical use-after-free bug here.
 
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
-Link: https://lkml.kernel.org/r/20200114160726.19771-1-dinguyen@kernel.org
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/socfpga/clk-pll-s10.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/wireless/mediatek/mt76/agg-rx.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/clk/socfpga/clk-pll-s10.c b/drivers/clk/socfpga/clk-pll-s10.c
-index c4d0b6f6abf2e..fc2e2839fe570 100644
---- a/drivers/clk/socfpga/clk-pll-s10.c
-+++ b/drivers/clk/socfpga/clk-pll-s10.c
-@@ -38,7 +38,9 @@ static unsigned long clk_pll_recalc_rate(struct clk_hw *hwclk,
- 	/* read VCO1 reg for numerator and denominator */
- 	reg = readl(socfpgaclk->hw.reg);
- 	refdiv = (reg & SOCFPGA_PLL_REFDIV_MASK) >> SOCFPGA_PLL_REFDIV_SHIFT;
--	vco_freq = (unsigned long long)parent_rate / refdiv;
-+
-+	vco_freq = parent_rate;
-+	do_div(vco_freq, refdiv);
+diff --git a/drivers/net/wireless/mediatek/mt76/agg-rx.c b/drivers/net/wireless/mediatek/mt76/agg-rx.c
+index d44d57e6eb27a..97df6b3a472b1 100644
+--- a/drivers/net/wireless/mediatek/mt76/agg-rx.c
++++ b/drivers/net/wireless/mediatek/mt76/agg-rx.c
+@@ -278,6 +278,7 @@ static void mt76_rx_aggr_shutdown(struct mt76_dev *dev, struct mt76_rx_tid *tid)
+ 		if (!skb)
+ 			continue;
  
- 	/* Read mdiv and fdiv from the fdbck register */
- 	reg = readl(socfpgaclk->hw.reg + 0x4);
++		tid->reorder_buf[i] = NULL;
+ 		tid->nframes--;
+ 		dev_kfree_skb(skb);
+ 	}
 -- 
 2.25.1
 
