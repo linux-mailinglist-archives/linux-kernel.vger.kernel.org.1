@@ -2,108 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE2B26F78E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 09:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E87A626F814
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726382AbgIRH6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 03:58:41 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:60816 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726599AbgIRH6j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 03:58:39 -0400
-Date:   Fri, 18 Sep 2020 07:58:35 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600415916;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IJ3nkibF2B/vDoniHLfD0X7Q3rUEgY+JQJTaY4UTSvU=;
-        b=TQyvDH0TvTknSOKF93Lnz3y0SKGrY++I8dKHQfJN6OJeHhEBNuDTS9y0PoeI9AxIJhYPIi
-        wDMStqfmoujIPYbWm+nNwLJa507mWPUv1UuqsDwI2J6UZoar+lEngmH18YiFA5XdJQo6kZ
-        E6286Ypzjmri7DUNfrMiM7ymM8EM+yo6C6RWQTJKIe+0DMdDmaM0M77ev7yJzd733FUMVd
-        HcU/e+b76wiZDxtXlT9Sl5mfJBP6Daxlly4+NQnElXwmBeYjhwbkm95COEHXRQQDwodtiM
-        kyusFMNSe+2DmaTmueXvOut9h+fl4gJf+mJq1uS4qxttNhoPF8FliHDl+oDfXg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600415916;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IJ3nkibF2B/vDoniHLfD0X7Q3rUEgY+JQJTaY4UTSvU=;
-        b=ThhpyMk/2BNb5/YV/BUYoL5sGtOb0aHx9onbVhudAf4ZZ4UOARPoPJkHWjEXHaRt1M0Kkn
-        sg3KhYMn9uCNAKCA==
-From:   "tip-bot2 for Krish Sadhukhan" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cpu] x86/cpu: Add hardware-enforced cache coherency as a
- CPUID feature
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
-        Borislav Petkov <bp@suse.de>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200917212038.5090-2-krish.sadhukhan@oracle.com>
-References: <20200917212038.5090-2-krish.sadhukhan@oracle.com>
-MIME-Version: 1.0
-Message-ID: <160041591536.15536.9107710778522234278.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        id S1726422AbgIRIYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 04:24:02 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:40960 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726365AbgIRIX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 04:23:59 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A4F472010B6;
+        Fri, 18 Sep 2020 10:08:44 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id AF624201128;
+        Fri, 18 Sep 2020 10:08:37 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id D8F2C402AE;
+        Fri, 18 Sep 2020 10:08:28 +0200 (CEST)
+From:   Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
+To:     linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        robh+dt@kernel.org, lorenzo.pieralisi@arm.com, bhelgaas@google.com,
+        shawnguo@kernel.org, kishon@ti.com, leoyang.li@nxp.com,
+        gustavo.pimentel@synopsys.com, arnd@arndb.de,
+        gregkh@linuxfoundation.org, andrew.murray@arm.com
+Cc:     minghuan.Lian@nxp.com, mingkai.hu@nxp.com, roy.zang@nxp.com,
+        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+Subject: [PATCHv8 00/12]PCI: dwc: Add the multiple PF support for DWC and Layerscape
+Date:   Fri, 18 Sep 2020 16:00:12 +0800
+Message-Id: <20200918080024.13639-1-Zhiqiang.Hou@nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cpu branch of tip:
+From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
 
-Commit-ID:     f1f325183519ba25370765607e2732d6edf53de1
-Gitweb:        https://git.kernel.org/tip/f1f325183519ba25370765607e2732d6edf53de1
-Author:        Krish Sadhukhan <krish.sadhukhan@oracle.com>
-AuthorDate:    Thu, 17 Sep 2020 21:20:36 
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Fri, 18 Sep 2020 09:46:06 +02:00
+Add the PCIe EP multiple PF support for DWC and Layerscape, and use
+a list to manage the PFs of each PCIe controller; add the doorbell
+MSIX function for DWC; and refactor the Layerscape EP driver due to
+some difference in Layercape platforms PCIe integration.
 
-x86/cpu: Add hardware-enforced cache coherency as a CPUID feature
+Rebased this series against pci/dwc branch of git tree:
+https://git.kernel.org/pub/scm/linux/kernel/git/lpieralisi/pci.git
 
-In some hardware implementations, coherency between the encrypted and
-unencrypted mappings of the same physical page is enforced. In such a system,
-it is not required for software to flush the page from all CPU caches in the
-system prior to changing the value of the C-bit for a page. This hardware-
-enforced cache coherency is indicated by EAX[10] in CPUID leaf 0x8000001f.
+Hou Zhiqiang (1):
+  misc: pci_endpoint_test: Add driver data for Layerscape PCIe
+    controllers
 
-Suggested-by: Tom Lendacky <thomas.lendacky@amd.com>
-Signed-off-by: Krish Sadhukhan <krish.sadhukhan@oracle.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20200917212038.5090-2-krish.sadhukhan@oracle.com
----
- arch/x86/include/asm/cpufeatures.h | 1 +
- arch/x86/kernel/cpu/scattered.c    | 1 +
- 2 files changed, 2 insertions(+)
+Xiaowei Bao (11):
+  PCI: designware-ep: Add multiple PFs support for DWC
+  PCI: designware-ep: Add the doorbell mode of MSI-X in EP mode
+  PCI: designware-ep: Move the function of getting MSI capability
+    forward
+  PCI: designware-ep: Modify MSI and MSIX CAP way of finding
+  dt-bindings: pci: layerscape-pci: Add compatible strings for ls1088a
+    and ls2088a
+  PCI: layerscape: Fix some format issue of the code
+  PCI: layerscape: Modify the way of getting capability with different
+    PEX
+  PCI: layerscape: Modify the MSIX to the doorbell mode
+  PCI: layerscape: Add EP mode support for ls1088a and ls2088a
+  arm64: dts: layerscape: Add PCIe EP node for ls1088a
+  misc: pci_endpoint_test: Add LS1088a in pci_device_id table
 
-diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-index 83fc9d3..ba6e8f4 100644
---- a/arch/x86/include/asm/cpufeatures.h
-+++ b/arch/x86/include/asm/cpufeatures.h
-@@ -288,6 +288,7 @@
- #define X86_FEATURE_FENCE_SWAPGS_USER	(11*32+ 4) /* "" LFENCE in user entry SWAPGS path */
- #define X86_FEATURE_FENCE_SWAPGS_KERNEL	(11*32+ 5) /* "" LFENCE in kernel entry SWAPGS path */
- #define X86_FEATURE_SPLIT_LOCK_DETECT	(11*32+ 6) /* #AC for split lock */
-+#define X86_FEATURE_SME_COHERENT	(11*32+ 7) /* "" AMD hardware-enforced cache coherency */
- 
- /* Intel-defined CPU features, CPUID level 0x00000007:1 (EAX), word 12 */
- #define X86_FEATURE_AVX512_BF16		(12*32+ 5) /* AVX512 BFLOAT16 instructions */
-diff --git a/arch/x86/kernel/cpu/scattered.c b/arch/x86/kernel/cpu/scattered.c
-index 62b137c..3221b71 100644
---- a/arch/x86/kernel/cpu/scattered.c
-+++ b/arch/x86/kernel/cpu/scattered.c
-@@ -41,6 +41,7 @@ static const struct cpuid_bit cpuid_bits[] = {
- 	{ X86_FEATURE_MBA,		CPUID_EBX,  6, 0x80000008, 0 },
- 	{ X86_FEATURE_SME,		CPUID_EAX,  0, 0x8000001f, 0 },
- 	{ X86_FEATURE_SEV,		CPUID_EAX,  1, 0x8000001f, 0 },
-+	{ X86_FEATURE_SME_COHERENT,	CPUID_EAX, 10, 0x8000001f, 0 },
- 	{ 0, 0, 0, 0, 0 }
- };
- 
+ .../bindings/pci/layerscape-pci.txt           |   2 +
+ .../arm64/boot/dts/freescale/fsl-ls1088a.dtsi |  31 +++
+ drivers/misc/pci_endpoint_test.c              |   8 +-
+ .../pci/controller/dwc/pci-layerscape-ep.c    | 100 +++++--
+ .../pci/controller/dwc/pcie-designware-ep.c   | 245 ++++++++++++++----
+ drivers/pci/controller/dwc/pcie-designware.c  |  59 +++--
+ drivers/pci/controller/dwc/pcie-designware.h  |  48 +++-
+ 7 files changed, 397 insertions(+), 96 deletions(-)
+
+-- 
+2.17.1
+
