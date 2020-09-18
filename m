@@ -2,112 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA6B2703C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 20:11:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A0FF2703C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 20:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726344AbgIRSLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 14:11:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33674 "EHLO
+        id S1726299AbgIRSMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 14:12:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726007AbgIRSLZ (ORCPT
+        with ESMTP id S1726157AbgIRSMx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 14:11:25 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A846C0613CE;
-        Fri, 18 Sep 2020 11:11:24 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id k15so6514661wrn.10;
-        Fri, 18 Sep 2020 11:11:24 -0700 (PDT)
+        Fri, 18 Sep 2020 14:12:53 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4194EC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 11:12:53 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id f1so3378344plo.13
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 11:12:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+ALrwdNETU2MxK86SGthSKgE8MUMcPyrI0lP0CVqjQI=;
-        b=C5sqb2yxcvsNocPhY2Lt3IwIlIROvFB5l5wNHYnGsMCGx9n+mMxLjFgVBddP5hBPCT
-         yY3ecasFwG1FymqjnUMeSkZ/bEtd5QDDKud901OlHdDIdUhaPQHonwK7ECAeCD39iGzo
-         1ceBzNiaEq5YGLyRWnZ73Sycp6czdV7kbXa4acm1kpyvzNrzxkb9lDCiaW+tqRYxLugN
-         WOxtIBRfR9PMygYkUZObTRnxLppsgc3A01wLrB2gKfcjPhbogE+ebXlgJy9hAmL9dswg
-         WdZojnwDp94191WZEhe8+W5lPfw5iN/HT4g+o81iXlgjUdMAWKFwB689QEIYiagiFbxj
-         mF/g==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rE4BZJp0q9zDr8kKMiT4zLrTffXmD+rm19TjujnN1Vk=;
+        b=Hm/XXSZmisiU6T6tNygou89zb4Ycs1lwy/6SoTmGc4hdMUZFBJNje4cBnYK/LR54S5
+         JGyuoXInxA9zBYd8nDTr0Qu5P8uH+/vXWhdoT4Mmzgt1sim6TjopH6EKXrimtqXHoOHI
+         rgWh7lGZz7y2Ae0mWVtAVQc91B1BzHSO4ZBYbJgCCc5XfiTQxGZA5988w/5j2ddwt+9h
+         mAqiEV06sdg8dIodDRfkXuY3jjZv9B6M7r1Ra/nwrvSzt5S9JtNQm9zHr9D7xpBPFuCT
+         SWex+b0QE5KrgqLz2uo9OfqZ6IdcAj5+pQZffqvsLf1HzIY4fKRt0qQKpRxi8F1nPnsx
+         X0SQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+ALrwdNETU2MxK86SGthSKgE8MUMcPyrI0lP0CVqjQI=;
-        b=oNuPlL+A/HvRAnqA89UKXAYEP1sRMr8lwbZmKlI4hePHNxAp/KjhrGeWJU3G5ZysZ3
-         3vSxaVgAPoS1lGAtseZt9dVXKqHVzZTonhRabpk41pf2NqgNIVT2mpeSduZQxM3ZHSMh
-         u7P+mEFDGitm+celQYbnP4odY+hRz59f/0rWSXAvaubzMJxUyhmg7+roB9S37E/rXfQc
-         uQqGmlLWbBL1xOn9JoYUhBZVnrbpxPujuhbCTENs8EBu0WrpqVgLFA8ioxizaN/ECPUK
-         0pR/kNdvSJ1io/Cf4xGB908pZhy0g8ARXGdkoONRRpSG5lkd+4jwdtLIy2rS1wvoztWU
-         2GrQ==
-X-Gm-Message-State: AOAM533II/SL+qLDPUmcfcGGqaW25nxYYtDs4rNkQczWmtGKnKOjLrFc
-        iN6R9qhdzwPBO2lvD0+b6dA=
-X-Google-Smtp-Source: ABdhPJwDlGeI6/TcQ1Yi8Z/1litjaMhehBdyMUqomeNKRCP/fWUFevqhp2m/vY3A2LUYX6AyOu/7xw==
-X-Received: by 2002:a5d:5261:: with SMTP id l1mr38534694wrc.193.1600452682915;
-        Fri, 18 Sep 2020 11:11:22 -0700 (PDT)
-Received: from Ansuel-XPS.localdomain (host-95-248-206-89.retail.telecomitalia.it. [95.248.206.89])
-        by smtp.googlemail.com with ESMTPSA id f23sm21461466wmc.3.2020.09.18.11.11.20
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rE4BZJp0q9zDr8kKMiT4zLrTffXmD+rm19TjujnN1Vk=;
+        b=JNSCNGLOpP4JLZytYDAvj8FUx25FAtIYY4mIpDCh/L5uN97M+lfbZaCcpcZUmUEb1y
+         7MgvhML/epCj7H9Dmh5aHftQbqoYZ3MFeunXd+htSWAuG21Tr1DLTzuJfFX3aU3LuMxt
+         ysOYtMWFIhWQyv8NGdE7BqO4IxxHxEufrdXEzH+CBv2be5oxrl5XfHnrfwcjbuV9yBI/
+         EpCIEBgUhJTatu+QFLRCauhmlOrmt2Smtmjn4cIjmrg1WSLH+CqS06+st3/hlOcUrOsz
+         4vFJOgrdQCGIhHTPwseiA6AXHPSPzsHwtAtnRJHaPkNv8yCLx+Owl5ZxWd9Bf22oZKrE
+         HeTQ==
+X-Gm-Message-State: AOAM531fjGtKVyqux+b/se0GtQNVW4HNw3srvBHdZwk2M+IOZPez5iOC
+        qVb7+1smg/nBgMe1QXCFtKZpZA==
+X-Google-Smtp-Source: ABdhPJwfrxGeVpYY+o0j8pr1eIsjuqfOXri4PFS+X0KVtN+hxvJwc1QM8JFwnSj5/PyhFV0mZRVNNg==
+X-Received: by 2002:a17:90b:e01:: with SMTP id ge1mr13566751pjb.187.1600452772658;
+        Fri, 18 Sep 2020 11:12:52 -0700 (PDT)
+Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
+        by smtp.gmail.com with ESMTPSA id l1sm3847426pgo.11.2020.09.18.11.12.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 11:11:21 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ath10k@lists.infradead.org
-Subject: [PATCH v2 2/2] dt: bindings: ath10k: Document qcom,ath10k-pre-calibration-data-mtd
-Date:   Fri, 18 Sep 2020 20:11:03 +0200
-Message-Id: <20200918181104.98-2-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200918181104.98-1-ansuelsmth@gmail.com>
-References: <20200918181104.98-1-ansuelsmth@gmail.com>
+        Fri, 18 Sep 2020 11:12:52 -0700 (PDT)
+From:   Kevin Hilman <khilman@baylibre.com>
+To:     linux-pci@vger.kernel.org
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Yue Wang <yue.wang@amlogic.com>
+Subject: [PATCH] pci: meson: build as module by default
+Date:   Fri, 18 Sep 2020 11:12:51 -0700
+Message-Id: <20200918181251.32423-1-khilman@baylibre.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document use of qcom,ath10k-pre-calibration-data-mtd bindings used to
-define from where the driver will load the pre-cal data in the defined
-mtd partition.
+Enable pci-meson to build as a module whenever ARCH_MESON is enabled.
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+Cc: Yue Wang <yue.wang@amlogic.com>
+Signed-off-by: Kevin Hilman <khilman@baylibre.com>
 ---
- .../devicetree/bindings/net/wireless/qcom,ath10k.txt | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+Tested on Khadas VIM3 and Khadas VIM3 using NVMe SSD devices.
 
-diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-index b61c2d5a0..568364243 100644
---- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-+++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-@@ -15,9 +15,9 @@ and also uses most of the properties defined in this doc (except
- "qcom,ath10k-calibration-data"). It uses "qcom,ath10k-pre-calibration-data"
- to carry pre calibration data.
+ drivers/pci/controller/dwc/Kconfig     | 3 ++-
+ drivers/pci/controller/dwc/pci-meson.c | 8 +++++++-
+ 2 files changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
+index 044a3761c44f..bc049865f8e0 100644
+--- a/drivers/pci/controller/dwc/Kconfig
++++ b/drivers/pci/controller/dwc/Kconfig
+@@ -237,8 +237,9 @@ config PCIE_HISI_STB
+ 	  Say Y here if you want PCIe controller support on HiSilicon STB SoCs
  
--In general, entry "qcom,ath10k-pre-calibration-data" and
--"qcom,ath10k-calibration-data" conflict with each other and only one
--can be provided per device.
-+In general, entry "qcom,ath10k-pre-calibration-data",
-+"qcom,ath10k-calibration-data-mtd" and "qcom,ath10k-calibration-data" conflict with
-+each other and only one can be provided per device.
+ config PCI_MESON
+-	bool "MESON PCIe controller"
++	tristate "MESON PCIe controller"
+ 	depends on PCI_MSI_IRQ_DOMAIN
++	default m if ARCH_MESON
+ 	select PCIE_DW_HOST
+ 	help
+ 	  Say Y here if you want to enable PCI controller support on Amlogic
+diff --git a/drivers/pci/controller/dwc/pci-meson.c b/drivers/pci/controller/dwc/pci-meson.c
+index 4f183b96afbb..7a1fb55ee44a 100644
+--- a/drivers/pci/controller/dwc/pci-meson.c
++++ b/drivers/pci/controller/dwc/pci-meson.c
+@@ -17,6 +17,7 @@
+ #include <linux/resource.h>
+ #include <linux/types.h>
+ #include <linux/phy/phy.h>
++#include <linux/module.h>
  
- SNOC based devices (i.e. wcn3990) uses compatible string "qcom,wcn3990-wifi".
+ #include "pcie-designware.h"
  
-@@ -63,6 +63,12 @@ Optional properties:
- 				 hw versions.
- - qcom,ath10k-pre-calibration-data : pre calibration data as an array,
- 				     the length can vary between hw versions.
-+- qcom,ath10k-pre-calibration-data-mtd :
-+	Usage: optional
-+	Value type: <phandle offset size>
-+	Definition: pre calibration data read from mtd partition. Take 3 value, the
-+		    mtd to read data from, the offset in the mtd partition and the
-+		    size of data to read.
- - <supply-name>-supply: handle to the regulator device tree node
- 			   optional "supply-name" are "vdd-0.8-cx-mx",
- 			   "vdd-1.8-xo", "vdd-1.3-rfa", "vdd-3.3-ch0",
+@@ -589,6 +590,7 @@ static const struct of_device_id meson_pcie_of_match[] = {
+ 	},
+ 	{},
+ };
++MODULE_DEVICE_TABLE(of, meson_pcie_of_match);
+ 
+ static struct platform_driver meson_pcie_driver = {
+ 	.probe = meson_pcie_probe,
+@@ -598,4 +600,8 @@ static struct platform_driver meson_pcie_driver = {
+ 	},
+ };
+ 
+-builtin_platform_driver(meson_pcie_driver);
++module_platform_driver(meson_pcie_driver);
++
++MODULE_AUTHOR("Yue Wang <yue.wang@amlogic.com>");
++MODULE_DESCRIPTION("Amlogic PCIe Controller driver");
++MODULE_LICENSE("Dual BSD/GPL");
 -- 
-2.27.0
+2.28.0
 
