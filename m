@@ -2,118 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8325B26E9EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 02:28:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC75326E9F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 02:31:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726135AbgIRA2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 20:28:13 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:57040 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725886AbgIRA2N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 20:28:13 -0400
-X-Greylist: delayed 20688 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 20:28:12 EDT
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: nicolas)
-        with ESMTPSA id 56DC829C66E
-From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
-To:     Maxime Ripard <mripard@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Chen-Yu Tsai <wens@csie.org>
-Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Ondrej Jirman <megous@megous.com>, linux-media@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] media: cedrus: Propagate OUTPUT resolution to CAPTURE
-Date:   Thu, 17 Sep 2020 20:27:51 -0400
-Message-Id: <20200918002751.373984-1-nicolas.dufresne@collabora.com>
-X-Mailer: git-send-email 2.26.2
+        id S1726093AbgIRAbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 20:31:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55774 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725987AbgIRAbb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 20:31:31 -0400
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 396AC207FF;
+        Fri, 18 Sep 2020 00:31:30 +0000 (UTC)
+Date:   Thu, 17 Sep 2020 20:31:27 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Xianting Tian <tian.xianting@h3c.com>
+Cc:     <mingo@redhat.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] tracing: use __this_cpu_read() in
+ trace_buffered_event_enable()
+Message-ID: <20200917203127.091e23f2@rorschach.local.home>
+In-Reply-To: <20200813112803.12256-1-tian.xianting@h3c.com>
+References: <20200813112803.12256-1-tian.xianting@h3c.com>
+X-Mailer: Claws Mail 3.17.4git76 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per spec, the CAPTURE resolution should be automatically set based on
-the OTUPUT resolution. This patch properly propagate width/height to the
-capture when the OUTPUT format is set and override the user provided
-width/height with configured OUTPUT resolution when the CAPTURE fmt is
-updated.
+Sorry for the late reply (been busy with Linux Plumbers, took a
+vacation, and then trying to catch up on all my email for the last two
+months!)
 
-This also prevents userspace from selecting a CAPTURE resolution that is
-too small, avoiding kernel oops.
+But I just wanted to let you know that I added this to my queue.
 
-Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
-Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
-Acked-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Tested-by: Ondrej Jirman <megous@megous.com>
----
- .../staging/media/sunxi/cedrus/cedrus_video.c | 29 +++++++++++++++++--
- 1 file changed, 27 insertions(+), 2 deletions(-)
+Thanks!
 
-diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_video.c b/drivers/staging/media/sunxi/cedrus/cedrus_video.c
-index 16d82309e7b6..667b86dde1ee 100644
---- a/drivers/staging/media/sunxi/cedrus/cedrus_video.c
-+++ b/drivers/staging/media/sunxi/cedrus/cedrus_video.c
-@@ -247,6 +247,8 @@ static int cedrus_try_fmt_vid_cap(struct file *file, void *priv,
- 		return -EINVAL;
- 
- 	pix_fmt->pixelformat = fmt->pixelformat;
-+	pix_fmt->width = ctx->src_fmt.width;
-+	pix_fmt->height = ctx->src_fmt.height;
- 	cedrus_prepare_format(pix_fmt);
- 
- 	return 0;
-@@ -296,10 +298,30 @@ static int cedrus_s_fmt_vid_out(struct file *file, void *priv,
- {
- 	struct cedrus_ctx *ctx = cedrus_file2ctx(file);
- 	struct vb2_queue *vq;
-+	struct vb2_queue *peer_vq;
- 	int ret;
- 
-+	ret = cedrus_try_fmt_vid_out(file, priv, f);
-+	if (ret)
-+		return ret;
-+
- 	vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx, f->type);
--	if (vb2_is_busy(vq))
-+	/*
-+	 * In order to support dynamic resolution change,
-+	 * the decoder admits a resolution change, as long
-+	 * as the pixelformat remains. Can't be done if streaming.
-+	 */
-+	if (vb2_is_streaming(vq) || (vb2_is_busy(vq) &&
-+	    f->fmt.pix.pixelformat != ctx->src_fmt.pixelformat))
-+		return -EBUSY;
-+	/*
-+	 * Since format change on the OUTPUT queue will reset
-+	 * the CAPTURE queue, we can't allow doing so
-+	 * when the CAPTURE queue has buffers allocated.
-+	 */
-+	peer_vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx,
-+				  V4L2_BUF_TYPE_VIDEO_CAPTURE);
-+	if (vb2_is_busy(peer_vq))
- 		return -EBUSY;
- 
- 	ret = cedrus_try_fmt_vid_out(file, priv, f);
-@@ -319,11 +341,14 @@ static int cedrus_s_fmt_vid_out(struct file *file, void *priv,
- 		break;
- 	}
- 
--	/* Propagate colorspace information to capture. */
-+	/* Propagate format information to capture. */
- 	ctx->dst_fmt.colorspace = f->fmt.pix.colorspace;
- 	ctx->dst_fmt.xfer_func = f->fmt.pix.xfer_func;
- 	ctx->dst_fmt.ycbcr_enc = f->fmt.pix.ycbcr_enc;
- 	ctx->dst_fmt.quantization = f->fmt.pix.quantization;
-+	ctx->dst_fmt.width = ctx->src_fmt.width;
-+	ctx->dst_fmt.height = ctx->src_fmt.height;
-+	cedrus_prepare_format(&ctx->dst_fmt);
- 
- 	return 0;
- }
--- 
-2.26.2
+-- Steve
+
+
+On Thu, 13 Aug 2020 19:28:03 +0800
+Xianting Tian <tian.xianting@h3c.com> wrote:
+
+> The code is executed with preemption disabled, so it's
+> safe to use __this_cpu_read().
+> 
+> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+> ---
+>  kernel/trace/trace.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> index bb6226972..7d0d71ce9 100644
+> --- a/kernel/trace/trace.c
+> +++ b/kernel/trace/trace.c
+> @@ -2514,7 +2514,7 @@ void trace_buffered_event_enable(void)
+>  
+>  		preempt_disable();
+>  		if (cpu == smp_processor_id() &&
+> -		    this_cpu_read(trace_buffered_event) !=
+> +		    __this_cpu_read(trace_buffered_event) !=
+>  		    per_cpu(trace_buffered_event, cpu))
+>  			WARN_ON_ONCE(1);
+>  		preempt_enable();
 
