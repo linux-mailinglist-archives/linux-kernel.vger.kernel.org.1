@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B29AE26ECAD
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1FD126ECB7
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726844AbgIRCNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:13:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41202 "EHLO mail.kernel.org"
+        id S1728447AbgIRCOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:14:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728989AbgIRCNp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:13:45 -0400
+        id S1727892AbgIRCOB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:14:01 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 257D9235F9;
-        Fri, 18 Sep 2020 02:13:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 868622395C;
+        Fri, 18 Sep 2020 02:13:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600395224;
-        bh=u0gIlx+26lPy9i8hc8Z2XqPWMlpcGLOnbaDcSsjvkrE=;
+        s=default; t=1600395232;
+        bh=TpK7mKMShkTCLbwwjCb+35dvaZV5D2kzJcuPIpLBKHI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z5pg1j9p4sVurAAACFFZR4LMj6SxkFmxT/8RxiSyrSPtVZMjzUhz1dpkh+c0yXmVs
-         IBU7ffkK2FF4Pm2W5SkSkFAiEgeVavH/JDttvdnAUPJM41rmRIBiRthSIYEswtNVud
-         4UXFtShQMHwSKF+pLfR40Poc56vsb8ZZAM3z73XQ=
+        b=TegD0aumXnAEWu1muIeQrrC1Di+Yxvmqr1bD50adNGLKMJN9F+KTRMCjtpYiJ8Arz
+         /4wu5aE6M/bozeDO2j684cOiSPdJMQbW2FrF8/b+gPqH2hWxWrUKZpxG6KgfuE9jmO
+         /29AQJcAzbvIsJnCN3fIv18eVUM+k2c22lBICF2w=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, linux-serial@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 071/127] serial: 8250: 8250_omap: Terminate DMA before pushing data on RX timeout
-Date:   Thu, 17 Sep 2020 22:11:24 -0400
-Message-Id: <20200918021220.2066485-71-sashal@kernel.org>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, linux-nfs@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 077/127] svcrdma: Fix leak of transport addresses
+Date:   Thu, 17 Sep 2020 22:11:30 -0400
+Message-Id: <20200918021220.2066485-77-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918021220.2066485-1-sashal@kernel.org>
 References: <20200918021220.2066485-1-sashal@kernel.org>
@@ -42,50 +42,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vignesh Raghavendra <vigneshr@ti.com>
+From: Chuck Lever <chuck.lever@oracle.com>
 
-[ Upstream commit 7cf4df30a98175033e9849f7f16c46e96ba47f41 ]
+[ Upstream commit 1a33d8a284b1e85e03b8c7b1ea8fb985fccd1d71 ]
 
-Terminate and flush DMA internal buffers, before pushing RX data to
-higher layer. Otherwise, this will lead to data corruption, as driver
-would end up pushing stale buffer data to higher layer while actual data
-is still stuck inside DMA hardware and has yet not arrived at the
-memory.
-While at that, replace deprecated dmaengine_terminate_all() with
-dmaengine_terminate_async().
+Kernel memory leak detected:
 
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-Link: https://lore.kernel.org/r/20200319110344.21348-2-vigneshr@ti.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+unreferenced object 0xffff888849cdf480 (size 8):
+  comm "kworker/u8:3", pid 2086, jiffies 4297898756 (age 4269.856s)
+  hex dump (first 8 bytes):
+    30 00 cd 49 88 88 ff ff                          0..I....
+  backtrace:
+    [<00000000acfc370b>] __kmalloc_track_caller+0x137/0x183
+    [<00000000a2724354>] kstrdup+0x2b/0x43
+    [<0000000082964f84>] xprt_rdma_format_addresses+0x114/0x17d [rpcrdma]
+    [<00000000dfa6ed00>] xprt_setup_rdma_bc+0xc0/0x10c [rpcrdma]
+    [<0000000073051a83>] xprt_create_transport+0x3f/0x1a0 [sunrpc]
+    [<0000000053531a8e>] rpc_create+0x118/0x1cd [sunrpc]
+    [<000000003a51b5f8>] setup_callback_client+0x1a5/0x27d [nfsd]
+    [<000000001bd410af>] nfsd4_process_cb_update.isra.7+0x16c/0x1ac [nfsd]
+    [<000000007f4bbd56>] nfsd4_run_cb_work+0x4c/0xbd [nfsd]
+    [<0000000055c5586b>] process_one_work+0x1b2/0x2fe
+    [<00000000b1e3e8ef>] worker_thread+0x1a6/0x25a
+    [<000000005205fb78>] kthread+0xf6/0xfb
+    [<000000006d2dc057>] ret_from_fork+0x3a/0x50
+
+Introduce a call to xprt_rdma_free_addresses() similar to the way
+that the TCP backchannel releases a transport's peer address
+strings.
+
+Fixes: 5d252f90a800 ("svcrdma: Add class for RDMA backwards direction transport")
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/8250/8250_omap.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ net/sunrpc/xprtrdma/svc_rdma_backchannel.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
-index 33df33a9e646a..726852ebef855 100644
---- a/drivers/tty/serial/8250/8250_omap.c
-+++ b/drivers/tty/serial/8250/8250_omap.c
-@@ -773,7 +773,10 @@ static void __dma_rx_do_complete(struct uart_8250_port *p)
- 	dmaengine_tx_status(dma->rxchan, dma->rx_cookie, &state);
+diff --git a/net/sunrpc/xprtrdma/svc_rdma_backchannel.c b/net/sunrpc/xprtrdma/svc_rdma_backchannel.c
+index af7893501e40a..4b9aaf487327c 100644
+--- a/net/sunrpc/xprtrdma/svc_rdma_backchannel.c
++++ b/net/sunrpc/xprtrdma/svc_rdma_backchannel.c
+@@ -270,6 +270,7 @@ xprt_rdma_bc_put(struct rpc_xprt *xprt)
+ {
+ 	dprintk("svcrdma: %s: xprt %p\n", __func__, xprt);
  
- 	count = dma->rx_size - state.residue;
--
-+	if (count < dma->rx_size)
-+		dmaengine_terminate_async(dma->rxchan);
-+	if (!count)
-+		goto unlock;
- 	ret = tty_insert_flip_string(tty_port, dma->rx_buf, count);
- 
- 	p->port.icount.rx += ret;
-@@ -833,7 +836,6 @@ static void omap_8250_rx_dma_flush(struct uart_8250_port *p)
- 	spin_unlock_irqrestore(&priv->rx_dma_lock, flags);
- 
- 	__dma_rx_do_complete(p);
--	dmaengine_terminate_all(dma->rxchan);
++	xprt_rdma_free_addresses(xprt);
+ 	xprt_free(xprt);
+ 	module_put(THIS_MODULE);
  }
- 
- static int omap_8250_rx_dma(struct uart_8250_port *p)
 -- 
 2.25.1
 
