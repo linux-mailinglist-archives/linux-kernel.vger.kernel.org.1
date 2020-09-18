@@ -2,87 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0025826F9D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 12:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF13926F9D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 12:05:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726200AbgIRKEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 06:04:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50364 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725941AbgIRKEV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 06:04:21 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        id S1726369AbgIRKEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 06:04:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725874AbgIRKEl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 06:04:41 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54517C06174A;
+        Fri, 18 Sep 2020 03:04:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=q0zE53Mklt4PMv82Yhr0kJeZ6KhXh1hhrqSKoGIyh/4=; b=kpjP9gHlUv2ZMQ11ObT93sJFCo
+        sSdoKxLyuRS1HpG4t3+6ez0r1TAvwJem2GeTCeChfLOh/44FZooqFj/1Yh7wLpBYUh0Bl4ZYrkoyA
+        nvX2A9fAoMQInSY2bySPFIqVmN8MIF6IUUgbj/MX2qkR8J11u+Nvf+7QHIyPVGf01Y4BLIYIIaeUC
+        2XBNgy0G2XFDPUc0udBgbAfJd3G3tjh673isGrmgH3R86R/0eNSA1LFgbLC0FxAHBU3NEGmYjHYQW
+        BoM3fznMoSX8ZzvgdzUTd62h3kOtpxcDlTCUFo8jaG9x0gn7QGPw5zuiDECmFesI8Lh50rGsk4m8N
+        OA95Pwbg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kJDFq-00036o-Go; Fri, 18 Sep 2020 10:04:34 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4627F208B8;
-        Fri, 18 Sep 2020 10:04:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600423460;
-        bh=rHX2SJofq2IV2gFxJYFKOzylhVaYmIes7RqnZSio3jI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kG8rJC4Cp3hvPot3IGhEDxr/XcztZKD0zBEoAcGY/UDvmDIIJspf24TsdjkIGywuC
-         zSbCqfERK3B448QOXLpaLB45J6Tl3VodqOmJvcVMwMEsg5OO6S6oEzLyXS/PNKoz0l
-         wPU+1g6T84vkWW85jwFPbT0tY9oOlsmRulj+eVfQ=
-Date:   Fri, 18 Sep 2020 11:03:30 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Alban Bedel <alban.bedel@aerq.com>, linux-hwmon@vger.kernel.org,
-        Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] hwmon: (lm75) Add regulator support
-Message-ID: <20200918100330.GA5703@sirena.org.uk>
-References: <20200917101819.32045-1-alban.bedel@aerq.com>
- <20200917101819.32045-4-alban.bedel@aerq.com>
- <20200917110053.GA4755@sirena.org.uk>
- <e5863e71-2531-b0de-c432-4bc2967d56c8@roeck-us.net>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 74802307A20;
+        Fri, 18 Sep 2020 12:04:32 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6326D2041904E; Fri, 18 Sep 2020 12:04:32 +0200 (CEST)
+Date:   Fri, 18 Sep 2020 12:04:32 +0200
+From:   peterz@infradead.org
+To:     Jan Kara <jack@suse.cz>
+Cc:     Oleg Nesterov <oleg@redhat.com>, Boaz Harrosh <boaz@plexistor.com>,
+        Hou Tao <houtao1@huawei.com>, Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC PATCH] locking/percpu-rwsem: use this_cpu_{inc|dec}() for
+ read_count
+Message-ID: <20200918100432.GJ35926@hirez.programming.kicks-ass.net>
+References: <20200915140750.137881-1-houtao1@huawei.com>
+ <20200915150610.GC2674@hirez.programming.kicks-ass.net>
+ <20200915153113.GA6881@redhat.com>
+ <20200915155150.GD2674@hirez.programming.kicks-ass.net>
+ <20200915160344.GH35926@hirez.programming.kicks-ass.net>
+ <b885ce8e-4b0b-8321-c2cc-ee8f42de52d4@huawei.com>
+ <ddd5d732-06da-f8f2-ba4a-686c58297e47@plexistor.com>
+ <20200917120132.GA5602@redhat.com>
+ <20200918090702.GB18920@quack2.suse.cz>
+ <20200918100112.GN1362448@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="fdj2RfSjLxBAspz7"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e5863e71-2531-b0de-c432-4bc2967d56c8@roeck-us.net>
-X-Cookie: Beware of geeks bearing graft.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200918100112.GN1362448@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 18, 2020 at 12:01:12PM +0200, peterz@infradead.org wrote:
+> @@ -198,7 +198,9 @@ EXPORT_SYMBOL_GPL(__percpu_down_read);
+>   */
+>  static bool readers_active_check(struct percpu_rw_semaphore *sem)
+>  {
+> -	if (per_cpu_sum(*sem->read_count) != 0)
+> +	u64 sum = per_cpu_sum(*(u64 *)sem->read_count);
+> +
+> +	if (sum + (sum >> 32))
 
---fdj2RfSjLxBAspz7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+That obviously wants to be:
 
-On Thu, Sep 17, 2020 at 07:04:51PM -0700, Guenter Roeck wrote:
-> On 9/17/20 4:00 AM, Mark Brown wrote:
-> > On Thu, Sep 17, 2020 at 12:18:19PM +0200, Alban Bedel wrote:
+	if ((u32)(sum + (sum >> 32)))
 
-> >> +	data->vs = devm_regulator_get_optional(dev, "vs");
-> >> +	if (IS_ERR(data->vs)) {
-
-> > Unless the device can work without power you should not be using
-> > regulator_get_optional().
-
-> The driver works today without regulator, and needs to continue
-> doing so.
-
-And it will continue to do so if it uses the normal regulator API, it
-will as ever ensure that if no regulator is provided by the firmware a
-dummy is provided.
-
---fdj2RfSjLxBAspz7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9khfEACgkQJNaLcl1U
-h9Bepwf9EYuxEZIeHPaK2Y0tAjFZp9YXlbTfjm444mUIeGVycPVpixaad4WmaFfx
-GwhiOO9mbYjzskCaeTjuY365KEofDOqY68qR1D1PmX0inyYE6WQfS+gYhDaS/JFd
-LKLOM6oSst+LamCt4GljU5hPd8khylSGriDqAZey/HArmFsjiMjf/P/+kHoe6NHy
-hhDqj2FY47DZq5OfJgHnOHGWZckVlJhzprcBhXJI1fbgzsWrwN/D0yDdBNj2c6LE
-P3fPIoM4nTZCfBLydMrMoDDeSmhYb7xAeMFeeaXAVUAfbo6JJjOXb1FySeThLvAv
-H+r0E+jRWuNtHjjSZli7ckZzBOZ0eQ==
-=dCm7
------END PGP SIGNATURE-----
-
---fdj2RfSjLxBAspz7--
+>  		return false;
+>  
+>  	/*
