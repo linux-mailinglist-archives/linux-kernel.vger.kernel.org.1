@@ -2,101 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22FF32702FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 19:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2151270302
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 19:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726381AbgIRROK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 18 Sep 2020 13:14:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726118AbgIRROJ (ORCPT
+        id S1726305AbgIRRPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 13:15:38 -0400
+Received: from m42-11.mailgun.net ([69.72.42.11]:37664 "EHLO
+        m42-11.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726205AbgIRRPi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 13:14:09 -0400
-Received: from mail.nic.cz (mail.nic.cz [IPv6:2001:1488:800:400::400])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A361C0613CE;
-        Fri, 18 Sep 2020 10:14:09 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
-        by mail.nic.cz (Postfix) with ESMTPSA id 394E514093B;
-        Fri, 18 Sep 2020 19:14:06 +0200 (CEST)
-Date:   Fri, 18 Sep 2020 19:14:05 +0200
-From:   Marek Behun <marek.behun@nic.cz>
-To:     Simon Guinot <simon.guinot@sequanux.org>
-Cc:     linux-leds@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        Dan Murphy <dmurphy@ti.com>,
-        =?UTF-8?B?T25kxZllag==?= Jirman <megous@megous.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org, Simon Guinot <sguinot@lacie.com>,
-        Vincent Donnefort <vdonnefort@gmail.com>,
-        Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH leds v1 10/10] leds: ns2: refactor and use struct
- led_init_data
-Message-ID: <20200918191405.516b51ff@nic.cz>
-In-Reply-To: <20200918130206.GE29951@kw.sim.vm.gnt>
-References: <20200916231650.11484-1-marek.behun@nic.cz>
-        <20200916231650.11484-11-marek.behun@nic.cz>
-        <20200918130206.GE29951@kw.sim.vm.gnt>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Fri, 18 Sep 2020 13:15:38 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600449337; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=yngYLv7On5M/Qyep/oUahIHqAnGroMVXpza1BfJKjZs=;
+ b=huFqeM5fE0atukAGzMG91HtwG9GPjmtttml4XvBoAxCDr9JlVy4UJ8eA/6YPAhupyn6KykcK
+ 8L6yL+b1ZZcX8UPaWQTbtl/7lBj+3/tpDsDkpCKWHSiyxcsAAecjQ/FOOk7fUQ4ulJJw1QqQ
+ /bPThyMm3nuAO47dQnKM+biE/Dg=
+X-Mailgun-Sending-Ip: 69.72.42.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5f64eb380049ea581630da9c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Sep 2020 17:15:36
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A2EA6C433CB; Fri, 18 Sep 2020 17:15:36 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: rishabhb)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 42793C433CA;
+        Fri, 18 Sep 2020 17:15:36 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
-        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
-        autolearn=disabled version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 18 Sep 2020 10:15:36 -0700
+From:   rishabhb@codeaurora.org
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     bjorn.andersson@linaro.org, ohad@wizery.com,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tsoni@codeaurora.org, psodagud@codeaurora.org,
+        sidgup@codeaurora.org
+Subject: Re: [PATCH v4 0/3] Move recovery/coredump configuration to sysfs
+In-Reply-To: <55d2c397-fad3-9dea-289b-6c10d31565ba@infradead.org>
+References: <1600368999-9461-1-git-send-email-rishabhb@codeaurora.org>
+ <55d2c397-fad3-9dea-289b-6c10d31565ba@infradead.org>
+Message-ID: <500895ac9667a82f0ca65696145858f2@codeaurora.org>
+X-Sender: rishabhb@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Sep 2020 15:02:06 +0200
-Simon Guinot <simon.guinot@sequanux.org> wrote:
-
-> On Thu, Sep 17, 2020 at 01:16:50AM +0200, Marek Behún wrote:
+On 2020-09-17 16:40, Randy Dunlap wrote:
+> On 9/17/20 11:56 AM, Rishabh Bhatnagar wrote:
+>> From Android R onwards Google has restricted access to debugfs in user
+>> and user-debug builds. This restricts access to most of the features
+>> exposed through debugfs. This patch series removes the 
+>> recovery/coredump
+>> entries from debugfs and moves them to sysfs.
+>> 'Coredump' and 'Recovery' are critical interfaces that are required
+>> for remoteproc to work on Qualcomm Chipsets. Coredump configuration
+>> needs to be set to "inline" in debug/test build and "disabled" in
+>> production builds. Whereas recovery needs to be "disabled" for
+>> debugging purposes and "enabled" on production builds.
+>> 
+>> Changelog:
+>> 
+>> v4 -> v3:
+>> - Remove the feature flag to expose recovery/coredump
+>> 
+>> v3 -> v2:
+>> - Remove the coredump/recovery entries from debugfs
+>> - Expose recovery/coredump from sysfs under a feature flag
+>> 
+>> v1 -> v2:
+>> - Correct the contact name in the sysfs documentation.
+>> - Remove the redundant write documentation for coredump/recovery sysfs
+>> - Add a feature flag to make this interface switch configurable.
+>> 
+>> Rishabh Bhatnagar (3):
+>>   remoteproc: Expose remoteproc configuration through sysfs
+>>   remoteproc: Add coredump configuration to sysfs
+>>   remoteproc: Add recovery configuration to sysfs
+>> 
+>>  Documentation/ABI/testing/sysfs-class-remoteproc |  44 ++++++++
+>>  drivers/remoteproc/Kconfig                       |  12 +++
+>>  drivers/remoteproc/remoteproc_debugfs.c          |  10 +-
+>>  drivers/remoteproc/remoteproc_sysfs.c            | 126 
+>> +++++++++++++++++++++++
+>>  4 files changed, 190 insertions(+), 2 deletions(-)
+>> 
 > 
-> Hi Marek,
+> Hi,
 > 
-> > By using struct led_init_data when registering we do not need to parse
-> > `label` DT property nor `linux,default-trigger` property.
-> > 
-> > Also, move forward from platform data to device tree only:
-> > since commit c7896490dd1a ("leds: ns2: Absorb platform data") the
-> > platform data structure is absorbed into the driver, because nothing
-> > else in the source tree used it. Since nobody complained and all usage  
+> Is there a patch 3/3?
+> This email (reply) is patch 0/3, then I see
+>                       patch 1/2
+>                       patch 2/2
+> so I'm confused.  However, the diffstat above references a Kconfig file
+> and neither patch 1/2 nor patch 2/2 contains any Kconfig changes.
 > 
-> Well, I probably should have...
-> 
-> I am using this driver on the Seagate Superbee NAS devices. This devices
-> are based on a x86 SoC. Since I have been unable to get from the ODM the
-> LED information written in the ACPI tables, then platform data are used
-> to pass the LED description to the driver.
-> 
-> The support of this boards is not available mainline yet but it is still
-> on my todo list. So that's why I am complaining right now :) If it is
-> not too much trouble I'd like to keep platform data support in this
-> driver.
-> 
-> Thanks in advance.
-> 
-> Simon
-> 
-
-Simon, what if we refactored the driver to use fwnode API instead of OF
-API? Then if it is impossible for you to write DTS for that device,
-instead of platform data you could implement your device via swnode
-fwnodes. :)
-
-static const struct property_entry entries[] = {
-	PROPERTY_ENTRY_STRING("compatible", "lacie,ns2-leds"),
-	...
-};
-
-Look at
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/platform/chrome/chromeos_laptop.c?h=v5.9-rc5
-search for PROPERTY_ENTRY.
-
-I am willing to work on this with you, but I would really like to rid
-the LED drivers of platform data.
-
-Marek
+> thanks.
+Hi Randy,
+The cover letter got messed up. There are only 2 patches now whereas in 
+the
+earlier versions there were 3 patches. I'll be sending out v5 soon.
+Please review that.
