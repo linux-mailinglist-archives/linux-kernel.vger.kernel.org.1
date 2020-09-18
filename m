@@ -2,121 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A58B426F91A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C7C426F929
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726659AbgIRJWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 05:22:08 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13256 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726126AbgIRJWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 05:22:08 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 6238588FCF4E78924EC0;
-        Fri, 18 Sep 2020 17:22:06 +0800 (CST)
-Received: from localhost.localdomain (10.175.118.36) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 18 Sep 2020 17:21:59 +0800
-From:   Luo bin <luobin9@huawei.com>
-To:     <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <luoxianjun@huawei.com>, <yin.yinshi@huawei.com>,
-        <cloud.wangxiaoyun@huawei.com>, <chiqijun@huawei.com>,
-        <zengweiliang.zengweiliang@huawei.com>
-Subject: [PATCH net-next] hinic: modify irq name
-Date:   Fri, 18 Sep 2020 17:23:22 +0800
-Message-ID: <20200918092322.3058-1-luobin9@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726518AbgIRJYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 05:24:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38912 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726316AbgIRJYH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 05:24:07 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 238A120DD4;
+        Fri, 18 Sep 2020 09:24:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600421046;
+        bh=5BPFCutNa5VNQMibpDHHB+qvvOTgQcOE09RubxpF1GI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xU5lzR1Ga0PcfhABCdoUUHXJd6dN4fDFAU+RJC4XjY97A6xGaeDusE+AIxQe09UUe
+         cjDXcplObHW/R0vJ/QWHVnEYHNiAmMG2eH98/7f5xG9jUnkaKa5fMSVYDlcCKKQY1K
+         3J3oarxI8eW8I9yOa/ZZSSr5YNbR3x/6bNNhLGVY=
+Date:   Fri, 18 Sep 2020 10:24:01 +0100
+From:   Will Deacon <will@kernel.org>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 06/11] kvm: arm64: Add helpers for accessing nVHE hyp
+ per-cpu vars
+Message-ID: <20200918092400.GF30834@willie-the-truck>
+References: <20200916173439.32265-1-dbrazdil@google.com>
+ <20200916173439.32265-7-dbrazdil@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.118.36]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916173439.32265-7-dbrazdil@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make a distinction between different irqs by netdev name or pci name.
+On Wed, Sep 16, 2020 at 06:34:34PM +0100, David Brazdil wrote:
+> Defining a per-CPU variable in hyp/nvhe will result in its name being
+> prefixed with __kvm_nvhe_. Add helpers for declaring these variables
+> in kernel proper and accessing them with this_cpu_ptr and per_cpu_ptr.
+> 
+> Signed-off-by: David Brazdil <dbrazdil@google.com>
+> ---
+>  arch/arm64/include/asm/kvm_asm.h | 25 +++++++++++++++++++++++--
+>  1 file changed, 23 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_asm.h b/arch/arm64/include/asm/kvm_asm.h
+> index cf9456663289..abc03f386b40 100644
+> --- a/arch/arm64/include/asm/kvm_asm.h
+> +++ b/arch/arm64/include/asm/kvm_asm.h
+> @@ -54,9 +54,21 @@
+>  	DECLARE_KVM_VHE_SYM(sym);		\
+>  	DECLARE_KVM_NVHE_SYM(sym)
+>  
+> +#define DECLARE_KVM_VHE_PER_CPU(type, sym)	\
+> +	DECLARE_PER_CPU(type, sym)
+> +#define DECLARE_KVM_NVHE_PER_CPU(type, sym)	\
+> +	DECLARE_PER_CPU(type, kvm_nvhe_sym(sym))
+> +
+> +#define DECLARE_KVM_HYP_PER_CPU(type, sym)	\
+> +	DECLARE_KVM_VHE_PER_CPU(type, sym);	\
+> +	DECLARE_KVM_NVHE_PER_CPU(type, sym)
+> +
+>  #define CHOOSE_VHE_SYM(sym)	sym
+>  #define CHOOSE_NVHE_SYM(sym)	kvm_nvhe_sym(sym)
+>  
+> +#define this_cpu_ptr_nvhe(sym)		this_cpu_ptr(&kvm_nvhe_sym(sym))
+> +#define per_cpu_ptr_nvhe(sym, cpu)	per_cpu_ptr(&kvm_nvhe_sym(sym), cpu)
 
-Signed-off-by: Luo bin <luobin9@huawei.com>
----
- drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.c | 15 +++++++++------
- drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.h |  1 +
- drivers/net/ethernet/huawei/hinic/hinic_rx.c     |  2 +-
- drivers/net/ethernet/huawei/hinic/hinic_tx.c     |  4 ++--
- 4 files changed, 13 insertions(+), 9 deletions(-)
+nit: I'd probably stick a _sym suffix on these macros, to make it clear
+that they're just munging the symbol name rather than doing some completely
+different pcpu implementation.
 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.c b/drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.c
-index 05018562222f..f108b0c9228e 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.c
-@@ -793,12 +793,15 @@ static int init_eq(struct hinic_eq *eq, struct hinic_hwif *hwif,
- 			    HINIC_EQ_MSIX_LLI_CREDIT_LIMIT_DEFAULT,
- 			    HINIC_EQ_MSIX_RESEND_TIMER_DEFAULT);
- 
--	if (type == HINIC_AEQ)
--		err = request_irq(entry.vector, aeq_interrupt, 0,
--				  "hinic_aeq", eq);
--	else if (type == HINIC_CEQ)
--		err = request_irq(entry.vector, ceq_interrupt, 0,
--				  "hinic_ceq", eq);
-+	if (type == HINIC_AEQ) {
-+		snprintf(eq->irq_name, sizeof(eq->irq_name), "hinic_aeq%d@pci:%s", eq->q_id,
-+			 pci_name(pdev));
-+		err = request_irq(entry.vector, aeq_interrupt, 0, eq->irq_name, eq);
-+	} else if (type == HINIC_CEQ) {
-+		snprintf(eq->irq_name, sizeof(eq->irq_name), "hinic_ceq%d@pci:%s", eq->q_id,
-+			 pci_name(pdev));
-+		err = request_irq(entry.vector, ceq_interrupt, 0, eq->irq_name, eq);
-+	}
- 
- 	if (err) {
- 		dev_err(&pdev->dev, "Failed to request irq for the EQ\n");
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.h b/drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.h
-index 43065fc70869..2f3222174fc7 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.h
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.h
-@@ -186,6 +186,7 @@ struct hinic_eq {
- 	int                     num_elem_in_pg;
- 
- 	struct msix_entry       msix_entry;
-+	char			irq_name[64];
- 
- 	dma_addr_t              *dma_addr;
- 	void                    **virt_addr;
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_rx.c b/drivers/net/ethernet/huawei/hinic/hinic_rx.c
-index 5bee951fe9d4..f403a6711e97 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_rx.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_rx.c
-@@ -588,7 +588,7 @@ int hinic_init_rxq(struct hinic_rxq *rxq, struct hinic_rq *rq,
- 	rxq_stats_init(rxq);
- 
- 	rxq->irq_name = devm_kasprintf(&netdev->dev, GFP_KERNEL,
--				       "hinic_rxq%d", qp->q_id);
-+				       "%s_rxq%d", netdev->name, qp->q_id);
- 	if (!rxq->irq_name)
- 		return -ENOMEM;
- 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_tx.c b/drivers/net/ethernet/huawei/hinic/hinic_tx.c
-index 502f00e1e2d0..c249b7e6e432 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_tx.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_tx.c
-@@ -894,14 +894,14 @@ int hinic_init_txq(struct hinic_txq *txq, struct hinic_sq *sq,
- 		goto err_alloc_free_sges;
- 	}
- 
--	irqname_len = snprintf(NULL, 0, "hinic_txq%d", qp->q_id) + 1;
-+	irqname_len = snprintf(NULL, 0, "%s_txq%d", netdev->name, qp->q_id) + 1;
- 	txq->irq_name = devm_kzalloc(&netdev->dev, irqname_len, GFP_KERNEL);
- 	if (!txq->irq_name) {
- 		err = -ENOMEM;
- 		goto err_alloc_irqname;
- 	}
- 
--	sprintf(txq->irq_name, "hinic_txq%d", qp->q_id);
-+	sprintf(txq->irq_name, "%s_txq%d", netdev->name, qp->q_id);
- 
- 	err = hinic_hwdev_hw_ci_addr_set(hwdev, sq, CI_UPDATE_NO_PENDING,
- 					 CI_UPDATE_NO_COALESC);
--- 
-2.17.1
+THat said, do you expect these to be used outside of the pcpu
+implementation? If not, I suggest some underscores as a prefix as well.
 
+>  #ifndef __KVM_NVHE_HYPERVISOR__
+>  /*
+>   * BIG FAT WARNINGS:
+> @@ -69,12 +81,21 @@
+>   * - Don't let the nVHE hypervisor have access to this, as it will
+>   *   pick the *wrong* symbol (yes, it runs at EL2...).
+>   */
+> -#define CHOOSE_HYP_SYM(sym)	(is_kernel_in_hyp_mode() ? CHOOSE_VHE_SYM(sym) \
+> +#define CHOOSE_HYP_SYM(sym)		(is_kernel_in_hyp_mode()	\
+> +					   ? CHOOSE_VHE_SYM(sym)	\
+>  					   : CHOOSE_NVHE_SYM(sym))
+> +#define this_cpu_ptr_hyp(sym)		(is_kernel_in_hyp_mode()	\
+> +					   ? this_cpu_ptr(&sym)		\
+> +					   : this_cpu_ptr_nvhe(sym))
+> +#define per_cpu_ptr_hyp(sym, cpu)	(is_kernel_in_hyp_mode()	\
+> +					   ? per_cpu_ptr(&sym, cpu)	\
+> +					   : per_cpu_ptr_nvhe(sym, cpu))
+
+is_kernel_in_hyp_mode() reads a system register to determine the current
+exception level, so this doesn't seem like something we should be doing
+everytime here. Perhaps is_kernel_in_hyp_mode() should avoid read_sysreg()
+and instead use a non-volatile asm to allow the result to be cached by
+the compiler. Hmm.
+
+But I think that can be tackled as a future patch, so with the naming nits
+resolved:
+
+Acked-by: Will Deacon <will@kernel.org>
+
+Will
