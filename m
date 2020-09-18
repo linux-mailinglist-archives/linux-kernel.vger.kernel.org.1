@@ -2,35 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 455FF26EBD5
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BDD426EBD8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727959AbgIRCHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:07:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57788 "EHLO mail.kernel.org"
+        id S1727970AbgIRCHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:07:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727280AbgIRCH3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:07:29 -0400
+        id S1727954AbgIRCHe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:07:34 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D5D21238E5;
-        Fri, 18 Sep 2020 02:07:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4404323770;
+        Fri, 18 Sep 2020 02:07:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394848;
-        bh=Gj8OXTifKI0qrXicRK/yWep/4PdfhSThsuwHq6DVKVc=;
+        s=default; t=1600394853;
+        bh=t/dL6LPjtS1TrQtU8/Vc04Fb463C66wB6aGtkDlVgYg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2GtUpe1/OOSQiG4kHGBnefSgdeeJPDM1ERS3xm6t0c/VzbXWknKVbadRcD6rAUS0M
-         moY8uk5O2ZJiJAYMdhcdYKLWs4VE/O0i8l+F1MiGFKXG86dRL+jTEiKXaMTMwW6Z3j
-         XXo10HPRaSM+9CX9wYGaEl+IgO0HDMMQJrCDgDKs=
+        b=L3JwIMigzWLgS9l3eA36aJ3Vw4zbWR81Q41AKl6r28wS4KspXjT8VVEM7B4KM2heo
+         s9gg57b0TiZIAFol5HrdHxIphHbWgPlLJDoO8OaubXDauhh3E1jFecJgtymmAEKGNY
+         BszDDpG68QaH2XQDwTwqBD/dFwW+1NmO+AgLf0wA=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, ceph-devel@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 305/330] ceph: fix potential race in ceph_check_caps
-Date:   Thu, 17 Sep 2020 22:00:45 -0400
-Message-Id: <20200918020110.2063155-305-sashal@kernel.org>
+Cc:     Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexandre Bounine <alex.bou9@gmail.com>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Allison Randal <allison@lohutok.net>,
+        Pavel Andrianov <andrianov@ispras.ru>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 308/330] rapidio: avoid data race between file operation callbacks and mport_cdev_add().
+Date:   Thu, 17 Sep 2020 22:00:48 -0400
+Message-Id: <20200918020110.2063155-308-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -42,53 +51,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeff Layton <jlayton@kernel.org>
+From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 
-[ Upstream commit dc3da0461cc4b76f2d0c5b12247fcb3b520edbbf ]
+[ Upstream commit e1c3cdb26ab881b77486dc50370356a349077c74 ]
 
-Nothing ensures that session will still be valid by the time we
-dereference the pointer. Take and put a reference.
+Fields of md(mport_dev) are set after cdev_device_add().  However, the
+file operation callbacks can be called after cdev_device_add() and
+therefore accesses to fields of md in the callbacks can race with the rest
+of the mport_cdev_add() function.
 
-In principle, we should always be able to get a reference here, but
-throw a warning if that's ever not the case.
+One such example is INIT_LIST_HEAD(&md->portwrites) in mport_cdev_add(),
+the list is initialised after cdev_device_add().  This can race with
+list_add_tail(&pw_filter->md_node,&md->portwrites) in
+rio_mport_add_pw_filter() which is called by unlocked_ioctl.
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+To avoid such data races use cdev_device_add() after initializing md.
+
+Found by Linux Driver Verification project (linuxtesting.org).
+
+Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Acked-by: Alexandre Bounine <alex.bou9@gmail.com>
+Cc: Matt Porter <mporter@kernel.crashing.org>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Mike Marshall <hubcap@omnibond.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ira Weiny <ira.weiny@intel.com>
+Cc: Allison Randal <allison@lohutok.net>
+Cc: Pavel Andrianov <andrianov@ispras.ru>
+Link: http://lkml.kernel.org/r/20200426112950.1803-1-madhuparnabhowmik10@gmail.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ceph/caps.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ drivers/rapidio/devices/rio_mport_cdev.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
-index b2695919435e8..af563d73d252c 100644
---- a/fs/ceph/caps.c
-+++ b/fs/ceph/caps.c
-@@ -2013,12 +2013,24 @@ ack:
- 			if (mutex_trylock(&session->s_mutex) == 0) {
- 				dout("inverting session/ino locks on %p\n",
- 				     session);
-+				session = ceph_get_mds_session(session);
- 				spin_unlock(&ci->i_ceph_lock);
- 				if (took_snap_rwsem) {
- 					up_read(&mdsc->snap_rwsem);
- 					took_snap_rwsem = 0;
- 				}
--				mutex_lock(&session->s_mutex);
-+				if (session) {
-+					mutex_lock(&session->s_mutex);
-+					ceph_put_mds_session(session);
-+				} else {
-+					/*
-+					 * Because we take the reference while
-+					 * holding the i_ceph_lock, it should
-+					 * never be NULL. Throw a warning if it
-+					 * ever is.
-+					 */
-+					WARN_ON_ONCE(true);
-+				}
- 				goto retry;
- 			}
- 		}
+diff --git a/drivers/rapidio/devices/rio_mport_cdev.c b/drivers/rapidio/devices/rio_mport_cdev.c
+index 10af330153b5e..0b85a80ae7ef6 100644
+--- a/drivers/rapidio/devices/rio_mport_cdev.c
++++ b/drivers/rapidio/devices/rio_mport_cdev.c
+@@ -2384,13 +2384,6 @@ static struct mport_dev *mport_cdev_add(struct rio_mport *mport)
+ 	cdev_init(&md->cdev, &mport_fops);
+ 	md->cdev.owner = THIS_MODULE;
+ 
+-	ret = cdev_device_add(&md->cdev, &md->dev);
+-	if (ret) {
+-		rmcd_error("Failed to register mport %d (err=%d)",
+-		       mport->id, ret);
+-		goto err_cdev;
+-	}
+-
+ 	INIT_LIST_HEAD(&md->doorbells);
+ 	spin_lock_init(&md->db_lock);
+ 	INIT_LIST_HEAD(&md->portwrites);
+@@ -2410,6 +2403,13 @@ static struct mport_dev *mport_cdev_add(struct rio_mport *mport)
+ #else
+ 	md->properties.transfer_mode |= RIO_TRANSFER_MODE_TRANSFER;
+ #endif
++
++	ret = cdev_device_add(&md->cdev, &md->dev);
++	if (ret) {
++		rmcd_error("Failed to register mport %d (err=%d)",
++		       mport->id, ret);
++		goto err_cdev;
++	}
+ 	ret = rio_query_mport(mport, &attr);
+ 	if (!ret) {
+ 		md->properties.flags = attr.flags;
 -- 
 2.25.1
 
