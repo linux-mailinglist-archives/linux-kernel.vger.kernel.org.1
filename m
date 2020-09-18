@@ -2,96 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B54A1270250
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B73C270260
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726471AbgIRQfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 12:35:16 -0400
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:53751 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726311AbgIRQfP (ORCPT
+        id S1726478AbgIRQj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 12:39:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726343AbgIRQj6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 12:35:15 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 68CEC82192;
-        Fri, 18 Sep 2020 19:35:12 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1600446912;
-        bh=lWBbZqYIit7sNYXKehI1WhpFX7nqzWRcU5+vculWpsc=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=RfRZdpEXVkL9Kyfwa7xl3yuSSQQI2KeA2HYZS3VWKyRNvnvJ3qzGloY8pWf9fKuzq
-         mNj+Nc57Y4sz1sJTJVuDom9iSebMhqShvv9BvghZim4ZN7PNefsrihSe3bj7XNr4QU
-         cxc8pasjqYxooN4k6jBu6Di/MtA6rGvzEOUw1eUc=
-Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Fri, 18 Sep 2020 19:35:11 +0300
-Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
- by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%6]) with mapi
- id 15.01.1847.003; Fri, 18 Sep 2020 19:35:11 +0300
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     Matthew Wilcox <willy@infradead.org>, Joe Perches <joe@perches.com>
-CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pali@kernel.org" <pali@kernel.org>,
-        "dsterba@suse.cz" <dsterba@suse.cz>,
-        "aaptel@suse.com" <aaptel@suse.com>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "mark@harmstone.com" <mark@harmstone.com>,
-        "nborisov@suse.com" <nborisov@suse.com>
-Subject: RE: [PATCH v5 03/10] fs/ntfs3: Add bitmap
-Thread-Topic: [PATCH v5 03/10] fs/ntfs3: Add bitmap
-Thread-Index: AQHWiEVLqTuLvbWOTEKMmELjfZa26KlmuM8AgACEsICAB2PZsA==
-Date:   Fri, 18 Sep 2020 16:35:11 +0000
-Message-ID: <1cb55e79c5a54feb82cf4850486890df@paragon-software.com>
-References: <20200911141018.2457639-1-almaz.alexandrovich@paragon-software.com>
- <20200911141018.2457639-4-almaz.alexandrovich@paragon-software.com>
- <d1dc86f2792d3e64d1281fc2b5fddaca5fa17b5a.camel@perches.com>
- <20200914023845.GJ6583@casper.infradead.org>
-In-Reply-To: <20200914023845.GJ6583@casper.infradead.org>
-Accept-Language: ru-RU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.30.8.36]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Fri, 18 Sep 2020 12:39:58 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCD22C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 09:39:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=kbkCOaAVGW2W0qtF3ILC2dY2YuGuU78+gf+gMb7gwmg=; b=kW/m5vnUNR9hH31GcXuVcpd9j2
+        YA6VaBH1j/TiUI3s10h53oQiEx5bSqjcpwY8JemDJbytieos8zt+gRB1FpEaZE9ZsAKzL4LQC0jza
+        iqqFAttfNNTd4/5l8lRTxiHEru6CjyH/WYZRSvfVriw/iqmEjMdx7BgGWHp8bWD5i5kx+iWa6kL8H
+        gBcyIRucV67OIH/x5iE4iVZODxkkwqs3zdZ+XmOdUAkQoickM8doXsxt/7EZ+p93DBYP3QdoVQtAN
+        2milUFpS2U5fzp8jyoapCmfH59wTxVZclqKH1diAZY87+wVGYpDlWdBfpnNKB0VdioTh1sC8mAgnG
+        JPit0e+w==;
+Received: from 089144214092.atnat0023.highway.a1.net ([89.144.214.92] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kJJQ7-00071w-B7; Fri, 18 Sep 2020 16:39:35 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>, x86@kernel.org,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-mm@kvack.org
+Subject: remove alloc_vm_area
+Date:   Fri, 18 Sep 2020 18:37:18 +0200
+Message-Id: <20200918163724.2511-1-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTWF0dGhldyBXaWxjb3ggPHdpbGx5QGluZnJhZGVhZC5vcmc+DQpTZW50OiBNb25kYXks
-IFNlcHRlbWJlciAxNCwgMjAyMCA1OjM5IEFNDQo+IA0KPiBPbiBTdW4sIFNlcCAxMywgMjAyMCBh
-dCAxMTo0Mzo1MEFNIC0wNzAwLCBKb2UgUGVyY2hlcyB3cm90ZToNCj4gPiBPbiBGcmksIDIwMjAt
-MDktMTEgYXQgMTc6MTAgKzAzMDAsIEtvbnN0YW50aW4gS29tYXJvdiB3cm90ZToNCj4gPiA+IFRo
-aXMgYWRkcyBiaXRtYXANCj4gPg0KPiA+ICQgbWFrZSBmcy9udGZzMy8NCj4gPiAgIFNZTkMgICAg
-aW5jbHVkZS9jb25maWcvYXV0by5jb25mLmNtZA0KPiA+ICAgQ0FMTCAgICBzY3JpcHRzL2NoZWNr
-c3lzY2FsbHMuc2gNCj4gPiAgIENBTEwgICAgc2NyaXB0cy9hdG9taWMvY2hlY2stYXRvbWljcy5z
-aA0KPiA+ICAgREVTQ0VORCAgb2JqdG9vbA0KPiA+ICAgQ0MgICAgICBmcy9udGZzMy9iaXRmdW5j
-Lm8NCj4gPiAgIENDICAgICAgZnMvbnRmczMvYml0bWFwLm8NCj4gPiBmcy9udGZzMy9iaXRtYXAu
-YzogSW4gZnVuY3Rpb24g4oCYd25kX3Jlc2NhbuKAmToNCj4gPiBmcy9udGZzMy9iaXRtYXAuYzo1
-NTY6NDogZXJyb3I6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uIOKAmHBhZ2VfY2Fj
-aGVfcmVhZGFoZWFkX3VuYm91bmRlZOKAmTsgZGlkIHlvdSBtZWFuDQo+IOKAmHBhZ2VfY2FjaGVf
-cmFfdW5ib3VuZGVk4oCZPyBbLVdlcnJvcj1pbXBsaWNpdC1mdW5jdGlvbi1kZWNsYXJhdGlvbl0N
-Cj4gPiAgIDU1NiB8ICAgIHBhZ2VfY2FjaGVfcmVhZGFoZWFkX3VuYm91bmRlZCgNCj4gPiAgICAg
-ICB8ICAgIF5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fg0KPiA+ICAgICAgIHwgICAgcGFn
-ZV9jYWNoZV9yYV91bmJvdW5kZWQNCj4gPiBjYzE6IHNvbWUgd2FybmluZ3MgYmVpbmcgdHJlYXRl
-ZCBhcyBlcnJvcnMNCj4gPiBtYWtlWzJdOiAqKiogW3NjcmlwdHMvTWFrZWZpbGUuYnVpbGQ6Mjgz
-OiBmcy9udGZzMy9iaXRtYXAub10gRXJyb3IgMQ0KPiA+IG1ha2VbMV06ICoqKiBbc2NyaXB0cy9N
-YWtlZmlsZS5idWlsZDo1MDA6IGZzL250ZnMzXSBFcnJvciAyDQo+ID4gbWFrZTogKioqIFtNYWtl
-ZmlsZToxNzkyOiBmc10gRXJyb3IgMg0KPiANCj4gVGhhdCB3YXMgb25seSBqdXN0IHJlbmFtZWQu
-ICBNb3JlIGNvbmNlcm5pbmdseSwgdGhlIGRvY3VtZW50YXRpb24gaXMNCj4gcXVpdGUgdW5hbWJp
-Z3VvdXM6DQo+IA0KPiAgKiBUaGlzIGZ1bmN0aW9uIGlzIGZvciBmaWxlc3lzdGVtcyB0byBjYWxs
-IHdoZW4gdGhleSB3YW50IHRvIHN0YXJ0DQo+ICAqIHJlYWRhaGVhZCBiZXlvbmQgYSBmaWxlJ3Mg
-c3RhdGVkIGlfc2l6ZS4gIFRoaXMgaXMgYWxtb3N0IGNlcnRhaW5seQ0KPiAgKiBub3QgdGhlIGZ1
-bmN0aW9uIHlvdSB3YW50IHRvIGNhbGwuICBVc2UgcGFnZV9jYWNoZV9hc3luY19yZWFkYWhlYWQo
-KQ0KPiAgKiBvciBwYWdlX2NhY2hlX3N5bmNfcmVhZGFoZWFkKCkgaW5zdGVhZC4NCg0KSGkgTWF0
-dGhldyEgaXQncyBub3Qgc28gY2xlYXIgZm9yIHVzIGJ5IHNldmVyYWwgcmVhc29ucyAocGxlYXNl
-IGNvcnJlY3QNCmlmIHRoaXMgaXMgd3JvbmcpOg0KcGFnZV9jYWNoZV9zeW5jX3JlYWRhaGVhZCgp
-IHNlZW1zIGFwcGxpY2FibGUgYXMgYSByZXBsYWNlbWVudCwgYnV0DQppdCBkb2Vzbid0IHNlZW0g
-dG8gYmUgcmVhc29uYWJsZSBhcyByZWFkYWhlYWQgaW4gdGhpcyBjYXNlIGdpdmVzIHBlcmYNCmlt
-cHJvdmVtZW50IGJlY2F1c2Ugb2YgaXQncyBhc3luYyBuYXR1cmUuIFRoZSAnYXN5bmMnIGZ1bmN0
-aW9uIGlzIGluY29tcGF0aWJsZQ0KcmVwbGFjZW1lbnQgYmFzZWQgb24gdGhlIGFyZ3VtZW50cyBs
-aXN0Lg0KDQpUaGFua3MuDQo=
+Hi Andrew,
+
+this series removes alloc_vm_area, which was left over from the big
+vmalloc interface rework.  It is a rather arkane interface, basicaly
+the equivalent of get_vm_area + actually faulting in all PTEs in
+the allocated area.  It was originally addeds for Xen (which isn't
+modular to start with), and then grew users in zsmalloc and i915
+which seems to mostly qualify as abuses of the interface, especially
+for i915 as a random driver should not set up PTE bits directly.
+
+Note that my laptop doesn't seem to actually exercise the new vmap_pfn
+path, so careful review from the i915 maintainers is very welcome.
+
+Also I wonder why zsmalloc is even doing the manual allocation of kernel
+virtual address space plus mapping into it.  IMHO zsmalloc should be
+using our normal vm_map_ram / vm_unmap_ram interface instead of being so
+special, which would also allow building it as a module again for the
+virtual mapping case.
+
+Diffstat:
+ arch/x86/xen/grant-table.c                |   27 +++++---
+ drivers/gpu/drm/i915/Kconfig              |    1 
+ drivers/gpu/drm/i915/gem/i915_gem_pages.c |  101 +++++++++++++-----------------
+ drivers/gpu/drm/i915/gt/shmem_utils.c     |   90 +++++++++++---------------
+ drivers/xen/xenbus/xenbus_client.c        |   30 ++++----
+ include/linux/vmalloc.h                   |    6 -
+ mm/Kconfig                                |    3 
+ mm/nommu.c                                |    7 --
+ mm/vmalloc.c                              |   93 +++++++++++++--------------
+ mm/zsmalloc.c                             |    2 
+ 10 files changed, 172 insertions(+), 188 deletions(-)
