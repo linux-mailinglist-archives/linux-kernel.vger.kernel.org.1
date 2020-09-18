@@ -2,115 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E1A7270771
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 586E6270774
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726454AbgIRUuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 16:50:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58420 "EHLO
+        id S1726409AbgIRUuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 16:50:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726118AbgIRUuQ (ORCPT
+        with ESMTP id S1726118AbgIRUuu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 16:50:16 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 016ECC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:50:16 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id z23so9753422ejr.13
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:50:15 -0700 (PDT)
+        Fri, 18 Sep 2020 16:50:50 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B78C0613CE;
+        Fri, 18 Sep 2020 13:50:50 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id i17so8573853oig.10;
+        Fri, 18 Sep 2020 13:50:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=f4okZ/7bct4uSKwZ6O3z2m5KyitVLtU4XG9WgtUAxwc=;
-        b=TxBH8AyvU6HWp66ncdZqEtoRFWD/YTji6mddQAC1tx4KXEeHFtGLdS3R9syxDOr/gw
-         EJ35wyT17gb2NJYLGzLi6nzgB21j9JTRzpSNH6ko4dn+slxaKb4IH8Ki7QRFsqI7v9aA
-         S87ydkbPm8kuIhgWoL3lKfaG0SLalSIBz1ahIC+ONuQXK7GoSVTs2pnZksirb/CgEcGJ
-         dda7cH+5KO+boQPBNW5nn7bmDiexjhjP2RtZPQz3JvCcezgV03AKeN1igjv/uW0ePsfq
-         kEgfrqOrvUv6gNdwmh3rNp+rjsPflT1TKKMgiRyTccCH7ogTg/un4wxhA9XtkrhpxfY7
-         o61Q==
+        bh=LQBTYd/i7TL56jJTVQHkU8FPXDKYu/R4V8hCfAPSzJo=;
+        b=r5aGYz+rFyzfIoItLLPRg0TWqJvXc782/dbNt7PSwOTmfECPgbPftiexIoJkmFTXtY
+         vK4UuJdscGwkJgnTX/t8tlx9Z7Q/eOVC0jbIuSuj/58XQV9sWNdOS+A82CTSgiMta/u7
+         uWQ/AYufjXogcJQpODpjD2prPYEWNCRPkks3c2V8pRp4Vv1LgYC+cVsE+kJPPCw0FBj7
+         U3e2A6CFjMd12j5aCHGLnlMRvVRHngzVR0UYL7Y7dNZk8OYyal5IYSmOiSEQuNazDCAR
+         Qh+MUj5CCTduEz3ESmgu6tb6KIFSCO6DgMyIbu4nv4eveg7nFsKcRcOce2Ou2wCbVKqy
+         bBfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=f4okZ/7bct4uSKwZ6O3z2m5KyitVLtU4XG9WgtUAxwc=;
-        b=NmQQU0iQZjLa+a3JtQVfIW7/vTylbjtHfMAj71mhe/UMz99cnUD7GGBxCqumYio0vG
-         V5tISitz6ALm0c0+BDVfP9UuHKv4dJFGFmZJl2tyuDfVSOmKl0mMeYzQzf4qEAvFGQrK
-         qFMOz5gMoiqFf0h35JiCm/x9I7qHA8YiE54LinMSWu5xh0moFpWtpE3v9xVoKztNNCMa
-         iPuyM0l/BHAqHWG3/1WoPuIRd+nR5mPNlT8dGvoLLJVWnwRVFDjEGbDaNxao/yHAatBt
-         Rp2MDO+ffOd7Sisq10OegVNuXAY4udlFRnYIAP7BWVlI/U9u9CdhM/FkWvTet7nILcYN
-         hB8w==
-X-Gm-Message-State: AOAM532SBOF4uYKX6o2fphFXUeJ41XFaGk+3x1N+nvtVJxosZM/IL1gN
-        ZUWlARl/TQwRp/r1TykvRp3pXcDH3ZYmFoARbgAAfQ==
-X-Google-Smtp-Source: ABdhPJxlmp9BJajUv0E4cVIdv3SYp0wheOk/nOpDB3mBZ4a/wfqp4uUfhfc+2gKB4vscqXhsi0M+J+iTaTW/5sPlq3g=
-X-Received: by 2002:a17:906:454e:: with SMTP id s14mr38862035ejq.137.1600462214260;
- Fri, 18 Sep 2020 13:50:14 -0700 (PDT)
+        bh=LQBTYd/i7TL56jJTVQHkU8FPXDKYu/R4V8hCfAPSzJo=;
+        b=XKLs9W4Qm2C/RipJ/HAiiZvKFtnyoKja2BlyCiVzA5RRLjU5rgw9QwLrTcpbBM0PRU
+         bn/5PnPcp+b4cY+scWrMFpmvl2FEvKOY+dTkRDXGTda49QRiuiYtRyqehnDGQgXLrnS/
+         m666k5ibdbFD8dXLAgVCAsMVZWIuVNZ5Rzh5nashvRaEnAZ+9+hGjT1og85OaBFFGZjs
+         uXvYCEMD+YOmt/TXxUIIFlVvMxhvWr0JyUtgS0Yf5uTgsiFJUf61wyelEideh7EEby+k
+         1azxlVgF4KEsxx+TUe/A3gxy9sLbHp4l8PXTYJ0HjwkzIUV3VcEX55KAtumQsiOURS2Q
+         Lzrw==
+X-Gm-Message-State: AOAM533mH74Hn2fVdyNFayw5eYeDPODHUc+FBWSGzzqgy0b98FT9/jh2
+        OV6ZdjUkGZe13w+wuLP7IiyJBUbqdXHfjeXauXw=
+X-Google-Smtp-Source: ABdhPJwLFCTn89gsNeMXFYjEgZOXfTDO437610Y8/ZpvSrOdjvvz3QGyVx9hb5/bIum5U6OkxJE/NlABUGT6UuwFT+0=
+X-Received: by 2002:aca:5b45:: with SMTP id p66mr11082126oib.39.1600462249606;
+ Fri, 18 Sep 2020 13:50:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200918201436.2932360-1-samitolvanen@google.com> <CA+icZUW1MYSUz8jwOaVpi6ib1dyCv1VmG5priw6TTzXGSh_8Gg@mail.gmail.com>
-In-Reply-To: <CA+icZUW1MYSUz8jwOaVpi6ib1dyCv1VmG5priw6TTzXGSh_8Gg@mail.gmail.com>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Fri, 18 Sep 2020 13:50:03 -0700
-Message-ID: <CABCJKueyWvNB2MQw_PCLtZb8F1+sA1QOLJi_5qMKwdFCcwSMGg@mail.gmail.com>
-Subject: Re: [PATCH v3 00/30] Add support for Clang LTO
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org,
-        X86 ML <x86@kernel.org>
+References: <20200910172826.3074357-1-enric.balletbo@collabora.com>
+ <20200910172826.3074357-4-enric.balletbo@collabora.com> <CAOwMV_z9OBpNqStCH+HEcwAK-TwPVeMH4LwJbp78T1P=t9bEKg@mail.gmail.com>
+In-Reply-To: <CAOwMV_z9OBpNqStCH+HEcwAK-TwPVeMH4LwJbp78T1P=t9bEKg@mail.gmail.com>
+From:   Enric Balletbo Serra <eballetbo@gmail.com>
+Date:   Fri, 18 Sep 2020 22:50:37 +0200
+Message-ID: <CAFqH_535GA6nFGKTu4wms1FGySfdrJPeZOf0tuFzaYwVwQuucg@mail.gmail.com>
+Subject: Re: [PATCH 03/12] arm64: dts: mediatek: Add mt8173 power domain controller
+To:     Fabien Parent <fparent@baylibre.com>
+Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Weiyi Lu <weiyi.lu@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 1:22 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> On Fri, Sep 18, 2020 at 10:14 PM 'Sami Tolvanen' via Clang Built Linux
-> <clang-built-linux@googlegroups.com> wrote:
-> >
-> > This patch series adds support for building x86_64 and arm64 kernels
-> > with Clang's Link Time Optimization (LTO).
-> >
-> > In addition to performance, the primary motivation for LTO is
-> > to allow Clang's Control-Flow Integrity (CFI) to be used in the
-> > kernel. Google has shipped millions of Pixel devices running three
-> > major kernel versions with LTO+CFI since 2018.
-> >
-> > Most of the patches are build system changes for handling LLVM
-> > bitcode, which Clang produces with LTO instead of ELF object files,
-> > postponing ELF processing until a later stage, and ensuring initcall
-> > ordering.
-> >
-> > Note that patches 1-5 are not directly related to LTO, but are
-> > needed to compile LTO kernels with ToT Clang, so I'm including them
-> > in the series for your convenience:
-> >
-> >  - Patches 1-3 fix build issues with LLVM and they are already in
-> >    linux-next.
-> >
-> >  - Patch 4 fixes x86 builds with LLVM IAS, but it hasn't yet been
-> >    picked up by maintainers.
-> >
-> >  - Patch 5 is from Masahiro's kbuild tree and makes the LTO linker
-> >    script changes much cleaner.
-> >
->
-> Hi Sami,
->
-> might be good to point to your GitHub tree and corresponding
-> release-tag for easy fetching.
+Hi Fabien,
 
-Ah, true. You can also pull this series from
+Thank you to look at this.
 
-  https://github.com/samitolvanen/linux.git lto-v3
+Missatge de Fabien Parent <fparent@baylibre.com> del dia dv., 18 de
+set. 2020 a les 22:24:
+>
+> Hi Enric,
+>
+> > -               scpsys: power-controller@10006000 {
+> > -                       compatible = "mediatek,mt8173-scpsys";
+> > -                       #power-domain-cells = <1>;
+>
+> This change generates a lot of warning when compiling the MT8173 device-trees.
+>
+> Warning (power_domains_property): /soc/mutex@14020000: Missing
+> property '#power-domain-cells' in node /soc/syscon@10006000 or bad
+> phandle (referred from power-domains[0])
 
-Sami
+I think that there is a mistake in that patch #power-domain-cells =
+<1>; should not be removed. Anyway, I talked with Matthias and I'm
+going to redefine this part as doesn't really match with the hardware.
+We're thinking on something like this:
+
+scpsys: syscon@10006000 {
+     compatible = "mediatek,mtk-scpsys", "syscon";
+      reg = ...
+
+     power-controller {
+           compatible = "mediatek,mt8173-power-controller";
+           #power-domain-cells = <1>;
+
+           <- the list of domains ->
+
+Thanks,
+  Enric
