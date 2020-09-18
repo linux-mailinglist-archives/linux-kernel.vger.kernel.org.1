@@ -2,36 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 092F226EF26
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5004826EF2B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:33:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729989AbgIRCdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:33:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41144 "EHLO mail.kernel.org"
+        id S1726720AbgIRCde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:33:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727960AbgIRCNm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:13:42 -0400
+        id S1728998AbgIRCNr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:13:47 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CA82F23977;
-        Fri, 18 Sep 2020 02:13:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 355C62389F;
+        Fri, 18 Sep 2020 02:13:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600395221;
-        bh=Z8IHuZLsc5cY1jPzZYhol1bmEhwUKDZVsue0I66Qxlc=;
+        s=default; t=1600395226;
+        bh=uKyd+P7uYdEygJarxNMMYG2W0SFX+OF/GFn1NYnMTTc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fI8jyPBlTh1dAxLIpsODBgnEM08CaCMGW2Xxr/qTQGiDAPi41js3mM1klLo5DFDsQ
-         kjUoOHb9UxInmCG7O7rLgKexXvNpY3+vx2G8mV8XVOfROuf1ACGS5rkUUx3TuyK7z/
-         wVktZXyV9rT3ffvY+lhT90UKxIeE9tiGtqmv15Bs=
+        b=XBYlz8JogGy9MELmt+L3RugIjqQoi/lUJmVIK4h3iIHZEjysvHeE+d1ra3kFwWS3O
+         rPL850GXGGUIakVOTaYqcQ+DufdujIgVtLvJdYtlo1RIAfv5S7njL2ontrJ8FXb9BE
+         5weD6zEY1xPZQ3+wyZqsdjuM6xed0aASA6i3rucs=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Don Zickus <dzickus@redhat.com>, He Zhe <zhe.he@windriver.com>,
+        Jan Stancek <jstancek@redhat.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        kernel-janitors@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.14 068/127] tracing: Use address-of operator on section symbols
-Date:   Thu, 17 Sep 2020 22:11:21 -0400
-Message-Id: <20200918021220.2066485-68-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 072/127] perf cpumap: Fix snprintf overflow check
+Date:   Thu, 17 Sep 2020 22:11:25 -0400
+Message-Id: <20200918021220.2066485-72-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918021220.2066485-1-sashal@kernel.org>
 References: <20200918021220.2066485-1-sashal@kernel.org>
@@ -43,47 +52,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit bf2cbe044da275021b2de5917240411a19e5c50d ]
+[ Upstream commit d74b181a028bb5a468f0c609553eff6a8fdf4887 ]
 
-Clang warns:
+'snprintf' returns the number of characters which would be generated for
+the given input.
 
-../kernel/trace/trace.c:9335:33: warning: array comparison always
-evaluates to true [-Wtautological-compare]
-        if (__stop___trace_bprintk_fmt != __start___trace_bprintk_fmt)
-                                       ^
-1 warning generated.
+If the returned value is *greater than* or equal to the buffer size, it
+means that the output has been truncated.
 
-These are not true arrays, they are linker defined symbols, which are
-just addresses. Using the address of operator silences the warning and
-does not change the runtime result of the check (tested with some print
-statements compiled in with clang + ld.lld and gcc + ld.bfd in QEMU).
+Fix the overflow test accordingly.
 
-Link: http://lkml.kernel.org/r/20200220051011.26113-1-natechancellor@gmail.com
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/893
-Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Fixes: 7780c25bae59f ("perf tools: Allow ability to map cpus to nodes easily")
+Fixes: 92a7e1278005b ("perf cpumap: Add cpu__max_present_cpu()")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Suggested-by: David Laight <David.Laight@ACULAB.COM>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Don Zickus <dzickus@redhat.com>
+Cc: He Zhe <zhe.he@windriver.com>
+Cc: Jan Stancek <jstancek@redhat.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Kan Liang <kan.liang@linux.intel.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: kernel-janitors@vger.kernel.org
+Link: http://lore.kernel.org/lkml/20200324070319.10901-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/trace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/util/cpumap.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 22759f5607192..19526297a5b1c 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -8346,7 +8346,7 @@ __init static int tracer_alloc_buffers(void)
- 		goto out_free_buffer_mask;
+diff --git a/tools/perf/util/cpumap.c b/tools/perf/util/cpumap.c
+index f93846edc1e0d..827d844f4efb1 100644
+--- a/tools/perf/util/cpumap.c
++++ b/tools/perf/util/cpumap.c
+@@ -462,7 +462,7 @@ static void set_max_cpu_num(void)
  
- 	/* Only allocate trace_printk buffers if a trace_printk exists */
--	if (__stop___trace_bprintk_fmt != __start___trace_bprintk_fmt)
-+	if (&__stop___trace_bprintk_fmt != &__start___trace_bprintk_fmt)
- 		/* Must be called before global_trace.buffer is allocated */
- 		trace_printk_init_buffers();
+ 	/* get the highest possible cpu number for a sparse allocation */
+ 	ret = snprintf(path, PATH_MAX, "%s/devices/system/cpu/possible", mnt);
+-	if (ret == PATH_MAX) {
++	if (ret >= PATH_MAX) {
+ 		pr_err("sysfs path crossed PATH_MAX(%d) size\n", PATH_MAX);
+ 		goto out;
+ 	}
+@@ -473,7 +473,7 @@ static void set_max_cpu_num(void)
  
+ 	/* get the highest present cpu number for a sparse allocation */
+ 	ret = snprintf(path, PATH_MAX, "%s/devices/system/cpu/present", mnt);
+-	if (ret == PATH_MAX) {
++	if (ret >= PATH_MAX) {
+ 		pr_err("sysfs path crossed PATH_MAX(%d) size\n", PATH_MAX);
+ 		goto out;
+ 	}
+@@ -501,7 +501,7 @@ static void set_max_node_num(void)
+ 
+ 	/* get the highest possible cpu number for a sparse allocation */
+ 	ret = snprintf(path, PATH_MAX, "%s/devices/system/node/possible", mnt);
+-	if (ret == PATH_MAX) {
++	if (ret >= PATH_MAX) {
+ 		pr_err("sysfs path crossed PATH_MAX(%d) size\n", PATH_MAX);
+ 		goto out;
+ 	}
+@@ -586,7 +586,7 @@ int cpu__setup_cpunode_map(void)
+ 		return 0;
+ 
+ 	n = snprintf(path, PATH_MAX, "%s/devices/system/node", mnt);
+-	if (n == PATH_MAX) {
++	if (n >= PATH_MAX) {
+ 		pr_err("sysfs path crossed PATH_MAX(%d) size\n", PATH_MAX);
+ 		return -1;
+ 	}
+@@ -601,7 +601,7 @@ int cpu__setup_cpunode_map(void)
+ 			continue;
+ 
+ 		n = snprintf(buf, PATH_MAX, "%s/%s", path, dent1->d_name);
+-		if (n == PATH_MAX) {
++		if (n >= PATH_MAX) {
+ 			pr_err("sysfs path crossed PATH_MAX(%d) size\n", PATH_MAX);
+ 			continue;
+ 		}
 -- 
 2.25.1
 
