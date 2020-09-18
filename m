@@ -2,214 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D5826F802
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:21:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDDE126F7AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgIRIUR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 18 Sep 2020 04:20:17 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2886 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726064AbgIRIUQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 04:20:16 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id D6418949A7C7C550C067;
-        Fri, 18 Sep 2020 09:04:59 +0100 (IST)
-Received: from localhost (10.52.125.116) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 18 Sep
- 2020 09:04:59 +0100
-Date:   Fri, 18 Sep 2020 09:03:21 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Gene Chen <gene.chen.richtek@gmail.com>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>, <knaack.h@gmx.de>,
-        <lars@metafoo.de>, <pmeerw@pmeerw.net>,
-        <linux-iio@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gene Chen <gene_chen@richtek.com>, <Wilma.Wu@mediatek.com>,
-        <shufan_lee@richtek.com>, <cy_huang@richtek.com>,
-        <benjamin.chao@mediatek.com>,
-        Cristian Pop <cristian.pop@analog.com>
-Subject: Re: [PATCH v4 2/3] Documentation: ABI: testing: mt6360: Add ADC
- sysfs guideline
-Message-ID: <20200918090321.00007f70@Huawei.com>
-In-Reply-To: <CAE+NS35Pw-6UqcHPNOsUtW0GABPVEHfPineF81+qrS6A18HiyA@mail.gmail.com>
-References: <1600191369-28040-1-git-send-email-gene.chen.richtek@gmail.com>
-        <1600191369-28040-3-git-send-email-gene.chen.richtek@gmail.com>
-        <20200917184256.71328701@archlinux>
-        <CAE+NS35Pw-6UqcHPNOsUtW0GABPVEHfPineF81+qrS6A18HiyA@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1726867AbgIRIGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 04:06:07 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:38598 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726280AbgIRIGH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 04:06:07 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08I83mvt192647;
+        Fri, 18 Sep 2020 08:05:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=FwzhrR6pIZT+ddO5HaCmr7glfRurUVeHrfqvesMmzJA=;
+ b=OjUABHgStFfv1CkX6AQwRtXJUXjBH0AkIeV0zBZrDu+Ryz3eHaqiUi/wTGLWwAkme4mi
+ Jntda+uCcBDcdtGph54CcMENWADtFDlzI3Gwhc0Tk3xa7jUT8b/NjeodkN0R8FroMrfE
+ V4EfxU8H8Iy0WzyNA1kXqrKPdAJdloMYv7syCm4A9hoNw5w0muNaqUd+VKI4hVFgRqbA
+ Ed47cP7Ix/k8LBfO/yKP74fMVey4y3SUtAiPNs8MvxUZArrfMmStHdLzWhRQ0iBLJiyT
+ 7Rp4JFt4gdusisIY4wJYD5zP/SneygwYvq2ic56xV0W4BZ1Hr3xQUQVDwTo6BCWUKTIt 9A== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 33gnrrdnx4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 18 Sep 2020 08:05:48 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08I80tFr079657;
+        Fri, 18 Sep 2020 08:03:48 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 33megaxe6x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 18 Sep 2020 08:03:48 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08I83iix026517;
+        Fri, 18 Sep 2020 08:03:44 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 18 Sep 2020 08:03:44 +0000
+Date:   Fri, 18 Sep 2020 11:03:35 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     yong.zhi@intel.com, sakari.ailus@linux.intel.com,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
+        gregkh@linuxfoundation.org, davem@davemloft.net, robh@kernel.org,
+        devel@driverdev.osuosl.org, jorhand@linux.microsoft.com,
+        kieran.bingham@ideasonboard.com, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, kitakar@gmail.com
+Subject: Re: [RFC PATCH] Add bridge driver to connect sensors to CIO2 device
+ via software nodes on ACPI platforms
+Message-ID: <20200918080335.GT4282@kadam>
+References: <20200916213618.8003-1-djrscally@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [10.52.125.116]
-X-ClientProxiedBy: lhreml741-chm.china.huawei.com (10.201.108.191) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916213618.8003-1-djrscally@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9747 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 spamscore=0
+ mlxlogscore=999 adultscore=0 bulkscore=0 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009180067
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9747 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0
+ lowpriorityscore=0 malwarescore=0 mlxscore=0 bulkscore=0 suspectscore=0
+ clxscore=1015 mlxlogscore=999 adultscore=0 priorityscore=1501
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009180067
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Sep 2020 15:21:44 +0800
-Gene Chen <gene.chen.richtek@gmail.com> wrote:
+I ran Smatch over the code and it spotted an off by one.
 
-> Jonathan Cameron <jic23@kernel.org> 於 2020年9月18日 週五 上午1:43寫道：
-> >
-> > On Wed, 16 Sep 2020 01:36:08 +0800
-> > Gene Chen <gene.chen.richtek@gmail.com> wrote:
-> >  
-> > > From: Gene Chen <gene_chen@richtek.com>
-> > >
-> > > Add ABI documentation for mt6360 ADC sysfs interfaces.
-> > >
-> > > Signed-off-by: Gene Chen <gene_chen@richtek.com>  
-> > Would you consider using the proposed label attribute for channels?
-> >
-> > https://lore.kernel.org/linux-iio/20200916132115.81795-1-cristian.pop@analog.com/T/#u
-> >
-> > I'm hoping that will remove the need to have ext name used in the majority of
-> > cases and would like to know if it would work for you?
-> > It may not work for this particular case of course.
-> >
-> > Other comments inline.
-> >  
-> 
-> because of ADC layout is fixed, I can't switch channel to specific
-> purpose for userspace.
+On Wed, Sep 16, 2020 at 10:36:18PM +0100, Daniel Scally wrote:
+> +#define MAX_CONNECTED_DEVICES			4
+> +#define SWNODE_SENSOR_HID			0
+> +#define SWNODE_SENSOR_PORT			1
+> +#define SWNODE_SENSOR_ENDPOINT			2
+> +#define SWNODE_CIO2_PORT			3
+> +#define SWNODE_CIO2_ENDPOINT			4
+> +#define SWNODE_NULL_TERMINATOR			5
+   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-That patch set doesn't allow userspace to change the purpose. It provides
-a *_label attribute for each channel to allow for identification of the channel.
-That can be provided by ACPI / DT or can be provided by the driver itself.
-The advantage is that it removes the nasty freeform parsing that is needed
-to work out the filenames.
+> +struct sensor {
+> +	struct device *dev;
+> +	struct software_node swnodes[5];
+                             ^^^^^^^^^^
+This needs to be 6 instead of 5 to prevent memory corruption.
 
-> 
-> > > ---
-> > >  Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360 | 83 ++++++++++++++++++++++
-> > >  1 file changed, 83 insertions(+)
-> > >  create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360
-> > >
-> > > diff --git a/Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360 b/Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360
-> > > new file mode 100644
-> > > index 0000000..4b1c270
-> > > --- /dev/null
-> > > +++ b/Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360
-> > > @@ -0,0 +1,83 @@
-> > > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_USBID_input  
-> >
-> >
-> > The mixture of case is a bit ugly.  Could we do
-> > in_voltage_usbin_input?
-> >  
-> 
-> ACK
-> 
-> > > +KernelVersion:       5.8.0
-> > > +Contact:     gene_chen@richtek.com
-> > > +Description:
-> > > +             Indicated MT6360 USBID ADC which connected to connector ID pin.
-> > > +             Reading returns voltage in uV
-> > > +
-> > > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_VBUSDIV5_input  
-> >  
-> > > +KernelVersion:       5.8.0
-> > > +Contact:     gene_chen@richtek.com
-> > > +Description:
-> > > +             Indicated MT6360 VBUS ADC with high accuracy
-> > > +             Reading returns voltage in uV  
-> >
-> > Why would we ever read the low accuracy version?
-> >  
-> > > +
-> > > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_VBUSDIV2_input
-> > > +KernelVersion:       5.8.0
-> > > +Contact:     gene_chen@richtek.com
-> > > +Description:
-> > > +             Indicated MT6360 VBUS ADC with low accuracy
-> > > +             Reading returns voltage in uV
-> > > +
-> > > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_VSYS_input
-> > > +KernelVersion:       5.8.0
-> > > +Contact:     gene_chen@richtek.com
-> > > +Description:
-> > > +             Indicated MT6360 VSYS ADC
-> > > +             Reading returns voltage in uV
-> > > +
-> > > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_VBAT_input
-> > > +KernelVersion:       5.8.0
-> > > +Contact:     gene_chen@richtek.com
-> > > +Description:
-> > > +             Indicated MT6360 VBAT ADC
-> > > +             Reading returns voltage in uV
-> > > +
-> > > +What:                /sys/bus/iio/devices/iio:deviceX/in_current_IBUS_input
-> > > +KernelVersion:       5.8.0
-> > > +Contact:     gene_chen@richtek.com
-> > > +Description:
-> > > +             Indicated MT6360 IBUS ADC
-> > > +             Reading returns current in uA  
-> > Given voltage and current are already clear from the channel type,
-> > could we avoid the repetition?
-> >
-> > in_current_bus_input perhaps?
-> >  
-> 
-> ACK
-> 
-> > > +
-> > > +What:                /sys/bus/iio/devices/iio:deviceX/in_current_IBAT_input
-> > > +KernelVersion:       5.8.0
-> > > +Contact:     gene_chen@richtek.com
-> > > +Description:
-> > > +             Indicated MT6360 IBAT ADC
-> > > +             Reading returns current in uA
-> > > +
-> > > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_CHG_VDDP_input
-> > > +KernelVersion:       5.8.0
-> > > +Contact:     gene_chen@richtek.com
-> > > +Description:
-> > > +             Indicated MT6360 CHG_VDDP ADC
-> > > +             Reading returns voltage in uV
-> > > +
-> > > +What:                /sys/bus/iio/devices/iio:deviceX/in_temp_TEMP_JC_input
-> > > +KernelVersion:       5.8.0
-> > > +Contact:     gene_chen@richtek.com
-> > > +Description:
-> > > +             Indicated MT6360 IC junction temperature
-> > > +             Reading returns temperature in degree
-> > > +
-> > > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_VREF_TS_input
-> > > +KernelVersion:       5.8.0
-> > > +Contact:     gene_chen@richtek.com
-> > > +Description:
-> > > +             Indicated MT6360 VREF_TS ADC
-> > > +             Reading returns voltage in uV
-> > > +
-> > > +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_TS_input
-> > > +KernelVersion:       5.8.0
-> > > +Contact:     gene_chen@richtek.com
-> > > +Description:
-> > > +             Indicated MT6360 TS ADC
-> > > +             Reading returns voltage in uV
-> > > +
-> > > +What:                /sys/bus/iio/devices/iio:deviceX/timestamp
-> > > +KernelVersion:       5.8.0
-> > > +Contact:     gene_chen@richtek.com
-> > > +Description:
-> > > +             Indicated MT6360 timestamp
-> > > +             Reading returns current timestamp in ms  
-> >
-> > That's an odd bit of ABI.  Why would we want to read the current timestamp from
-> > sysfs?  Timestamps in IIO also tend to be in nano seconds.
-> >
-> >
-> >
-> >  
-> 
-> ACK, I will remove this.
+> +	struct property_entry sensor_props[6];
+> +	struct property_entry cio2_props[3];
+> +	struct fwnode_handle *fwnode;
+> +};
 
+
+> +		nodes[SWNODE_NULL_TERMINATOR]   = SOFTWARE_NODE_NULL;
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Here.
+
+regards,
+dan carpenter
 
