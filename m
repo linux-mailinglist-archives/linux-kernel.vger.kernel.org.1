@@ -2,63 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6285D26F957
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2A3826F95D
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726359AbgIRJcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 05:32:17 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13257 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726064AbgIRJcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 05:32:17 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 78C7A460323D27677148;
-        Fri, 18 Sep 2020 17:32:14 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 18 Sep 2020 17:32:05 +0800
-From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
-To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <lee.jones@linaro.org>, <colin.king@canonical.com>,
-        <axboe@kernel.dk>, <mchehab+huawei@kernel.org>,
-        <gustavoars@kernel.org>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <jingxiangfeng@huawei.com>
-Subject: [PATCH] scsi: arcmsr: Remove the superfluous break
-Date:   Fri, 18 Sep 2020 17:32:30 +0800
-Message-ID: <20200918093230.49050-1-jingxiangfeng@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726586AbgIRJda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 05:33:30 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:50439 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726159AbgIRJd3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 05:33:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600421608;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YyxvQapKO8cJ+h1msTh4Bn1k/c9vh0JXpNMN+TtY/Sw=;
+        b=ahAFF1i7fMzT8xjFRQLAOL+w1Mvw5o0mCjlI2GNpje+SkkEcMcAar7PTgchXmrBMULCwlx
+        +yi55h+ULht+PyR0Qgi6LtUchbOSVYhGysGB0hk9+cb+4qC/md+ab+4nPSEeienloDhiP7
+        Dp8r/gDS1gxfQTDK6Y4xvU4mw3zK8Bg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-585-DO35AFk4Nsq_aFG1fRQDGA-1; Fri, 18 Sep 2020 05:33:22 -0400
+X-MC-Unique: DO35AFk4Nsq_aFG1fRQDGA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4AB5F1091066;
+        Fri, 18 Sep 2020 09:33:21 +0000 (UTC)
+Received: from sirius.home.kraxel.org (ovpn-112-85.ams2.redhat.com [10.36.112.85])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 672E519D6C;
+        Fri, 18 Sep 2020 09:33:14 +0000 (UTC)
+Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
+        id 943F516E0A; Fri, 18 Sep 2020 11:33:13 +0200 (CEST)
+Date:   Fri, 18 Sep 2020 11:33:13 +0200
+From:   Gerd Hoffmann <kraxel@redhat.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Peter Xu <peterx@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Julia Suvorova <jsuvorov@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andrew Jones <drjones@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] KVM: x86: KVM_MEM_PCI_HOLE memory
+Message-ID: <20200918093313.7qfsgi7o46imqunc@sirius.home.kraxel.org>
+References: <20200807141232.402895-1-vkuznets@redhat.com>
+ <20200825212526.GC8235@xz-x1>
+ <87eenlwoaa.fsf@vitty.brq.redhat.com>
+ <20200901200021.GB3053@xz-x1>
+ <877dtcpn9z.fsf@vitty.brq.redhat.com>
+ <20200904061210.GA22435@sjchrist-ice>
+ <20200904072905.vbkiq3h762fyzds6@sirius.home.kraxel.org>
+ <20200907065054-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200907065054-mutt-send-email-mst@kernel.org>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the superfluous break, as there is a 'return' before it.
+  Hi,
 
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
----
- drivers/scsi/arcmsr/arcmsr_hba.c | 2 --
- 1 file changed, 2 deletions(-)
+> > We could probably wire up ecam (arm/virt style) for pcie support, once
+> > the acpi support for mictovm finally landed (we need acpi for that
+> > because otherwise the kernel wouldn't find the pcie bus).
+> > 
+> > Question is whenever there is a good reason to do so.  Why would someone
+> > prefer microvm with pcie support over q35?
+> 
+> The usual reasons to use pcie apply to microvm just the same.
+> E.g.: pass through of pcie devices?
 
-diff --git a/drivers/scsi/arcmsr/arcmsr_hba.c b/drivers/scsi/arcmsr/arcmsr_hba.c
-index ec895d0319f0..74add6d247d5 100644
---- a/drivers/scsi/arcmsr/arcmsr_hba.c
-+++ b/drivers/scsi/arcmsr/arcmsr_hba.c
-@@ -2699,10 +2699,8 @@ static irqreturn_t arcmsr_interrupt(struct AdapterControlBlock *acb)
- 	switch (acb->adapter_type) {
- 	case ACB_ADAPTER_TYPE_A:
- 		return arcmsr_hbaA_handle_isr(acb);
--		break;
- 	case ACB_ADAPTER_TYPE_B:
- 		return arcmsr_hbaB_handle_isr(acb);
--		break;
- 	case ACB_ADAPTER_TYPE_C:
- 		return arcmsr_hbaC_handle_isr(acb);
- 	case ACB_ADAPTER_TYPE_D:
--- 
-2.17.1
+Playground:
+  https://git.kraxel.org/cgit/qemu/log/?h=sirius/microvm-usb
+
+Adds support for usb and pcie (use -machine microvm,usb=on,pcie=on
+to enable).  Reuses the gpex used on arm/aarch64.  Seems to work ok
+on a quick test.
+
+Not fully sure how to deal correctly with ioports.  The gpex device
+has a mmio window for the io address space.  Will that approach work
+on x86 too?  Anyway, just not having a ioport range seems to be a
+valid configuation, so I've just disabled them for now ...
+
+take care,
+  Gerd
 
