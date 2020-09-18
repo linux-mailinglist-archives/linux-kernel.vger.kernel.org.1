@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E0526EB98
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:06:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F01526EB91
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727775AbgIRCGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:06:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55220 "EHLO mail.kernel.org"
+        id S1727041AbgIRCGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:06:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55274 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726981AbgIRCGI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:06:08 -0400
+        id S1727718AbgIRCGK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:06:10 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 69E5823718;
-        Fri, 18 Sep 2020 02:06:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A7EE92388E;
+        Fri, 18 Sep 2020 02:06:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394768;
-        bh=6/6a8jeCD9rXFbBxNlrS6wkqXNU4bmx5jaM2whCPLAs=;
+        s=default; t=1600394769;
+        bh=jIhQZwXP3VavhttXfmnocOIZi+wRX7HUe9ayE5xeqI0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ukuuDLl6tb65pSfXuGB0FV7nAPeDJ7nA6QbIbO3Xdcx4WxZd3wjHK89lP8JwMb3vg
-         LDgKP1umuvGFgngZSWjh+zdlGBiT+yYsDxjza2bPXsPjhK+5JJiX/vqG9E/8zl7CuZ
-         Ysmh7QaR5CTHZSbJ4KDqKwSmklt0Jd5CQB9oowdk=
+        b=Yv2UDUQdcx7xNcptd18lFp7J/vPn4uV29i2hIpcOoh4vQnGRc/h8VCSvHguJYQ1DV
+         iYkK7GTFfvmh6W1wgh3z7i5smUHbiK+yUCO6/LbzLeU60lr56GwwFlOAfCRhTU2hNr
+         TbmZBC3uunLesvV+tzF+3KJjvityDSZ8wAOXCYkQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zenghui Yu <yuzenghui@huawei.com>, Marc Zyngier <maz@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 243/330] KVM: arm64: vgic-its: Fix memory leak on the error path of vgic_add_lpi()
-Date:   Thu, 17 Sep 2020 21:59:43 -0400
-Message-Id: <20200918020110.2063155-243-sashal@kernel.org>
+Cc:     Tonghao Zhang <xiangxia.m.yue@gmail.com>,
+        Pravin B Shelar <pshelar@ovn.org>, Andy Zhou <azhou@ovn.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        dev@openvswitch.org
+Subject: [PATCH AUTOSEL 5.4 244/330] net: openvswitch: use u64 for meter bucket
+Date:   Thu, 17 Sep 2020 21:59:44 -0400
+Message-Id: <20200918020110.2063155-244-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -43,50 +44,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zenghui Yu <yuzenghui@huawei.com>
+From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
 
-[ Upstream commit 57bdb436ce869a45881d8aa4bc5dac8e072dd2b6 ]
+[ Upstream commit e57358873bb5d6caa882b9684f59140912b37dde ]
 
-If we're going to fail out the vgic_add_lpi(), let's make sure the
-allocated vgic_irq memory is also freed. Though it seems that both
-cases are unlikely to fail.
+When setting the meter rate to 4+Gbps, there is an
+overflow, the meters don't work as expected.
 
-Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20200414030349.625-3-yuzenghui@huawei.com
+Cc: Pravin B Shelar <pshelar@ovn.org>
+Cc: Andy Zhou <azhou@ovn.org>
+Signed-off-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+Acked-by: Pravin B Shelar <pshelar@ovn.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- virt/kvm/arm/vgic/vgic-its.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ net/openvswitch/meter.c | 2 +-
+ net/openvswitch/meter.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/virt/kvm/arm/vgic/vgic-its.c b/virt/kvm/arm/vgic/vgic-its.c
-index f8ad7096555d7..35be0e2a46393 100644
---- a/virt/kvm/arm/vgic/vgic-its.c
-+++ b/virt/kvm/arm/vgic/vgic-its.c
-@@ -96,14 +96,21 @@ out_unlock:
- 	 * We "cache" the configuration table entries in our struct vgic_irq's.
- 	 * However we only have those structs for mapped IRQs, so we read in
- 	 * the respective config data from memory here upon mapping the LPI.
-+	 *
-+	 * Should any of these fail, behave as if we couldn't create the LPI
-+	 * by dropping the refcount and returning the error.
- 	 */
- 	ret = update_lpi_config(kvm, irq, NULL, false);
--	if (ret)
-+	if (ret) {
-+		vgic_put_irq(kvm, irq);
- 		return ERR_PTR(ret);
-+	}
+diff --git a/net/openvswitch/meter.c b/net/openvswitch/meter.c
+index 3323b79ff548d..b10734f18bbd6 100644
+--- a/net/openvswitch/meter.c
++++ b/net/openvswitch/meter.c
+@@ -251,7 +251,7 @@ static struct dp_meter *dp_meter_create(struct nlattr **a)
+ 		 *
+ 		 * Start with a full bucket.
+ 		 */
+-		band->bucket = (band->burst_size + band->rate) * 1000;
++		band->bucket = (band->burst_size + band->rate) * 1000ULL;
+ 		band_max_delta_t = band->bucket / band->rate;
+ 		if (band_max_delta_t > meter->max_delta_t)
+ 			meter->max_delta_t = band_max_delta_t;
+diff --git a/net/openvswitch/meter.h b/net/openvswitch/meter.h
+index f645913870bd2..2e3fd6f1d7ebe 100644
+--- a/net/openvswitch/meter.h
++++ b/net/openvswitch/meter.h
+@@ -23,7 +23,7 @@ struct dp_meter_band {
+ 	u32 type;
+ 	u32 rate;
+ 	u32 burst_size;
+-	u32 bucket; /* 1/1000 packets, or in bits */
++	u64 bucket; /* 1/1000 packets, or in bits */
+ 	struct ovs_flow_stats stats;
+ };
  
- 	ret = vgic_v3_lpi_sync_pending_status(kvm, irq);
--	if (ret)
-+	if (ret) {
-+		vgic_put_irq(kvm, irq);
- 		return ERR_PTR(ret);
-+	}
- 
- 	return irq;
- }
 -- 
 2.25.1
 
