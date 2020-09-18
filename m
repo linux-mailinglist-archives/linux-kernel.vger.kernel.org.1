@@ -2,129 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4252708DB
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 00:15:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 236942708DC
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 00:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726327AbgIRWPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 18:15:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43388 "EHLO
+        id S1726361AbgIRWPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 18:15:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726064AbgIRWPc (ORCPT
+        with ESMTP id S1726064AbgIRWPf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 18:15:32 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED3B9C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 15:15:31 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id bg9so3714683plb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 15:15:31 -0700 (PDT)
+        Fri, 18 Sep 2020 18:15:35 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92043C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 15:15:35 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id q12so3689504plr.12
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 15:15:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=YEclY2iwyu0jlnQiBB87ymgBcVVY0ErisbvKEJVyXm0=;
-        b=ICMHhp80r95pO+Ydw4mNouO0td68FVra6xQNFte2g1iMiKW/pHDcZNQdu45p5Bc+9B
-         VAzHMFSr5zoNAI7lOFKTcTHLVdsf/ikaVLBrainI6pyQUtgYsGciCHxMojlsE4Ppdv//
-         Kt1Cab1IqgePpNqhsfFOIjRXUd3QagtbRQj3U=
+        bh=SrwWzubv5h3B9P76J3z99oFtalx/OCZ7EJ7fkGSpVgQ=;
+        b=QY+6VmOO8BF5u44VxGWc8JX7T1P/dV/9mgkGHS+diYYVjv0p07d7hQU5/FZBXNUPHC
+         JWBR3upUue70AARpn3Vt3JQGV8zkumOtLDNP9fIp1Qaa9CafEbteqJ24Sj5RK/h272oT
+         sKJIVpbp/gqx7505lmeHx5JX9/+5ODtxQG8iE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=YEclY2iwyu0jlnQiBB87ymgBcVVY0ErisbvKEJVyXm0=;
-        b=qgZmlpqa+wEP+Rgc9Jn6c3DnsLknGALMqKKFMQrgmaBsZtHu6f64v+d8/wovevMj5y
-         ELK5y6O5tiS3xYVXF4ulT05F+wcCaoO0drZpbacAdrxjGI3ltt8hlIvE+2TL18T1mXAa
-         MrxZVn1kLE72/MrTyBzDxmfbi0/COY80mYEZItvebUchWkhqy/msDCKKVeuUs3CkhR5A
-         j1u8aR04gw5yPtkz6SODgmRdqd07jH7r4SVdN6363bcKxHcgB+DwjK0zL98Hb1MoWU2k
-         WYMLy1VCkWtJOlt0dlJ/aLL3an+rayZs0vXhCiN/UWt38qZyP/x1Hu76GfXrFKFy9Mce
-         ct6w==
-X-Gm-Message-State: AOAM5335yw4vHGeT7BEHdIPSzRopvqFSqbu32HYoe44eod8+tbNZcew8
-        ngU+6obtuRkx5rlcK1wLypqECw==
-X-Google-Smtp-Source: ABdhPJx53gzbd9ZsjhX0pSg4WzlGuZtPv1AGb9Q5UfqVmXEehttdQE2OK/g1Lr217CbACVSu9B+QAA==
-X-Received: by 2002:a17:902:fe85:b029:d1:e598:3ff7 with SMTP id x5-20020a170902fe85b02900d1e5983ff7mr16843671plm.49.1600467331222;
-        Fri, 18 Sep 2020 15:15:31 -0700 (PDT)
+        bh=SrwWzubv5h3B9P76J3z99oFtalx/OCZ7EJ7fkGSpVgQ=;
+        b=G6e77WBp/Lc9CbYJXSct+0wZfEis4LadNpshnSkvR3Te7vqokBYdpydmF55iuZEGxS
+         pNrgpG14jNq0OJNA51cbg3Yuod38RwDvKDADMMww7j6fiemH6OnZ70i8vFgV+st9IthM
+         VpkOgkoaZhjB7Qw7sGJk9to8qhHxh3z9XXrS1lgS0uqT39gZ69hoZylV4RujfevsRamK
+         RRnQp4Z/6vL6GR1Jk3xthi8AGzWzadchHiwdjQnqK6usbcSNqr7HhBUyNQC2U9lAStN+
+         KKL5bU4h5E52X5Ov0M0QzOPeBvKeBBU1ZbC//ZbNCzKX4Q5Z5+6bziHu06Gi0fs8uLjT
+         EZqg==
+X-Gm-Message-State: AOAM532wSJ7SgWonIzMRXlggRrWpVwWPaY73prebSiqYKiFLrKZXJA4V
+        TdqZLhqn0inp0nUi+2XKGrfCXA==
+X-Google-Smtp-Source: ABdhPJzZyPSsZzJRv9rYVo7kdm9wZodrGneH1JhDs+L7UviABtABDlVA09cLfeIiENDPv5Z70Mv0NQ==
+X-Received: by 2002:a17:902:9695:b029:d1:e598:4007 with SMTP id n21-20020a1709029695b02900d1e5984007mr17456998plp.65.1600467334910;
+        Fri, 18 Sep 2020 15:15:34 -0700 (PDT)
 Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
-        by smtp.gmail.com with ESMTPSA id h12sm4224618pfo.68.2020.09.18.15.15.29
+        by smtp.gmail.com with ESMTPSA id h12sm4224618pfo.68.2020.09.18.15.15.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 15:15:30 -0700 (PDT)
+        Fri, 18 Sep 2020 15:15:34 -0700 (PDT)
 From:   Jim Quinlan <james.quinlan@broadcom.com>
 To:     bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS),
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        linux-kernel@vger.kernel.org (open list),
         linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM BCM7XXX
-        ARM ARCHITECTURE), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 1/2] dt-bindings: Add bindings for BrcmSTB SCMI mailbox driver
-Date:   Fri, 18 Sep 2020 18:15:14 -0400
-Message-Id: <20200918221520.21999-2-james.quinlan@broadcom.com>
+        ARM ARCHITECTURE)
+Subject: [PATCH v2 2/2] mailbox: Add Broadcom STB mailbox driver
+Date:   Fri, 18 Sep 2020 18:15:15 -0400
+Message-Id: <20200918221520.21999-3-james.quinlan@broadcom.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200918221520.21999-1-james.quinlan@broadcom.com>
 References: <20200918221520.21999-1-james.quinlan@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000c8d33705af9dd6b5"
+        boundary="0000000000000010f805af9dd75c"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000c8d33705af9dd6b5
+--0000000000000010f805af9dd75c
 
-Bindings are added.  Only one interrupt is needed because
-we do not yet employ the SCMI p2a channel.
+This is a simple mailbox driver to be used by the SCMI protocol stack.  It
+only implements the agent-to-platform channel; we may implement the
+platform-to-agent channel in the future.  An unusual aspect of this driver
+is how the completion of an SCMI message is indicated.  An SCMI message is
+initiated with an ARM SMC call, but the return of this call does not
+indicate the execution or completion of the message.  Rather, the message's
+completion is signaled by an interrupt.
 
 Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
- .../bindings/mailbox/brcm,brcmstb-mbox.yaml   | 39 +++++++++++++++++++
- 1 file changed, 39 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mailbox/brcm,brcmstb-mbox.yaml
+ drivers/mailbox/Kconfig           |  12 +++
+ drivers/mailbox/Makefile          |   2 +
+ drivers/mailbox/brcmstb-mailbox.c | 173 ++++++++++++++++++++++++++++++
+ 3 files changed, 187 insertions(+)
+ create mode 100644 drivers/mailbox/brcmstb-mailbox.c
 
-diff --git a/Documentation/devicetree/bindings/mailbox/brcm,brcmstb-mbox.yaml b/Documentation/devicetree/bindings/mailbox/brcm,brcmstb-mbox.yaml
+diff --git a/drivers/mailbox/Kconfig b/drivers/mailbox/Kconfig
+index 05b1009e2820..378ebd5a7933 100644
+--- a/drivers/mailbox/Kconfig
++++ b/drivers/mailbox/Kconfig
+@@ -254,4 +254,16 @@ config QCOM_IPCC
+ 	  acts as an interrupt controller for receiving interrupts from clients.
+ 	  Say Y here if you want to build this driver.
+ 
++config BRCMSTB_MBOX
++	tristate "Broadcom STB Mailbox"
++	depends on ARM64 || ARM
++	depends on ARM_SCMI_PROTOCOL && ARCH_BRCMSTB
++	default ARM_SCMI_PROTOCOL && ARCH_BRCMSTB
++        help
++          Mailbox implementation of the Broadcom STB for the sole purposes
++          of SCMI communication.  This is used by the SCMI drivers to
++	  communicate with FW that runs in EL3.  This mailbox only implements
++	  the agent-to-platform channgel of SCMI but may be augmented in
++	  the future to add the platform-to-agent channel.
++
+ endif
+diff --git a/drivers/mailbox/Makefile b/drivers/mailbox/Makefile
+index 60d224b723a1..a74efd02eece 100644
+--- a/drivers/mailbox/Makefile
++++ b/drivers/mailbox/Makefile
+@@ -54,3 +54,5 @@ obj-$(CONFIG_SUN6I_MSGBOX)	+= sun6i-msgbox.o
+ obj-$(CONFIG_SPRD_MBOX)		+= sprd-mailbox.o
+ 
+ obj-$(CONFIG_QCOM_IPCC)		+= qcom-ipcc.o
++
++obj-$(CONFIG_BRCMSTB_MBOX)	+= brcmstb-mailbox.o
+diff --git a/drivers/mailbox/brcmstb-mailbox.c b/drivers/mailbox/brcmstb-mailbox.c
 new file mode 100644
-index 000000000000..797c0cc609a3
+index 000000000000..27d87938b08c
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/mailbox/brcm,brcmstb-mbox.yaml
-@@ -0,0 +1,39 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+$id: http://devicetree.org/schemas/mailbox/brcm,brcmstb-mbox.yaml#
++++ b/drivers/mailbox/brcmstb-mailbox.c
+@@ -0,0 +1,173 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2017, Broadcom */
 +
-+title: Broadcom STB mailbox driver bindings
++#include <linux/kernel.h>
++#include <linux/interrupt.h>
++#include <linux/mailbox_controller.h>
++#include <linux/mailbox_client.h>
++#include <linux/module.h>
++#include <linux/io.h>
++#include <linux/of.h>
++#include <linux/of_device.h>
++#include <linux/of_irq.h>
++#include <linux/of_platform.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++#if defined(CONFIG_ARM64) || defined(CONFIG_ARM)
++#include <linux/arm-smccc.h>
++#endif
 +
-+maintainers:
-+  - Jim Quinlan <james.quinlan@broadcom.com>
++#define BRCM_SCMI_SMC_OEM_FUNC	0x400
++#define BRCM_SCMI_MBOX_NUM	0
++#define BRCM_FID(ch) ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL, \
++			IS_ENABLED(CONFIG_ARM64), \
++			ARM_SMCCC_OWNER_OEM, \
++			BRCM_SCMI_SMC_OEM_FUNC + (ch))
++enum {
++	A2P_CHAN = 0,
++	NUM_CHAN
++};
 +
-+properties:
-+  compatible:
-+    enum:
-+      - brcm,brcmstb-mbox
++struct chan_priv {
++	unsigned int mbox_num;
++	unsigned int ch;
++};
 +
-+  interrupts:
-+    items:
-+      - description: a2p return interrupt, indicates SCMI msg completion.
++struct brcm_mbox {
++	struct mbox_controller controller;
++	int irqs[NUM_CHAN];
++};
 +
-+  "#mbox-cells":
-+    const: 1
++static struct mbox_chan *brcm_mbox_of_xlate(struct mbox_controller *controller,
++					    const struct of_phandle_args *sp)
++{
++	unsigned int ch = sp->args[0];
++	struct brcm_mbox *mbox
++		= container_of(controller, struct brcm_mbox, controller);
 +
-+required:
-+  - compatible
-+  - interrupts
-+  - "#mbox-cells"
++	if (!mbox || ch >= NUM_CHAN)
++		return ERR_PTR(-ENOENT);
 +
-+additionalProperties: false
++	return &mbox->controller.chans[ch];
++}
 +
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    mailbox {
-+      compatible = "brcm,brcmstb-mailbox";
-+      #mbox-cells = <1>;
-+      interrupts = <GIC_SPI 0xc6 IRQ_TYPE_LEVEL_HIGH>;
-+    };
-+...
++#if defined(CONFIG_ARM64) || defined(CONFIG_ARM)
++static int announce_msg(unsigned int mbox_num, unsigned int ch)
++{
++	struct arm_smccc_res res;
++
++	if (ch >= NUM_CHAN)
++		return -EIO;
++	arm_smccc_smc(BRCM_FID(ch), mbox_num, 0, 0, 0, 0, 0, 0, &res);
++	if (res.a0)
++		return -EIO;
++	return 0;
++}
++#else
++#error Func announce_msg() not defined for the current ARCH
++#endif
++
++static int brcm_mbox_send_data(struct mbox_chan *chan, void *data)
++{
++	struct chan_priv *priv = chan->con_priv;
++
++	return announce_msg(priv->mbox_num, priv->ch);
++}
++
++static int brcm_mbox_startup(struct mbox_chan *chan)
++{
++	return 0;
++}
++
++static const struct mbox_chan_ops brcm_mbox_ops = {
++	.send_data = brcm_mbox_send_data,
++	.startup = brcm_mbox_startup,
++};
++
++static irqreturn_t brcm_a2p_isr(int irq, void *data)
++{
++	struct mbox_chan *chan = data;
++
++	mbox_chan_received_data(chan, NULL);
++	return IRQ_HANDLED;
++}
++
++static int brcm_mbox_probe(struct platform_device *pdev)
++{
++	struct brcm_mbox *mbox;
++	struct device *dev = &pdev->dev;
++	struct device_node *np = dev->of_node;
++	struct chan_priv *chan_priv;
++	int ret;
++
++	if (!np)
++		return -EINVAL;
++
++	mbox = devm_kzalloc(&pdev->dev, sizeof(*mbox), GFP_KERNEL);
++	if (!mbox)
++		return -ENOMEM;
++
++	/* Allocate channels */
++	mbox->controller.chans = devm_kzalloc(
++		&pdev->dev, NUM_CHAN * sizeof(struct mbox_chan), GFP_KERNEL);
++	if (!mbox->controller.chans)
++		return -ENOMEM;
++	chan_priv = devm_kzalloc(
++		&pdev->dev, NUM_CHAN * sizeof(struct chan_priv), GFP_KERNEL);
++	if (!chan_priv)
++		return -ENOMEM;
++
++	mbox->irqs[A2P_CHAN] = platform_get_irq(pdev, 0);
++	ret = devm_request_irq(&pdev->dev, mbox->irqs[A2P_CHAN], brcm_a2p_isr,
++				IRQF_NO_SUSPEND, "brcm: SCMI a2p intr",
++				&mbox->controller.chans[A2P_CHAN]);
++	if (ret) {
++		dev_err(&pdev->dev, "failed to setup SCMI a2p isr\n");
++		return ret;
++	}
++	chan_priv[A2P_CHAN].mbox_num = BRCM_SCMI_MBOX_NUM;
++	chan_priv[A2P_CHAN].ch = A2P_CHAN;
++	mbox->controller.chans[A2P_CHAN].con_priv = &chan_priv[A2P_CHAN];
++	mbox->controller.num_chans++;
++	mbox->controller.dev = &pdev->dev;
++	mbox->controller.ops = &brcm_mbox_ops;
++	mbox->controller.of_xlate = brcm_mbox_of_xlate;
++	ret = mbox_controller_register(&mbox->controller);
++	if (ret) {
++		dev_err(dev, "failed to register BrcmSTB mbox\n");
++		return ret;
++	}
++
++	platform_set_drvdata(pdev, mbox);
++	return 0;
++}
++
++static int brcm_mbox_remove(struct platform_device *pdev)
++{
++	struct brcm_mbox *mbox = platform_get_drvdata(pdev);
++
++	mbox_controller_unregister(&mbox->controller);
++
++	return 0;
++}
++
++static const struct of_device_id brcm_mbox_of_match[] = {
++	{ .compatible = "brcm,brcmstb-mbox", },
++	{}
++};
++MODULE_DEVICE_TABLE(of, brcm_mbox_of_match);
++
++static struct platform_driver brcm_mbox_driver = {
++	.probe = brcm_mbox_probe,
++	.remove = brcm_mbox_remove,
++	.driver = {
++		.name = "brcm_mbox",
++		.of_match_table = brcm_mbox_of_match,
++	},
++};
++
++module_platform_driver(brcm_mbox_driver);
++
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("Broadcom STB SCMI Mailbox driver");
++MODULE_AUTHOR("Broadcom");
 -- 
 2.17.1
 
 
---000000000000c8d33705af9dd6b5
+--0000000000000010f805af9dd75c
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -194,14 +366,14 @@ V6GuAMmRknrzeTlxPy40UhUcRKk6Nm8mxl3Jh4KB68z7NFVpIx8G5w5I7S5ar1mLGNRjtFZ0RE4O
 lcCwKVGUXRaZMgQGrIhxGVelVgrcBh2vjpndlv733VI2VKE/TvV5MxMGU18RnogYSm66AEFA/Zb+
 5ztz1AtIMYICbzCCAmsCAQEwbTBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBu
 di1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25hbFNpZ24gMiBDQSAtIFNIQTI1NiAtIEcz
-AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIED+ut8FluwF
-N16vkbtPdlPLwRPYzbcMjH1DZ16v/U2bMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIwMDkxODIyMTUzMVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIC056Q4V9mpP
+gaHHPPgNbsJA0XN/O+TAE/rsWQmgV2oZMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIwMDkxODIyMTUzNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDkr+H7GmY0fiCsMcy3EEl0U66B4HaT
-AQMjgJaL86KEpAmkafPevFlJEXvQOXlUdpge1P3vecCs+JfIy3uKZgVa+U8KamdQoVtRxD2fxGxR
-kc34tKgE3BuTvxdLZlwQ54mrRmNZ6wTnAR9+9eCcACTBI3GStbZ9IgIR4Jora5Y4xlX46mU/zcWM
-LJPfBXSMrP6+yUgq/J149yTiw3V2gPXwWQiHL18NibSkMcDvZprCyav0fgD7J8XUU+pCGPhkCe0a
-arDVxUlYGWPSaNQ9vWkEC6MRp64xNjjGx5MWQs878zuN48zWzc/8ETHrdZBDZ9SwoLZyz8Zo3Vm8
-0uAzJ7wL
---000000000000c8d33705af9dd6b5--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQA1Sq5q/Tdc8zhDwG2dzbknJbHMyvhD
+aRhJVFkwY8xR6vjEI11ZIiGj3Jw81J53GET/7orgqXn+AdxROsj7BALSg2Ulcez/pQKNH6ZhGR/c
+RsrgigVC2ToK6yNfUgy46UMTvqwtn4O1pCDjdR9crxWgir/JbdQsEwY8tpA+ORkMGTknfrap2o71
+alc0aOLtSkOuUr02T9jvcDooEkDjmHifzJcNUUpENdgKC0VqeR4G1Rjqr+yUvYPeFyvPrSqzsgm3
+x6ktMgoI4eWh08R55BqG/UxHmwfqz64mJYider8GB66p/k2EfYT4loL8R+clR+Ip+wOHCDPVNCUr
+uMtX01K3
+--0000000000000010f805af9dd75c--
