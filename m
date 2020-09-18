@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEA5426EC76
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9088726EC80
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 04:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728245AbgIRCMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Sep 2020 22:12:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37986 "EHLO mail.kernel.org"
+        id S1728758AbgIRCMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Sep 2020 22:12:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726970AbgIRCL7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:11:59 -0400
+        id S1726841AbgIRCME (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:12:04 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C658A22211;
-        Fri, 18 Sep 2020 02:11:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1B9D922211;
+        Fri, 18 Sep 2020 02:12:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600395118;
-        bh=e38EqGABZdZgZOTGBUSdaKwLOXI5KyOfBAC42dvHaUE=;
+        s=default; t=1600395124;
+        bh=eRMfmZFwTImPEWtl1fuuHttjQfss4QTdStH+7CxWtYs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uti4mCTldFJdgJrOuF/rv9A7FtfvebmAsYSCzpIjvk4p5Vn2X+YAXO7wTXe7gGheC
-         DEuLjvVeo2s0W/DFpoVzJgBZUh5LeSM5lu1Q7QsOtWQy0l4GYPBlSCgUhjLQdhdeDj
-         RjDZR9FeOmFI37ZJ7GhzKoROVNl0ycLSxf4J1QjE=
+        b=NAAE42wQgqsXfmYpEakl8oVMozukQPJhgz40lDw0rLLWYPVxkHkNC4ngFd0AlKQvr
+         sURoRtRvmP7vgq/WiJ49GIypOlrN+Kxpc3VB2NwUw99FSfA2VjhowR+QstMizllCZy
+         sVpwOs/hrAg4z2zAhRyayy4TL2m4lYFm/TubPwKE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Qian Cai <cai@lca.pw>, Andrew Morton <akpm@linux-foundation.org>,
-        Marco Elver <elver@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>, linux-mm@kvack.org
-Subject: [PATCH AUTOSEL 4.19 191/206] mm/swap_state: fix a data race in swapin_nr_pages
-Date:   Thu, 17 Sep 2020 22:07:47 -0400
-Message-Id: <20200918020802.2065198-191-sashal@kernel.org>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Qian Cai <cai@lca.pw>, Daniel Wagner <dwagner@suse.de>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, kvm@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 195/206] vfio/pci: Clear error and request eventfd ctx after releasing
+Date:   Thu, 17 Sep 2020 22:07:51 -0400
+Message-Id: <20200918020802.2065198-195-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
 References: <20200918020802.2065198-1-sashal@kernel.org>
@@ -44,81 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qian Cai <cai@lca.pw>
+From: Alex Williamson <alex.williamson@redhat.com>
 
-[ Upstream commit d6c1f098f2a7ba62627c9bc17cda28f534ef9e4a ]
+[ Upstream commit 5c5866c593bbd444d0339ede6a8fb5f14ff66d72 ]
 
-"prev_offset" is a static variable in swapin_nr_pages() that can be
-accessed concurrently with only mmap_sem held in read mode as noticed by
-KCSAN,
+The next use of the device will generate an underflow from the
+stale reference.
 
- BUG: KCSAN: data-race in swap_cluster_readahead / swap_cluster_readahead
-
- write to 0xffffffff92763830 of 8 bytes by task 14795 on cpu 17:
-  swap_cluster_readahead+0x2a6/0x5e0
-  swapin_readahead+0x92/0x8dc
-  do_swap_page+0x49b/0xf20
-  __handle_mm_fault+0xcfb/0xd70
-  handle_mm_fault+0xfc/0x2f0
-  do_page_fault+0x263/0x715
-  page_fault+0x34/0x40
-
- 1 lock held by (dnf)/14795:
-  #0: ffff897bd2e98858 (&mm->mmap_sem#2){++++}-{3:3}, at: do_page_fault+0x143/0x715
-  do_user_addr_fault at arch/x86/mm/fault.c:1405
-  (inlined by) do_page_fault at arch/x86/mm/fault.c:1535
- irq event stamp: 83493
- count_memcg_event_mm+0x1a6/0x270
- count_memcg_event_mm+0x119/0x270
- __do_softirq+0x365/0x589
- irq_exit+0xa2/0xc0
-
- read to 0xffffffff92763830 of 8 bytes by task 1 on cpu 22:
-  swap_cluster_readahead+0xfd/0x5e0
-  swapin_readahead+0x92/0x8dc
-  do_swap_page+0x49b/0xf20
-  __handle_mm_fault+0xcfb/0xd70
-  handle_mm_fault+0xfc/0x2f0
-  do_page_fault+0x263/0x715
-  page_fault+0x34/0x40
-
- 1 lock held by systemd/1:
-  #0: ffff897c38f14858 (&mm->mmap_sem#2){++++}-{3:3}, at: do_page_fault+0x143/0x715
- irq event stamp: 43530289
- count_memcg_event_mm+0x1a6/0x270
- count_memcg_event_mm+0x119/0x270
- __do_softirq+0x365/0x589
- irq_exit+0xa2/0xc0
-
-Signed-off-by: Qian Cai <cai@lca.pw>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Marco Elver <elver@google.com>
-Cc: Hugh Dickins <hughd@google.com>
-Link: http://lkml.kernel.org/r/20200402213748.2237-1-cai@lca.pw
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Qian Cai <cai@lca.pw>
+Fixes: 1518ac272e78 ("vfio/pci: fix memory leaks of eventfd ctx")
+Reported-by: Daniel Wagner <dwagner@suse.de>
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+Tested-by: Daniel Wagner <dwagner@suse.de>
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/swap_state.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/vfio/pci/vfio_pci.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/mm/swap_state.c b/mm/swap_state.c
-index 09731f4174c7e..3febffe0fca4a 100644
---- a/mm/swap_state.c
-+++ b/mm/swap_state.c
-@@ -537,10 +537,11 @@ static unsigned long swapin_nr_pages(unsigned long offset)
- 		return 1;
+diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
+index 86cd8bdfa9f28..94fad366312f1 100644
+--- a/drivers/vfio/pci/vfio_pci.c
++++ b/drivers/vfio/pci/vfio_pci.c
+@@ -409,10 +409,14 @@ static void vfio_pci_release(void *device_data)
+ 	if (!(--vdev->refcnt)) {
+ 		vfio_spapr_pci_eeh_release(vdev->pdev);
+ 		vfio_pci_disable(vdev);
+-		if (vdev->err_trigger)
++		if (vdev->err_trigger) {
+ 			eventfd_ctx_put(vdev->err_trigger);
+-		if (vdev->req_trigger)
++			vdev->err_trigger = NULL;
++		}
++		if (vdev->req_trigger) {
+ 			eventfd_ctx_put(vdev->req_trigger);
++			vdev->req_trigger = NULL;
++		}
+ 	}
  
- 	hits = atomic_xchg(&swapin_readahead_hits, 0);
--	pages = __swapin_nr_pages(prev_offset, offset, hits, max_pages,
-+	pages = __swapin_nr_pages(READ_ONCE(prev_offset), offset, hits,
-+				  max_pages,
- 				  atomic_read(&last_readahead_pages));
- 	if (!hits)
--		prev_offset = offset;
-+		WRITE_ONCE(prev_offset, offset);
- 	atomic_set(&last_readahead_pages, pages);
- 
- 	return pages;
+ 	mutex_unlock(&driver_lock);
 -- 
 2.25.1
 
