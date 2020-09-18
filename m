@@ -2,48 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 061A726F8EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D619126F8F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 11:07:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726556AbgIRJHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 05:07:32 -0400
-Received: from 8bytes.org ([81.169.241.247]:45194 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725874AbgIRJHc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 05:07:32 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 99E44396; Fri, 18 Sep 2020 11:07:30 +0200 (CEST)
-Date:   Fri, 18 Sep 2020 11:07:29 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     krzk@kernel.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-tegra@vger.kernel.org,
-        jonathanh@nvidia.com, vdumpa@nvidia.com, thierry.reding@gmail.com
-Subject: Re: [RESEND][PATCH 0/2] iommu/tegra-smmu: Fix TLB line for Tegra210
-Message-ID: <20200918090728.GL31590@8bytes.org>
-References: <20200917113155.13438-1-nicoleotsuka@gmail.com>
+        id S1726677AbgIRJHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 05:07:52 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:50942 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725874AbgIRJHw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 05:07:52 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 55A4A1514625D3BF7801;
+        Fri, 18 Sep 2020 17:07:50 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 18 Sep 2020 17:07:39 +0800
+From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
+To:     <fthain@telegraphics.com.au>, <schmitzmic@gmail.com>,
+        <linux@armlinux.org.uk>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <jingxiangfeng@huawei.com>
+Subject: [PATCH] scsi: remove redundant initialization of variable ret
+Date:   Fri, 18 Sep 2020 17:07:47 +0800
+Message-ID: <20200918090747.44645-1-jingxiangfeng@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917113155.13438-1-nicoleotsuka@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 04:31:53AM -0700, Nicolin Chen wrote:
-> These two patches fix ACTIVE_TLB_LINES field setting in tegra-smmu
-> driver for Tegra210 platforms.
-> 
-> This resend in series groups two previous seperate changes that're
-> corelated, being pointed out by Thierry. Also adding his Acked-by.
-> 
-> Nicolin Chen (2):
->   iommu/tegra-smmu: Fix tlb_mask
->   memory: tegra: Correct num_tlb_lines for tegra210
-> 
->  drivers/iommu/tegra-smmu.c      | 2 +-
->  drivers/memory/tegra/tegra210.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+The variable ret is being initialized with '-ENOMEM' that is
+meaningless. So remove it.
 
-Applied, thanks.
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+---
+ drivers/scsi/arm/oak.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/scsi/arm/oak.c b/drivers/scsi/arm/oak.c
+index 7c9d361e91a9..78f33d57c3e8 100644
+--- a/drivers/scsi/arm/oak.c
++++ b/drivers/scsi/arm/oak.c
+@@ -120,7 +120,7 @@ static struct scsi_host_template oakscsi_template = {
+ static int oakscsi_probe(struct expansion_card *ec, const struct ecard_id *id)
+ {
+ 	struct Scsi_Host *host;
+-	int ret = -ENOMEM;
++	int ret;
+ 
+ 	ret = ecard_request_resources(ec);
+ 	if (ret)
+-- 
+2.17.1
+
