@@ -2,99 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 281C927085C
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 23:35:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 352F7270867
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 23:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726394AbgIRVfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 17:35:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37180 "EHLO
+        id S1726332AbgIRVgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 17:36:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726187AbgIRVfP (ORCPT
+        with ESMTP id S1726192AbgIRVgs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 17:35:15 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 007E6C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 14:35:14 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id t7so3852441pjd.3
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 14:35:14 -0700 (PDT)
+        Fri, 18 Sep 2020 17:36:48 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7170EC0613CE;
+        Fri, 18 Sep 2020 14:36:48 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id m17so8624759ioo.1;
+        Fri, 18 Sep 2020 14:36:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OsXO9Vng0uZ8zdPlCQEPUkvMN685QAvewZuZv3id6Vk=;
-        b=Qm/FmtT5Dnyrxf4BCgQpgqbDw7sS/zTtWsVgCPYD/Z8fGcfQ5xbRlGReuouD+SHCd9
-         dZJK4vmeSlLB9LbvCFrufdgXKAOEcR0Sj+Z6M4GjiMmOMsAqZazgwvwTj14O7ZQgEo98
-         fFyktTytinUg2oHTwmTXsDyGhM3irl/3gs0Oc=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DYAfKOEgqTvyvH0yDy3llMH0PY9ahaiDfu83a2kBOFs=;
+        b=KL1m+3ilCVTJWW4GEz6PYiYht8QSLyBWsxXqbceneOydilxk6IrertQdBtA2CBI86L
+         WSMD/cf/ZhKtIvBJpcrokAe/Xt0vEpWOO3fm1z8KNdFEXXrIVcYVnnaD2ln73UBCeWOl
+         yu3pZDws9ashJZGh/QIj4vuWx2TBWwtFoU6FvoT+c++UO2XHEoINN9rEME+AnVxslmtF
+         VzoxMB+Hufev73B1IRmeKm+JCi9JBWLSaYKxnZS607wEaGrkHD/t3oSh1keAEK7ViOQr
+         EvFRyZb45rQHwrjluEGg9JANUw6IVf1geB1isIB8hEYC1doRYCexQtAm4WS6/WB3w4Hj
+         Purg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OsXO9Vng0uZ8zdPlCQEPUkvMN685QAvewZuZv3id6Vk=;
-        b=l7Aw/Pba+TXMLjHPEx3rAUiVdYzugt2MocUxDABsz3s/5sV0V2Mf2zJ802nbFubyaI
-         +EeoOxXdrsssy6ZUIgjI0ZqVFa4oUERXejhvQG37+6kc1q0Yv1Jr9gSb3JCHnN5/HlXr
-         orhYsJj8qhbzgDP8kBPc2L2vkNMlbjdleqf0JiB2fJjFwPaOohBMYiK3RIaKkpvXLWi/
-         N2FHL2EN62z68zLODrYrRZJ+HpSN7IdxZO6SzbBRo9R54nlrEcA1cF/kF7ZWkYYAwYls
-         g0ZYtiV6yQmsxG3vwVNfAqlZty0p8sJStwzJ3K3ptTo2oN8+6iTlJVZdb5hzM2+KxdMe
-         ZUWw==
-X-Gm-Message-State: AOAM533zC9cgsApVMn3h6R/7vedn3JS7fpy7rm9BLpUCl43veW0Zb3XC
-        1hzYBD/Whj+sjqvwKNWDnYOTeg==
-X-Google-Smtp-Source: ABdhPJyK4NrndRd3u8+tWx5b+nRCti5n/xaxbJJsCKhy+21AIJjWUWUQo+BNLBjVu3tDwrR5itradw==
-X-Received: by 2002:a17:90a:156:: with SMTP id z22mr14965929pje.140.1600464914535;
-        Fri, 18 Sep 2020 14:35:14 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id f19sm4097785pfj.25.2020.09.18.14.35.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 14:35:13 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 14:35:12 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     John Wood <john.wood@gmx.com>
-Cc:     kernel-hardening@lists.openwall.com, Jann Horn <jannh@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [RFC PATCH 6/6] security/fbfam: Mitigate a fork brute force
- attack
-Message-ID: <202009181433.EAF237C36@keescook>
-References: <20200910202107.3799376-1-keescook@chromium.org>
- <20200910202107.3799376-7-keescook@chromium.org>
- <202009101649.2A0BF95@keescook>
- <20200918152116.GB3229@ubuntu>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DYAfKOEgqTvyvH0yDy3llMH0PY9ahaiDfu83a2kBOFs=;
+        b=t1gMahsQwaCk6uEUfYPCMmP3svitewbWJghpHSh8Ck/cTox71y6PvQfzltPCCyiSga
+         zpq9cMvndPf4FezOR/3uSBtO/p9py3nIFQl2dYnd4cPXVWoXcLaIDvAQB3D5pjm4vRnf
+         58Aspj15iATUNn0KW625Py1tykN6ZQRAtHS+O/EFagHeVxceI7jbO1WN/tYlkhCZsCQX
+         N5/h9ge0Mz5XGvEGibpuXaFR7AcVW+C7exXNstVvjWMR4WtSlcR0BVmLL/pjKFmEKNHx
+         778YXzDr8YnjRbaDfO41QeI5zpUOAlHO6yzpnPigcEjf95e+QrOHncriDYBrczBcRa0Y
+         Tl5w==
+X-Gm-Message-State: AOAM530YCEWXgXJWCEip0xJ4v0lotw180DiMNPxs8gQ9jkCljs4u7ugW
+        dcEBWcgjbfHa4psXqzP2fKa1IUod8Hr1VEV6dIg=
+X-Google-Smtp-Source: ABdhPJxcSizO6W8h2GV+qS06uMaeznfZ+zoijcOqzbPihxuHG8PsGc9HW19RbwJQQTgjZshpByRKce18anYGPKoMnRQ=
+X-Received: by 2002:a05:6602:6c9:: with SMTP id n9mr28333723iox.91.1600465007846;
+ Fri, 18 Sep 2020 14:36:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918152116.GB3229@ubuntu>
+References: <20200918192312.25978-1-yu-cheng.yu@intel.com> <20200918192312.25978-2-yu-cheng.yu@intel.com>
+ <ce2524cc-081b-aec9-177a-11c7431cb20d@infradead.org> <20200918205933.GB4304@duo.ucw.cz>
+ <CAMe9rOo0+SBPtN7yb8_-h0dRAoOXkad8wi9d-EiWAfgFSedXjQ@mail.gmail.com> <20200918212403.GE4304@duo.ucw.cz>
+In-Reply-To: <20200918212403.GE4304@duo.ucw.cz>
+From:   "H.J. Lu" <hjl.tools@gmail.com>
+Date:   Fri, 18 Sep 2020 14:36:11 -0700
+Message-ID: <CAMe9rOrO_Yat4VbeqDvs8UsjOhEtCiDW0pLY-kQkK8yND_iO_A@mail.gmail.com>
+Subject: Re: [PATCH v12 1/8] x86/cet/ibt: Add Kconfig option for user-mode
+ Indirect Branch Tracking
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 06:02:16PM +0200, John Wood wrote:
-> On Thu, Sep 10, 2020 at 04:56:19PM -0700, Kees Cook wrote:
-> > On Thu, Sep 10, 2020 at 01:21:07PM -0700, Kees Cook wrote:
-> > > +		pr_warn("fbfam: Offending process with PID %d killed\n",
-> > > +			p->pid);
+On Fri, Sep 18, 2020 at 2:24 PM Pavel Machek <pavel@ucw.cz> wrote:
+>
+> Hi!
+>
+> > > > > +   help
+> > > > > +     Indirect Branch Tracking (IBT) provides protection against
+> > > > > +     CALL-/JMP-oriented programming attacks.  It is active when
+> > > > > +     the kernel has this feature enabled, and the processor and
+> > > > > +     the application support it.  When this feature is enabled,
+> > > > > +     legacy non-IBT applications continue to work, but without
+> > > > > +     IBT protection.
+> > > > > +
+> > > > > +     If unsure, say y
+> > > >
+> > > >         If unsure, say y.
+> > >
+> > > Actually, it would be "If unsure, say Y.", to be consistent with the
+> > > rest of the Kconfig.
+> > >
+> > > But I wonder if Yes by default is good idea. Only very new CPUs will
+> > > support this, right? Are they even available at the market? Should the
+> > > help text say "if your CPU is Whatever Lake or newer, ...." :-) ?
+> > >
 > >
-> > I'd make this ratelimited (along with Jann's suggestions).
-> 
-> Sorry, but I don't understand what you mean with "make this ratelimited".
-> A clarification would be greatly appreciated.
+> > CET enabled kernel runs on all x86-64 processors.  All my machines
+> > are running the same CET enabled kernel binary.
+>
+> I believe that.
+>
+> But enabling CET in kernel is useless on Core 2 Duo machine, right?
+>
 
-Ah! Yes, sorry for not being more clear. There are ratelimit helpers for
-the pr_*() family of functions, e.g.:
+This is very important for CET kernel to run on Core 2 Duo machine.
+Otherwise, a distro needs to provide 2 kernel binaries, one for CET
+CPU and one for non-CET CPU.
 
-	pr_warn_ratelimited("brute: Offending process with PID...
 
 -- 
-Kees Cook
+H.J.
