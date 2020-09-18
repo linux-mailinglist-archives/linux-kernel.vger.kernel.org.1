@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B50582705CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 21:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF7232705CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 21:48:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726405AbgIRTsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 15:48:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48636 "EHLO
+        id S1726413AbgIRTsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 15:48:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726367AbgIRTsm (ORCPT
+        with ESMTP id S1726335AbgIRTso (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 15:48:42 -0400
+        Fri, 18 Sep 2020 15:48:44 -0400
 Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 667D5C0613CE;
-        Fri, 18 Sep 2020 12:48:42 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id u4so6005182ljd.10;
-        Fri, 18 Sep 2020 12:48:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FBD3C0613CE;
+        Fri, 18 Sep 2020 12:48:43 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id k25so6053326ljk.0;
+        Fri, 18 Sep 2020 12:48:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=pihU19ZyV1tR9rxjJBUfTFPiShIHT6wFJWQRUBqDuSU=;
-        b=bS8wqurDjQBWPYzxoQcs/RTFMBIpDOsIN5r0Vh5wX+3vYkIyVlIjt5XSIMtOJstZVK
-         wb5EiRTsmWoA0Cp8WZy/jSjGkQR2T6ZuFRH3hci0DFMhtnD06XU2yZICKtAEn5vg/hpd
-         KV0eJycW4/86TauW7eoyQ/E0dz+UDN5qU4WOpJWlS2yLKFi/bDBT41Pc1qzrlDzkKvDB
-         OeZDVLMLFzjzLZ6QzDVdRIkQ+hIk1N2s3SUEwFL47OvxQ4+WZ1kmaqriNQlipgbfuCZo
-         kCOVW9IhZ6C/HiDlwve9rHe/GOCZdKrMrh9qjgyKuVs3P/uxNZIC9xHjIzYdnZfq/yyK
-         JuvA==
+        bh=SzvHH1kSKdJ2ziBgd9Jq8Z/nxeBRoANgHFle/0iuLew=;
+        b=L06jfMN2PzbFEpKONJ57B5VlRj0rlQ0Zbw9IIWkpz1wKb8dQNExEe1OJMnfZHUCnko
+         xX0nkCOl2aW4CdKV33nWLFKXSYE/xp0VPkqTgtkQdCwM/zJW72gYCjseA32MZawSOqBR
+         asl+Iv2Nl/CSx7Hme52926esMeA3s2paJYuO0Doh3AZHAz4v/yq/wYUK9iLM4cZXU5xf
+         Wp/Ts/6WBrsURw/Gr5AyZLA2x9hfSEOCutnjyFw9WqhtybeVfiXorWGBStNLRcH2oSqq
+         aUcADxo/mRjYcLU7QDBOLqIDgnzdH/bAuyAkiM4ITemEsvaoKRQEb781x/xaU8/aM6Gb
+         FYCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=pihU19ZyV1tR9rxjJBUfTFPiShIHT6wFJWQRUBqDuSU=;
-        b=fA43XjVQK/czkpTOHp0UqDsObxAunSnLPH1o7zaeZQt4F0Oc1n1VCNRNij3cOsb1BJ
-         hyQqWSJwx4tFkuXQHOgOZZuBd4stljBzbDv5VcjWliULQlBhrdjCJ/o+6/KLYl/PunOP
-         EGzaEVD5jQ0jzDqaOYYqual9IVLKi5IzcJBB44zK8qwGyPSNng80xcv6magXuscw8B81
-         e/lOy0MgGUiL/yqNZQofLvogjmQ2vR8TZvWZTSUYSx7z1hfnX2h14hKTiuBTTtE7ZHlp
-         iJBYSYFqykSgzJ4AEKrdAcDlqSIdSnx/PvGpZxLsu3UMJ6fUVb98i6P7XKsR9yixVoSF
-         GPBw==
-X-Gm-Message-State: AOAM530+xcMHVxtE17MTGjshFponjlZf6hYHH4O2cY3Ihj/d8DQaZQnu
-        eNqdASt8o48te0zY3GFuaA8Tjq00jSELUHlz
-X-Google-Smtp-Source: ABdhPJwbBuxfhOpviYZGwvbN5A+9fD5A8wr8vfAimfJY/Xc6BHGV8kJjoXIMhF++dXqMjZqyGvocnw==
-X-Received: by 2002:a2e:911:: with SMTP id 17mr13543936ljj.207.1600458520502;
-        Fri, 18 Sep 2020 12:48:40 -0700 (PDT)
+        bh=SzvHH1kSKdJ2ziBgd9Jq8Z/nxeBRoANgHFle/0iuLew=;
+        b=eKEW9P33/Ix4SwTlNcBmQKGHj0FnA4NlTUQCYSwGaMjwz5b8i6m3G5I9ZrP7gwzKTE
+         F4lh7EzoqGjMWvZDZrxYXctqQId4qOABgxUg39kHHSJe4fMCUEPVxkAC3p9fXnSVg8VS
+         yED8Qu1k1IEs1dTSxH1nAporu4OqnSqCUptZpNVuoXH6WRJA3l2hA+CtvWlKKvoX3klb
+         oITOod44DjQ96KyNqsOJc8XB3Buiqqpd9+aOjffn5LXG+cNXWNULyx13nHNFyZYb8Kqv
+         JTMCcBixJW5fsGmUMaHh1VQjANfJkh3sr8rpIPcp2bCdPkBQ8DHFVu5+9AHMOwxjUm8c
+         T8iw==
+X-Gm-Message-State: AOAM531eGoFdnVxmHoGjA243MZlZ8nKHxs9kuJSnW2EaSPbIL4zYQhA7
+        6L4v7542UG1EQY37j6Vtvg3pWPSuaCE0u7KL
+X-Google-Smtp-Source: ABdhPJzK/m1EMHaCbJdkbPMwOFhH52Qvuz4FPNXfeee2GFnRfrriSXfCcozLep37DAqr2fWTcDnZSQ==
+X-Received: by 2002:a2e:6f1c:: with SMTP id k28mr11293487ljc.297.1600458521547;
+        Fri, 18 Sep 2020 12:48:41 -0700 (PDT)
 Received: from pc638.lan (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id a17sm766769lfd.148.2020.09.18.12.48.39
+        by smtp.gmail.com with ESMTPSA id a17sm766769lfd.148.2020.09.18.12.48.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 12:48:40 -0700 (PDT)
+        Fri, 18 Sep 2020 12:48:41 -0700 (PDT)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
@@ -61,9 +61,9 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Uladzislau Rezki <urezki@gmail.com>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: [PATCH 3/4] rcu/tree: use __rcu_alloc_page_lockless() func.
-Date:   Fri, 18 Sep 2020 21:48:16 +0200
-Message-Id: <20200918194817.48921-4-urezki@gmail.com>
+Subject: [PATCH 4/4] rcu/tree: Use schedule_delayed_work() instead of WQ_HIGHPRI queue
+Date:   Fri, 18 Sep 2020 21:48:17 +0200
+Message-Id: <20200918194817.48921-5-urezki@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200918194817.48921-1-urezki@gmail.com>
 References: <20200918194817.48921-1-urezki@gmail.com>
@@ -73,43 +73,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use a newly introduced __rcu_alloc_page_lockless() function
-directly in the k[v]free_rcu() path, a new pointer array can
-be obtained by demand, what reduces a memory footprint, does
-it without any delays and in time.
+Recently the separate worker thread has been introduced to
+maintain the local page cache from the regular kernel context,
+instead of kvfree_rcu() contexts. That was done because a caller
+of the k[v]free_rcu() can be any context type what is a problem
+from the allocation point of view.
 
-Please note, we still keep the worker approach introduced earlier,
-because the lock-less page allocation uses a per-cpu-list cache
-that can be depleted, what is absolutely a normal behaviour.
+From the other hand, the lock-less way of obtaining a page has
+been introduced and directly injected to the k[v]free_rcu() path.
 
-If so, the worker we have, by requesting a new page will also
-initiate an internal process that prefetches specified number
-of elements from the buddy allocator populating the "pcplist"
-by new fresh pages.
-
-A number of pre-fetched elements can be controlled via sysfs
-attribute. Please see the /proc/sys/vm/percpu_pagelist_fraction.
+Therefore it is not important anymore to use a high priority "wq"
+for the external job that used to fill a page cache ASAP when it
+was empty.
 
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- kernel/rcu/tree.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ kernel/rcu/tree.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 4bfc46a1e9d1..d51209343029 100644
+index d51209343029..f2b4215631f7 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -3401,6 +3401,10 @@ kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
- 	if (!krcp->bkvhead[idx] ||
- 			krcp->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
- 		bnode = get_cached_bnode(krcp);
-+		if (!bnode)
-+			bnode = (struct kvfree_rcu_bulk_data *)
-+				__rcu_alloc_page_lockless();
-+
- 		/* Switch to emergency path. */
- 		if (!bnode)
- 			return false;
+@@ -3100,7 +3100,7 @@ struct kfree_rcu_cpu {
+ 	 * lockless an access has to be protected by the
+ 	 * per-cpu lock.
+ 	 */
+-	struct work_struct page_cache_work;
++	struct delayed_work page_cache_work;
+ 	atomic_t work_in_progress;
+ 	struct llist_head bkvcache;
+ 	int nr_bkv_objs;
+@@ -3354,7 +3354,7 @@ static void fill_page_cache_func(struct work_struct *work)
+ 	struct kvfree_rcu_bulk_data *bnode;
+ 	struct kfree_rcu_cpu *krcp =
+ 		container_of(work, struct kfree_rcu_cpu,
+-			page_cache_work);
++			page_cache_work.work);
+ 	unsigned long flags;
+ 	bool pushed;
+ 	int i;
+@@ -3440,7 +3440,6 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ {
+ 	unsigned long flags;
+ 	struct kfree_rcu_cpu *krcp;
+-	bool irq_disabled = irqs_disabled();
+ 	bool success;
+ 	void *ptr;
+ 
+@@ -3473,9 +3472,9 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 
+ 	success = kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr);
+ 	if (!success) {
+-		// TODO: schedule the work from the hrtimer.
+-		if (!irq_disabled && !atomic_xchg(&krcp->work_in_progress, 1))
+-			queue_work(system_highpri_wq, &krcp->page_cache_work);
++		// Use delayed work, so we do not deadlock with rq->lock.
++		if (!atomic_xchg(&krcp->work_in_progress, 1))
++			schedule_delayed_work(&krcp->page_cache_work, 1);
+ 
+ 		if (head == NULL)
+ 			// Inline if kvfree_rcu(one_arg) call.
+@@ -4475,7 +4474,7 @@ static void __init kfree_rcu_batch_init(void)
+ 		}
+ 
+ 		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
+-		INIT_WORK(&krcp->page_cache_work, fill_page_cache_func);
++		INIT_DELAYED_WORK(&krcp->page_cache_work, fill_page_cache_func);
+ 		krcp->initialized = true;
+ 	}
+ 	if (register_shrinker(&kfree_rcu_shrinker))
 -- 
 2.20.1
 
