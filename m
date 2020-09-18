@@ -2,78 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 499B027021B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D257270202
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 18:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726440AbgIRQ3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 12:29:33 -0400
-Received: from relayfre-01.paragon-software.com ([176.12.100.13]:47986 "EHLO
-        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726414AbgIRQ3c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 12:29:32 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 4A38B1F95;
-        Fri, 18 Sep 2020 19:24:16 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1600446256;
-        bh=RxSw7X+wpmeQ6G1EAUiYigbd/zeYyHKp/Ps36UFhmJM=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=JVwIldYEvWmg+m4icp3FO89GStfWHs21m6jpHfQDEe3RETtE2H2O0OB/1ACRRpmV5
-         SIAIrsDlBgaOIj6hK+gDbQ82euqajzbE175ka72h3OKirL2TMD/B8vfMCr15L0rJR0
-         vZhUJP5t4eBPpI7oa4H8Ubfz1QgDugOSElXqzHxo=
-Received: from fsd-lkpg.ufsd.paragon-software.com (172.30.114.105) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Fri, 18 Sep 2020 19:24:14 +0300
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     <linux-fsdevel@vger.kernel.org>
-CC:     <viro@zeniv.linux.org.uk>, <linux-kernel@vger.kernel.org>,
-        <pali@kernel.org>, <dsterba@suse.cz>, <aaptel@suse.com>,
-        <willy@infradead.org>, <rdunlap@infradead.org>, <joe@perches.com>,
-        <mark@harmstone.com>, <nborisov@suse.com>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Subject: [PATCH v6 10/10] fs/ntfs3: Add MAINTAINERS
-Date:   Fri, 18 Sep 2020 19:22:04 +0300
-Message-ID: <20200918162204.3706029-11-almaz.alexandrovich@paragon-software.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200918162204.3706029-1-almaz.alexandrovich@paragon-software.com>
-References: <20200918162204.3706029-1-almaz.alexandrovich@paragon-software.com>
+        id S1726389AbgIRQWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 12:22:16 -0400
+Received: from mga07.intel.com ([134.134.136.100]:30056 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726115AbgIRQWP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 12:22:15 -0400
+IronPort-SDR: emwWflsj0S8TURxGTMpYNn1JcP01tKz6wuGzM5llOrd95H1g/IagyHtPAqQaGNIMdCZDrLtTML
+ 09Tf09QsUV5g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9748"; a="224142956"
+X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
+   d="scan'208";a="224142956"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 09:22:13 -0700
+IronPort-SDR: xi6E08IvoZBUkpZ1Z7pbYXExv9ngdCp9u1d4BqY/0BPBMX91LZEW3Bh9HS2MOnDppXEf4rEDIs
+ WOfjiggeoaBQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
+   d="scan'208";a="289391730"
+Received: from otcwcpicx6.sc.intel.com ([172.25.55.29])
+  by fmsmga008.fm.intel.com with ESMTP; 18 Sep 2020 09:22:13 -0700
+Date:   Fri, 18 Sep 2020 16:22:12 +0000
+From:   Fenghua Yu <fenghua.yu@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     "Raj, Ashok" <ashok.raj@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org
+Subject: Re: [PATCH v8 3/9] Documentation/x86: Add documentation for SVA
+ (Shared Virtual Addressing)
+Message-ID: <20200918162212.GA444227@otcwcpicx6.sc.intel.com>
+References: <1600187413-163670-1-git-send-email-fenghua.yu@intel.com>
+ <1600187413-163670-4-git-send-email-fenghua.yu@intel.com>
+ <20200917075338.GC31960@zn.tnic>
+ <20200917145609.GB91028@otc-nc-03>
+ <20200917171849.GO31960@zn.tnic>
+ <20200917172239.GB92038@otc-nc-03>
+ <20200917173041.GQ31960@zn.tnic>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.30.114.105]
-X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917173041.GQ31960@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds MAINTAINERS
+On Thu, Sep 17, 2020 at 07:30:41PM +0200, Borislav Petkov wrote:
+> On Thu, Sep 17, 2020 at 10:22:39AM -0700, Raj, Ashok wrote:
+> > s/translation again/translation
+> 
+> Ok, last one. Now stop looking at that text because you'll find more.
+> 
+> :-)))
 
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
----
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+Thank you very much for taking care of the series, Boris!
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d746519253c3..b7637734a39f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12378,6 +12378,13 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/aia21/ntfs.git
- F:	Documentation/filesystems/ntfs.rst
- F:	fs/ntfs/
- 
-+NTFS3 FILESYSTEM
-+M:	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-+S:	Supported
-+W:	http://www.paragon-software.com/
-+F:	Documentation/filesystems/ntfs3.rst
-+F:	fs/ntfs3/
-+
- NUBUS SUBSYSTEM
- M:	Finn Thain <fthain@telegraphics.com.au>
- L:	linux-m68k@lists.linux-m68k.org
--- 
-2.25.4
+I tested the tip:x86/pasid branch and everything works fine by my tests.
+I'll enable more tests for the branch.
 
+-Fenghua
