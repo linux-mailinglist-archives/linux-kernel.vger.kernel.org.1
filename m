@@ -2,111 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F5D826FDAF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 14:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFB4326FDBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 15:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726706AbgIRM7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 08:59:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726380AbgIRM7O (ORCPT
+        id S1726623AbgIRNDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 09:03:13 -0400
+Received: from esa3.mentor.iphmx.com ([68.232.137.180]:24928 "EHLO
+        esa3.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726301AbgIRNDN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 08:59:14 -0400
-Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBA46C06174A;
-        Fri, 18 Sep 2020 05:59:13 -0700 (PDT)
-Received: by mail-oo1-xc43.google.com with SMTP id m25so1406419oou.0;
-        Fri, 18 Sep 2020 05:59:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=w8HQ3J+t/0CpN0ZzyptZv1efAlGCKuHKmS2AU0wzvzU=;
-        b=JWcuknOXar6OLMnxJxohK1oyz8imbmM5I0OQLONIsZbjbi+4SqHN/ny7mr+uvySCZ9
-         Qtipg6LAwgPjfmANgnX16jiEH/4eNeXUzQP1iv/R+Uyk7BxG9YBaGX7XiQ00ou5M1uwB
-         gH3rVjw6YVlJov5B8UVKiGSeUiS/APp6kvSWFjO16Jcp9jBd1GC9RxSuG0ShOBQcgm2z
-         bt0FBSVasUEnxt7Lotl9AluspQztroN22cb/ZVyGGzcr3ZisFJoJEbN5CkF5fc1fipSx
-         ER1cAt/TKR5ZEim+Wd88E/4+jIC9OOlkV8wsweo/O3DAFDd7m33Yr7YL2/Ho7fnib6V0
-         hiZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=w8HQ3J+t/0CpN0ZzyptZv1efAlGCKuHKmS2AU0wzvzU=;
-        b=XRrp5cTUiHAeQqiT6D2UWaFtg8zejxjqgf8bSe2pcyPE343t13aKC2A4CqEBdKCvzH
-         fMn/5Bx5SMgKiKAZTiglEeYdijbjxcIknZDjJqvMEzp01BTpZguSbAWohJQmQJtm3fnI
-         s388EZ0js2PIQa4AUtbT60jQ+2CyyKXUGKcl3+uNBuIs6qQQuDK9wwtuIv1CBIgOSF5b
-         9n+X+ol8DdvuiYL0HcBkmrgb24sgAudO7Y3j5wsgSHLwTOvNwAvplYKmMbwgWISNyhn7
-         1vsQp+xPsCG8apQ8E9kfcrjnqzPrCaLfbTiAPdO3dQpXNfLpV2mL2wb6FjSOdjnSMtBb
-         ph/w==
-X-Gm-Message-State: AOAM5306qYAyCdE2Q75WCdwWR8m//6oxrg2wgsld0+LD3pR36dTRD/t8
-        dCIAJ/i4k8sKJB4sL8HQUeogRk5clD1LtM01hEo=
-X-Google-Smtp-Source: ABdhPJzq0e2lsb1ql/BlG1VxAZsanmPDPsQfHSgePevEn5og9q1JV0yFvknIbQD6oz4Pun6nL3YSa/ycmmre8w3u6f0=
-X-Received: by 2002:a4a:5a06:: with SMTP id v6mr23967835ooa.22.1600433953158;
- Fri, 18 Sep 2020 05:59:13 -0700 (PDT)
+        Fri, 18 Sep 2020 09:03:13 -0400
+X-Greylist: delayed 427 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Sep 2020 09:03:13 EDT
+IronPort-SDR: Ll7X52+3bwPkHDBFm5q+muSu77QqvfJR53K3x8flgoU/n3LtPE6OfNSZlShnhoS9IKuBnK2saz
+ BAcTlnokm46vuQhy4xwK7WNA/i5xGRtcasHkZkksTNEbPNtm84K3EwBqaijVANqqsnRv41ySQk
+ MvhcSP/uyBQUZUuBJ7DSgSjDphxp/5duhXi4fiet/xv3aXD4DJ+GvhiNcBc4+4qKRZxxp6kl58
+ rxkFAvqy9X7MzFFRjWXLGmftCFVEqimrQo8b4xoXs8xSl5gZJx/bf7BD11c1njLb8q2h35lIWA
+ xi4=
+X-IronPort-AV: E=Sophos;i="5.77,274,1596528000"; 
+   d="scan'208";a="53022473"
+Received: from orw-gwy-02-in.mentorg.com ([192.94.38.167])
+  by esa3.mentor.iphmx.com with ESMTP; 18 Sep 2020 04:56:06 -0800
+IronPort-SDR: fC5JHIiRWj9SqYHNhubjnrTnhTROOtaF56uPoGAYhG43vhQEG0xvZQPNmFA612pVcbBSE5s5Lj
+ RqAQxxl7C3YlQR63hNsqy+GBmRpFqINQ7uQFxGdIwSnLmltzgkBjALq8YaxjFjmw4vjaIuieob
+ WIAQbD3q0/yCm7M1E1T5LmkWGsQnvsUrutKZPazwgNJlbqW+iQs0avDcxrPG6Q+VS12B1gPPqI
+ nWhQkS7s3dOHZIrbbdIqL3lDQz5cqB/Y5+WWZTKrK/UUAR3+7PoFs3vnLr2cICVoecJEI0Ewid
+ 1kU=
+From:   Jiada Wang <jiada_wang@mentor.com>
+To:     <nick@shmanahar.org>, <dmitry.torokhov@gmail.com>,
+        <robh+dt@kernel.org>, <digetx@gmail.com>
+CC:     <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <andy.shevchenko@gmail.com>, <erosca@de.adit-jv.com>,
+        <Andrew_Gabbasov@mentor.com>, <jiada_wang@mentor.com>
+Subject: [PATCH v1 1/2] dt-bindings: input: atmel: add compatible for mXT1386
+Date:   Fri, 18 Sep 2020 21:56:00 +0900
+Message-ID: <20200918125601.8210-1-jiada_wang@mentor.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20200909154120.363209-1-liq3ea@163.com>
-In-Reply-To: <20200909154120.363209-1-liq3ea@163.com>
-From:   Li Qiang <liq3ea@gmail.com>
-Date:   Fri, 18 Sep 2020 20:58:37 +0800
-Message-ID: <CAKXe6SKAFqOQtxbLwA4WA8aEBB-8EtEPvrpsNYU8rLUt9t6zSQ@mail.gmail.com>
-Subject: Re: [PATCH] vhost-vdpa: fix memory leak in error path
-To:     Li Qiang <liq3ea@163.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        kvm list <kvm@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Any status update?
+Document the mXT1386  compatible string.
 
-Thanks,
-Li Qiang
+Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+---
+ Documentation/devicetree/bindings/input/atmel,maxtouch.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-Li Qiang <liq3ea@163.com> =E4=BA=8E2020=E5=B9=B49=E6=9C=889=E6=97=A5=E5=91=
-=A8=E4=B8=89 =E4=B8=8B=E5=8D=8811:42=E5=86=99=E9=81=93=EF=BC=9A
->
-> Free the 'page_list' when the 'npages' is zero.
->
-> Signed-off-by: Li Qiang <liq3ea@163.com>
-> ---
->  drivers/vhost/vdpa.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-> index 3fab94f88894..6a9fcaf1831d 100644
-> --- a/drivers/vhost/vdpa.c
-> +++ b/drivers/vhost/vdpa.c
-> @@ -609,8 +609,10 @@ static int vhost_vdpa_process_iotlb_update(struct vh=
-ost_vdpa *v,
->                 gup_flags |=3D FOLL_WRITE;
->
->         npages =3D PAGE_ALIGN(msg->size + (iova & ~PAGE_MASK)) >> PAGE_SH=
-IFT;
-> -       if (!npages)
-> -               return -EINVAL;
-> +       if (!npages) {
-> +               ret =3D -EINVAL;
-> +               goto free_page;
-> +       }
->
->         mmap_read_lock(dev->mm);
->
-> @@ -666,6 +668,8 @@ static int vhost_vdpa_process_iotlb_update(struct vho=
-st_vdpa *v,
->                 atomic64_sub(npages, &dev->mm->pinned_vm);
->         }
->         mmap_read_unlock(dev->mm);
-> +
-> +free_page:
->         free_page((unsigned long)page_list);
->         return ret;
->  }
-> --
-> 2.25.1
->
+diff --git a/Documentation/devicetree/bindings/input/atmel,maxtouch.txt b/Documentation/devicetree/bindings/input/atmel,maxtouch.txt
+index c88919480d37..c13fc0f3f00b 100644
+--- a/Documentation/devicetree/bindings/input/atmel,maxtouch.txt
++++ b/Documentation/devicetree/bindings/input/atmel,maxtouch.txt
+@@ -3,6 +3,7 @@ Atmel maXTouch touchscreen/touchpad
+ Required properties:
+ - compatible:
+     atmel,maxtouch
++    atmel,mXT1386
+ 
+     The following compatibles have been used in various products but are
+     deprecated:
+-- 
+2.17.1
+
