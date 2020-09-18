@@ -2,85 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C8726F89A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D4D26F89E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726537AbgIRIqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 04:46:32 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2887 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725900AbgIRIqb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 04:46:31 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id 1422599A47038976F689;
-        Fri, 18 Sep 2020 09:46:30 +0100 (IST)
-Received: from localhost (10.52.125.116) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 18 Sep
- 2020 09:46:29 +0100
-Date:   Fri, 18 Sep 2020 09:44:51 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Sean V Kelley <sean.v.kelley@intel.com>
-CC:     Bjorn Helgaas <helgaas@kernel.org>, <bhelgaas@google.com>,
-        <rjw@rjwysocki.net>, <ashok.raj@intel.com>, <tony.luck@intel.com>,
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        <qiuxu.zhuo@intel.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V4 00/10] Add RCEC handling to PCI/AER
-Message-ID: <20200918094451.000033cc@Huawei.com>
-In-Reply-To: <39F1C577-2486-43DC-BB65-1F6EDE02B217@intel.com>
-References: <20200917173600.GA1706067@bjorn-Precision-5520>
-        <39F1C577-2486-43DC-BB65-1F6EDE02B217@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1726440AbgIRIsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 04:48:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725900AbgIRIsi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 04:48:38 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9250EC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 01:48:38 -0700 (PDT)
+Date:   Fri, 18 Sep 2020 10:48:35 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600418917;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xrwqb8emfg0+zuovHZmra52ub5Ax38TjifDBCV568B0=;
+        b=ida0nrdDFonfiLuCxJmFLP4bivtBsw0uoBoGMfVH7wu0CIVPXpqAm/OIQJyKNkeWieBMZO
+        2DjmNRMieSpCE76FwXZDV5QaoT6LejXN141CgS11ku7+durukade4JrGFYPajhkz3k9Cwa
+        6avFtTxaqzgnX9hmeTNgvG2teMrCs7UVjF4NsG+vPLCvKQz316EHOSo4PQv+5qKMwyPd7l
+        WpSO2HDvppfTpK5k2QdkjaYbyJo1aqUCcJF6cV7RYetmsW4kKwQvTsOFvsEY8ebHBCTT4a
+        7Bd0fG08v73xs43mSjZXcDbnU3ugPwXn9OSGET3ne2690bxeioj8FyjTkREPMw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600418917;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xrwqb8emfg0+zuovHZmra52ub5Ax38TjifDBCV568B0=;
+        b=RPM+nJIN4jAivhtmkd8e0Vts2mcE8pUhauujQVwEoqXb7bTBDCHeA23ObBkRGaNhybpLxT
+        UYpmeWkne0xmilBw==
+From:   Sebastian Siewior <bigeasy@linutronix.de>
+To:     peterz@infradead.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Scott Wood <swood@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>
+Subject: Re: [patch 09/10] sched/core: Add migrate_disable/enable()
+Message-ID: <20200918084835.onjipzofxac5epe2@linutronix.de>
+References: <20200917094202.301694311@linutronix.de>
+ <20200917101624.813835219@linutronix.de>
+ <20200917142438.GH1362448@hirez.programming.kicks-ass.net>
+ <20200917143850.25akkvr32ojtwohy@linutronix.de>
+ <20200917144937.GI1362448@hirez.programming.kicks-ass.net>
+ <20200917151341.2ilqamtnc6hperix@linutronix.de>
+ <20200917155410.GK1362448@hirez.programming.kicks-ass.net>
+ <20200917163001.5ksl5vjwi35ozzsv@linutronix.de>
+ <20200918082232.GL1362448@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.125.116]
-X-ClientProxiedBy: lhreml741-chm.china.huawei.com (10.201.108.191) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200918082232.GL1362448@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Sep 2020 10:55:16 -0700
-Sean V Kelley <sean.v.kelley@intel.com> wrote:
+On 2020-09-18 10:22:32 [+0200], peterz@infradead.org wrote:
+> > > One reason for not allowing migrate_disable() to sleep was: FPU code.
+> > >=20
+> > > Could it be it does something like:
+> > >=20
+> > > 	preempt_disable();
+> > > 	spin_lock();
+> > >=20
+> > > 	spin_unlock();
+> > > 	preempt_enable();
+> > >=20
+> > > Where we'll never get preempted while migrate_disable()'d and thus ne=
+ver
+> > > trigger any of the sleep paths?
+> >=20
+> > I try to get rid of something like that. This doesn't work either way
+> > because the spin_lock() may block which it can't with disabled
+> > preemption.
+>=20
+> Yeah, that obviously should have been migrate_disable/enable instead of
+> spin_lock/unlock :/
 
-> On 17 Sep 2020, at 10:36, Bjorn Helgaas wrote:
-> 
-> > On Thu, Sep 17, 2020 at 09:25:38AM -0700, Sean V Kelley wrote:  
-> >> Changes since v3 [1]:  
-> >
-> > This series claims "V4 00/10", i.e., there should be this cover letter
-> > plus 10 patches, but I only got 3 patches.  I don't know if some got
-> > lost, or if only those 3 patches were updated, or what?  If it's the
-> > latter, it's too hard for me to collect the right versions of
-> > everything into a single series.
-> >
-> > Either way, can you resend the entire series as a V5?
-> >
-> > Bjorn  
-> 
-> That's weird.  I can see all 10 got sent. There's something awry with 
-> the mailer as I got the copies.  You are right.  Lore only shows 3.  I 
-> will see if something happened with the smtp access.  Will resend as V5.
+Ah. Me stupid. fpregs_lock() does
 
-I got all 10.  
+	preempt_disable();
+	local_bh_disable();
 
-May be coincidence but I saw this with a couple of series I was trying
-to pick up with b4 (so from lore.kernel.org). I assumed it was a problem
-at the sender, but that wasn't intel..
+which is more or less the "official" pattern. As of today
+local_bh_disable() does migrate_disable() / spin_lock(). Not sure what
+we end up with for local_bh_disable() in the end.
+We used not have a BLK here on RT but ended up in all kind of locking
+problems because vanilla treats local_bh_disable() as a BLK and uses it
+for locking.
+Today we have a per-CPU spinlock_t in local_bh_disable() to emulate the
+BKL. But this pattern above isn't working due to the atomic part=E2=80=A6
 
-Perhaps something more general going on at vger?
-
-Thanks,
-
-Jonathan
-
-> 
-> Thanks,
-> 
-> Sean
-
-
+Sebastian
