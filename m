@@ -2,145 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC1882705DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 21:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B5B62705DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 21:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726174AbgIRT5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 15:57:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53618 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726118AbgIRT5r (ORCPT
+        id S1726290AbgIRT7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 15:59:11 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:59551 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726253AbgIRT7K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 15:57:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600459065;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/g7ZSNROlpJMrEUtWDRpRe5vjuvZ4Kcl9hqq8QxtxyA=;
-        b=i/Tn5CQ16xbxaiYs6VntWtxbL9yMvfNa3w2rFt+/F841302X3X5d82iW2jOtkcr0rBEb3C
-        SDDaKcc5mSIHykUyiKHcii7lUxi+YIZUm2s6t7qZ3cAM5c7UiYwPvgFPmBt0+1czHCSZqI
-        4pb6ihp6xNmQPmylEE/FJticu8LeK8Y=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-521-35SujhhWNs-ckbv6cKddhg-1; Fri, 18 Sep 2020 15:57:43 -0400
-X-MC-Unique: 35SujhhWNs-ckbv6cKddhg-1
-Received: by mail-qv1-f70.google.com with SMTP id p20so4589440qvl.4
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 12:57:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/g7ZSNROlpJMrEUtWDRpRe5vjuvZ4Kcl9hqq8QxtxyA=;
-        b=ipkytUOMZ5RixL8p4p6dA6ldaBd4cThmfLvS13SfvtN64f5kUqWnVKKXb6uHo1DNFu
-         79ZpV6XxKI2TyJeIxSj54RO9XiQSADshQIqGDVW36rKyL3jhSv7Wh3o0gX66uRF3aYd0
-         0lo34IbyUAr/XaSGuHxxWSQlqQgbW1JmUQ2x7m7Q7JQyme54y3HasBnWa71gZMUiSS9D
-         vBxE680hpJV1OcwTf2R9xGnCCWZnMCQQEwpQezuA2weGXQKAeJR+djSlW/Xy2zutb+45
-         LcrLCuuo+dYx0gHGNifJkwAGdAYz3bPb308jEOQsreHJBor0Q0Q8DTjgh/pj4zXSvH6p
-         1N5Q==
-X-Gm-Message-State: AOAM531EHUGDCvV2YrTqIvstOvw6HQj1mh2AmQSG5lkbo6fwuJsDlaHu
-        UpKR66BnPg+8MRmGy5gopwp4l4ki5jo1xBBsjGe2W/vizSLpSVv0Bm9eY4Oi1iFEvzWD9PClBh9
-        bS+uanAXtPC5UoSp4Pe03W/XX
-X-Received: by 2002:a37:aca:: with SMTP id 193mr35797831qkk.149.1600459062901;
-        Fri, 18 Sep 2020 12:57:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzrSCIo7RHMYY3CDjs/ANl3bd11aNIAfLAaxeB9KNGSSGUQAU8xnC5IuWMh44vt17aA9xbXdg==
-X-Received: by 2002:a37:aca:: with SMTP id 193mr35797817qkk.149.1600459062592;
-        Fri, 18 Sep 2020 12:57:42 -0700 (PDT)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
-        by smtp.gmail.com with ESMTPSA id n7sm2919885qtf.27.2020.09.18.12.57.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 12:57:41 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 15:57:40 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Maya B . Gokhale" <gokhale2@llnl.gov>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Marty Mcfadden <mcfadden8@llnl.gov>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
-Message-ID: <20200918195740.GB5962@xz-x1>
-References: <20200915232238.GO1221970@ziepe.ca>
- <e6c352f8-7ee9-0702-10a4-122d2c4422fc@nvidia.com>
- <20200916174804.GC8409@ziepe.ca>
- <20200916184619.GB40154@xz-x1>
- <20200917112538.GD8409@ziepe.ca>
- <CAHk-=wjtfjB3TqTFRzVmOrB9Mii6Yzc-=wKq0fu4ruDE6AsJgg@mail.gmail.com>
- <20200917193824.GL8409@ziepe.ca>
- <CAHk-=wiY_g+SSjncZi8sO=LrxXmMox0NO7K34-Fs653XVXheGg@mail.gmail.com>
- <20200918164032.GA5962@xz-x1>
- <CAHk-=whL44VySgScXjvCQ4VkeaW3nOcPMn0UwnY03iOE=1T7VQ@mail.gmail.com>
+        Fri, 18 Sep 2020 15:59:10 -0400
+Received: from mail-qv1-f53.google.com ([209.85.219.53]) by
+ mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1M7aqD-1kOa8H2TiH-0081tZ; Fri, 18 Sep 2020 21:59:08 +0200
+Received: by mail-qv1-f53.google.com with SMTP id j3so3588296qvi.7;
+        Fri, 18 Sep 2020 12:59:08 -0700 (PDT)
+X-Gm-Message-State: AOAM530ZeA+inWt9/NUkL62YrpIHKAwi+jcnZKhF3N9L3B/PbdVnsya/
+        oi0z+HavLMw4yRHXwDKid3mKo/SHozliPNXw794=
+X-Google-Smtp-Source: ABdhPJytBHBh/fQMXo7+68dbrxEABzvlGs5A0AsCoE1YgJGiTA+FdkuyePsZid8ag08tntnusNEq5NJL9EnWegFjyH8=
+X-Received: by 2002:a0c:b902:: with SMTP id u2mr33843869qvf.7.1600459147303;
+ Fri, 18 Sep 2020 12:59:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whL44VySgScXjvCQ4VkeaW3nOcPMn0UwnY03iOE=1T7VQ@mail.gmail.com>
+References: <20200915093203.16934-1-lorenzo.pieralisi@arm.com>
+ <cover.1600254147.git.lorenzo.pieralisi@arm.com> <20200918114508.GA20110@e121166-lin.cambridge.arm.com>
+In-Reply-To: <20200918114508.GA20110@e121166-lin.cambridge.arm.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 18 Sep 2020 21:58:51 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1f9Qj+yhMB4QaAu36ZUQ1p6oKHm2MZQ3zU31q6xmymGA@mail.gmail.com>
+Message-ID: <CAK8P3a1f9Qj+yhMB4QaAu36ZUQ1p6oKHm2MZQ3zU31q6xmymGA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] Fix pci_iounmap() on !CONFIG_GENERIC_IOMAP
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        George Cherian <george.cherian@marvell.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:VRIHA3kLYuVnqBOmVjZxDHpU5iuxIlHABaeAykjpWRJG87XIlvQ
+ nzm3sJNPdfFThXmkqyLysreEc+3FT/n9/9a3iFPzE1VldoYL3pSVbI7xm1N5t0Ntdj2H3E5
+ 0wns+4uby2aVC8sMbV7XixaW/OoRhu52L49WST1aoWuqFsS75RJmLdKhgUHKZ4FxiCNF5oG
+ IDiSkaNIyG8J5Sglb2QTQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:sGyc9ZK48K0=:MgR91tZDwpTRSSaUl5QwuW
+ w7NJlzbSeEqaw1gKql7IuPwyNTolfpxmJnzLD+kD6jG27ciar1zrqhU4B+qMayu7h82FWbZuj
+ qyy4qh9fJdjSGWQYIJmFZUDhi0LiZafpDYE0uSQH3iUfVrfoSyTj4QZUZ2ixbSlQxe46nBKl1
+ YwSiLMC6CxU1SQFzNLaXZpV3vX0u8aa1JaACYzKyY8jX40J9RSb34ZvKcb4/XwwA2McF12O25
+ vBoSilcB0ynE8LGYTPu5yvGmZ2ettPn152/sEwjIHLrqwB5G99W3tM/ZV9Y7f/eetDjUTn1WM
+ MjnE0qyfvsWJ99AKefuOpqhtTrnxmdVFUEzGnif2H2FBGhem//UViQhLaEmzkakIxp5M5KWB8
+ LwvoRSg4lwxc5lx6yP7FZoGfb9OPPVvEvCCr1b02mWiqo99uRTIqfatDXoL33U3eZZHYNXWQa
+ q6ApbB2LOjGq2vXAHjaRdR+vA4frdNzk1nLikZvpKxDPqRs8UY87kRmzxojd+KCqHznclxjmq
+ iEdOKYfQWHJsjDDLWMqnWX1ezXcNtmqNiDVPjCm80J++O8c5PfWsCFz15S8CT2Tof28M5VeZh
+ Wtn4DYEEi0aKbE2WU6t+jkg5idcgqz10aSPCnvwUq5i8/rrexesjJ8Kjh32C/Z9LMFAeV3t1n
+ mEDPp/ucOB6kGTGY4boICZpP2ghp4lqOrj63nrmqYLUQ6jR4zz4ff9Z8WyubjGtlA+IUR2Pjq
+ yvpC9n8swLV2z+lVd0A/hlN6cpp/qaBs3Ez0ccHvClombF27bt2yVQQpb6ePRaQFG+V5HMYnA
+ gc+Zj337DEaXH0oShl2TKT/dZYbSoqjylcy8HzbE5SaJEWS+lyFc7rdYrzbytwIto5oL/pF
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 10:16:19AM -0700, Linus Torvalds wrote:
-> The only change I'd make is to make it a "int" and put it next to the
-> "int map_count", since that will pack better on 64-bit (assuming you
-> don't do the randomize_layout thing, in which case it's all moot).
+On Fri, Sep 18, 2020 at 1:45 PM Lorenzo Pieralisi
+<lorenzo.pieralisi@arm.com> wrote:
+> >
+> > Lorenzo Pieralisi (3):
+> >   sparc32: Remove useless io_32.h __KERNEL__ preprocessor guard
+> >   sparc32: Move ioremap/iounmap declaration before asm-generic/io.h
+> >     include
+> >   asm-generic/io.h: Fix !CONFIG_GENERIC_IOMAP pci_iounmap()
+> >     implementation
+> >
+> >  arch/sparc/include/asm/io_32.h | 17 ++++++---------
+> >  include/asm-generic/io.h       | 39 +++++++++++++++++++++++-----------
+> >  2 files changed, 34 insertions(+), 22 deletions(-)
+>
+> Arnd, David, Bjorn,
+>
+> I have got review/test tags, is it OK if we merge this series please ?
+>
+> Can we pull it in the PCI tree or you want it to go via a different
+> route upstream ?
+>
+> Please let me know.
 
-Will do.
+Going through the PCI tree sounds good to me, but I can
+take it through the asm-generic tree if Bjorn doesn't want to
+pick it up there.
 
-[...]
-
-> > One issue is when we charge for cgroup we probably can't do that onto the new
-> > mm/task, since copy_namespaces() is called after copy_mm().
-> 
-> That cannot possibly matter as far as I can see.
-> 
-> Copying the page in between those two calls is already possible since
-> we've already dropped the mmap_lock by the time copy_namespaces() is
-> called. So if the parent was threaded, and another thread did a write
-> access, the parent would have caused that COW that we did early.
-> 
-> And any page copying cost should be to the parent anyway, since that
-> is who did the pinning that caused the copy in the first place.
-> 
-> So for both of those reasons - the COW can already happen between
-> copy_mm() and copy_namespaces(), *and* charging it to the parent
-> namespace is proper anyway - I think your cgroup worry is not
-> relevant.
-> 
-> I'm not even sure anything relevant to accounting is created, but my
-> point is that even if it is, I don't see how it could be an issue.
-
-The parent process should be fine to do any COW and do its accounting right,
-which I agree.  But the new COW that we're adding here is for the child process
-rather than the parent.
-
-I'm just afraid the parent process's accounting number could go very high after
-it pinned some pages and fork()ed a few more times, since those extra
-accountings will accumulate even after the children die, if I'm not wrong...
-
-Actually I tend to move copy_namespaces() to be before copy_mm() now..  I know
-nothing about namespaces, however I see that copy_namespaces() seems to be
-quite self-contained.  But I'm always ready for a "no, you can't"...
-
-> 
-> > The other thing is on how to fail.  E.g., when COW failed due to either
-> > charging of cgroup or ENOMEM, ideally we should fail fork() too.  Though that
-> > might need more changes - current patch silently kept the shared page for
-> > simplicity.
-> 
-> We already can fail forkind due to memory allocations failing. Again,
-> not an issue. It happens.
-
-Yes.  I didn't change this only because I thought it could save quite a few
-lines of codes.  However after I notice the fact that this patch will probably
-grow bigger no matter what, I'm kind of not worrying on this any more..
-
--- 
-Peter Xu
-
+       Arnd
