@@ -2,129 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38717270792
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:53:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED0A527079A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 22:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726490AbgIRUx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 16:53:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58936 "EHLO
+        id S1726366AbgIRU4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 16:56:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726369AbgIRUx3 (ORCPT
+        with ESMTP id S1726252AbgIRU4l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 16:53:29 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27E70C0613D0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:53:29 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id kk9so3628898pjb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:53:29 -0700 (PDT)
+        Fri, 18 Sep 2020 16:56:41 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8566C0613D0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:56:40 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id l9so6841087wme.3
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 13:56:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Iy3TQ3C1Ek23yK9GZJXs0daNRNetn5CYF4/zAE2h7ik=;
-        b=KW2Q2zo+JFuYkr4TiNUBIe05OcRvez9oPhQD2VPO4rhQx4vr57iS+J6zydE3kkrQLF
-         DI66mG3IeYuMnm30FYVw5h6Oxc9WygSHNlBMmug3nlJy8G1DUZ0juqx+QQnea9m7Gete
-         ZlaTZ+Z/2TdOkps+Zf6K1JMQCJdPxK/x+hQD14J8YYA/+4YQfkWf+gJLTCmIge3scE76
-         p3ygrRlm7Krhqb7M2JzcHo7FC2+dzmjQDXITtDjcCKKvClFY66fCZJuYnZ82RbA6pZTO
-         Ed6GbIdgELybyBiBA7rEsXwGMBM8G5XyQ62y/lS/J/y5NTvmLs19ZGyoccTTuwOoeW73
-         b8Ig==
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5FMcTfB8bTNiA4IO/9hnI5vPpMpLqnjxtoFBZxrk7cE=;
+        b=qcmtt6kWrvx7k2QXabW17gKwfCLKlGN7MuLc+YURLF3y8JXAUupyBXOWPXzkOgERbd
+         heeBiEW3ckdFgeef0CSxlO0KtTGJyCZaSvzAhOvhG3zYvWbJPbI5yMwKN8nZrtOObvNU
+         EFfpfdmivw7K23hKCFr3u8dgqBnonLw60yviyWEGBRhij5x2Sh2mshRSDU8YePF1rOSX
+         aufFYW2i4xmv1RqpXOiLpN3mPPuFd2/A7rSbYVdI7KpyYVyCeVMFBJhWxma+qfnzw4W+
+         ZkxjFzBtR43RbJ84MAq6elE6PZsg7F2l2Xv5N12JZ8zDFv4ME7WO/RHJNwQ9F42D5ifI
+         scbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Iy3TQ3C1Ek23yK9GZJXs0daNRNetn5CYF4/zAE2h7ik=;
-        b=gJoCpEf2wVqV5EJ7V4QbmG8pvAVWt81LRP/TyisXkAbTiM2keLJFlg1Vd/onKqdVse
-         fIxdcHgzWh7MFR7YV7EWMzRV6Vhs+446GjZ3K0Ti4mylnzsFriccUsqREywpMW/BblHm
-         XFiHgWu6CI1VZ9fRJBL0isKECpDAezQLu2i0QI0j201Nz2Pv0q82M1oLWTKtbFIhMZqy
-         hbnJ/PvT8OJqm7lMo/ZOIxzaCkScamt5FOxJD0F14cLLlDQRRAAav1T8O4C5sWm3/pcg
-         kvxrQoeIVrxElY3a5/oapzLAqeoaM8grV3ZABAYdKWds3+3/2jmnivJ4p56DybYacKE8
-         tklw==
-X-Gm-Message-State: AOAM531f4+5JmFTyoVpaACpurwgkYfz1qw5u+5R5PZ+D+wgP8xBphJph
-        tJ05I4qMzlQewupEMfGNU68ualNTBOq+5NRpVceleA==
-X-Google-Smtp-Source: ABdhPJykoyGWTRcD0lR6xnSRRS+gTsSrH7i8r0dJuA7wRYkUeLk2vde81YvSA+MIvTflgkJVw4xrDt+AfE3pnj9QWgw=
-X-Received: by 2002:a17:90b:f18:: with SMTP id br24mr2004360pjb.32.1600462408474;
- Fri, 18 Sep 2020 13:53:28 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5FMcTfB8bTNiA4IO/9hnI5vPpMpLqnjxtoFBZxrk7cE=;
+        b=NdX64f0sDv0Ss5v4vbSQtELGrVviSJOk9jRx1tlhYcrhYu+E+PjHjcOJqu13V5HH4+
+         /6niwoLZlN8enqwmeflStvZh5FLagv2m9oGlSgU/I60AJQw4V40uuYlvYxbxyRjGjxN8
+         RUVNnlm1V8r6PiGewgTQ1Zg0gqqowsxxTInee6V0D2ALxNnGsqaY06XB1GY9TLr90FvI
+         ru7p3BtM0f7pPS3BoHENw8XSe13UnH/cgPE9Bv37w3/+vv4WdlboXUcuahdEIz9DLGvb
+         TNNvYZy8YAYl91e2ks5lXv2y7vmLUa8b+WObcFxY2bpcQ9a/kSTHjjDjLaWURGAqG16W
+         hTyw==
+X-Gm-Message-State: AOAM532mCxndbixh5IhW7AKtaBIp/SsOoHAvyuv9Qh8CtSdnur38ZFJ4
+        IoM6LAG1XQse6b9TfqTRZmSvpw==
+X-Google-Smtp-Source: ABdhPJzhy9TPwdBBkuXxPyaO8NB4E6vvhIn4upUGvLx5IuAD7USpHZ5JEqUfW7aw5bNhdX0/RP/s0g==
+X-Received: by 2002:a1c:f20b:: with SMTP id s11mr17966461wmc.144.1600462599324;
+        Fri, 18 Sep 2020 13:56:39 -0700 (PDT)
+Received: from localhost.localdomain (dh207-97-14.xnet.hr. [88.207.97.14])
+        by smtp.googlemail.com with ESMTPSA id a17sm7661875wra.24.2020.09.18.13.56.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 13:56:38 -0700 (PDT)
+From:   Robert Marko <robert.marko@sartura.hr>
+To:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Cc:     Robert Marko <robert.marko@sartura.hr>
+Subject: [PATCH v3 0/2] net: mdio-ipq4019: add Clause 45 support
+Date:   Fri, 18 Sep 2020 22:56:31 +0200
+Message-Id: <20200918205633.2698654-1-robert.marko@sartura.hr>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200918201436.2932360-1-samitolvanen@google.com>
- <CA+icZUW1MYSUz8jwOaVpi6ib1dyCv1VmG5priw6TTzXGSh_8Gg@mail.gmail.com> <CABCJKueyWvNB2MQw_PCLtZb8F1+sA1QOLJi_5qMKwdFCcwSMGg@mail.gmail.com>
-In-Reply-To: <CABCJKueyWvNB2MQw_PCLtZb8F1+sA1QOLJi_5qMKwdFCcwSMGg@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 18 Sep 2020 13:53:17 -0700
-Message-ID: <CAKwvOd=N5XS+c7X+fM+0aHWoo8j-xZ96Qk1a4n6gvYJZAq1mCQ@mail.gmail.com>
-Subject: Re: [PATCH v3 00/30] Add support for Clang LTO
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org,
-        X86 ML <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 1:50 PM Sami Tolvanen <samitolvanen@google.com> wrote:
->
-> On Fri, Sep 18, 2020 at 1:22 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> >
-> > On Fri, Sep 18, 2020 at 10:14 PM 'Sami Tolvanen' via Clang Built Linux
-> > <clang-built-linux@googlegroups.com> wrote:
-> > >
-> > > This patch series adds support for building x86_64 and arm64 kernels
-> > > with Clang's Link Time Optimization (LTO).
-> > >
-> > > In addition to performance, the primary motivation for LTO is
-> > > to allow Clang's Control-Flow Integrity (CFI) to be used in the
-> > > kernel. Google has shipped millions of Pixel devices running three
-> > > major kernel versions with LTO+CFI since 2018.
-> > >
-> > > Most of the patches are build system changes for handling LLVM
-> > > bitcode, which Clang produces with LTO instead of ELF object files,
-> > > postponing ELF processing until a later stage, and ensuring initcall
-> > > ordering.
-> > >
-> > > Note that patches 1-5 are not directly related to LTO, but are
-> > > needed to compile LTO kernels with ToT Clang, so I'm including them
-> > > in the series for your convenience:
-> > >
-> > >  - Patches 1-3 fix build issues with LLVM and they are already in
-> > >    linux-next.
-> > >
-> > >  - Patch 4 fixes x86 builds with LLVM IAS, but it hasn't yet been
-> > >    picked up by maintainers.
-> > >
-> > >  - Patch 5 is from Masahiro's kbuild tree and makes the LTO linker
-> > >    script changes much cleaner.
-> > >
-> >
-> > Hi Sami,
-> >
-> > might be good to point to your GitHub tree and corresponding
-> > release-tag for easy fetching.
->
-> Ah, true. You can also pull this series from
->
->   https://github.com/samitolvanen/linux.git lto-v3
+This patch series adds support for Clause 45 to the driver.
 
-Also, I've been using b4 happily for a short while now.
-https://people.kernel.org/monsieuricon/introducing-b4-and-patch-attestation
+While at it also change some defines to upper case to match rest of the driver.
 
-My workflow would be: check lore.kernel.org/lkml/
-for the series in question. In this case:
-https://lore.kernel.org/lkml/CABCJKueyWvNB2MQw_PCLtZb8F1+sA1QOLJi_5qMKwdFCcwSMGg@mail.gmail.com/T/#t
-is the cover letter.  Then in my tree:
-$ b4 am https://lore.kernel.org/lkml/CABCJKueyWvNB2MQw_PCLtZb8F1+sA1QOLJi_5qMKwdFCcwSMGg@mail.gmail.com/T/#t
--o - | git am
+Changes since v1:
+* Drop clock patches, these need further investigation and
+no user for non default configuration has been found
+
+Robert Marko (2):
+  net: mdio-ipq4019: change defines to upper case
+  net: mdio-ipq4019: add Clause 45 support
+
+ drivers/net/phy/mdio-ipq4019.c | 109 ++++++++++++++++++++++++++++-----
+ 1 file changed, 92 insertions(+), 17 deletions(-)
+
 -- 
-Thanks,
-~Nick Desaulniers
+2.26.2
+
