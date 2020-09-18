@@ -2,123 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FAFC27094C
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 01:54:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EAFF27094E
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 01:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726192AbgIRXxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 19:53:46 -0400
-Received: from mga09.intel.com ([134.134.136.24]:33797 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726009AbgIRXxq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 19:53:46 -0400
-IronPort-SDR: w88lfMPgP8nXs6QNBM3G9+SRjZ14xkOCZ5XgA13OPSP9X04b0sjDBzC0nzr1DkG4NMrOIrcm8e
- GdoUPGxCptDA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9748"; a="160973147"
-X-IronPort-AV: E=Sophos;i="5.77,276,1596524400"; 
-   d="scan'208";a="160973147"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 16:53:41 -0700
-IronPort-SDR: 7Tx3tHHwo1WoVwkybdZU7HNvtlLMmqX3VW0acb1K3sujhz8PdF+fzQtAi4QgCRrc9FtFlGDduE
- oOSShv2q69YQ==
-X-IronPort-AV: E=Sophos;i="5.77,276,1596524400"; 
-   d="scan'208";a="381080557"
-Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 16:53:38 -0700
-Date:   Fri, 18 Sep 2020 16:53:37 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
+        id S1726245AbgIRXzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 19:55:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726022AbgIRXzm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 19:55:42 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 823AFC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 16:55:42 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kJQDx-001LjX-0T; Fri, 18 Sep 2020 23:55:29 +0000
+Date:   Sat, 19 Sep 2020 00:55:28 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
 To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, linux-sgx@vger.kernel.org,
+Cc:     syzbot <syzbot+ea3a78a71705faf41d77@syzkaller.appspotmail.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        asapek@google.com, Borislav Petkov <bp@alien8.de>,
-        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
-        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
-        Christian Ludloff <ludloff@google.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Patrick Uiterwijk <puiterwijk@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
-Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
-Message-ID: <20200918235337.GA21189@sjchrist-ice>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-11-jarkko.sakkinen@linux.intel.com>
- <CALCETrX9T1ZUug=M5ba9g4H5B7kV=yL5RzuTaeAEdy3uAieN_A@mail.gmail.com>
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        syzkaller-bugs@googlegroups.com,
+        Thomas Gleixner <tglx@linutronix.de>, X86 ML <x86@kernel.org>
+Subject: Re: WARNING in ex_handler_uaccess
+Message-ID: <20200918235528.GB3421308@ZenIV.linux.org.uk>
+References: <000000000000762dee05af9ccd01@google.com>
+ <CALCETrVL=VGNXbWK1BB1LnsxaKOGRbEfCGUEx4jaCW9cF-54Ag@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALCETrX9T1ZUug=M5ba9g4H5B7kV=yL5RzuTaeAEdy3uAieN_A@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CALCETrVL=VGNXbWK1BB1LnsxaKOGRbEfCGUEx4jaCW9cF-54Ag@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 08:09:04AM -0700, Andy Lutomirski wrote:
-> On Tue, Sep 15, 2020 at 4:28 AM Jarkko Sakkinen
-> <jarkko.sakkinen@linux.intel.com> wrote:
-> >
-> > From: Sean Christopherson <sean.j.christopherson@intel.com>
-> >
-> > Add vm_ops()->mprotect() for additional constraints for a VMA.
-> >
-> > Intel Software Guard eXtensions (SGX) will use this callback to add two
-> > constraints:
-> >
-> > 1. Verify that the address range does not have holes: each page address
-> >    must be filled with an enclave page.
-> > 2. Verify that VMA permissions won't surpass the permissions of any enclave
-> >    page within the address range. Enclave cryptographically sealed
-> >    permissions for each page address that set the upper limit for possible
-> >    VMA permissions. Not respecting this can cause #GP's to be emitted.
+On Fri, Sep 18, 2020 at 04:31:33PM -0700, Andy Lutomirski wrote:
 
-Side note, #GP is wrong.  EPCM violations are #PFs.  Skylake CPUs #GP, but
-that's technically an errata.  But this isn't the real motivation, e.g.
-userspace can already trigger #GP/#PF by reading/writing a bad address, SGX
-simply adds another flavor.
+> check_zeroed_user() looks buggy.  It does:
+> 
+>        if (!user_access_begin(from, size))
+>                return -EFAULT;
+> 
+>        unsafe_get_user(val, (unsigned long __user *) from, err_fault);
+> 
+> This is wrong if size < sizeof(unsigned long) -- you read outside the
+> area you verified using user_access_begin().
 
-> It's been awhile since I looked at this.  Can you remind us: is this
-> just preventing userspace from shooting itself in the foot or is this
-> something more important?
+Read the code immediately prior to that.  from will be word-aligned,
+and size will be extended accordingly.  If the area acceptable for
+user_access_begin() ends *NOT* on a word boundary, you have a problem
+and I would strongly recommend to seek professional help.
 
-Something more important, it's used to prevent userspace from circumventing
-a noexec filesystem by loading code into an enclave, and to give the kernel the
-option of adding enclave specific LSM policies in the future.
-
-The source file (if one exists) for the enclave is long gone when the enclave
-is actually mmap()'d and mprotect()'d.  To enforce noexec, the requested
-permissions for a given page are snapshotted when the page is added to the
-enclave, i.e. when the enclave is built.  Enclave pages that will be executable
-must originate from an a MAYEXEC VMA, e.g. the source page can't come from a
-noexec file system.
-
-The ->mprotect() hook allows SGX to reject mprotect() if userspace is declaring
-permissions beyond what are allowed, e.g. trying to map an enclave page with
-EXEC permissions when the page was added to the enclave without EXEC.
-
-Future LSM policies have a similar need due to vm_file always pointing at
-/dev/sgx/enclave, e.g. policies couldn't be attached to a specific enclave.
-->mprotect() again allows enforcing permissions at map time that were checked
-at enclave build time, e.g. via an LSM hook.
-
-Deferring ->mprotect() until LSM support is added (if it ever is) would be
-problematic due to SGX2.  With SGX2, userspace can extend permissions of an
-enclave page (for the CPU's EPC Map entry, not the kernel's page tables)
-without bouncing through the kernel.  Without ->mprotect () enforcement.
-userspace could do EADD(RW) -> mprotect(RWX) -> EMODPE(X) to gain W+X.  We
-want to disallow such a flow now, i.e. force userspace to do EADD(RW,X), so
-that the hypothetical LSM hook would have all information at EADD(), i.e.
-would be aware of the EXEC permission, without creating divergent behavior
-based on whether or not an LSM is active.
+All reads in that thing are word-aligned and word-sized.  So I very
+much doubt that your analysis is correct.
