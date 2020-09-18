@@ -2,91 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA78727008B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 17:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6621C270090
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 17:11:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726253AbgIRPJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 11:09:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58798 "EHLO mail.kernel.org"
+        id S1726199AbgIRPLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 11:11:01 -0400
+Received: from 8bytes.org ([81.169.241.247]:45352 "EHLO theia.8bytes.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725941AbgIRPJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 11:09:18 -0400
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E5F422395C
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 15:09:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600441758;
-        bh=IkOqknM/pgGLyHstRYRh+yvQ8FdTpYzJtOj13eKOQoo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=wQ81rRBmz55lhQkw2ePr88cuYBKO/mwDLRArD0Dl8vrCF5JXRSXioBz0uBj1vbe70
-         7ubHe+MaHqxq7vYXgkIa4718PY9E1caLN8k+OyQ/4Lw3jA7BY/kHAtCbuaiqUdqiDw
-         K0rCTSxm+b5VRI6PUTZSoBTMiyAMIGCPrMWMoFt4=
-Received: by mail-wr1-f52.google.com with SMTP id w5so5980591wrp.8
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 08:09:17 -0700 (PDT)
-X-Gm-Message-State: AOAM5334J84JhAvZGmN5yGcP42jLUaihLWFwROy1umeXOFpQ/DaLD9tV
-        SFtaWhRIUSZtFizsJpHNeBr/3XUr97sUZ/fBnstBtw==
-X-Google-Smtp-Source: ABdhPJxGmXBOztEznChCx1zDcy87QF70YtkyM1AXgQnapl+jEklF6uBqSKjj6yAkDzuf8mO6n3/eki81+OiGt2xlp30=
-X-Received: by 2002:a5d:5111:: with SMTP id s17mr37934142wrt.70.1600441756359;
- Fri, 18 Sep 2020 08:09:16 -0700 (PDT)
+        id S1726118AbgIRPK7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 11:10:59 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 43459A8D; Fri, 18 Sep 2020 17:10:58 +0200 (CEST)
+Date:   Fri, 18 Sep 2020 17:10:56 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
+Subject: [git pull] IOMMU Fixes for Linux v5.9-rc5
+Message-ID: <20200918151051.GA31007@8bytes.org>
 MIME-Version: 1.0
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com> <20200915112842.897265-11-jarkko.sakkinen@linux.intel.com>
-In-Reply-To: <20200915112842.897265-11-jarkko.sakkinen@linux.intel.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Fri, 18 Sep 2020 08:09:04 -0700
-X-Gmail-Original-Message-ID: <CALCETrX9T1ZUug=M5ba9g4H5B7kV=yL5RzuTaeAEdy3uAieN_A@mail.gmail.com>
-Message-ID: <CALCETrX9T1ZUug=M5ba9g4H5B7kV=yL5RzuTaeAEdy3uAieN_A@mail.gmail.com>
-Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     X86 ML <x86@kernel.org>, linux-sgx@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        asapek@google.com, Borislav Petkov <bp@alien8.de>,
-        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
-        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
-        Christian Ludloff <ludloff@google.com>,
-        Andrew Lutomirski <luto@kernel.org>,
-        Neil Horman <nhorman@redhat.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Patrick Uiterwijk <puiterwijk@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="envbJBWh7q8WU6mo"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 4:28 AM Jarkko Sakkinen
-<jarkko.sakkinen@linux.intel.com> wrote:
->
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
->
-> Add vm_ops()->mprotect() for additional constraints for a VMA.
->
-> Intel Software Guard eXtensions (SGX) will use this callback to add two
-> constraints:
->
-> 1. Verify that the address range does not have holes: each page address
->    must be filled with an enclave page.
-> 2. Verify that VMA permissions won't surpass the permissions of any enclave
->    page within the address range. Enclave cryptographically sealed
->    permissions for each page address that set the upper limit for possible
->    VMA permissions. Not respecting this can cause #GP's to be emitted.
 
-It's been awhile since I looked at this.  Can you remind us: is this
-just preventing userspace from shooting itself in the foot or is this
-something more important?
+--envbJBWh7q8WU6mo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
---Andy
+Hi Linus,
+
+The following changes since commit 856deb866d16e29bd65952e0289066f6078af773:
+
+  Linux 5.9-rc5 (2020-09-13 16:06:00 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-fixes-v5.9-rc5
+
+for you to fetch changes up to e97685abd5d711c885053d4949178f7ab9acbaef:
+
+  iommu/amd: Restore IRTE.RemapEn bit for amd_iommu_activate_guest_mode (2020-09-18 11:17:19 +0200)
+
+----------------------------------------------------------------
+IOMMU Fixes for Linux v5.9-rc5
+
+Two fixes for the AMD IOMMU driver:
+
+	- Fix a potential NULL-ptr dereference found by smatch
+
+	- Fix interrupt remapping when a device is assigned to a guest
+	  and AVIC is enabled.
+
+----------------------------------------------------------------
+Joao Martins (1):
+      iommu/amd: Fix potential @entry null deref
+
+Suravee Suthikulpanit (1):
+      iommu/amd: Restore IRTE.RemapEn bit for amd_iommu_activate_guest_mode
+
+ drivers/iommu/amd/iommu.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+Please pull.
+
+Thanks,
+
+	Joerg
+
+--envbJBWh7q8WU6mo
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEr9jSbILcajRFYWYyK/BELZcBGuMFAl9kzfYACgkQK/BELZcB
+GuPpIg//av7xkX3DUvOd7ZJf+Jd7q25MYp1V2h89/PvfkPPy/X05tJDt4N/MFzT8
+qFi05Yl7kocTf7RhH5odvsaBF5x2DoF/7mmjJjBAesoJIye0BL2jugajiIyEOz8N
+7cLItdClfs/cFjM9Qwux1NdsXnWThNywSpZRPpx279GGJZxwvV4B98MYOo/j1IY7
+F41HWi3AeD/x1lnR3NuflnYv8TaTm7cZubzmimC9uOujbB1asBrIx1qVeqL3WP9K
+QeXj8UeGaZFDWaYfRM+8RPP2fnqHQu6IyE0SuzyA2BsEh5qz59L0QUJ5vjauQt0N
+IauNpKF8Yq04tHfnRyWnnbUgshM7WkTb+87i5ZVVf/EsXw8SCKKmfYLob/Ubb6mU
+NI/a1F06IGFrMwvhMYE+GiHEP7JM7/g5/x1TmCj8XFXQhRpnMopoLNdLVjt8O64G
+hStvr9OmM8y7ED//vUMdPAHnQKZ+CfXaG1TY5fJR8wIjTPMCow12S/6VG+klmJ26
+XCrgoc0A1GCyxQKSOd4oJajcxW0/LBf7heUM7BjnHguEpDqEjNClYpU7FtiraR2Y
+75SW5aIeIsx9WDR88pTRvBtu1IJ9pmXran0D1umsCPhQS4ULP/94APbLXmN8rObk
+RACcOeWjDc+YDMj3YH9TS6O/8Y6VW+s08Mwnl1hDxrQpvzUfiLA=
+=2y0U
+-----END PGP SIGNATURE-----
+
+--envbJBWh7q8WU6mo--
