@@ -2,49 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D6227089B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 23:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06FF727089D
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 23:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726312AbgIRV45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 17:56:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726154AbgIRV44 (ORCPT
+        id S1726371AbgIRV5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 17:57:06 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:50960 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726154AbgIRV5G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 17:56:56 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B22A1C0613CE;
-        Fri, 18 Sep 2020 14:56:56 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id E869815A0D92C;
-        Fri, 18 Sep 2020 14:40:08 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 14:56:55 -0700 (PDT)
-Message-Id: <20200918.145655.108889132068479351.davem@davemloft.net>
-To:     yuehaibing@huawei.com
-Cc:     jmaloy@redhat.com, ying.xue@windriver.com, kuba@kernel.org,
-        tuong.t.lien@dektech.com.au, netdev@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] tipc: Remove unused macro CF_SERVER
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200918131615.20124-1-yuehaibing@huawei.com>
-References: <20200918131615.20124-1-yuehaibing@huawei.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Fri, 18 Sep 2020 14:40:09 -0700 (PDT)
+        Fri, 18 Sep 2020 17:57:06 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kJONH-00051w-Q8; Fri, 18 Sep 2020 21:56:59 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto/chcr: fix minor indentation issue
+Date:   Fri, 18 Sep 2020 22:56:59 +0100
+Message-Id: <20200918215659.49825-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
-Date: Fri, 18 Sep 2020 21:16:15 +0800
+From: Colin Ian King <colin.king@canonical.com>
 
-> It is no used any more, so can remove it.
-> 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+There is a statement that is indented by one whitespace too deeply,
+fix this by removing the whitespace.
 
-Applied.
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/crypto/chelsio/chcr_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/crypto/chelsio/chcr_core.c b/drivers/crypto/chelsio/chcr_core.c
+index 40d51d2bd935..f91f9d762a45 100644
+--- a/drivers/crypto/chelsio/chcr_core.c
++++ b/drivers/crypto/chelsio/chcr_core.c
+@@ -127,7 +127,7 @@ static void chcr_dev_init(struct uld_ctx *u_ctx)
+ 
+ static int chcr_dev_move(struct uld_ctx *u_ctx)
+ {
+-	 mutex_lock(&drv_data.drv_mutex);
++	mutex_lock(&drv_data.drv_mutex);
+ 	if (drv_data.last_dev == u_ctx) {
+ 		if (list_is_last(&drv_data.last_dev->entry, &drv_data.act_dev))
+ 			drv_data.last_dev = list_first_entry(&drv_data.act_dev,
+-- 
+2.27.0
+
