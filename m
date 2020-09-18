@@ -2,70 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A484826F765
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 09:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17D2326F768
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 09:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726832AbgIRHwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 03:52:15 -0400
-Received: from mail-ej1-f67.google.com ([209.85.218.67]:37519 "EHLO
-        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726820AbgIRHwO (ORCPT
+        id S1726847AbgIRHwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 03:52:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726711AbgIRHwa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 03:52:14 -0400
-Received: by mail-ej1-f67.google.com with SMTP id nw23so6829405ejb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 00:52:13 -0700 (PDT)
+        Fri, 18 Sep 2020 03:52:30 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C62B1C06174A;
+        Fri, 18 Sep 2020 00:52:30 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id o8so4592549otl.4;
+        Fri, 18 Sep 2020 00:52:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=S2eNoZYJBbRdDL+9Rn83UkdafaYmPioHl03HTHvdQG0=;
+        b=fO0ZculQNiNNXJ+GZ4XJ+Izjls+aHWlLkPNgFCkYk+T4lrNk7okIWBhRv8aPZ7YnRU
+         yWmecYPz7JpgdFFby2UJOV+G1HX6r9Va6HM9/nOoRxu0+aSY1ZDJzT+KIV+hLlMKIIN1
+         w6WxP82H9u6RYNFrh5Fzt8r9ozMRUZ1ZZCjaHtyEuwLsoI3zyWl+hUh3asYRUOdT0pVn
+         isRpZ3GYvfejEndmnWnnrq7WiQ2WxtgBuhwKo/HbP5kcDNEkirlFKW8syexCFtoRZSqM
+         cxQmDcjHLdDdOgUqnk2PF4PFUuECcVinfxvfalrwXNRmNpMP+qmYjTgCkNI/+ZEZu6PZ
+         6ZDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hVeD4AgSLUxv4KbwXFJdFh3q8zmR7ZKG7yv4OBGE2SU=;
-        b=hatu5MIQ8AuJyT2jcV3xumi/8krlZNTvOioZPEHFgfQ07hJKXigz4+U2XbTUvAZiE5
-         HmNwJ5LNjW4j5e/c6b754Crw8dFNSVwQTMh3GECV3XrD0C2kwY7RULHE8g8FthIhRMMo
-         1a4CeRbqRKnTwFma7r2BxRe+rx6lN5sXPU/e5wCWfGgvEpVPMnpidA5NxInkBlR8w6q9
-         DEUg/j63+pzRiKX8v3+Urp4P9QsAQr4RdhIrEtgZwX9bb90Km6V291hrU0qPr5g27Z34
-         vj7jDLFAQNRGELvOIwWnwMTRLibRFlsEjPy85/++yhACGBOFDNJcIbnyqVruOTaEYQXy
-         NG8g==
-X-Gm-Message-State: AOAM531S94fdYLW0chdT2+lufZ8g2FvUe8MIvY4FbAuAMUh5k0rzvVhT
-        E83ngEB/fqDrFqV5Q5QludrxzySlUBLgvw==
-X-Google-Smtp-Source: ABdhPJy6O0InFIHrkL+jLqMkKAkedMjP16RyAufGrj5CbO1nxlr9W8/RBqwBZeRjLo1od0Qdn6/4Yw==
-X-Received: by 2002:a17:906:54e:: with SMTP id k14mr34810091eja.59.1600415533126;
-        Fri, 18 Sep 2020 00:52:13 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id j20sm1652378ejf.27.2020.09.18.00.52.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Sep 2020 00:52:12 -0700 (PDT)
-Subject: Re: [PATCH] vt: fix some doc warnings in vt.c
-To:     Xiaofei Tan <tanxiaofei@huawei.com>, gregkh@linuxfoundation.org,
-        nico@fluxnic.net, linux-kernel@vger.kernel.org
-Cc:     linuxarm@huawei.com
-References: <1600415225-17736-1-git-send-email-tanxiaofei@huawei.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <f03ee775-8a49-f1d0-b28b-73489f5b8be2@kernel.org>
-Date:   Fri, 18 Sep 2020 09:52:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=S2eNoZYJBbRdDL+9Rn83UkdafaYmPioHl03HTHvdQG0=;
+        b=sFEd2QlV1XYA3Q7MAgDgX1ZOlLTfl3UteH6UH2eeB1NVpuVukXne3fK/C116UchLaO
+         8vMBAVxKTA9qhjjOGGHBzDeU/oBmoGf5f8qGmVcTjHqJTDxC6Wckm9PUiinoHbnVfoyV
+         d+NohSbEozlcloanb76UXsyg2gPhWPu5YO810V2lbkHQT+yEjXtfuqUWX/3VyM8/vcKi
+         uhrha8bnjBDrj8R24DDJ92bg4MYEL2O+2otRqtBc0tN8HEbSIJpxBy0pIgsKF/1Wu3bD
+         kof70WeGGvBhR/tj5pbAQtNnNw78jwvigawhDQWqLhQk/m2a0a9J+wW33/8Bw7+UyhZs
+         rq8w==
+X-Gm-Message-State: AOAM533ekjx57n85xXc8rlaisTwPDbbT92+IJP+VJX65I7UPxpysNePA
+        m6/86ipLs5bBBLT3HXjifnzUNvRFH2GrQDYHkrs=
+X-Google-Smtp-Source: ABdhPJyuZa4aaOHbJ4KcquqeOW73BYpH7VvGe3VxVVFyF5vKx1u35OqPT0RQOJtMKbnV/Z8+HMnZE6+poiphw4Tj38I=
+X-Received: by 2002:a9d:67c3:: with SMTP id c3mr23645453otn.9.1600415549857;
+ Fri, 18 Sep 2020 00:52:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1600415225-17736-1-git-send-email-tanxiaofei@huawei.com>
-Content-Type: text/plain; charset=iso-8859-2
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1600401668.git.riteshh@linux.ibm.com> <88e795d8a4d5cd22165c7ebe857ba91d68d8813e.1600401668.git.riteshh@linux.ibm.com>
+In-Reply-To: <88e795d8a4d5cd22165c7ebe857ba91d68d8813e.1600401668.git.riteshh@linux.ibm.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 18 Sep 2020 09:52:18 +0200
+Message-ID: <CA+icZUXvhDR2TFEemfGyt=twxHBcu0_9b0H1j5cwGPG5kGA+TA@mail.gmail.com>
+Subject: Re: [PATCHv3 1/1] ext4: Optimize file overwrites
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu, jack@suse.cz,
+        dan.j.williams@intel.com, anju@linux.vnet.ibm.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18. 09. 20, 9:47, Xiaofei Tan wrote:
-> Fix following warnings caused by mismatch bewteen function parameters
-> and comments.
-> drivers/tty/vt/vt.c:3994: warning: Function parameter or member 'vc' not described in 'con_debug_enter'
-> drivers/tty/vt/vt.c:3994: warning: Excess function parameter 'sw' description in 'con_debug_enter'
-> drivers/tty/vt/vt.c:4051: warning: Excess function parameter 'sw' description in 'con_debug_leave'
+On Fri, Sep 18, 2020 at 7:09 AM Ritesh Harjani <riteshh@linux.ibm.com> wrote:
+>
+> In case if the file already has underlying blocks/extents allocated
+> then we don't need to start a journal txn and can directly return
+> the underlying mapping. Currently ext4_iomap_begin() is used by
+> both DAX & DIO path. We can check if the write request is an
+> overwrite & then directly return the mapping information.
+>
+> This could give a significant perf boost for multi-threaded writes
+> specially random overwrites.
+> On PPC64 VM with simulated pmem(DAX) device, ~10x perf improvement
+> could be seen in random writes (overwrite). Also bcoz this optimizes
+> away the spinlock contention during jbd2 slab cache allocation
+> (jbd2_journal_handle). On x86 VM, ~2x perf improvement was observed.
+>
+> Reported-by: Dan Williams <dan.j.williams@intel.com>
+> Suggested-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
 
-It looks like I fixed those in
-https://lore.kernel.org/r/20200818085655.12071-6-jslaby@suse.cz
-too. Could you rebase on the top of tty-next?
+I have applied your patch on top of recent Linus Git and boot-tested on x86-64.
 
-thanks,
--- 
-js
-suse labs
+Here I have LTP installed.
+If you have a LTP filesystem test-/use-case you know for testing,
+please let me know.
+
+Yes, I have seen the FIO config in the cover-letter.
+Maybe you have a different FIO config - 16G AFAIK is too big here.
+
+Feel free to add...
+
+Tested-by: Sedat Dilek <sedat.dilek@gmail.com> # Compile and boot on
+x86-64 Debian/unstable
+
+Thanks.
+
+- Sedat -
+
+> ---
+>  fs/ext4/inode.c | 18 +++++++++++++++---
+>  1 file changed, 15 insertions(+), 3 deletions(-)
+>
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 10dd470876b3..6eae17758ece 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -3437,14 +3437,26 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+>         map.m_len = min_t(loff_t, (offset + length - 1) >> blkbits,
+>                           EXT4_MAX_LOGICAL_BLOCK) - map.m_lblk + 1;
+>
+> -       if (flags & IOMAP_WRITE)
+> +       if (flags & IOMAP_WRITE) {
+> +               /*
+> +                * We check here if the blocks are already allocated, then we
+> +                * don't need to start a journal txn and we can directly return
+> +                * the mapping information. This could boost performance
+> +                * especially in multi-threaded overwrite requests.
+> +                */
+> +               if (offset + length <= i_size_read(inode)) {
+> +                       ret = ext4_map_blocks(NULL, inode, &map, 0);
+> +                       if (ret > 0 && (map.m_flags & EXT4_MAP_MAPPED))
+> +                               goto out;
+> +               }
+>                 ret = ext4_iomap_alloc(inode, &map, flags);
+> -       else
+> +       } else {
+>                 ret = ext4_map_blocks(NULL, inode, &map, 0);
+> +       }
+>
+>         if (ret < 0)
+>                 return ret;
+> -
+> +out:
+>         ext4_set_iomap(inode, iomap, &map, offset, length);
+>
+>         return 0;
+> --
+> 2.26.2
+>
