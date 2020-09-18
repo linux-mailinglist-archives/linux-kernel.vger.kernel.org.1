@@ -2,182 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CDE627080B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 23:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 156B3270810
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 23:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726369AbgIRVTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 17:19:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726326AbgIRVTW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 17:19:22 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D58C7C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 14:19:22 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id m13so2196504otl.9
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 14:19:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=hCqfyPqClFtsWYJ6Us4lj54w9VZCcNft/YN87A9Cm1M=;
-        b=RCLC4pAGnJPpVPcdwcMuRM/kCYe5yGj3+0+2krt4aXaidS5UjLbpsy5sPdGpUYeYRj
-         IBCHrTculQJ+3IShLOsUN6M5LV+639lGd7bqOJYdYqXbWCjoM+eHsTdG3SZ0VnMu3VBb
-         v1MqRjdzxrxOIQMNceoi2JERCRmFElH4hkgHDalq70CLk5z3OYuyljGxTWjzOaUk/Oxy
-         6zibOGX9vP7z9sGGCcerC4SEGV83/ul+bVkJTN0QLe4xEOrQBdEFfPpj32cEFf8O1FxL
-         Neg5uuOeUd8D7gZYZDr8oPchdjy3oDL0qD8+0dxihlkhQph1J00Bku1yFNeDZ0N5wddQ
-         SNFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=hCqfyPqClFtsWYJ6Us4lj54w9VZCcNft/YN87A9Cm1M=;
-        b=cP9nDXat1d4YaVn1VcfezcG34sGlsNgmbzaHFNwjzUls0gHRdzvACVA81KN39R6xW2
-         ft99aON/daVthcBs+UDdGCESEsG3fFq6MxeKesLMVgXdYFDIU53SG3mu+94LWgtMMkXr
-         pDaQ+U+852UdxgA+u1fzbEx5u6pFqBItHGE8MtiEY/0r/hgKgpshS+kqgFs9I265liJc
-         dICV/3OK66LyGC2aQoLaimafQMHS0Dsg8HZcH97XRITm8+ymTnnVGN8g4SRu6k+nf1k7
-         oyMByhyoR4+28xIAyG5sj4wlSVdKHZtccPRsLqVbiJFQdSDb000fjIEe7WMu1nt0/xQg
-         ejXQ==
-X-Gm-Message-State: AOAM532zxMWWmRCg9mVuL4tlUjpfmITUNRVLG0uVDWe1sba0G7/GUoBi
-        20qxBPB4iWV7IwLVZTkzx96M+Q==
-X-Google-Smtp-Source: ABdhPJyNWyKUZsUDgJBuIgPpf2i2iguj4TPsuCoz2AqoNjriX/A+uxXwTQHeC491Oww9bEb83eWPDg==
-X-Received: by 2002:a05:6830:1e6b:: with SMTP id m11mr24868463otr.40.1600463961917;
-        Fri, 18 Sep 2020 14:19:21 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id q184sm4146364ooq.40.2020.09.18.14.19.19
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Fri, 18 Sep 2020 14:19:20 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 14:19:02 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Yu Zhao <yuzhao@google.com>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Huang Ying <ying.huang@intel.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Konstantin Khlebnikov <koct9i@gmail.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Jaewon Kim <jaewon31.kim@samsung.com>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/13] mm: clean up some lru related pieces
-In-Reply-To: <20200918210126.GA1118730@google.com>
-Message-ID: <alpine.LSU.2.11.2009181406410.11531@eggly.anvils>
-References: <20200918030051.650890-1-yuzhao@google.com> <alpine.LSU.2.11.2009181317350.11298@eggly.anvils> <20200918210126.GA1118730@google.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        id S1726309AbgIRVVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 17:21:39 -0400
+Received: from mga02.intel.com ([134.134.136.20]:39891 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726247AbgIRVVj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 17:21:39 -0400
+IronPort-SDR: /YNQjK+3CfGUAwbUQfkGYAZ53dm1qYamVyqqoLDI6HzqIqiodyvlX9vt5N81oy/t1oLXSPX9De
+ BQoZU5nCnUdQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9748"; a="147718685"
+X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
+   d="scan'208";a="147718685"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 14:21:24 -0700
+IronPort-SDR: cqPmBsZP+6LCDOndU195386/Bgju5YHVNwiypFk5BMbPE9dJG8qo+zu4vjlHNtpOUfjRfXM7d/
+ s8nIq35e4evA==
+X-IronPort-AV: E=Sophos;i="5.77,274,1596524400"; 
+   d="scan'208";a="381051016"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.0.248]) ([10.212.0.248])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2020 14:21:13 -0700
+Subject: Re: [PATCH v12 8/8] x86: Disallow vsyscall emulation when CET is
+ enabled
+To:     Pavel Machek <pavel@ucw.cz>, Dave Hansen <dave.hansen@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+References: <20200918192312.25978-1-yu-cheng.yu@intel.com>
+ <20200918192312.25978-9-yu-cheng.yu@intel.com>
+ <f02b511d-1d48-6dea-d2e6-84d58e21e6cd@intel.com>
+ <20200918210026.GC4304@duo.ucw.cz>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <862eef02-eba2-e13f-ed67-f915f749ebca@intel.com>
+Date:   Fri, 18 Sep 2020 14:21:10 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <20200918210026.GC4304@duo.ucw.cz>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Sep 2020, Yu Zhao wrote:
-> On Fri, Sep 18, 2020 at 01:46:59PM -0700, Hugh Dickins wrote:
-> > On Thu, 17 Sep 2020, Yu Zhao wrote:
-> > 
-> > > Hi Andrew,
-> > > 
-> > > I see you have taken this:
-> > >   mm: use add_page_to_lru_list()/page_lru()/page_off_lru()
-> > > Do you mind dropping it?
-> > > 
-> > > Michal asked to do a bit of additional work. So I thought I probably
-> > > should create a series to do more cleanups I've been meaning to.
-> > > 
-> > > This series contains the change in the patch above and goes a few
-> > > more steps farther. It's intended to improve readability and should
-> > > not have any performance impacts. There are minor behavior changes in
-> > > terms of debugging and error reporting, which I have all highlighted
-> > > in the individual patches. All patches were properly tested on 5.8
-> > > running Chrome OS, with various debug options turned on.
-> > > 
-> > > Michal,
-> > > 
-> > > Do you mind taking a looking at the entire series?
-> > > 
-> > > Thank you.
-> > > 
-> > > Yu Zhao (13):
-> > >   mm: use add_page_to_lru_list()
-> > >   mm: use page_off_lru()
-> > >   mm: move __ClearPageLRU() into page_off_lru()
-> > >   mm: shuffle lru list addition and deletion functions
-> > >   mm: don't pass enum lru_list to lru list addition functions
-> > >   mm: don't pass enum lru_list to trace_mm_lru_insertion()
-> > >   mm: don't pass enum lru_list to del_page_from_lru_list()
-> > >   mm: rename page_off_lru() to __clear_page_lru_flags()
-> > >   mm: inline page_lru_base_type()
-> > >   mm: VM_BUG_ON lru page flags
-> > >   mm: inline __update_lru_size()
-> > >   mm: make lruvec_lru_size() static
-> > >   mm: enlarge the int parameter of update_lru_size()
-> > > 
-> > >  include/linux/memcontrol.h     |  14 ++--
-> > >  include/linux/mm_inline.h      | 115 ++++++++++++++-------------------
-> > >  include/linux/mmzone.h         |   2 -
-> > >  include/linux/vmstat.h         |   2 +-
-> > >  include/trace/events/pagemap.h |  11 ++--
-> > >  mm/compaction.c                |   2 +-
-> > >  mm/memcontrol.c                |  10 +--
-> > >  mm/mlock.c                     |   2 +-
-> > >  mm/swap.c                      |  53 ++++++---------
-> > >  mm/vmscan.c                    |  28 +++-----
-> > >  10 files changed, 95 insertions(+), 144 deletions(-)
-> > > 
-> > > -- 
-> > > 2.28.0.681.g6f77f65b4e-goog
-> > 
-> > Sorry, Yu, I may be out-of-line in sending this: but as you know,
-> > Alex Shi has a long per-memcg lru_lock series playing in much the
-> > same area (particularly conflicting in mm/swap.c and mm/vmscan.c):
-> > a patchset that makes useful changes, that I'm very keen to help
-> > into mmotm a.s.a.p (but not before I've completed diligence).
-> > 
-> > We've put a lot of effort into its testing, I'm currently reviewing
-> > it patch by patch (my general silence indicating that I'm busy on that,
-> > but slow as ever): so I'm a bit discouraged to have its stability
-> > potentially undermined by conflicting cleanups at this stage.
-> > 
-> > If there's general agreement that your cleanups are safe and welcome
-> > (Michal's initial reaction sheds some doubt on that), great: I hope
-> > that Andrew can fast-track them into mmotm, then Alex rebase on top
-> > of them, and I then re-test and re-review.
-> > 
-> > But if that quick agreement is not forthcoming, may I ask you please
-> > to hold back, and resend based on top of Alex's next posting?
+On 9/18/2020 2:00 PM, Pavel Machek wrote:
+> On Fri 2020-09-18 12:32:57, Dave Hansen wrote:
+>> On 9/18/20 12:23 PM, Yu-cheng Yu wrote:
+>>> Emulation of the legacy vsyscall page is required by some programs
+>>> built before 2013.  Newer programs after 2013 don't use it.
+>>> Disable vsyscall emulation when Control-flow Enforcement (CET) is
+>>> enabled to enhance security.
+>>
+>> How does this "enhance security"?
+>>
+>> What is the connection between vsyscall emulation and CET?
 > 
-> The per-memcg lru lock series seems a high priority, and I have
-> absolutely no problem accommodate your request.
-
-Many thanks!
-
+> Boom.
 > 
-> In return, may I ask you or Alex to review this series after you
-> have finished with per-memcg lru lock (to make sure that I resolve
-> all the conflicts correctly at least)?
+> We don't break compatibility by default, and you should not tell
+> people to enable CET by default if you plan to do this.
 
-Fair enough: I promise to do so.
+I would revise the wording if there is another version.  What this patch 
+does is:
 
-And your rebasing will necessarily lead you to review some parts
-of Alex's patchset, which will help us all too.
+If an application is compiled for CET and the system supports it, then 
+the application cannot do vsyscall emulation.  Earlier we allow the 
+emulation, and had a patch that fixes the shadow stack and endbr for the 
+emulation code.  Since newer programs mostly do no do the emulation, we 
+changed the patch do block it when attempted.
 
-Andrew, Yu asked at the start:
-> > > I see you have taken this:
-> > >   mm: use add_page_to_lru_list()/page_lru()/page_off_lru()
-> > > Do you mind dropping it?
-Dropping that for now will help too.
+This patch would not block any legacy applications or any applications 
+on older machines.
 
-Thanks,
-Hugh
+Yu-cheng
