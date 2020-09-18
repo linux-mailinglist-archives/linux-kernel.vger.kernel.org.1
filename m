@@ -2,89 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C0426F80F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48CA626F81B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 10:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726392AbgIRIX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 04:23:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725874AbgIRIXz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 04:23:55 -0400
-Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C529C06174A;
-        Fri, 18 Sep 2020 01:23:55 -0700 (PDT)
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id 9A728C6366; Fri, 18 Sep 2020 09:23:52 +0100 (BST)
-Date:   Fri, 18 Sep 2020 09:23:52 +0100
-From:   Sean Young <sean@mess.org>
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>
-Cc:     "mchehab@kernel.org" <mchehab@kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: Re: [PATCH] media: rc: gpio-ir-recv: add QoS support for cpuidle
- system
-Message-ID: <20200918082352.GA32346@gofer.mess.org>
-References: <20200915150202.24165-1-qiangqing.zhang@nxp.com>
- <20200915093342.GA24139@gofer.mess.org>
- <DB8PR04MB6795CB9F519D2BD277654B29E63E0@DB8PR04MB6795.eurprd04.prod.outlook.com>
- <20200917204336.GA21441@gofer.mess.org>
- <DB8PR04MB6795D5228426C7D93AF08081E63F0@DB8PR04MB6795.eurprd04.prod.outlook.com>
+        id S1726044AbgIRIYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 04:24:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48146 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726366AbgIRIYH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 04:24:07 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6712A21D42;
+        Fri, 18 Sep 2020 08:24:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600417446;
+        bh=lUYNaNiZ3xGBR8zJ1KybHo8613T0moodIxZkxWsv0X4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PEy+iwxuA+46MoaY0Gk6Pt+Hlx3cPzAx+FTYDsBoElEwdtee7tgLtoBVFtFoX0Adm
+         FbwTnHJ+WK18H4b9brnxV/OV8FmlP+ueWUju5WlkK5oIYQMxZrVjr6W7Z+oWN8bzHo
+         xXynd0zhqNghGEU891wrj1SAn6V7um6nC+4ERrnE=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kJBga-00Cvso-IJ; Fri, 18 Sep 2020 09:24:04 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <DB8PR04MB6795D5228426C7D93AF08081E63F0@DB8PR04MB6795.eurprd04.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 18 Sep 2020 09:24:04 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Saravana Kannan <saravanak@google.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v3 08/16] irqchip/gic: Configure SGIs as standard
+ interrupts
+In-Reply-To: <a31dac24-7a1d-d78c-ae70-2ada2a7f7862@nvidia.com>
+References: <20200901144324.1071694-1-maz@kernel.org>
+ <20200901144324.1071694-9-maz@kernel.org>
+ <CGME20200914130601eucas1p23ce276d168dee37909b22c75499e68da@eucas1p2.samsung.com>
+ <a917082d-4bfd-a6fd-db88-36e75f5f5921@samsung.com>
+ <933bc43e-3cd7-10ec-b9ec-58afaa619fb7@nvidia.com>
+ <3378cd07b92e87a24f1db75f708424ee@kernel.org>
+ <CACRpkdYvqQUJaReD1yNTwiHhaZpQ9h5Z9DgdqbKkCexnM7cWNw@mail.gmail.com>
+ <049d62ac7de32590cb170714b47fb87d@kernel.org>
+ <a88528cd-eb76-367a-77d6-7ae20bd28304@nvidia.com>
+ <81cb16323baa1c81e7bc1e8156fa47b8@kernel.org>
+ <e317b2fe-52e3-8ce7-ba77-43d2708d660f@nvidia.com>
+ <4645f636-e7cc-6983-a3b7-897c20ec5096@samsung.com>
+ <ace68d00-f005-fee3-1f01-44522c180462@nvidia.com>
+ <a31dac24-7a1d-d78c-ae70-2ada2a7f7862@nvidia.com>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <e757da2ab2452da6dbaf98a752688eaf@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: jonathanh@nvidia.com, m.szyprowski@samsung.com, sumit.garg@linaro.org, f.fainelli@gmail.com, linux@arm.linux.org.uk, jason@lakedaemon.net, saravanak@google.com, andrew@lunn.ch, catalin.marinas@arm.com, linus.walleij@linaro.org, b.zolnierkie@samsung.com, linux-kernel@vger.kernel.org, krzk@kernel.org, Valentin.Schneider@arm.com, will@kernel.org, linux-samsung-soc@vger.kernel.org, linux-tegra@vger.kernel.org, tglx@linutronix.de, kernel-team@android.com, gregory.clement@bootlin.com, linux-arm-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joakim,
-
-On Fri, Sep 18, 2020 at 01:42:15AM +0000, Joakim Zhang wrote:
-> > -----Original Message-----
-> > From: Sean Young <sean@mess.org>
-> > Sent: 2020年9月18日 4:44
-> > To: Joakim Zhang <qiangqing.zhang@nxp.com>
-> > Cc: mchehab@kernel.org; linux-media@vger.kernel.org;
-> > linux-kernel@vger.kernel.org; dl-linux-imx <linux-imx@nxp.com>
-> > Subject: Re: [PATCH] media: rc: gpio-ir-recv: add QoS support for cpuidle
-> > system
-
--snip-
-
-> > > Autosuspend delay should be fixed value, should be set to gpio device timeout
-> > value, which is 125ms.
-> > 
-> > So the idea was that cpuidle is only enabled while IR frames are being received,
-> > that's why I suggested it.
+On 2020-09-17 19:24, Jon Hunter wrote:
+> On 17/09/2020 15:53, Jon Hunter wrote:
 > 
-> May be a typo, "cpuidle is only DISABLED while IR frames are being receive,", this is not I want to implement, experiments have also shown poor results.
-
-Sorry, yes I got this wrong. You are right.
-
-> > If you set the autosuspend delay to 125ms, then the cpuidle will not be enabled
-> > between IR frames. Maybe this is what you want, but it does mean cpuidle is
-> > totally suspended while anyone is pressing buttons on a remote.
+> ...
 > 
-> Yes, this is what I want, cpuidle is totally disabled while pressing buttons, disable cpuidle at the first frame then keep disabled until there is no activity for a while.
-> So that we only can not decode the first frame, such as, if transmitting 4 frames once, we can correctly decode 3 times.
+>>> next-20200916 completely broken on ARM and ARM64. Please check
+>>> next-20200915 + the mentioned fix or just check
+>>> https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/log/?h=irq/ipi-as-irq
+>> 
+>> OK, I have confirmed that on Tegra20 and Tegra30, that next-20200915 +
+>> Marc's fix boots fine.
+>> 
+>> Tegra186 and Tegra194 are not booting, but I am wondering if this is 
+>> yet
+>> another issue that is not related. I have not actually bisected on 
+>> these
+>> boards, but I am now bisecting on Tegra186 to confirm.
 > 
-> I also try your suggestion, set autosuspend delay time to protocol's timeout value, but the result is terrible. If transmitting 4 frames once, we can't correctly decode 3 times,
-> even can't decode it sometime. The sequence is, cpu in idle state when the first frame coming, then disable cpu idle until protocols' timeout, cpu in idle state again, the first frame can't be decoded.
-> The second frame coming, it will repeat the behavior of the first frame, may cause the second frame can't be decode......
-> 
-> Can you take account of I have done in the first version, autosuspend delay time is set to 125ms?
+> Hmm ... well bisect on Tegra186 is also pointing to this commit, but 
+> the
+> fix is not working there. Wonder what's going on with this gic-400?
 
-Yes, in retrospect you are right. Trying to shorten the cpuidle suspended
-period will not work. I am sorry about this.
+It's not GIC400. I have tons of machines with GIC400 around me, and they
+don't even need the fix. What happens if you only boot the non-Denver 
+CPUs?
 
-How about setting the autosuspend period in devicetree, and 0 will turn
-this feature off completely?
-
-Thanks,
-
-Sean
+         M.
+-- 
+Jazz is not dead. It just smells funny...
