@@ -2,135 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF3062708B1
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 00:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F0682708B7
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 00:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726361AbgIRWAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 18:00:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726157AbgIRWAu (ORCPT
+        id S1726250AbgIRWEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 18:04:00 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:38744 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726154AbgIRWEA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 18:00:50 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BAC2C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 15:00:50 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id g29so4256078pgl.2
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 15:00:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=JxUdFoGAxFplTWGtoXNZgS71eI4uX7HGfO5ucGAc8lo=;
-        b=F3F4STQx9TEbezd5dpqkh+1WgHncbTN/t8oI9gLXFGTIZBF4umVMyWZs6/5SC4DPNe
-         BdEswkxGJNvw8UKNxsjmhcgGCOWOfL+FnYmzid7dcH3dg8ENtuW1e1zau+x+4ZWOfwET
-         oYzijV7/xANP6xFwAgQjhsqbAUPQauG787ODk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=JxUdFoGAxFplTWGtoXNZgS71eI4uX7HGfO5ucGAc8lo=;
-        b=YRUlfKwoXrJdQCQrTZtOU/aPzOl1YzGf0HqBr6zMSGpAqpdlLqAguTkk0frg724rV6
-         KHpU76oSG7mxoUYxuwhoTm7JpefKj1xxq7qJy0haoYE1vW0rY3mWZZ6uXf2e3uEr/J6b
-         m0AFPXljxGbN6Sj0IpkwJZGyrDp+v5s5MAQFfUxkw40ZnSnQ5bSMUytWW6H1133ulwMD
-         wizsIrZ91mVvD/Q9L4nCDgqPjq2iIs6kfjr5yjN5dAIwwwBqfQoenmMJyHsW1B7u4jgi
-         ZQS4AAbQqPXx4s92gARmxzKZaKjqr29SGySDEAsVgs2xDSmF2rVU0b65lUtMF3Xy+OvT
-         0A3g==
-X-Gm-Message-State: AOAM530Ca8aEPcN6el4dXN1rs0iWCKwt9BKXb0P2rnOwinDyncCyLDm5
-        nOS4ebabx511f4M9YhRz6j9dNA==
-X-Google-Smtp-Source: ABdhPJw0uH7wi+N0H7/B8Z1EuUZoi1IOCarbau2BnWaa5f2mRZZbuRvvXpA7+ce1jDkK2XKWqANrBA==
-X-Received: by 2002:a63:5b5c:: with SMTP id l28mr1381997pgm.243.1600466449680;
-        Fri, 18 Sep 2020 15:00:49 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v204sm4236125pfc.10.2020.09.18.15.00.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 15:00:48 -0700 (PDT)
-Date:   Fri, 18 Sep 2020 15:00:48 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christian Brauner <christian@brauner.io>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        linux-kselftest@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org,
-        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 14/15] selftests/clone3: Avoid OS-defined clone_args
-Message-ID: <202009181500.9A560349@keescook>
-References: <20200912110820.597135-1-keescook@chromium.org>
- <20200912110820.597135-15-keescook@chromium.org>
- <20200915162528.x7admy45pdqsoke4@wittgenstein>
+        Fri, 18 Sep 2020 18:04:00 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 8146F1C0B78; Sat, 19 Sep 2020 00:03:55 +0200 (CEST)
+Date:   Sat, 19 Sep 2020 00:03:55 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     "H.J. Lu" <hjl.tools@gmail.com>
+Cc:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+Subject: Re: [PATCH v12 1/8] x86/cet/ibt: Add Kconfig option for user-mode
+ Indirect Branch Tracking
+Message-ID: <20200918220355.GC7443@duo.ucw.cz>
+References: <20200918192312.25978-1-yu-cheng.yu@intel.com>
+ <20200918192312.25978-2-yu-cheng.yu@intel.com>
+ <ce2524cc-081b-aec9-177a-11c7431cb20d@infradead.org>
+ <20200918205933.GB4304@duo.ucw.cz>
+ <019b5e45-b116-7f3d-f1f2-3680afbd676c@intel.com>
+ <20200918214020.GF4304@duo.ucw.cz>
+ <CAMe9rOrmq-7mZkp=O+wRRX+wGa=1dopUhXRbCJBJQUdGA3N=7w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="xesSdrSSBC0PokLI"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200915162528.x7admy45pdqsoke4@wittgenstein>
+In-Reply-To: <CAMe9rOrmq-7mZkp=O+wRRX+wGa=1dopUhXRbCJBJQUdGA3N=7w@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 06:25:28PM +0200, Christian Brauner wrote:
-> On Sat, Sep 12, 2020 at 04:08:19AM -0700, Kees Cook wrote:
-> > As the UAPI headers start to appear in distros, we need to avoid
-> > outdated versions of struct clone_args to be able to test modern
-> > features. Additionally pull in the syscall numbers correctly.
-> > 
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> 
-> Hm, with this patch applied I'm getting:
-> 
-> gcc -g -I../../../../usr/include/    clone3_set_tid.c /home/brauner/src/git/linux/linux/tools/testing/selftests/kselftest_harness.h /home/brauner/src/git/linux/linux/tools/testing/selftests/kselftest.h -lcap -o /home/brauner/src/git/linux/linux/tools/testing/selftests/clone3/clone3_set_tid
-> In file included from clone3_set_tid.c:24:
-> clone3_selftests.h:37:8: error: redefinition of ‘struct clone_args’
->    37 | struct clone_args {
->       |        ^~~~~~~~~~
-> In file included from clone3_set_tid.c:12:
-> /usr/include/linux/sched.h:92:8: note: originally defined here
->    92 | struct clone_args {
->       |        ^~~~~~~~~~
-> make: *** [../lib.mk:140: /home/brauner/src/git/linux/linux/tools/testing/selftests/clone3/clone3_set_tid] Error 1
 
-Hm, weird.
+--xesSdrSSBC0PokLI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> One trick to avoid this could be:
-> 
-> #ifndef CLONE_ARGS_SIZE_VER0
-> #define CLONE_ARGS_SIZE_VER0 64 /* sizeof first published struct */
-> #endif
-> 
-> #ifndef CLONE_ARGS_SIZE_VER1
-> #define CLONE_ARGS_SIZE_VER1 80 /* sizeof second published struct */
-> #endif
-> 
-> #ifndef CLONE_ARGS_SIZE_VER2
-> #define CLONE_ARGS_SIZE_VER2 88 /* sizeof third published struct */
-> #endif
-> 
-> struct __clone_args {
-> 	__aligned_u64 flags;
-> 	__aligned_u64 pidfd;
-> 	__aligned_u64 child_tid;
-> 	__aligned_u64 parent_tid;
-> 	__aligned_u64 exit_signal;
-> 	__aligned_u64 stack;
-> 	__aligned_u64 stack_size;
-> 	__aligned_u64 tls;
-> 	__aligned_u64 set_tid;
-> 	__aligned_u64 set_tid_size;
-> 	__aligned_u64 cgroup;
-> };
-> 
-> static pid_t sys_clone3(struct __clone_args *args, size_t size)
-> {
-> 	return syscall(__NR_clone3, args, size);
-> }
+On Fri 2020-09-18 14:46:12, H.J. Lu wrote:
+> On Fri, Sep 18, 2020 at 2:40 PM Pavel Machek <pavel@ucw.cz> wrote:
+> >
+> > On Fri 2020-09-18 14:25:12, Yu, Yu-cheng wrote:
+> > > On 9/18/2020 1:59 PM, Pavel Machek wrote:
+> > > > On Fri 2020-09-18 13:24:13, Randy Dunlap wrote:
+> > > > > Hi,
+> > > > >
+> > > > > If you do another version of this:
+> > > > >
+> > > > > On 9/18/20 12:23 PM, Yu-cheng Yu wrote:
+> > > > > > Introduce Kconfig option X86_INTEL_BRANCH_TRACKING_USER.
+> > > > > >
+> > > > > > Indirect Branch Tracking (IBT) provides protection against CALL=
+-/JMP-
+> > > > > > oriented programming attacks.  It is active when the kernel has=
+ this
+> > > > > > feature enabled, and the processor and the application support =
+it.
+> > > > > > When this feature is enabled, legacy non-IBT applications conti=
+nue to
+> > > > > > work, but without IBT protection.
+> > > > > >
+> > > > > > Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+> > > > > > ---
+> > > > > > v10:
+> > > > > > - Change build-time CET check to config depends on.
+> > > > > >
+> > > > > >   arch/x86/Kconfig | 16 ++++++++++++++++
+> > > > > >   1 file changed, 16 insertions(+)
+> > > > > >
+> > > > > > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> > > > > > index 6b6dad011763..b047e0a8d1c2 100644
+> > > > > > --- a/arch/x86/Kconfig
+> > > > > > +++ b/arch/x86/Kconfig
+> > > > > > @@ -1963,6 +1963,22 @@ config X86_INTEL_SHADOW_STACK_USER
+> > > > > >           If unsure, say y.
+> > > > > > +config X86_INTEL_BRANCH_TRACKING_USER
+> > > > > > +       prompt "Intel Indirect Branch Tracking for user-mode"
+> > > > > > +       def_bool n
+> > > > > > +       depends on CPU_SUP_INTEL && X86_64
+> > > > > > +       depends on $(cc-option,-fcf-protection)
+> > > > > > +       select X86_INTEL_CET
+> > > > > > +       help
+> > > > > > +         Indirect Branch Tracking (IBT) provides protection ag=
+ainst
+> > > > > > +         CALL-/JMP-oriented programming attacks.  It is active=
+ when
+> > > > > > +         the kernel has this feature enabled, and the processo=
+r and
+> > > > > > +         the application support it.  When this feature is ena=
+bled,
+> > > > > > +         legacy non-IBT applications continue to work, but wit=
+hout
+> > > > > > +         IBT protection.
+> > > > > > +
+> > > > > > +         If unsure, say y
+> > > > >
+> > > > >     If unsure, say y.
+> > > >
+> > > > Actually, it would be "If unsure, say Y.", to be consistent with the
+> > > > rest of the Kconfig.
+> > > >
+> > > > But I wonder if Yes by default is good idea. Only very new CPUs will
+> > > > support this, right? Are they even available at the market? Should =
+the
+> > > > help text say "if your CPU is Whatever Lake or newer, ...." :-) ?
+> > >
+> > > I will revise the wording if there is another version.  But a CET-cap=
+able
+> > > kernel can run on legacy systems.  We have been testing that combinat=
+ion.
+> >
+> > Yes, but enabling CET is unneccessary overhead on older systems. And
+> > Kconfig is great place to explain that.
+> >
+>=20
+> I can't tell any visible CET kernel overhead on my non-CET machines.
 
-Yeah, that has fewer down sides. I'll rework it.
+I assume you are not a troll but you sound a bit like one.
 
--- 
-Kees Cook
+Please list kernel size before and after enabling
+X86_INTEL_CET option(s).
+
+That's the overhead I'm talking about, and that's why Kconfig should
+explain what machines this is useful on.
+
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--xesSdrSSBC0PokLI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX2UuywAKCRAw5/Bqldv6
+8tNJAJ9zzAqfN0aeU1k6gJtk7OBI9HGT+gCffaWJMFOfRANSTM5cDlxOOo23LTw=
+=3UMg
+-----END PGP SIGNATURE-----
+
+--xesSdrSSBC0PokLI--
