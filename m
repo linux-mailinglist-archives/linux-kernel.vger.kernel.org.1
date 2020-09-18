@@ -2,168 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB77270457
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 20:48:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D83127045E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 20:50:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726290AbgIRSsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 14:48:30 -0400
-Received: from m42-11.mailgun.net ([69.72.42.11]:18396 "EHLO
-        m42-11.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726115AbgIRSs3 (ORCPT
+        id S1726332AbgIRSuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 14:50:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726139AbgIRSuM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 14:48:29 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600454908; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=I15lYOFQgP5KLwMoydnHHG3ATiZuNtYswFCmvUG0xyo=;
- b=mIPRcPY4CVem1yHATT/hhVWe6GkrD4Cjq/zX2lT2OkrKkSPd+o2QkCa2WP7/lulUspGhRcDB
- WIYK8FydVXPYdc94n2utKRR/G9C1Qz955BTTqc9FRlfcAVlSpz9180ISwd/y9WYB27vQ8f6k
- QFs54yg1zD/sxpfWvr6UanuKUWY=
-X-Mailgun-Sending-Ip: 69.72.42.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 5f6500f6c4180d293b3726c5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Sep 2020 18:48:22
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5D063C433F1; Fri, 18 Sep 2020 18:48:22 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 93856C433CA;
-        Fri, 18 Sep 2020 18:48:21 +0000 (UTC)
+        Fri, 18 Sep 2020 14:50:12 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FF8FC0613CE;
+        Fri, 18 Sep 2020 11:50:12 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id g96so4999978ybi.12;
+        Fri, 18 Sep 2020 11:50:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hqvHrh3o7jsEIYCRdIqyTmHwMSYgGKNVHC9p9LOXhxw=;
+        b=DHO41exICjvGwAxxgbDYlzJnlKcZj15vuplT8+Ds/C6Zsm+MoNytObL5d+kXL6YYQ6
+         73mS3t3sDYJn28DFoiYcp4OUQVhx7B2NdSnbpE6AoYr1qHwV1M3aJQhLLDb6aiJN/wao
+         SpoigZSAfRpIHfrWuqqsZUHPKm48I0I5Xo4B3S6m3ImEwQuzuG8FlvcsrcybYeX4bmFF
+         joNvS9XfxS1OB85qYm12cIwa8DEzupjF07wqbIHW7UIF/4RdH9fizf5/+hX+BJ+GF4lo
+         wGKDZeQYQV8KdOo7im58v4Q24OQuvoKAZem0MXFKfmFlz8JtBHdl9ZYVApMUYYQN6HKp
+         77Hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hqvHrh3o7jsEIYCRdIqyTmHwMSYgGKNVHC9p9LOXhxw=;
+        b=rqok6WJNhkifpqAMOGisf8ovV1lijfD1b0hhuFRyTAPkH+mmoXfUpSJCscO5+jPJck
+         pJn88Tqw9Khjy+J67tXyPNYJIgXexYdPVYxfyydJYfkVsrCif6tmqvCTCr75I0BeR05j
+         g8r5SztST969rOb914u1OwyCdtrWlcUJd580Y8C5KgUGVAHXEiGzLS7zo7uJQNYHf30f
+         6YCEcp+jc5rXCQUQ7/CE6t86Bm5jAQHIPHNBFAAfEVXPypuoazT5HhTxG0J9j1/fjDM/
+         4/lvgny/o0S7xZ0AeNq1ZaytQ7N4nKPImO53frKxLr8SbV8/t7hZsnDOANaG59MubW2h
+         O+aw==
+X-Gm-Message-State: AOAM533hHXxTT7qlVOi33zszK1lccLXYJ9Ka3IFLKJY/b91EiqcoAUtW
+        2QYvWytu+b0rnGdR/XRgXIbFPDrfLH75gfS+mDM=
+X-Google-Smtp-Source: ABdhPJyOocoh51I0ATOSNT+p7C2IV0G8EA0W32YmITZyk+4NJTlyniC7h6zcLTYEovP7TKzk4dvn5ydKFv2dFmV7l4Y=
+X-Received: by 2002:a25:6644:: with SMTP id z4mr21000090ybm.347.1600455011405;
+ Fri, 18 Sep 2020 11:50:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 18 Sep 2020 11:48:21 -0700
-From:   bbhatt@codeaurora.org
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Jeffrey Hugo <jhugo@codeaurora.org>, linux-arm-msm@vger.kernel.org,
-        hemantk@codeaurora.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/3] bus: mhi: core: Remove warnings for missing
- MODULE_LICENSE()
-In-Reply-To: <20200918171809.GA3410@Mani-XPS-13-9360>
-References: <1600381176-37604-1-git-send-email-bbhatt@codeaurora.org>
- <1600381176-37604-2-git-send-email-bbhatt@codeaurora.org>
- <6f7b6be3-f52d-b082-6065-c75e3d89d252@codeaurora.org>
- <0e34b5a2562b776ea410c80479107581@codeaurora.org>
- <20200918171809.GA3410@Mani-XPS-13-9360>
-Message-ID: <4506782e8bb9a50d80b4a40575ae532e@codeaurora.org>
-X-Sender: bbhatt@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20200916194733.GA4820@ubuntu-x1> <20200917080452.GB2411168@krava>
+ <20200917083809.GE2411168@krava> <20200917091406.GF2411168@krava>
+ <20200917125450.GC4820@ubuntu-x1> <20200918100542.GD2514666@krava>
+In-Reply-To: <20200918100542.GD2514666@krava>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 18 Sep 2020 11:50:00 -0700
+Message-ID: <CAEf4BzZY5ReVYDRJq2kRGjH9Q9_H-LWWyo2WfWSbgGzr=QZ_Uw@mail.gmail.com>
+Subject: Re: resolve_btfids breaks kernel cross-compilation
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Seth Forshee <seth.forshee@canonical.com>,
+        Andrii Nakryiko <andriin@fb.com>, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-18 10:18, Manivannan Sadhasivam wrote:
-> On Fri, Sep 18, 2020 at 09:49:05AM -0700, bbhatt@codeaurora.org wrote:
->> On 2020-09-18 07:27, Jeffrey Hugo wrote:
->> > On 9/17/2020 4:19 PM, Bhaumik Bhatt wrote:
->> > > When building MHI as a module, missing MODULE_LICENSE() warnings
->> > > are seen. Avoid them by adding the license and description
->> > > information for the files where the warnings are seen.
->> > >
->> > > Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
->> > > ---
->> > >   drivers/bus/mhi/core/boot.c | 3 +++
->> > >   drivers/bus/mhi/core/main.c | 3 +++
->> > >   drivers/bus/mhi/core/pm.c   | 3 +++
->> > >   3 files changed, 9 insertions(+)
->> > >
->> > > diff --git a/drivers/bus/mhi/core/boot.c b/drivers/bus/mhi/core/boot.c
->> > > index 24422f5..78140cc 100644
->> > > --- a/drivers/bus/mhi/core/boot.c
->> > > +++ b/drivers/bus/mhi/core/boot.c
->> > > @@ -523,3 +523,6 @@ void mhi_fw_load_handler(struct mhi_controller
->> > > *mhi_cntrl)
->> > >   error_alloc_fw_table:
->> > >   	release_firmware(firmware);
->> > >   }
->> > > +
->> > > +MODULE_LICENSE("GPL v2");
->> > > +MODULE_DESCRIPTION("MHI Host Interface");
->> > > diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
->> > > index 2cff5dd..172026f 100644
->> > > --- a/drivers/bus/mhi/core/main.c
->> > > +++ b/drivers/bus/mhi/core/main.c
->> > > @@ -1533,3 +1533,6 @@ int mhi_poll(struct mhi_device *mhi_dev, u32
->> > > budget)
->> > >   	return ret;
->> > >   }
->> > >   EXPORT_SYMBOL_GPL(mhi_poll);
->> > > +
->> > > +MODULE_LICENSE("GPL v2");
->> > > +MODULE_DESCRIPTION("MHI Host Interface");
->> > > diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
->> > > index ce4d969..72c3dbc 100644
->> > > --- a/drivers/bus/mhi/core/pm.c
->> > > +++ b/drivers/bus/mhi/core/pm.c
->> > > @@ -1150,3 +1150,6 @@ void mhi_device_put(struct mhi_device *mhi_dev)
->> > >   	read_unlock_bh(&mhi_cntrl->pm_lock);
->> > >   }
->> > >   EXPORT_SYMBOL_GPL(mhi_device_put);
->> > > +
->> > > +MODULE_LICENSE("GPL v2");
->> > > +MODULE_DESCRIPTION("MHI Host Interface");
->> > >
->> >
->> > I would expect you only need to add the MODULE_* once per module, in
->> > which case main.c is probably the only place that needs it.
->> 
->> Hi Jeff,
->> 
->> I thought so too. This is to fix below warnings seen when building MHI 
->> as a
->> MODULE:
->> 
->> WARNING: modpost: missing MODULE_LICENSE() in 
->> drivers/bus/mhi/core/main.o
->> WARNING: modpost: missing MODULE_LICENSE() in 
->> drivers/bus/mhi/core/pm.o
->> WARNING: modpost: missing MODULE_LICENSE() in 
->> drivers/bus/mhi/core/boot.o
->> 
->> We've only had those in init.c so far.
->> 
-> 
-> Can you please test below diff to see if it fixes the warning?
-> 
-> diff --git a/drivers/bus/mhi/core/Makefile 
-> b/drivers/bus/mhi/core/Makefile
-> index 66e2700c9032..bc1469778cf8 100644
-> --- a/drivers/bus/mhi/core/Makefile
-> +++ b/drivers/bus/mhi/core/Makefile
-> @@ -1,3 +1,3 @@
-> -obj-$(CONFIG_MHI_BUS) := mhi.o
-> +obj-$(CONFIG_MHI_BUS) += mhi.o
-> 
->  mhi-y := init.o main.o pm.o boot.o
-> 
-> Thanks,
-> Mani
-> 
->> Thanks,
->> Bhaumik
->> 
->> 'The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
->> Forum,\na Linux Foundation Collaborative Project'
-Hi Mani,
+On Fri, Sep 18, 2020 at 3:07 AM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Thu, Sep 17, 2020 at 07:54:50AM -0500, Seth Forshee wrote:
+> > On Thu, Sep 17, 2020 at 11:14:06AM +0200, Jiri Olsa wrote:
+> > > On Thu, Sep 17, 2020 at 10:38:12AM +0200, Jiri Olsa wrote:
+> > > > On Thu, Sep 17, 2020 at 10:04:55AM +0200, Jiri Olsa wrote:
+> > > > > On Wed, Sep 16, 2020 at 02:47:33PM -0500, Seth Forshee wrote:
+> > > > > > The requirement to build resolve_btfids whenever CONFIG_DEBUG_INFO_BTF
+> > > > > > is enabled breaks some cross builds. For example, when building a 64-bit
+> > > > > > powerpc kernel on amd64 I get:
+> > > > > >
+> > > > > >  Auto-detecting system features:
+> > > > > >  ...                        libelf: [ [32mon[m  ]
+> > > > > >  ...                          zlib: [ [32mon[m  ]
+> > > > > >  ...                           bpf: [ [31mOFF[m ]
+> > > > > >
+> > > > > >  BPF API too old
+> > > > > >  make[6]: *** [Makefile:295: bpfdep] Error 1
+> > > > > >
+> > > > > > The contents of tools/bpf/resolve_btfids/feature/test-bpf.make.output:
+> > > > > >
+> > > > > >  In file included from /home/sforshee/src/u-k/unstable/tools/arch/powerpc/include/uapi/asm/bitsperlong.h:11,
+> > > > > >                   from /usr/include/asm-generic/int-ll64.h:12,
+> > > > > >                   from /usr/include/asm-generic/types.h:7,
+> > > > > >                   from /usr/include/x86_64-linux-gnu/asm/types.h:1,
+> > > > > >                   from /home/sforshee/src/u-k/unstable/tools/include/linux/types.h:10,
+> > > > > >                   from /home/sforshee/src/u-k/unstable/tools/include/uapi/linux/bpf.h:11,
+> > > > > >                   from test-bpf.c:3:
+> > > > > >  /home/sforshee/src/u-k/unstable/tools/include/asm-generic/bitsperlong.h:14:2: error: #error Inconsistent word size. Check asm/bitsperlong.h
+> > > > > >     14 | #error Inconsistent word size. Check asm/bitsperlong.h
+> > > > > >        |  ^~~~~
+> > > > > >
+> > > > > > This is because tools/arch/powerpc/include/uapi/asm/bitsperlong.h sets
+> > > > > > __BITS_PER_LONG based on the predefinied compiler macro __powerpc64__,
+> > > > > > which is not defined by the host compiler. What can we do to get cross
+> > > > > > builds working again?
+> > > > >
+> > > > > could you please share the command line and setup?
+> > > >
+> > > > I just reproduced.. checking on fix
+> > >
+> > > I still need to check on few things, but patch below should help
+> >
+> > It does help with the word size problem, thanks.
+> >
+> > > we might have a problem for cross builds with different endianity
+> > > than the host because libbpf does not support reading BTF data
+> > > with different endianity, and we get:
+> > >
+> > >   BTFIDS  vmlinux
+> > > libbpf: non-native ELF endianness is not supported
+> >
+> > Yes, I see this now when cross building for s390.
+>
+> Andrii,
+> I read you might be already working on this?
+>   https://lore.kernel.org/bpf/CAEf4Bza9tZ-Jj0dj9Ne0fmxa95t=9XxxJR+Ce=6hDmw_d8uVFA@mail.gmail.com/
+>
 
-Yes I was just about to reply. I realized it was due to the Makefile 
-change. I have fixed and
-tested it. The warnings are gone now. I will remove the patch.
+Yes, it's one of the limitations I'm solving, stay tuned.
 
-Thanks,
-Bhaumik
 
-'The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
-Forum,\na Linux Foundation Collaborative Project'
+> thanks,
+> jirka
+>
+> >
+> > Thanks,
+> > Seth
+> >
+> > >
+> > > jirka
+> > >
+> > >
+> > > ---
+> > > diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
+> > > index a88cd4426398..d3c818b8d8d3 100644
+> > > --- a/tools/bpf/resolve_btfids/Makefile
+> > > +++ b/tools/bpf/resolve_btfids/Makefile
+> > > @@ -1,5 +1,6 @@
+> > >  # SPDX-License-Identifier: GPL-2.0-only
+> > >  include ../../scripts/Makefile.include
+> > > +include ../../scripts/Makefile.arch
+> > >
+> > >  ifeq ($(srctree),)
+> > >  srctree := $(patsubst %/,%,$(dir $(CURDIR)))
+> > > @@ -29,6 +30,7 @@ endif
+> > >  AR       = $(HOSTAR)
+> > >  CC       = $(HOSTCC)
+> > >  LD       = $(HOSTLD)
+> > > +ARCH     = $(HOSTARCH)
+> > >
+> > >  OUTPUT ?= $(srctree)/tools/bpf/resolve_btfids/
+> > >
+> > >
+> >
+>
