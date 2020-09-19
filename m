@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB591270A40
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 04:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A652270A38
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 04:52:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726496AbgISCwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 22:52:07 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13716 "EHLO huawei.com"
+        id S1726445AbgISCvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 22:51:50 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13717 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726393AbgISCvm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 22:51:42 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 1BCBB63CA26479BB4EDA;
-        Sat, 19 Sep 2020 10:51:41 +0800 (CST)
+        id S1726406AbgISCvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 22:51:44 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id BA0F121CB20FF9F68158;
+        Sat, 19 Sep 2020 10:51:42 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 19 Sep 2020 10:51:33 +0800
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 19 Sep 2020 10:51:34 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
 To:     Yoshinori Sato <ysato@users.sourceforge.jp>,
         Rich Felker <dalias@libc.org>
 CC:     <linux-sh@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH -next v2] sh: mm: Convert to DEFINE_SHOW_ATTRIBUTE
-Date:   Sat, 19 Sep 2020 10:52:05 +0800
-Message-ID: <20200919025205.17667-1-miaoqinglang@huawei.com>
+Subject: [PATCH -next v2] sh: intc: Convert to DEFINE_SHOW_ATTRIBUTE
+Date:   Sat, 19 Sep 2020 10:52:06 +0800
+Message-ID: <20200919025206.17729-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -42,109 +42,40 @@ Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 v2: based on linux-next(20200917), and can be applied to
     mainline cleanly now.
 
- arch/sh/mm/asids-debugfs.c | 15 ++-------------
- arch/sh/mm/cache-debugfs.c | 15 ++-------------
- arch/sh/mm/pmb.c           | 15 ++-------------
- 3 files changed, 6 insertions(+), 39 deletions(-)
+ drivers/sh/intc/virq-debugfs.c | 14 ++------------
+ 1 file changed, 2 insertions(+), 12 deletions(-)
 
-diff --git a/arch/sh/mm/asids-debugfs.c b/arch/sh/mm/asids-debugfs.c
-index 4c1ca197e..d16d6f5ec 100644
---- a/arch/sh/mm/asids-debugfs.c
-+++ b/arch/sh/mm/asids-debugfs.c
-@@ -26,7 +26,7 @@
- #include <asm/processor.h>
- #include <asm/mmu_context.h>
+diff --git a/drivers/sh/intc/virq-debugfs.c b/drivers/sh/intc/virq-debugfs.c
+index 9e62ba931..939915a07 100644
+--- a/drivers/sh/intc/virq-debugfs.c
++++ b/drivers/sh/intc/virq-debugfs.c
+@@ -16,7 +16,7 @@
+ #include <linux/debugfs.h>
+ #include "internals.h"
  
--static int asids_seq_show(struct seq_file *file, void *iter)
-+static int asids_debugfs_show(struct seq_file *file, void *iter)
- {
- 	struct task_struct *p;
- 
-@@ -48,18 +48,7 @@ static int asids_seq_show(struct seq_file *file, void *iter)
- 	return 0;
- }
- 
--static int asids_debugfs_open(struct inode *inode, struct file *file)
--{
--	return single_open(file, asids_seq_show, inode->i_private);
--}
--
--static const struct file_operations asids_debugfs_fops = {
--	.owner		= THIS_MODULE,
--	.open		= asids_debugfs_open,
--	.read		= seq_read,
--	.llseek		= seq_lseek,
--	.release	= single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(asids_debugfs);
- 
- static int __init asids_debugfs_init(void)
- {
-diff --git a/arch/sh/mm/cache-debugfs.c b/arch/sh/mm/cache-debugfs.c
-index 17d780794..b0f185169 100644
---- a/arch/sh/mm/cache-debugfs.c
-+++ b/arch/sh/mm/cache-debugfs.c
-@@ -22,7 +22,7 @@ enum cache_type {
- 	CACHE_TYPE_UNIFIED,
- };
- 
--static int cache_seq_show(struct seq_file *file, void *iter)
-+static int cache_debugfs_show(struct seq_file *file, void *iter)
- {
- 	unsigned int cache_type = (unsigned int)file->private;
- 	struct cache_info *cache;
-@@ -94,18 +94,7 @@ static int cache_seq_show(struct seq_file *file, void *iter)
- 	return 0;
- }
- 
--static int cache_debugfs_open(struct inode *inode, struct file *file)
--{
--	return single_open(file, cache_seq_show, inode->i_private);
--}
--
--static const struct file_operations cache_debugfs_fops = {
--	.owner		= THIS_MODULE,
--	.open		= cache_debugfs_open,
--	.read		= seq_read,
--	.llseek		= seq_lseek,
--	.release	= single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(cache_debugfs);
- 
- static int __init cache_debugfs_init(void)
- {
-diff --git a/arch/sh/mm/pmb.c b/arch/sh/mm/pmb.c
-index b20aba6e1..68eb7cc6e 100644
---- a/arch/sh/mm/pmb.c
-+++ b/arch/sh/mm/pmb.c
-@@ -812,7 +812,7 @@ bool __in_29bit_mode(void)
-         return (__raw_readl(PMB_PASCR) & PASCR_SE) == 0;
- }
- 
--static int pmb_seq_show(struct seq_file *file, void *iter)
-+static int pmb_debugfs_show(struct seq_file *file, void *iter)
+-static int intc_irq_xlate_debug(struct seq_file *m, void *priv)
++static int intc_irq_xlate_show(struct seq_file *m, void *priv)
  {
  	int i;
  
-@@ -846,18 +846,7 @@ static int pmb_seq_show(struct seq_file *file, void *iter)
+@@ -37,17 +37,7 @@ static int intc_irq_xlate_debug(struct seq_file *m, void *priv)
  	return 0;
  }
  
--static int pmb_debugfs_open(struct inode *inode, struct file *file)
+-static int intc_irq_xlate_open(struct inode *inode, struct file *file)
 -{
--	return single_open(file, pmb_seq_show, NULL);
+-	return single_open(file, intc_irq_xlate_debug, inode->i_private);
 -}
 -
--static const struct file_operations pmb_debugfs_fops = {
--	.owner		= THIS_MODULE,
--	.open		= pmb_debugfs_open,
--	.read		= seq_read,
--	.llseek		= seq_lseek,
--	.release	= single_release,
+-static const struct file_operations intc_irq_xlate_fops = {
+-	.open = intc_irq_xlate_open,
+-	.read = seq_read,
+-	.llseek = seq_lseek,
+-	.release = single_release,
 -};
-+DEFINE_SHOW_ATTRIBUTE(pmb_debugfs);
++DEFINE_SHOW_ATTRIBUTE(intc_irq_xlate);
  
- static int __init pmb_debugfs_init(void)
+ static int __init intc_irq_xlate_init(void)
  {
 -- 
 2.23.0
