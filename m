@@ -2,103 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E80F270A63
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 05:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A7A9270A6A
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 05:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726222AbgISDZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 23:25:51 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:49648 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726104AbgISDZv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 23:25:51 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id DF6A8AB6E1ECC9ABE957;
-        Sat, 19 Sep 2020 11:25:47 +0800 (CST)
-Received: from [10.174.177.167] (10.174.177.167) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 19 Sep 2020 11:25:45 +0800
-Subject: Re: [PATCH v2 1/2] locktorture: doesn't check nreaders_stress when no
- readlock support
-To:     <paulmck@kernel.org>
-CC:     Josh Triplett <josh@joshtriplett.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        <linux-kernel@vger.kernel.org>, <rcu@vger.kernel.org>
-References: <20200918033755.GS29330@paulmck-ThinkPad-P72>
- <20200918114424.100852-1-houtao1@huawei.com>
- <20200918175911.GV29330@paulmck-ThinkPad-P72>
-From:   Hou Tao <houtao1@huawei.com>
-Message-ID: <f1d37fd7-32e7-0f31-bc3d-a1286e3fb4c2@huawei.com>
-Date:   Sat, 19 Sep 2020 11:25:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726200AbgISDhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 23:37:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726097AbgISDhH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 23:37:07 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E72AC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 20:37:07 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id z18so4096653qvp.6
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 20:37:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=toq7L4SsqCXQkGluRvxqWyOqRcCx3zVe/9m6BQKiNj4=;
+        b=NKq5xsKRFFkUHwl4DGXnrrp/G1OqQNLCxeoEYtd0u6KVQvJmo60LvKkqWkoHSPwTLn
+         yoXHS+ZksyW9w16cWLkyQEfj2mXUgNvLBZKqwBMNgqve+HPqpOpMlDzoGY1755W2snyE
+         uEJB2ArbcoEQNqUZ/2DLQ5c8nCp62P0YxMuC97EAt+ieVfbz4dgTAiU7jW1yZcWwTkB3
+         D5D20Q1EyxEpHzusUSIguH2YPeHLUTsB2i6cJOsIiwToNshBr1vfj2AYZb9y8Lo6kCrH
+         W8UfBkshddz5zOINqaZSJOr7haVapA5LWMu+Kc70uES3L03qSJG4ZTqeuQUMwUBxXlJA
+         m/Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=toq7L4SsqCXQkGluRvxqWyOqRcCx3zVe/9m6BQKiNj4=;
+        b=ctDkpa97oP02hm/EDGsU9HVajscn+TCJ9A1ze3S60Afid4ZqJiWdadPW3aSWkinKxb
+         h8N7QZIDC3ezpZ1z29sI/BSK5gZxuPmT0Si1vaWJltGk+1vm6+z1fVbjrxBPV5e6u9Qp
+         B+KtiCPX7KNcExjd6wn89O1MJBX5mtG5f7+oVh5qgZA8iNipMMMMFleTBpIvnlgmdA1A
+         slT7CnJBshpCOhStD9ii1V1gt8MfSAlRFgG5x7U4OQWlqUI0bXtcfJ+D5IYbYEk1svZH
+         6ZKqkNIbLXhnN79yXxW7Ld774Rqk+RI2ZyCPpLEsSLI+19TUHqQ73MRQEApWrI48njxV
+         5xFg==
+X-Gm-Message-State: AOAM533oZRxA5Va1mI0a0mlvj+TpeZ/FeEB68qf1M5tl7r7drJlN4RVg
+        f6ZsyhrEiBWytrcislzw6ws=
+X-Google-Smtp-Source: ABdhPJwEvd5oJAbcEssSmMyzVbLa0P+JOVCKw+dATnM3nOQC1r/DN9pd7rf1itdoheKAEa3WaO+1Ug==
+X-Received: by 2002:a05:6214:601:: with SMTP id z1mr36881818qvw.0.1600486626503;
+        Fri, 18 Sep 2020 20:37:06 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id w194sm3400318qkb.130.2020.09.18.20.37.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 20:37:05 -0700 (PDT)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Fri, 18 Sep 2020 23:37:04 -0400
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [GIT PULL] percpu fix for v5.9-rc6
+Message-ID: <20200919033704.GA3014163@rani.riverdale.lan>
+References: <20200918193426.GA15213@embeddedor>
+ <CAHk-=wg=vvSf3M9O1VkwyYB4D4W6XS2AHVpQn6hEQY+usWrKGg@mail.gmail.com>
+ <20200918200252.GH32101@casper.infradead.org>
+ <CAHk-=wiNjJGhAMBwYixwkADpNharvcuOG-AMCdii1q_Xo_Ky_A@mail.gmail.com>
+ <20200918202909.GA2946008@rani.riverdale.lan>
+ <CAHk-=wh-ryuY7KBNWr1n+kgQ5_CHB3-X+od-djBV4W-1kQFokA@mail.gmail.com>
+ <20200918210050.GA2953017@rani.riverdale.lan>
+ <CAHk-=wgyKF9vnac3mw6v-Bo5D8X-rcrkF=BsZ2jX+OveGkGgBw@mail.gmail.com>
+ <20200918223957.GA2964553@rani.riverdale.lan>
+ <20200919024556.GJ32101@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20200918175911.GV29330@paulmck-ThinkPad-P72>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.167]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200919024556.GJ32101@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+On Sat, Sep 19, 2020 at 03:45:56AM +0100, Matthew Wilcox wrote:
+> On Fri, Sep 18, 2020 at 06:39:57PM -0400, Arvind Sankar wrote:
+> > On Fri, Sep 18, 2020 at 02:18:20PM -0700, Linus Torvalds wrote:
+> > > On Fri, Sep 18, 2020 at 2:00 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+> > > >
+> > > > You could just assert that offsetof(typeof(s),flex) == sizeof(s), no?
+> > > 
+> > > No, because the whole point is that I want that "sizeof(s)" to *WARN*.
+> > 
+> > Ouch, offsetof() and sizeof() will give different results in the
+> > presence of alignment padding.
+> > 
+> > https://godbolt.org/z/rqnxTK
+> 
+> We really should be using offsetof() then.  It's harmless because we're
+> currently overallocating, not underallocating.  The test case I did was:
+> 
 
-On 2020/9/19 1:59, Paul E. McKenney wrote:
-> On Fri, Sep 18, 2020 at 07:44:24PM +0800, Hou Tao wrote:
->> When do locktorture for exclusive lock which doesn't have readlock
->> support, the following module parameters will be considered as valid:
->>
->>  torture_type=mutex_lock nwriters_stress=0 nreaders_stress=1
->>
->> But locktorture will do nothing useful, so instead of permitting
->> these useless parameters, let's reject these parameters by returning
->> -EINVAL during module init.
->>
->> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> 
-> Much better, much easier for people a year from now to understand.
-> Queued for v5.11, thank you!
-> 
-> I did edit the commit log a bit as shown below, so please let me
-> know if I messed anything up.
-> 
-Thanks for your edit, it looks more clearer.
+I wonder if there are cases where we know the total size, and are
+working out the number of elements in the flexible array by doing
+size - sizeof(s).
 
-Regards,
-Tao
-> 							Thanx, Paul
-> 
-> commit 4985c52e3b5237666265e59f56856f485ee36e71
-> Author: Hou Tao <houtao1@huawei.com>
-> Date:   Fri Sep 18 19:44:24 2020 +0800
-> 
->     locktorture: Ignore nreaders_stress if no readlock support
->     
->     Exclusive locks do not have readlock support, which means that a
->     locktorture run with the following module parameters will do nothing:
->     
->      torture_type=mutex_lock nwriters_stress=0 nreaders_stress=1
->     
->     This commit therefore rejects this combination for exclusive locks by
->     returning -EINVAL during module init.
->     
->     Signed-off-by: Hou Tao <houtao1@huawei.com>
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-> index 316531d..046ea2d 100644
-> --- a/kernel/locking/locktorture.c
-> +++ b/kernel/locking/locktorture.c
-> @@ -870,7 +870,8 @@ static int __init lock_torture_init(void)
->  		goto unwind;
->  	}
->  
-> -	if (nwriters_stress == 0 && nreaders_stress == 0) {
-> +	if (nwriters_stress == 0 &&
-> +	    (!cxt.cur_ops->readlock || nreaders_stress == 0)) {
->  		pr_alert("lock-torture: must run at least one locking thread\n");
->  		firsterr = -EINVAL;
->  		goto unwind;
-> .
-> 
+Would a macro to do the inverse of struct_size(), i.e. get the count
+knowing the total size be useful?
