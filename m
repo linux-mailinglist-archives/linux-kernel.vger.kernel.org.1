@@ -2,88 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 972D9270CFC
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 12:26:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30C5A270D03
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 12:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726321AbgISK0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 06:26:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34152 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726041AbgISK0P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 06:26:15 -0400
-Received: from linux-8ccs (p57a236d4.dip0.t-ipconnect.de [87.162.54.212])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EEFFF207FF;
-        Sat, 19 Sep 2020 10:26:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600511174;
-        bh=QS+/7ck8Ms+3NScVBhWMouEzmGA4XUAFNHh7y81UkaA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Dhs4E9cCPWR5U6/L6w+Ot0AP6OfHcv183sxqnUkXXz/AnXJDt0AXHHvcqCMVei5i6
-         GKnSZS2OKXzMu25vZ30nutYcHd1k1XhpuBjem46GWue0KNcO/LOyTnnK8hzbEj6OMj
-         lh64cXJ94R44/ThRRJAbdzF0qE+FcmC0n0GycrxI=
-Date:   Sat, 19 Sep 2020 12:26:01 +0200
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Richard Weinberger <richard@nod.at>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-riscv@lists.infradead.org, linux-um@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2] kbuild: preprocess module linker script
-Message-ID: <20200919102601.GA22693@linux-8ccs>
-References: <20200908042708.2511528-1-masahiroy@kernel.org>
+        id S1726298AbgISK3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 06:29:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726041AbgISK3o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Sep 2020 06:29:44 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76AF3C0613CE;
+        Sat, 19 Sep 2020 03:29:44 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id a2so6334111ybj.2;
+        Sat, 19 Sep 2020 03:29:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bgc4Ern0Y0Q1ekxGlfi+TnuTO0VX/iOSAV2OpCNNyMs=;
+        b=nccB+YiePPbuyj+5ZX/P31lqlS0RkmlZUl3LaCjZdI/rJQhi8FvjABo6zKrvRlGtVH
+         ObwKkLGgsWjaTRkFTW4Ka9/AlTwD0Y7Z4azpfWs0wDSW2dthCqcXSAoOZdmons9tFnmS
+         9aZOW6MBh1NcLh7mDp5MpZx2AB+od4LLmN+om2ITGbq0Ghro/lP+JQfWFnYwDaESGky5
+         jFVto0WOOwCMOCBhJxxkezxgM27lOv6XdxzYYJH8vO8K0w59pEqWc49fqmOUXpe/VGUF
+         jlH+6d94QbtNFAPS2ggNV7Qc2hdh5ALtvI9gLqNBQCO61OTz6fRyBnLkH4h/LRX4yWrw
+         8W4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bgc4Ern0Y0Q1ekxGlfi+TnuTO0VX/iOSAV2OpCNNyMs=;
+        b=f2Ebt2b2q7QuWIlsv6OR5yptzCI+WDSGGSd9npu/RK8K+AgFC3QwvKnd6PHytLc/+F
+         pjT03gOltvMQoXCOrXlc5tWiTtVV0YHhNgZZmzwbXFoYTWRRGfiwysM98ixvd5TFbc3t
+         GA265DqxTVF5rHZvBf1k40AwQMB1cdZ/cuJ3WQCjbK4xsmXoR2rKXJ9KF68tiPXHBNFp
+         KMAmvHQqGb/V+YZoTS30EK3hNFcvHOItwkUXsYsLsQHSg9a+SscIAQeMwkaFiQgpPRPT
+         4D33TpRRkWuSzET9YDkNfcBR2ZrmglY+YcMmwiOtdRqNHDPcqejS/It+6wplUb00Vnmh
+         vLoQ==
+X-Gm-Message-State: AOAM53129YQ89np3FHKCOYwfVlDtSM3QGy/NbNZtiCgi2Y0R4tmg7bVT
+        IWwci3UKXFbmxV6L9pKi/Gx9xevGKxbgDlCswQE=
+X-Google-Smtp-Source: ABdhPJyk1tFrKk24g/oNjpsj259VACkd1z7im4SfhTwP2PQVQpraTXlTs1/jNW9RSKfXKPQK2rl7mDzlWKdiOwtNF3w=
+X-Received: by 2002:a25:e811:: with SMTP id k17mr45524041ybd.401.1600511383079;
+ Sat, 19 Sep 2020 03:29:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200908042708.2511528-1-masahiroy@kernel.org>
-X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200827153041.27806-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20200827153041.27806-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Sat, 19 Sep 2020 11:29:17 +0100
+Message-ID: <CA+V-a8tYK4k=NQmmt-jfU6_xuLtZf=GCRMsT1dX30K_3GVBcNw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] dt-bindings: can: document R8A774E1
+To:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-can@vger.kernel.org,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Masahiro Yamada [08/09/20 13:27 +0900]:
->There was a request to preprocess the module linker script like we
->do for the vmlinux one. (https://lkml.org/lkml/2020/8/21/512)
->
->The difference between vmlinux.lds and module.lds is that the latter
->is needed for external module builds, thus must be cleaned up by
->'make mrproper' instead of 'make clean'. Also, it must be created
->by 'make modules_prepare'.
->
->You cannot put it in arch/$(SRCARCH)/kernel/, which is cleaned up by
->'make clean'. I moved arch/$(SRCARCH)/kernel/module.lds to
->arch/$(SRCARCH)/include/asm/module.lds.h, which is included from
->scripts/module.lds.S.
->
->scripts/module.lds is fine because 'make clean' keeps all the
->build artifacts under scripts/.
->
->You can add arch-specific sections in <asm/module.lds.h>.
->
->Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
->Tested-by: Jessica Yu <jeyu@kernel.org>
->Acked-by: Will Deacon <will@kernel.org>
+Hi Wolfgang, Marc, David,
 
-Acked-by: Jessica Yu <jeyu@kernel.org>
+On Thu, Aug 27, 2020 at 4:30 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+>
+> Hi All,
+>
+> Both the patches are part of series [1] (patch 18/20, 19/20),
+> rest of the patches have been acked/merged so just sending
+> two patches from the series.
+>
+> [1] https://lkml.org/lkml/2020/7/15/515
+>
+> Cheers,
+> Prabhakar
+>
+> Changes for v2:
+> * Added R8A774E1 to the list of SoCs that can use CANFD through "clkp2".
+> * Added R8A774E1 to the list of SoCs that can use the CANFD clock.
+>
+> Lad Prabhakar (2):
+>   dt-bindings: can: rcar_canfd: Document r8a774e1 support
+>   dt-bindings: can: rcar_can: Document r8a774e1 support
+>
+>  Documentation/devicetree/bindings/net/can/rcar_can.txt   | 5 +++--
+>  Documentation/devicetree/bindings/net/can/rcar_canfd.txt | 5 +++--
+>  2 files changed, 6 insertions(+), 4 deletions(-)
+>
+Could either of you pick these patches please.
 
-Thanks for working on this! 
-
+Cheers,
+Prabhakar
