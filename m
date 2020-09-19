@@ -2,171 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 698692709C7
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 03:53:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 767102709C8
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 03:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726298AbgISBxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 21:53:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726054AbgISBxV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 21:53:21 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C0F0C0613CE;
-        Fri, 18 Sep 2020 18:53:21 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id g4so7299361wrs.5;
-        Fri, 18 Sep 2020 18:53:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BxV6YGRn23jRpo6op9QJZovwE6L/PxsHN1kxycYIod4=;
-        b=ElXRHU20aWE1PWPA/D+5qpVStqagYgvtf1FxaVCo6JH1Wj/H3+MZLB/f9fWAXXTDt/
-         2evWkfNea/Dp91Nx84SV6fWcinqRzj46XSQoB7gsJoClyixCjrZh6MM/9M+hKrWiXj92
-         BJ5zccx8L8KkjpzHUBJEpMABmiYweQS3qVKnq7pxETOhj5mY0285xV94E+wADGScOtfc
-         iYxofYQFOkXj8rFaYe1TT1FTbM60KzN6+Ei0nKHaWT5i+uLsHwPX8+Rc25tvr70iEnQr
-         leJmv/IiosoD8NZi/006e4Gsz0Ojqaov4FxIXGLYhzbNRV/R9sQLxvG0PBkuF/hS+oBO
-         VSyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BxV6YGRn23jRpo6op9QJZovwE6L/PxsHN1kxycYIod4=;
-        b=UZ+FUTZIKcDCXf3lnyWqor5k2RUlWkQCAbkxIRR/nIVn/iOT5bp1bNqO7Qeqx/KhJ1
-         rz8GYQ+e1EHBbnBye7V9+r0+ZRSlhbPOOCZ8szDV3aCExS9VlwtjTL6SesZrE6Ob4eQl
-         08Xq3umHY/Ki418X6bgyBcufHE1ZLQmqI+GJ+Kzm4G8SaytMpP9zncc1Uek9hhFRp+Wp
-         lUhE5cLtTck1/Hf8f0YXqKdgzuq2ciGRBeXtg11qPjAHfTfefvRZxT4pmcRVVIRp0lii
-         BYdHQTHf2IM/v1ZkcuTyZsTG07/FtcSpEgOoNP8JknnP67MSY1fmyuzbFf1i7JZXnSle
-         D6/A==
-X-Gm-Message-State: AOAM532dQuh+70vmtkkMulKhGanRHm8abKd1ZywWeX55OLlx00L5rgcN
-        q+Jmyi0sf8nPyKA1ItUIHZljsVVS5kDjag9yzIo=
-X-Google-Smtp-Source: ABdhPJyCFcqoSk2NBgKEAJSgMUY7AkkpPKgmjJGmNPK7HZGvl7zbyjnfZgchpSMfxiQU3eBKEimZ7Ko2gR5TQPxaFZ4=
-X-Received: by 2002:a5d:4a0e:: with SMTP id m14mr42994703wrq.313.1600480399563;
- Fri, 18 Sep 2020 18:53:19 -0700 (PDT)
+        id S1726314AbgISByI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 21:54:08 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:51176 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726054AbgISByI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 21:54:08 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id EBEC54A831E356ED8E93;
+        Sat, 19 Sep 2020 09:54:06 +0800 (CST)
+Received: from [10.174.185.226] (10.174.185.226) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 19 Sep 2020 09:54:00 +0800
+Subject: Re: [PATCH 2/2] vfio/pci: Remove bardirty from vfio_pci_device
+To:     Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>
+CC:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wanghaibin.wang@huawei.com>
+References: <20200917033128.872-1-yuzenghui@huawei.com>
+ <20200917033128.872-2-yuzenghui@huawei.com>
+ <20200917133537.17af2ef3.cohuck@redhat.com> <20200917160742.4e4d6efd@x1.home>
+From:   Zenghui Yu <yuzenghui@huawei.com>
+Message-ID: <3b5214f9-9e17-2bcd-1b92-57bacc1c1b31@huawei.com>
+Date:   Sat, 19 Sep 2020 09:54:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-References: <20200917194341.16272-1-ben.levinsky@xilinx.com>
- <20200917194341.16272-6-ben.levinsky@xilinx.com> <20200917221120.GA15530@xaphan>
- <BYAPR02MB44073E7A3BEA401FF4684E95B53E0@BYAPR02MB4407.namprd02.prod.outlook.com>
- <BYAPR02MB4407A552ECBA907DFC3CEC91B53E0@BYAPR02MB4407.namprd02.prod.outlook.com>
- <20200918160721.GD15530@xaphan> <BYAPR02MB44073FBEF86F4AA2379D8A11B53F0@BYAPR02MB4407.namprd02.prod.outlook.com>
- <20200918190643.GA172254@xaphan>
-In-Reply-To: <20200918190643.GA172254@xaphan>
-From:   Wendy Liang <sunnyliangjy@gmail.com>
-Date:   Fri, 18 Sep 2020 18:53:08 -0700
-Message-ID: <CAA07jV9WfTTLRwh3kmy1985p4C1m37wQJQAHzLdK2cn4f8HENw@mail.gmail.com>
-Subject: Re: RE: RE: [PATCH v14 5/5] remoteproc: Add initial zynqmp R5
- remoteproc driver
-To:     Michael Auchter <michael.auchter@ni.com>
-Cc:     Ben Levinsky <BLEVINSK@xilinx.com>,
-        "punit1.agrawal@toshiba.co.jp" <punit1.agrawal@toshiba.co.jp>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200917160742.4e4d6efd@x1.home>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.185.226]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI Michael, Ben, Punit,
+Hi Alex,
 
-On Fri, Sep 18, 2020 at 12:08 PM Michael Auchter <michael.auchter@ni.com> wrote:
->
-> Hey Ben,
->
-> On Fri, Sep 18, 2020 at 06:01:19PM +0000, Ben Levinsky wrote:
-> > Hi Michael, Punit,
-> >
-> > > -----Original Message-----
-> > > From: Michael Auchter <michael.auchter@ni.com>
-> > > Sent: Friday, September 18, 2020 9:07 AM
-> > > To: Ben Levinsky <BLEVINSK@xilinx.com>
-> > > Cc: devicetree@vger.kernel.org; linux-remoteproc@vger.kernel.org; linux-
-> > > kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org
-> > > Subject: Re: RE: [PATCH v14 5/5] remoteproc: Add initial zynqmp R5
-> > > remoteproc driver
-> > >
-> > > On Thu, Sep 17, 2020 at 10:50:42PM +0000, Ben Levinsky wrote:
-> > > > In addition to device tree, is there particular linker script you use
-> > > > for your R5 application? For example with OCM? As presently this
-> > > > driver only has DDR and TCM as supported regions to load into
-> > >
-> > > The firmware is being loaded to TCM.
-> > >
-> > > I'm able to use this driver to load and run my firmware on both R5
-> > > cores, but only after I change the incorrect:
-> > >
-> > >     rpu_mode = lockstep_mode
-> > >
-> > > assignment to:
-> > >
-> > >     rpu_mode = lockstep_mode ? PM_RPU_MODE_LOCKSTEP
-> > >                              : PM_RPU_MODE_SPLIT;
-> > There was a point raised by Punit that as "it is possible to set R5 to
-> > operatore in split or lock-step mode dynamically" which is true and
-> > can be done via sysfs and the Xilinx firmware kernel code.
->
-> I'm not familiar with this, and don't see an obvious way to do this
-> (from looking at drivers/firmware/xilinx/). Can you point me to this
-> code?
->
-> > A suggestion that might clean up the driver so that the whole
-> > rpu_mode, tcm_mode configuration can be simplified and pulled out of
-> > the driver:
-> > - as Punit suggested, remove the lockstep-mode property
-> > - the zynqmp_remoteproc_r5 driver ONLY loads firmware and does start/stop.
-> > - the zynqmp_remoteproc_r5 driver does not configure and memory regions or the RPU. Let the Xilinx firmware sysfs interface handle this.
->
-> I don't think this is a good approach.
-[Wendy] The TCMs are presented differently in the system depending on
-if RPU is in
-lockstep or split mode.
+On 2020/9/18 6:07, Alex Williamson wrote:
+> On Thu, 17 Sep 2020 13:35:37 +0200
+> Cornelia Huck <cohuck@redhat.com> wrote:
+> 
+>> On Thu, 17 Sep 2020 11:31:28 +0800
+>> Zenghui Yu <yuzenghui@huawei.com> wrote:
+>>
+>>> It isn't clear what purpose the @bardirty serves. It might be used to avoid
+>>> the unnecessary vfio_bar_fixup() invoking on a user-space BAR read, which
+>>> is not required when bardirty is unset.
+>>>
+>>> The variable was introduced in commit 89e1f7d4c66d ("vfio: Add PCI device
+>>> driver") but never actually used, so it shouldn't be that important. Remove
+>>> it.
+>>>
+>>> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+>>> ---
+>>>   drivers/vfio/pci/vfio_pci_config.c  | 7 -------
+>>>   drivers/vfio/pci/vfio_pci_private.h | 1 -
+>>>   2 files changed, 8 deletions(-)
+>>
+>> Yes, it seems to have been write-only all the time.
+> 
+> I suspect the intent was that vfio_bar_fixup() could test
+> vdev->bardirty to avoid doing work if no BARs had been written since
+> they were last read.  As it is now we regenerate vconfig for all the
+> BARs every time any offset of any of them are read.  BARs aren't
+> re-read regularly and config space is not a performance path,
 
-Not sure if it is allowed to list TCMs registers properties for both
-split mode and lockstep
-mode in the same device node.
+Yes, it seems that Qemu itself emulates all BAR registers and will read
+the BAR from the kernel side only at initialization time.
 
-Even though, driver can have this information in the code, but I feel
-the device tree is a
-better place for this information.
-And also for predefined shared memories, you will need to know the RPU
-op mode ahead,
-so that you can specify which shared memories belong to which RPU.
+> but maybe
+> we should instead test if we see any regressions from returning without
+> doing any work in vfio_bar_fixup() if vdev->bardirty is false.  Thanks,
 
-To dynamic setup the RPU mode, besides sysfs, setup, if remoteproc can support
-device tree overlay, the RPUs can be described with dtbo and loaded at runtime.
+I will test it with the following diff. Please let me know which way do
+you prefer.
 
-Just want to understand the case which needs to set  RPU mode at runtime?
-I think testing can be one case.
+diff --git a/drivers/vfio/pci/vfio_pci_config.c 
+b/drivers/vfio/pci/vfio_pci_config.c
+index d98843feddce..77c419d536d0 100644
+--- a/drivers/vfio/pci/vfio_pci_config.c
++++ b/drivers/vfio/pci/vfio_pci_config.c
+@@ -515,7 +515,7 @@ static int vfio_basic_config_read(struct 
+vfio_pci_device *vdev, int pos,
+                                   int count, struct perm_bits *perm,
+                                   int offset, __le32 *val)
+  {
+-       if (is_bar(offset)) /* pos == offset for basic config */
++       if (is_bar(offset) && vdev->bardirty) /* pos == offset for basic 
+config */
+                 vfio_bar_fixup(vdev);
 
-Best Regards,
-Wendy
+         count = vfio_default_config_read(vdev, pos, count, perm, 
+offset, val);
 
-> - How will someone know to configure the RPU mode and TCM mode via sysfs?
-> - What happens when someone changes the RPU mode after remoteproc has
->   already booted some firmware on it?
-> - What if the kernel is the one booting the R5, not the user?
->
-> Split vs. lockstep, IMO, needs to be specified as part of the device
-> tree, and this driver needs to handle configuring the RPU mode and TCM
-> modes appropriately.
->
-> Split vs. lockstep already necessitates different entries in the device
-> tree:
-> - In the binding, each core references its TCMs via the
->   meta-memory-regions phandles, and the referenced nodes necessarily
->   encode this size. In split mode, each core has access to 64K of
->   TCMA/TCMB, while in lockstep R5 0 has access to 128K of TCMA/TCMB. So,
->   the "xlnx,tcm" nodes' reg entries need to differ between lockstep and
->   split.
-> - In lockstep mode, it does not make sense to have both r5@0 and r5@1
->   child nodes: only r5@0 makes sense. Though, I just realized that I
->   think this driver will currently permit that, and register two
->   remoteprocs even in lockstep mode... What happens if someone tries to
->   load firmware on to r5_1 when they're in lockstep mode? This should
->   probably be prevented.
->
-> Thanks,
->  Michael
+
+Thanks,
+Zenghui
