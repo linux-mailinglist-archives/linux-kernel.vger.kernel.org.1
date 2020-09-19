@@ -2,144 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01426270ABF
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 06:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A974A270AC1
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 06:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726192AbgISEri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 00:47:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726054AbgISEri (ORCPT
+        id S1726247AbgISEur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 00:50:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20117 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726054AbgISEuq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 00:47:38 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 183D2C0613CE;
-        Fri, 18 Sep 2020 21:47:38 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id w7so4770848pfi.4;
-        Fri, 18 Sep 2020 21:47:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=1+rk0Yb85QwC2uyvEMI2pDfEImVWuhSTx15aUUDMpOg=;
-        b=g68ExC3d9sovA7VmyWcDsPBMqHLhWKIcTFcUEh81MmXMOmBeXLI+hrsu9m0+TigiBP
-         NIgJqjlM+/+FuFhr8ViyzlhzcJeD657/l7K8CuGHZezozE0OZqDlb+MbgD5yswpO1ock
-         rQAY0kjdwRrF/rprigJCIZJLo/fWuERSw3ypQMLfPqk5r0TOqbwO8xlZNR0lID4Xo8iz
-         NvambGcH03EvjQKtkp9Srpq+foceEKzm4joXMW7/wNnvD9VeQotQK7m7VKeByi58FNb1
-         THzC0RXxta02G/tn9uuwA9+ppOcER5tLTeFAs+EPWSLQ5NC+f/GkPlzN85ckrZtFQ4pr
-         vXbw==
+        Sat, 19 Sep 2020 00:50:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600491045;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=V/GtNqeAhxmnaYHKbHI9s+9A7kWQV4YD44WjAsjMMwM=;
+        b=KUBRpPOIEVeoQhtimD41JCXyJKfzgW8CpwzCESrq0MplN8ww08wsEbW5EG1TS6MbzU8/9a
+        bSCKsmEHlO0TMuiWxzpZs50eR/LQjR1kMSxY3GE5TKrLM+O/Y1rpaRTPJXiX9NNzYSrJ6j
+        CyGsv41AWERgEYbQ9ve+q2mgSonEbl8=
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
+ [209.85.210.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-510-55LgYvViOtCkYV2YvF5m8g-1; Sat, 19 Sep 2020 00:50:41 -0400
+X-MC-Unique: 55LgYvViOtCkYV2YvF5m8g-1
+Received: by mail-pf1-f200.google.com with SMTP id q16so4921150pfj.7
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 21:50:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=1+rk0Yb85QwC2uyvEMI2pDfEImVWuhSTx15aUUDMpOg=;
-        b=kBPD6oFCJvlU+vbXT2Ql3rztVVCWvKXFwLfLSbHiM1D4nkoXCPki77bV5kTdFoTM2K
-         ckulSMtN0vcwdI9TcL7xgJfV/ykRdU1hnv/3CVz9yIcI9GGLUQBtSkZch3ilJ7oUYjZE
-         grCvhEpvEuze7/5xBzC6aRTxUEjEj811zo5XAy0q1THLrzQYZluPBi7e/59sl4/7R14j
-         tKCVOdoABkIpAl7wK3aZxReMveWJjgP2ZFc544eEogQKlgYJ6qrIz3ZXr0HSUF6tmfU8
-         wP/QoARN/yoUo7zaEzBjDx8LyaX9U1TrwDl6NmE5vwS+h9aWnxfvpk3hsZRirmLWRxox
-         L/IQ==
-X-Gm-Message-State: AOAM5314No4Ny12PD8XPRnH0stS3N8cxIXxlSowRNm4Wm0Crqp4cqFPc
-        zoZ1lspSFpbvxM360WriUsc=
-X-Google-Smtp-Source: ABdhPJzV2XSt7/1TMMaL54a+Y5LNWcvRNGgkfwWflY4O11w6GSTD+hw4JUMFpUvEXav4NghtsSpWBQ==
-X-Received: by 2002:a05:6a00:15c8:b029:142:2501:35ca with SMTP id o8-20020a056a0015c8b0290142250135camr19183086pfu.42.1600490857573;
-        Fri, 18 Sep 2020 21:47:37 -0700 (PDT)
-Received: from localhost.localdomain ([43.224.245.179])
-        by smtp.gmail.com with ESMTPSA id h35sm4718339pgl.31.2020.09.18.21.47.34
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=V/GtNqeAhxmnaYHKbHI9s+9A7kWQV4YD44WjAsjMMwM=;
+        b=EhGGqOQVx1k34QP558qI6fgk9dnvDOfGM1inD1ZKu2nda27dvcEcFyvbsjv2ITZ+20
+         Aowl7E2Gt2gv0nn7r7paJuNXwZ8KhaSHBHXczWTK5jqkP3nWIMBf3VddkPgG8OSEHQYW
+         QKuMJQcDay2w6YCq/NaQsAwcVWjjF2tM6fCE6G3l1DSxqJE88RSdBbstlRe3GRpuWPBk
+         S0wcqTwwiaXgkHEKiuWUIVMVeSHZqo+4eR9jtiH+2OXCt+8tQLI/5v1IT8WZLkUHORNx
+         9DrM/uxRyRH0gWLsUMFLKSEVe33oSxgmjjx6gdrsxZAqfpYOYZ0rzpYtYJLEg8RIkFw/
+         hBzQ==
+X-Gm-Message-State: AOAM530NFZueJrJxXfpYf8qnynwcf78OPxmPA1GqvHvDl6J0F+JOGfiV
+        67W0xF93ntU2UBtVjuWF3ZnWWd0sUYqcrjWZeffOcoLEcyDUzClX8UNoXB0whBSRYNHalquyPXs
+        YCs6HN1rz/uAezvOawWjvUySy
+X-Received: by 2002:a63:fa45:: with SMTP id g5mr28532849pgk.448.1600491040327;
+        Fri, 18 Sep 2020 21:50:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyvVI0r49m3wB0RYWnXgFPLiK9pU7OtGbcH6Hw1jnUOf70rw5kEO1Odeu56Qv8mcOKhwwSI1Q==
+X-Received: by 2002:a63:fa45:: with SMTP id g5mr28532835pgk.448.1600491040079;
+        Fri, 18 Sep 2020 21:50:40 -0700 (PDT)
+Received: from xiangao.remote.csb ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id l188sm4898305pfl.200.2020.09.18.21.50.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 21:47:37 -0700 (PDT)
-From:   zhuguangqing83@gmail.com
-To:     amit.kachhap@gmail.com, daniel.lezcano@linaro.org,
-        viresh.kumar@linaro.org, javi.merino@kernel.org,
-        rui.zhang@intel.com, amitk@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhuguangqing <zhuguangqing@xiaomi.com>
-Subject: [PATCH] thermal/drivers/cpuidle_cooling: Change the latency limit
-Date:   Sat, 19 Sep 2020 12:47:25 +0800
-Message-Id: <20200919044725.2148-1-zhuguangqing83@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 18 Sep 2020 21:50:39 -0700 (PDT)
+Date:   Sat, 19 Sep 2020 12:50:29 +0800
+From:   Gao Xiang <hsiangkao@redhat.com>
+To:     linux-erofs@lists.ozlabs.org, Chao Yu <yuchao0@huawei.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Chao Yu <chao@kernel.org>
+Subject: Re: [PATCH 3/4] erofs: specify accurate nr_iovecs for compressed bios
+Message-ID: <20200919045029.GA18633@xiangao.remote.csb>
+References: <20200918135436.17689-1-hsiangkao@redhat.com>
+ <20200918135436.17689-3-hsiangkao@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200918135436.17689-3-hsiangkao@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhuguangqing <zhuguangqing@xiaomi.com>
+On Fri, Sep 18, 2020 at 09:54:35PM +0800, Gao Xiang wrote:
+> Use more accurate compressed page count
+> instead of BIO_MAX_PAGES unconditionally.
+> 
+> Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
 
-The injected idle duration must be greater than the wake up latency
-(entry + exit latency) or the idle state target residency (or  min
-residency), otherwise we end up consuming more energy and potentially
-invert the mitigation effect.
+Found by ro_fsstress, the submission chain could be extended
+by other threads, so this patch wouldn't work with the tail
+merging strategy. Please ignore this and I will drop it and
+send the next version instead.
 
-In function idle_inject_fn(), we call play_idle_precise() to specify
-a latency limit which is finally used in find_deepest_state() to find
-the deepest idle state. Although the latency limit is compared with
-s->exit_latency_ns in find_deepest_state(), it should not be exit
-latency, but the idle duraion minus entry latency which can ensure
-that the injected idle duration is greater than the wake up latency
-(entry + exit latency).
-
-There are two timers in idle inject process, the length of the first
-timer (timer_1) is idle duration, and the length of the second timer
-(timer_2) is idle duration plus run duration. When timer_2 expires,
-it's restarted and idle_inject_timer_fn() is called and it wakes up
-idle injection tasks associated with the timer and they, in turn,
-invoke play_idle_precise() to inject a specified amount (idle duration)
-of CPU idle time. The major functions called are as follows:
-
-play_idle_precise() ->
- do_idle() ->
-  cpuidle_idle_call() ->
-   cpuidle_find_deepest_state() ->
-    find_deepest_state()
-
-When we call find_deepest_state(), some time has been consumed from
-the beginning of the idle duration which could be considered the
-entry latency approximately, so the latency limit should be the idle
-duraion minus entry latency which can ensure that the injected idle
-duration is greater than the wake up latency (entry + exit latency).
-
-Here are two sample scenes,
-scene   entry latency(us)    exit latency(us)    idle duration(us)
-1            500                     600               1000
-2            500                     600               3000
-
-In scene 1, if we use exit latency (600us) for the latency limit,
-we may find a idle state which has a exit latency equal to or less
-than 600us, suppose the idle state's exit latency is equal to 600us,
-then the wake up latency (entry + exit latency) is greater than idle
-duration.
-
-In scene 2, if we use exit latency (600us) for the latency limit,
-we may also find a idle state which has a exit latency equal to
-600us. But if we use the idle duraion minus entry latency
-(3000 - 500 = 2500us), we can find a deeper idle state to save
-more power in idle duration.
-
-Signed-off-by: zhuguangqing <zhuguangqing@xiaomi.com>
----
- drivers/thermal/cpuidle_cooling.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/thermal/cpuidle_cooling.c b/drivers/thermal/cpuidle_cooling.c
-index 78e3e8238116..6f78c7816fcc 100644
---- a/drivers/thermal/cpuidle_cooling.c
-+++ b/drivers/thermal/cpuidle_cooling.c
-@@ -174,6 +174,7 @@ static int __cpuidle_cooling_register(struct device_node *np,
- 	struct idle_inject_device *ii_dev;
- 	struct cpuidle_cooling_device *idle_cdev;
- 	struct thermal_cooling_device *cdev;
-+	unsigned int entry_latency_us;
- 	unsigned int idle_duration_us = TICK_USEC;
- 	unsigned int latency_us = UINT_MAX;
- 	char dev_name[THERMAL_NAME_LENGTH];
-@@ -198,7 +199,9 @@ static int __cpuidle_cooling_register(struct device_node *np,
- 	}
- 
- 	of_property_read_u32(np, "duration-us", &idle_duration_us);
--	of_property_read_u32(np, "exit-latency-us", &latency_us);
-+	if (!of_property_read_u32(np, "entry-latency-us", &entry_latency_us) &&
-+	    idle_duration_us > entry_latency_us)
-+		latency_us = idle_duration_us - entry_latency_us;
- 
- 	idle_inject_set_duration(ii_dev, TICK_USEC, idle_duration_us);
- 	idle_inject_set_latency(ii_dev, latency_us);
--- 
-2.17.1
+Thanks,
+Gao Xiang
 
