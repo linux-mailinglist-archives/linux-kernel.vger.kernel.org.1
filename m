@@ -2,89 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A32CD270D65
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 13:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A058270D71
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 13:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726465AbgISLDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 07:03:09 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:43554 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726455AbgISLDF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 07:03:05 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 3D190658BE13BBBCAC36;
-        Sat, 19 Sep 2020 19:03:03 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.177.253) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 19 Sep 2020 19:02:57 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Oliver O'Halloran <oohall@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Dave Jiang" <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Libin <huawei.libin@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH v2 1/1] libnvdimm/region: delete a piece of useless code in nd_region_create()
-Date:   Sat, 19 Sep 2020 19:02:45 +0800
-Message-ID: <20200919110245.3965-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        id S1726394AbgISLGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 07:06:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726041AbgISLGB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Sep 2020 07:06:01 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC9BC0613CE;
+        Sat, 19 Sep 2020 04:06:01 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id x20so6369338ybs.8;
+        Sat, 19 Sep 2020 04:06:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0Ij7bvisAUQqcftsNPRluVmVo55tqxHkQBfHxZFcMOA=;
+        b=QXuiXUNrQssc+AmgBVbKQxNzGo5tROj3AJ+f/1m3yJZ+Luju1U9BNROqgJmx9MMyOr
+         mFI9BS8XS4gFSYurp2pr6oGgPub/q9VcS+OshZA3iZbg2bohf/ebHc/nXA1mwzy5q56X
+         EJ7spOnvN8ZaSNZOBVjS67rmeCWoe9W6GpK+k557oP4dp1JTq6s0ze24blVvQEjbAN9v
+         ACdaIWWlSZUiSxYi6gKKTjac1YBw5UnvzymtdfM5uOUiSJVGTHxabBHzD69AvtPgFRdX
+         uWL3lhWMCciU41cU+AYOk5oi+kOP8koiqC0LihfXmFB8vMIDN4bZnwQSobAMvEprPPp9
+         mjqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0Ij7bvisAUQqcftsNPRluVmVo55tqxHkQBfHxZFcMOA=;
+        b=bAutchs26Qxj17JlRTg8lkW8Dtwon6QVl0Cd5jjX5thgb7oNYgqEQLt9IvGz3u/xrn
+         ylfMaJwGzIED5wMN9v9JW2WFGnfALQxI4zlE0uzh8jXN0K1vTjYG6iBd73ActWMNx+pD
+         23j+Pp2b+lrRSfpRrKyjDVhEEe6Vu18qFrMd1F4qqtLu62gMxZlnhjcHhZ0bRPWH3x2X
+         H47hl0avL4L+xeeiq7ohdHI07hJdY3KFwXzQkm86VTvewgeylYC4Ly+nTWvBfozlkoQ5
+         tmpom4jhBnoO1UUh+aCGp7mcBRsvFYj2eHE5lvUQd1qenp1x8xDDIQPHBs1OFS13+IXG
+         xp/Q==
+X-Gm-Message-State: AOAM5310T4XO2CJt6xnz0sw9G6WpX548VeIGBLVERnoh8y0jv+keL2Gp
+        9+ryTNttfj93MkZKyzCUHCn9YvforxRhJ0L6R6Y=
+X-Google-Smtp-Source: ABdhPJxiabQbGSqQ3/I9bCoypnGYRh9dwnRNf8kkHTS7HlO2VXzvkXrzQAbnqylSkxUqAmX3P2x1QEczoNP6w8K1IAY=
+X-Received: by 2002:a25:23cb:: with SMTP id j194mr47804126ybj.445.1600513559955;
+ Sat, 19 Sep 2020 04:05:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.253]
-X-CFilter-Loop: Reflected
+References: <1594811350-14066-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1594811350-14066-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com> <CA+V-a8vwhtTWjaoXkfMBjKx90WkcoejD5ryPkXnQNEbtgnJGXQ@mail.gmail.com>
+In-Reply-To: <CA+V-a8vwhtTWjaoXkfMBjKx90WkcoejD5ryPkXnQNEbtgnJGXQ@mail.gmail.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Sat, 19 Sep 2020 12:05:34 +0100
+Message-ID: <CA+V-a8tzELW-F3GLqq+M3pKoYZwfsc28K-PVVQq-sxJN0pL73Q@mail.gmail.com>
+Subject: Re: [PATCH 02/20] dt-bindings: thermal: rcar-gen3-thermal: Add
+ r8a774e1 support
+To:     Niklas <niklas.soderlund@ragnatech.se>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-can@vger.kernel.org,
+        netdev <netdev@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Linux Watchdog Mailing List <linux-watchdog@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The code snippet is as follows:
-	if (ndr_desc->flush)
-1)		nd_region->flush = ndr_desc->flush;
-	else
-2)		nd_region->flush = NULL;
+Hi Niklas/Zhang/Daniel,
 
-When entering the "else" branch, the value of ndr_desc->flush is NULL.
-After replaced "NULL" with "ndr_desc->flush" at 2), we will find that
-it becomes the same to 1).
+On Thu, Aug 27, 2020 at 5:52 PM Lad, Prabhakar
+<prabhakar.csengg@gmail.com> wrote:
+>
+> Hi Zhang,Daniel,Amit,
+>
+> On Wed, Jul 15, 2020 at 12:09 PM Lad Prabhakar
+> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> >
+> > Document RZ/G2H (R8A774E1) SoC bindings.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > ---
+> >  Documentation/devicetree/bindings/thermal/rcar-gen3-thermal.yaml | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> Gentle ping.
+>
+Could either of please pick this patch.
 
-So the above code snippet can be reduced to one statement:
-nd_region->flush = ndr_desc->flush;
-
-No functional change.
-
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
-v1 --> v2:
-1. Only the title and description are modified.
-
-v1:
-https://lkml.org/lkml/2020/8/19/1469
-
- drivers/nvdimm/region_devs.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/drivers/nvdimm/region_devs.c b/drivers/nvdimm/region_devs.c
-index ef23119db574663..7cf9c7d857909ce 100644
---- a/drivers/nvdimm/region_devs.c
-+++ b/drivers/nvdimm/region_devs.c
-@@ -1131,10 +1131,7 @@ static struct nd_region *nd_region_create(struct nvdimm_bus *nvdimm_bus,
- 	nd_region->ndr_size = resource_size(ndr_desc->res);
- 	nd_region->ndr_start = ndr_desc->res->start;
- 	nd_region->align = default_align(nd_region);
--	if (ndr_desc->flush)
--		nd_region->flush = ndr_desc->flush;
--	else
--		nd_region->flush = NULL;
-+	nd_region->flush = ndr_desc->flush;
- 
- 	nd_device_register(dev);
- 
--- 
-1.8.3
-
-
+Cheers,
+Prabhakar
