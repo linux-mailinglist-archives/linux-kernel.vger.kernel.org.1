@@ -2,85 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF20270EE7
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 17:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5377B270EF0
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 17:28:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726551AbgISPXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 11:23:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36972 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726408AbgISPXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 11:23:49 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 95BE72098B;
-        Sat, 19 Sep 2020 15:23:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600529029;
-        bh=1EeKdlmsmU+caUMfvOqBXfsDpnLBdhbdpm6tlnkp3Ds=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=1pEsOL5fIWwve6PgdC1+REytce3vMzPAdtpFJM66+4V6Uus32SOUBo2D5W4z9KrjG
-         wwVqMo7jm0+niToKdNQcQDqUquiJ39baP4LeWVds4eTB2AuoG/eSCC9XOoDSnX3r7X
-         onEGh4Wq19m5e2lE9hfUSBQLMA5drhhzCUk32g5w=
-Date:   Sat, 19 Sep 2020 16:23:45 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Cristian Pop <cristian.pop@analog.com>
-Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5] iio:Documentation: Add documentation for label
- channel attribute
-Message-ID: <20200919162345.12ba91a3@archlinux>
-In-Reply-To: <20200918093337.93621-1-cristian.pop@analog.com>
-References: <20200918093337.93621-1-cristian.pop@analog.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726582AbgISP2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 11:28:47 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:63292 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726449AbgISP2r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Sep 2020 11:28:47 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08JF33g2115289;
+        Sat, 19 Sep 2020 11:28:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id; s=pp1;
+ bh=F5IPuoRy4PpWgpmKafbX47Ict4OA/+gedW/oss+a8mw=;
+ b=gGlU2o3Z4EBj991M4DTn898NEQ445s1pscwnU45peq9y8oThQsSQvpc3AO3zGrmpVKWq
+ G6teYq6PqSrw8eir0nGk23XpRVKxhFBBCd5m+5lbiOtUNpsl2Rjtmu+BkERUvzyePm+A
+ q6uR/Z4i0Gi1rArml53V/D3NTVNvYc5McEFpDhm6c+fNp2nLtQxPRicL14Vgr0WTGaQB
+ iqqHcZejGBhsmtLkkHA0Yx7Debud0iukm9TwPyRAVF450/RTpN2unYxgHQdFBHfRgsK2
+ tsS2xqVJRYArWcAoktRNWyGG2LvzafjmYkcB3Vy8zhOY6mVfPLygoPFqsMyKytRO26BP Tw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33nk87hhby-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 19 Sep 2020 11:28:46 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08JFSkfM022814;
+        Sat, 19 Sep 2020 11:28:46 -0400
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33nk87hhbp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 19 Sep 2020 11:28:45 -0400
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08JFS6G6019802;
+        Sat, 19 Sep 2020 15:28:44 GMT
+Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
+        by ppma01wdc.us.ibm.com with ESMTP id 33n9m8b6s0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 19 Sep 2020 15:28:44 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08JFScfJ60555674
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 19 Sep 2020 15:28:38 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A6439BE054;
+        Sat, 19 Sep 2020 15:28:41 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 87370BE053;
+        Sat, 19 Sep 2020 15:28:40 +0000 (GMT)
+Received: from oc4221205838.ibm.com (unknown [9.211.74.107])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Sat, 19 Sep 2020 15:28:40 +0000 (GMT)
+From:   Matthew Rosato <mjrosato@linux.ibm.com>
+To:     alex.williamson@redhat.com, cohuck@redhat.com,
+        schnelle@linux.ibm.com
+Cc:     pmorel@linux.ibm.com, borntraeger@de.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, gerald.schaefer@linux.ibm.com,
+        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] Pass zPCI hardware information via VFIO
+Date:   Sat, 19 Sep 2020 11:28:34 -0400
+Message-Id: <1600529318-8996-1-git-send-email-mjrosato@linux.ibm.com>
+X-Mailer: git-send-email 1.8.3.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-19_05:2020-09-16,2020-09-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ clxscore=1015 impostorscore=0 mlxscore=0 spamscore=0 priorityscore=1501
+ bulkscore=0 lowpriorityscore=0 adultscore=0 mlxlogscore=887 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009190131
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Sep 2020 12:33:37 +0300
-Cristian Pop <cristian.pop@analog.com> wrote:
+This patchset provides a means by which hardware information about the
+underlying PCI device can be passed up to userspace (ie, QEMU) so that
+this hardware information can be used rather than previously hard-coded
+assumptions. A new VFIO region type is defined which holds this
+information. 
 
-> If a label is defined in the device tree for this channel add that to the
-> channel specific attributes. This is useful for userspace to be able to
-> identify an individual channel.
-> 
-> Signed-off-by: Cristian Pop <cristian.pop@analog.com>
-> ---
-> Changes in V5:
-> Create a separate patch file for this commit.
->  Documentation/ABI/testing/sysfs-bus-iio | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
-> index d3e53a6d8331..f2a9a03b8af9 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-iio
-> +++ b/Documentation/ABI/testing/sysfs-bus-iio
-> @@ -1697,6 +1697,15 @@ Description:
->  
->  		Raw counter device counters direction for channel Y.
->  
-> +What:		/sys/bus/iio/devices/iio:deviceX/channel_label
+A form of these patches saw some rounds last year but has been back-
+tabled for a while.  The original work for this feature was done by Pierre
+Morel. I'd like to refresh the discussion on this and get this finished up
+so that we can move forward with better-supporting additional types of
+PCI-attached devices.  The proposal here presents a completely different
+region mapping vs the prior approach, taking inspiration from vfio info
+capability chains to provide device CLP information in a way that allows 
+for future expansion (new CLP features).
 
-That naming doesn't look right. Should be something like
-in_voltageY_label
+This feature is toggled via the CONFIG_VFIO_PCI_ZDEV configuration entry.
 
-> +KernelVersion:	5.8
-> +Contact:	linux-iio@vger.kernel.org
-> +Description:
-> +		Optional symbolic label to a device channel.
-> +		If a label is defined in the device tree for this channel add
-> +		that to the channel specific attributes. This is useful for
-> +		userspace to be able to identify an individual channel.
+Matthew Rosato (4):
+  s390/pci: stash version in the zpci_dev
+  s390/pci: track whether util_str is valid in the zpci_dev
+  vfio-pci/zdev: define the vfio_zdev header
+  vfio-pci/zdev: use a device region to retrieve zPCI information
 
-This isn't devicetree specific.  The driver can elect to provide this
-label from all sorts of sources such as ACPI, or it might be hard coded
-in the driver if the channel is internal to a SoC for example.
+ arch/s390/include/asm/pci.h         |   4 +-
+ arch/s390/pci/pci_clp.c             |   2 +
+ drivers/vfio/pci/Kconfig            |  13 ++
+ drivers/vfio/pci/Makefile           |   1 +
+ drivers/vfio/pci/vfio_pci.c         |   8 ++
+ drivers/vfio/pci/vfio_pci_private.h |  10 ++
+ drivers/vfio/pci/vfio_pci_zdev.c    | 242 ++++++++++++++++++++++++++++++++++++
+ include/uapi/linux/vfio.h           |   5 +
+ include/uapi/linux/vfio_zdev.h      | 116 +++++++++++++++++
+ 9 files changed, 400 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/vfio/pci/vfio_pci_zdev.c
+ create mode 100644 include/uapi/linux/vfio_zdev.h
 
-> +
->  What:		/sys/bus/iio/devices/iio:deviceX/in_phaseY_raw
->  KernelVersion:	4.18
->  Contact:	linux-iio@vger.kernel.org
+-- 
+1.8.3.1
 
