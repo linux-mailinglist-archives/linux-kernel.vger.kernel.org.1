@@ -2,115 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6049270A1B
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 04:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6960270A23
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 04:46:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726273AbgISCkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 22:40:02 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13317 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726054AbgISCkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 22:40:02 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 076EFCC9CB3F25A70EFE;
-        Sat, 19 Sep 2020 10:40:01 +0800 (CST)
-Received: from [10.174.185.226] (10.174.185.226) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 19 Sep 2020 10:39:55 +0800
-Subject: Re: [PATCH 2/2] vfio/pci: Remove bardirty from vfio_pci_device
-To:     Alex Williamson <alex.williamson@redhat.com>
-CC:     Cornelia Huck <cohuck@redhat.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <wanghaibin.wang@huawei.com>
-References: <20200917033128.872-1-yuzenghui@huawei.com>
- <20200917033128.872-2-yuzenghui@huawei.com>
- <20200917133537.17af2ef3.cohuck@redhat.com> <20200917160742.4e4d6efd@x1.home>
- <3b5214f9-9e17-2bcd-1b92-57bacc1c1b31@huawei.com>
- <20200918201128.16cf0a1c@x1.home>
-From:   Zenghui Yu <yuzenghui@huawei.com>
-Message-ID: <254ac8bf-e912-0d01-0295-8bb54f7a88bf@huawei.com>
-Date:   Sat, 19 Sep 2020 10:39:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1726281AbgISCqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 22:46:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726129AbgISCqG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 22:46:06 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC657C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 19:46:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=IqGNJCHkPeeEzn4NZlU91gM1WIifD6Ne5eGwToLNy+M=; b=gtXloL/e0Kvaq/QDn0ut5wgWxH
+        pUgd7WNS1TYv4EPwksDQv4wRtU/ABSj2FZZKs3Ro769lszzyWDli9JsID75OJPO93KeciullZhnK9
+        oiYR7LwIJR1bAD+k7f8wF8BTYmz/GdCY9F/CvF5/FfNisiw/JcmtY+L6eMtWXFXfEm4u9OSavDvUH
+        M0xkGhOfp/k0PUY3MzhqO3TwQ1fnJWbLnFAJ6+8Ij6CsZmFgzHzOuhdaI3X8x0S7g8ttdZC9jKkGU
+        VHzhWzDHHXe6Io4gI1xZ1SreCnXrLA3Oi/TYk2qZHnVfAiiNCqbNsGpEZgMn51tr2IcPw23yhxIMk
+        xYJ/ZgGw==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kJSsu-0000w8-Ip; Sat, 19 Sep 2020 02:45:56 +0000
+Date:   Sat, 19 Sep 2020 03:45:56 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [GIT PULL] percpu fix for v5.9-rc6
+Message-ID: <20200919024556.GJ32101@casper.infradead.org>
+References: <CAHk-=wjH+OH08yjp=LpexkUnGp0Ogusk3WX0G7Q+Lh7Anfr21A@mail.gmail.com>
+ <20200918193426.GA15213@embeddedor>
+ <CAHk-=wg=vvSf3M9O1VkwyYB4D4W6XS2AHVpQn6hEQY+usWrKGg@mail.gmail.com>
+ <20200918200252.GH32101@casper.infradead.org>
+ <CAHk-=wiNjJGhAMBwYixwkADpNharvcuOG-AMCdii1q_Xo_Ky_A@mail.gmail.com>
+ <20200918202909.GA2946008@rani.riverdale.lan>
+ <CAHk-=wh-ryuY7KBNWr1n+kgQ5_CHB3-X+od-djBV4W-1kQFokA@mail.gmail.com>
+ <20200918210050.GA2953017@rani.riverdale.lan>
+ <CAHk-=wgyKF9vnac3mw6v-Bo5D8X-rcrkF=BsZ2jX+OveGkGgBw@mail.gmail.com>
+ <20200918223957.GA2964553@rani.riverdale.lan>
 MIME-Version: 1.0
-In-Reply-To: <20200918201128.16cf0a1c@x1.home>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.185.226]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200918223957.GA2964553@rani.riverdale.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/9/19 10:11, Alex Williamson wrote:
-> On Sat, 19 Sep 2020 09:54:00 +0800
-> Zenghui Yu <yuzenghui@huawei.com> wrote:
+On Fri, Sep 18, 2020 at 06:39:57PM -0400, Arvind Sankar wrote:
+> On Fri, Sep 18, 2020 at 02:18:20PM -0700, Linus Torvalds wrote:
+> > On Fri, Sep 18, 2020 at 2:00 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+> > >
+> > > You could just assert that offsetof(typeof(s),flex) == sizeof(s), no?
+> > 
+> > No, because the whole point is that I want that "sizeof(s)" to *WARN*.
 > 
->> Hi Alex,
->>
->> On 2020/9/18 6:07, Alex Williamson wrote:
->>> On Thu, 17 Sep 2020 13:35:37 +0200
->>> Cornelia Huck <cohuck@redhat.com> wrote:
->>>    
->>>> On Thu, 17 Sep 2020 11:31:28 +0800
->>>> Zenghui Yu <yuzenghui@huawei.com> wrote:
->>>>   
->>>>> It isn't clear what purpose the @bardirty serves. It might be used to avoid
->>>>> the unnecessary vfio_bar_fixup() invoking on a user-space BAR read, which
->>>>> is not required when bardirty is unset.
->>>>>
->>>>> The variable was introduced in commit 89e1f7d4c66d ("vfio: Add PCI device
->>>>> driver") but never actually used, so it shouldn't be that important. Remove
->>>>> it.
->>>>>
->>>>> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
->>>>> ---
->>>>>    drivers/vfio/pci/vfio_pci_config.c  | 7 -------
->>>>>    drivers/vfio/pci/vfio_pci_private.h | 1 -
->>>>>    2 files changed, 8 deletions(-)
->>>>
->>>> Yes, it seems to have been write-only all the time.
->>>
->>> I suspect the intent was that vfio_bar_fixup() could test
->>> vdev->bardirty to avoid doing work if no BARs had been written since
->>> they were last read.  As it is now we regenerate vconfig for all the
->>> BARs every time any offset of any of them are read.  BARs aren't
->>> re-read regularly and config space is not a performance path,
->>
->> Yes, it seems that Qemu itself emulates all BAR registers and will read
->> the BAR from the kernel side only at initialization time.
->>
->>> but maybe
->>> we should instead test if we see any regressions from returning without
->>> doing any work in vfio_bar_fixup() if vdev->bardirty is false.  Thanks,
->>
->> I will test it with the following diff. Please let me know which way do
->> you prefer.
->>
->> diff --git a/drivers/vfio/pci/vfio_pci_config.c
->> b/drivers/vfio/pci/vfio_pci_config.c
->> index d98843feddce..77c419d536d0 100644
->> --- a/drivers/vfio/pci/vfio_pci_config.c
->> +++ b/drivers/vfio/pci/vfio_pci_config.c
->> @@ -515,7 +515,7 @@ static int vfio_basic_config_read(struct
->> vfio_pci_device *vdev, int pos,
->>                                     int count, struct perm_bits *perm,
->>                                     int offset, __le32 *val)
->>    {
->> -       if (is_bar(offset)) /* pos == offset for basic config */
->> +       if (is_bar(offset) && vdev->bardirty) /* pos == offset for basic
->> config */
->>                   vfio_bar_fixup(vdev);
->>
->>           count = vfio_default_config_read(vdev, pos, count, perm,
->> offset, val);
+> Ouch, offsetof() and sizeof() will give different results in the
+> presence of alignment padding.
 > 
-> 
-> There's only one caller currently, but I'd think it cleaner to put this
-> in vfio_bar_fixup(), ie. return immediately if !bardirty.  Thanks,
+> https://godbolt.org/z/rqnxTK
 
-OK, I'll do that in the v2.
+We really should be using offsetof() then.  It's harmless because we're
+currently overallocating, not underallocating.  The test case I did was:
 
+struct s {
+        int count;
+        char *p[];
+};
 
-Thanks,
-Zenghui
+struct_size(&s, p, 5); (48 bytes)
+struct_size2(&s, p, 5); (also 48 bytes)
+
+struct_size2 uses offsetof instead of sizeof.
+
+Your case is different because the chars fit in the padding at the end
+of the struct.
