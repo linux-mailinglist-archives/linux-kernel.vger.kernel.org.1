@@ -2,106 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E5C0270EDB
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 17:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EA9E270EDE
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 17:19:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726619AbgISPRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 11:17:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726552AbgISPRk (ORCPT
+        id S1726552AbgISPTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 11:19:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55832 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726408AbgISPTF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 11:17:40 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C56C0613D2
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 08:17:40 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id y17so9338287lfa.8
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 08:17:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=q0+1rITu9zGQ5V58k1klugk4ipvhjZZlAIk1eT/nOkM=;
-        b=jlypQ5acNaNT5R3S5pdgWVB0Vi/rYiYlvPPivmOO0iXhrfHD1rxF+Uqt8DVQZgvYMb
-         ZbEUWPdUUbK3N6aqOOh1j8DJU2RLu7MSPk/Rl6muWuMm12QvakTY2nwjACarsCQR5rVS
-         SGTJiErEGHmxqZPagTdm4HcK4mAecov4n6DeaTqKUjHcXVP9yQUE34ysWCCS03IsTQdh
-         kl/qkYJf9z5+qS5Lp+H/VVFffpFFKYr6/9dmDJGWSoXB/M7/xgCShWMTwoDpnCf267D/
-         j8fJLGUfGWzQl0w1xhg8q7GMZqQ3d39s10QPacBN7SlGDUhjtwvaSqgYbwnJQwKg+nvQ
-         X0iA==
+        Sat, 19 Sep 2020 11:19:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600528743;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UbPVb1SNMbV2AieY6+SVa7sK76f4nIZ2S6J0MZz1m7s=;
+        b=UlpxXjvGWJUV13PYeWhApTYf9SWLDU9qIvQOjR1kdga5l9BDVHXoOFWVa11ZBEssp8uWaD
+        4hzW1Yqmo4BYSrbxKWSW+RhhEZpyYo2JY4kL1UtkQAKyzySv+VgnUoAi/qN2kX0z4YzL09
+        /BuknwYtx74lLPy6KQrSMco3ZO2m3N4=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-442-GHJ8CIQ_MWyBFnIIsn8yCA-1; Sat, 19 Sep 2020 11:19:02 -0400
+X-MC-Unique: GHJ8CIQ_MWyBFnIIsn8yCA-1
+Received: by mail-wr1-f72.google.com with SMTP id r16so3534318wrm.18
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 08:19:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=q0+1rITu9zGQ5V58k1klugk4ipvhjZZlAIk1eT/nOkM=;
-        b=fAWpp2eppyMV61JPx988ynDAssbF4vJ1zEkNlBsi4D6WIrJbA5CtHquGcSv6NmrSOw
-         MGP3W1oSmb8t7hqiPscJQ2iw1ncY29nd3wLQVVdxAxqhGVOd7auZ95atM1Ye+u4VDW0L
-         5l2qy7SGh2wz4wW+lEk4wF8+Opu8Wuolc3gyq5jDkRuNEMAZM6fXEHBfukq72+LOSZ2Z
-         ay20AxpCSJLDNlaSbEwKZ233oQJFfmxuDf6ffGwLW7VQY7qVI/8SW3ZDuRcMnDEU2YEG
-         Wp1/qjPaGZAi0wjDT+FAz8Le2gU9RPXdyMVpFn+KSiAncByTnWg4l0jJ1SAlflGZgRza
-         0XSw==
-X-Gm-Message-State: AOAM533HmO6eYs5vcUDp8eEbMAlRFys+UKSxYHMGP1PEz9yPXvbKHdl/
-        iZmH3+0HzZcBodFRzz/FHNsScvpwzWxzYm8ZfYc=
-X-Google-Smtp-Source: ABdhPJzRxQXMQal5cM2KA8gj3HIjd9ffoqd6+E2q7pTn8UAGkH3YDJEsW8fBVC+6c0obtp0swSzdI9NH1rOwITvR8gE=
-X-Received: by 2002:a05:6512:512:: with SMTP id o18mr12048009lfb.98.1600528658613;
- Sat, 19 Sep 2020 08:17:38 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UbPVb1SNMbV2AieY6+SVa7sK76f4nIZ2S6J0MZz1m7s=;
+        b=qNwtSenxo5WpbEGb4AjCu+2BVhwDXRZlR1/vC3p3R8DUCrS5FZhdeKMPYLwV1nrHdG
+         bPqQ+L+4PD7nrDysd9IMoBYui2Vtk5RIKRm8URz8h3g5+kzelzMAhIsJLJHqpixsKgqs
+         KXwn5nRlcPjY8RBX/QFveZCT8AysqNU8tGd0hRmq2l6KBH4eU89TM2RVEtdG5efqeUNN
+         ZcCKs/xkDS35fSWGt5BxoLk5F+V1HaI2TkmNJbhIdoMbXo4jN/LDYjy4MgikrymJTuSx
+         tdnAi+G8hwghTujN2BTM2LoOdukSqVTi7swqIesQX8iblkHjNrHCU22tTVeFl5Utv/Ve
+         Xd9Q==
+X-Gm-Message-State: AOAM533llEN4Fw9/NsrKqj9LYG3FM0RRDAZPRfNywQR/887XnGYrpNb8
+        xpgT8PvEG6HK5zZrQ9tHIBWBIE06+/YG5Pm6gbKq2OqnSH5GC4sA5b8zK2C58ZSprhP4zT1RUzp
+        73j4CLCl00jJ6NB9JgTqtnV2y
+X-Received: by 2002:a05:6000:100c:: with SMTP id a12mr46271719wrx.115.1600528740889;
+        Sat, 19 Sep 2020 08:19:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzSDC+LPueFhpaaTGv2ug0qRqfzgHwqddZt/Gb4Xtw5UXDFve1xKaVT3W11Pk7R2NFm1DhDew==
+X-Received: by 2002:a05:6000:100c:: with SMTP id a12mr46271696wrx.115.1600528740649;
+        Sat, 19 Sep 2020 08:19:00 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:b20a:b600:521c:512d? ([2001:b07:6468:f312:b20a:b600:521c:512d])
+        by smtp.gmail.com with ESMTPSA id c16sm12719465wrx.31.2020.09.19.08.18.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 19 Sep 2020 08:18:59 -0700 (PDT)
+Subject: Re: [PATCH 3/3 v4] KVM: SVM: Don't flush cache if hardware enforces
+ cache coherency across encryption domains
+To:     Borislav Petkov <bp@alien8.de>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>
+Cc:     kvm@vger.kernel.org, jmattson@google.com, tglx@linutronix.de,
+        mingo@redhat.com, x86@kernel.org, sean.j.christopherson@intel.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, joro@8bytes.org,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, hpa@zytor.com
+References: <20200917212038.5090-1-krish.sadhukhan@oracle.com>
+ <20200917212038.5090-4-krish.sadhukhan@oracle.com>
+ <20200918075651.GC6585@zn.tnic>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <b711fc52-0adf-1afd-61c8-ce142bff9ddb@redhat.com>
+Date:   Sat, 19 Sep 2020 17:18:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Received: by 2002:ab3:6e58:0:0:0:0:0 with HTTP; Sat, 19 Sep 2020 08:17:38
- -0700 (PDT)
-Reply-To: kkoduah.sarpong@outlook.com
-From:   Kofi Koduah Sarpong <kofikoduahsarpong68@gmail.com>
-Date:   Sat, 19 Sep 2020 08:17:38 -0700
-Message-ID: <CAGyyCaswJDtv6YEsYa0YRTX9iQo6MMCz8sQQ_ZuWQUX5BF-1xA@mail.gmail.com>
-Subject: Re: investment interest from Engr: Kofi Sarpong Please go through and
- get back to me.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200918075651.GC6585@zn.tnic>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lukoil Overseas Gh. Ltd.
-Oil & Gas Extraction Companies
-No. 68 Mankralo Street
-East Cantonments
-Accra Ghana.
+On 18/09/20 09:56, Borislav Petkov wrote:
+> On Thu, Sep 17, 2020 at 09:20:38PM +0000, Krish Sadhukhan wrote:
+>> In some hardware implementations, coherency between the encrypted and
+>> unencrypted mappings of the same physical page in a VM is enforced. In such a
+>> system, it is not required for software to flush the VM's page from all CPU
+>> caches in the system prior to changing the value of the C-bit for the page.
+>>
+>> Signed-off-by: Krish Sadhukhan <krish.sadhukhan@oracle.com>
+>> ---
+>>  arch/x86/kvm/svm/sev.c | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+>> index 7bf7bf734979..3c9a45efdd4d 100644
+>> --- a/arch/x86/kvm/svm/sev.c
+>> +++ b/arch/x86/kvm/svm/sev.c
+>> @@ -384,7 +384,8 @@ static void sev_clflush_pages(struct page *pages[], unsigned long npages)
+>>  	uint8_t *page_virtual;
+>>  	unsigned long i;
+>>  
+>> -	if (npages == 0 || pages == NULL)
+>> +	if (this_cpu_has(X86_FEATURE_SME_COHERENT) || npages == 0 ||
+>> +	    pages == NULL)
+>>  		return;
+>>  
+>>  	for (i = 0; i < npages; i++) {
+>> -- 
+> 
+> Took the first two, Paolo lemme know if I should route this one through
+> tip too.
+> 
+> Thx.
+> 
 
-Dear: Sir
+Yeah, it's innocuous enough as far as conflicts are concerned.
 
-My name is Engr: Kofi Koduah Sarpong.
-I am the Chief Executive Officer of Lukoil Overseas Gh. Ltd Ghana.
-I will be retiring from my work by June next year. I write to inform
-you of my intention to invest in a Hotel business or any other forms
-of business in your country and i request you assists me in carrying
-out the feasibility studies on location and likely cost implication,
-type and estimation on how much it will cost to establish a three star
-hotel, either by outright purchase of already existing one or a
-dilapidated one that we can renovate or setting up a new one entirely.
+Acked-by: Paolo Bonzini <pbonzini@redhat.com>
 
-If you sincerely carry out this survey, and give me feedback as fast
-as possible, I will give you the power of attorney to build & manage
-the hotel for me, pending my retirement next year as I said.
+Paolo
 
-Sir, i have the sum of (US$85 million USD) that I deposited in a
-Finance company outside my country for this project.
-
-Please don=E2=80=99t disregard this message I am very sincere in what am
-telling you the documents for the deposit I will send them to you for
-your confirmation as soon as we proceed.
-
-I have very little issue with health right now as a result of age but
-I have been assured by my doctor that I will be fine and get back to
-work soon presently i am in the neighboring country for medical
-reason.
-
-Please do let me know if you are capable, and can handling such
-business. Feed me back with your details, and your area of
-specialization should be indicated as well. I will be expecting your
-reply as soon as possible.
-
-Please send your telephone number to me i will call you for more details.
-
-
-Regards
-Engr: Kofi Koduah Sarpong
-Chief Executive Officer
