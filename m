@@ -2,206 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BC7E2710AD
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 23:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C70A2710B3
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 23:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726740AbgISVl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 17:41:26 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:49041 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726696AbgISVlZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 17:41:25 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4Bv402664bzcg;
-        Sat, 19 Sep 2020 23:41:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1600551682; bh=sjHesEuhUQBPTBR5PKdh6Su6/OO5b6xTTe6dLO4s9HI=;
-        h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=Ejy2x38Jl2CufmcXcBr0JO0Vfrc+ZlEVXVGRqVHCRKcgy3XgwPm0gyKFSj+n+XO9J
-         Jpwfh4PxPU/Slwv5DG75tQQz92wkcVQRFpF+VDNpYvUJr0m3qXW6ON7O7eYz8zC/u+
-         4Ppmy9BwGfj9EXvQOPrgAn4v+ncAsOroFeBCgYkqzl/XNhCjT4D/s1hUfAwf6y79IJ
-         mLr84Qv1qLxfW5x3F9aGzG9IvLXIQOxCnezAlyf+Qy5X/8hLuWqmM7noJY17Upmr1Y
-         9/Xi65lZHG08RH5LrJ964e1sxmsvtKTkKwZPaTLgPEuAXIhvztJUmpVr+9GIc5mIJO
-         FTa6BjvVzdXkQ==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Sat, 19 Sep 2020 23:41:22 +0200
-Message-Id: <d1ce1c899edc68cff47cedc295d18e5e61250212.1600551334.git.mirq-linux@rere.qmqm.pl>
-In-Reply-To: <cover.1600551334.git.mirq-linux@rere.qmqm.pl>
-References: <cover.1600551334.git.mirq-linux@rere.qmqm.pl>
-From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH v7 3/4] input: elants: read touchscreen size for EKTF3624
+        id S1726711AbgISVss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 17:48:48 -0400
+Received: from sonic312-21.consmr.mail.bf2.yahoo.com ([74.6.128.83]:40618 "EHLO
+        sonic312-21.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726598AbgISVss (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Sep 2020 17:48:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1600552127; bh=DPYuw2gUpgtMJzJhlH/AVmRGu2wSKCY1C+f8nOCoxu0=; h=Date:From:Reply-To:Subject:References:From:Subject; b=gA5sHVNo3YlIRWzEVOmA9fsYnPWFxldrQEIr5GNvNEnrOYD74/qcdFsBK7sYGRtBA8rH9AfDdoM7LHH+aLI/xbTBllBznDXXUiyRyr6tqvywjRT3wbth81zsUSzxEzdq6nOhgqj7jrKT7pP9zB2/Nw7UKKQ5yuAPz8DTskBER+KouOIlFf4JOV2sBhtlBPVRz8wK2dKAgzCmD6B83ThB4+D4rtygPRIjwFIsIxLLw5zGurAmg+d3+PtETlTiM4h+JUPMfE9XzYT3vx1/nTdyB1Aq0NPp9EsCnNCS5MnDGpWv9+qp6VigsZr7TMSyEFjiuJOENmZBSqgk75sUryMTJQ==
+X-YMail-OSG: oPGC9u4VM1lZSkFtRvZbOcT4FwTtUOQMkhW4gQLfh_9G9x8VTw6lf21PoWTLE7Q
+ xGdQjs8cluEopbzVozcPZs8EWehEyHMKFCMLfjNZf3pkx19g125QEqToc.hRmNrjXSxVy94qTOVn
+ yIM95ZhuNzdVjTQ5NPBNPIzvG9HoPldXqHkjI_E0S8pp0X8XC3RdfSc4n19CHbzDYpSrR.WLgZhz
+ 8wLDAhH_1fD_1X.sstpN69r_3RYJpzPS8C4JxFLj79Rxgmr8jiXcM4eZHfDeEkVjB3_50JBsC3WS
+ NKdIjHWlXZyXvDeHPp9DL4Q3fymLQ1N_2DK5lX397WoL8NbbgE6CYaFTlKQpf.HtFt6gLS0kqZoj
+ H.xtbTzmpR4ugewMxDYP_AmFTbwiVEYWePS1PUK7E2OjTISlxct7QgVYjl0ObCjPWyxexwBL1D4l
+ GEHQim2Ljol3Q3jFj8mK1rEgyTVpXEol0DpCpoIK4cIWf38mY8m0lAaNncZZW_KHAGYnVu1jUmF3
+ 1kBIzjrWDl9DDs06_mZt0yXVhqb2PkBYP12iSTxZhczimYd1tEuBrt4sbVNbEP_a0PjpvS6u0f_Z
+ WvULonsssdjXCOc8lnqMGNbIsm_JHtS6.DgFu_UbXhUD3Bq7MmM8JHDfd10VBVtieNQ3jiAw11Zt
+ miIU_j_CKLjw4TiodL5bygpKpkhABC_ribdtkc19t5.HJ0SJh.0cMux_FYjxuKncbT7d4DJNsqx_
+ RkbM6YJCbJxuWX9BuihR1GlHXgjQu6lbV4_CGMeYnWimkUANWd1v2a75x46OBP2Umx31t2kegz.9
+ gZ9Z4yWPa6tCdi2OYJEWNmGByKxR0MEUjqq4HXLx1_82bqzolim2buYcs8Eg6RQn3J7oa0ck9Cx3
+ kOJAk8JlPH8EKd7TdwO5VOFNpK9BB5g98WHEdzRhpPhWIXDMe4AlxD3fyQtVNwdz81TNI11c5Sg3
+ .DI7.7ww4spOQFq3ZDoDwKVDEQeJ5jXLu6eigJpDW_I9zKHKyXnHtElmps0HSlZb5yYZ0OlwglXZ
+ eRQOLLuQt610EJD9vrcs6cK_c9i6lhQRwRuVDHtYuMWhyZ9ciXq1Cuu_umiCRlhIqM2TRtaN8vfV
+ REIJPZNauS3l7Rr3Udbs5JT1fyMd9gV.V3WAmymPQJOeiMswROVAkfvY3wQuPltXY4JruqYtf_va
+ RcQHGsegdJhgi3qndLtnPGwdDLnltGL7C1mFlEifaXoZhGotRNmtFF7HCtYTOPcoEVv2Oo23aSCA
+ kQ..6DgaQbTqhFEL6G6VUbzPaF45oj7pgZ03lLmr7HMg7Vc7H.VtitUZP0KRJGuh4KyRffP79WP7
+ Sv_nk..ADb0iLKz2Pia6dz1r0kZ7hnhpvURUupnOZw_b7gO2LMnX838yQuINwnPbJJbRvfWYt1C2
+ KTlIO7njnyYJerozcnZlc_2l_aZH33iFLOwoUm9doIyvuUpUdFoezIEFn
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.bf2.yahoo.com with HTTP; Sat, 19 Sep 2020 21:48:47 +0000
+Date:   Sat, 19 Sep 2020 21:48:46 +0000 (UTC)
+From:   "Mrs. Mina A. Brunel" <minaabrunel43@gmail.com>
+Reply-To: mrsminaabrunel36@gmail.com
+Message-ID: <1356144648.3960096.1600552126190@mail.yahoo.com>
+Subject: My Dear in the lord
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        James Chen <james.chen@emc.com.tw>,
-        Johnny Chuang <johnny.chuang@emc.com.tw>,
-        Scott Liu <scott.liu@emc.com.tw>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Harry Cutts <hcutts@chromium.org>,
-        Peter Hutterer <peter.hutterer@who-t.net>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+References: <1356144648.3960096.1600552126190.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16583 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-EKTF3624 as present in Asus TF300T tablet has touchscreen size encoded
-in different registers.
 
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-Tested-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/input/touchscreen/elants_i2c.c | 84 ++++++++++++++++++++++++--
- 1 file changed, 79 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/input/touchscreen/elants_i2c.c b/drivers/input/touchscreen/elants_i2c.c
-index f1bf3e000e96..c24d8cdc4251 100644
---- a/drivers/input/touchscreen/elants_i2c.c
-+++ b/drivers/input/touchscreen/elants_i2c.c
-@@ -35,7 +35,7 @@
- #include <linux/input/mt.h>
- #include <linux/input/touchscreen.h>
- #include <linux/acpi.h>
--#include <linux/of.h>
-+#include <linux/of_device.h>
- #include <linux/gpio/consumer.h>
- #include <linux/regulator/consumer.h>
- #include <asm/unaligned.h>
-@@ -43,6 +43,10 @@
- /* Device, Driver information */
- #define DEVICE_NAME	"elants_i2c"
- 
-+/* Device IDs */
-+#define EKTH3500	0
-+#define EKTF3624	1
-+
- /* Convert from rows or columns into resolution */
- #define ELAN_TS_RESOLUTION(n, m)   (((n) - 1) * (m))
- 
-@@ -94,6 +98,8 @@
- #define E_ELAN_INFO_REK		0xD0
- #define E_ELAN_INFO_TEST_VER	0xE0
- #define E_ELAN_INFO_FW_ID	0xF0
-+#define E_INFO_X_RES		0x60
-+#define E_INFO_Y_RES		0x63
- #define E_INFO_OSR		0xD6
- #define E_INFO_PHY_SCAN		0xD7
- #define E_INFO_PHY_DRIVER	0xD8
-@@ -157,6 +163,7 @@ struct elants_data {
- 
- 	bool wake_irq_enabled;
- 	bool keep_power_in_suspend;
-+	u8 chip_id;
- 
- 	/* Must be last to be used for DMA operations */
- 	u8 buf[MAX_PACKET_SIZE] ____cacheline_aligned;
-@@ -434,7 +441,58 @@ static int elants_i2c_query_bc_version(struct elants_data *ts)
- 	return 0;
- }
- 
--static int elants_i2c_query_ts_info(struct elants_data *ts)
-+static int elants_i2c_query_ts_info_ektf(struct elants_data *ts)
-+{
-+	struct i2c_client *client = ts->client;
-+	int error;
-+	u8 resp[4];
-+	u16 phy_x, phy_y;
-+	const u8 get_xres_cmd[] = {
-+		CMD_HEADER_READ, E_INFO_X_RES, 0x00, 0x00
-+	};
-+	const u8 get_yres_cmd[] = {
-+		CMD_HEADER_READ, E_INFO_Y_RES, 0x00, 0x00
-+	};
-+
-+	/* Get X/Y size in mm */
-+	error = elants_i2c_execute_command(client, get_xres_cmd,
-+					   sizeof(get_xres_cmd),
-+					   resp, sizeof(resp), 1,
-+					   "get X size");
-+	if (error)
-+		return error;
-+
-+	phy_x = resp[2] | ((resp[3] & 0xF0) << 4);
-+
-+	error = elants_i2c_execute_command(client, get_yres_cmd,
-+					   sizeof(get_yres_cmd),
-+					   resp, sizeof(resp), 1,
-+					   "get Y size");
-+	if (error)
-+		return error;
-+
-+	phy_y = resp[2] | ((resp[3] & 0xF0) << 4);
-+
-+	if (!phy_x || !phy_y) {
-+		dev_warn(&client->dev,
-+			 "invalid size data: %d x %d mm\n",
-+			 phy_x, phy_y);
-+		return 0;
-+	}
-+
-+	dev_dbg(&client->dev, "phy_x=%d, phy_y=%d\n", phy_x, phy_y);
-+
-+	/* calculate resolution from size */
-+	ts->x_max = 2240-1;
-+	ts->x_res = DIV_ROUND_CLOSEST(ts->prop.max_x, phy_x);
-+
-+	ts->y_max = 1408-1;
-+	ts->y_res = DIV_ROUND_CLOSEST(ts->prop.max_y, phy_y);
-+
-+	return 0;
-+}
-+
-+static int elants_i2c_query_ts_info_ekth(struct elants_data *ts)
- {
- 	struct i2c_client *client = ts->client;
- 	int error;
-@@ -588,8 +646,20 @@ static int elants_i2c_initialize(struct elants_data *ts)
- 		error = elants_i2c_query_fw_version(ts);
- 	if (!error)
- 		error = elants_i2c_query_test_version(ts);
--	if (!error)
--		error = elants_i2c_query_ts_info(ts);
-+
-+	switch (ts->chip_id) {
-+	case EKTH3500:
-+		if (!error)
-+			error = elants_i2c_query_ts_info_ekth(ts);
-+		break;
-+	case EKTF3624:
-+		if (!error)
-+			error = elants_i2c_query_ts_info_ektf(ts);
-+		break;
-+	default:
-+		unreachable();
-+		break;
-+	}
- 
- 	if (error)
- 		ts->iap_mode = ELAN_IAP_RECOVERY;
-@@ -1266,6 +1336,9 @@ static int elants_i2c_probe(struct i2c_client *client,
- 	ts->client = client;
- 	i2c_set_clientdata(client, ts);
- 
-+	if (client->dev.of_node)
-+		ts->chip_id = (uintptr_t)of_device_get_match_data(&client->dev);
-+
- 	ts->vcc33 = devm_regulator_get(&client->dev, "vcc33");
- 	if (IS_ERR(ts->vcc33)) {
- 		error = PTR_ERR(ts->vcc33);
-@@ -1495,7 +1568,8 @@ MODULE_DEVICE_TABLE(acpi, elants_acpi_id);
- 
- #ifdef CONFIG_OF
- static const struct of_device_id elants_of_match[] = {
--	{ .compatible = "elan,ekth3500" },
-+	{ .compatible = "elan,ekth3500", .data = (void *)EKTH3500 },
-+	{ .compatible = "elan,ektf3624", .data = (void *)EKTF3624 },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, elants_of_match);
--- 
-2.20.1
+My Dear in the lord
 
+
+My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
+na Faso, I am married to Mr. Brunel Patrice, a politicians who owns a small=
+ gold company in Burkina Faso; He died of Leprosy and Radesyge, in year Feb=
+ruary 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Milli=
+on Euro) Eight million, Five hundred thousand Euros in a bank in Ouagadougo=
+u the capital city of of Burkina in West Africa. The money was from the sal=
+e of his company and death benefits payment and entitlements of my deceased=
+ husband by his company.
+
+I am sending you this message with heavy tears in my eyes and great sorrow =
+in my heart, and also praying that it will reach you in good health because=
+ I am not in good health, I sleep every night without knowing if I may be a=
+live to see the next day. I am suffering from long time cancer and presentl=
+y I am partially suffering from Leprosy, which has become difficult for me =
+to move around. I was married to my late husband for more than 6 years with=
+out having a child and my doctor confided that I have less chance to live, =
+having to know when the cup of death will come, I decided to contact you to=
+ claim the fund since I don't have any relation I grew up from an orphanage=
+ home.
+
+I have decided to donate this money for the support of helping Motherless b=
+abies/Less privileged/Widows and churches also to build the house of God be=
+cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
+cided to donate from what I have inherited from my late husband to you for =
+the good work of Almighty God; I will be going in for an operation surgery =
+soon.
+
+Now I want you to stand as my next of kin to claim the funds for charity pu=
+rposes. Because of this money remains unclaimed after my death, the bank ex=
+ecutives or the government will take the money as unclaimed fund and maybe =
+use it for selfishness and worthless ventures, I need a very honest person =
+who can claim this money and use it for Charity works, for orphanages, wido=
+ws and also build schools and churches for less privilege that will be name=
+d after my late husband and my name.
+
+I need your urgent answer to know if you will be able to execute this proje=
+ct, and I will give you more information on how the fund will be transferre=
+d to your bank account or online banking.
+
+Thanks
+Mrs. Mina A. Brunel
