@@ -2,17 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BE3F270B36
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 08:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B3C270B39
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 08:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726315AbgISGqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 02:46:34 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:33156 "EHLO huawei.com"
+        id S1726360AbgISGqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 02:46:38 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:33150 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726112AbgISGqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 02:46:32 -0400
+        id S1726054AbgISGqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Sep 2020 02:46:33 -0400
 Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 9F2B36905347ACCDFFFD;
+        by Forcepoint Email with ESMTP id 9A9E5726B9C783EBAADF;
         Sat, 19 Sep 2020 14:46:29 +0800 (CST)
 Received: from thunder-town.china.huawei.com (10.174.177.253) by
  DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
@@ -25,9 +25,9 @@ To:     Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>,
 CC:     Zhen Lei <thunder.leizhen@huawei.com>,
         Libin <huawei.libin@huawei.com>,
         Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH v2 1/4] dt-bindings: arm: hisilicon: add binding for SD5203 SoC
-Date:   Sat, 19 Sep 2020 14:45:52 +0800
-Message-ID: <20200919064555.3616-2-thunder.leizhen@huawei.com>
+Subject: [PATCH v2 2/4] ARM: hisi: add support for SD5203 SoC
+Date:   Sat, 19 Sep 2020 14:45:53 +0800
+Message-ID: <20200919064555.3616-3-thunder.leizhen@huawei.com>
 X-Mailer: git-send-email 2.26.0.windows.1
 In-Reply-To: <20200919064555.3616-1-thunder.leizhen@huawei.com>
 References: <20200919064555.3616-1-thunder.leizhen@huawei.com>
@@ -40,29 +40,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add devicetree binding for Hisilicon SD5203 SoC.
+From: Kefeng Wang <wangkefeng.wang@huawei.com>
 
+Enable support for the Hisilicon SD5203 SoC. The core is ARM926EJ-S.
+
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 ---
- Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/arm/mach-hisi/Kconfig | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt b/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt
-index a97f643e7d1c760..5d80070bfb13fc0 100644
---- a/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt
-+++ b/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt
-@@ -56,6 +56,11 @@ HiP07 D05 Board
- Required root node properties:
- 	- compatible = "hisilicon,hip07-d05";
+diff --git a/arch/arm/mach-hisi/Kconfig b/arch/arm/mach-hisi/Kconfig
+index 3b010fe7c0e9b48..2e980f834a6aa1b 100644
+--- a/arch/arm/mach-hisi/Kconfig
++++ b/arch/arm/mach-hisi/Kconfig
+@@ -1,9 +1,9 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ config ARCH_HISI
+ 	bool "Hisilicon SoC Support"
+-	depends on ARCH_MULTI_V7
++	depends on ARCH_MULTI_V7 || ARCH_MULTI_V5
+ 	select ARM_AMBA
+-	select ARM_GIC
++	select ARM_GIC if ARCH_MULTI_V7
+ 	select ARM_TIMER_SP804
+ 	select POWER_RESET
+ 	select POWER_RESET_HISI
+@@ -15,6 +15,7 @@ menu "Hisilicon platform type"
  
-+SD5203 SoC
-+Required root node properties:
-+	- compatible = "hisilicon,sd5203";
-+
-+
- Hisilicon system controller
+ config ARCH_HI3xxx
+ 	bool "Hisilicon Hi36xx family"
++	depends on ARCH_MULTI_V7
+ 	select CACHE_L2X0
+ 	select HAVE_ARM_SCU if SMP
+ 	select HAVE_ARM_TWD if SMP
+@@ -25,6 +26,7 @@ config ARCH_HI3xxx
  
- Required properties:
+ config ARCH_HIP01
+ 	bool "Hisilicon HIP01 family"
++	depends on ARCH_MULTI_V7
+ 	select HAVE_ARM_SCU if SMP
+ 	select HAVE_ARM_TWD if SMP
+ 	select ARM_GLOBAL_TIMER
+@@ -33,6 +35,7 @@ config ARCH_HIP01
+ 
+ config ARCH_HIP04
+ 	bool "Hisilicon HiP04 Cortex A15 family"
++	depends on ARCH_MULTI_V7
+ 	select ARM_ERRATA_798181 if SMP
+ 	select HAVE_ARM_ARCH_TIMER
+ 	select MCPM if SMP
+@@ -43,6 +46,7 @@ config ARCH_HIP04
+ 
+ config ARCH_HIX5HD2
+ 	bool "Hisilicon X5HD2 family"
++	depends on ARCH_MULTI_V7
+ 	select CACHE_L2X0
+ 	select HAVE_ARM_SCU if SMP
+ 	select HAVE_ARM_TWD if SMP
+@@ -50,6 +54,14 @@ config ARCH_HIX5HD2
+ 	select PINCTRL_SINGLE
+ 	help
+ 	  Support for Hisilicon HIX5HD2 SoC family
++
++config ARCH_SD5203
++	bool "Hisilicon SD5203 family"
++	depends on ARCH_MULTI_V5
++	select DW_APB_ICTL
++	help
++	  Support for Hisilicon SD5203 SoC family
++
+ endmenu
+ 
+ endif
 -- 
 1.8.3
 
