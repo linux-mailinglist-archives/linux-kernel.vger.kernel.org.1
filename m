@@ -2,110 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26EF1270BA5
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 10:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E65270BA9
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 10:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726222AbgISIDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 04:03:16 -0400
-Received: from mout.gmx.net ([212.227.15.18]:57295 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726041AbgISIDQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 04:03:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1600502522;
-        bh=4XgdFtvAi6R4B5XmudteHuz8hEx5VkQonxbFFxSLuwY=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=gCp0Pxfe1yp36A3FUcn3Ym16DzjHZUgk64Ut9YWbXYe/BKi3p8cyxtAJI0hgpxtYP
-         e0+AlAlOyP8R57EgIGKVjk4e38bY9yau4aydPoEJ9autBnx7bJm9yJroWGVQs8csFs
-         jPkF+SEyN4GWAfOSKf5in74y2MfJDeGl+9Aq+Vjo=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ubuntu ([79.150.73.70]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MOiHl-1k7lYc36kx-00QAd0; Sat, 19
- Sep 2020 10:02:01 +0200
-Date:   Sat, 19 Sep 2020 10:01:43 +0200
-From:   John Wood <john.wood@gmx.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     John Wood <john.wood@gmx.com>, kernel-hardening@lists.openwall.com,
-        Jann Horn <jannh@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [RFC PATCH 6/6] security/fbfam: Mitigate a fork brute force
- attack
-Message-ID: <20200919080143.GA2998@ubuntu>
-References: <20200910202107.3799376-1-keescook@chromium.org>
- <20200910202107.3799376-7-keescook@chromium.org>
- <202009101649.2A0BF95@keescook>
- <20200918152116.GB3229@ubuntu>
- <202009181433.EAF237C36@keescook>
+        id S1726305AbgISIEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 04:04:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726041AbgISIEp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Sep 2020 04:04:45 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FD40C0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 01:04:44 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id r24so6934869ljm.3
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 01:04:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=74d+3zdIrItu4yPjssRFwYhLxV8d+x9MW5ISlAEwzIM=;
+        b=rRvZD8N50pyTKZUu3Uq4YwvhiMedpbQfrgkiEcR6sqlFbGxRDZ0es9mmDSXY49F65c
+         kHuqDBwRu2yzu8+g6L3YaN2t5FLGs0AXIVoXm5Nl6ZxFzTexLoPxVZmwvQ5+cLiHjmtX
+         7TKh7LEoYgTAA6xyNKTa1toLP3hniG1Hc3RyRq7uifBfPDh7ue+cb601ENhbhyE6kf7Y
+         xKqcGZq1exzBZuHT2XMrsBMghlaEP8AMzFXgXRJSm9ZwEP3+dUeMMYTwvywKqYSaVlz7
+         2Ty3Aql/xVvRWyyATI5hxvgSvae5yZfmk9drBJEJnp+Nxk9OTXogsbmTGA8TWJBaCzEU
+         m/Bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=74d+3zdIrItu4yPjssRFwYhLxV8d+x9MW5ISlAEwzIM=;
+        b=CVbT5UfVHxDJcVGacnY6ZQooyS1yiUS97HqvI0v+plkcNoB7O5rKbs4QS4x55EgSxr
+         iIy2cAwaB33yHOCu3KwRvvds68KeNiJE2xSZn5Or5ZmXquHS9ynv5mr2ny/R7dWeTFyT
+         fqGeS0AkVRGg8tb7VkwiSHp9dL8xpczQakd0RGDox3Km3MAZQrIss/qHv7y1NoV+qjt7
+         LIQOs7D0RyFy+sD/b/UNRXj7oRE++1Kfj6U4kdEIfnLgAZsKKKKqf98qVHBbQNPFxkZ2
+         Ru3t82V+ZV55sd6dZj4VlW3sCina4TysFGr+1Xs1bi3d67UDXiUPgvzb8r5SBUmqzuEK
+         NuFw==
+X-Gm-Message-State: AOAM531afdxbjfslUKKiJU5gdin0JnXnJAD65efZ2VhWZK0xZQHch4+u
+        CBxcyxXEKv3Y9oUMdF1KjHo=
+X-Google-Smtp-Source: ABdhPJw99VzTK4mNA4zbDFoHai02D7/beIuY/UeI5WSDlDYUJpL1QZ6lxuec0lKqKD6xilVG6V9A4g==
+X-Received: by 2002:a2e:8904:: with SMTP id d4mr14161289lji.322.1600502683030;
+        Sat, 19 Sep 2020 01:04:43 -0700 (PDT)
+Received: from z50.gdansk-morena.vectranet.pl (109241122244.gdansk.vectranet.pl. [109.241.122.244])
+        by smtp.gmail.com with ESMTPSA id c22sm1110110lff.202.2020.09.19.01.04.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Sep 2020 01:04:42 -0700 (PDT)
+From:   Janusz Krzysztofik <jmkrzyszt@gmail.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-mtd@lists.infradead.org, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org,
+        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] mtd: rawnand: ams-delta: Fix non-OF build warning
+Date:   Sat, 19 Sep 2020 10:04:03 +0200
+Message-Id: <20200919080403.17520-1-jmkrzyszt@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202009181433.EAF237C36@keescook>
-X-Provags-ID: V03:K1:9L/Tjnvsa4rFId2m/ThIutvMMgMjZ/IzDuYdTCkaziufEFzDKT/
- IRrFLRh5iZZijoWA9cyyfuQ4k6jgKMd25Kk8d4GzwKnS21hKdASly6qgEiapWsHmSbTaFO+
- ENvVfY9y27mz4HzAjPWRFPwB2wIeSzoU1ixZMKt41hEE37FmLQuxey8tSSV1y7BasThZLWK
- UFxckuz1NmniW0O7Dq3Tw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:DsrSIZNTKX4=:fcgG2vxOYNU28XvduGgWSa
- l8OZ/b33w3ZI6C2efMkW4M4v7bTdHnASMI4IqpDRJr818NfR2aEPc0wQF/se2ZEijsoc+fbZm
- g6oyJlTgpJSpsWyfvKwOSmljP4gX09HDMTHcVypA7NU+ujsxjA58GmgDEzM/a8tQT0maE6MkT
- 84zWkocT9nX/OtvYtNW5b1/JijWJkxtRk61NJPv14n1twCS8Mzl3Tw643fLm2K3wzEB8bnjGc
- OmlW6f04gTRYuNs5JpPApQxOCM6P4btmbltAm99vq9C8V4QWGrqSnlAPBArJf9/tzIjdTl/ZV
- cfAso21lbNzw9SFeRQyweLS/zOflRENFU9ISWCBnulBelTGqKi5S9MOtt4WkPJHbnTp0vXAOE
- Y3K++PK1wcas5NxxoCltB/JlKLdQz6dxsR3OgCEXpcieMaOyxxzsLHLvZYH1rmMGHGD1gbsAu
- VVzBIZ8dc3GFVnmGRTUL+VJfk+9P+LXhtSEcs29a2mWA6gs9997OxBHVz0Oqpqci1J/nqxs9y
- LG4jzr9JCMOqkF8xexq410aveWcLckUQp4k2RA+BQrk26YC+kN0Mj9Xse78p4EN96svVeLKbj
- Lqlj5k1+KEqd1qJfnhCxEG3suUQhW3xQh354D2+q45dSf1FlqlnBpbFzBt2wvVNq26prssG/X
- KK0vyakF7pgD5Wx9sV3XRmV6Zm4QuoTN+ZTnHHSLwgIICtSnrVQVLzn8GsKAbZtXYdPVc3Avl
- xvhafXunIOq2wROMVBjr9Z7srPprj1rUFtQdz0Nwlm/he+HlVwvSa8KcTazoXWepxIdyF7+HV
- BbSCC5D3Lk/DWhSkQ84CK5NIVlH8auL3JXuiT5AtkGNzzgPBf/hMpvP4GKhrVcY7fsmVTP0ow
- LkFRL7xchZ9ergYtr90Euxz6nV0Ko71ORgua7sVn+IeijeftZHqB3+ASSRommPaZzMeFNWKtQ
- 8j3sW3Zy4NNNdmi0BKNpV1FHOiQQKHNedyCUm4QTeQUALWHQxDr1lETNzG8O9iDvzpAZHa4SV
- W9bN3Iik9vt0yh8POyczQC94lONDsRZ1duce+iDjqfvdH8U239jL2GNwWyxOGfLzRHIHgdnT+
- UtdphSgI1cUGccdFzgH1EtmPf7mGGyAB2utUt75IHNLONIrMAfTxpK7eNTlSrTS4BPtbbM4e2
- e5Fk8i4DtMwmE1+qey/Od3qJdIcnFM3e1UUlGMI0Q3xOc4ZQsLqUYtDyzUzMcx+Iwlx5LkWCw
- tJj4wRrbj6ekneFnF4EzqQplU3U5eCTOuu4LMaQ==
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 02:35:12PM -0700, Kees Cook wrote:
-> On Fri, Sep 18, 2020 at 06:02:16PM +0200, John Wood wrote:
-> > On Thu, Sep 10, 2020 at 04:56:19PM -0700, Kees Cook wrote:
-> > > On Thu, Sep 10, 2020 at 01:21:07PM -0700, Kees Cook wrote:
-> > > > +		pr_warn("fbfam: Offending process with PID %d killed\n",
-> > > > +			p->pid);
-> > >
-> > > I'd make this ratelimited (along with Jann's suggestions).
-> >
-> > Sorry, but I don't understand what you mean with "make this ratelimite=
-d".
-> > A clarification would be greatly appreciated.
->
-> Ah! Yes, sorry for not being more clear. There are ratelimit helpers for
-> the pr_*() family of functions, e.g.:
->
-> 	pr_warn_ratelimited("brute: Offending process with PID...
+Commit 7c2f66a960fc ("mtd: rawnand: ams-delta: Add module device
+tables") introduced an OF module device table but wrapped a reference
+to it with of_match_ptr() which resolves to NULL in non-OF configs.
+That resulted in a clang compiler warning on unused variable in non-OF
+builds.  Fix it.
 
-Thanks for the clarification.
+drivers/mtd/nand/raw/ams-delta.c:373:34: warning: unused variable 'gpio_nand_of_id_table' [-Wunused-const-variable]
+   static const struct of_device_id gpio_nand_of_id_table[] = {
+                                    ^
+   1 warning generated.
 
-> --
-> Kees Cook
+Fixes: 7c2f66a960fc ("mtd: rawnand: ams-delta: Add module device tables")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+---
+ drivers/mtd/nand/raw/ams-delta.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Regards,
-John Wood
+diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
+index fdba155416d2..0bf4cfc25147 100644
+--- a/drivers/mtd/nand/raw/ams-delta.c
++++ b/drivers/mtd/nand/raw/ams-delta.c
+@@ -400,12 +400,14 @@ static int gpio_nand_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_OF
+ static const struct of_device_id gpio_nand_of_id_table[] = {
+ 	{
+ 		/* sentinel */
+ 	},
+ };
+ MODULE_DEVICE_TABLE(of, gpio_nand_of_id_table);
++#endif
+ 
+ static const struct platform_device_id gpio_nand_plat_id_table[] = {
+ 	{
+-- 
+2.26.2
+
