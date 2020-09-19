@@ -2,324 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0306C270E70
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 16:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2FD270E7B
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 16:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726528AbgISON7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 10:13:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46974 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726159AbgISON5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 10:13:57 -0400
-Received: from localhost.localdomain (unknown [194.230.155.191])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A50E021582;
-        Sat, 19 Sep 2020 14:13:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600524836;
-        bh=lBHpIaEQEA0hwJz1aWk1HdsShTkLdgBJrh4IfJNUNoA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dhUjaG3u1deZv01LKAE6u4qszEqKRj1qnTFc5rm+ljCziJcuX5KlfK6nTgj6iYIho
-         dpqFsH+Bq3hoKDlDBwctYi8HfnCoABcoSibC8aYr7lWyLU2LHifJye8wbm/Exvcuw7
-         BbGMAuptBTksZpSP5WqyHczNXWDDxQXlhh/NaEF4=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Li Yang <leoyang.li@nxp.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v2 3/3] arm64: dts: imx8mn-var-som-symphony: Add Variscite Symphony board with VAR-SOM-MX8MN
-Date:   Sat, 19 Sep 2020 16:13:32 +0200
-Message-Id: <20200919141332.5095-3-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200919141332.5095-1-krzk@kernel.org>
-References: <20200919141332.5095-1-krzk@kernel.org>
+        id S1726481AbgISOVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 10:21:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726159AbgISOVA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Sep 2020 10:21:00 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA4D0C0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 07:20:59 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id a15so7398839ljk.2
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 07:20:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=PUHtQcqiSZ/AYJ78aojY6rcjCJNWWX9KkICMEl5Pxjk=;
+        b=UIHkh2F+bZWon7Zzm4VYiSR86PJuWxT7I1KLzYBzSse1bBnCIL9rh/JNfOYGII9+L4
+         N22+I2foHhRlNV+T182Cu87YSn4hYDSJHumyrUAEGr5UAHT8qahcL/mplmDH65jvwLgs
+         KxfFAIRrxXGcYqSl6RdpzceFYY91WM5F0fkOAeITTsQE6BmuXq+wRJmIt/j5qw+feVoD
+         a9fY700xepoJUIf27WGy4N5QLzpoG/j7qQ7PTeLbeIjugRe1FqfvSpJ62h9n2U4EtXWw
+         oEFQuqF2/0ThBqQ54RAjZ/6zDxSOi4Rhh0kAOViDZtnuFPWlP+VlQebLLgD8iUM/YRuT
+         d7dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=PUHtQcqiSZ/AYJ78aojY6rcjCJNWWX9KkICMEl5Pxjk=;
+        b=OezSFAoxXHl7J7c5wDpXQz4oG9x/kXgy2l6WRITWSY1zlMY5MYGhTvCG3ZtJ3zj/BS
+         LxIKKr2OnpLPxfppgvv6FD6ncEAn19YadMzgMVejOz0egED8fKZZsR58qJghKpuX8h8Q
+         4vW0YDpUyd9YJdA28yO35qWgC9Q209o9uGY3PdPWKnolpFVmN7XZUqtc/UsnUW7e3FYs
+         D75PaX0HaO94FZwqX9ub37Zb/v8VvrEtFu1EMLxQcW3FLSIH5kH0HQb9cikSKjoGjVCR
+         /PzbZCCsarU4hRH/k1zPRycP3p0vuKmjr3CGtAVjuokySUVVN8L75eN7ldKEyrJDzNai
+         Uk3g==
+X-Gm-Message-State: AOAM531b2gDj/UNQdtHuK5+fwLgCsFgDcvEMsyC2QivKaceevLmUgAIr
+        ceEZkbcqrtiJF3skUU1UHDDOnhO8Me55FYn0Dbk=
+X-Google-Smtp-Source: ABdhPJyMg/mnMXR4MEGAHysfndIvOsq0b1g7ci7F2m8rheuh2EdYBa2dxj39gjazQFllsb5oiFLtJvbcBKdzUnucIYA=
+X-Received: by 2002:a2e:9ad4:: with SMTP id p20mr13398814ljj.456.1600525258273;
+ Sat, 19 Sep 2020 07:20:58 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:ab3:6e58:0:0:0:0:0 with HTTP; Sat, 19 Sep 2020 07:20:57
+ -0700 (PDT)
+Reply-To: kkoduah.sarpong@outlook.com
+From:   Kofi Koduah Sarpong <kofikoduahsarpong68@gmail.com>
+Date:   Sat, 19 Sep 2020 07:20:57 -0700
+Message-ID: <CAGyyCatD=em9XADto-DvJhR2YmzKhCN92_9u4SZ+3P+7M9aFOg@mail.gmail.com>
+Subject: Re: investment interest from Engr: Kofi Sarpong Please go through and
+ get back to me.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a basic DTS for Variscite Symphony evaluation kit with VAR-SOM-MX8MN
-(i.MX 8M Nano) System on Module.  This brings up the board with basic
-functionalities although still few issues remain (e.g. I2C3 and USB OTG
-port, although it might not be the problem of DTS).
+Lukoil Overseas Gh. Ltd.
+Oil & Gas Extraction Companies
+No. 68 Mankralo Street
+East Cantonments
+Accra Ghana.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Dear:Sir
 
----
+My name is Engr: Kofi Koduah Sarpong.
+I am the Chief Executive Officer of Lukoil Overseas Gh. Ltd Ghana.
+I will be retiring from my work by June next year. I write to inform
+you of my intention to invest in a Hotel business or any other forms
+of business in your country and i request you assists me in carrying
+out the feasibility studies on location and likely cost implication,
+type and estimation on how much it will cost to establish a three star
+hotel, either by outright purchase of already existing one or a
+dilapidated one that we can renovate or setting up a new one entirely.
 
-Changes since v1:
-1. Add Variscite copyright. The work was based on my previous
-   imx8mm-var-som work which was based on imx8mm-evk, however few device
-   nodes were configured based on Variscite GPLv2 work.
-2. Drop wakeup-source from RTC.
----
- arch/arm64/boot/dts/freescale/Makefile        |   1 +
- .../dts/freescale/imx8mn-var-som-symphony.dts | 240 ++++++++++++++++++
- 2 files changed, 241 insertions(+)
- create mode 100644 arch/arm64/boot/dts/freescale/imx8mn-var-som-symphony.dts
+If you sincerely carry out this survey, and give me feedback as fast
+as possible, I will give you the power of attorney to build & manage
+the hotel for me, pending my retirement next year as I said.
 
-diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-index 6b3494b6aa99..28904ebd92cf 100644
---- a/arch/arm64/boot/dts/freescale/Makefile
-+++ b/arch/arm64/boot/dts/freescale/Makefile
-@@ -33,6 +33,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mm-var-som-symphony.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-ddr4-evk.dtb
-+dtb-$(CONFIG_ARCH_MXC) += imx8mn-var-som-symphony.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mq-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mq-hummingboard-pulse.dtb
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn-var-som-symphony.dts b/arch/arm64/boot/dts/freescale/imx8mn-var-som-symphony.dts
-new file mode 100644
-index 000000000000..f61c48776cf3
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx8mn-var-som-symphony.dts
-@@ -0,0 +1,240 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright 2019-2020 Variscite Ltd.
-+ * Copyright (C) 2020 Krzysztof Kozlowski <krzk@kernel.org>
-+ */
-+
-+/dts-v1/;
-+
-+#include "imx8mn-var-som.dtsi"
-+
-+/ {
-+	model = "Variscite VAR-SOM-MX8MN Symphony evaluation board";
-+	compatible = "variscite,var-som-mx8mn-symphony", "variscite,var-som-mx8mn", "fsl,imx8mn";
-+
-+	reg_usdhc2_vmmc: regulator-usdhc2-vmmc {
-+		compatible = "regulator-fixed";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_reg_usdhc2_vmmc>;
-+		regulator-name = "VSD_3V3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		gpio = <&gpio4 22 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+
-+		back {
-+			label = "Back";
-+			gpios = <&pca9534 1 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_BACK>;
-+		};
-+
-+		home {
-+			label = "Home";
-+			gpios = <&pca9534 2 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_HOME>;
-+		};
-+
-+		menu {
-+			label = "Menu";
-+			gpios = <&pca9534 3 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_MENU>;
-+		};
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		led {
-+			label = "Heartbeat";
-+			gpios = <&pca9534 0 GPIO_ACTIVE_LOW>;
-+			linux,default-trigger = "heartbeat";
-+		};
-+	};
-+};
-+
-+&ethphy {
-+	reset-gpios = <&pca9534 5 GPIO_ACTIVE_HIGH>;
-+};
-+
-+&i2c2 {
-+	clock-frequency = <400000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c2>;
-+	status = "okay";
-+
-+	pca9534: gpio@20 {
-+		compatible = "nxp,pca9534";
-+		reg = <0x20>;
-+		gpio-controller;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_pca9534>;
-+		interrupt-parent = <&gpio1>;
-+		interrupts = <7 IRQ_TYPE_EDGE_FALLING>;
-+		#gpio-cells = <2>;
-+		wakeup-source;
-+
-+		/* USB 3.0 OTG (usbotg1) / SATA port switch, set to USB 3.0 */
-+		usb3-sata-sel-hog {
-+			gpio-hog;
-+			gpios = <4 GPIO_ACTIVE_HIGH>;
-+			output-low;
-+			line-name = "usb3_sata_sel";
-+		};
-+
-+		som-vselect-hog {
-+			gpio-hog;
-+			gpios = <6 GPIO_ACTIVE_HIGH>;
-+			output-low;
-+			line-name = "som_vselect";
-+		};
-+
-+		enet-sel-hog {
-+			gpio-hog;
-+			gpios = <7 GPIO_ACTIVE_HIGH>;
-+			output-low;
-+			line-name = "enet_sel";
-+		};
-+	};
-+
-+	extcon_usbotg1: typec@3d {
-+		compatible = "nxp,ptn5150";
-+		reg = <0x3d>;
-+		interrupt-parent = <&gpio1>;
-+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_ptn5150>;
-+		status = "okay";
-+	};
-+};
-+
-+&i2c3 {
-+	/* Capacitive touch controller */
-+	ft5x06_ts: touchscreen@38 {
-+		compatible = "edt,edt-ft5406";
-+		reg = <0x38>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_captouch>;
-+		interrupt-parent = <&gpio5>;
-+		interrupts = <4 IRQ_TYPE_LEVEL_HIGH>;
-+
-+		touchscreen-size-x = <800>;
-+		touchscreen-size-y = <480>;
-+		touchscreen-inverted-x;
-+		touchscreen-inverted-y;
-+	};
-+
-+	rtc@68 {
-+		compatible = "dallas,ds1337";
-+		reg = <0x68>;
-+	};
-+};
-+
-+/* Header */
-+&uart1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart1>;
-+	status = "okay";
-+};
-+
-+/* Header */
-+&uart3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart3>;
-+	status = "okay";
-+};
-+
-+&usbotg1 {
-+	disable-over-current;
-+	extcon = <&extcon_usbotg1>, <&extcon_usbotg1>;
-+};
-+
-+&pinctrl_fec1 {
-+	fsl,pins = <
-+		MX8MN_IOMUXC_ENET_MDC_ENET1_MDC			0x3
-+		MX8MN_IOMUXC_ENET_MDIO_ENET1_MDIO		0x3
-+		MX8MN_IOMUXC_ENET_TD3_ENET1_RGMII_TD3		0x1f
-+		MX8MN_IOMUXC_ENET_TD2_ENET1_RGMII_TD2		0x1f
-+		MX8MN_IOMUXC_ENET_TD1_ENET1_RGMII_TD1		0x1f
-+		MX8MN_IOMUXC_ENET_TD0_ENET1_RGMII_TD0		0x1f
-+		MX8MN_IOMUXC_ENET_RD3_ENET1_RGMII_RD3		0x91
-+		MX8MN_IOMUXC_ENET_RD2_ENET1_RGMII_RD2		0x91
-+		MX8MN_IOMUXC_ENET_RD1_ENET1_RGMII_RD1		0x91
-+		MX8MN_IOMUXC_ENET_RD0_ENET1_RGMII_RD0		0x91
-+		MX8MN_IOMUXC_ENET_TXC_ENET1_RGMII_TXC		0x1f
-+		MX8MN_IOMUXC_ENET_RXC_ENET1_RGMII_RXC		0x91
-+		MX8MN_IOMUXC_ENET_RX_CTL_ENET1_RGMII_RX_CTL	0x91
-+		MX8MN_IOMUXC_ENET_TX_CTL_ENET1_RGMII_TX_CTL	0x1f
-+		/* Remove the MX8MM_IOMUXC_GPIO1_IO09_GPIO1_IO9 as not used */
-+	>;
-+};
-+
-+&pinctrl_fec1_sleep {
-+	fsl,pins = <
-+		MX8MN_IOMUXC_ENET_MDC_GPIO1_IO16		0x120
-+		MX8MN_IOMUXC_ENET_MDIO_GPIO1_IO17		0x120
-+		MX8MN_IOMUXC_ENET_TD3_GPIO1_IO18		0x120
-+		MX8MN_IOMUXC_ENET_TD2_GPIO1_IO19		0x120
-+		MX8MN_IOMUXC_ENET_TD1_GPIO1_IO20		0x120
-+		MX8MN_IOMUXC_ENET_TD0_GPIO1_IO21		0x120
-+		MX8MN_IOMUXC_ENET_RD3_GPIO1_IO29		0x120
-+		MX8MN_IOMUXC_ENET_RD2_GPIO1_IO28		0x120
-+		MX8MN_IOMUXC_ENET_RD1_GPIO1_IO27		0x120
-+		MX8MN_IOMUXC_ENET_RD0_GPIO1_IO26		0x120
-+		MX8MN_IOMUXC_ENET_TXC_GPIO1_IO23		0x120
-+		MX8MN_IOMUXC_ENET_RXC_GPIO1_IO25		0x120
-+		MX8MN_IOMUXC_ENET_RX_CTL_GPIO1_IO24		0x120
-+		MX8MN_IOMUXC_ENET_TX_CTL_GPIO1_IO22		0x120
-+		/* Remove the MX8MM_IOMUXC_GPIO1_IO09_GPIO1_IO9 as not used */
-+	>;
-+};
-+
-+&iomuxc {
-+	pinctrl_captouch: captouchgrp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_SPDIF_RX_GPIO5_IO4		0x16
-+		>;
-+	};
-+
-+	pinctrl_i2c2: i2c2grp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_I2C2_SCL_I2C2_SCL		0x400001c3
-+			MX8MN_IOMUXC_I2C2_SDA_I2C2_SDA		0x400001c3
-+		>;
-+	};
-+
-+	pinctrl_pca9534: pca9534grp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_GPIO1_IO07_GPIO1_IO7	0x16
-+		>;
-+	};
-+
-+	pinctrl_ptn5150: ptn5150grp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_GPIO1_IO11_GPIO1_IO11	0x16
-+		>;
-+	};
-+
-+	pinctrl_reg_usdhc2_vmmc: regusdhc2vmmcgrp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_SAI2_RXC_GPIO4_IO22	0x41
-+		>;
-+	};
-+
-+	pinctrl_uart1: uart1grp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_UART1_RXD_UART1_DCE_RX	0x140
-+			MX8MN_IOMUXC_UART1_TXD_UART1_DCE_TX	0x140
-+		>;
-+	};
-+
-+	pinctrl_uart3: uart3grp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_UART3_RXD_UART3_DCE_RX	0x140
-+			MX8MN_IOMUXC_UART3_TXD_UART3_DCE_TX	0x140
-+		>;
-+	};
-+};
--- 
-2.17.1
+Sir, i have the sum of (US$85 million USD) that I deposited in a
+Finance company outside my country for this project.
 
+Please don=E2=80=99t disregard this message I am very sincere in what am
+telling you the documents for the deposit I will send them to you for
+your confirmation as soon as we proceed.
+
+I have very little issue with health right now as a result of age but
+I have been assured by my doctor that I will be fine and get back to
+work soon presently i am in the neighboring country for medical
+reason.
+
+Please do let me know if you are capable, and can handling such
+business. Feed me back with your details, and your area of
+specialization should be indicated as well. I will be expecting your
+reply as soon as possible.
+
+Please send your telephone number to me i will call you for more details.
+
+
+Regards
+Engr: Kofi Koduah Sarpong
+Chief Executive Officer
