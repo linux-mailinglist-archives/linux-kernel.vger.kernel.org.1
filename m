@@ -2,512 +2,531 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1958D270BEA
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 10:43:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E59DA270C0A
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 10:58:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726307AbgISInJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 04:43:09 -0400
-Received: from out28-2.mail.aliyun.com ([115.124.28.2]:53607 "EHLO
-        out28-2.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726168AbgISInI (ORCPT
+        id S1726280AbgISIyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 04:54:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726041AbgISIyS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 04:43:08 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436282|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.00643127-0.00323972-0.990329;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03307;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=14;RT=14;SR=0;TI=SMTPD_---.IZF-VLZ_1600504972;
-Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.IZF-VLZ_1600504972)
-          by smtp.aliyun-inc.com(10.147.42.253);
-          Sat, 19 Sep 2020 16:43:03 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org, kishon@ti.com,
-        vkoul@kernel.org, paul@crapouillou.net
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        christophe.jaillet@wanadoo.fr, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
-        zhenwenjin@gmail.com
-Subject: [PATCH v4 2/2] PHY: Ingenic: Add USB PHY driver using generic PHY framework.
-Date:   Sat, 19 Sep 2020 16:42:25 +0800
-Message-Id: <20200919084225.112072-3-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200919084225.112072-1-zhouyanjie@wanyeetech.com>
-References: <20200919084225.112072-1-zhouyanjie@wanyeetech.com>
+        Sat, 19 Sep 2020 04:54:18 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A7A2C0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 01:54:18 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id z18so4385751qvp.6
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 01:54:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cibYu/XnPkSzcJkSS+LcXLppjLjKQb6hQCC/1bHWysQ=;
+        b=VyYuIF+6dyjYZlGRuWq00FX0j7eFXNb/ChAdDCRgO5vfkVXpqUEKpFUYahSCQ1IqPN
+         CvYCOwo3Alu4kG36nFUtSZ+KGuv//q+piAL1ks3POPXAxkeO1+JaZYYNdUPApDdsu2mz
+         JfL99um/RreuOvgm5yHRpllUI0JPwsi5Xlpg8f5UkrQTMewwWex1Z45mR+pph2rcsP7H
+         i6RksAQEV/8nrmi0bPUawzrVoVwZ0qrqINHkGz+jaLe7cXYwV8b32qyBj8DJ4ZYLh0HT
+         +fH9bgHv93NCu1Q2sOjFJam/eIfo00kH//buFTtpUR4/AnZ0GvxtZxHJmA0VH3OkL0WE
+         HjgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cibYu/XnPkSzcJkSS+LcXLppjLjKQb6hQCC/1bHWysQ=;
+        b=BF76C27R2HGUZpT1ha4nRYFnPEQ8e48TJpMKmvAsXOYSbRd++Wh37SGXat3o5+YfRe
+         +yzCWNJC/CSb9BKtwm6HSsnchXpC66cLQ0h1REopsLMxmt6R2+KCCV3hxLZt6W7LGUE8
+         /uE+M4/Oq591bhahZpCOTqULmjQiqKTKByKRY9BosvyuBFyuas42gY1efL4IMQ1WvYB/
+         ufRpfo1kFO2zE+asGMAa1cMw8qTnQLm/yqSlKinYGsUL6y3/ZuNtk3Aa/vnMHPBF++Y5
+         LvezdbmHvoOhNQSQnEZXPFMJeeMZkuaM9TyqmZZX5gR6PQUADVo1ymCmwZWhWlgARnIJ
+         rU3w==
+X-Gm-Message-State: AOAM532DUVZlp6dsmpc2wiTZ4W0zHyQ2ANDzhLTNU/lP/wHhsjBSDAm/
+        rZaQw8GKLuL819GqhR3RZYI=
+X-Google-Smtp-Source: ABdhPJzjAsHW2sCnzU2biwyZS94HW4rqYiIIC0GOIcBjDCaV380TYYhEAelnKdjAzaOyHfzOyBR7Eg==
+X-Received: by 2002:a0c:9142:: with SMTP id q60mr37484947qvq.13.1600505657193;
+        Sat, 19 Sep 2020 01:54:17 -0700 (PDT)
+Received: from localhost.localdomain (dslb-002-204-143-169.002.204.pools.vodafone-ip.de. [2.204.143.169])
+        by smtp.gmail.com with ESMTPSA id v90sm3924836qtd.66.2020.09.19.01.54.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Sep 2020 01:54:16 -0700 (PDT)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, lorian.c.schilhabel@googlemail.com,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: [PATCH 1/2] staging: rtl8712: clean up comparsions to NULL
+Date:   Sat, 19 Sep 2020 10:50:31 +0200
+Message-Id: <20200919085032.32453-1-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Used the generic PHY framework API to create the PHY, this driver
-supoorts USB OTG PHY used in JZ4770 SoC, JZ4780 SoC, X1000 SoC,
-and X1830 SoC.
+Clean up comparsions to NULL Reported by checkpatch.
+if (x == NULL) -> if (!x)
+if (x != NULL) -> if (x)
 
-Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
-Co-developed-by: 漆鹏振 (Qi Pengzhen) <aric.pzqi@ingenic.com>
-Signed-off-by: 漆鹏振 (Qi Pengzhen) <aric.pzqi@ingenic.com>
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
+ drivers/staging/rtl8712/rtl871x_cmd.c         |  4 ++--
+ drivers/staging/rtl8712/rtl871x_io.c          |  2 +-
+ drivers/staging/rtl8712/rtl871x_ioctl_linux.c | 16 ++++++-------
+ drivers/staging/rtl8712/rtl871x_mlme.c        | 11 ++++-----
+ drivers/staging/rtl8712/rtl871x_mp_ioctl.c    |  2 +-
+ drivers/staging/rtl8712/rtl871x_recv.c        | 20 ++++++++--------
+ drivers/staging/rtl8712/rtl871x_security.c    |  8 +++----
+ drivers/staging/rtl8712/rtl871x_sta_mgt.c     |  4 ++--
+ drivers/staging/rtl8712/rtl871x_xmit.c        | 24 +++++++++----------
+ drivers/staging/rtl8712/usb_intf.c            |  2 +-
+ 10 files changed, 46 insertions(+), 47 deletions(-)
 
-Notes:
-    v1->v2:
-    Fix bug, ".of_match_table = of_match_ptr(ingenic_usb_phy_of_matches)" is wrong
-    and should be replaced with ".of_match_table = ingenic_usb_phy_of_matches".
-    
-    v2->v3:
-    1.Change "depends on (MACH_INGENIC && MIPS) || COMPILE_TEST" to
-      "depends on MIPS || COMPILE_TEST".
-    2.Keep the adjustments of "ingenic_usb_phy_init()" and "ingenic_usb_phu_exit()"
-      positions in v2 to make them consistent with the order in "ingenic_usb_phy_ops",
-      keep the adjustments to the positions of "ingenic_usb_phy_of_matches[]" in v2
-      to keep them consistent with the styles of other USB PHY drivers. And remove
-      some unnecessary changes to reduce the diff size, from the original 256 lines
-      change to the current 209 lines.
-    
-    v3->v4:
-    Only add new generic-PHY driver, without removing the old one. Because the
-    jz4740-musb driver is not ready to use the generic PHY framework. When the
-    jz4740-musb driver is modified to use the generic PHY framework, the old
-    jz4770-phy driver can be "retired".
-
- drivers/phy/Kconfig                   |   1 +
- drivers/phy/Makefile                  |   1 +
- drivers/phy/ingenic/Kconfig           |  12 ++
- drivers/phy/ingenic/Makefile          |   2 +
- drivers/phy/ingenic/phy-ingenic-usb.c | 373 ++++++++++++++++++++++++++++++++++
- 5 files changed, 389 insertions(+)
- create mode 100644 drivers/phy/ingenic/Kconfig
- create mode 100644 drivers/phy/ingenic/Makefile
- create mode 100644 drivers/phy/ingenic/phy-ingenic-usb.c
-
-diff --git a/drivers/phy/Kconfig b/drivers/phy/Kconfig
-index de9362c25c07..0534b0fdd057 100644
---- a/drivers/phy/Kconfig
-+++ b/drivers/phy/Kconfig
-@@ -55,6 +55,7 @@ source "drivers/phy/broadcom/Kconfig"
- source "drivers/phy/cadence/Kconfig"
- source "drivers/phy/freescale/Kconfig"
- source "drivers/phy/hisilicon/Kconfig"
-+source "drivers/phy/ingenic/Kconfig"
- source "drivers/phy/lantiq/Kconfig"
- source "drivers/phy/marvell/Kconfig"
- source "drivers/phy/mediatek/Kconfig"
-diff --git a/drivers/phy/Makefile b/drivers/phy/Makefile
-index c27408e4daae..ab24f0d20763 100644
---- a/drivers/phy/Makefile
-+++ b/drivers/phy/Makefile
-@@ -14,6 +14,7 @@ obj-y					+= allwinner/	\
- 					   cadence/	\
- 					   freescale/	\
- 					   hisilicon/	\
-+					   ingenic/	\
- 					   intel/	\
- 					   lantiq/	\
- 					   marvell/	\
-diff --git a/drivers/phy/ingenic/Kconfig b/drivers/phy/ingenic/Kconfig
-new file mode 100644
-index 000000000000..912b14e512cb
---- /dev/null
-+++ b/drivers/phy/ingenic/Kconfig
-@@ -0,0 +1,12 @@
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Phy drivers for Ingenic platforms
-+#
-+config PHY_INGENIC_USB
-+	tristate "Ingenic SoCs USB PHY Driver"
-+	depends on MIPS || COMPILE_TEST
-+	depends on USB_SUPPORT
-+	select GENERIC_PHY
-+	help
-+	  This driver provides USB PHY support for the USB controller found
-+	  on the JZ-series and X-series SoCs from Ingenic.
-diff --git a/drivers/phy/ingenic/Makefile b/drivers/phy/ingenic/Makefile
-new file mode 100644
-index 000000000000..65d5ea00fc9d
---- /dev/null
-+++ b/drivers/phy/ingenic/Makefile
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0
-+obj-y		+= phy-ingenic-usb.o
-diff --git a/drivers/phy/ingenic/phy-ingenic-usb.c b/drivers/phy/ingenic/phy-ingenic-usb.c
-new file mode 100644
-index 000000000000..f220750e7950
---- /dev/null
-+++ b/drivers/phy/ingenic/phy-ingenic-usb.c
-@@ -0,0 +1,373 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Ingenic SoCs USB PHY driver
-+ * Copyright (c) Paul Cercueil <paul@crapouillou.net>
-+ * Copyright (c) 漆鹏振 (Qi Pengzhen) <aric.pzqi@ingenic.com>
-+ * Copyright (c) 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/delay.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/phy/phy.h>
-+#include <linux/platform_device.h>
-+#include <linux/regulator/consumer.h>
-+
-+/* OTGPHY register offsets */
-+#define REG_USBPCR_OFFSET			0x00
-+#define REG_USBRDT_OFFSET			0x04
-+#define REG_USBVBFIL_OFFSET			0x08
-+#define REG_USBPCR1_OFFSET			0x0c
-+
-+/* bits within the USBPCR register */
-+#define USBPCR_USB_MODE				BIT(31)
-+#define USBPCR_AVLD_REG				BIT(30)
-+#define USBPCR_COMMONONN			BIT(25)
-+#define USBPCR_VBUSVLDEXT			BIT(24)
-+#define USBPCR_VBUSVLDEXTSEL		BIT(23)
-+#define USBPCR_POR					BIT(22)
-+#define USBPCR_SIDDQ				BIT(21)
-+#define USBPCR_OTG_DISABLE			BIT(20)
-+#define USBPCR_TXPREEMPHTUNE		BIT(6)
-+
-+#define USBPCR_IDPULLUP_LSB	28
-+#define USBPCR_IDPULLUP_MASK		GENMASK(29, USBPCR_IDPULLUP_LSB)
-+#define USBPCR_IDPULLUP_ALWAYS		(0x2 << USBPCR_IDPULLUP_LSB)
-+#define USBPCR_IDPULLUP_SUSPEND		(0x1 << USBPCR_IDPULLUP_LSB)
-+#define USBPCR_IDPULLUP_OTG			(0x0 << USBPCR_IDPULLUP_LSB)
-+
-+#define USBPCR_COMPDISTUNE_LSB		17
-+#define USBPCR_COMPDISTUNE_MASK		GENMASK(19, USBPCR_COMPDISTUNE_LSB)
-+#define USBPCR_COMPDISTUNE_DFT		(0x4 << USBPCR_COMPDISTUNE_LSB)
-+
-+#define USBPCR_OTGTUNE_LSB			14
-+#define USBPCR_OTGTUNE_MASK			GENMASK(16, USBPCR_OTGTUNE_LSB)
-+#define USBPCR_OTGTUNE_DFT			(0x4 << USBPCR_OTGTUNE_LSB)
-+
-+#define USBPCR_SQRXTUNE_LSB	11
-+#define USBPCR_SQRXTUNE_MASK		GENMASK(13, USBPCR_SQRXTUNE_LSB)
-+#define USBPCR_SQRXTUNE_DCR_20PCT	(0x7 << USBPCR_SQRXTUNE_LSB)
-+#define USBPCR_SQRXTUNE_DFT			(0x3 << USBPCR_SQRXTUNE_LSB)
-+
-+#define USBPCR_TXFSLSTUNE_LSB		7
-+#define USBPCR_TXFSLSTUNE_MASK		GENMASK(10, USBPCR_TXFSLSTUNE_LSB)
-+#define USBPCR_TXFSLSTUNE_DCR_50PPT	(0xf << USBPCR_TXFSLSTUNE_LSB)
-+#define USBPCR_TXFSLSTUNE_DCR_25PPT	(0x7 << USBPCR_TXFSLSTUNE_LSB)
-+#define USBPCR_TXFSLSTUNE_DFT		(0x3 << USBPCR_TXFSLSTUNE_LSB)
-+#define USBPCR_TXFSLSTUNE_INC_25PPT	(0x1 << USBPCR_TXFSLSTUNE_LSB)
-+#define USBPCR_TXFSLSTUNE_INC_50PPT	(0x0 << USBPCR_TXFSLSTUNE_LSB)
-+
-+#define USBPCR_TXHSXVTUNE_LSB		4
-+#define USBPCR_TXHSXVTUNE_MASK		GENMASK(5, USBPCR_TXHSXVTUNE_LSB)
-+#define USBPCR_TXHSXVTUNE_DFT		(0x3 << USBPCR_TXHSXVTUNE_LSB)
-+#define USBPCR_TXHSXVTUNE_DCR_15MV	(0x1 << USBPCR_TXHSXVTUNE_LSB)
-+
-+#define USBPCR_TXRISETUNE_LSB		4
-+#define USBPCR_TXRISETUNE_MASK		GENMASK(5, USBPCR_TXRISETUNE_LSB)
-+#define USBPCR_TXRISETUNE_DFT		(0x3 << USBPCR_TXRISETUNE_LSB)
-+
-+#define USBPCR_TXVREFTUNE_LSB		0
-+#define USBPCR_TXVREFTUNE_MASK		GENMASK(3, USBPCR_TXVREFTUNE_LSB)
-+#define USBPCR_TXVREFTUNE_INC_25PPT	(0x7 << USBPCR_TXVREFTUNE_LSB)
-+#define USBPCR_TXVREFTUNE_DFT		(0x5 << USBPCR_TXVREFTUNE_LSB)
-+
-+/* bits within the USBRDTR register */
-+#define USBRDT_UTMI_RST				BIT(27)
-+#define USBRDT_HB_MASK				BIT(26)
-+#define USBRDT_VBFIL_LD_EN			BIT(25)
-+#define USBRDT_IDDIG_EN				BIT(24)
-+#define USBRDT_IDDIG_REG			BIT(23)
-+#define USBRDT_VBFIL_EN				BIT(2)
-+
-+/* bits within the USBPCR1 register */
-+#define USBPCR1_BVLD_REG			BIT(31)
-+#define USBPCR1_DPPD				BIT(29)
-+#define USBPCR1_DMPD				BIT(28)
-+#define USBPCR1_USB_SEL				BIT(28)
-+#define USBPCR1_WORD_IF_16BIT		BIT(19)
-+
-+enum ingenic_usb_phy_version {
-+	ID_JZ4770,
-+	ID_JZ4780,
-+	ID_X1000,
-+	ID_X1830,
-+};
-+
-+struct ingenic_soc_info {
-+	enum ingenic_usb_phy_version version;
-+
-+	void (*usb_phy_init)(struct phy *phy);
-+};
-+
-+struct ingenic_usb_phy {
-+	const struct ingenic_soc_info *soc_info;
-+
-+	struct phy *phy;
-+	struct device *dev;
-+	void __iomem *base;
-+	struct clk *clk;
-+	struct regulator *vcc_supply;
-+};
-+
-+static int ingenic_usb_phy_init(struct phy *phy)
-+{
-+	struct ingenic_usb_phy *priv = phy_get_drvdata(phy);
-+	int err;
-+	u32 reg;
-+
-+	err = clk_prepare_enable(priv->clk);
-+	if (err) {
-+		dev_err(priv->dev, "Unable to start clock: %d\n", err);
-+		return err;
-+	}
-+
-+	priv->soc_info->usb_phy_init(phy);
-+
-+	/* Wait for PHY to reset */
-+	usleep_range(30, 300);
-+	reg = readl(priv->base + REG_USBPCR_OFFSET);
-+	writel(reg & ~USBPCR_POR, priv->base + REG_USBPCR_OFFSET);
-+	usleep_range(300, 1000);
-+
-+	return 0;
-+}
-+
-+static int ingenic_usb_phy_exit(struct phy *phy)
-+{
-+	struct ingenic_usb_phy *priv = phy_get_drvdata(phy);
-+
-+	clk_disable_unprepare(priv->clk);
-+	regulator_disable(priv->vcc_supply);
-+
-+	return 0;
-+}
-+
-+static int ingenic_usb_phy_power_on(struct phy *phy)
-+{
-+	struct ingenic_usb_phy *priv = phy_get_drvdata(phy);
-+	int err;
-+
-+	err = regulator_enable(priv->vcc_supply);
-+	if (err) {
-+		dev_err(priv->dev, "Unable to enable VCC: %d\n", err);
-+		return err;
-+	}
-+
-+	return 0;
-+}
-+
-+static int ingenic_usb_phy_power_off(struct phy *phy)
-+{
-+	struct ingenic_usb_phy *priv = phy_get_drvdata(phy);
-+
-+	regulator_disable(priv->vcc_supply);
-+
-+	return 0;
-+}
-+
-+static int ingenic_usb_phy_set_mode(struct phy *phy,
-+				  enum phy_mode mode, int submode)
-+{
-+	struct ingenic_usb_phy *priv = phy_get_drvdata(phy);
-+	u32 reg;
-+
-+	switch (mode) {
-+	case PHY_MODE_USB_HOST:
-+		reg = readl(priv->base + REG_USBPCR_OFFSET);
-+		reg &= ~(USBPCR_VBUSVLDEXT | USBPCR_VBUSVLDEXTSEL | USBPCR_OTG_DISABLE);
-+		reg |= USBPCR_USB_MODE;
-+		writel(reg, priv->base + REG_USBPCR_OFFSET);
-+
-+		break;
-+	case PHY_MODE_USB_DEVICE:
-+		if (priv->soc_info->version >= ID_X1000) {
-+			reg = readl(priv->base + REG_USBPCR1_OFFSET);
-+			reg |= USBPCR1_BVLD_REG;
-+			writel(reg, priv->base + REG_USBPCR1_OFFSET);
-+		}
-+
-+		reg = readl(priv->base + REG_USBPCR_OFFSET);
-+		reg &= ~USBPCR_USB_MODE;
-+		reg |= USBPCR_VBUSVLDEXT | USBPCR_VBUSVLDEXTSEL | USBPCR_OTG_DISABLE;
-+		writel(reg, priv->base + REG_USBPCR_OFFSET);
-+
-+		break;
-+	case PHY_MODE_USB_OTG:
-+		reg = readl(priv->base + REG_USBPCR_OFFSET);
-+		reg &= ~USBPCR_OTG_DISABLE;
-+		reg |= USBPCR_VBUSVLDEXT | USBPCR_VBUSVLDEXTSEL | USBPCR_USB_MODE;
-+		writel(reg, priv->base + REG_USBPCR_OFFSET);
-+
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct phy_ops ingenic_usb_phy_ops = {
-+	.init		= ingenic_usb_phy_init,
-+	.exit		= ingenic_usb_phy_exit,
-+	.power_on	= ingenic_usb_phy_power_on,
-+	.power_off	= ingenic_usb_phy_power_off,
-+	.set_mode	= ingenic_usb_phy_set_mode,
-+	.owner		= THIS_MODULE,
-+};
-+
-+static void jz4770_usb_phy_init(struct phy *phy)
-+{
-+	struct ingenic_usb_phy *priv = phy_get_drvdata(phy);
-+	u32 reg;
-+
-+	reg = USBPCR_AVLD_REG | USBPCR_COMMONONN | USBPCR_IDPULLUP_ALWAYS |
-+		USBPCR_COMPDISTUNE_DFT | USBPCR_OTGTUNE_DFT | USBPCR_SQRXTUNE_DFT |
-+		USBPCR_TXFSLSTUNE_DFT | USBPCR_TXRISETUNE_DFT | USBPCR_TXVREFTUNE_DFT |
-+		USBPCR_POR;
-+	writel(reg, priv->base + REG_USBPCR_OFFSET);
-+}
-+
-+static void jz4780_usb_phy_init(struct phy *phy)
-+{
-+	struct ingenic_usb_phy *priv = phy_get_drvdata(phy);
-+	u32 reg;
-+
-+	reg = readl(priv->base + REG_USBPCR1_OFFSET) | USBPCR1_USB_SEL |
-+		USBPCR1_WORD_IF_16BIT;
-+	writel(reg, priv->base + REG_USBPCR1_OFFSET);
-+
-+	reg = USBPCR_TXPREEMPHTUNE | USBPCR_COMMONONN | USBPCR_POR;
-+	writel(reg, priv->base + REG_USBPCR_OFFSET);
-+}
-+
-+static void x1000_usb_phy_init(struct phy *phy)
-+{
-+	struct ingenic_usb_phy *priv = phy_get_drvdata(phy);
-+	u32 reg;
-+
-+	reg = readl(priv->base + REG_USBPCR1_OFFSET) | USBPCR1_WORD_IF_16BIT;
-+	writel(reg, priv->base + REG_USBPCR1_OFFSET);
-+
-+	reg = USBPCR_SQRXTUNE_DCR_20PCT | USBPCR_TXPREEMPHTUNE |
-+		USBPCR_TXHSXVTUNE_DCR_15MV | USBPCR_TXVREFTUNE_INC_25PPT |
-+		USBPCR_COMMONONN | USBPCR_POR;
-+	writel(reg, priv->base + REG_USBPCR_OFFSET);
-+}
-+
-+static void x1830_usb_phy_init(struct phy *phy)
-+{
-+	struct ingenic_usb_phy *priv = phy_get_drvdata(phy);
-+	u32 reg;
-+
-+	/* rdt */
-+	writel(USBRDT_VBFIL_EN | USBRDT_UTMI_RST, priv->base + REG_USBRDT_OFFSET);
-+
-+	reg = readl(priv->base + REG_USBPCR1_OFFSET) | USBPCR1_WORD_IF_16BIT |
-+		USBPCR1_DMPD | USBPCR1_DPPD;
-+	writel(reg, priv->base + REG_USBPCR1_OFFSET);
-+
-+	reg = USBPCR_IDPULLUP_OTG | USBPCR_VBUSVLDEXT |	USBPCR_TXPREEMPHTUNE |
-+		USBPCR_COMMONONN | USBPCR_POR;
-+	writel(reg, priv->base + REG_USBPCR_OFFSET);
-+}
-+
-+static const struct ingenic_soc_info jz4770_soc_info = {
-+	.version = ID_JZ4770,
-+
-+	.usb_phy_init = jz4770_usb_phy_init,
-+};
-+
-+static const struct ingenic_soc_info jz4780_soc_info = {
-+	.version = ID_JZ4780,
-+
-+	.usb_phy_init = jz4780_usb_phy_init,
-+};
-+
-+static const struct ingenic_soc_info x1000_soc_info = {
-+	.version = ID_X1000,
-+
-+	.usb_phy_init = x1000_usb_phy_init,
-+};
-+
-+static const struct ingenic_soc_info x1830_soc_info = {
-+	.version = ID_X1830,
-+
-+	.usb_phy_init = x1830_usb_phy_init,
-+};
-+
-+static int ingenic_usb_phy_probe(struct platform_device *pdev)
-+{
-+	struct ingenic_usb_phy *priv;
-+	struct phy_provider *provider;
-+	struct device *dev = &pdev->dev;
-+	int err;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->soc_info = device_get_match_data(dev);
-+	if (!priv->soc_info) {
-+		dev_err(dev, "Error: No device match found\n");
-+		return -ENODEV;
-+	}
-+
-+	platform_set_drvdata(pdev, priv);
-+	priv->dev = dev;
-+
-+	priv->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(priv->base)) {
-+		dev_err(dev, "Failed to map registers\n");
-+		return PTR_ERR(priv->base);
-+	}
-+
-+	priv->clk = devm_clk_get(dev, NULL);
-+	if (IS_ERR(priv->clk)) {
-+		err = PTR_ERR(priv->clk);
-+		if (err != -EPROBE_DEFER)
-+			dev_err(dev, "Failed to get clock\n");
-+		return err;
-+	}
-+
-+	priv->vcc_supply = devm_regulator_get(dev, "vcc");
-+	if (IS_ERR(priv->vcc_supply)) {
-+		err = PTR_ERR(priv->vcc_supply);
-+		if (err != -EPROBE_DEFER)
-+			dev_err(dev, "Failed to get regulator\n");
-+		return err;
-+	}
-+
-+	priv->phy = devm_phy_create(dev, NULL, &ingenic_usb_phy_ops);
-+	if (IS_ERR(priv))
-+		return PTR_ERR(priv);
-+
-+	phy_set_drvdata(priv->phy, priv);
-+
-+	provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
-+	return PTR_ERR_OR_ZERO(provider);
-+}
-+
-+static const struct of_device_id ingenic_usb_phy_of_matches[] = {
-+	{ .compatible = "ingenic,jz4770-phy", .data = &jz4770_soc_info },
-+	{ .compatible = "ingenic,jz4780-phy", .data = &jz4780_soc_info },
-+	{ .compatible = "ingenic,x1000-phy", .data = &x1000_soc_info },
-+	{ .compatible = "ingenic,x1830-phy", .data = &x1830_soc_info },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, ingenic_usb_phy_of_matches);
-+
-+static struct platform_driver ingenic_usb_phy_driver = {
-+	.probe		= ingenic_usb_phy_probe,
-+	.driver		= {
-+		.name	= "ingenic-usb-phy",
-+		.of_match_table = ingenic_usb_phy_of_matches,
-+	},
-+};
-+module_platform_driver(ingenic_usb_phy_driver);
-+
-+MODULE_AUTHOR("周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>");
-+MODULE_AUTHOR("漆鹏振 (Qi Pengzhen) <aric.pzqi@ingenic.com>");
-+MODULE_AUTHOR("Paul Cercueil <paul@crapouillou.net>");
-+MODULE_DESCRIPTION("Ingenic SoCs USB PHY driver");
-+MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/rtl8712/rtl871x_cmd.c b/drivers/staging/rtl8712/rtl871x_cmd.c
+index c7523072a660..18116469bd31 100644
+--- a/drivers/staging/rtl8712/rtl871x_cmd.c
++++ b/drivers/staging/rtl8712/rtl871x_cmd.c
+@@ -161,7 +161,7 @@ void r8712_free_cmd_obj(struct cmd_obj *pcmd)
+ 	if ((pcmd->cmdcode != _JoinBss_CMD_) &&
+ 	    (pcmd->cmdcode != _CreateBss_CMD_))
+ 		kfree(pcmd->parmbuf);
+-	if (pcmd->rsp != NULL) {
++	if (pcmd->rsp) {
+ 		if (pcmd->rspsz != 0)
+ 			kfree(pcmd->rsp);
+ 	}
+@@ -191,7 +191,7 @@ u8 r8712_sitesurvey_cmd(struct _adapter *padapter,
+ 	psurveyPara->passive_mode = cpu_to_le32(pmlmepriv->passive_mode);
+ 	psurveyPara->ss_ssidlen = 0;
+ 	memset(psurveyPara->ss_ssid, 0, IW_ESSID_MAX_SIZE + 1);
+-	if ((pssid != NULL) && (pssid->SsidLength)) {
++	if (pssid && pssid->SsidLength) {
+ 		memcpy(psurveyPara->ss_ssid, pssid->Ssid, pssid->SsidLength);
+ 		psurveyPara->ss_ssidlen = cpu_to_le32(pssid->SsidLength);
+ 	}
+diff --git a/drivers/staging/rtl8712/rtl871x_io.c b/drivers/staging/rtl8712/rtl871x_io.c
+index 87024d6a465e..6789a4c98564 100644
+--- a/drivers/staging/rtl8712/rtl871x_io.c
++++ b/drivers/staging/rtl8712/rtl871x_io.c
+@@ -50,7 +50,7 @@ static uint _init_intf_hdl(struct _adapter *padapter,
+ 	init_intf_priv = &r8712_usb_init_intf_priv;
+ 	pintf_priv = pintf_hdl->pintfpriv = kmalloc(sizeof(struct intf_priv),
+ 						    GFP_ATOMIC);
+-	if (pintf_priv == NULL)
++	if (!pintf_priv)
+ 		goto _init_intf_hdl_fail;
+ 	pintf_hdl->adapter = (u8 *)padapter;
+ 	set_intf_option(&pintf_hdl->intf_option);
+diff --git a/drivers/staging/rtl8712/rtl871x_ioctl_linux.c b/drivers/staging/rtl8712/rtl871x_ioctl_linux.c
+index df6ae855f3c1..cbaa7a489748 100644
+--- a/drivers/staging/rtl8712/rtl871x_ioctl_linux.c
++++ b/drivers/staging/rtl8712/rtl871x_ioctl_linux.c
+@@ -481,11 +481,11 @@ static int r871x_set_wpa_ie(struct _adapter *padapter, char *pie,
+ 	int group_cipher = 0, pairwise_cipher = 0;
+ 	int ret = 0;
+ 
+-	if ((ielen > MAX_WPA_IE_LEN) || (pie == NULL))
++	if (ielen > MAX_WPA_IE_LEN || !pie)
+ 		return -EINVAL;
+ 	if (ielen) {
+ 		buf = kmemdup(pie, ielen, GFP_ATOMIC);
+-		if (buf == NULL)
++		if (!buf)
+ 			return -ENOMEM;
+ 		if (ielen < RSN_HEADER_LEN) {
+ 			ret  = -EINVAL;
+@@ -777,7 +777,7 @@ static int r871x_wx_set_pmkid(struct net_device *dev,
+  *	If cmd is IW_PMKSA_REMOVE, it means the wpa_supplicant wants to
+  *	remove a PMKID/BSSID from driver.
+  */
+-	if (pPMK == NULL)
++	if (!pPMK)
+ 		return -EINVAL;
+ 	memcpy(strIssueBssid, pPMK->bssid.sa_data, ETH_ALEN);
+ 	switch (pPMK->cmd) {
+@@ -1099,7 +1099,7 @@ static int r871x_wx_set_mlme(struct net_device *dev,
+ 	struct _adapter *padapter = netdev_priv(dev);
+ 	struct iw_mlme *mlme = (struct iw_mlme *) extra;
+ 
+-	if (mlme == NULL)
++	if (!mlme)
+ 		return -1;
+ 	switch (mlme->cmd) {
+ 	case IW_MLME_DEAUTH:
+@@ -1950,7 +1950,7 @@ static int r871x_get_ap_info(struct net_device *dev,
+ 	u8 bssid[ETH_ALEN];
+ 	char data[33];
+ 
+-	if (padapter->driver_stopped || (pdata == NULL))
++	if (padapter->driver_stopped || !pdata)
+ 		return -EINVAL;
+ 	while (check_fwstate(pmlmepriv, _FW_UNDER_SURVEY |
+ 			     _FW_UNDER_LINKING)) {
+@@ -2014,7 +2014,7 @@ static int r871x_set_pid(struct net_device *dev,
+ 	struct _adapter *padapter = netdev_priv(dev);
+ 	struct iw_point *pdata = &wrqu->data;
+ 
+-	if ((padapter->driver_stopped) || (pdata == NULL))
++	if (padapter->driver_stopped || !pdata)
+ 		return -EINVAL;
+ 	if (copy_from_user(&padapter->pid, pdata->pointer, sizeof(int)))
+ 		return -EINVAL;
+@@ -2030,7 +2030,7 @@ static int r871x_set_chplan(struct net_device *dev,
+ 	struct iw_point *pdata = &wrqu->data;
+ 	int ch_plan = -1;
+ 
+-	if ((padapter->driver_stopped) || (pdata == NULL)) {
++	if (padapter->driver_stopped || !pdata) {
+ 		ret = -EINVAL;
+ 		goto exit;
+ 	}
+@@ -2050,7 +2050,7 @@ static int r871x_wps_start(struct net_device *dev,
+ 	struct iw_point *pdata = &wrqu->data;
+ 	u32   u32wps_start = 0;
+ 
+-	if ((padapter->driver_stopped) || (pdata == NULL))
++	if (padapter->driver_stopped || !pdata)
+ 		return -EINVAL;
+ 	if (copy_from_user((void *)&u32wps_start, pdata->pointer, 4))
+ 		return -EFAULT;
+diff --git a/drivers/staging/rtl8712/rtl871x_mlme.c b/drivers/staging/rtl8712/rtl871x_mlme.c
+index 2ccd49032206..6074383ec0b5 100644
+--- a/drivers/staging/rtl8712/rtl871x_mlme.c
++++ b/drivers/staging/rtl8712/rtl871x_mlme.c
+@@ -754,7 +754,7 @@ void r8712_joinbss_event_callback(struct _adapter *adapter, u8 *pbuf)
+ 					ptarget_wlan->fixed = true;
+ 			}
+ 
+-			if (ptarget_wlan == NULL) {
++			if (!ptarget_wlan) {
+ 				if (check_fwstate(pmlmepriv,
+ 					_FW_UNDER_LINKING))
+ 					pmlmepriv->fw_state ^=
+@@ -768,7 +768,7 @@ void r8712_joinbss_event_callback(struct _adapter *adapter, u8 *pbuf)
+ 					ptarget_sta =
+ 						 r8712_get_stainfo(pstapriv,
+ 						 pnetwork->network.MacAddress);
+-					if (ptarget_sta == NULL)
++					if (!ptarget_sta)
+ 						ptarget_sta =
+ 						 r8712_alloc_stainfo(pstapriv,
+ 						 pnetwork->network.MacAddress);
+@@ -879,7 +879,7 @@ void r8712_stassoc_event_callback(struct _adapter *adapter, u8 *pbuf)
+ 	if (!r8712_access_ctrl(&adapter->acl_list, pstassoc->macaddr))
+ 		return;
+ 	psta = r8712_get_stainfo(&adapter->stapriv, pstassoc->macaddr);
+-	if (psta != NULL) {
++	if (psta) {
+ 		/*the sta have been in sta_info_queue => do nothing
+ 		 *(between drv has received this event before and
+ 		 * fw have not yet to set key to CAM_ENTRY)
+@@ -888,7 +888,7 @@ void r8712_stassoc_event_callback(struct _adapter *adapter, u8 *pbuf)
+ 	}
+ 
+ 	psta = r8712_alloc_stainfo(&adapter->stapriv, pstassoc->macaddr);
+-	if (psta == NULL)
++	if (!psta)
+ 		return;
+ 	/* to do : init sta_info variable */
+ 	psta->qos_option = 0;
+@@ -1080,8 +1080,7 @@ int r8712_select_and_join_from_scan(struct mlme_priv *pmlmepriv)
+ 	pmlmepriv->pscanned = phead->next;
+ 	while (1) {
+ 		if (end_of_queue_search(phead, pmlmepriv->pscanned)) {
+-			if ((pmlmepriv->assoc_by_rssi) &&
+-			    (pnetwork_max_rssi != NULL)) {
++			if (pmlmepriv->assoc_by_rssi && pnetwork_max_rssi) {
+ 				pnetwork = pnetwork_max_rssi;
+ 				goto ask_for_joinbss;
+ 			}
+diff --git a/drivers/staging/rtl8712/rtl871x_mp_ioctl.c b/drivers/staging/rtl8712/rtl871x_mp_ioctl.c
+index 29b85330815f..f906d3fbe179 100644
+--- a/drivers/staging/rtl8712/rtl871x_mp_ioctl.c
++++ b/drivers/staging/rtl8712/rtl871x_mp_ioctl.c
+@@ -186,7 +186,7 @@ static int mp_start_test(struct _adapter *padapter)
+ 	if (psta)
+ 		r8712_free_stainfo(padapter, psta);
+ 	psta = r8712_alloc_stainfo(&padapter->stapriv, bssid.MacAddress);
+-	if (psta == NULL) {
++	if (!psta) {
+ 		res = -ENOMEM;
+ 		goto end_of_mp_start_test;
+ 	}
+diff --git a/drivers/staging/rtl8712/rtl871x_recv.c b/drivers/staging/rtl8712/rtl871x_recv.c
+index c1bfd61824ef..eb4e46a7f743 100644
+--- a/drivers/staging/rtl8712/rtl871x_recv.c
++++ b/drivers/staging/rtl8712/rtl871x_recv.c
+@@ -58,7 +58,7 @@ void _r8712_init_recv_priv(struct recv_priv *precvpriv,
+ 	precvpriv->pallocated_frame_buf = kzalloc(NR_RECVFRAME *
+ 				sizeof(union recv_frame) + RXFRAME_ALIGN_SZ,
+ 				GFP_ATOMIC);
+-	if (precvpriv->pallocated_frame_buf == NULL)
++	if (!precvpriv->pallocated_frame_buf)
+ 		return;
+ 	kmemleak_not_leak(precvpriv->pallocated_frame_buf);
+ 	precvpriv->precv_frame_buf = precvpriv->pallocated_frame_buf +
+@@ -97,7 +97,7 @@ union recv_frame *r8712_alloc_recvframe(struct __queue *pfree_recv_queue)
+ 	if (precvframe) {
+ 		list_del_init(&precvframe->u.hdr.list);
+ 		padapter = precvframe->u.hdr.adapter;
+-		if (padapter != NULL) {
++		if (padapter) {
+ 			precvpriv = &padapter->recvpriv;
+ 			if (pfree_recv_queue == &precvpriv->free_recv_queue)
+ 				precvpriv->free_recvframe_cnt--;
+@@ -145,7 +145,7 @@ sint r8712_recvframe_chkmic(struct _adapter *adapter,
+ 	stainfo = r8712_get_stainfo(&adapter->stapriv, &prxattrib->ta[0]);
+ 	if (prxattrib->encrypt == _TKIP_) {
+ 		/* calculate mic code */
+-		if (stainfo != NULL) {
++		if (stainfo) {
+ 			if (is_multicast_ether_addr(prxattrib->ra)) {
+ 				iv = precvframe->u.hdr.rx_data +
+ 				     prxattrib->hdrlen;
+@@ -242,7 +242,7 @@ union recv_frame *r8712_portctrl(struct _adapter *adapter,
+ 		ptr = ptr + pfhdr->attrib.hdrlen + LLC_HEADER_SIZE;
+ 		ether_type = get_unaligned_be16(ptr);
+ 
+-		if ((psta != NULL) && (psta->ieee8021x_blocked)) {
++		if (psta && psta->ieee8021x_blocked) {
+ 			/* blocked
+ 			 * only accept EAPOL frame
+ 			 */
+@@ -349,7 +349,7 @@ static sint sta2sta_data_frame(struct _adapter *adapter,
+ 		*psta = r8712_get_bcmc_stainfo(adapter);
+ 	else
+ 		*psta = r8712_get_stainfo(pstapriv, sta_addr); /* get ap_info */
+-	if (*psta == NULL) {
++	if (!*psta) {
+ 		if (check_fwstate(pmlmepriv, WIFI_MP_STATE))
+ 			adapter->mppriv.rx_pktloss++;
+ 		return _FAIL;
+@@ -399,7 +399,7 @@ static sint ap2sta_data_frame(struct _adapter *adapter,
+ 			*psta = r8712_get_bcmc_stainfo(adapter);
+ 		else
+ 			*psta = r8712_get_stainfo(pstapriv, pattrib->bssid);
+-		if (*psta == NULL)
++		if (!*psta)
+ 			return _FAIL;
+ 	} else if (check_fwstate(pmlmepriv, WIFI_MP_STATE) &&
+ 		   check_fwstate(pmlmepriv, _FW_LINKED)) {
+@@ -410,7 +410,7 @@ static sint ap2sta_data_frame(struct _adapter *adapter,
+ 		memcpy(pattrib->ta, pattrib->src, ETH_ALEN);
+ 		memcpy(pattrib->bssid,  mybssid, ETH_ALEN);
+ 		*psta = r8712_get_stainfo(pstapriv, pattrib->bssid);
+-		if (*psta == NULL)
++		if (!*psta)
+ 			return _FAIL;
+ 	} else {
+ 		return _FAIL;
+@@ -435,7 +435,7 @@ static sint sta2ap_data_frame(struct _adapter *adapter,
+ 		if (memcmp(pattrib->bssid, mybssid, ETH_ALEN))
+ 			return _FAIL;
+ 		*psta = r8712_get_stainfo(pstapriv, pattrib->src);
+-		if (*psta == NULL)
++		if (!*psta)
+ 			return _FAIL;
+ 	}
+ 	return _SUCCESS;
+@@ -469,7 +469,7 @@ static sint validate_recv_data_frame(struct _adapter *adapter,
+ 	pda = get_da(ptr);
+ 	psa = get_sa(ptr);
+ 	pbssid = get_hdr_bssid(ptr);
+-	if (pbssid == NULL)
++	if (!pbssid)
+ 		return _FAIL;
+ 	memcpy(pattrib->dst, pda, ETH_ALEN);
+ 	memcpy(pattrib->src, psa, ETH_ALEN);
+@@ -499,7 +499,7 @@ static sint validate_recv_data_frame(struct _adapter *adapter,
+ 	}
+ 	if (res == _FAIL)
+ 		return _FAIL;
+-	if (psta == NULL)
++	if (!psta)
+ 		return _FAIL;
+ 	precv_frame->u.hdr.psta = psta;
+ 	pattrib->amsdu = 0;
+diff --git a/drivers/staging/rtl8712/rtl871x_security.c b/drivers/staging/rtl8712/rtl871x_security.c
+index c05010d85212..5000c87752d3 100644
+--- a/drivers/staging/rtl8712/rtl871x_security.c
++++ b/drivers/staging/rtl8712/rtl871x_security.c
+@@ -584,7 +584,7 @@ u32 r8712_tkip_encrypt(struct _adapter *padapter, u8 *pxmitframe)
+ 		else
+ 			stainfo = r8712_get_stainfo(&padapter->stapriv,
+ 				  &pattrib->ra[0]);
+-		if (stainfo != NULL) {
++		if (stainfo) {
+ 			prwskey = &stainfo->x_UncstKey.skey[0];
+ 			for (curfragnum = 0; curfragnum < pattrib->nr_frags;
+ 			     curfragnum++) {
+@@ -658,7 +658,7 @@ void r8712_tkip_decrypt(struct _adapter *padapter, u8 *precvframe)
+ 	if (prxattrib->encrypt == _TKIP_) {
+ 		stainfo = r8712_get_stainfo(&padapter->stapriv,
+ 					    &prxattrib->ta[0]);
+-		if (stainfo != NULL) {
++		if (stainfo) {
+ 			iv = pframe + prxattrib->hdrlen;
+ 			payload = pframe + prxattrib->iv_len +
+ 				  prxattrib->hdrlen;
+@@ -1155,7 +1155,7 @@ u32 r8712_aes_encrypt(struct _adapter *padapter, u8 *pxmitframe)
+ 		else
+ 			stainfo = r8712_get_stainfo(&padapter->stapriv,
+ 				  &pattrib->ra[0]);
+-		if (stainfo != NULL) {
++		if (stainfo) {
+ 			prwskey = &stainfo->x_UncstKey.skey[0];
+ 			for (curfragnum = 0; curfragnum < pattrib->nr_frags;
+ 			     curfragnum++) {
+@@ -1357,7 +1357,7 @@ void r8712_aes_decrypt(struct _adapter *padapter, u8 *precvframe)
+ 	if (prxattrib->encrypt == _AES_) {
+ 		stainfo = r8712_get_stainfo(&padapter->stapriv,
+ 					    &prxattrib->ta[0]);
+-		if (stainfo != NULL) {
++		if (stainfo) {
+ 			if (is_multicast_ether_addr(prxattrib->ra)) {
+ 				iv = pframe + prxattrib->hdrlen;
+ 				idx = iv[3];
+diff --git a/drivers/staging/rtl8712/rtl871x_sta_mgt.c b/drivers/staging/rtl8712/rtl871x_sta_mgt.c
+index 653812c5d5a8..706e9db0fc5b 100644
+--- a/drivers/staging/rtl8712/rtl871x_sta_mgt.c
++++ b/drivers/staging/rtl8712/rtl871x_sta_mgt.c
+@@ -149,7 +149,7 @@ void r8712_free_stainfo(struct _adapter *padapter, struct sta_info *psta)
+ 	struct	xmit_priv *pxmitpriv = &padapter->xmitpriv;
+ 	struct	sta_priv *pstapriv = &padapter->stapriv;
+ 
+-	if (psta == NULL)
++	if (!psta)
+ 		return;
+ 	pfree_sta_queue = &pstapriv->free_sta_queue;
+ 	pstaxmitpriv = &psta->sta_xmitpriv;
+@@ -222,7 +222,7 @@ struct sta_info *r8712_get_stainfo(struct sta_priv *pstapriv, u8 *hwaddr)
+ 	struct sta_info *psta = NULL;
+ 	u32	index;
+ 
+-	if (hwaddr == NULL)
++	if (!hwaddr)
+ 		return NULL;
+ 	index = wifi_mac_hash(hwaddr);
+ 	spin_lock_irqsave(&pstapriv->sta_hash_lock, irqL);
+diff --git a/drivers/staging/rtl8712/rtl871x_xmit.c b/drivers/staging/rtl8712/rtl871x_xmit.c
+index cae552276ab8..7093903b3af1 100644
+--- a/drivers/staging/rtl8712/rtl871x_xmit.c
++++ b/drivers/staging/rtl8712/rtl871x_xmit.c
+@@ -156,7 +156,7 @@ void _free_xmit_priv(struct xmit_priv *pxmitpriv)
+ 					pxmitpriv->pxmit_frame_buf;
+ 	struct xmit_buf *pxmitbuf = (struct xmit_buf *)pxmitpriv->pxmitbuf;
+ 
+-	if (pxmitpriv->pxmit_frame_buf == NULL)
++	if (!pxmitpriv->pxmit_frame_buf)
+ 		return;
+ 	for (i = 0; i < NR_XMITFRAME; i++) {
+ 		r8712_xmit_complete(padapter, pxmitframe);
+@@ -269,7 +269,7 @@ int r8712_update_attrib(struct _adapter *padapter, _pkt *pkt,
+ 			pattrib->mac_id = 5;
+ 		} else {
+ 			psta = r8712_get_stainfo(pstapriv, pattrib->ra);
+-			if (psta == NULL)  /* drop the pkt */
++			if (!psta)  /* drop the pkt */
+ 				return -ENOMEM;
+ 			if (check_fwstate(pmlmepriv, WIFI_STATION_STATE))
+ 				pattrib->mac_id = 5;
+@@ -362,7 +362,7 @@ static int xmitframe_addmic(struct _adapter *padapter,
+ 					    &pattrib->ra[0]);
+ 	if (pattrib->encrypt == _TKIP_) {
+ 		/*encode mic code*/
+-		if (stainfo != NULL) {
++		if (stainfo) {
+ 			u8 null_key[16] = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+ 					   0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+ 					   0x0, 0x0};
+@@ -592,10 +592,10 @@ sint r8712_xmitframe_coalesce(struct _adapter *padapter, _pkt *pkt,
+ 	u8 *pbuf_start;
+ 	bool bmcst = is_multicast_ether_addr(pattrib->ra);
+ 
+-	if (pattrib->psta == NULL)
++	if (!pattrib->psta)
+ 		return _FAIL;
+ 	psta = pattrib->psta;
+-	if (pxmitframe->buf_addr == NULL)
++	if (!pxmitframe->buf_addr)
+ 		return _FAIL;
+ 	pbuf_start = pxmitframe->buf_addr;
+ 	ptxdesc = pbuf_start;
+@@ -623,7 +623,7 @@ sint r8712_xmitframe_coalesce(struct _adapter *padapter, _pkt *pkt,
+ 		mpdu_len -= pattrib->hdrlen;
+ 		/* adding icv, if necessary...*/
+ 		if (pattrib->iv_len) {
+-			if (psta != NULL) {
++			if (psta) {
+ 				switch (pattrib->encrypt) {
+ 				case _WEP40_:
+ 				case _WEP104_:
+@@ -711,7 +711,7 @@ void r8712_update_protection(struct _adapter *padapter, u8 *ie, uint ie_len)
+ 	case AUTO_VCS:
+ 	default:
+ 		perp = r8712_get_ie(ie, _ERPINFO_IE_, &erp_len, ie_len);
+-		if (perp == NULL) {
++		if (!perp) {
+ 			pxmitpriv->vcs = NONE_VCS;
+ 		} else {
+ 			protection = (*(perp + 2)) & BIT(1);
+@@ -750,7 +750,7 @@ void r8712_free_xmitbuf(struct xmit_priv *pxmitpriv, struct xmit_buf *pxmitbuf)
+ 	unsigned long irqL;
+ 	struct  __queue *pfree_xmitbuf_queue = &pxmitpriv->free_xmitbuf_queue;
+ 
+-	if (pxmitbuf == NULL)
++	if (!pxmitbuf)
+ 		return;
+ 	spin_lock_irqsave(&pfree_xmitbuf_queue->lock, irqL);
+ 	list_del_init(&pxmitbuf->list);
+@@ -803,7 +803,7 @@ void r8712_free_xmitframe(struct xmit_priv *pxmitpriv,
+ 	struct  __queue *pfree_xmit_queue = &pxmitpriv->free_xmit_queue;
+ 	struct _adapter *padapter = pxmitpriv->adapter;
+ 
+-	if (pxmitframe == NULL)
++	if (!pxmitframe)
+ 		return;
+ 	spin_lock_irqsave(&pfree_xmit_queue->lock, irqL);
+ 	list_del_init(&pxmitframe->list);
+@@ -819,7 +819,7 @@ void r8712_free_xmitframe(struct xmit_priv *pxmitpriv,
+ void r8712_free_xmitframe_ex(struct xmit_priv *pxmitpriv,
+ 		      struct xmit_frame *pxmitframe)
+ {
+-	if (pxmitframe == NULL)
++	if (!pxmitframe)
+ 		return;
+ 	if (pxmitframe->frame_tag == DATA_FRAMETAG)
+ 		r8712_free_xmitframe(pxmitpriv, pxmitframe);
+@@ -910,7 +910,7 @@ int r8712_xmit_classifier(struct _adapter *padapter,
+ 				psta = r8712_get_stainfo(pstapriv, pattrib->ra);
+ 		}
+ 	}
+-	if (psta == NULL)
++	if (!psta)
+ 		return -EINVAL;
+ 	ptxservq = get_sta_pending(padapter, &pstapending,
+ 		   psta, pattrib->priority);
+@@ -1022,7 +1022,7 @@ int r8712_pre_xmit(struct _adapter *padapter, struct xmit_frame *pxmitframe)
+ 		return ret;
+ 	}
+ 	pxmitbuf = r8712_alloc_xmitbuf(pxmitpriv);
+-	if (pxmitbuf == NULL) { /*enqueue packet*/
++	if (!pxmitbuf) { /*enqueue packet*/
+ 		ret = false;
+ 		r8712_xmit_enqueue(padapter, pxmitframe);
+ 		spin_unlock_irqrestore(&pxmitpriv->lock, irqL);
+diff --git a/drivers/staging/rtl8712/usb_intf.c b/drivers/staging/rtl8712/usb_intf.c
+index 2fcd65260f4c..dc21e7743349 100644
+--- a/drivers/staging/rtl8712/usb_intf.c
++++ b/drivers/staging/rtl8712/usb_intf.c
+@@ -577,7 +577,7 @@ static int r871xu_drv_init(struct usb_interface *pusb_intf,
+ error:
+ 	usb_put_dev(udev);
+ 	usb_set_intfdata(pusb_intf, NULL);
+-	if (padapter && padapter->dvobj_deinit != NULL)
++	if (padapter && padapter->dvobj_deinit)
+ 		padapter->dvobj_deinit(padapter);
+ 	if (pnetdev)
+ 		free_netdev(pnetdev);
 -- 
-2.11.0
+2.28.0
 
