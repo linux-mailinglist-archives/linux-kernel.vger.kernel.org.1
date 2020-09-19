@@ -2,53 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DBB9270AC5
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 07:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 320AA270ACA
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 07:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726157AbgISFHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 01:07:42 -0400
-Received: from verein.lst.de ([213.95.11.211]:34840 "EHLO verein.lst.de"
+        id S1726247AbgISFP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 01:15:26 -0400
+Received: from verein.lst.de ([213.95.11.211]:34874 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726054AbgISFHm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 01:07:42 -0400
+        id S1726054AbgISFP0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Sep 2020 01:15:26 -0400
 Received: by verein.lst.de (Postfix, from userid 2407)
-        id C9EBB68BEB; Sat, 19 Sep 2020 07:07:39 +0200 (CEST)
-Date:   Sat, 19 Sep 2020 07:07:39 +0200
+        id 811BE68BEB; Sat, 19 Sep 2020 07:15:20 +0200 (CEST)
+Date:   Sat, 19 Sep 2020 07:15:20 +0200
 From:   Christoph Hellwig <hch@lst.de>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, kernel test robot <rong.a.chen@intel.com>
-Subject: Re: [fs] 36e2c7421f:
- kernel-selftests.splice.short_splice_read.sh.fail
-Message-ID: <20200919050739.GA7038@lst.de>
-References: <20200917012542.GF28738@shao2-debian> <202009181443.C2179FB@keescook>
+To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Stefan Haberland <sth@linux.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.ibm.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, nbd@other.debian.org,
+        linux-ide@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        linux-pm@vger.kernel.org, linux-mm@kvack.org,
+        linux-block@vger.kernel.org
+Subject: Re: [PATCH 02/14] block: switch register_disk to use
+ blkdev_get_by_dev
+Message-ID: <20200919051520.GA7070@lst.de>
+References: <20200917165720.3285256-1-hch@lst.de> <20200917165720.3285256-3-hch@lst.de> <091931b1-eb9c-e45e-c9e8-501554618508@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202009181443.C2179FB@keescook>
+In-Reply-To: <091931b1-eb9c-e45e-c9e8-501554618508@gmail.com>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 02:49:19PM -0700, Kees Cook wrote:
-> In response to my recent bug fix for splice vs sysfs binary handler[1],
-> I added splice testing for other pseudo filesystems[2], for which the
-> test output is seen above.
-> 
-> What is the final verdict on the "should splice have a fallback mode?"
-> question[3]? Right now /proc and /sys reject splice attempts (which, as
-> I mentioned in the thread, is fine by me, since it would have blocked
-> the bug I had to fix from ever being exposed in the first place).
+On Fri, Sep 18, 2020 at 11:52:39AM +0300, Sergei Shtylyov wrote:
+> Hello!
+>
+> On 17.09.2020 19:57, Christoph Hellwig wrote:
+>
+>> Use blkdev_get_by_dev instead of open coding it using bdget_disk +
+>> blkdev_get.
+>
+>    I don't see where you are removing bdget_disk() call (situated just before
+> the below code?)...
 
-The verdict is: without a set_fs()-like mechanism that allows uaccess
-routines to operate on kernel buffers, or even worse a
-compat_alloc_user_space-like mechanism we can't have an entirely
-generic fallback.
-
-> Should I update the test to _expect_ that splice should fail?
-
-I think so.  We can updated individual file operations to support splice
-where actually used applications except it (even when they shouldn't),
-but I'd rather not do it just for a test case.
+Indeed.  That's what you get for a messy last minute rebase.. :(
