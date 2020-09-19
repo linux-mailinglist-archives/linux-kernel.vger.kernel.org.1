@@ -2,109 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E65270BA9
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 10:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 609AA270BAB
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 10:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726305AbgISIEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 04:04:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49522 "EHLO
+        id S1726192AbgISIGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 04:06:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726041AbgISIEp (ORCPT
+        with ESMTP id S1726041AbgISIGq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 04:04:45 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FD40C0613CE
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 01:04:44 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id r24so6934869ljm.3
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 01:04:44 -0700 (PDT)
+        Sat, 19 Sep 2020 04:06:46 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B28C9C0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 01:06:46 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id z18so4985172pfg.0
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 01:06:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=74d+3zdIrItu4yPjssRFwYhLxV8d+x9MW5ISlAEwzIM=;
-        b=rRvZD8N50pyTKZUu3Uq4YwvhiMedpbQfrgkiEcR6sqlFbGxRDZ0es9mmDSXY49F65c
-         kHuqDBwRu2yzu8+g6L3YaN2t5FLGs0AXIVoXm5Nl6ZxFzTexLoPxVZmwvQ5+cLiHjmtX
-         7TKh7LEoYgTAA6xyNKTa1toLP3hniG1Hc3RyRq7uifBfPDh7ue+cb601ENhbhyE6kf7Y
-         xKqcGZq1exzBZuHT2XMrsBMghlaEP8AMzFXgXRJSm9ZwEP3+dUeMMYTwvywKqYSaVlz7
-         2Ty3Aql/xVvRWyyATI5hxvgSvae5yZfmk9drBJEJnp+Nxk9OTXogsbmTGA8TWJBaCzEU
-         m/Bw==
+        bh=9iH7lg3YkHOWr7NTqH/dXox+CFNwDp9U5uBDltp9opg=;
+        b=VliAdCAKA8262/f1rFGSxP8xylGXaZO4FcA+nCHPcdNqzcUPuWcsjFUnaLb/PJdGDc
+         77LDfBN6skG3zcIHXXKVxcVAm5eMB9le2+2lsMUje1wbpOCIZh2A4ZLSie9ILwBOpC9K
+         4vvx0i4xKcWt+EOoZlwSsPar86nskR8syAyuE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=74d+3zdIrItu4yPjssRFwYhLxV8d+x9MW5ISlAEwzIM=;
-        b=CVbT5UfVHxDJcVGacnY6ZQooyS1yiUS97HqvI0v+plkcNoB7O5rKbs4QS4x55EgSxr
-         iIy2cAwaB33yHOCu3KwRvvds68KeNiJE2xSZn5Or5ZmXquHS9ynv5mr2ny/R7dWeTFyT
-         fqGeS0AkVRGg8tb7VkwiSHp9dL8xpczQakd0RGDox3Km3MAZQrIss/qHv7y1NoV+qjt7
-         LIQOs7D0RyFy+sD/b/UNRXj7oRE++1Kfj6U4kdEIfnLgAZsKKKKqf98qVHBbQNPFxkZ2
-         Ru3t82V+ZV55sd6dZj4VlW3sCina4TysFGr+1Xs1bi3d67UDXiUPgvzb8r5SBUmqzuEK
-         NuFw==
-X-Gm-Message-State: AOAM531afdxbjfslUKKiJU5gdin0JnXnJAD65efZ2VhWZK0xZQHch4+u
-        CBxcyxXEKv3Y9oUMdF1KjHo=
-X-Google-Smtp-Source: ABdhPJw99VzTK4mNA4zbDFoHai02D7/beIuY/UeI5WSDlDYUJpL1QZ6lxuec0lKqKD6xilVG6V9A4g==
-X-Received: by 2002:a2e:8904:: with SMTP id d4mr14161289lji.322.1600502683030;
-        Sat, 19 Sep 2020 01:04:43 -0700 (PDT)
-Received: from z50.gdansk-morena.vectranet.pl (109241122244.gdansk.vectranet.pl. [109.241.122.244])
-        by smtp.gmail.com with ESMTPSA id c22sm1110110lff.202.2020.09.19.01.04.41
+        bh=9iH7lg3YkHOWr7NTqH/dXox+CFNwDp9U5uBDltp9opg=;
+        b=pjlF8/S1Ic4tj14dnpNwe2Ij4fFu8TV9zluVszMJz7XrQbAhFtQN3H/BoJHJWG6mxN
+         hsl7DOVKV521gSpwzuYgO1g+C0kX4r684qWrsFK0mrzY7VFf5OWXQrNfcMLpVuxsET0n
+         RQ2jSdMQFecZ5235UCTsrRG/foj6yHX0c8OgInqRQCgfZ+pWq2U3NANNDXNDsG1+Y7/C
+         z09sytcH7IgLQpSBq7xA4MnF8FU+MkxaFeH71Fhg433mLfuoeXM9ysl+tmsenvSRv0Y6
+         yG3vPmLsoPR9ML+KqT752gu5GHoCT3jJiQ/252s547NPmLMG/GqUqp+fFVc7DrKKlaY+
+         eTlA==
+X-Gm-Message-State: AOAM531urkLBYilZ+s05QGbYh/xFBX/egpavr030j4DTB69Mn4xPTXyH
+        hMHPoJGb+oH3G7IowyKCb9J/aw==
+X-Google-Smtp-Source: ABdhPJxqwI/NRVwSlA1Y4+c6UzNBZYDGK/U+ZUNMSqUez01WLw6CEsVrOzXeoFKh2YifcS+xdf+aPg==
+X-Received: by 2002:aa7:87da:0:b029:13c:1611:66bf with SMTP id i26-20020aa787da0000b029013c161166bfmr35672458pfo.10.1600502806153;
+        Sat, 19 Sep 2020 01:06:46 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id gj6sm4896682pjb.10.2020.09.19.01.06.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Sep 2020 01:04:42 -0700 (PDT)
-From:   Janusz Krzysztofik <jmkrzyszt@gmail.com>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-mtd@lists.infradead.org, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org,
-        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] mtd: rawnand: ams-delta: Fix non-OF build warning
-Date:   Sat, 19 Sep 2020 10:04:03 +0200
-Message-Id: <20200919080403.17520-1-jmkrzyszt@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Sat, 19 Sep 2020 01:06:45 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kees Cook <keescook@chromium.org>,
+        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Christian Brauner <christian@brauner.io>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        linux-kselftest@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org,
+        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH v2 0/4] selftests/seccomp: Refactor change_syscall()
+Date:   Sat, 19 Sep 2020 01:06:33 -0700
+Message-Id: <20200919080637.259478-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 7c2f66a960fc ("mtd: rawnand: ams-delta: Add module device
-tables") introduced an OF module device table but wrapped a reference
-to it with of_match_ptr() which resolves to NULL in non-OF configs.
-That resulted in a clang compiler warning on unused variable in non-OF
-builds.  Fix it.
+v1: https://lore.kernel.org/lkml/20200912110820.597135-1-keescook@chromium.org
+v2:
+- Took Acked patches into -next
+- refactored powerpc syscall setting implementation
+- refactored clone3 args implementation
 
-drivers/mtd/nand/raw/ams-delta.c:373:34: warning: unused variable 'gpio_nand_of_id_table' [-Wunused-const-variable]
-   static const struct of_device_id gpio_nand_of_id_table[] = {
-                                    ^
-   1 warning generated.
+Hi,
 
-Fixes: 7c2f66a960fc ("mtd: rawnand: ams-delta: Add module device tables")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
----
- drivers/mtd/nand/raw/ams-delta.c | 2 ++
- 1 file changed, 2 insertions(+)
+This finishes the refactoring of the seccomp selftest logic used in
+for ptrace syscall number/return handling for powerpc. Additionally
+fixes clone3 (which seccomp depends on for testing) to run under MIPS
+where an old struct clone_args has become visible.
 
-diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
-index fdba155416d2..0bf4cfc25147 100644
---- a/drivers/mtd/nand/raw/ams-delta.c
-+++ b/drivers/mtd/nand/raw/ams-delta.c
-@@ -400,12 +400,14 @@ static int gpio_nand_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+#ifdef CONFIG_OF
- static const struct of_device_id gpio_nand_of_id_table[] = {
- 	{
- 		/* sentinel */
- 	},
- };
- MODULE_DEVICE_TABLE(of, gpio_nand_of_id_table);
-+#endif
- 
- static const struct platform_device_id gpio_nand_plat_id_table[] = {
- 	{
+(FWIW, I expect to take these via the seccomp tree.)
+
+Thanks,
+
+Kees Cook (4):
+  selftests/seccomp: Record syscall during ptrace entry
+  selftests/seccomp: Allow syscall nr and ret value to be set separately
+  selftests/seccomp: powerpc: Set syscall return during ptrace syscall
+    exit
+  selftests/clone3: Avoid OS-defined clone_args
+
+ tools/testing/selftests/clone3/clone3.c       |  45 +++----
+ .../clone3/clone3_cap_checkpoint_restore.c    |   4 +-
+ .../selftests/clone3/clone3_clear_sighand.c   |   2 +-
+ .../selftests/clone3/clone3_selftests.h       |  24 ++--
+ .../testing/selftests/clone3/clone3_set_tid.c |   4 +-
+ tools/testing/selftests/seccomp/seccomp_bpf.c | 120 ++++++++++++++----
+ 6 files changed, 131 insertions(+), 68 deletions(-)
+
 -- 
-2.26.2
+2.25.1
 
