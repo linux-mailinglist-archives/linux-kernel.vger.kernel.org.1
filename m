@@ -2,78 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4384D270C49
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 11:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1123D270CC1
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 12:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726371AbgISJqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 05:46:44 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:47456 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726307AbgISJqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 05:46:39 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 94376AA78F333804EE86;
-        Sat, 19 Sep 2020 17:46:35 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Sat, 19 Sep 2020
- 17:46:27 +0800
-From:   Liu Shixin <liushixin2@huawei.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        "Neil Armstrong" <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-CC:     <linux-rtc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-amlogic@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        "Liu Shixin" <liushixin2@huawei.com>
-Subject: [PATCH -next] rtc: meson: simplify the return expression of meson_vrtc_probe
-Date:   Sat, 19 Sep 2020 18:08:56 +0800
-Message-ID: <20200919100856.1639319-1-liushixin2@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S1726192AbgISKE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 06:04:29 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:45368 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726041AbgISKE3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Sep 2020 06:04:29 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 4E0321C0B85; Sat, 19 Sep 2020 12:04:26 +0200 (CEST)
+Date:   Sat, 19 Sep 2020 12:04:25 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>
+Cc:     linux-leds@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
+        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH leds v2 31/50] leds: lm36274: use devres LED registering
+ function
+Message-ID: <20200919100425.GA16109@duo.ucw.cz>
+References: <20200917223338.14164-1-marek.behun@nic.cz>
+ <20200917223338.14164-32-marek.behun@nic.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.32]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="r5Pyd7+fXNt84Ff3"
+Content-Disposition: inline
+In-Reply-To: <20200917223338.14164-32-marek.behun@nic.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify the return expression.
 
-Signed-off-by: Liu Shixin <liushixin2@huawei.com>
----
- drivers/rtc/rtc-meson-vrtc.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+--r5Pyd7+fXNt84Ff3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/rtc/rtc-meson-vrtc.c b/drivers/rtc/rtc-meson-vrtc.c
-index 89e5ba0dae69..e6bd0808a092 100644
---- a/drivers/rtc/rtc-meson-vrtc.c
-+++ b/drivers/rtc/rtc-meson-vrtc.c
-@@ -65,7 +65,6 @@ static const struct rtc_class_ops meson_vrtc_ops = {
- static int meson_vrtc_probe(struct platform_device *pdev)
- {
- 	struct meson_vrtc_data *vrtc;
--	int ret;
- 
- 	vrtc = devm_kzalloc(&pdev->dev, sizeof(*vrtc), GFP_KERNEL);
- 	if (!vrtc)
-@@ -84,11 +83,7 @@ static int meson_vrtc_probe(struct platform_device *pdev)
- 		return PTR_ERR(vrtc->rtc);
- 
- 	vrtc->rtc->ops = &meson_vrtc_ops;
--	ret = rtc_register_device(vrtc->rtc);
--	if (ret)
--		return ret;
--
--	return 0;
-+	return rtc_register_device(vrtc->rtc);
- }
- 
- static int __maybe_unused meson_vrtc_suspend(struct device *dev)
--- 
-2.25.1
+Hi!
 
+> By using devres version of LED registering function we can remove the
+> .remove method from this driver.
+
+Please see a0972fff09479dd09b731360a3a0b09e4fb4d415.
+
+And yes, Johan should have added a comment instead of placing it in
+changelog. Feel free to add the comment. There was more than one such
+patch IIRC.
+
+Best regards,
+								Pavel
+							=09
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--r5Pyd7+fXNt84Ff3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX2XXqQAKCRAw5/Bqldv6
+8pNGAKCBVzPLTTuhD4Ps+0m59MWqL2J/bACcCLzFuZcdUbhmgLME5MZA7UY9wUM=
+=Hhc7
+-----END PGP SIGNATURE-----
+
+--r5Pyd7+fXNt84Ff3--
