@@ -2,116 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F308270A25
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 04:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDD49270A27
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 04:49:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbgISCsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 22:48:20 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13319 "EHLO huawei.com"
+        id S1726308AbgISCsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 22:48:46 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:40346 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726009AbgISCsT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 22:48:19 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 3101F85380A276DAB0C9;
-        Sat, 19 Sep 2020 10:48:16 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 19 Sep 2020 10:48:06 +0800
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Jakub Kicinski <kubakici@wp.pl>, Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH -next v2] mt7601u: Convert to DEFINE_SHOW_ATTRIBUTE
-Date:   Sat, 19 Sep 2020 10:48:38 +0800
-Message-ID: <20200919024838.14172-1-miaoqinglang@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726009AbgISCsq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 22:48:46 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id A6AA161F0C41473CEDEE;
+        Sat, 19 Sep 2020 10:48:44 +0800 (CST)
+Received: from [10.174.176.211] (10.174.176.211) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 19 Sep 2020 10:48:42 +0800
+Subject: Re: [PATCH -next] tty: hvc: fix link error with
+ CONFIG_SERIAL_CORE_CONSOLE=n
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
+References: <20200918092030.3855438-1-yangyingliang@huawei.com>
+ <20200918111708.GC2242974@kroah.com>
+From:   Yang Yingliang <yangyingliang@huawei.com>
+Message-ID: <6100a6e7-641f-7e9b-b4a3-3834320d1bb1@huawei.com>
+Date:   Sat, 19 Sep 2020 10:48:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
+In-Reply-To: <20200918111708.GC2242974@kroah.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.176.211]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
 
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
----
- .../net/wireless/mediatek/mt7601u/debugfs.c   | 34 ++++---------------
- 1 file changed, 6 insertions(+), 28 deletions(-)
-
-diff --git a/drivers/net/wireless/mediatek/mt7601u/debugfs.c b/drivers/net/wireless/mediatek/mt7601u/debugfs.c
-index 300242bce..20669eacb 100644
---- a/drivers/net/wireless/mediatek/mt7601u/debugfs.c
-+++ b/drivers/net/wireless/mediatek/mt7601u/debugfs.c
-@@ -30,7 +30,7 @@ mt76_reg_get(void *data, u64 *val)
- DEFINE_DEBUGFS_ATTRIBUTE(fops_regval, mt76_reg_get, mt76_reg_set, "0x%08llx\n");
- 
- static int
--mt7601u_ampdu_stat_read(struct seq_file *file, void *data)
-+mt7601u_ampdu_stat_show(struct seq_file *file, void *data)
- {
- 	struct mt7601u_dev *dev = file->private;
- 	int i, j;
-@@ -73,21 +73,10 @@ mt7601u_ampdu_stat_read(struct seq_file *file, void *data)
- 	return 0;
- }
- 
--static int
--mt7601u_ampdu_stat_open(struct inode *inode, struct file *f)
--{
--	return single_open(f, mt7601u_ampdu_stat_read, inode->i_private);
--}
--
--static const struct file_operations fops_ampdu_stat = {
--	.open = mt7601u_ampdu_stat_open,
--	.read = seq_read,
--	.llseek = seq_lseek,
--	.release = single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(mt7601u_ampdu_stat);
- 
- static int
--mt7601u_eeprom_param_read(struct seq_file *file, void *data)
-+mt7601u_eeprom_param_show(struct seq_file *file, void *data)
- {
- 	struct mt7601u_dev *dev = file->private;
- 	struct mt7601u_rate_power *rp = &dev->ee->power_rate_table;
-@@ -131,18 +120,7 @@ mt7601u_eeprom_param_read(struct seq_file *file, void *data)
- 	return 0;
- }
- 
--static int
--mt7601u_eeprom_param_open(struct inode *inode, struct file *f)
--{
--	return single_open(f, mt7601u_eeprom_param_read, inode->i_private);
--}
--
--static const struct file_operations fops_eeprom_param = {
--	.open = mt7601u_eeprom_param_open,
--	.read = seq_read,
--	.llseek = seq_lseek,
--	.release = single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(mt7601u_eeprom_param);
- 
- void mt7601u_init_debugfs(struct mt7601u_dev *dev)
- {
-@@ -157,6 +135,6 @@ void mt7601u_init_debugfs(struct mt7601u_dev *dev)
- 
- 	debugfs_create_u32("regidx", 0600, dir, &dev->debugfs_reg);
- 	debugfs_create_file("regval", 0600, dir, dev, &fops_regval);
--	debugfs_create_file("ampdu_stat", 0400, dir, dev, &fops_ampdu_stat);
--	debugfs_create_file("eeprom_param", 0400, dir, dev, &fops_eeprom_param);
-+	debugfs_create_file("ampdu_stat", 0400, dir, dev, &mt7601u_ampdu_stat_fops);
-+	debugfs_create_file("eeprom_param", 0400, dir, dev, &mt7601u_eeprom_param_fops);
- }
--- 
-2.23.0
-
+On 2020/9/18 19:17, Greg KH wrote:
+> On Fri, Sep 18, 2020 at 05:20:30PM +0800, Yang Yingliang wrote:
+>> Fix the link error by selecting SERIAL_CORE_CONSOLE.
+>>
+>> aarch64-linux-gnu-ld: drivers/tty/hvc/hvc_dcc.o: in function `dcc_early_write':
+>> hvc_dcc.c:(.text+0x164): undefined reference to `uart_console_write'
+>>
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+>> ---
+>>   drivers/tty/hvc/Kconfig | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/tty/hvc/Kconfig b/drivers/tty/hvc/Kconfig
+>> index d1b27b0522a3..8d60e0ff67b4 100644
+>> --- a/drivers/tty/hvc/Kconfig
+>> +++ b/drivers/tty/hvc/Kconfig
+>> @@ -81,6 +81,7 @@ config HVC_DCC
+>>   	bool "ARM JTAG DCC console"
+>>   	depends on ARM || ARM64
+>>   	select HVC_DRIVER
+>> +	select SERIAL_CORE_CONSOLE
+>>   	help
+>>   	  This console uses the JTAG DCC on ARM to create a console under the HVC
+>>   	  driver. This console is used through a JTAG only on ARM. If you don't have
+>> -- 
+>> 2.25.1
+>>
+> Same question here, what caused this problem to happen?
+Fixes: d1a1af2cdf19 ("hvc: dcc: Add earlycon support")
+>
+> thanks,
+>
+> greg k-h
+> .
