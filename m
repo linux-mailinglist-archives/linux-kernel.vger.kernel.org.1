@@ -2,110 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 435CC2709B4
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 03:35:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D83522709B8
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 03:44:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726159AbgISBfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 21:35:43 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13313 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726009AbgISBfn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 21:35:43 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 96987FFA1B1B80233A53;
-        Sat, 19 Sep 2020 09:35:41 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 19 Sep 2020 09:35:33 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <dri-devel@lists.freedesktop.org>, <nouveau@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] gpu: nouveau: Remove set but not used variable
-Date:   Sat, 19 Sep 2020 09:36:27 +0800
-Message-ID: <20200919013627.22682-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726192AbgISBmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 21:42:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726009AbgISBmz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 21:42:55 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CAEFC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 18:42:55 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id k13so3916777plk.3
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 18:42:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=EhoP3N7hvag0b8mP1hRbWzDoofE3rRk8aNl4i8BZvqc=;
+        b=Nc12u21uLbmQtPwURkkktCz7tf37xyAb9vDwo8zhGE9PIHELSyO1HSuf/x6IfR/tG/
+         jA8acg0sQtgaPwopP7uY2QWTutYF9nKFbH28bvCg4gvN9ybsiY1etpOhRvp89V68LJbH
+         i0DJwJ6q1q/B5xPCxS0GG1LTI6fp/RHUN0aa8P2uMQiLGDFlA4+CgW5Pfg0ADwDSJiVZ
+         t1uDqGGh7HQsAaMwjMGfX6dyqTGl/scDa/ehj37fRZbtPpi7P4cs0yySENpJj3wjzbNI
+         Fykk7Cgef+pZTclndCZ4yG86MnMFx21da9X4kV/gOUtJJyETfxyVwbCkWEFFHOmWI1Bg
+         MBBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=EhoP3N7hvag0b8mP1hRbWzDoofE3rRk8aNl4i8BZvqc=;
+        b=ef0qHpyyll1qC+cCdSNGdBQyzpG9ganMVsn95UvTLYAXHcZ7MCHIFc77mHM2IEgA3G
+         EZN+jLhdAMb7/4kmzR/Bb36JR8yp+uuoYPLaAfOvhE+i5Ac8E7cx9z7NgoqO7BbDGyAn
+         N09VvMFGyAzegC2brQ/PtvVbvxUjmXvzJCmbb0u3YRhR8S8sU44yakjwSeTs1mcx5WzW
+         D3j7ImdGm9ztMSJHoeHi2JS78QzSFKBd7bi/b5o0uuNh9s1I2pjZpwEnHmWvgTl+BGEm
+         1Cl27mSgUgmkQbhh8RSzhsgiXoq0pyRpWv/7Acvf0JdheyWw5x5TbypPfxkDFYWO1Kf8
+         0Y7g==
+X-Gm-Message-State: AOAM531w+8N9lt2moeNmEVtqyv+ofEdbCLG3DlO5TdfwC9YCRORsqzml
+        RWNu7Cw8Xv1tQnhXDWlUQm9mon3KuiM=
+X-Google-Smtp-Source: ABdhPJwrA4oz7iUiPFOcgrH2Jnw5ub3gOHUvyHPH4FvUoyn6c07Kx40i7L7ZpjzNKr5ZwnNC3RLCSQ==
+X-Received: by 2002:a17:90b:1256:: with SMTP id gx22mr15886479pjb.47.1600479773895;
+        Fri, 18 Sep 2020 18:42:53 -0700 (PDT)
+Received: from iZj6chx1xj0e0buvshuecpZ ([47.75.1.235])
+        by smtp.gmail.com with ESMTPSA id f18sm5066522pfe.153.2020.09.18.18.42.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 18 Sep 2020 18:42:53 -0700 (PDT)
+Date:   Sat, 19 Sep 2020 09:42:49 +0800
+From:   Peng Liu <iwtbavbm@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, valentin.schneider@arm.com, raistlin@linux.it,
+        iwtbavbm@gmail.com
+Subject: [PATCH v3] sched/deadline: Fix sched_dl_global_validate()
+Message-ID: <20200919014249.GA31707@iZj6chx1xj0e0buvshuecpZ>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes gcc '-Wunused-but-set-variable' warning:
+When user changes sched_rt_{runtime, period}_us, then
 
-drivers/gpu/drm/nouveau/dispnv50/disp.c: In function nv50_mstm_cleanup:
-drivers/gpu/drm/nouveau/dispnv50/disp.c:1303:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
+  sched_rt_handler()
+    -->	sched_dl_bandwidth_validate()
+	{
+		new_bw = global_rt_runtime()/global_rt_period();
 
-drivers/gpu/drm/nouveau/dispnv50/disp.c: In function nv50_mstm_prepare:
-drivers/gpu/drm/nouveau/dispnv50/disp.c:1327:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
+		for_each_possible_cpu(cpu) {
+			dl_b = dl_bw_of(cpu);
+			if (new_bw < dl_b->total_bw)
+				ret = -EBUSY;
+		}
+	}
 
-drivers/gpu/drm/nouveau/nouveau_svm.c: In function nouveau_pfns_map:
-drivers/gpu/drm/nouveau/nouveau_svm.c:818:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
+Under CONFIG_SMP, dl_bw is per root domain , but not per CPU,
+dl_b->total_bw is the allocated bandwidth of the whole root domain.
+we should compare dl_b->total_bw against cpus*new_bw, where 'cpus'
+is the number of CPUs of the root domain.
 
-these variable is never used, so remove it.
+Also, below annotation(in kernel/sched/sched.h) implied implementation
+only appeared in SCHED_DEADLINE v2[1], then deadline scheduler kept
+evolving till got merged(v9), but the annotation remains unchanged,
+meaningless and misleading, correct it.
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+* With respect to SMP, the bandwidth is given on a per-CPU basis,
+* meaning that:
+*  - dl_bw (< 100%) is the bandwidth of the system (group) on each CPU;
+*  - dl_total_bw array contains, in the i-eth element, the currently
+*    allocated bandwidth on the i-eth CPU.
+
+[1] https://lkml.org/lkml/2010/2/28/119
+
+[!CONFIG_SMP build error]
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Peng Liu <iwtbavbm@gmail.com>
 ---
- drivers/gpu/drm/nouveau/dispnv50/disp.c | 9 +++------
- drivers/gpu/drm/nouveau/nouveau_svm.c   | 3 +--
- 2 files changed, 4 insertions(+), 8 deletions(-)
+v3 <-- v2:
+ Fix build error for !CONFIG_SMP, reported by kernel test robot.
 
-diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-index 1ed242070001..7cb5618e4592 100644
---- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
-+++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-@@ -1306,12 +1306,10 @@ nv50_mstm_cleanup(struct nv50_mstm *mstm)
- {
- 	struct nouveau_drm *drm = nouveau_drm(mstm->outp->base.base.dev);
- 	struct drm_encoder *encoder;
--	int ret;
+v2 <-- v1:
+ Replace cpumask_weight(cpu_rq(cpu)->rd->span) with dl_bw_cpus(cpu),
+ suggested by Juri.
+
+ kernel/sched/deadline.c | 43 ++++++++++++++++++++++++++++-------------
+ kernel/sched/sched.h    | 17 +++++-----------
+ 2 files changed, 35 insertions(+), 25 deletions(-)
+
+diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+index 3862a28cd05d..39ec0be574e8 100644
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -2511,33 +2511,45 @@ const struct sched_class dl_sched_class
+ 	.update_curr		= update_curr_dl,
+ };
  
- 	NV_ATOMIC(drm, "%s: mstm cleanup\n", mstm->outp->base.base.name);
--	ret = drm_dp_check_act_status(&mstm->mgr);
++#ifdef CONFIG_SMP
++static struct cpumask dl_local_possible_mask;
++#endif /* CONFIG_SMP */
++
+ int sched_dl_global_validate(void)
+ {
+ 	u64 runtime = global_rt_runtime();
+ 	u64 period = global_rt_period();
+ 	u64 new_bw = to_ratio(period, runtime);
+ 	struct dl_bw *dl_b;
+-	int cpu, ret = 0;
++	int cpu, cpus, ret = 0;
+ 	unsigned long flags;
+ 
+ 	/*
+ 	 * Here we want to check the bandwidth not being set to some
+ 	 * value smaller than the currently allocated bandwidth in
+ 	 * any of the root_domains.
+-	 *
+-	 * FIXME: Cycling on all the CPUs is overdoing, but simpler than
+-	 * cycling on root_domains... Discussion on different/better
+-	 * solutions is welcome!
+ 	 */
++#ifdef CONFIG_SMP
++	cpumask_t *possible_mask = &dl_local_possible_mask;
++
++	cpumask_copy(possible_mask, cpu_possible_mask);
++	for_each_cpu(cpu, possible_mask) {
++#else
+ 	for_each_possible_cpu(cpu) {
++#endif /* CONFIG_SMP */
+ 		rcu_read_lock_sched();
+ 		dl_b = dl_bw_of(cpu);
 -
--	ret = drm_dp_update_payload_part2(&mstm->mgr);
-+	drm_dp_check_act_status(&mstm->mgr);
-+	drm_dp_update_payload_part2(&mstm->mgr);
++		cpus = dl_bw_cpus(cpu);
++#ifdef CONFIG_SMP
++		/* Do the "andnot" operation iff it's necessary. */
++		if (cpus > 1)
++			cpumask_andnot(possible_mask, possible_mask,
++				       cpu_rq(cpu)->rd->span);
++#endif /* CONFIG_SMP */
+ 		raw_spin_lock_irqsave(&dl_b->lock, flags);
+-		if (new_bw < dl_b->total_bw)
++		if (new_bw * cpus < dl_b->total_bw)
+ 			ret = -EBUSY;
+ 		raw_spin_unlock_irqrestore(&dl_b->lock, flags);
+-
+ 		rcu_read_unlock_sched();
  
- 	drm_for_each_encoder(encoder, mstm->outp->base.base.dev) {
- 		if (encoder->encoder_type == DRM_MODE_ENCODER_DPMST) {
-@@ -1330,10 +1328,9 @@ nv50_mstm_prepare(struct nv50_mstm *mstm)
- {
- 	struct nouveau_drm *drm = nouveau_drm(mstm->outp->base.base.dev);
- 	struct drm_encoder *encoder;
--	int ret;
+ 		if (ret)
+@@ -2566,6 +2578,7 @@ void sched_dl_do_global(void)
+ 	struct dl_bw *dl_b;
+ 	int cpu;
+ 	unsigned long flags;
++	cpumask_t *possible_mask = NULL;
  
- 	NV_ATOMIC(drm, "%s: mstm prepare\n", mstm->outp->base.base.name);
--	ret = drm_dp_update_payload_part1(&mstm->mgr);
-+	drm_dp_update_payload_part1(&mstm->mgr);
+ 	def_dl_bandwidth.dl_period = global_rt_period();
+ 	def_dl_bandwidth.dl_runtime = global_rt_runtime();
+@@ -2573,17 +2586,21 @@ void sched_dl_do_global(void)
+ 	if (global_rt_runtime() != RUNTIME_INF)
+ 		new_bw = to_ratio(global_rt_period(), global_rt_runtime());
  
- 	drm_for_each_encoder(encoder, mstm->outp->base.base.dev) {
- 		if (encoder->encoder_type == DRM_MODE_ENCODER_DPMST) {
-diff --git a/drivers/gpu/drm/nouveau/nouveau_svm.c b/drivers/gpu/drm/nouveau/nouveau_svm.c
-index 2df1c0460559..01583e9954a2 100644
---- a/drivers/gpu/drm/nouveau/nouveau_svm.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_svm.c
-@@ -815,7 +815,6 @@ nouveau_pfns_map(struct nouveau_svmm *svmm, struct mm_struct *mm,
- 		 unsigned long addr, u64 *pfns, unsigned long npages)
- {
- 	struct nouveau_pfnmap_args *args = nouveau_pfns_to_args(pfns);
--	int ret;
+-	/*
+-	 * FIXME: As above...
+-	 */
+-	for_each_possible_cpu(cpu) {
++#ifdef CONFIG_SMP
++	possible_mask = &dl_local_possible_mask;
++	cpumask_copy(possible_mask, cpu_possible_mask);
++#endif /* CONFIG_SMP */
++	for_each_cpu(cpu, possible_mask) {
+ 		rcu_read_lock_sched();
+ 		dl_b = dl_bw_of(cpu);
  
- 	args->p.addr = addr;
- 	args->p.size = npages << PAGE_SHIFT;
-@@ -823,7 +822,7 @@ nouveau_pfns_map(struct nouveau_svmm *svmm, struct mm_struct *mm,
- 	mutex_lock(&svmm->mutex);
+ 		raw_spin_lock_irqsave(&dl_b->lock, flags);
+ 		dl_b->bw = new_bw;
+ 		raw_spin_unlock_irqrestore(&dl_b->lock, flags);
+-
++#ifdef CONFIG_SMP
++		cpumask_andnot(possible_mask, possible_mask,
++			       cpu_rq(cpu)->rd->span);
++#endif /* CONFIG_SMP */
+ 		rcu_read_unlock_sched();
+ 		init_dl_rq_bw_ratio(&cpu_rq(cpu)->dl);
+ 	}
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 28709f6b0975..2602544e06ff 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -258,9 +258,9 @@ struct rt_bandwidth {
+ void __dl_clear_params(struct task_struct *p);
  
- 	svmm->vmm->vmm.object.client->super = true;
--	ret = nvif_object_ioctl(&svmm->vmm->vmm.object, args, sizeof(*args) +
-+	nvif_object_ioctl(&svmm->vmm->vmm.object, args, sizeof(*args) +
- 				npages * sizeof(args->p.phys[0]), NULL);
- 	svmm->vmm->vmm.object.client->super = false;
- 
+ /*
+- * To keep the bandwidth of -deadline tasks and groups under control
++ * To keep the bandwidth of -deadline tasks under control
+  * we need some place where:
+- *  - store the maximum -deadline bandwidth of the system (the group);
++ *  - store the maximum -deadline bandwidth of each root domain;
+  *  - cache the fraction of that bandwidth that is currently allocated.
+  *
+  * This is all done in the data structure below. It is similar to the
+@@ -269,17 +269,10 @@ void __dl_clear_params(struct task_struct *p);
+  * do not decrease any runtime while the group "executes", neither we
+  * need a timer to replenish it.
+  *
+- * With respect to SMP, the bandwidth is given on a per-CPU basis,
++ * With respect to SMP, the bandwidth is given on a per root domain basis,
+  * meaning that:
+- *  - dl_bw (< 100%) is the bandwidth of the system (group) on each CPU;
+- *  - dl_total_bw array contains, in the i-eth element, the currently
+- *    allocated bandwidth on the i-eth CPU.
+- * Moreover, groups consume bandwidth on each CPU, while tasks only
+- * consume bandwidth on the CPU they're running on.
+- * Finally, dl_total_bw_cpu is used to cache the index of dl_total_bw
+- * that will be shown the next time the proc or cgroup controls will
+- * be red. It on its turn can be changed by writing on its own
+- * control.
++ *  - bw (< 100%) is the bandwidth of the system on each CPU;
++ *  - total_bw is the currently allocated bandwidth on each root domain.
+  */
+ struct dl_bandwidth {
+ 	raw_spinlock_t		dl_runtime_lock;
 -- 
-2.17.1
+2.20.1
 
