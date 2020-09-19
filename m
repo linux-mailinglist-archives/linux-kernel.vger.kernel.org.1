@@ -2,197 +2,326 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B18927105E
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 21:50:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7459A271062
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 21:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726680AbgISTus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 15:50:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45640 "EHLO
+        id S1726649AbgISTxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 15:53:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726511AbgISTur (ORCPT
+        with ESMTP id S1726518AbgISTxn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 15:50:47 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D4EBC0613CE;
-        Sat, 19 Sep 2020 12:50:47 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id z4so8868845wrr.4;
-        Sat, 19 Sep 2020 12:50:47 -0700 (PDT)
+        Sat, 19 Sep 2020 15:53:43 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B89F2C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 12:53:42 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id l17so9157436edq.12
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 12:53:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=JcVDmb1HHV/znVzm4kdq0UX6hTsOZELRii0JoTOZ9ew=;
-        b=iQEgzahuQCccMTCQd7xXrsKyPTXK2pBEdS21cAmowqFOsmMJkkfw9sdU5tZTskWXXM
-         /GqHvIAHM8TX/hz6B0dihWu2ltZMy4ijYtkTE9dTZfomkE4ToqU905VhYTLztoURPYJ/
-         VLkpwAg3ms774LxZcoL0Ph3LqA/dXapmwdSHD2WPvF9Qm+ObxE6u2ls+Ct3Ez+zHTveK
-         aF2paraN+HDaOGp4QMQZT+vtjjb4BUFGYV1x2ajZoxwSmonDBrdvCh0gYxf2NBJ/uOKB
-         vs7ZvUht/N8T8ifg7ZS6or2krg8DJoacW4KWrlH9ZP3btjI3Q0Ca1cvtnbu9ppy5aUWn
-         UP5g==
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qMwGB/6Q8iuh06nESVxnQhD9mhvdXzNztX0AnrMhLHo=;
+        b=Av22sauDdvg5f8PJXeQVU4ypMPuew4aeryx9oJBswTAhrJHWsVkgSte0K74F7AR5GT
+         IbrGAYZhgWen0QxSEd5Ccij1pT9wnVpFZGkFzWPglsy9z2hz4EqfIjvB3sMvyaDA2w0c
+         nL+TPQqa1eSsXRqyA6nkzEWPoMegpGQ+J/UeA1rqUiDgNqxePx/CsrwhqteSgmkswNqk
+         7dSuWWmhxQCwL3ESjeMtfWemDZYOsra4XP6FznaRG+4xGZH2V1w4W9xai+R/BnQBXi/T
+         HTy8StVIlM5ONAj0vexUroJMm37GBhGfir8cHX7bgZIr/CTD6FUDDWUiZ6dbLZIpc4c3
+         Os8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=JcVDmb1HHV/znVzm4kdq0UX6hTsOZELRii0JoTOZ9ew=;
-        b=Gx4eHYhthJ3D6itYwMjbnXQEHiVTA9L80zIEJYz8RNp7l7MA81aK35AmseFxPJy+9C
-         z6W9LrO2wjYDNFbJ+NW40dqj8eiQXn1p1KQk1FyM2QBXyM6+NMSbDH4TsVeQ/ZcyiiNf
-         WtC/FmqhKxaFusCKl8wW9lS+JvM7Hvbn0FYy36X0SsoUlU/pNotusbNonCFxurWZJ2TS
-         Eo3jXtaJSwoXrQsJyUcdsHP8Cz6xUi3sZDO7Z2EvsiFkklBmcTeA0+RjWSXxkoHzj+VW
-         cRl4xGQVcf/ae7UO1AxoTtTNpFbuIAf33OTClakkDFHX8RrTh1yzVCYVAeyEZY4djaC8
-         MXnw==
-X-Gm-Message-State: AOAM533fWZU1qzdvCfSVNiiOHnTp5jnCC2451BjvpPU4yfW17V23bs99
-        IG5M0AP4W3msUyx5ovvwpoPLXkPYYQWa7kQf
-X-Google-Smtp-Source: ABdhPJzMb1RFm1f+lZbN60pF813Rr1opTK3wLHJ6o8cnICAiVwrcfUG8feuzYKTDKSXJHnuL5gvj/w==
-X-Received: by 2002:a5d:608f:: with SMTP id w15mr21313274wrt.244.1600545045891;
-        Sat, 19 Sep 2020 12:50:45 -0700 (PDT)
-Received: from [192.168.0.18] (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id b11sm12196537wrt.38.2020.09.19.12.50.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 19 Sep 2020 12:50:45 -0700 (PDT)
-Subject: Re: [PATCH v2] staging: media: atomisp: Fix error path in
- lm3554_probe()
-To:     dan.carpenter@oracle.com
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qMwGB/6Q8iuh06nESVxnQhD9mhvdXzNztX0AnrMhLHo=;
+        b=jjuMvBnGCW2H3Z1KpotDABMd9l+RVoMshaFuRrGC+lMSA5ry09W+yYl/3WnZVKIeDQ
+         DFs6jr2VytZi0zuYPyQq28Yk8wsZC09Vm2CtLYx+wVZGvJ53HoC+D6x+js8iBFy8UgHW
+         /6eofP3JdaTAHo8hCV2FhAzLDdCXsuMv/byk5LLxuAk6NiFizTX/25ZCiFExhted2hWZ
+         2F14qMDK6YEl6vx8bk5wHWquR6u1GZlRDwz1KfcBu30Hgi/eq9GdC+jNt1FHCoyFupUM
+         ++pfjqDgZrIX9KRk4tZBBsBNfm/LtvRqksNZ2Zw2+Cl5Ib+Q4uy7um/L+BpNssXYs9uu
+         6C6A==
+X-Gm-Message-State: AOAM532Bdf3wYf2io92GhAiWSa7NwQL3np1TM9iP2EqKFBoYig2W0NkN
+        DwpuLbwQvt153Htoi4wAn58xa8WQUYH5bxgwKHk=
+X-Google-Smtp-Source: ABdhPJwl3da6h+kCC6DLGgNphfmJ0WGAOBmg2rj2XT2NbMiwRvB0yOEG972ZAybPmrRI/nyI6ETh/g==
+X-Received: by 2002:a50:bb26:: with SMTP id y35mr46674569ede.234.1600545221134;
+        Sat, 19 Sep 2020 12:53:41 -0700 (PDT)
+Received: from localhost.localdomain ([2001:16b8:5c3d:1401:6946:9f46:bd13:f4c6])
+        by smtp.gmail.com with ESMTPSA id h5sm4978881ejk.41.2020.09.19.12.53.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Sep 2020 12:53:40 -0700 (PDT)
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Tony Lindgren <tony@atomide.com>, Rob Herring <robh+dt@kernel.org>,
         Linus Walleij <linus.walleij@linaro.org>,
-        Alan Cox <alan@linux.intel.com>, linux-media@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-References: <20200903173843.GF8299@kadam>
- <20200903182502.709300-1-alex.dewar90@gmail.com>
-From:   Alex Dewar <alex.dewar90@gmail.com>
-Message-ID: <1109bb4e-ef17-0633-275f-2a279437fdc6@gmail.com>
-Date:   Sat, 19 Sep 2020 20:50:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@gmail.com>,
+        Trent Piepho <tpiepho@gmail.com>,
+        Christina Quast <cquast@hanoverdisplays.com>,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org
+Cc:     Drew Fustini <drew@beagleboard.org>
+Subject: [PATCH] ARM: dts: am335x: guardian: switch to AM33XX_PADCONF
+Date:   Sat, 19 Sep 2020 21:52:00 +0200
+Message-Id: <20200919195159.3126193-1-drew@beagleboard.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200903182502.709300-1-alex.dewar90@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-03 19:24, Alex Dewar wrote:
-> The error path for lm3554_probe() contains a number of bugs, including:
->   * resource leaks
->   * jumping to error labels out of sequence
->   * not setting the return value appropriately
-Ping?
->
-> Fix it up and give the labels more memorable names.
->
-> This issue has existed since the code was originally contributed in
-> commit a49d25364dfb ("staging/atomisp: Add support for the Intel IPU v2"),
-> although the code was subsequently removed altogether and then
-> reinstated with commit ad85094b293e ("Revert "media: staging: atomisp: Remove driver"").
->
-> Addresses-Coverity: 1496802 ("Resource leaks")
-> Fixes: a49d25364dfb ("staging/atomisp: Add support for the Intel IPU v2")
-> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
-> ---
->   .../media/atomisp/i2c/atomisp-lm3554.c        | 53 +++++++++++--------
->   1 file changed, 30 insertions(+), 23 deletions(-)
->
-> diff --git a/drivers/staging/media/atomisp/i2c/atomisp-lm3554.c b/drivers/staging/media/atomisp/i2c/atomisp-lm3554.c
-> index 7ca7378b1859..cca10a4c2db0 100644
-> --- a/drivers/staging/media/atomisp/i2c/atomisp-lm3554.c
-> +++ b/drivers/staging/media/atomisp/i2c/atomisp-lm3554.c
-> @@ -833,7 +833,6 @@ static void *lm3554_platform_data_func(struct i2c_client *client)
->   
->   static int lm3554_probe(struct i2c_client *client)
->   {
-> -	int err = 0;
->   	struct lm3554 *flash;
->   	unsigned int i;
->   	int ret;
-> @@ -843,36 +842,38 @@ static int lm3554_probe(struct i2c_client *client)
->   		return -ENOMEM;
->   
->   	flash->pdata = lm3554_platform_data_func(client);
-> -	if (IS_ERR(flash->pdata))
-> -		return PTR_ERR(flash->pdata);
-> +	if (IS_ERR(flash->pdata)) {
-> +		ret = PTR_ERR(flash->pdata);
-> +		goto err_free_flash;
-> +	}
->   
->   	v4l2_i2c_subdev_init(&flash->sd, client, &lm3554_ops);
->   	flash->sd.internal_ops = &lm3554_internal_ops;
->   	flash->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
->   	flash->mode = ATOMISP_FLASH_MODE_OFF;
->   	flash->timeout = LM3554_MAX_TIMEOUT / LM3554_TIMEOUT_STEPSIZE - 1;
-> -	ret =
-> -	    v4l2_ctrl_handler_init(&flash->ctrl_handler,
-> -				   ARRAY_SIZE(lm3554_controls));
-> +	ret = v4l2_ctrl_handler_init(&flash->ctrl_handler,
-> +				     ARRAY_SIZE(lm3554_controls));
->   	if (ret) {
-> -		dev_err(&client->dev, "error initialize a ctrl_handler.\n");
-> -		goto fail2;
-> +		dev_err(&client->dev, "error initializing ctrl_handler");
-> +		goto err_unregister_sd;
->   	}
->   
->   	for (i = 0; i < ARRAY_SIZE(lm3554_controls); i++)
->   		v4l2_ctrl_new_custom(&flash->ctrl_handler, &lm3554_controls[i],
->   				     NULL);
->   
-> -	if (flash->ctrl_handler.error) {
-> -		dev_err(&client->dev, "ctrl_handler error.\n");
-> -		goto fail2;
-> +	ret = flash->ctrl_handler.error;
-> +	if (ret) {
-> +		dev_err(&client->dev, "ctrl_handler error");
-> +		goto err_free_ctrl_handler;
->   	}
->   
->   	flash->sd.ctrl_handler = &flash->ctrl_handler;
-> -	err = media_entity_pads_init(&flash->sd.entity, 0, NULL);
-> -	if (err) {
-> -		dev_err(&client->dev, "error initialize a media entity.\n");
-> -		goto fail1;
-> +	ret = media_entity_pads_init(&flash->sd.entity, 0, NULL);
-> +	if (ret) {
-> +		dev_err(&client->dev, "error initializing media entity");
-> +		goto err_free_ctrl_handler;
->   	}
->   
->   	flash->sd.entity.function = MEDIA_ENT_F_FLASH;
-> @@ -881,20 +882,26 @@ static int lm3554_probe(struct i2c_client *client)
->   
->   	timer_setup(&flash->flash_off_delay, lm3554_flash_off_delay, 0);
->   
-> -	err = lm3554_gpio_init(client);
-> -	if (err) {
-> +	ret = lm3554_gpio_init(client);
-> +	if (ret) {
->   		dev_err(&client->dev, "gpio request/direction_output fail");
-> -		goto fail2;
-> +		goto err_del_timer;
->   	}
-> -	return atomisp_register_i2c_module(&flash->sd, NULL, LED_FLASH);
-> -fail2:
-> +
-> +	ret = atomisp_register_i2c_module(&flash->sd, NULL, LED_FLASH);
-> +	if (!ret)
-> +		return 0;
-> +
-> +err_del_timer:
-> +	del_timer_sync(&flash->flash_off_delay);
->   	media_entity_cleanup(&flash->sd.entity);
-> +err_free_ctrl_handler:
->   	v4l2_ctrl_handler_free(&flash->ctrl_handler);
-> -fail1:
-> +err_unregister_sd:
->   	v4l2_device_unregister_subdev(&flash->sd);
-> +err_free_flash:
->   	kfree(flash);
-> -
-> -	return err;
-> +	return ret;
->   }
->   
->   static int lm3554_remove(struct i2c_client *client)
+Change the pin defintions from AM33XX_IOPAD to AM33XX_PADCONF macro so
+that it correctly handles changes to #pinctrl-cells.
+
+Fixes: 27c90e5e48d0 ("ARM: dts: am33xx-l4: change #pinctrl-cells from 1 to 2")
+Reported-by: Trent Piepho <tpiepho@gmail.com>
+Link: https://lore.kernel.org/linux-omap/3139716.CMS8C0sQ7x@zen.local/
+Signed-off-by: Drew Fustini <drew@beagleboard.org>
+---
+ arch/arm/boot/dts/am335x-guardian.dts | 172 +++++++++++++-------------
+ 1 file changed, 86 insertions(+), 86 deletions(-)
+
+diff --git a/arch/arm/boot/dts/am335x-guardian.dts b/arch/arm/boot/dts/am335x-guardian.dts
+index 1918766c1f80..56c9cd674d98 100644
+--- a/arch/arm/boot/dts/am335x-guardian.dts
++++ b/arch/arm/boot/dts/am335x-guardian.dts
+@@ -339,152 +339,152 @@ &am33xx_pinmux {
+ 
+ 	clkout2_pin: pinmux_clkout2_pin {
+ 		pinctrl-single,pins = <
+-			AM33XX_IOPAD(0x9b4, PIN_OUTPUT_PULLDOWN | MUX_MODE3)
++			AM33XX_PADCONF(0x9b4, PIN_OUTPUT_PULLDOWN, MUX_MODE3)
+ 		>;
+ 	};
+ 
+ 	dmtimer7_pins: pinmux_dmtimer7_pins {
+ 		pinctrl-single,pins = <
+-			AM33XX_IOPAD(0x968, PIN_OUTPUT | MUX_MODE5)
++			AM33XX_PADCONF(0x968, PIN_OUTPUT, MUX_MODE5)
+ 		>;
+ 	};
+ 
+ 	gpio_keys_pins: pinmux_gpio_keys_pins {
+ 		pinctrl-single,pins = <
+-			AM33XX_IOPAD(0x940, PIN_INPUT | MUX_MODE7)
++			AM33XX_PADCONF(0x940, PIN_INPUT, MUX_MODE7)
+ 		>;
+ 	};
+ 
+ 	gpio_pins: pinmux_gpio_pins {
+ 		pinctrl-single,pins = <
+-			AM33XX_IOPAD(0x928, PIN_OUTPUT | MUX_MODE7)
+-			AM33XX_IOPAD(0x990, PIN_OUTPUT | MUX_MODE7)
++			AM33XX_PADCONF(0x928, PIN_OUTPUT, MUX_MODE7)
++			AM33XX_PADCONF(0x990, PIN_OUTPUT, MUX_MODE7)
+ 		>;
+ 	};
+ 
+ 	i2c0_pins: pinmux_i2c0_pins {
+ 		pinctrl-single,pins = <
+-			AM33XX_IOPAD(0x988, PIN_INPUT_PULLUP | MUX_MODE0)
+-			AM33XX_IOPAD(0x98c, PIN_INPUT_PULLUP | MUX_MODE0)
++			AM33XX_PADCONF(0x988, PIN_INPUT_PULLUP, MUX_MODE0)
++			AM33XX_PADCONF(0x98c, PIN_INPUT_PULLUP, MUX_MODE0)
+ 		>;
+ 	};
+ 
+ 	lcd_disen_pins: pinmux_lcd_disen_pins {
+ 		pinctrl-single,pins = <
+-			AM33XX_IOPAD(0x9a4, PIN_OUTPUT_PULLUP | SLEWCTRL_SLOW | MUX_MODE7)
++			AM33XX_PADCONF(0x9a4, PIN_OUTPUT_PULLUP | SLEWCTRL_SLOW, MUX_MODE7)
+ 		>;
+ 	};
+ 
+ 	lcd_pins_default: pinmux_lcd_pins_default {
+ 		pinctrl-single,pins = <
+-			AM33XX_IOPAD(0x820, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE1)
+-			AM33XX_IOPAD(0x824, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE1)
+-			AM33XX_IOPAD(0x828, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE1)
+-			AM33XX_IOPAD(0x82c, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE1)
+-			AM33XX_IOPAD(0x830, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE1)
+-			AM33XX_IOPAD(0x834, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE1)
+-			AM33XX_IOPAD(0x838, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE1)
+-			AM33XX_IOPAD(0x83c, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE1)
+-			AM33XX_IOPAD(0x8a0, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
+-			AM33XX_IOPAD(0x8a4, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
+-			AM33XX_IOPAD(0x8a8, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
+-			AM33XX_IOPAD(0x8ac, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
+-			AM33XX_IOPAD(0x8b0, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
+-			AM33XX_IOPAD(0x8b4, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
+-			AM33XX_IOPAD(0x8b8, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
+-			AM33XX_IOPAD(0x8bc, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
+-			AM33XX_IOPAD(0x8c0, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
+-			AM33XX_IOPAD(0x8c4, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
+-			AM33XX_IOPAD(0x8c8, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
+-			AM33XX_IOPAD(0x8cc, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
+-			AM33XX_IOPAD(0x8d0, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
+-			AM33XX_IOPAD(0x8d4, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
+-			AM33XX_IOPAD(0x8d8, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
+-			AM33XX_IOPAD(0x8dc, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
+-			AM33XX_IOPAD(0x8e0, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
+-			AM33XX_IOPAD(0x8e4, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
+-			AM33XX_IOPAD(0x8e8, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
+-			AM33XX_IOPAD(0x8ec, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
++			AM33XX_PADCONF(0x820, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE1)
++			AM33XX_PADCONF(0x824, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE1)
++			AM33XX_PADCONF(0x828, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE1)
++			AM33XX_PADCONF(0x82c, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE1)
++			AM33XX_PADCONF(0x830, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE1)
++			AM33XX_PADCONF(0x834, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE1)
++			AM33XX_PADCONF(0x838, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE1)
++			AM33XX_PADCONF(0x83c, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE1)
++			AM33XX_PADCONF(0x8a0, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
++			AM33XX_PADCONF(0x8a4, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
++			AM33XX_PADCONF(0x8a8, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
++			AM33XX_PADCONF(0x8ac, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
++			AM33XX_PADCONF(0x8b0, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
++			AM33XX_PADCONF(0x8b4, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
++			AM33XX_PADCONF(0x8b8, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
++			AM33XX_PADCONF(0x8bc, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
++			AM33XX_PADCONF(0x8c0, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
++			AM33XX_PADCONF(0x8c4, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
++			AM33XX_PADCONF(0x8c8, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
++			AM33XX_PADCONF(0x8cc, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
++			AM33XX_PADCONF(0x8d0, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
++			AM33XX_PADCONF(0x8d4, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
++			AM33XX_PADCONF(0x8d8, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
++			AM33XX_PADCONF(0x8dc, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
++			AM33XX_PADCONF(0x8e0, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
++			AM33XX_PADCONF(0x8e4, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
++			AM33XX_PADCONF(0x8e8, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
++			AM33XX_PADCONF(0x8ec, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
+ 		>;
+ 	};
+ 
+ 	lcd_pins_sleep: pinmux_lcd_pins_sleep {
+ 		pinctrl-single,pins = <
+-			AM33XX_IOPAD(0x8a0, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
+-			AM33XX_IOPAD(0x8a4, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
+-			AM33XX_IOPAD(0x8a8, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
+-			AM33XX_IOPAD(0x8ac, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
+-			AM33XX_IOPAD(0x8b0, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
+-			AM33XX_IOPAD(0x8b4, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
+-			AM33XX_IOPAD(0x8b8, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
+-			AM33XX_IOPAD(0x8bc, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
+-			AM33XX_IOPAD(0x8c0, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
+-			AM33XX_IOPAD(0x8c4, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
+-			AM33XX_IOPAD(0x8c8, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
+-			AM33XX_IOPAD(0x8cc, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
+-			AM33XX_IOPAD(0x8d0, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
+-			AM33XX_IOPAD(0x8d4, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
+-			AM33XX_IOPAD(0x8d8, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
+-			AM33XX_IOPAD(0x8dc, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
+-			AM33XX_IOPAD(0x8e0, PIN_INPUT_PULLDOWN | SLEWCTRL_SLOW | MUX_MODE7)
+-			AM33XX_IOPAD(0x8e4, PIN_INPUT_PULLDOWN | SLEWCTRL_SLOW | MUX_MODE7)
+-			AM33XX_IOPAD(0x8e8, PIN_INPUT_PULLDOWN | SLEWCTRL_SLOW | MUX_MODE7)
+-			AM33XX_IOPAD(0x8ec, PIN_INPUT_PULLDOWN | SLEWCTRL_SLOW | MUX_MODE7)
++			AM33XX_PADCONF(0x8a0, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
++			AM33XX_PADCONF(0x8a4, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
++			AM33XX_PADCONF(0x8a8, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
++			AM33XX_PADCONF(0x8ac, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
++			AM33XX_PADCONF(0x8b0, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
++			AM33XX_PADCONF(0x8b4, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
++			AM33XX_PADCONF(0x8b8, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
++			AM33XX_PADCONF(0x8bc, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
++			AM33XX_PADCONF(0x8c0, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
++			AM33XX_PADCONF(0x8c4, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
++			AM33XX_PADCONF(0x8c8, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
++			AM33XX_PADCONF(0x8cc, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
++			AM33XX_PADCONF(0x8d0, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
++			AM33XX_PADCONF(0x8d4, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
++			AM33XX_PADCONF(0x8d8, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
++			AM33XX_PADCONF(0x8dc, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
++			AM33XX_PADCONF(0x8e0, PIN_INPUT_PULLDOWN | SLEWCTRL_SLOW, MUX_MODE7)
++			AM33XX_PADCONF(0x8e4, PIN_INPUT_PULLDOWN | SLEWCTRL_SLOW, MUX_MODE7)
++			AM33XX_PADCONF(0x8e8, PIN_INPUT_PULLDOWN | SLEWCTRL_SLOW, MUX_MODE7)
++			AM33XX_PADCONF(0x8ec, PIN_INPUT_PULLDOWN | SLEWCTRL_SLOW, MUX_MODE7)
+ 		>;
+ 	};
+ 
+ 	leds_pins: pinmux_leds_pins {
+ 		pinctrl-single,pins = <
+-			AM33XX_IOPAD(0x868, PIN_OUTPUT | MUX_MODE7)
+-			AM33XX_IOPAD(0x86c, PIN_OUTPUT | MUX_MODE7)
++			AM33XX_PADCONF(0x868, PIN_OUTPUT, MUX_MODE7)
++			AM33XX_PADCONF(0x86c, PIN_OUTPUT, MUX_MODE7)
+ 		>;
+ 	};
+ 
+ 	mmc1_pins: pinmux_mmc1_pins {
+ 		pinctrl-single,pins = <
+-			AM33XX_IOPAD(0x8f0, PIN_INPUT_PULLUP | MUX_MODE0)
+-			AM33XX_IOPAD(0x8f4, PIN_INPUT_PULLUP | MUX_MODE0)
+-			AM33XX_IOPAD(0x8f8, PIN_INPUT_PULLUP | MUX_MODE0)
+-			AM33XX_IOPAD(0x8fc, PIN_INPUT_PULLUP | MUX_MODE0)
+-			AM33XX_IOPAD(0x900, PIN_INPUT_PULLUP | MUX_MODE0)
+-			AM33XX_IOPAD(0x904, PIN_INPUT_PULLUP | MUX_MODE0)
+-			AM33XX_IOPAD(0x960, PIN_INPUT | MUX_MODE7)
++			AM33XX_PADCONF(0x8f0, PIN_INPUT_PULLUP, MUX_MODE0)
++			AM33XX_PADCONF(0x8f4, PIN_INPUT_PULLUP, MUX_MODE0)
++			AM33XX_PADCONF(0x8f8, PIN_INPUT_PULLUP, MUX_MODE0)
++			AM33XX_PADCONF(0x8fc, PIN_INPUT_PULLUP, MUX_MODE0)
++			AM33XX_PADCONF(0x900, PIN_INPUT_PULLUP, MUX_MODE0)
++			AM33XX_PADCONF(0x904, PIN_INPUT_PULLUP, MUX_MODE0)
++			AM33XX_PADCONF(0x960, PIN_INPUT, MUX_MODE7)
+ 		>;
+ 	};
+ 
+ 	spi0_pins: pinmux_spi0_pins {
+ 		pinctrl-single,pins = <
+-			AM33XX_IOPAD(0x950, PIN_OUTPUT_PULLDOWN | MUX_MODE0)
+-			AM33XX_IOPAD(0x954, PIN_OUTPUT_PULLUP | MUX_MODE0)
+-			AM33XX_IOPAD(0x958, PIN_INPUT_PULLUP | MUX_MODE0)
+-			AM33XX_IOPAD(0x95c, PIN_OUTPUT_PULLUP | MUX_MODE0)
++			AM33XX_PADCONF(0x950, PIN_OUTPUT_PULLDOWN, MUX_MODE0)
++			AM33XX_PADCONF(0x954, PIN_OUTPUT_PULLUP, MUX_MODE0)
++			AM33XX_PADCONF(0x958, PIN_INPUT_PULLUP, MUX_MODE0)
++			AM33XX_PADCONF(0x95c, PIN_OUTPUT_PULLUP, MUX_MODE0)
+ 		>;
+ 	};
+ 
+ 	uart0_pins: pinmux_uart0_pins {
+ 		pinctrl-single,pins = <
+-			AM33XX_IOPAD(0x970, PIN_INPUT_PULLUP | MUX_MODE0)
+-			AM33XX_IOPAD(0x974, PIN_OUTPUT_PULLDOWN | MUX_MODE0)
++			AM33XX_PADCONF(0x970, PIN_INPUT_PULLUP, MUX_MODE0)
++			AM33XX_PADCONF(0x974, PIN_OUTPUT_PULLDOWN, MUX_MODE0)
+ 		>;
+ 	};
+ 
+ 	nandflash_pins: pinmux_nandflash_pins {
+ 		pinctrl-single,pins = <
+-			AM33XX_IOPAD(0x800, PIN_INPUT | MUX_MODE0)
+-			AM33XX_IOPAD(0x804, PIN_INPUT | MUX_MODE0)
+-			AM33XX_IOPAD(0x808, PIN_INPUT | MUX_MODE0)
+-			AM33XX_IOPAD(0x80c, PIN_INPUT | MUX_MODE0)
+-			AM33XX_IOPAD(0x810, PIN_INPUT | MUX_MODE0)
+-			AM33XX_IOPAD(0x814, PIN_INPUT | MUX_MODE0)
+-			AM33XX_IOPAD(0x818, PIN_INPUT | MUX_MODE0)
+-			AM33XX_IOPAD(0x81c, PIN_INPUT | MUX_MODE0)
+-			AM33XX_IOPAD(0x870, PIN_INPUT | MUX_MODE0)
+-			AM33XX_IOPAD(0x874, PIN_OUTPUT | MUX_MODE0)
+-			AM33XX_IOPAD(0x87c, PIN_OUTPUT | MUX_MODE0)
+-			AM33XX_IOPAD(0x890, PIN_OUTPUT | MUX_MODE0)
+-			AM33XX_IOPAD(0x894, PIN_OUTPUT | MUX_MODE0)
+-			AM33XX_IOPAD(0x898, PIN_OUTPUT | MUX_MODE0)
+-			AM33XX_IOPAD(0x89c, PIN_OUTPUT | MUX_MODE0)
++			AM33XX_PADCONF(0x800, PIN_INPUT, MUX_MODE0)
++			AM33XX_PADCONF(0x804, PIN_INPUT, MUX_MODE0)
++			AM33XX_PADCONF(0x808, PIN_INPUT, MUX_MODE0)
++			AM33XX_PADCONF(0x80c, PIN_INPUT, MUX_MODE0)
++			AM33XX_PADCONF(0x810, PIN_INPUT, MUX_MODE0)
++			AM33XX_PADCONF(0x814, PIN_INPUT, MUX_MODE0)
++			AM33XX_PADCONF(0x818, PIN_INPUT, MUX_MODE0)
++			AM33XX_PADCONF(0x81c, PIN_INPUT, MUX_MODE0)
++			AM33XX_PADCONF(0x870, PIN_INPUT, MUX_MODE0)
++			AM33XX_PADCONF(0x874, PIN_OUTPUT, MUX_MODE0)
++			AM33XX_PADCONF(0x87c, PIN_OUTPUT, MUX_MODE0)
++			AM33XX_PADCONF(0x890, PIN_OUTPUT, MUX_MODE0)
++			AM33XX_PADCONF(0x894, PIN_OUTPUT, MUX_MODE0)
++			AM33XX_PADCONF(0x898, PIN_OUTPUT, MUX_MODE0)
++			AM33XX_PADCONF(0x89c, PIN_OUTPUT, MUX_MODE0)
+ 		>;
+ 	};
+ };
+-- 
+2.25.1
 
