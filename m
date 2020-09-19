@@ -2,86 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B899E270ECC
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 17:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1AC1270ECE
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 17:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726583AbgISPPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 11:15:12 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:23203 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726400AbgISPPM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 11:15:12 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-119-zyhv7N-1MGiIdxBhVxCBPA-1; Sat, 19 Sep 2020 16:15:09 +0100
-X-MC-Unique: zyhv7N-1MGiIdxBhVxCBPA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Sat, 19 Sep 2020 16:15:08 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Sat, 19 Sep 2020 16:15:08 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arvind Sankar' <nivedita@alum.mit.edu>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-CC:     Matthew Wilcox <willy@infradead.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>
-Subject: RE: [GIT PULL] percpu fix for v5.9-rc6
-Thread-Topic: [GIT PULL] percpu fix for v5.9-rc6
-Thread-Index: AQHWjgyny/sE3fQBqEK1/ezS5qKpfKlwETuA
-Date:   Sat, 19 Sep 2020 15:15:08 +0000
-Message-ID: <776bcc3e3814433a8ed2c2027a2cf7c1@AcuMS.aculab.com>
-References: <20200918162305.GB25599@embeddedor>
- <CAHk-=wjH+OH08yjp=LpexkUnGp0Ogusk3WX0G7Q+Lh7Anfr21A@mail.gmail.com>
- <20200918193426.GA15213@embeddedor>
- <CAHk-=wg=vvSf3M9O1VkwyYB4D4W6XS2AHVpQn6hEQY+usWrKGg@mail.gmail.com>
- <20200918200252.GH32101@casper.infradead.org>
- <CAHk-=wiNjJGhAMBwYixwkADpNharvcuOG-AMCdii1q_Xo_Ky_A@mail.gmail.com>
- <20200918202909.GA2946008@rani.riverdale.lan>
- <CAHk-=wh-ryuY7KBNWr1n+kgQ5_CHB3-X+od-djBV4W-1kQFokA@mail.gmail.com>
- <20200918210050.GA2953017@rani.riverdale.lan>
- <CAHk-=wgyKF9vnac3mw6v-Bo5D8X-rcrkF=BsZ2jX+OveGkGgBw@mail.gmail.com>
- <20200918223957.GA2964553@rani.riverdale.lan>
-In-Reply-To: <20200918223957.GA2964553@rani.riverdale.lan>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1726572AbgISPQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 11:16:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59390 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726400AbgISPQm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Sep 2020 11:16:42 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8A3AA2098B;
+        Sat, 19 Sep 2020 15:16:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600528602;
+        bh=+y+bw6n8SN9jBc2YfWVyglQV2EMkOcqIEAz8BTxArUM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=vQ6YJwb0MAvZmQTt8VWRi/4UHGWj/sAU0vkflZggHdQKGUDh90EPecpI8sM1jkYqB
+         0nhluLmhujFq5UyPHVC+HstjGe4Kxpc4lJJHqZfYt9WwbLjKIRSfUD/R9XL+uP5EeL
+         PrA1zHzd0Akl7+4KfAU/1KsNut24RzDFs+Xt84pQ=
+Date:   Sat, 19 Sep 2020 16:16:38 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Cristian Pop <cristian.pop@analog.com>
+Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5] iio: adc: ad7768-1: Add channel label example
+Message-ID: <20200919161638.3357f266@archlinux>
+In-Reply-To: <20200919161440.2cb17583@archlinux>
+References: <20200918093356.93670-1-cristian.pop@analog.com>
+        <20200919161440.2cb17583@archlinux>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQXJ2aW5kIFNhbmthcg0KPiBTZW50OiAxOCBTZXB0ZW1iZXIgMjAyMCAyMzo0MA0KLi4N
-Cj4gT3VjaCwgb2Zmc2V0b2YoKSBhbmQgc2l6ZW9mKCkgd2lsbCBnaXZlIGRpZmZlcmVudCByZXN1
-bHRzIGluIHRoZQ0KPiBwcmVzZW5jZSBvZiBhbGlnbm1lbnQgcGFkZGluZy4NCj4gDQo+IGh0dHBz
-Oi8vZ29kYm9sdC5vcmcvei9ycW54VEsNCj4gDQo+IEkgdGhpbmssIGdyZXBwaW5nIGF0IHJhbmRv
-bSwgdGhhdCBhdCBsZWFzdCBzdHJ1Y3Qgc2NzaV92cGQgaXMgbGlrZSB0aGlzLA0KPiBzaXplIGlz
-IDI0IGJ1dCBkYXRhW10gc3RhcnRzIGF0IG9mZnNldCAyMC4NCj4gDQo+IAlzdHJ1Y3Qgc2NzaV92
-cGQgew0KPiAJCXN0cnVjdCByY3VfaGVhZAlyY3U7DQo+IAkJaW50CQlsZW47DQo+IAkJdW5zaWdu
-ZWQgY2hhcglkYXRhW107DQo+IAl9Ow0KDQpGb3IgYW5vdGhlciBzdGFuZGFyZHMgJ2JyYWluLWZh
-cnQnIGNvbnNpZGVyOg0KCXggPSBtYWxsb2Mob2Zmc2V0b2Yoc3RydWN0IHNjc2lfdnBkLCBkYXRh
-W2NvdW50XSkpOw0KDQpTaW5jZSBvZmZzZXRvZigpIGlzIGRlZmluZWQgdG8gcmV0dXJuIGEgY29t
-cGlsZS10aW1lIGNvbnN0YW50DQooaGkgTWljcm9zb2Z0KSB0aGlzIGlzIGlsbGVnYWwgdW5sZXNz
-ICdjb3VudCcgaXMgYWxzbyBhDQpjb21waWxlLXRpbWUgY29uc3RhbnQuDQooSXQgb3VnaHQgdG8g
-YmUgZGVmaW5lZCB0byBiZSBjb25zdGFudCBpZiB0aGUgZmllbGQgaXMgY29uc3RhbnQuKQ0KDQpJ
-ZiBjb3VudCA8IDQgdGhlbiAqeCA9ICp5IHdpbGwgYWxzbyB3cml0ZSBwYXN0IHRoZSBlbmQgb2Yg
-eC4NClN1Y2ggc3RydWN0dXJlIGFzc2lnbm1lbnRzIHNob3VsZCBiZSBjb21waWxlLXRpbWUgZXJy
-b3JzLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5
-IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRp
-b24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+On Sat, 19 Sep 2020 16:14:40 +0100
+Jonathan Cameron <jic23@kernel.org> wrote:
+
+> On Fri, 18 Sep 2020 12:33:56 +0300
+> Cristian Pop <cristian.pop@analog.com> wrote:
+> 
+> > This is a demo usage of new "label" attribute for channel.  
+> While I can see this is a demo in someways, I assume we also have
+> a valid usecase for doing this beyond as a demo!
+> 
+> So perhaps rephrase that intro.
+
+I also forgot to say that you also need to update the dt-bindings
+for this driver.  I've just committed a patch converting them to yaml
+so work on top of that.
+
+Thanks
+
+Jonathan
+
+> 
+> > 
+> > Signed-off-by: Cristian Pop <cristian.pop@analog.com>
+> > ---
+> > Changes in V5:
+> > Create a separate patch file for this commit
+> >  drivers/iio/adc/ad7768-1.c | 49 ++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 49 insertions(+)
+> > 
+> > diff --git a/drivers/iio/adc/ad7768-1.c b/drivers/iio/adc/ad7768-1.c
+> > index 0d132708c429..5ca9f9febb5a 100644
+> > --- a/drivers/iio/adc/ad7768-1.c
+> > +++ b/drivers/iio/adc/ad7768-1.c
+> > @@ -161,6 +161,7 @@ struct ad7768_state {
+> >  	struct completion completion;
+> >  	struct iio_trigger *trig;
+> >  	struct gpio_desc *gpio_sync_in;
+> > +	const char **labels;
+> >  	/*
+> >  	 * DMA (thus cache coherency maintenance) requires the
+> >  	 * transfer buffers to live in their own cache lines.
+> > @@ -407,6 +408,14 @@ static int ad7768_write_raw(struct iio_dev *indio_dev,
+> >  	}
+> >  }
+> >  
+> > +static int ad7768_read_label(struct iio_dev *indio_dev,
+> > +	const struct iio_chan_spec *chan, char *label)
+> > +{
+> > +	struct ad7768_state *st = iio_priv(indio_dev);
+> > +
+> > +	return sprintf(label, "%s\n", st->labels[chan->channel]);
+> > +}
+> > +
+> >  static struct attribute *ad7768_attributes[] = {
+> >  	&iio_dev_attr_sampling_frequency_available.dev_attr.attr,
+> >  	NULL
+> > @@ -420,6 +429,7 @@ static const struct iio_info ad7768_info = {
+> >  	.attrs = &ad7768_group,
+> >  	.read_raw = &ad7768_read_raw,
+> >  	.write_raw = &ad7768_write_raw,
+> > +	.read_label = ad7768_read_label,
+> >  	.debugfs_reg_access = &ad7768_reg_access,
+> >  };
+> >  
+> > @@ -538,6 +548,41 @@ static void ad7768_clk_disable(void *data)
+> >  	clk_disable_unprepare(st->mclk);
+> >  }
+> >  
+> > +static int ad7768_set_channel_label(struct iio_dev *indio_dev,
+> > +						int num_channels)
+> > +{
+> > +	struct ad7768_state *st = iio_priv(indio_dev);
+> > +	struct device *device = indio_dev->dev.parent;
+> > +	struct fwnode_handle *fwnode;
+> > +	struct fwnode_handle *child;
+> > +	const char *label;
+> > +	int crt_ch = 0;
+> > +
+> > +	st->labels = devm_kcalloc(indio_dev->dev.parent,
+> > +					num_channels,
+> > +					sizeof(**st->labels),  
+> 
+> I think that ends up being the size of a single character which isn't
+> the intent.  I assume aim is a suitable sized array of pointers to
+> strings which we will fill in later?
+> 
+> If so we can probably just use a static sized array as the maximum
+> number of channels is well constrained.  In this particular driver
+> that is 1 I think!
+
+
+> 
+> > +					GFP_KERNEL);
+> > +
+> > +	if (!st->labels)
+> > +		return -ENOMEM;
+> > +
+> > +	fwnode = dev_fwnode(device);
+> > +	fwnode_for_each_child_node(fwnode, child) {
+> > +		if (fwnode_property_read_u32(child, "reg", &crt_ch))
+> > +			continue;
+> > +
+> > +		if (crt_ch >= num_channels)
+> > +			continue;
+> > +
+> > +		if (fwnode_property_read_string(child, "label", &label))
+> > +			continue;
+> > +
+> > +		st->labels[crt_ch] = label;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >  static int ad7768_probe(struct spi_device *spi)
+> >  {
+> >  	struct ad7768_state *st;
+> > @@ -611,6 +656,10 @@ static int ad7768_probe(struct spi_device *spi)
+> >  
+> >  	init_completion(&st->completion);
+> >  
+> > +	ret = ad7768_set_channel_label(indio_dev, ARRAY_SIZE(ad7768_channels));
+> > +	if (ret)
+> > +		return ret;
+> > +
+> >  	ret = devm_request_irq(&spi->dev, spi->irq,
+> >  			       &ad7768_interrupt,
+> >  			       IRQF_TRIGGER_RISING | IRQF_ONESHOT,  
+> 
 
