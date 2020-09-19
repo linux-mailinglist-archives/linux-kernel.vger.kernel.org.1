@@ -2,119 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EA9E270EDE
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 17:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 132DF270EE2
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 17:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726552AbgISPTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 11:19:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55832 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726408AbgISPTF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 11:19:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600528743;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UbPVb1SNMbV2AieY6+SVa7sK76f4nIZ2S6J0MZz1m7s=;
-        b=UlpxXjvGWJUV13PYeWhApTYf9SWLDU9qIvQOjR1kdga5l9BDVHXoOFWVa11ZBEssp8uWaD
-        4hzW1Yqmo4BYSrbxKWSW+RhhEZpyYo2JY4kL1UtkQAKyzySv+VgnUoAi/qN2kX0z4YzL09
-        /BuknwYtx74lLPy6KQrSMco3ZO2m3N4=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-442-GHJ8CIQ_MWyBFnIIsn8yCA-1; Sat, 19 Sep 2020 11:19:02 -0400
-X-MC-Unique: GHJ8CIQ_MWyBFnIIsn8yCA-1
-Received: by mail-wr1-f72.google.com with SMTP id r16so3534318wrm.18
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 08:19:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UbPVb1SNMbV2AieY6+SVa7sK76f4nIZ2S6J0MZz1m7s=;
-        b=qNwtSenxo5WpbEGb4AjCu+2BVhwDXRZlR1/vC3p3R8DUCrS5FZhdeKMPYLwV1nrHdG
-         bPqQ+L+4PD7nrDysd9IMoBYui2Vtk5RIKRm8URz8h3g5+kzelzMAhIsJLJHqpixsKgqs
-         KXwn5nRlcPjY8RBX/QFveZCT8AysqNU8tGd0hRmq2l6KBH4eU89TM2RVEtdG5efqeUNN
-         ZcCKs/xkDS35fSWGt5BxoLk5F+V1HaI2TkmNJbhIdoMbXo4jN/LDYjy4MgikrymJTuSx
-         tdnAi+G8hwghTujN2BTM2LoOdukSqVTi7swqIesQX8iblkHjNrHCU22tTVeFl5Utv/Ve
-         Xd9Q==
-X-Gm-Message-State: AOAM533llEN4Fw9/NsrKqj9LYG3FM0RRDAZPRfNywQR/887XnGYrpNb8
-        xpgT8PvEG6HK5zZrQ9tHIBWBIE06+/YG5Pm6gbKq2OqnSH5GC4sA5b8zK2C58ZSprhP4zT1RUzp
-        73j4CLCl00jJ6NB9JgTqtnV2y
-X-Received: by 2002:a05:6000:100c:: with SMTP id a12mr46271719wrx.115.1600528740889;
-        Sat, 19 Sep 2020 08:19:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzSDC+LPueFhpaaTGv2ug0qRqfzgHwqddZt/Gb4Xtw5UXDFve1xKaVT3W11Pk7R2NFm1DhDew==
-X-Received: by 2002:a05:6000:100c:: with SMTP id a12mr46271696wrx.115.1600528740649;
-        Sat, 19 Sep 2020 08:19:00 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:b20a:b600:521c:512d? ([2001:b07:6468:f312:b20a:b600:521c:512d])
-        by smtp.gmail.com with ESMTPSA id c16sm12719465wrx.31.2020.09.19.08.18.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 19 Sep 2020 08:18:59 -0700 (PDT)
-Subject: Re: [PATCH 3/3 v4] KVM: SVM: Don't flush cache if hardware enforces
- cache coherency across encryption domains
-To:     Borislav Petkov <bp@alien8.de>,
-        Krish Sadhukhan <krish.sadhukhan@oracle.com>
-Cc:     kvm@vger.kernel.org, jmattson@google.com, tglx@linutronix.de,
-        mingo@redhat.com, x86@kernel.org, sean.j.christopherson@intel.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, joro@8bytes.org,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, hpa@zytor.com
-References: <20200917212038.5090-1-krish.sadhukhan@oracle.com>
- <20200917212038.5090-4-krish.sadhukhan@oracle.com>
- <20200918075651.GC6585@zn.tnic>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <b711fc52-0adf-1afd-61c8-ce142bff9ddb@redhat.com>
-Date:   Sat, 19 Sep 2020 17:18:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726621AbgISPTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 11:19:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34692 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726408AbgISPTp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Sep 2020 11:19:45 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D51C92098B;
+        Sat, 19 Sep 2020 15:19:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600528784;
+        bh=2jK1ssTfxonKsXGsA+rUttXem8uaqAD3aZO3hv6lPoU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HzWh81QkND0fpvLhLaPhfuWwiRnWb1REwy+KTyzP4BIq3JX2EcBo1vTRcTvcybibD
+         est5eE1jQrc62/r1CW0zeLNywMOYLaYjohOFZjJf6lTCyigck0MqcS233xf0Z2wNHH
+         SqWry9cB+Ecx5n3nZ22muk9rYkfCpBKhV87WOnV4=
+Date:   Sat, 19 Sep 2020 16:19:39 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     <linux-iio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kgene@kernel.org>,
+        <krzk@kernel.org>, Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+Subject: Re: [PATCH v2] iio: adc: exynos_adc: Replace indio_dev->mlock with
+ own device lock
+Message-ID: <20200919161939.374bac95@archlinux>
+In-Reply-To: <20200916093123.78954-1-alexandru.ardelean@analog.com>
+References: <20200826132203.236748-1-alexandru.ardelean@analog.com>
+        <20200916093123.78954-1-alexandru.ardelean@analog.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200918075651.GC6585@zn.tnic>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/09/20 09:56, Borislav Petkov wrote:
-> On Thu, Sep 17, 2020 at 09:20:38PM +0000, Krish Sadhukhan wrote:
->> In some hardware implementations, coherency between the encrypted and
->> unencrypted mappings of the same physical page in a VM is enforced. In such a
->> system, it is not required for software to flush the VM's page from all CPU
->> caches in the system prior to changing the value of the C-bit for the page.
->>
->> Signed-off-by: Krish Sadhukhan <krish.sadhukhan@oracle.com>
->> ---
->>  arch/x86/kvm/svm/sev.c | 3 ++-
->>  1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
->> index 7bf7bf734979..3c9a45efdd4d 100644
->> --- a/arch/x86/kvm/svm/sev.c
->> +++ b/arch/x86/kvm/svm/sev.c
->> @@ -384,7 +384,8 @@ static void sev_clflush_pages(struct page *pages[], unsigned long npages)
->>  	uint8_t *page_virtual;
->>  	unsigned long i;
->>  
->> -	if (npages == 0 || pages == NULL)
->> +	if (this_cpu_has(X86_FEATURE_SME_COHERENT) || npages == 0 ||
->> +	    pages == NULL)
->>  		return;
->>  
->>  	for (i = 0; i < npages; i++) {
->> -- 
-> 
-> Took the first two, Paolo lemme know if I should route this one through
-> tip too.
-> 
-> Thx.
-> 
+On Wed, 16 Sep 2020 12:31:23 +0300
+Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
 
-Yeah, it's innocuous enough as far as conflicts are concerned.
+> From: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+> 
+> As part of the general cleanup of indio_dev->mlock, this change replaces
+> it with a local lock, to protect potential concurrent access to the
+> completion callback during a conversion.
+> 
+> This is part of a bigger cleanup.
+> Link: https://lore.kernel.org/linux-iio/CA+U=Dsoo6YABe5ODLp+eFNPGFDjk5ZeQEceGkqjxXcVEhLWubw@mail.gmail.com/
+> 
+> Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Signed-off-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Applied to the togreg branch of iio.git and pushed out as testing for the
+autobuilders to play with it.
 
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+Thanks,
 
-Paolo
+Jonathan
+
+> ---
+>  drivers/iio/adc/exynos_adc.c | 20 ++++++++++++++++----
+>  1 file changed, 16 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/exynos_adc.c b/drivers/iio/adc/exynos_adc.c
+> index 20477b249f2a..99f4404e9fd1 100644
+> --- a/drivers/iio/adc/exynos_adc.c
+> +++ b/drivers/iio/adc/exynos_adc.c
+> @@ -138,6 +138,16 @@ struct exynos_adc {
+>  	bool			read_ts;
+>  	u32			ts_x;
+>  	u32			ts_y;
+> +
+> +	/*
+> +	 * Lock to protect from potential concurrent access to the
+> +	 * completion callback during a manual conversion. For this driver
+> +	 * a wait-callback is used to wait for the conversion result,
+> +	 * so in the meantime no other read request (or conversion start)
+> +	 * must be performed, otherwise it would interfere with the
+> +	 * current conversion result.
+> +	 */
+> +	struct mutex		lock;
+>  };
+>  
+>  struct exynos_adc_data {
+> @@ -542,7 +552,7 @@ static int exynos_read_raw(struct iio_dev *indio_dev,
+>  		return -EINVAL;
+>  	}
+>  
+> -	mutex_lock(&indio_dev->mlock);
+> +	mutex_lock(&info->lock);
+>  	reinit_completion(&info->completion);
+>  
+>  	/* Select the channel to be used and Trigger conversion */
+> @@ -562,7 +572,7 @@ static int exynos_read_raw(struct iio_dev *indio_dev,
+>  		ret = IIO_VAL_INT;
+>  	}
+>  
+> -	mutex_unlock(&indio_dev->mlock);
+> +	mutex_unlock(&info->lock);
+>  
+>  	return ret;
+>  }
+> @@ -573,7 +583,7 @@ static int exynos_read_s3c64xx_ts(struct iio_dev *indio_dev, int *x, int *y)
+>  	unsigned long timeout;
+>  	int ret;
+>  
+> -	mutex_lock(&indio_dev->mlock);
+> +	mutex_lock(&info->lock);
+>  	info->read_ts = true;
+>  
+>  	reinit_completion(&info->completion);
+> @@ -598,7 +608,7 @@ static int exynos_read_s3c64xx_ts(struct iio_dev *indio_dev, int *x, int *y)
+>  	}
+>  
+>  	info->read_ts = false;
+> -	mutex_unlock(&indio_dev->mlock);
+> +	mutex_unlock(&info->lock);
+>  
+>  	return ret;
+>  }
+> @@ -868,6 +878,8 @@ static int exynos_adc_probe(struct platform_device *pdev)
+>  	indio_dev->channels = exynos_adc_iio_channels;
+>  	indio_dev->num_channels = info->data->num_channels;
+>  
+> +	mutex_init(&info->lock);
+> +
+>  	ret = request_irq(info->irq, exynos_adc_isr,
+>  					0, dev_name(&pdev->dev), info);
+>  	if (ret < 0) {
 
