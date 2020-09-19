@@ -2,221 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75EC1270DA7
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 13:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E78DC270DAA
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 13:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726411AbgISLkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 07:40:01 -0400
-Received: from out28-123.mail.aliyun.com ([115.124.28.123]:45892 "EHLO
-        out28-123.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726097AbgISLkA (ORCPT
+        id S1726218AbgISLnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 07:43:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726097AbgISLnM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 07:40:00 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07437983|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.211489-0.000369664-0.788142;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03294;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=12;RT=12;SR=0;TI=SMTPD_---.IZIG6YS_1600515567;
-Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.IZIG6YS_1600515567)
-          by smtp.aliyun-inc.com(10.147.40.7);
-          Sat, 19 Sep 2020 19:39:55 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     robh+dt@kernel.org, tsbogend@alpha.franken.de, paul@crapouillou.net
-Cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
-        zhenwenjin@gmail.com
-Subject: [PATCH 1/1] MIPS: Ingenic: Add CPU nodes for Ingenic SoCs.
-Date:   Sat, 19 Sep 2020 19:38:59 +0800
-Message-Id: <20200919113859.88566-2-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200919113859.88566-1-zhouyanjie@wanyeetech.com>
-References: <20200919113859.88566-1-zhouyanjie@wanyeetech.com>
+        Sat, 19 Sep 2020 07:43:12 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3F5CC0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 04:43:11 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id t10so8117691wrv.1
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 04:43:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=aZ1Xg9xu87AJbKRQeqyi2KGzZRXOlNHypsuQaTggL7M=;
+        b=O3rcuuptNIi6Grt+CnxIUHZyxSWPP9lZISX+0CiGIGpKCdBmMtzhfhqcDhYRAiXVRk
+         /Jm6xtStN8ayYUTdrSTSa/kMI9KBNfJvvS9tvY0apynEO9HNJU0XWlIyCFA2uoYCqIl5
+         ZM9rFly1ajeqb2LV99nZPYFeKZxw2aZAlOFOC0jy7XhwynZdz/qqiXn+eo9in8D8CbGp
+         Us21RkmTgEkTG9huHTAlf76z3PnaoxfpxwECflfPd101KEIq2Pzo/coTg+kfB+HHDgVW
+         jSlThh9T2BF9gHoJTzGm/mCkCV/9jRg1WvmJlnINx1aQLNA/h6EznyYxTxocIazVkU6p
+         XdIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aZ1Xg9xu87AJbKRQeqyi2KGzZRXOlNHypsuQaTggL7M=;
+        b=I5opsk7boMHi9PflXTb4VRfMJY7qNHpUeSmaOm9Xopu6gML+cXTz26kL7+6r9KRVI/
+         xQgAMTVrN7XTv3Ql832cBMuDgcXVywmu12eaakb1iDQOQ6rh/DLtqFftoaEDoWLj2E4/
+         Msm7VLDbxvt/4AkR2nj4yobUV9sgIleDBFwWDQxwTvu1nSIweI9+LcuRllS94g4doyxz
+         KMc9K0TjTWZWDMcwVnCuBnt48Q16bcNk9mLO5vKr2jI3/+pJJyXLSGBgrQqK12v4YAWJ
+         oO1MfQnfVy/tkoVv0MxbreeEI7CiGPGSaR/JZUue31G+MTd4D4mKr1Q4RKevWgsYJrXM
+         K3gQ==
+X-Gm-Message-State: AOAM5306KjAGtEW4nK8xjIlJRcz3XR8Bs+/49k0OZatmvvnJ8bXPxjJF
+        UfUdyyJ6BnL6lO/bv7ZtIoVGXPVK2V06DA==
+X-Google-Smtp-Source: ABdhPJxxDCQGtTX077DT0dkDppRm85GvwwtV0yU6McX0Fq5XFSd14UJn1U1pNT9VABMX+oO2mlZ4vQ==
+X-Received: by 2002:a05:6000:151:: with SMTP id r17mr41907468wrx.311.1600515790377;
+        Sat, 19 Sep 2020 04:43:10 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:9142:20e7:201d:cd11? ([2a01:e34:ed2f:f020:9142:20e7:201d:cd11])
+        by smtp.googlemail.com with ESMTPSA id d13sm10772599wrp.44.2020.09.19.04.43.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 19 Sep 2020 04:43:09 -0700 (PDT)
+Subject: Re: [PATCH v3 9/9] dt-bindings: sp804: add support for Hisilicon
+ sp804 timer
+To:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Haojian Zhuang <haojian.zhuang@linaro.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Cc:     Libin <huawei.libin@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Jianguo Chen <chenjianguo3@huawei.com>
+References: <20200918132237.3552-1-thunder.leizhen@huawei.com>
+ <20200918132237.3552-10-thunder.leizhen@huawei.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <89edf87e-099a-85c2-6259-de60c0a84608@linaro.org>
+Date:   Sat, 19 Sep 2020 13:43:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20200918132237.3552-10-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add 'cpus' node to the jz4725b.dtsi, jz4740.dtsi, jz4770.dtsi,
-jz4780.dtsi, x1000.dtsi, and x1830.dtsi files.
+On 18/09/2020 15:22, Zhen Lei wrote:
+> Some Hisilicon SoCs, such as Hi1212, use the Hisilicon extended sp804
+> timer.
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
 
-Tested-by: H. Nikolaus Schaller <hns@goldelico.com>
-Tested-by: Paul Boddie <paul@boddie.org.uk>
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
----
- arch/mips/boot/dts/ingenic/jz4725b.dtsi | 14 ++++++++++++++
- arch/mips/boot/dts/ingenic/jz4740.dtsi  | 14 ++++++++++++++
- arch/mips/boot/dts/ingenic/jz4770.dtsi  | 15 ++++++++++++++-
- arch/mips/boot/dts/ingenic/jz4780.dtsi  | 23 +++++++++++++++++++++++
- arch/mips/boot/dts/ingenic/x1000.dtsi   | 14 ++++++++++++++
- arch/mips/boot/dts/ingenic/x1830.dtsi   | 14 ++++++++++++++
- 6 files changed, 93 insertions(+), 1 deletion(-)
+I'm not able to apply this patch, the file does not exists.
 
-diff --git a/arch/mips/boot/dts/ingenic/jz4725b.dtsi b/arch/mips/boot/dts/ingenic/jz4725b.dtsi
-index a8fca560878d..a1f0b71c9223 100644
---- a/arch/mips/boot/dts/ingenic/jz4725b.dtsi
-+++ b/arch/mips/boot/dts/ingenic/jz4725b.dtsi
-@@ -7,6 +7,20 @@
- 	#size-cells = <1>;
- 	compatible = "ingenic,jz4725b";
- 
-+	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		cpu0: cpu@0 {
-+			device_type = "cpu";
-+			compatible = "ingenic,xburst-mxu1.0";
-+			reg = <0>;
-+
-+			clocks = <&cgu JZ4725B_CLK_CCLK>;
-+			clock-names = "cpu";
-+		};
-+	};
-+
- 	cpuintc: interrupt-controller {
- 		#address-cells = <0>;
- 		#interrupt-cells = <1>;
-diff --git a/arch/mips/boot/dts/ingenic/jz4740.dtsi b/arch/mips/boot/dts/ingenic/jz4740.dtsi
-index 1520585c235c..eee523678ce5 100644
---- a/arch/mips/boot/dts/ingenic/jz4740.dtsi
-+++ b/arch/mips/boot/dts/ingenic/jz4740.dtsi
-@@ -7,6 +7,20 @@
- 	#size-cells = <1>;
- 	compatible = "ingenic,jz4740";
- 
-+	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		cpu0: cpu@0 {
-+			device_type = "cpu";
-+			compatible = "ingenic,xburst-mxu1.0";
-+			reg = <0>;
-+
-+			clocks = <&cgu JZ4740_CLK_CCLK>;
-+			clock-names = "cpu";
-+		};
-+	};
-+
- 	cpuintc: interrupt-controller {
- 		#address-cells = <0>;
- 		#interrupt-cells = <1>;
-diff --git a/arch/mips/boot/dts/ingenic/jz4770.dtsi b/arch/mips/boot/dts/ingenic/jz4770.dtsi
-index fa11ac950499..018721a9eea9 100644
---- a/arch/mips/boot/dts/ingenic/jz4770.dtsi
-+++ b/arch/mips/boot/dts/ingenic/jz4770.dtsi
-@@ -1,5 +1,4 @@
- // SPDX-License-Identifier: GPL-2.0
--
- #include <dt-bindings/clock/jz4770-cgu.h>
- #include <dt-bindings/clock/ingenic,tcu.h>
- 
-@@ -8,6 +7,20 @@
- 	#size-cells = <1>;
- 	compatible = "ingenic,jz4770";
- 
-+	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		cpu0: cpu@0 {
-+			device_type = "cpu";
-+			compatible = "ingenic,xburst-fpu1.0-mxu1.1";
-+			reg = <0>;
-+
-+			clocks = <&cgu JZ4770_CLK_CCLK>;
-+			clock-names = "cpu";
-+		};
-+	};
-+
- 	cpuintc: interrupt-controller {
- 		#address-cells = <0>;
- 		#interrupt-cells = <1>;
-diff --git a/arch/mips/boot/dts/ingenic/jz4780.dtsi b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-index b7f409a7cf5d..dfb5a7e1bb21 100644
---- a/arch/mips/boot/dts/ingenic/jz4780.dtsi
-+++ b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-@@ -8,6 +8,29 @@
- 	#size-cells = <1>;
- 	compatible = "ingenic,jz4780";
- 
-+	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		cpu0: cpu@0 {
-+			device_type = "cpu";
-+			compatible = "ingenic,xburst-fpu1.0-mxu1.1";
-+			reg = <0>;
-+
-+			clocks = <&cgu JZ4780_CLK_CPU>;
-+			clock-names = "cpu";
-+		};
-+
-+		cpu1: cpu@1 {
-+			device_type = "cpu";
-+			compatible = "ingenic,xburst-fpu1.0-mxu1.1";
-+			reg = <1>;
-+
-+			clocks = <&cgu JZ4780_CLK_CORE1>;
-+			clock-names = "cpu";
-+		};
-+	};
-+
- 	cpuintc: interrupt-controller {
- 		#address-cells = <0>;
- 		#interrupt-cells = <1>;
-diff --git a/arch/mips/boot/dts/ingenic/x1000.dtsi b/arch/mips/boot/dts/ingenic/x1000.dtsi
-index 9de9e7c2d523..1f1f896dd1f7 100644
---- a/arch/mips/boot/dts/ingenic/x1000.dtsi
-+++ b/arch/mips/boot/dts/ingenic/x1000.dtsi
-@@ -8,6 +8,20 @@
- 	#size-cells = <1>;
- 	compatible = "ingenic,x1000", "ingenic,x1000e";
- 
-+	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		cpu0: cpu@0 {
-+			device_type = "cpu";
-+			compatible = "ingenic,xburst-fpu1.0-mxu1.1";
-+			reg = <0>;
-+
-+			clocks = <&cgu X1000_CLK_CPU>;
-+			clock-names = "cpu";
-+		};
-+	};
-+
- 	cpuintc: interrupt-controller {
- 		#address-cells = <0>;
- 		#interrupt-cells = <1>;
-diff --git a/arch/mips/boot/dts/ingenic/x1830.dtsi b/arch/mips/boot/dts/ingenic/x1830.dtsi
-index eb1214481a33..b05dac3ae308 100644
---- a/arch/mips/boot/dts/ingenic/x1830.dtsi
-+++ b/arch/mips/boot/dts/ingenic/x1830.dtsi
-@@ -8,6 +8,20 @@
- 	#size-cells = <1>;
- 	compatible = "ingenic,x1830";
- 
-+	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		cpu0: cpu@0 {
-+			device_type = "cpu";
-+			compatible = "ingenic,xburst-fpu2.0-mxu2.0";
-+			reg = <0>;
-+
-+			clocks = <&cgu X1830_CLK_CPU>;
-+			clock-names = "cpu";
-+		};
-+	};
-+
- 	cpuintc: interrupt-controller {
- 		#address-cells = <0>;
- 		#interrupt-cells = <1>;
+
 -- 
-2.11.0
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
