@@ -2,122 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33F4C27106D
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 22:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7528F271070
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 22:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726660AbgISUKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 16:10:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48652 "EHLO
+        id S1726653AbgISURq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 16:17:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726520AbgISUKX (ORCPT
+        with ESMTP id S1726511AbgISURq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 16:10:23 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 646D9C0613D0
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 13:10:23 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id r7so12519219ejs.11
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 13:10:23 -0700 (PDT)
+        Sat, 19 Sep 2020 16:17:46 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15035C0613CE;
+        Sat, 19 Sep 2020 13:17:46 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id k8so5734093pfk.2;
+        Sat, 19 Sep 2020 13:17:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bIUgrI9VvUV3joqrWL0lDga1yejUz0t72Nx3sYu9s5I=;
-        b=L9ZNoEf+xu48ppvnblmZrK2nJchaz2vEmWMEwk0swPeneNBWwlEvhh9K2LRJ4HX/Lr
-         yaLd88oTJthtaQqxoTU6Bpq9MompSoGcLiUcNpIfeAA00igj+XiDykYLeLV/Jw8j1hhS
-         INZQvLR3KlU5Mz4ouanoPhPkOE8DEebpwgHK1I4PX/UKjaA9eUPZ+znYNIZ1yQpacRBA
-         0HOeF7HiDNqgNDI2rcBXnSTaJk5w+fymuI/a9RBVIXTu7CcWALUG5FTdeATk0vZ2Ud7H
-         bROaU33aeRXMmpNvS74rrEVYF/PP54F9jib8fsmGcXYMFfhRBbqJE69KatbCAS7mm5Y+
-         RIbw==
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=nufqMxRxzBynEUzPSmKE11m5kNg4+eB3mixf5Nnih4E=;
+        b=dswyVVpWzVbiP2kS5AD/QD8cHzI45lM/MxkySFRQSVYmP2C8cVcZnsoIUHMkeP0p6/
+         NlTrTAXVIQGKSljeVEQhU+rnZwZ3C/3m2dB4u56v+olo8gfT5B9MdaXdKTVwCBBXSfso
+         d5Z4wDdJJBRlamEyPm/YjKSiZ8yioEkioxLfq+AigV1SPZ/xhfZr0jOIVyYzat9wDWYC
+         51w3q3tm5bQ7RG8qzu+7WpdTHbkb0eyDyFpKSEapx3qUPx39/PPaLOEEJuICYPy02oWM
+         UnjgNwiJitmwsUd5YiujlNl9YLxZIOY8BPW9NDqyDoHD3//eqchZuhpJIFz3Tx97SysN
+         eKpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bIUgrI9VvUV3joqrWL0lDga1yejUz0t72Nx3sYu9s5I=;
-        b=nMJPcAii/Vblx/hCbbJRu7mc6A4516Bd8YG3RJWnluc1Lf9QoyxKfjb5HG5RR2r75M
-         sXJtzWOaYLd6cDF/Ku/6lijopKjEaTWJDDErthYE4nSLCcimZLaRMCV0eknZ9oRZE/iU
-         fV3AtFOrCsoYvjON4JrTVKWrPd0cm0sfNrgR+D6kdqGbgoMcpP3+xaWnhiCZDBovbrXI
-         gnhreYZyVX6CLmmeBDEfLtAP2r/zJnCLkJz6NAEOb3zulX50hqw+6JqQL/RABPDH7/V6
-         yamUjR/S272y+3CnLG0aq2vzwnome7Isf1G6evpGUke+8QJ61tec5iMq8UmvzID5KHfp
-         dYMg==
-X-Gm-Message-State: AOAM530BaWCGTIlp9N3KgNFBWQQH6AbAi4rW1QukgIRrDOYR6TFDJrnp
-        GYOfv3EY/pF3V9kshgz2i/5/8w==
-X-Google-Smtp-Source: ABdhPJyXNqZQicq1ULAO60r8L8+AZhDK5qSHeRWT+5a8VqRkbjyQ+aQHZc7zHY/Lxi8bZlOvg+97sQ==
-X-Received: by 2002:a17:906:4553:: with SMTP id s19mr41341473ejq.475.1600546220782;
-        Sat, 19 Sep 2020 13:10:20 -0700 (PDT)
-Received: from localhost.localdomain ([2001:16b8:5c3d:1401:6946:9f46:bd13:f4c6])
-        by smtp.gmail.com with ESMTPSA id ks21sm5008761ejb.63.2020.09.19.13.10.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Sep 2020 13:10:19 -0700 (PDT)
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Tony Lindgren <tony@atomide.com>, Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@gmail.com>,
-        Trent Piepho <tpiepho@gmail.com>,
-        Christina Quast <cquast@hanoverdisplays.com>,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org
-Cc:     Drew Fustini <drew@beagleboard.org>
-Subject: [PATCH v2] ARM: dts: document pinctrl-single,pins when #pinctrl-cells = 2
-Date:   Sat, 19 Sep 2020 22:08:37 +0200
-Message-Id: <20200919200836.3218536-1-drew@beagleboard.org>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=nufqMxRxzBynEUzPSmKE11m5kNg4+eB3mixf5Nnih4E=;
+        b=L7q3f+lVdQWz5koVnjAq++F2J045zwW+UsnLWFb2cdoChW+tdV9g2b7PeM4nG+OdqA
+         0WVyNt7Ssad8I2VFRgattaVfuMbenElb2M/sCD7nL/F96amVb413wNm0LVg/aVRVtUU1
+         pJhuXPep9Adfd/UPkSyAFUUqyHmERBVH/MoZ627oVBdLRoPIOjJTP5AROPohdLhWq8D0
+         drNLTPK3ipjC+bjKsOcI9iPWCfeWK5ba9KM4y1uKhNWoorlh0+nSnJTfGNUURNObHY68
+         /zRSynaIk22FZq1M0hk3hR5CqAuDxCv5uoUn0AXQ3JsRylWCgjvE5HZhEwGZCu/7XY9s
+         UNyQ==
+X-Gm-Message-State: AOAM532ORsq3/aD383vrB/oD9QGONCSOLttvFL78oT3KQyns55nMvScT
+        i3nsadjXVV57YNGdX8ndoPEmRmUWhO3FMTvfj+A=
+X-Google-Smtp-Source: ABdhPJwmaLvMmQ0FhJwwhvT/7QRl99Kv7dcwIDpJdJkJ/7+mObcFcvLUIlKkLC9FIB3sn+NWTWMmwg==
+X-Received: by 2002:aa7:8aca:0:b029:13e:d13d:a07d with SMTP id b10-20020aa78aca0000b029013ed13da07dmr37930221pfd.20.1600546664624;
+        Sat, 19 Sep 2020 13:17:44 -0700 (PDT)
+Received: from [192.168.0.104] ([49.207.212.24])
+        by smtp.gmail.com with ESMTPSA id d20sm6371822pjv.39.2020.09.19.13.17.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 19 Sep 2020 13:17:43 -0700 (PDT)
+Subject: Re: [Linux-kernel-mentees] [PATCH] fs: fix KMSAN uninit-value bug by
+ initializing nd in do_file_open_root
+From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     Eric Biggers <ebiggers@kernel.org>, linux-fsdevel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+4191a44ad556eacc1a7a@syzkaller.appspotmail.com,
+        linux-kernel@vger.kernel.org
+References: <20200916052657.18683-1-anant.thazhemadam@gmail.com>
+ <20200916054157.GC825@sol.localdomain>
+ <20200917002238.GO3421308@ZenIV.linux.org.uk>
+ <20200919144451.GF2712238@kroah.com>
+ <20200919161727.GG3421308@ZenIV.linux.org.uk>
+ <20200919165558.GH3421308@ZenIV.linux.org.uk>
+ <26d881e5-f68a-b3b7-4cb0-04a3c6c384ac@gmail.com>
+Message-ID: <e8b218d4-e64a-ac0a-ea53-567d07a58f42@gmail.com>
+Date:   Sun, 20 Sep 2020 01:47:39 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
+In-Reply-To: <26d881e5-f68a-b3b7-4cb0-04a3c6c384ac@gmail.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the values in pinctrl-single,pins when #pinctrl-cells = <2>
 
-Fixes: 27c90e5e48d0 ("ARM: dts: am33xx-l4: change #pinctrl-cells from 1 to 2")
-Reported-by: Trent Piepho <tpiepho@gmail.com>
-Link: https://lore.kernel.org/linux-omap/3139716.CMS8C0sQ7x@zen.local/
-Signed-off-by: Drew Fustini <drew@beagleboard.org>
----
-v2 change:
-- rephrase to make it clear that the pin conf value and pin mux value
-  are OR'd together with #pinctrl-cells = <2>
+On 19-09-2020 17:03, Anant Thazhemadam wrote:
+> On 19-09-2020 22:25, Al Viro wrote:
+>> On Sat, Sep 19, 2020 at 05:17:27PM +0100, Al Viro wrote:
+>>
+>>> Lovely...  That would get an empty path and non-directory for a starting
+>>> point, but it should end up with LAST_ROOT in nd->last_type.  Which should
+>>> not be able to reach the readers of those fields...  Which kernel had
+>>> that been on?
+>> Yecchhh...  I see what's going on; I suspect that this ought to be enough.
+>> Folks, could somebody test it on the original reproducer setup?
+> Sure. I can do that.
 
+Looks like this patch actually fixes this bug.
+I made syzbot test the patch, and no issues were triggered!
 
- .../bindings/pinctrl/pinctrl-single.txt       | 21 ++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
+Note:    syzbot tested the patch with the KMSAN kernel, which
+was recently rebased on v5.9-rc4.
 
-diff --git a/Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt b/Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt
-index e705acd3612c..f903eb4471f8 100644
---- a/Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt
-+++ b/Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt
-@@ -94,16 +94,23 @@ pinctrl-single,bit-per-mux is set), and uses the common pinctrl bindings as
- specified in the pinctrl-bindings.txt document in this directory.
- 
- The pin configuration nodes for pinctrl-single are specified as pinctrl
--register offset and value pairs using pinctrl-single,pins. Only the bits
--specified in pinctrl-single,function-mask are updated. For example, setting
--a pin for a device could be done with:
-+register offset and values using pinctrl-single,pins. Only the bits specified
-+in pinctrl-single,function-mask are updated.
-+
-+When #pinctrl-cells = 1, then setting a pin for a device could be done with:
- 
- 	pinctrl-single,pins = <0xdc 0x118>;
- 
--Where 0xdc is the offset from the pinctrl register base address for the
--device pinctrl register, and 0x118 contains the desired value of the
--pinctrl register. See the device example and static board pins example
--below for more information.
-+Where 0xdc is the offset from the pinctrl register base address for the device
-+pinctrl register, and 0x118 contains the desired value of the pinctrl register.
-+
-+When #pinctrl-cells = 2, then setting a pin for a device could be done with:
-+
-+	pinctrl-single,pins = <0xdc 0x30 0x07>;
-+
-+Where 0x30 is the pin configuration value and 0x07 is the pin mux mode value.
-+These two values are OR'd together to produce the value stored at offset 0xdc.
-+See the device example and static board pins example below for more information.
- 
- In case when one register changes more than one pin's mux the
- pinctrl-single,bits need to be used which takes three parameters:
--- 
-2.25.1
+Thanks,
+Anant
 
