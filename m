@@ -2,65 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83CBE270A07
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 04:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6E80270A06
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 04:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726104AbgISC0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 22:26:51 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:54786 "EHLO huawei.com"
+        id S1726174AbgISC0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 22:26:46 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:54728 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726112AbgISC0r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 22:26:47 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id B3A9FAAE83476303B3A4;
-        Sat, 19 Sep 2020 10:26:45 +0800 (CST)
-Received: from [127.0.0.1] (10.74.185.4) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Sat, 19 Sep 2020
- 10:26:35 +0800
-Subject: Re: [PATCH] vt: fix some doc warnings in vt.c
-To:     Jiri Slaby <jirislaby@kernel.org>, <gregkh@linuxfoundation.org>,
-        <nico@fluxnic.net>, <linux-kernel@vger.kernel.org>
-References: <1600415225-17736-1-git-send-email-tanxiaofei@huawei.com>
- <f03ee775-8a49-f1d0-b28b-73489f5b8be2@kernel.org>
-CC:     <linuxarm@huawei.com>
-From:   Xiaofei Tan <tanxiaofei@huawei.com>
-Message-ID: <5F656C5B.9050106@huawei.com>
-Date:   Sat, 19 Sep 2020 10:26:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.5.1
+        id S1726054AbgISC0q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 22:26:46 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 90745AFC71EE37155C7E;
+        Sat, 19 Sep 2020 10:26:43 +0800 (CST)
+Received: from [10.174.176.211] (10.174.176.211) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 19 Sep 2020 10:26:39 +0800
+Subject: Re: [PATCH -next] tty: serial: imx: fix link error with
+ CONFIG_SERIAL_CORE_CONSOLE=n
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200918091305.3822598-1-yangyingliang@huawei.com>
+ <20200918111658.GB2242974@kroah.com>
+From:   Yang Yingliang <yangyingliang@huawei.com>
+Message-ID: <d39572f9-2f18-384e-ebc2-21a046c5986f@huawei.com>
+Date:   Sat, 19 Sep 2020 10:26:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <f03ee775-8a49-f1d0-b28b-73489f5b8be2@kernel.org>
-Content-Type: text/plain; charset="iso-8859-2"
+In-Reply-To: <20200918111658.GB2242974@kroah.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.185.4]
+Content-Language: en-US
+X-Originating-IP: [10.174.176.211]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+Hi,
 
-On 2020/9/18 15:52, Jiri Slaby wrote:
-> On 18. 09. 20, 9:47, Xiaofei Tan wrote:
->> Fix following warnings caused by mismatch bewteen function parameters
->> and comments.
->> drivers/tty/vt/vt.c:3994: warning: Function parameter or member 'vc' not described in 'con_debug_enter'
->> drivers/tty/vt/vt.c:3994: warning: Excess function parameter 'sw' description in 'con_debug_enter'
->> drivers/tty/vt/vt.c:4051: warning: Excess function parameter 'sw' description in 'con_debug_leave'
-> 
-> It looks like I fixed those in
-> https://lore.kernel.org/r/20200818085655.12071-6-jslaby@suse.cz
-> too. Could you rebase on the top of tty-next?
-> 
+On 2020/9/18 19:16, Greg KH wrote:
+> On Fri, Sep 18, 2020 at 05:13:05PM +0800, Yang Yingliang wrote:
+>> Fix the link error by selecting SERIAL_CORE_CONSOLE.
+>>
+>> aarch64-linux-gnu-ld: drivers/tty/serial/imx_earlycon.o: in function `imx_uart_console_early_write':
+>> imx_earlycon.c:(.text+0x84): undefined reference to `uart_console_write'
+>>
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+>> ---
+>>   drivers/tty/serial/Kconfig | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+>> index 9631ccf43378..1044fc387691 100644
+>> --- a/drivers/tty/serial/Kconfig
+>> +++ b/drivers/tty/serial/Kconfig
+>> @@ -521,6 +521,7 @@ config SERIAL_IMX_EARLYCON
+>>   	depends on ARCH_MXC || COMPILE_TEST
+>>   	depends on OF
+>>   	select SERIAL_EARLYCON
+>> +	select SERIAL_CORE_CONSOLE
+>>   	help
+>>   	  If you have enabled the earlycon on the Freescale IMX
+>>   	  CPU you can make it the earlycon by answering Y to this option.
+>> -- 
+>> 2.25.1
+>>
+> What caused this build error to start happening?  Any pointers to the
+> specific commit?
 
-Oh, yes, I used a different branch.
-Thanks for your remind.
+It's start from 699cc4dfd140 ("tty: serial: imx: add imx earlycon 
+driver"), the driver
 
+uses the uart_console_write(), but SERIAL_CORE_CONSOLE is not selected, 
+so uart_console_write
 
+is not defined, then we get the error.
+
+>
 > thanks,
-> 
-
--- 
- thanks
-tanxiaofei
-
+>
+> greg k-h
+> .
