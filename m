@@ -2,100 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C5A270D03
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 12:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B85270D0B
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 12:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726298AbgISK3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 06:29:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43360 "EHLO
+        id S1726269AbgISKf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 06:35:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726041AbgISK3o (ORCPT
+        with ESMTP id S1726159AbgISKf1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 06:29:44 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76AF3C0613CE;
-        Sat, 19 Sep 2020 03:29:44 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id a2so6334111ybj.2;
-        Sat, 19 Sep 2020 03:29:44 -0700 (PDT)
+        Sat, 19 Sep 2020 06:35:27 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D8E9C0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 03:35:27 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id u25so7844111otq.6
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 03:35:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=ffwll.ch; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=bgc4Ern0Y0Q1ekxGlfi+TnuTO0VX/iOSAV2OpCNNyMs=;
-        b=nccB+YiePPbuyj+5ZX/P31lqlS0RkmlZUl3LaCjZdI/rJQhi8FvjABo6zKrvRlGtVH
-         ObwKkLGgsWjaTRkFTW4Ka9/AlTwD0Y7Z4azpfWs0wDSW2dthCqcXSAoOZdmons9tFnmS
-         9aZOW6MBh1NcLh7mDp5MpZx2AB+od4LLmN+om2ITGbq0Ghro/lP+JQfWFnYwDaESGky5
-         jFVto0WOOwCMOCBhJxxkezxgM27lOv6XdxzYYJH8vO8K0w59pEqWc49fqmOUXpe/VGUF
-         jlH+6d94QbtNFAPS2ggNV7Qc2hdh5ALtvI9gLqNBQCO61OTz6fRyBnLkH4h/LRX4yWrw
-         8W4A==
+        bh=el+Z1rLUwIg0Lo19W7bciojCg78mYjD/sa8mCUQGhXg=;
+        b=EVzELTGqNpOCv+xxoHTDIB+JfH6R+bJea1X1ICZfYUUSwyVqtWZK8FGT/+012CWynI
+         JZJ90/eXttC7sXGHMV6vVDJiFkkgzC9M1+Jr+djbqhC9yIsLWNmlmHNtqfOJm783H4QN
+         20i+/s03YOHbsQdMI48ii5Hoj/X8m7lQJqJ4w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=bgc4Ern0Y0Q1ekxGlfi+TnuTO0VX/iOSAV2OpCNNyMs=;
-        b=f2Ebt2b2q7QuWIlsv6OR5yptzCI+WDSGGSd9npu/RK8K+AgFC3QwvKnd6PHytLc/+F
-         pjT03gOltvMQoXCOrXlc5tWiTtVV0YHhNgZZmzwbXFoYTWRRGfiwysM98ixvd5TFbc3t
-         GA265DqxTVF5rHZvBf1k40AwQMB1cdZ/cuJ3WQCjbK4xsmXoR2rKXJ9KF68tiPXHBNFp
-         KMAmvHQqGb/V+YZoTS30EK3hNFcvHOItwkUXsYsLsQHSg9a+SscIAQeMwkaFiQgpPRPT
-         4D33TpRRkWuSzET9YDkNfcBR2ZrmglY+YcMmwiOtdRqNHDPcqejS/It+6wplUb00Vnmh
-         vLoQ==
-X-Gm-Message-State: AOAM53129YQ89np3FHKCOYwfVlDtSM3QGy/NbNZtiCgi2Y0R4tmg7bVT
-        IWwci3UKXFbmxV6L9pKi/Gx9xevGKxbgDlCswQE=
-X-Google-Smtp-Source: ABdhPJyk1tFrKk24g/oNjpsj259VACkd1z7im4SfhTwP2PQVQpraTXlTs1/jNW9RSKfXKPQK2rl7mDzlWKdiOwtNF3w=
-X-Received: by 2002:a25:e811:: with SMTP id k17mr45524041ybd.401.1600511383079;
- Sat, 19 Sep 2020 03:29:43 -0700 (PDT)
+        bh=el+Z1rLUwIg0Lo19W7bciojCg78mYjD/sa8mCUQGhXg=;
+        b=D1ZZFM4diDUZLcP2KpHh6+QEEyKx0l6Sn0OJ6xfA3AODPZ3878uBHLzyYhROug5Gw8
+         LKy7xIpZsBEadoTq69iQxoLL1R0mmsb4X1NkKJzgpbca+iZJCGYNjPP4stnBbbWMyMWx
+         wopr/eIuuE56pRqTSCahyMaN97N9R+h39eezygzdgy+c0zTwW3Br8ZsxPRTWnD0HjESH
+         kCOPVJB6XJ1925NS1MJrJTdl/sdocToAsOsqCH6ZLirx0D/amYCL+gbVD4qIgI75QXbn
+         kiMgb9PRfW/m8KSFZi/zikuaFdAODgat2PNzpBcxaTq4fv9QkxXUQLBvIpwHDPed8OLZ
+         lqCw==
+X-Gm-Message-State: AOAM530asI/O1gWo8bJOWOcDRtnAHvUy/xOAL+6sKqTEKwv9KOXu27wQ
+        xp7m6Oayk6dyv69loszs7tn4Qu6qlF/hSMot5g2P7A==
+X-Google-Smtp-Source: ABdhPJxt+kM+c4sGqm0VngBIRvBEF3eOuAoLdZF9ShbveHjPXujfxmRvD8dORjLp/h2eldKD21rGXbvHdOMaT6H1ALo=
+X-Received: by 2002:a05:6830:1e56:: with SMTP id e22mr24822187otj.303.1600511726492;
+ Sat, 19 Sep 2020 03:35:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200827153041.27806-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20200827153041.27806-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Sat, 19 Sep 2020 11:29:17 +0100
-Message-ID: <CA+V-a8tYK4k=NQmmt-jfU6_xuLtZf=GCRMsT1dX30K_3GVBcNw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] dt-bindings: can: document R8A774E1
-To:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-can@vger.kernel.org,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20200919091751.011116649@linutronix.de>
+In-Reply-To: <20200919091751.011116649@linutronix.de>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Sat, 19 Sep 2020 12:35:15 +0200
+Message-ID: <CAKMK7uHTVJL2jGtCg61zG=myiF1BSk+yDdRYikcm-Mq_1TQWMQ@mail.gmail.com>
+Subject: Re: [patch RFC 00/15] mm/highmem: Provide a preemptible variant of
+ kmap_atomic & friends
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "open list:GENERIC INCLUDE/A..." <linux-arch@vger.kernel.org>,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Paul McKenney <paulmck@kernel.org>, X86 ML <x86@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        arcml <linux-snps-arc@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
+        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wolfgang, Marc, David,
+On Sat, Sep 19, 2020 at 11:50 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> First of all, sorry for the horribly big Cc list!
+>
+> Following up to the discussion in:
+>
+>   https://lore.kernel.org/r/20200914204209.256266093@linutronix.de
+>
+> this provides a preemptible variant of kmap_atomic & related
+> interfaces. This is achieved by:
+>
+>  - Consolidating all kmap atomic implementations in generic code
+>
+>  - Switching from per CPU storage of the kmap index to a per task storage
+>
+>  - Adding a pteval array to the per task storage which contains the ptevals
+>    of the currently active temporary kmaps
+>
+>  - Adding context switch code which checks whether the outgoing or the
+>    incoming task has active temporary kmaps. If so, the outgoing task's
+>    kmaps are removed and the incoming task's kmaps are restored.
+>
+>  - Adding new interfaces k[un]map_temporary*() which are not disabling
+>    preemption and can be called from any context (except NMI).
+>
+>    Contrary to kmap() which provides preemptible and "persistant" mappings,
+>    these interfaces are meant to replace the temporary mappings provided by
+>    kmap_atomic*() today.
+>
+> This allows to get rid of conditional mapping choices and allows to have
+> preemptible short term mappings on 64bit which are today enforced to be
+> non-preemptible due to the highmem constraints. It clearly puts overhead on
+> the highmem users, but highmem is slow anyway.
+>
+> This is not a wholesale conversion which makes kmap_atomic magically
+> preemptible because there might be usage sites which rely on the implicit
+> preempt disable. So this needs to be done on a case by case basis and the
+> call sites converted to kmap_temporary.
+>
+> Note, that this is only lightly tested on X86 and completely untested on
+> all other architectures.
+>
+> The lot is also available from
+>
+>    git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git highmem
 
-On Thu, Aug 27, 2020 at 4:30 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
->
-> Hi All,
->
-> Both the patches are part of series [1] (patch 18/20, 19/20),
-> rest of the patches have been acked/merged so just sending
-> two patches from the series.
->
-> [1] https://lkml.org/lkml/2020/7/15/515
->
-> Cheers,
-> Prabhakar
->
-> Changes for v2:
-> * Added R8A774E1 to the list of SoCs that can use CANFD through "clkp2".
-> * Added R8A774E1 to the list of SoCs that can use the CANFD clock.
->
-> Lad Prabhakar (2):
->   dt-bindings: can: rcar_canfd: Document r8a774e1 support
->   dt-bindings: can: rcar_can: Document r8a774e1 support
->
->  Documentation/devicetree/bindings/net/can/rcar_can.txt   | 5 +++--
->  Documentation/devicetree/bindings/net/can/rcar_canfd.txt | 5 +++--
->  2 files changed, 6 insertions(+), 4 deletions(-)
->
-Could either of you pick these patches please.
+I think it should be the case, but I want to double check: Will
+copy_*_user be allowed within a kmap_temporary section? This would
+allow us to ditch an absolute pile of slowpaths.
+-Daniel
 
-Cheers,
-Prabhakar
+>
+> Thanks,
+>
+>         tglx
+> ---
+>  a/arch/arm/mm/highmem.c               |  121 ---------------------
+>  a/arch/microblaze/mm/highmem.c        |   78 -------------
+>  a/arch/nds32/mm/highmem.c             |   48 --------
+>  a/arch/powerpc/mm/highmem.c           |   67 -----------
+>  a/arch/sparc/mm/highmem.c             |  115 --------------------
+>  arch/arc/Kconfig                      |    1
+>  arch/arc/include/asm/highmem.h        |    8 +
+>  arch/arc/mm/highmem.c                 |   44 -------
+>  arch/arm/Kconfig                      |    1
+>  arch/arm/include/asm/highmem.h        |   30 +++--
+>  arch/arm/mm/Makefile                  |    1
+>  arch/csky/Kconfig                     |    1
+>  arch/csky/include/asm/highmem.h       |    4
+>  arch/csky/mm/highmem.c                |   75 -------------
+>  arch/microblaze/Kconfig               |    1
+>  arch/microblaze/include/asm/highmem.h |    6 -
+>  arch/microblaze/mm/Makefile           |    1
+>  arch/microblaze/mm/init.c             |    6 -
+>  arch/mips/Kconfig                     |    1
+>  arch/mips/include/asm/highmem.h       |    4
+>  arch/mips/mm/highmem.c                |   77 -------------
+>  arch/mips/mm/init.c                   |    3
+>  arch/nds32/Kconfig.cpu                |    1
+>  arch/nds32/include/asm/highmem.h      |   21 ++-
+>  arch/nds32/mm/Makefile                |    1
+>  arch/powerpc/Kconfig                  |    1
+>  arch/powerpc/include/asm/highmem.h    |    6 -
+>  arch/powerpc/mm/Makefile              |    1
+>  arch/powerpc/mm/mem.c                 |    7 -
+>  arch/sparc/Kconfig                    |    1
+>  arch/sparc/include/asm/highmem.h      |    7 -
+>  arch/sparc/mm/Makefile                |    3
+>  arch/sparc/mm/srmmu.c                 |    2
+>  arch/x86/include/asm/fixmap.h         |    1
+>  arch/x86/include/asm/highmem.h        |   12 +-
+>  arch/x86/include/asm/iomap.h          |   29 +++--
+>  arch/x86/mm/highmem_32.c              |   59 ----------
+>  arch/x86/mm/init_32.c                 |   15 --
+>  arch/x86/mm/iomap_32.c                |   57 ----------
+>  arch/xtensa/Kconfig                   |    1
+>  arch/xtensa/include/asm/highmem.h     |    9 +
+>  arch/xtensa/mm/highmem.c              |   44 -------
+>  b/arch/x86/Kconfig                    |    3
+>  include/linux/highmem.h               |  141 +++++++++++++++---------
+>  include/linux/io-mapping.h            |    2
+>  include/linux/sched.h                 |    9 +
+>  kernel/sched/core.c                   |   10 +
+>  mm/Kconfig                            |    3
+>  mm/highmem.c                          |  192 ++++++++++++++++++++++++++++++++--
+>  49 files changed, 422 insertions(+), 909 deletions(-)
+
+
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
