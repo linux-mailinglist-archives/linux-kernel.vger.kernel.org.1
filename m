@@ -2,106 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD1F270F08
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 17:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C3A270F05
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 17:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbgISPcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 11:32:01 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:50523 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726491AbgISPcA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 11:32:00 -0400
-X-Greylist: delayed 303 seconds by postgrey-1.27 at vger.kernel.org; Sat, 19 Sep 2020 11:31:58 EDT
-X-UUID: cd6e87128bfa48b7ab029e7556ad1be4-20200919
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=IrIcNVhFVMWRbTHiVNPXL4VIQ4/x908yIeAq6qk9Ekc=;
-        b=AkC4jDUGvMpB3L53ZdH1ue0FGSgGFs0n4j/r6cPjzBdoxCITafuHL1+KZakmoORsWbVBlIBD+Z+jxGoFMGRMt3JL8uVKSby43kwv/ZBVGx9o7SRkI4MdleN8ZkXPUF3oVHclKUJDTfdCQial5DRmFTjC0CrOqxeEsQbfCpWVeAQ=;
-X-UUID: cd6e87128bfa48b7ab029e7556ad1be4-20200919
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
-        (envelope-from <yingjoe.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1990299331; Sat, 19 Sep 2020 23:26:52 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sat, 19 Sep 2020 23:26:50 +0800
-Received: from [172.21.77.4] (172.21.77.4) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 19 Sep 2020 23:26:42 +0800
-Message-ID: <1600529204.7002.0.camel@mtksdaap41>
-Subject: Re: [PATCH v2 4/5] spi: spi-mtk-nor: support 36bit dma addressing
- to mediatek
-From:   Yingjoe Chen <yingjoe.chen@mediatek.com>
-To:     Ikjoon Jang <ikjn@chromium.org>
-CC:     Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Date:   Sat, 19 Sep 2020 23:26:44 +0800
-In-Reply-To: <20200918162834.v2.4.Id1cb208392928afc7ceed4de06924243c7858cd0@changeid>
-References: <20200918083124.3921207-1-ikjn@chromium.org>
-         <20200918162834.v2.4.Id1cb208392928afc7ceed4de06924243c7858cd0@changeid>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S1726597AbgISPbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 11:31:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47940 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726491AbgISPbl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Sep 2020 11:31:41 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B0D302098B;
+        Sat, 19 Sep 2020 15:31:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600529501;
+        bh=Qohrf9BpoBZlJjpmOfnoyBggZccjSte4L1IkpPdEpwU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=e/aYfBvruQqkyRy9IScjqMSBrv3EGchdrqaBA9d2uosaBsMjSGGc+fUljN8ki4hsh
+         QPrxI+zmiGdUdky2tsHk8hZbIzk/t7nT5zOp/vEph2FCmQA4O+fLDhir0jRRr49Q34
+         WhzVAsJuze/leLHb78+xH6JCm7kqw+ejRXEVv2Y8=
+Date:   Sat, 19 Sep 2020 16:31:36 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     trix@redhat.com, Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald <pmeerw@pmeerw.net>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] iio: imu: st_lsm6dsx: check st_lsm6dsx_shub_read_output
+ return
+Message-ID: <20200919163136.4a201207@archlinux>
+In-Reply-To: <CAHp75Vcomp1mDUm5houAm2j2b2HtxAP8Z78Vfcdmgm_g+bbt7w@mail.gmail.com>
+References: <20200809175551.6794-1-trix@redhat.com>
+        <CAHp75Vcomp1mDUm5houAm2j2b2HtxAP8Z78Vfcdmgm_g+bbt7w@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 46E17E8B4D077AB8C9950FBED0B79A5B30E2719458EBEF71FDC429C6B020E84F2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIwLTA5LTE4IGF0IDE2OjMxICswODAwLCBJa2pvb24gSmFuZyB3cm90ZToNCj4g
-VGhpcyBwYXRjaCBlbmFibGVzIDM2Yml0IGRtYSBhZGRyZXNzIHN1cHBvcnQgdG8gc3BpLW10ay1u
-b3IuDQo+IEN1cnJlbnRseSAzNmJpdCBkbWEgYWRkcmVzc2luZyBpcyBlbmFibGVkIG9ubHkgZm9y
-IG10ODE5Mi1ub3IuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBJa2pvb24gSmFuZyA8aWtqbkBjaHJv
-bWl1bS5vcmc+DQo+IC0tLQ0KPiANCj4gKG5vIGNoYW5nZXMgc2luY2UgdjEpDQo+IA0KPiAgZHJp
-dmVycy9zcGkvc3BpLW10ay1ub3IuYyB8IDE5ICsrKysrKysrKysrKysrKysrKy0NCj4gIDEgZmls
-ZSBjaGFuZ2VkLCAxOCBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+IA0KPiBkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9zcGkvc3BpLW10ay1ub3IuYyBiL2RyaXZlcnMvc3BpL3NwaS1tdGstbm9y
-LmMNCj4gaW5kZXggZTE0Nzk4YTZlN2QwLi45OWRkNWRjYTc0NGUgMTAwNjQ0DQo+IC0tLSBhL2Ry
-aXZlcnMvc3BpL3NwaS1tdGstbm9yLmMNCj4gKysrIGIvZHJpdmVycy9zcGkvc3BpLW10ay1ub3Iu
-Yw0KPiBAQCAtNzgsNiArNzgsOCBAQA0KPiAgI2RlZmluZSBNVEtfTk9SX1JFR19ETUFfRkFEUgkJ
-MHg3MWMNCj4gICNkZWZpbmUgTVRLX05PUl9SRUdfRE1BX0RBRFIJCTB4NzIwDQo+ICAjZGVmaW5l
-IE1US19OT1JfUkVHX0RNQV9FTkRfREFEUgkweDcyNA0KPiArI2RlZmluZSBNVEtfTk9SX1JFR19E
-TUFfREFEUl9IQgkJMHg3MzgNCj4gKyNkZWZpbmUgTVRLX05PUl9SRUdfRE1BX0VORF9EQURSX0hC
-CTB4NzNjDQo+ICANCj4gICNkZWZpbmUgTVRLX05PUl9QUkdfTUFYX1NJWkUJCTYNCj4gIC8vIFJl
-YWRpbmcgRE1BIHNyYy9kc3QgYWRkcmVzc2VzIGhhdmUgdG8gYmUgMTYtYnl0ZSBhbGlnbmVkDQo+
-IEBAIC0xMDIsNiArMTA0LDcgQEAgc3RydWN0IG10a19ub3Igew0KPiAgCXVuc2lnbmVkIGludCBz
-cGlfZnJlcTsNCj4gIAlib29sIHdidWZfZW47DQo+ICAJYm9vbCBoYXNfaXJxOw0KPiArCWJvb2wg
-aGlnaF9kbWE7DQo+ICAJc3RydWN0IGNvbXBsZXRpb24gb3BfZG9uZTsNCj4gIH07DQo+ICANCj4g
-QEAgLTI5MSw2ICsyOTQsMTEgQEAgc3RhdGljIGludCByZWFkX2RtYShzdHJ1Y3QgbXRrX25vciAq
-c3AsIHUzMiBmcm9tLCB1bnNpZ25lZCBpbnQgbGVuZ3RoLA0KPiAgCXdyaXRlbChkbWFfYWRkciwg
-c3AtPmJhc2UgKyBNVEtfTk9SX1JFR19ETUFfREFEUik7DQo+ICAJd3JpdGVsKGRtYV9hZGRyICsg
-bGVuZ3RoLCBzcC0+YmFzZSArIE1US19OT1JfUkVHX0RNQV9FTkRfREFEUik7DQo+ICANCj4gKwlp
-ZiAoc3AtPmhpZ2hfZG1hKSB7DQo+ICsJCXdyaXRlbChkbWFfYWRkciA+PiAzMiwgc3AtPmJhc2Ug
-KyBNVEtfTk9SX1JFR19ETUFfREFEUl9IQik7DQo+ICsJCXdyaXRlbCgoZG1hX2FkZHIgKyBsZW5n
-dGgpID4+IDMyLCBzcC0+YmFzZSArIE1US19OT1JfUkVHX0RNQV9FTkRfREFEUl9IQik7DQo+ICsJ
-fQ0KPiArDQo+ICAJaWYgKHNwLT5oYXNfaXJxKSB7DQo+ICAJCXJlaW5pdF9jb21wbGV0aW9uKCZz
-cC0+b3BfZG9uZSk7DQo+ICAJCW10a19ub3Jfcm13KHNwLCBNVEtfTk9SX1JFR19JUlFfRU4sIE1U
-S19OT1JfSVJRX0RNQSwgMCk7DQo+IEBAIC01OTQsNyArNjAyLDggQEAgc3RhdGljIGNvbnN0IHN0
-cnVjdCBzcGlfY29udHJvbGxlcl9tZW1fb3BzIG10a19ub3JfbWVtX29wcyA9IHsNCj4gIH07DQo+
-ICANCj4gIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkIG10a19ub3JfbWF0Y2hbXSA9
-IHsNCj4gLQl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE3My1ub3IiIH0sDQo+ICsJeyAu
-Y29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxOTItbm9yIiwgLmRhdGEgPSAodm9pZCAqKTM2IH0s
-DQo+ICsJeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxNzMtbm9yIiwgLmRhdGEgPSAodm9p
-ZCAqKTMyIH0sDQo+ICAJeyAvKiBzZW50aW5lbCAqLyB9DQo+ICB9Ow0KPiAgTU9EVUxFX0RFVklD
-RV9UQUJMRShvZiwgbXRrX25vcl9tYXRjaCk7DQo+IEBAIC02MDcsNiArNjE2LDcgQEAgc3RhdGlj
-IGludCBtdGtfbm9yX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQo+ICAJdTgg
-KmJ1ZmZlcjsNCj4gIAlzdHJ1Y3QgY2xrICpzcGlfY2xrLCAqY3Rscl9jbGs7DQo+ICAJaW50IHJl
-dCwgaXJxOw0KPiArCXVuc2lnbmVkIGxvbmcgZG1hX2JpdHM7DQo+ICANCj4gIAliYXNlID0gZGV2
-bV9wbGF0Zm9ybV9pb3JlbWFwX3Jlc291cmNlKHBkZXYsIDApOw0KPiAgCWlmIChJU19FUlIoYmFz
-ZSkpDQo+IEBAIC02MjMsNiArNjMzLDEzIEBAIHN0YXRpYyBpbnQgbXRrX25vcl9wcm9iZShzdHJ1
-Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiAgCWJ1ZmZlciA9IGRldm1fa21hbGxvYygmcGRl
-di0+ZGV2LA0KPiAgCQkJICAgICAgTVRLX05PUl9CT1VOQ0VfQlVGX1NJWkUgKyBNVEtfTk9SX0RN
-QV9BTElHTiwNCj4gIAkJCSAgICAgIEdGUF9LRVJORUwpOw0KPiArDQo+ICsJZG1hX2JpdHMgPSAo
-dW5zaWduZWQgbG9uZylvZl9kZXZpY2VfZ2V0X21hdGNoX2RhdGEoJnBkZXYtPmRldik7DQo+ICsJ
-aWYgKGRtYV9zZXRfbWFza19hbmRfY29oZXJlbnQoJnBkZXYtPmRldiwgRE1BX0JJVF9NQVNLKGRt
-YV9iaXRzKSkpIHsNCj4gKwkJZGV2X2VycigmcGRldi0+ZGV2LCAiZmFpbGVkIHRvIHNldCBkbWEg
-bWFzayglbHUpXG4iLCBkbWFfYml0cyk7DQo+ICsJCXJldHVybiAtRUlOVkFMOw0KPiArCX0NCj4g
-Kw0KDQpEbyB3ZSBuZWVkIHRvIHNldCBzcC0+aGlnaF9kbWEgd2hlbiB3ZSBoYXZlID4zMmJpdHMg
-RE1BPw0KDQpKb2UuQw0K
+On Mon, 10 Aug 2020 11:08:39 +0300
+Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+
+> On Sun, Aug 9, 2020 at 8:56 PM <trix@redhat.com> wrote:
+> >
+> > From: Tom Rix <trix@redhat.com>
+> >
+> > clang static analysis reports this represenative problem
+> >
+> > st_lsm6dsx_shub.c:540:8: warning: Assigned value is garbage or undefined
+> >         *val = (s16)le16_to_cpu(*((__le16 *)data));
+> >              ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >
+> > data is set with
+> >
+> >         err = st_lsm6dsx_shub_read(sensor, ch->address, data, len);
+> >         if (err < 0)
+> >                 return err;
+> >
+> > The problem with st_lsm6dsx_shub_read() is this statement
+> >
+> >         err = st_lsm6dsx_shub_read_output(hw, data,
+> >                                           len & ST_LS6DSX_READ_OP_MASK);
+> >
+> > The err value is never checked.
+> > So check err.
+> >  
+> 
+> 
+> > Fixes: c91c1c844ebd ("iio: imu: st_lsm6dsx: add i2c embedded controller support")
+> >
+> > Signed-off-by: Tom Rix <trix@redhat.com>  
+> 
+> You see, the commit message can be divided to three sections
+> 
+> 1. Title / very short description
+> 2. Detailed description
+> 3. Tag block
+> 
+> Each of them has some specific rules:
+> 1. One quite short line prefixed by subsystem / driver in the
+> specified format (usually gathered by reading git log against the
+> module in question)
+> 2. Should explain why this change is done
+> 3. Should be one tag -- one line, no blank lines in between.
+> 
+> Hope, you will use this in the future.
+> 
+> After addressing that (perhaps Jonathan will do it for you)
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Description adjusted and patch applied.  Given timing in cycle
+I've queued this for the next merge window rather than trying to
+get it in during this cycle.
+
+Applied to the togreg branch of iio.git and pushed out as testing for
+the autobuilders to see if we missed anything.
+
+thanks,
+
+Jonathan
+
+> 
+> > ---
+> >  drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_shub.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_shub.c b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_shub.c
+> > index ed83471dc7dd..8c8d8870ca07 100644
+> > --- a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_shub.c
+> > +++ b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_shub.c
+> > @@ -313,6 +313,8 @@ st_lsm6dsx_shub_read(struct st_lsm6dsx_sensor *sensor, u8 addr,
+> >
+> >         err = st_lsm6dsx_shub_read_output(hw, data,
+> >                                           len & ST_LS6DSX_READ_OP_MASK);
+> > +       if (err < 0)
+> > +               return err;
+> >
+> >         st_lsm6dsx_shub_master_enable(sensor, false);
+> >
+> > --
+> > 2.18.1
+> >  
+> 
+> 
 
