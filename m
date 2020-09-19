@@ -2,111 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D93EA2709FA
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 04:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38AD1270A01
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 04:19:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726267AbgISCPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 22:15:33 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:44392 "EHLO huawei.com"
+        id S1726322AbgISCTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 22:19:51 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13315 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726009AbgISCPd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 22:15:33 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id A10CE5A7B70B5E082F60;
-        Sat, 19 Sep 2020 10:15:31 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 19 Sep 2020 10:15:21 +0800
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Joshua Morris <josh.h.morris@us.ibm.com>,
-        Philip Kelleher <pjk1939@linux.ibm.com>,
-        Jens Axboe <axboe@kernel.dk>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Qinglang Miao" <miaoqinglang@huawei.com>
-Subject: [PATCH -next v2] rsxx: Convert to DEFINE_SHOW_ATTRIBUTE
-Date:   Sat, 19 Sep 2020 10:15:52 +0800
-Message-ID: <20200919021552.189712-1-miaoqinglang@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726119AbgISCTv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 22:19:51 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 8FA2BE34F52534EADD74;
+        Sat, 19 Sep 2020 10:19:49 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 19 Sep 2020 10:19:38 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <linmiaohe@huawei.com>,
+        <martin.varghese@nokia.com>, <fw@strlen.de>, <edumazet@google.com>,
+        <dcaratti@redhat.com>, <steffen.klassert@secunet.com>,
+        <pabeni@redhat.com>, <kyk.segfault@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>
+Subject: [PATCH net-next] net: hns3: remove unnecessary NULL checking in napi_consume_skb()
+Date:   Sat, 19 Sep 2020 10:16:06 +0800
+Message-ID: <1600481766-46158-1-git-send-email-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
+When budget is non-zero, skb_unref() has already handled the
+NULL checking.
 
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+When budget is zero, the dev_consume_skb_any() has handled NULL
+checking in __dev_kfree_skb_irq(), or dev_kfree_skb() which also
+ultimately call skb_unref().
+
+So remove the unnecessary checking in napi_consume_skb().
+
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
 ---
-v2: based on linux-next(20200917), and can be applied to
-    mainline cleanly now.
+ net/core/skbuff.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
- drivers/block/rsxx/core.c | 31 ++++---------------------------
- 1 file changed, 4 insertions(+), 27 deletions(-)
-
-diff --git a/drivers/block/rsxx/core.c b/drivers/block/rsxx/core.c
-index 8799e3bab..7d580965f 100644
---- a/drivers/block/rsxx/core.c
-+++ b/drivers/block/rsxx/core.c
-@@ -150,16 +150,6 @@ static int rsxx_attr_stats_show(struct seq_file *m, void *p)
- 	return 0;
- }
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index bfd7483..e077447 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -895,9 +895,6 @@ void __kfree_skb_defer(struct sk_buff *skb)
  
--static int rsxx_attr_stats_open(struct inode *inode, struct file *file)
--{
--	return single_open(file, rsxx_attr_stats_show, inode->i_private);
--}
--
--static int rsxx_attr_pci_regs_open(struct inode *inode, struct file *file)
--{
--	return single_open(file, rsxx_attr_pci_regs_show, inode->i_private);
--}
--
- static ssize_t rsxx_cram_read(struct file *fp, char __user *ubuf,
- 			      size_t cnt, loff_t *ppos)
+ void napi_consume_skb(struct sk_buff *skb, int budget)
  {
-@@ -206,21 +196,8 @@ static const struct file_operations debugfs_cram_fops = {
- 	.write		= rsxx_cram_write,
- };
- 
--static const struct file_operations debugfs_stats_fops = {
--	.owner		= THIS_MODULE,
--	.open		= rsxx_attr_stats_open,
--	.read		= seq_read,
--	.llseek		= seq_lseek,
--	.release	= single_release,
--};
+-	if (unlikely(!skb))
+-		return;
 -
--static const struct file_operations debugfs_pci_regs_fops = {
--	.owner		= THIS_MODULE,
--	.open		= rsxx_attr_pci_regs_open,
--	.read		= seq_read,
--	.llseek		= seq_lseek,
--	.release	= single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(rsxx_attr_stats);
-+DEFINE_SHOW_ATTRIBUTE(rsxx_attr_pci_regs);
- 
- static void rsxx_debugfs_dev_new(struct rsxx_cardinfo *card)
- {
-@@ -234,13 +211,13 @@ static void rsxx_debugfs_dev_new(struct rsxx_cardinfo *card)
- 
- 	debugfs_stats = debugfs_create_file("stats", 0444,
- 					    card->debugfs_dir, card,
--					    &debugfs_stats_fops);
-+					    &rsxx_attr_stats_fops);
- 	if (IS_ERR_OR_NULL(debugfs_stats))
- 		goto failed_debugfs_stats;
- 
- 	debugfs_pci_regs = debugfs_create_file("pci_regs", 0444,
- 					       card->debugfs_dir, card,
--					       &debugfs_pci_regs_fops);
-+					       &rsxx_attr_pci_regs_fops);
- 	if (IS_ERR_OR_NULL(debugfs_pci_regs))
- 		goto failed_debugfs_pci_regs;
- 
+ 	/* Zero budget indicate non-NAPI context called us, like netpoll */
+ 	if (unlikely(!budget)) {
+ 		dev_consume_skb_any(skb);
 -- 
-2.23.0
+2.8.1
 
