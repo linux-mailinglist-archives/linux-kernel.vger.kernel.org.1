@@ -2,419 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 688F6270EFB
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 17:29:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28720270F03
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 17:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726678AbgISP3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 11:29:03 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:13670 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726609AbgISP2x (ORCPT
+        id S1726660AbgISPaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 11:30:21 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:40892 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726580AbgISPaV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 11:28:53 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08JF1i5w016758;
-        Sat, 19 Sep 2020 11:28:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references; s=pp1;
- bh=5kdqs7Ly86dfKgI6wh7OU0A1GEXMYvgp2EoCOx/rw10=;
- b=Bv9O0fzp0zk8xt5mtus47bSJ20oF1bowLg2HbcsHmrteVLGngTUITrKLAxdpU2+MWDMO
- VngppRQwotHZM3eJIz4dSYIr6g97N6Zq8bIvQefNHgkEI6APbHX69YH5sVANLFbzJkKk
- /1xY1UIh/+PTeC4yec3bTZiBDQGMM9wiGsT2Ekomem9m7rC+hMfHPi9G+5kH6DbyV8sh
- vX8tAcivxGq24Wq/x8dbDpoiaulVZzg0SumBbSQo+C7SxJVUbrsWWojl6Hxugg7rtnAv
- o8YBSRAL/MBSBSwARWB4UPGrCmXgXZqBpF8mN8Z4CE1w41NddhWE59+Clom7C+Vs67zq fA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33nkyx0qn7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 19 Sep 2020 11:28:51 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08JFS4im072643;
-        Sat, 19 Sep 2020 11:28:51 -0400
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33nkyx0qmy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 19 Sep 2020 11:28:51 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08JFR3bm003396;
-        Sat, 19 Sep 2020 15:28:50 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma02dal.us.ibm.com with ESMTP id 33n9m8c0cy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 19 Sep 2020 15:28:50 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08JFSkEd37355808
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 19 Sep 2020 15:28:46 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BD59DBE054;
-        Sat, 19 Sep 2020 15:28:46 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A9015BE04F;
-        Sat, 19 Sep 2020 15:28:45 +0000 (GMT)
-Received: from oc4221205838.ibm.com (unknown [9.211.74.107])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Sat, 19 Sep 2020 15:28:45 +0000 (GMT)
-From:   Matthew Rosato <mjrosato@linux.ibm.com>
-To:     alex.williamson@redhat.com, cohuck@redhat.com,
-        schnelle@linux.ibm.com
-Cc:     pmorel@linux.ibm.com, borntraeger@de.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, gerald.schaefer@linux.ibm.com,
-        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] vfio-pci/zdev: use a device region to retrieve zPCI information
-Date:   Sat, 19 Sep 2020 11:28:38 -0400
-Message-Id: <1600529318-8996-5-git-send-email-mjrosato@linux.ibm.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1600529318-8996-1-git-send-email-mjrosato@linux.ibm.com>
-References: <1600529318-8996-1-git-send-email-mjrosato@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-19_05:2020-09-16,2020-09-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 phishscore=0
- adultscore=0 mlxscore=0 lowpriorityscore=0 clxscore=1015 spamscore=0
- bulkscore=0 suspectscore=0 impostorscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009190126
+        Sat, 19 Sep 2020 11:30:21 -0400
+Received: by mail-il1-f198.google.com with SMTP id g188so7215520ilh.7
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 08:30:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=D4+7jk2RQylbKFHcrada+X46KPBZCO1gaZmvvVtlxHk=;
+        b=Jw79ev/JMh+NC98aoeUwh6Q8yZI6UexxTk1agOvzL+Q0LXf1jlkLBWNfK7KSyihNzt
+         hbSEKxoUiEmh7FroosUJvugeDIXH4/d5mBLwYabdpFHBoVzDoUfbOTmNwQePmUZ/crxL
+         A9Y62SjL5U2+WuGDHrsiDhnnaAZ/UAOkTXtKcyniYEfXtF1pqQAx7F1cqY561o85zoye
+         ynhl2pmsCAqDXY5U1pD+npzeRl0g4TwYSFj5IcnDhLHC0LJh6j47GQJ8CYHxAZCGvp/+
+         l8teLw2DaruVKGbAzQ2HFFDSfHKBunbRXcj3FoUDEtQtW28xaltq5GuOXRd/bKavQSwd
+         75GQ==
+X-Gm-Message-State: AOAM530y5EAHJOJSrK2m6iCPTtlCiF8m21HApW1opDHeyGh0qcvBbxVa
+        PQranQeZ3B4wOBsz5zhUQKxw6pKel446oD4p89/w8VFIsVEq
+X-Google-Smtp-Source: ABdhPJyfDXDvTZ3Mlz1Oc44FuZ81W0ygXIbE6z3JVXP2CMdJ7a6IAEnl+EthMG6+LNRgfed/tyrAeM50VSAujcRVJIKhAO9V9tcy
+MIME-Version: 1.0
+X-Received: by 2002:a05:6638:248d:: with SMTP id x13mr35209410jat.39.1600529418725;
+ Sat, 19 Sep 2020 08:30:18 -0700 (PDT)
+Date:   Sat, 19 Sep 2020 08:30:18 -0700
+In-Reply-To: <001a113eba282f2ffc0568b76123@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000074af4c05afac4b76@google.com>
+Subject: Re: kernel BUG at fs/reiserfs/journal.c:LINE!
+From:   syzbot <syzbot+6820505ae5978f4f8f2f@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, alex.shi@linux.alibaba.com,
+        axboe@kernel.dk, baijiaju1990@gmail.com, colin.king@canonical.com,
+        dhowells@redhat.com, gregkh@linuxfoundation.org, jack@suse.cz,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        rdunlap@infradead.org, reiserfs-devel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, yanaijie@huawei.com,
+        zhengbin13@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Define a new configuration entry VFIO_PCI_ZDEV for VFIO/PCI.
+syzbot has found a reproducer for the following issue on:
 
-When this s390-only feature is configured we initialize a new device
-region, VFIO_REGION_SUBTYPE_IBM_ZPCI_CLP, to hold information provided
-by the underlying hardware.
+HEAD commit:    eb5f95f1 Merge tag 's390-5.9-6' of git://git.kernel.org/pu..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=127b7809900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ffe85b197a57c180
+dashboard link: https://syzkaller.appspot.com/bug?extid=6820505ae5978f4f8f2f
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16a825d9900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13a5c8d3900000
 
-This patch is based on work previously done by Pierre Morel.
+Bisection is inconclusive: the issue happens on the oldest tested release.
 
-Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>
----
- drivers/vfio/pci/Kconfig            |  13 ++
- drivers/vfio/pci/Makefile           |   1 +
- drivers/vfio/pci/vfio_pci.c         |   8 ++
- drivers/vfio/pci/vfio_pci_private.h |  10 ++
- drivers/vfio/pci/vfio_pci_zdev.c    | 242 ++++++++++++++++++++++++++++++++++++
- 5 files changed, 274 insertions(+)
- create mode 100644 drivers/vfio/pci/vfio_pci_zdev.c
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1426e997200000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1226e997200000
 
-diff --git a/drivers/vfio/pci/Kconfig b/drivers/vfio/pci/Kconfig
-index ac3c1dd..07b4a35 100644
---- a/drivers/vfio/pci/Kconfig
-+++ b/drivers/vfio/pci/Kconfig
-@@ -45,3 +45,16 @@ config VFIO_PCI_NVLINK2
- 	depends on VFIO_PCI && PPC_POWERNV
- 	help
- 	  VFIO PCI support for P9 Witherspoon machine with NVIDIA V100 GPUs
-+
-+config VFIO_PCI_ZDEV
-+	bool "VFIO PCI ZPCI device CLP support"
-+	depends on VFIO_PCI && S390
-+	default y
-+	help
-+	  Enabling this options exposes a region containing hardware
-+	  configuration for zPCI devices. This enables userspace (e.g. QEMU)
-+	  to supply proper configuration values instead of hard-coded defaults
-+	  for zPCI devices passed through via VFIO on s390.
-+
-+	  Say Y here.
-+
-diff --git a/drivers/vfio/pci/Makefile b/drivers/vfio/pci/Makefile
-index f027f8a..781e080 100644
---- a/drivers/vfio/pci/Makefile
-+++ b/drivers/vfio/pci/Makefile
-@@ -3,5 +3,6 @@
- vfio-pci-y := vfio_pci.o vfio_pci_intrs.o vfio_pci_rdwr.o vfio_pci_config.o
- vfio-pci-$(CONFIG_VFIO_PCI_IGD) += vfio_pci_igd.o
- vfio-pci-$(CONFIG_VFIO_PCI_NVLINK2) += vfio_pci_nvlink2.o
-+vfio-pci-$(CONFIG_VFIO_PCI_ZDEV) += vfio_pci_zdev.o
- 
- obj-$(CONFIG_VFIO_PCI) += vfio-pci.o
-diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-index 1ab1f5c..cfb04d9 100644
---- a/drivers/vfio/pci/vfio_pci.c
-+++ b/drivers/vfio/pci/vfio_pci.c
-@@ -409,6 +409,14 @@ static int vfio_pci_enable(struct vfio_pci_device *vdev)
- 		}
- 	}
- 
-+	if (IS_ENABLED(CONFIG_VFIO_PCI_ZDEV)) {
-+		ret = vfio_pci_zdev_init(vdev);
-+		if (ret && ret != -ENODEV) {
-+			pci_warn(pdev, "Failed to setup zPCI CLP region\n");
-+			goto disable_exit;
-+		}
-+	}
-+
- 	vfio_pci_probe_mmaps(vdev);
- 
- 	return 0;
-diff --git a/drivers/vfio/pci/vfio_pci_private.h b/drivers/vfio/pci/vfio_pci_private.h
-index 61ca8ab..729af20 100644
---- a/drivers/vfio/pci/vfio_pci_private.h
-+++ b/drivers/vfio/pci/vfio_pci_private.h
-@@ -213,4 +213,14 @@ static inline int vfio_pci_ibm_npu2_init(struct vfio_pci_device *vdev)
- 	return -ENODEV;
- }
- #endif
-+
-+#ifdef CONFIG_VFIO_PCI_ZDEV
-+extern int vfio_pci_zdev_init(struct vfio_pci_device *vdev);
-+#else
-+static inline int vfio_pci_zdev_init(struct vfio_pci_device *vdev)
-+{
-+	return -ENODEV;
-+}
-+#endif
-+
- #endif /* VFIO_PCI_PRIVATE_H */
-diff --git a/drivers/vfio/pci/vfio_pci_zdev.c b/drivers/vfio/pci/vfio_pci_zdev.c
-new file mode 100644
-index 0000000..9c7d659
---- /dev/null
-+++ b/drivers/vfio/pci/vfio_pci_zdev.c
-@@ -0,0 +1,242 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * VFIO ZPCI devices support
-+ *
-+ * Copyright (C) IBM Corp. 2020.  All rights reserved.
-+ *	Author(s): Pierre Morel <pmorel@linux.ibm.com>
-+ *                 Matthew Rosato <mjrosato@linux.ibm.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ */
-+#include <linux/io.h>
-+#include <linux/pci.h>
-+#include <linux/uaccess.h>
-+#include <linux/vfio.h>
-+#include <linux/vfio_zdev.h>
-+#include <asm/pci_clp.h>
-+#include <asm/pci_io.h>
-+
-+#include "vfio_pci_private.h"
-+
-+static size_t vfio_pci_zdev_rw(struct vfio_pci_device *vdev,
-+			       char __user *buf, size_t count, loff_t *ppos,
-+			       bool iswrite)
-+{
-+	unsigned int i = VFIO_PCI_OFFSET_TO_INDEX(*ppos) - VFIO_PCI_NUM_REGIONS;
-+	struct vfio_region_zpci_info *region = vdev->region[i].data;
-+	loff_t pos = *ppos & VFIO_PCI_OFFSET_MASK;
-+
-+	if ((!vdev->pdev->bus) || (!to_zpci(vdev->pdev)))
-+		return -ENODEV;
-+
-+	if (pos >= vdev->region[i].size || iswrite)
-+		return -EINVAL;
-+
-+	count = min(count, (size_t)(vdev->region[i].size - pos));
-+	if (copy_to_user(buf, region + pos, count))
-+		return -EFAULT;
-+
-+	return count;
-+}
-+
-+static void vfio_pci_zdev_release(struct vfio_pci_device *vdev,
-+				  struct vfio_pci_region *region)
-+{
-+	kfree(region->data);
-+}
-+
-+static const struct vfio_pci_regops vfio_pci_zdev_regops = {
-+	.rw		= vfio_pci_zdev_rw,
-+	.release	= vfio_pci_zdev_release,
-+};
-+
-+static void vfio_pci_zdev_fill_hdr(struct vfio_region_zpci_info_hdr *hdr,
-+				   __u16 id, __u16 version, size_t offset,
-+				   size_t size)
-+{
-+	hdr->id = id;
-+	hdr->version = version;
-+	hdr->next = offset + size;
-+}
-+
-+/*
-+ * Add the Query PCI Function information to the device region.
-+ *
-+ * zdev - the zPCI device to get information from
-+ * region - start of the vfio device region
-+ * offset - location within region to place the data
-+ *
-+ * On return, provide the offset of the end of this CLP feature.
-+ */
-+static size_t vfio_pci_zdev_add_qpci(struct zpci_dev *zdev, void *region,
-+				     size_t offset)
-+{
-+	struct vfio_region_zpci_info_qpci *clp;
-+
-+	/* Jump to the CLP region via the offset */
-+	clp = (struct vfio_region_zpci_info_qpci *) (region + offset);
-+
-+	/* Fill in the clp header */
-+	vfio_pci_zdev_fill_hdr(&clp->hdr, VFIO_REGION_ZPCI_INFO_QPCI, 1,
-+			       offset, sizeof(*clp));
-+
-+	/* Fill in the CLP feature info */
-+	clp->start_dma = zdev->start_dma;
-+	clp->end_dma = zdev->end_dma;
-+	clp->pchid = zdev->pchid;
-+	clp->vfn = zdev->vfn;
-+	clp->fmb_length = zdev->fmb_length;
-+	clp->pft = zdev->pft;
-+	clp->gid = zdev->pfgid;
-+
-+	/* Return offset to the end of this CLP feature */
-+	return clp->hdr.next;
-+}
-+
-+/*
-+ * Add the Query PCI Function Group information to the device region.
-+ *
-+ * zdev - the zPCI device to get information from
-+ * region - start of the vfio device region
-+ * offset - location within region to place the data
-+ *
-+ * On return, provide the offset of the end of this CLP feature.
-+ */
-+static size_t vfio_pci_zdev_add_qpcifg(struct zpci_dev *zdev, void *region,
-+				       size_t offset)
-+{
-+	struct vfio_region_zpci_info_qpcifg *clp;
-+
-+	/* Jump to the CLP region via the offset */
-+	clp = (struct vfio_region_zpci_info_qpcifg *) (region + offset);
-+
-+	/* Fill in the clp header */
-+	vfio_pci_zdev_fill_hdr(&clp->hdr, VFIO_REGION_ZPCI_INFO_QPCIFG, 1,
-+			       offset, sizeof(*clp));
-+
-+	/* Fill in the CLP feature info */
-+	clp->dasm = zdev->dma_mask;
-+	clp->msi_addr = zdev->msi_addr;
-+	clp->flags = VFIO_PCI_ZDEV_FLAGS_REFRESH;
-+	clp->mui = zdev->fmb_update;
-+	clp->noi = zdev->max_msi;
-+	clp->maxstbl = ZPCI_MAX_WRITE_SIZE;
-+	clp->version = zdev->version;
-+
-+	/* Return offset to the end of this CLP feature */
-+	return clp->hdr.next;
-+}
-+
-+/*
-+ * Add the device utility string to the device region.
-+ *
-+ * zdev - the zPCI device to get information from
-+ * region - start of the vfio device region
-+ * offset - location within region to place the data
-+ *
-+ * On return, provide the offset of the end of this CLP feature.
-+ */
-+static size_t vfio_pci_zdev_add_util(struct zpci_dev *zdev, void *region,
-+				     size_t offset)
-+{
-+	struct vfio_region_zpci_info_util *clp;
-+	size_t size = CLP_UTIL_STR_LEN;
-+
-+	/* Only add a utility string if one is available */
-+	if (!zdev->util_avail)
-+		return offset;
-+
-+	/* Jump to the CLP region via the offset */
-+	clp = (struct vfio_region_zpci_info_util *) (region + offset);
-+
-+	/* Fill in the clp header */
-+	vfio_pci_zdev_fill_hdr(&clp->hdr, VFIO_REGION_ZPCI_INFO_UTIL, 1,
-+			       offset, sizeof(*clp) + size);
-+
-+	/* Fill in the CLP feature info */
-+	clp->size = size;
-+	memcpy(clp->util_str, zdev->util_str, size);
-+
-+	/* Return offset to the end of this CLP feature */
-+	return clp->hdr.next;
-+}
-+
-+/*
-+ * Add the function path string to the device region.
-+ *
-+ * zdev - the zPCI device to get information from
-+ * region - start of the vfio device region
-+ * offset - location within region to place the data
-+ *
-+ * On return, provide the offset of the end of this CLP feature.
-+ */
-+static size_t vfio_pci_zdev_add_pfip(struct zpci_dev *zdev, void *region,
-+				     size_t offset)
-+{
-+	struct vfio_region_zpci_info_pfip *clp;
-+	size_t size = CLP_PFIP_NR_SEGMENTS;
-+
-+	/* Jump to the CLP region via the offset */
-+	clp = (struct vfio_region_zpci_info_pfip *) (region + offset);
-+
-+	/* Fill in the clp header */
-+	vfio_pci_zdev_fill_hdr(&clp->hdr, VFIO_REGION_ZPCI_INFO_PFIP, 1,
-+			       offset, sizeof(*clp) + size);
-+
-+	/* Fill in the CLP feature info */
-+	clp->size = size;
-+	memcpy(clp->pfip, zdev->pfip, size);
-+
-+	/* Return offset to the end of this CLP feature */
-+	return clp->hdr.next;
-+}
-+
-+int vfio_pci_zdev_init(struct vfio_pci_device *vdev)
-+{
-+	struct vfio_region_zpci_info *region;
-+	struct zpci_dev *zdev;
-+	size_t clp_offset;
-+	int size;
-+	int ret;
-+
-+	if (!vdev->pdev->bus)
-+		return -ENODEV;
-+
-+	zdev = to_zpci(vdev->pdev);
-+	if (!zdev)
-+		return -ENODEV;
-+
-+	/* Calculate size needed for all supported CLP features  */
-+	size = sizeof(*region) +
-+	       sizeof(struct vfio_region_zpci_info_qpci) +
-+	       sizeof(struct vfio_region_zpci_info_qpcifg) +
-+	       (sizeof(struct vfio_region_zpci_info_util) + CLP_UTIL_STR_LEN) +
-+	       (sizeof(struct vfio_region_zpci_info_pfip) +
-+		CLP_PFIP_NR_SEGMENTS);
-+
-+	region = kmalloc(size, GFP_KERNEL);
-+	if (!region)
-+		return -ENOMEM;
-+
-+	/* Fill in header */
-+	region->argsz = size;
-+	clp_offset = region->offset = sizeof(struct vfio_region_zpci_info);
-+
-+	/* Fill the supported CLP features */
-+	clp_offset = vfio_pci_zdev_add_qpci(zdev, region, clp_offset);
-+	clp_offset = vfio_pci_zdev_add_qpcifg(zdev, region, clp_offset);
-+	clp_offset = vfio_pci_zdev_add_util(zdev, region, clp_offset);
-+	clp_offset = vfio_pci_zdev_add_pfip(zdev, region, clp_offset);
-+
-+	ret = vfio_pci_register_dev_region(vdev,
-+		PCI_VENDOR_ID_IBM | VFIO_REGION_TYPE_PCI_VENDOR_TYPE,
-+		VFIO_REGION_SUBTYPE_IBM_ZPCI_CLP, &vfio_pci_zdev_regops,
-+		size, VFIO_REGION_INFO_FLAG_READ, region);
-+	if (ret)
-+		kfree(region);
-+
-+	return ret;
-+}
--- 
-1.8.3.1
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+6820505ae5978f4f8f2f@syzkaller.appspotmail.com
+
+REISERFS (device loop0): journal params: device loop0, size 512, journal first block 18, max trans len 256, max batch 225, max commit age 0, max trans age 30
+REISERFS (device loop0): checking transaction log (loop0)
+REISERFS warning (device loop0): vs-13075 reiserfs_read_locked_inode: dead inode read from disk [1 2 0x0 SD]. This is likely to be race with knfsd. Ignore
+REISERFS (device loop0): Using rupasov hash to sort names
+------------[ cut here ]------------
+kernel BUG at fs/reiserfs/journal.c:3630!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 6906 Comm: syz-executor291 Not tainted 5.9.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:check_journal_end fs/reiserfs/journal.c:3630 [inline]
+RIP: 0010:do_journal_end+0x3698/0x48d0 fs/reiserfs/journal.c:4026
+Code: fe 0a ff ff e9 51 f9 ff ff e8 94 e0 76 ff 0f 0b e8 8d e0 76 ff 0f 0b e8 86 e0 76 ff 0f 0b e8 7f e0 76 ff 0f 0b e8 78 e0 76 ff <0f> 0b e8 71 e0 76 ff 0f 0b e8 6a e0 76 ff 48 8b 44 24 08 48 8b 54
+RSP: 0018:ffffc90005607a00 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffffc9000570b000 RCX: ffffffff81ff2e9a
+RDX: ffff8880a86485c0 RSI: ffffffff81ff5f48 RDI: 0000000000000007
+RBP: 0000000000000000 R08: 0000000000000001 R09: ffffc9000570b05b
+R10: 0000000000000000 R11: 0000000000000000 R12: ffffc9000570b058
+R13: ffffc90005607c38 R14: 0000000000000000 R15: ffff8880a7d5a000
+FS:  00007f8113e05700(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f9853cc7000 CR3: 00000000a6d1f000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ journal_end+0x277/0x320 fs/reiserfs/journal.c:3400
+ reiserfs_fill_super+0x20e9/0x2deb fs/reiserfs/super.c:2168
+ mount_bdev+0x32e/0x3f0 fs/super.c:1417
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1547
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x1387/0x20a0 fs/namespace.c:3192
+ do_mount fs/namespace.c:3205 [inline]
+ __do_sys_mount fs/namespace.c:3413 [inline]
+ __se_sys_mount fs/namespace.c:3390 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3390
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x44d45a
+Code: b8 08 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 5d a1 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 3a a1 fb ff c3 66 0f 1f 84 00 00 00 00 00
+RSP: 002b:00007f8113e04bf8 EFLAGS: 00000297 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 0000000000000006 RCX: 000000000044d45a
+RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007f8113e04c10
+RBP: 00007f8113e04c10 R08: 00007f8113e04c50 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000297 R12: 0000000000000006
+R13: 00007f8113e04c50 R14: 00007f8113e056d0 R15: 0000000000000005
+Modules linked in:
+---[ end trace 170160bcfcf2edcc ]---
+RIP: 0010:check_journal_end fs/reiserfs/journal.c:3630 [inline]
+RIP: 0010:do_journal_end+0x3698/0x48d0 fs/reiserfs/journal.c:4026
+Code: fe 0a ff ff e9 51 f9 ff ff e8 94 e0 76 ff 0f 0b e8 8d e0 76 ff 0f 0b e8 86 e0 76 ff 0f 0b e8 7f e0 76 ff 0f 0b e8 78 e0 76 ff <0f> 0b e8 71 e0 76 ff 0f 0b e8 6a e0 76 ff 48 8b 44 24 08 48 8b 54
+RSP: 0018:ffffc90005607a00 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffffc9000570b000 RCX: ffffffff81ff2e9a
+RDX: ffff8880a86485c0 RSI: ffffffff81ff5f48 RDI: 0000000000000007
+RBP: 0000000000000000 R08: 0000000000000001 R09: ffffc9000570b05b
+R10: 0000000000000000 R11: 0000000000000000 R12: ffffc9000570b058
+R13: ffffc90005607c38 R14: 0000000000000000 R15: ffff8880a7d5a000
+FS:  00007f8113e05700(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f9853c57000 CR3: 00000000a6d1f000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
