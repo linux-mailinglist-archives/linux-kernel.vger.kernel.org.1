@@ -2,30 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E183A2709FD
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 04:18:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE462709FF
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 04:18:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726280AbgISCSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 22:18:09 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:36364 "EHLO huawei.com"
+        id S1726312AbgISCSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 22:18:16 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13314 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726009AbgISCSJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 22:18:09 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 0426F3DC7334026F9B0F;
-        Sat, 19 Sep 2020 10:18:07 +0800 (CST)
+        id S1726134AbgISCSO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 22:18:14 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 454673BE94AD298B4A0D;
+        Sat, 19 Sep 2020 10:18:12 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
  DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 19 Sep 2020 10:18:00 +0800
+ 14.3.487.0; Sat, 19 Sep 2020 10:18:01 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
+To:     Lee Jones <lee.jones@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>,
         Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH -next v2] mfd: ab3100-otp: Convert to DEFINE_SHOW_ATTRIBUTE
-Date:   Sat, 19 Sep 2020 10:18:32 +0800
-Message-ID: <20200919021832.191137-1-miaoqinglang@huawei.com>
+Subject: [PATCH -next v2] mfd: tps65010: Convert to DEFINE_SHOW_ATTRIBUTE
+Date:   Sat, 19 Sep 2020 10:18:33 +0800
+Message-ID: <20200919021833.191196-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -43,48 +41,41 @@ Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 v2: based on linux-next(20200917), and can be applied to
     mainline cleanly now.
 
- drivers/mfd/ab3100-otp.c | 16 +++-------------
- 1 file changed, 3 insertions(+), 13 deletions(-)
+ drivers/mfd/tps65010.c | 14 ++------------
+ 1 file changed, 2 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/mfd/ab3100-otp.c b/drivers/mfd/ab3100-otp.c
-index c393102e3..e5d294805 100644
---- a/drivers/mfd/ab3100-otp.c
-+++ b/drivers/mfd/ab3100-otp.c
-@@ -96,7 +96,7 @@ static int __init ab3100_otp_read(struct ab3100_otp *otp)
-  * the contents of the OTP.
-  */
- #ifdef CONFIG_DEBUG_FS
--static int ab3100_show_otp(struct seq_file *s, void *v)
-+static int ab3100_otp_show(struct seq_file *s, void *v)
- {
- 	struct ab3100_otp *otp = s->private;
+diff --git a/drivers/mfd/tps65010.c b/drivers/mfd/tps65010.c
+index 7e7dbee58..f6d6b6c18 100644
+--- a/drivers/mfd/tps65010.c
++++ b/drivers/mfd/tps65010.c
+@@ -179,7 +179,7 @@ static inline void show_chgconfig(int por, const char *label, u8 chgconfig) { }
  
-@@ -110,23 +110,13 @@ static int ab3100_show_otp(struct seq_file *s, void *v)
+ #ifdef	CONFIG_DEBUG_FS
+ 
+-static int dbg_show(struct seq_file *s, void *_)
++static int debug_show(struct seq_file *s, void *_)
+ {
+ 	struct tps65010	*tps = s->private;
+ 	u8		value, v2;
+@@ -283,17 +283,7 @@ static int dbg_show(struct seq_file *s, void *_)
  	return 0;
  }
  
--static int ab3100_otp_open(struct inode *inode, struct file *file)
+-static int dbg_tps_open(struct inode *inode, struct file *file)
 -{
--	return single_open(file, ab3100_show_otp, inode->i_private);
+-	return single_open(file, dbg_show, inode->i_private);
 -}
 -
--static const struct file_operations ab3100_otp_operations = {
--	.open		= ab3100_otp_open,
+-static const struct file_operations debug_fops = {
+-	.open		= dbg_tps_open,
 -	.read		= seq_read,
 -	.llseek		= seq_lseek,
 -	.release	= single_release,
 -};
-+DEFINE_SHOW_ATTRIBUTE(ab3100_otp);
++DEFINE_SHOW_ATTRIBUTE(debug);
  
- static void __init ab3100_otp_init_debugfs(struct device *dev,
- 					   struct ab3100_otp *otp)
- {
- 	otp->debugfs = debugfs_create_file("ab3100_otp", S_IFREG | S_IRUGO,
--					   NULL, otp, &ab3100_otp_operations);
-+					   NULL, otp, &ab3100_otp_fops);
- }
+ #define	DEBUG_FOPS	&debug_fops
  
- static void __exit ab3100_otp_exit_debugfs(struct ab3100_otp *otp)
 -- 
 2.23.0
 
