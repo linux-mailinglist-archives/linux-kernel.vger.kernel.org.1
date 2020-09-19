@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A04270A41
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 04:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC09270A32
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 04:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726507AbgISCwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 22:52:10 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13715 "EHLO huawei.com"
+        id S1726387AbgISCvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 22:51:38 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:51344 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726382AbgISCvj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 22:51:39 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id E0B8A29B20C02A2E11D7;
-        Sat, 19 Sep 2020 10:51:37 +0800 (CST)
+        id S1726368AbgISCvh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 22:51:37 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 7A5A1C4FFCAAF84C8CDA;
+        Sat, 19 Sep 2020 10:51:36 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 19 Sep 2020 10:51:27 +0800
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 19 Sep 2020 10:51:28 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        John Crispin <john@phrozen.org>
-CC:     <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Qinglang Miao" <miaoqinglang@huawei.com>
-Subject: [PATCH -next v2] mips: Convert to DEFINE_SHOW_ATTRIBUTE
-Date:   Sat, 19 Sep 2020 10:51:59 +0800
-Message-ID: <20200919025159.17337-1-miaoqinglang@huawei.com>
+To:     Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>
+CC:     <linux-block@vger.kernel.org>, <nbd@other.debian.org>,
+        <linux-kernel@vger.kernel.org>,
+        Qinglang Miao <miaoqinglang@huawei.com>
+Subject: [PATCH -next v2] nbd: Convert to DEFINE_SHOW_ATTRIBUTE
+Date:   Sat, 19 Sep 2020 10:52:00 +0800
+Message-ID: <20200919025200.17399-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -42,112 +42,65 @@ Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 v2: based on linux-next(20200917), and can be applied to
     mainline cleanly now.
 
- arch/mips/cavium-octeon/oct_ilm.c | 16 +++-------------
- arch/mips/kernel/segment.c        | 14 ++------------
- arch/mips/ralink/bootrom.c        | 14 ++------------
- 3 files changed, 7 insertions(+), 37 deletions(-)
+ drivers/block/nbd.c | 28 ++++------------------------
+ 1 file changed, 4 insertions(+), 24 deletions(-)
 
-diff --git a/arch/mips/cavium-octeon/oct_ilm.c b/arch/mips/cavium-octeon/oct_ilm.c
-index 99e27155b..10ed6ebdb 100644
---- a/arch/mips/cavium-octeon/oct_ilm.c
-+++ b/arch/mips/cavium-octeon/oct_ilm.c
-@@ -28,7 +28,7 @@ struct latency_info {
- static struct latency_info li;
- static struct dentry *dir;
- 
--static int show_latency(struct seq_file *m, void *v)
-+static int oct_ilm_show(struct seq_file *m, void *v)
- {
- 	u64 cpuclk, avg, max, min;
- 	struct latency_info curr_li = li;
-@@ -44,17 +44,7 @@ static int show_latency(struct seq_file *m, void *v)
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index 15eed210f..ab1242a34 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -1543,17 +1543,7 @@ static int nbd_dbg_tasks_show(struct seq_file *s, void *unused)
  	return 0;
  }
  
--static int oct_ilm_open(struct inode *inode, struct file *file)
+-static int nbd_dbg_tasks_open(struct inode *inode, struct file *file)
 -{
--	return single_open(file, show_latency, NULL);
+-	return single_open(file, nbd_dbg_tasks_show, inode->i_private);
 -}
 -
--static const struct file_operations oct_ilm_ops = {
--	.open = oct_ilm_open,
+-static const struct file_operations nbd_dbg_tasks_ops = {
+-	.open = nbd_dbg_tasks_open,
 -	.read = seq_read,
 -	.llseek = seq_lseek,
 -	.release = single_release,
 -};
-+DEFINE_SHOW_ATTRIBUTE(oct_ilm);
++DEFINE_SHOW_ATTRIBUTE(nbd_dbg_tasks);
  
- static int reset_statistics(void *data, u64 value)
+ static int nbd_dbg_flags_show(struct seq_file *s, void *unused)
  {
-@@ -67,7 +57,7 @@ DEFINE_SIMPLE_ATTRIBUTE(reset_statistics_ops, NULL, reset_statistics, "%llu\n");
- static void init_debugfs(void)
- {
- 	dir = debugfs_create_dir("oct_ilm", 0);
--	debugfs_create_file("statistics", 0222, dir, NULL, &oct_ilm_ops);
-+	debugfs_create_file("statistics", 0222, dir, NULL, &oct_ilm_fops);
- 	debugfs_create_file("reset", 0222, dir, NULL, &reset_statistics_ops);
- }
- 
-diff --git a/arch/mips/kernel/segment.c b/arch/mips/kernel/segment.c
-index 0a9bd7b09..778487bf3 100644
---- a/arch/mips/kernel/segment.c
-+++ b/arch/mips/kernel/segment.c
-@@ -46,7 +46,7 @@ static void build_segment_config(char *str, unsigned int cfg)
- 		((cfg & MIPS_SEGCFG_EU) >> MIPS_SEGCFG_EU_SHIFT));
- }
- 
--static int show_segments(struct seq_file *m, void *v)
-+static int segments_show(struct seq_file *m, void *v)
- {
- 	unsigned int segcfg;
- 	char str[42];
-@@ -81,17 +81,7 @@ static int show_segments(struct seq_file *m, void *v)
+@@ -1578,17 +1568,7 @@ static int nbd_dbg_flags_show(struct seq_file *s, void *unused)
  	return 0;
  }
  
--static int segments_open(struct inode *inode, struct file *file)
+-static int nbd_dbg_flags_open(struct inode *inode, struct file *file)
 -{
--	return single_open(file, show_segments, NULL);
+-	return single_open(file, nbd_dbg_flags_show, inode->i_private);
 -}
 -
--static const struct file_operations segments_fops = {
--	.open		= segments_open,
--	.read		= seq_read,
--	.llseek		= seq_lseek,
--	.release	= single_release,
+-static const struct file_operations nbd_dbg_flags_ops = {
+-	.open = nbd_dbg_flags_open,
+-	.read = seq_read,
+-	.llseek = seq_lseek,
+-	.release = single_release,
 -};
-+DEFINE_SHOW_ATTRIBUTE(segments);
++DEFINE_SHOW_ATTRIBUTE(nbd_dbg_flags);
  
- static int __init segments_info(void)
+ static int nbd_dev_dbg_init(struct nbd_device *nbd)
  {
-diff --git a/arch/mips/ralink/bootrom.c b/arch/mips/ralink/bootrom.c
-index 94ca8379b..c57fd38fd 100644
---- a/arch/mips/ralink/bootrom.c
-+++ b/arch/mips/ralink/bootrom.c
-@@ -19,21 +19,11 @@ static int bootrom_show(struct seq_file *s, void *unused)
+@@ -1606,11 +1586,11 @@ static int nbd_dev_dbg_init(struct nbd_device *nbd)
+ 	}
+ 	config->dbg_dir = dir;
+ 
+-	debugfs_create_file("tasks", 0444, dir, nbd, &nbd_dbg_tasks_ops);
++	debugfs_create_file("tasks", 0444, dir, nbd, &nbd_dbg_tasks_fops);
+ 	debugfs_create_u64("size_bytes", 0444, dir, &config->bytesize);
+ 	debugfs_create_u32("timeout", 0444, dir, &nbd->tag_set.timeout);
+ 	debugfs_create_u64("blocksize", 0444, dir, &config->blksize);
+-	debugfs_create_file("flags", 0444, dir, nbd, &nbd_dbg_flags_ops);
++	debugfs_create_file("flags", 0444, dir, nbd, &nbd_dbg_flags_fops);
+ 
  	return 0;
  }
- 
--static int bootrom_open(struct inode *inode, struct file *file)
--{
--	return single_open(file, bootrom_show, NULL);
--}
--
--static const struct file_operations bootrom_file_ops = {
--	.open		= bootrom_open,
--	.read		= seq_read,
--	.llseek		= seq_lseek,
--	.release	= single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(bootrom);
- 
- static int __init bootrom_setup(void)
- {
--	debugfs_create_file("bootrom", 0444, NULL, NULL, &bootrom_file_ops);
-+	debugfs_create_file("bootrom", 0444, NULL, NULL, &bootrom_fops);
- 	return 0;
- }
- 
 -- 
 2.23.0
 
