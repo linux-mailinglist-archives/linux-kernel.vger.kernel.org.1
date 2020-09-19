@@ -2,96 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C70A2710B3
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 23:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1680F2710BB
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 23:50:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726711AbgISVss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 17:48:48 -0400
-Received: from sonic312-21.consmr.mail.bf2.yahoo.com ([74.6.128.83]:40618 "EHLO
-        sonic312-21.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726598AbgISVss (ORCPT
+        id S1726762AbgISVuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 17:50:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726638AbgISVuE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 17:48:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1600552127; bh=DPYuw2gUpgtMJzJhlH/AVmRGu2wSKCY1C+f8nOCoxu0=; h=Date:From:Reply-To:Subject:References:From:Subject; b=gA5sHVNo3YlIRWzEVOmA9fsYnPWFxldrQEIr5GNvNEnrOYD74/qcdFsBK7sYGRtBA8rH9AfDdoM7LHH+aLI/xbTBllBznDXXUiyRyr6tqvywjRT3wbth81zsUSzxEzdq6nOhgqj7jrKT7pP9zB2/Nw7UKKQ5yuAPz8DTskBER+KouOIlFf4JOV2sBhtlBPVRz8wK2dKAgzCmD6B83ThB4+D4rtygPRIjwFIsIxLLw5zGurAmg+d3+PtETlTiM4h+JUPMfE9XzYT3vx1/nTdyB1Aq0NPp9EsCnNCS5MnDGpWv9+qp6VigsZr7TMSyEFjiuJOENmZBSqgk75sUryMTJQ==
-X-YMail-OSG: oPGC9u4VM1lZSkFtRvZbOcT4FwTtUOQMkhW4gQLfh_9G9x8VTw6lf21PoWTLE7Q
- xGdQjs8cluEopbzVozcPZs8EWehEyHMKFCMLfjNZf3pkx19g125QEqToc.hRmNrjXSxVy94qTOVn
- yIM95ZhuNzdVjTQ5NPBNPIzvG9HoPldXqHkjI_E0S8pp0X8XC3RdfSc4n19CHbzDYpSrR.WLgZhz
- 8wLDAhH_1fD_1X.sstpN69r_3RYJpzPS8C4JxFLj79Rxgmr8jiXcM4eZHfDeEkVjB3_50JBsC3WS
- NKdIjHWlXZyXvDeHPp9DL4Q3fymLQ1N_2DK5lX397WoL8NbbgE6CYaFTlKQpf.HtFt6gLS0kqZoj
- H.xtbTzmpR4ugewMxDYP_AmFTbwiVEYWePS1PUK7E2OjTISlxct7QgVYjl0ObCjPWyxexwBL1D4l
- GEHQim2Ljol3Q3jFj8mK1rEgyTVpXEol0DpCpoIK4cIWf38mY8m0lAaNncZZW_KHAGYnVu1jUmF3
- 1kBIzjrWDl9DDs06_mZt0yXVhqb2PkBYP12iSTxZhczimYd1tEuBrt4sbVNbEP_a0PjpvS6u0f_Z
- WvULonsssdjXCOc8lnqMGNbIsm_JHtS6.DgFu_UbXhUD3Bq7MmM8JHDfd10VBVtieNQ3jiAw11Zt
- miIU_j_CKLjw4TiodL5bygpKpkhABC_ribdtkc19t5.HJ0SJh.0cMux_FYjxuKncbT7d4DJNsqx_
- RkbM6YJCbJxuWX9BuihR1GlHXgjQu6lbV4_CGMeYnWimkUANWd1v2a75x46OBP2Umx31t2kegz.9
- gZ9Z4yWPa6tCdi2OYJEWNmGByKxR0MEUjqq4HXLx1_82bqzolim2buYcs8Eg6RQn3J7oa0ck9Cx3
- kOJAk8JlPH8EKd7TdwO5VOFNpK9BB5g98WHEdzRhpPhWIXDMe4AlxD3fyQtVNwdz81TNI11c5Sg3
- .DI7.7ww4spOQFq3ZDoDwKVDEQeJ5jXLu6eigJpDW_I9zKHKyXnHtElmps0HSlZb5yYZ0OlwglXZ
- eRQOLLuQt610EJD9vrcs6cK_c9i6lhQRwRuVDHtYuMWhyZ9ciXq1Cuu_umiCRlhIqM2TRtaN8vfV
- REIJPZNauS3l7Rr3Udbs5JT1fyMd9gV.V3WAmymPQJOeiMswROVAkfvY3wQuPltXY4JruqYtf_va
- RcQHGsegdJhgi3qndLtnPGwdDLnltGL7C1mFlEifaXoZhGotRNmtFF7HCtYTOPcoEVv2Oo23aSCA
- kQ..6DgaQbTqhFEL6G6VUbzPaF45oj7pgZ03lLmr7HMg7Vc7H.VtitUZP0KRJGuh4KyRffP79WP7
- Sv_nk..ADb0iLKz2Pia6dz1r0kZ7hnhpvURUupnOZw_b7gO2LMnX838yQuINwnPbJJbRvfWYt1C2
- KTlIO7njnyYJerozcnZlc_2l_aZH33iFLOwoUm9doIyvuUpUdFoezIEFn
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.bf2.yahoo.com with HTTP; Sat, 19 Sep 2020 21:48:47 +0000
-Date:   Sat, 19 Sep 2020 21:48:46 +0000 (UTC)
-From:   "Mrs. Mina A. Brunel" <minaabrunel43@gmail.com>
-Reply-To: mrsminaabrunel36@gmail.com
-Message-ID: <1356144648.3960096.1600552126190@mail.yahoo.com>
-Subject: My Dear in the lord
+        Sat, 19 Sep 2020 17:50:04 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0095C0613CE;
+        Sat, 19 Sep 2020 14:50:03 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id cy2so5191335qvb.0;
+        Sat, 19 Sep 2020 14:50:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3hl1o3ICFuXiy7eA4eDYoCmO/Au2P6m1F0ozkchaXgs=;
+        b=Uz8mi+lijtNLOM5wb/5Yk7OxXSqXl5fTEBY7PXi4nuO0+QLCl7qsbdZhtRlzWbi4QG
+         tdbMEYnSfTvGVeIxXS8ZJP83K41jhJgNNfVxfPKrm4+bLPNbecb3L/gfyUut5QP9iV8c
+         vGom8C4REFcJzu7P2gdHgUTNgPVQZSJTpWH3WcaGnvL5NG3WOodcUQviG0FcAcFsuBtS
+         xrtbP5uCqQc4vpI+1hgoHKwFDX7uKgXC0ld7xBvLhQP5WpEj1N6nW5urAaTvm8sCrFg1
+         NeF9HEzYLFN8oO76DOF7VpSPsjarccv36/5l8suDdjtqOR+qXUTKq2yu4veidiBzVN9W
+         38Eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3hl1o3ICFuXiy7eA4eDYoCmO/Au2P6m1F0ozkchaXgs=;
+        b=j9k34ulbrOOzIB5jAUO7DnHuZFbWLXOlUQfRuaeaslHRXiuT2H0F7XDhqbR0RimAfq
+         mUDpimVMPPRUezbn7wav1LxKmEnd0iNrTfLHr5u1FX8Pb0NEnwuvuvYjX/ll4WMO67AO
+         agmgcpHSoDNt4uGEr9kuTVLAKVlWuGQiuQptNIN7500QWUWIKJYMufoX3lE4QuwRlFbC
+         FTRicGyzAYKtk0V6rs4KurwgpZVXEjCAGnBGyLNgix/tv4wnoF2HRDTJPQjEu+0PbDn9
+         F9oczV24ANg3zuKDdxZGw/sfcX2begmnjWFqP5XiCb954riSeAStNiVnnMXew8xt0aK/
+         qU+g==
+X-Gm-Message-State: AOAM533vPPeIo5IV/SZI2BL5QNBQCrw/xD3y3iaL9UxWa6RYY3IzRmzl
+        Zh5RuFnv3+ZO8fZoWeGCEqk=
+X-Google-Smtp-Source: ABdhPJzdzJ1kGDYMRHif8O/iBPP6dvdWrG9E2e77pdxXFPpqjWA/ABGx99WwnWT1CMkGNUt/ozlxnQ==
+X-Received: by 2002:a0c:c543:: with SMTP id y3mr23404364qvi.47.1600552202469;
+        Sat, 19 Sep 2020 14:50:02 -0700 (PDT)
+Received: from Ansuel-XPS.localdomain (93-39-149-95.ip76.fastwebnet.it. [93.39.149.95])
+        by smtp.googlemail.com with ESMTPSA id y30sm5617173qth.7.2020.09.19.14.49.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Sep 2020 14:50:01 -0700 (PDT)
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH 0/4] Actually implement nvmem support for mtd
+Date:   Sat, 19 Sep 2020 23:49:34 +0200
+Message-Id: <20200919214941.8038-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <1356144648.3960096.1600552126190.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16583 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The mtd support for the nvmem api has been stalled from 2018 with a patch
+half pushed hoping that a scheme is found for the mtd name later. This
+pathset try to address this and add a very needed feature for the
+mac-address.
 
+My solution to the already discussed problem here [1] is to keep it simple.
+A mtd subpartition can be set as a nvmem-provider with a specific tag and
+each direct subnode is treat by the nvmem api as a nvmem-cell and gets
+correctly registred. The mtd driver will treat a direct subnode of the
+subpartition as a legacy subpartition of the subpartition using the
+'fixed-partition' parser. To fix this every nvmem-cell has to have the
+'nvmem-cell' tag and the fixed-partition parser will skip these node if 
+this tag is detected. Simple as that. The subpartition with the tag 
+'nvmem-provider' will then be set by the config to not skip the of
+registration in the config and the nvmem-cells are correctly registred
+and can be used to set mac-address of the devices on the system.
 
-My Dear in the lord
+The last 2 patch try to address a problem in the embedded devices (mostly
+routers) that have the mac-address saved in a dedicated partition and is
+a ""master"" mac-address. Each device increment or decrement the extracted
+mac-address based on the device number. The increment function is
+implemented in the of_net function to get the mac-address that every net
+driver should allready use if they don't have a trusty mac-address source.
+(One example of this implementation are many ath10k device that gets the
+mac-address from the art mtd partition assigned to the network driver and
+increments it 1 for the wifi 2.4ghz and 2 for the wifi 5ghz).
 
+I really hope my mtd nvmem implementation doesn't conflicts with others
+and can be used, since this would remove many patch used to get mac-address
+and other nvmem data.
 
-My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
-na Faso, I am married to Mr. Brunel Patrice, a politicians who owns a small=
- gold company in Burkina Faso; He died of Leprosy and Radesyge, in year Feb=
-ruary 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Milli=
-on Euro) Eight million, Five hundred thousand Euros in a bank in Ouagadougo=
-u the capital city of of Burkina in West Africa. The money was from the sal=
-e of his company and death benefits payment and entitlements of my deceased=
- husband by his company.
+[1] https://lore.kernel.org/patchwork/patch/765435/
 
-I am sending you this message with heavy tears in my eyes and great sorrow =
-in my heart, and also praying that it will reach you in good health because=
- I am not in good health, I sleep every night without knowing if I may be a=
-live to see the next day. I am suffering from long time cancer and presentl=
-y I am partially suffering from Leprosy, which has become difficult for me =
-to move around. I was married to my late husband for more than 6 years with=
-out having a child and my doctor confided that I have less chance to live, =
-having to know when the cup of death will come, I decided to contact you to=
- claim the fund since I don't have any relation I grew up from an orphanage=
- home.
+Ansuel Smith (4):
+  mtd: Add nvmem support for mtd nvmem-providers
+  dt-bindings: mtd: partition: Document use of nvmem-provider
+  of_net: add mac-address-increment support
+  dt-bindings: net: Document use of mac-address-increment
 
-I have decided to donate this money for the support of helping Motherless b=
-abies/Less privileged/Widows and churches also to build the house of God be=
-cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
-cided to donate from what I have inherited from my late husband to you for =
-the good work of Almighty God; I will be going in for an operation surgery =
-soon.
+ .../devicetree/bindings/mtd/partition.txt     | 59 +++++++++++++++++++
+ .../bindings/net/ethernet-controller.yaml     | 19 ++++++
+ drivers/mtd/mtdcore.c                         |  2 +-
+ drivers/mtd/parsers/ofpart.c                  |  8 +++
+ drivers/of/of_net.c                           | 53 +++++++++++++----
+ 5 files changed, 128 insertions(+), 13 deletions(-)
 
-Now I want you to stand as my next of kin to claim the funds for charity pu=
-rposes. Because of this money remains unclaimed after my death, the bank ex=
-ecutives or the government will take the money as unclaimed fund and maybe =
-use it for selfishness and worthless ventures, I need a very honest person =
-who can claim this money and use it for Charity works, for orphanages, wido=
-ws and also build schools and churches for less privilege that will be name=
-d after my late husband and my name.
+-- 
+2.27.0
 
-I need your urgent answer to know if you will be able to execute this proje=
-ct, and I will give you more information on how the fund will be transferre=
-d to your bank account or online banking.
-
-Thanks
-Mrs. Mina A. Brunel
