@@ -2,87 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F497270E83
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 16:25:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F034270EA2
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 16:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726515AbgISOZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 10:25:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57108 "EHLO mail.kernel.org"
+        id S1726554AbgISOoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 10:44:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726434AbgISOZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 10:25:10 -0400
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726312AbgISOoY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Sep 2020 10:44:24 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 60E4D21582;
-        Sat, 19 Sep 2020 14:25:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5B8912098B;
+        Sat, 19 Sep 2020 14:44:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600525509;
-        bh=kHRkKnYP82SMnFqUKvGenb2khehyXzI7WLF+nQ+tzgw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=2oYZ4BVC2fLdI6wdQldYFviXX+QrY8yA0ESlee7qs0Kg3rxm+3/6PF7RDdoanWhzk
-         7SCrbarFFlCxPmeN8jVVYZ6eN2Dx0WuxN9pBX7Bej1bF3XrffumU+pypQxtnac8AZo
-         1o0OYgAJM/AzKyeyqbeC+5fYnJHhdKDn1nORlUAE=
-Received: by mail-ej1-f50.google.com with SMTP id r7so11824075ejs.11;
-        Sat, 19 Sep 2020 07:25:09 -0700 (PDT)
-X-Gm-Message-State: AOAM532oRJHdcR+yYRD/+FzSvaJSpRXr9lctERxcnRkNsxrPBQ9JP2RJ
-        cRn2Nzdz5QLi/RRmIX6NtWC3RAaQZv6d2xxPMe0=
-X-Google-Smtp-Source: ABdhPJxqLwyyHgA5Kx4Q6V81m6PRoMJ6U0hi/KURq0qDLpn+NftnXz1sAVg2ynpJvB3sE/6Veg68lbEq0jaBtPYIvhc=
-X-Received: by 2002:a17:906:4046:: with SMTP id y6mr43178032ejj.148.1600525507972;
- Sat, 19 Sep 2020 07:25:07 -0700 (PDT)
+        s=default; t=1600526663;
+        bh=Bxl5ZkjXMp2TPSkn3hGdRJLWXUhCroTIN94qZJ785hM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HvAmBzz4j84+nW2I/6iTGG7u+tu/+fVFlTymgUy9x48ZHF94OcJYcK3VRxYLyYTyb
+         gLdVK3Jz7CFYgGvvk2LFTH6hxIvgXGihiig+gwgxNnILZPGg1qc84/ZJiaXzrUMjzZ
+         9BfhiCQpyntL37/8AEdpoY9xJH4Lfe+mv81k+IoQ=
+Date:   Sat, 19 Sep 2020 16:44:51 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Eric Biggers <ebiggers@kernel.org>, linux-fsdevel@vger.kernel.org,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+4191a44ad556eacc1a7a@syzkaller.appspotmail.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Linux-kernel-mentees] [PATCH] fs: fix KMSAN uninit-value bug by
+ initializing nd in do_file_open_root
+Message-ID: <20200919144451.GF2712238@kroah.com>
+References: <20200916052657.18683-1-anant.thazhemadam@gmail.com>
+ <20200916054157.GC825@sol.localdomain>
+ <20200917002238.GO3421308@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-References: <20200904152404.20636-1-krzk@kernel.org> <20200904152404.20636-8-krzk@kernel.org>
- <81a8248f-0d02-5646-36b2-5d4c3a7c4211@linaro.org>
-In-Reply-To: <81a8248f-0d02-5646-36b2-5d4c3a7c4211@linaro.org>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Sat, 19 Sep 2020 16:24:56 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPdJhfUsTqrTCouF+xQ1ChBWipBc6UaOBbewSPfrEw9Mtg@mail.gmail.com>
-Message-ID: <CAJKOXPdJhfUsTqrTCouF+xQ1ChBWipBc6UaOBbewSPfrEw9Mtg@mail.gmail.com>
-Subject: Re: [PATCH v3 07/14] dt-bindings: thermal: imx8mm-thermal: Add i.MX
- 8M Nano compatible
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-mtd@lists.infradead.org, linux-pwm@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-watchdog@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917002238.GO3421308@ZenIV.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 19 Sep 2020 at 13:48, Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
->
-> On 04/09/2020 17:23, Krzysztof Kozlowski wrote:
-> > DTSes with new i.MX 8M SoCs introduce their own compatibles so add them
-> > to fix dtbs_check warnings like:
-> >
-> >   arch/arm64/boot/dts/freescale/imx8mn-evk.dt.yaml: tmu@30260000:
-> >     compatible:0: 'fsl,imx8mn-tmu' is not one of ['fsl,imx8mm-tmu', 'fsl,imx8mp-tmu']
-> >     From schema: Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml
-> >
-> >   arch/arm64/boot/dts/freescale/imx8mn-evk.dt.yaml: tmu@30260000:
-> >     compatible: ['fsl,imx8mn-tmu', 'fsl,imx8mm-tmu'] is too long
-> >
-> >   arch/arm64/boot/dts/freescale/imx8mn-evk.dt.yaml: tmu@30260000:
-> >     compatible: Additional items are not allowed ('fsl,imx8mm-tmu' was unexpected)
-> >
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > Reviewed-by: Rob Herring <robh@kernel.org>
-> > ---
->
-> Shall I pick this patch separately or did you merge the entire series ?
+On Thu, Sep 17, 2020 at 01:22:38AM +0100, Al Viro wrote:
+> On Tue, Sep 15, 2020 at 10:41:57PM -0700, Eric Biggers wrote:
+> 
+> > Looking at the actual KMSAN report, it looks like it's nameidata::dir_mode or
+> > nameidata::dir_uid that is uninitialized.  You need to figure out the correct
+> > solution, not just blindly initialize with zeroes -- that could hide a bug.
+> > Is there a bug that is preventing these fields from being initialized to the
+> > correct values, are these fields being used when they shouldn't be, etc...
+> 
+> False positive, and this is the wrong place to shut it up.
+> 
+> ->dir_uid and ->dir_mode are set when link_path_walk() resolves the pathname
+> to directory + final component.  They are used when deciding whether to reject
+> a trailing symlink (on fs.protected_symlinks setups) and whether to allow
+> creation in sticky directories (on fs.protected_regular and fs.protected_fifos
+> setups).  Both operations really need the results of successful link_path_walk().
+> 
+> I don't see how that could be not a false positive.  If we hit the use in
+> may_create_in_sticky(), we'd need the combination of
+> 	* pathname that consists only of slashes (or it will be initialized)
+> 	* LAST_NORM in nd->last_type, which is flat-out impossible, since
+> we are left with LAST_ROOT for such pathnames.  The same goes for
+> may_follow_link() use - we need WALK_TRAILING in flags to hit it in the
+> first place, which can come from two sources -
+>         return walk_component(nd, WALK_TRAILING);
+> in lookup_last() (and walk_component() won't go anywhere near the
+> call chain leading to may_follow_link() without LAST_NORM in nd->last_type)
+> and
+>         res = step_into(nd, WALK_TRAILING, dentry, inode, seq);
+> in open_last_lookups(), which also won't go anywhere near that line without
+> LAST_NORM in the nd->last_type.
+> 
+> IOW, unless we manage to call that without having called link_path_walk()
+> at all or after link_path_walk() returning an error, we shouldn't hit
+> that.  And if we *do* go there without link_path_walk() or with an error
+> from link_path_walk(), we have a much worse problem.
+> 
+> I want to see the details of reproducer.  If it's for real, we have a much
+> more serious problem; if it's a false positive, the right place to deal
+> with it would be elsewhere (perhaps on return from link_path_walk() with
+> a slashes-only pathname), but in any case it should only be done after we
+> manage to understand what's going on.
 
-Thanks. Rob already picked this up.
+Reproducer is pretty simple:
+	https://syzkaller.appspot.com/text?tag=ReproC&x=13974b2f100000
 
-Best regards,
-Krzysztof
+Now if that is actually valid or not, I don't know...
+
+thanks,
+
+greg k-h
