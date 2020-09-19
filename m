@@ -2,117 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B239D270BC6
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 10:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78914270BC9
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 10:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726216AbgISIRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 04:17:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48730 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726054AbgISIRN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 04:17:13 -0400
-Received: from kernel.org (unknown [87.71.73.56])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B2BD921481;
-        Sat, 19 Sep 2020 08:17:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600503433;
-        bh=T3vHD+t2wwh+JRDOjD6PywHEwj3QURdLWr2DXDdJ9Eg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oq1HgnGLpd/kJhUyal09FR8c6/MJma3nfq0mW9Sav1TAbwGIap2bn5F+ldxCKBWSH
-         TgdlCVi+a7xtDsYOjH18OgegqpQCN7OObO/ttl6jzq6yGIwxT2PBTt2s0N8GH0v5zD
-         TsDy9a6iTV3m8lbvthtBa4MM0gMNYi1AnleUGgH4=
-Date:   Sat, 19 Sep 2020 11:17:06 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Atish Patra <atish.patra@wdc.com>
-Cc:     linux-kernel@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <anup.patel@wdc.com>,
-        linux-riscv@lists.infradead.org,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Zong Li <zong.li@sifive.com>
-Subject: Re: [PATCH v2] RISC-V: Remove any memblock representing unusable
- memory area
-Message-ID: <20200919081706.GP2142832@kernel.org>
-References: <20200917234055.2321977-1-atish.patra@wdc.com>
+        id S1726273AbgISITQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 04:19:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726097AbgISITQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Sep 2020 04:19:16 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7A4AC0613CE;
+        Sat, 19 Sep 2020 01:19:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=IJuNd4Gv09RCWUtcMRiqY/ZG9/GwVj+dhX5p2aRdauU=; b=M3ACm5mAdf7GFn88uis+FydnL
+        bEkrNBoGv79Y3vmqo9+VcsFQzoolHZEHKtd1fBbiM1R9sgRo5eub6AZ+Ap//OXgWSm9yi563pd3OC
+        t2+lOQVlhelmGHK5xdoaRENeAZdHiHvPZIGo++k61VxtxBTOB/vRcYppcL0sUW+qjmkjRoZ2x0uL+
+        2b4FiXSz+AaqUIw9UrV3gMoH00CaCqQFgQLumeWrIXm+BP06dOve4pEH9BaThoAs1KYYeGGMgnPut
+        bn21/hSfFlhzcG9DJHQP8sPChJRdGuU/ROf5pu1iXpsx1WmCgPH9Y5+rM/B4e4WVLrxS/WSOMeoPG
+        Hn6wtjFzw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35542)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kJY5N-0008EB-3k; Sat, 19 Sep 2020 09:19:09 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kJY5K-0007c5-E9; Sat, 19 Sep 2020 09:19:06 +0100
+Date:   Sat, 19 Sep 2020 09:19:06 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v2 0/9] ARM: remove set_fs callers and implementation
+Message-ID: <20200919081906.GV1551@shell.armlinux.org.uk>
+References: <20200918124624.1469673-1-arnd@arndb.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200917234055.2321977-1-atish.patra@wdc.com>
+In-Reply-To: <20200918124624.1469673-1-arnd@arndb.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 04:40:55PM -0700, Atish Patra wrote:
-> RISC-V limits the physical memory size by -PAGE_OFFSET. Any memory beyond
-> that size from DRAM start is unusable. Just remove any memblock pointing
-> to those memory region without worrying about computing the maximum size.
+On Fri, Sep 18, 2020 at 02:46:15PM +0200, Arnd Bergmann wrote:
+> Hi Christoph, Russell,
 > 
-> Signed-off-by: Atish Patra <atish.patra@wdc.com>
-
-With one nit below
-
-Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
-
-> ---
-> Changes from v1->v2:
-> Used memblock_enforce_memory_limit instead of memblock_remove without
-> computing the maximum memory size.
-> ---
->  arch/riscv/mm/init.c | 15 +++++----------
->  1 file changed, 5 insertions(+), 10 deletions(-)
+> Here is an updated series for removing set_fs() from arch/arm,
+> based on the previous feedback.
 > 
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index 787c75f751a5..ed6e83871112 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -146,8 +146,6 @@ static phys_addr_t dtb_early_pa __initdata;
->  void __init setup_bootmem(void)
->  {
->  	struct memblock_region *reg;
-> -	phys_addr_t mem_size = 0;
-> -	phys_addr_t total_mem = 0;
->  	phys_addr_t mem_start, end = 0;
->  	phys_addr_t vmlinux_end = __pa_symbol(&_end);
->  	phys_addr_t vmlinux_start = __pa_symbol(&_start);
-> @@ -155,21 +153,18 @@ void __init setup_bootmem(void)
->  	/* Find the memory region containing the kernel */
->  	for_each_memblock(memory, reg) {
->  		end = reg->base + reg->size;
-> -		if (!total_mem)
-> +		if (!mem_start)
->  			mem_start = reg->base;
->  		if (reg->base <= vmlinux_start && vmlinux_end <= end)
->  			BUG_ON(reg->size == 0);
-> -		total_mem = total_mem + reg->size;
->  	}
->  
->  	/*
-> -	 * Remove memblock from the end of usable area to the
-> -	 * end of region
-> +	 * The maximum physical memory supported is -PAGE_OFFSET.
+> I have tested the oabi-compat changes using the LTP tests for the three
+> modified syscalls using an Armv7 kernel and a Debian 5 OABI user space,
+> and I have lightly tested the get_kernel_nofault infrastructure by
+> loading the test_lockup.ko module after setting CONFIG_DEBUG_SPINLOCK.
 
-Maybe
+I'm not too keen on always saving the syscall number, but for the gain
+of getting rid of set_fs() I think it's worth it. However...
 
-	The maximal supported physical memory size is -PAGE_OFFSET
+I think there are some things to check - what value do you end up
+with as the first number in /proc/self/syscall when you do:
 
+strace cat /proc/self/syscall
 
-> +	 * Make sure that any memory beyond mem_start + (-PAGE_OFFSET) is removed
-> +	 * as it is unusable by kernel.
->  	 */
-> -	mem_size = min(total_mem, (phys_addr_t)-PAGE_OFFSET);
-> -	if (mem_start + mem_size < end)
-> -		memblock_remove(mem_start + mem_size,
-> -				end - mem_start - mem_size);
-> +	memblock_enforce_memory_limit(mem_start - PAGE_OFFSET);
->  
->  	/* Reserve from the start of the kernel to the end of the kernel */
->  	memblock_reserve(vmlinux_start, vmlinux_end - vmlinux_start);
-> -- 
-> 2.25.1
-> 
+?
+
+It should be 3, not 0x900003. I suspect you're getting the latter
+with these changes.  IIRC, task_thread_info(task)->syscall needs to
+be the value _without_ the offset, otherwise tracing will break.
 
 -- 
-Sincerely yours,
-Mike.
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
