@@ -2,171 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89F0C270A78
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 06:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F33E270A81
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 06:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726308AbgISEEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 00:04:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40176 "EHLO
+        id S1726159AbgISEQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 00:16:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726152AbgISEEv (ORCPT
+        with ESMTP id S1726009AbgISEQB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 00:04:51 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B445C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 21:04:51 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id 7so4605758pgm.11
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 21:04:51 -0700 (PDT)
+        Sat, 19 Sep 2020 00:16:01 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B46BC0613CE;
+        Fri, 18 Sep 2020 21:16:01 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id h4so9303508ioe.5;
+        Fri, 18 Sep 2020 21:16:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9Tw/VT6abRABuCODOnmZy5z2Kq1FJN33mmLRQftQB9M=;
-        b=SLgzzufE74BEoJjpZcOn3EKPfDfc/uhsl2wl+I6FP3DDJfZmFvGr9OMgqfYeaYSbO4
-         c/ioBqnUlYb+by5MXp/LkSEG4WpgYtoHTXsn9TVp2CT04+/I3OTXCBTJ5EIE4IBlcjy6
-         nRXRN9Hfr92edtA+aKOYd3rRs6tuMTokFPsXdP/XQ+89Xh1sIleSQ5K87GozIjGPY8Js
-         T6LswBBgqHGqZ/zwI92ueJZXkTqLPdnEYsIKADKcZkOA4QfyCDl838cNt47qm9g65SbU
-         /ITeJ343EhacZMWf0IevCnawFNpDg264s8gs0xqYdSUMFO2/Q2cBKS4j1uwhcrjfi+yi
-         4yqw==
+        bh=MKEE3yp5Rcc/md7pG2bSGfj9ZsRwTbcCIHn5InN/kNw=;
+        b=aGlESU91VLGmqPRG+xHbjCgsyyg5neN9y2SNkYDvUeQ/ri6kC1WlyggLSeUQowP2o3
+         MJ5NU1bEu8TBm/7t2TfhQcrZd4HxQLTHSmRvaNfRYBlCa6N3rg+Lt/9tFIFKogS8UkgA
+         GHeyEaQ3o28fInNlpcYGcX7+tlb0eBwcl+FIh5XCCx5SImQO5UV6LDiEY93RUahk0DuI
+         DU41E/43MjV31NeVL4Dou3FBVxJ/gksWyph1xvb0WoYr8TbCqfpEUBnBmsDFdN/7xj9X
+         tLwwWLvSCL/lInFUsxJakhgPfUhwqb93IYkschuRk9FWmDUQioeCrf4gKAXvQH66XarW
+         RcLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9Tw/VT6abRABuCODOnmZy5z2Kq1FJN33mmLRQftQB9M=;
-        b=qV9QYKVy8kW2kVDSOkez5lJ7GaFfJoOC8GeolcQYDBFrvhSpp3We1xnnvQ5UGuiruQ
-         vck9VVdDpWNp0kYNCUDoigxZu5PF9PyFzc+Vnmfpzy0CCCP/+stYfGqBLQ5130n3jnr/
-         ip57Hfk70hC8AK4nEADZp+OLVoTt2x23J/ycQkzBPp4dcQXi7ufEyMyU0RfP0OEpulgM
-         uOTVxE8IY5AaDcH0ItG5vc+iTN81iNMc70I982edn6chKvlKUItSl0K9qGmQX495KU/m
-         nmvpykoRGQ3f5i08xHOFF9YEpDjf0gAO4YYqgZm4KGCCoLqB7PcK6aYuoCNCoOPeczfE
-         dqzg==
-X-Gm-Message-State: AOAM532G+a3lT/FZiGmmeeP473QzQwVpj6YcXWGdMj4AeQWiPKdDIr2a
-        Co2Hxhc1vvF2ICJkq2HaCdMI4V8yC4qlRMWIL9fMag==
-X-Google-Smtp-Source: ABdhPJw78K/EoK2HyOpx187ms+jNQII1MEFnLFRwW5iZxScNP+NMKFBYliXJncTEafPEtV8yUK129CnKtnGWbejEAio=
-X-Received: by 2002:aa7:8287:0:b029:142:2501:39ec with SMTP id
- s7-20020aa782870000b0290142250139ecmr18340385pfm.59.1600488290025; Fri, 18
- Sep 2020 21:04:50 -0700 (PDT)
+        bh=MKEE3yp5Rcc/md7pG2bSGfj9ZsRwTbcCIHn5InN/kNw=;
+        b=BBbvrpXjUhM6KxYy1rw2kmwuiPEFz189jCrXc4KhH2Xf96xghDp09VbTuJZzsMtz54
+         jxJlnTWdoHSvhMREPqQPTHEB6brXIZv6OkRev0coneyobROmmYwVAq5nPSUZPp1fsGMb
+         WVc5aL6hcY4Px4HMLoXji2++YBZ7ZMNHc7JcvBeEJ86QhGHmxE7v2mxAkrnB0yQSkHSp
+         VoWdZfP/d4ObogNwSsEsRj8rwf34iSA5bsbiBdnrEOiQVnSiYy+BRAkyfUoPonupF23A
+         OM2Z5ZbwFUFymw0v4fQeEoyJkMKz8kkOOXrLsxzUCBRUAfXV3zHs4Tmqywa/c/4HYDwO
+         FOIw==
+X-Gm-Message-State: AOAM531XG9oE4fsn8whqES6MO9KqhYZ7q3BTBZM5Ny2Pb/jJC250hr2H
+        hucBG3c2HVI4QQtKBWUwo3jJsJS9VUW3t2uA5JMg08ohyos=
+X-Google-Smtp-Source: ABdhPJwKnTGflf3OjRpTv6fCq3h03LLJfNJI6RfNDUunk5g2o2wcmnT9KK1bw3XsjwKQAmkTA2xcwBBV8pBnPKwMV/8=
+X-Received: by 2002:a5d:8a04:: with SMTP id w4mr29941997iod.68.1600488960801;
+ Fri, 18 Sep 2020 21:16:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200905060412.88560-1-songmuchun@bytedance.com> <20200918124600.69e94b71@gandalf.local.home>
-In-Reply-To: <20200918124600.69e94b71@gandalf.local.home>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Sat, 19 Sep 2020 12:04:13 +0800
-Message-ID: <CAMZfGtViXY2F-fMxGeegiCqrFs5wTUpQKmovbDSGwzvCfe8T3Q@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] tasklet: Introduce tasklet tracepoints
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, romain.perier@gmail.com,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20200916074214.995128-1-Tony.Ambardar@gmail.com>
+ <20200917000757.1232850-1-Tony.Ambardar@gmail.com> <87363gpqhz.fsf@mpe.ellerman.id.au>
+ <CAK8P3a3FVoDzNb1TOA6cRQDdEc+st7KkBL70t0FeStEziQG4+A__37056.5000850306$1600351707$gmane$org@mail.gmail.com>
+ <87h7rw321o.fsf@igel.home>
+In-Reply-To: <87h7rw321o.fsf@igel.home>
+From:   Tony Ambardar <tony.ambardar@gmail.com>
+Date:   Fri, 18 Sep 2020 21:15:50 -0700
+Message-ID: <CAPGftE__Mh2Fp_v=Vhm3cQ1PHNFETMsXET6raTpLav-BbVQvbw@mail.gmail.com>
+Subject: Re: [PATCH v2] powerpc: fix EDEADLOCK redefinition error in uapi/asm/errno.h
+To:     Andreas Schwab <schwab@linux-m68k.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Rosen Penev <rosenp@gmail.com>, bpf <bpf@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 19, 2020 at 12:46 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+On Thu, 17 Sep 2020 at 07:34, Andreas Schwab <schwab@linux-m68k.org> wrote:
 >
-> On Sat,  5 Sep 2020 14:04:12 +0800
-> Muchun Song <songmuchun@bytedance.com> wrote:
+> On Sep 17 2020, Arnd Bergmann wrote:
 >
-> > Introduce tracepoints for tasklets just like softirq does. In this case,
-> > we can calculate tasklet latency and know what tasklet run.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  include/trace/events/irq.h | 44 ++++++++++++++++++++++++++++++++++++++
-> >  kernel/softirq.c           |  2 ++
-> >  2 files changed, 46 insertions(+)
-> >
-> > diff --git a/include/trace/events/irq.h b/include/trace/events/irq.h
-> > index eeceafaaea4c..69a16f3a21c2 100644
-> > --- a/include/trace/events/irq.h
-> > +++ b/include/trace/events/irq.h
-> > @@ -160,6 +160,50 @@ DEFINE_EVENT(softirq, softirq_raise,
-> >       TP_ARGS(vec_nr)
-> >  );
-> >
-> > +DECLARE_EVENT_CLASS(tasklet,
-> > +
-> > +     TP_PROTO(struct tasklet_struct *t),
-> > +
-> > +     TP_ARGS(t),
-> > +
-> > +     TP_STRUCT__entry(
-> > +             __field(        void *, callback        )
-> > +     ),
-> > +
-> > +     TP_fast_assign(
-> > +             __entry->callback = t->callback;
+> > The errno man page says they are supposed to be synonyms,
+> > and glibc defines it that way, while musl uses the numbers
+> > from the kernel.
 >
-> I think you need to replicate the logic in the code:
+> glibc also uses whatever the kernel defines.
 >
->                 if (t->use_callback)
->                         __entry->callback = t->callback;
->                 else
->                         __entry->callback = t->func;
+That's right, and from my investigation this isn't a libc issue. The
+various libc flavours simply try to follow POSIX and the PPC ABI and
+aren't doing anything wrong.
 
-The `callback` and `func` is union and `callback` will replace
-`func` someday in the feature. So I think that here we use
-`t->callback` is enough. Right? Thanks.
+See errno.h for example (https://man7.org/linux/man-pages/man3/errno.3.html):
+  EDEADLK: Resource deadlock avoided (POSIX.1-2001).
+  EDEADLOCK: On most architectures, a synonym for EDEADLK.  On some
+architectures (e.g., Linux MIPS, PowerPC, SPARC), it is a separate
+error code "File locking deadlock error".
 
->
-> -- Steve
->
-> > +     ),
-> > +
-> > +     TP_printk("callback=%ps", __entry->callback)
-> > +);
-> > +
-> > +/**
-> > + * tasklet_entry - called immediately before the tasklet handler
-> > + * @t: pointer to struct tasklet_struct
-> > + *
-> > + * When used in combination with the tasklet_exit tracepoint
-> > + * we can determine the tasklet handler routine.
-> > + */
-> > +DEFINE_EVENT(tasklet, tasklet_entry,
-> > +
-> > +     TP_PROTO(struct tasklet_struct *t),
-> > +
-> > +     TP_ARGS(t)
-> > +);
-> > +
-> > +/**
-> > + * tasklet_exit - called immediately after the tasklet handler returns
-> > + * @t: pointer to struct tasklet_struct
-> > + *
-> > + * When used in combination with the tasklet_entry tracepoint
-> > + * we can determine the tasklet handler routine.
-> > + */
-> > +DEFINE_EVENT(tasklet, tasklet_exit,
-> > +
-> > +     TP_PROTO(struct tasklet_struct *t),
-> > +
-> > +     TP_ARGS(t)
-> > +);
-> >  #endif /*  _TRACE_IRQ_H */
-> >
-> >  /* This part must be outside protection */
-> > diff --git a/kernel/softirq.c b/kernel/softirq.c
-> > index bf88d7f62433..0f9f5b2cc3d3 100644
-> > --- a/kernel/softirq.c
-> > +++ b/kernel/softirq.c
-> > @@ -553,10 +553,12 @@ static void tasklet_action_common(struct softirq_action *a,
-> >                               if (!test_and_clear_bit(TASKLET_STATE_SCHED,
-> >                                                       &t->state))
-> >                                       BUG();
-> > +                             trace_tasklet_entry(t);
-> >                               if (t->use_callback)
-> >                                       t->callback(t);
-> >                               else
-> >                                       t->func(t->data);
-> > +                             trace_tasklet_exit(t);
-> >                               tasklet_unlock(t);
-> >                               continue;
-> >                       }
->
+The root cause is unique to the Linux PPC code in
+arch/powerpc/include/uapi/asm/errno.h:
+  >/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+  >#ifndef _ASM_POWERPC_ERRNO_H
+  >#define _ASM_POWERPC_ERRNO_H
+  >
+  >#include <asm-generic/errno.h>
+  >
+  >#undef  EDEADLOCK
+  >#define EDEADLOCK       58      /* File locking deadlock error */
+  >
+  >#endif  /* _ASM_POWERPC_ERRNO_H */
 
+It includes "<asm-generic/errno.h>" to pull in various definitions but
+has the side-effect of redefining EDEADLOCK to a non-ABI value which
+conflicts with the libc errno.h, as I outline in the patch
+description. Other arches which also use different EDEADLOCK and
+EDEADLK values (mips,sparc) do not do this. They define EDEADLOCK
+*once*, with an ABI-consistent value, and don't have the same issue.
 
--- 
-Yours,
-Muchun
+The problem goes back a ways (as Arnd points out), affecting current
+stable and all LTS branches, so would be nice to get this sorted out.
+I'm certainly interested if there's a better way than proposed in this
+patch.
+
+> Andreas.
+>
+> --
+> Andreas Schwab, schwab@linux-m68k.org
+> GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+> "And now for something completely different."
