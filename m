@@ -2,30 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C836A270C4A
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 11:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4384D270C49
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 11:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726201AbgISJqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726371AbgISJqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sat, 19 Sep 2020 05:46:44 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:54814 "EHLO huawei.com"
+Received: from szxga07-in.huawei.com ([45.249.212.35]:47456 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726202AbgISJqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 05:46:36 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id D875968D08076370B470;
-        Sat, 19 Sep 2020 17:46:33 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Sat, 19 Sep 2020
- 17:46:26 +0800
+        id S1726307AbgISJqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Sep 2020 05:46:39 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 94376AA78F333804EE86;
+        Sat, 19 Sep 2020 17:46:35 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Sat, 19 Sep 2020
+ 17:46:27 +0800
 From:   Liu Shixin <liushixin2@huawei.com>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        "Neil Armstrong" <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+CC:     <linux-rtc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-amlogic@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
         "Liu Shixin" <liushixin2@huawei.com>
-Subject: [PATCH -next] mtd: vmu-flash: simplify the return expression of probe_maple_vmu
-Date:   Sat, 19 Sep 2020 18:08:54 +0800
-Message-ID: <20200919100854.1639267-1-liushixin2@huawei.com>
+Subject: [PATCH -next] rtc: meson: simplify the return expression of meson_vrtc_probe
+Date:   Sat, 19 Sep 2020 18:08:56 +0800
+Message-ID: <20200919100856.1639319-1-liushixin2@huawei.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -40,34 +46,34 @@ Simplify the return expression.
 
 Signed-off-by: Liu Shixin <liushixin2@huawei.com>
 ---
- drivers/mtd/maps/vmu-flash.c | 7 +------
+ drivers/rtc/rtc-meson-vrtc.c | 7 +------
  1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/maps/vmu-flash.c b/drivers/mtd/maps/vmu-flash.c
-index 177bf134e189..588e82de581c 100644
---- a/drivers/mtd/maps/vmu-flash.c
-+++ b/drivers/mtd/maps/vmu-flash.c
-@@ -772,7 +772,6 @@ static void vmu_file_error(struct maple_device *mdev, void *recvbuf)
- 
- static int probe_maple_vmu(struct device *dev)
+diff --git a/drivers/rtc/rtc-meson-vrtc.c b/drivers/rtc/rtc-meson-vrtc.c
+index 89e5ba0dae69..e6bd0808a092 100644
+--- a/drivers/rtc/rtc-meson-vrtc.c
++++ b/drivers/rtc/rtc-meson-vrtc.c
+@@ -65,7 +65,6 @@ static const struct rtc_class_ops meson_vrtc_ops = {
+ static int meson_vrtc_probe(struct platform_device *pdev)
  {
--	int error;
- 	struct maple_device *mdev = to_maple_dev(dev);
- 	struct maple_driver *mdrv = to_maple_driver(dev->driver);
+ 	struct meson_vrtc_data *vrtc;
+-	int ret;
  
-@@ -780,11 +779,7 @@ static int probe_maple_vmu(struct device *dev)
- 	mdev->fileerr_handler = vmu_file_error;
- 	mdev->driver = mdrv;
+ 	vrtc = devm_kzalloc(&pdev->dev, sizeof(*vrtc), GFP_KERNEL);
+ 	if (!vrtc)
+@@ -84,11 +83,7 @@ static int meson_vrtc_probe(struct platform_device *pdev)
+ 		return PTR_ERR(vrtc->rtc);
  
--	error = vmu_connect(mdev);
--	if (error)
--		return error;
+ 	vrtc->rtc->ops = &meson_vrtc_ops;
+-	ret = rtc_register_device(vrtc->rtc);
+-	if (ret)
+-		return ret;
 -
 -	return 0;
-+	return vmu_connect(mdev);
++	return rtc_register_device(vrtc->rtc);
  }
  
- static int remove_maple_vmu(struct device *dev)
+ static int __maybe_unused meson_vrtc_suspend(struct device *dev)
 -- 
 2.25.1
 
