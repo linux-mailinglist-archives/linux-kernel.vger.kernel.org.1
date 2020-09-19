@@ -2,205 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2CA6270B15
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 08:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC571270B13
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 08:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgISGWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 02:22:37 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:29843 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726112AbgISGWf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 02:22:35 -0400
-X-Greylist: delayed 137514 seconds by postgrey-1.27 at vger.kernel.org; Sat, 19 Sep 2020 02:22:34 EDT
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 08J6MBlG013966;
-        Sat, 19 Sep 2020 15:22:11 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 08J6MBlG013966
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1600496532;
-        bh=3qpLDuWy/DcoGkn4p3JVkeymEbMB7rJdUSRKY9QQZKc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=wRMTMSfMOuL9Xf72hlZ42qrP5U1IBm+MptAkfb6n8TnJi4NXAvyPyHBJy7FOxpiJR
-         KgXqI4Up6hXdRiqQi3bb+h/vDllcwRoDaRiabmusTVaYiZuJBFTyDjLKPzJZe3ypFN
-         qk9jE19qJ0NWY02tEN1Uq/FclMegtoOA9QA7CpkddZUdYbcb3/4JsUgcGKMbBKHXBa
-         Ws0OWUb+pjG0LHJy9ynO82wpLDKcvrxATiXVmBaiVOQAS159FeU/tXSFma6395xTU/
-         KWSTzP8PwwcSlLwO+tx/tO5UpQ8DvJG0fyRQQTyeB9lGp0qtpNN4lacsG+bgE6WCLn
-         epVfcVFZMokUg==
-X-Nifty-SrcIP: [209.85.215.176]
-Received: by mail-pg1-f176.google.com with SMTP id s65so4765028pgb.0;
-        Fri, 18 Sep 2020 23:22:11 -0700 (PDT)
-X-Gm-Message-State: AOAM532YI7rqzaHixAd6QzMGicuD4GgLU7p6Ils/e2xqoIxzJOCdd0/q
-        MfMwdW7QD4F6Q2vULQ2XnSyzKwpmzrIKupWhcAE=
-X-Google-Smtp-Source: ABdhPJxJkXyCd6E0zMHk36ByBV/pa6RSIREVA4aqiLpGXE/V99ureSaipjtIDpiJTeT1xFn+XHzf+JVFpzfxQpTImpk=
-X-Received: by 2002:a63:d242:: with SMTP id t2mr30414737pgi.47.1600496530866;
- Fri, 18 Sep 2020 23:22:10 -0700 (PDT)
+        id S1726280AbgISGWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 02:22:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34172 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726129AbgISGWe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Sep 2020 02:22:34 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E5B1222208;
+        Sat, 19 Sep 2020 06:22:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600496553;
+        bh=Kuxz2KrdTf20dNUtZmk07m7aaNkacgtNpBvw3SbUQYw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aH6o+6KJlF936JU2BCeVAUcxGQ/1gZEVmZcXoqFYc60DOttLJNcVoRL1mpBaYL5U6
+         MAFlBhaIVxRRNStv/oLtoo1Zl/199MRZs1GlgXN5Lijz19bh9crAinFJoScH+lIE3R
+         v1e+4bCe08tdcmWrOFkSjNuvabUHL0WDZTvaE9uQ=
+Date:   Sat, 19 Sep 2020 08:22:28 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Denis Efremov <efremov@linux.com>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH V3 6/8] mm: and drivers core: Convert
+ hugetlb_report_node_meminfo to sysfs_emit
+Message-ID: <20200919062228.GA438957@kroah.com>
+References: <cover.1600285923.git.joe@perches.com>
+ <894b351b82da6013cde7f36ff4b5493cd0ec30d0.1600285923.git.joe@perches.com>
 MIME-Version: 1.0
-References: <20200918215010.250580-1-pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20200918215010.250580-1-pierre-louis.bossart@linux.intel.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 19 Sep 2020 15:21:34 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATUcRpCvu9iQd_s9i5+3kRA96O+DMd-QGbAu-swmVuauw@mail.gmail.com>
-Message-ID: <CAK7LNATUcRpCvu9iQd_s9i5+3kRA96O+DMd-QGbAu-swmVuauw@mail.gmail.com>
-Subject: Re: [PATCH] modpost: allow modpost to fail on warnings
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Filipe Brandenburger <filbranden@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Michael Davidson <md@google.com>,
-        Eugene Surovegin <surovegin@google.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <894b351b82da6013cde7f36ff4b5493cd0ec30d0.1600285923.git.joe@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 19, 2020 at 6:50 AM Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
->
-> From: Filipe Brandenburger <filbranden@google.com>
->
-> Set KBUILD_MODPOST_FAIL_ON_WARNINGS to a non-empty value to make the
-> kbuild fail when modpost generates any warnings. This will avoid
-> misses such as [1] where the SOF CI did not catch a missing module
-> license.
->
-> This was initially contributed in 2016 [2], rebase/clean-ups and tests
-> by Pierre Bossart.
->
-> Test example:
-> $ KBUILD_MODPOST_FAIL_ON_WARNINGS=1 make
->   GEN     Makefile
->   DESCEND  objtool
->   CALL    sof-dev/scripts/atomic/check-atomics.sh
->   CALL    sof-dev/scripts/checksyscalls.sh
->   CHK     include/generated/compile.h
->   MODPOST Module.symvers
-> Kernel: arch/x86/boot/bzImage is ready  (#13)
-> WARNING: modpost: missing MODULE_LICENSE() in sound/soc/intel/boards/snd-soc-sof-sdw.o
-> make[2]: *** [sof-dev/scripts/Makefile.modpost:114: Module.symvers] Error 2
-
-
-I think [1] should be an error instead of a warning
-by default.
-
-
-
-> [1] https://lkml.org/lkml/2020/9/17/2343
-> [2] https://patchwork.kernel.org/patch/8343431/
->
-> Signed-off-by: Filipe Brandenburger <filbranden@google.com>
-> Cc: Greg Thelen <gthelen@google.com>
-> Cc: Michael Davidson <md@google.com>
-> Cc: Eugene Surovegin <surovegin@google.com>
-> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-> Co-developed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+On Wed, Sep 16, 2020 at 01:40:43PM -0700, Joe Perches wrote:
+> Convert the unbound sprintf in hugetlb_report_node_meminfo to use
+> sysfs_emit_at so that no possible overrun of a PAGE_SIZE buf can occur.
+> 
+> Signed-off-by: Joe Perches <joe@perches.com>
 > ---
->  Documentation/kbuild/kbuild.rst |  5 +++++
->  scripts/Makefile.modpost        |  5 ++++-
->  scripts/mod/modpost.c           | 12 +++++++++++-
->  3 files changed, 20 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/kbuild/kbuild.rst b/Documentation/kbuild/kbuild.rst
-> index 2d1fc03d346e..cc102aad8619 100644
-> --- a/Documentation/kbuild/kbuild.rst
-> +++ b/Documentation/kbuild/kbuild.rst
-> @@ -229,6 +229,11 @@ KBUILD_MODPOST_WARN can be set to avoid errors in case of undefined
->  symbols in the final module linking stage. It changes such errors
->  into warnings.
->
-> +KBUILD_MODPOST_FAIL_ON_WARNINGS
-> +-------------------------------
-> +KBUILD_MODPOST_FAIL_ON_WARNINGS can be set to turn all warnings into
-> +errors in the final module linking stage.
-> +
->  KBUILD_MODPOST_NOFINAL
->  ----------------------
->  KBUILD_MODPOST_NOFINAL can be set to skip the final link of modules.
-> diff --git a/scripts/Makefile.modpost b/scripts/Makefile.modpost
-> index f54b6ac37ac2..69297cd6f8ce 100644
-> --- a/scripts/Makefile.modpost
-> +++ b/scripts/Makefile.modpost
-> @@ -34,6 +34,8 @@
->
->  # KBUILD_MODPOST_WARN can be set to avoid error out in case of undefined
->  # symbols in the final module linking stage
-> +# KBUILD_MODPOST_FAIL_ON_WARNINGS can be set to fail whenever modpost
-> +# generates warnings
->  # KBUILD_MODPOST_NOFINAL can be set to skip the final link of modules.
->  # This is solely useful to speed up test compiles
->
-> @@ -47,7 +49,8 @@ MODPOST = scripts/mod/modpost                                                         \
->         $(if $(CONFIG_MODVERSIONS),-m)                                                  \
->         $(if $(CONFIG_MODULE_SRCVERSION_ALL),-a)                                        \
->         $(if $(CONFIG_SECTION_MISMATCH_WARN_ONLY),,-E)                                  \
-> -       $(if $(KBUILD_MODPOST_WARN),-w) \
-> +       $(if $(KBUILD_MODPOST_WARN),-w)                                                 \
-> +       $(if $(KBUILD_MODPOST_FAIL_ON_WARNINGS),-F)                                     \
->         -o $@
->
->  ifdef MODPOST_VMLINUX
-> diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-> index 69341b36f271..422f1cfca289 100644
-> --- a/scripts/mod/modpost.c
-> +++ b/scripts/mod/modpost.c
-> @@ -39,6 +39,9 @@ static int sec_mismatch_fatal = 0;
->  static int ignore_missing_files;
->  /* If set to 1, only warn (instead of error) about missing ns imports */
->  static int allow_missing_ns_imports;
-> +/* Turn warnings into errors */
-> +static int fail_on_warnings;
-> +static int warnings_count;
->
->  enum export {
->         export_plain,      export_unused,     export_gpl,
-> @@ -59,6 +62,7 @@ modpost_log(enum loglevel loglevel, const char *fmt, ...)
->         switch (loglevel) {
->         case LOG_WARN:
->                 fprintf(stderr, "WARNING: ");
-> +               warnings_count++;
->                 break;
->         case LOG_ERROR:
->                 fprintf(stderr, "ERROR: ");
-> @@ -2559,7 +2563,7 @@ int main(int argc, char **argv)
->         struct dump_list *dump_read_start = NULL;
->         struct dump_list **dump_read_iter = &dump_read_start;
->
-> -       while ((opt = getopt(argc, argv, "ei:mnT:o:awENd:")) != -1) {
-> +       while ((opt = getopt(argc, argv, "ei:mnT:o:awEFNd:")) != -1) {
->                 switch (opt) {
->                 case 'e':
->                         external_module = 1;
-> @@ -2588,6 +2592,9 @@ int main(int argc, char **argv)
->                 case 'w':
->                         warn_unresolved = 1;
->                         break;
-> +               case 'F':
-> +                       fail_on_warnings = 1;
-> +                       break;
->                 case 'E':
->                         sec_mismatch_fatal = 1;
->                         break;
-> @@ -2671,5 +2678,8 @@ int main(int argc, char **argv)
->
->         free(buf.p);
->
-> +       if (fail_on_warnings && warnings_count)
-> +               err |= 2;
-> +
->         return err;
+>  drivers/base/node.c     |  2 +-
+>  include/linux/hugetlb.h |  4 ++--
+>  mm/hugetlb.c            | 18 ++++++++++--------
+>  3 files changed, 13 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/base/node.c b/drivers/base/node.c
+> index b33526a9fcfc..dafe03e82e7c 100644
+> --- a/drivers/base/node.c
+> +++ b/drivers/base/node.c
+> @@ -473,7 +473,7 @@ static ssize_t node_read_meminfo(struct device *dev,
+>  				    HPAGE_PMD_NR)
+>  #endif
+>  			    );
+> -	len += hugetlb_report_node_meminfo(nid, buf + len);
+> +	len += hugetlb_report_node_meminfo(buf, len, nid);
+>  	return len;
 >  }
-> --
-> 2.25.1
->
+>  
+> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> index d5cc5f802dd4..ebca2ef02212 100644
+> --- a/include/linux/hugetlb.h
+> +++ b/include/linux/hugetlb.h
+> @@ -129,7 +129,7 @@ void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
+>  				unsigned long start, unsigned long end,
+>  				struct page *ref_page);
+>  void hugetlb_report_meminfo(struct seq_file *);
+> -int hugetlb_report_node_meminfo(int, char *);
+> +int hugetlb_report_node_meminfo(char *buf, int len, int nid);
+>  void hugetlb_show_meminfo(void);
+>  unsigned long hugetlb_total_pages(void);
+>  vm_fault_t hugetlb_fault(struct mm_struct *mm, struct vm_area_struct *vma,
+> @@ -245,7 +245,7 @@ static inline void hugetlb_report_meminfo(struct seq_file *m)
+>  {
+>  }
+>  
+> -static inline int hugetlb_report_node_meminfo(int nid, char *buf)
+> +static inline int hugetlb_report_node_meminfo(char *buf, int len, int nid)
+>  {
+>  	return 0;
+>  }
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 61469fd3ad92..fe76f8fd5a73 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -3571,18 +3571,20 @@ void hugetlb_report_meminfo(struct seq_file *m)
+>  	seq_printf(m, "Hugetlb:        %8lu kB\n", total / 1024);
+>  }
+>  
+> -int hugetlb_report_node_meminfo(int nid, char *buf)
+> +int hugetlb_report_node_meminfo(char *buf, int len, int nid)
+>  {
+>  	struct hstate *h = &default_hstate;
+> +
+>  	if (!hugepages_supported())
+>  		return 0;
+> -	return sprintf(buf,
+> -		"Node %d HugePages_Total: %5u\n"
+> -		"Node %d HugePages_Free:  %5u\n"
+> -		"Node %d HugePages_Surp:  %5u\n",
+> -		nid, h->nr_huge_pages_node[nid],
+> -		nid, h->free_huge_pages_node[nid],
+> -		nid, h->surplus_huge_pages_node[nid]);
+> +
+> +	return sysfs_emit_at(buf, len,
+> +			     "Node %d HugePages_Total: %5u\n"
+> +			     "Node %d HugePages_Free:  %5u\n"
+> +			     "Node %d HugePages_Surp:  %5u\n",
+> +			     nid, h->nr_huge_pages_node[nid],
+> +			     nid, h->free_huge_pages_node[nid],
+> +			     nid, h->surplus_huge_pages_node[nid]);
+>  }
 
+That is NOT one-value-per-file, which is required for sysfs files.  This
+should be 3 different sysfs files.
 
--- 
-Best Regards
-Masahiro Yamada
+Ugh.
+
+But that's separate from this series, thanks for redoing this.  I'll
+take a look at it on Monday...
+
+thanks,
+
+greg k-h
