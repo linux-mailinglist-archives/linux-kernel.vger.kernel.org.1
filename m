@@ -2,64 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C52A270A13
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 04:36:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29BD3270A15
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 04:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbgISCgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 22:36:50 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13710 "EHLO huawei.com"
+        id S1726262AbgISCiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 22:38:03 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13711 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726054AbgISCgu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 22:36:50 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id F0781500FCD49F045492;
-        Sat, 19 Sep 2020 10:36:46 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 19 Sep 2020 10:36:38 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <bryan.whitehead@microchip.com>, <UNGLinuxDriver@microchip.com>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH net-next] net: microchip: Remove set but not used variable
-Date:   Sat, 19 Sep 2020 10:37:32 +0800
-Message-ID: <20200919023732.23656-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726054AbgISCiD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 22:38:03 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 6D4AD5756FE30B666C8F;
+        Sat, 19 Sep 2020 10:38:00 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 19 Sep 2020 10:37:54 +0800
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+To:     John Garry <john.garry@huawei.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Qinglang Miao" <miaoqinglang@huawei.com>
+Subject: [PATCH -next v2] scsi: hisi_sas: Convert to DEFINE_SHOW_ATTRIBUTE
+Date:   Sat, 19 Sep 2020 10:38:25 +0800
+Message-ID: <20200919023825.5798-1-miaoqinglang@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.138.68]
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes gcc '-Wunused-but-set-variable' warning:
+Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
 
-drivers/net/ethernet/microchip/lan743x_main.c: In function lan743x_pm_suspend:
-drivers/net/ethernet/microchip/lan743x_main.c:3041:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
-
-`ret` is never used, so remove it.
-
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- drivers/net/ethernet/microchip/lan743x_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v2: based on linux-next(20200917), and can be applied to
+    mainline cleanly now.
 
-diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
-index de93cc6ebc1a..56a1b5928f9a 100644
---- a/drivers/net/ethernet/microchip/lan743x_main.c
-+++ b/drivers/net/ethernet/microchip/lan743x_main.c
-@@ -3053,7 +3053,7 @@ static int lan743x_pm_suspend(struct device *dev)
- 	/* Host sets PME_En, put D3hot */
- 	ret = pci_prepare_to_sleep(pdev);
- 
--	return 0;
-+	return ret;
+ drivers/scsi/hisi_sas/hisi_sas_main.c | 137 ++------------------------
+ 1 file changed, 10 insertions(+), 127 deletions(-)
+
+diff --git a/drivers/scsi/hisi_sas/hisi_sas_main.c b/drivers/scsi/hisi_sas/hisi_sas_main.c
+index afc7ba892..11ad710cb 100644
+--- a/drivers/scsi/hisi_sas/hisi_sas_main.c
++++ b/drivers/scsi/hisi_sas/hisi_sas_main.c
+@@ -2870,19 +2870,7 @@ static int hisi_sas_debugfs_global_show(struct seq_file *s, void *p)
+ 	return 0;
  }
  
- static int lan743x_pm_resume(struct device *dev)
+-static int hisi_sas_debugfs_global_open(struct inode *inode, struct file *filp)
+-{
+-	return single_open(filp, hisi_sas_debugfs_global_show,
+-			   inode->i_private);
+-}
+-
+-static const struct file_operations hisi_sas_debugfs_global_fops = {
+-	.open = hisi_sas_debugfs_global_open,
+-	.read = seq_read,
+-	.llseek = seq_lseek,
+-	.release = single_release,
+-	.owner = THIS_MODULE,
+-};
++DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_global);
+ 
+ static int hisi_sas_debugfs_axi_show(struct seq_file *s, void *p)
+ {
+@@ -2897,19 +2885,7 @@ static int hisi_sas_debugfs_axi_show(struct seq_file *s, void *p)
+ 	return 0;
+ }
+ 
+-static int hisi_sas_debugfs_axi_open(struct inode *inode, struct file *filp)
+-{
+-	return single_open(filp, hisi_sas_debugfs_axi_show,
+-			   inode->i_private);
+-}
+-
+-static const struct file_operations hisi_sas_debugfs_axi_fops = {
+-	.open = hisi_sas_debugfs_axi_open,
+-	.read = seq_read,
+-	.llseek = seq_lseek,
+-	.release = single_release,
+-	.owner = THIS_MODULE,
+-};
++DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_axi);
+ 
+ static int hisi_sas_debugfs_ras_show(struct seq_file *s, void *p)
+ {
+@@ -2924,19 +2900,7 @@ static int hisi_sas_debugfs_ras_show(struct seq_file *s, void *p)
+ 	return 0;
+ }
+ 
+-static int hisi_sas_debugfs_ras_open(struct inode *inode, struct file *filp)
+-{
+-	return single_open(filp, hisi_sas_debugfs_ras_show,
+-			   inode->i_private);
+-}
+-
+-static const struct file_operations hisi_sas_debugfs_ras_fops = {
+-	.open = hisi_sas_debugfs_ras_open,
+-	.read = seq_read,
+-	.llseek = seq_lseek,
+-	.release = single_release,
+-	.owner = THIS_MODULE,
+-};
++DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_ras);
+ 
+ static int hisi_sas_debugfs_port_show(struct seq_file *s, void *p)
+ {
+@@ -2951,18 +2915,7 @@ static int hisi_sas_debugfs_port_show(struct seq_file *s, void *p)
+ 	return 0;
+ }
+ 
+-static int hisi_sas_debugfs_port_open(struct inode *inode, struct file *filp)
+-{
+-	return single_open(filp, hisi_sas_debugfs_port_show, inode->i_private);
+-}
+-
+-static const struct file_operations hisi_sas_debugfs_port_fops = {
+-	.open = hisi_sas_debugfs_port_open,
+-	.read = seq_read,
+-	.llseek = seq_lseek,
+-	.release = single_release,
+-	.owner = THIS_MODULE,
+-};
++DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_port);
+ 
+ static void hisi_sas_show_row_64(struct seq_file *s, int index,
+ 				 int sz, __le64 *ptr)
+@@ -3019,18 +2972,7 @@ static int hisi_sas_debugfs_cq_show(struct seq_file *s, void *p)
+ 	return 0;
+ }
+ 
+-static int hisi_sas_debugfs_cq_open(struct inode *inode, struct file *filp)
+-{
+-	return single_open(filp, hisi_sas_debugfs_cq_show, inode->i_private);
+-}
+-
+-static const struct file_operations hisi_sas_debugfs_cq_fops = {
+-	.open = hisi_sas_debugfs_cq_open,
+-	.read = seq_read,
+-	.llseek = seq_lseek,
+-	.release = single_release,
+-	.owner = THIS_MODULE,
+-};
++DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_cq);
+ 
+ static void hisi_sas_dq_show_slot(struct seq_file *s, int slot, void *dq_ptr)
+ {
+@@ -3052,18 +2994,7 @@ static int hisi_sas_debugfs_dq_show(struct seq_file *s, void *p)
+ 	return 0;
+ }
+ 
+-static int hisi_sas_debugfs_dq_open(struct inode *inode, struct file *filp)
+-{
+-	return single_open(filp, hisi_sas_debugfs_dq_show, inode->i_private);
+-}
+-
+-static const struct file_operations hisi_sas_debugfs_dq_fops = {
+-	.open = hisi_sas_debugfs_dq_open,
+-	.read = seq_read,
+-	.llseek = seq_lseek,
+-	.release = single_release,
+-	.owner = THIS_MODULE,
+-};
++DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_dq);
+ 
+ static int hisi_sas_debugfs_iost_show(struct seq_file *s, void *p)
+ {
+@@ -3080,18 +3011,7 @@ static int hisi_sas_debugfs_iost_show(struct seq_file *s, void *p)
+ 	return 0;
+ }
+ 
+-static int hisi_sas_debugfs_iost_open(struct inode *inode, struct file *filp)
+-{
+-	return single_open(filp, hisi_sas_debugfs_iost_show, inode->i_private);
+-}
+-
+-static const struct file_operations hisi_sas_debugfs_iost_fops = {
+-	.open = hisi_sas_debugfs_iost_open,
+-	.read = seq_read,
+-	.llseek = seq_lseek,
+-	.release = single_release,
+-	.owner = THIS_MODULE,
+-};
++DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_iost);
+ 
+ static int hisi_sas_debugfs_iost_cache_show(struct seq_file *s, void *p)
+ {
+@@ -3117,20 +3037,7 @@ static int hisi_sas_debugfs_iost_cache_show(struct seq_file *s, void *p)
+ 	return 0;
+ }
+ 
+-static int hisi_sas_debugfs_iost_cache_open(struct inode *inode,
+-					    struct file *filp)
+-{
+-	return single_open(filp, hisi_sas_debugfs_iost_cache_show,
+-			   inode->i_private);
+-}
+-
+-static const struct file_operations hisi_sas_debugfs_iost_cache_fops = {
+-	.open = hisi_sas_debugfs_iost_cache_open,
+-	.read = seq_read,
+-	.llseek = seq_lseek,
+-	.release = single_release,
+-	.owner = THIS_MODULE,
+-};
++DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_iost_cache);
+ 
+ static int hisi_sas_debugfs_itct_show(struct seq_file *s, void *p)
+ {
+@@ -3147,18 +3054,7 @@ static int hisi_sas_debugfs_itct_show(struct seq_file *s, void *p)
+ 	return 0;
+ }
+ 
+-static int hisi_sas_debugfs_itct_open(struct inode *inode, struct file *filp)
+-{
+-	return single_open(filp, hisi_sas_debugfs_itct_show, inode->i_private);
+-}
+-
+-static const struct file_operations hisi_sas_debugfs_itct_fops = {
+-	.open = hisi_sas_debugfs_itct_open,
+-	.read = seq_read,
+-	.llseek = seq_lseek,
+-	.release = single_release,
+-	.owner = THIS_MODULE,
+-};
++DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_itct);
+ 
+ static int hisi_sas_debugfs_itct_cache_show(struct seq_file *s, void *p)
+ {
+@@ -3184,20 +3080,7 @@ static int hisi_sas_debugfs_itct_cache_show(struct seq_file *s, void *p)
+ 	return 0;
+ }
+ 
+-static int hisi_sas_debugfs_itct_cache_open(struct inode *inode,
+-					    struct file *filp)
+-{
+-	return single_open(filp, hisi_sas_debugfs_itct_cache_show,
+-			   inode->i_private);
+-}
+-
+-static const struct file_operations hisi_sas_debugfs_itct_cache_fops = {
+-	.open = hisi_sas_debugfs_itct_cache_open,
+-	.read = seq_read,
+-	.llseek = seq_lseek,
+-	.release = single_release,
+-	.owner = THIS_MODULE,
+-};
++DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_itct_cache);
+ 
+ static void hisi_sas_debugfs_create_files(struct hisi_hba *hisi_hba)
+ {
 -- 
-2.17.1
+2.23.0
 
