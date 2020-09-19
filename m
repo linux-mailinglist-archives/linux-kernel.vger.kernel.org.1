@@ -2,64 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BD4E270957
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 02:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 207F4270954
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 02:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726281AbgISAJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 20:09:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51112 "EHLO mail.kernel.org"
+        id S1726298AbgISADt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 20:03:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50072 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726009AbgISAJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 20:09:19 -0400
-Received: from localhost (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
+        id S1726009AbgISADt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 20:03:49 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8CF4322208;
-        Sat, 19 Sep 2020 00:09:18 +0000 (UTC)
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH] MAINTAINERS: TPM DEVICE DRIVER: Update GIT
-Date:   Sat, 19 Sep 2020 03:09:11 +0300
-Message-Id: <20200919000911.12159-1-jarkko.sakkinen@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        by mail.kernel.org (Postfix) with ESMTPSA id 0D91D21D7B;
+        Sat, 19 Sep 2020 00:03:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600473828;
+        bh=oEBa36AVWkTR5WS0hFGxmPuS9UCLfzCx0uX7n3OmL40=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fsP9RSFkTleWuPSduVxY6qlNLD5ArBqQUb1JK5arT7Uv7UyTKqL5AUNzl5t8gm4WW
+         4O4v7Pw1nXZyG0L3WqDcsiupA2PlglXHlJOY8inZ/3vDUTJYxDzZVHpo5ZeWpWwAno
+         0CZj1jNjRqriMN/Aov9YAhoZk9ZH+LnypkKcLn7Q=
+Date:   Fri, 18 Sep 2020 19:09:25 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Rustam Kovhaev <rkovhaev@gmail.com>
+Cc:     pbonzini@redhat.com, vkuznets@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] KVM: use struct_size() and flex_array_size() helpers in
+ kvm_io_bus_unregister_dev()
+Message-ID: <20200919000925.GA23967@embeddedor>
+References: <20200918120500.954436-1-rkovhaev@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200918120500.954436-1-rkovhaev@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update Git URL to
+On Fri, Sep 18, 2020 at 05:05:00AM -0700, Rustam Kovhaev wrote:
+> Make use of the struct_size() helper to avoid any potential type
+> mistakes and protect against potential integer overflows
+> Make use of the flex_array_size() helper to calculate the size of a
+> flexible array member within an enclosing structure
+> 
+> Cc: stable@vger.kernel.org
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git
+I don't think this change applies for -stable.
 
-This is done for availability reasons, i.e. better infrastructure.
+> Suggested-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
 
-Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Rob Herring <robh@kernel.org>
-Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
----
-I'm happy to include this to my next PR, if that is fine for you.
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0d0862b19ce5..7b083b8f0c3c 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -17593,7 +17593,7 @@ L:	linux-integrity@vger.kernel.org
- S:	Maintained
- W:	https://kernsec.org/wiki/index.php/Linux_Kernel_Integrity
- Q:	https://patchwork.kernel.org/project/linux-integrity/list/
--T:	git git://git.infradead.org/users/jjs/linux-tpmdd.git
-+T:	git git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git
- F:	drivers/char/tpm/
- 
- TRACING
--- 
-2.25.1
+Thanks!
+--
+Gustavo
 
+> ---
+>  virt/kvm/kvm_main.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index cf88233b819a..68edd25dcb11 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -4350,10 +4350,10 @@ void kvm_io_bus_unregister_dev(struct kvm *kvm, enum kvm_bus bus_idx,
+>  	new_bus = kmalloc(struct_size(bus, range, bus->dev_count - 1),
+>  			  GFP_KERNEL_ACCOUNT);
+>  	if (new_bus) {
+> -		memcpy(new_bus, bus, sizeof(*bus) + i * sizeof(struct kvm_io_range));
+> +		memcpy(new_bus, bus, struct_size(bus, range, i));
+>  		new_bus->dev_count--;
+>  		memcpy(new_bus->range + i, bus->range + i + 1,
+> -		       (new_bus->dev_count - i) * sizeof(struct kvm_io_range));
+> +				flex_array_size(new_bus, range, new_bus->dev_count - i));
+>  	} else {
+>  		pr_err("kvm: failed to shrink bus, removing it completely\n");
+>  		for (j = 0; j < bus->dev_count; j++) {
+> -- 
+> 2.28.0
+> 
