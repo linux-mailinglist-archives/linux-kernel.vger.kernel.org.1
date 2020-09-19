@@ -2,154 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE2B270F99
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 18:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96159270FA1
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 18:48:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgISQoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 12:44:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726463AbgISQoB (ORCPT
+        id S1726642AbgISQsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 12:48:04 -0400
+Received: from sonic315-20.consmr.mail.ne1.yahoo.com ([66.163.190.146]:39204
+        "EHLO sonic315-20.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726463AbgISQsD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 12:44:01 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3521C0613CE;
-        Sat, 19 Sep 2020 09:44:01 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id a3so11310351oib.4;
-        Sat, 19 Sep 2020 09:44:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Cfduvuo2qaLqbrqkySQg+itnGIveDrg6Cvu0oEAcq/k=;
-        b=pU9HBPbUXcukfQfrJjasbEIUXNL/ChjPxwRvkTvdzlQgmVSa10YyaEIw7ZCOTf+H13
-         /NW1BQrmCMQLifiBnW0BTazPYzpTWmIFpH8KXJ4txuYts1G5o2iQa5wJdnb3I77WfKUE
-         cTWLqAbnz1m8HqqpJt5UfqDFB1OYtMX6Ixw0SXIzbg8yQQh0UfgIQeDY/CEaj9d5xM4V
-         GVmjVOw+jLpTqhoAbEqcn5gUO916XtAX7I5jFfZYm37l+W5yVFeeQH0mU4pO1b5MrjZW
-         8xIQ9WInrK/ZhDgPOJMpm5d3rMNNj59KA6nPNoIWY8DXioBAHND0dx9+AGGCqN5jQOE7
-         kyEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Cfduvuo2qaLqbrqkySQg+itnGIveDrg6Cvu0oEAcq/k=;
-        b=jSbadOkvJTD5Pzx/G2yUH9/D4bnnya7tuoRsdSnAQ0H4A3ew0SxAETX5JMUoPpnblF
-         youWFMcbwPooZKIr/w1pfqIG3lozsETKq3wDECgSfteiWh2064H9IwkNObK0plU7Z/W8
-         lVmmwnwzG6+7VoqUNTjctBwsN4vWrBQqWMKgEZ/iNxkvygeWTO7qWgVRZWSa0lgT9Szx
-         U3+EQcG6IF1o68B4i0Q6X/7jYpxUhYu4OV+F89zLIWcBuS46BPgwrrWo/oWDUM+d7rCz
-         Myr+WHRItGKUTqNW0hm7hGSVmWF/A4saQ4IyqfXi4CwaaSN8z3OHs+IbNevSpcGpVyAk
-         iLRQ==
-X-Gm-Message-State: AOAM530F+nv9GBXaf8cKvzCLS8sV+XJelLHB93e0CAdcx16D6n4AGNhn
-        nf1gYPBtC9UF413t18clYG3KfXqEbhhLQrV5ZdE=
-X-Google-Smtp-Source: ABdhPJwJqb/AKIJliKN7dAiHbWX51Djs2BGiO2F9MjnRLdzLcAZrD77jiGwWi8q2T31NGa25n//D/HTIw2eycuiNJNA=
-X-Received: by 2002:a05:6808:a05:: with SMTP id n5mr13138730oij.154.1600533839763;
- Sat, 19 Sep 2020 09:43:59 -0700 (PDT)
+        Sat, 19 Sep 2020 12:48:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1600534082; bh=fB90K+9O02P1ViQM/kwbkjQJZ5yP7WeTCC4tmdR6z2Q=; h=Date:From:Reply-To:Subject:References:From:Subject; b=A5MeQm32T8gxL9vBO+jHjorEl6AKsDa9T5VZQCyoQV73EErIIvne55kUJOAbmnxOiye3iM319nhfW8TWS8Td0YOV0mdI9oCiU+p+VuChMXb6tVsvNMWqoFz/9W4a8RXbri3sXykpSfxDdS7N/nOUzoe+g2+21lt4/apr5SRoW8/Gpkw6w1fGZOTS9mEowHsa1nttnAAe9WH2pAo0uTV2eyxQh1UhoQAFHppC/r0z1/x/eu9JiYL2v0b+bsHZP53bVtsM3l7hC31zsLCot5xUKYSOk7h6ZWveT77mnshq9zt4atZkGyAX1Gl0z7LCHp3K1VQPO8IP9KD4TT48nYUZog==
+X-YMail-OSG: vv3NVyQVM1lLrAqoEhHppLFIQE3WBuUyUvS4heypW4qE0BgBmIhSEeuhvRSQrnT
+ PlyUUBDhfK0UmdbviCVEN3NZQitMeLMt7YOR90Pyl2YPy3uC2X_LPu8v9pQTzYz96UwAld4QIdlM
+ PWYtgX4yiGeIeqhPVPTx4xXwgcxc0.6VW6_DWa2GCAzMNnaH6Qd4uPp2U9Dnep5.iOAQ0SBb5yWg
+ VqDideJf7o3LnTLWyzpTPrSpLE_yB6cmah7yns_W1TNRDjWcrC9o5Apo60zfIxqRo.SVJTOylgy7
+ zk0jM1STzOYB10KidpHLsOpg5tENWqNS2HdmqfMqy_OicpwK5q2w9DziNa36ZSlFZPwMuwBkL7Z_
+ 0s5fGmPzoA_PJlX.gABYLMb1ve7M9aXhUmqZHugHkmh1SiqZR.ZKExdpvkFcwdPKiMfxNOa.eOzj
+ rWTO_ysqdPhdK6gLvd6Z2YBowPVzElmLU36S48Yew.Xw2_6ekGY.2N08FWnYWUTVLsjJ6N1JvC3T
+ sCO40OwVafcP3Z3LHaMpwoWk87p1VIQgX_6Sol9cHL2a6hk4Jrwj8FdaPJqCwnBSCSwEdYFnHWpG
+ M2qAldh35WL0cXcySrgS2vh5ZecfbjAQgBe7cvE7MZmutBvidgD.oHFq4lvQTvTcQW1.oeJLjeoB
+ L6R3Kj68Mj8BxPUrJqTI2HNS7bcm89svsdOa44cZ1rv5XuObz2im2u.v.AHKMnVM9ZIvc0rvaVn1
+ pinnW0LZoR0wuJLnFqbI5Zv19kWggBLtRfJF_mV1_87D9kH8rCf9AxLvGb8fh2_Oojl_gRZLYHOX
+ PzDyeD4ADmx8rl5_jqQXgt5Cyu9TX68TR1uaI4mA_b_qOxw0dqbFa4zavccOF47UghkAW4nq_5nb
+ eewgQMh_6BFXO4409.qmxEJuF7FvcdEvzzw4p08UE6mqlWm1I3FfFwec.3V.r8sEazQqmyaOBy.U
+ _gd4n50LI0SO3MvS.3tPpJHkFj0zcGIx8Bn4E0RiNc0JraYadr3Ff1_mZWuG61Dr8nG8X3NKIvD2
+ I19wsGN4l8Mgd3Bf8IiKJ7Dmx91J8KpTsxoGQKBn6G.4UvRY0btSbjuVGc5Rd3pAGnuwthNvURJ9
+ WxDSb5MfnWmh8L2fB335oS.Y61fZgB9rb3qKMVRC2zvU7i8pSo6IspuujxE0hj_MCV3uJM09IbM4
+ jLzD8bqV4sh_E3kEX8acx5NLHli1ATa46Vye45XSi_SPPdwLrKyIhZfWIDXd9tiFYeoRITaPKusT
+ wrantCd.jMTFQLdI7_Wy1oTGI1mXyaG_5KUGKc9CF3FOfA1YzjyIQ3Zxv8GQxXiMhvGk1XVWaEsa
+ XSnwFlVV0.oPUkJTjU8iKuiiZ8GJC0Mq0sOHsOhEdy1CVuA.ok2ZS0eyfUVmCYfxc67bmmbQyE_e
+ TrQJV8M.pJooAjnyA89eS4VQ0hXcRQm_QRP77iyJ__98kIbCdD0srftH7_mfZB7A-
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic315.consmr.mail.ne1.yahoo.com with HTTP; Sat, 19 Sep 2020 16:48:02 +0000
+Date:   Sat, 19 Sep 2020 16:47:58 +0000 (UTC)
+From:   Sal Kavar <salkavar2@gmail.com>
+Reply-To: salkavar2@gmail.com
+Message-ID: <591622745.4245246.1600534078004@mail.yahoo.com>
+Subject: STRICTLY AND CONFIDENTIAL.
 MIME-Version: 1.0
-References: <CAFCwf12XZRxLYifSfuB+RGhuiKBytzsUTOnEa6FqfJHYvcVJPQ@mail.gmail.com>
- <20200917171833.GJ8409@ziepe.ca> <0b21db8d-1061-6453-960b-8043951b3bad@amazon.com>
- <20200918115227.GR869610@unreal> <CAFCwf10C1zm91e=tqPVGOX8kZD7o=AR2EW-P9VwCF4rcvnEJnA@mail.gmail.com>
- <20200918120340.GT869610@unreal> <CAFCwf12VPuyGFqFJK5D19zcKFQJ=fmzjwscdPG82tfR_v_h3Kg@mail.gmail.com>
- <20200918121905.GU869610@unreal> <20200919064020.GC439518@kroah.com>
- <20200919082003.GW869610@unreal> <20200919083012.GA465680@kroah.com>
-In-Reply-To: <20200919083012.GA465680@kroah.com>
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-Date:   Sat, 19 Sep 2020 19:43:28 +0300
-Message-ID: <CAFCwf122V-ep44Kqk1DgRJN+tq3ctxE9uVbqYL07apLkLe2Z7g@mail.gmail.com>
-Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Gal Pressman <galpress@amazon.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <591622745.4245246.1600534078004.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16583 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:80.0) Gecko/20100101 Firefox/80.0
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 19, 2020 at 11:30 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Sat, Sep 19, 2020 at 11:20:03AM +0300, Leon Romanovsky wrote:
-> > On Sat, Sep 19, 2020 at 08:40:20AM +0200, Greg Kroah-Hartman wrote:
-> > > On Fri, Sep 18, 2020 at 03:19:05PM +0300, Leon Romanovsky wrote:
-> > > > > So we do have an open-source library called hl-thunk, which uses our
-> > > > > driver and indeed that was part of the requirement.
-> > > > > It is similar to libdrm.
-> > > > > Here is the link:
-> > > > > https://github.com/HabanaAI/hl-thunk
-> > > >
-> > > > Are you kidding?
-> > > >
-> > > > This is mirror of some internal repository that looks like dumpster
-> > > > with ChangeId, internal bug tracker numbers, not part of major OS
-> > > > distributions.
-> > > >
-> > > > It is not open-source library and shows very clear why you chose
-> > > > to upstream your driver through driver/misc/ tree.
-> > >
-> > > It is an open source library, as per the license and the code
-> > > availability.  What more is expected here?
-> >
-> > So can I fork iproute2, add bunch of new custom netlink UAPIs and expect
-> > Dave to merge it after I throw it on github?
->
-> Don't be silly, that's not the case here at all and you know that.
->
-> > > No distro has to pick it up, that's not a requirement for kernel code,
-> > > we have many kernel helper programs that are not in distros.  Heck, udev
-> > > took a long time to get into distros, does that mean the kernel side of
-> > > that interface should never have been merged?
-> > >
-> > > I don't understand your complaint here, it's not our place to judge the
-> > > code quality of userspace libraries, otherwise we would never get any
-> > > real-work done :)
-> >
-> > My main complaint is that you can't imagine merging code into large
-> > subsystems (netdev, RDMA, DRM? e.t.c) without being civil open-source
-> > citizen. It means use of existing user-space libraries/tools and/or
-> > providing new ones that will be usable for everyone.
->
-> Agreed.
->
-> > In this case, we have some custom char device with library that is not
-> > usable for anyone else and this is why drivers/misc/ is right place.
->
-> Also agreed.
->
-> > While we are talking about real-work, it is our benefit to push companies
-> > to make investment into ecosystem and not letting them to find an excuse
-> > for not doing it.
->
-> So why are you complaining about a stand-alone driver that does not have
-> any shared subsystems's userspace code to control that driver?
->
-> Yes, when integrating into other subsystems (i.e. networking and rdma),
-> they should use those common subsystems interfaces, no one is arguing
-> that at all.
-Hi Greg,
-It's probably heresy, but why do I need to integrate into the RDMA subsystem ?
-I understand your reasoning about networking (Ethernet) as the driver
-connects to the kernel networking stack (netdev), but with RDMA the
-driver doesn't use or connect to anything in that stack. If I were to
-support IBverbs and declare that I support it, then of course I would
-need to integrate to the RDMA subsystem and add my backend to
-rdma-core.
-But we don't do that so why am I being forced to support IBverbs ?
-Forcing GAUDI to use the RDMA stack and IBverbs is like swatting flies
-with a sledgehammer.
-I do hope that in future devices we will support it natively and of
-course then we will integrate as requested, but for GAUDI it is just a
-huge overkill IMHO.
 
-Thanks,
-Oded
->
-> totally lost,
->
-> greg k-h
+
+Dear friend.
+
+I assume you and your family are in good health. I am the Foreign operations Manager at one of the leading generation bank here in West Africa.
+
+This being a wide world in which it can be difficult to make new acquaintances and because it is virtually impossible to know who is trustworthy and who can be believed, i have decided to repose confidence in you after much fasting and prayer. It is only because of this that I have decided to confide in you and to share with you this confidential business.
+
+In my bank; there resides an overdue and unclaimed sum of $15.5m, (Fifteen Million Five Hundred Thousand Dollars Only) When the account holder suddenly passed on, he left no beneficiary who would be entitled to the receipt of this fund. For this reason, I have found it expedient to transfer this fund to a trustworthy individual with capacity to act as foreign business partner. Thus i humbly request your assistance to claim this fund.
+
+Upon the transfer of this fund in your account, you will take 45% as your share from the total fund, 10% will be shared to Charity Organizations in both country and 45% will be for me. Please if you are really sure you can handle this project, contact me immediately.
+
+
+Yours Faithful,
+Mr.Sal Kavar.
