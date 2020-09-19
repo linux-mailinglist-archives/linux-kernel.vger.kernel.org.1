@@ -2,90 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29B172709A2
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 03:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 187622709A4
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 03:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726276AbgISBWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 21:22:32 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:50744 "EHLO huawei.com"
+        id S1726159AbgISB1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 21:27:54 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13312 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726009AbgISBWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 21:22:31 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 646C5DEA6396A4285BA7;
-        Sat, 19 Sep 2020 09:22:30 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 19 Sep 2020 09:22:21 +0800
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>
-CC:     <linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Qinglang Miao" <miaoqinglang@huawei.com>
-Subject: [PATCH -next v2] RAS/CEC: Convert to DEFINE_SHOW_ATTRIBUTE
-Date:   Sat, 19 Sep 2020 09:22:52 +0800
-Message-ID: <20200919012252.171437-1-miaoqinglang@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726009AbgISB1y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 21:27:54 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 23CC91B64D794E1EAAC7;
+        Sat, 19 Sep 2020 09:27:52 +0800 (CST)
+Received: from [10.174.179.91] (10.174.179.91) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 19 Sep 2020 09:27:47 +0800
+Subject: Re: [PATCH -next] powerpc: Convert to DEFINE_SHOW_ATTRIBUTE
+To:     Paul Mackerras <paulus@ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <kvm-ppc@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200716090712.14375-1-miaoqinglang@huawei.com>
+ <20200902045118.GD272502@thinks.paulus.ozlabs.org>
+From:   miaoqinglang <miaoqinglang@huawei.com>
+Message-ID: <088368fc-1bad-d973-39c7-86e8ba5c0f69@huawei.com>
+Date:   Sat, 19 Sep 2020 09:27:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
+In-Reply-To: <20200902045118.GD272502@thinks.paulus.ozlabs.org>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.91]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
 
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
----
-v2: based on linux-next(20200917), and can be applied to
-    mainline cleanly now.
 
- drivers/ras/cec.c | 17 +++--------------
- 1 file changed, 3 insertions(+), 14 deletions(-)
+ÔÚ 2020/9/2 12:51, Paul Mackerras Ð´µÀ:
+> On Thu, Jul 16, 2020 at 05:07:12PM +0800, Qinglang Miao wrote:
+>> From: Chen Huang <chenhuang5@huawei.com>
+>>
+>> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
+>>
+>> Signed-off-by: Chen Huang <chenhuang5@huawei.com>
+> 
+> For the arch/powerpc/kvm part:
+> 
+> Acked-by: Paul Mackerras <paulus@ozlabs.org>
+> 
+> I expect Michael Ellerman will take the patch through his tree.
+> 
+> Paul.
+> .
+Hi Michael and Paul,
 
-diff --git a/drivers/ras/cec.c b/drivers/ras/cec.c
-index 6939aa5b3..ddecf25b5 100644
---- a/drivers/ras/cec.c
-+++ b/drivers/ras/cec.c
-@@ -435,7 +435,7 @@ DEFINE_DEBUGFS_ATTRIBUTE(action_threshold_ops, u64_get, action_threshold_set, "%
- 
- static const char * const bins[] = { "00", "01", "10", "11" };
- 
--static int array_dump(struct seq_file *m, void *v)
-+static int array_show(struct seq_file *m, void *v)
- {
- 	struct ce_array *ca = &ce_arr;
- 	int i;
-@@ -467,18 +467,7 @@ static int array_dump(struct seq_file *m, void *v)
- 	return 0;
- }
- 
--static int array_open(struct inode *inode, struct file *filp)
--{
--	return single_open(filp, array_dump, NULL);
--}
--
--static const struct file_operations array_ops = {
--	.owner	 = THIS_MODULE,
--	.open	 = array_open,
--	.read	 = seq_read,
--	.llseek	 = seq_lseek,
--	.release = single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(array);
- 
- static int __init create_debugfs_nodes(void)
- {
-@@ -513,7 +502,7 @@ static int __init create_debugfs_nodes(void)
- 		goto err;
- 	}
- 
--	array = debugfs_create_file("array", S_IRUSR, d, NULL, &array_ops);
-+	array = debugfs_create_file("array", S_IRUSR, d, NULL, &array_fops);
- 	if (!array) {
- 		pr_warn("Error creating array debugfs node!\n");
- 		goto err;
--- 
-2.23.0
+I spilited this patch and resent them because I noticed that 
+<4d4901c6d7>(turn .read -> .read_iter) in linux-next has been reverted.
 
+New patches are against linux-next(20200917), and they can
+be applied to mainline cleanly now.
+
+Thanks.
+> 
