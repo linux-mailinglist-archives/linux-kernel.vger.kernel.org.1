@@ -2,91 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECB1C270DE6
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 14:45:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4764270DEA
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 14:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbgISMpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 08:45:07 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:39996 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726218AbgISMpG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 08:45:06 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id D81B814E6D6CAD530CEB;
-        Sat, 19 Sep 2020 20:45:02 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.177.253) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 19 Sep 2020 20:44:56 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     devicetree <devicetree@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Haojian Zhuang" <haojian.zhuang@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Libin <huawei.libin@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH 1/1] dt-bindings: sp804: add support for Hisilicon sp804 timer
-Date:   Sat, 19 Sep 2020 20:44:12 +0800
-Message-ID: <20200919124412.4135-2-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20200919124412.4135-1-thunder.leizhen@huawei.com>
-References: <20200919124412.4135-1-thunder.leizhen@huawei.com>
+        id S1726469AbgISMpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 08:45:20 -0400
+Received: from out28-220.mail.aliyun.com ([115.124.28.220]:47905 "EHLO
+        out28-220.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726218AbgISMpU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Sep 2020 08:45:20 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.2281876|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0238255-0.00364275-0.972532;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03273;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=16;RT=16;SR=0;TI=SMTPD_---.IZJIYjg_1600519505;
+Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.IZJIYjg_1600519505)
+          by smtp.aliyun-inc.com(10.147.42.198);
+          Sat, 19 Sep 2020 20:45:15 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     paulburton@kernel.org, tsbogend@alpha.franken.de,
+        paul@crapouillou.net
+Cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        jiaxun.yang@flygoat.com, rppt@kernel.org,
+        Sergey.Semin@baikalelectronics.ru,
+        Alexey.Malahov@baikalelectronics.ru, akpm@linux-foundation.org,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
+        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
+Subject: [PATCH 0/2] Repair X1000E SoC L2 cache capacity detection.
+Date:   Sat, 19 Sep 2020 20:44:35 +0800
+Message-Id: <20200919124437.89576-1-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.253]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some Hisilicon SoCs, such as Hi1212, use the Hisilicon extended sp804
-timer.
+The X1000E SoC has a 4-way L2 cache with a capacity of 128 KiB.
+The current code cannot detect its correctly, which will cause
+the CU1000-Neo board using the X1000E SoC to report that it
+has found a 5-way 320KiB L2 cache at boot time. This series
+of patches is to fix this problem.
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- Documentation/devicetree/bindings/timer/arm,sp804.yaml | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+周琰杰 (Zhou Yanjie) (2):
+  MIPS: X1000E: Add X1000E system type.
+  MIPS: Ingenic: Fix bugs when detecting X1000E's L2 cache.
 
-diff --git a/Documentation/devicetree/bindings/timer/arm,sp804.yaml b/Documentation/devicetree/bindings/timer/arm,sp804.yaml
-index ba0945cf799ee0b..e35d3053250a557 100644
---- a/Documentation/devicetree/bindings/timer/arm,sp804.yaml
-+++ b/Documentation/devicetree/bindings/timer/arm,sp804.yaml
-@@ -15,19 +15,26 @@ description: |+
-   free-running mode. The input clock is shared, but can be gated and prescaled
-   independently for each timer.
- 
-+  There is a viriant of Arm SP804: Hisilicon 64-bit SP804 timer. Some Hisilicon
-+  SoCs, such as Hi1212, should use the dedicated compatible: "hisilicon,sp804".
-+
- # Need a custom select here or 'arm,primecell' will match on lots of nodes
- select:
-   properties:
-     compatible:
-       contains:
--        const: arm,sp804
-+        oneOf:
-+          - const: arm,sp804
-+          - const: hisilicon,sp804
-   required:
-     - compatible
- 
- properties:
-   compatible:
-     items:
--      - const: arm,sp804
-+      - enum:
-+        - arm,sp804
-+        - hisilicon,sp804
-       - const: arm,primecell
- 
-   interrupts:
+ arch/mips/generic/board-ingenic.c | 3 +++
+ arch/mips/include/asm/bootinfo.h  | 1 +
+ arch/mips/mm/sc-mips.c            | 1 +
+ 3 files changed, 5 insertions(+)
+
 -- 
-1.8.3
-
+2.11.0
 
