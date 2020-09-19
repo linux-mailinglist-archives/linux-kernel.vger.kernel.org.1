@@ -2,84 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6815D2709CF
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 04:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4FF32709D2
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 04:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726219AbgISCCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 22:02:24 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13704 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726009AbgISCCX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 22:02:23 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id D84F1914A9015C7DD5F5;
-        Sat, 19 Sep 2020 10:02:21 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.253) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Sat, 19 Sep 2020
- 10:02:12 +0800
-Subject: Re: [PATCH 1/2] dt-bindings: interrupt-controller: add Hisilicon
- SD5203 vector interrupt controller
-To:     Rob Herring <robh@kernel.org>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-References: <20200903120504.2308-1-thunder.leizhen@huawei.com>
- <20200903120504.2308-2-thunder.leizhen@huawei.com>
- <20200914203110.GA185427@bogus>
- <4873e234-d06c-930e-6645-a832164e18ea@huawei.com>
- <0928ac6a-2295-4e87-5191-4fd4580f87b5@huawei.com>
- <CAL_JsqK3635vQGK+mw+GKz5Sj2YKEt6+sj8MNo0d3hFESbfUKw@mail.gmail.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <1c5f44ba-7093-9828-c9d7-186dbd7f6892@huawei.com>
-Date:   Sat, 19 Sep 2020 10:02:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
-MIME-Version: 1.0
-In-Reply-To: <CAL_JsqK3635vQGK+mw+GKz5Sj2YKEt6+sj8MNo0d3hFESbfUKw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.253]
-X-CFilter-Loop: Reflected
+        id S1726342AbgISCCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 22:02:47 -0400
+Received: from so254-54.mailgun.net ([198.61.254.54]:32247 "EHLO
+        so254-54.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726308AbgISCCp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 22:02:45 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600480964; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=BURDtrM4/JhTY390gcc6/L/mWWU1YCPB+gfT4j3BWUs=; b=H+pHxCcWpoifhp+xNvnR0/syDm28rU3l+CogB5KymezTDzJEGvmmQFABdseMYFwgBdWBiJ05
+ mU1HAR+KlOwKt6NSEOjakYR7dhQQKchiuUv6yM7RPwB/CO+IlxtpJFxLb3DmWpZo3q5MItDv
+ G8duNezWcjtYROd2biW105//FEk=
+X-Mailgun-Sending-Ip: 198.61.254.54
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 5f6566c436c8ce93e8ab2058 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 19 Sep 2020 02:02:44
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EE024C43382; Sat, 19 Sep 2020 02:02:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 19B96C433CB;
+        Sat, 19 Sep 2020 02:02:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 19B96C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v1 00/10] Bug fixes and improvements for MHI power operations
+Date:   Fri, 18 Sep 2020 19:02:25 -0700
+Message-Id: <1600480955-16827-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Bug fixes and improvements for MHI powerup and shutdown handling.
+Firmware load function names are updated to accurately reflect their purpose.
+Closed certain design gaps where the host (MHI bus) would allow clients to
+operate after a power down or error detection.
+Move to an error state sooner based on different scenarios.
 
+These patches were tested on arm64 and X86_64 architectures.
 
-On 2020/9/19 2:55, Rob Herring wrote:
-> On Wed, Sep 16, 2020 at 9:30 PM Leizhen (ThunderTown)
-> <thunder.leizhen@huawei.com> wrote:
->>
->>
->>
->> On 2020/9/15 14:12, Leizhen (ThunderTown) wrote:
->>>
->>>
->>> On 2020/9/15 4:31, Rob Herring wrote:
->>>> On Thu, Sep 03, 2020 at 08:05:03PM +0800, Zhen Lei wrote:
->>>>> Add DT bindings for the Hisilicon SD5203 vector interrupt controller.
->>>>>
->>>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->>>>> ---
->>>>>  .../hisilicon,sd5203-vic.txt                  | 27 +++++++++++++++++++
->>>>
->>>> Bindings should be in DT schema format now.
->>
->> Do I need to change the existing "snps,dw-apb-ictl.txt" to DT schema format?
-> 
-> That would be nice, but not necessary for minor changes.
+Bhaumik Bhatt (10):
+  bus: mhi: core: Use appropriate names for firmware load functions
+  bus: mhi: core: Move to using high priority workqueue
+  bus: mhi: core: Skip device wake in error or shutdown states
+  bus: mhi: core: Use the IRQF_ONESHOT flag for the BHI interrupt line
+  bus: mhi: core: Disable IRQs when powering down
+  bus: mhi: core: Improve shutdown handling after link down detection
+  bus: mhi: core: Move to SYS_ERROR regardless of RDDM capability
+  bus: mhi: core: Move to an error state on any firmware load failure
+  bus: mhi: core: Move to an error state on mission mode failure
+  bus: mhi: core: Mark device inactive soon after host issues a shutdown
 
-I had done it before you replied to me. Can you check it out?
+ drivers/bus/mhi/core/boot.c     | 59 ++++++++++++++++++++++-----------------
+ drivers/bus/mhi/core/init.c     | 10 ++++++-
+ drivers/bus/mhi/core/internal.h |  1 +
+ drivers/bus/mhi/core/main.c     | 28 +++++++++++++------
+ drivers/bus/mhi/core/pm.c       | 62 ++++++++++++++++++++++++++++-------------
+ include/linux/mhi.h             |  2 ++
+ 6 files changed, 108 insertions(+), 54 deletions(-)
 
-https://www.spinics.net/lists/devicetree/msg378632.html
-
-> 
-> Rob
-> 
-> .
-> 
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
