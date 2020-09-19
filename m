@@ -2,382 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE1F270E23
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 15:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FDA4270E2E
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 15:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726438AbgISNa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 09:30:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40638 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726159AbgISNa0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 09:30:26 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DDE6F2100A;
-        Sat, 19 Sep 2020 13:30:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600522225;
-        bh=umIqp8rQ5cHUnScAQ74bGLk7Bj2WKt5zdB9CN5qaKaU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rXVfGV6ffn32x3ws9NUJtU/t1DJX+dMVDm+o9yF1+GmA2NX0x76dfXa5hUGbffgeJ
-         rTV5jEeFoB2CD/1HTDeWVB74md3S2XvDpKr/D1Bk+8lebo/BqduAb8FuPmcM81IEEM
-         OsIZ+HaH0VXFd/NVMkeJCcfAIrUn/lGGxNwmtx8Y=
-Date:   Sat, 19 Sep 2020 14:30:20 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Mario Tesi <martepisa@gmail.com>
-Cc:     lorenzo.bianconi83@gmail.com, knaack.h@gmx.de, lars@metafoo.de,
-        pmeerw@pmeerw.net, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mario.tesi@st.com
-Subject: Re: [PATCH] iio: imu: st_lsm6dsx: Scaling factor type set to
- IIO_VAL_INT_PLUS_NANO
-Message-ID: <20200919143020.53df1f3f@archlinux>
-In-Reply-To: <1600361236-2285-1-git-send-email-martepisa@gmail.com>
-References: <1600361236-2285-1-git-send-email-martepisa@gmail.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726454AbgISNmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 09:42:23 -0400
+Received: from mail-il1-f205.google.com ([209.85.166.205]:50108 "EHLO
+        mail-il1-f205.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726400AbgISNmX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Sep 2020 09:42:23 -0400
+Received: by mail-il1-f205.google.com with SMTP id n1so7031135ilm.16
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 06:42:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=yOyCHWQQoRyAKAF0HzMowQuhfbsREVKqwAPSYsKGzpE=;
+        b=IvecIgHDufdUHm7ueyzWthALhyBxr+fNdtBzf5GCyb/QKBLMKHwKs2ZA0FKNWG+uau
+         Nl+MTJypM7g4Hpy/OEcE+cx4RHegiFHhIeUwFpyRnkdeEOk+2Q4OJXEk4Yc9joe3Yvll
+         6h1es4Sf6pHV7dlX4ga71cG/zjql8xicKHuR5vqsEZkZqlmTqtl1d7ckq5IhMEACrIr6
+         SY3snT9fSuF6vBTTiao2IqnWfaRtOaLgN/8Z8lQeLv8IYywUUKrHmThAnLQCGMp+8Wp1
+         K8eZ4ZGFFXQCgy4Ili6fU90dMsZpDjtiX2yfqnCuvSugcC0L+F9W1nvPXylbrbRFJn7b
+         cXRg==
+X-Gm-Message-State: AOAM530z0KTkBVb5t7hSEa8kGdFIntKzTFVYCh/LClg6xisXAoABGB0w
+        Psi2Ir3cQkDGfVcj5soH6b6G6p0jl1ry0Xbvh8mqMj++kaGM
+X-Google-Smtp-Source: ABdhPJyKhAzte/NJFAV4UyJH4tIvOu1lTta/kM8V6FBfUNin7qm5rdNi60NF9h749bV0F7G5/pq8wFytUdukGd+fsK05WvhkIgqL
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+X-Received: by 2002:a6b:680f:: with SMTP id d15mr30985825ioc.198.1600522942316;
+ Sat, 19 Sep 2020 06:42:22 -0700 (PDT)
+Date:   Sat, 19 Sep 2020 06:42:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006e87b905afaac99d@google.com>
+Subject: INFO: trying to register non-static key in vma_link
+From:   syzbot <syzbot+2b5fc781c93512ef418c@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Sep 2020 18:47:16 +0200
-Mario Tesi <martepisa@gmail.com> wrote:
+Hello,
 
-> From: Mario Tesi <mario.tesi@st.com>
->=20
-> Scaling factor values for Acc lead to an unacceptable rounding of the
-> full scale (FS) calculated by some SensorHAL on Android devices. For exam=
-ples
-> setting FS to 4g the in_accel_x_scale, in_accel_y_scale and in_accel_z_sc=
-ale
-> are 0.001196 on 6 decimal digits and the FS is
-> 0.001196 =C3=97 ((2^15) =E2=88=92 1) ~=3D 39.1893 m/s^2.
->=20
-> Android CTS R10 SensorParameterRangeTest test expects a value greater than
-> 39.20 m/s^2 so this test fails (ACCELEROMETER_MAX_RANGE =3D 4 * 9.80).
->=20
-> Using 9 decimal digits the new scale factor is 0.001196411 and the FS now
-> is 0.001196411 =C3=97 ((2^15)=E2=88=921) ~=3D 39.2028 m/s^2.
->=20
-> This patch extends to IIO_VAL_INT_PLUS_NANO type the scaling factor to all
-> IMU devices where SensorParameterRangeTest CTS test fails.
->=20
-> Signed-off-by: Mario Tesi <mario.tesi@st.com>
-Is this v2?  If so where is the change log?
-Thankfully wasn't too hard to spot the difference and you were fixing what
-Lorenzo was pointing out in v1.
+syzbot found the following issue on:
 
-Also, should have picked up Lorenzo's tag from v1 as you have fixed
-what he asked you to fix before applying it.
+HEAD commit:    fc4f28bb Merge tag 'for-5.9-rc5-tag' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12cb5153900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c61f6bd349c981f3
+dashboard link: https://syzkaller.appspot.com/bug?extid=2b5fc781c93512ef418c
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-Anyhow, stuff to get right next time.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Applied to the togreg branch of iio.git and pushed out as testing for
-the autobuilders to play with it.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+2b5fc781c93512ef418c@syzkaller.appspotmail.com
 
-Thanks,
+INFO: trying to register non-static key.
+the code is fine but needs lockdep annotation.
+turning off the locking correctness validator.
+CPU: 0 PID: 9051 Comm: syz-executor.5 Not tainted 5.9.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ assign_lock_key kernel/locking/lockdep.c:894 [inline]
+ register_lock_class+0x157d/0x1630 kernel/locking/lockdep.c:1206
+ __lock_acquire+0xf9/0x5570 kernel/locking/lockdep.c:4305
+ lock_acquire+0x1f3/0xae0 kernel/locking/lockdep.c:5006
+ down_write+0x8d/0x150 kernel/locking/rwsem.c:1531
+ i_mmap_lock_write include/linux/fs.h:498 [inline]
+ vma_link+0x9e/0x830 mm/mmap.c:651
+ mmap_region+0xcd8/0x1780 mm/mmap.c:1815
+ do_mmap+0xcf9/0x11d0 mm/mmap.c:1545
+ aio_setup_ring fs/aio.c:528 [inline]
+ ioctx_alloc+0x881/0x1d70 fs/aio.c:760
+ __do_sys_io_setup fs/aio.c:1329 [inline]
+ __se_sys_io_setup fs/aio.c:1312 [inline]
+ __x64_sys_io_setup+0xc4/0x3d0 fs/aio.c:1312
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45d5f9
+Code: 5d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 2b b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fa4d2ef3c78 EFLAGS: 00000246 ORIG_RAX: 00000000000000ce
+RAX: ffffffffffffffda RBX: 0000000000008240 RCX: 000000000045d5f9
+RDX: 0000000000000000 RSI: 0000000020000140 RDI: 0000000000000002
+RBP: 000000000118cf78 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cf4c
+R13: 000000000169fb6f R14: 00007fa4d2ef49c0 R15: 000000000118cf4c
+------------[ cut here ]------------
+DEBUG_RWSEMS_WARN_ON(sem->magic != sem): count = 0x1, magic = 0x0, owner = 0xffff88808cb38100, curr 0xffff88808cb38100, list not empty
+WARNING: CPU: 0 PID: 9051 at kernel/locking/rwsem.c:1450 __up_write kernel/locking/rwsem.c:1450 [inline]
+WARNING: CPU: 0 PID: 9051 at kernel/locking/rwsem.c:1450 up_write+0x381/0x560 kernel/locking/rwsem.c:1584
 
-Jonathan
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-=09
-
-> ---
->  drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c | 134 +++++++++++++++------=
-------
->  1 file changed, 77 insertions(+), 57 deletions(-)
->=20
-> diff --git a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c b/drivers/iio/i=
-mu/st_lsm6dsx/st_lsm6dsx_core.c
-> index 346c242..42f4856 100644
-> --- a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
-> +++ b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
-> @@ -157,10 +157,10 @@ static const struct st_lsm6dsx_settings st_lsm6dsx_=
-sensor_settings[] =3D {
->  					.addr =3D 0x20,
->  					.mask =3D GENMASK(4, 3),
->  				},
-> -				.fs_avl[0] =3D {  IIO_G_TO_M_S_2(61), 0x0 },
-> -				.fs_avl[1] =3D { IIO_G_TO_M_S_2(122), 0x2 },
-> -				.fs_avl[2] =3D { IIO_G_TO_M_S_2(244), 0x3 },
-> -				.fs_avl[3] =3D { IIO_G_TO_M_S_2(732), 0x1 },
-> +				.fs_avl[0] =3D {  IIO_G_TO_M_S_2(61000), 0x0 },
-> +				.fs_avl[1] =3D { IIO_G_TO_M_S_2(122000), 0x2 },
-> +				.fs_avl[2] =3D { IIO_G_TO_M_S_2(244000), 0x3 },
-> +				.fs_avl[3] =3D { IIO_G_TO_M_S_2(732000), 0x1 },
->  				.fs_len =3D 4,
->  			},
->  			[ST_LSM6DSX_ID_GYRO] =3D {
-> @@ -169,9 +169,9 @@ static const struct st_lsm6dsx_settings st_lsm6dsx_se=
-nsor_settings[] =3D {
->  					.mask =3D GENMASK(4, 3),
->  				},
-> =20
-> -				.fs_avl[0] =3D {  IIO_DEGREE_TO_RAD(8750), 0x0 },
-> -				.fs_avl[1] =3D { IIO_DEGREE_TO_RAD(17500), 0x1 },
-> -				.fs_avl[2] =3D { IIO_DEGREE_TO_RAD(70000), 0x3 },
-> +				.fs_avl[0] =3D {  IIO_DEGREE_TO_RAD(8750000), 0x0 },
-> +				.fs_avl[1] =3D { IIO_DEGREE_TO_RAD(17500000), 0x1 },
-> +				.fs_avl[2] =3D { IIO_DEGREE_TO_RAD(70000000), 0x3 },
->  				.fs_len =3D 3,
->  			},
->  		},
-> @@ -259,10 +259,10 @@ static const struct st_lsm6dsx_settings st_lsm6dsx_=
-sensor_settings[] =3D {
->  					.addr =3D 0x10,
->  					.mask =3D GENMASK(3, 2),
->  				},
-> -				.fs_avl[0] =3D {  IIO_G_TO_M_S_2(61), 0x0 },
-> -				.fs_avl[1] =3D { IIO_G_TO_M_S_2(122), 0x2 },
-> -				.fs_avl[2] =3D { IIO_G_TO_M_S_2(244), 0x3 },
-> -				.fs_avl[3] =3D { IIO_G_TO_M_S_2(488), 0x1 },
-> +				.fs_avl[0] =3D {  IIO_G_TO_M_S_2(61000), 0x0 },
-> +				.fs_avl[1] =3D { IIO_G_TO_M_S_2(122000), 0x2 },
-> +				.fs_avl[2] =3D { IIO_G_TO_M_S_2(244000), 0x3 },
-> +				.fs_avl[3] =3D { IIO_G_TO_M_S_2(488000), 0x1 },
->  				.fs_len =3D 4,
->  			},
->  			[ST_LSM6DSX_ID_GYRO] =3D {
-> @@ -270,10 +270,10 @@ static const struct st_lsm6dsx_settings st_lsm6dsx_=
-sensor_settings[] =3D {
->  					.addr =3D 0x11,
->  					.mask =3D GENMASK(3, 2),
->  				},
-> -				.fs_avl[0] =3D {  IIO_DEGREE_TO_RAD(8750), 0x0 },
-> -				.fs_avl[1] =3D { IIO_DEGREE_TO_RAD(17500), 0x1 },
-> -				.fs_avl[2] =3D { IIO_DEGREE_TO_RAD(35000), 0x2 },
-> -				.fs_avl[3] =3D { IIO_DEGREE_TO_RAD(70000), 0x3 },
-> +				.fs_avl[0] =3D {  IIO_DEGREE_TO_RAD(8750000), 0x0 },
-> +				.fs_avl[1] =3D { IIO_DEGREE_TO_RAD(17500000), 0x1 },
-> +				.fs_avl[2] =3D { IIO_DEGREE_TO_RAD(35000000), 0x2 },
-> +				.fs_avl[3] =3D { IIO_DEGREE_TO_RAD(70000000), 0x3 },
->  				.fs_len =3D 4,
->  			},
->  		},
-> @@ -425,10 +425,10 @@ static const struct st_lsm6dsx_settings st_lsm6dsx_=
-sensor_settings[] =3D {
->  					.addr =3D 0x10,
->  					.mask =3D GENMASK(3, 2),
->  				},
-> -				.fs_avl[0] =3D {  IIO_G_TO_M_S_2(61), 0x0 },
-> -				.fs_avl[1] =3D { IIO_G_TO_M_S_2(122), 0x2 },
-> -				.fs_avl[2] =3D { IIO_G_TO_M_S_2(244), 0x3 },
-> -				.fs_avl[3] =3D { IIO_G_TO_M_S_2(488), 0x1 },
-> +				.fs_avl[0] =3D {  IIO_G_TO_M_S_2(61000), 0x0 },
-> +				.fs_avl[1] =3D { IIO_G_TO_M_S_2(122000), 0x2 },
-> +				.fs_avl[2] =3D { IIO_G_TO_M_S_2(244000), 0x3 },
-> +				.fs_avl[3] =3D { IIO_G_TO_M_S_2(488000), 0x1 },
->  				.fs_len =3D 4,
->  			},
->  			[ST_LSM6DSX_ID_GYRO] =3D {
-> @@ -436,10 +436,10 @@ static const struct st_lsm6dsx_settings st_lsm6dsx_=
-sensor_settings[] =3D {
->  					.addr =3D 0x11,
->  					.mask =3D GENMASK(3, 2),
->  				},
-> -				.fs_avl[0] =3D {  IIO_DEGREE_TO_RAD(8750), 0x0 },
-> -				.fs_avl[1] =3D { IIO_DEGREE_TO_RAD(17500), 0x1 },
-> -				.fs_avl[2] =3D { IIO_DEGREE_TO_RAD(35000), 0x2 },
-> -				.fs_avl[3] =3D { IIO_DEGREE_TO_RAD(70000), 0x3 },
-> +				.fs_avl[0] =3D {  IIO_DEGREE_TO_RAD(8750000), 0x0 },
-> +				.fs_avl[1] =3D { IIO_DEGREE_TO_RAD(17500000), 0x1 },
-> +				.fs_avl[2] =3D { IIO_DEGREE_TO_RAD(35000000), 0x2 },
-> +				.fs_avl[3] =3D { IIO_DEGREE_TO_RAD(70000000), 0x3 },
->  				.fs_len =3D 4,
->  			},
->  		},
-> @@ -600,10 +600,10 @@ static const struct st_lsm6dsx_settings st_lsm6dsx_=
-sensor_settings[] =3D {
->  					.addr =3D 0x10,
->  					.mask =3D GENMASK(3, 2),
->  				},
-> -				.fs_avl[0] =3D {  IIO_G_TO_M_S_2(61), 0x0 },
-> -				.fs_avl[1] =3D { IIO_G_TO_M_S_2(122), 0x2 },
-> -				.fs_avl[2] =3D { IIO_G_TO_M_S_2(244), 0x3 },
-> -				.fs_avl[3] =3D { IIO_G_TO_M_S_2(488), 0x1 },
-> +				.fs_avl[0] =3D {  IIO_G_TO_M_S_2(61000), 0x0 },
-> +				.fs_avl[1] =3D { IIO_G_TO_M_S_2(122000), 0x2 },
-> +				.fs_avl[2] =3D { IIO_G_TO_M_S_2(244000), 0x3 },
-> +				.fs_avl[3] =3D { IIO_G_TO_M_S_2(488000), 0x1 },
->  				.fs_len =3D 4,
->  			},
->  			[ST_LSM6DSX_ID_GYRO] =3D {
-> @@ -611,10 +611,10 @@ static const struct st_lsm6dsx_settings st_lsm6dsx_=
-sensor_settings[] =3D {
->  					.addr =3D 0x11,
->  					.mask =3D GENMASK(3, 2),
->  				},
-> -				.fs_avl[0] =3D {  IIO_DEGREE_TO_RAD(8750), 0x0 },
-> -				.fs_avl[1] =3D { IIO_DEGREE_TO_RAD(17500), 0x1 },
-> -				.fs_avl[2] =3D { IIO_DEGREE_TO_RAD(35000), 0x2 },
-> -				.fs_avl[3] =3D { IIO_DEGREE_TO_RAD(70000), 0x3 },
-> +				.fs_avl[0] =3D {  IIO_DEGREE_TO_RAD(8750000), 0x0 },
-> +				.fs_avl[1] =3D { IIO_DEGREE_TO_RAD(17500000), 0x1 },
-> +				.fs_avl[2] =3D { IIO_DEGREE_TO_RAD(35000000), 0x2 },
-> +				.fs_avl[3] =3D { IIO_DEGREE_TO_RAD(70000000), 0x3 },
->  				.fs_len =3D 4,
->  			},
->  		},
-> @@ -816,10 +816,10 @@ static const struct st_lsm6dsx_settings st_lsm6dsx_=
-sensor_settings[] =3D {
->  					.addr =3D 0x10,
->  					.mask =3D GENMASK(3, 2),
->  				},
-> -				.fs_avl[0] =3D {  IIO_G_TO_M_S_2(61), 0x0 },
-> -				.fs_avl[1] =3D { IIO_G_TO_M_S_2(122), 0x2 },
-> -				.fs_avl[2] =3D { IIO_G_TO_M_S_2(244), 0x3 },
-> -				.fs_avl[3] =3D { IIO_G_TO_M_S_2(488), 0x1 },
-> +				.fs_avl[0] =3D {  IIO_G_TO_M_S_2(61000), 0x0 },
-> +				.fs_avl[1] =3D { IIO_G_TO_M_S_2(122000), 0x2 },
-> +				.fs_avl[2] =3D { IIO_G_TO_M_S_2(244000), 0x3 },
-> +				.fs_avl[3] =3D { IIO_G_TO_M_S_2(488000), 0x1 },
->  				.fs_len =3D 4,
->  			},
->  			[ST_LSM6DSX_ID_GYRO] =3D {
-> @@ -827,10 +827,10 @@ static const struct st_lsm6dsx_settings st_lsm6dsx_=
-sensor_settings[] =3D {
->  					.addr =3D 0x11,
->  					.mask =3D GENMASK(3, 2),
->  				},
-> -				.fs_avl[0] =3D {  IIO_DEGREE_TO_RAD(8750), 0x0 },
-> -				.fs_avl[1] =3D { IIO_DEGREE_TO_RAD(17500), 0x1 },
-> -				.fs_avl[2] =3D { IIO_DEGREE_TO_RAD(35000), 0x2 },
-> -				.fs_avl[3] =3D { IIO_DEGREE_TO_RAD(70000), 0x3 },
-> +				.fs_avl[0] =3D {  IIO_DEGREE_TO_RAD(8750000), 0x0 },
-> +				.fs_avl[1] =3D { IIO_DEGREE_TO_RAD(17500000), 0x1 },
-> +				.fs_avl[2] =3D { IIO_DEGREE_TO_RAD(35000000), 0x2 },
-> +				.fs_avl[3] =3D { IIO_DEGREE_TO_RAD(70000000), 0x3 },
->  				.fs_len =3D 4,
->  			},
->  		},
-> @@ -1021,10 +1021,10 @@ static const struct st_lsm6dsx_settings st_lsm6ds=
-x_sensor_settings[] =3D {
->  					.addr =3D 0x10,
->  					.mask =3D GENMASK(3, 2),
->  				},
-> -				.fs_avl[0] =3D {  IIO_G_TO_M_S_2(61), 0x0 },
-> -				.fs_avl[1] =3D { IIO_G_TO_M_S_2(122), 0x2 },
-> -				.fs_avl[2] =3D { IIO_G_TO_M_S_2(244), 0x3 },
-> -				.fs_avl[3] =3D { IIO_G_TO_M_S_2(488), 0x1 },
-> +				.fs_avl[0] =3D {  IIO_G_TO_M_S_2(61000), 0x0 },
-> +				.fs_avl[1] =3D { IIO_G_TO_M_S_2(122000), 0x2 },
-> +				.fs_avl[2] =3D { IIO_G_TO_M_S_2(244000), 0x3 },
-> +				.fs_avl[3] =3D { IIO_G_TO_M_S_2(488000), 0x1 },
->  				.fs_len =3D 4,
->  			},
->  			[ST_LSM6DSX_ID_GYRO] =3D {
-> @@ -1032,10 +1032,10 @@ static const struct st_lsm6dsx_settings st_lsm6ds=
-x_sensor_settings[] =3D {
->  					.addr =3D 0x11,
->  					.mask =3D GENMASK(3, 2),
->  				},
-> -				.fs_avl[0] =3D {  IIO_DEGREE_TO_RAD(8750), 0x0 },
-> -				.fs_avl[1] =3D { IIO_DEGREE_TO_RAD(17500), 0x1 },
-> -				.fs_avl[2] =3D { IIO_DEGREE_TO_RAD(35000), 0x2 },
-> -				.fs_avl[3] =3D { IIO_DEGREE_TO_RAD(70000), 0x3 },
-> +				.fs_avl[0] =3D {  IIO_DEGREE_TO_RAD(8750000), 0x0 },
-> +				.fs_avl[1] =3D { IIO_DEGREE_TO_RAD(17500000), 0x1 },
-> +				.fs_avl[2] =3D { IIO_DEGREE_TO_RAD(35000000), 0x2 },
-> +				.fs_avl[3] =3D { IIO_DEGREE_TO_RAD(70000000), 0x3 },
->  				.fs_len =3D 4,
->  			},
->  		},
-> @@ -1200,10 +1200,10 @@ static const struct st_lsm6dsx_settings st_lsm6ds=
-x_sensor_settings[] =3D {
->  					.addr =3D 0x10,
->  					.mask =3D GENMASK(3, 2),
->  				},
-> -				.fs_avl[0] =3D {  IIO_G_TO_M_S_2(61), 0x0 },
-> -				.fs_avl[1] =3D { IIO_G_TO_M_S_2(122), 0x2 },
-> -				.fs_avl[2] =3D { IIO_G_TO_M_S_2(244), 0x3 },
-> -				.fs_avl[3] =3D { IIO_G_TO_M_S_2(488), 0x1 },
-> +				.fs_avl[0] =3D {  IIO_G_TO_M_S_2(61000), 0x0 },
-> +				.fs_avl[1] =3D { IIO_G_TO_M_S_2(122000), 0x2 },
-> +				.fs_avl[2] =3D { IIO_G_TO_M_S_2(244000), 0x3 },
-> +				.fs_avl[3] =3D { IIO_G_TO_M_S_2(488000), 0x1 },
->  				.fs_len =3D 4,
->  			},
->  			[ST_LSM6DSX_ID_GYRO] =3D {
-> @@ -1211,10 +1211,10 @@ static const struct st_lsm6dsx_settings st_lsm6ds=
-x_sensor_settings[] =3D {
->  					.addr =3D 0x11,
->  					.mask =3D GENMASK(3, 2),
->  				},
-> -				.fs_avl[0] =3D {  IIO_DEGREE_TO_RAD(8750), 0x0 },
-> -				.fs_avl[1] =3D { IIO_DEGREE_TO_RAD(17500), 0x1 },
-> -				.fs_avl[2] =3D { IIO_DEGREE_TO_RAD(35000), 0x2 },
-> -				.fs_avl[3] =3D { IIO_DEGREE_TO_RAD(70000), 0x3 },
-> +				.fs_avl[0] =3D {  IIO_DEGREE_TO_RAD(8750000), 0x0 },
-> +				.fs_avl[1] =3D { IIO_DEGREE_TO_RAD(17500000), 0x1 },
-> +				.fs_avl[2] =3D { IIO_DEGREE_TO_RAD(35000000), 0x2 },
-> +				.fs_avl[3] =3D { IIO_DEGREE_TO_RAD(70000000), 0x3 },
->  				.fs_len =3D 4,
->  			},
->  		},
-> @@ -1598,7 +1598,7 @@ static int st_lsm6dsx_read_raw(struct iio_dev *iio_=
-dev,
->  	case IIO_CHAN_INFO_SCALE:
->  		*val =3D 0;
->  		*val2 =3D sensor->gain;
-> -		ret =3D IIO_VAL_INT_PLUS_MICRO;
-> +		ret =3D IIO_VAL_INT_PLUS_NANO;
->  		break;
->  	default:
->  		ret =3D -EINVAL;
-> @@ -1836,13 +1836,31 @@ static ssize_t st_lsm6dsx_sysfs_scale_avail(struc=
-t device *dev,
-> =20
->  	fs_table =3D &hw->settings->fs_table[sensor->id];
->  	for (i =3D 0; i < fs_table->fs_len; i++)
-> -		len +=3D scnprintf(buf + len, PAGE_SIZE - len, "0.%06u ",
-> +		len +=3D scnprintf(buf + len, PAGE_SIZE - len, "0.%09u ",
->  				 fs_table->fs_avl[i].gain);
->  	buf[len - 1] =3D '\n';
-> =20
->  	return len;
->  }
-> =20
-> +static int st_lsm6dsx_write_raw_get_fmt(struct iio_dev *indio_dev,
-> +					struct iio_chan_spec const *chan,
-> +					long mask)
-> +{
-> +	switch (mask) {
-> +	case IIO_CHAN_INFO_SCALE:
-> +		switch (chan->type) {
-> +		case IIO_ANGL_VEL:
-> +		case IIO_ACCEL:
-> +			return IIO_VAL_INT_PLUS_NANO;
-> +		default:
-> +			return IIO_VAL_INT_PLUS_MICRO;
-> +		}
-> +	default:
-> +		return IIO_VAL_INT_PLUS_MICRO;
-> +	}
-> +}
-> +
->  static IIO_DEV_ATTR_SAMP_FREQ_AVAIL(st_lsm6dsx_sysfs_sampling_frequency_=
-avail);
->  static IIO_DEVICE_ATTR(in_accel_scale_available, 0444,
->  		       st_lsm6dsx_sysfs_scale_avail, NULL, 0);
-> @@ -1868,6 +1886,7 @@ static const struct iio_info st_lsm6dsx_acc_info =
-=3D {
->  	.read_event_config =3D st_lsm6dsx_read_event_config,
->  	.write_event_config =3D st_lsm6dsx_write_event_config,
->  	.hwfifo_set_watermark =3D st_lsm6dsx_set_watermark,
-> +	.write_raw_get_fmt =3D st_lsm6dsx_write_raw_get_fmt,
->  };
-> =20
->  static struct attribute *st_lsm6dsx_gyro_attributes[] =3D {
-> @@ -1885,6 +1904,7 @@ static const struct iio_info st_lsm6dsx_gyro_info =
-=3D {
->  	.read_raw =3D st_lsm6dsx_read_raw,
->  	.write_raw =3D st_lsm6dsx_write_raw,
->  	.hwfifo_set_watermark =3D st_lsm6dsx_set_watermark,
-> +	.write_raw_get_fmt =3D st_lsm6dsx_write_raw_get_fmt,
->  };
-> =20
->  static int st_lsm6dsx_get_drdy_pin(struct st_lsm6dsx_hw *hw, int *drdy_p=
-in)
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
