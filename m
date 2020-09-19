@@ -2,112 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 626E2270C37
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 11:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7ED4270C3F
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 11:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726219AbgISJhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 05:37:09 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13768 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726097AbgISJhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 05:37:09 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id D23E5170A5BB9ACD5BC3;
-        Sat, 19 Sep 2020 17:37:05 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.177.253) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 19 Sep 2020 17:36:56 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Oliver O'Halloran <oohall@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Dave Jiang" <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Libin <huawei.libin@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH v2 1/1] libnvdimm/namespace: avoid repeated judgment in nvdimm_namespace_disk_name()
-Date:   Sat, 19 Sep 2020 17:36:29 +0800
-Message-ID: <20200919093629.3792-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        id S1726250AbgISJoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 05:44:22 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:43286 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726097AbgISJoW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Sep 2020 05:44:22 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 374151C0B85; Sat, 19 Sep 2020 11:44:19 +0200 (CEST)
+Date:   Sat, 19 Sep 2020 11:44:18 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Alexander Dahl <post@lespocky.de>
+Cc:     linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
+        Alexander Dahl <ada@thorsis.com>,
+        Denis Osterland-Heim <denis.osterland@diehl.com>
+Subject: Re: [PATCH v5 1/3] leds: pwm: Remove platform_data support
+Message-ID: <20200919094418.GC12294@duo.ucw.cz>
+References: <20200919053145.7564-1-post@lespocky.de>
+ <20200919053145.7564-2-post@lespocky.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.253]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="KDt/GgjP6HVcx58l"
+Content-Disposition: inline
+In-Reply-To: <20200919053145.7564-2-post@lespocky.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The judgment (suffix ? suffix : "") appears three times, we do this just
-because the initial value of local variable "suffix" is NULL, should be
-replaced with empty string "" to avoid null pointer reference. It's easy
-to get rid of it as below:
--	const char *suffix = NULL;
-+	const char *suffix = "";
 
-To avoid having rows that exceed 80 columns, add a new local variable
-"region_id".
+--KDt/GgjP6HVcx58l
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-No functional change, but it can reduce the code size.
-Before:
-   text    data     bss     dec     hex filename
-  41749    3697      16   45462    b196 drivers/nvdimm/namespace_devs.o
+Hi!
 
-After:
-   text    data     bss     dec     hex filename
-  41653    3697      16   45366    b136 drivers/nvdimm/namespace_devs.o
+> Since commit 141f15c66d94 ("leds: pwm: remove header") that platform
+> interface is not usable from outside and there seems to be no in tree
+> user anymore.  All in-tree users of the leds-pwm driver seem to use DT
+> currently.  Getting rid of the old platform interface will allow the
+> leds-pwm driver to switch over from 'devm_led_classdev_register()' to
+> 'devm_led_classdev_register_ext()' later.
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
-v1 --> v2:
-1. Only the title and description are modified.
+> @@ -61,6 +56,7 @@ static int led_pwm_set(struct led_classdev *led_cdev,
+>  	return pwm_apply_state(led_dat->pwm, &led_dat->pwmstate);
+>  }
+> =20
+> +__attribute__((nonnull))
+>  static int led_pwm_add(struct device *dev, struct led_pwm_priv *priv,
+>  		       struct led_pwm *led, struct fwnode_handle *fwnode)
+>  {
 
-v1:
-https://lore.kernel.org/patchwork/patch/1292584/
-
- drivers/nvdimm/namespace_devs.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/nvdimm/namespace_devs.c b/drivers/nvdimm/namespace_devs.c
-index 6da67f4d641a27c..ef2800c5da4c99c 100644
---- a/drivers/nvdimm/namespace_devs.c
-+++ b/drivers/nvdimm/namespace_devs.c
-@@ -157,7 +157,8 @@ const char *nvdimm_namespace_disk_name(struct nd_namespace_common *ndns,
- 		char *name)
- {
- 	struct nd_region *nd_region = to_nd_region(ndns->dev.parent);
--	const char *suffix = NULL;
-+	const char *suffix = "";
-+	int region_id = nd_region->id;
- 
- 	if (ndns->claim && is_nd_btt(ndns->claim))
- 		suffix = "s";
-@@ -173,17 +174,14 @@ const char *nvdimm_namespace_disk_name(struct nd_namespace_common *ndns,
- 		}
- 
- 		if (nsidx)
--			sprintf(name, "pmem%d.%d%s", nd_region->id, nsidx,
--					suffix ? suffix : "");
-+			sprintf(name, "pmem%d.%d%s", region_id, nsidx, suffix);
- 		else
--			sprintf(name, "pmem%d%s", nd_region->id,
--					suffix ? suffix : "");
-+			sprintf(name, "pmem%d%s", region_id, suffix);
- 	} else if (is_namespace_blk(&ndns->dev)) {
- 		struct nd_namespace_blk *nsblk;
- 
- 		nsblk = to_nd_namespace_blk(&ndns->dev);
--		sprintf(name, "ndblk%d.%d%s", nd_region->id, nsblk->id,
--				suffix ? suffix : "");
-+		sprintf(name, "ndblk%d.%d%s", region_id, nsblk->id, suffix);
- 	} else {
- 		return NULL;
- 	}
--- 
-1.8.3
+This normally goes elsewhere -- right? I'd expect:
 
 
+  static int led_pwm_add(struct device *dev, struct led_pwm_priv *priv,
+  		       struct led_pwm *led, struct fwnode_handle *fwnode)
+	  __attribute__((nonnull))
+
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--KDt/GgjP6HVcx58l
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX2XS8gAKCRAw5/Bqldv6
+8iapAKCTRc30eD7P0wc+NOhcH593+trd/QCfZ+5um+mTGHwp65tN1p4Xgs0rsDA=
+=2m5L
+-----END PGP SIGNATURE-----
+
+--KDt/GgjP6HVcx58l--
