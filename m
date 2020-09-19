@@ -2,171 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1AC1270ECE
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 17:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23155270ED0
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 17:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726572AbgISPQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 11:16:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59390 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726400AbgISPQm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 11:16:42 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8A3AA2098B;
-        Sat, 19 Sep 2020 15:16:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600528602;
-        bh=+y+bw6n8SN9jBc2YfWVyglQV2EMkOcqIEAz8BTxArUM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=vQ6YJwb0MAvZmQTt8VWRi/4UHGWj/sAU0vkflZggHdQKGUDh90EPecpI8sM1jkYqB
-         0nhluLmhujFq5UyPHVC+HstjGe4Kxpc4lJJHqZfYt9WwbLjKIRSfUD/R9XL+uP5EeL
-         PrA1zHzd0Akl7+4KfAU/1KsNut24RzDFs+Xt84pQ=
-Date:   Sat, 19 Sep 2020 16:16:38 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Cristian Pop <cristian.pop@analog.com>
-Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5] iio: adc: ad7768-1: Add channel label example
-Message-ID: <20200919161638.3357f266@archlinux>
-In-Reply-To: <20200919161440.2cb17583@archlinux>
-References: <20200918093356.93670-1-cristian.pop@analog.com>
-        <20200919161440.2cb17583@archlinux>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726605AbgISPQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 11:16:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726589AbgISPQv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Sep 2020 11:16:51 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FE1AC0613D1
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 08:16:50 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id m5so9332141lfp.7
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 08:16:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=/Yyx5fgdQQ53MJfSQkVm3NCGXBb0SNoIJgKMHS8hFqU=;
+        b=rN7OavEaQ4SwSGOpsJTrpu03q6Glz1O6NFAjy8AikXA7iFrkbitfUVx01VMLZ4M6Ue
+         sEqqInFS75d8eXpw59FJiEYbpUqnkORrfmcEaFVLhCeBLNOJhVo5dj2bSmpvRqwP1/5O
+         1jnLtTiBCA1tvQYPrfM7z5oe3bkE2zUKFDowcCoATPWIdhdX19EVq2dEezActrm+QKJg
+         0fn6ZG0N/BubIi9AhxEACFjMkKv7MQ2R4R0ziHGIKIuKhhI6HEZY5KiXWLxoCeoXRmv7
+         SXWGUC0YXiiSzojyoxsc120R58zfbMV53Vyys19g9flOxW6/svOkdhPuf132O66GguW2
+         FrUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=/Yyx5fgdQQ53MJfSQkVm3NCGXBb0SNoIJgKMHS8hFqU=;
+        b=Ouz/BvbfgAjZ8tXv7brN1AZJRiaDybw+enSQEzmnhRW9JUxyVgqu0041TwTLF/prw5
+         xDsCAeze9PCnllp68DJTLSWKEo1+WrwsvAl3Op/i3kCoZ0lZ4O+VKn76H5EXnczy4DLY
+         uzpHEYRjAs/0jeRMReA9sYtpcIFREcyiJlaJ47xQIPCT/e7ErwPxzcaytjHnvCyJ1h5/
+         198c7he1wjrdUs5uz++7Ze2gH+c+JRLuf2g7kKD2jbHCt94UvTQTFL2wNylu6U93fsbq
+         YfQ+pD0aGBrnY5ecIn+v90A7TQ5PpnWlwgEE3kNlOkARect3r0Ivy7LuP7gq7RkdK1se
+         pYuQ==
+X-Gm-Message-State: AOAM533EYTUAR1DgXBVzvu3ZblGdObJVfsO+Fqwd77XsrVPBYkiebgVa
+        of3jI3RAD2m4+VDAm/99kBF3W+6OKF+zXAu87IM=
+X-Google-Smtp-Source: ABdhPJwuWHxT1algO/3mzGuimfSdFOFDRjOyCniqmj9rP8XU1guJfFUmBH+P7dbey4pHmLDJd+qS0RNZJZ8JsHkx+/c=
+X-Received: by 2002:ac2:4424:: with SMTP id w4mr11947842lfl.447.1600528608758;
+ Sat, 19 Sep 2020 08:16:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: by 2002:ab3:6e58:0:0:0:0:0 with HTTP; Sat, 19 Sep 2020 08:16:48
+ -0700 (PDT)
+Reply-To: kkoduah.sarpong@outlook.com
+From:   Kofi Koduah Sarpong <kofikoduahsarpong68@gmail.com>
+Date:   Sat, 19 Sep 2020 08:16:48 -0700
+Message-ID: <CAGyyCatJ-GsTnppF_8M5=VUOK+S9JoJyUVUoucVHSVOsHgJUkQ@mail.gmail.com>
+Subject: Re: investment interest from Engr: Kofi Sarpong Please go through and
+ get back to me.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 19 Sep 2020 16:14:40 +0100
-Jonathan Cameron <jic23@kernel.org> wrote:
+Lukoil Overseas Gh. Ltd.
+Oil & Gas Extraction Companies
+No. 68 Mankralo Street
+East Cantonments
+Accra Ghana.
 
-> On Fri, 18 Sep 2020 12:33:56 +0300
-> Cristian Pop <cristian.pop@analog.com> wrote:
-> 
-> > This is a demo usage of new "label" attribute for channel.  
-> While I can see this is a demo in someways, I assume we also have
-> a valid usecase for doing this beyond as a demo!
-> 
-> So perhaps rephrase that intro.
+Dear: Reem Awwaad
 
-I also forgot to say that you also need to update the dt-bindings
-for this driver.  I've just committed a patch converting them to yaml
-so work on top of that.
+My name is Engr: Kofi Koduah Sarpong.
+I am the Chief Executive Officer of Lukoil Overseas Gh. Ltd Ghana.
+I will be retiring from my work by June next year. I write to inform
+you of my intention to invest in a Hotel business or any other forms
+of business in your country and i request you assists me in carrying
+out the feasibility studies on location and likely cost implication,
+type and estimation on how much it will cost to establish a three star
+hotel, either by outright purchase of already existing one or a
+dilapidated one that we can renovate or setting up a new one entirely.
 
-Thanks
+If you sincerely carry out this survey, and give me feedback as fast
+as possible, I will give you the power of attorney to build & manage
+the hotel for me, pending my retirement next year as I said.
 
-Jonathan
+Sir, i have the sum of (US$85 million USD) that I deposited in a
+Finance company outside my country for this project.
 
-> 
-> > 
-> > Signed-off-by: Cristian Pop <cristian.pop@analog.com>
-> > ---
-> > Changes in V5:
-> > Create a separate patch file for this commit
-> >  drivers/iio/adc/ad7768-1.c | 49 ++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 49 insertions(+)
-> > 
-> > diff --git a/drivers/iio/adc/ad7768-1.c b/drivers/iio/adc/ad7768-1.c
-> > index 0d132708c429..5ca9f9febb5a 100644
-> > --- a/drivers/iio/adc/ad7768-1.c
-> > +++ b/drivers/iio/adc/ad7768-1.c
-> > @@ -161,6 +161,7 @@ struct ad7768_state {
-> >  	struct completion completion;
-> >  	struct iio_trigger *trig;
-> >  	struct gpio_desc *gpio_sync_in;
-> > +	const char **labels;
-> >  	/*
-> >  	 * DMA (thus cache coherency maintenance) requires the
-> >  	 * transfer buffers to live in their own cache lines.
-> > @@ -407,6 +408,14 @@ static int ad7768_write_raw(struct iio_dev *indio_dev,
-> >  	}
-> >  }
-> >  
-> > +static int ad7768_read_label(struct iio_dev *indio_dev,
-> > +	const struct iio_chan_spec *chan, char *label)
-> > +{
-> > +	struct ad7768_state *st = iio_priv(indio_dev);
-> > +
-> > +	return sprintf(label, "%s\n", st->labels[chan->channel]);
-> > +}
-> > +
-> >  static struct attribute *ad7768_attributes[] = {
-> >  	&iio_dev_attr_sampling_frequency_available.dev_attr.attr,
-> >  	NULL
-> > @@ -420,6 +429,7 @@ static const struct iio_info ad7768_info = {
-> >  	.attrs = &ad7768_group,
-> >  	.read_raw = &ad7768_read_raw,
-> >  	.write_raw = &ad7768_write_raw,
-> > +	.read_label = ad7768_read_label,
-> >  	.debugfs_reg_access = &ad7768_reg_access,
-> >  };
-> >  
-> > @@ -538,6 +548,41 @@ static void ad7768_clk_disable(void *data)
-> >  	clk_disable_unprepare(st->mclk);
-> >  }
-> >  
-> > +static int ad7768_set_channel_label(struct iio_dev *indio_dev,
-> > +						int num_channels)
-> > +{
-> > +	struct ad7768_state *st = iio_priv(indio_dev);
-> > +	struct device *device = indio_dev->dev.parent;
-> > +	struct fwnode_handle *fwnode;
-> > +	struct fwnode_handle *child;
-> > +	const char *label;
-> > +	int crt_ch = 0;
-> > +
-> > +	st->labels = devm_kcalloc(indio_dev->dev.parent,
-> > +					num_channels,
-> > +					sizeof(**st->labels),  
-> 
-> I think that ends up being the size of a single character which isn't
-> the intent.  I assume aim is a suitable sized array of pointers to
-> strings which we will fill in later?
-> 
-> If so we can probably just use a static sized array as the maximum
-> number of channels is well constrained.  In this particular driver
-> that is 1 I think!
+Please don=E2=80=99t disregard this message I am very sincere in what am
+telling you the documents for the deposit I will send them to you for
+your confirmation as soon as we proceed.
+
+I have very little issue with health right now as a result of age but
+I have been assured by my doctor that I will be fine and get back to
+work soon presently i am in the neighboring country for medical
+reason.
+
+Please do let me know if you are capable, and can handling such
+business. Feed me back with your details, and your area of
+specialization should be indicated as well. I will be expecting your
+reply as soon as possible.
+
+Please send your telephone number to me i will call you for more details.
 
 
-> 
-> > +					GFP_KERNEL);
-> > +
-> > +	if (!st->labels)
-> > +		return -ENOMEM;
-> > +
-> > +	fwnode = dev_fwnode(device);
-> > +	fwnode_for_each_child_node(fwnode, child) {
-> > +		if (fwnode_property_read_u32(child, "reg", &crt_ch))
-> > +			continue;
-> > +
-> > +		if (crt_ch >= num_channels)
-> > +			continue;
-> > +
-> > +		if (fwnode_property_read_string(child, "label", &label))
-> > +			continue;
-> > +
-> > +		st->labels[crt_ch] = label;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >  static int ad7768_probe(struct spi_device *spi)
-> >  {
-> >  	struct ad7768_state *st;
-> > @@ -611,6 +656,10 @@ static int ad7768_probe(struct spi_device *spi)
-> >  
-> >  	init_completion(&st->completion);
-> >  
-> > +	ret = ad7768_set_channel_label(indio_dev, ARRAY_SIZE(ad7768_channels));
-> > +	if (ret)
-> > +		return ret;
-> > +
-> >  	ret = devm_request_irq(&spi->dev, spi->irq,
-> >  			       &ad7768_interrupt,
-> >  			       IRQF_TRIGGER_RISING | IRQF_ONESHOT,  
-> 
-
+Regards
+Engr: Kofi Koduah Sarpong
+Chief Executive Officer
