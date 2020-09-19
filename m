@@ -2,169 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00216270FBA
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 19:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 616C4270FC0
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 19:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726613AbgISRTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 13:19:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726434AbgISRTQ (ORCPT
+        id S1726631AbgISR0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 13:26:09 -0400
+Received: from smtprelay0108.hostedemail.com ([216.40.44.108]:38762 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726449AbgISR0J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 13:19:16 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19271C0613CE
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 10:19:16 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id w11so9589340lfn.2
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 10:19:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=waM6UyKAxKjxaPuk1aOj7tJ5Pe/ksOuiXEzSSo1PI/U=;
-        b=PDwKTi4lX9j7zg3G7WzPyBOHBiLdhmAgWRxWPWvYR/nEys9FVfUL6zNUVgG09pDixg
-         o+e2DCxbAvOZN3jBhyrOMZPfygh9RU8mogp2HXrCoLkUWHRL8e1VK4NRvgzXaMsluBfo
-         GR1BPuNqLZOfJqo2g/IqA9gl4eqzfpV+zOYak=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=waM6UyKAxKjxaPuk1aOj7tJ5Pe/ksOuiXEzSSo1PI/U=;
-        b=m+xnfXXeN0BCgwSvgDPodbKc3duUacutfnoknKFK1b1lx7p3Jr1f7fZupHcmLTu7gg
-         lzD0YLBC7lK45WcCkF4RjQqC1XUDJssc08nCr+kr9N0z8BjSeLurE8dU5yqptslnw+6X
-         F36nGCNbcL6/N7Rin8qrh8tk2WTQo6IqSkwwdJ4GznBm3cEfJ2X6MbzDcfHI4m8hQPuM
-         P7S6ZkfHU4CJQXlzEv7xS/NqLrvzGlF6XGGr91scgeCIs7OIfIEpw8O3yVYY6Lo8WcZq
-         k6yBKawpHFgQg+0a7rdnzvLDFEZtiabXj1awyd6zfSJI9Vw7w00IT+VLAVCSEmSSmAl/
-         sNAQ==
-X-Gm-Message-State: AOAM5303xrNEpI7eSbAF6EehCtDq5f0wQdvHLNk4aWWnBk+o+ZQFO1kF
-        HySIbh5B0YqVgD9UYFGnUdWALNtSprIvZA==
-X-Google-Smtp-Source: ABdhPJwI7Do1h1npZMzpOxSughAN1eu4beO24p7/iFhjv8Pxrc1tFrhfLMKEK38hfhy8XaGmT0rMCg==
-X-Received: by 2002:a05:6512:52a:: with SMTP id o10mr11877369lfc.596.1600535953619;
-        Sat, 19 Sep 2020 10:19:13 -0700 (PDT)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id 13sm1350521lfn.239.2020.09.19.10.19.11
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 19 Sep 2020 10:19:12 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id b22so9520092lfs.13
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 10:19:11 -0700 (PDT)
-X-Received: by 2002:a19:521a:: with SMTP id m26mr14134256lfb.133.1600535951025;
- Sat, 19 Sep 2020 10:19:11 -0700 (PDT)
+        Sat, 19 Sep 2020 13:26:09 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 363F81DEB;
+        Sat, 19 Sep 2020 17:26:08 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 90,9,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3653:3865:3866:3867:3868:3870:3872:4321:5007:7514:7576:7903:10004:10400:10848:11026:11232:11473:11658:11914:12291:12296:12297:12438:12555:12740:12760:12895:13255:13439:14181:14659:14721:21080:21221:21324:21433:21451:21627:21740:21741:21819:21990:30012:30022:30034:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: sun72_231127327135
+X-Filterd-Recvd-Size: 3279
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf08.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 19 Sep 2020 17:26:07 +0000 (UTC)
+Message-ID: <ad937bba6ebd306f6e467add90cfd857bb4f2391.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: extend author Signed-off-by check for split
+ From: header
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org, apw@canonical.com,
+        linux-kernel@vger.kernel.org
+Date:   Sat, 19 Sep 2020 10:26:06 -0700
+In-Reply-To: <20200919081225.28624-1-dwaipayanray1@gmail.com>
+References: <20200919081225.28624-1-dwaipayanray1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-References: <20200919091751.011116649@linutronix.de>
-In-Reply-To: <20200919091751.011116649@linutronix.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 19 Sep 2020 10:18:54 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiYGyrFRbA1cc71D2-nc5U9LM9jUJesXGqpPnB7E4X1YQ@mail.gmail.com>
-Message-ID: <CAHk-=wiYGyrFRbA1cc71D2-nc5U9LM9jUJesXGqpPnB7E4X1YQ@mail.gmail.com>
-Subject: Re: [patch RFC 00/15] mm/highmem: Provide a preemptible variant of
- kmap_atomic & friends
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        "open list:SYNOPSYS ARC ARCHITECTURE" 
-        <linux-snps-arc@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
-        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-sparc <sparclinux@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 19, 2020 at 2:50 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> this provides a preemptible variant of kmap_atomic & related
-> interfaces. This is achieved by:
+On Sat, 2020-09-19 at 13:42 +0530, Dwaipayan Ray wrote:
+> Checkpatch did not handle cases where the author From: header
+> was split into two lines. The author string went empty and
+> checkpatch generated a false NO_AUTHOR_SIGN_OFF warning.
 
-Ack. This looks really nice, even apart from the new capability.
+It's good to provide an example where the current code
+doesn't work.
 
-The only thing I really reacted to is that the name doesn't make sense
-to me: "kmap_temporary()" seems a bit odd.
+It likely would be better to do this by searching forward for
+any extension lines after a "^From:' rather than searching
+backwards as there can be any number of extension lines.
 
-Particularly for an interface that really is basically meant as a
-better replacement of "kmap_atomic()" (but is perhaps also a better
-replacement for "kmap()").
+> Support split From: headers in AUTHOR_SIGN_OFF check by adding
+> an additional clause to resolve author identity in such cases.
+> 
+> Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+> ---
+>  scripts/checkpatch.pl | 28 ++++++++++++++++++++++++----
+>  1 file changed, 24 insertions(+), 4 deletions(-)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 504d2e431c60..86975baead22 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -1210,6 +1210,16 @@ sub reformat_email {
+>  	return format_email($email_name, $email_address);
+>  }
+>  
+> +sub format_author_email {
+> +	my ($email, $from) = @_;
+> +
+> +	$email = encode("utf8", $email) if ($from =~ /=\?utf-8\?/i);
+> +	$email =~ s/"//g;
+> +	$email = reformat_email($email);
+> +
+> +	return $email;
+> +}
+> +
+>  sub same_email_addresses {
+>  	my ($email1, $email2) = @_;
+>  
+> @@ -2347,6 +2357,7 @@ sub process {
+>  	my $signoff = 0;
+>  	my $author = '';
+>  	my $authorsignoff = 0;
+> +	my $prevheader = '';
+>  	my $is_patch = 0;
+>  	my $is_binding_patch = -1;
+>  	my $in_header_lines = $file ? 0 : 1;
+> @@ -2658,12 +2669,21 @@ sub process {
+>  			}
+>  		}
+>  
+> +# Check the patch for a split From:
+> +		if($prevheader ne '') {
+> +			if ($author eq '' && decode("MIME-Header", $prevheader) =~ /^From:\s*(.*)/) {
+> +				my $email = $1.$line;
+> +				$author = format_author_email($email, $prevheader);
+> +			}
+> +			$prevheader = '';
+> +		}
+> +
+>  # Check the patch for a From:
+>  		if (decode("MIME-Header", $line) =~ /^From:\s*(.*)/) {
+> -			$author = $1;
+> -			$author = encode("utf8", $author) if ($line =~ /=\?utf-8\?/i);
+> -			$author =~ s/"//g;
+> -			$author = reformat_email($author);
+> +			$author = format_author_email($1, $line);
+> +			if($author eq '') {
+> +				$prevheader = $line;
+> +			}
+>  		}
+>  
+>  # Check the patch for a signoff:
 
-I think I understand how the name came about: I think the "temporary"
-is there as a distinction from the "longterm" regular kmap(). So I
-think it makes some sense from an internal implementation angle, but I
-don't think it makes a lot of sense from an interface name.
-
-I don't know what might be a better name, but if we want to emphasize
-that it's thread-private and a one-off, maybe "local" would be a
-better naming, and make it distinct from the "global" nature of the
-old kmap() interface?
-
-However, another solution might be to just use this new preemptible
-"local" kmap(), and remove the old global one entirely. Yes, the old
-global one caches the page table mapping and that sounds really
-efficient and nice. But it's actually horribly horribly bad, because
-it means that we need to use locking for them. Your new "temporary"
-implementation seems to be fundamentally better locking-wise, and only
-need preemption disabling as locking (and is equally fast for the
-non-highmem case).
-
-So I wonder if the single-page TLB flush isn't a better model, and
-whether it wouldn't be a lot simpler to just get rid of the old
-complex kmap() entirely, and replace it with this?
-
-I agree we can't replace the kmap_atomic() version, because maybe
-people depend on the preemption disabling it also implied. But what
-about replacing the non-atomic kmap()?
-
-Maybe I've missed something.  Is it because the new interface still
-does "pagefault_disable()" perhaps?
-
-But does it even need the pagefault_disable() at all? Yes, the
-*atomic* one obviously needed it. But why does this new one need to
-disable page faults?
-
-[ I'm just reading the patches, I didn't try to apply them and look at
-the end result, so I might have missed something ]
-
-The only other worry I would have is just test coverage of this
-change. I suspect very few developers use HIGHMEM. And I know the
-various test robots don't tend to test 32-bit either.
-
-But apart from that question about naming (and perhaps replacing
-kmap() entirely), I very much like it.
-
-                        Linus
