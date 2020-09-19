@@ -2,340 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BFA3270BB2
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 10:07:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23635270BC3
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 10:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726405AbgISIG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 04:06:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726367AbgISIGt (ORCPT
+        id S1726247AbgISIPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 04:15:46 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:55854 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726054AbgISIPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 04:06:49 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50DB1C0613D0
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 01:06:49 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id l71so4862423pge.4
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 01:06:49 -0700 (PDT)
+        Sat, 19 Sep 2020 04:15:45 -0400
+X-Greylist: delayed 426 seconds by postgrey-1.27 at vger.kernel.org; Sat, 19 Sep 2020 04:15:44 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1600503344; x=1632039344;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=I8S5z1Zetw+N3Tc8/AwAT7ZZeb2Ps14oN1mCy0TiWL8=;
+  b=W3yUKo3JZrueZpJM/tl7bVn1psLxgt9nYW2VBArQQAfxS6DxgUv9+/cK
+   ROQETiiY0Ayj0kvuAVVbcavXFVT0Qd7n7oO7OhOqx96iGQfblqTOR4U0O
+   kQadplf9MLBTDtpCtr+eUnOdRAfA1889f6DTPHo7K6ZDJQSxF619/msa8
+   +tiBy1SEg0DKv7gkf4w6rcYXKd1brjQw5uO+8XORKfr8QSCxvuJes6r54
+   atKSNpvKVGO4vomdWTYgl5Iiv/QrmjRLUiZ0hhuufKDmXg+MVTJlvYi1d
+   WZaRsxYCYtQ78NsJbRljS3xuop4boTXsrkadLRSSx3PpROxvW70Ra8Xs+
+   Q==;
+IronPort-SDR: WosWP4HwsKEtLkN4pgQd8LdAhXJPOdFQ6UUcdxrvIQLpyvUwu4n4hI8KZOMOEaP49uhdDZuSc/
+ lYLHDyTrs2vRuCOmE02uSOWdXQ70vjW1WGpfWD/8Yf2UP0K4x5DLc1fb6CZdmx8LH5Cxtjmv/y
+ xK+sybw5/OOh5Og4wdE7wMXrCy/+NKUTVmDJgSpnvW4DHFJtDrSjS8tRfWMpAZ8EwV9zEI3nJq
+ Nz6NUzABOyPitOWyou7jio6o4vf7xEwWbRb/1CV4OkoeMLnUsUIhvffF77k3ygNpGQ01ygs9vK
+ sYs=
+X-IronPort-AV: E=Sophos;i="5.77,278,1596470400"; 
+   d="scan'208";a="257469877"
+Received: from mail-mw2nam10lp2109.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.109])
+  by ob1.hgst.iphmx.com with ESMTP; 19 Sep 2020 16:08:36 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CF0LeR4zSFF9yWWcy/gPP+3YgyexmVTSNnPeShQHkiLu8XvAgwwWLpVWW1zUw/KyexR8jlOGc/127lTjYV36VaOqPD10FOKAtjsJIRo62N/APjA1E+q5H4joKN8L4spcSb2RrE30ZpjHaEWOOu9fK1mOPQQuL51aAPgtGDwhTEWnQKNn83k7auiwfme5FaapP5GxD1+h2qx2ODMkbFl/IIldAoWbmJDNgCA1IES4ERPbIecV+4dyW0PwP2WiGKFvPK0Wbfh2Z9/jR598W9GZ0b+Y3SqsDgodunABCfTJagwwU8Ux2UltdQLA+OmOFwwgwedo0uNDnLTPUCWqJHJSdw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MijMlWdcTW+B7zU+EFwuOg/5bj67LRHSn8GupvrdDdw=;
+ b=HIp5qNoFb11dgWiK/15LtV8rYtRwS9hlKcE4PEYwgYBoiiDuOtT+UxOGqME9KAyPC4Rr+t6uMyjdy5106IanYugqmdpwaV5KSlJqU+CVfSoR7r+rTyDONytViHH0nFbMaiqNO9D1ZbB4j1EGsOjtjvxw6dmYtavrqjlGwr6CptnkvAYp0pemQR7O60ie7OUvhhDQluUJII9C9nJZaWCmLiTFBfGf0v8buHqvI+uQk5dtqZNwR08kNV48rBcfwKMwI+0HA60pGUKAeeMpaSPSKmpRmfg7kplkomULJBfOq409/HmvfBjuPGkVXtu7vDWW9dj8OXQ+H4wfcZrgsvQQJQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4mjAsO6i14BLDGSTSdDKCE/ErMpri2AIzn0P8gVWa8M=;
-        b=f0OFDsETa78EaeXMDCZ1RlCfxiwXc9SrnugxfxtZMcxjpwzsQZOe/tYIDistENL+3n
-         8aJ8UY7gOEmoL3ldEcxG/KpWw2K2lmPViEdyK2GebPCprnlzSQiPqZqOPp3m2hjzte7U
-         XTdyC+J3wSoKeBaYrzyy/kuZdk1+t7cxQEEzc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4mjAsO6i14BLDGSTSdDKCE/ErMpri2AIzn0P8gVWa8M=;
-        b=k1/up1P9n6zsQq8ptRtmkFzxmF4lPazFE3mZOpXJdD7TK1k/8CH0dxkBicNp9lGDwc
-         JPe3xgydP6a2vbjg89rP0FrLyGVCthsN8BeDD/0oKVigaD+aiPzHcWKpJx0VMYW/riKP
-         AXoK8puVMazzaNE09+xXnSkzYKWuMt1ZnGdIcqMzadzD5GYdOPn2Lnm0kmHXT1e2Fjmz
-         hrW/dc5VJYMdSA/A+V2ZBo2xea3ZuIDTCvhrIdi9J3pWw/wb0sDW2cp15o6oCpgAF/Hj
-         IjDUF69CZfifyCN6WGfOeQjfR6SL9oBOgl822e1x2yEs5h2wjHR3uu5Ii3vItVdkMlM2
-         rY0A==
-X-Gm-Message-State: AOAM530v7lThze/sK9o65SgcZsIKw7+A29QeBmCl2fGpvUyuNnuASjXN
-        02cvMIcvPh+6JinrvS2bZNHmIQ==
-X-Google-Smtp-Source: ABdhPJzoDBiiDd/qwVg2H2idKKM+EA63R2fRTH/k5PeOCGXyrSeLjPAUUIbnlIzg8EvmDnpbjiiFuA==
-X-Received: by 2002:a63:491:: with SMTP id 139mr13312846pge.147.1600502808858;
-        Sat, 19 Sep 2020 01:06:48 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s3sm5443116pgc.61.2020.09.19.01.06.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Sep 2020 01:06:45 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kees Cook <keescook@chromium.org>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christian Brauner <christian@brauner.io>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        linux-kselftest@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org,
-        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v2 4/4] selftests/clone3: Avoid OS-defined clone_args
-Date:   Sat, 19 Sep 2020 01:06:37 -0700
-Message-Id: <20200919080637.259478-5-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200919080637.259478-1-keescook@chromium.org>
-References: <20200919080637.259478-1-keescook@chromium.org>
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MijMlWdcTW+B7zU+EFwuOg/5bj67LRHSn8GupvrdDdw=;
+ b=l1DtmCX+8TvL5lmcXAeT9ymmqCD0kH8A3JsL1CYmavxqm353vl0hKupS+p+pBsefEN5Tt2sOOGp3wgUXpDyok3CrKbwGA/1Nitm9AV1D8/KysEtcIowBRVW4gfUPL08mWZsbvz29lW9rsD056dA3D2+/YdmQ+ctRnznbdWHJdZY=
+Received: from BY5PR04MB6705.namprd04.prod.outlook.com (2603:10b6:a03:220::8)
+ by BY5PR04MB6613.namprd04.prod.outlook.com (2603:10b6:a03:1dd::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14; Sat, 19 Sep
+ 2020 08:08:34 +0000
+Received: from BY5PR04MB6705.namprd04.prod.outlook.com
+ ([fe80::2c49:48e2:e9fb:d5a0]) by BY5PR04MB6705.namprd04.prod.outlook.com
+ ([fe80::2c49:48e2:e9fb:d5a0%9]) with mapi id 15.20.3391.011; Sat, 19 Sep 2020
+ 08:08:34 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Stanley Chu <stanley.chu@mediatek.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>
+CC:     "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuohong.wang@mediatek.com" <kuohong.wang@mediatek.com>,
+        "peter.wang@mediatek.com" <peter.wang@mediatek.com>,
+        "chun-hung.wu@mediatek.com" <chun-hung.wu@mediatek.com>,
+        "andy.teng@mediatek.com" <andy.teng@mediatek.com>,
+        "chaotian.jing@mediatek.com" <chaotian.jing@mediatek.com>,
+        "cc.chou@mediatek.com" <cc.chou@mediatek.com>
+Subject: RE: [PATCH 3/4] scsi: ufs-mediatek: Fix flag of unipro low-power mode
+Thread-Topic: [PATCH 3/4] scsi: ufs-mediatek: Fix flag of unipro low-power
+ mode
+Thread-Index: AQHWhauhHCtH2hn6FEG2JWtNrKtBPqlvq8+A
+Date:   Sat, 19 Sep 2020 08:08:33 +0000
+Message-ID: <BY5PR04MB67058DE7C6B5F63E960280CBFC3C0@BY5PR04MB6705.namprd04.prod.outlook.com>
+References: <20200908064507.30774-1-stanley.chu@mediatek.com>
+ <20200908064507.30774-4-stanley.chu@mediatek.com>
+In-Reply-To: <20200908064507.30774-4-stanley.chu@mediatek.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: mediatek.com; dkim=none (message not signed)
+ header.d=none;mediatek.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [77.138.4.172]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: de266f29-ea89-4c15-a983-08d85c73344b
+x-ms-traffictypediagnostic: BY5PR04MB6613:
+x-microsoft-antispam-prvs: <BY5PR04MB661340636AD9FC438695EE59FC3C0@BY5PR04MB6613.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: sg7w+VmYtrZkTySQ7DNrVYvMa6Dfv13qHB7M0F+ppR8OVhfQpFM7siCg+GhwVUXcXwSkWyV8VpW5g4aRxzjTAGYjNPbTWcbEBMRS6JDpSPSLOQTutMk4Kj4TdRwVxGLVmCTkbTn6DWKce6iYFg+xtgqMWeFWMcraDSU2S6GtN+27lMtJ/VNAxmJX25gRlEKeojE56YLkaPtaYpBhBl2bnlpCdqIMnLf71g+J+8iloT4n+XqRRo7+4lORNi7yQhT4UTUfOrQXvz/KeGS+o9H1V5DgSZXOkny63MDAjdgSYRLQHyI9/2X88wKr6dWvQbOqeXz22W3iroWzvzZru6Qc+FcQzniUXa46LR+VqlwqJjq4C9rjiUL/6NFLDwPLnbhk
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6705.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(39860400002)(366004)(396003)(83380400001)(33656002)(186003)(7696005)(26005)(478600001)(110136005)(66446008)(86362001)(316002)(8936002)(54906003)(8676002)(2906002)(7416002)(6506007)(66476007)(55016002)(9686003)(52536014)(71200400001)(66556008)(66946007)(76116006)(4326008)(64756008)(5660300002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: EcNwee0FM/dY1ea7EqyyXOIBh/gm0ksovgraoUGH2vzK3TXwdX8qJ9sGDOqsdACW4dEnlYGN583loWAAb744QtNU/etYYvNOu6uYuwxBVDiECHVb5+LHEcuPFoujkDbG8IxVPTovfgiy+KoZMAcgOkkIDjqIG58nLWhfCJZmeRQD2OwSW3Q6WeYkPNoex3qwPNXAMhzl8PG57N8DpTdp8B3XFYD8kpvWV0r9mdEsmxHjJvAO+BGT7LVYj1t3y11MjOmJc9isd/putDPWjU/sdS2FlEtGhQtfHdrMaiwvUZRqdWicmf8Qhb/6bC3vLuScGmavrGG6c7o8kiqaWYHRuY6F9IlGRa2Ugw/e1AChCP6zgDtn8/2jtaCUUykr4C9+QKzFSU+o0hyk4JZVyA6DO8Y3R1QArKcUNwC+ABoNUAB5B4E3BCV9X2j4Xxpc7LhhEQpUcyFYuZI7hYT3bU4pKlkhulyv8rHeHMrMUWd2SG1bGXJVDTJxhIv3NV8Aou59yeS5VY5r0o9bq90jdn7ARmHHfvJ006rU8pV/hZ14RF9K4dwYrt1a+B1q7JC8Efpa4FnO/CXhK0a0oOIlTV+N64D9CVJh+LIFYGF2YWxh2hwyFYO69tseysyLTmlukzoFeMKWAPuqLhFzMRJ1m/rhLw==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6705.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: de266f29-ea89-4c15-a983-08d85c73344b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Sep 2020 08:08:33.9660
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Fnb3zXPcQJdx0wWzxE6JCD2QOzSAGndYeRmRRJk8Hm1vRYwB0EnyTlpoSOWDuZlcn14QK24iHP/9QRzBWgdnvA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6613
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the UAPI headers start to appear in distros, we need to avoid outdated
-versions of struct clone_args to be able to test modern features;
-rename to "struct __clone_args". Additionally update the struct size
-macro names to match UAPI names.
+>=20
+> Forcibly leave UniPro low-power mode if UIC commands is failed.
+> This makes hba_enable_delay_us as correct (default) value for
+> re-enabling the host.
+>=20
+> At the same time, change type of parameter "lpm" in function
+> ufs_mtk_unipro_set_pm() to "bool".
+Semantically, better leave it u32 as its eventually assigned to the arg3 of=
+ the uic command=20
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- tools/testing/selftests/clone3/clone3.c       | 45 ++++++++-----------
- .../clone3/clone3_cap_checkpoint_restore.c    |  4 +-
- .../selftests/clone3/clone3_clear_sighand.c   |  2 +-
- .../selftests/clone3/clone3_selftests.h       | 24 +++++-----
- .../testing/selftests/clone3/clone3_set_tid.c |  4 +-
- tools/testing/selftests/seccomp/seccomp_bpf.c |  4 +-
- 6 files changed, 40 insertions(+), 43 deletions(-)
-
-diff --git a/tools/testing/selftests/clone3/clone3.c b/tools/testing/selftests/clone3/clone3.c
-index b7e6dec36173..42be3b925830 100644
---- a/tools/testing/selftests/clone3/clone3.c
-+++ b/tools/testing/selftests/clone3/clone3.c
-@@ -20,13 +20,6 @@
- #include "../kselftest.h"
- #include "clone3_selftests.h"
- 
--/*
-- * Different sizes of struct clone_args
-- */
--#ifndef CLONE3_ARGS_SIZE_V0
--#define CLONE3_ARGS_SIZE_V0 64
--#endif
--
- enum test_mode {
- 	CLONE3_ARGS_NO_TEST,
- 	CLONE3_ARGS_ALL_0,
-@@ -38,13 +31,13 @@ enum test_mode {
- 
- static int call_clone3(uint64_t flags, size_t size, enum test_mode test_mode)
- {
--	struct clone_args args = {
-+	struct __clone_args args = {
- 		.flags = flags,
- 		.exit_signal = SIGCHLD,
- 	};
- 
- 	struct clone_args_extended {
--		struct clone_args args;
-+		struct __clone_args args;
- 		__aligned_u64 excess_space[2];
- 	} args_ext;
- 
-@@ -52,11 +45,11 @@ static int call_clone3(uint64_t flags, size_t size, enum test_mode test_mode)
- 	int status;
- 
- 	memset(&args_ext, 0, sizeof(args_ext));
--	if (size > sizeof(struct clone_args))
-+	if (size > sizeof(struct __clone_args))
- 		args_ext.excess_space[1] = 1;
- 
- 	if (size == 0)
--		size = sizeof(struct clone_args);
-+		size = sizeof(struct __clone_args);
- 
- 	switch (test_mode) {
- 	case CLONE3_ARGS_ALL_0:
-@@ -77,9 +70,9 @@ static int call_clone3(uint64_t flags, size_t size, enum test_mode test_mode)
- 		break;
- 	}
- 
--	memcpy(&args_ext.args, &args, sizeof(struct clone_args));
-+	memcpy(&args_ext.args, &args, sizeof(struct __clone_args));
- 
--	pid = sys_clone3((struct clone_args *)&args_ext, size);
-+	pid = sys_clone3((struct __clone_args *)&args_ext, size);
- 	if (pid < 0) {
- 		ksft_print_msg("%s - Failed to create new process\n",
- 				strerror(errno));
-@@ -144,14 +137,14 @@ int main(int argc, char *argv[])
- 	else
- 		ksft_test_result_skip("Skipping clone3() with CLONE_NEWPID\n");
- 
--	/* Do a clone3() with CLONE3_ARGS_SIZE_V0. */
--	test_clone3(0, CLONE3_ARGS_SIZE_V0, 0, CLONE3_ARGS_NO_TEST);
-+	/* Do a clone3() with CLONE_ARGS_SIZE_VER0. */
-+	test_clone3(0, CLONE_ARGS_SIZE_VER0, 0, CLONE3_ARGS_NO_TEST);
- 
--	/* Do a clone3() with CLONE3_ARGS_SIZE_V0 - 8 */
--	test_clone3(0, CLONE3_ARGS_SIZE_V0 - 8, -EINVAL, CLONE3_ARGS_NO_TEST);
-+	/* Do a clone3() with CLONE_ARGS_SIZE_VER0 - 8 */
-+	test_clone3(0, CLONE_ARGS_SIZE_VER0 - 8, -EINVAL, CLONE3_ARGS_NO_TEST);
- 
- 	/* Do a clone3() with sizeof(struct clone_args) + 8 */
--	test_clone3(0, sizeof(struct clone_args) + 8, 0, CLONE3_ARGS_NO_TEST);
-+	test_clone3(0, sizeof(struct __clone_args) + 8, 0, CLONE3_ARGS_NO_TEST);
- 
- 	/* Do a clone3() with exit_signal having highest 32 bits non-zero */
- 	test_clone3(0, 0, -EINVAL, CLONE3_ARGS_INVAL_EXIT_SIGNAL_BIG);
-@@ -165,31 +158,31 @@ int main(int argc, char *argv[])
- 	/* Do a clone3() with NSIG < exit_signal < CSIG */
- 	test_clone3(0, 0, -EINVAL, CLONE3_ARGS_INVAL_EXIT_SIGNAL_NSIG);
- 
--	test_clone3(0, sizeof(struct clone_args) + 8, 0, CLONE3_ARGS_ALL_0);
-+	test_clone3(0, sizeof(struct __clone_args) + 8, 0, CLONE3_ARGS_ALL_0);
- 
--	test_clone3(0, sizeof(struct clone_args) + 16, -E2BIG,
-+	test_clone3(0, sizeof(struct __clone_args) + 16, -E2BIG,
- 			CLONE3_ARGS_ALL_0);
- 
--	test_clone3(0, sizeof(struct clone_args) * 2, -E2BIG,
-+	test_clone3(0, sizeof(struct __clone_args) * 2, -E2BIG,
- 			CLONE3_ARGS_ALL_0);
- 
- 	/* Do a clone3() with > page size */
- 	test_clone3(0, getpagesize() + 8, -E2BIG, CLONE3_ARGS_NO_TEST);
- 
--	/* Do a clone3() with CLONE3_ARGS_SIZE_V0 in a new PID NS. */
-+	/* Do a clone3() with CLONE_ARGS_SIZE_VER0 in a new PID NS. */
- 	if (uid == 0)
--		test_clone3(CLONE_NEWPID, CLONE3_ARGS_SIZE_V0, 0,
-+		test_clone3(CLONE_NEWPID, CLONE_ARGS_SIZE_VER0, 0,
- 				CLONE3_ARGS_NO_TEST);
- 	else
- 		ksft_test_result_skip("Skipping clone3() with CLONE_NEWPID\n");
- 
--	/* Do a clone3() with CLONE3_ARGS_SIZE_V0 - 8 in a new PID NS */
--	test_clone3(CLONE_NEWPID, CLONE3_ARGS_SIZE_V0 - 8, -EINVAL,
-+	/* Do a clone3() with CLONE_ARGS_SIZE_VER0 - 8 in a new PID NS */
-+	test_clone3(CLONE_NEWPID, CLONE_ARGS_SIZE_VER0 - 8, -EINVAL,
- 			CLONE3_ARGS_NO_TEST);
- 
- 	/* Do a clone3() with sizeof(struct clone_args) + 8 in a new PID NS */
- 	if (uid == 0)
--		test_clone3(CLONE_NEWPID, sizeof(struct clone_args) + 8, 0,
-+		test_clone3(CLONE_NEWPID, sizeof(struct __clone_args) + 8, 0,
- 				CLONE3_ARGS_NO_TEST);
- 	else
- 		ksft_test_result_skip("Skipping clone3() with CLONE_NEWPID\n");
-diff --git a/tools/testing/selftests/clone3/clone3_cap_checkpoint_restore.c b/tools/testing/selftests/clone3/clone3_cap_checkpoint_restore.c
-index 9562425aa0a9..55bd387ce7ec 100644
---- a/tools/testing/selftests/clone3/clone3_cap_checkpoint_restore.c
-+++ b/tools/testing/selftests/clone3/clone3_cap_checkpoint_restore.c
-@@ -44,13 +44,13 @@ static int call_clone3_set_tid(struct __test_metadata *_metadata,
- 	int status;
- 	pid_t pid = -1;
- 
--	struct clone_args args = {
-+	struct __clone_args args = {
- 		.exit_signal = SIGCHLD,
- 		.set_tid = ptr_to_u64(set_tid),
- 		.set_tid_size = set_tid_size,
- 	};
- 
--	pid = sys_clone3(&args, sizeof(struct clone_args));
-+	pid = sys_clone3(&args, sizeof(args));
- 	if (pid < 0) {
- 		TH_LOG("%s - Failed to create new process", strerror(errno));
- 		return -errno;
-diff --git a/tools/testing/selftests/clone3/clone3_clear_sighand.c b/tools/testing/selftests/clone3/clone3_clear_sighand.c
-index db5fc9c5edcf..47a8c0fc3676 100644
---- a/tools/testing/selftests/clone3/clone3_clear_sighand.c
-+++ b/tools/testing/selftests/clone3/clone3_clear_sighand.c
-@@ -47,7 +47,7 @@ static void test_clone3_clear_sighand(void)
- {
- 	int ret;
- 	pid_t pid;
--	struct clone_args args = {};
-+	struct __clone_args args = {};
- 	struct sigaction act;
- 
- 	/*
-diff --git a/tools/testing/selftests/clone3/clone3_selftests.h b/tools/testing/selftests/clone3/clone3_selftests.h
-index 91c1a78ddb39..e81ffaaee02b 100644
---- a/tools/testing/selftests/clone3/clone3_selftests.h
-+++ b/tools/testing/selftests/clone3/clone3_selftests.h
-@@ -19,13 +19,11 @@
- #define CLONE_INTO_CGROUP 0x200000000ULL /* Clone into a specific cgroup given the right permissions. */
- #endif
- 
--#ifndef CLONE_ARGS_SIZE_VER0
--#define CLONE_ARGS_SIZE_VER0 64
--#endif
--
- #ifndef __NR_clone3
- #define __NR_clone3 -1
--struct clone_args {
-+#endif
-+
-+struct __clone_args {
- 	__aligned_u64 flags;
- 	__aligned_u64 pidfd;
- 	__aligned_u64 child_tid;
-@@ -34,15 +32,21 @@ struct clone_args {
- 	__aligned_u64 stack;
- 	__aligned_u64 stack_size;
- 	__aligned_u64 tls;
--#define CLONE_ARGS_SIZE_VER1 80
-+#ifndef CLONE_ARGS_SIZE_VER0
-+#define CLONE_ARGS_SIZE_VER0 64	/* sizeof first published struct */
-+#endif
- 	__aligned_u64 set_tid;
- 	__aligned_u64 set_tid_size;
--#define CLONE_ARGS_SIZE_VER2 88
-+#ifndef CLONE_ARGS_SIZE_VER1
-+#define CLONE_ARGS_SIZE_VER1 80	/* sizeof second published struct */
-+#endif
- 	__aligned_u64 cgroup;
-+#ifndef CLONE_ARGS_SIZE_VER2
-+#define CLONE_ARGS_SIZE_VER2 88	/* sizeof third published struct */
-+#endif
- };
--#endif /* __NR_clone3 */
- 
--static pid_t sys_clone3(struct clone_args *args, size_t size)
-+static pid_t sys_clone3(struct __clone_args *args, size_t size)
- {
- 	fflush(stdout);
- 	fflush(stderr);
-@@ -52,7 +56,7 @@ static pid_t sys_clone3(struct clone_args *args, size_t size)
- static inline void test_clone3_supported(void)
- {
- 	pid_t pid;
--	struct clone_args args = {};
-+	struct __clone_args args = {};
- 
- 	if (__NR_clone3 < 0)
- 		ksft_exit_skip("clone3() syscall is not supported\n");
-diff --git a/tools/testing/selftests/clone3/clone3_set_tid.c b/tools/testing/selftests/clone3/clone3_set_tid.c
-index 5831c1082d6d..0229e9ebb995 100644
---- a/tools/testing/selftests/clone3/clone3_set_tid.c
-+++ b/tools/testing/selftests/clone3/clone3_set_tid.c
-@@ -46,14 +46,14 @@ static int call_clone3_set_tid(pid_t *set_tid,
- 	int status;
- 	pid_t pid = -1;
- 
--	struct clone_args args = {
-+	struct __clone_args args = {
- 		.flags = flags,
- 		.exit_signal = SIGCHLD,
- 		.set_tid = ptr_to_u64(set_tid),
- 		.set_tid_size = set_tid_size,
- 	};
- 
--	pid = sys_clone3(&args, sizeof(struct clone_args));
-+	pid = sys_clone3(&args, sizeof(args));
- 	if (pid < 0) {
- 		ksft_print_msg("%s - Failed to create new process\n",
- 			       strerror(errno));
-diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index 894c2404d321..4a180439ee9e 100644
---- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-+++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -3817,7 +3817,7 @@ TEST(user_notification_filter_empty)
- 	long ret;
- 	int status;
- 	struct pollfd pollfd;
--	struct clone_args args = {
-+	struct __clone_args args = {
- 		.flags = CLONE_FILES,
- 		.exit_signal = SIGCHLD,
- 	};
-@@ -3871,7 +3871,7 @@ TEST(user_notification_filter_empty_threaded)
- 	long ret;
- 	int status;
- 	struct pollfd pollfd;
--	struct clone_args args = {
-+	struct __clone_args args = {
- 		.flags = CLONE_FILES,
- 		.exit_signal = SIGCHLD,
- 	};
--- 
-2.25.1
-
+>=20
+> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+> ---
+>  drivers/scsi/ufs/ufs-mediatek.c | 20 ++++++++++++++------
+>  1 file changed, 14 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/drivers/scsi/ufs/ufs-mediatek.c b/drivers/scsi/ufs/ufs-media=
+tek.c
+> index 887c03e8bcc0..feba74a72309 100644
+> --- a/drivers/scsi/ufs/ufs-mediatek.c
+> +++ b/drivers/scsi/ufs/ufs-mediatek.c
+> @@ -419,7 +419,7 @@ static int ufs_mtk_pwr_change_notify(struct ufs_hba
+> *hba,
+>         return ret;
+>  }
+>=20
+> -static int ufs_mtk_unipro_set_pm(struct ufs_hba *hba, u32 lpm)
+> +static int ufs_mtk_unipro_set_pm(struct ufs_hba *hba, bool lpm)
+>  {
+>         int ret;
+>         struct ufs_mtk_host *host =3D ufshcd_get_variant(hba);
+> @@ -427,8 +427,14 @@ static int ufs_mtk_unipro_set_pm(struct ufs_hba
+> *hba, u32 lpm)
+>         ret =3D ufshcd_dme_set(hba,
+>                              UIC_ARG_MIB_SEL(VS_UNIPROPOWERDOWNCONTROL, 0=
+),
+>                              lpm);
+> -       if (!ret)
+> +       if (!ret || !lpm) {
+> +               /*
+> +                * Forcibly set as non-LPM mode if UIC commands is failed
+> +                * to use default hba_enable_delay_us value for re-enabli=
+ng
+> +                * the host.
+> +                */
+>                 host->unipro_lpm =3D lpm;
+Maybe just host->unipro_lpm =3D false; instead
