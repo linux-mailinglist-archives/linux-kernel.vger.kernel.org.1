@@ -2,176 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F554270B6E
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 09:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7DFC270B78
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 09:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726307AbgISH2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 03:28:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49144 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726112AbgISH23 (ORCPT
+        id S1726299AbgISHb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 03:31:56 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:26391 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726112AbgISHbv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 03:28:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600500507;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=s5QBdWf0Be/EzSaYQm1AD046Zbo4g6mUJcMIOSDZ87c=;
-        b=Mkt3n8SEY5UFiXIo31cmBOyJcLke9aooYbEvxJN5fXpf1yhKQ2YKGuLzZA5W6smCLESq4T
-        +P74kUTcs2MPJlrftG81nkIHdjYGzuGsfqVJieGuXr0HS9XEQ4rD/kiCYVHRlEZqxzehMt
-        kW4xAf1wMqHnlc4n/JrxnPO6zO58IDQ=
-Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
- [209.85.210.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-131-sAhIStsGMMCTyORuz-ttaA-1; Sat, 19 Sep 2020 03:28:25 -0400
-X-MC-Unique: sAhIStsGMMCTyORuz-ttaA-1
-Received: by mail-pf1-f197.google.com with SMTP id f76so5099431pfa.5
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 00:28:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=s5QBdWf0Be/EzSaYQm1AD046Zbo4g6mUJcMIOSDZ87c=;
-        b=LwUmVWZOiDnv5/sx52Ti9fYUMRWFv8S1LpclFlb6RmK8yP9HCLfbW4MB0RN0e+OCSC
-         r+eCAtcaOxzYMg8/7crQPNEZfElx6nHRH5EQROMrDSttfpu7pDonuZETw0GT+hhjMyC7
-         uE9Lu2t/+Y9EB0FL2iOffi60AhFABNY/9cdLScgdWEcPSQzDTcTUHL9Duis4FAREaHEV
-         iSdEWCDk8Z0rtJ78KrZjLjVpF+ymrneE/qMLBpofqLSvU35t0nV9ntfuqiMOZ0zuRs8D
-         oxQMJC2xMQFVskfL6zzO+iGS71auR/WLb6Zit1PXy27bKX41mIldgntUc3lGewNajS3p
-         O05Q==
-X-Gm-Message-State: AOAM530PJQ7YdofHapqASKUcqj2MDhBXmmcCMKaO8V7Q91a82MnYet4w
-        4j8tdEa+ku/b2DTDq7ag+6ShL+OUFOg57NhekqoYWdXa5cfRqcq9V6L9GMemlYgDFHX9lPV68hr
-        ry7H39Pg0gQLn2RMgq11uWZKj
-X-Received: by 2002:a17:902:b586:b029:d1:bb0f:2644 with SMTP id a6-20020a170902b586b02900d1bb0f2644mr32502957pls.34.1600500504785;
-        Sat, 19 Sep 2020 00:28:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxZYnm3xckGHKZChvOgswDfMVTG0fk8MOC46B/+w0qe2CXhzMvyQVAnykW4gqBnbQZw+2FQCQ==
-X-Received: by 2002:a17:902:b586:b029:d1:bb0f:2644 with SMTP id a6-20020a170902b586b02900d1bb0f2644mr32502940pls.34.1600500504523;
-        Sat, 19 Sep 2020 00:28:24 -0700 (PDT)
-Received: from xiangao.remote.csb ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id s3sm5407381pfe.116.2020.09.19.00.28.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Sep 2020 00:28:24 -0700 (PDT)
-From:   Gao Xiang <hsiangkao@redhat.com>
-To:     linux-erofs@lists.ozlabs.org, Chao Yu <yuchao0@huawei.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Chao Yu <chao@kernel.org>,
-        Gao Xiang <hsiangkao@redhat.com>
-Subject: [PATCH v2 3/3] erofs: add REQ_RAHEAD flag to readahead requests
-Date:   Sat, 19 Sep 2020 15:27:30 +0800
-Message-Id: <20200919072730.24989-3-hsiangkao@redhat.com>
-X-Mailer: git-send-email 2.18.1
-In-Reply-To: <20200919072730.24989-1-hsiangkao@redhat.com>
-References: <20200919072730.24989-1-hsiangkao@redhat.com>
+        Sat, 19 Sep 2020 03:31:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1600500711; x=1632036711;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=DpmDv03ZFQ2rDcR5Sq0h1+5dTe0xhR4W0aRl3pnlwcA=;
+  b=P9nkTrmFr7eWaulN+kRAoIRmxxy4ktAk//gEgG+EyaMLG+YzTcRxTQXr
+   dKv5hNkioGAs7rcgpFY/ejDVJF44pZ2R+bbvFy1UvUQi56UunTUZ10Qri
+   PvFcw2+LHIV0py9q/WfmUSSUcaAE2OIEN/m5UwgSG8b3+LxHoZQ7QQI8G
+   jVIzzljM46t1JrlGlZSnzrjLwya8K09ZUNm51WEDEYYtuz3uw009kGqBZ
+   8kI/KCBcY2yTyW0xbshhSGKlIFJao0uLno8mzIvX6EE7SUSKw62QxSjIR
+   oBo8gfAcvIKiuKV5zOpttCVeuifh7EooOxsY+QxLcrUvkyS6MLzASWMRj
+   w==;
+IronPort-SDR: OVNaurijh8eNuASHcxF4mAt9TRKRvhxi2Jf/AroaV7SWKMYok9AxLRblx4jwZHTPkmw7fsz/FI
+ vX958p6CyeZJdnkCV5Sk3hNTPxjHXCnmaZbXHxRN80MU9Ce9q7uiZi+Q/7Zii35Hc7hLaijjN9
+ lFC0XwDkgJk6go3OhDmzSjvGu3cIo0OUALctcm1Fb8BrW1/QWo78+PtAbjED6hKWWmIiq5tNrV
+ 0S9dG9MSVp/bjEU0pCqLk1VEFHP+/Z7WwgDrUXZPhi3HG6T/4GRAiBDh1LgRhLd0wa1j0a1Mc1
+ lqU=
+X-IronPort-AV: E=Sophos;i="5.77,278,1596470400"; 
+   d="scan'208";a="149016429"
+Received: from mail-bn8nam12lp2174.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.174])
+  by ob1.hgst.iphmx.com with ESMTP; 19 Sep 2020 15:31:48 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kpCQqfq88AO//yAn9IjWe6TNWjxD+hiBcsUrJzzYgdQNdcUDdSO8N7uBQKnwESpgYTK0vqNhMIxB5D7UDt4wLH2CcMeZW+k3XfcjcWCIWgpXnj+6YWmYvQI+eUj/lv+ug5bsR95CjVIuxXE9okh4tqwl5LyVf8IkL4xmeNBbUuYAExSo6xbhk2tesqe0V6Tet7pWdSmj73YrY96/sG3oovJPLuyuNWeo+EavpOeIQBXkcieq30mIZewXsga2POH/l+Q43KKm6nKV8YA/w4tiOwRieJy/Pt6xcFrLeID4E88HU6mAGdZIDh4yyMgPzBqIiscTNB4D1WKQndFIJnvkjw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DpmDv03ZFQ2rDcR5Sq0h1+5dTe0xhR4W0aRl3pnlwcA=;
+ b=k61F23T8gIj+lYNb3MPPQNRGxS8f9xYGD7htsE6YyF22AAWDVJsELACB6MXuS3pNznhePircGpHatRIxqSxr7i6oY19gwgP6wqTy+LdA2kGuHEAToVXJMB11SD28DLU0Q5d+q1MRDm7/pNBDBN850IdVaxwQB5pbWcnED7mcfp5lVhjjckpiMbfsbm29ZpTzlUJ7ddQVwudA9qMtruOAXg0RV9ZLB2b1a8nS9Im61Xs05o44nVpUH34nXLziGFRFAOnG4CSC8hgsGbt+aL920WfyFn8CojR4jfkVE7Aki4pg2ycELes6l2qiyXai3237zJXlESTshn/PwD5lBmJHPQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DpmDv03ZFQ2rDcR5Sq0h1+5dTe0xhR4W0aRl3pnlwcA=;
+ b=E9X+rxcfUHZoNlR9EhrLpJLce5/x3bdpFP/1SzMfNq0wTkKFirILZxT4/5pbpdDMAJ55yLtY4mk42crvI3zcGJrg/9GSscoCYdPL0GOzPQWbKoR7T/A3KA+DdNqhu3g2vKkSKprc9tErw1jKAd2VZaE5dAMUqwREmqe1BKqMaBY=
+Received: from BY5PR04MB6705.namprd04.prod.outlook.com (2603:10b6:a03:220::8)
+ by BY5PR04MB6454.namprd04.prod.outlook.com (2603:10b6:a03:1e1::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14; Sat, 19 Sep
+ 2020 07:31:45 +0000
+Received: from BY5PR04MB6705.namprd04.prod.outlook.com
+ ([fe80::2c49:48e2:e9fb:d5a0]) by BY5PR04MB6705.namprd04.prod.outlook.com
+ ([fe80::2c49:48e2:e9fb:d5a0%9]) with mapi id 15.20.3391.011; Sat, 19 Sep 2020
+ 07:31:45 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Stanley Chu <stanley.chu@mediatek.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>
+CC:     "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuohong.wang@mediatek.com" <kuohong.wang@mediatek.com>,
+        "peter.wang@mediatek.com" <peter.wang@mediatek.com>,
+        "chun-hung.wu@mediatek.com" <chun-hung.wu@mediatek.com>,
+        "andy.teng@mediatek.com" <andy.teng@mediatek.com>,
+        "chaotian.jing@mediatek.com" <chaotian.jing@mediatek.com>,
+        "cc.chou@mediatek.com" <cc.chou@mediatek.com>
+Subject: RE: [PATCH 1/4] scsi: ufs-mediatek: Eliminate error message for
+ unbound mphy
+Thread-Topic: [PATCH 1/4] scsi: ufs-mediatek: Eliminate error message for
+ unbound mphy
+Thread-Index: AQHWhaugYPy2JozBXEmxUsUiMtnzqalvolHQ
+Date:   Sat, 19 Sep 2020 07:31:45 +0000
+Message-ID: <BY5PR04MB67052FB35C97CA914F037FE9FC3C0@BY5PR04MB6705.namprd04.prod.outlook.com>
+References: <20200908064507.30774-1-stanley.chu@mediatek.com>
+ <20200908064507.30774-2-stanley.chu@mediatek.com>
+In-Reply-To: <20200908064507.30774-2-stanley.chu@mediatek.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: mediatek.com; dkim=none (message not signed)
+ header.d=none;mediatek.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [77.138.4.172]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: a81b0a13-69ae-400b-6eaf-08d85c6e0ff1
+x-ms-traffictypediagnostic: BY5PR04MB6454:
+x-microsoft-antispam-prvs: <BY5PR04MB64543AC4671E50206466EF0FFC3C0@BY5PR04MB6454.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:4502;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: FCdF+3d1r58FHvzLAR4QkAkV9sjZfVWfoWbAU3uYjvtYSAKLGOvIkNS3J0TFIPvfTTUzkIlMBbzAD88KxtPvs0tPl1SEPuiKZxn8Ir7WiOXyfHD8wdDrUJE08PVA3cLvUMIUIdMleVPbv0CvvfYJQAonj0ljb+FixBR5Ink7z15krMNCH1WS5vF7cWaOyZZg8YxVCdEgEKKFGd32CONaeK5rTHXgkcYeDMn5zfob924yJ5ZD90fg227UxB9AYlkBfjvpdZxwrmyKgQTwL+FOHkApDOcjxpVaeJ1jos6cMRH5KuVunZosmJbFhp0ZrdSuTY5pLNGLspkEjOrlAtvM/Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6705.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(346002)(376002)(396003)(136003)(4326008)(66946007)(52536014)(7416002)(478600001)(71200400001)(7696005)(33656002)(5660300002)(55016002)(9686003)(2906002)(6506007)(316002)(186003)(8676002)(26005)(86362001)(8936002)(54906003)(64756008)(66556008)(66476007)(66446008)(558084003)(76116006)(110136005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: 8zPCDG3Miu1JPwrS1pwuKcdmbcLxuY04MiUS5OFLiWxqMBat8ms2s7j2cG9USiAGaTnlJASSeap9XCW554tF1V7sjNxZgcVH1WftskarKON4z03kSTjO+yNIg9dNi9NF+Xw1CsFyDVJZBSlR+tW2uja3+JXkorGYUfVZyAl0BdZnetHGRktmjF11p9/Cet2Yj7+jrIAVimGvIOqo2cK/tCoIVH0xtymMu460+yhBxf2tDKLO736hGGPwyEsG+OxcelmAZ7L3jbGC7kLwFZU5SM9cULsibw3JT7Gr7jFesBpam//4oYCAwZV46nvB4zmcE2SiMbDR/GgldDzatGRe1Gj3qMXeve1/DVb/OuK/gLoi/C2OKlZJyGFQ/cT0iV3UDG6RlTp1vnzwkYr4OTgwp3vjTYgi5GHcfZQklotNZmEoElLVW129wzFlhzeVqLCqjwVY4V2DCm0GpL98DIQfvPgMs1+mXkAYsUvJ7nhf/y0l+upVWLqfLGa16Dk+l+B1WWSp67iJSolPyWj2Qt96B5GxQEOI22umXS+FOLZEQ/tN/VNwR1szPkrXOu6Vb74av8X6XxOvMSEXICAV7p6+jtnfgakfcDogaDvI3TtudrRW/SrcILsm/BbeGdO9LUX0s8/guTDhtNcH5xF/60XWzw==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6705.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a81b0a13-69ae-400b-6eaf-08d85c6e0ff1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Sep 2020 07:31:45.5020
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: gFGqjkWH4KAq7nTl9KFkqRvRxFrKoN3YgmRWqXPWcGg1uRVbPlbNqjWjPGuJZjA0IPGwxh2/h8hOYh2lVPFL1Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6454
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's add REQ_RAHEAD flag so it'd be easier to identify
-readahead I/O requests in blktrace.
-
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
----
-change since v1:
- since "erofs: add REQ_RAHEAD flag to readahead requests" is dropped,
- lifting up related code to this patch and rebase for now.
-
- fs/erofs/data.c  |  2 +-
- fs/erofs/zdata.c | 17 +++++++++++------
- 2 files changed, 12 insertions(+), 7 deletions(-)
-
-diff --git a/fs/erofs/data.c b/fs/erofs/data.c
-index 459ecb42cbd3..347be146884c 100644
---- a/fs/erofs/data.c
-+++ b/fs/erofs/data.c
-@@ -224,7 +224,7 @@ static inline struct bio *erofs_read_raw_page(struct bio *bio,
- 		bio_set_dev(bio, sb->s_bdev);
- 		bio->bi_iter.bi_sector = (sector_t)blknr <<
- 			LOG_SECTORS_PER_BLOCK;
--		bio->bi_opf = REQ_OP_READ;
-+		bio->bi_opf = REQ_OP_READ | (ra ? REQ_RAHEAD : 0);
- 	}
- 
- 	err = bio_add_page(bio, page, PAGE_SIZE, 0);
-diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
-index bee6ce783c64..50912a5420b4 100644
---- a/fs/erofs/zdata.c
-+++ b/fs/erofs/zdata.c
-@@ -135,6 +135,7 @@ struct z_erofs_decompress_frontend {
- 	struct z_erofs_collector clt;
- 	struct erofs_map_blocks map;
- 
-+	bool readahead;
- 	/* used for applying cache strategy on the fly */
- 	bool backmost;
- 	erofs_off_t headoffset;
-@@ -1148,7 +1149,7 @@ static void move_to_bypass_jobqueue(struct z_erofs_pcluster *pcl,
- }
- 
- static void z_erofs_submit_queue(struct super_block *sb,
--				 z_erofs_next_pcluster_t owned_head,
-+				 struct z_erofs_decompress_frontend *f,
- 				 struct list_head *pagepool,
- 				 struct z_erofs_decompressqueue *fgq,
- 				 bool *force_fg)
-@@ -1157,6 +1158,7 @@ static void z_erofs_submit_queue(struct super_block *sb,
- 	z_erofs_next_pcluster_t qtail[NR_JOBQUEUES];
- 	struct z_erofs_decompressqueue *q[NR_JOBQUEUES];
- 	void *bi_private;
-+	z_erofs_next_pcluster_t owned_head = f->clt.owned_head;
- 	/* since bio will be NULL, no need to initialize last_index */
- 	pgoff_t last_index;
- 	unsigned int nr_bios = 0;
-@@ -1212,6 +1214,8 @@ static void z_erofs_submit_queue(struct super_block *sb,
- 					LOG_SECTORS_PER_BLOCK;
- 				bio->bi_private = bi_private;
- 				bio->bi_opf = REQ_OP_READ;
-+				if (f->readahead)
-+					bio->bi_opf |= REQ_RAHEAD;
- 				++nr_bios;
- 			}
- 
-@@ -1243,14 +1247,14 @@ static void z_erofs_submit_queue(struct super_block *sb,
- }
- 
- static void z_erofs_runqueue(struct super_block *sb,
--			     struct z_erofs_collector *clt,
-+			     struct z_erofs_decompress_frontend *f,
- 			     struct list_head *pagepool, bool force_fg)
- {
- 	struct z_erofs_decompressqueue io[NR_JOBQUEUES];
- 
--	if (clt->owned_head == Z_EROFS_PCLUSTER_TAIL)
-+	if (f->clt.owned_head == Z_EROFS_PCLUSTER_TAIL)
- 		return;
--	z_erofs_submit_queue(sb, clt->owned_head, pagepool, io, &force_fg);
-+	z_erofs_submit_queue(sb, f, pagepool, io, &force_fg);
- 
- 	/* handle bypass queue (no i/o pclusters) immediately */
- 	z_erofs_decompress_queue(&io[JQ_BYPASS], pagepool);
-@@ -1281,7 +1285,7 @@ static int z_erofs_readpage(struct file *file, struct page *page)
- 	(void)z_erofs_collector_end(&f.clt);
- 
- 	/* if some compressed cluster ready, need submit them anyway */
--	z_erofs_runqueue(inode->i_sb, &f.clt, &pagepool, true);
-+	z_erofs_runqueue(inode->i_sb, &f, &pagepool, true);
- 
- 	if (err)
- 		erofs_err(inode->i_sb, "failed to read, err [%d]", err);
-@@ -1307,6 +1311,7 @@ static void z_erofs_readahead(struct readahead_control *rac)
- 
- 	trace_erofs_readpages(inode, readahead_index(rac), nr_pages, false);
- 
-+	f.readahead = true;
- 	f.headoffset = readahead_pos(rac);
- 
- 	while ((page = readahead_page(rac))) {
-@@ -1340,7 +1345,7 @@ static void z_erofs_readahead(struct readahead_control *rac)
- 
- 	(void)z_erofs_collector_end(&f.clt);
- 
--	z_erofs_runqueue(inode->i_sb, &f.clt, &pagepool, sync);
-+	z_erofs_runqueue(inode->i_sb, &f, &pagepool, sync);
- 
- 	if (f.map.mpage)
- 		put_page(f.map.mpage);
--- 
-2.18.1
-
+>=20
+> Some MediaTek platforms does not have to bind MPHY so users
+> shall not see any unnecessary logs. Simply remove logs for this
+> case.
+>=20
+> Fixes: fc4983018fea ("scsi: ufs-mediatek: Allow unbound mphy")
+> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+Reviewed-by: Avri Altman <avri.altman@wdc.com>
