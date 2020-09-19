@@ -2,143 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 021A9271048
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 21:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8F6627104A
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 21:36:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726732AbgISTco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 15:32:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42894 "EHLO
+        id S1726599AbgISTgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 15:36:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726511AbgISTco (ORCPT
+        with ESMTP id S1726511AbgISTgg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 15:32:44 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3560C0613CE;
-        Sat, 19 Sep 2020 12:32:43 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id a9so8743826wmm.2;
-        Sat, 19 Sep 2020 12:32:43 -0700 (PDT)
+        Sat, 19 Sep 2020 15:36:36 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1234BC0613CE;
+        Sat, 19 Sep 2020 12:36:36 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id u13so5555493pgh.1;
+        Sat, 19 Sep 2020 12:36:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:cc:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-transfer-encoding:content-language;
-        bh=6boIJn1Hc6yrb/X3f5StEamiGaIf5qsazhLrdjuT1jg=;
-        b=rKgy8J8Fi3dCPRbJA5BeAy3xNVjI1YvBMt+/4vHtRLOs98Asf+rRsb4GLm5oUMa+Mb
-         3s1pPoFICMj5mVtTZ/Coa9FkZscpZmPvb7bPWLHrY7w56U2Q2lbn/VPcNkm6vXgOl2X0
-         3CgnRPfepXJhVIyDQjY/aoQOfQV1eTWMcWBABW90M+b2C4bRpU7C6KH+thiwfzUJOMxK
-         FLdpSydQwXUQgVRgBba9jHL70CS9HAr2VRBzjB3KDMiFyfLPhNHvMXAyVIWnaskAZsSO
-         XPmLDb7sZyAF5q5gSjhFRMlRakdnuU4Rxt5q+4laOc80msmoyVIaaT8syEpmL3ZnS5f7
-         St7w==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/hbQvW/WwycKpSevUDMADl+bOt9pZZjBbbmr6AnIEaI=;
+        b=LV6oI91d2+vZgOpBsE3f5tmaEmuLfA7Q10jGKazhq2CUGtcu8o0tldMSpggbrL5u7m
+         sO5twsUD4PMa9te7nppTnFJHrV2oD/h0QfLir3MaGmWZ+OEx/ViSJsie0+YbKww6hPts
+         A55PE8p4pOWQq/zHNIvzaRBXJ3OJL0jLKqQr9Z6WlEeEGa54bzoxNrk0au9GK8T0e4Al
+         fvkRM0ECxrsqQ5f/aGK9ZUTPAwPKSrAcNKN7SNl1oRXr0DRcGg9kizSn6fbBQLZ68Z61
+         iZkJ5p/0sgZZryPhSTJRgJzXioKskcTnmyJY7QY+yr4WGH2U9FxZ0v6AKNvXKVewCdQN
+         iySg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=6boIJn1Hc6yrb/X3f5StEamiGaIf5qsazhLrdjuT1jg=;
-        b=agGNG7BD8/vRRs2fTQNlYAtMjrIqQ6gQCi7xfvISvRxMbFmlKnaztiLBNK2Qmah/ya
-         nIqt59S6OwRSmQMKKKmWzm1B3z7omFjsILkeTdlQFPp62ZT4gtFi8bnfS30wfIRwgzSa
-         3rKZnGwq6nx50LIaACWR/fVuMQGCbrmx2lM+dZUUgCjKZBM21kZXiU36CADmlMcNqbsJ
-         QNJpsTio0oIL1V1PfJeRp65hOVvuMyVw3FevG8TnZaDl/jZqpZwpOb/N8+X51iD/6RMo
-         y6Nk3PDrnPXGAXSAGChqnKDWM9Y5Ibv7p2Ke8VcfGj5OcyyqTg+BH3F6FlOQDbGpMitR
-         bN/A==
-X-Gm-Message-State: AOAM532IxwygHfJ/USki1378TXJLkK5udXeWFNc+JAE2OtYdy8euIcsF
-        H9NyfecdjoF9cdhxRQfIAnFZfIf9H8zHzQ==
-X-Google-Smtp-Source: ABdhPJyNlKV2kgdVjY3G0msZ9YuKh9JVTs9EJZo7vcehlu+58pmD6tfcKEAYCH/mzh2qJH9Tt2eJ4g==
-X-Received: by 2002:a1c:1f42:: with SMTP id f63mr21164283wmf.1.1600543962484;
-        Sat, 19 Sep 2020 12:32:42 -0700 (PDT)
-Received: from [192.168.43.148] (92.40.169.140.threembb.co.uk. [92.40.169.140])
-        by smtp.gmail.com with ESMTPSA id 91sm13361561wrq.9.2020.09.19.12.32.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 19 Sep 2020 12:32:42 -0700 (PDT)
-Subject: Re: [PATCH] power: supply: charger-manager: Tidy function
-Cc:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200902165816.401213-1-alex.dewar90@gmail.com>
-From:   Alex Dewar <alex.dewar90@gmail.com>
-Message-ID: <ad8f0610-b534-c699-e26f-3fa8c8637684@gmail.com>
-Date:   Sat, 19 Sep 2020 20:32:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/hbQvW/WwycKpSevUDMADl+bOt9pZZjBbbmr6AnIEaI=;
+        b=KEci1CqHMJnwbtGx+COXpyfmzYPdT+6NQZMPoW1oURNDXpcF7aqNwdkboyUnnS7p0o
+         yAgKYyy/wE/Oq+mP2XfH7Vri1gL5JRPbf/cAmc92YuoWI6VtoHGGzm+KN0I7IAHCW4X/
+         t9mm0DG9lhXN+hfEbGCxBSrwYP7P5LOf32qAF3YTrzpywH1PcpqSMhZU2GJrhIyugBbe
+         AVRsymqYWn5CvlLz2CdkVXCeDVrPKFnWk25VLJxkOGWFZtwErc7ewQKm6K8V83cgrR89
+         Gxz93y1jiuVyJVsE8BxgFwynVWjLfCkpu+HkR5vfBGaFpupKfdNINnT+vAIyjKZagdlo
+         hcnA==
+X-Gm-Message-State: AOAM532o+QkWNZ0OZfjqHKYRzNBcsGqhTXN0DnGs6NDvO56N3MC9/KAc
+        Id59h67QmLx9JAmrzH9ll1E=
+X-Google-Smtp-Source: ABdhPJx9BimOCWqRHWSyLRsQP7obbHYEpFxvnWsXd3DpadbJxUFwl1Fa6tKEJ5FKQ1joMc6DMSSa4A==
+X-Received: by 2002:a65:42c2:: with SMTP id l2mr11008521pgp.61.1600544195287;
+        Sat, 19 Sep 2020 12:36:35 -0700 (PDT)
+Received: from localhost ([2601:1c0:5200:a6:307:a401:7b76:c6e5])
+        by smtp.gmail.com with ESMTPSA id g24sm7553133pfk.65.2020.09.19.12.36.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Sep 2020 12:36:34 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Peter Zijlstra <peterz@infradead.org>, Tejun Heo <tj@kernel.org>,
+        timmurray@google.com, linux-arm-msm@vger.kernel.org,
+        Rob Clark <robdclark@chromium.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 0/3] drm: commit_work scheduling
+Date:   Sat, 19 Sep 2020 12:37:23 -0700
+Message-Id: <20200919193727.2093945-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200902165816.401213-1-alex.dewar90@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-02 17:58, Alex Dewar wrote:
-> check_charging_duration() contains some copy-pasted code, which makes it
-> less readable. Refactor the function to be a bit tidier.
-Ping?
->
-> I've also fixed a couple of typos.
->
-> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
-> ---
->   drivers/power/supply/charger-manager.c | 39 +++++++++-----------------
->   1 file changed, 14 insertions(+), 25 deletions(-)
->
-> diff --git a/drivers/power/supply/charger-manager.c b/drivers/power/supply/charger-manager.c
-> index 07992821e252..67c7b1fb6601 100644
-> --- a/drivers/power/supply/charger-manager.c
-> +++ b/drivers/power/supply/charger-manager.c
-> @@ -443,42 +443,31 @@ static int try_charger_enable(struct charger_manager *cm, bool enable)
->    * check_charging_duration - Monitor charging/discharging duration
->    * @cm: the Charger Manager representing the battery.
->    *
-> - * If whole charging duration exceed 'charging_max_duration_ms',
-> + * If whole charging duration exceeds 'charging_max_duration_ms',
->    * cm stop charging to prevent overcharge/overheat. If discharging
-> - * duration exceed 'discharging _max_duration_ms', charger cable is
-> + * duration exceeds 'discharging _max_duration_ms', charger cable is
->    * attached, after full-batt, cm start charging to maintain fully
->    * charged state for battery.
->    */
->   static int check_charging_duration(struct charger_manager *cm)
->   {
->   	struct charger_desc *desc = cm->desc;
-> -	u64 curr = ktime_to_ms(ktime_get());
->   	u64 duration;
-> -	int ret = false;
->   
-> -	if (!desc->charging_max_duration_ms &&
-> -			!desc->discharging_max_duration_ms)
-> -		return ret;
-> -
-> -	if (cm->charger_enabled) {
-> -		duration = curr - cm->charging_start_time;
-> -
-> -		if (duration > desc->charging_max_duration_ms) {
-> -			dev_info(cm->dev, "Charging duration exceed %ums\n",
-> -				 desc->charging_max_duration_ms);
-> -			ret = true;
-> -		}
-> -	} else if (cm->battery_status == POWER_SUPPLY_STATUS_NOT_CHARGING) {
-> -		duration = curr - cm->charging_end_time;
-> +	if ((desc->charging_max_duration_ms == 0 &&
-> +			desc->discharging_max_duration_ms == 0))
-> +		return false;
-> +	if (!cm->charger_enabled &&
-> +			cm->battery_status != POWER_SUPPLY_STATUS_NOT_CHARGING)
-> +		return false;
->   
-> -		if (duration > desc->charging_max_duration_ms) {
-> -			dev_info(cm->dev, "Discharging duration exceed %ums\n",
-> -				 desc->discharging_max_duration_ms);
-> -			ret = true;
-> -		}
-> +	duration = ktime_to_ms(ktime_get()) - cm->charging_start_time;
-> +	if (duration > desc->charging_max_duration_ms) {
-> +		dev_info(cm->dev, "Charging duration exceeds %ums\n",
-> +				desc->charging_max_duration_ms);
-> +		return true;
->   	}
-> -
-> -	return ret;
-> +	return false;
->   }
->   
->   static int cm_get_battery_temperature_by_psy(struct charger_manager *cm,
+From: Rob Clark <robdclark@chromium.org>
+
+The android userspace treats the display pipeline as a realtime problem.
+And arguably, if your goal is to not miss frame deadlines (ie. vblank),
+it is.  (See https://lwn.net/Articles/809545/ for the best explaination
+that I found.)
+
+But this presents a problem with using workqueues for non-blocking
+atomic commit_work(), because the SCHED_FIFO userspace thread(s) can
+preempt the worker.  Which is not really the outcome you want.. once
+the required fences are scheduled, you want to push the atomic commit
+down to hw ASAP.
+
+But the decision of whether commit_work should be RT or not really
+depends on what userspace is doing.  For a pure CFS userspace display
+pipeline, commit_work() should remain SCHED_NORMAL.
+
+To handle this, convert non-blocking commit_work() to use per-CRTC
+kthread workers, instead of system_unbound_wq.  Per-CRTC workers are
+used to avoid serializing commits when userspace is using a per-CRTC
+update loop.
+
+A client-cap is introduced so that userspace can opt-in to SCHED_FIFO
+priority commit work.
+
+A potential issue is that since 616d91b68cd ("sched: Remove
+sched_setscheduler*() EXPORTs") we have limited RT priority levels,
+meaning that commit_work() ends up running at the same priority level
+as vblank-work.  This shouldn't be a big problem *yet*, due to limited
+use of vblank-work at this point.  And if it could be arranged that
+vblank-work is scheduled before signaling out-fences and/or sending
+pageflip events, it could probably work ok to use a single priority
+level for both commit-work and vblank-work.
+
+Rob Clark (3):
+  drm/crtc: Introduce per-crtc kworker
+  drm/atomic: Use kthread worker for nonblocking commits
+  drm: Add a client-cap to set scheduling mode
+
+ drivers/gpu/drm/drm_atomic_helper.c | 13 ++++++----
+ drivers/gpu/drm/drm_auth.c          |  4 ++++
+ drivers/gpu/drm/drm_crtc.c          | 37 +++++++++++++++++++++++++++++
+ drivers/gpu/drm/drm_ioctl.c         | 13 ++++++++++
+ include/drm/drm_atomic.h            | 31 ++++++++++++++++++++++++
+ include/drm/drm_crtc.h              | 10 ++++++++
+ include/uapi/drm/drm.h              | 13 ++++++++++
+ 7 files changed, 117 insertions(+), 4 deletions(-)
+
+-- 
+2.26.2
 
