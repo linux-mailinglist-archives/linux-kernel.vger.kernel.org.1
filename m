@@ -2,139 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 164FF27103C
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 21:31:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F03EE271041
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 21:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726684AbgISTb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 15:31:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42694 "EHLO
+        id S1726699AbgISTbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 15:31:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726511AbgISTb1 (ORCPT
+        with ESMTP id S1726626AbgISTby (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 15:31:27 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 459DBC0613CE;
-        Sat, 19 Sep 2020 12:31:27 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id y15so8717718wmi.0;
-        Sat, 19 Sep 2020 12:31:27 -0700 (PDT)
+        Sat, 19 Sep 2020 15:31:54 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77DD8C0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 12:31:54 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id q9so8378429wmj.2
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 12:31:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:cc:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-transfer-encoding:content-language;
-        bh=UOl7aJgZVOco43pM0FR5gPug/eBppWzmQE1Qt2hPsAY=;
-        b=SAR0t0Mj+t6LJOUepzhwcvAdBYiCPJWGjidXih0mxT/g+e3HpjDn+rHLzEtKVjbxW/
-         U3eKWcHtoLlmBxL0VfxZEGGwU6kak1+ICOcHK/ET7oWeNI54c6+j2fMN2r0tkSfZFh1j
-         TrwhSwDu7L7ecAblHecFDbynutj3x1Rhjh7AzcjoAFvurffDnvFqnkjDpJpWQCnozpp2
-         wtJ58uf6U8uH8fyZvud81B3jgbTUU7RX/OHlDfLrxQQCcVU1dERHDuz2Y8twvucivKPL
-         9sq77/VxiElGMOKb4uf5Es3JXwLn3ugDaix0Uo4H7Ry8agI+9dfLEVWnqT+28qlFjvUh
-         mB4w==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=nhO64xCI4d4r54ZrWnpLalMx3gX9IygCuaPxGjDx99M=;
+        b=Tydqc+qocqvnz2vAK6WPkAGgnydb9gSTS2fJ6ETQF3KtpWS+d12fFMWuHhG06PgIiH
+         j8cZ9oAGiWg0wL4VD8YjU+KUq/iQAe8STAP3+LpVPSFKZGtOtKKL33/2/yW6Cu7n40Wy
+         7Uhrtt3jOzepOcePj+W5S2+ywlbIT9N3e9bW6ZyiXEMO7BgiNhgvRceKHVZMts9Mcty3
+         2n24pNmcZpMHW5tFUv9bSjVDvmkPSLxsTNnYDiAgKeYTiEJebAzE7GyxAHAh0jjVRNrW
+         g29AMco/b9piZzP5j1YmAKIb3yrCa3uITV3y4BcCSL6fd8p55wt+HFAXSlzyoWI7HOcj
+         tzPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:cc:references:from:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding
          :content-language;
-        bh=UOl7aJgZVOco43pM0FR5gPug/eBppWzmQE1Qt2hPsAY=;
-        b=r5j/7goxfy7hz2P/+bbe9dXBgHOo0jXFU4KILnMXPfiGIS6mxvBc02fE0qWaXGyLkN
-         8CUn1EFxYtC8LxKd2t2cc3AXkLWapopMiRev63w3ft97OkX9DpXnHyzUQiu+/P7ls+xg
-         aKnip+fj3jq/wZ0/RmiaeW6ywZEFkDJ4egpVnPV6o9sS9rzS9PsWG/ALEA73WK8q8FYu
-         3PHQZ4XG0DyaDb/cHjHcUxLRbugbkDH6b+BoejUPAaNNXUiBYpY93bCvvmG7mssWTQis
-         rj0GmfmPfYJSM357XNWC/5t9SpXf67SD29utBSPMT/69ZZFcj0HlAqzgAtnymfTcXWfa
-         IfEA==
-X-Gm-Message-State: AOAM533GHC8kVC+TtuJ7dLjleqtoQdJgF1nnX93xxa7Yd6hvIkgBoxLl
-        tJyTVru0bQlKsvHR7IQ904+wNsOkaTPmUw==
-X-Google-Smtp-Source: ABdhPJwJ20Z3JMpNdgnVFQm9slja9W33AF/EopSX3S7Pe3V4UVomGGyQAntmfyCVsKyY+zUqaBXruA==
-X-Received: by 2002:a1c:32c6:: with SMTP id y189mr21360900wmy.51.1600543885768;
-        Sat, 19 Sep 2020 12:31:25 -0700 (PDT)
+        bh=nhO64xCI4d4r54ZrWnpLalMx3gX9IygCuaPxGjDx99M=;
+        b=T7AVYah7oJcxb/aIM5Lh+2kaBnn5HIprW/WhDBKEQ5axyzqvjio01u2NnuWiVZ5eTR
+         JauddTrzOeho4JvrguXKVSJl3S87ITUsCh3LxWcFRenEuRIi96frFe1ULa0D4Ww5i4y0
+         rs5mFnBWB++WdOrry3zJA8Atq/0bNKEn79qPBdtfzFt7tiENWKPbubD7C+gT8NAwkVc2
+         LoBMDWHJM4SCtYZndALx8t0JLeKnVUePtdpQsntQ9DmlI8Olqk5pMUo2euQAXvmROsB9
+         LWkQZljqr0EULMIAA0TkFWmxm7jb8xbZbyK041BPJD20RgO3RfTgnPrkcd+iWwLBuVv6
+         ueLQ==
+X-Gm-Message-State: AOAM532FE9godprgYin+X1GUQCDiupquuLkDVADFPVjJwjhKkSn1PQrU
+        gdMTahE0hfb2pQ959LaXL3HQQ2EgEzwAYA==
+X-Google-Smtp-Source: ABdhPJzunn6qDr4P1aW+zfdh47dIikbU0rsyCB3FHmxe0aDSJgTLqHEQXgP+YIxCawHHutNcaRX3lg==
+X-Received: by 2002:a7b:c453:: with SMTP id l19mr21021614wmi.163.1600543913008;
+        Sat, 19 Sep 2020 12:31:53 -0700 (PDT)
 Received: from [192.168.43.148] (92.40.169.140.threembb.co.uk. [92.40.169.140])
-        by smtp.gmail.com with ESMTPSA id w14sm12516740wrk.95.2020.09.19.12.31.24
+        by smtp.gmail.com with ESMTPSA id b18sm13020585wrn.21.2020.09.19.12.31.51
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 19 Sep 2020 12:31:24 -0700 (PDT)
-Subject: Re: [PATCH] staging: media: atomisp: Don't do unnecessary zeroing of
- memory
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-References: <20200909204807.36501-1-alex.dewar90@gmail.com>
+        Sat, 19 Sep 2020 12:31:52 -0700 (PDT)
+Subject: Re: [PATCH] drm/bridge: dw-mipi-dsi: Use kmemdup cf. kmalloc+memcpy
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Philippe Cornu <philippe.cornu@st.com>,
+        =?UTF-8?Q?Yannick_Fertr=c3=a9?= <yannick.fertre@st.com>,
+        Antonio Borneo <antonio.borneo@st.com>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Angelo Ribeiro <Angelo.Ribeiro@synopsys.com>,
+        Markus Elfring <elfring@users.sourceforge.net>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20200909190213.156302-1-alex.dewar90@gmail.com>
+ <c14d055d-1f6e-8c46-3a6e-7794ec69e6fe@baylibre.com>
 From:   Alex Dewar <alex.dewar90@gmail.com>
-Message-ID: <6e70df97-808a-6d23-c24e-4b7c905cccda@gmail.com>
-Date:   Sat, 19 Sep 2020 20:31:23 +0100
+Message-ID: <89c599d2-6766-df68-5359-7672679b3d89@gmail.com>
+Date:   Sat, 19 Sep 2020 20:31:51 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200909204807.36501-1-alex.dewar90@gmail.com>
+In-Reply-To: <c14d055d-1f6e-8c46-3a6e-7794ec69e6fe@baylibre.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-09 21:48, Alex Dewar wrote:
-> In a few places in pci/sh_css_params.c, memset is used to zero memory
-> immediately before it is freed. As none of these structs appear to
-> contain sensitive information, just remove the calls to memset.
+On 2020-09-11 13:57, Neil Armstrong wrote:
+> On 09/09/2020 21:02, Alex Dewar wrote:
+>> kmemdup can be used instead of kmalloc+memcpy. Replace an occurrence of
+>> this pattern.
 Friendly ping?
+>>
+>> Issue identified with Coccinelle.
+>>
+>> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+>> ---
+>>   drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 4 +---
+>>   1 file changed, 1 insertion(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+>> index 52f5c5a2ed64..7e9a62ad56e8 100644
+>> --- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+>> +++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+>> @@ -1049,12 +1049,10 @@ static void debugfs_create_files(void *data)
+>>   	};
+>>   	int i;
+>>   
+>> -	dsi->debugfs_vpg = kmalloc(sizeof(debugfs), GFP_KERNEL);
+>> +	dsi->debugfs_vpg = kmemdup(debugfs, sizeof(debugfs), GFP_KERNEL);
+>>   	if (!dsi->debugfs_vpg)
+>>   		return;
+>>   
+>> -	memcpy(dsi->debugfs_vpg, debugfs, sizeof(debugfs));
+>> -
+>>   	for (i = 0; i < ARRAY_SIZE(debugfs); i++)
+>>   		debugfs_create_file(dsi->debugfs_vpg[i].name, 0644,
+>>   				    dsi->debugfs, &dsi->debugfs_vpg[i],
+>>
+> Acked-by: Neil Armstrong <narmstrong@baylibre.com>
 >
-> Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
-> ---
->   drivers/staging/media/atomisp/pci/sh_css_params.c | 6 ------
->   1 file changed, 6 deletions(-)
->
-> diff --git a/drivers/staging/media/atomisp/pci/sh_css_params.c b/drivers/staging/media/atomisp/pci/sh_css_params.c
-> index 2c67c23b3700..24fc497bd491 100644
-> --- a/drivers/staging/media/atomisp/pci/sh_css_params.c
-> +++ b/drivers/staging/media/atomisp/pci/sh_css_params.c
-> @@ -4378,7 +4378,6 @@ ia_css_3a_statistics_free(struct ia_css_3a_statistics *me)
->   	if (me) {
->   		kvfree(me->rgby_data);
->   		kvfree(me->data);
-> -		memset(me, 0, sizeof(struct ia_css_3a_statistics));
->   		kvfree(me);
->   	}
->   }
-> @@ -4417,7 +4416,6 @@ ia_css_dvs_statistics_free(struct ia_css_dvs_statistics *me)
->   	if (me) {
->   		kvfree(me->hor_proj);
->   		kvfree(me->ver_proj);
-> -		memset(me, 0, sizeof(struct ia_css_dvs_statistics));
->   		kvfree(me);
->   	}
->   }
-> @@ -4459,7 +4457,6 @@ ia_css_dvs_coefficients_free(struct ia_css_dvs_coefficients *me)
->   	if (me) {
->   		kvfree(me->hor_coefs);
->   		kvfree(me->ver_coefs);
-> -		memset(me, 0, sizeof(struct ia_css_dvs_coefficients));
->   		kvfree(me);
->   	}
->   }
-> @@ -4551,7 +4548,6 @@ ia_css_dvs2_statistics_free(struct ia_css_dvs2_statistics *me)
->   		kvfree(me->ver_prod.odd_imag);
->   		kvfree(me->ver_prod.even_real);
->   		kvfree(me->ver_prod.even_imag);
-> -		memset(me, 0, sizeof(struct ia_css_dvs2_statistics));
->   		kvfree(me);
->   	}
->   }
-> @@ -4635,7 +4631,6 @@ ia_css_dvs2_coefficients_free(struct ia_css_dvs2_coefficients *me)
->   		kvfree(me->ver_coefs.odd_imag);
->   		kvfree(me->ver_coefs.even_real);
->   		kvfree(me->ver_coefs.even_imag);
-> -		memset(me, 0, sizeof(struct ia_css_dvs2_coefficients));
->   		kvfree(me);
->   	}
->   }
-> @@ -4710,7 +4705,6 @@ ia_css_dvs2_6axis_config_free(struct ia_css_dvs_6axis_config *dvs_6axis_config)
->   		kvfree(dvs_6axis_config->ycoords_y);
->   		kvfree(dvs_6axis_config->xcoords_uv);
->   		kvfree(dvs_6axis_config->ycoords_uv);
-> -		memset(dvs_6axis_config, 0, sizeof(struct ia_css_dvs_6axis_config));
->   		kvfree(dvs_6axis_config);
->   	}
->   }
+> Thanks,
+> Neil
 
