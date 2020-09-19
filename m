@@ -2,93 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BED5B270FB3
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 19:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00216270FBA
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 19:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726682AbgISRD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 13:03:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48424 "EHLO
+        id S1726613AbgISRTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 13:19:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726434AbgISRD4 (ORCPT
+        with ESMTP id S1726434AbgISRTQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 13:03:56 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0F29C0613CE;
-        Sat, 19 Sep 2020 10:03:55 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id f2so5400519pgd.3;
-        Sat, 19 Sep 2020 10:03:55 -0700 (PDT)
+        Sat, 19 Sep 2020 13:19:16 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19271C0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 10:19:16 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id w11so9589340lfn.2
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 10:19:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=0w8QbwM4kvqqRSaS1CHSdmOE6xRTZzX0zjgQjqhKDF0=;
-        b=qx/oIGreK31Y6ETNGs/oln3jQ0qx9pvT8TBNtkNN19nR4lNugF6enbJTX4d0iWk7Ms
-         dPvb2UoEnAjmBcHnjynt8u7rFvxEUYM3+iEvgVwr2hW4PEgfdCu1B4Ueribxo7hfy9SR
-         HnxwBFa3s3kdu2CiWYcABCW2IhFzbwWQnn0JYqZkYaAcmN7HE2HNDH4aKDaE+K2S+zoK
-         geUinYva8s+J8N2Yib7FDRNdPTOa27AUEEechVAdPKMaqQQM5wT36mRuNmS81b6PtfYf
-         E1S5hl4+R68/og0k0Jn8qnZaNcYUvKHb3FYR4lJ/3N9LJwURlyGGCZrFxrGePMyc1ALN
-         enZw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=waM6UyKAxKjxaPuk1aOj7tJ5Pe/ksOuiXEzSSo1PI/U=;
+        b=PDwKTi4lX9j7zg3G7WzPyBOHBiLdhmAgWRxWPWvYR/nEys9FVfUL6zNUVgG09pDixg
+         o+e2DCxbAvOZN3jBhyrOMZPfygh9RU8mogp2HXrCoLkUWHRL8e1VK4NRvgzXaMsluBfo
+         GR1BPuNqLZOfJqo2g/IqA9gl4eqzfpV+zOYak=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=0w8QbwM4kvqqRSaS1CHSdmOE6xRTZzX0zjgQjqhKDF0=;
-        b=kdXhIIXGcktMgfaIpywEzk1Xzye4wbANOuqZ5cnR63ybeqEAHKLOPNLS2v47fTv8xx
-         H52hgKPJdqXCrCgreliLCp39Bbvd/5L+wv88ywi96Y2/R/LFXK4sLVYNT+k874w+wdX7
-         qvLaOAu6HCyvYG5DzlKCq0kNB6SreoSiJUUs0Bb+4gqCiva0icFOiCtdokv/gu7fPQhx
-         Icm965zMMc1VyRnm1DkqI9kFRt+7UoVzb7WV8v2KqSb/5qZMhaOIuMKC5bsAM9asXiU0
-         zicd2/dqqgbHjv0R21/c5vg+/HPN2npM/wnJarLAWB4t+nZywsap4VoeVKOHeq6fvCqE
-         0pWw==
-X-Gm-Message-State: AOAM5300OYSLhkZsZt0OVr+7iRFS3mdzzWExyAsjrGrZ0tkIAja3I3sf
-        mIn28sUiXHA/eXXiNjad4cT76anQgmrt90C4a/U=
-X-Google-Smtp-Source: ABdhPJxexXsrnXptAxi5so8K363t5vhAMff8n1qfJ44WUX0aS/CL9GTAnnqtJntEjZjKUhVbBRFdjg==
-X-Received: by 2002:a63:485c:: with SMTP id x28mr31998096pgk.289.1600535034888;
-        Sat, 19 Sep 2020 10:03:54 -0700 (PDT)
-Received: from [192.168.0.104] ([49.207.212.24])
-        by smtp.gmail.com with ESMTPSA id k28sm6958398pfh.196.2020.09.19.10.03.52
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=waM6UyKAxKjxaPuk1aOj7tJ5Pe/ksOuiXEzSSo1PI/U=;
+        b=m+xnfXXeN0BCgwSvgDPodbKc3duUacutfnoknKFK1b1lx7p3Jr1f7fZupHcmLTu7gg
+         lzD0YLBC7lK45WcCkF4RjQqC1XUDJssc08nCr+kr9N0z8BjSeLurE8dU5yqptslnw+6X
+         F36nGCNbcL6/N7Rin8qrh8tk2WTQo6IqSkwwdJ4GznBm3cEfJ2X6MbzDcfHI4m8hQPuM
+         P7S6ZkfHU4CJQXlzEv7xS/NqLrvzGlF6XGGr91scgeCIs7OIfIEpw8O3yVYY6Lo8WcZq
+         k6yBKawpHFgQg+0a7rdnzvLDFEZtiabXj1awyd6zfSJI9Vw7w00IT+VLAVCSEmSSmAl/
+         sNAQ==
+X-Gm-Message-State: AOAM5303xrNEpI7eSbAF6EehCtDq5f0wQdvHLNk4aWWnBk+o+ZQFO1kF
+        HySIbh5B0YqVgD9UYFGnUdWALNtSprIvZA==
+X-Google-Smtp-Source: ABdhPJwI7Do1h1npZMzpOxSughAN1eu4beO24p7/iFhjv8Pxrc1tFrhfLMKEK38hfhy8XaGmT0rMCg==
+X-Received: by 2002:a05:6512:52a:: with SMTP id o10mr11877369lfc.596.1600535953619;
+        Sat, 19 Sep 2020 10:19:13 -0700 (PDT)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
+        by smtp.gmail.com with ESMTPSA id 13sm1350521lfn.239.2020.09.19.10.19.11
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 19 Sep 2020 10:03:54 -0700 (PDT)
-Subject: Re: [Linux-kernel-mentees] [PATCH] fs: fix KMSAN uninit-value bug by
- initializing nd in do_file_open_root
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     Eric Biggers <ebiggers@kernel.org>, linux-fsdevel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+4191a44ad556eacc1a7a@syzkaller.appspotmail.com,
-        linux-kernel@vger.kernel.org
-References: <20200916052657.18683-1-anant.thazhemadam@gmail.com>
- <20200916054157.GC825@sol.localdomain>
- <20200917002238.GO3421308@ZenIV.linux.org.uk>
- <20200919144451.GF2712238@kroah.com>
- <20200919161727.GG3421308@ZenIV.linux.org.uk>
- <20200919165558.GH3421308@ZenIV.linux.org.uk>
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Message-ID: <26d881e5-f68a-b3b7-4cb0-04a3c6c384ac@gmail.com>
-Date:   Sat, 19 Sep 2020 17:03:50 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        Sat, 19 Sep 2020 10:19:12 -0700 (PDT)
+Received: by mail-lf1-f44.google.com with SMTP id b22so9520092lfs.13
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 10:19:11 -0700 (PDT)
+X-Received: by 2002:a19:521a:: with SMTP id m26mr14134256lfb.133.1600535951025;
+ Sat, 19 Sep 2020 10:19:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200919165558.GH3421308@ZenIV.linux.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20200919091751.011116649@linutronix.de>
+In-Reply-To: <20200919091751.011116649@linutronix.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 19 Sep 2020 10:18:54 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiYGyrFRbA1cc71D2-nc5U9LM9jUJesXGqpPnB7E4X1YQ@mail.gmail.com>
+Message-ID: <CAHk-=wiYGyrFRbA1cc71D2-nc5U9LM9jUJesXGqpPnB7E4X1YQ@mail.gmail.com>
+Subject: Re: [patch RFC 00/15] mm/highmem: Provide a preemptible variant of
+ kmap_atomic & friends
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        "open list:SYNOPSYS ARC ARCHITECTURE" 
+        <linux-snps-arc@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
+        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-sparc <sparclinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 19-09-2020 22:25, Al Viro wrote:
-> On Sat, Sep 19, 2020 at 05:17:27PM +0100, Al Viro wrote:
+On Sat, Sep 19, 2020 at 2:50 AM Thomas Gleixner <tglx@linutronix.de> wrote:
 >
->> Lovely...  That would get an empty path and non-directory for a starting
->> point, but it should end up with LAST_ROOT in nd->last_type.  Which should
->> not be able to reach the readers of those fields...  Which kernel had
->> that been on?
-> Yecchhh...  I see what's going on; I suspect that this ought to be enough.
-> Folks, could somebody test it on the original reproducer setup?
+> this provides a preemptible variant of kmap_atomic & related
+> interfaces. This is achieved by:
 
-Sure. I can do that.
+Ack. This looks really nice, even apart from the new capability.
 
-Thanks,
-Anant
+The only thing I really reacted to is that the name doesn't make sense
+to me: "kmap_temporary()" seems a bit odd.
+
+Particularly for an interface that really is basically meant as a
+better replacement of "kmap_atomic()" (but is perhaps also a better
+replacement for "kmap()").
+
+I think I understand how the name came about: I think the "temporary"
+is there as a distinction from the "longterm" regular kmap(). So I
+think it makes some sense from an internal implementation angle, but I
+don't think it makes a lot of sense from an interface name.
+
+I don't know what might be a better name, but if we want to emphasize
+that it's thread-private and a one-off, maybe "local" would be a
+better naming, and make it distinct from the "global" nature of the
+old kmap() interface?
+
+However, another solution might be to just use this new preemptible
+"local" kmap(), and remove the old global one entirely. Yes, the old
+global one caches the page table mapping and that sounds really
+efficient and nice. But it's actually horribly horribly bad, because
+it means that we need to use locking for them. Your new "temporary"
+implementation seems to be fundamentally better locking-wise, and only
+need preemption disabling as locking (and is equally fast for the
+non-highmem case).
+
+So I wonder if the single-page TLB flush isn't a better model, and
+whether it wouldn't be a lot simpler to just get rid of the old
+complex kmap() entirely, and replace it with this?
+
+I agree we can't replace the kmap_atomic() version, because maybe
+people depend on the preemption disabling it also implied. But what
+about replacing the non-atomic kmap()?
+
+Maybe I've missed something.  Is it because the new interface still
+does "pagefault_disable()" perhaps?
+
+But does it even need the pagefault_disable() at all? Yes, the
+*atomic* one obviously needed it. But why does this new one need to
+disable page faults?
+
+[ I'm just reading the patches, I didn't try to apply them and look at
+the end result, so I might have missed something ]
+
+The only other worry I would have is just test coverage of this
+change. I suspect very few developers use HIGHMEM. And I know the
+various test robots don't tend to test 32-bit either.
+
+But apart from that question about naming (and perhaps replacing
+kmap() entirely), I very much like it.
+
+                        Linus
