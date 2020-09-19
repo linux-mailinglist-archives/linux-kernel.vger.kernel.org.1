@@ -2,101 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2072709AD
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 03:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2E92709AB
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 03:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726333AbgISBay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 21:30:54 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:58572 "EHLO huawei.com"
+        id S1726314AbgISBal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 21:30:41 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:58200 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726009AbgISBay (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 21:30:54 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 32022B859BFF745D94BE;
-        Sat, 19 Sep 2020 09:30:53 +0800 (CST)
-Received: from [10.174.179.91] (10.174.179.91) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 19 Sep 2020 09:30:51 +0800
-Subject: Re: [PATCH -next] m68k/amiga: missing platform_device_unregister() on
- error in amiga_init_devices()
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-CC:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200728022746.87612-1-miaoqinglang@huawei.com>
- <CAMuHMdWfqh_AKyE+od_0yVPP6Lkv8LUAR1dWf8Df94W7b4qxLA@mail.gmail.com>
-From:   miaoqinglang <miaoqinglang@huawei.com>
-Message-ID: <613d3a43-4fb0-48d5-93d6-bf0d8f0bd671@huawei.com>
-Date:   Sat, 19 Sep 2020 09:30:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726009AbgISBak (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 21:30:40 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 4F082EFD25FA7A788F1D;
+        Sat, 19 Sep 2020 09:30:39 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 19 Sep 2020 09:30:29 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <dchickles@marvell.com>, <sburla@marvell.com>,
+        <fmanlunas@marvell.com>, <davem@davemloft.net>, <kuba@kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH net-next] net: liquidio: Remove set but not used variable
+Date:   Sat, 19 Sep 2020 09:31:23 +0800
+Message-ID: <20200919013123.22596-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdWfqh_AKyE+od_0yVPP6Lkv8LUAR1dWf8Df94W7b4qxLA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.91]
+X-Originating-IP: [10.175.138.68]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fixes gcc '-Wunused-but-set-variable' warning:
 
+drivers/net/ethernet/cavium/liquidio/octeon_device.c: In function lio_pci_readq:
+drivers/net/ethernet/cavium/liquidio/octeon_device.c:1327:6: warning: variable ‘val32’ set but not used [-Wunused-but-set-variable]
 
-在 2020/8/26 17:07, Geert Uytterhoeven 写道:
-> Hi Qinglang,
-> 
-> On Tue, Jul 28, 2020 at 4:24 AM Qinglang Miao <miaoqinglang@huawei.com> wrote:
->> Add the missing platform_device_unregister() before return
->> from amiga_init_devices() in the error handling case.
->>
->> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-> 
-> Thanks for your patch!
-> 
->> --- a/arch/m68k/amiga/platform.c
->> +++ b/arch/m68k/amiga/platform.c
->> @@ -188,8 +188,10 @@ static int __init amiga_init_devices(void)
->>                          return PTR_ERR(pdev);
->>                  error = platform_device_add_data(pdev, &a1200_ide_pdata,
->>                                                   sizeof(a1200_ide_pdata));
-> 
-> The only reason why platform_device_add_data() can fail is because the
-> system ran out of memory.  If that's the case this early, the whole
-> system will fail to work anyway, and it doesn't matter that the IDE
-> driver will crash later due to missing platform data.
-> 
-> So I don't think it helps to increase kernel size by adding more error
-> handling.
-> 
-Hi Geert,
+drivers/net/ethernet/cavium/liquidio/octeon_device.c: In function lio_pci_writeq:
+drivers/net/ethernet/cavium/liquidio/octeon_device.c:1358:6: warning: variable ‘val32’ set but not used [-Wunused-but-set-variable]
 
-Glad to know your opnions, it sounds resonable to me.
+these variable is never used, so remove it.
 
-Thanks.
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ drivers/net/ethernet/cavium/liquidio/octeon_device.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
->> -               if (error)
->> +               if (error) {
->> +                       platform_device_unregister(pdev);
->>                          return error;
->> +               }
->>          }
->>
->>          if (AMIGAHW_PRESENT(A4000_IDE)) {
->> @@ -199,8 +201,10 @@ static int __init amiga_init_devices(void)
->>                          return PTR_ERR(pdev);
->>                  error = platform_device_add_data(pdev, &a4000_ide_pdata,
->>                                                   sizeof(a4000_ide_pdata));
->> -               if (error)
->> +               if (error) {
->> +                       platform_device_unregister(pdev);
-> 
-> Likewise.
-> 
->>                          return error;
->> +               }
-> 
-> Gr{oetje,eeting}s,
-> 
->                          Geert
-> 
+diff --git a/drivers/net/ethernet/cavium/liquidio/octeon_device.c b/drivers/net/ethernet/cavium/liquidio/octeon_device.c
+index ac32facaa427..fbde7c58c4db 100644
+--- a/drivers/net/ethernet/cavium/liquidio/octeon_device.c
++++ b/drivers/net/ethernet/cavium/liquidio/octeon_device.c
+@@ -1324,7 +1324,7 @@ u64 lio_pci_readq(struct octeon_device *oct, u64 addr)
+ {
+ 	u64 val64;
+ 	unsigned long flags;
+-	u32 val32, addrhi;
++	u32 addrhi;
+ 
+ 	spin_lock_irqsave(&oct->pci_win_lock, flags);
+ 
+@@ -1339,10 +1339,10 @@ u64 lio_pci_readq(struct octeon_device *oct, u64 addr)
+ 	writel(addrhi, oct->reg_list.pci_win_rd_addr_hi);
+ 
+ 	/* Read back to preserve ordering of writes */
+-	val32 = readl(oct->reg_list.pci_win_rd_addr_hi);
++	readl(oct->reg_list.pci_win_rd_addr_hi);
+ 
+ 	writel(addr & 0xffffffff, oct->reg_list.pci_win_rd_addr_lo);
+-	val32 = readl(oct->reg_list.pci_win_rd_addr_lo);
++	readl(oct->reg_list.pci_win_rd_addr_lo);
+ 
+ 	val64 = readq(oct->reg_list.pci_win_rd_data);
+ 
+@@ -1355,7 +1355,6 @@ void lio_pci_writeq(struct octeon_device *oct,
+ 		    u64 val,
+ 		    u64 addr)
+ {
+-	u32 val32;
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&oct->pci_win_lock, flags);
+@@ -1365,7 +1364,7 @@ void lio_pci_writeq(struct octeon_device *oct,
+ 	/* The write happens when the LSB is written. So write MSB first. */
+ 	writel(val >> 32, oct->reg_list.pci_win_wr_data_hi);
+ 	/* Read the MSB to ensure ordering of writes. */
+-	val32 = readl(oct->reg_list.pci_win_wr_data_hi);
++	readl(oct->reg_list.pci_win_wr_data_hi);
+ 
+ 	writel(val & 0xffffffff, oct->reg_list.pci_win_wr_data_lo);
+ 
+-- 
+2.17.1
+
