@@ -2,102 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9030270C0B
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 10:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 520BE270C0C
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 10:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726311AbgISIyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 04:54:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726041AbgISIyU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 04:54:20 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02767C0613CE
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 01:54:20 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id 19so7473524qtp.1
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 01:54:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8RkoIvJj/P1T7mgVICWKb37QwYd4KVIZEz69XNANi5M=;
-        b=cigkbj0lcJ59ciYcNd6AWopkcIZ3+DmIZGt+u+7OEvMbOqH6lNwtjfu+z+NWAyWHul
-         p4Xaj6KY8kEVxTgo0WKLe6JELJPdUfB6HVeo7CJG1a0WFgmoDMxiK92o9Bu6DIqDKMVh
-         CUqCYCT1EvEzqT8yoCwCsiCVkoZ5f4vgN/sgciLO7KsdqN3KrvhBGXwCEZlszzgIufHI
-         Ly8VO7HD+zHd1lXOg/fImNfBUWdRPz9quwBjSSbbnUb9cTRAAkmwIwvg3eo1j8fekEIK
-         ryfypECF4DmVZDSzZZ1RqNy2TBNhPWmxmhaRu18BcN2gvEDXxw27Dw4pQ942kTYMkSQq
-         F5tQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8RkoIvJj/P1T7mgVICWKb37QwYd4KVIZEz69XNANi5M=;
-        b=opeNU9Bm2iyVT2txrbkAn4oPBcCQMiXfzmMYWvqLNskLUfvgTdOxXRpPuKheuRZ6tg
-         gJ5yhErQ1AmUAT1LeyqsZqLYOiatAA7maQ+akhrFPJxDGEFKsHORbS3eNkepo2AT/01i
-         PdHMx1CJa+DXRdYNUPNOB9f9NB84c7m1xSst2TIAmj2q8OI8++lIMgifjJdD1BirbXb2
-         joJ0W8qlDtg0oROC6u8ZckFOUtp1XSaI2l+yz6J7WYNWhrCVeXAdf6NXTsUtGrIYTkVe
-         ek6zLjWcpiEUJ2qbnyzTpb1L0mFxdMQwGVd/gLK8wHevAaRaRvUeAoN1cGGA8hKzh+oN
-         RAtA==
-X-Gm-Message-State: AOAM532EKBIkyHd9Yz6yZ0VpnaBqeiLN+58gHlg3RWLVMXqRBrmr6k7L
-        6MjxxnP9jrUqsocRxrFkaJY=
-X-Google-Smtp-Source: ABdhPJzg4Kdphi97Ym9wZXhTnKCYneZmO6m2ez0Gd8A0LMSFFV71QRPYbSENnKqXxuxJBlBr+PFi0g==
-X-Received: by 2002:ac8:5b47:: with SMTP id n7mr24137816qtw.7.1600505659317;
-        Sat, 19 Sep 2020 01:54:19 -0700 (PDT)
-Received: from localhost.localdomain (dslb-002-204-143-169.002.204.pools.vodafone-ip.de. [2.204.143.169])
-        by smtp.gmail.com with ESMTPSA id v90sm3924836qtd.66.2020.09.19.01.54.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Sep 2020 01:54:18 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, lorian.c.schilhabel@googlemail.com,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 2/2] staging: rtl8712: use shorter array initializations
-Date:   Sat, 19 Sep 2020 10:50:32 +0200
-Message-Id: <20200919085032.32453-2-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200919085032.32453-1-straube.linux@gmail.com>
-References: <20200919085032.32453-1-straube.linux@gmail.com>
+        id S1726306AbgISI6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 04:58:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55362 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726041AbgISI6G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Sep 2020 04:58:06 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C721B21582;
+        Sat, 19 Sep 2020 08:58:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600505885;
+        bh=++lE0cUaP7TIk6cdN49a/tPWXNii3KbrsDBs/q2JJZg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mXxJKosptnNHyuGtJY0GL4zqZ1KT7fJdVyNFptKO1EG5xo23cYTwOO21KBNxzNYoP
+         NxDJZh1QhTMEXbUovPfOg/+rOevuv/vRcVG6Hdky1+6HiW6QFA/2UIW8psc2O1+yPP
+         S/AO0yFWhuIRJIXxBGFNIYLLUpuHUkUKGPVpeGT4=
+Date:   Sat, 19 Sep 2020 11:58:01 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+Message-ID: <20200919085801.GA869610@unreal>
+References: <20200917171833.GJ8409@ziepe.ca>
+ <0b21db8d-1061-6453-960b-8043951b3bad@amazon.com>
+ <20200918115227.GR869610@unreal>
+ <CAFCwf10C1zm91e=tqPVGOX8kZD7o=AR2EW-P9VwCF4rcvnEJnA@mail.gmail.com>
+ <20200918120340.GT869610@unreal>
+ <CAFCwf12VPuyGFqFJK5D19zcKFQJ=fmzjwscdPG82tfR_v_h3Kg@mail.gmail.com>
+ <20200918121905.GU869610@unreal>
+ <20200919064020.GC439518@kroah.com>
+ <20200919082003.GW869610@unreal>
+ <20200919083012.GA465680@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200919083012.GA465680@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use empty brace syntax to initialize zero valued arrays.
-Simplifies and shortens the code a little bit.
+On Sat, Sep 19, 2020 at 10:30:12AM +0200, Greg Kroah-Hartman wrote:
+> On Sat, Sep 19, 2020 at 11:20:03AM +0300, Leon Romanovsky wrote:
+> > On Sat, Sep 19, 2020 at 08:40:20AM +0200, Greg Kroah-Hartman wrote:
+> > > On Fri, Sep 18, 2020 at 03:19:05PM +0300, Leon Romanovsky wrote:
+> > > > > So we do have an open-source library called hl-thunk, which uses our
+> > > > > driver and indeed that was part of the requirement.
+> > > > > It is similar to libdrm.
+> > > > > Here is the link:
+> > > > > https://github.com/HabanaAI/hl-thunk
+> > > >
+> > > > Are you kidding?
+> > > >
+> > > > This is mirror of some internal repository that looks like dumpster
+> > > > with ChangeId, internal bug tracker numbers, not part of major OS
+> > > > distributions.
+> > > >
+> > > > It is not open-source library and shows very clear why you chose
+> > > > to upstream your driver through driver/misc/ tree.
+> > >
+> > > It is an open source library, as per the license and the code
+> > > availability.  What more is expected here?
+> >
+> > So can I fork iproute2, add bunch of new custom netlink UAPIs and expect
+> > Dave to merge it after I throw it on github?
+>
+> Don't be silly, that's not the case here at all and you know that.
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
- drivers/staging/rtl8712/rtl871x_xmit.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+It was far-fetched example.
 
-diff --git a/drivers/staging/rtl8712/rtl871x_xmit.c b/drivers/staging/rtl8712/rtl871x_xmit.c
-index 7093903b3af1..fd99782a400a 100644
---- a/drivers/staging/rtl8712/rtl871x_xmit.c
-+++ b/drivers/staging/rtl8712/rtl871x_xmit.c
-@@ -352,7 +352,7 @@ static int xmitframe_addmic(struct _adapter *padapter,
- 	struct	pkt_attrib  *pattrib = &pxmitframe->attrib;
- 	struct	security_priv *psecpriv = &padapter->securitypriv;
- 	struct	xmit_priv *pxmitpriv = &padapter->xmitpriv;
--	u8 priority[4] = {0x0, 0x0, 0x0, 0x0};
-+	u8 priority[4] = {};
- 	bool bmcst = is_multicast_ether_addr(pattrib->ra);
- 
- 	if (pattrib->psta)
-@@ -363,9 +363,8 @@ static int xmitframe_addmic(struct _adapter *padapter,
- 	if (pattrib->encrypt == _TKIP_) {
- 		/*encode mic code*/
- 		if (stainfo) {
--			u8 null_key[16] = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
--					   0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
--					   0x0, 0x0};
-+			u8 null_key[16] = {};
-+
- 			pframe = pxmitframe->buf_addr + TXDESC_OFFSET;
- 			if (bmcst) {
- 				if (!memcmp(psecpriv->XGrptxmickey
--- 
-2.28.0
+>
+> > > No distro has to pick it up, that's not a requirement for kernel code,
+> > > we have many kernel helper programs that are not in distros.  Heck, udev
+> > > took a long time to get into distros, does that mean the kernel side of
+> > > that interface should never have been merged?
+> > >
+> > > I don't understand your complaint here, it's not our place to judge the
+> > > code quality of userspace libraries, otherwise we would never get any
+> > > real-work done :)
+> >
+> > My main complaint is that you can't imagine merging code into large
+> > subsystems (netdev, RDMA, DRM? e.t.c) without being civil open-source
+> > citizen. It means use of existing user-space libraries/tools and/or
+> > providing new ones that will be usable for everyone.
+>
+> Agreed.
+>
+> > In this case, we have some custom char device with library that is not
+> > usable for anyone else and this is why drivers/misc/ is right place.
+>
+> Also agreed.
+>
+> > While we are talking about real-work, it is our benefit to push companies
+> > to make investment into ecosystem and not letting them to find an excuse
+> > for not doing it.
+>
+> So why are you complaining about a stand-alone driver that does not have
+> any shared subsystems's userspace code to control that driver?
 
+I didn't, everything started when I explained to Gal why RDMA subsystem
+requires rdma-core counterpart for any UAPI code.
+https://lore.kernel.org/linux-rdma/CAFCwf12B4vCCwmfA7+VTUYUgJ9EHAtvg6F0bMYnsSCUBST+aWA@mail.gmail.com/T/#m17d52d61adadf54c12bfecf1af5db40f5d829ac3
+
+And expressed my view on the quality of the library that was presented
+as open-source example.
+https://lore.kernel.org/linux-rdma/CAFCwf12B4vCCwmfA7+VTUYUgJ9EHAtvg6F0bMYnsSCUBST+aWA@mail.gmail.com/T/#m9059c5a9405ba932d9ffb731195a43b27443d265
+
+>
+> Yes, when integrating into other subsystems (i.e. networking and rdma),
+> they should use those common subsystems interfaces, no one is arguing
+> that at all.
+>
+> totally lost,
+
+And here comes my request to do it right
+https://lore.kernel.org/linux-rdma/CAFCwf12B4vCCwmfA7+VTUYUgJ9EHAtvg6F0bMYnsSCUBST+aWA@mail.gmail.com/T/#ma1fa6fe63666f630674eb668f1c00e6a672db85b
+
+All that I asked from Oded is to do UAPI/libraries right, while all the responses
+can be summarized to one sentence - "it is too hard, we don't want to do it."
+
+Thanks
+
+>
+> greg k-h
