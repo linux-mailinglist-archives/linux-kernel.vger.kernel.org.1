@@ -2,86 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 207F4270954
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 02:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26CC1270958
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 02:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726298AbgISADt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 20:03:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50072 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726009AbgISADt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 20:03:49 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D91D21D7B;
-        Sat, 19 Sep 2020 00:03:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600473828;
-        bh=oEBa36AVWkTR5WS0hFGxmPuS9UCLfzCx0uX7n3OmL40=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fsP9RSFkTleWuPSduVxY6qlNLD5ArBqQUb1JK5arT7Uv7UyTKqL5AUNzl5t8gm4WW
-         4O4v7Pw1nXZyG0L3WqDcsiupA2PlglXHlJOY8inZ/3vDUTJYxDzZVHpo5ZeWpWwAno
-         0CZj1jNjRqriMN/Aov9YAhoZk9ZH+LnypkKcLn7Q=
-Date:   Fri, 18 Sep 2020 19:09:25 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Rustam Kovhaev <rkovhaev@gmail.com>
-Cc:     pbonzini@redhat.com, vkuznets@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] KVM: use struct_size() and flex_array_size() helpers in
- kvm_io_bus_unregister_dev()
-Message-ID: <20200919000925.GA23967@embeddedor>
-References: <20200918120500.954436-1-rkovhaev@gmail.com>
+        id S1726222AbgISAKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 20:10:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726054AbgISAKv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 20:10:51 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BA5EC0613CE;
+        Fri, 18 Sep 2020 17:10:51 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id k25so6454741ljk.0;
+        Fri, 18 Sep 2020 17:10:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dESGYbnfg7wQ4Z2+mdwlRJpxrBgQFzID5ccxYF3X5U0=;
+        b=RBva7VcRX7O/kEvKZNDT0CqRALPY8292/hmUqYscH0QmEeo1gQEcDL0zF+AbqAXGGR
+         Y2d++cg0mVY2SOyOZfJ8t2LZQZRz1YlDe79xqcCf0Gh+6rhqqsIj8eHM8XJAP8fN+CRT
+         xq4FEaG1qVkgvcKXKRkoVEvqLTocw4Q1zxkEnP98UNWJODPkpShSbLVsFRjKzOJTVNdA
+         oabZcP29m8FtqJBuA1xHeVil5/9Z+XAGFIb7TcQtjhnUFiv78f6SWtkVDqw4bNzuqlK0
+         uineKtoRhaVEYmocI08pmESxMC5ikiTwfjreg5HynFJSykF4IL8b3P2eIufUS6HnvFwI
+         BPrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dESGYbnfg7wQ4Z2+mdwlRJpxrBgQFzID5ccxYF3X5U0=;
+        b=C7D9PD834wJ677APgiTYGlA41L7H+FpZH5jO9XGFEdRGQI7stv/sjuz2kV7XONjfSh
+         GtD9TjucKRSt+Ip3tx4BYv1A07O2TbMOCSxy/tj29BDMtALMNvyoOpNhW3pJrTEBt0Sx
+         ImXmNYjhKU307N5cGZgmdNrDOCYKcx5JfOchhLOsKvs0AR5Dh508qVdF6w9Nn9OWQdiL
+         yysCD+3CsndYHV2pqIu4vmgzjxv+bf5qQPk0PK/FuGyqNW2RgJ26J/E9W2PtZmpuQZ1v
+         JOph6Q5hU2olwx5l+p7em4HwJIJiJt/Kz0puKBZO9KhN90jpSaWKAgKVllo6ZCS2lGMw
+         JgmQ==
+X-Gm-Message-State: AOAM532IQzLr1yUZOa2gpKi1j6F79QaHwXUdW3Qqg9OYYdoUpIjGnCv6
+        YAqswfniKT7lvj1JkuYhQj2Qzy/ck3o=
+X-Google-Smtp-Source: ABdhPJwU/xG13KtB/wenP6ov2aCDN9xIdgYiffJ0dh7QiB9V4mFL1Mg9WtyrLUlUetxhNBHXgjqz3g==
+X-Received: by 2002:a2e:6d01:: with SMTP id i1mr13116898ljc.181.1600474249240;
+        Fri, 18 Sep 2020 17:10:49 -0700 (PDT)
+Received: from localhost.localdomain (188.147.112.12.nat.umts.dynamic.t-mobile.pl. [188.147.112.12])
+        by smtp.gmail.com with ESMTPSA id j127sm915054lfd.6.2020.09.18.17.10.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 17:10:48 -0700 (PDT)
+From:   mateusznosek0@gmail.com
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Mateusz Nosek <mateusznosek0@gmail.com>, viro@zeniv.linux.org.uk
+Subject: [PATCH] fs/open.c: micro-optimization by avoiding branch on common path
+Date:   Sat, 19 Sep 2020 02:10:21 +0200
+Message-Id: <20200919001021.21690-1-mateusznosek0@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918120500.954436-1-rkovhaev@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 05:05:00AM -0700, Rustam Kovhaev wrote:
-> Make use of the struct_size() helper to avoid any potential type
-> mistakes and protect against potential integer overflows
-> Make use of the flex_array_size() helper to calculate the size of a
-> flexible array member within an enclosing structure
-> 
-> Cc: stable@vger.kernel.org
+From: Mateusz Nosek <mateusznosek0@gmail.com>
 
-I don't think this change applies for -stable.
+If file is a directory it is surely not regular. Therefore, if 'S_ISREG'
+check returns false one can be sure that vfs_truncate must returns with
+error. Introduced patch refactors code to avoid one branch in 'likely'
+control flow path. Moreover, it marks the proper check with 'unlikely'
+macro to improve both branch prediction and readability. Changes were
+tested with gcc 8.3.0 on x86 architecture and it is confirmed that
+slightly better assembly is generated.
 
-> Suggested-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
+Signed-off-by: Mateusz Nosek <mateusznosek0@gmail.com>
+---
+ fs/open.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+diff --git a/fs/open.c b/fs/open.c
+index 9af548fb841b..69658ea27530 100644
+--- a/fs/open.c
++++ b/fs/open.c
+@@ -74,10 +74,12 @@ long vfs_truncate(const struct path *path, loff_t length)
+ 	inode = path->dentry->d_inode;
+ 
+ 	/* For directories it's -EISDIR, for other non-regulars - -EINVAL */
+-	if (S_ISDIR(inode->i_mode))
+-		return -EISDIR;
+-	if (!S_ISREG(inode->i_mode))
+-		return -EINVAL;
++	if (unlikely(!S_ISREG(inode->i_mode))) {
++		if (S_ISDIR(inode->i_mode))
++			return -EISDIR;
++		else
++			return -EINVAL;
++	}
+ 
+ 	error = mnt_want_write(path->mnt);
+ 	if (error)
+-- 
+2.20.1
 
-Thanks!
---
-Gustavo
-
-> ---
->  virt/kvm/kvm_main.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index cf88233b819a..68edd25dcb11 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -4350,10 +4350,10 @@ void kvm_io_bus_unregister_dev(struct kvm *kvm, enum kvm_bus bus_idx,
->  	new_bus = kmalloc(struct_size(bus, range, bus->dev_count - 1),
->  			  GFP_KERNEL_ACCOUNT);
->  	if (new_bus) {
-> -		memcpy(new_bus, bus, sizeof(*bus) + i * sizeof(struct kvm_io_range));
-> +		memcpy(new_bus, bus, struct_size(bus, range, i));
->  		new_bus->dev_count--;
->  		memcpy(new_bus->range + i, bus->range + i + 1,
-> -		       (new_bus->dev_count - i) * sizeof(struct kvm_io_range));
-> +				flex_array_size(new_bus, range, new_bus->dev_count - i));
->  	} else {
->  		pr_err("kvm: failed to shrink bus, removing it completely\n");
->  		for (j = 0; j < bus->dev_count; j++) {
-> -- 
-> 2.28.0
-> 
