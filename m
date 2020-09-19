@@ -2,101 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC90A270975
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 02:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 638CA270977
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 02:45:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726156AbgISAdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 20:33:25 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:60155 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726009AbgISAdY (ORCPT
+        id S1726192AbgISApj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 20:45:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726022AbgISApi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 20:33:24 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R581e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0U9MBOmq_1600475598;
-Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U9MBOmq_1600475598)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 19 Sep 2020 08:33:19 +0800
-Subject: Re: [PATCH 00/13] mm: clean up some lru related pieces
-To:     Hugh Dickins <hughd@google.com>, Yu Zhao <yuzhao@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Huang Ying <ying.huang@intel.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Konstantin Khlebnikov <koct9i@gmail.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Jaewon Kim <jaewon31.kim@samsung.com>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20200918030051.650890-1-yuzhao@google.com>
- <alpine.LSU.2.11.2009181317350.11298@eggly.anvils>
- <20200918210126.GA1118730@google.com>
- <alpine.LSU.2.11.2009181406410.11531@eggly.anvils>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <56062aa9-bec7-6757-e49b-f94da141cb2c@linux.alibaba.com>
-Date:   Sat, 19 Sep 2020 08:31:26 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        Fri, 18 Sep 2020 20:45:38 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABA39C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 17:45:38 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id q4so4038817pjh.5
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 17:45:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=I9DKFU7QPxZJEnkfzidi3lK2I/p7M1OxIN1tiywqUs8=;
+        b=kCiMKDH3nnYATu2ElRhi7X+tNFp/jWD7K0KkFDR4wzavd7z2vHgseo0HBNiqMY0Pzc
+         I7ip6V1N1cxIw6ELlphy8BWzInNcItFyfZZ5Ai6GMX235FktIVvGzupxM7Fhay+WSN+C
+         j5+l37/E4fyRasoV9oSLmB4MD3o7giXRlzeAQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=I9DKFU7QPxZJEnkfzidi3lK2I/p7M1OxIN1tiywqUs8=;
+        b=GwI4oEQVfImCFbdGLz4T30p3wm3KaSp/XYHdcmzpSf3hVCA0eZOhXo0pfOih0cXKIN
+         R2DZXbbkoLTmn/6aydMklQ/A7MsyVkifbabN7ZR41V4nBoFntJmMahgr7TtGpndGUuIF
+         LaX4UoRX/krER/Nrwy+XPVbpRyHD5Mkh/SvhFAcDSJKSMBrnpMPCpHReKduroOWPjPME
+         NUzHD+cc408GXO1f1egKCs5mknbKGdZ9qF3Ez7+tOv4U19d7wvm554g/9/USl5OZgRXd
+         cLdsdkz8ZDLuOc1hfFkX9k0EDpNtLirYNRz9Pb8jtjHPgqSeW4MS9mN64viAk26ggwWy
+         qARQ==
+X-Gm-Message-State: AOAM530JOEjj9Ky4v4aSrSGjswdFbECYKuFTpYF3KWw98dVAt/0hRYtF
+        HpEaJOuThXuFxtRIlBT60tS1JQ==
+X-Google-Smtp-Source: ABdhPJzTquwp8o4Wi9pUdFSyG6//hHRgFjsv8I3+kMytrRsnqm/MxhF3Q42uXyYwmt0ZyTQOJYLUJQ==
+X-Received: by 2002:a17:902:2:b029:d1:7ed9:613f with SMTP id 2-20020a1709020002b02900d17ed9613fmr35787255pla.32.1600476338005;
+        Fri, 18 Sep 2020 17:45:38 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
+        by smtp.gmail.com with ESMTPSA id j18sm4257479pgm.30.2020.09.18.17.45.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 17:45:36 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     swboyd@chromium.org, linux-arm-msm@vger.kernel.org,
+        akashast@codeaurora.org, Douglas Anderson <dianders@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] arm64: dts: qcom: sc7180: Provide pinconf for SPI to use GPIO for CS
+Date:   Fri, 18 Sep 2020 17:45:27 -0700
+Message-Id: <20200918174511.v2.1.I997a428f58ef9d48b37a27a028360f34e66c00ec@changeid>
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
 MIME-Version: 1.0
-In-Reply-To: <alpine.LSU.2.11.2009181406410.11531@eggly.anvils>
-Content-Type: text/plain; charset=gbk
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When the chip select line is controlled by the QUP, changing CS is a
+time consuming operation.  We have to send a command over to the geni
+and wait for it to Ack us every time we want to change (both making it
+high and low).  To send this command we have to make a choice in
+software when we want to control the chip select, we have to either:
+A) Wait for the Ack via interrupt which slows down all SPI transfers
+   (and incurrs extra processing associated with interrupts).
+B) Sit in a loop and poll, waiting for the Ack.
 
+Neither A) nor B) is a great option.
 
-ÔÚ 2020/9/19 ÉÏÎç5:19, Hugh Dickins Ð´µÀ:
->>>> 2.28.0.681.g6f77f65b4e-goog
->>> Sorry, Yu, I may be out-of-line in sending this: but as you know,
->>> Alex Shi has a long per-memcg lru_lock series playing in much the
->>> same area (particularly conflicting in mm/swap.c and mm/vmscan.c):
->>> a patchset that makes useful changes, that I'm very keen to help
->>> into mmotm a.s.a.p (but not before I've completed diligence).
->>>
->>> We've put a lot of effort into its testing, I'm currently reviewing
->>> it patch by patch (my general silence indicating that I'm busy on that,
->>> but slow as ever): so I'm a bit discouraged to have its stability
->>> potentially undermined by conflicting cleanups at this stage.
->>>
->>> If there's general agreement that your cleanups are safe and welcome
->>> (Michal's initial reaction sheds some doubt on that), great: I hope
->>> that Andrew can fast-track them into mmotm, then Alex rebase on top
->>> of them, and I then re-test and re-review.
->>>
->>> But if that quick agreement is not forthcoming, may I ask you please
->>> to hold back, and resend based on top of Alex's next posting?
->> The per-memcg lru lock series seems a high priority, and I have
->> absolutely no problem accommodate your request.
-> Many thanks!
-> 
->> In return, may I ask you or Alex to review this series after you
->> have finished with per-memcg lru lock (to make sure that I resolve
->> all the conflicts correctly at least)?
-> Fair enough: I promise to do so.
-> 
-> And your rebasing will necessarily lead you to review some parts
-> of Alex's patchset, which will help us all too.
-> 
-> Andrew, Yu asked at the start:
->>>> I see you have taken this:
->>>>   mm: use add_page_to_lru_list()/page_lru()/page_off_lru()
->>>> Do you mind dropping it?
-> Dropping that for now will help too.
+We can avoid all of this by realizing that, at least on some boards,
+there is no advantage of considering this line to be a geni line.
+While it's true that geni _can_ control the line, it's also true that
+the line can be a GPIO and there is no downside of viewing it that
+way.  Setting a GPIO is a simple MMIO operation.
 
-Hi Hugh & Yu,
+This patch provides definitions so a board can easily select the GPIO
+mode.
 
-Thanks for all your considerations! I will looking into this series after thing
-on lru_lock finished.
+NOTE: apparently, it's possible to run the geni in "GSI" mode.  In GSI
+the SPI port is allowed to be controlled by more than one user (like
+firmware and Linux) and also the port can operate sequences of
+operations in one go.  In GSI mode it _would_ be invalid to look at
+the chip select as a GPIO because that would prevent other users from
+using it.  In theory GSI mode would also avoid some overhead by
+allowing us to sequence the chip select better.  However, I'll argue
+GSI is not relevant for all boards (and certainly not any boards
+supported by mainline today).  Why?
+- Apparently to run a SPI chip in GSI mode you need to initialize it
+  (in the bootloader) with a different firmware and then it will
+  always run in GSI mode.  Since there is no support for GSI mode in
+  the current Linux driver, it must be that existing boards don't have
+  firmware that's doing that.  Note that the kernel device tree
+  describes hardware but also firmware, so it is legitimate to make
+  the assumption that we don't have GSI firmware in a given dts file.
+- Some boards with sc7180 have SPI connected to the Chrome OS EC or
+  security chip (Cr50).  The protocols for talking to cros_ec and cr50
+  are extremely complex.  Both drivers in Linux fully lock the bus
+  across several distinct SPI transfers.  While I am not an expert on
+  GSI mode it feels highly unlikely to me that we'd ever be able to
+  enable GSI mode for these devices.
 
-Thanks a lot!
-Alex
+From a testing perspective, running "flashrom -p ec -r /tmp/foo.bin"
+in a loop after this patch shows almost no reduction in time, but the
+number of interrupts per command goes from 32357 down to 30611 (about
+a 5% reduction).
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
+
+Changes in v2:
+- Now just add the pinctrl; let a board use it.
+
+ arch/arm64/boot/dts/qcom/sc7180.dtsi | 96 ++++++++++++++++++++++++++++
+ 1 file changed, 96 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+index 6678f1e8e395..0534122b9a3c 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+@@ -1595,6 +1595,18 @@ pinmux {
+ 				};
+ 			};
+ 
++			qup_spi0_cs_gpio: qup-spi0-cs-gpio {
++				pinmux {
++					pins = "gpio34", "gpio35",
++					       "gpio36";
++					function = "qup00";
++				};
++				pinmux-cs {
++					pins = "gpio37";
++					function = "gpio";
++				};
++			};
++
+ 			qup_spi1_default: qup-spi1-default {
+ 				pinmux {
+ 					pins = "gpio0", "gpio1",
+@@ -1603,6 +1615,18 @@ pinmux {
+ 				};
+ 			};
+ 
++			qup_spi1_cs_gpio: qup-spi1-cs-gpio {
++				pinmux {
++					pins = "gpio0", "gpio1",
++					       "gpio2";
++					function = "qup01";
++				};
++				pinmux-cs {
++					pins = "gpio3";
++					function = "gpio";
++				};
++			};
++
+ 			qup_spi3_default: qup-spi3-default {
+ 				pinmux {
+ 					pins = "gpio38", "gpio39",
+@@ -1611,6 +1635,18 @@ pinmux {
+ 				};
+ 			};
+ 
++			qup_spi3_cs_gpio: qup-spi3-cs-gpio {
++				pinmux {
++					pins = "gpio38", "gpio39",
++					       "gpio40";
++					function = "qup03";
++				};
++				pinmux-cs {
++					pins = "gpio41";
++					function = "gpio";
++				};
++			};
++
+ 			qup_spi5_default: qup-spi5-default {
+ 				pinmux {
+ 					pins = "gpio25", "gpio26",
+@@ -1619,6 +1655,18 @@ pinmux {
+ 				};
+ 			};
+ 
++			qup_spi5_cs_gpio: qup-spi5-cs-gpio {
++				pinmux {
++					pins = "gpio25", "gpio26",
++					       "gpio27";
++					function = "qup05";
++				};
++				pinmux-cs {
++					pins = "gpio28";
++					function = "gpio";
++				};
++			};
++
+ 			qup_spi6_default: qup-spi6-default {
+ 				pinmux {
+ 					pins = "gpio59", "gpio60",
+@@ -1627,6 +1675,18 @@ pinmux {
+ 				};
+ 			};
+ 
++			qup_spi6_cs_gpio: qup-spi6-cs-gpio {
++				pinmux {
++					pins = "gpio59", "gpio60",
++					       "gpio61";
++					function = "qup10";
++				};
++				pinmux-cs {
++					pins = "gpio62";
++					function = "gpio";
++				};
++			};
++
+ 			qup_spi8_default: qup-spi8-default {
+ 				pinmux {
+ 					pins = "gpio42", "gpio43",
+@@ -1635,6 +1695,18 @@ pinmux {
+ 				};
+ 			};
+ 
++			qup_spi8_cs_gpio: qup-spi8-cs-gpio {
++				pinmux {
++					pins = "gpio42", "gpio43",
++					       "gpio44";
++					function = "qup12";
++				};
++				pinmux-cs {
++					pins = "gpio45";
++					function = "gpio";
++				};
++			};
++
+ 			qup_spi10_default: qup-spi10-default {
+ 				pinmux {
+ 					pins = "gpio86", "gpio87",
+@@ -1643,6 +1715,18 @@ pinmux {
+ 				};
+ 			};
+ 
++			qup_spi10_cs_gpio: qup-spi10-cs-gpio {
++				pinmux {
++					pins = "gpio86", "gpio87",
++					       "gpio88";
++					function = "qup14";
++				};
++				pinmux-cs {
++					pins = "gpio89";
++					function = "gpio";
++				};
++			};
++
+ 			qup_spi11_default: qup-spi11-default {
+ 				pinmux {
+ 					pins = "gpio53", "gpio54",
+@@ -1651,6 +1735,18 @@ pinmux {
+ 				};
+ 			};
+ 
++			qup_spi11_cs_gpio: qup-spi11-cs-gpio {
++				pinmux {
++					pins = "gpio53", "gpio54",
++					       "gpio55";
++					function = "qup15";
++				};
++				pinmux-cs {
++					pins = "gpio56";
++					function = "gpio";
++				};
++			};
++
+ 			qup_uart0_default: qup-uart0-default {
+ 				pinmux {
+ 					pins = "gpio34", "gpio35",
+-- 
+2.28.0.681.g6f77f65b4e-goog
+
