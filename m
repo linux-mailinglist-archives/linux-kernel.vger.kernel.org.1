@@ -2,139 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EE0F27105D
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 21:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B18927105E
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 21:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726673AbgISTtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 15:49:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45394 "EHLO
+        id S1726680AbgISTus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 15:50:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726511AbgISTtK (ORCPT
+        with ESMTP id S1726511AbgISTur (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 15:49:10 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EC86C0613CE;
-        Sat, 19 Sep 2020 12:49:10 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id x69so9806401lff.3;
-        Sat, 19 Sep 2020 12:49:10 -0700 (PDT)
+        Sat, 19 Sep 2020 15:50:47 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D4EBC0613CE;
+        Sat, 19 Sep 2020 12:50:47 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id z4so8868845wrr.4;
+        Sat, 19 Sep 2020 12:50:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=iRl4Hsy9O4I7BJY7bZPGaXxXlud7f1VtwGO5tvJEaiY=;
-        b=RdH6omBgja3rfceBY7qOmD636Q7XMpZvGIhI3u8nrebDoTQEnoyiTO1VtKKt99o3db
-         USbWuOuclM1b8Xfy2iJEo0CdwYru2VkdOwmVPNY9AoTADrZ2AQbgeQqGBW4tAiiYep/X
-         SJw4EbIa/F0vgLk8pZsbIxEldYcZYlEoUhdIcF7Kc5pOrpfKUvL+tTN8gEkQwHkw154Z
-         iIqEbPHr8+ODlUI5Y3Ax3yn7Lz+qe/fvlwj8jFL28Fyqed59BFxLQBclERxP0yb+GK8Y
-         0eqHPL8OoajZ/LXPuaDyC/xvlf0BkEw6/GLE47pQKknPwQIBIn9pJojROwYEYmulY7QE
-         tMNQ==
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=JcVDmb1HHV/znVzm4kdq0UX6hTsOZELRii0JoTOZ9ew=;
+        b=iQEgzahuQCccMTCQd7xXrsKyPTXK2pBEdS21cAmowqFOsmMJkkfw9sdU5tZTskWXXM
+         /GqHvIAHM8TX/hz6B0dihWu2ltZMy4ijYtkTE9dTZfomkE4ToqU905VhYTLztoURPYJ/
+         VLkpwAg3ms774LxZcoL0Ph3LqA/dXapmwdSHD2WPvF9Qm+ObxE6u2ls+Ct3Ez+zHTveK
+         aF2paraN+HDaOGp4QMQZT+vtjjb4BUFGYV1x2ajZoxwSmonDBrdvCh0gYxf2NBJ/uOKB
+         vs7ZvUht/N8T8ifg7ZS6or2krg8DJoacW4KWrlH9ZP3btjI3Q0Ca1cvtnbu9ppy5aUWn
+         UP5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=iRl4Hsy9O4I7BJY7bZPGaXxXlud7f1VtwGO5tvJEaiY=;
-        b=L6+j1mCKaPw3lh6XMFydqzkU8wtbrtMLIm6N5ayd/PS5bwRE2Mbw21gcCwDifhbSHn
-         Ds7I44EbYGXp2jF1wC25VCUPYF0/S/BP2OebyAJq4Fci0UtKwke6x8AgCoBwM7F3Edze
-         OyVcG2+3DS7gUrLM/2sKTbGuScxX0szer5xtT/Y+jdK6efcPMIDyF7yrvbQqBpoPo5Nb
-         N6dZVC5+z9drPpvZFFyvB+29OIplT+NZTQoejxHT8+cjvtIwfa7KbJhf3Kgc1O2t2nVL
-         5JUM2faJE//EKSqpmlOTniUNwF2UjKjxSrbSeQq3Tx0W2E5fcIZ0/0r39B5OybolL28O
-         soVg==
-X-Gm-Message-State: AOAM531eO1kOWWmkZWEatQxIxJ5/5FEsUxW+LaSv98+5rD410XWtL8vR
-        zOYYOFtTTonJpj9cRjfE7pY=
-X-Google-Smtp-Source: ABdhPJxBMkzal6gO9zQwDPFK2Tws6+5zrCr7dpCEzLYOtsdbMhcv0vAI9Wkj7q/XJHissYC63bM6Ng==
-X-Received: by 2002:a19:4e:: with SMTP id 75mr12378023lfa.159.1600544948772;
-        Sat, 19 Sep 2020 12:49:08 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id n2sm1416147lji.97.2020.09.19.12.49.07
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=JcVDmb1HHV/znVzm4kdq0UX6hTsOZELRii0JoTOZ9ew=;
+        b=Gx4eHYhthJ3D6itYwMjbnXQEHiVTA9L80zIEJYz8RNp7l7MA81aK35AmseFxPJy+9C
+         z6W9LrO2wjYDNFbJ+NW40dqj8eiQXn1p1KQk1FyM2QBXyM6+NMSbDH4TsVeQ/ZcyiiNf
+         WtC/FmqhKxaFusCKl8wW9lS+JvM7Hvbn0FYy36X0SsoUlU/pNotusbNonCFxurWZJ2TS
+         Eo3jXtaJSwoXrQsJyUcdsHP8Cz6xUi3sZDO7Z2EvsiFkklBmcTeA0+RjWSXxkoHzj+VW
+         cRl4xGQVcf/ae7UO1AxoTtTNpFbuIAf33OTClakkDFHX8RrTh1yzVCYVAeyEZY4djaC8
+         MXnw==
+X-Gm-Message-State: AOAM533fWZU1qzdvCfSVNiiOHnTp5jnCC2451BjvpPU4yfW17V23bs99
+        IG5M0AP4W3msUyx5ovvwpoPLXkPYYQWa7kQf
+X-Google-Smtp-Source: ABdhPJzMb1RFm1f+lZbN60pF813Rr1opTK3wLHJ6o8cnICAiVwrcfUG8feuzYKTDKSXJHnuL5gvj/w==
+X-Received: by 2002:a5d:608f:: with SMTP id w15mr21313274wrt.244.1600545045891;
+        Sat, 19 Sep 2020 12:50:45 -0700 (PDT)
+Received: from [192.168.0.18] (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id b11sm12196537wrt.38.2020.09.19.12.50.44
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 19 Sep 2020 12:49:08 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] Input: atmel_mxt_ts - wake mXT1386 from deep-sleep
- mode
-To:     "Wang, Jiada" <jiada_wang@mentor.com>, nick@shmanahar.org,
-        dmitry.torokhov@gmail.com, robh+dt@kernel.org
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        andy.shevchenko@gmail.com, erosca@de.adit-jv.com,
-        Andrew_Gabbasov@mentor.com
-References: <20200918125601.8210-1-jiada_wang@mentor.com>
- <20200918125601.8210-2-jiada_wang@mentor.com>
- <2c3e093a-dc75-d315-519d-9b8fbab9b41b@gmail.com>
- <d0d8dffe-be52-992e-af2b-020d4b159747@mentor.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <11e0052b-ae7a-71bc-1b28-9d5b42acfd11@gmail.com>
-Date:   Sat, 19 Sep 2020 22:49:07 +0300
+        Sat, 19 Sep 2020 12:50:45 -0700 (PDT)
+Subject: Re: [PATCH v2] staging: media: atomisp: Fix error path in
+ lm3554_probe()
+To:     dan.carpenter@oracle.com
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alan Cox <alan@linux.intel.com>, linux-media@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+References: <20200903173843.GF8299@kadam>
+ <20200903182502.709300-1-alex.dewar90@gmail.com>
+From:   Alex Dewar <alex.dewar90@gmail.com>
+Message-ID: <1109bb4e-ef17-0633-275f-2a279437fdc6@gmail.com>
+Date:   Sat, 19 Sep 2020 20:50:44 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <d0d8dffe-be52-992e-af2b-020d4b159747@mentor.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200903182502.709300-1-alex.dewar90@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-18.09.2020 18:55, Wang, Jiada пишет:
-...
->>>   +static void mxt_wake(struct mxt_data *data)
->>> +{
->>> +    struct i2c_client *client = data->client;
->>> +    struct device *dev = &data->client->dev;
->>> +    struct device_node *np = dev->of_node;
->>> +    union i2c_smbus_data dummy;
->>> +
->>> +    if (!of_device_is_compatible(np, "atmel,mXT1386"))
->>> +        return;
->> I'm not sure whether you misses the previous answers from Dmitry
->> Torokhov and Rob Herring, but they suggested to add a new device-tree
->> property which should specify the atmel,wakeup-method.
->>
-> I think Rob Herring prefers for the compatible solution than property.
+On 2020-09-03 19:24, Alex Dewar wrote:
+> The error path for lm3554_probe() contains a number of bugs, including:
+>   * resource leaks
+>   * jumping to error labels out of sequence
+>   * not setting the return value appropriately
+Ping?
+>
+> Fix it up and give the labels more memorable names.
+>
+> This issue has existed since the code was originally contributed in
+> commit a49d25364dfb ("staging/atomisp: Add support for the Intel IPU v2"),
+> although the code was subsequently removed altogether and then
+> reinstated with commit ad85094b293e ("Revert "media: staging: atomisp: Remove driver"").
+>
+> Addresses-Coverity: 1496802 ("Resource leaks")
+> Fixes: a49d25364dfb ("staging/atomisp: Add support for the Intel IPU v2")
+> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+> ---
+>   .../media/atomisp/i2c/atomisp-lm3554.c        | 53 +++++++++++--------
+>   1 file changed, 30 insertions(+), 23 deletions(-)
+>
+> diff --git a/drivers/staging/media/atomisp/i2c/atomisp-lm3554.c b/drivers/staging/media/atomisp/i2c/atomisp-lm3554.c
+> index 7ca7378b1859..cca10a4c2db0 100644
+> --- a/drivers/staging/media/atomisp/i2c/atomisp-lm3554.c
+> +++ b/drivers/staging/media/atomisp/i2c/atomisp-lm3554.c
+> @@ -833,7 +833,6 @@ static void *lm3554_platform_data_func(struct i2c_client *client)
+>   
+>   static int lm3554_probe(struct i2c_client *client)
+>   {
+> -	int err = 0;
+>   	struct lm3554 *flash;
+>   	unsigned int i;
+>   	int ret;
+> @@ -843,36 +842,38 @@ static int lm3554_probe(struct i2c_client *client)
+>   		return -ENOMEM;
+>   
+>   	flash->pdata = lm3554_platform_data_func(client);
+> -	if (IS_ERR(flash->pdata))
+> -		return PTR_ERR(flash->pdata);
+> +	if (IS_ERR(flash->pdata)) {
+> +		ret = PTR_ERR(flash->pdata);
+> +		goto err_free_flash;
+> +	}
+>   
+>   	v4l2_i2c_subdev_init(&flash->sd, client, &lm3554_ops);
+>   	flash->sd.internal_ops = &lm3554_internal_ops;
+>   	flash->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
+>   	flash->mode = ATOMISP_FLASH_MODE_OFF;
+>   	flash->timeout = LM3554_MAX_TIMEOUT / LM3554_TIMEOUT_STEPSIZE - 1;
+> -	ret =
+> -	    v4l2_ctrl_handler_init(&flash->ctrl_handler,
+> -				   ARRAY_SIZE(lm3554_controls));
+> +	ret = v4l2_ctrl_handler_init(&flash->ctrl_handler,
+> +				     ARRAY_SIZE(lm3554_controls));
+>   	if (ret) {
+> -		dev_err(&client->dev, "error initialize a ctrl_handler.\n");
+> -		goto fail2;
+> +		dev_err(&client->dev, "error initializing ctrl_handler");
+> +		goto err_unregister_sd;
+>   	}
+>   
+>   	for (i = 0; i < ARRAY_SIZE(lm3554_controls); i++)
+>   		v4l2_ctrl_new_custom(&flash->ctrl_handler, &lm3554_controls[i],
+>   				     NULL);
+>   
+> -	if (flash->ctrl_handler.error) {
+> -		dev_err(&client->dev, "ctrl_handler error.\n");
+> -		goto fail2;
+> +	ret = flash->ctrl_handler.error;
+> +	if (ret) {
+> +		dev_err(&client->dev, "ctrl_handler error");
+> +		goto err_free_ctrl_handler;
+>   	}
+>   
+>   	flash->sd.ctrl_handler = &flash->ctrl_handler;
+> -	err = media_entity_pads_init(&flash->sd.entity, 0, NULL);
+> -	if (err) {
+> -		dev_err(&client->dev, "error initialize a media entity.\n");
+> -		goto fail1;
+> +	ret = media_entity_pads_init(&flash->sd.entity, 0, NULL);
+> +	if (ret) {
+> +		dev_err(&client->dev, "error initializing media entity");
+> +		goto err_free_ctrl_handler;
+>   	}
+>   
+>   	flash->sd.entity.function = MEDIA_ENT_F_FLASH;
+> @@ -881,20 +882,26 @@ static int lm3554_probe(struct i2c_client *client)
+>   
+>   	timer_setup(&flash->flash_off_delay, lm3554_flash_off_delay, 0);
+>   
+> -	err = lm3554_gpio_init(client);
+> -	if (err) {
+> +	ret = lm3554_gpio_init(client);
+> +	if (ret) {
+>   		dev_err(&client->dev, "gpio request/direction_output fail");
+> -		goto fail2;
+> +		goto err_del_timer;
+>   	}
+> -	return atomisp_register_i2c_module(&flash->sd, NULL, LED_FLASH);
+> -fail2:
+> +
+> +	ret = atomisp_register_i2c_module(&flash->sd, NULL, LED_FLASH);
+> +	if (!ret)
+> +		return 0;
+> +
+> +err_del_timer:
+> +	del_timer_sync(&flash->flash_off_delay);
+>   	media_entity_cleanup(&flash->sd.entity);
+> +err_free_ctrl_handler:
+>   	v4l2_ctrl_handler_free(&flash->ctrl_handler);
+> -fail1:
+> +err_unregister_sd:
+>   	v4l2_device_unregister_subdev(&flash->sd);
+> +err_free_flash:
+>   	kfree(flash);
+> -
+> -	return err;
+> +	return ret;
+>   }
+>   
+>   static int lm3554_remove(struct i2c_client *client)
 
-Actually, seems you're right. But I'm not sure now whether he just made
-a typo, because it's actually a board-specific option.
-
-It could be more preferred to skip the i2c_smbus_xfer() for the NONE
-variant, but it also should be harmless in practice. I guess we indeed
-could keep the current variant of yours patch and then add a clarifying
-comment to the commit message and to the code, telling that
-i2c_smbus_xfer() is harmless in a case of the hardwired WAKE-LINE.
-
->> There are 3 possible variants:
->>
->>    - NONE
->>    - GPIO
->>    - I2C-SCL
->>
->> Hence we should bail out from mxt_wake() if method is set to NONE or
->> GPIO.
->>
-> for "GPIO", we still need 25 ms sleep. but rather than a dummy read,
-> WAKE line need to be asserted before sleep.
-
-Correct, I just meant to bail out because GPIO is currently unsupported.
-
-...
->>>   static int mxt_initialize(struct mxt_data *data)
->>>   {
->>>       struct i2c_client *client = data->client;
->>>       int recovery_attempts = 0;
->>>       int error;
->>>   +    mxt_wake(data);
->>> +
->>>       while (1) {
->>
->> I assume the mxt_wake() should be placed here, since there is a 3
->> seconds timeout in the end of the while-loop, meaning that device may
->> get back into deep-sleep on a retry.
->>
-> Can you elaborate a little more why exit from bootload mode after sleep
-> for 3 second could enter deep-sleep mode.
-
-The loop attempts to exit from bootload mode and then I suppose
-mxt_read_info_block() may fail if I2C "accidentally" fails, hence the
-deep-sleep mode still will be enabled on a retry.
-
-The datasheet says that there are 2 seconds since the time of the last
-I2C access before TS is put back into auto-sleep if deep-sleep mode is
-enabled. The wait-loop has msleep(3000).
