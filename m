@@ -2,61 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFBC7270A5D
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 05:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81835270A64
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 05:26:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726381AbgISDQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 23:16:53 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:41126 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726119AbgISDQx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 23:16:53 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 3E32B30318231580C927;
-        Sat, 19 Sep 2020 11:16:51 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 19 Sep 2020 11:16:41 +0800
-From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
-To:     <boris.ostrovsky@oracle.com>, <jgross@suse.com>,
-        <sstabellini@kernel.org>
-CC:     <xen-devel@lists.xenproject.org>, <linux-kernel@vger.kernel.org>,
-        <jingxiangfeng@huawei.com>
-Subject: [PATCH] xen: remove redundant initialization of variable ret
-Date:   Sat, 19 Sep 2020 11:17:02 +0800
-Message-ID: <20200919031702.32192-1-jingxiangfeng@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726298AbgISD0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 23:26:01 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:33247 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726104AbgISD0A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 23:26:00 -0400
+X-Greylist: delayed 347 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Sep 2020 23:26:00 EDT
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 5FDD8C85;
+        Fri, 18 Sep 2020 23:20:12 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Fri, 18 Sep 2020 23:20:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=+klDHT4tIeJVl4fgQHq2RfH08C
+        mREckooi3m30a5UCo=; b=jQ0RJFmNOpIwpCANwC4OJdLY4yyTqiSWbNqzQrBvIU
+        yUeMnR2j/ohd+NhiZcavWACRKnql+z+0GbYFw05W9/D3QPD9/Ji10/a3GV5uex7B
+        RA9AC4vD34GqfrnVvKhK35PCedstAEtmQZUJXSL9PgRdlm03iMQMQhRcsnL5aFHj
+        pDuuhujCAKdbdN+/slMynwW4YQkQxpZ9iHotjVU4MmqdfJw9iJjzF3EtW8sniRgX
+        KNKj8HBOG3nkvJW+0hUg1ekim0blgLkwH3rtQ2uQBPTAMqe8XSmcRuO9UmWP80Nf
+        Biz43slSF8iNI2jptUPzkcy53D+C3JgdWuEEZqMgtL5w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=+klDHT4tIeJVl4fgQ
+        Hq2RfH08CmREckooi3m30a5UCo=; b=Qhr5ijpX6iqjimQMjwfFdGgNVENqOM+TQ
+        vTFRwZNrZNl0MXZ9bf6cdak9eTv+gVUpHzMZuE0KM1JJzG2NjENp77liHWBXXcgT
+        drTz/1D6hbMyl9meC/3IpkHZYVkUuVk8AxhCbczFgqXJ5qSqlSyovI6wCVq2qsOM
+        pkFVZcShuZ3paZj0dK+8dUAGcMVpQNYIbyHqHHztWYCG0YG9+yEpDmg9wNY1GTG5
+        H8JUL+J3BUyzNuf2EyivN9dmgxj9Hlgv5JzTBGR3wZ+UlxiSPzUkxZ7rsMCJagQ4
+        dggJK7dnKeKkQviLT0XY5+5tdXTzP0T6SoWl0cicHqDhg0pesn6HA==
+X-ME-Sender: <xms:6nhlXxKLHLjMB0bQu0mCRnsDvEMvfECIsSaeMYFKmgbqBIbeU1czOA>
+    <xme:6nhlX9J-pyGgsUxuAjEOcybbG9p6jMBpRlUIsYdQ4gNqGvXPH7kDbxxS180BZkKQu
+    Jt5SiWGZcGkSMzdzQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrtdejgdeikecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghlucfj
+    ohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrfgrth
+    htvghrnhepieetkefhheduudfgledtudefjeejfeegveehkeeufffhhfejkeehiefftdev
+    tdevnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdho
+    rhhg
+X-ME-Proxy: <xmx:6nhlX5sDOs37MMY2eacFEHsazrIygWZuK8g8zE7WBZ8pAsU4YFQNMQ>
+    <xmx:6nhlXyY3uILhrkEuHzLhJe8DTbQ6cWoSYti4fS_uvp9_XlWwwk1L-w>
+    <xmx:6nhlX4ZjRzGVzloKhQOgeQyGu5SfASCQiXVjeGbKpm8DOUfiEpVOtw>
+    <xmx:7HhlXwFybixx5eLHpPcwfxV-9-rtYjQMyVJ0C9K9-xwrTX-fSVVwdg>
+Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 5C4D2306467E;
+        Fri, 18 Sep 2020 23:20:10 -0400 (EDT)
+From:   Samuel Holland <samuel@sholland.org>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>
+Subject: [PATCH] powerpc: Select HAVE_FUTEX_CMPXCHG
+Date:   Fri, 18 Sep 2020 22:20:09 -0500
+Message-Id: <20200919032009.8346-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit 9f51c05dc41a ("pvcalls-front: Avoid
-get_free_pages(GFP_KERNEL) under spinlock"), the variable ret is being
-initialized with '-ENOMEM' that is meaningless. So remove it.
+On powerpc, access_ok() succeeds for the NULL pointer. This breaks the
+dynamic check in futex_detect_cmpxchg(), which expects -EFAULT. As a
+result, robust futex operations are not functional on powerpc.
 
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+Since the architecture's futex_atomic_cmpxchg_inatomic() implementation
+requires no runtime feature detection, we can select HAVE_FUTEX_CMPXCHG
+to skip futex_detect_cmpxchg() and enable the use of robust futexes.
+
+Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
- drivers/xen/pvcalls-front.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/xen/pvcalls-front.c b/drivers/xen/pvcalls-front.c
-index 72d725a0ab5c..7984645b5956 100644
---- a/drivers/xen/pvcalls-front.c
-+++ b/drivers/xen/pvcalls-front.c
-@@ -371,7 +371,7 @@ static int alloc_active_ring(struct sock_mapping *map)
- static int create_active(struct sock_mapping *map, evtchn_port_t *evtchn)
- {
- 	void *bytes;
--	int ret = -ENOMEM, irq = -1, i;
-+	int ret, irq = -1, i;
- 
- 	*evtchn = 0;
- 	init_waitqueue_head(&map->active.inflight_conn_req);
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index ad620637cbd1..5ad1deb0c669 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -196,6 +196,7 @@ config PPC
+ 	select HAVE_FUNCTION_ERROR_INJECTION
+ 	select HAVE_FUNCTION_GRAPH_TRACER
+ 	select HAVE_FUNCTION_TRACER
++	select HAVE_FUTEX_CMPXCHG
+ 	select HAVE_GCC_PLUGINS			if GCC_VERSION >= 50200   # plugin support on gcc <= 5.1 is buggy on PPC
+ 	select HAVE_HW_BREAKPOINT		if PERF_EVENTS && (PPC_BOOK3S || PPC_8xx)
+ 	select HAVE_IDE
 -- 
-2.17.1
+2.26.2
 
