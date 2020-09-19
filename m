@@ -2,119 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F33E270A81
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 06:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 295A4270AB9
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 06:43:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726159AbgISEQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 00:16:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41866 "EHLO
+        id S1726157AbgISEl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 00:41:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726009AbgISEQB (ORCPT
+        with ESMTP id S1726054AbgISEl3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 00:16:01 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B46BC0613CE;
-        Fri, 18 Sep 2020 21:16:01 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id h4so9303508ioe.5;
-        Fri, 18 Sep 2020 21:16:01 -0700 (PDT)
+        Sat, 19 Sep 2020 00:41:29 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4600EC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 21:41:29 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id k13so4055823plk.3
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 21:41:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MKEE3yp5Rcc/md7pG2bSGfj9ZsRwTbcCIHn5InN/kNw=;
-        b=aGlESU91VLGmqPRG+xHbjCgsyyg5neN9y2SNkYDvUeQ/ri6kC1WlyggLSeUQowP2o3
-         MJ5NU1bEu8TBm/7t2TfhQcrZd4HxQLTHSmRvaNfRYBlCa6N3rg+Lt/9tFIFKogS8UkgA
-         GHeyEaQ3o28fInNlpcYGcX7+tlb0eBwcl+FIh5XCCx5SImQO5UV6LDiEY93RUahk0DuI
-         DU41E/43MjV31NeVL4Dou3FBVxJ/gksWyph1xvb0WoYr8TbCqfpEUBnBmsDFdN/7xj9X
-         tLwwWLvSCL/lInFUsxJakhgPfUhwqb93IYkschuRk9FWmDUQioeCrf4gKAXvQH66XarW
-         RcLQ==
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0U+Dbiw8JUnuvLwJ+RFlNrwPxKsZPBsQuslXlMIRDCg=;
+        b=VYQfGUEAu1xJLuJK5YTF17kGuh93Q5ohcNEDSoejfjVEt3m7CxO8A7tcG7NArx8/0E
+         a5W1lLZgVlcr9x/t/TSsOh2I4v/4F1aoa4LLr0iNm1aRfzTu0TQZXVb317zLs+BSlnSH
+         ARB6Z5n+2hRN6Hc0xVMTnSBKaSSDCHpBLI3ddFtup8AdiSi3n56bbU6wCkQLqud595Wx
+         mL9wyWOI6o7OJ2xnlVXivkB0Pva17j0PCM/kknp6x4WwqC0IdNGZZjiXmCXdW8zRUIcT
+         SabCsY2uLEzb3bLZ8mhu1kQPmSVDMp7N1CkybT5fiJ+/kH0dTfNcxmIiHBd2xK7ctNjF
+         GfXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MKEE3yp5Rcc/md7pG2bSGfj9ZsRwTbcCIHn5InN/kNw=;
-        b=BBbvrpXjUhM6KxYy1rw2kmwuiPEFz189jCrXc4KhH2Xf96xghDp09VbTuJZzsMtz54
-         jxJlnTWdoHSvhMREPqQPTHEB6brXIZv6OkRev0coneyobROmmYwVAq5nPSUZPp1fsGMb
-         WVc5aL6hcY4Px4HMLoXji2++YBZ7ZMNHc7JcvBeEJ86QhGHmxE7v2mxAkrnB0yQSkHSp
-         VoWdZfP/d4ObogNwSsEsRj8rwf34iSA5bsbiBdnrEOiQVnSiYy+BRAkyfUoPonupF23A
-         OM2Z5ZbwFUFymw0v4fQeEoyJkMKz8kkOOXrLsxzUCBRUAfXV3zHs4Tmqywa/c/4HYDwO
-         FOIw==
-X-Gm-Message-State: AOAM531XG9oE4fsn8whqES6MO9KqhYZ7q3BTBZM5Ny2Pb/jJC250hr2H
-        hucBG3c2HVI4QQtKBWUwo3jJsJS9VUW3t2uA5JMg08ohyos=
-X-Google-Smtp-Source: ABdhPJwKnTGflf3OjRpTv6fCq3h03LLJfNJI6RfNDUunk5g2o2wcmnT9KK1bw3XsjwKQAmkTA2xcwBBV8pBnPKwMV/8=
-X-Received: by 2002:a5d:8a04:: with SMTP id w4mr29941997iod.68.1600488960801;
- Fri, 18 Sep 2020 21:16:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200916074214.995128-1-Tony.Ambardar@gmail.com>
- <20200917000757.1232850-1-Tony.Ambardar@gmail.com> <87363gpqhz.fsf@mpe.ellerman.id.au>
- <CAK8P3a3FVoDzNb1TOA6cRQDdEc+st7KkBL70t0FeStEziQG4+A__37056.5000850306$1600351707$gmane$org@mail.gmail.com>
- <87h7rw321o.fsf@igel.home>
-In-Reply-To: <87h7rw321o.fsf@igel.home>
-From:   Tony Ambardar <tony.ambardar@gmail.com>
-Date:   Fri, 18 Sep 2020 21:15:50 -0700
-Message-ID: <CAPGftE__Mh2Fp_v=Vhm3cQ1PHNFETMsXET6raTpLav-BbVQvbw@mail.gmail.com>
-Subject: Re: [PATCH v2] powerpc: fix EDEADLOCK redefinition error in uapi/asm/errno.h
-To:     Andreas Schwab <schwab@linux-m68k.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Rosen Penev <rosenp@gmail.com>, bpf <bpf@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=0U+Dbiw8JUnuvLwJ+RFlNrwPxKsZPBsQuslXlMIRDCg=;
+        b=oYl580o6yoMxNC9ckT+dN0kWDPRkGTnWCBnB8rZRNqQ729zpuP+wA6ywwjKAuhZ6hd
+         CZNOjDpHEcm6cZrfhTrxD33lIZXsLJdNAbH6UhPtTzVh5HaxNDS9JSsBBrBuZV31kQsi
+         pIQY5i7espHc1hhUdJU7OPdYmiINiai/QWWSC/AiX4khuLSQzraU1HexRyn1BVn9vvKd
+         PVwlULYUGYL3Jr5FYqBoL5vwSocDewvlXJmi6ByN6hD6biyLbzuS6+UlFRYSQuNKBh9b
+         IEy+D1alDfVf8xxOQl636a6wrMx94p/Er5QNtsPJTx/lGgINwwBcevplRb8Qpf8BQTmQ
+         URUg==
+X-Gm-Message-State: AOAM530XUUPBybnC9k6Rpw7DsLosobmVR4SLZ3ZxLAM2W74Vx2GIEuXg
+        FdkpLeJ8ZbAT0f1T/8wXV26ong==
+X-Google-Smtp-Source: ABdhPJyB02vYW/ZXzBUzwm+xOgsNi4YTZThESy5B6wG3Zj++xNSulybh5FYd1yIMeM4g9UNRjmkveQ==
+X-Received: by 2002:a17:902:ee54:b029:d1:f2ae:e2 with SMTP id 20-20020a170902ee54b02900d1f2ae00e2mr14059738plo.3.1600490488574;
+        Fri, 18 Sep 2020 21:41:28 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id o20sm5044877pgh.63.2020.09.18.21.41.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 21:41:27 -0700 (PDT)
+Date:   Fri, 18 Sep 2020 21:41:27 -0700 (PDT)
+X-Google-Original-Date: Fri, 18 Sep 2020 21:41:25 PDT (-0700)
+Subject:     Re: [PATCH] riscv: Add sfence.vma after page table changed
+In-Reply-To: <CAHCEehKnFpdDamANoOfSJV2pbeMzjhxWja667PL6Sueid9imPw@mail.gmail.com>
+CC:     catalin.marinas@arm.com, Will Deacon <willdeacon@google.com>,
+        Marc Zyngier <maz@kernel.org>, mark.rutland@arm.com,
+        anup@brainfault.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, aou@eecs.berkeley.edu,
+        Paul Walmsley <paul.walmsley@sifive.com>, syven.wang@sifive.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     greentime.hu@sifive.com
+Message-ID: <mhng-9dba0867-f793-4cec-a3a0-82190bfcfde4@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Sep 2020 at 07:34, Andreas Schwab <schwab@linux-m68k.org> wrote:
+On Mon, 14 Sep 2020 20:58:13 PDT (-0700), greentime.hu@sifive.com wrote:
+> Palmer Dabbelt <palmer@dabbelt.com> 於 2020年8月5日 週三 上午10:03寫道：
+>>
+>> On Mon, 03 Aug 2020 20:29:32 PDT (-0700), anup@brainfault.org wrote:
+>> > On Tue, Aug 4, 2020 at 8:32 AM Greentime Hu <greentime.hu@sifive.com> wrote:
+>> >>
+>> >> This patch addes local_flush_tlb_page(addr) to use sfence.vma after the
+>> >
+>> > s/addes/adds
+>> >
+>> >> page table changed. That address will be used immediately in
+>> >> memset(nextp, 0, PAGE_SIZE) to cause this issue so we should add the
+>> >> sfence.vma before we use it.
+>> >
+>> > Alternate version of this commit description can be:
+>> >
+>> > Invalidate local TLB after both set_pet() and clear_pte() because the
+>> > address can be used immediately after page table change.
+>> >
+>> >> Fixes: f2c17aabc917 ("RISC-V: Implement compile-time fixed mappings")
+>> >>
+>> >> Reported-by: Syven Wang <syven.wang@sifive.com>
+>> >> Signed-off-by: Syven Wang <syven.wang@sifive.com>
+>> >> Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
+>> >> ---
+>> >>  arch/riscv/mm/init.c | 7 +++----
+>> >>  1 file changed, 3 insertions(+), 4 deletions(-)
+>> >>
+>> >> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+>> >> index f4adb3684f3d..29b0f7108054 100644
+>> >> --- a/arch/riscv/mm/init.c
+>> >> +++ b/arch/riscv/mm/init.c
+>> >> @@ -202,12 +202,11 @@ void __set_fixmap(enum fixed_addresses idx, phys_addr_t phys, pgprot_t prot)
+>> >>
+>> >>         ptep = &fixmap_pte[pte_index(addr)];
+>> >>
+>> >> -       if (pgprot_val(prot)) {
+>> >> +       if (pgprot_val(prot))
+>> >>                 set_pte(ptep, pfn_pte(phys >> PAGE_SHIFT, prot));
+>> >> -       } else {
+>> >> +       else
+>> >>                 pte_clear(&init_mm, addr, ptep);
+>> >> -               local_flush_tlb_page(addr);
+>> >> -       }
+>> >> +       local_flush_tlb_page(addr);
+>> >>  }
+>>
+>> arm64 appears to be upgrading all set_pte()s on valid kernel mappings to
+>> include the fence.  It looks like the message from 7f0b1bf04511 ("arm64: Fix
+>> barriers used for page table modifications") is out of date, as I can't find
+>> create_mapping() any more.  If that was some generic kernel thing then we
+>> should probably upgrade ours as well, but if it was arch/arm64/ code then this
+>> approach seems fine as __set_fixmap() isn't on the hot path -- I guess this is
+>> fine either way, but there may be other issues that the arm64 approach fixes.
+>>
+>> Do you guys happen to remember what was going on here?
 >
-> On Sep 17 2020, Arnd Bergmann wrote:
+> Hi Palmer,
 >
-> > The errno man page says they are supposed to be synonyms,
-> > and glibc defines it that way, while musl uses the numbers
-> > from the kernel.
+> Some architectures add cache writeback in set_pte(), just like nds32, csky.
 >
-> glibc also uses whatever the kernel defines.
+> https://github.com/torvalds/linux/blob/master/arch/nds32/include/asm/pgtable.h#L213
+> https://github.com/torvalds/linux/blob/master/arch/csky/include/asm/pgtable.h#L104
 >
-That's right, and from my investigation this isn't a libc issue. The
-various libc flavours simply try to follow POSIX and the PPC ABI and
-aren't doing anything wrong.
+> Would you like to pick this patch or should I send another patch to
+> implement it in set_pte()?
 
-See errno.h for example (https://man7.org/linux/man-pages/man3/errno.3.html):
-  EDEADLK: Resource deadlock avoided (POSIX.1-2001).
-  EDEADLOCK: On most architectures, a synonym for EDEADLK.  On some
-architectures (e.g., Linux MIPS, PowerPC, SPARC), it is a separate
-error code "File locking deadlock error".
+Sorry, I forgot about this.  I'm picking up this patch on fixes, as it clearly
+fixes a bug.  We might also have uncovered another bug, but there's no sense in
+letting this one hang around until we figure that out.
 
-The root cause is unique to the Linux PPC code in
-arch/powerpc/include/uapi/asm/errno.h:
-  >/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-  >#ifndef _ASM_POWERPC_ERRNO_H
-  >#define _ASM_POWERPC_ERRNO_H
-  >
-  >#include <asm-generic/errno.h>
-  >
-  >#undef  EDEADLOCK
-  >#define EDEADLOCK       58      /* File locking deadlock error */
-  >
-  >#endif  /* _ASM_POWERPC_ERRNO_H */
+I've cleaned up the comment text a bit, as Anup pointed out some issuses.
 
-It includes "<asm-generic/errno.h>" to pull in various definitions but
-has the side-effect of redefining EDEADLOCK to a non-ABI value which
-conflicts with the libc errno.h, as I outline in the patch
-description. Other arches which also use different EDEADLOCK and
-EDEADLK values (mips,sparc) do not do this. They define EDEADLOCK
-*once*, with an ABI-consistent value, and don't have the same issue.
-
-The problem goes back a ways (as Arnd points out), affecting current
-stable and all LTS branches, so would be nice to get this sorted out.
-I'm certainly interested if there's a better way than proposed in this
-patch.
-
-> Andreas.
->
-> --
-> Andreas Schwab, schwab@linux-m68k.org
-> GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-> "And now for something completely different."
+Thanks!
