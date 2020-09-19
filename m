@@ -2,101 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26CC1270958
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 02:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFF7227095B
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 02:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726222AbgISAKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 20:10:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726054AbgISAKv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 20:10:51 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BA5EC0613CE;
-        Fri, 18 Sep 2020 17:10:51 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id k25so6454741ljk.0;
-        Fri, 18 Sep 2020 17:10:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dESGYbnfg7wQ4Z2+mdwlRJpxrBgQFzID5ccxYF3X5U0=;
-        b=RBva7VcRX7O/kEvKZNDT0CqRALPY8292/hmUqYscH0QmEeo1gQEcDL0zF+AbqAXGGR
-         Y2d++cg0mVY2SOyOZfJ8t2LZQZRz1YlDe79xqcCf0Gh+6rhqqsIj8eHM8XJAP8fN+CRT
-         xq4FEaG1qVkgvcKXKRkoVEvqLTocw4Q1zxkEnP98UNWJODPkpShSbLVsFRjKzOJTVNdA
-         oabZcP29m8FtqJBuA1xHeVil5/9Z+XAGFIb7TcQtjhnUFiv78f6SWtkVDqw4bNzuqlK0
-         uineKtoRhaVEYmocI08pmESxMC5ikiTwfjreg5HynFJSykF4IL8b3P2eIufUS6HnvFwI
-         BPrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dESGYbnfg7wQ4Z2+mdwlRJpxrBgQFzID5ccxYF3X5U0=;
-        b=C7D9PD834wJ677APgiTYGlA41L7H+FpZH5jO9XGFEdRGQI7stv/sjuz2kV7XONjfSh
-         GtD9TjucKRSt+Ip3tx4BYv1A07O2TbMOCSxy/tj29BDMtALMNvyoOpNhW3pJrTEBt0Sx
-         ImXmNYjhKU307N5cGZgmdNrDOCYKcx5JfOchhLOsKvs0AR5Dh508qVdF6w9Nn9OWQdiL
-         yysCD+3CsndYHV2pqIu4vmgzjxv+bf5qQPk0PK/FuGyqNW2RgJ26J/E9W2PtZmpuQZ1v
-         JOph6Q5hU2olwx5l+p7em4HwJIJiJt/Kz0puKBZO9KhN90jpSaWKAgKVllo6ZCS2lGMw
-         JgmQ==
-X-Gm-Message-State: AOAM532IQzLr1yUZOa2gpKi1j6F79QaHwXUdW3Qqg9OYYdoUpIjGnCv6
-        YAqswfniKT7lvj1JkuYhQj2Qzy/ck3o=
-X-Google-Smtp-Source: ABdhPJwU/xG13KtB/wenP6ov2aCDN9xIdgYiffJ0dh7QiB9V4mFL1Mg9WtyrLUlUetxhNBHXgjqz3g==
-X-Received: by 2002:a2e:6d01:: with SMTP id i1mr13116898ljc.181.1600474249240;
-        Fri, 18 Sep 2020 17:10:49 -0700 (PDT)
-Received: from localhost.localdomain (188.147.112.12.nat.umts.dynamic.t-mobile.pl. [188.147.112.12])
-        by smtp.gmail.com with ESMTPSA id j127sm915054lfd.6.2020.09.18.17.10.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Sep 2020 17:10:48 -0700 (PDT)
-From:   mateusznosek0@gmail.com
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Mateusz Nosek <mateusznosek0@gmail.com>, viro@zeniv.linux.org.uk
-Subject: [PATCH] fs/open.c: micro-optimization by avoiding branch on common path
-Date:   Sat, 19 Sep 2020 02:10:21 +0200
-Message-Id: <20200919001021.21690-1-mateusznosek0@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726200AbgISAME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 20:12:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51982 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726119AbgISAME (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 20:12:04 -0400
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 722AA23600
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 00:12:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600474323;
+        bh=etjZlYYd1IIPDO1NfKNkztbf4goZGkm6DYQVvva74MI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=L7h6oG+UCIlVAj7i6PyxRQf7m9hC/1jmn3wsGAiTRhuPMAOQbzjvfwU1eUsohup7x
+         nsEMlDfmILL1Qv9F7HCx4sxrvxUj9AqhKo2z0RWVDQolq2dDHte4dIn/vts80Gz3rj
+         iLjVZ1Ydk2VK8jPEt1IyztAW9dwtHXaJ1tj9YxRE=
+Received: by mail-wm1-f43.google.com with SMTP id x23so6780390wmi.3
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Sep 2020 17:12:03 -0700 (PDT)
+X-Gm-Message-State: AOAM531Yrsss5Vu/AOuFP0ZIBckAj4wc2eheGqpKgq+8kqaJS4Mg6+cE
+        +HR7x79YMeDjm4iDCYoumEvVekiXVXiYHhb94UOK6g==
+X-Google-Smtp-Source: ABdhPJxmOMUD3oJeWUBWSi+Yvq5YFeJEC+DLVGlDfJl03Mlbg5VJuyOxaSuU065pkOCJwFJ0EmxFOn3UVUdyN4X8nu8=
+X-Received: by 2002:a05:600c:4104:: with SMTP id j4mr17372943wmi.36.1600474321906;
+ Fri, 18 Sep 2020 17:12:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200918192312.25978-1-yu-cheng.yu@intel.com> <20200918192312.25978-9-yu-cheng.yu@intel.com>
+In-Reply-To: <20200918192312.25978-9-yu-cheng.yu@intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 18 Sep 2020 17:11:50 -0700
+X-Gmail-Original-Message-ID: <CALCETrXfixDGJhf0yPw-OckjEdeF2SbYjWFm8VbLriiP0Krhrg@mail.gmail.com>
+Message-ID: <CALCETrXfixDGJhf0yPw-OckjEdeF2SbYjWFm8VbLriiP0Krhrg@mail.gmail.com>
+Subject: Re: [PATCH v12 8/8] x86: Disallow vsyscall emulation when CET is enabled
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mateusz Nosek <mateusznosek0@gmail.com>
+On Fri, Sep 18, 2020 at 12:23 PM Yu-cheng Yu <yu-cheng.yu@intel.com> wrote:
+>
+> Emulation of the legacy vsyscall page is required by some programs
+> built before 2013.  Newer programs after 2013 don't use it.
+> Disable vsyscall emulation when Control-flow Enforcement (CET) is
+> enabled to enhance security.
+>
+> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+> ---
+> v12:
+> - Disable vsyscall emulation only when it is attempted (vs. at compile time).
+>
+>  arch/x86/entry/vsyscall/vsyscall_64.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/arch/x86/entry/vsyscall/vsyscall_64.c b/arch/x86/entry/vsyscall/vsyscall_64.c
+> index 44c33103a955..3196e963e365 100644
+> --- a/arch/x86/entry/vsyscall/vsyscall_64.c
+> +++ b/arch/x86/entry/vsyscall/vsyscall_64.c
+> @@ -150,6 +150,15 @@ bool emulate_vsyscall(unsigned long error_code,
+>
+>         WARN_ON_ONCE(address != regs->ip);
+>
+> +#ifdef CONFIG_X86_INTEL_CET
+> +       if (current->thread.cet.shstk_size ||
+> +           current->thread.cet.ibt_enabled) {
+> +               warn_bad_vsyscall(KERN_INFO, regs,
+> +                                 "vsyscall attempted with cet enabled");
+> +               return false;
+> +       }
 
-If file is a directory it is surely not regular. Therefore, if 'S_ISREG'
-check returns false one can be sure that vfs_truncate must returns with
-error. Introduced patch refactors code to avoid one branch in 'likely'
-control flow path. Moreover, it marks the proper check with 'unlikely'
-macro to improve both branch prediction and readability. Changes were
-tested with gcc 8.3.0 on x86 architecture and it is confirmed that
-slightly better assembly is generated.
+Nope, try again.  Having IBT on does *not* mean that every library in
+the process knows that we have indirect branch tracking.  The legacy
+bitmap exists for a reason.  Also, I want a way to flag programs as
+not using the vsyscall page, but that flag should not be called CET.
+And a process with vsyscalls off should not be able to read the
+vsyscall page, and /proc/self/maps should be correct.
 
-Signed-off-by: Mateusz Nosek <mateusznosek0@gmail.com>
----
- fs/open.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+So you have some choices:
 
-diff --git a/fs/open.c b/fs/open.c
-index 9af548fb841b..69658ea27530 100644
---- a/fs/open.c
-+++ b/fs/open.c
-@@ -74,10 +74,12 @@ long vfs_truncate(const struct path *path, loff_t length)
- 	inode = path->dentry->d_inode;
- 
- 	/* For directories it's -EISDIR, for other non-regulars - -EINVAL */
--	if (S_ISDIR(inode->i_mode))
--		return -EISDIR;
--	if (!S_ISREG(inode->i_mode))
--		return -EINVAL;
-+	if (unlikely(!S_ISREG(inode->i_mode))) {
-+		if (S_ISDIR(inode->i_mode))
-+			return -EISDIR;
-+		else
-+			return -EINVAL;
-+	}
- 
- 	error = mnt_want_write(path->mnt);
- 	if (error)
--- 
-2.20.1
+1. Drop this patch and make it work.
 
+2. Add a real per-process vsyscall control.  Either make it depend on
+vsyscall=xonly and wire it up correctly or actually make it work
+correctly with vsyscall=emulate.
+
+NAK to any hacks in this space.  Do it right or don't do it at all.
