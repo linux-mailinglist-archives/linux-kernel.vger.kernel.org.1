@@ -2,85 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2F4F270F22
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 17:36:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C50270F25
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 17:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726684AbgISPgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 11:36:20 -0400
-Received: from saturn.retrosnub.co.uk ([46.235.226.198]:39046 "EHLO
-        saturn.retrosnub.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726636AbgISPgT (ORCPT
+        id S1726598AbgISPhR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 19 Sep 2020 11:37:17 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:58060 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726449AbgISPhR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 11:36:19 -0400
-X-Greylist: delayed 162165 seconds by postgrey-1.27 at vger.kernel.org; Sat, 19 Sep 2020 11:36:19 EDT
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        by saturn.retrosnub.co.uk (Postfix; Retrosnub mail submission) with ESMTPSA id 7A3F39E0056;
-        Sat, 19 Sep 2020 16:36:15 +0100 (BST)
-Date:   Sat, 19 Sep 2020 16:36:13 +0100
-From:   Jonathan Cameron <jic23@jic23.retrosnub.co.uk>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Kamel Bouhara <kamel.bouhara@bootlin.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] counter: microchip-tcb-capture: check the correct
- variable
-Message-ID: <20200919163613.7984587c@archlinux>
-In-Reply-To: <20200727122825.GA5614@shinobu>
-References: <20200727112316.GG389488@mwanda>
-        <20200727122825.GA5614@shinobu>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Sat, 19 Sep 2020 11:37:17 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-84-GWrqbXc2NvCA3BPd7nszzA-1; Sat, 19 Sep 2020 16:37:13 +0100
+X-MC-Unique: GWrqbXc2NvCA3BPd7nszzA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Sat, 19 Sep 2020 16:37:12 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Sat, 19 Sep 2020 16:37:12 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Al Viro' <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>
+CC:     syzbot <syzbot+ea3a78a71705faf41d77@syzkaller.appspotmail.com>,
+        "Aleksa Sarai" <cyphar@cyphar.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>, "X86 ML" <x86@kernel.org>
+Subject: RE: WARNING in ex_handler_uaccess
+Thread-Topic: WARNING in ex_handler_uaccess
+Thread-Index: AQHWjhpCdhxJQ/Fq7U+wxL6/+NIsNalwFyxA
+Date:   Sat, 19 Sep 2020 15:37:12 +0000
+Message-ID: <40d7cc7127084d96a8654993a91b68f4@AcuMS.aculab.com>
+References: <000000000000762dee05af9ccd01@google.com>
+ <CALCETrVL=VGNXbWK1BB1LnsxaKOGRbEfCGUEx4jaCW9cF-54Ag@mail.gmail.com>
+ <20200918235528.GB3421308@ZenIV.linux.org.uk>
+ <CALCETrVi=quLyPXzt-0ou-FF_OYMa7pE5N8_NchRaWtwLg3kNg@mail.gmail.com>
+ <20200919001714.GC3421308@ZenIV.linux.org.uk>
+In-Reply-To: <20200919001714.GC3421308@ZenIV.linux.org.uk>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Jul 2020 08:28:25 -0400
-William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
-
-> On Mon, Jul 27, 2020 at 02:23:16PM +0300, Dan Carpenter wrote:
-> > This should be testing "regmap" instead of "priv->regmap".  The
-> > "priv->regmap" variable is always zero so it's not an error pointer.
-> > 
-> > Fixes: 106b104137fd ("counter: Add microchip TCB capture counter")
-> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>  
+From: Al Viro
+> Sent: 19 September 2020 01:17
 > 
-> Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-Seems I applied this one a while back but never replied to this thread.
-Sorry about that!
-
-Jonathan
-
+> On Fri, Sep 18, 2020 at 05:07:43PM -0700, Andy Lutomirski wrote:
+> > On Fri, Sep 18, 2020 at 4:55 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> > >
+> > > On Fri, Sep 18, 2020 at 04:31:33PM -0700, Andy Lutomirski wrote:
+> > >
+> > > > check_zeroed_user() looks buggy.  It does:
+> > > >
+> > > >        if (!user_access_begin(from, size))
+> > > >                return -EFAULT;
+> > > >
+> > > >        unsafe_get_user(val, (unsigned long __user *) from, err_fault);
+> > > >
+> > > > This is wrong if size < sizeof(unsigned long) -- you read outside the
+> > > > area you verified using user_access_begin().
+> > >
+> > > Read the code immediately prior to that.  from will be word-aligned,
+> > > and size will be extended accordingly.  If the area acceptable for
+> > > user_access_begin() ends *NOT* on a word boundary, you have a problem
+> > > and I would strongly recommend to seek professional help.
+> > >
+> > > All reads in that thing are word-aligned and word-sized.  So I very
+> > > much doubt that your analysis is correct.
+> >
+> > Maybe -ETOOTIRED, but I seriously question the math in here.  Suppose
+> > from == (unsigned long *)1 and size == 1.  Then align is 1, and we do:
+> >
+> > from -= align;
+> > size += align;
+> >
+> > So now from = 0 and size = 2.  Now we do user_access_begin(0, 2) and
+> > then immediately read 4 or 8 bytes.  No good.
 > 
-> > ---
-> > The commit 106b104137fd ("counter: Add microchip TCB capture counter")
-> > doesn't use the correct patch prefix.  This is a common mistake for the
-> > the first commit which adds the driver.  There is no kernel wide
-> > standard for patch prefixes so it's difficult for people sending fixes
-> > to know the correct prefix should be.
-> > 
-> >  drivers/counter/microchip-tcb-capture.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/counter/microchip-tcb-capture.c b/drivers/counter/microchip-tcb-capture.c
-> > index f7b7743ddb94..b7b252c5addf 100644
-> > --- a/drivers/counter/microchip-tcb-capture.c
-> > +++ b/drivers/counter/microchip-tcb-capture.c
-> > @@ -320,8 +320,8 @@ static int mchp_tc_probe(struct platform_device *pdev)
-> >  	}
-> >  
-> >  	regmap = syscon_node_to_regmap(np->parent);
-> > -	if (IS_ERR(priv->regmap))
-> > -		return PTR_ERR(priv->regmap);
-> > +	if (IS_ERR(regmap))
-> > +		return PTR_ERR(regmap);
-> >  
-> >  	/* max. channels number is 2 when in QDEC mode */
-> >  	priv->num_channels = of_property_count_u32_elems(np, "reg");
-> > -- 
-> > 2.27.0
-> >   
+> Could you explain what kind of insane hardware manages to do #PF-related
+> checks (including SMAP, whatever) with *sub*WORD* granularity?
+> 
+> If it's OK with 16bit read from word-aligned address, but barfs on 64bit
+> one...  I want to know what the hell had its authors been smoking.
+
+Not going to happen to anything in the data cache. But...
+
+Byte parity errors on memory locations that have never been written
+but power-up initialised to 'bad parity'?
+
+I have seen that - but I've completely forgotten the hardware.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
