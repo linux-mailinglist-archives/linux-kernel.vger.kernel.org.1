@@ -2,73 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6330D270968
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 02:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1E4C27096A
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 02:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726216AbgISAUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 20:20:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34228 "EHLO
+        id S1726249AbgISAWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 20:22:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726009AbgISAUf (ORCPT
+        with ESMTP id S1726054AbgISAWU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 20:20:35 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A301C0613CE;
-        Fri, 18 Sep 2020 17:20:35 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kJQcD-001MaQ-Lp; Sat, 19 Sep 2020 00:20:33 +0000
-Date:   Sat, 19 Sep 2020 01:20:33 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     mateusznosek0@gmail.com
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs/open.c: micro-optimization by avoiding branch on
- common path
-Message-ID: <20200919002033.GD3421308@ZenIV.linux.org.uk>
-References: <20200919001021.21690-1-mateusznosek0@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200919001021.21690-1-mateusznosek0@gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+        Fri, 18 Sep 2020 20:22:20 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAF22C0613CE;
+        Fri, 18 Sep 2020 17:22:20 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id AD65915B1D06B;
+        Fri, 18 Sep 2020 17:05:32 -0700 (PDT)
+Date:   Fri, 18 Sep 2020 17:22:18 -0700 (PDT)
+Message-Id: <20200918.172218.585529915367078350.davem@davemloft.net>
+To:     f.fainelli@gmail.com
+Cc:     netdev@vger.kernel.org, opendmb@gmail.com, andrew@lunn.ch,
+        hkallweit1@gmail.com, linux@armlinux.org.uk, kuba@kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2] net: phy: bcm7xxx: request and manage GPHY
+ clock
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200917020413.2313461-1-f.fainelli@gmail.com>
+References: <20200917020413.2313461-1-f.fainelli@gmail.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Fri, 18 Sep 2020 17:05:33 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 19, 2020 at 02:10:21AM +0200, mateusznosek0@gmail.com wrote:
-> From: Mateusz Nosek <mateusznosek0@gmail.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
+Date: Wed, 16 Sep 2020 19:04:13 -0700
+
+> The internal Gigabit PHY on Broadcom STB chips has a digital clock which
+> drives its MDIO interface among other things, the driver now requests
+> and manage that clock during .probe() and .remove() accordingly.
 > 
-> If file is a directory it is surely not regular. Therefore, if 'S_ISREG'
-> check returns false one can be sure that vfs_truncate must returns with
-> error. Introduced patch refactors code to avoid one branch in 'likely'
-> control flow path. Moreover, it marks the proper check with 'unlikely'
-> macro to improve both branch prediction and readability. Changes were
-> tested with gcc 8.3.0 on x86 architecture and it is confirmed that
-> slightly better assembly is generated.
-
-Does it measurably show in any profiles?
-
-> Signed-off-by: Mateusz Nosek <mateusznosek0@gmail.com>
+> Because the PHY driver can be probed with the clocks turned off we need
+> to apply the dummy BMSR workaround during the driver probe function to
+> ensure subsequent MDIO read or write towards the PHY will succeed.
+> 
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 > ---
->  fs/open.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
+> Changes in v2:
 > 
-> diff --git a/fs/open.c b/fs/open.c
-> index 9af548fb841b..69658ea27530 100644
-> --- a/fs/open.c
-> +++ b/fs/open.c
-> @@ -74,10 +74,12 @@ long vfs_truncate(const struct path *path, loff_t length)
->  	inode = path->dentry->d_inode;
->  
->  	/* For directories it's -EISDIR, for other non-regulars - -EINVAL */
-> -	if (S_ISDIR(inode->i_mode))
-> -		return -EISDIR;
-> -	if (!S_ISREG(inode->i_mode))
-> -		return -EINVAL;
-> +	if (unlikely(!S_ISREG(inode->i_mode))) {
-> +		if (S_ISDIR(inode->i_mode))
-> +			return -EISDIR;
-> +		else
-> +			return -EINVAL;
-> +	}
+> - localize the changes exclusively within the PHY driver and do not
+>   involve the MDIO driver at all. Using the ethernet-phyidAAAA.BBBB
+>   compatible string we can get straight to the desired driver without
+>   requiring clocks to be assumed on.
 
-If anything, turn the second if into return S_ISDIR(...) ? -EISDIR : -EINVAL;
+Applied and queued up for -stable, thanks.
