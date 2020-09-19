@@ -2,155 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2EDC270BBE
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 10:12:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE62270BC1
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 10:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726279AbgISIMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 04:12:17 -0400
-Received: from mail-il1-f207.google.com ([209.85.166.207]:56859 "EHLO
-        mail-il1-f207.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726041AbgISIMQ (ORCPT
+        id S1726281AbgISINd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 04:13:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726054AbgISINd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 04:12:16 -0400
-Received: by mail-il1-f207.google.com with SMTP id d16so6590539ila.23
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 01:12:15 -0700 (PDT)
+        Sat, 19 Sep 2020 04:13:33 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4315DC0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 01:13:33 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id k8so4988766pfk.2
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 01:13:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qo1Kncp7nKtQTMgD/J1YluzPmB67ylbz1cdDpQ+cS5k=;
+        b=EP8+HzlUvVotYon/NYKsW6/THtUATQp5TfUmOCBvOYwQ9wHqZTKiA6zwD8u/IN7h8W
+         ESOAfXDWGqkVGLQSwVPxXqP9Oyba8OFWKsCmvCi5HuqO868vGzHQDxUqu50YrCL19ySY
+         uAfhsCrPNB2rqcwU8w3POpzDl43JAMA4BW/BZzKXAtyMSC4c8s39VXOuicaqOvt4rOqq
+         5MEZLwPMrmf1KLPoHDpXsmGlHvU+xPZTLY5QWHe1H5jn/BOkjOokvrp6VzFXHPZS8aEZ
+         Cna/GDso0xnNpdMrbUM/Qk89u2NlNNQm0Q4FrHUNh04jyLPSQ8AyNiBSE3fBy77uCuIn
+         lsdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=6HhLE0HT4Q+SqFsTd2grsdiwXmoqbVkPB3FBmd86n98=;
-        b=HoXup0tqsf8QS1+CDXzOx5z7B7E7JxmMCxM3qCSHm2o/Zp/sdmBO7GdMA5AXXf+ZJc
-         w2nSgxixqE25rUYyfL+aO4PprNhXS7vWourGfLW8MfKnFNkHEzBHAJNMAz3qFy+UfzUY
-         c33RbpuVF8lAglKdajiu74tdMdQwn9t39fmCvpHI2oFgSKpM6d7eCN+88f2eEoul7G3O
-         XeBG1uTbhzq+MSTKIe857J/BF7Lri+fa+GvKX8cFZ9K/zjmgwkzrvDYuNFk2czTXwlp9
-         e5NT7UkojCjD3uVRola21yUP0RjN/HNGvetjMZexHaD6WrquZ8mHAvXzc/QLX6IjfdOC
-         /Iyg==
-X-Gm-Message-State: AOAM532PyqWYTYO1H7ro/7NtkYL7kbAZ8fnPJR8zWynlfhvyKOLVp518
-        jvjL+CK4EM0xYesXpF2bklrKLollXApMqgPX2xjCTIxRrneI
-X-Google-Smtp-Source: ABdhPJxiTw0xJg+Isg+E4HXVmoCdg7n6xrPKOmy+dKMxnVByjvrmj77RBPRXVtJdg2NGUv5CX3qAe68PHqLo7VhNWT2A+s5G3n1j
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qo1Kncp7nKtQTMgD/J1YluzPmB67ylbz1cdDpQ+cS5k=;
+        b=hVLOzFAFAoKIivZsPp4nhYuUdO0duUfurwarHFoVvgRhOhn6J2A91grzgOoX8/aq6P
+         OMDm5klhhGc2utYEqZ2TmVnkzir+rw5n0u3mVT+UjQBp9WBxKS8LHCM1blK92l8KmDz9
+         qYyzAv0BqhDAccX7Nm2jIZFVwQajWpC6zVVElpY4Dbb7hZpW6YG95vqjqxMuxnGB2J3y
+         wnG/TtaaYK/zXSdI2yxK3rMmiWAt21XxqzOXpMvOTHaMK+8MnaTIbTQIDDQP9pyHEOQe
+         CmRfWAyAWErOm0ToWKSRFPwl12TvthDcYTkcH9RpTIn4kVo7A6zhW3zeV8CKyyaYvtV6
+         KTdA==
+X-Gm-Message-State: AOAM530RYwpHdYJe8Pki0WENn/y6R/F1gSwjZ4qb/rtXbvtzH3mN5J5f
+        8Y91+DfYlf6ApdYKjVbDWX4=
+X-Google-Smtp-Source: ABdhPJxkjZjT5tsSB75IW5oSZ/wI8SxbNKgOOYjkAPAa384Q2qlI/PfR5bdMAORT0BOWL2DqJ2uPYQ==
+X-Received: by 2002:a63:2c4:: with SMTP id 187mr24754410pgc.127.1600503212626;
+        Sat, 19 Sep 2020 01:13:32 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:9004:68b6:22a6:478b:7326:9143])
+        by smtp.gmail.com with ESMTPSA id br22sm4853463pjb.35.2020.09.19.01.13.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Sep 2020 01:13:32 -0700 (PDT)
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+To:     joe@perches.com
+Cc:     lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        dwaipayanray1@gmail.com, apw@canonical.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] checkpatch: extend author Signed-off-by check for split From: header
+Date:   Sat, 19 Sep 2020 13:42:25 +0530
+Message-Id: <20200919081225.28624-1-dwaipayanray1@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:eb0:: with SMTP id u16mr29723757ilj.291.1600503135094;
- Sat, 19 Sep 2020 01:12:15 -0700 (PDT)
-Date:   Sat, 19 Sep 2020 01:12:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d4502f05afa62cf4@google.com>
-Subject: KMSAN: uninit-value in btrfs_clean_tree_block
-From:   syzbot <syzbot+37fb1c865f4d57cc1e7c@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, glider@google.com,
-        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Checkpatch did not handle cases where the author From: header
+was split into two lines. The author string went empty and
+checkpatch generated a false NO_AUTHOR_SIGN_OFF warning.
 
-syzbot found the following issue on:
+Support split From: headers in AUTHOR_SIGN_OFF check by adding
+an additional clause to resolve author identity in such cases.
 
-HEAD commit:    c5a13b33 kmsan: clang-format core
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=1081d69b900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=20f149ad694ba4be
-dashboard link: https://syzkaller.appspot.com/bug?extid=37fb1c865f4d57cc1e7c
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-userspace arch: i386
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+37fb1c865f4d57cc1e7c@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in btrfs_clean_tree_block+0x293/0x330 fs/btrfs/disk-io.c:1066
-CPU: 0 PID: 10879 Comm: syz-executor.5 Not tainted 5.9.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x21c/0x280 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:122
- __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:219
- btrfs_clean_tree_block+0x293/0x330 fs/btrfs/disk-io.c:1066
- btrfs_init_new_buffer fs/btrfs/extent-tree.c:4532 [inline]
- btrfs_alloc_tree_block+0x93d/0x1f40 fs/btrfs/extent-tree.c:4609
- alloc_tree_block_no_bg_flush fs/btrfs/ctree.c:987 [inline]
- __btrfs_cow_block+0xaee/0x23f0 fs/btrfs/ctree.c:1042
- btrfs_cow_block+0xa15/0xce0 fs/btrfs/ctree.c:1487
- commit_cowonly_roots+0x1c0/0x1620 fs/btrfs/transaction.c:1184
- btrfs_commit_transaction+0x32ff/0x5630 fs/btrfs/transaction.c:2271
- btrfs_sync_fs+0x63c/0x6c0 fs/btrfs/super.c:1383
- __sync_filesystem fs/sync.c:39 [inline]
- sync_filesystem+0x2d4/0x440 fs/sync.c:67
- generic_shutdown_super+0xc7/0x650 fs/super.c:448
- kill_anon_super+0x6c/0xb0 fs/super.c:1108
- btrfs_kill_super+0x61/0x90 fs/btrfs/super.c:2265
- deactivate_locked_super+0x10d/0x1e0 fs/super.c:335
- deactivate_super+0x1b7/0x1d0 fs/super.c:366
- cleanup_mnt+0x796/0x880 fs/namespace.c:1118
- __cleanup_mnt+0x3b/0x50 fs/namespace.c:1125
- task_work_run+0x1f2/0x2e0 kernel/task_work.c:141
- tracehook_notify_resume include/linux/tracehook.h:188 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:163 [inline]
- exit_to_user_mode_prepare+0x434/0x540 kernel/entry/common.c:190
- syscall_exit_to_user_mode+0x35/0x50 kernel/entry/common.c:265
- __do_fast_syscall_32+0x151/0x180 arch/x86/entry/common.c:80
- do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:162
- do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:205
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-RIP: 0023:0xf7f10549
-Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
-RSP: 002b:00000000ffa2f56c EFLAGS: 00000296 ORIG_RAX: 0000000000000034
-RAX: 0000000000000000 RBX: 00000000ffa2f5fc RCX: 0000000000000002
-RDX: 000000000a24f228 RSI: 000000000a24f2b4 RDI: 00000000080d837e
-RBP: 00000000ffa2f5fc R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-
-Uninit was created at:
- kmsan_save_stack_with_flags+0x3c/0x90 mm/kmsan/kmsan.c:143
- kmsan_internal_alloc_meta_for_pages mm/kmsan/kmsan_shadow.c:268 [inline]
- kmsan_alloc_page+0xc5/0x1a0 mm/kmsan/kmsan_shadow.c:292
- __alloc_pages_nodemask+0xf34/0x1120 mm/page_alloc.c:4927
- alloc_pages_current+0x685/0xb50 mm/mempolicy.c:2275
- alloc_pages include/linux/gfp.h:545 [inline]
- __page_cache_alloc+0xc8/0x310 mm/filemap.c:957
- pagecache_get_page+0xe81/0x1cd0 mm/filemap.c:1710
- find_or_create_page include/linux/pagemap.h:348 [inline]
- alloc_extent_buffer+0x7c5/0x2820 fs/btrfs/extent_io.c:5246
- btrfs_find_create_tree_block+0x68/0x80 fs/btrfs/disk-io.c:1031
- btrfs_init_new_buffer fs/btrfs/extent-tree.c:4513 [inline]
- btrfs_alloc_tree_block+0x4f6/0x1f40 fs/btrfs/extent-tree.c:4609
- alloc_tree_block_no_bg_flush fs/btrfs/ctree.c:987 [inline]
- __btrfs_cow_block+0xaee/0x23f0 fs/btrfs/ctree.c:1042
- btrfs_cow_block+0xa15/0xce0 fs/btrfs/ctree.c:1487
- commit_cowonly_roots+0x1c0/0x1620 fs/btrfs/transaction.c:1184
- btrfs_commit_transaction+0x32ff/0x5630 fs/btrfs/transaction.c:2271
- btrfs_sync_fs+0x63c/0x6c0 fs/btrfs/super.c:1383
- __sync_filesystem fs/sync.c:39 [inline]
- sync_filesystem+0x2d4/0x440 fs/sync.c:67
- generic_shutdown_super+0xc7/0x650 fs/super.c:448
- kill_anon_super+0x6c/0xb0 fs/super.c:1108
- btrfs_kill_super+0x61/0x90 fs/btrfs/super.c:2265
- deactivate_locked_super+0x10d/0x1e0 fs/super.c:335
- deactivate_super+0x1b7/0x1d0 fs/super.c:366
- cleanup_mnt+0x796/0x880 fs/namespace.c:1118
- __cleanup_mnt+0x3b/0x50 fs/namespace.c:1125
- task_work_run+0x1f2/0x2e0 kernel/task_work.c:141
- tracehook_notify_resume include/linux/tracehook.h:188 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:163 [inline]
- exit_to_user_mode_prepare+0x434/0x540 kernel/entry/common.c:190
- syscall_exit_to_user_mode+0x35/0x50 kernel/entry/common.c:265
- __do_fast_syscall_32+0x151/0x180 arch/x86/entry/common.c:80
- do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:162
- do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:205
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-=====================================================
-
-
+Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ scripts/checkpatch.pl | 28 ++++++++++++++++++++++++----
+ 1 file changed, 24 insertions(+), 4 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 504d2e431c60..86975baead22 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -1210,6 +1210,16 @@ sub reformat_email {
+ 	return format_email($email_name, $email_address);
+ }
+ 
++sub format_author_email {
++	my ($email, $from) = @_;
++
++	$email = encode("utf8", $email) if ($from =~ /=\?utf-8\?/i);
++	$email =~ s/"//g;
++	$email = reformat_email($email);
++
++	return $email;
++}
++
+ sub same_email_addresses {
+ 	my ($email1, $email2) = @_;
+ 
+@@ -2347,6 +2357,7 @@ sub process {
+ 	my $signoff = 0;
+ 	my $author = '';
+ 	my $authorsignoff = 0;
++	my $prevheader = '';
+ 	my $is_patch = 0;
+ 	my $is_binding_patch = -1;
+ 	my $in_header_lines = $file ? 0 : 1;
+@@ -2658,12 +2669,21 @@ sub process {
+ 			}
+ 		}
+ 
++# Check the patch for a split From:
++		if($prevheader ne '') {
++			if ($author eq '' && decode("MIME-Header", $prevheader) =~ /^From:\s*(.*)/) {
++				my $email = $1.$line;
++				$author = format_author_email($email, $prevheader);
++			}
++			$prevheader = '';
++		}
++
+ # Check the patch for a From:
+ 		if (decode("MIME-Header", $line) =~ /^From:\s*(.*)/) {
+-			$author = $1;
+-			$author = encode("utf8", $author) if ($line =~ /=\?utf-8\?/i);
+-			$author =~ s/"//g;
+-			$author = reformat_email($author);
++			$author = format_author_email($1, $line);
++			if($author eq '') {
++				$prevheader = $line;
++			}
+ 		}
+ 
+ # Check the patch for a signoff:
+-- 
+2.27.0
+
