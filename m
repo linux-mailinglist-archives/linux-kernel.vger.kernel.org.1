@@ -2,132 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9BE270B96
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 09:53:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C411270B9E
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 09:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726192AbgISHx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 03:53:27 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:29413 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726041AbgISHx0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 03:53:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1600502006; x=1632038006;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=sKY26FFKn37wPjaDWqNKQ5SHM6CJVPkpEe0cAAE2jSw=;
-  b=jvW1Pw53+7W+1m9H8FHfTyaZz2lvP2iO2O8UCZbvZOhERq+sR4e1GSon
-   QnGoVciTpyZtEOAoyOdTe9l//DQUmYJiWErd/pEowlUTR6ua+8iVBmtQV
-   E8jkwIU+8I2QG/B7PSvq9u5EadUW0g2ph82IYT4QXjtPxTDRAYTvKxVEZ
-   NDt5YxG7gVhflaPUWKEOhBfmmMelzLqvSPjbsVCXvuR8XP/Q32ujnHbMo
-   lykKER1aQtclNrg5wAp54tchz6yzeYfpcfaZXm547qnMDe4r8hfOTNjDa
-   Q3nQdFPJllikBCAJLHHecTELXSXur0sC1DJbnxKAO5xl9xCCoJcCA5fqR
-   g==;
-IronPort-SDR: e9MN5DBdYUHb29Qqi3Pzssg6Y4mp1HmpzG8EQZSX/SrJFzTGo6ZQZ05ViPK2HEBdPYfwc6QOlP
- 85plXsCdjR+B29+esosaGjoODsj2/RTCfrZXOOf67Oa+lxjPjKByolMVIg9IPTEhdHQdNQMVtn
- Agg4OVMYnsBBIb4Dkt1RSU7mi4m6XDfMfwwCZqjBJixE0uM77AbDxHEKfwWVBzk4czgCNgMayJ
- on36hllsyt7lPlzZi3LKMXdC0VUf77NYa6Gw6Gz4LYHTiUd6JH6ItplLCKvxWmKo/m/1ypMNoP
- r7w=
-X-IronPort-AV: E=Sophos;i="5.77,278,1596470400"; 
-   d="scan'208";a="149017257"
-Received: from mail-dm6nam12lp2173.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.173])
-  by ob1.hgst.iphmx.com with ESMTP; 19 Sep 2020 15:53:24 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Wh/X4kbHnVk3TL7RLZc6ZwVI+HAYJPf7ogrO7cBCi4w0kDpQge7ke3d0JEQ7OsZZV2DHc5f2TDY8auY3a2ALROKb75xcJSDhXiyZVNB2cY/kDWLQ8OG5CFpYIoksHLPtHdiY6bf5Z85v7RkGt1zW2mOmVsZqyhKwUbfqlyUTyrVzIDrVln+YZXGkObpjynO1cgBOerc3d4WrZHbX/KVA6+Bo5UH7FIG6yuJWvMDf+D6Z0/k9LOHzr/AJARr4EqqKCvAhRpQskWulU4XgdZa8Tqorj4h2NYyTct/4ScjDtuGpRw0BDUFKdheSdlJwDlXtAzfRbXyF/VgF4wb88yH2Tg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sKY26FFKn37wPjaDWqNKQ5SHM6CJVPkpEe0cAAE2jSw=;
- b=EeNrQzTvOa83LFWTvFBRYpnj8Y2TB9ow2Z0hJoGY2IsJr/RQQeJeR9QB2eBrZ+hcuxUm08fM7aBgVvIvbx3iYGaNYFAa6EEo1wnIRm6BkCGyRQrfh6eTZYQ8q45BfhgB74zIuF++dLOkcTfbCkXdU0idy0M5AfPnDVUqIt+ThI16kjERH44aCgWaw1mrsHv0NEgXoEBABnQSvTsIKQfO4EEw5fwRGKr+XI0VDyUNrD6XuFARLy5lb+/dZirh2T5rmYG6oPE9XEM5AHtRUurH4M2r3PvLYAmXkA9tOlO/vreqWGpvoU+oT4MWOLjvuT68ftUPaCIB7RRfBEcYsaHGyw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sKY26FFKn37wPjaDWqNKQ5SHM6CJVPkpEe0cAAE2jSw=;
- b=pNQejk2wVMfGfAMlHj+m9ei7e+kiTw+EFge4EFFHCxneFevbHKMqRKcTPYFC1dYdF6usg/OI05ZqXRUeNY7zoHOr5h4rhBtQCuyRFFM07zwrg/wv5vlOka0lNxpyM2vTnq/aOUjIIczMdsL+Kotvlna52F9/u9zLluVycr9Xo84=
-Received: from BY5PR04MB6705.namprd04.prod.outlook.com (2603:10b6:a03:220::8)
- by BYAPR04MB5238.namprd04.prod.outlook.com (2603:10b6:a03:c6::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.19; Sat, 19 Sep
- 2020 07:53:19 +0000
-Received: from BY5PR04MB6705.namprd04.prod.outlook.com
- ([fe80::2c49:48e2:e9fb:d5a0]) by BY5PR04MB6705.namprd04.prod.outlook.com
- ([fe80::2c49:48e2:e9fb:d5a0%9]) with mapi id 15.20.3391.011; Sat, 19 Sep 2020
- 07:53:19 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     Stanley Chu <stanley.chu@mediatek.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>
-CC:     "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuohong.wang@mediatek.com" <kuohong.wang@mediatek.com>,
-        "peter.wang@mediatek.com" <peter.wang@mediatek.com>,
-        "chun-hung.wu@mediatek.com" <chun-hung.wu@mediatek.com>,
-        "andy.teng@mediatek.com" <andy.teng@mediatek.com>,
-        "chaotian.jing@mediatek.com" <chaotian.jing@mediatek.com>,
-        "cc.chou@mediatek.com" <cc.chou@mediatek.com>
-Subject: RE: [PATCH 2/4] scsi: ufs-mediatek: Fix HOST_PA_TACTIVATE quirk
-Thread-Topic: [PATCH 2/4] scsi: ufs-mediatek: Fix HOST_PA_TACTIVATE quirk
-Thread-Index: AQHWhaugPlH83fCRGE6LVX+FKPQRNqlvqEbQ
-Date:   Sat, 19 Sep 2020 07:53:19 +0000
-Message-ID: <BY5PR04MB6705B15F1B7373FF6FFBCAF3FC3C0@BY5PR04MB6705.namprd04.prod.outlook.com>
-References: <20200908064507.30774-1-stanley.chu@mediatek.com>
- <20200908064507.30774-3-stanley.chu@mediatek.com>
-In-Reply-To: <20200908064507.30774-3-stanley.chu@mediatek.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: mediatek.com; dkim=none (message not signed)
- header.d=none;mediatek.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [77.138.4.172]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 77ede0ba-a9a0-44a9-8003-08d85c71130a
-x-ms-traffictypediagnostic: BYAPR04MB5238:
-x-microsoft-antispam-prvs: <BYAPR04MB5238AC58F9A36CEF139D249CFC3C0@BYAPR04MB5238.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:2657;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: m9zXO/2WGL2tb/K641OXJ49KLWYAsUiO3qX6uDHzzgwZnLt48LwH75K3w2Qf9yMY+tIqZfjctB1FL53YycRhjpppBfDSD6U0r4WblwFqVy7z80ZXRableqeGUUImEj3dN+fEyZKJ8ZAheLcCw5rPdr7r1+0Mfi7dif3U6cpDyNZVnQPtZkhLelhHJB0vPaaZfXONp3QySWlXivo5AzUAHlibqC0pMXjxho8lY0aVQNgwvifdpYXORHNMbyc3TOeLedciKXnu7jqNQXxjvR//B7Ueyyz6sD0CIM6wZNKUnnJajIqucyDdi5WV+APrM0CiHp59HW0DrwQCMnUJecj7uQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6705.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(396003)(346002)(39860400002)(136003)(55016002)(8936002)(7416002)(110136005)(8676002)(7696005)(316002)(54906003)(186003)(83380400001)(6506007)(26005)(478600001)(71200400001)(66446008)(86362001)(4326008)(33656002)(66476007)(52536014)(558084003)(66556008)(9686003)(2906002)(76116006)(64756008)(5660300002)(66946007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: aGUFUyJWQce10loiAMDlhMJMYTaOnMZHXLnnDB3bYG++fbbjYntknzetpDSQBYwT8LWA4I6Ag1UyoGdAtGB/gjs+/7gb8vJZhmluijrHr9AncumW2mbGbnPibaydMRzRDgrVmSteZDgOreDDJdw+c/oRhEzLKfEIX+nl3dNdDxrU+9nZkydzQzoR0KML5Ud9EE1cRoxWLjNT0fEfCyyfb2SwkqrKVSU/TZzmkj82vmtLbRoL1CqkPtb/sOjlNw/aSUvYU9kwOuKWvAHuVlQm9gJoJVSzHMA4mJUn2A7bHo56ftqlIwEWj4a8XHMKSh6UxobCrD6EMD8Dh8QUvb8SMjhr11PGB+xqrTSUQ4+CYg4eSAjiy7y+13jMt0mXZ458MEZF2Yfqsow/y1ZYbyCmyNBja9IzdxphKRkl+g1VgrCcBaO2h3j+x3S8kQf1rJ1aUsiKrtvSAA/eagCq+RE+XizSpKnybVPxVICKFhvIH++T9t4w6y4cR3RBy7b+9BmNOVOfXTW/qyMIYmJ1PO1LjSL6/ZmDDZo3bT8TX9daCKjzDBOPUN1LSBymYVfZjNiLtVkG00JyukZO9zVr6+2r7Fyr2tzaGp7QLGYRG/5cX2K9KiQpx21k3vrPEJFNXU00EDYBjAxkYkJ+tPzeMzZ+7Q==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726192AbgISH6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 03:58:44 -0400
+Received: from mga05.intel.com ([192.55.52.43]:9419 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726041AbgISH6o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Sep 2020 03:58:44 -0400
+IronPort-SDR: 6RLAm5l++MtqiuuDWzoUa1aD/g2BIXs7K1YuchpPvSbHhG6QEXNZNmxgYVMTta71aOAyvQCL8w
+ x6Qx2flD9eLQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9748"; a="244939802"
+X-IronPort-AV: E=Sophos;i="5.77,278,1596524400"; 
+   d="scan'208";a="244939802"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2020 00:58:41 -0700
+IronPort-SDR: B/SXFwDUMfw+9Xirb9HcNd4+el4a/ZS01my2XwQkyhBPKH3DYvQLY41glukoAf9n+k6tfwdEyJ
+ 8EXxUPxzrgBA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,278,1596524400"; 
+   d="scan'208";a="340112893"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga002.fm.intel.com with ESMTP; 19 Sep 2020 00:58:41 -0700
+Received: from [10.249.228.91] (abudanko-mobl.ccr.corp.intel.com [10.249.228.91])
+        by linux.intel.com (Postfix) with ESMTP id 8585F580279;
+        Sat, 19 Sep 2020 00:58:39 -0700 (PDT)
+Subject: Re: [PATCH 3/3] platform/x86: Intel PMT Crashlog capability driver
+To:     "David E. Box" <david.e.box@linux.intel.com>, lee.jones@linaro.org,
+        dvhart@infradead.org, andy@infradead.org,
+        alexander.h.duyck@linux.intel.com
+Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Alexey Budankov <alexey.budankov@linux.intel.com>
+References: <20200911194549.12780-1-david.e.box@linux.intel.com>
+ <20200911194549.12780-4-david.e.box@linux.intel.com>
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <0ec64bdc-66fd-4be1-03cf-561a7c42de68@linux.intel.com>
+Date:   Sat, 19 Sep 2020 10:58:38 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6705.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 77ede0ba-a9a0-44a9-8003-08d85c71130a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Sep 2020 07:53:19.2175
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 1biusgXjg69yUj4lh8uLF5wSSZ500lWECUbqdBWx7LCD3q+mxbfLbnMUhx/ajtmCJbgUyMKMuKHpAVQqCIer4A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB5238
+In-Reply-To: <20200911194549.12780-4-david.e.box@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->=20
-> Simply add HOST_PA_TACTIVATE quirk back since it was incorrectly
-> removed before.
->=20
-> Fixes: 47d054580a75 ("scsi: ufs-mediatek: fix HOST_PA_TACTIVATE quirk for
-> Samsung UFS Devices")
-> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
-Reviewed-by: Avri Altman <avri.altman@wdc.com>
+Hi,
+
+Thanks for the patches.
+
+On 11.09.2020 22:45, David E. Box wrote:
+> From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> 
+> Add support for the Intel Platform Monitoring Technology crashlog
+> interface.  This interface provides a few sysfs values to allow for
+> controlling the crashlog telemetry interface as well as a character driver
+> to allow for mapping the crashlog memory region so that it can be accessed
+> after a crashlog has been recorded.
+> 
+> This driver is meant to only support the server version of the crashlog
+> which is identified as crash_type 1 with a version of zero. Currently no
+> other types are supported.
+> 
+> Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> ---
+>  .../ABI/testing/sysfs-class-pmt_crashlog      |  66 ++
+>  drivers/platform/x86/Kconfig                  |  10 +
+>  drivers/platform/x86/Makefile                 |   1 +
+>  drivers/platform/x86/intel_pmt_crashlog.c     | 588 ++++++++++++++++++
+>  4 files changed, 665 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-class-pmt_crashlog
+>  create mode 100644 drivers/platform/x86/intel_pmt_crashlog.c
+
+<SNIP>
+
+> +
+> +/*
+> + * devfs
+> + */
+> +static int pmt_crashlog_open(struct inode *inode, struct file *filp)
+> +{
+> +	struct crashlog_entry *entry;
+> +	struct pci_driver *pci_drv;
+> +	struct pmt_crashlog_priv *priv;
+> +
+> +	if (!capable(CAP_SYS_ADMIN))
+> +		return -EPERM;
+
+Will not this above still block access to /dev/crashlogX for admin_group users
+in case root configured access e.g. similar to this:
+
+ls -alh /dev/
+crw-rw----.  1 root admin_group      1,   9 Sep 15 18:28 crashlogX
+
+If yes then that capable() check is probably superfluous and
+should be avoided in order not to block access to PMT data.
+
+Could you please clarify or comment?
+
+Thanks,
+Alexei  
