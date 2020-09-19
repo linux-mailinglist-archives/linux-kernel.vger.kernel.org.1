@@ -2,102 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC6827106A
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 22:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F4C27106D
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 22:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726642AbgISUE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 16:04:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47792 "EHLO
+        id S1726660AbgISUKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 16:10:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726511AbgISUE5 (ORCPT
+        with ESMTP id S1726520AbgISUKX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 16:04:57 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C554C0613CE;
-        Sat, 19 Sep 2020 13:04:57 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id n22so9264024edt.4;
-        Sat, 19 Sep 2020 13:04:57 -0700 (PDT)
+        Sat, 19 Sep 2020 16:10:23 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 646D9C0613D0
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 13:10:23 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id r7so12519219ejs.11
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 13:10:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=VNdVm0qjWANV+k8o/qFZrx8yrtDDDYIfNRixrZTkFtI=;
-        b=kskcrheTxsjTIrQVeP6MdQi4U5gZ/ntOTUiAAnZlvSwJADnMKFK4DlxPR1Xhyy+Zu+
-         PMQgTNzkZBRJ9+T4tIfQ8WNrAdJrjZ+zfC4lvEjZmSW/Fn0vy0Kn9NBTSLCVpVbLlC25
-         pkLT21r2ucwZsAiAsl11SZpR6ygnqgWwWc04fqtRT8fyK9XdpPkp9L5fv9kEF9j5ZD83
-         pMtMFva23ct8DQGw2o1fKLuIpLYj4DpjBJtXutr+2CsZpqVkuQuM8uGty4A823sGV1Nr
-         VGolbaVRUYi145kKu8Y+HzWvsUzxyUzD0esZot13I5bw9SxFpJjHykcvMGf4LL+ayDn4
-         xNug==
+        bh=bIUgrI9VvUV3joqrWL0lDga1yejUz0t72Nx3sYu9s5I=;
+        b=L9ZNoEf+xu48ppvnblmZrK2nJchaz2vEmWMEwk0swPeneNBWwlEvhh9K2LRJ4HX/Lr
+         yaLd88oTJthtaQqxoTU6Bpq9MompSoGcLiUcNpIfeAA00igj+XiDykYLeLV/Jw8j1hhS
+         INZQvLR3KlU5Mz4ouanoPhPkOE8DEebpwgHK1I4PX/UKjaA9eUPZ+znYNIZ1yQpacRBA
+         0HOeF7HiDNqgNDI2rcBXnSTaJk5w+fymuI/a9RBVIXTu7CcWALUG5FTdeATk0vZ2Ud7H
+         bROaU33aeRXMmpNvS74rrEVYF/PP54F9jib8fsmGcXYMFfhRBbqJE69KatbCAS7mm5Y+
+         RIbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=VNdVm0qjWANV+k8o/qFZrx8yrtDDDYIfNRixrZTkFtI=;
-        b=DK0AOe/ugO7Oxc+Jy3+Z3RkxoR3BRZ2CT37KBYsbfbanwKm4MJxNECVMt/kGX3c61F
-         fNlX6XhcODQlxhHOQQpcShy/g+M0VNlQrXMoJ48gNXoo+V26HH77/M2EurPljXP6liaI
-         Hn+a6H2/BqZW9SApRfrBE//nN8eccIBs89hL7G/wbtahpDuDlDmf5Tg1dyx1shgQL+6K
-         SYFYEhqTT2bh1a6MZESbVzg1bvlVScUZ6lAa2G9RTwJ29KldDmk1BPG94Q4xjPBAnuIC
-         eS31oYvIARqhDriWLxw5gEA2J0uXJnwaCYVLTS7tdTSvj7l8ThkpExc/Vywzu6CIg7ON
-         8VLA==
-X-Gm-Message-State: AOAM532dyKz60RxLoNFTnVQV5h2m6oV+ZPQEKgu6oSEQIdlwGOp4+SIj
-        htfxmDARIgtcVG/YYlQ+s4uXYImWUNJ3Pqdv4dPT1yRQW+i9Iw==
-X-Google-Smtp-Source: ABdhPJzHKwVw+CxCv0ZligwmUeji7ZCv31u0VbhT9/h/+ebgnwuR0WCpOqOdSOlIQSTIOmt3TeykAg2ugseJGbyoEiA=
-X-Received: by 2002:aa7:cad3:: with SMTP id l19mr43047942edt.352.1600545895900;
- Sat, 19 Sep 2020 13:04:55 -0700 (PDT)
+        bh=bIUgrI9VvUV3joqrWL0lDga1yejUz0t72Nx3sYu9s5I=;
+        b=nMJPcAii/Vblx/hCbbJRu7mc6A4516Bd8YG3RJWnluc1Lf9QoyxKfjb5HG5RR2r75M
+         sXJtzWOaYLd6cDF/Ku/6lijopKjEaTWJDDErthYE4nSLCcimZLaRMCV0eknZ9oRZE/iU
+         fV3AtFOrCsoYvjON4JrTVKWrPd0cm0sfNrgR+D6kdqGbgoMcpP3+xaWnhiCZDBovbrXI
+         gnhreYZyVX6CLmmeBDEfLtAP2r/zJnCLkJz6NAEOb3zulX50hqw+6JqQL/RABPDH7/V6
+         yamUjR/S272y+3CnLG0aq2vzwnome7Isf1G6evpGUke+8QJ61tec5iMq8UmvzID5KHfp
+         dYMg==
+X-Gm-Message-State: AOAM530BaWCGTIlp9N3KgNFBWQQH6AbAi4rW1QukgIRrDOYR6TFDJrnp
+        GYOfv3EY/pF3V9kshgz2i/5/8w==
+X-Google-Smtp-Source: ABdhPJyXNqZQicq1ULAO60r8L8+AZhDK5qSHeRWT+5a8VqRkbjyQ+aQHZc7zHY/Lxi8bZlOvg+97sQ==
+X-Received: by 2002:a17:906:4553:: with SMTP id s19mr41341473ejq.475.1600546220782;
+        Sat, 19 Sep 2020 13:10:20 -0700 (PDT)
+Received: from localhost.localdomain ([2001:16b8:5c3d:1401:6946:9f46:bd13:f4c6])
+        by smtp.gmail.com with ESMTPSA id ks21sm5008761ejb.63.2020.09.19.13.10.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Sep 2020 13:10:19 -0700 (PDT)
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Tony Lindgren <tony@atomide.com>, Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@gmail.com>,
+        Trent Piepho <tpiepho@gmail.com>,
+        Christina Quast <cquast@hanoverdisplays.com>,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org
+Cc:     Drew Fustini <drew@beagleboard.org>
+Subject: [PATCH v2] ARM: dts: document pinctrl-single,pins when #pinctrl-cells = 2
+Date:   Sat, 19 Sep 2020 22:08:37 +0200
+Message-Id: <20200919200836.3218536-1-drew@beagleboard.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-From:   =?UTF-8?Q?Mikael_Wikstr=C3=B6m?= <leakim.wikstrom@gmail.com>
-Date:   Sat, 19 Sep 2020 22:04:45 +0200
-Message-ID: <CADGsf-Gs9EM770jTVX=yABBLAT1rdfBYb5jam720yqez=D3VHg@mail.gmail.com>
-Subject: [PATCH] HID: multitouch: Lenovo X1 Tablet Gen3 trackpoint and buttons
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-One more device that needs 40d5bb87 to resolve regression for the trackpoin=
-t
-and three mouse buttons on the type cover of the Lenovo X1 Tablet Gen3.
+Document the values in pinctrl-single,pins when #pinctrl-cells = <2>
 
-It is probably also needed for the Lenovo X1 Tablet Gen2 with PID 0x60a3
-
-Signed-off-by: Mikael Wikstr=C3=B6m <leakim.wikstrom@gmail.com>
+Fixes: 27c90e5e48d0 ("ARM: dts: am33xx-l4: change #pinctrl-cells from 1 to 2")
+Reported-by: Trent Piepho <tpiepho@gmail.com>
+Link: https://lore.kernel.org/linux-omap/3139716.CMS8C0sQ7x@zen.local/
+Signed-off-by: Drew Fustini <drew@beagleboard.org>
 ---
- drivers/hid/hid-ids.h        | 1 +
- drivers/hid/hid-multitouch.c | 6 ++++++
- 2 files changed, 7 insertions(+)
+v2 change:
+- rephrase to make it clear that the pin conf value and pin mux value
+  are OR'd together with #pinctrl-cells = <2>
 
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index 74fc1df6e3c2..6a6e2c1b6090 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -727,6 +727,7 @@
- #define USB_DEVICE_ID_LENOVO_TP10UBKBD 0x6062
- #define USB_DEVICE_ID_LENOVO_TPPRODOCK 0x6067
- #define USB_DEVICE_ID_LENOVO_X1_COVER 0x6085
-+#define USB_DEVICE_ID_LENOVO_X1_TAB3 0x60b5
- #define USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_608D 0x608d
- #define USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_6019 0x6019
- #define USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_602E 0x602e
-diff --git a/drivers/hid/hid-multitouch.c b/drivers/hid/hid-multitouch.c
-index e3152155c4b8..99f041afd5c0 100644
---- a/drivers/hid/hid-multitouch.c
-+++ b/drivers/hid/hid-multitouch.c
-@@ -1973,6 +1973,12 @@ static const struct hid_device_id mt_devices[] =3D {
-  HID_DEVICE(BUS_I2C, HID_GROUP_GENERIC,
-  USB_VENDOR_ID_LG, I2C_DEVICE_ID_LG_7010) },
 
-+ /* Lenovo X1 TAB Gen 3 */
-+ { .driver_data =3D MT_CLS_WIN_8_FORCE_MULTI_INPUT,
-+ HID_DEVICE(BUS_USB, HID_GROUP_MULTITOUCH_WIN_8,
-+    USB_VENDOR_ID_LENOVO,
-+    USB_DEVICE_ID_LENOVO_X1_TAB3) },
+ .../bindings/pinctrl/pinctrl-single.txt       | 21 ++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt b/Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt
+index e705acd3612c..f903eb4471f8 100644
+--- a/Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt
++++ b/Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt
+@@ -94,16 +94,23 @@ pinctrl-single,bit-per-mux is set), and uses the common pinctrl bindings as
+ specified in the pinctrl-bindings.txt document in this directory.
+ 
+ The pin configuration nodes for pinctrl-single are specified as pinctrl
+-register offset and value pairs using pinctrl-single,pins. Only the bits
+-specified in pinctrl-single,function-mask are updated. For example, setting
+-a pin for a device could be done with:
++register offset and values using pinctrl-single,pins. Only the bits specified
++in pinctrl-single,function-mask are updated.
 +
-  /* MosArt panels */
-  { .driver_data =3D MT_CLS_CONFIDENCE_MINUS_ONE,
-  MT_USB_DEVICE(USB_VENDOR_ID_ASUS,
---=20
-2.26.2
++When #pinctrl-cells = 1, then setting a pin for a device could be done with:
+ 
+ 	pinctrl-single,pins = <0xdc 0x118>;
+ 
+-Where 0xdc is the offset from the pinctrl register base address for the
+-device pinctrl register, and 0x118 contains the desired value of the
+-pinctrl register. See the device example and static board pins example
+-below for more information.
++Where 0xdc is the offset from the pinctrl register base address for the device
++pinctrl register, and 0x118 contains the desired value of the pinctrl register.
++
++When #pinctrl-cells = 2, then setting a pin for a device could be done with:
++
++	pinctrl-single,pins = <0xdc 0x30 0x07>;
++
++Where 0x30 is the pin configuration value and 0x07 is the pin mux mode value.
++These two values are OR'd together to produce the value stored at offset 0xdc.
++See the device example and static board pins example below for more information.
+ 
+ In case when one register changes more than one pin's mux the
+ pinctrl-single,bits need to be used which takes three parameters:
+-- 
+2.25.1
+
