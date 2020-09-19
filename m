@@ -2,179 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD555270FF0
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 20:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 015F8270FF2
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 20:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726599AbgISSMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 14:12:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58978 "EHLO
+        id S1726626AbgISSOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 14:14:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726449AbgISSMy (ORCPT
+        with ESMTP id S1726511AbgISSOS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 14:12:54 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E13CC0613CE
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 11:12:54 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id w5so8729322wrp.8
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 11:12:53 -0700 (PDT)
+        Sat, 19 Sep 2020 14:14:18 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E301CC0613D0
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 11:14:17 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id b142so6940717ybg.9
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 11:14:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=igZ3yuYSihjkAl8l2bbx70F4SPOMsCwAFAVFNrs+xjw=;
-        b=M9J2UKcqidPe+jOkl4EQ5aOT45tzxn55SdpbkqbqeMy0CNq/MPdy2AHaIN67udH1gF
-         /NbLTLJs/HFhGhVpmYi6vAB1M0UdoegvCYl8qaDp4+OgbFkXAuIJG+xGvzp6Z+CPYtL3
-         hbOR2B0a+EY/taGitXQNcz3VT3PM3L16Fji9w/VXwJdPKtDcP1JXJuIvhnvHGMkdMe0s
-         bI84sx3EhfbJuVg2L1l/ACOpZ9U4JZxtSi5fEDldiVmolCMbam1wGHnfjXvP1fZF9tJ8
-         du5aXRmtio3bbjhMcII3JrHvy+uqteC/09tGQhERC7OeJJYNCLiIzdO5vQg0tTPIFmob
-         TwFQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q9ptxfdoEfwu73EnjCKZtaPVR45R7yiJGjZWUa14+0Q=;
+        b=CtqaZek9ZP2Z2+ATOKYiaaPz8FaW/DMezoGqqNdpYCtZQpT30aNYA+No+MbCkulDW6
+         6KZ7QSGsUIKbYPsIjGhW+6tLI2pf98R+9919LefYj+SfSuKZ/uHHWJ/lmqXGw/fIbgCQ
+         cg3ImJNKdDTsqIJFWNfSf98awtSPYv4lCpHuWf735EpjboOmbwHJyEW12dxxEAjSkMZS
+         nb6xqDZZxFKHjsff6mLCulQFA+j4XmXvR3mkTjD97tWFzmb5fNbkHUl1kwxWzb7WyhDB
+         u47QhI41/vGWXsMOlrBw72Wp+ZciO1oEAMdgLLVrFkuOPV8DpuOI/Naaw3JIhEo27Z7d
+         m+Dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=igZ3yuYSihjkAl8l2bbx70F4SPOMsCwAFAVFNrs+xjw=;
-        b=fAQ8q6gTFiyDO3Tp/laepUk1WiGyL8fGoWWNVAwS/1IspjXyatLRpngXd+coL+f+xn
-         Xl6gsgHA6tz2xSYIzAB1Kmjf1u19DbUIOVZmDmSmciugO3ki8tiVfGylwA+mGyMAFKJN
-         wuiDPSUaH1p/Iq+2+doRoC/dgmbHi78jNnLKxhiWZdnmSbDxCznOHtTio1lD/U/+P22w
-         wUVN2Bj8n1qn/rvqDMXrfIyuzKPnwpwZGArm2t6WmtRIR/qn1NMmhoHRa2MPaF1T+9Gv
-         hY5xdPXQct5GyNpmnHsiPJWFHCoi1MLTzklAdjtmqBSSVSAlYhnf/Ws1CtbRNU32uTpl
-         BwiA==
-X-Gm-Message-State: AOAM531YC98TePpENVNV09UZSunFyLHfMF/w4ifks7GIK5wF9DSap+f4
-        92uR5AsicAoF6jZUeyUiQTI=
-X-Google-Smtp-Source: ABdhPJyn10xbEE/jNHZooWdw5LV/avSOktcDWkNd9VlNb+zyIXOMSvcb9TpcLxgH419p4IBX59TwvA==
-X-Received: by 2002:a5d:440d:: with SMTP id z13mr16508040wrq.352.1600539172424;
-        Sat, 19 Sep 2020 11:12:52 -0700 (PDT)
-Received: from felia ([2001:16b8:2dba:3d00:c552:323e:8340:ec83])
-        by smtp.gmail.com with ESMTPSA id q20sm10722037wmj.5.2020.09.19.11.12.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Sep 2020 11:12:51 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
-Date:   Sat, 19 Sep 2020 20:12:50 +0200 (CEST)
-X-X-Sender: lukas@felia
-To:     Joe Perches <joe@perches.com>
-cc:     Dwaipayan Ray <dwaipayanray1@gmail.com>, lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org, apw@canonical.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] checkpatch: extend author Signed-off-by check for split
- From: header
-In-Reply-To: <ad937bba6ebd306f6e467add90cfd857bb4f2391.camel@perches.com>
-Message-ID: <alpine.DEB.2.21.2009191950460.7901@felia>
-References: <20200919081225.28624-1-dwaipayanray1@gmail.com> <ad937bba6ebd306f6e467add90cfd857bb4f2391.camel@perches.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q9ptxfdoEfwu73EnjCKZtaPVR45R7yiJGjZWUa14+0Q=;
+        b=JS6VUBbEzU2H+MZBs7gxa8K5+IvXylMGEECj0Ta1K9cwDAE/mBhwbC6E+g8tfb0p44
+         UAOzdf6T1k5s3kW3Jj67mVG4bkZMWiT3rX0swyxQAMUcfVEmGALdQkuVk9+/ETyhX9km
+         Ln0BEdfUxPQKXHptUTmcTl5CU9RrU/DopnohwJx0+hnOEINqEriOjP6t+pByKDXsKTXS
+         z9kEyT5y7L5S5wX2PpWkdX0+m1FmGNdG27VDV5UyDPRU74H12oDZoQ5zcRiIVNI6e+cw
+         NxKs5uum2Cdsx1pEk8ZlEsy5XhuWbV+TtMD5n/CevF0OBJsIqya3unUowodjJju/yBIt
+         OU6g==
+X-Gm-Message-State: AOAM533vAxjRDHsNHHYEPpL3xJSN7pI/fki8GktVg5nNidiyYtu+GaXH
+        Lz4IsNPXSC9p5LLwWDkokkWrRgtPe4eoWvLPxsPV0g==
+X-Google-Smtp-Source: ABdhPJxQgzG1sCr0K7HLhY1pGoCZ07AtiIQrQzaF6FDRFj8I9Qv6KVvvAX108TV8rENpG+uQZIJaPWy5jjrnJ+6//yg=
+X-Received: by 2002:a25:5546:: with SMTP id j67mr8320422ybb.170.1600539256725;
+ Sat, 19 Sep 2020 11:14:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20200520195134.GK26186@redhat.com> <CA+EESO4wEQz3CMxNLh8mQmTpUHdO+zZbV10zUfYGKEwfRPK2nQ@mail.gmail.com>
+ <20200520211634.GL26186@redhat.com> <CABXk95A-E4NYqA5qVrPgDF18YW-z4_udzLwa0cdo2OfqVsy=SQ@mail.gmail.com>
+ <CA+EESO4kLaje0yTOyMSxHfSLC0n86zAF+M1DWB_XrwFDLOCawQ@mail.gmail.com>
+ <CAFJ0LnGfrzvVgtyZQ+UqRM6F3M7iXOhTkUBTc+9sV+=RrFntyQ@mail.gmail.com>
+ <20200724093852-mutt-send-email-mst@kernel.org> <CAFJ0LnEZghYj=d3w8Fmko4GZAWw6Qc5rgAMmXj-8qgXtyU3bZQ@mail.gmail.com>
+ <20200806004351-mutt-send-email-mst@kernel.org> <CA+EESO6bxhKf5123feNX1LZyyN2QL4Ti5ApPAu=xb3pHXd7cwQ@mail.gmail.com>
+ <20200904033438.GI9411@redhat.com> <CA+EESO7yc9k79TxyQk+XvWbMfhMmax5GtJTYbNhDrb-0VgJunA@mail.gmail.com>
+In-Reply-To: <CA+EESO7yc9k79TxyQk+XvWbMfhMmax5GtJTYbNhDrb-0VgJunA@mail.gmail.com>
+From:   Nick Kralevich <nnk@google.com>
+Date:   Sat, 19 Sep 2020 11:14:03 -0700
+Message-ID: <CAFJ0LnEo-7YUvgOhb4pHteuiUW+wPfzqbwXUCGAA35ZMx11A-w@mail.gmail.com>
+Subject: Re: [PATCH 2/2] Add a new sysctl knob: unprivileged_userfaultfd_user_mode_only
+To:     Lokesh Gidra <lokeshgidra@google.com>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Xu <peterx@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Jerome Glisse <jglisse@redhat.com>, Shaohua Li <shli@fb.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Tim Murray <timmurray@google.com>,
+        Minchan Kim <minchan@google.com>,
+        Sandeep Patil <sspatil@google.com>, kernel@android.com,
+        Daniel Colascione <dancol@dancol.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Dmitry Vyukov <dvyukov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Sat, 19 Sep 2020, Joe Perches wrote:
-
-> On Sat, 2020-09-19 at 13:42 +0530, Dwaipayan Ray wrote:
-> > Checkpatch did not handle cases where the author From: header
-> > was split into two lines. The author string went empty and
-> > checkpatch generated a false NO_AUTHOR_SIGN_OFF warning.
-> 
-> It's good to provide an example where the current code
-> doesn't work.
+On Fri, Sep 4, 2020 at 5:36 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
+>
+> On Thu, Sep 3, 2020 at 8:34 PM Andrea Arcangeli <aarcange@redhat.com> wrote:
+> >
+> > 1) why don't you enforce the block of kernel initiated faults with
+> >    seccomp-bpf instead of adding a sysctl value 2? Is the sysctl just
+> >    an optimization to remove a few instructions per syscall in the bpf
+> >    execution of Android unprivileged apps? You should block a lot of
+> >    other syscalls by default to all unprivileged processes, including
+> >    vmsplice.
+> >
+> >    In other words if it's just for Android, why can't Android solve it
+> >    with only patch 1/2 by tweaking the seccomp filter?
+>
+> I would let Nick (nnk@) and Jeff (jeffv@) respond to this.
+>
+> The previous responses from both of them on this email thread
+> (https://lore.kernel.org/lkml/CABXk95A-E4NYqA5qVrPgDF18YW-z4_udzLwa0cdo2OfqVsy=SQ@mail.gmail.com/
+> and https://lore.kernel.org/lkml/CAFJ0LnGfrzvVgtyZQ+UqRM6F3M7iXOhTkUBTc+9sV+=RrFntyQ@mail.gmail.com/)
+> suggest that the performance overhead of seccomp-bpf is too much. Kees
+> also objected to it
+> (https://lore.kernel.org/lkml/202005200921.2BD5A0ADD@keescook/)
+>
+> I'm not familiar with how seccomp-bpf works. All that I can add here
+> is that userfaultfd syscall is usually not invoked in a performance
+> critical code path. So, if the performance overhead of seccomp-bpf (if
+> enabled) is observed on all syscalls originating from a process, then
+> I'd say patch 2/2 is essential. Otherwise, it should be ok to let
+> seccomp perform the same functionality instead.
 >
 
-Joe, as this is a linux-kernel-mentees patch, we discussed that before 
-reaching out to you; you can find Dwaipayan's own evaluation here:
+There are two primary reasons why seccomp isn't viable here.
 
-https://lore.kernel.org/linux-kernel-mentees/CABJPP5BOTG0QLFSaRJTb2vAZ_hJf229OAQihHKG4sYd35i_WMw@mail.gmail.com/
+1) Seccomp was never designed for whole-of-system protections, and is
+impractical to deploy for anything other than "leaf" processes.
+2) Attempts to enable seccomp on Android have run into performance
+problems, even for trivial seccomp filters.
 
-Dwaipayan, Joe's comment is still valid; it would be good to describe
-the reasons why patches might have split lines (as far as see, long 
-encodings for non-ascii names).
+Let's go into each one.
 
-I will run my own evaluation of checkpatch.pl before and after patch 
-application on Monday and then check if I can confirm Dwaipayan's results.
+Issue #1: Seccomp was never designed for whole-of-system protections,
+and is impractical to deploy for anything other than "leaf" processes.
 
-> It likely would be better to do this by searching forward for
-> any extension lines after a "^From:' rather than searching
-> backwards as there can be any number of extension lines.
->
+Andrea suggests deploying a seccomp filter purely focused on Android
+unprivileged[1] (third party installed) apps. However, the intention
+is for this security control to be used system-wide[2]. Only processes
+which have a need for kernel initiated faults should be allowed to use
+them; all other processes should be denied by default. And when I say
+"all' processes, I mean "all" processes, even those which run with
+UID=0. Andrea's proposal is akin to a denylist, where many modern
+distributions (such as Android) use allowlists.
 
-Just to sure what you are talking about...
+The seemingly obvious solution is to apply a global seccomp filter in
+init (PID=1), but it falls down in practice. Seccomp is an incredibly
+useful tool, but it wasn't designed to be applied system-wide. Seccomp
+is fundamentally hierarchical in nature. A seccomp filter, once
+applied, cannot be subsequently relaxed or removed in child processes.
+While this restriction is great for leaf processes, it causes problems
+for OS designers - a parent process must maintain an unused capability
+if any process in the parent's process tree uses that capability. This
+makes applying a userfaultfd seccomp filter in init impossible, since
+we expect a few of init's children (but not init itself or most of
+init's children) to use userfaultfd kernel faults. We end up back to a
+wack-a-mole (denylist) problem of trying to modify each individual
+process to block userfaultfd kernel faults, defeating the goals of
+system-wide protection, and introducing significant complexity into
+the system design.
 
-You mean just to access the next line through the lines array, rather 
-than using prevheader and trying to decode that one line twice.
+Seccomp should be used in the context where it provides the most value
+-- process leaf nodes. But trying to apply seccomp as a system-wide
+control just isn't viable.
 
-I agree the logic is a bit redundant and complicated at the moment.
+Lokesh's sysctl proposal doesn't have these problems. When the sysctl
+is set to 2 by the OS distributor, all processes which don't have
+CAP_SYS_PTRACE are denied kernel generated faults, making the system
+safe-by-default. Only processes which are on the OS distributor's
+CAP_SYS_PTRACE allowlist (see Android's allowlist at [3]) can generate
+these faults, and capabilities can be managed without regards to
+process hierarchy. This keeps the system minimally privileged and
+safe.
 
-Once prevheader is non-empty, it already clear that author is '' and 
-prevheader decodes with that match, because that is the only way to
-make prevheader non-empty in the first place; at least as far I see it 
-right now.
+Seccomp isn't a viable solution here.
 
+Issue #2: Attempts to enable seccomp on Android globally have run into
+performance problems, even for trivial seccomp filters.
 
-Lukas
- 
-> > Support split From: headers in AUTHOR_SIGN_OFF check by adding
-> > an additional clause to resolve author identity in such cases.
-> > 
-> > Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
-> > ---
-> >  scripts/checkpatch.pl | 28 ++++++++++++++++++++++++----
-> >  1 file changed, 24 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> > index 504d2e431c60..86975baead22 100755
-> > --- a/scripts/checkpatch.pl
-> > +++ b/scripts/checkpatch.pl
-> > @@ -1210,6 +1210,16 @@ sub reformat_email {
-> >  	return format_email($email_name, $email_address);
-> >  }
-> >  
-> > +sub format_author_email {
-> > +	my ($email, $from) = @_;
-> > +
-> > +	$email = encode("utf8", $email) if ($from =~ /=\?utf-8\?/i);
-> > +	$email =~ s/"//g;
-> > +	$email = reformat_email($email);
-> > +
-> > +	return $email;
-> > +}
-> > +
-> >  sub same_email_addresses {
-> >  	my ($email1, $email2) = @_;
-> >  
-> > @@ -2347,6 +2357,7 @@ sub process {
-> >  	my $signoff = 0;
-> >  	my $author = '';
-> >  	my $authorsignoff = 0;
-> > +	my $prevheader = '';
-> >  	my $is_patch = 0;
-> >  	my $is_binding_patch = -1;
-> >  	my $in_header_lines = $file ? 0 : 1;
-> > @@ -2658,12 +2669,21 @@ sub process {
-> >  			}
-> >  		}
-> >  
-> > +# Check the patch for a split From:
-> > +		if($prevheader ne '') {
-> > +			if ($author eq '' && decode("MIME-Header", $prevheader) =~ /^From:\s*(.*)/) {
-> > +				my $email = $1.$line;
-> > +				$author = format_author_email($email, $prevheader);
-> > +			}
-> > +			$prevheader = '';
-> > +		}
-> > +
-> >  # Check the patch for a From:
-> >  		if (decode("MIME-Header", $line) =~ /^From:\s*(.*)/) {
-> > -			$author = $1;
-> > -			$author = encode("utf8", $author) if ($line =~ /=\?utf-8\?/i);
-> > -			$author =~ s/"//g;
-> > -			$author = reformat_email($author);
-> > +			$author = format_author_email($1, $line);
-> > +			if($author eq '') {
-> > +				$prevheader = $line;
-> > +			}
-> >  		}
-> >  
-> >  # Check the patch for a signoff:
-> 
-> 
+Android has tried a few times to enable seccomp globally, but even
+excluding the above-mentioned hierarchical process problems, we've
+seen performance regressions across the board. Imposing a seccomp
+filter merely for userfaultfd imposes a tax on every syscall, even if
+the process never makes use of userfaultfd. Lokesh's sysctl proposal
+avoids this tax and places the check where it's most effective, with
+the rest of the userfaultfd functionality.
+
+See also the threads that Lokesh mentioned above:
+
+* https://lore.kernel.org/lkml/CABXk95A-E4NYqA5qVrPgDF18YW-z4_udzLwa0cdo2OfqVsy=SQ@mail.gmail.com/
+* https://lore.kernel.org/lkml/CAFJ0LnGfrzvVgtyZQ+UqRM6F3M7iXOhTkUBTc+9sV+=RrFntyQ@mail.gmail.com/
+* https://lore.kernel.org/lkml/202005200921.2BD5A0ADD@keescook/
+
+Thanks,
+-- Nick
+
+[1] The use of the term "unprivileged" is unfortunate. In Android,
+there's no coarse-grain privileged vs unprivileged process. Each
+process, including root processes, have only the privileges they need,
+and not a bit more. As a concrete example, Android's init process
+(PID=1) is not allowed to open TCP/UDP sockets, but is allowed to
+spawn children which can do so. Having each process be differently
+privileged, and ensuring that functionality is only given out on a
+need-to-have basis, is an important part of modern OS design.
+
+[2] The trend in modern exploits isn't to perform attacks directly
+from untrusted code to the kernel. A lot of the attack surface needed
+by an attacker isn't reachable directly from untrusted code, but only
+indirectly through other processes. The attacker moves laterally
+through the system, exploiting a process which has the necessary
+capabilities, then escalating to the kernel. Enforcing security
+controls system-wide is an important part of denying an attacker the
+tools for an effective exploit and preventing this kind of lateral
+movement from being useful. Denying an attacker access to kernel
+initiated faults in userfaultfd system-wide (except for authorized
+processes) is doubly important, as these kinds of faults are extremely
+valuable to an exploit writer (see explanation at
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cefdca0a86be517bc390fc4541e3674b8e7803b0
+or https://duasynt.com/blog/cve-2016-6187-heap-off-by-one-exploit)
+
+[3] https://android.googlesource.com/platform/system/sepolicy/+/7be9e9e372c70a5518f729a0cdcb0d39a28be377/private/domain.te#107
+line 107
+
+-- 
+Nick Kralevich | nnk@google.com
