@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A42D5270BAD
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 10:06:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BFA3270BB2
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 10:07:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726353AbgISIGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 04:06:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49846 "EHLO
+        id S1726405AbgISIG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 04:06:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726315AbgISIGr (ORCPT
+        with ESMTP id S1726367AbgISIGt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 04:06:47 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46943C0613D0
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 01:06:47 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id x22so152305pfo.12
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 01:06:47 -0700 (PDT)
+        Sat, 19 Sep 2020 04:06:49 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50DB1C0613D0
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 01:06:49 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id l71so4862423pge.4
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 01:06:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=35YzUlNbVtiet2PZ45LS5yY7R0/2AJJr6WQjB9kb9DQ=;
-        b=NPIiKYArpLnpWfZp2HXxYn+rhNR6sHO84+EVXiHS/T9DNxwqVpJsTgJu6e6UOqIac5
-         bDkvvguK356n60RctscGCaXQ5NOApiENU+nr9wKDX2+G6Dwk6/Kt2ohTlILyR4XhG7Vd
-         EmOtzDVI6LSIRYyfxPFLa8F7JELTXGEK7gbOM=
+        bh=4mjAsO6i14BLDGSTSdDKCE/ErMpri2AIzn0P8gVWa8M=;
+        b=f0OFDsETa78EaeXMDCZ1RlCfxiwXc9SrnugxfxtZMcxjpwzsQZOe/tYIDistENL+3n
+         8aJ8UY7gOEmoL3ldEcxG/KpWw2K2lmPViEdyK2GebPCprnlzSQiPqZqOPp3m2hjzte7U
+         XTdyC+J3wSoKeBaYrzyy/kuZdk1+t7cxQEEzc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=35YzUlNbVtiet2PZ45LS5yY7R0/2AJJr6WQjB9kb9DQ=;
-        b=EThZjGh7wArTn/NJ2IUSPd4KUhW3IS2ohKneYIs8SOg5tr67h7ZkGxVoxA1ssdiDwv
-         hftGfvAcFIjpoIpCZ0pO+tm5ZlBVCUMbTxwPC5bgtIAjBjNsv7Zc93nCvMNl3mkMUKZa
-         NZG0D8WP7oVkxQPYz1BF3iMfZ48PhtNai/TZ0A/EoxWdWEnZXQk84/ZhnsfmZTrX8+xX
-         hVMiiStSL0nsn7XvBRnr9IunnI1ye+5H9n4Ebs1mUcFlRF3l/0gNMm2loCBw90inxq6U
-         mrupJpMV2mIis4WfrtcMc5f8U8DGkJEVIZauqI+GWq8/ixneJ5zXJB2lpo6zGE062un8
-         JvKw==
-X-Gm-Message-State: AOAM532FJZ+OYQL3yLitO9GasBVWT+z2VTc/b0X8X1ATTh0OEvWAn1BI
-        DJo8PtoKV9+QXDzOqpK21i0KyQ==
-X-Google-Smtp-Source: ABdhPJyNRXL2Utm2uMp6p2aTrp/bIX0uxScQD/cHSmnwCqXqPd9T4QRySA1oqwyg3Lqotd99libtWg==
-X-Received: by 2002:a65:6449:: with SMTP id s9mr21340653pgv.388.1600502806814;
-        Sat, 19 Sep 2020 01:06:46 -0700 (PDT)
+        bh=4mjAsO6i14BLDGSTSdDKCE/ErMpri2AIzn0P8gVWa8M=;
+        b=k1/up1P9n6zsQq8ptRtmkFzxmF4lPazFE3mZOpXJdD7TK1k/8CH0dxkBicNp9lGDwc
+         JPe3xgydP6a2vbjg89rP0FrLyGVCthsN8BeDD/0oKVigaD+aiPzHcWKpJx0VMYW/riKP
+         AXoK8puVMazzaNE09+xXnSkzYKWuMt1ZnGdIcqMzadzD5GYdOPn2Lnm0kmHXT1e2Fjmz
+         hrW/dc5VJYMdSA/A+V2ZBo2xea3ZuIDTCvhrIdi9J3pWw/wb0sDW2cp15o6oCpgAF/Hj
+         IjDUF69CZfifyCN6WGfOeQjfR6SL9oBOgl822e1x2yEs5h2wjHR3uu5Ii3vItVdkMlM2
+         rY0A==
+X-Gm-Message-State: AOAM530v7lThze/sK9o65SgcZsIKw7+A29QeBmCl2fGpvUyuNnuASjXN
+        02cvMIcvPh+6JinrvS2bZNHmIQ==
+X-Google-Smtp-Source: ABdhPJzoDBiiDd/qwVg2H2idKKM+EA63R2fRTH/k5PeOCGXyrSeLjPAUUIbnlIzg8EvmDnpbjiiFuA==
+X-Received: by 2002:a63:491:: with SMTP id 139mr13312846pge.147.1600502808858;
+        Sat, 19 Sep 2020 01:06:48 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id e27sm5744480pfj.62.2020.09.19.01.06.44
+        by smtp.gmail.com with ESMTPSA id s3sm5443116pgc.61.2020.09.19.01.06.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Sat, 19 Sep 2020 01:06:45 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
@@ -57,9 +57,9 @@ Cc:     Kees Cook <keescook@chromium.org>,
         linux-kselftest@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-xtensa@linux-xtensa.org,
         linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v2 3/4] selftests/seccomp: powerpc: Set syscall return during ptrace syscall exit
-Date:   Sat, 19 Sep 2020 01:06:36 -0700
-Message-Id: <20200919080637.259478-4-keescook@chromium.org>
+Subject: [PATCH v2 4/4] selftests/clone3: Avoid OS-defined clone_args
+Date:   Sat, 19 Sep 2020 01:06:37 -0700
+Message-Id: <20200919080637.259478-5-keescook@chromium.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200919080637.259478-1-keescook@chromium.org>
 References: <20200919080637.259478-1-keescook@chromium.org>
@@ -69,74 +69,273 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some archs (like powerpc) only support changing the return code during
-syscall exit when ptrace is used. Test entry vs exit phases for which
-portions of the syscall number and return values need to be set at which
-different phases. For non-powerpc, all changes are made during ptrace
-syscall entry, as before. For powerpc, the syscall number is changed at
-ptrace syscall entry and the syscall return value is changed on ptrace
-syscall exit.
+As the UAPI headers start to appear in distros, we need to avoid outdated
+versions of struct clone_args to be able to test modern features;
+rename to "struct __clone_args". Additionally update the struct size
+macro names to match UAPI names.
 
-Reported-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Suggested-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Link: https://lore.kernel.org/linux-kselftest/20200911181012.171027-1-cascardo@canonical.com/
-Fixes: 58d0a862f573 ("seccomp: add tests for ptrace hole")
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- tools/testing/selftests/seccomp/seccomp_bpf.c | 25 ++++++++++++++++---
- 1 file changed, 21 insertions(+), 4 deletions(-)
+ tools/testing/selftests/clone3/clone3.c       | 45 ++++++++-----------
+ .../clone3/clone3_cap_checkpoint_restore.c    |  4 +-
+ .../selftests/clone3/clone3_clear_sighand.c   |  2 +-
+ .../selftests/clone3/clone3_selftests.h       | 24 +++++-----
+ .../testing/selftests/clone3/clone3_set_tid.c |  4 +-
+ tools/testing/selftests/seccomp/seccomp_bpf.c |  4 +-
+ 6 files changed, 40 insertions(+), 43 deletions(-)
 
-diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index 98ce5e8a6398..894c2404d321 100644
---- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-+++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -1765,6 +1765,7 @@ TEST_F(TRACE_poke, getpid_runs_normally)
- 			(_regs).ccr &= ~0x10000000;		\
- 		}						\
- 	} while (0)
-+# define SYSCALL_RET_SET_ON_PTRACE_EXIT
- #elif defined(__s390__)
- # define ARCH_REGS		s390_regs
- # define SYSCALL_NUM(_regs)	(_regs).gprs[2]
-@@ -1853,6 +1854,18 @@ TEST_F(TRACE_poke, getpid_runs_normally)
- 	} while (0)
+diff --git a/tools/testing/selftests/clone3/clone3.c b/tools/testing/selftests/clone3/clone3.c
+index b7e6dec36173..42be3b925830 100644
+--- a/tools/testing/selftests/clone3/clone3.c
++++ b/tools/testing/selftests/clone3/clone3.c
+@@ -20,13 +20,6 @@
+ #include "../kselftest.h"
+ #include "clone3_selftests.h"
+ 
+-/*
+- * Different sizes of struct clone_args
+- */
+-#ifndef CLONE3_ARGS_SIZE_V0
+-#define CLONE3_ARGS_SIZE_V0 64
+-#endif
+-
+ enum test_mode {
+ 	CLONE3_ARGS_NO_TEST,
+ 	CLONE3_ARGS_ALL_0,
+@@ -38,13 +31,13 @@ enum test_mode {
+ 
+ static int call_clone3(uint64_t flags, size_t size, enum test_mode test_mode)
+ {
+-	struct clone_args args = {
++	struct __clone_args args = {
+ 		.flags = flags,
+ 		.exit_signal = SIGCHLD,
+ 	};
+ 
+ 	struct clone_args_extended {
+-		struct clone_args args;
++		struct __clone_args args;
+ 		__aligned_u64 excess_space[2];
+ 	} args_ext;
+ 
+@@ -52,11 +45,11 @@ static int call_clone3(uint64_t flags, size_t size, enum test_mode test_mode)
+ 	int status;
+ 
+ 	memset(&args_ext, 0, sizeof(args_ext));
+-	if (size > sizeof(struct clone_args))
++	if (size > sizeof(struct __clone_args))
+ 		args_ext.excess_space[1] = 1;
+ 
+ 	if (size == 0)
+-		size = sizeof(struct clone_args);
++		size = sizeof(struct __clone_args);
+ 
+ 	switch (test_mode) {
+ 	case CLONE3_ARGS_ALL_0:
+@@ -77,9 +70,9 @@ static int call_clone3(uint64_t flags, size_t size, enum test_mode test_mode)
+ 		break;
+ 	}
+ 
+-	memcpy(&args_ext.args, &args, sizeof(struct clone_args));
++	memcpy(&args_ext.args, &args, sizeof(struct __clone_args));
+ 
+-	pid = sys_clone3((struct clone_args *)&args_ext, size);
++	pid = sys_clone3((struct __clone_args *)&args_ext, size);
+ 	if (pid < 0) {
+ 		ksft_print_msg("%s - Failed to create new process\n",
+ 				strerror(errno));
+@@ -144,14 +137,14 @@ int main(int argc, char *argv[])
+ 	else
+ 		ksft_test_result_skip("Skipping clone3() with CLONE_NEWPID\n");
+ 
+-	/* Do a clone3() with CLONE3_ARGS_SIZE_V0. */
+-	test_clone3(0, CLONE3_ARGS_SIZE_V0, 0, CLONE3_ARGS_NO_TEST);
++	/* Do a clone3() with CLONE_ARGS_SIZE_VER0. */
++	test_clone3(0, CLONE_ARGS_SIZE_VER0, 0, CLONE3_ARGS_NO_TEST);
+ 
+-	/* Do a clone3() with CLONE3_ARGS_SIZE_V0 - 8 */
+-	test_clone3(0, CLONE3_ARGS_SIZE_V0 - 8, -EINVAL, CLONE3_ARGS_NO_TEST);
++	/* Do a clone3() with CLONE_ARGS_SIZE_VER0 - 8 */
++	test_clone3(0, CLONE_ARGS_SIZE_VER0 - 8, -EINVAL, CLONE3_ARGS_NO_TEST);
+ 
+ 	/* Do a clone3() with sizeof(struct clone_args) + 8 */
+-	test_clone3(0, sizeof(struct clone_args) + 8, 0, CLONE3_ARGS_NO_TEST);
++	test_clone3(0, sizeof(struct __clone_args) + 8, 0, CLONE3_ARGS_NO_TEST);
+ 
+ 	/* Do a clone3() with exit_signal having highest 32 bits non-zero */
+ 	test_clone3(0, 0, -EINVAL, CLONE3_ARGS_INVAL_EXIT_SIGNAL_BIG);
+@@ -165,31 +158,31 @@ int main(int argc, char *argv[])
+ 	/* Do a clone3() with NSIG < exit_signal < CSIG */
+ 	test_clone3(0, 0, -EINVAL, CLONE3_ARGS_INVAL_EXIT_SIGNAL_NSIG);
+ 
+-	test_clone3(0, sizeof(struct clone_args) + 8, 0, CLONE3_ARGS_ALL_0);
++	test_clone3(0, sizeof(struct __clone_args) + 8, 0, CLONE3_ARGS_ALL_0);
+ 
+-	test_clone3(0, sizeof(struct clone_args) + 16, -E2BIG,
++	test_clone3(0, sizeof(struct __clone_args) + 16, -E2BIG,
+ 			CLONE3_ARGS_ALL_0);
+ 
+-	test_clone3(0, sizeof(struct clone_args) * 2, -E2BIG,
++	test_clone3(0, sizeof(struct __clone_args) * 2, -E2BIG,
+ 			CLONE3_ARGS_ALL_0);
+ 
+ 	/* Do a clone3() with > page size */
+ 	test_clone3(0, getpagesize() + 8, -E2BIG, CLONE3_ARGS_NO_TEST);
+ 
+-	/* Do a clone3() with CLONE3_ARGS_SIZE_V0 in a new PID NS. */
++	/* Do a clone3() with CLONE_ARGS_SIZE_VER0 in a new PID NS. */
+ 	if (uid == 0)
+-		test_clone3(CLONE_NEWPID, CLONE3_ARGS_SIZE_V0, 0,
++		test_clone3(CLONE_NEWPID, CLONE_ARGS_SIZE_VER0, 0,
+ 				CLONE3_ARGS_NO_TEST);
+ 	else
+ 		ksft_test_result_skip("Skipping clone3() with CLONE_NEWPID\n");
+ 
+-	/* Do a clone3() with CLONE3_ARGS_SIZE_V0 - 8 in a new PID NS */
+-	test_clone3(CLONE_NEWPID, CLONE3_ARGS_SIZE_V0 - 8, -EINVAL,
++	/* Do a clone3() with CLONE_ARGS_SIZE_VER0 - 8 in a new PID NS */
++	test_clone3(CLONE_NEWPID, CLONE_ARGS_SIZE_VER0 - 8, -EINVAL,
+ 			CLONE3_ARGS_NO_TEST);
+ 
+ 	/* Do a clone3() with sizeof(struct clone_args) + 8 in a new PID NS */
+ 	if (uid == 0)
+-		test_clone3(CLONE_NEWPID, sizeof(struct clone_args) + 8, 0,
++		test_clone3(CLONE_NEWPID, sizeof(struct __clone_args) + 8, 0,
+ 				CLONE3_ARGS_NO_TEST);
+ 	else
+ 		ksft_test_result_skip("Skipping clone3() with CLONE_NEWPID\n");
+diff --git a/tools/testing/selftests/clone3/clone3_cap_checkpoint_restore.c b/tools/testing/selftests/clone3/clone3_cap_checkpoint_restore.c
+index 9562425aa0a9..55bd387ce7ec 100644
+--- a/tools/testing/selftests/clone3/clone3_cap_checkpoint_restore.c
++++ b/tools/testing/selftests/clone3/clone3_cap_checkpoint_restore.c
+@@ -44,13 +44,13 @@ static int call_clone3_set_tid(struct __test_metadata *_metadata,
+ 	int status;
+ 	pid_t pid = -1;
+ 
+-	struct clone_args args = {
++	struct __clone_args args = {
+ 		.exit_signal = SIGCHLD,
+ 		.set_tid = ptr_to_u64(set_tid),
+ 		.set_tid_size = set_tid_size,
+ 	};
+ 
+-	pid = sys_clone3(&args, sizeof(struct clone_args));
++	pid = sys_clone3(&args, sizeof(args));
+ 	if (pid < 0) {
+ 		TH_LOG("%s - Failed to create new process", strerror(errno));
+ 		return -errno;
+diff --git a/tools/testing/selftests/clone3/clone3_clear_sighand.c b/tools/testing/selftests/clone3/clone3_clear_sighand.c
+index db5fc9c5edcf..47a8c0fc3676 100644
+--- a/tools/testing/selftests/clone3/clone3_clear_sighand.c
++++ b/tools/testing/selftests/clone3/clone3_clear_sighand.c
+@@ -47,7 +47,7 @@ static void test_clone3_clear_sighand(void)
+ {
+ 	int ret;
+ 	pid_t pid;
+-	struct clone_args args = {};
++	struct __clone_args args = {};
+ 	struct sigaction act;
+ 
+ 	/*
+diff --git a/tools/testing/selftests/clone3/clone3_selftests.h b/tools/testing/selftests/clone3/clone3_selftests.h
+index 91c1a78ddb39..e81ffaaee02b 100644
+--- a/tools/testing/selftests/clone3/clone3_selftests.h
++++ b/tools/testing/selftests/clone3/clone3_selftests.h
+@@ -19,13 +19,11 @@
+ #define CLONE_INTO_CGROUP 0x200000000ULL /* Clone into a specific cgroup given the right permissions. */
  #endif
  
-+/*
-+ * Some architectures (e.g. powerpc) can only set syscall
-+ * return values on syscall exit during ptrace.
-+ */
-+const bool ptrace_entry_set_syscall_nr = true;
-+const bool ptrace_entry_set_syscall_ret =
-+#ifndef SYSCALL_RET_SET_ON_PTRACE_EXIT
-+	true;
-+#else
-+	false;
+-#ifndef CLONE_ARGS_SIZE_VER0
+-#define CLONE_ARGS_SIZE_VER0 64
+-#endif
+-
+ #ifndef __NR_clone3
+ #define __NR_clone3 -1
+-struct clone_args {
 +#endif
 +
- /*
-  * Use PTRACE_GETREGS and PTRACE_SETREGS when available. This is useful for
-  * architectures without HAVE_ARCH_TRACEHOOK (e.g. User-mode Linux).
-@@ -2006,11 +2019,15 @@ void tracer_ptrace(struct __test_metadata *_metadata, pid_t tracee,
- 	 */
- 	if (entry)
- 		self->syscall_nr = get_syscall(_metadata, tracee);
--	else
--		return;
++struct __clone_args {
+ 	__aligned_u64 flags;
+ 	__aligned_u64 pidfd;
+ 	__aligned_u64 child_tid;
+@@ -34,15 +32,21 @@ struct clone_args {
+ 	__aligned_u64 stack;
+ 	__aligned_u64 stack_size;
+ 	__aligned_u64 tls;
+-#define CLONE_ARGS_SIZE_VER1 80
++#ifndef CLONE_ARGS_SIZE_VER0
++#define CLONE_ARGS_SIZE_VER0 64	/* sizeof first published struct */
++#endif
+ 	__aligned_u64 set_tid;
+ 	__aligned_u64 set_tid_size;
+-#define CLONE_ARGS_SIZE_VER2 88
++#ifndef CLONE_ARGS_SIZE_VER1
++#define CLONE_ARGS_SIZE_VER1 80	/* sizeof second published struct */
++#endif
+ 	__aligned_u64 cgroup;
++#ifndef CLONE_ARGS_SIZE_VER2
++#define CLONE_ARGS_SIZE_VER2 88	/* sizeof third published struct */
++#endif
+ };
+-#endif /* __NR_clone3 */
  
--	syscall_nr = &syscall_nr_val;
--	syscall_ret = &syscall_ret_val;
-+	/*
-+	 * Depending on the architecture's syscall setting abilities, we
-+	 * pick which things to set during this phase (entry or exit).
-+	 */
-+	if (entry == ptrace_entry_set_syscall_nr)
-+		syscall_nr = &syscall_nr_val;
-+	if (entry == ptrace_entry_set_syscall_ret)
-+		syscall_ret = &syscall_ret_val;
+-static pid_t sys_clone3(struct clone_args *args, size_t size)
++static pid_t sys_clone3(struct __clone_args *args, size_t size)
+ {
+ 	fflush(stdout);
+ 	fflush(stderr);
+@@ -52,7 +56,7 @@ static pid_t sys_clone3(struct clone_args *args, size_t size)
+ static inline void test_clone3_supported(void)
+ {
+ 	pid_t pid;
+-	struct clone_args args = {};
++	struct __clone_args args = {};
  
- 	/* Now handle the actual rewriting cases. */
- 	switch (self->syscall_nr) {
+ 	if (__NR_clone3 < 0)
+ 		ksft_exit_skip("clone3() syscall is not supported\n");
+diff --git a/tools/testing/selftests/clone3/clone3_set_tid.c b/tools/testing/selftests/clone3/clone3_set_tid.c
+index 5831c1082d6d..0229e9ebb995 100644
+--- a/tools/testing/selftests/clone3/clone3_set_tid.c
++++ b/tools/testing/selftests/clone3/clone3_set_tid.c
+@@ -46,14 +46,14 @@ static int call_clone3_set_tid(pid_t *set_tid,
+ 	int status;
+ 	pid_t pid = -1;
+ 
+-	struct clone_args args = {
++	struct __clone_args args = {
+ 		.flags = flags,
+ 		.exit_signal = SIGCHLD,
+ 		.set_tid = ptr_to_u64(set_tid),
+ 		.set_tid_size = set_tid_size,
+ 	};
+ 
+-	pid = sys_clone3(&args, sizeof(struct clone_args));
++	pid = sys_clone3(&args, sizeof(args));
+ 	if (pid < 0) {
+ 		ksft_print_msg("%s - Failed to create new process\n",
+ 			       strerror(errno));
+diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+index 894c2404d321..4a180439ee9e 100644
+--- a/tools/testing/selftests/seccomp/seccomp_bpf.c
++++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+@@ -3817,7 +3817,7 @@ TEST(user_notification_filter_empty)
+ 	long ret;
+ 	int status;
+ 	struct pollfd pollfd;
+-	struct clone_args args = {
++	struct __clone_args args = {
+ 		.flags = CLONE_FILES,
+ 		.exit_signal = SIGCHLD,
+ 	};
+@@ -3871,7 +3871,7 @@ TEST(user_notification_filter_empty_threaded)
+ 	long ret;
+ 	int status;
+ 	struct pollfd pollfd;
+-	struct clone_args args = {
++	struct __clone_args args = {
+ 		.flags = CLONE_FILES,
+ 		.exit_signal = SIGCHLD,
+ 	};
 -- 
 2.25.1
 
