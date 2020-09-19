@@ -2,68 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38AD1270A01
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 04:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B95322709FC
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 04:17:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726322AbgISCTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 22:19:51 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13315 "EHLO huawei.com"
+        id S1726200AbgISCRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 22:17:39 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13707 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726119AbgISCTv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 22:19:51 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 8FA2BE34F52534EADD74;
-        Sat, 19 Sep 2020 10:19:49 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.58) by
+        id S1726009AbgISCRj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 22:17:39 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id B07AE3937706E353A1AF;
+        Sat, 19 Sep 2020 10:17:37 +0800 (CST)
+Received: from [10.174.179.91] (10.174.179.91) by
  DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 19 Sep 2020 10:19:38 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <linmiaohe@huawei.com>,
-        <martin.varghese@nokia.com>, <fw@strlen.de>, <edumazet@google.com>,
-        <dcaratti@redhat.com>, <steffen.klassert@secunet.com>,
-        <pabeni@redhat.com>, <kyk.segfault@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH net-next] net: hns3: remove unnecessary NULL checking in napi_consume_skb()
-Date:   Sat, 19 Sep 2020 10:16:06 +0800
-Message-ID: <1600481766-46158-1-git-send-email-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.8.1
+ 14.3.487.0; Sat, 19 Sep 2020 10:17:36 +0800
+Subject: Re: [PATCH -next] mfd: Convert to DEFINE_SHOW_ATTRIBUTE
+To:     Lee Jones <lee.jones@linaro.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200716090236.13057-1-miaoqinglang@huawei.com>
+ <20200716134603.GR3165313@dell>
+From:   miaoqinglang <miaoqinglang@huawei.com>
+Message-ID: <00056e7b-6a6d-459d-2498-f07da156e409@huawei.com>
+Date:   Sat, 19 Sep 2020 10:17:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
+In-Reply-To: <20200716134603.GR3165313@dell>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.91]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When budget is non-zero, skb_unref() has already handled the
-NULL checking.
 
-When budget is zero, the dev_consume_skb_any() has handled NULL
-checking in __dev_kfree_skb_irq(), or dev_kfree_skb() which also
-ultimately call skb_unref().
 
-So remove the unnecessary checking in napi_consume_skb().
+在 2020/7/16 21:46, Lee Jones 写道:
+> On Thu, 16 Jul 2020, Qinglang Miao wrote:
+> 
+>> From: Yongqiang Liu <liuyongqiang13@huawei.com>
+>>
+>> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
+>>
+>> Signed-off-by: Yongqiang Liu <liuyongqiang13@huawei.com>
+>> ---
+>>   drivers/mfd/ab3100-core.c | 15 ++-------------
+>>   drivers/mfd/ab3100-otp.c  | 16 +++-------------
+>>   drivers/mfd/tps65010.c    | 14 ++------------
+> 
+> Can you split this out into different patches please.
 
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
----
- net/core/skbuff.c | 3 ---
- 1 file changed, 3 deletions(-)
+Hi Lee,
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index bfd7483..e077447 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -895,9 +895,6 @@ void __kfree_skb_defer(struct sk_buff *skb)
- 
- void napi_consume_skb(struct sk_buff *skb, int budget)
- {
--	if (unlikely(!skb))
--		return;
--
- 	/* Zero budget indicate non-NAPI context called us, like netpoll */
- 	if (unlikely(!budget)) {
- 		dev_consume_skb_any(skb);
--- 
-2.8.1
+I've splited this out into three patches.
 
+They are against linux-next(20200917), and can be applied to mainline 
+cleanly now.
+
+Thanks.
+> 
+>>   3 files changed, 7 insertions(+), 38 deletions(-)
+> 
