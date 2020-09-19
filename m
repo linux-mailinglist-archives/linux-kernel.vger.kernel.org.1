@@ -2,128 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 150AF270D81
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 13:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1917270D91
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 13:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726415AbgISLOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 07:14:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726041AbgISLN7 (ORCPT
+        id S1726218AbgISLYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 07:24:48 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:39911 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726041AbgISLYr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 07:13:59 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E58DC0613CE
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 04:13:59 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id y15so7953954wmi.0
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 04:13:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rdXsTgoGM0w1H/nnYlMehpdLdQB8fsaLuG+w+yCrM5Y=;
-        b=oE1Ira58YScVwaWdnk8LgV/cmqXxiHNeIxxJxGh/47M2R9d91zsr8xnnO10hEg/rbV
-         X/OkZoB+Ec6C3icy0bbdRVni1Zi24/ZEAoEejz/V2DtZpk5RIl2uqXZF0EuIc4ajTRTP
-         stmClxW2sPQNFUxn8a5St2F18T9mfjkN/O0VMqoyDWgBFiz8MYdKiwWCffRt+7eYZW82
-         KKQ60NKca7pjSMx9p9P1MNuJL8b2UE43042p8VdL1ET41Ho6kJPh0Ed3BIQB00lJ3DPD
-         nMjGLYrTrM4RwItA7Kt243vXvwpkpoPOVcT/SuQ9cdFU5y0yWLxrjspRqE/v4y2onTNm
-         RGxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rdXsTgoGM0w1H/nnYlMehpdLdQB8fsaLuG+w+yCrM5Y=;
-        b=IAGcUabCsOtZnUEMQ+wdPVCZkwx5+/RmwBK6hDAZLsRN6octEjYOGdENseIh8jq/Hu
-         3fCp2vRuPfNu9TO2Ih9ApVDkU2xvj1q2UY+wIyGYLhzmroJ6NePbTN6RA8krIHH5kGid
-         +YnVAL9I9oFgg523XMSH29OPL+GScIPOnJk8zU0+ed7kFHgmx/46RW4z0FDTzjTjdl8+
-         zL3Vew04ef7DvUmKvylyuYo5uQtb6B2d2nOgqxTyVsNe+UC8wZPmmmjld2RbnNzbNYEy
-         gh+A27HBgWc+e40ib91h/4fR2dOcUDO/HyA2uQOG3jKPQhsIKBQT1NzDE++TOF2CVz6j
-         t6aQ==
-X-Gm-Message-State: AOAM532HsIAueWw+AcULiv8zwQF1aZkftM8hFXQEH2Er7L6aAMMv6H2f
-        Ln8v03xv3XoAjNjCitrYWPUPVA==
-X-Google-Smtp-Source: ABdhPJxtvQBqLG15ElhXHTv/DA5n/A5hXVODsh0bX2dk1jWFMP3l4fnu0fcw+jZBZHKHnGGxUTbOHg==
-X-Received: by 2002:a7b:c40b:: with SMTP id k11mr19727844wmi.135.1600514037438;
-        Sat, 19 Sep 2020 04:13:57 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:9142:20e7:201d:cd11? ([2a01:e34:ed2f:f020:9142:20e7:201d:cd11])
-        by smtp.googlemail.com with ESMTPSA id o129sm10277063wmb.27.2020.09.19.04.13.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 19 Sep 2020 04:13:56 -0700 (PDT)
-Subject: Re: [PATCH 05/20] dt-bindings: timer: renesas,cmt: Document r8a774e1
- CMT support
-To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Niklas <niklas.soderlund@ragnatech.se>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Amit Kucheria <amit.kucheria@verdurent.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-can@vger.kernel.org,
-        netdev <netdev@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Linux Watchdog Mailing List <linux-watchdog@vger.kernel.org>
-References: <1594811350-14066-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1594811350-14066-6-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CA+V-a8sBF2ak+dYd9g=Tf_2Kwz_Om2mpK=z+KzGQQG4qJM-+zA@mail.gmail.com>
- <CA+V-a8tcuxiDBZ0WYgrMrPjnse7On1LWiJngznZMiSOQAqT9Ag@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <bce1bbc3-203c-aa9e-6c40-5a1eb82510e3@linaro.org>
-Date:   Sat, 19 Sep 2020 13:13:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sat, 19 Sep 2020 07:24:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600514686;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=p/Cp+HbWHGDnEaLomvN0C6Vwdvi0O4lmNM7SwEyA2xE=;
+        b=EZOXXKWOOPUPDci6IfWiJYOgx5SpfIzUUor0NkYkhj3RR60YFF1nlZVKVMvY5GbXHxgDn4
+        /rX7PtyQynUY98s+CXn+X6io2MPvob3CgoLCw2+V05AQyguAu19fOImvjiZwTvPzhOFjKw
+        zwkEhyop9iply3F5BmYnoc3UeWjWqJA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-200-wqOo2jZPNf6XX66XjZDiag-1; Sat, 19 Sep 2020 07:24:43 -0400
+X-MC-Unique: wqOo2jZPNf6XX66XjZDiag-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 00FC7801AF7;
+        Sat, 19 Sep 2020 11:24:42 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.17])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 647587880F;
+        Sat, 19 Sep 2020 11:24:40 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Sat, 19 Sep 2020 13:24:41 +0200 (CEST)
+Date:   Sat, 19 Sep 2020 13:24:39 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Davidlohr Bueso <dave@stgolabs.net>, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, Davidlohr Bueso <dbueso@suse.de>
+Subject: Re: [PATCH] fgraph: Convert ret_stack tasklist scanning to rcu
+Message-ID: <20200919112438.GA4430@redhat.com>
+References: <20200907013326.9870-1-dave@stgolabs.net>
+ <20200907114301.GA31050@redhat.com>
+ <20200918131201.53b894b4@gandalf.local.home>
 MIME-Version: 1.0
-In-Reply-To: <CA+V-a8tcuxiDBZ0WYgrMrPjnse7On1LWiJngznZMiSOQAqT9Ag@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200918131201.53b894b4@gandalf.local.home>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/09/2020 13:00, Lad, Prabhakar wrote:
-> Hi Daniel and Thomas,
-> 
-> On Thu, Aug 27, 2020 at 6:00 PM Lad, Prabhakar
-> <prabhakar.csengg@gmail.com> wrote:
->>
->> Hi Daniel and Thomas,
->>
->> On Wed, Jul 15, 2020 at 12:09 PM Lad Prabhakar
->> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
->>>
->>> Document SoC specific bindings for RZ/G2H (r8a774e1) SoC.
->>>
->>> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->>> ---
->>>  Documentation/devicetree/bindings/timer/renesas,cmt.yaml | 2 ++
->>>  1 file changed, 2 insertions(+)
->>>
->> Gentle ping.
->>
-> Could you please pick this patch.
+On 09/18, Steven Rostedt wrote:
+>
+> On Mon, 7 Sep 2020 13:43:02 +0200
+> Oleg Nesterov <oleg@redhat.com> wrote:
+>
+> > Afaics, with or without this change alloc_retstack_tasklist() can race
+> > with copy_process() and miss the new child; ftrace_graph_init_task()
+> > can't help, ftrace_graph_active can be set right after the check and
+> > for_each_process_thread() can't see the new process yet.
+>
+> There's a call in copy_process(): ftrace_graph_init_task() that initializes
+> a new tasks ret_stack,
 
-Applied, thanks
+Only if ftrace_graph_active != 0.
 
+register_ftrace_graph() can increment ftrace_graph_active and call
+alloc_retstack_tasklist() right after ftrace_graph_init_task() checks
+ftrace_graph_active.
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+> and this loop will ignore it
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+and this loop won't see it unless the forking process finishes copy_process()
+and does list_add_tail_rcu(&p->tasks, &init_task.tasks) which makes it
+visible to for_each_process(). Yes, this is very unlikely.
+
+> > Looks like, ftrace_graph_exit_task() was called by the exiting task
+> > in the past? Indeed, see 65afa5e603d50 ("tracing/function-return-tracer:
+> > free the return stack on free_task()"). I think it makes sense to
+> > simplify this function now, it can simply do kfree(t->ret_stack) and
+> > nothing more.
+>
+> Ah, yeah, then you are right. If it can't be called on a running task then
+> it can be simplified. Probably need a:
+>
+>  WARN_ON_ONCE(t->on_rq);
+>
+> just to make sure this never happens.
+
+Well, ftrace_graph_exit_task(t) is called by free_task(t), right before
+kmem_cache_free(t).
+
+> > ACK, but ...
+> >
+> > > @@ -387,8 +387,8 @@ static int alloc_retstack_tasklist(struct ftrace_ret_stack **ret_stack_list)
+> > >  		}
+> > >  	}
+> > >
+> > > -	read_lock(&tasklist_lock);
+> >
+> > then you should probably rename alloc_retstack_tasklist() ?
+> >
+>
+> tasklist, process thead? Is there a difference?
+
+Aah, please ignore. Somehow I misinterpreted the _tasklist suffix, as if it
+refers to tasklist_lock.
+
+Oleg.
+
