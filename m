@@ -2,64 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EE97270A18
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 04:38:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6049270A1B
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 04:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbgISCis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 22:38:48 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:55348 "EHLO huawei.com"
+        id S1726273AbgISCkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 22:40:02 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13317 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726054AbgISCir (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 22:38:47 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id D45489CD0D4469AD96A1;
-        Sat, 19 Sep 2020 10:38:21 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 19 Sep 2020 10:38:15 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <bryan.whitehead@microchip.com>, <UNGLinuxDriver@microchip.com>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH net-next] net: microchip: Remove set but not used variable
-Date:   Sat, 19 Sep 2020 10:39:09 +0800
-Message-ID: <20200919023909.23716-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726054AbgISCkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 22:40:02 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 076EFCC9CB3F25A70EFE;
+        Sat, 19 Sep 2020 10:40:01 +0800 (CST)
+Received: from [10.174.185.226] (10.174.185.226) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 19 Sep 2020 10:39:55 +0800
+Subject: Re: [PATCH 2/2] vfio/pci: Remove bardirty from vfio_pci_device
+To:     Alex Williamson <alex.williamson@redhat.com>
+CC:     Cornelia Huck <cohuck@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <wanghaibin.wang@huawei.com>
+References: <20200917033128.872-1-yuzenghui@huawei.com>
+ <20200917033128.872-2-yuzenghui@huawei.com>
+ <20200917133537.17af2ef3.cohuck@redhat.com> <20200917160742.4e4d6efd@x1.home>
+ <3b5214f9-9e17-2bcd-1b92-57bacc1c1b31@huawei.com>
+ <20200918201128.16cf0a1c@x1.home>
+From:   Zenghui Yu <yuzenghui@huawei.com>
+Message-ID: <254ac8bf-e912-0d01-0295-8bb54f7a88bf@huawei.com>
+Date:   Sat, 19 Sep 2020 10:39:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.138.68]
+In-Reply-To: <20200918201128.16cf0a1c@x1.home>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.185.226]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes gcc '-Wunused-but-set-variable' warning:
+On 2020/9/19 10:11, Alex Williamson wrote:
+> On Sat, 19 Sep 2020 09:54:00 +0800
+> Zenghui Yu <yuzenghui@huawei.com> wrote:
+> 
+>> Hi Alex,
+>>
+>> On 2020/9/18 6:07, Alex Williamson wrote:
+>>> On Thu, 17 Sep 2020 13:35:37 +0200
+>>> Cornelia Huck <cohuck@redhat.com> wrote:
+>>>    
+>>>> On Thu, 17 Sep 2020 11:31:28 +0800
+>>>> Zenghui Yu <yuzenghui@huawei.com> wrote:
+>>>>   
+>>>>> It isn't clear what purpose the @bardirty serves. It might be used to avoid
+>>>>> the unnecessary vfio_bar_fixup() invoking on a user-space BAR read, which
+>>>>> is not required when bardirty is unset.
+>>>>>
+>>>>> The variable was introduced in commit 89e1f7d4c66d ("vfio: Add PCI device
+>>>>> driver") but never actually used, so it shouldn't be that important. Remove
+>>>>> it.
+>>>>>
+>>>>> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+>>>>> ---
+>>>>>    drivers/vfio/pci/vfio_pci_config.c  | 7 -------
+>>>>>    drivers/vfio/pci/vfio_pci_private.h | 1 -
+>>>>>    2 files changed, 8 deletions(-)
+>>>>
+>>>> Yes, it seems to have been write-only all the time.
+>>>
+>>> I suspect the intent was that vfio_bar_fixup() could test
+>>> vdev->bardirty to avoid doing work if no BARs had been written since
+>>> they were last read.  As it is now we regenerate vconfig for all the
+>>> BARs every time any offset of any of them are read.  BARs aren't
+>>> re-read regularly and config space is not a performance path,
+>>
+>> Yes, it seems that Qemu itself emulates all BAR registers and will read
+>> the BAR from the kernel side only at initialization time.
+>>
+>>> but maybe
+>>> we should instead test if we see any regressions from returning without
+>>> doing any work in vfio_bar_fixup() if vdev->bardirty is false.  Thanks,
+>>
+>> I will test it with the following diff. Please let me know which way do
+>> you prefer.
+>>
+>> diff --git a/drivers/vfio/pci/vfio_pci_config.c
+>> b/drivers/vfio/pci/vfio_pci_config.c
+>> index d98843feddce..77c419d536d0 100644
+>> --- a/drivers/vfio/pci/vfio_pci_config.c
+>> +++ b/drivers/vfio/pci/vfio_pci_config.c
+>> @@ -515,7 +515,7 @@ static int vfio_basic_config_read(struct
+>> vfio_pci_device *vdev, int pos,
+>>                                     int count, struct perm_bits *perm,
+>>                                     int offset, __le32 *val)
+>>    {
+>> -       if (is_bar(offset)) /* pos == offset for basic config */
+>> +       if (is_bar(offset) && vdev->bardirty) /* pos == offset for basic
+>> config */
+>>                   vfio_bar_fixup(vdev);
+>>
+>>           count = vfio_default_config_read(vdev, pos, count, perm,
+>> offset, val);
+> 
+> 
+> There's only one caller currently, but I'd think it cleaner to put this
+> in vfio_bar_fixup(), ie. return immediately if !bardirty.  Thanks,
 
-drivers/net/ethernet/microchip/lan743x_main.c: In function lan743x_pm_suspend:
-drivers/net/ethernet/microchip/lan743x_main.c:3041:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
+OK, I'll do that in the v2.
 
-`ret` is set but not used, so check it's value.
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- drivers/net/ethernet/microchip/lan743x_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
-index de93cc6ebc1a..56a1b5928f9a 100644
---- a/drivers/net/ethernet/microchip/lan743x_main.c
-+++ b/drivers/net/ethernet/microchip/lan743x_main.c
-@@ -3053,7 +3053,7 @@ static int lan743x_pm_suspend(struct device *dev)
- 	/* Host sets PME_En, put D3hot */
- 	ret = pci_prepare_to_sleep(pdev);
- 
--	return 0;
-+	return ret;
- }
- 
- static int lan743x_pm_resume(struct device *dev)
--- 
-2.17.1
-
+Thanks,
+Zenghui
