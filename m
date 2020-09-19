@@ -2,101 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81835270A64
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 05:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67416270A65
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 05:26:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726298AbgISD0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 23:26:01 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:33247 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726104AbgISD0A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 23:26:00 -0400
-X-Greylist: delayed 347 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Sep 2020 23:26:00 EDT
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 5FDD8C85;
-        Fri, 18 Sep 2020 23:20:12 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Fri, 18 Sep 2020 23:20:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm3; bh=+klDHT4tIeJVl4fgQHq2RfH08C
-        mREckooi3m30a5UCo=; b=jQ0RJFmNOpIwpCANwC4OJdLY4yyTqiSWbNqzQrBvIU
-        yUeMnR2j/ohd+NhiZcavWACRKnql+z+0GbYFw05W9/D3QPD9/Ji10/a3GV5uex7B
-        RA9AC4vD34GqfrnVvKhK35PCedstAEtmQZUJXSL9PgRdlm03iMQMQhRcsnL5aFHj
-        pDuuhujCAKdbdN+/slMynwW4YQkQxpZ9iHotjVU4MmqdfJw9iJjzF3EtW8sniRgX
-        KNKj8HBOG3nkvJW+0hUg1ekim0blgLkwH3rtQ2uQBPTAMqe8XSmcRuO9UmWP80Nf
-        Biz43slSF8iNI2jptUPzkcy53D+C3JgdWuEEZqMgtL5w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=+klDHT4tIeJVl4fgQ
-        Hq2RfH08CmREckooi3m30a5UCo=; b=Qhr5ijpX6iqjimQMjwfFdGgNVENqOM+TQ
-        vTFRwZNrZNl0MXZ9bf6cdak9eTv+gVUpHzMZuE0KM1JJzG2NjENp77liHWBXXcgT
-        drTz/1D6hbMyl9meC/3IpkHZYVkUuVk8AxhCbczFgqXJ5qSqlSyovI6wCVq2qsOM
-        pkFVZcShuZ3paZj0dK+8dUAGcMVpQNYIbyHqHHztWYCG0YG9+yEpDmg9wNY1GTG5
-        H8JUL+J3BUyzNuf2EyivN9dmgxj9Hlgv5JzTBGR3wZ+UlxiSPzUkxZ7rsMCJagQ4
-        dggJK7dnKeKkQviLT0XY5+5tdXTzP0T6SoWl0cicHqDhg0pesn6HA==
-X-ME-Sender: <xms:6nhlXxKLHLjMB0bQu0mCRnsDvEMvfECIsSaeMYFKmgbqBIbeU1czOA>
-    <xme:6nhlX9J-pyGgsUxuAjEOcybbG9p6jMBpRlUIsYdQ4gNqGvXPH7kDbxxS180BZkKQu
-    Jt5SiWGZcGkSMzdzQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrtdejgdeikecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghlucfj
-    ohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrfgrth
-    htvghrnhepieetkefhheduudfgledtudefjeejfeegveehkeeufffhhfejkeehiefftdev
-    tdevnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdho
-    rhhg
-X-ME-Proxy: <xmx:6nhlX5sDOs37MMY2eacFEHsazrIygWZuK8g8zE7WBZ8pAsU4YFQNMQ>
-    <xmx:6nhlXyY3uILhrkEuHzLhJe8DTbQ6cWoSYti4fS_uvp9_XlWwwk1L-w>
-    <xmx:6nhlX4ZjRzGVzloKhQOgeQyGu5SfASCQiXVjeGbKpm8DOUfiEpVOtw>
-    <xmx:7HhlXwFybixx5eLHpPcwfxV-9-rtYjQMyVJ0C9K9-xwrTX-fSVVwdg>
-Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 5C4D2306467E;
-        Fri, 18 Sep 2020 23:20:10 -0400 (EDT)
-From:   Samuel Holland <samuel@sholland.org>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>
-Subject: [PATCH] powerpc: Select HAVE_FUTEX_CMPXCHG
-Date:   Fri, 18 Sep 2020 22:20:09 -0500
-Message-Id: <20200919032009.8346-1-samuel@sholland.org>
-X-Mailer: git-send-email 2.26.2
+        id S1726326AbgISD0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 23:26:47 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:50560 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726104AbgISD0r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 23:26:47 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 5430AEF173E634A95E96;
+        Sat, 19 Sep 2020 11:26:45 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 19 Sep 2020 11:26:37 +0800
+From:   Xiaofei Tan <tanxiaofei@huawei.com>
+To:     <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <linuxarm@huawei.com>, Xiaofei Tan <tanxiaofei@huawei.com>
+Subject: [PATCH] mm: fix some doc warnings in workingset.c
+Date:   Sat, 19 Sep 2020 11:25:13 +0800
+Message-ID: <1600485913-11192-1-git-send-email-tanxiaofei@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On powerpc, access_ok() succeeds for the NULL pointer. This breaks the
-dynamic check in futex_detect_cmpxchg(), which expects -EFAULT. As a
-result, robust futex operations are not functional on powerpc.
+Fix following warnings caused by mismatch bewteen function parameters
+and comments.
+mm/workingset.c:228: warning: Function parameter or member 'lruvec' not described in 'workingset_age_nonresident'
+mm/workingset.c:228: warning: Excess function parameter 'memcg' description in 'workingset_age_nonresident'
 
-Since the architecture's futex_atomic_cmpxchg_inatomic() implementation
-requires no runtime feature detection, we can select HAVE_FUTEX_CMPXCHG
-to skip futex_detect_cmpxchg() and enable the use of robust futexes.
-
-Signed-off-by: Samuel Holland <samuel@sholland.org>
+Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
 ---
- arch/powerpc/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ mm/workingset.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index ad620637cbd1..5ad1deb0c669 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -196,6 +196,7 @@ config PPC
- 	select HAVE_FUNCTION_ERROR_INJECTION
- 	select HAVE_FUNCTION_GRAPH_TRACER
- 	select HAVE_FUNCTION_TRACER
-+	select HAVE_FUTEX_CMPXCHG
- 	select HAVE_GCC_PLUGINS			if GCC_VERSION >= 50200   # plugin support on gcc <= 5.1 is buggy on PPC
- 	select HAVE_HW_BREAKPOINT		if PERF_EVENTS && (PPC_BOOK3S || PPC_8xx)
- 	select HAVE_IDE
+diff --git a/mm/workingset.c b/mm/workingset.c
+index 92e6611..8ed8e62 100644
+--- a/mm/workingset.c
++++ b/mm/workingset.c
+@@ -216,7 +216,7 @@ static void unpack_shadow(void *shadow, int *memcgidp, pg_data_t **pgdat,
+ 
+ /**
+  * workingset_age_nonresident - age non-resident entries as LRU ages
+- * @memcg: the lruvec that was aged
++ * @lruvec: the lruvec that was aged
+  * @nr_pages: the number of pages to count
+  *
+  * As in-memory pages are aged, non-resident pages need to be aged as
 -- 
-2.26.2
+2.8.1
 
