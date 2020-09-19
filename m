@@ -2,548 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF06D270B95
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 09:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9BE270B96
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 09:53:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbgISHt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 03:49:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726216AbgISHt0 (ORCPT
+        id S1726192AbgISHx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 03:53:27 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:29413 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726041AbgISHx0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 03:49:26 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9FD0C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 00:49:25 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id r19so4209233pls.1
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 00:49:25 -0700 (PDT)
+        Sat, 19 Sep 2020 03:53:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1600502006; x=1632038006;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=sKY26FFKn37wPjaDWqNKQ5SHM6CJVPkpEe0cAAE2jSw=;
+  b=jvW1Pw53+7W+1m9H8FHfTyaZz2lvP2iO2O8UCZbvZOhERq+sR4e1GSon
+   QnGoVciTpyZtEOAoyOdTe9l//DQUmYJiWErd/pEowlUTR6ua+8iVBmtQV
+   E8jkwIU+8I2QG/B7PSvq9u5EadUW0g2ph82IYT4QXjtPxTDRAYTvKxVEZ
+   NDt5YxG7gVhflaPUWKEOhBfmmMelzLqvSPjbsVCXvuR8XP/Q32ujnHbMo
+   lykKER1aQtclNrg5wAp54tchz6yzeYfpcfaZXm547qnMDe4r8hfOTNjDa
+   Q3nQdFPJllikBCAJLHHecTELXSXur0sC1DJbnxKAO5xl9xCCoJcCA5fqR
+   g==;
+IronPort-SDR: e9MN5DBdYUHb29Qqi3Pzssg6Y4mp1HmpzG8EQZSX/SrJFzTGo6ZQZ05ViPK2HEBdPYfwc6QOlP
+ 85plXsCdjR+B29+esosaGjoODsj2/RTCfrZXOOf67Oa+lxjPjKByolMVIg9IPTEhdHQdNQMVtn
+ Agg4OVMYnsBBIb4Dkt1RSU7mi4m6XDfMfwwCZqjBJixE0uM77AbDxHEKfwWVBzk4czgCNgMayJ
+ on36hllsyt7lPlzZi3LKMXdC0VUf77NYa6Gw6Gz4LYHTiUd6JH6ItplLCKvxWmKo/m/1ypMNoP
+ r7w=
+X-IronPort-AV: E=Sophos;i="5.77,278,1596470400"; 
+   d="scan'208";a="149017257"
+Received: from mail-dm6nam12lp2173.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.173])
+  by ob1.hgst.iphmx.com with ESMTP; 19 Sep 2020 15:53:24 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Wh/X4kbHnVk3TL7RLZc6ZwVI+HAYJPf7ogrO7cBCi4w0kDpQge7ke3d0JEQ7OsZZV2DHc5f2TDY8auY3a2ALROKb75xcJSDhXiyZVNB2cY/kDWLQ8OG5CFpYIoksHLPtHdiY6bf5Z85v7RkGt1zW2mOmVsZqyhKwUbfqlyUTyrVzIDrVln+YZXGkObpjynO1cgBOerc3d4WrZHbX/KVA6+Bo5UH7FIG6yuJWvMDf+D6Z0/k9LOHzr/AJARr4EqqKCvAhRpQskWulU4XgdZa8Tqorj4h2NYyTct/4ScjDtuGpRw0BDUFKdheSdlJwDlXtAzfRbXyF/VgF4wb88yH2Tg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sKY26FFKn37wPjaDWqNKQ5SHM6CJVPkpEe0cAAE2jSw=;
+ b=EeNrQzTvOa83LFWTvFBRYpnj8Y2TB9ow2Z0hJoGY2IsJr/RQQeJeR9QB2eBrZ+hcuxUm08fM7aBgVvIvbx3iYGaNYFAa6EEo1wnIRm6BkCGyRQrfh6eTZYQ8q45BfhgB74zIuF++dLOkcTfbCkXdU0idy0M5AfPnDVUqIt+ThI16kjERH44aCgWaw1mrsHv0NEgXoEBABnQSvTsIKQfO4EEw5fwRGKr+XI0VDyUNrD6XuFARLy5lb+/dZirh2T5rmYG6oPE9XEM5AHtRUurH4M2r3PvLYAmXkA9tOlO/vreqWGpvoU+oT4MWOLjvuT68ftUPaCIB7RRfBEcYsaHGyw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Mo9wAvGILKCqYotrN+tF0XCxTgM5i35wrY/cuVjP5Ps=;
-        b=VMlNfIw2pyfJl6rUyI7rAR56tGSa+aICh4WBFHY+FIFO75ETGjU9BpSfSuvERReo5P
-         iBm2ls1HWbP1Ta9DHf2/gvdVpOqoqvT1MrKw5egGT3xxIAY4wTAsR7IDrzvnhRIpZDyL
-         WJchOoG349il5bAa+xSY3/amWvNYAcvSKTiWjEevs9OhKDNYHiyF29Rtgo11ILK13puX
-         72Z2I98soY3kveDkcHzui0pbkc207x80/dySWD4Feuu8xEYaCkPXhJYXzuDOXiJDXy0d
-         I/+9rNx5f7pZ+GBw2ienUNvMPB7ev9+FcUqE7bTVxUuDTiSD5JqKOjKPuN60cQ2Lymqn
-         rchQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=Mo9wAvGILKCqYotrN+tF0XCxTgM5i35wrY/cuVjP5Ps=;
-        b=VvPhaLsipHzJQgGiUfEn7gi9NZIci/Evlrs5qtZBW6mDND6Czij6xK5vLiPPbeYIbA
-         kWLwIJ+A1wcjtFrnxNNd76VidzyNc8oV2mZB/0KUlr+ep2SJ0NfxOxUpMR1eOOVYxBqt
-         ADgV7Q5dBrTT3ic2BvkDt5cY78ElJ4Ip/dTH/VjkyBdkKUeMwmlnBFHh4ohOQjnTy7a0
-         cSgCH1J3IdtJeIbpDIh3Un39nKEVsfxa2c17g83PeZK0VHJt+/GHLHnwWTt92iqYHFH2
-         1+SASmEInmY7X3HvCI1NG5XZaellCl+r5ISkfweb4jFSmZ3yur3sUXkBA8bLvYgF151g
-         uRaw==
-X-Gm-Message-State: AOAM5323Wq3eyjKhraJcsO1FO3jHCS1G8DFaud93HSFuvSpBkaILtO1Z
-        F4UlKROpwDgjTrck/msgHk5nZxd6u0AxFQ==
-X-Google-Smtp-Source: ABdhPJzxtKNJExQxGphWrBSpCp6nPiEtR1WXPnghOp2j+lZr49oGD8LfOwdiVGslVYrJXFathVlwnA==
-X-Received: by 2002:a17:90a:ca17:: with SMTP id x23mr15392828pjt.96.1600501765011;
-        Sat, 19 Sep 2020 00:49:25 -0700 (PDT)
-Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id m13sm5688151pfk.103.2020.09.19.00.49.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Sep 2020 00:49:24 -0700 (PDT)
-From:   John Stultz <john.stultz@linaro.org>
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        "Andrew F . Davis" <afd@ti.com>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH v3 2/2] dma-heap: Add a system-uncached heap
-Date:   Sat, 19 Sep 2020 07:49:05 +0000
-Message-Id: <20200919074905.82036-2-john.stultz@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200919074905.82036-1-john.stultz@linaro.org>
-References: <20200919074905.82036-1-john.stultz@linaro.org>
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sKY26FFKn37wPjaDWqNKQ5SHM6CJVPkpEe0cAAE2jSw=;
+ b=pNQejk2wVMfGfAMlHj+m9ei7e+kiTw+EFge4EFFHCxneFevbHKMqRKcTPYFC1dYdF6usg/OI05ZqXRUeNY7zoHOr5h4rhBtQCuyRFFM07zwrg/wv5vlOka0lNxpyM2vTnq/aOUjIIczMdsL+Kotvlna52F9/u9zLluVycr9Xo84=
+Received: from BY5PR04MB6705.namprd04.prod.outlook.com (2603:10b6:a03:220::8)
+ by BYAPR04MB5238.namprd04.prod.outlook.com (2603:10b6:a03:c6::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.19; Sat, 19 Sep
+ 2020 07:53:19 +0000
+Received: from BY5PR04MB6705.namprd04.prod.outlook.com
+ ([fe80::2c49:48e2:e9fb:d5a0]) by BY5PR04MB6705.namprd04.prod.outlook.com
+ ([fe80::2c49:48e2:e9fb:d5a0%9]) with mapi id 15.20.3391.011; Sat, 19 Sep 2020
+ 07:53:19 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Stanley Chu <stanley.chu@mediatek.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>
+CC:     "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuohong.wang@mediatek.com" <kuohong.wang@mediatek.com>,
+        "peter.wang@mediatek.com" <peter.wang@mediatek.com>,
+        "chun-hung.wu@mediatek.com" <chun-hung.wu@mediatek.com>,
+        "andy.teng@mediatek.com" <andy.teng@mediatek.com>,
+        "chaotian.jing@mediatek.com" <chaotian.jing@mediatek.com>,
+        "cc.chou@mediatek.com" <cc.chou@mediatek.com>
+Subject: RE: [PATCH 2/4] scsi: ufs-mediatek: Fix HOST_PA_TACTIVATE quirk
+Thread-Topic: [PATCH 2/4] scsi: ufs-mediatek: Fix HOST_PA_TACTIVATE quirk
+Thread-Index: AQHWhaugPlH83fCRGE6LVX+FKPQRNqlvqEbQ
+Date:   Sat, 19 Sep 2020 07:53:19 +0000
+Message-ID: <BY5PR04MB6705B15F1B7373FF6FFBCAF3FC3C0@BY5PR04MB6705.namprd04.prod.outlook.com>
+References: <20200908064507.30774-1-stanley.chu@mediatek.com>
+ <20200908064507.30774-3-stanley.chu@mediatek.com>
+In-Reply-To: <20200908064507.30774-3-stanley.chu@mediatek.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: mediatek.com; dkim=none (message not signed)
+ header.d=none;mediatek.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [77.138.4.172]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 77ede0ba-a9a0-44a9-8003-08d85c71130a
+x-ms-traffictypediagnostic: BYAPR04MB5238:
+x-microsoft-antispam-prvs: <BYAPR04MB5238AC58F9A36CEF139D249CFC3C0@BYAPR04MB5238.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:2657;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: m9zXO/2WGL2tb/K641OXJ49KLWYAsUiO3qX6uDHzzgwZnLt48LwH75K3w2Qf9yMY+tIqZfjctB1FL53YycRhjpppBfDSD6U0r4WblwFqVy7z80ZXRableqeGUUImEj3dN+fEyZKJ8ZAheLcCw5rPdr7r1+0Mfi7dif3U6cpDyNZVnQPtZkhLelhHJB0vPaaZfXONp3QySWlXivo5AzUAHlibqC0pMXjxho8lY0aVQNgwvifdpYXORHNMbyc3TOeLedciKXnu7jqNQXxjvR//B7Ueyyz6sD0CIM6wZNKUnnJajIqucyDdi5WV+APrM0CiHp59HW0DrwQCMnUJecj7uQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6705.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(396003)(346002)(39860400002)(136003)(55016002)(8936002)(7416002)(110136005)(8676002)(7696005)(316002)(54906003)(186003)(83380400001)(6506007)(26005)(478600001)(71200400001)(66446008)(86362001)(4326008)(33656002)(66476007)(52536014)(558084003)(66556008)(9686003)(2906002)(76116006)(64756008)(5660300002)(66946007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: aGUFUyJWQce10loiAMDlhMJMYTaOnMZHXLnnDB3bYG++fbbjYntknzetpDSQBYwT8LWA4I6Ag1UyoGdAtGB/gjs+/7gb8vJZhmluijrHr9AncumW2mbGbnPibaydMRzRDgrVmSteZDgOreDDJdw+c/oRhEzLKfEIX+nl3dNdDxrU+9nZkydzQzoR0KML5Ud9EE1cRoxWLjNT0fEfCyyfb2SwkqrKVSU/TZzmkj82vmtLbRoL1CqkPtb/sOjlNw/aSUvYU9kwOuKWvAHuVlQm9gJoJVSzHMA4mJUn2A7bHo56ftqlIwEWj4a8XHMKSh6UxobCrD6EMD8Dh8QUvb8SMjhr11PGB+xqrTSUQ4+CYg4eSAjiy7y+13jMt0mXZ458MEZF2Yfqsow/y1ZYbyCmyNBja9IzdxphKRkl+g1VgrCcBaO2h3j+x3S8kQf1rJ1aUsiKrtvSAA/eagCq+RE+XizSpKnybVPxVICKFhvIH++T9t4w6y4cR3RBy7b+9BmNOVOfXTW/qyMIYmJ1PO1LjSL6/ZmDDZo3bT8TX9daCKjzDBOPUN1LSBymYVfZjNiLtVkG00JyukZO9zVr6+2r7Fyr2tzaGp7QLGYRG/5cX2K9KiQpx21k3vrPEJFNXU00EDYBjAxkYkJ+tPzeMzZ+7Q==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6705.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 77ede0ba-a9a0-44a9-8003-08d85c71130a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Sep 2020 07:53:19.2175
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1biusgXjg69yUj4lh8uLF5wSSZ500lWECUbqdBWx7LCD3q+mxbfLbnMUhx/ajtmCJbgUyMKMuKHpAVQqCIer4A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB5238
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds a heap that allocates non-contiguous buffers that are
-marked as writecombined, so they are not cached by the CPU.
-
-This is useful, as most graphics buffers are usually not touched
-by the CPU or only written into once by the CPU. So when mapping
-the buffer over and over between devices, we can skip the CPU
-syncing, which saves a lot of cache management overhead, greatly
-improving performance.
-
-For folk using ION, there was a ION_FLAG_CACHED flag, which
-signaled if the returned buffer should be CPU cacheable or not.
-With DMA-BUF heaps, we do not yet have such a flag, and by default
-the current heaps (system and cma) produce CPU cachable buffers.
-So for folks transitioning from ION to DMA-BUF Heaps, this fills
-in some of that missing functionality.
-
-There has been a suggestion to make this functionality a flag
-(DMAHEAP_FLAG_UNCACHED?) on the system heap, similar to how
-ION used the ION_FLAG_CACHED. But I want to make sure an
-_UNCACHED flag would truely be a generic attribute across all
-heaps. So far that has been unclear, so having it as a separate
-heap seemes better for now. (But I'm open to discussion on this
-point!)
-
-Feedback would be very welcome!
-
-Many thanks to Liam Mark for his help to get this working.
-
-Pending opensource users of this code include:
-* AOSP HiKey960 gralloc:
-  - https://android-review.googlesource.com/c/device/linaro/hikey/+/1399519
-  - Visibly improves performance over the system heap
-* AOSP Codec2 (possibly, needs more review):
-  - https://android-review.googlesource.com/c/platform/frameworks/av/+/1360640/17/media/codec2/vndk/C2DmaBufAllocator.cpp#325
-
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: Andrew F. Davis <afd@ti.com>
-Cc: Benjamin Gaignard <benjamin.gaignard@linaro.org>
-Cc: Liam Mark <lmark@codeaurora.org>
-Cc: Laura Abbott <labbott@kernel.org>
-Cc: Brian Starkey <Brian.Starkey@arm.com>
-Cc: Hridya Valsaraju <hridya@google.com>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Ezequiel Garcia <ezequiel@collabora.com>
-Cc: Simon Ser <contact@emersion.fr>
-Cc: James Jones <jajones@nvidia.com>
-Cc: linux-media@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Signed-off-by: John Stultz <john.stultz@linaro.org>
----
-v2:
-* Fix build issue on sh reported-by: kernel test robot <lkp@intel.com>
-* Rework to use for_each_sgtable_sg(), dma_map_sgtable(), and
-  for_each_sg_page() along with numerous other cleanups suggested
-  by Robin Murphy
-v3:
-* Clarified commit message to address questions from last submission
----
- drivers/dma-buf/heaps/Kconfig                |  10 +
- drivers/dma-buf/heaps/Makefile               |   1 +
- drivers/dma-buf/heaps/system_uncached_heap.c | 371 +++++++++++++++++++
- 3 files changed, 382 insertions(+)
- create mode 100644 drivers/dma-buf/heaps/system_uncached_heap.c
-
-diff --git a/drivers/dma-buf/heaps/Kconfig b/drivers/dma-buf/heaps/Kconfig
-index a5eef06c4226..420b0ed0a512 100644
---- a/drivers/dma-buf/heaps/Kconfig
-+++ b/drivers/dma-buf/heaps/Kconfig
-@@ -5,6 +5,16 @@ config DMABUF_HEAPS_SYSTEM
- 	  Choose this option to enable the system dmabuf heap. The system heap
- 	  is backed by pages from the buddy allocator. If in doubt, say Y.
- 
-+config DMABUF_HEAPS_SYSTEM_UNCACHED
-+	bool "DMA-BUF Uncached System Heap"
-+	depends on DMABUF_HEAPS
-+	help
-+	  Choose this option to enable the uncached system dmabuf heap. This
-+	  heap is backed by pages from the buddy allocator, but pages are setup
-+	  for write combining. This avoids cache management overhead, and can
-+	  be faster if pages are mostly untouched by the cpu.  If in doubt,
-+	  say Y.
-+
- config DMABUF_HEAPS_CMA
- 	bool "DMA-BUF CMA Heap"
- 	depends on DMABUF_HEAPS && DMA_CMA
-diff --git a/drivers/dma-buf/heaps/Makefile b/drivers/dma-buf/heaps/Makefile
-index 6e54cdec3da0..085685ec478f 100644
---- a/drivers/dma-buf/heaps/Makefile
-+++ b/drivers/dma-buf/heaps/Makefile
-@@ -1,4 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
- obj-y					+= heap-helpers.o
- obj-$(CONFIG_DMABUF_HEAPS_SYSTEM)	+= system_heap.o
-+obj-$(CONFIG_DMABUF_HEAPS_SYSTEM_UNCACHED) += system_uncached_heap.o
- obj-$(CONFIG_DMABUF_HEAPS_CMA)		+= cma_heap.o
-diff --git a/drivers/dma-buf/heaps/system_uncached_heap.c b/drivers/dma-buf/heaps/system_uncached_heap.c
-new file mode 100644
-index 000000000000..3b8e699bcae7
---- /dev/null
-+++ b/drivers/dma-buf/heaps/system_uncached_heap.c
-@@ -0,0 +1,371 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Uncached System DMA-Heap exporter
-+ *
-+ * Copyright (C) 2020 Linaro Ltd.
-+ *
-+ * Based off of Andrew Davis' SRAM heap:
-+ * Copyright (C) 2019 Texas Instruments Incorporated - http://www.ti.com/
-+ *	Andrew F. Davis <afd@ti.com>
-+ */
-+
-+#include <linux/dma-mapping.h>
-+#include <linux/err.h>
-+#include <linux/highmem.h>
-+#include <linux/io.h>
-+#include <linux/mm.h>
-+#include <linux/scatterlist.h>
-+#include <linux/slab.h>
-+#include <linux/vmalloc.h>
-+#include <linux/dma-buf.h>
-+#include <linux/dma-heap.h>
-+
-+struct uncached_heap {
-+	struct dma_heap *heap;
-+};
-+
-+struct uncached_heap_buffer {
-+	struct dma_heap *heap;
-+	struct list_head attachments;
-+	struct mutex lock;
-+	unsigned long len;
-+	struct sg_table sg_table;
-+	int vmap_cnt;
-+	void *vaddr;
-+};
-+
-+struct dma_heap_attachment {
-+	struct device *dev;
-+	struct sg_table *table;
-+	struct list_head list;
-+};
-+
-+static struct sg_table *dup_sg_table(struct sg_table *table)
-+{
-+	struct sg_table *new_table;
-+	int ret, i;
-+	struct scatterlist *sg, *new_sg;
-+
-+	new_table = kzalloc(sizeof(*new_table), GFP_KERNEL);
-+	if (!new_table)
-+		return ERR_PTR(-ENOMEM);
-+
-+	ret = sg_alloc_table(new_table, table->nents, GFP_KERNEL);
-+	if (ret) {
-+		kfree(new_table);
-+		return ERR_PTR(-ENOMEM);
-+	}
-+
-+	new_sg = new_table->sgl;
-+	for_each_sgtable_sg(table, sg, i) {
-+		sg_set_page(new_sg, sg_page(sg), sg->length, sg->offset);
-+		new_sg = sg_next(new_sg);
-+	}
-+
-+	return new_table;
-+}
-+
-+static int dma_heap_attach(struct dma_buf *dmabuf,
-+			   struct dma_buf_attachment *attachment)
-+{
-+	struct uncached_heap_buffer *buffer = dmabuf->priv;
-+	struct dma_heap_attachment *a;
-+	struct sg_table *table;
-+
-+	a = kzalloc(sizeof(*a), GFP_KERNEL);
-+	if (!a)
-+		return -ENOMEM;
-+
-+	table = dup_sg_table(&buffer->sg_table);
-+	if (IS_ERR(table)) {
-+		kfree(a);
-+		return -ENOMEM;
-+	}
-+
-+	a->table = table;
-+	a->dev = attachment->dev;
-+	INIT_LIST_HEAD(&a->list);
-+
-+	attachment->priv = a;
-+
-+	mutex_lock(&buffer->lock);
-+	list_add(&a->list, &buffer->attachments);
-+	mutex_unlock(&buffer->lock);
-+
-+	return 0;
-+}
-+
-+static void dma_heap_detatch(struct dma_buf *dmabuf,
-+			     struct dma_buf_attachment *attachment)
-+{
-+	struct uncached_heap_buffer *buffer = dmabuf->priv;
-+	struct dma_heap_attachment *a = attachment->priv;
-+
-+	mutex_lock(&buffer->lock);
-+	list_del(&a->list);
-+	mutex_unlock(&buffer->lock);
-+
-+	sg_free_table(a->table);
-+	kfree(a->table);
-+	kfree(a);
-+}
-+
-+static struct sg_table *dma_heap_map_dma_buf(struct dma_buf_attachment *attachment,
-+					     enum dma_data_direction direction)
-+{
-+	struct dma_heap_attachment *a = attachment->priv;
-+	struct sg_table *table = a->table;
-+
-+	if (dma_map_sgtable(attachment->dev, table, direction, DMA_ATTR_SKIP_CPU_SYNC))
-+		return ERR_PTR(-ENOMEM);
-+
-+	return table;
-+}
-+
-+static void dma_heap_unmap_dma_buf(struct dma_buf_attachment *attachment,
-+				   struct sg_table *table,
-+				   enum dma_data_direction direction)
-+{
-+	dma_unmap_sgtable(attachment->dev, table, direction, DMA_ATTR_SKIP_CPU_SYNC);
-+}
-+
-+static int dma_heap_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma)
-+{
-+	struct uncached_heap_buffer *buffer = dmabuf->priv;
-+	struct sg_table *table = &buffer->sg_table;
-+	unsigned long addr = vma->vm_start;
-+	struct sg_page_iter piter;
-+	int ret;
-+
-+	vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
-+
-+	for_each_sgtable_page(table, &piter, vma->vm_pgoff) {
-+		struct page *page = sg_page_iter_page(&piter);
-+
-+		ret = remap_pfn_range(vma, addr, page_to_pfn(page), PAGE_SIZE,
-+				      vma->vm_page_prot);
-+		if (ret)
-+			return ret;
-+		addr += PAGE_SIZE;
-+		if (addr >= vma->vm_end)
-+			return 0;
-+	}
-+	return 0;
-+}
-+
-+static void *dma_heap_do_vmap(struct uncached_heap_buffer *buffer)
-+{
-+	struct sg_table *table = &buffer->sg_table;
-+	int npages = PAGE_ALIGN(buffer->len) / PAGE_SIZE;
-+	struct page **pages = vmalloc(sizeof(struct page *) * npages);
-+	struct page **tmp = pages;
-+	struct sg_page_iter piter;
-+	pgprot_t pgprot;
-+	void *vaddr;
-+
-+	if (!pages)
-+		return ERR_PTR(-ENOMEM);
-+
-+	pgprot = pgprot_writecombine(PAGE_KERNEL);
-+
-+	for_each_sgtable_page(table, &piter, 0) {
-+		WARN_ON(tmp - pages >= npages);
-+		*tmp++ = sg_page_iter_page(&piter);
-+	}
-+
-+	vaddr = vmap(pages, npages, VM_MAP, pgprot);
-+	vfree(pages);
-+
-+	if (!vaddr)
-+		return ERR_PTR(-ENOMEM);
-+
-+	return vaddr;
-+}
-+
-+static void *dma_heap_buffer_vmap_get(struct uncached_heap_buffer *buffer)
-+{
-+	void *vaddr;
-+
-+	if (buffer->vmap_cnt) {
-+		buffer->vmap_cnt++;
-+		return buffer->vaddr;
-+	}
-+
-+	vaddr = dma_heap_do_vmap(buffer);
-+	if (IS_ERR(vaddr))
-+		return vaddr;
-+
-+	buffer->vaddr = vaddr;
-+	buffer->vmap_cnt++;
-+	return vaddr;
-+}
-+
-+static void dma_heap_buffer_vmap_put(struct uncached_heap_buffer *buffer)
-+{
-+	if (!--buffer->vmap_cnt) {
-+		vunmap(buffer->vaddr);
-+		buffer->vaddr = NULL;
-+	}
-+}
-+
-+static void *dma_heap_vmap(struct dma_buf *dmabuf)
-+{
-+	struct uncached_heap_buffer *buffer = dmabuf->priv;
-+	void *vaddr;
-+
-+	mutex_lock(&buffer->lock);
-+	vaddr = dma_heap_buffer_vmap_get(buffer);
-+	mutex_unlock(&buffer->lock);
-+
-+	return vaddr;
-+}
-+
-+static void dma_heap_vunmap(struct dma_buf *dmabuf, void *vaddr)
-+{
-+	struct uncached_heap_buffer *buffer = dmabuf->priv;
-+
-+	mutex_lock(&buffer->lock);
-+	dma_heap_buffer_vmap_put(buffer);
-+	mutex_unlock(&buffer->lock);
-+}
-+
-+static void dma_heap_dma_buf_release(struct dma_buf *dmabuf)
-+{
-+	struct uncached_heap_buffer *buffer = dmabuf->priv;
-+	struct sg_table *table;
-+	struct scatterlist *sg;
-+	int i;
-+
-+	table = &buffer->sg_table;
-+	dma_unmap_sgtable(dma_heap_get_dev(buffer->heap), table, DMA_BIDIRECTIONAL, 0);
-+
-+	for_each_sgtable_sg(table, sg, i)
-+		__free_page(sg_page(sg));
-+	sg_free_table(table);
-+	kfree(buffer);
-+}
-+
-+const struct dma_buf_ops uncached_heap_buf_ops = {
-+	.attach = dma_heap_attach,
-+	.detach = dma_heap_detatch,
-+	.map_dma_buf = dma_heap_map_dma_buf,
-+	.unmap_dma_buf = dma_heap_unmap_dma_buf,
-+	.mmap = dma_heap_mmap,
-+	.vmap = dma_heap_vmap,
-+	.vunmap = dma_heap_vunmap,
-+	.release = dma_heap_dma_buf_release,
-+};
-+
-+static int uncached_heap_allocate(struct dma_heap *heap,
-+				  unsigned long len,
-+				  unsigned long fd_flags,
-+				  unsigned long heap_flags)
-+{
-+	struct uncached_heap_buffer *buffer;
-+	DEFINE_DMA_BUF_EXPORT_INFO(exp_info);
-+	struct dma_buf *dmabuf;
-+	struct sg_table *table;
-+	struct scatterlist *sg;
-+	pgoff_t pagecount;
-+	pgoff_t pg;
-+	int i, ret = -ENOMEM;
-+
-+	buffer = kzalloc(sizeof(*buffer), GFP_KERNEL);
-+	if (!buffer)
-+		return -ENOMEM;
-+
-+	INIT_LIST_HEAD(&buffer->attachments);
-+	mutex_init(&buffer->lock);
-+	buffer->heap = heap;
-+	buffer->len = len;
-+
-+	table = &buffer->sg_table;
-+	pagecount = len / PAGE_SIZE;
-+	if (sg_alloc_table(table, pagecount, GFP_KERNEL))
-+		goto free_buffer;
-+
-+	sg = table->sgl;
-+	for (pg = 0; pg < pagecount; pg++) {
-+		struct page *page;
-+		/*
-+		 * Avoid trying to allocate memory if the process
-+		 * has been killed by SIGKILL
-+		 */
-+		if (fatal_signal_pending(current))
-+			goto free_pages;
-+		page = alloc_page(GFP_KERNEL | __GFP_ZERO);
-+		if (!page)
-+			goto free_pages;
-+		sg_set_page(sg, page, page_size(page), 0);
-+		sg = sg_next(sg);
-+	}
-+
-+	/* create the dmabuf */
-+	exp_info.ops = &uncached_heap_buf_ops;
-+	exp_info.size = buffer->len;
-+	exp_info.flags = fd_flags;
-+	exp_info.priv = buffer;
-+	dmabuf = dma_buf_export(&exp_info);
-+	if (IS_ERR(dmabuf)) {
-+		ret = PTR_ERR(dmabuf);
-+		goto free_pages;
-+	}
-+
-+	ret = dma_buf_fd(dmabuf, fd_flags);
-+	if (ret < 0) {
-+		dma_buf_put(dmabuf);
-+		/* just return, as put will call release and that will free */
-+		return ret;
-+	}
-+
-+	/*
-+	 * XXX This is hackish. While the buffer will be uncached, we need
-+	 * to initially flush cpu cache, since the __GFP_ZERO on the
-+	 * allocation means the zeroing was done by the cpu and thus it is
-+	 * likely cached. Map (and implicitly flush) it out now so we don't
-+	 * get corruption later on.
-+	 *
-+	 * Ideally we could do this without using the heap device as a dummy dev.
-+	 */
-+	dma_map_sgtable(dma_heap_get_dev(heap), table, DMA_BIDIRECTIONAL, 0);
-+
-+	return ret;
-+
-+free_pages:
-+	for_each_sgtable_sg(table, sg, i)
-+		__free_page(sg_page(sg));
-+	sg_free_table(table);
-+free_buffer:
-+	kfree(buffer);
-+
-+	return ret;
-+}
-+
-+static struct dma_heap_ops uncached_heap_ops = {
-+	.allocate = uncached_heap_allocate,
-+};
-+
-+static int uncached_heap_create(void)
-+{
-+	struct uncached_heap *heap;
-+	struct dma_heap_export_info exp_info;
-+
-+	heap = kzalloc(sizeof(*heap), GFP_KERNEL);
-+	if (!heap)
-+		return -ENOMEM;
-+
-+	exp_info.name = "system-uncached";
-+	exp_info.ops = &uncached_heap_ops;
-+	exp_info.priv = heap;
-+	heap->heap = dma_heap_add(&exp_info);
-+	if (IS_ERR(heap->heap)) {
-+		int ret = PTR_ERR(heap->heap);
-+
-+		kfree(heap);
-+		return ret;
-+	}
-+	dma_coerce_mask_and_coherent(dma_heap_get_dev(heap->heap), DMA_BIT_MASK(64));
-+
-+	return 0;
-+}
-+device_initcall(uncached_heap_create);
--- 
-2.17.1
-
+>=20
+> Simply add HOST_PA_TACTIVATE quirk back since it was incorrectly
+> removed before.
+>=20
+> Fixes: 47d054580a75 ("scsi: ufs-mediatek: fix HOST_PA_TACTIVATE quirk for
+> Samsung UFS Devices")
+> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+Reviewed-by: Avri Altman <avri.altman@wdc.com>
