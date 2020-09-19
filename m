@@ -2,320 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CFAD270A0F
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 04:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 117E2270A0D
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 04:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726298AbgISCcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 22:32:36 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:59796 "EHLO huawei.com"
+        id S1726247AbgISCbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 22:31:53 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13316 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726009AbgISCcg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 22:32:36 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 6066E8360B6A16BA0088;
-        Sat, 19 Sep 2020 10:32:34 +0800 (CST)
-Received: from [10.174.179.91] (10.174.179.91) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 19 Sep 2020 10:32:24 +0800
-Subject: Re: [PATCH -next] scsi: hisi_sas: Convert to DEFINE_SHOW_ATTRIBUTE
-To:     luojiaxing <luojiaxing@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        John Garry <john.garry@huawei.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200716084714.7872-1-miaoqinglang@huawei.com>
- <c3bc1f66-2eae-1f9b-58bf-7eacb25739e1@huawei.com>
-From:   miaoqinglang <miaoqinglang@huawei.com>
-Message-ID: <af4ef34b-efbe-ba8f-e988-4b8b7f682814@huawei.com>
-Date:   Sat, 19 Sep 2020 10:32:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726009AbgISCbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 22:31:53 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 9B6D058F76B69594C3DB;
+        Sat, 19 Sep 2020 10:31:49 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 19 Sep 2020 10:31:42 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH net-next] net: micrel: Remove set but not used variable
+Date:   Sat, 19 Sep 2020 10:32:35 +0800
+Message-ID: <20200919023235.23494-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <c3bc1f66-2eae-1f9b-58bf-7eacb25739e1@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.91]
+X-Originating-IP: [10.175.138.68]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fixes gcc '-Wunused-but-set-variable' warning:
 
+drivers/net/ethernet/micrel/ksz884x.c: In function rx_proc:
+drivers/net/ethernet/micrel/ksz884x.c:4981:6: warning: variable ‘rx_status’ set but not used [-Wunused-but-set-variable]
 
-在 2020/7/16 20:39, luojiaxing 写道:
-> Hi, Qinglang
-> 
-> On 2020/7/16 16:47, Qinglang Miao wrote:
->> From: Yongqiang Liu <liuyongqiang13@huawei.com>
->>
->> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
->>
->> Signed-off-by: Yongqiang Liu <liuyongqiang13@huawei.com>
->> ---
->>   drivers/scsi/hisi_sas/hisi_sas_main.c | 137 ++------------------------
->>   1 file changed, 10 insertions(+), 127 deletions(-)
->>
->> diff --git a/drivers/scsi/hisi_sas/hisi_sas_main.c 
->> b/drivers/scsi/hisi_sas/hisi_sas_main.c
->> index 852d2620e..f50b0c78f 100644
->> --- a/drivers/scsi/hisi_sas/hisi_sas_main.c
->> +++ b/drivers/scsi/hisi_sas/hisi_sas_main.c
->> @@ -2870,19 +2870,7 @@ static int hisi_sas_debugfs_global_show(struct 
->> seq_file *s, void *p)
->>       return 0;
->>   }
->> -static int hisi_sas_debugfs_global_open(struct inode *inode, struct 
->> file *filp)
->> -{
->> -    return single_open(filp, hisi_sas_debugfs_global_show,
->> -               inode->i_private);
->> -}
->> -
->> -static const struct file_operations hisi_sas_debugfs_global_fops = {
->> -    .open = hisi_sas_debugfs_global_open,
->> -    .read_iter = seq_read_iter,
->> -    .llseek = seq_lseek,
->> -    .release = single_release,
->> -    .owner = THIS_MODULE,
->> -};
-> 
-> 
-> I saw that your code is different from code in kernel 5.8-rc4, and it 
-> should be as follow:
-> 
-> static const struct file_operations hisi_sas_debugfs_global_fops = {
->      .open = hisi_sas_debugfs_global_open,
->      .read = seq_read,
->      .llseek = seq_lseek,
->      .release = single_release,
->      .owner = THIS_MODULE,
-> };
-> 
-> 
-> Plus, if we use this macro directly when we write this code, it really 
-> makes the code simpler. But if we accept the cleanup now,
-> 
-> we might need to consider evading compilation failures when we merge 
-> these code back to some older kernel (e.g kernel 4.14 for centOS 7.6).
-> 
-> I think this marco is introduced into kernel 4.16-rc2.
-> 
-> 
-> So I don't see much additional benefit to us from this simplification. 
-> But this marco is quite helpful and I think I will use it somewhere else.
-> 
-> Thanks
-> 
-> Jiaxing
-Hi Jiaxing,
+drivers/net/ethernet/micrel/ksz884x.c: In function netdev_get_ethtool_stats:
+drivers/net/ethernet/micrel/ksz884x.c:6512:6: warning: variable ‘rc’ set but not used [-Wunused-but-set-variable]
 
-I think the 'clean-up' patch means to standardize codes, which can also 
-make readers understand codes better.
+these variable is never used, so remove it.
 
-As for 'merge back', if this situation really exists, evading 
-compilation failures should be necessary. But all you need to do is to 
-introduce the macro.
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ drivers/net/ethernet/micrel/ksz884x.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-I respect your opnion anyhow. But I still resent a new patch based 
-against linux-next(20200917) which can be applied to mainline cleanly 
-now just in case you need it.
+diff --git a/drivers/net/ethernet/micrel/ksz884x.c b/drivers/net/ethernet/micrel/ksz884x.c
+index bb646b65cc95..4fe8810bd06e 100644
+--- a/drivers/net/ethernet/micrel/ksz884x.c
++++ b/drivers/net/ethernet/micrel/ksz884x.c
+@@ -4978,7 +4978,6 @@ static inline int rx_proc(struct net_device *dev, struct ksz_hw* hw,
+ 	struct dev_info *hw_priv = priv->adapter;
+ 	struct ksz_dma_buf *dma_buf;
+ 	struct sk_buff *skb;
+-	int rx_status;
+ 
+ 	/* Received length includes 4-byte CRC. */
+ 	packet_len = status.rx.frame_len - 4;
+@@ -5014,7 +5013,7 @@ static inline int rx_proc(struct net_device *dev, struct ksz_hw* hw,
+ 	dev->stats.rx_bytes += packet_len;
+ 
+ 	/* Notify upper layer for received packet. */
+-	rx_status = netif_rx(skb);
++	netif_rx(skb);
+ 
+ 	return 0;
+ }
+@@ -6509,7 +6508,6 @@ static void netdev_get_ethtool_stats(struct net_device *dev,
+ 	int i;
+ 	int n;
+ 	int p;
+-	int rc;
+ 	u64 counter[TOTAL_PORT_COUNTER_NUM];
+ 
+ 	mutex_lock(&hw_priv->lock);
+@@ -6530,19 +6528,19 @@ static void netdev_get_ethtool_stats(struct net_device *dev,
+ 
+ 	if (1 == port->mib_port_cnt && n < SWITCH_PORT_NUM) {
+ 		p = n;
+-		rc = wait_event_interruptible_timeout(
++		wait_event_interruptible_timeout(
+ 			hw_priv->counter[p].counter,
+ 			2 == hw_priv->counter[p].read,
+ 			HZ * 1);
+ 	} else
+ 		for (i = 0, p = n; i < port->mib_port_cnt - n; i++, p++) {
+ 			if (0 == i) {
+-				rc = wait_event_interruptible_timeout(
++				wait_event_interruptible_timeout(
+ 					hw_priv->counter[p].counter,
+ 					2 == hw_priv->counter[p].read,
+ 					HZ * 2);
+ 			} else if (hw->port_mib[p].cnt_ptr) {
+-				rc = wait_event_interruptible_timeout(
++				wait_event_interruptible_timeout(
+ 					hw_priv->counter[p].counter,
+ 					2 == hw_priv->counter[p].read,
+ 					HZ * 1);
+-- 
+2.17.1
 
-Thanks.
-
-> 
->> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_global);
->>   static int hisi_sas_debugfs_axi_show(struct seq_file *s, void *p)
->>   {
->> @@ -2897,19 +2885,7 @@ static int hisi_sas_debugfs_axi_show(struct 
->> seq_file *s, void *p)
->>       return 0;
->>   }
->> -static int hisi_sas_debugfs_axi_open(struct inode *inode, struct file 
->> *filp)
->> -{
->> -    return single_open(filp, hisi_sas_debugfs_axi_show,
->> -               inode->i_private);
->> -}
->> -
->> -static const struct file_operations hisi_sas_debugfs_axi_fops = {
->> -    .open = hisi_sas_debugfs_axi_open,
->> -    .read_iter = seq_read_iter,
->> -    .llseek = seq_lseek,
->> -    .release = single_release,
->> -    .owner = THIS_MODULE,
->> -};
->> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_axi);
->>   static int hisi_sas_debugfs_ras_show(struct seq_file *s, void *p)
->>   {
->> @@ -2924,19 +2900,7 @@ static int hisi_sas_debugfs_ras_show(struct 
->> seq_file *s, void *p)
->>       return 0;
->>   }
->> -static int hisi_sas_debugfs_ras_open(struct inode *inode, struct file 
->> *filp)
->> -{
->> -    return single_open(filp, hisi_sas_debugfs_ras_show,
->> -               inode->i_private);
->> -}
->> -
->> -static const struct file_operations hisi_sas_debugfs_ras_fops = {
->> -    .open = hisi_sas_debugfs_ras_open,
->> -    .read_iter = seq_read_iter,
->> -    .llseek = seq_lseek,
->> -    .release = single_release,
->> -    .owner = THIS_MODULE,
->> -};
->> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_ras);
->>   static int hisi_sas_debugfs_port_show(struct seq_file *s, void *p)
->>   {
->> @@ -2951,18 +2915,7 @@ static int hisi_sas_debugfs_port_show(struct 
->> seq_file *s, void *p)
->>       return 0;
->>   }
->> -static int hisi_sas_debugfs_port_open(struct inode *inode, struct 
->> file *filp)
->> -{
->> -    return single_open(filp, hisi_sas_debugfs_port_show, 
->> inode->i_private);
->> -}
->> -
->> -static const struct file_operations hisi_sas_debugfs_port_fops = {
->> -    .open = hisi_sas_debugfs_port_open,
->> -    .read_iter = seq_read_iter,
->> -    .llseek = seq_lseek,
->> -    .release = single_release,
->> -    .owner = THIS_MODULE,
->> -};
->> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_port);
->>   static void hisi_sas_show_row_64(struct seq_file *s, int index,
->>                    int sz, __le64 *ptr)
->> @@ -3019,18 +2972,7 @@ static int hisi_sas_debugfs_cq_show(struct 
->> seq_file *s, void *p)
->>       return 0;
->>   }
->> -static int hisi_sas_debugfs_cq_open(struct inode *inode, struct file 
->> *filp)
->> -{
->> -    return single_open(filp, hisi_sas_debugfs_cq_show, 
->> inode->i_private);
->> -}
->> -
->> -static const struct file_operations hisi_sas_debugfs_cq_fops = {
->> -    .open = hisi_sas_debugfs_cq_open,
->> -    .read_iter = seq_read_iter,
->> -    .llseek = seq_lseek,
->> -    .release = single_release,
->> -    .owner = THIS_MODULE,
->> -};
->> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_cq);
->>   static void hisi_sas_dq_show_slot(struct seq_file *s, int slot, void 
->> *dq_ptr)
->>   {
->> @@ -3052,18 +2994,7 @@ static int hisi_sas_debugfs_dq_show(struct 
->> seq_file *s, void *p)
->>       return 0;
->>   }
->> -static int hisi_sas_debugfs_dq_open(struct inode *inode, struct file 
->> *filp)
->> -{
->> -    return single_open(filp, hisi_sas_debugfs_dq_show, 
->> inode->i_private);
->> -}
->> -
->> -static const struct file_operations hisi_sas_debugfs_dq_fops = {
->> -    .open = hisi_sas_debugfs_dq_open,
->> -    .read_iter = seq_read_iter,
->> -    .llseek = seq_lseek,
->> -    .release = single_release,
->> -    .owner = THIS_MODULE,
->> -};
->> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_dq);
->>   static int hisi_sas_debugfs_iost_show(struct seq_file *s, void *p)
->>   {
->> @@ -3080,18 +3011,7 @@ static int hisi_sas_debugfs_iost_show(struct 
->> seq_file *s, void *p)
->>       return 0;
->>   }
->> -static int hisi_sas_debugfs_iost_open(struct inode *inode, struct 
->> file *filp)
->> -{
->> -    return single_open(filp, hisi_sas_debugfs_iost_show, 
->> inode->i_private);
->> -}
->> -
->> -static const struct file_operations hisi_sas_debugfs_iost_fops = {
->> -    .open = hisi_sas_debugfs_iost_open,
->> -    .read_iter = seq_read_iter,
->> -    .llseek = seq_lseek,
->> -    .release = single_release,
->> -    .owner = THIS_MODULE,
->> -};
->> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_iost);
->>   static int hisi_sas_debugfs_iost_cache_show(struct seq_file *s, void 
->> *p)
->>   {
->> @@ -3117,20 +3037,7 @@ static int 
->> hisi_sas_debugfs_iost_cache_show(struct seq_file *s, void *p)
->>       return 0;
->>   }
->> -static int hisi_sas_debugfs_iost_cache_open(struct inode *inode,
->> -                        struct file *filp)
->> -{
->> -    return single_open(filp, hisi_sas_debugfs_iost_cache_show,
->> -               inode->i_private);
->> -}
->> -
->> -static const struct file_operations hisi_sas_debugfs_iost_cache_fops = {
->> -    .open = hisi_sas_debugfs_iost_cache_open,
->> -    .read_iter = seq_read_iter,
->> -    .llseek = seq_lseek,
->> -    .release = single_release,
->> -    .owner = THIS_MODULE,
->> -};
->> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_iost_cache);
->>   static int hisi_sas_debugfs_itct_show(struct seq_file *s, void *p)
->>   {
->> @@ -3147,18 +3054,7 @@ static int hisi_sas_debugfs_itct_show(struct 
->> seq_file *s, void *p)
->>       return 0;
->>   }
->> -static int hisi_sas_debugfs_itct_open(struct inode *inode, struct 
->> file *filp)
->> -{
->> -    return single_open(filp, hisi_sas_debugfs_itct_show, 
->> inode->i_private);
->> -}
->> -
->> -static const struct file_operations hisi_sas_debugfs_itct_fops = {
->> -    .open = hisi_sas_debugfs_itct_open,
->> -    .read_iter = seq_read_iter,
->> -    .llseek = seq_lseek,
->> -    .release = single_release,
->> -    .owner = THIS_MODULE,
->> -};
->> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_itct);
->>   static int hisi_sas_debugfs_itct_cache_show(struct seq_file *s, void 
->> *p)
->>   {
->> @@ -3184,20 +3080,7 @@ static int 
->> hisi_sas_debugfs_itct_cache_show(struct seq_file *s, void *p)
->>       return 0;
->>   }
->> -static int hisi_sas_debugfs_itct_cache_open(struct inode *inode,
->> -                        struct file *filp)
->> -{
->> -    return single_open(filp, hisi_sas_debugfs_itct_cache_show,
->> -               inode->i_private);
->> -}
->> -
->> -static const struct file_operations hisi_sas_debugfs_itct_cache_fops = {
->> -    .open = hisi_sas_debugfs_itct_cache_open,
->> -    .read_iter = seq_read_iter,
->> -    .llseek = seq_lseek,
->> -    .release = single_release,
->> -    .owner = THIS_MODULE,
->> -};
->> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_itct_cache);
->>   static void hisi_sas_debugfs_create_files(struct hisi_hba *hisi_hba)
->>   {
-> 
-> .
