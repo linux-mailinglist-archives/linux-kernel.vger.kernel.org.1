@@ -2,66 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93111270CD3
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 12:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FAB5270CD5
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 12:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726174AbgISKMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 06:12:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726041AbgISKL7 (ORCPT
+        id S1726262AbgISKMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 06:12:30 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:45980 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726041AbgISKMa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 06:11:59 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6F22C0613CE
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 03:11:59 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id o6so7820016ota.2
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 03:11:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=ujiHBwaaGNuMhzojZ2C69RM25MjRj77aVtoAsKFcXTM=;
-        b=DzwnlYARzA1xvWPGMx2xX60ZRK1avUffnr+pouWzObbOT59KRpQkDZXHLYHvVTF7do
-         MW8ZA/B5x8uoHXL8hiF1byVldlyXLRNmLP2V9m627uVcYZUvlDDzAsupyT6NJoeOIpmh
-         D7H4NOFSfZx9++LhtNyvjogUUaEi9W+n39Vw+tiQgBrQBjyiE8tnNqrTu3vI1Byy4VcF
-         NdnjUAPoRpFM3MQ4XAlCBmojBskNmoRNVWzhrW1ADUU2gMHCo0a2sPRqSJXWJUEsjvBw
-         wpm+um+VFKhIy81+I8GXcTAiDKLHSfW7rWjOKnBapLtaxnLlri+qe7vUOSKsbIhYst3w
-         aMmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=ujiHBwaaGNuMhzojZ2C69RM25MjRj77aVtoAsKFcXTM=;
-        b=dAQs190037xPRJ+m4g/DUBELDX+Xg2WTFqX/suvYuqkVnUG5V6p/y8SK8Qp+gp/rYY
-         UTJ9JNArulXkTajRZw6sjM+ADz7GD6hfuM779x8yfpOe/xegzmUGSGr2ngoauDOXS7z8
-         kDAb0S3kQCMfWNSCktUQHHyPyRk5NslezGd7eHMk0yrSr/pRSr8ffyQNzQSVfnZNpjSn
-         VGPck10er1ZhEB5fHHEp6olqxzqajSnlXNInnLuRSaeQDp/7/Py253EhLFgFegeYs8U7
-         h+WPkJmqUlU3s1sTdG4AY2wt2+RQlYwP/gYrLSSCZinUzfV+sJcjTsJEjityrP6ZXYYY
-         0mxg==
-X-Gm-Message-State: AOAM532EFriRErm4rdXew/9RVxxd5xKy6hy3QEJjjUknHDld5LB207fM
-        +9YU5ZC6Cma0ENvECxr4XyHbQywCav6d6y59fOsNZ9tYVlM=
-X-Google-Smtp-Source: ABdhPJwgWv60cDI7m/RMyft7kGwS2w3Z6DiIIM14RzGG4wEkRxLLbmWAmNu7M4PaQH3BP6++toaJV3f9sdEaGIgghgI=
-X-Received: by 2002:a05:6830:1553:: with SMTP id l19mr24021025otp.6.1600510319213;
- Sat, 19 Sep 2020 03:11:59 -0700 (PDT)
+        Sat, 19 Sep 2020 06:12:30 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 58F291C0B85; Sat, 19 Sep 2020 12:12:27 +0200 (CEST)
+Date:   Sat, 19 Sep 2020 12:12:27 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>
+Cc:     linux-leds@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
+        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org,
+        Simon Guinot <simon.guinot@sequanux.org>,
+        Simon Guinot <sguinot@lacie.com>,
+        Vincent Donnefort <vdonnefort@gmail.com>,
+        Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH leds v2 48/50] leds: ns2: reorder headers alphabetically
+Message-ID: <20200919101227.GB16109@duo.ucw.cz>
+References: <20200917223338.14164-1-marek.behun@nic.cz>
+ <20200917223338.14164-49-marek.behun@nic.cz>
 MIME-Version: 1.0
-Received: by 2002:a9d:4e84:0:0:0:0:0 with HTTP; Sat, 19 Sep 2020 03:11:58
- -0700 (PDT)
-Reply-To: jessicavail020@gmail.com
-From:   Jessica Vail <dossesemekonawo@gmail.com>
-Date:   Sat, 19 Sep 2020 10:11:58 +0000
-Message-ID: <CAAp7hYyoKzi_maiQrqaPYCsMGEXwoSWf8fsHWYVvqprQ2CHysw@mail.gmail.com>
-Subject: Hi
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="A6N2fC+uXW/VQSAv"
+Content-Disposition: inline
+In-Reply-To: <20200917223338.14164-49-marek.behun@nic.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi dear,
 
-I'm Jessica Vail, from the United States,please i wish to have a
-communication with you.
+--A6N2fC+uXW/VQSAv
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I wait for your answer.
+On Fri 2020-09-18 00:33:36, Marek Beh=FAn wrote:
+> Reorder #includes alphabetically.
 
-Jessica Vail.
+No.
+							Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--A6N2fC+uXW/VQSAv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX2XZiwAKCRAw5/Bqldv6
+8qNGAJkBbiYtuHt+9zfwR1LjLvQrl0hbrQCggevbgWHjQ8d0L1GE9htac2efTXM=
+=H7i6
+-----END PGP SIGNATURE-----
+
+--A6N2fC+uXW/VQSAv--
