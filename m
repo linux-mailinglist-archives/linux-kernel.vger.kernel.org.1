@@ -2,326 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7459A271062
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 21:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC6827106A
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Sep 2020 22:05:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726649AbgISTxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 15:53:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46084 "EHLO
+        id S1726642AbgISUE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 16:04:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726518AbgISTxn (ORCPT
+        with ESMTP id S1726511AbgISUE5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 15:53:43 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B89F2C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 12:53:42 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id l17so9157436edq.12
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 12:53:42 -0700 (PDT)
+        Sat, 19 Sep 2020 16:04:57 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C554C0613CE;
+        Sat, 19 Sep 2020 13:04:57 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id n22so9264024edt.4;
+        Sat, 19 Sep 2020 13:04:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc
          :content-transfer-encoding;
-        bh=qMwGB/6Q8iuh06nESVxnQhD9mhvdXzNztX0AnrMhLHo=;
-        b=Av22sauDdvg5f8PJXeQVU4ypMPuew4aeryx9oJBswTAhrJHWsVkgSte0K74F7AR5GT
-         IbrGAYZhgWen0QxSEd5Ccij1pT9wnVpFZGkFzWPglsy9z2hz4EqfIjvB3sMvyaDA2w0c
-         nL+TPQqa1eSsXRqyA6nkzEWPoMegpGQ+J/UeA1rqUiDgNqxePx/CsrwhqteSgmkswNqk
-         7dSuWWmhxQCwL3ESjeMtfWemDZYOsra4XP6FznaRG+4xGZH2V1w4W9xai+R/BnQBXi/T
-         HTy8StVIlM5ONAj0vexUroJMm37GBhGfir8cHX7bgZIr/CTD6FUDDWUiZ6dbLZIpc4c3
-         Os8Q==
+        bh=VNdVm0qjWANV+k8o/qFZrx8yrtDDDYIfNRixrZTkFtI=;
+        b=kskcrheTxsjTIrQVeP6MdQi4U5gZ/ntOTUiAAnZlvSwJADnMKFK4DlxPR1Xhyy+Zu+
+         PMQgTNzkZBRJ9+T4tIfQ8WNrAdJrjZ+zfC4lvEjZmSW/Fn0vy0Kn9NBTSLCVpVbLlC25
+         pkLT21r2ucwZsAiAsl11SZpR6ygnqgWwWc04fqtRT8fyK9XdpPkp9L5fv9kEF9j5ZD83
+         pMtMFva23ct8DQGw2o1fKLuIpLYj4DpjBJtXutr+2CsZpqVkuQuM8uGty4A823sGV1Nr
+         VGolbaVRUYi145kKu8Y+HzWvsUzxyUzD0esZot13I5bw9SxFpJjHykcvMGf4LL+ayDn4
+         xNug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
          :content-transfer-encoding;
-        bh=qMwGB/6Q8iuh06nESVxnQhD9mhvdXzNztX0AnrMhLHo=;
-        b=jjuMvBnGCW2H3Z1KpotDABMd9l+RVoMshaFuRrGC+lMSA5ry09W+yYl/3WnZVKIeDQ
-         DFs6jr2VytZi0zuYPyQq28Yk8wsZC09Vm2CtLYx+wVZGvJ53HoC+D6x+js8iBFy8UgHW
-         /6eofP3JdaTAHo8hCV2FhAzLDdCXsuMv/byk5LLxuAk6NiFizTX/25ZCiFExhted2hWZ
-         2F14qMDK6YEl6vx8bk5wHWquR6u1GZlRDwz1KfcBu30Hgi/eq9GdC+jNt1FHCoyFupUM
-         ++pfjqDgZrIX9KRk4tZBBsBNfm/LtvRqksNZ2Zw2+Cl5Ib+Q4uy7um/L+BpNssXYs9uu
-         6C6A==
-X-Gm-Message-State: AOAM532Bdf3wYf2io92GhAiWSa7NwQL3np1TM9iP2EqKFBoYig2W0NkN
-        DwpuLbwQvt153Htoi4wAn58xa8WQUYH5bxgwKHk=
-X-Google-Smtp-Source: ABdhPJwl3da6h+kCC6DLGgNphfmJ0WGAOBmg2rj2XT2NbMiwRvB0yOEG972ZAybPmrRI/nyI6ETh/g==
-X-Received: by 2002:a50:bb26:: with SMTP id y35mr46674569ede.234.1600545221134;
-        Sat, 19 Sep 2020 12:53:41 -0700 (PDT)
-Received: from localhost.localdomain ([2001:16b8:5c3d:1401:6946:9f46:bd13:f4c6])
-        by smtp.gmail.com with ESMTPSA id h5sm4978881ejk.41.2020.09.19.12.53.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Sep 2020 12:53:40 -0700 (PDT)
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Tony Lindgren <tony@atomide.com>, Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@gmail.com>,
-        Trent Piepho <tpiepho@gmail.com>,
-        Christina Quast <cquast@hanoverdisplays.com>,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org
-Cc:     Drew Fustini <drew@beagleboard.org>
-Subject: [PATCH] ARM: dts: am335x: guardian: switch to AM33XX_PADCONF
-Date:   Sat, 19 Sep 2020 21:52:00 +0200
-Message-Id: <20200919195159.3126193-1-drew@beagleboard.org>
-X-Mailer: git-send-email 2.25.1
+        bh=VNdVm0qjWANV+k8o/qFZrx8yrtDDDYIfNRixrZTkFtI=;
+        b=DK0AOe/ugO7Oxc+Jy3+Z3RkxoR3BRZ2CT37KBYsbfbanwKm4MJxNECVMt/kGX3c61F
+         fNlX6XhcODQlxhHOQQpcShy/g+M0VNlQrXMoJ48gNXoo+V26HH77/M2EurPljXP6liaI
+         Hn+a6H2/BqZW9SApRfrBE//nN8eccIBs89hL7G/wbtahpDuDlDmf5Tg1dyx1shgQL+6K
+         SYFYEhqTT2bh1a6MZESbVzg1bvlVScUZ6lAa2G9RTwJ29KldDmk1BPG94Q4xjPBAnuIC
+         eS31oYvIARqhDriWLxw5gEA2J0uXJnwaCYVLTS7tdTSvj7l8ThkpExc/Vywzu6CIg7ON
+         8VLA==
+X-Gm-Message-State: AOAM532dyKz60RxLoNFTnVQV5h2m6oV+ZPQEKgu6oSEQIdlwGOp4+SIj
+        htfxmDARIgtcVG/YYlQ+s4uXYImWUNJ3Pqdv4dPT1yRQW+i9Iw==
+X-Google-Smtp-Source: ABdhPJzHKwVw+CxCv0ZligwmUeji7ZCv31u0VbhT9/h/+ebgnwuR0WCpOqOdSOlIQSTIOmt3TeykAg2ugseJGbyoEiA=
+X-Received: by 2002:aa7:cad3:: with SMTP id l19mr43047942edt.352.1600545895900;
+ Sat, 19 Sep 2020 13:04:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   =?UTF-8?Q?Mikael_Wikstr=C3=B6m?= <leakim.wikstrom@gmail.com>
+Date:   Sat, 19 Sep 2020 22:04:45 +0200
+Message-ID: <CADGsf-Gs9EM770jTVX=yABBLAT1rdfBYb5jam720yqez=D3VHg@mail.gmail.com>
+Subject: [PATCH] HID: multitouch: Lenovo X1 Tablet Gen3 trackpoint and buttons
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change the pin defintions from AM33XX_IOPAD to AM33XX_PADCONF macro so
-that it correctly handles changes to #pinctrl-cells.
+One more device that needs 40d5bb87 to resolve regression for the trackpoin=
+t
+and three mouse buttons on the type cover of the Lenovo X1 Tablet Gen3.
 
-Fixes: 27c90e5e48d0 ("ARM: dts: am33xx-l4: change #pinctrl-cells from 1 to 2")
-Reported-by: Trent Piepho <tpiepho@gmail.com>
-Link: https://lore.kernel.org/linux-omap/3139716.CMS8C0sQ7x@zen.local/
-Signed-off-by: Drew Fustini <drew@beagleboard.org>
+It is probably also needed for the Lenovo X1 Tablet Gen2 with PID 0x60a3
+
+Signed-off-by: Mikael Wikstr=C3=B6m <leakim.wikstrom@gmail.com>
 ---
- arch/arm/boot/dts/am335x-guardian.dts | 172 +++++++++++++-------------
- 1 file changed, 86 insertions(+), 86 deletions(-)
+ drivers/hid/hid-ids.h        | 1 +
+ drivers/hid/hid-multitouch.c | 6 ++++++
+ 2 files changed, 7 insertions(+)
 
-diff --git a/arch/arm/boot/dts/am335x-guardian.dts b/arch/arm/boot/dts/am335x-guardian.dts
-index 1918766c1f80..56c9cd674d98 100644
---- a/arch/arm/boot/dts/am335x-guardian.dts
-+++ b/arch/arm/boot/dts/am335x-guardian.dts
-@@ -339,152 +339,152 @@ &am33xx_pinmux {
- 
- 	clkout2_pin: pinmux_clkout2_pin {
- 		pinctrl-single,pins = <
--			AM33XX_IOPAD(0x9b4, PIN_OUTPUT_PULLDOWN | MUX_MODE3)
-+			AM33XX_PADCONF(0x9b4, PIN_OUTPUT_PULLDOWN, MUX_MODE3)
- 		>;
- 	};
- 
- 	dmtimer7_pins: pinmux_dmtimer7_pins {
- 		pinctrl-single,pins = <
--			AM33XX_IOPAD(0x968, PIN_OUTPUT | MUX_MODE5)
-+			AM33XX_PADCONF(0x968, PIN_OUTPUT, MUX_MODE5)
- 		>;
- 	};
- 
- 	gpio_keys_pins: pinmux_gpio_keys_pins {
- 		pinctrl-single,pins = <
--			AM33XX_IOPAD(0x940, PIN_INPUT | MUX_MODE7)
-+			AM33XX_PADCONF(0x940, PIN_INPUT, MUX_MODE7)
- 		>;
- 	};
- 
- 	gpio_pins: pinmux_gpio_pins {
- 		pinctrl-single,pins = <
--			AM33XX_IOPAD(0x928, PIN_OUTPUT | MUX_MODE7)
--			AM33XX_IOPAD(0x990, PIN_OUTPUT | MUX_MODE7)
-+			AM33XX_PADCONF(0x928, PIN_OUTPUT, MUX_MODE7)
-+			AM33XX_PADCONF(0x990, PIN_OUTPUT, MUX_MODE7)
- 		>;
- 	};
- 
- 	i2c0_pins: pinmux_i2c0_pins {
- 		pinctrl-single,pins = <
--			AM33XX_IOPAD(0x988, PIN_INPUT_PULLUP | MUX_MODE0)
--			AM33XX_IOPAD(0x98c, PIN_INPUT_PULLUP | MUX_MODE0)
-+			AM33XX_PADCONF(0x988, PIN_INPUT_PULLUP, MUX_MODE0)
-+			AM33XX_PADCONF(0x98c, PIN_INPUT_PULLUP, MUX_MODE0)
- 		>;
- 	};
- 
- 	lcd_disen_pins: pinmux_lcd_disen_pins {
- 		pinctrl-single,pins = <
--			AM33XX_IOPAD(0x9a4, PIN_OUTPUT_PULLUP | SLEWCTRL_SLOW | MUX_MODE7)
-+			AM33XX_PADCONF(0x9a4, PIN_OUTPUT_PULLUP | SLEWCTRL_SLOW, MUX_MODE7)
- 		>;
- 	};
- 
- 	lcd_pins_default: pinmux_lcd_pins_default {
- 		pinctrl-single,pins = <
--			AM33XX_IOPAD(0x820, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE1)
--			AM33XX_IOPAD(0x824, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE1)
--			AM33XX_IOPAD(0x828, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE1)
--			AM33XX_IOPAD(0x82c, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE1)
--			AM33XX_IOPAD(0x830, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE1)
--			AM33XX_IOPAD(0x834, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE1)
--			AM33XX_IOPAD(0x838, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE1)
--			AM33XX_IOPAD(0x83c, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE1)
--			AM33XX_IOPAD(0x8a0, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
--			AM33XX_IOPAD(0x8a4, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
--			AM33XX_IOPAD(0x8a8, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
--			AM33XX_IOPAD(0x8ac, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
--			AM33XX_IOPAD(0x8b0, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
--			AM33XX_IOPAD(0x8b4, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
--			AM33XX_IOPAD(0x8b8, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
--			AM33XX_IOPAD(0x8bc, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
--			AM33XX_IOPAD(0x8c0, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
--			AM33XX_IOPAD(0x8c4, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
--			AM33XX_IOPAD(0x8c8, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
--			AM33XX_IOPAD(0x8cc, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
--			AM33XX_IOPAD(0x8d0, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
--			AM33XX_IOPAD(0x8d4, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
--			AM33XX_IOPAD(0x8d8, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
--			AM33XX_IOPAD(0x8dc, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
--			AM33XX_IOPAD(0x8e0, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
--			AM33XX_IOPAD(0x8e4, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
--			AM33XX_IOPAD(0x8e8, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
--			AM33XX_IOPAD(0x8ec, PIN_OUTPUT | SLEWCTRL_SLOW | MUX_MODE0)
-+			AM33XX_PADCONF(0x820, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE1)
-+			AM33XX_PADCONF(0x824, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE1)
-+			AM33XX_PADCONF(0x828, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE1)
-+			AM33XX_PADCONF(0x82c, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE1)
-+			AM33XX_PADCONF(0x830, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE1)
-+			AM33XX_PADCONF(0x834, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE1)
-+			AM33XX_PADCONF(0x838, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE1)
-+			AM33XX_PADCONF(0x83c, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE1)
-+			AM33XX_PADCONF(0x8a0, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
-+			AM33XX_PADCONF(0x8a4, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
-+			AM33XX_PADCONF(0x8a8, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
-+			AM33XX_PADCONF(0x8ac, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
-+			AM33XX_PADCONF(0x8b0, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
-+			AM33XX_PADCONF(0x8b4, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
-+			AM33XX_PADCONF(0x8b8, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
-+			AM33XX_PADCONF(0x8bc, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
-+			AM33XX_PADCONF(0x8c0, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
-+			AM33XX_PADCONF(0x8c4, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
-+			AM33XX_PADCONF(0x8c8, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
-+			AM33XX_PADCONF(0x8cc, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
-+			AM33XX_PADCONF(0x8d0, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
-+			AM33XX_PADCONF(0x8d4, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
-+			AM33XX_PADCONF(0x8d8, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
-+			AM33XX_PADCONF(0x8dc, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
-+			AM33XX_PADCONF(0x8e0, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
-+			AM33XX_PADCONF(0x8e4, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
-+			AM33XX_PADCONF(0x8e8, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
-+			AM33XX_PADCONF(0x8ec, PIN_OUTPUT | SLEWCTRL_SLOW, MUX_MODE0)
- 		>;
- 	};
- 
- 	lcd_pins_sleep: pinmux_lcd_pins_sleep {
- 		pinctrl-single,pins = <
--			AM33XX_IOPAD(0x8a0, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
--			AM33XX_IOPAD(0x8a4, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
--			AM33XX_IOPAD(0x8a8, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
--			AM33XX_IOPAD(0x8ac, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
--			AM33XX_IOPAD(0x8b0, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
--			AM33XX_IOPAD(0x8b4, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
--			AM33XX_IOPAD(0x8b8, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
--			AM33XX_IOPAD(0x8bc, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
--			AM33XX_IOPAD(0x8c0, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
--			AM33XX_IOPAD(0x8c4, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
--			AM33XX_IOPAD(0x8c8, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
--			AM33XX_IOPAD(0x8cc, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
--			AM33XX_IOPAD(0x8d0, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
--			AM33XX_IOPAD(0x8d4, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
--			AM33XX_IOPAD(0x8d8, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
--			AM33XX_IOPAD(0x8dc, PULL_DISABLE | SLEWCTRL_SLOW | MUX_MODE7)
--			AM33XX_IOPAD(0x8e0, PIN_INPUT_PULLDOWN | SLEWCTRL_SLOW | MUX_MODE7)
--			AM33XX_IOPAD(0x8e4, PIN_INPUT_PULLDOWN | SLEWCTRL_SLOW | MUX_MODE7)
--			AM33XX_IOPAD(0x8e8, PIN_INPUT_PULLDOWN | SLEWCTRL_SLOW | MUX_MODE7)
--			AM33XX_IOPAD(0x8ec, PIN_INPUT_PULLDOWN | SLEWCTRL_SLOW | MUX_MODE7)
-+			AM33XX_PADCONF(0x8a0, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
-+			AM33XX_PADCONF(0x8a4, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
-+			AM33XX_PADCONF(0x8a8, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
-+			AM33XX_PADCONF(0x8ac, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
-+			AM33XX_PADCONF(0x8b0, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
-+			AM33XX_PADCONF(0x8b4, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
-+			AM33XX_PADCONF(0x8b8, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
-+			AM33XX_PADCONF(0x8bc, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
-+			AM33XX_PADCONF(0x8c0, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
-+			AM33XX_PADCONF(0x8c4, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
-+			AM33XX_PADCONF(0x8c8, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
-+			AM33XX_PADCONF(0x8cc, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
-+			AM33XX_PADCONF(0x8d0, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
-+			AM33XX_PADCONF(0x8d4, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
-+			AM33XX_PADCONF(0x8d8, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
-+			AM33XX_PADCONF(0x8dc, PULL_DISABLE | SLEWCTRL_SLOW, MUX_MODE7)
-+			AM33XX_PADCONF(0x8e0, PIN_INPUT_PULLDOWN | SLEWCTRL_SLOW, MUX_MODE7)
-+			AM33XX_PADCONF(0x8e4, PIN_INPUT_PULLDOWN | SLEWCTRL_SLOW, MUX_MODE7)
-+			AM33XX_PADCONF(0x8e8, PIN_INPUT_PULLDOWN | SLEWCTRL_SLOW, MUX_MODE7)
-+			AM33XX_PADCONF(0x8ec, PIN_INPUT_PULLDOWN | SLEWCTRL_SLOW, MUX_MODE7)
- 		>;
- 	};
- 
- 	leds_pins: pinmux_leds_pins {
- 		pinctrl-single,pins = <
--			AM33XX_IOPAD(0x868, PIN_OUTPUT | MUX_MODE7)
--			AM33XX_IOPAD(0x86c, PIN_OUTPUT | MUX_MODE7)
-+			AM33XX_PADCONF(0x868, PIN_OUTPUT, MUX_MODE7)
-+			AM33XX_PADCONF(0x86c, PIN_OUTPUT, MUX_MODE7)
- 		>;
- 	};
- 
- 	mmc1_pins: pinmux_mmc1_pins {
- 		pinctrl-single,pins = <
--			AM33XX_IOPAD(0x8f0, PIN_INPUT_PULLUP | MUX_MODE0)
--			AM33XX_IOPAD(0x8f4, PIN_INPUT_PULLUP | MUX_MODE0)
--			AM33XX_IOPAD(0x8f8, PIN_INPUT_PULLUP | MUX_MODE0)
--			AM33XX_IOPAD(0x8fc, PIN_INPUT_PULLUP | MUX_MODE0)
--			AM33XX_IOPAD(0x900, PIN_INPUT_PULLUP | MUX_MODE0)
--			AM33XX_IOPAD(0x904, PIN_INPUT_PULLUP | MUX_MODE0)
--			AM33XX_IOPAD(0x960, PIN_INPUT | MUX_MODE7)
-+			AM33XX_PADCONF(0x8f0, PIN_INPUT_PULLUP, MUX_MODE0)
-+			AM33XX_PADCONF(0x8f4, PIN_INPUT_PULLUP, MUX_MODE0)
-+			AM33XX_PADCONF(0x8f8, PIN_INPUT_PULLUP, MUX_MODE0)
-+			AM33XX_PADCONF(0x8fc, PIN_INPUT_PULLUP, MUX_MODE0)
-+			AM33XX_PADCONF(0x900, PIN_INPUT_PULLUP, MUX_MODE0)
-+			AM33XX_PADCONF(0x904, PIN_INPUT_PULLUP, MUX_MODE0)
-+			AM33XX_PADCONF(0x960, PIN_INPUT, MUX_MODE7)
- 		>;
- 	};
- 
- 	spi0_pins: pinmux_spi0_pins {
- 		pinctrl-single,pins = <
--			AM33XX_IOPAD(0x950, PIN_OUTPUT_PULLDOWN | MUX_MODE0)
--			AM33XX_IOPAD(0x954, PIN_OUTPUT_PULLUP | MUX_MODE0)
--			AM33XX_IOPAD(0x958, PIN_INPUT_PULLUP | MUX_MODE0)
--			AM33XX_IOPAD(0x95c, PIN_OUTPUT_PULLUP | MUX_MODE0)
-+			AM33XX_PADCONF(0x950, PIN_OUTPUT_PULLDOWN, MUX_MODE0)
-+			AM33XX_PADCONF(0x954, PIN_OUTPUT_PULLUP, MUX_MODE0)
-+			AM33XX_PADCONF(0x958, PIN_INPUT_PULLUP, MUX_MODE0)
-+			AM33XX_PADCONF(0x95c, PIN_OUTPUT_PULLUP, MUX_MODE0)
- 		>;
- 	};
- 
- 	uart0_pins: pinmux_uart0_pins {
- 		pinctrl-single,pins = <
--			AM33XX_IOPAD(0x970, PIN_INPUT_PULLUP | MUX_MODE0)
--			AM33XX_IOPAD(0x974, PIN_OUTPUT_PULLDOWN | MUX_MODE0)
-+			AM33XX_PADCONF(0x970, PIN_INPUT_PULLUP, MUX_MODE0)
-+			AM33XX_PADCONF(0x974, PIN_OUTPUT_PULLDOWN, MUX_MODE0)
- 		>;
- 	};
- 
- 	nandflash_pins: pinmux_nandflash_pins {
- 		pinctrl-single,pins = <
--			AM33XX_IOPAD(0x800, PIN_INPUT | MUX_MODE0)
--			AM33XX_IOPAD(0x804, PIN_INPUT | MUX_MODE0)
--			AM33XX_IOPAD(0x808, PIN_INPUT | MUX_MODE0)
--			AM33XX_IOPAD(0x80c, PIN_INPUT | MUX_MODE0)
--			AM33XX_IOPAD(0x810, PIN_INPUT | MUX_MODE0)
--			AM33XX_IOPAD(0x814, PIN_INPUT | MUX_MODE0)
--			AM33XX_IOPAD(0x818, PIN_INPUT | MUX_MODE0)
--			AM33XX_IOPAD(0x81c, PIN_INPUT | MUX_MODE0)
--			AM33XX_IOPAD(0x870, PIN_INPUT | MUX_MODE0)
--			AM33XX_IOPAD(0x874, PIN_OUTPUT | MUX_MODE0)
--			AM33XX_IOPAD(0x87c, PIN_OUTPUT | MUX_MODE0)
--			AM33XX_IOPAD(0x890, PIN_OUTPUT | MUX_MODE0)
--			AM33XX_IOPAD(0x894, PIN_OUTPUT | MUX_MODE0)
--			AM33XX_IOPAD(0x898, PIN_OUTPUT | MUX_MODE0)
--			AM33XX_IOPAD(0x89c, PIN_OUTPUT | MUX_MODE0)
-+			AM33XX_PADCONF(0x800, PIN_INPUT, MUX_MODE0)
-+			AM33XX_PADCONF(0x804, PIN_INPUT, MUX_MODE0)
-+			AM33XX_PADCONF(0x808, PIN_INPUT, MUX_MODE0)
-+			AM33XX_PADCONF(0x80c, PIN_INPUT, MUX_MODE0)
-+			AM33XX_PADCONF(0x810, PIN_INPUT, MUX_MODE0)
-+			AM33XX_PADCONF(0x814, PIN_INPUT, MUX_MODE0)
-+			AM33XX_PADCONF(0x818, PIN_INPUT, MUX_MODE0)
-+			AM33XX_PADCONF(0x81c, PIN_INPUT, MUX_MODE0)
-+			AM33XX_PADCONF(0x870, PIN_INPUT, MUX_MODE0)
-+			AM33XX_PADCONF(0x874, PIN_OUTPUT, MUX_MODE0)
-+			AM33XX_PADCONF(0x87c, PIN_OUTPUT, MUX_MODE0)
-+			AM33XX_PADCONF(0x890, PIN_OUTPUT, MUX_MODE0)
-+			AM33XX_PADCONF(0x894, PIN_OUTPUT, MUX_MODE0)
-+			AM33XX_PADCONF(0x898, PIN_OUTPUT, MUX_MODE0)
-+			AM33XX_PADCONF(0x89c, PIN_OUTPUT, MUX_MODE0)
- 		>;
- 	};
- };
--- 
-2.25.1
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index 74fc1df6e3c2..6a6e2c1b6090 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -727,6 +727,7 @@
+ #define USB_DEVICE_ID_LENOVO_TP10UBKBD 0x6062
+ #define USB_DEVICE_ID_LENOVO_TPPRODOCK 0x6067
+ #define USB_DEVICE_ID_LENOVO_X1_COVER 0x6085
++#define USB_DEVICE_ID_LENOVO_X1_TAB3 0x60b5
+ #define USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_608D 0x608d
+ #define USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_6019 0x6019
+ #define USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_602E 0x602e
+diff --git a/drivers/hid/hid-multitouch.c b/drivers/hid/hid-multitouch.c
+index e3152155c4b8..99f041afd5c0 100644
+--- a/drivers/hid/hid-multitouch.c
++++ b/drivers/hid/hid-multitouch.c
+@@ -1973,6 +1973,12 @@ static const struct hid_device_id mt_devices[] =3D {
+  HID_DEVICE(BUS_I2C, HID_GROUP_GENERIC,
+  USB_VENDOR_ID_LG, I2C_DEVICE_ID_LG_7010) },
 
++ /* Lenovo X1 TAB Gen 3 */
++ { .driver_data =3D MT_CLS_WIN_8_FORCE_MULTI_INPUT,
++ HID_DEVICE(BUS_USB, HID_GROUP_MULTITOUCH_WIN_8,
++    USB_VENDOR_ID_LENOVO,
++    USB_DEVICE_ID_LENOVO_X1_TAB3) },
++
+  /* MosArt panels */
+  { .driver_data =3D MT_CLS_CONFIDENCE_MINUS_ONE,
+  MT_USB_DEVICE(USB_VENDOR_ID_ASUS,
+--=20
+2.26.2
