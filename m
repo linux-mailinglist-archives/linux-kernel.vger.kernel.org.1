@@ -2,81 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C6D271861
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 00:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9E65271866
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 00:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726326AbgITWZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 18:25:18 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:52162 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726239AbgITWZS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 18:25:18 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 522241C0B7A; Mon, 21 Sep 2020 00:25:13 +0200 (CEST)
-Date:   Mon, 21 Sep 2020 00:25:12 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Marek Behun <marek.behun@nic.cz>
-Cc:     linux-leds@vger.kernel.org,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>, dmurphy@ti.com,
-        linux-kernel@vger.kernel.org, Antonio Ospite <ao2@ao2.it>
-Subject: Re: [PATCH leds] leds: regulator: remove driver
-Message-ID: <20200920222512.GD31397@duo.ucw.cz>
-References: <20200920204203.17148-1-marek.behun@nic.cz>
- <20200920214647.GC31397@duo.ucw.cz>
- <20200920235312.7da1dd51@nic.cz>
+        id S1726359AbgITWjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 18:39:46 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:55394 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726126AbgITWjq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 18:39:46 -0400
+X-Greylist: delayed 1529 seconds by postgrey-1.27 at vger.kernel.org; Sun, 20 Sep 2020 18:39:45 EDT
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1kK7b2-0005lD-9m; Mon, 21 Sep 2020 00:14:12 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     linus.walleij@linaro.org, Jianqun Xu <jay.xu@rock-chips.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        Jianqun Xu <jay.xu@rock-chips.com>
+Subject: Re: [PATCH 2/2] pinctrl: rockchip: make driver be tristate module
+Date:   Mon, 21 Sep 2020 00:14:11 +0200
+Message-ID: <5373086.oXRXx9yCqB@diego>
+In-Reply-To: <20200914003847.10341-1-jay.xu@rock-chips.com>
+References: <20200907025927.9713-3-jay.xu@rock-chips.com> <20200914003847.10341-1-jay.xu@rock-chips.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="n/aVsWSeQ4JHkrmm"
-Content-Disposition: inline
-In-Reply-To: <20200920235312.7da1dd51@nic.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am Montag, 14. September 2020, 02:38:47 CEST schrieb Jianqun Xu:
+> Make pinctrl-rockchip driver to be tristate module, support to build as
+> a module, this is useful for GKI.
+> 
+> Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
 
---n/aVsWSeQ4JHkrmm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Heiko Stuebner <heiko@sntech.de>
 
-Hi!
+> ---
+>  drivers/pinctrl/Kconfig            |  2 +-
+>  drivers/pinctrl/pinctrl-rockchip.c | 13 +++++++++++++
+>  2 files changed, 14 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
+> index 4284f39a5c61..743eb2bb8709 100644
+> --- a/drivers/pinctrl/Kconfig
+> +++ b/drivers/pinctrl/Kconfig
+> @@ -207,7 +207,7 @@ config PINCTRL_OXNAS
+>  	select MFD_SYSCON
+>  
+>  config PINCTRL_ROCKCHIP
+> -	bool
+> +	tristate "Rockchip gpio and pinctrl driver"
+>  	depends on OF
+>  	select PINMUX
+>  	select GENERIC_PINCONF
+> diff --git a/drivers/pinctrl/pinctrl-rockchip.c b/drivers/pinctrl/pinctrl-rockchip.c
+> index 0401c1da79dd..927d132d6716 100644
+> --- a/drivers/pinctrl/pinctrl-rockchip.c
+> +++ b/drivers/pinctrl/pinctrl-rockchip.c
+> @@ -16,10 +16,12 @@
+>   */
+>  
+>  #include <linux/init.h>
+> +#include <linux/module.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/io.h>
+>  #include <linux/bitops.h>
+>  #include <linux/gpio/driver.h>
+> +#include <linux/of_device.h>
+>  #include <linux/of_address.h>
+>  #include <linux/of_irq.h>
+>  #include <linux/pinctrl/machine.h>
+> @@ -4258,3 +4260,14 @@ static int __init rockchip_pinctrl_drv_register(void)
+>  	return platform_driver_register(&rockchip_pinctrl_driver);
+>  }
+>  postcore_initcall(rockchip_pinctrl_drv_register);
+> +
+> +static void __exit rockchip_pinctrl_drv_unregister(void)
+> +{
+> +	platform_driver_unregister(&rockchip_pinctrl_driver);
+> +}
+> +module_exit(rockchip_pinctrl_drv_unregister);
+> +
+> +MODULE_DESCRIPTION("ROCKCHIP Pin Controller Driver");
+> +MODULE_LICENSE("GPL");
+> +MODULE_ALIAS("platform:pinctrl-rockchip");
+> +MODULE_DEVICE_TABLE(of, rockchip_pinctrl_dt_match);
+> 
 
-> > > The leds-regulator driver only supports the old platform data binding
-> > > and no in-tree code uses it. It also seems that no OpenWRT board uses
-> > > it.
-> > >=20
-> > > Remove this driver. =20
-> >=20
-> > Lets keep this one.
->=20
-> Very well.
->=20
-> > Connecting LED directly to regulator simply makes sense.
->=20
-> It does makes sence to me as well, but at least it needs to be
-> rewritten to use OF instead of platdata. The way it is written now it
-> is not used by anyone, apparently.
 
-I'd say that first person that needs it gets to fix it for their needs
-:-). I'd suggest simply ignoring it for now.
 
-Best regards,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
 
---n/aVsWSeQ4JHkrmm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX2fWyAAKCRAw5/Bqldv6
-8jqbAJ9Ftt5Uv9mlhyhmb+uzoa0dCxwdlwCeMGHlCcAlBYyjWr1HSbvlKgyTrdk=
-=wJHY
------END PGP SIGNATURE-----
-
---n/aVsWSeQ4JHkrmm--
