@@ -2,104 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D8A2714B4
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 15:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED8CC2714C0
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 16:01:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726467AbgITN4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 09:56:11 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:46411 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726305AbgITN4J (ORCPT
+        id S1726392AbgITOBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 10:01:21 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:56823 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726311AbgITOBV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 09:56:09 -0400
-Received: from mail-qk1-f179.google.com ([209.85.222.179]) by
- mrelayeu.kundenserver.de (mreue011 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1MMoOy-1k1Dwv2q28-00Ijbf; Sun, 20 Sep 2020 15:56:05 +0200
-Received: by mail-qk1-f179.google.com with SMTP id w16so12205786qkj.7;
-        Sun, 20 Sep 2020 06:56:04 -0700 (PDT)
-X-Gm-Message-State: AOAM533+Tg7GsRoHCgP40ir59ld5C/1Vm0N7+PC3SG26gIqEIleq3ONH
-        fksm3LFFVG+V0/cydp/yoybdjQO0QWCzFdtRnVg=
-X-Google-Smtp-Source: ABdhPJwjhkL3KLtOGKzNMPo/as4noBlQ9Jb8z4PXaKINeNIOOA3tWOtTq+bHeowiwT9kTTVa6K2ILOsBaWuTHLMSx30=
-X-Received: by 2002:a37:a495:: with SMTP id n143mr41151530qke.394.1600610163343;
- Sun, 20 Sep 2020 06:56:03 -0700 (PDT)
+        Sun, 20 Sep 2020 10:01:21 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id EF1F35C0065;
+        Sun, 20 Sep 2020 10:01:19 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Sun, 20 Sep 2020 10:01:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=A/ZjnwvXqRqqm+QgiPPmKStHh/4
+        JwIXaKDmYW+WEZVI=; b=Tv6jedMRKhwNpGlOhrdkmsHUsL7R233wB2kNUVkTzNZ
+        ncNIAnTgWuGMV0mbSeoxaULjMEI/L8Uwp/6iy5fYr5yb/1kM5Jwf/JKNycMkTIEC
+        Pa3G9N6PRSixSNgIz/xOAZtKPnDCLLD1PrLi9JnU9v64DbEeNa+pv753yqZXE9fr
+        JvyZhN2qld5vKxmmPz7+9shaXIG0uBCRuHBG91KXCW51l0sO0PEe82Eh3FL8bRzR
+        3XE0gE0OS5Jwte7vgFlZ0E156hQ6RrR8YNk/f+DUr22QT5OGoVEF72WGVYw04cqj
+        //hDgmqV+9GJP2830lQgaDn9YicBWcRU+biSf8IZsKg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=A/Zjnw
+        vXqRqqm+QgiPPmKStHh/4JwIXaKDmYW+WEZVI=; b=G5WvkymRwyYFntEqpm9vQ/
+        UplUMvaCfZiECsCrA03wXsp2ahfu4NYhf8zRcPSHxyou+nCs/VhQtl/iEihMWhia
+        ZzYUDqGiokGu1UvK/+9s6heBSqqyBU2hYdVN8ykH8TAUb+K2zU+/nP5yFk130IpN
+        9Y4kVAaaoNaNRtnFYvTPv1uwM+H7OPPn8T67wmNwOr1kwkxMzOVAUcXWsubAM3Es
+        bn32N1aJsktNHX2GsfgHf3TO/UVMGgDaze/+7YqFZ3wXH1vYffLEXf71JTYPd3M8
+        uXZHyqe24jYWCuH5vEofL9JK0T8guJl8ZhdAiDPqpV2oeGuKfRsENLICey9KP28Q
+        ==
+X-ME-Sender: <xms:rmBnX5YQSMUgNgZvgOA3ObGfJz7jrWLHoUtptZ6MRC_4KdTHt-5P-Q>
+    <xme:rmBnXwbw02TIxPJUYFlHol_IvDNAPOjrXFn_aJ3HAfDIlS2SFR5how4Sg3k7pZMFC
+    Nq3Dlb2O5x9Nw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtgdejudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
+    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
+    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeekfedr
+    keeirdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
+X-ME-Proxy: <xmx:rmBnX7_uyshV2v7D72jpxmFEKuLzJ-ChQoZdyo8g-fTz7PRZr2U3lg>
+    <xmx:rmBnX3qt3s8BdL4DlIBUbxHvi6PnrAJai1RadIiGmM1SK_5x2onhTw>
+    <xmx:rmBnX0o9Z4ZpNkb7avo0qQ9T5ELogtun1f99eY6frv5VfWxOzj8TWg>
+    <xmx:r2BnX9lRnSq1k_hy9fPewKqmU3ew_E5TyQ-ZyZWv-vatirvMUqgquw>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 59A70328005E;
+        Sun, 20 Sep 2020 10:01:18 -0400 (EDT)
+Date:   Sun, 20 Sep 2020 16:01:43 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Crypto List <linux-crypto@vger.kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the staging tree with the crypto tree
+Message-ID: <20200920140143.GB2886633@kroah.com>
+References: <20200918152127.4414b524@canb.auug.org.au>
+ <20200918054134.GA9252@gondor.apana.org.au>
+ <20200918074911.GA987884@kroah.com>
+ <20200918075036.GA24315@gondor.apana.org.au>
 MIME-Version: 1.0
-References: <20200918124533.3487701-1-hch@lst.de> <20200918124533.3487701-2-hch@lst.de>
- <20200918134012.GY3421308@ZenIV.linux.org.uk> <20200918134406.GA17064@lst.de>
- <20200918135822.GZ3421308@ZenIV.linux.org.uk> <20200918151615.GA23432@lst.de> <20200919220920.GI3421308@ZenIV.linux.org.uk>
-In-Reply-To: <20200919220920.GI3421308@ZenIV.linux.org.uk>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sun, 20 Sep 2020 15:55:47 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3QApj3isPu3TkLahArsfb5jaABb7DJ7EKMxey1T1YPbA@mail.gmail.com>
-Message-ID: <CAK8P3a3QApj3isPu3TkLahArsfb5jaABb7DJ7EKMxey1T1YPbA@mail.gmail.com>
-Subject: Re: [PATCH 1/9] kernel: add a PF_FORCE_COMPAT flag
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        David Howells <dhowells@redhat.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        linux-aio <linux-aio@kvack.org>, io-uring@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Networking <netdev@vger.kernel.org>, keyrings@vger.kernel.org,
-        LSM List <linux-security-module@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:DEeFGJUPrk6u/LSjSFLEBpcAP+oeK32PoUjTZYC6fPIs6n+k1mv
- XDMz6XlgCh1Nyx4j17+27me+L64NgDjpVdd7dXJCFrjon/aTAyIu+oh95nm9X9KaWl6wa9w
- jNEmllGRXAiSS7LrTZQ8rS4tQWtbNU8yEqoB7YoTh84C0NTdLZyWEaqn7c0+w0xlPbaxYu4
- ur3P1v08FrYIfJVpNVfUg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6mkBVY6Bong=:SqXPt0trLeYLMHgx1cvXuJ
- U5p4iiPSwCCzF8iboycWFBfO05sNkLPSd9pwnBrqqztOBcPkNasCWa49qwp+g4/XCsXhPAeIp
- ZEo2wIs2JuHkQHCsr1J07cwiEuu+Jpl8XT2iP7S5i5y3yZeYsvvpW+zjEoGvo0lUUzt50b+DF
- d+etXRDTAS4MI0KZwR66GwCASGNxKnFcidiAQ7uHqKF4jBCdVZRVVC3unjWR/zDQrf1UsSGl5
- yiA+FMkQ1meD61zxEhK4DYTj39EHaC1fCYgevYfr50bwM5KeXfxunkJdrXZB40zmP6hwiP8U7
- ZAYUI2x6IdnJZ7j005UTxSUKkFfiSfHKfIcRoNLVxmyXZFSZpZv1lHhqR5Lc7mlnrYMV7yfwX
- jEWPWgGYdVS/0Pqp4mDctdka7FBBmnDQpnQCFWndo9r29o5kZmF/0FWZTAYaiXIc1zXQ0CNGs
- ITo99AkK8c2i8ikDCjq3PgczN6CdTTM3aiqzqHKeSvyXfbkvI1hCX/5ydNZHKVZf8msKr2S8H
- vq/kWx12tz5+znGWLFrLlf7992gz4tbGhg+ohl2KdxHhWBaLbGq7B7TrxKF2dX7bnaN+L5Zp/
- vJ8JYq605hJO1se4r8NW3ew1++WG531E7DL/6Lx0YnzfRjxiToXb8Pg4KnyC0djlxEMEwUAlv
- CmSJKACAV0HY6EMSYJ8+oWpo6MOxbBfBPrBaLdo9nEybAZsqUhO7gMBhw4FLPWxPNJ4TahNDG
- ZB13aOM7zMIaLy9bXTcJUkAShP8ZyjBNl+F3C7ClxLkP593ksjcwF70rTpIg8nnqaoxY/0Dee
- smdON9VOaGsvyMjHBc085FK8V3s316O5YhVW2qcAg2UzaNBdL/34eax1MABsisTpCdIrIGW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200918075036.GA24315@gondor.apana.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 20, 2020 at 12:09 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
-> On Fri, Sep 18, 2020 at 05:16:15PM +0200, Christoph Hellwig wrote:
-> > On Fri, Sep 18, 2020 at 02:58:22PM +0100, Al Viro wrote:
-> > > Said that, why not provide a variant that would take an explicit
-> > > "is it compat" argument and use it there?  And have the normal
-> > > one pass in_compat_syscall() to that...
+On Fri, Sep 18, 2020 at 05:50:36PM +1000, Herbert Xu wrote:
+> On Fri, Sep 18, 2020 at 09:49:11AM +0200, Greg KH wrote:
 > >
-> > That would help to not introduce a regression with this series yes.
-> > But it wouldn't fix existing bugs when io_uring is used to access
-> > read or write methods that use in_compat_syscall().  One example that
-> > I recently ran into is drivers/scsi/sg.c.
->
-> So screw such read/write methods - don't use them with io_uring.
-> That, BTW, is one of the reasons I'm sceptical about burying the
-> decisions deep into the callchain - we don't _want_ different
-> data layouts on read/write depending upon the 32bit vs. 64bit
-> caller, let alone the pointer-chasing garbage that is /dev/sg.
+> > Ok, I'll go revert these.
+> 
+> Thanks!
+> 
+> > > As the driver has been converted over to the lib arc4 API, it
+> > > does not need to select CRYPTO at all.
+> > 
+> > Is it converted in your tree?  If so, have a branch/tag I can pull in to
+> > prevent merge issues in the future?
+> 
+> It's in the cryptodev tree, but unfortunately it's not in a
+> topic branch so you'd be pulling all other crypto changes along
+> with it.
 
-Would it be too late to limit what kind of file descriptors we allow
-io_uring to read/write on?
+Sorry for the delay, this is now fixed up in my tree.
 
-If io_uring can get changed to return -EINVAL on trying to
-read/write something other than S_IFREG file descriptors,
-that particular problem space gets a lot simpler, but this
-is of course only possible if nobody actually relies on it yet.
-
-      Arnd
+greg k-h
