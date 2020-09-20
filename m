@@ -2,60 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44982271296
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 08:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F240D27129C
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 08:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726321AbgITGPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 02:15:02 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:36522 "EHLO
+        id S1726368AbgITGRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 02:17:49 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:47918 "EHLO
         mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726200AbgITGPB (ORCPT
+        with ESMTP id S1726200AbgITGRs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 02:15:01 -0400
+        Sun, 20 Sep 2020 02:17:48 -0400
 Received: from marcel-macbook.fritz.box (p4fefc7f4.dip0.t-ipconnect.de [79.239.199.244])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 9727CCECC4;
-        Sun, 20 Sep 2020 08:21:57 +0200 (CEST)
+        by mail.holtmann.org (Postfix) with ESMTPSA id B8E5ACEC92;
+        Sun, 20 Sep 2020 08:24:44 +0200 (CEST)
 Content-Type: text/plain;
         charset=us-ascii
 Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
-Subject: Re: [PATCH v3 2/6] Bluetooth: Set scan parameters for ADV Monitor
+Subject: Re: [PATCH v1] Bluetooth: btusb: Enable wide band speech support for
+ BTUSB_QCA_ROME
 From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20200918111110.v3.2.I8aafface41460f81241717da0498419a533bd165@changeid>
-Date:   Sun, 20 Sep 2020 08:14:59 +0200
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        Manish Mandlik <mmandlik@chromium.org>, alainm@chromium.org,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+In-Reply-To: <20200917130923.15237-1-rjliao@codeaurora.org>
+Date:   Sun, 20 Sep 2020 08:17:46 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org
 Content-Transfer-Encoding: 7bit
-Message-Id: <A78820F2-CA17-452A-88E4-0BF670BE1BB4@holtmann.org>
-References: <20200918111110.v3.1.I27ef2a783d8920c147458639f3fa91b69f6fd9ea@changeid>
- <20200918111110.v3.2.I8aafface41460f81241717da0498419a533bd165@changeid>
-To:     Howard Chung <howardchung@google.com>
+Message-Id: <6D9F38F1-D350-4D32-8D30-A316AD1A9400@holtmann.org>
+References: <20200917130923.15237-1-rjliao@codeaurora.org>
+To:     Rocky Liao <rjliao@codeaurora.org>
 X-Mailer: Apple Mail (2.3608.120.23.2.1)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Howard,
+Hi Rocky,
 
-> Set scan parameters when there is at least one Advertisement monitor.
+> QCA Rome supports wide band speech, this patch enables the wide band
+> speech support by set the BTUSB_WIDEBAND_SPEECH flag.
 > 
-> Signed-off-by: Howard Chung <howardchung@google.com>
-> Reviewed-by: Alain Michaud <alainm@chromium.org>
-> Reviewed-by: Manish Mandlik <mmandlik@chromium.org>
-> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+> Signed-off-by: Rocky Liao <rjliao@codeaurora.org>
 > ---
-> 
-> (no changes since v1)
-> 
-> net/bluetooth/hci_request.c | 3 +++
-> 1 file changed, 3 insertions(+)
+> drivers/bluetooth/btusb.c | 54 ++++++++++++++++++++++++++-------------
+> 1 file changed, 36 insertions(+), 18 deletions(-)
 
 patch has been applied to bluetooth-next tree.
 
