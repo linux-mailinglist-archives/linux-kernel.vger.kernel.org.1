@@ -2,92 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE4B22717BC
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 21:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 413BC2717BD
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 21:59:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726495AbgITT7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 15:59:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45344 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726126AbgITT7R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 15:59:17 -0400
-Received: from localhost.localdomain (unknown [194.230.155.191])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726522AbgITT7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 15:59:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726126AbgITT7X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 15:59:23 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 247A3C061755;
+        Sun, 20 Sep 2020 12:59:23 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C053020866;
-        Sun, 20 Sep 2020 19:59:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600631956;
-        bh=TcC5o7oGoxPxKy945MH6L8dlc5AwUItnlYwmPDxOllk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wyT45BFv4hL1QtbJvmfvVADPzg70pl9gioaWiHvEzSf1uM2hWivFSYNmHFGTAIgfO
-         2HwsytuIGl94oangcN7+OkHz4JJ2UbiNtD10m9UupjUSOABqLEydyoPKg/xSgFFaVY
-         fMWLc+varUXjHd7iVV4xaCd84LXQdNw0QrWVN2vc=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Stefan Agner <stefan@agner.ch>, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v3 4/4] dt-bindings: gpio: gpio-vf610: fix iMX 7ULP compatible matching
-Date:   Sun, 20 Sep 2020 21:58:48 +0200
-Message-Id: <20200920195848.27075-4-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200920195848.27075-1-krzk@kernel.org>
-References: <20200920195848.27075-1-krzk@kernel.org>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bvdgr1vNsz9sSn;
+        Mon, 21 Sep 2020 05:59:20 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1600631960;
+        bh=K9EwikCZOZe93VOpyvhvMl2J14PPghHc7s8jzz7I4bo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=NZK+b0Ei2b5/kQwV2qigyePE+9JmHoERxQ7TkdHq33IdiocdUD7Jki0dVsCnrMa9C
+         w5tEhjICiCKTw+Qtedx1a6J+yvRW8H3G7B9ZXA3oFknp9V46jK39TynsUxBrFuhC9H
+         jQyMr/o9nIZTsLJHtJqxNBgL9R7IcHMZiqeTU8L+gLy5xNqA0R33g1ZTcR2MRoCFIO
+         3+xawo7rNevd236sbSH3S0NzDHd3LbxVFO/fc99lXkjJww5NkPMKzfpkCqR50PFy9q
+         2ylgReTpeoxqckBYjpDu1J3NEPwDVYDq1/Ac7Bbg6VL4Y4HXETRlp85AGQnK1M1amE
+         rMP9EerV5nB1w==
+Date:   Mon, 21 Sep 2020 05:59:19 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus =?UTF-8?B?TMO8c3Npbmc=?= <linus.luessing@c0d3.blue>,
+        Simon Wunderlich <sw@simonwunderlich.de>,
+        Sven Eckelmann <sven@narfation.org>
+Subject: linux-next: Fixes tag needs some work in the net tree
+Message-ID: <20200921055919.5bf70643@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/3zBD.H+RxUu5w60cb04Omgo";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The i.MX 7ULP DTSes use two compatibles so update the binding to fix
-dtbs_check warnings like:
+--Sig_/3zBD.H+RxUu5w60cb04Omgo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-  arch/arm/boot/dts/imx7ulp-com.dt.yaml: gpio@40ae0000:
-    compatible: ['fsl,imx7ulp-gpio', 'fsl,vf610-gpio'] is too long
+Hi all,
 
-  arch/arm/boot/dts/imx7ulp-com.dt.yaml: gpio@40ae0000:
-    compatible: Additional items are not allowed ('fsl,vf610-gpio' was unexpected)
+In commit
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+  2369e8270469 ("batman-adv: mcast: fix duplicate mcast packets from BLA ba=
+ckbone to mesh")
 
----
+Fixes tag
 
-Changes since v2:
-1. None, split from previous patchset using common GPIO schema
+  Fixes: 279e89b2281a ("batman-adv: add broadcast duplicate check")
 
-Changes since v1:
-1. New patch
----
- Documentation/devicetree/bindings/gpio/gpio-vf610.yaml | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+has these problem(s):
 
-diff --git a/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml b/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml
-index 6ac5a78ad3da..19738a457a58 100644
---- a/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml
-+++ b/Documentation/devicetree/bindings/gpio/gpio-vf610.yaml
-@@ -19,9 +19,11 @@ description: |
- 
- properties:
-   compatible:
--    enum:
--      - fsl,vf610-gpio
--      - fsl,imx7ulp-gpio
-+    oneOf:
-+      - const: fsl,vf610-gpio
-+      - items:
-+          - const: fsl,imx7ulp-gpio
-+          - const: fsl,vf610-gpio
- 
-   reg:
-     description: The first reg tuple represents the PORT module, the second tuple
--- 
-2.17.1
+  - Subject does not match target commit subject
 
+Did you mean:
+
+Fixes: 279e89b2281a ("batman-adv: bla: use netif_rx_ni when not in interrup=
+t context")
+
+or
+
+Fixes: fe2da6ff27c7 ("batman-adv: add broadcast duplicate check")
+
+
+In commit
+
+  74c09b727512 ("batman-adv: mcast: fix duplicate mcast packets in BLA back=
+bone from mesh")
+
+Fixes tag
+
+  Fixes: fe2da6ff27c7 ("batman-adv: check incoming packet type for bla")
+
+has these problem(s):
+
+  - Subject does not match target commit subject
+
+Did you mean
+
+Fixes: fe2da6ff27c7 ("batman-adv: add broadcast duplicate check")
+
+or
+
+Fixes 2d3f6ccc4ea5 ("batman-adv: check incoming packet type for bla")
+
+
+In commit
+
+  3236d215ad38 ("batman-adv: mcast: fix duplicate mcast packets in BLA back=
+bone from LAN")
+
+Fixes tag
+
+  Fixes: 2d3f6ccc4ea5 ("batman-adv: Modified forwarding behaviour for multi=
+cast packets")
+
+has these problem(s):
+
+  - Subject does not match target commit subject
+
+Did you mean
+
+Fixes 2d3f6ccc4ea5 ("batman-adv: check incoming packet type for bla")
+(I could find no commit with subject "batman-adv: Modified forwarding
+behaviour for multicast packets".)
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/3zBD.H+RxUu5w60cb04Omgo
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9ntJcACgkQAVBC80lX
+0GzOwwf/dHL8KMvsPVKLBC6BGQmHNRzPzlvbjtewXdD2wtVcM4asRzmziElIZR64
+pmLD1+LgtQv+2YNdKA8Do2pinHvaIh1bAbNq7hm9QEN1z5nAOzpHrbJ84USadtoA
+zipWk+U0PVFOIZWwYKDujXpNBz6NOK9ugRUpQ+FHYRetJTBK9Dsm4sUhu3lJloPz
+PRkzx7p0VhcKC9EPJvjFoRMD7uDLuGxF1HCQGLPkTYQO1gAqMq8C04rETiqa9xk1
+ANYTOWETAgoVyD1QI1jjLtVfv4HVeFY6J9I6UbvMRi3B6rEoJmJAP0cqqURVLMgk
+1MY/Q73YJv3O7NFp5KXQmipSrrUdcg==
+=QBMA
+-----END PGP SIGNATURE-----
+
+--Sig_/3zBD.H+RxUu5w60cb04Omgo--
