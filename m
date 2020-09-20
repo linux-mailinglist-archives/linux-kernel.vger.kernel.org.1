@@ -2,85 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE56B271787
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 21:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22299271796
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 21:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726343AbgITT2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 15:28:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34124 "EHLO mail.kernel.org"
+        id S1726253AbgITTdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 15:33:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43650 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726109AbgITT2e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 15:28:34 -0400
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B83EB2145D
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 19:28:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600630114;
-        bh=MvoJlqBNzeGMhQj08qmauzE2jefx91WtS5O4xpiUc2w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JjkWdzs8l4VG7axJD8j1N7zsDNyHx01VvIoenQP0XrkbTc8PSIPFDC+ocOwK5vc2K
-         RrxibNtkQ6Bu2l0c6FA8qAmsm6Zk+9gHRRr0jrtaswknN6/RVSUvSl9tUHIGyxATeV
-         mD5rOKF8ZZ6lwaLYgtTds2laysQr8iIjXXnAGF54=
-Received: by mail-wr1-f52.google.com with SMTP id c18so10566712wrm.9
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 12:28:33 -0700 (PDT)
-X-Gm-Message-State: AOAM531FqzPBQrH1n3YdZYj+TojjfsRqo1j8lKHESZ7mIeylGt21FiFI
-        89w8WfXaiA6ZrmDphdmZ+clqiReTOPLSI74YbyUS8A==
-X-Google-Smtp-Source: ABdhPJyGRJyXPIIAcXrNp8ibkDlg/u7fNSqAcKhSzeIjm5dJtxkt9PxOngbofryv0JcZUoQWH7pgaf1q3lhvPecaOZc=
-X-Received: by 2002:a5d:6a47:: with SMTP id t7mr48111800wrw.75.1600630112287;
- Sun, 20 Sep 2020 12:28:32 -0700 (PDT)
+        id S1726109AbgITTdP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 15:33:15 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E234CAD49;
+        Sun, 20 Sep 2020 19:33:49 +0000 (UTC)
+Date:   Sun, 20 Sep 2020 21:33:12 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, x86-ml <x86@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] efi/urgent for v5.9-rc6
+Message-ID: <20200920193312.GD13044@zn.tnic>
 MIME-Version: 1.0
-References: <20200918124533.3487701-1-hch@lst.de> <20200918124533.3487701-2-hch@lst.de>
- <20200920151510.GS32101@casper.infradead.org> <20200920180742.GN3421308@ZenIV.linux.org.uk>
- <20200920190159.GT32101@casper.infradead.org> <20200920191031.GQ3421308@ZenIV.linux.org.uk>
- <20200920192259.GU32101@casper.infradead.org>
-In-Reply-To: <20200920192259.GU32101@casper.infradead.org>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Sun, 20 Sep 2020 12:28:20 -0700
-X-Gmail-Original-Message-ID: <CALCETrXVtBkxNJcMxf9myaKT9snHKbCWUenKHGRfp8AOtORBPg@mail.gmail.com>
-Message-ID: <CALCETrXVtBkxNJcMxf9myaKT9snHKbCWUenKHGRfp8AOtORBPg@mail.gmail.com>
-Subject: Re: [PATCH 1/9] kernel: add a PF_FORCE_COMPAT flag
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Linux SCSI List <linux-scsi@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-aio <linux-aio@kvack.org>, io-uring@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Network Development <netdev@vger.kernel.org>,
-        keyrings@vger.kernel.org,
-        LSM List <linux-security-module@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 20, 2020 at 12:23 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Sun, Sep 20, 2020 at 08:10:31PM +0100, Al Viro wrote:
-> > IMO it's much saner to mark those and refuse to touch them from io_uring...
->
-> Simpler solution is to remove io_uring from the 32-bit syscall list.
-> If you're a 32-bit process, you don't get to use io_uring.  Would
-> any real users actually care about that?
+Hi Linus,
 
-We could go one step farther and declare that we're done adding *any*
-new compat syscalls :)
+please pull a single EFI/urgent fix. I'm simply forwarding Ard's tag, I hope
+that's ok.
 
+Thx.
 
+---
+
+The following changes since commit fb1201aececc59990b75ef59fca93ae4aa1e1444:
+
+  Documentation: efi: remove description of efi=old_map (2020-08-20 11:18:36 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/efi-urgent-for-v5.9-rc5
+
+for you to fetch changes up to 46908326c6b801201f1e46f5ed0db6e85bef74ae:
+
+  efi: efibc: check for efivars write capability (2020-09-15 18:22:47 +0300)
+
+----------------------------------------------------------------
+Single EFI fix for v5.9-rc:
+- ensure that the EFI bootloader control module only probes successfully
+  on systems that support the EFI SetVariable runtime service
+
+----------------------------------------------------------------
+Ard Biesheuvel (1):
+      efi: efibc: check for efivars write capability
+
+ drivers/firmware/efi/efibc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/firmware/efi/efibc.c b/drivers/firmware/efi/efibc.c
+index 35dccc88ac0a..15a47539dc56 100644
+--- a/drivers/firmware/efi/efibc.c
++++ b/drivers/firmware/efi/efibc.c
+@@ -84,7 +84,7 @@ static int __init efibc_init(void)
+ {
+ 	int ret;
+ 
+-	if (!efi_enabled(EFI_RUNTIME_SERVICES))
++	if (!efivars_kobject() || !efivar_supports_writes())
+ 		return -ENODEV;
+ 
+ 	ret = register_reboot_notifier(&efibc_reboot_notifier);
 
 -- 
-Andy Lutomirski
-AMA Capital Management, LLC
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
