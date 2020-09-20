@@ -2,38 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD1C27140B
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 13:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7061227141E
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 14:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726321AbgITLx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 07:53:56 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:15784 "EHLO
+        id S1726539AbgITMJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 08:09:32 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:50034 "EHLO
         mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726250AbgITLx4 (ORCPT
+        by vger.kernel.org with ESMTP id S1726315AbgITMJM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 07:53:56 -0400
+        Sun, 20 Sep 2020 08:09:12 -0400
 X-IronPort-AV: E=Sophos;i="5.77,282,1596492000"; 
-   d="scan'208";a="468611353"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 20 Sep 2020 13:53:31 +0200
-Date:   Sun, 20 Sep 2020 13:53:31 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     joe@perches.com, apw@canonical.com
-cc:     linux-kernel@vger.kernel.org, linux@rasmusvillemoes.dk
-Subject: outside repository fatal error
-Message-ID: <alpine.DEB.2.22.394.2009201346560.2966@hadrien>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+   d="scan'208";a="468612186"
+Received: from palace.lip6.fr ([132.227.105.202])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/AES256-SHA256; 20 Sep 2020 14:08:58 +0200
+From:   Julia Lawall <Julia.Lawall@inria.fr>
+To:     linux-spi@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, rds-devel@oss.oracle.com,
+        linux-rdma@vger.kernel.org, Yossi Leybovich <sleybo@amazon.com>,
+        netdev@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        dmaengine@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: [PATCH 00/14] drop double zeroing
+Date:   Sun, 20 Sep 2020 13:26:12 +0200
+Message-Id: <1600601186-7420-1-git-send-email-Julia.Lawall@inria.fr>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit bcf4271d4bc3 ("checkpatch: allow not using -f with files that
-are in git") in linux-next seems to cause checkpatch to fail on a file
-containing a patch if that file is not in the directory containing the
-Linux kernel.  Is that intentional?
+sg_init_table zeroes its first argument, so the allocation of that argument
+doesn't have to.
 
-thanks,
-julia
+---
+
+ block/bsg-lib.c                                  |    2 +-
+ drivers/dma/sh/rcar-dmac.c                       |    2 +-
+ drivers/dma/sh/shdma-base.c                      |    2 +-
+ drivers/infiniband/hw/efa/efa_verbs.c            |    2 +-
+ drivers/media/common/saa7146/saa7146_core.c      |    2 +-
+ drivers/misc/mic/scif/scif_nodeqp.c              |    2 +-
+ drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c |    2 +-
+ drivers/net/wireless/intel/iwlwifi/fw/dbg.c      |    2 +-
+ drivers/pci/p2pdma.c                             |    2 +-
+ drivers/spi/spi-topcliff-pch.c                   |    4 ++--
+ drivers/target/target_core_rd.c                  |    2 +-
+ drivers/tty/serial/pch_uart.c                    |    2 +-
+ net/rds/rdma.c                                   |    2 +-
+ net/sunrpc/xprtrdma/frwr_ops.c                   |    2 +-
+ 14 files changed, 15 insertions(+), 15 deletions(-)
