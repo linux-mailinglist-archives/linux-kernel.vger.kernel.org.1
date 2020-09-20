@@ -2,80 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B35B52716F2
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 20:12:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E7C27170D
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 20:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726430AbgITSMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 14:12:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726305AbgITSMP (ORCPT
+        id S1726236AbgITSeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 14:34:04 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:56768 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726055AbgITSeE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 14:12:15 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C43F1C061755;
-        Sun, 20 Sep 2020 11:12:14 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kK3om-002bUn-Fx; Sun, 20 Sep 2020 18:12:08 +0000
-Date:   Sun, 20 Sep 2020 19:12:08 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Linux SCSI List <linux-scsi@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-aio <linux-aio@kvack.org>, io-uring@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Network Development <netdev@vger.kernel.org>,
-        keyrings@vger.kernel.org,
-        LSM List <linux-security-module@vger.kernel.org>
-Subject: Re: [PATCH 1/9] kernel: add a PF_FORCE_COMPAT flag
-Message-ID: <20200920181208.GO3421308@ZenIV.linux.org.uk>
-References: <20200919224122.GJ3421308@ZenIV.linux.org.uk>
- <36CF3DE7-7B4B-41FD-9818-FDF8A5B440FB@amacapital.net>
- <20200919232411.GK3421308@ZenIV.linux.org.uk>
- <CALCETrViwOdFia_aX4p4riE8aqop1zoOqVfiQtSAZEzheC+Ozg@mail.gmail.com>
- <20200920025745.GL3421308@ZenIV.linux.org.uk>
- <CALCETrWj1i-oyfA1rCXsNqdJddK6Vwm=W31YEf=k-OMBTC0vHw@mail.gmail.com>
+        Sun, 20 Sep 2020 14:34:04 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id CA3891C0B8A; Sun, 20 Sep 2020 20:34:01 +0200 (CEST)
+Date:   Sun, 20 Sep 2020 20:34:01 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Cc:     linux-leds@vger.kernel.org, dmurphy@ti.com,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: ledtrig-cpu: Limit to 4 CPUs
+Message-ID: <20200920183401.GA21494@duo.ucw.cz>
+References: <20200919093833.GA14326@duo.ucw.cz>
+ <27e19ac9-4bc0-2945-3985-6cd6bb5407df@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="HcAYCG3uE/tztfnV"
 Content-Disposition: inline
-In-Reply-To: <CALCETrWj1i-oyfA1rCXsNqdJddK6Vwm=W31YEf=k-OMBTC0vHw@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <27e19ac9-4bc0-2945-3985-6cd6bb5407df@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 20, 2020 at 09:59:36AM -0700, Andy Lutomirski wrote:
 
-> As one example, look at __sys_setsockopt().  It's called for the
-> native and compat versions, and it contains an in_compat_syscall()
-> check.  (This particularly check looks dubious to me, but that's
-> another story.)  If this were to be done with equivalent semantics
-> without a separate COMPAT_DEFINE_SYSCALL and without
-> in_compat_syscall(), there would need to be some indication as to
-> whether this is compat or native setsockopt.  There are other
-> setsockopt implementations in the net stack with more
-> legitimate-seeming uses of in_compat_syscall() that would need some
-> other mechanism if in_compat_syscall() were to go away.
-> 
-> setsockopt is (I hope!) out of scope for io_uring, but the situation
-> isn't fundamentally different from read and write.
+--HcAYCG3uE/tztfnV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-	Except that setsockopt() had that crap very widespread; for read()
-and write() those are very rare exceptions.
+Hi!
 
-	Andy, please RTFS.  Or dig through archives.  The situation
-with setsockopt() is *NOT* a good thing - it's (probably) the least
-of the evils.  The last thing we need is making that the norm.
+> >    *
+> >    * It can be bound to any LED just like other triggers using either a
+> >    * board file or via sysfs interface.
+> >    *
+> >    * An API named ledtrig_cpu is exported for any user, who want to add=
+ CPU
+> > - * activity indication in their code
+> > + * activity indication in their code.
+> >    *
+> >    * Copyright 2011 Linus Walleij <linus.walleij@linaro.org>
+> >    * Copyright 2011 - 2012 Bryan Wu <bryan.wu@canonical.com>
+> > @@ -145,6 +149,9 @@ static int __init ledtrig_cpu_init(void)
+> >   	for_each_possible_cpu(cpu) {
+> >   		struct led_trigger_cpu *trig =3D &per_cpu(cpu_trig, cpu);
+> > +		if (cpu > 4)
+>=20
+> NACK. The workaround for this trigger was implemented for a reason -
+> to make it working on platforms with arbitrary number of logical cpus.
+> I've got 8, so I am discriminated now. Not saying, that it precludes
+> trigger registration with no single line of warning.
+
+Can I get details of your setup?
+
+What CPU type that is, and how are you mapping CPU activity to LEDs?
+
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--HcAYCG3uE/tztfnV
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX2egmQAKCRAw5/Bqldv6
+8ifzAJ425uTIMaxQjbPH64kCDAFYOYS/EgCfTu7q/5bT+yzx1aKsfqeRIQBfdtM=
+=7Xqf
+-----END PGP SIGNATURE-----
+
+--HcAYCG3uE/tztfnV--
