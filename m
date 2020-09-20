@@ -2,218 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5233E271607
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 18:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 310F727160D
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 18:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726406AbgITQpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 12:45:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726305AbgITQp3 (ORCPT
+        id S1726367AbgITQuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 12:50:51 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:27719 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726267AbgITQuv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 12:45:29 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51DBEC0613CE
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 09:45:29 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id x23so9841673wmi.3
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 09:45:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qzl9zPCs8H2BtZaJntghTFMfMfHZHrqcOSC3Zyznv/Q=;
-        b=cFm69Xob+MUQJhW/KRFfRcPqMhAb2iePNT2ryLzJYKs5zDuH7IhCeiRNrjn/WOFfZk
-         O18sx+H7rc7XeTHxE4vcrqywuiyUsISU8LRDiwOA8e6Cv5AbLGVJlOEmRnJ+QN1x4Go1
-         1GOS2VhnrpqW3DX+9s6IZZjBDXagdrRVwEyXE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=qzl9zPCs8H2BtZaJntghTFMfMfHZHrqcOSC3Zyznv/Q=;
-        b=iQIaSOX9RtHFUssLrfAG88t0HB2MRoGho3Ea4ilxoO2ummFc5c7UfwIfh2Q1b+6xrc
-         UpirlTW8VUM+6ceCxSH8gNWXexsFbE4QwpSxgGpIR4kngEkl5H6yWQYVdlsPR8oHfprb
-         FJya9VUJorbDKs28DOnFApG1cMiNFix2hcPWPsVFV7gFLucUmSEPtURnSg+w9Q2/j8Te
-         8/hZhpYZOv+mMDthANlwLeG+RV0gECt9adrnSAb+YbjfSkj7emx8XSoTumgDJHGb5c24
-         QJrUX/x26S1zeYMqDHQzHdnRssw67o8Cqqvp8SUEbovrwGbMEtFv2tP7Hol+eJDfOker
-         CE6w==
-X-Gm-Message-State: AOAM530WAnRgmxsNL3kKhlZdg8vcZEgw2uuL8/JCMMAJSp5GtkoKQpxL
-        PP+fE2F6jC6PM+y11cVkGFOwdA==
-X-Google-Smtp-Source: ABdhPJwU7eMdQh3XSVJaPGYj+0mfXFKRGE2Mauhd5cKQ5YFxLoykFKT8T3FgelDXYKCADsmSZm8nhQ==
-X-Received: by 2002:a05:600c:220f:: with SMTP id z15mr12988715wml.87.1600620327700;
-        Sun, 20 Sep 2020 09:45:27 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id m18sm14787218wmg.32.2020.09.20.09.45.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Sep 2020 09:45:26 -0700 (PDT)
-Date:   Sun, 20 Sep 2020 18:45:24 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
-Message-ID: <20200920164524.GH438822@phenom.ffwll.local>
-Mail-Followup-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Oded Gabbay <oded.gabbay@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>
-References: <20200915171022.10561-1-oded.gabbay@gmail.com>
- <20200915.134252.1280841239760138359.davem@davemloft.net>
- <CAFCwf131Vbo3im1BjOi_XXfRUu+nfrJY54sEZv8Z5LKut3QE6w@mail.gmail.com>
- <20200916062614.GF142621@kroah.com>
- <CAFCwf126PVDtjeAD8wCc_TiDfer04iydrW1AjUicH4oVHbs12Q@mail.gmail.com>
- <20200916074217.GB189144@kroah.com>
- <CAFCwf10zLR9v65sgGGdkcf+JzZaw_WORAbQvEw-hbbfj=dy2Xg@mail.gmail.com>
- <20200916082226.GA509119@kroah.com>
- <CAFCwf1366_GoTj1gpneJBSqVxJ1mOnsdZiC+DJLG85GHGfZrzw@mail.gmail.com>
- <20200916120054.GA2753544@kroah.com>
+        Sun, 20 Sep 2020 12:50:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1600620646;
+        s=strato-dkim-0002; d=chronox.de;
+        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=OLR7KLlF/JzCb7U35Y0Ov3zt4ftoGTUVmg0q5c2S7X8=;
+        b=AXFBj5iFdqqm2RyFxhGonh9KuIog7gpzd7oaPSl1w8CkWElzaVeCsBCICZ+z+XMJeG
+        7hhZLAm+6EPVdJX9KWP4wZqCOtWI3wwtY6fOU+bXUu1iU/JtPtzYfG14W+49PKHPs2+u
+        chCNqeEc0xVwmsJmUyiHFv6Ox9ap6wzNP+45tpLrPsaq/MTryqW6yrGB/qYAtBit9Xl5
+        S2V6Zi6z1Z2zMU8ZigqgIWgg3W8qVZbHVquuI4cwGTu0M637bJN7B0RygsU+9WCYxeDe
+        TIDTSQhvz4WjbwbEep4lv9kp/ZQnuRs2mAYXQvujn1aOd52pOMt4ltHviU2VGrALvpnk
+        aJ/Q==
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPbI/Sa6ro="
+X-RZG-CLASS-ID: mo00
+Received: from tauon.chronox.de
+        by smtp.strato.de (RZmta 46.10.7 DYNA|AUTH)
+        with ESMTPSA id 002e9aw8KGnwCmn
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Sun, 20 Sep 2020 18:49:58 +0200 (CEST)
+From:   Stephan Mueller <smueller@chronox.de>
+To:     Arnd Bergmann <arnd@arndb.de>, kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-api@vger.kernel.org,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Willy Tarreau <w@1wt.eu>
+Subject: Re: [PATCH v35 01/13] Linux Random Number Generator
+Date:   Sun, 20 Sep 2020 18:49:57 +0200
+Message-ID: <4146830.tdWV9SEqCh@tauon.chronox.de>
+In-Reply-To: <202009182001.I8MjZZ8x%lkp@intel.com>
+References: <4288186.LvFx2qVVIh@positron.chronox.de> <202009182001.I8MjZZ8x%lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916120054.GA2753544@kroah.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 02:00:54PM +0200, Greg Kroah-Hartman wrote:
-> On Wed, Sep 16, 2020 at 11:47:58AM +0300, Oded Gabbay wrote:
-> > On Wed, Sep 16, 2020 at 11:21 AM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Wed, Sep 16, 2020 at 11:02:39AM +0300, Oded Gabbay wrote:
-> > > > On Wed, Sep 16, 2020 at 10:41 AM Greg Kroah-Hartman
-> > > > <gregkh@linuxfoundation.org> wrote:
-> > > > >
-> > > > > On Wed, Sep 16, 2020 at 09:36:23AM +0300, Oded Gabbay wrote:
-> > > > > > On Wed, Sep 16, 2020 at 9:25 AM Greg Kroah-Hartman
-> > > > > > <gregkh@linuxfoundation.org> wrote:
-> > > > > > >
-> > > > > > > On Tue, Sep 15, 2020 at 11:49:12PM +0300, Oded Gabbay wrote:
-> > > > > > > > On Tue, Sep 15, 2020 at 11:42 PM David Miller <davem@davemloft.net> wrote:
-> > > > > > > > >
-> > > > > > > > > From: Oded Gabbay <oded.gabbay@gmail.com>
-> > > > > > > > > Date: Tue, 15 Sep 2020 20:10:08 +0300
-> > > > > > > > >
-> > > > > > > > > > This is the second version of the patch-set to upstream the GAUDI NIC code
-> > > > > > > > > > into the habanalabs driver.
-> > > > > > > > > >
-> > > > > > > > > > The only modification from v2 is in the ethtool patch (patch 12). Details
-> > > > > > > > > > are in that patch's commit message.
-> > > > > > > > > >
-> > > > > > > > > > Link to v2 cover letter:
-> > > > > > > > > > https://lkml.org/lkml/2020/9/12/201
-> > > > > > > > >
-> > > > > > > > > I agree with Jakub, this driver definitely can't go-in as it is currently
-> > > > > > > > > structured and designed.
-> > > > > > > > Why is that ?
-> > > > > > > > Can you please point to the things that bother you or not working correctly?
-> > > > > > > > I can't really fix the driver if I don't know what's wrong.
-> > > > > > > >
-> > > > > > > > In addition, please read my reply to Jakub with the explanation of why
-> > > > > > > > we designed this driver as is.
-> > > > > > > >
-> > > > > > > > And because of the RDMA'ness of it, the RDMA
-> > > > > > > > > folks have to be CC:'d and have a chance to review this.
-> > > > > > > > As I said to Jakub, the driver doesn't use the RDMA infrastructure in
-> > > > > > > > the kernel and we can't connect to it due to the lack of H/W support
-> > > > > > > > we have
-> > > > > > > > Therefore, I don't see why we need to CC linux-rdma.
-> > > > > > > > I understood why Greg asked me to CC you because we do connect to the
-> > > > > > > > netdev and standard eth infrastructure, but regarding the RDMA, it's
-> > > > > > > > not really the same.
-> > > > > > >
-> > > > > > > Ok, to do this "right" it needs to be split up into separate drivers,
-> > > > > > > hopefully using the "virtual bus" code that some day Intel will resubmit
-> > > > > > > again that will solve this issue.
-> > > > > > Hi Greg,
-> > > > > > Can I suggest an alternative for the short/medium term ?
-> > > > > >
-> > > > > > In an earlier email, Jakub said:
-> > > > > > "Is it not possible to move the files and still build them into a single
-> > > > > > module?"
-> > > > > >
-> > > > > > I thought maybe that's a good way to progress here ?
-> > > > >
-> > > > > Cross-directory builds of a single module are crazy.  Yes, they work,
-> > > > > but really, that's a mess, and would never suggest doing that.
-> > > > >
-> > > > > > First, split the content to Ethernet and RDMA.
-> > > > > > Then move the Ethernet part to drivers/net but build it as part of
-> > > > > > habanalabs.ko.
-> > > > > > Regarding the RDMA code, upstream/review it in a different patch-set
-> > > > > > (maybe they will want me to put the files elsewhere).
-> > > > > >
-> > > > > > What do you think ?
-> > > > >
-> > > > > I think you are asking for more work there than just splitting out into
-> > > > > separate modules :)
-> > > > >
-> > > > > thanks,
-> > > > >
-> > > > > greg k-h
-> > > > Hi Greg,
-> > > >
-> > > > If cross-directory building is out of the question, what about
-> > > > splitting into separate modules ? And use cross-module notifiers/calls
-> > > > ? I did that with amdkfd and amdgpu/radeon a couple of years back. It
-> > > > worked (that's the best thing I can say about it).
-> > >
-> > > That's fine with me.
-> > >
-> > > > The main problem with this "virtual bus" thing is that I'm not
-> > > > familiar with it at all and from my experience I imagine it would take
-> > > > a considerable time and effort to upstream this infrastructure work.
-> > >
-> > > It shouldn't be taking that long, but for some unknown reason, the
-> > > original author of that code is sitting on it and not resending it.  Go
-> > > poke them through internal Intel channels to find out what the problem
-> > > is, as I have no clue why a 200-300 line bus module is taking so long to
-> > > get "right" :(
-> > >
-> > > I'm _ALMOST_ at the point where I would just do that work myself, but
-> > > due to my current status with Intel, I'll let them do it as I have
-> > > enough other things on my plate...
-> > >
-> > > > This could delay the NIC code for a couple of years, which by then
-> > > > this won't be relevant at all.
-> > >
-> > > Why wouldn't this code be relevant in a year?  It's going to be 2+ years
-> > > before any of this shows up in an "enterprise distro" based on their
-> > > release cycles anyway :)
-> > >
-> > > thanks,
-> > >
-> > > greg k-h
-> > 
-> > Hi Greg,
-> > ok, I'll take a look. Do you happen to have the name of the patch-set / author ?
+Am Freitag, 18. September 2020, 15:02:17 CEST schrieb kernel test robot:
+
+Hi,
+
+> All errors (new ones prefixed by >>):
+> >> drivers/char/lrng/lrng_chacha20.c:33:8: error: structure variable
+> >> 'chacha20' with 'latent_entropy' attribute has a non-integer field
+> >> 'block'
+>       33 | struct chacha20_state chacha20 __latent_entropy;
 > 
-> Here's at least one copy:
-> 	https://lore.kernel.org/linux-rdma/20200520070227.3392100-2-jeffrey.t.kirsher@intel.com/
+>          |        ^~~~~~~~~~~~~~
 > 
-> there might have been a newer one, can't remember, sorry.
+> #
+> https://github.com/0day-ci/linux/commit/ecb964754fd80cca434d6d2ad6db8f28a15
+> 92fa1 git remote add linux-review https://github.com/0day-ci/linux
+> git fetch --no-tags linux-review
+> Stephan-M-ller/dev-random-a-new-approach/20200918-181505 git checkout
+> ecb964754fd80cca434d6d2ad6db8f28a1592fa1
+> vim +33 drivers/char/lrng/lrng_chacha20.c
+> 
+>     27
+>     28	/*
+>     29	 * Have a static memory blocks for the ChaCha20 DRNG instance to
+> avoid calling 30	 * kmalloc too early in the boot cycle. For 
+subsequent
+> allocation requests, 31	 * such as per-NUMA-node DRNG instances, 
+kmalloc
+> will be used. 32	 */
+> 
+>   > 33	struct chacha20_state chacha20 __latent_entropy;
 
-Maybe I'm missing something or maybe the in-tree code we have already
-should be refactored to use more buses and drivers, but
-drivers/base/component.c is made for this. We use this to glue all kinds
-of things across all kinds of subsystems already.
+I do not think this report is valid. The following definitions apply:
 
-Of course it really should be only used for one-off problems, as soon as
-you have a standard interface/interaction there should be some kind of
-standard lookup way to get at your thing (and the driver behind it), e.g.
-in drivers/gpu we're now building up drm_bridge and trying to get away
-from componenent.c for these things.
+struct chacha20_state {
+        struct chacha20_block block;
+};
 
-Cheers, Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+struct chacha20_block {
+        u32 constants[4];
+        union {
+#define CHACHA_KEY_SIZE_WORDS (CHACHA_KEY_SIZE / sizeof(u32))
+                u32 u[CHACHA_KEY_SIZE_WORDS];
+                u8  b[CHACHA_KEY_SIZE];
+        } key;
+        u32 counter;
+        u32 nonce[3];
+};
+
+
+This implies that struct chacha20_state and thus the chacha20 variable is a 
+linear buffer with in total 4 + 8 + 1 + 3  = 16 32-bit integers which are at 
+least aligned on a 32-bit boundary and are designated as u32 integers.
+
+Please let me know if I need to make a tweak to the definitions to convince 
+the code analyzer it is a flat linear buffer consisting of integers and thus 
+to understand the structure correctly.
+
+Thanks a lot.
+
+Ciao
+Stephan
+
+
