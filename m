@@ -2,91 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F9A2711E3
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 05:04:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BABD2711F5
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 06:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726893AbgITDD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 23:03:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726760AbgITDD5 (ORCPT
+        id S1726874AbgITECT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 00:02:19 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:31530 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726760AbgITECT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 23:03:57 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FF8C061755
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 20:03:56 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id y17so10339355lfa.8
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 20:03:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YWV/jsMUMksMZE27IZI8c4rRP2TN1WctCnXiq3Scruw=;
-        b=r7dyFO6BZvkU1+jZ3ktulb7Olj5XZq+xHJP4KheRGVnYhJmpsqxmFJdChSY2NdWG5Y
-         bfFTyOcXPEqjm4OtdeP+MZE5vFy4GfVmaLZJWAWU9L7KlgWx+vc2K1YT+NTTrASnvlW4
-         ASdVbrFSBXkh6uWPsAXEaABL1wKgAUA05cc1hYdIyGHsIEMxZ5WrxAiqzj9cwpwUwdCL
-         Htgf508DYtqP1ypux+vGuq0cshOyiiSmWyZJfS0csD1Ie8vGK+xRJUGq2tcADIvmADGo
-         6PJvySufLgKB+O2wpJb2+TSVolkxR+Upyp8lEW/YBr0oJ4Rso/7CtSpVuaZWYId4e6lg
-         pBHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YWV/jsMUMksMZE27IZI8c4rRP2TN1WctCnXiq3Scruw=;
-        b=sWMHwJlGuTiGF75zdHGYh72C8peUKA8Tgwtn8tswyIzyCnyRVw8FWb6FXWT8ccGU/S
-         8d+YDt09h4homLh8TH7IYD0/6A0tNffN1QG5bf/EiSniNax7kNExOyS4Q+NUmVgbiU3L
-         pMCoRnUI3WLyvxomKQipF4a8TFFn+eX4FxSoJkge1I70X4Y6pAUsOzfrskoLNMnsWEwI
-         c1toRqfnBFJvrUvIyxaVE0ijldFtoO+nrgA0WtIaMX1rcXuINRDPivm9wFJQeglr9+h+
-         IlFpQFh8NgWW7gkQKpYgoXqPRP0d9ifrld/yaQihfhXiwvSrieBAc4ReFsZsgatuMNia
-         Fkfw==
-X-Gm-Message-State: AOAM531CvwE/tCaIaz0d7RiFspgV+MLva9W1wEcR+XcLhL/MzL+IT7lC
-        /pQxZ4lNFpp5VHn+XIcbGtRLRByBgq/LDRqQJbs=
-X-Google-Smtp-Source: ABdhPJzbxewgfIRd7dFM6aMH8nUIu+ubY3i/ED1st8W1cGiDchus/yhoowbwxNgeMctJTsfy+YU3hHPueP3NVVxWv5Y=
-X-Received: by 2002:ac2:43d5:: with SMTP id u21mr15328758lfl.135.1600571034789;
- Sat, 19 Sep 2020 20:03:54 -0700 (PDT)
+        Sun, 20 Sep 2020 00:02:19 -0400
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 08K424E7004449;
+        Sun, 20 Sep 2020 13:02:04 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 08K424E7004449
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1600574525;
+        bh=Wa3KUda/n9V5QenLQvNQJmVfwyqNjY1oIGQXeyq+QYg=;
+        h=From:Date:Subject:To:Cc:From;
+        b=sVDUHyV5vIBU7P+CBdwW0mt8sP0DaIpnLqwuazcTa043CZGCq4yq69ySrzKMMYgdb
+         aIgJbd17f3g9Mevt4efEKlCgO3GuziUtyriJ8fZ80BqWi/kqAtaYqs77n9H9m9Jiuu
+         Q2rA7G3iERyD6V2U0AqasmindKuAMgBrzZiIIiDjJAJsqtW/Te63sTpDnSDHy8pllz
+         xMIe5YJGdgmR1Ohr36UBARJKTii8x6vg25NJWHraGOjqKI0YYQivGL+xoyWQ+Ono4e
+         jY5GUE5OD3G5JogbLPBbAy/xxeD9XcG+/q3/WHbhIV18vkWMvaQ1CtFDe+69exWwXO
+         kISF0Sk5mYZ/w==
+X-Nifty-SrcIP: [209.85.214.181]
+Received: by mail-pl1-f181.google.com with SMTP id d19so5159499pld.0;
+        Sat, 19 Sep 2020 21:02:04 -0700 (PDT)
+X-Gm-Message-State: AOAM531sgMqxaR4XPc4qDRACIedsT2CSIfkcOKlHfRIR76FfJYk4L+Bn
+        kR6UIpRDEPpwCp4dr//WZ7/yzUr8X9f80uAs3ow=
+X-Google-Smtp-Source: ABdhPJzwj+dAD+WWv6NRA0MG1jdWIK7fmIg9frgpKy2FYGWrXg6STRB0xmbQQY5sLKtT7dxxiMFLCjhAVCT4AmkyaI8=
+X-Received: by 2002:a17:90b:360a:: with SMTP id ml10mr18902509pjb.198.1600574523871;
+ Sat, 19 Sep 2020 21:02:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200916100232.GF18329@kadam> <20200917065706.409079-1-jhubbard@nvidia.com>
- <20200917074054.GO18329@kadam>
-In-Reply-To: <20200917074054.GO18329@kadam>
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Sun, 20 Sep 2020 08:33:43 +0530
-Message-ID: <CAFqt6zYFjGTJ=KUjHd5jf-ri5tCmo4HOLP1j3nsELFgcoEoLHQ@mail.gmail.com>
-Subject: Re: [PATCH] mm/gup: protect unpin_user_pages() against npages==-ERRNO
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>, alex.bou9@gmail.com,
-        gustavoars@kernel.org, Ira Weiny <ira.weiny@intel.com>,
-        linux-kernel@vger.kernel.org, madhuparnabhowmik10@gmail.com,
-        mporter@kernel.crashing.org, Matthew Wilcox <willy@infradead.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sun, 20 Sep 2020 13:01:27 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQPTUCWVk=xDr9bv6X+TANOZHfr4YKenP64Mq+sgFTmDw@mail.gmail.com>
+Message-ID: <CAK7LNAQPTUCWVk=xDr9bv6X+TANOZHfr4YKenP64Mq+sgFTmDw@mail.gmail.com>
+Subject: [GIT PULL] Kbuild fixes for v5.9-rc6
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 1:11 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> On Wed, Sep 16, 2020 at 11:57:06PM -0700, John Hubbard wrote:
-> > As suggested by Dan Carpenter, fortify unpin_user_pages() just a bit,
-> > against a typical caller mistake: check if the npages arg is really a
-> > -ERRNO value, which would blow up the unpinning loop: WARN and return.
-> >
-> > If this new WARN_ON() fires, then the system *might* be leaking pages
-> > (by leaving them pinned), but probably not. More likely, gup/pup
-> > returned a hard -ERRNO error to the caller, who erroneously passed it
-> > here.
-> >
-> > Cc: Ira Weiny <ira.weiny@intel.com>
-> > Cc: Souptick Joarder <jrdr.linux@gmail.com>
-> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> > ---
-> >
-> > Hi Dan,
-> >
-> > Is is OK to use your signed-off-by here? Since you came up with this.
-> >
->
-> Yeah.  That's fine.
+Hi Linus,
 
-Do we need a similar check inside unpin_user_pages_dirty_lock(),
-when make_dirty set to false ?
+Please pull more fixes.
+Thanks.
+
+
+
+
+The following changes since commit 856deb866d16e29bd65952e0289066f6078af773:
+
+  Linux 5.9-rc5 (2020-09-13 16:06:00 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
+tags/kbuild-fixes-v5.9-3
+
+for you to fetch changes up to a46afd11414758233f23798cc5be51e554d04efe:
+
+  kconfig: qconf: revive help message in the info view (2020-09-20
+12:58:54 +0900)
+
+----------------------------------------------------------------
+Kbuild fixes for v5.9 (3rd)
+
+ - fix qconf warnings and revive help message
+
+----------------------------------------------------------------
+Masahiro Yamada (3):
+      kconfig: qconf: use delete[] instead of delete to free array (again)
+      kconfig: qconf: fix incomplete type 'struct gstr' warning
+      kconfig: qconf: revive help message in the info view
+
+ scripts/kconfig/lkc.h       | 47
+++++++++++++++++++++++++++++++-----------------
+ scripts/kconfig/lkc_proto.h | 14 --------------
+ scripts/kconfig/qconf.cc    | 13 +++++++++----
+ 3 files changed, 39 insertions(+), 35 deletions(-)
+
+
+-- 
+Best Regards
+Masahiro Yamada
