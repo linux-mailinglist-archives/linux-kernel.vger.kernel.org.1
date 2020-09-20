@@ -2,168 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EB0F271355
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 12:48:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93DD0271357
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 12:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726306AbgITKsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 06:48:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726250AbgITKsc (ORCPT
+        id S1726333AbgITKwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 06:52:22 -0400
+Received: from mail-il1-f205.google.com ([209.85.166.205]:40906 "EHLO
+        mail-il1-f205.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726250AbgITKwV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 06:48:32 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F04FC061755;
-        Sun, 20 Sep 2020 03:48:32 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id b124so6487404pfg.13;
-        Sun, 20 Sep 2020 03:48:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ckywbst0H6+Lz6mtGf7VZ8LvRCLnr8rkKra487dI2jg=;
-        b=h2NOR/VXE3wlXPmVyZpsSZVZQFAjPUlr6FGWRBmRlwfRuEnn6JCF5lu/Fg2ar1F6s+
-         WcgrYNerKtVXzLMa5ImiwQypoxjm+1yNFXBQtMLEDX1N5DRlAwECwAueRnJzwTovKXN0
-         vph5DZ9A9fucVsNBiuZTbWTuIAOlwVqXqqqJWqyRd42p/OS0XCLLtt+eI5pkDbY6Wld5
-         Hql6IPs9Qz34UKbVW4XiNUTpxyFarF/PQhjpuRCblUI60HoGa94ZC82BKTLSWwiip7fQ
-         DdhnTKxNAG+MwHfzMoATHSM6RuoF8G5DpJ6XZk8OciE8fWYnJrgY8piC/gMJqbdzVdAH
-         eczw==
+        Sun, 20 Sep 2020 06:52:21 -0400
+Received: by mail-il1-f205.google.com with SMTP id g188so8676050ilh.7
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 03:52:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ckywbst0H6+Lz6mtGf7VZ8LvRCLnr8rkKra487dI2jg=;
-        b=TYsZ5wTns1PZMWFHPP+lZRTQtiaUUqy6gL5adpkeWvvqYv7prWQtL4Q1qPE4qcLT0W
-         zr19KBFy3U368mpB7ekNrdDlRQs9BTGF0yeVPW5OVImvgDan8nVvEbz5euz43WY8bdvS
-         SJwxwFCiy47Q5UUXHOJuytYRu1bpiIJX/LxkNtw74bmepoPZOM65SLKSKZcfjy8ZEbyh
-         eDLl6GQ5gouI1eNdBM4TJobw34Z/t/w0UdfzC77RFguF5DzilV++dScHcjvTpN61W5wu
-         6VDsanQk6hhgwNLBMyY/b5LaMoJPIVpuPhK4/p9KcoTVNqmAN8FrQe5cYiOE7a7EgiTv
-         o3Cg==
-X-Gm-Message-State: AOAM533GIhyObudEkNrHg/GVhvoDZUrqh+DGkwCZUNAAJn1NS8TVWwbD
-        4RBNYl+ntOfTV1SFCcoHRpk=
-X-Google-Smtp-Source: ABdhPJwDLSg9MlG1DNXBi7rMgKnwhW19wzuVlHCdL8y+Vl+/JPCGS7Jaq/Xp0P6aXlq8zhQMovjoQQ==
-X-Received: by 2002:a63:e141:: with SMTP id h1mr102058pgk.289.1600598912100;
-        Sun, 20 Sep 2020 03:48:32 -0700 (PDT)
-Received: from sol (106-69-189-59.dyn.iinet.net.au. [106.69.189.59])
-        by smtp.gmail.com with ESMTPSA id y13sm9121837pfr.141.2020.09.20.03.48.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Sep 2020 03:48:31 -0700 (PDT)
-Date:   Sun, 20 Sep 2020 18:48:26 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v8 04/20] gpio: uapi: define uAPI v2
-Message-ID: <20200920104826.GA793608@sol>
-References: <20200909102640.1657622-1-warthog618@gmail.com>
- <20200909102640.1657622-5-warthog618@gmail.com>
- <CAHp75VdF1be-W3iV2JfWYZzEhrj13+5A+1Y4J8XgpBrkvg8cZQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=sEzIaRwys/QIQ/izTd98t3jdkVY27DKWjlVLvODZoyM=;
+        b=joOq3AVIBPjrZ2wcOdAOFtqzzVjVZehqcrMsrWUnsUCIBbUQrIqEeHLOi1o2Nwm/n/
+         imBhaX9urTkvfCNyK8zKZtAa/sMSmUHU4G/wSbiYgX0msv8I14pM+cYCWiI+1kpeq/PF
+         Y1oW5KkyrJE3ihAUwzgwxAQDJyGkRHkzPuOEIDYu049M8SN9ZvtxvF7VuHSYE0o/BgCe
+         x/56agbNEjePoEF0A6ohdQHE3kSXnAaIeWDK+axplV//rfrSl9ZpSH3SiFZDPkd9Xolk
+         xy10+Ea/EjUaOejkEUcr1CgsWCTgi+02Yyh2BsmmVmYhIgYPKyCEcEbmpcXHnWtD5sCV
+         df7g==
+X-Gm-Message-State: AOAM533eEl3o40cx4f/pJ8JSL/EJY/MMajtVAoOUm9SHqLILQAOFewMq
+        maYo/H4Wx57XOxFIPvWDslcqWAOiS3fFDDnmYrBAWAVxMc+U
+X-Google-Smtp-Source: ABdhPJyllw3NACkZbVwVhikJFEp3f40s01ePYpin0grc5y8ut/eETSQsu0O/Lmdbdor2URMebH9Dgb4vEaHMuRkgojKkVkmJTMNq
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VdF1be-W3iV2JfWYZzEhrj13+5A+1Y4J8XgpBrkvg8cZQ@mail.gmail.com>
+X-Received: by 2002:a92:cc83:: with SMTP id x3mr35676758ilo.232.1600599139678;
+ Sun, 20 Sep 2020 03:52:19 -0700 (PDT)
+Date:   Sun, 20 Sep 2020 03:52:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000025fe5805afbc876c@google.com>
+Subject: possible deadlock in xfrm_policy_lookup_bytype
+From:   syzbot <syzbot+4cbd5e3669aee5ac5149@syzkaller.appspotmail.com>
+To:     a.darwish@linutronix.de, davem@davemloft.net,
+        herbert@gondor.apana.org.au, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        netdev@vger.kernel.org, peterz@infradead.org,
+        steffen.klassert@secunet.com, syzkaller-bugs@googlegroups.com,
+        will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 01:06:36PM +0300, Andy Shevchenko wrote:
-> On Wed, Sep 9, 2020 at 1:29 PM Kent Gibson <warthog618@gmail.com> wrote:
-> >
-> 
-> Thanks again for doing this and sorry for quite a delay from my side.
-> Below my comments regarding uAPI v2 (mostly nit-picks as I agree with
-> it in general).
-> 
+Hello,
 
-No problems with most of your points - so I'll chop those bits out.
-Responses to the remainder below...
+syzbot found the following issue on:
 
-> > +/**
-> > + * enum gpio_v2_line_attr_id - &struct gpio_v2_line_attribute.id values
-> 
-> Perhaps per-item description (couple of words per each)?
-> 
+HEAD commit:    5fa35f24 Add linux-next specific files for 20200916
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=16ec67fd900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6bdb7e39caf48f53
+dashboard link: https://syzkaller.appspot.com/bug?extid=4cbd5e3669aee5ac5149
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17ca2c73900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13668701900000
 
-I'll add kernel doc for all the enum values - see if that works.
+The issue was bisected to:
 
-> > + * GPIO_V2_LINE_FLAG_OUTPUT etc, OR:ed together.  This is the default for
-> 
-> I think "OR:ed together" is understandable for programmers but a bit
-> special for normal phrases. I would rephrase it somehow, but I'm not a
-> native speaker.
-> Something like "or any of their combinations".
-> 
+commit 1909760f5fc3f123e47b4e24e0ccdc0fc8f3f106
+Author: Ahmed S. Darwish <a.darwish@linutronix.de>
+Date:   Fri Sep 4 15:32:31 2020 +0000
 
-My bad - I was assuming the primary audience was programmers ;-).
+    seqlock: PREEMPT_RT: Do not starve seqlock_t writers
 
-Actually that description is drawn from the v1 uAPI, as is the case for
-all of the fields that were carried over.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=156b27dd900000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=176b27dd900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=136b27dd900000
 
-And "or any of their combinations" is misleading - some combinations are
-invalid.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4cbd5e3669aee5ac5149@syzkaller.appspotmail.com
+Fixes: 1909760f5fc3 ("seqlock: PREEMPT_RT: Do not starve seqlock_t writers")
 
-I'll take another look at it, but I'm ok with it as is. (and I' ok with
-'ok' over 'OK' or 'okay' as well, btw ;-)
+========================================================
+WARNING: possible irq lock inversion dependency detected
+5.9.0-rc5-next-20200916-syzkaller #0 Not tainted
+--------------------------------------------------------
+syz-executor974/6847 just changed the state of lock:
+ffffffff8ae7a3c8 (&s->seqcount#9){+..-}-{0:0}, at: xfrm_policy_lookup_bytype+0x183/0xa40 net/xfrm/xfrm_policy.c:2088
+but this lock took another, SOFTIRQ-unsafe lock in the past:
+ (&s->seqcount#8){+.+.}-{0:0}
 
-> > + * @attrs: the configuration attributes associated with the requested
-> > + * lines.  Any attribute should only be associated with a particular line
-> > + * once.  If an attribute is associated with a line multiple times then the
-> > + * first occurrence (i.e. lowest index) has precedence.
-> 
-> This is a bit unexpected. I anticipated last come last served as in a
-> shell script argument list.
-> 
 
-I don't want to encourage userspace to just add another entry to attrs
-to encode a change.
-The behaviour was originally as you describe, but was changed in v3 to
-encourage userspace to keep the configuration attributes as simplified as
-possible, and to make clearer that the fields, particularly the flags bits,
-are not overlayed.
+and interrupts could create inverse lock ordering between them.
 
-> > +       /*
-> > +        * Pad to fill implicit padding and provide space for future use.
-> > +        */
-> 
-> > +       __u32 padding[5];
-> 
-> This is still questionable. First of all why to waste so many bytes (I
-> propose 5 -> 1) and how will you do when the structure changes (we
-> still need some type of versioning or flags for which one u32 is more
-> than enough).
-> 
 
-Ack - we disagree on how to manage future changes and the impact of
-reserving space.
+other info that might help us debug this:
+ Possible interrupt unsafe locking scenario:
 
-> > + * @num_lines: number of lines requested in this request, i.e. the number
-> > + * of valid fields in the GPIO_V2_LINES_MAX sized arrays, set to 1 to
-> > + * request a single line
-> 
-> I would rather call it "amount" or something which is one word, but
-> you may have a reason for the current, so I don't insist.
-> Also, I would describe what will be the expected behaviour outside of
-> the range (and what is the range?).
-> For example, would it mean that we consider all lines if num_lines >=
-> _LINES_MAX?
-> 
+       CPU0                    CPU1
+       ----                    ----
+  lock(&s->seqcount#8);
+                               local_irq_disable();
+                               lock(&s->seqcount#9);
+                               lock(&s->seqcount#8);
+  <Interrupt>
+    lock(&s->seqcount#9);
 
-Using num_X to describe the number of active entries in array X is a
-common pattern, so I'll stick with that.
+ *** DEADLOCK ***
 
-And num_lines > _LINES_MAX is interpreted as invalid - since they wont
-fit.  The EINVAL the user will get if they try should make that clear.
+4 locks held by syz-executor974/6847:
+ #0: ffffffff8aae80a8 (rtnl_mutex){+.+.}-{3:3}, at: tun_detach drivers/net/tun.c:687 [inline]
+ #0: ffffffff8aae80a8 (rtnl_mutex){+.+.}-{3:3}, at: tun_chr_close+0x3a/0x180 drivers/net/tun.c:3390
+ #1: ffffc90000007d80 ((&idev->mc_ifc_timer)){+.-.}-{0:0}, at: lockdep_copy_map include/linux/lockdep.h:35 [inline]
+ #1: ffffc90000007d80 ((&idev->mc_ifc_timer)){+.-.}-{0:0}, at: call_timer_fn+0xd5/0x6b0 kernel/time/timer.c:1403
+ #2: ffffffff89e71cc0 (rcu_read_lock){....}-{1:2}, at: read_pnet include/net/net_namespace.h:327 [inline]
+ #2: ffffffff89e71cc0 (rcu_read_lock){....}-{1:2}, at: dev_net include/linux/netdevice.h:2290 [inline]
+ #2: ffffffff89e71cc0 (rcu_read_lock){....}-{1:2}, at: mld_sendpack+0x165/0xdb0 net/ipv6/mcast.c:1646
+ #3: ffffffff89e71cc0 (rcu_read_lock){....}-{1:2}, at: xfrm_policy_lookup_bytype+0x104/0xa40 net/xfrm/xfrm_policy.c:2082
 
-> > + * @consumer: a functional name for the consumer of this GPIO line as set
-> > + * by whatever is using it, will be empty if there is no current user but
-> > + * may also be empty if the consumer doesn't set this up
-> 
-> In both cases "empty" means what? All \0:s, only first \0, white spaces?
-> 
+the shortest dependencies between 2nd lock and 1st lock:
+ -> (&s->seqcount#8){+.+.}-{0:0} {
+    HARDIRQ-ON-W at:
+                      lock_acquire+0x1f2/0xaa0 kernel/locking/lockdep.c:5398
+                      write_seqcount_t_begin_nested include/linux/seqlock.h:509 [inline]
+                      write_seqcount_t_begin include/linux/seqlock.h:535 [inline]
+                      write_seqlock include/linux/seqlock.h:883 [inline]
+                      xfrm_set_spdinfo+0x302/0x660 net/xfrm/xfrm_user.c:1185
+                      xfrm_user_rcv_msg+0x414/0x700 net/xfrm/xfrm_user.c:2684
+                      netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
+                      xfrm_netlink_rcv+0x6b/0x90 net/xfrm/xfrm_user.c:2692
+                      netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+                      netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+                      netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+                      sock_sendmsg_nosec net/socket.c:651 [inline]
+                      sock_sendmsg+0xcf/0x120 net/socket.c:671
+                      ____sys_sendmsg+0x6e8/0x810 net/socket.c:2362
+                      ___sys_sendmsg+0xf3/0x170 net/socket.c:2416
+                      __sys_sendmsg+0xe5/0x1b0 net/socket.c:2449
+                      do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+                      entry_SYSCALL_64_after_hwframe+0x44/0xa9
+    SOFTIRQ-ON-W at:
+                      lock_acquire+0x1f2/0xaa0 kernel/locking/lockdep.c:5398
+                      write_seqcount_t_begin_nested include/linux/seqlock.h:509 [inline]
+                      write_seqcount_t_begin include/linux/seqlock.h:535 [inline]
+                      write_seqlock include/linux/seqlock.h:883 [inline]
+                      xfrm_set_spdinfo+0x302/0x660 net/xfrm/xfrm_user.c:1185
+                      xfrm_user_rcv_msg+0x414/0x700 net/xfrm/xfrm_user.c:2684
+                      netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
+                      xfrm_netlink_rcv+0x6b/0x90 net/xfrm/xfrm_user.c:2692
+                      netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+                      netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+                      netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+                      sock_sendmsg_nosec net/socket.c:651 [inline]
+                      sock_sendmsg+0xcf/0x120 net/socket.c:671
+                      ____sys_sendmsg+0x6e8/0x810 net/socket.c:2362
+                      ___sys_sendmsg+0xf3/0x170 net/socket.c:2416
+                      __sys_sendmsg+0xe5/0x1b0 net/socket.c:2449
+                      do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+                      entry_SYSCALL_64_after_hwframe+0x44/0xa9
+    INITIAL USE at:
+                     lock_acquire+0x1f2/0xaa0 kernel/locking/lockdep.c:5398
+                     write_seqcount_t_begin_nested include/linux/seqlock.h:509 [inline]
+                     write_seqcount_t_begin include/linux/seqlock.h:535 [inline]
+                     write_seqlock include/linux/seqlock.h:883 [inline]
+                     xfrm_set_spdinfo+0x302/0x660 net/xfrm/xfrm_user.c:1185
+                     xfrm_user_rcv_msg+0x414/0x700 net/xfrm/xfrm_user.c:2684
+                     netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
+                     xfrm_netlink_rcv+0x6b/0x90 net/xfrm/xfrm_user.c:2692
+                     netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+                     netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+                     netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+                     sock_sendmsg_nosec net/socket.c:651 [inline]
+                     sock_sendmsg+0xcf/0x120 net/socket.c:671
+                     ____sys_sendmsg+0x6e8/0x810 net/socket.c:2362
+                     ___sys_sendmsg+0xf3/0x170 net/socket.c:2416
+                     __sys_sendmsg+0xe5/0x1b0 net/socket.c:2449
+                     do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+                     entry_SYSCALL_64_after_hwframe+0x44/0xa9
+    (null) at:
+general protection fault, probably for non-canonical address 0xdffffc0000000003: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000018-0x000000000000001f]
+CPU: 0 PID: 6847 Comm: syz-executor974 Not tainted 5.9.0-rc5-next-20200916-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:print_lock_trace kernel/locking/lockdep.c:1751 [inline]
+RIP: 0010:print_lock_class_header kernel/locking/lockdep.c:2240 [inline]
+RIP: 0010:print_shortest_lock_dependencies.cold+0x110/0x2af kernel/locking/lockdep.c:2263
+Code: 48 8b 04 24 48 c1 e8 03 42 80 3c 20 00 74 09 48 8b 3c 24 e8 c1 2b d9 f9 48 8b 04 24 48 8b 00 48 8d 78 14 48 89 fa 48 c1 ea 03 <42> 0f b6 0c 22 48 89 fa 83 e2 07 83 c2 03 38 ca 7c 08 84 c9 0f 85
+RSP: 0018:ffffc90000007470 EFLAGS: 00010007
+RAX: 0000000000000008 RBX: ffffffff8cbe3eb0 RCX: 0000000000000000
+RDX: 0000000000000003 RSI: ffffffff815c26b7 RDI: 000000000000001c
+RBP: ffffc900000075a0 R08: 0000000000000004 R09: ffff8880ae620f8b
+R10: 0000000000000000 R11: 6c756e2820202020 R12: dffffc0000000000
+R13: ffffffff8ca092f8 R14: 0000000000000009 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000004c7fe8 CR3: 0000000009c8e000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <IRQ>
+ print_irq_inversion_bug.part.0+0x2c6/0x2ee kernel/locking/lockdep.c:3769
+ print_irq_inversion_bug kernel/locking/lockdep.c:4377 [inline]
+ check_usage_forwards kernel/locking/lockdep.c:3800 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3935 [inline]
+ mark_lock.cold+0x94/0x10d kernel/locking/lockdep.c:4375
+ mark_usage kernel/locking/lockdep.c:4252 [inline]
+ __lock_acquire+0x1402/0x55d0 kernel/locking/lockdep.c:4750
+ lock_acquire+0x1f2/0xaa0 kernel/locking/lockdep.c:5398
+ seqcount_lockdep_reader_access+0x139/0x1a0 include/linux/seqlock.h:103
+ xfrm_policy_lookup_bytype+0x183/0xa40 net/xfrm/xfrm_policy.c:2088
+ xfrm_policy_lookup net/xfrm/xfrm_policy.c:2139 [inline]
+ xfrm_bundle_lookup net/xfrm/xfrm_policy.c:2944 [inline]
+ xfrm_lookup_with_ifid+0x5e3/0x2100 net/xfrm/xfrm_policy.c:3085
+ icmp6_dst_alloc+0x489/0x6c0 net/ipv6/route.c:3187
+ mld_sendpack+0x5c3/0xdb0 net/ipv6/mcast.c:1668
+ mld_send_cr net/ipv6/mcast.c:1975 [inline]
+ mld_ifc_timer_expire+0x60a/0xf10 net/ipv6/mcast.c:2474
+ call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1413
+ expire_timers kernel/time/timer.c:1458 [inline]
+ __run_timers.part.0+0x67c/0xa50 kernel/time/timer.c:1755
+ __run_timers kernel/time/timer.c:1736 [inline]
+ run_timer_softirq+0xae/0x1a0 kernel/time/timer.c:1768
+ __do_softirq+0x202/0xa42 kernel/softirq.c:298
+ asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:786
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
+ do_softirq_own_stack+0x9d/0xd0 arch/x86/kernel/irq_64.c:77
+ do_softirq kernel/softirq.c:343 [inline]
+ do_softirq+0x154/0x1b0 kernel/softirq.c:330
+ __local_bh_enable_ip+0x196/0x1f0 kernel/softirq.c:195
+ local_bh_enable include/linux/bottom_half.h:32 [inline]
+ netif_tx_unlock_bh include/linux/netdevice.h:4240 [inline]
+ dev_watchdog_down net/sched/sch_generic.c:479 [inline]
+ dev_deactivate_many+0x47a/0xc10 net/sched/sch_generic.c:1223
+ __dev_close_many+0x130/0x2e0 net/core/dev.c:1593
+ dev_close_many+0x238/0x650 net/core/dev.c:1631
+ rollback_registered_many+0x3a8/0x14f0 net/core/dev.c:9303
+ rollback_registered net/core/dev.c:9371 [inline]
+ unregister_netdevice_queue+0x2dd/0x570 net/core/dev.c:10452
+ unregister_netdevice include/linux/netdevice.h:2797 [inline]
+ __tun_detach+0x100b/0x1320 drivers/net/tun.c:673
+ tun_detach drivers/net/tun.c:690 [inline]
+ tun_chr_close+0xd9/0x180 drivers/net/tun.c:3390
+ __fput+0x285/0x920 fs/file_table.c:281
+ task_work_run+0xdd/0x190 kernel/task_work.c:141
+ exit_task_work include/linux/task_work.h:25 [inline]
+ do_exit+0xb23/0x2930 kernel/exit.c:806
+ do_group_exit+0x125/0x310 kernel/exit.c:903
+ __do_sys_exit_group kernel/exit.c:914 [inline]
+ __se_sys_exit_group kernel/exit.c:912 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:912
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x441698
+Code: Bad RIP value.
+RSP: 002b:00007ffd2fddd438 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 0000000000441698
+RDX: 0000000000000001 RSI: 000000000000003c RDI: 0000000000000001
+RBP: 00000000004c7fb0 R08: 00000000000000e7 R09: ffffffffffffffd4
+R10: 0000000001000002 R11: 0000000000000246 R12: 0000000000000001
+R13: 00000000006da5e0 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+---[ end trace fa8e7a53e9954f16 ]---
+RIP: 0010:print_lock_trace kernel/locking/lockdep.c:1751 [inline]
+RIP: 0010:print_lock_class_header kernel/locking/lockdep.c:2240 [inline]
+RIP: 0010:print_shortest_lock_dependencies.cold+0x110/0x2af kernel/locking/lockdep.c:2263
+Code: 48 8b 04 24 48 c1 e8 03 42 80 3c 20 00 74 09 48 8b 3c 24 e8 c1 2b d9 f9 48 8b 04 24 48 8b 00 48 8d 78 14 48 89 fa 48 c1 ea 03 <42> 0f b6 0c 22 48 89 fa 83 e2 07 83 c2 03 38 ca 7c 08 84 c9 0f 85
+RSP: 0018:ffffc90000007470 EFLAGS: 00010007
+RAX: 0000000000000008 RBX: ffffffff8cbe3eb0 RCX: 0000000000000000
+RDX: 0000000000000003 RSI: ffffffff815c26b7 RDI: 000000000000001c
+RBP: ffffc900000075a0 R08: 0000000000000004 R09: ffff8880ae620f8b
+R10: 0000000000000000 R11: 6c756e2820202020 R12: dffffc0000000000
+R13: ffffffff8ca092f8 R14: 0000000000000009 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000004c7fe8 CR3: 0000000009c8e000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-Another one inherited from v1 - empty => consumer[0] == '\0'.
 
-Cheers,
-Kent.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
