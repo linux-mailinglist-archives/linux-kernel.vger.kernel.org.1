@@ -2,133 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82BE327183F
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 23:41:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D891271844
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 23:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726412AbgITVlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 17:41:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51834 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726126AbgITVlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 17:41:15 -0400
-Received: from localhost.localdomain (unknown [194.230.155.191])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE2BE20829;
-        Sun, 20 Sep 2020 21:41:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600638074;
-        bh=6Q4ug0hWEa1GEfOS1tG8oJU9yv/p0VtczqGdqMr744c=;
-        h=From:To:Cc:Subject:Date:From;
-        b=AMiFAryxlO+ofSKACHsqO2QpbpyQn/JeKsmbPVaV2vj0kkBkrCZQuuCh/uMnWpQSb
-         fFE68gYJYAhOEz7Np+lf6qzhO28wJThbmmVcpFsj6ed4pLG++BpfJcFKDFosKPeiEu
-         GDxKKgoibk0aiX8oAT4fNqQXwSCtRiP8uAuEkUfk=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH] regulator: enable compile testing for Maxim and Samsung PMIC drivers
-Date:   Sun, 20 Sep 2020 23:41:07 +0200
-Message-Id: <20200920214107.6299-1-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        id S1726514AbgITVmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 17:42:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726126AbgITVml (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 17:42:41 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 992EFC061755;
+        Sun, 20 Sep 2020 14:42:41 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kK76L-002haB-NO; Sun, 20 Sep 2020 21:42:29 +0000
+Date:   Sun, 20 Sep 2020 22:42:29 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
+        io-uring@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: Re: [PATCH 1/9] kernel: add a PF_FORCE_COMPAT flag
+Message-ID: <20200920214229.GR3421308@ZenIV.linux.org.uk>
+References: <20200918124533.3487701-1-hch@lst.de>
+ <20200918124533.3487701-2-hch@lst.de>
+ <20200920151510.GS32101@casper.infradead.org>
+ <20200920180742.GN3421308@ZenIV.linux.org.uk>
+ <20200920190159.GT32101@casper.infradead.org>
+ <20200920191031.GQ3421308@ZenIV.linux.org.uk>
+ <20200920192259.GU32101@casper.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200920192259.GU32101@casper.infradead.org>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Most of Maxim and Samsung PMIC/MUIC regulator drivers can be compile
-tested to increase build coverage.  This allows to build them on
-configurations without I2C (as I2C is required by dependency - parent
-MFD driver).
+On Sun, Sep 20, 2020 at 08:22:59PM +0100, Matthew Wilcox wrote:
+> On Sun, Sep 20, 2020 at 08:10:31PM +0100, Al Viro wrote:
+> > IMO it's much saner to mark those and refuse to touch them from io_uring...
+> 
+> Simpler solution is to remove io_uring from the 32-bit syscall list.
+> If you're a 32-bit process, you don't get to use io_uring.  Would
+> any real users actually care about that?
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- drivers/regulator/Kconfig | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index 4efa27b0f9f5..278ae0b06aee 100644
---- a/drivers/regulator/Kconfig
-+++ b/drivers/regulator/Kconfig
-@@ -510,7 +510,7 @@ config REGULATOR_MAX1586
- 
- config REGULATOR_MAX77620
- 	tristate "Maxim 77620/MAX20024 voltage regulator"
--	depends on MFD_MAX77620
-+	depends on MFD_MAX77620 || COMPILE_TEST
- 	help
- 	  This driver controls Maxim MAX77620 voltage output regulator
- 	  via I2C bus. The provided regulator is suitable for Tegra
-@@ -519,7 +519,7 @@ config REGULATOR_MAX77620
- 
- config REGULATOR_MAX77650
- 	tristate "Maxim MAX77650/77651 regulator support"
--	depends on MFD_MAX77650
-+	depends on MFD_MAX77650 || COMPILE_TEST
- 	help
- 	  Regulator driver for MAX77650/77651 PMIC from Maxim
- 	  Semiconductor. This device has a SIMO with three independent
-@@ -542,7 +542,7 @@ config REGULATOR_MAX8660
- 
- config REGULATOR_MAX8907
- 	tristate "Maxim 8907 voltage regulator"
--	depends on MFD_MAX8907
-+	depends on MFD_MAX8907 || COMPILE_TEST
- 	help
- 	  This driver controls a Maxim 8907 voltage output regulator
- 	  via I2C bus. The provided regulator is suitable for Tegra
-@@ -592,7 +592,7 @@ config REGULATOR_MAX8998
- 
- config REGULATOR_MAX77686
- 	tristate "Maxim 77686 regulator"
--	depends on MFD_MAX77686
-+	depends on MFD_MAX77686 || COMPILE_TEST
- 	help
- 	  This driver controls a Maxim 77686 regulator
- 	  via I2C bus. The provided regulator is suitable for
-@@ -600,7 +600,7 @@ config REGULATOR_MAX77686
- 
- config REGULATOR_MAX77693
- 	tristate "Maxim 77693/77843 regulator"
--	depends on (MFD_MAX77693 || MFD_MAX77843)
-+	depends on MFD_MAX77693 || MFD_MAX77843 || COMPILE_TEST
- 	help
- 	  This driver controls a Maxim 77693/77843 regulators via I2C bus.
- 	  The regulators include two LDOs, 'SAFEOUT1', 'SAFEOUT2'
-@@ -609,7 +609,7 @@ config REGULATOR_MAX77693
- 
- config REGULATOR_MAX77802
- 	tristate "Maxim 77802 regulator"
--	depends on MFD_MAX77686
-+	depends on MFD_MAX77686 || COMPILE_TEST
- 	help
- 	  This driver controls a Maxim 77802 regulator
- 	  via I2C bus. The provided regulator is suitable for
-@@ -941,14 +941,14 @@ config REGULATOR_RT5033
- 
- config REGULATOR_S2MPA01
- 	tristate "Samsung S2MPA01 voltage regulator"
--	depends on MFD_SEC_CORE
-+	depends on MFD_SEC_CORE || COMPILE_TEST
- 	help
- 	 This driver controls Samsung S2MPA01 voltage output regulator
- 	 via I2C bus. S2MPA01 has 10 Bucks and 26 LDO outputs.
- 
- config REGULATOR_S2MPS11
- 	tristate "Samsung S2MPS11/13/14/15/S2MPU02 voltage regulator"
--	depends on MFD_SEC_CORE
-+	depends on MFD_SEC_CORE || COMPILE_TEST
- 	help
- 	 This driver supports a Samsung S2MPS11/13/14/15/S2MPU02 voltage
- 	 output regulator via I2C bus. The chip is comprised of high efficient
-@@ -957,7 +957,7 @@ config REGULATOR_S2MPS11
- 
- config REGULATOR_S5M8767
- 	tristate "Samsung S5M8767A voltage regulator"
--	depends on MFD_SEC_CORE
-+	depends on MFD_SEC_CORE || COMPILE_TEST
- 	help
- 	 This driver supports a Samsung S5M8767A voltage output regulator
- 	 via I2C bus. S5M8767A have 9 Bucks and 28 LDOs output and
--- 
-2.17.1
-
+What for?  I mean, is there any reason to try and keep those bugs as
+first-class citizens?  IDGI...  Yes, we have several special files
+(out of thousands) that have read()/write() user-visible semantics
+broken wrt 32bit/64bit.  And we have to keep them working that way
+for existing syscalls.  Why would we want to pretend that their
+behaviour is normal and isn't an ABI bug, not to be repeated for
+anything new?
