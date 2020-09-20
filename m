@@ -2,51 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA49271852
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 23:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A22C7271839
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 23:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726430AbgITVtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 17:49:53 -0400
-Received: from [112.133.52.154] ([112.133.52.154]:5272 "EHLO
-        localhost.localdomain" rhost-flags-FAIL-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726126AbgITVtx (ORCPT
+        id S1726412AbgITVh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 17:37:29 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:48400 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726126AbgITVh2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 17:49:53 -0400
-X-Greylist: delayed 675 seconds by postgrey-1.27 at vger.kernel.org; Sun, 20 Sep 2020 17:49:52 EDT
-Received: from User (localhost [127.0.0.1])
-        by localhost.localdomain (Postfix) with SMTP id F3486C52D824;
-        Mon, 21 Sep 2020 06:34:06 +0900 (KST)
-Reply-To: <financialinvestmentpartners@gmail.com>
-From:   "Financial Investment" <info.randy@office.com>
-Subject: Business Investment Loan
-Date:   Sun, 20 Sep 2020 21:34:26 -0000
+        Sun, 20 Sep 2020 17:37:28 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 92A311C0B7A; Sun, 20 Sep 2020 23:37:25 +0200 (CEST)
+Date:   Sun, 20 Sep 2020 23:37:25 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commits in the leds tree
+Message-ID: <20200920213725.GA31397@duo.ucw.cz>
+References: <20200921061638.28bb1ff3@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-Id: <20200920213406.F3486C52D824@localhost.localdomain>
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="6c2NcOVqGQ03X4Wi"
+Content-Disposition: inline
+In-Reply-To: <20200921061638.28bb1ff3@canb.auug.org.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I am a retired banker, now consulting for Investors.
 
-The Investors are providing loan funding to anyone who has a good
-business/project in need of finance at 3% interest rate annually
-with minimal documents required to conclude funding modalities.
+--6c2NcOVqGQ03X4Wi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Also, a fee: 1% is paid to anyone who introduces project owner
-for finance and we are ready to fund any project up to
-500,000,000 EURO (five Hundred Million Euro) as well as provide
+Hi!
 
-Loan to individual or Co-operation are available.
+>   258a8388d0ec ("leds: ns2: use struct led_init_data when registering")
+>   d444232bbbdd ("leds: ns2: remove unneeded variable")
+>   29c44f2b51a8 ("leds: ns2: register LED immediately after parsing DT pro=
+perties")
+>   925533c5a040 ("leds: ns2: cosmetic change: use helper variable")
+>   47f1fb852be2 ("leds: ns2: cosmetic change")
+>   a2ca4110ffc9 ("leds: ns2: cosmetic variable rename")
+>   2d55e2a22ef0 ("leds: ns2: cosmetic structure rename")
+>   51822355a756 ("leds: ns2: use devres API for getting GPIO descriptors")
+>   e6367d0d57cb ("leds: ns2: move parsing of one LED into separate functio=
+n")
+>   a5c8eb177993 ("leds: ns2: support OF probing only, forget platdata")
+>   820a7e98dbc3 ("leds: ns2: alloc simple array instead of struct ns2_led_=
+priv")
+>   5943b5ceb7f2 ("leds: ns2: use devres LED registering function")
+>=20
+> are missing a Signed-off-by from their committer.
 
-I anticipate your reply.
+Thanks for heads-up. Fixed and force-pushed.
 
-Sincerely,
-John.
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--6c2NcOVqGQ03X4Wi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX2fLlQAKCRAw5/Bqldv6
+8vXVAKDBfeOh+8fBDg3Hcs4cjhdExeZMgwCgqrUwjTV99N0eKQLNKdmhhHgCeR0=
+=YD5H
+-----END PGP SIGNATURE-----
+
+--6c2NcOVqGQ03X4Wi--
