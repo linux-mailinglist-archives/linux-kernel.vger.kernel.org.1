@@ -2,128 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3677D271666
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 19:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D9327166F
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 19:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726154AbgITRnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 13:43:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47710 "EHLO
+        id S1726244AbgITRt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 13:49:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725858AbgITRnP (ORCPT
+        with ESMTP id S1725858AbgITRt5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 13:43:15 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23FD8C061755
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 10:43:15 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id x69so11520872lff.3
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 10:43:15 -0700 (PDT)
+        Sun, 20 Sep 2020 13:49:57 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5D0AC061755;
+        Sun, 20 Sep 2020 10:49:56 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id l17so10617703edq.12;
+        Sun, 20 Sep 2020 10:49:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ejz/GOVvBNgiciatH4EjBRwlfy2MnL1tDSObr2BrKeg=;
-        b=cBDZkiv4uiqeUChUbmqRPD8tkvllq4angLGjbI6fcWbyt0pYNQ1SGMQdEdmcewXaXT
-         IE5S9J/GFuNXr/rpY1dC/0Yf7uyzIPTs0u+8f3gLaQ3BI+ak5trluGhkQvuTa+ZLZ3HS
-         UcueGtftJ4Q3p1fqvR6MgwdAfAMUTTFhAr56U=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yC2IsBfWzK7ZQ09LtojSvZoD4EQg7HI9mq1hIWS4J6A=;
+        b=BiJUwRFgcR3h/6Hkbk1y6UKhj2QBXzgbO2d4orYpKa91odNUZpH2+LO31ez24ulNn/
+         AwMXA6nhZ2Vujxu34JmOoDoXUL6N9VjENiWD1sUf01iopp63a4Qfp8YlekBMMHQZWzYu
+         XR5U5IDTT0SZoNNpvpdtx4Lcp/IxvZVzMZoInzdb1AqYRkdlofsEzPZ593RdRQoOGVJx
+         DqhZp1G2cxEjLaKWIsVEWgf0ZiOcxSHZl+hoDofL74bAmpaOh2/qr2x3MPdyh4sq5N32
+         QO1W3D1Lq/udrB2rt0iLy75BLmTC7bdzCAMs12sGSnuGV7dSHFBx6j7ADhYAx2Cpbm3L
+         cUfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ejz/GOVvBNgiciatH4EjBRwlfy2MnL1tDSObr2BrKeg=;
-        b=MiNZSe+ldL8B9r4wQ5/45CHUYGFbRdEDeAE5DYpY2TwL5HCK912eoiJOeQjOREFuhz
-         Yj8O6uMqQMLyRco5Bd4UMRs4ZtGsYUWnNmpAkpiSQPqCWx0SNaSmDtunxvkb8xJhyNUw
-         uVrJjfSlSTYshrxmkD5Geteq9frZ7HK1XeoXmaJjd5Gkxaaayy/RLsgWGyQJ6sSf25L8
-         nuRc3KAClNAHy1P76A6/2+oXhmtcqDOBniOXlm9c0eFJ8VpIcprtjP+QL4Knau9Svu8U
-         kNHrnxz3bEO2KZsFphqWnjv7goMfEGRJ4WmtIaHeJLrs5sXp7cx7Yl5SELvGXniL5Mjr
-         0oFA==
-X-Gm-Message-State: AOAM532p4Ub0XyHWJjrHsb89yi48t6Wb/tem6aHefwCAkPcM+7IArkq5
-        8rwfN8SP4TTj7r+UkKOAOYMgmjDo6otF+Q==
-X-Google-Smtp-Source: ABdhPJw5RmrzR+Hy1U5slri6/0dxn5IHdiHZEznMYl7AgieKoxgU5U83UKnLsc7j1TvamOaBvSDcTQ==
-X-Received: by 2002:ac2:52ab:: with SMTP id r11mr16144130lfm.118.1600623792940;
-        Sun, 20 Sep 2020 10:43:12 -0700 (PDT)
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
-        by smtp.gmail.com with ESMTPSA id d24sm1948886lfn.140.2020.09.20.10.43.11
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yC2IsBfWzK7ZQ09LtojSvZoD4EQg7HI9mq1hIWS4J6A=;
+        b=LzKpwD8jpuq4J22O+A7LkkjNjDiaHZu7vLzxb+1CpFZoMEV3PcEtrWfb3XQdhyEZpN
+         KKG/NeCMaNICt04fYvAXEcf3r2DVuQcVMBsEPvu1J5Sqv+rd2YtQQfa2QWtjRtDz3tdw
+         kStOVbYIyWWcCPPCi0c60+gkQ2wnOqrLk27gzG+u9kcMnfgOx9GE+5bvnQpsLkVPNNu9
+         XHFoWpQ/fSwH6AmRapOVNMIGhI6h+1Udzy9JC6t0ba9jY16n37eL8KASOUf9YbBx7Pft
+         //V6rg4P/WrRyYtQTVEYBam0tXKhceWBHguggSBN6SUpc14PSr13B6ffGcNBmA6Ai1Zo
+         TjWw==
+X-Gm-Message-State: AOAM530TlPPe+6Kg2HSVnf6oq1HaQ1JE/kQS75TNWHa3tfSM6HJmuWwH
+        fhZVYs2LnrM3lA2Sz7FqqjCHMV9nBEQ=
+X-Google-Smtp-Source: ABdhPJzYZQOxxiDWmwSjz1ZfxP7A8zCvb/AhvdOUgHx1t3dn4BR5oNZkwLEST9JnQWZAGUmmEH9TwA==
+X-Received: by 2002:aa7:cb44:: with SMTP id w4mr49144986edt.139.1600624195080;
+        Sun, 20 Sep 2020 10:49:55 -0700 (PDT)
+Received: from ?IPv6:2a01:110f:b59:fd00:1879:e534:7e37:5e55? ([2a01:110f:b59:fd00:1879:e534:7e37:5e55])
+        by smtp.gmail.com with ESMTPSA id si28sm7057547ejb.95.2020.09.20.10.49.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 20 Sep 2020 10:43:12 -0700 (PDT)
-Received: by mail-lj1-f173.google.com with SMTP id a15so9203220ljk.2
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 10:43:11 -0700 (PDT)
-X-Received: by 2002:a2e:84d6:: with SMTP id q22mr13708479ljh.70.1600623791519;
- Sun, 20 Sep 2020 10:43:11 -0700 (PDT)
+        Sun, 20 Sep 2020 10:49:54 -0700 (PDT)
+Subject: Re: ledtrig-cpu: Limit to 4 CPUs
+To:     Marek Behun <marek.behun@nic.cz>
+Cc:     Pavel Machek <pavel@ucw.cz>, linux-leds@vger.kernel.org,
+        dmurphy@ti.com,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200919093833.GA14326@duo.ucw.cz>
+ <27e19ac9-4bc0-2945-3985-6cd6bb5407df@gmail.com>
+ <20200920173905.237c314e@nic.cz>
+ <91f1caa7-8005-6c8f-ce7c-84e5c8cee5f8@gmail.com>
+ <20200920193357.3d797a46@nic.cz>
+From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Message-ID: <2cf83322-0f9f-6d7e-02d0-c2e6d773921f@gmail.com>
+Date:   Sun, 20 Sep 2020 19:49:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200919091751.011116649@linutronix.de> <CAHk-=wiYGyrFRbA1cc71D2-nc5U9LM9jUJesXGqpPnB7E4X1YQ@mail.gmail.com>
- <87mu1lc5mp.fsf@nanos.tec.linutronix.de> <87k0wode9a.fsf@nanos.tec.linutronix.de>
- <CAHk-=wgbmwsTOKs23Z=71EBTrULoeaH2U3TNqT2atHEWvkBKdw@mail.gmail.com> <87eemwcpnq.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87eemwcpnq.fsf@nanos.tec.linutronix.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 20 Sep 2020 10:42:55 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgF-upZVpqJWK=TK7MS9H-Rp1ZxGfOG+dDW=JThtxAzVQ@mail.gmail.com>
-Message-ID: <CAHk-=wgF-upZVpqJWK=TK7MS9H-Rp1ZxGfOG+dDW=JThtxAzVQ@mail.gmail.com>
-Subject: Re: [patch RFC 00/15] mm/highmem: Provide a preemptible variant of
- kmap_atomic & friends
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        "open list:SYNOPSYS ARC ARCHITECTURE" 
-        <linux-snps-arc@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
-        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-sparc <sparclinux@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200920193357.3d797a46@nic.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 20, 2020 at 10:40 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> I think the more obvious solution is to split the whole exercise:
->
->   schedule()
->      prepare_switch()
->         unmap()
->
->     switch_to()
->
->     finish_switch()
->         map()
+On 9/20/20 7:33 PM, Marek Behun wrote:
+> On Sun, 20 Sep 2020 18:55:28 +0200
+> Jacek Anaszewski <jacek.anaszewski@gmail.com> wrote:
+> 
+>> On 9/20/20 5:39 PM, Marek Behun wrote:
+>>> On Sun, 20 Sep 2020 16:15:09 +0200
+>>> Jacek Anaszewski <jacek.anaszewski@gmail.com> wrote:
+>>>    
+>>>> Hi Pavel,
+>>>>
+>>>> On 9/19/20 11:38 AM, Pavel Machek wrote:
+>>>>> commit 318681d3e019e39354cc6c2155a7fd1bb8e8084d
+>>>>> Author: Pavel Machek <pavel@ucw.cz>
+>>>>> Date:   Sat Sep 19 11:34:58 2020 +0200
+>>>>>
+>>>>>        ledtrig-cpu: Limit to 4 CPUs
+>>>>>        
+>>>>>        Some machines have thousands of CPUs... and trigger mechanisms was not
+>>>>>        really meant for thousands of triggers. I doubt anyone uses this
+>>>>>        trigger on many-CPU machine; but if they do, they'll need to do it
+>>>>>        properly.
+>>>>>        
+>>>>>        Signed-off-by: Pavel Machek <pavel@ucw.cz>
+>>>>>
+>>>>> diff --git a/drivers/leds/trigger/ledtrig-cpu.c b/drivers/leds/trigger/ledtrig-cpu.c
+>>>>> index 869976d1b734..b7e00b09b137 100644
+>>>>> --- a/drivers/leds/trigger/ledtrig-cpu.c
+>>>>> +++ b/drivers/leds/trigger/ledtrig-cpu.c
+>>>>> @@ -2,14 +2,18 @@
+>>>>>     /*
+>>>>>      * ledtrig-cpu.c - LED trigger based on CPU activity
+>>>>>      *
+>>>>> - * This LED trigger will be registered for each possible CPU and named as
+>>>>> - * cpu0, cpu1, cpu2, cpu3, etc.
+>>>>> + * This LED trigger will be registered for first four CPUs and named
+>>>>> + * as cpu0, cpu1, cpu2, cpu3. There's additional trigger called cpu that
+>>>>> + * is on when any CPU is active.
+>>>>> + *
+>>>>> + * If you want support for arbitrary number of CPUs, make it one trigger,
+>>>>> + * with additional sysfs file selecting which CPU to watch.
+>>>>>      *
+>>>>>      * It can be bound to any LED just like other triggers using either a
+>>>>>      * board file or via sysfs interface.
+>>>>>      *
+>>>>>      * An API named ledtrig_cpu is exported for any user, who want to add CPU
+>>>>> - * activity indication in their code
+>>>>> + * activity indication in their code.
+>>>>>      *
+>>>>>      * Copyright 2011 Linus Walleij <linus.walleij@linaro.org>
+>>>>>      * Copyright 2011 - 2012 Bryan Wu <bryan.wu@canonical.com>
+>>>>> @@ -145,6 +149,9 @@ static int __init ledtrig_cpu_init(void)
+>>>>>     	for_each_possible_cpu(cpu) {
+>>>>>     		struct led_trigger_cpu *trig = &per_cpu(cpu_trig, cpu);
+>>>>>     
+>>>>> +		if (cpu > 4)
+>>>>
+>>>> NACK. The workaround for this trigger was implemented for a reason -
+>>>> to make it working on platforms with arbitrary number of logical cpus.
+>>>> I've got 8, so I am discriminated now. Not saying, that it precludes
+>>>> trigger registration with no single line of warning.
+>>>> Regardless of that - you have no guarantee that you're not breaking
+>>>> anyone - "I doubt" is not a sufficient argument.
+>>>>   
+>>>
+>>> If that is the case Jacek, I would try 16 and then see if people
+>>> complain. Do you really think that someone sets a specific LED to
+>>> trigger on activity on CPU id > 16?
+>>
+>> I have an access to the machine with 80 cpus, so I could once
+>> get surprised not being able to find cpuN triggers not being
+>> listed among available triggers.
+>>
+>> And say that I have a solution where I install 80 userspace LEDs
+>> (drivers/leds/uleds.c) and register them on each cpuN triggers to get
+>> notifications on how cpus work.
+> 
+> Hi Jacek,
+> 
+> I understand (and Pavel does for sure too) that many people
+> currently have that possibility, that they have access to machines with
+> many CPUs and many LEDs. We also understand that currently it is
+> possible for users to set 1847th LED to trigger on activity on CPU ID
+> 1337. What we are suggesting is that practically no one uses this, and
+> for those 10 people who do, well it would be better for them to migrate
+> to new ABI than for kernel developers having forever maintain this
+> legacy ABI.
+> 
+> Legacy drivers get removed from kernel from time to time, if no one
+> uses them. So I think Pavel's proposal (although I may not agree with
+> the limit 4) has some merit. If we try this, and someone complains, we
+> can then discuss. If we don't try, we may never know.
 
-Yeah, that looks much easier to explain. Ack.
+Just go ahead without my ack. I just wanted not to let it go without
+any discussion. At least we leave a trace...
 
-               Linus
+>>> If you do not agree, then I think we should implement a "cpu" trigger
+>>> where the cpu ID (or maybe mask of multiple CPUs) is configurable via
+>>> another sysfs file. And then declare current cpu trigger (with names
+>>> "cpu%d") as legacy.
+>>
+>> Yes, we can do that, and even mark the cpu trigger as legacy but we
+>> cannot prevent people from using it if that was present in kernel
+>> for many years.
+>>
+> 
+
+-- 
+Best regards,
+Jacek Anaszewski
