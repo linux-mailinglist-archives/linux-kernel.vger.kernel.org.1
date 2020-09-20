@@ -2,87 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64057271728
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 20:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5208F271734
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 20:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726343AbgITSmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 14:42:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726055AbgITSmG (ORCPT
+        id S1726221AbgITSp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 14:45:29 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:42017 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726055AbgITSp3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 14:42:06 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B81C061755;
-        Sun, 20 Sep 2020 11:42:05 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kK4Hd-002cE4-T4; Sun, 20 Sep 2020 18:41:58 +0000
-Date:   Sun, 20 Sep 2020 19:41:57 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
-        io-uring@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org
-Subject: Re: [PATCH 1/9] kernel: add a PF_FORCE_COMPAT flag
-Message-ID: <20200920184157.GP3421308@ZenIV.linux.org.uk>
-References: <20200918124533.3487701-1-hch@lst.de>
- <20200918124533.3487701-2-hch@lst.de>
- <20200920151510.GS32101@casper.infradead.org>
- <20200920180742.GN3421308@ZenIV.linux.org.uk>
+        Sun, 20 Sep 2020 14:45:29 -0400
+X-Greylist: delayed 370 seconds by postgrey-1.27 at vger.kernel.org; Sun, 20 Sep 2020 14:45:28 EDT
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 12AC9580195;
+        Sun, 20 Sep 2020 14:45:28 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Sun, 20 Sep 2020 14:45:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=U
+        ktx1VRTJlKt926xOC0fJTdMwvcW/tqqviFWzSCgYTM=; b=rAQrhhB5BY0ozfCkJ
+        ULTtKfgOS3lObtqJesEa7hjgZauSluJH9jNbISNOMO3zbDec68JUb5gZBeBOpok5
+        m+9OAWwbJ+jfiMXM8DdSxxpFbnDtZX7H5mBhFPCWOg3SPbUBGuLMVgXbLLWUqlSi
+        4oUigGIyYSul7rZXoxrx2t1mmg50ixyI+VX5MBEnDo5++2Ew/1y65jFYb/sMkjGx
+        4Re53tg45uWn7be/XhNg6csizZBb+cvXfZ330fbWNX+PfUjqALaJif1tcU3/C9Gs
+        V8r7cadIatj9uJRQ6XUdmhXYJtUUj5QeYQbi8zwlkKUuLfMqpZ556n+0COra6Mz7
+        /7tsg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=Uktx1VRTJlKt926xOC0fJTdMwvcW/tqqviFWzSCgY
+        TM=; b=AbCyfx6U/EbMMaPCWW1L77lTvD7DlIDa0Az2WEgvymv2ZaG96RfPHawTu
+        WS4z/r/r19hSvIlclTboFKRiY6hy8R/0hUM9Z/T994jKm/GF5bAdfkQ4RVA+glbp
+        vcsFZtxbEem/BAdBusZEoSGnQ7LMUllTlAYs9jLiCb1GtB/U3z8jgRVgkzExp7Hj
+        uur7YrQhy0pnbBe1AyOBtC0HnfFauPD4WOC4kH5yJqNft38GQwX3rILolLrkdiij
+        ON154Jscjw4AakZWff6WsEpBqomqgpy8QZnpj/QC/G7bf16t33PMokahpcZ/VI8Y
+        3ydIJLbCGGub5YfsTxUmQ1yqp4nUQ==
+X-ME-Sender: <xms:RqNnXwSI0Wrg8dfDYN4_sS3QU-0_62cUy31SVgAMDBEJwXLz2dZ5Zg>
+    <xme:RqNnX9ydEN93faF_-710xV6VuUdqP6V1fJiAA4_uxVacTfwmox-_apY7Ef8Z3Kpfg
+    7xtLWGKoBzc1FHO_Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtgdduvdejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomhepufgrmhhu
+    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepgfelkeduveejtdejhfeiledvhfeggeeiieeklefhfeefffffffeg
+    udetteelieejnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgr
+    nhgurdhorhhg
+X-ME-Proxy: <xmx:R6NnX902Fy5EhF0jiUx3_Pl0HOoeA9_3WEGJyerJ-_8NP2iFAF6tfA>
+    <xmx:R6NnX0BWzPk2KOx8Oh9NsQCn8idrKwokWSLrylMqMrQTCSRKu4jDOQ>
+    <xmx:R6NnX5j9wTAF8rmwFN0dXZm0MetMKinuMIZyFkp0Z48pEnTnSMtfzQ>
+    <xmx:SKNnXyZCTMzcRgmjMOOqgzJNPEPVkdOzn-SsTtg1jQcKIkNyZPwHpQ>
+Received: from [192.168.50.169] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 63E06328005A;
+        Sun, 20 Sep 2020 14:45:26 -0400 (EDT)
+Subject: Re: [PATCH v3 05/19] ASoc: sun4i-i2s: Add 20 and 24 bit support
+To:     =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Marcus Cooper <codekipper@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com
+References: <20200920180758.592217-1-peron.clem@gmail.com>
+ <20200920180758.592217-6-peron.clem@gmail.com>
+From:   Samuel Holland <samuel@sholland.org>
+Message-ID: <2d2799c5-62e8-8e64-c739-3d85b89c1178@sholland.org>
+Date:   Sun, 20 Sep 2020 13:45:25 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200920180742.GN3421308@ZenIV.linux.org.uk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20200920180758.592217-6-peron.clem@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 20, 2020 at 07:07:42PM +0100, Al Viro wrote:
+On 9/20/20 1:07 PM, Clément Péron wrote:
+> From: Marcus Cooper <codekipper@gmail.com>
+> 
+> Extend the functionality of the driver to include support of 20 and
+> 24 bits per sample.
+> 
+> Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+> Signed-off-by: Clément Péron <peron.clem@gmail.com>
+> Acked-by: Maxime Ripard <mripard@kernel.org>
+> ---
+>  sound/soc/sunxi/sun4i-i2s.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+> 
+As I have mentioned before, if you want to support a 32-bit slot width on sun4i
+variants (which patch 2 does via TDM and this patch does via PCM format), you
+need to fix sun4i_i2s_get_wss() to return "3", not "4", for a 32-bit input.
 
-> /proc/bus/input/devices (fucked bitmap-to-text representation)
-
-To illustrate the, er, beauty of that stuff:
-
-; cat32 /proc/bus/input/devices >/tmp/a
-; cat /proc/bus/input/devices >/tmp/b
-; diff -u /tmp/a /tmp/b|grep '^[-+]'
---- /tmp/a      2020-09-20 14:28:43.442560691 -0400
-+++ /tmp/b      2020-09-20 14:28:49.018543230 -0400
--B: KEY=1100f 2902000 8380307c f910f001 feffffdf ffefffff ffffffff fffffffe
-+B: KEY=1100f02902000 8380307cf910f001 feffffdfffefffff fffffffffffffffe
--B: KEY=70000 0 0 0 0 0 0 0 0
-+B: KEY=70000 0 0 0 0
--B: KEY=420 0 70000 0 0 0 0 0 0 0 0
-+B: KEY=420 70000 0 0 0 0
--B: KEY=100000 0 0 0
-+B: KEY=10000000000000 0
--B: KEY=4000 0 0 0 0
-+B: KEY=4000 0 0
--B: KEY=8000 0 0 0 0 0 1100b 800 2 200000 0 0 0 0
-+B: KEY=800000000000 0 0 1100b00000800 200200000 0 0
--B: KEY=3e000b 0 0 0 0 0 0 0
-+B: KEY=3e000b00000000 0 0 0
--B: KEY=ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff fffffffe
-+B: KEY=ffffffffffffffff ffffffffffffffff ffffffffffffffff fffffffffffffffe
-; 
-(cat32 being a 32bit binary of cat)
-All the differences are due to homegrown bitmap-to-text conversion.
-
-Note that feeding that into a pipe leaves the recepient with a lovely problem -
-you can't go by the width of words (they are not zero-padded) and you can't
-go by the number of words either - it varies from device to device.
-
-And there's nothing we can do with that - it's a userland ABI, can't be
-changed without breaking stuff.  I would prefer to avoid additional examples
-like that, TYVM...
+Cheers,
+Samuel
