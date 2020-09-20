@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30296271487
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 15:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13EFA27148C
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 15:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726444AbgITN1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 09:27:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43376 "EHLO mail.kernel.org"
+        id S1726485AbgITN2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 09:28:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726306AbgITN1q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 09:27:46 -0400
+        id S1726367AbgITN2F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 09:28:05 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8789F20EDD;
-        Sun, 20 Sep 2020 13:27:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0E8DD2220C;
+        Sun, 20 Sep 2020 13:28:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600608466;
-        bh=d/AhPlXzKn283CBhxrBvQLk4f05mqXcvXC6Tknq+TR0=;
+        s=default; t=1600608484;
+        bh=u8RCC0R3r+tetpcJh+PF/KNlzTKwwzGUVErVKwaocy0=;
         h=Date:From:To:Cc:Subject:From;
-        b=C474BhnYiU+lHFmExApdS3dfiAw8yh8+qKIjp6cKmoaoJPTHpAIX6XyXefcSpgq+3
-         DVbNe+zakvW4ibU2Db1i/JH5aVKgYzNBm4xyuiCLfv/ThVfYFsEYElZee92NurtZGE
-         lzTEls95+iJu4C2cIR1Ity+n5KtSlUh0akenTk0E=
-Date:   Sun, 20 Sep 2020 15:28:11 +0200
+        b=01mr5jXNV1egtLQSqAlD/CYaNZ13Gmrdyk2RQ7dXYGSvx78G65jQjCWlKpX+cI6yS
+         qCt2JGBeW4HHchKg68HwNWKaI1r8YMYzpeqYhGSbIxsqEz45yhJ9eoHx78KB0alPl4
+         jUMwcis8nHTPmuZCRsrX7/bzSD/Uicg5E7moh1/A=
+Date:   Sun, 20 Sep 2020 15:28:30 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jiri Slaby <jslaby@suse.cz>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: [GIT PULL] TTY/Serial driver fixes for 5.9-rc6
-Message-ID: <20200920132811.GA2844860@kroah.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: [GIT PULL] USB/Thunderbolt fixes for 5.9-rc6
+Message-ID: <20200920132830.GA2845084@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -39,45 +37,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit f75aef392f869018f78cfedf3c320a6b3fcfda6b:
+The following changes since commit 856deb866d16e29bd65952e0289066f6078af773:
 
-  Linux 5.9-rc3 (2020-08-30 16:01:54 -0700)
+  Linux 5.9-rc5 (2020-09-13 16:06:00 -0700)
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-5.9-rc6
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.9-rc6
 
-for you to fetch changes up to ec0972adecb391a8d8650832263a4790f3bfb4df:
+for you to fetch changes up to 9cdabcb3ef8c24ca3a456e4db7b012befb688e73:
 
-  fbcon: Fix user font detection test at fbcon_resize(). (2020-09-16 14:35:51 +0200)
+  usblp: fix race between disconnect() and read() (2020-09-17 18:45:30 +0200)
 
 ----------------------------------------------------------------
-TTY/Serial/fbcon fixes for 5.9-rc6
+USB/Thunderbolt fixes for 5.9-rc6
 
-Here are some small TTY/Serial and one more fbcon fix for 5.9-rc6
+Here are some small USB and one Thunderbolt driver fixes for 5.9-rc6.
 
-They include:
-	- serial core locking regression fixes
-	- new device ids for 8250_pci driver
-	- fbcon fix for syzbot found issue
+Nothing major at all, just some fixes for reported issues, and a quirk
+addition:
+	- typec fixes
+	- UAS disconnect fix
+	- usblp race fix
+	- ehci-hcd modversions build fix
+	- ignore wakeup quirk table addition
+	- thunderbolt DROM read fix
 
-All have been in linux-next with no reported issues.
+All of these have been in linux-next with no reported issues.
 
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ----------------------------------------------------------------
-Johan Hovold (2):
-      serial: core: fix port-lock initialisation
-      serial: core: fix console port-lock regression
+Greg Kroah-Hartman (1):
+      Merge tag 'thunderbolt-for-v5.9-rc6' of git://git.kernel.org/.../westeri/thunderbolt into usb-linus
 
-Tetsuo Handa (1):
-      fbcon: Fix user font detection test at fbcon_resize().
+Heikki Krogerus (2):
+      usb: typec: ucsi: acpi: Increase command completion timeout value
+      usb: typec: ucsi: Prevent mode overrun
 
-Tobias Diedrich (1):
-      serial: 8250_pci: Add Realtek 816a and 816b
+Madhusudanarao Amara (1):
+      usb: typec: intel_pmc_mux: Handle SCU IPC error conditions
 
- drivers/tty/serial/8250/8250_pci.c | 11 ++++++++++
- drivers/tty/serial/serial_core.c   | 44 +++++++++++++++++---------------------
- drivers/video/fbdev/core/fbcon.c   |  2 +-
- include/linux/serial_core.h        |  1 +
- 4 files changed, 33 insertions(+), 25 deletions(-)
+Mika Westerberg (1):
+      thunderbolt: Retry DROM read once if parsing fails
+
+Oliver Neukum (2):
+      USB: UAS: fix disconnect by unplugging a hub
+      usblp: fix race between disconnect() and read()
+
+Penghao (1):
+      USB: quirks: Add USB_QUIRK_IGNORE_REMOTE_WAKEUP quirk for BYD zhaoxin notebook
+
+Quentin Perret (1):
+      ehci-hcd: Move include to keep CRC stable
+
+ drivers/thunderbolt/eeprom.c          | 20 ++++++++++++++++----
+ drivers/usb/class/usblp.c             |  5 +++++
+ drivers/usb/core/quirks.c             |  4 ++++
+ drivers/usb/host/ehci-hcd.c           |  1 +
+ drivers/usb/host/ehci-hub.c           |  1 -
+ drivers/usb/storage/uas.c             | 14 ++++++++++++--
+ drivers/usb/typec/mux/intel_pmc_mux.c | 12 +++++++++---
+ drivers/usb/typec/ucsi/ucsi.c         | 22 ++++++++++++++++------
+ drivers/usb/typec/ucsi/ucsi_acpi.c    |  2 +-
+ 9 files changed, 64 insertions(+), 17 deletions(-)
