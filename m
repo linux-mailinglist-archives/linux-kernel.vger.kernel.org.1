@@ -2,145 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B815F271659
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 19:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2584E27165B
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 19:39:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726178AbgITReB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 13:34:01 -0400
-Received: from lists.nic.cz ([217.31.204.67]:52902 "EHLO mail.nic.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725858AbgITReB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 13:34:01 -0400
-Received: from localhost (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
-        by mail.nic.cz (Postfix) with ESMTPSA id 8E6AD140A3B;
-        Sun, 20 Sep 2020 19:33:57 +0200 (CEST)
-Date:   Sun, 20 Sep 2020 19:33:57 +0200
-From:   Marek Behun <marek.behun@nic.cz>
-To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Cc:     Pavel Machek <pavel@ucw.cz>, linux-leds@vger.kernel.org,
-        dmurphy@ti.com,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: ledtrig-cpu: Limit to 4 CPUs
-Message-ID: <20200920193357.3d797a46@nic.cz>
-In-Reply-To: <91f1caa7-8005-6c8f-ce7c-84e5c8cee5f8@gmail.com>
-References: <20200919093833.GA14326@duo.ucw.cz>
-        <27e19ac9-4bc0-2945-3985-6cd6bb5407df@gmail.com>
-        <20200920173905.237c314e@nic.cz>
-        <91f1caa7-8005-6c8f-ce7c-84e5c8cee5f8@gmail.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726148AbgITRjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 13:39:53 -0400
+Received: from smtprelay0006.hostedemail.com ([216.40.44.6]:51076 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726043AbgITRjw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 13:39:52 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id BBEF0180A7FDD;
+        Sun, 20 Sep 2020 17:39:51 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2525:2560:2563:2682:2685:2828:2859:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3353:3622:3653:3865:3867:3868:3870:3871:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:4470:5007:6119:7514:7576:7903:7974:9025:10004:10400:10848:11026:11232:11473:11658:11914:12043:12297:12438:12555:12740:12760:12895:13255:13439:14181:14659:14721:21080:21221:21433:21451:21627:21811:21939:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: shame47_050a3db2713e
+X-Filterd-Recvd-Size: 2993
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf11.hostedemail.com (Postfix) with ESMTPA;
+        Sun, 20 Sep 2020 17:39:50 +0000 (UTC)
+Message-ID: <cb359f57c645831ac4f4d89cf67ab1101ac76c00.camel@perches.com>
+Subject: Re: [PATCH v2] checkpatch: extend author Signed-off-by check for
+ split From: header
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org, apw@canonical.com,
+        linux-kernel@vger.kernel.org
+Date:   Sun, 20 Sep 2020 10:39:49 -0700
+In-Reply-To: <20200920091706.56276-1-dwaipayanray1@gmail.com>
+References: <20200920091706.56276-1-dwaipayanray1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,URIBL_BLOCKED,
-        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
-        autolearn=disabled version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 20 Sep 2020 18:55:28 +0200
-Jacek Anaszewski <jacek.anaszewski@gmail.com> wrote:
-
-> On 9/20/20 5:39 PM, Marek Behun wrote:
-> > On Sun, 20 Sep 2020 16:15:09 +0200
-> > Jacek Anaszewski <jacek.anaszewski@gmail.com> wrote:
-> >   
-> >> Hi Pavel,
-> >>
-> >> On 9/19/20 11:38 AM, Pavel Machek wrote:  
-> >>> commit 318681d3e019e39354cc6c2155a7fd1bb8e8084d
-> >>> Author: Pavel Machek <pavel@ucw.cz>
-> >>> Date:   Sat Sep 19 11:34:58 2020 +0200
-> >>>
-> >>>       ledtrig-cpu: Limit to 4 CPUs
-> >>>       
-> >>>       Some machines have thousands of CPUs... and trigger mechanisms was not
-> >>>       really meant for thousands of triggers. I doubt anyone uses this
-> >>>       trigger on many-CPU machine; but if they do, they'll need to do it
-> >>>       properly.
-> >>>       
-> >>>       Signed-off-by: Pavel Machek <pavel@ucw.cz>
-> >>>
-> >>> diff --git a/drivers/leds/trigger/ledtrig-cpu.c b/drivers/leds/trigger/ledtrig-cpu.c
-> >>> index 869976d1b734..b7e00b09b137 100644
-> >>> --- a/drivers/leds/trigger/ledtrig-cpu.c
-> >>> +++ b/drivers/leds/trigger/ledtrig-cpu.c
-> >>> @@ -2,14 +2,18 @@
-> >>>    /*
-> >>>     * ledtrig-cpu.c - LED trigger based on CPU activity
-> >>>     *
-> >>> - * This LED trigger will be registered for each possible CPU and named as
-> >>> - * cpu0, cpu1, cpu2, cpu3, etc.
-> >>> + * This LED trigger will be registered for first four CPUs and named
-> >>> + * as cpu0, cpu1, cpu2, cpu3. There's additional trigger called cpu that
-> >>> + * is on when any CPU is active.
-> >>> + *
-> >>> + * If you want support for arbitrary number of CPUs, make it one trigger,
-> >>> + * with additional sysfs file selecting which CPU to watch.
-> >>>     *
-> >>>     * It can be bound to any LED just like other triggers using either a
-> >>>     * board file or via sysfs interface.
-> >>>     *
-> >>>     * An API named ledtrig_cpu is exported for any user, who want to add CPU
-> >>> - * activity indication in their code
-> >>> + * activity indication in their code.
-> >>>     *
-> >>>     * Copyright 2011 Linus Walleij <linus.walleij@linaro.org>
-> >>>     * Copyright 2011 - 2012 Bryan Wu <bryan.wu@canonical.com>
-> >>> @@ -145,6 +149,9 @@ static int __init ledtrig_cpu_init(void)
-> >>>    	for_each_possible_cpu(cpu) {
-> >>>    		struct led_trigger_cpu *trig = &per_cpu(cpu_trig, cpu);
-> >>>    
-> >>> +		if (cpu > 4)  
-> >>
-> >> NACK. The workaround for this trigger was implemented for a reason -
-> >> to make it working on platforms with arbitrary number of logical cpus.
-> >> I've got 8, so I am discriminated now. Not saying, that it precludes
-> >> trigger registration with no single line of warning.
-> >> Regardless of that - you have no guarantee that you're not breaking
-> >> anyone - "I doubt" is not a sufficient argument.
-> >>  
-> > 
-> > If that is the case Jacek, I would try 16 and then see if people
-> > complain. Do you really think that someone sets a specific LED to
-> > trigger on activity on CPU id > 16?  
+On Sun, 2020-09-20 at 14:47 +0530, Dwaipayan Ray wrote:
+> Checkpatch did not handle cases where the author From: header
+> was split into multiple lines. The author identity could not
+> be resolved and checkpatch generated a false NO_AUTHOR_SIGN_OFF
+> warning.
 > 
-> I have an access to the machine with 80 cpus, so I could once
-> get surprised not being able to find cpuN triggers not being
-> listed among available triggers.
+> A typical example is Commit e33bcbab16d1 ("tee: add support for
+> session's client UUID generation"). When checkpatch was run on
+> this commit, it displayed:
 > 
-> And say that I have a solution where I install 80 userspace LEDs
-> (drivers/leds/uleds.c) and register them on each cpuN triggers to get
-> notifications on how cpus work.
-
-Hi Jacek,
-
-I understand (and Pavel does for sure too) that many people
-currently have that possibility, that they have access to machines with
-many CPUs and many LEDs. We also understand that currently it is
-possible for users to set 1847th LED to trigger on activity on CPU ID
-1337. What we are suggesting is that practically no one uses this, and
-for those 10 people who do, well it would be better for them to migrate
-to new ABI than for kernel developers having forever maintain this
-legacy ABI.
-
-Legacy drivers get removed from kernel from time to time, if no one
-uses them. So I think Pavel's proposal (although I may not agree with
-the limit 4) has some merit. If we try this, and someone complains, we
-can then discuss. If we don't try, we may never know.
-
-Marek
-
-> > If you do not agree, then I think we should implement a "cpu" trigger
-> > where the cpu ID (or maybe mask of multiple CPUs) is configurable via
-> > another sysfs file. And then declare current cpu trigger (with names
-> > "cpu%d") as legacy.  
+> "WARNING:NO_AUTHOR_SIGN_OFF: Missing Signed-off-by: line by nominal
+> patch author ''"
 > 
-> Yes, we can do that, and even mark the cpu trigger as legacy but we
-> cannot prevent people from using it if that was present in kernel
-> for many years.
+> This was due to split header lines not being handled properly and
+> the author himself wrote in Commit cd2614967d8b ("checkpatch: warn
+> if missing author Signed-off-by"):
 > 
+> "Split From: headers are not fully handled: only the first part
+> is compared."
+> 
+> Support split From: headers by correctly parsing the header
+> extension lines. RFC 2822, Section-2.2.3 stated that each extended
+> line must start with a WSP character (a space or htab). The solution
+> was therefore to concatenate the lines which start with a WSP to
+> get the correct long header.
+> 
+> Suggested-by: Joe Perches <joe@perches.com>
+> Link: https://lore.kernel.org/linux-kernel-mentees/f5d8124e54a50480b0a9fa638787bc29b6e09854.camel@perches.com/
+> Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+
+Acked-by: Joe Perches <joe@perches.com>
+
+> ---
+>  scripts/checkpatch.pl | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 504d2e431c60..9e65d21456f1 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -2661,6 +2661,10 @@ sub process {
+>  # Check the patch for a From:
+>  		if (decode("MIME-Header", $line) =~ /^From:\s*(.*)/) {
+>  			$author = $1;
+> +			my $curline = $linenr;
+> +			while(defined($rawlines[$curline]) && ($rawlines[$curline++] =~ /^[ \t]\s*(.*)/)) {
+> +				$author .= $1;
+> +			}
+>  			$author = encode("utf8", $author) if ($line =~ /=\?utf-8\?/i);
+>  			$author =~ s/"//g;
+>  			$author = reformat_email($author);
 
