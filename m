@@ -2,75 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1404A2711BE
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 04:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 566222711BC
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 04:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726864AbgITCH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 22:07:58 -0400
-Received: from mxout04.lancloud.ru ([89.108.124.63]:55750 "EHLO
-        mxout04.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726760AbgITCH6 (ORCPT
+        id S1726843AbgITCDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 22:03:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726707AbgITCDh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 22:07:58 -0400
-X-Greylist: delayed 536 seconds by postgrey-1.27 at vger.kernel.org; Sat, 19 Sep 2020 22:07:57 EDT
-Received: from LanCloud
-DKIM-Filter: OpenDKIM Filter v2.11.0 mxout04.lancloud.ru 8C2FA207034A
-Received: from LanCloud
-Received: from LanCloud
-Received: from LanCloud
-Date:   Sun, 20 Sep 2020 04:58:57 +0300
-From:   Elvira Khabirova <e.khabirova@omprussia.ru>
-To:     <op-tee@lists.trustedfirmware.org>
-CC:     <jens.wiklander@linaro.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] tee: fix some comment typos in header files
-Message-ID: <20200920045857.34b612bf@akathisia>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Sat, 19 Sep 2020 22:03:37 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6151C061755;
+        Sat, 19 Sep 2020 19:03:36 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id b13so5425563qvl.2;
+        Sat, 19 Sep 2020 19:03:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wYkcmiJBC3UmRJJ8A8jHqdwu2K2eI6OMMapMmbHZsAc=;
+        b=g2lwKVAZocLXlmT3uCPGEXrGUwv9sO6hruUw3Lkn7JoFlLwz27BjSe9kAFIlNtF4df
+         LDDQ6aYnKJeJBtIiKzSDuCdoo7jo61HaRE17q2q0N2uZHD+Djwetkba6T60HhdkuxNFC
+         7SlBevuPgpKPRQmZNaqgsHnqy/7nxfBhYR+3eJmggIRuVc+7uyT+FR9L6cDP3+YoVHTQ
+         SzegpDBxAUNqPwsm+K5mTTiSU8Z9xp5xDFNY+W9JiBN77ZueNFyu3cjQyPjlbCD7Q8pP
+         2xnCXqgCbhVfTgQzdSmta/+Mkw6FmA90QMSLYwejmPMWZ34vdL719P36TjS5omhYZBXY
+         uZvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wYkcmiJBC3UmRJJ8A8jHqdwu2K2eI6OMMapMmbHZsAc=;
+        b=PmQD4YGkk8uF2p4ilQFKCtgQ7Mzra/0f2IiVWzMvXDuw/QiAF5BG6yLQuEkRDyEvSA
+         7KoG0szoC6gTM5O29vE3+dSLtfMsurcAObd/1f7Z4N7X8ot6bjtKdvwbCj4U4ADHJ7Us
+         dIz4xm5Az3yYh47TFgw3TwG1nJ2+cyAdmYXBt3DkQ/mhTfQsPgMQK3yvcEVrBcLmuDDW
+         FGR5HXh4DPfmZT9v0hAq9YkTtW6OhqxKD4or6x2DsKdQnCuewVsbBoIMld74dVLlnzVd
+         Io5+p198qGA/5STN7zhOBoUZc/xBPoBs3TxJ1N760sx2UlKFfFVcU1BuWQmsUsyyNsO0
+         UKsQ==
+X-Gm-Message-State: AOAM532uDn+g/Zkudl8smCmBBLRwkFnQezpX8kUd5pEvhR/4AENVj4jB
+        jTtsPuDJVJfXUwhoMzUKyfc=
+X-Google-Smtp-Source: ABdhPJxR3/k7aDO54FO9GwsAlCssS4k6XnMLUL45Eiw4vb0ft3hXPrgkwZhc1FEKXesqL+d0ci/C+w==
+X-Received: by 2002:a05:6214:a52:: with SMTP id ee18mr24363474qvb.39.1600567415594;
+        Sat, 19 Sep 2020 19:03:35 -0700 (PDT)
+Received: from [192.168.1.181] (pool-173-75-208-99.phlapa.fios.verizon.net. [173.75.208.99])
+        by smtp.gmail.com with ESMTPSA id q35sm6061142qtd.75.2020.09.19.19.03.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 19 Sep 2020 19:03:34 -0700 (PDT)
+Subject: Re: [PATCH] wireless: ath9k: hif_usb: fix race condition between
+ usb_get_urb() and usb_kill_anchored_urbs()
+To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
+Cc:     gregkh@linuxfoundation.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ath9k-devel@qca.qualcomm.com,
+        syzkaller-bugs@googlegroups.com,
+        syzbot+89bd486af9427a9fc605@syzkaller.appspotmail.com
+References: <20200911071427.32354-1-brookebasile@gmail.com>
+From:   Brooke Basile <brookebasile@gmail.com>
+Message-ID: <535351e1-90e3-ceb6-3d0a-a445a6d9582c@gmail.com>
+Date:   Sat, 19 Sep 2020 22:03:33 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+In-Reply-To: <20200911071427.32354-1-brookebasile@gmail.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [89.255.69.56]
-X-ClientProxiedBy: LFEXT01.lancloud.ru (fd00:f066::141) To
- LFEX1904.lancloud.ru (fd00:f066::74)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct tee_param: revc -> recv.
-TEE_IOC_SUPPL_SEND: typo introduced by copy-pasting, replace invalid
-description with description from the according argument struct.
+On 9/11/20 3:14 AM, Brooke Basile wrote:
+> Calls to usb_kill_anchored_urbs() after usb_kill_urb() on multiprocessor
+> systems create a race condition in which usb_kill_anchored_urbs() deallocates
+> the URB before the completer callback is called in usb_kill_urb(), resulting
+> in a use-after-free.
+> To fix this, add proper lock protection to usb_kill_urb() calls that can
+> possibly run concurrently with usb_kill_anchored_urbs().
+> 
+> Reported-by: syzbot+89bd486af9427a9fc605@syzkaller.appspotmail.com
+> Link: https://syzkaller.appspot.com/bug?id=cabffad18eb74197f84871802fd2c5117b61febf
+> Signed-off-by: Brooke Basile <brookebasile@gmail.com>
+> ---
+>   drivers/net/wireless/ath/ath9k/hif_usb.c | 19 +++++++++++++++++++
+>   1 file changed, 19 insertions(+)
+> 
+> diff --git a/drivers/net/wireless/ath/ath9k/hif_usb.c b/drivers/net/wireless/ath/ath9k/hif_usb.c
+> index 3f563e02d17d..2ed98aaed6fb 100644
+> --- a/drivers/net/wireless/ath/ath9k/hif_usb.c
+> +++ b/drivers/net/wireless/ath/ath9k/hif_usb.c
+> @@ -449,10 +449,19 @@ static void hif_usb_stop(void *hif_handle)
+>   	spin_unlock_irqrestore(&hif_dev->tx.tx_lock, flags);
+> 
+>   	/* The pending URBs have to be canceled. */
+> +	spin_lock_irqsave(&hif_dev->tx.tx_lock, flags);
+>   	list_for_each_entry_safe(tx_buf, tx_buf_tmp,
+>   				 &hif_dev->tx.tx_pending, list) {
+> +		usb_get_urb(tx_buf->urb);
+> +		spin_unlock_irqrestore(&hif_dev->tx.tx_lock, flags);
+>   		usb_kill_urb(tx_buf->urb);
+> +		list_del(&tx_buf->list);
+> +		usb_free_urb(tx_buf->urb);
+> +		kfree(tx_buf->buf);
+> +		kfree(tx_buf);
+> +		spin_lock_irqsave(&hif_dev->tx.tx_lock, flags);
+>   	}
+> +	spin_unlock_irqrestore(&hif_dev->tx.tx_lock, flags);
+> 
+>   	usb_kill_anchored_urbs(&hif_dev->mgmt_submitted);
+>   }
+> @@ -762,27 +771,37 @@ static void ath9k_hif_usb_dealloc_tx_urbs(struct hif_device_usb *hif_dev)
+>   	struct tx_buf *tx_buf = NULL, *tx_buf_tmp = NULL;
+>   	unsigned long flags;
+> 
+> +	spin_lock_irqsave(&hif_dev->tx.tx_lock, flags);
+>   	list_for_each_entry_safe(tx_buf, tx_buf_tmp,
+>   				 &hif_dev->tx.tx_buf, list) {
+> +		usb_get_urb(tx_buf->urb);
+> +		spin_unlock_irqrestore(&hif_dev->tx.tx_lock, flags);
+>   		usb_kill_urb(tx_buf->urb);
+>   		list_del(&tx_buf->list);
+>   		usb_free_urb(tx_buf->urb);
+>   		kfree(tx_buf->buf);
+>   		kfree(tx_buf);
+> +		spin_lock_irqsave(&hif_dev->tx.tx_lock, flags);
+>   	}
+> +	spin_unlock_irqrestore(&hif_dev->tx.tx_lock, flags);
+> 
+>   	spin_lock_irqsave(&hif_dev->tx.tx_lock, flags);
+>   	hif_dev->tx.flags |= HIF_USB_TX_FLUSH;
+>   	spin_unlock_irqrestore(&hif_dev->tx.tx_lock, flags);
+> 
+> +	spin_lock_irqsave(&hif_dev->tx.tx_lock, flags);
+>   	list_for_each_entry_safe(tx_buf, tx_buf_tmp,
+>   				 &hif_dev->tx.tx_pending, list) {
+> +		usb_get_urb(tx_buf->urb);
+> +		spin_unlock_irqrestore(&hif_dev->tx.tx_lock, flags);
+>   		usb_kill_urb(tx_buf->urb);
+>   		list_del(&tx_buf->list);
+>   		usb_free_urb(tx_buf->urb);
+>   		kfree(tx_buf->buf);
+>   		kfree(tx_buf);
+> +		spin_lock_irqsave(&hif_dev->tx.tx_lock, flags);
+>   	}
+> +	spin_unlock_irqrestore(&hif_dev->tx.tx_lock, flags);
+> 
+>   	usb_kill_anchored_urbs(&hif_dev->mgmt_submitted);
+>   }
+> --
+> 2.28.0
+> 
 
-Signed-off-by: Elvira Khabirova <e.khabirova@omprussia.ru>
----
- include/linux/tee_drv.h  | 2 +-
- include/uapi/linux/tee.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Hi,
 
-diff --git a/include/linux/tee_drv.h b/include/linux/tee_drv.h
-index d074302989dd..61557bc0e29f 100644
---- a/include/linux/tee_drv.h
-+++ b/include/linux/tee_drv.h
-@@ -85,7 +85,7 @@ struct tee_param {
-  * @close_session:	close a session
-  * @invoke_func:	invoke a trusted function
-  * @cancel_req:		request cancel of an ongoing invoke or open
-- * @supp_revc:		called for supplicant to get a command
-+ * @supp_recv:		called for supplicant to get a command
-  * @supp_send:		called for supplicant to send a response
-  * @shm_register:	register shared memory buffer in TEE
-  * @shm_unregister:	unregister shared memory buffer in TEE
-diff --git a/include/uapi/linux/tee.h b/include/uapi/linux/tee.h
-index b619f37ee03e..7546be5ed4f8 100644
---- a/include/uapi/linux/tee.h
-+++ b/include/uapi/linux/tee.h
-@@ -342,7 +342,7 @@ struct tee_iocl_supp_send_arg {
- };
- 
- /**
-- * TEE_IOC_SUPPL_SEND - Receive a request for a supplicant function
-+ * TEE_IOC_SUPPL_SEND - Send a response to a received request
-  *
-  * Takes a struct tee_ioctl_buf_data which contains a struct
-  * tee_iocl_supp_send_arg followed by any array of struct tee_param
--- 
-2.28.0
+Just wanted to check on the status of this patch, if there's anything 
+wrong I'm happy to make it right.
+Sorry to bother!
 
+Best,
+Brooke Basile
