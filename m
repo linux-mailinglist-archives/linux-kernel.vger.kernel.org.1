@@ -2,71 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD0DC271798
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 21:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92CF627179A
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 21:38:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726316AbgITTfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 15:35:30 -0400
-Received: from smtp.infotech.no ([82.134.31.41]:44920 "EHLO smtp.infotech.no"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726109AbgITTfa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 15:35:30 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by smtp.infotech.no (Postfix) with ESMTP id 9DDD020424C;
-        Sun, 20 Sep 2020 21:35:28 +0200 (CEST)
-X-Virus-Scanned: by amavisd-new-2.6.6 (20110518) (Debian) at infotech.no
-Received: from smtp.infotech.no ([127.0.0.1])
-        by localhost (smtp.infotech.no [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id iBvNNGn0a9mC; Sun, 20 Sep 2020 21:35:22 +0200 (CEST)
-Received: from [192.168.48.23] (host-45-78-251-166.dyn.295.ca [45.78.251.166])
-        by smtp.infotech.no (Postfix) with ESMTPA id 38CFD204172;
-        Sun, 20 Sep 2020 21:35:20 +0200 (CEST)
-Reply-To: dgilbert@interlog.com
-Subject: Re: [PATCH] lib/scatterlist: Fix memory leak in sgl_alloc_order()
-To:     Markus Elfring <Markus.Elfring@web.de>, linux-block@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Bart Van Assche <bvanassche@acm.org>,
-        Jens Axboe <axboe@kernel.dk>
-References: <e69e9865-a599-5bd9-95b1-7d57c7e2e90c@web.de>
-From:   Douglas Gilbert <dgilbert@interlog.com>
-Message-ID: <1608a0b7-6960-afce-aa39-6785036b01e0@interlog.com>
-Date:   Sun, 20 Sep 2020 15:35:18 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726314AbgITTic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 15:38:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726109AbgITTia (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 15:38:30 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1CF2C061755;
+        Sun, 20 Sep 2020 12:38:29 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id q5so5150702ilj.1;
+        Sun, 20 Sep 2020 12:38:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=7dHmlm15L5muln7P5gMny8ZyKU2l3Q2uBGbFxPZzDB4=;
+        b=lVFox2j6QnZDD7C2ONG3APLQz8HzTN8Hms0gWrPbxfh9V8jGk+2KfupLvFzMkmLgww
+         5pNoYdtWj4b9mGW4CqbJ1AM4DLYW7tZq3uQC4UNkjlkkKQcyyxkKF2c+Fi7iiibmGA5B
+         ZjW5oAmZAETlVmVsVFZD0dhxwayVpqI6+ut8Tt8QgVVU8emPjhznNwJ8r3lAcZaDyD0v
+         lSPr/01CzAVuZUuoURjsqerBb47YOZ1n3Eup2RZfgvkRf9JJ0C7yucug2VYBaQjUTASX
+         2pyUNxI8MJu33r5Bdd8JMlvgzIq7S0j7voIYWOftqXT6ztwTLaK+u6iJrwzBlvZ9pj8G
+         pW4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=7dHmlm15L5muln7P5gMny8ZyKU2l3Q2uBGbFxPZzDB4=;
+        b=LaR7ptATNa3ddYYehwgT0daZekhx1eOcU5joLvEHhd3y8x3URONIpytuH2jVrSWw5t
+         fiUhTSquRg508+cLl0SDYrf17cxKKFsif38IlcA+lEaYaR4V9D4DcnhHsI3m3Rpyd5tX
+         yY3nQWhm9cYeerS/xOt18yVf/zsJx6MMGJfnDLXn68q3GVHGagP/cXQZSyI2TDa0gEDo
+         t/O6/zBnLrk+we6XEw1a0024OBXVq9tlWcmMQ/8+8d4QyulE4+TkUPtBqAQqtpqIUq5D
+         HCNzUqpcydVKWr/Ie8vdZGhz8UAZlSOgE09xBQ0jwGKxvUiZH75M1DYVhyPMTiV/VEwc
+         bUdg==
+X-Gm-Message-State: AOAM530hM+EVnDs/lShRNq3tsKSGIs1vNz52lDdYkyt2xUmptaHKZ04R
+        rOkYoNJb1vBXgObPTphnOpff/O/zNChg3Bxirjgvl/+LGHRJRg==
+X-Google-Smtp-Source: ABdhPJxqQ4WQOR6w77n6t0YKh1ksHhXAMWdDCFuTkiQ8DZOfS9rz6gqURn759P7yp/tqGDFGiQjAeZg4Tk80F04zEbI=
+X-Received: by 2002:a92:a1c8:: with SMTP id b69mr19779859ill.293.1600630708670;
+ Sun, 20 Sep 2020 12:38:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <e69e9865-a599-5bd9-95b1-7d57c7e2e90c@web.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-CA
-Content-Transfer-Encoding: 8bit
+References: <20200920180758.592217-1-peron.clem@gmail.com> <20200920180758.592217-2-peron.clem@gmail.com>
+ <e0eb7e94-e736-4ec0-b838-884a4857bb97@sholland.org>
+In-Reply-To: <e0eb7e94-e736-4ec0-b838-884a4857bb97@sholland.org>
+From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Date:   Sun, 20 Sep 2020 21:38:17 +0200
+Message-ID: <CAJiuCcenXE_BZpk7smwaddsgqwq7LmhCQuH9T1pG2twM4Uu+mA@mail.gmail.com>
+Subject: Re: [PATCH v3 01/19] ASoC: sun4i-i2s: Add support for H6 I2S
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Marcus Cooper <codekipper@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-20 1:09 p.m., Markus Elfring wrote:
->> Noticed that when sgl_alloc_order() failed with order > 0 that
->> free memory on my machine shrank. That function shouldn't call
->> sgl_free() on its error path since that is only correct when
->> order==0 .
-> 
-> * Would an imperative wording become helpful for the change description?
+Hi Samuel,
 
-No passive tense there. Or do you mean usage like: "Go to hell" or
-"Fix memory leak in ..."? I studied French and Latin at school; at a
-guess, my mother tongue got its grammar from the former. My mother
-taught English grammar and the term "imperative wording" rings no
-bells in my grammatical education. Google agrees with me.
-Please define: "imperative wording".
-> * How do you think about to add the tag “Fixes” to the commit message?r
+On Sun, 20 Sep 2020 at 20:39, Samuel Holland <samuel@sholland.org> wrote:
+>
+> On 9/20/20 1:07 PM, Cl=C3=A9ment P=C3=A9ron wrote:
+> > From: Jernej Skrabec <jernej.skrabec@siol.net>
+> >
+> > H6 I2S is very similar to that in H3, except it supports up to 16
+> > channels.
+> >
+> > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+> > Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+> > Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
+> > ---
+> >  sound/soc/sunxi/sun4i-i2s.c | 218 ++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 218 insertions(+)
+> >
+> > diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+> > index f23ff29e7c1d..348057464bed 100644
+> > --- a/sound/soc/sunxi/sun4i-i2s.c
+> > +++ b/sound/soc/sunxi/sun4i-i2s.c
+> ...
+> > @@ -699,6 +770,102 @@ static int sun8i_i2s_set_soc_fmt(const struct sun=
+4i_i2s *i2s,
+> >       return 0;
+> >  }
+> >
+> > +static int sun50i_h6_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
+> > +                                  unsigned int fmt)
+> > +{
+> > +     u32 mode, val;
+> > +     u8 offset;
+> > +
+> > +     /* DAI clock polarity */
+> > +     switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+> > +     case SND_SOC_DAIFMT_IB_IF:
+> > +             /* Invert both clocks */
+> > +             val =3D SUN8I_I2S_FMT0_BCLK_POLARITY_INVERTED |
+> > +                   SUN8I_I2S_FMT0_LRCLK_POLARITY_INVERTED;
+> > +             break;
+> > +     case SND_SOC_DAIFMT_IB_NF:
+> > +             /* Invert bit clock */
+> > +             val =3D SUN8I_I2S_FMT0_BCLK_POLARITY_INVERTED;
+> > +             break;
+> > +     case SND_SOC_DAIFMT_NB_IF:
+> > +             /* Invert frame clock */
+> > +             val =3D SUN8I_I2S_FMT0_LRCLK_POLARITY_INVERTED;
+> > +             break;
+> > +     case SND_SOC_DAIFMT_NB_NF:
+> > +             val =3D 0;
+> > +             break;
+> > +     default:
+> > +             return -EINVAL;
+> > +     }
+>
+> Maxime's testing that showed LRCK inversion was necessary was done on the=
+ H6. So
+> in addition to dropping the patch that removed the LRCK inversion for oth=
+er
+> sun8i variants, you need to re-add it to this patch for the H6 variant.
 
-In the workflow I'm used to, others (closer to LT) make that decision.
-Why waste my time?
+Thanks, you're right!
+Clement
 
-> * Will an other patch subject be more appropriate?
-
-Twas testing a 6 GB allocation with said function on my 8 GB laptop.
-It failed and free told me 5 GB had disappeared (and
-'cat /sys/kernel/debug/kmemleak' told me _nothing_). Umm, it is
-potentially a HUGE f@#$ing memory LEAK! Best to call a spade a spade.
-
-Doug Gilbert
-
+>
+> Cheers,
+> Samuel
+>
+> > +
+> > +     regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
+> > +                        SUN8I_I2S_FMT0_LRCLK_POLARITY_MASK |
+> > +                        SUN8I_I2S_FMT0_BCLK_POLARITY_MASK,
+> > +                        val);
+> > +
+> > +     /* DAI Mode */
+> > +     switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+> > +     case SND_SOC_DAIFMT_DSP_A:
+> > +             mode =3D SUN8I_I2S_CTRL_MODE_PCM;
+> > +             offset =3D 1;
+> > +             break;
+> > +
+> > +     case SND_SOC_DAIFMT_DSP_B:
+> > +             mode =3D SUN8I_I2S_CTRL_MODE_PCM;
+> > +             offset =3D 0;
+> > +             break;
+> > +
+> > +     case SND_SOC_DAIFMT_I2S:
+> > +             mode =3D SUN8I_I2S_CTRL_MODE_LEFT;
+> > +             offset =3D 1;
+> > +             break;
+> > +
+> > +     case SND_SOC_DAIFMT_LEFT_J:
+> > +             mode =3D SUN8I_I2S_CTRL_MODE_LEFT;
+> > +             offset =3D 0;
+> > +             break;
+> > +
+> > +     case SND_SOC_DAIFMT_RIGHT_J:
+> > +             mode =3D SUN8I_I2S_CTRL_MODE_RIGHT;
+> > +             offset =3D 0;
+> > +             break;
+> > +
+> > +     default:
+> > +             return -EINVAL;
+> > +     }
+> > +
+> > +     regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
+> > +                        SUN8I_I2S_CTRL_MODE_MASK, mode);
+> > +     regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
+> > +                        SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET_MASK,
+> > +                        SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET(offset));
+> > +     regmap_update_bits(i2s->regmap, SUN50I_H6_I2S_RX_CHAN_SEL_REG,
+> > +                        SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET_MASK,
+> > +                        SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET(offset));
+> > +
+> > +     /* DAI clock master masks */
+> > +     switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+> > +     case SND_SOC_DAIFMT_CBS_CFS:
+> > +             /* BCLK and LRCLK master */
+> > +             val =3D SUN8I_I2S_CTRL_BCLK_OUT | SUN8I_I2S_CTRL_LRCK_OUT=
+;
+> > +             break;
+> > +
+> > +     case SND_SOC_DAIFMT_CBM_CFM:
+> > +             /* BCLK and LRCLK slave */
+> > +             val =3D 0;
+> > +             break;
+> > +
+> > +     default:
+> > +             return -EINVAL;
+> > +     }
+> > +
+> > +     regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
+> > +                        SUN8I_I2S_CTRL_BCLK_OUT | SUN8I_I2S_CTRL_LRCK_=
+OUT,
+> > +                        val);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> >  static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt=
+)
+> >  {
+> >       struct sun4i_i2s *i2s =3D snd_soc_dai_get_drvdata(dai);
+> ...
