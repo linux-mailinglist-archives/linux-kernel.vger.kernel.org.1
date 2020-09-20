@@ -2,166 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 626052711D1
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 04:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F9A2711E3
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 05:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726901AbgITCzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 22:55:49 -0400
-Received: from gateway21.websitewelcome.com ([192.185.45.175]:49946 "EHLO
-        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726760AbgITCzt (ORCPT
+        id S1726893AbgITDD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 23:03:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726760AbgITDD5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 22:55:49 -0400
-Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
-        by gateway21.websitewelcome.com (Postfix) with ESMTP id 07F8A400C7D7D
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 21:55:47 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id JpVykEqJfn9FWJpVzkbVZj; Sat, 19 Sep 2020 21:55:47 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:Subject:From:References:Cc:To:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Ya37KMBl1qlxUErGQo1UvQ0XFZ7dz/T7a+mC4RM1Jyg=; b=abUrk1RY9rUy2a4Ca46G0xy6/L
-        evbK6extBKzNdwYIdJT+viQJ/ROgo5gl0khaohOWvcspYLq4rM2qjNxigVB4Poh1A+g/jZOXpPRmZ
-        Ve4WSfIdCo9sBe+i2rDMQJu7OBkK68CPCRg57mgfuxqUpuLMfxEIgIlwZomVReC9IwK8nvtorb2BI
-        7KcMbhXV4JcNPntObumOqh//ichUXXr3v5p9SLmFFon4W+k6VrJbZDUlbbYpBYKP99q9lBWKCqaw4
-        ORGe0gvA1Ak82VBs7HOyNbyYMlARBeT1zsQ8tI4dA+HgO6B1Ftw6yz3gJXX5YhePTmSJwFOfJuMcw
-        kI9WdoDg==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:54402 helo=[192.168.15.4])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1kJpVy-001Big-NQ; Sat, 19 Sep 2020 21:55:46 -0500
-To:     Elvira Khabirova <e.khabirova@omprussia.ru>,
-        op-tee@lists.trustedfirmware.org
-Cc:     jens.wiklander@linaro.org, linux-kernel@vger.kernel.org
-References: <20200920045857.34b612bf@akathisia>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- AP7RWS474w==
-Subject: Re: [PATCH] tee: fix some comment typos in header files
-Message-ID: <5dc9f507-df6b-b711-5312-648150451299@embeddedor.com>
-Date:   Sat, 19 Sep 2020 22:01:28 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sat, 19 Sep 2020 23:03:57 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FF8C061755
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 20:03:56 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id y17so10339355lfa.8
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 20:03:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YWV/jsMUMksMZE27IZI8c4rRP2TN1WctCnXiq3Scruw=;
+        b=r7dyFO6BZvkU1+jZ3ktulb7Olj5XZq+xHJP4KheRGVnYhJmpsqxmFJdChSY2NdWG5Y
+         bfFTyOcXPEqjm4OtdeP+MZE5vFy4GfVmaLZJWAWU9L7KlgWx+vc2K1YT+NTTrASnvlW4
+         ASdVbrFSBXkh6uWPsAXEaABL1wKgAUA05cc1hYdIyGHsIEMxZ5WrxAiqzj9cwpwUwdCL
+         Htgf508DYtqP1ypux+vGuq0cshOyiiSmWyZJfS0csD1Ie8vGK+xRJUGq2tcADIvmADGo
+         6PJvySufLgKB+O2wpJb2+TSVolkxR+Upyp8lEW/YBr0oJ4Rso/7CtSpVuaZWYId4e6lg
+         pBHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YWV/jsMUMksMZE27IZI8c4rRP2TN1WctCnXiq3Scruw=;
+        b=sWMHwJlGuTiGF75zdHGYh72C8peUKA8Tgwtn8tswyIzyCnyRVw8FWb6FXWT8ccGU/S
+         8d+YDt09h4homLh8TH7IYD0/6A0tNffN1QG5bf/EiSniNax7kNExOyS4Q+NUmVgbiU3L
+         pMCoRnUI3WLyvxomKQipF4a8TFFn+eX4FxSoJkge1I70X4Y6pAUsOzfrskoLNMnsWEwI
+         c1toRqfnBFJvrUvIyxaVE0ijldFtoO+nrgA0WtIaMX1rcXuINRDPivm9wFJQeglr9+h+
+         IlFpQFh8NgWW7gkQKpYgoXqPRP0d9ifrld/yaQihfhXiwvSrieBAc4ReFsZsgatuMNia
+         Fkfw==
+X-Gm-Message-State: AOAM531CvwE/tCaIaz0d7RiFspgV+MLva9W1wEcR+XcLhL/MzL+IT7lC
+        /pQxZ4lNFpp5VHn+XIcbGtRLRByBgq/LDRqQJbs=
+X-Google-Smtp-Source: ABdhPJzbxewgfIRd7dFM6aMH8nUIu+ubY3i/ED1st8W1cGiDchus/yhoowbwxNgeMctJTsfy+YU3hHPueP3NVVxWv5Y=
+X-Received: by 2002:ac2:43d5:: with SMTP id u21mr15328758lfl.135.1600571034789;
+ Sat, 19 Sep 2020 20:03:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200920045857.34b612bf@akathisia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1kJpVy-001Big-NQ
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.4]) [187.162.31.110]:54402
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 4
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+References: <20200916100232.GF18329@kadam> <20200917065706.409079-1-jhubbard@nvidia.com>
+ <20200917074054.GO18329@kadam>
+In-Reply-To: <20200917074054.GO18329@kadam>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Sun, 20 Sep 2020 08:33:43 +0530
+Message-ID: <CAFqt6zYFjGTJ=KUjHd5jf-ri5tCmo4HOLP1j3nsELFgcoEoLHQ@mail.gmail.com>
+Subject: Re: [PATCH] mm/gup: protect unpin_user_pages() against npages==-ERRNO
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>, alex.bou9@gmail.com,
+        gustavoars@kernel.org, Ira Weiny <ira.weiny@intel.com>,
+        linux-kernel@vger.kernel.org, madhuparnabhowmik10@gmail.com,
+        mporter@kernel.crashing.org, Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Sep 17, 2020 at 1:11 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> On Wed, Sep 16, 2020 at 11:57:06PM -0700, John Hubbard wrote:
+> > As suggested by Dan Carpenter, fortify unpin_user_pages() just a bit,
+> > against a typical caller mistake: check if the npages arg is really a
+> > -ERRNO value, which would blow up the unpinning loop: WARN and return.
+> >
+> > If this new WARN_ON() fires, then the system *might* be leaking pages
+> > (by leaving them pinned), but probably not. More likely, gup/pup
+> > returned a hard -ERRNO error to the caller, who erroneously passed it
+> > here.
+> >
+> > Cc: Ira Weiny <ira.weiny@intel.com>
+> > Cc: Souptick Joarder <jrdr.linux@gmail.com>
+> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+> > ---
+> >
+> > Hi Dan,
+> >
+> > Is is OK to use your signed-off-by here? Since you came up with this.
+> >
+>
+> Yeah.  That's fine.
 
-Here is another one you can solve:
-
-$ git grep -nw overlfow
-net/sctp/tsnmap.c:78:    * overlfow our map
-
-Thanks
---
-Gustavo
-
-On 9/19/20 20:58, Elvira Khabirova wrote:
-> struct tee_param: revc -> recv.
-> TEE_IOC_SUPPL_SEND: typo introduced by copy-pasting, replace invalid
-> description with description from the according argument struct.
-> 
-> Signed-off-by: Elvira Khabirova <e.khabirova@omprussia.ru>
-> ---
->  include/linux/tee_drv.h  | 2 +-
->  include/uapi/linux/tee.h | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/tee_drv.h b/include/linux/tee_drv.h
-> index d074302989dd..61557bc0e29f 100644
-> --- a/include/linux/tee_drv.h
-> +++ b/include/linux/tee_drv.h
-> @@ -85,7 +85,7 @@ struct tee_param {
->   * @close_session:	close a session
->   * @invoke_func:	invoke a trusted function
->   * @cancel_req:		request cancel of an ongoing invoke or open
-> - * @supp_revc:		called for supplicant to get a command
-> + * @supp_recv:		called for supplicant to get a command
->   * @supp_send:		called for supplicant to send a response
->   * @shm_register:	register shared memory buffer in TEE
->   * @shm_unregister:	unregister shared memory buffer in TEE
-> diff --git a/include/uapi/linux/tee.h b/include/uapi/linux/tee.h
-> index b619f37ee03e..7546be5ed4f8 100644
-> --- a/include/uapi/linux/tee.h
-> +++ b/include/uapi/linux/tee.h
-> @@ -342,7 +342,7 @@ struct tee_iocl_supp_send_arg {
->  };
->  
->  /**
-> - * TEE_IOC_SUPPL_SEND - Receive a request for a supplicant function
-> + * TEE_IOC_SUPPL_SEND - Send a response to a received request
->   *
->   * Takes a struct tee_ioctl_buf_data which contains a struct
->   * tee_iocl_supp_send_arg followed by any array of struct tee_param
-> 
+Do we need a similar check inside unpin_user_pages_dirty_lock(),
+when make_dirty set to false ?
