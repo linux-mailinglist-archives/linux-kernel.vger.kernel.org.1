@@ -2,27 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F0FF27141D
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 14:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1F327141B
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 14:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726566AbgITMJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 08:09:38 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:50059 "EHLO
+        id S1726548AbgITMJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 08:09:34 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:50064 "EHLO
         mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726484AbgITMJa (ORCPT
+        by vger.kernel.org with ESMTP id S1726445AbgITMJY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 08:09:30 -0400
+        Sun, 20 Sep 2020 08:09:24 -0400
 X-IronPort-AV: E=Sophos;i="5.77,282,1596492000"; 
-   d="scan'208";a="468612197"
+   d="scan'208";a="468612198"
 Received: from palace.lip6.fr ([132.227.105.202])
   by mail2-relais-roc.national.inria.fr with ESMTP/TLS/AES256-SHA256; 20 Sep 2020 14:08:58 +0200
 From:   Julia Lawall <Julia.Lawall@inria.fr>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     kernel-janitors@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 11/14] spi/topcliff-pch: drop double zeroing
-Date:   Sun, 20 Sep 2020 13:26:23 +0200
-Message-Id: <1600601186-7420-12-git-send-email-Julia.Lawall@inria.fr>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     kernel-janitors@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 12/14] [media] saa7146: drop double zeroing
+Date:   Sun, 20 Sep 2020 13:26:24 +0200
+Message-Id: <1600601186-7420-13-git-send-email-Julia.Lawall@inria.fr>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1600601186-7420-1-git-send-email-Julia.Lawall@inria.fr>
 References: <1600601186-7420-1-git-send-email-Julia.Lawall@inria.fr>
@@ -44,7 +45,7 @@ expression x,n,flags;
 x = 
 - kcalloc
 + kmalloc_array
-  (n,sizeof(*x),flags)
+  (n,sizeof(struct scatterlist),flags)
 ...
 sg_init_table(x,n)
 // </smpl>
@@ -52,28 +53,19 @@ sg_init_table(x,n)
 Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
 ---
- drivers/spi/spi-topcliff-pch.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/media/common/saa7146/saa7146_core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff -u -p a/drivers/spi/spi-topcliff-pch.c b/drivers/spi/spi-topcliff-pch.c
---- a/drivers/spi/spi-topcliff-pch.c
-+++ b/drivers/spi/spi-topcliff-pch.c
-@@ -1002,7 +1002,7 @@ static void pch_spi_handle_dma(struct pc
- 	spin_unlock_irqrestore(&data->lock, flags);
+diff -u -p a/drivers/media/common/saa7146/saa7146_core.c b/drivers/media/common/saa7146/saa7146_core.c
+--- a/drivers/media/common/saa7146/saa7146_core.c
++++ b/drivers/media/common/saa7146/saa7146_core.c
+@@ -140,7 +140,7 @@ static struct scatterlist* vmalloc_to_sg
+ 	struct page *pg;
+ 	int i;
  
- 	/* RX */
--	dma->sg_rx_p = kcalloc(num, sizeof(*dma->sg_rx_p), GFP_ATOMIC);
-+	dma->sg_rx_p = kmalloc_array(num, sizeof(*dma->sg_rx_p), GFP_ATOMIC);
- 	if (!dma->sg_rx_p)
- 		return;
- 
-@@ -1065,7 +1065,7 @@ static void pch_spi_handle_dma(struct pc
- 		head = 0;
- 	}
- 
--	dma->sg_tx_p = kcalloc(num, sizeof(*dma->sg_tx_p), GFP_ATOMIC);
-+	dma->sg_tx_p = kmalloc_array(num, sizeof(*dma->sg_tx_p), GFP_ATOMIC);
- 	if (!dma->sg_tx_p)
- 		return;
- 
+-	sglist = kcalloc(nr_pages, sizeof(struct scatterlist), GFP_KERNEL);
++	sglist = kmalloc_array(nr_pages, sizeof(struct scatterlist), GFP_KERNEL);
+ 	if (NULL == sglist)
+ 		return NULL;
+ 	sg_init_table(sglist, nr_pages);
 
