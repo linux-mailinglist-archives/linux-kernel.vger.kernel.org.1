@@ -2,187 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F61271858
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 00:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4A5227185B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 00:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726375AbgITWAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 18:00:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58806 "EHLO
+        id S1726338AbgITWD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 18:03:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726156AbgITWAz (ORCPT
+        with ESMTP id S1726126AbgITWD4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 18:00:55 -0400
-Received: from vuizook.err.no (vuizook.err.no [IPv6:2a02:20c8:2640::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA54AC061755
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 15:00:54 -0700 (PDT)
-Received: from [2400:4160:1877:2b00:3dc4:3545:b496:6a29] (helo=glandium.org)
-        by vuizook.err.no with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <glandium@glandium.org>)
-        id 1kK7O1-0005Fd-Kz; Sun, 20 Sep 2020 22:00:46 +0000
-Received: from glandium by goemon.lan with local (Exim 4.92)
-        (envelope-from <glandium@goemon>)
-        id 1kK7Nv-0001xE-Ia; Mon, 21 Sep 2020 07:00:39 +0900
-From:   Mike Hommey <mh@glandium.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Mike Hommey <mh@glandium.org>
-Subject: [PATCH v2] x86/boot: Handle fpu-related and clearcpuid command line arguments earlier
-Date:   Mon, 21 Sep 2020 07:00:36 +0900
-Message-Id: <20200920220036.7469-1-mh@glandium.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200920083626.GA7473@zn.tnic>
-References: <20200920083626.GA7473@zn.tnic>
+        Sun, 20 Sep 2020 18:03:56 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74054C061755
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 15:03:56 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id s205so9472701lja.7
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 15:03:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ri07SWB636BQu9HeTZXldjDnXsp6QhYO/5gj4FXNUIo=;
+        b=ehY/ZfgBKBZu+aLDoJAH14zbHNeQQ4gPKz81o3C3zMJoYWW+yWIZcVreq3Bx9P2Kbq
+         B4WYpqJ4sY4sPF0L4iVeGXgGQYf4oxxPGdpLAEYNYEBQrbTiD3o+Bh45zKmRlQcOmARx
+         jtQ+yhKP/y6+y2YXVRrsKT1ot1Q5AvF0e2b7o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ri07SWB636BQu9HeTZXldjDnXsp6QhYO/5gj4FXNUIo=;
+        b=NgES0xWAEJE928REi4V2Ju5fknSbkUZqSDjE7v+KkBCut4IxEHb6Cb88vGy5H0hYAX
+         poBxcPVFmJfGSjzhDFzt3Vdi3s8o9eBLnf0he6NODzrsmcHRP4iNuCoM8788/a+JzZNn
+         0y1sSlEgXiGMnfuIBeXgWy2Q05zcWuQeRKwoD3f7jzSkPg0SGZWRQw7E6cBpA61a1zpN
+         bROAKCLD8BJofI1otkIk6j3aVJ5EjNPoTKNDH12LLxr3qPYo1KADK6XZTa7BND9/r1QV
+         ilUM+4Xr7txPwevBRWUDZeNWE6Zhkn9+tOJI1G8Kup6V20DvCU93x4a9Wmt1Cl/3PNyu
+         cS+Q==
+X-Gm-Message-State: AOAM531nxY9hVoUl76Q7s/fr6XSg6az1o2AsVZFN1vZX7qNtun4VUEUa
+        GBxg3NQF1MnUmAIhX1XS1LlsPdVuODTbUw==
+X-Google-Smtp-Source: ABdhPJwQOOPSDc00zLPNReIUU2ILvk2DqJnZ5eY0oBuKy1lRt/nWhQpfDV4DWazTi/HpkAkSO2QLwA==
+X-Received: by 2002:a2e:810e:: with SMTP id d14mr16596624ljg.100.1600639434443;
+        Sun, 20 Sep 2020 15:03:54 -0700 (PDT)
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
+        by smtp.gmail.com with ESMTPSA id z7sm2055914lfb.221.2020.09.20.15.03.52
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 20 Sep 2020 15:03:53 -0700 (PDT)
+Received: by mail-lj1-f174.google.com with SMTP id u4so9469210ljd.10
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 15:03:52 -0700 (PDT)
+X-Received: by 2002:a05:651c:32e:: with SMTP id b14mr14128964ljp.314.1600639432685;
+ Sun, 20 Sep 2020 15:03:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: (score 2.2): No, score=2.2 required=5.0 tests=RDNS_NONE,SPF_FAIL,SPF_HELO_FAIL autolearn=disabled version=3.4.2
+References: <CAPcyv4h3oKM-2hoG=FWHJwzVqjptnpQV9C+W6txfp_qcBhd7yQ@mail.gmail.com>
+In-Reply-To: <CAPcyv4h3oKM-2hoG=FWHJwzVqjptnpQV9C+W6txfp_qcBhd7yQ@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 20 Sep 2020 15:03:36 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whuR1ZHV4c6a7d3EmgRBFfQfYGckD2t1kQXDpwnf50ATA@mail.gmail.com>
+Message-ID: <CAHk-=whuR1ZHV4c6a7d3EmgRBFfQfYGckD2t1kQXDpwnf50ATA@mail.gmail.com>
+Subject: Re: libnvdimm fixes 5.9-rc6
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     linux-nvdimm <linux-nvdimm@lists.01.org>,
+        device-mapper development <dm-devel@redhat.com>,
+        Jan Kara <jack@suse.cz>, Adrian Huang12 <ahuang12@lenovo.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-FPU initialization handles them currently. However, in the case of
-clearcpuid, some other early initialization code may check for features
-before the FPU initialization code is called. Handling the argument
-earlier allows the command line to influence those early
-initializations.
+On Sun, Sep 20, 2020 at 11:56 AM Dan Williams <dan.j.williams@intel.com> wrote:
+>
+>    You will notice that this branch was rebased this
+> morning and it has not appeared in -next. I decided to cut short the
+> soak time because the infinite-recursion regression is currently
+> crashing anyone attempting to test filesystem-dax in 5.9-rc5+.
 
-Signed-off-by: Mike Hommey <mh@glandium.org>
----
- arch/x86/kernel/cpu/common.c | 41 ++++++++++++++++++++++++++++++++++++
- arch/x86/kernel/fpu/init.c   | 41 ------------------------------------
- 2 files changed, 41 insertions(+), 41 deletions(-)
+Thanks for the explanation, all looks fine.
 
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index c5d6f17d9b9d..5e2e4d3621bd 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -23,6 +23,7 @@
- #include <linux/syscore_ops.h>
- #include <linux/pgtable.h>
- 
-+#include <asm/cmdline.h>
- #include <asm/stackprotector.h>
- #include <asm/perf_event.h>
- #include <asm/mmu_context.h>
-@@ -1220,6 +1221,45 @@ static void detect_nopl(void)
- #endif
- }
- 
-+/*
-+ * We parse cpu parameters early because early_identify_cpu() is executed
-+ * before parse_early_param().
-+ */
-+static void __init cpu__init_parse_early_param(void)
-+{
-+	char arg[32];
-+	char *argptr = arg;
-+	int bit;
-+
-+#ifdef CONFIG_X86_32
-+	if (cmdline_find_option_bool(boot_command_line, "no387"))
-+#ifdef CONFIG_MATH_EMULATION
-+		setup_clear_cpu_cap(X86_FEATURE_FPU);
-+#else
-+		pr_err("Option 'no387' required CONFIG_MATH_EMULATION enabled.\n");
-+#endif
-+
-+	if (cmdline_find_option_bool(boot_command_line, "nofxsr"))
-+		setup_clear_cpu_cap(X86_FEATURE_FXSR);
-+#endif
-+
-+	if (cmdline_find_option_bool(boot_command_line, "noxsave"))
-+		setup_clear_cpu_cap(X86_FEATURE_XSAVE);
-+
-+	if (cmdline_find_option_bool(boot_command_line, "noxsaveopt"))
-+		setup_clear_cpu_cap(X86_FEATURE_XSAVEOPT);
-+
-+	if (cmdline_find_option_bool(boot_command_line, "noxsaves"))
-+		setup_clear_cpu_cap(X86_FEATURE_XSAVES);
-+
-+	if (cmdline_find_option(boot_command_line, "clearcpuid", arg,
-+				sizeof(arg)) &&
-+	    get_option(&argptr, &bit) &&
-+	    bit >= 0 &&
-+	    bit < NCAPINTS * 32)
-+		setup_clear_cpu_cap(bit);
-+}
-+
- /*
-  * Do minimum CPU detection early.
-  * Fields really needed: vendor, cpuid_level, family, model, mask,
-@@ -1255,6 +1295,7 @@ static void __init early_identify_cpu(struct cpuinfo_x86 *c)
- 		get_cpu_cap(c);
- 		get_cpu_address_sizes(c);
- 		setup_force_cpu_cap(X86_FEATURE_CPUID);
-+		cpu__init_parse_early_param();
- 
- 		if (this_cpu->c_early_init)
- 			this_cpu->c_early_init(c);
-diff --git a/arch/x86/kernel/fpu/init.c b/arch/x86/kernel/fpu/init.c
-index 61ddc3a5e5c2..701f196d7c68 100644
---- a/arch/x86/kernel/fpu/init.c
-+++ b/arch/x86/kernel/fpu/init.c
-@@ -5,7 +5,6 @@
- #include <asm/fpu/internal.h>
- #include <asm/tlbflush.h>
- #include <asm/setup.h>
--#include <asm/cmdline.h>
- 
- #include <linux/sched.h>
- #include <linux/sched/task.h>
-@@ -237,52 +236,12 @@ static void __init fpu__init_system_ctx_switch(void)
- 	on_boot_cpu = 0;
- }
- 
--/*
-- * We parse fpu parameters early because fpu__init_system() is executed
-- * before parse_early_param().
-- */
--static void __init fpu__init_parse_early_param(void)
--{
--	char arg[32];
--	char *argptr = arg;
--	int bit;
--
--#ifdef CONFIG_X86_32
--	if (cmdline_find_option_bool(boot_command_line, "no387"))
--#ifdef CONFIG_MATH_EMULATION
--		setup_clear_cpu_cap(X86_FEATURE_FPU);
--#else
--		pr_err("Option 'no387' required CONFIG_MATH_EMULATION enabled.\n");
--#endif
--
--	if (cmdline_find_option_bool(boot_command_line, "nofxsr"))
--		setup_clear_cpu_cap(X86_FEATURE_FXSR);
--#endif
--
--	if (cmdline_find_option_bool(boot_command_line, "noxsave"))
--		setup_clear_cpu_cap(X86_FEATURE_XSAVE);
--
--	if (cmdline_find_option_bool(boot_command_line, "noxsaveopt"))
--		setup_clear_cpu_cap(X86_FEATURE_XSAVEOPT);
--
--	if (cmdline_find_option_bool(boot_command_line, "noxsaves"))
--		setup_clear_cpu_cap(X86_FEATURE_XSAVES);
--
--	if (cmdline_find_option(boot_command_line, "clearcpuid", arg,
--				sizeof(arg)) &&
--	    get_option(&argptr, &bit) &&
--	    bit >= 0 &&
--	    bit < NCAPINTS * 32)
--		setup_clear_cpu_cap(bit);
--}
--
- /*
-  * Called on the boot CPU once per system bootup, to set up the initial
-  * FPU state that is later cloned into all processes:
-  */
- void __init fpu__init_system(struct cpuinfo_x86 *c)
- {
--	fpu__init_parse_early_param();
- 	fpu__init_system_early_generic(c);
- 
- 	/*
--- 
-2.28.0
-
+             Linus
