@@ -2,81 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 077522712E8
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 10:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E895D2712EA
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 10:37:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726311AbgITIgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 04:36:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726262AbgITIgg (ORCPT
+        id S1726368AbgITIhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 04:37:51 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:59764 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726326AbgITIhv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 04:36:36 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C9B0C061755
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 01:36:36 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f295d00612687364c3aa3ce.dip0.t-ipconnect.de [IPv6:2003:ec:2f29:5d00:6126:8736:4c3a:a3ce])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 72B5C1EC03EA;
-        Sun, 20 Sep 2020 10:36:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600590993;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=z4ArdGsHu1lItnm9BSdt7a+gByFQ8BVlRUkfS9dAFIE=;
-        b=XH0cQGO06+bcmPyHdrCM5/B7LNFk+BnM1qu+MH6F3fTsKyBFnwhLzoJ98sxMJNyaM0TnEl
-        B2MdaL8IBlq4svxxvfz+W4W68BwoUeJ8W0m3+vZ80uieF8BfC8Wax4LGAm6BjI1ViiSqKX
-        nLy4S5fAbU7nCIcV20PFdCpH0z5icA4=
-Date:   Sun, 20 Sep 2020 10:36:26 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Mike Hommey <mh@glandium.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/boot: Delay BSP init until after FPU initialization
-Message-ID: <20200920083626.GA7473@zn.tnic>
-References: <20200920010310.10961-1-mh@glandium.org>
+        Sun, 20 Sep 2020 04:37:51 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 893A71C0B9B; Sun, 20 Sep 2020 10:37:46 +0200 (CEST)
+Date:   Sun, 20 Sep 2020 10:37:45 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     wim@linux-watchdog.org, linux@roeck-us.net,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] watchdog: fix memory leak in error path
+Message-ID: <20200920083745.GA1186@amd>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="BOKacYhQ+x31HxR3"
 Content-Disposition: inline
-In-Reply-To: <20200920010310.10961-1-mh@glandium.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 20, 2020 at 10:03:10AM +0900, Mike Hommey wrote:
-> FPU initialization handles the clearcpuid command line argument. If it
-> comes after BSP init, clearcpuid cannot be used to disable features that
-> trigger some parts of the BSP init code.
-> 
-> Signed-off-by: Mike Hommey <mh@glandium.org>
-> ---
->  arch/x86/kernel/cpu/common.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> I was trying to use clearcpuid=440 to disable X86_FEATURES_AMD_SSBD to
-> reproduce the behavior that happens on Zen/Zen+ on a Zen2 machine, but
-> that didn't work because the command line is handled after the setup for
-> X86_FEATURE_LS_CFG_SSBD.
-> 
-> I tought about either moving the command line handling earlier, but it
-> seems there wasn't a specific reason for BSP init being earlier than FPU
-> initialization so I went with reordering those instead.
 
-Our boot order is fragile and the functionality in
-fpu__init_parse_early_param() which does the clearcpuid= parsing should be
-independent from FPU, as your use case shows.
+--BOKacYhQ+x31HxR3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-So I'd prefer if you moved that function perhaps to right after the call
+Fix memory leak in error path.
 
-  setup_force_cpu_cap(X86_FEATURE_CPUID);
+Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
 
-in early_identify_cpu() and renamed it to something generic instead.
+diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_de=
+v.c
+index 6798addabd5a..785270ee337c 100644
+--- a/drivers/watchdog/watchdog_dev.c
++++ b/drivers/watchdog/watchdog_dev.c
+@@ -994,8 +994,10 @@ static int watchdog_cdev_register(struct watchdog_devi=
+ce *wdd)
+ 	wd_data->wdd =3D wdd;
+ 	wdd->wd_data =3D wd_data;
+=20
+-	if (IS_ERR_OR_NULL(watchdog_kworker))
++	if (IS_ERR_OR_NULL(watchdog_kworker)) {
++		kfree(wd_data);
+ 		return -ENODEV;
++	}
+=20
+ 	device_initialize(&wd_data->dev);
+ 	wd_data->dev.devt =3D MKDEV(MAJOR(watchdog_devt), wdd->id);
 
-Thx.
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
 
--- 
-Regards/Gruss,
-    Boris.
+--BOKacYhQ+x31HxR3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-https://people.kernel.org/tglx/notes-about-netiquette
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl9nFNkACgkQMOfwapXb+vLdywCgnFLCnxHVctMo7+9IbLVDqk59
+u14AnjQxnSyuJm9frlrtWQEkFWq7L7yh
+=gAoN
+-----END PGP SIGNATURE-----
+
+--BOKacYhQ+x31HxR3--
