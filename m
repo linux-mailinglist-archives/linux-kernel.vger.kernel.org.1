@@ -2,113 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 405292718D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 02:23:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4532718D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 02:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726359AbgIUAXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 20:23:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726236AbgIUAXV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 20:23:21 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81D89C061755;
-        Sun, 20 Sep 2020 17:23:21 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id l191so7405319pgd.5;
-        Sun, 20 Sep 2020 17:23:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=v3Vp5NrGGMOCiRkdb4Q/Xbdx+HabRr82jxca5q0JC98=;
-        b=jDZKa9cs8Qv6XCzcFWRROK245g3fx/cngkkRLxpRAlCtgAxCX4YzCh//POGD2L6k2d
-         cediQFlT2G+AYqdWE2lSUGD9Sg1d0o7/M2mEjNR8i5dfZ+BgH19Sv/Vv9/TEXWXKTspW
-         4Lyw115+yZ4AS7zqZkr2NxCkyEHthOgtMayhOV7uYPZHlaATPrGXSspM2lMXfZHG0AlH
-         IhhCdgOyI91t7P0FzsZJxBTrde9FbknVtPSWPjvckcgGUsmdU4R9CB/L3oexuL8cC7Jg
-         jDTXHl597byvl9K7dPirdGnAaHU3QUIPW08e1TC6sgbT5V1GapR7hbcAdoATTJT/NAXh
-         GqZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=v3Vp5NrGGMOCiRkdb4Q/Xbdx+HabRr82jxca5q0JC98=;
-        b=YbPxDuuH7iXH6eWRenedAjZpX6/9lqPaa90PZwzWezduzwNLmThhBjIdy7QgUzcSfH
-         uST0yAhjOP1W/o/cxImiFwUmzyC48PGMI7dHDQBtGoPyRVG0ZT+VGy1kmy6l1DpYATAN
-         QccoaHSgxuCNOiqfcr9NsbScRmVyR1rGv41wRgWt9wLpPHd3jCkzgwPI3LDei12ntadr
-         GIz5q2hj7JBSNtlflHj90A/PshF94FKXLAiflDvcrkvCbC/kFcEVCLV0hJNPwJ8qliMy
-         n9lgjA+hlBKO+O3iBWXNZb8yot+GVUROPWxq0JKGOoEaYtVDgcfTR1cuJ48b3whKhgun
-         Fqzg==
-X-Gm-Message-State: AOAM533mDz5qNeeApkVnpKaeABKoBjihZhrg3Nq3UxnNd2fJoxtcBFHx
-        daWbDnFgb3BQKBtytVMgIw==
-X-Google-Smtp-Source: ABdhPJz+Z+eD2TTHxk4lHNb/eZhngZE4UQ9Lj4taKRcybhu6NoaBVoKliHNqfZ53mRETM1X0nEzKQw==
-X-Received: by 2002:a63:63c7:: with SMTP id x190mr34821422pgb.90.1600647800787;
-        Sun, 20 Sep 2020 17:23:20 -0700 (PDT)
-Received: from [127.0.0.1] ([103.7.29.9])
-        by smtp.gmail.com with ESMTPSA id q11sm9403983pgj.92.2020.09.20.17.23.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 20 Sep 2020 17:23:20 -0700 (PDT)
-Subject: Re: [PATCH 1/2] KVM: Fix the build error
-To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, x86@kernel.org
-Cc:     sean.j.christopherson@intel.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        lihaiwei@tencent.com, kernel test robot <lkp@intel.com>
-References: <20200914091148.95654-1-lihaiwei.kernel@gmail.com>
- <20200914091148.95654-2-lihaiwei.kernel@gmail.com>
- <1810e3e5-8286-29e0-ff10-636d6c32df6d@redhat.com>
-From:   Haiwei Li <lihaiwei.kernel@gmail.com>
-Message-ID: <632965cf-e4e9-9c78-9664-df500410401f@gmail.com>
-Date:   Mon, 21 Sep 2020 08:23:09 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        id S1726322AbgIUApV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 20 Sep 2020 20:45:21 -0400
+Received: from mail.slpost.lk ([203.94.75.238]:50726 "EHLO slpost.lk"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726126AbgIUApU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 20:45:20 -0400
+X-Greylist: delayed 17461 seconds by postgrey-1.27 at vger.kernel.org; Sun, 20 Sep 2020 20:45:10 EDT
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by slpost.lk (Postfix) with ESMTP id 8F3FFE99A75;
+        Sun, 20 Sep 2020 20:40:02 +0530 (IST)
+X-Virus-Scanned: amavisd-new at slpost.lk
+Received: from slpost.lk ([127.0.0.1])
+        by localhost (slpost.lk [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id hq6mJqx3VBd6; Sun, 20 Sep 2020 20:40:02 +0530 (IST)
+Received: from slpost.lk (slpost.lk [192.168.1.246])
+        by slpost.lk (Postfix) with ESMTP id 1388CE99A16;
+        Sun, 20 Sep 2020 20:39:59 +0530 (IST)
+Date:   Sun, 20 Sep 2020 20:39:59 +0530 (IST)
+From:   "MRS. CORIS WHENT" <dpmg.ep@slpost.lk>
+Reply-To: "MRS. CORIS WHENT" <info@whentfoundation.com>
+Subject: =?utf-8?Q?DOBR=C3=89_ZPR=C3=81VY?=
+Message-ID: <c56b4912-2019-451c-a563-2a0683ef7631@slpost.lk>
+In-Reply-To: <67c511ee-8e30-4f9c-9567-509c2a49aca6@slpost.lk>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-In-Reply-To: <1810e3e5-8286-29e0-ff10-636d6c32df6d@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.1.253]
+X-Mailer: Zimbra 7.1.2_GA_3268 (ZimbraWebClient - FF3.0 (Win)/7.1.2_GA_3268)
+To:     undisclosed-recipients:;
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Můj drahý příjemce,
 
+Jsem si jist, že vám tato pošta přijde jako překvapení, protože jsme se nikdy předtím nesetkali a také byste se ptali, proč jsem se rozhodl vybrat vás mezi četnými uživateli internetu na světě. Vaše e-mailová adresa se objevila v náhodném losování, které provedla podpora charitativního fundraisingu Vodafone Group plc. Nemohu říci, proč jsem si vybral vás, ale nebojte se, protože jsme provedli náhodné losování a byla vybrána vaše e-mailová adresa fond jako příjemce mé (POSLEDNÍ VŮLE), který mě přiměl splnit můj požadavek. Kéž vám všemohoucí Bůh žehná a uvidí vás skrze tuto misi. Přečtěte si prosím pozorně následující zprávu.
 
-On 20/9/20 21:09, Paolo Bonzini wrote:
-> On 14/09/20 11:11, lihaiwei.kernel@gmail.com wrote:
->> From: Haiwei Li <lihaiwei@tencent.com>
->>
->> When CONFIG_SMP is not set, an build error occurs with message "error:
->> use of undeclared identifier 'kvm_send_ipi_mask_allbutself'"
->>
->> Fixes: 0f990222108d ("KVM: Check the allocation of pv cpu mask", 2020-09-01)
->> Reported-by: kernel test robot <lkp@intel.com>
->> Signed-off-by: Haiwei Li <lihaiwei@tencent.com>
->> ---
->>   arch/x86/kernel/kvm.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
->> index 1b51b727b140..7e8be0421720 100644
->> --- a/arch/x86/kernel/kvm.c
->> +++ b/arch/x86/kernel/kvm.c
->> @@ -797,7 +797,9 @@ static __init int kvm_alloc_cpumask(void)
->>   			}
->>   		}
->>   
->> +#if defined(CONFIG_SMP)
->>   	apic->send_IPI_mask_allbutself = kvm_send_ipi_mask_allbutself;
->> +#endif
->>   	pv_ops.mmu.flush_tlb_others = kvm_flush_tlb_others;
->>   	return 0;
->>   
->>
-> 
-> If CONFIG_SMP is not set you don't need kvm_alloc_cpumask or
-> pv_ops.mmu.flush_tlb_others at all.  Can you squash these two into the
-> original patch and re-submit for 5.10?
+Než se posunu dále, dovolte mi, abych vám poskytl něco ze své biografie. Jmenuji se Matka Coris Whent, 74 let, zakladatelka nadace Whent Family Foundation a manželka Late Sir, Gerald Arthur „Gerry“ Whent, zakladatel a bývalý generální ředitel společnosti Vodafone Group plc. Po smrti mého manžela jsem se stal vedoucím jeho investice a teď, když jsem starý a slabý, jsem se rozhodl strávit zbytek svého života se svou rodinou a blízkými, na které jsem během svého obchodního života nikdy neměl čas , ale před smrtí mého manžela jsme měli plán, jak využít poslední dny našeho života k darování poloviny toho, pro co jsme pracovali, do méně privilegovaných a charitativních domovů a druhou polovinu pro sebe, členy rodiny a blízké přátele, a je tak nešťastné, že můj manžel dnes není naživu, aby to udělal se mnou, a já jsem teď velmi slabý a starý, proto jsem se rozhodl udělat tuto filantropickou práci jménem mého zesnulého manžela a já.
 
-I will, thanks.
+V současné době jsem vložil Šek v součtu (PĚT MILIONŮ SPOJENÝCH STÁTŮ DOLARŮ) u ING Groep, aby vám mohl být převeden, co teď musíte udělat, je kontaktovat ING Groep co nejdříve, abyste věděli, kdy vám převede vaše peníze z důvodu data vypršení platnosti. Vložil jsem pouze pomocí vaší E-MAILOVÉ ADRESY a VKLADOVÝ KÓD je (ING_19728493_WFP). Zaplatil jsem za pojistné a poplatek za bankovní převod daru, což ukazuje, že se nejedná o peníze z drog nebo fond určený k sponzorování terorismu ve vaší zemi. Zopakuji ještě jednou, za pojistné a poplatek za bankovní převod šeku neplatíte, protože jsem je již zaplatil.
 
-Haiwei Li
+Je mi líto, že vás informuji, že mě nikdy nebudete mít příležitost poznat, protože jsem právě dokončil úkol, na kterém jsme se s manželem dohodli před jeho náhlou smrtí, a náhodou jste byli příjemcem naší (POSLEDNÍ VŮLE), bez ohledu na to vašeho předchozího finančního stavu, a proto potřebuji, abyste mi udělali laskavost tím, že přijmete naši nabídku, která vás nebude nic stát. PROSÍM, VÁŽE MILÉ, POKUD VÍTE, ŽE NEBUDETE PRACOVAT NA LEPENÍ CHUDÝCH VE VAŠÍ ZEMI, prosím, nekontaktujte mě ani ING Groep, prosím, potřebuji někoho, kdo mi pomůže velkoryse rozdělit tyto peníze chudým.
+
+Laskavě kontaktujte pana Tanate Phutrakula (finančního ředitele ING Groep N.V. a ING Bank) s vašimi úplnými jmény: vaše poštovní adresa; Vaše přímé telefonní číslo; za převod šeku na vás.
+
+Kontaktní osoba: pan Tanate Phutrakul
+E-mail: cfo@ing-gb.com
+Tel: +44 745 212 0201
+Tel: +31 97005032613
+
+Poznámka: Prosím, nechci, abyste mi poděkovali nebo mému manželovi, vše, co od vás potřebuji, je rozumně investovat a někdy udělat něco dobrého pro život někoho jiného, ​​protože to je jediný způsob, jak by tento svět byl lepší komunitou, kdybychom se stali nezištnými vzájemné služby. BŮH TI ŽEHNEJ!
+
+S pozdravem
+Paní Coris Whent
