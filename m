@@ -2,49 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3E67271478
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 15:23:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F4B27147B
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 15:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726387AbgITNX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 09:23:29 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:35930 "EHLO fornost.hmeau.com"
+        id S1726430AbgITN0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 09:26:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35474 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726306AbgITNX3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 09:23:29 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1kJzJI-0003uI-DV; Sun, 20 Sep 2020 23:23:21 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Sun, 20 Sep 2020 23:23:20 +1000
-Date:   Sun, 20 Sep 2020 23:23:20 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Thomas Graf <tgraf@suug.ch>, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rhashtable: fix indentation of a continue statement
-Message-ID: <20200920132320.GA769@gondor.apana.org.au>
-References: <20200918215126.49236-1-colin.king@canonical.com>
+        id S1726321AbgITN0Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 09:26:25 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 14E0EAD32;
+        Sun, 20 Sep 2020 13:26:59 +0000 (UTC)
+From:   =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>
+To:     Yan-Hsuan Chuang <yhchuang@realtek.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        linux-wireless@vger.kernel.org
+Cc:     Chin-Yen Lee <timlee@realtek.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-realtek-soc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>
+Subject: [PATCH 0/2] net: wireless: rtw88: Fix oops on probe errors
+Date:   Sun, 20 Sep 2020 15:26:19 +0200
+Message-Id: <20200920132621.26468-1-afaerber@suse.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918215126.49236-1-colin.king@canonical.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 10:51:26PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> A continue statement is indented incorrectly, add in the missing
-> tab.
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  lib/test_rhashtable.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Hello,
 
-Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
+This mini-series fixes oopses in rtw88 device probe error handling,
+resulting from asynchronous firmware loading.
+
+Since there does not appear to be a public kernel API for canceling
+scheduled or ongoing firmware loads, it seems we need to wait with
+teardown until rtw88's callback was invoked and signals completion.
+
+Found on RTD1296 arm64 SoC with experimental PCI host bridge driver
+(https://github.com/afaerber/linux/commits/rtd1295-next) with a 4K
+physical bar window, resulting in rtw_pci_setup_resource() failing,
+or with non-implemented 4K remapping resulting in rtw_pci_read32()
+returning 0xffffffff values and causing rtw_mac_power_on() to fail.
+
+Cheers,
+Andreas
+
+Andreas Färber (2):
+  rtw88: Fix probe error handling race with firmware loading
+  rtw88: Fix potential probe error handling race with wow firmware
+    loading
+
+ drivers/net/wireless/realtek/rtw88/main.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.28.0
+
