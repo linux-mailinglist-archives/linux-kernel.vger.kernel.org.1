@@ -2,125 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13A032712CF
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 09:59:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 176F72712DB
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 10:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726342AbgITH7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 03:59:18 -0400
-Received: from mga05.intel.com ([192.55.52.43]:32914 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726222AbgITH7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 03:59:18 -0400
-IronPort-SDR: Vt3jHHhrUsrooIgHboT8nzInP5g3J9Qzg9X5so/lWAy++q1GTMf7E/+2dpxSai39mf9WPjCMxT
- uaMrLMXmK1Iw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9749"; a="245050244"
-X-IronPort-AV: E=Sophos;i="5.77,282,1596524400"; 
-   d="scan'208";a="245050244"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2020 00:59:16 -0700
-IronPort-SDR: Y30tpdpci8zdHDsOs7gcBhrl6wCUDjQ1zRdIzX8woBzO2DnwyVPsDNPqbFhXtiZrtQJnE3sS+r
- fbFa2iaPYfKg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,282,1596524400"; 
-   d="scan'208";a="453506253"
-Received: from lkp-server01.sh.intel.com (HELO a05db971c861) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 20 Sep 2020 00:59:14 -0700
-Received: from kbuild by a05db971c861 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kJuFd-0001K4-8m; Sun, 20 Sep 2020 07:59:13 +0000
-Date:   Sun, 20 Sep 2020 15:58:58 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/cpu] BUILD SUCCESS
- e1ebb2b49048c4767cfa0d8466f9c701e549fa5e
-Message-ID: <5f670bc2.TJ1pVewDNZOPoqNt%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726327AbgITIYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 04:24:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726262AbgITIX7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 04:23:59 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10892C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 01:23:58 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id e16so9658788wrm.2
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 01:23:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QW/8f02YUz9CyJxz2jJDAPCwQUNyEsIs6ErdQRH78bk=;
+        b=KpEMjAVsWIsf6j85U5lGiCQk94IKAbNlzJpqqh7UlpZP+uHxVyI9xbDPp+PEj35Klr
+         Fp0pmrJPV4QcEqfbWznBKmcAQ+Q7J+2NCTy4gUD/Rd5fRLvQ3GCVnl4V8YU78MIWGtmi
+         zOs5T/os04dSRrngCDI5iUuJvEbe2rp33EGPI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=QW/8f02YUz9CyJxz2jJDAPCwQUNyEsIs6ErdQRH78bk=;
+        b=RoiJa5VCIF4rAzYyKHZnq8GeQqAHmMH+ajnreH2A4Ah3zEBW1uIo3IWCuUS/aW8/VS
+         9+DpEoIWty3x8nrTu7CkWd2SDm8Noa2vpZk3Y8IjegE9Uw/2SMw7Ka8g/QckpowMwWtF
+         ww0SzYRofTX0BUgRQCvp2YwSd3HvPFjuvOPD7fcBsgqCY5dLq6eEanvz59f80dXIugxm
+         yyhYZ/Vn0ulDdzGr07yCKCTWvDPZR00P1K5oqEsG9KwbOFqPOWd9o3brT2mPKzCY870L
+         M9YJrMZkrSnKU9T2ZYR8UPng5vB5oYClUXJWdNz804xbVsag7QgGVFsQdnXArdLMNz84
+         8NOQ==
+X-Gm-Message-State: AOAM5313BRozmjHtfYm1SBhWawfj5K0/UQinP6NoifwJOvl0KyVH3wkn
+        E/ElJX3zDF+y+f5hT4TaeKfVng==
+X-Google-Smtp-Source: ABdhPJxNYcqTcvbH9VqF1Sc6UfalSbf2k2pQjIV2s6WyfB9ecjNuyH5YNGsmVXrxzF1y/be4tY28HQ==
+X-Received: by 2002:a5d:6886:: with SMTP id h6mr48291568wru.374.1600590237536;
+        Sun, 20 Sep 2020 01:23:57 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id i16sm13867150wrq.73.2020.09.20.01.23.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Sep 2020 01:23:56 -0700 (PDT)
+Date:   Sun, 20 Sep 2020 10:23:53 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:GENERIC INCLUDE/A..." <linux-arch@vger.kernel.org>,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Paul McKenney <paulmck@kernel.org>, X86 ML <x86@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        arcml <linux-snps-arc@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
+        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org
+Subject: Re: [patch RFC 00/15] mm/highmem: Provide a preemptible variant of
+ kmap_atomic & friends
+Message-ID: <20200920082353.GG438822@phenom.ffwll.local>
+Mail-Followup-To: Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:GENERIC INCLUDE/A..." <linux-arch@vger.kernel.org>,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Paul McKenney <paulmck@kernel.org>, X86 ML <x86@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>, Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        arcml <linux-snps-arc@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
+        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org
+References: <20200919091751.011116649@linutronix.de>
+ <CAKMK7uHTVJL2jGtCg61zG=myiF1BSk+yDdRYikcm-Mq_1TQWMQ@mail.gmail.com>
+ <CAKMK7uENFDANQKebS_H0bhHeQRijrp1aVHQqyZPute3KBZ+fVQ@mail.gmail.com>
+ <87pn6hc6g1.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <87pn6hc6g1.fsf@nanos.tec.linutronix.de>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/cpu
-branch HEAD: e1ebb2b49048c4767cfa0d8466f9c701e549fa5e  KVM: SVM: Don't flush cache if hardware enforces cache coherency across encryption domains
+On Sun, Sep 20, 2020 at 08:23:26AM +0200, Thomas Gleixner wrote:
+> On Sat, Sep 19 2020 at 12:37, Daniel Vetter wrote:
+> > On Sat, Sep 19, 2020 at 12:35 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+> >> I think it should be the case, but I want to double check: Will
+> >> copy_*_user be allowed within a kmap_temporary section? This would
+> >> allow us to ditch an absolute pile of slowpaths.
+> >
+> > (coffee just kicked in) copy_*_user is ofc allowed, but if you hit a
+> > page fault you get a short read/write. This looks like it would remove
+> > the need to handle these in a slowpath, since page faults can now be
+> > served in this new kmap_temporary sections. But this sounds too good
+> > to be true, so I'm wondering what I'm missing.
+> 
+> In principle we could allow pagefaults, but not with the currently
+> proposed interface which can be called from any context. Obviously if
+> called from atomic context it can't handle user page faults.
+ 
+Yeah that's clear, but does the implemention need to disable pagefaults
+unconditionally?
 
-elapsed time: 721m
+> In theory we could make a variant which does not disable pagefaults, but
+> that's what kmap() already provides.
 
-configs tested: 61
-configs skipped: 65
+Currently we have a bunch of code which roughly does
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+	kmap_atomic();
+	copy_*_user();
+	kunmap_atomic();
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-parisc                generic-32bit_defconfig
-xtensa                       common_defconfig
-arc                        nsimosci_defconfig
-sh                          lboxre2_defconfig
-powerpc                         ps3_defconfig
-powerpc                     tqm8541_defconfig
-mips                      pic32mzda_defconfig
-arm                            mmp2_defconfig
-sparc                            alldefconfig
-powerpc                        icon_defconfig
-m68k                       m5208evb_defconfig
-csky                             alldefconfig
-powerpc                     tqm8555_defconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-i386                             allyesconfig
-i386                                defconfig
-x86_64               randconfig-a005-20200920
-x86_64               randconfig-a003-20200920
-x86_64               randconfig-a004-20200920
-x86_64               randconfig-a002-20200920
-x86_64               randconfig-a006-20200920
-x86_64               randconfig-a001-20200920
-i386                 randconfig-a002-20200920
-i386                 randconfig-a006-20200920
-i386                 randconfig-a003-20200920
-i386                 randconfig-a004-20200920
-i386                 randconfig-a005-20200920
-i386                 randconfig-a001-20200920
-i386                 randconfig-a012-20200920
-i386                 randconfig-a014-20200920
-i386                 randconfig-a016-20200920
-i386                 randconfig-a013-20200920
-i386                 randconfig-a011-20200920
-i386                 randconfig-a015-20200920
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+	if (short_copy_user) {
+		kmap();
+		copy_*_user(remaining_stuff);
+		kunmap();
+	}
 
-clang tested configs:
-x86_64               randconfig-a011-20200920
-x86_64               randconfig-a013-20200920
-x86_64               randconfig-a014-20200920
-x86_64               randconfig-a015-20200920
-x86_64               randconfig-a012-20200920
-x86_64               randconfig-a016-20200920
+And the only reason is that kmap is a notch slower, hence the fastpath. If
+we get a kmap which is fast and allows pagefaults (only in contexts that
+allow pagefaults already ofc) then we can ditch a pile of kmap users.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Cheers, Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
