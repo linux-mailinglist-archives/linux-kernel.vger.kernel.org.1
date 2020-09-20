@@ -2,69 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3842715A4
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 18:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E3152715A9
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 18:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726360AbgITQUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 12:20:37 -0400
-Received: from smtprelay0155.hostedemail.com ([216.40.44.155]:41372 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726311AbgITQUh (ORCPT
+        id S1726442AbgITQVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 12:21:14 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:50125 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726311AbgITQVO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 12:20:37 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 3C8AB18224D7E;
-        Sun, 20 Sep 2020 16:20:36 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3351:3653:3867:3870:3871:3874:5007:7903:10004:10400:10848:11026:11658:11914:12297:12555:12760:13069:13095:13221:13229:13255:13311:13357:13439:14181:14394:14659:14721:21080:21433:21627:21660:21990:30054,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: tramp39_4902a322713d
-X-Filterd-Recvd-Size: 1866
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf07.hostedemail.com (Postfix) with ESMTPA;
-        Sun, 20 Sep 2020 16:20:35 +0000 (UTC)
-Message-ID: <b6afa04112d450c2fc120a308d706acd60cee294.camel@perches.com>
-Subject: [PATCH -next] checkpatch: Fix git "fatal" warning if file argument
- outside kernel tree
-From:   Joe Perches <joe@perches.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux@rasmusvillemoes.dk,
-        Julia Lawall <julia.lawall@inria.fr>, apw@canonical.com
-Date:   Sun, 20 Sep 2020 09:20:34 -0700
-In-Reply-To: <cca15cb7889f25ab010300a3e7e55dd63478c1fc.camel@perches.com>
-References: <alpine.DEB.2.22.394.2009201346560.2966@hadrien>
-         <cca15cb7889f25ab010300a3e7e55dd63478c1fc.camel@perches.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Sun, 20 Sep 2020 12:21:14 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=34;SR=0;TI=SMTPD_---0U9VT-1s_1600618863;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0U9VT-1s_1600618863)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 21 Sep 2020 00:21:04 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Howells <dhowells@redhat.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Stephan Mueller <smueller@chronox.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Waiman Long <longman@redhat.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        Vitaly Chikunov <vt@altlinux.org>,
+        "Gilad Ben-Yossef" <gilad@benyossef.com>,
+        Pascal van Leeuwen <pvanleeuwen@rambus.com>,
+        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>,
+        Jia Zhang <zhang.jia@linux.alibaba.com>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Subject: [PATCH v7 00/10] crpyto: introduce OSCCA certificate and SM2 asymmetric algorithm
+Date:   Mon, 21 Sep 2020 00:20:53 +0800
+Message-Id: <20200920162103.83197-1-tianjia.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.3.ge56e4f7
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit bcf4271d4bc3 ("checkpatch: allow not using -f with files that
-are in git") in linux-next causes checkpatch to emit a fatal message:
+Hello all,
 
-fatal: <file>: '<file>' is outside repository at '<kernel_dir>'
+This new module implement the OSCCA certificate and SM2 public key
+algorithm. It was published by State Encryption Management Bureau, China.
+List of specifications for OSCCA certificate and SM2 elliptic curve
+public key cryptography:
 
-Fix that by sending git's error output to /dev/null instead.
+* GM/T 0003.1-2012
+* GM/T 0003.2-2012
+* GM/T 0003.3-2012
+* GM/T 0003.4-2012
+* GM/T 0003.5-2012
+* GM/T 0015-2012
+* GM/T 0009-2012 
 
-Signed-off-by: Joe Perches <joe@perches.com>
-Reported-by: Julia Lawall <julia.lawall@inria.fr>
-Reviewed-by: Julia Lawall <julia.lawall@inria.fr>
+IETF: https://tools.ietf.org/html/draft-shen-sm2-ecdsa-02
+oscca: http://www.oscca.gov.cn/sca/xxgk/2010-12/17/content_1002386.shtml
+scctc: http://www.gmbz.org.cn/main/bzlb.html
+
+These patchs add the OID object identifier defined by OSCCA. The
+x509 certificate supports sm2-with-sm3 type certificate parsing
+and verification.
+
+The sm2 algorithm is based on libgcrypt's mpi implementation, and has
+made some additions to the kernel's original mpi library, and added the
+implementation of ec to better support elliptic curve-like algorithms.
+
+sm2 has good support in both openssl and gnupg projects, and sm3 and sm4
+of the OSCCA algorithm family have also been implemented in the kernel.
+
+Among them, sm3 and sm4 have been well implemented in the kernel.
+This group of patches has newly introduced sm2. In order to implement
+sm2 more perfectly, I expanded the mpi library and introduced the
+ec implementation of the mpi library as the basic algorithm. Compared
+to the kernel's crypto/ecc.c, the implementation of mpi/ec.c is more
+complete and elegant, sm2 is implemented based on these algorithms.
+
 ---
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 3e474072aa90..469f8e7456df 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -981,7 +981,7 @@ sub git_is_single_file {
- 
- 	return 0 if ((which("git") eq "") || !(-e "$gitroot"));
- 
--	my $output = `${git_command} ls-files -- $filename`;
-+	my $output = `${git_command} ls-files -- $filename 2>/dev/null`;
- 	my $count = $output =~ tr/\n//;
- 	return $count eq 1 && $output =~ m{^${filename}$};
- }
+v7 changes:
+  1. add sm2 test vectors to testmgr.
+  2. fix potential memory leak in testmgr (PATCH 6/10).
+  3. rebase on mainline.
 
+v6 changes:
+  1. remove mpi_sub_ui function from mpi library.
+  2. rebase on mainline.
+
+v5 changes:
+  1. fix compilation failure when SM2 is configured as a module.
+  2. simplify the mpi and ec code, remove unused functions reported by test robot.
+
+v4 changes:
+  1. Pass data directly when calculating sm2 certificate digest.
+  2. rebase on mainline.
+
+v3 changes:
+  1. integrity asymmetric digsig support sm2-with-sm3 algorithm.
+  2. remove unused sm2_set_priv_key().
+  3. rebase on mainline.
+
+v2 changes:
+  1. simplify the sm2 algorithm and only retain the verify function.
+  2. extract the sm2 certificate code into a separate file.
+
+
+Tianjia Zhang (10):
+  crypto: sm3 - export crypto_sm3_final function
+  lib/mpi: Extend the MPI library
+  lib/mpi: Introduce ec implementation to MPI library
+  crypto: sm2 - introduce OSCCA SM2 asymmetric cipher algorithm
+  crypto: testmgr - support test with different ciphertext per
+    encryption
+  crypto: testmgr - Fix potential memory leak in test_akcipher_one()
+  crypto: sm2 - add SM2 test vectors to testmgr
+  X.509: support OSCCA certificate parse
+  X.509: support OSCCA SM2-with-SM3 certificate verification
+  integrity: Asymmetric digsig supports SM2-with-SM3 algorithm
+
+ crypto/Kconfig                            |   17 +
+ crypto/Makefile                           |    8 +
+ crypto/asymmetric_keys/Makefile           |    1 +
+ crypto/asymmetric_keys/public_key.c       |    6 +
+ crypto/asymmetric_keys/public_key_sm2.c   |   61 +
+ crypto/asymmetric_keys/x509_cert_parser.c |   27 +-
+ crypto/asymmetric_keys/x509_public_key.c  |    3 +
+ crypto/sm2.c                              |  481 +++++++
+ crypto/sm2signature.asn1                  |    4 +
+ crypto/sm3_generic.c                      |    7 +-
+ crypto/testmgr.c                          |   24 +-
+ crypto/testmgr.h                          |   59 +
+ include/crypto/public_key.h               |   15 +
+ include/crypto/sm2.h                      |   25 +
+ include/crypto/sm3.h                      |    2 +
+ include/linux/mpi.h                       |  192 +++
+ include/linux/oid_registry.h              |    6 +
+ lib/mpi/Makefile                          |    6 +
+ lib/mpi/ec.c                              | 1509 +++++++++++++++++++++
+ lib/mpi/mpi-add.c                         |  155 +++
+ lib/mpi/mpi-bit.c                         |  251 ++++
+ lib/mpi/mpi-cmp.c                         |   46 +-
+ lib/mpi/mpi-div.c                         |  238 ++++
+ lib/mpi/mpi-internal.h                    |   53 +
+ lib/mpi/mpi-inv.c                         |  143 ++
+ lib/mpi/mpi-mod.c                         |  155 +++
+ lib/mpi/mpi-mul.c                         |   94 ++
+ lib/mpi/mpicoder.c                        |  336 +++++
+ lib/mpi/mpih-div.c                        |  294 ++++
+ lib/mpi/mpih-mul.c                        |   25 +
+ lib/mpi/mpiutil.c                         |  204 +++
+ security/integrity/digsig_asymmetric.c    |   14 +-
+ 32 files changed, 4435 insertions(+), 26 deletions(-)
+ create mode 100644 crypto/asymmetric_keys/public_key_sm2.c
+ create mode 100644 crypto/sm2.c
+ create mode 100644 crypto/sm2signature.asn1
+ create mode 100644 include/crypto/sm2.h
+ create mode 100644 lib/mpi/ec.c
+ create mode 100644 lib/mpi/mpi-add.c
+ create mode 100644 lib/mpi/mpi-div.c
+ create mode 100644 lib/mpi/mpi-inv.c
+ create mode 100644 lib/mpi/mpi-mod.c
+ create mode 100644 lib/mpi/mpi-mul.c
+
+-- 
+2.19.1.3.ge56e4f7
 
