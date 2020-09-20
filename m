@@ -2,80 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 345DA2717C3
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 22:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 272B42717C4
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 22:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726343AbgITUDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 16:03:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726126AbgITUDe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 16:03:34 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56A35C061755;
-        Sun, 20 Sep 2020 13:03:34 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bvdmg4WKtz9sPB;
-        Mon, 21 Sep 2020 06:03:31 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600632211;
-        bh=QjboH7VSmbjfV++NPvYTHItW+R7R39XMr6gcOwwGB9w=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Z6Rt7t1SVI39h79BI2Nc+cYorebjPECPyyy6GhkZ4MZm4UztCwhKNmknTzegvy4e2
-         bX9zHwAle2zKYFZJ26HIG4IErjxq5MSlZrLvUkaIM2RJ/G9WVWbWbYxrjAinIwnmRU
-         jsVqAexws8TcOMJ8VoALbyaOUcC25zRb6RIsYOL2NSAxO2WVXT954AseMm/UktDBIY
-         Fqre2ol3RZF08NA2NgBYu8UfI7h1HwxD0feazxB1Y0gAW/nimr6gT71eo1YCNAQ+pG
-         rsQ1Fg+zpSAGdZxPRj6lbeY8KTIPQo6W2Ma0MxJxT2FVA3JaJS4n3BHMWp7kgcGPYt
-         wI/tJKltdQWiQ==
-Date:   Mon, 21 Sep 2020 06:03:30 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: linux-next: Signed-off-by missing for commit in the kvm-fixes tree
-Message-ID: <20200921060330.1e3ef67c@canb.auug.org.au>
+        id S1726381AbgITUE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 16:04:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56474 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726126AbgITUEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 16:04:55 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7F3EBAD32;
+        Sun, 20 Sep 2020 20:05:30 +0000 (UTC)
+Date:   Sun, 20 Sep 2020 22:04:53 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] core/urgent for v5.9-rc6
+Message-ID: <20200920200453.GG13044@zn.tnic>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/.zAKErYdlL2BCV/Ap+ef4iK";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/.zAKErYdlL2BCV/Ap+ef4iK
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Linus,
 
-Hi all,
+please pull a single syscall tracing fix.
 
-Commit
+Thx.
 
-  d5eff360a675 ("Revert "KVM: Check the allocation of pv cpu mask"")
+---
+The following changes since commit 856deb866d16e29bd65952e0289066f6078af773:
 
-is missing a Signed-off-by from its author.
+  Linux 5.9-rc5 (2020-09-13 16:06:00 -0700)
 
---=20
-Cheers,
-Stephen Rothwell
+are available in the Git repository at:
 
---Sig_/.zAKErYdlL2BCV/Ap+ef4iK
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/core_urgent_for_v5.9_rc6
 
------BEGIN PGP SIGNATURE-----
+for you to fetch changes up to b6ec413461034d49f9e586845825adb35ba308f6:
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9ntZIACgkQAVBC80lX
-0GzcpAf/emCgEulJmGLDQyctuetEDAt5KyQbKYqXizmQFiDJulNIis5oF3xwo0RS
-dAwE4nd5IckjNAiw4q53MVGSyJJ6Irc687Iu6/c0rgJiLV10mCYEJP/sAeVuxsb9
-gE+Tsuvk2ZDHZCfFLnShUtmsN+EqZMh5Ur245YRmDTxJJWyT85JUXXaqAGhWSa3K
-BZPkIs9XzNa7FxOFM4UM0doCDgyCEVAp34ZIu3puXJ1P6jsBhXHGQUo3oYd7Yzpi
-1qep5pQvmzvZyR48JbT2fTPrmht74f3iTAsqKfUGopBjzblFwN1o7mjPoOAFqXJy
-0NFUGBa9LMn7/jCbQyQFk08rRa4TCA==
-=hDLk
------END PGP SIGNATURE-----
+  core/entry: Report syscall correctly for trace and audit (2020-09-14 22:49:51 +0200)
 
---Sig_/.zAKErYdlL2BCV/Ap+ef4iK--
+----------------------------------------------------------------
+Fix the seccomp syscall rewriting so that trace and audit see the
+rewritten syscall number, from Kees Cook.
+
+----------------------------------------------------------------
+Kees Cook (1):
+      core/entry: Report syscall correctly for trace and audit
+
+ kernel/entry/common.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+index 18683598edbc..6fdb6105e6d6 100644
+--- a/kernel/entry/common.c
++++ b/kernel/entry/common.c
+@@ -60,13 +60,15 @@ static long syscall_trace_enter(struct pt_regs *regs, long syscall,
+ 			return ret;
+ 	}
+ 
++	/* Either of the above might have changed the syscall number */
++	syscall = syscall_get_nr(current, regs);
++
+ 	if (unlikely(ti_work & _TIF_SYSCALL_TRACEPOINT))
+ 		trace_sys_enter(regs, syscall);
+ 
+ 	syscall_enter_audit(regs, syscall);
+ 
+-	/* The above might have changed the syscall number */
+-	return ret ? : syscall_get_nr(current, regs);
++	return ret ? : syscall;
+ }
+ 
+ static __always_inline long
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
