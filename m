@@ -2,217 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92CF627179A
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 21:38:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1718B27179E
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 21:39:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726314AbgITTic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 15:38:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726109AbgITTia (ORCPT
+        id S1726387AbgITTjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 15:39:23 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:45048 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726109AbgITTjW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 15:38:30 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1CF2C061755;
-        Sun, 20 Sep 2020 12:38:29 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id q5so5150702ilj.1;
-        Sun, 20 Sep 2020 12:38:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=7dHmlm15L5muln7P5gMny8ZyKU2l3Q2uBGbFxPZzDB4=;
-        b=lVFox2j6QnZDD7C2ONG3APLQz8HzTN8Hms0gWrPbxfh9V8jGk+2KfupLvFzMkmLgww
-         5pNoYdtWj4b9mGW4CqbJ1AM4DLYW7tZq3uQC4UNkjlkkKQcyyxkKF2c+Fi7iiibmGA5B
-         ZjW5oAmZAETlVmVsVFZD0dhxwayVpqI6+ut8Tt8QgVVU8emPjhznNwJ8r3lAcZaDyD0v
-         lSPr/01CzAVuZUuoURjsqerBb47YOZ1n3Eup2RZfgvkRf9JJ0C7yucug2VYBaQjUTASX
-         2pyUNxI8MJu33r5Bdd8JMlvgzIq7S0j7voIYWOftqXT6ztwTLaK+u6iJrwzBlvZ9pj8G
-         pW4Q==
+        Sun, 20 Sep 2020 15:39:22 -0400
+Received: by mail-ed1-f66.google.com with SMTP id b12so10762518edz.11;
+        Sun, 20 Sep 2020 12:39:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7dHmlm15L5muln7P5gMny8ZyKU2l3Q2uBGbFxPZzDB4=;
-        b=LaR7ptATNa3ddYYehwgT0daZekhx1eOcU5joLvEHhd3y8x3URONIpytuH2jVrSWw5t
-         fiUhTSquRg508+cLl0SDYrf17cxKKFsif38IlcA+lEaYaR4V9D4DcnhHsI3m3Rpyd5tX
-         yY3nQWhm9cYeerS/xOt18yVf/zsJx6MMGJfnDLXn68q3GVHGagP/cXQZSyI2TDa0gEDo
-         t/O6/zBnLrk+we6XEw1a0024OBXVq9tlWcmMQ/8+8d4QyulE4+TkUPtBqAQqtpqIUq5D
-         HCNzUqpcydVKWr/Ie8vdZGhz8UAZlSOgE09xBQ0jwGKxvUiZH75M1DYVhyPMTiV/VEwc
-         bUdg==
-X-Gm-Message-State: AOAM530hM+EVnDs/lShRNq3tsKSGIs1vNz52lDdYkyt2xUmptaHKZ04R
-        rOkYoNJb1vBXgObPTphnOpff/O/zNChg3Bxirjgvl/+LGHRJRg==
-X-Google-Smtp-Source: ABdhPJxqQ4WQOR6w77n6t0YKh1ksHhXAMWdDCFuTkiQ8DZOfS9rz6gqURn759P7yp/tqGDFGiQjAeZg4Tk80F04zEbI=
-X-Received: by 2002:a92:a1c8:: with SMTP id b69mr19779859ill.293.1600630708670;
- Sun, 20 Sep 2020 12:38:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200920180758.592217-1-peron.clem@gmail.com> <20200920180758.592217-2-peron.clem@gmail.com>
- <e0eb7e94-e736-4ec0-b838-884a4857bb97@sholland.org>
-In-Reply-To: <e0eb7e94-e736-4ec0-b838-884a4857bb97@sholland.org>
-From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Date:   Sun, 20 Sep 2020 21:38:17 +0200
-Message-ID: <CAJiuCcenXE_BZpk7smwaddsgqwq7LmhCQuH9T1pG2twM4Uu+mA@mail.gmail.com>
-Subject: Re: [PATCH v3 01/19] ASoC: sun4i-i2s: Add support for H6 I2S
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Marcus Cooper <codekipper@gmail.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        devicetree <devicetree@vger.kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=EjOn6uRQVdPuymFl16y3sShxeseL+O0M4hlLdZpwFpM=;
+        b=fzV3N2JP7Qn2Un3gsyBkgM9KrmD3SLAd7ErjwLLrv7C0svmYJIw/Su3cN5jzL1n75r
+         zrVBbRp0adJmTob9fvSDvQTeINq0Fe9rGHzxfRP0yd1oHGM5CSes4h1H9lsNN2Af6+NR
+         d0ulDLOpr/hTyADZvhy/M2cTvFeR3SoGBczBJ92jLgWJWYP4aoeh/bgd5MS1ieIJoYVg
+         6ksqwh1EH+VLlfV5bSMH+63fjGtU1MA8xMNeQOL1kPDGpsLiE949brMg2FIGNi48s+UJ
+         hRtgtzzp0Oyof5RPfv/PXU0EB+6wtwI2PdzADE7pvJ1dNlnFiXqjYGjwyU5Dq6cYL3ef
+         fBbw==
+X-Gm-Message-State: AOAM531mhHln8/YoTRQVgbf2mjMhbyiq8/5NMP0j+70D/dQvnqboSPB4
+        aA6R66kZyihQ8588LXmKHUA=
+X-Google-Smtp-Source: ABdhPJxm64DrxO2BCAhB/Z2FKAFGkrjja3e7GI7Mop9Y1YiJS/Mzx02Jc3rgIeVCd0fm8AibxTyTyA==
+X-Received: by 2002:a05:6402:326:: with SMTP id q6mr48977643edw.216.1600630759279;
+        Sun, 20 Sep 2020 12:39:19 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.191])
+        by smtp.googlemail.com with ESMTPSA id bf25sm6956900edb.95.2020.09.20.12.39.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 20 Sep 2020 12:39:18 -0700 (PDT)
+Date:   Sun, 20 Sep 2020 21:39:15 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree@vger.kernel.org,
         linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-unisoc@lists.infradead.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        "moderated list:ARM/STM32 ARCHITECTURE" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:MEDIA DRIVERS FOR RENESAS - FCP" 
+        <linux-renesas-soc@vger.kernel.org>
+Subject: Re: [PATCH v2 01/13] dt-bindings: gpio: add common schema for GPIO
+ controllers
+Message-ID: <20200920193915.GA31074@kozik-lap>
+References: <20200917165301.23100-1-krzk@kernel.org>
+ <20200917165301.23100-2-krzk@kernel.org>
+ <CAL_JsqJCLgf6syqV=jNPHPyu02ygwWCDDV+U9VCm0qRpLkirSQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAL_JsqJCLgf6syqV=jNPHPyu02ygwWCDDV+U9VCm0qRpLkirSQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Samuel,
+On Fri, Sep 18, 2020 at 08:30:02AM -0600, Rob Herring wrote:
+> On Thu, Sep 17, 2020 at 10:53 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> >
+> > Convert parts of gpio.txt bindings into common dtschema file for GPIO
+> > controllers.  The schema enforces proper naming of GPIO controller nodes
+> > and GPIO hogs.
+> 
+> Did you not see my previous reply about a common schema? We already
+> have a common GPIO and hog schema in dtschema. Please add to it
+> whatever is missing.
 
-On Sun, 20 Sep 2020 at 20:39, Samuel Holland <samuel@sholland.org> wrote:
->
-> On 9/20/20 1:07 PM, Cl=C3=A9ment P=C3=A9ron wrote:
-> > From: Jernej Skrabec <jernej.skrabec@siol.net>
-> >
-> > H6 I2S is very similar to that in H3, except it supports up to 16
-> > channels.
-> >
-> > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-> > Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-> > Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
-> > ---
-> >  sound/soc/sunxi/sun4i-i2s.c | 218 ++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 218 insertions(+)
-> >
-> > diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-> > index f23ff29e7c1d..348057464bed 100644
-> > --- a/sound/soc/sunxi/sun4i-i2s.c
-> > +++ b/sound/soc/sunxi/sun4i-i2s.c
-> ...
-> > @@ -699,6 +770,102 @@ static int sun8i_i2s_set_soc_fmt(const struct sun=
-4i_i2s *i2s,
-> >       return 0;
-> >  }
-> >
-> > +static int sun50i_h6_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
-> > +                                  unsigned int fmt)
-> > +{
-> > +     u32 mode, val;
-> > +     u8 offset;
-> > +
-> > +     /* DAI clock polarity */
-> > +     switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-> > +     case SND_SOC_DAIFMT_IB_IF:
-> > +             /* Invert both clocks */
-> > +             val =3D SUN8I_I2S_FMT0_BCLK_POLARITY_INVERTED |
-> > +                   SUN8I_I2S_FMT0_LRCLK_POLARITY_INVERTED;
-> > +             break;
-> > +     case SND_SOC_DAIFMT_IB_NF:
-> > +             /* Invert bit clock */
-> > +             val =3D SUN8I_I2S_FMT0_BCLK_POLARITY_INVERTED;
-> > +             break;
-> > +     case SND_SOC_DAIFMT_NB_IF:
-> > +             /* Invert frame clock */
-> > +             val =3D SUN8I_I2S_FMT0_LRCLK_POLARITY_INVERTED;
-> > +             break;
-> > +     case SND_SOC_DAIFMT_NB_NF:
-> > +             val =3D 0;
-> > +             break;
-> > +     default:
-> > +             return -EINVAL;
-> > +     }
->
-> Maxime's testing that showed LRCK inversion was necessary was done on the=
- H6. So
-> in addition to dropping the patch that removed the LRCK inversion for oth=
-er
-> sun8i variants, you need to re-add it to this patch for the H6 variant.
+Indeed, I'll enhance the dt-schema.
 
-Thanks, you're right!
-Clement
+The trouble is that each in-kernel YAML file still has to mention
+possible gpio-hogs nodes. Is the proper solution to put them in common
+YAML inside kernel sources?
 
->
-> Cheers,
-> Samuel
->
-> > +
-> > +     regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
-> > +                        SUN8I_I2S_FMT0_LRCLK_POLARITY_MASK |
-> > +                        SUN8I_I2S_FMT0_BCLK_POLARITY_MASK,
-> > +                        val);
-> > +
-> > +     /* DAI Mode */
-> > +     switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-> > +     case SND_SOC_DAIFMT_DSP_A:
-> > +             mode =3D SUN8I_I2S_CTRL_MODE_PCM;
-> > +             offset =3D 1;
-> > +             break;
-> > +
-> > +     case SND_SOC_DAIFMT_DSP_B:
-> > +             mode =3D SUN8I_I2S_CTRL_MODE_PCM;
-> > +             offset =3D 0;
-> > +             break;
-> > +
-> > +     case SND_SOC_DAIFMT_I2S:
-> > +             mode =3D SUN8I_I2S_CTRL_MODE_LEFT;
-> > +             offset =3D 1;
-> > +             break;
-> > +
-> > +     case SND_SOC_DAIFMT_LEFT_J:
-> > +             mode =3D SUN8I_I2S_CTRL_MODE_LEFT;
-> > +             offset =3D 0;
-> > +             break;
-> > +
-> > +     case SND_SOC_DAIFMT_RIGHT_J:
-> > +             mode =3D SUN8I_I2S_CTRL_MODE_RIGHT;
-> > +             offset =3D 0;
-> > +             break;
-> > +
-> > +     default:
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
-> > +                        SUN8I_I2S_CTRL_MODE_MASK, mode);
-> > +     regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
-> > +                        SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET_MASK,
-> > +                        SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET(offset));
-> > +     regmap_update_bits(i2s->regmap, SUN50I_H6_I2S_RX_CHAN_SEL_REG,
-> > +                        SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET_MASK,
-> > +                        SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET(offset));
-> > +
-> > +     /* DAI clock master masks */
-> > +     switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-> > +     case SND_SOC_DAIFMT_CBS_CFS:
-> > +             /* BCLK and LRCLK master */
-> > +             val =3D SUN8I_I2S_CTRL_BCLK_OUT | SUN8I_I2S_CTRL_LRCK_OUT=
-;
-> > +             break;
-> > +
-> > +     case SND_SOC_DAIFMT_CBM_CFM:
-> > +             /* BCLK and LRCLK slave */
-> > +             val =3D 0;
-> > +             break;
-> > +
-> > +     default:
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
-> > +                        SUN8I_I2S_CTRL_BCLK_OUT | SUN8I_I2S_CTRL_LRCK_=
-OUT,
-> > +                        val);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> >  static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt=
-)
-> >  {
-> >       struct sun4i_i2s *i2s =3D snd_soc_dai_get_drvdata(dai);
-> ...
+> 
+> My goal is all common schema end up in dtschema, but I haven't pushed
+> folks to do that yet. Ones I've done are there though. One issue is
+> what's in dtschema should be GPL/BSD and the existing text bindings
+> are default GPL, so there's a relicensing exercise. In some cases, the
+> schema is there but I haven't copied over the descriptions.
+
+Right, I'll skip the descriptions when posting to dt-schema.
+
+Best regards,
+Krzysztof
+
