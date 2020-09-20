@@ -2,79 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 551A82717B0
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 21:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 900F62717B2
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 21:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726436AbgITT60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 15:58:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48842 "EHLO mx2.suse.de"
+        id S1726454AbgITT7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 15:59:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726126AbgITT60 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 15:58:26 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 37962AD39;
-        Sun, 20 Sep 2020 19:59:01 +0000 (UTC)
-Date:   Sun, 20 Sep 2020 21:58:23 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] objtool/urgent for v5.9-rc6
-Message-ID: <20200920195823.GF13044@zn.tnic>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+        id S1726126AbgITT67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 15:58:59 -0400
+Received: from localhost.localdomain (unknown [194.230.155.191])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A80312085B;
+        Sun, 20 Sep 2020 19:58:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600631939;
+        bh=qE/XNWOxN2w9q5YVj7knCuVoes9uF5n3abGxzM2Z+W4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Ha8P/imBl3wD1AWwjK3A7QC8+fabyc9+n2hkGToE0oI4/70U+xYAHRInRgDNNntwd
+         KoUZrm+DbHQxl6meWzKWsrDk3rhpYORqNi4UDAUj277nFMatb8Y9TnfmWwVTg7CIqE
+         FLgjjokJ1hHgQwP+bUWXaz0bGE5hTnn51x77HDEY=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Stefan Agner <stefan@agner.ch>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH v3 1/4] dt-bindings: gpio: pl061: add gpio-line-names
+Date:   Sun, 20 Sep 2020 21:58:45 +0200
+Message-Id: <20200920195848.27075-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Describe common "gpio-line-names" property to fix dtbs_check warnings
+like:
 
-please pull a single objtool fix.
+  arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dt.yaml: gpio@e8a0b000:
+    'gpio-line-names' does not match any of the regexes: 'pinctrl-[0-9]+'
 
-Thx.
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
 ---
-The following changes since commit 856deb866d16e29bd65952e0289066f6078af773:
 
-  Linux 5.9-rc5 (2020-09-13 16:06:00 -0700)
+Changes since v2:
+1. Common GPIO goes to dt-schema
+---
+ Documentation/devicetree/bindings/gpio/pl061-gpio.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/objtool_urgent_for_v5.9_rc6
-
-for you to fetch changes up to db6c6a0df840e3f52c84cc302cc1a08ba11a4416:
-
-  objtool: Fix noreturn detection for ignored functions (2020-09-18 19:37:51 +0200)
-
-----------------------------------------------------------------
-Fix noreturn detection for ignored sibling functions, from Josh
-Poimboeuf.
-
-----------------------------------------------------------------
-Josh Poimboeuf (1):
-      objtool: Fix noreturn detection for ignored functions
-
- tools/objtool/check.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index e034a8f24f46..90a66891441a 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -619,7 +619,7 @@ static int add_jump_destinations(struct objtool_file *file)
- 		if (!is_static_jump(insn))
- 			continue;
+diff --git a/Documentation/devicetree/bindings/gpio/pl061-gpio.yaml b/Documentation/devicetree/bindings/gpio/pl061-gpio.yaml
+index 313b17229247..bd35cbf7fa09 100644
+--- a/Documentation/devicetree/bindings/gpio/pl061-gpio.yaml
++++ b/Documentation/devicetree/bindings/gpio/pl061-gpio.yaml
+@@ -51,7 +51,10 @@ properties:
  
--		if (insn->ignore || insn->offset == FAKE_JUMP_OFFSET)
-+		if (insn->offset == FAKE_JUMP_OFFSET)
- 			continue;
+   gpio-controller: true
  
- 		reloc = find_reloc_by_dest_range(file->elf, insn->sec,
-
++  gpio-line-names: true
++
+   gpio-ranges:
++    minItems: 1
+     maxItems: 8
+ 
+ required:
 -- 
-Regards/Gruss,
-    Boris.
+2.17.1
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
