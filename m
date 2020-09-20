@@ -2,62 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79D212715EE
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 18:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32D2427160F
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 18:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726342AbgITQaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 12:30:10 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:52494 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726267AbgITQaJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 12:30:09 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R261e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0U9VT.Ya_1600619405;
-Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0U9VT.Ya_1600619405)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 21 Sep 2020 00:30:05 +0800
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-To:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Subject: [PATCH] mm/shmem.c: Fix the missing unaccount on the failed path
-Date:   Mon, 21 Sep 2020 00:30:05 +0800
-Message-Id: <20200920163005.97079-1-tianjia.zhang@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.3.ge56e4f7
+        id S1726397AbgITQvO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 20 Sep 2020 12:51:14 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:28606 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726267AbgITQvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 12:51:14 -0400
+X-Greylist: delayed 1929 seconds by postgrey-1.27 at vger.kernel.org; Sun, 20 Sep 2020 12:51:13 EDT
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4BvXnZ292gz9twrG;
+        Sun, 20 Sep 2020 18:18:58 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id Y2LHIYqBMmfM; Sun, 20 Sep 2020 18:18:58 +0200 (CEST)
+Received: from vm-hermes.si.c-s.fr (vm-hermes.si.c-s.fr [192.168.25.253])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4BvXnZ182Yz9twrF;
+        Sun, 20 Sep 2020 18:18:58 +0200 (CEST)
+Received: by vm-hermes.si.c-s.fr (Postfix, from userid 33)
+        id 2CDF9650; Sun, 20 Sep 2020 18:21:03 +0200 (CEST)
+Received: from rop17-1_migr-88-124-70-171.fbx.proxad.net
+ (rop17-1_migr-88-124-70-171.fbx.proxad.net [88.124.70.171]) by
+ messagerie.si.c-s.fr (Horde Framework) with HTTP; Sun, 20 Sep 2020 18:21:03
+ +0200
+Date:   Sun, 20 Sep 2020 18:21:03 +0200
+Message-ID: <20200920182103.Horde.CrXBasE1t05E1AKBoy6wCQ1@messagerie.si.c-s.fr>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux@roeck-us.net, wim@linux-watchdog.org
+Subject: Re: [PATCH] watchdog: fix memory leak in error path
+In-Reply-To: <20200920083745.GA1186@amd>
+User-Agent: Internet Messaging Program (IMP) H5 (6.2.3)
+Content-Type: text/plain; charset=UTF-8; format=flowed; DelSp=Yes
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In function __shmem_file_setup(), shmem_unacct_size() is forgotten
-on the failed path, so add it.
+Pavel Machek <pavel@ucw.cz> a écrit :
 
-Fixes: 93dec2da7b234 ("... and switch shmem_file_setup() to alloc_file_pseudo()")
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
----
- mm/shmem.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+> Fix memory leak in error path.
+>
+> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+>
+> diff --git a/drivers/watchdog/watchdog_dev.c  
+> b/drivers/watchdog/watchdog_dev.c
+> index 6798addabd5a..785270ee337c 100644
+> --- a/drivers/watchdog/watchdog_dev.c
+> +++ b/drivers/watchdog/watchdog_dev.c
+> @@ -994,8 +994,10 @@ static int watchdog_cdev_register(struct  
+> watchdog_device *wdd)
+>  	wd_data->wdd = wdd;
+>  	wdd->wd_data = wd_data;
+>
+> -	if (IS_ERR_OR_NULL(watchdog_kworker))
 
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 8e2b35ba93ad..591410dc3541 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -4200,8 +4200,10 @@ static struct file *__shmem_file_setup(struct vfsmount *mnt, const char *name, l
- 	if (!IS_ERR(res))
- 		res = alloc_file_pseudo(inode, mnt, name, O_RDWR,
- 				&shmem_file_operations);
--	if (IS_ERR(res))
-+	if (IS_ERR(res)) {
- 		iput(inode);
-+		shmem_unacct_size(flags, size);
-+	}
- 	return res;
- }
- 
--- 
-2.19.1.3.ge56e4f7
+Maybe it would be better to move this check before the kzalloc as the  
+wd_data is not needed for doing that check.
+
+Christophe
+
+> +	if (IS_ERR_OR_NULL(watchdog_kworker)) {
+> +		kfree(wd_data);
+>  		return -ENODEV;
+> +	}
+>
+>  	device_initialize(&wd_data->dev);
+>  	wd_data->dev.devt = MKDEV(MAJOR(watchdog_devt), wdd->id);
+>
+> --
+> (english) http://www.livejournal.com/~pavelmachek
+> (cesky, pictures)  
+> http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
+
 
