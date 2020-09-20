@@ -2,27 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA94271412
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 14:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86612271410
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 14:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726392AbgITMJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 08:09:11 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:50059 "EHLO
+        id S1726360AbgITMJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 08:09:09 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:50034 "EHLO
         mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726273AbgITMJL (ORCPT
+        by vger.kernel.org with ESMTP id S1726273AbgITMJJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 08:09:11 -0400
+        Sun, 20 Sep 2020 08:09:09 -0400
 X-IronPort-AV: E=Sophos;i="5.77,282,1596492000"; 
-   d="scan'208";a="468612188"
+   d="scan'208";a="468612189"
 Received: from palace.lip6.fr ([132.227.105.202])
   by mail2-relais-roc.national.inria.fr with ESMTP/TLS/AES256-SHA256; 20 Sep 2020 14:08:58 +0200
 From:   Julia Lawall <Julia.Lawall@inria.fr>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     kernel-janitors@vger.kernel.org, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 02/14] target/rd: drop double zeroing
-Date:   Sun, 20 Sep 2020 13:26:14 +0200
-Message-Id: <1600601186-7420-3-git-send-email-Julia.Lawall@inria.fr>
+To:     Ioana Ciornei <ioana.ciornei@nxp.com>
+Cc:     kernel-janitors@vger.kernel.org,
+        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 03/14] dpaa2-eth: drop double zeroing
+Date:   Sun, 20 Sep 2020 13:26:15 +0200
+Message-Id: <1600601186-7420-4-git-send-email-Julia.Lawall@inria.fr>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1600601186-7420-1-git-send-email-Julia.Lawall@inria.fr>
 References: <1600601186-7420-1-git-send-email-Julia.Lawall@inria.fr>
@@ -44,7 +47,7 @@ expression x,n,flags;
 x = 
 - kcalloc
 + kmalloc_array
-  (n,sizeof(*x),flags)
+  (n,sizeof(struct scatterlist),flags)
 ...
 sg_init_table(x,n)
 // </smpl>
@@ -52,19 +55,19 @@ sg_init_table(x,n)
 Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
 ---
- drivers/target/target_core_rd.c |    2 +-
+ drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff -u -p a/drivers/target/target_core_rd.c b/drivers/target/target_core_rd.c
---- a/drivers/target/target_core_rd.c
-+++ b/drivers/target/target_core_rd.c
-@@ -131,7 +131,7 @@ static int rd_allocate_sgl_table(struct
- 		if (sg_per_table < total_sg_needed)
- 			chain_entry = 1;
+diff -u -p a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
+--- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
++++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
+@@ -607,7 +607,7 @@ static int dpaa2_eth_build_sg_fd(struct
+ 	if (unlikely(PAGE_SIZE / sizeof(struct scatterlist) < nr_frags + 1))
+ 		return -EINVAL;
  
--		sg = kcalloc(sg_per_table + chain_entry, sizeof(*sg),
-+		sg = kmalloc_array(sg_per_table + chain_entry, sizeof(*sg),
- 				GFP_KERNEL);
- 		if (!sg)
- 			return -ENOMEM;
+-	scl = kcalloc(nr_frags + 1, sizeof(struct scatterlist), GFP_ATOMIC);
++	scl = kmalloc_array(nr_frags + 1, sizeof(struct scatterlist), GFP_ATOMIC);
+ 	if (unlikely(!scl))
+ 		return -ENOMEM;
+ 
 
