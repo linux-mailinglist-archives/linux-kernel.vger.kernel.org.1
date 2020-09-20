@@ -2,156 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12888271612
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 18:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29FFB271613
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 18:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726413AbgITQze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 12:55:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726267AbgITQzd (ORCPT
+        id S1726419AbgITQ4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 12:56:22 -0400
+Received: from mail-ej1-f65.google.com ([209.85.218.65]:46538 "EHLO
+        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726305AbgITQ4W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 12:55:33 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD7BC061755;
-        Sun, 20 Sep 2020 09:55:32 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id nw23so14516040ejb.4;
-        Sun, 20 Sep 2020 09:55:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CAqmdf6aL8mzhP74g+GjJTStIQuY1mHyfBlsL4DKJCQ=;
-        b=G8jz+iXJ2O+LIy++D83+hxIx1XoBuFvq2UhVRqKlTV58nIMxyrKVajsMkWr9LwBIUp
-         Dgzkn9ROO1MoynIlB++qzJmvR45Ap7XbqqqfIkQzuhH4TPn2XxnJaqlpWpZsrQl77XXa
-         YBPiytfd4GbuxTcbj/BTffvxuSARqmF0Xtb6uets97NNiHQlRtGJfnbYbeGzzyk5C/gI
-         1IoneR6qC1y3vRjN6CFb5L9gCh6K6JNj0xeEK9qdJMuG1pkQdsl2Ar+0d3X4jUEwqqnl
-         w5BZDkxJiedGr+wmtyvjgUzGdVb70XEk04oMKYtGoGbOEpTkSe95UQ9hC3P0WsI/pQw/
-         54yA==
+        Sun, 20 Sep 2020 12:56:22 -0400
+Received: by mail-ej1-f65.google.com with SMTP id z23so14462247ejr.13
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 09:56:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CAqmdf6aL8mzhP74g+GjJTStIQuY1mHyfBlsL4DKJCQ=;
-        b=cnlRohy3bAAK/jA3+HaX1FPxfQwZN66AsC99LAKqkiptcntvwLanQWRCcn0ebNmmYu
-         hZgwrKXr3V/620SrYkbKES2V2c3Ui/QSPR8xs5lr98jmgNA+svs25eUQVb6uKpBKn15H
-         42ofYKF1t5CbnppX/ZesUEiyaxSCd8Ul8Pcc3O2eel35VRrBSQZIxnxZIzwWyKPM6Srw
-         uaO/3INBYGXkYMNNZ80ZRKaiOfPzFXqVQSVe5yT3gwtOPMlGFivaqyxU3a6CWkFbM55F
-         C2C8F5HlMyXZaeNYFlQfUuf6f+VSZYA0sMAPi1/5NbnOHcCZ02R5VH1Y1AIYqKbiG6sg
-         JXuw==
-X-Gm-Message-State: AOAM532KmFYkFXSNiAVFagt4P3+RzXmMKhwXju/QuNY5aQejjOlZ9zT/
-        eGZrA310LtGRo1UDUhry5PEDw0qmnTM=
-X-Google-Smtp-Source: ABdhPJx9z66TL7y8GlK78FEX6DfBCjWF4DcLVrAunLqpYuAdBVTx52e9xBej9KDRK0YX9FvMEZAeZA==
-X-Received: by 2002:a17:906:cd0d:: with SMTP id oz13mr45601187ejb.212.1600620930424;
-        Sun, 20 Sep 2020 09:55:30 -0700 (PDT)
-Received: from ?IPv6:2a01:110f:b59:fd00:1879:e534:7e37:5e55? ([2a01:110f:b59:fd00:1879:e534:7e37:5e55])
-        by smtp.gmail.com with ESMTPSA id n7sm7011978eji.13.2020.09.20.09.55.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 20 Sep 2020 09:55:29 -0700 (PDT)
-Subject: Re: ledtrig-cpu: Limit to 4 CPUs
-To:     Marek Behun <marek.behun@nic.cz>
-Cc:     Pavel Machek <pavel@ucw.cz>, linux-leds@vger.kernel.org,
-        dmurphy@ti.com,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20200919093833.GA14326@duo.ucw.cz>
- <27e19ac9-4bc0-2945-3985-6cd6bb5407df@gmail.com>
- <20200920173905.237c314e@nic.cz>
-From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Message-ID: <91f1caa7-8005-6c8f-ce7c-84e5c8cee5f8@gmail.com>
-Date:   Sun, 20 Sep 2020 18:55:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=TLnZSoQCnv1sWJoNFW+CrgDT9gtSC1UEAVXzcDB6xLI=;
+        b=RNxLZwED8QyaC5MavXM9PfImZoI9HDJBywSqIoIRKyJ5KxUR0snNS+M4wrPflEzQKP
+         9EygaMOSQ4A7dsdWDOA6YGgLTTAAyCxr2yps3buuLPl1gX7yzSMVnNUT6yTWAeoTyUE6
+         m8A1MD+EpckQ4SkWnZBJGMVpagLGez09oaFxA52iF0Ox+QHu44ruM3zWMGhw/L8mTp3l
+         Li3WJ5a8rRFxGAQVr+cdWLz2DcQZZ3+HKEjFZv2v6s8H/1Z/sZCAXLir/fp8/85Gwdiz
+         kXodSjTuKS/PKNeCKirt9cwjWx4CiTz1FfpNIsO+Ghh/rSAmbZcaMM4T9qxlSTXSUzkB
+         I6Nw==
+X-Gm-Message-State: AOAM532QDstVQTwYONvwtEcX3WA5XjY1bzIl3c0oeUU7gSqllpjhG6iT
+        t4/LGCy4aWKArMYMSR4M9L0=
+X-Google-Smtp-Source: ABdhPJz4y7rryGGZdnMwF0KoJED3lL2lbbUql2rxJDbxivqpFO9QI++yi0z6+ESAuiDW8XONWqEk7A==
+X-Received: by 2002:a17:906:7013:: with SMTP id n19mr45736460ejj.388.1600620980413;
+        Sun, 20 Sep 2020 09:56:20 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.191])
+        by smtp.googlemail.com with ESMTPSA id re19sm6877734ejb.86.2020.09.20.09.56.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 20 Sep 2020 09:56:19 -0700 (PDT)
+Date:   Sun, 20 Sep 2020 18:56:17 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Xu Yilun <yilun.xu@intel.com>
+Cc:     linux-kernel@vger.kernel.org, trix@redhat.com,
+        matthew.gerlach@linux.intel.com, russell.h.weight@intel.com,
+        lgoncalv@redhat.com, hao.wu@intel.com, mdf@kernel.org
+Subject: Re: [PATCH v2] memory: dfl-emif: add the DFL EMIF private feature
+ driver
+Message-ID: <20200920165617.GA16184@kozik-lap>
+References: <1600234622-8815-1-git-send-email-yilun.xu@intel.com>
+ <1600234622-8815-2-git-send-email-yilun.xu@intel.com>
+ <20200920163538.GB10210@kozik-lap>
 MIME-Version: 1.0
-In-Reply-To: <20200920173905.237c314e@nic.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200920163538.GB10210@kozik-lap>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/20/20 5:39 PM, Marek Behun wrote:
-> On Sun, 20 Sep 2020 16:15:09 +0200
-> Jacek Anaszewski <jacek.anaszewski@gmail.com> wrote:
+On Sun, Sep 20, 2020 at 06:35:38PM +0200, Krzysztof Kozlowski wrote:
+> On Wed, Sep 16, 2020 at 01:37:02PM +0800, Xu Yilun wrote:
+> > This driver is for the EMIF private feature implemented under FPGA
+> > Device Feature List (DFL) framework. It is used to expose memory
+> > interface status information as well as memory clearing control.
+> > 
+> > The purpose of memory clearing block is to zero out all private memory
+> > when FPGA is to be reprogrammed. This gives users a reliable method to
+> > prevent potential data leakage.
+> > 
+> > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> > Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> > ---
+> > v2: Adjust the position of this driver in Kconfig.
+> >     Improves the name of the Kconfig option.
+> >     Change the include dfl-bus.h to dfl.h, cause the previous patchset
+> >      renames the file.
+> >     Some minor fixes and comment improvement.
+> > ---
+> >  .../ABI/testing/sysfs-bus-dfl-devices-emif         |  25 +++
+> >  drivers/memory/Kconfig                             |   9 +
+> >  drivers/memory/Makefile                            |   2 +
+> >  drivers/memory/dfl-emif.c                          | 207 +++++++++++++++++++++
+> >  4 files changed, 243 insertions(+)
+> >  create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
+> >  create mode 100644 drivers/memory/dfl-emif.c
+> > 
+> > diff --git a/Documentation/ABI/testing/sysfs-bus-dfl-devices-emif b/Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
+> > new file mode 100644
+> > index 0000000..56f97dc
+> > --- /dev/null
+> > +++ b/Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
+> > @@ -0,0 +1,25 @@
+> > +What:		/sys/bus/dfl/devices/dfl_dev.X/infX_cal_fail
+> > +Date:		Sep 2020
+> > +KernelVersion:	5.10
+> > +Contact:	Xu Yilun <yilun.xu@intel.com>
+> > +Description:	Read-only. It indicates if the calibration failed on this
+> > +		memory interface. "1" for calibration failure, "0" for OK.
+> > +		Format: %u
+> > +
+> > +What:		/sys/bus/dfl/devices/dfl_dev.X/infX_init_done
+> > +Date:		Sep 2020
+> > +KernelVersion:	5.10
+> > +Contact:	Xu Yilun <yilun.xu@intel.com>
+> > +Description:	Read-only. It indicates if the initialization completed on
+> > +		this memory interface. "1" for initialization complete, "0"
+> > +		for not yet.
+> > +		Format: %u
+> > +
+> > +What:		/sys/bus/dfl/devices/dfl_dev.X/infX_clear
+> > +Date:		Sep 2020
+> > +KernelVersion:	5.10
+> > +Contact:	Xu Yilun <yilun.xu@intel.com>
+> > +Description:	Write-only. Writing "1" to this file will zero out all memory
+> > +		data in this memory interface. Writing of other values is
+> > +		invalid.
+> > +		Format: %u
+> > diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
+> > index 8072204..8dc819f 100644
+> > --- a/drivers/memory/Kconfig
+> > +++ b/drivers/memory/Kconfig
+> > @@ -136,6 +136,15 @@ config TI_EMIF_SRAM
+> >  	  sequence so this driver provides several relocatable PM functions
+> >  	  for the SoC PM code to use.
+> >  
+> > +config FPGA_DFL_EMIF
+> > +	tristate "FPGA DFL EMIF Driver"
+> > +	depends on FPGA_DFL && HAS_IOMEM
+> > +	help
+> > +	  This driver is for the EMIF private feature implemented under
+> > +	  FPGA Device Feature List (DFL) framework. It is used to expose
+> > +	  memory interface status information as well as memory clearing
+> > +	  control.
+> > +
+> >  config MVEBU_DEVBUS
+> >  	bool "Marvell EBU Device Bus Controller"
+> >  	default y if PLAT_ORION
+> > diff --git a/drivers/memory/Makefile b/drivers/memory/Makefile
+> > index e71cf7b..0afbf39 100644
+> > --- a/drivers/memory/Makefile
+> > +++ b/drivers/memory/Makefile
+> > @@ -39,3 +39,5 @@ $(obj)/ti-emif-asm-offsets.h: $(obj)/emif-asm-offsets.s FORCE
+> >  
+> >  targets += emif-asm-offsets.s
+> >  clean-files += ti-emif-asm-offsets.h
+> > +
+> > +obj-$(CONFIG_FPGA_DFL_EMIF)	+= dfl-emif.o
 > 
->> Hi Pavel,
->>
->> On 9/19/20 11:38 AM, Pavel Machek wrote:
->>> commit 318681d3e019e39354cc6c2155a7fd1bb8e8084d
->>> Author: Pavel Machek <pavel@ucw.cz>
->>> Date:   Sat Sep 19 11:34:58 2020 +0200
->>>
->>>       ledtrig-cpu: Limit to 4 CPUs
->>>       
->>>       Some machines have thousands of CPUs... and trigger mechanisms was not
->>>       really meant for thousands of triggers. I doubt anyone uses this
->>>       trigger on many-CPU machine; but if they do, they'll need to do it
->>>       properly.
->>>       
->>>       Signed-off-by: Pavel Machek <pavel@ucw.cz>
->>>
->>> diff --git a/drivers/leds/trigger/ledtrig-cpu.c b/drivers/leds/trigger/ledtrig-cpu.c
->>> index 869976d1b734..b7e00b09b137 100644
->>> --- a/drivers/leds/trigger/ledtrig-cpu.c
->>> +++ b/drivers/leds/trigger/ledtrig-cpu.c
->>> @@ -2,14 +2,18 @@
->>>    /*
->>>     * ledtrig-cpu.c - LED trigger based on CPU activity
->>>     *
->>> - * This LED trigger will be registered for each possible CPU and named as
->>> - * cpu0, cpu1, cpu2, cpu3, etc.
->>> + * This LED trigger will be registered for first four CPUs and named
->>> + * as cpu0, cpu1, cpu2, cpu3. There's additional trigger called cpu that
->>> + * is on when any CPU is active.
->>> + *
->>> + * If you want support for arbitrary number of CPUs, make it one trigger,
->>> + * with additional sysfs file selecting which CPU to watch.
->>>     *
->>>     * It can be bound to any LED just like other triggers using either a
->>>     * board file or via sysfs interface.
->>>     *
->>>     * An API named ledtrig_cpu is exported for any user, who want to add CPU
->>> - * activity indication in their code
->>> + * activity indication in their code.
->>>     *
->>>     * Copyright 2011 Linus Walleij <linus.walleij@linaro.org>
->>>     * Copyright 2011 - 2012 Bryan Wu <bryan.wu@canonical.com>
->>> @@ -145,6 +149,9 @@ static int __init ledtrig_cpu_init(void)
->>>    	for_each_possible_cpu(cpu) {
->>>    		struct led_trigger_cpu *trig = &per_cpu(cpu_trig, cpu);
->>>    
->>> +		if (cpu > 4)
->>
->> NACK. The workaround for this trigger was implemented for a reason -
->> to make it working on platforms with arbitrary number of logical cpus.
->> I've got 8, so I am discriminated now. Not saying, that it precludes
->> trigger registration with no single line of warning.
->> Regardless of that - you have no guarantee that you're not breaking
->> anyone - "I doubt" is not a sufficient argument.
->>
+> It there is going to be a resend: this as well has to go next to CONFIG_TI_EMIF_SRAM.
 > 
-> If that is the case Jacek, I would try 16 and then see if people
-> complain. Do you really think that someone sets a specific LED to
-> trigger on activity on CPU id > 16?
+> Otherwise I will fix it up while applying.
 
-I have an access to the machine with 80 cpus, so I could once
-get surprised not being able to find cpuN triggers not being
-listed among available triggers.
+This patch depends on latest fpga/dfl changes which I see are mixed with
+other changes on FPGA drivers tree so they cannot be provided
+independently from others as a stable tag.  Unless Moritz can rebase his
+tree and put them on separate branch.
 
-And say that I have a solution where I install 80 userspace LEDs
-(drivers/leds/uleds.c) and register them on each cpuN triggers to get
-notifications on how cpus work.
+Your "Modularization of DFL private feature drivers" should be sent
+along with this here, so all the maintainers see the dependencies and
+they can apply things for cross-merging at the beginning of the process.
 
-> If you do not agree, then I think we should implement a "cpu" trigger
-> where the cpu ID (or maybe mask of multiple CPUs) is configurable via
-> another sysfs file. And then declare current cpu trigger (with names
-> "cpu%d") as legacy.
+Therefore please send a v3 of this patch with the fix above and let's
+apply it via Moritz's tree.
 
-Yes, we can do that, and even mark the cpu trigger as legacy but we
-cannot prevent people from using it if that was present in kernel
-for many years.
-
--- 
 Best regards,
-Jacek Anaszewski
+Krzysztof
+
