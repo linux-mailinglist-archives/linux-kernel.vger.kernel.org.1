@@ -2,61 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1C442717D6
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 22:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A0C22717E0
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 22:41:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726412AbgITU05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 16:26:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47882 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726126AbgITU05 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 16:26:57 -0400
-Received: from localhost.localdomain (unknown [194.230.155.191])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BBB282085B;
-        Sun, 20 Sep 2020 20:26:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600633617;
-        bh=F8loTzsy5fkwJ3XL+YXnbVLdbm2gOfrgVElRrw7bieA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ArCrysFTbG/9vPwQ0ZIE0q5elmPR7nZJyezec424ZSwv3H3fjx+QpXu5z3dyu6LHz
-         cGHruTVDXte1hXE6ZKdOte3sm6NcRDLrMKVmJM36vPxYc7UjAPqJxYf/FpFOVZRDcd
-         Q+9IT82Xl4hSGq29XQHMv9E4MROTO0Hd/++OJWLw=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH] soc: actions: include header to fix missing prototype
-Date:   Sun, 20 Sep 2020 22:26:52 +0200
-Message-Id: <20200920202652.11469-1-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        id S1726442AbgITUl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 16:41:28 -0400
+Received: from mail1.nippynetworks.com ([91.220.24.129]:57620 "EHLO
+        mail1.nippynetworks.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726148AbgITUl2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 16:41:28 -0400
+Received: from twocubed.nippynetworks.com (office.nippynetworks.com [46.17.61.232])
+        by mail1.nippynetworks.com (Postfix) with SMTP id 4BvfRD21N7zTgZM;
+        Sun, 20 Sep 2020 21:33:28 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wildgooses.com;
+        s=dkim; t=1600634012;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=dTuEJgYM6LNmm/jFqMkJjsE9372TSsB7bhiTsLa2tvw=;
+        b=B9nmzHHHkUDdpuavrr5ANVP4mNFUVzIvi/pkKL9CTkMPYwaZL6jQiT0ZRdHjSqzmg7vggT
+        RBNHnsmsgzX0dCDU++R9hBzagDuUyyCZAna7GoKT1sxFwOH5uJZKBpNxg5wtQ5Dtr9nheY
+        lgqxQOerctxFtHDGh3I7Qwq9s1AimmY=
+Received: by twocubed.nippynetworks.com (sSMTP sendmail emulation); Sun, 20 Sep 2020 21:33:23 +0100
+From:   Ed Wildgoose <lists@wildgooses.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     fe@dev.tdt.de, Ed Wildgoose <lists@wildgooses.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        platform-driver-x86@vger.kernel.org, linux-gpio@vger.kernel.org
+Subject: [PATCH] gpio: gpio-amd-fch: Fix typo on define of AMD_FCH_GPIO_REG_GPIO55_DEVSLP0
+Date:   Sun, 20 Sep 2020 21:32:06 +0100
+Message-Id: <20200920203207.25696-1-lists@wildgooses.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Include the header with prototype of owl_sps_set_pg to fix:
+Schematics show that the GPIO number is 55 (not 59). Trivial typo.
 
-  drivers/soc/actions/owl-sps-helper.c:16:5: warning: no previous prototype for 'owl_sps_set_pg' [-Wmissing-prototypes]
-
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Ed Wildgoose <lists@wildgooses.com>
 ---
- drivers/soc/actions/owl-sps-helper.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/platform/x86/pcengines-apuv2.c          | 2 +-
+ include/linux/platform_data/gpio/gpio-amd-fch.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/soc/actions/owl-sps-helper.c b/drivers/soc/actions/owl-sps-helper.c
-index 291a206d6f04..e3f36603dd53 100644
---- a/drivers/soc/actions/owl-sps-helper.c
-+++ b/drivers/soc/actions/owl-sps-helper.c
-@@ -10,6 +10,7 @@
+diff --git a/drivers/platform/x86/pcengines-apuv2.c b/drivers/platform/x86/pcengines-apuv2.c
+index 6aff6cf41..c37349f97 100644
+--- a/drivers/platform/x86/pcengines-apuv2.c
++++ b/drivers/platform/x86/pcengines-apuv2.c
+@@ -32,7 +32,7 @@
+ #define APU2_GPIO_REG_LED3		AMD_FCH_GPIO_REG_GPIO59_DEVSLP1
+ #define APU2_GPIO_REG_MODESW		AMD_FCH_GPIO_REG_GPIO32_GE1
+ #define APU2_GPIO_REG_SIMSWAP		AMD_FCH_GPIO_REG_GPIO33_GE2
+-#define APU2_GPIO_REG_MPCIE2		AMD_FCH_GPIO_REG_GPIO59_DEVSLP0
++#define APU2_GPIO_REG_MPCIE2		AMD_FCH_GPIO_REG_GPIO55_DEVSLP0
+ #define APU2_GPIO_REG_MPCIE3		AMD_FCH_GPIO_REG_GPIO51
  
- #include <linux/delay.h>
- #include <linux/io.h>
-+#include <linux/soc/actions/owl-sps.h>
- 
- #define OWL_SPS_PG_CTL	0x0
- 
+ /* Order in which the GPIO lines are defined in the register list */
+diff --git a/include/linux/platform_data/gpio/gpio-amd-fch.h b/include/linux/platform_data/gpio/gpio-amd-fch.h
+index 9e46678ed..255d51c9d 100644
+--- a/include/linux/platform_data/gpio/gpio-amd-fch.h
++++ b/include/linux/platform_data/gpio/gpio-amd-fch.h
+@@ -19,7 +19,7 @@
+ #define AMD_FCH_GPIO_REG_GPIO49		0x40
+ #define AMD_FCH_GPIO_REG_GPIO50		0x41
+ #define AMD_FCH_GPIO_REG_GPIO51		0x42
+-#define AMD_FCH_GPIO_REG_GPIO59_DEVSLP0	0x43
++#define AMD_FCH_GPIO_REG_GPIO55_DEVSLP0	0x43
+ #define AMD_FCH_GPIO_REG_GPIO57		0x44
+ #define AMD_FCH_GPIO_REG_GPIO58		0x45
+ #define AMD_FCH_GPIO_REG_GPIO59_DEVSLP1	0x46
 -- 
-2.17.1
+2.26.2
 
