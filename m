@@ -2,74 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 614182717A8
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 21:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53DF62717AB
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 21:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726397AbgITTvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 15:51:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46864 "EHLO mx2.suse.de"
+        id S1726303AbgITT6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 15:58:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726126AbgITTvb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 15:51:31 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D0242AD1A;
-        Sun, 20 Sep 2020 19:52:05 +0000 (UTC)
-Date:   Sun, 20 Sep 2020 21:51:20 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] locking/urgent for v5.9-rc6
-Message-ID: <20200920195120.GE13044@zn.tnic>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+        id S1726126AbgITT6A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 15:58:00 -0400
+Received: from localhost.localdomain (unknown [194.230.155.191])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 672862085B;
+        Sun, 20 Sep 2020 19:57:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600631880;
+        bh=m0XnXB4RBm1lpp0EtxL36ngGwfAG2TUJ2txjhliasPQ=;
+        h=From:To:Subject:Date:From;
+        b=N20z2E7tn8D32Vkzel/MJECLysaB0OVdip+XqgKmyCLSkXjt2jIxeJzz9f4EGWGjk
+         9n3OTi73yRWKOLEsquS2XMjd/ukFyL+7hWJO1xsgNsvS/goMB0sqFYqSdAX+vYAN+N
+         Xovtu4YcsTWik6DNgfZkmfD3szlN7E1k7mUEtQoo=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Martin Kepplinger <martink@posteo.de>,
+        "Angus Ainslie (Purism)" <angus@akkea.ca>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/3] arm64: dts: imx8mq-librem5: correct GPIO hog property
+Date:   Sun, 20 Sep 2020 21:57:47 +0200
+Message-Id: <20200920195749.26952-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Correct the name of property for GPIO specifier in GPIO hog.
 
-please pull two fixes from the locking/urgent pile.
-
-Thx.
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
 ---
 
-The following changes since commit fc3abb53250a90ba2150eebd182137c136f4d25a:
+Changes since v2:
+1. None, split from previous patchset using common GPIO schema
+---
+ arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-  Merge branch 'for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid (2020-09-02 12:55:46 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/locking_urgent_for_v5.9_rc6
-
-for you to fetch changes up to e6b1a44eccfcab5e5e280be376f65478c3b2c7a2:
-
-  locking/percpu-rwsem: Use this_cpu_{inc,dec}() for read_count (2020-09-16 16:26:56 +0200)
-
-----------------------------------------------------------------
-* Fix lockdep's detection of "USED" <- "IN-NMI" inversions, from Peter
-  Zijlstra.
-
-* Make percpu-rwsem operations on the semaphore's ->read_count IRQ-safe
-  because it can be used in an IRQ context, from Hou Tao.
-
-----------------------------------------------------------------
-Hou Tao (1):
-      locking/percpu-rwsem: Use this_cpu_{inc,dec}() for read_count
-
-peterz@infradead.org (1):
-      locking/lockdep: Fix "USED" <- "IN-NMI" inversions
-
- include/linux/percpu-rwsem.h       |  8 ++++----
- kernel/locking/lockdep.c           | 35 +++++++++++++++++++++++++++++------
- kernel/locking/lockdep_internals.h |  2 ++
- kernel/locking/percpu-rwsem.c      |  4 ++--
- 4 files changed, 37 insertions(+), 12 deletions(-)
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
+index 56295dd2fa8f..e4dedcb58f76 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
+@@ -251,7 +251,7 @@
+ 
+ 	pmic-5v {
+ 		gpio-hog;
+-		gpio = <&gpio1 1 GPIO_ACTIVE_HIGH>;
++		gpios = <&gpio1 1 GPIO_ACTIVE_HIGH>;
+ 		input;
+ 	};
+ };
 -- 
-Regards/Gruss,
-    Boris.
+2.17.1
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
