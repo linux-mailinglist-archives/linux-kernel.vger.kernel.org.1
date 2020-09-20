@@ -2,80 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED4B27159F
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 18:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C472715A2
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 18:17:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726389AbgITQQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 12:16:04 -0400
-Received: from mga02.intel.com ([134.134.136.20]:34883 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726311AbgITQQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 12:16:03 -0400
-IronPort-SDR: Z/btV2oIZEGEE4OQBmo0xIMclj5hatdZqETj6rkChzv1weMYldD50leviV/xs7ANQWDPZohkAK
- vcowZdJMwHcQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9750"; a="147907847"
-X-IronPort-AV: E=Sophos;i="5.77,283,1596524400"; 
-   d="scan'208";a="147907847"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2020 09:16:03 -0700
-IronPort-SDR: 2OiPkCNNx5PxzODqcuEyjmlGwl+i9mA/YoOKObe+NWpf6W3Imv6Rv9aqis8zuAINJgB2P3Fa99
- forf2oD8sLNA==
-X-IronPort-AV: E=Sophos;i="5.77,283,1596524400"; 
-   d="scan'208";a="453615387"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2020 09:16:03 -0700
-Date:   Sun, 20 Sep 2020 09:16:02 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v4 2/2] KVM: nSVM: implement ondemand allocation of the
- nested state
-Message-ID: <20200920161602.GA17325@linux.intel.com>
-References: <20200917101048.739691-1-mlevitsk@redhat.com>
- <20200917101048.739691-3-mlevitsk@redhat.com>
- <20200917162942.GE13522@sjchrist-ice>
- <d9c0d190-c6ea-2e21-92ca-2a53efb86a1d@redhat.com>
+        id S1726415AbgITQQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 12:16:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726326AbgITQQc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 12:16:32 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 125DBC061755
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 09:16:32 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id t138so12495517qka.0
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 09:16:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/C96D/c4iIB14ZPmIUheFcFLIlUZ3nkmg1zOuVbd2fU=;
+        b=aFe2XdukaO4XWLAejv3n6+ezsPMXuImrKobbyJW+px09EQOmZv0Hqm436nDsdiSVFV
+         utg4lT6KRuUXPIffkzVCcxiQB3M35DOViKylzg342XvALcBZa/pS/IfrjFr/DIuwB89L
+         sxoHsXMY3LG+5Iwceo8x5KruBV9NbHk5IHBa8lqTkSppSUNllWJfUD3Z9OhHDyPkLyLa
+         xPo4fvnJwvXnfX4APIHb4CW16RzwhYCwxM8Nhn8eIy9QUG2aemYkI6aLceH9KF+9hstq
+         ESpUe8B2BACsY7ErXB4sLZN3v4nsUh6MsC87WqDNU/NHHp68avlqKMgG27RlKi3SfAvc
+         UI4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=/C96D/c4iIB14ZPmIUheFcFLIlUZ3nkmg1zOuVbd2fU=;
+        b=J/cw7SX6NXuI63bSgeoXR01I0UnXMufDP15UDYlNUoTlt4vcaf7pweo9cS3XncYf+T
+         93Pst55w5dEE9XmdlUTEpJV01KhdH8NlkJvkGldMsc+/d0A6HCpZiL/a31r10P9gi1kx
+         JhFNJ9h+oAW/jAFB4xylPsfEL2f9fOQDTmAqZPNgjyLkWPGYZh301HISK05H8osmo1sb
+         ag/ArMGSByK8KlNxks0deJs1I3w83lDE4r9H0mnNycBMP64jyMBGD8Jur/IlFPWlaJVr
+         CqBsfJa1ajxEdX8aqZ/srp7KKILlI9WH7cCB9xXTIx4Tq+ZxyYsjpgEGMxdilma3Ecxc
+         rspg==
+X-Gm-Message-State: AOAM531TJFlKJTQLvqmVEq4M81IRh7zK9HNfaqWKhVpApNZWdmc8DSGV
+        GIUdmZB3+t9uZvfDLMNLVVhk0YNn9o8=
+X-Google-Smtp-Source: ABdhPJwzN4yCD9prM3q27A2CgHXEm02tDOBxivJ7I0cpbfdf9wDVcuB+ffbtWJjFEXGVWniQap7wDQ==
+X-Received: by 2002:a05:620a:1274:: with SMTP id b20mr41187910qkl.220.1600618591180;
+        Sun, 20 Sep 2020 09:16:31 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id z3sm6814429qkf.92.2020.09.20.09.16.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Sep 2020 09:16:30 -0700 (PDT)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Sun, 20 Sep 2020 12:16:28 -0400
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] Use feature bit names in clearcpuid=
+Message-ID: <20200920161628.GA3951950@rani.riverdale.lan>
+References: <20200920154228.GB7473@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <d9c0d190-c6ea-2e21-92ca-2a53efb86a1d@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200920154228.GB7473@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 19, 2020 at 05:09:09PM +0200, Paolo Bonzini wrote:
-> On 17/09/20 18:29, Sean Christopherson wrote:
-> >> +				vcpu->arch.efer = old_efer;
-> >> +				kvm_make_request(KVM_REQ_OUT_OF_MEMORY, vcpu);
-> > I really dislike KVM_REQ_OUT_OF_MEMORY.  It's redundant with -ENOMEM and
-> > creates a huge discrepancy with respect to existing code, e.g. nVMX returns
-> > -ENOMEM in a similar situation.
+On Sun, Sep 20, 2020 at 05:42:28PM +0200, Borislav Petkov wrote:
+> Hi,
 > 
-> Maxim, your previous version was adding some error handling to
-> kvm_x86_ops.set_efer.  I don't remember what was the issue; did you have
-> any problems propagating all the errors up to KVM_SET_SREGS (easy),
-> kvm_set_msr (harder) etc.?
+> so tglx hates this clearcpuid= interface where you have to give the
+> X86_FEATURE array indices in order to disable a feature bit for testing.
+> Below is a first attempt (lightly tested in a VM only) to accept the bit
+> names from /proc/cpuinfo too.
+> 
+> I say "too" because not all feature bits have names and we would still
+> have to support the numbers. Yeah, yuck.
+> 
+> An exemplary cmdline would then be something like:
+> 
+> clearcpuid=de,440,smca,succory,bmi1,3dnow ("succory" is wrong on
+> purpose).
+> 
+> and it says:
+> 
+> [    0.000000] Clearing CPUID bits: de 13:24 smca bmi1 3dnow
+> 
+> Also, I'm thinking we should taint the kernel when this option is used.
+> 
+> Thoughts?
 
-I objected to letting .set_efer() return a fault.  A relatively minor issue is
-the code in vmx_set_efer() that handles lack of EFER because technically KVM
-can emulate EFER.SCE+SYSCALL without supporting EFER in hardware.  Returning
-success/'0' would avoid that particular issue.  My primary concern is that I'd
-prefer not to add another case where KVM can potentially ignore a fault
-indicated by a helper, a la vmx_set_cr4().
+I like it. Allowing 13:24 as input would be icing on the cake :)
 
-To that end, I'd be ok with adding error handling to .set_efer() if KVM
-enforces, via WARN in one of the .set_efer() call sites, that SVM/VMX can only
-return negative error codes, i.e. let SVM handle the -ENOMEM case but disallow
-fault injection.  It doesn't actually change anything, but it'd give me a warm
-fuzzy feeling.
+Small comments below.
+
+> @@ -273,21 +273,45 @@ static void __init fpu__init_parse_early_param(void)
+>  		return;
+>  
+>  	pr_info("Clearing CPUID bits:");
+> -	do {
+> -		res = get_option(&argptr, &bit);
+> -		if (res == 0 || res == 3)
+> -			break;
+> -
+> -		/* If the argument was too long, the last bit may be cut off */
+> -		if (res == 1 && arglen >= sizeof(arg))
+> -			break;
+> -
+> -		if (bit >= 0 && bit < NCAPINTS * 32) {
+> -			pr_cont(" " X86_CAP_FMT, x86_cap_flag(bit));
+> -			setup_clear_cpu_cap(bit);
+> +
+> +	while (argptr) {
+> +		int i;
+> +
+> +		opt = (strsep(&argptr, ","));
+> +		if (!opt)
+> +			continue;
+
+The !opt check is unnecessary: strsep() returns NULL iff argptr is NULL
+on entry. The parentheses around strsep() also look odd.
+
+> +
+> +		if (!kstrtoint(opt, 10, &bit)) {
+
+Could make bit unsigned and use kstrtouint().
+
+> +			if (bit >= 0 && bit < NCAPINTS * 32) {
+> +				if (!x86_cap_flag(bit))
+> +					pr_cont(" " X86_CAP_FMT_BARE, x86_cap_flag_bare(bit));
+> +				else
+> +					pr_cont(" " X86_CAP_FMT, x86_cap_flag(bit));
+> +
+> +				setup_clear_cpu_cap(bit);
+> +				taint++;
+> +				continue;
+> +			}
+
+Could always continue if it was a number, even if it was invalid, since
+that shouldn't match a name in any case?
+
+>  		}
+> -	} while (res == 2);
+> +
+> +#ifdef CONFIG_X86_FEATURE_NAMES
+> +		for (i = 0; i < 32 * NCAPINTS; i++) {
+> +			if (!x86_cap_flags[i])
+> +				continue;
+> +
+> +			if (strcmp(x86_cap_flags[i], opt))
+> +				continue;
+> +
+> +			pr_cont(" %s", opt);
+> +			setup_clear_cpu_cap(i);
+> +			taint++;
+
+We could break out of the loop here -- we can't have multiple bits with
+the same name, right?
+
+> +		}
+> +#endif
+> +	}
+>  	pr_cont("\n");
+> +
+> +	if (taint)
+> +		add_taint(TAINT_CPU_OUT_OF_SPEC, LOCKDEP_STILL_OK);
+>  }
+>  
+>  /*
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
