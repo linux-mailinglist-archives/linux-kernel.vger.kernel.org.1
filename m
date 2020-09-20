@@ -2,122 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 559F0271627
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 19:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D95ED27162C
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 19:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726475AbgITRAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 13:00:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41142 "EHLO
+        id S1726367AbgITRDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 13:03:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726360AbgITRAO (ORCPT
+        with ESMTP id S1726267AbgITRDY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 13:00:14 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA46C061755
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 10:00:13 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id a17so10339048wrn.6
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 10:00:13 -0700 (PDT)
+        Sun, 20 Sep 2020 13:03:24 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F29C061755
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 10:03:24 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id gr14so14622165ejb.1
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 10:03:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=aus.edu; s=google;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=jOy8pCEvDvUVsY7c+dPWpcPOlK4T09BoZC0Ovrp+G58=;
-        b=DBHC7IKKSVH01+nHHdBW0Wp0bft7zE16WjPNV8gVjZ4/iDYLymkvYgfh9P//8f+Qpn
-         OnE8U24HlUsqHzpU/E/Ek+IM75Ob1Q5ouYcg2rCQmobTSttvdCQCGDUDWEoAFS+qyprG
-         LHuPvH3nTXhL7twIm2TwlUtc9chK8XiLasUVIAHkP57WAwVB+lvVAP1/8iHUmfYC+MNG
-         KCtBUZ3r9xGvrquNVSV4ZBIwT1DFRdHuSCdiR301iNyFZ5uQ+VVSWPmsQmEi1cDH4Yrl
-         d/LKNLM1IAjHS5M6+/RGiGr1X0xc+mCoxAhQJwUmKuITr6QXbamPohoAK5Lm5STnMU4b
-         4COg==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Govkq2c7yVsAEyCudSuE8qhnS6+zy4O8TiKkmkv2nIk=;
+        b=O7YDY5EZgHd0ux+0JI623n4+xCNSLKkbNn75HK0PfnOR4wlB9CfHJM9R8MpDNxC4Bt
+         StinnqnJ77DBvptD2dta7OTELHl1G548xZdBUVNIayCFE6KgnVNuKWIqgtvMj+8UMN/e
+         7pSxwfkCe8prPQ3KSbQLetFJedeblKFxQgFMg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=jOy8pCEvDvUVsY7c+dPWpcPOlK4T09BoZC0Ovrp+G58=;
-        b=WsnuM1gFSltUAKfSo+izx+HLEYQBmRSfN41YxGWlM7TmxHuBYi8TbFamimH7kwjB8E
-         WPcojgzgv/qjRYCa1R4asEMsfT8xRI02V/Wr5zsMQMxClEFXSWBtzZEP8Gl2J2KLMHi4
-         iN7+lf9oTSQFtjHLqqctfQ/rlqv6alunVipgJ/mGLgK78RsLY95OCEPZrAIaQKG7Wr1m
-         vu1pmAl3j9sTU2mcfFcJ3gHgIEaQw5uOZKcwQjIzFWn/OLzI7p5NFPGqvA+mQqKWfyxv
-         6s9i+eN7jAtueEtnu9GrqgoTobF0A9yjLRV8obeQko+bnf3Nbv6NmWlIdTqQZBF5E6yE
-         lq8A==
-X-Gm-Message-State: AOAM533B25vyYqIOxVn4wqgZ9BrTPkWvScRsGgmjHOI9tj9aXtCrSiEP
-        9lgR3YzeBVSMYVOVV35kA/j8i0kvSzUa+jRIRuZ3zO0+4ALOFAcEdzU1FiqhC5zMKF8HjSvbdEI
-        Cq+DxD5r7owjjtZNGbBe9N/1kCpqldeozHbljYHmMg1VVuD3DhNUp3XwZpq/ingz+TqMnDLIgxq
-        s=
-X-Google-Smtp-Source: ABdhPJwM03l3cpdbOnDJvxPxLpecxdRj7HYc5iJIcn5OxMWFNGbq0WLbsiAY0GHarOTgo3hmB4SPqw==
-X-Received: by 2002:a5d:6404:: with SMTP id z4mr50798032wru.423.1600621212104;
-        Sun, 20 Sep 2020 10:00:12 -0700 (PDT)
-Received: from localhost.localdomain ([2001:8f8:1461:1f22:70ac:7893:ce11:b470])
-        by smtp.gmail.com with ESMTPSA id v17sm18002592wrc.23.2020.09.20.10.00.11
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Govkq2c7yVsAEyCudSuE8qhnS6+zy4O8TiKkmkv2nIk=;
+        b=W4HUdF5y8IL46li/aLWtqF1XJO6kSUNyNg6lQQlq/lHa09QYfyRuIdGDfLmuGoashc
+         83+sSg8r4ohTOPsGgHOTDX6qHwsouAY/v6fpdZCCgYQJkl9j9MXkxTiUMxbLIJvpzCCu
+         42aLHOyMwVjBWHWNqUM6rhcX9wijwR1WFrrsPR++y+L1mW//WOYh/0HdhLuSkDVsydnB
+         L6zl7lUqy2UyzOKbv1xrByqblI8VXR5bRkA88pP3c6bQKqbSB7M8eJ4fRC3Tn+cnylaH
+         HWdYPYqoqyYFn0Q+t40G3z/KbXwGjH0SOD0X4qhCB47AoB/9A4e37EY6QdcBbtUWNm+T
+         HiWQ==
+X-Gm-Message-State: AOAM5320R4eEFICC6JlHBJizV7idZPF0jgBhuIzRGIwNmSsF1+/H91bn
+        pUqw42ZbhY33Xu+4YUfrY2J30dXcISIdbA==
+X-Google-Smtp-Source: ABdhPJw8aePyNIBJCqaSdn8XsSIQuoAqvzqCXu5gVZJ8sjQeyd+h0cYIGmgawxVkFcL+HkZKYT7Wig==
+X-Received: by 2002:a17:906:2cd2:: with SMTP id r18mr48010495ejr.371.1600621402484;
+        Sun, 20 Sep 2020 10:03:22 -0700 (PDT)
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com. [209.85.218.41])
+        by smtp.gmail.com with ESMTPSA id lo25sm6938175ejb.53.2020.09.20.10.03.22
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 20 Sep 2020 10:00:11 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Asif Rasheed <b00073877@aus.edu>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH] Staging list.h: Modified comment
-Date:   Sun, 20 Sep 2020 21:00:09 +0400
-Message-Id: <2634BEC0-93C5-4630-AC27-9A0BD56641D0@aus.edu>
-References: <20200920151822.GA29330@paulmck-ThinkPad-P72>
-Cc:     linux-kernel@vger.kernel.org
-In-Reply-To: <20200920151822.GA29330@paulmck-ThinkPad-P72>
-To:     paulmck@kernel.org
-X-Mailer: iPhone Mail (18A373)
+        Sun, 20 Sep 2020 10:03:22 -0700 (PDT)
+Received: by mail-ej1-f41.google.com with SMTP id j11so14628391ejk.0
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 10:03:22 -0700 (PDT)
+X-Received: by 2002:ac2:5594:: with SMTP id v20mr15170982lfg.344.1600621076988;
+ Sun, 20 Sep 2020 09:57:56 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200919091751.011116649@linutronix.de> <CAHk-=wiYGyrFRbA1cc71D2-nc5U9LM9jUJesXGqpPnB7E4X1YQ@mail.gmail.com>
+ <87mu1lc5mp.fsf@nanos.tec.linutronix.de> <87k0wode9a.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87k0wode9a.fsf@nanos.tec.linutronix.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 20 Sep 2020 09:57:40 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgbmwsTOKs23Z=71EBTrULoeaH2U3TNqT2atHEWvkBKdw@mail.gmail.com>
+Message-ID: <CAHk-=wgbmwsTOKs23Z=71EBTrULoeaH2U3TNqT2atHEWvkBKdw@mail.gmail.com>
+Subject: Re: [patch RFC 00/15] mm/highmem: Provide a preemptible variant of
+ kmap_atomic & friends
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        "open list:SYNOPSYS ARC ARCHITECTURE" 
+        <linux-snps-arc@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
+        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-sparc <sparclinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Everything looks good. Thank you!
+On Sun, Sep 20, 2020 at 1:49 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> Actually most usage sites of kmap atomic do not need page faults to be
+> disabled at all.
 
-Regards,
-Asif Rasheed
+Right. I think the pagefault disabling has (almost) nothing at all to
+do with the kmap() itself - it comes from the "atomic" part, not the
+"kmap" part.
 
-> On 20 Sep 2020, at 7:18 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
->=20
-> =EF=BB=BFOn Sun, Sep 20, 2020 at 05:31:54PM +0400, Asif Rasheed wrote:
->> We (everyone from my Operating System Lecture Section) were confused on w=
-hether the list is circular or not (because no one bothered to look at the i=
-mplementation). Modified the comment on top for clarification.
->>=20
->> Signed-off-by: Asif Rasheed <b00073877@aus.edu>
->=20
-> Good point!  "Simple" here means "not complex", but given the size of
-> this file, one could argue that this characterization is long obsolete.
->=20
-> I queued your patch for v5.11, but as usual could not resist the
-> urge to edit the commit log.  Could you please review the version
-> below to make sure that I did not mess anything up?
->=20
->                            Thanx, Paul
->=20
-> ------------------------------------------------------------------------
->=20
-> commit 8ac8c191b5f1a42b02462d5b35675f2439097b86
-> Author: Asif Rasheed <b00073877@aus.edu>
-> Date:   Sun Sep 20 17:31:54 2020 +0400
->=20
->    list.h: Update comment to explicitly note circular lists
->=20
->    The students in the Operating System Lecture Section at the
->    American University of Sharjah were confused by the header comment
->    in include/linux/list.h, which says "Simple doubly linked list
->    implementation".  This comment means "simple" as in "not complex",
->    but "simple" is often used in this context to mean "not circular".
->    This commit therefore avoids this ambiguity by explicitly calling out
->    "circular".
->=20
->    Signed-off-by: Asif Rasheed <b00073877@aus.edu>
->    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->=20
-> diff --git a/include/linux/list.h b/include/linux/list.h
-> index 0d0d17a..796975c 100644
-> --- a/include/linux/list.h
-> +++ b/include/linux/list.h
-> @@ -9,7 +9,7 @@
-> #include <linux/kernel.h>
->=20
-> /*
-> - * Simple doubly linked list implementation.
-> + * Circular doubly linked list implementation.
->  *
->  * Some of the internal functions ("__xxx") are useful when
->  * manipulating whole lists rather than single entries, as
+I say *almost*, because there is one issue that needs some thought:
+the amount of kmap nesting.
+
+The kmap_atomic() interface - and your local/temporary/whatever
+versions of it - depends very much inherently on being strictly
+nesting. In fact, it depends so much on it that maybe that should be
+part of the new name?
+
+It's very wrong to do
+
+    addr1 = kmap_atomic();
+    addr2 = kmap_atomic();
+    ..do something with addr 1..
+    kunmap_atomic(addr1);
+    .. do something with addr 2..
+    kunmap_atomic(addr2);
+
+because the way we allocate the slots is by using a percpu-atomic
+inc-return (and we deallocate using dec).
+
+So it's fundamentally a stack.
+
+And that's perfectly fine for page faults - if they do any kmaps,
+those will obviously nest.
+
+So the only issue with page faults might be that the stack grows
+_larger_. And that might need some thought. We already make the kmap
+stack bigger for CONFIG_DEBUG_HIGHMEM, and it's possibly that if we
+allow page faults we need to make the kmap stack bigger still.
+
+Btw, looking at the stack code, Ithink your new implementation of it
+is a bit scary:
+
+   static inline int kmap_atomic_idx_push(void)
+   {
+  -       int idx = __this_cpu_inc_return(__kmap_atomic_idx) - 1;
+  +       int idx = current->kmap_ctrl.idx++;
+
+and now that 'current->kmap_ctrl.idx' is not atomic wrt
+
+ (a) NMI's (this may be ok, maybe we never do kmaps in NMIs, and with
+nesting I think it's fine anyway - the NMI will undo whatever it did)
+
+ (b) the prev/next switch
+
+And that (b) part worries me. You do the kmap_switch_temporary() to
+switch the entries, but you do that *separately* from actually
+switching 'current' to the new value.
+
+So kmap_switch_temporary() looks safe, but I don't think it actually
+is. Because while it first unmaps the old entries and then remaps the
+new ones, an interrupt can come in, and at that point it matters what
+is *CURRENT*.
+
+And regardless of whether 'current' is 'prev' or 'next', that
+kmap_switch_temporary() loop may be doing the wrong thing, depending
+on which one had the deeper stack. The interrupt will be using
+whatever "current->kmap_ctrl.idx" is, but that might overwrite entries
+that are in the process of being restored (if current is still 'prev',
+but kmap_switch_temporary() is in the "restore @next's kmaps" pgase),
+or it might stomp on entries that have been pte_clear()'ed by the
+'prev' thing.
+
+I dunno. The latter may be one of those "it works anyway, it
+overwrites things we don't care about", but the former will most
+definitely not work.
+
+And it will be completely impossible to debug, because it will depend
+on an interrupt that uses kmap_local/atomic/whatever() coming in
+_just_ at the right point in the scheduler, and only when the
+scheduler has been entered with the right number of kmap entries on
+the prev/next stack.
+
+And no developer will ever see this with any amount of debug code
+enabled, because it will only hit on legacy platforms that do this
+kmap anyway.
+
+So honestly, that code scares me. I think it's buggy. And even if it
+"happens to work", it does so for all the wrong reasons, and is very
+fragile.
+
+So I would suggest:
+
+ - continue to use an actual per-cpu kmap_atomic_idx
+
+ - make the switching code save the old idx, then unmap the old
+entries one by one (while doing the proper "pop" action), and then map
+the new entries one by one (while doing the proper "push" action).
+
+which would mean that the only index that is actually ever *USED* is
+the percpu one, and it's always up-to-date and pushed/popped for
+individual entries, rather than this - imho completely bogus -
+optimization where you use "p->kmap_ctrl.idx" directly and very very
+unsafely.
+
+Alternatively, that process counter would need about a hundred lines
+of commentary about exactly why it's safe. Because I don't think it
+is.
+
+                   Linus
