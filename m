@@ -2,145 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08B9727173A
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 20:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB4F27173C
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 20:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726303AbgITSwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 14:52:15 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:57449 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726109AbgITSwP (ORCPT
+        id S1726244AbgITS4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 14:56:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726109AbgITS4B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 14:52:15 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 2F68C5800A3;
-        Sun, 20 Sep 2020 14:52:14 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Sun, 20 Sep 2020 14:52:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        subject:to:cc:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=U
-        aKCWb+alngLYqUciWW42BXBdBSdxoHktDXuWpsVbrI=; b=oFC6W7pv/B3eHmUKR
-        5P4lPrdAPq4Je35suAc4Jnc9Y2mx/f6alNQMyaLHujFUmtjAblXP8YV3sB4JgOaj
-        1q/URKWa54gXKwZ+/qa6myvdQuwdPT4XX2QjfDa/MEbOzNmMph1xbHpcBftlqmmu
-        le8crrD+s5xT9ff+Ts9ghK+W5mZvai7etQMyvaOuHlaRsthzlOsp9htLJy1PzWRD
-        9MoTVVTd9nlXjl/qu7K6zEiVIJYXpY97A1uKCFcCuxQzyluAwqlJqtARhADODX4m
-        PevuLPGAdXAJyeAz9/ND4/uM5bPN2Jca/tw5hqd5Dsu5Jzgx/zANMe5Tg/Lrxk8k
-        lGE8g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=UaKCWb+alngLYqUciWW42BXBdBSdxoHktDXuWpsVb
-        rI=; b=VReChI7L+/asa/We8ef+cHzapzCWscrW00o9/Tfxe2AJkNafuoRlHDFSE
-        7v+Vt1cfM3xe8ypmDp9uu84JbASRu0Z3noC77ROi5XTYvw7SG6z1ARLg59WhAnEb
-        06ZmZGW9JIdH0l/mjewLKaidA4o7YBtYCwZLHXxAmOVGijvIJa+NlKT+ds3I8Du4
-        CeA8dQ2wj6NPc4EQ3WLqZiMLPZM2aERJ5zWgPtRe0kZKKexocea8CENl+QdgoWc4
-        Ek2qvqXRJY8GohzinSi9Q1Ulwfn9YAYA8kJagh8aI03yBTA3dnbOYX8W9tfiNjye
-        gm/Gnii7e0RJTF6HExOZamm+WnZRA==
-X-ME-Sender: <xms:3KRnX-urMvU9Q17WZsg0I44fQd7RIohRuDcYbdqPfEOkN_HSvw7QKA>
-    <xme:3KRnXzdxonus58aXIzgMhbuV6GwFTaCm7tmXVnE_a9_XrlPdLFCOn6uZvGCy4SDKd
-    LppPbNlmkbgjJVnRA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtgddufedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomhepufgrmhhu
-    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepuddvleffkeejhfduieelheejteehleefieeikefgteeugefhtdev
-    keefvefgheeinecuffhomhgrihhnpehgihhthhhusgdrtghomhenucfkphepjedtrddufe
-    ehrddugeekrdduhedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghi
-    lhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
-X-ME-Proxy: <xmx:3KRnX5z29Z1ju_ZDS9Yav0YREkL2MbH_JK_QZbayg1l6Jm2d8ZYvIw>
-    <xmx:3KRnX5OU_SGLZL2fXculMRXlA0MoH1mOV6ohI9_0vZy6CHbNSI9Kpw>
-    <xmx:3KRnX-8YPPoC05bhO1FvnIhRo9PVg-ScC41SsnoO6PzLS6pJ21RX4g>
-    <xmx:3qRnX5VoP_9B6N7A2NI8mlo0RSDz8KMC6osnEwfyAMBz4uPqugmjRg>
-Received: from [192.168.50.169] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 1E85B3280065;
-        Sun, 20 Sep 2020 14:52:12 -0400 (EDT)
-Subject: Re: [PATCH v3 06/19] ASoC: sun4i-i2s: Fix sun8i volatile regs
-To:     =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Marcus Cooper <codekipper@gmail.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com
-References: <20200920180758.592217-1-peron.clem@gmail.com>
- <20200920180758.592217-7-peron.clem@gmail.com>
-From:   Samuel Holland <samuel@sholland.org>
-Message-ID: <497a7062-4acf-d928-c2ee-ec595ed6799b@sholland.org>
-Date:   Sun, 20 Sep 2020 13:52:11 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Sun, 20 Sep 2020 14:56:01 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7C1C061755
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 11:56:00 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id i26so14715427ejb.12
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 11:56:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=ndUrGHBk92F1HUk+uxxSKtBUDi6Sd7JPiTr1APxGa3w=;
+        b=06+rJhdHVsBikc7My0jVdVWkFb6ll1c13PfOBaXFzXenuTkKwBRq+WHycaid/goujl
+         vamZD6pIPUPBN2IevX0wGsoK1NY5XskGD4kP73Z/SRFMTvfT1BGRZy1p8HihAd1W9R4l
+         DSjRGcwIfknnzdONQaCLqDdXHdw1gKQu3qCry/JTCaqAcaWhya8UrzZ9Nac//COnDQZx
+         4uFTrCbGoL4RDWBCqiha51wc3/BcXxU59qX6LQtoYmJwkqBKGmAV7gUrysMGPfTxhM8e
+         +YWXlZhBuWN31arVAB1ix7QvtwiAMLjlIgSO9n/j/JedEUD8YUYp0qubfIPo6EPyI2Bb
+         uDgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=ndUrGHBk92F1HUk+uxxSKtBUDi6Sd7JPiTr1APxGa3w=;
+        b=SbrZODUFNSZmh0m3/MSz8pRrMo2OqsL4KJXBH9E6eAlzvQFj9XChGjnPZ0HiDunAPU
+         +khdUDVSRlkypFhp7ADANGl1tvvDpY53mIwOeqsSy5kcLbe75CCIPSNMNOhH9skdgwej
+         IX4QtDv9B2qL/gU4lShYGATJDjb/CmOS50+GoJ7NS0lf7EDU1WShaiL907MR1ivOINZT
+         qohilU58AV/+cW26nX6vuyRFPS7Rru8teLvoJ9X8J5DLr5htDe82w4IoAOgESFf/fk2N
+         2hR6aJ1+C8b4Nt5iKoEGxZdKOfrz+DQ7IOMkfXEnrDnl9dqDEt18cY6ocbyuvXr2DwRU
+         ow0A==
+X-Gm-Message-State: AOAM531ItMDOufyxLfqGw5iGnaG523gKCbpkvC8/Vvk48YNpipY8ZrRD
+        Z1LLRRb3ZheGcCfmjN5syhPZvX1iiBpZoLTqlReJQw==
+X-Google-Smtp-Source: ABdhPJw5iohlXyCeLttrxkgBFQjc3U6GHH9QAJRXr6ebWx59BVm+Rbod9dk6PHIoy/8UAn87A2YkjANX8lc0r9162HY=
+X-Received: by 2002:a17:906:8289:: with SMTP id h9mr46107743ejx.45.1600628159425;
+ Sun, 20 Sep 2020 11:55:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200920180758.592217-7-peron.clem@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Sun, 20 Sep 2020 11:55:48 -0700
+Message-ID: <CAPcyv4h3oKM-2hoG=FWHJwzVqjptnpQV9C+W6txfp_qcBhd7yQ@mail.gmail.com>
+Subject: libnvdimm fixes 5.9-rc6
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-nvdimm <linux-nvdimm@lists.01.org>,
+        device-mapper development <dm-devel@redhat.com>,
+        Jan Kara <jack@suse.cz>, Adrian Huang12 <ahuang12@lenovo.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/20/20 1:07 PM, Clément Péron wrote:
-> The FIFO TX reg is volatile and sun8i i2s register
-> mapping is different from sun4i.
-> 
-> Even if in this case it's doesn't create an issue,
-> Avoid setting some regs that are undefined in sun8i.
-> 
-> Signed-off-by: Clément Péron <peron.clem@gmail.com>
-> Acked-by: Maxime Ripard <mripard@kernel.org>
-> ---
->  sound/soc/sunxi/sun4i-i2s.c | 15 +++++++++++----
->  1 file changed, 11 insertions(+), 4 deletions(-)
-> 
-> diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-> index ce4913f0ffe4..a35be0e2baf5 100644
-> --- a/sound/soc/sunxi/sun4i-i2s.c
-> +++ b/sound/soc/sunxi/sun4i-i2s.c
-> @@ -1126,12 +1126,19 @@ static bool sun8i_i2s_rd_reg(struct device *dev, unsigned int reg)
->  
->  static bool sun8i_i2s_volatile_reg(struct device *dev, unsigned int reg)
->  {
-> -	if (reg == SUN8I_I2S_INT_STA_REG)
-> +	switch (reg) {
-> +	case SUN4I_I2S_FIFO_CTRL_REG:
+Hi Linus, please pull from:
 
-Please check if this breaks audio recording with runtime PM enabled. I noticed
-this with an older revision of the series that also changed
-sun4i_i2s_volatile_reg. Marking SUN4I_I2S_FIFO_CTRL_REG as volatile broke
-setting of SUN4I_I2S_FIFO_CTRL_TX_MODE/RX_MODE, because the set_fmt() callback
-is not run with a runtime PM reference held, and volatile registers are not
-written by regcache_sync() during sun4i_i2s_runtime_resume().
+  git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm
+tags/libnvdimm-fixes-5.9-rc6
 
-As a workaround, I moved the TX_MODE/RX_MODE initialization to hw_params(), but
-I am not sure it is the right thing to do:
+...to receive a handful of fixes to address a string of mistakes in
+the mechanism for device-mapper to determine if its component devices
+are dax capable. You will notice that this branch was rebased this
+morning and it has not appeared in -next. I decided to cut short the
+soak time because the infinite-recursion regression is currently
+crashing anyone attempting to test filesystem-dax in 5.9-rc5+. The
+most recent rebase folded in a compile fix reported by the kbuild
+robot for the uncommon CONFIG_DAX=m case. It should, "should",  be all
+good now.
 
-https://github.com/smaeul/linux/commit/5e40ac610986.patch
+---
 
-Cheers,
-Samuel
+The following changes since commit 856deb866d16e29bd65952e0289066f6078af773:
 
-> +	case SUN4I_I2S_FIFO_RX_REG:
-> +	case SUN4I_I2S_FIFO_STA_REG:
-> +	case SUN4I_I2S_RX_CNT_REG:
-> +	case SUN4I_I2S_TX_CNT_REG:
-> +	case SUN8I_I2S_FIFO_TX_REG:
-> +	case SUN8I_I2S_INT_STA_REG:
->  		return true;
-> -	if (reg == SUN8I_I2S_FIFO_TX_REG)
-> -		return false;
->  
-> -	return sun4i_i2s_volatile_reg(dev, reg);
-> +	default:
-> +		return false;
-> +	}
->  }
->  
->  static const struct reg_default sun4i_i2s_reg_defaults[] = {
-> 
+  Linux 5.9-rc5 (2020-09-13 16:06:00 -0700)
 
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm
+tags/libnvdimm-fixes-5.9-rc6
+
+for you to fetch changes up to d4c5da5049ac27c6ef8f6f98548c3a1ade352d25:
+
+  dax: Fix stack overflow when mounting fsdax pmem device (2020-09-20
+08:57:36 -0700)
+
+----------------------------------------------------------------
+libnvdimm fixes for 5.9-rc6
+
+- Fix an original bug in device-mapper table reference counting when
+  interrogating dax capability in the component device. This bug was
+  hidden by the following bug.
+
+- Fix device-mapper to use the proper helper (dax_supported() instead of
+  the leaf helper generic_fsdax_supported()) to determine dax operation
+  of a stacked block device configuration. The original implementation
+  is only valid for one level of dax-capable block device stacking. This
+  bug was discovered while fixing the below regression.
+
+- Fix an infinite recursion regression introduced by broken attempts to
+  quiet the generic_fsdax_supported() path and make it bail out before
+  logging "dax capability not found" errors.
+
+----------------------------------------------------------------
+Adrian Huang (1):
+      dax: Fix stack overflow when mounting fsdax pmem device
+
+Dan Williams (1):
+      dm/dax: Fix table reference counts
+
+Jan Kara (1):
+      dm: Call proper helper to determine dax support
+
+ drivers/dax/super.c   | 16 ++++++++++------
+ drivers/md/dm-table.c | 10 +++++++---
+ drivers/md/dm.c       |  5 +++--
+ include/linux/dax.h   | 22 ++++++++++++++++++++--
+ 4 files changed, 40 insertions(+), 13 deletions(-)
