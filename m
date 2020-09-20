@@ -2,246 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28FBF271573
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 17:49:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 926BF27157D
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 17:55:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726353AbgITPtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 11:49:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58636 "EHLO
+        id S1726415AbgITPzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 11:55:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726267AbgITPtm (ORCPT
+        with ESMTP id S1726267AbgITPzp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 11:49:42 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 662EBC061755;
-        Sun, 20 Sep 2020 08:49:42 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id u21so9039281ljl.6;
-        Sun, 20 Sep 2020 08:49:42 -0700 (PDT)
+        Sun, 20 Sep 2020 11:55:45 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA728C061755;
+        Sun, 20 Sep 2020 08:55:44 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id 16so12427329qkf.4;
+        Sun, 20 Sep 2020 08:55:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KLEq7NDgstqDGIfDMX9P58k/4dUT7WQv1PJsm6l4Jgs=;
-        b=TJenO6HGmb7QSBWlTrIiwpMqzFe4PgdBUcw/BJ9peFZfzXNuxz1ZdLgQGd0slPSsIH
-         t2A2plnMKEigkCum8cbhigBEBsOmnq4sfKADU5VxiuHeKw0NmFMZbIFXB+p1h5Zfd8hj
-         FizE7vF/LdAPySEHHbc3eqELsCNF1u1Bw8sUnIB3PoRdNsQb4Q/tuJ7BYll5Ux4wjAwm
-         HEPuAnkIKaoEcQrWAxM6v1tqQH3Gllz/SrokfvfHoVFGAjdoTDp3zjHCnJUq4mEj7g3H
-         s8WPZTVwAfYdt2pJuTIWEKRGsDGnB81gN99Al9eVHG8vQpW10+vynFFL6O0Ykdez7ezT
-         Dnfw==
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=wK83tl6Aps7O/Nyle+fjor+3BT0ZPHQ73i72gH6haeo=;
+        b=j4uRAT2E8fdr2YaqrsiSPOPm8SjiSJMcVFWHVJQhudY7AjMagOuTaPaUrJZNB/DBxT
+         RsSoXPsH0OZD1fdr6pAc+sedSbMtOJwM9dBbGX8EN9WBkRUekzOQnQi4yezBjIKvjoxp
+         4pTmIYXjTwfM8Ld7eN31Snn3HDl+xaBbxHqYulOMGjuIpzvi82ZxqqNXiPf1uBPbl0mW
+         R3NIOxISkFL7B3tRSyYt+xnjnX4aUHUa0CKdIWEe71XW1d+175gN1d4Ezj+1k468etjw
+         /p5aXBL9ieWXzE65cwKlIMBtQsaHBRTVaj0KGV3HN1O35ptGSjHCYh1Za9qlu8Ia58/F
+         0ILw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KLEq7NDgstqDGIfDMX9P58k/4dUT7WQv1PJsm6l4Jgs=;
-        b=Oqld5aOny8boGTmI0M0ts2piTGAPms4ZkEXcFs3D/0OSe2EJnrDMMlJZn2bb8ecfCb
-         VqacBiRI2drQONAkBk+/RWeUB+wKdH9aQLjxGkW4oqc03NkuMgRzjImpYg5uQbkKZY3a
-         opDOyeK5HnCPeP14T6AcDjxSalp5pAO05XZfWdD9op3A+sHGHDhnZ+zKtN4XNfKkBMqY
-         tdAh/5KROXnr1NQkAG1UakNgyJPm3x3+LXodVnL6hfBGrzKJzeRcst/m8M2ii85A5lLM
-         h/Kn9x4E0xosOFEDQ/CBIWOYcagVsAuVN77JPw9/yFNDSeGuxBXeJgOcqVUdladfn+yV
-         oYiw==
-X-Gm-Message-State: AOAM530F+ELqVBfwD/q1f/2NZJVd9ePXjG1Jo1nhy5t8zjVKsldPxkwA
-        SGmU8GUUyyZ3yXSwZRfmg7l7lXb5v5Q=
-X-Google-Smtp-Source: ABdhPJzZThw0jO56HDdng/PLr5E49NeeHBymUrei6WPAeXWmoHYcvfY54rUsYnxFhy7iqs/aiJZ8nA==
-X-Received: by 2002:a2e:8011:: with SMTP id j17mr16186145ljg.444.1600616979776;
-        Sun, 20 Sep 2020 08:49:39 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id u10sm1867735lfr.33.2020.09.20.08.49.38
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=wK83tl6Aps7O/Nyle+fjor+3BT0ZPHQ73i72gH6haeo=;
+        b=MVEvg7GVE0UwEB/ZAZ6gif/de22ie6uJH02CpMntE3eCjMiLc4mtOVY35v/lCpmGI1
+         do5epLnA0IOlZBcyYJpJHy+yAE8B81RoKiT9KIGTWhoAxJlwGBtfxriBrAhPIN4/Z+dT
+         lYvjOZGNloV1B9R88+E8aovv9+C0tXS2KAzlzsu3JfAoYVTi1qGiwO56odm9U3yH9zOl
+         v4mAHouV/IVfNaPp8CP2slwszyXAgV/E53rz/xQfbxx07tnK3mONhiXFmK6QA5GW3Jk5
+         vzfvcTK3oF5O/ozhCfkXIZpf7cEQU6BkLSBjkFcZx1zpDKXuSwY5oCkOnw/E+cXcsY6a
+         HPjw==
+X-Gm-Message-State: AOAM53079/7R18hIx/eWVGFWm1GSrmbGEBNsXKkfLXBXONkxCpNv9qkt
+        qlqM8bYTN9eBcVOFs/2dhI3mekHPJDjjcD++
+X-Google-Smtp-Source: ABdhPJy0BhskiTDfvD8MBwip85dcX1wIsXPWtdth0juyqPe/DUqb3tBX97TvqdwX16zuipDqY5+Gyg==
+X-Received: by 2002:a05:620a:c10:: with SMTP id l16mr40194491qki.245.1600617343577;
+        Sun, 20 Sep 2020 08:55:43 -0700 (PDT)
+Received: from localhost.localdomain ([65.140.37.34])
+        by smtp.gmail.com with ESMTPSA id v30sm7605819qtj.52.2020.09.20.08.55.42
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 20 Sep 2020 08:49:39 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] Input: atmel_mxt_ts - wake mXT1386 from deep-sleep
- mode
-To:     "Wang, Jiada" <jiada_wang@mentor.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Nick Dyer <nick@shmanahar.org>, Rob Herring <robh+dt@kernel.org>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        erosca@de.adit-jv.com, Andrew_Gabbasov@mentor.com
-References: <20200918125601.8210-1-jiada_wang@mentor.com>
- <20200918125601.8210-2-jiada_wang@mentor.com>
- <2c3e093a-dc75-d315-519d-9b8fbab9b41b@gmail.com>
- <d0d8dffe-be52-992e-af2b-020d4b159747@mentor.com>
- <11e0052b-ae7a-71bc-1b28-9d5b42acfd11@gmail.com>
- <e9ad6ba7-05a3-af3b-85c3-94797fb33554@mentor.com>
- <CAKdAkRQnvCb+E1-i3HaZgXBPSYoJnr3_wEVB_51cXw3FV+NW7A@mail.gmail.com>
- <8b5f2198-a94e-7ccd-f91d-fb74e5ec7a4f@mentor.com>
- <1a5265f7-8ffd-5fba-c436-3c938a90198c@gmail.com>
- <d54c5626-c693-7838-9b21-82eda6cfc678@mentor.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <eae6dc1d-8712-3c7d-50fc-5acebf3d3bbd@gmail.com>
-Date:   Sun, 20 Sep 2020 18:49:38 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <d54c5626-c693-7838-9b21-82eda6cfc678@mentor.com>
+        Sun, 20 Sep 2020 08:55:42 -0700 (PDT)
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+From:   William Kucharski <kucharsk@gmail.com>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH 1/9] kernel: add a PF_FORCE_COMPAT flag
+Date:   Sun, 20 Sep 2020 09:55:40 -0600
+Message-Id: <76A432F3-4532-42A4-900E-16C0AC2D21D8@gmail.com>
+References: <20200920151510.GS32101@casper.infradead.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
+        io-uring@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org
+In-Reply-To: <20200920151510.GS32101@casper.infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+X-Mailer: iPhone Mail (18B5052h)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-20.09.2020 17:36, Wang, Jiada пишет:
-> Hi Dmitry
-> 
-> On 2020/09/20 23:21, Dmitry Osipenko wrote:
->> 20.09.2020 16:13, Wang, Jiada пишет:
->>> Hi Dmitry
->>>
->>> On 2020/09/20 15:02, Dmitry Torokhov wrote:
->>>> On Sat, Sep 19, 2020 at 10:28 PM Wang, Jiada <jiada_wang@mentor.com>
->>>> wrote:
->>>>>
->>>>> Hi Dmitry
->>>>>
->>>>> On 2020/09/20 4:49, Dmitry Osipenko wrote:
->>>>>> 18.09.2020 18:55, Wang, Jiada пишет:
->>>>>> ...
->>>>>>>>>      +static void mxt_wake(struct mxt_data *data)
->>>>>>>>> +{
->>>>>>>>> +    struct i2c_client *client = data->client;
->>>>>>>>> +    struct device *dev = &data->client->dev;
->>>>>>>>> +    struct device_node *np = dev->of_node;
->>>>>>>>> +    union i2c_smbus_data dummy;
->>>>>>>>> +
->>>>>>>>> +    if (!of_device_is_compatible(np, "atmel,mXT1386"))
->>>>>>>>> +        return;
->>>>>>>> I'm not sure whether you misses the previous answers from Dmitry
->>>>>>>> Torokhov and Rob Herring, but they suggested to add a new
->>>>>>>> device-tree
->>>>>>>> property which should specify the atmel,wakeup-method.
->>>>>>>>
->>>>>>> I think Rob Herring prefers for the compatible solution than
->>>>>>> property.
->>>>>>
->>>>>> Actually, seems you're right. But I'm not sure now whether he just
->>>>>> made
->>>>>> a typo, because it's actually a board-specific option.
->>>>>>
->>>>> Right, I think since it is a board specific issue,
->>>>> so "property" is the preferred way,
->>>>
->>>> Why are you saying it is a board-specific issue? It seems to me that
->>>> it is behavior of a given controller, not behavior of a board that
->>>> happens to use such a controller?
->>>>
->>>
->>> the issue only occurs on mXT1386 controller,
->>> but with same mXT1386 soc, behavior differs from how WAKE line is
->>> connected, (left low, connect to GPIO or connect to SCL),
->>> so I think the issue also is board-specific?
->>>
->>>>> if I understand you correctly,
->>>>> compatible combine with property is what you are suggesting, right?
->>>>
->>>> We should gate the behavior either off a compatible or a new property,
->>>> but not both.
->>
->> Both variants will work. But if other controller models have a similar
->> need, then a wakeup-method property should be more universal since
->> potentially it could be reused by other TS models without much changes
->> to the code.
->>
->> To be honest, I'm not familiar with other Atmel TS controllers, so have
->> no clue what variant should be more preferred. The wakeup-method should
->> be a safer variant, but it also will be a bit more invasive code change.
->>
->>>>>> It could be more preferred to skip the i2c_smbus_xfer() for the NONE
->>>>>> variant, but it also should be harmless in practice. I guess we
->>>>>> indeed
->>>>>> could keep the current variant of yours patch and then add a
->>>>>> clarifying
->>>>>> comment to the commit message and to the code, telling that
->>>>>> i2c_smbus_xfer() is harmless in a case of the hardwired WAKE-LINE.
->>>>>>
->>>>> I will skip dummy read for "NONE" variant.
->>>>>
->>>>>>>> There are 3 possible variants:
->>>>>>>>
->>>>>>>>       - NONE
->>>>>>>>       - GPIO
->>>>>>>>       - I2C-SCL
->>>>>>>>
->>>>>>>> Hence we should bail out from mxt_wake() if method is set to
->>>>>>>> NONE or
->>>>>>>> GPIO.
->>>>>>>>
->>>>>>> for "GPIO", we still need 25 ms sleep. but rather than a dummy read,
->>>>>>> WAKE line need to be asserted before sleep.
->>>>>>
->>>>>> Correct, I just meant to bail out because GPIO is currently
->>>>>> unsupported.
->>>>>>
->>>>>
->>>>> OK
->>>>>
->>>>>> ...
->>>>>>>>>      static int mxt_initialize(struct mxt_data *data)
->>>>>>>>>      {
->>>>>>>>>          struct i2c_client *client = data->client;
->>>>>>>>>          int recovery_attempts = 0;
->>>>>>>>>          int error;
->>>>>>>>>      +    mxt_wake(data);
->>>>>>>>> +
->>>>>>>>>          while (1) {
->>>>>>>>
->>>>>>>> I assume the mxt_wake() should be placed here, since there is a 3
->>>>>>>> seconds timeout in the end of the while-loop, meaning that
->>>>>>>> device may
->>>>>>>> get back into deep-sleep on a retry.
->>>>>>>>
->>>>>>> Can you elaborate a little more why exit from bootload mode after
->>>>>>> sleep
->>>>>>> for 3 second could enter deep-sleep mode.
->>>>>>
->>>>>> The loop attempts to exit from bootload mode and then I suppose
->>>>>> mxt_read_info_block() may fail if I2C "accidentally" fails, hence the
->>>>>> deep-sleep mode still will be enabled on a retry.
->>>>
->>>> If the controller is in bootloader mode it will not be in a deep sleep
->>>> mode. If the controller was just reset via reset GPIO it will not be
->>>> in deep sleep mode. The controller can only be in deep sleep mode if
->>>> someone requested deep sleep mode. I'd recommend moving the mxt_wake
->>>> in the "else" case of handling reset GPIO.
->>
->> My observation on Acer A500 shows that first I2C transfer after the
->> reset via GPIO could easily get a NAK, hence mxt_wake() definitely must
->> be placed before the mxt_read_info_block(). Apparently reset doesn't
->> wake controller.
->>
->> What's even more interesting is that I now spotted that the NAK could
->> happen in mxt_interrupt() after mxt_initialize().
->>
->> I'm also now seeing that both mxt_set_t7_power_cfg() and
->> mxt_t6_command() in mxt_start() need the mxt_wake()! Because both 100%
->> get a NAK without the wakes.
->>
->> @@ -3005,9 +3022,11 @@ static void mxt_start(struct mxt_data *data)
->>
->>       case MXT_SUSPEND_DEEP_SLEEP:
->>       default:
->> +        mxt_wake(data);
->>           mxt_set_t7_power_cfg(data, MXT_POWER_CFG_RUN);
->>
->>           /* Recalibrate since chip has been in deep sleep */
->> +        mxt_wake(data);
->>           mxt_t6_command(data, MXT_COMMAND_CALIBRATE, 1, false);
->>           break;
->>       }
->>
->> Maybe adding I2C retries still isn't a bad idea?
-> 
-> Yes, by working on find out where need to place mxt_wake(),
-> I am having feeling, we must over look somewhere which needs mxt_wake(),
-> also it will introduce lots of difficulty, later someone needs add some
-> new routines.
-> 
-> probably based on retries idea, we can add "compatible" check,
-> to only narrow the retry mechanism happen on mXT1368 controller,
-> is more easier way...
+I really like that as it=E2=80=99s self-documenting and anyone debugging it c=
+an see what is actually being used at a glance.
 
-Agree, this should be the best option.
-
-BTW, could you please add a patch to update the touchscreen@4c entry in
-arch/arm/boot/dts/tegra20-acer-a500-picasso.dts? Thanks in advance!
+> On Sep 20, 2020, at 09:15, Matthew Wilcox <willy@infradead.org> wrote:
+>=20
+> =EF=BB=BFOn Fri, Sep 18, 2020 at 02:45:25PM +0200, Christoph Hellwig wrote=
+:
+>> Add a flag to force processing a syscall as a compat syscall.  This is
+>> required so that in_compat_syscall() works for I/O submitted by io_uring
+>> helper threads on behalf of compat syscalls.
+>=20
+> Al doesn't like this much, but my suggestion is to introduce two new
+> opcodes -- IORING_OP_READV32 and IORING_OP_WRITEV32.  The compat code
+> can translate IORING_OP_READV to IORING_OP_READV32 and then the core
+> code can know what that user pointer is pointing to.
