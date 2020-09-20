@@ -2,176 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC29B271656
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 19:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B815F271659
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 19:34:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726151AbgITRaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 13:30:02 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:38408 "EHLO mail.skyhub.de"
+        id S1726178AbgITReB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 13:34:01 -0400
+Received: from lists.nic.cz ([217.31.204.67]:52902 "EHLO mail.nic.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725858AbgITRaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 13:30:02 -0400
-Received: from zn.tnic (p200300ec2f295d00bdfb2ba46bfb7e19.dip0.t-ipconnect.de [IPv6:2003:ec:2f29:5d00:bdfb:2ba4:6bfb:7e19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 725891EC0249;
-        Sun, 20 Sep 2020 19:30:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600623000;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=ZK/pK7hyUJbvzqeprax2YuNNymLlRHB61Jw3fFVfyEE=;
-        b=nxqUOgkMu/kTf6hylnqHb8H6VeTneEpGfIFC7o7PwBK6eoz4Csr36D3F+Lb58g3vyTUwNL
-        MZ8XXpU2Y+tDSqRPkMo/XFBuiypyXWfsJA0//dLNa9Jd1qkw3oYYmC5688IFJHcCZWpkEZ
-        QNwlpmqzK9Ub/AfFNo4AtIFCKHonEy0=
-Date:   Sun, 20 Sep 2020 19:29:54 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] Use feature bit names in clearcpuid=
-Message-ID: <20200920172954.GC7473@zn.tnic>
-References: <20200920154228.GB7473@zn.tnic>
- <20200920161628.GA3951950@rani.riverdale.lan>
+        id S1725858AbgITReB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 13:34:01 -0400
+Received: from localhost (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
+        by mail.nic.cz (Postfix) with ESMTPSA id 8E6AD140A3B;
+        Sun, 20 Sep 2020 19:33:57 +0200 (CEST)
+Date:   Sun, 20 Sep 2020 19:33:57 +0200
+From:   Marek Behun <marek.behun@nic.cz>
+To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, linux-leds@vger.kernel.org,
+        dmurphy@ti.com,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: ledtrig-cpu: Limit to 4 CPUs
+Message-ID: <20200920193357.3d797a46@nic.cz>
+In-Reply-To: <91f1caa7-8005-6c8f-ce7c-84e5c8cee5f8@gmail.com>
+References: <20200919093833.GA14326@duo.ucw.cz>
+        <27e19ac9-4bc0-2945-3985-6cd6bb5407df@gmail.com>
+        <20200920173905.237c314e@nic.cz>
+        <91f1caa7-8005-6c8f-ce7c-84e5c8cee5f8@gmail.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200920161628.GA3951950@rani.riverdale.lan>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,URIBL_BLOCKED,
+        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
+        autolearn=disabled version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 20, 2020 at 12:16:28PM -0400, Arvind Sankar wrote:
-> Allowing 13:24 as input would be icing on the cake :)
+On Sun, 20 Sep 2020 18:55:28 +0200
+Jacek Anaszewski <jacek.anaszewski@gmail.com> wrote:
 
-Well, I'm kinda "meh" on that. Why, you ask?
+> On 9/20/20 5:39 PM, Marek Behun wrote:
+> > On Sun, 20 Sep 2020 16:15:09 +0200
+> > Jacek Anaszewski <jacek.anaszewski@gmail.com> wrote:
+> >   
+> >> Hi Pavel,
+> >>
+> >> On 9/19/20 11:38 AM, Pavel Machek wrote:  
+> >>> commit 318681d3e019e39354cc6c2155a7fd1bb8e8084d
+> >>> Author: Pavel Machek <pavel@ucw.cz>
+> >>> Date:   Sat Sep 19 11:34:58 2020 +0200
+> >>>
+> >>>       ledtrig-cpu: Limit to 4 CPUs
+> >>>       
+> >>>       Some machines have thousands of CPUs... and trigger mechanisms was not
+> >>>       really meant for thousands of triggers. I doubt anyone uses this
+> >>>       trigger on many-CPU machine; but if they do, they'll need to do it
+> >>>       properly.
+> >>>       
+> >>>       Signed-off-by: Pavel Machek <pavel@ucw.cz>
+> >>>
+> >>> diff --git a/drivers/leds/trigger/ledtrig-cpu.c b/drivers/leds/trigger/ledtrig-cpu.c
+> >>> index 869976d1b734..b7e00b09b137 100644
+> >>> --- a/drivers/leds/trigger/ledtrig-cpu.c
+> >>> +++ b/drivers/leds/trigger/ledtrig-cpu.c
+> >>> @@ -2,14 +2,18 @@
+> >>>    /*
+> >>>     * ledtrig-cpu.c - LED trigger based on CPU activity
+> >>>     *
+> >>> - * This LED trigger will be registered for each possible CPU and named as
+> >>> - * cpu0, cpu1, cpu2, cpu3, etc.
+> >>> + * This LED trigger will be registered for first four CPUs and named
+> >>> + * as cpu0, cpu1, cpu2, cpu3. There's additional trigger called cpu that
+> >>> + * is on when any CPU is active.
+> >>> + *
+> >>> + * If you want support for arbitrary number of CPUs, make it one trigger,
+> >>> + * with additional sysfs file selecting which CPU to watch.
+> >>>     *
+> >>>     * It can be bound to any LED just like other triggers using either a
+> >>>     * board file or via sysfs interface.
+> >>>     *
+> >>>     * An API named ledtrig_cpu is exported for any user, who want to add CPU
+> >>> - * activity indication in their code
+> >>> + * activity indication in their code.
+> >>>     *
+> >>>     * Copyright 2011 Linus Walleij <linus.walleij@linaro.org>
+> >>>     * Copyright 2011 - 2012 Bryan Wu <bryan.wu@canonical.com>
+> >>> @@ -145,6 +149,9 @@ static int __init ledtrig_cpu_init(void)
+> >>>    	for_each_possible_cpu(cpu) {
+> >>>    		struct led_trigger_cpu *trig = &per_cpu(cpu_trig, cpu);
+> >>>    
+> >>> +		if (cpu > 4)  
+> >>
+> >> NACK. The workaround for this trigger was implemented for a reason -
+> >> to make it working on platforms with arbitrary number of logical cpus.
+> >> I've got 8, so I am discriminated now. Not saying, that it precludes
+> >> trigger registration with no single line of warning.
+> >> Regardless of that - you have no guarantee that you're not breaking
+> >> anyone - "I doubt" is not a sufficient argument.
+> >>  
+> > 
+> > If that is the case Jacek, I would try 16 and then see if people
+> > complain. Do you really think that someone sets a specific LED to
+> > trigger on activity on CPU id > 16?  
+> 
+> I have an access to the machine with 80 cpus, so I could once
+> get surprised not being able to find cpuN triggers not being
+> listed among available triggers.
+> 
+> And say that I have a solution where I install 80 userspace LEDs
+> (drivers/leds/uleds.c) and register them on each cpuN triggers to get
+> notifications on how cpus work.
 
-Well, whether the user multiplies two integers or the kernel does it for
-her/him, I'd prefer the user.
+Hi Jacek,
 
-But that's not even the problem - whether the product of the word number
-and the bit within that word, or the two supplied as a pair - either is
-the wrong interface. It is ugly and not even close to even beginning to
-be user-friendly.
+I understand (and Pavel does for sure too) that many people
+currently have that possibility, that they have access to machines with
+many CPUs and many LEDs. We also understand that currently it is
+possible for users to set 1847th LED to trigger on activity on CPU ID
+1337. What we are suggesting is that practically no one uses this, and
+for those 10 people who do, well it would be better for them to migrate
+to new ABI than for kernel developers having forever maintain this
+legacy ABI.
 
-However, we can't make it fully user-friendly yet because not all bits
-have names. :-\
+Legacy drivers get removed from kernel from time to time, if no one
+uses them. So I think Pavel's proposal (although I may not agree with
+the limit 4) has some merit. If we try this, and someone complains, we
+can then discuss. If we don't try, we may never know.
 
-But you know what, that doesn't matter too because that clearcpuid=
-thing is mainly for poking at sh*t and testing, not meant for users.
-Thus the tainting...
+Marek
 
-So I guess the one who needs it, can go the minute distance and do the
-multiplication. According to that argument, adding the string parsing is
-not really needed too, but it is simple enough so WTH.
+> > If you do not agree, then I think we should implement a "cpu" trigger
+> > where the cpu ID (or maybe mask of multiple CPUs) is configurable via
+> > another sysfs file. And then declare current cpu trigger (with names
+> > "cpu%d") as legacy.  
+> 
+> Yes, we can do that, and even mark the cpu trigger as legacy but we
+> cannot prevent people from using it if that was present in kernel
+> for many years.
+> 
 
-I've incorporated all your other comments, see below.
-
-Thx!
-
----
-diff --git a/arch/x86/include/asm/cpufeature.h b/arch/x86/include/asm/cpufeature.h
-index 59bf91c57aa8..10b65045fc37 100644
---- a/arch/x86/include/asm/cpufeature.h
-+++ b/arch/x86/include/asm/cpufeature.h
-@@ -32,14 +32,17 @@ enum cpuid_leafs
- 	CPUID_7_EDX,
- };
- 
-+#define X86_CAP_FMT_BARE "%d:%d"
-+#define x86_cap_flag_bare(flag) ((flag) >> 5), ((flag) & 31)
-+
- #ifdef CONFIG_X86_FEATURE_NAMES
- extern const char * const x86_cap_flags[NCAPINTS*32];
- extern const char * const x86_power_flags[32];
- #define X86_CAP_FMT "%s"
- #define x86_cap_flag(flag) x86_cap_flags[flag]
- #else
--#define X86_CAP_FMT "%d:%d"
--#define x86_cap_flag(flag) ((flag) >> 5), ((flag) & 31)
-+#define X86_CAP_FMT X86_CAP_FMT_BARE
-+#define x86_cap_flag(flag) x86_cap_flag_bare((flag))
- #endif
- 
- /*
-diff --git a/arch/x86/kernel/fpu/init.c b/arch/x86/kernel/fpu/init.c
-index f8ff895aaf7e..98c0e571561f 100644
---- a/arch/x86/kernel/fpu/init.c
-+++ b/arch/x86/kernel/fpu/init.c
-@@ -244,8 +244,8 @@ static void __init fpu__init_system_ctx_switch(void)
- static void __init fpu__init_parse_early_param(void)
- {
- 	char arg[128];
--	char *argptr = arg;
--	int arglen, res, bit;
-+	char *argptr = arg, *opt;
-+	int arglen, taint = 0;
- 
- #ifdef CONFIG_X86_32
- 	if (cmdline_find_option_bool(boot_command_line, "no387"))
-@@ -273,21 +273,48 @@ static void __init fpu__init_parse_early_param(void)
- 		return;
- 
- 	pr_info("Clearing CPUID bits:");
--	do {
--		res = get_option(&argptr, &bit);
--		if (res == 0 || res == 3)
--			break;
- 
--		/* If the argument was too long, the last bit may be cut off */
--		if (res == 1 && arglen >= sizeof(arg))
--			break;
-+	while (argptr) {
-+		unsigned int bit;
-+
-+		opt = strsep(&argptr, ",");
-+
-+		if (!kstrtouint(opt, 10, &bit)) {
-+			if (bit < NCAPINTS * 32) {
-+				if (!x86_cap_flag(bit))
-+					pr_cont(" " X86_CAP_FMT_BARE, x86_cap_flag_bare(bit));
-+				else
-+					pr_cont(" " X86_CAP_FMT, x86_cap_flag(bit));
-+
-+				setup_clear_cpu_cap(bit);
-+				taint++;
-+			}
-+			/*
-+			 * We're assuming there are no feature names with only
-+			 * numbers in the name thus go to the next argument.
-+			 */
-+			continue;
-+		}
-+
-+#ifdef CONFIG_X86_FEATURE_NAMES
-+		for (bit = 0; bit < 32 * NCAPINTS; bit++) {
-+			if (!x86_cap_flags[bit])
-+				continue;
-+
-+			if (strcmp(x86_cap_flags[bit], opt))
-+				continue;
- 
--		if (bit >= 0 && bit < NCAPINTS * 32) {
--			pr_cont(" " X86_CAP_FMT, x86_cap_flag(bit));
-+			pr_cont(" %s", opt);
- 			setup_clear_cpu_cap(bit);
-+			taint++;
-+			break;
- 		}
--	} while (res == 2);
-+#endif
-+	}
- 	pr_cont("\n");
-+
-+	if (taint)
-+		add_taint(TAINT_CPU_OUT_OF_SPEC, LOCKDEP_STILL_OK);
- }
- 
- /*
-
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
