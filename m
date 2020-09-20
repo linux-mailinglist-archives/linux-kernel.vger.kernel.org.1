@@ -2,101 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 790FA271328
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 11:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA3D7271338
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 11:45:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726332AbgITJZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 05:25:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38320 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726247AbgITJZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 05:25:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B6207AC26;
-        Sun, 20 Sep 2020 09:25:40 +0000 (UTC)
-Date:   Sun, 20 Sep 2020 11:24:56 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-edac <linux-edac@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] EDAC urgent for v5.9-rc6
-Message-ID: <20200920092456.GA13044@zn.tnic>
+        id S1726322AbgITJpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 05:45:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726247AbgITJpQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 05:45:16 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF82C061755;
+        Sun, 20 Sep 2020 02:45:16 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id j3so5740864qvi.7;
+        Sun, 20 Sep 2020 02:45:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:references:in-reply-to:subject:date:message-id
+         :mime-version:content-transfer-encoding:thread-index
+         :content-language;
+        bh=bI+KOrtm+DSOj1ybD5+aMPXLAeGAqLLQ4CXe7B48ZTE=;
+        b=NxAC5HjLQiiQOxYG1GSo4Va4sls7g1uaLOZZTDnvfUHeEzmqLO0BYQKz1TLdRixF3E
+         KbeMAmB3eCmXKcWTICE0OGJZrOpxm8DglmaSkqQzVoipcIbiO5ReHxTAyBhgg+iOs9zy
+         H7aMX0gyIxbIusGhjGvyD+tJKqezSxj50OGbo544PUDnOD+entJF548NRPSMCbT/Oyhq
+         oqzMY9cO6zakK6R2FVd//CwE3Tx+1YLTFk/syGN2r6Mq0VxoeN6mXKtRpJzXyXGE1X8B
+         ds5hzde/kJ6sdRDk9mT/SanfRkT4mBzMtp9q4Tu3KvaovtT2dzMyASKRsTFbKHCTFfPR
+         MXpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:references:in-reply-to:subject:date
+         :message-id:mime-version:content-transfer-encoding:thread-index
+         :content-language;
+        bh=bI+KOrtm+DSOj1ybD5+aMPXLAeGAqLLQ4CXe7B48ZTE=;
+        b=n8StgzuvedLKtEnktbROVhpuRtW+v7cO51LJ50ui8mLtOozsglv1rLzMVnMGKX/F0N
+         gL6rQftvRms0jCKuxQEKknW33IsObjDVfL1RUB1QvqX0l/XneUJpjcfnO9pbKmyOvn6B
+         t5P8X+v9xD4x7NEE6bYx7w3Py3uhjmi2oVPOd5R4cN23F+2BnPN7Yh8WSbuW/tkWamci
+         RdpLeeeEFG1G5uIaJO+nRRcFImoSVqmdMGHJw6vzK2/GxCNYhPi3s8sxkn6wE5yjtv0F
+         +5ZW8XUDOEROuGAVQ6HEjvkLzwRcAUIBKpPtyHzeHgNEKIa4pkOYrj+qwmzJfA1JUnUT
+         m8OQ==
+X-Gm-Message-State: AOAM531l62iDKsUtO21z1nhU2Xe4zoJbqsmzpXBzrZz3nTxJ38XS+MYe
+        c44epIe6MsFQPZXgfFUP5tO1EQ39TOvGtg==
+X-Google-Smtp-Source: ABdhPJydcBHGJIrOrtEfrenLSKbouJBsnyeBUGfdfMaMGB5KmQOskprwcIhcZLog9QuzQ3/4vEGcdQ==
+X-Received: by 2002:a0c:9a01:: with SMTP id p1mr24371120qvd.61.1600595115198;
+        Sun, 20 Sep 2020 02:45:15 -0700 (PDT)
+Received: from AnsuelXPS (93-39-149-95.ip76.fastwebnet.it. [93.39.149.95])
+        by smtp.gmail.com with ESMTPSA id n144sm6257632qkn.69.2020.09.20.02.45.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 20 Sep 2020 02:45:14 -0700 (PDT)
+From:   <ansuelsmth@gmail.com>
+To:     "'Andrew Lunn'" <andrew@lunn.ch>
+Cc:     "'Miquel Raynal'" <miquel.raynal@bootlin.com>,
+        "'Richard Weinberger'" <richard@nod.at>,
+        "'Vignesh Raghavendra'" <vigneshr@ti.com>,
+        "'Rob Herring'" <robh+dt@kernel.org>,
+        "'David S. Miller'" <davem@davemloft.net>,
+        "'Jakub Kicinski'" <kuba@kernel.org>,
+        "'Heiner Kallweit'" <hkallweit1@gmail.com>,
+        "'Russell King'" <linux@armlinux.org.uk>,
+        "'Frank Rowand'" <frowand.list@gmail.com>,
+        "'Boris Brezillon'" <bbrezillon@kernel.org>,
+        <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+References: <20200919223026.20803-1-ansuelsmth@gmail.com> <20200919223026.20803-5-ansuelsmth@gmail.com> <20200920003128.GC3673389@lunn.ch> <006301d68ee6$87fcc400$97f64c00$@gmail.com> <20200920012216.GE3673389@lunn.ch>
+In-Reply-To: <20200920012216.GE3673389@lunn.ch>
+Subject: RE: R: [PATCH v2 4/4] dt-bindings: net: Document use of mac-address-increment
+Date:   Sun, 20 Sep 2020 11:45:08 +0200
+Message-ID: <002a01d68f32$bc737bb0$355a7310$@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQJTwTIROpBsKHcYsKMkb8exrd/FtgHUg4PZAkc+4zACC3fAJQJmQYzGqDJ2ekA=
+Content-Language: it
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+> On Sun, Sep 20, 2020 at 02:39:39AM +0200, ansuelsmth@gmail.com
+> wrote:
+> >
+> >
+> > > -----Messaggio originale-----
+> > > Da: Andrew Lunn <andrew@lunn.ch>
+> > > Inviato: domenica 20 settembre 2020 02:31
+> > > A: Ansuel Smith <ansuelsmth@gmail.com>
+> > > Cc: Miquel Raynal <miquel.raynal@bootlin.com>; Richard Weinberger
+> > > <richard@nod.at>; Vignesh Raghavendra <vigneshr@ti.com>; Rob
+> Herring
+> > > <robh+dt@kernel.org>; David S. Miller <davem@davemloft.net>; Jakub
+> > > Kicinski <kuba@kernel.org>; Heiner Kallweit <hkallweit1@gmail.com>;
+> > > Russell King <linux@armlinux.org.uk>; Frank Rowand
+> > > <frowand.list@gmail.com>; Boris Brezillon <bbrezillon@kernel.org>;
+> linux-
+> > > mtd@lists.infradead.org; devicetree@vger.kernel.org; linux-
+> > > kernel@vger.kernel.org; netdev@vger.kernel.org
+> > > Oggetto: Re: [PATCH v2 4/4] dt-bindings: net: Document use of mac-
+> > > address-increment
+> > >
+> > > > +  mac-address-increment:
+> > > > +    description:
+> > > > +      The MAC address can optionally be increased (or decreased
+using
+> > > > +      negative values) from the original value readed (from a nvmem
+> > cell
+> > >
+> > > Read is irregular, there is no readed, just read.
+> > >
+> > > > +      for example). This can be used if the mac is readed from a
+> > dedicated
+> > > > +      partition and must be increased based on the number of device
+> > > > +      present in the system.
+> > >
+> > > You should probably add there is no underflow/overflow to other bytes
+> > > of the MAC address. 00:01:02:03:04:ff + 1 == 00:01:02:03:04:00.
+> > >
+> > > > +    minimum: -255
+> > > > +    maximum: 255
+> > > > +
+> > > > +  mac-address-increment-byte:
+> > > > +    description:
+> > > > +      If 'mac-address-increment' is defined, this will tell what
+byte
+> > of
+> > > > +      the mac-address will be increased. If 'mac-address-increment'
+is
+> > > > +      not defined, this option will do nothing.
+> > > > +    default: 5
+> > > > +    minimum: 0
+> > > > +    maximum: 5
+> > >
+> > > Is there a real need for this? A value of 0 seems like a bad idea,
+> > > since a unicast address could easily become a multicast address, which
+> > > is not valid for an interface address. It also does not seem like a
+> > > good idea to allow the OUI to be changed. So i think only bytes 3-5
+> > > should be allowed, but even then, i don't think this is needed, unless
+> > > you do have a clear use case.
+> > >
+> > >     Andrew
+> >
+> > Honestly the mac-address-increment-byte is added to give user some
+> control
+> > but I
+> > don't really have a use case for it. Should I limit it to 3 or just
+remove
+> > the function?
+> 
+> If you have no use case, just remove it and document that last byte
+> will be incremented. I somebody does need it, it can be added in a
+> backwards compatible way.
+> 
+>      Andrew
 
-please pull two more fixes for ghes_edac resulting from playing with
-CONFIG_DEBUG_TEST_DRIVER_REMOVE=y.
+I just rechecked mac-address-increment-byte and we have one device that
+use it and would benefits from this.  I will change the Documentation to
+min 3 and leave it.
 
-Thx.
-
----
-The following changes since commit 856deb866d16e29bd65952e0289066f6078af773:
-
-  Linux 5.9-rc5 (2020-09-13 16:06:00 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git tags/edac_urgent_for_v5.9_rc6
-
-for you to fetch changes up to 251c54ea26fa6029b01a76161a37a12fde5124e4:
-
-  EDAC/ghes: Check whether the driver is on the safe list correctly (2020-09-15 09:42:15 +0200)
-
-----------------------------------------------------------------
-Two fixes for resulting from CONFIG_DEBUG_TEST_DRIVER_REMOVE=y experiments:
-
-* The first one completes a previous fix to reset a local structure
-containing scanned system data properly so that the driver rescans, as
-it should, on a second load.
-
-* The second one addresses a refcount underflow due to not paying
-attention to the driver whitelest on unregister.
-
-----------------------------------------------------------------
-Borislav Petkov (2):
-      EDAC/ghes: Clear scanned data on unload
-      EDAC/ghes: Check whether the driver is on the safe list correctly
-
- drivers/edac/ghes_edac.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/edac/ghes_edac.c b/drivers/edac/ghes_edac.c
-index 54ebc8afc6b1..94d1e3165052 100644
---- a/drivers/edac/ghes_edac.c
-+++ b/drivers/edac/ghes_edac.c
-@@ -508,6 +508,7 @@ int ghes_edac_register(struct ghes *ghes, struct device *dev)
- 		if (!force_load && idx < 0)
- 			return -ENODEV;
- 	} else {
-+		force_load = true;
- 		idx = 0;
- 	}
- 
-@@ -629,9 +630,13 @@ void ghes_edac_unregister(struct ghes *ghes)
- 	struct mem_ctl_info *mci;
- 	unsigned long flags;
- 
-+	if (!force_load)
-+		return;
-+
- 	mutex_lock(&ghes_reg_mutex);
- 
- 	system_scanned = false;
-+	memset(&ghes_hw, 0, sizeof(struct ghes_hw_desc));
- 
- 	if (!refcount_dec_and_test(&ghes_refcount))
- 		goto unlock;
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
