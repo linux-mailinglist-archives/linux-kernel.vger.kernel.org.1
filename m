@@ -2,92 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BABD2711F5
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 06:02:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23B8C2711FD
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 06:10:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726874AbgITECT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 00:02:19 -0400
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:31530 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726760AbgITECT (ORCPT
+        id S1726900AbgITEKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 00:10:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726760AbgITEKD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 00:02:19 -0400
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 08K424E7004449;
-        Sun, 20 Sep 2020 13:02:04 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 08K424E7004449
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1600574525;
-        bh=Wa3KUda/n9V5QenLQvNQJmVfwyqNjY1oIGQXeyq+QYg=;
-        h=From:Date:Subject:To:Cc:From;
-        b=sVDUHyV5vIBU7P+CBdwW0mt8sP0DaIpnLqwuazcTa043CZGCq4yq69ySrzKMMYgdb
-         aIgJbd17f3g9Mevt4efEKlCgO3GuziUtyriJ8fZ80BqWi/kqAtaYqs77n9H9m9Jiuu
-         Q2rA7G3iERyD6V2U0AqasmindKuAMgBrzZiIIiDjJAJsqtW/Te63sTpDnSDHy8pllz
-         xMIe5YJGdgmR1Ohr36UBARJKTii8x6vg25NJWHraGOjqKI0YYQivGL+xoyWQ+Ono4e
-         jY5GUE5OD3G5JogbLPBbAy/xxeD9XcG+/q3/WHbhIV18vkWMvaQ1CtFDe+69exWwXO
-         kISF0Sk5mYZ/w==
-X-Nifty-SrcIP: [209.85.214.181]
-Received: by mail-pl1-f181.google.com with SMTP id d19so5159499pld.0;
-        Sat, 19 Sep 2020 21:02:04 -0700 (PDT)
-X-Gm-Message-State: AOAM531sgMqxaR4XPc4qDRACIedsT2CSIfkcOKlHfRIR76FfJYk4L+Bn
-        kR6UIpRDEPpwCp4dr//WZ7/yzUr8X9f80uAs3ow=
-X-Google-Smtp-Source: ABdhPJzwj+dAD+WWv6NRA0MG1jdWIK7fmIg9frgpKy2FYGWrXg6STRB0xmbQQY5sLKtT7dxxiMFLCjhAVCT4AmkyaI8=
-X-Received: by 2002:a17:90b:360a:: with SMTP id ml10mr18902509pjb.198.1600574523871;
- Sat, 19 Sep 2020 21:02:03 -0700 (PDT)
-MIME-Version: 1.0
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 20 Sep 2020 13:01:27 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQPTUCWVk=xDr9bv6X+TANOZHfr4YKenP64Mq+sgFTmDw@mail.gmail.com>
-Message-ID: <CAK7LNAQPTUCWVk=xDr9bv6X+TANOZHfr4YKenP64Mq+sgFTmDw@mail.gmail.com>
-Subject: [GIT PULL] Kbuild fixes for v5.9-rc6
+        Sun, 20 Sep 2020 00:10:03 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12255C061755;
+        Sat, 19 Sep 2020 21:10:03 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id f18so6167519pfa.10;
+        Sat, 19 Sep 2020 21:10:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=iVZZCW0Q20YwtnqRpz5fHXWAFsGsghxnEHFSoHHWKok=;
+        b=CavDZFttb/gUf99uBpf9pfSNDm02GOxgz3Suw/4DjxSkSsb7AiD0ERNZsOp8othQBM
+         GYgZXmV6MXKRX4bvHmDDEa51rE+99UD+8JEYUMa7EqMghIjIGJSHwWqTAGhB+Fuw7vyD
+         T0uZSX7aGlkXALg+zyNTWyXLxxDJ+mb+r5WONxgsp16+MsBdT4QYs4NxFMqyXpGPUGUP
+         DtJ3VR2WnxYgDJZO4qz1U+OtNqFnjeJMKzhqaBCuEkiyQztL0N++I1IPTNHo6QGez70Y
+         5ET1S4Y8ZCJpw1oklHsrA2kYW+t5W/ziwKwD1PqYfs27Mr52SJQwdzCqRo716rdXLmtL
+         njWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=iVZZCW0Q20YwtnqRpz5fHXWAFsGsghxnEHFSoHHWKok=;
+        b=Z+WH0yPjGFAHHqYeK05zCM6VhSCWy5VceRilzZ1xLI8/VvlcjNJaUrxD6pzQkX3gZ4
+         TCaaJ7EMlwErdxH1brPdRONcnYC3211ciT5/v0euAwmlxrngE832fZP48Ik48dfmAaT0
+         URyxZBC1OirT6ffr3D1kGEGBfHKsY10OcGa8yUPD/A6w+ekeXPS3g9N3ljB5d70L+SBE
+         sKdj7HEesbO3Ktw7t0KZVB8KBoSd04bSPGrBNZOWmgcGjxZvIEjZqhrnb+bO77s2PANL
+         otn8ZgaLxb+1++eokg65KqLYaV7eoLtRs5OTOqoUYAK8el34XvyWvi8cMoaaaLWVV6MW
+         I19Q==
+X-Gm-Message-State: AOAM533yIpivkT1aROXYpnRSHfA6HDcpsTqynQbM2JZuB2Hh4bo18Zxj
+        GKiyUis77qgMjbR8Q+Mjgg8=
+X-Google-Smtp-Source: ABdhPJzRmSPfpDwouZKRpY/bWsVcTkdZ756mwTwEgHqQs4AFD7Eg+Dian3nrrsKDk6t2uUg6rvtXFQ==
+X-Received: by 2002:a63:204c:: with SMTP id r12mr32633300pgm.262.1600575002389;
+        Sat, 19 Sep 2020 21:10:02 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id 141sm8240642pfb.50.2020.09.19.21.10.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Sep 2020 21:10:01 -0700 (PDT)
+Date:   Sat, 19 Sep 2020 21:09:59 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+Subject: [git pull] Input updates for v5.9-rc5
+Message-ID: <20200920040959.GA5175@dtor-ws>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Linus,
 
-Please pull more fixes.
+Please pull from:
+
+	git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git for-linus
+
+to receive updates for the input subsystem. Just a couple of driver
+quirks.
+
+Changelog:
+---------
+
+Hans de Goede (1):
+      Input: i8042 - add Entroware Proteus EL07R4 to nomux and reset lists
+
+Vincent Huang (1):
+      Input: trackpoint - add new trackpoint variant IDs
+
+Diffstat:
+--------
+
+ drivers/input/mouse/trackpoint.c      | 10 ++++++----
+ drivers/input/mouse/trackpoint.h      | 10 ++++++----
+ drivers/input/serio/i8042-x86ia64io.h | 16 ++++++++++++++++
+ 3 files changed, 28 insertions(+), 8 deletions(-)
+
 Thanks.
 
 
-
-
-The following changes since commit 856deb866d16e29bd65952e0289066f6078af773:
-
-  Linux 5.9-rc5 (2020-09-13 16:06:00 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
-tags/kbuild-fixes-v5.9-3
-
-for you to fetch changes up to a46afd11414758233f23798cc5be51e554d04efe:
-
-  kconfig: qconf: revive help message in the info view (2020-09-20
-12:58:54 +0900)
-
-----------------------------------------------------------------
-Kbuild fixes for v5.9 (3rd)
-
- - fix qconf warnings and revive help message
-
-----------------------------------------------------------------
-Masahiro Yamada (3):
-      kconfig: qconf: use delete[] instead of delete to free array (again)
-      kconfig: qconf: fix incomplete type 'struct gstr' warning
-      kconfig: qconf: revive help message in the info view
-
- scripts/kconfig/lkc.h       | 47
-++++++++++++++++++++++++++++++-----------------
- scripts/kconfig/lkc_proto.h | 14 --------------
- scripts/kconfig/qconf.cc    | 13 +++++++++----
- 3 files changed, 39 insertions(+), 35 deletions(-)
-
-
 -- 
-Best Regards
-Masahiro Yamada
+Dmitry
