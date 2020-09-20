@@ -2,92 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6FD52714F7
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 16:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A882714FB
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 16:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726572AbgITOSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 10:18:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726427AbgITOSX (ORCPT
+        id S1726392AbgITOUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 10:20:48 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:57238 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726267AbgITOUs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 10:18:23 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE691C0613CE
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 07:18:22 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id a3so13810260oib.4
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 07:18:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tXYVVjGeX/xuyfCibo3bpfqRj6kkCOVBFK4enHIceHE=;
-        b=Wg6OqqlH6rIm7Xfhn2EakhbSEojfIFe0MYKmRSXC0V+4z00gQXgjQYwbDrcRQ83MKd
-         3hqA767bQlOQY7GH5QnV3szoPe6Hkl4a93vPVwNetPylG9f1Od3hBS3PozkeewcN4+sx
-         SLbbh5ePxxAttoxhvDaIAOM8UF7Oy0wHhAScghdyyFUzYkvSlUGhHf5HI2JoV63MSSlF
-         JcfuAw+l+rIMMLvs0j2lf6rHpJDLoF3qRKrweIfiyblm6yAdphVbGI14KKwpcqi+bdC5
-         UdBzZa+2iP+oHItcJbBvT6Q+Z3kVdJK6RY7J4Trdu30LCH4mlEqUhJCGTkIDuVf4KjRC
-         OxPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tXYVVjGeX/xuyfCibo3bpfqRj6kkCOVBFK4enHIceHE=;
-        b=FJkMchKZ+6KV0sGK7W39V5fPj7vPHkBcsXvu2GD7dBqejSBoJcJjWM9SeZ83tKq03m
-         ehYpiuMe2buRzrWRE99SgXfaaljwsGMrWHsaMqDt0qXccxrDIaBy7GEvXF/DfPPxzyQt
-         o/wcZH3rwLb4gupfZuUljGiPmwrpimUvTSm7OMddlUGjOZY/STvgg8AuH47zmTRAzGbU
-         G13U2OERXYso2pU1Aqm0O4OVJtlY4oKlgkMdeWi9Scu1y4m+xiCRdr3gxjjht3TXgT9J
-         sTJcnmdRIbO6bkKsPT9jjEWhK7hvgcrff193V8lRANxq6+32J4MaolrW0eKHercyDIRG
-         eBvA==
-X-Gm-Message-State: AOAM532x1DEMV5Dz2rsAvFbFtlTlF6v2HjUfx1viQa4Zm0lZRfthfndl
-        VFMgPWmzwE8iykXcip023IOlra98741oBe5uvAfAsg==
-X-Google-Smtp-Source: ABdhPJyrqOxV6k9JkXLWX+/F0Z1cR467cTi2opsDkYvpZyhMXkoQG5oWI2IbqBq37FNrxJaYLykL8u/i2T7+qBJ0mcQ=
-X-Received: by 2002:a05:6808:a05:: with SMTP id n5mr15212386oij.154.1600611502232;
- Sun, 20 Sep 2020 07:18:22 -0700 (PDT)
+        Sun, 20 Sep 2020 10:20:48 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kK0Cs-0007OB-Eu; Sun, 20 Sep 2020 14:20:46 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     John Stultz <john.stultz@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] misc: hisi_hikey_usb: clean up indentation issue
+Date:   Sun, 20 Sep 2020 15:20:46 +0100
+Message-Id: <20200920142046.33123-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20200918205633.2698654-1-robert.marko@sartura.hr>
- <20200918205633.2698654-3-robert.marko@sartura.hr> <20200920001904.GB3673389@lunn.ch>
-In-Reply-To: <20200920001904.GB3673389@lunn.ch>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Sun, 20 Sep 2020 16:18:11 +0200
-Message-ID: <CA+HBbNHqfwErgUg41h9-zZoPNwS1wu5iT_jwvMohqWcT-aH0Hg@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] net: mdio-ipq4019: add Clause 45 support
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        David Miller <davem@davemloft.net>, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Luka Perkov <luka.perkov@sartura.hr>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 20, 2020 at 2:19 AM Andrew Lunn <andrew@lunn.ch> wrote:
->
-> > +
-> > +/* 0 = Clause 22, 1 = Clause 45 */
-> > +#define MDIO_MODE_BIT                                BIT(8)
->
-> How about calling this MDIO_MODE_C45
+From: Colin Ian King <colin.king@canonical.com>
 
-Good idea, will rename it.
+There is a return statement that is indented too deeply,
+fix this by removing the extraneous tab.
 
->
-> > +             /* Enter Clause 45 mode */
-> > +             data = readl(priv->membase + MDIO_MODE_REG);
-> > +
-> > +             data |= MDIO_MODE_BIT;
-> > +
-> > +             writel(data, priv->membase + MDIO_MODE_REG);
->
-> It then becomes clearer what this does.
->
-> Otherwise this looks O.K.
->
->           Andrew
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/misc/hisi_hikey_usb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-v4 has been pushed to address your comment
-Regards,
-Robert
+diff --git a/drivers/misc/hisi_hikey_usb.c b/drivers/misc/hisi_hikey_usb.c
+index 5759e7209023..cc93569e601c 100644
+--- a/drivers/misc/hisi_hikey_usb.c
++++ b/drivers/misc/hisi_hikey_usb.c
+@@ -162,7 +162,7 @@ static int hisi_hikey_usb_parse_kirin970(struct platform_device *pdev,
+ 		dev_err(&pdev->dev,
+ 			"get hub-vdd-supply failed with error %ld\n",
+ 			PTR_ERR(regulator));
+-			return PTR_ERR(regulator);
++		return PTR_ERR(regulator);
+ 	}
+ 	hisi_hikey_usb->regulator = regulator;
+ 
+-- 
+2.27.0
+
