@@ -2,114 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1723E27161A
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 18:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 559F0271627
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 19:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbgITQ7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 12:59:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48302 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726392AbgITQ7u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 12:59:50 -0400
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0253C2158C
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 16:59:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600621190;
-        bh=x0CbGoy7QDKeuRiDyZ0r+bpumnscmCVOPI/85NlktW8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=gJKTktW4SZM9Nk5DOVt1OrRoD5xvcMTHGvsORGcnvvYrrRwkT7FctEN7F9OgfkMkf
-         go8qh4j37RWcESJvMJRLehEaF3oKhwPYJJdJDts/+toGi7k1LIglAiuuVrdC6I4+Xp
-         /LzZmxNyVgp/8l8nI8i/3m9FhkW6jCz/eC4EQY4Q=
-Received: by mail-wm1-f48.google.com with SMTP id s13so9863644wmh.4
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 09:59:49 -0700 (PDT)
-X-Gm-Message-State: AOAM533O4JS3BMumURLQmyyTrgxWDZXOU6w4NiEmG7wGq94a8D4emCOx
-        3Y9BekiorryK5zsFc0FWAB3bb1xY+5HXH7Gz33Vvxw==
-X-Google-Smtp-Source: ABdhPJwqhOCovrDdCcRZECZNQYs8Sx/d9wwPnQKSY4d4VjHeXmP8XzKxWrTfmcwJ7rQVtp7oa0fbaMUpJAjukisl/1Y=
-X-Received: by 2002:a1c:7e15:: with SMTP id z21mr25730921wmc.21.1600621188572;
- Sun, 20 Sep 2020 09:59:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200919224122.GJ3421308@ZenIV.linux.org.uk> <36CF3DE7-7B4B-41FD-9818-FDF8A5B440FB@amacapital.net>
- <20200919232411.GK3421308@ZenIV.linux.org.uk> <CALCETrViwOdFia_aX4p4riE8aqop1zoOqVfiQtSAZEzheC+Ozg@mail.gmail.com>
- <20200920025745.GL3421308@ZenIV.linux.org.uk>
-In-Reply-To: <20200920025745.GL3421308@ZenIV.linux.org.uk>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Sun, 20 Sep 2020 09:59:36 -0700
-X-Gmail-Original-Message-ID: <CALCETrWj1i-oyfA1rCXsNqdJddK6Vwm=W31YEf=k-OMBTC0vHw@mail.gmail.com>
-Message-ID: <CALCETrWj1i-oyfA1rCXsNqdJddK6Vwm=W31YEf=k-OMBTC0vHw@mail.gmail.com>
-Subject: Re: [PATCH 1/9] kernel: add a PF_FORCE_COMPAT flag
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Andy Lutomirski <luto@kernel.org>, Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Linux SCSI List <linux-scsi@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-aio <linux-aio@kvack.org>, io-uring@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Network Development <netdev@vger.kernel.org>,
-        keyrings@vger.kernel.org,
-        LSM List <linux-security-module@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726475AbgITRAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 13:00:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726360AbgITRAO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 13:00:14 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA46C061755
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 10:00:13 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id a17so10339048wrn.6
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 10:00:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=aus.edu; s=google;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=jOy8pCEvDvUVsY7c+dPWpcPOlK4T09BoZC0Ovrp+G58=;
+        b=DBHC7IKKSVH01+nHHdBW0Wp0bft7zE16WjPNV8gVjZ4/iDYLymkvYgfh9P//8f+Qpn
+         OnE8U24HlUsqHzpU/E/Ek+IM75Ob1Q5ouYcg2rCQmobTSttvdCQCGDUDWEoAFS+qyprG
+         LHuPvH3nTXhL7twIm2TwlUtc9chK8XiLasUVIAHkP57WAwVB+lvVAP1/8iHUmfYC+MNG
+         KCtBUZ3r9xGvrquNVSV4ZBIwT1DFRdHuSCdiR301iNyFZ5uQ+VVSWPmsQmEi1cDH4Yrl
+         d/LKNLM1IAjHS5M6+/RGiGr1X0xc+mCoxAhQJwUmKuITr6QXbamPohoAK5Lm5STnMU4b
+         4COg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=jOy8pCEvDvUVsY7c+dPWpcPOlK4T09BoZC0Ovrp+G58=;
+        b=WsnuM1gFSltUAKfSo+izx+HLEYQBmRSfN41YxGWlM7TmxHuBYi8TbFamimH7kwjB8E
+         WPcojgzgv/qjRYCa1R4asEMsfT8xRI02V/Wr5zsMQMxClEFXSWBtzZEP8Gl2J2KLMHi4
+         iN7+lf9oTSQFtjHLqqctfQ/rlqv6alunVipgJ/mGLgK78RsLY95OCEPZrAIaQKG7Wr1m
+         vu1pmAl3j9sTU2mcfFcJ3gHgIEaQw5uOZKcwQjIzFWn/OLzI7p5NFPGqvA+mQqKWfyxv
+         6s9i+eN7jAtueEtnu9GrqgoTobF0A9yjLRV8obeQko+bnf3Nbv6NmWlIdTqQZBF5E6yE
+         lq8A==
+X-Gm-Message-State: AOAM533B25vyYqIOxVn4wqgZ9BrTPkWvScRsGgmjHOI9tj9aXtCrSiEP
+        9lgR3YzeBVSMYVOVV35kA/j8i0kvSzUa+jRIRuZ3zO0+4ALOFAcEdzU1FiqhC5zMKF8HjSvbdEI
+        Cq+DxD5r7owjjtZNGbBe9N/1kCpqldeozHbljYHmMg1VVuD3DhNUp3XwZpq/ingz+TqMnDLIgxq
+        s=
+X-Google-Smtp-Source: ABdhPJwM03l3cpdbOnDJvxPxLpecxdRj7HYc5iJIcn5OxMWFNGbq0WLbsiAY0GHarOTgo3hmB4SPqw==
+X-Received: by 2002:a5d:6404:: with SMTP id z4mr50798032wru.423.1600621212104;
+        Sun, 20 Sep 2020 10:00:12 -0700 (PDT)
+Received: from localhost.localdomain ([2001:8f8:1461:1f22:70ac:7893:ce11:b470])
+        by smtp.gmail.com with ESMTPSA id v17sm18002592wrc.23.2020.09.20.10.00.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 20 Sep 2020 10:00:11 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Asif Rasheed <b00073877@aus.edu>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH] Staging list.h: Modified comment
+Date:   Sun, 20 Sep 2020 21:00:09 +0400
+Message-Id: <2634BEC0-93C5-4630-AC27-9A0BD56641D0@aus.edu>
+References: <20200920151822.GA29330@paulmck-ThinkPad-P72>
+Cc:     linux-kernel@vger.kernel.org
+In-Reply-To: <20200920151822.GA29330@paulmck-ThinkPad-P72>
+To:     paulmck@kernel.org
+X-Mailer: iPhone Mail (18A373)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 19, 2020 at 7:57 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> On Sat, Sep 19, 2020 at 05:14:41PM -0700, Andy Lutomirski wrote:
->
-> > > 2) have you counted the syscalls that do and do not need that?
-> >
-> > No.
->
-> Might be illuminating...
->
-> > > 3) how many of those realistically *can* be unified with their
-> > > compat counterparts?  [hint: ioctl(2) cannot]
-> >
-> > There would be no requirement to unify anything.  The idea is that
-> > we'd get rid of all the global state flags.
->
-> _What_ global state flags?  When you have separate SYSCALL_DEFINE3(ioctl...)
-> and COMPAT_SYSCALL_DEFINE3(ioctl...), there's no flags at all, global or
-> local.  They only come into the play when you try to share the same function
-> for both, right on the top level.
+Everything looks good. Thank you!
 
-...
+Regards,
+Asif Rasheed
 
->
-> > For ioctl, we'd have a new file_operation:
-> >
-> > long ioctl(struct file *, unsigned int, unsigned long, enum syscall_arch);
-> >
-> > I'm not saying this is easy, but I think it's possible and the result
-> > would be more obviously correct than what we have now.
->
-> No, it would not.  Seriously, from time to time a bit of RTFS before grand
-> proposals turns out to be useful.
-
-As one example, look at __sys_setsockopt().  It's called for the
-native and compat versions, and it contains an in_compat_syscall()
-check.  (This particularly check looks dubious to me, but that's
-another story.)  If this were to be done with equivalent semantics
-without a separate COMPAT_DEFINE_SYSCALL and without
-in_compat_syscall(), there would need to be some indication as to
-whether this is compat or native setsockopt.  There are other
-setsockopt implementations in the net stack with more
-legitimate-seeming uses of in_compat_syscall() that would need some
-other mechanism if in_compat_syscall() were to go away.
-
-setsockopt is (I hope!) out of scope for io_uring, but the situation
-isn't fundamentally different from read and write.
+> On 20 Sep 2020, at 7:18 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
+>=20
+> =EF=BB=BFOn Sun, Sep 20, 2020 at 05:31:54PM +0400, Asif Rasheed wrote:
+>> We (everyone from my Operating System Lecture Section) were confused on w=
+hether the list is circular or not (because no one bothered to look at the i=
+mplementation). Modified the comment on top for clarification.
+>>=20
+>> Signed-off-by: Asif Rasheed <b00073877@aus.edu>
+>=20
+> Good point!  "Simple" here means "not complex", but given the size of
+> this file, one could argue that this characterization is long obsolete.
+>=20
+> I queued your patch for v5.11, but as usual could not resist the
+> urge to edit the commit log.  Could you please review the version
+> below to make sure that I did not mess anything up?
+>=20
+>                            Thanx, Paul
+>=20
+> ------------------------------------------------------------------------
+>=20
+> commit 8ac8c191b5f1a42b02462d5b35675f2439097b86
+> Author: Asif Rasheed <b00073877@aus.edu>
+> Date:   Sun Sep 20 17:31:54 2020 +0400
+>=20
+>    list.h: Update comment to explicitly note circular lists
+>=20
+>    The students in the Operating System Lecture Section at the
+>    American University of Sharjah were confused by the header comment
+>    in include/linux/list.h, which says "Simple doubly linked list
+>    implementation".  This comment means "simple" as in "not complex",
+>    but "simple" is often used in this context to mean "not circular".
+>    This commit therefore avoids this ambiguity by explicitly calling out
+>    "circular".
+>=20
+>    Signed-off-by: Asif Rasheed <b00073877@aus.edu>
+>    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>=20
+> diff --git a/include/linux/list.h b/include/linux/list.h
+> index 0d0d17a..796975c 100644
+> --- a/include/linux/list.h
+> +++ b/include/linux/list.h
+> @@ -9,7 +9,7 @@
+> #include <linux/kernel.h>
+>=20
+> /*
+> - * Simple doubly linked list implementation.
+> + * Circular doubly linked list implementation.
+>  *
+>  * Some of the internal functions ("__xxx") are useful when
+>  * manipulating whole lists rather than single entries, as
