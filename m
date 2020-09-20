@@ -2,86 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3931271492
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 15:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37D8A2714B4
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 15:56:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726375AbgITNcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 09:32:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726305AbgITNcB (ORCPT
+        id S1726467AbgITN4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 09:56:11 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:46411 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726305AbgITN4J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 09:32:01 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D71F6C061755
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 06:32:00 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id o5so10037012wrn.13
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 06:32:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=aus.edu; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=t+IvPcfmSxe2t3wOAmoqckSrWQKodDu46tgSEpw2wHE=;
-        b=JHhm/W2RyvXAqMaUmjKVWq7H24NEtvOSeAywzzQnB2wCEg8wmj5WI3fWCTOpyjamuK
-         28lTtSO7VOMPilANNLAropRcT/VCd2xUUQnB/EnuKKU7+XHQ7VeBcKaIng1mlPlQxdP3
-         KfPNL6a1bMLIEf8eQRmDJsh5KwHirlz3eV8h+YvgoB7pqXnymnvf3FPBi029rTOZDIlb
-         tdD+yUrUqYtBShot6Pecc2/a8MhXC0J19+modRn5LBDWr1aKdqOXMXiCy9QfMztWlcNv
-         plCuxJDPs3ysN8go9PcGEJ6or1k+IsKAaDdLrcx/it9xLh21ij3z6ngK7Pyp+C1ZUmFp
-         SBeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=t+IvPcfmSxe2t3wOAmoqckSrWQKodDu46tgSEpw2wHE=;
-        b=lPONIktPlRAmX45Xw3PrXhZ8pJOmBSN8C1d7+1KuwG4vMYqzO6+NGieW+uKBOiyKNF
-         BXp3NULhN8pKNVx+A3wWMgs6ewwMG1a/K2FLhudEa3GfgJeWtfzvCTGghn/G2F636PVQ
-         4sILd9Fp+OYtYa6Dk49yqB0X1pepC2DUEUcf0005WG+KQljRnyqcasEGA5ASIG8dvCxm
-         GqIG0Abjb+jKNFmclKIvHTaEn36pP77fvx0kfM8eiTXRYIYFpyIRH2hufq3EnGNDCPYp
-         k64s93D+6j0si41NzeZ+Ir7axMIoUdcrTkIBnR28EZItXgQqBw22w7cQpXujlO93ejV2
-         NPSw==
-X-Gm-Message-State: AOAM5315EAP3JMQb/ckSYu9bCkS/Bmth3ey0MrqzTClRosJeK//l+UfE
-        YxO2A5AlMZ9RXvQanpnxFkscKDwpQ5RSth+Kd6dYlUT0u4qOrQCiCcZEW9/AkcNgXzT31lBRE9s
-        8oLQERqtwxzulfaYmvPc4EFmR2Q==
-X-Google-Smtp-Source: ABdhPJygjEDE6grx/gL+fC7zGvAyU3i47iV/YNJg0Yr/lgiDX8xyI56khkDqnyGlIcFOAvIjq+gPjA==
-X-Received: by 2002:a5d:4fcc:: with SMTP id h12mr47580527wrw.199.1600608719416;
-        Sun, 20 Sep 2020 06:31:59 -0700 (PDT)
-Received: from localhost.localdomain (bba460270.alshamil.net.ae. [86.96.43.22])
-        by smtp.gmail.com with ESMTPSA id m4sm16403469wro.18.2020.09.20.06.31.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 20 Sep 2020 06:31:58 -0700 (PDT)
-From:   Asif Rasheed <b00073877@aus.edu>
-To:     paulmck@kernel.org
-Cc:     linux-kernel@vger.kernel.org, b00073877@aus.edu
-Subject: [PATCH] Staging list.h: Modified comment
-Date:   Sun, 20 Sep 2020 17:31:54 +0400
-Message-Id: <20200920133154.71514-1-b00073877@aus.edu>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+        Sun, 20 Sep 2020 09:56:09 -0400
+Received: from mail-qk1-f179.google.com ([209.85.222.179]) by
+ mrelayeu.kundenserver.de (mreue011 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MMoOy-1k1Dwv2q28-00Ijbf; Sun, 20 Sep 2020 15:56:05 +0200
+Received: by mail-qk1-f179.google.com with SMTP id w16so12205786qkj.7;
+        Sun, 20 Sep 2020 06:56:04 -0700 (PDT)
+X-Gm-Message-State: AOAM533+Tg7GsRoHCgP40ir59ld5C/1Vm0N7+PC3SG26gIqEIleq3ONH
+        fksm3LFFVG+V0/cydp/yoybdjQO0QWCzFdtRnVg=
+X-Google-Smtp-Source: ABdhPJwjhkL3KLtOGKzNMPo/as4noBlQ9Jb8z4PXaKINeNIOOA3tWOtTq+bHeowiwT9kTTVa6K2ILOsBaWuTHLMSx30=
+X-Received: by 2002:a37:a495:: with SMTP id n143mr41151530qke.394.1600610163343;
+ Sun, 20 Sep 2020 06:56:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200918124533.3487701-1-hch@lst.de> <20200918124533.3487701-2-hch@lst.de>
+ <20200918134012.GY3421308@ZenIV.linux.org.uk> <20200918134406.GA17064@lst.de>
+ <20200918135822.GZ3421308@ZenIV.linux.org.uk> <20200918151615.GA23432@lst.de> <20200919220920.GI3421308@ZenIV.linux.org.uk>
+In-Reply-To: <20200919220920.GI3421308@ZenIV.linux.org.uk>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sun, 20 Sep 2020 15:55:47 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3QApj3isPu3TkLahArsfb5jaABb7DJ7EKMxey1T1YPbA@mail.gmail.com>
+Message-ID: <CAK8P3a3QApj3isPu3TkLahArsfb5jaABb7DJ7EKMxey1T1YPbA@mail.gmail.com>
+Subject: Re: [PATCH 1/9] kernel: add a PF_FORCE_COMPAT flag
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        David Howells <dhowells@redhat.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        linux-aio <linux-aio@kvack.org>, io-uring@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Networking <netdev@vger.kernel.org>, keyrings@vger.kernel.org,
+        LSM List <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:DEeFGJUPrk6u/LSjSFLEBpcAP+oeK32PoUjTZYC6fPIs6n+k1mv
+ XDMz6XlgCh1Nyx4j17+27me+L64NgDjpVdd7dXJCFrjon/aTAyIu+oh95nm9X9KaWl6wa9w
+ jNEmllGRXAiSS7LrTZQ8rS4tQWtbNU8yEqoB7YoTh84C0NTdLZyWEaqn7c0+w0xlPbaxYu4
+ ur3P1v08FrYIfJVpNVfUg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:6mkBVY6Bong=:SqXPt0trLeYLMHgx1cvXuJ
+ U5p4iiPSwCCzF8iboycWFBfO05sNkLPSd9pwnBrqqztOBcPkNasCWa49qwp+g4/XCsXhPAeIp
+ ZEo2wIs2JuHkQHCsr1J07cwiEuu+Jpl8XT2iP7S5i5y3yZeYsvvpW+zjEoGvo0lUUzt50b+DF
+ d+etXRDTAS4MI0KZwR66GwCASGNxKnFcidiAQ7uHqKF4jBCdVZRVVC3unjWR/zDQrf1UsSGl5
+ yiA+FMkQ1meD61zxEhK4DYTj39EHaC1fCYgevYfr50bwM5KeXfxunkJdrXZB40zmP6hwiP8U7
+ ZAYUI2x6IdnJZ7j005UTxSUKkFfiSfHKfIcRoNLVxmyXZFSZpZv1lHhqR5Lc7mlnrYMV7yfwX
+ jEWPWgGYdVS/0Pqp4mDctdka7FBBmnDQpnQCFWndo9r29o5kZmF/0FWZTAYaiXIc1zXQ0CNGs
+ ITo99AkK8c2i8ikDCjq3PgczN6CdTTM3aiqzqHKeSvyXfbkvI1hCX/5ydNZHKVZf8msKr2S8H
+ vq/kWx12tz5+znGWLFrLlf7992gz4tbGhg+ohl2KdxHhWBaLbGq7B7TrxKF2dX7bnaN+L5Zp/
+ vJ8JYq605hJO1se4r8NW3ew1++WG531E7DL/6Lx0YnzfRjxiToXb8Pg4KnyC0djlxEMEwUAlv
+ CmSJKACAV0HY6EMSYJ8+oWpo6MOxbBfBPrBaLdo9nEybAZsqUhO7gMBhw4FLPWxPNJ4TahNDG
+ ZB13aOM7zMIaLy9bXTcJUkAShP8ZyjBNl+F3C7ClxLkP593ksjcwF70rTpIg8nnqaoxY/0Dee
+ smdON9VOaGsvyMjHBc085FK8V3s316O5YhVW2qcAg2UzaNBdL/34eax1MABsisTpCdIrIGW
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We (everyone from my Operating System Lecture Section) were confused on whether the list is circular or not (because no one bothered to look at the implementation). Modified the comment on top for clarification.
+On Sun, Sep 20, 2020 at 12:09 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> On Fri, Sep 18, 2020 at 05:16:15PM +0200, Christoph Hellwig wrote:
+> > On Fri, Sep 18, 2020 at 02:58:22PM +0100, Al Viro wrote:
+> > > Said that, why not provide a variant that would take an explicit
+> > > "is it compat" argument and use it there?  And have the normal
+> > > one pass in_compat_syscall() to that...
+> >
+> > That would help to not introduce a regression with this series yes.
+> > But it wouldn't fix existing bugs when io_uring is used to access
+> > read or write methods that use in_compat_syscall().  One example that
+> > I recently ran into is drivers/scsi/sg.c.
+>
+> So screw such read/write methods - don't use them with io_uring.
+> That, BTW, is one of the reasons I'm sceptical about burying the
+> decisions deep into the callchain - we don't _want_ different
+> data layouts on read/write depending upon the 32bit vs. 64bit
+> caller, let alone the pointer-chasing garbage that is /dev/sg.
 
-Signed-off-by: Asif Rasheed <b00073877@aus.edu>
----
- include/linux/list.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Would it be too late to limit what kind of file descriptors we allow
+io_uring to read/write on?
 
-diff --git a/include/linux/list.h b/include/linux/list.h
-index 0d0d17a10d25..796975c3c35c 100644
---- a/include/linux/list.h
-+++ b/include/linux/list.h
-@@ -9,7 +9,7 @@
- #include <linux/kernel.h>
- 
- /*
-- * Simple doubly linked list implementation.
-+ * Circular doubly linked list implementation.
-  *
-  * Some of the internal functions ("__xxx") are useful when
-  * manipulating whole lists rather than single entries, as
--- 
-2.24.3 (Apple Git-128)
+If io_uring can get changed to return -EINVAL on trying to
+read/write something other than S_IFREG file descriptors,
+that particular problem space gets a lot simpler, but this
+is of course only possible if nobody actually relies on it yet.
 
+      Arnd
