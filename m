@@ -2,97 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A7C627153F
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 17:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A44D3271540
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 17:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726382AbgITPGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 11:06:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51246 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726305AbgITPGj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 11:06:39 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 88EB620870;
-        Sun, 20 Sep 2020 15:06:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600614398;
-        bh=eF+JnFq4iVQVzHR+dMxoT/cJJg+WxK5PierVQVgRRow=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=n7OiQ5Ajr9+bxOXjvsZ6IMErGgjMDEFMnIM26xvZQnPPFS5bPusrTEDIBbMaWaf7O
-         DDeVviN3WVgAWeqp8LC5sZgdSQpeBX268cpMAV6fmQGqVuZTyignednhIkIotoKuXh
-         zUhfOeuO6i8cvW52oHTFVStN6UO71OdL8kJRwKMw=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 587FC35227C1; Sun, 20 Sep 2020 08:06:38 -0700 (PDT)
-Date:   Sun, 20 Sep 2020 08:06:38 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 4/4] rcu/tree: Use schedule_delayed_work() instead of
- WQ_HIGHPRI queue
-Message-ID: <20200920150638.GA5453@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200918194817.48921-1-urezki@gmail.com>
- <20200918194817.48921-5-urezki@gmail.com>
+        id S1726344AbgITPJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 11:09:45 -0400
+Received: from smtprelay0104.hostedemail.com ([216.40.44.104]:37384 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726267AbgITPJp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 11:09:45 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 1A7B7180A7FFE;
+        Sun, 20 Sep 2020 15:09:44 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1535:1544:1593:1594:1711:1730:1747:1777:1792:2197:2198:2199:2200:2393:2559:2562:2691:2828:2895:3138:3139:3140:3141:3142:3355:3622:3653:3865:3867:3868:3870:3871:3872:3873:3874:4250:4321:4470:4605:5007:6119:7514:7576:7903:7974:8825:10004:10848:11026:11232:11473:11658:11914:12043:12291:12295:12297:12438:12555:12663:12679:12683:12740:12895:13095:13255:13439:13894:14093:14097:14180:14181:14659:14721:21060:21080:21221:21324:21433:21451:21627:21740:21819:21990:30003:30022:30029:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: taste68_280c5f42713d
+X-Filterd-Recvd-Size: 5265
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf10.hostedemail.com (Postfix) with ESMTPA;
+        Sun, 20 Sep 2020 15:09:43 +0000 (UTC)
+Message-ID: <7958ded756c895ca614ba900aae7b830a992475e.camel@perches.com>
+Subject: Re: [PATCH v2] checkpatch: extend author Signed-off-by check for
+ split From: header
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org, apw@canonical.com,
+        linux-kernel@vger.kernel.org
+Date:   Sun, 20 Sep 2020 08:09:42 -0700
+In-Reply-To: <20200920091706.56276-1-dwaipayanray1@gmail.com>
+References: <20200920091706.56276-1-dwaipayanray1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918194817.48921-5-urezki@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 09:48:17PM +0200, Uladzislau Rezki (Sony) wrote:
-> Recently the separate worker thread has been introduced to
-> maintain the local page cache from the regular kernel context,
-> instead of kvfree_rcu() contexts. That was done because a caller
-> of the k[v]free_rcu() can be any context type what is a problem
-> from the allocation point of view.
+On Sun, 2020-09-20 at 14:47 +0530, Dwaipayan Ray wrote:
+> Checkpatch did not handle cases where the author From: header
+> was split into multiple lines. The author identity could not
+> be resolved and checkpatch generated a false NO_AUTHOR_SIGN_OFF
+> warning.
+
+Hi Dwaipayan.
+
+> A typical example is Commit e33bcbab16d1 ("tee: add support for
+> session's client UUID generation"). When checkpatch was run on
+> this commit, it displayed:
 > 
-> >From the other hand, the lock-less way of obtaining a page has
-> been introduced and directly injected to the k[v]free_rcu() path.
+> "WARNING:NO_AUTHOR_SIGN_OFF: Missing Signed-off-by: line by nominal
+> patch author ''"
 > 
-> Therefore it is not important anymore to use a high priority "wq"
-> for the external job that used to fill a page cache ASAP when it
-> was empty.
+> This was due to split header lines not being handled properly and
+> the author himself wrote in Commit cd2614967d8b ("checkpatch: warn
+> if missing author Signed-off-by"):
 > 
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> "Split From: headers are not fully handled: only the first part
+> is compared."
+> 
+> Support split From: headers by correctly parsing the header
+> extension lines. RFC 2822, Section-2.2.3 stated that each extended
+> line must start with a WSP character (a space or htab). The solution
+> was therefore to concatenate the lines which start with a WSP to
+> get the correct long header.
 
-And I needed to apply the patch below to make this one pass rcutorture
-scenarios SRCU-P and TREE05.  Repeat by:
+This is a good commit message, though I believe the
+latest rfc is 5322.  I'm not sure there is any real
+difference in the referenced section though.
 
-tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 3 --configs "SRCU-P TREE05" --trust-make
+While your patch seems to work for git format-email,
+other emailers seem to set headers that have multiple
+whitespace chars that should be collapsed into a
+single space.
 
-Without the patch below, the system hangs very early in boot.
+I think you'll find that the eliding all whitespace
+after header folding causes mismatches for emails.
 
-Please let me know if some other fix would be better.
+For instance:
 
-						Thanx, Paul
+From:   "=?UTF-8?q?Christian=20K=C3=B6nig?=" 
+        <ckoenig.leichtzumerken@gmail.com>
 
-------------------------------------------------------------------------
+Always inserting a single space if there is any
+whitespace after the folding WSP might be better
+otherwise this is decoded as
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 8ce1ea4..2424e2a 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3481,7 +3481,8 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 	success = kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr);
- 	if (!success) {
- 		// Use delayed work, so we do not deadlock with rq->lock.
--		if (!atomic_xchg(&krcp->work_in_progress, 1))
-+		if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
-+		    !atomic_xchg(&krcp->work_in_progress, 1))
- 			schedule_delayed_work(&krcp->page_cache_work, 1);
+From: "Christian König"<ckoenig.leichtzumerken@gmail.com>
+
+What I have does a bit more by saving any post-folding
+
+"From: <name and email address>"
+
+and comparing that to any "name and perhaps different
+email address" in a Signed-off-by: line.
+
+A new message is emitted if the name matches but the
+email address is different.
+
+Perhaps it's reasonable to apply your patch and then
+update it with something like the below:
+---
+ scripts/checkpatch.pl | 32 ++++++++++++++++++++++++++++----
+ 1 file changed, 28 insertions(+), 4 deletions(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 3e474072aa90..1ecc179e938d 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -1240,6 +1240,15 @@ sub same_email_addresses {
+ 	       $email1_address eq $email2_address;
+ }
  
- 		if (head == NULL)
++sub same_email_names {
++	my ($email1, $email2) = @_;
++
++	my ($email1_name, $name1_comment, $email1_address, $comment1) = parse_email($email1);
++	my ($email2_name, $name2_comment, $email2_address, $comment2) = parse_email($email2);
++
++	return $email1_name eq $email2_name;
++}
++
+ sub which {
+ 	my ($bin) = @_;
+ 
+@@ -2679,20 +2688,32 @@ sub process {
+ 		}
+ 
+ # Check the patch for a From:
+-		if (decode("MIME-Header", $line) =~ /^From:\s*(.*)/) {
++		if ($line =~ /^From:\s*(.*)/i) {
+ 			$author = $1;
+-			$author = encode("utf8", $author) if ($line =~ /=\?utf-8\?/i);
++			my $curline = $linenr;
++			while (defined($rawlines[$curline]) && $rawlines[$curline++] =~ /^\s(\s+)?(.*)/) {
++				$author .= ' ' if (defined($1));
++				$author .= "$2";
++			}
++			if ($author =~ /=\?utf-8\?/i) {
++				$author = decode("MIME-Header", $author);
++				$author = encode("utf8", $author);
++			}
++
+ 			$author =~ s/"//g;
+ 			$author = reformat_email($author);
+ 		}
+ 
+ # Check the patch for a signoff:
+ 		if ($line =~ /^\s*signed-off-by:\s*(.*)/i) {
++			my $sig = $1;
+ 			$signoff++;
+ 			$in_commit_log = 0;
+ 			if ($author ne '') {
+-				if (same_email_addresses($1, $author)) {
+-					$authorsignoff = 1;
++				if (same_email_addresses($sig, $author)) {
++					$authorsignoff = "1";
++				} elsif (same_email_names($sig, $author)) {
++					$authorsignoff = $sig;
+ 				}
+ 			}
+ 		}
+@@ -6937,6 +6958,9 @@ sub process {
+ 		} elsif (!$authorsignoff) {
+ 			WARN("NO_AUTHOR_SIGN_OFF",
+ 			     "Missing Signed-off-by: line by nominal patch author '$author'\n");
++		} elsif ($authorsignoff ne "1") {
++			WARN("NO_AUTHOR_SIGN_OFF",
++			     "From:/SoB: email address mismatch: 'From: $author' != 'Signed-off-by: $authorsignoff'\n");
+ 		}
+ 	}
+ 
+
