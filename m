@@ -2,150 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 551482715F5
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 18:35:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70469271603
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 18:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726368AbgITQfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 12:35:45 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:35335 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726267AbgITQfo (ORCPT
+        id S1726387AbgITQmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 12:42:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30415 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726267AbgITQmp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 12:35:44 -0400
-Received: by mail-ej1-f66.google.com with SMTP id u21so14538887eja.2
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 09:35:43 -0700 (PDT)
+        Sun, 20 Sep 2020 12:42:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600620163;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PQOc5ISffTaehBEuI30FdkiWsdsuqhPzKjSDj5gslrU=;
+        b=cnVAF+a7ERkRfDwimCNrUdJeFTbO3ZRbBWlXKGmiI9kvYeR525V9CGOvMY4/3a+jP5MW1L
+        zu8QOeEi2CjyQDk+hi7rsD/PqfLVusTTFl5jzBcRgtgW3B7SOvNwEz1ptfX7TZR57LQKIs
+        BTt0IJY6OJhhm908FCkNvu6HRb+bwG4=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-238-6ayyQGTaPhGlAiAmOgPlrQ-1; Sun, 20 Sep 2020 12:42:41 -0400
+X-MC-Unique: 6ayyQGTaPhGlAiAmOgPlrQ-1
+Received: by mail-wr1-f72.google.com with SMTP id a12so4751985wrg.13
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 09:42:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ItAZHqF4YnSpoMjkTZj64q8zJ6nmLYzMiqK+0Ip9lPU=;
-        b=UOFOaXByfZy/wm44aeBUPQ1oJSc/f/lJdIMPpAzaDu2SjMjAXRQ/dNm0hH6jQt9loh
-         e4ssNmzhPLi0MPFqv8qSlQ3jjJSxhx8z5B2gZIlbQ+aJLPLPmRoeNdg3ZkXOrVM4/b4l
-         uNhTB5g/3IfDDDN0orku80/2XGaBUOProQBA/V/Gq8IWO0oX9HdbwX8T5XfUx28TM+kx
-         CgzTr+Yzqif5UApU2GzYvqzTSVrF5ZSsK3q/hhIkeeiNekGg4tiVYFCrZn6O6wtx6/PQ
-         zEnTTAjcgXw2lF2YBws2aLlgWLTWdrqkNojw7xe8M973bWEk7ETTrlcBMRFMdOYkWKGW
-         4FWA==
-X-Gm-Message-State: AOAM532vC6f2ggL9nr8VDSKq++umkj6r3RIab58RI1/EWapiIzN9Y1jr
-        Gh0iNvZNdOi0d/tVI80bKvw=
-X-Google-Smtp-Source: ABdhPJzklTFuJ2dgmSPYDfxLIE4m24Zajbfry0kkQFG4RDyP9bH2yPpVQTtn3aUzJYvWWuEVkF2wTw==
-X-Received: by 2002:a17:906:33ca:: with SMTP id w10mr48262426eja.438.1600619742641;
-        Sun, 20 Sep 2020 09:35:42 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.191])
-        by smtp.googlemail.com with ESMTPSA id bv8sm4084491ejb.3.2020.09.20.09.35.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 20 Sep 2020 09:35:41 -0700 (PDT)
-Date:   Sun, 20 Sep 2020 18:35:38 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     linux-kernel@vger.kernel.org, trix@redhat.com,
-        matthew.gerlach@linux.intel.com, russell.h.weight@intel.com,
-        lgoncalv@redhat.com, hao.wu@intel.com, mdf@kernel.org
-Subject: Re: [PATCH v2] memory: dfl-emif: add the DFL EMIF private feature
- driver
-Message-ID: <20200920163538.GB10210@kozik-lap>
-References: <1600234622-8815-1-git-send-email-yilun.xu@intel.com>
- <1600234622-8815-2-git-send-email-yilun.xu@intel.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PQOc5ISffTaehBEuI30FdkiWsdsuqhPzKjSDj5gslrU=;
+        b=TSzgv0ihZMR9QaYrKXunXAl3ogKnt3/kGuNHdpBadQKp9rvbfUI3ImPW7N+8GeXyO4
+         A5PdXyOBD+rL/X9io9ps3jSNaGp3gsldqGTY1U+QRNv+1T30cWsjMxrpN1itJ90FP1F+
+         hubReKqmxTVpTmzfnMA20Q+am0DjU9qwDuVgkBOrIzzLoyX9Tu6z7cV4TF6mJu+q4R8L
+         5qDlWjVsmQE/qplYxHXOuwBT1pJbidiKN2BygC5wVT3eCDRtoRgpOC50HZwZnuczsiA7
+         kki2/uvhsQumTXU/qzQxHG1KKapYerW81tISbe4LQBHrLQaqkyVekrr87tQwd3MQKK+S
+         xkrw==
+X-Gm-Message-State: AOAM531fvX9D/C3zSvCL/zuC5ncc+zYcdl+soJef08aYyIb9jvxB4ZBV
+        b+01kqNqpeXdKGDvi65IItIqG097pmjbWIX2R+hhkvx+5SE/+7xvWKLi9tzqYNIOqUhKTkkTwCm
+        3x3hPgZ7EMokaU6gzv7yT4rSb
+X-Received: by 2002:a7b:c103:: with SMTP id w3mr24627951wmi.24.1600620160109;
+        Sun, 20 Sep 2020 09:42:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxcpPDRWHYVnQLTNMlhC8LLSjhM1SI6varUE6ZPjuPraMsccbvNnrlSEoYpg8wkw0TCEmrNbg==
+X-Received: by 2002:a7b:c103:: with SMTP id w3mr24627934wmi.24.1600620159827;
+        Sun, 20 Sep 2020 09:42:39 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:d107:d3ba:83ae:307e? ([2001:b07:6468:f312:d107:d3ba:83ae:307e])
+        by smtp.gmail.com with ESMTPSA id l10sm14977264wru.59.2020.09.20.09.42.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 20 Sep 2020 09:42:39 -0700 (PDT)
+Subject: Re: [PATCH v4 2/2] KVM: nSVM: implement ondemand allocation of the
+ nested state
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
+References: <20200917101048.739691-1-mlevitsk@redhat.com>
+ <20200917101048.739691-3-mlevitsk@redhat.com>
+ <20200917162942.GE13522@sjchrist-ice>
+ <d9c0d190-c6ea-2e21-92ca-2a53efb86a1d@redhat.com>
+ <20200920161602.GA17325@linux.intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <c35cbaca-2c34-cd93-b589-d4ab782fc754@redhat.com>
+Date:   Sun, 20 Sep 2020 18:42:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
+In-Reply-To: <20200920161602.GA17325@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1600234622-8815-2-git-send-email-yilun.xu@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 01:37:02PM +0800, Xu Yilun wrote:
-> This driver is for the EMIF private feature implemented under FPGA
-> Device Feature List (DFL) framework. It is used to expose memory
-> interface status information as well as memory clearing control.
-> 
-> The purpose of memory clearing block is to zero out all private memory
-> when FPGA is to be reprogrammed. This gives users a reliable method to
-> prevent potential data leakage.
-> 
-> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> ---
-> v2: Adjust the position of this driver in Kconfig.
->     Improves the name of the Kconfig option.
->     Change the include dfl-bus.h to dfl.h, cause the previous patchset
->      renames the file.
->     Some minor fixes and comment improvement.
-> ---
->  .../ABI/testing/sysfs-bus-dfl-devices-emif         |  25 +++
->  drivers/memory/Kconfig                             |   9 +
->  drivers/memory/Makefile                            |   2 +
->  drivers/memory/dfl-emif.c                          | 207 +++++++++++++++++++++
->  4 files changed, 243 insertions(+)
->  create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
->  create mode 100644 drivers/memory/dfl-emif.c
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-dfl-devices-emif b/Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
-> new file mode 100644
-> index 0000000..56f97dc
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
-> @@ -0,0 +1,25 @@
-> +What:		/sys/bus/dfl/devices/dfl_dev.X/infX_cal_fail
-> +Date:		Sep 2020
-> +KernelVersion:	5.10
-> +Contact:	Xu Yilun <yilun.xu@intel.com>
-> +Description:	Read-only. It indicates if the calibration failed on this
-> +		memory interface. "1" for calibration failure, "0" for OK.
-> +		Format: %u
-> +
-> +What:		/sys/bus/dfl/devices/dfl_dev.X/infX_init_done
-> +Date:		Sep 2020
-> +KernelVersion:	5.10
-> +Contact:	Xu Yilun <yilun.xu@intel.com>
-> +Description:	Read-only. It indicates if the initialization completed on
-> +		this memory interface. "1" for initialization complete, "0"
-> +		for not yet.
-> +		Format: %u
-> +
-> +What:		/sys/bus/dfl/devices/dfl_dev.X/infX_clear
-> +Date:		Sep 2020
-> +KernelVersion:	5.10
-> +Contact:	Xu Yilun <yilun.xu@intel.com>
-> +Description:	Write-only. Writing "1" to this file will zero out all memory
-> +		data in this memory interface. Writing of other values is
-> +		invalid.
-> +		Format: %u
-> diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
-> index 8072204..8dc819f 100644
-> --- a/drivers/memory/Kconfig
-> +++ b/drivers/memory/Kconfig
-> @@ -136,6 +136,15 @@ config TI_EMIF_SRAM
->  	  sequence so this driver provides several relocatable PM functions
->  	  for the SoC PM code to use.
->  
-> +config FPGA_DFL_EMIF
-> +	tristate "FPGA DFL EMIF Driver"
-> +	depends on FPGA_DFL && HAS_IOMEM
-> +	help
-> +	  This driver is for the EMIF private feature implemented under
-> +	  FPGA Device Feature List (DFL) framework. It is used to expose
-> +	  memory interface status information as well as memory clearing
-> +	  control.
-> +
->  config MVEBU_DEVBUS
->  	bool "Marvell EBU Device Bus Controller"
->  	default y if PLAT_ORION
-> diff --git a/drivers/memory/Makefile b/drivers/memory/Makefile
-> index e71cf7b..0afbf39 100644
-> --- a/drivers/memory/Makefile
-> +++ b/drivers/memory/Makefile
-> @@ -39,3 +39,5 @@ $(obj)/ti-emif-asm-offsets.h: $(obj)/emif-asm-offsets.s FORCE
->  
->  targets += emif-asm-offsets.s
->  clean-files += ti-emif-asm-offsets.h
-> +
-> +obj-$(CONFIG_FPGA_DFL_EMIF)	+= dfl-emif.o
+On 20/09/20 18:16, Sean Christopherson wrote:
+>> Maxim, your previous version was adding some error handling to
+>> kvm_x86_ops.set_efer.  I don't remember what was the issue; did you have
+>> any problems propagating all the errors up to KVM_SET_SREGS (easy),
+>> kvm_set_msr (harder) etc.?
+> I objected to letting .set_efer() return a fault.
 
-It there is going to be a resend: this as well has to go next to CONFIG_TI_EMIF_SRAM.
+So did I, and that's why we get KVM_REQ_OUT_OF_MEMORY.  But it was more
+of an "it's ugly and it ought not to fail" thing than something I could
+pinpoint.
 
-Otherwise I will fix it up while applying.
+It looks like we agree, but still we have to choose the lesser evil?
 
-Best regards,
-Krzysztof
+Paolo
+
+> A relatively minor issue is
+> the code in vmx_set_efer() that handles lack of EFER because technically KVM
+> can emulate EFER.SCE+SYSCALL without supporting EFER in hardware.  Returning
+> success/'0' would avoid that particular issue.  My primary concern is that I'd
+> prefer not to add another case where KVM can potentially ignore a fault
+> indicated by a helper, a la vmx_set_cr4().
 
