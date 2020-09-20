@@ -2,112 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC82C271738
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 20:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08B9727173A
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 20:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726187AbgITStl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 14:49:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726109AbgITStl (ORCPT
+        id S1726303AbgITSwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 14:52:15 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:57449 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726109AbgITSwP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 14:49:41 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C861C061755
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 11:49:41 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id 185so14307704oie.11
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 11:49:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=T2hFKmZJlvTIbWOQCGeuk8z5hREoSVHVU52LKW8EOhQ=;
-        b=GkypHfeNG9sKolaGeFYnd5pUpQ3Plcwj9YLNYxDMMhNy1MjZwta9buiSbQNhKR0w8b
-         uoORmY+tDwnyCm2sJ12M2j+0EYUXshSt7oTdb8KFaAZI6clzshS5X8Zss8AoYZzjojNY
-         a2pzJvwvg0blfztQHd+Bmb66j6PfiFV1eCHR3+uHFHizT+T2zxiqA+8oOcAX16QWql8k
-         MiLLYh4C59S/Y5v7wq450yIBfvoSkkZhyvI6NQeuPXxgsIoLV+66+oRHfUYJJAdldT2d
-         0TWN+62SeSuE5PHsdQLXpi7qrvYN63SqvgYVZiri9JJRRPl/+g3p2cPIV9gcq2ejTbsl
-         aJHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=T2hFKmZJlvTIbWOQCGeuk8z5hREoSVHVU52LKW8EOhQ=;
-        b=Dj/tgiZeAElCBpb+W1XjjBr6ZhfAiXtSintXun0tWr+DbUqqDQsRrs0aX5Gc03Xce7
-         FHlC7K+RVg2A52pbhXtUgclmg6oV1PTGmZUrbQKrY+wDm5/R9t8aH98dG5mPmPw3RD7o
-         lYfGWpX8rKgFtizaIwTNm09DEKthIWavCx1zHxNWWYv4AjK5eeDF2U61AGsV6xUOFnNN
-         Xu56UD6tWWrkrzoA177BVbEffD+U/Cobsz1bFPSBi0u1jauPglIAavPbopOgFnVlHKoI
-         Aae0A1kPV+3ajYDVEHfLizHytnTTS3oQHvFI+F/qh6GhJnbFNKcqdwHg8Mauf9GVXyuN
-         Xq/A==
-X-Gm-Message-State: AOAM533Z/xo4Sb2WggUy6CBOA0mRLsDtm21EgCaoMzqrauUec6JqfTvg
-        Nqbg1ooqCzfpdULvn2WPhiSrwg==
-X-Google-Smtp-Source: ABdhPJzdc9OCQsXRMp9Q5pIlzC47ECQfzDrkMTtjd82DubPRsr1YkLFqfY4C7mAaHoBKdIklPTe+Ag==
-X-Received: by 2002:a05:6808:14f:: with SMTP id h15mr14768940oie.119.1600627779649;
-        Sun, 20 Sep 2020 11:49:39 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id z8sm6418184oic.11.2020.09.20.11.49.37
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Sun, 20 Sep 2020 11:49:38 -0700 (PDT)
-Date:   Sun, 20 Sep 2020 11:49:20 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/shmem.c: Fix the missing unaccount on the failed
- path
-In-Reply-To: <20200920163005.97079-1-tianjia.zhang@linux.alibaba.com>
-Message-ID: <alpine.LSU.2.11.2009201141510.4318@eggly.anvils>
-References: <20200920163005.97079-1-tianjia.zhang@linux.alibaba.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        Sun, 20 Sep 2020 14:52:15 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 2F68C5800A3;
+        Sun, 20 Sep 2020 14:52:14 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Sun, 20 Sep 2020 14:52:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=U
+        aKCWb+alngLYqUciWW42BXBdBSdxoHktDXuWpsVbrI=; b=oFC6W7pv/B3eHmUKR
+        5P4lPrdAPq4Je35suAc4Jnc9Y2mx/f6alNQMyaLHujFUmtjAblXP8YV3sB4JgOaj
+        1q/URKWa54gXKwZ+/qa6myvdQuwdPT4XX2QjfDa/MEbOzNmMph1xbHpcBftlqmmu
+        le8crrD+s5xT9ff+Ts9ghK+W5mZvai7etQMyvaOuHlaRsthzlOsp9htLJy1PzWRD
+        9MoTVVTd9nlXjl/qu7K6zEiVIJYXpY97A1uKCFcCuxQzyluAwqlJqtARhADODX4m
+        PevuLPGAdXAJyeAz9/ND4/uM5bPN2Jca/tw5hqd5Dsu5Jzgx/zANMe5Tg/Lrxk8k
+        lGE8g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=UaKCWb+alngLYqUciWW42BXBdBSdxoHktDXuWpsVb
+        rI=; b=VReChI7L+/asa/We8ef+cHzapzCWscrW00o9/Tfxe2AJkNafuoRlHDFSE
+        7v+Vt1cfM3xe8ypmDp9uu84JbASRu0Z3noC77ROi5XTYvw7SG6z1ARLg59WhAnEb
+        06ZmZGW9JIdH0l/mjewLKaidA4o7YBtYCwZLHXxAmOVGijvIJa+NlKT+ds3I8Du4
+        CeA8dQ2wj6NPc4EQ3WLqZiMLPZM2aERJ5zWgPtRe0kZKKexocea8CENl+QdgoWc4
+        Ek2qvqXRJY8GohzinSi9Q1Ulwfn9YAYA8kJagh8aI03yBTA3dnbOYX8W9tfiNjye
+        gm/Gnii7e0RJTF6HExOZamm+WnZRA==
+X-ME-Sender: <xms:3KRnX-urMvU9Q17WZsg0I44fQd7RIohRuDcYbdqPfEOkN_HSvw7QKA>
+    <xme:3KRnXzdxonus58aXIzgMhbuV6GwFTaCm7tmXVnE_a9_XrlPdLFCOn6uZvGCy4SDKd
+    LppPbNlmkbgjJVnRA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtgddufedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomhepufgrmhhu
+    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepuddvleffkeejhfduieelheejteehleefieeikefgteeugefhtdev
+    keefvefgheeinecuffhomhgrihhnpehgihhthhhusgdrtghomhenucfkphepjedtrddufe
+    ehrddugeekrdduhedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghi
+    lhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
+X-ME-Proxy: <xmx:3KRnX5z29Z1ju_ZDS9Yav0YREkL2MbH_JK_QZbayg1l6Jm2d8ZYvIw>
+    <xmx:3KRnX5OU_SGLZL2fXculMRXlA0MoH1mOV6ohI9_0vZy6CHbNSI9Kpw>
+    <xmx:3KRnX-8YPPoC05bhO1FvnIhRo9PVg-ScC41SsnoO6PzLS6pJ21RX4g>
+    <xmx:3qRnX5VoP_9B6N7A2NI8mlo0RSDz8KMC6osnEwfyAMBz4uPqugmjRg>
+Received: from [192.168.50.169] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 1E85B3280065;
+        Sun, 20 Sep 2020 14:52:12 -0400 (EDT)
+Subject: Re: [PATCH v3 06/19] ASoC: sun4i-i2s: Fix sun8i volatile regs
+To:     =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Marcus Cooper <codekipper@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com
+References: <20200920180758.592217-1-peron.clem@gmail.com>
+ <20200920180758.592217-7-peron.clem@gmail.com>
+From:   Samuel Holland <samuel@sholland.org>
+Message-ID: <497a7062-4acf-d928-c2ee-ec595ed6799b@sholland.org>
+Date:   Sun, 20 Sep 2020 13:52:11 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <20200920180758.592217-7-peron.clem@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Sep 2020, Tianjia Zhang wrote:
-
-> In function __shmem_file_setup(), shmem_unacct_size() is forgotten
-> on the failed path, so add it.
+On 9/20/20 1:07 PM, Clément Péron wrote:
+> The FIFO TX reg is volatile and sun8i i2s register
+> mapping is different from sun4i.
 > 
-> Fixes: 93dec2da7b234 ("... and switch shmem_file_setup() to alloc_file_pseudo()")
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> Even if in this case it's doesn't create an issue,
+> Avoid setting some regs that are undefined in sun8i.
+> 
+> Signed-off-by: Clément Péron <peron.clem@gmail.com>
+> Acked-by: Maxime Ripard <mripard@kernel.org>
 > ---
->  mm/shmem.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>  sound/soc/sunxi/sun4i-i2s.c | 15 +++++++++++----
+>  1 file changed, 11 insertions(+), 4 deletions(-)
 > 
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 8e2b35ba93ad..591410dc3541 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -4200,8 +4200,10 @@ static struct file *__shmem_file_setup(struct vfsmount *mnt, const char *name, l
->  	if (!IS_ERR(res))
->  		res = alloc_file_pseudo(inode, mnt, name, O_RDWR,
->  				&shmem_file_operations);
-> -	if (IS_ERR(res))
-> +	if (IS_ERR(res)) {
->  		iput(inode);
-> +		shmem_unacct_size(flags, size);
+> diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+> index ce4913f0ffe4..a35be0e2baf5 100644
+> --- a/sound/soc/sunxi/sun4i-i2s.c
+> +++ b/sound/soc/sunxi/sun4i-i2s.c
+> @@ -1126,12 +1126,19 @@ static bool sun8i_i2s_rd_reg(struct device *dev, unsigned int reg)
+>  
+>  static bool sun8i_i2s_volatile_reg(struct device *dev, unsigned int reg)
+>  {
+> -	if (reg == SUN8I_I2S_INT_STA_REG)
+> +	switch (reg) {
+> +	case SUN4I_I2S_FIFO_CTRL_REG:
+
+Please check if this breaks audio recording with runtime PM enabled. I noticed
+this with an older revision of the series that also changed
+sun4i_i2s_volatile_reg. Marking SUN4I_I2S_FIFO_CTRL_REG as volatile broke
+setting of SUN4I_I2S_FIFO_CTRL_TX_MODE/RX_MODE, because the set_fmt() callback
+is not run with a runtime PM reference held, and volatile registers are not
+written by regcache_sync() during sun4i_i2s_runtime_resume().
+
+As a workaround, I moved the TX_MODE/RX_MODE initialization to hw_params(), but
+I am not sure it is the right thing to do:
+
+https://github.com/smaeul/linux/commit/5e40ac610986.patch
+
+Cheers,
+Samuel
+
+> +	case SUN4I_I2S_FIFO_RX_REG:
+> +	case SUN4I_I2S_FIFO_STA_REG:
+> +	case SUN4I_I2S_RX_CNT_REG:
+> +	case SUN4I_I2S_TX_CNT_REG:
+> +	case SUN8I_I2S_FIFO_TX_REG:
+> +	case SUN8I_I2S_INT_STA_REG:
+>  		return true;
+> -	if (reg == SUN8I_I2S_FIFO_TX_REG)
+> -		return false;
+>  
+> -	return sun4i_i2s_volatile_reg(dev, reg);
+> +	default:
+> +		return false;
 > +	}
->  	return res;
 >  }
 >  
-> -- 
-> 2.19.1.3.ge56e4f7
+>  static const struct reg_default sun4i_i2s_reg_defaults[] = {
+> 
 
-Looks mistaken to me.
-
-Is this something you noticed by source inspection,
-or something you have observed in practice?
-
-I haven't tried exercising this path while injecting errors into
-alloc_file_pseudo(); but what I'd expect to happen is that the
-iput(inode), which you see already on that error path, will get
-to evict the inode, which will entail calling shmem_evict_inode(),
-which does that shmem_unacct_size() itself.
-
-Hugh
