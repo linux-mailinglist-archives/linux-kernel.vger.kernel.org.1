@@ -2,178 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A44D3271540
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 17:09:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4D6F271541
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 17:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726344AbgITPJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 11:09:45 -0400
-Received: from smtprelay0104.hostedemail.com ([216.40.44.104]:37384 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726267AbgITPJp (ORCPT
+        id S1726285AbgITPMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 11:12:20 -0400
+Received: from mail-il1-f206.google.com ([209.85.166.206]:40255 "EHLO
+        mail-il1-f206.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726267AbgITPMT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 11:09:45 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 1A7B7180A7FFE;
-        Sun, 20 Sep 2020 15:09:44 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1535:1544:1593:1594:1711:1730:1747:1777:1792:2197:2198:2199:2200:2393:2559:2562:2691:2828:2895:3138:3139:3140:3141:3142:3355:3622:3653:3865:3867:3868:3870:3871:3872:3873:3874:4250:4321:4470:4605:5007:6119:7514:7576:7903:7974:8825:10004:10848:11026:11232:11473:11658:11914:12043:12291:12295:12297:12438:12555:12663:12679:12683:12740:12895:13095:13255:13439:13894:14093:14097:14180:14181:14659:14721:21060:21080:21221:21324:21433:21451:21627:21740:21819:21990:30003:30022:30029:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: taste68_280c5f42713d
-X-Filterd-Recvd-Size: 5265
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf10.hostedemail.com (Postfix) with ESMTPA;
-        Sun, 20 Sep 2020 15:09:43 +0000 (UTC)
-Message-ID: <7958ded756c895ca614ba900aae7b830a992475e.camel@perches.com>
-Subject: Re: [PATCH v2] checkpatch: extend author Signed-off-by check for
- split From: header
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org, apw@canonical.com,
-        linux-kernel@vger.kernel.org
-Date:   Sun, 20 Sep 2020 08:09:42 -0700
-In-Reply-To: <20200920091706.56276-1-dwaipayanray1@gmail.com>
-References: <20200920091706.56276-1-dwaipayanray1@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Sun, 20 Sep 2020 11:12:19 -0400
+Received: by mail-il1-f206.google.com with SMTP id g188so8997520ilh.7
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 08:12:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=4h1WgrZ3msxiVY5gN6krMYZA5aFi9a0Lv0AJNKzWo6E=;
+        b=UJwUH9NpvGrr0YkEsvHNiwyonfDUzGtMIR/yLARS3b8N13jjzk20p05dor7MWC4cUh
+         r1BmREDjTgSaxbfeBqwCa4FGsnp0WcZlbaq4R4XVsRO6Ivjh/qXwKL4dJE4tcfEDlyee
+         ZjnLQjatqxtcnkz5tUTBNCSyo8lGTpWu5660HvielIWOqBTyDl2rN1NdRuJAoBGF03YU
+         Or/zKWHM7u6AHLwqlVKv9qQjhjAYabmCnRBPrlrXkOQefjSLg0Jt/Zi4h/zu4xm4v6Tr
+         rq5caKshZwFL75drlAy+hJFQZmV/Hu2SDV422QybP+16jkbdiek2bOfJrgtjtbc+I0Yd
+         fpPQ==
+X-Gm-Message-State: AOAM531/ZynDxjl3J/z6/UIGDdHMmMFFnaDy1U0Le9AJaoIUZP4UU8aO
+        /LZY6OB/pac0ZnGfJ/hNYfWsQZ24iMLQa8VBSAhXUD620Gnm
+X-Google-Smtp-Source: ABdhPJyy2Jt9GUpIdVkeXdvmU+hIPyf9a29IbuE2yhRWMBqVbE5TjyHhnWcQZvkxA+uf7xRXDVrHx1UgpsgY6ypjXsNqWYErvU9q
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a02:8802:: with SMTP id r2mr37653894jai.75.1600614738355;
+ Sun, 20 Sep 2020 08:12:18 -0700 (PDT)
+Date:   Sun, 20 Sep 2020 08:12:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e6ed0205afc0287c@google.com>
+Subject: KASAN: use-after-free Read in tcf_action_destroy
+From:   syzbot <syzbot+2287853d392e4b42374a@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, jhs@mojatatu.com, jiri@mellanox.com,
+        jiri@resnulli.us, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        marcelo.leitner@gmail.com, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, vladbu@mellanox.com,
+        xiyou.wangcong@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-09-20 at 14:47 +0530, Dwaipayan Ray wrote:
-> Checkpatch did not handle cases where the author From: header
-> was split into multiple lines. The author identity could not
-> be resolved and checkpatch generated a false NO_AUTHOR_SIGN_OFF
-> warning.
+Hello,
 
-Hi Dwaipayan.
+syzbot found the following issue on:
 
-> A typical example is Commit e33bcbab16d1 ("tee: add support for
-> session's client UUID generation"). When checkpatch was run on
-> this commit, it displayed:
-> 
-> "WARNING:NO_AUTHOR_SIGN_OFF: Missing Signed-off-by: line by nominal
-> patch author ''"
-> 
-> This was due to split header lines not being handled properly and
-> the author himself wrote in Commit cd2614967d8b ("checkpatch: warn
-> if missing author Signed-off-by"):
-> 
-> "Split From: headers are not fully handled: only the first part
-> is compared."
-> 
-> Support split From: headers by correctly parsing the header
-> extension lines. RFC 2822, Section-2.2.3 stated that each extended
-> line must start with a WSP character (a space or htab). The solution
-> was therefore to concatenate the lines which start with a WSP to
-> get the correct long header.
+HEAD commit:    0f9ad4e7 Merge branch 's390-qeth-next'
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=15fc6755900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d29a102d22f784ea
+dashboard link: https://syzkaller.appspot.com/bug?extid=2287853d392e4b42374a
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=133e6cc5900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11c4158b900000
 
-This is a good commit message, though I believe the
-latest rfc is 5322.  I'm not sure there is any real
-difference in the referenced section though.
+The issue was bisected to:
 
-While your patch seems to work for git format-email,
-other emailers seem to set headers that have multiple
-whitespace chars that should be collapsed into a
-single space.
+commit 4e8ddd7f1758ca4ddd0c1f7cf3e66fce736241d2
+Author: Vlad Buslov <vladbu@mellanox.com>
+Date:   Thu Jul 5 14:24:30 2018 +0000
 
-I think you'll find that the eliding all whitespace
-after header folding causes mismatches for emails.
+    net: sched: don't release reference on action overwrite
 
-For instance:
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13a50d01900000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=10650d01900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17a50d01900000
 
-From:   "=?UTF-8?q?Christian=20K=C3=B6nig?=" 
-        <ckoenig.leichtzumerken@gmail.com>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+2287853d392e4b42374a@syzkaller.appspotmail.com
+Fixes: 4e8ddd7f1758 ("net: sched: don't release reference on action overwrite")
 
-Always inserting a single space if there is any
-whitespace after the folding WSP might be better
-otherwise this is decoded as
+netlink: 32 bytes leftover after parsing attributes in process `syz-executor259'.
+==================================================================
+BUG: KASAN: use-after-free in tcf_action_destroy+0x188/0x1b0 net/sched/act_api.c:724
+Read of size 8 at addr ffff8880a6998c00 by task syz-executor259/6880
 
-From: "Christian König"<ckoenig.leichtzumerken@gmail.com>
+CPU: 0 PID: 6880 Comm: syz-executor259 Not tainted 5.9.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+ tcf_action_destroy+0x188/0x1b0 net/sched/act_api.c:724
+ tcf_action_init+0x285/0x380 net/sched/act_api.c:1059
+ tcf_action_add+0xd9/0x360 net/sched/act_api.c:1452
+ tc_ctl_action+0x33a/0x439 net/sched/act_api.c:1505
+ rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5563
+ netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:671
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x446c69
+Code: e8 5c b3 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 8b 07 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f16641f8d98 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c69
+RDX: 0000000000000000 RSI: 0000000020002980 RDI: 0000000000000003
+RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+R13: 0001008400000000 R14: 0000000000000000 R15: 053b003000000098
 
-What I have does a bit more by saving any post-folding
+Allocated by task 6880:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
+ __do_kmalloc mm/slab.c:3655 [inline]
+ __kmalloc+0x1b0/0x310 mm/slab.c:3664
+ kmalloc include/linux/slab.h:559 [inline]
+ kzalloc include/linux/slab.h:666 [inline]
+ tcf_idr_create+0x5b/0x7b0 net/sched/act_api.c:408
+ tcf_connmark_init+0x535/0x960 net/sched/act_connmark.c:126
+ tcf_action_init_1+0x6a5/0xac0 net/sched/act_api.c:984
+ tcf_action_init+0x249/0x380 net/sched/act_api.c:1044
+ tcf_action_add+0xd9/0x360 net/sched/act_api.c:1452
+ tc_ctl_action+0x33a/0x439 net/sched/act_api.c:1505
+ rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5563
+ netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:671
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-"From: <name and email address>"
+Freed by task 6882:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0xd8/0x120 mm/kasan/common.c:422
+ __cache_free mm/slab.c:3418 [inline]
+ kfree+0x10e/0x2b0 mm/slab.c:3756
+ tcf_idr_release_unsafe net/sched/act_api.c:284 [inline]
+ tcf_del_walker net/sched/act_api.c:310 [inline]
+ tcf_generic_walker+0x959/0xb60 net/sched/act_api.c:339
+ tca_action_flush+0x42b/0x920 net/sched/act_api.c:1279
+ tca_action_gd+0x8ac/0xda0 net/sched/act_api.c:1386
+ tc_ctl_action+0x280/0x439 net/sched/act_api.c:1513
+ rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5563
+ netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:671
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-and comparing that to any "name and perhaps different
-email address" in a Signed-off-by: line.
+The buggy address belongs to the object at ffff8880a6998c00
+ which belongs to the cache kmalloc-512 of size 512
+The buggy address is located 0 bytes inside of
+ 512-byte region [ffff8880a6998c00, ffff8880a6998e00)
+The buggy address belongs to the page:
+page:00000000db318149 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff8880a6998400 pfn:0xa6998
+flags: 0xfffe0000000200(slab)
+raw: 00fffe0000000200 ffffea00029e0748 ffffea00029b4808 ffff8880aa040600
+raw: ffff8880a6998400 ffff8880a6998000 0000000100000003 0000000000000000
+page dumped because: kasan: bad access detected
 
-A new message is emitted if the name matches but the
-email address is different.
+Memory state around the buggy address:
+ ffff8880a6998b00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff8880a6998b80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff8880a6998c00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                   ^
+ ffff8880a6998c80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8880a6998d00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
 
-Perhaps it's reasonable to apply your patch and then
-update it with something like the below:
+
 ---
- scripts/checkpatch.pl | 32 ++++++++++++++++++++++++++++----
- 1 file changed, 28 insertions(+), 4 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 3e474072aa90..1ecc179e938d 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -1240,6 +1240,15 @@ sub same_email_addresses {
- 	       $email1_address eq $email2_address;
- }
- 
-+sub same_email_names {
-+	my ($email1, $email2) = @_;
-+
-+	my ($email1_name, $name1_comment, $email1_address, $comment1) = parse_email($email1);
-+	my ($email2_name, $name2_comment, $email2_address, $comment2) = parse_email($email2);
-+
-+	return $email1_name eq $email2_name;
-+}
-+
- sub which {
- 	my ($bin) = @_;
- 
-@@ -2679,20 +2688,32 @@ sub process {
- 		}
- 
- # Check the patch for a From:
--		if (decode("MIME-Header", $line) =~ /^From:\s*(.*)/) {
-+		if ($line =~ /^From:\s*(.*)/i) {
- 			$author = $1;
--			$author = encode("utf8", $author) if ($line =~ /=\?utf-8\?/i);
-+			my $curline = $linenr;
-+			while (defined($rawlines[$curline]) && $rawlines[$curline++] =~ /^\s(\s+)?(.*)/) {
-+				$author .= ' ' if (defined($1));
-+				$author .= "$2";
-+			}
-+			if ($author =~ /=\?utf-8\?/i) {
-+				$author = decode("MIME-Header", $author);
-+				$author = encode("utf8", $author);
-+			}
-+
- 			$author =~ s/"//g;
- 			$author = reformat_email($author);
- 		}
- 
- # Check the patch for a signoff:
- 		if ($line =~ /^\s*signed-off-by:\s*(.*)/i) {
-+			my $sig = $1;
- 			$signoff++;
- 			$in_commit_log = 0;
- 			if ($author ne '') {
--				if (same_email_addresses($1, $author)) {
--					$authorsignoff = 1;
-+				if (same_email_addresses($sig, $author)) {
-+					$authorsignoff = "1";
-+				} elsif (same_email_names($sig, $author)) {
-+					$authorsignoff = $sig;
- 				}
- 			}
- 		}
-@@ -6937,6 +6958,9 @@ sub process {
- 		} elsif (!$authorsignoff) {
- 			WARN("NO_AUTHOR_SIGN_OFF",
- 			     "Missing Signed-off-by: line by nominal patch author '$author'\n");
-+		} elsif ($authorsignoff ne "1") {
-+			WARN("NO_AUTHOR_SIGN_OFF",
-+			     "From:/SoB: email address mismatch: 'From: $author' != 'Signed-off-by: $authorsignoff'\n");
- 		}
- 	}
- 
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
