@@ -2,115 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE0427186A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 00:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2B5927187F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 00:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726419AbgITWjy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 20 Sep 2020 18:39:54 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:55402 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726126AbgITWjv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 18:39:51 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1kK7fS-0005mW-C4; Mon, 21 Sep 2020 00:18:46 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     linus.walleij@linaro.org, Jianqun Xu <jay.xu@rock-chips.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        Jianqun Xu <jay.xu@rock-chips.com>
-Subject: Re: [PATCH 2/2] pinctrl: rockchip: make driver be tristate module
-Date:   Mon, 21 Sep 2020 00:18:45 +0200
-Message-ID: <7244527.mGzxE9Z0Hj@diego>
-In-Reply-To: <5373086.oXRXx9yCqB@diego>
-References: <20200907025927.9713-3-jay.xu@rock-chips.com> <20200914003847.10341-1-jay.xu@rock-chips.com> <5373086.oXRXx9yCqB@diego>
+        id S1726488AbgITWs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 18:48:28 -0400
+Received: from 2.152.178.181.dyn.user.ono.com ([2.152.178.181]:36164 "EHLO
+        pulsar.hadrons.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726470AbgITWsZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 18:48:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hadrons.org
+        ; s=201908; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:From:Reply-To:Subject:Content-Type:Content-ID:Content-Description:
+        In-Reply-To:References:X-Debbugs-Cc;
+        bh=BEaf5N67gW/3JDSsMKeXlNJnbEC057EVIzScGuD+00g=; b=vystEKXyxgDyK9obe+gyKrVsEh
+        3/73jE9dMfR3PJRKFK82s7YaSfp5zunvX4dy8JEaMksgAv6Husg9wA82xFczjkW8SNfGIpiQ6L8Lo
+        IrZfFHk47NJAeUct6xJHpYTgljG87GKnZaBcFO50kJ75MaUgb8goCApEr+xC1gt7h2OsVxj4/sgrp
+        /NJ+iHMvl8mmJZnTuhtPUB2oqvE9NlS4YmnJ01zOyYzH7o6boB+PE/4SP8koF8DeXkLxeLZmXHOQz
+        kC/E9O0zaDe687tfGk162dFfoLD4iFttnc860XeLCpj/Yo4rbSdBWAahhzDvuZxVmoTPkXbOVGPnG
+        HKLm6P6A==;
+Received: from guillem by pulsar.hadrons.org with local (Exim 4.92)
+        (envelope-from <guillem@hadrons.org>)
+        id 1kK7my-0002c7-NK; Mon, 21 Sep 2020 00:26:32 +0200
+From:   Guillem Jover <guillem@hadrons.org>
+To:     linux-kbuild@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH 0/7] builddeb: Improve Debian packaging
+Date:   Mon, 21 Sep 2020 00:25:49 +0200
+Message-Id: <20200920222556.10002-1-guillem@hadrons.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jay,
+Hi!
 
-Am Montag, 21. September 2020, 00:14:11 CEST schrieb Heiko Stübner:
-> Am Montag, 14. September 2020, 02:38:47 CEST schrieb Jianqun Xu:
-> > Make pinctrl-rockchip driver to be tristate module, support to build as
-> > a module, this is useful for GKI.
-> > 
-> > Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
-> 
-> Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+This series fixes some packaging issues and brings it closer to
+current standards.
 
-It seems I've reviewed all patches of this series now, but I think
-you might want to resend the series a final time as v3 in a cleaned up
-state (drop patch1 and just post patches 2-5 in a full series) so that
-we don't confuse Linus too much with the reposted patches we currently
-have.
+Thanks,
+Guillem
 
-Thanks
-Heiko
+Guillem Jover (7):
+  builddeb: Pass -n to gzip for reproducible packages
+  builddeb: Move upstream repository URL into the upstream metadata file
+  builddeb: Switch to a machine readable copyright file
+  builddeb: Add support for all required debian/rules targets
+  builddeb: Enable rootless builds
+  builddeb: Map rc versions to use an earlier than version scheme
+  builddeb: Try to get the user full name from the GECOS field
 
+ scripts/package/builddeb | 11 ++++++--
+ scripts/package/mkdebian | 59 +++++++++++++++++++++++++++-------------
+ 2 files changed, 48 insertions(+), 22 deletions(-)
 
-
-
-> 
-> > ---
-> >  drivers/pinctrl/Kconfig            |  2 +-
-> >  drivers/pinctrl/pinctrl-rockchip.c | 13 +++++++++++++
-> >  2 files changed, 14 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
-> > index 4284f39a5c61..743eb2bb8709 100644
-> > --- a/drivers/pinctrl/Kconfig
-> > +++ b/drivers/pinctrl/Kconfig
-> > @@ -207,7 +207,7 @@ config PINCTRL_OXNAS
-> >  	select MFD_SYSCON
-> >  
-> >  config PINCTRL_ROCKCHIP
-> > -	bool
-> > +	tristate "Rockchip gpio and pinctrl driver"
-> >  	depends on OF
-> >  	select PINMUX
-> >  	select GENERIC_PINCONF
-> > diff --git a/drivers/pinctrl/pinctrl-rockchip.c b/drivers/pinctrl/pinctrl-rockchip.c
-> > index 0401c1da79dd..927d132d6716 100644
-> > --- a/drivers/pinctrl/pinctrl-rockchip.c
-> > +++ b/drivers/pinctrl/pinctrl-rockchip.c
-> > @@ -16,10 +16,12 @@
-> >   */
-> >  
-> >  #include <linux/init.h>
-> > +#include <linux/module.h>
-> >  #include <linux/platform_device.h>
-> >  #include <linux/io.h>
-> >  #include <linux/bitops.h>
-> >  #include <linux/gpio/driver.h>
-> > +#include <linux/of_device.h>
-> >  #include <linux/of_address.h>
-> >  #include <linux/of_irq.h>
-> >  #include <linux/pinctrl/machine.h>
-> > @@ -4258,3 +4260,14 @@ static int __init rockchip_pinctrl_drv_register(void)
-> >  	return platform_driver_register(&rockchip_pinctrl_driver);
-> >  }
-> >  postcore_initcall(rockchip_pinctrl_drv_register);
-> > +
-> > +static void __exit rockchip_pinctrl_drv_unregister(void)
-> > +{
-> > +	platform_driver_unregister(&rockchip_pinctrl_driver);
-> > +}
-> > +module_exit(rockchip_pinctrl_drv_unregister);
-> > +
-> > +MODULE_DESCRIPTION("ROCKCHIP Pin Controller Driver");
-> > +MODULE_LICENSE("GPL");
-> > +MODULE_ALIAS("platform:pinctrl-rockchip");
-> > +MODULE_DEVICE_TABLE(of, rockchip_pinctrl_dt_match);
-> > 
-> 
-> 
-
-
-
+-- 
+2.28.0.297.g1956fa8f8d
 
