@@ -2,48 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5839271678
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 20:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0681427167E
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 20:00:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726389AbgITSAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 14:00:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38408 "EHLO mail.kernel.org"
+        id S1726468AbgITSA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 14:00:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726043AbgITSAP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 14:00:15 -0400
-Subject: Re: [GIT PULL] RISC-V Fixes for 5.9-rc6 (or shortly after)
+        id S1726148AbgITSAX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 14:00:23 -0400
+Subject: Re: [GIT PULL] EDAC urgent for v5.9-rc6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600624815;
-        bh=zDZdy2/rOnaDLkaUwDrgQ6iWegH8r8eZeBuVbfVBAuo=;
+        s=default; t=1600624823;
+        bh=Fc4O2ntJhipGapfvG9AtWFGzKLNS/ZPkvWDMfBudwkw=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=RpOFY3dRA1kjtEBFlEyzubKpkWKi1vjwiMbCqj4BohEHju+Fj++kUR029nvp3rsZ2
-         BI8xY8fPGFjXnRl9cpjOw460Eps1pc7RqSvvd3uSbDS+Qadt4oMOjTEu15+w7aWQvY
-         aSS7rVGXg44eO3xwekrB11yqLiDazdnFrmEBmpIE=
+        b=Psigey2j90OAiFKCa7pH1iFoIlNfBtNRVs7nIwDJWDLS1R2Hu3IdSwPGFcg7AQJ89
+         KdYXB80E/lvt/blcSToywaIRmJLTihcPpzfbhwcndzhD/r2IXezJd00p3Vtkq/JVBo
+         RcJh36hE0JnUShLmY6h+9wxh+PtTD9pZmmdRJCk8=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <mhng-a3f22c5c-7980-4ed9-b198-da86bf6d1162@palmerdabbelt-glaptop1>
-References: <mhng-a3f22c5c-7980-4ed9-b198-da86bf6d1162@palmerdabbelt-glaptop1>
-X-PR-Tracked-List-Id: <linux-riscv.lists.infradead.org>
-X-PR-Tracked-Message-Id: <mhng-a3f22c5c-7980-4ed9-b198-da86bf6d1162@palmerdabbelt-glaptop1>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.9-rc6
-X-PR-Tracked-Commit-Id: d5be89a8d118a8e8d09cd74a921a808f17fbdd09
+In-Reply-To: <20200920092456.GA13044@zn.tnic>
+References: <20200920092456.GA13044@zn.tnic>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200920092456.GA13044@zn.tnic>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git tags/edac_urgent_for_v5.9_rc6
+X-PR-Tracked-Commit-Id: 251c54ea26fa6029b01a76161a37a12fde5124e4
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: bdcf11de8f776152c82d2197b255c2d04603f976
-Message-Id: <160062481552.1698.11531166567985103507.pr-tracker-bot@kernel.org>
-Date:   Sun, 20 Sep 2020 18:00:15 +0000
-To:     Palmer Dabbelt <palmer@dabbelt.com>
+X-PR-Merge-Commit-Id: aac5925b49956f7bf0f5d0ef3477e419f3ee2f78
+Message-Id: <160062482341.2021.12014127101188593873.pr-tracker-bot@kernel.org>
+Date:   Sun, 20 Sep 2020 18:00:23 +0000
+To:     Borislav Petkov <bp@suse.de>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+        linux-edac <linux-edac@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 20 Sep 2020 10:26:34 -0700 (PDT):
+The pull request you sent on Sun, 20 Sep 2020 11:24:56 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.9-rc6
+> git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git tags/edac_urgent_for_v5.9_rc6
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/bdcf11de8f776152c82d2197b255c2d04603f976
+https://git.kernel.org/torvalds/c/aac5925b49956f7bf0f5d0ef3477e419f3ee2f78
 
 Thank you!
 
