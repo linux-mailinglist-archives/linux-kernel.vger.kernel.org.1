@@ -2,301 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC11271375
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 13:15:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE06727137F
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 13:23:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726301AbgITLPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 07:15:20 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:53292 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726247AbgITLPU (ORCPT
+        id S1726456AbgITLW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 07:22:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726338AbgITLWv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 07:15:20 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id C6DF2803073F;
-        Sun, 20 Sep 2020 11:15:16 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 8uDbgm43KziS; Sun, 20 Sep 2020 14:15:15 +0300 (MSK)
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Lee Jones <lee.jones@linaro.org>, <linux-mips@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH v3] mtd: physmap: Add Baikal-T1 physically mapped ROM support
-Date:   Sun, 20 Sep 2020 14:14:44 +0300
-Message-ID: <20200920111445.21816-1-Sergey.Semin@baikalelectronics.ru>
+        Sun, 20 Sep 2020 07:22:51 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E7B8C0613CE;
+        Sun, 20 Sep 2020 04:22:51 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id q4so10997753ils.4;
+        Sun, 20 Sep 2020 04:22:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BKZ1Xe28Ow4rt1PmT83Z3KN/e9i3VDBbZGy6cfuQ9rc=;
+        b=EpRWEq+0W27nipF/ccwD+Vkb1kYhEdvek2UVshOvnbnagKmTN4zRCoE82za7ipXxEy
+         8/9ITdGmgxy/tRI1MNtEe5BMJR11FQH90CdR5LaJafghzE/E9sSe01yvclymV040VTwu
+         Xqi3Doq0px/4apUjzjGjdmHa68RA5me8OvmSHncKjOha1xQIbA3RZGumrfRAnMY6toLa
+         y0Sw5fpwsHEzKq3vaOZhe6FDHisi3M1f1YC0dW578qqZfxZv7lL4+33s+Ik+asicgekD
+         Pr1Xwefbqsur5DGqhTTrTxeulMH6zIWDinbj0AAMPUZ/TA+Hv+80zfRxU+53iWOFfhql
+         wvWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BKZ1Xe28Ow4rt1PmT83Z3KN/e9i3VDBbZGy6cfuQ9rc=;
+        b=l2GI9fB41N9XQvWSLNN88wwGi+VUGb81hEWAGibf1hl2uiYo7cH36c913gpYRn5CYg
+         hhvyp/ZB5R3+G8ikKmUixRR3zIKM5tSWSGUIfc/n8ig1lAjRnfOAotwXCHLPupKbMkbK
+         KeDsgFI3zhX3Dixs/RKJnkhbOfUJyDPOw6ulfAlna5wYDJ3O3YI4AAowbz9uRl8j5eYL
+         r0CJ9zr/393LkCwb3nuu67Vx36WcYnh5AT8zyD+3gclXT3pgvG0t667SKeauyr1bF21r
+         lh2WKmELQ1z5nAZ0GPgBxVqSLY/zNn0v7EZozpzzHis1sPbpRl6Oz1ArlHSLNHGpsgYn
+         n2MQ==
+X-Gm-Message-State: AOAM532PdtW8FXWB7SRDmeQFXSXD1o+sSJLd1F9Y/O61Dbl6Pyr1WFfp
+        mlMbEC3AJhcuIwTb4X9h0hBXEpW6sLbqKNkvbVI=
+X-Google-Smtp-Source: ABdhPJylG4Xdn0ZNb1hXBIPSZ6b/NG2QAMotphgKFHqocioQVWnEbNWG3WUXqKXVvHHwNqi00NDCHNHpmZ3M9upNZmM=
+X-Received: by 2002:a92:1a03:: with SMTP id a3mr35254819ila.304.1600600970818;
+ Sun, 20 Sep 2020 04:22:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+References: <20200916105949.24858-1-fabrizio.castro.jz@renesas.com> <20200916105949.24858-2-fabrizio.castro.jz@renesas.com>
+In-Reply-To: <20200916105949.24858-2-fabrizio.castro.jz@renesas.com>
+From:   Ramesh Shanmugasundaram <rashanmu@gmail.com>
+Date:   Sun, 20 Sep 2020 12:22:14 +0100
+Message-ID: <CAJWpUEd5_fTUtT_9tuwpgvp=ECmh-NGcU2FH49jmyaJNxKCqmA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] MAINTAINERS: Add Fabrizio Castro to Renesas DRIF
+To:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Baikal-T1 Boot Controller provides an access to a RO storages, which are
-physically mapped into the SoC MMIO space. In particularly there are
-Internal ROM embedded into the SoC with a pre-installed firmware,
-externally attached SPI flash (also accessed in the read-only mode) and a
-memory region, which mirrors one of them in accordance with the currently
-enabled system boot mode (also called Boot ROM).
+Hi Fabrizio,
 
-This commit adds the Internal ROM support to the physmap driver of the MTD
-kernel subsystem. The driver will create the Internal ROM MTD as long as
-it is defined in the system dts file. The physically mapped SPI flash
-region will be used to implement the SPI-mem interface. The mirroring
-memory region won't be accessible directly since it's redundant due to
-both bootable regions being exposed anyway.
+>
+> Renesas are expanding their DRIF support and offering,
+> I'll be the internal maintainer for DRIF.
+>
+> Signed-off-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-Note we had to create a dedicated code for the ROMs since read from the
-corresponding memory regions must be done via the dword-aligned addresses.
+Thank you for volunteering :-).
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
-Cc: Lee Jones <lee.jones@linaro.org>
-Cc: linux-mips@vger.kernel.org
+Reviewed-by: Ramesh Shanmugasundaram <rashanmu@gmail.com>
 
----
+Please feel free to take my name off the maintainers list as I am not
+spending time on this topic for a while now.
 
-Link: https://lore.kernel.org/linux-mtd/20200508100905.5854-1-Sergey.Semin@baikalelectronics.ru/
-Changelog v2:
-- Resend.
+Thanks,
+Ramesh
 
-Link: https://lore.kernel.org/linux-mtd/20200526225849.20985-1-Sergey.Semin@baikalelectronics.ru
-Changelog v3:
-- Alphabetically order the include statements.
-- Discard dummy IOs.
-- Discard Baikal-T1 Boot ROM support. The directly mapped SPI flash
-  memory will be used in the DW APB SSI driver instead.
----
- drivers/mtd/maps/Kconfig           |  11 +++
- drivers/mtd/maps/Makefile          |   1 +
- drivers/mtd/maps/physmap-bt1-rom.c | 126 +++++++++++++++++++++++++++++
- drivers/mtd/maps/physmap-bt1-rom.h |  17 ++++
- drivers/mtd/maps/physmap-core.c    |   5 ++
- 5 files changed, 160 insertions(+)
- create mode 100644 drivers/mtd/maps/physmap-bt1-rom.c
- create mode 100644 drivers/mtd/maps/physmap-bt1-rom.h
-
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index fd37553f1b07..6650acbc961e 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -75,6 +75,17 @@ config MTD_PHYSMAP_OF
- 	  physically into the CPU's memory. The mapping description here is
- 	  taken from OF device tree.
- 
-+config MTD_PHYSMAP_BT1_ROM
-+	bool "Baikal-T1 Boot ROMs OF-based physical memory map handling"
-+	depends on MTD_PHYSMAP_OF
-+	depends on MIPS_BAIKAL_T1 || COMPILE_TEST
-+	select MTD_COMPLEX_MAPPINGS
-+	select MULTIPLEXER
-+	select MUX_MMIO
-+	help
-+	  This provides some extra DT physmap parsing for the Baikal-T1
-+	  platforms, some detection and setting up ROMs-specific accessors.
-+
- config MTD_PHYSMAP_VERSATILE
- 	bool "ARM Versatile OF-based physical memory map handling"
- 	depends on MTD_PHYSMAP_OF
-diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-index c0da86a5d26f..79f018cf412f 100644
---- a/drivers/mtd/maps/Makefile
-+++ b/drivers/mtd/maps/Makefile
-@@ -18,6 +18,7 @@ obj-$(CONFIG_MTD_CK804XROM)	+= ck804xrom.o
- obj-$(CONFIG_MTD_TSUNAMI)	+= tsunami_flash.o
- obj-$(CONFIG_MTD_PXA2XX)	+= pxa2xx-flash.o
- physmap-objs-y			+= physmap-core.o
-+physmap-objs-$(CONFIG_MTD_PHYSMAP_BT1_ROM) += physmap-bt1-rom.o
- physmap-objs-$(CONFIG_MTD_PHYSMAP_VERSATILE) += physmap-versatile.o
- physmap-objs-$(CONFIG_MTD_PHYSMAP_GEMINI) += physmap-gemini.o
- physmap-objs-$(CONFIG_MTD_PHYSMAP_IXP4XX) += physmap-ixp4xx.o
-diff --git a/drivers/mtd/maps/physmap-bt1-rom.c b/drivers/mtd/maps/physmap-bt1-rom.c
-new file mode 100644
-index 000000000000..27cfe1c63a2e
---- /dev/null
-+++ b/drivers/mtd/maps/physmap-bt1-rom.c
-@@ -0,0 +1,126 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2020 BAIKAL ELECTRONICS, JSC
-+ *
-+ * Authors:
-+ *   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-+ *
-+ * Baikal-T1 Physically Mapped Internal ROM driver
-+ */
-+#include <linux/bits.h>
-+#include <linux/device.h>
-+#include <linux/kernel.h>
-+#include <linux/mtd/map.h>
-+#include <linux/mtd/xip.h>
-+#include <linux/mux/consumer.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+#include <linux/string.h>
-+#include <linux/types.h>
-+
-+#include "physmap-bt1-rom.h"
-+
-+/*
-+ * Baikal-T1 SoC ROMs are only accessible by the dword-aligned instructions.
-+ * We have to take this into account when implementing the data read-methods.
-+ * Note there is no need in bothering with endianness, since both Baikal-T1
-+ * CPU and MMIO are LE.
-+ */
-+static map_word __xipram bt1_rom_map_read(struct map_info *map,
-+					  unsigned long ofs)
-+{
-+	void __iomem *src = map->virt + ofs;
-+	unsigned long shift;
-+	map_word ret;
-+	u32 data;
-+
-+	/* Read data within offset dword. */
-+	shift = (unsigned long)src & 0x3;
-+	data = readl_relaxed(src - shift);
-+	if (!shift) {
-+		ret.x[0] = data;
-+		return ret;
-+	}
-+	ret.x[0] = data >> (shift * BITS_PER_BYTE);
-+
-+	/* Read data from the next dword. */
-+	shift = 4 - shift;
-+	if (ofs + shift >= map->size)
-+		return ret;
-+
-+	data = readl_relaxed(src + shift);
-+	ret.x[0] |= data << (shift * BITS_PER_BYTE);
-+
-+	return ret;
-+}
-+
-+static void __xipram bt1_rom_map_copy_from(struct map_info *map,
-+					   void *to, unsigned long from,
-+					   ssize_t len)
-+{
-+	void __iomem *src = map->virt + from;
-+	ssize_t shift, chunk;
-+	u32 data;
-+
-+	if (len <= 0 || from >= map->size)
-+		return;
-+
-+	/* Make sure we don't go over the map limit. */
-+	len = min_t(ssize_t, map->size - from, len);
-+
-+	/*
-+	 * Since requested data size can be pretty big we have to implement
-+	 * the copy procedure as optimal as possible. That's why it's split
-+	 * up into the next three stages: unaligned head, aligned body,
-+	 * unaligned tail.
-+	 */
-+	shift = (ssize_t)src & 0x3;
-+	if (shift) {
-+		chunk = min_t(ssize_t, 4 - shift, len);
-+		data = readl_relaxed(src - shift);
-+		memcpy(to, &data + shift, chunk);
-+		src += chunk;
-+		to += chunk;
-+		len -= chunk;
-+	}
-+
-+	while (len >= 4) {
-+		data = readl_relaxed(src);
-+		memcpy(to, &data, 4);
-+		src += 4;
-+		to += 4;
-+		len -= 4;
-+	}
-+
-+	if (len) {
-+		data = readl_relaxed(src);
-+		memcpy(to, &data, len);
-+	}
-+}
-+
-+int of_flash_probe_bt1_rom(struct platform_device *pdev,
-+			   struct device_node *np,
-+			   struct map_info *map)
-+{
-+	struct device *dev = &pdev->dev;
-+
-+	/* It's supposed to be read-only MTD. */
-+	if (!of_device_is_compatible(np, "mtd-rom")) {
-+		dev_info(dev, "No mtd-rom compatible string\n");
-+		return 0;
-+	}
-+
-+	/* Multiplatform guard. */
-+	if (!of_device_is_compatible(np, "baikal,bt1-int-rom"))
-+		return 0;
-+
-+	/* Sanity check the device parameters retrieved from DTB. */
-+	if (map->bankwidth != 4)
-+		dev_warn(dev, "Bank width is supposed to be 32 bits wide\n");
-+
-+	map->read = bt1_rom_map_read;
-+	map->copy_from = bt1_rom_map_copy_from;
-+
-+	return 0;
-+}
-diff --git a/drivers/mtd/maps/physmap-bt1-rom.h b/drivers/mtd/maps/physmap-bt1-rom.h
-new file mode 100644
-index 000000000000..6782899598a4
---- /dev/null
-+++ b/drivers/mtd/maps/physmap-bt1-rom.h
-@@ -0,0 +1,17 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+#include <linux/mtd/map.h>
-+#include <linux/of.h>
-+
-+#ifdef CONFIG_MTD_PHYSMAP_BT1_ROM
-+int of_flash_probe_bt1_rom(struct platform_device *pdev,
-+			   struct device_node *np,
-+			   struct map_info *map);
-+#else
-+static inline
-+int of_flash_probe_bt1_rom(struct platform_device *pdev,
-+			   struct device_node *np,
-+			   struct map_info *map)
-+{
-+	return 0;
-+}
-+#endif
-diff --git a/drivers/mtd/maps/physmap-core.c b/drivers/mtd/maps/physmap-core.c
-index 8f7f966fa9a7..8843e780f5c8 100644
---- a/drivers/mtd/maps/physmap-core.c
-+++ b/drivers/mtd/maps/physmap-core.c
-@@ -41,6 +41,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/gpio/consumer.h>
- 
-+#include "physmap-bt1-rom.h"
- #include "physmap-gemini.h"
- #include "physmap-ixp4xx.h"
- #include "physmap-versatile.h"
-@@ -371,6 +372,10 @@ static int physmap_flash_of_init(struct platform_device *dev)
- 		info->maps[i].bankwidth = bankwidth;
- 		info->maps[i].device_node = dp;
- 
-+		err = of_flash_probe_bt1_rom(dev, dp, &info->maps[i]);
-+		if (err)
-+			return err;
-+
- 		err = of_flash_probe_gemini(dev, dp, &info->maps[i]);
- 		if (err)
- 			return err;
--- 
-2.27.0
-
+> ---
+> v1->v2:
+> * No change
+>
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 2575f449139a..d9ebaf0c179b 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -10909,6 +10909,7 @@ F:      include/media/drv-intf/renesas-ceu.h
+>
+>  MEDIA DRIVERS FOR RENESAS - DRIF
+>  M:     Ramesh Shanmugasundaram <rashanmu@gmail.com>
+> +M:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+>  L:     linux-media@vger.kernel.org
+>  L:     linux-renesas-soc@vger.kernel.org
+>  S:     Supported
+> --
+> 2.25.1
+>
