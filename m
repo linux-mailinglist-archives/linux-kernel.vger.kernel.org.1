@@ -2,111 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D554271181
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 02:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9418B27118F
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 02:19:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726850AbgITAO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Sep 2020 20:14:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60876 "EHLO mail.kernel.org"
+        id S1726860AbgITATJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Sep 2020 20:19:09 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:45632 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726680AbgITAO4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Sep 2020 20:14:56 -0400
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F34FA23730
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 00:14:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600560895;
-        bh=hFlNFuPTeOm0L/kdCL4zZ1r5D8O6dPLmjujTGrKOlYM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=puNMNVSIh3nOcXZR2bsSX89mx7JsoFWoBEe7Ak/z+DHmLOhb+Kh9sSU8Baw2xkYcL
-         D2jd4AOn8hF0K/zn41LjhaaVl7xocGLJmOT8gdJrwj7qZg0ejYTZECwuJzlzHWv+kO
-         OFRT3p90VCBE1oiQrCZZUJZydIgvG/SANufNNLCU=
-Received: by mail-wr1-f52.google.com with SMTP id t10so9181030wrv.1
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Sep 2020 17:14:54 -0700 (PDT)
-X-Gm-Message-State: AOAM533F29XMaaqLSLu/4wUhuzKs8uXldhUCtf0OJw+XwONjHWoAM4Mb
-        ZqHOpCWUJsijISztTX8chlmusPOGiVE0ZCrFiwtImQ==
-X-Google-Smtp-Source: ABdhPJwNa+g9tI1uon0gRHcB2mOJvq7bEiosz+i+17dS26MXBg9h+I1xFom2CJCFuIf/wJaqwzsOPjK0guk9bG2/Zms=
-X-Received: by 2002:adf:a3c3:: with SMTP id m3mr251480wrb.70.1600560893353;
- Sat, 19 Sep 2020 17:14:53 -0700 (PDT)
+        id S1726831AbgITATJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Sep 2020 20:19:09 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kJn4K-00FR2h-1K; Sun, 20 Sep 2020 02:19:04 +0200
+Date:   Sun, 20 Sep 2020 02:19:04 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Luka Perkov <luka.perkov@sartura.hr>
+Subject: Re: [PATCH v3 2/2] net: mdio-ipq4019: add Clause 45 support
+Message-ID: <20200920001904.GB3673389@lunn.ch>
+References: <20200918205633.2698654-1-robert.marko@sartura.hr>
+ <20200918205633.2698654-3-robert.marko@sartura.hr>
 MIME-Version: 1.0
-References: <20200919224122.GJ3421308@ZenIV.linux.org.uk> <36CF3DE7-7B4B-41FD-9818-FDF8A5B440FB@amacapital.net>
- <20200919232411.GK3421308@ZenIV.linux.org.uk>
-In-Reply-To: <20200919232411.GK3421308@ZenIV.linux.org.uk>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Sat, 19 Sep 2020 17:14:41 -0700
-X-Gmail-Original-Message-ID: <CALCETrViwOdFia_aX4p4riE8aqop1zoOqVfiQtSAZEzheC+Ozg@mail.gmail.com>
-Message-ID: <CALCETrViwOdFia_aX4p4riE8aqop1zoOqVfiQtSAZEzheC+Ozg@mail.gmail.com>
-Subject: Re: [PATCH 1/9] kernel: add a PF_FORCE_COMPAT flag
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Linux SCSI List <linux-scsi@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-aio@kvack.org, io-uring@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Network Development <netdev@vger.kernel.org>,
-        keyrings@vger.kernel.org,
-        LSM List <linux-security-module@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200918205633.2698654-3-robert.marko@sartura.hr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 19, 2020 at 4:24 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> On Sat, Sep 19, 2020 at 03:53:40PM -0700, Andy Lutomirski wrote:
->
-> > > It would not be a win - most of the syscalls don't give a damn
-> > > about 32bit vs. 64bit...
-> >
-> > Any reasonable implementation would optimize it out for syscalls that d=
-on=E2=80=99t care.  Or it could be explicit:
-> >
-> > DEFINE_MULTIARCH_SYSCALL(...)
->
-> 1) what would that look like?
+> +
+> +/* 0 = Clause 22, 1 = Clause 45 */
+> +#define MDIO_MODE_BIT				BIT(8)
 
-In effect, it would work like this:
+How about calling this MDIO_MODE_C45
 
-/* Arch-specific, but there's a generic case for sane architectures. */
-enum syscall_arch {
-  SYSCALL_NATIVE,
-  SYSCALL_COMPAT,
-  SYSCALL_X32,
-};
+> +		/* Enter Clause 45 mode */
+> +		data = readl(priv->membase + MDIO_MODE_REG);
+> +
+> +		data |= MDIO_MODE_BIT;
+> +
+> +		writel(data, priv->membase + MDIO_MODE_REG);
 
-DEFINE_MULTIARCH_SYSCALLn(args, arch)
-{
-  args are the args here, and arch is the arch.
-}
+It then becomes clearer what this does.
 
-> 2) have you counted the syscalls that do and do not need that?
+Otherwise this looks O.K.
 
-No.
-
-> 3) how many of those realistically *can* be unified with their
-> compat counterparts?  [hint: ioctl(2) cannot]
-
-There would be no requirement to unify anything.  The idea is that
-we'd get rid of all the global state flags.
-
-For ioctl, we'd have a new file_operation:
-
-long ioctl(struct file *, unsigned int, unsigned long, enum syscall_arch);
-
-I'm not saying this is easy, but I think it's possible and the result
-would be more obviously correct than what we have now.
+	  Andrew
