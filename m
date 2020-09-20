@@ -2,106 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70469271603
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 18:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5233E271607
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 18:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726387AbgITQmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 12:42:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30415 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726267AbgITQmp (ORCPT
+        id S1726406AbgITQpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 12:45:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726305AbgITQp3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 12:42:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600620163;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PQOc5ISffTaehBEuI30FdkiWsdsuqhPzKjSDj5gslrU=;
-        b=cnVAF+a7ERkRfDwimCNrUdJeFTbO3ZRbBWlXKGmiI9kvYeR525V9CGOvMY4/3a+jP5MW1L
-        zu8QOeEi2CjyQDk+hi7rsD/PqfLVusTTFl5jzBcRgtgW3B7SOvNwEz1ptfX7TZR57LQKIs
-        BTt0IJY6OJhhm908FCkNvu6HRb+bwG4=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-238-6ayyQGTaPhGlAiAmOgPlrQ-1; Sun, 20 Sep 2020 12:42:41 -0400
-X-MC-Unique: 6ayyQGTaPhGlAiAmOgPlrQ-1
-Received: by mail-wr1-f72.google.com with SMTP id a12so4751985wrg.13
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 09:42:41 -0700 (PDT)
+        Sun, 20 Sep 2020 12:45:29 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51DBEC0613CE
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 09:45:29 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id x23so9841673wmi.3
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 09:45:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qzl9zPCs8H2BtZaJntghTFMfMfHZHrqcOSC3Zyznv/Q=;
+        b=cFm69Xob+MUQJhW/KRFfRcPqMhAb2iePNT2ryLzJYKs5zDuH7IhCeiRNrjn/WOFfZk
+         O18sx+H7rc7XeTHxE4vcrqywuiyUsISU8LRDiwOA8e6Cv5AbLGVJlOEmRnJ+QN1x4Go1
+         1GOS2VhnrpqW3DX+9s6IZZjBDXagdrRVwEyXE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PQOc5ISffTaehBEuI30FdkiWsdsuqhPzKjSDj5gslrU=;
-        b=TSzgv0ihZMR9QaYrKXunXAl3ogKnt3/kGuNHdpBadQKp9rvbfUI3ImPW7N+8GeXyO4
-         A5PdXyOBD+rL/X9io9ps3jSNaGp3gsldqGTY1U+QRNv+1T30cWsjMxrpN1itJ90FP1F+
-         hubReKqmxTVpTmzfnMA20Q+am0DjU9qwDuVgkBOrIzzLoyX9Tu6z7cV4TF6mJu+q4R8L
-         5qDlWjVsmQE/qplYxHXOuwBT1pJbidiKN2BygC5wVT3eCDRtoRgpOC50HZwZnuczsiA7
-         kki2/uvhsQumTXU/qzQxHG1KKapYerW81tISbe4LQBHrLQaqkyVekrr87tQwd3MQKK+S
-         xkrw==
-X-Gm-Message-State: AOAM531fvX9D/C3zSvCL/zuC5ncc+zYcdl+soJef08aYyIb9jvxB4ZBV
-        b+01kqNqpeXdKGDvi65IItIqG097pmjbWIX2R+hhkvx+5SE/+7xvWKLi9tzqYNIOqUhKTkkTwCm
-        3x3hPgZ7EMokaU6gzv7yT4rSb
-X-Received: by 2002:a7b:c103:: with SMTP id w3mr24627951wmi.24.1600620160109;
-        Sun, 20 Sep 2020 09:42:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxcpPDRWHYVnQLTNMlhC8LLSjhM1SI6varUE6ZPjuPraMsccbvNnrlSEoYpg8wkw0TCEmrNbg==
-X-Received: by 2002:a7b:c103:: with SMTP id w3mr24627934wmi.24.1600620159827;
-        Sun, 20 Sep 2020 09:42:39 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:d107:d3ba:83ae:307e? ([2001:b07:6468:f312:d107:d3ba:83ae:307e])
-        by smtp.gmail.com with ESMTPSA id l10sm14977264wru.59.2020.09.20.09.42.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 20 Sep 2020 09:42:39 -0700 (PDT)
-Subject: Re: [PATCH v4 2/2] KVM: nSVM: implement ondemand allocation of the
- nested state
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
-References: <20200917101048.739691-1-mlevitsk@redhat.com>
- <20200917101048.739691-3-mlevitsk@redhat.com>
- <20200917162942.GE13522@sjchrist-ice>
- <d9c0d190-c6ea-2e21-92ca-2a53efb86a1d@redhat.com>
- <20200920161602.GA17325@linux.intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <c35cbaca-2c34-cd93-b589-d4ab782fc754@redhat.com>
-Date:   Sun, 20 Sep 2020 18:42:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=qzl9zPCs8H2BtZaJntghTFMfMfHZHrqcOSC3Zyznv/Q=;
+        b=iQIaSOX9RtHFUssLrfAG88t0HB2MRoGho3Ea4ilxoO2ummFc5c7UfwIfh2Q1b+6xrc
+         UpirlTW8VUM+6ceCxSH8gNWXexsFbE4QwpSxgGpIR4kngEkl5H6yWQYVdlsPR8oHfprb
+         FJya9VUJorbDKs28DOnFApG1cMiNFix2hcPWPsVFV7gFLucUmSEPtURnSg+w9Q2/j8Te
+         8/hZhpYZOv+mMDthANlwLeG+RV0gECt9adrnSAb+YbjfSkj7emx8XSoTumgDJHGb5c24
+         QJrUX/x26S1zeYMqDHQzHdnRssw67o8Cqqvp8SUEbovrwGbMEtFv2tP7Hol+eJDfOker
+         CE6w==
+X-Gm-Message-State: AOAM530WAnRgmxsNL3kKhlZdg8vcZEgw2uuL8/JCMMAJSp5GtkoKQpxL
+        PP+fE2F6jC6PM+y11cVkGFOwdA==
+X-Google-Smtp-Source: ABdhPJwU7eMdQh3XSVJaPGYj+0mfXFKRGE2Mauhd5cKQ5YFxLoykFKT8T3FgelDXYKCADsmSZm8nhQ==
+X-Received: by 2002:a05:600c:220f:: with SMTP id z15mr12988715wml.87.1600620327700;
+        Sun, 20 Sep 2020 09:45:27 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id m18sm14787218wmg.32.2020.09.20.09.45.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Sep 2020 09:45:26 -0700 (PDT)
+Date:   Sun, 20 Sep 2020 18:45:24 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+Message-ID: <20200920164524.GH438822@phenom.ffwll.local>
+Mail-Followup-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Oded Gabbay <oded.gabbay@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>
+References: <20200915171022.10561-1-oded.gabbay@gmail.com>
+ <20200915.134252.1280841239760138359.davem@davemloft.net>
+ <CAFCwf131Vbo3im1BjOi_XXfRUu+nfrJY54sEZv8Z5LKut3QE6w@mail.gmail.com>
+ <20200916062614.GF142621@kroah.com>
+ <CAFCwf126PVDtjeAD8wCc_TiDfer04iydrW1AjUicH4oVHbs12Q@mail.gmail.com>
+ <20200916074217.GB189144@kroah.com>
+ <CAFCwf10zLR9v65sgGGdkcf+JzZaw_WORAbQvEw-hbbfj=dy2Xg@mail.gmail.com>
+ <20200916082226.GA509119@kroah.com>
+ <CAFCwf1366_GoTj1gpneJBSqVxJ1mOnsdZiC+DJLG85GHGfZrzw@mail.gmail.com>
+ <20200916120054.GA2753544@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20200920161602.GA17325@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916120054.GA2753544@kroah.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/09/20 18:16, Sean Christopherson wrote:
->> Maxim, your previous version was adding some error handling to
->> kvm_x86_ops.set_efer.  I don't remember what was the issue; did you have
->> any problems propagating all the errors up to KVM_SET_SREGS (easy),
->> kvm_set_msr (harder) etc.?
-> I objected to letting .set_efer() return a fault.
+On Wed, Sep 16, 2020 at 02:00:54PM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Sep 16, 2020 at 11:47:58AM +0300, Oded Gabbay wrote:
+> > On Wed, Sep 16, 2020 at 11:21 AM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Wed, Sep 16, 2020 at 11:02:39AM +0300, Oded Gabbay wrote:
+> > > > On Wed, Sep 16, 2020 at 10:41 AM Greg Kroah-Hartman
+> > > > <gregkh@linuxfoundation.org> wrote:
+> > > > >
+> > > > > On Wed, Sep 16, 2020 at 09:36:23AM +0300, Oded Gabbay wrote:
+> > > > > > On Wed, Sep 16, 2020 at 9:25 AM Greg Kroah-Hartman
+> > > > > > <gregkh@linuxfoundation.org> wrote:
+> > > > > > >
+> > > > > > > On Tue, Sep 15, 2020 at 11:49:12PM +0300, Oded Gabbay wrote:
+> > > > > > > > On Tue, Sep 15, 2020 at 11:42 PM David Miller <davem@davemloft.net> wrote:
+> > > > > > > > >
+> > > > > > > > > From: Oded Gabbay <oded.gabbay@gmail.com>
+> > > > > > > > > Date: Tue, 15 Sep 2020 20:10:08 +0300
+> > > > > > > > >
+> > > > > > > > > > This is the second version of the patch-set to upstream the GAUDI NIC code
+> > > > > > > > > > into the habanalabs driver.
+> > > > > > > > > >
+> > > > > > > > > > The only modification from v2 is in the ethtool patch (patch 12). Details
+> > > > > > > > > > are in that patch's commit message.
+> > > > > > > > > >
+> > > > > > > > > > Link to v2 cover letter:
+> > > > > > > > > > https://lkml.org/lkml/2020/9/12/201
+> > > > > > > > >
+> > > > > > > > > I agree with Jakub, this driver definitely can't go-in as it is currently
+> > > > > > > > > structured and designed.
+> > > > > > > > Why is that ?
+> > > > > > > > Can you please point to the things that bother you or not working correctly?
+> > > > > > > > I can't really fix the driver if I don't know what's wrong.
+> > > > > > > >
+> > > > > > > > In addition, please read my reply to Jakub with the explanation of why
+> > > > > > > > we designed this driver as is.
+> > > > > > > >
+> > > > > > > > And because of the RDMA'ness of it, the RDMA
+> > > > > > > > > folks have to be CC:'d and have a chance to review this.
+> > > > > > > > As I said to Jakub, the driver doesn't use the RDMA infrastructure in
+> > > > > > > > the kernel and we can't connect to it due to the lack of H/W support
+> > > > > > > > we have
+> > > > > > > > Therefore, I don't see why we need to CC linux-rdma.
+> > > > > > > > I understood why Greg asked me to CC you because we do connect to the
+> > > > > > > > netdev and standard eth infrastructure, but regarding the RDMA, it's
+> > > > > > > > not really the same.
+> > > > > > >
+> > > > > > > Ok, to do this "right" it needs to be split up into separate drivers,
+> > > > > > > hopefully using the "virtual bus" code that some day Intel will resubmit
+> > > > > > > again that will solve this issue.
+> > > > > > Hi Greg,
+> > > > > > Can I suggest an alternative for the short/medium term ?
+> > > > > >
+> > > > > > In an earlier email, Jakub said:
+> > > > > > "Is it not possible to move the files and still build them into a single
+> > > > > > module?"
+> > > > > >
+> > > > > > I thought maybe that's a good way to progress here ?
+> > > > >
+> > > > > Cross-directory builds of a single module are crazy.  Yes, they work,
+> > > > > but really, that's a mess, and would never suggest doing that.
+> > > > >
+> > > > > > First, split the content to Ethernet and RDMA.
+> > > > > > Then move the Ethernet part to drivers/net but build it as part of
+> > > > > > habanalabs.ko.
+> > > > > > Regarding the RDMA code, upstream/review it in a different patch-set
+> > > > > > (maybe they will want me to put the files elsewhere).
+> > > > > >
+> > > > > > What do you think ?
+> > > > >
+> > > > > I think you are asking for more work there than just splitting out into
+> > > > > separate modules :)
+> > > > >
+> > > > > thanks,
+> > > > >
+> > > > > greg k-h
+> > > > Hi Greg,
+> > > >
+> > > > If cross-directory building is out of the question, what about
+> > > > splitting into separate modules ? And use cross-module notifiers/calls
+> > > > ? I did that with amdkfd and amdgpu/radeon a couple of years back. It
+> > > > worked (that's the best thing I can say about it).
+> > >
+> > > That's fine with me.
+> > >
+> > > > The main problem with this "virtual bus" thing is that I'm not
+> > > > familiar with it at all and from my experience I imagine it would take
+> > > > a considerable time and effort to upstream this infrastructure work.
+> > >
+> > > It shouldn't be taking that long, but for some unknown reason, the
+> > > original author of that code is sitting on it and not resending it.  Go
+> > > poke them through internal Intel channels to find out what the problem
+> > > is, as I have no clue why a 200-300 line bus module is taking so long to
+> > > get "right" :(
+> > >
+> > > I'm _ALMOST_ at the point where I would just do that work myself, but
+> > > due to my current status with Intel, I'll let them do it as I have
+> > > enough other things on my plate...
+> > >
+> > > > This could delay the NIC code for a couple of years, which by then
+> > > > this won't be relevant at all.
+> > >
+> > > Why wouldn't this code be relevant in a year?  It's going to be 2+ years
+> > > before any of this shows up in an "enterprise distro" based on their
+> > > release cycles anyway :)
+> > >
+> > > thanks,
+> > >
+> > > greg k-h
+> > 
+> > Hi Greg,
+> > ok, I'll take a look. Do you happen to have the name of the patch-set / author ?
+> 
+> Here's at least one copy:
+> 	https://lore.kernel.org/linux-rdma/20200520070227.3392100-2-jeffrey.t.kirsher@intel.com/
+> 
+> there might have been a newer one, can't remember, sorry.
 
-So did I, and that's why we get KVM_REQ_OUT_OF_MEMORY.  But it was more
-of an "it's ugly and it ought not to fail" thing than something I could
-pinpoint.
+Maybe I'm missing something or maybe the in-tree code we have already
+should be refactored to use more buses and drivers, but
+drivers/base/component.c is made for this. We use this to glue all kinds
+of things across all kinds of subsystems already.
 
-It looks like we agree, but still we have to choose the lesser evil?
+Of course it really should be only used for one-off problems, as soon as
+you have a standard interface/interaction there should be some kind of
+standard lookup way to get at your thing (and the driver behind it), e.g.
+in drivers/gpu we're now building up drm_bridge and trying to get away
+from componenent.c for these things.
 
-Paolo
-
-> A relatively minor issue is
-> the code in vmx_set_efer() that handles lack of EFER because technically KVM
-> can emulate EFER.SCE+SYSCALL without supporting EFER in hardware.  Returning
-> success/'0' would avoid that particular issue.  My primary concern is that I'd
-> prefer not to add another case where KVM can potentially ignore a fault
-> indicated by a helper, a la vmx_set_cr4().
-
+Cheers, Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
