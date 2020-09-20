@@ -2,234 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EFEF2717FC
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 22:52:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 831A4271808
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 23:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726448AbgITUv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 16:51:57 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39326 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726126AbgITUv5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 16:51:57 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C9CABAC12;
-        Sun, 20 Sep 2020 20:52:29 +0000 (UTC)
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: SGI-IP30: Move irq bits to better header files
-Date:   Sun, 20 Sep 2020 22:51:50 +0200
-Message-Id: <20200920205151.112113-1-tsbogend@alpha.franken.de>
-X-Mailer: git-send-email 2.16.4
+        id S1726456AbgITVI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 17:08:29 -0400
+Received: from 212.199.177.27.static.012.net.il ([212.199.177.27]:55417 "EHLO
+        herzl.nuvoton.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726126AbgITVI3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 17:08:29 -0400
+X-Greylist: delayed 1130 seconds by postgrey-1.27 at vger.kernel.org; Sun, 20 Sep 2020 17:08:28 EDT
+Received: from taln60.nuvoton.co.il (ntil-fw [212.199.177.25])
+        by herzl.nuvoton.co.il (8.13.8/8.13.8) with ESMTP id 08KKmfuV002773;
+        Sun, 20 Sep 2020 23:48:41 +0300
+Received: by taln60.nuvoton.co.il (Postfix, from userid 20088)
+        id AF7F5639D5; Sun, 20 Sep 2020 23:48:41 +0300 (IDT)
+From:   Tali Perry <tali.perry1@gmail.com>
+To:     wsa@kernel.org, andriy.shevchenko@linux.intel.com,
+        kunyi@google.com, benjaminfair@google.com, avifishman70@gmail.com,
+        joel@jms.id.au, tmaimon77@gmail.com
+Cc:     linux-i2c@vger.kernel.org, openbmc@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, Tali Perry <tali.perry1@gmail.com>
+Subject: [PATCH v1] i2c: npcm7xx: Clear LAST bit after a failed transaction.
+Date:   Sun, 20 Sep 2020 23:48:09 +0300
+Message-Id: <20200920204809.132911-1-tali.perry1@gmail.com>
+X-Mailer: git-send-email 2.22.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move HEART specific parts of mach-ip30/irq.h to asm/sgi/heart.h and IP30
-specific parts to sgi-ip30/ip30-common.h.
+Due to a HW issue, in some scenarios the LAST bit might remain set.
+This will cause an unexpected NACK after reading 16 bytes on the next
+read.
 
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Example: if user tries to read from a missing device, get a NACK,
+then if the next command is a long read ( > 16 bytes),
+the master will stop reading after 16 bytes.
+To solve this, if a command fails, check if LAST bit is still
+set. If it does, reset the module.
+
+Fixes: 56a1485b102e (i2c: npcm7xx: Add Nuvoton NPCM I2C controller driver)
+Signed-off-by: Tali Perry <tali.perry1@gmail.com>
 ---
- arch/mips/include/asm/mach-ip30/irq.h | 87 -----------------------------------
- arch/mips/include/asm/sgi/heart.h     | 51 ++++++++++++++++++++
- arch/mips/sgi-ip30/ip30-common.h      | 14 ++++++
- arch/mips/sgi-ip30/ip30-irq.c         |  2 +
- 4 files changed, 67 insertions(+), 87 deletions(-)
- delete mode 100644 arch/mips/include/asm/mach-ip30/irq.h
+ drivers/i2c/busses/i2c-npcm7xx.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/arch/mips/include/asm/mach-ip30/irq.h b/arch/mips/include/asm/mach-ip30/irq.h
-deleted file mode 100644
-index 27ba899c95be..000000000000
---- a/arch/mips/include/asm/mach-ip30/irq.h
-+++ /dev/null
-@@ -1,87 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--/*
-- * HEART IRQ defines
-- *
-- * Copyright (C) 2009 Johannes Dickgreber <tanzy@gmx.de>
-- *		 2014-2016 Joshua Kinard <kumba@gentoo.org>
-- *
-- */
--
--#ifndef __ASM_MACH_IP30_IRQ_H
--#define __ASM_MACH_IP30_IRQ_H
--
--/*
-- * HEART has 64 hardware interrupts, but use 128 to leave room for a few
-- * software interrupts as well (such as the CPU timer interrupt.
-- */
--#define NR_IRQS				128
--
--extern void __init ip30_install_ipi(void);
--
--/*
-- * HEART has 64 interrupt vectors available to it, subdivided into five
-- * priority levels.  They are numbered 0 to 63.
-- */
--#define HEART_NUM_IRQS			64
--
--/*
-- * These are the five interrupt priority levels and their corresponding
-- * CPU IPx interrupt pins.
-- *
-- * Level 4 - Error Interrupts.
-- * Level 3 - HEART timer interrupt.
-- * Level 2 - CPU IPI, CPU debug, power putton, general device interrupts.
-- * Level 1 - General device interrupts.
-- * Level 0 - General device GFX flow control interrupts.
-- */
--#define HEART_L4_INT_MASK		0xfff8000000000000ULL	/* IP6 */
--#define HEART_L3_INT_MASK		0x0004000000000000ULL	/* IP5 */
--#define HEART_L2_INT_MASK		0x0003ffff00000000ULL	/* IP4 */
--#define HEART_L1_INT_MASK		0x00000000ffff0000ULL	/* IP3 */
--#define HEART_L0_INT_MASK		0x000000000000ffffULL	/* IP2 */
--
--/* HEART L0 Interrupts (Low Priority) */
--#define HEART_L0_INT_GENERIC		 0
--#define HEART_L0_INT_FLOW_CTRL_HWTR_0	 1
--#define HEART_L0_INT_FLOW_CTRL_HWTR_1	 2
--
--/* HEART L2 Interrupts (High Priority) */
--#define HEART_L2_INT_RESCHED_CPU_0	46
--#define HEART_L2_INT_RESCHED_CPU_1	47
--#define HEART_L2_INT_CALL_CPU_0		48
--#define HEART_L2_INT_CALL_CPU_1		49
--
--/* HEART L3 Interrupts (Compare/Counter Timer) */
--#define HEART_L3_INT_TIMER		50
--
--/* HEART L4 Interrupts (Errors) */
--#define HEART_L4_INT_XWID_ERR_9		51
--#define HEART_L4_INT_XWID_ERR_A		52
--#define HEART_L4_INT_XWID_ERR_B		53
--#define HEART_L4_INT_XWID_ERR_C		54
--#define HEART_L4_INT_XWID_ERR_D		55
--#define HEART_L4_INT_XWID_ERR_E		56
--#define HEART_L4_INT_XWID_ERR_F		57
--#define HEART_L4_INT_XWID_ERR_XBOW	58
--#define HEART_L4_INT_CPU_BUS_ERR_0	59
--#define HEART_L4_INT_CPU_BUS_ERR_1	60
--#define HEART_L4_INT_CPU_BUS_ERR_2	61
--#define HEART_L4_INT_CPU_BUS_ERR_3	62
--#define HEART_L4_INT_HEART_EXCP		63
--
--/*
-- * Power Switch is wired via BaseIO BRIDGE slot #6.
-- *
-- * ACFail is wired via BaseIO BRIDGE slot #7.
-- */
--#define IP30_POWER_IRQ		HEART_L2_INT_POWER_BTN
--
--#include <asm/mach-generic/irq.h>
--
--#define IP30_HEART_L0_IRQ	(MIPS_CPU_IRQ_BASE + 2)
--#define IP30_HEART_L1_IRQ	(MIPS_CPU_IRQ_BASE + 3)
--#define IP30_HEART_L2_IRQ	(MIPS_CPU_IRQ_BASE + 4)
--#define IP30_HEART_TIMER_IRQ	(MIPS_CPU_IRQ_BASE + 5)
--#define IP30_HEART_ERR_IRQ	(MIPS_CPU_IRQ_BASE + 6)
--
--#endif /* __ASM_MACH_IP30_IRQ_H */
-diff --git a/arch/mips/include/asm/sgi/heart.h b/arch/mips/include/asm/sgi/heart.h
-index c423221b4792..0d03751955c4 100644
---- a/arch/mips/include/asm/sgi/heart.h
-+++ b/arch/mips/include/asm/sgi/heart.h
-@@ -264,6 +264,57 @@ struct ip30_heart_regs {		/* 0x0ff00000 */
- #define HC_NCOR_MEM_ERR			BIT(1)
- #define HC_COR_MEM_ERR			BIT(0)
+diff --git a/drivers/i2c/busses/i2c-npcm7xx.c b/drivers/i2c/busses/i2c-npcm7xx.c
+index dfcf04e1967f..2ad166355ec9 100644
+--- a/drivers/i2c/busses/i2c-npcm7xx.c
++++ b/drivers/i2c/busses/i2c-npcm7xx.c
+@@ -2163,6 +2163,15 @@ static int npcm_i2c_master_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
+ 	if (bus->cmd_err == -EAGAIN)
+ 		ret = i2c_recover_bus(adap);
  
-+/*
-+ * HEART has 64 interrupt vectors available to it, subdivided into five
-+ * priority levels.  They are numbered 0 to 63.
-+ */
-+#define HEART_NUM_IRQS			64
++	/*
++	 * After any type of error, check if LAST bit is still set,
++	 * due to a HW issue.
++	 * It cannot be cleared without resetting the module.
++	 */
++	if (bus->cmd_err &&
++	    (NPCM_I2CRXF_CTL_LAST_PEC & ioread8(bus->reg + NPCM_I2CRXF_CTL)))
++		npcm_i2c_reset(bus);
 +
-+/*
-+ * These are the five interrupt priority levels and their corresponding
-+ * CPU IPx interrupt pins.
-+ *
-+ * Level 4 - Error Interrupts.
-+ * Level 3 - HEART timer interrupt.
-+ * Level 2 - CPU IPI, CPU debug, power putton, general device interrupts.
-+ * Level 1 - General device interrupts.
-+ * Level 0 - General device GFX flow control interrupts.
-+ */
-+#define HEART_L4_INT_MASK		0xfff8000000000000ULL	/* IP6 */
-+#define HEART_L3_INT_MASK		0x0004000000000000ULL	/* IP5 */
-+#define HEART_L2_INT_MASK		0x0003ffff00000000ULL	/* IP4 */
-+#define HEART_L1_INT_MASK		0x00000000ffff0000ULL	/* IP3 */
-+#define HEART_L0_INT_MASK		0x000000000000ffffULL	/* IP2 */
-+
-+/* HEART L0 Interrupts (Low Priority) */
-+#define HEART_L0_INT_GENERIC		 0
-+#define HEART_L0_INT_FLOW_CTRL_HWTR_0	 1
-+#define HEART_L0_INT_FLOW_CTRL_HWTR_1	 2
-+
-+/* HEART L2 Interrupts (High Priority) */
-+#define HEART_L2_INT_RESCHED_CPU_0	46
-+#define HEART_L2_INT_RESCHED_CPU_1	47
-+#define HEART_L2_INT_CALL_CPU_0		48
-+#define HEART_L2_INT_CALL_CPU_1		49
-+
-+/* HEART L3 Interrupts (Compare/Counter Timer) */
-+#define HEART_L3_INT_TIMER		50
-+
-+/* HEART L4 Interrupts (Errors) */
-+#define HEART_L4_INT_XWID_ERR_9		51
-+#define HEART_L4_INT_XWID_ERR_A		52
-+#define HEART_L4_INT_XWID_ERR_B		53
-+#define HEART_L4_INT_XWID_ERR_C		54
-+#define HEART_L4_INT_XWID_ERR_D		55
-+#define HEART_L4_INT_XWID_ERR_E		56
-+#define HEART_L4_INT_XWID_ERR_F		57
-+#define HEART_L4_INT_XWID_ERR_XBOW	58
-+#define HEART_L4_INT_CPU_BUS_ERR_0	59
-+#define HEART_L4_INT_CPU_BUS_ERR_1	60
-+#define HEART_L4_INT_CPU_BUS_ERR_2	61
-+#define HEART_L4_INT_CPU_BUS_ERR_3	62
-+#define HEART_L4_INT_HEART_EXCP		63
-+
- extern struct ip30_heart_regs __iomem *heart_regs;
- 
- #define heart_read	____raw_readq
-diff --git a/arch/mips/sgi-ip30/ip30-common.h b/arch/mips/sgi-ip30/ip30-common.h
-index d2bcaee712f3..7b5db24b6279 100644
---- a/arch/mips/sgi-ip30/ip30-common.h
-+++ b/arch/mips/sgi-ip30/ip30-common.h
-@@ -3,6 +3,20 @@
- #ifndef __IP30_COMMON_H
- #define __IP30_COMMON_H
- 
-+/*
-+ * Power Switch is wired via BaseIO BRIDGE slot #6.
-+ *
-+ * ACFail is wired via BaseIO BRIDGE slot #7.
-+ */
-+#define IP30_POWER_IRQ		HEART_L2_INT_POWER_BTN
-+
-+#define IP30_HEART_L0_IRQ	(MIPS_CPU_IRQ_BASE + 2)
-+#define IP30_HEART_L1_IRQ	(MIPS_CPU_IRQ_BASE + 3)
-+#define IP30_HEART_L2_IRQ	(MIPS_CPU_IRQ_BASE + 4)
-+#define IP30_HEART_TIMER_IRQ	(MIPS_CPU_IRQ_BASE + 5)
-+#define IP30_HEART_ERR_IRQ	(MIPS_CPU_IRQ_BASE + 6)
-+
-+extern void __init ip30_install_ipi(void);
- extern struct plat_smp_ops ip30_smp_ops;
- extern void __init ip30_per_cpu_init(void);
- 
-diff --git a/arch/mips/sgi-ip30/ip30-irq.c b/arch/mips/sgi-ip30/ip30-irq.c
-index c2ffcb920250..e8374e4c705b 100644
---- a/arch/mips/sgi-ip30/ip30-irq.c
-+++ b/arch/mips/sgi-ip30/ip30-irq.c
-@@ -14,6 +14,8 @@
- #include <asm/irq_cpu.h>
- #include <asm/sgi/heart.h>
- 
-+#include "ip30-common.h"
-+
- struct heart_irq_data {
- 	u64	*irq_mask;
- 	int	cpu;
+ #if IS_ENABLED(CONFIG_I2C_SLAVE)
+ 	/* reenable slave if it was enabled */
+ 	if (bus->slave)
+
+base-commit: 856deb866d16e29bd65952e0289066f6078af773
 -- 
-2.16.4
+2.22.0
 
