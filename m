@@ -2,191 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 176F72712DB
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 10:24:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31AD82712E2
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 10:25:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726327AbgITIYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 04:24:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47374 "EHLO
+        id S1726367AbgITIZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 04:25:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726262AbgITIX7 (ORCPT
+        with ESMTP id S1726245AbgITIZH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 04:23:59 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10892C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 01:23:58 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id e16so9658788wrm.2
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 01:23:58 -0700 (PDT)
+        Sun, 20 Sep 2020 04:25:07 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45EDAC061755
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 01:25:07 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id a2so9557474otr.11
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 01:25:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QW/8f02YUz9CyJxz2jJDAPCwQUNyEsIs6ErdQRH78bk=;
-        b=KpEMjAVsWIsf6j85U5lGiCQk94IKAbNlzJpqqh7UlpZP+uHxVyI9xbDPp+PEj35Klr
-         Fp0pmrJPV4QcEqfbWznBKmcAQ+Q7J+2NCTy4gUD/Rd5fRLvQ3GCVnl4V8YU78MIWGtmi
-         zOs5T/os04dSRrngCDI5iUuJvEbe2rp33EGPI=
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/a7naUyGGQKH1PXxQJcaI7djTJ1eGMxz16YFC+CoiHA=;
+        b=MwFaajB4ddZEfoS7GDUcwZ09kFwbv/ZPTx4QWEGF92caNb0CPyyc8mE2LnbmeydYRg
+         SiXt2yT2P3jWmptEP4rwZTk1fwEjtS/pTYL6Q8V40Y01tXllkHP+t+b6Hsvhroi/DjiG
+         kxCI09qbc0xIpWl8xxp8GDUaqMoxh3MOpOINY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=QW/8f02YUz9CyJxz2jJDAPCwQUNyEsIs6ErdQRH78bk=;
-        b=RoiJa5VCIF4rAzYyKHZnq8GeQqAHmMH+ajnreH2A4Ah3zEBW1uIo3IWCuUS/aW8/VS
-         9+DpEoIWty3x8nrTu7CkWd2SDm8Noa2vpZk3Y8IjegE9Uw/2SMw7Ka8g/QckpowMwWtF
-         ww0SzYRofTX0BUgRQCvp2YwSd3HvPFjuvOPD7fcBsgqCY5dLq6eEanvz59f80dXIugxm
-         yyhYZ/Vn0ulDdzGr07yCKCTWvDPZR00P1K5oqEsG9KwbOFqPOWd9o3brT2mPKzCY870L
-         M9YJrMZkrSnKU9T2ZYR8UPng5vB5oYClUXJWdNz804xbVsag7QgGVFsQdnXArdLMNz84
-         8NOQ==
-X-Gm-Message-State: AOAM5313BRozmjHtfYm1SBhWawfj5K0/UQinP6NoifwJOvl0KyVH3wkn
-        E/ElJX3zDF+y+f5hT4TaeKfVng==
-X-Google-Smtp-Source: ABdhPJxNYcqTcvbH9VqF1Sc6UfalSbf2k2pQjIV2s6WyfB9ecjNuyH5YNGsmVXrxzF1y/be4tY28HQ==
-X-Received: by 2002:a5d:6886:: with SMTP id h6mr48291568wru.374.1600590237536;
-        Sun, 20 Sep 2020 01:23:57 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id i16sm13867150wrq.73.2020.09.20.01.23.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Sep 2020 01:23:56 -0700 (PDT)
-Date:   Sun, 20 Sep 2020 10:23:53 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:GENERIC INCLUDE/A..." <linux-arch@vger.kernel.org>,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Paul McKenney <paulmck@kernel.org>, X86 ML <x86@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        arcml <linux-snps-arc@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
-        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org
-Subject: Re: [patch RFC 00/15] mm/highmem: Provide a preemptible variant of
- kmap_atomic & friends
-Message-ID: <20200920082353.GG438822@phenom.ffwll.local>
-Mail-Followup-To: Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:GENERIC INCLUDE/A..." <linux-arch@vger.kernel.org>,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Paul McKenney <paulmck@kernel.org>, X86 ML <x86@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>, Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        arcml <linux-snps-arc@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
-        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org
-References: <20200919091751.011116649@linutronix.de>
- <CAKMK7uHTVJL2jGtCg61zG=myiF1BSk+yDdRYikcm-Mq_1TQWMQ@mail.gmail.com>
- <CAKMK7uENFDANQKebS_H0bhHeQRijrp1aVHQqyZPute3KBZ+fVQ@mail.gmail.com>
- <87pn6hc6g1.fsf@nanos.tec.linutronix.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/a7naUyGGQKH1PXxQJcaI7djTJ1eGMxz16YFC+CoiHA=;
+        b=RsKSNeRcFROCbOHpnikMPAl8nYQzs/+9JkflBAPvrJZBBqNkL52Z+Vq7gSZAmPJwB3
+         yRxwrtsfxZvAkumAeytN7MjtHFn5m/LZo62+LSaVDoq6BvP5cQnm7E7yOlIk7OryAmHU
+         7FuCzl/kvR8n988IIJeKtvWCvsgeQAa5AwsTgL+BNdlyrlwqgAhGiy9wqacrGIWpi9aC
+         TOtP8J8qAZhWUoIJKSQAf/drj7fWoEqFmkOwvkxr5sVz7pot1yqp+7OV6TT2hv01qRRC
+         IQajyT/s8iGfMbKzfUKzlx8zX4OiPMB6DE+FbRjnxs3p+S6497/mpgBjKZmztSqoMmbs
+         gG/g==
+X-Gm-Message-State: AOAM530j56ARPZ7gRx/3PYOkdr7i79xx3hS/xK9H4Rx+rnggkJT3bDr4
+        unvcn9NxdmsNkUvH2VVywBPDQW60RVaSTK3y/QxwlQ==
+X-Google-Smtp-Source: ABdhPJwvCe+IENwJ8m6nRbrwsW1P4512f+jSE1TU352LgCSSh9cgMw9oHKltWRqeohi5j6nyA0l0FsdeQtUcKr0FdFA=
+X-Received: by 2002:a9d:4b99:: with SMTP id k25mr29624761otf.281.1600590306336;
+ Sun, 20 Sep 2020 01:25:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87pn6hc6g1.fsf@nanos.tec.linutronix.de>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+References: <20200909190213.156302-1-alex.dewar90@gmail.com>
+ <c14d055d-1f6e-8c46-3a6e-7794ec69e6fe@baylibre.com> <89c599d2-6766-df68-5359-7672679b3d89@gmail.com>
+In-Reply-To: <89c599d2-6766-df68-5359-7672679b3d89@gmail.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Sun, 20 Sep 2020 10:24:55 +0200
+Message-ID: <CAKMK7uEwQhdqmU4+Ri+M9JtYqMmetmK8p9uFrhx1Lp16g=1edA@mail.gmail.com>
+Subject: Re: [PATCH] drm/bridge: dw-mipi-dsi: Use kmemdup cf. kmalloc+memcpy
+To:     Alex Dewar <alex.dewar90@gmail.com>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Philippe Cornu <philippe.cornu@st.com>,
+        =?UTF-8?Q?Yannick_Fertr=C3=A9?= <yannick.fertre@st.com>,
+        Antonio Borneo <antonio.borneo@st.com>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Angelo Ribeiro <Angelo.Ribeiro@synopsys.com>,
+        Markus Elfring <elfring@users.sourceforge.net>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 20, 2020 at 08:23:26AM +0200, Thomas Gleixner wrote:
-> On Sat, Sep 19 2020 at 12:37, Daniel Vetter wrote:
-> > On Sat, Sep 19, 2020 at 12:35 PM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >> I think it should be the case, but I want to double check: Will
-> >> copy_*_user be allowed within a kmap_temporary section? This would
-> >> allow us to ditch an absolute pile of slowpaths.
-> >
-> > (coffee just kicked in) copy_*_user is ofc allowed, but if you hit a
-> > page fault you get a short read/write. This looks like it would remove
-> > the need to handle these in a slowpath, since page faults can now be
-> > served in this new kmap_temporary sections. But this sounds too good
-> > to be true, so I'm wondering what I'm missing.
-> 
-> In principle we could allow pagefaults, but not with the currently
-> proposed interface which can be called from any context. Obviously if
-> called from atomic context it can't handle user page faults.
- 
-Yeah that's clear, but does the implemention need to disable pagefaults
-unconditionally?
+On Sat, Sep 19, 2020 at 9:31 PM Alex Dewar <alex.dewar90@gmail.com> wrote:
+>
+> On 2020-09-11 13:57, Neil Armstrong wrote:
+> > On 09/09/2020 21:02, Alex Dewar wrote:
+> >> kmemdup can be used instead of kmalloc+memcpy. Replace an occurrence of
+> >> this pattern.
+> Friendly ping?
+> >>
+> >> Issue identified with Coccinelle.
+> >>
+> >> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+> >> ---
+> >>   drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 4 +---
+> >>   1 file changed, 1 insertion(+), 3 deletions(-)
+> >>
+> >> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+> >> index 52f5c5a2ed64..7e9a62ad56e8 100644
+> >> --- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+> >> +++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+> >> @@ -1049,12 +1049,10 @@ static void debugfs_create_files(void *data)
+> >>      };
+> >>      int i;
+> >>
+> >> -    dsi->debugfs_vpg = kmalloc(sizeof(debugfs), GFP_KERNEL);
+> >> +    dsi->debugfs_vpg = kmemdup(debugfs, sizeof(debugfs), GFP_KERNEL);
+> >>      if (!dsi->debugfs_vpg)
+> >>              return;
+> >>
+> >> -    memcpy(dsi->debugfs_vpg, debugfs, sizeof(debugfs));
+> >> -
+> >>      for (i = 0; i < ARRAY_SIZE(debugfs); i++)
+> >>              debugfs_create_file(dsi->debugfs_vpg[i].name, 0644,
+> >>                                  dsi->debugfs, &dsi->debugfs_vpg[i],
+> >>
+> > Acked-by: Neil Armstrong <narmstrong@baylibre.com>
 
-> In theory we could make a variant which does not disable pagefaults, but
-> that's what kmap() already provides.
-
-Currently we have a bunch of code which roughly does
-
-	kmap_atomic();
-	copy_*_user();
-	kunmap_atomic();
-
-	if (short_copy_user) {
-		kmap();
-		copy_*_user(remaining_stuff);
-		kunmap();
-	}
-
-And the only reason is that kmap is a notch slower, hence the fastpath. If
-we get a kmap which is fast and allows pagefaults (only in contexts that
-allow pagefaults already ofc) then we can ditch a pile of kmap users.
-
-Cheers, Daniel
+Neil has commit rights, so I was assuming he'd push this to drm-misc-next.
+-Daniel
 -- 
 Daniel Vetter
 Software Engineer, Intel Corporation
