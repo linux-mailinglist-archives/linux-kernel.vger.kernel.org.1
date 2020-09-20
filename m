@@ -2,89 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0265D271287
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 07:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62FDD27128A
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 07:36:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726932AbgITF1i convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 20 Sep 2020 01:27:38 -0400
-Received: from 211-75-203-52.HINET-IP.hinet.net ([211.75.203.52]:49774 "EHLO
-        biored.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726760AbgITF1h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 01:27:37 -0400
-X-Greylist: delayed 1710 seconds by postgrey-1.27 at vger.kernel.org; Sun, 20 Sep 2020 01:27:37 EDT
-Received: from biored.com.tw ([197.234.219.44])
-        by biored.com.tw ([10.35.6.1]);
-        Sun, 20 Sep 2020 12:59:03 +0800
-Reply-To: tolarokanse@gmail.com
-From:   Mr Tolar OKANSE <calvin@biored.com.tw>
-To:     linux-kernel@vger.kernel.org
-Subject: =?UTF-8?B?SU5WRVNUTUVOVCBPRkZFUiAvIE9GRlJFIETigJlJTlZFU1RJU1NFTUVOVA==?=
-Date:   20 Sep 2020 05:59:02 +0100
-Message-ID: <20200920055901.EDB153047E6A71DE@biored.com.tw>
+        id S1726267AbgITFf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 01:35:57 -0400
+Received: from esa2.mentor.iphmx.com ([68.232.141.98]:38646 "EHLO
+        esa2.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726247AbgITFf5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 01:35:57 -0400
+X-Greylist: delayed 426 seconds by postgrey-1.27 at vger.kernel.org; Sun, 20 Sep 2020 01:35:56 EDT
+IronPort-SDR: 3BReqJoXREzd5Dtbw5U9NUqTvfWy/KxJ70pngSzG/X8ovgjsWxRme3hgLOW4m074WE1KGB9Vk+
+ MfkCYEYdamVGYYv31kc1DXxOzzI8d75yDPgGnq5Uq2QZC4ONuByX0oS/3BG5tx1mqK3QX9QpNG
+ nbHTymyBXR/bPO4HpPnoJtf0osD41IKlUcG7BbOEHBKwZkZItUycylR/oKLjcnpDAzccWBG/Zu
+ 3wPblBV9El9t+/fGflyivuGCvoSG+ZiAxYuzPYc5IKXSYwvntjenSL1fEAt5lBjXZRzHeLTsnZ
+ 66A=
+X-IronPort-AV: E=Sophos;i="5.77,281,1596528000"; 
+   d="scan'208";a="53106235"
+Received: from orw-gwy-02-in.mentorg.com ([192.94.38.167])
+  by esa2.mentor.iphmx.com with ESMTP; 19 Sep 2020 21:28:50 -0800
+IronPort-SDR: bYIzAEPNrQjjhBBoT5k+ao+kqFvc/BlhJI6MjnIEAVHSYPnnMibdijgXB+kwn5A1Yg5U57gbdd
+ qOTX+ZDG7wFgeDWBxPH/kO8/d8wG68Vo7oReCriNHwKANiZaHRMjJjo7SagK7pA6HIsx3Oicpi
+ mrL/+IZ1FWxPD7ykYw9tzIQ6bc8wwwtWZpYXCsZMI+1rtGdb5OHQypXYG7H2eZwXjBzkMjnSTs
+ TUlrrTxLAmkVLBwQ4P2KXP6bUKQLRMyvBO/68eGWp4Ld0e0TK+96IihtTP4IBmf3IbLvRbIH8M
+ 9SY=
+Subject: Re: [PATCH v2 2/2] Input: atmel_mxt_ts - wake mXT1386 from deep-sleep
+ mode
+To:     Dmitry Osipenko <digetx@gmail.com>, <nick@shmanahar.org>,
+        <dmitry.torokhov@gmail.com>, <robh+dt@kernel.org>
+CC:     <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <andy.shevchenko@gmail.com>, <erosca@de.adit-jv.com>,
+        <Andrew_Gabbasov@mentor.com>
+References: <20200918125601.8210-1-jiada_wang@mentor.com>
+ <20200918125601.8210-2-jiada_wang@mentor.com>
+ <2c3e093a-dc75-d315-519d-9b8fbab9b41b@gmail.com>
+ <d0d8dffe-be52-992e-af2b-020d4b159747@mentor.com>
+ <11e0052b-ae7a-71bc-1b28-9d5b42acfd11@gmail.com>
+From:   "Wang, Jiada" <jiada_wang@mentor.com>
+Message-ID: <e9ad6ba7-05a3-af3b-85c3-94797fb33554@mentor.com>
+Date:   Sun, 20 Sep 2020 14:28:45 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-X-Antivirus: Avast (VPS 200919-4, 19/09/2020), Outbound message
-X-Antivirus-Status: Clean
+In-Reply-To: <11e0052b-ae7a-71bc-1b28-9d5b42acfd11@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SVR-ORW-MBX-05.mgc.mentorg.com (147.34.90.205) To
+ svr-orw-mbx-01.mgc.mentorg.com (147.34.90.201)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-INVESTMENT OFFER
+Hi Dmitry
 
-I am Mr Tolar OKANSE, financial advisor, property and private 
-assets. I found your contact through a search through the 
-Internet and I apologize for this unexpected intrusion on my part 
-and the surprised effect it may cause given everything that is 
-currently happening on the Internet.
+On 2020/09/20 4:49, Dmitry Osipenko wrote:
+> 18.09.2020 18:55, Wang, Jiada пишет:
+> ...
+>>>>    +static void mxt_wake(struct mxt_data *data)
+>>>> +{
+>>>> +    struct i2c_client *client = data->client;
+>>>> +    struct device *dev = &data->client->dev;
+>>>> +    struct device_node *np = dev->of_node;
+>>>> +    union i2c_smbus_data dummy;
+>>>> +
+>>>> +    if (!of_device_is_compatible(np, "atmel,mXT1386"))
+>>>> +        return;
+>>> I'm not sure whether you misses the previous answers from Dmitry
+>>> Torokhov and Rob Herring, but they suggested to add a new device-tree
+>>> property which should specify the atmel,wakeup-method.
+>>>
+>> I think Rob Herring prefers for the compatible solution than property.
+> 
+> Actually, seems you're right. But I'm not sure now whether he just made
+> a typo, because it's actually a board-specific option.
+> 
+Right, I think since it is a board specific issue,
+so "property" is the preferred way,
+if I understand you correctly,
+compatible combine with property is what you are suggesting, right?
 
-Indeed, I am in direct contact with a Libyan community 
-(Politicians, Traders, Businessmen and Military) resident in 
-Ghana. The latter have significant funds and would like to make 
-investments and investments with their funds in all profitable 
-areas and they are looking for a serious manager to whom to 
-entrust all management.
+> It could be more preferred to skip the i2c_smbus_xfer() for the NONE
+> variant, but it also should be harmless in practice. I guess we indeed
+> could keep the current variant of yours patch and then add a clarifying
+> comment to the commit message and to the code, telling that
+> i2c_smbus_xfer() is harmless in a case of the hardwired WAKE-LINE.
+> 
+I will skip dummy read for "NONE" variant.
 
-If you are interested in my offer, I will put you in contact with 
-their representative on site for more details and information.
+>>> There are 3 possible variants:
+>>>
+>>>     - NONE
+>>>     - GPIO
+>>>     - I2C-SCL
+>>>
+>>> Hence we should bail out from mxt_wake() if method is set to NONE or
+>>> GPIO.
+>>>
+>> for "GPIO", we still need 25 ms sleep. but rather than a dummy read,
+>> WAKE line need to be asserted before sleep.
+> 
+> Correct, I just meant to bail out because GPIO is currently unsupported.
+> 
 
+OK
 
-Please contact me directly at my email address: 
-tolarokanse@gmail.com
+> ...
+>>>>    static int mxt_initialize(struct mxt_data *data)
+>>>>    {
+>>>>        struct i2c_client *client = data->client;
+>>>>        int recovery_attempts = 0;
+>>>>        int error;
+>>>>    +    mxt_wake(data);
+>>>> +
+>>>>        while (1) {
+>>>
+>>> I assume the mxt_wake() should be placed here, since there is a 3
+>>> seconds timeout in the end of the while-loop, meaning that device may
+>>> get back into deep-sleep on a retry.
+>>>
+>> Can you elaborate a little more why exit from bootload mode after sleep
+>> for 3 second could enter deep-sleep mode.
+> 
+> The loop attempts to exit from bootload mode and then I suppose
+> mxt_read_info_block() may fail if I2C "accidentally" fails, hence the
+> deep-sleep mode still will be enabled on a retry.
+> 
+> The datasheet says that there are 2 seconds since the time of the last
+> I2C access before TS is put back into auto-sleep if deep-sleep mode is
+> enabled. The wait-loop has msleep(3000).
 
-Cordially...
-Mr T. Okanse
+OK, thanks for the clarification
 
-……………………………………………………………………………….
-
-OFFRE D’INVESTISSEMENT
-
-Je suis Mr Tolar OKANSE, conseiller financier, des biens et de 
-patrimoines privés. J'ai trouvé votre contact suite à une 
-recherche via l'Internet et je vous prie de m'excuser pour cette 
-intrusion inattendue de ma part et l'effet surpris que cela peut 
-causer vu tout ce qui se passe actuellement sur l'Internet.
-
-En effet, je suis en contact direct avec une communauté libyenne 
-(Politiciens, Commerçants, Hommes d’affaire et Militaires) 
-résidents au Ghana.  Ces derniers disposent d’importants fonds et 
-souhaiteraient faire des placements et investissement avec ses 
-fonds dans tous les domaines rentables et  ils sont à la 
-recherche de manager sérieux à qui confier  toute la gérance.
-
-Dans le cas où vous serez intéressés par mon offre, je vous 
-mettrai en contact avec leur représentant sur place pour plus 
-amples détails et informations.
-
-
-Veuillez bien vouloir me contacter directement à mon adresse e-
-mail : tolarokanse@gmail.com
-
-Cordialement...
-Mr T. Okanse
-
-
--- 
-L'absence de virus dans ce courrier électronique a été vérifiée par le logiciel antivirus Avast.
-https://www.avast.com/antivirus
+Thanks,
+Jiada
+> 
