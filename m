@@ -2,174 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34C472715A2
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 18:17:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3842715A4
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 18:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726415AbgITQQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 12:16:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726326AbgITQQc (ORCPT
+        id S1726360AbgITQUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 12:20:37 -0400
+Received: from smtprelay0155.hostedemail.com ([216.40.44.155]:41372 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726311AbgITQUh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 12:16:32 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 125DBC061755
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 09:16:32 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id t138so12495517qka.0
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 09:16:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/C96D/c4iIB14ZPmIUheFcFLIlUZ3nkmg1zOuVbd2fU=;
-        b=aFe2XdukaO4XWLAejv3n6+ezsPMXuImrKobbyJW+px09EQOmZv0Hqm436nDsdiSVFV
-         utg4lT6KRuUXPIffkzVCcxiQB3M35DOViKylzg342XvALcBZa/pS/IfrjFr/DIuwB89L
-         sxoHsXMY3LG+5Iwceo8x5KruBV9NbHk5IHBa8lqTkSppSUNllWJfUD3Z9OhHDyPkLyLa
-         xPo4fvnJwvXnfX4APIHb4CW16RzwhYCwxM8Nhn8eIy9QUG2aemYkI6aLceH9KF+9hstq
-         ESpUe8B2BACsY7ErXB4sLZN3v4nsUh6MsC87WqDNU/NHHp68avlqKMgG27RlKi3SfAvc
-         UI4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=/C96D/c4iIB14ZPmIUheFcFLIlUZ3nkmg1zOuVbd2fU=;
-        b=J/cw7SX6NXuI63bSgeoXR01I0UnXMufDP15UDYlNUoTlt4vcaf7pweo9cS3XncYf+T
-         93Pst55w5dEE9XmdlUTEpJV01KhdH8NlkJvkGldMsc+/d0A6HCpZiL/a31r10P9gi1kx
-         JhFNJ9h+oAW/jAFB4xylPsfEL2f9fOQDTmAqZPNgjyLkWPGYZh301HISK05H8osmo1sb
-         ag/ArMGSByK8KlNxks0deJs1I3w83lDE4r9H0mnNycBMP64jyMBGD8Jur/IlFPWlaJVr
-         CqBsfJa1ajxEdX8aqZ/srp7KKILlI9WH7cCB9xXTIx4Tq+ZxyYsjpgEGMxdilma3Ecxc
-         rspg==
-X-Gm-Message-State: AOAM531TJFlKJTQLvqmVEq4M81IRh7zK9HNfaqWKhVpApNZWdmc8DSGV
-        GIUdmZB3+t9uZvfDLMNLVVhk0YNn9o8=
-X-Google-Smtp-Source: ABdhPJwzN4yCD9prM3q27A2CgHXEm02tDOBxivJ7I0cpbfdf9wDVcuB+ffbtWJjFEXGVWniQap7wDQ==
-X-Received: by 2002:a05:620a:1274:: with SMTP id b20mr41187910qkl.220.1600618591180;
-        Sun, 20 Sep 2020 09:16:31 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id z3sm6814429qkf.92.2020.09.20.09.16.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Sep 2020 09:16:30 -0700 (PDT)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Sun, 20 Sep 2020 12:16:28 -0400
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] Use feature bit names in clearcpuid=
-Message-ID: <20200920161628.GA3951950@rani.riverdale.lan>
-References: <20200920154228.GB7473@zn.tnic>
+        Sun, 20 Sep 2020 12:20:37 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 3C8AB18224D7E;
+        Sun, 20 Sep 2020 16:20:36 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3351:3653:3867:3870:3871:3874:5007:7903:10004:10400:10848:11026:11658:11914:12297:12555:12760:13069:13095:13221:13229:13255:13311:13357:13439:14181:14394:14659:14721:21080:21433:21627:21660:21990:30054,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: tramp39_4902a322713d
+X-Filterd-Recvd-Size: 1866
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf07.hostedemail.com (Postfix) with ESMTPA;
+        Sun, 20 Sep 2020 16:20:35 +0000 (UTC)
+Message-ID: <b6afa04112d450c2fc120a308d706acd60cee294.camel@perches.com>
+Subject: [PATCH -next] checkpatch: Fix git "fatal" warning if file argument
+ outside kernel tree
+From:   Joe Perches <joe@perches.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux@rasmusvillemoes.dk,
+        Julia Lawall <julia.lawall@inria.fr>, apw@canonical.com
+Date:   Sun, 20 Sep 2020 09:20:34 -0700
+In-Reply-To: <cca15cb7889f25ab010300a3e7e55dd63478c1fc.camel@perches.com>
+References: <alpine.DEB.2.22.394.2009201346560.2966@hadrien>
+         <cca15cb7889f25ab010300a3e7e55dd63478c1fc.camel@perches.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200920154228.GB7473@zn.tnic>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 20, 2020 at 05:42:28PM +0200, Borislav Petkov wrote:
-> Hi,
-> 
-> so tglx hates this clearcpuid= interface where you have to give the
-> X86_FEATURE array indices in order to disable a feature bit for testing.
-> Below is a first attempt (lightly tested in a VM only) to accept the bit
-> names from /proc/cpuinfo too.
-> 
-> I say "too" because not all feature bits have names and we would still
-> have to support the numbers. Yeah, yuck.
-> 
-> An exemplary cmdline would then be something like:
-> 
-> clearcpuid=de,440,smca,succory,bmi1,3dnow ("succory" is wrong on
-> purpose).
-> 
-> and it says:
-> 
-> [    0.000000] Clearing CPUID bits: de 13:24 smca bmi1 3dnow
-> 
-> Also, I'm thinking we should taint the kernel when this option is used.
-> 
-> Thoughts?
+commit bcf4271d4bc3 ("checkpatch: allow not using -f with files that
+are in git") in linux-next causes checkpatch to emit a fatal message:
 
-I like it. Allowing 13:24 as input would be icing on the cake :)
+fatal: <file>: '<file>' is outside repository at '<kernel_dir>'
 
-Small comments below.
+Fix that by sending git's error output to /dev/null instead.
 
-> @@ -273,21 +273,45 @@ static void __init fpu__init_parse_early_param(void)
->  		return;
->  
->  	pr_info("Clearing CPUID bits:");
-> -	do {
-> -		res = get_option(&argptr, &bit);
-> -		if (res == 0 || res == 3)
-> -			break;
-> -
-> -		/* If the argument was too long, the last bit may be cut off */
-> -		if (res == 1 && arglen >= sizeof(arg))
-> -			break;
-> -
-> -		if (bit >= 0 && bit < NCAPINTS * 32) {
-> -			pr_cont(" " X86_CAP_FMT, x86_cap_flag(bit));
-> -			setup_clear_cpu_cap(bit);
-> +
-> +	while (argptr) {
-> +		int i;
-> +
-> +		opt = (strsep(&argptr, ","));
-> +		if (!opt)
-> +			continue;
+Signed-off-by: Joe Perches <joe@perches.com>
+Reported-by: Julia Lawall <julia.lawall@inria.fr>
+Reviewed-by: Julia Lawall <julia.lawall@inria.fr>
+---
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 3e474072aa90..469f8e7456df 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -981,7 +981,7 @@ sub git_is_single_file {
+ 
+ 	return 0 if ((which("git") eq "") || !(-e "$gitroot"));
+ 
+-	my $output = `${git_command} ls-files -- $filename`;
++	my $output = `${git_command} ls-files -- $filename 2>/dev/null`;
+ 	my $count = $output =~ tr/\n//;
+ 	return $count eq 1 && $output =~ m{^${filename}$};
+ }
 
-The !opt check is unnecessary: strsep() returns NULL iff argptr is NULL
-on entry. The parentheses around strsep() also look odd.
 
-> +
-> +		if (!kstrtoint(opt, 10, &bit)) {
-
-Could make bit unsigned and use kstrtouint().
-
-> +			if (bit >= 0 && bit < NCAPINTS * 32) {
-> +				if (!x86_cap_flag(bit))
-> +					pr_cont(" " X86_CAP_FMT_BARE, x86_cap_flag_bare(bit));
-> +				else
-> +					pr_cont(" " X86_CAP_FMT, x86_cap_flag(bit));
-> +
-> +				setup_clear_cpu_cap(bit);
-> +				taint++;
-> +				continue;
-> +			}
-
-Could always continue if it was a number, even if it was invalid, since
-that shouldn't match a name in any case?
-
->  		}
-> -	} while (res == 2);
-> +
-> +#ifdef CONFIG_X86_FEATURE_NAMES
-> +		for (i = 0; i < 32 * NCAPINTS; i++) {
-> +			if (!x86_cap_flags[i])
-> +				continue;
-> +
-> +			if (strcmp(x86_cap_flags[i], opt))
-> +				continue;
-> +
-> +			pr_cont(" %s", opt);
-> +			setup_clear_cpu_cap(i);
-> +			taint++;
-
-We could break out of the loop here -- we can't have multiple bits with
-the same name, right?
-
-> +		}
-> +#endif
-> +	}
->  	pr_cont("\n");
-> +
-> +	if (taint)
-> +		add_taint(TAINT_CPU_OUT_OF_SPEC, LOCKDEP_STILL_OK);
->  }
->  
->  /*
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
