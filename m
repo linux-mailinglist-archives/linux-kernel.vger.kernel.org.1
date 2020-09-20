@@ -2,28 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C1F327141B
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 14:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C8F27141C
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 14:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726548AbgITMJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 08:09:34 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:50064 "EHLO
+        id S1726553AbgITMJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 08:09:36 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:50034 "EHLO
         mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726445AbgITMJY (ORCPT
+        by vger.kernel.org with ESMTP id S1726479AbgITMJ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 08:09:24 -0400
+        Sun, 20 Sep 2020 08:09:27 -0400
 X-IronPort-AV: E=Sophos;i="5.77,282,1596492000"; 
-   d="scan'208";a="468612198"
+   d="scan'208";a="468612199"
 Received: from palace.lip6.fr ([132.227.105.202])
   by mail2-relais-roc.national.inria.fr with ESMTP/TLS/AES256-SHA256; 20 Sep 2020 14:08:58 +0200
 From:   Julia Lawall <Julia.Lawall@inria.fr>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
+To:     Sudeep Dutt <sudeep.dutt@intel.com>
 Cc:     kernel-janitors@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 12/14] [media] saa7146: drop double zeroing
-Date:   Sun, 20 Sep 2020 13:26:24 +0200
-Message-Id: <1600601186-7420-13-git-send-email-Julia.Lawall@inria.fr>
+        Ashutosh Dixit <ashutosh.dixit@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 13/14] misc: mic: drop double zeroing
+Date:   Sun, 20 Sep 2020 13:26:25 +0200
+Message-Id: <1600601186-7420-14-git-send-email-Julia.Lawall@inria.fr>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1600601186-7420-1-git-send-email-Julia.Lawall@inria.fr>
 References: <1600601186-7420-1-git-send-email-Julia.Lawall@inria.fr>
@@ -53,19 +55,19 @@ sg_init_table(x,n)
 Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
 ---
- drivers/media/common/saa7146/saa7146_core.c |    2 +-
+ drivers/misc/mic/scif/scif_nodeqp.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff -u -p a/drivers/media/common/saa7146/saa7146_core.c b/drivers/media/common/saa7146/saa7146_core.c
---- a/drivers/media/common/saa7146/saa7146_core.c
-+++ b/drivers/media/common/saa7146/saa7146_core.c
-@@ -140,7 +140,7 @@ static struct scatterlist* vmalloc_to_sg
- 	struct page *pg;
+diff -u -p a/drivers/misc/mic/scif/scif_nodeqp.c b/drivers/misc/mic/scif/scif_nodeqp.c
+--- a/drivers/misc/mic/scif/scif_nodeqp.c
++++ b/drivers/misc/mic/scif/scif_nodeqp.c
+@@ -363,7 +363,7 @@ scif_p2p_setsg(phys_addr_t pa, int page_
+ 	struct page *page;
  	int i;
  
--	sglist = kcalloc(nr_pages, sizeof(struct scatterlist), GFP_KERNEL);
-+	sglist = kmalloc_array(nr_pages, sizeof(struct scatterlist), GFP_KERNEL);
- 	if (NULL == sglist)
+-	sg = kcalloc(page_cnt, sizeof(struct scatterlist), GFP_KERNEL);
++	sg = kmalloc_array(page_cnt, sizeof(struct scatterlist), GFP_KERNEL);
+ 	if (!sg)
  		return NULL;
- 	sg_init_table(sglist, nr_pages);
+ 	sg_init_table(sg, page_cnt);
 
