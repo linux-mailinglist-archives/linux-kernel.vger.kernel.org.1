@@ -2,175 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A576271370
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 13:12:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC11271375
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 13:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726401AbgITLML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 07:12:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726262AbgITLMK (ORCPT
+        id S1726301AbgITLPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 07:15:20 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:53292 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726247AbgITLPU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 07:12:10 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99A16C061755;
-        Sun, 20 Sep 2020 04:12:10 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id t7so5695094pjd.3;
-        Sun, 20 Sep 2020 04:12:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SK3azXNEl6yyJpFq5d1iG5zYYrlyno7Q8Ly4/yE9BOw=;
-        b=n6+rQwSl1SrCYFdOOctb8jo002SA1KxyLmOokDezLuQi+zK4b9DqigFXhppot6OT6U
-         FzkYUI8U4gUr2QCMDpKZxrbtU67rOmxWoWN4bkk7hiR5h9mhB4xDeLkqkOlXLHwd7SUv
-         37z3mreIRiM2OGDTAcZ5Vmdur61iTwrpCnpJnIIsxXajBGH1m1Ts4FLbpPXipaz/sVvk
-         3nUOwfx2aOYTksA1tzaNhY7phJnfuKL3xIE2K6Wgp+Eibe3qUKljivBSxdedUIYb2CtL
-         UeYMWF3ibd1Iv2pULnKqMqrK/zuLOo72imdf5kXZSuaeXZStxRV37yHMZtqFjKv4lVAN
-         i5Og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SK3azXNEl6yyJpFq5d1iG5zYYrlyno7Q8Ly4/yE9BOw=;
-        b=t5EwD+A8vY546ObXZJzAgN+gKQLmakY3RKYG+PJfEivF0DT0Ibtsf49fr0I9gSB4Io
-         DY/aWMKSNES+R1yq09t6fvB3CsQCsuecox7q381zQvNfMFee3g0rDXzL7anSGzgEUsGT
-         YKCaOGeKQfR08kVnetMYawZuy55yqfqDsj2K35tBDEjug9cNvGBAh+lO+EFgufuuyqAW
-         fc+B6fPoegf06ooLwjHyBrSof0BKDkh0dwgOlN46DR/p1T/uEeNOgNNHeJpwXieQ2rUL
-         5Y0d5Nhp7nId8YY8nAnYRNUpJIhVuhO2GfP30CLUsb9GlIkV6t0COAjOKhe/vpLYykNW
-         OXRA==
-X-Gm-Message-State: AOAM531YSayh8/mWe1Lv6tG1RuxkBriGZ2lvMd5BYFKJ0dUiK5lug0LI
-        dU7eK/kQI++HMPIL35V5lZCm7yWdtDA=
-X-Google-Smtp-Source: ABdhPJyFAoID7PRDy1inYmvnuEgVJulyUyCgaasKVkQI/AEnllQRjdzPTg+beyPuTWM5cLVTgrOk6w==
-X-Received: by 2002:a17:90a:c83:: with SMTP id v3mr20130659pja.229.1600600329910;
-        Sun, 20 Sep 2020 04:12:09 -0700 (PDT)
-Received: from sol (106-69-189-59.dyn.iinet.net.au. [106.69.189.59])
-        by smtp.gmail.com with ESMTPSA id j13sm5469374pjn.14.2020.09.20.04.12.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Sep 2020 04:12:09 -0700 (PDT)
-Date:   Sun, 20 Sep 2020 19:12:04 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v7 07/20] gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL
- and GPIO_V2_LINE_GET_VALUES_IOCTL
-Message-ID: <20200920111204.GB793608@sol>
-References: <20200905133549.24606-1-warthog618@gmail.com>
- <20200905133549.24606-8-warthog618@gmail.com>
- <CAHp75Vdm=61wibz70ScvayXk_D77rZw_pG7wPkLXkbkzagRPNA@mail.gmail.com>
+        Sun, 20 Sep 2020 07:15:20 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id C6DF2803073F;
+        Sun, 20 Sep 2020 11:15:16 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 8uDbgm43KziS; Sun, 20 Sep 2020 14:15:15 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Lee Jones <lee.jones@linaro.org>, <linux-mips@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
+Subject: [PATCH v3] mtd: physmap: Add Baikal-T1 physically mapped ROM support
+Date:   Sun, 20 Sep 2020 14:14:44 +0300
+Message-ID: <20200920111445.21816-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vdm=61wibz70ScvayXk_D77rZw_pG7wPkLXkbkzagRPNA@mail.gmail.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 01:31:27PM +0300, Andy Shevchenko wrote:
-> On Sat, Sep 5, 2020 at 4:49 PM Kent Gibson <warthog618@gmail.com> wrote:
-> >
-> > Add support for requesting lines using the GPIO_V2_GET_LINE_IOCTL, and
-> > returning their current values using GPIO_V2_LINE_GET_VALUES_IOCTL.
-> >
-> > The struct linereq implementation is based on the v1 struct linehandle
-> > implementation.
-> >
-> > Signed-off-by: Kent Gibson <warthog618@gmail.com>
-> > ---
-> >
+Baikal-T1 Boot Controller provides an access to a RO storages, which are
+physically mapped into the SoC MMIO space. In particularly there are
+Internal ROM embedded into the SoC with a pre-installed firmware,
+externally attached SPI flash (also accessed in the read-only mode) and a
+memory region, which mirrors one of them in accordance with the currently
+enabled system boot mode (also called Boot ROM).
 
-[snip]
-> 
-> > +       /* Bias requires explicit direction. */
-> > +       if ((flags & GPIO_V2_LINE_BIAS_FLAGS) &&
-> > +           !(flags & GPIO_V2_LINE_DIRECTION_FLAGS))
-> > +               return -EINVAL;
-> 
-> Why is this? If I request a line as is and after set a bias, should I
-> really care about direction?
-> 
+This commit adds the Internal ROM support to the physmap driver of the MTD
+kernel subsystem. The driver will create the Internal ROM MTD as long as
+it is defined in the system dts file. The physically mapped SPI flash
+region will be used to implement the SPI-mem interface. The mirroring
+memory region won't be accessible directly since it's redundant due to
+both bootable regions being exposed anyway.
 
-Yeah, you probably should be aware of the direction if they are setting
-the bias, so this makes sure they are.
+Note we had to create a dedicated code for the ROMs since read from the
+corresponding memory regions must be done via the dword-aligned addresses.
 
-The practical reason is that gpiod_direction_output() or
-gpiod_direction_input() have to be called to set the bias, and they are
-only called if the corresponding flag is set.
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+Cc: Lee Jones <lee.jones@linaro.org>
+Cc: linux-mips@vger.kernel.org
 
-> 
-> > +       for (num_get = 0, i = 0; i < lr->num_lines; i++) {
-> > +               if (lv.mask & BIT_ULL(i)) {
-> 
-> for_each_set_bit() ?
-> 
+---
 
-No - lv.mask is u64, not unsigned long.
-You could do a cast, but it would break on BE-32.
-Sound familar? - you caught me doing just that in your review of an earlier
-version.
+Link: https://lore.kernel.org/linux-mtd/20200508100905.5854-1-Sergey.Semin@baikalelectronics.ru/
+Changelog v2:
+- Resend.
 
-> > +       ulr.consumer[sizeof(ulr.consumer)-1] = '\0';
-> > +       if (strlen(ulr.consumer)) {
-> > +               lr->label = kstrdup(ulr.consumer, GFP_KERNEL);
-> 
-> Sounds like kstrndup()
-> 
+Link: https://lore.kernel.org/linux-mtd/20200526225849.20985-1-Sergey.Semin@baikalelectronics.ru
+Changelog v3:
+- Alphabetically order the include statements.
+- Discard dummy IOs.
+- Discard Baikal-T1 Boot ROM support. The directly mapped SPI flash
+  memory will be used in the DW APB SSI driver instead.
+---
+ drivers/mtd/maps/Kconfig           |  11 +++
+ drivers/mtd/maps/Makefile          |   1 +
+ drivers/mtd/maps/physmap-bt1-rom.c | 126 +++++++++++++++++++++++++++++
+ drivers/mtd/maps/physmap-bt1-rom.h |  17 ++++
+ drivers/mtd/maps/physmap-core.c    |   5 ++
+ 5 files changed, 160 insertions(+)
+ create mode 100644 drivers/mtd/maps/physmap-bt1-rom.c
+ create mode 100644 drivers/mtd/maps/physmap-bt1-rom.h
 
-Been here before too - they differ slightly in that here lr->label is
-left null if consumer is empty,  whereas kstrndup() would alloc one byte
-just for the null terminator.
-
-> > +               }
-> > +
-> > +               blocking_notifier_call_chain(&desc->gdev->notifier,
-> > +                                            GPIOLINE_CHANGED_REQUESTED, desc);
-> > +
-> 
-> > +               dev_dbg(&gdev->dev, "registered chardev handle for line %d\n",
-> > +                       offset);
-> 
-> Hmm... I would rather see trace events / points than new dev_dbg() /
-> pr_debug() calls.
-> 
-
-Agreed - it is on the TODO list.
-I have looked at it and doing it properly would mean adding tracepoints
-to gpiolib.c, and modifying the v1 code as well, so it is best done in a
-separate patch later...
-
-> > @@ -1104,6 +1505,25 @@ int gpiolib_cdev_register(struct gpio_device *gdev, dev_t devt)
-> >                  MAJOR(devt), gdev->id);
-> >
-> >         return 0;
-> > +       /*
-> > +        * array sizes must ensure 64-bit alignment and not create holes in
-> > +        * the struct packing.
-> > +        */
-> > +       BUILD_BUG_ON(IS_ALIGNED(GPIO_V2_LINES_MAX, 2));
-> > +       BUILD_BUG_ON(IS_ALIGNED(GPIO_MAX_NAME_SIZE, 8));
-> > +
-> > +       /*
-> > +        * check that uAPI structs are 64-bit aligned for 32/64-bit
-> > +        * compatibility
-> > +        */
-> > +       BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_attribute), 8));
-> > +       BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_config_attribute), 8));
-> > +       BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_config), 8));
-> > +       BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_request), 8));
-> > +       BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_info), 8));
-> > +       BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_info_changed), 8));
-> > +       BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_event), 8));
-> > +       BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_values), 8));
-> 
-> Can we use static_assert() at the top of the file? Presumably after
-> inclusion block.
-> 
-
-Good idea - will do.
-
-Cheers,
-Kent.
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index fd37553f1b07..6650acbc961e 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -75,6 +75,17 @@ config MTD_PHYSMAP_OF
+ 	  physically into the CPU's memory. The mapping description here is
+ 	  taken from OF device tree.
+ 
++config MTD_PHYSMAP_BT1_ROM
++	bool "Baikal-T1 Boot ROMs OF-based physical memory map handling"
++	depends on MTD_PHYSMAP_OF
++	depends on MIPS_BAIKAL_T1 || COMPILE_TEST
++	select MTD_COMPLEX_MAPPINGS
++	select MULTIPLEXER
++	select MUX_MMIO
++	help
++	  This provides some extra DT physmap parsing for the Baikal-T1
++	  platforms, some detection and setting up ROMs-specific accessors.
++
+ config MTD_PHYSMAP_VERSATILE
+ 	bool "ARM Versatile OF-based physical memory map handling"
+ 	depends on MTD_PHYSMAP_OF
+diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+index c0da86a5d26f..79f018cf412f 100644
+--- a/drivers/mtd/maps/Makefile
++++ b/drivers/mtd/maps/Makefile
+@@ -18,6 +18,7 @@ obj-$(CONFIG_MTD_CK804XROM)	+= ck804xrom.o
+ obj-$(CONFIG_MTD_TSUNAMI)	+= tsunami_flash.o
+ obj-$(CONFIG_MTD_PXA2XX)	+= pxa2xx-flash.o
+ physmap-objs-y			+= physmap-core.o
++physmap-objs-$(CONFIG_MTD_PHYSMAP_BT1_ROM) += physmap-bt1-rom.o
+ physmap-objs-$(CONFIG_MTD_PHYSMAP_VERSATILE) += physmap-versatile.o
+ physmap-objs-$(CONFIG_MTD_PHYSMAP_GEMINI) += physmap-gemini.o
+ physmap-objs-$(CONFIG_MTD_PHYSMAP_IXP4XX) += physmap-ixp4xx.o
+diff --git a/drivers/mtd/maps/physmap-bt1-rom.c b/drivers/mtd/maps/physmap-bt1-rom.c
+new file mode 100644
+index 000000000000..27cfe1c63a2e
+--- /dev/null
++++ b/drivers/mtd/maps/physmap-bt1-rom.c
+@@ -0,0 +1,126 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (C) 2020 BAIKAL ELECTRONICS, JSC
++ *
++ * Authors:
++ *   Serge Semin <Sergey.Semin@baikalelectronics.ru>
++ *
++ * Baikal-T1 Physically Mapped Internal ROM driver
++ */
++#include <linux/bits.h>
++#include <linux/device.h>
++#include <linux/kernel.h>
++#include <linux/mtd/map.h>
++#include <linux/mtd/xip.h>
++#include <linux/mux/consumer.h>
++#include <linux/of.h>
++#include <linux/of_device.h>
++#include <linux/platform_device.h>
++#include <linux/string.h>
++#include <linux/types.h>
++
++#include "physmap-bt1-rom.h"
++
++/*
++ * Baikal-T1 SoC ROMs are only accessible by the dword-aligned instructions.
++ * We have to take this into account when implementing the data read-methods.
++ * Note there is no need in bothering with endianness, since both Baikal-T1
++ * CPU and MMIO are LE.
++ */
++static map_word __xipram bt1_rom_map_read(struct map_info *map,
++					  unsigned long ofs)
++{
++	void __iomem *src = map->virt + ofs;
++	unsigned long shift;
++	map_word ret;
++	u32 data;
++
++	/* Read data within offset dword. */
++	shift = (unsigned long)src & 0x3;
++	data = readl_relaxed(src - shift);
++	if (!shift) {
++		ret.x[0] = data;
++		return ret;
++	}
++	ret.x[0] = data >> (shift * BITS_PER_BYTE);
++
++	/* Read data from the next dword. */
++	shift = 4 - shift;
++	if (ofs + shift >= map->size)
++		return ret;
++
++	data = readl_relaxed(src + shift);
++	ret.x[0] |= data << (shift * BITS_PER_BYTE);
++
++	return ret;
++}
++
++static void __xipram bt1_rom_map_copy_from(struct map_info *map,
++					   void *to, unsigned long from,
++					   ssize_t len)
++{
++	void __iomem *src = map->virt + from;
++	ssize_t shift, chunk;
++	u32 data;
++
++	if (len <= 0 || from >= map->size)
++		return;
++
++	/* Make sure we don't go over the map limit. */
++	len = min_t(ssize_t, map->size - from, len);
++
++	/*
++	 * Since requested data size can be pretty big we have to implement
++	 * the copy procedure as optimal as possible. That's why it's split
++	 * up into the next three stages: unaligned head, aligned body,
++	 * unaligned tail.
++	 */
++	shift = (ssize_t)src & 0x3;
++	if (shift) {
++		chunk = min_t(ssize_t, 4 - shift, len);
++		data = readl_relaxed(src - shift);
++		memcpy(to, &data + shift, chunk);
++		src += chunk;
++		to += chunk;
++		len -= chunk;
++	}
++
++	while (len >= 4) {
++		data = readl_relaxed(src);
++		memcpy(to, &data, 4);
++		src += 4;
++		to += 4;
++		len -= 4;
++	}
++
++	if (len) {
++		data = readl_relaxed(src);
++		memcpy(to, &data, len);
++	}
++}
++
++int of_flash_probe_bt1_rom(struct platform_device *pdev,
++			   struct device_node *np,
++			   struct map_info *map)
++{
++	struct device *dev = &pdev->dev;
++
++	/* It's supposed to be read-only MTD. */
++	if (!of_device_is_compatible(np, "mtd-rom")) {
++		dev_info(dev, "No mtd-rom compatible string\n");
++		return 0;
++	}
++
++	/* Multiplatform guard. */
++	if (!of_device_is_compatible(np, "baikal,bt1-int-rom"))
++		return 0;
++
++	/* Sanity check the device parameters retrieved from DTB. */
++	if (map->bankwidth != 4)
++		dev_warn(dev, "Bank width is supposed to be 32 bits wide\n");
++
++	map->read = bt1_rom_map_read;
++	map->copy_from = bt1_rom_map_copy_from;
++
++	return 0;
++}
+diff --git a/drivers/mtd/maps/physmap-bt1-rom.h b/drivers/mtd/maps/physmap-bt1-rom.h
+new file mode 100644
+index 000000000000..6782899598a4
+--- /dev/null
++++ b/drivers/mtd/maps/physmap-bt1-rom.h
+@@ -0,0 +1,17 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++#include <linux/mtd/map.h>
++#include <linux/of.h>
++
++#ifdef CONFIG_MTD_PHYSMAP_BT1_ROM
++int of_flash_probe_bt1_rom(struct platform_device *pdev,
++			   struct device_node *np,
++			   struct map_info *map);
++#else
++static inline
++int of_flash_probe_bt1_rom(struct platform_device *pdev,
++			   struct device_node *np,
++			   struct map_info *map)
++{
++	return 0;
++}
++#endif
+diff --git a/drivers/mtd/maps/physmap-core.c b/drivers/mtd/maps/physmap-core.c
+index 8f7f966fa9a7..8843e780f5c8 100644
+--- a/drivers/mtd/maps/physmap-core.c
++++ b/drivers/mtd/maps/physmap-core.c
+@@ -41,6 +41,7 @@
+ #include <linux/pm_runtime.h>
+ #include <linux/gpio/consumer.h>
+ 
++#include "physmap-bt1-rom.h"
+ #include "physmap-gemini.h"
+ #include "physmap-ixp4xx.h"
+ #include "physmap-versatile.h"
+@@ -371,6 +372,10 @@ static int physmap_flash_of_init(struct platform_device *dev)
+ 		info->maps[i].bankwidth = bankwidth;
+ 		info->maps[i].device_node = dp;
+ 
++		err = of_flash_probe_bt1_rom(dev, dp, &info->maps[i]);
++		if (err)
++			return err;
++
+ 		err = of_flash_probe_gemini(dev, dp, &info->maps[i]);
+ 		if (err)
+ 			return err;
+-- 
+2.27.0
 
