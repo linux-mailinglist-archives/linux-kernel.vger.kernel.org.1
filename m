@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2384271324
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 11:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 179B8271323
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 11:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbgITJWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726326AbgITJWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sun, 20 Sep 2020 05:22:17 -0400
-Received: from mail-il1-f206.google.com ([209.85.166.206]:53408 "EHLO
-        mail-il1-f206.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726247AbgITJWQ (ORCPT
+Received: from mail-io1-f77.google.com ([209.85.166.77]:51962 "EHLO
+        mail-io1-f77.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726250AbgITJWQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 20 Sep 2020 05:22:16 -0400
-Received: by mail-il1-f206.google.com with SMTP id w12so2037518ilc.20
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 02:22:15 -0700 (PDT)
+Received: by mail-io1-f77.google.com with SMTP id q12so7829126iob.18
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 02:22:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=IJjZQysLXu1/RF9ewteRS4rH+LUmVeCkOSAwIBABgto=;
-        b=BVAvbMynTnySMh7jOvAuTOwUW3NymmAtFHDrG7m/sUlKE5aKvzNFbTJ9OlUhEqNDvD
-         xApxt3YObXuUbQxQ5brWVETmUy+lxwoUQEvIyhGD7vZW1tDGqpB/4xpIhIw/bSOiiZuN
-         bC1KQiUhMU3ooXHVD4fhqfLIvx4N2zlC7vBQ14ODnypHBxXIpfVq1Nwgh08NijSYVFJx
-         Qq8m/rs4XE03xIiwNUTF7X3T5uU2pUf2SapRDbygroNwsAfIJVVOer0LmEkwh6ud8WnV
-         rTn5hP+9iNSbdwHcJHsZFXNiA4gVeblr+KnLUSA61hzyU1XIR3jkceo+f02ryEc01c07
-         yPFQ==
-X-Gm-Message-State: AOAM533+2PeXr98uglrTlgVOivkCmKy6t2TthqjgpC6ay59rHdkGBX3D
-        bzusNU4Yiap8YF/GEgp52uyq2p/pyhiXxt5x7ojq5aLmStLr
-X-Google-Smtp-Source: ABdhPJzegCGBiRCxz2F/3M3r3CJ9P0i4yQ+5vnz9X+cIpF7YYwXUhsCfH9xUomiztgWcfMIp0sV3NsHTm31QB5oFGN1R31LvVSc+
+        bh=To0958KlvR9rnacFqHmwL9rHYI1TEUcFIt/m7KfPjyg=;
+        b=JnopWZdGgehBUY5S69GNHH3HoXi6LHmVHYdtAXuR/1VewQfhN76Lkj0dpzxlIVeONM
+         K5t4IBFdmj+kVWBsyT1lw3YytV5WF4pI6NLPiwp5U/88GJcX5iy4KF8HDdls7mPVpd3r
+         HcWJWvneCpWeSigkF/5Jc1C/M3NJsps4RQ8xr+gF1cgJ/CLhg9Mg0Ew+Ty9UnTd5Khc3
+         jDdsmu2nvl/RktSE+h9jcvAWjA9dzG3W6T/xlyZVKhmwHP6pHZFLkthB0LfL34GBmftE
+         K60z+DNHgl8UamBpsFWTBAq6p3axqLDoWTysblnVmcv//9xJ2bYi4D4WJvWMkHVH5lL0
+         pqNw==
+X-Gm-Message-State: AOAM532AlUSmliMevlPJ10WMfjxINbKzBo8FDHBBzXVktPV5U5eD5D9u
+        tQYw0GX563b8vzjts3SAg08eFuTEA9gxTJB2c9ickAhwdp6Q
+X-Google-Smtp-Source: ABdhPJyDNeCia96xmEw5fuolUcxaByXJ+cAvOxDtBcMePQNKg2EwPE7xCw4BLtJyOSVE73rkr70HGoYo3xNrCSlFgfm+dT1U/zz3
 MIME-Version: 1.0
-X-Received: by 2002:a5e:8e0a:: with SMTP id a10mr33673966ion.200.1600593735382;
+X-Received: by 2002:a92:4101:: with SMTP id o1mr2661993ila.296.1600593735683;
  Sun, 20 Sep 2020 02:22:15 -0700 (PDT)
 Date:   Sun, 20 Sep 2020 02:22:15 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000006fb0905afbb458d@google.com>
-Subject: KMSAN: uninit-value in is_idle_task
-From:   syzbot <syzbot+a4b29e75da1c2c8bd34f@syzkaller.appspotmail.com>
-To:     bp@alien8.de, glider@google.com, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, luto@kernel.org, mingo@redhat.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org
+Message-ID: <0000000000000b953a05afbb4548@google.com>
+Subject: kernel BUG at fs/f2fs/segment.h:LINE!
+From:   syzbot <syzbot+3698081bcf0bb2d12174@syzkaller.appspotmail.com>
+To:     chao@kernel.org, jaegeuk@kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,70 +48,74 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    3b3ea602 x86: add failure injection to get/put/clear_user
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=144b8965900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ee5f7a0b2e48ed66
-dashboard link: https://syzkaller.appspot.com/bug?extid=a4b29e75da1c2c8bd34f
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+HEAD commit:    fc4f28bb Merge tag 'for-5.9-rc5-tag' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=134d97dd900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c61f6bd349c981f3
+dashboard link: https://syzkaller.appspot.com/bug?extid=3698081bcf0bb2d12174
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a4b29e75da1c2c8bd34f@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in is_idle_task+0x65/0x70 include/linux/sched.h:1672
-CPU: 0 PID: 5351 Comm: syz-executor.3 Not tainted 5.8.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x21c/0x280 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
- __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
- is_idle_task+0x65/0x70 include/linux/sched.h:1672
- sysvec_apic_timer_interrupt+0x2e/0x130 arch/x86/kernel/apic/apic.c:1091
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:593
-RIP: 0010:kmsan_get_metadata+0x136/0x180 mm/kmsan/kmsan_shadow.c:201
-Code: 75 5f 48 89 df e8 6a 00 00 00 48 85 c0 74 50 48 8b 48 40 48 85 c9 74 47 48 8b 40 48 48 85 c0 74 3e 81 e3 ff 0f 00 00 45 84 f6 <48> 0f 45 c8 48 b8 00 00 00 00 00 16 00 00 48 01 c8 48 c1 e8 04 48
-RSP: 0018:ffff8881cde9f460 EFLAGS: 00000246
-RAX: ffffea00090451b0 RBX: 0000000000000608 RCX: ffffea00090311b0
-RDX: 00000001cde9f608 RSI: 0000000000000720 RDI: ffff8881cde9f608
-RBP: ffff8881cde9f478 R08: ffffea000000000f R09: ffff88812fffa000
-R10: 0000000000000004 R11: 00000000ffffffff R12: 000000000000006a
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- kmsan_get_shadow_origin_ptr+0x6c/0xb0 mm/kmsan/kmsan_shadow.c:149
- __msan_metadata_ptr_for_load_4+0x10/0x20 mm/kmsan/kmsan_instr.c:54
- vga_8planes_fillrect drivers/video/fbdev/vga16fb.c:855 [inline]
- vga16fb_fillrect+0xbbc/0x1870 drivers/video/fbdev/vga16fb.c:947
- bit_clear_margins+0x582/0x740 drivers/video/fbdev/core/bitblit.c:232
- fbcon_clear_margins drivers/video/fbdev/core/fbcon.c:1381 [inline]
- fbcon_switch+0x2e79/0x3830 drivers/video/fbdev/core/fbcon.c:2363
- redraw_screen+0x9b2/0x2980 drivers/tty/vt/vt.c:1015
- fbcon_modechanged+0x110d/0x1320 drivers/video/fbdev/core/fbcon.c:3001
- fbcon_update_vcs+0x86/0xa0 drivers/video/fbdev/core/fbcon.c:3048
- fb_set_var+0x1420/0x1850 drivers/video/fbdev/core/fbmem.c:1056
- do_fb_ioctl+0xc00/0x1150 drivers/video/fbdev/core/fbmem.c:1109
- fb_ioctl+0x1e4/0x210 drivers/video/fbdev/core/fbmem.c:1185
- vfs_ioctl fs/ioctl.c:48 [inline]
- ksys_ioctl fs/ioctl.c:753 [inline]
- __do_sys_ioctl fs/ioctl.c:762 [inline]
- __se_sys_ioctl+0x319/0x4d0 fs/ioctl.c:760
- __x64_sys_ioctl+0x4a/0x70 fs/ioctl.c:760
- do_syscall_64+0xad/0x160 arch/x86/entry/common.c:386
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45d5f9
-Code: Bad RIP value.
-RSP: 002b:00007fdcda761c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 000000000000e280 RCX: 000000000045d5f9
-RDX: 00000000200000c0 RSI: 0000000000004601 RDI: 0000000000000003
-RBP: 000000000118cf80 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cf4c
-R13: 000000000169fb6f R14: 00007fdcda7629c0 R15: 000000000118cf4c
+Reported-by: syzbot+3698081bcf0bb2d12174@syzkaller.appspotmail.com
 
 ------------[ cut here ]------------
-slab index 32768 out of bounds (558) for stack id 262b8000
-WARNING: CPU: 0 PID: 5351 at lib/stackdepot.c:235 stack_depot_fetch+0x2d/0x60 lib/stackdepot.c:234
+kernel BUG at fs/f2fs/segment.h:657!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 16220 Comm: syz-executor.0 Not tainted 5.9.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:f2fs_ra_meta_pages+0xa51/0xdc0 fs/f2fs/segment.h:657
+Code: 08 49 83 ed 01 e9 3f f8 ff ff c7 44 24 18 80 00 00 00 45 31 ff 45 31 f6 31 f6 41 bc 01 00 00 00 e9 cd fb ff ff e8 0f 48 3e fe <0f> 0b e8 08 48 3e fe 4c 8b 6c 24 08 be 04 00 00 00 4c 89 ef e8 76
+RSP: 0018:ffffc9000b4177a8 EFLAGS: 00010246
+RAX: 0000000000040000 RBX: dffffc0000000000 RCX: ffffc9000ac51000
+RDX: 0000000000040000 RSI: ffffffff833605d1 RDI: 0000000000000004
+RBP: ffff88804e738000 R08: 0000000000000001 R09: ffffea00060e7337
+R10: 0000000000000037 R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000000601 R14: ffff88808cb73800 R15: 000000000000001e
+FS:  00007fcc23249700(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000560df32133b7 CR3: 0000000074a09000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ build_sit_entries fs/f2fs/segment.c:4195 [inline]
+ f2fs_build_segment_manager+0x4b8a/0xa3c0 fs/f2fs/segment.c:4779
+ f2fs_fill_super+0x377d/0x6b80 fs/f2fs/super.c:3633
+ mount_bdev+0x32e/0x3f0 fs/super.c:1417
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1547
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x1387/0x2070 fs/namespace.c:3192
+ do_mount fs/namespace.c:3205 [inline]
+ __do_sys_mount fs/namespace.c:3413 [inline]
+ __se_sys_mount fs/namespace.c:3390 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3390
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x46004a
+Code: b8 a6 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 fd 89 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 da 89 fb ff c3 66 0f 1f 84 00 00 00 00 00
+RSP: 002b:00007fcc23248a88 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fcc23248b20 RCX: 000000000046004a
+RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007fcc23248ae0
+RBP: 00007fcc23248ae0 R08: 00007fcc23248b20 R09: 0000000020000000
+R10: 0000000000000000 R11: 0000000000000202 R12: 0000000020000000
+R13: 0000000020000100 R14: 0000000020000200 R15: 0000000020012400
+Modules linked in:
+---[ end trace a60c6b47a90afa81 ]---
+RIP: 0010:f2fs_ra_meta_pages+0xa51/0xdc0 fs/f2fs/segment.h:657
+Code: 08 49 83 ed 01 e9 3f f8 ff ff c7 44 24 18 80 00 00 00 45 31 ff 45 31 f6 31 f6 41 bc 01 00 00 00 e9 cd fb ff ff e8 0f 48 3e fe <0f> 0b e8 08 48 3e fe 4c 8b 6c 24 08 be 04 00 00 00 4c 89 ef e8 76
+RSP: 0018:ffffc9000b4177a8 EFLAGS: 00010246
+RAX: 0000000000040000 RBX: dffffc0000000000 RCX: ffffc9000ac51000
+RDX: 0000000000040000 RSI: ffffffff833605d1 RDI: 0000000000000004
+RBP: ffff88804e738000 R08: 0000000000000001 R09: ffffea00060e7337
+R10: 0000000000000037 R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000000601 R14: ffff88808cb73800 R15: 000000000000001e
+FS:  00007fcc23249700(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f253183c000 CR3: 0000000074a09000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
 ---
