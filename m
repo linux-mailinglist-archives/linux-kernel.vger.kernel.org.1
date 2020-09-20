@@ -2,171 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03AEC271784
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 21:23:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE56B271787
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 21:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726402AbgITTX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 15:23:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41054 "EHLO mx2.suse.de"
+        id S1726343AbgITT2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 15:28:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726126AbgITTX0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 15:23:26 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 43FAEAF1A;
-        Sun, 20 Sep 2020 19:23:59 +0000 (UTC)
-Date:   Sun, 20 Sep 2020 21:23:15 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/urgent for v5.9-rc6
-Message-ID: <20200920192315.GC13044@zn.tnic>
+        id S1726109AbgITT2e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 15:28:34 -0400
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B83EB2145D
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 19:28:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600630114;
+        bh=MvoJlqBNzeGMhQj08qmauzE2jefx91WtS5O4xpiUc2w=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JjkWdzs8l4VG7axJD8j1N7zsDNyHx01VvIoenQP0XrkbTc8PSIPFDC+ocOwK5vc2K
+         RrxibNtkQ6Bu2l0c6FA8qAmsm6Zk+9gHRRr0jrtaswknN6/RVSUvSl9tUHIGyxATeV
+         mD5rOKF8ZZ6lwaLYgtTds2laysQr8iIjXXnAGF54=
+Received: by mail-wr1-f52.google.com with SMTP id c18so10566712wrm.9
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 12:28:33 -0700 (PDT)
+X-Gm-Message-State: AOAM531FqzPBQrH1n3YdZYj+TojjfsRqo1j8lKHESZ7mIeylGt21FiFI
+        89w8WfXaiA6ZrmDphdmZ+clqiReTOPLSI74YbyUS8A==
+X-Google-Smtp-Source: ABdhPJyGRJyXPIIAcXrNp8ibkDlg/u7fNSqAcKhSzeIjm5dJtxkt9PxOngbofryv0JcZUoQWH7pgaf1q3lhvPecaOZc=
+X-Received: by 2002:a5d:6a47:: with SMTP id t7mr48111800wrw.75.1600630112287;
+ Sun, 20 Sep 2020 12:28:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <20200918124533.3487701-1-hch@lst.de> <20200918124533.3487701-2-hch@lst.de>
+ <20200920151510.GS32101@casper.infradead.org> <20200920180742.GN3421308@ZenIV.linux.org.uk>
+ <20200920190159.GT32101@casper.infradead.org> <20200920191031.GQ3421308@ZenIV.linux.org.uk>
+ <20200920192259.GU32101@casper.infradead.org>
+In-Reply-To: <20200920192259.GU32101@casper.infradead.org>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Sun, 20 Sep 2020 12:28:20 -0700
+X-Gmail-Original-Message-ID: <CALCETrXVtBkxNJcMxf9myaKT9snHKbCWUenKHGRfp8AOtORBPg@mail.gmail.com>
+Message-ID: <CALCETrXVtBkxNJcMxf9myaKT9snHKbCWUenKHGRfp8AOtORBPg@mail.gmail.com>
+Subject: Re: [PATCH 1/9] kernel: add a PF_FORCE_COMPAT flag
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Linux SCSI List <linux-scsi@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-aio <linux-aio@kvack.org>, io-uring@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Network Development <netdev@vger.kernel.org>,
+        keyrings@vger.kernel.org,
+        LSM List <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Sun, Sep 20, 2020 at 12:23 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Sun, Sep 20, 2020 at 08:10:31PM +0100, Al Viro wrote:
+> > IMO it's much saner to mark those and refuse to touch them from io_uring...
+>
+> Simpler solution is to remove io_uring from the 32-bit syscall list.
+> If you're a 32-bit process, you don't get to use io_uring.  Would
+> any real users actually care about that?
 
-please pull the x86/urgent pile accumulated so far.
+We could go one step farther and declare that we're done adding *any*
+new compat syscalls :)
 
-Thx.
 
----
-The following changes since commit f4d51dffc6c01a9e94650d95ce0104964f8ae822:
-
-  Linux 5.9-rc4 (2020-09-06 17:11:40 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v5.9_rc6
-
-for you to fetch changes up to 6f9885a36c006d798319661fa849f9c2922223b9:
-
-  x86/unwind/fp: Fix FP unwinding in ret_from_fork (2020-09-18 09:59:40 +0200)
-
-----------------------------------------------------------------
-* A defconfig fix, from Daniel Díaz.
-
-* Disable relocation relaxation for the compressed kernel when not built
-  as -pie as in that case kernels built with clang and linked with LLD
-  fail to boot due to the linker optimizing some instructions in non-PIE
-  form; the gory details in the commit message, from Arvind Sankar.
-
-* A fix for the "bad bp value" warning issued by the frame-pointer
-  unwinder, from Josh Poimboeuf.
-
-----------------------------------------------------------------
-Arvind Sankar (1):
-      x86/boot/compressed: Disable relocation relaxation
-
-Daniel Díaz (1):
-      x86/defconfigs: Explicitly unset CONFIG_64BIT in i386_defconfig
-
-Josh Poimboeuf (1):
-      x86/unwind/fp: Fix FP unwinding in ret_from_fork
-
- arch/x86/boot/compressed/Makefile |  2 ++
- arch/x86/configs/i386_defconfig   |  1 +
- arch/x86/include/asm/frame.h      | 19 +++++++++++++++++++
- arch/x86/kernel/process.c         |  3 ++-
- 4 files changed, 24 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
-index 3962f592633d..ff7894f39e0e 100644
---- a/arch/x86/boot/compressed/Makefile
-+++ b/arch/x86/boot/compressed/Makefile
-@@ -43,6 +43,8 @@ KBUILD_CFLAGS += -Wno-pointer-sign
- KBUILD_CFLAGS += $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
- KBUILD_CFLAGS += -fno-asynchronous-unwind-tables
- KBUILD_CFLAGS += -D__DISABLE_EXPORTS
-+# Disable relocation relaxation in case the link is not PIE.
-+KBUILD_CFLAGS += $(call as-option,-Wa$(comma)-mrelax-relocations=no)
- 
- KBUILD_AFLAGS  := $(KBUILD_CFLAGS) -D__ASSEMBLY__
- GCOV_PROFILE := n
-diff --git a/arch/x86/configs/i386_defconfig b/arch/x86/configs/i386_defconfig
-index d7577fece9eb..4cfdf5755ab5 100644
---- a/arch/x86/configs/i386_defconfig
-+++ b/arch/x86/configs/i386_defconfig
-@@ -19,6 +19,7 @@ CONFIG_CGROUP_CPUACCT=y
- CONFIG_BLK_DEV_INITRD=y
- # CONFIG_COMPAT_BRK is not set
- CONFIG_PROFILING=y
-+# CONFIG_64BIT is not set
- CONFIG_SMP=y
- CONFIG_X86_GENERIC=y
- CONFIG_HPET_TIMER=y
-diff --git a/arch/x86/include/asm/frame.h b/arch/x86/include/asm/frame.h
-index 296b346184b2..fb42659f6e98 100644
---- a/arch/x86/include/asm/frame.h
-+++ b/arch/x86/include/asm/frame.h
-@@ -60,12 +60,26 @@
- #define FRAME_END "pop %" _ASM_BP "\n"
- 
- #ifdef CONFIG_X86_64
-+
- #define ENCODE_FRAME_POINTER			\
- 	"lea 1(%rsp), %rbp\n\t"
-+
-+static inline unsigned long encode_frame_pointer(struct pt_regs *regs)
-+{
-+	return (unsigned long)regs + 1;
-+}
-+
- #else /* !CONFIG_X86_64 */
-+
- #define ENCODE_FRAME_POINTER			\
- 	"movl %esp, %ebp\n\t"			\
- 	"andl $0x7fffffff, %ebp\n\t"
-+
-+static inline unsigned long encode_frame_pointer(struct pt_regs *regs)
-+{
-+	return (unsigned long)regs & 0x7fffffff;
-+}
-+
- #endif /* CONFIG_X86_64 */
- 
- #endif /* __ASSEMBLY__ */
-@@ -83,6 +97,11 @@
- 
- #define ENCODE_FRAME_POINTER
- 
-+static inline unsigned long encode_frame_pointer(struct pt_regs *regs)
-+{
-+	return 0;
-+}
-+
- #endif
- 
- #define FRAME_BEGIN
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index 13ce616cc7af..ba4593a913fa 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -42,6 +42,7 @@
- #include <asm/spec-ctrl.h>
- #include <asm/io_bitmap.h>
- #include <asm/proto.h>
-+#include <asm/frame.h>
- 
- #include "process.h"
- 
-@@ -133,7 +134,7 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
- 	fork_frame = container_of(childregs, struct fork_frame, regs);
- 	frame = &fork_frame->frame;
- 
--	frame->bp = 0;
-+	frame->bp = encode_frame_pointer(childregs);
- 	frame->ret_addr = (unsigned long) ret_from_fork;
- 	p->thread.sp = (unsigned long) fork_frame;
- 	p->thread.io_bitmap = NULL;
 
 -- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+Andy Lutomirski
+AMA Capital Management, LLC
