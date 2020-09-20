@@ -2,248 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 550C127134C
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 11:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09664271351
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 12:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726452AbgITJ7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 05:59:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33684 "EHLO
+        id S1726285AbgITKZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 06:25:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726280AbgITJ7j (ORCPT
+        with ESMTP id S1726247AbgITKZh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 05:59:39 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0B4DC0613CE
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 02:59:38 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id y6so5359069plt.9
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 02:59:38 -0700 (PDT)
+        Sun, 20 Sep 2020 06:25:37 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83FE1C061755
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 03:25:36 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id w11so10896241lfn.2
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 03:25:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=bsQK8LpuxrhLjsMMeuAwU+LPx3UZkeZ5l4b7tYvmwRw=;
-        b=uf2OGboFLy/L86Po2Es5Zv7ilwDEHjiD68HdWMnC+2TTVeQq6+3TpQ8S4hx54ztRz6
-         byRNGnVskkzKHg8WColeN7JdIRLxsd260424uAjNg9dOsUdX7kTpbuuiWjtlFCdyXxxB
-         d6Ubn2mPsUlkDVPO/GCNxHunwKCXPScicvQszzSzCGq2eusF2u40NN0hrA9iqGzwzBvv
-         oAM9YZQQn1IcETFhLtCe6kJ90ZtQoanr/NjfI2jG1VGZLhviiFKwbdZuJZbY3VsavHer
-         xv1SnI9UsEv6Mwwu8/vVj4sP5FTPPSnySzsOPSPXrzB8ga5sgjTi1RXltGX/o1IXvm50
-         RBzg==
+        bh=Bms3XLIcJiiOd/siUyxxcwUISQM0dhJ8X1yH852QRvQ=;
+        b=N3rdOE9+4X4464esehQiyYHznusJQQj1v+bf93OmmqptsEQDATM20Fu0nIz/GCfIv8
+         /hqsKQGBLpAb4dnEZ8AuoE+4PZXlzdjr1RVHaCHkeROt3R8mVdEE+APbwXqFgKdSNduJ
+         xHjP5N/SlR4ZAqps48mMVPaPaVMK7OfWJbXt5JR4aEg74wiSBl0RWxPmMm9fRTdV3JK2
+         T5FH7fbOeRtd4SLzu096ZbnY2lrXToDM+5xTzCM73RiQeqabNcuJasy++OynaFE1Yx/7
+         sY184jcHqGE/1I32jJxMU9AZJMaZy5OpJKRnrtgf1maWjcm3XVOcMvhjeryzOPnTUji9
+         Ng1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=bsQK8LpuxrhLjsMMeuAwU+LPx3UZkeZ5l4b7tYvmwRw=;
-        b=aQq9h0cB+VTzZ1f+/JP9wZOehU6pmPGKI+ZLe8CYoDS6OaJIxdvDF5xFOckbUU/4p0
-         TfpmtJOC2gwrIY6PMj4IVRIY7USsa113ezZMrl2Wk2cHC6ZtLdq5fB2QKDBm1eAFjVFI
-         cW0giVe0kt3ErWaWc1XDd67I9v+xecPiB/Hr759MGamUtUY9UWWFmVdqdPXd1AseVV4D
-         d/2uOY2jYHhOCWcGt5S9UAU/SKxsbdNoqcatswNYM48aIwepkRmUO3NOQDmvu9SLSXvV
-         YS5KGhcSIazQ3/f+juLbKJbWJQQiji0iCwF9AhylowwyddK3kmK4PtcvuhQDLN3myORX
-         iuwA==
-X-Gm-Message-State: AOAM532mBGKcHVXhXBT134GKSvyX5Lr782rGniJlTulAjxFDcX/HrHiE
-        Lh3bP9FtvuHPGUjKvtASocx+2RMER4/OkLLwF8H6VQ==
-X-Google-Smtp-Source: ABdhPJyLB6JeulC3J3qt+PdRVgQHD1bgo33KeQ7Z9TGvBKZsB/ZmYNsfj5G5KTW1QcP1SkVeA5KsxqzEv001KyERvQA=
-X-Received: by 2002:a17:90a:bc8d:: with SMTP id x13mr20950424pjr.229.1600595978266;
- Sun, 20 Sep 2020 02:59:38 -0700 (PDT)
+        bh=Bms3XLIcJiiOd/siUyxxcwUISQM0dhJ8X1yH852QRvQ=;
+        b=lY4AUQ3U0JdlwfYHD9kymlJdqhmOV4u2sBkWNRWiQ+TbgjdOXShbxeoO0NKtx9BSlq
+         zpawwb+5HUcmds5muKW6xXx4Z64WJPMViCm/FetQC4HesLZPmIKDtWkwRzPklPw65QXX
+         2DZ1HbFoManh9km8dIewevmOTRwm1F6DYrSVXQkdozSI64YEEiCgIRSsZXnAlOGbTmTL
+         21Gkcu/lBg5BND6ksCswty0DX5Ds9ppjh6MGQVq933p5KvlLwMFSIiQ8/cpulJstyIEm
+         /G1QnoJKUPD6v7vtNIT48VjUeXRe1CsgDTRvTaZpbqM/xl3ZaYqQlXXolv7Z7MeTicJJ
+         JeEQ==
+X-Gm-Message-State: AOAM530v/LudJhqnQc+YEO1jbdCpQl1yQbJ7Hl4T8wiyIMI3L4OhafbR
+        /eYPkLPwIOcBT7w+3IomUmxiXAVd9Vj4/pmjhmnJ+MAzuk8oKzQ=
+X-Google-Smtp-Source: ABdhPJzbeIwVWRc0plOUzm8nW92RweOhCqAjvaUf2CpE5Nz5HMGI19k+wvduQSuP5oP6PskPIEGPiOKnoujWJd18T6k=
+X-Received: by 2002:a05:6512:5cd:: with SMTP id o13mr15386945lfo.171.1600597534527;
+ Sun, 20 Sep 2020 03:25:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200915125947.26204-1-songmuchun@bytedance.com> <20200915125947.26204-22-songmuchun@bytedance.com>
-In-Reply-To: <20200915125947.26204-22-songmuchun@bytedance.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Sun, 20 Sep 2020 17:59:01 +0800
-Message-ID: <CAMZfGtWXr0A3ymf_trBmUggRudbZbhfwNCJWSHZdkK9JeBY1fg@mail.gmail.com>
-Subject: Re: [RFC PATCH 21/24] mm/hugetlb: Merge pte to huge pmd only for
- gigantic page
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>
-Cc:     linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel@vger.kernel.org
+References: <20200717110532.238533-1-asteinhauser@google.com> <20200907171825.GB13281@willie-the-truck>
+In-Reply-To: <20200907171825.GB13281@willie-the-truck>
+From:   Anthony Steinhauser <asteinhauser@google.com>
+Date:   Sun, 20 Sep 2020 03:25:23 -0700
+Message-ID: <CAN_oZf29J-DMF04EhQf=29CzV5zrPT+L6HchZcG-CDt=MjFf4A@mail.gmail.com>
+Subject: Re: [PATCH] PR_SPEC_DISABLE_NOEXEC support for arm64.
+To:     Will Deacon <will@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, catalin.marinas@arm.com,
+        maz@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 9:03 PM Muchun Song <songmuchun@bytedance.com> wrote:
->
-> Merge pte to huge pmd if it has ever been split. Now only support
-> gigantic page which's vmemmap pages size is an integer multiple of
-> PMD_SIZE. This is the simplest case to handle.
->
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->  include/linux/hugetlb.h |   7 +++
->  mm/hugetlb.c            | 104 +++++++++++++++++++++++++++++++++++++++-
->  2 files changed, 109 insertions(+), 2 deletions(-)
->
-> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> index e3aa192f1c39..c56df0da7ae5 100644
-> --- a/include/linux/hugetlb.h
-> +++ b/include/linux/hugetlb.h
-> @@ -611,6 +611,13 @@ static inline bool vmemmap_pmd_huge(pmd_t *pmd)
->  }
->  #endif
->
-> +#ifndef vmemmap_pmd_mkhuge
-> +static inline pmd_t vmemmap_pmd_mkhuge(struct page *page)
-> +{
-> +       return pmd_mkhuge(mk_pmd(page, PAGE_KERNEL));
-> +}
-> +#endif
-> +
->  #ifndef VMEMMAP_HPAGE_SHIFT
->  #define VMEMMAP_HPAGE_SHIFT            PMD_SHIFT
->  #endif
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 28c154679838..3ca36e259b4e 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1759,6 +1759,62 @@ static void __remap_huge_page_pte_vmemmap(struct page *reuse, pte_t *ptep,
->         }
->  }
->
-> +static void __replace_huge_page_pte_vmemmap(pte_t *ptep, unsigned long start,
-> +                                           unsigned int nr, struct page *huge,
-> +                                           struct list_head *free_pages)
-> +{
-> +       unsigned long addr;
-> +       unsigned long end = start + (nr  << PAGE_SHIFT);
-> +
-> +       for (addr = start; addr < end; addr += PAGE_SIZE, ptep++) {
-> +               struct page *page;
-> +               pte_t old = *ptep;
-> +               pte_t entry;
-> +
-> +               prepare_vmemmap_page(huge);
-> +
-> +               entry = mk_pte(huge++, PAGE_KERNEL);
-> +               VM_WARN_ON(!pte_present(old));
-> +               page = pte_page(old);
-> +               list_add(&page->lru, free_pages);
-> +
-> +               set_pte_at(&init_mm, addr, ptep, entry);
-> +       }
-> +}
-> +
-> +static void replace_huge_page_pmd_vmemmap(pmd_t *pmd, unsigned long start,
-> +                                         struct page *huge,
-> +                                         struct list_head *free_pages)
-> +{
-> +       unsigned long end = start + VMEMMAP_HPAGE_SIZE;
-> +
-> +       flush_cache_vunmap(start, end);
-> +       __replace_huge_page_pte_vmemmap(pte_offset_kernel(pmd, start), start,
-> +                                       VMEMMAP_HPAGE_NR, huge, free_pages);
-> +       flush_tlb_kernel_range(start, end);
-> +}
-> +
-> +static pte_t *merge_vmemmap_pte(pmd_t *pmdp, unsigned long addr)
-> +{
-> +       pte_t *pte;
-> +       struct page *page;
-> +
-> +       pte = pte_offset_kernel(pmdp, addr);
-> +       page = pte_page(*pte);
-> +       set_pmd(pmdp, vmemmap_pmd_mkhuge(page));
-> +
-> +       return pte;
-> +}
-> +
-> +static void merge_huge_page_pmd_vmemmap(pmd_t *pmd, unsigned long start,
-> +                                       struct page *huge,
-> +                                       struct list_head *free_pages)
-> +{
-> +       replace_huge_page_pmd_vmemmap(pmd, start, huge, free_pages);
-> +       pte_free_kernel(&init_mm, merge_vmemmap_pte(pmd, start));
-> +       flush_tlb_kernel_range(start, start + VMEMMAP_HPAGE_SIZE);
-> +}
-> +
->  static inline void alloc_vmemmap_pages(struct hstate *h, struct list_head *list)
->  {
->         int i;
-> @@ -1772,6 +1828,15 @@ static inline void alloc_vmemmap_pages(struct hstate *h, struct list_head *list)
->         }
->  }
->
-> +static inline void dissolve_compound_page(struct page *page, unsigned int order)
-> +{
-> +       int i;
-> +       unsigned int nr_pages = 1 << order;
-> +
-> +       for (i = 1; i < nr_pages; i++)
-> +               set_page_refcounted(page + i);
-> +}
-> +
->  static void alloc_huge_page_vmemmap(struct hstate *h, struct page *head)
->  {
->         pmd_t *pmd;
-> @@ -1791,10 +1856,45 @@ static void alloc_huge_page_vmemmap(struct hstate *h, struct page *head)
->                                     __remap_huge_page_pte_vmemmap);
->         if (!freed_vmemmap_hpage_dec(pmd_page(*pmd)) && pmd_split(pmd)) {
->                 /*
-> -                * Todo:
-> -                * Merge pte to huge pmd if it has ever been split.
-> +                * Merge pte to huge pmd if it has ever been split. Now only
-> +                * support gigantic page which's vmemmap pages size is an
-> +                * integer multiple of PMD_SIZE. This is the simplest case
-> +                * to handle.
->                  */
->                 clear_pmd_split(pmd);
-> +
-> +               if (IS_ALIGNED(nr_vmemmap(h), VMEMMAP_HPAGE_NR)) {
-> +                       unsigned long addr = (unsigned long)head;
-> +                       unsigned long end = addr + nr_vmemmap_size(h);
-> +
-> +                       spin_unlock(ptl);
-> +
-> +                       for (; addr < end; addr += VMEMMAP_HPAGE_SIZE) {
-> +                               void *to;
-> +                               struct page *page;
-> +
-> +                               page = alloc_pages(GFP_VMEMMAP_PAGE & ~__GFP_NOFAIL,
-> +                                                  VMEMMAP_HPAGE_ORDER);
-> +                               if (!page)
-> +                                       goto out;
+> As a heads up: I'm currently reworking most of this, and hope to post
+> something within the next two weeks.
 
-Here forget to call dissolve_compound_page().
+Sure. Let me know whether you want to implement the
+PR_SPEC_DISABLE_NOEXEC support directly or whether this patch would be
+relevant even after your rework.
+>
+> > diff --git a/arch/arm64/include/asm/ssbd.h b/arch/arm64/include/asm/ssbd.h
+> > new file mode 100644
+> > index 000000000000..68c716dc5811
+> > --- /dev/null
+> > +++ b/arch/arm64/include/asm/ssbd.h
+...
+> > +}
+>
+> I'd prefer to keep these where they are and have an out-of-line call if
+> necessary. We should try to keep the SSBD stuff in one place.
 
-+                               dissolve_compound_page(page,
-+                                                      VMEMMAP_HPAGE_ORDER);
-
-> +
-> +                               to = page_to_virt(page);
-> +                               memcpy(to, (void *)addr, VMEMMAP_HPAGE_SIZE);
-> +
-> +                               /*
-> +                                * Make sure that any data that writes to the
-> +                                * @to is made visible to the physical page.
-> +                                */
-> +                               flush_kernel_vmap_range(to, VMEMMAP_HPAGE_SIZE);
-> +
-> +                               merge_huge_page_pmd_vmemmap(pmd++, addr, page,
-> +                                                           &remap_pages);
-> +                       }
-> +
-> +out:
-> +                       free_vmemmap_page_list(&remap_pages);
-> +                       return;
-> +               }
->         }
->         spin_unlock(ptl);
->  }
-> --
-> 2.20.1
+OK.
+>
+> > +
+> > +#endif       /* __ASM_SSBD_H */
+> > diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+> > index 6089638c7d43..ad3c67c86c4c 100644
+> > --- a/arch/arm64/kernel/process.c
+> > +++ b/arch/arm64/kernel/process.c
+> > @@ -54,6 +54,7 @@
+> >  #include <asm/mmu_context.h>
+> >  #include <asm/processor.h>
+> >  #include <asm/pointer_auth.h>
+> > +#include <asm/ssbd.h>
+> >  #include <asm/stacktrace.h>
+> >
+> >  #if defined(CONFIG_STACKPROTECTOR) && !defined(CONFIG_STACKPROTECTOR_PER_TASK)
+> > @@ -588,6 +589,18 @@ void arch_setup_new_exec(void)
+> >       current->mm->context.flags = is_compat_task() ? MMCF_AARCH32 : 0;
+> >
+> >       ptrauth_thread_init_user(current);
+> > +
+> > +     /*
+> > +      * Don't inherit TIF_SSBD across exec boundary when
+> > +      * PR_SPEC_DISABLE_NOEXEC is used.
+> > +      */
+> > +     if (test_thread_flag(TIF_SSBD) &&
+> > +         task_spec_ssb_noexec(current)) {
+> > +             clear_thread_flag(TIF_SSBD);
+> > +             task_clear_spec_ssb_disable(current);
+> > +             task_clear_spec_ssb_noexec(current);
+> > +             ssbd_ssbs_enable(current);
+> > +     }
+>
+> How is this supposed to work with CPUs that expose SSBS directly to
+> userspace? I suppose we should be using PR_SPEC_DISABLE_NOEXEC to decide
+> what we set the SSBS bit to on exec, but the logic here requires TIF_SSBD
+> to be set and so won't trigger afaict.
 >
 
-
--- 
-Yours,
-Muchun
+You're right. The SSBS support is incomplete. I guess
+"test_thread_flag(TIF_SSBD)" can be replaced just with
+"arm64_get_ssbd_state() == ARM64_SSBD_KERNEL".
+Thanks,
+Anthony
