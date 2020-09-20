@@ -2,82 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F8692714E8
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 16:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46CC02714EC
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Sep 2020 16:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726470AbgITORM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 10:17:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44576 "EHLO
+        id S1726494AbgITORQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 10:17:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726267AbgITORK (ORCPT
+        with ESMTP id S1726472AbgITORN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 10:17:10 -0400
+        Sun, 20 Sep 2020 10:17:13 -0400
 Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 385AAC061755
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 07:17:10 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id j11so14300719ejk.0
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 07:17:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2EBBC0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 07:17:12 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id lo4so14199149ejb.8
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 07:17:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5FMcTfB8bTNiA4IO/9hnI5vPpMpLqnjxtoFBZxrk7cE=;
-        b=HmmNZIZZZaq+HVtTbpnhCSx2GGWeZBSkgDQD/ojGBX936B0rBnQrBVe6a2jwUBD/id
-         AEfc0Advl1q8swChQgrrhZ8gJZWT+faIQ0qGqMEv6Tf8RzPn+sefcdbWUDA5UgDdo4qe
-         kAV1v3RLqfMmCzB/wFc/Sokc1OsRVn6Fnaqfq9SsLsHtseK02ygfBrtAcyvdCHTzTa6b
-         OgSJptZy0z58441qrpTmGXgw5NmIRIp+YepIvq6c/7eYU6XmJs3eIEHl+nY9bMw8r6Ck
-         DXu+2EaFpk6W5HPx2qHkh10ALrfelFmWKJm+ASfUDGMTUkjxHcw5mpje/906twR4ANim
-         7a+A==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=+JO/vRiLXpeB8VcV6Xg2lUUCdaWgeJtk26slYXjrIcM=;
+        b=kVPF78Lk6Cp5dE4yxE87CaAATTpMf17aqwpZaTTnmiLSX0XkfcIL9ku0G6wo8pc166
+         DGt1S/I0bMCHEkimHAljEcD9pkcWumWyW8f+RTO2PIAoHuoU8HmKeLaCkS85z4DXIb51
+         dz3WxxhdsSzcMCeFCfn4C02zrN9R1BG4joHupNJLMlKdjw1BdL826vw2qXRVJuvCHDTy
+         26tCpafQffvGyRIw2fdZWeDjWi3gWBn/GhFhxLEVmZ7ZZo/qsQdOmZzcZjqXPFGNtaxw
+         Mx2OJyups3Xvm9BWOobx1WmN9l9LFIzJ3x8jVGG1rKZXIsbLmO4cifR9u41li6yMOAau
+         uwAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5FMcTfB8bTNiA4IO/9hnI5vPpMpLqnjxtoFBZxrk7cE=;
-        b=pImC/70uRgSoHbqjpmOFeABHNwrRG7jkDjxwYrTRwGw7jL2zwhm4SsKvGE36EHqZFd
-         QDK3UXZl5Tlit07IsmOAqcIqU7DVtlvAEh982JI5fJA9hV0nucq4rVrLamd6b1qVAS8c
-         8oJ3XY8pYTENoMsw5XdZ0jy0E7CNINBba9aGyVKvmx4M8Cx2GoueqkNZJ7yperYkijoO
-         i+vGfl505lfl1ccUrKzDrP5GMm4Qml4YF9QHngMniHBeFzRBSgAZ3yQmjNKO/2jiQjyM
-         /1uguanXfJe/NpgaLmSlz8bcP8JlrkgdFxbVFUXe3GhTxad8Gu+EH/aMcbyRNTyHxTG3
-         DjHw==
-X-Gm-Message-State: AOAM531RSIaVeU980Jmw2KJNEa9Ay7f5wCJy/A+O+etnk4yliKurtTEs
-        CqGRTANJq7xzsj+fnsgvW742Zg==
-X-Google-Smtp-Source: ABdhPJx0dxb5cXtiOZJrCkM5emj4ROEkQ/MFc/4rDyfqAef1IS06joaSvNmlbdT/jHmvQ4+Do4m39Q==
-X-Received: by 2002:a17:906:358c:: with SMTP id o12mr44535867ejb.406.1600611428669;
-        Sun, 20 Sep 2020 07:17:08 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=+JO/vRiLXpeB8VcV6Xg2lUUCdaWgeJtk26slYXjrIcM=;
+        b=seBq8FCyyE8Z/K/fqBZhSA53GN7u4FKRHQ0NqM/JaRVD6Q//0sKr/dfKqGVMyVrudq
+         LEFyCcmJb1Qn7vwbEDeQPiluU2UFfjx9n6L+MGQR9UxsexCIPCwiqnu351IE82E2/uNj
+         1CZY9NwsNr34/dDERDbWEO1NN6Scg/GTdbJuNd3+pDj97ncy1DZLI0CjhhgsYTFrzkqc
+         g3/Nh7QerE1sDNKAayaPBnEPYccgRFjPo+XbsGuLoV4glM+uOn7k+zl7DcW1h9BVq4nY
+         s7nVDETvQhDqTuq+j6Yt7jx7W+EZZeWqpnopTqVy4o6NUgQD93avzyG87JbdRX3aYvxF
+         XVTA==
+X-Gm-Message-State: AOAM5301THL2oUlOnbYIV7gVNPD1qE7rmgQE/5dlImIP9X7kwNhQ5SUk
+        e+SXY3zmyDbPO39gS/c8XFdUyQ==
+X-Google-Smtp-Source: ABdhPJwe7XrfvJeQ3xYFqReAUWmjkfls9M9MEc+Z4rWAC/WljKmLvF8sx3ECxUnfsYw9CqLQpwelwQ==
+X-Received: by 2002:a17:906:fb15:: with SMTP id lz21mr33165218ejb.185.1600611431475;
+        Sun, 20 Sep 2020 07:17:11 -0700 (PDT)
 Received: from localhost.localdomain ([88.207.4.31])
-        by smtp.googlemail.com with ESMTPSA id g11sm6631594edt.88.2020.09.20.07.17.07
+        by smtp.googlemail.com with ESMTPSA id g11sm6631594edt.88.2020.09.20.07.17.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Sep 2020 07:17:08 -0700 (PDT)
+        Sun, 20 Sep 2020 07:17:10 -0700 (PDT)
 From:   Robert Marko <robert.marko@sartura.hr>
 To:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
         davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Cc:     Robert Marko <robert.marko@sartura.hr>
-Subject: [PATCH v4 0/2] net: mdio-ipq4019: add Clause 45 support
-Date:   Sun, 20 Sep 2020 16:16:51 +0200
-Message-Id: <20200920141653.357493-1-robert.marko@sartura.hr>
+Cc:     Robert Marko <robert.marko@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Subject: [PATCH v4 1/2] net: mdio-ipq4019: change defines to upper case
+Date:   Sun, 20 Sep 2020 16:16:52 +0200
+Message-Id: <20200920141653.357493-2-robert.marko@sartura.hr>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200920141653.357493-1-robert.marko@sartura.hr>
+References: <20200920141653.357493-1-robert.marko@sartura.hr>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series adds support for Clause 45 to the driver.
+In the commit adding the IPQ4019 MDIO driver, defines for timeout and sleep partially used lower case.
+Lets change it to upper case in line with the rest of driver defines.
 
-While at it also change some defines to upper case to match rest of the driver.
+Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+Cc: Luka Perkov <luka.perkov@sartura.hr>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ drivers/net/phy/mdio-ipq4019.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Changes since v1:
-* Drop clock patches, these need further investigation and
-no user for non default configuration has been found
-
-Robert Marko (2):
-  net: mdio-ipq4019: change defines to upper case
-  net: mdio-ipq4019: add Clause 45 support
-
- drivers/net/phy/mdio-ipq4019.c | 109 ++++++++++++++++++++++++++++-----
- 1 file changed, 92 insertions(+), 17 deletions(-)
-
+diff --git a/drivers/net/phy/mdio-ipq4019.c b/drivers/net/phy/mdio-ipq4019.c
+index 1ce81ff2f41d..64b169e5a699 100644
+--- a/drivers/net/phy/mdio-ipq4019.c
++++ b/drivers/net/phy/mdio-ipq4019.c
+@@ -21,8 +21,8 @@
+ #define MDIO_CMD_ACCESS_CODE_READ	0
+ #define MDIO_CMD_ACCESS_CODE_WRITE	1
+ 
+-#define ipq4019_MDIO_TIMEOUT	10000
+-#define ipq4019_MDIO_SLEEP		10
++#define IPQ4019_MDIO_TIMEOUT	10000
++#define IPQ4019_MDIO_SLEEP		10
+ 
+ struct ipq4019_mdio_data {
+ 	void __iomem	*membase;
+@@ -35,7 +35,7 @@ static int ipq4019_mdio_wait_busy(struct mii_bus *bus)
+ 
+ 	return readl_poll_timeout(priv->membase + MDIO_CMD_REG, busy,
+ 				  (busy & MDIO_CMD_ACCESS_BUSY) == 0,
+-				  ipq4019_MDIO_SLEEP, ipq4019_MDIO_TIMEOUT);
++				  IPQ4019_MDIO_SLEEP, IPQ4019_MDIO_TIMEOUT);
+ }
+ 
+ static int ipq4019_mdio_read(struct mii_bus *bus, int mii_id, int regnum)
 -- 
 2.26.2
 
