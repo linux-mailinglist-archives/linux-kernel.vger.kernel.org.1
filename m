@@ -2,120 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B84C8272ACA
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:54:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EC46272AD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:55:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727857AbgIUPx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 11:53:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54516 "EHLO
+        id S1727893AbgIUPzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 11:55:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727062AbgIUPxv (ORCPT
+        with ESMTP id S1726749AbgIUPza (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 11:53:51 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1F59C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 08:53:50 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id z1so13346010wrt.3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 08:53:50 -0700 (PDT)
+        Mon, 21 Sep 2020 11:55:30 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B775EC0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 08:55:28 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id v23so11566165ljd.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 08:55:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KTBpsSohstfdxMCBUF81EcDDdz06RoEyYMuNoZotyCo=;
-        b=famILgKo1O88xDk5AaXOek1uxyqZObcL9K6qvjo0azlyjsg7v7iDgG9+PGPL8NcU9w
-         2/m2NQTTomJgdDPXlhkkewzzopjPRU3Q9dOXfkCQ8LoKknK8z9PJNKkph5lQUD+fdU8F
-         Jdih1cwR+CG3Jbdn20qourw/iguPUz++2PjGeSFmXqHaR/0JNN7dp0ND1NZOfIfh1kBx
-         wSHdRBJeUKD41c3q8VVI+NTmGxlmkUaQ9FlvoWEJdS/NR3r00n4qX9Fgow9RFRPCDgnk
-         1gKVdq6e1DFOseXsXbUReVAyX+Coa6hGPo4da7o+ISqXnHgIo6cBb1KDfStXwEi3TTH3
-         oR+A==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KlAO2f2MCbdMFYmuMR/JVAe3ADfPLwZDOazJ0JPDtY8=;
+        b=X6obxRKeN8mR9RXp9MXChkD/M+vckq63Aq7SzA4AbmwqS/IV5RDlSeQScIvKUx90Yq
+         egE3yRvoKY3/syMLF2edGesVcPB6irZi2K8o1J7gzKQQYLf/KoNbSLvEDwPRQ8Zm/SCT
+         gq5vqLKF0gc7kMWfQqZL8aa0UB2Bz+NsoL8x+711eRc2LRrgrsg/Qn9SIOSuQ9Ca3Re+
+         Gztcy1jkdpujzRW0mt7Jdz3Iu8Kp1XCbeD5DMLzyrhsRRCN2VL1v0le3b5DU/mAV5WTR
+         X02fZxY1HAoBQI19wrg4qUPbFwT29TH7MY4J5mkMhi6z/F/8vW26DM+UxD+2RtSmOaVe
+         uYPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KTBpsSohstfdxMCBUF81EcDDdz06RoEyYMuNoZotyCo=;
-        b=katUY1+wmXGAQlyI0mE1PVDTQTPSzN1+BWz8rA7sv9F/t3+8XvKF/pf4LRMdDUxt2+
-         5pBSeYzuHFBqC8VNAU0WiFB690lk7ewfcDvXXlaCTFVIR/0s+EvfBwddc4AIhzno+9Sg
-         XdL+MeI6gbddthW+bPI2FDCjzShhwrNUs7Sqo9pm7ZVtT9O9dLPmA7dAVjKaMQhZlHcB
-         //8Uk09bUJ0Asl7F7TpAkxNdj4RuqMpRyLSA1ibqV507QooBcy1EcDlolbzzZwWZgOU6
-         D94soT7tco4bxzUYry02ARbEspbrAM8t/774lZm9PWfOb2/L+OBIi+8C2aP+e99XNnFt
-         BYng==
-X-Gm-Message-State: AOAM530lkcJ6hvSIE/rhXLHRgz3O/bH2n/XKWVYmB+Ci/XOAdQcbTCfu
-        qgQR4Ldg/7z2L/670w7xISXgzQ==
-X-Google-Smtp-Source: ABdhPJyNCd7UpIRBrJBPlKXwCCU7poZm1KA+CUVsd8NiT+RLNIDpMICY3MKvb+cogfmje7NojwyJWw==
-X-Received: by 2002:a5d:4104:: with SMTP id l4mr437511wrp.396.1600703629473;
-        Mon, 21 Sep 2020 08:53:49 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:f173:2b51:521d:d30b? ([2a01:e34:ed2f:f020:f173:2b51:521d:d30b])
-        by smtp.googlemail.com with ESMTPSA id l4sm19642474wme.43.2020.09.21.08.53.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Sep 2020 08:53:48 -0700 (PDT)
-Subject: Re: [PATCH 0/3] powercap: Enable RAPL for AMD Fam17h
-To:     Victor Ding <victording@google.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jan Beulich <jbeulich@suse.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Vineela Tummalapalli <vineela.tummalapalli@intel.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>
-References: <20200729105206.2991064-1-victording@google.com>
- <CAJZ5v0jfMAi2UjvwjYG6=hytGeHZkuaeNEsu+oaz8tEMcuHnPg@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <29fb8ba3-8f7c-7736-201e-fec1b0a0d702@linaro.org>
-Date:   Mon, 21 Sep 2020 17:53:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KlAO2f2MCbdMFYmuMR/JVAe3ADfPLwZDOazJ0JPDtY8=;
+        b=LzoB9NPoiuM9xRc3mAe5bLdU+vdN7fQV/2380X6Mul8wg2nLAw6xRnLYy+UKAXEJwH
+         BlyACtXCOHbyx1ITCaLsDGetdhjJNE6et/XXROR74IZ1vlA5RQdmXdSXa3c6WwDHVQrA
+         TyyXjmfHOjWWcFMXwtJfuT5YqhpCQxpmNA8p4q8NrCZyY3qAzqy6NwFApTVhb2h/Zlx5
+         4ssF0pYlf/WmwUAiHu8mIUILrAD+LrZtp9sa193cITwxhjOMzRLAKFAPeaDVSNxVWYxb
+         nLXPVIxT1ll+MwEY8hIgWdkImiEXI0SK2ezkwXFn5KknsTspWhvVWHelCqpnjd82b+a1
+         +zdw==
+X-Gm-Message-State: AOAM530G8U7n9yRlB9wu0d3dKrG5qn0wGSHc6gwUJgPtqsaaihe+DhPa
+        +Y//947zhp7B2sdYpFdPXM7RDRDz4iKENHvQEVJS8g==
+X-Google-Smtp-Source: ABdhPJzAzrg0an3L/O21olXYAkjIkNnbmJ64HN6mgah50aQ3PSN08J/FUDGQvp5j4/fAmKh3qQmu1dRpTCZjQgXqSpU=
+X-Received: by 2002:a2e:7c09:: with SMTP id x9mr116899ljc.192.1600703726805;
+ Mon, 21 Sep 2020 08:55:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0jfMAi2UjvwjYG6=hytGeHZkuaeNEsu+oaz8tEMcuHnPg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200921080255.15505-1-zangchunxin@bytedance.com>
+In-Reply-To: <20200921080255.15505-1-zangchunxin@bytedance.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 21 Sep 2020 08:55:15 -0700
+Message-ID: <CALvZod5JpEsmNvbaCMEfRMt83GbeLJk2oM0=siCj+aXEnxYh4Q@mail.gmail.com>
+Subject: Re: [PATCH] mm/memcontrol: Add the drop_cache interface for cgroup v2
+To:     zangchunxin@bytedance.com
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kafai@fb.com,
+        Song Liu <songliubraving@fb.com>, yhs@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2020 17:51, Rafael J. Wysocki wrote:
-> On Wed, Jul 29, 2020 at 12:52 PM Victor Ding <victording@google.com> wrote:
->>
->> This patch series adds support for AMD Fam17h RAPL counters. As per
->> AMD PPR, Fam17h support RAPL counters to monitor power usage. The RAPL
->> counter operates as with Intel RAPL. Therefore, it is beneficial to
->> re-use existing framework for Intel, especially to allow existing tools
->> to seamlessly run on AMD.
->>
->> From the user's point view, this series enables the following two sysfs
->> entry on AMD Fam17h:
->>   /sys/class/powercap/intel-rapl/intel-rapl:0/energy_uj
->>   /sys/class/powercap/intel-rapl/intel-rapl:0/intel-rapl:0:0/energy_uj
->>
->>
->> Victor Ding (3):
->>   x86/msr-index: sort AMD RAPL MSRs by address
-> 
-> I haven't received this patch.
-> 
-> Any chance to resend the entire series with a CC to linux-pm?
+On Mon, Sep 21, 2020 at 1:05 AM <zangchunxin@bytedance.com> wrote:
+>
+> From: Chunxin Zang <zangchunxin@bytedance.com>
+>
+> In the cgroup v1, we have 'force_mepty' interface. This is very
+> useful for userspace to actively release memory. But the cgroup
+> v2 does not.
+>
+> This patch reuse cgroup v1's function, but have a new name for
+> the interface. Because I think 'drop_cache' may be is easier to
+> understand :)
+>
+> Signed-off-by: Chunxin Zang <zangchunxin@bytedance.com>
+> ---
+>  Documentation/admin-guide/cgroup-v2.rst | 11 +++++++++++
+>  mm/memcontrol.c                         |  5 +++++
+>  2 files changed, 16 insertions(+)
+>
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+> index ce3e05e41724..fbff959c8116 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -1181,6 +1181,17 @@ PAGE_SIZE multiple when read back.
+>         high limit is used and monitored properly, this limit's
+>         utility is limited to providing the final safety net.
+>
+> +  memory.drop_cache
+> +    A write-only single value file which exists on non-root
+> +    cgroups.
+> +
+> +    Provide a mechanism for users to actively trigger memory
+> +    reclaim. The cgroup will be reclaimed and as many pages
+> +    reclaimed as possible.
+> +
+> +    It will broke low boundary. Because it tries to reclaim the
+> +    memory many times, until the memory drops to a certain level.
+> +
 
-Is it possible to add me in Cc too ?
+drop_cache is not really force_empty(). What is your use-case? Maybe
+you can use memory.reclaim [1] for your use-case. It is already in
+Andrew's tree.
 
-Thanks
-
-
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+[1] https://lkml.kernel.org/r/20200909215752.1725525-1-shakeelb@google.com
