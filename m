@@ -2,88 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C80572727F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A25327287A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:44:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727762AbgIUOk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 10:40:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726341AbgIUOkY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:40:24 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C01E5C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 07:40:24 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id t14so9205238pgl.10
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 07:40:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=jN92Mz9LhRgMy6R9r5bCTsDXQ/6vWkXL7O/cDsot2BM=;
-        b=zsL9JirMq5HpALimvd09iibQnWaz8tHvctE5DJPUqGY1Bwj9g7lv4HpCPEkrQr9x1D
-         cpTvDW2kqI+apf8ijcXSda4vBc8ThF18xsliUg37T67kR2P0z6GTDBOgF6jXdrgqh2Mg
-         Eoi6xq3GWQa4Nn1WZnpMZhl7RXyaqqo0UWZArO54H7BdBnZnlC5c0koY/nZx7PVkWXD8
-         eUcVLJ9PEJcGe+A1IqCTVNHYA+zZxkNyY+o8wPyGapJKWEuU80LWGurNuSjmfInZJjs3
-         BZgyddmubK/p2R0nUUao9TYW0hlnJj2sa0rcRJgfa5GCas8zN1/kB4ctlwZDjmc4eodn
-         H/+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=jN92Mz9LhRgMy6R9r5bCTsDXQ/6vWkXL7O/cDsot2BM=;
-        b=p7bByTolU+RbYGywVc6Usd67jh0bVecaFxd7XbcL1G+XrncfFOgO1+q6gpMqAQlJiK
-         e9L0rTOYrbabxvF1NvXg9UMkzyB5eM0CwUOkuct1d97rXpVSiMt0slZCY1Nx4HRa9IuB
-         30kDigZi+yhEq4TQeRxVYIEYDW8HZ5jdNbYgV1T2zyV4IeHHTBwlG1+Y8FNYOTNEpTOU
-         IMLmxf4lG0UudUfQpJcLfvKcdAtb6zGsBqOml/D0+ioVPmfagce/8ENfhUfyV/kCEjFo
-         bDujc/IVzQ9ZUBIx44S4ZJTxAJvAX3JuqTTJ1KlIv4usWocAFAtf2jbT77IaTAkPE+qi
-         L+Bg==
-X-Gm-Message-State: AOAM530u1eRIybua32xq1BjUpr207ryGkmLQlOlvRZsTsJTQ9kVjRbb9
-        gZISVlYGlbYaZagYnG3xHMzQTjo95KSQ
-X-Google-Smtp-Source: ABdhPJyohwO/EI2eSCs0mN25XzumXwMZMcxYuYeuVEzHBXk0/POa0bAgm6mlE0cA5pI1tGm+UvhWEg==
-X-Received: by 2002:aa7:8c09:0:b029:142:2501:3983 with SMTP id c9-20020aa78c090000b029014225013983mr229338pfd.72.1600699224149;
-        Mon, 21 Sep 2020 07:40:24 -0700 (PDT)
-Received: from Mani-XPS-13-9360.localdomain ([2409:4072:6d03:bd12:1004:2ccf:6900:b97])
-        by smtp.gmail.com with ESMTPSA id m24sm12085108pgn.44.2020.09.21.07.40.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 07:40:23 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH] bus: mhi: core: Fix the building of MHI module
-Date:   Mon, 21 Sep 2020 20:10:16 +0530
-Message-Id: <20200921144016.10519-1-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        id S1728273AbgIUOnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 10:43:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49296 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727847AbgIUOkk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 10:40:40 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E1F4123447;
+        Mon, 21 Sep 2020 14:40:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600699239;
+        bh=di3yULSM4+hdbZ5tqj+v7wIYucgeKwIWjwz7F8NA8nc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=FAQOZ4pClGVlUCtanFVydWrYg8nozVjJUpV98i39PDT5RzbqF1bIe/hhOd2fEuPOx
+         2pwgTSyrFinFNX1JTbd4Y+oTXhh4JCLoRWTjqdKNSsT8BpVqnAutvt7slgAh92iqSw
+         0rxW9L1y5y+PhW0MzPO2zNC76WfpD56u95Fb6Q94=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Ilya Leoshkevich <iii@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>, linux-s390@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 09/20] s390/init: add missing __init annotations
+Date:   Mon, 21 Sep 2020 10:40:16 -0400
+Message-Id: <20200921144027.2135390-9-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200921144027.2135390-1-sashal@kernel.org>
+References: <20200921144027.2135390-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Kbuild rule to build MHI should use the append operator. This fixes
-the below warning reported by Kbuild test bot.
+From: Ilya Leoshkevich <iii@linux.ibm.com>
 
-WARNING: modpost: missing MODULE_LICENSE() in
-drivers/bus/mhi/core/main.o
-WARNING: modpost: missing MODULE_LICENSE() in drivers/bus/mhi/core/pm.o
-WARNING: modpost: missing MODULE_LICENSE() in
-drivers/bus/mhi/core/boot.o
+[ Upstream commit fcb2b70cdb194157678fb1a75f9ff499aeba3d2a ]
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Add __init to reserve_memory_end, reserve_oldmem and remove_oldmem.
+Sometimes these functions are not inlined, and then the build
+complains about section mismatch.
+
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bus/mhi/core/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/s390/kernel/setup.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/bus/mhi/core/Makefile b/drivers/bus/mhi/core/Makefile
-index 12c57ab3724c..c3feb4130aa3 100644
---- a/drivers/bus/mhi/core/Makefile
-+++ b/drivers/bus/mhi/core/Makefile
-@@ -1,4 +1,4 @@
--obj-$(CONFIG_MHI_BUS) := mhi.o
-+obj-$(CONFIG_MHI_BUS) += mhi.o
- 
- mhi-y := init.o main.o pm.o boot.o
- mhi-$(CONFIG_MHI_BUS_DEBUG) += debugfs.o
+diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
+index 07aa15ba43b3e..faf30f37c6361 100644
+--- a/arch/s390/kernel/setup.c
++++ b/arch/s390/kernel/setup.c
+@@ -619,7 +619,7 @@ static struct notifier_block kdump_mem_nb = {
+ /*
+  * Make sure that the area behind memory_end is protected
+  */
+-static void reserve_memory_end(void)
++static void __init reserve_memory_end(void)
+ {
+ 	if (memory_end_set)
+ 		memblock_reserve(memory_end, ULONG_MAX);
+@@ -628,7 +628,7 @@ static void reserve_memory_end(void)
+ /*
+  * Make sure that oldmem, where the dump is stored, is protected
+  */
+-static void reserve_oldmem(void)
++static void __init reserve_oldmem(void)
+ {
+ #ifdef CONFIG_CRASH_DUMP
+ 	if (OLDMEM_BASE)
+@@ -640,7 +640,7 @@ static void reserve_oldmem(void)
+ /*
+  * Make sure that oldmem, where the dump is stored, is protected
+  */
+-static void remove_oldmem(void)
++static void __init remove_oldmem(void)
+ {
+ #ifdef CONFIG_CRASH_DUMP
+ 	if (OLDMEM_BASE)
 -- 
-2.17.1
+2.25.1
 
