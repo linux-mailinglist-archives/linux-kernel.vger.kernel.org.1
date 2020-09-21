@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49455272F2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD7B9272E13
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728329AbgIUQpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:45:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51786 "EHLO mail.kernel.org"
+        id S1729543AbgIUQpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:45:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726436AbgIUQpl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:45:41 -0400
+        id S1727337AbgIUQpn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:45:43 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3C5E92076B;
-        Mon, 21 Sep 2020 16:45:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7A45920874;
+        Mon, 21 Sep 2020 16:45:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706740;
-        bh=Ym6t0eaYuLupir2lStyz4Gr4PMkrUEHoS+dTrxBEu8M=;
+        s=default; t=1600706743;
+        bh=sZ0X34q0lCuHz7JePqUQnYkx562+2UZhjKzVlNe39q0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RRSFkjBtB4SPpp46gxbXaonPP0w8LfkIIVmk9vw0crvp2hnMbpUt6yVjojj3gHfXw
-         y73FwCf2vrOMz9MrQ4XHLMgBVhGvCM/3ImnXferIE8NikXo3SsSzNJ6nxj9Wg3NQWf
-         ETDY9+ERZ+lEyi6kxvRdTxbGrGIVDBVkmKtCRWEk=
+        b=DzNbnxzREGDPxX+6aF0/M10GWjYMggfTSqNnHVWlPjcPgP2cEgsYgIWAhgNnI8Nxx
+         l9yP+MKnHMvAvDdxbjnEH1V1i9Vo34PjjdynSLhqby/zU4jE3sGGkqihyVh50J4Vno
+         Z8Q90F/mhCrQiQWNfaoPMqcPEyQglusBiDAUjS6s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 075/118] kconfig: qconf: use delete[] instead of delete to free array (again)
-Date:   Mon, 21 Sep 2020 18:28:07 +0200
-Message-Id: <20200921162039.823243128@linuxfoundation.org>
+        stable@vger.kernel.org, Yingjoe Chen <yingjoe.chen@mediatek.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Qii Wang <qii.wang@mediatek.com>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 076/118] i2c: mediatek: Fix generic definitions for bus frequency
+Date:   Mon, 21 Sep 2020 18:28:08 +0200
+Message-Id: <20200921162039.861373792@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
 References: <20200921162036.324813383@linuxfoundation.org>
@@ -43,48 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Yamada <masahiroy@kernel.org>
+From: Qii Wang <qii.wang@mediatek.com>
 
-[ Upstream commit a608b6a646e8816bc0db156baad2e0679fa4d137 ]
+[ Upstream commit ff6f3aff46beb3c29e0802cffcc559e1756c4814 ]
 
-Commit c9b09a9249e6 ("kconfig: qconf: use delete[] instead of delete
-to free array") fixed two lines, but there is one more.
-(cppcheck does not report it for some reason...)
+The max frequency of mediatek i2c controller driver is
+I2C_MAX_HIGH_SPEED_MODE_FREQ, not I2C_MAX_FAST_MODE_PLUS_FREQ.
+Fix it.
 
-This was detected by Clang.
-
-"make HOSTCXX=clang++ xconfig" reports the following:
-
-scripts/kconfig/qconf.cc:1279:2: warning: 'delete' applied to a pointer that was allocated with 'new[]'; did you mean 'delete[]'? [-Wmismatched-new-delete]
-        delete data;
-        ^
-              []
-scripts/kconfig/qconf.cc:1239:15: note: allocated with 'new[]' here
-        char *data = new char[count + 1];
-                     ^
-
-Fixes: c4f7398bee9c ("kconfig: qconf: make debug links work again")
-Fixes: c9b09a9249e6 ("kconfig: qconf: use delete[] instead of delete to free array")
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Fixes: 90224e6468e1 ("i2c: drivers: Use generic definitions for bus frequencies")
+Reviewed-by: Yingjoe Chen <yingjoe.chen@mediatek.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Qii Wang <qii.wang@mediatek.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/kconfig/qconf.cc | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/i2c/busses/i2c-mt65xx.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/scripts/kconfig/qconf.cc b/scripts/kconfig/qconf.cc
-index 5ceb93010a973..aedcc3343719e 100644
---- a/scripts/kconfig/qconf.cc
-+++ b/scripts/kconfig/qconf.cc
-@@ -1263,7 +1263,7 @@ void ConfigInfoView::clicked(const QUrl &url)
- 	}
+diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
+index deef69e569062..b099139cbb91e 100644
+--- a/drivers/i2c/busses/i2c-mt65xx.c
++++ b/drivers/i2c/busses/i2c-mt65xx.c
+@@ -658,8 +658,8 @@ static int mtk_i2c_calculate_speed(struct mtk_i2c *i2c, unsigned int clk_src,
+ 	unsigned int cnt_mul;
+ 	int ret = -EINVAL;
  
- 	free(result);
--	delete data;
-+	delete[] data;
- }
+-	if (target_speed > I2C_MAX_FAST_MODE_PLUS_FREQ)
+-		target_speed = I2C_MAX_FAST_MODE_PLUS_FREQ;
++	if (target_speed > I2C_MAX_HIGH_SPEED_MODE_FREQ)
++		target_speed = I2C_MAX_HIGH_SPEED_MODE_FREQ;
  
- QMenu* ConfigInfoView::createStandardContextMenu(const QPoint & pos)
+ 	max_step_cnt = mtk_i2c_max_step_cnt(target_speed);
+ 	base_step_cnt = max_step_cnt;
 -- 
 2.25.1
 
