@@ -2,63 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16AFB27359F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 00:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 658A52735A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 00:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728535AbgIUWTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 18:19:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40654 "EHLO mail.kernel.org"
+        id S1728548AbgIUWTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 18:19:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726457AbgIUWT2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 18:19:28 -0400
+        id S1726457AbgIUWTy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 18:19:54 -0400
 Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1DAB023A60;
-        Mon, 21 Sep 2020 22:19:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5604F23A60;
+        Mon, 21 Sep 2020 22:19:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600726768;
-        bh=arP0lyzu4ZP/6mZ5c6gn2TtbkaQYFXh2JDWGCkkM1Z4=;
+        s=default; t=1600726794;
+        bh=nsVCQXGW+vEBQKem+qf4fpSs9HOCy3YOzLNGU43qo3k=;
         h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=I71bsQd4xUaSenCEFrTi1KQAgr4DeQH3o2l9h81itnHntUyjtuXsdvIDN0PGWqZwM
-         6QIfYT7/8gaYdHZVz4X9xjK2MKQKABeNYUEKxGsycz09YV1hubksdlpiAxXMQ7Qb2U
-         5U/we8goerqSpQv27d3Sp8MgLTIlUZoIPXmUQ0gU=
-Date:   Mon, 21 Sep 2020 17:19:26 -0500
+        b=uLC5peuzDtxsOjb6SxAIq4tn6MBy9Awalcr5TWZvRKB0iErsGDoAB/arYYd0TXr2c
+         UBSyXWbCqYMy9w0AWL+tjmbuPvNy1Rqx/RSGXpYQXE1v3CSP+XwfNuv70C1xpMrSzj
+         UDqAlig4j1FiV8fyguB3wxleiw0Qx04nxP9xMvCQ=
+Date:   Mon, 21 Sep 2020 17:19:53 -0500
 From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     kan.liang@linux.intel.com
-Cc:     peterz@infradead.org, mingo@redhat.com,
+To:     peterz@infradead.org
+Cc:     kan.liang@linux.intel.com, mingo@redhat.com,
         linux-kernel@vger.kernel.org, bhelgaas@google.com,
         eranian@google.com, ak@linux.intel.com
-Subject: Re: [RESEND PATCH V2 5/6] perf/x86/intel/uncore: Generic support for
- the PCI sub driver
-Message-ID: <20200921221926.GA2139384@bjorn-Precision-5520>
+Subject: Re: [RESEND PATCH V2 0/6] Support PCIe3 uncore PMU on Snow Ridge
+Message-ID: <20200921221953.GA2139522@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1600094060-82746-6-git-send-email-kan.liang@linux.intel.com>
+In-Reply-To: <20200921150631.GS1362448@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 07:34:19AM -0700, kan.liang@linux.intel.com wrote:
-> From: Kan Liang <kan.liang@linux.intel.com>
+On Mon, Sep 21, 2020 at 05:06:31PM +0200, peterz@infradead.org wrote:
+> On Mon, Sep 14, 2020 at 07:34:14AM -0700, kan.liang@linux.intel.com wrote:
+> > From: Kan Liang <kan.liang@linux.intel.com>
+> > 
+> > Changes since V1:
+> > - Drop the platform device solution
+> > - A new uncore PCI sub driver solution is introduced which searches
+> >   the PCIe Root Port device via pci_get_device() and id table.
+> >   Register a PCI bus notifier for the remove notification. Once the
+> >   device is removed, the uncore driver can be notified to unregister
+> >   the corresponding PMU.
+> > - Modify the parameters of uncore_pci_pmu_unregister() function.
 > 
-> Some uncore counters may be located in the configuration space of a PCI
-> device, which already has a bonded driver. Currently, the uncore driver
-> cannot register a PCI uncore PMU for these counters, because, to
-> register a PCI uncore PMU, the uncore driver must be bond to the device.
-> However, one device can only have one bonded driver.
-> 
-> Add an uncore PCI sub driver to support such kind of devices.
-> 
-> The sub driver doesn't own the device. In initialization, the sub
-> driver searches the device via pci_get_device(), and register the
-> corresponding PMU for the device. In the meantime, the sub driver
-> registeris a PCI bus notifier, which is used to notify the sub driver
-> once the device is removed. The sub driver can unregister the PMU
-> accordingly.
+> Bjorn, you hated on the last version of this thing, are you OK with this
+> one?
 
-s/registeris/registers/
-
-It looks like this only handles hot-remove of the device, not hot-add.
-Maybe that's OK for your use case, I dunno, so just pointing it out.
+Yep, this is OK with me.
