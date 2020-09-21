@@ -2,151 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C12271FA0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98E4E271FA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726550AbgIUKEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:04:07 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:58130 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726428AbgIUKEG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 06:04:06 -0400
-Received: from zn.tnic (p200300ec2f07e300a1766583a478f392.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:e300:a176:6583:a478:f392])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A330E1EC0323;
-        Mon, 21 Sep 2020 12:04:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600682644;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=1udGxMkFjeOfV8BEY6v5FP5Ybt85foi64B2PPrPSWuY=;
-        b=C4UNaCAzsbKRZHDs/6SGErP8jpwET5CPKcp2z8WviAVsvwsAmOKv+llVqIWaLPSsIIiyml
-        hl81akJ+0zpRqT4AO7VPJVCCF9/zbVu840ejXPuK502FGaV2LNVIFV4lXQ06SjKKRvc13g
-        5Kp7LSnXpmobWWEsa5olMKCUNn5YNlk=
-Date:   Mon, 21 Sep 2020 12:03:56 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jethro Beekman <jethro@fortanix.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Seth Moore <sethmo@google.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 12/24] x86/sgx: Add SGX_IOC_ENCLAVE_CREATE
-Message-ID: <20200921100356.GB5901@zn.tnic>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-13-jarkko.sakkinen@linux.intel.com>
+        id S1726515AbgIUKEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:04:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726384AbgIUKEp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 06:04:45 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 199E7C061755;
+        Mon, 21 Sep 2020 03:04:45 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id j2so12073308wrx.7;
+        Mon, 21 Sep 2020 03:04:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UkuH/WWP5BM2+/HjFiAZ6z/l7IuHecE85iZQkNm/w4E=;
+        b=feXCk+RYG8aagpwCWUKrBf5bu0pOD+rXTbio6MrX74CO7k3r/KWMqCta7XbsOmjON5
+         wOm/xLi4/wTOU51UQ6AvYik5TSds1ylXsBOCy7ha6l4Bt4M6SiAO9BKGeIWkevRFI7kQ
+         mgIEYC8kwG1RB6D4kiE10tx871uAGkH1V6MTDIIeWX2rl7pLUW1bgnl+NlbOYfzLDUas
+         B5Cy3gQ50wXh2qOnksL3gJL/Ujdeo2hyO7Lv1xNLi5HBH8VvVjo3Q3X7IqD8+H0K0/R0
+         qJITPaGA+d3JXjETXHKW4wK/vPoO930uvrtyyDKK5wbLbB8G27IEYFtI9GQpcpWDxfm4
+         eibw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UkuH/WWP5BM2+/HjFiAZ6z/l7IuHecE85iZQkNm/w4E=;
+        b=KjRHm1f7Nkv2NMnU/SaDoI0b5CEKP5pPcn6qQmYkoSgMxEv46lkWJwUCuFBatOZUu+
+         rDvelzU3fL25G73dU/tn3uljhmKJKRiKHrnCWxmcXm13mOsaXJb3ixaf4A9gLNt83sSJ
+         ZfLbW7aDn77baUhokK6BU6hJXZswfC6gGh7sxHjaKCD5+rFQ8Ep0nKSCHZs/jFM9qqNj
+         F/OU5+dt5nuD2sLA7h2WCzeAMyN7VwlmRkPSx4kCKj+fF9FFretSFYb3a1lOYBdkwzLU
+         CJvM72WSS950P0ndrIOFx3IoNf6G1krqJhqVI7jwWLjLhl1ocBloCOCzbaI5dfRbGhDG
+         JLRA==
+X-Gm-Message-State: AOAM5301ACVCfxII/YHKNkF8/OWzwxXIMhPYVvBCUi3LOrRJ6SC/6WKV
+        2EoZfFJsN3NindAubxO/QdOO0rCBz0waOQ==
+X-Google-Smtp-Source: ABdhPJxpykmsqM5GSWO6ureL2EshNJp7ZQNhv3665VbXJ7PZglq45TWDJTqLgbCKs4hA13A2IaFJ6w==
+X-Received: by 2002:adf:ea0f:: with SMTP id q15mr36632145wrm.371.1600682683621;
+        Mon, 21 Sep 2020 03:04:43 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.113.201])
+        by smtp.gmail.com with ESMTPSA id n3sm2582093wmn.28.2020.09.21.03.04.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Sep 2020 03:04:42 -0700 (PDT)
+Subject: Re: [PATCH] arm: dts: mt7623: add missing pause for switchport
+To:     Frank Wunderlich <linux@fw-web.de>,
+        linux-mediatek@lists.infradead.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Landen Chao <landen.chao@mediatek.com>,
+        Qingfang DENG <dqfext@gmail.com>,
+        =?UTF-8?Q?Ren=c3=a9_van_Dorst?= <opensource@vdorst.com>,
+        Sean Wang <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+References: <20200907070517.51715-1-linux@fw-web.de>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <ae04ff83-f9f5-ecb0-1221-854d21fc9cfd@gmail.com>
+Date:   Mon, 21 Sep 2020 12:04:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200915112842.897265-13-jarkko.sakkinen@linux.intel.com>
+In-Reply-To: <20200907070517.51715-1-linux@fw-web.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 02:28:30PM +0300, Jarkko Sakkinen wrote:
-> +static int sgx_validate_secs(const struct sgx_secs *secs)
-> +{
-> +	u64 max_size = (secs->attributes & SGX_ATTR_MODE64BIT) ?
-> +		       sgx_encl_size_max_64 : sgx_encl_size_max_32;
-> +
-> +	if (secs->size < (2 * PAGE_SIZE) || !is_power_of_2(secs->size))
-> +		return -EINVAL;
-> +
-> +	if (secs->base & (secs->size - 1))
-> +		return -EINVAL;
-> +
-> +	if (secs->miscselect & sgx_misc_reserved_mask ||
-> +	    secs->attributes & sgx_attributes_reserved_mask ||
-> +	    secs->xfrm & sgx_xfrm_reserved_mask)
-> +		return -EINVAL;
-> +
-> +	if (secs->size > max_size)
-> +		return -EINVAL;
-> +
-> +	if (!(secs->xfrm & XFEATURE_MASK_FP) ||
-> +	    !(secs->xfrm & XFEATURE_MASK_SSE) ||
-> +	    (((secs->xfrm >> XFEATURE_BNDREGS) & 1) !=
-> +	     ((secs->xfrm >> XFEATURE_BNDCSR) & 1)))
-
-Let that last line stick out so that you have each statement on a single line.
-
-> +		return -EINVAL;
-> +
-> +	if (!secs->ssa_frame_size)
-> +		return -EINVAL;
-> +
-> +	if (sgx_calc_ssa_frame_size(secs->miscselect, secs->xfrm) >
-> +	    secs->ssa_frame_size)
-
-Let that stick out.
-
-> +		return -EINVAL;
-> +
-> +	if (memchr_inv(secs->reserved1, 0, sizeof(secs->reserved1)) ||
-> +	    memchr_inv(secs->reserved2, 0, sizeof(secs->reserved2)) ||
-> +	    memchr_inv(secs->reserved3, 0, sizeof(secs->reserved3)) ||
-> +	    memchr_inv(secs->reserved4, 0, sizeof(secs->reserved4)))
-> +		return -EINVAL;
-> +
-> +	return 0;
-> +}
-> +
-> +static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
-> +{
-> +	unsigned long encl_size = secs->size + PAGE_SIZE;
-
-You're still using secs->size before validation. I know, we will return
-early if sgx_validate_secs() fails but pls move that addition after the
-validation call.
-
-...
-
-> +/**
-> + * sgx_ioc_enclave_create - handler for %SGX_IOC_ENCLAVE_CREATE
-> + * @filep:	open file to /dev/sgx
-
-Dammit, how many times do I have to type this comment here?!
-
-"That's
-
-@encl: enclave pointer
-
-or so."
-
-There's no filep - there is an encl!
 
 
-> + * @arg:	userspace pointer to a struct sgx_enclave_create instance
-> + *
-> + * Allocate kernel data structures for a new enclave and execute ECREATE after
-> + * verifying the correctness of the provided SECS.
+On 07/09/2020 09:05, Frank Wunderlich wrote:
+> From: Frank Wunderlich <frank-w@public-files.de>
+> 
+> port6 of mt7530 switch (= cpu port 0) on bananapi-r2 misses pause option
+> which causes rx drops on running iperf.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: f4ff257cd160 ("arm: dts: mt7623: add support for Bananapi R2 (BPI-R2) board")
+> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
 
-... which is done in sgx_validate_secs()."
+Applied to v5.9-next/dts32
 
-Yes, spell it out, otherwise one has to wonder where that validation is
-happening in the function *below* because the comment is over it - not
-over sgx_validate_secs().
+Thanks!
 
-And yes, you need to spell stuff like that out because this SGX crap is
-complex and it better be properly documented!
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> ---
+>   arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts b/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
+> index 2b760f90f38c..5375c6699843 100644
+> --- a/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
+> +++ b/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
+> @@ -192,6 +192,7 @@ port@6 {
+>   					fixed-link {
+>   						speed = <1000>;
+>   						full-duplex;
+> +						pause;
+>   					};
+>   				};
+>   			};
+> 
