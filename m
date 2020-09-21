@@ -2,176 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FC7627232B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 819EE272330
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726682AbgIULxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 07:53:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726326AbgIULxu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 07:53:50 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC1ABC061755;
-        Mon, 21 Sep 2020 04:53:49 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id z9so12326146wmk.1;
-        Mon, 21 Sep 2020 04:53:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tnYdKbbs0v8cjRUa6+TQZR8WZS5M4KfLczxxoR92Ii4=;
-        b=k9PsPNfv4RkoW9BlHFdHIf9xY2kBpx4aGy+LnFsfyk7MVKIGfajOKv1yRzBG1g9kRV
-         p5vGoTuYp4sH7fDonoo3vDzOPUMd7BlEl+o7QkPoLDBJUlz5oWXszKWEObMkhiS53SpH
-         wRn0yH+tOYm+0D0rtlQoYQAtrJo20zc9BQhRZCwQlIuisnKA+4NIrYDfj+kz9namaMkx
-         HyFK6tUXueEbzI1XyPT6w+ZymeROdWDVBqT3LM/OgqsxRi/GfJgOY99kYRZFqfJK92Ir
-         LxYTgdQHuFkeU532K8QHqqJUS5jkFiz0n9mcSUyyn5e+qWGwMVp8/B/R4bHG9oSJM374
-         lufA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tnYdKbbs0v8cjRUa6+TQZR8WZS5M4KfLczxxoR92Ii4=;
-        b=Brwhx8ZjBoB7zDwF7t3xURMRZwlhhIuOrynb4S0ahgBSdNHvA0xAXlub74dQoQnOYJ
-         W6sEyZUNt4k1B+uKL48HdzQ/O24V0G2LIfKjRPH7PaGELlZIgiqmLsGYl+nECwuM8RD1
-         EIqkca/tmLJsLtlVqNV/puUMzP7439u/e/zG6OjWCsfOIGk4M0U3TQDLYsFaVb/X56Y3
-         vck5EWTd5J4XFVqbQvXtbLXavxC2ZKeIQsqMnwTg51rw5auEJmGQs4Hw1eO6NHScgPbv
-         Y6sq3o3cZnca5+d6d3mynrNSWSH69aycR5ccXjNwodZ1DVzwt88qFu/51qtnHyFFEu7F
-         1s/A==
-X-Gm-Message-State: AOAM531QGnI/Igy1bAoBgv7EGjmVzOP1rLt49BXv2hr1T3U41euxKuQ8
-        lTC+pg6mpKjdKXCypilFvaA=
-X-Google-Smtp-Source: ABdhPJx5aWLyT9FmZeJfWGXgN3NtrC5HfjdVYSlV8isUlvPJUARX+mcG8/Dj8AaoipCOjPw9vaznhw==
-X-Received: by 2002:a1c:7c13:: with SMTP id x19mr30741819wmc.45.1600689228397;
-        Mon, 21 Sep 2020 04:53:48 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id l8sm20641084wrx.22.2020.09.21.04.53.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 04:53:47 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 13:53:45 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        linux-tegra@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 12/34] i2c: tegra: Use clk-bulk helpers
-Message-ID: <20200921115345.GP3950626@ulmo>
-References: <20200908224006.25636-1-digetx@gmail.com>
- <20200908224006.25636-13-digetx@gmail.com>
- <20200917113846.GX3515672@ulmo>
- <CAHp75Vd_B9WLM99LnN2YiZ045z8SUkD7KwY2wVEUeQ9Mx7fg5g@mail.gmail.com>
- <20200921110159.GD3950626@ulmo>
- <CAHp75VcpoZ-m2wkJGv4s+KthOVLQR1XBTzMFMmvj-Q82BEh7NQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="6sj9mcRtP+pTWLOo"
-Content-Disposition: inline
-In-Reply-To: <CAHp75VcpoZ-m2wkJGv4s+KthOVLQR1XBTzMFMmvj-Q82BEh7NQ@mail.gmail.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+        id S1726483AbgIUL4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 07:56:30 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:46626 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726326AbgIUL4a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 07:56:30 -0400
+Received: from bogon.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxP9zolGhfDc8WAA--.1715S2;
+        Mon, 21 Sep 2020 19:56:24 +0800 (CST)
+From:   Jinyang He <hejinyang@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] MIPS: Loongson64: Fix cmdline parsing "mem=" and "memmap="
+Date:   Mon, 21 Sep 2020 19:56:24 +0800
+Message-Id: <1600689384-11032-1-git-send-email-hejinyang@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9DxP9zolGhfDc8WAA--.1715S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXw43JFy7Cr17uFy5uw4DJwb_yoW5AF4fpr
+        ZrCwn5Gr4rWFZ7Za4rtry8ur4rA3sYgFWfuFW7CF18uas5Zry7Ar4fG3WUXF1jqrW8t3WY
+        qF1Fq3y7tanFkaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkab7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwV
+        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Cr0_Gr
+        1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_Gw4l42xK
+        82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
+        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48J
+        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
+        IF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07bYkskUUUUU=
+X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Commit a94e4f24ec83 ("MIPS: init: Drop boot_mem_map") left
+add_memory_region() for historical reason. Machine cannot start normally
+when use "mem=" on the Loongson64 platform because parsing "mem=" calls
+memblock_add() by add_memory_region(). Loongson64 always enable NUMA and
+need memblock_add_node().
 
---6sj9mcRtP+pTWLOo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Replace add_memory_rigion(start, size, BOOT_MEM_RAM) with a weak function
+which named mips_memblock_add. For Loongson64, override mips_memblock_add
+at loongson64/numa.c. "memmap=" is similar to "mem=", replace it too.
 
-On Mon, Sep 21, 2020 at 02:15:09PM +0300, Andy Shevchenko wrote:
-> On Mon, Sep 21, 2020 at 2:02 PM Thierry Reding <thierry.reding@gmail.com>=
- wrote:
-> > On Thu, Sep 17, 2020 at 04:54:28PM +0300, Andy Shevchenko wrote:
-> > > On Thu, Sep 17, 2020 at 2:38 PM Thierry Reding <thierry.reding@gmail.=
-com> wrote:
-> > > > On Wed, Sep 09, 2020 at 01:39:44AM +0300, Dmitry Osipenko wrote:
->=20
-> ...
->=20
-> > > > This is tempting from a diffstat point of view, but the downside is=
- that
-> > > > we can now no longer validate that all of the necessary clocks are =
-given
-> > > > in device tree.
-> > > >
-> > > > Previously the driver would fail to probe the I2C controller if any=
- of
-> > > > the expected clocks were not defined in device tree, but now it's j=
-ust
-> > > > going to continue without it and not give any indication as to what=
-'s
-> > > > wrong.
-> > >
-> > > You may print an error in the error path as previously. Since both
-> > > clocks are mandatory (as far as I understood the code) user will need
-> > > to check DT in any case.
-> >
-> > The problem is that the number of required clocks depends on the variant
-> > of the IP block that's implemented. Some require just one clock and
-> > others require two or three. With this patch the driver is just going to
-> > pick whatever clocks are given in device tree, but it removes any
-> > possibility of detecting whether the device trees contain the correct
-> > clocks. So we may very well run into a situation where the driver now
-> > successfully probes but then malfunctions because one or more of the
-> > clocks were not specified in device tree.
-> >
-> > Thierry
->=20
-> I still failed to get this. Are you suggesting that CCF bulk
-> operations are fundamentally broken?
+Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+---
+ arch/mips/include/asm/bootinfo.h | 1 +
+ arch/mips/kernel/setup.c         | 9 +++++++--
+ arch/mips/loongson64/numa.c      | 8 ++++++++
+ 3 files changed, 16 insertions(+), 2 deletions(-)
 
-No, I'm not suggesting that. All I'm saying is the way that they are
-used here is causing the driver to behave differently that it was
-before.
+diff --git a/arch/mips/include/asm/bootinfo.h b/arch/mips/include/asm/bootinfo.h
+index 147c932..66fef4c 100644
+--- a/arch/mips/include/asm/bootinfo.h
++++ b/arch/mips/include/asm/bootinfo.h
+@@ -96,6 +96,7 @@ extern unsigned long mips_machtype;
+ 
+ extern void add_memory_region(phys_addr_t start, phys_addr_t size, long type);
+ extern void detect_memory_region(phys_addr_t start, phys_addr_t sz_min,  phys_addr_t sz_max);
++extern void mips_memblock_add(phys_addr_t start, phys_addr_t size);
+ 
+ extern void prom_init(void);
+ extern void prom_free_prom_memory(void);
+diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+index bf5f5ac..ef84b4d 100644
+--- a/arch/mips/kernel/setup.c
++++ b/arch/mips/kernel/setup.c
+@@ -149,6 +149,11 @@ void __init detect_memory_region(phys_addr_t start, phys_addr_t sz_min, phys_add
+ 	add_memory_region(start, size, BOOT_MEM_RAM);
+ }
+ 
++void __init __weak mips_memblock_add(phys_addr_t start, phys_addr_t size)
++{
++	memblock_add(start, size);
++}
++
+ /*
+  * Manage initrd
+  */
+@@ -400,7 +405,7 @@ static int __init early_parse_mem(char *p)
+ 	if (*p == '@')
+ 		start = memparse(p + 1, &p);
+ 
+-	add_memory_region(start, size, BOOT_MEM_RAM);
++	mips_memblock_add(start, size);
+ 
+ 	return 0;
+ }
+@@ -426,7 +431,7 @@ static int __init early_parse_memmap(char *p)
+ 
+ 	if (*p == '@') {
+ 		start_at = memparse(p+1, &p);
+-		add_memory_region(start_at, mem_size, BOOT_MEM_RAM);
++		mips_memblock_add(start_at, mem_size);
+ 	} else if (*p == '#') {
+ 		pr_err("\"memmap=nn#ss\" (force ACPI data) invalid on MIPS\n");
+ 		return -EINVAL;
+diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
+index ea8bb1b..d8ecdf2 100644
+--- a/arch/mips/loongson64/numa.c
++++ b/arch/mips/loongson64/numa.c
+@@ -257,6 +257,14 @@ void __init mem_init(void)
+ 	mem_init_print_info(NULL);
+ }
+ 
++void __init mips_memblock_add(phys_addr_t start, phys_addr_t size)
++{
++	u64 node_id;
++
++	node_id = (start >> 44) & 3;
++	memblock_add_node(start, size, node_id);
++}
++
+ /* All PCI device belongs to logical Node-0 */
+ int pcibus_to_node(struct pci_bus *bus)
+ {
+-- 
+2.1.0
 
-Taking for example the VI I2C controller instantiation. That requires
-the "slow" clock to be specified. Previously if the VI I2C device tree
-node didn't have that "slow" clock specified, the I2C driver probe would
-exit with an error code. After this change it will simply not see the
-"slow" clock and then just continue without it as if it was optional.
-
-In other words, after this patch we have no way of saying which clocks
-are required and which are optional. They all become optional, basically
-and the driver would attempt to continue (and most likely hang) if no
-clocks at all had been specified in device tree.
-
-> In the above case one may add more checks. AFAICS is_vi won't be
-> removed, so can be easily checked.
-> Basically that for-loop for div_clk is questionable. I agree on that.
-
-But we need that one to find which of the clocks is the divider clock so
-that we can call clk_set_rate() on it later on. It's a bit odd that we'd
-just continue even if we didn't find the divider clock. I think the CCF
-does handle this transparently and will just no-op all the calls for
-NULL clocks, but it still means that we won't be running the I2C bus at
-the right frequency if the divider clock was not specified in device
-tree.
-
-Thierry
-
---6sj9mcRtP+pTWLOo
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9olEkACgkQ3SOs138+
-s6E3RRAAicgwoUZ3itSlxAQ4dLKrDOobCDxoEwECgY1PncljTtqyP6aPCuvy9UnV
-QfJe0iXyK25n3oOFmpX2LEYtoBYHko87xRkII3JESAZLtXrUBdVbvyds4IqXBILR
-RYSVtkfh8Bl5pZggF5HwHpDnZaaQBPtK57c1da8CO2xROJBoXX+l6oiaNQwNkJy7
-n/qbWpBq5X4MMHnISa5YayuxGr0YQbDvFSPZeeWaU7KDBbwwSJPLiknBtQs0dNaB
-Ojm5SMM1aaaFbv15mY9OyK7X4fQ6AENpgAks+GcmZ/bQnFvtgXheMDKBDqFt7q2V
-JxzwXv273wT3qKHvt8yf1IMG2JlNu5OHeTckdMuynn5VIw07TY1xCGKDDL2T9z0P
-yXy3YMv0MunYCTSdjk8LJa4eVNBuEikAQTpN4AJsMTrYFCHH/z0OibRdAjuPbJc/
-SOZMlGwms02fhEiG7MqjI8JYIWdUhKuYiaJ1nfZkYcQnlhvgH+jDWBeJYyR2HzuK
-t/I+waWK6jfach6YbgSbQawvcekpioz1JbQKfqx+WxUtriEEOmHpYDgZolvtO/pI
-YEb/RDepVeQIlutFXAhSmQxa3LTXYcpxghMwnEpmYGJrz4jYc+8jnn3BdurqLAHI
-MYTd3VGD73ikxVgj4d3uzdyBbewjYvMUca7HWn+/YWRceBbCwdw=
-=iz+4
------END PGP SIGNATURE-----
-
---6sj9mcRtP+pTWLOo--
