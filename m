@@ -2,189 +2,349 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A523B2736C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 01:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 017452736CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 01:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728765AbgIUXsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 19:48:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59210 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728672AbgIUXsj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 19:48:39 -0400
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7D05123A82
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 23:48:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600732118;
-        bh=N8vHQdEHpTHWvUHKpDbNH8Yi1jVK5l/yl5V+P+NE0OA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=goDxIMoDoxVa3C64VsVsoO1jj5SNv4S6MzZHZ98rF+dlRwaM2zylky7OMs58V0cIt
-         0k34+7+qqV1O1on10uR7KTin37l5HHeADO5pXJZJTKNV4jiznZr/kCqEdpy6SoWJMv
-         J+loS6sIAobeIhC7PKoJMovzXnqu/F07k7RzKvZA=
-Received: by mail-wr1-f46.google.com with SMTP id z1so15012498wrt.3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 16:48:38 -0700 (PDT)
-X-Gm-Message-State: AOAM533/OFrz9t//CL2bjJPsHuwe5xcTTE0X8oDjP+TiwH4hgPFOrp5F
-        2i7aa/wQooRpGb/8U209p0mQYFHW765+gYY3DZPe8g==
-X-Google-Smtp-Source: ABdhPJzngS+LJRRhcziEyC3Eee4FojJ0Xz7OhABh4eqwGzQo/447WGnYoKx4dZhgKZSGTGYlukUJFQ1u+OQ1i1Jxyaw=
-X-Received: by 2002:a5d:6a47:: with SMTP id t7mr2138226wrw.75.1600732116993;
- Mon, 21 Sep 2020 16:48:36 -0700 (PDT)
+        id S1728906AbgIUXtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 19:49:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728671AbgIUXtn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 19:49:43 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D13CC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 16:49:43 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id n2so19016528oij.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 16:49:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=8oQpSQI8wvIpIER3mA+5Lt4f5fuUByXFTuElAIMrxcI=;
+        b=ma0zWoCL6rzOYyWSY+cIZNt+OG/Pkpzhkrxk7+XUsZBArWxN+4ODulV6lkF/ejZ3wq
+         sdqMdqNrnbCwZy7TGOOQjmktEWXJkmDwiTOfcEAy4S3ZPt6+ZAPZWl3cKaThR4AQqWEK
+         luvgNfEnjUh8Ni1M0fXfbsp46OwRSYRo3AvZcPTkJ+bR30q9gbfeZvMwsQPjMp2MRtRk
+         MPbnqEtZ1RgUKDL8zFjvTYHR/069rPbOGsCZs3WM7k1I0WJ4qFwTN+2XHEU+Qh+qTmgC
+         dA+ZuhFoLY9PdE7Xkfs6KYGmYj1jhIhQeo1oezoGYkb0nQR5IOFTvIVNdcr6yzGwvlOW
+         Moig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=8oQpSQI8wvIpIER3mA+5Lt4f5fuUByXFTuElAIMrxcI=;
+        b=pRik4GbvLdreTZ1PLBcnWQdKydLpKzmatkrynpR7RPWa0hzfyo4S/nFHC20hIpshx9
+         u7hB99jYbhGdOVWXaUTA2ljE1SURsNUhq+PXTUz4pZd4Ehtdt/mTHBM361uHqjde2Tmb
+         ChgGUrEpB0/e1eVhTPF5VS1M+HiD5i31yHK6UKKpdV47BWrqpkEv89TVA+/5NLkzn9Tq
+         /fl9oj9Vd9+Nsj+wq7XBlNdWLu5Iw0xUcHYZFE2HTzDHVQDstPQeOKfujB/BJ5rmLxEN
+         9BtHvFyYLDey6HenYWrd+J1QACtk65zXeBNkqQTPU0mcGkUx//Vfbp7lT1RIpgSXyhyi
+         6y+A==
+X-Gm-Message-State: AOAM531VjFNCr6LGjp5s+qiLe5/zRXkJIZFOydkj/QvxmrPy/MFE96ZW
+        LAZ8PRQ12bdfOFHYdDdbcYwDjQ==
+X-Google-Smtp-Source: ABdhPJy5gdr+wGvmIXnwQJ0rjjfTSRyQJp8fGZHNIOuMCqPD+xBQdNZSHLEgLMmGAWAOU0s/ZxuQEg==
+X-Received: by 2002:aca:f5cc:: with SMTP id t195mr1145600oih.10.1600732182000;
+        Mon, 21 Sep 2020 16:49:42 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id f29sm1669221ook.44.2020.09.21.16.49.39
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Mon, 21 Sep 2020 16:49:40 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 16:49:38 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, willy@infradead.org,
+        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        shakeelb@google.com, iamjoonsoo.kim@lge.com,
+        richard.weiyang@gmail.com, kirill@shutemov.name,
+        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
+        vdavydov.dev@gmail.com, shy828301@gmail.com
+Subject: Re: [PATCH v18 17/32] mm/compaction: do page isolation first in
+ compaction
+In-Reply-To: <1598273705-69124-18-git-send-email-alex.shi@linux.alibaba.com>
+Message-ID: <alpine.LSU.2.11.2009211617080.5214@eggly.anvils>
+References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com> <1598273705-69124-18-git-send-email-alex.shi@linux.alibaba.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-References: <20200918192312.25978-1-yu-cheng.yu@intel.com> <20200918192312.25978-9-yu-cheng.yu@intel.com>
- <CALCETrXfixDGJhf0yPw-OckjEdeF2SbYjWFm8VbLriiP0Krhrg@mail.gmail.com>
- <c96c98ec-d72a-81a3-06e2-2040f3ece33a@intel.com> <24718de58ab7bc6d7288c58d3567ad802eeb6542.camel@intel.com>
-In-Reply-To: <24718de58ab7bc6d7288c58d3567ad802eeb6542.camel@intel.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 21 Sep 2020 16:48:25 -0700
-X-Gmail-Original-Message-ID: <CALCETrWssUxxfhPPJZgPOmpaQcf4o9qCe1j-P7yiPyZVV+O8ZQ@mail.gmail.com>
-Message-ID: <CALCETrWssUxxfhPPJZgPOmpaQcf4o9qCe1j-P7yiPyZVV+O8ZQ@mail.gmail.com>
-Subject: Re: [PATCH v12 8/8] x86: Disallow vsyscall emulation when CET is enabled
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 3:37 PM Yu-cheng Yu <yu-cheng.yu@intel.com> wrote:
->
-> On Mon, 2020-09-21 at 09:22 -0700, Yu, Yu-cheng wrote:
-> > On 9/18/2020 5:11 PM, Andy Lutomirski wrote:
-> > > On Fri, Sep 18, 2020 at 12:23 PM Yu-cheng Yu <yu-cheng.yu@intel.com> wrote:
-> > > > Emulation of the legacy vsyscall page is required by some programs
-> > > > built before 2013.  Newer programs after 2013 don't use it.
-> > > > Disable vsyscall emulation when Control-flow Enforcement (CET) is
-> > > > enabled to enhance security.
-> > > >
-> > > > Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-> [...]
-> > >
-> > > Nope, try again.  Having IBT on does *not* mean that every library in
-> > > the process knows that we have indirect branch tracking.  The legacy
-> > > bitmap exists for a reason.  Also, I want a way to flag programs as
-> > > not using the vsyscall page, but that flag should not be called CET.
-> > > And a process with vsyscalls off should not be able to read the
-> > > vsyscall page, and /proc/self/maps should be correct.
-> > >
-> > > So you have some choices:
-> > >
-> > > 1. Drop this patch and make it work.
-> > >
-> > > 2. Add a real per-process vsyscall control.  Either make it depend on
-> > > vsyscall=xonly and wire it up correctly or actually make it work
-> > > correctly with vsyscall=emulate.
-> > >
-> > > NAK to any hacks in this space.  Do it right or don't do it at all.
-> > >
-> >
-> > We can drop this patch, and bring back the previous patch that fixes up
-> > shadow stack and ibt.  That makes vsyscall emulation work correctly, and
-> > does not force the application to do anything different from what is
-> > working now.  I will post the previous patch as a reply to this thread
-> > so that people can make comments on it.
-> >
-> > Yu-cheng
->
-> Here is the patch:
->
-> ------
->
-> From dfdee39c795ee5dcee2c77f6ba344a61f4d8124b Mon Sep 17 00:00:00 2001
-> From: Yu-cheng Yu <yu-cheng.yu@intel.com>
-> Date: Thu, 29 Nov 2018 14:15:38 -0800
-> Subject: [PATCH 34/43] x86/vsyscall/64: Fixup Shadow Stack and Indirect Branch
->  Tracking for vsyscall emulation
->
-> Vsyscall entry points are effectively branch targets.  Mark them with
-> ENDBR64 opcodes.  When emulating the RET instruction, unwind the shadow
-> stack and reset IBT state machine.
->
-> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+On Mon, 24 Aug 2020, Alex Shi wrote:
+
+> Currently, compaction would get the lru_lock and then do page isolation
+> which works fine with pgdat->lru_lock, since any page isoltion would
+> compete for the lru_lock. If we want to change to memcg lru_lock, we
+> have to isolate the page before getting lru_lock, thus isoltion would
+> block page's memcg change which relay on page isoltion too. Then we
+> could safely use per memcg lru_lock later.
+> 
+> The new page isolation use previous introduced TestClearPageLRU() +
+> pgdat lru locking which will be changed to memcg lru lock later.
+> 
+> Hugh Dickins <hughd@google.com> fixed following bugs in this patch's
+> early version:
+> 
+> Fix lots of crashes under compaction load: isolate_migratepages_block()
+> must clean up appropriately when rejecting a page, setting PageLRU again
+> if it had been cleared; and a put_page() after get_page_unless_zero()
+> cannot safely be done while holding locked_lruvec - it may turn out to
+> be the final put_page(), which will take an lruvec lock when PageLRU.
+> And move __isolate_lru_page_prepare back after get_page_unless_zero to
+> make trylock_page() safe:
+> trylock_page() is not safe to use at this time: its setting PG_locked
+> can race with the page being freed or allocated ("Bad page"), and can
+> also erase flags being set by one of those "sole owners" of a freshly
+> allocated page who use non-atomic __SetPageFlag().
+> 
+> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+> Signed-off-by: Hugh Dickins <hughd@google.com>
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+
+Okay, whatever. I was about to say
+Acked-by: Hugh Dickins <hughd@google.com>
+With my signed-off-by there, someone will ask if it should say
+"From: Hugh ..." at the top: no, it should not, this is Alex's patch,
+but I proposed some fixes to it, as you already acknowledged.
+
+A couple of comments below on the mm/vmscan.c part of it.
+
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-mm@kvack.org
 > ---
->  arch/x86/entry/vsyscall/vsyscall_64.c     | 29 +++++++++++++++++++++++
->  arch/x86/entry/vsyscall/vsyscall_emu_64.S |  9 +++++++
->  arch/x86/entry/vsyscall/vsyscall_trace.h  |  1 +
->  3 files changed, 39 insertions(+)
->
-> diff --git a/arch/x86/entry/vsyscall/vsyscall_64.c
-> b/arch/x86/entry/vsyscall/vsyscall_64.c
-> index 44c33103a955..0131c9f7f9c5 100644
-> --- a/arch/x86/entry/vsyscall/vsyscall_64.c
-> +++ b/arch/x86/entry/vsyscall/vsyscall_64.c
-> @@ -38,6 +38,9 @@
->  #include <asm/fixmap.h>
->  #include <asm/traps.h>
->  #include <asm/paravirt.h>
-> +#include <asm/fpu/xstate.h>
-> +#include <asm/fpu/types.h>
-> +#include <asm/fpu/internal.h>
->
->  #define CREATE_TRACE_POINTS
->  #include "vsyscall_trace.h"
-> @@ -286,6 +289,32 @@ bool emulate_vsyscall(unsigned long error_code,
->         /* Emulate a ret instruction. */
->         regs->ip = caller;
->         regs->sp += 8;
+>  include/linux/swap.h |  2 +-
+>  mm/compaction.c      | 42 +++++++++++++++++++++++++++++++++---------
+>  mm/vmscan.c          | 46 ++++++++++++++++++++++++++--------------------
+>  3 files changed, 60 insertions(+), 30 deletions(-)
+> 
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index 43e6b3458f58..550fdfdc3506 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -357,7 +357,7 @@ extern void lru_cache_add_inactive_or_unevictable(struct page *page,
+>  extern unsigned long zone_reclaimable_pages(struct zone *zone);
+>  extern unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
+>  					gfp_t gfp_mask, nodemask_t *mask);
+> -extern int __isolate_lru_page(struct page *page, isolate_mode_t mode);
+> +extern int __isolate_lru_page_prepare(struct page *page, isolate_mode_t mode);
+>  extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+>  						  unsigned long nr_pages,
+>  						  gfp_t gfp_mask,
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index 4e2c66869041..253382d99969 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -887,6 +887,7 @@ static bool too_many_isolated(pg_data_t *pgdat)
+>  		if (!valid_page && IS_ALIGNED(low_pfn, pageblock_nr_pages)) {
+>  			if (!cc->ignore_skip_hint && get_pageblock_skip(page)) {
+>  				low_pfn = end_pfn;
+> +				page = NULL;
+>  				goto isolate_abort;
+>  			}
+>  			valid_page = page;
+> @@ -968,6 +969,21 @@ static bool too_many_isolated(pg_data_t *pgdat)
+>  		if (!(cc->gfp_mask & __GFP_FS) && page_mapping(page))
+>  			goto isolate_fail;
+>  
+> +		/*
+> +		 * Be careful not to clear PageLRU until after we're
+> +		 * sure the page is not being freed elsewhere -- the
+> +		 * page release code relies on it.
+> +		 */
+> +		if (unlikely(!get_page_unless_zero(page)))
+> +			goto isolate_fail;
 > +
-> +       if (current->thread.cet.shstk_size ||
-> +           current->thread.cet.ibt_enabled) {
-> +               u64 r;
+> +		if (__isolate_lru_page_prepare(page, isolate_mode) != 0)
+> +			goto isolate_fail_put;
 > +
-> +               fpregs_lock();
-> +               if (test_thread_flag(TIF_NEED_FPU_LOAD))
-> +                       __fpregs_load_activate();
-
-Wouldn't this be nicer if you operated on the memory image, not the registers?
-
+> +		/* Try isolate the page */
+> +		if (!TestClearPageLRU(page))
+> +			goto isolate_fail_put;
 > +
-> +#ifdef CONFIG_X86_INTEL_BRANCH_TRACKING_USER
-> +               /* Fixup branch tracking */
-> +               if (current->thread.cet.ibt_enabled) {
-> +                       rdmsrl(MSR_IA32_U_CET, r);
-> +                       wrmsrl(MSR_IA32_U_CET, r & ~CET_WAIT_ENDBR);
-> +               }
-> +#endif
-
-Seems reasonable on first glance.
-
+>  		/* If we already hold the lock, we can skip some rechecking */
+>  		if (!locked) {
+>  			locked = compact_lock_irqsave(&pgdat->lru_lock,
+> @@ -980,10 +996,6 @@ static bool too_many_isolated(pg_data_t *pgdat)
+>  					goto isolate_abort;
+>  			}
+>  
+> -			/* Recheck PageLRU and PageCompound under lock */
+> -			if (!PageLRU(page))
+> -				goto isolate_fail;
+> -
+>  			/*
+>  			 * Page become compound since the non-locked check,
+>  			 * and it's on LRU. It can only be a THP so the order
+> @@ -991,16 +1003,13 @@ static bool too_many_isolated(pg_data_t *pgdat)
+>  			 */
+>  			if (unlikely(PageCompound(page) && !cc->alloc_contig)) {
+>  				low_pfn += compound_nr(page) - 1;
+> -				goto isolate_fail;
+> +				SetPageLRU(page);
+> +				goto isolate_fail_put;
+>  			}
+>  		}
+>  
+>  		lruvec = mem_cgroup_page_lruvec(page, pgdat);
+>  
+> -		/* Try isolate the page */
+> -		if (__isolate_lru_page(page, isolate_mode) != 0)
+> -			goto isolate_fail;
+> -
+>  		/* The whole page is taken off the LRU; skip the tail pages. */
+>  		if (PageCompound(page))
+>  			low_pfn += compound_nr(page) - 1;
+> @@ -1029,6 +1038,15 @@ static bool too_many_isolated(pg_data_t *pgdat)
+>  		}
+>  
+>  		continue;
 > +
-> +#ifdef CONFIG_X86_INTEL_SHADOW_STACK_USER
-> +               /* Unwind shadow stack. */
-> +               if (current->thread.cet.shstk_size) {
-> +                       rdmsrl(MSR_IA32_PL3_SSP, r);
-> +                       wrmsrl(MSR_IA32_PL3_SSP, r + 8);
-> +               }
-> +#endif
+> +isolate_fail_put:
+> +		/* Avoid potential deadlock in freeing page under lru_lock */
+> +		if (locked) {
+> +			spin_unlock_irqrestore(&pgdat->lru_lock, flags);
+> +			locked = false;
+> +		}
+> +		put_page(page);
+> +
+>  isolate_fail:
+>  		if (!skip_on_failure)
+>  			continue;
+> @@ -1065,9 +1083,15 @@ static bool too_many_isolated(pg_data_t *pgdat)
+>  	if (unlikely(low_pfn > end_pfn))
+>  		low_pfn = end_pfn;
+>  
+> +	page = NULL;
+> +
+>  isolate_abort:
+>  	if (locked)
+>  		spin_unlock_irqrestore(&pgdat->lru_lock, flags);
+> +	if (page) {
+> +		SetPageLRU(page);
+> +		put_page(page);
+> +	}
+>  
+>  	/*
+>  	 * Updated the cached scanner pfn once the pageblock has been scanned
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 1b3e0eeaad64..48b50695f883 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -1538,20 +1538,20 @@ unsigned int reclaim_clean_pages_from_list(struct zone *zone,
+>   *
+>   * returns 0 on success, -ve errno on failure.
+>   */
+> -int __isolate_lru_page(struct page *page, isolate_mode_t mode)
+> +int __isolate_lru_page_prepare(struct page *page, isolate_mode_t mode)
+>  {
+>  	int ret = -EINVAL;
+>  
+> -	/* Only take pages on the LRU. */
+> -	if (!PageLRU(page))
+> -		return ret;
+> -
+>  	/* Compaction should not handle unevictable pages but CMA can do so */
+>  	if (PageUnevictable(page) && !(mode & ISOLATE_UNEVICTABLE))
+>  		return ret;
+>  
+>  	ret = -EBUSY;
+>  
+> +	/* Only take pages on the LRU. */
+> +	if (!PageLRU(page))
+> +		return ret;
+> +
 
-What happens if the result is noncanonical?  A quick skim of the SDM
-didn't find anything.  This latter issue goes away if you operate on
-the memory image, though -- writing a bogus value is just fine, since
-the FP restore will handle it.
+So here you do deal with that BUG() issue.  But I'd prefer you to leave
+it as I suggested in 16/32, just start with "int ret = -EBUSY;" and
+don't rearrange the checks here at all.  I say that partly because
+the !PageLRU check is very important (when called for compaction), and
+the easier it is to find (at the very start), the less anxious I get!
+
+>  	/*
+>  	 * To minimise LRU disruption, the caller can indicate that it only
+>  	 * wants to isolate pages it will be able to operate on without
+> @@ -1592,20 +1592,9 @@ int __isolate_lru_page(struct page *page, isolate_mode_t mode)
+>  	if ((mode & ISOLATE_UNMAPPED) && page_mapped(page))
+>  		return ret;
+>  
+> -	if (likely(get_page_unless_zero(page))) {
+> -		/*
+> -		 * Be careful not to clear PageLRU until after we're
+> -		 * sure the page is not being freed elsewhere -- the
+> -		 * page release code relies on it.
+> -		 */
+> -		ClearPageLRU(page);
+> -		ret = 0;
+> -	}
+> -
+> -	return ret;
+> +	return 0;
+>  }
+>  
+> -
+>  /*
+>   * Update LRU sizes after isolating pages. The LRU size updates must
+>   * be complete before mem_cgroup_update_lru_size due to a sanity check.
+> @@ -1685,17 +1674,34 @@ static unsigned long isolate_lru_pages(unsigned long nr_to_scan,
+>  		 * only when the page is being freed somewhere else.
+>  		 */
+>  		scan += nr_pages;
+> -		switch (__isolate_lru_page(page, mode)) {
+> +		switch (__isolate_lru_page_prepare(page, mode)) {
+>  		case 0:
+> +			/*
+> +			 * Be careful not to clear PageLRU until after we're
+> +			 * sure the page is not being freed elsewhere -- the
+> +			 * page release code relies on it.
+> +			 */
+> +			if (unlikely(!get_page_unless_zero(page)))
+> +				goto busy;
+> +
+> +			if (!TestClearPageLRU(page)) {
+> +				/*
+> +				 * This page may in other isolation path,
+> +				 * but we still hold lru_lock.
+> +				 */
+> +				put_page(page);
+> +				goto busy;
+> +			}
+> +
+>  			nr_taken += nr_pages;
+>  			nr_zone_taken[page_zonenum(page)] += nr_pages;
+>  			list_move(&page->lru, dst);
+>  			break;
+> -
+> +busy:
+>  		case -EBUSY:
+
+It's a long time since I read a C manual. I had to try that out in a
+little test program: and it does seem to do the right thing.  Maybe
+I'm just very ignorant, and everybody else finds that natural: but I'd
+feel more comfortable with the busy label on the line after the
+"case -EBUSY:" - wouldn't you?
+
+You could, of course, change that "case -EBUSY" to "default",
+and delete the "default: BUG();" that follows: whatever you prefer.
+
+>  			/* else it is being freed elsewhere */
+>  			list_move(&page->lru, src);
+> -			continue;
+> +			break;
+
+Aha. Yes, I like that change, I'm not going to throw a tantrum,
+accusing you of sneaking in unrelated changes etc. You made me look
+back at the history: it was "continue" from back in the days of
+lumpy reclaim, when there was stuff after the switch statement
+which needed to be skipped in the -EBUSY case.  "break" looks
+more natural to me now.
+
+>  
+>  		default:
+>  			BUG();
+> -- 
+> 1.8.3.1
