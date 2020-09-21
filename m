@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A3122724CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:11:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 034422724D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727458AbgIUNKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:10:55 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:43170 "EHLO huawei.com"
+        id S1727608AbgIUNLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:11:45 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:43260 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727426AbgIUNKp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:10:45 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id EA8FCE349BEBA8CD73F2;
-        Mon, 21 Sep 2020 21:10:42 +0800 (CST)
+        id S1727444AbgIUNKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:10:51 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id BCADCAD5ED1DF002F2BF;
+        Mon, 21 Sep 2020 21:10:47 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 21 Sep 2020 21:10:35 +0800
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 21 Sep 2020 21:10:37 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Joshua Morris <josh.h.morris@us.ibm.com>,
-        Philip Kelleher <pjk1939@linux.ibm.com>,
-        Jens Axboe <axboe@kernel.dk>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+To:     Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+CC:     <linux-s390@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         "Qinglang Miao" <miaoqinglang@huawei.com>
-Subject: [PATCH -next] rsxx: simplify the return expression of rsxx_save_config()
-Date:   Mon, 21 Sep 2020 21:10:59 +0800
-Message-ID: <20200921131059.92987-1-miaoqinglang@huawei.com>
+Subject: [PATCH -next] s390/3215: simplify the return expression of tty3215_open()
+Date:   Mon, 21 Sep 2020 21:11:01 +0800
+Message-ID: <20200921131101.93037-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -40,34 +40,34 @@ Simplify the return expression.
 
 Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- drivers/block/rsxx/config.c | 7 +------
+ drivers/s390/char/con3215.c | 7 +------
  1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/block/rsxx/config.c b/drivers/block/rsxx/config.c
-index 11ed1d964..c6de88186 100644
---- a/drivers/block/rsxx/config.c
-+++ b/drivers/block/rsxx/config.c
-@@ -84,7 +84,6 @@ static void config_data_cpu_to_le(struct rsxx_card_cfg *cfg)
- static int rsxx_save_config(struct rsxx_cardinfo *card)
+diff --git a/drivers/s390/char/con3215.c b/drivers/s390/char/con3215.c
+index 92757f9bd..d8acabbb1 100644
+--- a/drivers/s390/char/con3215.c
++++ b/drivers/s390/char/con3215.c
+@@ -978,7 +978,6 @@ static int tty3215_install(struct tty_driver *driver, struct tty_struct *tty)
+ static int tty3215_open(struct tty_struct *tty, struct file * filp)
  {
- 	struct rsxx_card_cfg cfg;
--	int st;
+ 	struct raw3215_info *raw = tty->driver_data;
+-	int retval;
  
- 	memcpy(&cfg, &card->config, sizeof(cfg));
+ 	tty_port_tty_set(&raw->port, tty);
  
-@@ -107,11 +106,7 @@ static int rsxx_save_config(struct rsxx_cardinfo *card)
- 	config_data_swab(&cfg);
- 	config_hdr_cpu_to_be(&cfg.hdr);
- 
--	st = rsxx_creg_write(card, CREG_ADD_CONFIG, sizeof(cfg), &cfg, 1);
--	if (st)
--		return st;
+@@ -986,11 +985,7 @@ static int tty3215_open(struct tty_struct *tty, struct file * filp)
+ 	/*
+ 	 * Start up 3215 device
+ 	 */
+-	retval = raw3215_startup(raw);
+-	if (retval)
+-		return retval;
 -
 -	return 0;
-+	return rsxx_creg_write(card, CREG_ADD_CONFIG, sizeof(cfg), &cfg, 1);
++	return raw3215_startup(raw);
  }
  
- int rsxx_load_config(struct rsxx_cardinfo *card)
+ /*
 -- 
 2.23.0
 
