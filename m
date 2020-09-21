@@ -2,249 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DFC7271DDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4781C271DE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:26:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726541AbgIUIZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 04:25:23 -0400
-Received: from mail-eopbgr80059.outbound.protection.outlook.com ([40.107.8.59]:53379
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726416AbgIUIZX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 04:25:23 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jM3UPGchfu04kEpzndK7Hhpey12xTdk+lUco+nld24EP3ucrUJvh3Cd9qhzPx6At56Y4PsXU/gFL5T3U5Rv8RLH8MGaCDu4Rh0Y39gxXW8i/dDV4kbSvNQkiL2GMs1uEBn85TPBU5Una5j8fg78yKukOYcivhuS5LSTaJ1IlzsJ1dBA9MXIor6aDCtjLODMo4ERDyR5wY/bHv8LJsHzc+gkqroqpKeUscN2+f2qATyrs/hogWPxVCivc7XjO74D4jFWtI4DMN9Na1URLnfFITRk51xb8Y/iGoCg2VW/BZWdT6nqco/3FoVY5Cr2+8pBXSDfk6jt095E1/EfaMjOs4A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9YLCSH+fx+UuIDsHytbS1FIG25qFesTYvscAgzZOHNI=;
- b=By7YyXdu9Ei4wPxEcBUt6A9NUNYeEp99Ouxs+M/4Pkl1BIjmmQ90/ZofiV5L6XWTOA3WGPjKn0Ie7DBIdxLkcRVKsqkFzWP8ClpvtybI2rIDU44Q7om+6QAb7oSM1moXnjJWejYuuZb3d/BTbgLE1YqSiI3KQdNoGZH0uTeZV3Y7cTitH3i8Ws+E8FHZlE03pFttK3sc+mjMooiiG+ofEQD3yv8Bo/VeSnuhdapwpoZInad0BnR2hHDdGmz8Dp8GqiAbGj2RMKCw3zlwxmUFXuZVbDBPm7Kgrh7AlzQVKM1zTX7hgQXbfoXiaE4hOJmioDCGqEt6Xj3gozKunhjnWA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9YLCSH+fx+UuIDsHytbS1FIG25qFesTYvscAgzZOHNI=;
- b=aDVfxA4qMDigFqX9HwjGu5sOs9mAKplyTES8LhgpDYPY9Vb0dsffelCNkItFxDOS5ZfrjqrIL+9Aua8bGG2jxo7Fwbuglpvoq5wO3isPfKbKBMxlNSPJwHyiFJY7LKDCWfRRClpZfnlC6CfWxePm5BkIWnd2+XKKxUw7f6HQfgM=
-Received: from VE1PR04MB6638.eurprd04.prod.outlook.com (2603:10a6:803:119::15)
- by VI1PR04MB6944.eurprd04.prod.outlook.com (2603:10a6:803:133::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14; Mon, 21 Sep
- 2020 08:25:18 +0000
-Received: from VE1PR04MB6638.eurprd04.prod.outlook.com
- ([fe80::ad7f:d95a:5413:a950]) by VE1PR04MB6638.eurprd04.prod.outlook.com
- ([fe80::ad7f:d95a:5413:a950%3]) with mapi id 15.20.3391.017; Mon, 21 Sep 2020
- 08:25:18 +0000
-From:   Robin Gong <yibin.gong@nxp.com>
-To:     Marco Felsch <m.felsch@pengutronix.de>
-CC:     "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "will.deacon@arm.com" <will.deacon@arm.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "martin.fuzzey@flowbird.group" <martin.fuzzey@flowbird.group>,
-        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "matthias.schiffer@ew.tq-group.com" 
-        <matthias.schiffer@ew.tq-group.com>,
-        "frieder.schrempf@kontron.de" <frieder.schrempf@kontron.de>,
-        "r.schwebel@pengutronix.de" <r.schwebel@pengutronix.de>,
-        "Benjamin.Bara@skidata.com" <Benjamin.Bara@skidata.com>,
-        "Richard.Leitner@skidata.com" <Richard.Leitner@skidata.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: RE: [PATCH v13 00/12] add ecspi ERR009165 for i.mx6/7 soc family
-Thread-Topic: [PATCH v13 00/12] add ecspi ERR009165 for i.mx6/7 soc family
-Thread-Index: AQHWf2tkimfqSdG8kEGKEyob2MpDZaljtaAAgA8dHUA=
-Date:   Mon, 21 Sep 2020 08:25:16 +0000
-Message-ID: <VE1PR04MB66387B8FEBBC937CE0A1AC24893A0@VE1PR04MB6638.eurprd04.prod.outlook.com>
-References: <1598889805-30399-1-git-send-email-yibin.gong@nxp.com>
- <20200911164018.6treqdmywzjhqe3a@pengutronix.de>
-In-Reply-To: <20200911164018.6treqdmywzjhqe3a@pengutronix.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: pengutronix.de; dkim=none (message not signed)
- header.d=none;pengutronix.de; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.67]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: cba8acb2-8acd-45f3-82fb-08d85e07df91
-x-ms-traffictypediagnostic: VI1PR04MB6944:
-x-ld-processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR04MB6944D249F8827639BD2E9DAB893A0@VI1PR04MB6944.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1360;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: pRYfi+3WPpK1DK0C+AJgtvPvVOuISMvNZnBLGZYDL+TEqTcWIZl28d6+RD9yV4t+L3MficmjoevTrdEbx8wA91YZXIdAN2goukjawQyepnwRzc25ESl1ZVlkI18Fuum/WCWRiPCNGxqYgQK72JYUKkAaiufYdz7nyGX4S341wzDKCbZhKcx+BJDFwEyxFq46Qb2Loo9+AH/JLtv/scVF9wt1lQyord2X2FLhwn4YIEk0pCTzDbTwIEf3WyRZkBQTB9vCI3qEv9d9CJCzcp4gxt+PhhBRWNmch40Kexq1aWVovAEmNpem3loWOjyyFEMK0V84X3I9F3vU3wKpAcIEG5Z0p0Wc1CBuoE4/vkIOYH4=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6638.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(136003)(346002)(396003)(376002)(7416002)(8676002)(54906003)(478600001)(7696005)(966005)(316002)(66476007)(66556008)(64756008)(86362001)(2906002)(76116006)(6916009)(53546011)(66446008)(6506007)(45080400002)(66946007)(55016002)(71200400001)(52536014)(9686003)(33656002)(26005)(5660300002)(8936002)(186003)(4326008)(83380400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: pxVLiZiyHfouNUcYj7+a1Q4iulOnyCTIKGgxGtpw8/x5DmzDD5ojZ9xxwv0/07TXmHQ8M8Q5XYUC8wkNlIRdV7yvij5nw/YYJt9aYIGnidM3JY/3s0rg8bIHDcJzlnVC1Dh33CQLXpJbiJCewQ4R2mAm2Ra4RGCEnzoGnA+5P3wKodBaU8Ab2jAMCBSOnzv/LceHsdhXmbn//kijBz+JxhmCeC77SIX7yy5HXdM/Qb7yiyH+G4sipuxUf4qBbVGPaxc9jeJcy1F10gu3N1ew0hAqkJx6Jq3YALL00WdJ5x7qp/fV2hTFwccOSxuq4K6Pt7x5tzfzxlKDujl4wk3TbOeg/Yr5/qytkHj46ZBsSRZADBzrml6aVKrstuYqL9TK+Rq6qlxImyD2dBiv3spC87yyXs7glq0oR5uJx3de0WgbtUU2z5gC0DLiarRwvnbsYBecK15jgp/02H9Eq2QEvVL9pv+esV1Xb+tMYYf1dntT8Kj9UWssmBRMpAINOdK+khZNB4bhKTtJGXsRa53TtmZQNhBlpQJcgmrU+WOnLdhWPr3xxstabPEFuyyqNvmou5Yc4kCIFooq0Pg+ueKoaRaOZ3EYd2HEEqzsl+HjaTBY+D4IyHtX+ZFSxI2EavtpAwuH+OgjTwVHr5aefUKO9g==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726550AbgIUI0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 04:26:13 -0400
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:41029 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726318AbgIUI0N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 04:26:13 -0400
+Received: from dread.disaster.area (pa49-195-191-192.pa.nsw.optusnet.com.au [49.195.191.192])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 3400982635B;
+        Mon, 21 Sep 2020 18:26:01 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1kKH96-0006yw-7S; Mon, 21 Sep 2020 18:26:00 +1000
+Date:   Mon, 21 Sep 2020 18:26:00 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Theodore Tso <tytso@mit.edu>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Qiuyang Sun <sunqiuyang@huawei.com>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, nborisov@suse.de
+Subject: Re: More filesystem need this fix (xfs: use MMAPLOCK around
+ filemap_map_pages())
+Message-ID: <20200921082600.GO12131@dread.disaster.area>
+References: <20200623052059.1893966-1-david@fromorbit.com>
+ <CAOQ4uxh0dnVXJ9g+5jb3q72RQYYqTLPW_uBqHPKn6AJZ2DNPOQ@mail.gmail.com>
+ <20200916155851.GA1572@quack2.suse.cz>
+ <20200917014454.GZ12131@dread.disaster.area>
+ <alpine.LSU.2.11.2009161853220.2087@eggly.anvils>
+ <20200917064532.GI12131@dread.disaster.area>
+ <alpine.LSU.2.11.2009170017590.8077@eggly.anvils>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6638.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cba8acb2-8acd-45f3-82fb-08d85e07df91
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Sep 2020 08:25:16.5621
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yrooecPYo5u8wfdUnZ9g/kH4VAByXTj1mqqwA/yyWEEjmO2xxTweKcnQxfTeG25goXhUz+HEvKDQiwF6GZ4vWQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6944
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.11.2009170017590.8077@eggly.anvils>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=esqhMbhX c=1 sm=1 tr=0 cx=a_idp_d
+        a=vvDRHhr1aDYKXl+H6jx2TA==:117 a=vvDRHhr1aDYKXl+H6jx2TA==:17
+        a=kj9zAlcOel0A:10 a=reM5J-MqmosA:10 a=7-415B0cAAAA:8
+        a=Rl2tvrQ78qD9MlTf7ZcA:9 a=0JP9OAGvzaOLfl4_:21 a=MdB2K0HZLmbF2jdA:21
+        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/09/12 0:40 Marco Felsch <m.felsch@pengutronix.de> wrote:
-> Hi Robin,
->=20
-> I took your patches and did a few test on the mainline available
-> fsl,imx6q-sabrelite. I used a vanilla linux version v5.9-rc1 for all my t=
-ests except
-> the needed SPI-NOR patches [1]. Following are my results:
-Marco, thanks for your test :)
+On Thu, Sep 17, 2020 at 12:47:10AM -0700, Hugh Dickins wrote:
+> On Thu, 17 Sep 2020, Dave Chinner wrote:
+> > On Wed, Sep 16, 2020 at 07:04:46PM -0700, Hugh Dickins wrote:
+> > > On Thu, 17 Sep 2020, Dave Chinner wrote:
+> > > > 					<pte now points to a freed page>
+> > > 
+> > > No.  filemap_map_pages() checks page->mapping after trylock_page(),
+> > > before setting up the pte; and truncate_cleanup_page() does a one-page
+> > > unmap_mapping_range() if page_mapped(), while holding page lock.
+> > 
+> > Ok, fair, I missed that.
+> > 
+> > So why does truncate_pagecache() talk about fault races and require
+> > a second unmap range after the invalidation "for correctness" if
+> > this sort of race cannot happen?
+> 
+> I thought the comment
+> 	 * unmap_mapping_range is called twice, first simply for
+> 	 * efficiency so that truncate_inode_pages does fewer
+> 	 * single-page unmaps.  However after this first call, and
+> 	 * before truncate_inode_pages finishes, it is possible for
+> 	 * private pages to be COWed, which remain after
+> 	 * truncate_inode_pages finishes, hence the second
+> 	 * unmap_mapping_range call must be made for correctness.
+> explains it fairly well.
 
->=20
-> Testcase 1: "Using ROM-FW"
-> =3D=3D=3D
-> [OK] Playing Audio (SSI)
-> [OK] TX/RX bytes on a different UART (not the serial used for
->      interaction)
-> [OK] Writing to the SPI-NOR
-> [OK] Doing all at the same time (once for TX and once for RX on UART)
->=20
-> Notes:
-> - Your Patches adding a maybe noise message "sdma firmware not ready".
->   Maybe we should consider about that if it should be a warning or a info=
-.
-That means the script you're using is ram script which may not be loaded as=
- your
-case. That should be a warning I think, to avoid too much noise I have refi=
-ne it
-to dev_warn_once.
+Not to me. It explains what the code is doing, and the why is simply
+"correctness".
 
->=20
-> - For spi-nor I did run this test:
->   dd if=3D/dev/urandom of=3D/var/tmp/test1M bs=3D1M count=3D1 && \
->   flashcp -v /var/tmp/test1M /dev/mtd2
->=20
->   and checked /proc/interrupts:
->   25:    2107169          0          0          0       GPC  31
-> Level	2008000.spi
->=20
-> Testcase 2: "Using new FW from linux-firmware"
-> =3D=3D=3D
-> [OK] Playing Audio (SSI)
-> [OK] TX/RX bytes on a different UART (not the serial used for
->      interaction)
-> [OK] Writing to the SPI-NOR
-> [OK] Doing all at the same time (once for TX and once for RX on UART)
->=20
-> Notes:
-> - For spi-nor I did run this test:
->   dd if=3D/dev/urandom of=3D/var/tmp/test1M bs=3D1M count=3D1 && \
->   flashcp -v /var/tmp/test1M /dev/mtd2
->=20
->   and checked /proc/interrupts:
->   25:    2107993          0          0          0       GPC  31
-> Level	2008000.spi
->=20
->   I saw no SDMA interrupts during this testcase instead I saw only spi
->   controller interrupts.
-That's not expected. But I have tried just now and show that SDMA interrupt
-caught by spi as belows. Are you sure sdma firmware loaded indeed?
+I have no idea what "correctness" actually means in this context
+because there is no reference to what correct behaviour should be.
+Nor do I have any idea why COW faults might behave differently to a
+normal read/write page fault...
 
-./spidev_test -D /dev/spidev0.0 -s 1200000 -b 8 -S 512 -I 1 -l 8 -S 512 -I
-spi mode: 0x24
-bits per word: 8
-max speed: 1200000 Hz (1200 kHz)
-total: tx 0.5KB, rx 0.5KB
-root@imx6qpdlsolox:~# cat /proc/interrupts | grep dma
- 58:          2          0       GPC   2 Level     sdma=20
+> It's because POSIX demanded that when a file
+> is truncated, the user will get SIGBUS on trying to access even the
+> COWed pages beyond EOF in a MAP_PRIVATE mapping.  Page lock on the
+> cache page does not serialize the pages COWed from it very well.
 
+And there's the "why". I don't find the "page lock doesn't
+serialise COW faults very well" particularly reassuring in this
+case....
 
->=20
-> - According linux-firmware you did a version bump from 3.5 to 4.5 but my
->   dmesg shows:
->   imx-sdma 20ec000.sdma: loaded firmware 3.5
-3.x is used for i.mx6 family while 4.x is used for i.mx7/8 since there are =
-some
-change on ROM which depended by RAM script. Not means version bump
-between 3.5/4.5. 3.5 is correct on i.mx6q.=20
+> But there's no such SIGBUS requirement in the case of hole-punching,
+> and trying to unmap those pages racily instantiated just after the
+> punching cursor passed, would probably do more harm than good.
 
->=20
-> SPI Benchmark:
-> =3D=3D=3D
-> flash_erase /dev/mtd2 0 0 && \
-> 	dd if=3D/dev/urandom of=3D/dev/mtd2 bs=3D1M count=3D1
->=20
-> - without firmware (ROM-FW)
->   1048576 bytes (1.0 MB, 1.0 MiB) copied, 51.9713 s, 20.2 kB/s
->=20
-> - with firmware
->   1048576 bytes (1.0 MB, 1.0 MiB) copied, 59.4174 s, 17.6 kB/s
->=20
-> Conclusion:
-> =3D=3D=3D
-> It seems that we don't have any performance boost with your patchset inst=
-ead
-> we are increasing the complexity and the interrupts...
-Yes, that's expected. What ERR009165 fix is data correct on spi bus though
-that bring performance drop in dma mode, because the workaround just let
-sdma do similar thing as cpu (PIO), while cpu running faster than sdma. If =
-you
-care much spi performance, PIO is better way. If care cpu loading, dma way
-is better.=20
+There isn't a SIGBUS requirement for fallocate operations, just a
+"don't expose stale data to userspace" requirement.
 
->=20
-> Pls let me know if I did something wrong during testing or if my test set=
-up was
-> wrong. Note: the /dev/mtd2 isn't mainlined yet but if you use barebox you=
- only
-> have to add:
-> 8<---------------------------------------------------------------------
-> diff --git a/arch/arm/dts/imx6qdl-sabrelite.dtsi
-> b/arch/arm/dts/imx6qdl-sabrelite.dtsi
-> index ec3d364bde..256dd90a0f 100644
-> --- a/arch/arm/dts/imx6qdl-sabrelite.dtsi
-> +++ b/arch/arm/dts/imx6qdl-sabrelite.dtsi
-> @@ -38,6 +38,11 @@
->  		label =3D "barebox-environment";
->  		reg =3D <0xe0000 0x20000>;
->  	};
-> +
-> +	parition@100000 {
-> +		label =3D "user-partition";
-> +		reg =3D <0x100000 0x100000>;
-> +	};
->  };
->=20
->  &ocotp {
-> 8<---------------------------------------------------------------------
-> to the barebox device tree.
->=20
-> [1]
-> https://eur01.safelinks.protection.outlook.com/?url=3Dhttp%3A%2F%2Flists.=
-infra
-> dead.org%2Fpipermail%2Flinux-mtd%2F2020-September%2F082099.html&am
-> p;data=3D02%7C01%7Cyibin.gong%40nxp.com%7C324d4b5c2f2344883a3108d85
-> 67166f9%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C1%7C63735439234
-> 6471210&amp;sdata=3Dru8fKz6wpDhzYeaHIT28T0OybHlCFHJ41N1lJYuqKgE%3D&
-> amp;reserved=3D0
->=20
-> Regards,
->   Marco
+FWIW, how does a COW fault even work with file backed pages? We can
+only have a single page attached to the inode address space for a given
+offset, so if there's been a COW fault and a new page faulted in for
+the write fault in that VMA, doesn't that imply the user data then
+written to that page is never going to be written back to storage
+because the COW page is not tracked by the inode address space?
+
+> > Why is that different to truncate_pagecache_range() which -doesn't-i
+> > do that second removal? It's called for more than just hole_punch -
+> > from the filesystem's persepective holepunch should do exactly the
+> > same as truncate to the page cache, and for things like
+> > COLLAPSE_RANGE it is absolutely essential because the data in that
+> > range is -not zero- and will be stale if the mappings are not
+> > invalidated completely....
+> 
+> I can't speak to COLLAPSE_RANGE.
+
+It moves data around, doesn't replace data with zeros. Hence the
+contents of any page that isn't invalidated entirely by
+truncate_pagecache_range() is now entirely incorrect...
+
+> > Also, if page->mapping == NULL is sufficient to detect an invalidated
+> > page in all cases, then why does page_cache_delete() explicitly
+> > leave page->index intact:
+> > 
+> > 	page->mapping = NULL;
+> > 	/* Leave page->index set: truncation lookup relies upon it */
+> 
+> Because there was, and I think still is (but might it now be xarrayed
+> away?), code (mainly in mm/truncate.c) which finds it convenient to
+> check page->index for end of range, without necessitating the overhead
+> of getting page lock.  I've no doubt it's an (minor) optimization that
+> could be discarded if there were ever a need to invalidate page->index
+> when deleting; but nobody has required that yet.
+
+And that's exactly my concern w.r.t. fallocate based invalidation:
+checking the page is beyond EOF without locking the page or checking
+the mapping does not detect pages invalidated by hole punching and
+other fallocate() operations because page->index on the invalidated
+pages is never beyond EOF....
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
