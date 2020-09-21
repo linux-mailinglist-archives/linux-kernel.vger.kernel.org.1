@@ -2,46 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 457F1272D07
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AFF8272D5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728459AbgIUQgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:36:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36662 "EHLO mail.kernel.org"
+        id S1729288AbgIUQjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:39:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727248AbgIUQgo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:36:44 -0400
+        id S1729279AbgIUQjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:39:33 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC496206B7;
-        Mon, 21 Sep 2020 16:36:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4ED65206DC;
+        Mon, 21 Sep 2020 16:39:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706204;
-        bh=+ZNFsCH5R9zar9SM9C5+IV8IJqrC7C+DBmo6Wye+BkE=;
+        s=default; t=1600706372;
+        bh=a8FIL44GDurr+687Ha2e2Ma98fqZA7yHRGY+R4Ty8Ac=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hsiNEZh0xyaR8Aczq0kEbgxWwDd03EXOsjpXiLNN7KzDuNHT2ocwVE64o04fBxrM7
-         RacdGzxduRG0ozhVXmbSSo1UJurMSr00m9xe8QNOzzdtiOfplvLgDxXsp2Y+bN3yvE
-         FDFMxZJHpQRvELJNcvdvp5lgegj97ukVYL/XVB/Y=
+        b=ud2cIXSEf3DNiplt9+NZWV+Dq/sUl1ASzV0zFClKnmC0WHDLc7VhDc6jO7ZvDzJg7
+         XsKqXUTILwyAKBJ+SNo5xzFiUE0zwmfr+H/tolVPE7pX8kZUb8UZ/I4pf47JW1ak8J
+         tTUsNQZLn8DsMizaS6nKdXvWFM/ZFDFWgrlx2TNY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Namhyung Kim <namhyung@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 59/70] perf test: Free formats for perf pmu parse test
-Date:   Mon, 21 Sep 2020 18:27:59 +0200
-Message-Id: <20200921162037.825982246@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 73/94] i2c: algo: pca: Reapply i2c bus settings after reset
+Date:   Mon, 21 Sep 2020 18:28:00 +0200
+Message-Id: <20200921162038.883026332@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
-References: <20200921162035.136047591@linuxfoundation.org>
+In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
+References: <20200921162035.541285330@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,92 +45,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Namhyung Kim <namhyung@kernel.org>
+From: Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
 
-[ Upstream commit d26383dcb2b4b8629fde05270b4e3633be9e3d4b ]
+[ Upstream commit 0a355aeb24081e4538d4d424cd189f16c0bbd983 ]
 
-The following leaks were detected by ASAN:
+If something goes wrong (such as the SCL being stuck low) then we need
+to reset the PCA chip. The issue with this is that on reset we lose all
+config settings and the chip ends up in a disabled state which results
+in a lock up/high CPU usage. We need to re-apply any configuration that
+had previously been set and re-enable the chip.
 
-  Indirect leak of 360 byte(s) in 9 object(s) allocated from:
-    #0 0x7fecc305180e in calloc (/lib/x86_64-linux-gnu/libasan.so.5+0x10780e)
-    #1 0x560578f6dce5 in perf_pmu__new_format util/pmu.c:1333
-    #2 0x560578f752fc in perf_pmu_parse util/pmu.y:59
-    #3 0x560578f6a8b7 in perf_pmu__format_parse util/pmu.c:73
-    #4 0x560578e07045 in test__pmu tests/pmu.c:155
-    #5 0x560578de109b in run_test tests/builtin-test.c:410
-    #6 0x560578de109b in test_and_print tests/builtin-test.c:440
-    #7 0x560578de401a in __cmd_test tests/builtin-test.c:661
-    #8 0x560578de401a in cmd_test tests/builtin-test.c:807
-    #9 0x560578e49354 in run_builtin /home/namhyung/project/linux/tools/perf/perf.c:312
-    #10 0x560578ce71a8 in handle_internal_command /home/namhyung/project/linux/tools/perf/perf.c:364
-    #11 0x560578ce71a8 in run_argv /home/namhyung/project/linux/tools/perf/perf.c:408
-    #12 0x560578ce71a8 in main /home/namhyung/project/linux/tools/perf/perf.c:538
-    #13 0x7fecc2b7acc9 in __libc_start_main ../csu/libc-start.c:308
-
-Fixes: cff7f956ec4a1 ("perf tests: Move pmu tests into separate object")
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Stephane Eranian <eranian@google.com>
-Link: http://lore.kernel.org/lkml/20200915031819.386559-12-namhyung@kernel.org
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
+Reviewed-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/tests/pmu.c |  1 +
- tools/perf/util/pmu.c  | 11 +++++++++++
- tools/perf/util/pmu.h  |  1 +
- 3 files changed, 13 insertions(+)
+ drivers/i2c/algos/i2c-algo-pca.c | 35 +++++++++++++++++++++-----------
+ include/linux/i2c-algo-pca.h     | 15 ++++++++++++++
+ 2 files changed, 38 insertions(+), 12 deletions(-)
 
-diff --git a/tools/perf/tests/pmu.c b/tools/perf/tests/pmu.c
-index 1802ad3f45b63..e2fab5229ec08 100644
---- a/tools/perf/tests/pmu.c
-+++ b/tools/perf/tests/pmu.c
-@@ -169,6 +169,7 @@ int test__pmu(int subtest __maybe_unused)
- 		ret = 0;
- 	} while (0);
- 
-+	perf_pmu__del_formats(&formats);
- 	test_format_dir_put(format);
- 	return ret;
- }
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 39abbf8276464..5f1ba6f84f5f7 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -1018,6 +1018,17 @@ void perf_pmu__set_format(unsigned long *bits, long from, long to)
- 		set_bit(b, bits);
- }
- 
-+void perf_pmu__del_formats(struct list_head *formats)
-+{
-+	struct perf_pmu_format *fmt, *tmp;
+diff --git a/drivers/i2c/algos/i2c-algo-pca.c b/drivers/i2c/algos/i2c-algo-pca.c
+index 3a9db4626cb60..1886588b9ea3e 100644
+--- a/drivers/i2c/algos/i2c-algo-pca.c
++++ b/drivers/i2c/algos/i2c-algo-pca.c
+@@ -50,8 +50,22 @@ static void pca_reset(struct i2c_algo_pca_data *adap)
+ 		pca_outw(adap, I2C_PCA_INDPTR, I2C_PCA_IPRESET);
+ 		pca_outw(adap, I2C_PCA_IND, 0xA5);
+ 		pca_outw(adap, I2C_PCA_IND, 0x5A);
 +
-+	list_for_each_entry_safe(fmt, tmp, formats, list) {
-+		list_del(&fmt->list);
-+		free(fmt->name);
-+		free(fmt);
-+	}
-+}
++		/*
++		 * After a reset we need to re-apply any configuration
++		 * (calculated in pca_init) to get the bus in a working state.
++		 */
++		pca_outw(adap, I2C_PCA_INDPTR, I2C_PCA_IMODE);
++		pca_outw(adap, I2C_PCA_IND, adap->bus_settings.mode);
++		pca_outw(adap, I2C_PCA_INDPTR, I2C_PCA_ISCLL);
++		pca_outw(adap, I2C_PCA_IND, adap->bus_settings.tlow);
++		pca_outw(adap, I2C_PCA_INDPTR, I2C_PCA_ISCLH);
++		pca_outw(adap, I2C_PCA_IND, adap->bus_settings.thi);
 +
- static int sub_non_neg(int a, int b)
- {
- 	if (b > a)
-diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-index 25712034c815b..fed6c3b56ce75 100644
---- a/tools/perf/util/pmu.h
-+++ b/tools/perf/util/pmu.h
-@@ -71,6 +71,7 @@ int perf_pmu__new_format(struct list_head *list, char *name,
- 			 int config, unsigned long *bits);
- void perf_pmu__set_format(unsigned long *bits, long from, long to);
- int perf_pmu__format_parse(char *dir, struct list_head *head);
-+void perf_pmu__del_formats(struct list_head *formats);
++		pca_set_con(adap, I2C_PCA_CON_ENSIO);
+ 	} else {
+ 		adap->reset_chip(adap->data);
++		pca_set_con(adap, I2C_PCA_CON_ENSIO | adap->bus_settings.clock_freq);
+ 	}
+ }
  
- struct perf_pmu *perf_pmu__scan(struct perf_pmu *pmu);
+@@ -435,13 +449,14 @@ static int pca_init(struct i2c_adapter *adap)
+ 				" Use the nominal frequency.\n", adap->name);
+ 		}
  
+-		pca_reset(pca_data);
+-
+ 		clock = pca_clock(pca_data);
+ 		printk(KERN_INFO "%s: Clock frequency is %dkHz\n",
+ 		     adap->name, freqs[clock]);
+ 
+-		pca_set_con(pca_data, I2C_PCA_CON_ENSIO | clock);
++		/* Store settings as these will be needed when the PCA chip is reset */
++		pca_data->bus_settings.clock_freq = clock;
++
++		pca_reset(pca_data);
+ 	} else {
+ 		int clock;
+ 		int mode;
+@@ -508,19 +523,15 @@ static int pca_init(struct i2c_adapter *adap)
+ 			thi = tlow * min_thi / min_tlow;
+ 		}
+ 
++		/* Store settings as these will be needed when the PCA chip is reset */
++		pca_data->bus_settings.mode = mode;
++		pca_data->bus_settings.tlow = tlow;
++		pca_data->bus_settings.thi = thi;
++
+ 		pca_reset(pca_data);
+ 
+ 		printk(KERN_INFO
+ 		     "%s: Clock frequency is %dHz\n", adap->name, clock * 100);
+-
+-		pca_outw(pca_data, I2C_PCA_INDPTR, I2C_PCA_IMODE);
+-		pca_outw(pca_data, I2C_PCA_IND, mode);
+-		pca_outw(pca_data, I2C_PCA_INDPTR, I2C_PCA_ISCLL);
+-		pca_outw(pca_data, I2C_PCA_IND, tlow);
+-		pca_outw(pca_data, I2C_PCA_INDPTR, I2C_PCA_ISCLH);
+-		pca_outw(pca_data, I2C_PCA_IND, thi);
+-
+-		pca_set_con(pca_data, I2C_PCA_CON_ENSIO);
+ 	}
+ 	udelay(500); /* 500 us for oscillator to stabilise */
+ 
+diff --git a/include/linux/i2c-algo-pca.h b/include/linux/i2c-algo-pca.h
+index d03071732db4a..7c522fdd9ea73 100644
+--- a/include/linux/i2c-algo-pca.h
++++ b/include/linux/i2c-algo-pca.h
+@@ -53,6 +53,20 @@
+ #define I2C_PCA_CON_SI		0x08 /* Serial Interrupt */
+ #define I2C_PCA_CON_CR		0x07 /* Clock Rate (MASK) */
+ 
++/**
++ * struct pca_i2c_bus_settings - The configured PCA i2c bus settings
++ * @mode: Configured i2c bus mode
++ * @tlow: Configured SCL LOW period
++ * @thi: Configured SCL HIGH period
++ * @clock_freq: The configured clock frequency
++ */
++struct pca_i2c_bus_settings {
++	int mode;
++	int tlow;
++	int thi;
++	int clock_freq;
++};
++
+ struct i2c_algo_pca_data {
+ 	void 				*data;	/* private low level data */
+ 	void (*write_byte)		(void *data, int reg, int val);
+@@ -64,6 +78,7 @@ struct i2c_algo_pca_data {
+ 	 * For PCA9665, use the frequency you want here. */
+ 	unsigned int			i2c_clock;
+ 	unsigned int			chip;
++	struct pca_i2c_bus_settings		bus_settings;
+ };
+ 
+ int i2c_pca_add_bus(struct i2c_adapter *);
 -- 
 2.25.1
 
