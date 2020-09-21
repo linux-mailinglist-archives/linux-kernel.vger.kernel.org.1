@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 313E8271CA0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:00:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F40271CAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726359AbgIUIAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 04:00:37 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56802 "EHLO mx2.suse.de"
+        id S1726769AbgIUIAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 04:00:55 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57440 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726487AbgIUH7W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 03:59:22 -0400
+        id S1726579AbgIUH7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 03:59:40 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B03C1B50E;
-        Mon, 21 Sep 2020 07:59:56 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id C5D09B523;
+        Mon, 21 Sep 2020 08:00:04 +0000 (UTC)
 From:   Nicolai Stange <nstange@suse.de>
 To:     "Theodore Y. Ts'o" <tytso@mit.edu>
 Cc:     linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
@@ -46,148 +46,198 @@ Cc:     linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
         =?UTF-8?q?Stephan=20M=C3=BCller?= <smueller@chronox.de>,
         Torsten Duwe <duwe@suse.de>, Petr Tesarik <ptesarik@suse.cz>,
         Nicolai Stange <nstange@suse.de>
-Subject: [RFC PATCH 13/41] random: convert try_to_generate_entropy() to queued_entropy API
-Date:   Mon, 21 Sep 2020 09:58:29 +0200
-Message-Id: <20200921075857.4424-14-nstange@suse.de>
+Subject: [RFC PATCH 27/41] random: increase per-IRQ event entropy estimate if in FIPS mode
+Date:   Mon, 21 Sep 2020 09:58:43 +0200
+Message-Id: <20200921075857.4424-28-nstange@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200921075857.4424-1-nstange@suse.de>
 References: <20200921075857.4424-1-nstange@suse.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In an effort to drop __credit_entropy_bits_fast() in favor of the new
-__queue_entropy()/__dispatch_queued_entropy_fast() API, convert
-try_to_generate_entropy() from the former to the latter.
+NIST SP800-90C prohibits the use of multiple correlated entropy sources.
+However, add_interrupt_randomness(), add_disk_randomness() and
+add_input_randomness() are clearly not independent and an upcoming patch
+will make the latter two to stop contributing any entropy to the global
+balance if fips_enabled is on.
 
-Replace the call to __credit_entropy_bits_fast() from the timer callback,
-entropy_timer(), by a queue_entropy() operation. Dispatch it from the loop
-in try_to_generate_entropy() by invoking __dispatch_queued_entropy_fast()
-after the timestamp has been mixed into the input_pool.
+With the current parameter settings, it can be assumed that
+add_disk_randomness() resp. add_input_randomness() are the dominating
+contributors to the overall entropy reserve for some common workloads: both
+more or less estimate the entropy per event to equal the width of the
+minimum out of the first, second and third jiffes deltas to the previous
+occurrence.
 
-In order to provide the timer callback and try_to_generate_entropy() with
-access to a common struct queued_entropy instance, move the currently
-anonymous struct definition from the local 'stack' variable declaration in
-try_to_generate_entropy() to file scope and assign it a name,
-"struct try_to_generate_entropy_stack". Make entropy_timer() obtain a
-pointer to the corresponding instance by means of container_of() on the
-->timer member contained therein. Amend struct
-try_to_generate_entropy_stack by a new member ->q of type struct
-queued_entropy.
+add_interrupt_randomness() on the other hand only attributes one single bit
+entropy to a full batch of 64 IRQ events (or once a second if that
+completes earlier).
 
-Note that the described scheme alters behaviour a bit: first of all, new
-entropy credit now gets only dispatched to the pool after the actual mixing
-has completed rather than in an unsynchronized manner directly from the
-timer callback. As the mixing loop try_to_generate_entropy() is expected to
-run at higher frequency than the timer, this is unlikely to make any
-difference in practice.
+Thus, the upcoming exclusion of two potent entropy sources should somehow
+be compensated for.
 
-Furthermore, the pool entropy watermark as tracked over the period from
-queuing the entropy in the timer callback and to its subsequent dispatch
-from try_to_generate_entropy() is now taken into account when calculating
-the actual credit at dispatch. In consequence, the amount of new entropy
-dispatched to the pool will potentially be lowered if said period happens
-to overlap with the pool extraction from an initial crng_reseed() on the
-primary_crng. However, as getting the primary_crng seeded is the whole
-point of the try_to_generate_entropy() exercise, this won't matter.
+Stephan Müller worked around this very problem in his "LRNG" proposal ([1])
+by increasing the entropy estimate per IRQ event. Namely, in case a
+get_cycles() with instruction granularity is available, he estimated one
+bit of entropy per IRQ event and (IIRC) 1/10 bits otherwise. I haven't
+tested this claim myself, in particular not on smaller devices. But for the
+sake of moving the development of this RFC series forward, I'll assume it
+as granted and hereby postulate that
 
-Note that instead of calling queue_entropy() from the timer callback,
-an alternative would have been to maintain an invocation counter and queue
-that up from try_to_generate_entropy() right before the mix operation.
-This would have reduced the described effect of the pool's entropy
-watermark and in fact matched the intended queue_entropy() API usage
-better. However, in this particular case of try_to_generate_entropy(),
-jitter is desired and invoking queue_entropy() with its buffer locking etc.
-from the timer callback could potentially contribute to that.
+  The lower eight bits of the differences between get_cycles() from two
+  successive IRQ events on the same CPU carry
+  - one bit of min-entropy in case a get_cycles() with instruction
+    granularity is available and
+  - 1/8 bit of min-entropy in case get_cycles() is still non-trivial, but
+    has a lower resolution.
 
+In particular this is assumed to be true for highly periodic interrupts
+like those issued for e.g. USB microframes and on all supported
+architectures. In the former case, the underlying source of randomness is
+believed to follow the same principles as for the Jitter RNGs resp.
+try_to_generate_entropy(): diffences in RAM vs. CPU clockings and
+unpredictability of cache states to a certain extent.
+
+Notes:
+- NIST SP800-90B requires a means to access raw samples for validation
+  purposes. Implementation of such an interface is deliberately not part
+  of this RFC series here, but would necessarily be subject of future work.
+  So there would be a means to at least validate these assumptions.
+- The choice of 1/8 over the 1/10 from the LRNG patchset has been made
+  because it's a power of two and I suppose that the estimate of 1/10
+  had been quite arbitrary anyway. Replacement of the 1/8 by smaller
+  powers of two down to 1/64 will be supported throughout this patch
+  series.
+
+Some health tests as required by NIST SP800-90B will be implemented later
+in this series. In order to allow for dynamically decreasing the assessed
+entropy on a per-CPU basis upon health test failures, make it an attibute
+of the per-CPU struct fast_pool. That is, introduce a new integer field
+->event_entropy_shift to struct fast_pool. The estimated entropy per
+IRQ sample will be calculated as 2^-event_entropy_shift. Initialize it
+statically with -1 to indicate that runtime initialization hasn't happened
+yet. Introduce fast_pool_init_accounting() which gets called
+unconditionally from add_interrupt_randomness() for doing the necessary
+runtime initializations once, i.e. if ->event_entropy_shift is
+still found to be negative. Implement it with the help of the also new
+min_irq_event_entropy_shift(), which will return the initial
+->event_entropy_shift value as determined according to the rules from
+above. That is, depending on the have_highres_cycle_ctr, the result is
+eiher zero or three. Note that have_highres_cycle_ctr will only get
+properly initialized from rand_initialize() if fips_enabled is set, but
+->event_entropy_shift will also only ever get accessed in this case.
+
+Finally, for the case tha fips_enabled is set, make
+add_interrupt_randomness() to estimate the amount of entropy transferred
+from the fast_pool into the global input_pool as
+fast_pool_entropy(->count, ->event_entropy_shift), rather than only one
+single bit. Remember that fast_pool_entropy() calculates the amount of
+entropy contained in a fast_pool, based on the total number of events mixed
+into it and the estimated entropy per event.
+
+[1] https://lkml.kernel.org/r/5695397.lOV4Wx5bFT@positron.chronox.de
+
+Suggested-by: Stephan Müller <smueller@chronox.de>
 Signed-off-by: Nicolai Stange <nstange@suse.de>
 ---
- drivers/char/random.c | 42 +++++++++++++++++++++++++++++-------------
- 1 file changed, 29 insertions(+), 13 deletions(-)
+ drivers/char/random.c | 50 ++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 45 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/char/random.c b/drivers/char/random.c
-index bd3774c6be4b..dfbe49fdbcf1 100644
+index ac36c56dd135..8f79e90f2429 100644
 --- a/drivers/char/random.c
 +++ b/drivers/char/random.c
-@@ -1911,6 +1911,12 @@ void get_random_bytes(void *buf, int nbytes)
- EXPORT_SYMBOL(get_random_bytes);
+@@ -615,6 +615,7 @@ struct fast_pool {
+ 	unsigned long	last;
+ 	unsigned short	reg_idx;
+ 	unsigned char	count;
++	int		event_entropy_shift;
+ };
  
- 
-+struct try_to_generate_entropy_stack {
-+	unsigned long now;
-+	struct timer_list timer;
-+	struct queued_entropy q;
-+} stack;
-+
  /*
-  * Each time the timer fires, we expect that we got an unpredictable
-  * jump in the cycle counter. Even if the timer is running on another
-@@ -1926,14 +1932,10 @@ EXPORT_SYMBOL(get_random_bytes);
-  */
- static void entropy_timer(struct timer_list *t)
- {
--	bool reseed;
--	unsigned long flags;
-+	struct try_to_generate_entropy_stack *stack;
+@@ -1509,7 +1510,9 @@ void add_input_randomness(unsigned int type, unsigned int code,
+ }
+ EXPORT_SYMBOL_GPL(add_input_randomness);
  
--	spin_lock_irqsave(&input_pool.lock, flags);
--	reseed = __credit_entropy_bits_fast(&input_pool, 1);
--	spin_unlock_irqrestore(&input_pool.lock, flags);
--	if (reseed)
--		crng_reseed(&primary_crng, &input_pool);
-+	stack = container_of(t, struct try_to_generate_entropy_stack, timer);
-+	queue_entropy(&input_pool, &stack->q, 1 << ENTROPY_SHIFT);
+-static DEFINE_PER_CPU(struct fast_pool, irq_randomness);
++static DEFINE_PER_CPU(struct fast_pool, irq_randomness) = {
++	.event_entropy_shift = -1,
++};
+ 
+ #ifdef ADD_INTERRUPT_BENCH
+ static unsigned long avg_cycles, avg_deviation;
+@@ -1599,6 +1602,32 @@ static unsigned int fast_pool_entropy(unsigned int num_events,
+ 	return result >> event_entropy_shift;
  }
  
- /*
-@@ -1942,10 +1944,9 @@ static void entropy_timer(struct timer_list *t)
-  */
- static void try_to_generate_entropy(void)
- {
--	struct {
--		unsigned long now;
--		struct timer_list timer;
--	} stack;
-+	struct try_to_generate_entropy_stack stack = { 0 };
-+	unsigned long flags;
-+	bool reseed;
- 
- 	stack.now = random_get_entropy();
- 
-@@ -1957,14 +1958,29 @@ static void try_to_generate_entropy(void)
- 	while (!crng_ready()) {
- 		if (!timer_pending(&stack.timer))
- 			mod_timer(&stack.timer, jiffies+1);
--		mix_pool_bytes(&input_pool, &stack.now, sizeof(stack.now));
-+		spin_lock_irqsave(&input_pool.lock, flags);
-+		__mix_pool_bytes(&input_pool, &stack.now, sizeof(stack.now));
-+		reseed = __dispatch_queued_entropy_fast(&input_pool, &stack.q);
-+		spin_unlock_irqrestore(&input_pool.lock, flags);
++static inline int min_irq_event_entropy_shift(void)
++{
++	if (static_branch_likely(&have_highres_cycle_ctr)) {
++		/*
++		 * If a cycle counter with a good enough resolution is
++		 * available, estimate the entropy per IRQ event to
++		 * be no more than 2^-0 == 1 bit.
++		 */
++		return 0;
++	}
 +
-+		if (reseed)
-+			crng_reseed(&primary_crng, &input_pool);
-+
- 		schedule();
- 		stack.now = random_get_entropy();
- 	}
- 
- 	del_timer_sync(&stack.timer);
- 	destroy_timer_on_stack(&stack.timer);
--	mix_pool_bytes(&input_pool, &stack.now, sizeof(stack.now));
-+	spin_lock_irqsave(&input_pool.lock, flags);
-+	__mix_pool_bytes(&input_pool, &stack.now, sizeof(stack.now));
 +	/*
-+	 * Must be called here once more in order to complete a
-+	 * previously unmatched queue_entropy() from entropy_timer(),
-+	 * if any.
++	 * Otherwise return an estimate upper bound of
++	 * 2^-3 == 1/8 bit per event.
 +	 */
-+	__dispatch_queued_entropy_fast(&input_pool, &stack.q);
-+	spin_unlock_irqrestore(&input_pool.lock, flags);
- }
++	return 3;
++}
++
++static inline void fast_pool_init_accounting(struct fast_pool *f)
++{
++	if (likely(f->event_entropy_shift >= 0))
++		return;
++
++	f->event_entropy_shift = min_irq_event_entropy_shift();
++}
++
+ void add_interrupt_randomness(int irq, int irq_flags)
+ {
+ 	struct entropy_store	*r;
+@@ -1610,6 +1639,7 @@ void add_interrupt_randomness(int irq, int irq_flags)
+ 	__u64			ip;
+ 	bool			reseed;
+ 	struct queued_entropy	q = { 0 };
++	unsigned int		nfrac;
  
- /*
+ 	if (cycles == 0)
+ 		cycles = get_reg(fast_pool, regs);
+@@ -1644,13 +1674,23 @@ void add_interrupt_randomness(int irq, int irq_flags)
+ 	if (!spin_trylock(&r->lock))
+ 		return;
+ 
+-	fast_pool->last = now;
+-	fast_pool->count = 0;
+-	/* award one bit for the contents of the fast pool */
+-	__queue_entropy(r, &q, 1 << ENTROPY_SHIFT);
++	fast_pool_init_accounting(fast_pool);
++
++	if (!fips_enabled) {
++		/* award one bit for the contents of the fast pool */
++		nfrac = 1 << ENTROPY_SHIFT;
++	} else {
++		nfrac = fast_pool_entropy(fast_pool->count,
++					  fast_pool->event_entropy_shift);
++	}
++	__queue_entropy(r, &q, nfrac);
+ 	__mix_pool_bytes(r, &fast_pool->pool, sizeof(fast_pool->pool));
+ 	reseed = __dispatch_queued_entropy_fast(r, &q);
+ 	spin_unlock(&r->lock);
++
++	fast_pool->last = now;
++	fast_pool->count = 0;
++
+ 	if (reseed)
+ 		crng_reseed(&primary_crng, r);
+ }
 -- 
 2.26.2
 
