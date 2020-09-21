@@ -2,90 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 036E8272438
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4077727243C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:53:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726831AbgIUMxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 08:53:32 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13798 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726395AbgIUMxc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 08:53:32 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 70A2CC5B7ED38BAEA8BE;
-        Mon, 21 Sep 2020 20:53:29 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 21 Sep 2020 20:53:21 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH 2/2] f2fs: relocate blkzoned feature check
-Date:   Mon, 21 Sep 2020 20:53:14 +0800
-Message-ID: <20200921125314.99297-2-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200921125314.99297-1-yuchao0@huawei.com>
-References: <20200921125314.99297-1-yuchao0@huawei.com>
+        id S1726942AbgIUMxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 08:53:49 -0400
+Received: from vm1.sequanux.org ([188.165.36.56]:48371 "EHLO vm1.sequanux.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726395AbgIUMxr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 08:53:47 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by vm1.sequanux.org (Postfix) with ESMTP id 03AB21085E1;
+        Mon, 21 Sep 2020 14:53:46 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at vm1.sequanux.org
+Received: from vm1.sequanux.org ([127.0.0.1])
+        by localhost (vm1.sequanux.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id U7ldmjyxRVTX; Mon, 21 Sep 2020 14:53:43 +0200 (CEST)
+Received: from localhost (softwrestling.org [188.165.144.248])
+        by vm1.sequanux.org (Postfix) with ESMTPSA id D50811080EF;
+        Mon, 21 Sep 2020 14:53:43 +0200 (CEST)
+Date:   Mon, 21 Sep 2020 14:53:43 +0200
+From:   Simon Guinot <simon.guinot@sequanux.org>
+To:     Marek Behun <marek.behun@nic.cz>
+Cc:     linux-leds@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>,
+        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org, Simon Guinot <sguinot@lacie.com>,
+        Vincent Donnefort <vdonnefort@gmail.com>,
+        Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH leds v1 10/10] leds: ns2: refactor and use struct
+ led_init_data
+Message-ID: <20200921125343.GA4828@kw.sim.vm.gnt>
+References: <20200916231650.11484-1-marek.behun@nic.cz>
+ <20200916231650.11484-11-marek.behun@nic.cz>
+ <20200918130206.GE29951@kw.sim.vm.gnt>
+ <20200918191405.516b51ff@nic.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="KsGdsel6WgEHnImy"
+Content-Disposition: inline
+In-Reply-To: <20200918191405.516b51ff@nic.cz>
+User-Agent: Mutt/1.6.0 (2016-04-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Relocate blkzoned feature check into parse_options() like
-other feature check.
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
- fs/f2fs/super.c | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
+--KsGdsel6WgEHnImy
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index e0423b091b30..dc3edc9a5640 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -970,6 +970,17 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
- 		return -EINVAL;
- 	}
- #endif
-+	/*
-+	 * The BLKZONED feature indicates that the drive was formatted with
-+	 * zone alignment optimization. This is optional for host-aware
-+	 * devices, but mandatory for host-managed zoned block devices.
-+	 */
-+#ifndef CONFIG_BLK_DEV_ZONED
-+	if (f2fs_sb_has_blkzoned(sbi)) {
-+		f2fs_err(sbi, "Zoned block device support is not enabled");
-+		return -EINVAL;
-+	}
-+#endif
- 
- 	if (F2FS_IO_SIZE_BITS(sbi) && !f2fs_lfs_mode(sbi)) {
- 		f2fs_err(sbi, "Should set mode=lfs with %uKB-sized IO",
-@@ -3494,18 +3505,6 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
- 		sbi->s_chksum_seed = f2fs_chksum(sbi, ~0, raw_super->uuid,
- 						sizeof(raw_super->uuid));
- 
--	/*
--	 * The BLKZONED feature indicates that the drive was formatted with
--	 * zone alignment optimization. This is optional for host-aware
--	 * devices, but mandatory for host-managed zoned block devices.
--	 */
--#ifndef CONFIG_BLK_DEV_ZONED
--	if (f2fs_sb_has_blkzoned(sbi)) {
--		f2fs_err(sbi, "Zoned block device support is not enabled");
--		err = -EOPNOTSUPP;
--		goto free_sb_buf;
--	}
--#endif
- 	default_options(sbi);
- 	/* parse mount options */
- 	options = kstrdup((const char *)data, GFP_KERNEL);
--- 
-2.26.2
+On Fri, Sep 18, 2020 at 07:14:05PM +0200, Marek Behun wrote:
+> On Fri, 18 Sep 2020 15:02:06 +0200
+> Simon Guinot <simon.guinot@sequanux.org> wrote:
+>=20
+> > On Thu, Sep 17, 2020 at 01:16:50AM +0200, Marek Beh=C3=BAn wrote:
+> >=20
+> > Hi Marek,
+> >=20
+> > > By using struct led_init_data when registering we do not need to parse
+> > > `label` DT property nor `linux,default-trigger` property.
+> > >=20
+> > > Also, move forward from platform data to device tree only:
+> > > since commit c7896490dd1a ("leds: ns2: Absorb platform data") the
+> > > platform data structure is absorbed into the driver, because nothing
+> > > else in the source tree used it. Since nobody complained and all usag=
+e =20
+> >=20
+> > Well, I probably should have...
+> >=20
+> > I am using this driver on the Seagate Superbee NAS devices. This devices
+> > are based on a x86 SoC. Since I have been unable to get from the ODM the
+> > LED information written in the ACPI tables, then platform data are used
+> > to pass the LED description to the driver.
+> >=20
+> > The support of this boards is not available mainline yet but it is still
+> > on my todo list. So that's why I am complaining right now :) If it is
+> > not too much trouble I'd like to keep platform data support in this
+> > driver.
+> >=20
+> > Thanks in advance.
+> >=20
+> > Simon
+> >=20
+>=20
+> Simon, what if we refactored the driver to use fwnode API instead of OF
+> API? Then if it is impossible for you to write DTS for that device,
+> instead of platform data you could implement your device via swnode
+> fwnodes. :)
 
+Yes. That would be perfect.
+
+Simon
+
+--KsGdsel6WgEHnImy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEXW8DgovlR3VS5hA0zyg/RDPmszoFAl9oolcACgkQzyg/RDPm
+szrExxAAjNpMeco55YZIg8vi5pc3s8jKk0RzlVCx0U8kugJzjUN0Uh+WVGgelNpY
+5b+z1qe9m893rke8AueMJZMPraHrL585c2JWatYHeGfyoEXG+e4Uwba9XfRF1xj/
+vdAc/OZJSAF1ZMiJIZ6sQ385dr06MP7KEFCHwy1HVquohMVEjAHfXfG9WMamaQLX
+XRb43iuJP3WBiR3LVJ19q/bAoArcyF+My4WB3vbuv3MnV0fOWSmglX6Hbl078w2K
+qnBwB3u1+A0oXVGCndKUeHxFTscJBLPoKPdMmE0TI8QQOaey4rSmyAivBuCeANby
+Z3LpPNX8b2kffxD/zVTQrzxnHMTpnZeKt46zlanYAK46ks0/d8yZEbIgYlC6oVI2
+tFwH8bzieitdHYXoJ+d0V5Ac9G6NPODmKw5gh0F4PXr5R2x77M8k4mYFiXwgpR+q
+YEziR+Fi3iYiKNFGqQ2cZRNmJ+QhhOb1OH8lpH53etIVHs6Hy+FSuZoNJf2rLRDh
+BW4wIqOaHd91sf931DXJhKKrKsECH89/OLcr52OT3zL8ieOC5mgLiXaMRjL76YbC
+r8gKajpIZS+zdF7ecUVXFRtegyTj1xhZY53YT+3nZqSvpb7w7MP9JaInC1kaDg0A
+sXyq+GFw6grikNHJFmqlRPT25g28aLFFDHny9+Grb5goEktLKTc=
+=/jex
+-----END PGP SIGNATURE-----
+
+--KsGdsel6WgEHnImy--
