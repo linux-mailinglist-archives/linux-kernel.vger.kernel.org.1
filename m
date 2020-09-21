@@ -2,145 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E9E427311D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A3D8273123
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728040AbgIURs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 13:48:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38376 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726537AbgIURs3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 13:48:29 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 316392193E;
-        Mon, 21 Sep 2020 17:48:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600710508;
-        bh=+LrtWrB/YrmXALBTyY0f60jzeqjafAoXq/e/i/AT3Dw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=T4oPJpc3zGBvo6gaEbUhE7CZH2GIgVqggZVoxF++8x5XjrT0k0xFuBvmIsrCTCYnI
-         suHtgCs8P9zaNvOk+9hXZPb/z4sljpAQXhUuosoTYmSaJ8IIZAooG/3yCPuEgMIfyw
-         3I6gtpXwpyZhRq+GabN5WTDIqbSYrC3OseR72KBg=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id D2957352303A; Mon, 21 Sep 2020 10:48:27 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 10:48:27 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Kees Cook <keescook@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        SeongJae Park <sjpark@amazon.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Will Deacon <will@kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: Re: [PATCH v3 10/10] kfence: add test suite
-Message-ID: <20200921174827.GG29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200921132611.1700350-1-elver@google.com>
- <20200921132611.1700350-11-elver@google.com>
- <20200921171325.GE29330@paulmck-ThinkPad-P72>
- <CANpmjNPiAvyn+oARU39yOx7zxMxV8JHiSS_41H+65D_-MKmk7A@mail.gmail.com>
+        id S1727887AbgIURti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 13:49:38 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:41115 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726749AbgIURti (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 13:49:38 -0400
+Received: by mail-lj1-f193.google.com with SMTP id y4so11845880ljk.8
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 10:49:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=JYVL6vVhxxsHwQqcaJ+Y/Dyr3s/BHvLdogiat9zzOMY=;
+        b=W3ZDVAxtgxgzLtBKVV7zieKrkpsoWZ5wtekVTtdb4ZqWatJMyJbNtjafRv7Ga9HGsW
+         FQ2E/YadgrIC2dJbASKHWSbrC2OaREoOBRS3zsJFWNIwUaih80Y9gjsIzwjQa2npxsjC
+         yitO4+AJ9I22Vh7ksNqazjJ3roM5W0VXnsp0d1n/ZjxGPoSo6FjCkyu/14/bxDd7lXCP
+         a3323KJ/GpNGKmDPqrwfBGJVD7jNMSBORWNsbqcPQcCobpQtNAUBk8l7WYlrjklX86AW
+         b8hXjcA1TmE7OU0egifSm7X2PQiU8rcUucTklIu3RPrEmqd3+uuX1J9d42Z515jiD+iJ
+         1E9g==
+X-Gm-Message-State: AOAM5339YXp3i7C7GfOQFkHQx9xyvzF3UtRT2gC/ThBsC6xGUJnyLdG1
+        uQToCeT+Y44zN+bTYADfHbs=
+X-Google-Smtp-Source: ABdhPJyuIwK4gStrZns8fCO6n/pBDKraTe1BTnTEwKWkDnih4NCMna1EpOuzxJwnULIkwuD7H5324g==
+X-Received: by 2002:a2e:3203:: with SMTP id y3mr269898ljy.261.1600710575899;
+        Mon, 21 Sep 2020 10:49:35 -0700 (PDT)
+Received: from green.intra.ispras.ru (winnie.ispras.ru. [83.149.199.91])
+        by smtp.googlemail.com with ESMTPSA id q24sm2773353lfo.149.2020.09.21.10.49.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 10:49:35 -0700 (PDT)
+From:   Denis Efremov <efremov@linux.com>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Denis Efremov <efremov@linux.com>, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>
+Subject: [PATCH v3] coccinelle: misc: add flexible_array.cocci script
+Date:   Mon, 21 Sep 2020 20:49:20 +0300
+Message-Id: <20200921174920.87241-1-efremov@linux.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200806220342.25426-1-efremov@linux.com>
+References: <20200806220342.25426-1-efremov@linux.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANpmjNPiAvyn+oARU39yOx7zxMxV8JHiSS_41H+65D_-MKmk7A@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 07:37:13PM +0200, Marco Elver wrote:
-> On Mon, 21 Sep 2020 at 19:13, Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Mon, Sep 21, 2020 at 03:26:11PM +0200, Marco Elver wrote:
-> > > Add KFENCE test suite, testing various error detection scenarios. Makes
-> > > use of KUnit for test organization. Since KFENCE's interface to obtain
-> > > error reports is via the console, the test verifies that KFENCE outputs
-> > > expected reports to the console.
-> > >
-> > > Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
-> > > Co-developed-by: Alexander Potapenko <glider@google.com>
-> > > Signed-off-by: Alexander Potapenko <glider@google.com>
-> > > Signed-off-by: Marco Elver <elver@google.com>
-> >
-> > [ . . . ]
-> >
-> > > +/* Test SLAB_TYPESAFE_BY_RCU works. */
-> > > +static void test_memcache_typesafe_by_rcu(struct kunit *test)
-> > > +{
-> > > +     const size_t size = 32;
-> > > +     struct expect_report expect = {
-> > > +             .type = KFENCE_ERROR_UAF,
-> > > +             .fn = test_memcache_typesafe_by_rcu,
-> > > +     };
-> > > +
-> > > +     setup_test_cache(test, size, SLAB_TYPESAFE_BY_RCU, NULL);
-> > > +     KUNIT_EXPECT_TRUE(test, test_cache); /* Want memcache. */
-> > > +
-> > > +     expect.addr = test_alloc(test, size, GFP_KERNEL, ALLOCATE_ANY);
-> > > +     *expect.addr = 42;
-> > > +
-> > > +     rcu_read_lock();
-> > > +     test_free(expect.addr);
-> > > +     KUNIT_EXPECT_EQ(test, *expect.addr, (char)42);
-> > > +     rcu_read_unlock();
-> >
-> > It won't happen very often, but memory really could be freed at this point,
-> > especially in CONFIG_RCU_STRICT_GRACE_PERIOD=y kernels ...
-> 
-> Ah, thanks for pointing it out.
-> 
-> > > +     /* No reports yet, memory should not have been freed on access. */
-> > > +     KUNIT_EXPECT_FALSE(test, report_available());
-> >
-> > ... so the above statement needs to go before the rcu_read_unlock().
-> 
-> You mean the comment (and not the KUNIT_EXPECT_FALSE that no reports
-> were generated), correct?
-> 
-> Admittedly, the whole comment is a bit imprecise, so I'll reword.
+One-element and zero-length arrays are deprecated [1]. Kernel
+code should always use "flexible array members" instead, except
+for existing uapi definitions.
 
-I freely confess that I did not research exactly what might generate
-a report.  But if this KUNIT_EXPECT_FALSE() was just verifying that the
-previous KUNIT_EXPECT_TRUE() did not trigger, then yes, the code is just
-fine as it is.
+The script warns about one-element and zero-length arrays in structs.
 
-							Thanx, Paul
+[1] commit 68e4cd17e218 ("docs: deprecated.rst: Add zero-length and
+    one-element arrays")
 
-> > > +     rcu_barrier(); /* Wait for free to happen. */
-> >
-> > But you are quite right that the memory is not -guaranteed- to be freed
-> > until we get here.
-> 
-> Right, I'll update the comment.
-> 
-> Thanks,
-> -- Marco
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: Denis Efremov <efremov@linux.com>
+---
+Changes in v2:
+ - all uapi headers are now filtered-out. Unfortunately, coccinelle
+   doesn't provide structure names in Location.current_element.
+   For structures the field is always "something_else". Thus, there is
+   no easy way to create a list of existing structures in uapi headers
+   and suppress the warning only for them, but not for the newly added
+   uapi structures.
+ - The pattern doesn't require 2+ fields in a structure/union anymore.
+   Now it also checks single field structures/unions.
+ - The pattern simplified and now uses disjuction in array elements
+   (Thanks, Markus)
+ - Unions are removed from patch mode
+ - one-element arrays are removed from patch mode. Correct patch may
+   involve turning the array to a simple field instead of a flexible
+   array.
+Changes in v3:
+ - exists removed from "depends on patch"
+ - position argument fixed in org mode
+ - link to the online documentation added to the warning message
+
+ scripts/coccinelle/misc/flexible_array.cocci | 88 ++++++++++++++++++++
+ 1 file changed, 88 insertions(+)
+ create mode 100644 scripts/coccinelle/misc/flexible_array.cocci
+
+diff --git a/scripts/coccinelle/misc/flexible_array.cocci b/scripts/coccinelle/misc/flexible_array.cocci
+new file mode 100644
+index 000000000000..947fbaff82a9
+--- /dev/null
++++ b/scripts/coccinelle/misc/flexible_array.cocci
+@@ -0,0 +1,88 @@
++// SPDX-License-Identifier: GPL-2.0-only
++///
++/// Zero-length and one-element arrays are deprecated, see
++/// Documentation/process/deprecated.rst
++/// Flexible-array members should be used instead.
++///
++//
++// Confidence: High
++// Copyright: (C) 2020 Denis Efremov ISPRAS.
++// Comments:
++// Options: --no-includes --include-headers
++
++virtual context
++virtual report
++virtual org
++virtual patch
++
++@initialize:python@
++@@
++def relevant(positions):
++    for p in positions:
++        if "uapi" in p.file:
++             return False
++    return True
++
++@r depends on !patch@
++identifier name, array;
++type T;
++position p : script:python() { relevant(p) };
++@@
++
++(
++  struct name {
++    ...
++*   T array@p[\(0\|1\)];
++  };
++|
++  struct {
++    ...
++*   T array@p[\(0\|1\)];
++  };
++|
++  union name {
++    ...
++*   T array@p[\(0\|1\)];
++  };
++|
++  union {
++    ...
++*   T array@p[\(0\|1\)];
++  };
++)
++
++@depends on patch@
++identifier name, array;
++type T;
++position p : script:python() { relevant(p) };
++@@
++
++(
++  struct name {
++    ...
++    T array@p[
++-       0
++    ];
++  };
++|
++  struct {
++    ...
++    T array@p[
++-       0
++    ];
++  };
++)
++
++@script: python depends on report@
++p << r.p;
++@@
++
++msg = "WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)"
++coccilib.report.print_report(p[0], msg)
++
++@script: python depends on org@
++p << r.p;
++@@
++
++msg = "WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)"
++coccilib.org.print_todo(p[0], msg)
+-- 
+2.26.2
+
