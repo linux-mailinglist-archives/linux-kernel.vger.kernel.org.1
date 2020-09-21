@@ -2,104 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFC19273327
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A0327332E
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727629AbgIUTua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 15:50:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34628 "EHLO
+        id S1727495AbgIUTzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 15:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726395AbgIUTu3 (ORCPT
+        with ESMTP id S1726417AbgIUTzN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 15:50:29 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B77FC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 12:50:29 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id k14so9936189pgi.9
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 12:50:29 -0700 (PDT)
+        Mon, 21 Sep 2020 15:55:13 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC654C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 12:55:12 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id x23so671174wmi.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 12:55:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hfum0xk/RZI5/Ob/LotdK/fUqBVcECeLZPhlAXF7GSA=;
-        b=MzlFGtZxMRR3IzQFO78/27PAi9Tln8PEKmg4AWR1bn4Yo/X9UINdsoC9HczWeOPzK7
-         QNTmfcvvkJG792tUX68D4WrnSFP9CgJoYPCVFNR3GKZ+FyLm9t8ZFvvG1E2VbgZ5QAOS
-         +fB2gXbEHSaAuwNmKSv0Pd9zLHo+Oakazz/3+sTuhR7vJmpMwG3RSQFWLIHrAFmxsCGF
-         rqx+I3MNILJxZtgM/ON8s9FbFBrflmYiKAX23PoTz6WxO8eG+V87SwM9NqDKQlik6d31
-         oPGbYOdDpITjhl+sn2utDDkLbhUp7n/Am/HwVzM1DY93mI1ZfI1r1BvJTjtfivUMY2U6
-         ZKiA==
+         :cc:content-transfer-encoding;
+        bh=YnHM6Hb2y75zAmIL8oMRMNOuTr0UGFyFVBu7fGiSews=;
+        b=p6FPH/bXd02fVePtnRBJz3I1Vs4o+uGl8AUxVqGp329LcXDKk3VCkOUKY3G/kkIwtm
+         YUgnsCOjAv+E1XErdswu98/iRlqOni8BJyXmyFKLOSCAZuWbBvDo+nlrhcrdSju/el56
+         KdNQPfu3WsQ7Iv6ki9szDXn51b1CU2ZJhA//wUd+jeaBb5URBSMRk3k/F3WEbX4c3cYA
+         RYdXPuj87JW6/RPe0xxa+3sfNf+iHaGdPgqQUt86/QnRXzVFMX9DltQFNLgdM+byistd
+         huKGd258rIEXAmf3fIuhrCtS34bcMMGf30hnGmAgqiYZo7/yyug5WUMH2r3EXvmi5Vhu
+         +fcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hfum0xk/RZI5/Ob/LotdK/fUqBVcECeLZPhlAXF7GSA=;
-        b=a3ssneYLS5n65/EkQfdvGFuKgeysbmOziZJnPcyOtDPqHC+RMFyEIkku+FP00oIWQp
-         q0Y7PKEa2/i6/1QyxQHtwKYFph3+21/xu/LpAxNXyMF95OxiR/yh8zR+cmE55pqTLxd7
-         Sh2Gni0mJDWGILhPdNHIMJ9zICtH6BWNfzOVNNn3FykSciahmgAl0egb9Hte/nH6/wkG
-         TTL+CY1tr96cMlSPE5JwvQpQI8Chdxg86ZUlaNm9bY6WdFmk/2eG+v3D6sjV9K4v+UbC
-         lE8NOQExFs2KKTHK3e/kuJlo7J1pxQLAbmuNLQP1BpeJ1sTvf6TBPA01AFHeAEdrxgHi
-         xtIQ==
-X-Gm-Message-State: AOAM532y7XlOw7YKCJ7QmulprBPML5ccRJyqijx/sDD0xz2B47jf7+mf
-        9eXNzlvJndAltUIDGkOEvf5mALKSitdiQuwXAuLhJQ==
-X-Google-Smtp-Source: ABdhPJz0K7J9Kcn11+9meMrf3vRxVrLQJR4W3Bic2SiC1mK4LkwttbXKUrEWzTmF/9m2Ua801TzhyzK2CS2WC7W1H4g=
-X-Received: by 2002:a62:5586:0:b029:13e:d13d:a108 with SMTP id
- j128-20020a6255860000b029013ed13da108mr1208250pfb.36.1600717828686; Mon, 21
- Sep 2020 12:50:28 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=YnHM6Hb2y75zAmIL8oMRMNOuTr0UGFyFVBu7fGiSews=;
+        b=sFZTaV0X9wIam0RnjPXn/wJPtObkX24hBLN4B3L3pPd8os/UCe3QI4PAg/FtlzcdkS
+         UTTJ45C/E/ncG1ixXJb4Ya/vrXyaVPwp+zRAuT5dlBn7cGZBJSkERC10b9gcQELFSQM1
+         NyP7+Ht4i6IKkkfwbagfyUY72VcGkICmcCJyVGnGj8/2jz4I3iyhBlx6Lb33rmMx+VQm
+         eatixQRKm9YYE/P9eqUOziIgHjKU2DIPQUtkzTTEn75AN65WztR7U4SqIk1n4UrHjqb2
+         F1PWx1wYqPqzaLynpV1NE9CAGABbky5IW/46epjNl68Ylq+/b98mKbb8qkkMGJD2RDz3
+         dyqA==
+X-Gm-Message-State: AOAM531cEu/IFb0nnxhiRNBqIZ8tRCUp/Eal2ysHg2AS/7+waTv/Opr5
+        1X0ssHuk90wn7O1HR/8U6Lih9FaYAeTr8hg5lEg=
+X-Google-Smtp-Source: ABdhPJwZgwV6vkAAjowteBj5ihZxbhwD17IBcHMtzvMBYdjNxn4Ob2SIcxa+cIei8JjO78UQaTrO9VPBs6T/VC7upMk=
+X-Received: by 2002:a1c:7d4d:: with SMTP id y74mr912983wmc.73.1600718111467;
+ Mon, 21 Sep 2020 12:55:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAKwvOdkGd6mPw_OKHwmpVs_xxFW2oqAoXyr7M8hu3PCCwkqCEQ@mail.gmail.com>
- <CAPcyv4jZfbuS8zHZXBNqRTi_1HzHLUztkxDmsruMk5PGinGhPg@mail.gmail.com>
-In-Reply-To: <CAPcyv4jZfbuS8zHZXBNqRTi_1HzHLUztkxDmsruMk5PGinGhPg@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 21 Sep 2020 12:50:17 -0700
-Message-ID: <CAKwvOdnVeAFu_Zb2KNuCUcVRWcqsX9r855uyKAMR4+FM8LTdoQ@mail.gmail.com>
-Subject: =?UTF-8?B?UmU6IGVycm9yOiByZWRlZmluaXRpb24gb2Yg4oCYZGF4X3N1cHBvcnRlZOKAmQ==?=
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
+References: <20200915071820.76620-1-sudheesh.mavila@amd.com> <888285ed-62e9-53d7-7fde-e40ac64bc5a4@amd.com>
+In-Reply-To: <888285ed-62e9-53d7-7fde-e40ac64bc5a4@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 21 Sep 2020 15:55:00 -0400
+Message-ID: <CADnq5_NWnMraD_WPoms0G-bqmNxf7tN86h34Dm1Z+6ZTeqqzNg@mail.gmail.com>
+Subject: Re: [PATCH v1 ] drm/amd/pm: Removed fixed clock in auto mode DPM
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Sudheesh Mavila <sudheesh.mavila@amd.com>,
+        "Quan, Evan" <evan.quan@amd.com>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Kazlauskas, Nicholas" <nicholas.kazlauskas@amd.com>,
+        zhengbin <zhengbin13@huawei.com>,
+        Jason Yan <yanaijie@huawei.com>,
+        Tom St Denis <tom.stdenis@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "kernelci.org bot" <bot@kernelci.org>
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 11:47 AM Dan Williams <dan.j.williams@intel.com> wrote:
->
-> On Mon, Sep 21, 2020 at 11:35 AM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> >
-> > Hello DAX maintainers,
-> > I noticed our PPC64LE builds failing last night:
-> > https://travis-ci.com/github/ClangBuiltLinux/continuous-integration/jobs/388047043
-> > https://travis-ci.com/github/ClangBuiltLinux/continuous-integration/jobs/388047056
-> > https://travis-ci.com/github/ClangBuiltLinux/continuous-integration/jobs/388047099
-> > and looking on lore, I see a fresh report from KernelCI against arm:
-> > https://lore.kernel.org/linux-next/?q=dax_supported
-> >
-> > Can you all please take a look?  More concerning is that I see this
-> > failure on mainline.  It may be interesting to consider how this was
-> > not spotted on -next.
->
-> The failure is fixed with commit 88b67edd7247 ("dax: Fix compilation
-> for CONFIG_DAX && !CONFIG_FS_DAX"). I rushed the fixes that led to
-> this regression with insufficient exposure because it was crashing all
-> users. I thought the 2 kbuild-robot reports I squashed covered all the
-> config combinations, but there was a straggling report after I sent my
-> -rc6 pull request.
->
-> The baseline process escape for all of this was allowing a unit test
-> triggerable insta-crash upstream in the first instance necessitating
-> an urgent fix.
+Applied with fixed up whitespace.
 
-No worries; just checking that failures are root-caused.  I see it on
-top of v5.9-rc6:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/.
-I don't see it on -next today, but assume it will be there tomorrow.
-Thanks for the info.
--- 
 Thanks,
-~Nick Desaulniers
+
+Alex
+
+On Tue, Sep 15, 2020 at 3:45 AM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
+>
+> Am 15.09.20 um 09:18 schrieb Sudheesh Mavila:
+> >      SMU10_UMD_PSTATE_PEAK_FCLK value should not be used to set the DPM=
+.
+> >
+> >      Change  suggested by Evan.Quan@amd.com
+>
+> Can't say much about the change itself, but the Commit message is
+> indented and the indentation in the code doesn't look consistent either.
+>
+> Christian.
+>
+> >
+> > Signed-off-by: Sudheesh Mavila <sudheesh.mavila@amd.com>
+> > ---
+> >   drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c | 10 ++++++----
+> >   1 file changed, 6 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c b/driver=
+s/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c
+> > index c9cfe90a2947..081cb9b1b7c8 100644
+> > --- a/drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c
+> > +++ b/drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c
+> > @@ -566,6 +566,8 @@ static int smu10_dpm_force_dpm_level(struct pp_hwmg=
+r *hwmgr,
+> >       struct smu10_hwmgr *data =3D hwmgr->backend;
+> >       uint32_t min_sclk =3D hwmgr->display_config->min_core_set_clock;
+> >       uint32_t min_mclk =3D hwmgr->display_config->min_mem_set_clock/10=
+0;
+> > +     uint32_t index_fclk =3D data->clock_vol_info.vdd_dep_on_fclk->cou=
+nt - 1;
+> > +     uint32_t index_socclk =3D data->clock_vol_info.vdd_dep_on_socclk-=
+>count - 1;
+> >
+> >       if (hwmgr->smu_version < 0x1E3700) {
+> >               pr_info("smu firmware version too old, can not set dpm le=
+vel\n");
+> > @@ -679,13 +681,13 @@ static int smu10_dpm_force_dpm_level(struct pp_hw=
+mgr *hwmgr,
+> >               smum_send_msg_to_smc_with_parameter(hwmgr,
+> >                                               PPSMC_MSG_SetHardMinFclkB=
+yFreq,
+> >                                               hwmgr->display_config->nu=
+m_display > 3 ?
+> > -                                             SMU10_UMD_PSTATE_PEAK_FCL=
+K :
+> > +                                     data->clock_vol_info.vdd_dep_on_f=
+clk->entries[0].clk :
+> >                                               min_mclk,
+> >                                               NULL);
+> >
+> >               smum_send_msg_to_smc_with_parameter(hwmgr,
+> >                                               PPSMC_MSG_SetHardMinSoccl=
+kByFreq,
+> > -                                             SMU10_UMD_PSTATE_MIN_SOCC=
+LK,
+> > +                                     data->clock_vol_info.vdd_dep_on_s=
+occlk->entries[0].clk,
+> >                                               NULL);
+> >               smum_send_msg_to_smc_with_parameter(hwmgr,
+> >                                               PPSMC_MSG_SetHardMinVcn,
+> > @@ -698,11 +700,11 @@ static int smu10_dpm_force_dpm_level(struct pp_hw=
+mgr *hwmgr,
+> >                                               NULL);
+> >               smum_send_msg_to_smc_with_parameter(hwmgr,
+> >                                               PPSMC_MSG_SetSoftMaxFclkB=
+yFreq,
+> > -                                             SMU10_UMD_PSTATE_PEAK_FCL=
+K,
+> > +                             data->clock_vol_info.vdd_dep_on_fclk->ent=
+ries[index_fclk].clk,
+> >                                               NULL);
+> >               smum_send_msg_to_smc_with_parameter(hwmgr,
+> >                                               PPSMC_MSG_SetSoftMaxSoccl=
+kByFreq,
+> > -                                             SMU10_UMD_PSTATE_PEAK_SOC=
+CLK,
+> > +                             data->clock_vol_info.vdd_dep_on_socclk->e=
+ntries[index_socclk].clk,
+> >                                               NULL);
+> >               smum_send_msg_to_smc_with_parameter(hwmgr,
+> >                                               PPSMC_MSG_SetSoftMaxVcn,
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
