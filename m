@@ -2,125 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD5F27293F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20E14272943
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727738AbgIUO6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 10:58:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45946 "EHLO
+        id S1727759AbgIUO6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 10:58:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726973AbgIUO6T (ORCPT
+        with ESMTP id S1726471AbgIUO63 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:58:19 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A303CC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 07:58:18 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id e23so18204730eja.3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 07:58:18 -0700 (PDT)
+        Mon, 21 Sep 2020 10:58:29 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C689C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 07:58:29 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id k18so13059527wmj.5
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 07:58:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EJs4t9es9brS9byQpAuBOzkQpNdm2qyviSkYBbgWl2o=;
-        b=hXJAM8yDP7Dqi6R8iCao9nXatIh73hpixHgJlbXkNZlClzJTMS5uTw+NawbDadhq8G
-         Q7nPwwW61JWpKIg4KB0JYv8QIeoSyHzci2g8hhtueEJXuzenqzhz9/jR5VGJ0iCNBnbT
-         k8GZ1qB8bF5tYoDz+2dJwcnL05FNjyuqk7ppr2JRjYrmNdME9L7DLmhZpYPHFUR4F1pL
-         /0BM3hMQXDMP3Eb/9UnN3qA2LXhBxKJKYKayXb4D4u4JeFay1xDqDrYLV3hjV7oJhiol
-         6AGDEIyoWV8GqwkFZSeLHfzHvo3lujgje3dRULBPFg61tX1o29cnVFj+9hxZ+g/7ZJ4/
-         AeYQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=J02fUfHHsGOzjhQyl/tGfPUtfr9BJPAQxULq+u6ZRXM=;
+        b=pihm+3yZMKHKcYdASAww1rGEr2Dxntu4UArY54j2rSj/+nD8st9ACxliUmFGSoTDpl
+         SYW62IX43tVBiVLsps+pLlr7PiVubwfDVu+sMPAAohuq9lp51Wt+ZKPdFLEW5q1jOV8c
+         gHEiTzelfZRUecETp856lFG5KxFqbnWRRKGCMMVYJZjouqjBSXhYGnFaCZFWXgSa1LUb
+         ai9mNZxna9283GvRyEzueoFeoB+ZRgjB5RX5cuh1j9wmW0tjAud9Zcy8sSSNEi8Xb2ng
+         Z3Tf5sz8f37TbIMVt9ldV5IFpSNNDZPcFzAk2iQT9uFSoB6+wMOCyrSDB5nuhmuIbtdW
+         L2rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EJs4t9es9brS9byQpAuBOzkQpNdm2qyviSkYBbgWl2o=;
-        b=SW4oMDbg1sO1Sjx4i2Lid3cj8hSMB4S8tbKjQhtlxfDJATqQwZG/qn/VeojXz9dAjl
-         Wf8gcrt/fhyyXe3XzPG4FV13Ne4c2LmtClfeliu+x3gl7yRTP/TRb/I8Pn5zqYmRPjsd
-         SrVMVoBTbUP9r7lXFKGudSceuowys0Ind/H1jddXBfkyVFb2/Gk+229VTZtnoolDpHcF
-         hmgiAFgziWKjtl2SUlTfADBKQ7eIr1amVYO4c0lry7WnyD1cFu3+TGkNgzCO1FsjcKZ8
-         HZ1llj6gdoxJPtLlc/ZmZWSwapPEKF2sG2gqnywdAQ3Zqqh12HMC/nDQcwv19pKrA6V5
-         hfPA==
-X-Gm-Message-State: AOAM533p+ofujz2rYNOMlFfub01rTwgMNMAj5KJCPAEURUMyCDbNOmcA
-        2wPrqUBpYjZ9K7ZGPdWA8sPWGg==
-X-Google-Smtp-Source: ABdhPJyts2iTXX1HfbKhySlIf+CV1hK2t7cj5hn6jcA6d4Akk3B6Sur9AHgwQ3bMyn20MD/6Q6AqbQ==
-X-Received: by 2002:a17:906:60d3:: with SMTP id f19mr52068017ejk.141.1600700297089;
-        Mon, 21 Sep 2020 07:58:17 -0700 (PDT)
-Received: from tsr-vdi-mbaerts.nix.tessares.net (static.23.216.130.94.clients.your-server.de. [94.130.216.23])
-        by smtp.gmail.com with ESMTPSA id d13sm8746714edu.54.2020.09.21.07.58.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 07:58:16 -0700 (PDT)
-From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-To:     Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        mptcp@lists.01.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v3] mptcp: Wake up MPTCP worker when DATA_FIN found on a TCP FIN packet
-Date:   Mon, 21 Sep 2020 16:57:58 +0200
-Message-Id: <20200921145759.1302197-1-matthieu.baerts@tessares.net>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=J02fUfHHsGOzjhQyl/tGfPUtfr9BJPAQxULq+u6ZRXM=;
+        b=mTy04MzauDrkeDSh0l0hrNGlEkgKG9Z1D8u1vciF/ppg39ed8vPsbcnJG/3ZCX+Ulc
+         7qRd9dFG7XbTXuw7aTzkoQLEFDFIFzcn8lIvx5k5wH/Fb41dFjHlTFTjLqEMY2lPPyU8
+         M0x6SR+FZCJ6BB42OrX1wE7+iiR6brMqgjVx/eoQKwj4y38f1CPdkUv/EKGFIZHarzvz
+         A3Lw/RdOhRkJRbLjJvxxj9sGdbZ3g8Rk6G47RkMXULrvQ487s0h4pmDc4O0aUM7pQuuy
+         +dNyghNxazWXhOl3JcwHrQHsd+xkytQYo0f4Hb+ZUkvYuEKh4ZRtBC4BMbP9rMnBekx9
+         FGXw==
+X-Gm-Message-State: AOAM532/zJ/CSbP912gpxFX2tB2KBb3CXOm8hbcxLg5hvUF3Jmb0k486
+        kx0gXpBTaBnX9WZCHP90ou4BdWFf82sMkW4SqWwbWQ==
+X-Google-Smtp-Source: ABdhPJz9PSmNZXFkAIl8F7mMeI1IkMs29iiL7Fx77FGziAuV1SJmSBTtJ48EjMLqI0Oj5jqQ4/LlPfa8EPlyupGmeWM=
+X-Received: by 2002:a7b:c210:: with SMTP id x16mr47411wmi.37.1600700307697;
+ Mon, 21 Sep 2020 07:58:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200921132611.1700350-1-elver@google.com> <20200921132611.1700350-4-elver@google.com>
+ <20200921143059.GO2139@willie-the-truck>
+In-Reply-To: <20200921143059.GO2139@willie-the-truck>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Mon, 21 Sep 2020 16:58:16 +0200
+Message-ID: <CAG_fn=WKaY9MVmbpkgoN4vaJYD_T_A3z2Lgqn+2o8-irmCKywg@mail.gmail.com>
+Subject: Re: [PATCH v3 03/10] arm64, kfence: enable KFENCE for ARM64
+To:     Will Deacon <will@kernel.org>
+Cc:     Marco Elver <elver@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dmitriy Vyukov <dvyukov@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jonathan.Cameron@huawei.com, Jonathan Corbet <corbet@lwn.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, sjpark@amazon.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mat Martineau <mathew.j.martineau@linux.intel.com>
+On Mon, Sep 21, 2020 at 4:31 PM Will Deacon <will@kernel.org> wrote:
+>
+> On Mon, Sep 21, 2020 at 03:26:04PM +0200, Marco Elver wrote:
+> > Add architecture specific implementation details for KFENCE and enable
+> > KFENCE for the arm64 architecture. In particular, this implements the
+> > required interface in <asm/kfence.h>. Currently, the arm64 version does
+> > not yet use a statically allocated memory pool, at the cost of a pointe=
+r
+> > load for each is_kfence_address().
+> >
+> > Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+> > Co-developed-by: Alexander Potapenko <glider@google.com>
+> > Signed-off-by: Alexander Potapenko <glider@google.com>
+> > Signed-off-by: Marco Elver <elver@google.com>
+> > ---
+> > For ARM64, we would like to solicit feedback on what the best option is
+> > to obtain a constant address for __kfence_pool. One option is to declar=
+e
+> > a memory range in the memory layout to be dedicated to KFENCE (like is
+> > done for KASAN), however, it is unclear if this is the best available
+> > option. We would like to avoid touching the memory layout.
+>
+> Sorry for the delay on this.
 
-When receiving a DATA_FIN MPTCP option on a TCP FIN packet, the DATA_FIN
-information would be stored but the MPTCP worker did not get
-scheduled. In turn, the MPTCP socket state would remain in
-TCP_ESTABLISHED and no blocked operations would be awakened.
+NP, thanks for looking!
 
-TCP FIN packets are seen by the MPTCP socket when moving skbs out of the
-subflow receive queues, so schedule the MPTCP worker when a skb with
-DATA_FIN but no data payload is moved from a subflow queue. Other cases
-(DATA_FIN on a bare TCP ACK or on a packet with data payload) are
-already handled.
+> Given that the pool is relatively small (i.e. when compared with our virt=
+ual
+> address space), dedicating an area of virtual space sounds like it makes
+> the most sense here. How early do you need it to be available?
 
-Closes: https://github.com/multipath-tcp/mptcp_net-next/issues/84
-Fixes: 43b54c6ee382 ("mptcp: Use full MPTCP-level disconnect state machine")
-Acked-by: Paolo Abeni <pabeni@redhat.com>
-Signed-off-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
-Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
----
+Yes, having a dedicated address sounds good.
+We're inserting kfence_init() into start_kernel() after timekeeping_init().
+So way after mm_init(), if that matters.
 
-Notes:
-    This is a resend of v1 and v2 with the same code modification. The
-    previous versions did not get delivered to vger.kernel.org but did go
-    to other recipients. There is a known issue with the SMTP server on
-    the Intel side. Sorry for the multiple versions.
-    
-    The only modifications compared to v1 and v2 are in the commit message:
-    - Paolo's ACK is back: it was accidentaly dropped.
-    - My SOB is at the end, being the new sender of this patch from Mat.
+> An alternative approach would be to patch in the address at runtime, with
+> something like a static key to swizzle off the direct __kfence_pool load
+> once we're up and running.
 
- net/mptcp/subflow.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+IIUC there's no such thing as address patching in the kernel at the
+moment, at least static keys work differently?
+I am not sure how much we need to randomize this address range (we
+don't on x86 anyway).
 
-diff --git a/net/mptcp/subflow.c b/net/mptcp/subflow.c
-index 34d6230df017..31316cfeb4d0 100644
---- a/net/mptcp/subflow.c
-+++ b/net/mptcp/subflow.c
-@@ -733,7 +733,7 @@ static enum mapping_status get_mapping_status(struct sock *ssk,
- 
- 	if (mpext->data_fin == 1) {
- 		if (data_len == 1) {
--			mptcp_update_rcv_data_fin(msk, mpext->data_seq);
-+			bool updated = mptcp_update_rcv_data_fin(msk, mpext->data_seq);
- 			pr_debug("DATA_FIN with no payload seq=%llu", mpext->data_seq);
- 			if (subflow->map_valid) {
- 				/* A DATA_FIN might arrive in a DSS
-@@ -744,6 +744,9 @@ static enum mapping_status get_mapping_status(struct sock *ssk,
- 				skb_ext_del(skb, SKB_EXT_MPTCP);
- 				return MAPPING_OK;
- 			} else {
-+				if (updated && schedule_work(&msk->work))
-+					sock_hold((struct sock *)msk);
-+
- 				return MAPPING_DATA_FIN;
- 			}
- 		} else {
--- 
-2.27.0
+> Will
+>
+> --
+> You received this message because you are subscribed to the Google Groups=
+ "kasan-dev" group.
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to kasan-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgi=
+d/kasan-dev/20200921143059.GO2139%40willie-the-truck.
 
+
+
+--
+Alexander Potapenko
+Software Engineer
+
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
+
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
