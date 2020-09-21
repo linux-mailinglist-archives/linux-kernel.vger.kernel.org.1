@@ -2,73 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EB80272FA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C059272F99
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730289AbgIUQ67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:58:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39472 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726611AbgIUQ6v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:58:51 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 48A662223E;
-        Mon, 21 Sep 2020 16:58:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600707530;
-        bh=jBvTMb6BSyyzBMg1bmcGhFcyq8Z54iV6+nKI7nSpAMA=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=yg3oJvW5Lr1N1++gn6kiiQCbI2x01EE1M4MTbSGe+uk9MqyENcSjxgNUiXMobQE9h
-         OzW1kNiO34HzLBVgYO7LCBAH9nZDt6nc8h0wE01TCQE7q1zuQftM6qDn6I+Rq8chFg
-         bx+6jFuf4Q2JVd9l8JQlzkTKGsvDWzufQ59vtmNY=
-Date:   Mon, 21 Sep 2020 17:57:58 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     lgirdwood@gmail.com, dmurphy@ti.com,
-        Camel Guo <camel.guo@axis.com>, tiwai@suse.com,
+        id S1730260AbgIUQ63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:58:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728997AbgIUQ6F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:58:05 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEC77C061755;
+        Mon, 21 Sep 2020 09:58:04 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id c18so13562507wrm.9;
+        Mon, 21 Sep 2020 09:58:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Pwode9WuxR0NQny1g826zVRL54o0hpVVy92ZYMK8Dvw=;
+        b=sqePeyhlvkDMq0UuJOosFLcsXj2NVMi0T9t825erutMdwMYePO3YQMyHztvv+S1Srj
+         wkVr70iSteaGLlw7mDX/twUNDKPIhbw6XBW+b/L69MDnrin/dhAuHT/Rg8LQtAaFkzxX
+         mguMEZDzJz76tly4LqvPvL1IP6fvei34A+HDuK1yPzz27CUPqlGNpy3lCSVu3CK8s109
+         4kUaP5QXR9KQjqDiMOFDdvkJzaC73W4TFufIUzh8+oazfB425amqUx1A8WrssgUqSaU7
+         wjiGZJV2PPbGvfDsUPmtm1j7UTMzisPYeBx0pKeelDWfvwOdxPeo3wPQDyZZcLauACxm
+         FswA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Pwode9WuxR0NQny1g826zVRL54o0hpVVy92ZYMK8Dvw=;
+        b=KOLjeGCWvqtJoqXUG/qoCRpg/ojIoH301ExOEU5eA5CE8hCit9KGD6ijRj20lK4vlZ
+         tEbM7gJXn7M31d+WYoMN4vR+aEa0sJQzy3AKeGlkIhJQ3l8EAJJLw1JTbs7aW4LuBZ9P
+         KVC5+J+l5u9QNIhTwGylXs9L2CntZukZqUzt9E7iTolYiy9JqnDqNs4u2ubCyo0LLBX9
+         JwK1dohGMoB5eQkfPT4XTnTYyDSnTPpJqb5lOc64F6welcrQ13FrYTPYx/8yBlP4BTTj
+         8iuuFEWHXI4QYVNVq/sCKmc0caV5MZ7Z0z61fnNDVlPy7Faq1uOxgVwxYwX9gnqBlud8
+         +v4w==
+X-Gm-Message-State: AOAM5325RzhzPgCc1PbV/TlDpfbNq97IFZA+3Lw85it/zNlvy5rf8cPV
+        g7LiEbwV7MXqcvDy1F3GYpI=
+X-Google-Smtp-Source: ABdhPJysuN26CjjKmkh684/LBj0YsHAp2r5E1WyzP+CrVHERk8Z/A+gg8P+I+kN1vdh511YnZzgQeA==
+X-Received: by 2002:a5d:6049:: with SMTP id j9mr684578wrt.295.1600707483654;
+        Mon, 21 Sep 2020 09:58:03 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.113.201])
+        by smtp.gmail.com with ESMTPSA id h2sm22648597wrp.69.2020.09.21.09.58.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Sep 2020 09:58:02 -0700 (PDT)
+Subject: Re: [v4,2/5] arm64: dts: mt8183: update watchdog device node
+To:     Crystal Guo <crystal.guo@mediatek.com>, linux@roeck-us.net,
         robh+dt@kernel.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        alsa-devel@alsa-project.org, kernel@axis.com,
-        Camel Guo <camelg@axis.com>
-In-Reply-To: <20200918114025.18205-1-camel.guo@axis.com>
-References: <20200918114025.18205-1-camel.guo@axis.com>
-Subject: Re: [PATCH v5 1/2] dt-bindings: tlv320adcx140: Add GPIO config and drive config
-Message-Id: <160070745846.56122.3144589484342330182.b4-ty@kernel.org>
+Cc:     srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, seiya.wang@mediatek.com
+References: <20200803071501.30634-1-crystal.guo@mediatek.com>
+ <20200803071501.30634-3-crystal.guo@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <8df5726d-2be4-48b8-145e-67539f5a23f5@gmail.com>
+Date:   Mon, 21 Sep 2020 18:58:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <20200803071501.30634-3-crystal.guo@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Sep 2020 13:40:24 +0200, Camel Guo wrote:
-> Add properties for configuring the General Purpose Input Output (GPIO).
-> There are 2 settings for GPIO, configuration and the output drive type.
 
-Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On 03/08/2020 09:14, Crystal Guo wrote:
+> The watchdog driver for MT8183 relies on DT data, so the fallback
+> compatible MT6589 won't work, need to update watchdog device node
+> to sync with watchdog dt-binding document.
+> 
+> Signed-off-by: Crystal Guo <crystal.guo@mediatek.com>
+
+Applied to v5.9-next/dts64
 
 Thanks!
 
-[1/2] dt-bindings: tlv320adcx140: Add GPIO config and drive config
-      commit: 15b3d324c8980022071710b5096b705eb6b74fca
-[2/2] ASoC: tlv320adcx140: Add support for configuring GPIO pin
-      commit: d5214321498a43558d9ffcce4153775c2c296bad
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+> ---
+>   arch/arm64/boot/dts/mediatek/mt8183.dtsi | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> index 1e03c849dc5d..f8d835746ab8 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> @@ -310,8 +310,7 @@
+>   		};
+>   
+>   		watchdog: watchdog@10007000 {
+> -			compatible = "mediatek,mt8183-wdt",
+> -				     "mediatek,mt6589-wdt";
+> +			compatible = "mediatek,mt8183-wdt";
+>   			reg = <0 0x10007000 0 0x100>;
+>   			#reset-cells = <1>;
+>   		};
+> 
