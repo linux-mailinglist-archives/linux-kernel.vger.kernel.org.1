@@ -2,96 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72EE22726C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:15:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 567E42726BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:15:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727334AbgIUOPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 10:15:17 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:34973 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727030AbgIUOPQ (ORCPT
+        id S1727274AbgIUOPH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Sep 2020 10:15:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727229AbgIUOPF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:15:16 -0400
-Received: by mail-ot1-f65.google.com with SMTP id o6so12468582ota.2;
-        Mon, 21 Sep 2020 07:15:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jSuNx5iI/OJ6Z/gYoNUI3kSkgsNrBIRpVHSXiUBoJ5w=;
-        b=Zz6C9h7hwzCz1AmxTZ1iHFeSBowiybOPcYhmIbfPmKVNbN+9jTzrkqPx7DU1TVkdk2
-         R8lT54g/+rHVsN4dRTfNsNIVD1/L6IEEIU0L1kGjTfH9w6yVUhM8VD8LPG+iIf7iQFLP
-         omhG4Wj/B7zoAd0MH3OnadCvPwfEJ2Q1sbOAG48w2ZmUWHkZrlJDKUOK8qwxC4NXB0VU
-         m6VbWrDsbReSLaJGhWVl6YxYlHWOPLJLY/4JtofKYKxTTh31ml7FOmRwve5eY4R4BEbI
-         5k7tzxo7QfX46ltBX4gpukRFU68DmXf81TipX8TfoR+FT8MduImm9KAiq8v3a8bCPkQx
-         Hl/g==
-X-Gm-Message-State: AOAM532Dh/oSsXhag1+KnjkEZhJul6o2IfHanzwSOgp/iNeYSwgZ/Gcq
-        w0UC8ZcYbN2Y7fI19SS1BpW6h3mvuRXX/6CtuNU=
-X-Google-Smtp-Source: ABdhPJzkjPnsDI6GKmMx9reL3cE4Wwu3RkVhPxyLkDkECtfV3Ub2yNwh7ZDLrlXM6iT3pC+evVidlRkxKGGiXrUokjw=
-X-Received: by 2002:a9d:6010:: with SMTP id h16mr31722498otj.262.1600697715799;
- Mon, 21 Sep 2020 07:15:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200918165518.23246-1-grygorii.strashko@ti.com> <CAKfTPtApNLAYq-=UcD6bM8nhT3pp3DSp2bCxFsTF3AZKs6Qz3g@mail.gmail.com>
-In-Reply-To: <CAKfTPtApNLAYq-=UcD6bM8nhT3pp3DSp2bCxFsTF3AZKs6Qz3g@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 21 Sep 2020 16:15:00 +0200
-Message-ID: <CAJZ5v0jcTkQe68zgrxgpZvghFMAbnfui5wc=t3mh87fr0gu6Hw@mail.gmail.com>
-Subject: Re: [PATCH] pm: runtime: fix timer_expires on 32bits arch
-To:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        Mon, 21 Sep 2020 10:15:05 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1377C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 07:15:05 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kKMau-0000CD-8Z; Mon, 21 Sep 2020 16:15:04 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kKMar-0000oz-T0; Mon, 21 Sep 2020 16:15:01 +0200
+Message-ID: <b883059e51c97d34196a1ad15bbec66a89283c8e.camel@pengutronix.de>
+Subject: Re: [Re-send][PATCH] gpu/ipu-v3:reduce protected code area in ipu
+ idmac get/put
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Bernard <bernard@vivo.com>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com
+Date:   Mon, 21 Sep 2020 16:15:01 +0200
+In-Reply-To: <AN*ApwBwDVasgemZb6*hx4qM.1.1600686717774.Hmail.bernard@vivo.com>
+References: <AN*ApwBwDVasgemZb6*hx4qM.1.1600686717774.Hmail.bernard@vivo.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
+MIME-Version: 1.0
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 8:51 AM Vincent Guittot
-<vincent.guittot@linaro.org> wrote:
->
-> On Fri, 18 Sep 2020 at 18:55, Grygorii Strashko
-> <grygorii.strashko@ti.com> wrote:
-> >
-> > The commit 8234f6734c5d ("PM-runtime: Switch autosuspend over to using
-> > hrtimers") switched PM runtime autosuspend to use hrtimers and all related
-> > time accounting in ns, but missed update the struct
-> > dev_pm_info->timer_expires to u64. This causes timer_expires value to be
-> > truncated on 32bits architectures when assignment is done from u64 values:
-> >
-> > rpm_suspend()
-> > |- dev->power.timer_expires = expires;
-> >
-> > Hence, fix it by changing timer_expires type to u64.
-> >
-> > Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> > Fixes: 8234f6734c5d ("PM-runtime: Switch autosuspend over to using hrtimers")
-> > Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
->
-> Acked-by: Vincent Guittot <vincent.guittot@linaro.org>
+Hi Bernard,
 
-Applied as 5.9-rc7 material with some edits in the subject and
-changelog, thanks!
+On Mon, 2020-09-21 at 19:11 +0800, Bernard wrote:
+> This change will speed-up a bit these ipu_idmac_get &
+> ipu_idmac_put processing and there is no need to protect
+> kzalloc & kfree.
 
-> > ---
-> >  include/linux/pm.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/include/linux/pm.h b/include/linux/pm.h
-> > index a30a4b54df52..47aca6bac1d6 100644
-> > --- a/include/linux/pm.h
-> > +++ b/include/linux/pm.h
-> > @@ -590,7 +590,7 @@ struct dev_pm_info {
-> >  #endif
-> >  #ifdef CONFIG_PM
-> >         struct hrtimer          suspend_timer;
-> > -       unsigned long           timer_expires;
-> > +       u64                     timer_expires;
-> >         struct work_struct      work;
-> >         wait_queue_head_t       wait_queue;
-> >         struct wake_irq         *wakeirq;
-> > --
-> > 2.17.1
-> >
+I don't think that will be measurable, the channel lock is very unlikely
+to be contended. It might make more sense to replace the list walk with
+a bitfield.
+
+> Signed-off-by: Bernard Zhao <bernard@vivo.com>
+> ---
+>  drivers/gpu/ipu-v3/ipu-common.c | 24 +++++++++++++-----------
+>  1 file changed, 13 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/gpu/ipu-v3/ipu-common.c b/drivers/gpu/ipu-v3/ipu-common.c
+> index b3dae9ec1a38..8b3a57864c2e 100644
+> --- a/drivers/gpu/ipu-v3/ipu-common.c
+> +++ b/drivers/gpu/ipu-v3/ipu-common.c
+> @@ -267,29 +267,30 @@ EXPORT_SYMBOL_GPL(ipu_rot_mode_to_degrees);
+>  struct ipuv3_channel *ipu_idmac_get(struct ipu_soc *ipu, unsigned num)
+>  {
+>  	struct ipuv3_channel *channel;
+> +	struct ipuv3_channel *entry;
+>  
+>  	dev_dbg(ipu->dev, "%s %d\n", __func__, num);
+>  
+>  	if (num > 63)
+>  		return ERR_PTR(-ENODEV);
+>  
+> +	channel = kzalloc(sizeof(*channel), GFP_KERNEL);
+> +	if (!channel)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	channel->num = num;
+> +	channel->ipu = ipu;
+> +
+>  	mutex_lock(&ipu->channel_lock);
+>  
+> -	list_for_each_entry(channel, &ipu->channels, list) {
+> -		if (channel->num == num) {
+> +	list_for_each_entry(entry, &ipu->channels, list) {
+> +		if (entry->num == num) {
+> +			kfree(channel);
+>  			channel = ERR_PTR(-EBUSY);
+>  			goto out;
+
+This leaks the channel memory allocated above.
+
+>  		}
+>  	}
+> 
+> -	channel = kzalloc(sizeof(*channel), GFP_KERNEL);
+> -	if (!channel) {
+> -		channel = ERR_PTR(-ENOMEM);
+> -		goto out;
+> -	}
+> -
+> -	channel->num = num;
+> -	channel->ipu = ipu;
+>  	list_add(&channel->list, &ipu->channels);
+>  
+>  out:
+> @@ -308,9 +309,10 @@ void ipu_idmac_put(struct ipuv3_channel *channel)
+>  	mutex_lock(&ipu->channel_lock);
+>  
+>  	list_del(&channel->list);
+> -	kfree(channel);
+>  
+>  	mutex_unlock(&ipu->channel_lock);
+> +
+> +	kfree(channel);
+>  }
+>  EXPORT_SYMBOL_GPL(ipu_idmac_put);
+
+regards
+Philipp
