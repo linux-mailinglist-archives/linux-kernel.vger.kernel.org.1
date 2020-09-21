@@ -2,89 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C410271AC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 08:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14D27271ACE
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 08:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726522AbgIUGRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 02:17:37 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:37159 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726444AbgIUGRW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 02:17:22 -0400
-X-UUID: 847c506cef2040d1ac54569fed59b031-20200921
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=6qZ3MFCp67LQIehQWoxsg/JhWq3n6ohpU0YiOM2IRh4=;
-        b=EEQXTdPab/7sy/TBuVvayjO/SjldcuWGvOAXt1oxM8Dn2WfqdG4PHT6vemaX2A+svzCkDhoZhrrPjBQzLYbxPSK7Welhl8fNtwlO1HLqYsvhNziPihxNTji+Q6O3z3z+vY49bmfmt7AaQpQYAlw46eEP47+9tnA/TZ/w4jWrb1s=;
-X-UUID: 847c506cef2040d1ac54569fed59b031-20200921
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 937722441; Mon, 21 Sep 2020 14:17:14 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- MTKMBS31N1.mediatek.inc (172.27.4.69) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 21 Sep 2020 14:17:14 +0800
-Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 21 Sep 2020 14:17:12 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>
-CC:     Mathias Nyman <mathias.nyman@intel.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>, Jann Horn <jannh@google.com>,
-        Jason Yan <yanaijie@huawei.com>, Arnd Bergmann <arnd@arndb.de>,
-        Chuhong Yuan <hslester96@gmail.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        "Ben Dooks (Codethink)" <ben.dooks@codethink.co.uk>,
-        Saurav Girepunje <saurav.girepunje@gmail.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Alan Stern <stern@rowland.harvard.edu>
-Subject: [PATCH v4 11/11] iopoll: update kerneldoc of read_poll_timeout_atomic()
-Date:   Mon, 21 Sep 2020 14:13:35 +0800
-Message-ID: <1600668815-12135-11-git-send-email-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1600668815-12135-1-git-send-email-chunfeng.yun@mediatek.com>
-References: <1600668815-12135-1-git-send-email-chunfeng.yun@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 12B795415FC0ED3118BA475BA2E81ADE4E49B603F95922E5AACB3B2F03B46E0A2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        id S1726347AbgIUGWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 02:22:31 -0400
+Received: from mga04.intel.com ([192.55.52.120]:4790 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726011AbgIUGWa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 02:22:30 -0400
+IronPort-SDR: ODueQ2Vgsi8hp8/LxDpk5PlWKrslcGGLqP4fLCHigf5JkEMoDx0mQe0Yc9rLN80+nIAB6owra/
+ /vE5ddTAfiyQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9750"; a="157703146"
+X-IronPort-AV: E=Sophos;i="5.77,285,1596524400"; 
+   d="scan'208";a="157703146"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2020 23:22:29 -0700
+IronPort-SDR: UKrKTMhbaahAv9WpDlD2qnVoNECMqmJXcCG0BJgDVOSXMUypO2FZPaA6z6HLhS6nrpw0pmHaxD
+ RHgFnxUk/idg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,285,1596524400"; 
+   d="scan'208";a="510437549"
+Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
+  by fmsmga005.fm.intel.com with ESMTP; 20 Sep 2020 23:22:26 -0700
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     lee.jones@linaro.org, linux@roeck-us.net, jdelvare@suse.com,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, yilun.xu@intel.com,
+        matthew.gerlach@linux.intel.com, russell.h.weight@intel.com,
+        lgoncalv@redhat.com, hao.wu@intel.com, mdf@kernel.org
+Subject: [PATCH v3 0/2] add Intel MAX 10 BMC MFD driver & hwmon sub driver
+Date:   Mon, 21 Sep 2020 14:17:49 +0800
+Message-Id: <1600669071-26235-1-git-send-email-yilun.xu@intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QXJndW1lbnRzIGRlc2NyaXB0aW9uIG9mIHJlYWRfcG9sbF90aW1lb3V0X2F0b21pYygpIGlzIG91
-dCBvZiBkYXRlLA0KdXBkYXRlIGl0Lg0KDQpDYzogQWxhbiBTdGVybiA8c3Rlcm5Acm93bGFuZC5o
-YXJ2YXJkLmVkdT4NClNpZ25lZC1vZmYtYnk6IENodW5mZW5nIFl1biA8Y2h1bmZlbmcueXVuQG1l
-ZGlhdGVrLmNvbT4NCi0tLQ0KdjQ6IG5vIGNoYW5nZXMNCg0KdjM6IGZpeCB0eXBvIGluIGNvbW1p
-dCBtZXNzYWdlIHN1Z2dlc3RlZCBieSBTZXJnZWkNCg0KdjI6IG5ldyBwYXRjaCwgc3VnZ2VzdGVk
-IGJ5IEFsYW4NCi0tLQ0KIGluY2x1ZGUvbGludXgvaW9wb2xsLmggfCA0ICsrLS0NCiAxIGZpbGUg
-Y2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEv
-aW5jbHVkZS9saW51eC9pb3BvbGwuaCBiL2luY2x1ZGUvbGludXgvaW9wb2xsLmgNCmluZGV4IGJj
-ODlhYzYuLjJjODg2MGUgMTAwNjQ0DQotLS0gYS9pbmNsdWRlL2xpbnV4L2lvcG9sbC5oDQorKysg
-Yi9pbmNsdWRlL2xpbnV4L2lvcG9sbC5oDQpAQCAtNjAsOCArNjAsNyBAQA0KIC8qKg0KICAqIHJl
-YWRfcG9sbF90aW1lb3V0X2F0b21pYyAtIFBlcmlvZGljYWxseSBwb2xsIGFuIGFkZHJlc3MgdW50
-aWwgYSBjb25kaXRpb24gaXMNCiAgKiAJCQkJbWV0IG9yIGEgdGltZW91dCBvY2N1cnMNCi0gKiBA
-b3A6IGFjY2Vzc29yIGZ1bmN0aW9uICh0YWtlcyBAYWRkciBhcyBpdHMgb25seSBhcmd1bWVudCkN
-Ci0gKiBAYWRkcjogQWRkcmVzcyB0byBwb2xsDQorICogQG9wOiBhY2Nlc3NvciBmdW5jdGlvbiAo
-dGFrZXMgQGFyZ3MgYXMgaXRzIGFyZ3VtZW50cykNCiAgKiBAdmFsOiBWYXJpYWJsZSB0byByZWFk
-IHRoZSB2YWx1ZSBpbnRvDQogICogQGNvbmQ6IEJyZWFrIGNvbmRpdGlvbiAodXN1YWxseSBpbnZv
-bHZpbmcgQHZhbCkNCiAgKiBAZGVsYXlfdXM6IFRpbWUgdG8gdWRlbGF5IGJldHdlZW4gcmVhZHMg
-aW4gdXMgKDAgdGlnaHQtbG9vcHMpLiAgU2hvdWxkDQpAQCAtNjksNiArNjgsNyBAQA0KICAqICAg
-ICAgICAgICAgRG9jdW1lbnRhdGlvbi90aW1lcnMvdGltZXJzLWhvd3RvLnJzdCkuDQogICogQHRp
-bWVvdXRfdXM6IFRpbWVvdXQgaW4gdXMsIDAgbWVhbnMgbmV2ZXIgdGltZW91dA0KICAqIEBkZWxh
-eV9iZWZvcmVfcmVhZDogaWYgaXQgaXMgdHJ1ZSwgZGVsYXkgQGRlbGF5X3VzIGJlZm9yZSByZWFk
-Lg0KKyAqIEBhcmdzOiBhcmd1bWVudHMgZm9yIEBvcCBwb2xsDQogICoNCiAgKiBSZXR1cm5zIDAg
-b24gc3VjY2VzcyBhbmQgLUVUSU1FRE9VVCB1cG9uIGEgdGltZW91dC4gSW4gZWl0aGVyDQogICog
-Y2FzZSwgdGhlIGxhc3QgcmVhZCB2YWx1ZSBhdCBAYXJncyBpcyBzdG9yZWQgaW4gQHZhbC4NCi0t
-IA0KMS45LjENCg==
+I recently realized that maintainers may have trouble to apply patches to
+their trees if the patches depend on other being-reviewed patches. So I'm
+trying to wrapper the 2 patches into one patchset and let all the
+maintainers see the dependencies.
+
+But the patch version is then not aligned between the 2 patches. I'm not
+sure how to handle it. I just picked the smaller number on Subject, but
+you could still see their own version changes in commit message of each
+patch. Sorry if it makes confusing.
+
+
+Patch #1 implements the basic functions of the BMC chip for some Intel
+FPGA PCIe Acceleration Cards (PAC). The BMC is implemented using the
+Intel MAX 10 CPLD.
+
+This BMC chip is connected to the FPGA by a SPI bus. To provide direct
+register access from the FPGA, the "SPI slave to Avalon Master Bridge"
+(spi-avmm) IP is integrated in the chip. It converts encoded streams of
+bytes from the host to the internal register read/write on the Avalon
+bus. So This driver uses the regmap-spi-avmm for register accessing.
+
+Patch #2 adds support for the hwmon sub device in Intel MAX 10 BMC
+
+
+Xu Yilun (2):
+  mfd: intel-m10-bmc: add Intel MAX 10 BMC chip support for Intel FPGA
+    PAC
+  hwmon: intel-m10-bmc-hwmon: add hwmon support for Intel MAX 10 BMC
+
+ .../ABI/testing/sysfs-driver-intel-m10-bmc         |  15 +
+ Documentation/hwmon/index.rst                      |   1 +
+ Documentation/hwmon/intel-m10-bmc-hwmon.rst        |  78 +++++
+ drivers/hwmon/Kconfig                              |  11 +
+ drivers/hwmon/Makefile                             |   1 +
+ drivers/hwmon/intel-m10-bmc-hwmon.c                | 334 +++++++++++++++++++++
+ drivers/mfd/Kconfig                                |  13 +
+ drivers/mfd/Makefile                               |   2 +
+ drivers/mfd/intel-m10-bmc.c                        | 164 ++++++++++
+ include/linux/mfd/intel-m10-bmc.h                  |  65 ++++
+ 10 files changed, 684 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-driver-intel-m10-bmc
+ create mode 100644 Documentation/hwmon/intel-m10-bmc-hwmon.rst
+ create mode 100644 drivers/hwmon/intel-m10-bmc-hwmon.c
+ create mode 100644 drivers/mfd/intel-m10-bmc.c
+ create mode 100644 include/linux/mfd/intel-m10-bmc.h
+
+-- 
+2.7.4
 
