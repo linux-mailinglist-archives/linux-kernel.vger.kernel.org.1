@@ -2,150 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBC98271B2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 09:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 183D6271B39
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 09:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726445AbgIUHAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 03:00:44 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:38330 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726011AbgIUHAn (ORCPT
+        id S1726405AbgIUHEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 03:04:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726011AbgIUHEj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 03:00:43 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 08L701420005130, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb05.realtek.com.tw[172.21.6.98])
-        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 08L701420005130
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 21 Sep 2020 15:00:01 +0800
-Received: from RTEXMB04.realtek.com.tw (172.21.6.97) by
- RTEXMB05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Mon, 21 Sep 2020 15:00:01 +0800
-Received: from RTEXMB04.realtek.com.tw ([fe80::3477:84c0:6ac8:dfee]) by
- RTEXMB04.realtek.com.tw ([fe80::3477:84c0:6ac8:dfee%3]) with mapi id
- 15.01.2044.006; Mon, 21 Sep 2020 15:00:01 +0800
-From:   =?utf-8?B?5YqJ5YGJ5qyK?= <willy.liu@realtek.com>
-To:     Serge Semin <fancer.lancer@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>, "Kyle Evans" <kevans@FreeBSD.org>
-CC:     "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ryan Kao <ryankao@realtek.com>,
-        "Joe Hershberger" <joe.hershberger@ni.com>,
-        Peter Robinson <pbrobinson@gmail.com>
-Subject: RE: [PATCH] net: phy: realtek: fix rtl8211e rx/tx delay config
-Thread-Topic: [PATCH] net: phy: realtek: fix rtl8211e rx/tx delay config
-Thread-Index: AQHWjJSIgE9wGMLbJkqAPItOTw6viqlsFkuAgAHOTXCAAAJ4gIAAG6aAgARrxhA=
-Date:   Mon, 21 Sep 2020 07:00:00 +0000
-Message-ID: <e14a0e96ddf8480591f98677cdca5e77@realtek.com>
-References: <1600307253-3538-1-git-send-email-willy.liu@realtek.com>
- <20200917101035.uwajg4m524g4lz5o@mobilestation>
- <87c4ebf4b1fe48a7a10b27d0ba0b333c@realtek.com>
- <20200918135403.GC3631014@lunn.ch>
- <20200918153301.chwlvzh6a2bctbjw@mobilestation>
-In-Reply-To: <20200918153301.chwlvzh6a2bctbjw@mobilestation>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.179.211]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mon, 21 Sep 2020 03:04:39 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64827C061755;
+        Mon, 21 Sep 2020 00:04:39 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id b124so8445430pfg.13;
+        Mon, 21 Sep 2020 00:04:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=I2ZbtwVmDvOFK+zycxCjfdKVKY6xF0Wy1/dJQK2JDm0=;
+        b=o8tGxzau2gDvTjcFKlTm8o00rEEjLcbqbxiuYoS9gm8j+Jc38UaqRX1mskLjzw8qtW
+         KXx5O8nFLjrw0c8kXUUVvsCqvFVnE8zy3LyQQi1zI3DY9GHMkr5BSGHN/njPZGhz9hVS
+         5KFnwsV5X4q3AP0AMiyXsMGsngC1oNvgQAHJcGiPu/WEM37tmV9iOQkD3VIqaKSObb/o
+         h5CZ726agWwKFjZUvIMMcvKs8I+JBDTtaVbC9J2yC1PCsKO3/DZ5ZXXXV12uNue/l8sd
+         I9zlXUT9bk7I2MH+zzV5YtVqSn8CJYS/qQCNbYp8HxCJcb/RhEPZTW3DoJTHkwrZvQSi
+         yP5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=I2ZbtwVmDvOFK+zycxCjfdKVKY6xF0Wy1/dJQK2JDm0=;
+        b=tUnAWWniS3YK8KI+KHFLNaIEblrRDso5uyl4d5urtNOFsnsKSYw9WV1RYnfhm+Jycf
+         g+5pK75I9LJbWy4wfwVTXf0XsHWC+X0/9utZsEYF0W/GoULn+UXRFXv8DhuEkI5ts9eW
+         7qQ8CKBqkuKagI1U4kKCV4ne5BIBGTKlAhelgIHm8Iz04sErcJLxq1fCKlqwcsD5M1/L
+         7J00B9TZ+S8zpRPKwBNC17IV/USti7/+soOt5sGWDfQNC10Qe/W7L/N36kOfbIqFNeO+
+         j5mUko7jZBfwTcTPWIX5UppMantWPvo+efhv3lA02vCThAOysUqybOP5RCvDJfmw8uR2
+         Jxew==
+X-Gm-Message-State: AOAM5323TUOTQqFlbxL4Ri6RYoMVwcKxL5uyoyGfnvMPCflRZtx9Dvdz
+        174h24llQoL4ak3rw+aqrnaddoGgXRuul0+r
+X-Google-Smtp-Source: ABdhPJxauJfV3iIfYHv2fZVgLIL3gwOGcPNQSd5OnGX3Cd0KzCdRiPOt0FDIMC5ssPVIgCkewP04Ng==
+X-Received: by 2002:aa7:904a:0:b029:142:2501:35d8 with SMTP id n10-20020aa7904a0000b0290142250135d8mr25862705pfo.56.1600671878867;
+        Mon, 21 Sep 2020 00:04:38 -0700 (PDT)
+Received: from localhost.localdomain ([47.242.4.81])
+        by smtp.gmail.com with ESMTPSA id m13sm10095919pjl.45.2020.09.21.00.04.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 00:04:38 -0700 (PDT)
+From:   Herrington <hankinsea@gmail.com>
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shipujin.t@gmail.com, hankinsea@gmail.com,
+        Pujin Shi <shipj@lemote.com>
+Subject: [PATCH v2] powercap: include header to fix -Wmissing-prototypes
+Date:   Mon, 21 Sep 2020 15:04:17 +0800
+Message-Id: <20200921070417.1121-1-hankinsea@gmail.com>
+X-Mailer: git-send-email 2.18.4
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQW5kcmV3LA0KSSByZW1vdmVkIGJlbG93IHJlZ2lzdGVyIGxheW91dCBkZXNjcmlwdGlvbnMg
-YmVjYXVzZSB0aGVzZSBkZXNjcmlwdGlvbnMgZGlkIG5vdCBtYXRjaCByZWdpc3RlciBkZWZpbml0
-aW9ucyBmb3IgcnRsODIxMWUgZXh0ZW5zaW9uIHBhZ2UgMTY0IHJlZyAweDFjIGF0IGFsbC4NCjg6
-NiA9IFBIWSBBZGRyZXNzDQo1OjQgPSBBdXRvLU5lZ290aWF0aW9uDQozID0gTW9kZQ0KMiA9IFJY
-RA0KMSA9IFRYRA0KMCA9IFNFTFJHVjENCkkgdGhpbmsgaXQgaXMgYSBtaXN1bmRlcnN0YW5kaW5n
-LiBUaGVzZSBkZWZpbml0aW9ucyBhcmUgbWFwcGVkIGZyb20gZGF0YXNoZWV0IHJ0bDgyMTFlIHRh
-YmxlMTMiIENvbmZpZ3VyYXRpb24gUmVnaXN0ZXIgRGVmaW5pdGlvbiIuIEhvd2V2ZXIgdGhpcyB0
-YWJsZSBzaG91bGQgYmUgSFcgcGluIGNvbmZpZ3VyYXRpb25zIG5vdCByZWdpc3RlciBkZXNjcmlw
-dGlvbnMuIA0KDQpVc2VycyBjYW4gY29uZmlnIFJYRC9UWEQgdmlhIHJlZ2lzdGVyIHNldHRpbmco
-ZXh0ZW5zaW9uIHBhZ2UgMTY0IHJlZyAweDFjKS4gQnV0IGJpdCBtYXAgZm9yIHRoZXNlIHR3byBz
-ZXR0aW5ncyBzaG91bGQgYmUgYmVsb3c6IA0KMTMgPSBGb3JjZSBUeCBSWCBEZWxheSBjb250cm9s
-bGVkIGJ5IGJpdDEyIGJpdDExLA0KMTIgPSBSWCBEZWxheSwgMTEgPSBUWCBEZWxheQ0KDQpIaSBT
-ZXJnZXksDQpJIHNhdyB0aGUgc3VtbWFyeSBmcm9tIGh0dHBzOi8vcmV2aWV3cy5mcmVlYnNkLm9y
-Zy9EMTM1OTEuIFRoaXMgcGF0Y2ggaXMgdG8gcmVjb25maWd1cmUgdGhlIFJUTDgyMTFFIHVzZWQg
-dG8gZm9yY2Ugb2ZmIFRYRC9SWEQgKFJYRCBpcyBkZWZhdWx0aW5nIHRvIG9uLCBpbiBteSBjaGVj
-a3MpIGFuZCB0dXJuIG9uIHNvbWUgYml0cyBpbiB0aGUgY29uZmlndXJhdGlvbiByZWdpc3RlciBm
-b3IgdGhpcyBQSFkgdGhhdCBhcmUgdW5kb2N1bWVudGVkLg0KVGhlIGRlZmF1bHQgdmFsdWUgZm9y
-ICJleHRlbnNpb24gcGcgMHhhNCByZWcgMHgxYyIgaXMgMHg4MTQ4LCBhbmQgYml0MS0yIHNob3Vs
-ZCBiZSAwLiBJbiBteSBvcGluaW9uLCB0aGlzIHBhdGNoIHNob3VsZCBiZSB3b3JrZWQgYmFzZWQg
-b24gdGhlIG1hZ2ljIG51bWJlciAoMHhiNDAwKS4gSXQgc2VlbXMgUlggZGVsYXkgd2FzIHNldCBh
-bmQgcGFja2FnZSBkaWQgbm90IGxvc3QgZm9yIFNvbWUgcGluZTY0IG1vZGVscy4gSSBhbSBub3Qg
-c3VyZSBpZiBzb21lIG1vZGVscyBnb3QgZGlmZmVyZW50IGRlZmF1bHQgdmFsdWUobm90IDB4ODE0
-OCkgYmVjYXVzZSB0aGUgc3VtbWFyeSBzYXlzIChSWEQgaXMgZGVmYXVsdGluZyB0byBvbikuIFdo
-YXQgSSBtZWFuIGlzIHRoYXQgdGhpcyBwYXRjaCBpcyBhY3R1YWxseSB0dXJuIG9uIFJYIERlbGF5
-IG5vdCB0dXJuIG9mZiBSWCBkZWxheS4gSSBob3BlIHdlIGNhbiBjb3JyZWN0IHRoZSBtZWFuaW5n
-IG9mIHRoaXMgcmVnaXN0ZXIuIA0KDQpCLlIuDQpXaWxseQ0KDQotLS0tLU9yaWdpbmFsIE1lc3Nh
-Z2UtLS0tLQ0KRnJvbTogU2VyZ2UgU2VtaW4gPGZhbmNlci5sYW5jZXJAZ21haWwuY29tPiANClNl
-bnQ6IEZyaWRheSwgU2VwdGVtYmVyIDE4LCAyMDIwIDExOjMzIFBNDQpUbzogQW5kcmV3IEx1bm4g
-PGFuZHJld0BsdW5uLmNoPjsgS3lsZSBFdmFucyA8a2V2YW5zQEZyZWVCU0Qub3JnPjsg5YqJ5YGJ
-5qyKIDx3aWxseS5saXVAcmVhbHRlay5jb20+DQpDYzogaGthbGx3ZWl0MUBnbWFpbC5jb207IGxp
-bnV4QGFybWxpbnV4Lm9yZy51azsgZGF2ZW1AZGF2ZW1sb2Z0Lm5ldDsga3ViYUBrZXJuZWwub3Jn
-OyBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBS
-eWFuIEthbyA8cnlhbmthb0ByZWFsdGVrLmNvbT47IEpvZSBIZXJzaGJlcmdlciA8am9lLmhlcnNo
-YmVyZ2VyQG5pLmNvbT47IFBldGVyIFJvYmluc29uIDxwYnJvYmluc29uQGdtYWlsLmNvbT4NClN1
-YmplY3Q6IFJlOiBbUEFUQ0hdIG5ldDogcGh5OiByZWFsdGVrOiBmaXggcnRsODIxMWUgcngvdHgg
-ZGVsYXkgY29uZmlnDQoNCkhlbGxvIEFuZHJldy4NCg0KT24gRnJpLCBTZXAgMTgsIDIwMjAgYXQg
-MDM6NTQ6MDNQTSArMDIwMCwgQW5kcmV3IEx1bm4gd3JvdGU6DQo+IE9uIEZyaSwgU2VwIDE4LCAy
-MDIwIGF0IDA2OjU1OjE2QU0gKzAwMDAsIOWKieWBieasiiB3cm90ZToNCj4gPiBIaSBTZXJnZSwN
-Cj4gDQo+ID4gVGhhbmtzIGZvciB5b3VyIHJlcGx5LiBUaGVyZSBpcyBhIGNvbmZpZGVudGlhbCBp
-c3N1ZSB0aGF0IHJlYWx0ZWsgDQo+ID4gZG9lc24ndCBvZmZlciB0aGUgZGV0YWlsIG9mIGEgZnVs
-bCByZWdpc3RlciBsYXlvdXQgZm9yIGNvbmZpZ3VyYXRpb24gDQo+ID4gcmVnaXN0ZXIuDQo+IA0K
-PiAuLi4NCj4gDQo+ID4gPiAgCSAqIDB4YTQgZXh0ZW5zaW9uIHBhZ2UgKDB4NykgbGF5b3V0LiBJ
-dCBjYW4gYmUgdXNlZCB0byBkaXNhYmxlL2VuYWJsZQ0KPiA+ID4gIAkgKiB0aGUgUlgvVFggZGVs
-YXlzIG90aGVyd2lzZSBjb250cm9sbGVkIGJ5IFJYRExZL1RYRExZIHBpbnMuIEl0IGNhbg0KPiA+
-ID4gIAkgKiBhbHNvIGJlIHVzZWQgdG8gY3VzdG9taXplIHRoZSB3aG9sZSBjb25maWd1cmF0aW9u
-IHJlZ2lzdGVyOg0KPiA+IA0KPiA+ID4gLQkgKiA4OjYgPSBQSFkgQWRkcmVzcywgNTo0ID0gQXV0
-by1OZWdvdGlhdGlvbiwgMyA9IEludGVyZmFjZSBNb2RlIFNlbGVjdCwNCj4gPiA+IC0JICogMiA9
-IFJYIERlbGF5LCAxID0gVFggRGVsYXksIDAgPSBTRUxSR1YgKHNlZSBvcmlnaW5hbCBQSFkgZGF0
-YXNoZWV0DQo+ID4gPiAtCSAqIGZvciBkZXRhaWxzKS4NCj4gPiA+ICsJICogMTMgPSBGb3JjZSBU
-eCBSWCBEZWxheSBjb250cm9sbGVkIGJ5IGJpdDEyIGJpdDExLA0KPiA+ID4gKwkgKiAxMiA9IFJY
-IERlbGF5LCAxMSA9IFRYIERlbGF5DQo+ID4gDQo+IA0KPiA+IEhlcmUgeW91J3ZlIHJlbW92ZWQg
-dGhlIHJlZ2lzdGVyIGxheW91dCBkZXNjcmlwdGlvbiBhbmQgcmVwbGFjZWQgaXRxIA0KPiA+IHdp
-dGgganVzdCB0aHJlZSBiaXRzIGluZm8uIFNvIGZyb20gbm93IHRoZSB0ZXh0IGFib3ZlIGRvZXNu
-J3QgcmVhbGx5IA0KPiA+IGNvcnJlc3BvbmRzIHRvIHdoYXQgZm9sbG93cy4NCj4gDQo+ID4gSSBt
-aWdodCBoYXZlIGZvcmdvdHRlbiBzb21ldGhpbmcsIGJ1dCBBRkFJUiB0aGF0IHJlZ2lzdGVyIGJp
-dHMgDQo+ID4gc3RhdGVxIG1hcHBlZCB3ZWxsIHRvIHdoYXQgd2FzIGF2YWlsYWJsZSBvbiB0aGUg
-Y29ycmVzcG9uZGluZyANCj4gPiBleHRlcm5hbCBwaW5zLg0KPiANCj4gSGkgV2lsbHkNCj4gDQoN
-Cj4gU28gaXQgYXBwZWFycyBiaXRzIDMgdG8gOCBoYXZlIGJlZW4gcmV2ZXJzZSBlbmdpbmVlcmVk
-LiBVbmxlc3MgeW91IA0KPiBrbm93IGZyb20geW91ciBjb25maWRlbnRpYWwgZGF0YXNoZWV0IHRo
-YXQgdGhlc2UgYXJlIHdyb25nLCBwbGVhc2UgDQo+IGxlYXZlIHRoZSBjb21tZW50IGFsb25lLg0K
-PiANCj4gSWYgeW91IGNvbmZpZGVudGlhbCBkYXRhc2hlZXQgc2F5cyB0aGF0IHRoZSB1c2FnZSBv
-ZiBiaXRzIDAtMiBpcyANCj4gd3JvbmcsIHRoZW4gcGxlYXNlIGRvIGNvcnJlY3QgdGhhdCBwYXJ0
-Lg0KDQpJJ3ZlIGdvdCB0aGF0IGluZm8gZnJvbSBLeWxlIHBvc3QgaGVyZToNCmh0dHBzOi8vcmV2
-aWV3cy5mcmVlYnNkLm9yZy9EMTM1OTENCg0KTXkgd29yayB3aXRoIHRoYXQgcHJvYmxlbSBoYXMg
-YmVlbiBkb25lIG1vcmUgdGhhbiBhIHllYXIgYWdvLCBzbyBJIGRvbid0IHJlbWVtYmVyIGFsbCB0
-aGUgZGV0YWlscy4gQnV0IElJUkMgdGhlIHZlcnkgZmlyc3QgbmluZSBiaXRzIFs4OjBdIG11c3Qg
-YmUgYSBjb3B5IG9mIHdoYXQgaXMgc2V0IG9uIHRoZSBleHRlcm5hbCBjb25maWd1cmF0aW9uIHBp
-bnMgYXMgSSBkZXNjcmliZWQgaW4gdGhlIGNvbW1lbnQuDQpBRkFJUiBJIHRyaWVkIHRvIG1hbnVh
-bGx5IGNoYW5nZSB0aGVzZSBwaW5zIFsxXSBhbmQgZGV0ZWN0ZWQgdGhhdCBjaGFuZ2UgcmlnaHQg
-dGhlcmUgaW4gdGhlIHJlZ2lzdGVyLiBUaGF0IGZ1bGx5IGZpdHRlZCB0byB3aGF0IEt5bGUgd3Jv
-dGUgaW4gaGlzIHBvc3QuIEFsYXMgSSBjYW4ndCByZXBlYXQgaXQgdG8gYmUgY29tcGxldGVseSBz
-dXJlIGF0IHRoZSBtb21lbnQgZHVlIHRvIHRoZSBsYWNrIG9mIHRoZSBoYXJkd2FyZS4gU28gSSBt
-aWdodCBoYXZlIG1pc3NlZCBzb21ldGhpbmcsIGFuZCBXaWxseScgY29uZmlybWF0aW9uIGFib3V0
-IHRoYXQgd291bGQgaGF2ZSBiZWVuIG1vcmUgdGhhbiB3ZWxjb21lLiBXaGF0IHdlIGNhbiBzYXkg
-bm93IGZvciBzdXJlIEkgZGlkbid0IHVzZSB0aGUgbWFnaWMgbnVtYmVyIGluIG15IHBhdGNoLiBU
-aGF0IGNvdWxkIGhhdmUgYmVlbiBhIG1pc3Rha2UgZnJvbSB3aGF0IFdpbGx5IHNheXMgaW4gdGhl
-IGNvbW1pdC1sb2cuLi4NCg0KQW55d2F5IGFzaWRlIHdpdGggdGhlIE1hZ2ljIGJpdHMgc2V0dGlu
-Z3MgKHdoaWNoIGJ5IFdpbGx5JyBwYXRjaCBhcHBlYXJzIHRvIGJlIHRoZSBUeC9SeCBkZWxheXMg
-KyBGb3JjZSBUeC9SeCBkZWxheSBzZXR0aW5nKSBLeWxlIGFsc28gY2xlYXJzIHRoZSBiaXRzIDEt
-MiB3aXRoIGEgY29tbWVudCAiRW5zdXJlIGJvdGggaW50ZXJuYWwgZGVsYXlzIGFyZSB0dXJuZWQg
-b2ZmIi4gV2lsbHksIHdoYXQgY2FuIHlvdSBzYXkgYWJvdXQgdGhhdD8gQ2FuIHdlIHJlYWxseSBs
-ZWF2ZSB0aGVtIG91dCBmcm9tIHRoZSBjaGFuZ2U/IEt5bGUsIGNvdWxkIHlvdSBnaXZlIHVzIGEg
-Y29tbWVudCBhYm91dCB5b3VyIGV4cGVyaWVuY2Ugd2l0aCB0aGF0Pw0KDQpbMV0gUlRMODIxMUUt
-VkItQ0csIFJUTDgyMTFFLVZMLUNHLCBSVEw4MjExRS1WTC1DRywgIklOVEVHUkFURUQgMTAvMTAw
-LzEwMDBNIEVUSEVSTkVUDQogICAgVFJBTlNDRUlWRVIiIERhdGFzaGVldCwgVGFibGUgMTMuIENv
-bmZpZ3VyYXRpb24gUmVnaXN0ZXIgRGVmaW5pdGlvbiwgUmV2LiAxLjYsDQogICAgMDMgQXByaWwg
-MjAxMiwgVHJhY2sgSUQ6IEpBVFItMzM3NS0xNiwgcC4xNg0KDQotU2VyZ2V5DQoNCj4gDQo+ICAg
-ICAgICBBbmRyZXcNCg0KLS0tLS0tUGxlYXNlIGNvbnNpZGVyIHRoZSBlbnZpcm9ubWVudCBiZWZv
-cmUgcHJpbnRpbmcgdGhpcyBlLW1haWwuDQo=
+Include the linux/idle_inject.h header to fix W=1 build warning:
+
+    drivers/powercap/idle_inject.c:152:6: warning: no previous prototype for ‘idle_inject_set_duration’ [-Wmissing-prototypes]
+    drivers/powercap/idle_inject.c:167:6: warning: no previous prototype for ‘idle_inject_get_duration’ [-Wmissing-prototypes]
+    drivers/powercap/idle_inject.c:179:6: warning: no previous prototype for ‘idle_inject_set_latency’ [-Wmissing-prototypes]
+    drivers/powercap/idle_inject.c:195:5: warning: no previous prototype for ‘idle_inject_start’ [-Wmissing-prototypes]
+    drivers/powercap/idle_inject.c:227:6: warning: no previous prototype for ‘idle_inject_stop’ [-Wmissing-prototypes]
+    drivers/powercap/idle_inject.c:299:28: warning: no previous prototype for ‘idle_inject_register’ [-Wmissing-prototypes]
+    drivers/powercap/idle_inject.c:345:6: warning: no previous prototype for ‘idle_inject_unregister’ [-Wmissing-prototypes]
+
+Signed-off-by: Herrington <hankinsea@gmail.com>
+Signed-off-by: Pujin Shi <shipujin.t@gmail.com>
+Signed-off-by: Pujin Shi <shipj@lemote.com>
+---
+ drivers/powercap/idle_inject.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/powercap/idle_inject.c b/drivers/powercap/idle_inject.c
+index 4310901a074e..6e1a0043c411 100644
+--- a/drivers/powercap/idle_inject.c
++++ b/drivers/powercap/idle_inject.c
+@@ -43,6 +43,7 @@
+ #include <linux/sched.h>
+ #include <linux/slab.h>
+ #include <linux/smpboot.h>
++#include <linux/idle_inject.h>
+ 
+ #include <uapi/linux/sched/types.h>
+ 
+-- 
+2.25.4
+
