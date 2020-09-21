@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B68D6272F3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44270272D96
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728465AbgIUQzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:55:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51590 "EHLO mail.kernel.org"
+        id S1729443AbgIUQl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:41:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729335AbgIUQpe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:45:34 -0400
+        id S1729422AbgIUQlT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:41:19 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 078E7206B2;
-        Mon, 21 Sep 2020 16:45:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 080FF239A1;
+        Mon, 21 Sep 2020 16:41:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706733;
-        bh=YsJqGuQHBEUaF1qm14Gss1YdcyjLDX2tF6KDxKMGKjE=;
+        s=default; t=1600706478;
+        bh=TUEjtj204vy7wOWygtH9ZCPsqUQ8InzxMlOiYMlgGDg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UKlDa5QM8DU7f2sm6jMrEXuqopt5WVjW2DsylR0RF+pDRlwv6KY07PkSJuF7fp6Ss
-         642xrgDOBvFK1nXYyLpXkco8N2AyLyHI80acKF8jrND/LLoeBuXq5QenKVTLQzewud
-         /+KvplWxd5zbf71na0hXeZbVW3XioT3LWjzPv2/M=
+        b=Ckls77EIK2W2cPTQ/szfUA5OxeYvg242AktSJynov37I6bsSIGfVjq1IXytU2UACD
+         MM50BpK/MlWp6sap5gstNbhvOUFyDBNr0Mr5pmdEbeOJN+aDW4enWaKQM1gPTl6zDi
+         v+KQTpK+IMbA9zlj/SFCL0x5HRJkq1nCJP851DLQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 073/118] iommu/amd: Fix potential @entry null deref
+        stable@vger.kernel.org, Sahitya Tummala <stummala@codeaurora.org>,
+        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 21/49] f2fs: fix indefinite loop scanning for free nid
 Date:   Mon, 21 Sep 2020 18:28:05 +0200
-Message-Id: <20200921162039.724027857@linuxfoundation.org>
+Message-Id: <20200921162035.606945840@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
-References: <20200921162036.324813383@linuxfoundation.org>
+In-Reply-To: <20200921162034.660953761@linuxfoundation.org>
+References: <20200921162034.660953761@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,51 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joao Martins <joao.m.martins@oracle.com>
+From: Sahitya Tummala <stummala@codeaurora.org>
 
-[ Upstream commit 14c4acc5ed22c21f9821103be7c48efdf9763584 ]
+[ Upstream commit e2cab031ba7b5003cd12185b3ef38f1a75e3dae8 ]
 
-After commit 26e495f34107 ("iommu/amd: Restore IRTE.RemapEn bit after
-programming IRTE"), smatch warns:
+If the sbi->ckpt->next_free_nid is not NAT block aligned and if there
+are free nids in that NAT block between the start of the block and
+next_free_nid, then those free nids will not be scanned in scan_nat_page().
+This results into mismatch between nm_i->available_nids and the sum of
+nm_i->free_nid_count of all NAT blocks scanned. And nm_i->available_nids
+will always be greater than the sum of free nids in all the blocks.
+Under this condition, if we use all the currently scanned free nids,
+then it will loop forever in f2fs_alloc_nid() as nm_i->available_nids
+is still not zero but nm_i->free_nid_count of that partially scanned
+NAT block is zero.
 
-	drivers/iommu/amd/iommu.c:3870 amd_iommu_deactivate_guest_mode()
-        warn: variable dereferenced before check 'entry' (see line 3867)
+Fix this to align the nm_i->next_scan_nid to the first nid of the
+corresponding NAT block.
 
-Fix this by moving the @valid assignment to after @entry has been checked
-for NULL.
-
-Fixes: 26e495f34107 ("iommu/amd: Restore IRTE.RemapEn bit after programming IRTE")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
-Reviewed-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Cc: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Link: https://lore.kernel.org/r/20200910171621.12879-1-joao.m.martins@oracle.com
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/amd/iommu.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/f2fs/node.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-index 37c74c842f3a3..48fe272da6e9c 100644
---- a/drivers/iommu/amd/iommu.c
-+++ b/drivers/iommu/amd/iommu.c
-@@ -3855,12 +3855,14 @@ int amd_iommu_deactivate_guest_mode(void *data)
- 	struct amd_ir_data *ir_data = (struct amd_ir_data *)data;
- 	struct irte_ga *entry = (struct irte_ga *) ir_data->entry;
- 	struct irq_cfg *cfg = ir_data->cfg;
--	u64 valid = entry->lo.fields_remap.valid;
-+	u64 valid;
+diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+index 2ff02541c53d5..1934dc6ad1ccd 100644
+--- a/fs/f2fs/node.c
++++ b/fs/f2fs/node.c
+@@ -2257,6 +2257,9 @@ static int __f2fs_build_free_nids(struct f2fs_sb_info *sbi,
+ 	if (unlikely(nid >= nm_i->max_nid))
+ 		nid = 0;
  
- 	if (!AMD_IOMMU_GUEST_IR_VAPIC(amd_iommu_guest_ir) ||
- 	    !entry || !entry->lo.fields_vapic.guest_mode)
- 		return 0;
- 
-+	valid = entry->lo.fields_remap.valid;
++	if (unlikely(nid % NAT_ENTRY_PER_BLOCK))
++		nid = NAT_BLOCK_OFFSET(nid) * NAT_ENTRY_PER_BLOCK;
 +
- 	entry->lo.val = 0;
- 	entry->hi.val = 0;
- 
+ 	/* Enough entries */
+ 	if (nm_i->nid_cnt[FREE_NID] >= NAT_ENTRY_PER_BLOCK)
+ 		return 0;
 -- 
 2.25.1
 
