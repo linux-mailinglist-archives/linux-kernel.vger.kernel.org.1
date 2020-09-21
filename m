@@ -2,88 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7DB32724A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:09:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91FB327251A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726985AbgIUNJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:09:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39020 "EHLO mail.kernel.org"
+        id S1727153AbgIUNKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:10:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726417AbgIUNJn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:09:43 -0400
-Received: from pali.im (pali.im [31.31.79.79])
+        id S1727049AbgIUNJy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:09:54 -0400
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2BA0C21789;
-        Mon, 21 Sep 2020 13:09:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E6BA21789;
+        Mon, 21 Sep 2020 13:09:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600693783;
-        bh=tV9re0vJKY15IANIsLBtwOSpqPFekeUVNGNJqdyZCEQ=;
+        s=default; t=1600693794;
+        bh=X8+eZkPCO0dSMkwRqVfpCHg1hSL3BOtJFo3Gz3AeHag=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Gj2ZcVHpDmqMimR+38DpWqLVIREuioT8exZybsWFHEDcvm9ocAjPsjCYVcJIejTeq
-         yopx7AAKAYKx6zFRS23ZGPRbsjtxO5EP4vUKVsu4JQhwdOIHuo601ovmQuU97V1qYM
-         so6Ic5guzHtZXH8206Mj+TntjRgzl278reoWTD3Q=
-Received: by pali.im (Postfix)
-        id D1BED7BF; Mon, 21 Sep 2020 15:09:40 +0200 (CEST)
-Date:   Mon, 21 Sep 2020 15:09:40 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
-        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] PCI: aardvark: Fix comphy with old ATF
-Message-ID: <20200921130940.ticdda2lo2fhcrl5@pali>
-References: <20200902144344.16684-1-pali@kernel.org>
- <3f2b0e5b-87f1-7887-4afc-77f31d56b5a3@gmail.com>
+        b=oPB+2wuYh52uMUPyI5KZ6Rh461pqaGhZC/UqnAEEugCFp8h7VNjMdFM+pGAqn2LHT
+         RX/kUkndIRbikpr9qvbw81pUY4fNfE0v7u8VpXaTpUb5Gj/56rDLlJBFppOzMPdtC8
+         NifQCRdVbtsMqvB3Eg1CD4rf3Pt8VgZ1Q4njtn1k=
+Date:   Mon, 21 Sep 2020 21:09:46 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sam Ravnborg <sam@ravnborg.org>, Li Yang <leoyang.li@nxp.com>,
+        Robert Chiras <robert.chiras@nxp.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, etnaviv@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 03/13] dt-bindings: arm: fsl: Fix matching Purism Librem5
+ phones
+Message-ID: <20200921130945.GB25428@dragon>
+References: <20200904145312.10960-1-krzk@kernel.org>
+ <20200904145312.10960-4-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3f2b0e5b-87f1-7887-4afc-77f31d56b5a3@gmail.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20200904145312.10960-4-krzk@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lorenzo, could you look and review this patch series? It fixes commit
-366697018c9a and we would like to have fix also in stable kernels.
+On Fri, Sep 04, 2020 at 04:53:02PM +0200, Krzysztof Kozlowski wrote:
+> All Purism Librem5 phones have three compatibles so they need their own
+> entry to fix dbts_check warnings like:
+> 
+>   arch/arm64/boot/dts/freescale/imx8mq-librem5-r2.dt.yaml: /:
+>     compatible: ['purism,librem5r2', 'purism,librem5', 'fsl,imx8mq'] is not valid under any of the given schemas
+> 
+>   arch/arm64/boot/dts/freescale/imx8mq-librem5-r2.dt.yaml: /:
+>     compatible: ['purism,librem5r2', 'purism,librem5', 'fsl,imx8mq'] is too long
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-On Wednesday 16 September 2020 17:14:02 Tomasz Maciej Nowak wrote:
-> W dniu 02.09.2020 o 16:43, Pali Rohár pisze:
-> > This patch series fixes regression introduced in commit 366697018c9a
-> > ("PCI: aardvark: Add PHY support") which caused aardvark driver
-> > initialization failure on EspressoBin board with factory version of
-> > Arm Trusted Firmware provided by Marvell.
-> > 
-> > Second patch depends on the first patch, so please add appropriate
-> > Fixes/Cc:stable@ tags to have both patches correctly backported to
-> > stable kernels.
-> > 
-> > I have tested both patches with Marvell ATF firmware ebin-17.10-uart.zip
-> > and with upstream ATF+uboot and aardvark was initialized successfully.
-> > Without this patch series on ebin-17.10-uart.zip aardvark initialization
-> > failed.
-> > 
-> > Pali Rohár (2):
-> >   phy: marvell: comphy: Convert internal SMCC firmware return codes to
-> >     errno
-> >   PCI: aardvark: Fix initialization with old Marvell's Arm Trusted
-> >     Firmware
-> 
-> For both patches
-> 
-> Tested-by: Tomasz Maciej Nowak <tmn505@gmail.com>
-> 
-> > 
-> >  drivers/pci/controller/pci-aardvark.c        |  4 +++-
-> >  drivers/phy/marvell/phy-mvebu-a3700-comphy.c | 14 +++++++++++---
-> >  drivers/phy/marvell/phy-mvebu-cp110-comphy.c | 14 +++++++++++---
-> >  3 files changed, 25 insertions(+), 7 deletions(-)
-> > 
-> 
+Applied, thanks.
