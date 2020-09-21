@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA922720EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F34F272115
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726869AbgIUK1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:27:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60240 "EHLO
+        id S1727176AbgIUK3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:29:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726353AbgIUK1m (ORCPT
+        with ESMTP id S1726669AbgIUK1n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 06:27:42 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A271C061755;
-        Mon, 21 Sep 2020 03:27:42 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id b79so12036668wmb.4;
-        Mon, 21 Sep 2020 03:27:42 -0700 (PDT)
+        Mon, 21 Sep 2020 06:27:43 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 698D9C061755;
+        Mon, 21 Sep 2020 03:27:43 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id e17so11583526wme.0;
+        Mon, 21 Sep 2020 03:27:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ZsMT0CrEUbDwl+d5khTOYaGtUlOWn7Yi+9GLp9dBrZs=;
-        b=oMGph5JMS4IMByo7SEq/EEhqYCEJSAJWh1ORxSJdk937N8/sdqhkw4QGAVsLEGav9D
-         OQFpLA3octkJqhiE8KvODqkhUj/cSYivsyKi9OqR7wqEf2miYf8SgoNuNstgFblEdovL
-         rxM6CP2+VsdcY5KlAitt6Rkil21GvMA5c9JtyvpwSOWDBSNk9KC0Y9e5Rrd2aZOYwCyP
-         L7E7v0KzcqsA4ttlb4JqDdWTi3WmbC+jGWmGWCbk8Db+ox+CVndkongV9gS7cPFYzJQK
-         AiAjqenClWxrRUq749n4e5i4YAV3fF+wlv8aMDACpNhOk6N8HmN6GDWGDOnYAuWktxiA
-         izBg==
+        bh=U836kMnIm9OVtnsGLVK3iz9PKF3eFCFtxxEFlUe/IkU=;
+        b=ZbuYowe/exjNSbzyxWOsn0UkKuQtse3CnJeL9q8ycWEJieTy1i2UN3YU9zsuUdOay6
+         7nENve0r6Uegf7qeymFnFzLLXkkEwU86uVPdvxV8t1ReqijDJK1cI0WNPMPASQtAXZGq
+         ii+Rv1shuaiirWfJdVC4xDZbT9FMYlJ4OWwBLKFfY5hGramdfm7Sl5mWs5weEgS6lO8x
+         Ex2576w4v5VrB5epna9j9fgIZpX+vUeC8AG8TdgqDvaybZwKfib+2x9d87LVxlGCFn9U
+         2e4pZIifUVW4RjNZeCpf702urA0M30GYCpVei+Ud7fRj7CXbNAu9ZEZfMTJz9ZR7hag9
+         Vi2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ZsMT0CrEUbDwl+d5khTOYaGtUlOWn7Yi+9GLp9dBrZs=;
-        b=Lg5Qj8UCBvNodKglpJdY1o27S0ztAjbrrF33rehZr4H0X8pxcpA3jsiQRWcDYvAtsf
-         EF4bSwoFE1gTl44ZMr1UZGwjqa8yQ5OrF2lh/UR3B+0YCw5ghJi7v3czyWfSJjgXYvFp
-         p7zaOzVG1ePl5luDz0r8JjpuTkXAM+DE2lEfXFWorgLukuOFwLMy+LqcReE9qG3mPhjR
-         AD2AzuQf/npgAnGQQPKKKDEQSSKdyxQ65mcTGBGIs0yU3YTwmJQ1VHSh3Tzw/VpCDVNI
-         +86PZoB0KYspVaGX2N6eDe4vY9M/6OL1LlqbjeANCGmIB0o5TtyZZmhOeGr/Jr9xmKyy
-         oX6g==
-X-Gm-Message-State: AOAM533rnQ6PJTrZN2oylaOPuIjNhQqTlWEEIBt0elicT8o/I2y4D00f
-        wwTb7cQBua4SOYdiPh3IwFPn4CnwPZ5KBp1T
-X-Google-Smtp-Source: ABdhPJxgV5A3pfob1xTad7/Ki6Cu/+R5MNVmZQTcenpCcuIPvax7TnEV66cdNM7NM+tYZOL/8I/gsQ==
-X-Received: by 2002:a7b:c345:: with SMTP id l5mr8080935wmj.123.1600684060840;
-        Mon, 21 Sep 2020 03:27:40 -0700 (PDT)
+        bh=U836kMnIm9OVtnsGLVK3iz9PKF3eFCFtxxEFlUe/IkU=;
+        b=lGBy7U4Ev4txIwGySgD9F2Vmxd2p6GUz4hEh/5jANed558vfAAXm4e5BuLGJFM9v8d
+         iE7TVZP+CZ30rj5N7WZdS9MFm53BrCVe67Gi1RRSU0B80pFbODZwHy32wWMz+E6pjRtQ
+         4X9ASWi3Ve/2nfPVndpY7wLTf5Mu1gKUAP5DGXPxpRCckDrr7MDJjVLFHCbONFgxAvct
+         legs9/SDrVI5YR0Q5RbI0pEGaN7uVWB3+eitY+YEw/mM+j4FnphOigj0T2HZym3yJNKN
+         XMxyXkOhOzlc/aSzPd04V81YvxfQFAWQ9RuoAzc0s5SVCLTt561Rs/xIVczSjmLfM12W
+         014Q==
+X-Gm-Message-State: AOAM532mRu3t7A7Qo44QnhyM3kcuHwALu0zvnKwpLJPdcTl4MHh9NRHr
+        dd6klwAGyLn+I0HQi01FYOw=
+X-Google-Smtp-Source: ABdhPJx/JCXkAsyJn8R++VEiZyHBg4ONga+dVVbhmNLMXGj1NTdCtbBEHiGhSX5adMKp4LZosvZ/Ig==
+X-Received: by 2002:a7b:c0ca:: with SMTP id s10mr29366622wmh.103.1600684061978;
+        Mon, 21 Sep 2020 03:27:41 -0700 (PDT)
 Received: from localhost.localdomain (lputeaux-656-1-11-33.w82-127.abo.wanadoo.fr. [82.127.142.33])
-        by smtp.gmail.com with ESMTPSA id h2sm20713774wrp.69.2020.09.21.03.27.38
+        by smtp.gmail.com with ESMTPSA id h2sm20713774wrp.69.2020.09.21.03.27.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 03:27:39 -0700 (PDT)
+        Mon, 21 Sep 2020 03:27:41 -0700 (PDT)
 From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -59,11 +59,10 @@ Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
         alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-sunxi@googlegroups.com,
-        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v4 04/22] dt-bindings: ASoC: sun4i-i2s: Add H6 compatible
-Date:   Mon, 21 Sep 2020 12:27:13 +0200
-Message-Id: <20200921102731.747736-5-peron.clem@gmail.com>
+        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+Subject: [PATCH v4 05/22] ASoC: sun4i-i2s: Set sign extend sample
+Date:   Mon, 21 Sep 2020 12:27:14 +0200
+Message-Id: <20200921102731.747736-6-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200921102731.747736-1-peron.clem@gmail.com>
 References: <20200921102731.747736-1-peron.clem@gmail.com>
@@ -74,40 +73,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jernej Skrabec <jernej.skrabec@siol.net>
+From: Marcus Cooper <codekipper@gmail.com>
 
-H6 I2S is very similar to H3, except that it supports up to 16 channels
-and thus few registers have fields on different position.
+On the newer SoCs such as the H3 and A64 this is set by default
+to transfer a 0 after each sample in each slot. However the A10
+and A20 SoCs that this driver was developed on had a default
+setting where it padded the audio gain with zeros.
 
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+This isn't a problem while we have only support for 16bit audio
+but with larger sample resolution rates in the pipeline then SEXT
+bits should be cleared so that they also pad at the LSB. Without
+this the audio gets distorted.
+
+Set sign extend sample for all the sunxi generations even if they
+are not affected. This will keep consistency and avoid relying on
+default.
+
 Signed-off-by: Marcus Cooper <codekipper@gmail.com>
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
-Acked-by: Maxime Ripard <mripard@kernel.org>
-Acked-by: Rob Herring <robh@kernel.org>
 ---
- .../devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml      | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/sunxi/sun4i-i2s.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
-index 112ae00d63c1..606ad2d884a8 100644
---- a/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
-+++ b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
-@@ -24,6 +24,7 @@ properties:
-       - items:
-           - const: allwinner,sun50i-a64-i2s
-           - const: allwinner,sun8i-h3-i2s
-+      - const: allwinner,sun50i-h6-i2s
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index 11bbcbe24d6b..b31454eee43c 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -48,6 +48,9 @@
+ #define SUN4I_I2S_FMT0_FMT_I2S				(0 << 0)
  
-   reg:
-     maxItems: 1
-@@ -59,6 +60,7 @@ allOf:
-               - allwinner,sun8i-a83t-i2s
-               - allwinner,sun8i-h3-i2s
-               - allwinner,sun50i-a64-codec-i2s
-+              - allwinner,sun50i-h6-i2s
+ #define SUN4I_I2S_FMT1_REG		0x08
++#define SUN4I_I2S_FMT1_REG_SEXT_MASK		BIT(8)
++#define SUN4I_I2S_FMT1_REG_SEXT(sext)			((sext) << 8)
++
+ #define SUN4I_I2S_FIFO_TX_REG		0x0c
+ #define SUN4I_I2S_FIFO_RX_REG		0x10
  
-     then:
-       required:
+@@ -105,6 +108,9 @@
+ #define SUN8I_I2S_FMT0_BCLK_POLARITY_INVERTED		(1 << 7)
+ #define SUN8I_I2S_FMT0_BCLK_POLARITY_NORMAL		(0 << 7)
+ 
++#define SUN8I_I2S_FMT1_REG_SEXT_MASK		GENMASK(5, 4)
++#define SUN8I_I2S_FMT1_REG_SEXT(sext)			((sext) << 4)
++
+ #define SUN8I_I2S_INT_STA_REG		0x0c
+ #define SUN8I_I2S_FIFO_TX_REG		0x20
+ 
+@@ -676,6 +682,7 @@ static int sun4i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
+ 	}
+ 	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
+ 			   SUN4I_I2S_CTRL_MODE_MASK, val);
++
+ 	return 0;
+ }
+ 
+@@ -778,6 +785,11 @@ static int sun8i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
+ 			   SUN8I_I2S_CTRL_BCLK_OUT | SUN8I_I2S_CTRL_LRCK_OUT,
+ 			   val);
+ 
++	/* Set sign extension to pad out LSB with 0 */
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT1_REG,
++			   SUN8I_I2S_FMT1_REG_SEXT_MASK,
++			   SUN8I_I2S_FMT1_REG_SEXT(0));
++
+ 	return 0;
+ }
+ 
+@@ -880,6 +892,11 @@ static int sun50i_h6_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
+ 			   SUN8I_I2S_CTRL_BCLK_OUT | SUN8I_I2S_CTRL_LRCK_OUT,
+ 			   val);
+ 
++	/* Set sign extension to pad out LSB with 0 */
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT1_REG,
++			   SUN8I_I2S_FMT1_REG_SEXT_MASK,
++			   SUN8I_I2S_FMT1_REG_SEXT(0));
++
+ 	return 0;
+ }
+ 
 -- 
 2.25.1
 
