@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EADE5272087
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:23:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE1F272059
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:23:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727167AbgIUKWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:22:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59124 "EHLO
+        id S1726924AbgIUKVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:21:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726886AbgIUKU7 (ORCPT
+        with ESMTP id S1726897AbgIUKVA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 06:20:59 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D18DC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:20:59 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id l15so11152960wmh.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:20:59 -0700 (PDT)
+        Mon, 21 Sep 2020 06:21:00 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D861C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:21:00 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id x14so12096983wrl.12
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:21:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=14WJj/RqQjb5y9fKAYpp9xKxfwW/Mh3U1gqbae/yMEI=;
-        b=OLmZzc/r2Nu25RC4agP9sFqGyGE70U4vF6jpgeTe/Ld9FCKI9UNwkO38fJLJpnZ1aT
-         FCuiWAZQldH0H9H4eu33pQfeCK9MCtMtlQWhCWnWnB8wVDF+c3MNEupsagEPgbtYXDGt
-         AOCBnJ7YKYP+Ed+Put7CP4VxKa0/l9MZaoJu94G23aW6gCRaY/wfw2obNAKsxpVXqAkY
-         yq161oDjhmqwoRa0Frx1xjgajGOtn/IoFgdh4OVkXJ8DE9Vuc8TfMMwKIW06d6KwjPNL
-         XFV2lOzn/RhtqaZ/CYpyLbt42ZFLL4f17M0TrKTSlEHOnmNe+2ZA4PkmVDmyVcJ0IwzU
-         NW3w==
+        bh=9ZBjuGtlIQ8oulJMUmpkUNjlWYvzKi6Grt0GpSmmusw=;
+        b=rxZwjV6HY9LG0dpHkUso3xgcTJu7kAviAeubkz4/JVYFg/pNiT7Mv0ja6GhsRuMgYB
+         j5RydFDHDpcj6AtcVzbq+tBHf9E7bBVCehrc22Be6rCJ31ARmygdsxWk0KKPLR0isLzF
+         GZtcCPBa0cphp7RHnHGfOaYKgli39BOriDPuBFnO2HQO36mlrtoowEm7ZGzf7Y+pZyV1
+         c5x80CK8sJiPuomKofPU/1tkVzdpjtpuCmWUpkFJ53ZMwsWwuevTyvmwGe3ezPDykPjg
+         PKVRYplwuhfbBoF6bsfRI+4BbOEA/7K7BRVlQa8NOLvjAY42SPCmJa6qmBHkkI9BW5rR
+         lONQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=14WJj/RqQjb5y9fKAYpp9xKxfwW/Mh3U1gqbae/yMEI=;
-        b=ltkI1a5R2QBoP8EJinZnf/GHM/Co7FG/yL/xrQl15k9F3YIWhAb1EC4kZrstq1aHMW
-         VlH01m8GNyw21JoUZNVdgNgwV+aenCnfquC07c8bRrd/z4MJHgXouc/wn1KmWpOkqBpL
-         CJwDeJTAIgiNjJxLRwdeUUnDKY/w8YY6/BWHh1Nn7hjSnEdUOkEGppC5MPwNZuYJpmhH
-         RgXJXRkuY5NdTbLgMWBgZjVjy1x3lGuWoef2ZaEkMi68W1SGVJuAMplTANppa9g1L/bm
-         dQscauEvKcmffrn0Ieh97LS+aCMC/PcqUhNnuZob6hryI7dJQdWeaWmnhvwoCktlvwM6
-         puuw==
-X-Gm-Message-State: AOAM533GneeY7seG5uXcdUl6VV0YtrT+hmH8BidSalQT76ATQJM9EUqu
-        pIWsv1xKNtG+hoZWtawZ5edy+HvrJhU9kQ==
-X-Google-Smtp-Source: ABdhPJx1Ryc9pfX4wBErhIyfQ0T8KkhSO1BIqse9FMAU5+1kMZdMdiuOXHzz3wNhtql/XUvTWjWShw==
-X-Received: by 2002:a1c:7508:: with SMTP id o8mr28218460wmc.127.1600683658224;
-        Mon, 21 Sep 2020 03:20:58 -0700 (PDT)
+        bh=9ZBjuGtlIQ8oulJMUmpkUNjlWYvzKi6Grt0GpSmmusw=;
+        b=jW1O14oQi5erxtpWZwZWAJHeoysklR56LOfdFeD3zkmAuGnybltVeeFwtkt6MUH+Z1
+         xhDF+kvjt4lqY4EGJM0ThzVbj15vkERkTXmrJ0SV0gSPt7nzphMVNapdktA9KQKPXgqe
+         NOZ3FEleBLWyJIl2qMkbsQlejRauKGNLoYfQvKubmMel2OrWtpjNU+NxedxJwQDNXjEx
+         JeOVctMQ75mfnUNS3JNr7mbDSX4A0FfAUwUkY54S6TcSDt+E157yqdiubUc/dqzxD66o
+         Kp+KOxUjtUctBIRhxG4PdhNBgH/aad/6Ue2Jrzr26/lXEvakL/Gb6wFG6c652YsRFIlX
+         zvKw==
+X-Gm-Message-State: AOAM533AyMq0M7fOu8s6Pz8DUZi+RpB3cLgqhnrGoOHH4L12umseIUic
+        d4yjd3wzE9WdT9TxB9ZYlymVuWHUnXnnng==
+X-Google-Smtp-Source: ABdhPJyzfzbEKklN94+4S73Qh+VMGuoEabkAmSVR1mVdTjh3TG+GaY08+ACfViEVCb5X17IIx6vMRg==
+X-Received: by 2002:adf:9405:: with SMTP id 5mr28243151wrq.51.1600683659111;
+        Mon, 21 Sep 2020 03:20:59 -0700 (PDT)
 Received: from localhost.localdomain ([51.15.160.169])
-        by smtp.googlemail.com with ESMTPSA id l17sm18804629wme.11.2020.09.21.03.20.57
+        by smtp.googlemail.com with ESMTPSA id l17sm18804629wme.11.2020.09.21.03.20.58
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 21 Sep 2020 03:20:57 -0700 (PDT)
+        Mon, 21 Sep 2020 03:20:58 -0700 (PDT)
 From:   Corentin Labbe <clabbe@baylibre.com>
 To:     gregkh@linuxfoundation.org, laurent.pinchart@skynet.be,
         mchehab@kernel.org
 Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
         linux-media@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH RFT/RFC 27/49] staging: media: zoran: convert irq to pci irq
-Date:   Mon, 21 Sep 2020 10:20:02 +0000
-Message-Id: <1600683624-5863-28-git-send-email-clabbe@baylibre.com>
+Subject: [PATCH RFT/RFC 28/49] staging: media: zoran: convert zoran alloc to devm
+Date:   Mon, 21 Sep 2020 10:20:03 +0000
+Message-Id: <1600683624-5863-29-git-send-email-clabbe@baylibre.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1600683624-5863-1-git-send-email-clabbe@baylibre.com>
 References: <1600683624-5863-1-git-send-email-clabbe@baylibre.com>
@@ -62,45 +62,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch convert zoran to pci_irq functions.
+Allocate the zoran structure with devm_ functions permit to simplify
+code.
 
 Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 ---
- drivers/staging/media/zoran/zoran_card.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/staging/media/zoran/zoran_card.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/drivers/staging/media/zoran/zoran_card.c b/drivers/staging/media/zoran/zoran_card.c
-index 1c587ce0d8c0..fe4d34e388b4 100644
+index fe4d34e388b4..62e63804ae14 100644
 --- a/drivers/staging/media/zoran/zoran_card.c
 +++ b/drivers/staging/media/zoran/zoran_card.c
-@@ -1008,7 +1008,7 @@ static void zoran_remove(struct pci_dev *pdev)
- 	zoran_set_pci_master(zr, 0);
- 	/* put chip into reset */
- 	btwrite(0, ZR36057_SPGPPCR);
--	free_irq(zr->pci_dev->irq, zr);
-+	pci_free_irq(zr->pci_dev, 0, zr);
- 	/* unmap and free memory */
- 	dma_free_coherent(&zr->pci_dev->dev, BUZ_NUM_STAT_COM * sizeof(u32), zr->stat_com, zr->p_sc);
- 	iounmap(zr->zr36057_mem);
-@@ -1166,8 +1166,7 @@ static int zoran_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		goto zr_unreg;
+@@ -1017,7 +1017,6 @@ static void zoran_remove(struct pci_dev *pdev)
+ exit_free:
+ 	v4l2_ctrl_handler_free(&zr->hdl);
+ 	v4l2_device_unregister(&zr->v4l2_dev);
+-	kfree(zr);
+ }
+ 
+ void zoran_vdev_release(struct video_device *vdev)
+@@ -1101,7 +1100,7 @@ static int zoran_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		return -ENOENT;
  	}
  
--	result = request_irq(zr->pci_dev->irq, zoran_irq,
--			     IRQF_SHARED, ZR_DEVNAME(zr), zr);
-+	result = pci_request_irq(pdev, 0, zoran_irq, NULL, zr, ZR_DEVNAME(zr));
- 	if (result < 0) {
- 		if (result == -EINVAL) {
- 			pci_err(pdev, "%s - bad IRQ number or handler\n", __func__);
-@@ -1281,7 +1280,7 @@ static int zoran_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	zoran_unregister_i2c(zr);
- zr_free_irq:
- 	btwrite(0, ZR36057_SPGPPCR);
--	free_irq(zr->pci_dev->irq, zr);
-+	pci_free_irq(zr->pci_dev, 0, zr);
- zr_unmap:
- 	iounmap(zr->zr36057_mem);
- zr_unreg:
+-	zr = kzalloc(sizeof(*zr), GFP_KERNEL);
++	zr = devm_kzalloc(&pdev->dev, sizeof(*zr), GFP_KERNEL);
+ 	if (!zr)
+ 		return -ENOMEM;
+ 
+@@ -1287,7 +1286,6 @@ static int zoran_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	v4l2_ctrl_handler_free(&zr->hdl);
+ 	v4l2_device_unregister(&zr->v4l2_dev);
+ zr_free_mem:
+-	kfree(zr);
+ 
+ 	return -ENODEV;
+ }
 -- 
 2.26.2
 
