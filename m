@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 950E1272E22
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1B92272D87
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728631AbgIUQqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:46:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52792 "EHLO mail.kernel.org"
+        id S1729389AbgIUQk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:40:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43750 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727900AbgIUQqa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:46:30 -0400
+        id S1728887AbgIUQkn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:40:43 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B5D472388B;
-        Mon, 21 Sep 2020 16:46:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C2C58235F9;
+        Mon, 21 Sep 2020 16:40:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706790;
-        bh=4h2vGnKA21+C4oRjiw99zQjWCk1lgfV63y1n2Te5HM8=;
+        s=default; t=1600706443;
+        bh=I8vTKPKPUh/H/WNeeEyNJZRVJ2gJ3oDIQYlO/tpd1WQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YyiSJbCt/Wp/vge8JINL1jEoCYiofWo9YxEm2mKs7KjmDGSsDBSou5bpsThxZR5JD
-         fvIR5FJogCluFC0P5TW6RezK08FzM4hRh5kMtcYOntA09ux7WUx/5Gdo4Dcd9vajES
-         aHNhuDYjqbGfg8kyNzAcDrw0CG3TsjT/xAbk/0G8=
+        b=k4Tgz5Ng+9sP/kPe9nCAtrt2l42S3sZv0t4a6dDWB2Pv50a+4hOPP2xnklAJYsQAS
+         jsV76SiCU7RVWIXVHt9M5NGabvLC4GgCE9e/kF8uGkAFhfsr19faC8bRfrScFuqS7o
+         IMEz9ywV+iyXGvbkq/KwueuZwY3Gt7RpM68jyYEc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
-        syzbot+be5b5f86a162a6c281e6@syzkaller.appspotmail.com
-Subject: [PATCH 5.8 088/118] usblp: fix race between disconnect() and read()
-Date:   Mon, 21 Sep 2020 18:28:20 +0200
-Message-Id: <20200921162040.443193883@linuxfoundation.org>
+        stable@vger.kernel.org, Adam Borowski <kilobyte@angband.pl>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-usb@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH 4.14 94/94] x86/defconfig: Enable CONFIG_USB_XHCI_HCD=y
+Date:   Mon, 21 Sep 2020 18:28:21 +0200
+Message-Id: <20200921162039.881390757@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
-References: <20200921162036.324813383@linuxfoundation.org>
+In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
+References: <20200921162035.541285330@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,34 +46,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Neukum <oneukum@suse.com>
+From: Adam Borowski <kilobyte@angband.pl>
 
-commit 9cdabcb3ef8c24ca3a456e4db7b012befb688e73 upstream.
+commit 72a9c673636b779e370983fea08e40f97039b981 upstream.
 
-read() needs to check whether the device has been
-disconnected before it tries to talk to the device.
+A spanking new machine I just got has all but one USB ports wired as 3.0.
+Booting defconfig resulted in no keyboard or mouse, which was pretty
+uncool.  Let's enable that -- USB3 is ubiquitous rather than an oddity.
+As 'y' not 'm' -- recovering from initrd problems needs a keyboard.
 
-Signed-off-by: Oliver Neukum <oneukum@suse.com>
-Reported-by: syzbot+be5b5f86a162a6c281e6@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/r/20200917103427.15740-1-oneukum@suse.com
-Cc: stable <stable@vger.kernel.org>
+Also add it to the 32-bit defconfig.
+
+Signed-off-by: Adam Borowski <kilobyte@angband.pl>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-usb@vger.kernel.org
+Link: http://lkml.kernel.org/r/20181009062803.4332-1-kilobyte@angband.pl
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/usb/class/usblp.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ arch/x86/configs/i386_defconfig   |    1 +
+ arch/x86/configs/x86_64_defconfig |    1 +
+ 2 files changed, 2 insertions(+)
 
---- a/drivers/usb/class/usblp.c
-+++ b/drivers/usb/class/usblp.c
-@@ -827,6 +827,11 @@ static ssize_t usblp_read(struct file *f
- 	if (rv < 0)
- 		return rv;
- 
-+	if (!usblp->present) {
-+		count = -ENODEV;
-+		goto done;
-+	}
-+
- 	if ((avail = usblp->rstatus) < 0) {
- 		printk(KERN_ERR "usblp%d: error %d reading from printer\n",
- 		    usblp->minor, (int)avail);
+--- a/arch/x86/configs/i386_defconfig
++++ b/arch/x86/configs/i386_defconfig
+@@ -246,6 +246,7 @@ CONFIG_USB_HIDDEV=y
+ CONFIG_USB=y
+ CONFIG_USB_ANNOUNCE_NEW_DEVICES=y
+ CONFIG_USB_MON=y
++CONFIG_USB_XHCI_HCD=y
+ CONFIG_USB_EHCI_HCD=y
+ CONFIG_USB_EHCI_TT_NEWSCHED=y
+ CONFIG_USB_OHCI_HCD=y
+--- a/arch/x86/configs/x86_64_defconfig
++++ b/arch/x86/configs/x86_64_defconfig
+@@ -242,6 +242,7 @@ CONFIG_USB_HIDDEV=y
+ CONFIG_USB=y
+ CONFIG_USB_ANNOUNCE_NEW_DEVICES=y
+ CONFIG_USB_MON=y
++CONFIG_USB_XHCI_HCD=y
+ CONFIG_USB_EHCI_HCD=y
+ CONFIG_USB_EHCI_TT_NEWSCHED=y
+ CONFIG_USB_OHCI_HCD=y
 
 
