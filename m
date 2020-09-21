@@ -2,153 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BD01272692
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1167272695
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727146AbgIUOD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 10:03:26 -0400
-Received: from vm1.sequanux.org ([188.165.36.56]:48968 "EHLO vm1.sequanux.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726496AbgIUOD0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:03:26 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by vm1.sequanux.org (Postfix) with ESMTP id 5D0B01085E1;
-        Mon, 21 Sep 2020 16:03:24 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at vm1.sequanux.org
-Received: from vm1.sequanux.org ([127.0.0.1])
-        by localhost (vm1.sequanux.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id wm2QrDNdFfMb; Mon, 21 Sep 2020 16:03:22 +0200 (CEST)
-Received: from localhost (softwrestling.org [188.165.144.248])
-        by vm1.sequanux.org (Postfix) with ESMTPSA id 556781080EF;
-        Mon, 21 Sep 2020 16:03:22 +0200 (CEST)
-Date:   Mon, 21 Sep 2020 16:03:22 +0200
-From:   Simon Guinot <simon.guinot@sequanux.org>
-To:     Marek Behun <marek.behun@nic.cz>
-Cc:     linux-leds@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        Dan Murphy <dmurphy@ti.com>,
-        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org, Simon Guinot <sguinot@lacie.com>,
-        Vincent Donnefort <vdonnefort@gmail.com>,
-        Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH leds v1 10/10] leds: ns2: refactor and use struct
- led_init_data
-Message-ID: <20200921140322.GB4828@kw.sim.vm.gnt>
-References: <20200916231650.11484-1-marek.behun@nic.cz>
- <20200916231650.11484-11-marek.behun@nic.cz>
- <20200918130206.GE29951@kw.sim.vm.gnt>
- <20200918191405.516b51ff@nic.cz>
- <20200921125343.GA4828@kw.sim.vm.gnt>
- <20200921150208.6a296bc7@nic.cz>
+        id S1727289AbgIUOD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 10:03:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726436AbgIUOD5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 10:03:57 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7540EC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 07:03:57 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id k133so4368625pgc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 07:03:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Ure3si/tYjsbRCU0EwPyJfAlat4O1xAue0I3OTloxBE=;
+        b=IbmmAYDofbT6k/lMMUKNFUvJQN+qDm8sFzdWHY+T/jpQ42pwIZOYbSGfTboMjkIIki
+         Jkrxy/xRizmjaL3yhpOsDT8zVKn6dCr/Qx4NTXFJ5PMTyljCQ06yTfP7v9kPGwYl6nhB
+         corbu1t3jb8tgFBVcGRnILxUa8/RbU2ExhVwR0IX4/WqvK163uTz6DZZBEG+mPjrFBUh
+         NwlfO4usJNkcLEJhv+nc2+YB8BnXAfdYl0RRa9eEy2qs6SQkq394Wmw9+qk2innSBEp8
+         +kLZbvlMGH2TpWMTgvIMzH6akl7HjQeGytHw42M1x8BfTdwgtIRnGcGZR9WcHISKC7po
+         WW4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Ure3si/tYjsbRCU0EwPyJfAlat4O1xAue0I3OTloxBE=;
+        b=IOzNmnh6ciYqI2XcZoaVpOC3a/jGrJKiDtQgFreOeq/lUtYSALPlUWmSZawpsb8/IU
+         LDXak4XLOgjBH6rHoDYxM8VC14Djw6euGDhwUWCb2Q3X/4zcDEQMmPI1cbSI1eRDtr3a
+         RHkRI/sNtP/Yt+YXkr0pR7VFlOjPRekP/zS3eWgHFmaiqvhfPUN+VbanaxHa/yWU51e7
+         Dw2ZIqDttlgspho0qIbL/82zwJ7kvY2BI8PojivvIP15g0bFViXu/e8ND/R7HfKZGslg
+         LhyCO1+9Y02fhYx/C2DCLbXBjXSZ7xUQ+7yiEDXBs7r94R2HXkioiQRlhGge2/91zsCc
+         +2xA==
+X-Gm-Message-State: AOAM531NG8pp07s5BQty5YMgVr1ayr/tIq6lhzUHOwcsNWeFxEh/53bp
+        fCMMr3wWq92ItQoSn6H678lQ
+X-Google-Smtp-Source: ABdhPJxigjLOV7f6CSoqVqVDbHIE443wB+VHWNUBrEke/v73GfmkYFIvsn1GUFVRK+tpgzFGhAYDJA==
+X-Received: by 2002:a63:fe57:: with SMTP id x23mr36499351pgj.309.1600697036935;
+        Mon, 21 Sep 2020 07:03:56 -0700 (PDT)
+Received: from Mani-XPS-13-9360 ([2409:4072:6d03:bd12:1004:2ccf:6900:b97])
+        by smtp.gmail.com with ESMTPSA id gn24sm11039713pjb.8.2020.09.21.07.03.53
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 21 Sep 2020 07:03:56 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 19:33:51 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] Debugfs and Sysfs entries for MHI
+Message-ID: <20200921140351.GD3262@Mani-XPS-13-9360>
+References: <1600457992-18448-1-git-send-email-bbhatt@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ftEhullJWpWg/VHq"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200921150208.6a296bc7@nic.cz>
-User-Agent: Mutt/1.6.0 (2016-04-01)
+In-Reply-To: <1600457992-18448-1-git-send-email-bbhatt@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 18, 2020 at 12:39:49PM -0700, Bhaumik Bhatt wrote:
+> Introduce debugfs and sysfs entries for MHI.
+> Fixes to allow building MHI as a module without warnings/errors.
+> 
+> This set of patches was tested on arm64 and x86_64 architectures.
+> 
+> v3:
+> -Fix typo in commit text and add a minor update to it
+> 
 
---ftEhullJWpWg/VHq
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Series applied to mhi-next!
 
-On Mon, Sep 21, 2020 at 03:02:08PM +0200, Marek Behun wrote:
-> On Mon, 21 Sep 2020 14:53:43 +0200
-> Simon Guinot <simon.guinot@sequanux.org> wrote:
->=20
-> > On Fri, Sep 18, 2020 at 07:14:05PM +0200, Marek Behun wrote:
-> > > On Fri, 18 Sep 2020 15:02:06 +0200
-> > > Simon Guinot <simon.guinot@sequanux.org> wrote:
-> > >  =20
-> > > > On Thu, Sep 17, 2020 at 01:16:50AM +0200, Marek Beh=C3=BAn wrote:
-> > > >=20
-> > > > Hi Marek,
-> > > >  =20
-> > > > > By using struct led_init_data when registering we do not need to =
-parse
-> > > > > `label` DT property nor `linux,default-trigger` property.
-> > > > >=20
-> > > > > Also, move forward from platform data to device tree only:
-> > > > > since commit c7896490dd1a ("leds: ns2: Absorb platform data") the
-> > > > > platform data structure is absorbed into the driver, because noth=
-ing
-> > > > > else in the source tree used it. Since nobody complained and all =
-usage   =20
-> > > >=20
-> > > > Well, I probably should have...
-> > > >=20
-> > > > I am using this driver on the Seagate Superbee NAS devices. This de=
-vices
-> > > > are based on a x86 SoC. Since I have been unable to get from the OD=
-M the
-> > > > LED information written in the ACPI tables, then platform data are =
-used
-> > > > to pass the LED description to the driver.
-> > > >=20
-> > > > The support of this boards is not available mainline yet but it is =
-still
-> > > > on my todo list. So that's why I am complaining right now :) If it =
-is
-> > > > not too much trouble I'd like to keep platform data support in this
-> > > > driver.
-> > > >=20
-> > > > Thanks in advance.
-> > > >=20
-> > > > Simon
-> > > >  =20
-> > >=20
-> > > Simon, what if we refactored the driver to use fwnode API instead of =
-OF
-> > > API? Then if it is impossible for you to write DTS for that device,
-> > > instead of platform data you could implement your device via swnode
-> > > fwnodes. :) =20
-> >=20
-> > Yes. That would be perfect.
-> >=20
-> > Simon
->=20
-> BTW if you have access to device schematics I could try to write DTS,
-> with schematics and the current board source file it should not be that
-> hard. But I can't test it, since I don't have the board.
+Thanks,
+Mani
 
-Don't worry, I'll do the writing and the testing of the fwnode in the
-x86 board files. This boards are not mainlined yet. So it is my problem.
-
-And actually if you don't have the time I can do the writing of the
-fwnode support in the driver as well. And you can just let the driver
-with the OF support. That's fine.
-
-But if you are willing to add fwnode support to the driver yourself,
-then you are more than welcome to do it. On my side, I can help with
-the testing. I can check that the ARM boards ant their DTB are still
-supported by the driver. And I can also check the support of the x86
-boards with the addition of the fwnode properties.
-
-Simon
-
---ftEhullJWpWg/VHq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEXW8DgovlR3VS5hA0zyg/RDPmszoFAl9osqkACgkQzyg/RDPm
-szqsPRAA02ZvnEqDbSk0IS/Qv1gVvuZ25GxX9cnLf1L9L5vCiR+Hc8VkCo2nUgqA
-9loWpEPNJMO9zRlOkquBucv4UHZszje+es04pYIF0iCxJ+y6N5of4LhT/+akEp/2
-ASaDJPphgi+EpMmpZ3aFjeEFQpKx3iUzoCNqs9Vq1ExCIUs4n9qBX43Vv640EJC8
-37E4TmnrA57ewARmt22ppPlhspwaiMFsr7gAav54w5KC4w4/ibcBcJtuqepJbn6q
-ENz7vhP8ixTZDjEjN9aKFWIXMKEqJv3x11lUazhMr99tdeX+frQWcuRMnRAMKqht
-/IG+HbyJqTaCSBsxj4LFznBBjuy3ra9sC5E5QaJrExx42btFG/EYXrg1GVKB3nHF
-kiQC2v/paaEvAs1H9xinfBDKjHJ6rFOYoQkva3aAVSAB9cuGs/yr/eODeOjjSVYb
-johlpxk+TcPb207mfkv1lIZ9C7yEi9qcqoKsyJVI6JRMYZV4KgvAnmhL8DSePpy6
-naJcj+UfJUe8rsHCN82TJLRaPwYwKOf/QkEbD9qRN6MZuahRVPfCMjB9iKDBLO7v
-RqPC7UpUBzXrgat2ejZZcFim6tXPgRBlLo3sqBJAt7cCD8fU+KyLyEJov5fKI85K
-Gxo/qV5X8kVGXJZxe76xc8wr/B1votHKcaG6nhyXhE8iVxV4KaQ=
-=wNem
------END PGP SIGNATURE-----
-
---ftEhullJWpWg/VHq--
+> v2:
+> -Remove the patch for removal of MODULE_LICENSE() warnings
+> -Add fixes to adhere to the Kconfig coding style
+> 
+> Bhaumik Bhatt (3):
+>   bus: mhi: Fix entries based on Kconfig coding style
+>   bus: mhi: core: Introduce debugfs entries for MHI
+>   bus: mhi: core: Introduce sysfs entries for MHI
+> 
+>  Documentation/ABI/stable/sysfs-bus-mhi |  21 ++
+>  MAINTAINERS                            |   1 +
+>  drivers/bus/mhi/Kconfig                |  20 +-
+>  drivers/bus/mhi/core/Makefile          |   1 +
+>  drivers/bus/mhi/core/debugfs.c         | 410 +++++++++++++++++++++++++++++++++
+>  drivers/bus/mhi/core/init.c            |  60 +++++
+>  drivers/bus/mhi/core/internal.h        |  24 ++
+>  include/linux/mhi.h                    |   2 +
+>  8 files changed, 533 insertions(+), 6 deletions(-)
+>  create mode 100644 Documentation/ABI/stable/sysfs-bus-mhi
+>  create mode 100644 drivers/bus/mhi/core/debugfs.c
+> 
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
