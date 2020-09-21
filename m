@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32086272E10
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:46:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2352272CFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729308AbgIUQpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:45:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51244 "EHLO mail.kernel.org"
+        id S1728983AbgIUQg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:36:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727338AbgIUQpV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:45:21 -0400
+        id S1728950AbgIUQgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:36:24 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DAC3E2399A;
-        Mon, 21 Sep 2020 16:45:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E141C2396F;
+        Mon, 21 Sep 2020 16:36:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706721;
-        bh=xjZXQcpiIWSbrq4vUTAl/BD54Tv1jv4rLS9iNd3uiJk=;
+        s=default; t=1600706183;
+        bh=d3XFlJeZ5FcVRMjyET295KfplhHWKUPA6e5DSv4GAcE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rI4ecV6psF8RabxVgCXrwRMe95yzGgPWe+LMOCrYvHIOWcTl38bSdn3xqSqpYvpWK
-         Rn+TSiXk6SAiHYhKc2cVQxe4/L/GXCy0IuN0GZcaEMiGY41cYC8tnvcGpU18S3t4kL
-         deoW3mmMWgTCl0A3qAzV/bd9ep6gV9IBFQLxe/go=
+        b=ZODU70kakwOW1R54VkYSPKENQtjUGVTN6wrTGQoYOEIDhw3aGHD3jCbBl8/HgRHhB
+         XtMnz3XNxyKtu2JhzPyqmgLEn0h5w58PHrLIu10POiu/xLuL+lptgGS2iEd8Gt812l
+         t3F3dDebUJHKAO9PAghF7Ldp7+fqB5qIdIEEwwuA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        stable@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 068/118] drm/mediatek: Add missing put_device() call in mtk_ddp_comp_init()
-Date:   Mon, 21 Sep 2020 18:28:00 +0200
-Message-Id: <20200921162039.505702820@linuxfoundation.org>
+Subject: [PATCH 4.9 61/70] MIPS: SNI: Fix spurious interrupts
+Date:   Mon, 21 Sep 2020 18:28:01 +0200
+Message-Id: <20200921162037.922800381@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
-References: <20200921162036.324813383@linuxfoundation.org>
+In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
+References: <20200921162035.136047591@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,34 +43,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
-[ Upstream commit d494c257271153633a05c11e6dec85ddfc7700ee ]
+[ Upstream commit b959b97860d0fee8c8f6a3e641d3c2ad76eab6be ]
 
-if of_find_device_by_node() succeed, mtk_ddp_comp_init() doesn't have
-a corresponding put_device(). Thus add put_device() to fix the exception
-handling for this function implementation.
+On A20R machines the interrupt pending bits in cause register need to be
+updated by requesting the chipset to do it. This needs to be done to
+find the interrupt cause and after interrupt service. In
+commit 0b888c7f3a03 ("MIPS: SNI: Convert to new irq_chip functions") the
+function to do after service update got lost, which caused spurious
+interrupts.
 
-Fixes: d0afe37f5209 ("drm/mediatek: support CMDQ interface in ddp component")
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Fixes: 0b888c7f3a03 ("MIPS: SNI: Convert to new irq_chip functions")
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/mips/sni/a20r.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-index 57c88de9a3293..526648885b97e 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-@@ -496,6 +496,7 @@ int mtk_ddp_comp_init(struct device *dev, struct device_node *node,
- #if IS_REACHABLE(CONFIG_MTK_CMDQ)
- 	if (of_address_to_resource(node, 0, &res) != 0) {
- 		dev_err(dev, "Missing reg in %s node\n", node->full_name);
-+		put_device(&larb_pdev->dev);
- 		return -EINVAL;
- 	}
- 	comp->regs_pa = res.start;
+diff --git a/arch/mips/sni/a20r.c b/arch/mips/sni/a20r.c
+index f9407e1704762..c6af7047eb0d2 100644
+--- a/arch/mips/sni/a20r.c
++++ b/arch/mips/sni/a20r.c
+@@ -143,7 +143,10 @@ static struct platform_device sc26xx_pdev = {
+ 	},
+ };
+ 
+-static u32 a20r_ack_hwint(void)
++/*
++ * Trigger chipset to update CPU's CAUSE IP field
++ */
++static u32 a20r_update_cause_ip(void)
+ {
+ 	u32 status = read_c0_status();
+ 
+@@ -205,12 +208,14 @@ static void a20r_hwint(void)
+ 	int irq;
+ 
+ 	clear_c0_status(IE_IRQ0);
+-	status = a20r_ack_hwint();
++	status = a20r_update_cause_ip();
+ 	cause = read_c0_cause();
+ 
+ 	irq = ffs(((cause & status) >> 8) & 0xf8);
+ 	if (likely(irq > 0))
+ 		do_IRQ(SNI_A20R_IRQ_BASE + irq - 1);
++
++	a20r_update_cause_ip();
+ 	set_c0_status(IE_IRQ0);
+ }
+ 
 -- 
 2.25.1
 
