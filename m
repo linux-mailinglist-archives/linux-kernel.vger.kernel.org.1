@@ -2,164 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35D42271F79
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 11:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97289271F78
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 11:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726667AbgIUJ6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 05:58:18 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:53564 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726402AbgIUJ6M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 05:58:12 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08L9X1rR041088;
-        Mon, 21 Sep 2020 05:57:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=jQOaqnEcRrITUPYlnEMjvu9BklPy8ufP8IkIeL0k9Nk=;
- b=ke24WU87Hvi17tFeibm/TEDq147cnFK1GKY6AebOE14REOdJt+hUuJvblEnLeLp4SW0Y
- gINQ3MJMRxiCAcPBAjH/h8vZgUIwDNTVLqM8yblkDfY6NZrQ90bPhFpyvyeWvyXLeBw/
- z1GOLG+nhRQv5FryrvzfxsuAhzvzr0Z2z0VxzbzOKk5KdPP2WJPUtk9cFi1NgCUEGQPN
- ASnxQ3j0J6RvOBfeQc7JgC8QmReNKsnXXo/4wYjQKg/rXEL+uI6Y6pcZZISZio84n3BH
- a/xysvrhatrqvRVYqFjKUs1osaYhOyXxEu9PmxTSNaXu0yPz12nleP9sM9WOrkSOIguW RQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33pshv0sy9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Sep 2020 05:57:55 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08L9vO5V121984;
-        Mon, 21 Sep 2020 05:57:55 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33pshv0sxn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Sep 2020 05:57:55 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08L9vrQc012141;
-        Mon, 21 Sep 2020 09:57:53 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06ams.nl.ibm.com with ESMTP id 33n98gswsw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Sep 2020 09:57:53 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08L9vowT30409120
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 21 Sep 2020 09:57:51 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D55CA52050;
-        Mon, 21 Sep 2020 09:57:50 +0000 (GMT)
-Received: from srikart450.in.ibm.com (unknown [9.77.192.225])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 8C55552051;
-        Mon, 21 Sep 2020 09:57:47 +0000 (GMT)
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Michael Neuling <mikey@neuling.org>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Subject: [PATCH v2 11/11] powerpc/smp: Optimize update_coregroup_mask
-Date:   Mon, 21 Sep 2020 15:26:53 +0530
-Message-Id: <20200921095653.9701-12-srikar@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200921095653.9701-1-srikar@linux.vnet.ibm.com>
-References: <20200921095653.9701-1-srikar@linux.vnet.ibm.com>
+        id S1726656AbgIUJ6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 05:58:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34918 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726366AbgIUJ6G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 05:58:06 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9BB5BB019;
+        Mon, 21 Sep 2020 09:58:39 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 4361B1E12E1; Mon, 21 Sep 2020 11:58:03 +0200 (CEST)
+Date:   Mon, 21 Sep 2020 11:58:03 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Dan Williams <dan.j.williams@intel.com>, Jan Kara <jack@suse.cz>,
+        linux-nvdimm@lists.01.org, linux- stable <stable@vger.kernel.org>,
+        Adrian Huang <ahuang12@lenovo.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        open list <linux-kernel@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>, mpatocka@redhat.com,
+        lkft-triage@lists.linaro.org
+Subject: Re: [PATCH v2] dm: Call proper helper to determine dax support
+Message-ID: <20200921095803.GE5862@quack2.suse.cz>
+References: <160040692945.25320.13233625491405115889.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <CA+G9fYud7x0TfTDNWHa_0hzYHNQyet-a2==gQzDaZKXywY1meg@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="Pk6IbRAofICFmK5e"
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-21_01:2020-09-21,2020-09-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=2
- impostorscore=0 phishscore=0 adultscore=0 mlxscore=0 spamscore=0
- bulkscore=0 lowpriorityscore=0 clxscore=1015 priorityscore=1501
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009210069
+In-Reply-To: <CA+G9fYud7x0TfTDNWHa_0hzYHNQyet-a2==gQzDaZKXywY1meg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All threads of a SMT4/SMT8 core can either be part of CPU's coregroup
-mask or outside the coregroup. Use this relation to reduce the
-number of iterations needed to find all the CPUs that share the same
-coregroup
 
-Use a temporary mask to iterate through the CPUs that may share
-coregroup mask. Also instead of setting one CPU at a time into
-cpu_coregroup_mask, copy the SMT4/SMT8/submask at one shot.
+--Pk6IbRAofICFmK5e
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Cc: LKML <linux-kernel@vger.kernel.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Anton Blanchard <anton@ozlabs.org>
-Cc: Oliver O'Halloran <oohall@gmail.com>
-Cc: Nathan Lynch <nathanl@linux.ibm.com>
-Cc: Michael Neuling <mikey@neuling.org>
-Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
-Cc: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+On Mon 21-09-20 11:23:07, Naresh Kamboju wrote:
+> On Fri, 18 Sep 2020 at 11:18, Dan Williams <dan.j.williams@intel.com> wrote:
+> >
+> > From: Jan Kara <jack@suse.cz>
+> >
+> > DM was calling generic_fsdax_supported() to determine whether a device
+> > referenced in the DM table supports DAX. However this is a helper for "leaf" device drivers so that
+> > they don't have to duplicate common generic checks. High level code
+> > should call dax_supported() helper which that calls into appropriate
+> > helper for the particular device. This problem manifested itself as
+> > kernel messages:
+> >
+> > dm-3: error: dax access failed (-95)
+> >
+> > when lvm2-testsuite run in cases where a DM device was stacked on top of
+> > another DM device.
+> >
+> > Fixes: 7bf7eac8d648 ("dax: Arrange for dax_supported check to span multiple devices")
+> > Cc: <stable@vger.kernel.org>
+> > Tested-by: Adrian Huang <ahuang12@lenovo.com>
+> > Signed-off-by: Jan Kara <jack@suse.cz>
+> > Acked-by: Mike Snitzer <snitzer@redhat.com>
+> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> > ---
+> > Changes since v1 [1]:
+> > - Add missing dax_read_lock() around dax_supported()
+> >
+> > [1]: http://lore.kernel.org/r/20200916151445.450-1-jack@suse.cz
+> >
+> >  drivers/dax/super.c   |    4 ++++
+> >  drivers/md/dm-table.c |   10 +++++++---
+> >  include/linux/dax.h   |   11 +++++++++--
+> >  3 files changed, 20 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/dax/super.c b/drivers/dax/super.c
+> > index e5767c83ea23..b6284c5cae0a 100644
+> > --- a/drivers/dax/super.c
+> > +++ b/drivers/dax/super.c
+> > @@ -325,11 +325,15 @@ EXPORT_SYMBOL_GPL(dax_direct_access);
+> >  bool dax_supported(struct dax_device *dax_dev, struct block_device *bdev,
+> >                 int blocksize, sector_t start, sector_t len)
+> >  {
+> > +       if (!dax_dev)
+> > +               return false;
+> > +
+> >         if (!dax_alive(dax_dev))
+> >                 return false;
+> >
+> >         return dax_dev->ops->dax_supported(dax_dev, bdev, blocksize, start, len);
+> >  }
+> > +EXPORT_SYMBOL_GPL(dax_supported);
+> 
+> arm build error while building with allmodconfig.
+> 
+> ../drivers/dax/super.c:325:6: error: redefinition of ‘dax_supported’
+>   325 | bool dax_supported(struct dax_device *dax_dev, struct
+> block_device *bdev,
+>       |      ^~~~~~~~~~~~~
+> In file included from ../drivers/dax/super.c:16:
+> ../include/linux/dax.h:162:20: note: previous definition of
+> ‘dax_supported’ was here
+>   162 | static inline bool dax_supported(struct dax_device *dax_dev,
+>       |                    ^~~~~~~~~~~~~
+> make[3]: *** [../scripts/Makefile.build:283: drivers/dax/super.o] Error 1
+> 
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> 
+> Ref:
+> https://builds.tuxbuild.com/IO690jFQDp0qP9zFuWBqpA/build.log
+
+Thanks for report! Attached patch should fix the build (at least I've
+tested it with CONFIG_DAX && CONFIG_FS_DAX, CONFIG_DAX && !CONFIG_FS_DAX,
+and !CONFIG_DAX cases). Dan can you please merge the fix?
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
+
+--Pk6IbRAofICFmK5e
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="0001-dax-Fix-compilation-for-CONFIG_DAX-CONFIG_FS_DAX.patch"
+
+From c48c9d1ee41ca17561dfd7ec5247b5afc527d40e Mon Sep 17 00:00:00 2001
+From: Jan Kara <jack@suse.cz>
+Date: Mon, 21 Sep 2020 11:33:23 +0200
+Subject: [PATCH] dax: Fix compilation for CONFIG_DAX && !CONFIG_FS_DAX
+
+dax_supported() is defined whenever CONFIG_DAX is enabled. So dummy
+implementation should be defined only in !CONFIG_DAX case, not in
+!CONFIG_FS_DAX case.
+
+Fixes: e2ec51282545 ("dm: Call proper helper to determine dax support")
+Cc: <stable@vger.kernel.org>
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
 ---
- arch/powerpc/kernel/smp.c | 30 ++++++++++++++++++++++--------
- 1 file changed, 22 insertions(+), 8 deletions(-)
+ include/linux/dax.h | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
-diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-index b48ae4e306d3..bbaea93dc558 100644
---- a/arch/powerpc/kernel/smp.c
-+++ b/arch/powerpc/kernel/smp.c
-@@ -1339,19 +1339,33 @@ static inline void add_cpu_to_smallcore_masks(int cpu)
- 
- static void update_coregroup_mask(int cpu)
+diff --git a/include/linux/dax.h b/include/linux/dax.h
+index 497031392e0a..43b39ab9de1a 100644
+--- a/include/linux/dax.h
++++ b/include/linux/dax.h
+@@ -58,6 +58,8 @@ static inline void set_dax_synchronous(struct dax_device *dax_dev)
  {
--	int first_thread = cpu_first_thread_sibling(cpu);
-+	struct cpumask *(*submask_fn)(int) = cpu_sibling_mask;
-+	cpumask_var_t mask;
- 	int coregroup_id = cpu_to_coregroup_id(cpu);
- 	int i;
+ 	__set_dax_synchronous(dax_dev);
+ }
++bool dax_supported(struct dax_device *dax_dev, struct block_device *bdev,
++		int blocksize, sector_t start, sector_t len);
+ /*
+  * Check if given mapping is supported by the file / underlying device.
+  */
+@@ -104,6 +106,12 @@ static inline bool dax_synchronous(struct dax_device *dax_dev)
+ static inline void set_dax_synchronous(struct dax_device *dax_dev)
+ {
+ }
++static inline bool dax_supported(struct dax_device *dax_dev,
++		struct block_device *bdev, int blocksize, sector_t start,
++		sector_t len)
++{
++	return false;
++}
+ static inline bool daxdev_mapping_supported(struct vm_area_struct *vma,
+ 				struct dax_device *dax_dev)
+ {
+@@ -130,8 +138,6 @@ static inline bool generic_fsdax_supported(struct dax_device *dax_dev,
+ 	return __generic_fsdax_supported(dax_dev, bdev, blocksize, start,
+ 			sectors);
+ }
+-bool dax_supported(struct dax_device *dax_dev, struct block_device *bdev,
+-		int blocksize, sector_t start, sector_t len);
  
--	cpumask_set_cpu(cpu, cpu_coregroup_mask(cpu));
--	for_each_cpu_and(i, cpu_online_mask, cpu_cpu_mask(cpu)) {
--		int fcpu = cpu_first_thread_sibling(i);
-+	alloc_cpumask_var_node(&mask, GFP_KERNEL, cpu_to_node(cpu));
-+	cpumask_and(mask, cpu_online_mask, cpu_cpu_mask(cpu));
-+
-+	if (shared_caches)
-+		submask_fn = cpu_l2_cache_mask;
-+
-+	/* Update coregroup mask with all the CPUs that are part of submask */
-+	or_cpumasks_related(cpu, cpu, submask_fn, cpu_coregroup_mask);
-+
-+	/* Skip all CPUs already part of coregroup mask */
-+	cpumask_andnot(mask, mask, cpu_coregroup_mask(cpu));
- 
--		if (fcpu == first_thread)
--			set_cpus_related(cpu, i, cpu_coregroup_mask);
--		else if (coregroup_id == cpu_to_coregroup_id(i))
--			set_cpus_related(cpu, i, cpu_coregroup_mask);
-+	for_each_cpu(i, mask) {
-+		/* Skip all CPUs not part of this coregroup */
-+		if (coregroup_id == cpu_to_coregroup_id(i)) {
-+			or_cpumasks_related(cpu, i, submask_fn, cpu_coregroup_mask);
-+			cpumask_andnot(mask, mask, submask_fn(i));
-+		} else {
-+			cpumask_andnot(mask, mask, cpu_coregroup_mask(i));
-+		}
- 	}
-+	free_cpumask_var(mask);
+ static inline void fs_put_dax(struct dax_device *dax_dev)
+ {
+@@ -159,13 +165,6 @@ static inline bool generic_fsdax_supported(struct dax_device *dax_dev,
+ 	return false;
  }
  
- static void add_cpu_to_masks(int cpu)
+-static inline bool dax_supported(struct dax_device *dax_dev,
+-		struct block_device *bdev, int blocksize, sector_t start,
+-		sector_t len)
+-{
+-	return false;
+-}
+-
+ static inline void fs_put_dax(struct dax_device *dax_dev)
+ {
+ }
 -- 
-2.17.1
+2.16.4
 
+
+--Pk6IbRAofICFmK5e--
