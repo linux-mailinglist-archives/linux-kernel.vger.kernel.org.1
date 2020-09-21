@@ -2,89 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63EB4273534
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 23:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9904C2734ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 23:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728357AbgIUVxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 17:53:10 -0400
-Received: from elvis.franken.de ([193.175.24.41]:49923 "EHLO elvis.franken.de"
+        id S1727346AbgIUVbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 17:31:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726574AbgIUVxK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 17:53:10 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kKSuS-0001Rx-0B; Mon, 21 Sep 2020 22:59:40 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id A0D27C0FE4; Mon, 21 Sep 2020 22:41:03 +0200 (CEST)
-Date:   Mon, 21 Sep 2020 22:41:03 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Youling Tang <tangyouling@loongson.cn>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: kexec: Add crashkernel=YM handling
-Message-ID: <20200921204103.GK29322@alpha.franken.de>
-References: <1600480546-10448-1-git-send-email-tangyouling@loongson.cn>
+        id S1726395AbgIUVbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 17:31:06 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 66E982388B;
+        Mon, 21 Sep 2020 21:31:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600723865;
+        bh=XfNnjrt9QUAoybG18+WUe4rxxAdluuzVFI5lzEiBxMY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=g7OaHGI7UCEkxkz8oHSGlOAlKnfBaBNbp0xu78Il4jeEba9yg4pjzT4wycXR4a2z/
+         +Uu3Cm2gP9AgOLKDcEKEtDcZ3/N7KZjsVqkAvxjc6TlVrMsfdBmmUYCNEtqUDPyVEQ
+         vL3MH+TSR2i8Mf+pUrLdU1SWb2Ni77RjmpAidDHQ=
+Date:   Mon, 21 Sep 2020 22:30:57 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     iommu@lists.linux-foundation.org, dri-devel@lists.freedesktop.org,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Vivek Gautam <vivek.gautam@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Rob Clark <robdclark@chromium.org>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Ben Dooks <ben.dooks@codethink.co.uk>,
+        Brian Masney <masneyb@onstation.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Eric Anholt <eric@anholt.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hanna Hawa <hannah@marvell.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        "moderated list:ARM SMMU DRIVERS" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Shawn Guo <shawn.guo@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Wambui Karuga <wambui.karugax@gmail.com>
+Subject: Re: [PATCH v17 00/20] iommu/arm-smmu + drm/msm: per-process GPU
+ pgtables
+Message-ID: <20200921213054.GA4270@willie-the-truck>
+References: <20200905200454.240929-1-robdclark@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1600480546-10448-1-git-send-email-tangyouling@loongson.cn>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20200905200454.240929-1-robdclark@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 19, 2020 at 09:55:46AM +0800, Youling Tang wrote:
-> When the kernel crashkernel parameter is specified with just a size,
-> we are supposed to allocate a region from RAM to store the crashkernel.
-> However, MIPS merely reserves physical address zero with no checking
-> that there is even RAM there.
+On Sat, Sep 05, 2020 at 01:04:06PM -0700, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
 > 
-> Fix this by lifting similar code from x86, importing it to MIPS with the
-> MIPS specific parameters added. In the absence of any platform specific
-> information, we allocate the crashkernel region from the first 512MB of
-> physical memory (limited to CKSEG0 or KSEG0 address range).
+> NOTE: I have re-ordered the series, and propose that we could merge this
+>       series in the following order:
 > 
-> When X is not specified, crash_base defaults to 0 (crashkernel=YM@XM).
-> 
-> E.g. without this patch:
-> 
-> The environment as follows:
-> [    0.000000] MIPS: machine is loongson,loongson64c-4core-ls7a
-> ...
-> [    0.000000] Kernel command line: root=/dev/sda2 crashkernel=96M ...
-> 
-> The warning as follows:
-> [    0.000000] Invalid memory region reserved for crash kernel
-> 
-> And the iomem as follows:
-> 00200000-0effffff : System RAM
->   00200000-00b47f87 : Kernel code
->   00b47f88-00dfffff : Kernel data
->   00e60000-01f73c7f : Kernel bss
-> 1a000000-1bffffff : pci@1a000000
-> ...
-> 
-> With this patch:
-> 
-> After increasing crash_base <= 0 handling.
-> 
-> And the iomem as follows:
-> 00200000-0effffff : System RAM
->   00200000-00b47f87 : Kernel code
->   00b47f88-00dfffff : Kernel data
->   00e60000-01f73c7f : Kernel bss
->   04000000-09ffffff : Crash kernel
-> 1a000000-1bffffff : pci@1a000000
-> ...
-> 
-> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
-> ---
->  arch/mips/kernel/setup.c | 24 +++++++++++++++++++++---
->  1 file changed, 21 insertions(+), 3 deletions(-)
+>        1) 01-11 - merge via drm / msm-next
+>        2) 12-15 - merge via iommu, no dependency on msm-next pull req
 
-applied to mips-next.
+Thanks, I've queued 12-15 in the smmu tree.
 
-Thomas.
+https://git.kernel.org/pub/scm/linux/kernel/git/will/linux.git/log/?h=for-joerg/arm-smmu/updates
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Will
