@@ -2,142 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 590EB272136
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30BF0272138
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:33:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726755AbgIUKda convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Sep 2020 06:33:30 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:34997 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726699AbgIUKdZ (ORCPT
+        id S1726774AbgIUKdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:33:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726428AbgIUKdn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 06:33:25 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-108-DbCTplcGNneZ3ytIFDanIg-1; Mon, 21 Sep 2020 11:33:20 +0100
-X-MC-Unique: DbCTplcGNneZ3ytIFDanIg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 21 Sep 2020 11:33:19 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 21 Sep 2020 11:33:19 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Rasmus Villemoes' <linux@rasmusvillemoes.dk>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>
-CC:     syzbot <syzbot+ea3a78a71705faf41d77@syzkaller.appspotmail.com>,
-        "Aleksa Sarai" <cyphar@cyphar.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>, "X86 ML" <x86@kernel.org>
-Subject: RE: WARNING in ex_handler_uaccess
-Thread-Topic: WARNING in ex_handler_uaccess
-Thread-Index: AQHWkAEVdhxJQ/Fq7U+wxL6/+NIsNaly5Eug
-Date:   Mon, 21 Sep 2020 10:33:19 +0000
-Message-ID: <8bef09fd4d644f48a7c83aa18b653f76@AcuMS.aculab.com>
-References: <000000000000762dee05af9ccd01@google.com>
- <CALCETrVL=VGNXbWK1BB1LnsxaKOGRbEfCGUEx4jaCW9cF-54Ag@mail.gmail.com>
- <20200918235528.GB3421308@ZenIV.linux.org.uk>
- <CALCETrVi=quLyPXzt-0ou-FF_OYMa7pE5N8_NchRaWtwLg3kNg@mail.gmail.com>
- <20200919001714.GC3421308@ZenIV.linux.org.uk>
- <bc5d889c-17f0-dcb8-d174-f21b321cf85b@rasmusvillemoes.dk>
-In-Reply-To: <bc5d889c-17f0-dcb8-d174-f21b321cf85b@rasmusvillemoes.dk>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 21 Sep 2020 06:33:43 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8FE1C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:33:42 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id e17so11601268wme.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:33:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=kjxw4km93AnFxrs9BHkSiQ7WIwZ/JBZnTalW8nKwc6M=;
+        b=wB8n8aKCne/xXh8ZcRI25eb7QDQ9dmygXDzNbdHRZRZOxblgUGkC7zIcpk8um1U/6b
+         et6Uo0KgtcECJ9YYbmvCLQsL8P9hyJSBrWqF02RGzwmpf0OQDxYp55VTpqWS6qtzQFoR
+         O76kqrdDfo/XeET1njsxCKaFgf2mDucqtbSHiTKgbSWnbzpgHvr7bc3otsPvYAkOIs1z
+         8a2Hd0cuZxOX9RpT9n2OQDphuWPy/IZGWk/UzKOWURJazGy3wN6twgcHFMPXadPuE7HZ
+         W0wPXawsW6Wiw3GxGN/2JhY59+PWFKI1FOSR//80NLjiqTH7CTyJsGMoXLpez9gV6b/o
+         f68Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=kjxw4km93AnFxrs9BHkSiQ7WIwZ/JBZnTalW8nKwc6M=;
+        b=ik3uI3ERulWWSDCDOZv3rvQ/3dn/effYENfY5Cq+Sb0kYl/cIJhOmhsNy9aPVB2ljw
+         HMX2p9DsOkLzybVZ4COWXrvk4zVHNmrfZZmTydHGmu55wD0PzocvOKTMCkuOwhXRRNk7
+         rXuCAQJlLwNP1VMhlY0yJn3j8H9nzdk5eWq/UTiFx/vBAazI8PrZz4J9Zh/6ccKY+A8q
+         5g2DLafHi49VxY8ShjzdbC7aoh3cl5kDxudmStx9BIZXNKlsmV6oAMzye3RdJ1J3ichm
+         pmphbU/f5qVQZERTtKCn/fIphjG0b/efVz8Bb1T6/CUGRENOjR+5mP5qKCjfeY0PdX16
+         SeGA==
+X-Gm-Message-State: AOAM531rQ6fLtJBe7/3duOEt+qYNStFf5gC8qibCNsC66ndz3nMDJQc4
+        ao01c8I6tcAK8ti/p+3uhebe9Q==
+X-Google-Smtp-Source: ABdhPJyBhlImM0gM7xMgkbACh9Rethu8/rF/kbdt83J3OCB6keNBr6euoSva3wSDTqHdNMC0CK+cVA==
+X-Received: by 2002:a1c:5a86:: with SMTP id o128mr28331649wmb.129.1600684421300;
+        Mon, 21 Sep 2020 03:33:41 -0700 (PDT)
+Received: from localhost ([86.61.181.4])
+        by smtp.gmail.com with ESMTPSA id 91sm21494851wrq.9.2020.09.21.03.33.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 03:33:40 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 12:33:39 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Moshe Shemesh <moshe@nvidia.com>
+Cc:     Ido Schimmel <idosch@idosch.org>,
+        Moshe Shemesh <moshe@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next RFC v4 04/15] devlink: Add reload actions stats
+ to dev get
+Message-ID: <20200921103339.GC2323@nanopsycho.orion>
+References: <1600063682-17313-1-git-send-email-moshe@mellanox.com>
+ <1600063682-17313-5-git-send-email-moshe@mellanox.com>
+ <20200914134500.GH2236@nanopsycho.orion>
+ <20200915064519.GA5390@shredder>
+ <20200915074402.GM2236@nanopsycho.orion>
+ <0d6cb0da-761b-b122-f5b1-b82320cfd5c4@nvidia.com>
+ <20200915133406.GQ2236@nanopsycho.orion>
+ <bcd28773-0027-11f5-1fd9-0a793f0a3c3a@nvidia.com>
+ <bd55e716-7659-c3c4-ded5-c0abbb3d37f3@nvidia.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <bd55e716-7659-c3c4-ded5-c0abbb3d37f3@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rasmus Villemoes
-> Sent: 21 September 2020 11:22
- 
-> On 19/09/2020 02.17, Al Viro wrote:
-> > On Fri, Sep 18, 2020 at 05:07:43PM -0700, Andy Lutomirski wrote:
-> >> On Fri, Sep 18, 2020 at 4:55 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
-> >>>
-> >>> On Fri, Sep 18, 2020 at 04:31:33PM -0700, Andy Lutomirski wrote:
-> >>>
-> >>>> check_zeroed_user() looks buggy.  It does:
-> >>>>
-> >>>>        if (!user_access_begin(from, size))
-> >>>>                return -EFAULT;
-> >>>>
-> >>>>        unsafe_get_user(val, (unsigned long __user *) from, err_fault);
-> >>>>
-> >>>> This is wrong if size < sizeof(unsigned long) -- you read outside the
-> >>>> area you verified using user_access_begin().
-> >>>
-> >>> Read the code immediately prior to that.  from will be word-aligned,
-> >>> and size will be extended accordingly.  If the area acceptable for
-> >>> user_access_begin() ends *NOT* on a word boundary, you have a problem
-> >>> and I would strongly recommend to seek professional help.
-> >>>
-> >>> All reads in that thing are word-aligned and word-sized.  So I very
-> >>> much doubt that your analysis is correct.
-> >>
-> >> Maybe -ETOOTIRED, but I seriously question the math in here.  Suppose
-> >> from == (unsigned long *)1 and size == 1.  Then align is 1, and we do:
-> >>
-> >> from -= align;
-> >> size += align;
-> >>
-> >> So now from = 0 and size = 2.  Now we do user_access_begin(0, 2) and
-> >> then immediately read 4 or 8 bytes.  No good.
-> >
-> > Could you explain what kind of insane hardware manages to do #PF-related
-> > checks (including SMAP, whatever) with *sub*WORD* granularity?
-> >
-> > If it's OK with 16bit read from word-aligned address, but barfs on 64bit
-> > one...  I want to know what the hell had its authors been smoking.
-> >
-> 
-> So, not sure how the above got triggered, but I notice there might be an
-> edge case in check_zeroed_user():
-> 
-> 	from -= align;
-> 	size += align;
-> 
-> 	if (!user_read_access_begin(from, size))
-> 		return -EFAULT;
-> 
-> 	unsafe_get_user(val, (unsigned long __user *) from, err_fault);
-> 
-> 
-> Suppose size is (size_t)-3 and align is 3. What's the convention for
-> access_ok(whatever, 0)? Is that equivalent to access_ok(whatever, 1), or
-> is it always true (or $ARCH-dependent)?
+Fri, Sep 18, 2020 at 06:13:59PM CEST, moshe@nvidia.com wrote:
+>
+>On 9/15/2020 11:33 PM, Moshe Shemesh wrote:
+>> External email: Use caution opening links or attachments
+>> 
+>> 
+>> On 9/15/2020 4:34 PM, Jiri Pirko wrote:
+>> > Tue, Sep 15, 2020 at 02:31:38PM CEST, moshe@nvidia.com wrote:
+>> > > On 9/15/2020 10:44 AM, Jiri Pirko wrote:
+>> > > > Tue, Sep 15, 2020 at 08:45:19AM CEST, idosch@idosch.org wrote:
+>> > > > > On Mon, Sep 14, 2020 at 03:45:00PM +0200, Jiri Pirko wrote:
+>> > > > > > Mon, Sep 14, 2020 at 08:07:51AM CEST, moshe@mellanox.com wrote:
+>> > > > > > > Expose devlink reload actions stats to the user through devlink dev
+>> > > > > > > get command.
+>> > > > > > > 
+>> > > > > > > Examples:
+>> > > > > > > $ devlink dev show
+>> > > > > > > pci/0000:82:00.0:
+>> > > > > > >    reload_action_stats:
+>> > > > > > >      driver_reinit 2
+>> > > > > > >      fw_activate 1
+>> > > > > > >      driver_reinit_no_reset 0
+>> > > > > > >      fw_activate_no_reset 0
+>> > > > > > > pci/0000:82:00.1:
+>> > > > > > >    reload_action_stats:
+>> > > > > > >      driver_reinit 1
+>> > > > > > >      fw_activate 1
+>> > > > > > >      driver_reinit_no_reset 0
+>> > > > > > >      fw_activate_no_reset 0
+>> > > > > > I would rather have something like:
+>> > > > > >      stats:
+>> > > > > >        reload_action:
+>> > > > > >          driver_reinit 1
+>> > > > > >          fw_activate 1
+>> > > > > >          driver_reinit_no_reset 0
+>> > > > > >          fw_activate_no_reset 0
+>> > > > > > 
+>> > > > > > Then we can easily extend and add other stats in the tree.
+>> > > 
+>> > > Sure, I will add it.
+>> > Could you please checkout the metrics patchset and figure out how to
+>> > merge that with your usecase?
+>> > 
+>> 
+>> I will check, I will discuss with Ido how it will fit.
+>> 
+>
+>I have discussed it with Ido, it doesn't fit to merge with metrics:
+>
+>1. These counters are maintained by devlink unlike metrics which are read by
+>the driver from HW.
 
-Doesn't matter, it will be doing access_ok(xxx, 8) regardless of
-the user-supplied transfer length.
+Okay.
 
-> But, AFAICT, no current caller of check_zeroed_user can end up passing
-> in a size that can overflow to 0. E.g. for the case at hand, size cannot
-> be more than SIZE_MAX-24.
-
-Basically KASAN doesn't like you reading full words and masking
-off the unused bytes.
-
-	David
-
-	
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+>
+>2. The metrics counters push string name, while here I use enum.
+>
+>However, I did add another level as you suggested here for option to future
+>stats that may fit.
+>
+>> > > > > > Also, I wonder if these stats could be somehow merged
+>> > > > > > with Ido's metrics
+>> > > > > > work:
+>> > > > > > https://github.com/idosch/linux/commits/submit/devlink_metric_rfc_v1
+>> > > > > > 
+>> > > > > > Ido, would it make sense?
+>> > > > > I guess. My original idea for devlink-metric was to expose
+>> > > > > design-specific metrics to user space where the entity
+>> > > > > registering the
+>> > > > > metrics is the device driver. In this case the entity
+>> > > > > would be devlink
+>> > > > > itself and it would be auto-registered for each device.
+>> > > > Yeah, the usecase is different, but it is still stats, right.
+>> > > > 
+>> > > > 
+>> > > > > > > $ devlink dev show -jp
+>> > > > > > > {
+>> > > > > > >      "dev": {
+>> > > > > > >          "pci/0000:82:00.0": {
+>> > > > > > >              "reload_action_stats": [ {
+>> > > > > > >                      "driver_reinit": 2
+>> > > > > > >                  },{
+>> > > > > > >                      "fw_activate": 1
+>> > > > > > >                  },{
+>> > > > > > >                      "driver_reinit_no_reset": 0
+>> > > > > > >                  },{
+>> > > > > > >                      "fw_activate_no_reset": 0
+>> > > > > > >                  } ]
+>> > > > > > >          },
+>> > > > > > >          "pci/0000:82:00.1": {
+>> > > > > > >              "reload_action_stats": [ {
+>> > > > > > >                      "driver_reinit": 1
+>> > > > > > >                  },{
+>> > > > > > >                      "fw_activate": 1
+>> > > > > > >                  },{
+>> > > > > > >                      "driver_reinit_no_reset": 0
+>> > > > > > >                  },{
+>> > > > > > >                      "fw_activate_no_reset": 0
+>> > > > > > >                  } ]
+>> > > > > > >          }
+>> > > > > > >      }
+>> > > > > > > }
+>> > > > > > > 
+>> > > > > > [..]
