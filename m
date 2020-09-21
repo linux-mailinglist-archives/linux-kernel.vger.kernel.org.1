@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E487F272D7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DED52272F26
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729074AbgIUQkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:40:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43366 "EHLO mail.kernel.org"
+        id S1729950AbgIUQyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:54:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52224 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729347AbgIUQkb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:40:31 -0400
+        id S1727197AbgIUQqJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:46:09 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 091772067D;
-        Mon, 21 Sep 2020 16:40:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E9B942223E;
+        Mon, 21 Sep 2020 16:46:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706430;
-        bh=+Hl0YBs/9utIV16UpKBcDuyGwpz2oOC/MgeEPAGwuuk=;
+        s=default; t=1600706768;
+        bh=8CgClc7n9JrrvXiLpWN8REZOBT57fFtY5L9Gom4cG6k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YMn5b6Tq22dzL/Dd648qwd2HDPtZsj4RDU6DyaXztWrAxQLFVX1JxwN96C3lhoujj
-         +Zifa9JqwFmyNcbxVCQrRK8xVMz+O5d3IfNy3Ry61ORxs+AtbLaWw+4mQ1Eu+oCp5q
-         P9zodwA8Kel4YvSO4ohN2FcKVAXMiariop5/HBus=
+        b=l3iHKQ/tl2lWJ+EQ55uhp84Cdkxi+UzIYc72fvh4ySp0KIlD73unT4LFbh2VScyW0
+         UjneeH0inc8kdC0ZEiK8qUz7VtYQeygTJV6sHCE6+phsDN3XiVZBsJNGq5AaNfTHwn
+         SBEX3vqxYSu6I3WWnQdqgUxwE40gn7DfuZYgiX1c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vincent Huang <vincent.huang@tw.synaptics.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 4.14 89/94] Input: trackpoint - add new trackpoint variant IDs
-Date:   Mon, 21 Sep 2020 18:28:16 +0200
-Message-Id: <20200921162039.629237110@linuxfoundation.org>
+        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Jani Nikula <jani.nikula@intel.com>
+Subject: [PATCH 5.8 085/118] drm/i915: Filter wake_flags passed to default_wake_function
+Date:   Mon, 21 Sep 2020 18:28:17 +0200
+Message-Id: <20200921162040.295019326@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
-References: <20200921162035.541285330@linuxfoundation.org>
+In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
+References: <20200921162036.324813383@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,61 +45,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Huang <vincent.huang@tw.synaptics.com>
+From: Chris Wilson <chris@chris-wilson.co.uk>
 
-commit 6c77545af100a72bf5e28142b510ba042a17648d upstream.
+commit 20612303a0b45de748d31331407e84300c38e497 upstream.
 
-Add trackpoint variant IDs to allow supported control on Synaptics
-trackpoints.
+(NOTE: This is the minimal backportable fix, a full fix is being
+developed at https://patchwork.freedesktop.org/patch/388048/)
 
-Signed-off-by: Vincent Huang <vincent.huang@tw.synaptics.com>
-Link: https://lore.kernel.org/r/20200914120327.2592-1-vincent.huang@tw.synaptics.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+The flags passed to the wait_entry.func are passed onwards to
+try_to_wake_up(), which has a very particular interpretation for its
+wake_flags. In particular, beyond the published WF_SYNC, it has a few
+internal flags as well. Since we passed the fence->error down the chain
+via the flags argument, these ended up in the default_wake_function
+confusing the kernel/sched.
+
+Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/2110
+Fixes: ef4688497512 ("drm/i915: Propagate fence errors")
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+Cc: Matthew Auld <matthew.auld@intel.com>
+Cc: <stable@vger.kernel.org> # v5.4+
+Reviewed-by: Matthew Auld <matthew.auld@intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200728152144.1100-1-chris@chris-wilson.co.uk
+Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+[Joonas: Rebased and reordered into drm-intel-gt-next branch]
+[Joonas: Added a note and link about more complete fix]
+Signed-off-by: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+(cherry picked from commit f4b3c395540aa3d4f5a6275c5bdd83ab89034806)
+Signed-off-by: Jani Nikula <jani.nikula@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/input/mouse/trackpoint.c |   10 ++++++----
- drivers/input/mouse/trackpoint.h |   10 ++++++----
- 2 files changed, 12 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/i915/i915_sw_fence.c |   10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
---- a/drivers/input/mouse/trackpoint.c
-+++ b/drivers/input/mouse/trackpoint.c
-@@ -20,10 +20,12 @@
- #include "trackpoint.h"
+--- a/drivers/gpu/drm/i915/i915_sw_fence.c
++++ b/drivers/gpu/drm/i915/i915_sw_fence.c
+@@ -164,9 +164,13 @@ static void __i915_sw_fence_wake_up_all(
  
- static const char * const trackpoint_variants[] = {
--	[TP_VARIANT_IBM]	= "IBM",
--	[TP_VARIANT_ALPS]	= "ALPS",
--	[TP_VARIANT_ELAN]	= "Elan",
--	[TP_VARIANT_NXP]	= "NXP",
-+	[TP_VARIANT_IBM]		= "IBM",
-+	[TP_VARIANT_ALPS]		= "ALPS",
-+	[TP_VARIANT_ELAN]		= "Elan",
-+	[TP_VARIANT_NXP]		= "NXP",
-+	[TP_VARIANT_JYT_SYNAPTICS]	= "JYT_Synaptics",
-+	[TP_VARIANT_SYNAPTICS]		= "Synaptics",
- };
+ 		do {
+ 			list_for_each_entry_safe(pos, next, &x->head, entry) {
+-				pos->func(pos,
+-					  TASK_NORMAL, fence->error,
+-					  &extra);
++				int wake_flags;
++
++				wake_flags = fence->error;
++				if (pos->func == autoremove_wake_function)
++					wake_flags = 0;
++
++				pos->func(pos, TASK_NORMAL, wake_flags, &extra);
+ 			}
  
- /*
---- a/drivers/input/mouse/trackpoint.h
-+++ b/drivers/input/mouse/trackpoint.h
-@@ -27,10 +27,12 @@
-  * 0x01 was the original IBM trackpoint, others implement very limited
-  * subset of trackpoint features.
-  */
--#define TP_VARIANT_IBM		0x01
--#define TP_VARIANT_ALPS		0x02
--#define TP_VARIANT_ELAN		0x03
--#define TP_VARIANT_NXP		0x04
-+#define TP_VARIANT_IBM			0x01
-+#define TP_VARIANT_ALPS			0x02
-+#define TP_VARIANT_ELAN			0x03
-+#define TP_VARIANT_NXP			0x04
-+#define TP_VARIANT_JYT_SYNAPTICS	0x05
-+#define TP_VARIANT_SYNAPTICS		0x06
- 
- /*
-  * Commands
+ 			if (list_empty(&extra))
 
 
