@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3298272D71
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E538E272F3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:55:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729341AbgIUQkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:40:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42296 "EHLO mail.kernel.org"
+        id S1729914AbgIUQzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:55:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728251AbgIUQj4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:39:56 -0400
+        id S1729503AbgIUQps (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:45:48 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2766323998;
-        Mon, 21 Sep 2020 16:39:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 624DF20874;
+        Mon, 21 Sep 2020 16:45:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706395;
-        bh=oJrYqPbkBNlwRIqbKGRD8Px3cMwSoK4wl8bdpEKC3k4=;
+        s=default; t=1600706747;
+        bh=4BJVieK2MQpsQrM3gMlFxZYQf6Qf6grauSn0niykwFw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z6C5AUhfOkZnxctkhrNZ59b316wQmMd0YWDCvG9Tn5gAS0HiFPlIZjLurKeO3o/Su
-         tmacRAlOXo4MSvUF6Z/GH2jAx6vJOFn0Jx0XUxMOFID/goPxhzOjx65MbEXZv6oqth
-         eRAweYIJwkz6PzD2MNYm0nHvaAvCgKw4CYIPR66Y=
+        b=cUmneEljdTisIMjpLOD1znhj/Q00B/+FXmlySKXMO2uoh9gWbSGPPbzm7Y7RLNW0B
+         46WxiKMLMc3MRehtQV14+5tv1DWPg5NfZ4PG4k2bSUExfrVumxg+IxZYzat4Hr4YHL
+         +sB1iCWgtORHrDEUSDzFm7McD+NRNVOaWLqOZFK4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        stable@vger.kernel.org, Syven Wang <syven.wang@sifive.com>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Anup Patel <anup@brainfault.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 82/94] drm/mediatek: Add exception handing in mtk_drm_probe() if component init fail
-Date:   Mon, 21 Sep 2020 18:28:09 +0200
-Message-Id: <20200921162039.292601486@linuxfoundation.org>
+Subject: [PATCH 5.8 078/118] riscv: Add sfence.vma after early page table changes
+Date:   Mon, 21 Sep 2020 18:28:10 +0200
+Message-Id: <20200921162039.961172891@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
-References: <20200921162035.541285330@linuxfoundation.org>
+In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
+References: <20200921162036.324813383@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,43 +45,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+From: Greentime Hu <greentime.hu@sifive.com>
 
-[ Upstream commit 64c194c00789889b0f9454f583712f079ba414ee ]
+[ Upstream commit 21190b74bcf3a36ebab9a715088c29f59877e1f3 ]
 
-mtk_ddp_comp_init() is called in a loop in mtk_drm_probe(), if it
-fail, previous successive init component is not proccessed.
+This invalidates local TLB after modifying the page tables during early init as
+it's too early to handle suprious faults as we otherwise do.
 
-Thus uninitialize valid component and put their device if component
-init failed.
-
-Fixes: 119f5173628a ("drm/mediatek: Add DRM Driver for Mediatek SoC MT8173.")
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Fixes: f2c17aabc917 ("RISC-V: Implement compile-time fixed mappings")
+Reported-by: Syven Wang <syven.wang@sifive.com>
+Signed-off-by: Syven Wang <syven.wang@sifive.com>
+Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
+Reviewed-by: Anup Patel <anup@brainfault.org>
+[Palmer: Cleaned up the commit text]
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/mediatek/mtk_drm_drv.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ arch/riscv/mm/init.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-index 670662128edd2..f32645a33cc90 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-@@ -538,8 +538,13 @@ err_pm:
- 	pm_runtime_disable(dev);
- err_node:
- 	of_node_put(private->mutex_node);
--	for (i = 0; i < DDP_COMPONENT_ID_MAX; i++)
-+	for (i = 0; i < DDP_COMPONENT_ID_MAX; i++) {
- 		of_node_put(private->comp_node[i]);
-+		if (private->ddp_comp[i]) {
-+			put_device(private->ddp_comp[i]->larb_dev);
-+			private->ddp_comp[i] = NULL;
-+		}
-+	}
- 	return ret;
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index 79e9d55bdf1ac..e229d95f470b8 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -226,12 +226,11 @@ void __set_fixmap(enum fixed_addresses idx, phys_addr_t phys, pgprot_t prot)
+ 
+ 	ptep = &fixmap_pte[pte_index(addr)];
+ 
+-	if (pgprot_val(prot)) {
++	if (pgprot_val(prot))
+ 		set_pte(ptep, pfn_pte(phys >> PAGE_SHIFT, prot));
+-	} else {
++	else
+ 		pte_clear(&init_mm, addr, ptep);
+-		local_flush_tlb_page(addr);
+-	}
++	local_flush_tlb_page(addr);
  }
  
+ static pte_t *__init get_pte_virt(phys_addr_t pa)
 -- 
 2.25.1
 
