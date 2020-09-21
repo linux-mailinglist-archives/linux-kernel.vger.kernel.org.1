@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAA23271CEF
+	by mail.lfdr.de (Postfix) with ESMTP id 5DCD6271CEE
 	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726998AbgIUIDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 04:03:05 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13744 "EHLO huawei.com"
+        id S1726989AbgIUIDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 04:03:04 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:48692 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726934AbgIUICm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 04:02:42 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id EAC8F36642FD99D8F596;
-        Mon, 21 Sep 2020 16:02:39 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Mon, 21 Sep 2020
- 16:02:30 +0800
+        id S1726945AbgIUICp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 04:02:45 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id BD625B29417C5FE20116;
+        Mon, 21 Sep 2020 16:02:41 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Mon, 21 Sep 2020
+ 16:02:31 +0800
 From:   Liu Shixin <liushixin2@huawei.com>
-To:     Karan Tilak Kumar <kartilak@cisco.com>,
-        Sesidhar Baddela <sebaddel@cisco.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH -next] snic: simplify the return expression of svnic_cq_alloc
-Date:   Mon, 21 Sep 2020 16:24:55 +0800
-Message-ID: <20200921082455.2592190-1-liushixin2@huawei.com>
+To:     Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "Arnd Bergmann" <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Liu Shixin" <liushixin2@huawei.com>
+Subject: [PATCH -next] tpm/st33zp24/i2c: simplify the return expression of st33zp24_i2c_remove
+Date:   Mon, 21 Sep 2020 16:24:56 +0800
+Message-ID: <20200921082456.2592242-1-liushixin2@huawei.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -41,35 +42,28 @@ Simplify the return expression.
 
 Signed-off-by: Liu Shixin <liushixin2@huawei.com>
 ---
- drivers/scsi/snic/vnic_cq.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ drivers/char/tpm/st33zp24/i2c.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/scsi/snic/vnic_cq.c b/drivers/scsi/snic/vnic_cq.c
-index 4c8e64e4fba6..3455dd7e73f4 100644
---- a/drivers/scsi/snic/vnic_cq.c
-+++ b/drivers/scsi/snic/vnic_cq.c
-@@ -31,8 +31,6 @@ void svnic_cq_free(struct vnic_cq *cq)
- int svnic_cq_alloc(struct vnic_dev *vdev, struct vnic_cq *cq,
- 	unsigned int index, unsigned int desc_count, unsigned int desc_size)
+diff --git a/drivers/char/tpm/st33zp24/i2c.c b/drivers/char/tpm/st33zp24/i2c.c
+index 7c617edff4ca..b180171e5678 100644
+--- a/drivers/char/tpm/st33zp24/i2c.c
++++ b/drivers/char/tpm/st33zp24/i2c.c
+@@ -267,13 +267,8 @@ static int st33zp24_i2c_probe(struct i2c_client *client,
+ static int st33zp24_i2c_remove(struct i2c_client *client)
  {
--	int err;
--
- 	cq->index = index;
- 	cq->vdev = vdev;
+ 	struct tpm_chip *chip = i2c_get_clientdata(client);
+-	int ret;
  
-@@ -43,11 +41,7 @@ int svnic_cq_alloc(struct vnic_dev *vdev, struct vnic_cq *cq,
- 		return -EINVAL;
- 	}
- 
--	err = svnic_dev_alloc_desc_ring(vdev, &cq->ring, desc_count, desc_size);
--	if (err)
--		return err;
+-	ret = st33zp24_remove(chip);
+-	if (ret)
+-		return ret;
 -
 -	return 0;
-+	return svnic_dev_alloc_desc_ring(vdev, &cq->ring, desc_count, desc_size);
++	return st33zp24_remove(chip);
  }
  
- void svnic_cq_init(struct vnic_cq *cq, unsigned int flow_control_enable,
+ static const struct i2c_device_id st33zp24_i2c_id[] = {
 -- 
 2.25.1
 
