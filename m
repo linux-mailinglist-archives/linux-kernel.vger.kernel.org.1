@@ -2,101 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E2627206D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E0F6272016
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726554AbgIUKVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:21:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727020AbgIUKVU (ORCPT
+        id S1726734AbgIUKUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:20:30 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:18314 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726326AbgIUKU3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 06:21:20 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7DEEC0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:21:19 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id k18so12018947wmj.5
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:21:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=S9MzB7+azPxcpMxlGiEMSs7z6RlW8asusze1qBJiaHc=;
-        b=cqXso1WeXMsOQTSMJsnRpwW6vw8vb52dEKHkPuvZGM4VKop5MTyriQZCa2VAmgKXOr
-         6c1e4BDDBKbJYdmtHs7EAJGjgrXlmHeffln/7gNXCUsNiyp/6bnDDzABtDtvgm83WBbu
-         wpeVMsoLT2gdb7UfQkoUQ+K0wPFRtw0xbm6wokBSi3Zrb1vr1VOl0O94XHk98PWCgDnx
-         HdNgaO/cwSEPz6RWMBmR8iMS3WJt8dd5N2QRjE1KkALT17HYzXNJug5lQ14x3Kcx3RF2
-         dWxYAgtv5XGlFBpF/dOyX+MNmI88hbCjsdHMzpXpyHEVYOfX7Swy8MPkhGJHhh31ycDS
-         Rxog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=S9MzB7+azPxcpMxlGiEMSs7z6RlW8asusze1qBJiaHc=;
-        b=mkRmCc9VuNwJmF2Bwk4xigfLW0PcCnijE04/nqHryQaPA/z+nZ/1Pae5wANpE1EUN1
-         e25BSzW6A91opye6MSSFMgMSK0Zo2YWPfY8azmiuExM0VM85gfBvaxa24ZETZ0TpMHyU
-         M2FKOVAcngdR2pXufcUyqnRBj6255BNk5A2t4RMr1B8FnDRvLK7Hnth7I5mBYEPQXeIA
-         vqlgrFDNc9RvrJoG1rVx1SBL6oX9aARtQB7AhebFLH+0iX0Hsf6YTl9KCnHpdWCLQMl1
-         CJL1RPkYCCRRYbLQgmgjF72jI66MUk6+TGR+MjHeX6xudlVLjjh9fymtaZbccu5CxBfx
-         qhiw==
-X-Gm-Message-State: AOAM532wOQVZCT54CEGk7NxHK2IMHa2ZwPGTBpLDjH5ok2sgdCC8Cf17
-        SfoFXcG5U0kUrqFy2jhJHCkkiQ==
-X-Google-Smtp-Source: ABdhPJwLLiqE0xL9dMMevVsNtAO5akGgDxGF9LqBxoG4mXvA7KUeZ9nz/B8s78vAAAQzdhd3oK38Ig==
-X-Received: by 2002:a7b:c317:: with SMTP id k23mr28413581wmj.44.1600683678660;
-        Mon, 21 Sep 2020 03:21:18 -0700 (PDT)
-Received: from localhost.localdomain ([51.15.160.169])
-        by smtp.googlemail.com with ESMTPSA id l17sm18804629wme.11.2020.09.21.03.21.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 21 Sep 2020 03:21:18 -0700 (PDT)
-From:   Corentin Labbe <clabbe@baylibre.com>
-To:     gregkh@linuxfoundation.org, laurent.pinchart@skynet.be,
-        mchehab@kernel.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH RFT/RFC 49/49] staging: media: zoran: update TODO
-Date:   Mon, 21 Sep 2020 10:20:24 +0000
-Message-Id: <1600683624-5863-50-git-send-email-clabbe@baylibre.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1600683624-5863-1-git-send-email-clabbe@baylibre.com>
-References: <1600683624-5863-1-git-send-email-clabbe@baylibre.com>
+        Mon, 21 Sep 2020 06:20:29 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f687e60000d>; Mon, 21 Sep 2020 03:20:16 -0700
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 21 Sep
+ 2020 10:20:28 +0000
+Received: from [192.168.22.23] (10.124.1.5) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Mon, 21 Sep 2020 10:20:26 +0000
+From:   Thierry Reding <treding@nvidia.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+CC:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?utf-8?q?Micha=C5=82_Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        <linux-i2c@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 28/34] i2c: tegra: Consolidate error handling in
+ tegra_i2c_xfer_msg()
+In-Reply-To: <20200908224006.25636-29-digetx@gmail.com>
+References: <20200908224006.25636-29-digetx@gmail.com>
+X-NVConfidentiality: public
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Message-ID: <9afe07b62c5c4bfaba2dafc2e146fdb4@HQMAIL111.nvidia.com>
+Date:   Mon, 21 Sep 2020 10:20:26 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600683616; bh=UancnqUnvAK8EPy0sy7KrTzvIPmdmdkysH0owfKLrrQ=;
+        h=From:To:CC:Subject:In-Reply-To:References:X-NVConfidentiality:
+         Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:
+         Date;
+        b=eO2pv0sFTFsqFzp6N3YKFrFy0OP/U4h/7zbUtqBbU7iXzKyo+Q99jPnrhER4dJhWz
+         W3ALnwcLxYYItrfryUzy8zJF2Jmi8q+lWE5O//GOg+rg2BOo88a+T5zJ0CyxidBVRd
+         o95ksy+Zo+IvLG1JjBkWTW4AuWAeEgjekI6NNHouhKQBg/vR1c7k9g4A2X9XIRE43a
+         PpGqkWI10WJuudWEjHVCKGLnqnG1FUq6fEuzXUp2JiYoq5+ZzL0xeJEEsAmYFEog5R
+         kF0m9jko/bOfqd0knwL/fJka3M3QomHQZPz1f5y3zLbMnAuF24E9M0Bcv1dLlIKsU2
+         Ux8alPngLdZ7A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the TODO of the zoran driver
+On Wed, 09 Sep 2020 01:40:00 +0300, Dmitry Osipenko wrote:
+> Consolidate error handling in tegra_i2c_xfer_msg() into a common code
+> path in order to make code cleaner.
+>=20
+> Reviewed-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/i2c/busses/i2c-tegra.c | 13 +++++++++----
+>  1 file changed, 9 insertions(+), 4 deletions(-)
 
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
----
- drivers/staging/media/zoran/TODO | 23 +++++++++++++++++++----
- 1 file changed, 19 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/staging/media/zoran/TODO b/drivers/staging/media/zoran/TODO
-index 54464095d0d7..6992540d3e53 100644
---- a/drivers/staging/media/zoran/TODO
-+++ b/drivers/staging/media/zoran/TODO
-@@ -1,4 +1,19 @@
--The zoran driver is marked deprecated. It will be removed
--around May 2019 unless someone is willing to update this
--driver to the latest V4L2 frameworks (especially the vb2
--framework).
-+
-+How to test the zoran driver:
-+- RAW capture
-+	mplayer tv:///dev/video0 -tv driver=v4l2
-+
-+- MJPEG capture (compression)
-+	mplayer tv:///dev/video0 -tv driver=v4l2:outfmt=mjpeg
-+	TODO: need two test for both Dcim path
-+
-+- MJPEG play (decompression)
-+	ffmpeg -i test.avi -vcodec mjpeg -an -f v4l2 /dev/video0
-+	Note: only recent ffmpeg has the ability of sending non-raw video via v4l2
-+
-+	The original way of sending video was via mplayer vo_zr/vo_zr2, but it does not compile
-+	anymore and is a dead end (usage of some old private ffmpeg structures).
-+
-+TODO
-+- fix the v4l compliance "TRY_FMT cannot handle an invalid pixelformat"
-+- Filter JPEG data to made output work
--- 
-2.26.2
-
+Tested-by: Thierry Reding <treding@nvidia.com>
