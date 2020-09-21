@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09FB0272D7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:40:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC02F272C7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728931AbgIUQkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:40:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42690 "EHLO mail.kernel.org"
+        id S1726430AbgIUQcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:32:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729316AbgIUQkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:40:09 -0400
+        id S1728488AbgIUQcd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:32:33 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C693B206DC;
-        Mon, 21 Sep 2020 16:40:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B2C22399C;
+        Mon, 21 Sep 2020 16:32:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706408;
-        bh=1K42RPfWFa2MUGLy7tJgYoAYVchLt6uhQyYG7oJD8P0=;
+        s=default; t=1600705953;
+        bh=0T9A2vS3EgCx7mMbINIZB7rlmmiUXGqbIW/pd8eX46s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A/T9zY1CYH9o1pFhKSxBDpSh8fM2upCYMzS4qCwmwiDxQ57Xv+NK6r7qJ1bHj+D8V
-         nU8rn8BqeFdCQ0rGo0abDVF2xYmzC4cqnfEBdTb12B2PCs/IzaRiyt+TRyI+7+QSJv
-         G9op5EZ37z4kvZsJpyl2T9wg4DMG52sNpOZJj0tA=
+        b=15uniIATJUxoNH5CCdxmf/j93rtqMRwYlw0iwpPmWofduoZWKo91VmNJ3SG9Ei/UK
+         7SWLa21QBNpwjRisJHmWYUWwgyTKC0165Y1Hng6JrwuJVXjn76gs6obh2dljTnlg3e
+         jPIE/lpTFtdYIGEAmeQwxV1uGODvF1DtVwjIzMAY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Aleksander Morgado <aleksander@aleksander.es>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.14 57/94] USB: serial: option: add support for SIM7070/SIM7080/SIM7090 modules
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 28/46] gcov: add support for GCC 10.1
 Date:   Mon, 21 Sep 2020 18:27:44 +0200
-Message-Id: <20200921162038.162721486@linuxfoundation.org>
+Message-Id: <20200921162034.599261898@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
-References: <20200921162035.541285330@linuxfoundation.org>
+In-Reply-To: <20200921162033.346434578@linuxfoundation.org>
+References: <20200921162033.346434578@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,79 +45,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aleksander Morgado <aleksander@aleksander.es>
+From: Peter Oberparleiter <oberpar@linux.ibm.com>
 
-commit 1ac698790819b83f39fd7ea4f6cdabee9bdd7b38 upstream.
+[ Upstream commit 40249c6962075c040fd071339acae524f18bfac9 ]
 
-These modules have 2 different USB layouts:
+Using gcov to collect coverage data for kernels compiled with GCC 10.1
+causes random malfunctions and kernel crashes.  This is the result of a
+changed GCOV_COUNTERS value in GCC 10.1 that causes a mismatch between
+the layout of the gcov_info structure created by GCC profiling code and
+the related structure used by the kernel.
 
-The default layout with PID 0x9205 (AT+CUSBSELNV=1) exposes 4 TTYs and
-an ECM interface:
+Fix this by updating the in-kernel GCOV_COUNTERS value.  Also re-enable
+config GCOV_KERNEL for use with GCC 10.
 
-  T:  Bus=02 Lev=01 Prnt=01 Port=02 Cnt=01 Dev#=  6 Spd=480 MxCh= 0
-  D:  Ver= 2.00 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
-  P:  Vendor=1e0e ProdID=9205 Rev=00.00
-  S:  Manufacturer=SimTech, Incorporated
-  S:  Product=SimTech SIM7080
-  S:  SerialNumber=1234567890ABCDEF
-  C:  #Ifs= 6 Cfg#= 1 Atr=e0 MxPwr=500mA
-  I:  If#=0x0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-  I:  If#=0x1 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-  I:  If#=0x2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-  I:  If#=0x3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-  I:  If#=0x4 Alt= 0 #EPs= 1 Cls=02(commc) Sub=06 Prot=00 Driver=cdc_ether
-  I:  If#=0x5 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=cdc_ether
-
-The purpose of each TTY is as follows:
- * ttyUSB0: DIAG/QCDM port.
- * ttyUSB1: GNSS data.
- * ttyUSB2: AT-capable port (control).
- * ttyUSB3: AT-capable port (data).
-
-In the secondary layout with PID=0x9206 (AT+CUSBSELNV=86) the module
-exposes 6 TTY ports:
-
-  T:  Bus=02 Lev=01 Prnt=01 Port=02 Cnt=01 Dev#=  8 Spd=480 MxCh= 0
-  D:  Ver= 2.00 Cls=02(commc) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-  P:  Vendor=1e0e ProdID=9206 Rev=00.00
-  S:  Manufacturer=SimTech, Incorporated
-  S:  Product=SimTech SIM7080
-  S:  SerialNumber=1234567890ABCDEF
-  C:  #Ifs= 6 Cfg#= 1 Atr=e0 MxPwr=500mA
-  I:  If#=0x0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-  I:  If#=0x1 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-  I:  If#=0x2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-  I:  If#=0x3 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-  I:  If#=0x4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-  I:  If#=0x5 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-
-The purpose of each TTY is as follows:
- * ttyUSB0: DIAG/QCDM port.
- * ttyUSB1: GNSS data.
- * ttyUSB2: AT-capable port (control).
- * ttyUSB3: QFLOG interface.
- * ttyUSB4: DAM interface.
- * ttyUSB5: AT-capable port (data).
-
-Signed-off-by: Aleksander Morgado <aleksander@aleksander.es>
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reported-by: Colin Ian King <colin.king@canonical.com>
+Reported-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Peter Oberparleiter <oberpar@linux.ibm.com>
+Tested-by: Leon Romanovsky <leonro@nvidia.com>
+Tested-and-Acked-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/serial/option.c |    2 ++
- 1 file changed, 2 insertions(+)
+ kernel/gcov/Kconfig   | 1 -
+ kernel/gcov/gcc_4_7.c | 4 +++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -1826,6 +1826,8 @@ static const struct usb_device_id option
- 	{ USB_DEVICE_INTERFACE_CLASS(0x1e0e, 0x9003, 0xff) },	/* Simcom SIM7500/SIM7600 MBIM mode */
- 	{ USB_DEVICE_INTERFACE_CLASS(0x1e0e, 0x9011, 0xff),	/* Simcom SIM7500/SIM7600 RNDIS mode */
- 	  .driver_info = RSVD(7) },
-+	{ USB_DEVICE_INTERFACE_CLASS(0x1e0e, 0x9205, 0xff) },	/* Simcom SIM7070/SIM7080/SIM7090 AT+ECM mode */
-+	{ USB_DEVICE_INTERFACE_CLASS(0x1e0e, 0x9206, 0xff) },	/* Simcom SIM7070/SIM7080/SIM7090 AT-only mode */
- 	{ USB_DEVICE(ALCATEL_VENDOR_ID, ALCATEL_PRODUCT_X060S_X200),
- 	  .driver_info = NCTRL(0) | NCTRL(1) | RSVD(4) },
- 	{ USB_DEVICE(ALCATEL_VENDOR_ID, ALCATEL_PRODUCT_X220_X500D),
+diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
+index 1d78ed19a3512..1276aabaab550 100644
+--- a/kernel/gcov/Kconfig
++++ b/kernel/gcov/Kconfig
+@@ -3,7 +3,6 @@ menu "GCOV-based kernel profiling"
+ config GCOV_KERNEL
+ 	bool "Enable gcov-based kernel profiling"
+ 	depends on DEBUG_FS
+-	depends on !CC_IS_GCC || GCC_VERSION < 100000
+ 	select CONSTRUCTORS if !UML
+ 	default n
+ 	---help---
+diff --git a/kernel/gcov/gcc_4_7.c b/kernel/gcov/gcc_4_7.c
+index 46a18e72bce61..6d5ef6220afe7 100644
+--- a/kernel/gcov/gcc_4_7.c
++++ b/kernel/gcov/gcc_4_7.c
+@@ -18,7 +18,9 @@
+ #include <linux/vmalloc.h>
+ #include "gcov.h"
+ 
+-#if (__GNUC__ >= 7)
++#if (__GNUC__ >= 10)
++#define GCOV_COUNTERS			8
++#elif (__GNUC__ >= 7)
+ #define GCOV_COUNTERS			9
+ #elif (__GNUC__ > 5) || (__GNUC__ == 5 && __GNUC_MINOR__ >= 1)
+ #define GCOV_COUNTERS			10
+-- 
+2.25.1
+
 
 
