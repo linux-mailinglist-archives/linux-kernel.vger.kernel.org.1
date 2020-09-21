@@ -2,38 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B7522733DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 22:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31AC12733F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 22:51:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728140AbgIUUtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 16:49:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55718 "EHLO mail.kernel.org"
+        id S1728270AbgIUUvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 16:51:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726467AbgIUUtq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 16:49:46 -0400
+        id S1727442AbgIUUvC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 16:51:02 -0400
 Received: from kozik-lap.mshome.net (unknown [194.230.155.191])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 25892216C4;
-        Mon, 21 Sep 2020 20:49:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E7ACE235FA;
+        Mon, 21 Sep 2020 20:50:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600721385;
-        bh=A0nup3Z1bLwO1gwJ+cXZYwovnnrdgdFmS3icDXQ1bU0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=0NX1aegjeIrleMvg63bVG4U3kIpITJ21qXGxQIUIFW6vlD8ojXxgESO5j0E8XNCom
-         cVeSDnPMfCHmpNW3iWiLQxztlXN2uthL6ABW7EOxYbOf66S+EW0nr//aFkcVmvWlws
-         cyHTgS+8q81kizLTlwTY2XGQxs4PhrCn3DqCBqP4=
+        s=default; t=1600721462;
+        bh=vvKw17eRDLLQlVh42aKmJSQlryi7VaH9GJJw2nvfTZM=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=gK0usBgH71IEZhnR6pmLOgSi6oqzWALtql35PfdxLnLmlVlHUdaby+OvgkCS3XvQa
+         ygqzDQ4fMfo4lUD0DOZo5RKADnsamWi6w5eH11MCBWlX7w374L7aI7x4rX2oXRPFyC
+         szcx7QoAd4VqxW2xzm2f30vQsYcH7UTA6WSNfcYs=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH] iio: ssp: use PLATFORM_DEVID_NONE
-Date:   Mon, 21 Sep 2020 22:49:39 +0200
-Message-Id: <20200921204939.20341-1-krzk@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Milo Kim <milo.kim@ti.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sangbeom Kim <sbkim73@samsung.com>,
+        Tony Lindgren <tony@atomide.com>,
+        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org
+Subject: [PATCH 06/42] mfd: bcm2835: use PLATFORM_DEVID_NONE
+Date:   Mon, 21 Sep 2020 22:49:40 +0200
+Message-Id: <20200921205016.20461-6-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200921205016.20461-1-krzk@kernel.org>
+References: <20200921205016.20461-1-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -44,23 +62,31 @@ Use PLATFORM_DEVID_NONE define instead of "-1" value because:
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/iio/common/ssp_sensors/ssp_dev.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/mfd/bcm2835-pm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/iio/common/ssp_sensors/ssp_dev.c b/drivers/iio/common/ssp_sensors/ssp_dev.c
-index a94dbcf491ce..1aee87100038 100644
---- a/drivers/iio/common/ssp_sensors/ssp_dev.c
-+++ b/drivers/iio/common/ssp_sensors/ssp_dev.c
-@@ -503,7 +503,8 @@ static int ssp_probe(struct spi_device *spi)
- 		return -ENODEV;
- 	}
+diff --git a/drivers/mfd/bcm2835-pm.c b/drivers/mfd/bcm2835-pm.c
+index 42fe67f1538e..a76014512bde 100644
+--- a/drivers/mfd/bcm2835-pm.c
++++ b/drivers/mfd/bcm2835-pm.c
+@@ -44,7 +44,7 @@ static int bcm2835_pm_probe(struct platform_device *pdev)
+ 	if (IS_ERR(pm->base))
+ 		return PTR_ERR(pm->base);
  
--	ret = mfd_add_devices(&spi->dev, -1, sensorhub_sensor_devs,
-+	ret = mfd_add_devices(&spi->dev, PLATFORM_DEVID_NONE,
-+			      sensorhub_sensor_devs,
- 			      ARRAY_SIZE(sensorhub_sensor_devs), NULL, 0, NULL);
- 	if (ret < 0) {
- 		dev_err(&spi->dev, "mfd add devices fail\n");
+-	ret = devm_mfd_add_devices(dev, -1,
++	ret = devm_mfd_add_devices(dev, PLATFORM_DEVID_NONE,
+ 				   bcm2835_pm_devs, ARRAY_SIZE(bcm2835_pm_devs),
+ 				   NULL, 0, NULL);
+ 	if (ret)
+@@ -60,7 +60,7 @@ static int bcm2835_pm_probe(struct platform_device *pdev)
+ 		if (IS_ERR(pm->asb))
+ 			return PTR_ERR(pm->asb);
+ 
+-		ret = devm_mfd_add_devices(dev, -1,
++		ret = devm_mfd_add_devices(dev, PLATFORM_DEVID_NONE,
+ 					   bcm2835_power_devs,
+ 					   ARRAY_SIZE(bcm2835_power_devs),
+ 					   NULL, 0, NULL);
 -- 
 2.17.1
 
