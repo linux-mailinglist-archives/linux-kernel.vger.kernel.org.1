@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA8D8273079
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:05:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F62273085
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730028AbgIURFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 13:05:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60792 "EHLO mail.kernel.org"
+        id S1730465AbgIURFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 13:05:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728311AbgIUQeJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:34:09 -0400
+        id S1728657AbgIUQdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:33:44 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB68E239D0;
-        Mon, 21 Sep 2020 16:34:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ACBEA2396F;
+        Mon, 21 Sep 2020 16:33:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706049;
-        bh=P74bg1oxvriKc+IHNTu/YL9uDoN4V/68SHrFiH+Bd4g=;
+        s=default; t=1600706024;
+        bh=eo6Nm9fAQf9qVIoL3ZBKPiiHmkLUcpw0XTOMtnjPZu8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P9UaIYmmcCxdA/Yaz72r2HnmRXVhIv/XBj2Tk8mprNeVrUqPr/ckyxkGTqimtGq19
-         z1SqwJH+bpuCLvfGwS0zjPbS7OBcSOejZyj1WLLiuyIIPetub5jxt3vXeIHLJU7SEB
-         /VXmvXIWknfmyfNAIE3MOIgzfGX4jC8RX1GL+qrM=
+        b=dhrfZymjdiwLC0aYFKJIaTCznf1NKb9R9vIUGEOYYee9nF3FS2u8GVWn8/o4OKE9q
+         LskA8wHF7qYJDaq8zJk1+fGTZCbyWcw6DBsZ3MYrKYs4uEk/8G1/OsbqojgwwAXV9g
+         CpwYhhYhPvKChNlVDZ1SUhjQ9QPMo6BdkBmM9Wp4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 02/70] RDMA/rxe: Fix memleak in rxe_mem_init_user
-Date:   Mon, 21 Sep 2020 18:27:02 +0200
-Message-Id: <20200921162035.247677847@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Eric Sandeen <sandeen@redhat.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 10/70] xfs: initialize the shortform attr header padding entry
+Date:   Mon, 21 Sep 2020 18:27:10 +0200
+Message-Id: <20200921162035.595966123@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
 References: <20200921162035.136047591@linuxfoundation.org>
@@ -43,34 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Darrick J. Wong <darrick.wong@oracle.com>
 
-[ Upstream commit e3ddd6067ee62f6e76ebcf61ff08b2c729ae412b ]
+[ Upstream commit 125eac243806e021f33a1fdea3687eccbb9f7636 ]
 
-When page_address() fails, umem should be freed just like when
-rxe_mem_alloc() fails.
+Don't leak kernel memory contents into the shortform attr fork.
 
-Fixes: 8700e3e7c485 ("Soft RoCE driver")
-Link: https://lore.kernel.org/r/20200819075632.22285-1-dinghao.liu@zju.edu.cn
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Eric Sandeen <sandeen@redhat.com>
+Reviewed-by: Dave Chinner <dchinner@redhat.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/sw/rxe/rxe_mr.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/xfs/libxfs/xfs_attr_leaf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index 9b732c5f89e16..6d1ba75398a1a 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -205,6 +205,7 @@ int rxe_mem_init_user(struct rxe_dev *rxe, struct rxe_pd *pd, u64 start,
- 			vaddr = page_address(sg_page(sg));
- 			if (!vaddr) {
- 				pr_warn("null vaddr\n");
-+				ib_umem_release(umem);
- 				err = -ENOMEM;
- 				goto err1;
- 			}
+diff --git a/fs/xfs/libxfs/xfs_attr_leaf.c b/fs/xfs/libxfs/xfs_attr_leaf.c
+index 70da4113c2baf..7b9dd76403bfd 100644
+--- a/fs/xfs/libxfs/xfs_attr_leaf.c
++++ b/fs/xfs/libxfs/xfs_attr_leaf.c
+@@ -520,8 +520,8 @@ xfs_attr_shortform_create(xfs_da_args_t *args)
+ 		ASSERT(ifp->if_flags & XFS_IFINLINE);
+ 	}
+ 	xfs_idata_realloc(dp, sizeof(*hdr), XFS_ATTR_FORK);
+-	hdr = (xfs_attr_sf_hdr_t *)ifp->if_u1.if_data;
+-	hdr->count = 0;
++	hdr = (struct xfs_attr_sf_hdr *)ifp->if_u1.if_data;
++	memset(hdr, 0, sizeof(*hdr));
+ 	hdr->totsize = cpu_to_be16(sizeof(*hdr));
+ 	xfs_trans_log_inode(args->trans, dp, XFS_ILOG_CORE | XFS_ILOG_ADATA);
+ }
 -- 
 2.25.1
 
