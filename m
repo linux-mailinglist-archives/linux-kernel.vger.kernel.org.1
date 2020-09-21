@@ -2,61 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E5D7271A24
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 06:41:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF1E7271A33
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 06:51:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726360AbgIUElc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 00:41:32 -0400
-Received: from verein.lst.de ([213.95.11.211]:38379 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726011AbgIUElb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 00:41:31 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 20EA168AFE; Mon, 21 Sep 2020 06:41:25 +0200 (CEST)
-Date:   Mon, 21 Sep 2020 06:41:25 +0200
-From:   'Christoph Hellwig' <hch@lst.de>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     'Christoph Hellwig' <hch@lst.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-Subject: Re: let import_iovec deal with compat_iovecs as well
-Message-ID: <20200921044125.GA16522@lst.de>
-References: <20200918124533.3487701-1-hch@lst.de> <2c7bf42ee4314484ae0177280cd8f5f3@AcuMS.aculab.com>
+        id S1726333AbgIUEvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 00:51:36 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13735 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726011AbgIUEvg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 00:51:36 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id ACE0EDAEC123FCDC541F;
+        Mon, 21 Sep 2020 12:51:32 +0800 (CST)
+Received: from DESKTOP-8RFUVS3.china.huawei.com (10.174.185.226) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 21 Sep 2020 12:51:26 +0800
+From:   Zenghui Yu <yuzenghui@huawei.com>
+To:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <alex.williamson@redhat.com>, <cohuck@redhat.com>,
+        <wanghaibin.wang@huawei.com>, Zenghui Yu <yuzenghui@huawei.com>
+Subject: [PATCH v2 1/2] vfio/pci: Remove redundant declaration of vfio_pci_driver
+Date:   Mon, 21 Sep 2020 12:51:15 +0800
+Message-ID: <20200921045116.258-1-yuzenghui@huawei.com>
+X-Mailer: git-send-email 2.23.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2c7bf42ee4314484ae0177280cd8f5f3@AcuMS.aculab.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.185.226]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 19, 2020 at 02:24:10PM +0000, David Laight wrote:
-> I thought about that change while writing my import_iovec() => iovec_import()
-> patch - and thought that the io_uring code would (as usual) cause grief.
-> 
-> Christoph - did you see those patches?
+It was added by commit 137e5531351d ("vfio/pci: Add sriov_configure
+support") but duplicates a forward declaration earlier in the file.
 
-No.
+Remove it.
+
+Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+---
+* From v1:
+  - Clarify the commit message per Alex's suggestion.
+  - Add Cornelia's R-b tag.
+
+ drivers/vfio/pci/vfio_pci.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
+index 1ab1f5cda4ac..da68e2f86622 100644
+--- a/drivers/vfio/pci/vfio_pci.c
++++ b/drivers/vfio/pci/vfio_pci.c
+@@ -1862,7 +1862,6 @@ static const struct vfio_device_ops vfio_pci_ops = {
+ 
+ static int vfio_pci_reflck_attach(struct vfio_pci_device *vdev);
+ static void vfio_pci_reflck_put(struct vfio_pci_reflck *reflck);
+-static struct pci_driver vfio_pci_driver;
+ 
+ static int vfio_pci_bus_notifier(struct notifier_block *nb,
+ 				 unsigned long action, void *data)
+-- 
+2.19.1
+
