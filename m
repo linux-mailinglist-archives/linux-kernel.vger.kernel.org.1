@@ -2,69 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 764612733C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 22:45:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB0972733C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 22:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727521AbgIUUpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 16:45:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53690 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726468AbgIUUpv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 16:45:51 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3014720735;
-        Mon, 21 Sep 2020 20:45:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600721151;
-        bh=2azUc9d8t3fHwPUNHpcYBtku3ZGS3Konwm3NpWeBUPU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ol3y6mLGysrQgD+hsUG5Zs8QfPycb6c9FdF4neo3Yl2B/SVvlbRvPSbSEpjww+2bT
-         uQo4nTyqiwwW8rqhc69kVyrBTohJyZSTfJKOw07y1OP8yU+hIq6ad10ko+dr9Pn/vT
-         pBH3mLd+y9ggYldkOg61tDWF3qUa/bBauierV5Ks=
-Date:   Mon, 21 Sep 2020 21:45:45 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Vennila Megavannan <vemegava@linux.microsoft.com>
-Cc:     robin.murphy@arm.com, joro@8bytes.org, srinath.mannam@broadcom.com,
-        jean-philippe@linaro.org, eric.auger@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, tyhicks@linux.microsoft.com,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com
-Subject: Re: [PATCH v2] iommu/arm: Add module parameter to set msi iova
- address
-Message-ID: <20200921204545.GA3811@willie-the-truck>
-References: <20200914181307.117792-1-vemegava@linux.microsoft.com>
+        id S1727703AbgIUUp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 16:45:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726468AbgIUUp5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 16:45:57 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D84C061755;
+        Mon, 21 Sep 2020 13:45:57 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id s13so834211wmh.4;
+        Mon, 21 Sep 2020 13:45:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9E/JMX1u9DMUuutSlm9kiJDKX4f6Y4qT6IOADWiSiVU=;
+        b=LWgNuVhb/ir9Jw9EmxgJOL6qMTGPKiuOJ5BYMHsy4oO8iPOD5LYu+I5NAmJiy5mO3v
+         PZZyZTaUn60arUGZB5ggzcRe8NA0D6RkJUUi0eDkKL6RGHhVY/f01hb41xmwaXDL2PA2
+         a3eg9q8BmLHeQ0gIC+GFi/2Gn4ZEROsoR4QoWCIdELJ0f4PiiEgRbLs0u7t3yu6/Hc/B
+         yOj25tfCH7kz5FCU6SmDCf6QC2OXrfHjg5hCs/qUIz3vF0usTiRbkjjCPG4S06UnZPBW
+         4xtvkm6ZXMRB/gdhs8cxm6Q04jLXwcERfG+CQm9qkkATNZDDixVCXievspJjPZLqAGI2
+         TtNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9E/JMX1u9DMUuutSlm9kiJDKX4f6Y4qT6IOADWiSiVU=;
+        b=tX8hvtjtlRMNhAvFhN/cC9LM1F+FToY8k/hpat0fdr6pEsMlreuIDPAaTS/JwrTU5v
+         Q8kKtis3o0dj7OnndyQnSLEBmUzG1gosDBE84dsM2vaCaRZOwryMZHeRxqobUZpBLV4P
+         WfTxKoF8Jca3Pd05p9yeyvCEIYQXdcvhxC3EepQhjomhT962MK+V+UteP0s/9nPCQUKI
+         W3qbCQNkH+QwAx1KmrQ1TunaVkEAqS6TFwFAtrDv4BAlxgJ8pg5p44FfXCq1oy4U6vDV
+         NWZBkfbQBnWorWwBFgi+wsMDGCYM31IgeENzLQ0j2KIWdgxTXaqjZnalFR3kKlSTwehf
+         zdxA==
+X-Gm-Message-State: AOAM533XF62AECfKJdVBSr2h4dWHTKQSLSWI99zPmLMbAtH9+aGC90R1
+        XpjXz9xviyIQiYHhDvvihvlAs3gnCNYQQgVa
+X-Google-Smtp-Source: ABdhPJzUu7oX6IPa7VQqGzn9y2wrOaGOqYEWYwmE69lXq28RQqiH/FVIN3BqMIM6zrmbhtuiq1E3Gw==
+X-Received: by 2002:a1c:3d44:: with SMTP id k65mr1061112wma.132.1600721156135;
+        Mon, 21 Sep 2020 13:45:56 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id k8sm22015682wrl.42.2020.09.21.13.45.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 13:45:55 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+X-Google-Original-From: Alex Dewar <a.dewar@sussex.ac.uk>
+Cc:     Alex Dewar <a.dewar@sussex.ac.uk>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Jim Quinlan <jquinlan@broadcom.com>,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] PCI: brcmstb: Add missing if statement
+Date:   Mon, 21 Sep 2020 21:45:50 +0100
+Message-Id: <20200921204550.29296-1-a.dewar@sussex.ac.uk>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914181307.117792-1-vemegava@linux.microsoft.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 11:13:07AM -0700, Vennila Megavannan wrote:
-> From: Srinath Mannam <srinath.mannam@broadcom.com>
-> 
-> Add provision to change default value of MSI IOVA base to platform's
-> suitable IOVA using module parameter. The present hardcoded MSI IOVA base
-> may not be the accessible IOVA ranges of platform.
-> 
-> If any platform has the limitaion to access default MSI IOVA, then it can
-> be changed using "arm-smmu.msi_iova_base=0xa0000000" command line argument.
-> 
-> Signed-off-by: Srinath Mannam <srinath.mannam@broadcom.com>
-> Co-developed-by: Vennila Megavannan <vemegava@linux.microsoft.com>
-> Signed-off-by: Vennila Megavannan <vemegava@linux.microsoft.com>
-> ---
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 5 ++++-
->  drivers/iommu/arm/arm-smmu/arm-smmu.c       | 5 ++++-
->  2 files changed, 8 insertions(+), 2 deletions(-)
+brcm_pcie_resume() contains a return statement that was presumably
+intended to have an "if (ret)" in front of it, otherwise the function
+returns prematurely. Fix this.
 
-This feels pretty fragile. Wouldn't it be better to realise that there's
-a region conflict with iommu_dma_get_resv_regions() and move the MSI window
-accordingly at runtime?
+I don't know if this code was tested or not, but I assume that this bug
+means that this driver will not resume properly.
 
-Will
+Fixes: ad3d29c77e1e ("PCI: brcmstb: Add control of rescal reset")
+Addresses-Coverity: CID 1497099: Control flow issues (UNREACHABLE)
+Signed-off-by: Alex Dewar <a.dewar@sussex.ac.uk>
+---
+ drivers/pci/controller/pcie-brcmstb.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
+index 7a3ff4632e7c..cb0c11b7308e 100644
+--- a/drivers/pci/controller/pcie-brcmstb.c
++++ b/drivers/pci/controller/pcie-brcmstb.c
+@@ -1154,6 +1154,7 @@ static int brcm_pcie_resume(struct device *dev)
+ 	clk_prepare_enable(pcie->clk);
+ 
+ 	ret = brcm_phy_start(pcie);
++	if (ret)
+ 		return ret;
+ 
+ 	/* Take bridge out of reset so we can access the SERDES reg */
+-- 
+2.28.0
+
