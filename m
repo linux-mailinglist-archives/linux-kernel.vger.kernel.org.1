@@ -2,272 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 197CF2736CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 01:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEFD72736CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 01:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728916AbgIUXuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 19:50:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59838 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728671AbgIUXuE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 19:50:04 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AEA3A23A6B;
-        Mon, 21 Sep 2020 23:50:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600732203;
-        bh=WXAj1BL2iqpv/9WzCzDCTN1WGAxwaYvomg4RZbzD0/Y=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=gdF9ew5d4qzS8pFee+vBD0ZMUVf5wD0LzXX2YB+s6EJZKjoPWZNuyhHXfrKsDBCn1
-         7zhFEk9qQg/hmQ14OFuB2XuInN+dLACfSUiWcKcBXz7Rls5zteo9GgJS6qYHRlZRsq
-         6mVUrd8eMO6KXQVGLkH0SnBAcfaf5n83DTgqI8xs=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 5C09635226C1; Mon, 21 Sep 2020 16:50:03 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 16:50:03 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>
-Subject: Re: [RFC PATCH 03/12] rcu: Provide basic callback offloading state
- machine bits
-Message-ID: <20200921235003.GM29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200921124351.24035-1-frederic@kernel.org>
- <20200921124351.24035-4-frederic@kernel.org>
+        id S1728926AbgIUXub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 19:50:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728895AbgIUXua (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 19:50:30 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 882BEC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 16:50:30 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id z1so15019154wrt.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 16:50:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1Y1U9iOOezYjCOoSPo/fvJd1TAyzAwihRmGNwzWZWTg=;
+        b=E/KUgl8kVQeaBO5tKkqTMAySFYVmhQ+29OfnU/pcF5XqLDAj3IUqUB7nONZnshcY1c
+         HH8iRtQ4ruQX/MPlEpnL9na3p24tSCCkCrFOz167nx/PaxVdCPNFPZCcSTrJmt10Eo1i
+         lpRs+tqxJOq8eM8AwWGcWIiN3zFvZsnD2NGaI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1Y1U9iOOezYjCOoSPo/fvJd1TAyzAwihRmGNwzWZWTg=;
+        b=f33o5vgJzjqWTkqywGxZpymQ3i7KoOOziSCjGkI8VQPsjoNuCMd5OL6vRVTDzJLQz5
+         DVmubzDTpddRJ7JND6M1FSIfQgoB01coQMoAzh8ikGj/OzwFYcSCFr9X3J/NKPXlAjMu
+         Yz4smaX68TwB/HAKu/qxI83AbPgn+Xkp+iCTAkw76pxeIlfor0ZeVDxYJ2vyD+AgHte7
+         j+oKhyT6PvO+UMB2A4sp3hUp6iSCYpO2IF/xS0JlAOHHlU+Jq9wQczB6AXuuDVqpNtQh
+         Jh/jft2tb3OVJ+D9Tf164VDFCWcUbZoBung8houwb80JHzmc9LBkwYy7FL2e4Mdz/lHj
+         mTAg==
+X-Gm-Message-State: AOAM531YlRr/y5eoqt9+rbZzy5X2XSbREpqVJnBVX3L2+ktw08cLMrWJ
+        WSDDooJp43ggY5WMX2mP/Go7IjIwkdOxRdOE3rEd
+X-Google-Smtp-Source: ABdhPJw2IeRlvWLmwCeYs9YRK4GBQmKJ92ij4ToI7a1BmtiQYXkXLov+SRIDwmstOVNyvvPfcdOX9/+PYbjmLndPxnI=
+X-Received: by 2002:adf:81c6:: with SMTP id 64mr2135564wra.176.1600732229175;
+ Mon, 21 Sep 2020 16:50:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200921124351.24035-4-frederic@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200918201140.3172284-1-atish.patra@wdc.com> <20200918201140.3172284-3-atish.patra@wdc.com>
+ <20200921100131.00005238@Huawei.com>
+In-Reply-To: <20200921100131.00005238@Huawei.com>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Mon, 21 Sep 2020 16:50:18 -0700
+Message-ID: <CAOnJCUKwn6dh8yuEf__Sr9uKyjTwSJyb8UFJo31-_ZDA_kmOwQ@mail.gmail.com>
+Subject: Re: [RFT PATCH v3 2/5] arm64, numa: Change the numa init functions
+ name to be generic
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Atish Patra <atish.patra@wdc.com>, linux-arch@vger.kernel.org,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Zong Li <zong.li@sifive.com>, Arnd Bergmann <arnd@arndb.de>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Anup Patel <anup@brainfault.org>,
+        David Hildenbrand <david@redhat.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 02:43:42PM +0200, Frederic Weisbecker wrote:
-> We'll need to be able to runtime offload and de-offload the processing
-> of callback for a given CPU. In order to support a smooth transition
-> from unlocked local processing (softirq/rcuc) to locked offloaded
-> processing (rcuop/rcuog) and the reverse, provide the necessary bits and
-> documentation for the state machine that will carry up all the steps to
-> enforce correctness while serving callbacks processing all along.
-> 
-> Inspired-by: Paul E. McKenney <paulmck@kernel.org>
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Josh Triplett <josh@joshtriplett.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> Cc: Joel Fernandes <joel@joelfernandes.org>
-> ---
->  include/linux/rcu_segcblist.h | 115 +++++++++++++++++++++++++++++++++-
->  kernel/rcu/rcu_segcblist.c    |   1 +
->  kernel/rcu/rcu_segcblist.h    |  12 +++-
->  kernel/rcu/tree.c             |   3 +
->  4 files changed, 128 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/rcu_segcblist.h b/include/linux/rcu_segcblist.h
-> index dca2f39ee67f..67f09a912f96 100644
-> --- a/include/linux/rcu_segcblist.h
-> +++ b/include/linux/rcu_segcblist.h
-> @@ -63,8 +63,121 @@ struct rcu_cblist {
->  #define RCU_NEXT_TAIL		3
->  #define RCU_CBLIST_NSEGS	4
->  
-> +
-> +/*
-> + *                     ==NOCB Offloading state machine==
-> + *
-> + *
-> + *  ----------------------------------------------------------------------------
-> + *  |                         SEGCBLIST_SOFTIRQ_ONLY                           |
-> + *  |                                                                          |
-> + *  |  Callbacks processed by rcu_core() from softirqs or local                |
-> + *  |  rcuc kthread, without holding nocb_lock.                                |
-> + *  ----------------------------------------------------------------------------
-> + *                                         |
-> + *                                         v
-> + *  ----------------------------------------------------------------------------
-> + *  |                        SEGCBLIST_OFFLOADED                               |
-> + *  |                                                                          |
-> + *  | Callbacks processed by rcu_core() from softirqs or local                 |
-> + *  | rcuc kthread, while holding nocb_lock. Waking up CB and GP kthreads,     |
-> + *  |  allowing nocb_timer to be armed.                                        |
+On Mon, Sep 21, 2020 at 2:03 AM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> On Fri, 18 Sep 2020 13:11:37 -0700
+> Atish Patra <atish.patra@wdc.com> wrote:
+>
+> > As we are using generic numa implementation code, modify the acpi & numa
+> > init functions name to indicate that generic implementation.
+> >
+> > Signed-off-by: Atish Patra <atish.patra@wdc.com>
+>
+> Other than the double include of linux/acpi.h below this looks good to me.
+>
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+>
+> > ---
+> >  arch/arm64/kernel/acpi_numa.c | 13 -------------
+> >  arch/arm64/mm/init.c          |  4 ++--
+> >  drivers/base/arch_numa.c      | 31 +++++++++++++++++++++++++++----
+> >  include/asm-generic/numa.h    |  4 ++--
+> >  4 files changed, 31 insertions(+), 21 deletions(-)
+> >
+> > diff --git a/arch/arm64/kernel/acpi_numa.c b/arch/arm64/kernel/acpi_numa.c
+> > index 7ff800045434..96502ff92af5 100644
+> > --- a/arch/arm64/kernel/acpi_numa.c
+> > +++ b/arch/arm64/kernel/acpi_numa.c
+> > @@ -117,16 +117,3 @@ void __init acpi_numa_gicc_affinity_init(struct acpi_srat_gicc_affinity *pa)
+> >
+> >       node_set(node, numa_nodes_parsed);
+> >  }
+> > -
+> > -int __init arm64_acpi_numa_init(void)
+> > -{
+> > -     int ret;
+> > -
+> > -     ret = acpi_numa_init();
+> > -     if (ret) {
+> > -             pr_info("Failed to initialise from firmware\n");
+> > -             return ret;
+> > -     }
+> > -
+> > -     return srat_disabled() ? -EINVAL : 0;
+> > -}
+> > diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> > index 481d22c32a2e..93b660229e1d 100644
+> > --- a/arch/arm64/mm/init.c
+> > +++ b/arch/arm64/mm/init.c
+> > @@ -418,10 +418,10 @@ void __init bootmem_init(void)
+> >       max_pfn = max_low_pfn = max;
+> >       min_low_pfn = min;
+> >
+> > -     arm64_numa_init();
+> > +     arch_numa_init();
+> >
+> >       /*
+> > -      * must be done after arm64_numa_init() which calls numa_init() to
+> > +      * must be done after arch_numa_init() which calls numa_init() to
+> >        * initialize node_online_map that gets used in hugetlb_cma_reserve()
+> >        * while allocating required CMA size across online nodes.
+> >        */
+> > diff --git a/drivers/base/arch_numa.c b/drivers/base/arch_numa.c
+> > index 73f8b49d485c..1649c90a3bc5 100644
+> > --- a/drivers/base/arch_numa.c
+> > +++ b/drivers/base/arch_numa.c
+> > @@ -13,7 +13,9 @@
+> >  #include <linux/module.h>
+> >  #include <linux/of.h>
+> >
+> > -#include <asm/acpi.h>
+> > +#ifdef CONFIG_ACPI_NUMA
+> > +#include <linux/acpi.h>
+> > +#endif
+>
+> Why do we need this ifdef stuff here?
+> In particular acpi_disabled is defined in that header
+> in the !CONFIG_ACPI case so seems like we should include it always.
+>
+> Also given we've just moved arch/arm64/numa.c to become this file,
+> it has an include of that header a few lines off the top of this diff anyway.
+>
+> So I think you can just drop the additional include here.
+>
 
-Whitespace nit before "allowing", just to show that I am paying attention.  ;-)
+Ahh Yes. Sorry for the oversight. Fixed it.
 
-Don't we need to acquire rcu_state.barrier_mutex at this point?  Otherwise
-rcu_barrier() could fail at this point.
+>
+> >  #include <asm/sections.h>
+> >
+> >  struct pglist_data *node_data[MAX_NUMNODES] __read_mostly;
+> > @@ -444,16 +446,37 @@ static int __init dummy_numa_init(void)
+> >       return 0;
+> >  }
+> >
+> > +#ifdef CONFIG_ACPI_NUMA
+> > +static int __init arch_acpi_numa_init(void)
+> > +{
+> > +     int ret;
+> > +
+> > +     ret = acpi_numa_init();
+> > +     if (ret) {
+> > +             pr_info("Failed to initialise from firmware\n");
+> > +             return ret;
+> > +     }
+> > +
+> > +     return srat_disabled() ? -EINVAL : 0;
+> > +}
+> > +#else
+> > +static int __init arch_acpi_numa_init(void)
+> > +{
+> > +     return -EOPNOTSUPP;
+> > +}
+> > +
+> > +#endif
+> > +
+> >  /**
+> > - * arm64_numa_init() - Initialize NUMA
+> > + * arch_numa_init() - Initialize NUMA
+> >   *
+> >   * Try each configured NUMA initialization method until one succeeds. The
+> >   * last fallback is dummy single node config encomapssing whole memory.
+> >   */
+> > -void __init arm64_numa_init(void)
+> > +void __init arch_numa_init(void)
+> >  {
+> >       if (!numa_off) {
+> > -             if (!acpi_disabled && !numa_init(arm64_acpi_numa_init))
+> > +             if (!acpi_disabled && !numa_init(arch_acpi_numa_init))
+> >                       return;
+> >               if (acpi_disabled && !numa_init(of_numa_init))
+> >                       return;
+> > diff --git a/include/asm-generic/numa.h b/include/asm-generic/numa.h
+> > index 2718d5a6ff03..e7962db4ba44 100644
+> > --- a/include/asm-generic/numa.h
+> > +++ b/include/asm-generic/numa.h
+> > @@ -27,7 +27,7 @@ static inline const struct cpumask *cpumask_of_node(int node)
+> >  }
+> >  #endif
+> >
+> > -void __init arm64_numa_init(void);
+> > +void __init arch_numa_init(void);
+> >  int __init numa_add_memblk(int nodeid, u64 start, u64 end);
+> >  void __init numa_set_distance(int from, int to, int distance);
+> >  void __init numa_free_distance(void);
+> > @@ -41,7 +41,7 @@ void numa_remove_cpu(unsigned int cpu);
+> >  static inline void numa_store_cpu_info(unsigned int cpu) { }
+> >  static inline void numa_add_cpu(unsigned int cpu) { }
+> >  static inline void numa_remove_cpu(unsigned int cpu) { }
+> > -static inline void arm64_numa_init(void) { }
+> > +static inline void arch_numa_init(void) { }
+> >  static inline void early_map_cpu_to_node(unsigned int cpu, int nid) { }
+> >
+> >  #endif       /* CONFIG_NUMA */
+>
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
-> + *  ----------------------------------------------------------------------------
-> + *                                         |
-> + *                                         v
-> + *                        -----------------------------------
-> + *                        |                                 |
-> + *                        v                                 v
-> + *  ---------------------------------------  ----------------------------------|
-> + *  |        SEGCBLIST_OFFLOADED |        |  |     SEGCBLIST_OFFLOADED |       |
-> + *  |        SEGCBLIST_KTHREAD_CB         |  |     SEGCBLIST_KTHREAD_GP        |
-> + *  |                                     |  |                                 |
-> + *  |                                     |  |                                 |
-> + *  | CB kthread woke up and              |  | GP kthread woke up and          |
-> + *  | acknowledged SEGCBLIST_OFFLOADED.   |  | acknowledged SEGCBLIST_OFFLOADED|
-> + *  | Processes callbacks concurrently    |  |                                 |
-> + *  | with rcu_core(), holding            |  |                                 |
-> + *  | nocb_lock.                          |  |                                 |
-> + *  ---------------------------------------  -----------------------------------
-> + *                        |                                 |
-> + *                        -----------------------------------
-> + *                                         |
-> + *                                         v
-> + *  |--------------------------------------------------------------------------|
-> + *  |                           SEGCBLIST_OFFLOADED |                          |
-> + *  |                           SEGCBLIST_KTHREAD_CB |                         |
-> + *  |                           SEGCBLIST_KTHREAD_GP                           |
-> + *  |                                                                          |
-> + *  |   Kthreads handle callbacks holding nocb_lock, local rcu_core() stops    |
-> + *  |   handling callbacks.                                                    |
 
-And rcu_state.barrier_mutex is dropped here.
 
-Or am I missing a trick here?  I guess I will look at the later patches to
-get an initial estimate of an answer to this question.
-
-> + *  ----------------------------------------------------------------------------
-> + */
-> +
-> +
-> +
-> +/*
-> + *                       ==NOCB De-Offloading state machine==
-> + *
-> + *
-> + *  |--------------------------------------------------------------------------|
-> + *  |                           SEGCBLIST_OFFLOADED |                          |
-> + *  |                           SEGCBLIST_KTHREAD_CB |                         |
-> + *  |                           SEGCBLIST_KTHREAD_GP                           |
-> + *  |                                                                          |
-> + *  |   CB/GP kthreads handle callbacks holding nocb_lock, local rcu_core()    |
-> + *  |   ignores callbacks.                                                     |
-
-And don't we also need to acquire rcu_state.barrier_mutex here?
-
-> + *  ----------------------------------------------------------------------------
-> + *                                      |
-> + *                                      v
-> + *  |--------------------------------------------------------------------------|
-> + *  |                           SEGCBLIST_KTHREAD_CB |                         |
-> + *  |                           SEGCBLIST_KTHREAD_GP                           |
-> + *  |                                                                          |
-> + *  |   CB/GP kthreads and local rcu_core() handle callbacks concurrently      |
-> + *  |   holding nocb_lock. Wake up CB and GP kthreads if necessary.            |
-> + *  ----------------------------------------------------------------------------
-> + *                                      |
-> + *                                      v
-> + *                     -----------------------------------
-> + *                     |                                 |
-> + *                     v                                 v
-> + *  ---------------------------------------------------------------------------|
-> + *  |                                                                          |
-> + *  |        SEGCBLIST_KTHREAD_CB         |       SEGCBLIST_KTHREAD_GP         |
-> + *  |                                     |                                    |
-> + *  | GP kthread woke up and              |   CB kthread woke up and           |
-> + *  | acknowledged the fact that          |   acknowledged the fact that       |
-> + *  | SEGCBLIST_OFFLOADED got cleared.    |   SEGCBLIST_OFFLOADED got cleared. |
-> + *  |                                     |   The CB kthread goes to sleep     |
-> + *  | The callbacks from the target CPU   |   until it ever gets re-offloaded. |
-> + *  | will be ignored from the GP kthread |                                    |
-> + *  | loop.                               |                                    |
-> + *  ----------------------------------------------------------------------------
-> + *                      |                                 |
-> + *                      -----------------------------------
-> + *                                      |
-> + *                                      v
-> + *  ----------------------------------------------------------------------------
-> + *  |                                   0                                      |
-> + *  |                                                                          |
-> + *  | Callbacks processed by rcu_core() from softirqs or local                 |
-> + *  | rcuc kthread, while holding nocb_lock. Forbid nocb_timer to be armed.    |
-> + *  | Flush pending nocb_timer. Flush nocb bypass callbacks.                   |
-
-And release rcu_state.barrier_mutex here?
-
-							Thanx, Paul
-
-> + *  ----------------------------------------------------------------------------
-> + *                                      |
-> + *                                      v
-> + *  ----------------------------------------------------------------------------
-> + *  |                         SEGCBLIST_SOFTIRQ_ONLY                           |
-> + *  |                                                                          |
-> + *  |  Callbacks processed by rcu_core() from softirqs or local                |
-> + *  |  rcuc kthread, without holding nocb_lock.                                |
-> + *  ----------------------------------------------------------------------------
-> + */
->  #define SEGCBLIST_ENABLED	BIT(0)
-> -#define SEGCBLIST_OFFLOADED	BIT(1)
-> +#define SEGCBLIST_SOFTIRQ_ONLY	BIT(1)
-> +#define SEGCBLIST_KTHREAD_CB	BIT(2)
-> +#define SEGCBLIST_KTHREAD_GP	BIT(3)
-> +#define SEGCBLIST_OFFLOADED	BIT(4)
->  
->  struct rcu_segcblist {
->  	struct rcu_head *head;
-> diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-> index d131ef8940a0..31cc27ee98d8 100644
-> --- a/kernel/rcu/rcu_segcblist.c
-> +++ b/kernel/rcu/rcu_segcblist.c
-> @@ -172,6 +172,7 @@ void rcu_segcblist_disable(struct rcu_segcblist *rsclp)
->   */
->  void rcu_segcblist_offload(struct rcu_segcblist *rsclp)
->  {
-> +	rcu_segcblist_clear_flags(rsclp, SEGCBLIST_SOFTIRQ_ONLY);
->  	rcu_segcblist_set_flags(rsclp, SEGCBLIST_OFFLOADED);
->  }
->  
-> diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
-> index fc98761e3ee9..575896a2518b 100644
-> --- a/kernel/rcu/rcu_segcblist.h
-> +++ b/kernel/rcu/rcu_segcblist.h
-> @@ -80,8 +80,16 @@ static inline bool rcu_segcblist_is_enabled(struct rcu_segcblist *rsclp)
->  /* Is the specified rcu_segcblist offloaded?  */
->  static inline bool rcu_segcblist_is_offloaded(struct rcu_segcblist *rsclp)
->  {
-> -	return IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
-> -		rcu_segcblist_test_flags(rsclp, SEGCBLIST_OFFLOADED);
-> +	if (IS_ENABLED(CONFIG_RCU_NOCB_CPU)) {
-> +		/*
-> +		 * Complete de-offloading happens only when SEGCBLIST_SOFTIRQ_ONLY
-> +		 * is set.
-> +		 */
-> +		if (!rcu_segcblist_test_flags(rsclp, SEGCBLIST_SOFTIRQ_ONLY))
-> +			return true;
-> +	}
-> +
-> +	return false;
->  }
->  
->  /*
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index c0286ce8fc03..b4292489db0c 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -96,6 +96,9 @@ static DEFINE_PER_CPU_SHARED_ALIGNED(struct rcu_data, rcu_data) = {
->  	.dynticks_nesting = 1,
->  	.dynticks_nmi_nesting = DYNTICK_IRQ_NONIDLE,
->  	.dynticks = ATOMIC_INIT(RCU_DYNTICK_CTRL_CTR),
-> +#ifdef CONFIG_RCU_NOCB_CPU
-> +	.cblist.flags = SEGCBLIST_SOFTIRQ_ONLY,
-> +#endif
->  };
->  static struct rcu_state rcu_state = {
->  	.level = { &rcu_state.node[0] },
-> -- 
-> 2.28.0
-> 
+-- 
+Regards,
+Atish
