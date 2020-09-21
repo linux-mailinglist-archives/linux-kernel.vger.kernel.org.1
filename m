@@ -2,77 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B711727295E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2718C272961
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727365AbgIUPEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 11:04:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726471AbgIUPEm (ORCPT
+        id S1727570AbgIUPFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 11:05:02 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:36539 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726471AbgIUPFB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 11:04:42 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0566BC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 08:04:41 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id l126so9487247pfd.5
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 08:04:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=C4nRQfx2qYF9dFDBskG/JyOe47RPw5Dquf61du0N5A8=;
-        b=agqNsv691BnrvFzNyxBbpHelbarCY+MdPY8sJNs3xWPg3dBXcHJCqrpBcnoFBvpaGk
-         t+9hnp0oga7Wt9JC4R8VokWxnTtBZ7rxUTcW1vxWQ2xq/psilOat09agPwjgo0Lr6+ZI
-         4SVo3SG9LZh0N2NX/uidZ4EL+OXZk/u7wzcCZ0l4k2zeGZcQMD5+q+0Vhglq3vylEqcY
-         QGXsdSA2MH/dV+po0pRrWoL4fD74CLimUWB6pCORYvAJdgyWUP1lb559v6F5zVdrOSAb
-         +Ei/3OtGyCRkERSwUKJhD5qD2qG7ZNTDJhAAv13/+0tGGSKMGP35nqWi/SK37mPSq5QY
-         FPUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=C4nRQfx2qYF9dFDBskG/JyOe47RPw5Dquf61du0N5A8=;
-        b=ikwqQdwwablmq/so00B6CersKxM4WzL199qDeyDIF4hVnkQNZMjxiOxas0gtWhmHot
-         dNWg3egfjQsp8gPrBC1KXSj9h8mf8uFjnwFMuc0s9IMeAgXi0WDVeb6m1ZlUavDcFdBU
-         Bm1YT5MP2G1tTRjR7AmSlNbTw/Cg+LP2DUUdBKg3/Ysnev6MZ+fBfPhke+wLE9rm++CS
-         H1vEYjYMWcvEfS+Iz+Fswf3P46sx+qDV+vwQpgZp5jWxD/vfJEfxCKXZHkoSCwfhy8JS
-         DeizI1heYW+qrIu8ekW8/T8aunWpdXFZ3kpUjZmqOZb1D1W02ALeosBIb6uH2uWAKSMi
-         WhIg==
-X-Gm-Message-State: AOAM531YFfi3cblYSAKxfqlQ2B9TIjpsUOSexb7jXjGHVlznBz89C3yu
-        D9EeTSQ2IKEcIemIllqN4Uidzw==
-X-Google-Smtp-Source: ABdhPJw871DXIKluSOo8DCgvKaAuFfj3403gaNC33ggwTlepiDipW1oSGIgho1PTVmka+2IO3LMruA==
-X-Received: by 2002:a17:902:7c0c:b029:d1:f38b:713b with SMTP id x12-20020a1709027c0cb02900d1f38b713bmr337499pll.44.1600700681460;
-        Mon, 21 Sep 2020 08:04:41 -0700 (PDT)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id k6sm12230168pfh.92.2020.09.21.08.04.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 08:04:40 -0700 (PDT)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Liu Shixin <liushixin2@huawei.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Liu Shixin <liushixin2@huawei.com>
-Subject: Re: [PATCH -next] rtc: meson: simplify the return expression of meson_vrtc_probe
-In-Reply-To: <20200919100856.1639319-1-liushixin2@huawei.com>
-References: <20200919100856.1639319-1-liushixin2@huawei.com>
-Date:   Mon, 21 Sep 2020 08:04:40 -0700
-Message-ID: <7hlfh3cgs7.fsf@baylibre.com>
+        Mon, 21 Sep 2020 11:05:01 -0400
+Received: from ip5f5af089.dynamic.kabel-deutschland.de ([95.90.240.137] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1kKNN5-0007iO-G6; Mon, 21 Sep 2020 15:04:51 +0000
+Date:   Mon, 21 Sep 2020 17:04:50 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Tejun Heo <tj@kernel.org>, Peter Xu <peterx@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Maya B . Gokhale" <gokhale2@llnl.gov>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Marty Mcfadden <mcfadden8@llnl.gov>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
+Message-ID: <20200921150450.3mjjb3p3jwgatn4v@wittgenstein>
+References: <CAHk-=wjtfjB3TqTFRzVmOrB9Mii6Yzc-=wKq0fu4ruDE6AsJgg@mail.gmail.com>
+ <20200917193824.GL8409@ziepe.ca>
+ <CAHk-=wiY_g+SSjncZi8sO=LrxXmMox0NO7K34-Fs653XVXheGg@mail.gmail.com>
+ <20200918164032.GA5962@xz-x1>
+ <20200921134200.GK12990@dhcp22.suse.cz>
+ <20200921141830.GE5962@xz-x1>
+ <20200921142834.GL12990@dhcp22.suse.cz>
+ <20200921143847.GB4268@mtj.duckdns.org>
+ <20200921144355.mrzc66lina3dkfjq@wittgenstein>
+ <20200921145537.GM12990@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200921145537.GM12990@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Liu Shixin <liushixin2@huawei.com> writes:
+On Mon, Sep 21, 2020 at 04:55:37PM +0200, Michal Hocko wrote:
+> On Mon 21-09-20 16:43:55, Christian Brauner wrote:
+> > On Mon, Sep 21, 2020 at 10:38:47AM -0400, Tejun Heo wrote:
+> > > Hello,
+> > > 
+> > > On Mon, Sep 21, 2020 at 04:28:34PM +0200, Michal Hocko wrote:
+> > > > Fundamentaly CLONE_INTO_CGROUP is similar to regular fork + move to the
+> > > > target cgroup after the child gets executed. So in principle there
+> > > > shouldn't be any big difference. Except that the move has to be explicit
+> > > > and the the child has to have enough privileges to move itself. I am not
+> > > 
+> > > Yeap, they're supposed to be the same operations. We've never clearly
+> > > defined how the accounting gets split across moves because 1. it's
+> > > inherently blurry and difficult 2. doesn't make any practical difference for
+> > > the recommended and vast majority usage pattern which uses migration to seed
+> > > the new cgroup. CLONE_INTO_CGROUP doesn't change any of that.
+> > > 
+> > > > completely sure about CLONE_INTO_CGROUP model though. According to man
+> > > > clone(2) it seems that O_RDONLY for the target cgroup directory is
+> > > > sufficient. That seems much more relaxed IIUC and it would allow to fork
+> > > > into a different cgroup while keeping a lot of resources in the parent's
+> > > > proper.
+> > > 
+> > > If the man page is documenting that, it's wrong. cgroup_css_set_fork() has
+> > > an explicit cgroup_may_write() test on the destination cgroup.
+> > > CLONE_INTO_CGROUP should follow exactly the same rules as regular
+> > > migrations.
+> > 
+> > Indeed!
+> > The O_RDONLY mention on the manpage doesn't make sense but it is
+> > explained that the semantics are exactly the same for moving via the
+> > filesystem:
+> 
+> OK, if the semantic is the same as for the task migration then I do not
+> see any (new) problems. Care to point me where the actual check is
+> enforced? For the migration you need a write access to cgroup.procs but
+> if the API expects directory fd then I am not sure how that would expose
+> the same behavior.
 
-> Simplify the return expression.
->
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+kernel/cgroup/cgroup.c:cgroup_csset_fork()
 
-Acked-by: Kevin Hilman <khilman@baylibre.com>
+So there's which is the first check for inode_permission() essentially:
+
+	/*
+	 * Verify that we the target cgroup is writable for us. This is
+	 * usually done by the vfs layer but since we're not going through
+	 * the vfs layer here we need to do it "manually".
+	 */
+	ret = cgroup_may_write(dst_cgrp, sb);
+	if (ret)
+		goto err;
+
+and what you're referring to is checked right after in:
+
+	ret = cgroup_attach_permissions(cset->dfl_cgrp, dst_cgrp, sb,
+					!(kargs->flags & CLONE_THREAD));
+	if (ret)
+		goto err;
+
+which calls:
+
+	ret = cgroup_procs_write_permission(src_cgrp, dst_cgrp, sb);
+	if (ret)
+		return ret;
+
+That should be what you're looking for. I've also added selftests as
+always that verify this behavior under:
+
+tools/testing/selftests/cgroup/
+
+as soon as CLONE_INTO_CGROUP is detected on the kernel than all the
+usual tests are exercised using CLONE_INTO_CGROUP so we should've seen
+any regression hopefully.
+
+Thanks!
+Christian
