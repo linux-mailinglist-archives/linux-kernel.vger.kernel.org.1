@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF4DF272D4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F7D272DCB
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729219AbgIUQjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:39:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40526 "EHLO mail.kernel.org"
+        id S1729592AbgIUQnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:43:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729215AbgIUQi7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:38:59 -0400
+        id S1729562AbgIUQnP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:43:15 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ADD49239D0;
-        Mon, 21 Sep 2020 16:38:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 782DE235F9;
+        Mon, 21 Sep 2020 16:43:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706339;
-        bh=s0Mo5u+brxlYU38Nh/VQSLjrk4n3pEAdmA+E2c66PFo=;
+        s=default; t=1600706595;
+        bh=3oTBHsTFSaSjiAFuk1w5MRsRzcO9Ats6ervYAEvAuDQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AV4YstBitza6ozJhQ2etu3oMYygNsdRrJqjFsn90ASYwUgVuws7LacZDxwz7CikJ/
-         gxtQHut08JDlR5h5s10LiOPw7ZC/bPv8AUJmNPaNwJIct8ChH+ZqkmuyZRsCATBnIn
-         Zixou0fw3hqKX7ScVGdONSIZ18S7JLVodiq6IE9w=
+        b=wRcyUtRXALsW7+bkVdy8MuUCcgMVOZRLlG150YlZeNwvsSNFVKCSVkCa/BEmmtymh
+         BnvPHCRFjaj3XPyEeVzGM8tK/yArMf08x+JLdLT69KL3PeClxGwCuYkWkACAvtf0Rl
+         489xCUbINsCWt75+YySBgPJloCiWvBp53ZwdcL08=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        stable@vger.kernel.org, Dick Kennedy <dick.kennedy@broadcom.com>,
+        James Smart <james.smart@broadcom.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 20/94] cpufreq: intel_pstate: Refuse to turn off with HWP enabled
-Date:   Mon, 21 Sep 2020 18:27:07 +0200
-Message-Id: <20200921162036.476048041@linuxfoundation.org>
+Subject: [PATCH 5.8 016/118] scsi: lpfc: Fix FLOGI/PLOGI receive race condition in pt2pt discovery
+Date:   Mon, 21 Sep 2020 18:27:08 +0200
+Message-Id: <20200921162037.086175129@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
-References: <20200921162035.541285330@linuxfoundation.org>
+In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
+References: <20200921162036.324813383@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,50 +44,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: James Smart <james.smart@broadcom.com>
 
-[ Upstream commit 43298db3009f06fe5c69e1ca8b6cfc2565772fa1 ]
+[ Upstream commit 7b08e89f98cee9907895fabb64cf437bc505ce9a ]
 
-After commit f6ebbcf08f37 ("cpufreq: intel_pstate: Implement passive
-mode with HWP enabled") it is possible to change the driver status
-to "off" via sysfs with HWP enabled, which effectively causes the
-driver to unregister itself, but HWP remains active and it forces the
-minimum performance, so even if another cpufreq driver is loaded,
-it will not be able to control the CPU frequency.
+The driver is unable to successfully login with remote device. During pt2pt
+login, the driver completes its FLOGI request with the remote device having
+WWN precedence.  The remote device issues its own (delayed) FLOGI after
+accepting the driver's and, upon transmitting the FLOGI, immediately
+recognizes it has already processed the driver's FLOGI thus it transitions
+to sending a PLOGI before waiting for an ACC to its FLOGI.
 
-For this reason, make the driver refuse to change the status to
-"off" with HWP enabled.
+In the driver, the FLOGI is received and an ACC sent, followed by the PLOGI
+being received and an ACC sent. The issue is that the PLOGI reception
+occurs before the response from the adapter from the FLOGI ACC is
+received. Processing of the PLOGI sets state flags to perform the REG_RPI
+mailbox command and proceed with the rest of discovery on the port. The
+same completion routine used by both FLOGI and PLOGI is generic in
+nature. One of the things it does is clear flags, and those flags happen to
+drive the rest of discovery.  So what happened was the PLOGI processing set
+the flags, the FLOGI ACC completion cleared them, thus when the PLOGI ACC
+completes it doesn't see the flags and stops.
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Fix by modifying the generic completion routine to not clear the rest of
+discovery flag (NLP_ACC_REGLOGIN) unless the completion is also associated
+with performing a mailbox command as part of its handling.  For things such
+as FLOGI ACC, there isn't a subsequent action to perform with the adapter,
+thus there is no mailbox cmd ptr. PLOGI ACC though will perform REG_RPI
+upon completion, thus there is a mailbox cmd ptr.
+
+Link: https://lore.kernel.org/r/20200828175332.130300-3-james.smart@broadcom.com
+Co-developed-by: Dick Kennedy <dick.kennedy@broadcom.com>
+Signed-off-by: Dick Kennedy <dick.kennedy@broadcom.com>
+Signed-off-by: James Smart <james.smart@broadcom.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/intel_pstate.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ drivers/scsi/lpfc/lpfc_els.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-index 5c41dc9aaa46d..be1a7bb0b4011 100644
---- a/drivers/cpufreq/intel_pstate.c
-+++ b/drivers/cpufreq/intel_pstate.c
-@@ -2098,9 +2098,15 @@ static int intel_pstate_update_status(const char *buf, size_t size)
- {
- 	int ret;
+diff --git a/drivers/scsi/lpfc/lpfc_els.c b/drivers/scsi/lpfc/lpfc_els.c
+index 3d670568a2760..7b6a210825677 100644
+--- a/drivers/scsi/lpfc/lpfc_els.c
++++ b/drivers/scsi/lpfc/lpfc_els.c
+@@ -4644,7 +4644,9 @@ lpfc_cmpl_els_rsp(struct lpfc_hba *phba, struct lpfc_iocbq *cmdiocb,
+ out:
+ 	if (ndlp && NLP_CHK_NODE_ACT(ndlp) && shost) {
+ 		spin_lock_irq(shost->host_lock);
+-		ndlp->nlp_flag &= ~(NLP_ACC_REGLOGIN | NLP_RM_DFLT_RPI);
++		if (mbox)
++			ndlp->nlp_flag &= ~NLP_ACC_REGLOGIN;
++		ndlp->nlp_flag &= ~NLP_RM_DFLT_RPI;
+ 		spin_unlock_irq(shost->host_lock);
  
--	if (size == 3 && !strncmp(buf, "off", size))
--		return intel_pstate_driver ?
--			intel_pstate_unregister_driver() : -EINVAL;
-+	if (size == 3 && !strncmp(buf, "off", size)) {
-+		if (!intel_pstate_driver)
-+			return -EINVAL;
-+
-+		if (hwp_active)
-+			return -EBUSY;
-+
-+		return intel_pstate_unregister_driver();
-+	}
- 
- 	if (size == 6 && !strncmp(buf, "active", size)) {
- 		if (intel_pstate_driver) {
+ 		/* If the node is not being used by another discovery thread,
 -- 
 2.25.1
 
