@@ -2,143 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F202727B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BAED2727C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727889AbgIUOge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 10:36:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42498 "EHLO
+        id S1727049AbgIUOhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 10:37:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727049AbgIUOgZ (ORCPT
+        with ESMTP id S1727485AbgIUOhB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:36:25 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2147AC061755;
-        Mon, 21 Sep 2020 07:36:25 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id l126so9413202pfd.5;
-        Mon, 21 Sep 2020 07:36:25 -0700 (PDT)
+        Mon, 21 Sep 2020 10:37:01 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AF24C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 07:37:01 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id s13so12366300wmh.4
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 07:37:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=zSfrj+3bs9sguc1QSl4SLJPp+UjGqMK1/8SE68suEvs=;
-        b=ar5BRUxq1oC1hBjcryyD9FKmnVVVYpvOs3MnnmNl8q8w9m90qzhI6qk7vJwHqYyUxe
-         aCEslOkys3v03XPCIs/CcblGzSesSp3DjYdqeqPKSf9oKNHL4hIaCtAj9HD/Nux8wjNo
-         NFoaPQ/+0vw4gYUCUxhCt1erh9C5DbqIyT4raZzKCadJRiUaCcKK/2OiqoFY3Amb1rsy
-         T4eamtx5AwvnwNpUaa5X1lroc9YxQy3M6n6+l/bfP0X/7xlB1LBgYcSdrUc0vVQkL6Vn
-         4KpGXFHnJhQD2TjCqmK4bYJ8wqsdi+OYv7FZ3kbULcQKt79GPJbyy5WhVyn9JRUmZJTE
-         e9AA==
+        d=arista.com; s=googlenew;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v8pcZTN+i/7Fb4vyTfG/UopYgDCcumlDoCD0Nm0/ODM=;
+        b=BuWNVkVr+wdx6IkSh0we8UYHMffxew16ocu/iGlVvYfgUg4rEdJVZkztwR2qvUWYjb
+         lDc1zsfBltXWC/+nWZ+9wHihwIGvCc/Q6Wq9NOKrL3vZHrzzjpPOPlyTHZjB6x+wFY6o
+         f1CGSkr4HoW1CwUGvfjIjxF4VhJbuo01ipe7SbBU4fbK/1k2diIlFUUjVDNfxkTN1koc
+         5sXZk8Bkgawx9re+wKExncSEd750J/1+bCIneEXYBOm72sId9diP9GdgKobiWhtlxNVA
+         NhNdNxERkEbKiF8DVGGnDBLJdA86/ST/PkCdSmwz6SloR33+7bOPaik7waYy7BJwdhSu
+         io+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zSfrj+3bs9sguc1QSl4SLJPp+UjGqMK1/8SE68suEvs=;
-        b=BT5QprwyUEnoAvFJOIz4Vi45EMW0RjvHYN1MzGM97mjvD9232m4bPA00I9xUbT8IQq
-         fvE9Q5pspDeOE5ms6b1HcOnS+ZiJgCs2nuoyl0ypU4VAQDoAxxvR1WCaU6q+FweblPpP
-         gJHbhHZGuKyfQfnfJNSuPO0V/FopHLnNfjQiNuEq9NsKes5HwT1lEbHkUBBAA5KXAQHl
-         W9/9DtZ917vXeex32yhmoz8rHkrSEblBSL36DgT2V0piCzoVf9rAxvWHDlqlBrAhzSsc
-         kU40hIH8cq3l1YUDQ7AeBO6fNXBiBEMmgw2/QpsfDeNQejovM9JiqleMIwp3D4tQ7/Oy
-         BkUw==
-X-Gm-Message-State: AOAM530+ZNUKJCYGPLHM7nb0SE5sT+U2oO7DKel/vaWATNJrNzyx/Hrg
-        xI+0TBoPxeLxX0W+2j21cZLc0JiqMBM=
-X-Google-Smtp-Source: ABdhPJwblvZRdBtLaYtrOyigdHm9lh+pppkIi+r81/+MSenIJRW174lVhuCdLv+l+XB6COw4VWenlw==
-X-Received: by 2002:a17:902:aa02:b029:d0:cbe1:e7b4 with SMTP id be2-20020a170902aa02b02900d0cbe1e7b4mr169659plb.37.1600698984672;
-        Mon, 21 Sep 2020 07:36:24 -0700 (PDT)
-Received: from localhost.localdomain ([1.129.169.155])
-        by smtp.gmail.com with ESMTPSA id j14sm11035358pjz.21.2020.09.21.07.36.21
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v8pcZTN+i/7Fb4vyTfG/UopYgDCcumlDoCD0Nm0/ODM=;
+        b=WZ6lK+hLX1PcJBTrfGg2xO0hSUql8AMr6h8VEmcQzSSUL43OT6QGSOODnR6nR+/HMs
+         kTdR9wnDrDV322vmS4GV+iDc+DkrQoTqWXaiedHA0sckqG3UwdiCP2FD7KebXMykA1Pz
+         t5F30uCiR6Tdx4FRn7R3VEQjBF7uRav8DyxJJAYbl3cbKgJPYwOUNXMFtLjAp6TOd+Pb
+         rUXq9VQU6XVr2HyIjC2tWLSTsHoLMocSj7KTmxvemnDdw3yHZehsRYp9gHAZR8veucrq
+         SenJCVAsPOaKgThq0u2IDnP3CP2/jLIyhCtqjEi5mzT1l0wajl9n+4HFnugw5NIlA/CK
+         K3aQ==
+X-Gm-Message-State: AOAM531UqbRdD0xe9mGns7Lm0bKav2wgctSGMgO50NimSGxwDuMfZJ1Z
+        U0qZFjQcCUawhi/tz15LIe1IRz62QwNfAA==
+X-Google-Smtp-Source: ABdhPJyUhXBQD62+KY+Pt4EzYAFVHYmRbhAVbXQ3qfCQzil0ho1EGOP5684hLHI3efWhFKAYI1JaUg==
+X-Received: by 2002:a1c:f20b:: with SMTP id s11mr203831wmc.144.1600699019590;
+        Mon, 21 Sep 2020 07:36:59 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
+        by smtp.gmail.com with ESMTPSA id c14sm20370753wrv.12.2020.09.21.07.36.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 07:36:23 -0700 (PDT)
-Date:   Tue, 22 Sep 2020 00:36:19 +1000
-From:   "G. Branden Robinson" <g.branden.robinson@gmail.com>
-To:     "mtk.manpages@gmail.com" <mtk.manpages@gmail.com>,
-        "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 22/24] membarrier.2: Note that glibc does not provide a
- wrapper
-Message-ID: <20200921143617.2iskdncu3diginqn@localhost.localdomain>
-References: <20200910211344.3562-1-colomar.6.4.3@gmail.com>
- <20200910211344.3562-23-colomar.6.4.3@gmail.com>
- <4ace434523f5491b9efcc7af175ad781@bfs.de>
+        Mon, 21 Sep 2020 07:36:58 -0700 (PDT)
+From:   Dmitry Safonov <dima@arista.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
+        Dmitry Safonov <dima@arista.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Florian Westphal <fw@strlen.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Stephen Suryaputra <ssuryaextr@gmail.com>,
+        netdev@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH v3 0/7] xfrm: Add compat layer
+Date:   Mon, 21 Sep 2020 15:36:50 +0100
+Message-Id: <20200921143657.604020-1-dima@arista.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="gn4pjnbkmrfvlsqv"
-Content-Disposition: inline
-In-Reply-To: <4ace434523f5491b9efcc7af175ad781@bfs.de>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Changes since v2:
+- added struct xfrm_translator as API to register xfrm_compat.ko with
+  xfrm_state.ko. This allows compilation of translator as a loadable
+  module
+- fixed indention and collected reviewed-by (Johannes Berg)
+- moved boilerplate from commit messages into cover-letter (Steffen
+  Klassert)
+- found on KASAN build and fixed non-initialised stack variable usage
+  in the translator
 
---gn4pjnbkmrfvlsqv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The resulting v2/v3 diff can be found here:
+https://gist.github.com/0x7f454c46/8f68311dfa1f240959fdbe7c77ed2259
 
-At 2020-09-11T12:58:08+0000, Walter Harms wrote:
-> the groff commands are ducument in man 7 groff
-> .nf       No filling or adjusting of output-lines.
-> .fi       Fill output lines
->=20
-> (for me) a typical use is like this:
-> .nf
->=20
-> struct timeval {
->     time_t      tv_sec;     /* seconds */
->     suseconds_t tv_usec;    /* microseconds */
-> };
-> .fi
->=20
-> In the top section you prevent indenting (if any).
+Patches as a .git branch:
+https://github.com/0x7f454c46/linux/tree/xfrm-compat-v3
 
-The above will not work as desired for typesetter output, a.k.a., "troff
-devices", such as PostScript or PDF.  The initial code indent might work
-okay but the alignment of the field names will become
-ragged/mis-registered and the comments even more so.
+Changes since v1:
+- reworked patches set to use translator
+- separated the compat layer into xfrm_compat.c,
+  compiled under XFRM_USER_COMPAT config
+- 32-bit messages now being sent in frag_list (like wext-core does)
+- instead of __packed add compat_u64 members in compat structures
+- selftest reworked to kselftest lib API
+- added netlink dump testing to the selftest
 
-This is because a proportional font is used by default for troff
-devices.  The classical man macros, going back to Version 7 Unix (1979)
-had no good solution for this problem and Unix room tradition at Murray
-Hill going all the way back to (what we now call) the First Edition
-manual in 1971 was to read the man pages on a typewriter--a Teletype
-Model 33 or Model 37.  Typewriters, of course, always[1] used monospaced
-fonts.
+XFRM is disabled for compatible users because of the UABI difference.
+The difference is in structures paddings and in the result the size
+of netlink messages differ.
 
-Version 9 Unix (1986) introduced .EX and .EE for setting material in a
-monospaced font even if the device used proportional type by default.
-(Plan 9 troff inherited them.)  GNU roff has supporteds .EX and .EE as
-well, for over 13 years, and its implementations are ultra-permissively
-licensed so other *roffs like Heirloom Doctools have picked them up.
-Therefore I recommend .EX and .EE for all code examples.
+Possibility for compatible application to manage xfrm tunnels was
+disabled by: the commmit 19d7df69fdb2 ("xfrm: Refuse to insert 32 bit
+userspace socket policies on 64 bit systems") and the commit 74005991b78a
+("xfrm: Do not parse 32bits compiled xfrm netlink msg on 64bits host").
 
-They are very simple to use.  In the above, simply replace ".nf" with
-".EX" and ".fi" with ".EE".
+This is my second attempt to resolve the xfrm/compat problem by adding
+the 64=>32 and 32=>64 bit translators those non-visibly to a user
+provide translation between compatible user and kernel.
+Previous attempt was to interrupt the message ABI according to a syscall
+by xfrm_user, which resulted in over-complicated code [1].
 
-Regards,
-Branden
+Florian Westphal provided the idea of translator and some draft patches
+in the discussion. In these patches, his idea is reused and some of his
+initial code is also present.
 
-[1] Not completely true; variable-pitch typewriters (such as 10/12 point
-selectable) were fairly common and some expensive models like the IBM
-Executive even featured true proportional type.
+There were a couple of attempts to solve xfrm compat problem:
+https://lkml.org/lkml/2017/1/20/733
+https://patchwork.ozlabs.org/patch/44600/
+http://netdev.vger.kernel.narkive.com/2Gesykj6/patch-net-next-xfrm-correctly-parse-netlink-msg-from-32bits-ip-command-on-64bits-host
 
---gn4pjnbkmrfvlsqv
-Content-Type: application/pgp-signature; name="signature.asc"
+All the discussions end in the conclusion that xfrm should have a full
+compatible layer to correctly work with 32-bit applications on 64-bit
+kernels:
+https://lkml.org/lkml/2017/1/23/413
+https://patchwork.ozlabs.org/patch/433279/
 
------BEGIN PGP SIGNATURE-----
+In some recent lkml discussion, Linus said that it's worth to fix this
+problem and not giving people an excuse to stay on 32-bit kernel:
+https://lkml.org/lkml/2018/2/13/752
 
-iQIzBAEBCAAdFiEEh3PWHWjjDgcrENwa0Z6cfXEmbc4FAl9oulAACgkQ0Z6cfXEm
-bc4nXg//a/pFLV+dC2pLWh48NQsSaQaYU0IMPK0FpdGYloetyPw2bo75WGukzVPQ
-GJ5yzvvQmI812qMmVnbChOZAr31EiaJqAqynG5XtmYxGIDK5Tx9cfnk+11Ko8DPQ
-orUaPEb5/u7rhtiQgOoYAYVewrF2ooTGEGRKIeRBhHRJHm3Fm2VRduDt5ZOJ1JsO
-aIdOc16tHBeAPJUjMamyVcSIoWZsWCdhdA4l9h94MeSrYYtZc3duDaieT9YnoZpx
-FKeKvmfR7fWBF8ZlIXSemYume2/wtC9x5SGoWz9EFlQVBM0rrUwjPtgdbri4Y/kr
-iBxiLcEJ350pPXGII4mMl/HWCfivFJRk9hd7tUGRvRXrj7MB4qQy5Myu993G+5X2
-LbF1lg3lvEv4zlaC1+Vx7ljnA5guGYqxq9v977VucyEWicSml5NczuzuBpgl8ynJ
-tJsFs04GBbR+8NHlILly2LOaI/B/9aFhUMYq1ix8GRqJABXhYA050t9n4UmlYIjA
-hulieVMLHDCVf9u+0+dE5ript5Ggqmh880AYZLYXQR0jEcGelJDYoxM0ushMogCx
-fFiO7iJpg/dr8l981Xe6B5t6xLKxzi9WJuZJ89V4efEjh/SK2SohGvYtRepzhj3a
-VRKZf+9Qamwt2PYrd5hgdryqsEpIs8335KQxpfUKYdzn4scuRsI=
-=i8QU
------END PGP SIGNATURE-----
+There is also an selftest for ipsec tunnels.
+It doesn't depend on any library and compat version can be easy
+build with: make CFLAGS=-m32 net/ipsec
 
---gn4pjnbkmrfvlsqv--
+[1]: https://lkml.kernel.org/r/20180726023144.31066-1-dima@arista.com
+
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Florian Westphal <fw@strlen.de>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: Steffen Klassert <steffen.klassert@secunet.com>
+Cc: Stephen Suryaputra <ssuryaextr@gmail.com>
+Cc: Dmitry Safonov <0x7f454c46@gmail.com>
+Cc: netdev@vger.kernel.org
+
+Dmitry Safonov (7):
+  xfrm: Provide API to register translator module
+  xfrm/compat: Add 64=>32-bit messages translator
+  xfrm/compat: Attach xfrm dumps to 64=>32 bit translator
+  netlink/compat: Append NLMSG_DONE/extack to frag_list
+  xfrm/compat: Add 32=>64-bit messages translator
+  xfrm/compat: Translate 32-bit user_policy from sockptr
+  selftest/net/xfrm: Add test for ipsec tunnel
+
+ MAINTAINERS                            |    1 +
+ include/net/xfrm.h                     |   33 +
+ net/netlink/af_netlink.c               |   47 +-
+ net/xfrm/Kconfig                       |   11 +
+ net/xfrm/Makefile                      |    1 +
+ net/xfrm/xfrm_compat.c                 |  625 +++++++
+ net/xfrm/xfrm_state.c                  |   77 +-
+ net/xfrm/xfrm_user.c                   |  110 +-
+ tools/testing/selftests/net/.gitignore |    1 +
+ tools/testing/selftests/net/Makefile   |    1 +
+ tools/testing/selftests/net/ipsec.c    | 2195 ++++++++++++++++++++++++
+ 11 files changed, 3066 insertions(+), 36 deletions(-)
+ create mode 100644 net/xfrm/xfrm_compat.c
+ create mode 100644 tools/testing/selftests/net/ipsec.c
+
+
+base-commit: ba4f184e126b751d1bffad5897f263108befc780
+-- 
+2.28.0
+
