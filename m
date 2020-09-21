@@ -2,133 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B21B271BD0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 09:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8464D271BC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 09:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726495AbgIUHaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 03:30:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726211AbgIUHaF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 03:30:05 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCF4C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 00:30:04 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id b79so11427456wmb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 00:30:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=zol9sTlVx1cMDB/LDeZ4rbD4ZJBOxDdQeq9S1TY4BIw=;
-        b=U++wP5Oxs7iNDod/UNjDPpsRf3sa27XVybxZP7gmo23YnZ0tR0ukS2ZIaV9/dto8yM
-         kFF0qM+yMePKBDHPUxVlSEfGyTjbEFbI5Qy0SbSWir0cuXlVx6Tn/Y5RUNwkijbH8H0n
-         aU5+AGDMFjkMtM9xoNMzI1d7a6lTmqvGHyC9VV3R8Wrm//FGa/RmPEH/Ly7q0wL8rVJP
-         oWahiJH7WaxWoI52O7zMUdftbXFUGQUCv1OZGJ5C2VOjxdcgh3QKm/j/aNXYNf2lfr5g
-         iAZkRuqPq9WxpqWK8vBpCIy9M3rE/z5FJKGC5LFT7IfaKW5VyjuRdzxqIz/e+ijI6qv0
-         Eheg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=zol9sTlVx1cMDB/LDeZ4rbD4ZJBOxDdQeq9S1TY4BIw=;
-        b=hLRZbl6l1UtZMTJkeT5I6Hgz2ozFOeQeZ0r7BHV5o3tVEd5KYw1mFKEjrZFmsnX+WI
-         bpB08TaZ4gMr09nBgLjYylGUtLWi7nNMmWeTTMvbyoqWCh7pJ2lFIElfNLtwJoV3cRMx
-         wJ4jvCmXSssyPJTXWS37Ek1xYbq0cjL7C55B/JGfm/Zgq+6sfpH/iq70ib+tYOw+eCKU
-         UUTtZomvmTP7ancz9wtJvANRCkZVZhf7KjW5vywqPUsOoYmUzIPI3LvBCJeT7LrAU/Ee
-         2wJgbPVnqPRvRDZLtIOqcXyxjygb/NWLNRDiBkxoZi5+KrdCH6986xwPW8Hv+0I+Odpk
-         lYpw==
-X-Gm-Message-State: AOAM530dGfPh3HQHh6lfQqUOgHX5hrf+wAm60iI92ofuo1qjlwjesliw
-        hxWVr16B5MbVw653SDwYr5VLkA==
-X-Google-Smtp-Source: ABdhPJwsDVGeRVgYiTq4kLTn2/rl4PLGOF/6jtq7sewX6RpZ85MXigabqmHC0IE8UQSSz8b0yiU8oA==
-X-Received: by 2002:a1c:7308:: with SMTP id d8mr28321173wmb.55.1600673403472;
-        Mon, 21 Sep 2020 00:30:03 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e0a:f:6020:157d:a871:1ab2:f67c])
-        by smtp.gmail.com with ESMTPSA id z14sm19102884wrh.14.2020.09.21.00.30.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 00:30:02 -0700 (PDT)
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, linux-kernel@vger.kernel.org
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH v2] sched/numa: use runnable_avg to classify node
-Date:   Mon, 21 Sep 2020 09:29:59 +0200
-Message-Id: <20200921072959.16317-1-vincent.guittot@linaro.org>
+        id S1726436AbgIUH3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 03:29:46 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13739 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726211AbgIUH3q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 03:29:46 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id E1E5BA8E2F36750E7470;
+        Mon, 21 Sep 2020 15:29:40 +0800 (CST)
+Received: from localhost.localdomain (10.175.118.36) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 21 Sep 2020 15:29:34 +0800
+From:   Luo bin <luobin9@huawei.com>
+To:     <davem@davemloft.net>
+CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <luoxianjun@huawei.com>, <yin.yinshi@huawei.com>,
+        <cloud.wangxiaoyun@huawei.com>, <chiqijun@huawei.com>,
+        <zengweiliang.zengweiliang@huawei.com>
+Subject: [PATCH net-next] hinic: improve the comments of function header
+Date:   Mon, 21 Sep 2020 15:31:03 +0800
+Message-ID: <20200921073103.10693-1-luobin9@huawei.com>
 X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.175.118.36]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use runnable_avg to classify numa node state similarly to what is done for
-normal load balancer. This helps to ensure that numa and normal balancers
-use the same view of the state of the system.
+Fix the warnings about function header comments when building hinic
+driver with "W=1" option.
 
-- large arm64system: 2 nodes / 224 CPUs
-hackbench -l (256000/#grp) -g #grp
-
-grp    tip/sched/core         +patchset              improvement
-1      14,008(+/- 4,99 %)     13,800(+/- 3.88 %)     1,48 %
-4       4,340(+/- 5.35 %)      4.283(+/- 4.85 %)     1,33 %
-16      3,357(+/- 0.55 %)      3.359(+/- 0.54 %)    -0,06 %
-32      3,050(+/- 0.94 %)      3.039(+/- 1,06 %)     0,38 %
-64      2.968(+/- 1,85 %)      3.006(+/- 2.92 %)    -1.27 %
-128     3,290(+/-12.61 %)      3,108(+/- 5.97 %)     5.51 %
-256     3.235(+/- 3.95 %)      3,188(+/- 2.83 %)     1.45 %
-
-Reviewed-by: Mel Gorman <mgorman@suse.de>
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+Signed-off-by: Luo bin <luobin9@huawei.com>
 ---
-Changes for v2:
-- added reviewed tag
-- rebased on tip/sched/core
+ drivers/net/ethernet/huawei/hinic/hinic_hw_cmdq.c | 2 +-
+ drivers/net/ethernet/huawei/hinic/hinic_hw_dev.c  | 6 +++++-
+ drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.c  | 3 ++-
+ drivers/net/ethernet/huawei/hinic/hinic_hw_if.c   | 1 +
+ drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c | 1 +
+ drivers/net/ethernet/huawei/hinic/hinic_main.c    | 2 +-
+ 6 files changed, 11 insertions(+), 4 deletions(-)
 
- kernel/sched/fair.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 33699db27ed5..a15deb210a17 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -1504,6 +1504,7 @@ enum numa_type {
- /* Cached statistics for all CPUs within a node */
- struct numa_stats {
- 	unsigned long load;
-+	unsigned long runnable;
- 	unsigned long util;
- 	/* Total compute capacity of CPUs on a node */
- 	unsigned long compute_capacity;
-@@ -1547,6 +1548,7 @@ struct task_numa_env {
- };
- 
- static unsigned long cpu_load(struct rq *rq);
-+static unsigned long cpu_runnable(struct rq *rq);
- static unsigned long cpu_util(int cpu);
- static inline long adjust_numa_imbalance(int imbalance, int src_nr_running);
- 
-@@ -1555,11 +1557,13 @@ numa_type numa_classify(unsigned int imbalance_pct,
- 			 struct numa_stats *ns)
+diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_cmdq.c b/drivers/net/ethernet/huawei/hinic/hinic_hw_cmdq.c
+index e0eb294779ec..5a6bbee819cd 100644
+--- a/drivers/net/ethernet/huawei/hinic/hinic_hw_cmdq.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_cmdq.c
+@@ -784,7 +784,7 @@ static void free_cmdq(struct hinic_cmdq *cmdq)
+  * init_cmdqs_ctxt - write the cmdq ctxt to HW after init all cmdq
+  * @hwdev: the NIC HW device
+  * @cmdqs: cmdqs to write the ctxts for
+- * &db_area: db_area for all the cmdqs
++ * @db_area: db_area for all the cmdqs
+  *
+  * Return 0 - Success, negative - Failure
+  **/
+diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.c b/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.c
+index 239685152f6e..0c74f6674634 100644
+--- a/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.c
+@@ -437,6 +437,8 @@ static int get_base_qpn(struct hinic_hwdev *hwdev, u16 *base_qpn)
+ /**
+  * hinic_hwdev_ifup - Preparing the HW for passing IO
+  * @hwdev: the NIC HW device
++ * @sq_depth: the send queue depth
++ * @rq_depth: the receive queue depth
+  *
+  * Return 0 - Success, negative - Failure
+  **/
+@@ -582,6 +584,7 @@ void hinic_hwdev_cb_unregister(struct hinic_hwdev *hwdev,
+ /**
+  * nic_mgmt_msg_handler - nic mgmt event handler
+  * @handle: private data for the handler
++ * @cmd: message command
+  * @buf_in: input buffer
+  * @in_size: input size
+  * @buf_out: output buffer
+@@ -909,6 +912,7 @@ int hinic_set_interrupt_cfg(struct hinic_hwdev *hwdev,
+ /**
+  * hinic_init_hwdev - Initialize the NIC HW
+  * @pdev: the NIC pci device
++ * @devlink: the poniter of hinic devlink
+  *
+  * Return initialized NIC HW device
+  *
+@@ -1121,7 +1125,7 @@ int hinic_hwdev_msix_cnt_set(struct hinic_hwdev *hwdev, u16 msix_index)
+  * @msix_index: msix_index
+  * @pending_limit: the maximum pending interrupt events (unit 8)
+  * @coalesc_timer: coalesc period for interrupt (unit 8 us)
+- * @lli_timer: replenishing period for low latency credit (unit 8 us)
++ * @lli_timer_cfg: replenishing period for low latency credit (unit 8 us)
+  * @lli_credit_limit: maximum credits for low latency msix messages (unit 8)
+  * @resend_timer: maximum wait for resending msix (unit coalesc period)
+  *
+diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.c b/drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.c
+index f108b0c9228e..19942fef99d9 100644
+--- a/drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.c
+@@ -188,6 +188,7 @@ static u8 eq_cons_idx_checksum_set(u32 val)
+ /**
+  * eq_update_ci - update the HW cons idx of event queue
+  * @eq: the event queue to update the cons idx for
++ * @arm_state: the arm bit value of eq's interrupt
+  **/
+ static void eq_update_ci(struct hinic_eq *eq, u32 arm_state)
  {
- 	if ((ns->nr_running > ns->weight) &&
--	    ((ns->compute_capacity * 100) < (ns->util * imbalance_pct)))
-+	    (((ns->compute_capacity * 100) < (ns->util * imbalance_pct)) ||
-+	     ((ns->compute_capacity * imbalance_pct) < (ns->runnable * 100))))
- 		return node_overloaded;
+@@ -368,7 +369,7 @@ static void eq_irq_work(struct work_struct *work)
  
- 	if ((ns->nr_running < ns->weight) ||
--	    ((ns->compute_capacity * 100) > (ns->util * imbalance_pct)))
-+	    (((ns->compute_capacity * 100) > (ns->util * imbalance_pct)) &&
-+	     ((ns->compute_capacity * imbalance_pct) > (ns->runnable * 100))))
- 		return node_has_spare;
- 
- 	return node_fully_busy;
-@@ -1610,6 +1614,7 @@ static void update_numa_stats(struct task_numa_env *env,
- 		struct rq *rq = cpu_rq(cpu);
- 
- 		ns->load += cpu_load(rq);
-+		ns->runnable += cpu_runnable(rq);
- 		ns->util += cpu_util(cpu);
- 		ns->nr_running += rq->cfs.h_nr_running;
- 		ns->compute_capacity += capacity_of(cpu);
+ /**
+  * ceq_tasklet - the tasklet of the EQ that received the event
+- * @ceq_data: the eq
++ * @t: the tasklet struct pointer
+  **/
+ static void ceq_tasklet(struct tasklet_struct *t)
+ {
+diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_if.c b/drivers/net/ethernet/huawei/hinic/hinic_hw_if.c
+index bc8925c0c982..efbaed389440 100644
+--- a/drivers/net/ethernet/huawei/hinic/hinic_hw_if.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_if.c
+@@ -230,6 +230,7 @@ static int wait_hwif_ready(struct hinic_hwif *hwif)
+  * @hwif: the HW interface of a pci function device
+  * @attr0: the first attribute that was read from the hw
+  * @attr1: the second attribute that was read from the hw
++ * @attr2: the third attribute that was read from the hw
+  **/
+ static void set_hwif_attr(struct hinic_hwif *hwif, u32 attr0, u32 attr1,
+ 			  u32 attr2)
+diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c b/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
+index c6ce5966284c..039731380579 100644
+--- a/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
+@@ -234,6 +234,7 @@ static int send_msg_to_mgmt(struct hinic_pf_to_mgmt *pf_to_mgmt,
+  * @out_size: response length
+  * @direction: the direction of the original message
+  * @resp_msg_id: msg id to response for
++ * @timeout: time-out period of waiting for response
+  *
+  * Return 0 - Success, negative - Failure
+  **/
+diff --git a/drivers/net/ethernet/huawei/hinic/hinic_main.c b/drivers/net/ethernet/huawei/hinic/hinic_main.c
+index 2c63e3a690cd..7245aa0dcec9 100644
+--- a/drivers/net/ethernet/huawei/hinic/hinic_main.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_main.c
+@@ -966,7 +966,7 @@ static void hinic_refresh_nic_cfg(struct hinic_dev *nic_dev)
+  * @handle: nic device for the handler
+  * @buf_in: input buffer
+  * @in_size: input size
+- * @buf_in: output buffer
++ * @buf_out: output buffer
+  * @out_size: returned output size
+  *
+  * Return 0 - Success, negative - Failure
 -- 
 2.17.1
 
