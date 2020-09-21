@@ -2,223 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00468272555
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A63B272561
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726981AbgIUNX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:23:59 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:25188 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726419AbgIUNX7 (ORCPT
+        id S1727127AbgIUN0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:26:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726932AbgIUN0i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:23:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600694637;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=J2/FeX5V/ZEFcOQ6qB7LEOuNKAsmu6be+QX5MLdG1mc=;
-        b=gfq6BrgXcIJSNgoNLREU2w++dW6/Q/wRE15fOeAQ9DB1wepFuN1jvVpXwzHtFrTzPVB5po
-        1XT5lZ6kNi7edFZ8qzr1MIp/lloDWpWCqBxbPWFM8II00mqAwGLMKFxrwqFy+hI8B/bF/S
-        2kPrhapXexK0alQ1FgfL/9dCr6QUU70=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-282-CbD6S37cMhSQvyElEobkeg-1; Mon, 21 Sep 2020 09:23:55 -0400
-X-MC-Unique: CbD6S37cMhSQvyElEobkeg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C2BEC107464D;
-        Mon, 21 Sep 2020 13:23:53 +0000 (UTC)
-Received: from starship (unknown [10.35.206.238])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3A6845C1DC;
-        Mon, 21 Sep 2020 13:23:49 +0000 (UTC)
-Message-ID: <badafb14f2b3659e6c5669602511083364e99fb5.camel@redhat.com>
-Subject: Re: [PATCH v4 2/2] KVM: nSVM: implement ondemand allocation of the
- nested state
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     kvm@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Jim Mattson <jmattson@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
-Date:   Mon, 21 Sep 2020 16:23:47 +0300
-In-Reply-To: <20200917162942.GE13522@sjchrist-ice>
-References: <20200917101048.739691-1-mlevitsk@redhat.com>
-         <20200917101048.739691-3-mlevitsk@redhat.com>
-         <20200917162942.GE13522@sjchrist-ice>
+        Mon, 21 Sep 2020 09:26:38 -0400
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1462C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 06:26:37 -0700 (PDT)
+Received: by mail-wr1-x449.google.com with SMTP id 33so5899299wre.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 06:26:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=EdTmVWGaBxdasegvEqn7J8/FntcyBLgQW6ssuU6G+uY=;
+        b=lnXG6wiqGOGBXPQPYdbxIqzXj/EsfLNKDABAmaM/yeVcSkvQbro9/uLwR1z3cLAyKW
+         IvGmn8fhlBoU3TDbuy+xcDsxKmHpaAhmAoFDVGDtIigifLUTi4vKm1mAStZ+9UgM0eat
+         ENjfkuVk4rUGKQJZzDVyoO79zd/5kuthc4MLoJTmXmnr7d7JOFrknBYXnaaRZBpN0RRQ
+         37S/mOAH++NDMhn4g16G6i+1S+yugEjMY2uQMfaCMAr9K18pHgUavbr+8SDxQVEmKBiM
+         58aAoxXtjFwsDSR/u6xi3WGKt51fN0LrMAIH6Cxj3HUandudidZ7z0TNVIOW7vo7U6gC
+         QJMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=EdTmVWGaBxdasegvEqn7J8/FntcyBLgQW6ssuU6G+uY=;
+        b=W/6IxqHwJU/CkpE1i0JPv/2ufa+K49xUyUDl25oOlKE7nuahxHRHWHQaoF6M586aq0
+         2dt1VR5V9aKCp2p5sq+1Z0yOY4b0aEVa4Qkt1+iEHlNxX+Lv7sz452npBn/ZgXhAdPZP
+         BXmswbnqjAz6HaThibDN50g/ItdkyvQRYzk90KW3Mj1gOnmLLfw2XMoYpZRiY4MdU3KX
+         4//3ynBxYyfUJ6n2euCXxbDe0vj48G3QcV7VAMV52BKqvsA59etvPimtmB+vlxWBEAkh
+         F9hgz0iBhLsaS87c0a0tPWRxNPElfjrM/k9kNHFqEvMD/b65tRNm3iDeOHazVQaSTLIR
+         dF1g==
+X-Gm-Message-State: AOAM530zrvFd/IraxuFO/XkGJyO96KSrmLbhO8g1xuJdmU6z5EVjUDZ3
+        vYcs0bYdKjrvTEpiFsmoE9prkwnjog==
+X-Google-Smtp-Source: ABdhPJwX1rHHuzQvgCheXOVUsUfAWEjkRMw91N899aD3K9MCxwDTcLNXL2ZcV8kJQBav6XPJiTknJFPm9A==
+Sender: "elver via sendgmr" <elver@elver.muc.corp.google.com>
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
+ (user=elver job=sendgmr) by 2002:a7b:c1d3:: with SMTP id a19mr29455454wmj.19.1600694796072;
+ Mon, 21 Sep 2020 06:26:36 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 15:26:01 +0200
+Message-Id: <20200921132611.1700350-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
+Subject: [PATCH v3 00/10] KFENCE: A low-overhead sampling-based memory safety
+ error detector
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, akpm@linux-foundation.org, glider@google.com
+Cc:     hpa@zytor.com, paulmck@kernel.org, andreyknvl@google.com,
+        aryabinin@virtuozzo.com, luto@kernel.org, bp@alien8.de,
+        catalin.marinas@arm.com, cl@linux.com, dave.hansen@linux.intel.com,
+        rientjes@google.com, dvyukov@google.com, edumazet@google.com,
+        gregkh@linuxfoundation.org, hdanton@sina.com, mingo@redhat.com,
+        jannh@google.com, Jonathan.Cameron@huawei.com, corbet@lwn.net,
+        iamjoonsoo.kim@lge.com, keescook@chromium.org,
+        mark.rutland@arm.com, penberg@kernel.org, peterz@infradead.org,
+        sjpark@amazon.com, tglx@linutronix.de, vbabka@suse.cz,
+        will@kernel.org, x86@kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-09-17 at 09:29 -0700, Sean Christopherson wrote:
-> On Thu, Sep 17, 2020 at 01:10:48PM +0300, Maxim Levitsky wrote:
-> > This way we don't waste memory on VMs which don't use
-> > nesting virtualization even if it is available to them.
-> > 
-> > If allocation of nested state fails (which should happen,
-> > only when host is about to OOM anyway), use new KVM_REQ_OUT_OF_MEMORY
-> > request to shut down the guest
-> > 
-> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> > ---
-> >  arch/x86/kvm/svm/nested.c | 42 ++++++++++++++++++++++++++++++
-> >  arch/x86/kvm/svm/svm.c    | 54 ++++++++++++++++++++++-----------------
-> >  arch/x86/kvm/svm/svm.h    |  7 +++++
-> >  3 files changed, 79 insertions(+), 24 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-> > index 09417f5197410..fe119da2ef836 100644
-> > --- a/arch/x86/kvm/svm/nested.c
-> > +++ b/arch/x86/kvm/svm/nested.c
-> > @@ -467,6 +467,9 @@ int nested_svm_vmrun(struct vcpu_svm *svm)
-> >  
-> >  	vmcb12 = map.hva;
-> >  
-> > +	if (WARN_ON(!svm->nested.initialized))
-> > +		return 1;
-> > +
-> >  	if (!nested_vmcb_checks(svm, vmcb12)) {
-> >  		vmcb12->control.exit_code    = SVM_EXIT_ERR;
-> >  		vmcb12->control.exit_code_hi = 0;
-> > @@ -684,6 +687,45 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
-> >  	return 0;
-> >  }
-> >  
-> > +int svm_allocate_nested(struct vcpu_svm *svm)
-> > +{
-> > +	struct page *hsave_page;
-> > +
-> > +	if (svm->nested.initialized)
-> > +		return 0;
-> > +
-> > +	hsave_page = alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
-> > +	if (!hsave_page)
-> > +		goto error;
-> 
-> goto is unnecessary, just do
-> 
-> 		return -ENOMEM;
+This adds the Kernel Electric-Fence (KFENCE) infrastructure. KFENCE is a
+low-overhead sampling-based memory safety error detector of heap
+use-after-free, invalid-free, and out-of-bounds access errors.  This
+series enables KFENCE for the x86 and arm64 architectures, and adds
+KFENCE hooks to the SLAB and SLUB allocators.
 
-To be honest this is a philosophical question,
-what way is better, but I don't mind to change this.
+KFENCE is designed to be enabled in production kernels, and has near
+zero performance overhead. Compared to KASAN, KFENCE trades performance
+for precision. The main motivation behind KFENCE's design, is that with
+enough total uptime KFENCE will detect bugs in code paths not typically
+exercised by non-production test workloads. One way to quickly achieve a
+large enough total uptime is when the tool is deployed across a large
+fleet of machines.
 
-> 
-> > +
-> > +	svm->nested.hsave = page_address(hsave_page);
-> > +
-> > +	svm->nested.msrpm = svm_vcpu_init_msrpm();
-> > +	if (!svm->nested.msrpm)
-> > +		goto err_free_hsave;
-> > +
-> > +	svm->nested.initialized = true;
-> > +	return 0;
-> > +err_free_hsave:
-> > +	__free_page(hsave_page);
-> > +error:
-> > +	return 1;
-> 
-> As above, -ENOMEM would be preferable.
-After the changes to return negative values from msr writes,
-this indeed makes sense and is done now.
-> 
-> > +}
-> > +
-> > +void svm_free_nested(struct vcpu_svm *svm)
-> > +{
-> > +	if (!svm->nested.initialized)
-> > +		return;
-> > +
-> > +	svm_vcpu_free_msrpm(svm->nested.msrpm);
-> > +	svm->nested.msrpm = NULL;
-> > +
-> > +	__free_page(virt_to_page(svm->nested.hsave));
-> > +	svm->nested.hsave = NULL;
-> > +
-> > +	svm->nested.initialized = false;
-> > +}
-> > +
-> >  /*
-> >   * Forcibly leave nested mode in order to be able to reset the VCPU later on.
-> >   */
-> > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> > index 3da5b2f1b4a19..57ea4407dcf09 100644
-> > --- a/arch/x86/kvm/svm/svm.c
-> > +++ b/arch/x86/kvm/svm/svm.c
-> > @@ -266,6 +266,7 @@ static int get_max_npt_level(void)
-> >  void svm_set_efer(struct kvm_vcpu *vcpu, u64 efer)
-> >  {
-> >  	struct vcpu_svm *svm = to_svm(vcpu);
-> > +	u64 old_efer = vcpu->arch.efer;
-> >  	vcpu->arch.efer = efer;
-> >  
-> >  	if (!npt_enabled) {
-> > @@ -276,9 +277,26 @@ void svm_set_efer(struct kvm_vcpu *vcpu, u64 efer)
-> >  			efer &= ~EFER_LME;
-> >  	}
-> >  
-> > -	if (!(efer & EFER_SVME)) {
-> > -		svm_leave_nested(svm);
-> > -		svm_set_gif(svm, true);
-> > +	if ((old_efer & EFER_SVME) != (efer & EFER_SVME)) {
-> > +		if (!(efer & EFER_SVME)) {
-> > +			svm_leave_nested(svm);
-> > +			svm_set_gif(svm, true);
-> > +
-> > +			/*
-> > +			 * Free the nested state unless we are in SMM, in which
-> > +			 * case the exit from SVM mode is only for duration of the SMI
-> > +			 * handler
-> > +			 */
-> > +			if (!is_smm(&svm->vcpu))
-> > +				svm_free_nested(svm);
-> > +
-> > +		} else {
-> > +			if (svm_allocate_nested(svm)) {
-> > +				vcpu->arch.efer = old_efer;
-> > +				kvm_make_request(KVM_REQ_OUT_OF_MEMORY, vcpu);
-> 
-> I really dislike KVM_REQ_OUT_OF_MEMORY.  It's redundant with -ENOMEM and
-> creates a huge discrepancy with respect to existing code, e.g. nVMX returns
-> -ENOMEM in a similar situation.
-> 
-> The deferred error handling creates other issues, e.g. vcpu->arch.efer is
-> unwound but the guest's RIP is not.
-> 
-> One thought for handling this without opening a can of worms would be to do:
-> 
-> 	r = kvm_x86_ops.set_efer(vcpu, efer);
-> 	if (r) {
-> 		WARN_ON(r > 0);
-> 		return r;
-> 	}
-> 
-> I.e. go with the original approach, but only for returning errors that will
-> go all the way out to userspace.
+KFENCE objects each reside on a dedicated page, at either the left or
+right page boundaries. The pages to the left and right of the object
+page are "guard pages", whose attributes are changed to a protected
+state, and cause page faults on any attempted access to them. Such page
+faults are then intercepted by KFENCE, which handles the fault
+gracefully by reporting a memory access error.
 
-Done as explained in the other reply.
+Guarded allocations are set up based on a sample interval (can be set
+via kfence.sample_interval). After expiration of the sample interval,
+the next allocation through the main allocator (SLAB or SLUB) returns a
+guarded allocation from the KFENCE object pool. At this point, the timer
+is reset, and the next allocation is set up after the expiration of the
+interval.
 
-> 
-> > +				return;
-> > +			}
-> > +		}
-> >  	}
-> >  
-> >  	svm->vmcb->save.efer = efer | EFER_SVME;
+To enable/disable a KFENCE allocation through the main allocator's
+fast-path without overhead, KFENCE relies on static branches via the
+static keys infrastructure. The static branch is toggled to redirect the
+allocation to KFENCE.
 
+The KFENCE memory pool is of fixed size, and if the pool is exhausted no
+further KFENCE allocations occur. The default config is conservative
+with only 255 objects, resulting in a pool size of 2 MiB (with 4 KiB
+pages).
 
-Thanks for the review,
-	Best regards,
-		Maxim Levitsky
+We have verified by running synthetic benchmarks (sysbench I/O,
+hackbench) that a kernel with KFENCE is performance-neutral compared to
+a non-KFENCE baseline kernel.
+
+KFENCE is inspired by GWP-ASan [1], a userspace tool with similar
+properties. The name "KFENCE" is a homage to the Electric Fence Malloc
+Debugger [2].
+
+For more details, see Documentation/dev-tools/kfence.rst added in the
+series -- also viewable here:
+
+	https://raw.githubusercontent.com/google/kasan/kfence/Documentation/dev-tools/kfence.rst
+
+[1] http://llvm.org/docs/GwpAsan.html
+[2] https://linux.die.net/man/3/efence
+
+v3:
+* Rewrite SLAB/SLUB patch descriptions to clarify need for 'orig_size'.
+* Various smaller fixes (see details in patches).
+
+v2: https://lkml.kernel.org/r/20200915132046.3332537-1-elver@google.com
+* Various comment/documentation changes (see details in patches).
+* Various smaller fixes (see details in patches).
+* Change all reports to reference the kfence object, "kfence-#nn".
+* Skip allocation/free internals stack trace.
+* Rework KMEMLEAK compatibility patch.
+
+RFC/v1: https://lkml.kernel.org/r/20200907134055.2878499-1-elver@google.com
+
+Alexander Potapenko (6):
+  mm: add Kernel Electric-Fence infrastructure
+  x86, kfence: enable KFENCE for x86
+  mm, kfence: insert KFENCE hooks for SLAB
+  mm, kfence: insert KFENCE hooks for SLUB
+  kfence, kasan: make KFENCE compatible with KASAN
+  kfence, kmemleak: make KFENCE compatible with KMEMLEAK
+
+Marco Elver (4):
+  arm64, kfence: enable KFENCE for ARM64
+  kfence, lockdep: make KFENCE compatible with lockdep
+  kfence, Documentation: add KFENCE documentation
+  kfence: add test suite
+
+ Documentation/dev-tools/index.rst  |   1 +
+ Documentation/dev-tools/kfence.rst | 291 +++++++++++
+ MAINTAINERS                        |  11 +
+ arch/arm64/Kconfig                 |   1 +
+ arch/arm64/include/asm/kfence.h    |  39 ++
+ arch/arm64/mm/fault.c              |   4 +
+ arch/x86/Kconfig                   |   2 +
+ arch/x86/include/asm/kfence.h      |  60 +++
+ arch/x86/mm/fault.c                |   4 +
+ include/linux/kfence.h             | 174 +++++++
+ init/main.c                        |   2 +
+ kernel/locking/lockdep.c           |   8 +
+ lib/Kconfig.debug                  |   1 +
+ lib/Kconfig.kfence                 |  78 +++
+ mm/Makefile                        |   1 +
+ mm/kasan/common.c                  |   7 +
+ mm/kfence/Makefile                 |   6 +
+ mm/kfence/core.c                   | 733 +++++++++++++++++++++++++++
+ mm/kfence/kfence.h                 | 102 ++++
+ mm/kfence/kfence_test.c            | 777 +++++++++++++++++++++++++++++
+ mm/kfence/report.c                 | 219 ++++++++
+ mm/kmemleak.c                      |   6 +
+ mm/slab.c                          |  46 +-
+ mm/slab_common.c                   |   6 +-
+ mm/slub.c                          |  72 ++-
+ 25 files changed, 2619 insertions(+), 32 deletions(-)
+ create mode 100644 Documentation/dev-tools/kfence.rst
+ create mode 100644 arch/arm64/include/asm/kfence.h
+ create mode 100644 arch/x86/include/asm/kfence.h
+ create mode 100644 include/linux/kfence.h
+ create mode 100644 lib/Kconfig.kfence
+ create mode 100644 mm/kfence/Makefile
+ create mode 100644 mm/kfence/core.c
+ create mode 100644 mm/kfence/kfence.h
+ create mode 100644 mm/kfence/kfence_test.c
+ create mode 100644 mm/kfence/report.c
+
+-- 
+2.28.0.681.g6f77f65b4e-goog
 
