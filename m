@@ -2,83 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9178A271B40
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 09:14:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 474C8271B43
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 09:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726384AbgIUHOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 03:14:10 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:25423 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726211AbgIUHOK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 03:14:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1600672450; x=1632208450;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=j1hyi4uW0dW+lCsxRl1fZv8pS3WTC62bapK32xNJUIU=;
-  b=jrGCZItd0OmeiReGQ2oCAIMqhnTHLLdkxDKXIwC2xu2i8CawKluvlmdJ
-   A2XhXqr1xxVRAl6eekPDt4NT48NqPrrIOHs2ZvRfj1qzdUREunURwmZJZ
-   et3LozQyF3AOm4aOWJ+1qZ8i1soNoM2I6j4eZfR5KqeWrJ9uafC9RUepE
-   Y=;
-X-IronPort-AV: E=Sophos;i="5.77,285,1596499200"; 
-   d="scan'208";a="77766272"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1a-715bee71.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 21 Sep 2020 07:13:57 +0000
-Received: from EX13D19EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1a-715bee71.us-east-1.amazon.com (Postfix) with ESMTPS id 60712A06C3;
-        Mon, 21 Sep 2020 07:13:55 +0000 (UTC)
-Received: from 8c85908914bf.ant.amazon.com (10.43.161.237) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 21 Sep 2020 07:13:49 +0000
-Subject: Re: [PATCH 05/14] RDMA/efa: drop double zeroing
-To:     Julia Lawall <Julia.Lawall@inria.fr>
-CC:     <kernel-janitors@vger.kernel.org>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1600601186-7420-1-git-send-email-Julia.Lawall@inria.fr>
- <1600601186-7420-6-git-send-email-Julia.Lawall@inria.fr>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <ee835ad6-c1fc-cd48-fc70-f42e2ded3ac0@amazon.com>
-Date:   Mon, 21 Sep 2020 10:13:43 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.2.2
+        id S1726456AbgIUHOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 03:14:14 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40256 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726211AbgIUHON (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 03:14:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1600672451;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=svbwHwBodOTvgdlvY5XDzm7sMwGYP2RjQJZ+9FLSCds=;
+        b=jJJ5gd9pBpyUA1mZ1gMOozlsHeBnD1yxFRFP7ZwGRXbukVMmG5I7CT+TXuG/dmHFW7G28w
+        HyNkLcslbrFGD1EKuR/7Cb2o48JQQPDTUvmrNJkTNJqdLK+NZsRU5UelYVPv1pjxwdubEu
+        LXO7uAo7LNgnjuW5ygH/OywJvAOxyZc=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D96A5ABB2;
+        Mon, 21 Sep 2020 07:14:46 +0000 (UTC)
+Date:   Mon, 21 Sep 2020 09:14:10 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        linux-mm <linux-mm@kvack.org>, linux-api@vger.kernel.org,
+        oleksandr@redhat.com, Suren Baghdasaryan <surenb@google.com>,
+        Tim Murray <timmurray@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Sonny Rao <sonnyrao@google.com>,
+        Brian Geffon <bgeffon@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        John Dias <joaodias@google.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Jann Horn <jannh@google.com>,
+        alexander.h.duyck@linux.intel.com, sj38.park@gmail.com,
+        David Rientjes <rientjes@google.com>,
+        Arjun Roy <arjunroy@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Christian Brauner <christian@brauner.io>,
+        Daniel Colascione <dancol@google.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        SeongJae Park <sjpark@amazon.de>, linux-man@vger.kernel.org
+Subject: Re: [PATCH v9 3/3] mm/madvise: introduce process_madvise() syscall:
+ an external memory hinting API
+Message-ID: <20200921071410.GB12990@dhcp22.suse.cz>
+References: <20200901000633.1920247-1-minchan@kernel.org>
+ <20200901000633.1920247-4-minchan@kernel.org>
+ <20200921065633.GA8070@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <1600601186-7420-6-git-send-email-Julia.Lawall@inria.fr>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.161.237]
-X-ClientProxiedBy: EX13D08UWB003.ant.amazon.com (10.43.161.186) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921065633.GA8070@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/09/2020 14:26, Julia Lawall wrote:
-> sg_init_table zeroes its first argument, so the allocation of that argument
-> doesn't have to.
+On Mon 21-09-20 07:56:33, Christoph Hellwig wrote:
+> On Mon, Aug 31, 2020 at 05:06:33PM -0700, Minchan Kim wrote:
+> > There is usecase that System Management Software(SMS) want to give a
+> > memory hint like MADV_[COLD|PAGEEOUT] to other processes and in the
+> > case of Android, it is the ActivityManagerService.
+> > 
+> > The information required to make the reclaim decision is not known to
+> > the app.  Instead, it is known to the centralized userspace
+> > daemon(ActivityManagerService), and that daemon must be able to
+> > initiate reclaim on its own without any app involvement.
+> > 
+> > To solve the issue, this patch introduces a new syscall process_madvise(2).
+> > It uses pidfd of an external process to give the hint. It also supports
+> > vector address range because Android app has thousands of vmas due to
+> > zygote so it's totally waste of CPU and power if we should call the
+> > syscall one by one for each vma.(With testing 2000-vma syscall vs
+> > 1-vector syscall, it showed 15% performance improvement.  I think it
+> > would be bigger in real practice because the testing ran very cache
+> > friendly environment).
 > 
-> the semantic patch that makes this change is as follows:
-> (http://coccinelle.lip6.fr/)
-> 
-> // <smpl>
-> @@
-> expression x,n,flags;
-> @@
-> 
-> x = 
-> - kcalloc
-> + kmalloc_array
->   (n,sizeof(*x),flags)
-> ...
-> sg_init_table(x,n)
-> // </smpl>
-> 
-> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+> I'm really not sure this syscall is a good idea.  If you want central
+> control you should implement an IPC mechanisms that allows your
+> supervisor daemon to tell the application to perform the madvice
+> instead of forcing the behavior on it.
 
-Thanks Julia,
-Acked-by: Gal Pressman <galpress@amazon.com>
+Even though I am not entirely happy about the interface [1]. As it seems
+I am in minority in my concern I backed off and decided to not block this
+work because I do not see the problem with the functionality itself. And
+I find it very useful for userspace driven memory management people are
+asking for a long time.
+
+This functionality shouldn't be much different from the standard memory
+reclaim. It has some limitations (e.g. it can only handle mapped memory)
+but allows to pro-actively swap out or reclaim disk based memory based
+on a specific knowlege of the workload. Kernel is not able to do the
+same.
+
+[1] http://lkml.kernel.org/r/20200117115225.GV19428@dhcp22.suse.cz
+-- 
+Michal Hocko
+SUSE Labs
