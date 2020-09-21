@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF030272C5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87247272C97
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:35:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728220AbgIUQbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:31:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56784 "EHLO mail.kernel.org"
+        id S1728629AbgIUQd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:33:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727248AbgIUQbp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:31:45 -0400
+        id S1728580AbgIUQdJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:33:09 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4B71123998;
-        Mon, 21 Sep 2020 16:31:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2DC6B2399C;
+        Mon, 21 Sep 2020 16:33:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600705904;
-        bh=ecsvlo9UBqAPM2bD3BSH+XYt4vPsp5ip8aNxOrUp9wA=;
+        s=default; t=1600705988;
+        bh=HPVoBkwWM2VEuHSnaDmJ4BHUWkB/Y6RRhjh/6SvnQNY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r60pPDlykqbUeFBeSOl1gJ+2eJUvrE5V305nzlxlQh2KMJPv9zbKUc1OxnKPcqw1N
-         bbbQ+ralq9OW/D8I3tYdEtfyff/Fss7JoskdINKF7I1VyphS/cLXVO6Q8CWwtHe9ww
-         A/TtA85H7eLsycQKS7Ik2bfBl6n95cPaR4swkzcM=
+        b=2O1nVnKnj/1qhYK3rvHVgFV/kOZMIDsCbcYBCMoAxg6FXODXfWsDP3TdfaGE+MFw/
+         q7pofdtvoL2JOGw+o7+YUQJ+zLHxQNMpL2ABPdpTNEEGJxolWM+NMQWyckx8OvevzC
+         14q+wLEExWYL8gMvsBEF4eM/jcqm6UiCCajEMkMY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Garry <john.garry@huawei.com>,
-        Jason Yan <yanaijie@huawei.com>,
-        Luo Jiaxing <luojiaxing@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Martin Schiller <ms@dev.tdt.de>,
+        Xie He <xie.he.0141@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 02/46] scsi: libsas: Set data_dir as DMA_NONE if libata marks qc as NODATA
-Date:   Mon, 21 Sep 2020 18:27:18 +0200
-Message-Id: <20200921162033.467085682@linuxfoundation.org>
+Subject: [PATCH 4.4 03/46] drivers/net/wan/lapbether: Added needed_tailroom
+Date:   Mon, 21 Sep 2020 18:27:19 +0200
+Message-Id: <20200921162033.512856614@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921162033.346434578@linuxfoundation.org>
 References: <20200921162033.346434578@linuxfoundation.org>
@@ -45,51 +46,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luo Jiaxing <luojiaxing@huawei.com>
+From: Xie He <xie.he.0141@gmail.com>
 
-[ Upstream commit 53de092f47ff40e8d4d78d590d95819d391bf2e0 ]
+[ Upstream commit 1ee39c1448c4e0d480c5b390e2db1987561fb5c2 ]
 
-It was discovered that sdparm will fail when attempting to disable write
-cache on a SATA disk connected via libsas.
+The underlying Ethernet device may request necessary tailroom to be
+allocated by setting needed_tailroom. This driver should also set
+needed_tailroom to request the tailroom needed by the underlying
+Ethernet device to be allocated.
 
-In the ATA command set the write cache state is controlled through the SET
-FEATURES operation. This is roughly corresponds to MODE SELECT in SCSI and
-the latter command is what is used in the SCSI-ATA translation layer. A
-subtle difference is that a MODE SELECT carries data whereas SET FEATURES
-is defined as a non-data command in ATA.
-
-Set the DMA data direction to DMA_NONE if the requested ATA command is
-identified as non-data.
-
-[mkp: commit desc]
-
-Fixes: fa1c1e8f1ece ("[SCSI] Add SATA support to libsas")
-Link: https://lore.kernel.org/r/1598426666-54544-1-git-send-email-luojiaxing@huawei.com
-Reviewed-by: John Garry <john.garry@huawei.com>
-Reviewed-by: Jason Yan <yanaijie@huawei.com>
-Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: Martin Schiller <ms@dev.tdt.de>
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/libsas/sas_ata.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/wan/lapbether.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/scsi/libsas/sas_ata.c b/drivers/scsi/libsas/sas_ata.c
-index 6f5e2720ffad1..68b33abeaa5fa 100644
---- a/drivers/scsi/libsas/sas_ata.c
-+++ b/drivers/scsi/libsas/sas_ata.c
-@@ -224,7 +224,10 @@ static unsigned int sas_ata_qc_issue(struct ata_queued_cmd *qc)
- 		task->num_scatter = si;
- 	}
+diff --git a/drivers/net/wan/lapbether.c b/drivers/net/wan/lapbether.c
+index 6eb0f7a85e531..5befc7f3f0e7a 100644
+--- a/drivers/net/wan/lapbether.c
++++ b/drivers/net/wan/lapbether.c
+@@ -343,6 +343,7 @@ static int lapbeth_new_device(struct net_device *dev)
+ 	 */
+ 	ndev->needed_headroom = -1 + 3 + 2 + dev->hard_header_len
+ 					   + dev->needed_headroom;
++	ndev->needed_tailroom = dev->needed_tailroom;
  
--	task->data_dir = qc->dma_dir;
-+	if (qc->tf.protocol == ATA_PROT_NODATA)
-+		task->data_dir = DMA_NONE;
-+	else
-+		task->data_dir = qc->dma_dir;
- 	task->scatter = qc->sg;
- 	task->ata_task.retry_count = 1;
- 	task->task_state_flags = SAS_TASK_STATE_PENDING;
+ 	lapbeth = netdev_priv(ndev);
+ 	lapbeth->axdev = ndev;
 -- 
 2.25.1
 
