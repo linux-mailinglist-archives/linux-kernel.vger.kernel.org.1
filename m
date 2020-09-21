@@ -2,142 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B402271BBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 09:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3DC8271BCA
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 09:29:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726573AbgIUH0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 03:26:23 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57416 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726211AbgIUH0X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 03:26:23 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C59D9B239;
-        Mon, 21 Sep 2020 07:26:56 +0000 (UTC)
-Subject: Re: [PATCH drm/hisilicon 3/3] drm/hisilicon: Releasing Resources in
- the Destroy callback Function
-To:     Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie,
-        daniel@ffwll.ch, kraxel@redhat.com, alexander.deucher@amd.com,
-        tglx@linutronix.de, dri-devel@lists.freedesktop.org,
-        xinliang.liu@linaro.org, linux-kernel@vger.kernel.org
-Cc:     linuxarm@huawei.com
-References: <1600658722-35945-1-git-send-email-tiantao6@hisilicon.com>
- <1600658722-35945-4-git-send-email-tiantao6@hisilicon.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <8dffa9f6-40ba-4d6b-a754-e6fbe59b84dc@suse.de>
-Date:   Mon, 21 Sep 2020 09:26:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726483AbgIUH3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 03:29:54 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:34007 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726211AbgIUH3t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 03:29:49 -0400
+Received: by mail-oi1-f196.google.com with SMTP id n2so15912143oij.1;
+        Mon, 21 Sep 2020 00:29:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=90EhcBzbpe2vvxa0ohP9B+Dh75rNdKfJSEph9k8z+pM=;
+        b=oDxmAMrxklOt/M1PIBJ5wlCKOryJNHL6AbIYPH+ts2Lf+weJo36Jgt+bVQOExMcli/
+         jiWAN8cEm7riKMtO6toa0Hx0xWPSloclKNkFI9FKjLVvO3WYBCq+Fcx0aWltBb3wyf4H
+         q6fmmWF6uwQUuaRw08Wqxk3LY9f4yFJav2NhRK7RyUo6Ic4yedLOXAI2TmnJUuVe7UGW
+         JR1pV6KTHJoP4l89nLJ28eCmiR0RmeCgM97DWOGh6phfp22P1Ya9VGn7X2FsSWz5i4Zi
+         6UxOnQK+nUVQd1gOcf4ZD8LZ3drWt9JzHGpzSqVlbYYaLUUKhm4QeSNWwx6BuumBUZ58
+         sXjg==
+X-Gm-Message-State: AOAM532QkC0NnNgDqUqt5rxvuMWnDVian6HtUJnXijdAfqkSTVlv4aVN
+        IHydqKWornGVvoiZsvST52amKfF+RKojBPiJ3Ao=
+X-Google-Smtp-Source: ABdhPJyf/sKRes03lyRebHMYTTNhwUI3iObyZWkgpxFfbC1QJaXNYOyLYBpf0EYemOiZ0DhKCpWF7uMdeYorWHg/2u4=
+X-Received: by 2002:aca:52d6:: with SMTP id g205mr16832418oib.54.1600673388389;
+ Mon, 21 Sep 2020 00:29:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1600658722-35945-4-git-send-email-tiantao6@hisilicon.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="67QygkkIabChZqUlFH6ASlUm8DVPrKKWs"
+References: <1594919915-5225-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1594919915-5225-12-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <CA+V-a8vuR-7vqxNnrqQ5Ysf3Xjvhp3xRZ33i8+6nEGFLJciT3A@mail.gmail.com> <20200920140846.GB2915460@kroah.com>
+In-Reply-To: <20200920140846.GB2915460@kroah.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 21 Sep 2020 09:29:36 +0200
+Message-ID: <CAMuHMdUNvODmaJDaLi45Q8wpCaZaTA4HnmW_Y0BLwkXw8UxgEQ@mail.gmail.com>
+Subject: Re: [PATCH 11/20] dt-bindings: usb: renesas,usbhs: Add r8a774e1 support
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Jens Axboe <axboe@kernel.dk>, Rob Herring <robh+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Mark Brown <broonie@kernel.org>,
+        Niklas <niklas.soderlund@ragnatech.se>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-ide@vger.kernel.org,
+        dmaengine <dmaengine@vger.kernel.org>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        alsa-devel <alsa-devel@alsa-project.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---67QygkkIabChZqUlFH6ASlUm8DVPrKKWs
-Content-Type: multipart/mixed; boundary="AVO1J07Y81GVQHDtXA6pjKA7OKms7BRkI";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie, daniel@ffwll.ch,
- kraxel@redhat.com, alexander.deucher@amd.com, tglx@linutronix.de,
- dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
- linux-kernel@vger.kernel.org
-Cc: linuxarm@huawei.com
-Message-ID: <8dffa9f6-40ba-4d6b-a754-e6fbe59b84dc@suse.de>
-Subject: Re: [PATCH drm/hisilicon 3/3] drm/hisilicon: Releasing Resources in
- the Destroy callback Function
-References: <1600658722-35945-1-git-send-email-tiantao6@hisilicon.com>
- <1600658722-35945-4-git-send-email-tiantao6@hisilicon.com>
-In-Reply-To: <1600658722-35945-4-git-send-email-tiantao6@hisilicon.com>
+Hi Greg,
 
---AVO1J07Y81GVQHDtXA6pjKA7OKms7BRkI
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+On Sun, Sep 20, 2020 at 4:08 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+> On Sat, Sep 19, 2020 at 11:54:05AM +0100, Lad, Prabhakar wrote:
+> > On Thu, Jul 16, 2020 at 6:19 PM Lad Prabhakar
+> > <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > >
+> > > Document RZ/G2H (R8A774E1) SoC bindings.
+> > >
+> > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > > Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+> > > ---
+> > >  Documentation/devicetree/bindings/usb/renesas,usbhs.yaml | 1 +
+> > >  1 file changed, 1 insertion(+)
+> > >
+> > Could you please pick this patch.
+>
+> Same here, doesn't a DT maintainer have to ack this?
 
-Hi
+And so *he did:
+https://lore.kernel.org/r/20200721033544.GA3505976@bogus
 
-The code looks correcet, but I think this patch should be merged into
-patch 2. Anyone who initializes the i2c adapter certainly wants it
-cleaned up as well :)
+Gr{oetje,eeting}s,
 
-Best regards
-Thomas
+                        Geert
 
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Am 21.09.20 um 05:25 schrieb Tian Tao:
-> Rewrite the desrtoy callback function to release resources.
->=20
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-> ---
->  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c b/drivers=
-/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-> index e84d381..f1541ff 100644
-> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-> @@ -47,6 +47,14 @@ static enum drm_mode_status hibmc_connector_mode_val=
-id(struct drm_connector *con
->  	return MODE_OK;
->  }
-> =20
-> +static void hibmc_connector_destroy(struct drm_connector *connector)
-> +{
-> +	struct hibmc_connector *hibmc_connector =3D to_hibmc_connector(connec=
-tor);
-> +
-> +	i2c_del_adapter(&hibmc_connector->adapter);
-> +	drm_connector_cleanup(connector);
-> +}
-> +
->  static const struct drm_connector_helper_funcs
->  	hibmc_connector_helper_funcs =3D {
->  	.get_modes =3D hibmc_connector_get_modes,
-> @@ -55,7 +63,7 @@ static const struct drm_connector_helper_funcs
-> =20
->  static const struct drm_connector_funcs hibmc_connector_funcs =3D {
->  	.fill_modes =3D drm_helper_probe_single_connector_modes,
-> -	.destroy =3D drm_connector_cleanup,
-> +	.destroy =3D hibmc_connector_destroy,
->  	.reset =3D drm_atomic_helper_connector_reset,
->  	.atomic_duplicate_state =3D drm_atomic_helper_connector_duplicate_sta=
-te,
->  	.atomic_destroy_state =3D drm_atomic_helper_connector_destroy_state,
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---AVO1J07Y81GVQHDtXA6pjKA7OKms7BRkI--
-
---67QygkkIabChZqUlFH6ASlUm8DVPrKKWs
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQFIBAEBCAAyFiEEchf7rIzpz2NEoWjlaA3BHVMLeiMFAl9oVZsUHHR6aW1tZXJt
-YW5uQHN1c2UuZGUACgkQaA3BHVMLeiOrRAgAkUJrhil+yGiFDo32tuJYH4QU/V/E
-1LnmoviaQ6Tm9fmMNp+Q6xVZz5NB7Qt0SsNbSMJB1FiqwXi2H/Bt7AwXM1TckZCh
-vsreTxnpkjV/MEasb904cdMHTyIzvB7Yn1oU+YRpL66PvX4mCkriKIsDBr3pF2eW
-Q5vJH2FRSxKHmc9LmLbHELHSHyqedvA+9Xph64LDNydxpwvQIq4Dog6sSxqjNfCW
-75IdA3Jl5sBCnC+MUBosG6rjTo+tHjLzovfFlNLurUy1ht6AXBS4/ipsD5/ZCoM4
-iEfN6EBMS2KpWXI6GTVH1cgT8y/EcSTANQUPumEu+lTqwbXEyazlBJFClg==
-=Ht2m
------END PGP SIGNATURE-----
-
---67QygkkIabChZqUlFH6ASlUm8DVPrKKWs--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
