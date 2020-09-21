@@ -2,186 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A3D8273123
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA3B273127
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727887AbgIURti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 13:49:38 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:41115 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726749AbgIURti (ORCPT
+        id S1727943AbgIURu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 13:50:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726436AbgIURu1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 13:49:38 -0400
-Received: by mail-lj1-f193.google.com with SMTP id y4so11845880ljk.8
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 10:49:36 -0700 (PDT)
+        Mon, 21 Sep 2020 13:50:27 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D202C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 10:50:27 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id w11so15035250lfn.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 10:50:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fU34l7YxeD2C4TJGstKuQVh5OhgRVbQTmIsDH4TDtHA=;
+        b=uawmf0NTdlD+Im+9mFd3lJDOqDo2Lsnv+KTjz98QMlHh4Ee2SL3Q4WOCovv/niPzcs
+         IQvZtZsqpBQUtlDfI434b4iCVueJIG8k2HdnhSDdOzgriUDUB4SVTywrvcq+7aynv+G4
+         9QCetox6w2Iny8/vuNondiSTlvkdSI+R3t4rh3P36hw6LyiB2jDb5YIF0PTishVgYV/9
+         Kwuc5EX6vamTecE5s7JWTqU5JEJzWHi4ysKhDHOt8VHVJfESBMPkBJsuA8OQxo7P/98X
+         DA0/OBG/CSSpaZEDOzbGRqCJIK9Iybw04BGzjfmgvpxLck7bWBDAhN9jySLBLBpI4CW5
+         DxjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JYVL6vVhxxsHwQqcaJ+Y/Dyr3s/BHvLdogiat9zzOMY=;
-        b=W3ZDVAxtgxgzLtBKVV7zieKrkpsoWZ5wtekVTtdb4ZqWatJMyJbNtjafRv7Ga9HGsW
-         FQ2E/YadgrIC2dJbASKHWSbrC2OaREoOBRS3zsJFWNIwUaih80Y9gjsIzwjQa2npxsjC
-         yitO4+AJ9I22Vh7ksNqazjJ3roM5W0VXnsp0d1n/ZjxGPoSo6FjCkyu/14/bxDd7lXCP
-         a3323KJ/GpNGKmDPqrwfBGJVD7jNMSBORWNsbqcPQcCobpQtNAUBk8l7WYlrjklX86AW
-         b8hXjcA1TmE7OU0egifSm7X2PQiU8rcUucTklIu3RPrEmqd3+uuX1J9d42Z515jiD+iJ
-         1E9g==
-X-Gm-Message-State: AOAM5339YXp3i7C7GfOQFkHQx9xyvzF3UtRT2gC/ThBsC6xGUJnyLdG1
-        uQToCeT+Y44zN+bTYADfHbs=
-X-Google-Smtp-Source: ABdhPJyuIwK4gStrZns8fCO6n/pBDKraTe1BTnTEwKWkDnih4NCMna1EpOuzxJwnULIkwuD7H5324g==
-X-Received: by 2002:a2e:3203:: with SMTP id y3mr269898ljy.261.1600710575899;
-        Mon, 21 Sep 2020 10:49:35 -0700 (PDT)
-Received: from green.intra.ispras.ru (winnie.ispras.ru. [83.149.199.91])
-        by smtp.googlemail.com with ESMTPSA id q24sm2773353lfo.149.2020.09.21.10.49.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 10:49:35 -0700 (PDT)
-From:   Denis Efremov <efremov@linux.com>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Denis Efremov <efremov@linux.com>, cocci@systeme.lip6.fr,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>
-Subject: [PATCH v3] coccinelle: misc: add flexible_array.cocci script
-Date:   Mon, 21 Sep 2020 20:49:20 +0300
-Message-Id: <20200921174920.87241-1-efremov@linux.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200806220342.25426-1-efremov@linux.com>
-References: <20200806220342.25426-1-efremov@linux.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fU34l7YxeD2C4TJGstKuQVh5OhgRVbQTmIsDH4TDtHA=;
+        b=eCurSCIMh+tb3HRIaD+2emUF9JIfm6m6N5DjD/RzPtfCCcezshBUImhK635NkG8gT+
+         JVKRpowNeadkB0AHu1ufe4fRrHdll6lgJ0QUb5Q57zsHSA6RJi5+kZmf9R9JO2+i8X/m
+         hLe3rjcFfh8KUlTMpu4rGUAw8RnsB0DUExMZmVNiiugtQtoKF+ZCAzslwoQup5SkNrvB
+         b6BSVpQqNE+RM+sGrMp89xC/hIhNKHNOd7NfjNZkF95TzgPIcb4qQyWLXLbOXc9KuTdZ
+         NtAmGT1BDUQxh/yQ2Z8feHf5vNxpIcr9O08y7lEwGGEmkRwhR1p7KSPU8Qjvmzx3Nsik
+         HhyA==
+X-Gm-Message-State: AOAM531BLM6QersapIg6iif7vvrOwZTJawSgXJ+b/Gm0sWsozagJXPNf
+        NYkje8eYaC8eqCrhFohOlF1Cls0BclTQoEa5lqDEU9NaqLz44w==
+X-Google-Smtp-Source: ABdhPJw+gk5dv0k2lyN2dCiAOCx1GJch0WhuKQXBQLMc65N97gQksXGsg5JZYxQjydE4zX3xDLbNjN5yKXNRkBmhx0o=
+X-Received: by 2002:a19:4084:: with SMTP id n126mr323748lfa.54.1600710625211;
+ Mon, 21 Sep 2020 10:50:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200909215752.1725525-1-shakeelb@google.com> <20200921163055.GQ12990@dhcp22.suse.cz>
+In-Reply-To: <20200921163055.GQ12990@dhcp22.suse.cz>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 21 Sep 2020 10:50:14 -0700
+Message-ID: <CALvZod43VXKZ3StaGXK_EZG_fKcW3v3=cEYOWFwp4HNJpOOf8g@mail.gmail.com>
+Subject: Re: [PATCH] memcg: introduce per-memcg reclaim interface
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
+        Greg Thelen <gthelen@google.com>,
+        David Rientjes <rientjes@google.com>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Yang Shi <shy828301@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-One-element and zero-length arrays are deprecated [1]. Kernel
-code should always use "flexible array members" instead, except
-for existing uapi definitions.
+On Mon, Sep 21, 2020 at 9:30 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Wed 09-09-20 14:57:52, Shakeel Butt wrote:
+> > Introduce an memcg interface to trigger memory reclaim on a memory cgroup.
+> >
+> > Use cases:
+> > ----------
+> >
+> > 1) Per-memcg uswapd:
+> >
+> > Usually applications consists of combination of latency sensitive and
+> > latency tolerant tasks. For example, tasks serving user requests vs
+> > tasks doing data backup for a database application. At the moment the
+> > kernel does not differentiate between such tasks when the application
+> > hits the memcg limits. So, potentially a latency sensitive user facing
+> > task can get stuck in high reclaim and be throttled by the kernel.
+> >
+> > Similarly there are cases of single process applications having two set
+> > of thread pools where threads from one pool have high scheduling
+> > priority and low latency requirement. One concrete example from our
+> > production is the VMM which have high priority low latency thread pool
+> > for the VCPUs while separate thread pool for stats reporting, I/O
+> > emulation, health checks and other managerial operations. The kernel
+> > memory reclaim does not differentiate between VCPU thread or a
+> > non-latency sensitive thread and a VCPU thread can get stuck in high
+> > reclaim.
+>
+> As those are presumably in the same cgroup what does prevent them to get
+> stuck behind shared resources with taken during the reclaim performed by
+> somebody else? I mean, memory reclaim might drop memory used by the high
+> priority task. Or they might simply stumble over same locks.
+>
 
-The script warns about one-element and zero-length arrays in structs.
+Yes there are a lot of challenges in providing isolation between
+latency sensitive and latency tolerant jobs/threads. This proposal
+aims to solve one specific challenge memcg limit reclaim.
 
-[1] commit 68e4cd17e218 ("docs: deprecated.rst: Add zero-length and
-    one-element arrays")
+> I am also more interested in actual numbers here. The high limit reclaim
+> is normally swift and should be mostly unnoticeable. If the reclaim gets
+> more expensive then it can get really noticeable for sure. But for the
+> later the same can happen with the external pro-activee reclaimer as
 
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
-Signed-off-by: Denis Efremov <efremov@linux.com>
----
-Changes in v2:
- - all uapi headers are now filtered-out. Unfortunately, coccinelle
-   doesn't provide structure names in Location.current_element.
-   For structures the field is always "something_else". Thus, there is
-   no easy way to create a list of existing structures in uapi headers
-   and suppress the warning only for them, but not for the newly added
-   uapi structures.
- - The pattern doesn't require 2+ fields in a structure/union anymore.
-   Now it also checks single field structures/unions.
- - The pattern simplified and now uses disjuction in array elements
-   (Thanks, Markus)
- - Unions are removed from patch mode
- - one-element arrays are removed from patch mode. Correct patch may
-   involve turning the array to a simple field instead of a flexible
-   array.
-Changes in v3:
- - exists removed from "depends on patch"
- - position argument fixed in org mode
- - link to the online documentation added to the warning message
+I think you meant 'uswapd' here instead of pro-active reclaimer.
 
- scripts/coccinelle/misc/flexible_array.cocci | 88 ++++++++++++++++++++
- 1 file changed, 88 insertions(+)
- create mode 100644 scripts/coccinelle/misc/flexible_array.cocci
+> well, right? So there is no real "guarantee". Do you have any numbers
+> from your workloads where you can demonstrate that the external reclaim
+> has saved you this amount of effective cpu time of the sensitive
+> workload? (Essentially measure how much time it has to consume in the
+> high limit reclaim)
+>
 
-diff --git a/scripts/coccinelle/misc/flexible_array.cocci b/scripts/coccinelle/misc/flexible_array.cocci
-new file mode 100644
-index 000000000000..947fbaff82a9
---- /dev/null
-+++ b/scripts/coccinelle/misc/flexible_array.cocci
-@@ -0,0 +1,88 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+///
-+/// Zero-length and one-element arrays are deprecated, see
-+/// Documentation/process/deprecated.rst
-+/// Flexible-array members should be used instead.
-+///
-+//
-+// Confidence: High
-+// Copyright: (C) 2020 Denis Efremov ISPRAS.
-+// Comments:
-+// Options: --no-includes --include-headers
-+
-+virtual context
-+virtual report
-+virtual org
-+virtual patch
-+
-+@initialize:python@
-+@@
-+def relevant(positions):
-+    for p in positions:
-+        if "uapi" in p.file:
-+             return False
-+    return True
-+
-+@r depends on !patch@
-+identifier name, array;
-+type T;
-+position p : script:python() { relevant(p) };
-+@@
-+
-+(
-+  struct name {
-+    ...
-+*   T array@p[\(0\|1\)];
-+  };
-+|
-+  struct {
-+    ...
-+*   T array@p[\(0\|1\)];
-+  };
-+|
-+  union name {
-+    ...
-+*   T array@p[\(0\|1\)];
-+  };
-+|
-+  union {
-+    ...
-+*   T array@p[\(0\|1\)];
-+  };
-+)
-+
-+@depends on patch@
-+identifier name, array;
-+type T;
-+position p : script:python() { relevant(p) };
-+@@
-+
-+(
-+  struct name {
-+    ...
-+    T array@p[
-+-       0
-+    ];
-+  };
-+|
-+  struct {
-+    ...
-+    T array@p[
-+-       0
-+    ];
-+  };
-+)
-+
-+@script: python depends on report@
-+p << r.p;
-+@@
-+
-+msg = "WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)"
-+coccilib.report.print_report(p[0], msg)
-+
-+@script: python depends on org@
-+p << r.p;
-+@@
-+
-+msg = "WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)"
-+coccilib.org.print_todo(p[0], msg)
--- 
-2.26.2
+What we actually use in our production is the 'proactive reclaim'
+which I have explained in the original message but I will add a couple
+more sentences below.
 
+For the uswapd use-case, let me point to the previous discussions and
+feature requests by others [1, 2]. One of the limiting factors of
+these previous proposals was the lack of CPU accounting of the
+background reclaimer which the current proposal solves by enabling the
+user space solution.
+
+[1] https://lwn.net/Articles/753162/
+[2] http://lkml.kernel.org/r/20200219181219.54356-1-hannes@cmpxchg.org
+
+Let me add one more point. Even if the high limit reclaim is swift, it
+can still take 100s of usecs. Most of our jobs are anon-only and we
+use zswap. Compressing a page can take a couple usec, so 100s of usecs
+in limit reclaim is normal. For latency sensitive jobs, this amount of
+hiccups do matters.
+
+For the proactive reclaim, based on the refault medium, we define
+tolerable refault rate of the applications. Then we proactively
+reclaim memory from the applications and monitor the refault rates.
+Based on the refault rates, the memory overcommit manager controls the
+aggressiveness of the proactive reclaim.
+
+This is exactly what we do in the production. Please let me know if
+you want to know why we do proactive reclaim in the first place.
+
+> To the feature itself, I am not yet convinced we want to have a feature
+> like that. It surely sounds easy to use and attractive for a better user
+> space control. It is also much well defined than drop_caches/force_empty
+> because it is not all or nothing. But it also sounds like something too
+> easy to use incorrectly (remember drop_caches). I am also a bit worried
+> about corner cases wich would be easier to hit - e.g. fill up the swap
+> limit and turn anonymous memory into unreclaimable and who knows what
+> else.
+
+The corner cases you are worried about are already possible with the
+existing interfaces. We can already do all such things with
+memory.high interface but with some limitations. This new interface
+resolves that limitation as explained in the original email.
+
+Please let me know if you have more questions.
+
+thanks,
+Shakeel
