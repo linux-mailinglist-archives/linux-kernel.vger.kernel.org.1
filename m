@@ -2,86 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45DA627204C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D87C7272001
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726853AbgIUKUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:20:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726825AbgIUKUs (ORCPT
+        id S1726677AbgIUKTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:19:54 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:18491 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726326AbgIUKTx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 06:20:48 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81B67C0613DF
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:20:47 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id k18so12017224wmj.5
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:20:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=d+cq9oU9Ma9PInvC8Tn3Mmy1QNY/EmZQ8V6ofB5bAgs=;
-        b=HuZV4z/aX5wQwktepBLxIaWp4Yua59yuPHG4i1pRHYu5zWrhN6JbZt6XBHolFvoph1
-         AGJKWr3LxB2xHduo0DMKAlTMuLT6QQB4sxpj05Nk1jZcwHCqAXrMuTpLw6i7jmTww344
-         M7YshZYYHApDueyyL+n+z1JwwFJnMqsEbbITkEQf+TrFw7ktx4RMPXlZI6U/3qKVjkVE
-         +OlMHSBX4sOClJoqZimOJvv2dtYQOuj97gkYJ/TU60o4YbzlJVMOPL12pSJ6q3GiTdFp
-         aaRh7jtdDmnsG4ffnrCfP+gZz9TfavAGqvD3EMR4TB+nd6REzA3wUQJKFtB1Mls2Q/9a
-         lZSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=d+cq9oU9Ma9PInvC8Tn3Mmy1QNY/EmZQ8V6ofB5bAgs=;
-        b=Uvaf6X5Shqm64TlsW4nTqfWiQsgOnlRodb8SOSF3V6/Py2ygKWT8nu0EEoyUwlu9BL
-         PQrhg2C5OajdjcOPf+wWK6Exehfv9IeOi5TA2heyWs5ha5oRUdmk8sT5zXHufNavK/EI
-         NzwNBuPXS/1VE6EEbyee4xpzHwcMcuGZ6sMpMXQOHznsGWSYMXd1RNtqRMuiSovImEzH
-         MLmcydoqXN/o8PoI3wHWjjn+tH1YKY042Lq0U4YU4vceuRvRqJqWYhVqOSONeC0lnhO0
-         rojNLDR40tMzj0Y1x4mto6luO5h6/qz1FU5F3nLS/aRf+sL1Xuuwl7NBXUq6HBF8JMud
-         tVmQ==
-X-Gm-Message-State: AOAM533+5k4MwrQXdppyB5ztxVvAA+W1Joodck+2KAMdyuktd3TJhuxT
-        dVANxI2jejhT2GiXPOXR2/ghOg==
-X-Google-Smtp-Source: ABdhPJzh07AdoC79L31ogzqdfpLSo8Vo99PgY8VHgWZwSZisNeA806uMbcHsomMmjB2Z+5Zfy8pl9A==
-X-Received: by 2002:a1c:4381:: with SMTP id q123mr28356129wma.108.1600683646253;
-        Mon, 21 Sep 2020 03:20:46 -0700 (PDT)
-Received: from localhost.localdomain ([51.15.160.169])
-        by smtp.googlemail.com with ESMTPSA id l17sm18804629wme.11.2020.09.21.03.20.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 21 Sep 2020 03:20:45 -0700 (PDT)
-From:   Corentin Labbe <clabbe@baylibre.com>
-To:     gregkh@linuxfoundation.org, laurent.pinchart@skynet.be,
-        mchehab@kernel.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH RFT/RFC 14/49] staging: media: zoran: use VFL_TYPE_VIDEO
+        Mon, 21 Sep 2020 06:19:53 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f687dec0002>; Mon, 21 Sep 2020 03:18:20 -0700
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 21 Sep
+ 2020 10:19:52 +0000
+Received: from [192.168.22.23] (10.124.1.5) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Mon, 21 Sep 2020 10:19:49 +0000
+From:   Thierry Reding <treding@nvidia.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+CC:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?utf-8?q?Micha=C5=82_Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        <linux-i2c@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 20/34] i2c: tegra: Remove "dma" variable from
+ tegra_i2c_xfer_msg()
+In-Reply-To: <20200908224006.25636-21-digetx@gmail.com>
+References: <20200908224006.25636-21-digetx@gmail.com>
+X-NVConfidentiality: public
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Message-ID: <6df73f9b69434fc38411cd69172d7d57@HQMAIL111.nvidia.com>
 Date:   Mon, 21 Sep 2020 10:19:49 +0000
-Message-Id: <1600683624-5863-15-git-send-email-clabbe@baylibre.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1600683624-5863-1-git-send-email-clabbe@baylibre.com>
-References: <1600683624-5863-1-git-send-email-clabbe@baylibre.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600683500; bh=PZMqJ0mpdlsSF2NWXXssuKNHeJDSYSa+NGTCLXbuSCU=;
+        h=From:To:CC:Subject:In-Reply-To:References:X-NVConfidentiality:
+         Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:
+         Date;
+        b=LpbK+MdEHG29iXnQSuXVwb+MjbYA0pClsbeCHaj3N2kD7RUlSaNePb/RFzuWyI1VN
+         Vie4zmFXxjVT2qpSxoBWjXir0i19qrcqa2QM3HqY2DP6rwWmhTTSQefAmh8Ng5TV7v
+         Hgb20NfDHJyz8gYQw1EjiobxtFu+3v06xGlhP60vs2QmnejpP4ndrU945Vb9Bh95Tz
+         N6cE8GeX3RjM9ZseO6UCLZCcVExHQwwUYm43gaiLnfTnFA64UuQzTudWWBmVqiKX0u
+         VmlLSrtlJDOUjEcY/8r9S6BphLYcKRxIBi/0yVZQ4xjLbOfV7bXQ+21qLT/nREFlBv
+         mpnnJWPziAWLg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The VFL_TYPE_GRABBER type was removed, so let's use the new type.
+On Wed, 09 Sep 2020 01:39:52 +0300, Dmitry Osipenko wrote:
+> The "dma" variable of tegra_i2c_xfer_msg() function doesn't bring much in
+> regards to readability and generation of the code.
+> 
+> Besides readability, it's also not very nice that the is_curr_dma_xfer
+> is initialized in tegra_i2c_xfer_msg() and then could be overridden by
+> tegra_i2c_config_fifo_trig(). In a result, the "dma" variable creates
+> slight confusion since it's not instantly obvious why it's set after
+> tegra_i2c_config_fifo_trig().
+> 
+> Hence should be better to have the variable removed. This makes code
+> more consistent.
+> 
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> Acked-by: Thierry Reding <treding@nvidia.com>
+> ---
+>  drivers/i2c/busses/i2c-tegra.c | 17 ++++++++---------
+>  1 file changed, 8 insertions(+), 9 deletions(-)
 
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
----
- drivers/staging/media/zoran/zoran_card.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/staging/media/zoran/zoran_card.c b/drivers/staging/media/zoran/zoran_card.c
-index 02af426cf94e..34841c12c224 100644
---- a/drivers/staging/media/zoran/zoran_card.c
-+++ b/drivers/staging/media/zoran/zoran_card.c
-@@ -957,7 +957,7 @@ static int zr36057_init(struct zoran *zr)
- 	 * another day.
- 	 */
- 	zr->video_dev->vfl_dir = VFL_DIR_M2M;
--	err = video_register_device(zr->video_dev, VFL_TYPE_GRABBER, video_nr[zr->id]);
-+	err = video_register_device(zr->video_dev, VFL_TYPE_VIDEO, video_nr[zr->id]);
- 	if (err < 0)
- 		goto exit_free;
- 	video_set_drvdata(zr->video_dev, zr);
--- 
-2.26.2
-
+Tested-by: Thierry Reding <treding@nvidia.com>
