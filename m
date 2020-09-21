@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C850C272DFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1BDA272C5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729722AbgIUQpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:45:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50600 "EHLO mail.kernel.org"
+        id S1728303AbgIUQby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:31:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729711AbgIUQo5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:44:57 -0400
+        id S1728246AbgIUQbu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:31:50 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3532E23976;
-        Mon, 21 Sep 2020 16:44:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 59408235F9;
+        Mon, 21 Sep 2020 16:31:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706696;
-        bh=jE+KNy6sH2GYUyNViDM63N8Nh9eGlpSBcc4XAXHGl3I=;
+        s=default; t=1600705909;
+        bh=sCSX/hkS/jZYAfpuxjYlfWkuz9jej7DqloL+c37m8TY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jflbdDLfomV1ZEKOHJ5LlhG4PC5DZ97YJDRUQtamVd5BjmCCqZ2TrxWP3yfH91Iaa
-         9O0KSa2SUsEpfsEMOYOBJq2LA79Bqui9dBznQm9Ld58hocqQ3Uwq9yzfxewj9aNBjf
-         el+CXAZIZ8Me5k9t9s2TXxVMuo7cS3jeZjaRdcto=
+        b=kf3URe3/mbPiCcvi/HCA0PO1z7CDV2AcHdP8eFg/ZhhGjb803q76eCT5EWRSg23UX
+         MieuSt6nj8dcuSnAxAi5n95JI/EmKPy8q1cnF2Pz+5jW4ps2DZygaNUEXVh2JU6aNl
+         pDxhc1ikObNHf4/cczcfKgK0MyGtaYuaG4HnK5lo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Milburn <dmilburn@redhat.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 027/118] nvme-rdma: cancel async events before freeing event struct
-Date:   Mon, 21 Sep 2020 18:27:19 +0200
-Message-Id: <20200921162037.576388687@linuxfoundation.org>
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 04/46] firestream: Fix memleak in fs_open
+Date:   Mon, 21 Sep 2020 18:27:20 +0200
+Message-Id: <20200921162033.560497929@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
-References: <20200921162036.324813383@linuxfoundation.org>
+In-Reply-To: <20200921162033.346434578@linuxfoundation.org>
+References: <20200921162033.346434578@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,34 +43,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Milburn <dmilburn@redhat.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit 925dd04c1f9825194b9e444c12478084813b2b5d ]
+[ Upstream commit 15ac5cdafb9202424206dc5bd376437a358963f9 ]
 
-Cancel async event work in case async event has been queued up, and
-nvme_rdma_submit_async_event() runs after event has been freed.
+When make_rate() fails, vcc should be freed just
+like other error paths in fs_open().
 
-Signed-off-by: David Milburn <dmilburn@redhat.com>
-Reviewed-by: Keith Busch <kbusch@kernel.org>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/rdma.c | 1 +
+ drivers/atm/firestream.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
-index 6c07bb55b0f83..4a0bc8927048a 100644
---- a/drivers/nvme/host/rdma.c
-+++ b/drivers/nvme/host/rdma.c
-@@ -809,6 +809,7 @@ static void nvme_rdma_destroy_admin_queue(struct nvme_rdma_ctrl *ctrl,
- 		blk_mq_free_tag_set(ctrl->ctrl.admin_tagset);
- 	}
- 	if (ctrl->async_event_sqe.data) {
-+		cancel_work_sync(&ctrl->ctrl.async_event_work);
- 		nvme_rdma_free_qe(ctrl->device->dev, &ctrl->async_event_sqe,
- 				sizeof(struct nvme_command), DMA_TO_DEVICE);
- 		ctrl->async_event_sqe.data = NULL;
+diff --git a/drivers/atm/firestream.c b/drivers/atm/firestream.c
+index 04b39d0da8681..70708608ab1e7 100644
+--- a/drivers/atm/firestream.c
++++ b/drivers/atm/firestream.c
+@@ -1009,6 +1009,7 @@ static int fs_open(struct atm_vcc *atm_vcc)
+ 				error = make_rate (pcr, r, &tmc0, NULL);
+ 				if (error) {
+ 					kfree(tc);
++					kfree(vcc);
+ 					return error;
+ 				}
+ 			}
 -- 
 2.25.1
 
