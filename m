@@ -2,102 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D2682718DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 02:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98E302718E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 03:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726387AbgIUA5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 20:57:31 -0400
-Received: from smtp.infotech.no ([82.134.31.41]:45464 "EHLO smtp.infotech.no"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726126AbgIUA5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 20:57:30 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by smtp.infotech.no (Postfix) with ESMTP id 90ABB20424C;
-        Mon, 21 Sep 2020 02:57:28 +0200 (CEST)
-X-Virus-Scanned: by amavisd-new-2.6.6 (20110518) (Debian) at infotech.no
-Received: from smtp.infotech.no ([127.0.0.1])
-        by localhost (smtp.infotech.no [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id giJNlnowmhTX; Mon, 21 Sep 2020 02:57:22 +0200 (CEST)
-Received: from [192.168.48.23] (host-45-78-251-166.dyn.295.ca [45.78.251.166])
-        by smtp.infotech.no (Postfix) with ESMTPA id 3FF2020417C;
-        Mon, 21 Sep 2020 02:57:20 +0200 (CEST)
-Reply-To: dgilbert@interlog.com
-Subject: Re: [PATCH] lib/scatterlist: Fix memory leak in sgl_alloc_order()
-To:     Markus Elfring <Markus.Elfring@web.de>, linux-block@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Bart Van Assche <bvanassche@acm.org>,
-        Jens Axboe <axboe@kernel.dk>
-References: <e69e9865-a599-5bd9-95b1-7d57c7e2e90c@web.de>
- <1608a0b7-6960-afce-aa39-6785036b01e0@interlog.com>
- <d8eb3d0e-52e2-1dab-ac02-774fdbd9c18c@web.de>
-From:   Douglas Gilbert <dgilbert@interlog.com>
-Message-ID: <9ee6e304-0f96-ea5b-f1ca-84e57345b237@interlog.com>
-Date:   Sun, 20 Sep 2020 20:57:19 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726322AbgIUBEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 21:04:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726184AbgIUBEC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 21:04:02 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BC1BC061755
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 18:04:02 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id o5so13357848qke.12
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 18:04:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=J+72f74yklzbZwXPP/c2OtPvu+CoHTqGx/+ZolI+Gk0=;
+        b=ckVyyTJGF5Y1Z9fAoreEpqyMMBkWSp8ECLjz5+k8BiG6S7sUhA69mU8DKBqfiF/3o7
+         jSpiDd2KpXc7mx8l7OOoJujsiimng5p/XM/lDBhkiJoVLu3QqVi1QKshKoRZLOUiXpcO
+         rwII/IHwLMt1SIAEyNPkxZiIC3Zk+0K+X7hWOgh5/J1zoI0WISU+2dVID3EnVSiqhNiN
+         20oLhKp2mVlrFNY/wjSOerVdypv0yPEfVbRnIRw7RfD0Um+WqBLnakDqHehcO7oo5MZc
+         EvzVKvxYqU3XGhtidt6sCS9L7XhZUJbbbPxY7xa+toBwvlj25kOMLLLjs/eEyZnX0UQs
+         CtYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding;
+        bh=J+72f74yklzbZwXPP/c2OtPvu+CoHTqGx/+ZolI+Gk0=;
+        b=qsQYhJmSzKcyzr1QlNJEb7ZpDCJVhvqvv4sMRgyItt3wHjdtD3xsclILpgGKcU7hMe
+         AY38mxwU6dE17Gm6zXF3l52710kDS0kZxf4uua3vOJH+XPb5QfJD7l9uBaehk2KcFDFg
+         DbkBszUC20xaVF2iZh8OtFfT4SWhBHwpr5/NtifWPsMJFxqlEIMCP2AZNYQmwAHzJPQV
+         crSrDrm/mc85/+NzmH/Kpd+dXJTc/PnHScZ9kamuYmrO+uWlYd1T7HpP6UJDxY8dzF/H
+         jHOTzlyuO2kR+6MMyPhNRsiX0u4tSOhxiMQlMijcCAGN7u6F+XD7+7T9VpKqA/GKpWtG
+         bv6A==
+X-Gm-Message-State: AOAM530pvMPXw1n61EmSZ83+0AKe5ryLWkBFQ9IvQMiH6G8gGrcvu/hd
+        nU6ot+7SRmyAoGDRLBmO6FE=
+X-Google-Smtp-Source: ABdhPJy31XmM6/H23APRyy8cX0tcIFePSKgZW4BT9H+DBkWaNJ5upMkwt2Gm2IG9smvD3WpFT+yLig==
+X-Received: by 2002:a37:64d4:: with SMTP id y203mr42807562qkb.359.1600650241614;
+        Sun, 20 Sep 2020 18:04:01 -0700 (PDT)
+Received: from arch-chirva.localdomain (pool-68-133-6-220.bflony.fios.verizon.net. [68.133.6.220])
+        by smtp.gmail.com with ESMTPSA id v30sm8744438qtj.52.2020.09.20.18.04.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Sep 2020 18:04:00 -0700 (PDT)
+Date:   Sun, 20 Sep 2020 21:03:59 -0400
+From:   Stuart Little <achirvasub@gmail.com>
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>, linux-nvdimm@lists.01.org
+Cc:     kernel list <linux-kernel@vger.kernel.org>
+Subject: PROBLEM: 5.9.0-rc6 fails to =?utf-8?Q?comp?=
+ =?utf-8?Q?ile_due_to_'redefinition_of_=E2=80=98dax=5Fsupported=E2=80=99'?=
+Message-ID: <20200921010359.GO3027113@arch-chirva.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <d8eb3d0e-52e2-1dab-ac02-774fdbd9c18c@web.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-CA
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-20 4:11 p.m., Markus Elfring wrote:
->>>> Noticed that when sgl_alloc_order() failed with order > 0 that
->>>> free memory on my machine shrank. That function shouldn't call
->>>> sgl_free() on its error path since that is only correct when
->>>> order==0 .
->>>
->>> * Would an imperative wording become helpful for the change description?
-> …
->> … and the term "imperative wording" rings no
->> bells in my grammatical education. …
-> 
-> I suggest to take another look at the published Linux development documentation.
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=bdcf11de8f776152c82d2197b255c2d04603f976#n151
-> 
-> 
->>> * How do you think about to add the tag “Fixes” to the commit message?r
->>
->> In the workflow I'm used to, others (closer to LT) make that decision.
->> Why waste my time?
-> 
-> I find another bit of guidance relevant.
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=bdcf11de8f776152c82d2197b255c2d04603f976#n183
-> 
-> 
->>> * Will an other patch subject be more appropriate?
->>
->> Twas testing a 6 GB allocation with said function on my 8 GB laptop.
->> It failed and free told me 5 GB had disappeared …
-> …
-> 
-> Have we got any different expectations for the canonical patch subject line?
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=bdcf11de8f776152c82d2197b255c2d04603f976#n684
-> 
-> I am curious how the software will evolve further also according to your
-> system test experiences.
+I am trying to compile for an x86_64 machine (Intel(R) Core(TM) i7-7500U CPU @ 2.70GHz). The config file I am currently using is at
 
-Sorry, I didn't come down in the last shower, it's not my first bug fix.
-Try consulting 'git log' and look for my name or the MAINTAINERS file.
-The culprits are usually happy as was the case with this patch. It's
-ack-ed and I would be very surprised if Jens Axboe doesn't accept it.
+https://termbin.com/xin7
 
-It is an obvious flaw. Fix it and move on. Alternatively supply your own
-patch that ticks all the above boxes.
+The build for 5.9.0-rc6 fails with the following errors:
 
+--- cut here ---
 
-If you want to talk about something substantial, then why do we have a
-function named sgl_free() that only works properly if, for example, the
-sgl_alloc_order() function creating the sgl used order==0 ? IMO sgl_free()
-should be removed or renamed.
+drivers/dax/super.c:325:6: error: redefinition of ‘dax_supported’
+  325 | bool dax_supported(struct dax_device *dax_dev, struct block_device *bdev,
+      |      ^~~~~~~~~~~~~
+In file included from drivers/dax/super.c:16:
+./include/linux/dax.h:162:20: note: previous definition of ‘dax_supported’ was here
+  162 | static inline bool dax_supported(struct dax_device *dax_dev,
+      |                    ^~~~~~~~~~~~~
+  CC      lib/memregion.o
+  CC [M]  drivers/gpu/drm/drm_gem_vram_helper.o
+make[2]: *** [scripts/Makefile.build:283: drivers/dax/super.o] Error 1
+make[1]: *** [scripts/Makefile.build:500: drivers/dax] Error 2
+make[1]: *** Waiting for unfinished jobs....
 
-Doug Gilbert
+--- end ---
 
+That's earlier on, and then later, at the end of the (failed) build:
 
-BTW The "imperative mood" stuff in that document is nonsense, at least
-in English. Wikipedia maps that term back to "the imperative" as in
-"Get thee to a nunnery" and "Et tu, Brute".
+make: *** [Makefile:1784: drivers] Error 2
 
+The full build log is at
+
+https://termbin.com/ihxj
+
+but I do not see anything else amiss. 5.9.0-rc5 built fine last week.
