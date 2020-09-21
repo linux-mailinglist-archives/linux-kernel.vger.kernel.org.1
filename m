@@ -2,85 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17ACD271EED
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 11:30:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFEFC271F58
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 11:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726503AbgIUJaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 05:30:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726347AbgIUJaN (ORCPT
+        id S1726436AbgIUJzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 05:55:09 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:4126 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726326AbgIUJzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 05:30:13 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7990C061755;
-        Mon, 21 Sep 2020 02:30:13 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f07e300a1766583a478f392.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:e300:a176:6583:a478:f392])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 895891EC02FE;
-        Mon, 21 Sep 2020 11:30:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600680611;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=ul1sT/JJqcPq+/FHC38hKbn8CrigKI2NTRXzyRlVYq8=;
-        b=b5SniYU9WfZ2MYH+c/k2qn56pXh/3q+o07CEdFzfUDWTzhjDRKc/G3n43UwhXseEQLx+nE
-        CQU3Z79Hw0SKHkZKuT3uP2KXFMF26WtuuWH2tdSSZ9rAfomyrfENo9uGzFKNCgoyoy7jsW
-        5zVCR83U/XZDIE4Ua4K6Gc1DJTp/3ek=
-Date:   Mon, 21 Sep 2020 11:30:06 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Seth Moore <sethmo@google.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
-        andriy.shevchenko@linux.intel.com, asapek@google.com,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 11/24] x86/sgx: Add SGX enclave driver
-Message-ID: <20200921093006.GA5901@zn.tnic>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-12-jarkko.sakkinen@linux.intel.com>
+        Mon, 21 Sep 2020 05:55:08 -0400
+X-Greylist: delayed 1675 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Sep 2020 05:55:06 EDT
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08L9NIRM030944;
+        Mon, 21 Sep 2020 11:26:47 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=SxC5y+mXZZSNchwDuU2t3Zth2X164XhsRrYANymsVQc=;
+ b=wH8d2hYHXKkEm/9E45YgiBFiEANU5yXYenE1oQUy+pZ07QTv1/U7hSCwRWcVK6Eksc+c
+ HY9YNnV3rtblztxM9Sd7nP4zr/TZltoFXKcJUSw0e1UICPxKmU0M3x72NaoJVGZWRa7T
+ s0xSnIsyurB+Ll67SgaaF4DmfV5WcXUelom7TYNBSjsGvrNSO8XS8N7gb1ojodrAPy6A
+ s3LMcYOpQwErAU8+GdEIvhbWFOT6Crt8LjnLlbwNMfsdK3QY6RD2o2Ly6KDrASr0Ujo3
+ xZ8s2CzMHibJHhV8zTkfp0Qqz3+GbYkZs5iNOvnxt5geaVWnMo1kohOrPi226mfDzX9u dA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 33n747seav-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Sep 2020 11:26:47 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C47B710002A;
+        Mon, 21 Sep 2020 11:26:45 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag6node1.st.com [10.75.127.16])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 92E6F21FEBE;
+        Mon, 21 Sep 2020 11:26:45 +0200 (CEST)
+Received: from lmecxl0923.lme.st.com (10.75.127.49) by SFHDAG6NODE1.st.com
+ (10.75.127.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 21 Sep
+ 2020 11:26:44 +0200
+Subject: Re: [PATCH] irqchip/stm32: fix return value of
+ stm32_exti_h_set_affinity
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>
+References: <20200612072901.14388-1-ludovic.barre@st.com>
+From:   Ludovic BARRE <ludovic.barre@st.com>
+Message-ID: <272066d2-35db-0441-a49d-9315894ae674@st.com>
+Date:   Mon, 21 Sep 2020 11:26:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200915112842.897265-12-jarkko.sakkinen@linux.intel.com>
+In-Reply-To: <20200612072901.14388-1-ludovic.barre@st.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG6NODE1.st.com
+ (10.75.127.16)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-21_01:2020-09-21,2020-09-20 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 02:28:29PM +0300, Jarkko Sakkinen wrote:
-> Intel Software Guard eXtensions (SGX) is a set of CPU instructions that can
-> be used by applications to set aside private regions of code and data. The
-> code outside the SGX hosted software entity is prevented from accessing the
-> memory inside the enclave by the CPU. We call these entities as enclaves.
+Hi Marc
 
-It was correct before:
+Just a gentleman ping about this patch.
+I verified, you could always apply this patch on linux master branch.
 
--memory inside the enclave by the CPU. We call these entities enclaves.
-+memory inside the enclave by the CPU. We call these entities as enclaves.
+Regards
+Ludo
 
-"as " is not needed.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Le 6/12/20 à 9:29 AM, Ludovic Barre a écrit :
+> exti hardware point of view, there is no specific action on set_affinity.
+> So the affinity must be forwarded to parent if there is a
+> descendent irqchips, otherwise just return IRQ_SET_MASK_OK_DONE.
+> 
+> Signed-off-by: Ludovic Barre <ludovic.barre@st.com>
+> ---
+>   drivers/irqchip/irq-stm32-exti.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
+> index faa8482c8246..1a0a60ee7140 100644
+> --- a/drivers/irqchip/irq-stm32-exti.c
+> +++ b/drivers/irqchip/irq-stm32-exti.c
+> @@ -555,7 +555,7 @@ static int stm32_exti_h_set_affinity(struct irq_data *d,
+>   	if (d->parent_data->chip)
+>   		return irq_chip_set_affinity_parent(d, dest, force);
+>   
+> -	return -EINVAL;
+> +	return IRQ_SET_MASK_OK_DONE;
+>   }
+>   
+>   static int __maybe_unused stm32_exti_h_suspend(void)
+> 
