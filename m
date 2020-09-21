@@ -2,83 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC3F273224
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 20:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 813B327323B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 20:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727838AbgIUSol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 14:44:41 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:37568 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726973AbgIUSol (ORCPT
+        id S1727955AbgIUSuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 14:50:05 -0400
+Received: from mail.efficios.com ([167.114.26.124]:39944 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727059AbgIUSuE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 14:44:41 -0400
-Received: by mail-ot1-f66.google.com with SMTP id o8so13296055otl.4;
-        Mon, 21 Sep 2020 11:44:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f9F01z2Bb5z2ZzTC5oN6TiPPe6hXeQsG8uh2XLvZwBk=;
-        b=Xpvu6JQrJGnGih4hXoIT4vyDLvDjVnsHE9M3RysvEr6yYozNoJlJbE1d2MEo6maSAx
-         UnIlA4gq8jUxV3JF8MMOM25ufaDGk2n5wd5OQsBnNI8n8RVa+5UY6T6WpX007n2XoJiX
-         30FWSMvbVCjzpRILxSN1E0CEG+id0R3Dl+VrIrd+r5PSKcXeLcrt7ShyG/um2/p8TRhy
-         niOiv9Nhu3JWZYA3Vegw9J9fCgcHJOjaWJxceQT50pA/f0K5nCTJPpm7Cas/6gKljFeW
-         IpTT1VtoemosBEudzl9/DkaGWLd/KxU3kNv8zPyRTbG/k71JjeKAs81ffWIZ4+q49O5c
-         atJA==
-X-Gm-Message-State: AOAM533drkJPs/c3ZryUxRtsqY9VTDEW/3LDjpx/Ny8d7Mz7csbJVJoX
-        MQ2tH44YStQpRMOxn9PS3qVsiWUjwoE9cdTM8Y761200
-X-Google-Smtp-Source: ABdhPJyO6UOg193jgPD+dvYrx2dx3pZjktblM7sGAP0U09mFmjWTD6HUIM/r22gTXuP1ftM2NnVlNhk7oWeWpMvU7yQ=
-X-Received: by 2002:a9d:5a92:: with SMTP id w18mr512260oth.145.1600713880522;
- Mon, 21 Sep 2020 11:44:40 -0700 (PDT)
+        Mon, 21 Sep 2020 14:50:04 -0400
+X-Greylist: delayed 323 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Sep 2020 14:50:03 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id A31F52CDD80;
+        Mon, 21 Sep 2020 14:44:39 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id WBvPMP2SvqHB; Mon, 21 Sep 2020 14:44:39 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 5A6D22CD77F;
+        Mon, 21 Sep 2020 14:44:39 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 5A6D22CD77F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1600713879;
+        bh=GVyop2Bxa1u83OR49HR6MQZ3Oln7khuYox267XJGLIA=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=CuiHiBDsd1vmweBJ35jYBnwQqbUBu+d/tFcHJO2+uynaIBn0rMDTcLoaQwzGrFe/b
+         3P9HZka8NsGT6H67f0sEjOwxVnjSmShJjYLSvqTgcw8cyrl8vfwB8sv1Py5qtqT0Ao
+         +lfXcGrSIgFItqMmmWTODM+9sl1tG5FK/rvw0J0oGiOsTXNHPifkCEd1UGm/6dha9g
+         VlTV4d6H646/NMPno6plOftOskb+4DHNY6iJ/xiMEyC1t2+rlLV6O+hwNC0OH37p+d
+         FXSUaRKveGMZ3ruHuRh1g5GzwyoXj9diL7WLSef0Lz+3+mYXe7Cpag4OYjbh00utQ4
+         6B5zJMMueoiYg==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id qJk3hvE_jpDr; Mon, 21 Sep 2020 14:44:39 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 50B642CD77E;
+        Mon, 21 Sep 2020 14:44:39 -0400 (EDT)
+Date:   Mon, 21 Sep 2020 14:44:39 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     David Ahern <dsahern@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <1453768496.36855.1600713879236.JavaMail.zimbra@efficios.com>
+In-Reply-To: <390b230b-629b-7f96-e7c9-b28f8b592102@gmail.com>
+References: <20200918181801.2571-1-mathieu.desnoyers@efficios.com> <390b230b-629b-7f96-e7c9-b28f8b592102@gmail.com>
+Subject: Re: [RFC PATCH v2 0/3] l3mdev icmp error route lookup fixes
 MIME-Version: 1.0
-References: <20200921162036.324813383@linuxfoundation.org>
-In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 21 Sep 2020 20:44:29 +0200
-Message-ID: <CAMuHMdVhowO4jK7hNk9MK5-SdmgQs3BTV3rd9jvYBknTX0GeXA@mail.gmail.com>
-Subject: Re: [PATCH 5.8 000/118] 5.8.11-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3965 (ZimbraWebClient - FF80 (Linux)/8.8.15_GA_3963)
+Thread-Topic: l3mdev icmp error route lookup fixes
+Thread-Index: 0yf8zWzCKvQf9eZ37AP1IEyfvMk3gQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+----- On Sep 21, 2020, at 2:36 PM, David Ahern dsahern@gmail.com wrote:
 
-On Mon, Sep 21, 2020 at 6:47 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.8.11 release.
-> There are 118 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 23 Sep 2020 16:20:12 +0000.
-> Anything received after that time might be too late.
+> On 9/18/20 12:17 PM, Mathieu Desnoyers wrote:
+>> Hi,
+>> 
+>> Here is an updated series of fixes for ipv4 and ipv6 which which ensure
+>> the route lookup is performed on the right routing table in VRF
+>> configurations when sending TTL expired icmp errors (useful for
+>> traceroute).
+>> 
+>> It includes tests for both ipv4 and ipv6.
+>> 
+>> These fixes address specifically address the code paths involved in
+>> sending TTL expired icmp errors. As detailed in the individual commit
+>> messages, those fixes do not address similar issues related to network
+>> namespaces and unreachable / fragmentation needed messages, which appear
+>> to use different code paths.
+>> 
+> 
+> New selftests are failing:
+> TEST: Ping received ICMP frag needed                       [FAIL]
+> 
+> Both IPv4 and IPv6 versions are failing.
 
-> Jan Kara <jack@suse.cz>
->     dax: Fix compilation for CONFIG_DAX && !CONFIG_FS_DAX
->
-> Jan Kara <jack@suse.cz>
->     dm: Call proper helper to determine dax support
+Indeed, this situation is discussed in each patch commit message:
 
-Perhaps it would be wise to hold-off a bit on backporting these, until
-they have received more testing?
+ipv4:
 
-Gr{oetje,eeting}s,
+[ It has also been pointed out that a similar issue exists with
+  unreachable / fragmentation needed messages, which can be triggered by
+  changing the MTU of eth1 in r1 to 1400 and running:
 
-                        Geert
+  ip netns exec h1 ping -s 1450 -Mdo -c1 172.16.2.2
+
+  Some investigation points to raw_icmp_error() and raw_err() as being
+  involved in this last scenario. The focus of this patch is TTL expired
+  ICMP messages, which go through icmp_route_lookup.
+  Investigation of failure modes related to raw_icmp_error() is beyond
+  this investigation's scope. ]
+
+ipv6:
+
+[ Testing shows that similar issues exist with ipv6 unreachable /
+  fragmentation needed messages.  However, investigation of this
+  additional failure mode is beyond this investigation's scope. ]
+
+I do not have the time to investigate further unfortunately, so I
+thought it best to post what I have.
+
+Note that network namespaces also probably have the same problem,
+but those are not covered by the test cases.
+
+Thanks,
+
+Mathieu
+
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
