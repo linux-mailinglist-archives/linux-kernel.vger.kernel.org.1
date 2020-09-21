@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0220F272FF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABD72272FEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730162AbgIURBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 13:01:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33414 "EHLO
+        id S1730268AbgIURBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 13:01:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728356AbgIUQjT (ORCPT
+        with ESMTP id S1729247AbgIUQjV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:39:19 -0400
+        Mon, 21 Sep 2020 12:39:21 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78AA3C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 09:39:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D205BC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 09:39:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=khmK1/BwcjJR5ktAJ7+ioiYrL0DP5beuYtB3piuayAI=; b=qM+triY6R+8n0sCNqci/x8OmOx
-        2WsjLMU5LBHtoOSjWs1GI2n3D+fXrrlL+rAwxvx8oCyBNoSSbkun/p8xV3CE0tF43WsS2nBIBjhA+
-        OOyrZ/cjdmGXc6RHiQi/hcAQkccAekh8XNxuO0hRDSd8BWUTIJM19feX47wHeA1+AuhTtRuCSON2x
-        zV5y2Vow9CtI4p+ro8aLPUiY2GY8kQ6RB6Pw9PF44AHFhS2LDBoqZDHt1bhZRdnR0ghTVtCsv0eNV
-        PNfKGoRkR/pZLXiSqhh06EvtgLQVXI87s7JSlGaBpvw9iPccL+EC4LewUQm6iAUJ9hYzwPUMWS4fL
-        P7xGILTQ==;
+        bh=t3Jvtb/vFM6qTG2WF/nyNwjrlskxt344vZcIr2UHE6g=; b=Nl7L5CO1cgqXbA2Pc7oa1g29r+
+        QDrN5sauf08mkKlknR7HGuTQyJMHhvOLHTf5t4GICesqzpOibB4jgPTTSyQYR6zKuAmwtv3r++Odx
+        BozemA6YPqP/bQfcwR/c+0JE8vU7Jnq6dxwfc9Nan0i4YG+m0HhxevJA+pctoKITKb1I3VH886kJD
+        Ml+anQaQRgW+0lZiGxHXdNSH0mrJQlMMigC9fGpgGuUFeIctMy/mL0F8bPca+VhkkxiK+WBXyjc78
+        LLit3rjMNglKhD8SKeFPQTyhw1F0ehDy52FsqtR+g3LT4jc2y0tD4l9DpDdxDQbaIN+DCtKNbsBNx
+        sqTLFfMw==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kKOqE-00016F-Tv; Mon, 21 Sep 2020 16:39:03 +0000
+        id 1kKOqE-00016E-Sv; Mon, 21 Sep 2020 16:39:03 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2564A307A65;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 256AB307A67;
         Mon, 21 Sep 2020 18:39:00 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id AB4B8201DA664; Mon, 21 Sep 2020 18:38:59 +0200 (CEST)
-Message-ID: <20200921163845.644634229@infradead.org>
+        id AEEA0201DA668; Mon, 21 Sep 2020 18:38:59 +0200 (CEST)
+Message-ID: <20200921163845.706308927@infradead.org>
 User-Agent: quilt/0.66
-Date:   Mon, 21 Sep 2020 18:36:02 +0200
+Date:   Mon, 21 Sep 2020 18:36:03 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     tglx@linutronix.de, mingo@kernel.org
 Cc:     linux-kernel@vger.kernel.org, bigeasy@linutronix.de,
@@ -46,7 +46,7 @@ Cc:     linux-kernel@vger.kernel.org, bigeasy@linutronix.de,
         vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
         rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
         bristot@redhat.com, vincent.donnefort@arm.com
-Subject: [PATCH 5/9] sched/hotplug: Consolidate task migration on CPU unplug
+Subject: [PATCH 6/9] sched: Massage set_cpus_allowed
 References: <20200921163557.234036895@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -54,260 +54,164 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+Thread a u32 flags word through the *set_cpus_allowed*() callchain.
+This will allow adding behavioural tweaks for future users.
 
-With the new mechanism which kicks tasks off the outgoing CPU at the end of
-schedule() the situation on an outgoing CPU right before the stopper thread
-brings it down completely is:
-
- - All user tasks and all unbound kernel threads have either been migrated
-   away or are not running and the next wakeup will move them to a online CPU.
-
- - All per CPU kernel threads, except cpu hotplug thread and the stopper
-   thread have either been unbound or parked by the responsible CPU hotplug
-   callback.
-
-That means that at the last step before the stopper thread is invoked the
-cpu hotplug thread is the last legitimate running task on the outgoing
-CPU.
-
-Add a final wait step right before the stopper thread is kicked which
-ensures that any still running tasks on the way to park or on the way to
-kick themself of the CPU are either sleeping or gone.
-
-This allows to remove the migrate_tasks() crutch in sched_cpu_dying(). If
-sched_cpu_dying() detects that there is still another running task aside of
-the stopper thread then it will explode with the appropriate fireworks.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- include/linux/cpuhotplug.h    |    1 
- include/linux/sched/hotplug.h |    2 
- kernel/cpu.c                  |    9 ++
- kernel/sched/core.c           |  150 +++++++++---------------------------------
- 4 files changed, 46 insertions(+), 116 deletions(-)
+ kernel/sched/core.c     |   28 ++++++++++++++++++----------
+ kernel/sched/deadline.c |    5 +++--
+ kernel/sched/sched.h    |    7 +++++--
+ 3 files changed, 26 insertions(+), 14 deletions(-)
 
---- a/include/linux/cpuhotplug.h
-+++ b/include/linux/cpuhotplug.h
-@@ -152,6 +152,7 @@ enum cpuhp_state {
- 	CPUHP_AP_ONLINE,
- 	CPUHP_TEARDOWN_CPU,
- 	CPUHP_AP_ONLINE_IDLE,
-+	CPUHP_AP_SCHED_WAIT_EMPTY,
- 	CPUHP_AP_SMPBOOT_THREADS,
- 	CPUHP_AP_X86_VDSO_VMA_ONLINE,
- 	CPUHP_AP_IRQ_AFFINITY_ONLINE,
---- a/include/linux/sched/hotplug.h
-+++ b/include/linux/sched/hotplug.h
-@@ -11,8 +11,10 @@ extern int sched_cpu_activate(unsigned i
- extern int sched_cpu_deactivate(unsigned int cpu);
- 
- #ifdef CONFIG_HOTPLUG_CPU
-+extern int sched_cpu_wait_empty(unsigned int cpu);
- extern int sched_cpu_dying(unsigned int cpu);
- #else
-+# define sched_cpu_wait_empty	NULL
- # define sched_cpu_dying	NULL
- #endif
- 
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -1602,7 +1602,7 @@ static struct cpuhp_step cpuhp_hp_states
- 		.name			= "ap:online",
- 	},
- 	/*
--	 * Handled on controll processor until the plugged processor manages
-+	 * Handled on control processor until the plugged processor manages
- 	 * this itself.
- 	 */
- 	[CPUHP_TEARDOWN_CPU] = {
-@@ -1611,6 +1611,13 @@ static struct cpuhp_step cpuhp_hp_states
- 		.teardown.single	= takedown_cpu,
- 		.cant_stop		= true,
- 	},
-+
-+	[CPUHP_AP_SCHED_WAIT_EMPTY] = {
-+		.name			= "sched:waitempty",
-+		.startup.single		= NULL,
-+		.teardown.single	= sched_cpu_wait_empty,
-+	},
-+
- 	/* Handle smpboot threads park/unpark */
- 	[CPUHP_AP_SMPBOOT_THREADS] = {
- 		.name			= "smpboot/threads:online",
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -6759,120 +6759,6 @@ void idle_task_exit(void)
- 	/* finish_cpu(), as ran on the BP, will clean up the active_mm state */
+@@ -1828,13 +1828,14 @@ static int migration_cpu_stop(void *data
+  * sched_class::set_cpus_allowed must do the below, but is not required to
+  * actually call this function.
+  */
+-void set_cpus_allowed_common(struct task_struct *p, const struct cpumask *new_mask)
++void set_cpus_allowed_common(struct task_struct *p, const struct cpumask *new_mask, u32 flags)
+ {
+ 	cpumask_copy(&p->cpus_mask, new_mask);
+ 	p->nr_cpus_allowed = cpumask_weight(new_mask);
  }
  
--/*
-- * Since this CPU is going 'away' for a while, fold any nr_active delta
-- * we might have. Assumes we're called after migrate_tasks() so that the
-- * nr_active count is stable. We need to take the teardown thread which
-- * is calling this into account, so we hand in adjust = 1 to the load
-- * calculation.
-- *
-- * Also see the comment "Global load-average calculations".
-- */
--static void calc_load_migrate(struct rq *rq)
--{
--	long delta = calc_load_fold_active(rq, 1);
--	if (delta)
--		atomic_long_add(delta, &calc_load_tasks);
--}
--
--static struct task_struct *__pick_migrate_task(struct rq *rq)
--{
--	const struct sched_class *class;
--	struct task_struct *next;
--
--	for_each_class(class) {
--		next = class->pick_next_task(rq);
--		if (next) {
--			next->sched_class->put_prev_task(rq, next);
--			return next;
--		}
--	}
--
--	/* The idle class should always have a runnable task */
--	BUG();
--}
--
--/*
-- * Migrate all tasks from the rq, sleeping tasks will be migrated by
-- * try_to_wake_up()->select_task_rq().
-- *
-- * Called with rq->lock held even though we'er in stop_machine() and
-- * there's no concurrency possible, we hold the required locks anyway
-- * because of lock validation efforts.
-- */
--static void migrate_tasks(struct rq *dead_rq, struct rq_flags *rf)
--{
--	struct rq *rq = dead_rq;
--	struct task_struct *next, *stop = rq->stop;
--	struct rq_flags orf = *rf;
--	int dest_cpu;
--
--	/*
--	 * Fudge the rq selection such that the below task selection loop
--	 * doesn't get stuck on the currently eligible stop task.
--	 *
--	 * We're currently inside stop_machine() and the rq is either stuck
--	 * in the stop_machine_cpu_stop() loop, or we're executing this code,
--	 * either way we should never end up calling schedule() until we're
--	 * done here.
--	 */
--	rq->stop = NULL;
--
--	/*
--	 * put_prev_task() and pick_next_task() sched
--	 * class method both need to have an up-to-date
--	 * value of rq->clock[_task]
--	 */
--	update_rq_clock(rq);
--
--	for (;;) {
--		/*
--		 * There's this thread running, bail when that's the only
--		 * remaining thread:
--		 */
--		if (rq->nr_running == 1)
--			break;
--
--		next = __pick_migrate_task(rq);
--
--		/*
--		 * Rules for changing task_struct::cpus_mask are holding
--		 * both pi_lock and rq->lock, such that holding either
--		 * stabilizes the mask.
--		 *
--		 * Drop rq->lock is not quite as disastrous as it usually is
--		 * because !cpu_active at this point, which means load-balance
--		 * will not interfere. Also, stop-machine.
--		 */
--		rq_unlock(rq, rf);
--		raw_spin_lock(&next->pi_lock);
--		rq_relock(rq, rf);
--
--		/*
--		 * Since we're inside stop-machine, _nothing_ should have
--		 * changed the task, WARN if weird stuff happened, because in
--		 * that case the above rq->lock drop is a fail too.
--		 */
--		if (WARN_ON(task_rq(next) != rq || !task_on_rq_queued(next))) {
--			raw_spin_unlock(&next->pi_lock);
--			continue;
--		}
--
--		/* Find suitable destination for @next, with force if needed. */
--		dest_cpu = select_fallback_rq(dead_rq->cpu, next);
--		rq = __migrate_task(rq, rf, next, dest_cpu);
--		if (rq != dead_rq) {
--			rq_unlock(rq, rf);
--			rq = dead_rq;
--			*rf = orf;
--			rq_relock(rq, rf);
--		}
--		raw_spin_unlock(&next->pi_lock);
--	}
--
--	rq->stop = stop;
--}
--
- static int __balance_push_cpu_stop(void *arg)
+-void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
++static void
++__do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask, u32 flags)
  {
- 	struct task_struct *p = arg;
-@@ -7145,6 +7031,41 @@ int sched_cpu_starting(unsigned int cpu)
+ 	struct rq *rq = task_rq(p);
+ 	bool queued, running;
+@@ -1855,7 +1856,7 @@ void do_set_cpus_allowed(struct task_str
+ 	if (running)
+ 		put_prev_task(rq, p);
+ 
+-	p->sched_class->set_cpus_allowed(p, new_mask);
++	p->sched_class->set_cpus_allowed(p, new_mask, flags);
+ 
+ 	if (queued)
+ 		enqueue_task(rq, p, ENQUEUE_RESTORE | ENQUEUE_NOCLOCK);
+@@ -1863,6 +1864,11 @@ void do_set_cpus_allowed(struct task_str
+ 		set_next_task(rq, p);
  }
  
- #ifdef CONFIG_HOTPLUG_CPU
-+
-+/*
-+ * Invoked immediately before the stopper thread is invoked to bring the
-+ * CPU down completely. At this point all per CPU kthreads except the
-+ * hotplug thread (current) and the stopper thread (inactive) have been
-+ * either parked or have been unbound from the outgoing CPU. Ensure that
-+ * any of those which might be on the way out are gone.
-+ *
-+ * If after this point a bound task is being woken on this CPU then the
-+ * responsible hotplug callback has failed to do it's job.
-+ * sched_cpu_dying() will catch it with the appropriate fireworks.
-+ */
-+int sched_cpu_wait_empty(unsigned int cpu)
++void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
 +{
-+	balance_hotplug_wait();
-+	return 0;
++	__do_set_cpus_allowed(p, new_mask, 0);
 +}
 +
-+/*
-+ * Since this CPU is going 'away' for a while, fold any nr_active delta we
-+ * might have. Called from the CPU stopper task after ensuring that the
-+ * stopper is the last running task on the CPU, so nr_active count is
-+ * stable. We need to take the teardown thread which is calling this into
-+ * account, so we hand in adjust = 1 to the load calculation.
-+ *
-+ * Also see the comment "Global load-average calculations".
-+ */
-+static void calc_load_migrate(struct rq *rq)
-+{
-+	long delta = calc_load_fold_active(rq, 1);
-+
-+	if (delta)
-+		atomic_long_add(delta, &calc_load_tasks);
-+}
-+
- int sched_cpu_dying(unsigned int cpu)
+ /*
+  * Change a given task's CPU affinity. Migrate the thread to a
+  * proper CPU and schedule it away if the CPU it's executing on
+@@ -1873,7 +1879,8 @@ void do_set_cpus_allowed(struct task_str
+  * call is not atomic; no spinlocks may be held.
+  */
+ static int __set_cpus_allowed_ptr(struct task_struct *p,
+-				  const struct cpumask *new_mask, bool check)
++				  const struct cpumask *new_mask,
++				  u32 flags)
  {
- 	struct rq *rq = cpu_rq(cpu);
-@@ -7158,7 +7079,6 @@ int sched_cpu_dying(unsigned int cpu)
- 		BUG_ON(!cpumask_test_cpu(cpu, rq->rd->span));
- 		set_rq_offline(rq);
+ 	const struct cpumask *cpu_valid_mask = cpu_active_mask;
+ 	unsigned int dest_cpu;
+@@ -1895,7 +1902,7 @@ static int __set_cpus_allowed_ptr(struct
+ 	 * Must re-check here, to close a race against __kthread_bind(),
+ 	 * sched_setaffinity() is not guaranteed to observe the flag.
+ 	 */
+-	if (check && (p->flags & PF_NO_SETAFFINITY)) {
++	if ((flags & SCA_CHECK) && (p->flags & PF_NO_SETAFFINITY)) {
+ 		ret = -EINVAL;
+ 		goto out;
  	}
--	migrate_tasks(rq, &rf);
- 	BUG_ON(rq->nr_running != 1);
- 	rq_unlock_irqrestore(rq, &rf);
+@@ -1914,7 +1921,7 @@ static int __set_cpus_allowed_ptr(struct
+ 		goto out;
+ 	}
+ 
+-	do_set_cpus_allowed(p, new_mask);
++	__do_set_cpus_allowed(p, new_mask, flags);
+ 
+ 	if (p->flags & PF_KTHREAD) {
+ 		/*
+@@ -1951,7 +1958,7 @@ static int __set_cpus_allowed_ptr(struct
+ 
+ int set_cpus_allowed_ptr(struct task_struct *p, const struct cpumask *new_mask)
+ {
+-	return __set_cpus_allowed_ptr(p, new_mask, false);
++	return __set_cpus_allowed_ptr(p, new_mask, 0);
+ }
+ EXPORT_SYMBOL_GPL(set_cpus_allowed_ptr);
+ 
+@@ -2410,7 +2417,8 @@ void sched_set_stop_task(int cpu, struct
+ #else
+ 
+ static inline int __set_cpus_allowed_ptr(struct task_struct *p,
+-					 const struct cpumask *new_mask, bool check)
++					 const struct cpumask *new_mask,
++					 u32 flags)
+ {
+ 	return set_cpus_allowed_ptr(p, new_mask);
+ }
+@@ -6025,7 +6033,7 @@ long sched_setaffinity(pid_t pid, const
+ 	}
+ #endif
+ again:
+-	retval = __set_cpus_allowed_ptr(p, new_mask, true);
++	retval = __set_cpus_allowed_ptr(p, new_mask, SCA_CHECK);
+ 
+ 	if (!retval) {
+ 		cpuset_cpus_allowed(p, cpus_allowed);
+@@ -6608,7 +6616,7 @@ void init_idle(struct task_struct *idle,
+ 	 *
+ 	 * And since this is boot we can forgo the serialization.
+ 	 */
+-	set_cpus_allowed_common(idle, cpumask_of(cpu));
++	set_cpus_allowed_common(idle, cpumask_of(cpu), 0);
+ #endif
+ 	/*
+ 	 * We're having a chicken and egg problem, even though we are
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -2280,7 +2280,8 @@ static void task_woken_dl(struct rq *rq,
+ }
+ 
+ static void set_cpus_allowed_dl(struct task_struct *p,
+-				const struct cpumask *new_mask)
++				const struct cpumask *new_mask,
++				u32 flags)
+ {
+ 	struct root_domain *src_rd;
+ 	struct rq *rq;
+@@ -2309,7 +2310,7 @@ static void set_cpus_allowed_dl(struct t
+ 		raw_spin_unlock(&src_dl_b->lock);
+ 	}
+ 
+-	set_cpus_allowed_common(p, new_mask);
++	set_cpus_allowed_common(p, new_mask, flags);
+ }
+ 
+ /* Assumes rq->lock is held */
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1806,7 +1806,8 @@ struct sched_class {
+ 	void (*task_woken)(struct rq *this_rq, struct task_struct *task);
+ 
+ 	void (*set_cpus_allowed)(struct task_struct *p,
+-				 const struct cpumask *newmask);
++				 const struct cpumask *newmask,
++				 u32 flags);
+ 
+ 	void (*rq_online)(struct rq *rq);
+ 	void (*rq_offline)(struct rq *rq);
+@@ -1899,7 +1900,9 @@ extern void update_group_capacity(struct
+ 
+ extern void trigger_load_balance(struct rq *rq);
+ 
+-extern void set_cpus_allowed_common(struct task_struct *p, const struct cpumask *new_mask);
++#define SCA_CHECK		0x01
++
++extern void set_cpus_allowed_common(struct task_struct *p, const struct cpumask *new_mask, u32 flags);
+ 
+ #endif
  
 
 
