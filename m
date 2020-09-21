@@ -2,33 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69BD0271D02
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D6B271CF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727072AbgIUIDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 04:03:47 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13742 "EHLO huawei.com"
+        id S1727045AbgIUIDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 04:03:24 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13786 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726886AbgIUICY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 04:02:24 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 59A5B41D858DED3A688D;
-        Mon, 21 Sep 2020 16:02:23 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Mon, 21 Sep 2020
- 16:02:13 +0800
+        id S1726334AbgIUIC0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 04:02:26 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id B541EF959A893D63AD73;
+        Mon, 21 Sep 2020 16:02:24 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Mon, 21 Sep 2020
+ 16:02:14 +0800
 From:   Liu Shixin <liushixin2@huawei.com>
-To:     Georgi Djakov <georgi.djakov@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-CC:     <linux-pm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH -next] interconnect: simplify the return expression of imx_icc_unregister
-Date:   Mon, 21 Sep 2020 16:24:37 +0800
-Message-ID: <20200921082437.2591461-1-liushixin2@huawei.com>
+To:     Antti Palosaari <crope@iki.fi>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+CC:     <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Liu Shixin <liushixin2@huawei.com>
+Subject: [PATCH -next] media: anysee: simplify the return expression of anysee_ci_* function
+Date:   Mon, 21 Sep 2020 16:24:38 +0800
+Message-ID: <20200921082438.2591513-1-liushixin2@huawei.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -43,30 +39,60 @@ Simplify the return expression.
 
 Signed-off-by: Liu Shixin <liushixin2@huawei.com>
 ---
- drivers/interconnect/imx/imx.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/media/usb/dvb-usb-v2/anysee.c | 21 +++------------------
+ 1 file changed, 3 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/interconnect/imx/imx.c b/drivers/interconnect/imx/imx.c
-index ac420f86008e..40fa22a32a60 100644
---- a/drivers/interconnect/imx/imx.c
-+++ b/drivers/interconnect/imx/imx.c
-@@ -269,15 +269,10 @@ EXPORT_SYMBOL_GPL(imx_icc_register);
- int imx_icc_unregister(struct platform_device *pdev)
+diff --git a/drivers/media/usb/dvb-usb-v2/anysee.c b/drivers/media/usb/dvb-usb-v2/anysee.c
+index 89a1b204b90c..aa45b5d263f6 100644
+--- a/drivers/media/usb/dvb-usb-v2/anysee.c
++++ b/drivers/media/usb/dvb-usb-v2/anysee.c
+@@ -1171,14 +1171,9 @@ static int anysee_ci_write_attribute_mem(struct dvb_ca_en50221 *ci, int slot,
+ 	int addr, u8 val)
  {
- 	struct icc_provider *provider = platform_get_drvdata(pdev);
+ 	struct dvb_usb_device *d = ci->data;
 -	int ret;
+ 	u8 buf[] = {CMD_CI, 0x03, 0x40 | addr >> 8, addr & 0xff, 0x00, 1, val};
  
- 	imx_icc_unregister_nodes(provider);
- 
--	ret = icc_provider_del(provider);
+-	ret = anysee_ctrl_msg(d, buf, sizeof(buf), NULL, 0);
 -	if (ret)
 -		return ret;
 -
 -	return 0;
-+	return icc_provider_del(provider);
++	return anysee_ctrl_msg(d, buf, sizeof(buf), NULL, 0);
  }
- EXPORT_SYMBOL_GPL(imx_icc_unregister);
  
+ static int anysee_ci_read_cam_control(struct dvb_ca_en50221 *ci, int slot,
+@@ -1200,14 +1195,9 @@ static int anysee_ci_write_cam_control(struct dvb_ca_en50221 *ci, int slot,
+ 	u8 addr, u8 val)
+ {
+ 	struct dvb_usb_device *d = ci->data;
+-	int ret;
+ 	u8 buf[] = {CMD_CI, 0x05, 0x40, addr, 0x00, 1, val};
+ 
+-	ret = anysee_ctrl_msg(d, buf, sizeof(buf), NULL, 0);
+-	if (ret)
+-		return ret;
+-
+-	return 0;
++	return anysee_ctrl_msg(d, buf, sizeof(buf), NULL, 0);
+ }
+ 
+ static int anysee_ci_slot_reset(struct dvb_ca_en50221 *ci, int slot)
+@@ -1252,13 +1242,8 @@ static int anysee_ci_slot_shutdown(struct dvb_ca_en50221 *ci, int slot)
+ static int anysee_ci_slot_ts_enable(struct dvb_ca_en50221 *ci, int slot)
+ {
+ 	struct dvb_usb_device *d = ci->data;
+-	int ret;
+ 
+-	ret = anysee_wr_reg_mask(d, REG_IOD, (0 << 1), 0x02);
+-	if (ret)
+-		return ret;
+-
+-	return 0;
++	return anysee_wr_reg_mask(d, REG_IOD, (0 << 1), 0x02);
+ }
+ 
+ static int anysee_ci_poll_slot_status(struct dvb_ca_en50221 *ci, int slot,
 -- 
 2.25.1
 
