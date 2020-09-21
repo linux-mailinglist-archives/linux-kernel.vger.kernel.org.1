@@ -2,349 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 017452736CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 01:49:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 197CF2736CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 01:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728906AbgIUXtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 19:49:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728671AbgIUXtn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 19:49:43 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D13CC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 16:49:43 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id n2so19016528oij.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 16:49:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=8oQpSQI8wvIpIER3mA+5Lt4f5fuUByXFTuElAIMrxcI=;
-        b=ma0zWoCL6rzOYyWSY+cIZNt+OG/Pkpzhkrxk7+XUsZBArWxN+4ODulV6lkF/ejZ3wq
-         sdqMdqNrnbCwZy7TGOOQjmktEWXJkmDwiTOfcEAy4S3ZPt6+ZAPZWl3cKaThR4AQqWEK
-         luvgNfEnjUh8Ni1M0fXfbsp46OwRSYRo3AvZcPTkJ+bR30q9gbfeZvMwsQPjMp2MRtRk
-         MPbnqEtZ1RgUKDL8zFjvTYHR/069rPbOGsCZs3WM7k1I0WJ4qFwTN+2XHEU+Qh+qTmgC
-         dA+ZuhFoLY9PdE7Xkfs6KYGmYj1jhIhQeo1oezoGYkb0nQR5IOFTvIVNdcr6yzGwvlOW
-         Moig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=8oQpSQI8wvIpIER3mA+5Lt4f5fuUByXFTuElAIMrxcI=;
-        b=pRik4GbvLdreTZ1PLBcnWQdKydLpKzmatkrynpR7RPWa0hzfyo4S/nFHC20hIpshx9
-         u7hB99jYbhGdOVWXaUTA2ljE1SURsNUhq+PXTUz4pZd4Ehtdt/mTHBM361uHqjde2Tmb
-         ChgGUrEpB0/e1eVhTPF5VS1M+HiD5i31yHK6UKKpdV47BWrqpkEv89TVA+/5NLkzn9Tq
-         /fl9oj9Vd9+Nsj+wq7XBlNdWLu5Iw0xUcHYZFE2HTzDHVQDstPQeOKfujB/BJ5rmLxEN
-         9BtHvFyYLDey6HenYWrd+J1QACtk65zXeBNkqQTPU0mcGkUx//Vfbp7lT1RIpgSXyhyi
-         6y+A==
-X-Gm-Message-State: AOAM531VjFNCr6LGjp5s+qiLe5/zRXkJIZFOydkj/QvxmrPy/MFE96ZW
-        LAZ8PRQ12bdfOFHYdDdbcYwDjQ==
-X-Google-Smtp-Source: ABdhPJy5gdr+wGvmIXnwQJ0rjjfTSRyQJp8fGZHNIOuMCqPD+xBQdNZSHLEgLMmGAWAOU0s/ZxuQEg==
-X-Received: by 2002:aca:f5cc:: with SMTP id t195mr1145600oih.10.1600732182000;
-        Mon, 21 Sep 2020 16:49:42 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id f29sm1669221ook.44.2020.09.21.16.49.39
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Mon, 21 Sep 2020 16:49:40 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 16:49:38 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, willy@infradead.org,
-        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        shakeelb@google.com, iamjoonsoo.kim@lge.com,
-        richard.weiyang@gmail.com, kirill@shutemov.name,
-        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
-        vdavydov.dev@gmail.com, shy828301@gmail.com
-Subject: Re: [PATCH v18 17/32] mm/compaction: do page isolation first in
- compaction
-In-Reply-To: <1598273705-69124-18-git-send-email-alex.shi@linux.alibaba.com>
-Message-ID: <alpine.LSU.2.11.2009211617080.5214@eggly.anvils>
-References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com> <1598273705-69124-18-git-send-email-alex.shi@linux.alibaba.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        id S1728916AbgIUXuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 19:50:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59838 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728671AbgIUXuE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 19:50:04 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AEA3A23A6B;
+        Mon, 21 Sep 2020 23:50:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600732203;
+        bh=WXAj1BL2iqpv/9WzCzDCTN1WGAxwaYvomg4RZbzD0/Y=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=gdF9ew5d4qzS8pFee+vBD0ZMUVf5wD0LzXX2YB+s6EJZKjoPWZNuyhHXfrKsDBCn1
+         7zhFEk9qQg/hmQ14OFuB2XuInN+dLACfSUiWcKcBXz7Rls5zteo9GgJS6qYHRlZRsq
+         6mVUrd8eMO6KXQVGLkH0SnBAcfaf5n83DTgqI8xs=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 5C09635226C1; Mon, 21 Sep 2020 16:50:03 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 16:50:03 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>
+Subject: Re: [RFC PATCH 03/12] rcu: Provide basic callback offloading state
+ machine bits
+Message-ID: <20200921235003.GM29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200921124351.24035-1-frederic@kernel.org>
+ <20200921124351.24035-4-frederic@kernel.org>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921124351.24035-4-frederic@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Aug 2020, Alex Shi wrote:
-
-> Currently, compaction would get the lru_lock and then do page isolation
-> which works fine with pgdat->lru_lock, since any page isoltion would
-> compete for the lru_lock. If we want to change to memcg lru_lock, we
-> have to isolate the page before getting lru_lock, thus isoltion would
-> block page's memcg change which relay on page isoltion too. Then we
-> could safely use per memcg lru_lock later.
+On Mon, Sep 21, 2020 at 02:43:42PM +0200, Frederic Weisbecker wrote:
+> We'll need to be able to runtime offload and de-offload the processing
+> of callback for a given CPU. In order to support a smooth transition
+> from unlocked local processing (softirq/rcuc) to locked offloaded
+> processing (rcuop/rcuog) and the reverse, provide the necessary bits and
+> documentation for the state machine that will carry up all the steps to
+> enforce correctness while serving callbacks processing all along.
 > 
-> The new page isolation use previous introduced TestClearPageLRU() +
-> pgdat lru locking which will be changed to memcg lru lock later.
-> 
-> Hugh Dickins <hughd@google.com> fixed following bugs in this patch's
-> early version:
-> 
-> Fix lots of crashes under compaction load: isolate_migratepages_block()
-> must clean up appropriately when rejecting a page, setting PageLRU again
-> if it had been cleared; and a put_page() after get_page_unless_zero()
-> cannot safely be done while holding locked_lruvec - it may turn out to
-> be the final put_page(), which will take an lruvec lock when PageLRU.
-> And move __isolate_lru_page_prepare back after get_page_unless_zero to
-> make trylock_page() safe:
-> trylock_page() is not safe to use at this time: its setting PG_locked
-> can race with the page being freed or allocated ("Bad page"), and can
-> also erase flags being set by one of those "sole owners" of a freshly
-> allocated page who use non-atomic __SetPageFlag().
-> 
-> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-> Signed-off-by: Hugh Dickins <hughd@google.com>
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-
-Okay, whatever. I was about to say
-Acked-by: Hugh Dickins <hughd@google.com>
-With my signed-off-by there, someone will ask if it should say
-"From: Hugh ..." at the top: no, it should not, this is Alex's patch,
-but I proposed some fixes to it, as you already acknowledged.
-
-A couple of comments below on the mm/vmscan.c part of it.
-
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-mm@kvack.org
+> Inspired-by: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: Joel Fernandes <joel@joelfernandes.org>
 > ---
->  include/linux/swap.h |  2 +-
->  mm/compaction.c      | 42 +++++++++++++++++++++++++++++++++---------
->  mm/vmscan.c          | 46 ++++++++++++++++++++++++++--------------------
->  3 files changed, 60 insertions(+), 30 deletions(-)
+>  include/linux/rcu_segcblist.h | 115 +++++++++++++++++++++++++++++++++-
+>  kernel/rcu/rcu_segcblist.c    |   1 +
+>  kernel/rcu/rcu_segcblist.h    |  12 +++-
+>  kernel/rcu/tree.c             |   3 +
+>  4 files changed, 128 insertions(+), 3 deletions(-)
 > 
-> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> index 43e6b3458f58..550fdfdc3506 100644
-> --- a/include/linux/swap.h
-> +++ b/include/linux/swap.h
-> @@ -357,7 +357,7 @@ extern void lru_cache_add_inactive_or_unevictable(struct page *page,
->  extern unsigned long zone_reclaimable_pages(struct zone *zone);
->  extern unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
->  					gfp_t gfp_mask, nodemask_t *mask);
-> -extern int __isolate_lru_page(struct page *page, isolate_mode_t mode);
-> +extern int __isolate_lru_page_prepare(struct page *page, isolate_mode_t mode);
->  extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
->  						  unsigned long nr_pages,
->  						  gfp_t gfp_mask,
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 4e2c66869041..253382d99969 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -887,6 +887,7 @@ static bool too_many_isolated(pg_data_t *pgdat)
->  		if (!valid_page && IS_ALIGNED(low_pfn, pageblock_nr_pages)) {
->  			if (!cc->ignore_skip_hint && get_pageblock_skip(page)) {
->  				low_pfn = end_pfn;
-> +				page = NULL;
->  				goto isolate_abort;
->  			}
->  			valid_page = page;
-> @@ -968,6 +969,21 @@ static bool too_many_isolated(pg_data_t *pgdat)
->  		if (!(cc->gfp_mask & __GFP_FS) && page_mapping(page))
->  			goto isolate_fail;
+> diff --git a/include/linux/rcu_segcblist.h b/include/linux/rcu_segcblist.h
+> index dca2f39ee67f..67f09a912f96 100644
+> --- a/include/linux/rcu_segcblist.h
+> +++ b/include/linux/rcu_segcblist.h
+> @@ -63,8 +63,121 @@ struct rcu_cblist {
+>  #define RCU_NEXT_TAIL		3
+>  #define RCU_CBLIST_NSEGS	4
 >  
-> +		/*
-> +		 * Be careful not to clear PageLRU until after we're
-> +		 * sure the page is not being freed elsewhere -- the
-> +		 * page release code relies on it.
-> +		 */
-> +		if (unlikely(!get_page_unless_zero(page)))
-> +			goto isolate_fail;
 > +
-> +		if (__isolate_lru_page_prepare(page, isolate_mode) != 0)
-> +			goto isolate_fail_put;
+> +/*
+> + *                     ==NOCB Offloading state machine==
+> + *
+> + *
+> + *  ----------------------------------------------------------------------------
+> + *  |                         SEGCBLIST_SOFTIRQ_ONLY                           |
+> + *  |                                                                          |
+> + *  |  Callbacks processed by rcu_core() from softirqs or local                |
+> + *  |  rcuc kthread, without holding nocb_lock.                                |
+> + *  ----------------------------------------------------------------------------
+> + *                                         |
+> + *                                         v
+> + *  ----------------------------------------------------------------------------
+> + *  |                        SEGCBLIST_OFFLOADED                               |
+> + *  |                                                                          |
+> + *  | Callbacks processed by rcu_core() from softirqs or local                 |
+> + *  | rcuc kthread, while holding nocb_lock. Waking up CB and GP kthreads,     |
+> + *  |  allowing nocb_timer to be armed.                                        |
+
+Whitespace nit before "allowing", just to show that I am paying attention.  ;-)
+
+Don't we need to acquire rcu_state.barrier_mutex at this point?  Otherwise
+rcu_barrier() could fail at this point.
+
+> + *  ----------------------------------------------------------------------------
+> + *                                         |
+> + *                                         v
+> + *                        -----------------------------------
+> + *                        |                                 |
+> + *                        v                                 v
+> + *  ---------------------------------------  ----------------------------------|
+> + *  |        SEGCBLIST_OFFLOADED |        |  |     SEGCBLIST_OFFLOADED |       |
+> + *  |        SEGCBLIST_KTHREAD_CB         |  |     SEGCBLIST_KTHREAD_GP        |
+> + *  |                                     |  |                                 |
+> + *  |                                     |  |                                 |
+> + *  | CB kthread woke up and              |  | GP kthread woke up and          |
+> + *  | acknowledged SEGCBLIST_OFFLOADED.   |  | acknowledged SEGCBLIST_OFFLOADED|
+> + *  | Processes callbacks concurrently    |  |                                 |
+> + *  | with rcu_core(), holding            |  |                                 |
+> + *  | nocb_lock.                          |  |                                 |
+> + *  ---------------------------------------  -----------------------------------
+> + *                        |                                 |
+> + *                        -----------------------------------
+> + *                                         |
+> + *                                         v
+> + *  |--------------------------------------------------------------------------|
+> + *  |                           SEGCBLIST_OFFLOADED |                          |
+> + *  |                           SEGCBLIST_KTHREAD_CB |                         |
+> + *  |                           SEGCBLIST_KTHREAD_GP                           |
+> + *  |                                                                          |
+> + *  |   Kthreads handle callbacks holding nocb_lock, local rcu_core() stops    |
+> + *  |   handling callbacks.                                                    |
+
+And rcu_state.barrier_mutex is dropped here.
+
+Or am I missing a trick here?  I guess I will look at the later patches to
+get an initial estimate of an answer to this question.
+
+> + *  ----------------------------------------------------------------------------
+> + */
 > +
-> +		/* Try isolate the page */
-> +		if (!TestClearPageLRU(page))
-> +			goto isolate_fail_put;
 > +
->  		/* If we already hold the lock, we can skip some rechecking */
->  		if (!locked) {
->  			locked = compact_lock_irqsave(&pgdat->lru_lock,
-> @@ -980,10 +996,6 @@ static bool too_many_isolated(pg_data_t *pgdat)
->  					goto isolate_abort;
->  			}
->  
-> -			/* Recheck PageLRU and PageCompound under lock */
-> -			if (!PageLRU(page))
-> -				goto isolate_fail;
-> -
->  			/*
->  			 * Page become compound since the non-locked check,
->  			 * and it's on LRU. It can only be a THP so the order
-> @@ -991,16 +1003,13 @@ static bool too_many_isolated(pg_data_t *pgdat)
->  			 */
->  			if (unlikely(PageCompound(page) && !cc->alloc_contig)) {
->  				low_pfn += compound_nr(page) - 1;
-> -				goto isolate_fail;
-> +				SetPageLRU(page);
-> +				goto isolate_fail_put;
->  			}
->  		}
->  
->  		lruvec = mem_cgroup_page_lruvec(page, pgdat);
->  
-> -		/* Try isolate the page */
-> -		if (__isolate_lru_page(page, isolate_mode) != 0)
-> -			goto isolate_fail;
-> -
->  		/* The whole page is taken off the LRU; skip the tail pages. */
->  		if (PageCompound(page))
->  			low_pfn += compound_nr(page) - 1;
-> @@ -1029,6 +1038,15 @@ static bool too_many_isolated(pg_data_t *pgdat)
->  		}
->  
->  		continue;
 > +
-> +isolate_fail_put:
-> +		/* Avoid potential deadlock in freeing page under lru_lock */
-> +		if (locked) {
-> +			spin_unlock_irqrestore(&pgdat->lru_lock, flags);
-> +			locked = false;
-> +		}
-> +		put_page(page);
-> +
->  isolate_fail:
->  		if (!skip_on_failure)
->  			continue;
-> @@ -1065,9 +1083,15 @@ static bool too_many_isolated(pg_data_t *pgdat)
->  	if (unlikely(low_pfn > end_pfn))
->  		low_pfn = end_pfn;
+> +/*
+> + *                       ==NOCB De-Offloading state machine==
+> + *
+> + *
+> + *  |--------------------------------------------------------------------------|
+> + *  |                           SEGCBLIST_OFFLOADED |                          |
+> + *  |                           SEGCBLIST_KTHREAD_CB |                         |
+> + *  |                           SEGCBLIST_KTHREAD_GP                           |
+> + *  |                                                                          |
+> + *  |   CB/GP kthreads handle callbacks holding nocb_lock, local rcu_core()    |
+> + *  |   ignores callbacks.                                                     |
+
+And don't we also need to acquire rcu_state.barrier_mutex here?
+
+> + *  ----------------------------------------------------------------------------
+> + *                                      |
+> + *                                      v
+> + *  |--------------------------------------------------------------------------|
+> + *  |                           SEGCBLIST_KTHREAD_CB |                         |
+> + *  |                           SEGCBLIST_KTHREAD_GP                           |
+> + *  |                                                                          |
+> + *  |   CB/GP kthreads and local rcu_core() handle callbacks concurrently      |
+> + *  |   holding nocb_lock. Wake up CB and GP kthreads if necessary.            |
+> + *  ----------------------------------------------------------------------------
+> + *                                      |
+> + *                                      v
+> + *                     -----------------------------------
+> + *                     |                                 |
+> + *                     v                                 v
+> + *  ---------------------------------------------------------------------------|
+> + *  |                                                                          |
+> + *  |        SEGCBLIST_KTHREAD_CB         |       SEGCBLIST_KTHREAD_GP         |
+> + *  |                                     |                                    |
+> + *  | GP kthread woke up and              |   CB kthread woke up and           |
+> + *  | acknowledged the fact that          |   acknowledged the fact that       |
+> + *  | SEGCBLIST_OFFLOADED got cleared.    |   SEGCBLIST_OFFLOADED got cleared. |
+> + *  |                                     |   The CB kthread goes to sleep     |
+> + *  | The callbacks from the target CPU   |   until it ever gets re-offloaded. |
+> + *  | will be ignored from the GP kthread |                                    |
+> + *  | loop.                               |                                    |
+> + *  ----------------------------------------------------------------------------
+> + *                      |                                 |
+> + *                      -----------------------------------
+> + *                                      |
+> + *                                      v
+> + *  ----------------------------------------------------------------------------
+> + *  |                                   0                                      |
+> + *  |                                                                          |
+> + *  | Callbacks processed by rcu_core() from softirqs or local                 |
+> + *  | rcuc kthread, while holding nocb_lock. Forbid nocb_timer to be armed.    |
+> + *  | Flush pending nocb_timer. Flush nocb bypass callbacks.                   |
+
+And release rcu_state.barrier_mutex here?
+
+							Thanx, Paul
+
+> + *  ----------------------------------------------------------------------------
+> + *                                      |
+> + *                                      v
+> + *  ----------------------------------------------------------------------------
+> + *  |                         SEGCBLIST_SOFTIRQ_ONLY                           |
+> + *  |                                                                          |
+> + *  |  Callbacks processed by rcu_core() from softirqs or local                |
+> + *  |  rcuc kthread, without holding nocb_lock.                                |
+> + *  ----------------------------------------------------------------------------
+> + */
+>  #define SEGCBLIST_ENABLED	BIT(0)
+> -#define SEGCBLIST_OFFLOADED	BIT(1)
+> +#define SEGCBLIST_SOFTIRQ_ONLY	BIT(1)
+> +#define SEGCBLIST_KTHREAD_CB	BIT(2)
+> +#define SEGCBLIST_KTHREAD_GP	BIT(3)
+> +#define SEGCBLIST_OFFLOADED	BIT(4)
 >  
-> +	page = NULL;
-> +
->  isolate_abort:
->  	if (locked)
->  		spin_unlock_irqrestore(&pgdat->lru_lock, flags);
-> +	if (page) {
-> +		SetPageLRU(page);
-> +		put_page(page);
-> +	}
->  
->  	/*
->  	 * Updated the cached scanner pfn once the pageblock has been scanned
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 1b3e0eeaad64..48b50695f883 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -1538,20 +1538,20 @@ unsigned int reclaim_clean_pages_from_list(struct zone *zone,
->   *
->   * returns 0 on success, -ve errno on failure.
+>  struct rcu_segcblist {
+>  	struct rcu_head *head;
+> diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+> index d131ef8940a0..31cc27ee98d8 100644
+> --- a/kernel/rcu/rcu_segcblist.c
+> +++ b/kernel/rcu/rcu_segcblist.c
+> @@ -172,6 +172,7 @@ void rcu_segcblist_disable(struct rcu_segcblist *rsclp)
 >   */
-> -int __isolate_lru_page(struct page *page, isolate_mode_t mode)
-> +int __isolate_lru_page_prepare(struct page *page, isolate_mode_t mode)
+>  void rcu_segcblist_offload(struct rcu_segcblist *rsclp)
 >  {
->  	int ret = -EINVAL;
->  
-> -	/* Only take pages on the LRU. */
-> -	if (!PageLRU(page))
-> -		return ret;
-> -
->  	/* Compaction should not handle unevictable pages but CMA can do so */
->  	if (PageUnevictable(page) && !(mode & ISOLATE_UNEVICTABLE))
->  		return ret;
->  
->  	ret = -EBUSY;
->  
-> +	/* Only take pages on the LRU. */
-> +	if (!PageLRU(page))
-> +		return ret;
-> +
-
-So here you do deal with that BUG() issue.  But I'd prefer you to leave
-it as I suggested in 16/32, just start with "int ret = -EBUSY;" and
-don't rearrange the checks here at all.  I say that partly because
-the !PageLRU check is very important (when called for compaction), and
-the easier it is to find (at the very start), the less anxious I get!
-
->  	/*
->  	 * To minimise LRU disruption, the caller can indicate that it only
->  	 * wants to isolate pages it will be able to operate on without
-> @@ -1592,20 +1592,9 @@ int __isolate_lru_page(struct page *page, isolate_mode_t mode)
->  	if ((mode & ISOLATE_UNMAPPED) && page_mapped(page))
->  		return ret;
->  
-> -	if (likely(get_page_unless_zero(page))) {
-> -		/*
-> -		 * Be careful not to clear PageLRU until after we're
-> -		 * sure the page is not being freed elsewhere -- the
-> -		 * page release code relies on it.
-> -		 */
-> -		ClearPageLRU(page);
-> -		ret = 0;
-> -	}
-> -
-> -	return ret;
-> +	return 0;
+> +	rcu_segcblist_clear_flags(rsclp, SEGCBLIST_SOFTIRQ_ONLY);
+>  	rcu_segcblist_set_flags(rsclp, SEGCBLIST_OFFLOADED);
 >  }
 >  
-> -
->  /*
->   * Update LRU sizes after isolating pages. The LRU size updates must
->   * be complete before mem_cgroup_update_lru_size due to a sanity check.
-> @@ -1685,17 +1674,34 @@ static unsigned long isolate_lru_pages(unsigned long nr_to_scan,
->  		 * only when the page is being freed somewhere else.
->  		 */
->  		scan += nr_pages;
-> -		switch (__isolate_lru_page(page, mode)) {
-> +		switch (__isolate_lru_page_prepare(page, mode)) {
->  		case 0:
-> +			/*
-> +			 * Be careful not to clear PageLRU until after we're
-> +			 * sure the page is not being freed elsewhere -- the
-> +			 * page release code relies on it.
-> +			 */
-> +			if (unlikely(!get_page_unless_zero(page)))
-> +				goto busy;
+> diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
+> index fc98761e3ee9..575896a2518b 100644
+> --- a/kernel/rcu/rcu_segcblist.h
+> +++ b/kernel/rcu/rcu_segcblist.h
+> @@ -80,8 +80,16 @@ static inline bool rcu_segcblist_is_enabled(struct rcu_segcblist *rsclp)
+>  /* Is the specified rcu_segcblist offloaded?  */
+>  static inline bool rcu_segcblist_is_offloaded(struct rcu_segcblist *rsclp)
+>  {
+> -	return IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
+> -		rcu_segcblist_test_flags(rsclp, SEGCBLIST_OFFLOADED);
+> +	if (IS_ENABLED(CONFIG_RCU_NOCB_CPU)) {
+> +		/*
+> +		 * Complete de-offloading happens only when SEGCBLIST_SOFTIRQ_ONLY
+> +		 * is set.
+> +		 */
+> +		if (!rcu_segcblist_test_flags(rsclp, SEGCBLIST_SOFTIRQ_ONLY))
+> +			return true;
+> +	}
 > +
-> +			if (!TestClearPageLRU(page)) {
-> +				/*
-> +				 * This page may in other isolation path,
-> +				 * but we still hold lru_lock.
-> +				 */
-> +				put_page(page);
-> +				goto busy;
-> +			}
-> +
->  			nr_taken += nr_pages;
->  			nr_zone_taken[page_zonenum(page)] += nr_pages;
->  			list_move(&page->lru, dst);
->  			break;
-> -
-> +busy:
->  		case -EBUSY:
-
-It's a long time since I read a C manual. I had to try that out in a
-little test program: and it does seem to do the right thing.  Maybe
-I'm just very ignorant, and everybody else finds that natural: but I'd
-feel more comfortable with the busy label on the line after the
-"case -EBUSY:" - wouldn't you?
-
-You could, of course, change that "case -EBUSY" to "default",
-and delete the "default: BUG();" that follows: whatever you prefer.
-
->  			/* else it is being freed elsewhere */
->  			list_move(&page->lru, src);
-> -			continue;
-> +			break;
-
-Aha. Yes, I like that change, I'm not going to throw a tantrum,
-accusing you of sneaking in unrelated changes etc. You made me look
-back at the history: it was "continue" from back in the days of
-lumpy reclaim, when there was stuff after the switch statement
-which needed to be skipped in the -EBUSY case.  "break" looks
-more natural to me now.
-
+> +	return false;
+>  }
 >  
->  		default:
->  			BUG();
+>  /*
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index c0286ce8fc03..b4292489db0c 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -96,6 +96,9 @@ static DEFINE_PER_CPU_SHARED_ALIGNED(struct rcu_data, rcu_data) = {
+>  	.dynticks_nesting = 1,
+>  	.dynticks_nmi_nesting = DYNTICK_IRQ_NONIDLE,
+>  	.dynticks = ATOMIC_INIT(RCU_DYNTICK_CTRL_CTR),
+> +#ifdef CONFIG_RCU_NOCB_CPU
+> +	.cblist.flags = SEGCBLIST_SOFTIRQ_ONLY,
+> +#endif
+>  };
+>  static struct rcu_state rcu_state = {
+>  	.level = { &rcu_state.node[0] },
 > -- 
-> 1.8.3.1
+> 2.28.0
+> 
