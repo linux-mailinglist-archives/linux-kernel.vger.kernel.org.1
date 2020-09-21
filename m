@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3980C272C76
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:33:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F39F272CDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728489AbgIUQcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:32:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58020 "EHLO mail.kernel.org"
+        id S1727914AbgIUQf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:35:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728457AbgIUQc2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:32:28 -0400
+        id S1728841AbgIUQfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:35:12 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4DF952399C;
-        Mon, 21 Sep 2020 16:32:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 87B8D2399C;
+        Mon, 21 Sep 2020 16:35:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600705947;
+        s=default; t=1600706111;
         bh=xXsQf780KKxrWSyvuZzMQJDEBPImRjRuT0OFaeDNp3I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=US6Wx9fauJGiegCyYjrxNEwafqxHLqkw3uYnJQg/EnTw6lqn9oHxtZrgmyrxQFsGw
-         yj4cQlTAtGFyOxGdOuYScP+WF7GNlrZo5fDOGCncNWR4fH7fCQpNpygc/E1V8Tp4C1
-         OjDn6clVBvWfNJGuheLTyVemrPUe1slrynrGCwUc=
+        b=1qMSCtP6TebNzrKO4yE2fEb2cvQkyQMJCicvnf+/w8MXcGo8A+GcQLMyEeWNRMA0z
+         UkVCMovM5HHOp9aHgdMYp1q67fbFjL2NY6yx7tvJvE4uhkSvc60h3EIIXvi9bMkXYS
+         TKW8yw1fEuoIZa4xV0WPW+ERQV7z0NW8BNiRgtNc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Aleksander Morgado <aleksander@aleksander.es>,
         Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.4 26/46] USB: serial: option: add support for SIM7070/SIM7080/SIM7090 modules
-Date:   Mon, 21 Sep 2020 18:27:42 +0200
-Message-Id: <20200921162034.517313011@linuxfoundation.org>
+Subject: [PATCH 4.9 43/70] USB: serial: option: add support for SIM7070/SIM7080/SIM7090 modules
+Date:   Mon, 21 Sep 2020 18:27:43 +0200
+Message-Id: <20200921162037.086301065@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162033.346434578@linuxfoundation.org>
-References: <20200921162033.346434578@linuxfoundation.org>
+In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
+References: <20200921162035.136047591@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
