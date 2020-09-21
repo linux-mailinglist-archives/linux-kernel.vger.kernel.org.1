@@ -2,95 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25136271EE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 11:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71A55271EE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 11:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726473AbgIUJ1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 05:27:04 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:42617 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726347AbgIUJ1D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 05:27:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600680422;
+        id S1726454AbgIUJ2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 05:28:06 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35758 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726343AbgIUJ2G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 05:28:06 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1600680485;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=R/mWcb3lVK8Gq7w/NdqwWlKh9+OIwDSzQsY/Vm1E6nM=;
-        b=E/4hG1RofRhA4crNSTNGy4j3N6+EhNFjhLfSq72SC3IgmKuxjD7C/H3JZDJBE6q47zvdy7
-        oq107/50Y/sT+7pxHNM0EgyCGNRfu5IDH8oPb+TKgU+JbdndMYyDZkyIIpBSbAhtnIHxOU
-        ZE3JpyLcod+FcayaVxNjihmQhQS89hM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-70-bXlEz8G5OUCmDZnu3Rr_vw-1; Mon, 21 Sep 2020 05:27:00 -0400
-X-MC-Unique: bXlEz8G5OUCmDZnu3Rr_vw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8CEF2186A56B;
-        Mon, 21 Sep 2020 09:26:58 +0000 (UTC)
-Received: from starship (unknown [10.35.206.28])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DDE2A73684;
-        Mon, 21 Sep 2020 09:26:53 +0000 (UTC)
-Message-ID: <6310fbe66e89b9f82ac88f7f080ea2eff2dad74e.camel@redhat.com>
-Subject: Re: [PATCH 1/1] KVM: x86: fix MSR_IA32_TSC read for nested migration
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Jim Mattson <jmattson@google.com>,
-        Borislav Petkov <bp@alien8.de>, Joerg Roedel <joro@8bytes.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Ingo Molnar <mingo@redhat.com>,
+        bh=CgeG9wiOK5szi7r4Lx13yhz5oyTZEIEUrg5ioQaQUW0=;
+        b=ODigja4H7PRphXqOl3FCAERnJwSCqyfA23sk3xD8uQXXSLyUP+JK2RW2DDjWv801Beqyxm
+        tUe+IugEJ438O7pVxX54o9wFNVoY4fcHz2gdVnr6Odb5jJRG50GI+Q/vux+cXbFtAy+MAo
+        cZEn9J9V8jt8iLieMVswgEUsCWvOua0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DF12AAC83;
+        Mon, 21 Sep 2020 09:28:40 +0000 (UTC)
+Date:   Mon, 21 Sep 2020 11:28:03 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Date:   Mon, 21 Sep 2020 12:26:52 +0300
-In-Reply-To: <20200917161450.GD13522@sjchrist-ice>
-References: <20200917110723.820666-1-mlevitsk@redhat.com>
-         <20200917110723.820666-2-mlevitsk@redhat.com>
-         <20200917161450.GD13522@sjchrist-ice>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk v2 1/3] printk: move printk_info into separate
+ array
+Message-ID: <20200921092803.GG14605@alley>
+References: <20200918223421.21621-1-john.ogness@linutronix.de>
+ <20200918223421.21621-2-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200918223421.21621-2-john.ogness@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-09-17 at 09:14 -0700, Sean Christopherson wrote:
-> On Thu, Sep 17, 2020 at 02:07:23PM +0300, Maxim Levitsky wrote:
-> > +		 * Intel PRM states that MSR_IA32_TSC read adds the TSC offset
+On Sat 2020-09-19 00:40:19, John Ogness wrote:
+> The majority of the size of a descriptor is taken up by meta data,
+> which is often not of interest to the ringbuffer (for example,
+> when performing state checks). Since descriptors are often
+> temporarily stored on the stack, keeping their size minimal will
+> help reduce stack pressure.
 > 
-> One more nit, "Intel SDM" would be preferred as that's most commonly used in
-> KVM changelogs, and there are multiple PRM acronyms in Intel's dictionary
-> these days.
-Fixed.
-
-Best regards,
-	Maxim Levitsky
-
+> Rather than embedding the printk_info into the descriptor, create
+> a separate printk_info array. The index of a descriptor in the
+> descriptor array corresponds to the printk_info with the same
+> index in the printk_info array. The rules for validity of a
+> printk_info match the existing rules for the data blocks: the
+> descriptor must be in a consistent state.
 > 
-> > +		 * even when not intercepted. AMD manual doesn't define this
-> > +		 * but appears to behave the same
-> > +		 *
-> > +		 * However when userspace wants to read this MSR, return its
-> > +		 * real L1 value so that its restore will be correct
-> > +		 *
-> > +		 */
-> > +		if (msr_info->host_initiated)
-> > +			msr_info->data = kvm_read_l1_tsc(vcpu, rdtsc());
-> > +		else
-> > +			msr_info->data = kvm_read_l2_tsc(vcpu, rdtsc());
-> >  		break;
-> >  	case MSR_MTRRcap:
-> >  	case 0x200 ... 0x2ff:
-> > -- 
-> > 2.26.2
-> > 
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
 
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
+Best Regards,
+Petr
