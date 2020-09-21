@@ -2,171 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A06C427356B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 00:03:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 855A727356E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 00:03:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728344AbgIUWDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 18:03:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726574AbgIUWDa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 18:03:30 -0400
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E180C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 15:03:29 -0700 (PDT)
-Received: by mail-oo1-xc41.google.com with SMTP id h8so3644036ooc.12
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 15:03:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=i9wIfsv5rz4rfrgx+xfjmFTxPq64qmLCQPg3J+waEbE=;
-        b=DdepaFHP5SGw8u3Jxxrft7G4MFxCoXyObylHPKbacrL+cHB16NaAJhD5pIbYyNVpQd
-         Klaaxa9m+XOEu8WCDI2BGJEh9xJjFu6wVMkxYCQs/wHlhajC7H1OK0C8z3pKFLSUutfo
-         /O7veoCMTReFJMDGKLzCE0pM1GtuT8DTXG6yGto0omKozwErUb6rkpUMzjHeaV+XrD0t
-         iAJga/vtnJp+LqFmK+3cqp4Jaa+9OIekQDdDnAxNz5daBoxRoUmhzN96QuWg4gkx+svY
-         3JdEGi8JFhwQzUsY/o2RfnpeJ3ffX8rby7q+sqiHf2n3DKWczyN8EYsw8pxVOvxpV03m
-         UyYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=i9wIfsv5rz4rfrgx+xfjmFTxPq64qmLCQPg3J+waEbE=;
-        b=oFsAQ77Bvl3cc2tniHOAnu+BYSnHhuf2sT/p+1D1DLmZprmOwhki2GgBscoOQrtsbK
-         Y9dvpJhPg0MdBjmnupZSeYQFSahfDsaQb3RPu3fRoZ60OxwV7O8LmnOm2KWrs8EtlFGX
-         eu3z9CYF9GAIb2Cm5pzJadQcnarh8+YdHzOdhf7/m50q3x5xJS9Bma7fDdasSPTwJV13
-         jObMDheOI7q+8NPaEUR+100fvMGoKoHsBnK+2R89hCahyO1GpeyLFcGBHb89p4ce/WLj
-         E04OsMBWBrI/K/wYnVUCdEKlx0To/G95qSFy65cN5X9cKk0Z3nNPAqwN0AGANDFeyEOY
-         r9NA==
-X-Gm-Message-State: AOAM531r6P5H/o+tttP0CeDEsYpbkbRZWASdBNAVBd6q0tz7VzsKenFd
-        nzzQHkp/MLez53bEC4FVQ9hiYA==
-X-Google-Smtp-Source: ABdhPJzeWJ4rwPj2Cwauo8tZscTlT1Kyhg81tkk759dQqFBpbkcFmtijVxaaNg1MA8kUUBfkJNG63Q==
-X-Received: by 2002:a4a:bc90:: with SMTP id m16mr1015628oop.12.1600725808483;
-        Mon, 21 Sep 2020 15:03:28 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id b14sm452685oii.52.2020.09.21.15.03.25
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Mon, 21 Sep 2020 15:03:27 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 15:03:24 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, willy@infradead.org,
-        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        shakeelb@google.com, iamjoonsoo.kim@lge.com,
-        richard.weiyang@gmail.com, kirill@shutemov.name,
-        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
-        vdavydov.dev@gmail.com, shy828301@gmail.com
-Subject: Re: [PATCH v18 15/32] mm/lru: move lock into lru_note_cost
-In-Reply-To: <alpine.LSU.2.11.2009211434490.5214@eggly.anvils>
-Message-ID: <alpine.LSU.2.11.2009211440570.5214@eggly.anvils>
-References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com> <1598273705-69124-16-git-send-email-alex.shi@linux.alibaba.com> <alpine.LSU.2.11.2009211434490.5214@eggly.anvils>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        id S1728448AbgIUWDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 18:03:52 -0400
+Received: from foss.arm.com ([217.140.110.172]:59192 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726497AbgIUWDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 18:03:51 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A75E147A;
+        Mon, 21 Sep 2020 15:03:51 -0700 (PDT)
+Received: from [10.57.50.108] (unknown [10.57.50.108])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 300193F73B;
+        Mon, 21 Sep 2020 15:03:49 -0700 (PDT)
+Subject: Re: [PATCHv4 1/6] iommu/io-pgtable-arm: Add support to use system
+ cache
+To:     Will Deacon <will@kernel.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        dri-devel@lists.freedesktop.org,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        linux-arm-kernel@lists.infradead.org
+References: <cover.1599832685.git.saiprakash.ranjan@codeaurora.org>
+ <3b1beb6cf6a34a44b0ecff9ec5a2105b5ff91bd4.1599832685.git.saiprakash.ranjan@codeaurora.org>
+ <20200921180318.GG3141@willie-the-truck>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <9646dd4f-f1e6-992d-b8a0-0f2c14fa9fe8@arm.com>
+Date:   Mon, 21 Sep 2020 23:03:49 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <20200921180318.GG3141@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Sep 2020, Hugh Dickins wrote:
-> On Mon, 24 Aug 2020, Alex Shi wrote:
+On 2020-09-21 19:03, Will Deacon wrote:
+> On Fri, Sep 11, 2020 at 07:57:18PM +0530, Sai Prakash Ranjan wrote:
+>> Add a quirk IO_PGTABLE_QUIRK_SYS_CACHE to override the
+>> attributes set in TCR for the page table walker when
+>> using system cache.
 > 
-> > We have to move lru_lock into lru_note_cost, since it cycle up on memcg
-> > tree, for future per lruvec lru_lock replace. It's a bit ugly and may
-> > cost a bit more locking, but benefit from multiple memcg locking could
-> > cover the lost.
-> > 
-> > Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> I wonder if the panfrost folks can reuse this for the issue discussed
+> over at:
 > 
-> Acked-by: Hugh Dickins <hughd@google.com>
+> https://lore.kernel.org/r/cover.1600213517.git.robin.murphy@arm.com
+
+Isn't this all hinged around the outer cacheability attribute, rather 
+than shareability (since these are nominally NC mappings and thus 
+already properly Osh)? The Panfrost issue is just about shareability 
+domains being a bit wonky; the cacheability attributes there are 
+actually reasonably normal (other than not having a non-cacheable type 
+at all, only a choice of allocation policies...)
+
+Robin.
+
+> However, Sai, your email setup went wrong when you posted this so you
+> probably need to repost now that you have that fixed.
 > 
-> In your lruv19 github tree, you have merged 14/32 into this one: thanks.
-
-Grr, I've only just started, and already missed some of my notes.
-
-I wanted to point out that this patch does introduce an extra unlock+lock
-in shrink_inactive_list(), even in a !CONFIG_MEMCG build.  I think you've
-done the right thing for now, keeping it simple, and maybe nobody will
-notice the extra overhead; but I expect us to replace lru_note_cost()
-by lru_note_cost_unlock_irq() later on, expecting the caller to do the
-initial lock_irq().
-
-lru_note_cost_page() looks redundant to me, but you're right not to
-delete it here, unless Johannes asks you to add that in: that's his
-business, and it may be dependent on the XXX at its callsite.
-
-> 
-> > Cc: Johannes Weiner <hannes@cmpxchg.org>
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: linux-mm@kvack.org
-> > Cc: linux-kernel@vger.kernel.org
-> > ---
-> >  mm/swap.c   | 5 +++--
-> >  mm/vmscan.c | 4 +---
-> >  2 files changed, 4 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/mm/swap.c b/mm/swap.c
-> > index 906255db6006..f80ccd6f3cb4 100644
-> > --- a/mm/swap.c
-> > +++ b/mm/swap.c
-> > @@ -269,7 +269,9 @@ void lru_note_cost(struct lruvec *lruvec, bool file, unsigned int nr_pages)
-> >  {
-> >  	do {
-> >  		unsigned long lrusize;
-> > +		struct pglist_data *pgdat = lruvec_pgdat(lruvec);
-> >  
-> > +		spin_lock_irq(&pgdat->lru_lock);
-> >  		/* Record cost event */
-> >  		if (file)
-> >  			lruvec->file_cost += nr_pages;
-> > @@ -293,15 +295,14 @@ void lru_note_cost(struct lruvec *lruvec, bool file, unsigned int nr_pages)
-> >  			lruvec->file_cost /= 2;
-> >  			lruvec->anon_cost /= 2;
-> >  		}
-> > +		spin_unlock_irq(&pgdat->lru_lock);
-> >  	} while ((lruvec = parent_lruvec(lruvec)));
-> >  }
-> >  
-> >  void lru_note_cost_page(struct page *page)
-> >  {
-> > -	spin_lock_irq(&page_pgdat(page)->lru_lock);
-> >  	lru_note_cost(mem_cgroup_page_lruvec(page, page_pgdat(page)),
-> >  		      page_is_file_lru(page), thp_nr_pages(page));
-> > -	spin_unlock_irq(&page_pgdat(page)->lru_lock);
-> >  }
-> >  
-> >  static void __activate_page(struct page *page, struct lruvec *lruvec)
-> > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > index ffccb94defaf..7b7b36bd1448 100644
-> > --- a/mm/vmscan.c
-> > +++ b/mm/vmscan.c
-> > @@ -1971,19 +1971,17 @@ static int current_may_throttle(void)
-> >  				&stat, false);
-> >  
-> >  	spin_lock_irq(&pgdat->lru_lock);
-> > -
-> >  	move_pages_to_lru(lruvec, &page_list);
-> >  
-> >  	__mod_node_page_state(pgdat, NR_ISOLATED_ANON + file, -nr_taken);
-> > -	lru_note_cost(lruvec, file, stat.nr_pageout);
-> >  	item = current_is_kswapd() ? PGSTEAL_KSWAPD : PGSTEAL_DIRECT;
-> >  	if (!cgroup_reclaim(sc))
-> >  		__count_vm_events(item, nr_reclaimed);
-> >  	__count_memcg_events(lruvec_memcg(lruvec), item, nr_reclaimed);
-> >  	__count_vm_events(PGSTEAL_ANON + file, nr_reclaimed);
-> > -
-> >  	spin_unlock_irq(&pgdat->lru_lock);
-> >  
-> > +	lru_note_cost(lruvec, file, stat.nr_pageout);
-> >  	mem_cgroup_uncharge_list(&page_list);
-> >  	free_unref_page_list(&page_list);
-> >  
-> > -- 
-> > 1.8.3.1
-> > 
-> > 
+> Will
+> _______________________________________________
+> iommu mailing list
+> iommu@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/iommu
 > 
