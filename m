@@ -2,138 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE2D827257F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C37BD272582
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:28:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727385AbgIUN1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:27:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59880 "EHLO
+        id S1727413AbgIUN1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:27:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727216AbgIUN12 (ORCPT
+        with ESMTP id S1727216AbgIUN1q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:27:28 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77A54C061755;
-        Mon, 21 Sep 2020 06:27:28 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id m6so12787494wrn.0;
-        Mon, 21 Sep 2020 06:27:28 -0700 (PDT)
+        Mon, 21 Sep 2020 09:27:46 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B695C061755;
+        Mon, 21 Sep 2020 06:27:46 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id s205so11063512lja.7;
+        Mon, 21 Sep 2020 06:27:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        h=from:date:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=HKuU7JpLVU1PBj0jVIiCYxaLdFW/3Q4BrrvDHD/vFoM=;
-        b=OjQfWOUGvS8vKD9rbIR3dJ08HDqYyREm1W/mAagKqnDl5qbkExQCWwYZwcwFzhW65d
-         g+Krd0TSRSxmSrLmG6cwCGyArGhLNgVenAI6YgNEnXNPtw23BOsaJO0VC7UU2Y5zSUdU
-         rHAXp2SzBL1sypBzEQA4T1xshK4AyA/D+UrLvtXtSaA+uzbKNY73Su/HeflR8CA84G90
-         VfCB6s0zz4KPl0Cwl9UwkuWJqvZyf9D7xEVBidkz+JvQp/0NyCZYzCiB9lUdCN6iuhkn
-         g+xG6BlS2ZsJgg1brj/iE8PJSnzt0f4pXsxdNx1aw7OLlUkVYqNxlSjmj4PgaX39GVhd
-         SOPQ==
+        bh=AKT/JIsFFqmjDXSqQuaX6dHydVPeyJXqeiY+NwsV04s=;
+        b=hua3oLTfb+FDOCXGstRREwb5tvEWujV3GiXymY13G0Ma8DKTv5RGen8s1EccyvEOET
+         0pYRD+i6sFV/aT9nUqNYbngnKCICWdyUkt8c+Q+nYENC3IRedGlWMLW1fecPvkY2kO6k
+         KmSKkv8VQQN+ZKFteYjY4oPBx/ryD/b9HsJ9fNVfPu1Um3jaEISegPqooC/zD6rxzsrb
+         vBxMrua6j8P2ocU0vdOV4zsoYdHKOwk9JNDupDgcChaAndSAAMarw/SCL0RYlx33r0kl
+         6wYB+eofJAgclHPs7GdT19/wE3pbbqE7MaQngLvYgVzBVeyOqyusfxnrRXoJfgjvyx+u
+         om+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HKuU7JpLVU1PBj0jVIiCYxaLdFW/3Q4BrrvDHD/vFoM=;
-        b=WM6ZkhfXkphrGL26Wy1325y2cuZf5bMisM53JjCPOBpkbpie2U+p8eVhKMaO9VUm7j
-         1mbrh7pZ35kR5/h8vmEkPhSFD2r38Zu0+hZlYcns6tjnagnsUE948bQ7xIYDwaH//B4+
-         HhNykLP9aKy8fpQWl7+jwCrJogwXOZwO1iNG2t+PMDN6Hx2TmShjcw+hB5TKdDSdiiaL
-         +9z11oLGpNXxDfbl5ylLJ29DhpmqjdQfV33pYPNjX/MiGTh8Yc7u7vWMX5hc7mEvEPh/
-         9bmVwYL9MM6KQOSM5ZFSELWmNgUO4idb4u5QJZ+i2eAua8n9j/68qvQR6WPAsMGB51hp
-         D7KA==
-X-Gm-Message-State: AOAM5332KvjTlVLIXx/yrWr0nqKp9zZOnWDiml3Bin5Peov3ZTvu3n8v
-        ro04Z01rj+RyZ9ePyFhk+ucL0jPOOAg=
-X-Google-Smtp-Source: ABdhPJwJAX4uVUX9aZ28FDXcSgA2gQ7vMBWi02ddoeec32uIkuLkE6NsU4P9DPevFlyqPCzJ83M1gw==
-X-Received: by 2002:adf:e690:: with SMTP id r16mr52023767wrm.15.1600694847222;
-        Mon, 21 Sep 2020 06:27:27 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id g14sm21591201wrv.25.2020.09.21.06.27.25
+        bh=AKT/JIsFFqmjDXSqQuaX6dHydVPeyJXqeiY+NwsV04s=;
+        b=QKWt51cx0iakYJw1FLiJ2ZcDwyV4zShsC6fblAKYvTnR89CZZ4wA5BbOwcioyvjn0O
+         kOmq1KARhrUb9c1DEyHbPz//3v2bxT0mNYYpN2gNWx1vNT2Uy1PvOKW17EGaGRSLNayb
+         jOBL0aNgiC0pZIgOxLBb1pCkfVXXPjqv9pFw+hG5s6xQYjK+zPa11/A68gaQu6QpcdtY
+         lnbFo0nXmSrWCOzSqkCEff90SMEgge+Jz1mI6S6AbXMwOkXTQAWuuec/KIh59TniXLnT
+         cJC30xY9FXi7k1gIwIrAdMbsZXgXJ5HTZz9bg9nxpYFwaF1VyCF4DYuBTwkgdl9kJudn
+         QyPQ==
+X-Gm-Message-State: AOAM533jdkBSHakPJWy2A8FR6lgkG5p56cE99qNfuyVGqE+iPXy+N0hb
+        vnFeILbPOygIS/El7z6jHxuqjAN31kV31Ds1
+X-Google-Smtp-Source: ABdhPJwK3TpTKcyOBIx8i1nITc8f4VQf17bKp4sJxgihojiawbG9dlqpRfhK/WzMXUjliT83ioVFwQ==
+X-Received: by 2002:a2e:5c5:: with SMTP id 188mr16826448ljf.375.1600694864958;
+        Mon, 21 Sep 2020 06:27:44 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id r4sm2565026lfc.162.2020.09.21.06.27.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 06:27:25 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 15:27:24 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Mikko Perttunen <cyndis@kapsi.fi>
-Cc:     Qinglang Miao <miaoqinglang@huawei.com>,
-        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] gpu: host1x: simplify the return expression of
- host1x_cdma_init()
-Message-ID: <20200921132724.GC3955907@ulmo>
-References: <20200921131032.91972-1-miaoqinglang@huawei.com>
- <4378d69a-2338-779f-ab4d-3c64fbf7dfd3@kapsi.fi>
+        Mon, 21 Sep 2020 06:27:44 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Mon, 21 Sep 2020 15:27:41 +0200
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 4/4] rcu/tree: Use schedule_delayed_work() instead of
+ WQ_HIGHPRI queue
+Message-ID: <20200921132741.GA20907@pc636>
+References: <20200918194817.48921-1-urezki@gmail.com>
+ <20200918194817.48921-5-urezki@gmail.com>
+ <20200920150638.GA5453@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="5QAgd0e35j3NYeGe"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4378d69a-2338-779f-ab4d-3c64fbf7dfd3@kapsi.fi>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+In-Reply-To: <20200920150638.GA5453@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Sep 20, 2020 at 08:06:38AM -0700, Paul E. McKenney wrote:
+> On Fri, Sep 18, 2020 at 09:48:17PM +0200, Uladzislau Rezki (Sony) wrote:
+> > Recently the separate worker thread has been introduced to
+> > maintain the local page cache from the regular kernel context,
+> > instead of kvfree_rcu() contexts. That was done because a caller
+> > of the k[v]free_rcu() can be any context type what is a problem
+> > from the allocation point of view.
+> > 
+> > >From the other hand, the lock-less way of obtaining a page has
+> > been introduced and directly injected to the k[v]free_rcu() path.
+> > 
+> > Therefore it is not important anymore to use a high priority "wq"
+> > for the external job that used to fill a page cache ASAP when it
+> > was empty.
+> > 
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> 
+> And I needed to apply the patch below to make this one pass rcutorture
+> scenarios SRCU-P and TREE05.  Repeat by:
+> 
+> tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 3 --configs "SRCU-P TREE05" --trust-make
+> 
+> Without the patch below, the system hangs very early in boot.
+> 
+> Please let me know if some other fix would be better.
+> 
+> 						Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 8ce1ea4..2424e2a 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3481,7 +3481,8 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+>  	success = kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr);
+>  	if (!success) {
+>  		// Use delayed work, so we do not deadlock with rq->lock.
+> -		if (!atomic_xchg(&krcp->work_in_progress, 1))
+> +		if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
+> +		    !atomic_xchg(&krcp->work_in_progress, 1))
+>  			schedule_delayed_work(&krcp->page_cache_work, 1);
+>  
+>  		if (head == NULL)
+I will double check!
 
---5QAgd0e35j3NYeGe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Sep 21, 2020 at 04:12:20PM +0300, Mikko Perttunen wrote:
-> On 9/21/20 4:10 PM, Qinglang Miao wrote:
-> > Simplify the return expression.
-> >=20
-> > Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-> > ---
-> >   drivers/gpu/host1x/cdma.c | 8 +-------
-> >   1 file changed, 1 insertion(+), 7 deletions(-)
-> >=20
-> > diff --git a/drivers/gpu/host1x/cdma.c b/drivers/gpu/host1x/cdma.c
-> > index e8d3fda91..08a0f9e10 100644
-> > --- a/drivers/gpu/host1x/cdma.c
-> > +++ b/drivers/gpu/host1x/cdma.c
-> > @@ -448,8 +448,6 @@ void host1x_cdma_update_sync_queue(struct host1x_cd=
-ma *cdma,
-> >    */
-> >   int host1x_cdma_init(struct host1x_cdma *cdma)
-> >   {
-> > -	int err;
-> > -
-> >   	mutex_init(&cdma->lock);
-> >   	init_completion(&cdma->complete);
-> > @@ -459,11 +457,7 @@ int host1x_cdma_init(struct host1x_cdma *cdma)
-> >   	cdma->running =3D false;
-> >   	cdma->torndown =3D false;
-> > -	err =3D host1x_pushbuffer_init(&cdma->push_buffer);
-> > -	if (err)
-> > -		return err;
-> > -
-> > -	return 0;
-> > +	return host1x_pushbuffer_init(&cdma->push_buffer);
->=20
-> IMHO, this makes it less readable since now it kind of looks like
-> host1x_pushbuffer_init is returning some meaningful value, instead of the
-> code just handling error values in a sequence.
-
-Agreed. Collapsing the error handling like this also makes adding code
-to the bottom of this function more complicated than necessary.
-
-Thierry
-
---5QAgd0e35j3NYeGe
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9oqjoACgkQ3SOs138+
-s6G9VBAAwKVijJXmqtUarO6foeE0wYjzdiAw+S3cuykrlg/Ji+72FwUlyjGRympc
-NEzmcqnFQkYFQjNoNQNToHEni79t2WL2XmhUzElTmrkYxR5xAgwC149EOuLQXLnl
-c+FLhNe6udpnt4DHTtqcL1AZRWRA+JZ02lPpObT5MzQj/t5XN8/cjgtamZbH1FHN
-moaFT24SQ1V1D1wlCBan1aze4ruCppchbklRpuChNSS11loqp/Ywb3pnKlz5y+2J
-xL0pVwAezOefXyJjk0TfRjYD1KvO+htYOhDJ8R71z04VpgT0vv9dlfWvzA4GUsBB
-Su6w0ndEaFqw4dStkIuVFyF5jBS+idCw5r8B4GUSgBgpMxa41xmHRfVwVaD6Zab1
-mX3dAswkmq9g6Z5lsXswI23BCb7v6vdh4zsvpU3dlG6CgE237cnZSZgfo2oPtsNZ
-+DhjSxo4ZbnWFjU8U9MTxWi0kEXC7yZMmkw2RLCx+LDFMSAKOqNFXESfHSQoutQD
-rpOedKlY1YIamxTeUD8jT0qvKR4mufH/O4XNUZTU2TPdI0ONMiIA+23McNr6RmrF
-zOHwgWQUn8lYFhlgw7WtN6RXzR2Cr6Za/ekMPeAJRLwIGV9w0H6ZgmJYcA+ii4FX
-fNZQHGdlivmzHPOcXFATqQgFEaAR8pUBSdnGu5CrWhXq4BpcpSk=
-=SQV7
------END PGP SIGNATURE-----
-
---5QAgd0e35j3NYeGe--
+--
+Vlad Rezki
