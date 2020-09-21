@@ -2,75 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF173272475
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7C7A272479
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726589AbgIUNAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:00:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42032 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726419AbgIUNAd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:00:33 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600693231;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QbMGdGSEKCbNHlcpDxVMYwiji/WZGhd6LjylQ8KNxmc=;
-        b=sJvwDXIgsaDJzaZVFypt9dI5DemxxR8DfDfQbVsusSxH7ZeIoYef+pI9sdOk+8GsPMmzGp
-        q96A35YZbN+aArJfcLCOvaa5/pWU62pl0j6emV1k15QvHTu+5SMNlp6LTuKbIDYyS84Jvc
-        W3D7Ee3BbjEuuL7B26VWnNI+jc1qwQ8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D4564AD12;
-        Mon, 21 Sep 2020 13:01:07 +0000 (UTC)
-Message-ID: <1600693216.2424.92.camel@suse.com>
-Subject: Re: [PATCH] usb: yurex: Rearrange code not to need GFP_ATOMIC
-From:   Oliver Neukum <oneukum@suse.com>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     gregkh@linuxfoundation.org, stern@rowland.harvard.edu,
-        johan@kernel.org, gustavoars@kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 21 Sep 2020 15:00:16 +0200
-In-Reply-To: <20200921125237.GA24776@duo.ucw.cz>
-References: <20200920084452.GA2257@amd> <1600691092.2424.85.camel@suse.com>
-         <20200921125237.GA24776@duo.ucw.cz>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1726803AbgIUNCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:02:06 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:61209 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726395AbgIUNCG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:02:06 -0400
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 21 Sep 2020 06:02:05 -0700
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 21 Sep 2020 06:02:03 -0700
+Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 21 Sep 2020 18:31:42 +0530
+Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
+        id 31A134DEF; Mon, 21 Sep 2020 18:31:41 +0530 (IST)
+From:   Dikshita Agarwal <dikshita@codeaurora.org>
+To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
+        ezequiel@collabora.com, stanimir.varbanov@linaro.org,
+        vgarodia@codeaurora.org, majja@codeaurora.org,
+        Dikshita Agarwal <dikshita@codeaurora.org>
+Subject: [PATCH v2 0/2] Add new controls for QP and layer bitrate
+Date:   Mon, 21 Sep 2020 18:31:16 +0530
+Message-Id: <1600693278-2669-1-git-send-email-dikshita@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Montag, den 21.09.2020, 14:52 +0200 schrieb Pavel Machek:
-> Hi!
+This series adds frame specific min/max qp controls for hevc and layer
+wise bitrate control for h264.
 
-> > 
-> > Task goes to TASK_INTERRUPTIBLE
-> > 
-> > >  	if (retval >= 0)
-> > >  		timeout = schedule_timeout(YUREX_WRITE_TIMEOUT);
-> > 
-> > Task turns into Sleeping Beauty until timeout
-> 
-> Is there way to do the allocations for submit_urb before the
+change since v1:
+ corrected email.
 
-No. In theory you do not even know which HC will get the URB.
-Preallocating resources is impossible. I do consider this a
-design bug in the usbcore API.
+Dikshita Agarwal (2):
+  media: v4l2-ctrl: Add frame-specific min/max qp controls for hevc
+  media: v4l2-ctrl: Add layer wise bitrate controls for h264
 
-> prepare_to_wait? GFP_ATOMIC would be nice to avoid... and doing
-> GFP_ATOMIC from normal process context just because of task_state
-> seems ... wrong.
+ .../userspace-api/media/v4l/ext-ctrls-codec.rst    | 74 +++++++++++++++++++++-
+ drivers/media/v4l2-core/v4l2-ctrls.c               | 15 +++++
+ include/uapi/linux/v4l2-controls.h                 | 17 +++++
+ 3 files changed, 104 insertions(+), 2 deletions(-)
 
-Well, then you will need to change the rest of the logic
-and use a struct completion. Give the age and practical
-relevance of the driver I would recommend against making
-such drastic changes and let it just be in its awkward
-but correct state.
-
-	Regards
-		Oliver
+-- 
+1.9.1
 
