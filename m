@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0477D272FFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C407272FF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729767AbgIURBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 13:01:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40810 "EHLO mail.kernel.org"
+        id S1730384AbgIURBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 13:01:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40980 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729228AbgIUQjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:39:10 -0400
+        id S1728689AbgIUQjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:39:13 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C0C5F238EE;
-        Mon, 21 Sep 2020 16:39:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8583A239D2;
+        Mon, 21 Sep 2020 16:39:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706349;
-        bh=PQSAbPp/SO39R20BoR+qN6FK+isHUo3NjRid7Kpzh9o=;
+        s=default; t=1600706352;
+        bh=UzQ0uvPCt7nfrpRWYyvNauFRanS9fD4G9NDc5o03kRY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w+ERLZt+oDhiT/gneu4HA2ygVqvC5HJDb5yQ/cHhHk8w91rAVihDKZm9VB5osfrVr
-         YA0eEwul58FCwMypMj+OjB2FCEdyqtWq1kDTRIdG9iEkv6GxsszPLWUUatSPFHSHus
-         uxKkrYfehuyB5krjWETpfgCfyOuu8xZ+yEbSQ6SY=
+        b=FpV1PuA6nMYoZEA1zC1ETAFu33uSDgq2JR1nOMWqUjOuu7PUF4oswKem/5TGPOIqI
+         VlmSmUGQCmIeQYPzncX5QYpaWg2bVAnvdwBa5pq7kKnMpGOTFYMUH2Be6ZDkeZ4pjo
+         /x/m8gIsCVWXkZ0fZbrwdxQbuANy8q9aqM5x+gTE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Javed Hasan <jhasan@marvell.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 65/94] scsi: pm8001: Fix memleak in pm8001_exec_internal_task_abort
-Date:   Mon, 21 Sep 2020 18:27:52 +0200
-Message-Id: <20200921162038.520595740@linuxfoundation.org>
+Subject: [PATCH 4.14 66/94] scsi: libfc: Fix for double free()
+Date:   Mon, 21 Sep 2020 18:27:53 +0200
+Message-Id: <20200921162038.556287384@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
 References: <20200921162035.541285330@linuxfoundation.org>
@@ -44,35 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Javed Hasan <jhasan@marvell.com>
 
-[ Upstream commit ea403fde7552bd61bad6ea45e3feb99db77cb31e ]
+[ Upstream commit 5a5b80f98534416b3b253859897e2ba1dc241e70 ]
 
-When pm8001_tag_alloc() fails, task should be freed just like it is done in
-the subsequent error paths.
+Fix for '&fp->skb' double free.
 
-Link: https://lore.kernel.org/r/20200823091453.4782-1-dinghao.liu@zju.edu.cn
-Acked-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Link:
+https://lore.kernel.org/r/20200825093940.19612-1-jhasan@marvell.com
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Javed Hasan <jhasan@marvell.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/pm8001/pm8001_sas.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/libfc/fc_disc.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/scsi/pm8001/pm8001_sas.c b/drivers/scsi/pm8001/pm8001_sas.c
-index e64a13f0bce17..61a2da30f94b7 100644
---- a/drivers/scsi/pm8001/pm8001_sas.c
-+++ b/drivers/scsi/pm8001/pm8001_sas.c
-@@ -795,7 +795,7 @@ pm8001_exec_internal_task_abort(struct pm8001_hba_info *pm8001_ha,
+diff --git a/drivers/scsi/libfc/fc_disc.c b/drivers/scsi/libfc/fc_disc.c
+index 62f83cc151b22..0db0d0ad9f966 100644
+--- a/drivers/scsi/libfc/fc_disc.c
++++ b/drivers/scsi/libfc/fc_disc.c
+@@ -658,8 +658,6 @@ free_fp:
+ 	fc_frame_free(fp);
+ out:
+ 	kref_put(&rdata->kref, fc_rport_destroy);
+-	if (!IS_ERR(fp))
+-		fc_frame_free(fp);
+ }
  
- 		res = pm8001_tag_alloc(pm8001_ha, &ccb_tag);
- 		if (res)
--			return res;
-+			goto ex_err;
- 		ccb = &pm8001_ha->ccb_info[ccb_tag];
- 		ccb->device = pm8001_dev;
- 		ccb->ccb_tag = ccb_tag;
+ /**
 -- 
 2.25.1
 
