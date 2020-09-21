@@ -2,79 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED63273521
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 23:46:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE9B273528
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 23:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727793AbgIUVqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 17:46:36 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:51596 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726452AbgIUVqf (ORCPT
+        id S1728129AbgIUVsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 17:48:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727171AbgIUVsn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 17:46:35 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 3E3A31C0B8C; Mon, 21 Sep 2020 23:46:33 +0200 (CEST)
-Date:   Mon, 21 Sep 2020 23:46:32 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Josef Bacik <josef@toxicpanda.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Stefan Haberland <sth@linux.ibm.com>,
-        Jan Hoeppner <hoeppner@linux.ibm.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, nbd@other.debian.org,
-        linux-ide@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        linux-pm@vger.kernel.org, linux-mm@kvack.org,
-        linux-block@vger.kernel.org,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [PATCH 11/14] PM: rewrite is_hibernate_resume_dev to not require
- an inode
-Message-ID: <20200921214632.GA11006@amd>
-References: <20200921071958.307589-1-hch@lst.de>
- <20200921071958.307589-12-hch@lst.de>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="Dxnq1zWXvFF0Q93v"
-Content-Disposition: inline
-In-Reply-To: <20200921071958.307589-12-hch@lst.de>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+        Mon, 21 Sep 2020 17:48:43 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E48B4C061755;
+        Mon, 21 Sep 2020 14:48:42 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id D32D311E49F63;
+        Mon, 21 Sep 2020 14:31:54 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 14:48:41 -0700 (PDT)
+Message-Id: <20200921.144841.1356454980970038338.davem@davemloft.net>
+To:     robert.marko@sartura.hr
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v4 0/2] net: mdio-ipq4019: add Clause 45 support
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200920141653.357493-1-robert.marko@sartura.hr>
+References: <20200920141653.357493-1-robert.marko@sartura.hr>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Mon, 21 Sep 2020 14:31:55 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Robert Marko <robert.marko@sartura.hr>
+Date: Sun, 20 Sep 2020 16:16:51 +0200
 
---Dxnq1zWXvFF0Q93v
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> This patch series adds support for Clause 45 to the driver.
+> 
+> While at it also change some defines to upper case to match rest of the driver.
+> 
+> Changes since v1:
+> * Drop clock patches, these need further investigation and
+> no user for non default configuration has been found
 
-On Mon 2020-09-21 09:19:55, Christoph Hellwig wrote:
-> Just check the dev_t to help simplifying the code.
->=20
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-
-Acked-by: Pavel Machek <pavel@ucw.cz>
-
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---Dxnq1zWXvFF0Q93v
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl9pHzgACgkQMOfwapXb+vLjrwCgkqX/NkSqeB9h9XmupMxguXKk
-HU8An2MYofOY5WFBUrwRO2mqpLwzFEzu
-=u07+
------END PGP SIGNATURE-----
-
---Dxnq1zWXvFF0Q93v--
+Please respin, in the net-next tree the MDIO drivers have been moved
+into their own directory.
