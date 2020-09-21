@@ -2,280 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C9F02732FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A371B273306
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728221AbgIUTjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 15:39:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32886 "EHLO
+        id S1728154AbgIUTl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 15:41:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726395AbgIUTjG (ORCPT
+        with ESMTP id S1727495AbgIUTl7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 15:39:06 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04553C061755;
-        Mon, 21 Sep 2020 12:39:06 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 4F4E22948A3
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kernel@collabora.com,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Ezequiel Garcia <ezequiel@collabora.com>
-Subject: [PATCH] media: uapi: h264: Add documentation to the interface header
-Date:   Mon, 21 Sep 2020 16:38:51 -0300
-Message-Id: <20200921193851.50752-1-ezequiel@collabora.com>
-X-Mailer: git-send-email 2.27.0
+        Mon, 21 Sep 2020 15:41:59 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C13EAC061755;
+        Mon, 21 Sep 2020 12:41:58 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f07e30076607a950172f225.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:e300:7660:7a95:172:f225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 516A61EC0328;
+        Mon, 21 Sep 2020 21:41:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600717317;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=qZrZqcOEfZo0QkO4uYT/3s/bwQqS6adWbtHRcxOuhrk=;
+        b=Z9OdnBDQsLfZKg6Qyw831XTqrlpD9GWb7mGg6TwaZ3Q/O3lxcPmh/gV/io1S8y/DFcb8tj
+        b7IoB+8w4yXdLI2vOvqc7cSIp8Bl8MuKMQexzLeKjKCqLNZwd9IJvXlzBfGHzEDoKWx9e2
+        wrmdQCekWZFDFeXMV5kCFa7XHqka2NI=
+Date:   Mon, 21 Sep 2020 21:41:56 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Andy Lutomirski <luto@kernel.org>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, nhorman@redhat.com,
+        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        sean.j.christopherson@intel.com, tglx@linutronix.de,
+        yaozhangx@google.com
+Subject: Re: [PATCH v38 15/24] x86/sgx: Enable provisioning for remote
+ attestation
+Message-ID: <20200921194156.GM5901@zn.tnic>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-16-jarkko.sakkinen@linux.intel.com>
+ <20200921180728.GJ5901@zn.tnic>
+ <20200921192706.GD53597@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200921192706.GD53597@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for making the interface public,
-document all the structures. Special care is taken to
-annotate those fields that depart from the H264 syntax.
+On Mon, Sep 21, 2020 at 10:27:06PM +0300, Jarkko Sakkinen wrote:
+> 'sgx_dev_enclave' is successfully register whenever that happens. Am I
+> missing something here?
 
-This commit only adds documentation and doesn't affect
-functionality in any way.
+No, I was missing the fact that you have *two* misc devices and you're
+deregistering the first one in the error path of the second.
 
-Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
----
- include/media/h264-ctrls.h | 138 ++++++++++++++++++++++++++++++++++---
- 1 file changed, 128 insertions(+), 10 deletions(-)
+Forget what I said. ;-\
 
-diff --git a/include/media/h264-ctrls.h b/include/media/h264-ctrls.h
-index ec4799154438..afc8e7c05c18 100644
---- a/include/media/h264-ctrls.h
-+++ b/include/media/h264-ctrls.h
-@@ -46,11 +46,38 @@
- #define V4L2_CTRL_TYPE_H264_DECODE_PARAMS	0x0114
- #define V4L2_CTRL_TYPE_H264_PRED_WEIGHTS	0x0115
- 
-+/**
-+ * enum v4l2_mpeg_video_h264_decode_mode - Decoding mode
-+ *
-+ * @V4L2_MPEG_VIDEO_H264_DECODE_MODE_SLICE_BASED: indicates that decoding
-+ * is performed one slice at a time. In this mode,
-+ * V4L2_CID_MPEG_VIDEO_H264_SLICE_PARAMS must contain the parsed slice
-+ * parameters and the OUTPUT buffer must contain a single slice.
-+ * V4L2_BUF_CAP_SUPPORTS_M2M_HOLD_CAPTURE_BUF feature is used
-+ * in order to support multislice frames.
-+ * @V4L2_MPEG_VIDEO_H264_DECODE_MODE_FRAME_BASED: indicates that
-+ * decoding is performed per frame. The OUTPUT buffer must contain
-+ * all slices and also both fields. This mode is typically supported
-+ * by device drivers that are able to parse the slice(s) header(s)
-+ * in hardware. When this mode is selected,
-+ * V4L2_CID_MPEG_VIDEO_H264_SLICE_PARAMS is not used.
-+ */
- enum v4l2_mpeg_video_h264_decode_mode {
- 	V4L2_MPEG_VIDEO_H264_DECODE_MODE_SLICE_BASED,
- 	V4L2_MPEG_VIDEO_H264_DECODE_MODE_FRAME_BASED,
- };
- 
-+/**
-+ * enum v4l2_mpeg_video_h264_start_code - Start code
-+ *
-+ * @V4L2_MPEG_VIDEO_H264_START_CODE_NONE: slices are passed
-+ * to the driver without any start code.
-+ * @V4L2_MPEG_VIDEO_H264_START_CODE_ANNEX_B: slices are passed
-+ * to the driver with an Annex B start code prefix
-+ * (legal start codes can be 3-bytes 0x000001 or 4-bytes 0x00000001).
-+ * This mode is typically supported by device drivers that parse
-+ * the start code in hardware.
-+ */
- enum v4l2_mpeg_video_h264_start_code {
- 	V4L2_MPEG_VIDEO_H264_START_CODE_NONE,
- 	V4L2_MPEG_VIDEO_H264_START_CODE_ANNEX_B,
-@@ -71,6 +98,12 @@ enum v4l2_mpeg_video_h264_start_code {
- #define V4L2_H264_SPS_FLAG_MB_ADAPTIVE_FRAME_FIELD		0x20
- #define V4L2_H264_SPS_FLAG_DIRECT_8X8_INFERENCE			0x40
- 
-+/**
-+ * struct v4l2_ctrl_h264_sps - H264 sequence parameter set
-+ *
-+ * All the members on this sequence parameter set structure match the
-+ * sequence parameter set syntax as specified by the H264 specification.
-+ */
- struct v4l2_ctrl_h264_sps {
- 	__u8 profile_idc;
- 	__u8 constraint_set_flags;
-@@ -101,6 +134,20 @@ struct v4l2_ctrl_h264_sps {
- #define V4L2_H264_PPS_FLAG_TRANSFORM_8X8_MODE				0x0040
- #define V4L2_H264_PPS_FLAG_SCALING_MATRIX_PRESENT			0x0080
- 
-+/**
-+ * struct v4l2_ctrl_h264_pps - H264 picture parameter set
-+ *
-+ * Except where noted, all the members on this picture parameter set
-+ * structure match the sequence parameter set syntax as specified
-+ * by the H264 specification.
-+ *
-+ * In particular, V4L2_H264_PPS_FLAG_SCALING_MATRIX_PRESENT flag
-+ * has a specific meaning. This flag should be set if a non-flat
-+ * scaling matrix applies to the picture. In this case, applications
-+ * are expected to use V4L2_CID_MPEG_VIDEO_H264_SCALING_MATRIX.
-+ * This will be the case if SPS scaling_matrix_present_flag or
-+ * PPS pic_scaling_matrix_present_flag syntax elements are set.
-+ */
- struct v4l2_ctrl_h264_pps {
- 	__u8 pic_parameter_set_id;
- 	__u8 seq_parameter_set_id;
-@@ -115,6 +162,18 @@ struct v4l2_ctrl_h264_pps {
- 	__u16 flags;
- };
- 
-+/**
-+ * struct v4l2_ctrl_h264_scaling_matrix - H264 scaling matrices
-+ *
-+ * @scaling_list_4x4: scaling matrix after applying the inverse
-+ * scanning process. Expected list order is Intra Y, Intra Cb,
-+ * Intra Cr, Inter Y, Inter Cb, Inter Cr. The values on each
-+ * scaling list are expected in raster scan order.
-+ * @scaling_list_8x8: scaling matrix after applying the inverse
-+ * scanning process. Expected list order is Intra Y, Inter Y,
-+ * Intra Cb, Inter Cb, Intra Cr, Inter Cr. The values on each
-+ * scaling list are expected in raster scan order.
-+ */
- struct v4l2_ctrl_h264_scaling_matrix {
- 	__u8 scaling_list_4x4[6][16];
- 	__u8 scaling_list_8x8[6][64];
-@@ -134,6 +193,12 @@ struct v4l2_h264_weight_factors {
- 	 ((pps)->weighted_bipred_idc == 1 && \
- 	  (slice)->slice_type == V4L2_H264_SLICE_TYPE_B))
- 
-+/**
-+ * struct v4l2_ctrl_h264_pred_weights - Prediction weight table
-+ *
-+ * Prediction weight table, which matches the syntax specified
-+ * by the H264 specification.
-+ */
- struct v4l2_ctrl_h264_pred_weights {
- 	__u16 luma_log2_weight_denom;
- 	__u16 chroma_log2_weight_denom;
-@@ -153,19 +218,41 @@ struct v4l2_ctrl_h264_pred_weights {
- #define V4L2_H264_BOTTOM_FIELD_REF			0x2
- #define V4L2_H264_FRAME_REF				0x3
- 
-+/**
-+ * struct v4l2_h264_reference - H264 picture reference
-+ *
-+ * @fields: indicates how the picture is referenced.
-+ * Valid values are V4L2_H264_{}_REF.
-+ * @index: index into v4l2_ctrl_h264_decode_params.dpb[].
-+ */
- struct v4l2_h264_reference {
- 	__u8 fields;
--
--	/* Index into v4l2_ctrl_h264_decode_params.dpb[] */
- 	__u8 index;
- };
- 
-+/**
-+ * struct v4l2_ctrl_h264_slice_params - H264 slice parameters
-+ *
-+ * This structure holds the H264 syntax elements that are specified
-+ * as non-invariant for the slices in a given frame.
-+ *
-+ * Slice invariant syntax elements are contained in struct
-+ * v4l2_ctrl_h264_decode_params. This is done to reduce the API surface
-+ * on frame-based decoders, where slice header parsing is done by the
-+ * hardware.
-+ *
-+ * Slice invariant syntax elements are specified in specification section
-+ * "7.4.3 Slice header semantics".
-+ *
-+ * Except where noted, the members on this struct match the slice header syntax.
-+ *
-+ * @header_bit_size: offset in bits to slice_data() from the beginning of this slice.
-+ * @ref_pic_list0: reference picture list 0 after applying the per-slice modifications.
-+ * @ref_pic_list1: reference picture list 1 after applying the per-slice modifications.
-+ */
- struct v4l2_ctrl_h264_slice_params {
--	/* Offset in bits to slice_data() from the beginning of this slice. */
- 	__u32 header_bit_size;
--
- 	__u32 first_mb_in_slice;
--
- 	__u8 slice_type;
- 	__u8 colour_plane_id;
- 	__u8 redundant_pic_cnt;
-@@ -191,22 +278,55 @@ struct v4l2_ctrl_h264_slice_params {
- #define V4L2_H264_DPB_ENTRY_FLAG_LONG_TERM	0x04
- #define V4L2_H264_DPB_ENTRY_FLAG_FIELD		0x08
- 
-+/**
-+ * struct v4l2_h264_dpb_entry - H264 decoded picture buffer entry
-+ *
-+ * @reference_ts: timestamp of the V4L2 capture buffer to use as reference.
-+ * The timestamp refers to the timestamp field in struct v4l2_buffer.
-+ * Use v4l2_timeval_to_ns() to convert the struct timeval to a __u64.
-+ * @pic_num: matches PicNum variable assigned during the reference
-+ * picture lists construction process.
-+ * @frame_num: frame identifier which matches frame_num syntax element.
-+ * @fields: indicates how the DPB entry is referenced. Valid values are
-+ * V4L2_H264_{}_REF.
-+ * @top_field_order_cnt: matches TopFieldOrderCnt picture value.
-+ * @bottom_field_order_cnt: matches BottomFieldOrderCnt picture value.
-+ * Note that picture field is indicated by v4l2_buffer.field.
-+ */
- struct v4l2_h264_dpb_entry {
- 	__u64 reference_ts;
- 	__u32 pic_num;
- 	__u16 frame_num;
- 	__u8 fields;
- 	__u8 reserved[5];
--	/* Note that field is indicated by v4l2_buffer.field */
- 	__s32 top_field_order_cnt;
- 	__s32 bottom_field_order_cnt;
--	__u32 flags; /* V4L2_H264_DPB_ENTRY_FLAG_* */
-+	__u32 flags;
- };
- 
- #define V4L2_H264_DECODE_PARAM_FLAG_IDR_PIC		0x01
- #define V4L2_H264_DECODE_PARAM_FLAG_FIELD_PIC		0x02
- #define V4L2_H264_DECODE_PARAM_FLAG_BOTTOM_FIELD	0x04
- 
-+/**
-+ * struct v4l2_ctrl_h264_decode_params - H264 decoding parameters
-+ *
-+ * @dpb: decoded picture buffer.
-+ * @nal_ref_idc: slice header syntax element.
-+ * @frame_num: slice header syntax element.
-+ * @top_field_order_cnt: matches TopFieldOrderCnt picture value.
-+ * @bottom_field_order_cnt: matches BottomFieldOrderCnt picture value.
-+ * Note that picture field is indicated by v4l2_buffer.field.
-+ * @idr_pic_id: slice header syntax element.
-+ * @pic_order_cnt_lsb: slice header syntax element.
-+ * @delta_pic_order_cnt_bottom: slice header syntax element.
-+ * @delta_pic_order_cnt0: slice header syntax element.
-+ * @delta_pic_order_cnt1: slice header syntax element.
-+ * @dec_ref_pic_marking_bit_size: size in bits of dec_ref_pic_marking()
-+ * syntax element.
-+ * @pic_order_cnt_bit_size: size in bits of pic order count syntax.
-+ * @slice_group_change_cycle: slice header syntax element.
-+ */
- struct v4l2_ctrl_h264_decode_params {
- 	struct v4l2_h264_dpb_entry dpb[V4L2_H264_NUM_DPB_ENTRIES];
- 	__u16 nal_ref_idc;
-@@ -218,14 +338,12 @@ struct v4l2_ctrl_h264_decode_params {
- 	__s32 delta_pic_order_cnt_bottom;
- 	__s32 delta_pic_order_cnt0;
- 	__s32 delta_pic_order_cnt1;
--	/* Size in bits of dec_ref_pic_marking() syntax element. */
- 	__u32 dec_ref_pic_marking_bit_size;
--	/* Size in bits of pic order count syntax. */
- 	__u32 pic_order_cnt_bit_size;
- 	__u32 slice_group_change_cycle;
- 
- 	__u32 reserved;
--	__u32 flags; /* V4L2_H264_DECODE_PARAM_FLAG_* */
-+	__u32 flags;
- };
- 
- #endif
 -- 
-2.27.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
