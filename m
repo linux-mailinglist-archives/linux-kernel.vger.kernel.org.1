@@ -2,123 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 476CA272591
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25899272597
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727161AbgIUNa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:30:56 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:28820 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726749AbgIUNax (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:30:53 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08LDUFaK022846;
-        Mon, 21 Sep 2020 09:30:51 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 33nbu66g9g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Sep 2020 09:30:51 -0400
-Received: from ASHBMBX9.ad.analog.com (ashbmbx9.ad.analog.com [10.64.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 08LDUo3X064179
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Mon, 21 Sep 2020 09:30:50 -0400
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Mon, 21 Sep
- 2020 09:30:52 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Mon, 21 Sep 2020 09:30:52 -0400
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 08LDUW2H021472;
-        Mon, 21 Sep 2020 09:30:47 -0400
-From:   Cristian Pop <cristian.pop@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <jic23@kernel.org>, Cristian Pop <cristian.pop@analog.com>
-Subject: [PATCH v6 4/4] dt-bindings:iio:adc:adi,ad7768-1: Add documentation for channel label
-Date:   Mon, 21 Sep 2020 16:30:20 +0300
-Message-ID: <20200921133020.62978-4-cristian.pop@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200921133020.62978-1-cristian.pop@analog.com>
-References: <20200921133020.62978-1-cristian.pop@analog.com>
+        id S1727322AbgIUNcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:32:04 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:30815 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727294AbgIUNcC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:32:02 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600695121; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=hfH7g19V4OeykMHRuFocSmUsqeHtErYNJtK0snxwKvA=; b=fkyEzkZp5+45G8pR3L/CBS+vZUl4fw//Dz3A2P1nzrgMm44gpaUrpg9e5ODfpxyYHL6j+knS
+ nFXZsd0qHf9z108+rxK9up7Piy2X7IrOSeX5SbLmpO9W2TsJtVaHh5PQYZa55LVOKp+75c1g
+ FW62zk2FrN229Es9LpmCr2ANj5I=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 5f68ab414ab73023a7d50263 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 21 Sep 2020 13:31:45
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F3D4EC433FE; Mon, 21 Sep 2020 13:31:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 22A68C433CB;
+        Mon, 21 Sep 2020 13:31:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 22A68C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     <davem@davemloft.net>, <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, ath11k@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ath11k: Mark two variables as __maybe_unused
+References: <20200901035603.25180-1-yuehaibing@huawei.com>
+Date:   Mon, 21 Sep 2020 16:31:40 +0300
+In-Reply-To: <20200901035603.25180-1-yuehaibing@huawei.com>
+        (yuehaibing@huawei.com's message of "Tue, 1 Sep 2020 11:56:03 +0800")
+Message-ID: <87zh5j45oj.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-21_05:2020-09-21,2020-09-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
- suspectscore=0 priorityscore=1501 spamscore=0 lowpriorityscore=0
- bulkscore=0 malwarescore=0 impostorscore=0 phishscore=0 clxscore=1015
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009210097
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Optional attribute for better identification of the channels.
+YueHaibing <yuehaibing@huawei.com> writes:
 
-Signed-off-by: Cristian Pop <cristian.pop@analog.com>
----
- .../bindings/iio/adc/adi,ad7768-1.yaml        | 31 +++++++++++++++++++
- 1 file changed, 31 insertions(+)
+> Fix -Wunused-variable warnings:
+>
+> drivers/net/wireless/ath/ath11k/debug.c:36:20: warning: =E2=80=98htt_bp_l=
+mac_ring=E2=80=99 defined but not used [-Wunused-variable]
+> drivers/net/wireless/ath/ath11k/debug.c:15:20: warning: =E2=80=98htt_bp_u=
+mac_ring=E2=80=99 defined but not used [-Wunused-variable]
+>
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7768-1.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7768-1.yaml
-index d3733ad8785a..0c75ce73ffe9 100644
---- a/Documentation/devicetree/bindings/iio/adc/adi,ad7768-1.yaml
-+++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7768-1.yaml
-@@ -29,6 +29,12 @@ properties:
-   interrupts:
-     maxItems: 1
- 
-+  '#address-cells':
-+    const: 1
-+
-+  '#size-cells':
-+    const: 0
-+
-   vref-supply:
-     description:
-       ADC reference voltage supply
-@@ -61,6 +67,23 @@ required:
-   - spi-cpha
-   - adi,sync-in-gpios
- 
-+patternProperties:
-+  "^channel@([0-9]|1[0-5])$":
-+    type: object
-+    description: |
-+      Represents the external channels which are connected to the device.
-+
-+    properties:
-+      reg:
-+        description: |
-+          The channel number.
-+
-+      label:
-+        description: |
-+          Unique name to identify which channel this is.
-+    required:
-+      - rega
-+
- additionalProperties: false
- 
- examples:
-@@ -84,6 +107,14 @@ examples:
-             reset-gpios = <&gpio 27 GPIO_ACTIVE_LOW>;
-             clocks = <&ad7768_mclk>;
-             clock-names = "mclk";
-+
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+
-+            channel@0 {
-+                reg = <0>;
-+                label = "channel_0";
-+            };
-         };
-     };
- ...
--- 
-2.17.1
+I don't like __maybe_unused so I decided to fix this with some refactoring:
 
+[1/4] ath11k: refactor debugfs code into debugfs.c
+https://patchwork.kernel.org/patch/11781017/
+
+--=20
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
