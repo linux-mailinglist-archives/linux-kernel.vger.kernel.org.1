@@ -2,105 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A86FF27241B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:44:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 030ED272432
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727108AbgIUMol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 08:44:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54770 "EHLO mail.kernel.org"
+        id S1726683AbgIUMv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 08:51:28 -0400
+Received: from mga01.intel.com ([192.55.52.88]:39063 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726501AbgIUMoY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 08:44:24 -0400
-Received: from lenoir.home (lfbn-ncy-1-588-162.w81-51.abo.wanadoo.fr [81.51.203.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9AD40221EC;
-        Mon, 21 Sep 2020 12:44:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600692262;
-        bh=lERr2kpMpC1vWfRV40MQ57Rp2Y00l8Xn2wmNQsCq+3M=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lzUs/3J+RvlEdbQBQjD81p0lBSewLkIN7n6/50IXhmlBkqlBv21in1qxjlm/yh77Z
-         oKWKNike0yO3IrENNXv+k/ASyNuCLd/AWJfNACiwJEHvZYZvcebqz1F4Hhn59ydrPW
-         PHzK+8OgRKbozpcUgkxcEWrOgrHZd9J249XAbvVU=
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>
-Subject: [RFC PATCH 12/12] rcu: Nocb (de)activate through sysfs
-Date:   Mon, 21 Sep 2020 14:43:51 +0200
-Message-Id: <20200921124351.24035-13-frederic@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921124351.24035-1-frederic@kernel.org>
-References: <20200921124351.24035-1-frederic@kernel.org>
+        id S1726417AbgIUMv1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 08:51:27 -0400
+IronPort-SDR: 6q+7jjxn5fSutTc1m8J30EwZlpEpgB31kPw6fTeCY/jeYXe13UUQgR5FlooquOn8s7Bj8za0dR
+ napvzPhhx6EQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9750"; a="178440425"
+X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; 
+   d="scan'208";a="178440425"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 05:51:27 -0700
+IronPort-SDR: RjRM4gJiXRdgoJN3d1WKPnh/tUFEQm31NNI2RI2m5nZEjc05peTpx6LodzU6hhR9iWJ7qlOlIK
+ M3W8AppvEMxg==
+X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; 
+   d="scan'208";a="510675980"
+Received: from clairemo-mobl.ger.corp.intel.com (HELO localhost) ([10.252.43.50])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 05:51:20 -0700
+Date:   Mon, 21 Sep 2020 15:51:17 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
+        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        asapek@google.com, Borislav Petkov <bp@alien8.de>,
+        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
+        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Huang, Haitao" <haitao.huang@intel.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
+        Christian Ludloff <ludloff@google.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Patrick Uiterwijk <puiterwijk@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
+Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
+Message-ID: <20200921125117.GG6038@linux.intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-11-jarkko.sakkinen@linux.intel.com>
+ <CALCETrX9T1ZUug=M5ba9g4H5B7kV=yL5RzuTaeAEdy3uAieN_A@mail.gmail.com>
+ <20200918235337.GA21189@sjchrist-ice>
+ <20200921124946.GF6038@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921124946.GF6038@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Not for merge.
+On Mon, Sep 21, 2020 at 03:49:56PM +0300, Jarkko Sakkinen wrote:
+> What really should be documented is to answer why we consider an enclave
+                                      ~~
+				      the (editing mistake)
 
-Make nocb toggable for a given CPU using:
-	/sys/devices/system/cpu/cpu*/hotplug/nocb
-
-This is only intended for those who want to test this patchset. The real
-interfaces will be cpuset/isolation and rcutorture.
-
-Not-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: Joel Fernandes <joel@joelfernandes.org>
----
- kernel/cpu.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
-
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 6ff2578ecf17..a36634113b8e 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -2224,10 +2224,33 @@ static ssize_t show_cpuhp_fail(struct device *dev,
- 
- static DEVICE_ATTR(fail, 0644, show_cpuhp_fail, write_cpuhp_fail);
- 
-+static ssize_t write_nocb(struct device *dev,
-+			  struct device_attribute *attr,
-+			  const char *buf, size_t count)
-+{
-+	int val, ret;
-+
-+	ret = kstrtoint(buf, 10, &val);
-+	if (ret)
-+		return ret;
-+
-+	if (val == 0)
-+		rcu_nocb_cpu_deoffload(dev->id);
-+	else if (val == 1)
-+		rcu_nocb_cpu_offload(dev->id);
-+	else
-+		return -EINVAL;
-+
-+	return count;
-+}
-+
-+static DEVICE_ATTR(nocb, 0644, NULL, write_nocb);
-+
- static struct attribute *cpuhp_cpu_attrs[] = {
- 	&dev_attr_state.attr,
- 	&dev_attr_target.attr,
- 	&dev_attr_fail.attr,
-+	&dev_attr_nocb.attr,
- 	NULL
- };
- 
--- 
-2.28.0
-
+/Jarkko
