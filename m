@@ -2,92 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED20271F0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 11:39:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF002271F0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 11:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726526AbgIUJjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 05:39:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59878 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726367AbgIUJjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 05:39:18 -0400
-Received: from localhost (p5486cf2a.dip0.t-ipconnect.de [84.134.207.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726483AbgIUJkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 05:40:14 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:41630 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726333AbgIUJkN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 05:40:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600681211;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hzal5HS5mBmQ65nzGT4AtLr7x+11VqTcaPyuQCAIt4g=;
+        b=PwYXWwAQkD7qZ9nfS1xSPKAl2N3rMA1+Z4FxFSl/u9WySsO7EZG7YhNZm9qDzCgWQ1rwWs
+        8b305apwqOUwyEJpgLmrf+L0UvQfvGOuDutwxoaWldB1iUJ5EwZ+3fvH6Y4oXp+UB1aFSN
+        s5UzIXwlNtvgxAbVKhCBCEbKAWVT6kM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-116-xapV6KnjMf2PtreSsxQg_g-1; Mon, 21 Sep 2020 05:40:09 -0400
+X-MC-Unique: xapV6KnjMf2PtreSsxQg_g-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E3A0B2151B;
-        Mon, 21 Sep 2020 09:39:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600681157;
-        bh=aMczpGqXtPI/LNHqyP5LpS7scjs+KqG3Q940lW72ss8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Q5Dtqh6rIDcSpfWs/+63d0rQFosBoVOA2fRD46aTCXY/VOUR4PVdMGfNz4i1yWYv+
-         eSok+EhNkGgvDV6U25OtfYL6cW/XHVzPY1sEljzA6KgUv3PDf094lfF/ZcZNBQpnJ/
-         p3ZrNYA/1vkFIDiymhgds6C/mCkF26rYJdwrimmA=
-Date:   Mon, 21 Sep 2020 11:39:14 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     trix@redhat.com
-Cc:     syniurge@gmail.com, nehal-bakulchandra.shah@amd.com,
-        shyam-sundar.s-k@amd.com, natechancellor@gmail.com,
-        ndesaulniers@google.com, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] i2c: amd_mp2: handle num is 0 input for i2c_amd_xfer
-Message-ID: <20200921093914.GJ1840@ninjato>
-References: <20200904180647.21080-1-trix@redhat.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6D0216A2A0;
+        Mon, 21 Sep 2020 09:40:07 +0000 (UTC)
+Received: from starship (unknown [10.35.206.28])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 091987882A;
+        Mon, 21 Sep 2020 09:40:00 +0000 (UTC)
+Message-ID: <fd81b1a3816354b7bff2b229a38ceb2851ea5706.camel@redhat.com>
+Subject: Re: [PATCH 1/1] KVM: x86: fix MSR_IA32_TSC read for nested migration
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Jim Mattson <jmattson@google.com>,
+        Borislav Petkov <bp@alien8.de>, Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Date:   Mon, 21 Sep 2020 12:39:59 +0300
+In-Reply-To: <f936123d4146ae6e2c9ffc8b25e4382c1d98255c.camel@redhat.com>
+References: <20200917110723.820666-1-mlevitsk@redhat.com>
+         <20200917110723.820666-2-mlevitsk@redhat.com>
+         <20200917161135.GC13522@sjchrist-ice>
+         <f936123d4146ae6e2c9ffc8b25e4382c1d98255c.camel@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="GvznHscUikHnwW2p"
-Content-Disposition: inline
-In-Reply-To: <20200904180647.21080-1-trix@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 2020-09-21 at 12:25 +0300, Maxim Levitsky wrote:
+> On Thu, 2020-09-17 at 09:11 -0700, Sean Christopherson wrote:
+> > On Thu, Sep 17, 2020 at 02:07:23PM +0300, Maxim Levitsky wrote:
+> > > MSR reads/writes should always access the L1 state, since the (nested)
+> > > hypervisor should intercept all the msrs it wants to adjust, and these
+> > > that it doesn't should be read by the guest as if the host had read it.
+> > > 
+> > > However IA32_TSC is an exception.Even when not intercepted, guest still
+> > 
+> > Missing a space after the period.
+> Fixed
+> > > reads the value + TSC offset.
+> > > The write however does not take any TSC offset in the account.
+> > 
+> > s/in the/into
+> Fixed.
+> > > This is documented in Intel's PRM and seems also to happen on AMD as well.
+> > 
+> > Ideally we'd get confirmation from AMD that this is the correct behavior.
+> It would be great. This isn't a blocker for this patch however since I didn't
+> change the current emulation behavier which already assumes this.
+> Also we don't really trap TSC reads, so this code isn't really executed.
 
---GvznHscUikHnwW2p
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I did now find out an explict mention that AMD's TSC scaling affects the MSR reads,
+and while this doesn't expictily mention the offset, this does give more ground
+to the assumption that the offset is added as well.
 
-On Fri, Sep 04, 2020 at 11:06:47AM -0700, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
->=20
-> clang static analyzer reports this problem
->=20
-> i2c-amd-mp2-plat.c:174:9: warning: Branch condition evaluates
->   to a garbage value
->         return err ? err : num;
->                ^~~
->=20
-> err is not initialized, it depends on the being set in the
-> transfer loop which will not happen if num is 0.  Surveying
-> other master_xfer() implementations show all handle a 0 num.
->=20
-> Because returning 0 is expected, initialize err to 0.
->=20
-> Signed-off-by: Tom Rix <trix@redhat.com>
+"Writing to the TSC Ratio MSR allows the hypervisor to control the guest's view of the Time Stamp
+Counter. The contents of TSC Ratio MSR sets the value of the TSCRatio. This constant scales the
+timestamp value returned when the TSC is read by a guest via the RDTSC or RDTSCP instructions or
+when the TSC, MPERF, or MPerfReadOnly MSRs are read via the RDMSR instruction by a guest
+running under virtualization."
 
-Applied to for-next, thanks!
+Best regards,
+	Maxim Levitsky
+
+> 
+> (I haven't checked what corner cases when we do this. It can happen in theory,
+> if MSR read is done from the emulator or something like that).
+> 
+> > > This creates a problem when userspace wants to read the IA32_TSC value and then
+> > > write it. (e.g for migration)
+> > > 
+> > > In this case it reads L2 value but write is interpreted as an L1 value.
+> > 
+> > It _may_ read the L2 value, e.g. it's not going to read the L2 value if L1
+> > is active.
+> 
+> I didn't thought about this this way. I guess I always thought that L2 is,
+> L2 if L2 is running, otherwise L1, but now I understand what you mean,
+> and I agree.
+> 
+> > > To fix this make the userspace initiated reads of IA32_TSC return L1 value
+> > > as well.
+> > > 
+> > > Huge thanks to Dave Gilbert for helping me understand this very confusing
+> > > semantic of MSR writes.
+> > > 
+> > > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> > > ---
+> > >  arch/x86/kvm/x86.c | 19 ++++++++++++++++++-
+> > >  1 file changed, 18 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > > index 17f4995e80a7e..d10d5c6add359 100644
+> > > --- a/arch/x86/kvm/x86.c
+> > > +++ b/arch/x86/kvm/x86.c
+> > > @@ -2025,6 +2025,11 @@ u64 kvm_read_l1_tsc(struct kvm_vcpu *vcpu, u64 host_tsc)
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(kvm_read_l1_tsc);
+> > >  
+> > > +static u64 kvm_read_l2_tsc(struct kvm_vcpu *vcpu, u64 host_tsc)
+> > 
+> > This is definitely not L2 specific.  I would vote to just omit the helper so
+> > that we don't need to come up with a name that is correct across the board,
+> > e.g. "raw" is also not quite correct.
+> Yes, now I see this.
+> 
+> > An alternative would be to do:
+> > 
+> > 	u64 tsc_offset = msr_info->host_initiated ? vcpu->arch.l1_tsc_offset :
+> > 						    vcpu->arch.tsc_offset;
+> > 
+> > 	msr_info->data = kvm_scale_tsc(vcpu, rdtsc()) + tsc_offset;
+> > 
+> > Which I kind of like because the behavioral difference is a bit more obvious.
+> Yep did that. The onl minor downside is that I need a C scope in the switch block.
+> I can add kvm_read_tsc but I think that this is not worth it.
+> 
+> > > +{
+> > > +	return vcpu->arch.tsc_offset + kvm_scale_tsc(vcpu, host_tsc);
+> > > +}
+> > > +
+> > >  static void kvm_vcpu_write_tsc_offset(struct kvm_vcpu *vcpu, u64 offset)
+> > >  {
+> > >  	vcpu->arch.l1_tsc_offset = offset;
+> > > @@ -3220,7 +3225,19 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+> > >  		msr_info->data = vcpu->arch.msr_ia32_power_ctl;
+> > >  		break;
+> > >  	case MSR_IA32_TSC:
+> > > -		msr_info->data = kvm_scale_tsc(vcpu, rdtsc()) + vcpu->arch.tsc_offset;
+> > > +		/*
+> > > +		 * Intel PRM states that MSR_IA32_TSC read adds the TSC offset
+> > > +		 * even when not intercepted. AMD manual doesn't define this
+> > > +		 * but appears to behave the same
+> > > +		 *
+> > > +		 * However when userspace wants to read this MSR, return its
+> > > +		 * real L1 value so that its restore will be correct
+> > > +		 *
+> > 
+> > Extra line is unnecessary.
+> This is a bit of my OCD :-) I don't mind to remove it.
+> > > +		 */
+> > > +		if (msr_info->host_initiated)
+> > > +			msr_info->data = kvm_read_l1_tsc(vcpu, rdtsc());
+> > > +		else
+> > > +			msr_info->data = kvm_read_l2_tsc(vcpu, rdtsc());
+> > >  		break;
+> > >  	case MSR_MTRRcap:
+> > >  	case 0x200 ... 0x2ff:
+> > > -- 
+> > > 2.26.2
+> > > 
+> 
+> Thanks for the review, the V2 is on the way.
+> Best regards,
+> 	Maxim Levitsky
+> 
 
 
---GvznHscUikHnwW2p
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9odMIACgkQFA3kzBSg
-KbYswA/8Dr/QwVbjfGkDlOvW2zJybPB+fpYamXJdBiftsNc/WyLDoLrw3236A987
-oRLA/UXcxyVRaXsFNDc7hoGG1GwxpqmiVFL34mGo02O20PtpO3VBFbDGk+oDYyF7
-AqWjxFw1xLSWx2pYQM6KXcd4JG7+wPT/XJ5eoRayLabLMoIboQWTM6LB2QxH4HV1
-/uDlVXuIY/q6kWJLuR1kUJ8loYo2n2TV5+9LSPLxNPfkmfnKfbDsf1AnqNEWRG+3
-y8CSda2VL/jvP3FAfsef+4i+2hKpW3PWoFrClgSl5mErw5g75+AO9P6WO7mQGdyd
-I4RybjsfXh5BaEMzyRVu1jcefcTdsir3Qt5025hRloMxZHNa3FnEU4XYvqHmNchG
-zSpMR6ynpQgbUGYh1N0Vi/jv1EJgPVi/vjH7XlA7+wMBOt9lIUiXdABSrWDEquOQ
-k4SJpDfIrSc0s2PWwMKiSPZkIH+wcrEnbXiFv/oVEw/AFf6mOihCVGbsomGn0hMh
-jSaHryCszQlzWn3J0NIyu/1v6chPTL/WuP9tVXP0lKRmSFzAdCUxupemqLWnIwuf
-I454ZgIKhZLsWk7v9qicDG9MTpJEEK63U4tBtmjHzCsg0f5cHO7YY/+liIT4H5/b
-Vyp27XqWrVJMriJda3rfF8htS3BcN+FXZtBVmXk22NCGQqhYN6I=
-=Kytx
------END PGP SIGNATURE-----
-
---GvznHscUikHnwW2p--
