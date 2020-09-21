@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB31272FD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC721272D78
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730195AbgIUQ74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:59:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43994 "EHLO mail.kernel.org"
+        id S1729351AbgIUQkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:40:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728374AbgIUQky (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:40:54 -0400
+        id S1728444AbgIUQkN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:40:13 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF21B206DC;
-        Mon, 21 Sep 2020 16:40:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B1AB823998;
+        Mon, 21 Sep 2020 16:40:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706453;
-        bh=CxXvDCRFbXogjAHvT1dFieOqdnGaCKypk6nS4evj2Q0=;
+        s=default; t=1600706413;
+        bh=Cm7zi0oycO/VORlrjs1Rf7bW3IHMkcejIpXZaKzDbZ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s5pQv5u/pmE8uSEoX7a3dBJODsddBDSOlO9c4tDHOY1fRqnXssi4uDJ0+WjSGTGcA
-         oYKlJsFOzkhLlGeV1WQIDcEcByFDSlL1jB3FWmXkodIB7a77jGZhXsrnV1hG8elD9b
-         QXZMgg9O+9kFMucZAJm8aeoSYXH/OtzkwDYISRDs=
+        b=vU9DBIPtIoXHKZZxnIqadFP06nG9GpS5B/nDOkJbetZQKsABVPjWgeuHLRjiyBD7c
+         k6GUcloO9SLyVX4zl3PMtH7z9xQEP1IzYG9LLeouP8sbULCweo3PBhPFGclls+CR04
+         bJkXv41ZU9hl/JGAjPG470KiISFqrTeoIXvNAqfI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Quinn Tran <quinn.tran@cavium.com>,
-        Himanshu Madhani <himanshu.madhani@cavium.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Zhengyuan Liu <liuzhengyuan@kylinos.cn>
-Subject: [PATCH 4.19 02/49] scsi: qla2xxx: Update rscn_rcvd field to more meaningful scan_needed
+        stable@vger.kernel.org,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Subject: [PATCH 4.14 59/94] usb: typec: ucsi: acpi: Check the _DEP dependencies
 Date:   Mon, 21 Sep 2020 18:27:46 +0200
-Message-Id: <20200921162034.770440243@linuxfoundation.org>
+Message-Id: <20200921162038.260737209@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162034.660953761@linuxfoundation.org>
-References: <20200921162034.660953761@linuxfoundation.org>
+In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
+References: <20200921162035.541285330@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,98 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quinn Tran <quinn.tran@cavium.com>
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-commit cb873ba4002095d1e2fc60521bc4d860c7b72b92 upstream.
+commit 1f3546ff3f0a1000971daef58406954bad3f7061 upstream.
 
-Rename rscn_rcvd field to scan_needed to be more meaningful.
+Failing probe with -EPROBE_DEFER until all dependencies
+listed in the _DEP (Operation Region Dependencies) object
+have been met.
 
-Signed-off-by: Quinn Tran <quinn.tran@cavium.com>
-Signed-off-by: Himanshu Madhani <himanshu.madhani@cavium.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Zhengyuan Liu <liuzhengyuan@kylinos.cn>
+This will fix an issue where on some platforms UCSI ACPI
+driver fails to probe because the address space handler for
+the operation region that the UCSI ACPI interface uses has
+not been loaded yet.
+
+Fixes: 8243edf44152 ("usb: typec: ucsi: Add ACPI driver")
+Cc: stable@vger.kernel.org
+Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Link: https://lore.kernel.org/r/20200904110918.51546-1-heikki.krogerus@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/scsi/qla2xxx/qla_def.h  |    2 +-
- drivers/scsi/qla2xxx/qla_gs.c   |   12 ++++++------
- drivers/scsi/qla2xxx/qla_init.c |    2 +-
- 3 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/usb/typec/ucsi/ucsi_acpi.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/scsi/qla2xxx/qla_def.h
-+++ b/drivers/scsi/qla2xxx/qla_def.h
-@@ -2351,7 +2351,7 @@ typedef struct fc_port {
- 	unsigned int login_succ:1;
- 	unsigned int query:1;
- 	unsigned int id_changed:1;
--	unsigned int rscn_rcvd:1;
-+	unsigned int scan_needed:1;
+--- a/drivers/usb/typec/ucsi/ucsi_acpi.c
++++ b/drivers/usb/typec/ucsi/ucsi_acpi.c
+@@ -67,11 +67,15 @@ static void ucsi_acpi_notify(acpi_handle
  
- 	struct work_struct nvme_del_work;
- 	struct completion nvme_del_done;
---- a/drivers/scsi/qla2xxx/qla_gs.c
-+++ b/drivers/scsi/qla2xxx/qla_gs.c
-@@ -3973,7 +3973,7 @@ void qla24xx_async_gnnft_done(scsi_qla_h
- 		list_for_each_entry(fcport, &vha->vp_fcports, list) {
- 			if (memcmp(rp->port_name, fcport->port_name, WWN_SIZE))
- 				continue;
--			fcport->rscn_rcvd = 0;
-+			fcport->scan_needed = 0;
- 			fcport->scan_state = QLA_FCPORT_FOUND;
- 			found = true;
- 			/*
-@@ -4009,12 +4009,12 @@ void qla24xx_async_gnnft_done(scsi_qla_h
- 	 */
- 	list_for_each_entry(fcport, &vha->vp_fcports, list) {
- 		if ((fcport->flags & FCF_FABRIC_DEVICE) == 0) {
--			fcport->rscn_rcvd = 0;
-+			fcport->scan_needed = 0;
- 			continue;
- 		}
+ static int ucsi_acpi_probe(struct platform_device *pdev)
+ {
++	struct acpi_device *adev = ACPI_COMPANION(&pdev->dev);
+ 	struct ucsi_acpi *ua;
+ 	struct resource *res;
+ 	acpi_status status;
+ 	int ret;
  
- 		if (fcport->scan_state != QLA_FCPORT_FOUND) {
--			fcport->rscn_rcvd = 0;
-+			fcport->scan_needed = 0;
- 			if ((qla_dual_mode_enabled(vha) ||
- 				qla_ini_mode_enabled(vha)) &&
- 			    atomic_read(&fcport->state) == FCS_ONLINE) {
-@@ -4033,7 +4033,7 @@ void qla24xx_async_gnnft_done(scsi_qla_h
- 				}
- 			}
- 		} else {
--			if (fcport->rscn_rcvd ||
-+			if (fcport->scan_needed ||
- 			    fcport->disc_state != DSC_LOGIN_COMPLETE) {
- 				if (fcport->login_retry == 0) {
- 					fcport->login_retry =
-@@ -4043,7 +4043,7 @@ void qla24xx_async_gnnft_done(scsi_qla_h
- 					    fcport->port_name, fcport->loop_id,
- 					    fcport->login_retry);
- 				}
--				fcport->rscn_rcvd = 0;
-+				fcport->scan_needed = 0;
- 				qla24xx_fcport_handle_login(vha, fcport);
- 			}
- 		}
-@@ -4058,7 +4058,7 @@ out:
- 
- 	if (recheck) {
- 		list_for_each_entry(fcport, &vha->vp_fcports, list) {
--			if (fcport->rscn_rcvd) {
-+			if (fcport->scan_needed) {
- 				set_bit(LOCAL_LOOP_UPDATE, &vha->dpc_flags);
- 				set_bit(LOOP_RESYNC_NEEDED, &vha->dpc_flags);
- 				break;
---- a/drivers/scsi/qla2xxx/qla_init.c
-+++ b/drivers/scsi/qla2xxx/qla_init.c
-@@ -1573,7 +1573,7 @@ void qla2x00_fcport_event_handler(scsi_q
- 			fcport = qla2x00_find_fcport_by_nportid
- 				(vha, &ea->id, 1);
- 			if (fcport)
--				fcport->rscn_rcvd = 1;
-+				fcport->scan_needed = 1;
- 
- 			spin_lock_irqsave(&vha->work_lock, flags);
- 			if (vha->scan.scan_flags == 0) {
++	if (adev->dep_unmet)
++		return -EPROBE_DEFER;
++
+ 	ua = devm_kzalloc(&pdev->dev, sizeof(*ua), GFP_KERNEL);
+ 	if (!ua)
+ 		return -ENOMEM;
 
 
