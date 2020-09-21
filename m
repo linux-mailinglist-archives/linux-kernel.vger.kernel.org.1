@@ -2,104 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD6EB271A39
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 06:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2D6E271A3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 06:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726406AbgIUExF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 00:53:05 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:34340 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726011AbgIUExE (ORCPT
+        id S1726357AbgIUE4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 00:56:18 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:36447 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726210AbgIUE4R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 00:53:04 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08L4qm3F104834;
-        Sun, 20 Sep 2020 23:52:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600663968;
-        bh=9uy99y5TKZJggG1dvxT3XStGw93Gtk7IkvWznY+qP3s=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=K4gIhkwolUAfm9iVFAchCwcLKjneOwbtczCbhfEJb0GxdRnrZXSxnS5IdVJnrbkNK
-         ePvICW/RFGMfgr3/260DoeM1KblpZ0umuirFakC8xUzASdO1YJ0jE/1RN1mVmR3cL/
-         1wazJS79T+GmZWJDPvRsIqF3kusrxjixhxJxqAk0=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08L4qmKx060489;
-        Sun, 20 Sep 2020 23:52:48 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Sun, 20
- Sep 2020 23:52:48 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Sun, 20 Sep 2020 23:52:48 -0500
-Received: from [10.250.232.147] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08L4qgFL030746;
-        Sun, 20 Sep 2020 23:52:43 -0500
-Subject: Re: [PATCH v5 14/17] NTB: Add support for EPF PCI-Express
- Non-Transparent Bridge
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>,
-        Tom Joseph <tjoseph@cadence.com>, Rob Herring <robh@kernel.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-pci@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-ntb@googlegroups.com>
-References: <20200918064227.1463-1-kishon@ti.com>
- <20200918064227.1463-15-kishon@ti.com>
- <93b651aa-23e5-9249-6b22-fef65806b007@infradead.org>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <c8b7fa2b-5586-3929-1e00-8473106935f9@ti.com>
-Date:   Mon, 21 Sep 2020 10:22:42 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 21 Sep 2020 00:56:17 -0400
+Received: by mail-il1-f198.google.com with SMTP id q11so10197508ilt.3
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 21:56:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=w48ND6QxLlcNNCRQLDNljU9DcN5bOMpJULTX22AUa7k=;
+        b=WYSiC+kItUaiZVsFYL1ltCBTUCshxK0FlNoic6WaV4B5Dx+88TvCeDffzASo35yXg5
+         2SFXHGV5iqzULSpqk5Rh34JjdWYhyFBa6hg1czFQOOKL0Nq4nL8tspdxuqtAYnL6DTEV
+         QX6LxDBwiMW5SiUAnNCiq5DzrnTPQ/UFOEUU08yDleyqd+V3gUDvxqA9zjfLTgCo8HyI
+         /S27mDfwKvO2ohHUyb9gbjLHrCG+sObZMY4qwfZdptO4P4hBa9vPVNwnC+c4/QkGEm7J
+         dR+tc+672OBVCbIVLaJgNKiQRwdEMtwlGvaz7q2lMElqvpgiDIAjFjW5GjcUEUxBJx6Z
+         LgJA==
+X-Gm-Message-State: AOAM530gIMi37RYvCYEmZgClu8YSfUkKsFvjWXYDYvqnDeyTCimpCJpp
+        I9gl0+laBV2x5WwZETObCF+4Sg2WeQJS+TgnPVj3d7HCD2y1
+X-Google-Smtp-Source: ABdhPJwjPK3Ia7dVxW507ow7140TEUNC+mwQEA2rx4IbXFDS7Ewwi7hZNWcstLRJQX0Z7Dmizwfy8BGgmKrkxmASs+ND/9fpZMPd
 MIME-Version: 1.0
-In-Reply-To: <93b651aa-23e5-9249-6b22-fef65806b007@infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Received: by 2002:a05:6638:cdc:: with SMTP id e28mr38787100jak.100.1600664176316;
+ Sun, 20 Sep 2020 21:56:16 -0700 (PDT)
+Date:   Sun, 20 Sep 2020 21:56:16 -0700
+In-Reply-To: <000000000000a6348d05a9234041@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a256d405afcbabc3@google.com>
+Subject: Re: WARNING in tracepoint_add_func
+From:   syzbot <syzbot+721aa903751db87aa244@syzkaller.appspotmail.com>
+To:     corbet@lwn.net, davem@davemloft.net, dsahern@gmail.com,
+        frederic@kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mathieu.desnoyers@polymtl.ca,
+        mingo@elte.hu, netdev@vger.kernel.org, peterz@infradead.org,
+        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
+syzbot has found a reproducer for the following issue on:
 
-On 18/09/20 9:45 pm, Randy Dunlap wrote:
-> On 9/17/20 11:42 PM, Kishon Vijay Abraham I wrote:
->> diff --git a/drivers/ntb/hw/epf/Kconfig b/drivers/ntb/hw/epf/Kconfig
->> new file mode 100644
->> index 000000000000..6197d1aab344
->> --- /dev/null
->> +++ b/drivers/ntb/hw/epf/Kconfig
->> @@ -0,0 +1,6 @@
->> +config NTB_EPF
->> +	tristate "Generic EPF Non-Transparent Bridge support"
->> +	depends on m
->> +	help
->> +	  This driver supports EPF NTB on configurable endpoint.
->> +	  If unsure, say N.
-> 
-> Hi,
-> Why is this driver restricted to 'm' (loadable module)?
-> I.e., it cannot be builtin.
+HEAD commit:    325d0eab Merge branch 'akpm' (patches from Andrew)
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16992c81900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b12e84189082991c
+dashboard link: https://syzkaller.appspot.com/bug?extid=721aa903751db87aa244
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17c797b5900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10569c03900000
 
-I'm trying to keep all the host side PCI drivers corresponding to the
-devices configured using endpoint function drivers as modules and also
-not populate MODULE_DEVICE_TABLE() to prevent auto-loading.
+The issue was bisected to:
 
-The different endpoint function drivers (right now only pci-epf-test.c
-and pci-epf-ntb.c) can use the same device ID and vendorID for
-configuring the endpoint devices. So on the host side, it's possible an
-un-intended PCI driver can be bound to the device. So in-order to give
-users the flexibility of deciding the driver to be bound, I'm trying to
-keep it as modules. (Some driver like NTB also uses class code
-PCI_CLASS_MEMORY_RAM for binding a driver in addition to deviceID and
-vendorID but it need not be the case for all the drivers.)
+commit 58956317c8de52009d1a38a721474c24aef74fe7
+Author: David Ahern <dsahern@gmail.com>
+Date:   Fri Dec 7 20:24:57 2018 +0000
 
-Thanks
-Kishon
+    neighbor: Improve garbage collection
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=146ba853900000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=166ba853900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=126ba853900000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+721aa903751db87aa244@syzkaller.appspotmail.com
+Fixes: 58956317c8de ("neighbor: Improve garbage collection")
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 6872 at kernel/tracepoint.c:243 tracepoint_add_func+0x254/0x880 kernel/tracepoint.c:243
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 6872 Comm: syz-executor482 Not tainted 5.9.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ panic+0x382/0x7fb kernel/panic.c:231
+ __warn.cold+0x20/0x4b kernel/panic.c:600
+ report_bug+0x1bd/0x210 lib/bug.c:198
+ handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:tracepoint_add_func+0x254/0x880 kernel/tracepoint.c:243
+Code: 44 24 20 48 8b 5b 08 80 38 00 0f 85 6b 05 00 00 48 8b 44 24 08 48 3b 58 08 0f 85 2d ff ff ff 41 bc ef ff ff ff e8 ec 62 fe ff <0f> 0b e8 e5 62 fe ff 44 89 e0 48 83 c4 38 5b 5d 41 5c 41 5d 41 5e
+RSP: 0000:ffffc900060f7ac0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffffc90000e76000 RCX: ffffffff8177dc72
+RDX: ffff888096766000 RSI: ffffffff8177dcd4 RDI: ffff8880a6b2ec48
+RBP: ffffffff8213fae0 R08: 0000000000000000 R09: ffffffff8a0c176b
+R10: 000000000000000a R11: 0000000000000000 R12: 00000000ffffffef
+R13: 0000000000000002 R14: dffffc0000000000 R15: ffff8880a6b2ec10
+ tracepoint_probe_register_prio kernel/tracepoint.c:315 [inline]
+ tracepoint_probe_register+0x9c/0xe0 kernel/tracepoint.c:335
+ __bpf_probe_register kernel/trace/bpf_trace.c:1950 [inline]
+ bpf_probe_register+0x16c/0x1d0 kernel/trace/bpf_trace.c:1955
+ bpf_raw_tracepoint_open+0x34e/0xb20 kernel/bpf/syscall.c:2741
+ __do_sys_bpf+0x1b2f/0x4c60 kernel/bpf/syscall.c:4220
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x4415a9
+Code: e8 ac e8 ff ff 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 8b 09 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffc28dd5d08 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00000000004415a9
+RDX: 0000000000000010 RSI: 0000000020000040 RDI: 0000000000000011
+RBP: 0000000000010308 R08: 00000000004002c8 R09: 00000000004002c8
+R10: 0000000000000004 R11: 0000000000000246 R12: 00000000004023c0
+R13: 0000000000402450 R14: 0000000000000000 R15: 0000000000000000
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
