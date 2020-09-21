@@ -2,130 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 819EE272330
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C0BF272333
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:57:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726483AbgIUL4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 07:56:30 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:46626 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726326AbgIUL4a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 07:56:30 -0400
-Received: from bogon.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxP9zolGhfDc8WAA--.1715S2;
-        Mon, 21 Sep 2020 19:56:24 +0800 (CST)
-From:   Jinyang He <hejinyang@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: Loongson64: Fix cmdline parsing "mem=" and "memmap="
-Date:   Mon, 21 Sep 2020 19:56:24 +0800
-Message-Id: <1600689384-11032-1-git-send-email-hejinyang@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9DxP9zolGhfDc8WAA--.1715S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXw43JFy7Cr17uFy5uw4DJwb_yoW5AF4fpr
-        ZrCwn5Gr4rWFZ7Za4rtry8ur4rA3sYgFWfuFW7CF18uas5Zry7Ar4fG3WUXF1jqrW8t3WY
-        qF1Fq3y7tanFkaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkab7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwV
-        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Cr0_Gr
-        1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_Gw4l42xK
-        82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
-        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48J
-        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
-        IF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
-        x4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07bYkskUUUUU=
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+        id S1726572AbgIUL5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 07:57:55 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:53828 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726326AbgIUL5y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 07:57:54 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08LBVcDV112559;
+        Mon, 21 Sep 2020 07:57:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=cv9aYg5ay77N/571CLKcX48/pmMEZzaqBIwgKv0yXdQ=;
+ b=qJk8j16Esfd3v4YioGAqeIwU8F9xPZyGp0O0RtEm0TTpBTP5mjtg+CcHNwrPwkSifuop
+ uvlZtsrTvk5HZHK/WHkTrmt4IS8S/HbrLhTUF2OzK4eO/pbM6zhmRX4kw3XfKaY7AWgV
+ sst9OzVUglkrpZZBlibQ7xjJ6mlaL76LP5S0yZ4KjmwcBLo6k9ZPhnev4vpmt2IdnamI
+ vOMbClXg7pOf9yz/kYZyQT89q8nGiIDkSc7qlEPGUxhYCJyTnOzCcIxhXpRKDeDllA2I
+ SND6/701VTNjAu/rCSJP43iIGXyp9hmqQEFiMPlMd+o2rRgnUPWCSNCLyw/g5bXd5iRk Eg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33pt9b2p1x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Sep 2020 07:57:52 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08LBVlpw113422;
+        Mon, 21 Sep 2020 07:57:51 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33pt9b2p1g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Sep 2020 07:57:51 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08LBvM3p025114;
+        Mon, 21 Sep 2020 11:57:50 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06fra.de.ibm.com with ESMTP id 33n98gs1pe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Sep 2020 11:57:49 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08LBuCBO33358210
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 21 Sep 2020 11:56:12 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F0F04A404D;
+        Mon, 21 Sep 2020 11:57:46 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 72DA6A4051;
+        Mon, 21 Sep 2020 11:57:46 +0000 (GMT)
+Received: from oc2783563651 (unknown [9.145.8.1])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 21 Sep 2020 11:57:46 +0000 (GMT)
+Date:   Mon, 21 Sep 2020 13:56:55 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        pmorel@linux.ibm.com, alex.williamson@redhat.com,
+        cohuck@redhat.com, kwankhede@nvidia.com
+Subject: Re: [PATCH] s390/vfio-ap: fix unregister GISC when KVM is already
+ gone results in OOPS
+Message-ID: <20200921135655.152c77c6.pasic@linux.ibm.com>
+In-Reply-To: <a108cd19-8c4b-908f-844d-5717ca405559@de.ibm.com>
+References: <20200918170234.5807-1-akrowiak@linux.ibm.com>
+        <a108cd19-8c4b-908f-844d-5717ca405559@de.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-21_03:2020-09-21,2020-09-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ mlxlogscore=999 suspectscore=2 phishscore=0 lowpriorityscore=0
+ malwarescore=0 clxscore=1011 mlxscore=0 spamscore=0 adultscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009210082
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit a94e4f24ec83 ("MIPS: init: Drop boot_mem_map") left
-add_memory_region() for historical reason. Machine cannot start normally
-when use "mem=" on the Loongson64 platform because parsing "mem=" calls
-memblock_add() by add_memory_region(). Loongson64 always enable NUMA and
-need memblock_add_node().
+On Mon, 21 Sep 2020 07:48:58 +0200
+Christian Borntraeger <borntraeger@de.ibm.com> wrote:
 
-Replace add_memory_rigion(start, size, BOOT_MEM_RAM) with a weak function
-which named mips_memblock_add. For Loongson64, override mips_memblock_add
-at loongson64/numa.c. "memmap=" is similar to "mem=", replace it too.
+> 
+> 
+> On 18.09.20 19:02, Tony Krowiak wrote:
+> > Attempting to unregister Guest Interruption Subclass (GISC) when the
+> > link between the matrix mdev and KVM has been removed results in the
+> > following:
+> > 
+> >    "Kernel panic -not syncing: Fatal exception: panic_on_oops"
+> 
+> I think the full backtrace would be better in case someone runs into this
+> and needs to compare this patch to its oops. This also makes it easier to
+> understand the fix. 
+> > 
+> > This patch fixes this bug by verifying the matrix mdev and KVM are still
+> > linked prior to unregistering the GISC.
+> > 
+> > Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> 
+> Do we need a Fixes tag and cc stable?
+> 
 
-Signed-off-by: Jinyang He <hejinyang@loongson.cn>
----
- arch/mips/include/asm/bootinfo.h | 1 +
- arch/mips/kernel/setup.c         | 9 +++++++--
- arch/mips/loongson64/numa.c      | 8 ++++++++
- 3 files changed, 16 insertions(+), 2 deletions(-)
+I believe we do!
 
-diff --git a/arch/mips/include/asm/bootinfo.h b/arch/mips/include/asm/bootinfo.h
-index 147c932..66fef4c 100644
---- a/arch/mips/include/asm/bootinfo.h
-+++ b/arch/mips/include/asm/bootinfo.h
-@@ -96,6 +96,7 @@ extern unsigned long mips_machtype;
- 
- extern void add_memory_region(phys_addr_t start, phys_addr_t size, long type);
- extern void detect_memory_region(phys_addr_t start, phys_addr_t sz_min,  phys_addr_t sz_max);
-+extern void mips_memblock_add(phys_addr_t start, phys_addr_t size);
- 
- extern void prom_init(void);
- extern void prom_free_prom_memory(void);
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index bf5f5ac..ef84b4d 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -149,6 +149,11 @@ void __init detect_memory_region(phys_addr_t start, phys_addr_t sz_min, phys_add
- 	add_memory_region(start, size, BOOT_MEM_RAM);
- }
- 
-+void __init __weak mips_memblock_add(phys_addr_t start, phys_addr_t size)
-+{
-+	memblock_add(start, size);
-+}
-+
- /*
-  * Manage initrd
-  */
-@@ -400,7 +405,7 @@ static int __init early_parse_mem(char *p)
- 	if (*p == '@')
- 		start = memparse(p + 1, &p);
- 
--	add_memory_region(start, size, BOOT_MEM_RAM);
-+	mips_memblock_add(start, size);
- 
- 	return 0;
- }
-@@ -426,7 +431,7 @@ static int __init early_parse_memmap(char *p)
- 
- 	if (*p == '@') {
- 		start_at = memparse(p+1, &p);
--		add_memory_region(start_at, mem_size, BOOT_MEM_RAM);
-+		mips_memblock_add(start_at, mem_size);
- 	} else if (*p == '#') {
- 		pr_err("\"memmap=nn#ss\" (force ACPI data) invalid on MIPS\n");
- 		return -EINVAL;
-diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
-index ea8bb1b..d8ecdf2 100644
---- a/arch/mips/loongson64/numa.c
-+++ b/arch/mips/loongson64/numa.c
-@@ -257,6 +257,14 @@ void __init mem_init(void)
- 	mem_init_print_info(NULL);
- }
- 
-+void __init mips_memblock_add(phys_addr_t start, phys_addr_t size)
-+{
-+	u64 node_id;
-+
-+	node_id = (start >> 44) & 3;
-+	memblock_add_node(start, size, node_id);
-+}
-+
- /* All PCI device belongs to logical Node-0 */
- int pcibus_to_node(struct pci_bus *bus)
- {
--- 
-2.1.0
+> 
+> > ---
+> >  drivers/s390/crypto/vfio_ap_ops.c | 14 +++++++++-----
+> >  1 file changed, 9 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+> > index e0bde8518745..847a88642644 100644
+> > --- a/drivers/s390/crypto/vfio_ap_ops.c
+> > +++ b/drivers/s390/crypto/vfio_ap_ops.c
+> > @@ -119,11 +119,15 @@ static void vfio_ap_wait_for_irqclear(int apqn)
+> >   */
+> >  static void vfio_ap_free_aqic_resources(struct vfio_ap_queue *q)
+> >  {
+> > -	if (q->saved_isc != VFIO_AP_ISC_INVALID && q->matrix_mdev)
+> 
+> So we already check for q->matrix_mdev here
+> 
+> > -		kvm_s390_gisc_unregister(q->matrix_mdev->kvm, q->saved_isc);
+> > -	if (q->saved_pfn && q->matrix_mdev)
+> 
+> and here
+> > -		vfio_unpin_pages(mdev_dev(q->matrix_mdev->mdev),
+> > -				 &q->saved_pfn, 1);
+> > +	if (q->matrix_mdev) {
+> > +		if (q->saved_isc != VFIO_AP_ISC_INVALID && q->matrix_mdev->kvm)
+>                                                            ^^^^ and this is the only
+> 		new check? Cant we just add this condition to the first if?
+
+You are technically right, but I'm not comfortable with my level of
+understanding of this logic regardless of the coding style. Will ask
+some questions directly.
+
+Regards,
+Halil
+
+> 
+> > +			kvm_s390_gisc_unregister(q->matrix_mdev->kvm,
+> > +						 q->saved_isc);
+> > +		if (q->saved_pfn)
+> > +			vfio_unpin_pages(mdev_dev(q->matrix_mdev->mdev),
+> > +					 &q->saved_pfn, 1);
+> > +	}
+> > +
+> >  	q->saved_pfn = 0;
+> >  	q->saved_isc = VFIO_AP_ISC_INVALID;
+> >  }
+> > 
 
