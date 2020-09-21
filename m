@@ -2,249 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FA2B271A51
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 07:11:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B61C271A53
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 07:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726415AbgIUFLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 01:11:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726186AbgIUFLY (ORCPT
+        id S1726211AbgIUFMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 01:12:22 -0400
+Received: from mail-io1-f80.google.com ([209.85.166.80]:37739 "EHLO
+        mail-io1-f80.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726186AbgIUFMW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 01:11:24 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918E7C061755;
-        Sun, 20 Sep 2020 22:11:23 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id z4so11262868wrr.4;
-        Sun, 20 Sep 2020 22:11:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=05ns352SOrrVFAHyev2BbDOaiF0T0xpSQqopABvWeIE=;
-        b=CHT9cqwY/wwWgjjUAftQ2LXqv+tIdJiNSL743W4XVqiEJFV4keFyZhWpLTr86Nx9Q6
-         50pjuaTxW+P5gCNXH24RrOC9/H4+sbVWhe8cuisYoLGxERe7sIJAgr6U+n66msYElY/+
-         KhrY3eyWREMfTqYh5zdam7+l0p1KDB8Je+ENB+u+L6O6fQVb/eUAzfkTkJgntoOFvmrb
-         PaL0IncS3ALswc7+IT48x3YbKIHYIVqY3ghHbaR/DX0yyUXTtxnYreLzepGLwb8hkaAb
-         y5GCDWhWOzn0qmB2d0LVtUBpFLuIvnUjOooQtm8nUJ9HrVV7qpOwMGerlc/PtiNsSgCO
-         hOoA==
+        Mon, 21 Sep 2020 01:12:22 -0400
+Received: by mail-io1-f80.google.com with SMTP id 80so9213131iou.4
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 22:12:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=05ns352SOrrVFAHyev2BbDOaiF0T0xpSQqopABvWeIE=;
-        b=nsRoo/l8mH3KUvg0UShywlD0P8IjKpTnthrVFaPu8BF87N8bj1EYPQYZ+GO2tZvzkW
-         FUnHU7CN582kxzRTY/bzx64V8EVcMeAUUz2tfPFAzmW+mHsHwlxCDncgHdr7BL7PKM+R
-         Q0DzyodXecWyMNMJYJhNlQDuRsRoJ1xGLGtVj4hI/jUGoGhOrVSNTlzEzuExq1s660Rp
-         /kdGBx4fPRjPchRs7PhdK4VEBZ74ZC8lJpF81e3Hw3+63ficXlrHtjy7fIKVDJXvOU07
-         dTdYPNki+/YuTaIdnTIRkPjwS63U4BJGcz2IZZUPq2qeM5SQq/mGR1rwS68iXkECoV/K
-         1hPw==
-X-Gm-Message-State: AOAM531lMQ1GqqUfj1x1ziZwPLxr4TtvRzvgzaQG8FnHg5NhbJZUXyXv
-        vw1fIAZPX63wkeEjrq+xQdjXrtqJR5Q5McFmwME=
-X-Google-Smtp-Source: ABdhPJyqXrT5bV8lr4wUwNbGvZ+Vxmm2v8GZ3UpXEsjExaqhw0ahbIg+bwDl0ZnGv/Pm9EzzrImHlIbM79DRxdefmYI=
-X-Received: by 2002:a5d:43cf:: with SMTP id v15mr51505782wrr.269.1600665081222;
- Sun, 20 Sep 2020 22:11:21 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Ds3GkKEaOskN3v3iZHyWFgI5IXn4mwKM9v/O5vRR7ew=;
+        b=nshjlt421wVBGf0rtk3n4b/0s0fwaRE04YMD4ccE8JriMh3wakK6wB2fcy/ZYLNQOB
+         6iMhNWVltCqNTm+E9sr4aKDDLSSMjjkjw2+UDzpbqacYbJNCft49pLnO34PVJl8zOVtK
+         6cUPqkHa5gZ/2LjxZeuOcxSdx+lTxWOWW1ygDadsbPswgty2BQTkx5hVV+VNUhW34IIB
+         Lb6ezNQOVyJ9uGVUCVCEv18feto80N9rxqrdvXZno9iqCK8URHsgqVDixI2nCnta4jjR
+         Q/xJ3bHXAhYL9o9FNEMVLlXPqNV6eBBeh4pKMK0bDaO21Ydp58DWlqPGli3jx7w/SiYS
+         /P9A==
+X-Gm-Message-State: AOAM530i6qL4ddFbnTF5UUXIYJqcMf9nzGTtB8v5gdcrIKCtgaMHDetC
+        6TA8zSMHseJWCkYpcFeAALclYWcnsHkVVfDEpXrXjbeW+t0Q
+X-Google-Smtp-Source: ABdhPJz+F8J8NwBY2tAz5v72BRt9HldYud/npOCxSObZ0/VIVnPtUTjwJ7fAq4nkUtQT3P/8MkzG7djOAQoPkTBZF3vMFDlf142m
 MIME-Version: 1.0
-References: <20200917194341.16272-1-ben.levinsky@xilinx.com>
- <20200917194341.16272-6-ben.levinsky@xilinx.com> <20200917221120.GA15530@xaphan>
- <BYAPR02MB44073E7A3BEA401FF4684E95B53E0@BYAPR02MB4407.namprd02.prod.outlook.com>
- <BYAPR02MB4407A552ECBA907DFC3CEC91B53E0@BYAPR02MB4407.namprd02.prod.outlook.com>
- <20200918160721.GD15530@xaphan> <BYAPR02MB44073FBEF86F4AA2379D8A11B53F0@BYAPR02MB4407.namprd02.prod.outlook.com>
- <20200918190643.GA172254@xaphan> <CAA07jV9WfTTLRwh3kmy1985p4C1m37wQJQAHzLdK2cn4f8HENw@mail.gmail.com>
- <BYAPR02MB4407AA5D63EBAC7BEC93CB62B53D0@BYAPR02MB4407.namprd02.prod.outlook.com>
-In-Reply-To: <BYAPR02MB4407AA5D63EBAC7BEC93CB62B53D0@BYAPR02MB4407.namprd02.prod.outlook.com>
-From:   Wendy Liang <sunnyliangjy@gmail.com>
-Date:   Sun, 20 Sep 2020 22:11:10 -0700
-Message-ID: <CAA07jV-CUvOqDne8Y9HRWaGCpAjKePt_yYedZVAxNGXeUogy-Q@mail.gmail.com>
-Subject: Re: RE: RE: [PATCH v14 5/5] remoteproc: Add initial zynqmp R5
- remoteproc driver
-To:     Ben Levinsky <BLEVINSK@xilinx.com>
-Cc:     Michael Auchter <michael.auchter@ni.com>,
-        "punit1.agrawal@toshiba.co.jp" <punit1.agrawal@toshiba.co.jp>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
+X-Received: by 2002:a5e:9419:: with SMTP id q25mr35583038ioj.205.1600665141281;
+ Sun, 20 Sep 2020 22:12:21 -0700 (PDT)
+Date:   Sun, 20 Sep 2020 22:12:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000026880b05afcbe562@google.com>
+Subject: KMSAN: uninit-value in hsr_fill_frame_info
+From:   syzbot <syzbot+e267bed19bfc5478fb33@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, glider@google.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, m-karicheri2@ti.com,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ben
+Hello,
 
-On Sun, Sep 20, 2020 at 4:16 PM Ben Levinsky <BLEVINSK@xilinx.com> wrote:
->
-> Hi All,
->
-> > -----Original Message-----
-> > From: Wendy Liang <sunnyliangjy@gmail.com>
-> > Sent: Friday, September 18, 2020 6:53 PM
-> > To: Michael Auchter <michael.auchter@ni.com>
-> > Cc: Ben Levinsky <BLEVINSK@xilinx.com>; punit1.agrawal@toshiba.co.jp;
-> > devicetree@vger.kernel.org; linux-remoteproc@vger.kernel.org; linux-
-> > kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org
-> > Subject: Re: RE: RE: [PATCH v14 5/5] remoteproc: Add initial zynqmp R5
-> > remoteproc driver
-> >
-> > HI Michael, Ben, Punit,
-> >
-> > On Fri, Sep 18, 2020 at 12:08 PM Michael Auchter <michael.auchter@ni.co=
-m>
-> > wrote:
-> > >
-> > > Hey Ben,
-> > >
-> > > On Fri, Sep 18, 2020 at 06:01:19PM +0000, Ben Levinsky wrote:
-> > > > Hi Michael, Punit,
-> > > >
-> > > > > -----Original Message-----
-> > > > > From: Michael Auchter <michael.auchter@ni.com>
-> > > > > Sent: Friday, September 18, 2020 9:07 AM
-> > > > > To: Ben Levinsky <BLEVINSK@xilinx.com>
-> > > > > Cc: devicetree@vger.kernel.org; linux-remoteproc@vger.kernel.org;
-> > linux-
-> > > > > kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org
-> > > > > Subject: Re: RE: [PATCH v14 5/5] remoteproc: Add initial zynqmp R=
-5
-> > > > > remoteproc driver
-> > > > >
-> > > > > On Thu, Sep 17, 2020 at 10:50:42PM +0000, Ben Levinsky wrote:
-> > > > > > In addition to device tree, is there particular linker script y=
-ou use
-> > > > > > for your R5 application? For example with OCM? As presently thi=
-s
-> > > > > > driver only has DDR and TCM as supported regions to load into
-> > > > >
-> > > > > The firmware is being loaded to TCM.
-> > > > >
-> > > > > I'm able to use this driver to load and run my firmware on both R=
-5
-> > > > > cores, but only after I change the incorrect:
-> > > > >
-> > > > >     rpu_mode =3D lockstep_mode
-> > > > >
-> > > > > assignment to:
-> > > > >
-> > > > >     rpu_mode =3D lockstep_mode ? PM_RPU_MODE_LOCKSTEP
-> > > > >                              : PM_RPU_MODE_SPLIT;
-> > > > There was a point raised by Punit that as "it is possible to set R5=
- to
-> > > > operatore in split or lock-step mode dynamically" which is true and
-> > > > can be done via sysfs and the Xilinx firmware kernel code.
-> > >
-> > > I'm not familiar with this, and don't see an obvious way to do this
-> > > (from looking at drivers/firmware/xilinx/). Can you point me to this
-> > > code?
-> > >
-> [Ben Levinsky] A way to do this, though it seems later comments show it i=
-s not an implementation to pursue, is use the RPU configuration API and pre=
-sent it via sysfs interface a la https://xilinx-wiki.atlassian.net/wiki/spa=
-ces/A/pages/18842232/Zynq+UltraScale+MPSoC+Power+Management+-+Linux+Kernel#=
-ZynqUltraScale%EF%BC%8BMPSoCPowerManagement-LinuxKernel-EnableClock
-> > > > A suggestion that might clean up the driver so that the whole
-> > > > rpu_mode, tcm_mode configuration can be simplified and pulled out o=
-f
-> > > > the driver:
-> > > > - as Punit suggested, remove the lockstep-mode property
-> > > > - the zynqmp_remoteproc_r5 driver ONLY loads firmware and does
-> > start/stop.
-> > > > - the zynqmp_remoteproc_r5 driver does not configure and memory
-> > regions or the RPU. Let the Xilinx firmware sysfs interface handle this=
-.
-> > >
-> > > I don't think this is a good approach.
-> [Ben Levinsky] ok, noted. Can keep the configuration but still as wendy s=
-aid just have lockstep property to denote lockstep mode in RPU and otherwis=
-e be split, for simplicity?
-> > [Wendy] The TCMs are presented differently in the system depending on
-> > if RPU is in
-> > lockstep or split mode.
-> >
-> > Not sure if it is allowed to list TCMs registers properties for both
-> > split mode and lockstep
-> > mode in the same device node.
-> >
-> > Even though, driver can have this information in the code, but I feel
-> > the device tree is a
-> > better place for this information.
-> > And also for predefined shared memories, you will need to know the RPU
-> > op mode ahead,
-> > so that you can specify which shared memories belong to which RPU.
-> >
-> > To dynamic setup the RPU mode, besides sysfs, setup, if remoteproc can
-> > support
-> > device tree overlay, the RPUs can be described with dtbo and loaded at
-> > runtime.
-> >
-> > Just want to understand the case which needs to set  RPU mode at runtim=
-e?
-> > I think testing can be one case.
-> >
-> [Ben Levinsky] for testing, so far it has been r50/1 split and r5 lockste=
-p
-[Wendy] I tried to understand the need to change the RPU mode at runtime.
-What I can think of is for testing purposes.
+syzbot found the following issue on:
 
-Thanks,
-Wendy
+HEAD commit:    c5a13b33 kmsan: clang-format core
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=13ef204b900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=20f149ad694ba4be
+dashboard link: https://syzkaller.appspot.com/bug?extid=e267bed19bfc5478fb33
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1015be73900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1185669b900000
 
-> > Best Regards,
-> > Wendy
-> >
-> > > - How will someone know to configure the RPU mode and TCM mode via
-> > sysfs?
-> > > - What happens when someone changes the RPU mode after remoteproc
-> > has
-> > >   already booted some firmware on it?
-> > > - What if the kernel is the one booting the R5, not the user?
-> > >
-> > > Split vs. lockstep, IMO, needs to be specified as part of the device
-> > > tree, and this driver needs to handle configuring the RPU mode and TC=
-M
-> > > modes appropriately.
-> > >
-> [Ben Levinsky] Ok, as Wendy suggested would instead the presence of a "lo=
-ckstep=3Dmode" property indicate lockstep mode and otherwise imply split mo=
-de?
-> > > Split vs. lockstep already necessitates different entries in the devi=
-ce
-> > > tree:
-> > > - In the binding, each core references its TCMs via the
-> > >   meta-memory-regions phandles, and the referenced nodes necessarily
-> > >   encode this size. In split mode, each core has access to 64K of
-> > >   TCMA/TCMB, while in lockstep R5 0 has access to 128K of TCMA/TCMB. =
-So,
-> > >   the "xlnx,tcm" nodes' reg entries need to differ between lockstep a=
-nd
-> > >   split.
-> > > - In lockstep mode, it does not make sense to have both r5@0 and r5@1
-> > >   child nodes: only r5@0 makes sense. Though, I just realized that I
-> > >   think this driver will currently permit that, and register two
-> > >   remoteprocs even in lockstep mode... What happens if someone tries =
-to
-> > >   load firmware on to r5_1 when they're in lockstep mode? This should
-> > >   probably be prevented.
-> > >
-> [Ben Levinsky] Good Point. the loading of R5 1 while in lockstep is an un=
-covered corner case.. for this, before loading/starting or requesting memor=
-y the state of global rpu mode can be checked and this can act as a guard f=
-or probing a remoteproc instance for r5-1 if either is in lockstep and simi=
-lar safeguard for firmware loading for R5-1 if in lockstep mode
->
-> That is, add the lockstep property only if in lockstep mode and use the p=
-resence of it or lack thereof for subsequent, single R5-specific driver rem=
-oteproc R5 probes or firmware loading
->
-> In addition to the above property and its behavior, would correcting the =
-inconsistencies of the Documentation vs the split/lockstep code in the remo=
-teproc r5 device tree binding, its corresponding remoteproc r5 driver addre=
-ss the above concerns as well as the memory handling as you noted earlier?
->
-> Also in the next series I can point to a sample R5 application and device=
- trees for the split mode and lockstep cases I used for testing in the cove=
-r letter.
->
-> > > Thanks,
-> > >  Michael
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e267bed19bfc5478fb33@syzkaller.appspotmail.com
+
+hsr0: VLAN not yet supported
+=====================================================
+BUG: KMSAN: uninit-value in hsr_fill_frame_info+0x3d3/0x570 net/hsr/hsr_forward.c:457
+CPU: 1 PID: 8700 Comm: syz-executor512 Not tainted 5.9.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:122
+ __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:219
+ hsr_fill_frame_info+0x3d3/0x570 net/hsr/hsr_forward.c:457
+ fill_frame_info net/hsr/hsr_forward.c:520 [inline]
+ hsr_forward_skb+0xc63/0x2610 net/hsr/hsr_forward.c:537
+ hsr_dev_xmit+0x133/0x230 net/hsr/hsr_device.c:220
+ __netdev_start_xmit include/linux/netdevice.h:4634 [inline]
+ netdev_start_xmit include/linux/netdevice.h:4648 [inline]
+ xmit_one+0x3cf/0x750 net/core/dev.c:3561
+ dev_hard_start_xmit net/core/dev.c:3577 [inline]
+ __dev_queue_xmit+0x3aad/0x4470 net/core/dev.c:4136
+ dev_queue_xmit+0x4b/0x60 net/core/dev.c:4169
+ packet_snd net/packet/af_packet.c:2989 [inline]
+ packet_sendmsg+0x8542/0x9a80 net/packet/af_packet.c:3014
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg net/socket.c:671 [inline]
+ __sys_sendto+0x9dc/0xc80 net/socket.c:1992
+ __do_sys_sendto net/socket.c:2004 [inline]
+ __se_sys_sendto+0x107/0x130 net/socket.c:2000
+ __x64_sys_sendto+0x6e/0x90 net/socket.c:2000
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x443d79
+Code: e8 8c 07 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 bb 09 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffdeb5a7c88 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000443d79
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000004
+RBP: 00007ffdeb5a7ca0 R08: 0000000020000000 R09: 0000000000000014
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffdeb5a7cb0
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+
+Uninit was created at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:143 [inline]
+ kmsan_internal_poison_shadow+0x66/0xd0 mm/kmsan/kmsan.c:126
+ kmsan_slab_alloc+0x8a/0xe0 mm/kmsan/kmsan_hooks.c:80
+ slab_alloc_node mm/slub.c:2907 [inline]
+ __kmalloc_node_track_caller+0x9aa/0x12f0 mm/slub.c:4511
+ __kmalloc_reserve net/core/skbuff.c:142 [inline]
+ __alloc_skb+0x35f/0xb30 net/core/skbuff.c:210
+ alloc_skb include/linux/skbuff.h:1094 [inline]
+ alloc_skb_with_frags+0x1f2/0xc10 net/core/skbuff.c:5771
+ sock_alloc_send_pskb+0xc83/0xe50 net/core/sock.c:2348
+ packet_alloc_skb net/packet/af_packet.c:2837 [inline]
+ packet_snd net/packet/af_packet.c:2932 [inline]
+ packet_sendmsg+0x6abb/0x9a80 net/packet/af_packet.c:3014
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg net/socket.c:671 [inline]
+ __sys_sendto+0x9dc/0xc80 net/socket.c:1992
+ __do_sys_sendto net/socket.c:2004 [inline]
+ __se_sys_sendto+0x107/0x130 net/socket.c:2000
+ __x64_sys_sendto+0x6e/0x90 net/socket.c:2000
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+=====================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
