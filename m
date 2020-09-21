@@ -2,137 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9576272231
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7AE027223B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:23:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbgIULVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 07:21:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726406AbgIULVa (ORCPT
+        id S1726757AbgIULXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 07:23:22 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:9480 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726367AbgIULXW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 07:21:30 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE77CC061755;
-        Mon, 21 Sep 2020 04:21:29 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id z9so12216782wmk.1;
-        Mon, 21 Sep 2020 04:21:29 -0700 (PDT)
+        Mon, 21 Sep 2020 07:23:22 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=0ZnIRDHof5llKXKRdM1UTdt+GPv/4voJnfxD2ooD47I=;
-        b=kttlAkC1AoyTyET4BKsIM8keD3CJpbyDi10VAiTrTGxPJQ4Kj8XE5+nitoFbm2PsZC
-         S4HSpUGhV4mUeWY4JR5AuvrfyBUweWZbCBLqHsYoqMdt9ZN3RkApKeg+/5eWheV6leou
-         cMzOEqRMQNQI6vR3TxtgUMDIV8FVbQJ5pyPT1PONXZDlCa5MGLZdUeR0NmKu6SSQyQsL
-         0CTXKKBsN1FUL58poNXtl60kOXOJFIlYXJap9BDzm7fb4juhp1s+yoqP0jCdCDtFbgW4
-         /NaoczVNVeKWKFz9LCI2ljVBZBU8PTw5mpiGrq7gm5AiPziA5i3YGHX3SqlezjWKW7tA
-         peaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0ZnIRDHof5llKXKRdM1UTdt+GPv/4voJnfxD2ooD47I=;
-        b=gRx9A1aRURjJTwGw/edXSRuXdfXYkShIUa97nDJqg0PhCNtYgZj3XGG8OLYCWlUcXC
-         EwHqeyoiFPHx/i+DYDIjXzcFarveTANMLoJKuCd0STXEcLz6WiYt5n/BErfrR4ZHATLu
-         HynaSqULkHKBGcwPWkHrCMXD4e4wEHnQtqZ96ypjijabY25xkPL4WwxJPWC4MnlhtWNc
-         Q0RYsTojFs4ZCV0W6sffOGIyCxvQSG+BMowO6N+a6PnfaC7qT2MvPsdiJjII0zaqykzQ
-         DbSLBZmIxAUvVKtlKGbokOFdpDT2oyuVqGpMuIUPlhGr8f5udw1RA6zpEMUGoRph8MWH
-         8NAg==
-X-Gm-Message-State: AOAM530BLN496C4Oi4+HAlI/spFpo+5gx6KPPriufSUusEN1m73EXD5k
-        6Nha8qfO4RkRLkKiTSm+CLE=
-X-Google-Smtp-Source: ABdhPJzCvxOm652pEtwWdGmLCokCFTSR23EaxWY7c9VoYRNQezGBdnQCD+zwQald5Jqbhm21QCU9Ug==
-X-Received: by 2002:a7b:cc88:: with SMTP id p8mr29826223wma.150.1600687288359;
-        Mon, 21 Sep 2020 04:21:28 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id 2sm18627914wmf.25.2020.09.21.04.21.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 04:21:27 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 13:21:25 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 21/34] i2c: tegra: Don't fall back to PIO mode if DMA
- configuration fails
-Message-ID: <20200921112125.GI3950626@ulmo>
-References: <20200908224006.25636-1-digetx@gmail.com>
- <20200908224006.25636-22-digetx@gmail.com>
- <20200917114716.GZ3515672@ulmo>
- <b2f68a72-9117-89d1-70f3-750ddc235482@gmail.com>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1600687402; x=1632223402;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=TwH9MzHRv79x/EUOe5/xNeRXZrG6bmMJIXJfLBWxxGQ=;
+  b=YF2wvJ1D6mpruSYmJ4xIQh+LGmjQime2fvQqIINAVFuttxQGz+J3jxow
+   VXVBi1UnVwi0ACZA8GuTOzurUJx3Y59PwAcQrq/rTDccEb9ZCg3Ha5gfr
+   gsw2q9yIy8uU6/pbI8Fnm0qonIEt6blprcKxJM8WQghlL5eviKgBBXtDY
+   8=;
+X-IronPort-AV: E=Sophos;i="5.77,286,1596499200"; 
+   d="scan'208";a="77900423"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-c7c08562.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 21 Sep 2020 11:23:02 +0000
+Received: from EX13D19EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1e-c7c08562.us-east-1.amazon.com (Postfix) with ESMTPS id D5CD3240FD9;
+        Mon, 21 Sep 2020 11:22:58 +0000 (UTC)
+Received: from 8c85908914bf.ant.amazon.com (10.43.161.85) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 21 Sep 2020 11:22:50 +0000
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Oded Gabbay <oded.gabbay@gmail.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, <izur@habana.ai>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, SW_Drivers <SW_Drivers@habana.ai>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        <linux-rdma@vger.kernel.org>, Olof Johansson <olof@lixom.net>
+References: <20200918125014.GR8409@ziepe.ca>
+ <CAFCwf12oK4RXYhgzXiN_YvXvjoW1Fwx1xBzR3Y5E4RLvzn_vhA@mail.gmail.com>
+ <20200918132645.GS8409@ziepe.ca>
+ <CAFCwf109t5=GuNvqTqLUCiYbjLC6o2xVoLY5C-SBqbN66f6wxg@mail.gmail.com>
+ <20200918135915.GT8409@ziepe.ca>
+ <CAFCwf13rJgb4=as7yW-2ZHvSnUd2NK1GP0UKKjyMfkB3vsnE5w@mail.gmail.com>
+ <20200918141909.GU8409@ziepe.ca>
+ <CAFCwf121_UNivhfPfO6uFoHbF+2Odeb1c3+482bOXeOZUsEnug@mail.gmail.com>
+ <20200918150735.GV8409@ziepe.ca>
+ <CAFCwf13y1VVy90zAoBPC-Gfj6mwMVbefh3fxKDVneuscp4esqA@mail.gmail.com>
+ <20200918152852.GW8409@ziepe.ca>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <b0721756-d323-b95e-b2d2-ca3ce8d4a660@amazon.com>
+Date:   Mon, 21 Sep 2020 14:22:02 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="2xeD/fx0+7k8I/QN"
-Content-Disposition: inline
-In-Reply-To: <b2f68a72-9117-89d1-70f3-750ddc235482@gmail.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+In-Reply-To: <20200918152852.GW8409@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.161.85]
+X-ClientProxiedBy: EX13D30UWC002.ant.amazon.com (10.43.162.235) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 18/09/2020 18:28, Jason Gunthorpe wrote:
+> On Fri, Sep 18, 2020 at 06:15:52PM +0300, Oded Gabbay wrote:
+> 
+>> I'm sorry, but you won't be able to convince me here that I need to
+>> "enslave" my entire code to RDMA, just because my ASIC "also" has some
+>> RDMA ports.
+> 
+> You can't recreate common shared subsystems in a driver just because
+> you don't want to work with the subsystem.
+> 
+> I don't care what else the ASIC has. In Linux the netdev part is
+> exposed through netdev, the RDMA part through RDMA, the
+> totally-not-a-GPU part through drivers/misc.
+> 
+> It is always been this way. Chelsio didn't get to rebuild the SCSI
+> stack in their driver just because "storage is a small part of their
+> device"
+> 
+> Drivers are not allowed to re-implement I2C/SPI/etc without re-using
+> the comon code for that just because "I2C is a small part of their
+> device"
+> 
+> Exposing to userspace the creation of RoCE QPs and their related
+> objects are unambiguously a RDMA subsystem task. I don't even know how
+> you think you can argue it is not. It is your company proudly claiming
+> the device has 100G RoCE ports in all the marketing literature, after
+> all.
+> 
+> It is too bad the device has a non-standards compliant implementation
+> of RoCE so this will be a bit hard for you. Oh well.
 
---2xeD/fx0+7k8I/QN
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+What is considered a RoCE port in this case if it's not compliant with RoCE?
+Sounds like it's an implementation of RDMA over ethernet, not RoCE.
+Does GAUDI support UD/RC/.. QPs? Is it using a proprietary wire protocol?
+(BTW, Oded claims it's similar to nvlink, how is nvlink's implementation
+exposed? Or is it closed source?)
 
-On Thu, Sep 17, 2020 at 06:03:04PM +0300, Dmitry Osipenko wrote:
-> 17.09.2020 14:47, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > On Wed, Sep 09, 2020 at 01:39:53AM +0300, Dmitry Osipenko wrote:
-> >> The DMA code path has been tested well enough and the DMA configuration
-> >> performed by tegra_i2c_config_fifo_trig() shouldn't ever fail in pract=
-ice.
-> >> Hence let's remove the obscure transfer-mode switching in order to hav=
-e a
-> >> cleaner and simpler code. Now I2C transfer will be failed if DMA
-> >> configuration fails.
-> >>
-> >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> >> ---
-> >>  drivers/i2c/busses/i2c-tegra.c | 18 ++++++++++--------
-> >>  1 file changed, 10 insertions(+), 8 deletions(-)
-> >=20
-> > I'm not sure that's a good idea. It's always possible that the DMA setup
-> > is going to break because of something that's not related to the I2C
-> > driver itself. Having the system completely break instead of falling
-> > back to PIO mode seems like it would only complicate troubleshooting any
-> > such issues.
->=20
-> That code has zero test coverage because this problem never happens in
-> practice, hence it should be better to have it removed. We may consider
-> re-adding it back if there will be a real-world incident, okay?
-
-Again, I think throwing out fallbacks and error messages out the window
-just because they "don't happen in practice" is misguided. Just because
-they don't *usually* happen doesn't mean they can't happen. And in case
-they do happen we absolutely do want some way of dealing with it rather
-than just have the driver stop working without any explanation.
-
-Thierry
-
---2xeD/fx0+7k8I/QN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9ojLUACgkQ3SOs138+
-s6G1jBAAo7ALv/1b+UdZOVeHC+ZjxIDvuKeSkINgH09LfvSpEP0SE09rXlVrk1VJ
-tJkgVoeixIlCNCPPW62AVl91hiYdAoah2oywe8F5wrPuB06sGfcgaOrYTCGilYdt
-wN/wCRgHOYhqLB/sfe8vMS29hhxxA5V3F6uCUrdIhHsTv7L5i+g/v3FJsR3LHX3X
-aBMwKrO1Ku8gn5jySWeJRTjxnm8X+AhxTJepSS5kxxZALaS3mhLtbYO5qhZmiE0r
-xW7i+04SS5ILKdMWEC/xB1WFD7oVSAgzCd9ei7UWxFFUpLWzQ9upWNrLB01Ysap5
-lRCRk0PLyA56JdKQgHVUnjMpWpGk7zv/4NjQK5Hn/B3JFCw7CLYbmpWLJiqAWEwb
-Ov0SjbCuPeIMNdUlt0Ndlhqr6TeFjTg8h36oqaXZvdA0vYEXuGDVxFWbgLnvwemN
-nkAjxUe24kyeCze/RV0EzgpbldywDJe+/q+swkcF4t4f+/cbNXS3zIsxewSRpsN5
-IzQc4QRoPgE3dhCWEdi9X4DTWu3wDSXCBW7Plnw5zTekIsq5yMqL6RZOjT1mTv8z
-DWh/At1KaPDwZ10vH9zb1pmVQyNnUBNcTB/8YyqI+7ErMEoHsv2AcPBNjEd+qURQ
-xaalpSnh91hwMjyHRxoRW5JGBrq28zX28SfO7GXioeEa3qwAhQw=
-=wZn0
------END PGP SIGNATURE-----
-
---2xeD/fx0+7k8I/QN--
+Jason, how do you imagine GAUDI in the RDMA subsystem? Userspace control path
+verbs (used by hl-thunk?) and all data path verbs exposed as kverbs (used by
+habanalabs driver)?
+So neither any userspace verbs apps could use it nor kernel ULPs?
