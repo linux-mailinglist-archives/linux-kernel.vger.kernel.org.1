@@ -2,73 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32630271A36
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 06:51:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD6EB271A39
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 06:53:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726389AbgIUEvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 00:51:41 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13736 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726011AbgIUEvk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 00:51:40 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id EBD527101C9BF283D53A;
-        Mon, 21 Sep 2020 12:51:37 +0800 (CST)
-Received: from DESKTOP-8RFUVS3.china.huawei.com (10.174.185.226) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 21 Sep 2020 12:51:29 +0800
-From:   Zenghui Yu <yuzenghui@huawei.com>
-To:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <alex.williamson@redhat.com>, <cohuck@redhat.com>,
-        <wanghaibin.wang@huawei.com>, Zenghui Yu <yuzenghui@huawei.com>
-Subject: [PATCH v2 2/2] vfio/pci: Don't regenerate vconfig for all BARs if !bardirty
-Date:   Mon, 21 Sep 2020 12:51:16 +0800
-Message-ID: <20200921045116.258-2-yuzenghui@huawei.com>
-X-Mailer: git-send-email 2.23.0.windows.1
-In-Reply-To: <20200921045116.258-1-yuzenghui@huawei.com>
-References: <20200921045116.258-1-yuzenghui@huawei.com>
+        id S1726406AbgIUExF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 00:53:05 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:34340 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726011AbgIUExE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 00:53:04 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08L4qm3F104834;
+        Sun, 20 Sep 2020 23:52:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600663968;
+        bh=9uy99y5TKZJggG1dvxT3XStGw93Gtk7IkvWznY+qP3s=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=K4gIhkwolUAfm9iVFAchCwcLKjneOwbtczCbhfEJb0GxdRnrZXSxnS5IdVJnrbkNK
+         ePvICW/RFGMfgr3/260DoeM1KblpZ0umuirFakC8xUzASdO1YJ0jE/1RN1mVmR3cL/
+         1wazJS79T+GmZWJDPvRsIqF3kusrxjixhxJxqAk0=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08L4qmKx060489;
+        Sun, 20 Sep 2020 23:52:48 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Sun, 20
+ Sep 2020 23:52:48 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Sun, 20 Sep 2020 23:52:48 -0500
+Received: from [10.250.232.147] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08L4qgFL030746;
+        Sun, 20 Sep 2020 23:52:43 -0500
+Subject: Re: [PATCH v5 14/17] NTB: Add support for EPF PCI-Express
+ Non-Transparent Bridge
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>,
+        Tom Joseph <tjoseph@cadence.com>, Rob Herring <robh@kernel.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-pci@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-ntb@googlegroups.com>
+References: <20200918064227.1463-1-kishon@ti.com>
+ <20200918064227.1463-15-kishon@ti.com>
+ <93b651aa-23e5-9249-6b22-fef65806b007@infradead.org>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <c8b7fa2b-5586-3929-1e00-8473106935f9@ti.com>
+Date:   Mon, 21 Sep 2020 10:22:42 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.185.226]
-X-CFilter-Loop: Reflected
+In-Reply-To: <93b651aa-23e5-9249-6b22-fef65806b007@infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now we regenerate vconfig for all the BARs via vfio_bar_fixup(), every time
-any offset of any of them are read. Though BARs aren't re-read regularly,
-the regeneration can be avoid if no BARs had been written since they were
-last read, in which case the vdev->bardirty is false.
+Hi Randy,
 
-Let's predicate the vfio_bar_fixup() on the bardirty so that it can return
-immediately if !bardirty.
+On 18/09/20 9:45 pm, Randy Dunlap wrote:
+> On 9/17/20 11:42 PM, Kishon Vijay Abraham I wrote:
+>> diff --git a/drivers/ntb/hw/epf/Kconfig b/drivers/ntb/hw/epf/Kconfig
+>> new file mode 100644
+>> index 000000000000..6197d1aab344
+>> --- /dev/null
+>> +++ b/drivers/ntb/hw/epf/Kconfig
+>> @@ -0,0 +1,6 @@
+>> +config NTB_EPF
+>> +	tristate "Generic EPF Non-Transparent Bridge support"
+>> +	depends on m
+>> +	help
+>> +	  This driver supports EPF NTB on configurable endpoint.
+>> +	  If unsure, say N.
+> 
+> Hi,
+> Why is this driver restricted to 'm' (loadable module)?
+> I.e., it cannot be builtin.
 
-Suggested-by: Alex Williamson <alex.williamson@redhat.com>
-Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
----
-* From v1:
-  - Per Alex's suggestion, let vfio_bar_fixup() test vdev->bardirty to
-    avoid doing work if bardirty is false, instead of removing it entirely.
-  - Rewrite the commit message.
+I'm trying to keep all the host side PCI drivers corresponding to the
+devices configured using endpoint function drivers as modules and also
+not populate MODULE_DEVICE_TABLE() to prevent auto-loading.
 
- drivers/vfio/pci/vfio_pci_config.c | 3 +++
- 1 file changed, 3 insertions(+)
+The different endpoint function drivers (right now only pci-epf-test.c
+and pci-epf-ntb.c) can use the same device ID and vendorID for
+configuring the endpoint devices. So on the host side, it's possible an
+un-intended PCI driver can be bound to the device. So in-order to give
+users the flexibility of deciding the driver to be bound, I'm trying to
+keep it as modules. (Some driver like NTB also uses class code
+PCI_CLASS_MEMORY_RAM for binding a driver in addition to deviceID and
+vendorID but it need not be the case for all the drivers.)
 
-diff --git a/drivers/vfio/pci/vfio_pci_config.c b/drivers/vfio/pci/vfio_pci_config.c
-index d98843feddce..5e02ba07e8e8 100644
---- a/drivers/vfio/pci/vfio_pci_config.c
-+++ b/drivers/vfio/pci/vfio_pci_config.c
-@@ -467,6 +467,9 @@ static void vfio_bar_fixup(struct vfio_pci_device *vdev)
- 	__le32 *vbar;
- 	u64 mask;
- 
-+	if (!vdev->bardirty)
-+		return;
-+
- 	vbar = (__le32 *)&vdev->vconfig[PCI_BASE_ADDRESS_0];
- 
- 	for (i = 0; i < PCI_STD_NUM_BARS; i++, vbar++) {
--- 
-2.19.1
-
+Thanks
+Kishon
