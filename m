@@ -2,153 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 949BE2723C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:21:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBBA5272392
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727284AbgIUMVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 08:21:23 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:63814 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726818AbgIUMVV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 08:21:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1600690880; x=1632226880;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=qn6jZ4UFLuxC71uxugrvyS3dKHBS9Q4+NnM86Wt68xg=;
-  b=P1DJD6+dcI/FVsd/ubnloZuWcELTzN2lJqsBUbnIJGqLhOhbFGliJTp5
-   59CI7vctMvqDPVnci358nZSqzAgpKSlhZ/lFJca1fw9uWe0DaSLGTJsm7
-   P44g2JqyJNVRoWkId+7REAv/pupQ+sMj+GabvuImyHwA8GSTrMNOrCQLp
-   g=;
-X-IronPort-AV: E=Sophos;i="5.77,286,1596499200"; 
-   d="scan'208";a="69768544"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1a-af6a10df.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 21 Sep 2020 12:21:19 +0000
-Received: from EX13D16EUB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1a-af6a10df.us-east-1.amazon.com (Postfix) with ESMTPS id 845B6A1E3D;
-        Mon, 21 Sep 2020 12:21:17 +0000 (UTC)
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.161.71) by
- EX13D16EUB001.ant.amazon.com (10.43.166.28) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 21 Sep 2020 12:21:07 +0000
-From:   Andra Paraschiv <andraprs@amazon.com>
-To:     linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Anthony Liguori <aliguori@amazon.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        "David Duncan" <davdunc@amazon.com>,
-        Bjoern Doebel <doebel@amazon.de>,
-        "David Woodhouse" <dwmw@amazon.co.uk>,
-        Frank van der Linden <fllinden@amazon.com>,
-        Alexander Graf <graf@amazon.de>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "Karen Noel" <knoel@redhat.com>,
-        Martin Pohlack <mpohlack@amazon.de>,
-        Matt Wilson <msw@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stewart Smith <trawets@amazon.com>,
-        Uwe Dannowski <uwed@amazon.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        kvm <kvm@vger.kernel.org>,
-        ne-devel-upstream <ne-devel-upstream@amazon.com>,
-        Andra Paraschiv <andraprs@amazon.com>
-Subject: [PATCH v10 18/18] MAINTAINERS: Add entry for the Nitro Enclaves driver
-Date:   Mon, 21 Sep 2020 15:17:32 +0300
-Message-ID: <20200921121732.44291-19-andraprs@amazon.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
-In-Reply-To: <20200921121732.44291-1-andraprs@amazon.com>
-References: <20200921121732.44291-1-andraprs@amazon.com>
+        id S1726834AbgIUMSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 08:18:01 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:40604 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726341AbgIUMSB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 08:18:01 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 9969A8865FCCDABF473C;
+        Mon, 21 Sep 2020 20:17:56 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 21 Sep 2020 20:17:45 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH net-next v2] net: natsemi: Remove set but not used variable
+Date:   Mon, 21 Sep 2020 20:18:41 +0800
+Message-ID: <20200921121841.31682-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-Originating-IP: [10.43.161.71]
-X-ClientProxiedBy: EX13D06UWC002.ant.amazon.com (10.43.162.205) To
- EX13D16EUB001.ant.amazon.com (10.43.166.28)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add entry in the MAINTAINERS file for the Nitro Enclaves files such as
-the documentation, the header files, the driver itself and the user
-space sample.
+Fixes gcc '-Wunused-but-set-variable' warning:
 
-Changelog
+drivers/net/ethernet/natsemi/ns83820.c: In function ns83820_get_link_ksettings:
+drivers/net/ethernet/natsemi/ns83820.c:1210:11: warning: variable ‘tanar’ set but not used [-Wunused-but-set-variable]
 
-v9 -> v10
+`tanar` is never used, so remove it.
 
-* Update commit message to include the changelog before the SoB tag(s).
-
-v8 -> v9
-
-* Update the location of the documentation, as it has been moved to the
-  "virt" directory.
-
-v7 -> v8
-
-* No changes.
-
-v6 -> v7
-
-* No changes.
-
-v5 -> v6
-
-* No changes.
-
-v4 -> v5
-
-* No changes.
-
-v3 -> v4
-
-* No changes.
-
-v2 -> v3
-
-* Update file entries to be in alphabetical order.
-
-v1 -> v2
-
-* No changes.
-
-Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
-Reviewed-by: Alexander Graf <graf@amazon.com>
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- MAINTAINERS | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ drivers/net/ethernet/natsemi/ns83820.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d746519253c3..4bd4820a7f45 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12293,6 +12293,19 @@ S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/lftan/nios2.git
- F:	arch/nios2/
+diff --git a/drivers/net/ethernet/natsemi/ns83820.c b/drivers/net/ethernet/natsemi/ns83820.c
+index 8e24c7acf79b..144feb2d2622 100644
+--- a/drivers/net/ethernet/natsemi/ns83820.c
++++ b/drivers/net/ethernet/natsemi/ns83820.c
+@@ -1207,7 +1207,7 @@ static int ns83820_get_link_ksettings(struct net_device *ndev,
+ 				      struct ethtool_link_ksettings *cmd)
+ {
+ 	struct ns83820 *dev = PRIV(ndev);
+-	u32 cfg, tanar, tbicr;
++	u32 cfg, tbicr;
+ 	int fullduplex   = 0;
+ 	u32 supported;
  
-+NITRO ENCLAVES (NE)
-+M:	Andra Paraschiv <andraprs@amazon.com>
-+M:	Alexandru Vasile <lexnv@amazon.com>
-+M:	Alexandru Ciobotaru <alcioa@amazon.com>
-+L:	linux-kernel@vger.kernel.org
-+S:	Supported
-+W:	https://aws.amazon.com/ec2/nitro/nitro-enclaves/
-+F:	Documentation/virt/ne_overview.rst
-+F:	drivers/virt/nitro_enclaves/
-+F:	include/linux/nitro_enclaves.h
-+F:	include/uapi/linux/nitro_enclaves.h
-+F:	samples/nitro_enclaves/
-+
- NOHZ, DYNTICKS SUPPORT
- M:	Frederic Weisbecker <fweisbec@gmail.com>
- M:	Thomas Gleixner <tglx@linutronix.de>
+@@ -1226,8 +1226,8 @@ static int ns83820_get_link_ksettings(struct net_device *ndev,
+ 
+ 	/* read current configuration */
+ 	cfg   = readl(dev->base + CFG) ^ SPDSTS_POLARITY;
+-	tanar = readl(dev->base + TANAR);
++	readl(dev->base + TANAR);
+ 	tbicr = readl(dev->base + TBICR);
+ 
+ 	fullduplex = (cfg & CFG_DUPSTS) ? 1 : 0;
+ 
 -- 
-2.20.1 (Apple Git-117)
-
-
-
-
-Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
+2.17.1
 
