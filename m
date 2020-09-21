@@ -2,96 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D969272C18
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:27:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 283E7272BD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728494AbgIUQ1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:27:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53978 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726430AbgIUQ1T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:27:19 -0400
-Received: from localhost.localdomain (unknown [194.230.155.191])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E68612223E;
-        Mon, 21 Sep 2020 16:27:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600705638;
-        bh=e6E2P2BYXwVmCEmpSJPcXJWaHXTpyBF/68bjK1631TY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gqklv8QK+pLEBZnsQ3PyfqEj3QjNrO1ivWXstm8712DqS1gkPnghbR70d2eHpOBvB
-         ksJL7N1syixJxvInW/mZMrOMb1+XWTMuXE4WIh1cCyaxrruGHAuTd0fexNoaolloDh
-         mzvgfbytCWNGmh+HT6C8WwuGQW6J1S+I7UmOnvHU=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Pavel Machek <pavel@ucw.cz>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Shawn Tu <shawnx.tu@intel.com>,
-        Ricardo Ribalda <ribalda@kernel.org>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
-        Shunqian Zheng <zhengsq@rock-chips.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
-        Hyungwoo Yang <hyungwoo.yang@intel.com>,
-        Wenyou Yang <wenyou.yang@microchip.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 25/25] media: i2c: tvp5150: simplify getting state container
-Date:   Mon, 21 Sep 2020 18:23:42 +0200
-Message-Id: <20200921162342.7348-25-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200921162342.7348-1-krzk@kernel.org>
-References: <20200921162342.7348-1-krzk@kernel.org>
+        id S1728267AbgIUQYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:24:17 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:43083 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728103AbgIUQYP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:24:15 -0400
+Received: by mail-lf1-f65.google.com with SMTP id y2so14678671lfy.10;
+        Mon, 21 Sep 2020 09:24:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=s8QzOTOjah+WertfUySnnF7ugxfBVl0ryTdPuxS2HPo=;
+        b=VtnIyFnN5XZZ4Ns4rfNwz/wN+TXlLWOJFWy9izXWRd2JMKQXvEwOLOWpPRszT7HA0s
+         Zti46F59WDr2V7GQMg0T4NIOHzjq0Qyj5+7UMKHkVyerPG0GMb2PD9ye/V+Fuls5V8E7
+         bNNd1HTRxW0u3HZJQ7Vmz4rRBbNPqrbjTU2pghZX48fTVYQn1RJ1mxjpZZMwTQn/KjaA
+         yhaRG444hDSUqqGM2rXikWRzg/hO9tPVqCqkkLmubPhVUd9JpUlZadKGuz6UNL8wsfLl
+         XTHJxQ3Iyarc7cOU4CWLnWbcDTRbcRHsiL1QxRwNMMnJcDixpH+m1T9jI7qtSkxkpAy5
+         D1PA==
+X-Gm-Message-State: AOAM533ajgwcaev7aX59QVeS87doYQ7wTuPuyxo6Mu6VTI0atPbPeB9S
+        HzXKtd+Pagx5E5NcwWcxamQ=
+X-Google-Smtp-Source: ABdhPJybUCfGWS9WyBnXuiUJe8163Fh8P9TSwT4PuBFC7F6G9dUwdzn/m/W3hOebbEoXbHM0Y5gjbw==
+X-Received: by 2002:a19:6b08:: with SMTP id d8mr220904lfa.218.1600705452390;
+        Mon, 21 Sep 2020 09:24:12 -0700 (PDT)
+Received: from green.intra.ispras.ru (winnie.ispras.ru. [83.149.199.91])
+        by smtp.googlemail.com with ESMTPSA id x21sm2686642lff.67.2020.09.21.09.24.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 09:24:11 -0700 (PDT)
+From:   Denis Efremov <efremov@linux.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Denis Efremov <efremov@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Leon Romanovsky <leon@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Boris Pismenny <borisp@nvidia.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] net/mlx5e: IPsec: Use kvfree() for memory allocated with kvzalloc()
+Date:   Mon, 21 Sep 2020 19:23:44 +0300
+Message-Id: <20200921162345.78097-1-efremov@linux.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pointer to 'struct v4l2_subdev' is stored in drvdata via
-v4l2_i2c_subdev_init() so there is no point of a dance like:
+Variables flow_group_in, spec in rx_fs_create() are allocated with
+kvzalloc(). It's incorrect to free them with kfree(). Use kvfree()
+instead.
 
-    struct i2c_client *client = to_i2c_client(struct device *dev)
-    struct v4l2_subdev *sd = i2c_get_clientdata(client);
-
-This allows to remove local variable 'client' and few pointer
-dereferences.
-
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Fixes: 5e466345291a ("net/mlx5e: IPsec: Add IPsec steering in local NIC RX")
+Signed-off-by: Denis Efremov <efremov@linux.com>
 ---
- drivers/media/i2c/tvp5150.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/i2c/tvp5150.c b/drivers/media/i2c/tvp5150.c
-index 7d9401219a3a..29f65bb6103d 100644
---- a/drivers/media/i2c/tvp5150.c
-+++ b/drivers/media/i2c/tvp5150.c
-@@ -1413,8 +1413,7 @@ static const struct media_entity_operations tvp5150_sd_media_ops = {
-  ****************************************************************************/
- static int __maybe_unused tvp5150_runtime_suspend(struct device *dev)
- {
--	struct i2c_client *client = to_i2c_client(dev);
--	struct v4l2_subdev *sd = i2c_get_clientdata(client);
-+	struct v4l2_subdev *sd = dev_get_drvdata(dev);
- 	struct tvp5150 *decoder = to_tvp5150(sd);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.c
+index 429428bbc903..b974f3cd1005 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.c
+@@ -228,8 +228,8 @@ static int rx_fs_create(struct mlx5e_priv *priv,
+ 	fs_prot->miss_rule = miss_rule;
  
- 	if (decoder->irq)
-@@ -1427,8 +1426,7 @@ static int __maybe_unused tvp5150_runtime_suspend(struct device *dev)
+ out:
+-	kfree(flow_group_in);
+-	kfree(spec);
++	kvfree(flow_group_in);
++	kvfree(spec);
+ 	return err;
+ }
  
- static int __maybe_unused tvp5150_runtime_resume(struct device *dev)
- {
--	struct i2c_client *client = to_i2c_client(dev);
--	struct v4l2_subdev *sd = i2c_get_clientdata(client);
-+	struct v4l2_subdev *sd = dev_get_drvdata(dev);
- 	struct tvp5150 *decoder = to_tvp5150(sd);
- 
- 	if (decoder->irq)
 -- 
-2.17.1
+2.26.2
 
