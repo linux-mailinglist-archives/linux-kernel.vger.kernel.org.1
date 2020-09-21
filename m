@@ -2,89 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 192F32736B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 01:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C46B2736C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 01:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728865AbgIUXks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 19:40:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52918 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728704AbgIUXks (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 19:40:48 -0400
-Received: from localhost (lfbn-ncy-1-588-162.w81-51.abo.wanadoo.fr [81.51.203.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5BF4622574;
-        Mon, 21 Sep 2020 23:40:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600731647;
-        bh=hhXBMZeIvO1UMKlXhXoAyN9wTX+oKmSJfODYTDEXzFw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T1y5Wa1aDfJxCvE3Y05b7WTzoZP9YqQ2V5sRHe+m2BTyoiFl3TDR/vOKJuG1NTJ+I
-         UHjmrCMGcO7vy12OlpkAefdM/4v0iFFq3qRNRDPXvFG+O05CWl6Rme+GMLC8XW2LUS
-         H95gXLDY8MeP4Q9XXHSFQ1UiQp1oM2ZK5PnuVPws=
-Date:   Tue, 22 Sep 2020 01:40:45 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Nitesh Narayan Lal <nitesh@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, mtosatti@redhat.com,
-        sassmann@redhat.com, jeffrey.t.kirsher@intel.com,
-        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
-        bhelgaas@google.com, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
-        jerinj@marvell.com, mathias.nyman@intel.com, jiri@nvidia.com
-Subject: Re: [RFC][Patch v1 1/3] sched/isolation: API to get num of
- hosekeeping CPUs
-Message-ID: <20200921234044.GA31047@lenoir>
-References: <20200909150818.313699-1-nitesh@redhat.com>
- <20200909150818.313699-2-nitesh@redhat.com>
+        id S1728889AbgIUXo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 19:44:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728293AbgIUXoZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 19:44:25 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 302EBC061755;
+        Mon, 21 Sep 2020 16:44:25 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id k13so10211202pfg.1;
+        Mon, 21 Sep 2020 16:44:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=f8AZNe0yh+nr0Q+aU3EvTJPeuK86gAHOuWijIQhouP8=;
+        b=vEGvA95PpAmbmXF/2pU8BaNMqZ5N1inrv9uju3AMOs5CulSDiskwgzFOBntcsI93QM
+         yEjo2q9ircjzU7d1ufiagzwfnhKETg/PR8JvFmoclPzGhNPiyn9ANKeTMV9FlDHSM66O
+         XoJ2QE+VcS9nST+vtUdxDzWpjzprT84+NULHJb7LPVe+Rq0sasjVAZR2yJ9NUdKBxgEk
+         j5AP6emS5GZFCLp2qarNt8/8hgbxgcfv6d0dzn9myFt0mQOAEgORS5vXiesu+pwlxwGR
+         LEsz4OcwMCvbZPND10wv//eJ2zOoVof7pjh3A/QMY825eKu324F0hjRDez+cdVTXz8RF
+         4SLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=f8AZNe0yh+nr0Q+aU3EvTJPeuK86gAHOuWijIQhouP8=;
+        b=QBX4VWqFUyKCrwaiMgXNBbPU64AhbwHZjaaLdiw4UmY1hflrtxLDB1ZtIz7F1VnKts
+         py3OEt4hCmNfDTpf2/U6RGOP2+TuQLmqINs3P1m+UvG89pXof+cbrCVNY66+UPbNx87T
+         axwI4iH6Xciu1fzXpjUJRbkrbgZBtiUCWpKq4Zpnozjg7x3y/j/1ZHriU876Wg31Hk7t
+         sa+Oi9sQEkR68ZYNAk1SsZy78nsBesAe5wB4WTx1EbWuO7n7ibG6w9E+SHekEJyrdbQG
+         z4mjbWbl9Q/tLopMcD8uYzcRiHSLoWWVKmROC6HAnkyX+baoBokGIkyvUb0C1KW2PxBK
+         psqA==
+X-Gm-Message-State: AOAM530cAVXPAlQhesB2RPEODgfmmx0rfhnC13cHZEUS4QfwCvsLfHBm
+        zMDsElC8Sjq/2sOO1DRF3mCBXRbEaIvJ+QEVGqBy2jPADUknlw==
+X-Google-Smtp-Source: ABdhPJz+byc0Fo9qwVi1m/19ewyehzO4HVj6Nm3myh1IDrLqLENEXpuSUgTX/J1/uhN/HgHUxQ0lni+/Gp6neZQXKB0=
+X-Received: by 2002:a17:902:7445:b029:d1:dea3:a3ca with SMTP id
+ e5-20020a1709027445b02900d1dea3a3camr2074614plt.19.1600731864616; Mon, 21 Sep
+ 2020 16:44:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200909150818.313699-2-nitesh@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <cover.1600661418.git.yifeifz2@illinois.edu> <6af89348c08a4820039e614a090d35aa1583acff.1600661419.git.yifeifz2@illinois.edu>
+ <CAG48ez0OqZavgm0BkGjCAJUr5UfRgbeCbmLOZFJ=Rj46COcN3Q@mail.gmail.com>
+In-Reply-To: <CAG48ez0OqZavgm0BkGjCAJUr5UfRgbeCbmLOZFJ=Rj46COcN3Q@mail.gmail.com>
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+Date:   Mon, 21 Sep 2020 18:44:13 -0500
+Message-ID: <CABqSeAQhVFeG1Frvu60XfUnRQ78YRS2Uaw1EsBobKVku-vVoDQ@mail.gmail.com>
+Subject: Re: [RFC PATCH seccomp 1/2] seccomp/cache: Add "emulator" to check if
+ filter is arg-dependent
+To:     Jann Horn <jannh@google.com>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        kernel list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 11:08:16AM -0400, Nitesh Narayan Lal wrote:
-> +/*
-> + * num_housekeeping_cpus() - Read the number of housekeeping CPUs.
-> + *
-> + * This function returns the number of available housekeeping CPUs
-> + * based on __num_housekeeping_cpus which is of type atomic_t
-> + * and is initialized at the time of the housekeeping setup.
-> + */
-> +unsigned int num_housekeeping_cpus(void)
-> +{
-> +	unsigned int cpus;
-> +
-> +	if (static_branch_unlikely(&housekeeping_overridden)) {
-> +		cpus = atomic_read(&__num_housekeeping_cpus);
-> +		/* We should always have at least one housekeeping CPU */
-> +		BUG_ON(!cpus);
-> +		return cpus;
-> +	}
-> +	return num_online_cpus();
-> +}
-> +EXPORT_SYMBOL_GPL(num_housekeeping_cpus);
-> +
->  int housekeeping_any_cpu(enum hk_flags flags)
->  {
->  	int cpu;
-> @@ -131,6 +153,7 @@ static int __init housekeeping_setup(char *str, enum hk_flags flags)
->  
->  	housekeeping_flags |= flags;
->  
-> +	atomic_set(&__num_housekeeping_cpus, cpumask_weight(housekeeping_mask));
+On Mon, Sep 21, 2020 at 12:47 PM Jann Horn <jannh@google.com> wrote:
+> Is this actually necessary, or can we just bail out on any branch that
+> we can't statically resolve?
 
-So the problem here is that it takes the whole cpumask weight but you're only
-interested in the housekeepers who take the managed irq duties I guess
-(HK_FLAG_MANAGED_IRQ ?).
+I think after we do enumerate the arch numbers it would make much more
+sense. Since if there is a branch after arch number and syscall
+numbers are fixed we can assume that the return values will be
+different if one or the other case is followed.
 
->  	free_bootmem_cpumask_var(non_housekeeping_mask);
->  
->  	return 1;
-> -- 
-> 2.27.0
-> 
+> Also: If it turns out that the time spent in seccomp_cache_prepare()
+> is measurable for large filters, a possible improvement would be to
+> keep track of the last syscall number for which the result would be
+> the same as for the current one, such that instead of evaluating the
+> filter for one instruction at a time, it would effectively be
+> evaluated for a range at a time. That should be pretty straightforward
+> to implement, I think.
+
+My concern was more of the possibly-exponential amount of time &
+memory needed to evaluate an adversarial filter containing full of
+unresolveable branches, hence the max pending states. If we never
+follow both branches then evaluation should not be much of a concern.
+
+> > +       depends on SECCOMP
+> > +       depends on SECCOMP_FILTER
+>
+> SECCOMP_FILTER already depends on SECCOMP, so the "depends on SECCOMP"
+> line is unnecessary.
+
+The reason that this is here is because of the looks in menuconfig.
+SECCOMP is the direct previous entry, so if this depends on SECCOMP
+then the config would be indented. Is this looks not worth keeping or
+is there some better way to do this?
+
+> > +       help
+> > +         Seccomp filters can potentially incur large overhead for each
+> > +         system call. This can alleviate some of the overhead.
+> > +
+> > +         If in doubt, select 'none'.
+>
+> This should not be in arch/x86. Other architectures, such as arm64,
+> should also be able to use this without extra work.
+
+In the initial RFC patch I only added to x86. I could add it to any
+arch that has seccomp filters. Though, I'm wondering, why is SECCOMP
+in the arch-specific Kconfigs?
+
+> I think we should probably just bail out if we see anything that's
+> BPF_ST/BPF_STX. I've never seen seccomp filters that actually use that
+> part of cBPF.
+>
+> But in case we do need this, maybe instead of using "2 +" for all
+> these things, the cBPF memory slots should be in a separate array.
+
+Ok I'll just bail.
+
+YiFei Zhu
