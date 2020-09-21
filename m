@@ -2,127 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EA2C271BB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 09:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBC98271B2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 09:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726545AbgIUHZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 03:25:54 -0400
-Received: from mga01.intel.com ([192.55.52.88]:12621 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726506AbgIUHZy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 03:25:54 -0400
-IronPort-SDR: xnH2KQohAPZfdUiEyDU0uYUXtNRwdHkBBsiiiN495THBtwaVX0qkbAxxpsE0Cv7sOBUksXVRUB
- yfbjQcfbhZbw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9750"; a="178401126"
-X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; 
-   d="scan'208";a="178401126"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 00:25:53 -0700
-IronPort-SDR: tJCyL5LH767pRUhzpKyMpYvg2ZQhRGpRCNFUjrrH30LVD2+umg+ssvdfqr5oNI1cJfjXIlPW6B
- SBJOXJxZCp5A==
-X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; 
-   d="scan'208";a="485325687"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 00:25:50 -0700
-From:   Bard Liao <yung-chuan.liao@linux.intel.com>
-To:     alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, jank@cadence.com,
-        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        mengdong.lin@intel.com, bard.liao@intel.com
-Subject: [PATCH 2/3] soundwire: intel: enable test modes
-Date:   Mon, 21 Sep 2020 03:32:06 +0800
-Message-Id: <20200920193207.31241-3-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200920193207.31241-1-yung-chuan.liao@linux.intel.com>
-References: <20200920193207.31241-1-yung-chuan.liao@linux.intel.com>
+        id S1726445AbgIUHAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 03:00:44 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:38330 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726011AbgIUHAn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 03:00:43 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 08L701420005130, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb05.realtek.com.tw[172.21.6.98])
+        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 08L701420005130
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 21 Sep 2020 15:00:01 +0800
+Received: from RTEXMB04.realtek.com.tw (172.21.6.97) by
+ RTEXMB05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2044.4; Mon, 21 Sep 2020 15:00:01 +0800
+Received: from RTEXMB04.realtek.com.tw ([fe80::3477:84c0:6ac8:dfee]) by
+ RTEXMB04.realtek.com.tw ([fe80::3477:84c0:6ac8:dfee%3]) with mapi id
+ 15.01.2044.006; Mon, 21 Sep 2020 15:00:01 +0800
+From:   =?utf-8?B?5YqJ5YGJ5qyK?= <willy.liu@realtek.com>
+To:     Serge Semin <fancer.lancer@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>, "Kyle Evans" <kevans@FreeBSD.org>
+CC:     "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ryan Kao <ryankao@realtek.com>,
+        "Joe Hershberger" <joe.hershberger@ni.com>,
+        Peter Robinson <pbrobinson@gmail.com>
+Subject: RE: [PATCH] net: phy: realtek: fix rtl8211e rx/tx delay config
+Thread-Topic: [PATCH] net: phy: realtek: fix rtl8211e rx/tx delay config
+Thread-Index: AQHWjJSIgE9wGMLbJkqAPItOTw6viqlsFkuAgAHOTXCAAAJ4gIAAG6aAgARrxhA=
+Date:   Mon, 21 Sep 2020 07:00:00 +0000
+Message-ID: <e14a0e96ddf8480591f98677cdca5e77@realtek.com>
+References: <1600307253-3538-1-git-send-email-willy.liu@realtek.com>
+ <20200917101035.uwajg4m524g4lz5o@mobilestation>
+ <87c4ebf4b1fe48a7a10b27d0ba0b333c@realtek.com>
+ <20200918135403.GC3631014@lunn.ch>
+ <20200918153301.chwlvzh6a2bctbjw@mobilestation>
+In-Reply-To: <20200918153301.chwlvzh6a2bctbjw@mobilestation>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.179.211]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-This patch adds debugfs support to override the Master and Slave data
-modes. The settings only take effect prior to a new stream being
-prepared/enabled, or on resume.
-
-The test mode can be set to verify data integrity and detect bus
-clashes, but can only be used to test capture paths. In this case the
-input generated by a Slave source port is replaced by a fixed or
-cyclical patterns.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/intel.c | 42 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
-
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 7dc6569ac431..6a1e862b16c3 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -262,6 +262,42 @@ static int intel_reg_show(struct seq_file *s_file, void *data)
- }
- DEFINE_SHOW_ATTRIBUTE(intel_reg);
- 
-+static int intel_set_m_datamode(void *data, u64 value)
-+{
-+	struct sdw_intel *sdw = data;
-+	struct sdw_bus *bus = &sdw->cdns.bus;
-+
-+	if (value > SDW_PORT_DATA_MODE_STATIC_1)
-+		return -EINVAL;
-+
-+	/* Userspace changed the hardware state behind the kernel's back */
-+	add_taint(TAINT_USER, LOCKDEP_STILL_OK);
-+
-+	bus->params.m_data_mode = value;
-+
-+	return 0;
-+}
-+DEFINE_DEBUGFS_ATTRIBUTE(intel_set_m_datamode_fops, NULL,
-+			 intel_set_m_datamode, "%llu\n");
-+
-+static int intel_set_s_datamode(void *data, u64 value)
-+{
-+	struct sdw_intel *sdw = data;
-+	struct sdw_bus *bus = &sdw->cdns.bus;
-+
-+	if (value > SDW_PORT_DATA_MODE_STATIC_1)
-+		return -EINVAL;
-+
-+	/* Userspace changed the hardware state behind the kernel's back */
-+	add_taint(TAINT_USER, LOCKDEP_STILL_OK);
-+
-+	bus->params.s_data_mode = value;
-+
-+	return 0;
-+}
-+DEFINE_DEBUGFS_ATTRIBUTE(intel_set_s_datamode_fops, NULL,
-+			 intel_set_s_datamode, "%llu\n");
-+
- static void intel_debugfs_init(struct sdw_intel *sdw)
- {
- 	struct dentry *root = sdw->cdns.bus.debugfs;
-@@ -274,6 +310,12 @@ static void intel_debugfs_init(struct sdw_intel *sdw)
- 	debugfs_create_file("intel-registers", 0400, sdw->debugfs, sdw,
- 			    &intel_reg_fops);
- 
-+	debugfs_create_file("intel-m-datamode", 0200, sdw->debugfs, sdw,
-+			    &intel_set_m_datamode_fops);
-+
-+	debugfs_create_file("intel-s-datamode", 0200, sdw->debugfs, sdw,
-+			    &intel_set_s_datamode_fops);
-+
- 	sdw_cdns_debugfs_init(&sdw->cdns, sdw->debugfs);
- }
- 
--- 
-2.17.1
-
+SGkgQW5kcmV3LA0KSSByZW1vdmVkIGJlbG93IHJlZ2lzdGVyIGxheW91dCBkZXNjcmlwdGlvbnMg
+YmVjYXVzZSB0aGVzZSBkZXNjcmlwdGlvbnMgZGlkIG5vdCBtYXRjaCByZWdpc3RlciBkZWZpbml0
+aW9ucyBmb3IgcnRsODIxMWUgZXh0ZW5zaW9uIHBhZ2UgMTY0IHJlZyAweDFjIGF0IGFsbC4NCjg6
+NiA9IFBIWSBBZGRyZXNzDQo1OjQgPSBBdXRvLU5lZ290aWF0aW9uDQozID0gTW9kZQ0KMiA9IFJY
+RA0KMSA9IFRYRA0KMCA9IFNFTFJHVjENCkkgdGhpbmsgaXQgaXMgYSBtaXN1bmRlcnN0YW5kaW5n
+LiBUaGVzZSBkZWZpbml0aW9ucyBhcmUgbWFwcGVkIGZyb20gZGF0YXNoZWV0IHJ0bDgyMTFlIHRh
+YmxlMTMiIENvbmZpZ3VyYXRpb24gUmVnaXN0ZXIgRGVmaW5pdGlvbiIuIEhvd2V2ZXIgdGhpcyB0
+YWJsZSBzaG91bGQgYmUgSFcgcGluIGNvbmZpZ3VyYXRpb25zIG5vdCByZWdpc3RlciBkZXNjcmlw
+dGlvbnMuIA0KDQpVc2VycyBjYW4gY29uZmlnIFJYRC9UWEQgdmlhIHJlZ2lzdGVyIHNldHRpbmco
+ZXh0ZW5zaW9uIHBhZ2UgMTY0IHJlZyAweDFjKS4gQnV0IGJpdCBtYXAgZm9yIHRoZXNlIHR3byBz
+ZXR0aW5ncyBzaG91bGQgYmUgYmVsb3c6IA0KMTMgPSBGb3JjZSBUeCBSWCBEZWxheSBjb250cm9s
+bGVkIGJ5IGJpdDEyIGJpdDExLA0KMTIgPSBSWCBEZWxheSwgMTEgPSBUWCBEZWxheQ0KDQpIaSBT
+ZXJnZXksDQpJIHNhdyB0aGUgc3VtbWFyeSBmcm9tIGh0dHBzOi8vcmV2aWV3cy5mcmVlYnNkLm9y
+Zy9EMTM1OTEuIFRoaXMgcGF0Y2ggaXMgdG8gcmVjb25maWd1cmUgdGhlIFJUTDgyMTFFIHVzZWQg
+dG8gZm9yY2Ugb2ZmIFRYRC9SWEQgKFJYRCBpcyBkZWZhdWx0aW5nIHRvIG9uLCBpbiBteSBjaGVj
+a3MpIGFuZCB0dXJuIG9uIHNvbWUgYml0cyBpbiB0aGUgY29uZmlndXJhdGlvbiByZWdpc3RlciBm
+b3IgdGhpcyBQSFkgdGhhdCBhcmUgdW5kb2N1bWVudGVkLg0KVGhlIGRlZmF1bHQgdmFsdWUgZm9y
+ICJleHRlbnNpb24gcGcgMHhhNCByZWcgMHgxYyIgaXMgMHg4MTQ4LCBhbmQgYml0MS0yIHNob3Vs
+ZCBiZSAwLiBJbiBteSBvcGluaW9uLCB0aGlzIHBhdGNoIHNob3VsZCBiZSB3b3JrZWQgYmFzZWQg
+b24gdGhlIG1hZ2ljIG51bWJlciAoMHhiNDAwKS4gSXQgc2VlbXMgUlggZGVsYXkgd2FzIHNldCBh
+bmQgcGFja2FnZSBkaWQgbm90IGxvc3QgZm9yIFNvbWUgcGluZTY0IG1vZGVscy4gSSBhbSBub3Qg
+c3VyZSBpZiBzb21lIG1vZGVscyBnb3QgZGlmZmVyZW50IGRlZmF1bHQgdmFsdWUobm90IDB4ODE0
+OCkgYmVjYXVzZSB0aGUgc3VtbWFyeSBzYXlzIChSWEQgaXMgZGVmYXVsdGluZyB0byBvbikuIFdo
+YXQgSSBtZWFuIGlzIHRoYXQgdGhpcyBwYXRjaCBpcyBhY3R1YWxseSB0dXJuIG9uIFJYIERlbGF5
+IG5vdCB0dXJuIG9mZiBSWCBkZWxheS4gSSBob3BlIHdlIGNhbiBjb3JyZWN0IHRoZSBtZWFuaW5n
+IG9mIHRoaXMgcmVnaXN0ZXIuIA0KDQpCLlIuDQpXaWxseQ0KDQotLS0tLU9yaWdpbmFsIE1lc3Nh
+Z2UtLS0tLQ0KRnJvbTogU2VyZ2UgU2VtaW4gPGZhbmNlci5sYW5jZXJAZ21haWwuY29tPiANClNl
+bnQ6IEZyaWRheSwgU2VwdGVtYmVyIDE4LCAyMDIwIDExOjMzIFBNDQpUbzogQW5kcmV3IEx1bm4g
+PGFuZHJld0BsdW5uLmNoPjsgS3lsZSBFdmFucyA8a2V2YW5zQEZyZWVCU0Qub3JnPjsg5YqJ5YGJ
+5qyKIDx3aWxseS5saXVAcmVhbHRlay5jb20+DQpDYzogaGthbGx3ZWl0MUBnbWFpbC5jb207IGxp
+bnV4QGFybWxpbnV4Lm9yZy51azsgZGF2ZW1AZGF2ZW1sb2Z0Lm5ldDsga3ViYUBrZXJuZWwub3Jn
+OyBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBS
+eWFuIEthbyA8cnlhbmthb0ByZWFsdGVrLmNvbT47IEpvZSBIZXJzaGJlcmdlciA8am9lLmhlcnNo
+YmVyZ2VyQG5pLmNvbT47IFBldGVyIFJvYmluc29uIDxwYnJvYmluc29uQGdtYWlsLmNvbT4NClN1
+YmplY3Q6IFJlOiBbUEFUQ0hdIG5ldDogcGh5OiByZWFsdGVrOiBmaXggcnRsODIxMWUgcngvdHgg
+ZGVsYXkgY29uZmlnDQoNCkhlbGxvIEFuZHJldy4NCg0KT24gRnJpLCBTZXAgMTgsIDIwMjAgYXQg
+MDM6NTQ6MDNQTSArMDIwMCwgQW5kcmV3IEx1bm4gd3JvdGU6DQo+IE9uIEZyaSwgU2VwIDE4LCAy
+MDIwIGF0IDA2OjU1OjE2QU0gKzAwMDAsIOWKieWBieasiiB3cm90ZToNCj4gPiBIaSBTZXJnZSwN
+Cj4gDQo+ID4gVGhhbmtzIGZvciB5b3VyIHJlcGx5LiBUaGVyZSBpcyBhIGNvbmZpZGVudGlhbCBp
+c3N1ZSB0aGF0IHJlYWx0ZWsgDQo+ID4gZG9lc24ndCBvZmZlciB0aGUgZGV0YWlsIG9mIGEgZnVs
+bCByZWdpc3RlciBsYXlvdXQgZm9yIGNvbmZpZ3VyYXRpb24gDQo+ID4gcmVnaXN0ZXIuDQo+IA0K
+PiAuLi4NCj4gDQo+ID4gPiAgCSAqIDB4YTQgZXh0ZW5zaW9uIHBhZ2UgKDB4NykgbGF5b3V0LiBJ
+dCBjYW4gYmUgdXNlZCB0byBkaXNhYmxlL2VuYWJsZQ0KPiA+ID4gIAkgKiB0aGUgUlgvVFggZGVs
+YXlzIG90aGVyd2lzZSBjb250cm9sbGVkIGJ5IFJYRExZL1RYRExZIHBpbnMuIEl0IGNhbg0KPiA+
+ID4gIAkgKiBhbHNvIGJlIHVzZWQgdG8gY3VzdG9taXplIHRoZSB3aG9sZSBjb25maWd1cmF0aW9u
+IHJlZ2lzdGVyOg0KPiA+IA0KPiA+ID4gLQkgKiA4OjYgPSBQSFkgQWRkcmVzcywgNTo0ID0gQXV0
+by1OZWdvdGlhdGlvbiwgMyA9IEludGVyZmFjZSBNb2RlIFNlbGVjdCwNCj4gPiA+IC0JICogMiA9
+IFJYIERlbGF5LCAxID0gVFggRGVsYXksIDAgPSBTRUxSR1YgKHNlZSBvcmlnaW5hbCBQSFkgZGF0
+YXNoZWV0DQo+ID4gPiAtCSAqIGZvciBkZXRhaWxzKS4NCj4gPiA+ICsJICogMTMgPSBGb3JjZSBU
+eCBSWCBEZWxheSBjb250cm9sbGVkIGJ5IGJpdDEyIGJpdDExLA0KPiA+ID4gKwkgKiAxMiA9IFJY
+IERlbGF5LCAxMSA9IFRYIERlbGF5DQo+ID4gDQo+IA0KPiA+IEhlcmUgeW91J3ZlIHJlbW92ZWQg
+dGhlIHJlZ2lzdGVyIGxheW91dCBkZXNjcmlwdGlvbiBhbmQgcmVwbGFjZWQgaXRxIA0KPiA+IHdp
+dGgganVzdCB0aHJlZSBiaXRzIGluZm8uIFNvIGZyb20gbm93IHRoZSB0ZXh0IGFib3ZlIGRvZXNu
+J3QgcmVhbGx5IA0KPiA+IGNvcnJlc3BvbmRzIHRvIHdoYXQgZm9sbG93cy4NCj4gDQo+ID4gSSBt
+aWdodCBoYXZlIGZvcmdvdHRlbiBzb21ldGhpbmcsIGJ1dCBBRkFJUiB0aGF0IHJlZ2lzdGVyIGJp
+dHMgDQo+ID4gc3RhdGVxIG1hcHBlZCB3ZWxsIHRvIHdoYXQgd2FzIGF2YWlsYWJsZSBvbiB0aGUg
+Y29ycmVzcG9uZGluZyANCj4gPiBleHRlcm5hbCBwaW5zLg0KPiANCj4gSGkgV2lsbHkNCj4gDQoN
+Cj4gU28gaXQgYXBwZWFycyBiaXRzIDMgdG8gOCBoYXZlIGJlZW4gcmV2ZXJzZSBlbmdpbmVlcmVk
+LiBVbmxlc3MgeW91IA0KPiBrbm93IGZyb20geW91ciBjb25maWRlbnRpYWwgZGF0YXNoZWV0IHRo
+YXQgdGhlc2UgYXJlIHdyb25nLCBwbGVhc2UgDQo+IGxlYXZlIHRoZSBjb21tZW50IGFsb25lLg0K
+PiANCj4gSWYgeW91IGNvbmZpZGVudGlhbCBkYXRhc2hlZXQgc2F5cyB0aGF0IHRoZSB1c2FnZSBv
+ZiBiaXRzIDAtMiBpcyANCj4gd3JvbmcsIHRoZW4gcGxlYXNlIGRvIGNvcnJlY3QgdGhhdCBwYXJ0
+Lg0KDQpJJ3ZlIGdvdCB0aGF0IGluZm8gZnJvbSBLeWxlIHBvc3QgaGVyZToNCmh0dHBzOi8vcmV2
+aWV3cy5mcmVlYnNkLm9yZy9EMTM1OTENCg0KTXkgd29yayB3aXRoIHRoYXQgcHJvYmxlbSBoYXMg
+YmVlbiBkb25lIG1vcmUgdGhhbiBhIHllYXIgYWdvLCBzbyBJIGRvbid0IHJlbWVtYmVyIGFsbCB0
+aGUgZGV0YWlscy4gQnV0IElJUkMgdGhlIHZlcnkgZmlyc3QgbmluZSBiaXRzIFs4OjBdIG11c3Qg
+YmUgYSBjb3B5IG9mIHdoYXQgaXMgc2V0IG9uIHRoZSBleHRlcm5hbCBjb25maWd1cmF0aW9uIHBp
+bnMgYXMgSSBkZXNjcmliZWQgaW4gdGhlIGNvbW1lbnQuDQpBRkFJUiBJIHRyaWVkIHRvIG1hbnVh
+bGx5IGNoYW5nZSB0aGVzZSBwaW5zIFsxXSBhbmQgZGV0ZWN0ZWQgdGhhdCBjaGFuZ2UgcmlnaHQg
+dGhlcmUgaW4gdGhlIHJlZ2lzdGVyLiBUaGF0IGZ1bGx5IGZpdHRlZCB0byB3aGF0IEt5bGUgd3Jv
+dGUgaW4gaGlzIHBvc3QuIEFsYXMgSSBjYW4ndCByZXBlYXQgaXQgdG8gYmUgY29tcGxldGVseSBz
+dXJlIGF0IHRoZSBtb21lbnQgZHVlIHRvIHRoZSBsYWNrIG9mIHRoZSBoYXJkd2FyZS4gU28gSSBt
+aWdodCBoYXZlIG1pc3NlZCBzb21ldGhpbmcsIGFuZCBXaWxseScgY29uZmlybWF0aW9uIGFib3V0
+IHRoYXQgd291bGQgaGF2ZSBiZWVuIG1vcmUgdGhhbiB3ZWxjb21lLiBXaGF0IHdlIGNhbiBzYXkg
+bm93IGZvciBzdXJlIEkgZGlkbid0IHVzZSB0aGUgbWFnaWMgbnVtYmVyIGluIG15IHBhdGNoLiBU
+aGF0IGNvdWxkIGhhdmUgYmVlbiBhIG1pc3Rha2UgZnJvbSB3aGF0IFdpbGx5IHNheXMgaW4gdGhl
+IGNvbW1pdC1sb2cuLi4NCg0KQW55d2F5IGFzaWRlIHdpdGggdGhlIE1hZ2ljIGJpdHMgc2V0dGlu
+Z3MgKHdoaWNoIGJ5IFdpbGx5JyBwYXRjaCBhcHBlYXJzIHRvIGJlIHRoZSBUeC9SeCBkZWxheXMg
+KyBGb3JjZSBUeC9SeCBkZWxheSBzZXR0aW5nKSBLeWxlIGFsc28gY2xlYXJzIHRoZSBiaXRzIDEt
+MiB3aXRoIGEgY29tbWVudCAiRW5zdXJlIGJvdGggaW50ZXJuYWwgZGVsYXlzIGFyZSB0dXJuZWQg
+b2ZmIi4gV2lsbHksIHdoYXQgY2FuIHlvdSBzYXkgYWJvdXQgdGhhdD8gQ2FuIHdlIHJlYWxseSBs
+ZWF2ZSB0aGVtIG91dCBmcm9tIHRoZSBjaGFuZ2U/IEt5bGUsIGNvdWxkIHlvdSBnaXZlIHVzIGEg
+Y29tbWVudCBhYm91dCB5b3VyIGV4cGVyaWVuY2Ugd2l0aCB0aGF0Pw0KDQpbMV0gUlRMODIxMUUt
+VkItQ0csIFJUTDgyMTFFLVZMLUNHLCBSVEw4MjExRS1WTC1DRywgIklOVEVHUkFURUQgMTAvMTAw
+LzEwMDBNIEVUSEVSTkVUDQogICAgVFJBTlNDRUlWRVIiIERhdGFzaGVldCwgVGFibGUgMTMuIENv
+bmZpZ3VyYXRpb24gUmVnaXN0ZXIgRGVmaW5pdGlvbiwgUmV2LiAxLjYsDQogICAgMDMgQXByaWwg
+MjAxMiwgVHJhY2sgSUQ6IEpBVFItMzM3NS0xNiwgcC4xNg0KDQotU2VyZ2V5DQoNCj4gDQo+ICAg
+ICAgICBBbmRyZXcNCg0KLS0tLS0tUGxlYXNlIGNvbnNpZGVyIHRoZSBlbnZpcm9ubWVudCBiZWZv
+cmUgcHJpbnRpbmcgdGhpcyBlLW1haWwuDQo=
