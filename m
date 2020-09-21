@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E1B0272D44
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:39:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52545272D3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729183AbgIUQil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:38:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39324 "EHLO mail.kernel.org"
+        id S1729174AbgIUQig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:38:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728014AbgIUQiT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:38:19 -0400
+        id S1729162AbgIUQiV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:38:21 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 55BCC238E6;
-        Mon, 21 Sep 2020 16:38:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DE15A206DC;
+        Mon, 21 Sep 2020 16:38:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706298;
-        bh=LIe2YtDDhKZJCaujEltYpclxrE+FyGpd2g/SfCcVFXo=;
+        s=default; t=1600706301;
+        bh=FuB4ajYoaUynKMIrAN1kcjaEdbWHw6VWOX4Am06KcgU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fkCLeC0UXimNVTEvrQ5VdSvOe2bAhvQ6mde2w0B/5ypcC1y4Rd8slPBtLs3woJAt9
-         WVKmLSpJaA9CkPh5tfldbHV6yrvLK/PzudngxTyvFkntn4exyLv8QXMErBe6LHOZyX
-         D5Pu1rEN958/zMF5mXQjmTHkfGM+7XHAAqkIfFyk=
+        b=GGz00EzTRJnot15IlzHneb8+EUigN0ip/gR6esqknsNivayqFjyelVlZ89/4G8vqX
+         rJejw0sxLPMgM2CPNcRWijZAO+gCaJpgrLsPcXwsPuwVdawR1g4SzMXWvBFRbb0pBv
+         5jByy1JKd4Obo0yLb6OTLd0yKekcdkwhD/AK/Ahg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mike Christie <michael.christie@oracle.com>,
-        Hou Pu <houpu@bytedance.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 4.14 44/94] scsi: target: iscsi: Fix hang in iscsit_access_np() when getting tpg->np_login_sem
-Date:   Mon, 21 Sep 2020 18:27:31 +0200
-Message-Id: <20200921162037.572575124@linuxfoundation.org>
+        stable@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: [PATCH 4.14 45/94] rbd: require global CAP_SYS_ADMIN for mapping and unmapping
+Date:   Mon, 21 Sep 2020 18:27:32 +0200
+Message-Id: <20200921162037.622813486@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
 References: <20200921162035.541285330@linuxfoundation.org>
@@ -44,117 +42,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hou Pu <houpu@bytedance.com>
+From: Ilya Dryomov <idryomov@gmail.com>
 
-commit ed43ffea78dcc97db3f561da834f1a49c8961e33 upstream.
+commit f44d04e696feaf13d192d942c4f14ad2e117065a upstream.
 
-The iSCSI target login thread might get stuck with the following stack:
+It turns out that currently we rely only on sysfs attribute
+permissions:
 
-cat /proc/`pidof iscsi_np`/stack
-[<0>] down_interruptible+0x42/0x50
-[<0>] iscsit_access_np+0xe3/0x167
-[<0>] iscsi_target_locate_portal+0x695/0x8ac
-[<0>] __iscsi_target_login_thread+0x855/0xb82
-[<0>] iscsi_target_login_thread+0x2f/0x5a
-[<0>] kthread+0xfa/0x130
-[<0>] ret_from_fork+0x1f/0x30
+  $ ll /sys/bus/rbd/{add*,remove*}
+  --w------- 1 root root 4096 Sep  3 20:37 /sys/bus/rbd/add
+  --w------- 1 root root 4096 Sep  3 20:37 /sys/bus/rbd/add_single_major
+  --w------- 1 root root 4096 Sep  3 20:37 /sys/bus/rbd/remove
+  --w------- 1 root root 4096 Sep  3 20:38 /sys/bus/rbd/remove_single_major
 
-This can be reproduced via the following steps:
+This means that images can be mapped and unmapped (i.e. block devices
+can be created and deleted) by a UID 0 process even after it drops all
+privileges or by any process with CAP_DAC_OVERRIDE in its user namespace
+as long as UID 0 is mapped into that user namespace.
 
-1. Initiator A tries to log in to iqn1-tpg1 on port 3260. After finishing
-   PDU exchange in the login thread and before the negotiation is finished
-   the the network link goes down. At this point A has not finished login
-   and tpg->np_login_sem is held.
+Be consistent with other virtual block devices (loop, nbd, dm, md, etc)
+and require CAP_SYS_ADMIN in the initial user namespace for mapping and
+unmapping, and also for dumping the configuration string and refreshing
+the image header.
 
-2. Initiator B tries to log in to iqn2-tpg1 on port 3260. After finishing
-   PDU exchange in the login thread the target expects to process remaining
-   login PDUs in workqueue context.
-
-3. Initiator A' tries to log in to iqn1-tpg1 on port 3260 from a new
-   socket. A' will wait for tpg->np_login_sem with np->np_login_timer
-   loaded to wait for at most 15 seconds. The lock is held by A so A'
-   eventually times out.
-
-4. Before A' got timeout initiator B gets negotiation failed and calls
-   iscsi_target_login_drop()->iscsi_target_login_sess_out().  The
-   np->np_login_timer is canceled and initiator A' will hang forever.
-   Because A' is now in the login thread, no new login requests can be
-   serviced.
-
-Fix this by moving iscsi_stop_login_thread_timer() out of
-iscsi_target_login_sess_out(). Also remove iscsi_np parameter from
-iscsi_target_login_sess_out().
-
-Link: https://lore.kernel.org/r/20200729130343.24976-1-houpu@bytedance.com
 Cc: stable@vger.kernel.org
-Reviewed-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Hou Pu <houpu@bytedance.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/target/iscsi/iscsi_target_login.c |    6 +++---
- drivers/target/iscsi/iscsi_target_login.h |    3 +--
- drivers/target/iscsi/iscsi_target_nego.c  |    3 +--
- 3 files changed, 5 insertions(+), 7 deletions(-)
+ drivers/block/rbd.c |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
---- a/drivers/target/iscsi/iscsi_target_login.c
-+++ b/drivers/target/iscsi/iscsi_target_login.c
-@@ -1158,7 +1158,7 @@ iscsit_conn_set_transport(struct iscsi_c
+--- a/drivers/block/rbd.c
++++ b/drivers/block/rbd.c
+@@ -4534,6 +4534,9 @@ static ssize_t rbd_config_info_show(stru
+ {
+ 	struct rbd_device *rbd_dev = dev_to_rbd_dev(dev);
+ 
++	if (!capable(CAP_SYS_ADMIN))
++		return -EPERM;
++
+ 	return sprintf(buf, "%s\n", rbd_dev->config_info);
  }
  
- void iscsi_target_login_sess_out(struct iscsi_conn *conn,
--		struct iscsi_np *np, bool zero_tsih, bool new_sess)
-+				 bool zero_tsih, bool new_sess)
- {
- 	if (!new_sess)
- 		goto old_sess_out;
-@@ -1180,7 +1180,6 @@ void iscsi_target_login_sess_out(struct
- 	conn->sess = NULL;
+@@ -4635,6 +4638,9 @@ static ssize_t rbd_image_refresh(struct
+ 	struct rbd_device *rbd_dev = dev_to_rbd_dev(dev);
+ 	int ret;
  
- old_sess_out:
--	iscsi_stop_login_thread_timer(np);
- 	/*
- 	 * If login negotiation fails check if the Time2Retain timer
- 	 * needs to be restarted.
-@@ -1440,8 +1439,9 @@ static int __iscsi_target_login_thread(s
- new_sess_out:
- 	new_sess = true;
- old_sess_out:
-+	iscsi_stop_login_thread_timer(np);
- 	tpg_np = conn->tpg_np;
--	iscsi_target_login_sess_out(conn, np, zero_tsih, new_sess);
-+	iscsi_target_login_sess_out(conn, zero_tsih, new_sess);
- 	new_sess = false;
++	if (!capable(CAP_SYS_ADMIN))
++		return -EPERM;
++
+ 	ret = rbd_dev_refresh(rbd_dev);
+ 	if (ret)
+ 		return ret;
+@@ -6159,6 +6165,9 @@ static ssize_t do_rbd_add(struct bus_typ
+ 	bool read_only;
+ 	int rc;
  
- 	if (tpg) {
---- a/drivers/target/iscsi/iscsi_target_login.h
-+++ b/drivers/target/iscsi/iscsi_target_login.h
-@@ -22,8 +22,7 @@ extern int iscsit_put_login_tx(struct is
- extern void iscsit_free_conn(struct iscsi_np *, struct iscsi_conn *);
- extern int iscsit_start_kthreads(struct iscsi_conn *);
- extern void iscsi_post_login_handler(struct iscsi_np *, struct iscsi_conn *, u8);
--extern void iscsi_target_login_sess_out(struct iscsi_conn *, struct iscsi_np *,
--				bool, bool);
-+extern void iscsi_target_login_sess_out(struct iscsi_conn *, bool, bool);
- extern int iscsi_target_login_thread(void *);
++	if (!capable(CAP_SYS_ADMIN))
++		return -EPERM;
++
+ 	if (!try_module_get(THIS_MODULE))
+ 		return -ENODEV;
  
- #endif   /*** ISCSI_TARGET_LOGIN_H ***/
---- a/drivers/target/iscsi/iscsi_target_nego.c
-+++ b/drivers/target/iscsi/iscsi_target_nego.c
-@@ -554,12 +554,11 @@ static bool iscsi_target_sk_check_and_cl
+@@ -6311,6 +6320,9 @@ static ssize_t do_rbd_remove(struct bus_
+ 	bool force = false;
+ 	int ret;
  
- static void iscsi_target_login_drop(struct iscsi_conn *conn, struct iscsi_login *login)
- {
--	struct iscsi_np *np = login->np;
- 	bool zero_tsih = login->zero_tsih;
- 
- 	iscsi_remove_failed_auth_entry(conn);
- 	iscsi_target_nego_release(conn);
--	iscsi_target_login_sess_out(conn, np, zero_tsih, true);
-+	iscsi_target_login_sess_out(conn, zero_tsih, true);
- }
- 
- static void iscsi_target_login_timeout(unsigned long data)
++	if (!capable(CAP_SYS_ADMIN))
++		return -EPERM;
++
+ 	dev_id = -1;
+ 	opt_buf[0] = '\0';
+ 	sscanf(buf, "%d %5s", &dev_id, opt_buf);
 
 
