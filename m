@@ -2,65 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E799273479
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 22:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85C302733A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 22:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728315AbgIUU7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 16:59:53 -0400
-Received: from elvis.franken.de ([193.175.24.41]:49843 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728113AbgIUU7o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 16:59:44 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kKSuS-0001Rx-00; Mon, 21 Sep 2020 22:59:40 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 404A1C0FE2; Mon, 21 Sep 2020 22:13:29 +0200 (CEST)
-Date:   Mon, 21 Sep 2020 22:13:29 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>
-Cc:     paul@crapouillou.net, paulburton@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        jiaxun.yang@flygoat.com, Sergey.Semin@baikalelectronics.ru,
-        akpm@linux-foundation.org, rppt@kernel.org,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-Subject: Re: [PATCH v2 1/2] MIPS: Ingenic: Add system type for new Ingenic
- SoCs.
-Message-ID: <20200921201329.GA29269@alpha.franken.de>
-References: <20200921174522.33866-1-zhouyanjie@wanyeetech.com>
- <20200921174522.33866-2-zhouyanjie@wanyeetech.com>
+        id S1727134AbgIUUio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 16:38:44 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:52128 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726451AbgIUUio (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 16:38:44 -0400
+X-Greylist: delayed 1114 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Sep 2020 16:38:43 EDT
+Received: from [78.134.51.148] (port=43940 helo=[192.168.77.62])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1kKSIA-0008Sc-U6; Mon, 21 Sep 2020 22:20:07 +0200
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Subject: Re: [PATCH 2/3] media: docs: v4l2-subdev: move "Subdev registration"
+ to a subsection
+To:     Jacopo Mondi <jacopo@jmondi.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <20200904215141.20862-1-luca@lucaceresoli.net>
+ <20200904215141.20862-2-luca@lucaceresoli.net>
+ <20200915134519.5u3vedcyek5ivvjq@uno.localdomain>
+Message-ID: <7aac5e6c-b925-c878-3a24-c2715a814476@lucaceresoli.net>
+Date:   Mon, 21 Sep 2020 22:20:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200915134519.5u3vedcyek5ivvjq@uno.localdomain>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200921174522.33866-2-zhouyanjie@wanyeetech.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 01:45:21AM +0800, 周琰杰 (Zhou Yanjie) wrote:
-> @@ -56,9 +64,13 @@ static const struct of_device_id ingenic_of_match[] __initconst = {
->  	{ .compatible = "ingenic,jz4740", .data = (void *)MACH_INGENIC_JZ4740 },
->  	{ .compatible = "ingenic,jz4725b", .data = (void *)MACH_INGENIC_JZ4725B },
->  	{ .compatible = "ingenic,jz4770", .data = (void *)MACH_INGENIC_JZ4770 },
-> +	{ .compatible = "ingenic,jz4775", .data = (void *)MACH_INGENIC_JZ4775 },
->  	{ .compatible = "ingenic,jz4780", .data = (void *)MACH_INGENIC_JZ4780 },
->  	{ .compatible = "ingenic,x1000", .data = (void *)MACH_INGENIC_X1000 },
-> +	{ .compatible = "ingenic,x1000e", .data = (void *)MACH_INGENIC_X1000E },
->  	{ .compatible = "ingenic,x1830", .data = (void *)MACH_INGENIC_X1830 },
-> +	{ .compatible = "ingenic,x2000", .data = (void *)MACH_INGENIC_X2000 },
-> +	{ .compatible = "ingenic,x2000e", .data = (void *)MACH_INGENIC_X2000E },
+Hi Jacopo,
 
-I get a warning from checkpatch:
+On 15/09/20 15:45, Jacopo Mondi wrote:
+> Hi Luca,
+> 
+> On Fri, Sep 04, 2020 at 11:51:40PM +0200, Luca Ceresoli wrote:
+>> The subdev registration topic is pretty lengthy, and takes more than
+>> half of the "V4L2 sub-devices" section. Help readers in finding their
+>> way through the document by dedicating a subsection to
+>> "Subdev registration".
+>>
+>> Each of the two registration methods takes many paragraphs, but since
+>> adding a subsubsection would be overkill, just emphasize them in bold.
+> 
+> I see bold being used mostly for C symbols names, I don't know if
+> that's a kind of convention or not.
+> 
+> I would not mind a subsection to be honest...
+> I think the patch is good and I'll provide a tag, maybe others can
+> provide opinions too!
 
-WARNING: DT compatible string "ingenic,x2000e" appears un-documented -- check ./Documentation/devicetree/bindings/
+I'd say it's a matter of taste, so I'll keep the patch as is unless
+there are more votes for changing it.
 
-Thomas.
+> Reviewed-by: Jacopo Mondi <jacopo@jmondi.org>
 
+Thanks,
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Luca
