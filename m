@@ -2,98 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB18B272259
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE2BC27228F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726871AbgIULZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 07:25:22 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:45818 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726367AbgIULZV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 07:25:21 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 3FAAD3016D65BB5E18EA;
-        Mon, 21 Sep 2020 19:25:18 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Mon, 21 Sep 2020
- 19:25:10 +0800
-From:   Liu Shixin <liushixin2@huawei.com>
-To:     Christian Brauner <christian@brauner.io>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        "Suren Baghdasaryan" <surenb@google.com>,
-        <devel@driverdev.osuosl.org>, <linux-kernel@vger.kernel.org>,
-        Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH -next] binder: simplify the return expression of binder_mmap
-Date:   Mon, 21 Sep 2020 19:47:34 +0800
-Message-ID: <20200921114734.3272769-1-liushixin2@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200921080830.vrki7dcm64l46ppb@wittgenstein>
-References: <20200921080830.vrki7dcm64l46ppb@wittgenstein>
+        id S1726676AbgIULbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 07:31:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56272 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726395AbgIULbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 07:31:48 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 172A520874;
+        Mon, 21 Sep 2020 11:31:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600687908;
+        bh=mQMoozXfMbMIA41YDL+R5M4NLSveohvZ2+XilKLda2Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PTlmD3uFzf+Vd8CsV49dYXhCdaLjWWRtke/wwkf2y0VQ5wn/nHdTPK75n7mlTuatw
+         U4a9FzLEw7ZxwjYubJ1f/g3k2BS6kFVF/fevLgKMu81vcS0begBUPWYyB2P1B7Hy+R
+         bL4BtlZ4bFqlVXaltI5a096ixn/5v50rWifnJa6U=
+Date:   Mon, 21 Sep 2020 12:31:43 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     ardb@kernel.org, keescook@chromium.org, mingo@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] lib: fix incomplete comment in
+ refcount_dec_and_lock_irqsave()
+Message-ID: <20200921113143.GD2139@willie-the-truck>
+References: <20200921112358.14841-1-linmiaohe@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.32]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921112358.14841-1-linmiaohe@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify the return expression.
+On Mon, Sep 21, 2020 at 07:23:58AM -0400, Miaohe Lin wrote:
+> The description of arg flags is incomplete. The flags is saved IRQ-flags
+> when the @lock is acquired.
+> 
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+>  lib/refcount.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/lib/refcount.c b/lib/refcount.c
+> index ebac8b7d15a7..dcfd092f66c7 100644
+> --- a/lib/refcount.c
+> +++ b/lib/refcount.c
+> @@ -161,7 +161,7 @@ EXPORT_SYMBOL(refcount_dec_and_lock);
+>   *                                 interrupts if able to decrement refcount to 0
+>   * @r: the refcount
+>   * @lock: the spinlock to be locked
+> - * @flags: saved IRQ-flags if the is acquired
+> + * @flags: saved IRQ-flags if the is @lock acquired
 
-Signed-off-by: Liu Shixin <liushixin2@huawei.com>
----
- drivers/android/binder.c | 18 ++++--------------
- 1 file changed, 4 insertions(+), 14 deletions(-)
+This still isn't quite right. If we go with:
 
-diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-index 37a505c41dec..49c0700816a5 100644
---- a/drivers/android/binder.c
-+++ b/drivers/android/binder.c
-@@ -5180,9 +5180,7 @@ static const struct vm_operations_struct binder_vm_ops = {
- 
- static int binder_mmap(struct file *filp, struct vm_area_struct *vma)
- {
--	int ret;
- 	struct binder_proc *proc = filp->private_data;
--	const char *failure_string;
- 
- 	if (proc->tsk != current->group_leader)
- 		return -EINVAL;
-@@ -5194,9 +5192,9 @@ static int binder_mmap(struct file *filp, struct vm_area_struct *vma)
- 		     (unsigned long)pgprot_val(vma->vm_page_prot));
- 
- 	if (vma->vm_flags & FORBIDDEN_MMAP_FLAGS) {
--		ret = -EPERM;
--		failure_string = "bad vm_flags";
--		goto err_bad_arg;
-+		pr_err("%s: %d %lx-%lx %s failed %d\n", __func__,
-+		       proc->pid, vma->vm_start, vma->vm_end, "bad vm_flags", -EPERM);
-+		return -EPERM;
- 	}
- 	vma->vm_flags |= VM_DONTCOPY | VM_MIXEDMAP;
- 	vma->vm_flags &= ~VM_MAYWRITE;
-@@ -5204,15 +5202,7 @@ static int binder_mmap(struct file *filp, struct vm_area_struct *vma)
- 	vma->vm_ops = &binder_vm_ops;
- 	vma->vm_private_data = proc;
- 
--	ret = binder_alloc_mmap_handler(&proc->alloc, vma);
--	if (ret)
--		return ret;
--	return 0;
--
--err_bad_arg:
--	pr_err("%s: %d %lx-%lx %s failed %d\n", __func__,
--	       proc->pid, vma->vm_start, vma->vm_end, failure_string, ret);
--	return ret;
-+	return binder_alloc_mmap_handler(&proc->alloc, vma);
- }
- 
- static int binder_open(struct inode *nodp, struct file *filp)
--- 
-2.25.1
+  @flags: saved IRQ-flags if @lock is acquired
 
+then:
+
+Acked-by: Will Deacon <will@kernel.org>
+
+Will
