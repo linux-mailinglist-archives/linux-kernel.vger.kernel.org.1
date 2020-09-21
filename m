@@ -2,80 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6529272983
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:08:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D8B3272977
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:07:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727744AbgIUPID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 11:08:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36648 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726584AbgIUPHy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 11:07:54 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E25DA2076E;
-        Mon, 21 Sep 2020 15:07:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600700874;
-        bh=CrIwS1xYozSl7U4DdOij9bK6ssn3A331CEG0ka0admY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gQ8sjHjBXZo+vNEWDNum3/lDMUIxQ5EI5VLGzt5Pl5kby/naiCoM79B8dR9dOAjgM
-         KcvEeJlAli4UXuLjhwveDzf8fr/gX6A+SVmjUBNN0gUUp9ZP4TFE6snymN1TOX5b41
-         Cq72zKQhVaI0NUQVDcvbRBSZgfSF/3CPAc6sKfp4=
-Date:   Mon, 21 Sep 2020 16:07:01 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        patches@opensource.cirrus.com, alsa-devel@alsa-project.org
-Subject: Re: [PATCH AUTOSEL 5.8 03/20] ASoC: wm8994: Skip setting of the
- WM8994_MICBIAS register for WM1811
-Message-ID: <20200921150701.GA12231@sirena.org.uk>
-References: <20200921144027.2135390-1-sashal@kernel.org>
- <20200921144027.2135390-3-sashal@kernel.org>
+        id S1727679AbgIUPHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 11:07:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726584AbgIUPHv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 11:07:51 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B7C7C061755;
+        Mon, 21 Sep 2020 08:07:51 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kKNPt-003Bss-FQ; Mon, 21 Sep 2020 15:07:45 +0000
+Date:   Mon, 21 Sep 2020 16:07:45 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        David Laight <David.Laight@aculab.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-aio@kvack.org, io-uring@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        netdev@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH 04/11] iov_iter: explicitly check for CHECK_IOVEC_ONLY in
+ rw_copy_check_uvector
+Message-ID: <20200921150745.GT3421308@ZenIV.linux.org.uk>
+References: <20200921143434.707844-1-hch@lst.de>
+ <20200921143434.707844-5-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="EeQfGwPcQSOJBaQU"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200921144027.2135390-3-sashal@kernel.org>
-X-Cookie: Alimony is the high cost of leaving.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200921143434.707844-5-hch@lst.de>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 21, 2020 at 04:34:27PM +0200, Christoph Hellwig wrote:
+> Explicitly check for the magic value insted of implicitly relying on
+> its numeric representation.   Also drop the rather pointless unlikely
+> annotation.
 
---EeQfGwPcQSOJBaQU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+See above - I would rather have CHECK_IOVEC_ONLY gone.
 
-On Mon, Sep 21, 2020 at 10:40:10AM -0400, Sasha Levin wrote:
-
-> The WM8994_MICBIAS register is not available in the WM1811 CODEC so skip
-> initialization of that register for that device.
-> This suppresses an error during boot:
-> "wm8994-codec: ASoC: error at snd_soc_component_update_bits on wm8994-codec"
-
-This is pretty much a cosmetic change - previously we were silently not
-reading the register, this just removes the attempt to read it since we
-added an error message in the core.
-
---EeQfGwPcQSOJBaQU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9owZQACgkQJNaLcl1U
-h9DuEAf9E4btRI0NX2oe8V1deZw2buPvoKQPGvwseEr3w1FrbC1fM6nn3sirDyae
-RdfP/1qR3WXfI5SZOztv8kG+g88mHWaT2Y1cDv6zZkBJs9+OicUPftZgBS7C30zU
-m8avzwevF96pjt70HMjxEPUya2ogLChAFrYA0CMGV1pwEkzOIxl7yv3aEfu0wdv6
-eIbwwwrlcs+HDAkwbptYy5sC2xMPRpn2rCBJG290M3x99Xbdy0ShUR+Ac3iuhERy
-zVLQgPtt/tj6spPaEXN+mBLw/vshwSwMX5ueJG6TLL6iNlY74l7Wli9u2fbUIAKP
-rDH9KHoSSnjFFGNpN31VNuUdi7x8BQ==
-=7sIW
------END PGP SIGNATURE-----
-
---EeQfGwPcQSOJBaQU--
+The reason for doing these access_ok() in the same loop is fairly weak,
+especially since you are checking type on each iteration.  Might as
+well do that in a separate loop afterwards.
