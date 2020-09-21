@@ -2,136 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57828272134
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 590EB272136
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726691AbgIUKd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:33:27 -0400
-Received: from mail-il1-f205.google.com ([209.85.166.205]:37621 "EHLO
-        mail-il1-f205.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726567AbgIUKdS (ORCPT
+        id S1726755AbgIUKda convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Sep 2020 06:33:30 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:34997 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726699AbgIUKdZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 06:33:18 -0400
-Received: by mail-il1-f205.google.com with SMTP id c66so10622142ilf.4
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:33:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=ANn/W8cefD65L0WEk2xKoOR7AQ8X98axJRQVhD3ngEg=;
-        b=ue+l7H8GcjiaZYI3zQvYvcyy4DnILUNlQdmtsYjWZDeG8E/ln+aLAALBuwGKYAhft6
-         gFUz6fmUMdu+MDFjR5SeLCHqsdKmbx09TmTNeYoW741L/7jzC67g7t28VqEpZ80p3aK+
-         2wb8CvAy4bOqDF8X+Q3Lng/xQdRzR2yUFP09cAqr1rSpO0uS+DDi3Cokaw2z2w36NexV
-         BnOtxUP3PSAG5G5dAI3wg13NLiSVOOMRVrWWPw8El/g+q968EQDlQaPtXpV7E0jEN5pK
-         savMVo+tTC67mk6cUvMWQXrCdUI+ZJqY4a0bg/hqbe2v1q++cfF+vReWnL/w9FXRem/h
-         oEJg==
-X-Gm-Message-State: AOAM532VFLHYtl1trpDYpy9KA2zv5xUtRtIOwnBlaOeBh1z0l7soBoqJ
-        7GS/Y70cfxPOWdNhQ7nmPo/Ue75IjVAHKZaHSxz+tAjqTeQZ
-X-Google-Smtp-Source: ABdhPJyGl3Fu6WMhEKCiTG9/3nbg9Nx4V6AKJVZWxuSQImBhnaho95oaG5nHYhN9fIxuw3FdWogs2afMdLO/9FYPTUsr//BxExrT
+        Mon, 21 Sep 2020 06:33:25 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-108-DbCTplcGNneZ3ytIFDanIg-1; Mon, 21 Sep 2020 11:33:20 +0100
+X-MC-Unique: DbCTplcGNneZ3ytIFDanIg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Mon, 21 Sep 2020 11:33:19 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Mon, 21 Sep 2020 11:33:19 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Rasmus Villemoes' <linux@rasmusvillemoes.dk>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>
+CC:     syzbot <syzbot+ea3a78a71705faf41d77@syzkaller.appspotmail.com>,
+        "Aleksa Sarai" <cyphar@cyphar.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>, "X86 ML" <x86@kernel.org>
+Subject: RE: WARNING in ex_handler_uaccess
+Thread-Topic: WARNING in ex_handler_uaccess
+Thread-Index: AQHWkAEVdhxJQ/Fq7U+wxL6/+NIsNaly5Eug
+Date:   Mon, 21 Sep 2020 10:33:19 +0000
+Message-ID: <8bef09fd4d644f48a7c83aa18b653f76@AcuMS.aculab.com>
+References: <000000000000762dee05af9ccd01@google.com>
+ <CALCETrVL=VGNXbWK1BB1LnsxaKOGRbEfCGUEx4jaCW9cF-54Ag@mail.gmail.com>
+ <20200918235528.GB3421308@ZenIV.linux.org.uk>
+ <CALCETrVi=quLyPXzt-0ou-FF_OYMa7pE5N8_NchRaWtwLg3kNg@mail.gmail.com>
+ <20200919001714.GC3421308@ZenIV.linux.org.uk>
+ <bc5d889c-17f0-dcb8-d174-f21b321cf85b@rasmusvillemoes.dk>
+In-Reply-To: <bc5d889c-17f0-dcb8-d174-f21b321cf85b@rasmusvillemoes.dk>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-X-Received: by 2002:a02:ca0e:: with SMTP id i14mr40438267jak.65.1600684397714;
- Mon, 21 Sep 2020 03:33:17 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 03:33:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ec63c105afd060f5@google.com>
-Subject: BUG: unable to handle kernel paging request in bpf_trace_run1
-From:   syzbot <syzbot+35b2a9c256b8956a2b11@syzkaller.appspotmail.com>
-To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org, mingo@redhat.com,
-        netdev@vger.kernel.org, rostedt@goodmis.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Rasmus Villemoes
+> Sent: 21 September 2020 11:22
+ 
+> On 19/09/2020 02.17, Al Viro wrote:
+> > On Fri, Sep 18, 2020 at 05:07:43PM -0700, Andy Lutomirski wrote:
+> >> On Fri, Sep 18, 2020 at 4:55 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> >>>
+> >>> On Fri, Sep 18, 2020 at 04:31:33PM -0700, Andy Lutomirski wrote:
+> >>>
+> >>>> check_zeroed_user() looks buggy.  It does:
+> >>>>
+> >>>>        if (!user_access_begin(from, size))
+> >>>>                return -EFAULT;
+> >>>>
+> >>>>        unsafe_get_user(val, (unsigned long __user *) from, err_fault);
+> >>>>
+> >>>> This is wrong if size < sizeof(unsigned long) -- you read outside the
+> >>>> area you verified using user_access_begin().
+> >>>
+> >>> Read the code immediately prior to that.  from will be word-aligned,
+> >>> and size will be extended accordingly.  If the area acceptable for
+> >>> user_access_begin() ends *NOT* on a word boundary, you have a problem
+> >>> and I would strongly recommend to seek professional help.
+> >>>
+> >>> All reads in that thing are word-aligned and word-sized.  So I very
+> >>> much doubt that your analysis is correct.
+> >>
+> >> Maybe -ETOOTIRED, but I seriously question the math in here.  Suppose
+> >> from == (unsigned long *)1 and size == 1.  Then align is 1, and we do:
+> >>
+> >> from -= align;
+> >> size += align;
+> >>
+> >> So now from = 0 and size = 2.  Now we do user_access_begin(0, 2) and
+> >> then immediately read 4 or 8 bytes.  No good.
+> >
+> > Could you explain what kind of insane hardware manages to do #PF-related
+> > checks (including SMAP, whatever) with *sub*WORD* granularity?
+> >
+> > If it's OK with 16bit read from word-aligned address, but barfs on 64bit
+> > one...  I want to know what the hell had its authors been smoking.
+> >
+> 
+> So, not sure how the above got triggered, but I notice there might be an
+> edge case in check_zeroed_user():
+> 
+> 	from -= align;
+> 	size += align;
+> 
+> 	if (!user_read_access_begin(from, size))
+> 		return -EFAULT;
+> 
+> 	unsafe_get_user(val, (unsigned long __user *) from, err_fault);
+> 
+> 
+> Suppose size is (size_t)-3 and align is 3. What's the convention for
+> access_ok(whatever, 0)? Is that equivalent to access_ok(whatever, 1), or
+> is it always true (or $ARCH-dependent)?
 
-syzbot found the following issue on:
+Doesn't matter, it will be doing access_ok(xxx, 8) regardless of
+the user-supplied transfer length.
 
-HEAD commit:    325d0eab Merge branch 'akpm' (patches from Andrew)
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=128d4dd9900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b12e84189082991c
-dashboard link: https://syzkaller.appspot.com/bug?extid=35b2a9c256b8956a2b11
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+> But, AFAICT, no current caller of check_zeroed_user can end up passing
+> in a size that can overflow to 0. E.g. for the case at hand, size cannot
+> be more than SIZE_MAX-24.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Basically KASAN doesn't like you reading full words and masking
+off the unused bytes.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+35b2a9c256b8956a2b11@syzkaller.appspotmail.com
+	David
 
-BUG: unable to handle page fault for address: fffff520001f4806
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD 21ffee067 P4D 21ffee067 PUD aa164067 PMD aa166067 PTE 0
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 6912 Comm: syz-executor.5 Not tainted 5.9.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:1887 [inline]
-RIP: 0010:bpf_trace_run1+0x113/0x3c0 kernel/trace/bpf_trace.c:1923
-Code: c7 c7 00 20 91 88 e8 ec 15 d2 ff 0f 1f 44 00 00 e8 82 07 f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 8e 02 00 00 48 8d 73 38 48 8d 7c 24 28 ff 53 30
-RSP: 0018:ffffc900056d7588 EFLAGS: 00010a06
-RAX: dffffc0000000000 RBX: ffffc90000fa4000 RCX: dffffc0000000000
-RDX: 1ffff920001f4806 RSI: ffffffff817f383e RDI: ffffc90000fa4030
-RBP: 1ffff92000adaeb2 R08: 0000000000000000 R09: ffffffff8d0b79e7
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
-R13: 0000000000000000 R14: ffff888083309e40 R15: ffffc900056d79c0
-FS:  0000000001995940(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: fffff520001f4806 CR3: 0000000057ab8000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __bpf_trace_ext4_mballoc_alloc+0x8b/0xc0 fs/ext4/super.c:6207
- trace_ext4_mballoc_alloc include/trace/events/ext4.h:1002 [inline]
- ext4_mb_collect_stats fs/ext4/mballoc.c:3541 [inline]
- ext4_mb_release_context fs/ext4/mballoc.c:4788 [inline]
- ext4_mb_new_blocks+0x2ad6/0x4720 fs/ext4/mballoc.c:4963
- ext4_ext_map_blocks+0x2320/0x61b0 fs/ext4/extents.c:4238
- ext4_map_blocks+0x7b8/0x1650 fs/ext4/inode.c:625
- ext4_getblk+0xad/0x530 fs/ext4/inode.c:832
- ext4_bread+0x7c/0x380 fs/ext4/inode.c:882
- ext4_append+0x15d/0x370 fs/ext4/namei.c:67
- ext4_init_new_dir fs/ext4/namei.c:2765 [inline]
- ext4_mkdir+0x5e0/0xdf0 fs/ext4/namei.c:2810
- vfs_mkdir+0x507/0x770 fs/namei.c:3649
- do_mkdirat+0x262/0x2d0 fs/namei.c:3672
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45ca17
-Code: 1f 40 00 b8 5a 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 2d c0 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 53 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 0d c0 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffee03b9878 EFLAGS: 00000206 ORIG_RAX: 0000000000000053
-RAX: ffffffffffffffda RBX: 0000000000059c04 RCX: 000000000045ca17
-RDX: 00007ffee03b98c5 RSI: 00000000000001ff RDI: 00007ffee03b98c0
-RBP: 0000000000000369 R08: 0000000000000000 R09: 0000000000000005
-R10: 0000000000000064 R11: 0000000000000206 R12: 0000000000000003
-R13: 00007ffee03b98b0 R14: 0000000000059aaa R15: 00007ffee03b98c0
-Modules linked in:
-CR2: fffff520001f4806
----[ end trace a7884d78e3b5aba2 ]---
-RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:1887 [inline]
-RIP: 0010:bpf_trace_run1+0x113/0x3c0 kernel/trace/bpf_trace.c:1923
-Code: c7 c7 00 20 91 88 e8 ec 15 d2 ff 0f 1f 44 00 00 e8 82 07 f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 8e 02 00 00 48 8d 73 38 48 8d 7c 24 28 ff 53 30
-RSP: 0018:ffffc900056d7588 EFLAGS: 00010a06
-RAX: dffffc0000000000 RBX: ffffc90000fa4000 RCX: dffffc0000000000
-RDX: 1ffff920001f4806 RSI: ffffffff817f383e RDI: ffffc90000fa4030
-RBP: 1ffff92000adaeb2 R08: 0000000000000000 R09: ffffffff8d0b79e7
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
-R13: 0000000000000000 R14: ffff888083309e40 R15: ffffc900056d79c0
-FS:  0000000001995940(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: fffff520001f4806 CR3: 0000000057ab8000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+	
 
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
