@@ -2,100 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 046C0271C31
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 09:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 369B3271C28
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 09:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726375AbgIUHlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 03:41:46 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:47396 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726236AbgIUHlq (ORCPT
+        id S1726387AbgIUHjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 03:39:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726244AbgIUHjl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 03:41:46 -0400
-X-Greylist: delayed 400 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Sep 2020 03:41:45 EDT
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 08L7YrVdA020630, This message is accepted by code: ctloc85258
-Received: from RSEXMBS02.realsil.com.cn ([172.29.17.196])
-        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 08L7YrVdA020630
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 21 Sep 2020 15:34:53 +0800
-Received: from RSEXMBS02.realsil.com.cn (172.29.17.196) by
- RSEXMBS02.realsil.com.cn (172.29.17.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Mon, 21 Sep 2020 15:34:52 +0800
-Received: from RSEXMBS02.realsil.com.cn ([fe80::7c48:1e22:fa36:f292]) by
- RSEXMBS02.realsil.com.cn ([fe80::7c48:1e22:fa36:f292%7]) with mapi id
- 15.01.2044.004; Mon, 21 Sep 2020 15:34:52 +0800
-From:   =?utf-8?B?5Yav6ZSQ?= <rui_feng@realsil.com.cn>
-To:     "lee.jones@linaro.org" <lee.jones@linaro.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Arnd Bergmann" <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Questions about drivers/mfd/mfd-core.c
-Thread-Topic: Questions about drivers/mfd/mfd-core.c
-Thread-Index: AdaP5SaG58tyf6GzRYmfdxMxh8jYxw==
-Date:   Mon, 21 Sep 2020 07:34:52 +0000
-Message-ID: <989ff36ebc5746d69528ce05b660c777@realsil.com.cn>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.29.40.150]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mon, 21 Sep 2020 03:39:41 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30953C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 00:39:41 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id z23so16218078ejr.13
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 00:39:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=BodLV2Cx3aSBcZ8i8dZwdtWx8R9mhFqXf0hcFRpAqxE=;
+        b=UHq/2f4R+TcDITq9cLAVlgIdzEwJ7enL5pTLzZt+6MrQLYk9JCmmmdSv2KbuXYsmjY
+         3834W5I+6J1m20g6LmdXUUFy3JvylArAGQypx+Sie2BwWpYXkXER+HF6cp0J9qNblmK/
+         X/nU1Ah6BU/YnxjZ2Zty8uGqD5OzS9xMbIwZyCpM7f/iFw7RF4WM44YIa3WW/Xr2CIaZ
+         NqEPucUa0g3yx+DHfU8FCbYT48o+WscYuHvQ8Y80geV4eq6NF1/tfHjKKYLPxBaDMbxQ
+         rQRRoRgG/ZOjTJWA8w+16HHp4Q/oUtAq2C8hM7AjfFIkUXIERpOJo4+shIsMbtN4D7IZ
+         z1ZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=BodLV2Cx3aSBcZ8i8dZwdtWx8R9mhFqXf0hcFRpAqxE=;
+        b=WMr1WddXs/ikDJicqYmwIMe+T7eQIPsvBDsTe1z+P0CZxqWL/vg9LFxdbnCU6E5cWg
+         IxKLU8yMVnh6vofdNRnHvwSBHd/IVr7mTdcLZtMD1XquUG2zsgI8cywJXR1LnV1GeYvN
+         mIlzmMLbMajLgBSFn8fufnLHKzoiQzft7PAMO0FLWZIwa68LBUObXzolLpxWSv0PGjhi
+         4322nVpoW4RqwBssUacRdmJPJBMK5h8zDGHJzGf8TO3Ok7dvMZ8JnDMEpXGhLK1DB05O
+         VPm2qmcn54cHvuC34BjHHYPHQcnWlDY8/01B6nyPdrYtzPR9VXSIHxAzaWoaGYEuxUBe
+         BEMw==
+X-Gm-Message-State: AOAM532QEFhBMHPoCol0Ff4Sr6IMAxb57nP4odfcBAk++qvniDEmUOcP
+        8plWQ8ukC89XgZDU3eBEWNI=
+X-Google-Smtp-Source: ABdhPJwgWhlPEhIVTNnjXHmbaHDpA4FHAhpOBypvmeQVF/PSjLJO8uvQOx9HZliQFiq9gIu3gpVYNw==
+X-Received: by 2002:a17:907:648:: with SMTP id wq8mr50545415ejb.291.1600673979648;
+        Mon, 21 Sep 2020 00:39:39 -0700 (PDT)
+Received: from felia ([2001:16b8:2d52:a400:69ec:6d66:6c4c:48])
+        by smtp.gmail.com with ESMTPSA id q23sm7963491edw.41.2020.09.21.00.39.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 00:39:38 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
+Date:   Mon, 21 Sep 2020 09:39:32 +0200 (CEST)
+X-X-Sender: lukas@felia
+To:     Joe Perches <joe@perches.com>
+cc:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org, apw@canonical.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] checkpatch: extend author Signed-off-by check for
+ split From: header
+In-Reply-To: <52ccb41c8922dda44ac325f2f3e09f81f1936611.camel@perches.com>
+Message-ID: <alpine.DEB.2.21.2009210921520.7483@felia>
+References: <20200920091706.56276-1-dwaipayanray1@gmail.com> <7958ded756c895ca614ba900aae7b830a992475e.camel@perches.com> <CABJPP5Chm2xd2PW77=Ru9t4C6Yvq3SyEmr1gKsaQGyF5AxRVfA@mail.gmail.com> <52ccb41c8922dda44ac325f2f3e09f81f1936611.camel@perches.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="8323329-1237931917-1600673978=:7483"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgSm9uZXMsDQoNCkkgaGF2ZSBhIHF1ZXN0aW9uIGFib3V0IGRyaXZlcnMvbWZkL21mZC1jb3Jl
-LmMgYW5kIG5lZWQgeW91ciBoZWxwLg0KVGhlIGRyaXZlciBpbiBkcml2ZXJzL21pc2MvY2FyZHJl
-YWRlci9ydHN4X3Bjci5jIGNhbGwgJ21mZF9hZGRfZGV2aWNlcycgYW5kICdtZmRfcmVtb3ZlX2Rl
-dmljZXMnIGluIHByb2JlIGFuZCByZW1vdmUgZnVuY3Rpb25zDQpCZWZvcmUgTGludXMgNS45LXJj
-MSwgdGhlIHR3byBmdW5jdGlvbnMgY2FuIHJ1biBwcm9wZXJseSwgYnV0IGluIExpbnVzIDUuOS1y
-YzEgd2hlbiBJIHVucGx1ZyB0aGUgY2FyZHJlYWRlciAnbWZkX3JlbW92ZV9kZXZpY2VzJyB3aWxs
-IGxlYWQgdG8gYSBrZXJuZWwgYnVnIGxpa2UgYmVsb3c6DQoNCi0tLS0tLS0tLS0tLVsgY3V0IGhl
-cmUgXS0tLS0tLS0tLS0tLQ0Ka2VybmVsIEJVRyBhdCBtbS9zbHViLmM6MzA0IQ0KaW52YWxpZCBv
-cGNvZGU6IDAwMDAgWyMxXSBTTVAgUFRJDQpDUFU6IDAgUElEOiA3IENvbW06IGt3b3JrZXIvdTg6
-MCBOb3QgdGFpbnRlZCA1LjguMCsgIzExDQpIYXJkd2FyZSBuYW1lOiBEZWxsIEluYy4gTGF0aXR1
-ZGUgRTU0NDAvMFJUMzZZLCBCSU9TIEEwNCAwMS8yMi8yMDE0DQpXb3JrcXVldWU6IGthY3BpX2hv
-dHBsdWcgYWNwaV9ob3RwbHVnX3dvcmtfZm4NClJJUDogMDAxMDpfX3NsYWJfZnJlZSsweDFhYS8w
-eDM1MA0KQ29kZTogMGYgMWYgNDQgMDAgMDAgZWIgYTUgNDEgZjcgNDYgMDggMDAgMGQgMjEgMDAg
-MGYgODUgMTYgZmYgZmYgZmYgNGQgODUgZWQgMGYgODUgMGQgZmYgZmYgZmYgODAgNGQgYmIgODAg
-NDUgMzEgYzAgZTkgNjAgZmYgZmYgZmYgPDBmPiAwYiA0OSAzYiA1YyAyNCAyOCA3NSBjNSA0OCA4
-YiA0NSA4OCA0OSA4OSA0YyAyNCAyOCA0OSA4OSA0NCAyNA0KUlNQOiAwMDE4OmZmZmZiNjU4YzAw
-NTdhMjAgRUZMQUdTOiAwMDAxMDI0Ng0KUkFYOiBmZmZmOTg4YTU0NmJmNWEwIFJCWDogMDAwMDAw
-MDA4MDE1MDAxMSBSQ1g6IGZmZmY5ODhhNTQ2YmY1NDANClJEWDogZmZmZjk4OGE1NDZiZjU0MCBS
-U0k6IGZmZmZlMzI3NDQ1MWFmYzAgUkRJOiBmZmZmOTg4YTZhMDQyODAwDQpSQlA6IGZmZmZiNjU4
-YzAwNTdhYzAgUjA4OiAwMDAwMDAwMDAwMDAwMDAxIFIwOTogZmZmZmZmZmZhOTEzNmE1Mg0KUjEw
-OiAwMDAwMDAwMDAwMDAwMDAxIFIxMTogMDAwMDAwMDAwMDAwMDAwMCBSMTI6IGZmZmZlMzI3NDQ1
-MWFmYzANClIxMzogZmZmZjk4OGE1NDZiZjU0MCBSMTQ6IGZmZmY5ODhhNmEwNDI4MDAgUjE1OiBm
-ZmZmOTg4YTU0NmJmNTQwDQpGUzogIDAwMDAwMDAwMDAwMDAwMDAoMDAwMCkgR1M6ZmZmZjk4OGE2
-YWEwMDAwMCgwMDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAwDQpDUzogIDAwMTAgRFM6IDAwMDAg
-RVM6IDAwMDAgQ1IwOiAwMDAwMDAwMDgwMDUwMDMzDQpDUjI6IDAwMDA3ZjAzYmMwMDNkMDQgQ1Iz
-OiAwMDAwMDAwMDk4NDBhMDAxIENSNDogMDAwMDAwMDAwMDE3MDZmMA0KQ2FsbCBUcmFjZToNCiA/
-IF9fa2VybmZzX3JlbW92ZS5wYXJ0LjE4KzB4MTAxLzB4MWYwDQogPyBwbGF0Zm9ybV9kZXZpY2Vf
-cmVsZWFzZSsweDIyLzB4NTANCiBrZnJlZSsweDM0Zi8weDM5MA0KID8ga2ZyZWUrMHgzNGYvMHgz
-OTANCiBwbGF0Zm9ybV9kZXZpY2VfcmVsZWFzZSsweDIyLzB4NTANCiBkZXZpY2VfcmVsZWFzZSsw
-eDJjLzB4ODANCiBrb2JqZWN0X3B1dCsweGFkLzB4MWMwDQogPyBkZXZpY2VfbGlua3NfZmx1c2hf
-c3luY19saXN0KzB4ZTAvMHhlMA0KIGtsaXN0X2NoaWxkcmVuX3B1dCsweDFhLzB4MjANCiBrbGlz
-dF9wcmV2KzB4YTYvMHgxMzANCiA/IG1mZF9jZWxsX2Rpc2FibGUrMHg1MC8weDUwDQogZGV2aWNl
-X2Zvcl9lYWNoX2NoaWxkX3JldmVyc2UrMHg2MC8weDkwDQogbWZkX3JlbW92ZV9kZXZpY2VzKzB4
-MzMvMHg1MA0KIHJ0c3hfcGNpX3JlbW92ZSsweDg1LzB4MTgwIFtydHN4X3BjaV0NCiBwY2lfZGV2
-aWNlX3JlbW92ZSsweDNlLzB4YzANCiBkZXZpY2VfcmVsZWFzZV9kcml2ZXJfaW50ZXJuYWwrMHhm
-Yi8weDFjMA0KIGRldmljZV9yZWxlYXNlX2RyaXZlcisweDEyLzB4MjANCiBwY2lfc3RvcF9idXNf
-ZGV2aWNlKzB4NjgvMHg5MA0KIHBjaV9zdG9wX2FuZF9yZW1vdmVfYnVzX2RldmljZSsweDEyLzB4
-MjANCiB0cmltX3N0YWxlX2RldmljZXMrMHgxNjcvMHgxOTANCiB0cmltX3N0YWxlX2RldmljZXMr
-MHhhOS8weDE5MA0KIGFjcGlwaHBfY2hlY2tfYnJpZGdlLnBhcnQuMTUrMHgxMDAvMHgxNDANCiBh
-Y3BpcGhwX2NoZWNrX2hvc3RfYnJpZGdlKzB4OTgvMHhjMA0KIGFjcGlfcGNpX3Jvb3Rfc2Nhbl9k
-ZXBlbmRlbnQrMHhlLzB4MjANCiBhY3BpX3NjYW5fYnVzX2NoZWNrKzB4M2YvMHhjMA0KIGFjcGlf
-ZGV2aWNlX2hvdHBsdWcrMHgyYWYvMHg0YjANCiBhY3BpX2hvdHBsdWdfd29ya19mbisweDFlLzB4
-MzANCiBwcm9jZXNzX29uZV93b3JrKzB4MjBjLzB4NDAwDQogd29ya2VyX3RocmVhZCsweDM0LzB4
-NDAwDQogPyBwcm9jZXNzX29uZV93b3JrKzB4NDAwLzB4NDAwDQoga3RocmVhZCsweDEyNi8weDE0
-MA0KID8ga3RocmVhZF9wYXJrKzB4OTAvMHg5MA0KIHJldF9mcm9tX2ZvcmsrMHgyMi8weDMwDQoN
-CkFmdGVyIEkgcmV2ZXJ0IHRoZSBjb21taXQgNDY2YTYyZDc2NDJmMDJmMzZkMzdkOWIzMGMxOWE3
-MjU1MzhhMDFjYShodHRwczovL2xvcmUua2VybmVsLm9yZy9wYXRjaHdvcmsvcGF0Y2gvMTI1NTEw
-NiksICdtZmRfcmVtb3ZlX2RldmljZXMnIHdpbGwgcnVuIHdpdGhvdXQgYnVnLA0KRG8gSSB1c2Ug
-J21mZF9hZGRfZGV2aWNlcycgYW5kICdtZmRfcmVtb3ZlX2RldmljZXMnIGluY29ycmVjdGx5IG9y
-IHBvc3NpYmxlIGJ1ZyBpbiBkcml2ZXJzL21mZC9tZmQtY29yZS5jPyBJIGRvbid0IGtub3cgd2hh
-dCdzIHdyb25nLCBzbyBJIG5lZWQgeW91ciBoZWxwLg0KSWYgeW91IG5lZWQgbW9yZSBpbmZvcm1h
-dGlvbiBwbGVhc2UgbGV0IG1lIGtub3cuDQoNClRoYW5rcw0KDQpSdWkgRmVuZw0K
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323329-1237931917-1600673978=:7483
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8BIT
+
+
+
+On Sun, 20 Sep 2020, Joe Perches wrote:
+
+> On Sun, 2020-09-20 at 21:52 +0530, Dwaipayan Ray wrote:
+> > On Sun, Sep 20, 2020 at 8:39 PM Joe Perches <joe@perches.com> wrote:
+> > > On Sun, 2020-09-20 at 14:47 +0530, Dwaipayan Ray wrote:
+> > > > Checkpatch did not handle cases where the author From: header
+> > > > was split into multiple lines. The author identity could not
+> > > > be resolved and checkpatch generated a false NO_AUTHOR_SIGN_OFF
+> > > > warning.
+> > > 
+> > I think there won't be any problem. Is my
+> > observation correct?
+> 
+> Likely true, it probably doesn't matter.
+> Still, I'd imagine it doesn't hurt either.
+> 
+> > > What I have does a bit more by saving any post-folding
+> > > 
+> > > "From: <name and email address>"
+> > > 
+> > > and comparing that to any "name and perhaps different
+> > > email address" in a Signed-off-by: line.
+> > > 
+> > > A new message is emitted if the name matches but the
+> > > email address is different.
+> > > 
+> > > Perhaps it's reasonable to apply your patch and then
+> > > update it with something like the below:
+> > > ---
+> > >  scripts/checkpatch.pl | 32 ++++++++++++++++++++++++++++----
+> > >  1 file changed, 28 insertions(+), 4 deletions(-)
+> > > 
+> > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> > > index 3e474072aa90..1ecc179e938d 100755
+> > > --- a/scripts/checkpatch.pl
+> > > +++ b/scripts/checkpatch.pl
+> > > @@ -1240,6 +1240,15 @@ sub same_email_addresses {
+> > >                $email1_address eq $email2_address;
+> > >  }
+> > > 
+> > > +sub same_email_names {
+> > > +       my ($email1, $email2) = @_;
+> > > +
+> > > +       my ($email1_name, $name1_comment, $email1_address, $comment1) = parse_email($email1);
+> > > +       my ($email2_name, $name2_comment, $email2_address, $comment2) = parse_email($email2);
+> > > +
+> > > +       return $email1_name eq $email2_name;
+> > > +}
+> > > +
+> > >  sub which {
+> > >         my ($bin) = @_;
+> > > 
+> > > @@ -2679,20 +2688,32 @@ sub process {
+> > >                 }
+> > > 
+> > >  # Check the patch for a From:
+> > > -               if (decode("MIME-Header", $line) =~ /^From:\s*(.*)/) {
+> > > +               if ($line =~ /^From:\s*(.*)/i) {
+> > >                         $author = $1;
+> > > -                       $author = encode("utf8", $author) if ($line =~ /=\?utf-8\?/i);
+> > > +                       my $curline = $linenr;
+> > > +                       while (defined($rawlines[$curline]) && $rawlines[$curline++] =~ /^\s(\s+)?(.*)/) {
+> > > +                               $author .= ' ' if (defined($1));
+> > > +                               $author .= "$2";
+> > > +                       }
+> > > +                       if ($author =~ /=\?utf-8\?/i) {
+> > > +                               $author = decode("MIME-Header", $author);
+> > > +                               $author = encode("utf8", $author);
+> > > +                       }
+> > > +
+> > >                         $author =~ s/"//g;
+> > >                         $author = reformat_email($author);
+> > >                 }
+> > > 
+> > >  # Check the patch for a signoff:
+> > >                 if ($line =~ /^\s*signed-off-by:\s*(.*)/i) {
+> > > +                       my $sig = $1;
+> > >                         $signoff++;
+> > >                         $in_commit_log = 0;
+> > >                         if ($author ne '') {
+> > > -                               if (same_email_addresses($1, $author)) {
+> > > -                                       $authorsignoff = 1;
+> > > +                               if (same_email_addresses($sig, $author)) {
+> > > +                                       $authorsignoff = "1";
+> > > +                               } elsif (same_email_names($sig, $author)) {
+> > > +                                       $authorsignoff = $sig;
+> > >                                 }
+> > >                         }
+> > >                 }
+> > > @@ -6937,6 +6958,9 @@ sub process {
+> > >                 } elsif (!$authorsignoff) {
+> > >                         WARN("NO_AUTHOR_SIGN_OFF",
+> > >                              "Missing Signed-off-by: line by nominal patch author '$author'\n");
+> > > +               } elsif ($authorsignoff ne "1") {
+> > > +                       WARN("NO_AUTHOR_SIGN_OFF",
+> > > +                            "From:/SoB: email address mismatch: 'From: $author' != 'Signed-off-by: $authorsignoff'\n");
+> > >                 }
+> > >         }
+> > > 
+> > > 
+> > 
+> > Yes, this is definitely more logical !
+> > I was actually hoping to talk with you on this.
+> 
+> Hope granted, but only via email... (smile)
+> 
+> > The code you sent better handles name mismatches when
+> > email addresses are same. But I also have found several
+> > such commits in which the author have signed off using
+> > a different email address than the one which he/she used
+> > to send the patch.
+> > 
+> > For example, Lukas checked commits between v5.4 and
+> > v5.8 and he found:
+> >     175 Missing Signed-off-by: line by nominal patch authorrep
+> >     'Daniel Vetter <daniel.vetter@ffwll.ch>'
+> > 
+> > Infact in all of those commits he signed off using a different
+> > mail, Daniel Vetter <daniel.vetter@intel.com>.
+> > 
+> > So is it possible to resolve these using perhaps .mailmap
+> > entries? Or should only the name mismatch part be better
+> > handled? Or perhaps both?
+> 
+> Dunno.  It certainly can be improved...
+> Try adding some more logic and see what you come up with.
+> 
+> btw:
+> 
+> The most frequent NO_AUTHOR_SIGN_OFF messages for v5.7..v5.8 are
+> 
+>      98 WARNING: From:/SoB: email address mismatch: 'From: Daniel Vetter <daniel.vetter@ffwll.ch>' != 'Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>'
+>      24 WARNING: From:/SoB: email address mismatch: 'From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>' != 'Signed-off-by: Thinh Nguyen <thinhn@synopsys.com>'
+>      19 WARNING: From:/SoB: email address mismatch: 'From: Wolfram Sang <wsa+renesas@sang-engineering.com>' != 'Signed-off-by: Wolfram Sang <wsa@kernel.org>'
+>      11 WARNING: From:/SoB: email address mismatch: 'From: Luke Nelson <lukenels@cs.washington.edu>' != 'Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>'
+>       8 WARNING: From:/SoB: email address mismatch: 'From: Christophe Leroy <christophe.leroy@c-s.fr>' != 'Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>'
+>       6 WARNING: From:/SoB: email address mismatch: 'From: Davidlohr Bueso <dave@stgolabs.net>' != 'Signed-off-by: Davidlohr Bueso <dbueso@suse.de>'
+>       5 WARNING: Missing Signed-off-by: line by nominal patch author '"Paul A. Clarke" <pc@us.ibm.com>'
+>       4 WARNING: Missing Signed-off-by: line by nominal patch author 'Huang Ying <ying.huang@intel.com>'
+>       3 WARNING: Missing Signed-off-by: line by nominal patch author '"Stephan Müller" <smueller@chronox.de>'
+>
+
+Great minds think alike.
+
+I did a similar investigation on Friday after the first discussion with 
+Dwaipayan:
+
+https://lore.kernel.org/linux-kernel-mentees/alpine.DEB.2.21.2009181238230.14717@felia/T/#m1bf5f7ca876d33d4d53e492b5d8a6232437c921f
+
+I hope Dwaipayan can come up with a '.AUTHOR_SIGN_OFF.mailmap' file that 
+we can use to distinguish the known developers that knowingly and 
+intentionally use different identities vs. the 'newbies' that should 
+validly be warned.
+
+We will see if Dwaipayan can come up with a good idea how to handle that.
+
+Lukas
+
+> For the Missing Signed-off-by: lines above,
+> even after decoding, the email matches but
+> the names do not.
+> 
+> From: "Paul A. Clarke" <pc@us.ibm.com>
+> [...]
+> Signed-off-by: Paul Clarke <pc@us.ibm.com>
+> 
+> From: Huang Ying <ying.huang@intel.com>
+> [...]
+> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+> 
+> From: =?UTF-8?q?Stephan=20M=C3=BCller?= <smueller@chronox.de>
+> [...]
+> Signed-off-by: Stephan Mueller <smueller@chronox.de>
+> 
+> > Also, I would like to know if there are any more changes
+> > required for the current patch or if it is good to go?
+> 
+> I think it's fine.
+> 
+> cheers, Joe
+> 
+> 
+--8323329-1237931917-1600673978=:7483--
