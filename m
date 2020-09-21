@@ -2,102 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB0972733C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 22:45:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06FED2733C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 22:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727703AbgIUUp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 16:45:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726468AbgIUUp5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 16:45:57 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D84C061755;
-        Mon, 21 Sep 2020 13:45:57 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id s13so834211wmh.4;
-        Mon, 21 Sep 2020 13:45:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9E/JMX1u9DMUuutSlm9kiJDKX4f6Y4qT6IOADWiSiVU=;
-        b=LWgNuVhb/ir9Jw9EmxgJOL6qMTGPKiuOJ5BYMHsy4oO8iPOD5LYu+I5NAmJiy5mO3v
-         PZZyZTaUn60arUGZB5ggzcRe8NA0D6RkJUUi0eDkKL6RGHhVY/f01hb41xmwaXDL2PA2
-         a3eg9q8BmLHeQ0gIC+GFi/2Gn4ZEROsoR4QoWCIdELJ0f4PiiEgRbLs0u7t3yu6/Hc/B
-         yOj25tfCH7kz5FCU6SmDCf6QC2OXrfHjg5hCs/qUIz3vF0usTiRbkjjCPG4S06UnZPBW
-         4xtvkm6ZXMRB/gdhs8cxm6Q04jLXwcERfG+CQm9qkkATNZDDixVCXievspJjPZLqAGI2
-         TtNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9E/JMX1u9DMUuutSlm9kiJDKX4f6Y4qT6IOADWiSiVU=;
-        b=tX8hvtjtlRMNhAvFhN/cC9LM1F+FToY8k/hpat0fdr6pEsMlreuIDPAaTS/JwrTU5v
-         Q8kKtis3o0dj7OnndyQnSLEBmUzG1gosDBE84dsM2vaCaRZOwryMZHeRxqobUZpBLV4P
-         WfTxKoF8Jca3Pd05p9yeyvCEIYQXdcvhxC3EepQhjomhT962MK+V+UteP0s/9nPCQUKI
-         W3qbCQNkH+QwAx1KmrQ1TunaVkEAqS6TFwFAtrDv4BAlxgJ8pg5p44FfXCq1oy4U6vDV
-         NWZBkfbQBnWorWwBFgi+wsMDGCYM31IgeENzLQ0j2KIWdgxTXaqjZnalFR3kKlSTwehf
-         zdxA==
-X-Gm-Message-State: AOAM533XF62AECfKJdVBSr2h4dWHTKQSLSWI99zPmLMbAtH9+aGC90R1
-        XpjXz9xviyIQiYHhDvvihvlAs3gnCNYQQgVa
-X-Google-Smtp-Source: ABdhPJzUu7oX6IPa7VQqGzn9y2wrOaGOqYEWYwmE69lXq28RQqiH/FVIN3BqMIM6zrmbhtuiq1E3Gw==
-X-Received: by 2002:a1c:3d44:: with SMTP id k65mr1061112wma.132.1600721156135;
-        Mon, 21 Sep 2020 13:45:56 -0700 (PDT)
-Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id k8sm22015682wrl.42.2020.09.21.13.45.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 13:45:55 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-X-Google-Original-From: Alex Dewar <a.dewar@sussex.ac.uk>
-Cc:     Alex Dewar <a.dewar@sussex.ac.uk>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Jim Quinlan <jquinlan@broadcom.com>,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] PCI: brcmstb: Add missing if statement
-Date:   Mon, 21 Sep 2020 21:45:50 +0100
-Message-Id: <20200921204550.29296-1-a.dewar@sussex.ac.uk>
-X-Mailer: git-send-email 2.28.0
+        id S1727783AbgIUUqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 16:46:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53890 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726471AbgIUUqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 16:46:02 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D37C221BE5;
+        Mon, 21 Sep 2020 20:45:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600721161;
+        bh=EdurATGxug8cG+oyNYLURJIjRYdM3Db8byGV5R+MXAw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2EmwJzFSBBPOPx6F855kk70qAf3unPskCBeHSbPpZVJNbW7TPKyCEWvjHhP623NnE
+         71cFz77tBtPoIb0OSrqSyQWabxmFq6g91n7EtrDlo4xAG9MTKOhh6CztBU8+s1/vxU
+         hbkVuOo6YgAefgKUlk5L+eWpvbnn/0eJnlyrBUS4=
+Date:   Mon, 21 Sep 2020 21:45:57 +0100
+From:   Will Deacon <will@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Yu Kuai <yukuai3@huawei.com>, robdclark@gmail.com, joro@8bytes.org,
+        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        iommu@lists.linux-foundation.org, linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
+Subject: Re: [PATCH] iommu/qcom: add missing put_device() call in
+ qcom_iommu_of_xlate()
+Message-ID: <20200921204556.GB3811@willie-the-truck>
+References: <20200918011357.909335-1-yukuai3@huawei.com>
+ <202009220340.bJfsaeQn%lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202009220340.bJfsaeQn%lkp@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-brcm_pcie_resume() contains a return statement that was presumably
-intended to have an "if (ret)" in front of it, otherwise the function
-returns prematurely. Fix this.
+On Tue, Sep 22, 2020 at 03:13:53AM +0800, kernel test robot wrote:
+> Thank you for the patch! Perhaps something to improve:
+> 
+> [auto build test WARNING on iommu/next]
+> [also build test WARNING on linus/master v5.9-rc6 next-20200921]
+> [cannot apply to robclark/msm-next]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Yu-Kuai/iommu-qcom-add-missing-put_device-call-in-qcom_iommu_of_xlate/20200918-091341
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git next
+> config: arm64-randconfig-r023-20200920 (attached as .config)
+> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 4e8c028158b56d9c2142a62464e8e0686bde3584)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install arm64 cross compiling tool for clang build
+>         # apt-get install binutils-aarch64-linux-gnu
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm64 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>):
+> 
+> >> drivers/iommu/arm/arm-smmu/qcom_iommu.c:601:4: warning: misleading indentation; statement is not part of the previous 'if' [-Wmisleading-indentation]
+>                            return -EINVAL;
+>                            ^
+>    drivers/iommu/arm/arm-smmu/qcom_iommu.c:599:3: note: previous statement is here
+>                    if (WARN_ON(qcom_iommu != dev_iommu_priv_get(dev)))
 
-I don't know if this code was tested or not, but I assume that this bug
-means that this driver will not resume properly.
+Oh, this looks like a nasty bug. Seems we're missing some braces.
 
-Fixes: ad3d29c77e1e ("PCI: brcmstb: Add control of rescal reset")
-Addresses-Coverity: CID 1497099: Control flow issues (UNREACHABLE)
-Signed-off-by: Alex Dewar <a.dewar@sussex.ac.uk>
----
- drivers/pci/controller/pcie-brcmstb.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-index 7a3ff4632e7c..cb0c11b7308e 100644
---- a/drivers/pci/controller/pcie-brcmstb.c
-+++ b/drivers/pci/controller/pcie-brcmstb.c
-@@ -1154,6 +1154,7 @@ static int brcm_pcie_resume(struct device *dev)
- 	clk_prepare_enable(pcie->clk);
- 
- 	ret = brcm_phy_start(pcie);
-+	if (ret)
- 		return ret;
- 
- 	/* Take bridge out of reset so we can access the SERDES reg */
--- 
-2.28.0
-
+Will
