@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6F5271C77
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 09:59:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7EC0271C80
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 09:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726485AbgIUH7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 03:59:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56496 "EHLO mx2.suse.de"
+        id S1726572AbgIUH7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 03:59:35 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56800 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726358AbgIUH7R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 03:59:17 -0400
+        id S1726454AbgIUH7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 03:59:19 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2C92AB4FB;
+        by mx2.suse.de (Postfix) with ESMTP id E94C1B4FD;
         Mon, 21 Sep 2020 07:59:51 +0000 (UTC)
 From:   Nicolai Stange <nstange@suse.de>
 To:     "Theodore Y. Ts'o" <tytso@mit.edu>
@@ -46,9 +46,9 @@ Cc:     linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
         =?UTF-8?q?Stephan=20M=C3=BCller?= <smueller@chronox.de>,
         Torsten Duwe <duwe@suse.de>, Petr Tesarik <ptesarik@suse.cz>,
         Nicolai Stange <nstange@suse.de>
-Subject: [RFC PATCH 01/41] random: remove dead code in credit_entropy_bits()
-Date:   Mon, 21 Sep 2020 09:58:17 +0200
-Message-Id: <20200921075857.4424-2-nstange@suse.de>
+Subject: [RFC PATCH 05/41] random: don't reset entropy to zero on overflow
+Date:   Mon, 21 Sep 2020 09:58:21 +0200
+Message-Id: <20200921075857.4424-6-nstange@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200921075857.4424-1-nstange@suse.de>
 References: <20200921075857.4424-1-nstange@suse.de>
@@ -58,41 +58,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 90ea1c6436d2 ("random: remove the blocking pool") the local
-has_initialized in credit_entropy_bits() won't get set anymore and
-the corresponding if-clause became dead code. Remove it as well as the
-has_initialized variable itself from credit_entropy_bits().
+credit_entropy_bits() adds one or more positive values to the signed
+entropy_count and checks if the result is negative afterwards. Note that
+because the initial value of entropy_count is positive, a negative result
+can happen only on overflow.
+
+However, if the final entropy_count is found to have overflown, a WARN()
+is emitted and the entropy_store's entropy count reset to zero. Even
+though this case should never happen, it is better to retain previously
+available entropy as this will facilitate a future change factoring out
+that approximation of the exponential.
+
+Make credit_entropy_bits() tp reset entropy_count to the original value
+rather than zero on overflow.
 
 Signed-off-by: Nicolai Stange <nstange@suse.de>
 ---
- drivers/char/random.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/char/random.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/char/random.c b/drivers/char/random.c
-index d20ba1b104ca..0580968fd28c 100644
+index 35e381be20fe..6adac462aa0d 100644
 --- a/drivers/char/random.c
 +++ b/drivers/char/random.c
-@@ -660,7 +660,7 @@ static void process_random_ready_list(void)
-  */
- static void credit_entropy_bits(struct entropy_store *r, int nbits)
- {
--	int entropy_count, orig, has_initialized = 0;
-+	int entropy_count, orig;
- 	const int pool_size = r->poolinfo->poolfracbits;
- 	int nfrac = nbits << ENTROPY_SHIFT;
- 
-@@ -717,11 +717,6 @@ static void credit_entropy_bits(struct entropy_store *r, int nbits)
+@@ -706,7 +706,7 @@ static void credit_entropy_bits(struct entropy_store *r, int nbits)
+ 	if (WARN_ON(entropy_count < 0)) {
+ 		pr_warn("negative entropy/overflow: pool %s count %d\n",
+ 			r->name, entropy_count);
+-		entropy_count = 0;
++		entropy_count = orig;
+ 	} else if (entropy_count > pool_size)
+ 		entropy_count = pool_size;
  	if (cmpxchg(&r->entropy_count, orig, entropy_count) != orig)
- 		goto retry;
- 
--	if (has_initialized) {
--		r->initialized = 1;
--		kill_fasync(&fasync, SIGIO, POLL_IN);
--	}
--
- 	trace_credit_entropy_bits(r->name, nbits,
- 				  entropy_count >> ENTROPY_SHIFT, _RET_IP_);
- 
 -- 
 2.26.2
 
