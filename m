@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57C1D272E08
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:46:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04DCB272C8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:35:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727672AbgIUQpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:45:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50866 "EHLO mail.kernel.org"
+        id S1728590AbgIUQdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:33:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729045AbgIUQpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:45:07 -0400
+        id S1728557AbgIUQdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:33:01 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 18EF323998;
-        Mon, 21 Sep 2020 16:45:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 055B72399C;
+        Mon, 21 Sep 2020 16:32:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706706;
-        bh=UlDZOmMEl82BvN+q3X8IemklTtPmKk+JfenhcMngvX4=;
+        s=default; t=1600705973;
+        bh=toxpiCs541mFXqnbYYRXvxXpCq2dj5tqD33uJsEyZ7g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fZhWaH+lRecwH7VM4ozS/sMVupSS5ipyYWO3e+2ZdD/GuoxevaLkvM8/Q113Q/zuY
-         Ggoh9icaBKeY43etG1mbcTgcQRmQllLHaMYNiflfn+1cbXTnvEMd7Y1WrRIEZHYHfc
-         cZPIBQQII9qbaDqjHSdkEhyHbB/MVarN1QA0Ri5Q=
+        b=k+guYuYpT7rqmaNArokn18mR+hhgbr9q20yJAKhnK4GieNfCZE2exobAECP/Dy1xR
+         xuuSYpR/hR5nxalAixG1ATW5Rd2uAWb3zEax42kExESYdY9dTAzmuAp4NkPnj48oKy
+         tUQrwymB/ij3Ftn2IhEV4RiaI/a8i0JfJk7FbTcI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+        stable@vger.kernel.org, Martin Schiller <ms@dev.tdt.de>,
+        Xie He <xie.he.0141@gmail.com>,
+        Krzysztof Halasa <khc@pm.waw.pl>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 031/118] f2fs: Return EOF on unaligned end of file DIO read
+Subject: [PATCH 4.4 07/46] drivers/net/wan/hdlc_cisco: Add hard_header_len
 Date:   Mon, 21 Sep 2020 18:27:23 +0200
-Message-Id: <20200921162037.757914751@linuxfoundation.org>
+Message-Id: <20200921162033.700922943@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
-References: <20200921162036.324813383@linuxfoundation.org>
+In-Reply-To: <20200921162033.346434578@linuxfoundation.org>
+References: <20200921162033.346434578@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,54 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gabriel Krisman Bertazi <krisman@collabora.com>
+From: Xie He <xie.he.0141@gmail.com>
 
-[ Upstream commit 20d0a107fb35f37578b919f62bd474d6d358d579 ]
+[ Upstream commit 1a545ebe380bf4c1433e3c136e35a77764fda5ad ]
 
-Reading past end of file returns EOF for aligned reads but -EINVAL for
-unaligned reads on f2fs.  While documentation is not strict about this
-corner case, most filesystem returns EOF on this case, like iomap
-filesystems.  This patch consolidates the behavior for f2fs, by making
-it return EOF(0).
+This driver didn't set hard_header_len. This patch sets hard_header_len
+for it according to its header_ops->create function.
 
-it can be verified by a read loop on a file that does a partial read
-before EOF (A file that doesn't end at an aligned address).  The
-following code fails on an unaligned file on f2fs, but not on
-btrfs, ext4, and xfs.
+This driver's header_ops->create function (cisco_hard_header) creates
+a header of (struct hdlc_header), so hard_header_len should be set to
+sizeof(struct hdlc_header).
 
-  while (done < total) {
-    ssize_t delta = pread(fd, buf + done, total - done, off + done);
-    if (!delta)
-      break;
-    ...
-  }
-
-It is arguable whether filesystems should actually return EOF or
--EINVAL, but since iomap filesystems support it, and so does the
-original DIO code, it seems reasonable to consolidate on that.
-
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Cc: Martin Schiller <ms@dev.tdt.de>
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Acked-by: Krzysztof Halasa <khc@pm.waw.pl>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/data.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/wan/hdlc_cisco.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 6e9017e6a8197..403e8033c974b 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -3463,6 +3463,9 @@ static int check_direct_IO(struct inode *inode, struct iov_iter *iter,
- 	unsigned long align = offset | iov_iter_alignment(iter);
- 	struct block_device *bdev = inode->i_sb->s_bdev;
- 
-+	if (iov_iter_rw(iter) == READ && offset >= i_size_read(inode))
-+		return 1;
-+
- 	if (align & blocksize_mask) {
- 		if (bdev)
- 			blkbits = blksize_bits(bdev_logical_block_size(bdev));
+diff --git a/drivers/net/wan/hdlc_cisco.c b/drivers/net/wan/hdlc_cisco.c
+index 3f20808b5ff82..f8ed079d8bc3e 100644
+--- a/drivers/net/wan/hdlc_cisco.c
++++ b/drivers/net/wan/hdlc_cisco.c
+@@ -377,6 +377,7 @@ static int cisco_ioctl(struct net_device *dev, struct ifreq *ifr)
+ 		memcpy(&state(hdlc)->settings, &new_settings, size);
+ 		spin_lock_init(&state(hdlc)->lock);
+ 		dev->header_ops = &cisco_header_ops;
++		dev->hard_header_len = sizeof(struct hdlc_header);
+ 		dev->type = ARPHRD_CISCO;
+ 		netif_dormant_on(dev);
+ 		return 0;
 -- 
 2.25.1
 
