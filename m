@@ -2,97 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B30D272436
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1F62272439
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726764AbgIUMwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 08:52:40 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:47126 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726395AbgIUMwk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 08:52:40 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id A60241C0B81; Mon, 21 Sep 2020 14:52:37 +0200 (CEST)
-Date:   Mon, 21 Sep 2020 14:52:37 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Oliver Neukum <oneukum@suse.com>
-Cc:     Pavel Machek <pavel@denx.de>, gregkh@linuxfoundation.org,
-        stern@rowland.harvard.edu, johan@kernel.org, gustavoars@kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: yurex: Rearrange code not to need GFP_ATOMIC
-Message-ID: <20200921125237.GA24776@duo.ucw.cz>
-References: <20200920084452.GA2257@amd>
- <1600691092.2424.85.camel@suse.com>
+        id S1726884AbgIUMxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 08:53:39 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13797 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726395AbgIUMxi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 08:53:38 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 6BEEB16731AB41C1103F;
+        Mon, 21 Sep 2020 20:53:29 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 21 Sep 2020 20:53:20 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH 1/2] f2fs: do sanity check on zoned block device path
+Date:   Mon, 21 Sep 2020 20:53:13 +0800
+Message-ID: <20200921125314.99297-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="FL5UXtIhxfXey3p5"
-Content-Disposition: inline
-In-Reply-To: <1600691092.2424.85.camel@suse.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+sbi->devs would be initialized only if image enables multiple device
+feature or blkzoned feature, if blkzoned feature flag was set by fuzz
+in non-blkzoned device, we will suffer below panic:
 
---FL5UXtIhxfXey3p5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+get_zone_idx fs/f2fs/segment.c:4892 [inline]
+f2fs_usable_zone_blks_in_seg fs/f2fs/segment.c:4943 [inline]
+f2fs_usable_blks_in_seg+0x39b/0xa00 fs/f2fs/segment.c:4999
+Call Trace:
+ check_block_count+0x69/0x4e0 fs/f2fs/segment.h:704
+ build_sit_entries fs/f2fs/segment.c:4403 [inline]
+ f2fs_build_segment_manager+0x51da/0xa370 fs/f2fs/segment.c:5100
+ f2fs_fill_super+0x3880/0x6ff0 fs/f2fs/super.c:3684
+ mount_bdev+0x32e/0x3f0 fs/super.c:1417
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1547
+ do_new_mount fs/namespace.c:2896 [inline]
+ path_mount+0x12ae/0x1e70 fs/namespace.c:3216
+ do_mount fs/namespace.c:3229 [inline]
+ __do_sys_mount fs/namespace.c:3437 [inline]
+ __se_sys_mount fs/namespace.c:3414 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3414
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
 
-Hi!
+Add sanity check to inconsistency on factors: blkzoned flag, device
+path and device character to avoid above panic.
 
-> > Move prepare to wait around, so that normal GFP_KERNEL allocation can
-> > be used.
-> >=20
-> > Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
-> > Acked-by: Alan Stern <stern@rowland.harvard.edu>
->=20
-> Ehm. Please recheck.
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+ fs/f2fs/super.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Sorry about that.
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 427ce4cbd124..e0423b091b30 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -2852,6 +2852,12 @@ static int sanity_check_raw_super(struct f2fs_sb_info *sbi,
+ 					segment_count, dev_seg_count);
+ 			return -EFSCORRUPTED;
+ 		}
++	} else {
++		if (__F2FS_HAS_FEATURE(raw_super, F2FS_FEATURE_BLKZONED) &&
++					!bdev_is_zoned(sbi->sb->s_bdev)) {
++			f2fs_info(sbi, "Zoned block device path is missing");
++			return -EFSCORRUPTED;
++		}
+ 	}
+ 
+ 	if (secs_per_zone > total_sections || !secs_per_zone) {
+-- 
+2.26.2
 
-> > +++ b/drivers/usb/misc/yurex.c
-> > @@ -489,10 +489,10 @@ static ssize_t yurex_write(struct file *file, con=
-st char __user *user_buffer,
-> >  	}
-> > =20
-> >  	/* send the data as the control msg */
-> > -	prepare_to_wait(&dev->waitq, &wait, TASK_INTERRUPTIBLE);
-> >  	dev_dbg(&dev->interface->dev, "%s - submit %c\n", __func__,
-> >  		dev->cntl_buffer[0]);
-> > -	retval =3D usb_submit_urb(dev->cntl_urb, GFP_ATOMIC);
-> > +	retval =3D usb_submit_urb(dev->cntl_urb, GFP_KERNEL);
->=20
-> URB completes here. wake_up() returns the task to RUNNING.
->=20
-> > +	prepare_to_wait(&dev->waitq, &wait, TASK_INTERRUPTIBLE);
->=20
-> Task goes to TASK_INTERRUPTIBLE
->=20
-> >  	if (retval >=3D 0)
-> >  		timeout =3D schedule_timeout(YUREX_WRITE_TIMEOUT);
->=20
-> Task turns into Sleeping Beauty until timeout
-
-Is there way to do the allocations for submit_urb before the
-prepare_to_wait? GFP_ATOMIC would be nice to avoid... and doing
-GFP_ATOMIC from normal process context just because of task_state
-seems ... wrong.
-
-								Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---FL5UXtIhxfXey3p5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX2iiFQAKCRAw5/Bqldv6
-8tnrAJ4yv71+Q+P6ArjsrTPlDQ7nQ+QIrQCdHjymlZ8hQ7EqYgentvBFzwxh0s0=
-=RmqP
------END PGP SIGNATURE-----
-
---FL5UXtIhxfXey3p5--
