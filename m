@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 999C1272CE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB95272C9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728900AbgIUQfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:35:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35130 "EHLO mail.kernel.org"
+        id S1728644AbgIUQdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:33:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728532AbgIUQfm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:35:42 -0400
+        id S1728615AbgIUQdY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:33:24 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9890F23730;
-        Mon, 21 Sep 2020 16:35:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 38AD12396F;
+        Mon, 21 Sep 2020 16:33:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706142;
-        bh=zolZwzTxEfBeTWyu+h7YHfETfQ/DiytX4nDIsqj6itw=;
+        s=default; t=1600706003;
+        bh=Ss0pB55/au/kXy08DEQd/XTsblmOidKQs1FngtrmUpA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1PdFIUW+GURyOY/T2mS3JxFHTNcb1hhuxHUaeuUVXkCZKxIxTL4zxXV2CVWfokIdg
-         3yCg4eiolhu6WxnfrCwWmddkm+esi5mEP9RIhNI3RCt8nStlbQidyyrKIverBCW1LJ
-         mNfOMrfvVoePJlHjshIRUZjRbD+uHdmui5JrJbG0=
+        b=l+CVaQLUS1yBU62t4Y4WSSSpjpKDnWNN0W55KIKVH+hnwUksAhD5seOmmGqPH5dEI
+         4rAum9A23sXH8rOo+Z0tYq2Rx2DJhuJZChpefiia8GiLiaqq0IJs3NARdogQY7eyAD
+         GcM6jtBu90bB/IT0Ry8vJmJ97fiP3MS7swfzs8CY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 54/70] rapidio: Replace select DMAENGINES with depends on
-Date:   Mon, 21 Sep 2020 18:27:54 +0200
-Message-Id: <20200921162037.601946943@linuxfoundation.org>
+        stable@vger.kernel.org, Penghao <penghao@uniontech.com>
+Subject: [PATCH 4.4 39/46] USB: quirks: Add USB_QUIRK_IGNORE_REMOTE_WAKEUP quirk for BYD zhaoxin notebook
+Date:   Mon, 21 Sep 2020 18:27:55 +0200
+Message-Id: <20200921162035.073583276@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
-References: <20200921162035.136047591@linuxfoundation.org>
+In-Reply-To: <20200921162033.346434578@linuxfoundation.org>
+References: <20200921162033.346434578@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,37 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+From: Penghao <penghao@uniontech.com>
 
-[ Upstream commit d2b86100245080cfdf1e95e9e07477474c1be2bd ]
+commit bcea6dafeeef7d1a6a8320a249aabf981d63b881 upstream.
 
-Enabling a whole subsystem from a single driver 'select' is frowned
-upon and won't be accepted in new drivers, that need to use 'depends on'
-instead. Existing selection of DMAENGINES will then cause circular
-dependencies. Replace them with a dependency.
+Add a USB_QUIRK_IGNORE_REMOTE_WAKEUP quirk for the BYD zhaoxin notebook.
+This notebook come with usb touchpad. And we would like to disable
+touchpad wakeup on this notebook by default.
 
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Penghao <penghao@uniontech.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200907023026.28189-1-penghao@uniontech.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/rapidio/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/core/quirks.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/rapidio/Kconfig b/drivers/rapidio/Kconfig
-index d6d2f20c45977..21df2816def76 100644
---- a/drivers/rapidio/Kconfig
-+++ b/drivers/rapidio/Kconfig
-@@ -25,7 +25,7 @@ config RAPIDIO_ENABLE_RX_TX_PORTS
- config RAPIDIO_DMA_ENGINE
- 	bool "DMA Engine support for RapidIO"
- 	depends on RAPIDIO
--	select DMADEVICES
-+	depends on DMADEVICES
- 	select DMA_ENGINE
- 	help
- 	  Say Y here if you want to use DMA Engine frameork for RapidIO data
--- 
-2.25.1
-
+--- a/drivers/usb/core/quirks.c
++++ b/drivers/usb/core/quirks.c
+@@ -236,6 +236,10 @@ static const struct usb_device_id usb_qu
+ 	/* Generic RTL8153 based ethernet adapters */
+ 	{ USB_DEVICE(0x0bda, 0x8153), .driver_info = USB_QUIRK_NO_LPM },
+ 
++	/* SONiX USB DEVICE Touchpad */
++	{ USB_DEVICE(0x0c45, 0x7056), .driver_info =
++			USB_QUIRK_IGNORE_REMOTE_WAKEUP },
++
+ 	/* Action Semiconductor flash disk */
+ 	{ USB_DEVICE(0x10d6, 0x2200), .driver_info =
+ 			USB_QUIRK_STRING_FETCH_255 },
 
 
