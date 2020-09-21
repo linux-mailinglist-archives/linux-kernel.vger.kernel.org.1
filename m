@@ -2,193 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A40272952
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4372B27295B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727497AbgIUPC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 11:02:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727231AbgIUPC0 (ORCPT
+        id S1727304AbgIUPEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 11:04:04 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:57628 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726419AbgIUPEE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 11:02:26 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 724C2C061755;
-        Mon, 21 Sep 2020 08:02:26 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kKNKV-003BjE-Jk; Mon, 21 Sep 2020 15:02:11 +0000
-Date:   Mon, 21 Sep 2020 16:02:11 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        David Laight <David.Laight@aculab.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-aio@kvack.org, io-uring@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        netdev@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH 02/11] mm: call import_iovec() instead of
- rw_copy_check_uvector() in process_vm_rw()
-Message-ID: <20200921150211.GS3421308@ZenIV.linux.org.uk>
-References: <20200921143434.707844-1-hch@lst.de>
- <20200921143434.707844-3-hch@lst.de>
+        Mon, 21 Sep 2020 11:04:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600700642;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aWq9zL8GIZrZPfPETbGBWQ7SMIA4wQyXTldEU2XQH7g=;
+        b=LxpF4KHUQmOWr6mhxeMwnuyfrIoahx792vpOT7jdYIZKSE1InipMZyol7uPpYPunZeT7/U
+        d/hnUqHeJJxAoP6Cj+PHMWzOmFcErSDwU9+WdpdoOJc85z3PlwXvOo7q+4gIaKhq0q71Ul
+        SXraPjNX0MiUK8uFKCewis4BLzkG+FE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-35-6SiifYBFP0Cy306bybUIbw-1; Mon, 21 Sep 2020 11:03:53 -0400
+X-MC-Unique: 6SiifYBFP0Cy306bybUIbw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C8069802B77;
+        Mon, 21 Sep 2020 15:03:51 +0000 (UTC)
+Received: from treble (ovpn-119-131.rdu2.redhat.com [10.10.119.131])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 23E9210013DB;
+        Mon, 21 Sep 2020 15:03:50 +0000 (UTC)
+Date:   Mon, 21 Sep 2020 10:03:48 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Julien Thierry <jthierry@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org, mbenes@suse.cz,
+        raphael.gault@arm.com, benh@kernel.crashing.org
+Subject: Re: [PATCH 1/3] objtool: check: Fully validate the stack frame
+Message-ID: <20200921150348.egfsznskrpebuyri@treble>
+References: <20200915081204.9204-1-jthierry@redhat.com>
+ <20200915081204.9204-2-jthierry@redhat.com>
+ <20200918205641.6nvnsib2paqa6xyn@treble>
+ <9a40f898-8f6a-2ba0-1954-0d06be5e2ef8@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200921143434.707844-3-hch@lst.de>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <9a40f898-8f6a-2ba0-1954-0d06be5e2ef8@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 04:34:25PM +0200, Christoph Hellwig wrote:
-> From: David Laight <David.Laight@ACULAB.COM>
+On Mon, Sep 21, 2020 at 11:31:23AM +0100, Julien Thierry wrote:
+> > > +++ b/tools/objtool/arch/x86/include/cfi_regs.h
+> > > @@ -22,4 +22,8 @@
+> > >   #define CFI_RA			16
+> > >   #define CFI_NUM_REGS		17
+> > > +#define CFA_SIZE	16
+> > 
+> > If I remember correctly, CFA (stolen from DWARF) is "Caller Frame
+> > Address".  It's the stack address of the caller, before the call.
+> > 
 > 
-> This is the only direct call of rw_copy_check_uvector().  Removing it
-> will allow rw_copy_check_uvector() to be inlined into import_iovec(),
-> while only paying a minor price by setting up an otherwise unused
-> iov_iter in the process_vm_readv/process_vm_writev syscalls that aren't
-> in a super hot path.
+> Ok, so maybe I'm mixing Call Frame and Stack Frame (frame pointer + return
+> address).
+> 
+> > I get the feeling CFA_SIZE is the wrong name, because CFA is an address,
+> > and its size isn't 16 bytes.  But I'm not quite sure what this is
+> > supposed to represent.  Is it supposed to be the size of the frame
+> > pointer + return address?  Isn't that always going to be 16 bytes for
+> > both arches?
+> > 
+> 
+> For arm64 and x86_64 it is. Maybe it is a bit early to consider it might
+> differ for other arches (e.g. 32bit arches?).
 
-> @@ -443,7 +443,7 @@ void iov_iter_init(struct iov_iter *i, unsigned int direction,
->  			const struct iovec *iov, unsigned long nr_segs,
->  			size_t count)
->  {
-> -	WARN_ON(direction & ~(READ | WRITE));
-> +	WARN_ON(direction & ~(READ | WRITE | CHECK_IOVEC_ONLY));
->  	direction &= READ | WRITE;
+I'd rather not consider other arches yet.  Even in the 32-bit case it
+wouldn't necessarily have to be an arch-specific value since it would
+presumably be 'size(long) * 2'.
 
-Ugh...
+> 
+> > >   static bool has_valid_stack_frame(struct insn_state *state)
+> > >   {
+> > >   	struct cfi_state *cfi = &state->cfi;
+> > > -	if (cfi->cfa.base == CFI_BP && cfi->regs[CFI_BP].base == CFI_CFA &&
+> > > -	    cfi->regs[CFI_BP].offset == -16)
+> > > +	if (cfi->cfa.base == CFI_BP && cfi->cfa.offset >= CFA_SIZE &&
+> > 
+> > Why '>=' rather than '=='?
+> > 
+> 
+> Because on arm64 the stack frame is not necessarily the first thing put on
+> the stack by the callee. The callee is free to create the stack frame where
+> it wants (on its part of the stack of course) as long as it appropriately
+> sets the frame pointer before making a call.
+> 
+> You could have something like:
+> 
+> +------------+
+> |            |
+> |            |
+> +------------+----> f1() called
+> |            |
+> | some callee|
+> | saved regs |
+> |            |
+> +------------+
+> |     RA     |
+> +------------+
+> |     BP/FP  |
+> +------------+----> Set new BP/FP value
 
-> -	rc = rw_copy_check_uvector(CHECK_IOVEC_ONLY, rvec, riovcnt, UIO_FASTIOV,
-> -				   iovstack_r, &iov_r);
-> +	rc = import_iovec(CHECK_IOVEC_ONLY, rvec, riovcnt, UIO_FASTIOV, &iov_r,
-> +			  &iter_r);
->  	if (rc <= 0)
->  		goto free_iovecs;
->  
-> -	rc = process_vm_rw_core(pid, &iter, iov_r, riovcnt, flags, vm_write);
-> +	rc = process_vm_rw_core(pid, &iter_l, iter_r.iov, iter_r.nr_segs,
-> +				flags, vm_write);
+I see, thanks.
 
-... and ugh^2, since now you are not only setting a meaningless iov_iter,
-you are creating a new place that pokes directly into struct iov_iter
-guts.
+-- 
+Josh
 
-Sure, moving rw_copy_check_uvector() over to lib/iov_iter.c makes sense.
-But I would rather split the access_ok()-related checks out of that thing
-and bury CHECK_IOVEC_ONLY.
-
-Step 1: move the damn thing to lib/iov_iter.c (same as you do, but without
-making it static)
-
-Step 2: split it in two:
-
-ssize_t rw_copy_check_uvector(const struct iovec __user * uvector,
-                              unsigned long nr_segs, unsigned long fast_segs,
-                              struct iovec *fast_pointer,
-                              struct iovec **ret_pointer)
-{
-	unsigned long seg;
-	ssize_t ret;
-	struct iovec *iov = fast_pointer;
-
-	*ret_pointer = fast_pointer;
-	/*
-	 * SuS says "The readv() function *may* fail if the iovcnt argument
-	 * was less than or equal to 0, or greater than {IOV_MAX}.  Linux has
-	 * traditionally returned zero for zero segments, so...
-	 */
-	if (nr_segs == 0)
-		return 0;
-
-	/*
-	 * First get the "struct iovec" from user memory and
-	 * verify all the pointers
-	 */
-	if (nr_segs > UIO_MAXIOV)
-		return -EINVAL;
-
-	if (nr_segs > fast_segs) {
-		iov = kmalloc_array(nr_segs, sizeof(struct iovec), GFP_KERNEL);
-		if (!iov)
-			return -ENOMEM;
-		*ret_pointer = iov;
-	}
-	if (copy_from_user(iov, uvector, nr_segs*sizeof(*uvector)))
-		return -EFAULT;
-
-	/*
-	 * According to the Single Unix Specification we should return EINVAL
-	 * if an element length is < 0 when cast to ssize_t or if the
-	 * total length would overflow the ssize_t return value of the
-	 * system call.
-	 *
-	 * Linux caps all read/write calls to MAX_RW_COUNT, and avoids the
-	 * overflow case.
-	 */
-	ret = 0;
-	for (seg = 0; seg < nr_segs; seg++) {
-		void __user *buf = iov[seg].iov_base;
-		ssize_t len = (ssize_t)iov[seg].iov_len;
-
-		/* see if we we're about to use an invalid len or if
-		 * it's about to overflow ssize_t */
-		if (len < 0)
-			return -EINVAL;
-		if (len > MAX_RW_COUNT - ret) {
-			len = MAX_RW_COUNT - ret;
-			iov[seg].iov_len = len;
-		}
-		ret += len;
-	}
-	return ret;
-}
-
-/*
- *  This is merely an early sanity check; we do _not_ rely upon
- *  it when we get to the actual memory accesses.
- */
-static bool check_iovecs(const struct iovec *iov, int nr_segs)
-{
-        for (seg = 0; seg < nr_segs; seg++) {
-                void __user *buf = iov[seg].iov_base;
-                ssize_t len = (ssize_t)iov[seg].iov_len;
-
-                if (unlikely(!access_ok(buf, len)))
-                        return false;
-        }
-	return true;
-}
-
-ssize_t import_iovec(int type, const struct iovec __user * uvector,
-                 unsigned nr_segs, unsigned fast_segs,
-                 struct iovec **iov, struct iov_iter *i)
-{
-	struct iovec *p;
-	ssize_t n;
-
-	n = rw_copy_check_uvector(uvector, nr_segs, fast_segs, *iov, &p);
-	if (n > 0 && !check_iovecs(p, nr_segs))
-		n = -EFAULT;
-	if (n < 0) {
-		if (p != *iov)
-			kfree(p);
-		*iov = NULL;
-		return n;
-	}
-	iov_iter_init(i, type, p, nr_segs, n);
-	*iov = p == *iov ? NULL : p;
-	return n;
-}
-
-kill CHECK_IOVEC_ONLY and use rw_copy_check_uvector() without the type
-argument in mm/process_vm_access.c
-
-Saner that way, IMO...
