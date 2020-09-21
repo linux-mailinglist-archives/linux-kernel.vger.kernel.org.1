@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B5A6273070
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3AA273002
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730077AbgIURFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 13:05:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34176 "EHLO mail.kernel.org"
+        id S1730405AbgIURBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 13:01:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728831AbgIUQfG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:35:06 -0400
+        id S1728075AbgIUQjH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:39:07 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 05C1A239E7;
-        Mon, 21 Sep 2020 16:35:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3D3702399C;
+        Mon, 21 Sep 2020 16:39:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706101;
-        bh=Z5wWMyoqO3xy9Sbyu4Ve2Y2wxWX0ItWe4CMpFhzvryY=;
+        s=default; t=1600706341;
+        bh=PU7N8QyiDXDa2AM2iHqNtGwW+FFE/9PP90fqZpQAWqU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AdZ9ueociVwB0iyx4AReITQr1Ev97u8Mm91GSTmAbmHxuWbGsY6yOxG6FvqeqKDq5
-         eFhqvXzVrowoV08luOXf6pH3/VjTUyuh44/U3JWG+g3AkSfDZoKklJPNRe2Z0AkTiE
-         P66JY+NQdHPI0PeZ30PiadHAaMHsAX2+bsaLtRKQ=
+        b=A4xTSaN/81xddpb6QhmgHCF752Q7yFA/q4U3vc74WiVMSIa7fseE5CkkgU+IS+o1b
+         MHnjPr16ZSa2BQeWuxzwzuEfNl2mMHcA8kq6Fh46jiYjSlNk1vDtbW9qyBt0vJ/zZa
+         diUOpf80OsGK1Ma+LQMBMVHhRB4iLKmaZjz/VZQ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Vaibhav Agarwal <vaibhav.sr@gmail.com>
-Subject: [PATCH 4.9 40/70] staging: greybus: audio: fix uninitialized value issue
-Date:   Mon, 21 Sep 2020 18:27:40 +0200
-Message-Id: <20200921162036.949975213@linuxfoundation.org>
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        syzbot+256e56ddde8b8957eabd@syzkaller.appspotmail.com,
+        Zeng Tao <prime.zeng@hisilicon.com>
+Subject: [PATCH 4.14 54/94] usb: core: fix slab-out-of-bounds Read in read_descriptors
+Date:   Mon, 21 Sep 2020 18:27:41 +0200
+Message-Id: <20200921162038.038774891@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
-References: <20200921162035.136047591@linuxfoundation.org>
+In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
+References: <20200921162035.541285330@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,82 +43,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vaibhav Agarwal <vaibhav.sr@gmail.com>
+From: Zeng Tao <prime.zeng@hisilicon.com>
 
-commit 1dffeb8b8b4c261c45416d53c75ea51e6ece1770 upstream.
+commit a18cd6c9b6bc73dc17e8b7e9bd07decaa8833c97 upstream.
 
-The current implementation for gbcodec_mixer_dapm_ctl_put() uses
-uninitialized gbvalue for comparison with updated value. This was found
-using static analysis with coverity.
+The USB device descriptor may get changed between two consecutive
+enumerations on the same device for some reason, such as DFU or
+malicius device.
+In that case, we may access the changing descriptor if we don't take
+the device lock here.
 
-Uninitialized scalar variable (UNINIT)
-11. uninit_use: Using uninitialized value
-gbvalue.value.integer_value[0].
-460        if (gbvalue.value.integer_value[0] != val) {
+The issue is reported:
+https://syzkaller.appspot.com/bug?id=901a0d9e6519ef8dc7acab25344bd287dd3c7be9
 
-This patch fixes the issue with fetching the gbvalue before using it for
-    comparision.
-
-Fixes: 6339d2322c47 ("greybus: audio: Add topology parser for GB codec")
-Reported-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Vaibhav Agarwal <vaibhav.sr@gmail.com>
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/bc4f29eb502ccf93cd2ffd98db0e319fa7d0f247.1597408126.git.vaibhav.sr@gmail.com
+Cc: Alan Stern <stern@rowland.harvard.edu>
+Reported-by: syzbot+256e56ddde8b8957eabd@syzkaller.appspotmail.com
+Fixes: 217a9081d8e6 ("USB: add all configs to the "descriptors" attribute")
+Signed-off-by: Zeng Tao <prime.zeng@hisilicon.com>
+Link: https://lore.kernel.org/r/1599201467-11000-1-git-send-email-prime.zeng@hisilicon.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/staging/greybus/audio_topology.c |   29 +++++++++++++++--------------
- 1 file changed, 15 insertions(+), 14 deletions(-)
+ drivers/usb/core/sysfs.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/staging/greybus/audio_topology.c
-+++ b/drivers/staging/greybus/audio_topology.c
-@@ -462,6 +462,15 @@ static int gbcodec_mixer_dapm_ctl_put(st
- 	val = ucontrol->value.integer.value[0] & mask;
- 	connect = !!val;
+--- a/drivers/usb/core/sysfs.c
++++ b/drivers/usb/core/sysfs.c
+@@ -865,7 +865,11 @@ read_descriptors(struct file *filp, stru
+ 	size_t srclen, n;
+ 	int cfgno;
+ 	void *src;
++	int retval;
  
-+	ret = gb_pm_runtime_get_sync(bundle);
-+	if (ret)
-+		return ret;
-+
-+	ret = gb_audio_gb_get_control(module->mgmt_connection, data->ctl_id,
-+				      GB_AUDIO_INVALID_INDEX, &gbvalue);
-+	if (ret)
-+		goto exit;
-+
- 	/* update ucontrol */
- 	if (gbvalue.value.integer_value[0] != val) {
- 		for (wi = 0; wi < wlist->num_widgets; wi++) {
-@@ -475,25 +484,17 @@ static int gbcodec_mixer_dapm_ctl_put(st
- 		gbvalue.value.integer_value[0] =
- 			ucontrol->value.integer.value[0];
- 
--		ret = gb_pm_runtime_get_sync(bundle);
--		if (ret)
--			return ret;
--
- 		ret = gb_audio_gb_set_control(module->mgmt_connection,
- 					      data->ctl_id,
- 					      GB_AUDIO_INVALID_INDEX, &gbvalue);
--
--		gb_pm_runtime_put_autosuspend(bundle);
--
--		if (ret) {
--			dev_err_ratelimited(codec->dev,
--					    "%d:Error in %s for %s\n", ret,
--					    __func__, kcontrol->id.name);
--			return ret;
--		}
++	retval = usb_lock_device_interruptible(udev);
++	if (retval < 0)
++		return -EINTR;
+ 	/* The binary attribute begins with the device descriptor.
+ 	 * Following that are the raw descriptor entries for all the
+ 	 * configurations (config plus subsidiary descriptors).
+@@ -890,6 +894,7 @@ read_descriptors(struct file *filp, stru
+ 			off -= srclen;
+ 		}
  	}
- 
--	return 0;
-+exit:
-+	gb_pm_runtime_put_autosuspend(bundle);
-+	if (ret)
-+		dev_err_ratelimited(codec_dev, "%d:Error in %s for %s\n", ret,
-+				    __func__, kcontrol->id.name);
-+	return ret;
++	usb_unlock_device(udev);
+ 	return count - nleft;
  }
  
- #define SOC_DAPM_MIXER_GB(xname, kcount, data) \
 
 
