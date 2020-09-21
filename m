@@ -2,135 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB0662718F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 03:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FDD32718FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 03:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726367AbgIUBO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 21:14:56 -0400
-Received: from mail-bn7nam10on2070.outbound.protection.outlook.com ([40.107.92.70]:23676
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726126AbgIUBO4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 21:14:56 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gO1ohXaxMUhQx17sh5RqiHzGgxclNTct6jPWu+BR6Wp1HKdaknq+O1rJq12yOUOuWeullPwxMeoP9SdhVhvHMtrlshec5nBO80r9IaltQVvAVgedepc69rsNLiH8Q+vfT6Hlo2Kks2SEw5BqfIbCCNAtlG4G9PjERd73OtqYBU9UXELhXpM1JxhVNzo0DLK5vzkhNhs91QoyViMTEHVPEdKQcmlOrLVtDTRlEwlibMxBQqRrBuItoJ51Ykk0IlnJiMT2tO4qwdgtmjhrFaxEmzw94dHUWIG9ivlCFqWBZ/TrqsqKKFdICpGlpfEjYqzZDJClN1pvw00dr2zDpnEi7Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WAKEvVNFerSkMGAQazu+pc9uib62Mx1apPzjuqDdTPg=;
- b=UMzKQ4TQe9eaGONkcxZRPGMNZhAhsjZm6gMmjqQeVJ4cKvhozwqu9WIvA2yoq30PjMQXbjvjhYaJ5HEbLNNehb5Va3TTUGWrVc+nIvWx9fc40yMCzOqqJufp3rNtxnHsLQURvptmo443G3HCggHb6PIE1AEDrDEBTQH8XxyeWh8gJMmCHO4ase/wPQlt6vG7X3CMVCkahQWwAb1BPmOEo+rV6vPDlhW+OB0CB33AA0sZtCiYsjFs7CmZeCUXx+6oNtYlt+TXrMEusAPY3BI7G3uzCP2eXYnDN14DOdd1a2O/iRlPm4ZxAWeYi+OcQpgAb7Oc/jQ/KwNgrXH1lTI6/g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+        id S1726437AbgIUBWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 21:22:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726322AbgIUBWA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 21:22:00 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A9D1C0613D0
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 18:22:00 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id q5so13464865qkc.2
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 18:22:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WAKEvVNFerSkMGAQazu+pc9uib62Mx1apPzjuqDdTPg=;
- b=L528jfM11MtUJ0lMVwSaY7/Yr7CTa7Ew+0AG0vn3IZ3O0WVg5wwyPpmN9o52U9g1dcG8LbHYMo+o0k4wE0OsfWhPz9WuoMUY0t2SHXk3t4Afvy60Se/F9q75lSG15ZZJX8+2oy98gnGMsdVZvwbxUZj2t/aQqs94i34hf/3Iu9Y=
-Authentication-Results: lunn.ch; dkim=none (message not signed)
- header.d=none;lunn.ch; dmarc=none action=none header.from=synaptics.com;
-Received: from DM6PR03MB4555.namprd03.prod.outlook.com (2603:10b6:5:102::17)
- by DM6PR03MB3802.namprd03.prod.outlook.com (2603:10b6:5:50::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.19; Mon, 21 Sep
- 2020 01:14:53 +0000
-Received: from DM6PR03MB4555.namprd03.prod.outlook.com
- ([fe80::e494:740f:155:4a38]) by DM6PR03MB4555.namprd03.prod.outlook.com
- ([fe80::e494:740f:155:4a38%7]) with mapi id 15.20.3391.019; Mon, 21 Sep 2020
- 01:14:52 +0000
-Date:   Mon, 21 Sep 2020 09:13:54 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 net-next] net: phy: realtek: enable ALDPS to save power
- for RTL8211F
-Message-ID: <20200921091354.2bf0a039@xhacker.debian>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: TY1PR01CA0155.jpnprd01.prod.outlook.com
- (2603:1096:402:1::31) To DM6PR03MB4555.namprd03.prod.outlook.com
- (2603:10b6:5:102::17)
+        d=joelfernandes.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KW/OrouFozh3RJwtVM+1IEV7aFLl7Dv1KLSBeb4lSh0=;
+        b=YXqYZLtHn6a1GIehKZlpms+NQ53oxoqIvzQuXO/Z51sMOnhjJ/jufd+38XU/6XF0R/
+         hMZDD7P3wMrHEZA3lu7l5LMWLuCpVe/7IzN+tKCuOfLIenQc4PV5dBsdY57lucqRSxSK
+         AbysYOeKnj1g0X5P115AKwh/yHHcTtnc9iDRw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KW/OrouFozh3RJwtVM+1IEV7aFLl7Dv1KLSBeb4lSh0=;
+        b=L6tUPpkM3QSGYVeJrm18cHgBcWgak391EbT3OKBW4gZfcDfJibr6OGlusb+L8IiA9i
+         WtltytrKMLKo6eTy8IPsQoE9OZmU33O/QBrDLcFE3a8MN+G/BMqbK75OXyvrd6mjwzf3
+         Ugj67ROpiA0rvqFH7yu/st11hg0Zh3/x6+XLPoNrg6clgLMDaxCbceKfO3stBlOrmrY9
+         ykBlU/Lfz+fKtc0FTO/iSQhDIOEGP1Y6g7YFdO7vqv/j0vmwFIqBE22ejdzt6hPdNHyh
+         wgBv65d3BKOkXsK6dRuP+trCCJx5HjPS4EWK6g/2dtdtZg/6pWnJpqNPzaBGD3iPbtFJ
+         N7yQ==
+X-Gm-Message-State: AOAM5312WhcucjoJf1LGYmKjgPjB8VRMQt7SBtAT5t4IU2YrfsiykaQ+
+        ujQezfUA0BDFAAIKOCb8/yM4ySiSppt3NA==
+X-Google-Smtp-Source: ABdhPJwaG8bbt8sAkQ/fz9zWyUNzi/QXFT18zr2Ppv2yeMK+HFe9BWh2Y5iXuG8gp+JjckfjvbOE2w==
+X-Received: by 2002:a37:9c86:: with SMTP id f128mr43757610qke.30.1600651317388;
+        Sun, 20 Sep 2020 18:21:57 -0700 (PDT)
+Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id l26sm7741951qki.62.2020.09.20.18.21.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Sep 2020 18:21:56 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        neeraj.iitr10@gmail.com, "Paul E. McKenney" <paulmck@kernel.org>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Subject: [RFC v5 0/5] Add support length of each segment in the segcblist (breaks TREE04)
+Date:   Sun, 20 Sep 2020 21:21:47 -0400
+Message-Id: <20200921012152.2831904-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (124.74.246.114) by TY1PR01CA0155.jpnprd01.prod.outlook.com (2603:1096:402:1::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11 via Frontend Transport; Mon, 21 Sep 2020 01:14:50 +0000
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-X-Originating-IP: [124.74.246.114]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 98081720-114a-41d8-40a3-08d85dcbbe33
-X-MS-TrafficTypeDiagnostic: DM6PR03MB3802:
-X-Microsoft-Antispam-PRVS: <DM6PR03MB3802D63D97D951849E551EF8ED3A0@DM6PR03MB3802.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:153;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UBn1YSW0+5I/bhceJXG6g3VokaY+lLRiyP/ZHDyb4tqZcjGfaBfNaMQ7GSX842kjXzlsPJZFEPKs6VzqtE5d5O+7BWgp1giI/vwrCvXKouNFB9Qy+Y3FqRWaqg7/yh7AorU8WzMd3rjWJXjdn2SNWwhRAy4ODz41th0eZeti/4DAL0dmfrD5bpvIndm7qEVmdd+tuKXs6qqUCutKtN8dd6cIhWt0y40Hpuca8RkyLm+TqtzYcTimgukHrACfBJbVeOeS0LsJPwr9Se9pHIFoZyYeq68YXSPG1Sa+JEkYzXs0xa84V1PI5wFS5iNz12UU51V4KtoljL4cXhW2cTfkTg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB4555.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(376002)(396003)(39850400004)(366004)(26005)(8936002)(110136005)(4326008)(956004)(478600001)(8676002)(7696005)(186003)(16526019)(52116002)(9686003)(66556008)(86362001)(2906002)(55016002)(66946007)(1076003)(6506007)(66476007)(316002)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: wIZ9x8Eao3plOi2Moz4/Xj/XIM/qoS97GjMCy/8pnRE7eQKVhSuO0sdjR1iSE+vZHvKesG+rRlwyEl9jxeeC0s0P8gVlShfi1R9wrdoXnzYmE6Qy3VV1y5dQzvFTgnp/w0wp7+skxuvp5of8gH2D7zpJ7x6mpo8k0wnTVRqwY+5scMu9AvYnxNCzAMJbdloZnYLbIN0JtrdISKwpvxT/WUCAl2FTRWQ+JFTKh8MAwoS/KmVydg5E7lCtzR2rzM3fBNHB/QvU/tVlxz8cpmXdJ//ETBCxKlNRv56BcfCEtuXRCy/jwx26tkjDo9RnBZ+vf5dBOewB7Ui23Xbu9jwr++VzePVZlXwwQWaMc2qOtq8NfHrtiNQQgfaBX0stz+a/8GRctViuiCCDkl+JX6HOWsHZydqoXhlSg1sO62oE8eeo0T4QOeukpKZU+rGwTEGDylaUoVCWFKSLucP8uA1LraMa3yonmmQjPOLYY/REWSFGlWqbiuXCsEsDeFVu3xOf9G23GGUv8ONIcxDseKJHTXw6/vEFOvWxGCF0fMMR83AyliXEAjBq4iT+37w57djYbAEQ/8hOQjMrLfPKgDWMjB0o40VNuLwnW9yTtK8hBdNJm78UqC/8pz89PB3xsXV36wRs+7xMT26esLcBEGO1Tg==
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 98081720-114a-41d8-40a3-08d85dcbbe33
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR03MB4555.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2020 01:14:52.6937
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kU+3HucTwjUq00iVWjm26lSz59foh4yg2fk01hQYxL/8E+SzBxNsfC2WgNNDyQMdlFomXbym0SeJUQ1Ius/hnA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR03MB3802
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable ALDPS(Advanced Link Down Power Saving) to save power when
-link down.
 
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
----
-Since v1:
- - add what does ALDPS mean.
- - replace magic number 0x18 with RTL8211F_PHYCR1 macro.
+NOTE: I marked as RFC since TREE 04 fails even though TREE03 passes. I don't
+see any RCU errors in the counters, however when shutdown thread tries to
+shutdown the system, it hangs when trying to shutdown the rcu_barrier thread.
+My suspicion is this is becaues I broke rcu_barrier() however I can't figure
+out how/where.  I added a patch in this series that could fix it, but it still
+does not alleviate TREE04's issues.  I also have a feeling this issue is
+related to nocb mode.
 
- drivers/net/phy/realtek.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+This is required for several usecases identified. One of them being tracing how
+the segmented callback list changes. Tracing this has identified issues in RCU
+code in the past.
 
-diff --git a/drivers/net/phy/realtek.c b/drivers/net/phy/realtek.c
-index 95dbe5e8e1d8..4bf54cded48a 100644
---- a/drivers/net/phy/realtek.c
-+++ b/drivers/net/phy/realtek.c
-@@ -27,11 +27,16 @@
- #define RTL821x_EXT_PAGE_SELECT			0x1e
- #define RTL821x_PAGE_SELECT			0x1f
- 
-+#define RTL8211F_PHYCR1				0x18
- #define RTL8211F_INSR				0x1d
- 
- #define RTL8211F_TX_DELAY			BIT(8)
- #define RTL8211F_RX_DELAY			BIT(3)
- 
-+#define RTL8211F_ALDPS_PLL_OFF			BIT(1)
-+#define RTL8211F_ALDPS_ENABLE			BIT(2)
-+#define RTL8211F_ALDPS_XTAL_OFF			BIT(12)
-+
- #define RTL8211E_TX_DELAY			BIT(1)
- #define RTL8211E_RX_DELAY			BIT(2)
- #define RTL8211E_MODE_MII_GMII			BIT(3)
-@@ -178,8 +183,12 @@ static int rtl8211f_config_init(struct phy_device *phydev)
- {
- 	struct device *dev = &phydev->mdio.dev;
- 	u16 val_txdly, val_rxdly;
-+	u16 val;
- 	int ret;
- 
-+	val = RTL8211F_ALDPS_ENABLE | RTL8211F_ALDPS_PLL_OFF | RTL8211F_ALDPS_XTAL_OFF;
-+	phy_modify_paged_changed(phydev, 0xa43, RTL8211F_PHYCR1, val, val);
-+
- 	switch (phydev->interface) {
- 	case PHY_INTERFACE_MODE_RGMII:
- 		val_txdly = 0;
--- 
-2.28.0
+From Paul:
+Another use case is of course more accurately determining whether a given CPU's
+large pile of callbacks can be best served by making grace periods go faster,
+invoking callbacks more vigorously, or both.  It should also be possible to
+simplify some of the callback handling a bit, given that some of the unnatural
+acts are due to there having been no per-batch counts.
+
+Revision history:
+v5: Various changes, bug fixes. Discovery of rcu_barrier issue.
+
+v4: Restructured rcu_do_batch() and segcblist merging to avoid issues.
+    Fixed minor nit from Davidlohr.
+v1->v3: minor nits.
+(https://lore.kernel.org/lkml/20200719034210.2382053-1-joel@joelfernandes.org/)
+
+Joel Fernandes (Google) (5):
+rcu/tree: Make rcu_do_batch count how many callbacks were executed
+rcu/segcblist: Add counters to segcblist datastructure
+rcu: Fix rcu_barrier() breakage from earlier patch
+rcu/trace: Add tracing for how segcb list changes
+rcu/segcblist: Remove useless rcupdate.h include
+
+include/linux/rcu_segcblist.h |   3 +
+include/trace/events/rcu.h    |  25 +++++
+kernel/rcu/rcu_segcblist.c    | 174 +++++++++++++++++++++++-----------
+kernel/rcu/rcu_segcblist.h    |  33 +++++--
+kernel/rcu/srcutree.c         |   1 -
+kernel/rcu/tree.c             |  22 +++--
+6 files changed, 192 insertions(+), 66 deletions(-)
+
+--
+2.28.0.681.g6f77f65b4e-goog
 
