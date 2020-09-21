@@ -2,215 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00B0827355B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 23:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94D8E27355F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 23:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728396AbgIUV5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 17:57:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726452AbgIUV5B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 17:57:01 -0400
-Received: from vuizook.err.no (vuizook.err.no [IPv6:2a02:20c8:2640::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68169C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 14:57:01 -0700 (PDT)
-Received: from [2400:4160:1877:2b00:5573:e9d:4014:d922] (helo=glandium.org)
-        by vuizook.err.no with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <glandium@glandium.org>)
-        id 1kKTnp-0002iA-3R; Mon, 21 Sep 2020 21:56:54 +0000
-Received: from glandium by goemon.lan with local (Exim 4.92)
-        (envelope-from <glandium@goemon>)
-        id 1kKTnj-0009tL-Tj; Tue, 22 Sep 2020 06:56:47 +0900
-From:   Mike Hommey <mh@glandium.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Mike Hommey <mh@glandium.org>
-Subject: [PATCH v3] x86/boot: Handle fpu-related and clearcpuid command line arguments earlier
-Date:   Tue, 22 Sep 2020 06:56:38 +0900
-Message-Id: <20200921215638.37980-1-mh@glandium.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921131005.GF5901@zn.tnic>
-References: <20200921131005.GF5901@zn.tnic>
+        id S1728457AbgIUV5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 17:57:37 -0400
+Received: from mail-eopbgr80048.outbound.protection.outlook.com ([40.107.8.48]:19109
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726452AbgIUV5g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 17:57:36 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Y0z8N/6SRWCFrDOr7qNezmRtpGiJWX0BYFigvRwRg70nvdzKtGeFXZhomuyGJqa/I4uB+LUgN1AP3NDwkLAQTJZKJKPrZxD937JlUW21MMmdALKEyhcaZzc3HQRX1MinWmE8zfWBmvkDjjPRcf8RlHcK1MnGFsgSHjqmgN6sd8UXfUqg+n+Iag3sRGGkdkowmTQ+CNXSN4bZ94VTNuM3myYc5ow0KolaiRpl4iU24Oq50fiiVeHSCT69Y4F4azszaHV9BvZHW99JsAcYkgBF2/kcfbES36oOEBgXanDQpi4U5qG/W+Du5ww0CMjl0q0jIkJiFZ4xYlSAcodLy5yCvA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dZ20vA+CiomRWKrN0hAcQ5qW/x+xP4weEd/72EbmPog=;
+ b=J89/HwC1WsFEO1BH3LMZnv93mIjpPNpZ75vdwNCOb2XhbLPulh1MsxGQn6bV2gcNflvzKWyq2vwMagqIovj1lFQDqKgKHjMQIH4pZTCTaUFQTm5shSSbov8MIZAVgmj7WK530SAtrPBU77uIk1rHcr0XHYZC7D5MU0oSNSpgx40LkPbHFN4s5jwUrZPhoolaKYdVyAZgBKMk76YqT2kOdzm0mJU9H6QbnIamN0QxYAx6y10Vk/zbkPxTuwZNDaP3EcvjQ9IzPaLNqPxf5BoX6shJTxmkIODbDn76vhir2z0/PjjOqQ6raEl51i7vg3VpAeqzZ5tlr5wsgvSNWFDj6Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dZ20vA+CiomRWKrN0hAcQ5qW/x+xP4weEd/72EbmPog=;
+ b=kjCOSaAzp7Mh/NC62T3eAJ5/A73MzAAgsiTf/3sz7yK7dBLO1BQkGV4uVbY42HB0+pr3sOfYeFGjPTmxmy78bUdyNCBuKU1IPah+n57znZbjOI6LlyCAXFL6bv+TEW8aYx2xH3cmvMefbSWUS+eop29a3XyQeS5/n9v556JYpMk=
+Received: from VE1PR04MB6687.eurprd04.prod.outlook.com (2603:10a6:803:121::30)
+ by VI1PR0401MB2669.eurprd04.prod.outlook.com (2603:10a6:800:51::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.17; Mon, 21 Sep
+ 2020 21:57:32 +0000
+Received: from VE1PR04MB6687.eurprd04.prod.outlook.com
+ ([fe80::8db9:c62f:dac5:ee3d]) by VE1PR04MB6687.eurprd04.prod.outlook.com
+ ([fe80::8db9:c62f:dac5:ee3d%3]) with mapi id 15.20.3391.023; Mon, 21 Sep 2020
+ 21:57:31 +0000
+From:   Leo Li <leoyang.li@nxp.com>
+To:     Ran Wang <ran.wang_1@nxp.com>, Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>
+CC:     "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ran Wang <ran.wang_1@nxp.com>
+Subject: RE: [PATCH 5/5] arm: dts: ls1021a: fix rcpm failed to claim resource
+Thread-Topic: [PATCH 5/5] arm: dts: ls1021a: fix rcpm failed to claim resource
+Thread-Index: AQHWjAMizUXV2OSeWUSrl1GifobWbalzrFaw
+Date:   Mon, 21 Sep 2020 21:57:31 +0000
+Message-ID: <VE1PR04MB66879DA9437534C3156384E98F3A0@VE1PR04MB6687.eurprd04.prod.outlook.com>
+References: <20200916081831.24747-1-ran.wang_1@nxp.com>
+ <20200916081831.24747-5-ran.wang_1@nxp.com>
+In-Reply-To: <20200916081831.24747-5-ran.wang_1@nxp.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [136.49.234.194]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 6d3ed2af-c54c-47ad-3636-08d85e795733
+x-ms-traffictypediagnostic: VI1PR0401MB2669:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR0401MB2669C39C2CF6FAF6D495C9338F3A0@VI1PR0401MB2669.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:283;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 9ddNPRRP7AZ2QSAO3QP6jrcDXykUKSPR4TEtoL0wuO0H9np5+XqM9KdzzzR2hd68sTlCSiE2iix3zA20S7Koh/JVa8g2wUJOwk6oFP6l899zl8v5A/DPK3MhexMn2UzzDSqjghymJixQdz7XsDXpRKzOhLAQFhe7iaJNpS2WT899v4hr+xmCSGicP4iEyQ1LygtLSKvo5GqyB+SrpP+swcz3LaDvanmGBP/ZDjqD7BZ2I+MMJvkjAPkHKoq+OrkoDKaGBFj/5qFBMDUY/IqolZFPwInRIIKzhl5emEUzinXkuota/FtlInTIcx1dKjUOC1iSv4MPQYFUPhzJBS7lZw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6687.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(39860400002)(366004)(136003)(376002)(478600001)(83380400001)(8676002)(5660300002)(71200400001)(9686003)(55016002)(52536014)(8936002)(76116006)(66476007)(66946007)(66446008)(66556008)(64756008)(316002)(2906002)(53546011)(33656002)(86362001)(110136005)(26005)(54906003)(186003)(7696005)(6506007)(4326008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: iS6kCuawBj0OBrfBNA3wKfBz5DEF6eKfpp4MIakB/NgRyFTsz9uSKycUo0il8CEoUJOAwL6p+tQgEUHJANrwgdin/SyrmJohpFJ05CR9WL2RY7twfhGDLR0oVZq9xrf+2OmYRXc//vclI9BfJI+3XqZaETgZ/SHIekjBHA/XpkkQ+jvvJrQu+WafBtlc1yiXi237P1j0BVhgytmYcMwrQnDwkG826nUGpBgO3NF5BKWIEFiOU0qlesnLmuDhKb0U+Wk8CKAPzEN+deYIQ0Zmq687aB7WceAGlhYBbClpwSrYH7kGY+H9gR3JqKjJnnUeBNQUfrkmPYSpTOJedTdzknbqLHhzlf7UDFWmkw93BAWryStkr8iCTm0QFQdpGyrZIBLqdc+73Isx3WnlNkbxD59dBxS4YBqZSKC4ch6f24ZF4K5F3JPaCEWDccxlWOFqV/bMf8McNB/tcd1/9mJzzoKQBTT8frRprZ1IBZS+Sh0yMy4HZF+jNx6sOVvVCIIFxxmFZIRNCgMRf33n6Av69xpHndSiE+WoZoPgX7kMijMxJIsZCoPpUltPAN2lXr8YUB2zzLkALFltX/Dh7b7ntgIbCruQKt1A1ct2PsoxTgJKwgWwFsbDcp8bYfnHac9NqRQ4KYTu7NQFE2WpaeC+UQ==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: (score 2.2): No, score=2.2 required=5.0 tests=RDNS_NONE,SPF_FAIL,SPF_HELO_FAIL autolearn=disabled version=3.4.2
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6687.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6d3ed2af-c54c-47ad-3636-08d85e795733
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Sep 2020 21:57:31.8593
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Z1ntEwxdIAgJBf/E7eWF03Ax7Q9G2FhHIVBX6IvvdATc6Vf0fMGjARkHMla0HUriQHmYXwz6sNYguXuOk5H6fw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2669
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-FPU initialization handles them currently. However, in the case of
-clearcpuid, some other early initialization code may check for features
-before the FPU initialization code is called. Handling the argument
-earlier allows the command line to influence those early
-initializations.
 
-Signed-off-by: Mike Hommey <mh@glandium.org>
----
- arch/x86/kernel/cpu/common.c | 55 ++++++++++++++++++++++++++++++++++++
- arch/x86/kernel/fpu/init.c   | 55 ------------------------------------
- 2 files changed, 55 insertions(+), 55 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index 8d4715e84268..6220fae87263 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -23,6 +23,7 @@
- #include <linux/syscore_ops.h>
- #include <linux/pgtable.h>
- 
-+#include <asm/cmdline.h>
- #include <asm/stackprotector.h>
- #include <asm/perf_event.h>
- #include <asm/mmu_context.h>
-@@ -1220,6 +1221,59 @@ static void detect_nopl(void)
- #endif
- }
- 
-+/*
-+ * We parse cpu parameters early because fpu__init_system() is executed
-+ * before parse_early_param().
-+ */
-+static void __init cpu_parse_early_param(void)
-+{
-+	char arg[128];
-+	char *argptr = arg;
-+	int arglen, res, bit;
-+
-+#ifdef CONFIG_X86_32
-+	if (cmdline_find_option_bool(boot_command_line, "no387"))
-+#ifdef CONFIG_MATH_EMULATION
-+		setup_clear_cpu_cap(X86_FEATURE_FPU);
-+#else
-+		pr_err("Option 'no387' required CONFIG_MATH_EMULATION enabled.\n");
-+#endif
-+
-+	if (cmdline_find_option_bool(boot_command_line, "nofxsr"))
-+		setup_clear_cpu_cap(X86_FEATURE_FXSR);
-+#endif
-+
-+	if (cmdline_find_option_bool(boot_command_line, "noxsave"))
-+		setup_clear_cpu_cap(X86_FEATURE_XSAVE);
-+
-+	if (cmdline_find_option_bool(boot_command_line, "noxsaveopt"))
-+		setup_clear_cpu_cap(X86_FEATURE_XSAVEOPT);
-+
-+	if (cmdline_find_option_bool(boot_command_line, "noxsaves"))
-+		setup_clear_cpu_cap(X86_FEATURE_XSAVES);
-+
-+	arglen = cmdline_find_option(boot_command_line, "clearcpuid", arg, sizeof(arg));
-+	if (arglen <= 0)
-+		return;
-+
-+	pr_info("Clearing CPUID bits:");
-+	do {
-+		res = get_option(&argptr, &bit);
-+		if (res == 0 || res == 3)
-+			break;
-+
-+		/* If the argument was too long, the last bit may be cut off */
-+		if (res == 1 && arglen >= sizeof(arg))
-+			break;
-+
-+		if (bit >= 0 && bit < NCAPINTS * 32) {
-+			pr_cont(" " X86_CAP_FMT, x86_cap_flag(bit));
-+			setup_clear_cpu_cap(bit);
-+		}
-+	} while (res == 2);
-+	pr_cont("\n");
-+}
-+
- /*
-  * Do minimum CPU detection early.
-  * Fields really needed: vendor, cpuid_level, family, model, mask,
-@@ -1255,6 +1309,7 @@ static void __init early_identify_cpu(struct cpuinfo_x86 *c)
- 		get_cpu_cap(c);
- 		get_cpu_address_sizes(c);
- 		setup_force_cpu_cap(X86_FEATURE_CPUID);
-+		cpu_parse_early_param();
- 
- 		if (this_cpu->c_early_init)
- 			this_cpu->c_early_init(c);
-diff --git a/arch/x86/kernel/fpu/init.c b/arch/x86/kernel/fpu/init.c
-index f8ff895aaf7e..701f196d7c68 100644
---- a/arch/x86/kernel/fpu/init.c
-+++ b/arch/x86/kernel/fpu/init.c
-@@ -5,7 +5,6 @@
- #include <asm/fpu/internal.h>
- #include <asm/tlbflush.h>
- #include <asm/setup.h>
--#include <asm/cmdline.h>
- 
- #include <linux/sched.h>
- #include <linux/sched/task.h>
-@@ -237,66 +236,12 @@ static void __init fpu__init_system_ctx_switch(void)
- 	on_boot_cpu = 0;
- }
- 
--/*
-- * We parse fpu parameters early because fpu__init_system() is executed
-- * before parse_early_param().
-- */
--static void __init fpu__init_parse_early_param(void)
--{
--	char arg[128];
--	char *argptr = arg;
--	int arglen, res, bit;
--
--#ifdef CONFIG_X86_32
--	if (cmdline_find_option_bool(boot_command_line, "no387"))
--#ifdef CONFIG_MATH_EMULATION
--		setup_clear_cpu_cap(X86_FEATURE_FPU);
--#else
--		pr_err("Option 'no387' required CONFIG_MATH_EMULATION enabled.\n");
--#endif
--
--	if (cmdline_find_option_bool(boot_command_line, "nofxsr"))
--		setup_clear_cpu_cap(X86_FEATURE_FXSR);
--#endif
--
--	if (cmdline_find_option_bool(boot_command_line, "noxsave"))
--		setup_clear_cpu_cap(X86_FEATURE_XSAVE);
--
--	if (cmdline_find_option_bool(boot_command_line, "noxsaveopt"))
--		setup_clear_cpu_cap(X86_FEATURE_XSAVEOPT);
--
--	if (cmdline_find_option_bool(boot_command_line, "noxsaves"))
--		setup_clear_cpu_cap(X86_FEATURE_XSAVES);
--
--	arglen = cmdline_find_option(boot_command_line, "clearcpuid", arg, sizeof(arg));
--	if (arglen <= 0)
--		return;
--
--	pr_info("Clearing CPUID bits:");
--	do {
--		res = get_option(&argptr, &bit);
--		if (res == 0 || res == 3)
--			break;
--
--		/* If the argument was too long, the last bit may be cut off */
--		if (res == 1 && arglen >= sizeof(arg))
--			break;
--
--		if (bit >= 0 && bit < NCAPINTS * 32) {
--			pr_cont(" " X86_CAP_FMT, x86_cap_flag(bit));
--			setup_clear_cpu_cap(bit);
--		}
--	} while (res == 2);
--	pr_cont("\n");
--}
--
- /*
-  * Called on the boot CPU once per system bootup, to set up the initial
-  * FPU state that is later cloned into all processes:
-  */
- void __init fpu__init_system(struct cpuinfo_x86 *c)
- {
--	fpu__init_parse_early_param();
- 	fpu__init_system_early_generic(c);
- 
- 	/*
--- 
-2.28.0
+> -----Original Message-----
+> From: Ran Wang <ran.wang_1@nxp.com>
+> Sent: Wednesday, September 16, 2020 3:19 AM
+> To: Leo Li <leoyang.li@nxp.com>; Rob Herring <robh+dt@kernel.org>;
+> Shawn Guo <shawnguo@kernel.org>
+> Cc: linuxppc-dev@lists.ozlabs.org; linux-arm-kernel@lists.infradead.org;
+> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; Ran Wang
+> <ran.wang_1@nxp.com>
+> Subject: [PATCH 5/5] arm: dts: ls1021a: fix rcpm failed to claim resource
+>=20
+> The range of dcfg reg is wrong, which overlap with other device, such as =
+rcpm.
+> This issue causing rcpm driver failed to claim reg resource when calling
+> devm_ioremap_resource().
+>=20
+> Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
+
+Acked-by: Li Yang <leoyang.li@nxp.com>
+
+> ---
+>  arch/arm/boot/dts/ls1021a.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/arch/arm/boot/dts/ls1021a.dtsi b/arch/arm/boot/dts/ls1021a.d=
+tsi
+> index e372630f..286c547 100644
+> --- a/arch/arm/boot/dts/ls1021a.dtsi
+> +++ b/arch/arm/boot/dts/ls1021a.dtsi
+> @@ -173,7 +173,7 @@
+>=20
+>  		dcfg: dcfg@1ee0000 {
+>  			compatible =3D "fsl,ls1021a-dcfg", "syscon";
+> -			reg =3D <0x0 0x1ee0000 0x0 0x10000>;
+> +			reg =3D <0x0 0x1ee0000 0x0 0x1000>;
+>  			big-endian;
+>  		};
+>=20
+> --
+> 2.7.4
 
