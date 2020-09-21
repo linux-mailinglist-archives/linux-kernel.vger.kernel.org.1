@@ -2,115 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C26D7272EB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 224B9272D5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:39:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728551AbgIUQvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:51:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59222 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730027AbgIUQui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:50:38 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        id S1729270AbgIUQja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:39:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729230AbgIUQjS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:39:18 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E7CFC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 09:39:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
+        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To;
+        bh=uh/FDwBvoTfhNjzgw+qMjrH+7RRHQIoPj2TATzyds1Y=; b=DqU5SEyVOtu08J+zEyFJdAiVrw
+        6sjmFrW5EGM+7kcn2Mfa3PWY768KVkqxcCWvnTXyMSBBEny9H2SVNCY8euhWOIMv2n/mEkk2yGO0b
+        Cz5Xd/X1zFNaneWYd6DyEL1ZhES7Pu7hPJPYThBM7exH3qr5Qa108s59DtHtbFsNinEjl15jyCD2O
+        f+OEOPkP+CqI8u2+ktNvW7MQTI6NfKdqPQurfTJ4vbXytXI7RF+0Iwi9GlP7/g6X8gMCM0C7vhYmK
+        ULnTtOd39jJ6u9ypptX/LV5m08mPSRLPY+EFPBHzD6lAVLqZFyFRfEDPYkW/IdDWAi21pxNlrwUnM
+        VfFB/3ng==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kKOqD-00025T-Th; Mon, 21 Sep 2020 16:39:02 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0FEE2206DC;
-        Mon, 21 Sep 2020 16:50:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600707037;
-        bh=+6aP1lae2mlckBCyDMj5DfB0+r5R9BvgSCVao3VHqnU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xW1HqDfEqSPOZOwrhDt3Z+rtQMtXYRTnXnqTyluOJF+lSYhEsuIwBl5tSzuK3jasV
-         y++uOwmZFBA49VgGPw3ulvNf4l3JP6gLhGZ7RiVXtRsP95NSQkqBo1wSzJ+QFeVdNe
-         XTigu06a4zolBkzbGA53guLbRZMTmKwQg0iUza8A=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        kernel test robot <lkp@intel.com>, Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: [PATCH 5.4 72/72] dax: Fix compilation for CONFIG_DAX && !CONFIG_FS_DAX
-Date:   Mon, 21 Sep 2020 18:31:51 +0200
-Message-Id: <20200921163125.284953643@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921163121.870386357@linuxfoundation.org>
-References: <20200921163121.870386357@linuxfoundation.org>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D7491307A5E;
+        Mon, 21 Sep 2020 18:38:59 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id A2428202075F5; Mon, 21 Sep 2020 18:38:59 +0200 (CEST)
+Message-ID: <20200921163845.457569309@infradead.org>
 User-Agent: quilt/0.66
+Date:   Mon, 21 Sep 2020 18:35:59 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     tglx@linutronix.de, mingo@kernel.org
+Cc:     linux-kernel@vger.kernel.org, bigeasy@linutronix.de,
+        qais.yousef@arm.com, swood@redhat.com, peterz@infradead.org,
+        valentin.schneider@arm.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vincent.donnefort@arm.com
+Subject: [PATCH 2/9] sched: Fix balance_callback()
+References: <20200921163557.234036895@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+The intent of balance_callback() has always been to delay executing
+balancing operations until the end of the current rq->lock section.
+This is because balance operations must often drop rq->lock, and that
+isn't safe in general.
 
-commit 88b67edd7247466bc47f01e1dc539b0d0d4b931e upstream.
+However, as noted by Scott, there were a few holes in that scheme;
+balance_callback() was called after rq->lock was dropped, which means
+another CPU can interleave and touch the callback list.
 
-dax_supported() is defined whenever CONFIG_DAX is enabled. So dummy
-implementation should be defined only in !CONFIG_DAX case, not in
-!CONFIG_FS_DAX case.
+Rework code to call the balance callbacks before dropping rq->lock
+where possible, and otherwise splice the balance list onto a local
+stack.
 
-Fixes: e2ec51282545 ("dm: Call proper helper to determine dax support")
-Cc: <stable@vger.kernel.org>
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This guarantees that the balance list must be empty when we take
+rq->lock. IOW, we'll only ever run our own balance callbacks.
 
+Reported-by: Scott Wood <swood@redhat.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- include/linux/dax.h |   17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ kernel/sched/core.c  |  119 ++++++++++++++++++++++++++++++++-------------------
+ kernel/sched/sched.h |    2 
+ 2 files changed, 77 insertions(+), 44 deletions(-)
 
---- a/include/linux/dax.h
-+++ b/include/linux/dax.h
-@@ -56,6 +56,8 @@ static inline void set_dax_synchronous(s
- {
- 	__set_dax_synchronous(dax_dev);
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3489,6 +3489,69 @@ static inline void finish_task(struct ta
+ #endif
  }
-+bool dax_supported(struct dax_device *dax_dev, struct block_device *bdev,
-+		int blocksize, sector_t start, sector_t len);
- /*
-  * Check if given mapping is supported by the file / underlying device.
-  */
-@@ -102,6 +104,12 @@ static inline bool dax_synchronous(struc
- static inline void set_dax_synchronous(struct dax_device *dax_dev)
- {
- }
-+static inline bool dax_supported(struct dax_device *dax_dev,
-+		struct block_device *bdev, int blocksize, sector_t start,
-+		sector_t len)
+ 
++#ifdef CONFIG_SMP
++
++static void do_balance_callbacks(struct rq *rq, struct callback_head *head)
 +{
-+	return false;
++	void (*func)(struct rq *rq);
++	struct callback_head *next;
++
++	lockdep_assert_held(&rq->lock);
++
++	while (head) {
++		func = (void (*)(struct rq *))head->func;
++		next = head->next;
++		head->next = NULL;
++		head = next;
++
++		func(rq);
++	}
 +}
- static inline bool daxdev_mapping_supported(struct vm_area_struct *vma,
- 				struct dax_device *dax_dev)
++
++static inline struct callback_head *splice_balance_callbacks(struct rq *rq)
++{
++	struct callback_head *head = rq->balance_callback;
++
++	lockdep_assert_held(&rq->lock);
++	if (head)
++		rq->balance_callback = NULL;
++
++	return head;
++}
++
++static void __balance_callbacks(struct rq *rq)
++{
++	do_balance_callbacks(rq, splice_balance_callbacks(rq));
++}
++
++static inline void balance_callbacks(struct rq *rq, struct callback_head *head)
++{
++	unsigned long flags;
++
++	if (unlikely(head)) {
++		raw_spin_lock_irqsave(&rq->lock, flags);
++		do_balance_callbacks(rq, head);
++		raw_spin_unlock_irqrestore(&rq->lock, flags);
++	}
++}
++
++#else
++
++static inline void __balance_callbacks(struct rq *rq)
++{
++}
++
++static inline struct callback_head *splice_balance_callbacks(struct rq *rq)
++{
++	return NULL;
++}
++
++static inline void balance_callbacks(struct rq *rq, struct callback_head *head)
++{
++}
++
++#endif
++
+ static inline void
+ prepare_lock_switch(struct rq *rq, struct task_struct *next, struct rq_flags *rf)
  {
-@@ -128,8 +136,6 @@ static inline bool generic_fsdax_support
- 	return __generic_fsdax_supported(dax_dev, bdev, blocksize, start,
- 			sectors);
- }
--bool dax_supported(struct dax_device *dax_dev, struct block_device *bdev,
--		int blocksize, sector_t start, sector_t len);
- 
- static inline struct dax_device *fs_dax_get_by_host(const char *host)
- {
-@@ -167,13 +173,6 @@ static inline struct dax_device *fs_dax_
- 	return NULL;
+@@ -3514,6 +3577,7 @@ static inline void finish_lock_switch(st
+ 	 * prev into current:
+ 	 */
+ 	spin_acquire(&rq->lock.dep_map, 0, 0, _THIS_IP_);
++	__balance_callbacks(rq);
+ 	raw_spin_unlock_irq(&rq->lock);
  }
  
--static inline bool dax_supported(struct dax_device *dax_dev,
--		struct block_device *bdev, int blocksize, sector_t start,
--		sector_t len)
+@@ -3655,43 +3719,6 @@ static struct rq *finish_task_switch(str
+ 	return rq;
+ }
+ 
+-#ifdef CONFIG_SMP
+-
+-/* rq->lock is NOT held, but preemption is disabled */
+-static void __balance_callback(struct rq *rq)
 -{
--	return false;
+-	struct callback_head *head, *next;
+-	void (*func)(struct rq *rq);
+-	unsigned long flags;
+-
+-	raw_spin_lock_irqsave(&rq->lock, flags);
+-	head = rq->balance_callback;
+-	rq->balance_callback = NULL;
+-	while (head) {
+-		func = (void (*)(struct rq *))head->func;
+-		next = head->next;
+-		head->next = NULL;
+-		head = next;
+-
+-		func(rq);
+-	}
+-	raw_spin_unlock_irqrestore(&rq->lock, flags);
 -}
 -
- static inline void fs_put_dax(struct dax_device *dax_dev)
- {
+-static inline void balance_callback(struct rq *rq)
+-{
+-	if (unlikely(rq->balance_callback))
+-		__balance_callback(rq);
+-}
+-
+-#else
+-
+-static inline void balance_callback(struct rq *rq)
+-{
+-}
+-
+-#endif
+-
+ /**
+  * schedule_tail - first thing a freshly forked thread must call.
+  * @prev: the thread we just switched away from.
+@@ -3711,7 +3738,6 @@ asmlinkage __visible void schedule_tail(
+ 	 */
+ 
+ 	rq = finish_task_switch(prev);
+-	balance_callback(rq);
+ 	preempt_enable();
+ 
+ 	if (current->set_child_tid)
+@@ -4527,10 +4553,11 @@ static void __sched notrace __schedule(b
+ 		rq = context_switch(rq, prev, next, &rf);
+ 	} else {
+ 		rq->clock_update_flags &= ~(RQCF_ACT_SKIP|RQCF_REQ_SKIP);
+-		rq_unlock_irq(rq, &rf);
+-	}
+ 
+-	balance_callback(rq);
++		rq_unpin_lock(rq, &rf);
++		__balance_callbacks(rq);
++		raw_spin_unlock_irq(&rq->lock);
++	}
  }
+ 
+ void __noreturn do_task_dead(void)
+@@ -4941,9 +4968,11 @@ void rt_mutex_setprio(struct task_struct
+ out_unlock:
+ 	/* Avoid rq from going away on us: */
+ 	preempt_disable();
+-	__task_rq_unlock(rq, &rf);
+ 
+-	balance_callback(rq);
++	rq_unpin_lock(rq, &rf);
++	__balance_callbacks(rq);
++	raw_spin_unlock(&rq->lock);
++
+ 	preempt_enable();
+ }
+ #else
+@@ -5217,6 +5246,7 @@ static int __sched_setscheduler(struct t
+ 	int retval, oldprio, oldpolicy = -1, queued, running;
+ 	int new_effective_prio, policy = attr->sched_policy;
+ 	const struct sched_class *prev_class;
++	struct callback_head *head;
+ 	struct rq_flags rf;
+ 	int reset_on_fork;
+ 	int queue_flags = DEQUEUE_SAVE | DEQUEUE_MOVE | DEQUEUE_NOCLOCK;
+@@ -5455,6 +5485,7 @@ static int __sched_setscheduler(struct t
+ 
+ 	/* Avoid rq from going away on us: */
+ 	preempt_disable();
++	head = splice_balance_callbacks(rq);
+ 	task_rq_unlock(rq, p, &rf);
+ 
+ 	if (pi) {
+@@ -5463,7 +5494,7 @@ static int __sched_setscheduler(struct t
+ 	}
+ 
+ 	/* Run balance callbacks after we've adjusted the PI chain: */
+-	balance_callback(rq);
++	balance_callbacks(rq, head);
+ 	preempt_enable();
+ 
+ 	return 0;
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1220,6 +1220,8 @@ static inline void rq_pin_lock(struct rq
+ #ifdef CONFIG_SCHED_DEBUG
+ 	rq->clock_update_flags &= (RQCF_REQ_SKIP|RQCF_ACT_SKIP);
+ 	rf->clock_update_flags = 0;
++
++	SCHED_WARN_ON(rq->balance_callback);
+ #endif
+ }
+ 
 
 
