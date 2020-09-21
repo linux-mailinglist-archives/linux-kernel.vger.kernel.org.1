@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F41272F49
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4BDB272D00
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730033AbgIUQz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:55:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51342 "EHLO mail.kernel.org"
+        id S1728352AbgIUQgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:36:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727939AbgIUQp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:45:27 -0400
+        id S1728976AbgIUQg1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:36:27 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B834C2076B;
-        Mon, 21 Sep 2020 16:45:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 91A03206DC;
+        Mon, 21 Sep 2020 16:36:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706726;
-        bh=sw/fWsgM3s2NVqfVCcC9QdPZrbGrFpV00b5iqhj5Kug=;
+        s=default; t=1600706186;
+        bh=jdRlnaY6vPBTfETmeS2VOahyt4KO7/6kWOm/9d1nv0o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wAlIV26MpY4Cu0dRi5i799rqZ4JCwt9QjzOqpUbt9/lhgr1aRAfN50lL6dLwY67xm
-         I9Pgv96rlTgnbQjxDKkuCa3UHnx9f2hbV1PPrq4CMdYh3GQr+VcJGpg7jzpQO8OPtc
-         LnWLuB0LF6PwVVv+bq2/ZeZWN+7MJpFBfgRE0ot4=
+        b=v4J5Qm+bOPy1uteR6YWTRrgFqArHm+ABRWmS4FqPC04/5ZxrpT4aCa2mp8s9TIHpU
+         IjuS8WKHXPhMfDcwYlPDye3t9POihLLZKk8FApCQ/Z+YJuflNwgi/cIPuZ6a5aJvaW
+         yEI9JsYYUHm6WZx6IEsBNcXlByNfwH11Aku8UUwg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
         Chun-Kuang Hu <chunkuang.hu@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 070/118] drm/mediatek: Add missing put_device() call in mtk_drm_kms_init()
+Subject: [PATCH 4.9 62/70] drm/mediatek: Add exception handing in mtk_drm_probe() if component init fail
 Date:   Mon, 21 Sep 2020 18:28:02 +0200
-Message-Id: <20200921162039.589715174@linuxfoundation.org>
+Message-Id: <20200921162037.969480551@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
-References: <20200921162036.324813383@linuxfoundation.org>
+In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
+References: <20200921162035.136047591@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,62 +45,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-[ Upstream commit 2132940f2192824acf160d115192755f7c58a847 ]
+[ Upstream commit 64c194c00789889b0f9454f583712f079ba414ee ]
 
-if of_find_device_by_node() succeed, mtk_drm_kms_init() doesn't have
-a corresponding put_device(). Thus add jump target to fix the exception
-handling for this function implementation.
+mtk_ddp_comp_init() is called in a loop in mtk_drm_probe(), if it
+fail, previous successive init component is not proccessed.
+
+Thus uninitialize valid component and put their device if component
+init failed.
 
 Fixes: 119f5173628a ("drm/mediatek: Add DRM Driver for Mediatek SoC MT8173.")
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/mediatek/mtk_drm_drv.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/mediatek/mtk_drm_drv.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-index 7ad0433539f45..b77dc36be4224 100644
+index 2865876079315..0f8f9a784b1be 100644
 --- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
 +++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-@@ -165,7 +165,7 @@ static int mtk_drm_kms_init(struct drm_device *drm)
- 
- 	ret = drmm_mode_config_init(drm);
- 	if (ret)
--		return ret;
-+		goto put_mutex_dev;
- 
- 	drm->mode_config.min_width = 64;
- 	drm->mode_config.min_height = 64;
-@@ -182,7 +182,7 @@ static int mtk_drm_kms_init(struct drm_device *drm)
- 
- 	ret = component_bind_all(drm->dev, drm);
- 	if (ret)
--		return ret;
-+		goto put_mutex_dev;
- 
- 	/*
- 	 * We currently support two fixed data streams, each optional,
-@@ -229,7 +229,7 @@ static int mtk_drm_kms_init(struct drm_device *drm)
- 	}
- 	if (!dma_dev->dma_parms) {
- 		ret = -ENOMEM;
--		goto err_component_unbind;
-+		goto put_dma_dev;
- 	}
- 
- 	ret = dma_set_max_seg_size(dma_dev, (unsigned int)DMA_BIT_MASK(32));
-@@ -256,9 +256,12 @@ static int mtk_drm_kms_init(struct drm_device *drm)
- err_unset_dma_parms:
- 	if (private->dma_parms_allocated)
- 		dma_dev->dma_parms = NULL;
-+put_dma_dev:
-+	put_device(private->dma_dev);
- err_component_unbind:
- 	component_unbind_all(drm->dev, drm);
--
-+put_mutex_dev:
-+	put_device(private->mutex_dev);
+@@ -457,8 +457,13 @@ err_pm:
+ 	pm_runtime_disable(dev);
+ err_node:
+ 	of_node_put(private->mutex_node);
+-	for (i = 0; i < DDP_COMPONENT_ID_MAX; i++)
++	for (i = 0; i < DDP_COMPONENT_ID_MAX; i++) {
+ 		of_node_put(private->comp_node[i]);
++		if (private->ddp_comp[i]) {
++			put_device(private->ddp_comp[i]->larb_dev);
++			private->ddp_comp[i] = NULL;
++		}
++	}
  	return ret;
  }
  
