@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1906B271F6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 11:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AC43271F71
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 11:58:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726592AbgIUJ5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 05:57:36 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:54576 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726581AbgIUJ5e (ORCPT
+        id S1726621AbgIUJ5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 05:57:52 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48450 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726460AbgIUJ5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 05:57:34 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08L9WuVT006777;
-        Mon, 21 Sep 2020 05:57:20 -0400
+        Mon, 21 Sep 2020 05:57:51 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08L9V6KC021010;
+        Mon, 21 Sep 2020 05:57:33 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=HFX0skN0rZR/1aGXEtBM7mhsg+LnZpihanlR7eECKUg=;
- b=blV2O1oBe6qfmal43OHHA7YS80WuQip0UNK2dMUg4C7KOas6X052qFFGkFwsg3yGxmFa
- RyMzYBZFn7338W4IacOwuSMc2KQa4Keuc7rJmIeZd+T9+jytdxVS7ucVKZuI5kQyAyd6
- WLQI1qMuArQgNLtWS9Rl48pYi1azllMygLi371fn6P29sQISxaYthekCMuSnrPLwpYXc
- 3CFTbdoGxIxhyw1+9Rlr4osF4ViNxcxbZ65aLxCxR8PsW5xy6HHytGqBO5arGsXb2kgh
- t8B5a61S8O97GaztuR72s1H/lpa3zvgVaFPP87nazhVjRAbV66zfdBIGCsoEIdxGRVFB bA== 
+ bh=Jfe9hm1hU64JKYNRHEzUfRKHoFWHl+CjDki2KcYMdII=;
+ b=gK0Q9lZvkaC+x1/LVykjBkbZ7+J4FYuZPSoSDc4YppJC4vhChHQB5sCS0wTYa6Bdjlmd
+ 4Axwuk3LfFeC407rYIZnouApTqc0vztjB4ZtXaWxnAuFLFuOy+ji+l/F4GYiJMPUE97s
+ XYtAMZkyhpVi+nBlwsMsbaMxUQ+lU6vvU86Vit1HOaCP/XO8CtZkWQwLytb+M/J51Qv1
+ 17YDf7DZ07TpOWs4nKITPK66grsKYpgsGDzGS+Eyo1LfR/H+3XyFrajkUD7PBedKqVaX
+ gUlbR2fHkR6BxSGmiLF99cISTbglEWyMGEae8p5SwetNWzFFFv2hUin5DJ47S/Oobt6n FA== 
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33ps2t9ssc-1
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33psavs67q-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Sep 2020 05:57:20 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08L9WwBc006942;
-        Mon, 21 Sep 2020 05:57:20 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33ps2t9srm-1
+        Mon, 21 Sep 2020 05:57:33 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08L9XECr026837;
+        Mon, 21 Sep 2020 05:57:33 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33psavs630-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Sep 2020 05:57:19 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08L9qkew025526;
-        Mon, 21 Sep 2020 09:57:17 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma03ams.nl.ibm.com with ESMTP id 33n9m89vs0-1
+        Mon, 21 Sep 2020 05:57:32 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08L9rxx5024010;
+        Mon, 21 Sep 2020 09:57:21 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06fra.de.ibm.com with ESMTP id 33n98gryve-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Sep 2020 09:57:17 +0000
+        Mon, 21 Sep 2020 09:57:21 +0000
 Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08L9vFYF27984262
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08L9vH0E29884860
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 21 Sep 2020 09:57:15 GMT
+        Mon, 21 Sep 2020 09:57:17 GMT
 Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0885752054;
-        Mon, 21 Sep 2020 09:57:15 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id DF59B52057;
+        Mon, 21 Sep 2020 09:57:18 +0000 (GMT)
 Received: from srikart450.in.ibm.com (unknown [9.77.192.225])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id B73315204E;
-        Mon, 21 Sep 2020 09:57:11 +0000 (GMT)
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 667D15204E;
+        Mon, 21 Sep 2020 09:57:15 +0000 (GMT)
 From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
 To:     Michael Ellerman <mpe@ellerman.id.au>
 Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
@@ -67,9 +67,9 @@ Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
         Ingo Molnar <mingo@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Valentin Schneider <valentin.schneider@arm.com>
-Subject: [PATCH v2 03/11] powerpc/smp: Remove get_physical_package_id
-Date:   Mon, 21 Sep 2020 15:26:45 +0530
-Message-Id: <20200921095653.9701-4-srikar@linux.vnet.ibm.com>
+Subject: [PATCH v2 04/11] powerpc/smp: Optimize remove_cpu_from_masks
+Date:   Mon, 21 Sep 2020 15:26:46 +0530
+Message-Id: <20200921095653.9701-5-srikar@linux.vnet.ibm.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200921095653.9701-1-srikar@linux.vnet.ibm.com>
 References: <20200921095653.9701-1-srikar@linux.vnet.ibm.com>
@@ -78,18 +78,23 @@ Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-09-21_01:2020-09-21,2020-09-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
- malwarescore=0 adultscore=0 spamscore=0 priorityscore=1501 clxscore=1015
- lowpriorityscore=0 impostorscore=0 suspectscore=0 mlxlogscore=999
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009210069
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ clxscore=1015 priorityscore=1501 impostorscore=0 mlxscore=0 phishscore=0
+ malwarescore=0 adultscore=0 lowpriorityscore=0 spamscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009210067
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that cpu_core_mask has been removed and topology_core_cpumask has
-been updated to use cpu_cpu_mask, we no more need
-get_physical_package_id.
+While offlining a CPU, system currently iterate through all the CPUs in
+the DIE to clear sibling, l2_cache and smallcore maps. However if there
+are more cores in a DIE, system can end up spending more time iterating
+through CPUs which are completely unrelated.
+
+Optimize this by only iterating through smaller but relevant cpumap.
+If shared_cache is set, cpu_l2_cache_map should be relevant else
+cpu_sibling_map would be relevant.
 
 Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
 Cc: LKML <linux-kernel@vger.kernel.org>
@@ -107,58 +112,37 @@ Cc: Valentin Schneider <valentin.schneider@arm.com>
 Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
 Tested-by: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
 ---
- arch/powerpc/include/asm/topology.h |  5 -----
- arch/powerpc/kernel/smp.c           | 20 --------------------
- 2 files changed, 25 deletions(-)
+ arch/powerpc/kernel/smp.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/topology.h b/arch/powerpc/include/asm/topology.h
-index e0f232533c9d..e45219f74be0 100644
---- a/arch/powerpc/include/asm/topology.h
-+++ b/arch/powerpc/include/asm/topology.h
-@@ -114,12 +114,7 @@ static inline int cpu_to_coregroup_id(int cpu)
- #ifdef CONFIG_PPC64
- #include <asm/smp.h>
- 
--#ifdef CONFIG_PPC_SPLPAR
--int get_physical_package_id(int cpu);
--#define topology_physical_package_id(cpu)	(get_physical_package_id(cpu))
--#else
- #define topology_physical_package_id(cpu)	(cpu_to_chip_id(cpu))
--#endif
- 
- #define topology_sibling_cpumask(cpu)	(per_cpu(cpu_sibling_map, cpu))
- #define topology_core_cpumask(cpu)	(cpu_cpu_mask(cpu))
 diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-index ec41491beca4..8c095fe237b2 100644
+index 8c095fe237b2..2e61a81aad88 100644
 --- a/arch/powerpc/kernel/smp.c
 +++ b/arch/powerpc/kernel/smp.c
-@@ -1292,26 +1292,6 @@ static inline void add_cpu_to_smallcore_masks(int cpu)
+@@ -1263,14 +1263,21 @@ static bool update_mask_by_l2(int cpu, struct cpumask *(*mask_fn)(int))
+ #ifdef CONFIG_HOTPLUG_CPU
+ static void remove_cpu_from_masks(int cpu)
+ {
++	struct cpumask *(*mask_fn)(int) = cpu_sibling_mask;
+ 	int i;
+ 
+-	for_each_cpu(i, cpu_cpu_mask(cpu)) {
++	if (shared_caches)
++		mask_fn = cpu_l2_cache_mask;
++
++	for_each_cpu(i, mask_fn(cpu)) {
+ 		set_cpus_unrelated(cpu, i, cpu_l2_cache_mask);
+ 		set_cpus_unrelated(cpu, i, cpu_sibling_mask);
+ 		if (has_big_cores)
+ 			set_cpus_unrelated(cpu, i, cpu_smallcore_mask);
+-		if (has_coregroup_support())
++	}
++
++	if (has_coregroup_support()) {
++		for_each_cpu(i, cpu_coregroup_mask(cpu))
+ 			set_cpus_unrelated(cpu, i, cpu_coregroup_mask);
  	}
  }
- 
--int get_physical_package_id(int cpu)
--{
--	int pkg_id = cpu_to_chip_id(cpu);
--
--	/*
--	 * If the platform is PowerNV or Guest on KVM, ibm,chip-id is
--	 * defined. Hence we would return the chip-id as the result of
--	 * get_physical_package_id.
--	 */
--	if (pkg_id == -1 && firmware_has_feature(FW_FEATURE_LPAR) &&
--	    IS_ENABLED(CONFIG_PPC_SPLPAR)) {
--		struct device_node *np = of_get_cpu_node(cpu, NULL);
--		pkg_id = of_node_to_nid(np);
--		of_node_put(np);
--	}
--
--	return pkg_id;
--}
--EXPORT_SYMBOL_GPL(get_physical_package_id);
--
- static void add_cpu_to_masks(int cpu)
- {
- 	int first_thread = cpu_first_thread_sibling(cpu);
 -- 
 2.17.1
 
