@@ -2,29 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B7D4271CD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE37271D09
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:04:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726889AbgIUICY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 04:02:24 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:47696 "EHLO huawei.com"
+        id S1726886AbgIUID7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 04:03:59 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:35140 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726551AbgIUICQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 04:02:16 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id BCFD0C7075D59CFE6278;
-        Mon, 21 Sep 2020 16:02:14 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Mon, 21 Sep 2020
- 16:02:08 +0800
+        id S1726566AbgIUICT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 04:02:19 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 24E51D5E5C3142B64F1A;
+        Mon, 21 Sep 2020 16:02:17 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Mon, 21 Sep 2020
+ 16:02:10 +0800
 From:   Liu Shixin <liushixin2@huawei.com>
-To:     Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
-        Moritz Fischer <mdf@kernel.org>
-CC:     <linux-fpga@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+CC:     <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH -next] fpga: dfl: simplify the return expression of fme_perf_pmu_register
-Date:   Mon, 21 Sep 2020 16:24:33 +0800
-Message-ID: <20200921082433.2591305-1-liushixin2@huawei.com>
+Subject: [PATCH -next] HID: intel-ish-hid: simplify the return expression of ishtp_hid_parse
+Date:   Mon, 21 Sep 2020 16:24:34 +0800
+Message-ID: <20200921082434.2591357-1-liushixin2@huawei.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -39,34 +40,30 @@ Simplify the return expression.
 
 Signed-off-by: Liu Shixin <liushixin2@huawei.com>
 ---
- drivers/fpga/dfl-fme-perf.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/hid/intel-ish-hid/ishtp-hid.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/fpga/dfl-fme-perf.c b/drivers/fpga/dfl-fme-perf.c
-index 531266287eee..e881fbe6d838 100644
---- a/drivers/fpga/dfl-fme-perf.c
-+++ b/drivers/fpga/dfl-fme-perf.c
-@@ -906,7 +906,6 @@ static int fme_perf_pmu_register(struct platform_device *pdev,
+diff --git a/drivers/hid/intel-ish-hid/ishtp-hid.c b/drivers/hid/intel-ish-hid/ishtp-hid.c
+index b8aae69ad15d..edf5ae942508 100644
+--- a/drivers/hid/intel-ish-hid/ishtp-hid.c
++++ b/drivers/hid/intel-ish-hid/ishtp-hid.c
+@@ -22,14 +22,9 @@ static int ishtp_hid_parse(struct hid_device *hid)
  {
- 	struct pmu *pmu = &priv->pmu;
- 	char *name;
--	int ret;
- 
- 	spin_lock_init(&priv->fab_lock);
- 
-@@ -926,11 +925,7 @@ static int fme_perf_pmu_register(struct platform_device *pdev,
- 
- 	name = devm_kasprintf(priv->dev, GFP_KERNEL, "dfl_fme%d", pdev->id);
- 
--	ret = perf_pmu_register(pmu, name, -1);
--	if (ret)
--		return ret;
+ 	struct ishtp_hid_data *hid_data =  hid->driver_data;
+ 	struct ishtp_cl_data *client_data = hid_data->client_data;
+-	int rv;
 -
+-	rv = hid_parse_report(hid, client_data->report_descr[hid_data->index],
+-			      client_data->report_descr_size[hid_data->index]);
+-	if (rv)
+-		return	rv;
+ 
 -	return 0;
-+	return perf_pmu_register(pmu, name, -1);
++	return hid_parse_report(hid, client_data->report_descr[hid_data->index],
++				client_data->report_descr_size[hid_data->index]);
  }
  
- static void fme_perf_pmu_unregister(struct fme_perf_priv *priv)
+ /* Empty callbacks with success return code */
 -- 
 2.25.1
 
