@@ -2,42 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21945272131
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:33:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57828272134
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726685AbgIUKdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:33:19 -0400
-Received: from mail-io1-f80.google.com ([209.85.166.80]:56016 "EHLO
-        mail-io1-f80.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726367AbgIUKdS (ORCPT
+        id S1726691AbgIUKd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:33:27 -0400
+Received: from mail-il1-f205.google.com ([209.85.166.205]:37621 "EHLO
+        mail-il1-f205.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726567AbgIUKdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 21 Sep 2020 06:33:18 -0400
-Received: by mail-io1-f80.google.com with SMTP id t187so9500613iof.22
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:33:17 -0700 (PDT)
+Received: by mail-il1-f205.google.com with SMTP id c66so10622142ilf.4
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:33:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=TkUyzMkYz/c8/5hvltm5ed1HTbPYyQWLlHEIooENSiE=;
-        b=f9y7r5nGfHtitbPeMkpTdRfBCjcbHJsNNyHC9ayWByuZEUuk79ydoUzAbp5xKiaw4J
-         ftS/uWBjrIOQyAbjgKcCcGkW9g2rS6/40EUxFa3xQwSLMenl8s8kYamNGYnyb7T1emO6
-         XGSkcmm4UoP7fI+rqrItnZGp0VcHEdgWjGBuEJX9JkyAsrTt1bOeBesnYKVdEl2RIfMq
-         ztGuEV4j69VsBf2Mwu6x6pi8vu+ErsUazX5Om9rxNE4ABk01vLaPkwhlSgjBrjTokdgw
-         AWRHGJ3yJzxqCgckIA4DwdDMattBqcsvG+7w5iy8VjAKJiGLuD9AkDNrv4OzBq7PRyyX
-         trOw==
-X-Gm-Message-State: AOAM531K/icRuGf2NPStibGm7+QwDFW/isFsql0tC4s37o2pGAgMeemX
-        3LolLnznMnCUD8YedvyhtfsONAZGOqxb9QSwC91wK1bj11BT
-X-Google-Smtp-Source: ABdhPJzGXxUiEInu/JMkAk+OuWugeCE3xYd/24sugKd3CrVst9ArkjXt3vF9NV/C7llboeCyQhrjsnxTHC26ZDvbvOUVzh9WjZxy
+        bh=ANn/W8cefD65L0WEk2xKoOR7AQ8X98axJRQVhD3ngEg=;
+        b=ue+l7H8GcjiaZYI3zQvYvcyy4DnILUNlQdmtsYjWZDeG8E/ln+aLAALBuwGKYAhft6
+         gFUz6fmUMdu+MDFjR5SeLCHqsdKmbx09TmTNeYoW741L/7jzC67g7t28VqEpZ80p3aK+
+         2wb8CvAy4bOqDF8X+Q3Lng/xQdRzR2yUFP09cAqr1rSpO0uS+DDi3Cokaw2z2w36NexV
+         BnOtxUP3PSAG5G5dAI3wg13NLiSVOOMRVrWWPw8El/g+q968EQDlQaPtXpV7E0jEN5pK
+         savMVo+tTC67mk6cUvMWQXrCdUI+ZJqY4a0bg/hqbe2v1q++cfF+vReWnL/w9FXRem/h
+         oEJg==
+X-Gm-Message-State: AOAM532VFLHYtl1trpDYpy9KA2zv5xUtRtIOwnBlaOeBh1z0l7soBoqJ
+        7GS/Y70cfxPOWdNhQ7nmPo/Ue75IjVAHKZaHSxz+tAjqTeQZ
+X-Google-Smtp-Source: ABdhPJyGl3Fu6WMhEKCiTG9/3nbg9Nx4V6AKJVZWxuSQImBhnaho95oaG5nHYhN9fIxuw3FdWogs2afMdLO/9FYPTUsr//BxExrT
 MIME-Version: 1.0
-X-Received: by 2002:a02:ccae:: with SMTP id t14mr32262614jap.63.1600684397439;
+X-Received: by 2002:a02:ca0e:: with SMTP id i14mr40438267jak.65.1600684397714;
  Mon, 21 Sep 2020 03:33:17 -0700 (PDT)
 Date:   Mon, 21 Sep 2020 03:33:17 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e82e1a05afd0605d@google.com>
-Subject: KASAN: use-after-free Read in afs_deactivate_cell (2)
-From:   syzbot <syzbot+a5e4946b04d6ca8fa5f3@syzkaller.appspotmail.com>
-To:     dhowells@redhat.com, linux-afs@lists.infradead.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000ec63c105afd060f5@google.com>
+Subject: BUG: unable to handle kernel paging request in bpf_trace_run1
+From:   syzbot <syzbot+35b2a9c256b8956a2b11@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org, mingo@redhat.com,
+        netdev@vger.kernel.org, rostedt@goodmis.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -49,106 +53,79 @@ syzbot found the following issue on:
 
 HEAD commit:    325d0eab Merge branch 'akpm' (patches from Andrew)
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15ec729b900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8d39f8ae68f9dcd5
-dashboard link: https://syzkaller.appspot.com/bug?extid=a5e4946b04d6ca8fa5f3
+console output: https://syzkaller.appspot.com/x/log.txt?x=128d4dd9900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b12e84189082991c
+dashboard link: https://syzkaller.appspot.com/bug?extid=35b2a9c256b8956a2b11
 compiler:       gcc (GCC) 10.1.0-syz 20200507
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a5e4946b04d6ca8fa5f3@syzkaller.appspotmail.com
+Reported-by: syzbot+35b2a9c256b8956a2b11@syzkaller.appspotmail.com
 
-==================================================================
-BUG: KASAN: use-after-free in __hlist_del include/linux/list.h:826 [inline]
-BUG: KASAN: use-after-free in hlist_del_rcu include/linux/rculist.h:487 [inline]
-BUG: KASAN: use-after-free in afs_deactivate_cell+0x165/0x1a0 fs/afs/cell.c:647
-Read of size 8 at addr ffff888090699880 by task kworker/0:3/7433
-
-CPU: 0 PID: 7433 Comm: kworker/0:3 Not tainted 5.9.0-rc5-syzkaller #0
+BUG: unable to handle page fault for address: fffff520001f4806
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 21ffee067 P4D 21ffee067 PUD aa164067 PMD aa166067 PTE 0
+Oops: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 6912 Comm: syz-executor.5 Not tainted 5.9.0-rc5-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: afs afs_manage_cell
+RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:1887 [inline]
+RIP: 0010:bpf_trace_run1+0x113/0x3c0 kernel/trace/bpf_trace.c:1923
+Code: c7 c7 00 20 91 88 e8 ec 15 d2 ff 0f 1f 44 00 00 e8 82 07 f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 8e 02 00 00 48 8d 73 38 48 8d 7c 24 28 ff 53 30
+RSP: 0018:ffffc900056d7588 EFLAGS: 00010a06
+RAX: dffffc0000000000 RBX: ffffc90000fa4000 RCX: dffffc0000000000
+RDX: 1ffff920001f4806 RSI: ffffffff817f383e RDI: ffffc90000fa4030
+RBP: 1ffff92000adaeb2 R08: 0000000000000000 R09: ffffffff8d0b79e7
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000000000 R14: ffff888083309e40 R15: ffffc900056d79c0
+FS:  0000000001995940(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffff520001f4806 CR3: 0000000057ab8000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- __hlist_del include/linux/list.h:826 [inline]
- hlist_del_rcu include/linux/rculist.h:487 [inline]
- afs_deactivate_cell+0x165/0x1a0 fs/afs/cell.c:647
- afs_manage_cell+0x326/0x11c0 fs/afs/cell.c:721
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- process_scheduled_works kernel/workqueue.c:2331 [inline]
- worker_thread+0x82b/0x1120 kernel/workqueue.c:2417
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-Allocated by task 19085:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
- kmem_cache_alloc_trace+0x174/0x300 mm/slab.c:3550
- kmalloc include/linux/slab.h:554 [inline]
- kzalloc include/linux/slab.h:666 [inline]
- afs_alloc_cell fs/afs/cell.c:151 [inline]
- afs_lookup_cell+0x5c8/0x1440 fs/afs/cell.c:262
- afs_parse_source fs/afs/super.c:290 [inline]
- afs_parse_param+0x404/0x8c0 fs/afs/super.c:326
- vfs_parse_fs_param fs/fs_context.c:117 [inline]
- vfs_parse_fs_param+0x203/0x550 fs/fs_context.c:98
- vfs_parse_fs_string+0xe6/0x150 fs/fs_context.c:161
- generic_parse_monolithic+0x16f/0x1f0 fs/fs_context.c:201
- do_new_mount fs/namespace.c:2871 [inline]
- path_mount+0x133f/0x20a0 fs/namespace.c:3192
- do_mount fs/namespace.c:3205 [inline]
- __do_sys_mount fs/namespace.c:3413 [inline]
- __se_sys_mount fs/namespace.c:3390 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3390
+ __bpf_trace_ext4_mballoc_alloc+0x8b/0xc0 fs/ext4/super.c:6207
+ trace_ext4_mballoc_alloc include/trace/events/ext4.h:1002 [inline]
+ ext4_mb_collect_stats fs/ext4/mballoc.c:3541 [inline]
+ ext4_mb_release_context fs/ext4/mballoc.c:4788 [inline]
+ ext4_mb_new_blocks+0x2ad6/0x4720 fs/ext4/mballoc.c:4963
+ ext4_ext_map_blocks+0x2320/0x61b0 fs/ext4/extents.c:4238
+ ext4_map_blocks+0x7b8/0x1650 fs/ext4/inode.c:625
+ ext4_getblk+0xad/0x530 fs/ext4/inode.c:832
+ ext4_bread+0x7c/0x380 fs/ext4/inode.c:882
+ ext4_append+0x15d/0x370 fs/ext4/namei.c:67
+ ext4_init_new_dir fs/ext4/namei.c:2765 [inline]
+ ext4_mkdir+0x5e0/0xdf0 fs/ext4/namei.c:2810
+ vfs_mkdir+0x507/0x770 fs/namei.c:3649
+ do_mkdirat+0x262/0x2d0 fs/namei.c:3672
  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Freed by task 9:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
- kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
- __kasan_slab_free+0xd8/0x120 mm/kasan/common.c:422
- __cache_free mm/slab.c:3418 [inline]
- kfree+0x10e/0x2b0 mm/slab.c:3756
- rcu_do_batch kernel/rcu/tree.c:2428 [inline]
- rcu_core+0x5ca/0x1130 kernel/rcu/tree.c:2656
- __do_softirq+0x1f8/0xb23 kernel/softirq.c:298
-
-Last call_rcu():
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_record_aux_stack+0x82/0xb0 mm/kasan/generic.c:346
- __call_rcu kernel/rcu/tree.c:2894 [inline]
- call_rcu+0x15e/0x7c0 kernel/rcu/tree.c:2968
- afs_manage_cell+0x250/0x11c0 fs/afs/cell.c:751
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-The buggy address belongs to the object at ffff888090699800
- which belongs to the cache kmalloc-1k of size 1024
-The buggy address is located 128 bytes inside of
- 1024-byte region [ffff888090699800, ffff888090699c00)
-The buggy address belongs to the page:
-page:00000000d3e3a7d0 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x90699
-flags: 0xfffe0000000200(slab)
-raw: 00fffe0000000200 ffffea0002558fc8 ffffea0001240988 ffff8880aa040700
-raw: 0000000000000000 ffff888090699000 0000000100000002 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888090699780: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888090699800: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff888090699880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                   ^
- ffff888090699900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888090699980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+RIP: 0033:0x45ca17
+Code: 1f 40 00 b8 5a 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 2d c0 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 53 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 0d c0 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffee03b9878 EFLAGS: 00000206 ORIG_RAX: 0000000000000053
+RAX: ffffffffffffffda RBX: 0000000000059c04 RCX: 000000000045ca17
+RDX: 00007ffee03b98c5 RSI: 00000000000001ff RDI: 00007ffee03b98c0
+RBP: 0000000000000369 R08: 0000000000000000 R09: 0000000000000005
+R10: 0000000000000064 R11: 0000000000000206 R12: 0000000000000003
+R13: 00007ffee03b98b0 R14: 0000000000059aaa R15: 00007ffee03b98c0
+Modules linked in:
+CR2: fffff520001f4806
+---[ end trace a7884d78e3b5aba2 ]---
+RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:1887 [inline]
+RIP: 0010:bpf_trace_run1+0x113/0x3c0 kernel/trace/bpf_trace.c:1923
+Code: c7 c7 00 20 91 88 e8 ec 15 d2 ff 0f 1f 44 00 00 e8 82 07 f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 8e 02 00 00 48 8d 73 38 48 8d 7c 24 28 ff 53 30
+RSP: 0018:ffffc900056d7588 EFLAGS: 00010a06
+RAX: dffffc0000000000 RBX: ffffc90000fa4000 RCX: dffffc0000000000
+RDX: 1ffff920001f4806 RSI: ffffffff817f383e RDI: ffffc90000fa4030
+RBP: 1ffff92000adaeb2 R08: 0000000000000000 R09: ffffffff8d0b79e7
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000000000 R14: ffff888083309e40 R15: ffffc900056d79c0
+FS:  0000000001995940(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffff520001f4806 CR3: 0000000057ab8000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
 ---
