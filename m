@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71BC82734B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 23:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C75E52734B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 23:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727671AbgIUVRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 17:17:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58623 "EHLO
+        id S1727805AbgIUVRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 17:17:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48275 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727317AbgIUVRx (ORCPT
+        by vger.kernel.org with ESMTP id S1727386AbgIUVRx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 21 Sep 2020 17:17:53 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
         s=mimecast20190719; t=1600723071;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=gWLsY05lICNle2YhUQzZEkQ3xwxCbs5IFMyW9iOIK7U=;
-        b=cWzSK4Z1svVr/53IHI3nWRmxT6clDMU99WnwIYnOwzTcy2jcIqselApw76TT06wDLrr+Hd
-        2J0LBXMeVzzm4JSs9kCQGRkIKL5SwBV0/yOXFnWTCr8DrVzmbhWRYsuN3CSJ3z9Ete1NOL
-        5jqWIRcxT8TLqUvW579kH9xAEgaBFp4=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-246-DY73P4UeNTqMxbH9ByI0cg-1; Mon, 21 Sep 2020 17:17:49 -0400
-X-MC-Unique: DY73P4UeNTqMxbH9ByI0cg-1
-Received: by mail-qk1-f198.google.com with SMTP id h191so12056998qke.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 14:17:48 -0700 (PDT)
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PpHRYhcxU0Jm84kdlicXVMnaAbcYEgTsJ/Su9ANodSU=;
+        b=eM04IRL5Dro5oziOT7+PY7Chscv7vWnhBWvHSJHVOuLGYcKSzfAPDJP/R+rCGT6mnZ+eCV
+        CWrAi9X5+n8zHxOD+1wmzAxVJ51GBIPSyQTZ6kWqE6ChjaUi9kw8EzDm9At2oIQslUxAn2
+        8POfDLw+f88zweep8ccOMlj2TDH/ngk=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-522-yUMke5lsP1G5DJv_hs7C0w-1; Mon, 21 Sep 2020 17:17:50 -0400
+X-MC-Unique: yUMke5lsP1G5DJv_hs7C0w-1
+Received: by mail-qk1-f200.google.com with SMTP id a2so12004215qkg.19
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 14:17:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gWLsY05lICNle2YhUQzZEkQ3xwxCbs5IFMyW9iOIK7U=;
-        b=slEwNOH2UNPWkWEsB3AZYcQ3+YNQnEtOmxcjXmeEo7uZxIxE4+GUdr3q5exdYmAIaH
-         He1paAnIXCUVziYTOU3gP7iVfjRBfdAO6CIgElYPDQLi6iSmIa9Q0XTCXSij0nsM52VT
-         OoWDdbWBKC48Tsk9VneDaCHuDaW4OStArlYqm6IbuJDvHhW5bvBRElL2Y4dCn1PHiX73
-         0xeGBlC3sLtK80gfjTjB2WgVTpR+gM3UkE6KYpsctNVyPikCu/fDdD4Gq6W2hHEMCtqm
-         QP1ZUexSTufWkzuieGPFaowVRHg4okVtSvpi6/0/mP/UVzUfvE3KdQnEhy1ZpGtDxYtc
-         rcMA==
-X-Gm-Message-State: AOAM533A3LqlrhUrnIRhRFLDIilqm9Enepyu2yCTOstjY0nuuq2dFEvj
-        VMR4uhRM2D1dGfk4zYQu174ui22+VZmIkjd5tYVOIC+BP3XWa4vvHlXBMSQbaoHYqbWPivO5V65
-        HaDMiy+0LO9O1LytTX8YzHEgE
-X-Received: by 2002:a05:620a:4107:: with SMTP id j7mr1630456qko.469.1600723067848;
-        Mon, 21 Sep 2020 14:17:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzcCX64AP4qp062+menLvZbLoudv80PWmwgaiADPDH4CiNhTKhFK/aUzRdlX4z70KkQqClrbw==
-X-Received: by 2002:a05:620a:4107:: with SMTP id j7mr1630433qko.469.1600723067537;
-        Mon, 21 Sep 2020 14:17:47 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=PpHRYhcxU0Jm84kdlicXVMnaAbcYEgTsJ/Su9ANodSU=;
+        b=d5aK4okryMU6Li+KKUnEeXG2O0k9CKWeShOWBM5mnRfN6sXfD42jMBJwmXU8ua6Wus
+         mMcX1B3+Qa7zZxx/x74+Sp0RkAyNYpDvVdMmIqxalPaI7Nnp49IZYSSB12phfNnHsre4
+         LVKpNaPP0X1i5BAxMhOb5qEM6QPuvmrAA5CDl3nAgqVzcx9peBR4Oxxb29QBpbM8p4pi
+         anfGaFSucQQmrRGrneQ/G/p8p88WDu8J/y2+/ffKkXRRmlN5G1akbu/cw0sp3oAT0sbS
+         Qz0y03iB++HFpfG8pfSCm97HqgIfGp5S1/E4JjJL25p+oriTlYeitVzdcvWQz8vZkpL0
+         GyvA==
+X-Gm-Message-State: AOAM531Mhjyvy7H3Mo8u/Z9mJY4r6/aKKrLUM/Qe0cmr9ipCzE6lVIvm
+        faz886F5gN2Uyf2bow5F6RMWXCBPeW9PHVtH41y6Q0K4JHCZMXNh+++cmCqiBejYV3hSDC5hxa1
+        b4y43bh4P7xMvhOrgTpPMG0CF
+X-Received: by 2002:aed:2767:: with SMTP id n94mr1564509qtd.237.1600723069544;
+        Mon, 21 Sep 2020 14:17:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxAG8txO9WFH1rMkSLxGPM+sc0589D4XINUeX9PKEy7c+VL4Izqm5WI4T67amcxlFTx2ENd2g==
+X-Received: by 2002:aed:2767:: with SMTP id n94mr1564475qtd.237.1600723069285;
+        Mon, 21 Sep 2020 14:17:49 -0700 (PDT)
 Received: from xz-x1.redhat.com (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
-        by smtp.gmail.com with ESMTPSA id h68sm10225108qkf.30.2020.09.21.14.17.45
+        by smtp.gmail.com with ESMTPSA id h68sm10225108qkf.30.2020.09.21.14.17.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 14:17:46 -0700 (PDT)
+        Mon, 21 Sep 2020 14:17:48 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
@@ -65,81 +66,94 @@ Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
         Leon Romanovsky <leonro@nvidia.com>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Jann Horn <jannh@google.com>
-Subject: [PATCH 0/5] mm: Break COW for pinned pages during fork()
-Date:   Mon, 21 Sep 2020 17:17:39 -0400
-Message-Id: <20200921211744.24758-1-peterx@redhat.com>
+Subject: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
+Date:   Mon, 21 Sep 2020 17:17:40 -0400
+Message-Id: <20200921211744.24758-2-peterx@redhat.com>
 X-Mailer: git-send-email 2.26.2
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20200921211744.24758-1-peterx@redhat.com>
+References: <20200921211744.24758-1-peterx@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Finally I start to post formal patches because it's growing.  And also sinc=
-e=0D
-we've discussed quite some issues already, so I feel like it's clearer on w=
-hat=0D
-we need to do, and how.=0D
-=0D
-This series is majorly inspired by the previous discussion on the list [1],=
-=0D
-starting from the report from Jason on the rdma test failure.  Linus propos=
-ed=0D
-the solution, which seems to be a very nice approach to avoid the breakage =
-of=0D
-userspace apps that didn't use MADV_DONTFORK properly before.  More informa=
-tion=0D
-can be found in that thread too.=0D
-=0D
-I believe the initial plan was to consider merging something like this for=
-=0D
-rc7/rc8.  However now I'm not sure due to the fact that the code change in=
-=0D
-copy_pte_range() is probably more than expected, so it can be with some ris=
-k.=0D
-I'll leave this question to the reviewers...=0D
-=0D
-I tested it myself with fork() after vfio pinning a bunch of device pages, =
-and=0D
-I verified that the new copy pte logic worked as expected at least in the m=
-ost=0D
-general path.  However I didn't test thp case yet because afaict vfio does =
-not=0D
-support thp backed dma pages.  Luckily, the pmd/pud thp patch is much more=
-=0D
-straightforward than the pte one, so hopefully it can be directly verified =
-by=0D
-some code review plus some more heavy-weight rdma tests.=0D
-=0D
-Patch 1:      Introduce mm.has_pinned (as single patch as suggested by Jaso=
-n)=0D
-Patch 2-3:    Some slight rework on copy_page_range() path as preparation=0D
-Patch 4:      Early cow solution for pte copy for pinned pages=0D
-Patch 5:      Same as above, but for thp (pmd/pud).=0D
-=0D
-Hugetlbfs fix is still missing, but as planned, that's not urgent so we can=
-=0D
-work upon.  Comments greatly welcomed.=0D
-=0D
-Thanks.=0D
-=0D
-Peter Xu (5):=0D
-  mm: Introduce mm_struct.has_pinned=0D
-  mm/fork: Pass new vma pointer into copy_page_range()=0D
-  mm: Rework return value for copy_one_pte()=0D
-  mm: Do early cow for pinned pages during fork() for ptes=0D
-  mm/thp: Split huge pmds/puds if they're pinned when fork()=0D
-=0D
- include/linux/mm.h       |   2 +-=0D
- include/linux/mm_types.h |  10 ++=0D
- kernel/fork.c            |   3 +-=0D
- mm/gup.c                 |   6 ++=0D
- mm/huge_memory.c         |  26 +++++=0D
- mm/memory.c              | 226 +++++++++++++++++++++++++++++++++++----=0D
- 6 files changed, 248 insertions(+), 25 deletions(-)=0D
-=0D
--- =0D
-2.26.2=0D
-=0D
+(Commit message collected from Jason Gunthorpe)
+
+Reduce the chance of false positive from page_maybe_dma_pinned() by keeping
+track if the mm_struct has ever been used with pin_user_pages(). mm_structs
+that have never been passed to pin_user_pages() cannot have a positive
+page_maybe_dma_pinned() by definition. This allows cases that might drive up
+the page ref_count to avoid any penalty from handling dma_pinned pages.
+
+Due to complexities with unpining this trivial version is a permanent sticky
+bit, future work will be needed to make this a counter.
+
+Suggested-by: Jason Gunthorpe <jgg@ziepe.ca>
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ include/linux/mm_types.h | 10 ++++++++++
+ kernel/fork.c            |  1 +
+ mm/gup.c                 |  6 ++++++
+ 3 files changed, 17 insertions(+)
+
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 496c3ff97cce..6f291f8b74c6 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -441,6 +441,16 @@ struct mm_struct {
+ #endif
+ 		int map_count;			/* number of VMAs */
+ 
++		/**
++		 * @has_pinned: Whether this mm has pinned any pages.  This can
++		 * be either replaced in the future by @pinned_vm when it
++		 * becomes stable, or grow into a counter on its own. We're
++		 * aggresive on this bit now - even if the pinned pages were
++		 * unpinned later on, we'll still keep this bit set for the
++		 * lifecycle of this mm just for simplicity.
++		 */
++		int has_pinned;
++
+ 		spinlock_t page_table_lock; /* Protects page tables and some
+ 					     * counters
+ 					     */
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 49677d668de4..7237d418e7b5 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -1011,6 +1011,7 @@ static struct mm_struct *mm_init(struct mm_struct *mm, struct task_struct *p,
+ 	mm_pgtables_bytes_init(mm);
+ 	mm->map_count = 0;
+ 	mm->locked_vm = 0;
++	mm->has_pinned = 0;
+ 	atomic64_set(&mm->pinned_vm, 0);
+ 	memset(&mm->rss_stat, 0, sizeof(mm->rss_stat));
+ 	spin_lock_init(&mm->page_table_lock);
+diff --git a/mm/gup.c b/mm/gup.c
+index e5739a1974d5..2d9019bf1773 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -1255,6 +1255,9 @@ static __always_inline long __get_user_pages_locked(struct mm_struct *mm,
+ 		BUG_ON(*locked != 1);
+ 	}
+ 
++	if (flags & FOLL_PIN)
++		WRITE_ONCE(mm->has_pinned, 1);
++
+ 	/*
+ 	 * FOLL_PIN and FOLL_GET are mutually exclusive. Traditional behavior
+ 	 * is to set FOLL_GET if the caller wants pages[] filled in (but has
+@@ -2660,6 +2663,9 @@ static int internal_get_user_pages_fast(unsigned long start, int nr_pages,
+ 				       FOLL_FAST_ONLY)))
+ 		return -EINVAL;
+ 
++	if (gup_flags & FOLL_PIN)
++		WRITE_ONCE(current->mm->has_pinned, 1);
++
+ 	if (!(gup_flags & FOLL_FAST_ONLY))
+ 		might_lock_read(&current->mm->mmap_lock);
+ 
+-- 
+2.26.2
 
