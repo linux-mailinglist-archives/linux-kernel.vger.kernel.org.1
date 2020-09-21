@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D2C272E18
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19381272C96
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:35:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729419AbgIUQqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:46:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52306 "EHLO mail.kernel.org"
+        id S1728620AbgIUQdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:33:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59160 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727998AbgIUQqO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:46:14 -0400
+        id S1728583AbgIUQdL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:33:11 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB1D423788;
-        Mon, 21 Sep 2020 16:46:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6701A2399A;
+        Mon, 21 Sep 2020 16:33:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706773;
-        bh=xdJlPdiCNNsDWzWhtcp05rqdqjw7RGbcMQpvT2jkvo4=;
+        s=default; t=1600705990;
+        bh=8aEWztFlDPl8H4sUn50FItF7gUpoIkj/vErTpfXsnpA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yf4CLymRckCZGgMZO29Q591okXnE5Jqz5flZfcZmwxXxLuTFG6aEsqgs38zadX7E1
-         IZB8br0G0uGPTy6AdUX4ULehqw6EGkTsxy1try6YBYzQd9TQN+4jReOUjazYTx9Qs7
-         rRlDhHZdJOUX8cSSVrlaGuWM4zPZFuhoCtwJi+J4=
+        b=mnlhlvkB1sIGfejS8KGkDSExup3fB5UsT8nfTXfzXM0TVaojHFEJxFJzJWg2B3VfK
+         VOzyUyiWbLWOU9YgN/CUxiQgczm8sJTJO5j6nOkMQ4e29PGqRHSMWUvB7qG4+gdzdc
+         lSbuqIdfGNBw9woQACBAUODES9OapGl2PMHh85jU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
         Jiri Olsa <jolsa@redhat.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Andi Kleen <ak@linux.intel.com>,
@@ -37,12 +36,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Stephane Eranian <eranian@google.com>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 059/118] perf test: Free aliases for PMU event map aliases test
-Date:   Mon, 21 Sep 2020 18:27:51 +0200
-Message-Id: <20200921162039.093086284@linuxfoundation.org>
+Subject: [PATCH 4.4 36/46] perf test: Free formats for perf pmu parse test
+Date:   Mon, 21 Sep 2020 18:27:52 +0200
+Message-Id: <20200921162034.943332447@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
-References: <20200921162036.324813383@linuxfoundation.org>
+In-Reply-To: <20200921162033.346434578@linuxfoundation.org>
+References: <20200921162033.346434578@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,29 +52,28 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Namhyung Kim <namhyung@kernel.org>
 
-[ Upstream commit 22fe5a25b5d8c4f8008dc4a8738d6d8a5f5ddbe9 ]
+[ Upstream commit d26383dcb2b4b8629fde05270b4e3633be9e3d4b ]
 
-The aliases were never released causing the following leaks:
+The following leaks were detected by ASAN:
 
-  Indirect leak of 1224 byte(s) in 9 object(s) allocated from:
-    #0 0x7feefb830628 in malloc (/lib/x86_64-linux-gnu/libasan.so.5+0x107628)
-    #1 0x56332c8f1b62 in __perf_pmu__new_alias util/pmu.c:322
-    #2 0x56332c8f401f in pmu_add_cpu_aliases_map util/pmu.c:778
-    #3 0x56332c792ce9 in __test__pmu_event_aliases tests/pmu-events.c:295
-    #4 0x56332c792ce9 in test_aliases tests/pmu-events.c:367
-    #5 0x56332c76a09b in run_test tests/builtin-test.c:410
-    #6 0x56332c76a09b in test_and_print tests/builtin-test.c:440
-    #7 0x56332c76ce69 in __cmd_test tests/builtin-test.c:695
-    #8 0x56332c76ce69 in cmd_test tests/builtin-test.c:807
-    #9 0x56332c7d2214 in run_builtin /home/namhyung/project/linux/tools/perf/perf.c:312
-    #10 0x56332c6701a8 in handle_internal_command /home/namhyung/project/linux/tools/perf/perf.c:364
-    #11 0x56332c6701a8 in run_argv /home/namhyung/project/linux/tools/perf/perf.c:408
-    #12 0x56332c6701a8 in main /home/namhyung/project/linux/tools/perf/perf.c:538
-    #13 0x7feefb359cc9 in __libc_start_main ../csu/libc-start.c:308
+  Indirect leak of 360 byte(s) in 9 object(s) allocated from:
+    #0 0x7fecc305180e in calloc (/lib/x86_64-linux-gnu/libasan.so.5+0x10780e)
+    #1 0x560578f6dce5 in perf_pmu__new_format util/pmu.c:1333
+    #2 0x560578f752fc in perf_pmu_parse util/pmu.y:59
+    #3 0x560578f6a8b7 in perf_pmu__format_parse util/pmu.c:73
+    #4 0x560578e07045 in test__pmu tests/pmu.c:155
+    #5 0x560578de109b in run_test tests/builtin-test.c:410
+    #6 0x560578de109b in test_and_print tests/builtin-test.c:440
+    #7 0x560578de401a in __cmd_test tests/builtin-test.c:661
+    #8 0x560578de401a in cmd_test tests/builtin-test.c:807
+    #9 0x560578e49354 in run_builtin /home/namhyung/project/linux/tools/perf/perf.c:312
+    #10 0x560578ce71a8 in handle_internal_command /home/namhyung/project/linux/tools/perf/perf.c:364
+    #11 0x560578ce71a8 in run_argv /home/namhyung/project/linux/tools/perf/perf.c:408
+    #12 0x560578ce71a8 in main /home/namhyung/project/linux/tools/perf/perf.c:538
+    #13 0x7fecc2b7acc9 in __libc_start_main ../csu/libc-start.c:308
 
-Fixes: 956a78356c24c ("perf test: Test pmu-events aliases")
+Fixes: cff7f956ec4a1 ("perf tests: Move pmu tests into separate object")
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-Reviewed-by: John Garry <john.garry@huawei.com>
 Acked-by: Jiri Olsa <jolsa@redhat.com>
 Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
 Cc: Andi Kleen <ak@linux.intel.com>
@@ -83,62 +81,60 @@ Cc: Ian Rogers <irogers@google.com>
 Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Stephane Eranian <eranian@google.com>
-Link: http://lore.kernel.org/lkml/20200915031819.386559-11-namhyung@kernel.org
+Link: http://lore.kernel.org/lkml/20200915031819.386559-12-namhyung@kernel.org
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/tests/pmu-events.c | 5 +++++
- tools/perf/util/pmu.c         | 2 +-
- tools/perf/util/pmu.h         | 1 +
- 3 files changed, 7 insertions(+), 1 deletion(-)
+ tools/perf/tests/pmu.c |  1 +
+ tools/perf/util/pmu.c  | 11 +++++++++++
+ tools/perf/util/pmu.h  |  1 +
+ 3 files changed, 13 insertions(+)
 
-diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
-index ab64b4a4e2848..343d36965836a 100644
---- a/tools/perf/tests/pmu-events.c
-+++ b/tools/perf/tests/pmu-events.c
-@@ -274,6 +274,7 @@ static int __test__pmu_event_aliases(char *pmu_name, int *count)
- 	int res = 0;
- 	bool use_uncore_table;
- 	struct pmu_events_map *map = __test_pmu_get_events_map();
-+	struct perf_pmu_alias *a, *tmp;
+diff --git a/tools/perf/tests/pmu.c b/tools/perf/tests/pmu.c
+index b776831ceeeac..4ca6d4dc86612 100644
+--- a/tools/perf/tests/pmu.c
++++ b/tools/perf/tests/pmu.c
+@@ -169,6 +169,7 @@ int test__pmu(void)
+ 		ret = 0;
+ 	} while (0);
  
- 	if (!map)
- 		return -1;
-@@ -347,6 +348,10 @@ static int __test__pmu_event_aliases(char *pmu_name, int *count)
- 			  pmu_name, alias->name);
- 	}
- 
-+	list_for_each_entry_safe(a, tmp, &aliases, list) {
-+		list_del(&a->list);
-+		perf_pmu_free_alias(a);
-+	}
- 	free(pmu);
- 	return res;
++	perf_pmu__del_formats(&formats);
+ 	test_format_dir_put(format);
+ 	return ret;
  }
 diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 93fe72a9dc0b2..97882e55321fe 100644
+index 5245fbd091067..8d99b6d9c36ae 100644
 --- a/tools/perf/util/pmu.c
 +++ b/tools/perf/util/pmu.c
-@@ -272,7 +272,7 @@ static void perf_pmu_update_alias(struct perf_pmu_alias *old,
+@@ -921,6 +921,17 @@ void perf_pmu__set_format(unsigned long *bits, long from, long to)
+ 		set_bit(b, bits);
  }
  
- /* Delete an alias entry. */
--static void perf_pmu_free_alias(struct perf_pmu_alias *newalias)
-+void perf_pmu_free_alias(struct perf_pmu_alias *newalias)
++void perf_pmu__del_formats(struct list_head *formats)
++{
++	struct perf_pmu_format *fmt, *tmp;
++
++	list_for_each_entry_safe(fmt, tmp, formats, list) {
++		list_del(&fmt->list);
++		free(fmt->name);
++		free(fmt);
++	}
++}
++
+ static int sub_non_neg(int a, int b)
  {
- 	zfree(&newalias->name);
- 	zfree(&newalias->desc);
+ 	if (b > a)
 diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-index f971d9aa4570a..1db31cbd21887 100644
+index 5d7e84466bee5..6789b1efc7d6e 100644
 --- a/tools/perf/util/pmu.h
 +++ b/tools/perf/util/pmu.h
-@@ -111,6 +111,7 @@ void pmu_add_cpu_aliases_map(struct list_head *head, struct perf_pmu *pmu,
+@@ -66,6 +66,7 @@ int perf_pmu__new_format(struct list_head *list, char *name,
+ 			 int config, unsigned long *bits);
+ void perf_pmu__set_format(unsigned long *bits, long from, long to);
+ int perf_pmu__format_parse(char *dir, struct list_head *head);
++void perf_pmu__del_formats(struct list_head *formats);
  
- struct pmu_events_map *perf_pmu__find_map(struct perf_pmu *pmu);
- bool pmu_uncore_alias_match(const char *pmu_name, const char *name);
-+void perf_pmu_free_alias(struct perf_pmu_alias *alias);
- 
- int perf_pmu__convert_scale(const char *scale, char **end, double *sval);
+ struct perf_pmu *perf_pmu__scan(struct perf_pmu *pmu);
  
 -- 
 2.25.1
