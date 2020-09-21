@@ -2,77 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2387272482
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB5427247D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727012AbgIUNDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:03:49 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:29515 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726355AbgIUNDs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:03:48 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600693428; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=RnNXoGJCqQ4mueFmIJRmRFdNcp/CeeC7DGPBkDYuxBU=;
- b=ZZCAiTEJe7ijmQqp/srWIB/yVNWn+DoiWvA7fe7z0b5+nb7Mnxh55Fge1lDANtFb3ZVNAxUk
- UnQp+1KxvTQavu3wBQmjiyLN6qk9sCSjIDFMqNp8yFJ7FZVDEeC5vSCYbfKAnrExfXWzZXcN
- kXT6RnUnnhhn/t8Mhbpu36EnXxQ=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5f68a440f1e3eb89c70a057e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 21 Sep 2020 13:01:52
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6DFE8C433CA; Mon, 21 Sep 2020 13:01:51 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 94FE4C433C8;
-        Mon, 21 Sep 2020 13:01:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 94FE4C433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S1726919AbgIUNCN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Sep 2020 09:02:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726395AbgIUNCL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:02:11 -0400
+Received: from mail.nic.cz (lists.nic.cz [IPv6:2001:1488:800:400::400])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C053C061755;
+        Mon, 21 Sep 2020 06:02:11 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
+        by mail.nic.cz (Postfix) with ESMTPSA id B5654140942;
+        Mon, 21 Sep 2020 15:02:08 +0200 (CEST)
+Date:   Mon, 21 Sep 2020 15:02:08 +0200
+From:   Marek Behun <marek.behun@nic.cz>
+To:     Simon Guinot <simon.guinot@sequanux.org>
+Cc:     linux-leds@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>,
+        =?UTF-8?B?T25kxZllag==?= Jirman <megous@megous.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org, Simon Guinot <sguinot@lacie.com>,
+        Vincent Donnefort <vdonnefort@gmail.com>,
+        Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH leds v1 10/10] leds: ns2: refactor and use struct
+ led_init_data
+Message-ID: <20200921150208.6a296bc7@nic.cz>
+In-Reply-To: <20200921125343.GA4828@kw.sim.vm.gnt>
+References: <20200916231650.11484-1-marek.behun@nic.cz>
+        <20200916231650.11484-11-marek.behun@nic.cz>
+        <20200918130206.GE29951@kw.sim.vm.gnt>
+        <20200918191405.516b51ff@nic.cz>
+        <20200921125343.GA4828@kw.sim.vm.gnt>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] ssb: Remove meaningless jump label to simplify the code
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200915020330.96067-1-jingxiangfeng@huawei.com>
-References: <20200915020330.96067-1-jingxiangfeng@huawei.com>
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
-Cc:     <m@bues.ch>, <linux-wireless@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <jingxiangfeng@huawei.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20200921130151.6DFE8C433CA@smtp.codeaurora.org>
-Date:   Mon, 21 Sep 2020 13:01:51 +0000 (UTC)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
+        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
+        autolearn=disabled version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jing Xiangfeng <jingxiangfeng@huawei.com> wrote:
+On Mon, 21 Sep 2020 14:53:43 +0200
+Simon Guinot <simon.guinot@sequanux.org> wrote:
 
-> The out jump label has nothing to do. So remove it to simplify the code.
+> On Fri, Sep 18, 2020 at 07:14:05PM +0200, Marek Behun wrote:
+> > On Fri, 18 Sep 2020 15:02:06 +0200
+> > Simon Guinot <simon.guinot@sequanux.org> wrote:
+> >   
+> > > On Thu, Sep 17, 2020 at 01:16:50AM +0200, Marek Behún wrote:
+> > > 
+> > > Hi Marek,
+> > >   
+> > > > By using struct led_init_data when registering we do not need to parse
+> > > > `label` DT property nor `linux,default-trigger` property.
+> > > > 
+> > > > Also, move forward from platform data to device tree only:
+> > > > since commit c7896490dd1a ("leds: ns2: Absorb platform data") the
+> > > > platform data structure is absorbed into the driver, because nothing
+> > > > else in the source tree used it. Since nobody complained and all usage    
+> > > 
+> > > Well, I probably should have...
+> > > 
+> > > I am using this driver on the Seagate Superbee NAS devices. This devices
+> > > are based on a x86 SoC. Since I have been unable to get from the ODM the
+> > > LED information written in the ACPI tables, then platform data are used
+> > > to pass the LED description to the driver.
+> > > 
+> > > The support of this boards is not available mainline yet but it is still
+> > > on my todo list. So that's why I am complaining right now :) If it is
+> > > not too much trouble I'd like to keep platform data support in this
+> > > driver.
+> > > 
+> > > Thanks in advance.
+> > > 
+> > > Simon
+> > >   
+> > 
+> > Simon, what if we refactored the driver to use fwnode API instead of OF
+> > API? Then if it is impossible for you to write DTS for that device,
+> > instead of platform data you could implement your device via swnode
+> > fwnodes. :)  
 > 
-> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+> Yes. That would be perfect.
+> 
+> Simon
 
-Patch applied to wireless-drivers-next.git, thanks.
+BTW if you have access to device schematics I could try to write DTS,
+with schematics and the current board source file it should not be that
+hard. But I can't test it, since I don't have the board.
 
-41650c45fbd2 ssb: Remove meaningless jump label to simplify the code
-
--- 
-https://patchwork.kernel.org/patch/11775319/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Marek
