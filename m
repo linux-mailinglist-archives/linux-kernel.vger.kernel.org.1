@@ -2,29 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51E3C2724C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5DD92724C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727489AbgIUNLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:11:08 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:43426 "EHLO huawei.com"
+        id S1726819AbgIUNLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:11:18 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13811 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727428AbgIUNK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:10:58 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id D4D769CEF4DE08770362;
-        Mon, 21 Sep 2020 21:10:55 +0800 (CST)
+        id S1727477AbgIUNLC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:11:02 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 24ADA27BFA3DD12BA083;
+        Mon, 21 Sep 2020 21:10:59 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 21 Sep 2020 21:10:49 +0800
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 21 Sep 2020 21:10:50 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Hans de Goede <hdegoede@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
-CC:     <linux-kernel@vger.kernel.org>,
+To:     Kalle Valo <kvalo@codeaurora.org>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
         Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH -next] virt: vbox: simplify the return expression of vbg_input_open()
-Date:   Mon, 21 Sep 2020 21:11:13 +0800
-Message-ID: <20200921131113.93459-1-miaoqinglang@huawei.com>
+Subject: [PATCH -next] zd1201: simplify the return expression of zd1201_set_maxassoc()
+Date:   Mon, 21 Sep 2020 21:11:15 +0800
+Message-ID: <20200921131115.93504-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -39,28 +41,30 @@ Simplify the return expression.
 
 Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- drivers/virt/vboxguest/vboxguest_linux.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/net/wireless/zydas/zd1201.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/virt/vboxguest/vboxguest_linux.c b/drivers/virt/vboxguest/vboxguest_linux.c
-index 6215a688e..73eb34849 100644
---- a/drivers/virt/vboxguest/vboxguest_linux.c
-+++ b/drivers/virt/vboxguest/vboxguest_linux.c
-@@ -202,13 +202,8 @@ static int vbg_input_open(struct input_dev *input)
+diff --git a/drivers/net/wireless/zydas/zd1201.c b/drivers/net/wireless/zydas/zd1201.c
+index 41641fc2b..718c4ee86 100644
+--- a/drivers/net/wireless/zydas/zd1201.c
++++ b/drivers/net/wireless/zydas/zd1201.c
+@@ -1652,15 +1652,11 @@ static int zd1201_set_maxassoc(struct net_device *dev,
+     struct iw_request_info *info, struct iw_param *rrq, char *extra)
  {
- 	struct vbg_dev *gdev = input_get_drvdata(input);
- 	u32 feat = VMMDEV_MOUSE_GUEST_CAN_ABSOLUTE | VMMDEV_MOUSE_NEW_PROTOCOL;
--	int ret;
+ 	struct zd1201 *zd = netdev_priv(dev);
+-	int err;
  
--	ret = vbg_core_set_mouse_status(gdev, feat);
--	if (ret)
--		return ret;
--
+ 	if (!zd->ap)
+ 		return -EOPNOTSUPP;
+ 
+-	err = zd1201_setconfig16(zd, ZD1201_RID_CNFMAXASSOCSTATIONS, rrq->value);
+-	if (err)
+-		return err;
 -	return 0;
-+	return vbg_core_set_mouse_status(gdev, feat);
++	return zd1201_setconfig16(zd, ZD1201_RID_CNFMAXASSOCSTATIONS, rrq->value);
  }
  
- /**
+ static int zd1201_get_maxassoc(struct net_device *dev,
 -- 
 2.23.0
 
