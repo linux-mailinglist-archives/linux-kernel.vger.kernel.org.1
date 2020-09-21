@@ -2,153 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79757272755
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2F202727B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727698AbgIUOfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 10:35:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42230 "EHLO
+        id S1727889AbgIUOge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 10:36:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727495AbgIUOen (ORCPT
+        with ESMTP id S1727049AbgIUOgZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:34:43 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB16FC061755;
-        Mon, 21 Sep 2020 07:34:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=7X3/qUs2y75UUlnvdA2vy1FAPs/IUNMhWXsjmEB0AzE=; b=dy92xMt8/hhoU3g/sIuxnNLbl+
-        Nnj6ERvpkc1IlL4sj5dIfssSenGvxA+3UGeocqvvW0bK5nqyD87xGywyHMO50b64xETvy6f5C7+jz
-        1ZJdm/VV09ZRLwsDyyLcMHfrELH2D1eYj+5bsTBZ25lWk1XsOFQFh/AQieGYsKfS5OUz5LASsN8I6
-        rzYxMMIXRXL89rVEiOUMrkOHhm1UEwQ9++bKqy6M9HdkYA+B0GjI6rNatMh1zg7somA/Qq96o55Q6
-        DVSHIhrhVnj3cQpJ/EO6vPX4LRYcTqqLU1MH8+ta4C+5jNV0FqKzNBOSq9JjyuaCqWmJpW60ZG8SO
-        wRMk55nw==;
-Received: from p4fdb0c34.dip0.t-ipconnect.de ([79.219.12.52] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kKMtm-0007tU-EZ; Mon, 21 Sep 2020 14:34:34 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        David Laight <David.Laight@aculab.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-aio@kvack.org, io-uring@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        netdev@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: [PATCH 11/11] security/keys: remove compat_keyctl_instantiate_key_iov
-Date:   Mon, 21 Sep 2020 16:34:34 +0200
-Message-Id: <20200921143434.707844-12-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921143434.707844-1-hch@lst.de>
-References: <20200921143434.707844-1-hch@lst.de>
+        Mon, 21 Sep 2020 10:36:25 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2147AC061755;
+        Mon, 21 Sep 2020 07:36:25 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id l126so9413202pfd.5;
+        Mon, 21 Sep 2020 07:36:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=zSfrj+3bs9sguc1QSl4SLJPp+UjGqMK1/8SE68suEvs=;
+        b=ar5BRUxq1oC1hBjcryyD9FKmnVVVYpvOs3MnnmNl8q8w9m90qzhI6qk7vJwHqYyUxe
+         aCEslOkys3v03XPCIs/CcblGzSesSp3DjYdqeqPKSf9oKNHL4hIaCtAj9HD/Nux8wjNo
+         NFoaPQ/+0vw4gYUCUxhCt1erh9C5DbqIyT4raZzKCadJRiUaCcKK/2OiqoFY3Amb1rsy
+         T4eamtx5AwvnwNpUaa5X1lroc9YxQy3M6n6+l/bfP0X/7xlB1LBgYcSdrUc0vVQkL6Vn
+         4KpGXFHnJhQD2TjCqmK4bYJ8wqsdi+OYv7FZ3kbULcQKt79GPJbyy5WhVyn9JRUmZJTE
+         e9AA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=zSfrj+3bs9sguc1QSl4SLJPp+UjGqMK1/8SE68suEvs=;
+        b=BT5QprwyUEnoAvFJOIz4Vi45EMW0RjvHYN1MzGM97mjvD9232m4bPA00I9xUbT8IQq
+         fvE9Q5pspDeOE5ms6b1HcOnS+ZiJgCs2nuoyl0ypU4VAQDoAxxvR1WCaU6q+FweblPpP
+         gJHbhHZGuKyfQfnfJNSuPO0V/FopHLnNfjQiNuEq9NsKes5HwT1lEbHkUBBAA5KXAQHl
+         W9/9DtZ917vXeex32yhmoz8rHkrSEblBSL36DgT2V0piCzoVf9rAxvWHDlqlBrAhzSsc
+         kU40hIH8cq3l1YUDQ7AeBO6fNXBiBEMmgw2/QpsfDeNQejovM9JiqleMIwp3D4tQ7/Oy
+         BkUw==
+X-Gm-Message-State: AOAM530+ZNUKJCYGPLHM7nb0SE5sT+U2oO7DKel/vaWATNJrNzyx/Hrg
+        xI+0TBoPxeLxX0W+2j21cZLc0JiqMBM=
+X-Google-Smtp-Source: ABdhPJwblvZRdBtLaYtrOyigdHm9lh+pppkIi+r81/+MSenIJRW174lVhuCdLv+l+XB6COw4VWenlw==
+X-Received: by 2002:a17:902:aa02:b029:d0:cbe1:e7b4 with SMTP id be2-20020a170902aa02b02900d0cbe1e7b4mr169659plb.37.1600698984672;
+        Mon, 21 Sep 2020 07:36:24 -0700 (PDT)
+Received: from localhost.localdomain ([1.129.169.155])
+        by smtp.gmail.com with ESMTPSA id j14sm11035358pjz.21.2020.09.21.07.36.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 07:36:23 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 00:36:19 +1000
+From:   "G. Branden Robinson" <g.branden.robinson@gmail.com>
+To:     "mtk.manpages@gmail.com" <mtk.manpages@gmail.com>,
+        "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 22/24] membarrier.2: Note that glibc does not provide a
+ wrapper
+Message-ID: <20200921143617.2iskdncu3diginqn@localhost.localdomain>
+References: <20200910211344.3562-1-colomar.6.4.3@gmail.com>
+ <20200910211344.3562-23-colomar.6.4.3@gmail.com>
+ <4ace434523f5491b9efcc7af175ad781@bfs.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="gn4pjnbkmrfvlsqv"
+Content-Disposition: inline
+In-Reply-To: <4ace434523f5491b9efcc7af175ad781@bfs.de>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that import_iovec handles compat iovecs, the native version of
-keyctl_instantiate_key_iov can be used for the compat case as well.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- security/keys/compat.c   | 36 ++----------------------------------
- security/keys/internal.h |  5 -----
- security/keys/keyctl.c   |  2 +-
- 3 files changed, 3 insertions(+), 40 deletions(-)
+--gn4pjnbkmrfvlsqv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/security/keys/compat.c b/security/keys/compat.c
-index 7ae531db031cf8..1545efdca56227 100644
---- a/security/keys/compat.c
-+++ b/security/keys/compat.c
-@@ -11,38 +11,6 @@
- #include <linux/slab.h>
- #include "internal.h"
- 
--/*
-- * Instantiate a key with the specified compatibility multipart payload and
-- * link the key into the destination keyring if one is given.
-- *
-- * The caller must have the appropriate instantiation permit set for this to
-- * work (see keyctl_assume_authority).  No other permissions are required.
-- *
-- * If successful, 0 will be returned.
-- */
--static long compat_keyctl_instantiate_key_iov(
--	key_serial_t id,
--	const struct compat_iovec __user *_payload_iov,
--	unsigned ioc,
--	key_serial_t ringid)
--{
--	struct iovec iovstack[UIO_FASTIOV], *iov = iovstack;
--	struct iov_iter from;
--	long ret;
--
--	if (!_payload_iov)
--		ioc = 0;
--
--	ret = import_iovec(WRITE, (const struct iovec __user *)_payload_iov,
--			   ioc, ARRAY_SIZE(iovstack), &iov, &from);
--	if (ret < 0)
--		return ret;
--
--	ret = keyctl_instantiate_key_common(id, &from, ringid);
--	kfree(iov);
--	return ret;
--}
--
- /*
-  * The key control system call, 32-bit compatibility version for 64-bit archs
-  */
-@@ -113,8 +81,8 @@ COMPAT_SYSCALL_DEFINE5(keyctl, u32, option,
- 		return keyctl_reject_key(arg2, arg3, arg4, arg5);
- 
- 	case KEYCTL_INSTANTIATE_IOV:
--		return compat_keyctl_instantiate_key_iov(
--			arg2, compat_ptr(arg3), arg4, arg5);
-+		return keyctl_instantiate_key_iov(arg2, compat_ptr(arg3), arg4,
-+						  arg5);
- 
- 	case KEYCTL_INVALIDATE:
- 		return keyctl_invalidate_key(arg2);
-diff --git a/security/keys/internal.h b/security/keys/internal.h
-index 338a526cbfa516..9b9cf3b6fcbb4d 100644
---- a/security/keys/internal.h
-+++ b/security/keys/internal.h
-@@ -262,11 +262,6 @@ extern long keyctl_instantiate_key_iov(key_serial_t,
- 				       const struct iovec __user *,
- 				       unsigned, key_serial_t);
- extern long keyctl_invalidate_key(key_serial_t);
--
--struct iov_iter;
--extern long keyctl_instantiate_key_common(key_serial_t,
--					  struct iov_iter *,
--					  key_serial_t);
- extern long keyctl_restrict_keyring(key_serial_t id,
- 				    const char __user *_type,
- 				    const char __user *_restriction);
-diff --git a/security/keys/keyctl.c b/security/keys/keyctl.c
-index 9febd37a168fd0..e26bbccda7ccee 100644
---- a/security/keys/keyctl.c
-+++ b/security/keys/keyctl.c
-@@ -1164,7 +1164,7 @@ static int keyctl_change_reqkey_auth(struct key *key)
-  *
-  * If successful, 0 will be returned.
-  */
--long keyctl_instantiate_key_common(key_serial_t id,
-+static long keyctl_instantiate_key_common(key_serial_t id,
- 				   struct iov_iter *from,
- 				   key_serial_t ringid)
- {
--- 
-2.28.0
+At 2020-09-11T12:58:08+0000, Walter Harms wrote:
+> the groff commands are ducument in man 7 groff
+> .nf       No filling or adjusting of output-lines.
+> .fi       Fill output lines
+>=20
+> (for me) a typical use is like this:
+> .nf
+>=20
+> struct timeval {
+>     time_t      tv_sec;     /* seconds */
+>     suseconds_t tv_usec;    /* microseconds */
+> };
+> .fi
+>=20
+> In the top section you prevent indenting (if any).
 
+The above will not work as desired for typesetter output, a.k.a., "troff
+devices", such as PostScript or PDF.  The initial code indent might work
+okay but the alignment of the field names will become
+ragged/mis-registered and the comments even more so.
+
+This is because a proportional font is used by default for troff
+devices.  The classical man macros, going back to Version 7 Unix (1979)
+had no good solution for this problem and Unix room tradition at Murray
+Hill going all the way back to (what we now call) the First Edition
+manual in 1971 was to read the man pages on a typewriter--a Teletype
+Model 33 or Model 37.  Typewriters, of course, always[1] used monospaced
+fonts.
+
+Version 9 Unix (1986) introduced .EX and .EE for setting material in a
+monospaced font even if the device used proportional type by default.
+(Plan 9 troff inherited them.)  GNU roff has supporteds .EX and .EE as
+well, for over 13 years, and its implementations are ultra-permissively
+licensed so other *roffs like Heirloom Doctools have picked them up.
+Therefore I recommend .EX and .EE for all code examples.
+
+They are very simple to use.  In the above, simply replace ".nf" with
+".EX" and ".fi" with ".EE".
+
+Regards,
+Branden
+
+[1] Not completely true; variable-pitch typewriters (such as 10/12 point
+selectable) were fairly common and some expensive models like the IBM
+Executive even featured true proportional type.
+
+--gn4pjnbkmrfvlsqv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEh3PWHWjjDgcrENwa0Z6cfXEmbc4FAl9oulAACgkQ0Z6cfXEm
+bc4nXg//a/pFLV+dC2pLWh48NQsSaQaYU0IMPK0FpdGYloetyPw2bo75WGukzVPQ
+GJ5yzvvQmI812qMmVnbChOZAr31EiaJqAqynG5XtmYxGIDK5Tx9cfnk+11Ko8DPQ
+orUaPEb5/u7rhtiQgOoYAYVewrF2ooTGEGRKIeRBhHRJHm3Fm2VRduDt5ZOJ1JsO
+aIdOc16tHBeAPJUjMamyVcSIoWZsWCdhdA4l9h94MeSrYYtZc3duDaieT9YnoZpx
+FKeKvmfR7fWBF8ZlIXSemYume2/wtC9x5SGoWz9EFlQVBM0rrUwjPtgdbri4Y/kr
+iBxiLcEJ350pPXGII4mMl/HWCfivFJRk9hd7tUGRvRXrj7MB4qQy5Myu993G+5X2
+LbF1lg3lvEv4zlaC1+Vx7ljnA5guGYqxq9v977VucyEWicSml5NczuzuBpgl8ynJ
+tJsFs04GBbR+8NHlILly2LOaI/B/9aFhUMYq1ix8GRqJABXhYA050t9n4UmlYIjA
+hulieVMLHDCVf9u+0+dE5ript5Ggqmh880AYZLYXQR0jEcGelJDYoxM0ushMogCx
+fFiO7iJpg/dr8l981Xe6B5t6xLKxzi9WJuZJ89V4efEjh/SK2SohGvYtRepzhj3a
+VRKZf+9Qamwt2PYrd5hgdryqsEpIs8335KQxpfUKYdzn4scuRsI=
+=i8QU
+-----END PGP SIGNATURE-----
+
+--gn4pjnbkmrfvlsqv--
