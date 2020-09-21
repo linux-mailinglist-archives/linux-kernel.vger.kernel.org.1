@@ -2,120 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4077727243C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:53:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5C627243F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726942AbgIUMxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 08:53:49 -0400
-Received: from vm1.sequanux.org ([188.165.36.56]:48371 "EHLO vm1.sequanux.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726395AbgIUMxr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 08:53:47 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by vm1.sequanux.org (Postfix) with ESMTP id 03AB21085E1;
-        Mon, 21 Sep 2020 14:53:46 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at vm1.sequanux.org
-Received: from vm1.sequanux.org ([127.0.0.1])
-        by localhost (vm1.sequanux.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id U7ldmjyxRVTX; Mon, 21 Sep 2020 14:53:43 +0200 (CEST)
-Received: from localhost (softwrestling.org [188.165.144.248])
-        by vm1.sequanux.org (Postfix) with ESMTPSA id D50811080EF;
-        Mon, 21 Sep 2020 14:53:43 +0200 (CEST)
-Date:   Mon, 21 Sep 2020 14:53:43 +0200
-From:   Simon Guinot <simon.guinot@sequanux.org>
-To:     Marek Behun <marek.behun@nic.cz>
-Cc:     linux-leds@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        Dan Murphy <dmurphy@ti.com>,
-        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org, Simon Guinot <sguinot@lacie.com>,
-        Vincent Donnefort <vdonnefort@gmail.com>,
-        Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH leds v1 10/10] leds: ns2: refactor and use struct
- led_init_data
-Message-ID: <20200921125343.GA4828@kw.sim.vm.gnt>
-References: <20200916231650.11484-1-marek.behun@nic.cz>
- <20200916231650.11484-11-marek.behun@nic.cz>
- <20200918130206.GE29951@kw.sim.vm.gnt>
- <20200918191405.516b51ff@nic.cz>
+        id S1726959AbgIUMyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 08:54:19 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:43254 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726395AbgIUMyS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 08:54:18 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08LCs3rg104245;
+        Mon, 21 Sep 2020 07:54:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600692843;
+        bh=qFpjHmcHk59IcPNluAVxwXpj8uIrlUPZIWnbDd1Te4Q=;
+        h=Date:From:To:CC:Subject;
+        b=y+qoS+kEz1snkJcbo3LrOxH1LEW2yCxUUntr5kU+vt0RAuJB34D+kuXI/VaTw2vI4
+         MZ8uEEln75MnNLHrFV3bH4rrjWU9oVhGYoLO3+v7n8a7F25Kbv1C4KY4p4qXo20YhM
+         mcOtOHdjnxizf8h4dfyQ1BVpNSbVaV28MMF7QnEA=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08LCs29C109519
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 21 Sep 2020 07:54:03 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 21
+ Sep 2020 07:54:03 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 21 Sep 2020 07:54:03 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08LCs2Ui118354;
+        Mon, 21 Sep 2020 07:54:02 -0500
+Date:   Mon, 21 Sep 2020 07:54:02 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        <arm@kernel.org>, <soc@kernel.org>
+CC:     <peda@axentia.se>, Roger Quadros <rogerq@ti.com>,
+        <t-kristo@ti.com>, <nsekhar@ti.com>, <kishon@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] arm64: dts: ti k3 fixes for v5.9
+Message-ID: <20200921125402.mtwypblhb45a6ssh@akan>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="KsGdsel6WgEHnImy"
+        protocol="application/pgp-signature"; boundary="4d5rvlxkmc7uz6ux"
 Content-Disposition: inline
-In-Reply-To: <20200918191405.516b51ff@nic.cz>
-User-Agent: Mutt/1.6.0 (2016-04-01)
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---KsGdsel6WgEHnImy
-Content-Type: text/plain; charset=utf-8
+--4d5rvlxkmc7uz6ux
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Sep 18, 2020 at 07:14:05PM +0200, Marek Behun wrote:
-> On Fri, 18 Sep 2020 15:02:06 +0200
-> Simon Guinot <simon.guinot@sequanux.org> wrote:
->=20
-> > On Thu, Sep 17, 2020 at 01:16:50AM +0200, Marek Beh=C3=BAn wrote:
-> >=20
-> > Hi Marek,
-> >=20
-> > > By using struct led_init_data when registering we do not need to parse
-> > > `label` DT property nor `linux,default-trigger` property.
-> > >=20
-> > > Also, move forward from platform data to device tree only:
-> > > since commit c7896490dd1a ("leds: ns2: Absorb platform data") the
-> > > platform data structure is absorbed into the driver, because nothing
-> > > else in the source tree used it. Since nobody complained and all usag=
-e =20
-> >=20
-> > Well, I probably should have...
-> >=20
-> > I am using this driver on the Seagate Superbee NAS devices. This devices
-> > are based on a x86 SoC. Since I have been unable to get from the ODM the
-> > LED information written in the ACPI tables, then platform data are used
-> > to pass the LED description to the driver.
-> >=20
-> > The support of this boards is not available mainline yet but it is still
-> > on my todo list. So that's why I am complaining right now :) If it is
-> > not too much trouble I'd like to keep platform data support in this
-> > driver.
-> >=20
-> > Thanks in advance.
-> >=20
-> > Simon
-> >=20
->=20
-> Simon, what if we refactored the driver to use fwnode API instead of OF
-> API? Then if it is impossible for you to write DTS for that device,
-> instead of platform data you could implement your device via swnode
-> fwnodes. :)
+Hi,
 
-Yes. That would be perfect.
+This is a single patch PR with for 5.9 to fix dts include introduced
+during 5.9-rc1. I had to base on 5.9-rc3 given the changes that took
+place post 5.9-rc1.
 
-Simon
+The following changes since commit f75aef392f869018f78cfedf3c320a6b3fcfda6b:
 
---KsGdsel6WgEHnImy
+  Linux 5.9-rc3 (2020-08-30 16:01:54 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git tags/ti-k3=
+-dt-fixes-for-v5.9
+
+for you to fetch changes up to c65176fd49f45bd5a5ffaa1790109745d1fa462c:
+
+  arm64: dts: ti: k3-j721e: Rename mux header and update macro names (2020-=
+09-21 07:17:20 -0500)
+
+----------------------------------------------------------------
+Tag fix up for TI serdes mux definition introduced in 5.9
+
+----------------------------------------------------------------
+Roger Quadros (1):
+      arm64: dts: ti: k3-j721e: Rename mux header and update macro names
+
+ .../boot/dts/ti/k3-j721e-common-proc-board.dts     | 11 ++--
+ arch/arm64/boot/dts/ti/k3-j721e-main.dtsi          | 13 ++--
+ include/dt-bindings/mux/mux-j721e-wiz.h            | 53 ----------------
+ include/dt-bindings/mux/ti-serdes.h                | 71 ++++++++++++++++++=
+++++
+ 4 files changed, 84 insertions(+), 64 deletions(-)
+ delete mode 100644 include/dt-bindings/mux/mux-j721e-wiz.h
+ create mode 100644 include/dt-bindings/mux/ti-serdes.h
+--=20
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5=
+ 849D 1736 249D
+
+--4d5rvlxkmc7uz6ux
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCgAdFiEEXW8DgovlR3VS5hA0zyg/RDPmszoFAl9oolcACgkQzyg/RDPm
-szrExxAAjNpMeco55YZIg8vi5pc3s8jKk0RzlVCx0U8kugJzjUN0Uh+WVGgelNpY
-5b+z1qe9m893rke8AueMJZMPraHrL585c2JWatYHeGfyoEXG+e4Uwba9XfRF1xj/
-vdAc/OZJSAF1ZMiJIZ6sQ385dr06MP7KEFCHwy1HVquohMVEjAHfXfG9WMamaQLX
-XRb43iuJP3WBiR3LVJ19q/bAoArcyF+My4WB3vbuv3MnV0fOWSmglX6Hbl078w2K
-qnBwB3u1+A0oXVGCndKUeHxFTscJBLPoKPdMmE0TI8QQOaey4rSmyAivBuCeANby
-Z3LpPNX8b2kffxD/zVTQrzxnHMTpnZeKt46zlanYAK46ks0/d8yZEbIgYlC6oVI2
-tFwH8bzieitdHYXoJ+d0V5Ac9G6NPODmKw5gh0F4PXr5R2x77M8k4mYFiXwgpR+q
-YEziR+Fi3iYiKNFGqQ2cZRNmJ+QhhOb1OH8lpH53etIVHs6Hy+FSuZoNJf2rLRDh
-BW4wIqOaHd91sf931DXJhKKrKsECH89/OLcr52OT3zL8ieOC5mgLiXaMRjL76YbC
-r8gKajpIZS+zdF7ecUVXFRtegyTj1xhZY53YT+3nZqSvpb7w7MP9JaInC1kaDg0A
-sXyq+GFw6grikNHJFmqlRPT25g28aLFFDHny9+Grb5goEktLKTc=
-=/jex
+iQIzBAABCgAdFiEE+KKGk1TrgjIXoxo03bWEnRc2JJ0FAl9oomMACgkQ3bWEnRc2
+JJ0Q/hAApesCuEpnWP4br1wccsN3Lcm7A8VxH3b1kW1T14wAHQCYljefz0v9Y++q
+lnhALivgYOdabxNolVKiy8NFWsKi/m+y6nZKlGVSEaPLBNFVaVm06JDPAep2MmsE
+w3bpY8N100LXQjonkYcRdoXTRat2lpEbnsEBEO6be69eY9V3vE/syAXvWyGc1Scb
+w8q5ZDh+kEdKWRjBrM+fx8g2cjMLUO6IyLvEPMjeb7t+buHNjLhBF6oHh7MSxgWV
+E729seZqPewTj50E8nb4LgtqY855bD1sPN6hcICaa9Wb98AlBdIvKg/hHMHWZmvb
++ocKixXpFzB28b2LL13uELFT5K5EsDhHMhGv+EjlY09V/M0KGqTXH6t0zsv5WQVG
+DT7+4CMwhiiUeqlgNaesFYK4A1FwL5TNvZoOzaNsnZleZjmbu3jAU+vmxuAzMeSB
+CR7dzq3BVNjlXnbGg5vLwutd4/IJqJ8mA1Ge8u9YsrVEGZVFEqvFqsl7yNsrNhkC
+RMYquCmNHWOrUwv9VGRxmTmbrnHbFOe7JbzwVHweoKnj+uqaOt/TtfS+8oMKHQSD
+rDVERAPqnCOl9wM0Pljb2jvNC2DrUPiIOIUandV6dPnWZE5WM1Bc7UCk9GyqeOsD
+HEksbT7bCE8Wt0RRv4g8vUMrH1O4n7bFWS+EZC4s8j1rwK+XRDY=
+=UH4k
 -----END PGP SIGNATURE-----
 
---KsGdsel6WgEHnImy--
+--4d5rvlxkmc7uz6ux--
