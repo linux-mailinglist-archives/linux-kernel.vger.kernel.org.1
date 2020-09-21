@@ -2,78 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07CFB273591
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 00:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69DB6273596
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 00:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728482AbgIUWR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 18:17:58 -0400
-Received: from mail1.nippynetworks.com ([91.220.24.129]:59122 "EHLO
-        mail1.nippynetworks.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726457AbgIUWR6 (ORCPT
+        id S1728515AbgIUWS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 18:18:29 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:17645 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726457AbgIUWS2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 18:17:58 -0400
-Received: from macbookpro-ed.wildgooses.lan (unknown [212.69.38.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256))
-        (No client certificate requested)
-        (Authenticated sender: ed@wildgooses.com)
-        by mail1.nippynetworks.com (Postfix) with ESMTPSA id 4BwJjH2PV3zTh56;
-        Mon, 21 Sep 2020 23:17:55 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wildgooses.com;
-        s=dkim; t=1600726676;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FW8VSKIvyxeWBPbuPFvBD+ezdTOAwO9l2dhOnE9RnDg=;
-        b=H3dySJfRCllaU4p4AvcexTteQ3Jambulzn/v1ogL3c/a7etWhop3XGKNKyMXVRab73AQpi
-        mw3SgNKWzVJBvwK5AKJ47Hp7jtBKYDqG+/pgdRptyeBG3N8kiCGdCrt5N1s9e+GQSCEahU
-        yzNWPBFWyOg2IftY6Mu7QwS1431ouzU=
-Subject: Re: [PATCH 1/2] x86: Remove led/gpio setup from pcengines platform
- driver
-To:     linux-kernel@vger.kernel.org
-Cc:     fe@dev.tdt.de, "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        platform-driver-x86@vger.kernel.org
-References: <20200921215919.3072-1-lists@wildgooses.com>
-From:   Ed W <lists@wildgooses.com>
-Message-ID: <d4b2045c-769b-4998-64cc-682c01c105fb@wildgooses.com>
-Date:   Mon, 21 Sep 2020 23:17:54 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
- Gecko/20100101 Thunderbird/78.2.2
+        Mon, 21 Sep 2020 18:18:28 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f6926860004>; Mon, 21 Sep 2020 15:17:42 -0700
+Received: from [10.2.52.174] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 21 Sep
+ 2020 22:18:28 +0000
+Subject: Re: [PATCH 4/5] mm: Do early cow for pinned pages during fork() for
+ ptes
+To:     Jann Horn <jannh@google.com>, Peter Xu <peterx@redhat.com>
+CC:     Linux-MM <linux-mm@kvack.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Hugh Dickins <hughd@google.com>,
+        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrea Arcangeli <aarcange@redhat.com>
+References: <20200921211744.24758-1-peterx@redhat.com>
+ <20200921212028.25184-1-peterx@redhat.com>
+ <CAG48ez3frkqQNHbE5bEB6rwYdbyoAA3B9FQZo=HKkUzWCM4H0Q@mail.gmail.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <07bc5f59-74ae-73e8-2616-f11712c27b58@nvidia.com>
+Date:   Mon, 21 Sep 2020 15:18:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200921215919.3072-1-lists@wildgooses.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAG48ez3frkqQNHbE5bEB6rwYdbyoAA3B9FQZo=HKkUzWCM4H0Q@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600726662; bh=yvFjZz5H7WJdvFOL+iOamQqOLsJG+P+1YgKrthibJWM=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=Jlbe/oAIF+Kj+XdyMgOu1fzzwVqxzP6YSa+FhzI/LeRGryj6jbi5EsnFIF4MozCJz
+         ZEpfKqKXugxSAEnkwrn9rUu6wuAH18JrTIm3IjCdCIFTn92m+3D9HIoaUVGxFz3fhk
+         VkN/mvruLCKBcMYTMFXwWwF1TxacefRBANYRCfx9OZn8B/qabtAsMTpUKUAWc45FOA
+         4Ev8zS0pDd2K9wLkbXz2dDY95GhjmVqVMCp5+Q/6bfLv7du9Hle7kp55hSpvvAlFxH
+         vYyHTKupTIqLqykWwBlfdZbkxJM6QMWqJczZ5Lv27mV3+/723UySFDJ82T131Q1hhh
+         RZRxTGS6Dn4zw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, I've been adding support for the PC Engines APU5 board, which is a variant of the APU 2-4 boards
-with some nice features. The current platform driver for pcengines boards has some redundant
-features with regards to recent bios/firmware packages for the board as they now set the ACPI tables
-to indicate GPIOs for keys and leds. So I've submitted a patch to eliminate this. It could be argued
-that it's useful to support older firmware versions, but there is also a 'leds-apu' driver which a)
-probably ought to be marked deprecated with a view to removing it and b) implements the leds even on
-antique firmware versions.
+On 9/21/20 2:55 PM, Jann Horn wrote:
+> On Mon, Sep 21, 2020 at 11:20 PM Peter Xu <peterx@redhat.com> wrote:
+...
+> I dislike the whole pin_user_pages() concept because (as far as I
+> understand) it fundamentally tries to fix a problem in the subset of
+> cases that are more likely to occur in practice (long-term pins
+> overlapping with things like writeback), and ignores the rarer cases
+> ("short-term" GUP).
+> 
 
-In implementing the APU5 I changed some of the exported gpio names to make them more closely match
-functionality across all the boards. For example APU2 vs APU4 both support 2x LTE options, but in
-different mpcie slots and this affects the numbering of options, but not the sense of them (so I
-renamed them based on the intention of the option). This is particularly true on APU5 which supports
-3x LTE cards
+Well, no, that's not really fair. pin_user_pages() provides a key
+prerequisite to fixing *all* of the bugs in that area, not just a
+subset. The 5 cases in Documentation/core-api/pin_user_pages.rst cover
+this pretty well. Or if they don't, let me know and I'll have another
+pass at it.
 
+The case for a "pin count" that is (logically) separate from a
+page->_refcount is real, and it fixes real problems. An elevated
+refcount can be caused by a lot of things, but it can normally be waited
+for and/or retried. The FOLL_PIN pages cannot.
 
-Can I get some advice: It would be helpful if the kernel would export the GPIOs to user-space
-automatically since toggling SIM slots is fairly useful task in userspace. At least for me the gpio
-numbers seem to jump around depending on the order of module loading, so doing something involving
-/sys/class/gpio/export isn't obviously an easy process. Reviewing the fine documentation suggests
-that I need to use gpio_export() to achieve this, but I concede I'm really not clear how to
-implement this in the platform module as currently structured... Any tips please?
+Of course, a valid remaining criticism of the situation is, "why not
+just *always* mark any of these pages as "dma-pinned"? In other words,
+why even have a separate gup/pup API? And in fact, perhaps eventually
+we'll just get rid of the get_user_pages*() side of it. But the pin
+count will need to remain, in order to discern between DMA pins and
+temporary refcount boosts.
 
-Thanks
-
-Ed W
-
+thanks,
+-- 
+John Hubbard
+NVIDIA
