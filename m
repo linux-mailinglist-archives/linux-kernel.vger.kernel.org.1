@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9675272CE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:36:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAB7D272CA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728892AbgIUQfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:35:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34864 "EHLO mail.kernel.org"
+        id S1728312AbgIUQdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:33:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728878AbgIUQff (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:35:35 -0400
+        id S1728626AbgIUQdj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:33:39 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B435206DC;
-        Mon, 21 Sep 2020 16:35:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E6CDB239A1;
+        Mon, 21 Sep 2020 16:33:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706134;
-        bh=joFQyl+j5Fc43C9AOBe7sS/X26HHeUPABLCMKhb5Kzs=;
+        s=default; t=1600706019;
+        bh=viQ5MaISis8I6/xy5sUsHEfiaQ4pyLWi8QwrFpDJ/R4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HlzoSaBmz9CAQ39Cw+a/Ba6nPRb/6UHCHJorAv4o2hiBroUCIPozUrU4MvMgG3l2a
-         5ssNIXiJSZ0M8G81b39GW2aKSdtnBxe8PkDVxz68t+R35+bgKOTa7W1fPKdG0ieYg8
-         XW+0GdjnXqhYlvk1Le6wkr6AisDRuV97HGexrL3o=
+        b=XvdC1r5keWHmDL5hC5T6e2MUp1VxIL2q0fCTQqoeGhB+PwZ2d5/MYSbpCrTt/Wi7p
+         Prm6klLkNoYhmC1TEy1nEr/7KvUbzqYSMusAQLMdf9KVbRgDVGGPSgBqdUkV95Oshx
+         uv+PcjukSETO1agBWaTqXkIlvzWVnGltCW0xu3no=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dick Kennedy <dick.kennedy@broadcom.com>,
-        James Smart <james.smart@broadcom.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 51/70] scsi: lpfc: Fix FLOGI/PLOGI receive race condition in pt2pt discovery
+Subject: [PATCH 4.4 35/46] MIPS: SNI: Fix MIPS_L1_CACHE_SHIFT
 Date:   Mon, 21 Sep 2020 18:27:51 +0200
-Message-Id: <20200921162037.458399729@linuxfoundation.org>
+Message-Id: <20200921162034.903672025@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
-References: <20200921162035.136047591@linuxfoundation.org>
+In-Reply-To: <20200921162033.346434578@linuxfoundation.org>
+References: <20200921162033.346434578@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,60 +43,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Smart <james.smart@broadcom.com>
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
-[ Upstream commit 7b08e89f98cee9907895fabb64cf437bc505ce9a ]
+[ Upstream commit 564c836fd945a94b5dd46597d6b7adb464092650 ]
 
-The driver is unable to successfully login with remote device. During pt2pt
-login, the driver completes its FLOGI request with the remote device having
-WWN precedence.  The remote device issues its own (delayed) FLOGI after
-accepting the driver's and, upon transmitting the FLOGI, immediately
-recognizes it has already processed the driver's FLOGI thus it transitions
-to sending a PLOGI before waiting for an ACC to its FLOGI.
+Commit 930beb5ac09a ("MIPS: introduce MIPS_L1_CACHE_SHIFT_<N>") forgot
+to select the correct MIPS_L1_CACHE_SHIFT for SNI RM. This breaks non
+coherent DMA because of a wrong allocation alignment.
 
-In the driver, the FLOGI is received and an ACC sent, followed by the PLOGI
-being received and an ACC sent. The issue is that the PLOGI reception
-occurs before the response from the adapter from the FLOGI ACC is
-received. Processing of the PLOGI sets state flags to perform the REG_RPI
-mailbox command and proceed with the rest of discovery on the port. The
-same completion routine used by both FLOGI and PLOGI is generic in
-nature. One of the things it does is clear flags, and those flags happen to
-drive the rest of discovery.  So what happened was the PLOGI processing set
-the flags, the FLOGI ACC completion cleared them, thus when the PLOGI ACC
-completes it doesn't see the flags and stops.
-
-Fix by modifying the generic completion routine to not clear the rest of
-discovery flag (NLP_ACC_REGLOGIN) unless the completion is also associated
-with performing a mailbox command as part of its handling.  For things such
-as FLOGI ACC, there isn't a subsequent action to perform with the adapter,
-thus there is no mailbox cmd ptr. PLOGI ACC though will perform REG_RPI
-upon completion, thus there is a mailbox cmd ptr.
-
-Link: https://lore.kernel.org/r/20200828175332.130300-3-james.smart@broadcom.com
-Co-developed-by: Dick Kennedy <dick.kennedy@broadcom.com>
-Signed-off-by: Dick Kennedy <dick.kennedy@broadcom.com>
-Signed-off-by: James Smart <james.smart@broadcom.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 930beb5ac09a ("MIPS: introduce MIPS_L1_CACHE_SHIFT_<N>")
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/lpfc/lpfc_els.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/mips/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/scsi/lpfc/lpfc_els.c b/drivers/scsi/lpfc/lpfc_els.c
-index 09dbf3021bb0b..7d4a5bb916062 100644
---- a/drivers/scsi/lpfc/lpfc_els.c
-+++ b/drivers/scsi/lpfc/lpfc_els.c
-@@ -3865,7 +3865,9 @@ lpfc_cmpl_els_rsp(struct lpfc_hba *phba, struct lpfc_iocbq *cmdiocb,
- out:
- 	if (ndlp && NLP_CHK_NODE_ACT(ndlp) && shost) {
- 		spin_lock_irq(shost->host_lock);
--		ndlp->nlp_flag &= ~(NLP_ACC_REGLOGIN | NLP_RM_DFLT_RPI);
-+		if (mbox)
-+			ndlp->nlp_flag &= ~NLP_ACC_REGLOGIN;
-+		ndlp->nlp_flag &= ~NLP_RM_DFLT_RPI;
- 		spin_unlock_irq(shost->host_lock);
- 
- 		/* If the node is not being used by another discovery thread,
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 596cbda9cb3d3..9d8bc19edc48e 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -817,6 +817,7 @@ config SNI_RM
+ 	select I8253
+ 	select I8259
+ 	select ISA
++	select MIPS_L1_CACHE_SHIFT_6
+ 	select SWAP_IO_SPACE if CPU_BIG_ENDIAN
+ 	select SYS_HAS_CPU_R4X00
+ 	select SYS_HAS_CPU_R5000
 -- 
 2.25.1
 
