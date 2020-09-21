@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E11A2272FA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:59:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F8F3272F07
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:55:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730119AbgIUQ6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:58:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45370 "EHLO mail.kernel.org"
+        id S1729186AbgIUQqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:46:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728952AbgIUQll (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:41:41 -0400
+        id S1727302AbgIUQp7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:45:59 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C5CBE235F9;
-        Mon, 21 Sep 2020 16:41:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D7875206B2;
+        Mon, 21 Sep 2020 16:45:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706500;
-        bh=Nz4n7y5tVBMacRjzpmWhoY0JWGL8SRcYrc+5EGfCeKc=;
+        s=default; t=1600706758;
+        bh=zRnzcd8ZM9DjUcGJxi3Jq0JAUPtuMZiw6U8QenmZGaY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MazVnHz16uVARxH3Q2k79RaNklikQod80UYzG3lwEwSVh79RvmD2mCuwhC05R1TBc
-         yimn9LqE7Qjmwbg8txDv8qjj3rwJT2ASB1R2Kvvgmt3NH3B9H40lCvdaB/MtVKie0/
-         ZOhO43jeZxzD/X1rUIfs8dB4fO5oZdLUNicJ7yEg=
+        b=Mj/eBapIaXy6teW4glIWiayfLhz/2JBzXL59FRwgGJfG4WDZDS4JgRmiEs+fKokF1
+         0vViPvxM50gAzTPM7OOcf4EaTmFgaQMG7GyfTEISMDAPiEJiW3kWvBOXnlpMHJmJxY
+         /QhLq9aH06z9Sfjgz0iOi105boPxtpA7DU8+8o58=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Wang Nan <wangnan0@huawei.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 30/49] perf test: Fix the "signal" test inline assembly
+        stable@vger.kernel.org, Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Borislav Petkov <bp@suse.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 082/118] x86/unwind/fp: Fix FP unwinding in ret_from_fork
 Date:   Mon, 21 Sep 2020 18:28:14 +0200
-Message-Id: <20200921162035.985776275@linuxfoundation.org>
+Message-Id: <20200921162040.146732002@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162034.660953761@linuxfoundation.org>
-References: <20200921162034.660953761@linuxfoundation.org>
+In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
+References: <20200921162036.324813383@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,105 +47,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Olsa <jolsa@kernel.org>
+From: Josh Poimboeuf <jpoimboe@redhat.com>
 
-[ Upstream commit 8a39e8c4d9baf65d88f66d49ac684df381e30055 ]
+[ Upstream commit 6f9885a36c006d798319661fa849f9c2922223b9 ]
 
-When compiling with DEBUG=1 on Fedora 32 I'm getting crash for 'perf
-test signal':
+There have been some reports of "bad bp value" warnings printed by the
+frame pointer unwinder:
 
-  Program received signal SIGSEGV, Segmentation fault.
-  0x0000000000c68548 in __test_function ()
-  (gdb) bt
-  #0  0x0000000000c68548 in __test_function ()
-  #1  0x00000000004d62e9 in test_function () at tests/bp_signal.c:61
-  #2  0x00000000004d689a in test__bp_signal (test=0xa8e280 <generic_ ...
-  #3  0x00000000004b7d49 in run_test (test=0xa8e280 <generic_tests+1 ...
-  #4  0x00000000004b7e7f in test_and_print (t=0xa8e280 <generic_test ...
-  #5  0x00000000004b8927 in __cmd_test (argc=1, argv=0x7fffffffdce0, ...
-  ...
+  WARNING: kernel stack regs at 000000005bac7112 in sh:1014 has bad 'bp' value 0000000000000000
 
-It's caused by the symbol __test_function being in the ".bss" section:
+This warning happens when unwinding from an interrupt in
+ret_from_fork(). If entry code gets interrupted, the state of the
+frame pointer (rbp) may be undefined, which can confuse the unwinder,
+resulting in warnings like the above.
 
-  $ readelf -a ./perf | less
-    [Nr] Name              Type             Address           Offset
-         Size              EntSize          Flags  Link  Info  Align
-    ...
-    [28] .bss              NOBITS           0000000000c356a0  008346a0
-         00000000000511f8  0000000000000000  WA       0     0     32
+There's an in_entry_code() check which normally silences such
+warnings for entry code. But in this case, ret_from_fork() is getting
+interrupted. It recently got moved out of .entry.text, so the
+in_entry_code() check no longer works.
 
-  $ nm perf | grep __test_function
-  0000000000c68548 B __test_function
+It could be moved back into .entry.text, but that would break the
+noinstr validation because of the call to schedule_tail().
 
-I guess most of the time we're just lucky the inline asm ended up in the
-".text" section, so making it specific explicit with push and pop
-section clauses.
+Instead, initialize each new task's RBP to point to the task's entry
+regs via an encoded frame pointer.  That will allow the unwinder to
+reach the end of the stack gracefully.
 
-  $ readelf -a ./perf | less
-    [Nr] Name              Type             Address           Offset
-         Size              EntSize          Flags  Link  Info  Align
-    ...
-    [13] .text             PROGBITS         0000000000431240  00031240
-         0000000000306faa  0000000000000000  AX       0     0     16
-
-  $ nm perf | grep __test_function
-  00000000004d62c8 T __test_function
-
-Committer testing:
-
-  $ readelf -wi ~/bin/perf | grep producer -m1
-    <c>   DW_AT_producer    : (indirect string, offset: 0x254a): GNU C99 10.2.1 20200723 (Red Hat 10.2.1-1) -mtune=generic -march=x86-64 -ggdb3 -std=gnu99 -fno-omit-frame-pointer -funwind-tables -fstack-protector-all
-                                                                                                                                         ^^^^^
-                                                                                                                                         ^^^^^
-                                                                                                                                         ^^^^^
-  $
-
-Before:
-
-  $ perf test signal
-  20: Breakpoint overflow signal handler                    : FAILED!
-  $
-
-After:
-
-  $ perf test signal
-  20: Breakpoint overflow signal handler                    : Ok
-  $
-
-Fixes: 8fd34e1cce18 ("perf test: Improve bp_signal")
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Michael Petlan <mpetlan@redhat.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Wang Nan <wangnan0@huawei.com>
-Link: http://lore.kernel.org/lkml/20200911130005.1842138-1-jolsa@kernel.org
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: b9f6976bfb94 ("x86/entry/64: Move non entry code into .text section")
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Reported-by: Logan Gunthorpe <logang@deltatee.com>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lkml.kernel.org/r/f366bbf5a8d02e2318ee312f738112d0af74d16f.1600103007.git.jpoimboe@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/tests/bp_signal.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/x86/include/asm/frame.h | 19 +++++++++++++++++++
+ arch/x86/kernel/process.c    |  3 ++-
+ 2 files changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/tests/bp_signal.c b/tools/perf/tests/bp_signal.c
-index 6cf00650602ef..697423ce3bdfc 100644
---- a/tools/perf/tests/bp_signal.c
-+++ b/tools/perf/tests/bp_signal.c
-@@ -44,10 +44,13 @@ volatile long the_var;
- #if defined (__x86_64__)
- extern void __test_function(volatile long *ptr);
- asm (
-+	".pushsection .text;"
- 	".globl __test_function\n"
-+	".type __test_function, @function;"
- 	"__test_function:\n"
- 	"incq (%rdi)\n"
--	"ret\n");
-+	"ret\n"
-+	".popsection\n");
- #else
- static void __test_function(volatile long *ptr)
- {
+diff --git a/arch/x86/include/asm/frame.h b/arch/x86/include/asm/frame.h
+index 296b346184b27..fb42659f6e988 100644
+--- a/arch/x86/include/asm/frame.h
++++ b/arch/x86/include/asm/frame.h
+@@ -60,12 +60,26 @@
+ #define FRAME_END "pop %" _ASM_BP "\n"
+ 
+ #ifdef CONFIG_X86_64
++
+ #define ENCODE_FRAME_POINTER			\
+ 	"lea 1(%rsp), %rbp\n\t"
++
++static inline unsigned long encode_frame_pointer(struct pt_regs *regs)
++{
++	return (unsigned long)regs + 1;
++}
++
+ #else /* !CONFIG_X86_64 */
++
+ #define ENCODE_FRAME_POINTER			\
+ 	"movl %esp, %ebp\n\t"			\
+ 	"andl $0x7fffffff, %ebp\n\t"
++
++static inline unsigned long encode_frame_pointer(struct pt_regs *regs)
++{
++	return (unsigned long)regs & 0x7fffffff;
++}
++
+ #endif /* CONFIG_X86_64 */
+ 
+ #endif /* __ASSEMBLY__ */
+@@ -83,6 +97,11 @@
+ 
+ #define ENCODE_FRAME_POINTER
+ 
++static inline unsigned long encode_frame_pointer(struct pt_regs *regs)
++{
++	return 0;
++}
++
+ #endif
+ 
+ #define FRAME_BEGIN
+diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+index fe67dbd76e517..bff502e779e44 100644
+--- a/arch/x86/kernel/process.c
++++ b/arch/x86/kernel/process.c
+@@ -42,6 +42,7 @@
+ #include <asm/spec-ctrl.h>
+ #include <asm/io_bitmap.h>
+ #include <asm/proto.h>
++#include <asm/frame.h>
+ 
+ #include "process.h"
+ 
+@@ -133,7 +134,7 @@ int copy_thread_tls(unsigned long clone_flags, unsigned long sp,
+ 	fork_frame = container_of(childregs, struct fork_frame, regs);
+ 	frame = &fork_frame->frame;
+ 
+-	frame->bp = 0;
++	frame->bp = encode_frame_pointer(childregs);
+ 	frame->ret_addr = (unsigned long) ret_from_fork;
+ 	p->thread.sp = (unsigned long) fork_frame;
+ 	p->thread.io_bitmap = NULL;
 -- 
 2.25.1
 
