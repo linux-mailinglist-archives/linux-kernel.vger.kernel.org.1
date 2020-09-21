@@ -2,194 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA6C271DF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:30:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C84F4271DF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726427AbgIUIaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 04:30:52 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50859 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726211AbgIUIaw (ORCPT
+        id S1726435AbgIUIbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 04:31:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726211AbgIUIbH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 04:30:52 -0400
-Received: from ip5f5af089.dynamic.kabel-deutschland.de ([95.90.240.137] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1kKHDi-0005eq-Ra; Mon, 21 Sep 2020 08:30:46 +0000
-Date:   Mon, 21 Sep 2020 10:30:45 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     containers@lists.linux-foundation.org,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Jann Horn <jannh@google.com>,
-        Aleksa Sarai <cyphar@cyphar.com>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH seccomp 0/2] seccomp: Add bitmap cache of
- arg-independent filter results that allow syscalls
-Message-ID: <20200921083045.ojlswvusrfzohp2d@wittgenstein>
-References: <cover.1600661418.git.yifeifz2@illinois.edu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <cover.1600661418.git.yifeifz2@illinois.edu>
+        Mon, 21 Sep 2020 04:31:07 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07404C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 01:31:07 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id p187so12483346ybg.14
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 01:31:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=y6MksErW1U8dQLfp/yZPir1AuwWyhaQIui/vcwOhDaY=;
+        b=nDddbb4lOurMWfZchX8bakzQqMzgLCy5k60NEpVpshy1+6sjpaH1Jan7Gr9g/3lYVe
+         E0ywF/hmG85PqwXGrVYH2bJne20r5r+6M9nWiSzUET45XT1aFOA1ELDCOCFsQGlgZaM9
+         AQ0504d3Kl8jqx6DAyJyDG9scU47A3JOrAmW5JwHQGf3Su/Nd+7LiPzqkFVDwP20HP1J
+         FtvowVJygsL08RlJ0XaaoB81o9lh/Z3turMCMCqAx14zUsIJdQsRQ1tkbrqm5tZ9WsWU
+         hRABre/H6H/2rpfIORzlZ7SU6cQgd9PgtfAAw0evBBAYfouIV/MVBOh6yf2Ht9s0iTwO
+         ZEXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=y6MksErW1U8dQLfp/yZPir1AuwWyhaQIui/vcwOhDaY=;
+        b=HYmqr7DxRq+MPAs9Zc1tMxfj4ZYaEsvTGOvEYd9Nu245nbblZWMRD2pl48TfanRdGX
+         iZjMtIwNVmgTcjr3+bbObbL2l3P1YoRaprkUQ8/eIT4d/R7CByvNElLV1hNddNqvXlGl
+         jn6wrzwErpg6p/hidZdB0PqeEyTqKYy+QJ5CB7TVWMVAyYoUE/6weTfw3Qb2LLqx0akW
+         +aHOyC8ecP5318NjlWVbiC2S7IEn7zdGn7oE0XCrjyTQbfInRfPrxdBNnJ8ZG3Rl0vbr
+         o0B8A6YDXZYlY6rPeds7kUo+kHEO5ggdd14vg4BHAafI0ZzmJvAedkfVbypmLljTRJO+
+         F1pQ==
+X-Gm-Message-State: AOAM53357+B4HrvjxZnTb23ZWDX9InjBvp4OO1h791vfMsP3ASd1H/Cb
+        INio+5wWCWk4dR7tNNuVxpA+eQT2dwXD
+X-Google-Smtp-Source: ABdhPJzkBC8MGwfsvKuV6X2blgHQy6tiWJ+vqkRMWva5R+ydmkE2UbP7Ot9gmDBXr1ckABkKMRu8YpHcONYX
+Sender: "apusaka via sendgmr" <apusaka@apusaka-p920.tpe.corp.google.com>
+X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:10:f693:9fff:fef4:2347])
+ (user=apusaka job=sendgmr) by 2002:a25:b946:: with SMTP id
+ s6mr61046214ybm.266.1600677066176; Mon, 21 Sep 2020 01:31:06 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 16:31:00 +0800
+Message-Id: <20200921163021.v1.1.Id3160295d33d44a59fa3f2a444d74f40d132ea5c@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
+Subject: [PATCH v1] Bluetooth: Enforce key size of 16 bytes on FIPS level
+From:   Archie Pusaka <apusaka@google.com>
+To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>
+Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Alain Michaud <alainm@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 12:35:16AM -0500, YiFei Zhu wrote:
-> From: YiFei Zhu <yifeifz2@illinois.edu>
-> 
-> This series adds a bitmap to cache seccomp filter results if the
-> result permits a syscall and is indepenent of syscall arguments.
-> This visibly decreases seccomp overhead for most common seccomp
-> filters with very little memory footprint.
+From: Archie Pusaka <apusaka@chromium.org>
 
-This is missing some people so expanding the Cc a little. Make sure to
-run scripts/get_maintainers.pl next time, in case you forgot. (Adding
-Andy, Will, Jann, Aleksa at least.)
+According to the spec Ver 5.2, Vol 3, Part C, Sec 5.2.2.8:
+Device in security mode 4 level 4 shall enforce:
+128-bit equivalent strength for link and encryption keys required
+using FIPS approved algorithms (E0 not allowed, SAFER+ not allowed,
+and P-192 not allowed; encryption key not shortened)
 
-Christian
+This patch rejects connection with key size below 16 for FIPS level
+services.
 
-> 
-> The overhead of running Seccomp filters has been part of some past
-> discussions [1][2][3]. Oftentimes, the filters have a large number
-> of instructions that check syscall numbers one by one and jump based
-> on that. Some users chain BPF filters which further enlarge the
-> overhead. A recent work [6] comprehensively measures the Seccomp
-> overhead and shows that the overhead is non-negligible and has a
-> non-trivial impact on application performance.
-> 
-> We propose SECCOMP_CACHE, a cache-based solution to minimize the
-> Seccomp overhead. The basic idea is to cache the result of each
-> syscall check to save the subsequent overhead of executing the
-> filters. This is feasible, because the check in Seccomp is stateless.
-> The checking results of the same syscall ID and argument remains
-> the same.
-> 
-> We observed some common filters, such as docker's [4] or
-> systemd's [5], will make most decisions based only on the syscall
-> numbers, and as past discussions considered, a bitmap where each bit
-> represents a syscall makes most sense for these filters.
-> 
-> In the past Kees proposed [2] to have an "add this syscall to the
-> reject bitmask". It is indeed much easier to securely make a reject
-> accelerator to pre-filter syscalls before passing to the BPF
-> filters, considering it could only strengthen the security provided
-> by the filter. However, ultimately, filter rejections are an
-> exceptional / rare case. Here, instead of accelerating what is
-> rejected, we accelerate what is allowed. In order not to compromise
-> the security rules the BPF filters defined, any accept-side
-> accelerator must complement the BPF filters rather than replacing them.
-> 
-> Statically analyzing BPF bytecode to see if each syscall is going to
-> always land in allow or reject is more of a rabbit hole, especially
-> there is no current in-kernel infrastructure to enumerate all the
-> possible architecture numbers for a given machine. So rather than
-> doing that, we propose to cache the results after the BPF filters are
-> run. And since there are filters like docker's who will check
-> arguments of some syscalls, but not all or none of the syscalls, when
-> a filter is loaded we analyze it to find whether each syscall is
-> cacheable (does not access syscall argument or instruction pointer) by
-> following its control flow graph, and store the result for each filter
-> in a bitmap. Changes to architecture number or the filter are expected
-> to be rare and simply cause the cache to be cleared. This solution
-> shall be fully transparent to userspace.
-> 
-> Ongoing work is to further support arguments with fast hash table
-> lookups. We are investigating the performance of doing so [6], and how
-> to best integrate with the existing seccomp infrastructure.
-> 
-> We have done some benchmarks with patch applied against bpf-next
-> commit 2e80be60c465 ("libbpf: Fix compilation warnings for 64-bit printf args").
-> 
-> Me, in qemu-kvm x86_64 VM, on Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz,
-> average results:
-> 
-> Without cache, seccomp_benchmark:
->   Current BPF sysctl settings:
->   net.core.bpf_jit_enable = 1
->   net.core.bpf_jit_harden = 0
->   Calibrating sample size for 15 seconds worth of syscalls ...
->   Benchmarking 23486415 syscalls...
->   16.079642020 - 1.013345439 = 15066296581 (15.1s)
->   getpid native: 641 ns
->   32.080237410 - 16.080763500 = 15999473910 (16.0s)
->   getpid RET_ALLOW 1 filter: 681 ns
->   48.609461618 - 32.081296173 = 16528165445 (16.5s)
->   getpid RET_ALLOW 2 filters: 703 ns
->   Estimated total seccomp overhead for 1 filter: 40 ns
->   Estimated total seccomp overhead for 2 filters: 62 ns
->   Estimated seccomp per-filter overhead: 22 ns
->   Estimated seccomp entry overhead: 18 ns
-> 
-> With cache:
->   Current BPF sysctl settings:
->   net.core.bpf_jit_enable = 1
->   net.core.bpf_jit_harden = 0
->   Calibrating sample size for 15 seconds worth of syscalls ...
->   Benchmarking 23486415 syscalls...
->   16.059512499 - 1.014108434 = 15045404065 (15.0s)
->   getpid native: 640 ns
->   31.651075934 - 16.060637323 = 15590438611 (15.6s)
->   getpid RET_ALLOW 1 filter: 663 ns
->   47.367316169 - 31.652302661 = 15715013508 (15.7s)
->   getpid RET_ALLOW 2 filters: 669 ns
->   Estimated total seccomp overhead for 1 filter: 23 ns
->   Estimated total seccomp overhead for 2 filters: 29 ns
->   Estimated seccomp per-filter overhead: 6 ns
->   Estimated seccomp entry overhead: 17 ns
-> 
-> Depending on the run estimated seccomp overhead for 2 filters can be
-> less than seccomp overhead for 1 filter, resulting in underflow to
-> estimated seccomp per-filter overhead:
->   Estimated total seccomp overhead for 1 filter: 27 ns
->   Estimated total seccomp overhead for 2 filters: 21 ns
->   Estimated seccomp per-filter overhead: 18446744073709551610 ns
->   Estimated seccomp entry overhead: 33 ns
-> 
-> Jack Chen has also run some benchmarks on a bare metal
-> Intel(R) Xeon(R) CPU E3-1240 v3 @ 3.40GHz, with side channel
-> mitigations off (spec_store_bypass_disable=off spectre_v2=off mds=off
-> pti=off l1tf=off), with BPF JIT on and docker default profile,
-> and reported:
-> 
->   unixbench syscall mix (https://github.com/kdlucas/byte-unixbench)
->   unconfined:      33295685
->   docker default:         20661056  60%
->   docker default + cache: 25719937  30%
-> 
-> Patch 1 introduces the static analyzer to check for a given filter,
-> whether the CFG loads the syscall arguments for each syscall number.
-> 
-> Patch 2 implements the bitmap cache.
-> 
-> [1] https://lore.kernel.org/linux-security-module/c22a6c3cefc2412cad00ae14c1371711@huawei.com/T/
-> [2] https://lore.kernel.org/lkml/202005181120.971232B7B@keescook/T/
-> [3] https://github.com/seccomp/libseccomp/issues/116
-> [4] https://github.com/moby/moby/blob/ae0ef82b90356ac613f329a8ef5ee42ca923417d/profiles/seccomp/default.json
-> [5] https://github.com/systemd/systemd/blob/6743a1caf4037f03dc51a1277855018e4ab61957/src/shared/seccomp-util.c#L270
-> [6] Draco: Architectural and Operating System Support for System Call Security
->     https://tianyin.github.io/pub/draco.pdf, MICRO-53, Oct. 2020
-> 
-> YiFei Zhu (2):
->   seccomp/cache: Add "emulator" to check if filter is arg-dependent
->   seccomp/cache: Cache filter results that allow syscalls
-> 
->  arch/x86/Kconfig        |  27 +++
->  include/linux/seccomp.h |  22 +++
->  kernel/seccomp.c        | 400 +++++++++++++++++++++++++++++++++++++++-
->  3 files changed, 446 insertions(+), 3 deletions(-)
-> 
-> --
-> 2.28.0
+Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+Reviewed-by: Alain Michaud <alainm@chromium.org>
+
+---
+
+ net/bluetooth/l2cap_core.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
+index ade83e224567..306616ec26e6 100644
+--- a/net/bluetooth/l2cap_core.c
++++ b/net/bluetooth/l2cap_core.c
+@@ -1515,8 +1515,13 @@ static bool l2cap_check_enc_key_size(struct hci_conn *hcon)
+ 	 * that have no key size requirements. Ensure that the link is
+ 	 * actually encrypted before enforcing a key size.
+ 	 */
++	int min_key_size = hcon->hdev->min_enc_key_size;
++
++	if (hcon->sec_level == BT_SECURITY_FIPS)
++		min_key_size = 16;
++
+ 	return (!test_bit(HCI_CONN_ENCRYPT, &hcon->flags) ||
+-		hcon->enc_key_size >= hcon->hdev->min_enc_key_size);
++		hcon->enc_key_size >= min_key_size);
+ }
+ 
+ static void l2cap_do_start(struct l2cap_chan *chan)
+-- 
+2.28.0.681.g6f77f65b4e-goog
+
