@@ -2,102 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF27C2726B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 582092726BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727092AbgIUONi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 10:13:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38916 "EHLO
+        id S1727212AbgIUOO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 10:14:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726419AbgIUONi (ORCPT
+        with ESMTP id S1726419AbgIUOO6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:13:38 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91A60C061755;
-        Mon, 21 Sep 2020 07:13:37 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id k25so11259798ljk.0;
-        Mon, 21 Sep 2020 07:13:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kqlqPe/fb61SSxp8f9o9nnoXD7w7sRkaVS4vymkermI=;
-        b=jBd4gHIdTGYs7BTU8rLAql5VGdosr3TRYY2FWaJGP2LQzNCEqo8L3x6i/W8d/7Zzm0
-         woBmanK+2+xbUlheBhAbBU17Gfvi967i64QpVgYRm5O0iuNcQUwDJlHHeO0hK1FF4KFQ
-         anChkKZjOgX8wUMl00Xrzlvw5a0A3GUMvHXR1mewlOd/aN+ecdbDz0uys00PDab2yrAs
-         yMnC0W1JlIafbL95OxErlncjN+FiSL8mP+AlXWhZc2FtZHUmtJwPN40n3WJgjVWVymn/
-         O9uhaZNrCDsPj8OGzvVqAWlUPMxUdT06/jpJPlQpwMn9cUSS7Dejg57m5BhtDjGP0CN1
-         urAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kqlqPe/fb61SSxp8f9o9nnoXD7w7sRkaVS4vymkermI=;
-        b=VVRJ41xcWjCJGU34t1UKJZ9mYlfRxgNCc6UaZPnfwaAf86fL2Sx3E/3RbsDpkTiUwk
-         mT0YUGWvL4GMqOMxBAucY8hsVim6x3ndWTjYXcWrfPKCrOtOiiDGKmJu+nSoIayNZ/4H
-         i5IY8QOKsRH4oh4mxF5/DBooKeFlXUc/REme1wP/vS8l34LbLnk6ojxz70Z32FV6JKKr
-         TBnqYGs5XJSLL55pwf0TKyj7aEFWZ1WPYHglcMnnsUq5UYA03drZhTWfgf+kYYdnk3Xc
-         72NTN903rEOCY7nlrw2/dZw5/cMqiqPfC4TJr+xMOtfyHp9IuCuYppQyEdhkKr+E3QR0
-         6jrg==
-X-Gm-Message-State: AOAM532yvLq/jzDK+X6u3B0FqBSSgSkkMRXHTjWPGGPLzS7NPxARSdJ/
-        lC6AnCRlDG7PlyanCypQGfbtIbFmHlQ=
-X-Google-Smtp-Source: ABdhPJyEOqOeo6raTKAL4JtBj7IRO7ygCzc3PbfNok4Uk7iaFeVk0diV0iARQp9cqcoryOi+AnT8iw==
-X-Received: by 2002:a2e:8782:: with SMTP id n2mr17411851lji.262.1600697615712;
-        Mon, 21 Sep 2020 07:13:35 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id c3sm2617374lfg.15.2020.09.21.07.13.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Sep 2020 07:13:35 -0700 (PDT)
-Subject: Re: [PATCH v7 27/34] i2c: tegra: Check errors for both positive and
- negative values
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        linux-tegra@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200908224006.25636-1-digetx@gmail.com>
- <20200908224006.25636-28-digetx@gmail.com> <20200917120955.GF3515672@ulmo>
- <CAHp75VdEoLAMvQWb1_p8ydROmY9p7KCqFGarRsgM8p8nDhyY7g@mail.gmail.com>
- <20200921112425.GK3950626@ulmo>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <0d18c64c-8765-a840-f963-ba6a205f0e6a@gmail.com>
-Date:   Mon, 21 Sep 2020 17:13:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 21 Sep 2020 10:14:58 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15997C061755;
+        Mon, 21 Sep 2020 07:14:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RzCz3Hermh11g+4+9HQSN0gxkYmQOxNMb82UklyV/D8=; b=X89tFZkHHutrGPYkvoSk4Kz0qQ
+        JG3bqlwLSyVOUUOFD6UwejdupLufHuJ/xtx/A40S0C4pNjTOLNS5jXvC4mrkf1kPkI7EzrRsnubVI
+        fcUzwGJLcwQeWGkv22/a9BnaNabrfu/scT8kDCKo5YelvVeXuRl69Z/AiyVPmUm/pilBqL/zAckf1
+        l2w498wY3BO+wodQnnjK4f5/HAOs03CBtty2vmAUsO9vl0DTK7gXxyHJfZabZlik0IZuXL2v7D7nf
+        Wd9k2lEO+AZYlfiz4AEfiphuf5irVMEl+kaHH2bxnli4ylDdATpeksPU/K1UFUn4c0FFUIfUrYuoe
+        mgxxYk3g==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kKMam-0006jJ-IF; Mon, 21 Sep 2020 14:14:56 +0000
+Date:   Mon, 21 Sep 2020 15:14:56 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH 4/9 next] fs/io_uring Don't use the return value from
+ import_iovec().
+Message-ID: <20200921141456.GD24515@infradead.org>
+References: <0dc67994b6b2478caa3d96a9e24d2bfb@AcuMS.aculab.com>
 MIME-Version: 1.0
-In-Reply-To: <20200921112425.GK3950626@ulmo>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0dc67994b6b2478caa3d96a9e24d2bfb@AcuMS.aculab.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-21.09.2020 14:24, Thierry Reding пишет:
-> On Thu, Sep 17, 2020 at 04:50:06PM +0300, Andy Shevchenko wrote:
->> On Thu, Sep 17, 2020 at 3:09 PM Thierry Reding <thierry.reding@gmail.com> wrote:
->>> On Wed, Sep 09, 2020 at 01:39:59AM +0300, Dmitry Osipenko wrote:
->>
->>> Why? All of these functions "return 0 on success or a negative error
->>> code on failure", don't they?
->>
->> And what is the point of having ' < 0' in all those cases?
+On Tue, Sep 15, 2020 at 02:55:20PM +0000, David Laight wrote:
 > 
-> It's explicitly checking for the documented error cases. And you'll
-> occasionally have a function that can return non-zero on success.
-> Testing for < 0 is the safest way to check for failure in the majority
-> of cases.
+> This is the only code that relies on import_iovec() returning
+> iter.count on success.
+> This allows a better interface to import_iovec().
 
-If you're testing only for negative errors, then it means that you will
-miss wrong positive errors, potentially setting machine on fire :) This
-is not an often problem for kernel, but this is a problem that I
-experienced with userspace more than one time.
+This looks generall sane, but a comment below:
 
-Anyways, this patch also makes the errors checking consistent across the
-whole driver and it makes the code look cleaner, so I'll prefer to keep
-this patch as-is.
+> @@ -3123,7 +3123,7 @@ static int io_read(struct io_kiocb *req, bool force_nonblock,
+>  	if (ret < 0)
+>  		return ret;
+>  	iov_count = iov_iter_count(iter);
+> -	io_size = ret;
+> +	io_size = iov_count;
+>  	req->result = io_size;
+>  	ret = 0;
+>  
+> @@ -3246,7 +3246,7 @@ static int io_write(struct io_kiocb *req, bool force_nonblock,
+>  	if (ret < 0)
+>  		return ret;
+>  	iov_count = iov_iter_count(iter);
+> -	io_size = ret;
+> +	io_size = iov_count;
+>  	req->result = io_size;
+
+I tink the local iov_count variable can go away in both functions,
+as io_size only changes after the last use of iov_count (io_read) or
+not at all (io_write).
