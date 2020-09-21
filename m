@@ -2,102 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42565271F80
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 11:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3306271F89
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726526AbgIUJ7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 05:59:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726430AbgIUJ7Q (ORCPT
+        id S1726526AbgIUKCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:02:23 -0400
+Received: from mail-il1-f205.google.com ([209.85.166.205]:51097 "EHLO
+        mail-il1-f205.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726428AbgIUKCW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 05:59:16 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 760EAC0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 02:59:16 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id z22so16801361ejl.7
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 02:59:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sl8uGkOUAXH9GoQjx9V+JkGylxwKYdt19btYfKxLbmw=;
-        b=mnoq6BMhUMKYHNjZLAhOQC5sz2iGfzQxNEvmCunoDgFntNgGc7N1PxAKKBdqnAaFyk
-         cfdOwPpq8pXxnJh/d+BGplVMxlXtQg5cRRr4R97rHYN0w/g7M8k9q/ndCWF5bsntgw5r
-         cgI2vgLNKHnGWQyBjNFkIKZXcFEra3O0awGEIvA/sTpxFWQrKzanm1JwQmDw/u74vRA8
-         ZNINbJTxS8atLiTnmFpxj+eI6lBUPe7TYseFLMNN8le+1ENVRig0jmgvojBIZUqt4Z1Z
-         ZmUyg/k2STu11/eNalBHkwiXgkeAJQJPdw4hufpBjKXNU5REWPdFkIBhF0LJPoen+M7V
-         VqXg==
+        Mon, 21 Sep 2020 06:02:22 -0400
+Received: by mail-il1-f205.google.com with SMTP id u20so10554258ilk.17
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:02:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sl8uGkOUAXH9GoQjx9V+JkGylxwKYdt19btYfKxLbmw=;
-        b=E6HqU+rKuhFbROSc5AJM9KJ4SMUTVBzbF9HqPbVePfugQKVZqqSPADFPM/SbBUum9T
-         xIEjSUt3HtDgigT6Emfaf+qZfKcPz9ikzp74HJQI+YzNPI+OBUstfYCO7UOKneqg1Wbj
-         V9l5jgy4pfKuZjue5DY3ZWvCVowZbMo3JwlON2+v4T03jHQUEQL+nHdVnOEdxjchm5O6
-         vcxYD+zhkLY7I8eXxerKOfr16+E06iZGkcOB5unByH5SLStx/YMqukIkPkVHC4geIqNY
-         FVJel7c9sGkce4t/bkB4Xxt8nL+k7rI2LWtTiv06dUA/O135BO5WP38/iPtwGbsgR7dP
-         5JEg==
-X-Gm-Message-State: AOAM532nIIponDOcSlhjT7YE6Zh42rYA27b6ZsnzjH4yrQMfbwvMurAO
-        X624sHR629SUsfCmLwyw7A5ukg==
-X-Google-Smtp-Source: ABdhPJwV2XZWvXBk31Ggd3Mw92swsNCTa+hfyEth2y1cYI1jCOhFVLvWbHjmNeuzBB83LG6KVU/cDw==
-X-Received: by 2002:a17:906:2e14:: with SMTP id n20mr50204929eji.214.1600682355019;
-        Mon, 21 Sep 2020 02:59:15 -0700 (PDT)
-Received: from x1 ([2001:16b8:5c50:7f01:652a:68b1:4040:26de])
-        by smtp.gmail.com with ESMTPSA id i26sm8303203edq.47.2020.09.21.02.59.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 02:59:14 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 11:59:12 +0200
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@gmail.com>,
-        Trent Piepho <tpiepho@gmail.com>,
-        Christina Quast <cquast@hanoverdisplays.com>,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: am335x: guardian: switch to AM33XX_PADCONF
-Message-ID: <20200921095912.GA3752675@x1>
-References: <20200919195159.3126193-1-drew@beagleboard.org>
- <20200921064707.GN7101@atomide.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=UrOT62Oj4GRjmaKFdFgDIhd86YLaoW5rX/6hwUD3AZw=;
+        b=XvEFFBAyIKFHfapsu4WHvguVDjbkFPR8zxv+0JcFxvizK4PBF2k52WQ7ZelO0nHA4u
+         VmxmAJUoxiwOhafAQsaZ0Tv1O/Xk1CDbvMIIU7j1a+MvcGWpESaLpd8BZemQVPfPO5ch
+         37Pllps95dVZazl0EZIIcOYjyNaAGjlszqEHgCdvHt3tNiYk5pssrzBvx7Z12RVcOc/r
+         xNvU/qPzVXEjiWlNIKz1hain4NbGSCto6IlQ9m+dmUNY4Yhkz0IPYjBAorrb231fto9N
+         wIrRyzd5TstRehC/DPsgi+GzYN7mxoameUaQ7pkrTMGN9evtgE5rch4Ug2glAcE2GpEW
+         e3Gw==
+X-Gm-Message-State: AOAM530ndfYUM/ih9KP2sUbiSnOyvxs8uOkIOK3p0VdQDcStaT1l4Tjb
+        EBRq2Ie8hzltG7JBuW2YzmYXbDFXbeOsF3uvwSmxCn/+Xd/j
+X-Google-Smtp-Source: ABdhPJx/RqJSeGhQOwYiUCC/AXEdupsu+C55iPqhfqOtzbCMf8gIs66F/OyhAZUMSKJCLb26WDRvrBJGC3VrmvmzNTeM1Ic2MDv+
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200921064707.GN7101@atomide.com>
+X-Received: by 2002:a05:6602:2f07:: with SMTP id q7mr36573930iow.191.1600682541716;
+ Mon, 21 Sep 2020 03:02:21 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 03:02:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004c1f4d05afcff2f4@google.com>
+Subject: memory leak in udf_process_sequence
+From:   syzbot <syzbot+128f4dd6e796c98b3760@syzkaller.appspotmail.com>
+To:     jack@suse.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 09:47:07AM +0300, Tony Lindgren wrote:
-> * Drew Fustini <drew@beagleboard.org> [200919 19:53]:
-> > Change the pin defintions from AM33XX_IOPAD to AM33XX_PADCONF macro so
-> > that it correctly handles changes to #pinctrl-cells.
-> 
-> Thanks for fixing this. I wonder if we should now also change the define
-> for the old AM33XX_IOPAD macro?
-> 
-> Or just remove it completely and mention that we've changed nr-pinctrl-cells
-> to use 3 now?
-> 
-> Otherwise the unknown number of out-of-tree boards will be hitting this
-> too.
-> 
+Hello,
 
-Christina Quast commented in f1ff9be7652b ("ARM: dts: am33xx: Added 
-AM33XX_PADCONF macro") that AM33XX_IOPAD() was left in place to avoid
-breaking boards not in mainline.
+syzbot found the following issue on:
 
-If we follow that logic, then I think that fixing AM33XX_IOPAD() for
-#pinctrl-cells = <2> would be the correct solution.
+HEAD commit:    325d0eab Merge branch 'akpm' (patches from Andrew)
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13ec44d3900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a1f3c5052e8097e9
+dashboard link: https://syzkaller.appspot.com/bug?extid=128f4dd6e796c98b3760
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=101a0e9b900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17ae18d3900000
 
-Would this be acceptable?
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+128f4dd6e796c98b3760@syzkaller.appspotmail.com
 
-#define AM33XX_IOPAD(pa, val)          OMAP_IOPAD_OFFSET((pa), 0x0800) (val) (0)
+BUG: memory leak
+unreferenced object 0xffff88811a1d0a00 (size 512):
+  comm "syz-executor299", pid 6519, jiffies 4294943224 (age 15.090s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<000000009ea2686e>] kmalloc include/linux/slab.h:554 [inline]
+    [<000000009ea2686e>] kmalloc_array include/linux/slab.h:593 [inline]
+    [<000000009ea2686e>] kcalloc include/linux/slab.h:605 [inline]
+    [<000000009ea2686e>] udf_process_sequence+0x7e/0x1080 fs/udf/super.c:1676
+    [<00000000d9f60715>] udf_load_sequence fs/udf/super.c:1795 [inline]
+    [<00000000d9f60715>] udf_check_anchor_block+0xdc/0x1a0 fs/udf/super.c:1835
+    [<0000000067395456>] udf_scan_anchors+0x9e/0x240 fs/udf/super.c:1868
+    [<00000000966a1b37>] udf_find_anchor fs/udf/super.c:1925 [inline]
+    [<00000000966a1b37>] udf_load_vrs+0x1be/0x3b0 fs/udf/super.c:1990
+    [<0000000004bba192>] udf_fill_super+0x286/0x7a5 fs/udf/super.c:2183
+    [<00000000d48efb9b>] mount_bdev+0x1d3/0x210 fs/super.c:1417
+    [<00000000280e173c>] legacy_get_tree+0x26/0x70 fs/fs_context.c:592
+    [<0000000059fde270>] vfs_get_tree+0x28/0xe0 fs/super.c:1547
+    [<00000000904c79e7>] do_new_mount fs/namespace.c:2875 [inline]
+    [<00000000904c79e7>] path_mount+0x90e/0xda0 fs/namespace.c:3192
+    [<000000008e0f8bcd>] do_mount fs/namespace.c:3205 [inline]
+    [<000000008e0f8bcd>] __do_sys_mount fs/namespace.c:3413 [inline]
+    [<000000008e0f8bcd>] __se_sys_mount fs/namespace.c:3390 [inline]
+    [<000000008e0f8bcd>] __x64_sys_mount+0x140/0x190 fs/namespace.c:3390
+    [<00000000e981acac>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<000000006322386a>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
 
-thanks,
-drew
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
