@@ -2,102 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFEFC271F58
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 11:55:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5854271EF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 11:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726436AbgIUJzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 05:55:09 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:4126 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726326AbgIUJzI (ORCPT
+        id S1726454AbgIUJcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 05:32:22 -0400
+Received: from mail-io1-f78.google.com ([209.85.166.78]:49689 "EHLO
+        mail-io1-f78.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726326AbgIUJcW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 05:55:08 -0400
-X-Greylist: delayed 1675 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Sep 2020 05:55:06 EDT
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08L9NIRM030944;
-        Mon, 21 Sep 2020 11:26:47 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=SxC5y+mXZZSNchwDuU2t3Zth2X164XhsRrYANymsVQc=;
- b=wH8d2hYHXKkEm/9E45YgiBFiEANU5yXYenE1oQUy+pZ07QTv1/U7hSCwRWcVK6Eksc+c
- HY9YNnV3rtblztxM9Sd7nP4zr/TZltoFXKcJUSw0e1UICPxKmU0M3x72NaoJVGZWRa7T
- s0xSnIsyurB+Ll67SgaaF4DmfV5WcXUelom7TYNBSjsGvrNSO8XS8N7gb1ojodrAPy6A
- s3LMcYOpQwErAU8+GdEIvhbWFOT6Crt8LjnLlbwNMfsdK3QY6RD2o2Ly6KDrASr0Ujo3
- xZ8s2CzMHibJHhV8zTkfp0Qqz3+GbYkZs5iNOvnxt5geaVWnMo1kohOrPi226mfDzX9u dA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 33n747seav-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Sep 2020 11:26:47 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C47B710002A;
-        Mon, 21 Sep 2020 11:26:45 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag6node1.st.com [10.75.127.16])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 92E6F21FEBE;
-        Mon, 21 Sep 2020 11:26:45 +0200 (CEST)
-Received: from lmecxl0923.lme.st.com (10.75.127.49) by SFHDAG6NODE1.st.com
- (10.75.127.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 21 Sep
- 2020 11:26:44 +0200
-Subject: Re: [PATCH] irqchip/stm32: fix return value of
- stm32_exti_h_set_affinity
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>
-References: <20200612072901.14388-1-ludovic.barre@st.com>
-From:   Ludovic BARRE <ludovic.barre@st.com>
-Message-ID: <272066d2-35db-0441-a49d-9315894ae674@st.com>
-Date:   Mon, 21 Sep 2020 11:26:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 21 Sep 2020 05:32:22 -0400
+Received: by mail-io1-f78.google.com with SMTP id k133so9454517iof.16
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 02:32:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=7LScLTXNzm2gkUhCR7T2xXINYdd7EBa4X2Zs75O1O7o=;
+        b=VhNu1wpTCnX/jGJRGIM5tiJKyS+Z6ZyVZ+Ks94RsX1ZMNaj2JMhbLa4i0b32dsKKrk
+         +jokPKYKjS//okbNe6O5uXTFFBfqzpf/MSQGYL5BLjnARNDpsHcPDA0PFdFM/bw7rJJF
+         p/B5UJ6Bi8RfqroLxFOK1aPANUS9xqEWKkZlioEpjrqVeR4G3n5FxSHXcCEiAPNBXe1L
+         7Q3AZC2Xvu1WR59NENvj1ggX7bEO95a+i46Bhn4j5QY6negTMoCcDyDmzpPRxOoKWtJh
+         L9LDhxMpExX1SOVGHEVB9PybcjQiVaio/jke4SKPDHVu8aBuex0EeUMe5++Zq5J7WTw9
+         wSfw==
+X-Gm-Message-State: AOAM533aTQrXmQYQblOI+ZCrE2aB/w0rSkcIC8Ll5bTkJY/z2gIFpwjm
+        E5d2NUOiIpeFcpcG8iRJInTGVfe0ovKcVnuWAeLbETsvOhAq
+X-Google-Smtp-Source: ABdhPJzLHqim6HCKec20SLNkfFBDZgy0YtLJkycvuB4vVEMZo5k481NdjX5SfjL26vqnFNfjmUP4IXddrACBLHReH7HPnLLftTBs
 MIME-Version: 1.0
-In-Reply-To: <20200612072901.14388-1-ludovic.barre@st.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG6NODE1.st.com
- (10.75.127.16)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-21_01:2020-09-21,2020-09-20 signatures=0
+X-Received: by 2002:a92:1a03:: with SMTP id a3mr40404624ila.105.1600680740894;
+ Mon, 21 Sep 2020 02:32:20 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 02:32:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f5be7f05afcf862a@google.com>
+Subject: general protection fault in reiserfs_security_init
+From:   syzbot <syzbot+690cb1e51970435f9775@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, reiserfs-devel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc
+Hello,
 
-Just a gentleman ping about this patch.
-I verified, you could always apply this patch on linux master branch.
+syzbot found the following issue on:
 
-Regards
-Ludo
+HEAD commit:    325d0eab Merge branch 'akpm' (patches from Andrew)
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1671c0e3900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b12e84189082991c
+dashboard link: https://syzkaller.appspot.com/bug?extid=690cb1e51970435f9775
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15705a3d900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=117b3281900000
 
-Le 6/12/20 à 9:29 AM, Ludovic Barre a écrit :
-> exti hardware point of view, there is no specific action on set_affinity.
-> So the affinity must be forwarded to parent if there is a
-> descendent irqchips, otherwise just return IRQ_SET_MASK_OK_DONE.
-> 
-> Signed-off-by: Ludovic Barre <ludovic.barre@st.com>
-> ---
->   drivers/irqchip/irq-stm32-exti.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
-> index faa8482c8246..1a0a60ee7140 100644
-> --- a/drivers/irqchip/irq-stm32-exti.c
-> +++ b/drivers/irqchip/irq-stm32-exti.c
-> @@ -555,7 +555,7 @@ static int stm32_exti_h_set_affinity(struct irq_data *d,
->   	if (d->parent_data->chip)
->   		return irq_chip_set_affinity_parent(d, dest, force);
->   
-> -	return -EINVAL;
-> +	return IRQ_SET_MASK_OK_DONE;
->   }
->   
->   static int __maybe_unused stm32_exti_h_suspend(void)
-> 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+690cb1e51970435f9775@syzkaller.appspotmail.com
+
+REISERFS (device loop0): journal params: device loop0, size 15748, journal first block 18, max trans len 256, max batch 225, max commit age 30, max trans age 30
+REISERFS (device loop0): checking transaction log (loop0)
+REISERFS (device loop0): Using tea hash to sort names
+REISERFS (device loop0): using 3.5.x disk format
+general protection fault, probably for non-canonical address 0xdffffc000000000d: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000068-0x000000000000006f]
+CPU: 0 PID: 6874 Comm: syz-executor834 Not tainted 5.9.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:d_really_is_negative include/linux/dcache.h:472 [inline]
+RIP: 0010:reiserfs_xattr_jcreate_nblocks fs/reiserfs/xattr.h:78 [inline]
+RIP: 0010:reiserfs_security_init+0x285/0x4d0 fs/reiserfs/xattr_security.c:70
+Code: 48 c1 ea 03 80 3c 02 00 0f 85 2b 02 00 00 4d 8b ad a0 05 00 00 48 b8 00 00 00 00 00 fc ff df 49 8d 7d 68 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 23 02 00 00 49 83 7d 68 00 0f 84 62 01 00 00 48
+RSP: 0018:ffffc90005827980 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 0000000000000036 RCX: 000000000000006c
+RDX: 000000000000000d RSI: ffffffff82009dd3 RDI: 0000000000000068
+RBP: ffff88807d8441d0 R08: ffffc90005827a10 R09: ffffc90005827a18
+R10: 0000000000000000 R11: 0000000000000000 R12: 00000000000005fa
+R13: 0000000000000000 R14: ffff888094e60000 R15: 0000000000000000
+FS:  0000000001036880(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f5a6fb90ab4 CR3: 000000009a1ab000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ reiserfs_mkdir+0x2c9/0x980 fs/reiserfs/namei.c:821
+ create_privroot fs/reiserfs/xattr.c:882 [inline]
+ reiserfs_xattr_init+0x4de/0xb52 fs/reiserfs/xattr.c:1004
+ reiserfs_fill_super+0x215d/0x2df3 fs/reiserfs/super.c:2177
+ mount_bdev+0x32e/0x3f0 fs/super.c:1417
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1547
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x1387/0x20a0 fs/namespace.c:3192
+ do_mount fs/namespace.c:3205 [inline]
+ __do_sys_mount fs/namespace.c:3413 [inline]
+ __se_sys_mount fs/namespace.c:3390 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3390
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x447d9a
+Code: b8 08 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 7d a3 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 5a a3 fb ff c3 66 0f 1f 84 00 00 00 00 00
+RSP: 002b:00007fffe558f5c8 EFLAGS: 00000297 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fffe558f620 RCX: 0000000000447d9a
+RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007fffe558f5e0
+RBP: 00007fffe558f5e0 R08: 00007fffe558f620 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000297 R12: 0000000000000006
+R13: 0000000000000004 R14: 0000000000000003 R15: 0000000000000003
+Modules linked in:
+---[ end trace e6a0a9f4ee2cea86 ]---
+RIP: 0010:d_really_is_negative include/linux/dcache.h:472 [inline]
+RIP: 0010:reiserfs_xattr_jcreate_nblocks fs/reiserfs/xattr.h:78 [inline]
+RIP: 0010:reiserfs_security_init+0x285/0x4d0 fs/reiserfs/xattr_security.c:70
+Code: 48 c1 ea 03 80 3c 02 00 0f 85 2b 02 00 00 4d 8b ad a0 05 00 00 48 b8 00 00 00 00 00 fc ff df 49 8d 7d 68 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 23 02 00 00 49 83 7d 68 00 0f 84 62 01 00 00 48
+RSP: 0018:ffffc90005827980 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 0000000000000036 RCX: 000000000000006c
+RDX: 000000000000000d RSI: ffffffff82009dd3 RDI: 0000000000000068
+RBP: ffff88807d8441d0 R08: ffffc90005827a10 R09: ffffc90005827a18
+R10: 0000000000000000 R11: 0000000000000000 R12: 00000000000005fa
+R13: 0000000000000000 R14: ffff888094e60000 R15: 0000000000000000
+FS:  0000000001036880(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ff7d575b000 CR3: 000000009a1ab000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
