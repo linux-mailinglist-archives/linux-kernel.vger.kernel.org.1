@@ -2,87 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A54ED272A9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C364E272A9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727984AbgIUPqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 11:46:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57566 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727770AbgIUPp7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 11:45:59 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DC48920B1F;
-        Mon, 21 Sep 2020 15:45:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600703158;
-        bh=HsDeVquuSyJnnOmiKWblMIIS/Vmw/qNnCOAfM6Vvy7M=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=HUS24PP8unqxMWlYWto9xTl5J4tCiludA9Hh9bLtJ2XBvEqYTLOisVcBQ4MA1g5jR
-         O0PqIensUHnmk4Q/KOipDVYwkFkgu8PMWA7pve4YudWsJkjjruDYDPmqDe6THgwJ3Z
-         bG0HVCMveCT92pofr103S9xCbsq+LSP2ZIz9/GSM=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 8BE7D352303A; Mon, 21 Sep 2020 08:45:58 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 08:45:58 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20200921154558.GD29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200918194817.48921-1-urezki@gmail.com>
- <20200918194817.48921-3-urezki@gmail.com>
- <20200921074716.GC12990@dhcp22.suse.cz>
+        id S1727996AbgIUPqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 11:46:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726611AbgIUPqs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 11:46:48 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DF60C061755;
+        Mon, 21 Sep 2020 08:46:48 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id t10so13317418wrv.1;
+        Mon, 21 Sep 2020 08:46:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=U7rH3MXQ3KBOROK+/p1uMLnsBPfVkv2CUGNF+40H8CQ=;
+        b=sn3DqawA1RNbqkHW0tvnFkd2GiYiCjELepybm+aam7/yvyjHFmOo9q7pPBiH33v8Op
+         2wL+UI+jhlMdMmJMPgt0vQClTuOd1Tn+woUaaLaU1nbbru77Gq92Sv7WlYXdGc/1fh7j
+         tPV7BURHK0mzqBcwiijiVvCOoDFHnuWolY9QHzurOv312IH7j3Au86bQTsXS+BGDCWAL
+         jomGlM4U5R6hyuHfCfItut5XwMsFyZwiPL5Diiy6tprIy7rS95mlHbaOL4RBW7MOVc26
+         GQMu0iwRcdWjryua/c2h1CCJFbhrvAubhd/57B9O5ZxZEZ7ElkfYSLSj/MG45nycuB4P
+         EftQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=U7rH3MXQ3KBOROK+/p1uMLnsBPfVkv2CUGNF+40H8CQ=;
+        b=Z5gvVz2p1kZTjcsw0N+yECJ4loCcd+fkZPVKWCxhIxBIBk/X0t1Z8zI3SdlZBtaSwi
+         IubUOV+Y/N4oxJztJ2AsVmeQY/xeUc63WuxuaZaDD3I+2SywJTK/7tVgN0aBtAy4Z+sX
+         r7F3Zhb1xmtbl24F/9J+SxzBGrcNIX1fsqVKom+uc8qARU6tGVnQQJqR0obPGJNOsCgx
+         wXfqr1sfKaUyTa4mwRQi+FhKSIzp0TWwGfwZ0uNGiM1C9s8NNq2y2VpE9BJwaZC5/bp7
+         tP5ATQgcxchfUfC9Haca1ZxrN3ZrvNB6lNgjfCCTIM1Icv5eUFKwqUTJxuQxK510kzOS
+         1pjg==
+X-Gm-Message-State: AOAM5306ZpIFEIKa5I5gZdrDvlu0kfKm3IDxWTMl/HVhnd16AAEvHls7
+        uh2JXrNPXroFqkR9x3THNMlSNnTwhWsGvzz4HWo=
+X-Google-Smtp-Source: ABdhPJxtVHCQUzYNlQuLpcrdAi/k+3N/BQu6j76lleZS5WeYQKN4wzqF/1ou0P5HlZiijbSJuuB5KdJ7UqhNNjRI4mg=
+X-Received: by 2002:adf:f382:: with SMTP id m2mr345644wro.327.1600703207013;
+ Mon, 21 Sep 2020 08:46:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200921074716.GC12990@dhcp22.suse.cz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <1600702038-10893-1-git-send-email-akhilpo@codeaurora.org> <1600702038-10893-2-git-send-email-akhilpo@codeaurora.org>
+In-Reply-To: <1600702038-10893-2-git-send-email-akhilpo@codeaurora.org>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Mon, 21 Sep 2020 08:47:48 -0700
+Message-ID: <CAF6AEGsRMB_XvAKuaV8uf3yT61j-845GLB7sKPQoJrOQwd5-QQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] drm/msm: Leave inuse count intact on map failure
+To:     Akhil P Oommen <akhilpo@codeaurora.org>
+Cc:     freedreno <freedreno@lists.freedesktop.org>,
+        dri-devel@freedesktop.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Jonathan <jonathan@marek.ca>,
+        Douglas Anderson <dianders@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 09:47:16AM +0200, Michal Hocko wrote:
-> On Fri 18-09-20 21:48:15, Uladzislau Rezki (Sony) wrote:
-> [...]
-> > Proposal
-> > ========
-> > Introduce a lock-free function that obtain a page from the per-cpu-lists
-> > on current CPU. It returns NULL rather than acquiring any non-raw spinlock.
-> 
-> I was not happy about this solution when we have discussed this
-> last time and I have to say I am still not happy. This is exposing
-> an internal allocator optimization and allows a hard to estimate
-> consumption of pcp free pages. IIUC this run on pcp cache can be
-> controled directly from userspace (close(open) loop IIRC) which makes it
-> even bigger no-no.
+On Mon, Sep 21, 2020 at 8:27 AM Akhil P Oommen <akhilpo@codeaurora.org> wrote:
+>
+> Leave the inuse count intact on map failure to keep the accounting
+> accurate.
+>
+> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+> ---
+>  drivers/gpu/drm/msm/msm_gem_vma.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/msm/msm_gem_vma.c b/drivers/gpu/drm/msm/msm_gem_vma.c
+> index 80a8a26..8367a1c 100644
+> --- a/drivers/gpu/drm/msm/msm_gem_vma.c
+> +++ b/drivers/gpu/drm/msm/msm_gem_vma.c
+> @@ -88,8 +88,10 @@ msm_gem_map_vma(struct msm_gem_address_space *aspace,
+>                 ret = aspace->mmu->funcs->map(aspace->mmu, vma->iova, sgt,
+>                                 size, prot);
+>
+> -       if (ret)
+> +       if (ret) {
+>                 vma->mapped = false;
+> +               vma->inuse++;
 
-Yes, I do well remember that you are unhappy with this approach.
-Unfortunately, thus far, there is no solution that makes all developers
-happy.  You might be glad to hear that we are also looking into other
-solutions, each of which makes some other developers unhappy.  So we
-are at least not picking on you alone.  :-/
+vma->inuse-- ?
 
-> I strongly agree with Thomas http://lkml.kernel.org/r/87tux4kefm.fsf@nanos.tec.linutronix.de
-> that this optimization is not aiming at reasonable workloads. Really, go
-> with pre-allocated buffer and fallback to whatever slow path you have
-> already. Exposing more internals of the allocator is not going to do any
-> good for long term maintainability.
+BR,
+-R
 
-I suggest that you carefully re-read the thread following that email.
-
-Given a choice between making users unhappy and making developers
-unhappy, I will side with the users each and every time.
-
-							Thanx, Paul
+> +       }
+>
+>         return ret;
+>  }
+> --
+> 2.7.4
+>
