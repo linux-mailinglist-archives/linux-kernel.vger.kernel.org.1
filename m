@@ -2,154 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D5BF271A83
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 07:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69FBA271A84
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 07:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726452AbgIUFtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 01:49:23 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:36191 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726435AbgIUFtX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 01:49:23 -0400
-Received: by mail-wr1-f66.google.com with SMTP id z1so11342360wrt.3
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 22:49:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1a+p+FgNcgXx8Svp1tGxsSJqvQ4ji+J61Fv03brKIlw=;
-        b=GwLFMeLGT7gPMNylQw8jZkFn4NQKH+BCgUfKGTqw5Kb7//fZqZoTrqHVzg8N9zN06U
-         IlqHBuJM8sbFZh1Bwu7742GMt1K6bHcBAz4ogDCDblb7ed97tH7caCgazlcyyiwaOzRl
-         P/FR7GMR9GdG8y8kKCnK/qX5TfIoKKIvdzkzBCIWpHGdj270+4Qn+Qx48jxX7tqsgDpy
-         q0dySoqBiRI7DX7/HbsNm75PIjHC/uhl1idq/j0rYinUdlYRLJsZVhrIPzds7SdFhsM/
-         hJZ0EydewsR4G1iQmdgrCORzG5VGVH7w7kP05HRdrzQ4/h7Kqcjb//vLTRcsSB9+RcDX
-         8A+Q==
-X-Gm-Message-State: AOAM5327sxWxwAUf579yY69+ED/5lWzyuVJ6r4FbWlph7MCYBrhrbxCP
-        KG8Oqt25CWGoooXCfPpADPVL2pGvhu6ma4Ayeog=
-X-Google-Smtp-Source: ABdhPJwSSJauM6Mpyv7p+mLx5wDjfC0lyLhsue5gqohdWiHWkiNn3UXV9RFCczgj9rUXr+LbpAnf+APfAEYC+ua81wU=
-X-Received: by 2002:adf:e481:: with SMTP id i1mr50206292wrm.391.1600667360925;
- Sun, 20 Sep 2020 22:49:20 -0700 (PDT)
+        id S1726353AbgIUFtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 01:49:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40376 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726011AbgIUFtt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 01:49:49 -0400
+Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E1091207DE;
+        Mon, 21 Sep 2020 05:49:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600667389;
+        bh=qBSHYO9pDJszEKBlL6Pv/Rf9R9wIlasteug3iXxVxyg=;
+        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
+        b=Kq781Xb15xsKlD4kl+1Xr6h6y6cOE2B4lNbfCeqHF8rTL4Jpx5tbWgaqz0E5iP9Qt
+         r4ujCnn1BgI1mJyuq5XM3b7WPSjEBxsZAC9HvkHZFcVRYLMTg5F0dKlDEvMmUHDfUG
+         T+6WtbQpS073giVrSRLdBqiSIH3IbhLXSU7ubEgs=
+Received: by mail-oi1-f173.google.com with SMTP id i17so15634436oig.10;
+        Sun, 20 Sep 2020 22:49:48 -0700 (PDT)
+X-Gm-Message-State: AOAM531JZ3QQE+lxjo0ysduXWZd2F5xRiNUFRf/sYiioGSJcj2BJQycy
+        drf8hzMJZmoCohPpyCVRZgVBmc3SfoQtWT+YlTc=
+X-Google-Smtp-Source: ABdhPJxvweHKFZtKANXKvwJXFk79HdzjJPeNotIAmKK952CYdST2RBMZ4XjBX9FlatvQ/3Uq+8+bCry1CJpgSo8LRA8=
+X-Received: by 2002:aca:da8b:: with SMTP id r133mr16599116oig.163.1600667388152;
+ Sun, 20 Sep 2020 22:49:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200916063129.1061487-1-namhyung@kernel.org> <20200916063129.1061487-5-namhyung@kernel.org>
- <20200918135120.GD2626435@krava>
-In-Reply-To: <20200918135120.GD2626435@krava>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Mon, 21 Sep 2020 14:49:10 +0900
-Message-ID: <CAM9d7cjJ2Gk_SK_=evG99fYqU5c_E=CBy43nDt+my_v8_T+oJA@mail.gmail.com>
-Subject: Re: [PATCH 4/4] perf test: Add expand cgroup event test
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        John Garry <john.garry@huawei.com>
+Received: by 2002:ac9:30cf:0:0:0:0:0 with HTTP; Sun, 20 Sep 2020 22:49:47
+ -0700 (PDT)
+In-Reply-To: <015d01d68bd0$2fc6bb60$8f543220$@samsung.com>
+References: <CGME20200911044449epcas1p42ecc35423eebc3b62428b14529d6a592@epcas1p4.samsung.com>
+ <20200911044439.13842-1-kohada.t2@gmail.com> <015d01d68bd0$2fc6bb60$8f543220$@samsung.com>
+From:   Namjae Jeon <linkinjeon@kernel.org>
+Date:   Sun, 20 Sep 2020 22:49:47 -0700
+X-Gmail-Original-Message-ID: <CAKYAXd-+3wox_1R2kdPQ1sGfC+9nvkdz+64uwgs_x4oEr-BexA@mail.gmail.com>
+Message-ID: <CAKYAXd-+3wox_1R2kdPQ1sGfC+9nvkdz+64uwgs_x4oEr-BexA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] exfat: remove useless directory scan in exfat_add_entry()
+To:     Tetsuhiro Kohada <kohada.t2@gmail.com>
+Cc:     Sungjong Seo <sj1557.seo@samsung.com>,
+        kohada.tetsuhiro@dc.mitsubishielectric.co.jp,
+        mori.takahiro@ab.mitsubishielectric.co.jp,
+        motai.hirotaka@aj.mitsubishielectric.co.jp,
+        Namjae Jeon <namjae.jeon@samsung.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 10:52 PM Jiri Olsa <jolsa@redhat.com> wrote:
+2020-09-15 19:22 GMT-07:00, Sungjong Seo <sj1557.seo@samsung.com>:
+>> There is nothing in directory just created, so there is no need to scan.
+>>
+>> Signed-off-by: Tetsuhiro Kohada <kohada.t2@gmail.com>
 >
-> On Wed, Sep 16, 2020 at 03:31:29PM +0900, Namhyung Kim wrote:
->
-> SNIP
->
-> > +++ b/tools/perf/tests/tests.h
-> > @@ -123,6 +123,7 @@ const char *test__pfm_subtest_get_desc(int subtest);
-> >  int test__pfm_subtest_get_nr(void);
-> >  int test__parse_metric(struct test *test, int subtest);
-> >  int test__pe_file_parsing(struct test *test, int subtest);
-> > +int test__expand_cgroup_events(struct test *test, int subtest);
-> >
-> >  bool test__bp_signal_is_supported(void);
-> >  bool test__bp_account_is_supported(void);
-> > diff --git a/tools/perf/util/cgroup.c b/tools/perf/util/cgroup.c
-> > index a1bf345a770b..eeffa08251b5 100644
-> > --- a/tools/perf/util/cgroup.c
-> > +++ b/tools/perf/util/cgroup.c
-> > @@ -52,7 +52,7 @@ static struct cgroup *evlist__find_cgroup(struct evlist *evlist, const char *str
-> >       return NULL;
-> >  }
->
->
-> could you please put the do_open change below into separate patch?
-
-Ok, will do.
-
-Thanks
-Namhyung
-
-> >
-> > -static struct cgroup *cgroup__new(const char *name)
-> > +static struct cgroup *cgroup__new(const char *name, bool do_open)
-> >  {
-> >       struct cgroup *cgroup = zalloc(sizeof(*cgroup));
-> >
-> > @@ -62,9 +62,14 @@ static struct cgroup *cgroup__new(const char *name)
-> >               cgroup->name = strdup(name);
-> >               if (!cgroup->name)
-> >                       goto out_err;
-> > -             cgroup->fd = open_cgroup(name);
-> > -             if (cgroup->fd == -1)
-> > -                     goto out_free_name;
-> > +
-> > +             if (do_open) {
-> > +                     cgroup->fd = open_cgroup(name);
-> > +                     if (cgroup->fd == -1)
-> > +                             goto out_free_name;
-> > +             } else {
-> > +                     cgroup->fd = -1;
-> > +             }
-> >       }
-> >
-> >       return cgroup;
-> > @@ -80,7 +85,7 @@ struct cgroup *evlist__findnew_cgroup(struct evlist *evlist, const char *name)
-> >  {
-> >       struct cgroup *cgroup = evlist__find_cgroup(evlist, name);
-> >
-> > -     return cgroup ?: cgroup__new(name);
-> > +     return cgroup ?: cgroup__new(name, true);
-> >  }
-> >
-> >  static int add_cgroup(struct evlist *evlist, const char *str)
-> > @@ -202,7 +207,7 @@ int parse_cgroups(const struct option *opt, const char *str,
-> >  }
-> >
-> >  int evlist__expand_cgroup(struct evlist *evlist, const char *str,
-> > -                       struct rblist *metric_events)
-> > +                       struct rblist *metric_events, bool open_cgroup)
-> >  {
-> >       struct evlist *orig_list, *tmp_list;
-> >       struct evsel *pos, *evsel, *leader;
-> > @@ -240,7 +245,7 @@ int evlist__expand_cgroup(struct evlist *evlist, const char *str,
-> >                       if (!name)
-> >                               break;
-> >
-> > -                     cgrp = cgroup__new(name);
-> > +                     cgrp = cgroup__new(name, open_cgroup);
-> >                       free(name);
-> >                       if (cgrp == NULL)
-> >                               break;
-> > diff --git a/tools/perf/util/cgroup.h b/tools/perf/util/cgroup.h
-> > index eea6df8ee373..162906f3412a 100644
-> > --- a/tools/perf/util/cgroup.h
-> > +++ b/tools/perf/util/cgroup.h
-> > @@ -26,7 +26,7 @@ struct rblist;
-> >
-> >  struct cgroup *evlist__findnew_cgroup(struct evlist *evlist, const char *name);
-> >  int evlist__expand_cgroup(struct evlist *evlist, const char *cgroups,
-> > -                       struct rblist *metric_events);
-> > +                       struct rblist *metric_events, bool open_cgroup);
-> >
-> >  void evlist__set_default_cgroup(struct evlist *evlist, struct cgroup *cgroup);
-> >
-> > --
-> > 2.28.0.618.gf4bc123cb7-goog
-> >
->
+> Acked-by: Sungjong Seo <sj1557.seo@samsung.com>
+Applied. Thanks for your patch!
