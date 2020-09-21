@@ -2,112 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA4E27195C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 04:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 857ED271960
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 04:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726234AbgIUCgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 22:36:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726011AbgIUCgY (ORCPT
+        id S1726265AbgIUCiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 22:38:01 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:36588 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726011AbgIUCiB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 22:36:24 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2332EC061755;
-        Sun, 20 Sep 2020 19:36:24 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BvpTx02gyz9sR4;
-        Mon, 21 Sep 2020 12:36:20 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600655781;
-        bh=S4MJY8JMup+AWKB8AHwtHY/lJhtUoFXs2nYPCSCNrTs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Hx2FBdfHPTBohZ3RsaLbD7YAPUJlmz8/HCYzwY1I13EtWbAoASblHqkOcXyY3mcdg
-         mjR72KXTKX84KgpU8svW84DNwoYqd8MOlyvA0ZDN6Eu5b9zhCLUTp2C1AjEUNGuB98
-         2TapqWRTQlwUY0pLnkcoB6WiYWr2ggTtfB8Dv588PXM1RwjvTsY84nGx0S467XVlTL
-         gyKvUCkseQ7E7t5MDDWuNbwHc2ic18jq91ClqluAloxnSMtJ7/VTzaSwk81KHaf1t8
-         GNQwOhEePvFWlPSsaJ4KHX6dFoEKe48BeJMnCQRyWLST6Ux0G3agh7MohlK0gxqK+K
-         yB/Xcaf2ORjaw==
-Date:   Mon, 21 Sep 2020 12:36:19 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Linux Crypto List <linux-crypto@vger.kernel.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: manual merge of the crypto tree with Linus' tree
-Message-ID: <20200921123619.2986ea3b@canb.auug.org.au>
+        Sun, 20 Sep 2020 22:38:01 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08L2ZhRT008276;
+        Mon, 21 Sep 2020 02:37:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=iNEQvWYqSjtoZGC6fGoYKZehKNUyQw+A4D+j6+OcPMI=;
+ b=VSX2yLn44TGwnQWnfWokdzmmP+pDefa2W7TEI/fVicrtQm7wAJffk6OGB8Derq25NX4T
+ 0T+sJy7N+Jfdil0SezKHGYolKnCcntUWU27Vv1WEqFKE/vaHwfcVfDO8CHrtB9H2bCgT
+ m3x+MEq2IN69F+X4dqN9drFisPT4yPij43EH7/2O2FqpxjkwoXuDaPCwoFIiX7qJDBAW
+ syq0g5m/AiR5tJHEz2SrL/AsRUEESjVFddIy6BP4ZAE/DSIIaV3wS6pxT2lrr8mwFn6v
+ YsYJSj7UUyUARmflXxK9r2GzAI90xBFVAZ0HV4BFheMAUXkA+LDVpfVpK1UQviq+WrdR 3A== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 33n9xkk58s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 21 Sep 2020 02:37:41 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08L2ZifL185586;
+        Mon, 21 Sep 2020 02:37:41 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 33nuvyf8fw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 21 Sep 2020 02:37:40 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08L2beXx031263;
+        Mon, 21 Sep 2020 02:37:40 GMT
+Received: from santoshs-mbp-3.lan (/69.181.241.203)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 20 Sep 2020 19:37:40 -0700
+Subject: Re: [PATCH -next v2] soc: ti: Convert to DEFINE_SHOW_ATTRIBUTE
+To:     Qinglang Miao <miaoqinglang@huawei.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20200919025207.17798-1-miaoqinglang@huawei.com>
+From:   "santosh.shilimkar@oracle.com" <santosh.shilimkar@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <32fde6aa-058f-6031-8488-65d90585b6e8@oracle.com>
+Date:   Sun, 20 Sep 2020 19:37:32 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/RgGlW3x5VGD1UCBI6V6vQFQ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20200919025207.17798-1-miaoqinglang@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9750 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
+ mlxscore=0 suspectscore=0 adultscore=0 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009210017
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9750 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 malwarescore=0
+ suspectscore=0 priorityscore=1501 adultscore=0 spamscore=0 clxscore=1011
+ mlxlogscore=999 bulkscore=0 mlxscore=0 phishscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009210017
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/RgGlW3x5VGD1UCBI6V6vQFQ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 9/18/20 7:52 PM, Qinglang Miao wrote:
+> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
+> 
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> ---
+> v2: based on linux-next(20200917), and can be applied to
+>      mainline cleanly now.
+> 
+Applied. Thanks !!
 
-Hi all,
-
-Today's linux-next merge of the crypto tree got a conflict in:
-
-  drivers/crypto/Kconfig
-
-between commit:
-
-  bfe8fe939a04 ("crypto: sa2ul - add Kconfig selects to fix build error")
-
-from Linus' tree and commit:
-
-  61f033ba18c3 ("crypto: sa2ul - Select CRYPTO_AUTHENC")
-
-from the crypto tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/crypto/Kconfig
-index 52a9b7cf6576,c2950127def6..000000000000
---- a/drivers/crypto/Kconfig
-+++ b/drivers/crypto/Kconfig
-@@@ -873,9 -873,7 +873,10 @@@ config CRYPTO_DEV_SA2U
-  	select CRYPTO_AES
-  	select CRYPTO_AES_ARM64
-  	select CRYPTO_ALGAPI
-+ 	select CRYPTO_AUTHENC
- +	select CRYPTO_SHA1
- +	select CRYPTO_SHA256
- +	select CRYPTO_SHA512
-  	select HW_RANDOM
-  	select SG_SPLIT
-  	help
-
---Sig_/RgGlW3x5VGD1UCBI6V6vQFQ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9oEaMACgkQAVBC80lX
-0Gxajgf+OvG+VcnVFycirKmyNkLZyzn70CjhdAXdDvONWm4IRS4vd2nz1PbjBrIS
-bbP7mFnvtkp/MEVuu0UGTsUHHdZMVVul0sJD1H3bKhI+8QO2oOdyjTJSW1tvzHrY
-ZvX79Kw45ODLurFX99xB/1rOs0nvAYJ7IXvbTFhEcwViAblczXM6qp3ileyB7gGf
-t2DJ4nidg9SOITBjW+BpvnbBwIIQ72i3ZaxJhhuqaWWM0mDZ60hoyqGern6oKu8v
-P8K8NGvpx4Rm+juhBr6BQUucRL12EwQTjRTag6jC1UQqzErG7z+x2ieNgEG2yMwS
-xu8wi2hbfR2XYBCuPP8Upt/XeAQiaA==
-=r6AE
------END PGP SIGNATURE-----
-
---Sig_/RgGlW3x5VGD1UCBI6V6vQFQ--
+Regards,
+Santosh
