@@ -2,83 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF81C27323C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 20:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97CB1273239
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 20:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727969AbgIUSui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 14:50:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:32998 "EHLO mx2.suse.de"
+        id S1727728AbgIUSt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 14:49:58 -0400
+Received: from mga18.intel.com ([134.134.136.126]:14046 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726395AbgIUSui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 14:50:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CE685B1FE;
-        Mon, 21 Sep 2020 18:51:12 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B96B8DA6E0; Mon, 21 Sep 2020 20:49:21 +0200 (CEST)
-Date:   Mon, 21 Sep 2020 20:49:21 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Denis Efremov <efremov@linux.com>
-Cc:     David Sterba <dsterba@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>, Chris Mason <clm@fb.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH 2/2] btrfs: check allocation size in btrfs_ioctl_send()
-Message-ID: <20200921184921.GR6756@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Denis Efremov <efremov@linux.com>,
-        David Sterba <dsterba@suse.com>, Josef Bacik <josef@toxicpanda.com>,
-        Chris Mason <clm@fb.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>
-References: <20200921170336.82643-1-efremov@linux.com>
- <20200921170336.82643-2-efremov@linux.com>
+        id S1727059AbgIUSt6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 14:49:58 -0400
+IronPort-SDR: kBaNvocmDj4CJooRbdRppdfMdLWdmAImHsDSf6074uWMxnqc/m6I3rdN0KfWI6trO0vnoV/X2P
+ fT7DZhNUGFoA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="148212393"
+X-IronPort-AV: E=Sophos;i="5.77,287,1596524400"; 
+   d="scan'208";a="148212393"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 11:49:57 -0700
+IronPort-SDR: yOjFgO+JASDoJWXCsFJyyGqSbA2UlKJcolvZQBtyuH2271liF19Bcs7ImLXTKGbe9ttgB9Iy3O
+ 14zT01aTm06w==
+X-IronPort-AV: E=Sophos;i="5.77,287,1596524400"; 
+   d="scan'208";a="485612138"
+Received: from gkapusti-mobl1.ccr.corp.intel.com (HELO localhost) ([10.252.42.63])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 11:49:50 -0700
+Date:   Mon, 21 Sep 2020 21:49:48 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Haitao Huang <haitao.huang@linux.intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 13/24] x86/sgx: Add SGX_IOC_ENCLAVE_ADD_PAGES
+Message-ID: <20200921184948.GA49586@linux.intel.com>
+References: <20200915110522.893152-14-jarkko.sakkinen@linux.intel.com>
+ <op.0q2prldowjvjmi@mqcpg7oapc828.gar.corp.intel.com>
+ <20200917160206.GF8530@linux.intel.com>
+ <op.0q3pw0stwjvjmi@mqcpg7oapc828.gar.corp.intel.com>
+ <20200918020940.GA14678@sjchrist-ice>
+ <20200918122029.GA27028@linux.intel.com>
+ <20200918123932.GB27028@linux.intel.com>
+ <20200919000918.GB21189@sjchrist-ice>
+ <20200921114104.GB6038@linux.intel.com>
+ <20200921164647.GC23989@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200921170336.82643-2-efremov@linux.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20200921164647.GC23989@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 08:03:36PM +0300, Denis Efremov wrote:
-> Replace kvzalloc() call with kvcalloc() that checks
-> the size internally. Use array_size() helper to compute
-> the memory size for clone_sources_tmp.
+On Mon, Sep 21, 2020 at 09:46:48AM -0700, Sean Christopherson wrote:
+> > This is also true. I meant by corrupt state e.g. a kernel bug, which
+> > causes uninitalizes pages go the free queue.
+> > 
+> > I'd rephrase this in kdoc as: "The function deinitializes enclave and
+> > returns -EIO when EPC is lost, while entering to a new power cycle".
 > 
-> Cc: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Denis Efremov <efremov@linux.com>
-> ---
->  fs/btrfs/send.c | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
+> The kdocs shouldn't speculate on why EEXTEND might fail.  E.g. in some (and
+> possibility most) environments, the most common scenario of EEXTEND failure
+> will be EPC invalidation due to virtual machine migration.
 > 
-> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-> index c874ddda6252..9e02aba30651 100644
-> --- a/fs/btrfs/send.c
-> +++ b/fs/btrfs/send.c
-> @@ -7087,7 +7087,7 @@ long btrfs_ioctl_send(struct file *mnt_file, struct btrfs_ioctl_send_args *arg)
->  	u32 i;
->  	u64 *clone_sources_tmp = NULL;
->  	int clone_sources_to_rollback = 0;
-> -	unsigned alloc_size;
-> +	size_t alloc_size;
->  	int sort_clone_roots = 0;
->  
->  	if (!capable(CAP_SYS_ADMIN))
-> @@ -7179,15 +7179,16 @@ long btrfs_ioctl_send(struct file *mnt_file, struct btrfs_ioctl_send_args *arg)
->  	sctx->waiting_dir_moves = RB_ROOT;
->  	sctx->orphan_dirs = RB_ROOT;
->  
-> -	alloc_size = sizeof(struct clone_root) * (arg->clone_sources_count + 1);
-> -
-> -	sctx->clone_roots = kvzalloc(alloc_size, GFP_KERNEL);
-> +	sctx->clone_roots = kvcalloc(sizeof(*sctx->clone_roots),
-> +				     arg->clone_sources_count + 1,
-> +				     GFP_KERNEL);
+> This is why I'd prefer that the kernel kill the enclave if and only if the
+> error is guaranteed to be fatal, e.g. the docs can have a blanket statement
+> along the lines of:
+> 
+>   An enclave will be killed and its EPC resources will be freed if an error that
+>   is guaranteed to be fatal is encountered at any time, e.g. if EEXTEND fails as
+>   EEXTEND can only fail due to loss of EPC, a kernel bug, or silicon bug, all of
+>   which are unrecoverable.
 
-There is an overflow check in btrfs_ioctl_send a few lines above, it
-won't overflow at the allocation so this more like a cleanup than adding
-a missing check, as the subject suggests.
+Kernel bug is not a legit condition. Neither is a silicon failure. We do
+not document speculated kernel bugs. If we used that kind of pattern for
+documentation, we would have to put similar statements about every
+single line of code.
 
-Patches added to misc-next, thanks.
+Describing legit failure conditions with the best knowledge available is
+the whole point why people read documentation in the first place.
+Otherwise, the documentation has absolutely no value.
+
+Documentation is also always, without exception, inaccurate. Lacking
+something is not an issue, if it is not done on purpose.
+
+I'd refine what I did as
+
+"The function deinitializes enclave and returns -EIO when EPC was lost,
+ while entering to a new power cycle, or any other condition where EPC
+ gets invalidated."
+
+It is not perfect, nothing ever is, but it is heck a lot more useful
+than being too generic to fail.
+
+> > > EADD is a little different, e.g. it could fault due to a bad source address,
+> > > in which case the failure is not technically fatal.  But, Jarkko wanted to
+> > > have consistent behavior for EADD and EEXTEND failures, and practically
+> > > speaking the enclave is probably hosed anyways if EADD fails, i.e. killing the
+> > > enclave on EADD failure isn't a sticking point (for me).
+> > 
+> > We need to figure out own return value for EADD, but I agree with this.
+> > 
+> > I would go with -EFAULT as we do when source VMA is no available. Does
+> > this make sense to you?
+> 
+> If only EEXTEND will be treated as fatal, then I see no need to worry about
+> the return code for EADD.  In that case, simply kill the enclave on EEXTEND
+> failure instead of on a specific return code.
+
+To have understandable semantics you have to map error codes to
+conditions rather than opcodes. -EIO means loss of enclave in the event
+of EPC gone invalid. Enclave is already lost, that is the reason why we
+deinitialize the kernel data structures.
+
+EADD must have a different error code because nothing is actually lost
+but the failure conditions are triggered outside. -EFAULT would be
+probably the most reasonable choice for that.
+
+/Jarkko
