@@ -2,104 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3D48273617
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 00:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 894F427361B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 00:59:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728673AbgIUW61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 18:58:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728662AbgIUW6Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 18:58:25 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EA51C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 15:58:25 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id l17so14353891edq.12
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 15:58:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=F406dxOGL4KIyo3r913T2qYQFJYxNBYaxUNYOkHvtJo=;
-        b=LOgAOhIuOtK3NEGs5lfUfr3Z1we8cm+fSTqcM/nC5XdWVc8G8zUtABSkKkmAQ52+H1
-         1c+W8yeUe6zOPyRAQkzv3YmZ68wzpCBSZbYpsAWqo96ic0X65rNdGYH8LmIb255U+BxI
-         AcFVi2WBYPbN5eWFHSV+GoQejC0hhUjgTozpchXclGf2pMYARIw5Nn8kswl3yTi8QH3C
-         /ZfNRcxgNstUkYZjsvuhuq1/CuGAyIibmjz/JC+desNVgZG3j59Jh+dsDzUufv5E4g2T
-         7ubxNAIyknRIdYm8G4IcLOiL79DsMCINz7MAtuidpGEXowsl8CAhQTvDIVfsZbFNiQOz
-         m26A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=F406dxOGL4KIyo3r913T2qYQFJYxNBYaxUNYOkHvtJo=;
-        b=mJCugIBkMA5wZ6i9rLEXGehtGDpySvoIWjeJ0wYNSvf3f1FftnumoIZTBmtnHONiWU
-         js3x5Sqp5EjXNtxzatGoocBJXczj35a/yw3LGMS7O0Abowdrxn76ehal8UQGwq5H+gE6
-         PM4Q2OKLmq8KrLjBm/lHVIZTsM7dPCitsWw2ZqCivwkdTqyYvVMgzSgBkRvyZ7fxDWZJ
-         OHXBNyhhafIdq7HO3iBlH488jRFsQom6O5MHUF7HcbF9AT7bvNjdMghEwCuJ62+QSpWU
-         09Q9Qi0wS4TAfUOCVYlIngdj/eDgvFiReNbTsbZLo6DSB8jEFm1ndncYzZgKn1Gv5IRv
-         vb5g==
-X-Gm-Message-State: AOAM530aq6k/+SU+uRVp+z1dIJYbzO3ulQRszhNYH6pqEjsN4Oe+qoaW
-        rlLNCMaJ2KieXQjJOpsyWj5oQfGqGSIyN++zLB9g4A==
-X-Google-Smtp-Source: ABdhPJzKQ8pt68rKwhcn6462p221HnYSc7PT1gfTLQQr7Dyyt5sp+3GSHllwhbLNcRdd6ZR5P19GP5X7qwPc+u0bf/A=
-X-Received: by 2002:a05:6402:cba:: with SMTP id cn26mr1188410edb.230.1600729104142;
- Mon, 21 Sep 2020 15:58:24 -0700 (PDT)
+        id S1728768AbgIUW6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 18:58:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37368 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728591AbgIUW6i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 18:58:38 -0400
+Received: from localhost (lfbn-ncy-1-588-162.w81-51.abo.wanadoo.fr [81.51.203.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 721432076E;
+        Mon, 21 Sep 2020 22:58:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600729117;
+        bh=2xk7Fmz3JjDQIAEPGMqF5VAoFrIcEHgYldDvUP9ihFA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Wlgl2Qt6SzVzrUnzox+uuaj2db3MfOfg8BnxPS8w3MUlFffW0wNf9oCF9nJMxLgc5
+         9+yBxfTqZgFDLxXDuSUxsvMo6KCvA0lRMLvCzymt1weUI4lWxtGKe3BQN1lkYKGZD6
+         bH62rL+RtrSyBOGvZvSyCWfiQrIvn8ciNV0EPaYk=
+Date:   Tue, 22 Sep 2020 00:58:35 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>
+Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pci@vger.kernel.org, mtosatti@redhat.com,
+        sassmann@redhat.com, jeffrey.t.kirsher@intel.com,
+        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
+        bhelgaas@google.com, mike.marciniszyn@intel.com,
+        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
+        jerinj@marvell.com, mathias.nyman@intel.com, jiri@nvidia.com
+Subject: Re: [RFC][Patch v1 2/3] i40e: limit msix vectors based on
+ housekeeping CPUs
+Message-ID: <20200921225834.GA30521@lenoir>
+References: <20200909150818.313699-1-nitesh@redhat.com>
+ <20200909150818.313699-3-nitesh@redhat.com>
+ <20200917112359.00006e10@intel.com>
 MIME-Version: 1.0
-References: <cover.1600661418.git.yifeifz2@illinois.edu> <b792335294ee5598d0fb42702a49becbce2f925f.1600661419.git.yifeifz2@illinois.edu>
- <CAG48ez3k0_7Vev_O=uV_WVuUGK6BPA0RyrYXMYSDV4DTMMe26g@mail.gmail.com> <CABqSeAROcwq0ZGzWaxyPm+LDHu6T_8CD7_1c-hdhaMikr_ECCA@mail.gmail.com>
-In-Reply-To: <CABqSeAROcwq0ZGzWaxyPm+LDHu6T_8CD7_1c-hdhaMikr_ECCA@mail.gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Tue, 22 Sep 2020 00:57:58 +0200
-Message-ID: <CAG48ez2HytqFaJ6V9iA6YZrbZU3kG4bB7nETMfHPt0-wd5D1jg@mail.gmail.com>
-Subject: Re: [RFC PATCH seccomp 2/2] seccomp/cache: Cache filter results that
- allow syscalls
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        kernel list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917112359.00006e10@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 12:51 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
-> On Mon, Sep 21, 2020 at 1:09 PM Jann Horn <jannh@google.com> wrote:
-> >
-> > On Mon, Sep 21, 2020 at 7:35 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
-> > [...]
-> > > We do this by creating a per-task bitmap of permitted syscalls.
-> > > If seccomp filter is invoked we check if it is cached and if so
-> > > directly return allow. Else we call into the cBPF filter, and if
-> > > the result is an allow then we cache the results.
-> >
-> > What? Why? We already have code to statically evaluate the filter for
-> > all syscall numbers. We should be using the results of that instead of
-> > re-running the filter and separately caching the results.
-> >
-> > > The cache is per-task
-> >
-> > Please don't. The static results are per-filter, so the bitmask(s)
-> > should also be per-filter and immutable.
->
-> I do agree that an immutable bitmask is faster and easier to reason
-> about its correctness. However, I did not find the "code to statically
-> evaluate the filter for all syscall numbers" while reading seccomp.c.
-> Would you give me a pointer to that and I will see how to best make
-> use of it?
+On Thu, Sep 17, 2020 at 11:23:59AM -0700, Jesse Brandeburg wrote:
+> Nitesh Narayan Lal wrote:
+> 
+> > In a realtime environment, it is essential to isolate unwanted IRQs from
+> > isolated CPUs to prevent latency overheads. Creating MSIX vectors only
+> > based on the online CPUs could lead to a potential issue on an RT setup
+> > that has several isolated CPUs but a very few housekeeping CPUs. This is
+> > because in these kinds of setups an attempt to move the IRQs to the
+> > limited housekeeping CPUs from isolated CPUs might fail due to the per
+> > CPU vector limit. This could eventually result in latency spikes because
+> > of the IRQ threads that we fail to move from isolated CPUs.
+> > 
+> > This patch prevents i40e to add vectors only based on available
+> > housekeeping CPUs by using num_housekeeping_cpus().
+> > 
+> > Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
+> 
+> The driver changes are straightforward, but this isn't the only driver
+> with this issue, right?  I'm sure ixgbe and ice both have this problem
+> too, you should fix them as well, at a minimum, and probably other
+> vendors drivers:
+> 
+> $ rg -c --stats num_online_cpus drivers/net/ethernet
+> ...
+> 50 files contained matches
 
-I'm talking about the code you're adding in the other patch ("[RFC
-PATCH seccomp 1/2] seccomp/cache: Add "emulator" to check if filter is
-arg-dependent"). Sorry, that was a bit unclear.
+Ouch, I was indeed surprised that these MSI vector allocations were done
+at the driver level and not at some $SUBSYSTEM level.
+
+The logic is already there in the driver so I wouldn't oppose to this very patch
+but would a shared infrastructure make sense for this? Something that would
+also handle hotplug operations?
+
+Does it possibly go even beyond networking drivers?
+
+Thanks.
+
+> 
+> for this patch i40e
+> Acked-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
