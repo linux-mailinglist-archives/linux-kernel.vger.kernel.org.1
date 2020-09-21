@@ -2,139 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AC24272B39
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B804272B37
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728184AbgIUQL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:11:58 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:45630 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727361AbgIUQL5 (ORCPT
+        id S1728177AbgIUQLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:11:46 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:50979 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727361AbgIUQLq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:11:57 -0400
-Received: by mail-oi1-f196.google.com with SMTP id z26so17520111oih.12;
-        Mon, 21 Sep 2020 09:11:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f5xopPVHQvCwupw2qPGnrX8/IM5yBS9FV37XxNdou08=;
-        b=hFZdYqZltOTB4rxpY60SKn37N2VRAga5blC8T3EM36HN5qEf1/wLnVAmzk4NlLgVtP
-         8kfa5flq13GGqlRtrbOyNyrOfWtI9nJ3nozrIoY7jAKEGTWg2cVxscq1HrCKuTTELmlV
-         /D6ie6v7hgbcaCTqc3i91OKPWTeW/aYerOSvYtnrqJQ/pDQCwHlrKKxAm0W/eYc2JIWj
-         B0TeBgBGzEOIHE4nzH0bBWCMtRcmFDibuA8uFdbjlM+Vi0iPziVcnSMddwqlfKEV5oBE
-         t2LideYA+VsKSnlYy9SxBEHNAecuSNV8uwRP4BCGsEnEWXczr6z94/0RrDI9O9rmrJWZ
-         PEBQ==
-X-Gm-Message-State: AOAM532B3SQg03PfGe4pkTTn6vfaUzYzt6eT4mz+yg6MIFf4W/vW74yj
-        2n0M1SxIYqRfD4Kyj3l+9+CkITFnlBgLctsFejA=
-X-Google-Smtp-Source: ABdhPJxGSsJ7wpuVxd0sTGjXqj0IvtjRadaXaA0vQ3zuWQjZAQjSobuRQ6HP8HZViuRxvTdCU9lcxi9EUCJP5vAKYJ4=
-X-Received: by 2002:aca:df84:: with SMTP id w126mr76245oig.103.1600704716385;
- Mon, 21 Sep 2020 09:11:56 -0700 (PDT)
+        Mon, 21 Sep 2020 12:11:46 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 2A597580231;
+        Mon, 21 Sep 2020 12:11:45 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Mon, 21 Sep 2020 12:11:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=xQrSx4d0XhjREDqVDJQ2AwgtfiK
+        I2i5h05Gyoz9jM4o=; b=cwvVz5vkKl/Xs8jFUfD9oiEVQvdifyVHewFH5VL0Hti
+        /C1oA8c3jZ7FGo3J04f+q70gHDwSbQ5HVNC7470bQOlAjIISNiUg8Y4u5G0V5kF/
+        0O7igqEwbGAp8VEXEJcCIJlYN/cR6BiT/menNcDiDhZArU8+7gEW8u6ehyh7mnmX
+        nkl17k20gSArRqYGIwpGfP0HsgxlWlPJs1N6JJc/Jg6pl/eiIxus6gEt56xXiuTO
+        E4KOBxtpGhcy9ZfEgLqqyrRiaI+0yD1zkcpcdS1nJwc6Ib4000Jov1AKe5Zin6GZ
+        qxbLsKsj3cM9dFxP+PSrhbgvVhl0OlvJNTm0SdBxlJw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=xQrSx4
+        d0XhjREDqVDJQ2AwgtfiKI2i5h05Gyoz9jM4o=; b=eNHufBtwKBHqpuKnGkwS0G
+        dLXGggLdz7uJ/KOwpbwLDfzG0WtPEigOuPC6HropP0ZSdyi6gP7qY+cq+B+1lm2N
+        LSIA5qgMyKnnB12S/Ks34/UN9iGngdHb+KolD+cXvg6Z/reu1GYYk5IetleJ3yHA
+        8mE/LO0MUn/MXQsN99nhNad5lG6hfjQKQ/Bot2ytnVI1xonqsXA8zdEadNKNhYrw
+        UcAxOkgn535uPFZrpyfqnEMLr7JURbo3NzS72rin2pLwXsLXBf9VONzFklFVbLl9
+        jygXjP6ErSVDqDDJRC61V/rxMMPER8veRMVHE/IhGUdAUCvb4QqmJD+2tt/XVVmw
+        ==
+X-ME-Sender: <xms:wNBoX3UPk8-lMvNzsvxvyDjI6Drwn5BaUcUCSKvy8UhljCOq8gt_jg>
+    <xme:wNBoX_nOUn-81VzgCcOLQVOuUEn73CtUHsoUQtSjCHtzgDREnamtfMqDV4HhnnhIw
+    LZ5uXz2U1llQw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddvgddutddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeeuleeltd
+    ehkeeltefhleduuddvhfffuedvffduveegheekgeeiffevheegfeetgfenucffohhmrghi
+    nhepkhgvrhhnvghlrdhorhhgnecukfhppeekfedrkeeirdejgedrieegnecuvehluhhsth
+    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghh
+    rdgtohhm
+X-ME-Proxy: <xmx:wNBoXzYuIk8s4tICIFhMpLQ_CNyXBUC1-PntvgBTd4F0bxv8BBJRiw>
+    <xmx:wNBoXyWdvRl_PsrNtU1IHQ_t5Cc2giy7mfdeSg_xyJzD-aNoRsC0kA>
+    <xmx:wNBoXxnrSoHU-ntEZ295EayKIiySDPbDDkaPCxhZaPpzGjCSfWdnnQ>
+    <xmx:wdBoXyhRODZ2Fa5jqA4TgAaAAxwQG9Xs5ZqlqfJHxKeZasHhZs0H5A>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id E2307306467D;
+        Mon, 21 Sep 2020 12:11:43 -0400 (EDT)
+Date:   Mon, 21 Sep 2020 18:12:05 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Julius Hemanth Pitti <jpitti@cisco.com>
+Cc:     akpm@linux-foundation.org, xlpang@linux.alibaba.com,
+        mhocko@suse.com, vdavydov.dev@gmail.com, ktkhai@virtuozzo.com,
+        hannes@cmpxchg.org, stable@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, xe-linux-external@cisco.com,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH stable v5.8] mm: memcg: fix memcg reclaim soft lockup
+Message-ID: <20200921161205.GC1096614@kroah.com>
+References: <20200918011913.57159-1-jpitti@cisco.com>
 MIME-Version: 1.0
-References: <20200819104057.318230-1-ulf.hansson@linaro.org>
- <20200819104057.318230-4-ulf.hansson@linaro.org> <20200825161602.GE12523@codeaurora.org>
- <CAPDyKFrMUf4y5kVjr=dW-wf2kqBwcGePf=55U1Ck8O6tp-OuqQ@mail.gmail.com>
-In-Reply-To: <CAPDyKFrMUf4y5kVjr=dW-wf2kqBwcGePf=55U1Ck8O6tp-OuqQ@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 21 Sep 2020 18:11:44 +0200
-Message-ID: <CAJZ5v0jXn-O3xQzpW_0QahDOLeGZC58cCeOnVF66HWAsRNT4zg@mail.gmail.com>
-Subject: Re: [PATCH 3/3] PM / Domains: Add support for PM domain on/off
- notifiers for genpd
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Lina Iyer <ilina@codeaurora.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Lorenzo Pieralisi <Lorenzo.Pieralisi@arm.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Benjamin Gaignard <benjamin.gaignard@st.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200918011913.57159-1-jpitti@cisco.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 8:38 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> On Tue, 25 Aug 2020 at 18:16, Lina Iyer <ilina@codeaurora.org> wrote:
-> >
-> > On Wed, Aug 19 2020 at 04:41 -0600, Ulf Hansson wrote:
-> > >A device may have specific HW constraints that must be obeyed to, before
-> > >its corresponding PM domain (genpd) can be powered off - and vice verse at
-> > >power on. These constraints can't be managed through the regular runtime PM
-> > >based deployment for a device, because the access pattern for it, isn't
-> > >always request based. In other words, using the runtime PM callbacks to
-> > >deal with the constraints doesn't work for these cases.
-> > >
-> > >For these reasons, let's instead add a PM domain power on/off notification
-> > >mechanism to genpd. To add/remove a notifier for a device, the device must
-> > >already have been attached to the genpd, which also means that it needs to
-> > >be a part of the PM domain topology.
-> > >
-> > >To add/remove a notifier, let's introduce two genpd specific functions:
-> > > - dev_pm_genpd_add|remove_notifier()
-> > >
-> > >Note that, to further clarify when genpd power on/off notifiers may be
-> > >used, one can compare with the existing CPU_CLUSTER_PM_ENTER|EXIT
-> > >notifiers. In the long run, the genpd power on/off notifiers should be able
-> > >to replace them, but that requires additional genpd based platform support
-> > >for the current users.
-> > >
-> > >Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > >---
-> > > drivers/base/power/domain.c | 130 ++++++++++++++++++++++++++++++++++--
-> > > include/linux/pm_domain.h   |  15 +++++
-> > > 2 files changed, 141 insertions(+), 4 deletions(-)
-> > >
-> > >diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> > >index 4b787e1ff188..9cb85a5e8342 100644
-> > >--- a/drivers/base/power/domain.c
-> > >+++ b/drivers/base/power/domain.c
-> > >@@ -545,13 +545,21 @@ static int genpd_power_off(struct generic_pm_domain *genpd, bool one_dev_on,
-> > >       if (!genpd->gov)
-> > >               genpd->state_idx = 0;
-> > >
-> > >+      /* Notify consumers that we are about to power off. */
-> > >+      ret = raw_notifier_call_chain(&genpd->power_notifiers, GENPD_STATE_OFF,
-> > >+                                    NULL);
-> > >+      if (ret)
-> > >+              return ret;
-> > >+
-> > >       /* Don't power off, if a child domain is waiting to power on. */
-> > >-      if (atomic_read(&genpd->sd_count) > 0)
-> > >-              return -EBUSY;
-> > >+      if (atomic_read(&genpd->sd_count) > 0) {
-> > >+              ret = -EBUSY;
-> > >+              goto busy;
-> > >+      }
-> > >
-> > >       ret = _genpd_power_off(genpd, true);
-> > >       if (ret)
-> > >-              return ret;
-> > >+              goto busy;
-> > >
-> > >       genpd->status = GENPD_STATE_OFF;
-> > >       genpd_update_accounting(genpd);
-> > >@@ -564,6 +572,9 @@ static int genpd_power_off(struct generic_pm_domain *genpd, bool one_dev_on,
-> > >       }
-> > >
-> > >       return 0;
-> > >+busy:
-> > >+      raw_notifier_call_chain(&genpd->power_notifiers, GENPD_STATE_ON, NULL);
-> > It would be helpful to abstract these notification related calls into
-> > functions of their own. So, for CPU PM domains, it would help to add
-> > RCU_NONIDLE() around the notifiers, allowing the callbacks to add trace
-> > functions.
->
-> Thanks for the suggestion! It makes perfect sense to me - and would
-> also be consistent with how CPU PM notifiers are managed,
+On Thu, Sep 17, 2020 at 06:19:13PM -0700, Julius Hemanth Pitti wrote:
+> From: Xunlei Pang <xlpang@linux.alibaba.com>
+> 
+> commit e3336cab2579012b1e72b5265adf98e2d6e244ad upstream.
+> 
+> We've met softlockup with "CONFIG_PREEMPT_NONE=y", when the target memcg
+> doesn't have any reclaimable memory.
+> 
+> It can be easily reproduced as below:
+> 
+>   watchdog: BUG: soft lockup - CPU#0 stuck for 111s![memcg_test:2204]
+>   CPU: 0 PID: 2204 Comm: memcg_test Not tainted 5.9.0-rc2+ #12
+>   Call Trace:
+>     shrink_lruvec+0x49f/0x640
+>     shrink_node+0x2a6/0x6f0
+>     do_try_to_free_pages+0xe9/0x3e0
+>     try_to_free_mem_cgroup_pages+0xef/0x1f0
+>     try_charge+0x2c1/0x750
+>     mem_cgroup_charge+0xd7/0x240
+>     __add_to_page_cache_locked+0x2fd/0x370
+>     add_to_page_cache_lru+0x4a/0xc0
+>     pagecache_get_page+0x10b/0x2f0
+>     filemap_fault+0x661/0xad0
+>     ext4_filemap_fault+0x2c/0x40
+>     __do_fault+0x4d/0xf9
+>     handle_mm_fault+0x1080/0x1790
+> 
+> It only happens on our 1-vcpu instances, because there's no chance for
+> oom reaper to run to reclaim the to-be-killed process.
+> 
+> Add a cond_resched() at the upper shrink_node_memcgs() to solve this
+> issue, this will mean that we will get a scheduling point for each memcg
+> in the reclaimed hierarchy without any dependency on the reclaimable
+> memory in that memcg thus making it more predictable.
+> 
+> Suggested-by: Michal Hocko <mhocko@suse.com>
+> Signed-off-by: Xunlei Pang <xlpang@linux.alibaba.com>
+> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> Acked-by: Chris Down <chris@chrisdown.name>
+> Acked-by: Michal Hocko <mhocko@suse.com>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> Link: http://lkml.kernel.org/r/1598495549-67324-1-git-send-email-xlpang@linux.alibaba.com
+> Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Fixes: b0dedc49a2da ("mm/vmscan.c: iterate only over charged shrinkers during memcg shrink_slab()")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Julius Hemanth Pitti <jpitti@cisco.com>
+> ---
+>  mm/vmscan.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 
-So I thought that you wanted to send a v2, but I cannot find it.
+The Fixes: tag you show here goes back to 4.19, can you provide a 4.19.y
+and 5.4.y version of this as well?
 
-Cheers!
+thanks,
+
+greg k-h
