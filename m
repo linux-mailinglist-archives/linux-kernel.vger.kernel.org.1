@@ -2,114 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33F482725A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:34:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE562725A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727078AbgIUNeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:34:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726501AbgIUNeA (ORCPT
+        id S1727160AbgIUNeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:34:09 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:48452 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726830AbgIUNeG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:34:00 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80625C0613CF;
-        Mon, 21 Sep 2020 06:34:00 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id a9so12738450wmm.2;
-        Mon, 21 Sep 2020 06:34:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=PSlR6UEl0k2mghvqxd0Ilre5cll+vxg1D9fFnWV554k=;
-        b=rgQgX6qUkRAi0UCi/mtfzJqE/csdkBuY4H2g5YPpJn3xtwt1X7JxJAi+3wprjmcKZC
-         aHgWow6pFeJQzhXjl/ZYmeOsOU/iyCw+Dw9oySAPctYk3EBKE9TcRi0YY/BFKbFKPTpU
-         9u0XpcCHQcywy13FSP0L39aabKU5+xvApYqLigXc/mXSJ9fg+4W3AFZdCFiB1/RUEjO4
-         RkGZfN3RixKgV1NxUKprEFYmKv/xzIDZ9oV9zuRM6Nutj8UcYbgKSMvNxHRHAmTEwFRn
-         EyzXLbQpI6jLExIj44MTLDNuUW695bYoYRdiNGO5lYb/Sx0k8GF95BtkGQo/YQmvoRQ7
-         Rdww==
+        Mon, 21 Sep 2020 09:34:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600695244;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e0HOfDTf0Hc7be4wHcgGqRMOsK0L7kOAKRk7B9r832E=;
+        b=LE4vpubGB1v1RUNFHz9wKPYQc46vDy4E7Jr1Pjf4dHpaq88Wm/0YaMOrjEhFcQXaO3bg1g
+        IOeYPaG/k2lOoqX8YJD7i7DEiQpAy9cpmAW5SQCJPdhiT83/5bvmtdH0j6OMcpUzkW1p2H
+        VE1T6oky9T3uMxWqKr4AVzsjxRvstXA=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-247-JbTs4QMxNcS5U54aQm8iug-1; Mon, 21 Sep 2020 09:34:02 -0400
+X-MC-Unique: JbTs4QMxNcS5U54aQm8iug-1
+Received: by mail-ej1-f70.google.com with SMTP id li24so4864962ejb.6
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 06:34:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=PSlR6UEl0k2mghvqxd0Ilre5cll+vxg1D9fFnWV554k=;
-        b=Vxet9340dMMIbeJwlOMOVsNuVr8YagTTOg5MVinhRj3hnNQ3DA/hwIscAO1R5OP9kU
-         KdMgcqK8kUQ8gpYkQ6vT0KsRtDsSqjvHuiL0MjYPxx3EokDYuAkqQniV5928Ymz1By1/
-         GotkM9e8tEJ8ACMx1/6O1ZMW6H4PbmxzOPELM0961SxR9M+nZ1MRVo+OiHxYTFVk+t0J
-         4Z457VDYWcDt1/1sbnHPl5N+SbfCdDtK30/yktFYNTeqBjFYvb7zUq5D92Q27BXjEuT2
-         gIqw0FwwaTU+t/hjfddUFT9oVCCAkL+Vh2JhR6O2bfgVcWxEvMP+P9Jkp8IIjMmq5rc5
-         kfCQ==
-X-Gm-Message-State: AOAM5330D6T41MlOHYwuJ3YmZvxkxgpkfoVgJMmrmWG9/jSn5axNKZ8Z
-        mfuh2do64uUZp55a1m1dtWo=
-X-Google-Smtp-Source: ABdhPJxs7SLQzpL7shi76iakBUBJaNASPqq5USxGQbR2ll5qMDRJbC8+U5kFag9gl1ppteY3tamIVA==
-X-Received: by 2002:a1c:9a0c:: with SMTP id c12mr30789130wme.85.1600695239140;
-        Mon, 21 Sep 2020 06:33:59 -0700 (PDT)
-Received: from [192.168.1.211] ([2.29.208.34])
-        by smtp.gmail.com with ESMTPSA id d9sm13017803wmb.30.2020.09.21.06.33.57
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=e0HOfDTf0Hc7be4wHcgGqRMOsK0L7kOAKRk7B9r832E=;
+        b=nIt9J3XrTfWlCkoETSLOL5XTCVkP7dV5BEfjiyhlxDY760pj1WhisIPAlYh4ETu/63
+         U1fu/6hKWEdFkk25O80TWyMwIoyLEBR1wu2r6Yby73QG4YUCIIcfd+sCbZPdJBm7y/Dz
+         BlVzM6CHUSiBmzcFBVMSClANcuwtxyePGWunTdFWoVfKlHzOPxGozLewAKuk1RAbtsG3
+         thoSPvGRbFeWnHuwaTZ8/Lgp/YMiLKm3kuG//b1jxhVt9kaqLcM6ARfjcPPI2q6iTyqk
+         1GDSr+Z1w8xC6VJvrnc3ttIUXXnk6un1lAerlgkiKOgrz0TywttZy6E0CJkhGTto+XFd
+         zbvw==
+X-Gm-Message-State: AOAM532Ooy9seHAv/Suih263pz/76Tv5l/9bgxTk6ZkYQnWl85NJ2pRS
+        4KHO4u+8i1ZlMdVxbsLwMAjWPVGR22IAY7nRFkFjzknikksAEznsoEbDSwDVSvPiCVNkMi3/Bd8
+        sX0gY8BWHzINJM/ol2SqhdzVs
+X-Received: by 2002:a17:906:a00c:: with SMTP id p12mr48474684ejy.10.1600695240831;
+        Mon, 21 Sep 2020 06:34:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyEbNkjEWDevemWKnY1PzrnQJTYPE6HudCcKEVIsFSbAf7fZ49PyMwEaYKYfz+t43uEViO4DA==
+X-Received: by 2002:a17:906:a00c:: with SMTP id p12mr48474673ejy.10.1600695240620;
+        Mon, 21 Sep 2020 06:34:00 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id r9sm8661365ejc.102.2020.09.21.06.33.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Sep 2020 06:33:58 -0700 (PDT)
-Subject: Re: [RFC PATCH] Add bridge driver to connect sensors to CIO2 device
- via software nodes on ACPI platforms
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     yong.zhi@intel.com, bingbu.cao@intel.com, tian.shu.qiu@intel.com,
-        mchehab@kernel.org, gregkh@linuxfoundation.org,
-        davem@davemloft.net, robh@kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        kieran.bingham@ideasonboard.com
-References: <20200916213618.8003-1-djrscally@gmail.com>
- <20200917103343.GW26842@paasikivi.fi.intel.com>
- <8133a57d-ab4c-dccd-4325-9b10e7805648@gmail.com>
- <20200917124514.GK3956970@smile.fi.intel.com>
- <20200918075157.GF26842@paasikivi.fi.intel.com>
- <20200918130739.GA3956970@smile.fi.intel.com>
-From:   Dan Scally <djrscally@gmail.com>
-Message-ID: <66e33cd5-6c1e-310a-61e8-6cde720ffa19@gmail.com>
-Date:   Mon, 21 Sep 2020 14:33:57 +0100
+        Mon, 21 Sep 2020 06:34:00 -0700 (PDT)
+Subject: Re: [PATCH -next] virt: vbox: simplify the return expression of
+ vbg_input_open()
+To:     Qinglang Miao <miaoqinglang@huawei.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org
+References: <20200921131113.93459-1-miaoqinglang@huawei.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <7cced541-88ab-bb21-6fc4-e6c06d2d2260@redhat.com>
+Date:   Mon, 21 Sep 2020 15:33:59 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200918130739.GA3956970@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200921131113.93459-1-miaoqinglang@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/09/2020 14:07, Andy Shevchenko wrote:
-> On Fri, Sep 18, 2020 at 10:51:57AM +0300, Sakari Ailus wrote:
->> On Thu, Sep 17, 2020 at 03:45:14PM +0300, Andy Shevchenko wrote:
->>> On Thu, Sep 17, 2020 at 11:52:28AM +0100, Dan Scally wrote:
->>>> On 17/09/2020 11:33, Sakari Ailus wrote:
->>>>> a module and not enlarge everyone's kernel, and the initialisation would at
->>>>> the same time take place before the rest of what the CIO2 driver does in
->>>>> probe.
->>>> I thought of that as well, but wasn't sure which was preferable. I can
->>>> compress it into the CIO2 driver though sure.
->>> Sakari, I tend to agree with Dan and have the board file separated from the
->>> driver and even framework.
->> And it'll be linked to the kernel binary then I suppose?
-> Solely depends to your Kconfig dependencies and declaration.
->
-> From code perspective you may do it before enumeration of the certain device or
-> after with reprobe.
->
->> I don't have a strong opinion either way, just thought that this will
->> affect anyone using x86 machines, whether or not they have IPU3. I guess it
->> could be compiled in if the ipu3-cio2 driver is enabled?
-> Of course!
+Hi,
 
-Apologies both - my inexperience is showing here: I thought you couldn't
-make it compile into the kernel where it's dependent on another piece of
-code that's configured to be a module? In my case, ipu3-cio2 plus some
-other dependencies are configured as modules; VIDEO_DEV and VIDEO_V4L2
-notably. Is that not right?
+On 9/21/20 3:11 PM, Qinglang Miao wrote:
+> Simplify the return expression.
+> 
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+
+Thank you, patch looks good to me:
+
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+
+Regards,
+
+Hans
 
 
-It would probably make the probe() ordering issues easier if it could be
-compiled in, since I could just rely on late_initcall() in that case and
-I guess that should work.
+
+> ---
+>   drivers/virt/vboxguest/vboxguest_linux.c | 7 +------
+>   1 file changed, 1 insertion(+), 6 deletions(-)
+> 
+> diff --git a/drivers/virt/vboxguest/vboxguest_linux.c b/drivers/virt/vboxguest/vboxguest_linux.c
+> index 6215a688e..73eb34849 100644
+> --- a/drivers/virt/vboxguest/vboxguest_linux.c
+> +++ b/drivers/virt/vboxguest/vboxguest_linux.c
+> @@ -202,13 +202,8 @@ static int vbg_input_open(struct input_dev *input)
+>   {
+>   	struct vbg_dev *gdev = input_get_drvdata(input);
+>   	u32 feat = VMMDEV_MOUSE_GUEST_CAN_ABSOLUTE | VMMDEV_MOUSE_NEW_PROTOCOL;
+> -	int ret;
+>   
+> -	ret = vbg_core_set_mouse_status(gdev, feat);
+> -	if (ret)
+> -		return ret;
+> -
+> -	return 0;
+> +	return vbg_core_set_mouse_status(gdev, feat);
+>   }
+>   
+>   /**
+> 
 
