@@ -2,84 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 961F627191B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 04:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A0127192A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 04:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726468AbgIUCDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 22:03:06 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:34234 "EHLO huawei.com"
+        id S1726442AbgIUCIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 22:08:37 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13733 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726413AbgIUCC6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 22:02:58 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id A86B3588FA98689880E4;
-        Mon, 21 Sep 2020 10:02:55 +0800 (CST)
-Received: from mdc.huawei.com (10.175.112.208) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 21 Sep 2020 10:02:49 +0800
-From:   Chen Jun <chenjun102@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-CC:     <catalin.marinas@arm.com>, <akpm@linux-foundation.org>,
-        <rui.xiang@huawei.com>, <weiyongjun1@huawei.com>
-Subject: [PATCH -next 5/5] mm/kmemleak-test: Add a test case for alloc_percpu
-Date:   Mon, 21 Sep 2020 02:00:07 +0000
-Message-ID: <20200921020007.35803-6-chenjun102@huawei.com>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200921020007.35803-1-chenjun102@huawei.com>
-References: <20200921020007.35803-1-chenjun102@huawei.com>
+        id S1726184AbgIUCIh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 22:08:37 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 7D4B3A2B58E6D22EB7B0;
+        Mon, 21 Sep 2020 10:08:35 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 21 Sep 2020 10:08:25 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <linmiaohe@huawei.com>,
+        <martin.varghese@nokia.com>, <fw@strlen.de>, <edumazet@google.com>,
+        <dcaratti@redhat.com>, <steffen.klassert@secunet.com>,
+        <pabeni@redhat.com>, <kyk.segfault@gmail.com>, <saeed@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>
+Subject: [PATCH net-next] net: use in_softirq() to indicate the NAPI context in napi_consume_skb()
+Date:   Mon, 21 Sep 2020 10:04:53 +0800
+Message-ID: <1600653893-206277-1-git-send-email-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.112.208]
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After insmod kmemleak-test.ko, a leaking for alloc_percpu will be
-reported as below:
+When napi_consume_skb() is called in the tx desc cleaning process,
+it is usually in the softirq context(BH disabled, or are processing
+softirqs), but it may also be in the task context, such as in the
+netpoll or loopback selftest process.
 
-kmemleak: alloc_percpu(sizeof(*elem)) = 00007dfdd26a2c40
-			:
-			:
-unreferenced object 0x7dfdd26a2c40 (size 8):
-  comm "insmod", pid 183, jiffies 4294905864 (age 40.520s)
-  hex dump (first 8 bytes):
-    00 00 00 00 00 00 00 00                          ........
-  backtrace:
-    [<(____ptrval____)>] pcpu_alloc+0x3ec/0x8c8
-    [<(____ptrval____)>] __alloc_percpu+0x18/0x28
-    [<(____ptrval____)>] 0xffff800008df525c
-    [<(____ptrval____)>] do_one_initcall+0x60/0x1d8
-    [<(____ptrval____)>] do_init_module+0x58/0x1d0
-    [<(____ptrval____)>] load_module+0x1d8c/0x23d0
-    [<(____ptrval____)>] __do_sys_finit_module+0xdc/0xf8
-    [<(____ptrval____)>] __arm64_sys_finit_module+0x20/0x30
-    [<(____ptrval____)>] el0_svc_common.constprop.3+0x68/0x170
-    [<(____ptrval____)>] do_el0_svc+0x24/0x90
-    [<(____ptrval____)>] el0_sync_handler+0x13c/0x1a8
-    [<(____ptrval____)>] el0_sync+0x158/0x180
+Currently napi_consume_skb() uses non-zero budget to indicate the
+NAPI context, the driver writer may provide the wrong budget when
+tx desc cleaning function is reused for both NAPI and non-NAPI
+context, see [1].
 
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Signed-off-by: Chen Jun <chenjun102@huawei.com>
+So this patch uses in_softirq() to indicate the NAPI context, which
+doesn't necessarily mean in NAPI context, but it shouldn't care if
+NAPI context or not as long as it runs in softirq context or with BH
+disabled, then _kfree_skb_defer() will push the skb to the particular
+cpu' napi_alloc_cache atomically.
+
+[1] https://lkml.org/lkml/2020/9/15/38
+
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
 ---
- mm/kmemleak-test.c | 3 +++
- 1 file changed, 3 insertions(+)
+note that budget parameter is not removed in this patch because it
+involves many driver changes, we can remove it in separate patch if
+this patch is accepted.
+---
+ net/core/skbuff.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/mm/kmemleak-test.c b/mm/kmemleak-test.c
-index 75fe1b8c3226..8f3e4a60166b 100644
---- a/mm/kmemleak-test.c
-+++ b/mm/kmemleak-test.c
-@@ -79,6 +79,9 @@ static int __init kmemleak_test_init(void)
- 			per_cpu(kmemleak_test_pointer, i));
- 	}
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index e077447..03d0d28 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -895,8 +895,10 @@ void __kfree_skb_defer(struct sk_buff *skb)
  
-+	pr_info("alloc_percpu(sizeof(*elem)) = %px\n",
-+		alloc_percpu(sizeof(*elem)));
-+
- 	return 0;
- }
- module_init(kmemleak_test_init);
+ void napi_consume_skb(struct sk_buff *skb, int budget)
+ {
+-	/* Zero budget indicate non-NAPI context called us, like netpoll */
+-	if (unlikely(!budget)) {
++	/* called by non-softirq context, which usually means non-NAPI
++	 * context, like netpoll.
++	 */
++	if (unlikely(!in_softirq())) {
+ 		dev_consume_skb_any(skb);
+ 		return;
+ 	}
 -- 
-2.25.0
+2.8.1
 
