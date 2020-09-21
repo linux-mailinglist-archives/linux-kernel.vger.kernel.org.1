@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABEB6272DEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C1F272CA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729424AbgIUQoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:44:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48536 "EHLO mail.kernel.org"
+        id S1728677AbgIUQdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:33:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729617AbgIUQnq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:43:46 -0400
+        id S1728615AbgIUQdm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:33:42 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A6213235F9;
-        Mon, 21 Sep 2020 16:43:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 562D6239D1;
+        Mon, 21 Sep 2020 16:33:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706625;
-        bh=d5XIaRljVwM3B1wOOuQiNn/RI/rtsJyv5oYD7QUfQG4=;
+        s=default; t=1600706021;
+        bh=k8YBnN1r1rH8qmEGW9LpgFbjNqcXscr5A5DztCGEcJg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P44afJqgyn4aJvCmng9lbk94/oXG4UQXJJ16d14+25aXGs9ySHg3oyMIncRaDJ3ND
-         htyaNed0f4AgJMTEnisye8ucWBuu6hQZEduiUUtXJTRFn8CdSOqtFMuYjJt3MIVeyb
-         r/KsPklRgUehOgSS7pkqtqUeVfdc0ewfpApmvaxU=
+        b=nF8aySSlWJCBvh6R7rq1F6Webs8MXs/7qYKMDggbd9SHS+Y4gEtVd7i/XpuOaDKCJ
+         HXqWKCbCncnEn2h1/4o4bk6QDAnHF9vAzQG1KaZQ+T4kiKIzGy60hIWsP6RKWm8nB7
+         we2i7KfVSSSVm2Xi5ldBZ/sBQiJb6UBOx85B1QM4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Prateek Sood <prsood@codeaurora.org>,
-        Takashi Iwai <tiwai@suse.de>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH 5.8 008/118] firmware_loader: fix memory leak for paged buffer
-Date:   Mon, 21 Sep 2020 18:27:00 +0200
-Message-Id: <20200921162036.725971208@linuxfoundation.org>
+        stable@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 01/70] ARM: dts: socfpga: fix register entry for timer3 on Arria10
+Date:   Mon, 21 Sep 2020 18:27:01 +0200
+Message-Id: <20200921162035.196082132@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
-References: <20200921162036.324813383@linuxfoundation.org>
+In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
+References: <20200921162035.136047591@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,92 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Prateek Sood <prsood@codeaurora.org>
+From: Dinh Nguyen <dinguyen@kernel.org>
 
-commit 4965b8cd1bc1ffb017e5c58e622da82b55e49414 upstream.
+[ Upstream commit 0ff5a4812be4ebd4782bbb555d369636eea164f7 ]
 
-vfree() is being called on paged buffer allocated
-using alloc_page() and mapped using vmap().
+Fixes the register address for the timer3 entry on Arria10.
 
-Freeing of pages in vfree() relies on nr_pages of
-struct vm_struct. vmap() does not update nr_pages.
-It can lead to memory leaks.
-
-Fixes: ddaf29fd9bb6 ("firmware: Free temporary page table after vmapping")
-Signed-off-by: Prateek Sood <prsood@codeaurora.org>
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/1597957070-27185-1-git-send-email-prsood@codeaurora.org
-Cc: Shuah Khan <skhan@linuxfoundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 475dc86d08de4 ("arm: dts: socfpga: Add a base DTSI for Altera's Arria10 SOC")
+Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/base/firmware_loader/firmware.h |    2 ++
- drivers/base/firmware_loader/main.c     |   17 +++++++++++------
- 2 files changed, 13 insertions(+), 6 deletions(-)
+ arch/arm/boot/dts/socfpga_arria10.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/base/firmware_loader/firmware.h
-+++ b/drivers/base/firmware_loader/firmware.h
-@@ -142,10 +142,12 @@ int assign_fw(struct firmware *fw, struc
- void fw_free_paged_buf(struct fw_priv *fw_priv);
- int fw_grow_paged_buf(struct fw_priv *fw_priv, int pages_needed);
- int fw_map_paged_buf(struct fw_priv *fw_priv);
-+bool fw_is_paged_buf(struct fw_priv *fw_priv);
- #else
- static inline void fw_free_paged_buf(struct fw_priv *fw_priv) {}
- static inline int fw_grow_paged_buf(struct fw_priv *fw_priv, int pages_needed) { return -ENXIO; }
- static inline int fw_map_paged_buf(struct fw_priv *fw_priv) { return -ENXIO; }
-+static inline bool fw_is_paged_buf(struct fw_priv *fw_priv) { return false; }
- #endif
- 
- #endif /* __FIRMWARE_LOADER_H */
---- a/drivers/base/firmware_loader/main.c
-+++ b/drivers/base/firmware_loader/main.c
-@@ -252,9 +252,11 @@ static void __free_fw_priv(struct kref *
- 	list_del(&fw_priv->list);
- 	spin_unlock(&fwc->lock);
- 
--	fw_free_paged_buf(fw_priv); /* free leftover pages */
--	if (!fw_priv->allocated_size)
-+	if (fw_is_paged_buf(fw_priv))
-+		fw_free_paged_buf(fw_priv);
-+	else if (!fw_priv->allocated_size)
- 		vfree(fw_priv->data);
-+
- 	kfree_const(fw_priv->fw_name);
- 	kfree(fw_priv);
- }
-@@ -268,6 +270,11 @@ static void free_fw_priv(struct fw_priv
- }
- 
- #ifdef CONFIG_FW_LOADER_PAGED_BUF
-+bool fw_is_paged_buf(struct fw_priv *fw_priv)
-+{
-+	return fw_priv->is_paged_buf;
-+}
-+
- void fw_free_paged_buf(struct fw_priv *fw_priv)
- {
- 	int i;
-@@ -275,6 +282,8 @@ void fw_free_paged_buf(struct fw_priv *f
- 	if (!fw_priv->pages)
- 		return;
- 
-+	vunmap(fw_priv->data);
-+
- 	for (i = 0; i < fw_priv->nr_pages; i++)
- 		__free_page(fw_priv->pages[i]);
- 	kvfree(fw_priv->pages);
-@@ -328,10 +337,6 @@ int fw_map_paged_buf(struct fw_priv *fw_
- 	if (!fw_priv->data)
- 		return -ENOMEM;
- 
--	/* page table is no longer needed after mapping, let's free */
--	kvfree(fw_priv->pages);
--	fw_priv->pages = NULL;
--
- 	return 0;
- }
- #endif
+diff --git a/arch/arm/boot/dts/socfpga_arria10.dtsi b/arch/arm/boot/dts/socfpga_arria10.dtsi
+index 4d496479e1353..342ae7ef9f08c 100644
+--- a/arch/arm/boot/dts/socfpga_arria10.dtsi
++++ b/arch/arm/boot/dts/socfpga_arria10.dtsi
+@@ -710,7 +710,7 @@
+ 		timer3: timer3@ffd00100 {
+ 			compatible = "snps,dw-apb-timer";
+ 			interrupts = <0 118 IRQ_TYPE_LEVEL_HIGH>;
+-			reg = <0xffd01000 0x100>;
++			reg = <0xffd00100 0x100>;
+ 			clocks = <&l4_sys_free_clk>;
+ 			clock-names = "timer";
+ 		};
+-- 
+2.25.1
+
 
 
