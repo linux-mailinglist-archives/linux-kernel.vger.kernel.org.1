@@ -2,155 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A16E8272B85
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:16:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F06B8272B8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728198AbgIUQQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:16:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727557AbgIUQQ2 (ORCPT
+        id S1727454AbgIUQSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:18:30 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:39120 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726341AbgIUQSa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:16:28 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72EB4C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 09:16:28 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id w2so94903wmi.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 09:16:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=htPCe9d3Pa34TUPhjBFaGH8jRG+GS7pqXbTfR7z8+ow=;
-        b=bFr/8F0r8SQESPG+ae54M5kO3y6FJPn/zwCLYrMQZraawA77/OO7/q6mgP3wWpVDC3
-         c/SeKw1k9YRMjOTs612ls6tyHIFP/czLpsQ5AP27Ju3iQglx2JTIU/RDTOmsCbRbVDEL
-         kIqS6kj41Y1rnt0GJlu8gKKtRxLpOmfzifKg7CANEf4OoZ4qExU17GLLr2PKmThEhgwt
-         OQrzNZNm4kaQi7P5Z3/NqMPH3xbUl+CeSWtdWInpuHpt0Hl7LlNk+Vb+N9Hjf/ITfd3+
-         bMfQzlziZuc5U2m2ddQfl1+c8svX1aF1+zP9mY2081/UqiWS+1TWOcGour0yfJxlhbK0
-         sfJA==
+        Mon, 21 Sep 2020 12:18:30 -0400
+Received: by mail-oi1-f194.google.com with SMTP id c13so17585471oiy.6;
+        Mon, 21 Sep 2020 09:18:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=htPCe9d3Pa34TUPhjBFaGH8jRG+GS7pqXbTfR7z8+ow=;
-        b=jiuJHmbluqOnC4OCponqhpgwJT9i0kOJ8pPvU/6HmyPSTubevUP8La43ESVgkhxzew
-         n/0wp0ctg+UGRAX4N73/u+oEGykzBSlhS7aHPQ53z/WT+0gTTAHtqbwrGymeqa/FMVRR
-         puoRzXvWrJXAGh1MjIefuVRAsZoQR0yAbqKbVRqs5hrIPkfJrpYzlNdIrN3kTyIAA8SZ
-         7KWbq/uBD1nhRDcZgyDjqo4KYfQCxQWnPziO5X80WN0OPT4EdKwLrK3/HfkFNQ2z3/WH
-         kVkzWmI8plx+T1CoNbg9Scs9DIZGxftZoHKvTbw+j2nzWL3UlSLTh1aTwkXIHbG7YC0J
-         keQA==
-X-Gm-Message-State: AOAM530CWrj9Ane78wim8dCOl8Nx8xWTOwOwijxAJnna4UVIeWbqzXNc
-        lPlko0mRrVoHPGxkYG/tHEQ=
-X-Google-Smtp-Source: ABdhPJwROwWW5Cd9tMiIlzNGJ1RQLMos0xb80a01XNW5a03Lm1yduKnwbtLNjxfaN/pF20k1d7GARg==
-X-Received: by 2002:a1c:4886:: with SMTP id v128mr118594wma.139.1600704987151;
-        Mon, 21 Sep 2020 09:16:27 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.113.201])
-        by smtp.gmail.com with ESMTPSA id m18sm71951wmg.32.2020.09.21.09.16.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Sep 2020 09:16:26 -0700 (PDT)
-Subject: Re: [PATCH v3 6/9] soc: mediatek: cmdq: add write_s_mask value
- function
-To:     Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, CK Hu <ck.hu@mediatek.com>,
-        Bibby Hsieh <bibby.hsieh@mediatek.com>,
-        Houlong Wei <houlong.wei@mediatek.com>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        wsd_upstream@mediatek.com, HS Liao <hs.liao@mediatek.com>
-References: <1594136714-11650-1-git-send-email-dennis-yc.hsieh@mediatek.com>
- <1594136714-11650-7-git-send-email-dennis-yc.hsieh@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <9073ff83-ad99-8e40-e25e-360df74435fd@gmail.com>
-Date:   Mon, 21 Sep 2020 18:16:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nbC7uccKDJ1WRncXvD6/krY9wssuSRXhmd3VlyR43es=;
+        b=nk6vyjkfkomXFTgk4hRoDlLqf6oS4BV5Te0CwwxQndH+jSoJaJzQGhA7SBRT9oBBI1
+         VAsCVZCnjgc7XUKPYNEv8gEjI3+jcTurwVciOeUFanHQ6Mors1cjY74mw8DEzun4j9pg
+         RfSMvLfe8N4EtKJfTCb0skNtJKM65iFvbgSLqAFYkshlf5pxo4eBuRGrhrdvCB/WR7Kp
+         pzDsCAe9A0n43mi6M4eQtve7OxNlKN02A2e3TV74xjsletwTUw1b7XwFm2S7fzBjSff4
+         cuSV9c2Qy5tab+jz0dyw1VMCdOvOhqH/HHXPb76bRGSqfyIu1HHlgzACKz8TnlVqSWlJ
+         FpyQ==
+X-Gm-Message-State: AOAM533N71mLyYFRbkNaUWx3++5qd5OwvpuxFY9n9S5Vq02IZybP9Ted
+        IBSs1q1elyWlFWlU673SCTDHf+Xu0YvHSl1Xr/A=
+X-Google-Smtp-Source: ABdhPJzk678teRbfi+MQPJejkzv4hFdqqIqhrmGw3zIKWNvilPbFXuEtEACgA8TivFAZDLWbBOcAN+05du/9R940FD0=
+X-Received: by 2002:a05:6808:491:: with SMTP id z17mr116123oid.110.1600705109159;
+ Mon, 21 Sep 2020 09:18:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1594136714-11650-7-git-send-email-dennis-yc.hsieh@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200821204921.32536-1-sibis@codeaurora.org>
+In-Reply-To: <20200821204921.32536-1-sibis@codeaurora.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 21 Sep 2020 18:18:17 +0200
+Message-ID: <CAJZ5v0gdMroJY0d9n2+_P2uhBNw1xp5yn=jhxdejDLq0WmkPTA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] PM / Domains: Add GENPD_FLAG_NO_SUSPEND/RESUME flags
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Andy Gross <agross@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        "Nayak, Rajendra" <rnayak@codeaurora.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Aug 21, 2020 at 10:49 PM Sibi Sankar <sibis@codeaurora.org> wrote:
+>
+> Add GENPD_FLAG_NO_SUSPEND/RESUME flags to instruct genpd to keep the
+> status of the PM domain unaltered during suspend/resume respectively.
+> The flags are aimed at power domains coupled to co-processors which
+> enter low-power modes independent to that of the application processor.
+>
+> Specifically the flags are to be used by the power domains exposed
+> by the AOSS QMP driver linked to modem, adsp, cdsp remoteprocs. These
+> power domains are used to notify the Always on Subsystem (AOSS) that
+> a particular co-processor is up. AOSS uses this information to wait
+> for the co-processors to suspend before starting its sleep sequence.
+> The application processor powers off these power domains only if the
+> co-processor has crashed or powered off and remains unaltered during
+> system suspend/resume.
+>
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
 
-
-On 07/07/2020 17:45, Dennis YC Hsieh wrote:
-> add write_s_mask_value function in cmdq helper functions which
-> writes a constant value to address with mask and large dma
-> access support.
-> 
-> Signed-off-by: Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>
-
-Now pushed to v5.9-next/soc
-
-Thanks!
+Applied with the Ulf's R-by along with the [2/2] as 5.10 material, thanks!
 
 > ---
->   drivers/soc/mediatek/mtk-cmdq-helper.c |   21 +++++++++++++++++++++
->   include/linux/soc/mediatek/mtk-cmdq.h  |   15 +++++++++++++++
->   2 files changed, 36 insertions(+)
-> 
-> diff --git a/drivers/soc/mediatek/mtk-cmdq-helper.c b/drivers/soc/mediatek/mtk-cmdq-helper.c
-> index 4e86b65815fc..b6e25f216605 100644
-> --- a/drivers/soc/mediatek/mtk-cmdq-helper.c
-> +++ b/drivers/soc/mediatek/mtk-cmdq-helper.c
-> @@ -294,6 +294,27 @@ int cmdq_pkt_write_s_value(struct cmdq_pkt *pkt, u8 high_addr_reg_idx,
->   }
->   EXPORT_SYMBOL(cmdq_pkt_write_s_value);
->   
-> +int cmdq_pkt_write_s_mask_value(struct cmdq_pkt *pkt, u8 high_addr_reg_idx,
-> +				u16 addr_low, u32 value, u32 mask)
-> +{
-> +	struct cmdq_instruction inst = {};
-> +	int err;
-> +
-> +	inst.op = CMDQ_CODE_MASK;
-> +	inst.mask = ~mask;
-> +	err = cmdq_pkt_append_command(pkt, inst);
-> +	if (err < 0)
-> +		return err;
-> +
-> +	inst.op = CMDQ_CODE_WRITE_S_MASK;
-> +	inst.sop = high_addr_reg_idx;
-> +	inst.offset = addr_low;
-> +	inst.value = value;
-> +
-> +	return cmdq_pkt_append_command(pkt, inst);
-> +}
-> +EXPORT_SYMBOL(cmdq_pkt_write_s_mask_value);
-> +
->   int cmdq_pkt_wfe(struct cmdq_pkt *pkt, u16 event)
->   {
->   	struct cmdq_instruction inst = { {0} };
-> diff --git a/include/linux/soc/mediatek/mtk-cmdq.h b/include/linux/soc/mediatek/mtk-cmdq.h
-> index ae73e10da274..d9390d76ee14 100644
-> --- a/include/linux/soc/mediatek/mtk-cmdq.h
-> +++ b/include/linux/soc/mediatek/mtk-cmdq.h
-> @@ -165,6 +165,21 @@ int cmdq_pkt_write_s_value(struct cmdq_pkt *pkt, u8 high_addr_reg_idx,
->   			   u16 addr_low, u32 value);
->   
->   /**
-> + * cmdq_pkt_write_s_mask_value() - append write_s command with mask to the CMDQ
-> + *				   packet which write value to a physical
-> + *				   address
-> + * @pkt:	the CMDQ packet
-> + * @high_addr_reg_idx:	internal register ID which contains high address of pa
-> + * @addr_low:	low address of pa
-> + * @value:	the specified target value
-> + * @mask:	the specified target mask
+>
+> V2:
+>  * Add more info in commit msg and description [Uffe/Kevin/Stephen]
+>  * Rename and split functionality into two flags [Uffe]
+>  * Drop R-b/T-b
+>
+>  drivers/base/power/domain.c |  6 ++++--
+>  include/linux/pm_domain.h   | 10 ++++++++++
+>  2 files changed, 14 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+> index 2cb5e04cf86cd..a5df5916f30f8 100644
+> --- a/drivers/base/power/domain.c
+> +++ b/drivers/base/power/domain.c
+> @@ -129,6 +129,8 @@ static const struct genpd_lock_ops genpd_spin_ops = {
+>  #define genpd_is_active_wakeup(genpd)  (genpd->flags & GENPD_FLAG_ACTIVE_WAKEUP)
+>  #define genpd_is_cpu_domain(genpd)     (genpd->flags & GENPD_FLAG_CPU_DOMAIN)
+>  #define genpd_is_rpm_always_on(genpd)  (genpd->flags & GENPD_FLAG_RPM_ALWAYS_ON)
+> +#define genpd_is_no_suspend(genpd)     (genpd->flags & GENPD_FLAG_NO_SUSPEND)
+> +#define genpd_is_no_resume(genpd)      (genpd->flags & GENPD_FLAG_NO_RESUME)
+>
+>  static inline bool irq_safe_dev_in_no_sleep_domain(struct device *dev,
+>                 const struct generic_pm_domain *genpd)
+> @@ -949,7 +951,7 @@ static void genpd_sync_power_off(struct generic_pm_domain *genpd, bool use_lock,
+>  {
+>         struct gpd_link *link;
+>
+> -       if (!genpd_status_on(genpd) || genpd_is_always_on(genpd))
+> +       if (!genpd_status_on(genpd) || genpd_is_always_on(genpd) || genpd_is_no_suspend(genpd))
+>                 return;
+>
+>         if (genpd->suspended_count != genpd->device_count
+> @@ -991,7 +993,7 @@ static void genpd_sync_power_on(struct generic_pm_domain *genpd, bool use_lock,
+>  {
+>         struct gpd_link *link;
+>
+> -       if (genpd_status_on(genpd))
+> +       if (genpd_status_on(genpd) || genpd_is_no_resume(genpd))
+>                 return;
+>
+>         list_for_each_entry(link, &genpd->child_links, child_node) {
+> diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
+> index ee11502a575b0..568abdf2e89cf 100644
+> --- a/include/linux/pm_domain.h
+> +++ b/include/linux/pm_domain.h
+> @@ -55,6 +55,14 @@
+>   *
+>   * GENPD_FLAG_RPM_ALWAYS_ON:   Instructs genpd to always keep the PM domain
+>   *                             powered on except for system suspend.
 > + *
-> + * Return: 0 for success; else the error code is returned
-> + */
-> +int cmdq_pkt_write_s_mask_value(struct cmdq_pkt *pkt, u8 high_addr_reg_idx,
-> +				u16 addr_low, u32 value, u32 mask);
-> +
-> +/**
->    * cmdq_pkt_wfe() - append wait for event command to the CMDQ packet
->    * @pkt:	the CMDQ packet
->    * @event:	the desired event type to "wait and CLEAR"
-> 
+> + * GENPD_FLAG_NO_SUSPEND:      Instructs genpd to keep the PM domain powered
+> + *                             on during suspend (if it's already powered on)
+> + *                             and runtime PM controlled otherwise.
+> + *
+> + * GENPD_FLAG_NO_RESUME:       Instructs genpd to keep the PM domain powered
+> + *                             off during resume (if it's already powered off)
+> + *                             and runtime PM controlled otherwise.
+>   */
+>  #define GENPD_FLAG_PM_CLK       (1U << 0)
+>  #define GENPD_FLAG_IRQ_SAFE     (1U << 1)
+> @@ -62,6 +70,8 @@
+>  #define GENPD_FLAG_ACTIVE_WAKEUP (1U << 3)
+>  #define GENPD_FLAG_CPU_DOMAIN   (1U << 4)
+>  #define GENPD_FLAG_RPM_ALWAYS_ON (1U << 5)
+> +#define GENPD_FLAG_NO_SUSPEND   (1U << 6)
+> +#define GENPD_FLAG_NO_RESUME    (1U << 7)
+>
+>  enum gpd_status {
+>         GPD_STATE_ACTIVE = 0,   /* PM domain is active */
+> --
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+>
