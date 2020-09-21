@@ -2,107 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 732EC273365
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D67B227335F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728480AbgIUT6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 15:58:34 -0400
+        id S1728471AbgIUT62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 15:58:28 -0400
 Received: from mga09.intel.com ([134.134.136.24]:6567 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727197AbgIUT6b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 15:58:31 -0400
-IronPort-SDR: lSsMAJfz9GNJcYE0NFmcHXpJwQGAAu12gG1N/XBhMyr++zV6clBjPL6fA90SzXqCF4+rsXo6um
- 9rG8nYk7jWGQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="161391879"
+        id S1727197AbgIUT61 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 15:58:27 -0400
+IronPort-SDR: rGkQ8Ecn3RdphPtP6caXGYgD+FcvA6RwBTyeWuzrNdI2h8XRvK+IUIeCT3Si0BglJpbU5to+io
+ ADKkpkVtFatQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="161391856"
 X-IronPort-AV: E=Sophos;i="5.77,287,1596524400"; 
-   d="scan'208";a="161391879"
+   d="scan'208";a="161391856"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 12:58:30 -0700
-IronPort-SDR: rAEqZ+YlzVG9mAhqVrqnE3X93fmpOiEzu0W+Q11CidGTPAHHF3PI4Yf1ELoMf4L5q51aAEUrYS
- uku4r5JKn0VA==
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 12:58:26 -0700
+IronPort-SDR: uOMQ77kzm8Nf+yWek1kTuScXulU6TmYu78CjdACPceLW7H1QaWd6t0P9Uf87NBJvd3fOhvq6oe
+ f2Bh5k5J2ZCg==
 X-IronPort-AV: E=Sophos;i="5.77,287,1596524400"; 
-   d="scan'208";a="485647966"
-Received: from kofels-mobl.ger.corp.intel.com (HELO localhost) ([10.249.45.179])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 12:58:23 -0700
-Date:   Mon, 21 Sep 2020 22:58:22 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Haitao Huang <haitao.huang@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jethro Beekman <jethro@fortanix.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Seth Moore <sethmo@google.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 13/24] x86/sgx: Add SGX_IOC_ENCLAVE_ADD_PAGES
-Message-ID: <20200921195822.GA58176@linux.intel.com>
-References: <20200917160206.GF8530@linux.intel.com>
- <op.0q3pw0stwjvjmi@mqcpg7oapc828.gar.corp.intel.com>
- <20200918020940.GA14678@sjchrist-ice>
- <20200918122029.GA27028@linux.intel.com>
- <20200918123932.GB27028@linux.intel.com>
- <20200919000918.GB21189@sjchrist-ice>
- <20200921114104.GB6038@linux.intel.com>
- <20200921164647.GC23989@linux.intel.com>
- <20200921184948.GA49586@linux.intel.com>
- <20200921194419.GA56547@linux.intel.com>
+   d="scan'208";a="485647918"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 12:58:25 -0700
+Date:   Mon, 21 Sep 2020 12:58:25 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        "open list:SYNOPSYS ARC ARCHITECTURE" 
+        <linux-snps-arc@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
+        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-sparc <sparclinux@vger.kernel.org>
+Subject: Re: [patch RFC 00/15] mm/highmem: Provide a preemptible variant of
+ kmap_atomic & friends
+Message-ID: <20200921195824.GM2540965@iweiny-DESK2.sc.intel.com>
+References: <20200919091751.011116649@linutronix.de>
+ <CAHk-=wiYGyrFRbA1cc71D2-nc5U9LM9jUJesXGqpPnB7E4X1YQ@mail.gmail.com>
+ <20200919173906.GQ32101@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200921194419.GA56547@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200919173906.GQ32101@casper.infradead.org>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 10:44:19PM +0300, Jarkko Sakkinen wrote:
-> On Mon, Sep 21, 2020 at 09:49:48PM +0300, Jarkko Sakkinen wrote:
-> > To have understandable semantics you have to map error codes to
-> > conditions rather than opcodes. -EIO means loss of enclave in the event
-> > of EPC gone invalid. Enclave is already lost, that is the reason why we
-> > deinitialize the kernel data structures.
+On Sat, Sep 19, 2020 at 06:39:06PM +0100, Matthew Wilcox wrote:
+> On Sat, Sep 19, 2020 at 10:18:54AM -0700, Linus Torvalds wrote:
+> > On Sat, Sep 19, 2020 at 2:50 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+> > >
+> > > this provides a preemptible variant of kmap_atomic & related
+> > > interfaces. This is achieved by:
 > > 
-> > EADD must have a different error code because nothing is actually lost
-> > but the failure conditions are triggered outside. -EFAULT would be
-> > probably the most reasonable choice for that.
+> > Ack. This looks really nice, even apart from the new capability.
+> > 
+> > The only thing I really reacted to is that the name doesn't make sense
+> > to me: "kmap_temporary()" seems a bit odd.
+> > 
+> > Particularly for an interface that really is basically meant as a
+> > better replacement of "kmap_atomic()" (but is perhaps also a better
+> > replacement for "kmap()").
+> > 
+> > I think I understand how the name came about: I think the "temporary"
+> > is there as a distinction from the "longterm" regular kmap(). So I
+> > think it makes some sense from an internal implementation angle, but I
+> > don't think it makes a lot of sense from an interface name.
+> > 
+> > I don't know what might be a better name, but if we want to emphasize
+> > that it's thread-private and a one-off, maybe "local" would be a
+> > better naming, and make it distinct from the "global" nature of the
+> > old kmap() interface?
+> > 
+> > However, another solution might be to just use this new preemptible
+> > "local" kmap(), and remove the old global one entirely. Yes, the old
+> > global one caches the page table mapping and that sounds really
+> > efficient and nice. But it's actually horribly horribly bad, because
+> > it means that we need to use locking for them. Your new "temporary"
+> > implementation seems to be fundamentally better locking-wise, and only
+> > need preemption disabling as locking (and is equally fast for the
+> > non-highmem case).
+> > 
+> > So I wonder if the single-page TLB flush isn't a better model, and
+> > whether it wouldn't be a lot simpler to just get rid of the old
+> > complex kmap() entirely, and replace it with this?
+> > 
+> > I agree we can't replace the kmap_atomic() version, because maybe
+> > people depend on the preemption disabling it also implied. But what
+> > about replacing the non-atomic kmap()?
 > 
-> Now that I did all the changes discussed and then I remember why EADD
-> and EEXTEND had a common error code, and common behaviour. Obviously EADD
-> can also fail because of EPC reset because it depends on a valid SECS
-> page.
+> My concern with that is people might use kmap() and then pass the address
+> to a different task.  So we need to audit the current users of kmap()
+> and convert any that do that into using vmap() instead.
 > 
-> If we cannot distinct from EADD caused by EPC loss and EADD caused by
-> problems with the source, it should have the same error code, and also
-> the enclave should be deinitialized, whenver this happens.
-> 
-> So I would just revert to v38 behaviour, keeping of course the whole
-> check more visible in sgx_ioc_enclave_add_pages(), and just refine
-> the documentation better describe the whole situation.
 
-So now the behaviour is reverted back to same as it was before [*] and
-I refined the documenation as:
+I've done some of this work.[3]  PKS and pmem stray write protection[2] depend
+on kmap to enable the correct PKS settings.  After working through the
+exception handling we realized that some users of kmap() seem to be doing just
+this; passing the address to a different task.
 
-"
- * The function deinitializes kernel data structures for enclave and returns
- * -EIO in any of the following conditions:
- *
- * - Enclave Page Cache (EPC), the physical memory holding enclaves, has
- *   been invalidated. This will cause EADD and EEXTEND to fail.
- * - If the source address is corrupted somehow when executing EADD.
-"
+From what I have found ~90% of kmap() callers are 'kmap_thread()' and the other
+~10% are kmap().[3]  But of those 10% I'm not familiar with the code enough to
+know if they really require a 'global' map.  What I do know is they save an
+address which appears to be used in other threads.  But I could be wrong.
 
-[*] https://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-sgx.git/tree/arch/x86/kernel/cpu/sgx/ioctl.c
+For PKS I added a 'global' implementation which could then be called by kmap()
+and added a new kmap_thread() call which used the original 'local' version of
+the PKS interface.  The PKS work is still being reviewed internally for the TIP
+core code.  But I've pushed it all to git hub for purposes of this
+discussion.[1]
 
-/Jarkko
+> I like kmap_local().  Or kmap_thread().
+
+I chose kmap_thread() so that makes sense to me.  I also thought about using
+kmap_global() as an alternative interface which would change just ~10% of the
+callers and make the series much smaller.  But internal discussions lead me to
+chose kmap_thread() as the new interface so that we don't change the semantics
+of kmap().
+
+Ira
+
+
+[1] https://github.com/weiny2/linux-kernel/tree/lm-pks-pmem-for-5.10-v3
+
+[2] https://lore.kernel.org/lkml/20200717072056.73134-1-ira.weiny@intel.com/
+
+[3]
+12:42:06 > git grep ' kmap(' *.c | grep -v '* ' | wc -l
+22
+
+12:43:32 > git grep ' kmap_thread(' *.c | grep -v '* ' | wc -l
+204
+
+Here are the callers which hand an address to another thread.
+
+12:45:25 > git grep ' kmap(' *.c | grep -v '* '
+arch/x86/mm/dump_pagetables.c:  [PKMAP_BASE_NR]         = { 0UL, "Persistent kmap() Area" },
+drivers/firewire/net.c:         ptr = kmap(dev->broadcast_rcv_buffer.pages[u]);
+drivers/gpu/drm/i915/gem/i915_gem_pages.c:              return kmap(sg_page(sgt->sgl));
+drivers/gpu/drm/i915/selftests/i915_perf.c:     scratch = kmap(ce->vm->scratch[0].base.page);
+drivers/gpu/drm/ttm/ttm_bo_util.c:              map->virtual = kmap(map->page);
+drivers/infiniband/hw/qib/qib_user_sdma.c:      mpage = kmap(page);
+drivers/misc/vmw_vmci/vmci_host.c:      context->notify = kmap(context->notify_page) + (uva & (PAGE_SIZE - 1));
+drivers/misc/xilinx_sdfec.c:            addr = kmap(pages[i]);
+drivers/mmc/host/usdhi6rol0.c:  host->pg.mapped         = kmap(host->pg.page);
+drivers/mmc/host/usdhi6rol0.c:  host->pg.mapped = kmap(host->pg.page);
+drivers/mmc/host/usdhi6rol0.c:  host->pg.mapped = kmap(host->pg.page);
+drivers/nvme/target/tcp.c:              iov->iov_base = kmap(sg_page(sg)) + sg->offset + sg_offset;
+drivers/scsi/libiscsi_tcp.c:            segment->sg_mapped = kmap(sg_page(sg));
+drivers/target/iscsi/iscsi_target.c:            iov[i].iov_base = kmap(sg_page(sg)) + sg->offset + page_off;
+drivers/target/target_core_transport.c:         return kmap(sg_page(sg)) + sg->offset;
+fs/btrfs/check-integrity.c:             block_ctx->datav[i] = kmap(block_ctx->pagev[i]);
+fs/ceph/dir.c:          cache_ctl->dentries = kmap(cache_ctl->page);
+fs/ceph/inode.c:                ctl->dentries = kmap(ctl->page);
+lib/scatterlist.c:              miter->addr = kmap(miter->page) + miter->__offset;
+net/ceph/pagelist.c:    pl->mapped_tail = kmap(page);
+net/ceph/pagelist.c:            pl->mapped_tail = kmap(page);
+virt/kvm/kvm_main.c:                    hva = kmap(page);
+
