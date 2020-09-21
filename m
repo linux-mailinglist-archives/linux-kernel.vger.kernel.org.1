@@ -2,145 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1BC3271C6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 09:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D043A271C7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 09:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726395AbgIUH6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 03:58:19 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:46694 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726211AbgIUH6T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 03:58:19 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08L7sbbZ096363;
-        Mon, 21 Sep 2020 07:57:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=YfXzG6w25mEucWzb4natHpFNhban2PK9sDz621j6ZmA=;
- b=eTpmLXrFpNX7bShNafBK3KezQjC9S7oKLR1X9gcZc35faAgxYUUxMMwYBjhOU0Ms9GUq
- Ugj4XXVZIJvq38hAuxWkawKwS7jx+foiCQgMnPqVaB43aYoiowRffa+bjY+lsXLou15C
- woSvJKhX4YQGu4DqX2j4lz55+hfMlIg01YphWG+27VX5Bh/QbljmDnVDoxfXsy5nsKC+
- D5xirZhU3KcTmcgiefSSrkJZ7QBWSWGNPM4BHgcwUdEzmQDp8mOvYeCnE6XSpMvXq/yf
- O3JoqAipRnEgSBnkHfu0G4iVkZG/0n0fjZK/SkAaGRWxXqs36HWocmCUXKnLQM8BF8mA vA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 33ndnu3sjw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 21 Sep 2020 07:57:48 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08L7tnrT159229;
-        Mon, 21 Sep 2020 07:57:48 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 33nuw03sws-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 21 Sep 2020 07:57:47 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08L7viTt017210;
-        Mon, 21 Sep 2020 07:57:44 GMT
-Received: from [192.168.1.102] (/39.109.231.106)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 21 Sep 2020 00:57:44 -0700
-Subject: Re: WARNING in close_fs_devices (2)
-To:     syzbot <syzbot+4cfe71a4da060be47502@syzkaller.appspotmail.com>,
-        clm@fb.com, dsterba@suse.com, dsterba@suse.cz,
-        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <0000000000005a890b05afc67285@google.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <c46c0d04-0ab7-dc81-978a-357c117eadbc@oracle.com>
-Date:   Mon, 21 Sep 2020 15:57:38 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        id S1726539AbgIUH7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 03:59:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56554 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726367AbgIUH7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 03:59:19 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2A9C9B4FA;
+        Mon, 21 Sep 2020 07:59:51 +0000 (UTC)
+From:   Nicolai Stange <nstange@suse.de>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Willy Tarreau <w@1wt.eu>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Peter Matthias <matthias.peter@bsi.bund.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        Roman Drahtmueller <draht@schaltsekun.de>,
+        Neil Horman <nhorman@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Andy Lavr <andy.lavr@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        =?UTF-8?q?Stephan=20M=C3=BCller?= <smueller@chronox.de>,
+        Torsten Duwe <duwe@suse.de>, Petr Tesarik <ptesarik@suse.cz>,
+        Nicolai Stange <nstange@suse.de>
+Subject: [DISCUSSION PATCH 00/41] random: possible ways towards NIST SP800-90B compliance
+Date:   Mon, 21 Sep 2020 09:58:16 +0200
+Message-Id: <20200921075857.4424-1-nstange@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <0000000000005a890b05afc67285@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9750 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
- mlxscore=0 suspectscore=0 adultscore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009210057
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9750 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- lowpriorityscore=0 phishscore=0 adultscore=0 suspectscore=0 bulkscore=0
- clxscore=1011 impostorscore=0 mlxlogscore=999 mlxscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009210057
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/9/20 6:42 am, syzbot wrote:
-> syzbot has found a reproducer for the following issue on:
-> 
-> HEAD commit:    b652d2a5 Add linux-next specific files for 20200918
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=17e84b07900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3cf0782933432b43
-> dashboard link: https://syzkaller.appspot.com/bug?extid=4cfe71a4da060be47502
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=112425d9900000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1486929b900000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+4cfe71a4da060be47502@syzkaller.appspotmail.com
-> 
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 6972 at fs/btrfs/volumes.c:1172 close_fs_devices+0x715/0x930 fs/btrfs/volumes.c:1172
-> Modules linked in:
-> CPU: 1 PID: 6972 Comm: syz-executor044 Not tainted 5.9.0-rc5-next-20200918-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:close_fs_devices+0x715/0x930 fs/btrfs/volumes.c:1172
-> Code: e8 00 b8 4c fe 85 db 0f 85 65 f9 ff ff e8 93 bb 4c fe 0f 0b e9 59 f9 ff ff e8 87 bb 4c fe 0f 0b e9 c0 fe ff ff e8 7b bb 4c fe <0f> 0b e9 f9 fe ff ff 48 c7 c7 fc a1 8f 8b e8 e8 0b 8e fe e9 19 f9
-> RSP: 0018:ffffc900061b7758 EFLAGS: 00010293
-> RAX: 0000000000000000 RBX: ffffffffffffffff RCX: ffffffff83285c2c
-> RDX: ffff8880a6bbe4c0 RSI: ffffffff83285d35 RDI: 0000000000000007
-> RBP: dffffc0000000000 R08: 0000000000000000 R09: ffff8880a2be1133
-> R10: 0000000000000000 R11: 0000000000000000 R12: ffff8880a2be1130
-> R13: ffff8880a2be11ec R14: ffff888093ab0508 R15: ffff8880a2be1050
-> FS:  000000000208a880(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00000000004babec CR3: 00000000a7bc7000 CR4: 00000000001506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->   btrfs_close_devices+0x8e/0x4b0 fs/btrfs/volumes.c:1184
->   open_ctree+0x492a/0x49cf fs/btrfs/disk-io.c:3381
->   btrfs_fill_super fs/btrfs/super.c:1316 [inline]
->   btrfs_mount_root.cold+0x14/0x165 fs/btrfs/super.c:1672
->   legacy_get_tree+0x105/0x220 fs/fs_context.c:592
->   vfs_get_tree+0x89/0x2f0 fs/super.c:1547
->   fc_mount fs/namespace.c:983 [inline]
->   vfs_kern_mount.part.0+0xd3/0x170 fs/namespace.c:1013
->   vfs_kern_mount+0x3c/0x60 fs/namespace.c:1000
->   btrfs_mount+0x234/0xaa0 fs/btrfs/super.c:1732
->   legacy_get_tree+0x105/0x220 fs/fs_context.c:592
->   vfs_get_tree+0x89/0x2f0 fs/super.c:1547
->   do_new_mount fs/namespace.c:2896 [inline]
->   path_mount+0x12ae/0x1e70 fs/namespace.c:3216
->   do_mount fs/namespace.c:3229 [inline]
->   __do_sys_mount fs/namespace.c:3437 [inline]
->   __se_sys_mount fs/namespace.c:3414 [inline]
->   __x64_sys_mount+0x27f/0x300 fs/namespace.c:3414
->   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> RIP: 0033:0x44851a
-> Code: b8 08 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 cd a2 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 aa a2 fb ff c3 66 0f 1f 84 00 00 00 00 00
-> RSP: 002b:00007ffcb26bce08 EFLAGS: 00000293 ORIG_RAX: 00000000000000a5
-> RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 000000000044851a
-> RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007ffcb26bce50
-> RBP: 00007ffcb26bce90 R08: 00007ffcb26bce90 R09: 0000000020000000
-> R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000003
-> R13: 00007ffcb26bce50 R14: 0000000000000003 R15: 0000000000000001
-> 
+Hi all,
+
+first of all, my apologies for the patch bomb following up in reply to this
+mail here -- it's not meant to receive any serious review at all, but only
+to support the discussion I'm hoping to get going.
+
+As some of you might already be aware of, all new submissions for FIPS
+certification will be required to comply with NIST SP800-90B from Nov 7th
+on ([1], sec. 7.18 "Entropy Estimation and Compliance with SP 800-90B").
+For reference: broadly speaking, NIST SP800-90B is about noise sources,
+SP800-90A about the DRBG algorithms stacked on top and SP800-90C about how
+everything is supposed to be glued together. The main requirements from
+SP800-90B are
+- no correlations between different noise sources,
+- to continuously run certain health tests on a noise source's output and
+- to provide an interface enabling access to the raw noise samples for
+  validation purposes.
+
+To my knowledge, all SP800-90B compliant noise sources available on Linux
+today are either based on the Jitter RNG one way or another or on
+architectural RNGs like e.g. x86's RDSEED or arm64's RNDRRS. Currently,
+there's an in-kernel Jitter RNG implementation getting registered (c.f.
+crypto/drbg.c, (*)) with the Crypto RNG API, which is also accessible from
+userspace via AF_ALG. The userspace haveged ([2]) or jitterentropy
+integrations ([3]) are worth mentioning in this context, too. So in
+summary, I think that for the in-kernel entropy consumers falling under the
+scope of FIPS, the currently only way to stay compliant would be to draw it
+from said Crypto API RNG. For userspace applications there's the additional
+option to invoke haveged and alike.
+
+OTOH, CPU jitter based techniques are not uncontroversial ([4]). In any
+case, it would certainly be a good idea to mix (xor or whatever) any jitter
+output with entropy obtained from /dev/random (**). If I'm not mistaken,
+the mentioned Crypto API RNG implementation (crypto/drbg.c) follows exactly
+this approach, but doesn't enforce it yet: there's no
+wait_for_random_bytes() and early DRBG invocations could in principle run
+on seeds dominated entirely by jitterentropy. However, this can probably
+get sorted quite easily and thus, one reasonable way towards maintaining
+FIPS resp. SP800-90 compliance would be to
+- make crypto/drbg.c invoke wait_for_random_bytes(),
+- make all relevant in-kernel consumers to draw their random numbers from
+  the Crypto RNG API, if not already the case and
+- convert all relevant userspace to use a SP800-90B conforming Jitter RNG
+  style noise source for compliance reasons, either by invoking the
+  kernel's Crypto RNG API or by diffent means, and mix that with
+  /dev/random.
+
+Even though this would probably be feasible, I'm not sure that giving up on
+/dev/random being the primary, well established source of randomness in
+favor of each and every userspace crypto library rolling its own entropy
+collection scheme is necessarily the best solution (it might very well be
+though).
+
+An obvious alternative would be to make /dev/random conform to SP800-90B.
+Stephan Müller posted his "LRNG" patchset ([5]), in which he proposed to
+introduce a second, independent implementation aiming at SP800-90[A-C]
+conformance. However, it's in the 35th iteration now and my impression is
+that there's hardly any discussion happening around this for quite a while
+now. I haven't followed the earlier development, but I can imagine several
+reasons for that:
+- people are not really interested in FIPS or even questioning the whole
+  concept in the first place (c.f. Theodore Ts'o remarks on this topic
+  at [6]),
+- potential reviewers got merely discouraged by the diffstat or
+- people dislike the approach of having two competing implementations for
+  what is basically the same functionality in the kernel.
+
+In either case, I figured it might perhaps help further discussion to
+provide at least a rough idea of how bad the existing /dev/random
+implementation would get cluttered when worked towards SP800-90B
+compliance. So I implemented the required health tests for the interrupt
+noise source -- the resulting patches can be found in reply to this mail.
+I'd like to stress(!) that this should really only be considered a first
+step and that there would still be a long way towards a complete solution;
+known open items are listed below. Also, I'm fully aware that making those
+continuous health tests block the best effort primary_crng reseeds upon
+failure is a ridiculous thing to do -- that's again meant for demonstration
+purposes only, c.f. the commit log from the next to last patch. Anyway,
+those of you who are interested in some more details beyond the mere
+diffstat can find them after the list of references below.
+
+In summary, I can imagine three feasible ways towards SP800-90 compliance:
+1.) Put the burden on consumers. For in-kernel users this would mean
+    conversion to the Jitter backed Crypto RNG API, in case that hasn't
+    happened yet. Userspace is free to use any approved Jitter based
+    mechanism for compliance reasons, but is encouraged to mix that with
+    /dev/random.
+2.) Merge Stephan's LRNG. Users/distros would have to decide between either
+    of the two competing implementations at kernel config time.
+3.) Develop the existing /dev/random towards compliance, ideally w/o
+    affecting !fips_enabled users too much. This would likely require some
+    redundancies as well as some atrocities imposed by the specs.
+
+I'm looking forward to hearing your opinions and suggestions! In case you
+happen to know of anybody who's not on CC but might potentially be
+interested in FIPS, I'd highly appreciate it if you could point him/her to
+this thread. The usual suspects are probably (enterprise?) distro folks,
+but there might be others I haven't thought of.
+
+Many thanks for your time!
+
+Nicolai
 
 
-I am able to reproduce. And its quite strange at the moment. A devid 0 
-is being scanned. Looks like crafted image.
+(*) That's an oversimplification for the sake of brevity: actually
+    SP800-90A DRBGs stacked on top of the SP800-90B conforming
+    jitterentropy source get registered with the Crypto API.
+(**) "/dev/random" is used as a synonym for everything related to
+     drivers/char/random.c throughout this mail.
 
-[19592.946397] BTRFS: device fsid f90cac8b-044b-4fa8-8bee-4b8d3da88dc2 
-devid 0 transid 0 /dev/loop0 scanned by t (70902)
+[1] https://csrc.nist.gov/csrc/media/projects/cryptographic-module-validation-program/documents/fips140-2/fips1402ig.pdf
+[2] http://www.issihosts.com/haveged/
+[3] http://www.chronox.de/jent/doc/CPU-Jitter-NPTRNG.html
+    c.f. appendices C-E
+[4] https://lwn.net/Articles/642166/
+[5] https://lkml.kernel.org/r/5667034.lOV4Wx5bFT@positron.chronox.de
+[6] https://lkml.kernel.org/r/20170919133959.5fgtioyonlsdyjf5@thunk.org
+    https://lkml.kernel.org/r/20170920011642.cczekznqebf2zq5u@thunk.org
+[7] https://lkml.kernel.org/r/aef70b42-763f-0697-f12e-1b8b1be13b07@gmail.com
 
+
+As promised above, some more details on the RFC series sent alongside
+follow. The primary goal was to implement that health test functionality as
+required by SP800-90B for the existing drivers/char/random.c without
+affecting !fips_enabled users in any way. As outlined below, I failed quite
+miserably as far as performance is concerned, but that shouldn't be
+something which cannot get rectified. Kernel version v5.9-rc4 had been used
+as a basis. The series can be logically subdivided into the following
+parts:
+- [1-5]: Preparatory cleanup.
+- [6-17]: Implement support for deferring entropy credit dispatch to the
+  global balance to long after the corresponding pool mixing operation has
+  taken place. Needed for "holding back" entropy until the health tests
+  have finished on the latest pending batch of samples.
+- [18-21]: Move arch_get_random_{seed_,}long() out of the interrupt path.
+  Needed to adhere to how SP800-90C expects multiple noise source to get
+  combined, but is also worthwhile on its own from a performance POV.
+- [22-23]: Don't award entropy to non-SP800-90B conforming architectural
+  RNGs if fips_enabled is set.
+- [24]: Move rand_initialize() to after time_init(). A "fix" for what is
+  currently a non-issue, but it's a prerequisite for the subsequent patch.
+- [25]: Detect cycle counter resolution, subsequently needed for making a
+  per-IRQ entropy assessment.
+- [26-28]: Follow Stephan's LRNG approach in how much entropy gets
+  awarded to what: a lot more than before to add_interrupt_randomness(),
+  none to add_{disk,input}_randomness() anymore.
+- [29-33]: Introduce empty health test stubs and wire them up to
+  add_interrupt_randomness().
+- [34-36]: Implement the Adaptive Proportion Test (APT) as specified by
+  SP800-90B and squeeze some more statistical power out of it.
+- [37]: Implement SP800-90B's Repetition Count Test (RCT).
+- [38-40]: Implement the startup tests, which are nothing but the
+  continuous tests (APT + RCT) run on a specified amount of samples at
+  boot time.
+- [41]: Attempt to keep the system going in case the entropy estimate
+  had been too optimistic and the health tests keep failing.
+
+As the health tests are run from interrupt context on each sample, a
+performance measurement is due. To this end, I configured a Raspberry Pi 2B
+(ARMv7 Cortex A7) to disable all peripherals, gated a
+19.2 MHz / 2048 ~= 9.3 kHz clock signal to some edge triggered GPIO and
+function_graph traced add_interrupt_randomness() for 10 min from a busybox
+initramfs. Unfortunately, the results had been a bit disappointing: with
+fips_enabled being unset there had been a runtime degradation of ~12.5% w/o
+SMP and ~5% w/ SMP resp. on average merely due to the application of the
+patches onto the v5.9-rc4 base. However, as the amount of work should not
+have changed much and given that struct fast_pool still fits into a single
+cacheline, I'm optimistic that this can get rectified by e.g. introducing
+a static_key for fips_enabled and perhaps shuffling branches a bit such
+that the !fips_enabled code becomes more linear. OTOH, the impact of
+enabling the health tests by means of setting fips_enabled had not been so
+dramatic: the observed increase in average add_interrupt_randomness()
+runtimes had been 6% w/o SMP and 5% w/ SMP respectively.
+
+Apart from those well controlled experiments on a RPi, I also did some
+lax benchmarking on my x86 desktop (which has some Intel i9, IIRC).
+More specifically, I simply didn't touch the system and ftraced
+add_interrupt_randomness() for 15 mins. The number of captured events had
+been about 2000 in each configuration. Here the add_interrupt_randomness()
+performance improved greatly: from 4.3 us on average w/o the patches down
+to 2.0 us with the patches applied and fips_enabled. However, I suppose
+this gain was due to the removal of RDSEED from add_interrupt_randomness().
+Indeed, when inspecting the distribution of add_interrupt_randomness()
+runtimes on plain v5.9-rc4 more closely, it can be seen that there's a
+good portion of events (about 1/4th) where add_interrupt_randomness() took
+about 10us. So I think that this comparison isn't really a fair one...
+
+
+To the best of my knowledge, these are the remaining open questions/items
+towards full SP800-90[A-C] compliance:
+- There's no (debugfs?) interface for accessing raw samples for validation
+  purposes yet. That would be doable though.
+- try_to_generate_entropy() should probably get wired up to the health
+  tests as well. More or less straightfoward to implement, too.
+- Diverting fast_pool contents into net_rand_state is not allowed (for a
+  related discussion on this topic see [7]).
+- I've been told that SP800-90A is not a hard requirement yet, but I
+  suppose it will eventually become one. This would mean that the chacha20
+  RNG would have to get replaced by something approved for fips_enabled.
+- The sequence of fast_pool -> input_pool -> extract_buf() operations
+  is to be considered a "non-vetted conditioning component" in SP800-90B
+  speak. It would follow that the output can't be estimated as having full
+  entropy, but only 0.999 of its length at max. (c.f. sec. 3.1.5.2). This
+  could be resolved by running a SP800-90A derivation function at CRNG
+  reseeding for fips_enabled. extract_buf(), which is already SHA1 based,
+  could perhaps be transformed into such one as well.
+- The only mention of combining different noise sources I was able to find
+  had been in SP800-90C, sec. 5.3.4 ("Using Multiple Entropy Sources"):
+  it clearly states that the outputs have to be combined by concatenation.
+  add_hwgenerator_randomness() mixes into the same input_pool as
+  add_interrupt_randomness() though and I would expect that this isn't
+  allowed, independent of whether the noise source backing the former
+  is SP800-90B compliant or not. IIUC, Stephan solved this for his LRNG
+  by maintaing a separate pool for the hw generator.
+- SP800-90A sets an upper bound on how many bits may be drawn from a
+  DRBG/crng before a reseed *must* take place ("reseed_interval"). In
+  principle that shouldn't matter much in practice, at least not with
+  CONFIG_NUMA: with reseed_interval == 2^32 bits, a single CRNG instance
+  would be allowed to hand out only 500MB worth of randomness before
+  reseeding, but a (single) numa crng chained to the primary_crng may
+  produce as much as 8PB before the latter must eventually get reseeded
+  from the input_pool. But AFAICT, a SP800-90A conforming implementation
+  would still have to provide provisions for a blocking extract_crng().
+- It's entirely unclear to me whether support for "prediction resistance
+  requests" is optional. It would be a pity if it weren't, because IIUC
+  that would effectively imply a return to the former blocking_pool
+  behaviour, which is obviously a no-no.
+
+
+Nicolai Stange (41):
+  random: remove dead code in credit_entropy_bits()
+  random: remove dead code for nbits < 0 in credit_entropy_bits()
+  random: prune dead assignment to entropy_bits in credit_entropy_bits()
+  random: drop 'reserved' parameter from extract_entropy()
+  random: don't reset entropy to zero on overflow
+  random: factor the exponential approximation in credit_entropy_bits()
+    out
+  random: let pool_entropy_delta() take nbits in units of
+    2^-ENTROPY_SHIFT
+  random: introduce __credit_entropy_bits_fast() for hot paths
+  random: protect ->entropy_count with the pool spinlock
+  random: implement support for delayed entropy dispatching
+  random: convert add_timer_randomness() to queued_entropy API
+  random: convert add_interrupt_randomness() to queued_entropy API
+  random: convert try_to_generate_entropy() to queued_entropy API
+  random: drop __credit_entropy_bits_fast()
+  random: convert add_hwgenerator_randomness() to queued_entropy API
+  random: convert random_ioctl() to queued_entropy API
+  random: drop credit_entropy_bits() and credit_entropy_bits_safe()
+  random: move arch_get_random_seed() calls in crng_reseed() into own
+    loop
+  random: reintroduce arch_has_random() + arch_has_random_seed()
+  random: provide min_crng_reseed_pool_entropy()
+  random: don't invoke arch_get_random_long() from
+    add_interrupt_randomness()
+  random: introduce arch_has_sp800_90b_random_seed()
+  random: don't award entropy to non-SP800-90B arch RNGs in FIPS mode
+  init: call time_init() before rand_initialize()
+  random: probe cycle counter resolution at initialization
+  random: implement support for evaluating larger fast_pool entropies
+  random: increase per-IRQ event entropy estimate if in FIPS mode
+  random: don't award entropy to disk + input events if in FIPS mode
+  random: move definition of struct queued_entropy and related API
+    upwards
+  random: add a queued_entropy instance to struct fast_pool
+  random: introduce struct health_test + health_test_reset()
+    placeholders
+  random: introduce health test stub and wire it up
+  random: make health_test_process() maintain the get_cycles() delta
+  random: implement the "Adaptive Proportion" NIST SP800-90B health test
+  random: improve the APT's statistical power
+  random: optimize the APT's presearch
+  random: implement the "Repetition Count" NIST SP800-90B health test
+  random: enable NIST SP800-90B startup tests
+  random: make the startup tests include muliple APT invocations
+  random: trigger startup health test on any failure of the health tests
+  random: lower per-IRQ entropy estimate upon health test failure
+
+ arch/arm64/include/asm/archrandom.h   |   33 +-
+ arch/powerpc/include/asm/archrandom.h |   17 +-
+ arch/s390/include/asm/archrandom.h    |   19 +-
+ arch/x86/include/asm/archrandom.h     |   26 +-
+ drivers/char/random.c                 | 1141 ++++++++++++++++++++++---
+ include/linux/random.h                |   17 +
+ init/main.c                           |    2 +-
+ 7 files changed, 1101 insertions(+), 154 deletions(-)
+
+--
+SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 Nürnberg, Germany
+(HRB 36809, AG Nürnberg), GF: Felix Imendörffer
+
+-- 
+2.26.2
 
