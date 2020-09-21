@@ -2,127 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 487E227213A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 601FF272141
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726812AbgIUKeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:34:17 -0400
-Received: from mail-il1-f208.google.com ([209.85.166.208]:39041 "EHLO
-        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726522AbgIUKeR (ORCPT
+        id S1726567AbgIUKfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:35:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726333AbgIUKfl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 06:34:17 -0400
-Received: by mail-il1-f208.google.com with SMTP id r10so9409804ilq.6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:34:16 -0700 (PDT)
+        Mon, 21 Sep 2020 06:35:41 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52BB1C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:35:41 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id d20so14417117qka.5
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:35:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PLztuyb5KZBoqqMXOyncGGUkQM8zZk81TCoj2WHVkLI=;
+        b=h87IXZy2ti0rW5qecnm+lcfDu5zUGNbUaTV8iS9AaJS/aIOWDHbsl6w+kUCMDXCm89
+         i+9dgsnnU2Z8B7MdT3GXgT8td6JWisaYwjT6pWklvxOmkdkaH4HQ21qbhCQNE9JncuPQ
+         sRDx76mU6E6yirmxUBBAjntzDg3HFM6rPcvRzEP3yihezPRaioEEiblFfSa7PtbHecux
+         SU08pZYS/3TfGa9ZVbnISRamZpxBAvkiJ3Q1oj48SfG5vKkHc32QnUh43R+T1R9eTF2X
+         jaX8jGFHDyccncc1xrQfEV/5La9OObCF8mak44IhqADRG0+ESSQL+zA17Axh4Z6HXUCY
+         314Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=ujdV3lelgEnkMcIAD2F2K3sV2UTSXwNq4UDGGg9DBXI=;
-        b=R0f0kfBkEL2xamf4HNZBjJYvM3JMPuiZWUHjQaGxEJLYkYr1p/3IwEPZaJcOPbJrqD
-         O7jOxWuVLUQ18Z4B31kWZ5UwjrokMrGmRxU+bwEo3AGTwkla8r8762ymoP4CA8SYBWaj
-         g0zdj+w5O0ZmVEe0pibAu0FQCaQxmOEgeg+GMgp9aczDrkhFxQMWBlFZOySM+41qfAZx
-         NjkPnukdktMt8QEg+W++ntSFM/vsSXZC7TkefE8gGFvUeoQ3LV9uGDH3O9oma3SLlse0
-         U0Kq8/fNmaVwbPNuEUQ2BqAwBWzLzM5dkdzGeMjfRr5Nm6uxYkektcq5KwpgrlFz2YyJ
-         uOjA==
-X-Gm-Message-State: AOAM533Ho5+166NdmzeVeGxnt8DdeXxE88RgxqL1hC6bmPP5x6jjy3Eu
-        bhu0pUrnBhkUXNGEcUScOM3NxBkX6Yli5dx6iIkgDZijjQtX
-X-Google-Smtp-Source: ABdhPJwlT3RkwZe2iYfwPboSxC5hK7hDqspKmfWWEfHDh3ywv+gnA3mMM4x1Cfx+KHfOBgI4+ZbFeX0JejME5PLcp0RqPKjpo6yV
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PLztuyb5KZBoqqMXOyncGGUkQM8zZk81TCoj2WHVkLI=;
+        b=VI9/llmk80XwFMvirOP/gAmthf4XCue0WRZ/5i5PjD/HAzak2t5v5fSsj/44nBSvun
+         kGEB5bvnzjrg4BWvL6lAVdPl6laxHJcpdqdJcXguXvWsrH29hmd3iQXKNC/f4oy9x0oi
+         ld5RXyWKnYLGp7SLPgDGbylkjm5DXuhcDFYOW+JNcJnphIg/HPoQUF2XOREbmRY9mJCM
+         AmdSHDxb9zr5wFnnwIJGjnzYVn2/Ps5A58+UB9WPM0rXfcxQdvmT1Beaep3ybIi+MotK
+         LlmoLIehsNEz42C/PyLSDhWD5/zxbJZyTWHEpNjtDR9Ud7HMHrvfFNjGhqovbwJFxloi
+         GBHA==
+X-Gm-Message-State: AOAM530olaAhk77TGTXnlpq+Fw3DQcgSghFXWk46hhSnsKHGU4r3EcOv
+        +HzfniMeFHPDgdh4/5i+4Cko91rFD8dRjgRHkoJi3g==
+X-Google-Smtp-Source: ABdhPJwQaE/SdllHpWILPtp5pZLVMuwYenRYLk9LCIXvyrdaSqxxSYw0HgNauj/eKWgGqOeeUnDJsMw1d8ll2j0YEcs=
+X-Received: by 2002:a37:a785:: with SMTP id q127mr43112403qke.256.1600684540203;
+ Mon, 21 Sep 2020 03:35:40 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:d07:: with SMTP id g7mr32966340ilj.63.1600684456151;
- Mon, 21 Sep 2020 03:34:16 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 03:34:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000680f2905afd0649c@google.com>
-Subject: BUG: unable to handle kernel paging request in bpf_trace_run2
-From:   syzbot <syzbot+cc36fd07553c0512f5f7@syzkaller.appspotmail.com>
-To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org, mingo@redhat.com,
-        netdev@vger.kernel.org, rostedt@goodmis.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
+References: <000000000000643b2605afd064d7@google.com>
+In-Reply-To: <000000000000643b2605afd064d7@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 21 Sep 2020 12:35:29 +0200
+Message-ID: <CACT4Y+aVj9QkKdPHFVAJNvHu+RKX5SxYTV1p=TTND+upJ818aw@mail.gmail.com>
+Subject: Re: BUG: unable to handle kernel NULL pointer dereference in map_vdso
+To:     syzbot <syzbot+9d25c706da4558b9f11a@syzkaller.appspotmail.com>
+Cc:     Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Sep 21, 2020 at 12:34 PM syzbot
+<syzbot+9d25c706da4558b9f11a@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    92ab97ad Merge tag 'sh-for-5.9-part2' of git://git.libc.or..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=162d70d3900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=cd992d74d6c7e62
+> dashboard link: https://syzkaller.appspot.com/bug?extid=9d25c706da4558b9f11a
+> compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+9d25c706da4558b9f11a@syzkaller.appspotmail.com
+>
+> BUG: kernel NULL pointer dereference, address: 0000000000000000
+> #PF: supervisor write access in kernel mode
+> #PF: error_code(0x0002) - not-present page
+> PGD 0 P4D 0
+> Oops: 0002 [#1] PREEMPT SMP KASAN
+> CPU: 0 PID: 5029 Comm: systemd-rfkill Not tainted 5.9.0-rc5-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:map_vdso+0x1ea/0x270 arch/x86/entry/vdso/vma.c:308
+> Code: 24 31 c9 e8 88 7c a7 00 eb 7a 4c 8b 74 24 28 43 80 3c 3e 00 48 8b 5c 24 08 74 08 4c 89 ef e8 4d 00 00 00 00 20 05 00 00 49 03 <6d> 00 48 89 e8 48 c1 e8 03 42 80 3c 38 00 74 08 48 89 ef e8 ae 64
+> RSP: 0018:ffffc90016bafb98 EFLAGS: 00010282
+> RAX: 00000000ab3c6738 RBX: ffff888056ebc538 RCX: ffff888093622440
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> RBP: ffff888056ebc480 R08: ffffffff81912471 R09: fffffbfff131e57c
+> R10: fffffbfff131e57c R11: 0000000000000000 R12: 00007fffda9dc000
+> R13: ffff888093622868 R14: 1ffff110126c450d R15: dffffc0000000000
+> FS:  0000000000000000(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000000000000 CR3: 000000008fac6000 CR4: 00000000001526f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  load_elf_binary+0x2e90/0x48a0 fs/binfmt_elf.c:1221
+>  search_binary_handler fs/exec.c:1819 [inline]
+>  exec_binprm fs/exec.c:1860 [inline]
+>  bprm_execve+0x919/0x1500 fs/exec.c:1931
+>  do_execveat_common+0x487/0x5f0 fs/exec.c:2026
+>  do_execve fs/exec.c:2094 [inline]
+>  __do_sys_execve fs/exec.c:2170 [inline]
+>  __se_sys_execve fs/exec.c:2165 [inline]
+>  __x64_sys_execve+0x8e/0xa0 fs/exec.c:2165
+>  do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x7f8127340647
+> Code: Bad RIP value.
+> RSP: 002b:00007ffc7b57dbf8 EFLAGS: 00000246 ORIG_RAX: 000000000000003b
+> RAX: ffffffffffffffda RBX: 000055a0c9286d40 RCX: 00007f8127340647
+> RDX: 000055a0c9307440 RSI: 000055a0c91cd210 RDI: 000055a0c924e9a0
+> RBP: 00007ffc7b57dd60 R08: 000000000000fe00 R09: 0000000000000030
+> R10: 000055a0c9239740 R11: 0000000000000246 R12: 000055a0c91e1228
+> R13: 0000000000000000 R14: 000055a0c91cd210 R15: 00007ffc7b57de40
+> Modules linked in:
+> CR2: 0000000000000000
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-syzbot found the following issue on:
+Another clang-only crash that may be related to these ones:
 
-HEAD commit:    70b97111 bpf: Use hlist_add_head_rcu when linking to local..
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1375823d900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7e0ca96a9b6ee858
-dashboard link: https://syzkaller.appspot.com/bug?extid=cc36fd07553c0512f5f7
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+cc36fd07553c0512f5f7@syzkaller.appspotmail.com
-
-BUG: unable to handle page fault for address: ffffc90001bca030
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD aa000067 P4D aa000067 PUD aa169067 PMD a930f067 PTE 0
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 3912 Comm: systemd-udevd Not tainted 5.9.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:bpf_dispatcher_nop_func include/linux/bpf.h:613 [inline]
-RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:1937 [inline]
-RIP: 0010:bpf_trace_run2+0x12e/0x3d0 kernel/trace/bpf_trace.c:1974
-Code: f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 8e 02 00 00 48 8d 73 38 48 8d 7c 24 28 <ff> 53 30 e8 ca 02 f7 ff e8 55 fb 86 06 31 ff 89 c3 89 c6 e8 1a ff
-RSP: 0018:ffffc90005257e90 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffffc90001bca000 RCX: ffffffff817f7778
-RDX: 0000000000000000 RSI: ffffc90001bca038 RDI: ffffc90005257eb8
-RBP: 1ffff92000a4afd3 R08: 0000000000000000 R09: ffffffff8ce329e7
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
-R13: ffffc90005257f58 R14: 0000000000000000 R15: 0000000000000000
-FS:  00007f32dd08f8c0(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffc90001bca030 CR3: 00000000a2fb8000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- trace_sys_enter include/trace/events/syscalls.h:18 [inline]
- syscall_trace_enter kernel/entry/common.c:64 [inline]
- syscall_enter_from_user_mode+0x22c/0x290 kernel/entry/common.c:82
- do_syscall_64+0xf/0x70 arch/x86/entry/common.c:41
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x7f32dbf022e2
-Code: 48 8b 05 b9 db 2b 00 64 c7 00 16 00 00 00 b8 ff ff ff ff c3 0f 1f 40 00 83 ff 01 77 33 48 63 fe b8 05 00 00 00 48 89 d6 0f 05 <48> 3d 00 f0 ff ff 77 06 f3 c3 0f 1f 40 00 48 8b 15 81 db 2b 00 f7
-RSP: 002b:00007fff10a5d048 EFLAGS: 00000246 ORIG_RAX: 0000000000000005
-RAX: ffffffffffffffda RBX: 0000000000000010 RCX: 00007f32dbf022e2
-RDX: 00007fff10a5d050 RSI: 00007fff10a5d050 RDI: 0000000000000010
-RBP: 00007f32dd08f710 R08: 00005630652cd480 R09: 0000000000001010
-R10: 00007f32dc1c0b58 R11: 0000000000000246 R12: 0000000000000000
-R13: 00005630652c69c0 R14: 00000000000000fe R15: 00005630652c69c0
-Modules linked in:
-CR2: ffffc90001bca030
----[ end trace 105c336028757ea7 ]---
-RIP: 0010:bpf_dispatcher_nop_func include/linux/bpf.h:613 [inline]
-RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:1937 [inline]
-RIP: 0010:bpf_trace_run2+0x12e/0x3d0 kernel/trace/bpf_trace.c:1974
-Code: f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 8e 02 00 00 48 8d 73 38 48 8d 7c 24 28 <ff> 53 30 e8 ca 02 f7 ff e8 55 fb 86 06 31 ff 89 c3 89 c6 e8 1a ff
-RSP: 0018:ffffc90005257e90 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffffc90001bca000 RCX: ffffffff817f7778
-RDX: 0000000000000000 RSI: ffffc90001bca038 RDI: ffffc90005257eb8
-RBP: 1ffff92000a4afd3 R08: 0000000000000000 R09: ffffffff8ce329e7
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
-R13: ffffc90005257f58 R14: 0000000000000000 R15: 0000000000000000
-FS:  00007f32dd08f8c0(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffc90001bca030 CR3: 00000000a2fb8000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+https://syzkaller.appspot.com/bug?extid=ce179bc99e64377c24bc
+https://syzkaller.appspot.com/bug?extid=1dccfcb049726389379c
