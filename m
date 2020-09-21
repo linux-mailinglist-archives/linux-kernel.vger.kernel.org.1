@@ -2,160 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5BF272AC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B84C8272ACA
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727677AbgIUPxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 11:53:52 -0400
+        id S1727857AbgIUPx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 11:53:56 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727030AbgIUPxv (ORCPT
+        with ESMTP id S1727062AbgIUPxv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 21 Sep 2020 11:53:51 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EB0FC0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 08:53:51 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id gf14so4365pjb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 08:53:51 -0700 (PDT)
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1F59C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 08:53:50 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id z1so13346010wrt.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 08:53:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Fn5z5p0KWkT8F7kdqXLtUSD00/eNhULjEnaQyt7HO3c=;
-        b=wS3DJbGh/toEWGHMWfIYAyfl62a2xPnkTm7cNhPym3mzQxK28qL+kZCrSZggBSROXa
-         NIIsRsLPprRNfrNxq/O7SgGIAQv+11RPoBUmYfVay0H+wQrvpSFqZGCCwczoE0PI3NwM
-         BajK6bGuvdWSOxCULPkkElyJinqDQbfrg3BX4qxe0nSoLtxoqCUZ4DYY8jlgM9XNnsxV
-         m952IZLwDFx/YDBae5MI6BosCFQlIVPnADU67SRlbPRPa3XZPP99q/tE/mqTrWmaFUGB
-         Cr7PUOGoUwpYEL9jPXyQWHhnShzEybRi2A7whxiV331Jx4G8BVdc/1kDmDMbH8AHeYn9
-         IaBA==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KTBpsSohstfdxMCBUF81EcDDdz06RoEyYMuNoZotyCo=;
+        b=famILgKo1O88xDk5AaXOek1uxyqZObcL9K6qvjo0azlyjsg7v7iDgG9+PGPL8NcU9w
+         2/m2NQTTomJgdDPXlhkkewzzopjPRU3Q9dOXfkCQ8LoKknK8z9PJNKkph5lQUD+fdU8F
+         Jdih1cwR+CG3Jbdn20qourw/iguPUz++2PjGeSFmXqHaR/0JNN7dp0ND1NZOfIfh1kBx
+         wSHdRBJeUKD41c3q8VVI+NTmGxlmkUaQ9FlvoWEJdS/NR3r00n4qX9Fgow9RFRPCDgnk
+         1gKVdq6e1DFOseXsXbUReVAyX+Coa6hGPo4da7o+ISqXnHgIo6cBb1KDfStXwEi3TTH3
+         oR+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Fn5z5p0KWkT8F7kdqXLtUSD00/eNhULjEnaQyt7HO3c=;
-        b=mY9AToWa1bfRCnPpqK0Cewb0qz87LO5Mw+rKpa8cVwuS9RScl3SSwXo6FAhieXWlA8
-         tg1CHvmDYxd8OdLEZJKlD04D1Z10KvRBfkI4+KSpaSVc54JrPQKK2PExWMd/GzmVHgAV
-         2t44Q5uewgXDefG26YMuRygW5eIPA6yflQEV/kbKZqzSxuHl0uAG2OkX/0zkaGdDymEy
-         TFgxSVdVuSPvUxFda00fo124/YHoaaP/RJ3YHpp8Yaa6r73I7ghKbpkQ5/tfC50xfu3b
-         nq2OsB0RuQJ1IGQL3y+zN0cP8UxYtKHkko9IVfzHi2GxWzc6G0sV3VMO49ucsecTrw+3
-         CJ4Q==
-X-Gm-Message-State: AOAM530i/gLAEwzQHUkbhgShP9FeCIvIIVXCn0oczodPGwE582d6lkw0
-        vALMnmNGtvQjwF91DNWELIt/6mJ/yJlOCvs5BmJF8A==
-X-Google-Smtp-Source: ABdhPJxEx7C1NCFiroHZ1htfv1qkh42nY8oGzcnOH06wOhFq2SsYUT8w4mdvW5J7C4BtXsEWH+72M+TnlFjXmM5sSRs=
-X-Received: by 2002:a17:90b:889:: with SMTP id bj9mr28426pjb.101.1600703630255;
- Mon, 21 Sep 2020 08:53:50 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KTBpsSohstfdxMCBUF81EcDDdz06RoEyYMuNoZotyCo=;
+        b=katUY1+wmXGAQlyI0mE1PVDTQTPSzN1+BWz8rA7sv9F/t3+8XvKF/pf4LRMdDUxt2+
+         5pBSeYzuHFBqC8VNAU0WiFB690lk7ewfcDvXXlaCTFVIR/0s+EvfBwddc4AIhzno+9Sg
+         XdL+MeI6gbddthW+bPI2FDCjzShhwrNUs7Sqo9pm7ZVtT9O9dLPmA7dAVjKaMQhZlHcB
+         //8Uk09bUJ0Asl7F7TpAkxNdj4RuqMpRyLSA1ibqV507QooBcy1EcDlolbzzZwWZgOU6
+         D94soT7tco4bxzUYry02ARbEspbrAM8t/774lZm9PWfOb2/L+OBIi+8C2aP+e99XNnFt
+         BYng==
+X-Gm-Message-State: AOAM530lkcJ6hvSIE/rhXLHRgz3O/bH2n/XKWVYmB+Ci/XOAdQcbTCfu
+        qgQR4Ldg/7z2L/670w7xISXgzQ==
+X-Google-Smtp-Source: ABdhPJyNCd7UpIRBrJBPlKXwCCU7poZm1KA+CUVsd8NiT+RLNIDpMICY3MKvb+cogfmje7NojwyJWw==
+X-Received: by 2002:a5d:4104:: with SMTP id l4mr437511wrp.396.1600703629473;
+        Mon, 21 Sep 2020 08:53:49 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:f173:2b51:521d:d30b? ([2a01:e34:ed2f:f020:f173:2b51:521d:d30b])
+        by smtp.googlemail.com with ESMTPSA id l4sm19642474wme.43.2020.09.21.08.53.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Sep 2020 08:53:48 -0700 (PDT)
+Subject: Re: [PATCH 0/3] powercap: Enable RAPL for AMD Fam17h
+To:     Victor Ding <victording@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jan Beulich <jbeulich@suse.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Vineela Tummalapalli <vineela.tummalapalli@intel.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+References: <20200729105206.2991064-1-victording@google.com>
+ <CAJZ5v0jfMAi2UjvwjYG6=hytGeHZkuaeNEsu+oaz8tEMcuHnPg@mail.gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <29fb8ba3-8f7c-7736-201e-fec1b0a0d702@linaro.org>
+Date:   Mon, 21 Sep 2020 17:53:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200918201436.2932360-1-samitolvanen@google.com> <20200918201436.2932360-4-samitolvanen@google.com>
-In-Reply-To: <20200918201436.2932360-4-samitolvanen@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 21 Sep 2020 08:53:39 -0700
-Message-ID: <CAKwvOdk7pR5dK0ynxPOWHVYVWLMF1CUn6c=_GvpF-80YHNhQEQ@mail.gmail.com>
-Subject: Re: [PATCH v3 03/30] x86/boot/compressed: Disable relocation relaxation
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAJZ5v0jfMAi2UjvwjYG6=hytGeHZkuaeNEsu+oaz8tEMcuHnPg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It looks like this just hit mainline over the weekend. FWIW. EOM.
+On 21/09/2020 17:51, Rafael J. Wysocki wrote:
+> On Wed, Jul 29, 2020 at 12:52 PM Victor Ding <victording@google.com> wrote:
+>>
+>> This patch series adds support for AMD Fam17h RAPL counters. As per
+>> AMD PPR, Fam17h support RAPL counters to monitor power usage. The RAPL
+>> counter operates as with Intel RAPL. Therefore, it is beneficial to
+>> re-use existing framework for Intel, especially to allow existing tools
+>> to seamlessly run on AMD.
+>>
+>> From the user's point view, this series enables the following two sysfs
+>> entry on AMD Fam17h:
+>>   /sys/class/powercap/intel-rapl/intel-rapl:0/energy_uj
+>>   /sys/class/powercap/intel-rapl/intel-rapl:0/intel-rapl:0:0/energy_uj
+>>
+>>
+>> Victor Ding (3):
+>>   x86/msr-index: sort AMD RAPL MSRs by address
+> 
+> I haven't received this patch.
+> 
+> Any chance to resend the entire series with a CC to linux-pm?
 
-On Fri, Sep 18, 2020 at 1:14 PM Sami Tolvanen <samitolvanen@google.com> wrote:
->
-> From: Arvind Sankar <nivedita@alum.mit.edu>
->
-> The x86-64 psABI [0] specifies special relocation types
-> (R_X86_64_[REX_]GOTPCRELX) for indirection through the Global Offset
-> Table, semantically equivalent to R_X86_64_GOTPCREL, which the linker
-> can take advantage of for optimization (relaxation) at link time. This
-> is supported by LLD and binutils versions 2.26 onwards.
->
-> The compressed kernel is position-independent code, however, when using
-> LLD or binutils versions before 2.27, it must be linked without the -pie
-> option. In this case, the linker may optimize certain instructions into
-> a non-position-independent form, by converting foo@GOTPCREL(%rip) to $foo.
->
-> This potential issue has been present with LLD and binutils-2.26 for a
-> long time, but it has never manifested itself before now:
-> - LLD and binutils-2.26 only relax
->         movq    foo@GOTPCREL(%rip), %reg
->   to
->         leaq    foo(%rip), %reg
->   which is still position-independent, rather than
->         mov     $foo, %reg
->   which is permitted by the psABI when -pie is not enabled.
-> - gcc happens to only generate GOTPCREL relocations on mov instructions.
-> - clang does generate GOTPCREL relocations on non-mov instructions, but
->   when building the compressed kernel, it uses its integrated assembler
->   (due to the redefinition of KBUILD_CFLAGS dropping -no-integrated-as),
->   which has so far defaulted to not generating the GOTPCRELX
->   relocations.
->
-> Nick Desaulniers reports [1,2]:
->   A recent change [3] to a default value of configuration variable
->   (ENABLE_X86_RELAX_RELOCATIONS OFF -> ON) in LLVM now causes Clang's
->   integrated assembler to emit R_X86_64_GOTPCRELX/R_X86_64_REX_GOTPCRELX
->   relocations. LLD will relax instructions with these relocations based
->   on whether the image is being linked as position independent or not.
->   When not, then LLD will relax these instructions to use absolute
->   addressing mode (R_RELAX_GOT_PC_NOPIC). This causes kernels built with
->   Clang and linked with LLD to fail to boot.
->
-> Patch series [4] is a solution to allow the compressed kernel to be
-> linked with -pie unconditionally, but even if merged is unlikely to be
-> backported. As a simple solution that can be applied to stable as well,
-> prevent the assembler from generating the relaxed relocation types using
-> the -mrelax-relocations=no option. For ease of backporting, do this
-> unconditionally.
->
-> [0] https://gitlab.com/x86-psABIs/x86-64-ABI/-/blob/master/x86-64-ABI/linker-optimization.tex#L65
-> [1] https://lore.kernel.org/lkml/20200807194100.3570838-1-ndesaulniers@google.com/
-> [2] https://github.com/ClangBuiltLinux/linux/issues/1121
-> [3] https://reviews.llvm.org/rGc41a18cf61790fc898dcda1055c3efbf442c14c0
-> [4] https://lore.kernel.org/lkml/20200731202738.2577854-1-nivedita@alum.mit.edu/
->
-> Reported-by: Nick Desaulniers <ndesaulniers@google.com>
-> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-> Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-> Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: stable@vger.kernel.org
-> ---
->  arch/x86/boot/compressed/Makefile | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
-> index 3962f592633d..ff7894f39e0e 100644
-> --- a/arch/x86/boot/compressed/Makefile
-> +++ b/arch/x86/boot/compressed/Makefile
-> @@ -43,6 +43,8 @@ KBUILD_CFLAGS += -Wno-pointer-sign
->  KBUILD_CFLAGS += $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
->  KBUILD_CFLAGS += -fno-asynchronous-unwind-tables
->  KBUILD_CFLAGS += -D__DISABLE_EXPORTS
-> +# Disable relocation relaxation in case the link is not PIE.
-> +KBUILD_CFLAGS += $(call as-option,-Wa$(comma)-mrelax-relocations=no)
->
->  KBUILD_AFLAGS  := $(KBUILD_CFLAGS) -D__ASSEMBLY__
->  GCOV_PROFILE := n
-> --
-> 2.28.0.681.g6f77f65b4e-goog
->
+Is it possible to add me in Cc too ?
+
+Thanks
+
+
 
 
 -- 
-Thanks,
-~Nick Desaulniers
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
