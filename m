@@ -2,136 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 315B8271F11
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 11:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54E97271F17
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 11:42:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726454AbgIUJlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 05:41:22 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46850 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726333AbgIUJlV (ORCPT
+        id S1726471AbgIUJmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 05:42:44 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:45130 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726413AbgIUJmn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 05:41:21 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08L9Y8fk074423;
-        Mon, 21 Sep 2020 05:41:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=LEBz9TEx8uiFEPQqwx50Y1lcY4tdxdDUdEoGP0NDXDg=;
- b=F1ob1yrf0Y6/Rmv7hv95/yw8TZ1rfGfmnJZ4uUfIok3VEGmEViVRZmqh36IrgnNBSmsR
- 7a4S6Ira+h90T2k/fACErrLQKWr0k0pMA2MABKcgz/gQ1iHHoV+/rnF8p9padbKrVP93
- 6ES6kchi0iLhsUF/K11mozr2+Q84cro6A1laYIW4HfkpMOwpu1AIJFna6yz7GdzNd8ez
- 7tlBQtxOLfGGQd3faPDcVts2EYsaCV6rzKvzODNVbyJb7l3Xf3x3dVUTqSd14vA5bU4B
- nvebWvJofVwzUwxKDFYRnfsEmxejuA8Uc7KY4O5ABuglqQbabWXAyNAi45ZtGi6Mywxn EA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33psbtgr44-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Sep 2020 05:41:20 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08L9ZD8I080070;
-        Mon, 21 Sep 2020 05:41:20 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33psbtgr2f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Sep 2020 05:41:20 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08L9S71O013874;
-        Mon, 21 Sep 2020 09:41:18 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma05fra.de.ibm.com with ESMTP id 33n9m7ry0q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Sep 2020 09:41:17 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08L9fFpN25100636
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 21 Sep 2020 09:41:15 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F3AFAA405F;
-        Mon, 21 Sep 2020 09:41:14 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 64763A405C;
-        Mon, 21 Sep 2020 09:41:14 +0000 (GMT)
-Received: from oc5500677777.ibm.com (unknown [9.145.29.18])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 21 Sep 2020 09:41:14 +0000 (GMT)
-Subject: Re: [PATCH 2/4] s390/pci: track whether util_str is valid in the
- zpci_dev
-To:     Matthew Rosato <mjrosato@linux.ibm.com>,
-        alex.williamson@redhat.com, cohuck@redhat.com
-Cc:     pmorel@linux.ibm.com, borntraeger@de.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, gerald.schaefer@linux.ibm.com,
-        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1600529318-8996-1-git-send-email-mjrosato@linux.ibm.com>
- <1600529318-8996-3-git-send-email-mjrosato@linux.ibm.com>
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-Message-ID: <d1bc0e6b-2a9b-3de0-4dd6-59e26d6c1da4@linux.ibm.com>
-Date:   Mon, 21 Sep 2020 11:41:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 21 Sep 2020 05:42:43 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200921094241euoutp02052309b1eacedd26e6fd60df2118b7a8~2wzexSp2a1008010080euoutp02l
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 09:42:41 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200921094241euoutp02052309b1eacedd26e6fd60df2118b7a8~2wzexSp2a1008010080euoutp02l
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1600681361;
+        bh=P7hV3rizkkW11m3+4j1sNlaGq+/5zEUIOPVUREPUhCo=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=fOpti2kFffFh8HR19ieBNHeTiJp67Mcj6RaWpLEqaoD4k1AwCcxhRjxMHK0NR4NuN
+         yNY0lkBdi5V/44ZbPRBNsAJ+I0IE+gaUmMBJY2YuusUf8NrB1mu5Eq5jmIeAghCiMz
+         4rnvkWT/fZmCa2eBtJIvka+WZtEj1CpUenIPhU80=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200921094240eucas1p1d13cee11e0eb009b70449ac1d5ea2d5a~2wzeJYofd2799327993eucas1p16;
+        Mon, 21 Sep 2020 09:42:40 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id CD.C4.06318.095786F5; Mon, 21
+        Sep 2020 10:42:40 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200921094240eucas1p20e6c9bc2b6eea56a28550a020e6c29da~2wzdwpc2I2744327443eucas1p2t;
+        Mon, 21 Sep 2020 09:42:40 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200921094240eusmtrp15a50ae632ede260cba22dd9888abdf30~2wzdvwFwl0875108751eusmtrp1y;
+        Mon, 21 Sep 2020 09:42:40 +0000 (GMT)
+X-AuditID: cbfec7f5-38bff700000018ae-91-5f687590ecbb
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id BE.CF.06017.095786F5; Mon, 21
+        Sep 2020 10:42:40 +0100 (BST)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200921094239eusmtip1e3c4e8efadf1706f41fef57690666543~2wzdLog8y0239002390eusmtip1F;
+        Mon, 21 Sep 2020 09:42:39 +0000 (GMT)
+Subject: Re: [PATCH v3 2/3] ARM: dts: exynos: Add assigned clock parent to
+ CMU in Exynos4412 Odroid
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <d53d0b67-2368-1434-ab00-fb37b1e824a6@samsung.com>
+Date:   Mon, 21 Sep 2020 11:42:40 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <1600529318-8996-3-git-send-email-mjrosato@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200911145403.GC15290@kozik-lap>
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-21_01:2020-09-21,2020-09-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- lowpriorityscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0 spamscore=0
- mlxscore=0 suspectscore=0 impostorscore=0 phishscore=0 clxscore=1015
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009210069
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrAKsWRmVeSWpSXmKPExsWy7djPc7oTSjPiDW72G1lsnLGe1WL+kXOs
+        Fv2PXzNbnD+/gd1i0+NrrBaXd81hs5hxfh+TReveI+wW7U9fMjtwemxa1cnmsXlJvUffllWM
+        Hp83yQWwRHHZpKTmZJalFunbJXBlbJv2ibHgLXfFkW9trA2Mnzi7GDk5JARMJP5tOMzSxcjF
+        ISSwglHi//M1rBDOF0aJg5eOsIBUCQl8ZpS4f04SpqN5xkl2iKLljBKTDk1jhnDeM0rMnvyP
+        CaRKWCBVYsa734wgCRGQ7suTrzGDJJiBErvfHmMFsdkEDCW63naxgdi8AnYS/y7sAFvHIqAq
+        0fejD2yQqECcxLFTj1ggagQlTs58AmZzCuhL/HrwnR1iprxE89bZUPPFJW49mc8EslhCYBu7
+        xP7n59gh7naRuPPnDjOELSzx6vgWqLiMxOnJPSwQDc2MEg/PrWWHcHqAzm6awQhRZS1x59wv
+        oFM5gFZoSqzfpQ8RdpS4dPohC0hYQoBP4sZbQYgj+CQmbZvODBHmlehoE4KoVpOYdXwd3NqD
+        Fy4xT2BUmoXktVlI3pmF5J1ZCHsXMLKsYhRPLS3OTU8tNs5LLdcrTswtLs1L10vOz93ECExH
+        p/8d/7qDcd+fpEOMAhyMSjy8F8rT44VYE8uKK3MPMUpwMCuJ8DqdPR0nxJuSWFmVWpQfX1Sa
+        k1p8iFGag0VJnNd40ctYIYH0xJLU7NTUgtQimCwTB6dUA2P+050JfQafLyUn26opBjDls86W
+        1uE79nf+y2D19/E+vsejKuo+Lf7ubXP5ma9c28TkmZr9XW2BDl81l1Xmi5XGnF8wj+lO3OJ1
+        HlLsx/0XLfO7dsCx5DVrV02FtlQpJ0+awlqhuvDZXzOf1C/5f/mfoMeVXe8T1efuvsYuK8M8
+        5XLG0l1ZR5RYijMSDbWYi4oTAYVeuL1DAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrMIsWRmVeSWpSXmKPExsVy+t/xu7oTSjPiDVY+FLHYOGM9q8X8I+dY
+        Lfofv2a2OH9+A7vFpsfXWC0u75rDZjHj/D4mi9a9R9gt2p++ZHbg9Ni0qpPNY/OSeo++LasY
+        PT5vkgtgidKzKcovLUlVyMgvLrFVija0MNIztLTQMzKx1DM0No+1MjJV0rezSUnNySxLLdK3
+        S9DL2DbtE2PBW+6KI9/aWBsYP3F2MXJySAiYSDTPOMnexcjFISSwlFHiz7QN7BAJGYmT0xpY
+        IWxhiT/Xutggit4ySjz58pgZJCEskCrx4+8ZsG4Rgc+MEs8aN4ElmIESE5umMkF03GCUeLtz
+        D9hYNgFDia63IKM4OXgF7CT+XdjBAmKzCKhK9P3oYwKxRQXiJM70vICqEZQ4OfMJWA2ngL7E
+        rwff2SEWmEnM2/wQapm8RPPW2VC2uMStJ/OZJjAKzULSPgtJyywkLbOQtCxgZFnFKJJaWpyb
+        nltspFecmFtcmpeul5yfu4kRGIHbjv3csoOx613wIUYBDkYlHt4L5enxQqyJZcWVuYcYJTiY
+        lUR4nc6ejhPiTUmsrEotyo8vKs1JLT7EaAr03ERmKdHkfGByyCuJNzQ1NLewNDQ3Njc2s1AS
+        5+0QOBgjJJCeWJKanZpakFoE08fEwSnVwCg6x/jFYXUBnc7oWRNmpn+yWvVu9b++1TFr9ESn
+        3p0YcDdurcnn1AXPbmmv3s1xMdSA8Ypn+Y48j8pL2u2a287tuvTBxzE9tm5fbvov7fKQSZdS
+        onlbGtXYbooEqTR11TYtf/Tk3YXpv58KPktfs0GHf7ls3el1iqo3w/nMHFu4982zfBgl3qDE
+        UpyRaKjFXFScCADHVhZO1gIAAA==
+X-CMS-MailID: 20200921094240eucas1p20e6c9bc2b6eea56a28550a020e6c29da
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200911150351eucas1p1c678e3ae20e49209dbf19c000ea033f4
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200911150351eucas1p1c678e3ae20e49209dbf19c000ea033f4
+References: <20200906142146.21266-1-krzk@kernel.org>
+        <20200906142146.21266-2-krzk@kernel.org>
+        <CGME20200911150351eucas1p1c678e3ae20e49209dbf19c000ea033f4@eucas1p1.samsung.com>
+        <20200911145403.GC15290@kozik-lap>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthew,
+Hi Krzysztof,
 
-On 9/19/20 5:28 PM, Matthew Rosato wrote:
-> We'll need to keep track of whether or not the byte string in util_str is
-> valid and thus needs to be passed to a vfio-pci passthrough device.
-> 
-> Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>
-> ---
->  arch/s390/include/asm/pci.h | 3 ++-
->  arch/s390/pci/pci_clp.c     | 1 +
->  2 files changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/s390/include/asm/pci.h b/arch/s390/include/asm/pci.h
-> index 882e233..32eb975 100644
-> --- a/arch/s390/include/asm/pci.h
-> +++ b/arch/s390/include/asm/pci.h
-> @@ -132,7 +132,8 @@ struct zpci_dev {
->  	u8		rid_available	: 1;
->  	u8		has_hp_slot	: 1;
->  	u8		is_physfn	: 1;
-> -	u8		reserved	: 5;
-> +	u8		util_avail	: 1;
+On 11.09.2020 16:54, Krzysztof Kozlowski wrote:
+> On Sun, Sep 06, 2020 at 04:21:45PM +0200, Krzysztof Kozlowski wrote:
+>> Commit 68605101460e ("ARM: dts: exynos: Add support for audio over HDMI
+>> for Odroid X/X2/U3") added assigned clocks under Clock Management Unit.
+>>
+>> However the dtschema expects "clocks" property if "assigned-clocks" are
+>> used.  Add reference to input clock, the parent used in
+>> "assigned-clock-parents" to silence the dtschema warnings:
+>>
+>>    arch/arm/boot/dts/exynos4412-odroidu3.dt.yaml: clock-controller@10030000: 'clocks' is a dependency of 'assigned-clocks'
+>>
+> Applied.
 
-Any reason you're not matching the util_str_avail name in the response struct?
-I think this is currently always an EBCDIC encoded string so the information that
-even if it looks like binary for anyone with a non-mainframe background
-it is in fact a string seems quite helpful.
-Other than that
+This patch breaks operation of clocks on Odroid X2/U3:
 
-Acked-by: Niklas Schnelle <schnelle@linux.ibm.com>
+# dmesg | grep clk
+[    0.000000] exynos_clkout_init: failed to register clkout clock
+[    0.000000] Exynos4x12 clocks: sclk_apll = 1000000000, sclk_mpll = 
+800000000
+                 sclk_epll = 45158401, sclk_vpll = 350000000, arm_clk = 
+1000000000
+[    2.569484] usb3503 0-0008: unable to request refclk (-517)
+[    2.848718] s3c-sdhci 12530000.sdhci: clock source 2: mmc_busclk.2 
+(50000000 Hz)
+[    3.373850] usb3503 0-0008: unable to request refclk (-517)
+[    3.542777] usb3503 0-0008: unable to request refclk (-517)
+[    3.544005] usb3503 0-0008: unable to request refclk (-517)
+[    3.559223] usb3503 0-0008: unable to request refclk (-517)
 
-> +	u8		reserved	: 4;
->  	unsigned int	devfn;		/* DEVFN part of the RID*/
->  
->  	struct mutex lock;
-> diff --git a/arch/s390/pci/pci_clp.c b/arch/s390/pci/pci_clp.c
-> index 48bf316..d011134 100644
-> --- a/arch/s390/pci/pci_clp.c
-> +++ b/arch/s390/pci/pci_clp.c
-> @@ -168,6 +168,7 @@ static int clp_store_query_pci_fn(struct zpci_dev *zdev,
->  	if (response->util_str_avail) {
->  		memcpy(zdev->util_str, response->util_str,
->  		       sizeof(zdev->util_str));
-> +		zdev->util_avail = 1;
->  	}
->  	zdev->mio_capable = response->mio_addr_avail;
->  	for (i = 0; i < PCI_STD_NUM_BARS; i++) {
-> 
+Please revert or drop if possible.
+
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
+
