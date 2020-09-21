@@ -2,94 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C87B0272A92
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 346FA272AA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:47:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727934AbgIUPpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 11:45:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727174AbgIUPpO (ORCPT
+        id S1727182AbgIUPrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 11:47:03 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:11080 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726611AbgIUPrA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 11:45:14 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B473C061755;
-        Mon, 21 Sep 2020 08:45:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=4YJsh+/JMJiEcRz2N7elI20o3ohDyLzBBt3UWLvYKAc=; b=RPZ4BuPJshcqBkKw0jQ4zUZomt
-        50RRZpvsMeVUMUBYc+Mz1JOG4MW3jkpnNZ9slvRv0ft9uK1Ud7y2+Ot/9kEuIiOyHaQ1cVMDAV1zh
-        /Rz2UrxtRfoZNrAVfhHsQ4CszIFQ/nHpNTaDeSxJoKSsQLgW5Bjk1jGfLhnfax8pTTJI7vGjPuPCW
-        VYpP9tkHFTPO8OD7wY+ic1zfCPf8JYJC90FoTJro96WKbSm84r5nw1I5csQJApIJOvxQ4b7BsFzc9
-        0ZM2a8vO6o1hki5+Iu5/cb/oDVYzyCNBDK6qb4a31WLWVVGrz/MPvKSw9r+NKwhxnpPznBKW8Vilp
-        BbzOlftw==;
-Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kKO01-0003GP-5T; Mon, 21 Sep 2020 15:45:05 +0000
-Subject: Re: [PATCH -next] phy: fix USB_LGM_PHY warning & build errors
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>
-Cc:     Li Yin <yin1.li@intel.com>,
-        Vadivel Murugan R <vadivel.muruganx.ramuthevar@linux.intel.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <d1dd0ddd-3143-5777-1c63-195e1a32f237@infradead.org>
-Message-ID: <cb3b277e-109d-82c5-9dec-153b4e035c2a@infradead.org>
-Date:   Mon, 21 Sep 2020 08:45:01 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 21 Sep 2020 11:47:00 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08LFhplG080640;
+        Mon, 21 Sep 2020 11:46:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=nluNtsCp3JizD1agG20vlbu9kvrXab0gUsgwUArlytk=;
+ b=GjudGODRy1hYrW5oWKcqPYkQIePG4efSE0Eiw6qZpat9OHLaM3mX64yMsdKkvNSAaD3U
+ nmeNSPaSLPsfP7JQFQ2FrkXjb1viJh6sdi4ZFlKKT5PkfJ8vJRGFFJ5/slk9wZomhQWA
+ b4tv/U87FiCSyfjcEWudICDN6duWFpH5rrCDlFMsTWJZAqiNMRqA29Oglkb1C2TXsBAJ
+ 3bPFAqbadVhuxFCKWaQhJkcGo96gZv/G7+ex1pEkV8gcJ0cBgJRff9pFpqVq8fRRYhxb
+ mkQubg2IeCKLFPzmlOlTmW71qAtjzPDav2Tp89VpIvkxjPMmPV22H/E6UraBMAjd/FYJ Lw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33py2u81gb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Sep 2020 11:46:59 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08LFjJi8083288;
+        Mon, 21 Sep 2020 11:46:58 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33py2u81fs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Sep 2020 11:46:58 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08LFS5XA013499;
+        Mon, 21 Sep 2020 15:46:56 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04fra.de.ibm.com with ESMTP id 33n9m7s4mn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Sep 2020 15:46:56 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08LFkrST16712018
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 21 Sep 2020 15:46:53 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 53E81A4054;
+        Mon, 21 Sep 2020 15:46:53 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C6F98A4060;
+        Mon, 21 Sep 2020 15:46:52 +0000 (GMT)
+Received: from oc2783563651 (unknown [9.145.8.1])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 21 Sep 2020 15:46:52 +0000 (GMT)
+Date:   Mon, 21 Sep 2020 17:45:36 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, pmorel@linux.ibm.com,
+        alex.williamson@redhat.com, cohuck@redhat.com,
+        kwankhede@nvidia.com, borntraeger@de.ibm.com
+Subject: Re: [PATCH] s390/vfio-ap: fix unregister GISC when KVM is already
+ gone results in OOPS
+Message-ID: <20200921174536.49e45e68.pasic@linux.ibm.com>
+In-Reply-To: <20200918170234.5807-1-akrowiak@linux.ibm.com>
+References: <20200918170234.5807-1-akrowiak@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <d1dd0ddd-3143-5777-1c63-195e1a32f237@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-21_05:2020-09-21,2020-09-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
+ impostorscore=0 mlxlogscore=999 bulkscore=0 mlxscore=0 spamscore=0
+ lowpriorityscore=0 malwarescore=0 phishscore=0 suspectscore=2
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009210112
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping.  Still seeing this in linux-next.
+On Fri, 18 Sep 2020 13:02:34 -0400
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-On 9/17/20 10:51 AM, Randy Dunlap wrote:
-> From: Randy Dunlap <rdunlap@infradead.org>
+> Attempting to unregister Guest Interruption Subclass (GISC) when the
+> link between the matrix mdev and KVM has been removed results in the
+> following:
 > 
-> Fix a Kconfig warning that is causing lots of build errors
-> when USB_SUPPORT is not set.
+>    "Kernel panic -not syncing: Fatal exception: panic_on_oops"
 > 
-> USB_PHY depends on USB_SUPPORT but "select" doesn't care about
-> dependencies, so this driver should also depend on USB_SUPPORT.
-> It should not select USB_SUPPORT.
+> This patch fixes this bug by verifying the matrix mdev and KVM are still
+> linked prior to unregistering the GISC.
+
+
+I read from your commit message that this happens when the link between
+the KVM and the matrix mdev was established and then got severed. 
+
+I assume the interrupts were previously enabled, and were not been
+disabled or cleaned up because q->saved_isc != VFIO_AP_ISC_INVALID.
+
+That means the guest enabled  interrupts and then for whatever
+reason got destroyed, and this happens on mdev cleanup.
+
+Does it happen all the time or is it some sort of a race?
+
 > 
-> WARNING: unmet direct dependencies detected for USB_PHY
->   Depends on [n]: USB_SUPPORT [=n]
->   Selected by [m]:
->   - USB_LGM_PHY [=m]
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Li Yin <yin1.li@intel.com>
-> Cc: Vadivel Murugan R <vadivel.muruganx.ramuthevar@linux.intel.com>
-> Cc: Kishon Vijay Abraham I <kishon@ti.com>
-> Cc: Vinod Koul <vkoul@kernel.org>
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
 > ---
->  drivers/phy/Kconfig |    1 +
->  1 file changed, 1 insertion(+)
+>  drivers/s390/crypto/vfio_ap_ops.c | 14 +++++++++-----
+>  1 file changed, 9 insertions(+), 5 deletions(-)
 > 
-> --- linux-next-20200917.orig/drivers/phy/Kconfig
-> +++ linux-next-20200917/drivers/phy/Kconfig
-> @@ -51,6 +51,7 @@ config PHY_XGENE
->  
->  config USB_LGM_PHY
->  	tristate "INTEL Lightning Mountain USB PHY Driver"
-> +	depends on USB_SUPPORT
->  	select USB_PHY
->  	select REGULATOR
->  	select REGULATOR_FIXED_VOLTAGE
-> 
+> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+> index e0bde8518745..847a88642644 100644
+> --- a/drivers/s390/crypto/vfio_ap_ops.c
+> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+> @@ -119,11 +119,15 @@ static void vfio_ap_wait_for_irqclear(int apqn)
+>   */
+>  static void vfio_ap_free_aqic_resources(struct vfio_ap_queue *q)
+>  {
+> -	if (q->saved_isc != VFIO_AP_ISC_INVALID && q->matrix_mdev)
+> -		kvm_s390_gisc_unregister(q->matrix_mdev->kvm, q->saved_isc);
+> -	if (q->saved_pfn && q->matrix_mdev)
+> -		vfio_unpin_pages(mdev_dev(q->matrix_mdev->mdev),
+> -				 &q->saved_pfn, 1);
+> +	if (q->matrix_mdev) {
+> +		if (q->saved_isc != VFIO_AP_ISC_INVALID && q->matrix_mdev->kvm)
+> +			kvm_s390_gisc_unregister(q->matrix_mdev->kvm,
+> +						 q->saved_isc);
 
+I don't quite understand the logic here. I suppose we need to ensure
+that the struct kvm is 'alive' at least until kvm_s390_gisc_unregister()
+is done. That is supposed be ensured by kvm_get_kvm() in
+vfio_ap_mdev_set_kvm() and kvm_put_kvm() in vfio_ap_mdev_release().
 
--- 
-~Randy
+If the critical section in vfio_ap_mdev_release() is done and
+matrix_mdev->kvm was set to NULL there then I would expect that the
+queues are already reset and q->saved_isc == VFIO_AP_ISC_INVALID. So
+this should not blow up.
+
+Now if this happens before the critical section in
+vfio_ap_mdev_release() is done, I ask myself how are we going to do the
+kvm_put_kvm()?
+
+Another question. Do we hold the matrix_dev->lock here?
+
+> +		if (q->saved_pfn)
+> +			vfio_unpin_pages(mdev_dev(q->matrix_mdev->mdev),
+> +					 &q->saved_pfn, 1);
+> +	}
+> +
+>  	q->saved_pfn = 0;
+>  	q->saved_isc = VFIO_AP_ISC_INVALID;
+>  }
 
