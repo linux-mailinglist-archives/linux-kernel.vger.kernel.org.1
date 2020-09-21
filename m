@@ -2,107 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8632732C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:27:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C13622732C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727957AbgIUT1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 15:27:18 -0400
-Received: from mga18.intel.com ([134.134.136.126]:17363 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726395AbgIUT1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 15:27:17 -0400
-IronPort-SDR: CwUALfPyt1QqYCLPG3gx3+k6kQ2nJF+rAESGeG5C9excg3hY6VGFamGCZE3E3Wdupz6AjLK3B3
- E4cgmlDejXgA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="148219672"
-X-IronPort-AV: E=Sophos;i="5.77,287,1596524400"; 
-   d="scan'208";a="148219672"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 12:27:15 -0700
-IronPort-SDR: cbyPBXm0cb5xQM9sQE62eDXqaA8R2a6gfDqOoDkAwymNNFzUkh45aE+8ekQNj6Q/n7bURhzaAA
- YZf7xt9VgpFA==
-X-IronPort-AV: E=Sophos;i="5.77,287,1596524400"; 
-   d="scan'208";a="485633868"
-Received: from tsenx-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.44.83])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 12:27:08 -0700
-Date:   Mon, 21 Sep 2020 22:27:06 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Andy Lutomirski <luto@kernel.org>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, nhorman@redhat.com,
-        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        sean.j.christopherson@intel.com, tglx@linutronix.de,
-        yaozhangx@google.com
-Subject: Re: [PATCH v38 15/24] x86/sgx: Enable provisioning for remote
- attestation
-Message-ID: <20200921192706.GD53597@linux.intel.com>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-16-jarkko.sakkinen@linux.intel.com>
- <20200921180728.GJ5901@zn.tnic>
+        id S1728085AbgIUT2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 15:28:01 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:53520 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726395AbgIUT2B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 15:28:01 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600716477;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NioanSWzd78GxCsWYULMNfEWngL7gbmu+5wZKJGKPtI=;
+        b=HxqY5bgmLL1k0f3vQQxKwcT5ry3L+n9eWbaa33JpgBbIQhQKyF5a3ij8mv6CpgblAufPcl
+        /NboBbVSLMzTqFGT0TjywuRmfs5bzTYeJmHXAxo0CVpHx+Vc+AcZ01mg2TfMdqQ2YBFUr0
+        T0biE/Xj6CpNppEeI1NN60+4LlXdME7cpu0hU+LkVE2Ap5bde7RRe7hWtZJQkXhhKWa8iV
+        9G4YL/t1/f3WBUyUCaKsXVKPluf5ho1Tri7IYKrkld4lHHpsIFR2kj//UAVDisud0CvF9E
+        Y+o/6lfteq1OBhGqZU5+eNzFDwvEzWDxVn5dG5jL6fLqKaz4jlZKqLWOR91+lA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600716477;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NioanSWzd78GxCsWYULMNfEWngL7gbmu+5wZKJGKPtI=;
+        b=K+USVXwNO19/CLwxF7hr/zQjzSe76M0Cqo3jC86XX3is24rhnFQjsCVAxPA8kns3xbx5QG
+        vlmVOJebsjPrOqAg==
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        "open list\:SYNOPSYS ARC ARCHITECTURE" 
+        <linux-snps-arc@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
+        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-sparc <sparclinux@vger.kernel.org>
+Subject: Re: [patch RFC 00/15] mm/highmem: Provide a preemptible variant of kmap_atomic & friends
+In-Reply-To: <CAHk-=wjhxzx3KHHOMvdDj3Aw-_Mk5eRiNTUBB=tFf=vTkw1FeA@mail.gmail.com>
+References: <20200919091751.011116649@linutronix.de> <CAHk-=wiYGyrFRbA1cc71D2-nc5U9LM9jUJesXGqpPnB7E4X1YQ@mail.gmail.com> <87mu1lc5mp.fsf@nanos.tec.linutronix.de> <87k0wode9a.fsf@nanos.tec.linutronix.de> <CAHk-=wgbmwsTOKs23Z=71EBTrULoeaH2U3TNqT2atHEWvkBKdw@mail.gmail.com> <87eemwcpnq.fsf@nanos.tec.linutronix.de> <CAHk-=wgF-upZVpqJWK=TK7MS9H-Rp1ZxGfOG+dDW=JThtxAzVQ@mail.gmail.com> <87a6xjd1dw.fsf@nanos.tec.linutronix.de> <CAHk-=wjhxzx3KHHOMvdDj3Aw-_Mk5eRiNTUBB=tFf=vTkw1FeA@mail.gmail.com>
+Date:   Mon, 21 Sep 2020 21:27:57 +0200
+Message-ID: <87sgbbaq0y.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200921180728.GJ5901@zn.tnic>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 08:07:28PM +0200, Borislav Petkov wrote:
-> On Tue, Sep 15, 2020 at 02:28:33PM +0300, Jarkko Sakkinen wrote:
-> > @@ -181,5 +192,12 @@ int __init sgx_drv_init(void)
-> >  		return ret;
-> >  	}
-> >  
-> > +	ret = misc_register(&sgx_dev_provision);
-> > +	if (ret) {
-> > +		pr_err("Creating /dev/sgx/provision failed with %d.\n", ret);
-> > +		misc_deregister(&sgx_dev_enclave);
-> 
-> The comment over misc_deregister() says:
-> 
->  *      Unregister a miscellaneous device that was previously
->  *      successfully registered with misc_register().
-> 
-> but this is not a successful registration here, in the if (ret) case...
+On Mon, Sep 21 2020 at 09:24, Linus Torvalds wrote:
+> On Mon, Sep 21, 2020 at 12:39 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>>
+>> If a task is migrated to a different CPU then the mapping address will
+>> change which will explode in colourful ways.
+>
+> Right you are.
+>
+> Maybe we really *could* call this new kmap functionality something
+> like "kmap_percpu()" (or maybe "local" is good enough), and make it
+> act like your RT code does for spinlocks - not disable preemption, but
+> only disabling CPU migration.
 
-'sgx_dev_enclave' is successfully register whenever that happens. Am I
-missing something here?
+I"m all for it, but the scheduler people have opinions :)
 
-> > + * sgx_ioc_enclave_set_attribute - handler for %SGX_IOC_ENCLAVE_PROVISION
-> > + * @filep:	open file to /dev/sgx
->        ^^^^^^
-> 
-> Can you guess what my comment to that would be...?
+> That would probably be good enough for a lot of users that don't want
+> to expose excessive latencies, but where it's really not a huge deal
+> to say "stick to this CPU for a short while".
+>
+> The crypto code certainly sounds like one such case.
 
-There is also another incosistency that I fixed: the first line should
-have 'sgx_ioc_enclave_provision'.
+I looked at a lot of the kmap_atomic() places and quite some of them
+only require migration to be disabled to keep the temporary map
+stable.
 
-> > +static long sgx_ioc_enclave_provision(struct sgx_encl *encl,
-> > +					  void __user *arg)
-> 
-> No need for the line break: both function args can fit on the same line.
+Quite some code could be simplified significantly especially those
+places which need to do copy_from/to_user inside these
+sections. Graphics is the main example here as Daniel pointed out.
 
-Fixed this one too, thanks.
+Alternatively this could of course be solved with per CPU page tables
+which will come around some day anyway I fear.
 
-> 
-> ...
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
 
-/Jarkko
+        tglx
