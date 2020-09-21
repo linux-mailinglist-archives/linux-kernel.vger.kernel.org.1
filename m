@@ -2,83 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72518271A31
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 06:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E5D7271A24
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 06:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726334AbgIUEpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 00:45:55 -0400
-Received: from cmta17.telus.net ([209.171.16.90]:58107 "EHLO cmta17.telus.net"
+        id S1726360AbgIUElc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 00:41:32 -0400
+Received: from verein.lst.de ([213.95.11.211]:38379 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726011AbgIUEpz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 00:45:55 -0400
-X-Greylist: delayed 487 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Sep 2020 00:45:54 EDT
-Received: from [192.168.20.38] ([209.89.189.71])
-        by cmsmtp with SMTP
-        id KDaCkn9JOrd15KDaEkY1eT; Sun, 20 Sep 2020 22:37:46 -0600
-X-Telus-Authed: Z2lsbGI0
-X-Authority-Analysis: v=2.3 cv=cLmeTWWN c=1 sm=1 tr=0
- a=lXP6RixAJDH2mbiCOq84ew==:117 a=lXP6RixAJDH2mbiCOq84ew==:17
- a=IkcTkHD0fZMA:10 a=VV5-G85skxbwr1oMt8sA:9 a=QEXdDO2ut3YA:10
-To:     linux-kernel@vger.kernel.org
-From:   bob <gillb4@telusplanet.net>
-Subject: kernel v5.9-rc6 not compiling
-Message-ID: <fdc4e3dc-e1ff-f525-44bb-9f70c86a282f@telusplanet.net>
-Date:   Sun, 20 Sep 2020 22:37:44 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726011AbgIUElb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 00:41:31 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 20EA168AFE; Mon, 21 Sep 2020 06:41:25 +0200 (CEST)
+Date:   Mon, 21 Sep 2020 06:41:25 +0200
+From:   'Christoph Hellwig' <hch@lst.de>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     'Christoph Hellwig' <hch@lst.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-aio@kvack.org" <linux-aio@kvack.org>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+Subject: Re: let import_iovec deal with compat_iovecs as well
+Message-ID: <20200921044125.GA16522@lst.de>
+References: <20200918124533.3487701-1-hch@lst.de> <2c7bf42ee4314484ae0177280cd8f5f3@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CMAE-Envelope: MS4wfAaVw7TN+lHXteBBYkZhK3kfogtr0xEnzbztWpm5KDZe3Pn7E0RUPvvKoUx6KZx2AUe/reiPikwbFRutZ9cAQybAdOBykUOQ4F0CHKi0bBUpkR2LSTSS
- DycynvB7Sf7wQkuCMNS0n/T7PI3UmSvfPAQFtDBaDXHmoWFKcuBzwg9FJhaGQFEgC0lIP1BwintRmw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2c7bf42ee4314484ae0177280cd8f5f3@AcuMS.aculab.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi.  I've been building kernels weekly since 1996.  Never had one not 
-build before today.  v5.9-rc6 does not compile.
+On Sat, Sep 19, 2020 at 02:24:10PM +0000, David Laight wrote:
+> I thought about that change while writing my import_iovec() => iovec_import()
+> patch - and thought that the io_uring code would (as usual) cause grief.
+> 
+> Christoph - did you see those patches?
 
-Error:
-
-   AR      drivers/gpu/built-in.a
-make: *** [Makefile:1784: drivers] Error 2
-   CALL    scripts/checksyscalls.sh
-   CALL    scripts/atomic/check-atomics.sh
-   DESCEND  objtool
-   CHK     include/generated/compile.h
-   CC      drivers/dax/super.o
-drivers/dax/super.c:325:6: error: redefinition of ‘dax_supported’
-   325 | bool dax_supported(struct dax_device *dax_dev, struct 
-block_device *bdev,
-       |      ^~~~~~~~~~~~~
-In file included from drivers/dax/super.c:16:
-./include/linux/dax.h:162:20: note: previous definition of 
-‘dax_supported’ was here
-   162 | static inline bool dax_supported(struct dax_device *dax_dev,
-       |                    ^~~~~~~~~~~~~
-make[2]: *** [scripts/Makefile.build:283: drivers/dax/super.o] Error 1
-make[1]: *** [scripts/Makefile.build:500: drivers/dax] Error 2
-make: *** [Makefile:1784: drivers] Error 2
-sed: can't read modules.order: No such file or directory
-make: *** [Makefile:1416: _modinst_] Error 2
-sh ./arch/x86/boot/install.sh 5.9.0-rc6 arch/x86/boot/bzImage \
-     System.map "/boot"
-
-  *** Missing file: arch/x86/boot/bzImage
-  *** You need to run "make" before "make install".
-
-make[1]: *** [arch/x86/boot/Makefile:160: install] Error 1
-make: *** [arch/x86/Makefile:274: install] Error 2
-You may need to edit your /etc/default/grub file
-
-
-... so its not like I'm stuck, I can pick any of a number of old kernels 
-from the bootloader.  And I've had a lot of rc kernels over the years 
-that would build, but weren't finished (occasionally I would get an oops 
-in dmesg).  Again pick another kernel from the bootloader, preferrably a 
-more stable non-rc one. But I don't think I've ever had a kernel not 
-compile before.  I'm waiting for the nouveau drivers to firm up, but DAX 
-is page cache for ext2/3/4 file systems (and I use ext4).  Hopefully my 
-report is useful.  Thank you.
-
+No.
