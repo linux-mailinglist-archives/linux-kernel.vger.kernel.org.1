@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF12272CB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:35:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14489272CAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:35:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728723AbgIUQeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:34:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60448 "EHLO mail.kernel.org"
+        id S1728703AbgIUQeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:34:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728674AbgIUQd5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:33:57 -0400
+        id S1728200AbgIUQd7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:33:59 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3C9CA23976;
-        Mon, 21 Sep 2020 16:33:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA5BB2396F;
+        Mon, 21 Sep 2020 16:33:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706036;
-        bh=UQ9uhk9yESmpsuclrVoey/brZ5TMAsHuztHElWFK4Kc=;
+        s=default; t=1600706039;
+        bh=Pzs6qruw76I/AzHcSJLll67dnrGP7d8pxzuN+iy4L2Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J5GdkIkZoA/5J+wUyykNv++OWvFVHVTz7HsB01a7ToUiDr7XuBHBAnuWRdQJz3/eW
-         Rap4zl3EYb6PQaWvsYENqTcG8f4XMFmVlWwHq5fsKV0cuuXuYWnobjW6YiXeJkIN0W
-         hIAX3I5+ZQ1igYvbjZBR+mfUEDDOnzLhql1Q8Yuc=
+        b=E7I2fDJ8pALyadrYZpo4/E+7XWqoFStTIwyDR8wSJJtSeZ8cw4LqXLWWubO/txJuS
+         trEEqEvZGY3E2V2fytKRVja2hgFK4P4Omwlch0HDUIaE3XmPOqKOn+8T5tag7VWl+K
+         Q8h/zv0TOT+aku3n0mdQeqxgU4oUDFCF40HrAOZo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
         Angelo Compagnucci <angelo.compagnucci@gmail.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.9 15/70] iio: adc: mcp3422: fix locking scope
-Date:   Mon, 21 Sep 2020 18:27:15 +0200
-Message-Id: <20200921162035.825651264@linuxfoundation.org>
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 16/70] iio: adc: mcp3422: fix locking on error path
+Date:   Mon, 21 Sep 2020 18:27:16 +0200
+Message-Id: <20200921162035.874202137@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
 References: <20200921162035.136047591@linuxfoundation.org>
@@ -46,65 +46,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Angelo Compagnucci <angelo.compagnucci@gmail.com>
 
-commit 3f1093d83d7164e4705e4232ccf76da54adfda85 upstream.
+[ Upstream commit a139ffa40f0c24b753838b8ef3dcf6ad10eb7854 ]
 
-Locking should be held for the entire reading sequence involving setting
-the channel, waiting for the channel switch and reading from the
-channel.
-If not, reading from a channel can result mixing with the reading from
-another channel.
+Reading from the chip should be unlocked on error path else the lock
+could never being released.
 
 Fixes: 07914c84ba30 ("iio: adc: Add driver for Microchip MCP3422/3/4 high resolution ADC")
+Fixes: 3f1093d83d71 ("iio: adc: mcp3422: fix locking scope")
+Acked-by: Jonathan Cameron <jonathan.cameron@huawei.com>
 Signed-off-by: Angelo Compagnucci <angelo.compagnucci@gmail.com>
-Link: https://lore.kernel.org/r/20200819075525.1395248-1-angelo.compagnucci@gmail.com
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Link: https://lore.kernel.org/r/20200901093218.1500845-1-angelo.compagnucci@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/adc/mcp3422.c |   12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ drivers/iio/adc/mcp3422.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 --- a/drivers/iio/adc/mcp3422.c
 +++ b/drivers/iio/adc/mcp3422.c
-@@ -99,16 +99,12 @@ static int mcp3422_update_config(struct
- {
- 	int ret;
- 
--	mutex_lock(&adc->lock);
--
- 	ret = i2c_master_send(adc->i2c, &newconfig, 1);
- 	if (ret > 0) {
- 		adc->config = newconfig;
- 		ret = 0;
- 	}
- 
--	mutex_unlock(&adc->lock);
--
- 	return ret;
- }
- 
-@@ -141,6 +137,8 @@ static int mcp3422_read_channel(struct m
- 	u8 config;
- 	u8 req_channel = channel->channel;
- 
-+	mutex_lock(&adc->lock);
-+
- 	if (req_channel != MCP3422_CHANNEL(adc->config)) {
- 		config = adc->config;
- 		config &= ~MCP3422_CHANNEL_MASK;
-@@ -153,7 +151,11 @@ static int mcp3422_read_channel(struct m
+@@ -146,8 +146,10 @@ static int mcp3422_read_channel(struct m
+ 		config &= ~MCP3422_PGA_MASK;
+ 		config |= MCP3422_PGA_VALUE(adc->pga[req_channel]);
+ 		ret = mcp3422_update_config(adc, config);
+-		if (ret < 0)
++		if (ret < 0) {
++			mutex_unlock(&adc->lock);
+ 			return ret;
++		}
  		msleep(mcp3422_read_times[MCP3422_SAMPLE_RATE(adc->config)]);
  	}
  
--	return mcp3422_read(adc, value, &config);
-+	ret = mcp3422_read(adc, value, &config);
-+
-+	mutex_unlock(&adc->lock);
-+
-+	return ret;
- }
- 
- static int mcp3422_read_raw(struct iio_dev *iio,
 
 
