@@ -2,28 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB8BD271D04
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69BD0271D02
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727078AbgIUIDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 04:03:50 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:35244 "EHLO huawei.com"
+        id S1727072AbgIUIDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 04:03:47 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13742 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726475AbgIUICX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 04:02:23 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 466FE2FF4B7E5FC02B6C;
-        Mon, 21 Sep 2020 16:02:20 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Mon, 21 Sep 2020
- 16:02:11 +0800
+        id S1726886AbgIUICY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 04:02:24 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 59A5B41D858DED3A688D;
+        Mon, 21 Sep 2020 16:02:23 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Mon, 21 Sep 2020
+ 16:02:13 +0800
 From:   Liu Shixin <liushixin2@huawei.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-CC:     <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH -next] Input: synaptics-rmi4 - simplify the return expression of rmi_driver_of_probe
-Date:   Mon, 21 Sep 2020 16:24:35 +0800
-Message-ID: <20200921082435.2591409-1-liushixin2@huawei.com>
+To:     Georgi Djakov <georgi.djakov@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>
+CC:     <linux-pm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Liu Shixin <liushixin2@huawei.com>
+Subject: [PATCH -next] interconnect: simplify the return expression of imx_icc_unregister
+Date:   Mon, 21 Sep 2020 16:24:37 +0800
+Message-ID: <20200921082437.2591461-1-liushixin2@huawei.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -38,29 +43,30 @@ Simplify the return expression.
 
 Signed-off-by: Liu Shixin <liushixin2@huawei.com>
 ---
- drivers/input/rmi4/rmi_driver.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ drivers/interconnect/imx/imx.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/input/rmi4/rmi_driver.c b/drivers/input/rmi4/rmi_driver.c
-index 258d5fe3d395..eec5d926da25 100644
---- a/drivers/input/rmi4/rmi_driver.c
-+++ b/drivers/input/rmi4/rmi_driver.c
-@@ -991,14 +991,8 @@ static int rmi_driver_remove(struct device *dev)
- static int rmi_driver_of_probe(struct device *dev,
- 				struct rmi_device_platform_data *pdata)
+diff --git a/drivers/interconnect/imx/imx.c b/drivers/interconnect/imx/imx.c
+index ac420f86008e..40fa22a32a60 100644
+--- a/drivers/interconnect/imx/imx.c
++++ b/drivers/interconnect/imx/imx.c
+@@ -269,15 +269,10 @@ EXPORT_SYMBOL_GPL(imx_icc_register);
+ int imx_icc_unregister(struct platform_device *pdev)
  {
--	int retval;
--
--	retval = rmi_of_property_read_u32(dev, &pdata->reset_delay_ms,
-+	return rmi_of_property_read_u32(dev, &pdata->reset_delay_ms,
- 					"syna,reset-delay-ms", 1);
--	if (retval)
--		return retval;
+ 	struct icc_provider *provider = platform_get_drvdata(pdev);
+-	int ret;
+ 
+ 	imx_icc_unregister_nodes(provider);
+ 
+-	ret = icc_provider_del(provider);
+-	if (ret)
+-		return ret;
 -
 -	return 0;
++	return icc_provider_del(provider);
  }
- #else
- static inline int rmi_driver_of_probe(struct device *dev,
+ EXPORT_SYMBOL_GPL(imx_icc_unregister);
+ 
 -- 
 2.25.1
 
