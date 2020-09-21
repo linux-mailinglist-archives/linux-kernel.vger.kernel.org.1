@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04DCB272C8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:35:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E15272CCA
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728590AbgIUQdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:33:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58916 "EHLO mail.kernel.org"
+        id S1728800AbgIUQem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:34:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728557AbgIUQdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:33:01 -0400
+        id S1728662AbgIUQeU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:34:20 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 055B72399C;
-        Mon, 21 Sep 2020 16:32:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A55C523998;
+        Mon, 21 Sep 2020 16:34:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600705973;
-        bh=toxpiCs541mFXqnbYYRXvxXpCq2dj5tqD33uJsEyZ7g=;
+        s=default; t=1600706059;
+        bh=Nl8wQCwDqfxCyNfdQhq52dD1AmHKgD8eoD3tX4UdaaQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k+guYuYpT7rqmaNArokn18mR+hhgbr9q20yJAKhnK4GieNfCZE2exobAECP/Dy1xR
-         xuuSYpR/hR5nxalAixG1ATW5Rd2uAWb3zEax42kExESYdY9dTAzmuAp4NkPnj48oKy
-         tUQrwymB/ij3Ftn2IhEV4RiaI/a8i0JfJk7FbTcI=
+        b=wUIQsDkmZ1ehklm+AU/Sr2Ypaq081XImjOc5T2639/EW+YMGNjTu0YRNmRxge8eq5
+         WibL8NzkW/Y0ZkEOMsLRTIHUqVlRcaqf/KF9acYC5W8HF3++cHC659QCWzOAMybrVA
+         SThXo49hStzI4Dlhwhe1Gy+KnKYsihuIzrd3yCaw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Martin Schiller <ms@dev.tdt.de>,
-        Xie He <xie.he.0141@gmail.com>,
-        Krzysztof Halasa <khc@pm.waw.pl>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 07/46] drivers/net/wan/hdlc_cisco: Add hard_header_len
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Gregor Boirie <gregor.boirie@parrot.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Stable@vger.kernel.org
+Subject: [PATCH 4.9 23/70] iio:magnetometer:ak8975 Fix alignment and data leak issues.
 Date:   Mon, 21 Sep 2020 18:27:23 +0200
-Message-Id: <20200921162033.700922943@linuxfoundation.org>
+Message-Id: <20200921162036.182912400@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162033.346434578@linuxfoundation.org>
-References: <20200921162033.346434578@linuxfoundation.org>
+In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
+References: <20200921162035.136047591@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,40 +46,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie He <xie.he.0141@gmail.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit 1a545ebe380bf4c1433e3c136e35a77764fda5ad ]
+commit 02ad21cefbac4d89ac443866f25b90449527737b upstream.
 
-This driver didn't set hard_header_len. This patch sets hard_header_len
-for it according to its header_ops->create function.
+One of a class of bugs pointed out by Lars in a recent review.
+iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
+to the size of the timestamp (8 bytes).  This is not guaranteed in
+this driver which uses an array of smaller elements on the stack.
+As Lars also noted this anti pattern can involve a leak of data to
+userspace and that indeed can happen here.  We close both issues by
+moving to a suitable structure in the iio_priv() data.
 
-This driver's header_ops->create function (cisco_hard_header) creates
-a header of (struct hdlc_header), so hard_header_len should be set to
-sizeof(struct hdlc_header).
+This data is allocated with kzalloc so no data can leak apart from
+previous readings.
 
-Cc: Martin Schiller <ms@dev.tdt.de>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
-Acked-by: Krzysztof Halasa <khc@pm.waw.pl>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The explicit alignment of ts is not necessary in this case as by
+coincidence the padding will end up the same, however I consider
+it to make the code less fragile and have included it.
+
+Fixes: bc11ca4a0b84 ("iio:magnetometer:ak8975: triggered buffer support")
+Reported-by: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Gregor Boirie <gregor.boirie@parrot.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/wan/hdlc_cisco.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/iio/magnetometer/ak8975.c |   16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/wan/hdlc_cisco.c b/drivers/net/wan/hdlc_cisco.c
-index 3f20808b5ff82..f8ed079d8bc3e 100644
---- a/drivers/net/wan/hdlc_cisco.c
-+++ b/drivers/net/wan/hdlc_cisco.c
-@@ -377,6 +377,7 @@ static int cisco_ioctl(struct net_device *dev, struct ifreq *ifr)
- 		memcpy(&state(hdlc)->settings, &new_settings, size);
- 		spin_lock_init(&state(hdlc)->lock);
- 		dev->header_ops = &cisco_header_ops;
-+		dev->hard_header_len = sizeof(struct hdlc_header);
- 		dev->type = ARPHRD_CISCO;
- 		netif_dormant_on(dev);
- 		return 0;
--- 
-2.25.1
-
+--- a/drivers/iio/magnetometer/ak8975.c
++++ b/drivers/iio/magnetometer/ak8975.c
+@@ -381,6 +381,12 @@ struct ak8975_data {
+ 	struct iio_mount_matrix orientation;
+ 	struct regulator	*vdd;
+ 	struct regulator	*vid;
++
++	/* Ensure natural alignment of timestamp */
++	struct {
++		s16 channels[3];
++		s64 ts __aligned(8);
++	} scan;
+ };
+ 
+ /* Enable attached power regulator if any. */
+@@ -813,7 +819,6 @@ static void ak8975_fill_buffer(struct ii
+ 	const struct i2c_client *client = data->client;
+ 	const struct ak_def *def = data->def;
+ 	int ret;
+-	s16 buff[8]; /* 3 x 16 bits axis values + 1 aligned 64 bits timestamp */
+ 	__le16 fval[3];
+ 
+ 	mutex_lock(&data->lock);
+@@ -836,12 +841,13 @@ static void ak8975_fill_buffer(struct ii
+ 	mutex_unlock(&data->lock);
+ 
+ 	/* Clamp to valid range. */
+-	buff[0] = clamp_t(s16, le16_to_cpu(fval[0]), -def->range, def->range);
+-	buff[1] = clamp_t(s16, le16_to_cpu(fval[1]), -def->range, def->range);
+-	buff[2] = clamp_t(s16, le16_to_cpu(fval[2]), -def->range, def->range);
++	data->scan.channels[0] = clamp_t(s16, le16_to_cpu(fval[0]), -def->range, def->range);
++	data->scan.channels[1] = clamp_t(s16, le16_to_cpu(fval[1]), -def->range, def->range);
++	data->scan.channels[2] = clamp_t(s16, le16_to_cpu(fval[2]), -def->range, def->range);
+ 
+-	iio_push_to_buffers_with_timestamp(indio_dev, buff,
++	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
+ 					   iio_get_time_ns(indio_dev));
++
+ 	return;
+ 
+ unlock:
 
 
