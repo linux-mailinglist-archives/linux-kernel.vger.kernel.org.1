@@ -2,156 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DFC4271F63
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 11:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70EB6271F64
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 11:56:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726526AbgIUJ4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 05:56:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33432 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726333AbgIUJ4A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 05:56:00 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600682158;
+        id S1726544AbgIUJ4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 05:56:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57981 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726333AbgIUJ4M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 05:56:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600682171;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=PEZAInpj1oTWxrddjQHo382Tz8I/0hhGW4I2Ie8w6dA=;
-        b=jRvnSP1kuwtZzuFURDJL28NQV8mCQ4e1Nu+3kFE07EQ3IjxWNBXN4h1ghozhVPlS2D/oZC
-        KdN62pQxU/AQz26/WmPlNBLjQnAE9tWgcPA/MryYG4LNlIwDx+yvxO+eipE9ZrWk60iwYd
-        KcGDyykbWyh9lYA9UN1z60bStr1ulzk=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 71E7EAF83;
-        Mon, 21 Sep 2020 09:56:34 +0000 (UTC)
-Date:   Mon, 21 Sep 2020 11:55:57 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk v2 2/3] printk: move dictionary keys to
- dev_printk_info
-Message-ID: <20200921095557.GH14605@alley>
-References: <20200918223421.21621-1-john.ogness@linutronix.de>
- <20200918223421.21621-3-john.ogness@linutronix.de>
+        bh=DsUvRaONG6fEHsv/ssy29tFeXa+nzG7PzMsq9dyzlZE=;
+        b=WAokWJkmK5CEbSYRgL4xqg7kfPbsc7KT3f1YTX4+UoIOAX/rbN6wI3gPu+aGBnHaK5JBhh
+        jKhvFda/jSbKsBG6zQTOuAFNTIQDsJA5V6+PulnZHnkD1SpcfaU4fNlsZYLBFFjNN1v6VF
+        SInXppgGnxmJYq+pKjK8pUrn6DRN/u8=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-266-QCTLuNCDPzSB7EKN_sUGQg-1; Mon, 21 Sep 2020 05:56:08 -0400
+X-MC-Unique: QCTLuNCDPzSB7EKN_sUGQg-1
+Received: by mail-wr1-f69.google.com with SMTP id s8so5626341wrb.15
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 02:56:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DsUvRaONG6fEHsv/ssy29tFeXa+nzG7PzMsq9dyzlZE=;
+        b=IzCjJSODkN2aUfZKxg9bSEqO5Urh9GCzvpS7rAGI8bUFUPDpmcvAU5KkegoRcpWDP6
+         kbSv/4WXnBdB5rYk91mkmIFt/XYCMS/go2Rftbx8p0dU8P0CdxONr3FQKTFwYjuKA1sG
+         OGVmuuqmDZJumjNFmPSQTbQa2t2Y2ABpRaOp6XZV5gL9ETmwgRnRom+0jh57BqffuCUf
+         lufZ/bBrln2eOt2XX0oVPhpcGfqPyhh3kuOVH4DivLBJcIqHmYiPn+ucZaVIYVSMXOaR
+         05p6tt6wibcxAe0lN/JoQ2vNobT2ceB//b3Domy5GpJxWN4RWQfedaZ/PJ3UUnKxqyWa
+         QXvA==
+X-Gm-Message-State: AOAM5313cEH0jP52ZOrykgIyTQZZgJmH/DVat0XAHQLcWhszobdeVIMG
+        BaqnsDy9H6F+qbbDD3hh6n33LsJAjqYboVAu2meFDFDDj8sG5HyoQAVnWfR3e4dPyBdACRWazAN
+        KfbWVnO1a4sCAX7UCN61v6IZW
+X-Received: by 2002:a1c:7215:: with SMTP id n21mr30993482wmc.154.1600682166883;
+        Mon, 21 Sep 2020 02:56:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwGBox03QI6ysklI1sA9ptdIcpxBo+nq2uOBFaA6k3Et9K+sSEItN/jk0tTRLsfnai2hbJ4BQ==
+X-Received: by 2002:a1c:7215:: with SMTP id n21mr30993462wmc.154.1600682166718;
+        Mon, 21 Sep 2020 02:56:06 -0700 (PDT)
+Received: from ?IPv6:2a01:cb14:499:3d00:cd47:f651:9d80:157a? ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
+        by smtp.gmail.com with ESMTPSA id m18sm18384578wmg.32.2020.09.21.02.56.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Sep 2020 02:56:06 -0700 (PDT)
+Subject: Re: [PATCH 3/3] objtool: check: Handle calling non-function symbols
+ in other sections
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org, mbenes@suse.cz
+References: <20200915075318.7336-1-jthierry@redhat.com>
+ <20200915075318.7336-4-jthierry@redhat.com>
+ <20200918200740.3x6eookduesrgz3x@treble>
+From:   Julien Thierry <jthierry@redhat.com>
+Message-ID: <5afa4c67-f557-b1c4-d94c-da7610f4fcbe@redhat.com>
+Date:   Mon, 21 Sep 2020 10:56:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918223421.21621-3-john.ogness@linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200918200740.3x6eookduesrgz3x@treble>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 2020-09-19 00:40:20, John Ogness wrote:
-> Dictionaries are only used for SUBSYSTEM and DEVICE properties. The
-> current implementation stores the property names each time they are
-> used. This requires more space than otherwise necessary. Also,
-> because the dictionary entries are currently considered optional,
-> it cannot be relied upon that they are always available, even if the
-> writer wanted to store them. These issues will increase should new
-> dictionary properties be introduced.
+
+
+On 9/18/20 9:07 PM, Josh Poimboeuf wrote:
+> On Tue, Sep 15, 2020 at 08:53:18AM +0100, Julien Thierry wrote:
+>> Relocation for a call destination could point to a symbol that has
+>> type STT_NOTYPE.
 > 
-> Rather than storing the subsystem and device properties in the
-> dict ring, introduce a struct dev_printk_info with separate fields
-> to store only the property values. Embed this struct within the
-> struct printk_info to provide guaranteed availability.
+> Then shouldn't the callee be changed to STT_FUNC?
+> 
+
+Not if it's a code symbol that does not follow standard calling convention.
+
+It's really the same case as the !reloc, except this time it's in a 
+different .text section. In arm64 there are different sections that are 
+used (.text for basic code, .idmap.text for code mapped in a manner 
+where virtual address == physical address, .hyp.text for kvm priviledged 
+code, .tramp.text for trampolines...). There aren't many cases, but some 
+symbols reference symbols in other sections, but the symbol being called 
+isn't a proper function.
 
 
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -629,36 +624,43 @@ static ssize_t msg_print_ext_body(char *buf, size_t size,
->  		else
->  			append_char(&p, e, c);
->  	}
-> -	append_char(&p, e, '\n');
-> +	append_char(&p, e, endc);
->  
-> -	if (dict_len) {
-> -		bool line = true;
-> +	return p - buf;
-> +}
->  
-> -		for (i = 0; i < dict_len; i++) {
-> -			unsigned char c = dict[i];
-> +static ssize_t msg_add_dict_text(char *buf, size_t size,
-> +				 const char *key, const char *val)
-> +{
-> +	size_t val_len = strlen(val);
-> +	ssize_t len;
->  
-> -			if (line) {
-> -				append_char(&p, e, ' ');
-> -				line = false;
 
-I double checked this and found that the above code prefixed dict
-values by ' ' in /dev/kmsg.
-
-It slightly improves readability and it is handy for eventual filtering.
-It would make sense to keep it.
-
-> -			}
-> +	if (!val_len)
-> +		return 0;
->  
-> -			if (c == '\0') {
-> -				append_char(&p, e, '\n');
-> -				line = true;
-> -				continue;
-> -			}
-> +	len = msg_add_ext_text(buf, size, key, strlen(key), '=');
-> +	len += msg_add_ext_text(buf + len, size - len, val, val_len, '\n');
-
-Slightly ugly but simple solution is:
-
-	len = msg_add_ext_text(buf, size, "", 0, ' ');	/* dict prefix */
-	len += msg_add_ext_text(buf + len, size - len, key, strlen(key), '=');
-	len += msg_add_ext_text(buf + len, size - len, val, val_len, '\n');
-
-With this fix:
-
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-
-
-Now, this is the only problem that I have found. It is not necessary
-to resend the entire patchset just because of this.
-
-It might be enough to either respin just this patch. Or I could
-commit the below one on top of the patchset. Either solution works
-for me.
-
-From dcc5dc0467c6e7d13202d98bbefb505a1db693fd Mon Sep 17 00:00:00 2001
-From: Petr Mladek <pmladek@suse.com>
-Date: Mon, 21 Sep 2020 11:45:16 +0200
-Subject: [PATCH] printk: Put back dict lines prefix into /dev/kmsg
-
-Put back prefix for dictionary lines in /dev/kmsg. They have been removed
-by the commit  XXX ("printk: move dictionary keys to dev_printk_info").
-
-Signed-off-by: Petr Mladek <pmladek@suse.com>
----
- kernel/printk/printk.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 77660354a7c5..1fe3d0cb2fe0 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -637,7 +637,8 @@ static ssize_t msg_add_dict_text(char *buf, size_t size,
- 	if (!val_len)
- 		return 0;
- 
--	len = msg_add_ext_text(buf, size, key, strlen(key), '=');
-+	len = msg_add_ext_text(buf, size, "", 0, ' ');	/* dict prefix */
-+	len += msg_add_ext_text(buf + len, size - len, key, strlen(key), '=');
- 	len += msg_add_ext_text(buf + len, size - len, val, val_len, '\n');
- 
- 	return len;
 -- 
-2.26.2
+Julien Thierry
 
