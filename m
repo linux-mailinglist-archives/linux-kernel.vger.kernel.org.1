@@ -2,102 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D53F0272654
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD982272656
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727102AbgIUNvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:51:17 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:37254 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726456AbgIUNvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:51:16 -0400
-X-Greylist: delayed 13631 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Sep 2020 09:51:16 EDT
-Received: from zn.tnic (p200300ec2f07e300be7bcf3e7fc25083.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:e300:be7b:cf3e:7fc2:5083])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 68D571EC0350;
-        Mon, 21 Sep 2020 15:51:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600696274;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=TXGxYzaYTYZyuhzUi0yldlks/2ZvxroQx1yLqik1Vw4=;
-        b=aPrbgGc5TcixC6fhqyg4myfOG3zNKOi74WHnEnWwB17ooWGZ4vzVrFCADKqOGe7dalPlQq
-        Z1IE1r2JlaeumW5tMGfj27CHaXUlGB6ZDw2zBAqPKn97Bl5bvrkI0FETrbFHs5kzARS4IB
-        a+5IXIlaq4K8d8PsFuDMoQcZb4tK3KI=
-Date:   Mon, 21 Sep 2020 15:51:07 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jethro Beekman <jethro@fortanix.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Seth Moore <sethmo@google.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 12/24] x86/sgx: Add SGX_IOC_ENCLAVE_CREATE
-Message-ID: <20200921135107.GG5901@zn.tnic>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-13-jarkko.sakkinen@linux.intel.com>
- <20200921100356.GB5901@zn.tnic>
- <20200921122823.GE6038@linux.intel.com>
+        id S1727266AbgIUNwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:52:06 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:3830 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726846AbgIUNwG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:52:06 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f68afa90001>; Mon, 21 Sep 2020 06:50:33 -0700
+Received: from localhost (10.124.1.5) by HQMAIL107.nvidia.com (172.20.187.13)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 21 Sep 2020 13:52:02
+ +0000
+Date:   Mon, 21 Sep 2020 16:51:58 +0300
+From:   Ido Schimmel <idosch@nvidia.com>
+To:     Qinglang Miao <miaoqinglang@huawei.com>
+CC:     Jiri Pirko <jiri@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] mlxsw: spectrum_acl_tcam: simplify the return
+ expression of ishtp_cl_driver_register()
+Message-ID: <20200921135158.GC1072139@shredder>
+References: <20200921131039.92249-1-miaoqinglang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20200921122823.GE6038@linux.intel.com>
+In-Reply-To: <20200921131039.92249-1-miaoqinglang@huawei.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600696233; bh=gE2fNCr4NwcEx9iSuQNwYxoJRE1QPBnOkOu1EucRaxI=;
+        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+         Content-Type:Content-Disposition:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy;
+        b=pYkaNYaH3ueP6f5CncBswUwYqFIYVLP52hKGqfXFwzoWkdqfZcjdhtni5fSef8kpH
+         UPujLYwUCAT4BjrW1w7mDJ+p1IiKPgoqnYR3nYT4QbSHLiF/9wgtQx1lT7QBsOj3nB
+         V5rU8DNTGPdnLfiS4Rbhq1EtGKl1McquyJ9oVCxpV4cZGSlIVmUh5b92azR2XGOcFd
+         stki/nt1HClAhxnYo3u5k148LtcQtEk5FXRXaungN611N9F457bUfMVRR8QoF4Q6zC
+         L3YWlEtyccRk/uj/I2YEoFKy23tJL+UCk8/mwT5Z1hWe56S38Ei9XF/LH0Ja/NwxCO
+         8CKz1G4m3bX3Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 03:28:23PM +0300, Jarkko Sakkinen wrote:
-> Is this appropriate:
+On Mon, Sep 21, 2020 at 09:10:39PM +0800, Qinglang Miao wrote:
+> Simplify the return expression.
 > 
-> 	/* The extra page in swap space goes to SECS. */
-> 	encl_size = secs->size + PAGE_SIZE;
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> ---
+>  drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c | 8 +-------
+>  1 file changed, 1 insertion(+), 7 deletions(-)
 > 
-> 	backing = shmem_file_setup("SGX backing", encl_size + (encl_size >> 5),
-> 				   VM_NORESERVE);
-> 	if (IS_ERR(backing)) {
-> 		ret = PTR_ERR(backing);
-> 		goto err_out_shrink;
-> 	}
->
+> diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c
+> index 5c0204033..5b4313991 100644
+> --- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c
+> +++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c
+> @@ -289,17 +289,11 @@ static int
+>  mlxsw_sp_acl_tcam_group_add(struct mlxsw_sp_acl_tcam *tcam,
+>  			    struct mlxsw_sp_acl_tcam_group *group)
+>  {
+> -	int err;
+> -
+>  	group->tcam = tcam;
+>  	mutex_init(&group->lock);
+>  	INIT_LIST_HEAD(&group->region_list);
+>  
+> -	err = mlxsw_sp_acl_tcam_group_id_get(tcam, &group->id);
+> -	if (err)
+> -		return err;
+> -
+> -	return 0;
+> +	return mlxsw_sp_acl_tcam_group_id_get(tcam, &group->id);
 
-Yap, thanks.
+There is actually a problem here. We don't call mutex_destroy() on
+error. Should be:
 
-> I agree with this but I also think it would make sense to rephrase
-> "verifying the correctness of the provided SECS" with something more
-> informative.
+diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c
+index 5c020403342f..7cccc41dd69c 100644
+--- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c
+@@ -292,13 +292,14 @@ mlxsw_sp_acl_tcam_group_add(struct mlxsw_sp_acl_tcam *tcam,
+        int err;
+ 
+        group->tcam = tcam;
+-       mutex_init(&group->lock);
+        INIT_LIST_HEAD(&group->region_list);
+ 
+        err = mlxsw_sp_acl_tcam_group_id_get(tcam, &group->id);
+        if (err)
+                return err;
+ 
++       mutex_init(&group->lock);
++
+        return 0;
+ }
+
+Then it's symmetric with mlxsw_sp_acl_tcam_group_del(). Do you want to
+send this patch to 'net' or should I? If so, it should have this Fixes
+line:
+
+Fixes: 5ec2ee28d27b ("mlxsw: spectrum_acl: Introduce a mutex to guard region list updates")
+
+Thanks
+
+>  }
+>  
+>  static void mlxsw_sp_acl_tcam_group_del(struct mlxsw_sp_acl_tcam_group *group)
+> -- 
+> 2.23.0
 > 
-> I would rephrase as:
-> 
-> "... after checking that the provided data for SECS meets the expectations
-> of ENCLS[ECREATE] for an unitialized enclave and size of the address
-> space does not surpass the platform expectations. This validation is
-> executed by sgx_validate_secs()."
-
-s/executed/done/
-
-> Is this sufficient for you, or do you have further suggestions?
-
-Yes, no further suggestions.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
