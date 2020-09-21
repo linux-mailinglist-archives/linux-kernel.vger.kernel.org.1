@@ -2,150 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C91DF272658
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8C027265A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726846AbgIUNzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:55:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60802 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726471AbgIUNzR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:55:17 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8F2492084C;
-        Mon, 21 Sep 2020 13:55:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600696516;
-        bh=giup4Dg5WhpWJ857PpfPZHU63m06kkHcvu6+1h1OTGM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t7krJPdjhg+bDMgb1GVhKtpKbKGCt2WMKioDi8bjOQhDdP+tN2VRUVawBcplmHqRv
-         ITVPksJ7H1kyELjQqLg+2bW3krseriR1pBihUVKjeV7ym6Qs2LqGtC0nTmhIcYUmk/
-         SSChRCFTfvuO7Ns8kaiJEEo5SJ0icrtDusNJm3qE=
-Date:   Mon, 21 Sep 2020 14:55:11 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Alexandru Elisei <alexandru.elisei@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, maz@kernel.org, catalin.marinas@arm.com,
-        swboyd@chromium.org, sumit.garg@linaro.org,
-        Julien Thierry <julien.thierry@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Will Deacon <will.deacon@arm.com>
-Subject: Re: [PATCH v6 6/7] arm_pmu: Introduce pmu_irq_ops
-Message-ID: <20200921135510.GM2139@willie-the-truck>
-References: <20200819133419.526889-1-alexandru.elisei@arm.com>
- <20200819133419.526889-7-alexandru.elisei@arm.com>
+        id S1727039AbgIUNzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:55:37 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:38605 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726471AbgIUNzg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:55:36 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 9C1084C5;
+        Mon, 21 Sep 2020 09:55:34 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 21 Sep 2020 09:55:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=B
+        EGNDlvDfXkKXK5REIu5N8vOOMx+km52gjr4Z6s/5Fc=; b=N7m/AzG31Z90u6VzB
+        XltErv+k3kNYcTZA1pbzj7WqgwGO5npF0+Nf3Ze7RXVb7HbY4bqLfuAolX0spSv8
+        GvtJU7TYsJbvAdNmaZRMR3HJWP9pOwwz/MqttmeqKj5U3uMqL6LH9P698EBQkESu
+        Q88pIIMbuRAYQAkVxSBkRBLGkyKx+SLYL7Y6nKHuZ0EKlPvdFlg37lWARpYBpVEe
+        zXTgp13eKYctWmwKy3rTC0AO+d8XbmGtyqnbQpLZEh655pWZ+PEWYuoUoJCGSks6
+        xreSY581Vnq7A1mxQY3KyWzmGiPGfdRYyubyv6bw9nmYsPre5XyRh5gnngsVfCFu
+        UyH2g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=BEGNDlvDfXkKXK5REIu5N8vOOMx+km52gjr4Z6s/5
+        Fc=; b=l2O8I0q/0iVpb13FY009yJZ1NNM7+PUv0mbTq9OaovWCTTcE4vHwvkcri
+        0I0r01zr2yHE23odRqOQ1LRIiBa87eJywH/u4nQ2TuKUhNV9gy/i79i7Pb+7q3VL
+        vihJ228lQLKkiB5fca1WsMiXo6kh6FjN6duF+p/JkIFP3BIyePe3qDD6BqpGB2lB
+        fZ3FgnTEsfTAsy8UC/a7ZsGhS6SZX4C7hB5vGcD1N3xfXcsXw+waz7WYO6HJo+5/
+        HaM9RVgHSUMI8Z8msh69w2bIFBdvi7wZBs/Nb3eJUuOJS0EAzbKfJjqDRWkNo8er
+        ZQAaNLNQ4hDnibgAfn05rXRxoMDzQ==
+X-ME-Sender: <xms:1bBoX4UeAeB8GgmIgR26hwOZabfy_NJElOfIIAC2slnkpDQAd1Dixw>
+    <xme:1bBoX8mYdyJBmyaB8GgUcrbA5UBTb3yhIGwDENbjgbp_4IpV5G_6zAtA7CPNaaK01
+    Fy9nQn3LPyXxzZrlNM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddvgdejvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggugfgjsehtqhertddttddunecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepheelvdfhkeelgfevleekleduvefftefhudekvdffhffhgeefuefgheegfeej
+    vedtnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:1bBoX8b73D5mSBvFXsb05BlZ_y0_EOpTMiFiS-F72hKhpgwZ2_ZuAQ>
+    <xmx:1bBoX3WDtmFPsXZpiBhmsoFpac29hEXjEgBWJfAhl9cxNN_3nJDmcA>
+    <xmx:1bBoXynb8HajnEpTY5Jzdue1RUc0UqaJuKN3R7L9rGFHqL7JPfByIA>
+    <xmx:1rBoX0cVHxrTpDdRh5Hf5Yyw8i26bDfgcGccMg_k5Civ5uEfV6rkmVuAqRI>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 0EBB63280060;
+        Mon, 21 Sep 2020 09:55:32 -0400 (EDT)
+Date:   Mon, 21 Sep 2020 15:55:30 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Marcus Cooper <codekipper@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com
+Subject: Re: [PATCH v4 03/22] ASoC: sun4i-i2s: Change get_sr() and get_wss()
+ to be more explicit
+Message-ID: <20200921135530.q36i4l5m4p7u7zyy@gilmour.lan>
+References: <20200921102731.747736-1-peron.clem@gmail.com>
+ <20200921102731.747736-4-peron.clem@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200819133419.526889-7-alexandru.elisei@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200921102731.747736-4-peron.clem@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 02:34:18PM +0100, Alexandru Elisei wrote:
-> From: Julien Thierry <julien.thierry@arm.com>
-> 
-> Currently the PMU interrupt can either be a normal irq or a percpu irq.
-> Supporting NMI will introduce two cases for each existing one. It becomes
-> a mess of 'if's when managing the interrupt.
-> 
-> Define sets of callbacks for operations commonly done on the interrupt. The
-> appropriate set of callbacks is selected at interrupt request time and
-> simplifies interrupt enabling/disabling and freeing.
-> 
-> Cc: Julien Thierry <julien.thierry.kdev@gmail.com>
-> Cc: Will Deacon <will.deacon@arm.com>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Signed-off-by: Julien Thierry <julien.thierry@arm.com>
-> Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
+On Mon, Sep 21, 2020 at 12:27:12PM +0200, Cl=E9ment P=E9ron wrote:
+> We are actually using a complex formula to just return a bunch of
+> simple values. Also this formula is wrong for sun4i.
+
+Just like the previous patch, this could use a bit more explanation,
+like why it's a good thing, or how it's wrong on sun4i
+
+> Replace this with a simpler switch case.
+>=20
+> Also drop the i2s params not used.
+>=20
+> Signed-off-by: Cl=E9ment P=E9ron <peron.clem@gmail.com>
 > ---
->  drivers/perf/arm_pmu.c | 86 ++++++++++++++++++++++++++++++++++--------
->  1 file changed, 70 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/perf/arm_pmu.c b/drivers/perf/arm_pmu.c
-> index df352b334ea7..17e5952d21e4 100644
-> --- a/drivers/perf/arm_pmu.c
-> +++ b/drivers/perf/arm_pmu.c
-> @@ -26,8 +26,46 @@
->  
->  #include <asm/irq_regs.h>
->  
-> +static int armpmu_count_irq_users(const int irq);
-> +
-> +struct pmu_irq_ops {
-> +	void (*enable_pmuirq)(unsigned int irq);
-> +	void (*disable_pmuirq)(unsigned int irq);
-> +	void (*free_pmuirq)(unsigned int irq, int cpu, void __percpu *devid);
-> +};
-> +
-> +static void armpmu_free_pmuirq(unsigned int irq, int cpu, void __percpu *devid)
-> +{
-> +	free_irq(irq, per_cpu_ptr(devid, cpu));
-> +}
-> +
-> +static const struct pmu_irq_ops pmuirq_ops = {
-> +	.enable_pmuirq = enable_irq,
-> +	.disable_pmuirq = disable_irq_nosync,
-> +	.free_pmuirq = armpmu_free_pmuirq
-> +};
-> +
-> +static void armpmu_enable_percpu_pmuirq(unsigned int irq)
-> +{
-> +	enable_percpu_irq(irq, IRQ_TYPE_NONE);
-> +}
-> +
-> +static void armpmu_free_percpu_pmuirq(unsigned int irq, int cpu,
-> +				   void __percpu *devid)
-> +{
-> +	if (armpmu_count_irq_users(irq) == 1)
-> +		free_percpu_irq(irq, devid);
-> +}
-> +
-> +static const struct pmu_irq_ops percpu_pmuirq_ops = {
-> +	.enable_pmuirq = armpmu_enable_percpu_pmuirq,
-> +	.disable_pmuirq = disable_percpu_irq,
-> +	.free_pmuirq = armpmu_free_percpu_pmuirq
-> +};
-> +
->  static DEFINE_PER_CPU(struct arm_pmu *, cpu_armpmu);
->  static DEFINE_PER_CPU(int, cpu_irq);
-> +static DEFINE_PER_CPU(const struct pmu_irq_ops *, cpu_irq_ops);
-
-Would it make sense to put this in a structure alongside the irq?
-
->  
->  static inline u64 arm_pmu_event_max_period(struct perf_event *event)
->  {
-> @@ -544,6 +582,19 @@ static int armpmu_count_irq_users(const int irq)
->  	return count;
+>  sound/soc/sunxi/sun4i-i2s.c | 69 +++++++++++++++++++++++--------------
+>  1 file changed, 44 insertions(+), 25 deletions(-)
+>=20
+> diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+> index 0633b9fba3d7..11bbcbe24d6b 100644
+> --- a/sound/soc/sunxi/sun4i-i2s.c
+> +++ b/sound/soc/sunxi/sun4i-i2s.c
+> @@ -175,8 +175,8 @@ struct sun4i_i2s_quirks {
+>  	unsigned int			num_mclk_dividers;
+> =20
+>  	unsigned long (*get_bclk_parent_rate)(const struct sun4i_i2s *);
+> -	s8	(*get_sr)(const struct sun4i_i2s *, int);
+> -	s8	(*get_wss)(const struct sun4i_i2s *, int);
+> +	int	(*get_sr)(unsigned int width);
+> +	int	(*get_wss)(unsigned int width);
+>  	int	(*set_chan_cfg)(const struct sun4i_i2s *i2s,
+>  				unsigned int channels,	unsigned int slots,
+>  				unsigned int slot_width);
+> @@ -381,37 +381,56 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_da=
+i *dai,
+>  	return 0;
 >  }
->  
-> +static const struct pmu_irq_ops *armpmu_find_irq_ops(int irq)
-> +{
-> +	int cpu;
-> +
-> +	for_each_possible_cpu(cpu) {
-> +		if (per_cpu(cpu_irq, cpu) == irq
-> +		    && per_cpu(cpu_irq_ops, cpu))
-> +			return per_cpu(cpu_irq_ops, cpu);
+> =20
+> -static s8 sun4i_i2s_get_sr(const struct sun4i_i2s *i2s, int width)
+> +static int sun4i_i2s_get_sr(unsigned int width)
+>  {
+> -	if (width < 16 || width > 24)
+> -		return -EINVAL;
+> -
+> -	if (width % 4)
+> -		return -EINVAL;
+> +	switch (width) {
+> +	case 16:
+> +		return 0x0;
+> +	case 20:
+> +		return 0x1;
+> +	case 24:
+> +		return 0x2;
 > +	}
 
-nit, but you could make this a bit more readable:
+Why do we need an hex number here?
 
-	struct pmu_irq_ops *ops = NULL;
+Also, why is the return type change needed?
 
-	for_each_possible_cpu(cpu) {
-		if (per_cpu(cpu_irq, cpu) != irq)
-			continue;
-
-		ops = per_cpu(cpu_irq_ops, cpu);
-		if (ops)
-			break;
-	}
-
-	return ops;
-
-Will
+Maxime
