@@ -2,84 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17E3F2723D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 838212723E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726715AbgIUMZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 08:25:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40902 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726537AbgIUMZJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 08:25:09 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600691108;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xi88G/T/Ke4IpBIm5Oy0pNETwvmeWGhrwcyE3mpgIIE=;
-        b=TTPAujd9IzUCDyyq2m9ZiMJADYiSSGuQMObA5pjcAdHMUJno4eoD6UihbxnZ5ju75rjP08
-        BgBjVxfWyrXL++9xTbMLEkwTu6hnJR9PT8ltkRSuXUo4s/jO/YGe04Uu0WbPFQzJYMla8Z
-        eEhK4mm0PRDb8DEjIMr9nO2T0UR1RWw=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0F724ACAF;
-        Mon, 21 Sep 2020 12:25:44 +0000 (UTC)
-Message-ID: <1600691092.2424.85.camel@suse.com>
-Subject: Re: [PATCH] usb: yurex: Rearrange code not to need GFP_ATOMIC
-From:   Oliver Neukum <oneukum@suse.com>
-To:     Pavel Machek <pavel@denx.de>, gregkh@linuxfoundation.org,
-        stern@rowland.harvard.edu, johan@kernel.org, gustavoars@kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 21 Sep 2020 14:24:52 +0200
-In-Reply-To: <20200920084452.GA2257@amd>
-References: <20200920084452.GA2257@amd>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1726541AbgIUM3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 08:29:24 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:56759 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726375AbgIUM3X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 08:29:23 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 46BABB57;
+        Mon, 21 Sep 2020 08:29:21 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 21 Sep 2020 08:29:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=R
+        HKQR7CbzI0F6ZRKVieWVWj1G/b0kU9KL/lrLU/cXIE=; b=BmH4loHf/twmMvruG
+        h+1fAO/CvxSkfl44OnYhWxEx9nAlNqB9xc0MBQipOjf3YpW9p4Y2UxFv5u1jwwEk
+        7itf8mgtLdyHUTNFAlgVz11YQvxeLAMdIXXbcBdiSvpXLoJ4iL8W4GXRL2AX9l4C
+        w4d/8tRbIVhEJUimi7VoZszz/9dNSk/KQ/rw/7NHU0LJq6ICr2MalqxmZHNtvdCO
+        GoS/5WX4ZxAXn3mj+IOgBmejzXi9Iydb/8cyfzXDvqVbHQeTJmGoEOEXwWPEAOmp
+        MTQ3yIHAKIweDxETUuvLopmQ+JEaX7JiLaADyZS4QitYgrwa7a+/18eOkmQ8RUDM
+        +Dfpw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=RHKQR7CbzI0F6ZRKVieWVWj1G/b0kU9KL/lrLU/cX
+        IE=; b=uCP6FvdbREPriWo7tBN7COrxikiM1temZ9SQ7f1vnlWJXXvpTgR8/9WKF
+        kGwplJwffLMMZMU3LkW4bYkyd6g7UFI9QfVFjeAJjXI/SRHxXt3Cet9h5D8+gfnF
+        OukGuVCqfRLO46NtvgMf/Rt2q6Vl4DxvzUFlQLq5CfjVCkYbMLCPv961KFo4RiMh
+        ARu2F1aqKZfZaXxMvQx8XhOmZKqk7TSCFEzY102TvWsSUKDor6w+NO2M5GZABkbO
+        XXF1vINgJBGIMsRMFOd4simfgjl+K3nqKrJoyEfVUe4Ozfw/CbYRhN/yJyHBan4s
+        PFJzTtoMmqieBbOhGHyPo+R6I9ysg==
+X-ME-Sender: <xms:n5xoX2Urj45I8RuFot4ZW1GTKO1jGOAaFRwEfOPzw3-hYRLhznqFMQ>
+    <xme:n5xoXylUBDPDNvKOWfMGfVZeTqjyqmZDH_cMYtsDFq1fOKmJc7UloqI4F4-VuT8lU
+    l0xdfK5E8_JQdgkrU8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddvgdehgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggugfgjsehtqhertddttddunecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepheelvdfhkeelgfevleekleduvefftefhudekvdffhffhgeefuefgheegfeej
+    vedtnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:n5xoX6YDobf3ogp7c8SHV-Yk_rRA2uc1uDT86C0UPE5mNFI5wgY1cA>
+    <xmx:n5xoX9UdwW79t8SEbNgS2451IJpJPK2zkH1UejK3VnnXZ18zE4yFDg>
+    <xmx:n5xoXwnWphsACygt4earwWgNmDEcjJ9UZiDhs4nrWeCxNQGLQO3IGQ>
+    <xmx:oJxoX786_gnFaDjZ6XBX4Ymq0ztTe-t6QLlEfLX6vTz5qNRVAAO84E4SLM4>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 7F091328005A;
+        Mon, 21 Sep 2020 08:29:19 -0400 (EDT)
+Date:   Mon, 21 Sep 2020 14:29:18 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Marcus Cooper <codekipper@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com, Samuel Holland <samuel@sholland.org>
+Subject: Re: [PATCH v4 02/22] ASoC: sun4i-i2s: Change set_chan_cfg() params
+Message-ID: <20200921122918.kzzu623wui277nwr@gilmour.lan>
+References: <20200921102731.747736-1-peron.clem@gmail.com>
+ <20200921102731.747736-3-peron.clem@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200921102731.747736-3-peron.clem@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Sonntag, den 20.09.2020, 10:44 +0200 schrieb Pavel Machek:
-> Move prepare to wait around, so that normal GFP_KERNEL allocation can
-> be used.
-> 
-> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
-> Acked-by: Alan Stern <stern@rowland.harvard.edu>
+On Mon, Sep 21, 2020 at 12:27:11PM +0200, Cl=E9ment P=E9ron wrote:
+> As slots and slot_width can be overwritter in case set_tdm() is
+> called. Avoid to have this logic in set_chan_cfg().
+>=20
+> Instead pass the required values as params to set_chan_cfg().
 
-Ehm. Please recheck.
+It's not really clear here what the issue is, and how passing the slots
+and slot_width as arguments addresses it
 
-> diff --git a/drivers/usb/misc/yurex.c b/drivers/usb/misc/yurex.c
-> index b2e09883c7e2..071f1debebba 100644
-> --- a/drivers/usb/misc/yurex.c
-> +++ b/drivers/usb/misc/yurex.c
-> @@ -489,10 +489,10 @@ static ssize_t yurex_write(struct file *file, const char __user *user_buffer,
->  	}
->  
->  	/* send the data as the control msg */
-> -	prepare_to_wait(&dev->waitq, &wait, TASK_INTERRUPTIBLE);
->  	dev_dbg(&dev->interface->dev, "%s - submit %c\n", __func__,
->  		dev->cntl_buffer[0]);
-> -	retval = usb_submit_urb(dev->cntl_urb, GFP_ATOMIC);
-> +	retval = usb_submit_urb(dev->cntl_urb, GFP_KERNEL);
+> This also fix a bug when i2s->slot_width is set for TDM but not
+> properly used in set_chan_cfg().
 
-URB completes here. wake_up() returns the task to RUNNING.
+Which bug?
 
-> +	prepare_to_wait(&dev->waitq, &wait, TASK_INTERRUPTIBLE);
+Also, Fixes tag?
 
-Task goes to TASK_INTERRUPTIBLE
-
->  	if (retval >= 0)
->  		timeout = schedule_timeout(YUREX_WRITE_TIMEOUT);
-
-Task turns into Sleeping Beauty until timeout
-
->  	finish_wait(&dev->waitq, &wait);
-
-And here task goes into error reporting as it checks timeout.
-
-	Regards
-		Oliver
-
+Thanks!
+Maxime
