@@ -2,70 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E166271A0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 06:28:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A587271A1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 06:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726343AbgIUE2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 00:28:21 -0400
-Received: from verein.lst.de ([213.95.11.211]:38359 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726011AbgIUE2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 00:28:20 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 979FC68AFE; Mon, 21 Sep 2020 06:28:15 +0200 (CEST)
-Date:   Mon, 21 Sep 2020 06:28:15 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Linux SCSI List <linux-scsi@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-aio <linux-aio@kvack.org>, io-uring@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Network Development <netdev@vger.kernel.org>,
-        keyrings@vger.kernel.org,
-        LSM List <linux-security-module@vger.kernel.org>
-Subject: Re: [PATCH 1/9] kernel: add a PF_FORCE_COMPAT flag
-Message-ID: <20200921042815.GA16281@lst.de>
-References: <20200918124533.3487701-1-hch@lst.de> <20200918124533.3487701-2-hch@lst.de> <20200920151510.GS32101@casper.infradead.org> <20200920180742.GN3421308@ZenIV.linux.org.uk> <CALCETrWHW4wHG+Z-mxsY-kvjSi+S6gRUQ+LHd9syPcm5bhi3cw@mail.gmail.com>
+        id S1726316AbgIUEfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 00:35:20 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:32782 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726011AbgIUEfU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 00:35:20 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08L4Yvj4101198;
+        Sun, 20 Sep 2020 23:34:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600662897;
+        bh=WgoOtI+mWNEhU87sIoLc3wQAHysSHQBYrpEdQxdi7R0=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=eazXT8PpjR3wm78Fq29IuQUJ2XyEy/eua/RYyHa0+Qj1lxkL7NbSr00PqjvwxkH3f
+         NLBs6B6CnwpEK4f1PiDMHInJREBoS8PoBw7WfJTPEjXdpIqHJR7ovkpSDOciph1F/H
+         pcFU5HDANH16FxRruhH3LPrv/23zSDgCBJQo9FQw=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08L4YvJW121785
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sun, 20 Sep 2020 23:34:57 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Sun, 20
+ Sep 2020 23:34:57 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Sun, 20 Sep 2020 23:34:57 -0500
+Received: from [10.250.232.147] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08L4YphG020154;
+        Sun, 20 Sep 2020 23:34:52 -0500
+Subject: Re: [PATCH v5 12/17] PCI: endpoint: Add EP function driver to provide
+ NTB functionality
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>,
+        Tom Joseph <tjoseph@cadence.com>, Rob Herring <robh@kernel.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-pci@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-ntb@googlegroups.com>
+References: <20200918064227.1463-1-kishon@ti.com>
+ <20200918064227.1463-13-kishon@ti.com>
+ <31985ad8-2e9b-99d8-55ef-4ae90103e499@infradead.org>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <b79f760b-0641-0e14-375b-df89588405b6@ti.com>
+Date:   Mon, 21 Sep 2020 10:04:45 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrWHW4wHG+Z-mxsY-kvjSi+S6gRUQ+LHd9syPcm5bhi3cw@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <31985ad8-2e9b-99d8-55ef-4ae90103e499@infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 20, 2020 at 12:14:49PM -0700, Andy Lutomirski wrote:
-> I wonder if this is really quite cast in stone.  We could also have
-> FMODE_SHITTY_COMPAT and set that when a file like this is *opened* in
-> compat mode.  Then that particular struct file would be read and
-> written using the compat data format.  The change would be
-> user-visible, but the user that would see it would be very strange
-> indeed.
-> 
-> I don't have a strong opinion as to whether that is better or worse
-> than denying io_uring access to these things, but at least it moves
-> the special case out of io_uring.
+Hi Randy,
 
-open could have happened through an io_uring thread a well, so I don't
-see how this would do anything but move the problem to a different
-place.
-
+On 18/09/20 9:47 pm, Randy Dunlap wrote:
+> On 9/17/20 11:42 PM, Kishon Vijay Abraham I wrote:
+>> diff --git a/drivers/pci/endpoint/functions/Kconfig b/drivers/pci/endpoint/functions/Kconfig
+>> index 8820d0f7ec77..55ac7bb2d469 100644
+>> --- a/drivers/pci/endpoint/functions/Kconfig
+>> +++ b/drivers/pci/endpoint/functions/Kconfig
+>> @@ -12,3 +12,15 @@ config PCI_EPF_TEST
+>>  	   for PCI Endpoint.
+>>  
+>>  	   If in doubt, say "N" to disable Endpoint test driver.
+>> +
+>> +config PCI_EPF_NTB
+>> +	tristate "PCI Endpoint NTB driver"
+>> +	depends on PCI_ENDPOINT
+>> +	help
+>> +	   Select this configuration option to enable the NTB driver
+>> +	   for PCI Endpoint. NTB driver implements NTB controller
+>> +	   functionality using multiple PCIe endpoint instances. It
+>> +	   can support NTB endpoint function devices created using
+>> +	   device tree.
 > 
-> --Andy
----end quoted text---
+> Indent help text with one tab + 2 spaces...
+> according to coding-style.rst.
+
+Okay, will fix this.
+
+Thanks
+Kishon
