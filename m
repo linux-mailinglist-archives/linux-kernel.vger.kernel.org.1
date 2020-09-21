@@ -2,119 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87913273385
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 22:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6851D273389
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 22:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726485AbgIUUNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 16:13:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726435AbgIUUM7 (ORCPT
+        id S1726476AbgIUUQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 16:16:56 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:50978 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726435AbgIUUQz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 16:12:59 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6152FC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 13:12:59 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id mm21so346223pjb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 13:12:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=W/Kxd3ZsTJKzJEkeZeLlo7BrMx4l7UcmMdHw88y51RQ=;
-        b=hVYFLWChiCBjVwypKK0nyxvfd37bkITGsEBYxWBdD10OR6NdYz0pzW1BJbHzXslJo0
-         xtK3VvUkMzKZbsQ7aCfvV6ZlkuAvQfTmGBV7ZSh1zyrAUTEkGDeSJAXhqEtbyVOTczYF
-         jER8++ADxIio0/I76KHHvyQQhit8ZCWm8qIE0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=W/Kxd3ZsTJKzJEkeZeLlo7BrMx4l7UcmMdHw88y51RQ=;
-        b=lPa8qWuRskajXC79CyM6I8blAaUDTAOk3ohJaKeWxfPtKAPY0WS2H/H3nXmRHcxqLd
-         Loo62UegvnN/QZ2G/4XQCF8Q6K1kWgpejvyfPowddRuPZwDD8oC0/vZpoXSiXjqBGPR4
-         zqiUeVN8j2metmIaE6Zv/KRB/JsoPOZ10tf3LRuJ3L7A5puzzaJSqtqpHoPtxIJDwI8u
-         /xYYPTamN4NxS0pkHOCIktrisEbNEjZATsjcgkXlZNQkxMme9eQCQ2uBA2hHlgh3JZig
-         FghPQ085iZY5pixPcGN7Es8Bb2lhK2NDP4vrl2toYdqzVot3O/1o1gJbo27VrpNPyI5V
-         WEjA==
-X-Gm-Message-State: AOAM531LYP2r4W/+UbT6YUUe6GhqAWb9V395rkyjX5WZfsLeI2J1QRr8
-        rhyCEJ1BLu+0dKAjV2JOocm2Qg==
-X-Google-Smtp-Source: ABdhPJyehtYtEUeW5/Zkf7avMtNZ6qZZdA9mko0zR33iKWVQ2TSolZX0a+lsDR+hlvIgP+9qaZ5HRg==
-X-Received: by 2002:a17:90b:3cb:: with SMTP id go11mr802317pjb.152.1600719178625;
-        Mon, 21 Sep 2020 13:12:58 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id l188sm12643094pfl.200.2020.09.21.13.12.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 13:12:57 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Mon, 21 Sep 2020 16:16:55 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08LKEfia194172;
+        Mon, 21 Sep 2020 20:16:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=Mt+aUTyxqBIgxXWtK4cmF7Dnc9mlrKM0yEoLKj0+Spk=;
+ b=ipUuetluqGLj4x4D4uofwZGPTB6fLoOS954lafOzhq3CR8/MgH6+UPa9UqxoRPvh/WgS
+ 2g8Nvzpph+w6QoqQfVBCMaB33k4i1j6j0rrXV4mbSp8Eud2aTyeUiVA6iEm97UWF8lcK
+ vo3KMzc42bBwIFUo60p4D+oXS6VQSIdT4af2qDil01vmdclFxlHFNh1+Eau5Nx8NCM8v
+ 7e295FyA/vQ/by6m9alI1IX5CJGnBAPHO6PYsIPBwAONfEYST2mwFPUlbeHAzfPif/yh
+ B/UZ7br8ka7IsZfE2cYBD6fqx6RWq+gqMBONsMxmAHSvGLtk+j/0D++pAxVdp2A9M5iG Ow== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 33ndnu8nk7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 21 Sep 2020 20:16:47 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08LKFmOR190268;
+        Mon, 21 Sep 2020 20:16:46 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 33nuw1ssb5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 21 Sep 2020 20:16:46 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08LKGhMU001821;
+        Mon, 21 Sep 2020 20:16:44 GMT
+Received: from char.us.oracle.com (/10.152.32.25)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 21 Sep 2020 13:16:43 -0700
+Received: by char.us.oracle.com (Postfix, from userid 1000)
+        id 34DB86A012C; Mon, 21 Sep 2020 16:18:12 -0400 (EDT)
+Date:   Mon, 21 Sep 2020 16:18:12 -0400
+From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Dave Young <dyoung@redhat.com>, bhe@redhat.com,
+        Eric Biederman <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+        Eric DeVolder <eric.devolder@oracle.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Subject: Re: [PATCH] Only allow to set crash_kexec_post_notifiers on boot time
+Message-ID: <20200921201811.GB3437@char.us.oracle.com>
+References: <20200918032546.GA4180@dhcp-128-65.nay.redhat.com>
+ <20200918174743.0994c59f058451948837dcb6@linux-foundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <f6cb2d7bc02dab409030ec42bf1d17c9@codeaurora.org>
-References: <20200917122558.23110-1-rojay@codeaurora.org> <160037421089.4188128.9425314091585708436@swboyd.mtv.corp.google.com> <f6cb2d7bc02dab409030ec42bf1d17c9@codeaurora.org>
-Subject: Re: [PATCH V4] i2c: i2c-qcom-geni: Add shutdown callback for i2c
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     wsa@kernel.org, dianders@chromium.org,
-        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
-        mka@chromium.org, akashast@codeaurora.org,
-        msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
-        vkaur@codeaurora.org, pyarlaga@codeaurora.org,
-        rnayak@codeaurora.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sumit.semwal@linaro.org, linux-media@vger.kernel.org
-To:     rojay@codeaurora.org
-Date:   Mon, 21 Sep 2020 13:12:56 -0700
-Message-ID: <160071917655.4188128.4175000228517858211@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200918174743.0994c59f058451948837dcb6@linux-foundation.org>
+User-Agent: Mutt/1.9.1 (2017-09-22)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9751 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
+ mlxscore=0 suspectscore=0 adultscore=0 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009210148
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9751 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ lowpriorityscore=0 phishscore=0 adultscore=0 suspectscore=0 bulkscore=0
+ clxscore=1011 impostorscore=0 mlxlogscore=999 mlxscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009210148
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting rojay@codeaurora.org (2020-09-21 04:21:04)
-> Hi Stephen,
->=20
-> On 2020-09-18 01:53, Stephen Boyd wrote:
-> > Quoting Roja Rani Yarubandi (2020-09-17 05:25:58)
-> >> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c=20
-> >> b/drivers/i2c/busses/i2c-qcom-geni.c
-> >> index dead5db3315a..b0d8043c8cb2 100644
-> >> --- a/drivers/i2c/busses/i2c-qcom-geni.c
-> >> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
-> >>  };
-> >>=20
-> >>  struct geni_i2c_err_log {
-> >> @@ -307,7 +311,6 @@ static void geni_i2c_abort_xfer(struct=20
-> >> geni_i2c_dev *gi2c)
-> >>=20
-> >>         spin_lock_irqsave(&gi2c->lock, flags);
-> >>         geni_i2c_err(gi2c, GENI_TIMEOUT);
-> >> -       gi2c->cur =3D NULL;
-> >=20
-> > This looks concerning. We're moving this out from under the spinlock.
-> > The irq handler in this driver seems to hold the spinlock all the time
-> > while processing and this function grabs it here to keep cur consistent
-> > when aborting the transfer due to a timeout. Otherwise it looks like=20
-> > the
-> > irqhandler can race with this and try to complete the transfer while
-> > it's being torn down here.
-> >=20
-> >>         geni_se_abort_m_cmd(&gi2c->se);
-> >>         spin_unlock_irqrestore(&gi2c->lock, flags);
-> >>         do {
-> >> @@ -349,10 +352,62 @@ static void geni_i2c_tx_fsm_rst(struct=20
-> >> geni_i2c_dev *gi2c)
-> >>                 dev_err(gi2c->se.dev, "Timeout resetting TX_FSM\n");
-> >>  }
-> >>=20
-> >> +static void geni_i2c_rx_msg_cleanup(struct geni_i2c_dev *gi2c)
-> >=20
-> > So maybe pass cur to this function?
-> >=20
->=20
-> Sorry, i did not understand why to pass cur to this function?
+On Fri, Sep 18, 2020 at 05:47:43PM -0700, Andrew Morton wrote:
+> On Fri, 18 Sep 2020 11:25:46 +0800 Dave Young <dyoung@redhat.com> wrote:
+> 
+> > crash_kexec_post_notifiers enables running various panic notifier
+> > before kdump kernel booting. This increases risks of kdump failure.
+> > It is well documented in kernel-parameters.txt. We do not suggest
+> > people to enable it together with kdump unless he/she is really sure.
+> > This is also not suggested to be enabled by default when users are
+> > not aware in distributions.
+> > 
+> > But unfortunately it is enabled by default in systemd, see below
+> > discussions in a systemd report, we can not convince systemd to change
+> > it:
+> > https://github.com/systemd/systemd/issues/16661
+> > 
+> > Actually we have got reports about kdump kernel hangs in both s390x
+> > and powerpcle cases caused by the systemd change,  also some x86 cases
+> > could also be caused by the same (although that is in Hyper-V code
+> > instead of systemd, that need to be addressed separately).
 
-I'm suggesting to copy the cur data out of the gi2c pointer and then
-pass it to these functions so that it can't race with another transfer.
-Something like an atomic exchange may work. I haven't thought about it
-deeply, but we need to make sure the irq handler can't race with the
-cleanup functions.
+Perhaps it may be better to fix the issus on s390x and PowerPC as well?
+
+> > 
+> > Thus to avoid the auto enablement here just disable the param writable
+> > permission in sysfs.
+> > 
+> 
+> Well.  I don't think this is at all a desirable way of resolving a
+> disagreement with the systemd developers
+> 
+> At the above github address I'm seeing "ryncsn added a commit to
+> ryncsn/systemd that referenced this issue 9 days ago", "pstore: don't
+> enable crash_kexec_post_notifiers by default".  So didn't that address
+> the issue?
+
+It does in systemd, but there is a strong interest in making this on by default.
