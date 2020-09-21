@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8A3E272F77
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85DA0272CCE
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:36:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729570AbgIUQnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:43:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47470 "EHLO mail.kernel.org"
+        id S1728818AbgIUQet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:34:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728652AbgIUQnF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:43:05 -0400
+        id S1728769AbgIUQed (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:34:33 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 309F7238E6;
-        Mon, 21 Sep 2020 16:43:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D33A5239D0;
+        Mon, 21 Sep 2020 16:34:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706584;
-        bh=3wRgz9njpE+lwA5Lwdpi4A+ePptV7i/tL3UDcDxYKGE=;
+        s=default; t=1600706072;
+        bh=BBbo8/ziU6asjVcbtlPGEKdIIiwmfsiKuMsFgA9S9mg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jgTl+Ho+KQpiNef1gKTzZi6LoHOegNRCuXpK2ATYSpJ6kwc8yG1SuNcGCzDlDguYF
-         JUQ+4yKpH2aUQ1hLmR/3WH++GxZoDCkmkoAFwZxGaJJ5KPgU1dJsQtNOhtssA46LVA
-         m5ltnlwYKNw44P7WW9KKSZ52OHU659xhhyf9Iz/A=
+        b=oxQLA1ZXKIQS5EJ5n82/pc4sf6V7lkJmiQB4sJooW7z5yLVgwymAXhxfiHox9U/ev
+         nG8mXD1HybGQMBK7gqz4kj3aQ9gcJtXVQ2ECa6YsYtg0CbzNFztEUVm/0djRvt2j2X
+         NJKmjqC5QNHl19IigjcT9fonXNydfaxcnLuj2qG0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Moti Haimovski <mhaimovski@habana.ai>,
-        Oded Gabbay <oded.gabbay@gmail.com>,
+        stable@vger.kernel.org, John Garry <john.garry@huawei.com>,
+        Jason Yan <yanaijie@huawei.com>,
+        Luo Jiaxing <luojiaxing@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 012/118] habanalabs: prevent user buff overflow
+Subject: [PATCH 4.9 04/70] scsi: libsas: Set data_dir as DMA_NONE if libata marks qc as NODATA
 Date:   Mon, 21 Sep 2020 18:27:04 +0200
-Message-Id: <20200921162036.900249682@linuxfoundation.org>
+Message-Id: <20200921162035.325075477@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
-References: <20200921162036.324813383@linuxfoundation.org>
+In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
+References: <20200921162035.136047591@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,35 +45,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Moti Haimovski <mhaimovski@habana.ai>
+From: Luo Jiaxing <luojiaxing@huawei.com>
 
-[ Upstream commit 6396feabf7a4104a4ddfecc00b8aac535c631a66 ]
+[ Upstream commit 53de092f47ff40e8d4d78d590d95819d391bf2e0 ]
 
-This commit fixes a potential debugfs issue that may occur when
-reading the clock gating mask into the user buffer since the
-user buffer size was not taken into consideration.
+It was discovered that sdparm will fail when attempting to disable write
+cache on a SATA disk connected via libsas.
 
-Signed-off-by: Moti Haimovski <mhaimovski@habana.ai>
-Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
-Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
+In the ATA command set the write cache state is controlled through the SET
+FEATURES operation. This is roughly corresponds to MODE SELECT in SCSI and
+the latter command is what is used in the SCSI-ATA translation layer. A
+subtle difference is that a MODE SELECT carries data whereas SET FEATURES
+is defined as a non-data command in ATA.
+
+Set the DMA data direction to DMA_NONE if the requested ATA command is
+identified as non-data.
+
+[mkp: commit desc]
+
+Fixes: fa1c1e8f1ece ("[SCSI] Add SATA support to libsas")
+Link: https://lore.kernel.org/r/1598426666-54544-1-git-send-email-luojiaxing@huawei.com
+Reviewed-by: John Garry <john.garry@huawei.com>
+Reviewed-by: Jason Yan <yanaijie@huawei.com>
+Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/habanalabs/debugfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/libsas/sas_ata.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/misc/habanalabs/debugfs.c b/drivers/misc/habanalabs/debugfs.c
-index 6c2b9cf45e831..650922061bdc7 100644
---- a/drivers/misc/habanalabs/debugfs.c
-+++ b/drivers/misc/habanalabs/debugfs.c
-@@ -982,7 +982,7 @@ static ssize_t hl_clk_gate_read(struct file *f, char __user *buf,
- 		return 0;
+diff --git a/drivers/scsi/libsas/sas_ata.c b/drivers/scsi/libsas/sas_ata.c
+index 87f5e694dbedd..b820c3a022eac 100644
+--- a/drivers/scsi/libsas/sas_ata.c
++++ b/drivers/scsi/libsas/sas_ata.c
+@@ -227,7 +227,10 @@ static unsigned int sas_ata_qc_issue(struct ata_queued_cmd *qc)
+ 		task->num_scatter = si;
+ 	}
  
- 	sprintf(tmp_buf, "0x%llx\n", hdev->clock_gating_mask);
--	rc = simple_read_from_buffer(buf, strlen(tmp_buf) + 1, ppos, tmp_buf,
-+	rc = simple_read_from_buffer(buf, count, ppos, tmp_buf,
- 			strlen(tmp_buf) + 1);
- 
- 	return rc;
+-	task->data_dir = qc->dma_dir;
++	if (qc->tf.protocol == ATA_PROT_NODATA)
++		task->data_dir = DMA_NONE;
++	else
++		task->data_dir = qc->dma_dir;
+ 	task->scatter = qc->sg;
+ 	task->ata_task.retry_count = 1;
+ 	task->task_state_flags = SAS_TASK_STATE_PENDING;
 -- 
 2.25.1
 
