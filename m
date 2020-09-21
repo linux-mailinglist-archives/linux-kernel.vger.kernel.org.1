@@ -2,117 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A71C4272BB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:21:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44F57272BBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727611AbgIUQV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:21:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726795AbgIUQV1 (ORCPT
+        id S1728090AbgIUQWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:22:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24636 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726419AbgIUQWl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:21:27 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC23EC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 09:21:26 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id c13so17596413oiy.6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 09:21:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dubeyko-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=wI5WECW0V/pdVKWU3V9XtntLhgWS6VZJW663ltNPIoM=;
-        b=BmYjZCCNi1HZT8atB5/9bV4/skAqiQhNQ6A65vrYQJ5f+sqPavPUzc1ZWJYOt85brG
-         IXM+w0oK0pyMwqqKjB25NQ0YK5PbcooPgq++/KDb03hSUgTVUHLV9R3GOp1uwXGcUw1I
-         f+wwMfwSZFKXkAStIuvzAK2KOjDSlEgVX88PYsr6XN5KIXnih4MxxprZCpc+xi8XoCK8
-         NR55rWc7hobt51+nh2M8IOIKQ4/4km4oRxMqJhrGJNUOSG9326SeEqf8dLLGk4X4hbqS
-         nQFnpdm0StYFuO4Nqh+AmrONYZXITu5a7H1TBLafqv+M/2pvdDu0GwFMdlUwULc8gTKs
-         QJVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=wI5WECW0V/pdVKWU3V9XtntLhgWS6VZJW663ltNPIoM=;
-        b=p2TQiaigpYR0wtd2x1a1j/yjf5WWcfid69CzaFe9P/LnmJ3g+z0xufNRmX1CGjVQsp
-         5bUmNwndLiNpV9oGHiEhRnfRlfEXnxG21e0nHQ4orIUThLk6s4A0sRVyZ0LP/7jetxSW
-         NnGQttPMMKA8rpP9iggRLAAR2CazrPmMzTBxBd97mMykRheTdda6ElRoRwHsV25NltE1
-         HiArSCt0+R8Ec/+ZSri/f6qlpeF13ukmHOLxbxRR+PHAxKvg1G35C1oAcBQ8uyRb5K9h
-         aYOy73gv2W/PqViXN4l8AqXY+bV6lLh05psbsu8N7VyUXmJHggrcIMWJTZ9+K8mwY5q9
-         ilcQ==
-X-Gm-Message-State: AOAM533PAzJIeZy6oUZPp00I/CJRx3NDL+H58tSm7ODxVSGOTganeUNZ
-        J6U8Mb+7kwykfLmmh+0GAvRekw==
-X-Google-Smtp-Source: ABdhPJyfoh/O7y19KEqeQG48cwxjNqIVd+6lXkmkRv6V3n58byFEw0G0IkGrYFGQwOQG4hP1NwzHUw==
-X-Received: by 2002:aca:f414:: with SMTP id s20mr122296oih.42.1600705286091;
-        Mon, 21 Sep 2020 09:21:26 -0700 (PDT)
-Received: from ?IPv6:2600:1700:42f0:6600:5825:d30d:b44a:2b1f? ([2600:1700:42f0:6600:5825:d30d:b44a:2b1f])
-        by smtp.gmail.com with ESMTPSA id x21sm6797059oie.49.2020.09.21.09.21.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 21 Sep 2020 09:21:25 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
-Subject: Re: [PATCH] hfsplus: Avoid truncating the logical block size
-From:   Viacheslav Dubeyko <slava@dubeyko.com>
-In-Reply-To: <1600650462-41862-1-git-send-email-wang.yi59@zte.com.cn>
-Date:   Mon, 21 Sep 2020 09:21:23 -0700
-Cc:     arnd@arndb.de, ernesto.mnd.fernandez@gmail.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xue.zhihong@zte.com.cn, wang.liang82@zte.com.cn,
-        Liao Pingfang <liao.pingfang@zte.com.cn>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <259C2036-40DA-4441-9740-07C7AB4CFF54@dubeyko.com>
-References: <1600650462-41862-1-git-send-email-wang.yi59@zte.com.cn>
-To:     Yi Wang <wang.yi59@zte.com.cn>
-X-Mailer: Apple Mail (2.3608.120.23.2.1)
+        Mon, 21 Sep 2020 12:22:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600705359;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=mmjCuWnFwwB/CNiwOmkEmAptAC4rqWxfnx9Vx4WCQPk=;
+        b=Ir1FnFo5ZpGlAoIvnkklPZCO5I9pvQ0lqbONlaveNyVmHQqw9JzbUUTZgeONna0fdOFAYb
+        nbSIoORfa/RpZYi8BVS2Te8xibekoGJwlh2ul1pk9YGNZJWo9P55I+RCsQMJ4MDy35w9B0
+        nfJM2obXyr+hxa8c6Uzl5AWqcKLNSgk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-49-cMZ3reOCP1yAkSNyITuqtQ-1; Mon, 21 Sep 2020 12:22:37 -0400
+X-MC-Unique: cMZ3reOCP1yAkSNyITuqtQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 886FC1074647;
+        Mon, 21 Sep 2020 16:22:35 +0000 (UTC)
+Received: from x1.bristot.me.redhat.com (ovpn-113-39.rdu2.redhat.com [10.10.113.39])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E3F145C1D0;
+        Mon, 21 Sep 2020 16:22:25 +0000 (UTC)
+From:   Daniel Bristot de Oliveira <bristot@redhat.com>
+To:     x86@kernel.org
+Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Marc Zyngier <maz@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] x86/irq: Use printk_deferred() on raw_spin_lock() protected sections
+Date:   Mon, 21 Sep 2020 18:22:12 +0200
+Message-Id: <e68888438cec9a1da53aaa1647720ade638d6ad4.1600705105.git.bristot@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+While testing hotplug I got this BUG:
 
+ =============================
+ [ BUG: Invalid wait context ]
+ 5.9.0-rc5+ #3 Not tainted
+ -----------------------------
+ migration/2/20 is trying to lock:
+ ffffffffb4315778 (&port->lock){-.-.}-{3:3}, at: serial8250_console_write+0x8e/0x380
+ other info that might help us debug this:
+ context-{5:5}
+ 4 locks held by migration/2/20:
+  #0: ffff91622a3ff4c0 (&irq_desc_lock_class){-.-.}-{2:2}, at: irq_migrate_all_off_this_cpu+0x41/0x2f0
+  #1: ffffffffb2c509b8 (vector_lock){-.-.}-{2:2}, at: irq_force_complete_move+0x2a/0x70
+  #2: ffffffffb2c7cec0 (console_lock){+.+.}-{0:0}, at: printk+0x48/0x4a
+  #3: ffffffffb2c7cbe0 (console_owner){....}-{0:0}, at: console_unlock+0x1af/0x650
+ stack backtrace:
+ CPU: 2 PID: 20 Comm: migration/2 Not tainted 5.9.0-rc5+ #3
+ Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
+ Call Trace:
+  dump_stack+0x8b/0xb8
+  __lock_acquire.cold+0x1ce/0x333
+  ? stack_trace_save+0x3b/0x50
+  ? save_trace+0x3f/0x360
+  lock_acquire+0xbf/0x3e0
+  ? serial8250_console_write+0x8e/0x380
+  _raw_spin_lock_irqsave+0x48/0x60
+  ? serial8250_console_write+0x8e/0x380
+  serial8250_console_write+0x8e/0x380
+  ? console_unlock+0x1e8/0x650
+  console_unlock+0x3f3/0x650
+  ? printk+0x48/0x4a
+  vprintk_emit+0x1b1/0x440
+  printk+0x48/0x4a
+  irq_force_complete_move.cold+0xf/0x14
+  irq_migrate_all_off_this_cpu+0xfa/0x2f0
+  fixup_irqs+0x25/0xe8
+  cpu_disable_common+0x2b8/0x2d0
+  native_cpu_disable+0x18/0x30
+  take_cpu_down+0x2f/0xa0
+  multi_cpu_stop+0x6d/0x130
+  ? stop_machine_yield+0x10/0x10
+  cpu_stopper_thread+0x7b/0x110
+  ? smpboot_thread_fn+0x26/0x1e0
+  smpboot_thread_fn+0x10b/0x1e0
+  ? smpboot_register_percpu_thread+0xf0/0xf0
+  kthread+0x13a/0x150
+  ? kthread_create_worker_on_cpu+0x40/0x40
+  ret_from_fork+0x22/0x30
+  smpboot: CPU 2 is now offline
+ =============================
 
-> On Sep 20, 2020, at 6:07 PM, Yi Wang <wang.yi59@zte.com.cn> wrote:
->=20
-> From: Liao Pingfang <liao.pingfang@zte.com.cn>=20
->=20
-> Return type of bdev_logical_blfsock_size() got changed from unsigned
-> short to unsigned int, but it was forgotten to update =
-hfsplus_min_io_size()
-> to use the new type. Fix it by calling max_t with new type and =
-returning
-> new type as well.
->=20
-> Fixes: ad6bf88a6c19 ("block: fix an integer overflow in logical block =
-size")
-> Signed-off-by: Liao Pingfang <liao.pingfang@zte.com.cn>=20
-> Signed-off-by: Yi Wang <wang.yi59@zte.com.cn>=20
-> ---
->  fs/hfsplus/hfsplus_fs.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/fs/hfsplus/hfsplus_fs.h b/fs/hfsplus/hfsplus_fs.h
-> index 3b03fff..3ed36d8 100644
-> --- a/fs/hfsplus/hfsplus_fs.h
-> +++ b/fs/hfsplus/hfsplus_fs.h
-> @@ -302,9 +302,9 @@ struct hfsplus_readdir_data {
->  /*
->   * Find minimum acceptible I/O size for an hfsplus sb.
->   */
-> -static inline unsigned short hfsplus_min_io_size(struct super_block =
-*sb)
-> +static inline unsigned int hfsplus_min_io_size(struct super_block =
-*sb)
->  {
-> -    return max_t(unsigned short, bdev_logical_block_size(sb->s_bdev),
-> +    return max_t(unsigned int, bdev_logical_block_size(sb->s_bdev),
->               HFSPLUS_SECTOR_SIZE);
->  }
->  =20
+It was caused by printk() inside a code section protected by a
+raw_spin_lock() that ended up calling a serial console that
+uses a regular spin_lock().
 
-Looks good. Thanks.
+Use the printk_deferred() to avoid calling the serial console
+in a raw_spin_lock() protected section.
 
-Reviewed-by: Viacheslav Dubeyko <slava@dubeyko.com>
+Signed-off-by: Daniel Bristot de Oliveira <bristot@redhat.com>
+Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: x86@kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+ arch/x86/kernel/apic/vector.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-
-> -- =20
-> 1.8.3.1
+diff --git a/arch/x86/kernel/apic/vector.c b/arch/x86/kernel/apic/vector.c
+index f8a56b5dc29f..1a0e5535b8ac 100644
+--- a/arch/x86/kernel/apic/vector.c
++++ b/arch/x86/kernel/apic/vector.c
+@@ -406,8 +406,9 @@ static int activate_reserved(struct irq_data *irqd)
+ 	 */
+ 	if (!cpumask_subset(irq_data_get_effective_affinity_mask(irqd),
+ 			    irq_data_get_affinity_mask(irqd))) {
+-		pr_warn("irq %u: Affinity broken due to vector space exhaustion.\n",
+-			irqd->irq);
++		printk_deferred(KERN_WARNING
++				"irq %u: Affinity broken due to vector space exhaustion.\n",
++				irqd->irq);
+ 	}
+ 
+ 	return ret;
+@@ -1012,8 +1013,9 @@ void irq_force_complete_move(struct irq_desc *desc)
+ 		 * so we have the necessary information when a problem in that
+ 		 * area arises.
+ 		 */
+-		pr_warn("IRQ fixup: irq %d move in progress, old vector %d\n",
+-			irqd->irq, vector);
++		printk_deferred(KERN_WARNING
++				"IRQ fixup: irq %d move in progress, old vector %d\n",
++				irqd->irq, vector);
+ 	}
+ 	free_moved_vector(apicd);
+ unlock:
+@@ -1034,15 +1036,17 @@ int lapic_can_unplug_cpu(void)
+ 	tomove = irq_matrix_allocated(vector_matrix);
+ 	avl = irq_matrix_available(vector_matrix, true);
+ 	if (avl < tomove) {
+-		pr_warn("CPU %u has %u vectors, %u available. Cannot disable CPU\n",
+-			cpu, tomove, avl);
++		printk_deferred(KERN_WARNING
++				"CPU %u has %u vectors, %u available. Cannot disable CPU\n",
++				cpu, tomove, avl);
+ 		ret = -ENOSPC;
+ 		goto out;
+ 	}
+ 	rsvd = irq_matrix_reserved(vector_matrix);
+ 	if (avl < rsvd) {
+-		pr_warn("Reserved vectors %u > available %u. IRQ request may fail\n",
+-			rsvd, avl);
++		printk_deferred(KERN_WARNING
++				"Reserved vectors %u > available %u. IRQ request may fail\n",
++				rsvd, avl);
+ 	}
+ out:
+ 	raw_spin_unlock(&vector_lock);
+-- 
+2.26.2
 
