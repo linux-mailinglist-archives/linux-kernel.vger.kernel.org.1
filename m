@@ -2,30 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D83852724BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18CD92724DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726701AbgIUNKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:10:51 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14200 "EHLO huawei.com"
+        id S1727641AbgIUNL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:11:58 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13765 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727428AbgIUNKq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:10:46 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 517EF94D4DDE6B6B7A45;
+        id S1727403AbgIUNKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:10:44 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 207EF6BC6A522D0DAF07;
         Mon, 21 Sep 2020 21:10:40 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
  DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 21 Sep 2020 21:10:30 +0800
+ 14.3.487.0; Mon, 21 Sep 2020 21:10:32 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+To:     Sean Wang <sean.wang@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <linux-mediatek@lists.infradead.org>, <linux-gpio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
         Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH -next] PCI: loongson: simplify the return expression of loongson_pci_probe()
-Date:   Mon, 21 Sep 2020 21:10:54 +0800
-Message-ID: <20200921131054.92797-1-miaoqinglang@huawei.com>
+Subject: [PATCH -next] pinctrl: mediatek: simplify the return expression of mtk_pinconf_bias_disable_set_rev1()
+Date:   Mon, 21 Sep 2020 21:10:56 +0800
+Message-ID: <20200921131056.92848-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -40,34 +42,30 @@ Simplify the return expression.
 
 Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- drivers/pci/controller/pci-loongson.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/pci/controller/pci-loongson.c b/drivers/pci/controller/pci-loongson.c
-index 719c19fe2..48169b1e3 100644
---- a/drivers/pci/controller/pci-loongson.c
-+++ b/drivers/pci/controller/pci-loongson.c
-@@ -183,7 +183,6 @@ static int loongson_pci_probe(struct platform_device *pdev)
- 	struct device_node *node = dev->of_node;
- 	struct pci_host_bridge *bridge;
- 	struct resource *regs;
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
+index 2f3dfb56c..16bb15226 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
+@@ -479,14 +479,8 @@ EXPORT_SYMBOL_GPL(mtk_pinconf_bias_get);
+ int mtk_pinconf_bias_disable_set_rev1(struct mtk_pinctrl *hw,
+ 				      const struct mtk_pin_desc *desc)
+ {
 -	int err;
- 
- 	if (!node)
- 		return -ENODEV;
-@@ -222,11 +221,7 @@ static int loongson_pci_probe(struct platform_device *pdev)
- 	bridge->ops = &loongson_pci_ops;
- 	bridge->map_irq = loongson_map_irq;
- 
--	err = pci_host_probe(bridge);
+-
+-	err = mtk_hw_set_value(hw, desc, PINCTRL_PIN_REG_PULLEN,
+-			       MTK_DISABLE);
 -	if (err)
 -		return err;
 -
 -	return 0;
-+	return pci_host_probe(bridge);
++	return mtk_hw_set_value(hw, desc, PINCTRL_PIN_REG_PULLEN,
++				MTK_DISABLE);
  }
+ EXPORT_SYMBOL_GPL(mtk_pinconf_bias_disable_set_rev1);
  
- static struct platform_driver loongson_pci_driver = {
 -- 
 2.23.0
 
