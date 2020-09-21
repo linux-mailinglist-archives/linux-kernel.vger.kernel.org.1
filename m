@@ -2,134 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B61C271A53
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 07:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34694271A58
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 07:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726211AbgIUFMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 01:12:22 -0400
-Received: from mail-io1-f80.google.com ([209.85.166.80]:37739 "EHLO
-        mail-io1-f80.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726186AbgIUFMW (ORCPT
+        id S1726357AbgIUFSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 01:18:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726211AbgIUFSO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 01:12:22 -0400
-Received: by mail-io1-f80.google.com with SMTP id 80so9213131iou.4
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 22:12:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Ds3GkKEaOskN3v3iZHyWFgI5IXn4mwKM9v/O5vRR7ew=;
-        b=nshjlt421wVBGf0rtk3n4b/0s0fwaRE04YMD4ccE8JriMh3wakK6wB2fcy/ZYLNQOB
-         6iMhNWVltCqNTm+E9sr4aKDDLSSMjjkjw2+UDzpbqacYbJNCft49pLnO34PVJl8zOVtK
-         6cUPqkHa5gZ/2LjxZeuOcxSdx+lTxWOWW1ygDadsbPswgty2BQTkx5hVV+VNUhW34IIB
-         Lb6ezNQOVyJ9uGVUCVCEv18feto80N9rxqrdvXZno9iqCK8URHsgqVDixI2nCnta4jjR
-         Q/xJ3bHXAhYL9o9FNEMVLlXPqNV6eBBeh4pKMK0bDaO21Ydp58DWlqPGli3jx7w/SiYS
-         /P9A==
-X-Gm-Message-State: AOAM530i6qL4ddFbnTF5UUXIYJqcMf9nzGTtB8v5gdcrIKCtgaMHDetC
-        6TA8zSMHseJWCkYpcFeAALclYWcnsHkVVfDEpXrXjbeW+t0Q
-X-Google-Smtp-Source: ABdhPJz+F8J8NwBY2tAz5v72BRt9HldYud/npOCxSObZ0/VIVnPtUTjwJ7fAq4nkUtQT3P/8MkzG7djOAQoPkTBZF3vMFDlf142m
+        Mon, 21 Sep 2020 01:18:14 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14098C061755;
+        Sun, 20 Sep 2020 22:18:14 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bvt4d3x0Xz9sR4;
+        Mon, 21 Sep 2020 15:18:09 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1600665491;
+        bh=Hh4xj2jPivYdeHaxLSo7KgWAKFpLMU7I7ybHbjiP3p0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=W77gqC4LHd29lI3tnJ6105GoATQK6fROLOYQC1pBSY5zQHrJsmSW6B6Wh6EWJ66ej
+         sZMOMH+8BCW+fyVA3KoQffXna/yTazZJ1aESp/cfyFrFtJAvcvuFogn6xZNYCXW1/z
+         7sj7TEwA3Gl33YG8fywVpYEUaCWUaXO4ELmkTVTzgLpcUvN2q/DBYtgC7hCdGYbcEc
+         oWuErpFKFjvj6wk39adf+EdOATpX5Uls9ZPREfyCxLtNbQyVLI0Dh0f11gQd4+AZ98
+         bVD8srESt4Ppi9z/Wz21pzacfeVINe0wPc4MAnSskI3CSDu3ezmQBtUGjAZwUwBVJQ
+         ZnelMZxzoHW6Q==
+Date:   Mon, 21 Sep 2020 15:18:07 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>, Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Jim Quinlan <jquinlan@broadcom.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: manual merge of the usb tree with the pci tree
+Message-ID: <20200921151807.637905c0@canb.auug.org.au>
 MIME-Version: 1.0
-X-Received: by 2002:a5e:9419:: with SMTP id q25mr35583038ioj.205.1600665141281;
- Sun, 20 Sep 2020 22:12:21 -0700 (PDT)
-Date:   Sun, 20 Sep 2020 22:12:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000026880b05afcbe562@google.com>
-Subject: KMSAN: uninit-value in hsr_fill_frame_info
-From:   syzbot <syzbot+e267bed19bfc5478fb33@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, glider@google.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, m-karicheri2@ti.com,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/nqdGVLMfBAT8Rvf3qCHfRxy";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+--Sig_/nqdGVLMfBAT8Rvf3qCHfRxy
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-syzbot found the following issue on:
+Hi all,
 
-HEAD commit:    c5a13b33 kmsan: clang-format core
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=13ef204b900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=20f149ad694ba4be
-dashboard link: https://syzkaller.appspot.com/bug?extid=e267bed19bfc5478fb33
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1015be73900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1185669b900000
+Today's linux-next merge of the usb tree got a conflict in:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e267bed19bfc5478fb33@syzkaller.appspotmail.com
+  drivers/pci/controller/pcie-brcmstb.c
 
-hsr0: VLAN not yet supported
-=====================================================
-BUG: KMSAN: uninit-value in hsr_fill_frame_info+0x3d3/0x570 net/hsr/hsr_forward.c:457
-CPU: 1 PID: 8700 Comm: syz-executor512 Not tainted 5.9.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x21c/0x280 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:122
- __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:219
- hsr_fill_frame_info+0x3d3/0x570 net/hsr/hsr_forward.c:457
- fill_frame_info net/hsr/hsr_forward.c:520 [inline]
- hsr_forward_skb+0xc63/0x2610 net/hsr/hsr_forward.c:537
- hsr_dev_xmit+0x133/0x230 net/hsr/hsr_device.c:220
- __netdev_start_xmit include/linux/netdevice.h:4634 [inline]
- netdev_start_xmit include/linux/netdevice.h:4648 [inline]
- xmit_one+0x3cf/0x750 net/core/dev.c:3561
- dev_hard_start_xmit net/core/dev.c:3577 [inline]
- __dev_queue_xmit+0x3aad/0x4470 net/core/dev.c:4136
- dev_queue_xmit+0x4b/0x60 net/core/dev.c:4169
- packet_snd net/packet/af_packet.c:2989 [inline]
- packet_sendmsg+0x8542/0x9a80 net/packet/af_packet.c:3014
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg net/socket.c:671 [inline]
- __sys_sendto+0x9dc/0xc80 net/socket.c:1992
- __do_sys_sendto net/socket.c:2004 [inline]
- __se_sys_sendto+0x107/0x130 net/socket.c:2000
- __x64_sys_sendto+0x6e/0x90 net/socket.c:2000
- do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x443d79
-Code: e8 8c 07 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 bb 09 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffdeb5a7c88 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000443d79
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000004
-RBP: 00007ffdeb5a7ca0 R08: 0000000020000000 R09: 0000000000000014
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffdeb5a7cb0
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+between commit:
 
-Uninit was created at:
- kmsan_save_stack_with_flags mm/kmsan/kmsan.c:143 [inline]
- kmsan_internal_poison_shadow+0x66/0xd0 mm/kmsan/kmsan.c:126
- kmsan_slab_alloc+0x8a/0xe0 mm/kmsan/kmsan_hooks.c:80
- slab_alloc_node mm/slub.c:2907 [inline]
- __kmalloc_node_track_caller+0x9aa/0x12f0 mm/slub.c:4511
- __kmalloc_reserve net/core/skbuff.c:142 [inline]
- __alloc_skb+0x35f/0xb30 net/core/skbuff.c:210
- alloc_skb include/linux/skbuff.h:1094 [inline]
- alloc_skb_with_frags+0x1f2/0xc10 net/core/skbuff.c:5771
- sock_alloc_send_pskb+0xc83/0xe50 net/core/sock.c:2348
- packet_alloc_skb net/packet/af_packet.c:2837 [inline]
- packet_snd net/packet/af_packet.c:2932 [inline]
- packet_sendmsg+0x6abb/0x9a80 net/packet/af_packet.c:3014
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg net/socket.c:671 [inline]
- __sys_sendto+0x9dc/0xc80 net/socket.c:1992
- __do_sys_sendto net/socket.c:2004 [inline]
- __se_sys_sendto+0x107/0x130 net/socket.c:2000
- __x64_sys_sendto+0x6e/0x90 net/socket.c:2000
- do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-=====================================================
+  1cf1b0a6dd95 ("PCI: brcmstb: Add bcm7278 register info")
 
+from the pci tree and commit:
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+  f48cc509c935 ("Revert "PCI: brcmstb: Wait for Raspberry Pi's firmware whe=
+n present"")
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+from the usb tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/pci/controller/pcie-brcmstb.c
+index 6e7aa82a54a3,bac63d04297f..000000000000
+--- a/drivers/pci/controller/pcie-brcmstb.c
++++ b/drivers/pci/controller/pcie-brcmstb.c
+@@@ -1213,8 -929,6 +1211,7 @@@ static int brcm_pcie_probe(struct platf
+  {
+  	struct device_node *np =3D pdev->dev.of_node, *msi_np;
+  	struct pci_host_bridge *bridge;
+- 	struct device_node *fw_np;
+ +	const struct pcie_cfg_data *data;
+  	struct brcm_pcie *pcie;
+  	int ret;
+ =20
+
+--Sig_/nqdGVLMfBAT8Rvf3qCHfRxy
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9oN48ACgkQAVBC80lX
+0GwlNAf+PGQHE3ysNK68/6po12G/AkWK40hqnzJNMPAsCX+3aBobVrVHHOQDn7dK
+7Y5rUxgbxcFBnM7o0mSPOZUyA7lbS6jX3ZxLi6gT76FCD77BogZy28ZxA/cA3Q6S
+QlAUKDK6Df5xp1wMfNbbCBLrDkHJ2zzaDa0leb+tpW4yAur2+zy56mic58NNPPkq
+JYBx+9F9XVN7tgqDMNVqSGQPwksV0GcwPbYZQW1YLsw75nsKGBWJ+JjfT2Obhvds
+k60T4Aeuh2BBrqQaSAzXIJd0icgdfKrphBsnGFNIA9bdphjYYrPxVv+gfKFPDJHf
+wBselLMg04zOk0HZ6CE2AIqQVX0BiA==
+=kk6c
+-----END PGP SIGNATURE-----
+
+--Sig_/nqdGVLMfBAT8Rvf3qCHfRxy--
