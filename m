@@ -2,42 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3306271F89
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 490AA271F93
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:02:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726526AbgIUKCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:02:23 -0400
-Received: from mail-il1-f205.google.com ([209.85.166.205]:51097 "EHLO
-        mail-il1-f205.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726428AbgIUKCW (ORCPT
+        id S1726471AbgIUKCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:02:22 -0400
+Received: from mail-il1-f206.google.com ([209.85.166.206]:39978 "EHLO
+        mail-il1-f206.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726341AbgIUKCW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 21 Sep 2020 06:02:22 -0400
-Received: by mail-il1-f205.google.com with SMTP id u20so10554258ilk.17
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:02:22 -0700 (PDT)
+Received: by mail-il1-f206.google.com with SMTP id g188so10564038ilh.7
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:02:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=UrOT62Oj4GRjmaKFdFgDIhd86YLaoW5rX/6hwUD3AZw=;
-        b=XvEFFBAyIKFHfapsu4WHvguVDjbkFPR8zxv+0JcFxvizK4PBF2k52WQ7ZelO0nHA4u
-         VmxmAJUoxiwOhafAQsaZ0Tv1O/Xk1CDbvMIIU7j1a+MvcGWpESaLpd8BZemQVPfPO5ch
-         37Pllps95dVZazl0EZIIcOYjyNaAGjlszqEHgCdvHt3tNiYk5pssrzBvx7Z12RVcOc/r
-         xNvU/qPzVXEjiWlNIKz1hain4NbGSCto6IlQ9m+dmUNY4Yhkz0IPYjBAorrb231fto9N
-         wIrRyzd5TstRehC/DPsgi+GzYN7mxoameUaQ7pkrTMGN9evtgE5rch4Ug2glAcE2GpEW
-         e3Gw==
-X-Gm-Message-State: AOAM530ndfYUM/ih9KP2sUbiSnOyvxs8uOkIOK3p0VdQDcStaT1l4Tjb
-        EBRq2Ie8hzltG7JBuW2YzmYXbDFXbeOsF3uvwSmxCn/+Xd/j
-X-Google-Smtp-Source: ABdhPJx/RqJSeGhQOwYiUCC/AXEdupsu+C55iPqhfqOtzbCMf8gIs66F/OyhAZUMSKJCLb26WDRvrBJGC3VrmvmzNTeM1Ic2MDv+
+        bh=878X+MokR+ZbeqJGJQNq7QDLXnpG5EMYsQ8wF9gEG6g=;
+        b=G78l8lxt+5XtsDb6U1u2FOJEMPjacC0zjB4RA1aOPJPPI0q4h6z0C1hcqn5AfwHTQk
+         QuYT+gZ4SgYfNIw0UwWftO+sxLX7AOpRH645E5xBQF4mwVa2h4NT1i0DmjFLmWtKltuC
+         3gf/IrAI8gPUPIpJqSGxn72gLqk6f22Yq9a4AV9z1zY6WTFtaBuBENXS/FrX5Vb7PRpX
+         FR5CV5sjkExzUQ/77ej7URk6nhSohOYamnYhwYXH0S/rd1xBbOy9HpFVMJE6DOMajCSD
+         bs22O/mNjRaFsGojhA/iRB2XrnD1+Fvtm7f5Cnva0qbj1GYRSkC/mPSdmJmywZRNQZI6
+         kD/Q==
+X-Gm-Message-State: AOAM532Fihmf3/idrhcyvRSJsxYRMiOMrGBfWwoIYmkR+fcE3YQxf5a+
+        ZDnHhK9K2Y5bg2vF0F9L6PZOo2Oay7m5mBwCPJg15tn9/zf9
+X-Google-Smtp-Source: ABdhPJy77SpanDAhaUD564y+kfir5vkWynL2iO3uzcCnBbobRoCMtMVM2wLANCqpTZo8HnFv9DEsyoW2UKTNcmOMcsiqIT+5iXiI
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2f07:: with SMTP id q7mr36573930iow.191.1600682541716;
+X-Received: by 2002:a6b:3e84:: with SMTP id l126mr35372373ioa.118.1600682541024;
  Mon, 21 Sep 2020 03:02:21 -0700 (PDT)
 Date:   Mon, 21 Sep 2020 03:02:21 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004c1f4d05afcff2f4@google.com>
-Subject: memory leak in udf_process_sequence
-From:   syzbot <syzbot+128f4dd6e796c98b3760@syzkaller.appspotmail.com>
-To:     jack@suse.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000418c7705afcff2e1@google.com>
+Subject: general protection fault in jffs2_parse_param
+From:   syzbot <syzbot+9765367bb86a19d38732@syzkaller.appspotmail.com>
+To:     dhowells@redhat.com, dwmw2@infradead.org,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        richard@nod.at, sandeen@sandeen.net,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -49,45 +51,69 @@ syzbot found the following issue on:
 
 HEAD commit:    325d0eab Merge branch 'akpm' (patches from Andrew)
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13ec44d3900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a1f3c5052e8097e9
-dashboard link: https://syzkaller.appspot.com/bug?extid=128f4dd6e796c98b3760
+console output: https://syzkaller.appspot.com/x/log.txt?x=12acb307900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b12e84189082991c
+dashboard link: https://syzkaller.appspot.com/bug?extid=9765367bb86a19d38732
 compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=101a0e9b900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17ae18d3900000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=175909d9900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=179b3cc3900000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+128f4dd6e796c98b3760@syzkaller.appspotmail.com
+Reported-by: syzbot+9765367bb86a19d38732@syzkaller.appspotmail.com
 
-BUG: memory leak
-unreferenced object 0xffff88811a1d0a00 (size 512):
-  comm "syz-executor299", pid 6519, jiffies 4294943224 (age 15.090s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<000000009ea2686e>] kmalloc include/linux/slab.h:554 [inline]
-    [<000000009ea2686e>] kmalloc_array include/linux/slab.h:593 [inline]
-    [<000000009ea2686e>] kcalloc include/linux/slab.h:605 [inline]
-    [<000000009ea2686e>] udf_process_sequence+0x7e/0x1080 fs/udf/super.c:1676
-    [<00000000d9f60715>] udf_load_sequence fs/udf/super.c:1795 [inline]
-    [<00000000d9f60715>] udf_check_anchor_block+0xdc/0x1a0 fs/udf/super.c:1835
-    [<0000000067395456>] udf_scan_anchors+0x9e/0x240 fs/udf/super.c:1868
-    [<00000000966a1b37>] udf_find_anchor fs/udf/super.c:1925 [inline]
-    [<00000000966a1b37>] udf_load_vrs+0x1be/0x3b0 fs/udf/super.c:1990
-    [<0000000004bba192>] udf_fill_super+0x286/0x7a5 fs/udf/super.c:2183
-    [<00000000d48efb9b>] mount_bdev+0x1d3/0x210 fs/super.c:1417
-    [<00000000280e173c>] legacy_get_tree+0x26/0x70 fs/fs_context.c:592
-    [<0000000059fde270>] vfs_get_tree+0x28/0xe0 fs/super.c:1547
-    [<00000000904c79e7>] do_new_mount fs/namespace.c:2875 [inline]
-    [<00000000904c79e7>] path_mount+0x90e/0xda0 fs/namespace.c:3192
-    [<000000008e0f8bcd>] do_mount fs/namespace.c:3205 [inline]
-    [<000000008e0f8bcd>] __do_sys_mount fs/namespace.c:3413 [inline]
-    [<000000008e0f8bcd>] __se_sys_mount fs/namespace.c:3390 [inline]
-    [<000000008e0f8bcd>] __x64_sys_mount+0x140/0x190 fs/namespace.c:3390
-    [<00000000e981acac>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000006322386a>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
+general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
+CPU: 1 PID: 6866 Comm: syz-executor202 Not tainted 5.9.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:jffs2_parse_param+0x141/0x330 fs/jffs2/super.c:206
+Code: 48 c1 ea 03 4d 63 fc 80 3c 02 00 0f 85 de 01 00 00 48 b8 00 00 00 00 00 fc ff df 4d 8b 75 00 49 8d 7e 08 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 c8 01 00 00 4d 8b 76 08 4c 89 ff 4c 89 f6 e8 d6
+RSP: 0018:ffffc90001087b78 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: ffff8880932c9c00 RCX: ffffffff82882084
+RDX: 0000000000000001 RSI: ffffffff82882096 RDI: 0000000000000008
+RBP: 1ffff92000210f6f R08: 0000000000000001 R09: 0000000000000003
+R10: 00000000003fffff R11: 0000000000000000 R12: 0000000000000000
+R13: ffff88808de2a000 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000000002198880(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000000043e830 CR3: 00000000a11a3000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ vfs_parse_fs_param fs/fs_context.c:117 [inline]
+ vfs_parse_fs_param+0x203/0x550 fs/fs_context.c:98
+ vfs_parse_fs_string+0xe6/0x150 fs/fs_context.c:161
+ generic_parse_monolithic+0x16f/0x1f0 fs/fs_context.c:201
+ do_new_mount fs/namespace.c:2871 [inline]
+ path_mount+0x133f/0x20a0 fs/namespace.c:3192
+ do_mount fs/namespace.c:3205 [inline]
+ __do_sys_mount fs/namespace.c:3413 [inline]
+ __se_sys_mount fs/namespace.c:3390 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3390
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x44699a
+Code: b8 08 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 7d ae fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 5a ae fb ff c3 66 0f 1f 84 00 00 00 00 00
+RSP: 002b:00007ffc381bf788 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffc381bf7d0 RCX: 000000000044699a
+RDX: 0000000020001300 RSI: 0000000020001340 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 00007ffc381bf7d0 R09: 0000000000000014
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401c80
+R13: 0000000000401d10 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+---[ end trace 9cf0f624124bffcb ]---
+RIP: 0010:jffs2_parse_param+0x141/0x330 fs/jffs2/super.c:206
+Code: 48 c1 ea 03 4d 63 fc 80 3c 02 00 0f 85 de 01 00 00 48 b8 00 00 00 00 00 fc ff df 4d 8b 75 00 49 8d 7e 08 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 c8 01 00 00 4d 8b 76 08 4c 89 ff 4c 89 f6 e8 d6
+RSP: 0018:ffffc90001087b78 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: ffff8880932c9c00 RCX: ffffffff82882084
+RDX: 0000000000000001 RSI: ffffffff82882096 RDI: 0000000000000008
+RBP: 1ffff92000210f6f R08: 0000000000000001 R09: 0000000000000003
+R10: 00000000003fffff R11: 0000000000000000 R12: 0000000000000000
+R13: ffff88808de2a000 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000000002198880(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000000043e830 CR3: 00000000a11a3000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
 ---
