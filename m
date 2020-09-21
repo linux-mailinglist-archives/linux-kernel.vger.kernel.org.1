@@ -2,97 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD5D327288D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD672728B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728280AbgIUOoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 10:44:07 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:35619 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727948AbgIUOoG (ORCPT
+        id S1728098AbgIUOoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 10:44:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727965AbgIUOom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:44:06 -0400
-Received: from ip5f5af089.dynamic.kabel-deutschland.de ([95.90.240.137] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1kKN2q-0003YE-9b; Mon, 21 Sep 2020 14:43:56 +0000
-Date:   Mon, 21 Sep 2020 16:43:55 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Michal Hocko <mhocko@suse.com>, Peter Xu <peterx@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Maya B . Gokhale" <gokhale2@llnl.gov>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Marty Mcfadden <mcfadden8@llnl.gov>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
-Message-ID: <20200921144355.mrzc66lina3dkfjq@wittgenstein>
-References: <20200916184619.GB40154@xz-x1>
- <20200917112538.GD8409@ziepe.ca>
- <CAHk-=wjtfjB3TqTFRzVmOrB9Mii6Yzc-=wKq0fu4ruDE6AsJgg@mail.gmail.com>
- <20200917193824.GL8409@ziepe.ca>
- <CAHk-=wiY_g+SSjncZi8sO=LrxXmMox0NO7K34-Fs653XVXheGg@mail.gmail.com>
- <20200918164032.GA5962@xz-x1>
- <20200921134200.GK12990@dhcp22.suse.cz>
- <20200921141830.GE5962@xz-x1>
- <20200921142834.GL12990@dhcp22.suse.cz>
- <20200921143847.GB4268@mtj.duckdns.org>
+        Mon, 21 Sep 2020 10:44:42 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E225BC061755;
+        Mon, 21 Sep 2020 07:44:41 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id 77so6996365lfj.0;
+        Mon, 21 Sep 2020 07:44:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VBmGKsH4HXBysaC98/3xCnOtRsPHJTpyWV8wSKmKAjM=;
+        b=BFVZcoCXkbqbquKK2sSGrqLtZKU9hzgIVQ2eHQpno/78sfx38zmfBEIhAH1oOuaatm
+         lX7GOmadwj/QomMTDwgUyLyExg3FoHj9ReuFspSZ8IyUmt4YBN3NEMi+mScNFnEg8gtK
+         4i5re2ZtmX2gYb2MANPMa3upP1zoLp3CFzZI6PTnBuhH6DNKdeLs2f6e8/buiPyfMA/P
+         0Wof0+d7k2Gs33gLKi16XEihTtQa8nhfqQ5p3WBJjmYa9MwZeeqEsQyMhLuLvY8MHbHI
+         V+EK2A+4HlnMfzeu7lygDLb7KCjca8QCFnR//FPG56cetY8StplXI7REZUHw3JQ2VlyD
+         u4Sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VBmGKsH4HXBysaC98/3xCnOtRsPHJTpyWV8wSKmKAjM=;
+        b=dBd0idAccgsOt+tbUfbgWH3RekJ+ZDJ8/ERJQcFzwmCzmcudISwzjaZFSPS0UImJHO
+         4YPEeabfmDwezU607MGVXOTbdKetYen+yusw9+C8XT/L38VMHxqKisPJg+Wm9x9qGS0i
+         xEpgaaY3O0FyvUMmUiOAVClHO/EHb9XdBXPZeWdwJ6JHyKbBrfNvu5awxclSczPceHuT
+         PQ112Zmamqoa0lOBJauQTHeaHaYxFMMdZ+WiglFIrjfhGDyISrr5PNFQc+524g3osoZ7
+         sanqceddodN3nvIbDcNhodhmISp1zrXdf4/M6nA+dDQTf3gHaY5K702ZaGPoBIf7XUsh
+         yK1Q==
+X-Gm-Message-State: AOAM532rGqWEWilRcEh7cdDx+UPU0Tz2trKrnfIQLOPpj/Q6zC7eYqph
+        tyqMZg/dvQ0n1lqX5jFsfNXCqTa7H4A=
+X-Google-Smtp-Source: ABdhPJz5SLAxXZRgZVYvNQwvj6rRLaz1d+7HanqGVKxv0Y8w2q0awvZO/dcXQiZTg5zyIAQogBIZTg==
+X-Received: by 2002:ac2:593b:: with SMTP id v27mr116180lfi.338.1600699480014;
+        Mon, 21 Sep 2020 07:44:40 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id x5sm2765162ljh.127.2020.09.21.07.44.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Sep 2020 07:44:39 -0700 (PDT)
+Subject: Re: [PATCH v7 12/34] i2c: tegra: Use clk-bulk helpers
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200908224006.25636-1-digetx@gmail.com>
+ <20200908224006.25636-13-digetx@gmail.com> <20200917113846.GX3515672@ulmo>
+ <175e7f54-36f0-32c6-35a3-14c5b5e89e95@gmail.com>
+ <20200921111257.GF3950626@ulmo>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <7b3b9e21-f8c8-eebb-85bb-af62fc204f10@gmail.com>
+Date:   Mon, 21 Sep 2020 17:44:38 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200921111257.GF3950626@ulmo>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200921143847.GB4268@mtj.duckdns.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 10:38:47AM -0400, Tejun Heo wrote:
-> Hello,
+21.09.2020 14:12, Thierry Reding пишет:
+> On Thu, Sep 17, 2020 at 06:01:56PM +0300, Dmitry Osipenko wrote:
+> [...]
+>> It's still possible to add the clk-num checking, but it should be
+>> unpractical. We could always add it later on if there will be a real
+>> incident. Do you agree?
 > 
-> On Mon, Sep 21, 2020 at 04:28:34PM +0200, Michal Hocko wrote:
-> > Fundamentaly CLONE_INTO_CGROUP is similar to regular fork + move to the
-> > target cgroup after the child gets executed. So in principle there
-> > shouldn't be any big difference. Except that the move has to be explicit
-> > and the the child has to have enough privileges to move itself. I am not
-> 
-> Yeap, they're supposed to be the same operations. We've never clearly
-> defined how the accounting gets split across moves because 1. it's
-> inherently blurry and difficult 2. doesn't make any practical difference for
-> the recommended and vast majority usage pattern which uses migration to seed
-> the new cgroup. CLONE_INTO_CGROUP doesn't change any of that.
-> 
-> > completely sure about CLONE_INTO_CGROUP model though. According to man
-> > clone(2) it seems that O_RDONLY for the target cgroup directory is
-> > sufficient. That seems much more relaxed IIUC and it would allow to fork
-> > into a different cgroup while keeping a lot of resources in the parent's
-> > proper.
-> 
-> If the man page is documenting that, it's wrong. cgroup_css_set_fork() has
-> an explicit cgroup_may_write() test on the destination cgroup.
-> CLONE_INTO_CGROUP should follow exactly the same rules as regular
-> migrations.
+> There's also clk_bulk_get(), which allows you to specify the number of
+> clocks and their consumer IDs that you want to request. That seems like
+> it would allow us to both avoid the repetitive calls to clk APIs and at
+> the same time allows us to specify exactly which clocks we need. Would
+> that not work as a compromise?
 
-Indeed!
-The O_RDONLY mention on the manpage doesn't make sense but it is
-explained that the semantics are exactly the same for moving via the
-filesystem:
-
-"In order to place the child process in a different cgroup, the caller
-specifies CLONE_INTO_CGROUP in cl_args.flags and passes a file
-descriptor  that  refers  to  a  version  2  cgroup  in  the
-cl_args.cgroup  field.  (This file descriptor can be obtained by opening
-a cgroup v2 directory using either the O_RDONLY or the O_PATH flag.)
-Note that all of the usual restrictions (described in cgroups(7)) on
-placing a process into a version 2 cgroup apply."
-
-Christian
+I'll change to use clk_bulk_get(), thanks.
