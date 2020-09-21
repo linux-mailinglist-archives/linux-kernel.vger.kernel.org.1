@@ -2,230 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B72FC272A48
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 610C4272A4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727408AbgIUPeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 11:34:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51820 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726537AbgIUPeN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 11:34:13 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3824620866;
-        Mon, 21 Sep 2020 15:34:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600702452;
-        bh=Qfz/osnh0nifGLXC37WqN1bCZaz5T5g6Ftq3vatCeU0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=fqCCBh1O572AsYzhfAKEIVEAKyLffBs/V23FRxIyITsxODjYJKVffaASkeIhuEeBi
-         K0sRpKvauMmLp+SrJIpN1DdG++wAmfMdSwq+D5GTM+93HhU+vCIPyGNKuK29CYEQBt
-         ayUKSfV3W+oaYnUX2IB4f50chbLyPsjyuA74tmNU=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 00720352303A; Mon, 21 Sep 2020 08:34:11 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 08:34:11 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        neeraj.iitr10@gmail.com, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Subject: Re: [RFC v5 0/5] Add support length of each segment in the segcblist
- (breaks TREE04)
-Message-ID: <20200921153411.GA8734@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200921012152.2831904-1-joel@joelfernandes.org>
- <20200921020625.GA2930323@google.com>
+        id S1727482AbgIUPeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 11:34:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726611AbgIUPeW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 11:34:22 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 041E2C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 08:34:21 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id z1so13270516wrt.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 08:34:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:autocrypt:organization:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uSzkynWntROh06sL5wXx2wzBkInd8hq2VCVKPuCE2JE=;
+        b=A/a1iPqBbRn5pk7LFiPA12/Rvof4tKMuZI+DPafPrjPkPY2pff035R74Q++bxw02kC
+         E5iGZqJShc5r3h5jklsYx18/KbgFhrbqZUHN8viV0hI2i2OV6O/icWSg1ePc1Le6gwx9
+         6xYmw6sA09+5iExyG6wyRKhxdqJqVRDZnIPbK0N8rNqZ/6J/Ad1n/BKk10IrrgIo3CqN
+         3PJPETEHBiOxZAsHxknJKcFeQog86phy4OKFH0SCVb8HCVuC0dzqu/VN7lxgfiEBo1qL
+         hvIcklYi7oLVrJejmdtOblJ2HLN2LieiBT3vVxcr4oURQRTLGjvPgr2tCHafLiCICOIY
+         t7PA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :organization:message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=uSzkynWntROh06sL5wXx2wzBkInd8hq2VCVKPuCE2JE=;
+        b=QGP1nXQ2t1dhzqNvAuI1iCm3ERVwB5rtJltN8o+Ws3++hvRemwJc1f0d8SIAyjR+hr
+         g6ZPiGmC1ICJwcDb/elDixg3kCHb4GXNr+gBDnFBMQ4815eNzy4X942uNP5pJLwMOmut
+         /vWse4B1vDjOJ97AbRsvqTgLUflj2GEV/s35UwsVtWDB5JixnF1PvRRW7/HbPgRxPYug
+         DhpJ3ySnp0E/JVYc+ioQv80jwkIHPSmLEfIl+28SdU/xAU/zioXaBG48lODTii1XR47q
+         Fljp46lusZ2gWWwGNqQOAINbMECBiKALeyhxwQrT5F35QDJcMr8FICyTjhJKWRpPouda
+         qqwQ==
+X-Gm-Message-State: AOAM532aP6YLEmjsh/fCu1qDdtsfDGj+3vqVB+F/smogy/s1GEcqf1fR
+        /w2py+QeAxCVc5S/FVkhhKSQHw==
+X-Google-Smtp-Source: ABdhPJzUfmqkdpWOiN4w11HpFOm4Ew4OqJdNbCkFmtQS/Rv45Z0VGZ/LIfZay2+QfeiAvoZZyNDCbA==
+X-Received: by 2002:adf:fc92:: with SMTP id g18mr340055wrr.201.1600702460451;
+        Mon, 21 Sep 2020 08:34:20 -0700 (PDT)
+Received: from [192.168.1.23] (home.beaume.starnux.net. [82.236.8.43])
+        by smtp.gmail.com with ESMTPSA id p3sm19451678wmm.40.2020.09.21.08.34.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Sep 2020 08:34:19 -0700 (PDT)
+Subject: Re: [PATCH] pci: meson: build as module by default
+To:     Kevin Hilman <khilman@baylibre.com>, linux-pci@vger.kernel.org
+Cc:     linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Yue Wang <yue.wang@amlogic.com>
+References: <20200918181251.32423-1-khilman@baylibre.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
+ 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
+ BSwxi7g3Mu7u5kUByanqHyA=
+Organization: Baylibre
+Message-ID: <5b84ea0b-abc1-006e-c07b-fead6c50c606@baylibre.com>
+Date:   Mon, 21 Sep 2020 17:34:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200921020625.GA2930323@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200918181251.32423-1-khilman@baylibre.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 20, 2020 at 10:06:25PM -0400, Joel Fernandes wrote:
-> On Sun, Sep 20, 2020 at 09:21:47PM -0400, Joel Fernandes (Google) wrote:
-> > 
-> > NOTE: I marked as RFC since TREE 04 fails even though TREE03 passes. I don't
-> > see any RCU errors in the counters, however when shutdown thread tries to
-> > shutdown the system, it hangs when trying to shutdown the rcu_barrier thread.
+On 18/09/2020 20:12, Kevin Hilman wrote:
+> Enable pci-meson to build as a module whenever ARCH_MESON is enabled.
 > 
-> Looks like if I restore the logic of setting the segcb_list ->len field from
-> the callers of extract_done_cbs(), then TREE04 issues go away. I am inclined
-> to do that considering this series, for what it is trying to do, does not
-> really need to optimize that logic (can be done later).
+> Cc: Yue Wang <yue.wang@amlogic.com>
+> Signed-off-by: Kevin Hilman <khilman@baylibre.com>
+> ---
+> Tested on Khadas VIM3 and Khadas VIM3 using NVMe SSD devices.
 > 
-> With the below diff on top of this series, TREE04 passes. I will await any
-> other review comments before posting another series.. meanwhile, will pass
-> it through the grinders..
-
-As discussed on IRC, I will await v6.
-
-							Thanx, Paul
-
-> ---8<---
-> diff --git a/include/linux/rcu_segcblist.h b/include/linux/rcu_segcblist.h
-> index 319a565f6ecb..d462ae5e340a 100644
-> --- a/include/linux/rcu_segcblist.h
-> +++ b/include/linux/rcu_segcblist.h
-> @@ -76,7 +76,6 @@ struct rcu_segcblist {
->  #endif
->  	u8 enabled;
->  	u8 offloaded;
-> -	u8 invoking;
+>  drivers/pci/controller/dwc/Kconfig     | 3 ++-
+>  drivers/pci/controller/dwc/pci-meson.c | 8 +++++++-
+>  2 files changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
+> index 044a3761c44f..bc049865f8e0 100644
+> --- a/drivers/pci/controller/dwc/Kconfig
+> +++ b/drivers/pci/controller/dwc/Kconfig
+> @@ -237,8 +237,9 @@ config PCIE_HISI_STB
+>  	  Say Y here if you want PCIe controller support on HiSilicon STB SoCs
+>  
+>  config PCI_MESON
+> -	bool "MESON PCIe controller"
+> +	tristate "MESON PCIe controller"
+>  	depends on PCI_MSI_IRQ_DOMAIN
+> +	default m if ARCH_MESON
+>  	select PCIE_DW_HOST
+>  	help
+>  	  Say Y here if you want to enable PCI controller support on Amlogic
+> diff --git a/drivers/pci/controller/dwc/pci-meson.c b/drivers/pci/controller/dwc/pci-meson.c
+> index 4f183b96afbb..7a1fb55ee44a 100644
+> --- a/drivers/pci/controller/dwc/pci-meson.c
+> +++ b/drivers/pci/controller/dwc/pci-meson.c
+> @@ -17,6 +17,7 @@
+>  #include <linux/resource.h>
+>  #include <linux/types.h>
+>  #include <linux/phy/phy.h>
+> +#include <linux/module.h>
+>  
+>  #include "pcie-designware.h"
+>  
+> @@ -589,6 +590,7 @@ static const struct of_device_id meson_pcie_of_match[] = {
+>  	},
+>  	{},
+>  };
+> +MODULE_DEVICE_TABLE(of, meson_pcie_of_match);
+>  
+>  static struct platform_driver meson_pcie_driver = {
+>  	.probe = meson_pcie_probe,
+> @@ -598,4 +600,8 @@ static struct platform_driver meson_pcie_driver = {
+>  	},
 >  };
 >  
->  #define RCU_SEGCBLIST_INITIALIZER(n) \
-> diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-> index ec9a609a461b..3c82c016feb1 100644
-> --- a/kernel/rcu/rcu_segcblist.c
-> +++ b/kernel/rcu/rcu_segcblist.c
-> @@ -388,7 +388,6 @@ void rcu_segcblist_extract_done_cbs(struct rcu_segcblist *rsclp,
->  		if (rsclp->tails[i] == rsclp->tails[RCU_DONE_TAIL])
->  			WRITE_ONCE(rsclp->tails[i], &rsclp->head);
->  	rcu_segcblist_set_seglen(rsclp, RCU_DONE_TAIL, 0);
-> -	rcu_segcblist_add_len(rsclp, -(rclp->len));
->  }
->  
->  /*
-> @@ -452,7 +451,17 @@ void rcu_segcblist_extract_pend_cbs(struct rcu_segcblist *rsclp,
->  		WRITE_ONCE(rsclp->tails[i], rsclp->tails[RCU_DONE_TAIL]);
->  		rcu_segcblist_set_seglen(rsclp, i, 0);
->  	}
-> -	rcu_segcblist_add_len(rsclp, -(rclp->len));
-> +}
+> -builtin_platform_driver(meson_pcie_driver);
+> +module_platform_driver(meson_pcie_driver);
 > +
-> +/*
-> + * Insert counts from the specified rcu_cblist structure in the
-> + * specified rcu_segcblist structure.
-> + */
-> +void rcu_segcblist_insert_count(struct rcu_segcblist *rsclp,
-> +				struct rcu_cblist *rclp)
-> +{
-> +	rcu_segcblist_add_len(rsclp, rclp->len);
-> +	rclp->len = 0;
->  }
->  
->  /*
-> @@ -476,7 +485,6 @@ void rcu_segcblist_insert_done_cbs(struct rcu_segcblist *rsclp,
->  			break;
->  	rclp->head = NULL;
->  	rclp->tail = &rclp->head;
-> -	rcu_segcblist_add_len(rsclp, rclp->len);
->  }
->  
->  /*
-> @@ -492,7 +500,6 @@ void rcu_segcblist_insert_pend_cbs(struct rcu_segcblist *rsclp,
->  	rcu_segcblist_add_seglen(rsclp, RCU_NEXT_TAIL, rclp->len);
->  	WRITE_ONCE(*rsclp->tails[RCU_NEXT_TAIL], rclp->head);
->  	WRITE_ONCE(rsclp->tails[RCU_NEXT_TAIL], rclp->tail);
-> -	rcu_segcblist_add_len(rsclp, rclp->len);
->  }
->  
->  /*
-> @@ -637,9 +644,12 @@ void rcu_segcblist_merge(struct rcu_segcblist *dst_rsclp,
->  	rcu_cblist_init(&donecbs);
->  	rcu_cblist_init(&pendcbs);
->  
-> +	rcu_segcblist_set_len(src_rsclp, 0);
->  	rcu_segcblist_extract_done_cbs(src_rsclp, &donecbs);
->  	rcu_segcblist_extract_pend_cbs(src_rsclp, &pendcbs);
->  
-> +	rcu_segcblist_insert_count(dst_rsclp, &donecbs);
-> +	rcu_segcblist_insert_count(dst_rsclp, &pendcbs);
->  	rcu_segcblist_insert_done_cbs(dst_rsclp, &donecbs);
->  	rcu_segcblist_insert_pend_cbs(dst_rsclp, &pendcbs);
->  
-> diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
-> index c2dc08a9b020..15c10d30f88c 100644
-> --- a/kernel/rcu/rcu_segcblist.h
-> +++ b/kernel/rcu/rcu_segcblist.h
-> @@ -40,33 +40,14 @@ static inline bool rcu_segcblist_empty(struct rcu_segcblist *rsclp)
->  	return !READ_ONCE(rsclp->head);
->  }
->  
-> -static inline void rcu_segcblist_set_invoking(struct rcu_segcblist *rsclp)
-> -{
-> -	WRITE_ONCE(rsclp->invoking, 1);
-> -}
-> -
-> -static inline void rcu_segcblist_reset_invoking(struct rcu_segcblist *rsclp)
-> -{
-> -	WRITE_ONCE(rsclp->invoking, 0);
-> -}
-> -
->  /* Return number of callbacks in segmented callback list. */
->  static inline long rcu_segcblist_n_cbs(struct rcu_segcblist *rsclp)
->  {
-> -	long ret;
->  #ifdef CONFIG_RCU_NOCB_CPU
-> -	ret = atomic_long_read(&rsclp->len);
-> +	return atomic_long_read(&rsclp->len);
->  #else
-> -	ret = READ_ONCE(rsclp->len);
-> +	return READ_ONCE(rsclp->len);
->  #endif
-> -
-> -	/*
-> -	 * An invoking list should not appear empty. This is required
-> -	 * by rcu_barrier().
-> -	 */
-> -	if (ret)
-> -		return ret;
-> -	return (READ_ONCE(rsclp->invoking) ? 1 : 0);
->  }
->  
->  /*
-> @@ -112,6 +93,8 @@ void rcu_segcblist_extract_done_cbs(struct rcu_segcblist *rsclp,
->  				    struct rcu_cblist *rclp);
->  void rcu_segcblist_extract_pend_cbs(struct rcu_segcblist *rsclp,
->  				    struct rcu_cblist *rclp);
-> +void rcu_segcblist_insert_count(struct rcu_segcblist *rsclp,
-> +				struct rcu_cblist *rclp);
->  void rcu_segcblist_insert_done_cbs(struct rcu_segcblist *rsclp,
->  				   struct rcu_cblist *rclp);
->  void rcu_segcblist_insert_pend_cbs(struct rcu_segcblist *rsclp,
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index 62b83fb997ee..0f23d20d485a 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -1196,6 +1196,7 @@ static void srcu_invoke_callbacks(struct work_struct *work)
->  	 * schedule another round of callback invocation.
->  	 */
->  	spin_lock_irq_rcu_node(sdp);
-> +	rcu_segcblist_insert_count(&sdp->srcu_cblist, &ready_cbs);
->  	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist,
->  				       rcu_seq_snap(&ssp->srcu_gp_seq));
->  	sdp->srcu_cblist_invoking = false;
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index b4dc18e4661c..64dff7b17e74 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -2465,7 +2465,6 @@ static void rcu_do_batch(struct rcu_data *rdp)
->  	}
->  	trace_rcu_batch_start(rcu_state.name,
->  			      rcu_segcblist_n_cbs(&rdp->cblist), bl);
-> -	rcu_segcblist_set_invoking(&rdp->cblist);
->  	rcu_segcblist_extract_done_cbs(&rdp->cblist, &rcl);
->  	if (offloaded)
->  		rdp->qlen_last_fqs_check = rcu_segcblist_n_cbs(&rdp->cblist);
-> @@ -2524,9 +2523,8 @@ static void rcu_do_batch(struct rcu_data *rdp)
->  
->  	/* Update counts and requeue any remaining callbacks. */
->  	rcu_segcblist_insert_done_cbs(&rdp->cblist, &rcl);
-> -
-> -	smp_mb();
-> -	rcu_segcblist_reset_invoking(&rdp->cblist);
-> +	smp_mb(); /* List handling before counting for rcu_barrier(). */
-> +	rcu_segcblist_add_len(&rdp->cblist, -count);
->  
->  	/* Reinstate batch limit if we have worked down the excess. */
->  	count = rcu_segcblist_n_cbs(&rdp->cblist);
+> +MODULE_AUTHOR("Yue Wang <yue.wang@amlogic.com>");
+> +MODULE_DESCRIPTION("Amlogic PCIe Controller driver");
+> +MODULE_LICENSE("Dual BSD/GPL");
+> 
+
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
