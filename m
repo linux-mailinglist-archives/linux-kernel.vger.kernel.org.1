@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45065272DDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:44:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39B19272CC7
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:36:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729654AbgIUQn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:43:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48860 "EHLO mail.kernel.org"
+        id S1728368AbgIUQee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:34:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729376AbgIUQn4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:43:56 -0400
+        id S1728742AbgIUQeZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:34:25 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1D6CE235F9;
-        Mon, 21 Sep 2020 16:43:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C0782239A1;
+        Mon, 21 Sep 2020 16:34:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706634;
-        bh=cIly/5z+st1Uow7ZPenOwpPHPjIa9UBrWv11R6UmPww=;
+        s=default; t=1600706064;
+        bh=6ttQ1q99cwkgnU2fv5srLVz3lazMI9eFX5Ivf1tdbFo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2oUU+TV+CfckKcwnskkmXG6vHjgTSVpiFdNJeDSrcQVGuiUD6hdmRlG5l8hDG11xF
-         vwyW6DV98neBhIkOACNfCUhO+akdNA8FlAtsTu9rvQe2V1fc2HZL2z9xUTJ9TJfRz4
-         CXj7shxroqXh3Pb/t9Gqc60Aav2qwT40J6Mz8CCQ=
+        b=1hWZQ2XVIw1JPl2lx4okzhHO9VGJWM65FbVbCfr5H5A68mojHVtmuF50hkOC49V/l
+         pUO9Iqkhmo0sc2BxE2hnPXW7dIEgy1iumsCu3MGz2yjgM0rNf+nD+5VG78ZikWVmDD
+         dhZpigQV2lRKriY//WXsQy71Mqynw7im1830xj6g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 032/118] i2c: algo: pca: Reapply i2c bus settings after reset
-Date:   Mon, 21 Sep 2020 18:27:24 +0200
-Message-Id: <20200921162037.804990288@linuxfoundation.org>
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Stable@vger.kernel.org
+Subject: [PATCH 4.9 25/70] iio: accel: kxsd9: Fix alignment of local buffer.
+Date:   Mon, 21 Sep 2020 18:27:25 +0200
+Message-Id: <20200921162036.263924072@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
-References: <20200921162036.324813383@linuxfoundation.org>
+In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
+References: <20200921162035.136047591@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,131 +44,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit 0a355aeb24081e4538d4d424cd189f16c0bbd983 ]
+commit 95ad67577de4ea08eb8e441394e698aa4addcc0b upstream.
 
-If something goes wrong (such as the SCL being stuck low) then we need
-to reset the PCA chip. The issue with this is that on reset we lose all
-config settings and the chip ends up in a disabled state which results
-in a lock up/high CPU usage. We need to re-apply any configuration that
-had previously been set and re-enable the chip.
+iio_push_to_buffers_with_timestamp assumes 8 byte alignment which
+is not guaranteed by an array of smaller elements.
 
-Signed-off-by: Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
-Reviewed-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Note that whilst in this particular case the alignment forcing
+of the ts element is not strictly necessary it acts as good
+documentation.  Doing this where not necessary should cut
+down on the number of cut and paste introduced errors elsewhere.
+
+Fixes: 0427a106a98a ("iio: accel: kxsd9: Add triggered buffer handling")
+Reported-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/i2c/algos/i2c-algo-pca.c | 35 +++++++++++++++++++++-----------
- include/linux/i2c-algo-pca.h     | 15 ++++++++++++++
- 2 files changed, 38 insertions(+), 12 deletions(-)
+ drivers/iio/accel/kxsd9.c |   16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/i2c/algos/i2c-algo-pca.c b/drivers/i2c/algos/i2c-algo-pca.c
-index 388978775be04..edc6985c696f0 100644
---- a/drivers/i2c/algos/i2c-algo-pca.c
-+++ b/drivers/i2c/algos/i2c-algo-pca.c
-@@ -41,8 +41,22 @@ static void pca_reset(struct i2c_algo_pca_data *adap)
- 		pca_outw(adap, I2C_PCA_INDPTR, I2C_PCA_IPRESET);
- 		pca_outw(adap, I2C_PCA_IND, 0xA5);
- 		pca_outw(adap, I2C_PCA_IND, 0x5A);
-+
-+		/*
-+		 * After a reset we need to re-apply any configuration
-+		 * (calculated in pca_init) to get the bus in a working state.
-+		 */
-+		pca_outw(adap, I2C_PCA_INDPTR, I2C_PCA_IMODE);
-+		pca_outw(adap, I2C_PCA_IND, adap->bus_settings.mode);
-+		pca_outw(adap, I2C_PCA_INDPTR, I2C_PCA_ISCLL);
-+		pca_outw(adap, I2C_PCA_IND, adap->bus_settings.tlow);
-+		pca_outw(adap, I2C_PCA_INDPTR, I2C_PCA_ISCLH);
-+		pca_outw(adap, I2C_PCA_IND, adap->bus_settings.thi);
-+
-+		pca_set_con(adap, I2C_PCA_CON_ENSIO);
- 	} else {
- 		adap->reset_chip(adap->data);
-+		pca_set_con(adap, I2C_PCA_CON_ENSIO | adap->bus_settings.clock_freq);
+--- a/drivers/iio/accel/kxsd9.c
++++ b/drivers/iio/accel/kxsd9.c
+@@ -212,14 +212,20 @@ static irqreturn_t kxsd9_trigger_handler
+ 	const struct iio_poll_func *pf = p;
+ 	struct iio_dev *indio_dev = pf->indio_dev;
+ 	struct kxsd9_state *st = iio_priv(indio_dev);
++	/*
++	 * Ensure correct positioning and alignment of timestamp.
++	 * No need to zero initialize as all elements written.
++	 */
++	struct {
++		__be16 chan[4];
++		s64 ts __aligned(8);
++	} hw_values;
+ 	int ret;
+-	/* 4 * 16bit values AND timestamp */
+-	__be16 hw_values[8];
+ 
+ 	ret = regmap_bulk_read(st->map,
+ 			       KXSD9_REG_X,
+-			       &hw_values,
+-			       8);
++			       hw_values.chan,
++			       sizeof(hw_values.chan));
+ 	if (ret) {
+ 		dev_err(st->dev,
+ 			"error reading data\n");
+@@ -227,7 +233,7 @@ static irqreturn_t kxsd9_trigger_handler
  	}
- }
  
-@@ -423,13 +437,14 @@ static int pca_init(struct i2c_adapter *adap)
- 				" Use the nominal frequency.\n", adap->name);
- 		}
+ 	iio_push_to_buffers_with_timestamp(indio_dev,
+-					   hw_values,
++					   &hw_values,
+ 					   iio_get_time_ns(indio_dev));
+ 	iio_trigger_notify_done(indio_dev->trig);
  
--		pca_reset(pca_data);
--
- 		clock = pca_clock(pca_data);
- 		printk(KERN_INFO "%s: Clock frequency is %dkHz\n",
- 		     adap->name, freqs[clock]);
- 
--		pca_set_con(pca_data, I2C_PCA_CON_ENSIO | clock);
-+		/* Store settings as these will be needed when the PCA chip is reset */
-+		pca_data->bus_settings.clock_freq = clock;
-+
-+		pca_reset(pca_data);
- 	} else {
- 		int clock;
- 		int mode;
-@@ -496,19 +511,15 @@ static int pca_init(struct i2c_adapter *adap)
- 			thi = tlow * min_thi / min_tlow;
- 		}
- 
-+		/* Store settings as these will be needed when the PCA chip is reset */
-+		pca_data->bus_settings.mode = mode;
-+		pca_data->bus_settings.tlow = tlow;
-+		pca_data->bus_settings.thi = thi;
-+
- 		pca_reset(pca_data);
- 
- 		printk(KERN_INFO
- 		     "%s: Clock frequency is %dHz\n", adap->name, clock * 100);
--
--		pca_outw(pca_data, I2C_PCA_INDPTR, I2C_PCA_IMODE);
--		pca_outw(pca_data, I2C_PCA_IND, mode);
--		pca_outw(pca_data, I2C_PCA_INDPTR, I2C_PCA_ISCLL);
--		pca_outw(pca_data, I2C_PCA_IND, tlow);
--		pca_outw(pca_data, I2C_PCA_INDPTR, I2C_PCA_ISCLH);
--		pca_outw(pca_data, I2C_PCA_IND, thi);
--
--		pca_set_con(pca_data, I2C_PCA_CON_ENSIO);
- 	}
- 	udelay(500); /* 500 us for oscillator to stabilise */
- 
-diff --git a/include/linux/i2c-algo-pca.h b/include/linux/i2c-algo-pca.h
-index d03071732db4a..7c522fdd9ea73 100644
---- a/include/linux/i2c-algo-pca.h
-+++ b/include/linux/i2c-algo-pca.h
-@@ -53,6 +53,20 @@
- #define I2C_PCA_CON_SI		0x08 /* Serial Interrupt */
- #define I2C_PCA_CON_CR		0x07 /* Clock Rate (MASK) */
- 
-+/**
-+ * struct pca_i2c_bus_settings - The configured PCA i2c bus settings
-+ * @mode: Configured i2c bus mode
-+ * @tlow: Configured SCL LOW period
-+ * @thi: Configured SCL HIGH period
-+ * @clock_freq: The configured clock frequency
-+ */
-+struct pca_i2c_bus_settings {
-+	int mode;
-+	int tlow;
-+	int thi;
-+	int clock_freq;
-+};
-+
- struct i2c_algo_pca_data {
- 	void 				*data;	/* private low level data */
- 	void (*write_byte)		(void *data, int reg, int val);
-@@ -64,6 +78,7 @@ struct i2c_algo_pca_data {
- 	 * For PCA9665, use the frequency you want here. */
- 	unsigned int			i2c_clock;
- 	unsigned int			chip;
-+	struct pca_i2c_bus_settings		bus_settings;
- };
- 
- int i2c_pca_add_bus(struct i2c_adapter *);
--- 
-2.25.1
-
 
 
