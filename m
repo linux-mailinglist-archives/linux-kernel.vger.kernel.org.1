@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21EFB272C88
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63C4A272D33
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:38:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728578AbgIUQdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:33:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58924 "EHLO mail.kernel.org"
+        id S1729155AbgIUQiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:38:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728561AbgIUQdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:33:01 -0400
+        id S1729138AbgIUQiK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:38:10 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB110239D0;
-        Mon, 21 Sep 2020 16:33:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD416238E6;
+        Mon, 21 Sep 2020 16:38:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600705981;
-        bh=D6ioDQNlnawCrx2GcOF/N/wwukoyQL0N+drj/kH08Bs=;
+        s=default; t=1600706289;
+        bh=bW0EaXRL4JdEPEJ5iKs6YM/ztqLoKsKmydV899itcz4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V+aCAq4unyKq4VxOjFi39ixKmidyfib1zM3Yhfvzx0UkylNzLfSATiTkE0U/dcOQA
-         aWQoIm4cMUeP4yrgf5fZFNhhESYcjgpBuqc9gNmA/ANThLRpYsXtj5Lpk5v5c3YsNX
-         Gzp3kNcs6N5s6v5zDFRQz85NmMgqqr2QCj3dTHBQ=
+        b=UIYc9sTi6RMy/98sCCEgXj14f7mkqYdI2PYfNL2s4KQRdb1TWcic5plAjam4cIcnk
+         6sa0HUwY/y5pix3X6wYsASSBX3vzr7Ec6Q5h3tk7wEoeIRzdEwZtEbiF2EK58YNdNS
+         zRcQIk7I000Az8C6esMTRBtjAn0/4YCOyMwaaiiQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Angelo Compagnucci <angelo.compagnucci@gmail.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.4 10/46] iio: adc: mcp3422: fix locking scope
-Date:   Mon, 21 Sep 2020 18:27:26 +0200
-Message-Id: <20200921162033.840827318@linuxfoundation.org>
+        stable@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 4.14 40/94] btrfs: fix lockdep splat in add_missing_dev
+Date:   Mon, 21 Sep 2020 18:27:27 +0200
+Message-Id: <20200921162037.384206634@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162033.346434578@linuxfoundation.org>
-References: <20200921162033.346434578@linuxfoundation.org>
+In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
+References: <20200921162035.541285330@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,67 +44,185 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Angelo Compagnucci <angelo.compagnucci@gmail.com>
+From: Josef Bacik <josef@toxicpanda.com>
 
-commit 3f1093d83d7164e4705e4232ccf76da54adfda85 upstream.
+commit fccc0007b8dc952c6bc0805cdf842eb8ea06a639 upstream.
 
-Locking should be held for the entire reading sequence involving setting
-the channel, waiting for the channel switch and reading from the
-channel.
-If not, reading from a channel can result mixing with the reading from
-another channel.
+Nikolay reported a lockdep splat in generic/476 that I could reproduce
+with btrfs/187.
 
-Fixes: 07914c84ba30 ("iio: adc: Add driver for Microchip MCP3422/3/4 high resolution ADC")
-Signed-off-by: Angelo Compagnucci <angelo.compagnucci@gmail.com>
-Link: https://lore.kernel.org/r/20200819075525.1395248-1-angelo.compagnucci@gmail.com
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+  ======================================================
+  WARNING: possible circular locking dependency detected
+  5.9.0-rc2+ #1 Tainted: G        W
+  ------------------------------------------------------
+  kswapd0/100 is trying to acquire lock:
+  ffff9e8ef38b6268 (&delayed_node->mutex){+.+.}-{3:3}, at: __btrfs_release_delayed_node.part.0+0x3f/0x330
+
+  but task is already holding lock:
+  ffffffffa9d74700 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x5/0x30
+
+  which lock already depends on the new lock.
+
+  the existing dependency chain (in reverse order) is:
+
+  -> #2 (fs_reclaim){+.+.}-{0:0}:
+	 fs_reclaim_acquire+0x65/0x80
+	 slab_pre_alloc_hook.constprop.0+0x20/0x200
+	 kmem_cache_alloc_trace+0x3a/0x1a0
+	 btrfs_alloc_device+0x43/0x210
+	 add_missing_dev+0x20/0x90
+	 read_one_chunk+0x301/0x430
+	 btrfs_read_sys_array+0x17b/0x1b0
+	 open_ctree+0xa62/0x1896
+	 btrfs_mount_root.cold+0x12/0xea
+	 legacy_get_tree+0x30/0x50
+	 vfs_get_tree+0x28/0xc0
+	 vfs_kern_mount.part.0+0x71/0xb0
+	 btrfs_mount+0x10d/0x379
+	 legacy_get_tree+0x30/0x50
+	 vfs_get_tree+0x28/0xc0
+	 path_mount+0x434/0xc00
+	 __x64_sys_mount+0xe3/0x120
+	 do_syscall_64+0x33/0x40
+	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+  -> #1 (&fs_info->chunk_mutex){+.+.}-{3:3}:
+	 __mutex_lock+0x7e/0x7e0
+	 btrfs_chunk_alloc+0x125/0x3a0
+	 find_free_extent+0xdf6/0x1210
+	 btrfs_reserve_extent+0xb3/0x1b0
+	 btrfs_alloc_tree_block+0xb0/0x310
+	 alloc_tree_block_no_bg_flush+0x4a/0x60
+	 __btrfs_cow_block+0x11a/0x530
+	 btrfs_cow_block+0x104/0x220
+	 btrfs_search_slot+0x52e/0x9d0
+	 btrfs_lookup_inode+0x2a/0x8f
+	 __btrfs_update_delayed_inode+0x80/0x240
+	 btrfs_commit_inode_delayed_inode+0x119/0x120
+	 btrfs_evict_inode+0x357/0x500
+	 evict+0xcf/0x1f0
+	 vfs_rmdir.part.0+0x149/0x160
+	 do_rmdir+0x136/0x1a0
+	 do_syscall_64+0x33/0x40
+	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+  -> #0 (&delayed_node->mutex){+.+.}-{3:3}:
+	 __lock_acquire+0x1184/0x1fa0
+	 lock_acquire+0xa4/0x3d0
+	 __mutex_lock+0x7e/0x7e0
+	 __btrfs_release_delayed_node.part.0+0x3f/0x330
+	 btrfs_evict_inode+0x24c/0x500
+	 evict+0xcf/0x1f0
+	 dispose_list+0x48/0x70
+	 prune_icache_sb+0x44/0x50
+	 super_cache_scan+0x161/0x1e0
+	 do_shrink_slab+0x178/0x3c0
+	 shrink_slab+0x17c/0x290
+	 shrink_node+0x2b2/0x6d0
+	 balance_pgdat+0x30a/0x670
+	 kswapd+0x213/0x4c0
+	 kthread+0x138/0x160
+	 ret_from_fork+0x1f/0x30
+
+  other info that might help us debug this:
+
+  Chain exists of:
+    &delayed_node->mutex --> &fs_info->chunk_mutex --> fs_reclaim
+
+   Possible unsafe locking scenario:
+
+	 CPU0                    CPU1
+	 ----                    ----
+    lock(fs_reclaim);
+				 lock(&fs_info->chunk_mutex);
+				 lock(fs_reclaim);
+    lock(&delayed_node->mutex);
+
+   *** DEADLOCK ***
+
+  3 locks held by kswapd0/100:
+   #0: ffffffffa9d74700 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x5/0x30
+   #1: ffffffffa9d65c50 (shrinker_rwsem){++++}-{3:3}, at: shrink_slab+0x115/0x290
+   #2: ffff9e8e9da260e0 (&type->s_umount_key#48){++++}-{3:3}, at: super_cache_scan+0x38/0x1e0
+
+  stack backtrace:
+  CPU: 1 PID: 100 Comm: kswapd0 Tainted: G        W         5.9.0-rc2+ #1
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
+  Call Trace:
+   dump_stack+0x92/0xc8
+   check_noncircular+0x12d/0x150
+   __lock_acquire+0x1184/0x1fa0
+   lock_acquire+0xa4/0x3d0
+   ? __btrfs_release_delayed_node.part.0+0x3f/0x330
+   __mutex_lock+0x7e/0x7e0
+   ? __btrfs_release_delayed_node.part.0+0x3f/0x330
+   ? __btrfs_release_delayed_node.part.0+0x3f/0x330
+   ? lock_acquire+0xa4/0x3d0
+   ? btrfs_evict_inode+0x11e/0x500
+   ? find_held_lock+0x2b/0x80
+   __btrfs_release_delayed_node.part.0+0x3f/0x330
+   btrfs_evict_inode+0x24c/0x500
+   evict+0xcf/0x1f0
+   dispose_list+0x48/0x70
+   prune_icache_sb+0x44/0x50
+   super_cache_scan+0x161/0x1e0
+   do_shrink_slab+0x178/0x3c0
+   shrink_slab+0x17c/0x290
+   shrink_node+0x2b2/0x6d0
+   balance_pgdat+0x30a/0x670
+   kswapd+0x213/0x4c0
+   ? _raw_spin_unlock_irqrestore+0x46/0x60
+   ? add_wait_queue_exclusive+0x70/0x70
+   ? balance_pgdat+0x670/0x670
+   kthread+0x138/0x160
+   ? kthread_create_worker_on_cpu+0x40/0x40
+   ret_from_fork+0x1f/0x30
+
+This is because we are holding the chunk_mutex when we call
+btrfs_alloc_device, which does a GFP_KERNEL allocation.  We don't want
+to switch that to a GFP_NOFS lock because this is the only place where
+it matters.  So instead use memalloc_nofs_save() around the allocation
+in order to avoid the lockdep splat.
+
+Reported-by: Nikolay Borisov <nborisov@suse.com>
+CC: stable@vger.kernel.org # 4.4+
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/adc/mcp3422.c |   12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ fs/btrfs/volumes.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
---- a/drivers/iio/adc/mcp3422.c
-+++ b/drivers/iio/adc/mcp3422.c
-@@ -98,16 +98,12 @@ static int mcp3422_update_config(struct
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -16,6 +16,7 @@
+  * Boston, MA 021110-1307, USA.
+  */
+ #include <linux/sched.h>
++#include <linux/sched/mm.h>
+ #include <linux/bio.h>
+ #include <linux/slab.h>
+ #include <linux/buffer_head.h>
+@@ -6278,8 +6279,17 @@ static struct btrfs_device *add_missing_
+ 					    u64 devid, u8 *dev_uuid)
  {
- 	int ret;
+ 	struct btrfs_device *device;
++	unsigned int nofs_flag;
  
--	mutex_lock(&adc->lock);
--
- 	ret = i2c_master_send(adc->i2c, &newconfig, 1);
- 	if (ret > 0) {
- 		adc->config = newconfig;
- 		ret = 0;
- 	}
++	/*
++	 * We call this under the chunk_mutex, so we want to use NOFS for this
++	 * allocation, however we don't want to change btrfs_alloc_device() to
++	 * always do NOFS because we use it in a lot of other GFP_KERNEL safe
++	 * places.
++	 */
++	nofs_flag = memalloc_nofs_save();
+ 	device = btrfs_alloc_device(NULL, &devid, dev_uuid);
++	memalloc_nofs_restore(nofs_flag);
+ 	if (IS_ERR(device))
+ 		return NULL;
  
--	mutex_unlock(&adc->lock);
--
- 	return ret;
- }
- 
-@@ -140,6 +136,8 @@ static int mcp3422_read_channel(struct m
- 	u8 config;
- 	u8 req_channel = channel->channel;
- 
-+	mutex_lock(&adc->lock);
-+
- 	if (req_channel != MCP3422_CHANNEL(adc->config)) {
- 		config = adc->config;
- 		config &= ~MCP3422_CHANNEL_MASK;
-@@ -152,7 +150,11 @@ static int mcp3422_read_channel(struct m
- 		msleep(mcp3422_read_times[MCP3422_SAMPLE_RATE(adc->config)]);
- 	}
- 
--	return mcp3422_read(adc, value, &config);
-+	ret = mcp3422_read(adc, value, &config);
-+
-+	mutex_unlock(&adc->lock);
-+
-+	return ret;
- }
- 
- static int mcp3422_read_raw(struct iio_dev *iio,
 
 
