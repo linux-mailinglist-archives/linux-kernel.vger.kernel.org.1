@@ -2,112 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7AE027223B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:23:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DFE8272235
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726757AbgIULXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 07:23:22 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:9480 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726367AbgIULXW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 07:23:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1600687402; x=1632223402;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=TwH9MzHRv79x/EUOe5/xNeRXZrG6bmMJIXJfLBWxxGQ=;
-  b=YF2wvJ1D6mpruSYmJ4xIQh+LGmjQime2fvQqIINAVFuttxQGz+J3jxow
-   VXVBi1UnVwi0ACZA8GuTOzurUJx3Y59PwAcQrq/rTDccEb9ZCg3Ha5gfr
-   gsw2q9yIy8uU6/pbI8Fnm0qonIEt6blprcKxJM8WQghlL5eviKgBBXtDY
-   8=;
-X-IronPort-AV: E=Sophos;i="5.77,286,1596499200"; 
-   d="scan'208";a="77900423"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-c7c08562.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 21 Sep 2020 11:23:02 +0000
-Received: from EX13D19EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1e-c7c08562.us-east-1.amazon.com (Postfix) with ESMTPS id D5CD3240FD9;
-        Mon, 21 Sep 2020 11:22:58 +0000 (UTC)
-Received: from 8c85908914bf.ant.amazon.com (10.43.161.85) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 21 Sep 2020 11:22:50 +0000
-Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Oded Gabbay <oded.gabbay@gmail.com>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, <izur@habana.ai>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, SW_Drivers <SW_Drivers@habana.ai>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        <linux-rdma@vger.kernel.org>, Olof Johansson <olof@lixom.net>
-References: <20200918125014.GR8409@ziepe.ca>
- <CAFCwf12oK4RXYhgzXiN_YvXvjoW1Fwx1xBzR3Y5E4RLvzn_vhA@mail.gmail.com>
- <20200918132645.GS8409@ziepe.ca>
- <CAFCwf109t5=GuNvqTqLUCiYbjLC6o2xVoLY5C-SBqbN66f6wxg@mail.gmail.com>
- <20200918135915.GT8409@ziepe.ca>
- <CAFCwf13rJgb4=as7yW-2ZHvSnUd2NK1GP0UKKjyMfkB3vsnE5w@mail.gmail.com>
- <20200918141909.GU8409@ziepe.ca>
- <CAFCwf121_UNivhfPfO6uFoHbF+2Odeb1c3+482bOXeOZUsEnug@mail.gmail.com>
- <20200918150735.GV8409@ziepe.ca>
- <CAFCwf13y1VVy90zAoBPC-Gfj6mwMVbefh3fxKDVneuscp4esqA@mail.gmail.com>
- <20200918152852.GW8409@ziepe.ca>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <b0721756-d323-b95e-b2d2-ca3ce8d4a660@amazon.com>
-Date:   Mon, 21 Sep 2020 14:22:02 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.2.2
+        id S1726526AbgIULWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 07:22:17 -0400
+Received: from foss.arm.com ([217.140.110.172]:41396 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726367AbgIULWR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 07:22:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9875DD6E;
+        Mon, 21 Sep 2020 04:22:16 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9889B3F73B;
+        Mon, 21 Sep 2020 04:22:15 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 12:22:09 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Bean Huo <huobean@gmail.com>
+Cc:     songxiaowei@hisilicon.com, wangbinghui@hisilicon.com,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, beanhuo@micron.com
+Subject: Re: [PATCH] PCI: kirin: Return -EPROBE_DEFER in case the gpio isn't
+ ready
+Message-ID: <20200921112209.GA2220@e121166-lin.cambridge.arm.com>
+References: <20200918123800.19983-1-huobean@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200918152852.GW8409@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.161.85]
-X-ClientProxiedBy: EX13D30UWC002.ant.amazon.com (10.43.162.235) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200918123800.19983-1-huobean@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/09/2020 18:28, Jason Gunthorpe wrote:
-> On Fri, Sep 18, 2020 at 06:15:52PM +0300, Oded Gabbay wrote:
+On Fri, Sep 18, 2020 at 02:38:00PM +0200, Bean Huo wrote:
+> From: Bean Huo <beanhuo@micron.com>
 > 
->> I'm sorry, but you won't be able to convince me here that I need to
->> "enslave" my entire code to RDMA, just because my ASIC "also" has some
->> RDMA ports.
+> PCI driver might be probed before the gpiochip, so, of_get_named_gpio()
+> can return -EPROBE_DEFER. And let kirin_pcie_probe() directly return
+> -ENODEV, which will result in the PCIe probe failure and the PCIe
+> will not be probed again after the gpiochip driver is loaded.
 > 
-> You can't recreate common shared subsystems in a driver just because
-> you don't want to work with the subsystem.
+> Fix the above issue by letting kirin_pcie_probe() return -EPROBE_DEFER in
+> such a case.
 > 
-> I don't care what else the ASIC has. In Linux the netdev part is
-> exposed through netdev, the RDMA part through RDMA, the
-> totally-not-a-GPU part through drivers/misc.
-> 
-> It is always been this way. Chelsio didn't get to rebuild the SCSI
-> stack in their driver just because "storage is a small part of their
-> device"
-> 
-> Drivers are not allowed to re-implement I2C/SPI/etc without re-using
-> the comon code for that just because "I2C is a small part of their
-> device"
-> 
-> Exposing to userspace the creation of RoCE QPs and their related
-> objects are unambiguously a RDMA subsystem task. I don't even know how
-> you think you can argue it is not. It is your company proudly claiming
-> the device has 100G RoCE ports in all the marketing literature, after
-> all.
-> 
-> It is too bad the device has a non-standards compliant implementation
-> of RoCE so this will be a bit hard for you. Oh well.
+> Fixes: 6e0832fa432e ("PCI: Collect all native drivers under drivers/pci/controller")
 
-What is considered a RoCE port in this case if it's not compliant with RoCE?
-Sounds like it's an implementation of RDMA over ethernet, not RoCE.
-Does GAUDI support UD/RC/.. QPs? Is it using a proprietary wire protocol?
-(BTW, Oded claims it's similar to nvlink, how is nvlink's implementation
-exposed? Or is it closed source?)
+This is certainly not the commit that triggered the issue so I would
+remove it. Kirin maintainers are CC'ed, waiting for their ACK.
 
-Jason, how do you imagine GAUDI in the RDMA subsystem? Userspace control path
-verbs (used by hl-thunk?) and all data path verbs exposed as kverbs (used by
-habanalabs driver)?
-So neither any userspace verbs apps could use it nor kernel ULPs?
+Lorenzo
+
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
+> ---
+>  drivers/pci/controller/dwc/pcie-kirin.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
+> index e496f51e0152..74b88d158072 100644
+> --- a/drivers/pci/controller/dwc/pcie-kirin.c
+> +++ b/drivers/pci/controller/dwc/pcie-kirin.c
+> @@ -507,8 +507,12 @@ static int kirin_pcie_probe(struct platform_device *pdev)
+>  
+>  	kirin_pcie->gpio_id_reset = of_get_named_gpio(dev->of_node,
+>  						      "reset-gpios", 0);
+> -	if (kirin_pcie->gpio_id_reset < 0)
+> +	if (kirin_pcie->gpio_id_reset == -EPROBE_DEFER) {
+> +		return -EPROBE_DEFER;
+> +	} else if (!gpio_is_valid(kirin_pcie->gpio_id_reset)) {
+> +		dev_err(dev, "unable to get a valid gpio pin\n");
+>  		return -ENODEV;
+> +	}
+>  
+>  	ret = kirin_pcie_power_on(kirin_pcie);
+>  	if (ret)
+> -- 
+> 2.17.1
+> 
