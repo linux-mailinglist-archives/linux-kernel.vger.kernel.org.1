@@ -2,79 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BFB0273592
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 00:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07CFB273591
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 00:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728437AbgIUWR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728482AbgIUWR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 21 Sep 2020 18:17:58 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2908 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726574AbgIUWR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+Received: from mail1.nippynetworks.com ([91.220.24.129]:59122 "EHLO
+        mail1.nippynetworks.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726457AbgIUWR6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 21 Sep 2020 18:17:58 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id 2724846A6D620468DA41;
-        Mon, 21 Sep 2020 23:17:56 +0100 (IST)
-Received: from [127.0.0.1] (10.210.166.25) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Mon, 21 Sep
- 2020 23:17:54 +0100
-Subject: Re: [PATCH v8 00/18] blk-mq/scsi: Provide hostwide shared tags for
- SCSI HBAs
-To:     <Don.Brace@microchip.com>, <martin.petersen@oracle.com>
-CC:     <axboe@kernel.dk>, <jejb@linux.ibm.com>, <don.brace@microsemi.com>,
-        <kashyap.desai@broadcom.com>, <ming.lei@redhat.com>,
-        <bvanassche@acm.org>, <dgilbert@interlog.com>,
-        <paolo.valente@linaro.org>, <hare@suse.de>, <hch@lst.de>,
-        <sumit.saxena@broadcom.com>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <esc.storagedev@microsemi.com>, <megaraidlinux.pdl@broadcom.com>,
-        <chenxiang66@hisilicon.com>, <luojiaxing@huawei.com>
-References: <1597850436-116171-1-git-send-email-john.garry@huawei.com>
- <df6a3bd3-a89e-5f2f-ece1-a12ada02b521@kernel.dk>
- <379ef8a4-5042-926a-b8a0-2d0a684a0e01@huawei.com>
- <yq1363xbtk7.fsf@ca-mkp.ca.oracle.com>
- <32def143-911f-e497-662e-a2a41572fe4f@huawei.com>
- <yq1imcdw6ni.fsf@ca-mkp.ca.oracle.com>
- <7e90cb73-632c-ad37-699f-cb40044029ee@huawei.com>
- <SN6PR11MB2848BF85607B18D23EC40B9BE13A0@SN6PR11MB2848.namprd11.prod.outlook.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <33612fc2-b70d-268e-5059-aadadf0c5dca@huawei.com>
-Date:   Mon, 21 Sep 2020 23:15:03 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+Received: from macbookpro-ed.wildgooses.lan (unknown [212.69.38.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256))
+        (No client certificate requested)
+        (Authenticated sender: ed@wildgooses.com)
+        by mail1.nippynetworks.com (Postfix) with ESMTPSA id 4BwJjH2PV3zTh56;
+        Mon, 21 Sep 2020 23:17:55 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wildgooses.com;
+        s=dkim; t=1600726676;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FW8VSKIvyxeWBPbuPFvBD+ezdTOAwO9l2dhOnE9RnDg=;
+        b=H3dySJfRCllaU4p4AvcexTteQ3Jambulzn/v1ogL3c/a7etWhop3XGKNKyMXVRab73AQpi
+        mw3SgNKWzVJBvwK5AKJ47Hp7jtBKYDqG+/pgdRptyeBG3N8kiCGdCrt5N1s9e+GQSCEahU
+        yzNWPBFWyOg2IftY6Mu7QwS1431ouzU=
+Subject: Re: [PATCH 1/2] x86: Remove led/gpio setup from pcengines platform
+ driver
+To:     linux-kernel@vger.kernel.org
+Cc:     fe@dev.tdt.de, "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        platform-driver-x86@vger.kernel.org
+References: <20200921215919.3072-1-lists@wildgooses.com>
+From:   Ed W <lists@wildgooses.com>
+Message-ID: <d4b2045c-769b-4998-64cc-682c01c105fb@wildgooses.com>
+Date:   Mon, 21 Sep 2020 23:17:54 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
+ Gecko/20100101 Thunderbird/78.2.2
 MIME-Version: 1.0
-In-Reply-To: <SN6PR11MB2848BF85607B18D23EC40B9BE13A0@SN6PR11MB2848.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+In-Reply-To: <20200921215919.3072-1-lists@wildgooses.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.166.25]
-X-ClientProxiedBy: lhreml701-chm.china.huawei.com (10.201.108.50) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Language: en-GB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2020 22:35, Don.Brace@microchip.com wrote:
->>> I'm waiting on the hpsa and smartpqi patches >>update, so please kindly merge only those >>patches, above.
->>> Thanks!
-> John, the hpsa driver crashes, the  or more patches to allow internal commands from Hannas seem to be missing.
-> 
-> I'll let you know exactly which ones soon.
-> 
+Hi, I've been adding support for the PC Engines APU5 board, which is a variant of the APU 2-4 boards
+with some nice features. The current platform driver for pcengines boards has some redundant
+features with regards to recent bios/firmware packages for the board as they now set the ACPI tables
+to indicate GPIOs for keys and leds. So I've submitted a patch to eliminate this. It could be argued
+that it's useful to support older firmware versions, but there is also a 'leds-apu' driver which a)
+probably ought to be marked deprecated with a view to removing it and b) implements the leds even on
+antique firmware versions.
 
-Hi Don,
+In implementing the APU5 I changed some of the exported gpio names to make them more closely match
+functionality across all the boards. For example APU2 vs APU4 both support 2x LTE options, but in
+different mpcie slots and this affects the numbering of options, but not the sense of them (so I
+renamed them based on the intention of the option). This is particularly true on APU5 which supports
+3x LTE cards
 
-Right, that branch did not include Hannes patches as they did not apply 
-cleanly, but I think that you need the same patches as before. I can 
-create a branch for you to test which does include those tomorrow - let 
-me know.
 
-Alternatively I think that we could create a hpsa patch which does not 
-rely on that series, like I mentioned here [0], but it would not be as 
-clean.
+Can I get some advice: It would be helpful if the kernel would export the GPIOs to user-space
+automatically since toggling SIM slots is fairly useful task in userspace. At least for me the gpio
+numbers seem to jump around depending on the order of module loading, so doing something involving
+/sys/class/gpio/export isn't obviously an easy process. Reviewing the fine documentation suggests
+that I need to use gpio_export() to achieve this, but I concede I'm really not clear how to
+implement this in the platform module as currently structured... Any tips please?
 
-Cheers,
-John
+Thanks
 
-https://lore.kernel.org/linux-scsi/dc0e72d8-7076-060c-3cd3-3d51ac7e6de8@huawei.com/
+Ed W
+
