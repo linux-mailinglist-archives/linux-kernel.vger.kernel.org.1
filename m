@@ -2,118 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F55D27291F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E94A272921
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727865AbgIUOvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 10:51:25 -0400
-Received: from mail-il1-f207.google.com ([209.85.166.207]:52239 "EHLO
-        mail-il1-f207.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727265AbgIUOvY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:51:24 -0400
-Received: by mail-il1-f207.google.com with SMTP id m1so11270847iln.19
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 07:51:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=X82mpFSYNXw8KiQzwN46zmsn9KUcYuqFASM4Rm2vW3I=;
-        b=UrnRnV+eEYImKvm8T7XKtcdGps0DeAfZLLCqfp0ghfunfR+Xqy+3yd8eGr2vhnrVLD
-         WCTxfQDGdBdMh3MBp7nG8QDCH5R2QKYbmfQ/gG/T7YD3mW+hs79ELoVPgPE+/EwtSLJd
-         7kzaaFTuLApr/YHcMLC/hXcie99N+rn2qxRgWj0ZN4kKrFGEq3acB/LZaet+BnD4BpKX
-         DKl+aH2vAPYzimQESckmPaqqXTnW3DpiiPurK6aNgwMMmlTWS5SMXDRfCS/gEvIoQD7L
-         kt3+ZJ2leE0Jf9Os1kYnGKlUyszWQ/3r0o3UCs/ip3StMjFcJzL+w8sJ/5Ue3phIC+os
-         vOXw==
-X-Gm-Message-State: AOAM531pDj4iyUIZk2+ek9lY/F1kt4i5BL7yD7M6TGnW8C85OU3A1zSY
-        rOSKWstk8PsLoBlxIGKKoSCAVuAud70UtLjTAfNgDIk0eU0U
-X-Google-Smtp-Source: ABdhPJx9GfnJQla92w2TYwa2GGE1k6o1j824dPE1UVO0QEVKZwifrmXxEYa0Fi95RKrtNmWIKJmwL7OJByfnvKHfqI3u2mZJEMmE
+        id S1727776AbgIUOvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 10:51:32 -0400
+Received: from foss.arm.com ([217.140.110.172]:44972 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727265AbgIUOv2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 10:51:28 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B432D1476;
+        Mon, 21 Sep 2020 07:51:27 -0700 (PDT)
+Received: from [10.57.43.251] (unknown [10.57.43.251])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 73BA33F718;
+        Mon, 21 Sep 2020 07:51:24 -0700 (PDT)
+Subject: Re: arm-smmu 5000000.iommu: Cannot accommodate DMA offset for IOMMU
+ page tables
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        linux-mtd@lists.infradead.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>
+Cc:     Poonam Aggrwal <poonam.aggrwal@nxp.com>, robh@kernel.org,
+        Joerg Roedel <jroedel@suse.de>, Arnd Bergmann <arnd@arndb.de>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Suram Suram <suram@nxp.com>, masonccyang@mxic.com.tw,
+        Zhiqiang.Hou@nxp.com
+References: <CA+G9fYvuq58q+GsWnzni0sKSHbubuQz-UaK3TASX26V_a7yBVw@mail.gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <c799eecf-8f47-8b57-5a9d-3c2a28cfde9a@arm.com>
+Date:   Mon, 21 Sep 2020 15:51:24 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-X-Received: by 2002:a92:1a03:: with SMTP id a3mr228720ila.105.1600699881989;
- Mon, 21 Sep 2020 07:51:21 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 07:51:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000dbab3a05afd3fb60@google.com>
-Subject: KMSAN: uninit-value in hci_event_packet (2)
-From:   syzbot <syzbot+54f68ac8e259a8af4f12@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, glider@google.com, johan.hedberg@gmail.com,
-        kuba@kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-kernel@vger.kernel.org, marcel@holtmann.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CA+G9fYvuq58q+GsWnzni0sKSHbubuQz-UaK3TASX26V_a7yBVw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 2020-09-21 14:20, Naresh Kamboju wrote:
+[...]
+> [    2.256403] e1000e 0000:01:00.0: Adding to iommu group 0
+> [    2.261733] arm-smmu 5000000.iommu: Cannot accommodate DMA offset
+> for IOMMU page tables
 
-syzbot found the following issue on:
+Ah, I know what's going on there - the dma_range_map stuff has 
+overlooked a subtlety, but it's easily fixed.
 
-HEAD commit:    c5a13b33 kmsan: clang-format core
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=1622db65900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=20f149ad694ba4be
-dashboard link: https://syzkaller.appspot.com/bug?extid=54f68ac8e259a8af4f12
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-userspace arch: i386
+> [    2.269752] Unable to handle kernel NULL pointer dereference at
+> virtual address 0000000000000000
 
-Unfortunately, I don't have any reproducer for this issue yet.
+...although either way that's really not how we should subsequently 
+handle failing to allocate a pagetable. I guess I'll take a look into 
+what the deal is there as well :(
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+54f68ac8e259a8af4f12@syzkaller.appspotmail.com
+Robin.
 
-=====================================================
-BUG: KMSAN: uninit-value in hci_conn_hash_lookup_ba include/net/bluetooth/hci_core.h:960 [inline]
-BUG: KMSAN: uninit-value in hci_conn_complete_evt net/bluetooth/hci_event.c:2579 [inline]
-BUG: KMSAN: uninit-value in hci_event_packet+0x1438/0x39e30 net/bluetooth/hci_event.c:6058
-CPU: 1 PID: 8513 Comm: kworker/u5:1 Not tainted 5.9.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: hci4 hci_rx_work
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x21c/0x280 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:122
- __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:219
- hci_conn_hash_lookup_ba include/net/bluetooth/hci_core.h:960 [inline]
- hci_conn_complete_evt net/bluetooth/hci_event.c:2579 [inline]
- hci_event_packet+0x1438/0x39e30 net/bluetooth/hci_event.c:6058
- hci_rx_work+0x745/0xd20 net/bluetooth/hci_core.c:4889
- process_one_work+0x1688/0x2140 kernel/workqueue.c:2269
- worker_thread+0x10bc/0x2730 kernel/workqueue.c:2415
- kthread+0x551/0x590 kernel/kthread.c:293
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-Uninit was created at:
- kmsan_save_stack_with_flags mm/kmsan/kmsan.c:143 [inline]
- kmsan_internal_poison_shadow+0x66/0xd0 mm/kmsan/kmsan.c:126
- kmsan_slab_alloc+0x8a/0xe0 mm/kmsan/kmsan_hooks.c:80
- slab_alloc_node mm/slub.c:2907 [inline]
- __kmalloc_node_track_caller+0x9aa/0x12f0 mm/slub.c:4511
- __kmalloc_reserve net/core/skbuff.c:142 [inline]
- __alloc_skb+0x35f/0xb30 net/core/skbuff.c:210
- alloc_skb include/linux/skbuff.h:1094 [inline]
- bt_skb_alloc include/net/bluetooth/bluetooth.h:389 [inline]
- vhci_get_user drivers/bluetooth/hci_vhci.c:165 [inline]
- vhci_write+0x18a/0x890 drivers/bluetooth/hci_vhci.c:285
- call_write_iter include/linux/fs.h:1882 [inline]
- new_sync_write fs/read_write.c:503 [inline]
- vfs_write+0xfa8/0x1860 fs/read_write.c:578
- ksys_write+0x275/0x500 fs/read_write.c:631
- __do_sys_write fs/read_write.c:643 [inline]
- __se_sys_write+0x92/0xb0 fs/read_write.c:640
- __ia32_sys_write+0x4a/0x70 fs/read_write.c:640
- do_syscall_32_irqs_on arch/x86/entry/common.c:80 [inline]
- __do_fast_syscall_32+0x129/0x180 arch/x86/entry/common.c:139
- do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:162
- do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:205
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> [    2.278544] Mem abort info:
+> [    2.281334]   ESR = 0x96000004
+> [    2.284389]   EC = 0x25: DABT (current EL), IL = 32 bits
+> [    2.289705]   SET = 0, FnV = 0
+> [    2.292759]   EA = 0, S1PTW = 0
+> [    2.295900] Data abort info:
+> [    2.298781]   ISV = 0, ISS = 0x00000004
+> [    2.302618]   CM = 0, WnR = 0
+> [    2.305581] [0000000000000000] user address but active_mm is swapper
+> [    2.311941] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+> [    2.317512] Modules linked in:
+> [    2.320566] CPU: 1 PID: 1 Comm: swapper/0 Tainted: G        W
+>    5.9.0-rc5-next-20200921 #1
+> [    2.329352] Hardware name: Freescale Layerscape 2088A RDB Board (DT)
+> [    2.335705] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+> [    2.341715] pc : arm_smmu_flush_iotlb_all+0x28/0x90
+> [    2.346590] lr : iommu_create_device_direct_mappings.isra.0+0x1f0/0x218
+> [    2.353203] sp : ffff80001005b9b0
+> [    2.356511] x29: ffff80001005b9b0 x28: 0000000000000000
+> [    2.361822] x27: ffffdc3792e904e0 x26: ffff80001005ba48
+> [    2.367134] x25: ffff0082ee6b0000 x24: ffff0082ed88e0a8
+> [    2.372445] x23: 00000000fffffff4 x22: 0000000000001000
+> [    2.377755] x21: ffff80001005ba48 x20: 0000000000000000
+> [    2.383066] x19: ffff0082cceeeb58 x18: 0000000000000010
+> [    2.388377] x17: 0000000000000000 x16: 00000000833b5ff2
+> [    2.393688] x15: ffff0082ee6b0480 x14: 203a756d6d6f692e
+> [    2.398999] x13: 3030303030303520 x12: 61646f6d6d6f6363
+> [    2.404311] x11: 6120746f6e6e6143 x10: 6f66207465736666
+> [    2.409622] x9 : ffffdc3791d31078 x8 : ffff0082ed8ffd00
+> [    2.414933] x7 : 0000000000000000 x6 : 000000000000003f
+> [    2.420244] x5 : 0000000000000040 x4 : ffff80001005b970
+> [    2.425554] x3 : 0000000000000000 x2 : 0000000000000000
+> [    2.430865] x1 : ffffdc37927dd2f0 x0 : ffff0082cceeeb58
+> [    2.436176] Call trace:
+> [    2.438618]  arm_smmu_flush_iotlb_all+0x28/0x90
+> [    2.443144]  iommu_create_device_direct_mappings.isra.0+0x1f0/0x218
+> [    2.449409]  iommu_probe_device+0x6c/0x120
+> [    2.453501]  of_iommu_configure+0x134/0x218
+> [    2.457683]  of_dma_configure_id+0x110/0x2e8
+> [    2.461950]  pci_dma_configure+0x4c/0xd8
+> [    2.465870]  really_probe+0xac/0x4d8
+> [    2.469441]  driver_probe_device+0xfc/0x168
+> [    2.473620]  device_driver_attach+0x7c/0x88
+> [    2.477799]  __driver_attach+0xac/0x178
+> [    2.481631]  bus_for_each_dev+0x78/0xc8
+> [    2.485463]  driver_attach+0x2c/0x38
+> [    2.489033]  bus_add_driver+0x14c/0x230
+> [    2.492865]  driver_register+0x6c/0x128
+> [    2.496696]  __pci_register_driver+0x4c/0x58
+> [    2.500964]  e1000_init_module+0x44/0x50
+> [    2.504882]  do_one_initcall+0x4c/0x2d0
+> [    2.508714]  kernel_init_freeable+0x214/0x280
+> [    2.513068]  kernel_init+0x1c/0x120
+> [    2.516552]  ret_from_fork+0x10/0x30
+> [    2.520124] Code: 910003fd a90153f3 aa0003f3 f85a8014 (f9400280)
+> [    2.526224] ---[ end trace d051012f465b08ec ]---
+> [    2.530848] Kernel panic - not syncing: Attempted to kill init!
+> exitcode=0x0000000b
+> [    2.538506] SMP: stopping secondary CPUs
+> [    2.542431] Kernel Offset: 0x5c3781480000 from 0xffff800010000000
+> [    2.548521] PHYS_OFFSET: 0xffffdb6ac0000000
+> [    2.552700] CPU features: 0x0240022,21806008
+> [    2.556965] Memory Limit: none
+> 
+> full test log,
+> https://lavalab.nxp.com/scheduler/job/86650#L849
+> 
