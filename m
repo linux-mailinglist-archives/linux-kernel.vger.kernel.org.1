@@ -2,157 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27BDD272325
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC7627232B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbgIULwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 07:52:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45172 "EHLO
+        id S1726682AbgIULxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 07:53:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726375AbgIULwm (ORCPT
+        with ESMTP id S1726326AbgIULxu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 07:52:42 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 055EAC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 04:52:41 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id v123so14535893qkd.9
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 04:52:41 -0700 (PDT)
+        Mon, 21 Sep 2020 07:53:50 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC1ABC061755;
+        Mon, 21 Sep 2020 04:53:49 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id z9so12326146wmk.1;
+        Mon, 21 Sep 2020 04:53:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9GdfLLnBwmTIrHlBrgKS0vwwGe97TiHUVxEiYepX0Ik=;
-        b=jd8mtccJd95vXG8tPvhTo5cmxVU/9D6fSI4BYPyufILC+upgo8ryyRIWhBoOerxqXd
-         BpWfFxCy8gWG+RgU9W4DeeKG/BHRVl95xXhbTSm+H2dE/wJJPXAXDwRrrtkjnAW3T8gP
-         lM1X+xsvG9oKy0MfknmFJ7YWqQ4bmuph0NLS7Ew9HgNR/uipDNWBCwoifN5cYojfXXv8
-         1vodTw6UDdRsC/PK3CJEmosE02WNk3bUx3AELA30Grac2iziP4KCY6+5UDo/zLjZy/2H
-         hz0USvFBtoXKQu6R3ePu7kL8+a4yMjbCsOR5LlPBGH0/+JnZaHt0TIcAAyMutlyjgooa
-         xo+A==
+         :content-disposition:in-reply-to:user-agent;
+        bh=tnYdKbbs0v8cjRUa6+TQZR8WZS5M4KfLczxxoR92Ii4=;
+        b=k9PsPNfv4RkoW9BlHFdHIf9xY2kBpx4aGy+LnFsfyk7MVKIGfajOKv1yRzBG1g9kRV
+         p5vGoTuYp4sH7fDonoo3vDzOPUMd7BlEl+o7QkPoLDBJUlz5oWXszKWEObMkhiS53SpH
+         wRn0yH+tOYm+0D0rtlQoYQAtrJo20zc9BQhRZCwQlIuisnKA+4NIrYDfj+kz9namaMkx
+         HyFK6tUXueEbzI1XyPT6w+ZymeROdWDVBqT3LM/OgqsxRi/GfJgOY99kYRZFqfJK92Ir
+         LxYTgdQHuFkeU532K8QHqqJUS5jkFiz0n9mcSUyyn5e+qWGwMVp8/B/R4bHG9oSJM374
+         lufA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9GdfLLnBwmTIrHlBrgKS0vwwGe97TiHUVxEiYepX0Ik=;
-        b=DblYkm557fyOWmtkbBEp6+w9xAKzABq4xc6NLkCUPQlAwvzEQlyM02X/bYtnOn3pM6
-         Rgak/DzRNkmdPX8hbJdlFPi4aeC8R/f+JUS5T5DL46vCEAi/q3ISJUfDLzD0rgynfQrb
-         KP6Tl5WkNXP0+LkJqhqyDOTi2X66Vby/jEPJxNr8Vgm/JWX+wclcxqGcxtzmKD51f7+Q
-         lG+JgAyYXBPeeMAn7RUSu/8LCja4RG2bRLZMQzOxp69Xabt/8pu30jnPml1QOPXfJMsz
-         LZ+KfOKJ0i1RQzfzwDbpMpnrluaUCZIGilWTj1euYP4BYGFzKqAA15A4rq0ML9pdKWP2
-         h/Yw==
-X-Gm-Message-State: AOAM532jUPtcKJB7KEnnAvkkNHPOsZPx/VCg8z/9yUV6zf5jJYQ6Tamn
-        XUmvt9KctNjjEJaAs2HL6F8CA6dseFkCXqM9
-X-Google-Smtp-Source: ABdhPJww4SA+NBlwW6cnSm5w5H+olbfUT5soN9XUNZ4B0XivTeFiStV1r25OdfE0Z547vGPoichUIQ==
-X-Received: by 2002:a37:5144:: with SMTP id f65mr7480324qkb.351.1600689161019;
-        Mon, 21 Sep 2020 04:52:41 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id p187sm8622635qkd.129.2020.09.21.04.52.40
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tnYdKbbs0v8cjRUa6+TQZR8WZS5M4KfLczxxoR92Ii4=;
+        b=Brwhx8ZjBoB7zDwF7t3xURMRZwlhhIuOrynb4S0ahgBSdNHvA0xAXlub74dQoQnOYJ
+         W6sEyZUNt4k1B+uKL48HdzQ/O24V0G2LIfKjRPH7PaGELlZIgiqmLsGYl+nECwuM8RD1
+         EIqkca/tmLJsLtlVqNV/puUMzP7439u/e/zG6OjWCsfOIGk4M0U3TQDLYsFaVb/X56Y3
+         vck5EWTd5J4XFVqbQvXtbLXavxC2ZKeIQsqMnwTg51rw5auEJmGQs4Hw1eO6NHScgPbv
+         Y6sq3o3cZnca5+d6d3mynrNSWSH69aycR5ccXjNwodZ1DVzwt88qFu/51qtnHyFFEu7F
+         1s/A==
+X-Gm-Message-State: AOAM531QGnI/Igy1bAoBgv7EGjmVzOP1rLt49BXv2hr1T3U41euxKuQ8
+        lTC+pg6mpKjdKXCypilFvaA=
+X-Google-Smtp-Source: ABdhPJx5aWLyT9FmZeJfWGXgN3NtrC5HfjdVYSlV8isUlvPJUARX+mcG8/Dj8AaoipCOjPw9vaznhw==
+X-Received: by 2002:a1c:7c13:: with SMTP id x19mr30741819wmc.45.1600689228397;
+        Mon, 21 Sep 2020 04:53:48 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id l8sm20641084wrx.22.2020.09.21.04.53.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 04:52:40 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kKKN5-002aXy-Dp; Mon, 21 Sep 2020 08:52:39 -0300
-Date:   Mon, 21 Sep 2020 08:52:39 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Gal Pressman <galpress@amazon.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
-Message-ID: <20200921115239.GC8409@ziepe.ca>
-References: <20200918120340.GT869610@unreal>
- <CAFCwf12VPuyGFqFJK5D19zcKFQJ=fmzjwscdPG82tfR_v_h3Kg@mail.gmail.com>
- <20200918121905.GU869610@unreal>
- <20200919064020.GC439518@kroah.com>
- <20200919082003.GW869610@unreal>
- <20200919083012.GA465680@kroah.com>
- <CAFCwf122V-ep44Kqk1DgRJN+tq3ctxE9uVbqYL07apLkLe2Z7g@mail.gmail.com>
- <20200919172730.GC2733595@kroah.com>
- <20200919192235.GB8409@ziepe.ca>
- <20200920084702.GA533114@kroah.com>
+        Mon, 21 Sep 2020 04:53:47 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 13:53:45 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        linux-tegra@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 12/34] i2c: tegra: Use clk-bulk helpers
+Message-ID: <20200921115345.GP3950626@ulmo>
+References: <20200908224006.25636-1-digetx@gmail.com>
+ <20200908224006.25636-13-digetx@gmail.com>
+ <20200917113846.GX3515672@ulmo>
+ <CAHp75Vd_B9WLM99LnN2YiZ045z8SUkD7KwY2wVEUeQ9Mx7fg5g@mail.gmail.com>
+ <20200921110159.GD3950626@ulmo>
+ <CAHp75VcpoZ-m2wkJGv4s+KthOVLQR1XBTzMFMmvj-Q82BEh7NQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="6sj9mcRtP+pTWLOo"
 Content-Disposition: inline
-In-Reply-To: <20200920084702.GA533114@kroah.com>
+In-Reply-To: <CAHp75VcpoZ-m2wkJGv4s+KthOVLQR1XBTzMFMmvj-Q82BEh7NQ@mail.gmail.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 20, 2020 at 10:47:02AM +0200, Greg Kroah-Hartman wrote:
-> > If not, what open source userspace are you going to ask them to
-> > present to merge the kernel side into misc?
-> 
-> I don't think that they have a userspace api to their rdma feature from
-> what I understand, but I could be totally wrong as I do not know their
-> hardware at all, so I'll let them answer this question.
 
-I thought Oded was pretty clear, the goal of this series is to expose
-their RDMA HW to userspace. This problem space requires co-mingling
-networking and compute at extremely high speed/low overhead. This is
-all done in userspace.
+--6sj9mcRtP+pTWLOo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-We are specifically talking about this in
-include/uapi/misc/habanalabs.h:
+On Mon, Sep 21, 2020 at 02:15:09PM +0300, Andy Shevchenko wrote:
+> On Mon, Sep 21, 2020 at 2:02 PM Thierry Reding <thierry.reding@gmail.com>=
+ wrote:
+> > On Thu, Sep 17, 2020 at 04:54:28PM +0300, Andy Shevchenko wrote:
+> > > On Thu, Sep 17, 2020 at 2:38 PM Thierry Reding <thierry.reding@gmail.=
+com> wrote:
+> > > > On Wed, Sep 09, 2020 at 01:39:44AM +0300, Dmitry Osipenko wrote:
+>=20
+> ...
+>=20
+> > > > This is tempting from a diffstat point of view, but the downside is=
+ that
+> > > > we can now no longer validate that all of the necessary clocks are =
+given
+> > > > in device tree.
+> > > >
+> > > > Previously the driver would fail to probe the I2C controller if any=
+ of
+> > > > the expected clocks were not defined in device tree, but now it's j=
+ust
+> > > > going to continue without it and not give any indication as to what=
+'s
+> > > > wrong.
+> > >
+> > > You may print an error in the error path as previously. Since both
+> > > clocks are mandatory (as far as I understood the code) user will need
+> > > to check DT in any case.
+> >
+> > The problem is that the number of required clocks depends on the variant
+> > of the IP block that's implemented. Some require just one clock and
+> > others require two or three. With this patch the driver is just going to
+> > pick whatever clocks are given in device tree, but it removes any
+> > possibility of detecting whether the device trees contain the correct
+> > clocks. So we may very well run into a situation where the driver now
+> > successfully probes but then malfunctions because one or more of the
+> > clocks were not specified in device tree.
+> >
+> > Thierry
+>=20
+> I still failed to get this. Are you suggesting that CCF bulk
+> operations are fundamentally broken?
 
- /*
-  * NIC
-  *
-  * This IOCTL allows the user to manage and configure the device's NIC ports.
-  * The following operations are available:
-  * - Create a completion queue
-  * - Destroy a completion queue
-  * - Wait on completion queue
-  * - Poll a completion queue
-  * - Update consumed completion queue entries
-  * - Set a work queue
-  * - Unset a work queue
-  *
-  * For all operations, the user should provide a pointer to an input structure
-  * with the context parameters. Some of the operations also require a pointer to
-  * driver regarding how many of the available CQEs were actually
-  * processed/consumed. Only then the driver will override them with newer
-  * entries.
-  * The set WQ operation should provide the device virtual address of the WQ with
-  * a matching size for the number of WQs and entries per WQ.
-  *
-  */
- #define HL_IOCTL_NIC	_IOWR('H', 0x07, struct hl_nic_args)
+No, I'm not suggesting that. All I'm saying is the way that they are
+used here is causing the driver to behave differently that it was
+before.
 
-Which is ibv_create_qp, ibv_create_cq, ibv_poll_cq, etc, etc
+Taking for example the VI I2C controller instantiation. That requires
+the "slow" clock to be specified. Previously if the VI I2C device tree
+node didn't have that "slow" clock specified, the I2C driver probe would
+exit with an error code. After this change it will simply not see the
+"slow" clock and then just continue without it as if it was optional.
 
-Habana has repeatedly described their HW as having multiple 100G RoCE
-ports. RoCE is one of the common industry standards that ibverbs
-unambiguously is responsible for.
+In other words, after this patch we have no way of saying which clocks
+are required and which are optional. They all become optional, basically
+and the driver would attempt to continue (and most likely hang) if no
+clocks at all had been specified in device tree.
 
-I would be much less annoyed if they were not actively marketing their
-product as RoCE RDMA.
+> In the above case one may add more checks. AFAICS is_vi won't be
+> removed, so can be easily checked.
+> Basically that for-loop for div_clk is questionable. I agree on that.
 
-Sure there is some argument that their RoCE isn't spec compliant, but
-I don't think it excuses the basic principle of our subsystem:
+But we need that one to find which of the clocks is the divider clock so
+that we can call clk_set_rate() on it later on. It's a bit odd that we'd
+just continue even if we didn't find the divider clock. I think the CCF
+does handle this transparently and will just no-op all the calls for
+NULL clocks, but it still means that we won't be running the I2C bus at
+the right frequency if the divider clock was not specified in device
+tree.
 
- RDMA HW needs to demonstrate some basic functionality using the
- standard open source userspace software stack.
+Thierry
 
-I don't like this idea of backdooring a bunch of proprietary closed
-source RDMA userspace through drivers/misc, and if you don't have a
-clear idea how to get something equal for drivers/misc you should not
-accept the H_IOCTL_NIC.
+--6sj9mcRtP+pTWLOo
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Plus RoCE is complicated, there is a bunch of interaction with netdev
-and rules related to that that really needs to be respected.
+-----BEGIN PGP SIGNATURE-----
 
-> For anything that _has_ to have a userspace RMDA interface, sure ibverbs
-> are the one we are stuck with, but I didn't think that was the issue
-> here at all, which is why I wrote the above comments.
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9olEkACgkQ3SOs138+
+s6E3RRAAicgwoUZ3itSlxAQ4dLKrDOobCDxoEwECgY1PncljTtqyP6aPCuvy9UnV
+QfJe0iXyK25n3oOFmpX2LEYtoBYHko87xRkII3JESAZLtXrUBdVbvyds4IqXBILR
+RYSVtkfh8Bl5pZggF5HwHpDnZaaQBPtK57c1da8CO2xROJBoXX+l6oiaNQwNkJy7
+n/qbWpBq5X4MMHnISa5YayuxGr0YQbDvFSPZeeWaU7KDBbwwSJPLiknBtQs0dNaB
+Ojm5SMM1aaaFbv15mY9OyK7X4fQ6AENpgAks+GcmZ/bQnFvtgXheMDKBDqFt7q2V
+JxzwXv273wT3qKHvt8yf1IMG2JlNu5OHeTckdMuynn5VIw07TY1xCGKDDL2T9z0P
+yXy3YMv0MunYCTSdjk8LJa4eVNBuEikAQTpN4AJsMTrYFCHH/z0OibRdAjuPbJc/
+SOZMlGwms02fhEiG7MqjI8JYIWdUhKuYiaJ1nfZkYcQnlhvgH+jDWBeJYyR2HzuK
+t/I+waWK6jfach6YbgSbQawvcekpioz1JbQKfqx+WxUtriEEOmHpYDgZolvtO/pI
+YEb/RDepVeQIlutFXAhSmQxa3LTXYcpxghMwnEpmYGJrz4jYc+8jnn3BdurqLAHI
+MYTd3VGD73ikxVgj4d3uzdyBbewjYvMUca7HWn+/YWRceBbCwdw=
+=iz+4
+-----END PGP SIGNATURE-----
 
-I think you should look at the patches #8 through 11:
-
-https://lore.kernel.org/lkml/20200915171022.10561-9-oded.gabbay@gmail.com/
-
-Jason
+--6sj9mcRtP+pTWLOo--
