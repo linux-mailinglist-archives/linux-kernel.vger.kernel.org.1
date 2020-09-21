@@ -2,152 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F06B8272B8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74CAD272B8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727454AbgIUQSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:18:30 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:39120 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726341AbgIUQSa (ORCPT
+        id S1726341AbgIUQSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:18:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726950AbgIUQSf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:18:30 -0400
-Received: by mail-oi1-f194.google.com with SMTP id c13so17585471oiy.6;
-        Mon, 21 Sep 2020 09:18:29 -0700 (PDT)
+        Mon, 21 Sep 2020 12:18:35 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66CFAC061755;
+        Mon, 21 Sep 2020 09:18:35 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id l126so9688518pfd.5;
+        Mon, 21 Sep 2020 09:18:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=3bcasITYJcvaICUjS8LM3CMudbHrdSshaP9nO3BF0+0=;
+        b=EjG3TpTvNOOVqz1MTLCqISk7nevAJ1GYEmhh5iulNEzz9CgLZrLg7jfLq8v6cQ+fK5
+         afawgseQIWFVvJyyp4CbJ1kZB/Cedkxdf/LMf0hC7RyzkiZ1CVbTjCU71WEQqSzBxyeE
+         dNDycOa7ss4qFCpq5BHNNS2zKugeZZ95mXKp7co3xDtma7vGNNGAJ+AmuxUA9LZ5CvKu
+         HHW1La+smK1zeQFH84QrAR97Kg7FbSVLPFGeVuynpIvYFYrkK03+avYXF73Pqnsy+mhD
+         ppRues7FpZGMWkTs1MNJ7aJluv9RwSGX6jVxq8Brtwxi2/O9Q6BpSctMiLHsGfaWcDcK
+         nqEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nbC7uccKDJ1WRncXvD6/krY9wssuSRXhmd3VlyR43es=;
-        b=nk6vyjkfkomXFTgk4hRoDlLqf6oS4BV5Te0CwwxQndH+jSoJaJzQGhA7SBRT9oBBI1
-         VAsCVZCnjgc7XUKPYNEv8gEjI3+jcTurwVciOeUFanHQ6Mors1cjY74mw8DEzun4j9pg
-         RfSMvLfe8N4EtKJfTCb0skNtJKM65iFvbgSLqAFYkshlf5pxo4eBuRGrhrdvCB/WR7Kp
-         pzDsCAe9A0n43mi6M4eQtve7OxNlKN02A2e3TV74xjsletwTUw1b7XwFm2S7fzBjSff4
-         cuSV9c2Qy5tab+jz0dyw1VMCdOvOhqH/HHXPb76bRGSqfyIu1HHlgzACKz8TnlVqSWlJ
-         FpyQ==
-X-Gm-Message-State: AOAM533N71mLyYFRbkNaUWx3++5qd5OwvpuxFY9n9S5Vq02IZybP9Ted
-        IBSs1q1elyWlFWlU673SCTDHf+Xu0YvHSl1Xr/A=
-X-Google-Smtp-Source: ABdhPJzk678teRbfi+MQPJejkzv4hFdqqIqhrmGw3zIKWNvilPbFXuEtEACgA8TivFAZDLWbBOcAN+05du/9R940FD0=
-X-Received: by 2002:a05:6808:491:: with SMTP id z17mr116123oid.110.1600705109159;
- Mon, 21 Sep 2020 09:18:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200821204921.32536-1-sibis@codeaurora.org>
-In-Reply-To: <20200821204921.32536-1-sibis@codeaurora.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 21 Sep 2020 18:18:17 +0200
-Message-ID: <CAJZ5v0gdMroJY0d9n2+_P2uhBNw1xp5yn=jhxdejDLq0WmkPTA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] PM / Domains: Add GENPD_FLAG_NO_SUSPEND/RESUME flags
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Andy Gross <agross@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        "Nayak, Rajendra" <rnayak@codeaurora.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=3bcasITYJcvaICUjS8LM3CMudbHrdSshaP9nO3BF0+0=;
+        b=CVta95mjWQeIpkiFJtfqqLeEPcVleprgzVp0ONh7oVhJpcSk1/hRl+OvUfyzBOpdWK
+         yK99lK8GTdbwqGyQmVogpunOfnoHxbTTRhOh/vDp/vDYM2FLvsw4EbBTs+bC0qZYImnL
+         ALVtoQrwB+W+TW5jNQM9FQPpnne8rZxvW/7gXO9VielTlGd7ng0FQ6qjYL8BlKsbr0Kw
+         TmtPhiRnq/8Yehazyg0ozhHIEt3k05FL/AnY2+QdGgNZ2VN4XmyLA1f3S22qyFuPVKyT
+         G49ibPejKToMTs4pAGOjpIxPR35lFIIl3FSncRljZTzpYbtBd0jL1u3FFpzQzfjVHogJ
+         ipiQ==
+X-Gm-Message-State: AOAM531K+wTbScLRIEJ+O07LPG26Ik2Q9CjD/YzCxWjoeIU/Gpq0P5sz
+        u8DmKJNB6Ua0G4LhuwPtkA==
+X-Google-Smtp-Source: ABdhPJw36Lj7NCId/C5Ie/W8KFUYXvlsi+213sOcmaLie+y07vSzZ7aPYESnIAoQWZ+Rh9Aj9vE0Jw==
+X-Received: by 2002:aa7:9093:0:b029:142:2501:39da with SMTP id i19-20020aa790930000b0290142250139damr520129pfa.41.1600705114856;
+        Mon, 21 Sep 2020 09:18:34 -0700 (PDT)
+Received: from localhost.localdomain ([47.242.131.39])
+        by smtp.gmail.com with ESMTPSA id p11sm12447179pfq.130.2020.09.21.09.18.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 09:18:34 -0700 (PDT)
+From:   Pujin Shi <shipujin.t@gmail.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Huacai Chen <chenhc@lemote.com>,
+        Liangliang Huang <huanglllzu@gmail.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hankinsea@gmail.com, shipujin.t@gmail.com,
+        Pujin Shi <shipj@lemote.com>
+Subject: [PATCH v2] MIPS: kernel: include probes-common.h header in branch.c
+Date:   Tue, 22 Sep 2020 00:18:21 +0800
+Message-Id: <20200921161821.2350-1-shipujin.t@gmail.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 10:49 PM Sibi Sankar <sibis@codeaurora.org> wrote:
->
-> Add GENPD_FLAG_NO_SUSPEND/RESUME flags to instruct genpd to keep the
-> status of the PM domain unaltered during suspend/resume respectively.
-> The flags are aimed at power domains coupled to co-processors which
-> enter low-power modes independent to that of the application processor.
->
-> Specifically the flags are to be used by the power domains exposed
-> by the AOSS QMP driver linked to modem, adsp, cdsp remoteprocs. These
-> power domains are used to notify the Always on Subsystem (AOSS) that
-> a particular co-processor is up. AOSS uses this information to wait
-> for the co-processors to suspend before starting its sleep sequence.
-> The application processor powers off these power domains only if the
-> co-processor has crashed or powered off and remains unaltered during
-> system suspend/resume.
->
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+arch/mips/kernel/branch.c:876:5: error: no previous prototype for '__insn_is_compact_branch' [-Werror=missing-prototypes]
 
-Applied with the Ulf's R-by along with the [2/2] as 5.10 material, thanks!
+Signed-off-by: Pujin Shi <shipujin.t@gmail.com>
+Signed-off-by: Pujin Shi <shipj@lemote.com>
+---
+ arch/mips/kernel/branch.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> ---
->
-> V2:
->  * Add more info in commit msg and description [Uffe/Kevin/Stephen]
->  * Rename and split functionality into two flags [Uffe]
->  * Drop R-b/T-b
->
->  drivers/base/power/domain.c |  6 ++++--
->  include/linux/pm_domain.h   | 10 ++++++++++
->  2 files changed, 14 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> index 2cb5e04cf86cd..a5df5916f30f8 100644
-> --- a/drivers/base/power/domain.c
-> +++ b/drivers/base/power/domain.c
-> @@ -129,6 +129,8 @@ static const struct genpd_lock_ops genpd_spin_ops = {
->  #define genpd_is_active_wakeup(genpd)  (genpd->flags & GENPD_FLAG_ACTIVE_WAKEUP)
->  #define genpd_is_cpu_domain(genpd)     (genpd->flags & GENPD_FLAG_CPU_DOMAIN)
->  #define genpd_is_rpm_always_on(genpd)  (genpd->flags & GENPD_FLAG_RPM_ALWAYS_ON)
-> +#define genpd_is_no_suspend(genpd)     (genpd->flags & GENPD_FLAG_NO_SUSPEND)
-> +#define genpd_is_no_resume(genpd)      (genpd->flags & GENPD_FLAG_NO_RESUME)
->
->  static inline bool irq_safe_dev_in_no_sleep_domain(struct device *dev,
->                 const struct generic_pm_domain *genpd)
-> @@ -949,7 +951,7 @@ static void genpd_sync_power_off(struct generic_pm_domain *genpd, bool use_lock,
->  {
->         struct gpd_link *link;
->
-> -       if (!genpd_status_on(genpd) || genpd_is_always_on(genpd))
-> +       if (!genpd_status_on(genpd) || genpd_is_always_on(genpd) || genpd_is_no_suspend(genpd))
->                 return;
->
->         if (genpd->suspended_count != genpd->device_count
-> @@ -991,7 +993,7 @@ static void genpd_sync_power_on(struct generic_pm_domain *genpd, bool use_lock,
->  {
->         struct gpd_link *link;
->
-> -       if (genpd_status_on(genpd))
-> +       if (genpd_status_on(genpd) || genpd_is_no_resume(genpd))
->                 return;
->
->         list_for_each_entry(link, &genpd->child_links, child_node) {
-> diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
-> index ee11502a575b0..568abdf2e89cf 100644
-> --- a/include/linux/pm_domain.h
-> +++ b/include/linux/pm_domain.h
-> @@ -55,6 +55,14 @@
->   *
->   * GENPD_FLAG_RPM_ALWAYS_ON:   Instructs genpd to always keep the PM domain
->   *                             powered on except for system suspend.
-> + *
-> + * GENPD_FLAG_NO_SUSPEND:      Instructs genpd to keep the PM domain powered
-> + *                             on during suspend (if it's already powered on)
-> + *                             and runtime PM controlled otherwise.
-> + *
-> + * GENPD_FLAG_NO_RESUME:       Instructs genpd to keep the PM domain powered
-> + *                             off during resume (if it's already powered off)
-> + *                             and runtime PM controlled otherwise.
->   */
->  #define GENPD_FLAG_PM_CLK       (1U << 0)
->  #define GENPD_FLAG_IRQ_SAFE     (1U << 1)
-> @@ -62,6 +70,8 @@
->  #define GENPD_FLAG_ACTIVE_WAKEUP (1U << 3)
->  #define GENPD_FLAG_CPU_DOMAIN   (1U << 4)
->  #define GENPD_FLAG_RPM_ALWAYS_ON (1U << 5)
-> +#define GENPD_FLAG_NO_SUSPEND   (1U << 6)
-> +#define GENPD_FLAG_NO_RESUME    (1U << 7)
->
->  enum gpd_status {
->         GPD_STATE_ACTIVE = 0,   /* PM domain is active */
-> --
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
->
+diff --git a/arch/mips/kernel/branch.c b/arch/mips/kernel/branch.c
+index fb3e203698ea..0216ff24c392 100644
+--- a/arch/mips/kernel/branch.c
++++ b/arch/mips/kernel/branch.c
+@@ -20,6 +20,8 @@
+ #include <asm/ptrace.h>
+ #include <linux/uaccess.h>
+ 
++#include "probes-common.h"
++
+ /*
+  * Calculate and return exception PC in case of branch delay slot
+  * for microMIPS and MIPS16e. It does not clear the ISA mode bit.
+-- 
+2.18.1
+
