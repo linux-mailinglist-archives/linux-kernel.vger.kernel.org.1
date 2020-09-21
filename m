@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACC34272CD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40503272D20
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728839AbgIUQfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:35:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33568 "EHLO mail.kernel.org"
+        id S1729101AbgIUQhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:37:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728802AbgIUQen (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:34:43 -0400
+        id S1729091AbgIUQhj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:37:39 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 451362399C;
-        Mon, 21 Sep 2020 16:34:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D45C6206B7;
+        Mon, 21 Sep 2020 16:37:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706082;
-        bh=A1GglWH/Xqi80/BCeRtvDldnvRBNc1Oeew/+yalEkgE=;
+        s=default; t=1600706258;
+        bh=0AsOqjbBkPZykoJS/EiWyx0FA+xrH0LXRfn/2dLrtzc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Pw/OQsiJP5Bi6vQbMMAMsqmeSPczODwJkAlOBc5ze/UvMFTu9KecLWrnGbdENyrs6
-         tyTCBBPVEU4I2hTr01LugFVbzqsqeU0ds4BpIsToCFuS4EXKpaDdEp1gPl12tHdZqh
-         aDUMPDcuzccv7gpvd7moOyUf+bJsq/5TaZfbhxO4=
+        b=EaWXP88RKv/xtjuAWXKpu+EUjPGipgLE62AIqIVnqDACbMKlAQ2ncdzcrj+74PkHf
+         SIKgkaFCnRyKTppSIbq5hT0k0q4Yqxb37HPvicoChf9EnrHjxqZqz2FFhVPBgYaEIh
+         B8ls6whm8r4blUP8/I1P3IWDORidoofmhe56U2qs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mohan Kumar <mkumard@nvidia.com>,
-        Sameer Pujar <spujar@nvidia.com>, Takashi Iwai <tiwai@suse.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 08/70] ALSA: hda: Fix 2 channel swapping for Tegra
+        stable@vger.kernel.org, Rander Wang <rander.wang@intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 21/94] ALSA: hda: fix a runtime pm issue in SOF when integrated GPU is disabled
 Date:   Mon, 21 Sep 2020 18:27:08 +0200
-Message-Id: <20200921162035.506612220@linuxfoundation.org>
+Message-Id: <20200921162036.518984044@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
-References: <20200921162035.136047591@linuxfoundation.org>
+In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
+References: <20200921162035.541285330@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,48 +47,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mohan Kumar <mkumard@nvidia.com>
+From: Rander Wang <rander.wang@intel.com>
 
-[ Upstream commit 216116eae43963c662eb84729507bad95214ca6b ]
+[ Upstream commit 13774d81f38538c5fa2924bdcdfa509155480fa6 ]
 
-The Tegra HDA codec HW implementation has an issue related to not
-swapping the 2 channel Audio Sample Packet(ASP) channel mapping.
-Whatever the FL and FR mapping specified the left channel always
-comes out of left speaker and right channel on right speaker. So
-add condition to disallow the swapping of FL,FR during the playback.
+In snd_hdac_device_init pm_runtime_set_active is called to
+increase child_count in parent device. But when it is failed
+to build connection with GPU for one case that integrated
+graphic gpu is disabled, snd_hdac_ext_bus_device_exit will be
+invoked to clean up a HD-audio extended codec base device. At
+this time the child_count of parent is not decreased, which
+makes parent device can't get suspended.
 
-Signed-off-by: Mohan Kumar <mkumard@nvidia.com>
-Acked-by: Sameer Pujar <spujar@nvidia.com>
-Link: https://lore.kernel.org/r/20200825052415.20626-2-mkumard@nvidia.com
+This patch calls pm_runtime_set_suspended to decrease child_count
+in parent device in snd_hdac_device_exit to match with
+snd_hdac_device_init. pm_runtime_set_suspended can make sure that
+it will not decrease child_count if the device is already suspended.
+
+Signed-off-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Link: https://lore.kernel.org/r/20200902154218.1440441-1-kai.vehmanen@linux.intel.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_hdmi.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/hda/hdac_device.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 2def4ad579ccf..4f8dd558af48f 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -3224,6 +3224,7 @@ static int tegra_hdmi_build_pcms(struct hda_codec *codec)
- 
- static int patch_tegra_hdmi(struct hda_codec *codec)
+diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
+index 19deb306facb7..4a843eb7cc940 100644
+--- a/sound/hda/hdac_device.c
++++ b/sound/hda/hdac_device.c
+@@ -123,6 +123,8 @@ EXPORT_SYMBOL_GPL(snd_hdac_device_init);
+ void snd_hdac_device_exit(struct hdac_device *codec)
  {
-+	struct hdmi_spec *spec;
- 	int err;
- 
- 	err = patch_generic_hdmi(codec);
-@@ -3231,6 +3232,10 @@ static int patch_tegra_hdmi(struct hda_codec *codec)
- 		return err;
- 
- 	codec->patch_ops.build_pcms = tegra_hdmi_build_pcms;
-+	spec = codec->spec;
-+	spec->chmap.ops.chmap_cea_alloc_validate_get_type =
-+		nvhdmi_chmap_cea_alloc_validate_get_type;
-+	spec->chmap.ops.chmap_validate = nvhdmi_chmap_validate;
- 
- 	return 0;
- }
+ 	pm_runtime_put_noidle(&codec->dev);
++	/* keep balance of runtime PM child_count in parent device */
++	pm_runtime_set_suspended(&codec->dev);
+ 	snd_hdac_bus_remove_device(codec->bus, codec);
+ 	kfree(codec->vendor_name);
+ 	kfree(codec->chip_name);
 -- 
 2.25.1
 
