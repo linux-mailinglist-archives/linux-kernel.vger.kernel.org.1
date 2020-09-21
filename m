@@ -2,97 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCED9272EB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B3E272FB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730104AbgIUQvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:51:25 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:52732 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730080AbgIUQvQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:51:16 -0400
-Date:   Mon, 21 Sep 2020 16:51:13 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600707074;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=Sgm2yn0v6HlarYRAA1wq4cFuSB25RZdNG4aFpDVvtug=;
-        b=3uqz6yd7s5xG/+rT4dK48m/86EJxwQ77Y2KWTDDvu0OTWuZrWWuOcNLxUz6Qtrqh51QFb1
-        h8S6092t6ucpxU/YZ+H8p7pOLPXGsJjNux4flC8qozy2D6LiB2G8XIiN6uf1exVP4RvSC3
-        /LA8GLqvX7UdpcKgvvRWJtsaprWR3q0r9FKqL5KWiSaaEVZvI9hzJ8sqzXNdlf18r0sH4s
-        pY9jGFNSFpUADO66uaMAp58l6YdOjC4tLMC8hgrSqE54AiaLjM8d6I2fQ1O6pJTQcccdzT
-        sbw06qigHv7/IeT107ph9RpnjCH5ojN07l+YTK3PRdAMyIdPnZcJ6dLjukq6DQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600707074;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=Sgm2yn0v6HlarYRAA1wq4cFuSB25RZdNG4aFpDVvtug=;
-        b=W7kDNY0lVaPpxwZehNCXzTOnaxPl7ljoYXZ0CZZWoSQpk/UBp8BIBRDjFCHSVLz0u3IPMD
-        SxZoJ2+I5bUZZ7BA==
-From:   "tip-bot2 for Julien Thierry" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/core] objtool: Remove useless tests before save_reg()
-Cc:     Julien Thierry <jthierry@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        id S1728632AbgIUQ7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:59:09 -0400
+Received: from mx4.wp.pl ([212.77.101.12]:27694 "EHLO mx4.wp.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730270AbgIUQ6t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:58:49 -0400
+Received: (wp-smtpd smtp.wp.pl 13450 invoked from network); 21 Sep 2020 18:52:04 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
+          t=1600707124; bh=pS0s86wtkZkGCWMQlTJztTBVhkWnFMCqOcJVff4yuvc=;
+          h=From:To:Cc:Subject;
+          b=UGtNTtqVtarl+XyGa2kB6cBeaa1BuI25AzUDueNTQn4DfiC1reVPXnlraaiDLYdr+
+           Mp8omSuKlE4ifX0O4Jiiqe8mTv+MN7VJqtyabyr7ALqCuG9atTQPpQSiXK8s6oYJyH
+           +dXpaI2dL/GQhV/9FxwiRa+lZLaUqcoWKiCFFLE0=
+Received: from unknown (HELO kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com) (kubakici@wp.pl@[163.114.132.4])
+          (envelope-sender <kubakici@wp.pl>)
+          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <miaoqinglang@huawei.com>; 21 Sep 2020 18:52:04 +0200
+Date:   Mon, 21 Sep 2020 09:51:57 -0700
+From:   Jakub Kicinski <kubakici@wp.pl>
+To:     Qinglang Miao <miaoqinglang@huawei.com>
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next v2] mt7601u: Convert to DEFINE_SHOW_ATTRIBUTE
+Message-ID: <20200921095157.2cd0414e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200919024838.14172-1-miaoqinglang@huawei.com>
+References: <20200919024838.14172-1-miaoqinglang@huawei.com>
 MIME-Version: 1.0
-Message-ID: <160070707332.15536.770642380870729185.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-WP-MailID: e1ebc130c8383d7528f1935eea539bf8
+X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
+X-WP-SPAM: NO 0000001 [gbJj]                               
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the objtool/core branch of tip:
+On Sat, 19 Sep 2020 10:48:38 +0800 Qinglang Miao wrote:
+> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
+> 
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 
-Commit-ID:     f4f803984c3685f416a74e9e2fa7d39bdafbe02b
-Gitweb:        https://git.kernel.org/tip/f4f803984c3685f416a74e9e2fa7d39bdafbe02b
-Author:        Julien Thierry <jthierry@redhat.com>
-AuthorDate:    Tue, 15 Sep 2020 08:53:16 +01:00
-Committer:     Josh Poimboeuf <jpoimboe@redhat.com>
-CommitterDate: Fri, 18 Sep 2020 12:02:27 -05:00
+Acked-by: Jakub Kicinski <kubakici@wp.pl>
 
-objtool: Remove useless tests before save_reg()
-
-save_reg already checks that the register being saved does not already
-have a saved state.
-
-Remove redundant checks before processing a register storing operation.
-
-Signed-off-by: Julien Thierry <jthierry@redhat.com>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
----
- tools/objtool/check.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 4e2f703..fd2edab 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -2030,7 +2030,7 @@ static int update_cfi_state(struct instruction *insn, struct cfi_state *cfi,
- 				/* drap: push %rbp */
- 				cfi->stack_size = 0;
- 
--			} else if (regs[op->src.reg].base == CFI_UNDEFINED) {
-+			} else {
- 
- 				/* drap: push %reg */
- 				save_reg(cfi, op->src.reg, CFI_BP, -cfi->stack_size);
-@@ -2059,9 +2059,7 @@ static int update_cfi_state(struct instruction *insn, struct cfi_state *cfi,
- 
- 				/* save drap offset so we know when to restore it */
- 				cfi->drap_offset = op->dest.offset;
--			}
--
--			else if (regs[op->src.reg].base == CFI_UNDEFINED) {
-+			} else {
- 
- 				/* drap: mov reg, disp(%rbp) */
- 				save_reg(cfi, op->src.reg, CFI_BP, op->dest.offset);
+You can keep my ack. 
