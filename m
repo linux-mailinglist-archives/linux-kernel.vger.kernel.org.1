@@ -2,107 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 455D52731EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 20:28:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B1E42731FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 20:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727860AbgIUS2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 14:28:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726456AbgIUS2B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 14:28:01 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D8FAC061755;
-        Mon, 21 Sep 2020 11:28:01 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f07e30076607a950172f225.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:e300:7660:7a95:172:f225])
+        id S1728029AbgIUSaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 14:30:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35168 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726456AbgIUSaS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 14:30:18 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B02F41EC0281;
-        Mon, 21 Sep 2020 20:27:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600712879;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=3cmmzkdRj3CTCc9fQg54iNBZbfaxEFaEzbuaRutT7SU=;
-        b=icOpOtF+LzqLL19ufTlDbtbRhNMihdfON08IuW/+S3bMBjHFCh8ar6QbiqxYd+WxaMS8G6
-        wpDpWR0Am94HmezGud2tKUF4hZpjooRtT1qIyy9Ghnx3F7DxE7DM88p9NSkLaI9jSLqe5h
-        GvQc7vA9wafbZKb15dGyRoEAWRL9DaY=
-Date:   Mon, 21 Sep 2020 20:27:53 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jethro Beekman <jethro@fortanix.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Seth Moore <sethmo@google.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 14/24] x86/sgx: Add SGX_IOC_ENCLAVE_INIT
-Message-ID: <20200921182753.GK5901@zn.tnic>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-15-jarkko.sakkinen@linux.intel.com>
- <20200921173514.GI5901@zn.tnic>
- <20200921181021.GA24481@linux.intel.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 6067C20758;
+        Mon, 21 Sep 2020 18:30:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600713017;
+        bh=RIG1o2W+S0fOozltrMezM0wKniQZjIj8tj49IFeycQc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZjWSgetkuu30PE+jVlTKOITp/D4bMu9VafoSjGjApUWBn2ecvVK2LCbjtTrwBSs9i
+         N96XP+fPh1z0gqX4hot0BvUoGmaGl3l3OzQgclsVmYQAZfSNupk6M4v2WNba8tuvm4
+         oTSGr3na8bgWrU7OVNMSdljPAw5bjrnzr21MhPDI=
+Date:   Mon, 21 Sep 2020 19:29:24 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     =?iso-8859-1?Q?Cl=E9ment_P=E9ron?= <peron.clem@gmail.com>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Marcus Cooper <codekipper@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com
+Subject: Re: [PATCH v4 09/22] arm64: dts: allwinner: h6: Add HDMI audio node
+Message-ID: <20200921182924.GG4792@sirena.org.uk>
+References: <20200921102731.747736-1-peron.clem@gmail.com>
+ <20200921102731.747736-10-peron.clem@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pE2VAHO2njSJCslu"
 Content-Disposition: inline
-In-Reply-To: <20200921181021.GA24481@linux.intel.com>
+In-Reply-To: <20200921102731.747736-10-peron.clem@gmail.com>
+X-Cookie: Love thy neighbor, tune thy piano.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 11:10:21AM -0700, Sean Christopherson wrote:
-> The LE pubkey hash MSRs are special snowflakes.  They get reset to Intel's
-> default key on any loss of EPC, e.g. if the system does a suspend/resume
-> cycle.  The approach we took (obviously) is to assume the kernel's cache can
-> be stale at any given time.  The alternative would be to try and track loss
-> of EPC conditions and emulate the reset, but that's a bit dicey on bare
-> metal as any missed case would hose SGX, and in a VM it's theoretically
-> impossible to handle as a particularly unhelpful VMM could emulate loss of
-> EPC at will.
 
-Lemme try to understand this: the system could suspend/resume right
-here:
+--pE2VAHO2njSJCslu
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-        sgx_update_lepubkeyhash_msrs(lepubkeyhash, false);
+On Mon, Sep 21, 2020 at 12:27:18PM +0200, Cl=E9ment P=E9ron wrote:
+> From: Jernej Skrabec <jernej.skrabec@siol.net>
+>=20
+> Add a simple-soundcard to link audio between HDMI and I2S.
 
-<--- suspend/resume
+It makes life a lot easier if you batch all the DTS changes together
+rather than randomly mixing them in with code changes, it both makes
+it clearer what's going on and makes things easier to handle.
 
-        ret = __einit(sigstruct, token, sgx_get_epc_addr(secs));
+--pE2VAHO2njSJCslu
+Content-Type: application/pgp-signature; name="signature.asc"
 
-and thus the MSRs would have the default key so you'd need the second
-__einit() call?
+-----BEGIN PGP SIGNATURE-----
 
-But what happens if the system suspends before the second __einit()
-call?
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9o8QQACgkQJNaLcl1U
+h9B3ogf9EEYaugeaZHYesvCMIRKvpSknwNalCvYT60A0SQGx2KNLn7X2PGd95CPY
+KC6cgEQ89lTdbrGiAkaE9SXZp1kM6lhQs5Lg/3F/zvf8m9zMtOBTfumTFwN6v050
+S8+sufsVctKcu4ztR0tLDIss5iVlklDm5EwmAHxfzk6tb3K8oZBhV0SsZldoDmFU
+T1zMh8OeJshpm34jx1kat93A0xKmXJdtc2ER6wvn/dSftwd0+34YBACD2G0iC4jx
+ttK0Q4Iq2mois+J7HrJWpEm7jo/dmKxuXvpKGlhr7YDS8LTK4teq3Re/tWJ/6i8H
+E2/MBNAuorphpOUuKd1kYaHbsa7z0g==
+=iKNi
+-----END PGP SIGNATURE-----
 
-Why don't you simply drop that @enforce param and let the caller handle
-any retries?
-
-Or is the scenario something different?
-
-Or you could perhaps disable suspend/resume around it, maybe something
-like lock_system_sleep() or so, from a quick grep...
-
-> Yes, this need a big fat comment.
-
-Oh yeah.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+--pE2VAHO2njSJCslu--
