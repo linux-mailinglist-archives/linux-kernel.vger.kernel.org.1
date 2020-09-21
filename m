@@ -2,132 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E94A272921
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59ADC272929
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727776AbgIUOvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 10:51:32 -0400
-Received: from foss.arm.com ([217.140.110.172]:44972 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727265AbgIUOv2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:51:28 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B432D1476;
-        Mon, 21 Sep 2020 07:51:27 -0700 (PDT)
-Received: from [10.57.43.251] (unknown [10.57.43.251])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 73BA33F718;
-        Mon, 21 Sep 2020 07:51:24 -0700 (PDT)
-Subject: Re: arm-smmu 5000000.iommu: Cannot accommodate DMA offset for IOMMU
- page tables
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        linux-mtd@lists.infradead.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>
-Cc:     Poonam Aggrwal <poonam.aggrwal@nxp.com>, robh@kernel.org,
-        Joerg Roedel <jroedel@suse.de>, Arnd Bergmann <arnd@arndb.de>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Suram Suram <suram@nxp.com>, masonccyang@mxic.com.tw,
-        Zhiqiang.Hou@nxp.com
-References: <CA+G9fYvuq58q+GsWnzni0sKSHbubuQz-UaK3TASX26V_a7yBVw@mail.gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <c799eecf-8f47-8b57-5a9d-3c2a28cfde9a@arm.com>
-Date:   Mon, 21 Sep 2020 15:51:24 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        id S1727156AbgIUOxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 10:53:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726419AbgIUOxY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 10:53:24 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A6E1C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 07:53:24 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id w5so13093150wrp.8
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 07:53:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZLIpTokF5jH+Cz9jMCvpZNnuTjedIPem/C8z7mI3oKI=;
+        b=HDivceJohFIuElY1wucrL0+CCkoN3NxC4fZ2p+cpfAhTpCX8Ba1gW2mU/mb9AZnrVy
+         sh5JgT47h6unJ4NIwLvXXd+mYlgzOTkWD8+V0qr254r533XNstBtXXjf2BUt0Buf/c94
+         QhK6X5z4cXqkxdrcdWiT+f0jXSBZkeho3CHQfFTh/xnM+R0Zwca4UumZUkUmi9OKwKFa
+         utiKl2UGXR17nPOg6w9G9eKfMfQ4F9o2VimjLOHh6XoS8VegLhy6trOFMCAQAGONr9/i
+         t9IKGkdrn6clTQLtqBtZlvnvEJjYBqz9b12iH0Vj+gzNP23jYjxlfLO5q4/04R2TNUhh
+         d3Aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZLIpTokF5jH+Cz9jMCvpZNnuTjedIPem/C8z7mI3oKI=;
+        b=sm2DF24fchFPxH6hwovEoUEHyfWFWKvqvsCxU1MGKMKpXIKAlhtkOfNjuGm+BI52JM
+         ABM7N7seG/B2GNxi6MBaYsaxBhSHd9dlsJ1fHuSvQEwBwcYTX/UaSXYxTL+5NmmgP5tN
+         unJFCovLOzxp5Ad6H7YEgjlUEbIjxXa73ITVgAs5DW7/EQ1sRRAqWbVeR4wrH5cWBHEj
+         D4F+ut4ifJwZtrOI9Gsw26yYeeETnRXQUbD/tutCONFLM9hGIMDzDDn5y6ZnB51M+deQ
+         QG0RXtQ/n10F3CC9LqVdvouaD3NrYmhYiJre59C+26rCu9JEenLyZkf+nPEhBRN2qhJV
+         nFiQ==
+X-Gm-Message-State: AOAM532WjatRvXOlfnzKoNpE2UyLtEcSxm9Vm9T3xI+F8l48cOdyBnYK
+        TQE1rxc/6KsUmYX70w26lvzP0Q==
+X-Google-Smtp-Source: ABdhPJzLD5pzZxn6lfDyHx+GkKqw6AZgDKziMzh+yFRg4+M/CAMHQNV666TSafzDoBpxyLcZibJWTw==
+X-Received: by 2002:a5d:444e:: with SMTP id x14mr119183wrr.235.1600700002841;
+        Mon, 21 Sep 2020 07:53:22 -0700 (PDT)
+Received: from google.com ([2a01:4b00:8523:2d03:e5b6:fa6a:5f89:97d3])
+        by smtp.gmail.com with ESMTPSA id m10sm19281942wmi.9.2020.09.21.07.53.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 07:53:22 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 15:53:20 +0100
+From:   David Brazdil <dbrazdil@google.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     kvmarm@lists.cs.columbia.edu,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, Andrew Scull <ascull@google.com>
+Subject: Re: [PATCH v3 05/11] kvm: arm64: Remove hyp_adr/ldr_this_cpu
+Message-ID: <20200921145320.2b2ipdj6w4morjc3@google.com>
+References: <20200916173439.32265-1-dbrazdil@google.com>
+ <20200916173439.32265-6-dbrazdil@google.com>
+ <20200918090533.GE30834@willie-the-truck>
 MIME-Version: 1.0
-In-Reply-To: <CA+G9fYvuq58q+GsWnzni0sKSHbubuQz-UaK3TASX26V_a7yBVw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200918090533.GE30834@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-21 14:20, Naresh Kamboju wrote:
-[...]
-> [    2.256403] e1000e 0000:01:00.0: Adding to iommu group 0
-> [    2.261733] arm-smmu 5000000.iommu: Cannot accommodate DMA offset
-> for IOMMU page tables
+Hi Will,
 
-Ah, I know what's going on there - the dma_range_map stuff has 
-overlooked a subtlety, but it's easily fixed.
-
-> [    2.269752] Unable to handle kernel NULL pointer dereference at
-> virtual address 0000000000000000
-
-...although either way that's really not how we should subsequently 
-handle failing to allocate a pagetable. I guess I'll take a look into 
-what the deal is there as well :(
-
-Robin.
-
-> [    2.278544] Mem abort info:
-> [    2.281334]   ESR = 0x96000004
-> [    2.284389]   EC = 0x25: DABT (current EL), IL = 32 bits
-> [    2.289705]   SET = 0, FnV = 0
-> [    2.292759]   EA = 0, S1PTW = 0
-> [    2.295900] Data abort info:
-> [    2.298781]   ISV = 0, ISS = 0x00000004
-> [    2.302618]   CM = 0, WnR = 0
-> [    2.305581] [0000000000000000] user address but active_mm is swapper
-> [    2.311941] Internal error: Oops: 96000004 [#1] PREEMPT SMP
-> [    2.317512] Modules linked in:
-> [    2.320566] CPU: 1 PID: 1 Comm: swapper/0 Tainted: G        W
->    5.9.0-rc5-next-20200921 #1
-> [    2.329352] Hardware name: Freescale Layerscape 2088A RDB Board (DT)
-> [    2.335705] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
-> [    2.341715] pc : arm_smmu_flush_iotlb_all+0x28/0x90
-> [    2.346590] lr : iommu_create_device_direct_mappings.isra.0+0x1f0/0x218
-> [    2.353203] sp : ffff80001005b9b0
-> [    2.356511] x29: ffff80001005b9b0 x28: 0000000000000000
-> [    2.361822] x27: ffffdc3792e904e0 x26: ffff80001005ba48
-> [    2.367134] x25: ffff0082ee6b0000 x24: ffff0082ed88e0a8
-> [    2.372445] x23: 00000000fffffff4 x22: 0000000000001000
-> [    2.377755] x21: ffff80001005ba48 x20: 0000000000000000
-> [    2.383066] x19: ffff0082cceeeb58 x18: 0000000000000010
-> [    2.388377] x17: 0000000000000000 x16: 00000000833b5ff2
-> [    2.393688] x15: ffff0082ee6b0480 x14: 203a756d6d6f692e
-> [    2.398999] x13: 3030303030303520 x12: 61646f6d6d6f6363
-> [    2.404311] x11: 6120746f6e6e6143 x10: 6f66207465736666
-> [    2.409622] x9 : ffffdc3791d31078 x8 : ffff0082ed8ffd00
-> [    2.414933] x7 : 0000000000000000 x6 : 000000000000003f
-> [    2.420244] x5 : 0000000000000040 x4 : ffff80001005b970
-> [    2.425554] x3 : 0000000000000000 x2 : 0000000000000000
-> [    2.430865] x1 : ffffdc37927dd2f0 x0 : ffff0082cceeeb58
-> [    2.436176] Call trace:
-> [    2.438618]  arm_smmu_flush_iotlb_all+0x28/0x90
-> [    2.443144]  iommu_create_device_direct_mappings.isra.0+0x1f0/0x218
-> [    2.449409]  iommu_probe_device+0x6c/0x120
-> [    2.453501]  of_iommu_configure+0x134/0x218
-> [    2.457683]  of_dma_configure_id+0x110/0x2e8
-> [    2.461950]  pci_dma_configure+0x4c/0xd8
-> [    2.465870]  really_probe+0xac/0x4d8
-> [    2.469441]  driver_probe_device+0xfc/0x168
-> [    2.473620]  device_driver_attach+0x7c/0x88
-> [    2.477799]  __driver_attach+0xac/0x178
-> [    2.481631]  bus_for_each_dev+0x78/0xc8
-> [    2.485463]  driver_attach+0x2c/0x38
-> [    2.489033]  bus_add_driver+0x14c/0x230
-> [    2.492865]  driver_register+0x6c/0x128
-> [    2.496696]  __pci_register_driver+0x4c/0x58
-> [    2.500964]  e1000_init_module+0x44/0x50
-> [    2.504882]  do_one_initcall+0x4c/0x2d0
-> [    2.508714]  kernel_init_freeable+0x214/0x280
-> [    2.513068]  kernel_init+0x1c/0x120
-> [    2.516552]  ret_from_fork+0x10/0x30
-> [    2.520124] Code: 910003fd a90153f3 aa0003f3 f85a8014 (f9400280)
-> [    2.526224] ---[ end trace d051012f465b08ec ]---
-> [    2.530848] Kernel panic - not syncing: Attempted to kill init!
-> exitcode=0x0000000b
-> [    2.538506] SMP: stopping secondary CPUs
-> [    2.542431] Kernel Offset: 0x5c3781480000 from 0xffff800010000000
-> [    2.548521] PHYS_OFFSET: 0xffffdb6ac0000000
-> [    2.552700] CPU features: 0x0240022,21806008
-> [    2.556965] Memory Limit: none
+> Cosmetic, but I think it would be cleaner just to define two variants of the
+> macro here:
 > 
-> full test log,
-> https://lavalab.nxp.com/scheduler/job/86650#L849
-> 
+> #if defined(__KVM_NVHE_HYPERVISOR__) || defined(__KVM_VHE_HYPERVISOR__)
+> 	.macro  this_cpu_offset, dst
+> 	mrs     \dst, tpidr_el2
+> 	.endm
+> #else
+> 	.macro  this_cpu_offset, dst
+> alternative_if_not ARM64_HAS_VIRT_HOST_EXTN
+> 	mrs     \dst, tpidr_el1
+> alternative_else
+> 	mrs     \dst, tpidr_el2
+> alternative_endif
+> 	.endm
+> #endif
+
+Sure.
+
+> (and should we have a shorthand __HYPERVISOR define to avoid the NVHE || VHE
+> logic?)
+
+Happy to add this but let's agree on the details.
+ * name: just __HYPERVISOR or __KVM_HYPERVISOR__?
+ * defined where? I'm wary of defining it in a header file because then sombody
+   will forget to add it and 'ifdef HYP' will be skipped. So I'd put this as
+   another '-D__HYPERVISOR' in the build rules. Do you agree?
+
+David
