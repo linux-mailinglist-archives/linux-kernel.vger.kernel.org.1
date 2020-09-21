@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42529272C77
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DDDC272C7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:33:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728504AbgIUQcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:32:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57890 "EHLO mail.kernel.org"
+        id S1728513AbgIUQci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:32:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728453AbgIUQcX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:32:23 -0400
+        id S1728246AbgIUQcZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:32:25 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6D75F23998;
-        Mon, 21 Sep 2020 16:32:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D250D239D1;
+        Mon, 21 Sep 2020 16:32:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600705942;
-        bh=/6ABPznMbPJMPHwQ9dNfrnIj4B/bBpl7xDMTEHxTExI=;
+        s=default; t=1600705945;
+        bh=vGAAuVJ8G2tTaHOJzaFxvLOe6hHBRYasILCwvRjyMXc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H1mLf8GJ38ytgbe7gLyz4V6ATPpI0T2iCCxaYS6SAy2YNcIo8d5BeAVr9VCttBb3/
-         ISggSbBQIpVAlUZI849e9E9eL3xI780j4iws6yhBQx/3Ba2fzzSwMP5ce0b+GkzvmQ
-         aEhdbZynMjkEZ1rm0mEdpaMcgXZvbDu5v/yNojLc=
+        b=yn0XiblQRHckijN30J4eM7EzUL8yfV4o/w4jMIjVgLySs5mqBnqkDfb9+A5GF5dZZ
+         UzMgqJ0MN2Wwgfitb6uWOIhk+3tkdqBhFXM1A40wpQ2vwuv72gMiEWZNK67C7n7ZCi
+         9X7TbPXZAosxQLVyLk2TAgDiO2Tq/zAMsaeuKALQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot <syzbot+69fbd3e01470f169c8c4@syzkaller.appspotmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: [PATCH 4.4 24/46] video: fbdev: fix OOB read in vga_8planes_imageblit()
-Date:   Mon, 21 Sep 2020 18:27:40 +0200
-Message-Id: <20200921162034.426295528@linuxfoundation.org>
+        Patrick Riphagen <patrick.riphagen@xsens.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.4 25/46] USB: serial: ftdi_sio: add IDs for Xsens Mti USB converter
+Date:   Mon, 21 Sep 2020 18:27:41 +0200
+Message-Id: <20200921162034.476418884@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921162033.346434578@linuxfoundation.org>
 References: <20200921162033.346434578@linuxfoundation.org>
@@ -43,35 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+From: Patrick Riphagen <patrick.riphagen@xsens.com>
 
-commit bd018a6a75cebb511bb55a0e7690024be975fe93 upstream.
+commit 6ccc48e0eb2f3a5f3bd39954a21317e5f8874726 upstream.
 
-syzbot is reporting OOB read at vga_8planes_imageblit() [1], for
-"cdat[y] >> 4" can become a negative value due to "const char *cdat".
+The device added has an FTDI chip inside.
+The device is used to connect Xsens USB Motion Trackers.
 
-[1] https://syzkaller.appspot.com/bug?id=0d7a0da1557dcd1989e00cb3692b26d4173b4132
-
-Reported-by: syzbot <syzbot+69fbd3e01470f169c8c4@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/90b55ec3-d5b0-3307-9f7c-7ff5c5fd6ad3@i-love.sakura.ne.jp
+Cc: stable@vger.kernel.org
+Signed-off-by: Patrick Riphagen <patrick.riphagen@xsens.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/video/fbdev/vga16fb.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/serial/ftdi_sio.c     |    1 +
+ drivers/usb/serial/ftdi_sio_ids.h |    1 +
+ 2 files changed, 2 insertions(+)
 
---- a/drivers/video/fbdev/vga16fb.c
-+++ b/drivers/video/fbdev/vga16fb.c
-@@ -1122,7 +1122,7 @@ static void vga_8planes_imageblit(struct
-         char oldop = setop(0);
-         char oldsr = setsr(0);
-         char oldmask = selectmask();
--        const char *cdat = image->data;
-+	const unsigned char *cdat = image->data;
- 	u32 dx = image->dx;
-         char __iomem *where;
-         int y;
+--- a/drivers/usb/serial/ftdi_sio.c
++++ b/drivers/usb/serial/ftdi_sio.c
+@@ -708,6 +708,7 @@ static const struct usb_device_id id_tab
+ 	{ USB_DEVICE(XSENS_VID, XSENS_AWINDA_STATION_PID) },
+ 	{ USB_DEVICE(XSENS_VID, XSENS_CONVERTER_PID) },
+ 	{ USB_DEVICE(XSENS_VID, XSENS_MTDEVBOARD_PID) },
++	{ USB_DEVICE(XSENS_VID, XSENS_MTIUSBCONVERTER_PID) },
+ 	{ USB_DEVICE(XSENS_VID, XSENS_MTW_PID) },
+ 	{ USB_DEVICE(FTDI_VID, FTDI_OMNI1509) },
+ 	{ USB_DEVICE(MOBILITY_VID, MOBILITY_USB_SERIAL_PID) },
+--- a/drivers/usb/serial/ftdi_sio_ids.h
++++ b/drivers/usb/serial/ftdi_sio_ids.h
+@@ -159,6 +159,7 @@
+ #define XSENS_AWINDA_DONGLE_PID 0x0102
+ #define XSENS_MTW_PID		0x0200	/* Xsens MTw */
+ #define XSENS_MTDEVBOARD_PID	0x0300	/* Motion Tracker Development Board */
++#define XSENS_MTIUSBCONVERTER_PID	0x0301	/* MTi USB converter */
+ #define XSENS_CONVERTER_PID	0xD00D	/* Xsens USB-serial converter */
+ 
+ /* Xsens devices using FTDI VID */
 
 
