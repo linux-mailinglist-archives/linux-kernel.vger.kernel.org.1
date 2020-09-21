@@ -2,150 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89DC9273349
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7309273356
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728387AbgIUT4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 15:56:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728274AbgIUT4Z (ORCPT
+        id S1728430AbgIUT4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 15:56:54 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:44466 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728300AbgIUT4x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 15:56:25 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 342F2C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 12:56:25 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id q2so9414876pfc.17
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 12:56:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=AWunavfjR2h7DGqJnJiiTrYCviYOJo4UjdEoDLbILJA=;
-        b=t+GNICctCeMjWN/pUlO1D6VvqfujACAsEcklfpybyR5nZwW6Sdy0QnYyrhBPaIC5t6
-         H14TSCQ9hvaKthS+0J7iv7W3S124LYUJjIn8tSybY1iBuhwhcstsGAGXxx+MKSl2D5rV
-         x1qT8rzCzrzUfHdbRpVEMzO2Qsz4WKJ9sZmwktYdUXjte3x4jHDV1Q0DmCa6LCZP+WRU
-         R7RJapDAJZCi5xkL+gOGg/vHjK0TzMA/4Ts41bi+x6kJuPbS8cgPiaZYtFuBwKSTQME5
-         AJaWthUeIzVlaBTWgTi0277fp+iOysN3yPiFmUvkI2KLp+ByLyegHYOBacsvUPov1VNU
-         vNXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=AWunavfjR2h7DGqJnJiiTrYCviYOJo4UjdEoDLbILJA=;
-        b=ED8HCQ23Cmvbdq1WS6sNp3cT0lpCldRb1QX/tBFb2chVT+7YDDOF0BPFzZcuoLs65Q
-         /snH3eqNYFFCfkOIsM1V996eJmgzqAV0f/RgWwXiDaXSrI//jpPd43uhr3SosrHxch78
-         Ukb9b/FzF9hO+sDjVj3KnbNuzWWbc8kN9RdJa0AyrcNmEmpsz+8xABON+7/vpul5GthX
-         RW3UVM+nktavuYhazzB29XMmRLj2PUoUjFAuINFczEUacEDXjke84B0cqpxe9tqYExUW
-         czSXNXbH9uE6AuAy7HaKduYMQcrvn26VFlPmt7jmZhHFdhBVnJuQGc7b13ngp5VVK6B2
-         QTcA==
-X-Gm-Message-State: AOAM531eeSNLBS9wP5+u9nUdumiiqmXo4+L1ElFavibhYD39/j+TIWUW
-        bA3SwcVq4449f/AsAY4mipIg6lOIMxY=
-X-Google-Smtp-Source: ABdhPJw68r3Flh7t8b0dWbxHTV0lK3ldYw/oSD30QlZuU6Hf9NnbdqD72KDkJsC1TlfmPRXRzX3WdKSiQew=
-Sender: "badhri via sendgmr" <badhri@badhri.mtv.corp.google.com>
-X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:1:f292:1cff:fee0:66cf])
- (user=badhri job=sendgmr) by 2002:a17:902:d68c:b029:d2:23a6:f6d7 with SMTP id
- v12-20020a170902d68cb02900d223a6f6d7mr1462202ply.45.1600718184724; Mon, 21
- Sep 2020 12:56:24 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 12:55:55 -0700
-In-Reply-To: <20200921195555.1050731-1-badhri@google.com>
-Message-Id: <20200921195555.1050731-11-badhri@google.com>
-Mime-Version: 1.0
-References: <20200921195555.1050731-1-badhri@google.com>
-X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
-Subject: [PATCH v8 11/11] usb: typec: tcpci_maxim: Implemnent set_auto_vbus_discharge_threshold
-From:   Badhri Jagan Sridharan <badhri@google.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        Badhri Jagan Sridharan <badhri@google.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 21 Sep 2020 15:56:53 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id CEDD12D7;
+        Mon, 21 Sep 2020 21:56:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1600718211;
+        bh=HaoTxYQD5e4vVzG+0N4ohrxKZQDQAmGxRMJB8zMf2Lw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NPtQx2KGrvekqZfHIAJiKQKpl/oVW+2sVsWCRxDBJyE8pFJE1AXRe+LxO3ME+wj3Y
+         RHl5ca8SFozzLHBxwxas3NcRHu6xpHFQ0yPgLflfNGuZpMalYQHnXEJAsxMU2DneTX
+         AjN2WkZaVpgfzq+l73+iaQwFkWG9pEZdbv42GzdM=
+Date:   Mon, 21 Sep 2020 22:56:18 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu-tasks: Fix compilation warning with
+ !CONFIG_TASKS_RCU and CONFIG_TINY_RCU
+Message-ID: <20200921195618.GB18343@pendragon.ideasonboard.com>
+References: <20200823030405.22174-1-laurent.pinchart@ideasonboard.com>
+ <20200825150222.GP2855@paulmck-ThinkPad-P72>
+ <20200825152249.GF6767@pendragon.ideasonboard.com>
+ <20200825161629.GS2855@paulmck-ThinkPad-P72>
+ <20200917222641.GA589@pendragon.ideasonboard.com>
+ <20200917232416.GR29330@paulmck-ThinkPad-P72>
+ <20200921193718.GI29330@paulmck-ThinkPad-P72>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200921193718.GI29330@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Programs VBUS_SINK_DISCONNECT_THRESHOLD based on the power_role,
-voltage requested as sink, mode of operation.
+On Mon, Sep 21, 2020 at 12:37:18PM -0700, Paul E. McKenney wrote:
+> On Thu, Sep 17, 2020 at 04:24:16PM -0700, Paul E. McKenney wrote:
+> > On Fri, Sep 18, 2020 at 01:26:41AM +0300, Laurent Pinchart wrote:
+> > > Hi Paul,
+> > > 
+> > > On Tue, Aug 25, 2020 at 09:16:29AM -0700, Paul E. McKenney wrote:
+> > > > On Tue, Aug 25, 2020 at 06:22:49PM +0300, Laurent Pinchart wrote:
+> > > > > On Tue, Aug 25, 2020 at 08:02:22AM -0700, Paul E. McKenney wrote:
+> > > > > > On Sun, Aug 23, 2020 at 06:04:05AM +0300, Laurent Pinchart wrote:
+> > > > > > > Commit 8344496e8b49 ("rcu-tasks: Conditionally compile
+> > > > > > > show_rcu_tasks_gp_kthreads()") introduced conditional compilation of
+> > > > > > > several functions, but forgot one occurrence of
+> > > > > > > show_rcu_tasks_classic_gp_kthread() that causes the compiler to warn of
+> > > > > > > an unused static function. Fix it.
+> > > > > > > 
+> > > > > > > Fixes: 8344496e8b49 ("rcu-tasks: Conditionally compile show_rcu_tasks_gp_kthreads()")
+> > > > > > > Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > > > > > > ---
+> > > > > > >  kernel/rcu/tasks.h | 2 ++
+> > > > > > >  1 file changed, 2 insertions(+)
+> > > > > > > 
+> > > > > > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> > > > > > > index 835e2df8590a..bddf3968c1eb 100644
+> > > > > > > --- a/kernel/rcu/tasks.h
+> > > > > > > +++ b/kernel/rcu/tasks.h
+> > > > > > > @@ -590,7 +590,9 @@ void exit_tasks_rcu_finish(void) __releases(&tasks_rcu_exit_srcu)
+> > > > > > >  }
+> > > > > > >  
+> > > > > > >  #else /* #ifdef CONFIG_TASKS_RCU */
+> > > > > > > +#ifndef CONFIG_TINY_RCU
+> > > > > > >  static void show_rcu_tasks_classic_gp_kthread(void) { }
+> > > > > > > +#endif /* #ifndef CONFIG_TINY_RCU */
+> > > > > > >  void exit_tasks_rcu_start(void) { }
+> > > > > > >  void exit_tasks_rcu_finish(void) { exit_tasks_rcu_finish_trace(current); }
+> > > > > > >  #endif /* #else #ifdef CONFIG_TASKS_RCU */
+> > > > > > 
+> > > > > > Good catch!!!
+> > > > > > 
+> > > > > > But does the following addition of "static inline" work for you?
+> > > > > 
+> > > > > They do. I initially added a static inline, and realized #ifdef was used
+> > > > > extensively when trying to find the proper Fixes: tag, so I went for
+> > > > > that. I don't mind either way, as long as this gets fixed :-)
+> > > > 
+> > > > This is admittedly an odd .h file, given that it is included but once.
+> > > > 
+> > > > I have applied the following patch with your Reported-by, cc-ing -stable
+> > > > for v5.8 and later.
+> > > 
+> > > I don't see the fix in Linus' master branch. Given that 8344496e8b49 was
+> > > introduced in v5.9-rc1, shouldn't this be treated as a regression and
+> > > merged before Linus releases v5.9 ?
+> > 
+> > The current plan is that it goes in during the upcoming merge window,
+> > a few weeks from now.  However, it sounds like you need it sooner.
+> > I will try doing a pull request and see what happens.
+> 
+> And sent, CCing you.
 
-The programmed threshold is based on vSinkDisconnect and
-vSinkDisconnectPD values.
+Thank you :-)
 
-Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
----
-Changes since v1:
-- Changing patch version to v6 to fix version number confusion.
+> > > > > > ------------------------------------------------------------------------
+> > > > > > 
+> > > > > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> > > > > > index 835e2df..3dc3ffc 100644
+> > > > > > --- a/kernel/rcu/tasks.h
+> > > > > > +++ b/kernel/rcu/tasks.h
+> > > > > > @@ -590,9 +590,9 @@ void exit_tasks_rcu_finish(void) __releases(&tasks_rcu_exit_srcu)
+> > > > > >  }
+> > > > > >  
+> > > > > >  #else /* #ifdef CONFIG_TASKS_RCU */
+> > > > > > -static void show_rcu_tasks_classic_gp_kthread(void) { }
+> > > > > > -void exit_tasks_rcu_start(void) { }
+> > > > > > -void exit_tasks_rcu_finish(void) { exit_tasks_rcu_finish_trace(current); }
+> > > > > > +static inline void show_rcu_tasks_classic_gp_kthread(void) { }
+> > > > > > +static inline void exit_tasks_rcu_start(void) { }
+> > > > > > +static inline void exit_tasks_rcu_finish(void) { exit_tasks_rcu_finish_trace(current); }
+> > > > > >  #endif /* #else #ifdef CONFIG_TASKS_RCU */
+> > > > > >  
+> > > > > >  #ifdef CONFIG_TASKS_RUDE_RCU
 
-Changes since v6:
-- Rebase on usb-next.
-
-Changes since v7:
-- Heikki's suggestion:
-Moved the actual write of TCPC_VBUS_SINK_DISCONNECT_THRES
-register to tcpci code.
----
- drivers/usb/typec/tcpm/tcpci_maxim.c | 33 ++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
-
-diff --git a/drivers/usb/typec/tcpm/tcpci_maxim.c b/drivers/usb/typec/tcpm/tcpci_maxim.c
-index 723d7dd38f75..329138622cc9 100644
---- a/drivers/usb/typec/tcpm/tcpci_maxim.c
-+++ b/drivers/usb/typec/tcpm/tcpci_maxim.c
-@@ -137,6 +137,37 @@ static void max_tcpci_init_regs(struct max_tcpci_chip *chip)
- 		return;
- }
- 
-+u32 max_tcpci_get_auto_vbus_discharge_threshold(struct tcpci *tcpci, struct tcpci_data *data,
-+						enum typec_role port_role,
-+						enum typec_pwr_opmode mode, bool pps_active,
-+						u32 requested_vbus_voltage_mv)
-+{
-+	struct max_tcpci_chip *chip = tdata_to_max_tcpci(data);
-+	u32 threshold = 0;
-+	u8 pwr_ctrl;
-+
-+	if (port_role == TYPEC_SINK) {
-+		max_tcpci_read8(chip, TCPC_POWER_CTRL, &pwr_ctrl);
-+		if (pwr_ctrl & TCPC_FAST_ROLE_SWAP_EN) {
-+			/* To prevent disconnect when the source is fast role swap is capable. */
-+			threshold = 3500;
-+		} else if (mode == TYPEC_PWR_MODE_PD) {
-+			if (pps_active)
-+				threshold = (95 * requested_vbus_voltage_mv / 100) - 850;
-+			else
-+				threshold = (95 * requested_vbus_voltage_mv / 100) - 1250;
-+		} else {
-+			/* 3.5V for non-pd sink */
-+			threshold = 3500;
-+		}
-+	} else {
-+		/* 4V for source */
-+		threshold = 4000;
-+	}
-+
-+	return threshold;
-+}
-+
- static void process_rx(struct max_tcpci_chip *chip, u16 status)
- {
- 	struct pd_message msg;
-@@ -441,6 +472,8 @@ static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id
- 	chip->data.start_drp_toggling = max_tcpci_start_toggling;
- 	chip->data.TX_BUF_BYTE_x_hidden = true;
- 	chip->data.init = tcpci_init;
-+	chip->data.get_auto_vbus_discharge_threshold = max_tcpci_get_auto_vbus_discharge_threshold;
-+	chip->data.auto_discharge_disconnect = true;
- 
- 	max_tcpci_init_regs(chip);
- 	chip->tcpci = tcpci_register_port(chip->dev, &chip->data);
 -- 
-2.28.0.681.g6f77f65b4e-goog
+Regards,
 
+Laurent Pinchart
