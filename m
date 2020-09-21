@@ -2,362 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09DA427311A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5DBA273120
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728247AbgIURre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 13:47:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726537AbgIURre (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 13:47:34 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EABFAC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 10:47:33 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id gr14so19036679ejb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 10:47:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xVoTB5ka9ij/JNpMUQJi3uemYQWRbk5sRyxB8af0Yk4=;
-        b=iqJprXevp6YDSedAolM02uxv2cp/VvZkDrKCCaO+89H5aB2fW4FG0aF+s3sWCB3S16
-         LrGTxEKt5vKKXLbFEmE8dYK0Ety4W7YGQlALf6fXgM7HaJQXNIXZL29uGpoqtKz+2naV
-         MmSszpAeuePE2GFK55RuS22V2W88ZD458SxQlfYzxK7EJwN8ZVtHZ4CowY54hnAe5QJC
-         xJEHk+lHx884k8Ri8/X2BtjIb0eoqy29IjFDXGTYAa/7HuPWpBgyIFIVB8nosZIcFvKB
-         nkqQkVBTSGebVutfgBiREpafaBBHUM991eqqzZuZwheCK+pE4a+tcor/dw+HgnDQx2Vi
-         gwNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xVoTB5ka9ij/JNpMUQJi3uemYQWRbk5sRyxB8af0Yk4=;
-        b=djcYX+OiSEt+UWHa7NZtqWTOZzBbUg2YOY5b4YOW3HCzymsaqEYpMr+qW1CqGspcq7
-         LeUHaSZ3kDVe7fHXIQaTe3fI+uRj4Omzh+Hmz1AFBAopUzjLANFDnkrwgCeUwbQHHOLa
-         7CEjS6qhNc4UbVYeZIrUVrDaDhCfR27fAj6bCAsSxYAVbpfZVMqM/YyKpNF99Rba0Cdh
-         5NWpyHijVWNIefRy7YPqblQv6fkXe73/z+g2SNyt2sy/Ky8cZpgBXud+PW42zgt7cuT3
-         M00p2eiXjucsB4SrR0lCIJOs9rYhJZNz1qyXxehKwJQYefTkAdkjKT2jfpAlVc2mZbE2
-         lidw==
-X-Gm-Message-State: AOAM530MnwHtECfVrurOnuiGZfcn3dDtKiwXbcF2ndlDv8Je7j1FJn6m
-        oJ4XZIYuyJskhHGT0NS5VpHthGt3CrNCY+odAw1Fxw==
-X-Google-Smtp-Source: ABdhPJzUx+dGF1qmUJjldN5R/Kp/CHg8b3GsPokZFi763Z3EI3PzJUFPr6qBkBdrErj+QF7fFBLW4ARTCHeUiHBtnXc=
-X-Received: by 2002:a17:906:9389:: with SMTP id l9mr581002ejx.537.1600710452090;
- Mon, 21 Sep 2020 10:47:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1600661418.git.yifeifz2@illinois.edu> <6af89348c08a4820039e614a090d35aa1583acff.1600661419.git.yifeifz2@illinois.edu>
-In-Reply-To: <6af89348c08a4820039e614a090d35aa1583acff.1600661419.git.yifeifz2@illinois.edu>
-From:   Jann Horn <jannh@google.com>
-Date:   Mon, 21 Sep 2020 19:47:05 +0200
-Message-ID: <CAG48ez0OqZavgm0BkGjCAJUr5UfRgbeCbmLOZFJ=Rj46COcN3Q@mail.gmail.com>
-Subject: Re: [RFC PATCH seccomp 1/2] seccomp/cache: Add "emulator" to check if
- filter is arg-dependent
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Jann Horn <jannh@google.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        kernel list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728287AbgIURsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 13:48:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38548 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726537AbgIURsa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 13:48:30 -0400
+Received: from localhost.localdomain (unknown [194.230.155.191])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7828B216C4;
+        Mon, 21 Sep 2020 17:48:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600710510;
+        bh=5HbWkTPMjTEjcRZk0/muHA9531uVnOzMMAxeJwJifjo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DNcxGJEyXWr5Mm8SeWt4U95UvNq1O3+tIgBWdAbYwXdKu3rXJLeFlGnhuo1PtgyH9
+         oGpP3vUT82cjnzA7Lxm4AR6cvFngN1lqsjxQ7Y6HUcld3PSM+4QCMikAEylTLB8HPA
+         rquwcWXzyNCNlIO1YRxpdgbCLP6BNLdfYwtIraV8=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: [PATCH] ARM: dts: exynos: revert "add input clock to CMU in Exynos4412 Odroid"
+Date:   Mon, 21 Sep 2020 19:48:18 +0200
+Message-Id: <20200921174818.15525-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 7:35 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
-> SECCOMP_CACHE_NR_ONLY will only operate on syscalls that do not
-> access any syscall arguments or instruction pointer. To facilitate
-> this we need a static analyser to know whether a filter will
-> access. This is implemented here with a pseudo-emulator, and
-> stored in a per-filter bitmap. Each seccomp cBPF instruction,
-> aside from ALU (which should rarely be used in seccomp), gets a
-> naive best-effort emulation for each syscall number.
->
-> The emulator works by following all possible (without SAT solving)
-> paths the filter can take. Every cBPF register / memory position
-> records whether that is a constant, and of so, the value of the
-> constant. Loading from struct seccomp_data is considered constant
-> if it is a syscall number, else it is an unknown. For each
-> conditional jump, if the both arguments can be resolved to a
-> constant, the jump is followed after computing the result of the
-> condition; else both directions are followed, by pushing one of
-> the next states to a linked list of next states to process. We
-> keep a finite number of pending states to process.
+This reverts commit eaf2d2f6895d676dda6c95a652b58594f2887720.
 
-Is this actually necessary, or can we just bail out on any branch that
-we can't statically resolve?
+The commit eaf2d2f6895d ("ARM: dts: exynos: add input clock to CMU in
+Exynos4412 Odroid") breaks probing of usb3503 USB hub on Odroid U3.
 
-struct seccomp_data only contains the syscall number (constant for a
-given filter evaluation), the architecture number (also constant), the
-instruction pointer (basically never used in seccomp filters), and the
-syscall arguments. Any normal seccomp filter first branches on the
-architecture, then branches on the syscall number, and then branches
-on arguments if necessary.
+It changes the order of clock drivers probe: the clkout (Exynos PMU)
+driver is probed before the main clk-exynos4 driver.  The clkout driver
+on Exynos4412 depends on clk-exynos4 but it does not support deferred
+probe, therefore this dependency and changed probe order causes probe
+failure.
 
-This optimization could only be improved by the "follow both branches"
-logic if a seccomp program branches on either the instruction pointer
-or an argument *before* looking at the syscall number, and later comes
-to the same conclusion on *both* sides of the check. It would have to
-be something like:
+The usb3503 USB hub on Odroid U3 on the other hand requires clkout
+clock.  This can be seen in logs:
 
-if (instruction_pointer == 0xasdf1234) {
-  if (nr == mmap) return ACCEPT;
-  [...]
-  return KILL;
-} else {
-  if (nr == mmap) return ACCEPT;
-  [...]
-  return KILL;
-}
+    [    5.007442] usb3503 0-0008: unable to request refclk (-517)
 
-I've never seen anyone do something like this. And the proposed patch
-would still bail out on such a filter because of the load from the
-instruction_pointer field; I don't think it would even be possible to
-reach a branch with an unknown condition with this patch. So I think
-we should probably get rid of this extra logic for keeping track of
-multiple execution states for now. That would make the code a lot
-simpler.
+Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ arch/arm/boot/dts/exynos4412-odroid-common.dtsi | 1 -
+ 1 file changed, 1 deletion(-)
 
+diff --git a/arch/arm/boot/dts/exynos4412-odroid-common.dtsi b/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
+index ab291cec650a..2983e91bc7dd 100644
+--- a/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
++++ b/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
+@@ -122,7 +122,6 @@
+ };
+ 
+ &clock {
+-	clocks = <&clock CLK_XUSBXTI>;
+ 	assigned-clocks = <&clock CLK_FOUT_EPLL>;
+ 	assigned-clock-rates = <45158401>;
+ };
+-- 
+2.17.1
 
-Also: If it turns out that the time spent in seccomp_cache_prepare()
-is measurable for large filters, a possible improvement would be to
-keep track of the last syscall number for which the result would be
-the same as for the current one, such that instead of evaluating the
-filter for one instruction at a time, it would effectively be
-evaluated for a range at a time. That should be pretty straightforward
-to implement, I think.
-
-> The emulation is halted if it reaches a return, or if it reaches a
-> read from struct seccomp_data that reads an offset that is neither
-> syscall number or architecture number. In the latter case, we mark
-> the syscall number as not okay for seccomp to cache. If a filter
-> depends on more filters, then if its dependee cannot process the
-> syscall then the depender is also marked not to process the syscall.
->
-> We also do a single pass on the entire filter instructions before
-> performing emulation. If none of the filter instructions load from
-> the troublesome offsets, then the filter is considered "trivial",
-> and all syscalls are marked okay for seccomp to cache.
->
-> Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
-> ---
->  arch/x86/Kconfig |  27 ++++
->  kernel/seccomp.c | 323 ++++++++++++++++++++++++++++++++++++++++++++++-
->  2 files changed, 349 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-[...]
-> +choice
-> +       prompt "Seccomp filter cache"
-> +       default SECCOMP_CACHE_NONE
-
-I think this should be on by default.
-
-> +       depends on SECCOMP
-> +       depends on SECCOMP_FILTER
-
-SECCOMP_FILTER already depends on SECCOMP, so the "depends on SECCOMP"
-line is unnecessary.
-
-> +       help
-> +         Seccomp filters can potentially incur large overhead for each
-> +         system call. This can alleviate some of the overhead.
-> +
-> +         If in doubt, select 'none'.
-
-This should not be in arch/x86. Other architectures, such as arm64,
-should also be able to use this without extra work.
-
-> +config SECCOMP_CACHE_NONE
-> +       bool "None"
-> +       help
-> +         No caching is done. Seccomp filters will be called each time
-> +         a system call occurs in a seccomp-guarded task.
-> +
-> +config SECCOMP_CACHE_NR_ONLY
-> +       bool "Syscall number only"
-> +       help
-> +         This is enables a bitmap to cache the results of seccomp
-> +         filters, if the filter allows the syscall and is independent
-> +         of the syscall arguments.
-
-Maybe reword this as something like: "For each syscall number, if the
-seccomp filter has a fixed result, store that result in a bitmap to
-speed up system calls."
-
-> This requires around 60 bytes per
-> +         filter and 70 bytes per task.
-> +
-> +endchoice
-> +
->  source "kernel/Kconfig.hz"
->
->  config KEXEC
-> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-> index 3ee59ce0a323..d8c30901face 100644
-> --- a/kernel/seccomp.c
-> +++ b/kernel/seccomp.c
-> @@ -143,6 +143,27 @@ struct notification {
->         struct list_head notifications;
->  };
->
-> +#ifdef CONFIG_SECCOMP_CACHE_NR_ONLY
-> +/**
-> + * struct seccomp_cache_filter_data - container for cache's per-filter data
-> + *
-> + * @syscall_ok: A bitmap where each bit represent whether seccomp is allowed to
-
-nit: represents
-
-> + *             cache the results of this syscall.
-> + */
-> +struct seccomp_cache_filter_data {
-> +       DECLARE_BITMAP(syscall_ok, NR_syscalls);
-> +};
-> +
-> +#define SECCOMP_EMU_MAX_PENDING_STATES 64
-> +#else
-> +struct seccomp_cache_filter_data { };
-> +
-> +static inline int seccomp_cache_prepare(struct seccomp_filter *sfilter)
-> +{
-> +       return 0;
-> +}
-> +#endif /* CONFIG_SECCOMP_CACHE_NR_ONLY */
-[...]
-> +/**
-> + * seccomp_emu_step - step one instruction in the emulator
-> + * @env: The emulator environment
-> + * @state: The emulator state
-> + *
-> + * Returns 1 to halt emulation, 0 to continue, or -errno if error occurred.
-> + */
-> +static int seccomp_emu_step(struct seccomp_emu_env *env,
-> +                           struct seccomp_emu_state *state)
-> +{
-> +       struct sock_filter *ftest = &env->filter[state->pc++];
-> +       struct seccomp_emu_state *new_state;
-> +       u16 code = ftest->code;
-> +       u32 k = ftest->k;
-> +       u32 operand;
-> +       bool compare;
-> +       int reg_idx;
-> +
-> +       switch (BPF_CLASS(code)) {
-> +       case BPF_LD:
-> +       case BPF_LDX:
-> +               reg_idx = BPF_CLASS(code) == BPF_LDX;
-> +
-> +               switch (BPF_MODE(code)) {
-> +               case BPF_IMM:
-> +                       state->reg_known[reg_idx] = true;
-> +                       state->reg_const[reg_idx] = k;
-> +                       break;
-> +               case BPF_ABS:
-> +                       if (k == offsetof(struct seccomp_data, nr)) {
-> +                               state->reg_known[reg_idx] = true;
-> +                               state->reg_const[reg_idx] = env->nr;
-> +                       } else {
-> +                               state->reg_known[reg_idx] = false;
-
-This is completely broken. This emulation logic *needs* to run with
-the proper architecture identifier. (And for platforms like x86-64
-that have compatibility support for a second ABI, the emulation should
-probably also be done for that ABI, and there should be separate
-bitmasks for that ABI.)
-
-With the current logic, you will (almost) never actually have
-permitted syscalls in the bitmask, because filters fundamentally have
-to return different results for different ABIs - the syscall numbers
-mean completely different things under different ABIs.
-
-> +                               if (k != offsetof(struct seccomp_data, arch)) {
-> +                                       env->syscall_ok = false;
-> +                                       return 1;
-> +                               }
-> +                       }
-
-This would read nicer as:
-
-if (k == offsetof(struct seccomp_data, nr)) {
-
-} else if (k == offsetof(struct seccomp_data, arch)) {
-
-} else {
-  env->syscall_ok = false;
-  return 1;
-}
-
-> +
-> +                       break;
-> +               case BPF_MEM:
-> +                       state->reg_known[reg_idx] = state->reg_known[2 + k];
-> +                       state->reg_const[reg_idx] = state->reg_const[2 + k];
-> +                       break;
-> +               default:
-> +                       state->reg_known[reg_idx] = false;
-> +               }
-> +
-> +               return 0;
-> +       case BPF_ST:
-> +       case BPF_STX:
-> +               reg_idx = BPF_CLASS(code) == BPF_STX;
-> +
-> +               state->reg_known[2 + k] = state->reg_known[reg_idx];
-> +               state->reg_const[2 + k] = state->reg_const[reg_idx];
-
-I think we should probably just bail out if we see anything that's
-BPF_ST/BPF_STX. I've never seen seccomp filters that actually use that
-part of cBPF.
-
-But in case we do need this, maybe instead of using "2 +" for all
-these things, the cBPF memory slots should be in a separate array.
-
-> +               return 0;
-> +       case BPF_ALU:
-> +               state->reg_known[0] = false;
-> +               return 0;
-> +       case BPF_JMP:
-> +               if (BPF_OP(code) == BPF_JA) {
-> +                       state->pc += k;
-> +                       return 0;
-> +               }
-> +
-> +               if (ftest->jt == ftest->jf) {
-> +                       state->pc += ftest->jt;
-> +                       return 0;
-> +               }
-
-Why is this check here? Is anyone actually creating filters with such
-obviously nonsensical branches? I know that there are highly ludicrous
-filters out there, but I don't think I've ever seen this specific kind
-of useless code.
-
-> +               if (!state->reg_known[0])
-> +                       goto both_cases;
-[...]
-> +both_cases:
-> +               if (env->next_state_len >= SECCOMP_EMU_MAX_PENDING_STATES)
-> +                       return -E2BIG;
-
-Even if we cap the maximum number of pending states, this could still
-run for an almost unbounded amount of time, I think. Which is bad. If
-this code was actually necessary, we'd probably want to track
-separately the total number of branches we've seen and so on.
-
-But as I said, I think this code should just be removed instead.
-
-[...]
-> +       }
-> +}
-[...]
