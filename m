@@ -2,176 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3246272B9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E352E272BA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728076AbgIUQTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:19:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727070AbgIUQTl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:19:41 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5416C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 09:19:40 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id l15so315941wmh.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 09:19:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2Um6c81r/1MBT+fI9iGjg9/o4XDqZdY7rKMNqEREgyE=;
-        b=ryoM2PMyrWMXEMclmgyN0lykLS3VG6GXyKh4BC5ZVuURKw5hMiI7c0HZAetAVJ9uHu
-         WHPCmKob3GZAwHB0bI+A+2bGumaPKa/LcayBImqxBLqSTWGPWgRIMaJNnzvsltdIClFm
-         RkamjI+3JgSIgX4e1nBRWo7MQ7hnY7fBVUTSj05a22ySRbVJdIZNenzaMknU984WS4Ff
-         oJXiT3JErczZ+ll+Fj95go1Z4vbo6Ay394q5fOCK4bcUb0WH0Lj7f+j3SmVyZSGTA862
-         vTxr3cmVPwuCj3G6rHPq98xrSw5GP3ZVb+Ds8kVgwUWtg000Tnlu5BKL9ISmU0qFih12
-         YEIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2Um6c81r/1MBT+fI9iGjg9/o4XDqZdY7rKMNqEREgyE=;
-        b=D9w94R4p3I1Wz1GetRcn7FHfBUZJ16sTrvXJhcdTLVIHPDC7Ts/vhTANpSOxmlQbkP
-         S0wvuNff+2kCyZUOB3r6ns2S+gOfZdvxvt3gmSbEB0dcDnfWR53pf1Z/nc4UDmKthIF8
-         xClrdhuVxKKRXz0h128N7nr29UaqLIJR9c7Mol+FUd4xNPXfW2GdWSJ4oJmHaa7bYhnZ
-         wdGMqPeGxeG/T+2Fohv7EaCt88UnvpKwy4BX3EcK54O1ggqCuULDHYEb7USIJUe1ZL2p
-         lz4tZ/HinTexG8Tdql0XjtEmCXiNLp1+3vbcNplVPufbv7mhi/pnzxheSQPwjteuCYZd
-         8MXQ==
-X-Gm-Message-State: AOAM530w5CO7zwxkzIqoUGTjtSKmrGGRJQCLrsj3elTbPjAH0xCY1OW8
-        nQW6N1YIxVTXWSWGVKnF35M=
-X-Google-Smtp-Source: ABdhPJxs7Ibc11EIGRwgCKphObeQv/hmih2hCL7dWsWP43DVc7B0GpSzQHeXgsihEEbfpQhdROSDTQ==
-X-Received: by 2002:a1c:2cc2:: with SMTP id s185mr145783wms.77.1600705179633;
-        Mon, 21 Sep 2020 09:19:39 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.113.201])
-        by smtp.gmail.com with ESMTPSA id a83sm67121wmh.48.2020.09.21.09.19.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Sep 2020 09:19:39 -0700 (PDT)
-Subject: Re: [PATCH v3 8/9] soc: mediatek: cmdq: add clear option in
- cmdq_pkt_wfe api
-To:     Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, CK Hu <ck.hu@mediatek.com>,
-        Bibby Hsieh <bibby.hsieh@mediatek.com>,
-        Houlong Wei <houlong.wei@mediatek.com>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        wsd_upstream@mediatek.com, HS Liao <hs.liao@mediatek.com>
-References: <1594136714-11650-1-git-send-email-dennis-yc.hsieh@mediatek.com>
- <1594136714-11650-9-git-send-email-dennis-yc.hsieh@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <728ace99-e5e6-f8bf-1687-e9b51dfae8d7@gmail.com>
-Date:   Mon, 21 Sep 2020 18:19:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <1594136714-11650-9-git-send-email-dennis-yc.hsieh@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1727803AbgIUQUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:20:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47480 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726430AbgIUQUl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:20:41 -0400
+Received: from localhost.localdomain (unknown [194.230.155.191])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D4E020708;
+        Mon, 21 Sep 2020 16:20:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600705240;
+        bh=EFB4bjRtaOGSTja0IClvTcBUSHtCtidWb/rfbU/147Y=;
+        h=From:To:Subject:Date:From;
+        b=EDuyRA8FB2bNU4hk1Eo6+sEIGQd3YjnYfOhpGdmasEMdtEOTlUL68CprKJnnQUuKN
+         rVIZfN1lCm4+QVtbhwKOnE9BmAM7Bg5Kxcy7M+rRKElbevloFUZ7M4FN0Dp3lsEfSb
+         eaqdBRZ4+45z9wNnSLwKLvVE0+j1ZyNdEPutyDxQ=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/4] dt-bindings: media: imx258: add bindings for IMX258 sensor
+Date:   Mon, 21 Sep 2020 18:20:17 +0200
+Message-Id: <20200921162020.2748-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add bindings for the IMX258 camera sensor.  The bindings, just like the
+driver, are quite limited, e.g. do not support regulator supplies.
 
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-On 07/07/2020 17:45, Dennis YC Hsieh wrote:
-> Add clear parameter to let client decide if
-> event should be clear to 0 after GCE receive it.
-> 
-> Change since v2:
-> - Keep behavior in drm crtc driver and
->    separate bug fix code into another patch.
+---
 
-This, should go...
+Changes since v2:
+1. Remove clock-frequency, add reset GPIOs, add supplies.
+2. Use additionalProperties.
 
-> 
-> Signed-off-by: Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>
-> ---
+Changes since v1:
+1. None
+---
+ .../devicetree/bindings/media/i2c/imx258.yaml | 96 +++++++++++++++++++
+ MAINTAINERS                                   |  1 +
+ 2 files changed, 97 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/imx258.yaml
 
-...here :)
+diff --git a/Documentation/devicetree/bindings/media/i2c/imx258.yaml b/Documentation/devicetree/bindings/media/i2c/imx258.yaml
+new file mode 100644
+index 000000000000..678ba966d026
+--- /dev/null
++++ b/Documentation/devicetree/bindings/media/i2c/imx258.yaml
+@@ -0,0 +1,96 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/media/i2c/imx258.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Sony IMX258 13 Mpixel CMOS Digital Image Sensor
++
++maintainers:
++  - Krzysztof Kozlowski <krzk@kernel.org>
++
++description: |-
++  IMX258 is a diagonal 5.867mm (Type 1/3.06) 13 Mega-pixel CMOS active pixel
++  type stacked image sensor with a square pixel array of size 4208 x 3120. It
++  is programmable through I2C interface.  Image data is sent through MIPI
++  CSI-2.
++
++properties:
++  compatible:
++    const: sony,imx258
++
++  clocks:
++    description:
++      Clock frequency from 6 to 27 MHz.
++    maxItems: 1
++
++  reg:
++    maxItems: 1
++
++  reset-gpios:
++    description: |-
++      Reference to the GPIO connected to the XCLR pin, if any.
++
++  vana-supply:
++    description:
++      Analog voltage (VANA) supply, 2.7 V
++
++  vdig-supply:
++    description:
++      Digital I/O voltage (VDIG) supply, 1.2 V
++
++  vif-supply:
++    description:
++      Interface voltage (VIF) supply, 1.8 V
++
++  # See ../video-interfaces.txt for more details
++  port:
++    type: object
++    properties:
++      endpoint:
++        type: object
++        properties:
++          data-lanes:
++            items:
++              - const: 1
++              - const: 2
++              - const: 3
++              - const: 4
++
++          link-frequencies:
++            allOf:
++              - $ref: /schemas/types.yaml#/definitions/uint64-array
++            description:
++              Allowed data bus frequencies.
++
++        required:
++          - data-lanes
++          - link-frequencies
++
++required:
++  - compatible
++  - reg
++  - port
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c0 {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        sensor@6c {
++            compatible = "sony,imx258";
++            reg = <0x6c>;
++            clocks = <&imx258_clk>;
++
++            port {
++                imx258_ep: endpoint {
++                    remote-endpoint = <&csi1_ep>;
++                    data-lanes = <1 2 3 4>;
++                    link-frequencies = /bits/ 64 <320000000>;
++                };
++            };
++        };
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 5b9621ca2b31..68f30a283a2c 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -16262,6 +16262,7 @@ M:	Sakari Ailus <sakari.ailus@linux.intel.com>
+ L:	linux-media@vger.kernel.org
+ S:	Maintained
+ T:	git git://linuxtv.org/media_tree.git
++F:	Documentation/devicetree/bindings/media/i2c/imx258.yaml
+ F:	drivers/media/i2c/imx258.c
+ 
+ SONY IMX274 SENSOR DRIVER
+-- 
+2.17.1
 
-I fixed to commit message and pushed the patch to v5.9-next/soc
-
-Thanks!
-
->   drivers/gpu/drm/mediatek/mtk_drm_crtc.c  |    2 +-
->   drivers/soc/mediatek/mtk-cmdq-helper.c   |    5 +++--
->   include/linux/mailbox/mtk-cmdq-mailbox.h |    3 +--
->   include/linux/soc/mediatek/mtk-cmdq.h    |    5 +++--
->   4 files changed, 8 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> index ec6c9ffbf35e..c84e7a14d4a8 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> @@ -490,7 +490,7 @@ static void mtk_drm_crtc_hw_config(struct mtk_drm_crtc *mtk_crtc)
->   		mbox_flush(mtk_crtc->cmdq_client->chan, 2000);
->   		cmdq_handle = cmdq_pkt_create(mtk_crtc->cmdq_client, PAGE_SIZE);
->   		cmdq_pkt_clear_event(cmdq_handle, mtk_crtc->cmdq_event);
-> -		cmdq_pkt_wfe(cmdq_handle, mtk_crtc->cmdq_event);
-> +		cmdq_pkt_wfe(cmdq_handle, mtk_crtc->cmdq_event, true);
->   		mtk_crtc_ddp_config(crtc, cmdq_handle);
->   		cmdq_pkt_finalize(cmdq_handle);
->   		cmdq_pkt_flush_async(cmdq_handle, ddp_cmdq_cb, cmdq_handle);
-> diff --git a/drivers/soc/mediatek/mtk-cmdq-helper.c b/drivers/soc/mediatek/mtk-cmdq-helper.c
-> index d55dc3296105..505651b0d715 100644
-> --- a/drivers/soc/mediatek/mtk-cmdq-helper.c
-> +++ b/drivers/soc/mediatek/mtk-cmdq-helper.c
-> @@ -316,15 +316,16 @@ int cmdq_pkt_write_s_mask_value(struct cmdq_pkt *pkt, u8 high_addr_reg_idx,
->   }
->   EXPORT_SYMBOL(cmdq_pkt_write_s_mask_value);
->   
-> -int cmdq_pkt_wfe(struct cmdq_pkt *pkt, u16 event)
-> +int cmdq_pkt_wfe(struct cmdq_pkt *pkt, u16 event, bool clear)
->   {
->   	struct cmdq_instruction inst = { {0} };
-> +	u32 clear_option = clear ? CMDQ_WFE_UPDATE : 0;
->   
->   	if (event >= CMDQ_MAX_EVENT)
->   		return -EINVAL;
->   
->   	inst.op = CMDQ_CODE_WFE;
-> -	inst.value = CMDQ_WFE_OPTION;
-> +	inst.value = CMDQ_WFE_OPTION | clear_option;
->   	inst.event = event;
->   
->   	return cmdq_pkt_append_command(pkt, inst);
-> diff --git a/include/linux/mailbox/mtk-cmdq-mailbox.h b/include/linux/mailbox/mtk-cmdq-mailbox.h
-> index efbd8a9eb2d1..d5a983d65f05 100644
-> --- a/include/linux/mailbox/mtk-cmdq-mailbox.h
-> +++ b/include/linux/mailbox/mtk-cmdq-mailbox.h
-> @@ -28,8 +28,7 @@
->    * bit 16-27: update value
->    * bit 31: 1 - update, 0 - no update
->    */
-> -#define CMDQ_WFE_OPTION			(CMDQ_WFE_UPDATE | CMDQ_WFE_WAIT | \
-> -					CMDQ_WFE_WAIT_VALUE)
-> +#define CMDQ_WFE_OPTION			(CMDQ_WFE_WAIT | CMDQ_WFE_WAIT_VALUE)
->   
->   /** cmdq event maximum */
->   #define CMDQ_MAX_EVENT			0x3ff
-> diff --git a/include/linux/soc/mediatek/mtk-cmdq.h b/include/linux/soc/mediatek/mtk-cmdq.h
-> index 34354e952f60..960704d75994 100644
-> --- a/include/linux/soc/mediatek/mtk-cmdq.h
-> +++ b/include/linux/soc/mediatek/mtk-cmdq.h
-> @@ -182,11 +182,12 @@ int cmdq_pkt_write_s_mask_value(struct cmdq_pkt *pkt, u8 high_addr_reg_idx,
->   /**
->    * cmdq_pkt_wfe() - append wait for event command to the CMDQ packet
->    * @pkt:	the CMDQ packet
-> - * @event:	the desired event type to "wait and CLEAR"
-> + * @event:	the desired event type to wait
-> + * @clear:	clear event or not after event arrive
->    *
->    * Return: 0 for success; else the error code is returned
->    */
-> -int cmdq_pkt_wfe(struct cmdq_pkt *pkt, u16 event);
-> +int cmdq_pkt_wfe(struct cmdq_pkt *pkt, u16 event, bool clear);
->   
->   /**
->    * cmdq_pkt_clear_event() - append clear event command to the CMDQ packet
-> 
