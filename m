@@ -2,94 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9BA1272917
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:50:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F8D527291B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728322AbgIUOuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 10:50:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727770AbgIUOuM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:50:12 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C96C061755;
-        Mon, 21 Sep 2020 07:50:12 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id n10so12537170qtv.3;
-        Mon, 21 Sep 2020 07:50:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=I0TzWXUmgi2lOEHpdl5qmQ0obP+a5wT/52mUzrc/Cfw=;
-        b=H4Yxk2SPjvLf2Brrla/hrvyq/OarS424J9FV8e1g25bELnn/LLXo44r2kzde5q0I7J
-         mjKpYsrkCTWeDdh8qDWSf00x4bh8CXq+JPKScEkemo4j8xD+q4qfALCjyeqei3pKuLcm
-         Bdr14uL8sNnC7bpzsT03ZCqVKKHeEsK0nTOUBKOKX+Xg+VQanXssvIv1+z4S+PxsIu8i
-         mBxqLYlWeveKSKy74N3HJm/uDVIk+VyzU1dNJ0wKA1Kvz25vFyh8iu/SfcMVxF+GxRyn
-         +0e8YMKCH/andqHfGTX8pEbimG8cSXJhvLiPuWljEK+LItU0WODLZNcFyUswDl+W+6XG
-         i8fA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=I0TzWXUmgi2lOEHpdl5qmQ0obP+a5wT/52mUzrc/Cfw=;
-        b=N9XDpQkw4VdJTEWb12dGJKv23ybRbpY1XRUOQ4xwtkJwARF6E0MgXcTgII0t9MpZM+
-         G+xSRnEev5fO/E6Ym4R+hnvARPIUl6BwB1E1z5gPUO9ZOfJd+1Us38BSfPk7zaZ1gGEV
-         IuAQcVbHYwkw5Dt8Cyfii5p6/96M473cHIVDlQgSTMe+1x/qnfJU96OMlhMHym/LIriu
-         KDZ5lUs4T6sT9+aShNln9aImNFd1YA888776fC810v1fXK/4yPa5qX5Qioo/CggznhSG
-         AXmFVZ4XDe3gVYxiH7JJvWd501790NDYUZDlLi+DJXSML1CLGvey4l7oM24Di2chSw7k
-         XRVQ==
-X-Gm-Message-State: AOAM531uzy28pnT/ZTtvivThq0hF/W1Cx27vT86jVH9hq24y8S7uPRH8
-        aZOBErZ7bg6dC2capoWKTOM=
-X-Google-Smtp-Source: ABdhPJzNNwPI/wJ/7TcWjcBWmRzVQTi9xiWSzOdY27OrIajjhpASkSL5yIN4toFKxhCtgEo3lO+psw==
-X-Received: by 2002:ac8:71c6:: with SMTP id i6mr32876446qtp.318.1600699811627;
-        Mon, 21 Sep 2020 07:50:11 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:54a6])
-        by smtp.gmail.com with ESMTPSA id w36sm10370728qtc.48.2020.09.21.07.50.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 07:50:10 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 21 Sep 2020 10:50:09 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Chengming Zhou <zhouchengming@bytedance.com>
-Cc:     lizefan@huawei.com, hannes@cmpxchg.org, corbet@lwn.net,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luodaowen.backend@bytedance.com,
-        songmuchun@bytedance.com
-Subject: Re: [PATCH] cgroup: Add cgroupstats numbers to cgroup.stat file
-Message-ID: <20200921145009.GD4268@mtj.duckdns.org>
-References: <20200915155349.15181-1-zhouchengming@bytedance.com>
+        id S1727773AbgIUOvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 10:51:03 -0400
+Received: from mga03.intel.com ([134.134.136.65]:31824 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727265AbgIUOvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 10:51:03 -0400
+IronPort-SDR: Amya1mXeOo1TtW/QT3Z5iTDVPlBIeZNfyC0x8Esc+pZFV5BOEWg5P9eAG6+rNVBjU4/WR4WP8e
+ 44cP1ykpp/Bg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="160452967"
+X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; 
+   d="scan'208";a="160452967"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 07:50:59 -0700
+IronPort-SDR: xn/KgqioDKaaG3NN/05jK2y0x4yrX4ejHsSFo1cxy48yoJXrusOhFwTkZuN6UE+b9SatRW4n+0
+ vFFIoQbOkZxg==
+X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; 
+   d="scan'208";a="321796207"
+Received: from apatwary-mobl.amr.corp.intel.com (HELO [10.212.120.65]) ([10.212.120.65])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 07:50:57 -0700
+Subject: Re: [PATCH] modpost: allow modpost to fail on warnings
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Filipe Brandenburger <filbranden@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Michael Davidson <md@google.com>,
+        Eugene Surovegin <surovegin@google.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+References: <20200918215010.250580-1-pierre-louis.bossart@linux.intel.com>
+ <CAK7LNATUcRpCvu9iQd_s9i5+3kRA96O+DMd-QGbAu-swmVuauw@mail.gmail.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <d14745a6-fbdc-ff84-5553-18af6d922989@linux.intel.com>
+Date:   Mon, 21 Sep 2020 09:50:56 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915155349.15181-1-zhouchengming@bytedance.com>
+In-Reply-To: <CAK7LNATUcRpCvu9iQd_s9i5+3kRA96O+DMd-QGbAu-swmVuauw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Thanks for the review,
 
-On Tue, Sep 15, 2020 at 11:53:49PM +0800, Chengming Zhou wrote:
-> In the cgroup v1, we can use netlink interface to get cgroupstats for
-> a cgroup. But it has been excluded from cgroup v2 interface intentionally
-> due to the duplication and inconsistencies with other statistics.
-> To make container monitor tool like "cadvisor" continue to work, we add
-> these cgroupstats numbers to the cgroup.stat file, and change the
-> admin-guide doc accordingly.
+>> Set KBUILD_MODPOST_FAIL_ON_WARNINGS to a non-empty value to make the
+>> kbuild fail when modpost generates any warnings. This will avoid
+>> misses such as [1] where the SOF CI did not catch a missing module
+>> license.
+>>
+>> This was initially contributed in 2016 [2], rebase/clean-ups and tests
+>> by Pierre Bossart.
+>>
+>> Test example:
+>> $ KBUILD_MODPOST_FAIL_ON_WARNINGS=1 make
+>>    GEN     Makefile
+>>    DESCEND  objtool
+>>    CALL    sof-dev/scripts/atomic/check-atomics.sh
+>>    CALL    sof-dev/scripts/checksyscalls.sh
+>>    CHK     include/generated/compile.h
+>>    MODPOST Module.symvers
+>> Kernel: arch/x86/boot/bzImage is ready  (#13)
+>> WARNING: modpost: missing MODULE_LICENSE() in sound/soc/intel/boards/snd-soc-sof-sdw.o
+>> make[2]: *** [sof-dev/scripts/Makefile.modpost:114: Module.symvers] Error 2
+> 
+> 
+> I think [1] should be an error instead of a warning
+> by default.
 
-So, we can't add O(nr_threads) operations to cgroup.stat reads. There are
-two ways forward that I can see.
+would the following patch be what you have in mind?
 
-* Investigate how these counters are being used. If it's used for congestion
-  detection, pressure metrics are likely better indicators to use anyway. If
-  the usage frequency is low enough, maybe querying from userspace should
-  work?
+diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+index 422f1cfca289..ae1eb67aa0f2 100644
+--- a/scripts/mod/modpost.c
++++ b/scripts/mod/modpost.c
+@@ -2018,7 +2018,7 @@ static void read_symbols(const char *modname)
+         if (!mod->is_vmlinux) {
+                 license = get_modinfo(&info, "license");
+                 if (!license)
+-                       warn("missing MODULE_LICENSE() in %s\n", modname);
++                       error("missing MODULE_LICENSE() in %s\n", modname);
+                 while (license) {
+                         if (license_is_gpl_compatible(license))
+                                 mod->gpl_compatible = 1;
 
-* If the need for these per-cgroup task state counters is really
-  justifiable, the counters should be maintained from scheduling event
-  directly and summed up using rstat like other statistics.
 
-Thanks.
+If yes, also wondering if we can still add the option to treat warnings 
+as errors as an opt-in behavior?
 
--- 
-tejun
+Thanks!
+-Pierre
