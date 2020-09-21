@@ -2,374 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE4C4271AAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 08:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E279271AAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 08:10:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726326AbgIUGIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 02:08:23 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:60217 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726011AbgIUGIX (ORCPT
+        id S1726357AbgIUGKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 02:10:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726336AbgIUGKb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 02:08:23 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 08L687JB0009549, This message is accepted by code: ctloc85258
-Received: from RSEXMBS02.realsil.com.cn ([172.29.17.196])
-        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 08L687JB0009549
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 21 Sep 2020 14:08:07 +0800
-Received: from RSEXMBS01.realsil.com.cn (172.29.17.195) by
- RSEXMBS02.realsil.com.cn (172.29.17.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Mon, 21 Sep 2020 14:08:07 +0800
-Received: from RSEXMBS01.realsil.com.cn ([fe80::9bf:166d:2689:5847]) by
- RSEXMBS01.realsil.com.cn ([fe80::9bf:166d:2689:5847%7]) with mapi id
- 15.01.2044.004; Mon, 21 Sep 2020 14:08:06 +0800
-From:   =?gb2312?B?wr3W7M6w?= <alex_lu@realsil.com.cn>
-To:     Marcel Holtmann <marcel@holtmann.org>
-CC:     Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Max Chou <max.chou@realtek.com>
-Subject: Re: [PATCH] Bluetooth: Fix the vulnerable issue on enc key size
-Thread-Topic: [PATCH] Bluetooth: Fix the vulnerable issue on enc key size
-Thread-Index: AdaP2rT2rqRD8iEeQ421X+FBubBc7w==
-Date:   Mon, 21 Sep 2020 06:08:06 +0000
-Message-ID: <21f9469eda2747eca351a1cb811a4834@realsil.com.cn>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.29.36.107]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        Mon, 21 Sep 2020 02:10:31 -0400
+Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 656AFC0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 23:10:31 -0700 (PDT)
+Received: by mail-vk1-xa41.google.com with SMTP id d2so3057018vkd.13
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 23:10:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hi2rPF/VTt+7YBV2OIek85mNirM/1FNuwC783UZ79gY=;
+        b=QaZvdjqmE01vsDCJpv/L3PIhQD9pFvCOGUpf8KQBf3AdasjOy8neTN7t/wRbvEYv1E
+         O1FVTx4IAh2rEkqCtye+7TzvIRzyjesUj2gTs4+Ewbb5W8ANnrCwLRpt5GYWxlXO4ElQ
+         JwwGdQdUvIdzbc2Tp2ibQkb6BgEX3QMwJUSt0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hi2rPF/VTt+7YBV2OIek85mNirM/1FNuwC783UZ79gY=;
+        b=YWZycN3S0WkgRz9vihZEvZ4oysoAEGQW9V1TGkL7OWA7rZeajkftYGxgKAmPXb8geW
+         bwTf75sluIvcpWp0cFhfBjRWdK8FP03rC+W9FCVEt49KkWL+QHt6EOGzxOT9wAXhZJko
+         lLK5ax5gydHrd3fs2cgiri2h6DhbfGEVFMsCLL8Seg3+hZlYNpOYUp4MBeHhKIH9t+rb
+         jnSdZE5NOy1xC16LbWOTHCJR8mMqgbrXJS963og1ht+U+A3zJTAR84bhqO1a1ZB1CxdQ
+         B5TiPjThO9jq7ELln5g4xP9itXtwSuW0gsdoxjV0DYedDJx+ECQzrl1eaYJh4rwMwAS4
+         JtBg==
+X-Gm-Message-State: AOAM5337dARn4/9LG7uvJS5MWIwgM+NFK6UdlG7M3JshgC/+9D8ulEEO
+        qYhzTmn44xmAr6uKe1Ml4U57CjZXUoO4C5LNATjx0g==
+X-Google-Smtp-Source: ABdhPJwS1vT6jl1+U7TJLvBVogQi38c1rNUQm4Kcmwy0nzE27iFQkCgHBkdfG6By1N4TLFUCpb7VEZDUgpxahYlWQZM=
+X-Received: by 2002:a1f:1c17:: with SMTP id c23mr17961911vkc.0.1600668630316;
+ Sun, 20 Sep 2020 23:10:30 -0700 (PDT)
 MIME-Version: 1.0
+References: <20200918083124.3921207-1-ikjn@chromium.org> <20200918162834.v2.2.I3de2918f09b817cc2ae6d324f1ece62779ecc7cf@changeid>
+ <CAJsYDV+Um3aEsgW-829BsZSaiVCp3O2LkrTmgCthhFv4fuEnLg@mail.gmail.com>
+In-Reply-To: <CAJsYDV+Um3aEsgW-829BsZSaiVCp3O2LkrTmgCthhFv4fuEnLg@mail.gmail.com>
+From:   Ikjoon Jang <ikjn@chromium.org>
+Date:   Mon, 21 Sep 2020 14:10:19 +0800
+Message-ID: <CAATdQgB5UAFbxW6J2no7=Jyn2ddaHXceAxedGaaAxa++gGNDkg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/5] spi: spi-mtk-nor: fix mishandled logics in
+ checking SPI memory operation
+To:     Chuanhong Guo <gch981213@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-spi@vger.kernel.org,
+        linux-mtd@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTWFyY2VsLA0KDQo+IE9uIFNlcHRlbWJlciAyMCwgMjAyMCAxNDoxMCwgTWFyY2VsIEhvbHRt
-YW5uIHdyb3RlOg0KPiANCj4gSGkgQWxleCwNCj4gDQo+ID4gV2hlbiBzb21lb25lIGF0dGFja3Mg
-dGhlIHNlcnZpY2UgcHJvdmlkZXIsIGl0IGNyZWF0ZXMgY29ubmVjdGlvbiwNCj4gPiBhdXRoZW50
-aWNhdGVzLiBUaGVuIGl0IHJlcXVlc3RzIGtleSBzaXplIG9mIG9uZSBieXRlIGFuZCBpdCBpZGVu
-dGlmaWVzDQo+ID4gdGhlIGtleSB3aXRoIGJydXRlIGZvcmNlIG1ldGhvZHMuDQo+ID4NCj4gPiBB
-ZnRlciBsMmNhcCBpbmZvIHJlcS9yZXNwIGV4Y2hhbmdlIGlzIGNvbXBsZXRlLiB0aGUgYXR0YWNr
-ZXIgc2VuZHMgbDJjYXANCj4gPiBjb25uZWN0IHdpdGggc3BlY2lmaWMgUFNNLg0KPiA+DQo+ID4g
-SW4gYWJvdmUgcHJvY2VkdXJlLCB0aGVyZSBpcyBubyBjaGFuY2UgZm9yIHRoZSBzZXJ2aWNlIHBy
-b3ZpZGVyIHRvIGNoZWNrDQo+ID4gdGhlIGVuY3J5cHRpb24ga2V5IHNpemUgYmVmb3JlIGwyY2Fw
-X2Nvbm5lY3QoKS4gQmVjYXVzZSB0aGUgc3RhdGUgb2YNCj4gPiBsMmNhcCBjaGFuIGluIGNvbm4t
-PmNoYW5fbCBpcyBCVF9MSVNURU4sIHRoZXJlIGlzIG5vIGwyY2FwIGNoYW4gd2l0aCB0aGUNCj4g
-PiBzdGF0ZSBvZiBCVF9DT05ORUNUIG9yIEJUX0NPTk5FQ1QyLg0KPiA+DQo+ID4gU28gc2Vydmlj
-ZSBwcm92aWRlciBzaG91bGQgY2hlY2sgdGhlIGVuY3J5cHRpb24ga2V5IHNpemUgaW4NCj4gPiBs
-MmNhcF9jb25uZWN0KCkNCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IEFsZXggTHUgPGFsZXhfbHVA
-cmVhbHNpbC5jb20uY24+DQo+ID4gLS0tDQo+ID4gbmV0L2JsdWV0b290aC9sMmNhcF9jb3JlLmMg
-fCA3ICsrKysrKysNCj4gPiAxIGZpbGUgY2hhbmdlZCwgNyBpbnNlcnRpb25zKCspDQo+ID4NCj4g
-PiBkaWZmIC0tZ2l0IGEvbmV0L2JsdWV0b290aC9sMmNhcF9jb3JlLmMgYi9uZXQvYmx1ZXRvb3Ro
-L2wyY2FwX2NvcmUuYw0KPiA+IGluZGV4IGFkZTgzZTIyNDU2Ny4uNjNkZjk2MWQ0MDJkIDEwMDY0
-NA0KPiA+IC0tLSBhL25ldC9ibHVldG9vdGgvbDJjYXBfY29yZS5jDQo+ID4gKysrIGIvbmV0L2Js
-dWV0b290aC9sMmNhcF9jb3JlLmMNCj4gPiBAQCAtNDE1MCw2ICs0MTUwLDEzIEBAIHN0YXRpYyBz
-dHJ1Y3QgbDJjYXBfY2hhbiAqbDJjYXBfY29ubmVjdChzdHJ1Y3QNCj4gbDJjYXBfY29ubiAqY29u
-biwNCj4gPg0KPiA+IAlpZiAoY29ubi0+aW5mb19zdGF0ZSAmIEwyQ0FQX0lORk9fRkVBVF9NQVNL
-X1JFUV9ET05FKSB7DQo+ID4gCQlpZiAobDJjYXBfY2hhbl9jaGVja19zZWN1cml0eShjaGFuLCBm
-YWxzZSkpIHsNCj4gPiArCQkJaWYgKCFsMmNhcF9jaGVja19lbmNfa2V5X3NpemUoY29ubi0+aGNv
-bikpIHsNCj4gPiArCQkJCWwyY2FwX3N0YXRlX2NoYW5nZShjaGFuLCBCVF9ESVNDT05OKTsNCj4g
-PiArCQkJCV9fc2V0X2NoYW5fdGltZXIoY2hhbiwNCj4gTDJDQVBfRElTQ19USU1FT1VUKTsNCj4g
-PiArCQkJCXJlc3VsdCA9IEwyQ0FQX0NSX1NFQ19CTE9DSzsNCj4gPiArCQkJCXN0YXR1cyA9IEwy
-Q0FQX0NTX05PX0lORk87DQo+ID4gKwkJCQlnb3RvIHJlc3BvbnNlOw0KPiA+ICsJCQl9DQo+ID4g
-CQkJaWYgKHRlc3RfYml0KEZMQUdfREVGRVJfU0VUVVAsICZjaGFuLT5mbGFncykpIHsNCj4gPiAJ
-CQkJbDJjYXBfc3RhdGVfY2hhbmdlKGNoYW4sIEJUX0NPTk5FQ1QyKTsNCj4gPiAJCQkJcmVzdWx0
-ID0gTDJDQVBfQ1JfUEVORDsNCj4gDQo+IEkgYW0gbm90IGZvbGxvd2luZyB3aGF0IHlvdSBhcmUg
-dHJ5aW5nIHRvIGZpeCBoZXJlLiBDYW4geW91IHNob3cgdGhpcyB3aXRoIGENCj4gYnRtb24gdHJh
-Y2UgZnJvbSBhbiBhdHRhY2tpbmcgZGV2aWNlPw0KPiANCj4gUmVnYXJkcw0KPiANCj4gTWFyY2Vs
-DQo+IA0KPiANCg0KSSdtIHNvcnJ5LCBJIGRpZG4ndCBoYXZlIGJ0bW9uIHRyYWNlIGZyb20gYW4g
-YXR0YWNraW5nIGRldmljZS4NCkkgZGlkbid0IGhhdmUgdGhlIHJlYWwgYXR0YWNraW5nIGRldmlj
-ZS4gSSBqdXN0IHNpbXVsYXRlIHRoZSBhdHRhY2tpbmcuDQpJIGhhdmUgYSBkZXZpY2UgdGhhdCBj
-YW4gY3JlYXRlIG9uZSBieXRlIHNpemUgZW5jcnlwdGlvbiBrZXkuDQpJdCB1c2VzIHRoZSBsaW5r
-IGtleSB0aGF0IHdhcyBwcm9kdWNlZCBieSBwYWlyaW5nIHdpdGggdGhlIHNlcnZpY2UgcHJvdmlk
-ZXIuIEFjdHVhbGx5IHRoZSBLTk9CIChLZXkgTmVnb3RpYXRpb24gb2YgQmx1ZXRvb3RoIEF0dGFj
-aykgc2F5cywgdGhlIGxpbmsga2V5IGlzIHVubmVjZXNzYXJ5IGZvciB0aGUgcmVjb25uZWN0aW9u
-Lg0KSSB1c2UgdGhpcyBkZXZpY2UgdG8gcmVjb25uZWN0IHRvIHNlcnZpY2UgcHJvdmlkZXIsIGFu
-ZCB0aGVuIGluaXRpYXRlIHRoZSBLZXkgTmVnb3RpYXRpb24gZm9yIG9uZSBieXRlIHNpemUgZW5j
-cnlwdGlvbiBrZXkuIEFjdHVhbGx5IHRoZSBhdHRhY2tlciBpZGVudGlmaWVkIHRoZSBlbmNyeXB0
-aW9uIGtleSB3aXRoIHNvbWUgYnJ1dGUgZm9yY2UgbWV0aG9kcy4NCg0KSSB3YW50IHRvIHByb3Zp
-ZGUgdGhlIHRyYWNlIG9uIHNlcnZpY2UgcHJvdmlkZXIgc2lkZS4NCg0KPiBIQ0kgRXZlbnQ6IENv
-bm5lY3QgUmVxdWVzdCAoMHgwNCkgcGxlbiAxMCAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAjMSBbaGNpMF0gNDIuOTMyNTg1DQogICAgICAgIEFkZHJlc3M6
-IDAwOjNGOjIyOkVFOjExOjMzIChPVUkgMDAtM0YtMjIpDQogICAgICAgIENsYXNzOiAweDAwMDEw
-Yw0KICAgICAgICAgIE1ham9yIGNsYXNzOiBDb21wdXRlciAoZGVza3RvcCwgbm90ZWJvb2ssIFBE
-QSwgb3JnYW5pemVycykNCiAgICAgICAgICBNaW5vciBjbGFzczogTGFwdG9wDQogICAgICAgIExp
-bmsgdHlwZTogQUNMICgweDAxKQ0KPCBIQ0kgQ29tbWFuZDogQWNjZXB0IENvbm5lY3Rpb24gUmVx
-dWVzdCAoMHgwMXwweDAwMDkpIHBsZW4gNyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAj
-MiBbaGNpMF0gNDIuOTMyNzk1DQogICAgICAgIEFkZHJlc3M6IDAwOjNGOjIyOkVFOjExOjMzIChP
-VUkgMDAtM0YtMjIpDQogICAgICAgIFJvbGU6IFNsYXZlICgweDAxKQ0KPiBIQ0kgRXZlbnQ6IENv
-bW1hbmQgU3RhdHVzICgweDBmKSBwbGVuIDQgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAjMyBbaGNpMF0gNDIuOTM0NTA5DQogICAgICBBY2NlcHQgQ29u
-bmVjdGlvbiBSZXF1ZXN0ICgweDAxfDB4MDAwOSkgbmNtZCAyDQogICAgICAgIFN0YXR1czogU3Vj
-Y2VzcyAoMHgwMCkNCj4gSENJIEV2ZW50OiBDb25uZWN0IENvbXBsZXRlICgweDAzKSBwbGVuIDEx
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIzQgW2hjaTBd
-IDQyLjk2NDU2OA0KICAgICAgICBTdGF0dXM6IFN1Y2Nlc3MgKDB4MDApDQogICAgICAgIEhhbmRs
-ZTogMQ0KICAgICAgICBBZGRyZXNzOiAwMDozRjoyMjpFRToxMTozMyAoT1VJIDAwLTNGLTIyKQ0K
-ICAgICAgICBMaW5rIHR5cGU6IEFDTCAoMHgwMSkNCiAgICAgICAgRW5jcnlwdGlvbjogRGlzYWJs
-ZWQgKDB4MDApDQo8IEhDSSBDb21tYW5kOiBSZWFkIFJlbW90ZSBTdXBwb3J0ZWQgRmVhdHVyZXMg
-KDB4MDF8MHgwMDFiKSBwbGVuIDIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICM1IFtoY2kwXSA0
-Mi45NjQ4MTUNCiAgICAgICAgSGFuZGxlOiAxDQo+IEhDSSBFdmVudDogTWF4IFNsb3RzIENoYW5n
-ZSAoMHgxYikgcGxlbiAzICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICM2IFtoY2kwXSA0Mi45NzA1MTYNCiAgICAgICAgSGFuZGxlOiAxDQogICAgICAgIE1h
-eCBzbG90czogNQ0KPiBIQ0kgRXZlbnQ6IENvbW1hbmQgU3RhdHVzICgweDBmKSBwbGVuIDQgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAjNyBbaGNpMF0g
-NDIuOTcxNTkyDQogICAgICBSZWFkIFJlbW90ZSBTdXBwb3J0ZWQgRmVhdHVyZXMgKDB4MDF8MHgw
-MDFiKSBuY21kIDINCiAgICAgICAgU3RhdHVzOiBTdWNjZXNzICgweDAwKQ0KPiBIQ0kgRXZlbnQ6
-IE1heCBTbG90cyBDaGFuZ2UgKDB4MWIpIHBsZW4gMyAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAjOCBbaGNpMF0gNDIuOTc2NTE2DQogICAgICAgIEhhbmRs
-ZTogMQ0KICAgICAgICBNYXggc2xvdHM6IDUNCj4gSENJIEV2ZW50OiBSZWFkIFJlbW90ZSBTdXBw
-b3J0ZWQgRmVhdHVyZXMgKDB4MGIpIHBsZW4gMTEgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIzkgW2hjaTBdIDQyLjk4MDUyMQ0KICAgICAgICBTdGF0dXM6IFN1Y2Nlc3MgKDB4MDAp
-DQogICAgICAgIEhhbmRsZTogMQ0KICAgICAgICBGZWF0dXJlczogMHhmZiAweGZmIDB4ZmYgMHhm
-ZSAweGRiIDB4ZmQgMHg3YiAweDg3DQogICAgICAgICAgMyBzbG90IHBhY2tldHMNCiAgICAgICAg
-ICA1IHNsb3QgcGFja2V0cw0KICAgICAgICAgIEVuY3J5cHRpb24NCiAgICAgICAgICBTbG90IG9m
-ZnNldA0KICAgICAgICAgIFRpbWluZyBhY2N1cmFjeQ0KICAgICAgICAgIFJvbGUgc3dpdGNoDQog
-ICAgICAgICAgSG9sZCBtb2RlDQogICAgICAgICAgU25pZmYgbW9kZQ0KICAgICAgICAgIFBhcmsg
-c3RhdGUNCiAgICAgICAgICBQb3dlciBjb250cm9sIHJlcXVlc3RzDQogICAgICAgICAgQ2hhbm5l
-bCBxdWFsaXR5IGRyaXZlbiBkYXRhIHJhdGUgKENRRERSKQ0KICAgICAgICAgIFNDTyBsaW5rDQog
-ICAgICAgICAgSFYyIHBhY2tldHMNCiAgICAgICAgICBIVjMgcGFja2V0cw0KICAgICAgICAgIHUt
-bGF3IGxvZyBzeW5jaHJvbm91cyBkYXRhDQogICAgICAgICAgQS1sYXcgbG9nIHN5bmNocm9ub3Vz
-IGRhdGENCiAgICAgICAgICBDVlNEIHN5bmNocm9ub3VzIGRhdGENCiAgICAgICAgICBQYWdpbmcg
-cGFyYW1ldGVyIG5lZ290aWF0aW9uDQogICAgICAgICAgUG93ZXIgY29udHJvbA0KICAgICAgICAg
-IFRyYW5zcGFyZW50IHN5bmNocm9ub3VzIGRhdGENCiAgICAgICAgICBGbG93IGNvbnRyb2wgbGFn
-IChsZWFzdCBzaWduaWZpY2FudCBiaXQpDQogICAgICAgICAgRmxvdyBjb250cm9sIGxhZyAobWlk
-ZGxlIGJpdCkNCiAgICAgICAgICBGbG93IGNvbnRyb2wgbGFnIChtb3N0IHNpZ25pZmljYW50IGJp
-dCkNCiAgICAgICAgICBCcm9hZGNhc3QgRW5jcnlwdGlvbg0KICAgICAgICAgIEVuaGFuY2VkIERh
-dGEgUmF0ZSBBQ0wgMiBNYnBzIG1vZGUNCiAgICAgICAgICBFbmhhbmNlZCBEYXRhIFJhdGUgQUNM
-IDMgTWJwcyBtb2RlDQogICAgICAgICAgRW5oYW5jZWQgaW5xdWlyeSBzY2FuDQogICAgICAgICAg
-SW50ZXJsYWNlZCBpbnF1aXJ5IHNjYW4NCiAgICAgICAgICBJbnRlcmxhY2VkIHBhZ2Ugc2Nhbg0K
-ICAgICAgICAgIFJTU0kgd2l0aCBpbnF1aXJ5IHJlc3VsdHMNCiAgICAgICAgICBFeHRlbmRlZCBT
-Q08gbGluayAoRVYzIHBhY2tldHMpDQogICAgICAgICAgRVY0IHBhY2tldHMNCiAgICAgICAgICBF
-VjUgcGFja2V0cw0KICAgICAgICAgIEFGSCBjYXBhYmxlIHNsYXZlDQogICAgICAgICAgQUZIIGNs
-YXNzaWZpY2F0aW9uIHNsYXZlDQogICAgICAgICAgTEUgU3VwcG9ydGVkIChDb250cm9sbGVyKQ0K
-ICAgICAgICAgIDMtc2xvdCBFbmhhbmNlZCBEYXRhIFJhdGUgQUNMIHBhY2tldHMNCiAgICAgICAg
-ICA1LXNsb3QgRW5oYW5jZWQgRGF0YSBSYXRlIEFDTCBwYWNrZXRzDQogICAgICAgICAgUGF1c2Ug
-ZW5jcnlwdGlvbg0KICAgICAgICAgIEFGSCBjYXBhYmxlIG1hc3Rlcg0KICAgICAgICAgIEFGSCBj
-bGFzc2lmaWNhdGlvbiBtYXN0ZXINCiAgICAgICAgICBFbmhhbmNlZCBEYXRhIFJhdGUgZVNDTyAy
-IE1icHMgbW9kZQ0KICAgICAgICAgIEVuaGFuY2VkIERhdGEgUmF0ZSBlU0NPIDMgTWJwcyBtb2Rl
-DQogICAgICAgICAgMy1zbG90IEVuaGFuY2VkIERhdGEgUmF0ZSBlU0NPIHBhY2tldHMNCiAgICAg
-ICAgICBFeHRlbmRlZCBJbnF1aXJ5IFJlc3BvbnNlDQogICAgICAgICAgU2ltdWx0YW5lb3VzIExF
-IGFuZCBCUi9FRFIgKENvbnRyb2xsZXIpDQogICAgICAgICAgU2VjdXJlIFNpbXBsZSBQYWlyaW5n
-DQogICAgICAgICAgRW5jYXBzdWxhdGVkIFBEVQ0KICAgICAgICAgIEVycm9uZW91cyBEYXRhIFJl
-cG9ydGluZw0KICAgICAgICAgIE5vbi1mbHVzaGFibGUgUGFja2V0IEJvdW5kYXJ5IEZsYWcNCiAg
-ICAgICAgICBMaW5rIFN1cGVydmlzaW9uIFRpbWVvdXQgQ2hhbmdlZCBFdmVudA0KICAgICAgICAg
-IElucXVpcnkgVFggUG93ZXIgTGV2ZWwNCiAgICAgICAgICBFbmhhbmNlZCBQb3dlciBDb250cm9s
-DQogICAgICAgICAgRXh0ZW5kZWQgZmVhdHVyZXMNCjwgSENJIENvbW1hbmQ6IFJlYWQgUmVtb3Rl
-IEV4dGVuZGVkIEZlYXR1cmVzICgweDAxfDB4MDAxYykgcGxlbiAzICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAjMTAgW2hjaTBdIDQyLjk4MDY3Nw0KICAgICAgICBIYW5kbGU6IDENCiAgICAgICAg
-UGFnZTogMQ0KPiBIQ0kgRXZlbnQ6IENvbW1hbmQgU3RhdHVzICgweDBmKSBwbGVuIDQgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMxMSBbaGNpMF0gNDIu
-OTgyNTEwDQogICAgICBSZWFkIFJlbW90ZSBFeHRlbmRlZCBGZWF0dXJlcyAoMHgwMXwweDAwMWMp
-IG5jbWQgMg0KICAgICAgICBTdGF0dXM6IFN1Y2Nlc3MgKDB4MDApDQo+IEhDSSBFdmVudDogUmVh
-ZCBSZW1vdGUgRXh0ZW5kZWQgRmVhdHVyZXMgKDB4MjMpIHBsZW4gMTMgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIzEyIFtoY2kwXSA0Mi45ODk1MjMNCiAgICAgICAgU3RhdHVzOiBT
-dWNjZXNzICgweDAwKQ0KICAgICAgICBIYW5kbGU6IDENCiAgICAgICAgUGFnZTogMS8yDQogICAg
-ICAgIEZlYXR1cmVzOiAweDAzIDB4MDAgMHgwMCAweDAwIDB4MDAgMHgwMCAweDAwIDB4MDANCiAg
-ICAgICAgICBTZWN1cmUgU2ltcGxlIFBhaXJpbmcgKEhvc3QgU3VwcG9ydCkNCiAgICAgICAgICBM
-RSBTdXBwb3J0ZWQgKEhvc3QpDQo8IEhDSSBDb21tYW5kOiBSZW1vdGUgTmFtZSBSZXF1ZXN0ICgw
-eDAxfDB4MDAxOSkgcGxlbiAxMCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIzEz
-IFtoY2kwXSA0Mi45ODk2OTcNCiAgICAgICAgQWRkcmVzczogMDA6M0Y6MjI6RUU6MTE6MzMgKE9V
-SSAwMC0zRi0yMikNCiAgICAgICAgUGFnZSBzY2FuIHJlcGV0aXRpb24gbW9kZTogUjIgKDB4MDIp
-DQogICAgICAgIFBhZ2Ugc2NhbiBtb2RlOiBNYW5kYXRvcnkgKDB4MDApDQogICAgICAgIENsb2Nr
-IG9mZnNldDogMHgwMDAwDQo8IEFDTCBEYXRhIFRYOiBIYW5kbGUgMSBmbGFncyAweDAwIGRsZW4g
-MTAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIzE0IFto
-Y2kwXSA0Mi45ODk3MjANCiAgICAgIEwyQ0FQOiBJbmZvcm1hdGlvbiBSZXF1ZXN0ICgweDBhKSBp
-ZGVudCAxIGxlbiAyDQogICAgICAgIFR5cGU6IEV4dGVuZGVkIGZlYXR1cmVzIHN1cHBvcnRlZCAo
-MHgwMDAyKQ0KPiBIQ0kgRXZlbnQ6IENvbW1hbmQgU3RhdHVzICgweDBmKSBwbGVuIDQgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMxNSBbaGNpMF0gNDIu
-OTkxNTEwDQogICAgICBSZW1vdGUgTmFtZSBSZXF1ZXN0ICgweDAxfDB4MDAxOSkgbmNtZCAyDQog
-ICAgICAgIFN0YXR1czogU3VjY2VzcyAoMHgwMCkNCj4gSENJIEV2ZW50OiBOdW1iZXIgb2YgQ29t
-cGxldGVkIFBhY2tldHMgKDB4MTMpIHBsZW4gNSAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAjMTYgW2hjaTBdIDQyLjk5MjQ5OA0KICAgICAgICBOdW0gaGFuZGxlczogMQ0KICAg
-ICAgICBIYW5kbGU6IDENCiAgICAgICAgQ291bnQ6IDENCj4gSENJIEV2ZW50OiBSZW1vdGUgTmFt
-ZSBSZXEgQ29tcGxldGUgKDB4MDcpIHBsZW4gMjU1ICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAjMTcgW2hjaTBdIDQzLjAxMTUxNA0KICAgICAgICBTdGF0dXM6IFN1Y2Nlc3Mg
-KDB4MDApDQogICAgICAgIEFkZHJlc3M6IDAwOjNGOjIyOkVFOjExOjMzIChPVUkgMDAtM0YtMjIp
-DQogICAgICAgIE5hbWU6IGRlbGwNCkAgTUdNVCBFdmVudDogRGV2aWNlIENvbm5lY3RlZCAoMHgw
-MDBiKSBwbGVuIDI0ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgezB4MDAw
-Mn0gW2hjaTBdIDQzLjAxMTU3OA0KICAgICAgICBCUi9FRFIgQWRkcmVzczogMDA6M0Y6MjI6RUU6
-MTE6MzMgKE9VSSAwMC0zRi0yMikNCiAgICAgICAgRmxhZ3M6IDB4MDAwMDAwMDANCiAgICAgICAg
-RGF0YSBsZW5ndGg6IDExDQogICAgICAgIE5hbWUgKGNvbXBsZXRlKTogZGVsbA0KICAgICAgICBD
-bGFzczogMHgwMDAxMGMNCiAgICAgICAgICBNYWpvciBjbGFzczogQ29tcHV0ZXIgKGRlc2t0b3As
-IG5vdGVib29rLCBQREEsIG9yZ2FuaXplcnMpDQogICAgICAgICAgTWlub3IgY2xhc3M6IExhcHRv
-cA0KQCBNR01UIEV2ZW50OiBEZXZpY2UgQ29ubmVjdGVkICgweDAwMGIpIHBsZW4gMjQgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB7MHgwMDAxfSBbaGNpMF0gNDMuMDExNTc4
-DQogICAgICAgIEJSL0VEUiBBZGRyZXNzOiAwMDozRjoyMjpFRToxMTozMyAoT1VJIDAwLTNGLTIy
-KQ0KICAgICAgICBGbGFnczogMHgwMDAwMDAwMA0KICAgICAgICBEYXRhIGxlbmd0aDogMTENCiAg
-ICAgICAgTmFtZSAoY29tcGxldGUpOiBkZWxsDQogICAgICAgIENsYXNzOiAweDAwMDEwYw0KICAg
-ICAgICAgIE1ham9yIGNsYXNzOiBDb21wdXRlciAoZGVza3RvcCwgbm90ZWJvb2ssIFBEQSwgb3Jn
-YW5pemVycykNCiAgICAgICAgICBNaW5vciBjbGFzczogTGFwdG9wDQo+IEhDSSBFdmVudDogTGlu
-ayBLZXkgUmVxdWVzdCAoMHgxNykgcGxlbiA2ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIzE4IFtoY2kwXSA0My4wMjE1MTANCiAgICAgICAgQWRkcmVzczog
-MDA6M0Y6MjI6RUU6MTE6MzMgKE9VSSAwMC0zRi0yMikNCjwgSENJIENvbW1hbmQ6IExpbmsgS2V5
-IFJlcXVlc3QgUmVwbHkgKDB4MDF8MHgwMDBiKSBwbGVuIDIyICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAjMTkgW2hjaTBdIDQzLjAyMTU4MA0KICAgICAgICBBZGRyZXNzOiAwMDozRjoy
-MjpFRToxMTozMyAoT1VJIDAwLTNGLTIyKQ0KICAgICAgICBMaW5rIGtleTogOGVkY2JiY2ZiZmQ5
-YmUxMDJiYWMwMDA0Y2M4ODdjODgNCj4gSENJIEV2ZW50OiBDb21tYW5kIENvbXBsZXRlICgweDBl
-KSBwbGVuIDEwICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAj
-MjAgW2hjaTBdIDQzLjAyNzU0NA0KICAgICAgTGluayBLZXkgUmVxdWVzdCBSZXBseSAoMHgwMXww
-eDAwMGIpIG5jbWQgMg0KICAgICAgICBTdGF0dXM6IFN1Y2Nlc3MgKDB4MDApDQogICAgICAgIEFk
-ZHJlc3M6IDAwOjNGOjIyOkVFOjExOjMzIChPVUkgMDAtM0YtMjIpDQo+IEhDSSBFdmVudDogRW5j
-cnlwdGlvbiBDaGFuZ2UgKDB4MDgpIHBsZW4gNCAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIzIxIFtoY2kwXSA0My4wODk2OTINCiAgICAgICAgU3RhdHVzOiBT
-dWNjZXNzICgweDAwKQ0KICAgICAgICBIYW5kbGU6IDENCiAgICAgICAgRW5jcnlwdGlvbjogRW5h
-YmxlZCB3aXRoIEUwICgweDAxKQ0KPCBIQ0kgQ29tbWFuZDogUmVhZCBFbmNyeXB0aW9uIEtleSBT
-aXplICgweDA1fDB4MDAwOCkgcGxlbiAyICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMy
-MiBbaGNpMF0gNDMuMDg5ODU5DQogICAgICAgIEhhbmRsZTogMQ0KPiBIQ0kgRXZlbnQ6IENvbW1h
-bmQgQ29tcGxldGUgKDB4MGUpIHBsZW4gNyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICMyMyBbaGNpMF0gNDMuMDkxNTI4DQogICAgICBSZWFkIEVuY3J5cHRp
-b24gS2V5IFNpemUgKDB4MDV8MHgwMDA4KSBuY21kIDINCiAgICAgICAgU3RhdHVzOiBTdWNjZXNz
-ICgweDAwKQ0KICAgICAgICBIYW5kbGU6IDENCiAgICAgICAgS2V5IHNpemU6IDENCj4gQUNMIERh
-dGEgUlg6IEhhbmRsZSAxIGZsYWdzIDB4MDIgZGxlbiAxMCAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAjMjQgW2hjaTBdIDQzLjE0MDg4OA0KICAgICAgTDJD
-QVA6IEluZm9ybWF0aW9uIFJlcXVlc3QgKDB4MGEpIGlkZW50IDEgbGVuIDINCiAgICAgICAgVHlw
-ZTogRXh0ZW5kZWQgZmVhdHVyZXMgc3VwcG9ydGVkICgweDAwMDIpDQo8IEFDTCBEYXRhIFRYOiBI
-YW5kbGUgMSBmbGFncyAweDAwIGRsZW4gMTYgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIzI1IFtoY2kwXSA0My4xNDA5NTENCiAgICAgIEwyQ0FQOiBJbmZv
-cm1hdGlvbiBSZXNwb25zZSAoMHgwYikgaWRlbnQgMSBsZW4gOA0KICAgICAgICBUeXBlOiBFeHRl
-bmRlZCBmZWF0dXJlcyBzdXBwb3J0ZWQgKDB4MDAwMikNCiAgICAgICAgUmVzdWx0OiBTdWNjZXNz
-ICgweDAwMDApDQogICAgICAgIEZlYXR1cmVzOiAweDAwMDAwMmI4DQogICAgICAgICAgRW5oYW5j
-ZWQgUmV0cmFuc21pc3Npb24gTW9kZQ0KICAgICAgICAgIFN0cmVhbWluZyBNb2RlDQogICAgICAg
-ICAgRkNTIE9wdGlvbg0KICAgICAgICAgIEZpeGVkIENoYW5uZWxzDQogICAgICAgICAgVW5pY2Fz
-dCBDb25uZWN0aW9ubGVzcyBEYXRhIFJlY2VwdGlvbg0KPiBBQ0wgRGF0YSBSWDogSGFuZGxlIDEg
-ZmxhZ3MgMHgwMiBkbGVuIDE2ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICMyNiBbaGNpMF0gNDMuMTQyMzA4DQogICAgICBMMkNBUDogSW5mb3JtYXRpb24g
-UmVzcG9uc2UgKDB4MGIpIGlkZW50IDEgbGVuIDgNCiAgICAgICAgVHlwZTogRXh0ZW5kZWQgZmVh
-dHVyZXMgc3VwcG9ydGVkICgweDAwMDIpDQogICAgICAgIFJlc3VsdDogU3VjY2VzcyAoMHgwMDAw
-KQ0KICAgICAgICBGZWF0dXJlczogMHgwMDAwMDJiOA0KICAgICAgICAgIEVuaGFuY2VkIFJldHJh
-bnNtaXNzaW9uIE1vZGUNCiAgICAgICAgICBTdHJlYW1pbmcgTW9kZQ0KICAgICAgICAgIEZDUyBP
-cHRpb24NCiAgICAgICAgICBGaXhlZCBDaGFubmVscw0KICAgICAgICAgIFVuaWNhc3QgQ29ubmVj
-dGlvbmxlc3MgRGF0YSBSZWNlcHRpb24NCjwgQUNMIERhdGEgVFg6IEhhbmRsZSAxIGZsYWdzIDB4
-MDAgZGxlbiAxMCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAjMjcgW2hjaTBdIDQzLjE0MjM2OQ0KICAgICAgTDJDQVA6IEluZm9ybWF0aW9uIFJlcXVlc3Qg
-KDB4MGEpIGlkZW50IDIgbGVuIDINCiAgICAgICAgVHlwZTogRml4ZWQgY2hhbm5lbHMgc3VwcG9y
-dGVkICgweDAwMDMpDQo+IEhDSSBFdmVudDogTnVtYmVyIG9mIENvbXBsZXRlZCBQYWNrZXRzICgw
-eDEzKSBwbGVuIDUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIzI4IFtoY2kw
-XSA0My4xNDM1NjcNCiAgICAgICAgTnVtIGhhbmRsZXM6IDENCiAgICAgICAgSGFuZGxlOiAxDQog
-ICAgICAgIENvdW50OiAxDQo+IEFDTCBEYXRhIFJYOiBIYW5kbGUgMSBmbGFncyAweDAyIGRsZW4g
-MTAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIzI5IFto
-Y2kwXSA0My4xNDUwMzQNCiAgICAgIEwyQ0FQOiBJbmZvcm1hdGlvbiBSZXF1ZXN0ICgweDBhKSBp
-ZGVudCAyIGxlbiAyDQogICAgICAgIFR5cGU6IEZpeGVkIGNoYW5uZWxzIHN1cHBvcnRlZCAoMHgw
-MDAzKQ0KPCBBQ0wgRGF0YSBUWDogSGFuZGxlIDEgZmxhZ3MgMHgwMCBkbGVuIDIwICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMzMCBbaGNpMF0gNDMuMTQ1
-MDkzDQogICAgICBMMkNBUDogSW5mb3JtYXRpb24gUmVzcG9uc2UgKDB4MGIpIGlkZW50IDIgbGVu
-IDEyDQogICAgICAgIFR5cGU6IEZpeGVkIGNoYW5uZWxzIHN1cHBvcnRlZCAoMHgwMDAzKQ0KICAg
-ICAgICBSZXN1bHQ6IFN1Y2Nlc3MgKDB4MDAwMCkNCiAgICAgICAgQ2hhbm5lbHM6IDB4MDAwMDAw
-MDAwMDAwMDAwNg0KICAgICAgICAgIEwyQ0FQIFNpZ25hbGluZyAoQlIvRURSKQ0KICAgICAgICAg
-IENvbm5lY3Rpb25sZXNzIHJlY2VwdGlvbg0KPiBIQ0kgRXZlbnQ6IE51bWJlciBvZiBDb21wbGV0
-ZWQgUGFja2V0cyAoMHgxMykgcGxlbiA1ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICMzMSBbaGNpMF0gNDMuMTQ1NTIzDQogICAgICAgIE51bSBoYW5kbGVzOiAxDQogICAgICAg
-IEhhbmRsZTogMQ0KICAgICAgICBDb3VudDogMQ0KPiBBQ0wgRGF0YSBSWDogSGFuZGxlIDEgZmxh
-Z3MgMHgwMiBkbGVuIDIwICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICMzMiBbaGNpMF0gNDMuMTQ1OTIyDQogICAgICBMMkNBUDogSW5mb3JtYXRpb24gUmVz
-cG9uc2UgKDB4MGIpIGlkZW50IDIgbGVuIDEyDQogICAgICAgIFR5cGU6IEZpeGVkIGNoYW5uZWxz
-IHN1cHBvcnRlZCAoMHgwMDAzKQ0KICAgICAgICBSZXN1bHQ6IFN1Y2Nlc3MgKDB4MDAwMCkNCiAg
-ICAgICAgQ2hhbm5lbHM6IDB4MDAwMDAwMDAwMDAwMDAwNg0KICAgICAgICAgIEwyQ0FQIFNpZ25h
-bGluZyAoQlIvRURSKQ0KICAgICAgICAgIENvbm5lY3Rpb25sZXNzIHJlY2VwdGlvbg0KPiBIQ0kg
-RXZlbnQ6IE51bWJlciBvZiBDb21wbGV0ZWQgUGFja2V0cyAoMHgxMykgcGxlbiA1ICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICMzMyBbaGNpMF0gNDMuMTQ3NTQ4DQogICAgICAg
-IE51bSBoYW5kbGVzOiAxDQogICAgICAgIEhhbmRsZTogMQ0KICAgICAgICBDb3VudDogMQ0KPiBB
-Q0wgRGF0YSBSWDogSGFuZGxlIDEgZmxhZ3MgMHgwMiBkbGVuIDEyICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMzNCBbaGNpMF0gNDMuMTQ4NDA1DQogICAg
-ICBMMkNBUDogQ29ubmVjdGlvbiBSZXF1ZXN0ICgweDAyKSBpZGVudCAzIGxlbiA0DQogICAgICAg
-IFBTTTogMyAoMHgwMDAzKQ0KICAgICAgICBTb3VyY2UgQ0lEOiA2NA0KPCBBQ0wgRGF0YSBUWDog
-SGFuZGxlIDEgZmxhZ3MgMHgwMCBkbGVuIDE2ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICMzNSBbaGNpMF0gNDMuMTQ4NTk0DQogICAgICBMMkNBUDogQ29u
-bmVjdGlvbiBSZXNwb25zZSAoMHgwMykgaWRlbnQgMyBsZW4gOA0KICAgICAgICBEZXN0aW5hdGlv
-biBDSUQ6IDY0DQogICAgICAgIFNvdXJjZSBDSUQ6IDY0DQogICAgICAgIFJlc3VsdDogQ29ubmVj
-dGlvbiBzdWNjZXNzZnVsICgweDAwMDApDQogICAgICAgIFN0YXR1czogTm8gZnVydGhlciBpbmZv
-cm1hdGlvbiBhdmFpbGFibGUgKDB4MDAwMCkNCjwgQUNMIERhdGEgVFg6IEhhbmRsZSAxIGZsYWdz
-IDB4MDAgZGxlbiAyMyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAjMzYgW2hjaTBdIDQzLjE0ODYyMg0KICAgICAgTDJDQVA6IENvbmZpZ3VyZSBSZXF1ZXN0
-ICgweDA0KSBpZGVudCAzIGxlbiAxNQ0KICAgICAgICBEZXN0aW5hdGlvbiBDSUQ6IDY0DQogICAg
-ICAgIEZsYWdzOiAweDAwMDANCiAgICAgICAgT3B0aW9uOiBSZXRyYW5zbWlzc2lvbiBhbmQgRmxv
-dyBDb250cm9sICgweDA0KSBbbWFuZGF0b3J5XQ0KICAgICAgICAgIE1vZGU6IEJhc2ljICgweDAw
-KQ0KICAgICAgICAgIFRYIHdpbmRvdyBzaXplOiAwDQogICAgICAgICAgTWF4IHRyYW5zbWl0OiAw
-DQogICAgICAgICAgUmV0cmFuc21pc3Npb24gdGltZW91dDogMA0KICAgICAgICAgIE1vbml0b3Ig
-dGltZW91dDogMA0KICAgICAgICAgIE1heGltdW0gUERVIHNpemU6IDANCjwgSENJIENvbW1hbmQ6
-IFZlbmRvciAoMHgzZnwweDAwMTkpIHBsZW4gNSAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAjMzcgW2hjaTBdIDQzLjE0ODc0MQ0KICAgICAgICAwMSAwMSAw
-MCAwOCAwMCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLi4uLi4gICAgICAgICAg
-IA0KPiBIQ0kgRXZlbnQ6IENvbW1hbmQgQ29tcGxldGUgKDB4MGUpIHBsZW4gNCAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMzOCBbaGNpMF0gNDMuMTUwNTA2
-DQogICAgICBWZW5kb3IgKDB4M2Z8MHgwMDE5KSBuY21kIDINCiAgICAgICAgU3RhdHVzOiBTdWNj
-ZXNzICgweDAwKQ0KPiBIQ0kgRXZlbnQ6IE51bWJlciBvZiBDb21wbGV0ZWQgUGFja2V0cyAoMHgx
-MykgcGxlbiA1ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMzOSBbaGNpMF0g
-NDMuMTUxNTAyDQogICAgICAgIE51bSBoYW5kbGVzOiAxDQogICAgICAgIEhhbmRsZTogMQ0KICAg
-ICAgICBDb3VudDogMQ0KPiBBQ0wgRGF0YSBSWDogSGFuZGxlIDEgZmxhZ3MgMHgwMiBkbGVuIDIz
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICM0MCBbaGNp
-MF0gNDMuMTUyNDI5DQogICAgICBMMkNBUDogQ29uZmlndXJlIFJlcXVlc3QgKDB4MDQpIGlkZW50
-IDQgbGVuIDE1DQogICAgICAgIERlc3RpbmF0aW9uIENJRDogNjQNCiAgICAgICAgRmxhZ3M6IDB4
-MDAwMA0KICAgICAgICBPcHRpb246IFJldHJhbnNtaXNzaW9uIGFuZCBGbG93IENvbnRyb2wgKDB4
-MDQpIFttYW5kYXRvcnldDQogICAgICAgICAgTW9kZTogQmFzaWMgKDB4MDApDQogICAgICAgICAg
-VFggd2luZG93IHNpemU6IDANCiAgICAgICAgICBNYXggdHJhbnNtaXQ6IDANCiAgICAgICAgICBS
-ZXRyYW5zbWlzc2lvbiB0aW1lb3V0OiAwDQogICAgICAgICAgTW9uaXRvciB0aW1lb3V0OiAwDQog
-ICAgICAgICAgTWF4aW11bSBQRFUgc2l6ZTogMA0KPiBIQ0kgRXZlbnQ6IE51bWJlciBvZiBDb21w
-bGV0ZWQgUGFja2V0cyAoMHgxMykgcGxlbiA1ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICM0MSBbaGNpMF0gNDMuMTUyNDk0DQogICAgICAgIE51bSBoYW5kbGVzOiAxDQogICAg
-ICAgIEhhbmRsZTogMQ0KICAgICAgICBDb3VudDogMQ0KPCBBQ0wgRGF0YSBUWDogSGFuZGxlIDEg
-ZmxhZ3MgMHgwMCBkbGVuIDE4ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICM0MiBbaGNpMF0gNDMuMTUyNTA4DQogICAgICBMMkNBUDogQ29uZmlndXJlIFJl
-c3BvbnNlICgweDA1KSBpZGVudCA0IGxlbiAxMA0KICAgICAgICBTb3VyY2UgQ0lEOiA2NA0KICAg
-ICAgICBGbGFnczogMHgwMDAwDQogICAgICAgIFJlc3VsdDogU3VjY2VzcyAoMHgwMDAwKQ0KICAg
-ICAgICBPcHRpb246IE1heGltdW0gVHJhbnNtaXNzaW9uIFVuaXQgKDB4MDEpIFttYW5kYXRvcnld
-DQogICAgICAgICAgTVRVOiA2NzINCj4gQUNMIERhdGEgUlg6IEhhbmRsZSAxIGZsYWdzIDB4MDIg
-ZGxlbiAxOCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAj
-NDMgW2hjaTBdIDQzLjE1NDU2Nw0KICAgICAgTDJDQVA6IENvbmZpZ3VyZSBSZXNwb25zZSAoMHgw
-NSkgaWRlbnQgMyBsZW4gMTANCiAgICAgICAgU291cmNlIENJRDogNjQNCiAgICAgICAgRmxhZ3M6
-IDB4MDAwMA0KICAgICAgICBSZXN1bHQ6IFN1Y2Nlc3MgKDB4MDAwMCkNCiAgICAgICAgT3B0aW9u
-OiBNYXhpbXVtIFRyYW5zbWlzc2lvbiBVbml0ICgweDAxKSBbbWFuZGF0b3J5XQ0KICAgICAgICAg
-IE1UVTogNjcyDQo+IEhDSSBFdmVudDogTnVtYmVyIG9mIENvbXBsZXRlZCBQYWNrZXRzICgweDEz
-KSBwbGVuIDUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIzQ0IFtoY2kwXSA0
-My4xNTU0OTYNCiAgICAgICAgTnVtIGhhbmRsZXM6IDENCiAgICAgICAgSGFuZGxlOiAxDQogICAg
-ICAgIENvdW50OiAxDQoNClRoYW5rcywNCkJScywNCkFsZXggTHUuDQo=
+On Fri, Sep 18, 2020 at 9:09 PM Chuanhong Guo <gch981213@gmail.com> wrote:
+>
+> Hi!
+>
+> On Fri, Sep 18, 2020 at 4:34 PM Ikjoon Jang <ikjn@chromium.org> wrote:
+> >
+> > Fix a simple bug which can limits its transfer size,
+> > and add a simple helper function for code cleanups.
+> >
+> > Fixes: a59b2c7c56bf ("spi: spi-mtk-nor: support standard spi properties")
+> > Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+> >
+> > ---
+> >
+> > (no changes since v1)
+> >
+> >  drivers/spi/spi-mtk-nor.c | 62 ++++++++++++++++++++++++---------------
+> >  1 file changed, 38 insertions(+), 24 deletions(-)
+> >
+> > diff --git a/drivers/spi/spi-mtk-nor.c b/drivers/spi/spi-mtk-nor.c
+> > index 6e6ca2b8e6c8..54b2c0fde95b 100644
+> > --- a/drivers/spi/spi-mtk-nor.c
+> > +++ b/drivers/spi/spi-mtk-nor.c
+> > @@ -167,52 +167,63 @@ static bool mtk_nor_match_read(const struct spi_mem_op *op)
+> >         return false;
+> >  }
+> >
+> > -static int mtk_nor_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
+> > +static bool need_bounce(void *cpu_addr, unsigned long len)
+> >  {
+> > -       size_t len;
+> > +       return !!(((uintptr_t)cpu_addr) & MTK_NOR_DMA_ALIGN_MASK);
+> > +}
+>
+> parameter 'len' isn't used in this function.
+
+ACK.
+
+>
+> >
+> > +static int mtk_nor_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
+> > +{
+> >         if (!op->data.nbytes)
+> >                 return 0;
+> >
+> >         if ((op->addr.nbytes == 3) || (op->addr.nbytes == 4)) {
+> > -               if ((op->data.dir == SPI_MEM_DATA_IN) &&
+> > -                   mtk_nor_match_read(op)) {
+>
+> I think replacing a if/else if with a two-case switch is more
+> of a personal code preference rather than code cleanup.
+> I'd prefer only adding need_bounce to replace alignment
+> check using a separated commit and leave other stuff
+> untouched because:
+> 1. This "cleanup" made unintended logic changes (see below)
+> 2. The "cleanup" itself actually becomes the major part of
+>     this patch, while the actual fix mentioned in commit
+>     message is the minor part.
+> 3. A fix commit should contain the fix itself. It shouldn't
+>     mix with these code changes.
+
+Got it, v3 will only include the fix itself.
+
+>
+> > +               switch (op->data.dir) {
+> > +               case SPI_MEM_DATA_IN:
+> > +                       if (!mtk_nor_match_read(op))
+> > +                               return -EINVAL;
+>
+> You are changing the code logic here.
+> mtk_nor_match_read checks if the operation can be executed
+> using controller PIO/DMA reading. Even if it's not supported,
+> we can still use PRG mode to execute the operation.
+> One example of such an operation is SPI NOR SFDP reading.
+> Your change breaks that which then breaks 1_2_2 and 1_4_4
+> reading capability because spi-nor driver parses these op formats
+> from SFDP table.
+
+As you already noticed it, this is a bug from the last patch I made
+and v2 isn't fixing this problem. This should be restored & fixed in v3.
+And will not include other changes in a same patch.
+
+>
+> > +                       /* check if it's DMAable */
+> >                         if ((op->addr.val & MTK_NOR_DMA_ALIGN_MASK) ||
+> > -                           (op->data.nbytes < MTK_NOR_DMA_ALIGN))
+> > +                           (op->data.nbytes < MTK_NOR_DMA_ALIGN)) {
+> >                                 op->data.nbytes = 1;
+> > -                       else if (!((ulong)(op->data.buf.in) &
+> > -                                  MTK_NOR_DMA_ALIGN_MASK))
+> > +                       } else {
+> > +                               if (need_bounce(op->data.buf.in, op->data.nbytes) &&
+> > +                                   (op->data.nbytes > MTK_NOR_BOUNCE_BUF_SIZE))
+> > +                                       op->data.nbytes = MTK_NOR_BOUNCE_BUF_SIZE;
+> >                                 op->data.nbytes &= ~MTK_NOR_DMA_ALIGN_MASK;
+> > -                       else if (op->data.nbytes > MTK_NOR_BOUNCE_BUF_SIZE)
+> > -                               op->data.nbytes = MTK_NOR_BOUNCE_BUF_SIZE;
+>
+> data length alignment is intentionally done only for DMA reading
+> without the bounce buffer.
+> My intention here:
+> If we use the bounce buffer, we can read more data than needed to.
+> Say we want 25 bytes of data, reading 32 bytes using DMA and
+> bounce buffer should be faster than reading 16 bytes with DMA
+> and another 9 bytes with PIO, because for every single byte of PIO
+> reading, adjust_op_size and exec_op is called once, we
+> program controller with new cmd/address, and controller need
+> to send extra cmd/address to flash.
+> I noticed that you removed this part of logic from DMA reading
+> execution in 3/5 as well. Please revert the logic change here
+> add in DMA reading function (see later comment in 3/5).
+
+In v2, I wasn't sure whether this behavior is sane (read more than requested)
+Now I think this is okay, I've missed the fact that flash address is
+also aligned together.
+I'll just keep the previous logics with padding in v3.
+
+Thanks!
+
+>
+> > -                       return 0;
+> > -               } else if (op->data.dir == SPI_MEM_DATA_OUT) {
+> > +                       }
+> > +                       break;
+> > +               case SPI_MEM_DATA_OUT:
+> >                         if (op->data.nbytes >= MTK_NOR_PP_SIZE)
+> >                                 op->data.nbytes = MTK_NOR_PP_SIZE;
+> >                         else
+> >                                 op->data.nbytes = 1;
+> > -                       return 0;
+> > +                       break;
+> > +               default:
+> > +                       break;
+> >                 }
+> > +       } else {
+> > +               u8 len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
+> > +
+> > +               if (len > MTK_NOR_PRG_MAX_SIZE)
+> > +                       return -EINVAL;
+> > +               if (op->data.nbytes && !(MTK_NOR_PRG_MAX_SIZE - len))
+> > +                       return -EINVAL;
+> > +               if (op->data.nbytes > (MTK_NOR_PRG_MAX_SIZE - len))
+> > +                       op->data.nbytes = MTK_NOR_PRG_MAX_SIZE - len;
+> >         }
+> >
+> > -       len = MTK_NOR_PRG_MAX_SIZE - op->cmd.nbytes - op->addr.nbytes -
+> > -             op->dummy.nbytes;
+> > -       if (op->data.nbytes > len)
+> > -               op->data.nbytes = len;
+> > -
+> >         return 0;
+> >  }
+> >
+> >  static bool mtk_nor_supports_op(struct spi_mem *mem,
+> >                                 const struct spi_mem_op *op)
+> >  {
+> > -       size_t len;
+> > -
+> >         if (op->cmd.buswidth != 1)
+> >                 return false;
+> >
+> >         if ((op->addr.nbytes == 3) || (op->addr.nbytes == 4)) {
+> > -               switch(op->data.dir) {
+> > +               switch (op->data.dir) {
+> >                 case SPI_MEM_DATA_IN:
+> >                         if (!mtk_nor_match_read(op))
+> >                                 return false;
+> > @@ -226,11 +237,14 @@ static bool mtk_nor_supports_op(struct spi_mem *mem,
+> >                 default:
+> >                         break;
+> >                 }
+> > +       } else {
+> > +               u8 len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
+> > +
+> > +               if (len > MTK_NOR_PRG_MAX_SIZE)
+> > +                       return false;
+> > +               if (op->data.nbytes && !(MTK_NOR_PRG_MAX_SIZE - len))
+> > +                       return false;
+> >         }
+> > -       len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
+> > -       if ((len > MTK_NOR_PRG_MAX_SIZE) ||
+> > -           ((op->data.nbytes) && (len == MTK_NOR_PRG_MAX_SIZE)))
+> > -               return false;
+> >
+> >         return spi_mem_default_supports_op(mem, op);
+> >  }
+> > --
+> > 2.28.0.681.g6f77f65b4e-goog
+> >
+>
+>
+> --
+> Regards,
+> Chuanhong Guo
