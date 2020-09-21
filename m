@@ -2,133 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6174D2732F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C9F02732FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:39:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728197AbgIUThT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 15:37:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60750 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726471AbgIUThT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 15:37:19 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9333A2193E;
-        Mon, 21 Sep 2020 19:37:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600717038;
-        bh=q6xAbhp5lYhc9fHGIo85JYl03Y3OpqUWULIOogMAYOE=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=KLPGrJStFS7lM17yDAvVX9b308Q2YR6uyH3NWRAroUuFuboX9cqHo4NGOlmdk1oWn
-         Us04uv96KGrNj1tTp4OQsgyUEoTCHc/mzpJ5W4u89VZaDN9ZT0UghGAy4EWOX3Q57b
-         1xBB2s2sUqsTErZi0QeC7AKnCzv+LaIXaTxjGLos=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 664F8352303A; Mon, 21 Sep 2020 12:37:18 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 12:37:18 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu-tasks: Fix compilation warning with
- !CONFIG_TASKS_RCU and CONFIG_TINY_RCU
-Message-ID: <20200921193718.GI29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200823030405.22174-1-laurent.pinchart@ideasonboard.com>
- <20200825150222.GP2855@paulmck-ThinkPad-P72>
- <20200825152249.GF6767@pendragon.ideasonboard.com>
- <20200825161629.GS2855@paulmck-ThinkPad-P72>
- <20200917222641.GA589@pendragon.ideasonboard.com>
- <20200917232416.GR29330@paulmck-ThinkPad-P72>
+        id S1728221AbgIUTjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 15:39:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726395AbgIUTjG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 15:39:06 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04553C061755;
+        Mon, 21 Sep 2020 12:39:06 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 4F4E22948A3
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kernel@collabora.com,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Subject: [PATCH] media: uapi: h264: Add documentation to the interface header
+Date:   Mon, 21 Sep 2020 16:38:51 -0300
+Message-Id: <20200921193851.50752-1-ezequiel@collabora.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917232416.GR29330@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 04:24:16PM -0700, Paul E. McKenney wrote:
-> On Fri, Sep 18, 2020 at 01:26:41AM +0300, Laurent Pinchart wrote:
-> > Hi Paul,
-> > 
-> > On Tue, Aug 25, 2020 at 09:16:29AM -0700, Paul E. McKenney wrote:
-> > > On Tue, Aug 25, 2020 at 06:22:49PM +0300, Laurent Pinchart wrote:
-> > > > On Tue, Aug 25, 2020 at 08:02:22AM -0700, Paul E. McKenney wrote:
-> > > > > On Sun, Aug 23, 2020 at 06:04:05AM +0300, Laurent Pinchart wrote:
-> > > > > > Commit 8344496e8b49 ("rcu-tasks: Conditionally compile
-> > > > > > show_rcu_tasks_gp_kthreads()") introduced conditional compilation of
-> > > > > > several functions, but forgot one occurrence of
-> > > > > > show_rcu_tasks_classic_gp_kthread() that causes the compiler to warn of
-> > > > > > an unused static function. Fix it.
-> > > > > > 
-> > > > > > Fixes: 8344496e8b49 ("rcu-tasks: Conditionally compile show_rcu_tasks_gp_kthreads()")
-> > > > > > Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > > > > > ---
-> > > > > >  kernel/rcu/tasks.h | 2 ++
-> > > > > >  1 file changed, 2 insertions(+)
-> > > > > > 
-> > > > > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > > > > > index 835e2df8590a..bddf3968c1eb 100644
-> > > > > > --- a/kernel/rcu/tasks.h
-> > > > > > +++ b/kernel/rcu/tasks.h
-> > > > > > @@ -590,7 +590,9 @@ void exit_tasks_rcu_finish(void) __releases(&tasks_rcu_exit_srcu)
-> > > > > >  }
-> > > > > >  
-> > > > > >  #else /* #ifdef CONFIG_TASKS_RCU */
-> > > > > > +#ifndef CONFIG_TINY_RCU
-> > > > > >  static void show_rcu_tasks_classic_gp_kthread(void) { }
-> > > > > > +#endif /* #ifndef CONFIG_TINY_RCU */
-> > > > > >  void exit_tasks_rcu_start(void) { }
-> > > > > >  void exit_tasks_rcu_finish(void) { exit_tasks_rcu_finish_trace(current); }
-> > > > > >  #endif /* #else #ifdef CONFIG_TASKS_RCU */
-> > > > > 
-> > > > > Good catch!!!
-> > > > > 
-> > > > > But does the following addition of "static inline" work for you?
-> > > > 
-> > > > They do. I initially added a static inline, and realized #ifdef was used
-> > > > extensively when trying to find the proper Fixes: tag, so I went for
-> > > > that. I don't mind either way, as long as this gets fixed :-)
-> > > 
-> > > This is admittedly an odd .h file, given that it is included but once.
-> > > 
-> > > I have applied the following patch with your Reported-by, cc-ing -stable
-> > > for v5.8 and later.
-> > 
-> > I don't see the fix in Linus' master branch. Given that 8344496e8b49 was
-> > introduced in v5.9-rc1, shouldn't this be treated as a regression and
-> > merged before Linus releases v5.9 ?
-> 
-> The current plan is that it goes in during the upcoming merge window,
-> a few weeks from now.  However, it sounds like you need it sooner.
-> I will try doing a pull request and see what happens.
+In preparation for making the interface public,
+document all the structures. Special care is taken to
+annotate those fields that depart from the H264 syntax.
 
-And sent, CCing you.
+This commit only adds documentation and doesn't affect
+functionality in any way.
 
-							Thanx, Paul
+Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+---
+ include/media/h264-ctrls.h | 138 ++++++++++++++++++++++++++++++++++---
+ 1 file changed, 128 insertions(+), 10 deletions(-)
 
-> > > > > ------------------------------------------------------------------------
-> > > > > 
-> > > > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > > > > index 835e2df..3dc3ffc 100644
-> > > > > --- a/kernel/rcu/tasks.h
-> > > > > +++ b/kernel/rcu/tasks.h
-> > > > > @@ -590,9 +590,9 @@ void exit_tasks_rcu_finish(void) __releases(&tasks_rcu_exit_srcu)
-> > > > >  }
-> > > > >  
-> > > > >  #else /* #ifdef CONFIG_TASKS_RCU */
-> > > > > -static void show_rcu_tasks_classic_gp_kthread(void) { }
-> > > > > -void exit_tasks_rcu_start(void) { }
-> > > > > -void exit_tasks_rcu_finish(void) { exit_tasks_rcu_finish_trace(current); }
-> > > > > +static inline void show_rcu_tasks_classic_gp_kthread(void) { }
-> > > > > +static inline void exit_tasks_rcu_start(void) { }
-> > > > > +static inline void exit_tasks_rcu_finish(void) { exit_tasks_rcu_finish_trace(current); }
-> > > > >  #endif /* #else #ifdef CONFIG_TASKS_RCU */
-> > > > >  
-> > > > >  #ifdef CONFIG_TASKS_RUDE_RCU
-> > 
-> > -- 
-> > Regards,
-> > 
-> > Laurent Pinchart
+diff --git a/include/media/h264-ctrls.h b/include/media/h264-ctrls.h
+index ec4799154438..afc8e7c05c18 100644
+--- a/include/media/h264-ctrls.h
++++ b/include/media/h264-ctrls.h
+@@ -46,11 +46,38 @@
+ #define V4L2_CTRL_TYPE_H264_DECODE_PARAMS	0x0114
+ #define V4L2_CTRL_TYPE_H264_PRED_WEIGHTS	0x0115
+ 
++/**
++ * enum v4l2_mpeg_video_h264_decode_mode - Decoding mode
++ *
++ * @V4L2_MPEG_VIDEO_H264_DECODE_MODE_SLICE_BASED: indicates that decoding
++ * is performed one slice at a time. In this mode,
++ * V4L2_CID_MPEG_VIDEO_H264_SLICE_PARAMS must contain the parsed slice
++ * parameters and the OUTPUT buffer must contain a single slice.
++ * V4L2_BUF_CAP_SUPPORTS_M2M_HOLD_CAPTURE_BUF feature is used
++ * in order to support multislice frames.
++ * @V4L2_MPEG_VIDEO_H264_DECODE_MODE_FRAME_BASED: indicates that
++ * decoding is performed per frame. The OUTPUT buffer must contain
++ * all slices and also both fields. This mode is typically supported
++ * by device drivers that are able to parse the slice(s) header(s)
++ * in hardware. When this mode is selected,
++ * V4L2_CID_MPEG_VIDEO_H264_SLICE_PARAMS is not used.
++ */
+ enum v4l2_mpeg_video_h264_decode_mode {
+ 	V4L2_MPEG_VIDEO_H264_DECODE_MODE_SLICE_BASED,
+ 	V4L2_MPEG_VIDEO_H264_DECODE_MODE_FRAME_BASED,
+ };
+ 
++/**
++ * enum v4l2_mpeg_video_h264_start_code - Start code
++ *
++ * @V4L2_MPEG_VIDEO_H264_START_CODE_NONE: slices are passed
++ * to the driver without any start code.
++ * @V4L2_MPEG_VIDEO_H264_START_CODE_ANNEX_B: slices are passed
++ * to the driver with an Annex B start code prefix
++ * (legal start codes can be 3-bytes 0x000001 or 4-bytes 0x00000001).
++ * This mode is typically supported by device drivers that parse
++ * the start code in hardware.
++ */
+ enum v4l2_mpeg_video_h264_start_code {
+ 	V4L2_MPEG_VIDEO_H264_START_CODE_NONE,
+ 	V4L2_MPEG_VIDEO_H264_START_CODE_ANNEX_B,
+@@ -71,6 +98,12 @@ enum v4l2_mpeg_video_h264_start_code {
+ #define V4L2_H264_SPS_FLAG_MB_ADAPTIVE_FRAME_FIELD		0x20
+ #define V4L2_H264_SPS_FLAG_DIRECT_8X8_INFERENCE			0x40
+ 
++/**
++ * struct v4l2_ctrl_h264_sps - H264 sequence parameter set
++ *
++ * All the members on this sequence parameter set structure match the
++ * sequence parameter set syntax as specified by the H264 specification.
++ */
+ struct v4l2_ctrl_h264_sps {
+ 	__u8 profile_idc;
+ 	__u8 constraint_set_flags;
+@@ -101,6 +134,20 @@ struct v4l2_ctrl_h264_sps {
+ #define V4L2_H264_PPS_FLAG_TRANSFORM_8X8_MODE				0x0040
+ #define V4L2_H264_PPS_FLAG_SCALING_MATRIX_PRESENT			0x0080
+ 
++/**
++ * struct v4l2_ctrl_h264_pps - H264 picture parameter set
++ *
++ * Except where noted, all the members on this picture parameter set
++ * structure match the sequence parameter set syntax as specified
++ * by the H264 specification.
++ *
++ * In particular, V4L2_H264_PPS_FLAG_SCALING_MATRIX_PRESENT flag
++ * has a specific meaning. This flag should be set if a non-flat
++ * scaling matrix applies to the picture. In this case, applications
++ * are expected to use V4L2_CID_MPEG_VIDEO_H264_SCALING_MATRIX.
++ * This will be the case if SPS scaling_matrix_present_flag or
++ * PPS pic_scaling_matrix_present_flag syntax elements are set.
++ */
+ struct v4l2_ctrl_h264_pps {
+ 	__u8 pic_parameter_set_id;
+ 	__u8 seq_parameter_set_id;
+@@ -115,6 +162,18 @@ struct v4l2_ctrl_h264_pps {
+ 	__u16 flags;
+ };
+ 
++/**
++ * struct v4l2_ctrl_h264_scaling_matrix - H264 scaling matrices
++ *
++ * @scaling_list_4x4: scaling matrix after applying the inverse
++ * scanning process. Expected list order is Intra Y, Intra Cb,
++ * Intra Cr, Inter Y, Inter Cb, Inter Cr. The values on each
++ * scaling list are expected in raster scan order.
++ * @scaling_list_8x8: scaling matrix after applying the inverse
++ * scanning process. Expected list order is Intra Y, Inter Y,
++ * Intra Cb, Inter Cb, Intra Cr, Inter Cr. The values on each
++ * scaling list are expected in raster scan order.
++ */
+ struct v4l2_ctrl_h264_scaling_matrix {
+ 	__u8 scaling_list_4x4[6][16];
+ 	__u8 scaling_list_8x8[6][64];
+@@ -134,6 +193,12 @@ struct v4l2_h264_weight_factors {
+ 	 ((pps)->weighted_bipred_idc == 1 && \
+ 	  (slice)->slice_type == V4L2_H264_SLICE_TYPE_B))
+ 
++/**
++ * struct v4l2_ctrl_h264_pred_weights - Prediction weight table
++ *
++ * Prediction weight table, which matches the syntax specified
++ * by the H264 specification.
++ */
+ struct v4l2_ctrl_h264_pred_weights {
+ 	__u16 luma_log2_weight_denom;
+ 	__u16 chroma_log2_weight_denom;
+@@ -153,19 +218,41 @@ struct v4l2_ctrl_h264_pred_weights {
+ #define V4L2_H264_BOTTOM_FIELD_REF			0x2
+ #define V4L2_H264_FRAME_REF				0x3
+ 
++/**
++ * struct v4l2_h264_reference - H264 picture reference
++ *
++ * @fields: indicates how the picture is referenced.
++ * Valid values are V4L2_H264_{}_REF.
++ * @index: index into v4l2_ctrl_h264_decode_params.dpb[].
++ */
+ struct v4l2_h264_reference {
+ 	__u8 fields;
+-
+-	/* Index into v4l2_ctrl_h264_decode_params.dpb[] */
+ 	__u8 index;
+ };
+ 
++/**
++ * struct v4l2_ctrl_h264_slice_params - H264 slice parameters
++ *
++ * This structure holds the H264 syntax elements that are specified
++ * as non-invariant for the slices in a given frame.
++ *
++ * Slice invariant syntax elements are contained in struct
++ * v4l2_ctrl_h264_decode_params. This is done to reduce the API surface
++ * on frame-based decoders, where slice header parsing is done by the
++ * hardware.
++ *
++ * Slice invariant syntax elements are specified in specification section
++ * "7.4.3 Slice header semantics".
++ *
++ * Except where noted, the members on this struct match the slice header syntax.
++ *
++ * @header_bit_size: offset in bits to slice_data() from the beginning of this slice.
++ * @ref_pic_list0: reference picture list 0 after applying the per-slice modifications.
++ * @ref_pic_list1: reference picture list 1 after applying the per-slice modifications.
++ */
+ struct v4l2_ctrl_h264_slice_params {
+-	/* Offset in bits to slice_data() from the beginning of this slice. */
+ 	__u32 header_bit_size;
+-
+ 	__u32 first_mb_in_slice;
+-
+ 	__u8 slice_type;
+ 	__u8 colour_plane_id;
+ 	__u8 redundant_pic_cnt;
+@@ -191,22 +278,55 @@ struct v4l2_ctrl_h264_slice_params {
+ #define V4L2_H264_DPB_ENTRY_FLAG_LONG_TERM	0x04
+ #define V4L2_H264_DPB_ENTRY_FLAG_FIELD		0x08
+ 
++/**
++ * struct v4l2_h264_dpb_entry - H264 decoded picture buffer entry
++ *
++ * @reference_ts: timestamp of the V4L2 capture buffer to use as reference.
++ * The timestamp refers to the timestamp field in struct v4l2_buffer.
++ * Use v4l2_timeval_to_ns() to convert the struct timeval to a __u64.
++ * @pic_num: matches PicNum variable assigned during the reference
++ * picture lists construction process.
++ * @frame_num: frame identifier which matches frame_num syntax element.
++ * @fields: indicates how the DPB entry is referenced. Valid values are
++ * V4L2_H264_{}_REF.
++ * @top_field_order_cnt: matches TopFieldOrderCnt picture value.
++ * @bottom_field_order_cnt: matches BottomFieldOrderCnt picture value.
++ * Note that picture field is indicated by v4l2_buffer.field.
++ */
+ struct v4l2_h264_dpb_entry {
+ 	__u64 reference_ts;
+ 	__u32 pic_num;
+ 	__u16 frame_num;
+ 	__u8 fields;
+ 	__u8 reserved[5];
+-	/* Note that field is indicated by v4l2_buffer.field */
+ 	__s32 top_field_order_cnt;
+ 	__s32 bottom_field_order_cnt;
+-	__u32 flags; /* V4L2_H264_DPB_ENTRY_FLAG_* */
++	__u32 flags;
+ };
+ 
+ #define V4L2_H264_DECODE_PARAM_FLAG_IDR_PIC		0x01
+ #define V4L2_H264_DECODE_PARAM_FLAG_FIELD_PIC		0x02
+ #define V4L2_H264_DECODE_PARAM_FLAG_BOTTOM_FIELD	0x04
+ 
++/**
++ * struct v4l2_ctrl_h264_decode_params - H264 decoding parameters
++ *
++ * @dpb: decoded picture buffer.
++ * @nal_ref_idc: slice header syntax element.
++ * @frame_num: slice header syntax element.
++ * @top_field_order_cnt: matches TopFieldOrderCnt picture value.
++ * @bottom_field_order_cnt: matches BottomFieldOrderCnt picture value.
++ * Note that picture field is indicated by v4l2_buffer.field.
++ * @idr_pic_id: slice header syntax element.
++ * @pic_order_cnt_lsb: slice header syntax element.
++ * @delta_pic_order_cnt_bottom: slice header syntax element.
++ * @delta_pic_order_cnt0: slice header syntax element.
++ * @delta_pic_order_cnt1: slice header syntax element.
++ * @dec_ref_pic_marking_bit_size: size in bits of dec_ref_pic_marking()
++ * syntax element.
++ * @pic_order_cnt_bit_size: size in bits of pic order count syntax.
++ * @slice_group_change_cycle: slice header syntax element.
++ */
+ struct v4l2_ctrl_h264_decode_params {
+ 	struct v4l2_h264_dpb_entry dpb[V4L2_H264_NUM_DPB_ENTRIES];
+ 	__u16 nal_ref_idc;
+@@ -218,14 +338,12 @@ struct v4l2_ctrl_h264_decode_params {
+ 	__s32 delta_pic_order_cnt_bottom;
+ 	__s32 delta_pic_order_cnt0;
+ 	__s32 delta_pic_order_cnt1;
+-	/* Size in bits of dec_ref_pic_marking() syntax element. */
+ 	__u32 dec_ref_pic_marking_bit_size;
+-	/* Size in bits of pic order count syntax. */
+ 	__u32 pic_order_cnt_bit_size;
+ 	__u32 slice_group_change_cycle;
+ 
+ 	__u32 reserved;
+-	__u32 flags; /* V4L2_H264_DECODE_PARAM_FLAG_* */
++	__u32 flags;
+ };
+ 
+ #endif
+-- 
+2.27.0
+
