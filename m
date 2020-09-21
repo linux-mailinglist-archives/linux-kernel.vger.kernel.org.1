@@ -2,109 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F42E271FAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85647271FB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbgIUKF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:05:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726341AbgIUKF6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 06:05:58 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 863A1C061755;
-        Mon, 21 Sep 2020 03:05:58 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id o5so12056606wrn.13;
-        Mon, 21 Sep 2020 03:05:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uB9lgh9yJlLcF4TAFLn2cbmVn5XoptteUACXhtU5Bic=;
-        b=LRchwCbJPnQ3FfwWq6KxXaJuPvw2bpddGbkNTXelOPiv5wu8K/WyIv3DPwV0rp3xZ7
-         NvPCvZnqiI6OpKif3vcyspZZLq/jFphm1Cdvg6W/ZWAZSyZty8nDm5Za0QGg3e/ccm7l
-         tzgryxgODHOsy6oOMQaAVECig51STcIIfAJMYnRkENyTVDAGIDAuapFnCJJ2zHfpSSGp
-         ufFdM823BArb7o+Vcm/POXm3A7fHOXfnHR6FlnU8ZJKxAeqvJgmSwJ5vSUaSZ93dJxWC
-         fvcHQTjVoddHr8kcSlcuSgo9B/fiik7PgeUoTHMJ+6Q+ZBMzBwE+lNCIHacnHGf2rOnw
-         u8/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uB9lgh9yJlLcF4TAFLn2cbmVn5XoptteUACXhtU5Bic=;
-        b=P2jnbbuSHbhc2JMFqsKAnN28C64TWVLQTN6Xf/hkFu6846F/fYAGdYwEOgOdIk0Y7m
-         /yC/5THNnaJmHg3/IUsup4bV+ZIEKWrzyHynVke3gX3kd1g1i4SgPV7CwLKREpH4w6IZ
-         r/4rl/vsr3c+gY7dc6cSxESKP/0YpfEmHEF30QEFieP1/NZ3t1yoh7TQeZrlsE9ZytUb
-         uOWTcvOHCvDuaHSur6Ckjkw5gQOlS145V1tXlPEDU17XbK0EllBgsP6+vPdYubAq6im5
-         sMK1tyoZuIeWddLbOBWmQTRXvtM45N9CoppZA/Vyibx+G0ZeEN3Au1NbBUdeSWy9vSML
-         ol7g==
-X-Gm-Message-State: AOAM531Om02Kd/Y9po3tUepy9fgf3tt2FQpvKA/x0BtEmHqkZEc2I0ow
-        XZERh72ODn6RUQXvhtoLA6bgTO4KxfNX8g==
-X-Google-Smtp-Source: ABdhPJznjBjQq9Ooy+DA0/ORvc9hcl6mLcPMKwkNC+WvnFsAwgjChcVdQBOflj+aNKPJao7ewsbwog==
-X-Received: by 2002:adf:f245:: with SMTP id b5mr53928403wrp.288.1600682757069;
-        Mon, 21 Sep 2020 03:05:57 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.113.201])
-        by smtp.gmail.com with ESMTPSA id p1sm35592072wma.0.2020.09.21.03.05.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Sep 2020 03:05:56 -0700 (PDT)
-Subject: Re: [PATCH] arm64: dts: mt8173: elm: Fix nor_flash node property
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20200727074124.3779237-1-hsinyi@chromium.org>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <9ac41633-0133-b6f1-2615-adb5a7c98ed7@gmail.com>
-Date:   Mon, 21 Sep 2020 12:05:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726428AbgIUKHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:07:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43118 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726333AbgIUKHx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 06:07:53 -0400
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8ADDD21D95;
+        Mon, 21 Sep 2020 10:07:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600682872;
+        bh=M6LHkAJAPE05nY/QGWQj/nCsSEFHZUH0Pr9phQ8CsDM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=a0hkdn54ND7Jt2MLUhEwTybGUgV+2MegWaY/Z3amxRopX8O0vmy488k+8TS0u6oJN
+         APX4BePvpq6tJxutWDzhYq/7GKuNc5uYaBNk4AE6nihJDyvUM6ZiUSy4kvxNBUMU92
+         lnMvIssouqPBll8gd6jc1a8BoeWkqzgpZgnL6vP8=
+Received: by mail-ed1-f54.google.com with SMTP id e22so12184504edq.6;
+        Mon, 21 Sep 2020 03:07:52 -0700 (PDT)
+X-Gm-Message-State: AOAM530uldYHKiTo2XvaTjoxwO4SaqPEirVKMjOR1cSuBWNd8fxwKcDk
+        vLChh1zK1X9rje+nhCBD59SVJTOwnLTNRGJAXDY=
+X-Google-Smtp-Source: ABdhPJxW+jgg5O7Hl7ECZYJTkULCTd9X5eBczp3dE+Ml5zWHvVZmxF4xBxBRwBttvPP8zbe1e2luzrCZ/E8eCYgfPDU=
+X-Received: by 2002:a50:e78f:: with SMTP id b15mr52070632edn.104.1600682870785;
+ Mon, 21 Sep 2020 03:07:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200727074124.3779237-1-hsinyi@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200906142146.21266-1-krzk@kernel.org> <20200906142146.21266-2-krzk@kernel.org>
+ <CGME20200911150351eucas1p1c678e3ae20e49209dbf19c000ea033f4@eucas1p1.samsung.com>
+ <20200911145403.GC15290@kozik-lap> <d53d0b67-2368-1434-ab00-fb37b1e824a6@samsung.com>
+In-Reply-To: <d53d0b67-2368-1434-ab00-fb37b1e824a6@samsung.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Mon, 21 Sep 2020 12:07:38 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPfN25243hXfj6ujueV+iLwN5iDRfG41eGfS1YeiPuUJ-w@mail.gmail.com>
+Message-ID: <CAJKOXPfN25243hXfj6ujueV+iLwN5iDRfG41eGfS1YeiPuUJ-w@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] ARM: dts: exynos: Add assigned clock parent to CMU
+ in Exynos4412 Odroid
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 21 Sep 2020 at 11:42, Marek Szyprowski <m.szyprowski@samsung.com> wrote:
+>
+> Hi Krzysztof,
+>
+> On 11.09.2020 16:54, Krzysztof Kozlowski wrote:
+> > On Sun, Sep 06, 2020 at 04:21:45PM +0200, Krzysztof Kozlowski wrote:
+> >> Commit 68605101460e ("ARM: dts: exynos: Add support for audio over HDMI
+> >> for Odroid X/X2/U3") added assigned clocks under Clock Management Unit.
+> >>
+> >> However the dtschema expects "clocks" property if "assigned-clocks" are
+> >> used.  Add reference to input clock, the parent used in
+> >> "assigned-clock-parents" to silence the dtschema warnings:
+> >>
+> >>    arch/arm/boot/dts/exynos4412-odroidu3.dt.yaml: clock-controller@10030000: 'clocks' is a dependency of 'assigned-clocks'
+> >>
+> > Applied.
+>
+> This patch breaks operation of clocks on Odroid X2/U3:
+>
+> # dmesg | grep clk
+> [    0.000000] exynos_clkout_init: failed to register clkout clock
+> [    0.000000] Exynos4x12 clocks: sclk_apll = 1000000000, sclk_mpll =
+> 800000000
+>                  sclk_epll = 45158401, sclk_vpll = 350000000, arm_clk =
+> 1000000000
+> [    2.569484] usb3503 0-0008: unable to request refclk (-517)
+> [    2.848718] s3c-sdhci 12530000.sdhci: clock source 2: mmc_busclk.2
+> (50000000 Hz)
+> [    3.373850] usb3503 0-0008: unable to request refclk (-517)
+> [    3.542777] usb3503 0-0008: unable to request refclk (-517)
+> [    3.544005] usb3503 0-0008: unable to request refclk (-517)
+> [    3.559223] usb3503 0-0008: unable to request refclk (-517)
+>
+> Please revert or drop if possible.
 
+Crap, thanks for noticing. I tested only Odroid X where the usb3503
+came up. I'll try to fix it or revert.
 
-On 27/07/2020 09:41, Hsin-Yi Wang wrote:
-> bus-width and non-removable is not used by the driver.
-> max-frequency should be spi-max-frequency for flash node.
-> 
-> Fixes: 689b937bedde ("arm64: dts: mediatek: add mt8173 elm and hana board")
-> Reported-by: Nicolas Boichat <drinkcat@chromium.org>
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-
-Applied to v5.9-next/dts64
-
-Thanks!
-
-> ---
->   arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi | 5 ++---
->   1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
-> index a5a12b2599a4..01522dd10603 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
-> @@ -431,12 +431,11 @@ &nor_flash {
->   	status = "okay";
->   	pinctrl-names = "default";
->   	pinctrl-0 = <&nor_gpio1_pins>;
-> -	bus-width = <8>;
-> -	max-frequency = <50000000>;
-> -	non-removable;
-> +
->   	flash@0 {
->   		compatible = "jedec,spi-nor";
->   		reg = <0>;
-> +		spi-max-frequency = <50000000>;
->   	};
->   };
->   
-> 
+Best regards,
+Krzysztof
