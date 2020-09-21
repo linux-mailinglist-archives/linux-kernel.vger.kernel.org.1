@@ -2,134 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAF45272C1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB600272C2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:28:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728394AbgIUQ12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:27:28 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:39658 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726430AbgIUQ11 (ORCPT
+        id S1728415AbgIUQ2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:28:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727323AbgIUQ2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:27:27 -0400
-Received: from mail-wm1-f69.google.com ([209.85.128.69])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <andrea.righi@canonical.com>)
-        id 1kKOey-0003Q9-Ao
-        for linux-kernel@vger.kernel.org; Mon, 21 Sep 2020 16:27:24 +0000
-Received: by mail-wm1-f69.google.com with SMTP id w3so40992wmg.4
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 09:27:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=thDClgHDaKGbmUezXRj7DdU1OZCmKXxi2A/KuiV5pMQ=;
-        b=mrvqDwjJkEIwZh3Kn3zoSMRgB4nB8ow0N2SoxHykdPxu4q4+IBlWy5nFESqMzgh1ZF
-         213ZzeUDwMYuaAkXr91aqf0g00GcbqkjGe9k2Dy+J2XK8xRwgFfnhqaVGw7cMMb024Fz
-         /NSPOAgNI9+LURYd3mXYwQWbttafCPes8dUaLtmbyosy5PVB55zfRSLxHLLBT0XXyUD7
-         utYZ+PuTdcnMVfh01dT7pkVq3V+tDttnUACc79acXIjKxZ2wntxf33zSp90sHCABkV+F
-         7z+sVWiNupmBVFeC56mRbqGUUBLP2fGDvYqEokAO4aYoB0BF+jXL6qctetD4PncmIEEn
-         oOow==
-X-Gm-Message-State: AOAM531Qmw0oqi5AVYZZS3AOI7dgQcMWzAjcEWP7gxfpgi6dSOOmOjX7
-        ZFpttJ8T7QcbmhRase7n9AdVd/18wbGjP67hyQlA8IN4uvqGpj/epYjoniQ2NNPhzwAymDCXDkY
-        tBncKL6qlOlinUD0ts6QHDiT8ldymmtz8oyGp3F5w4g==
-X-Received: by 2002:a5d:6a47:: with SMTP id t7mr574919wrw.75.1600705643860;
-        Mon, 21 Sep 2020 09:27:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzgJrK69H5PmmGl9KT2Fwv90aaZb1pxl44DuDt74XBRogjWPGU1j/n5jv6ePksnPSVZYiRRZg==
-X-Received: by 2002:a5d:6a47:: with SMTP id t7mr574894wrw.75.1600705643549;
-        Mon, 21 Sep 2020 09:27:23 -0700 (PDT)
-Received: from localhost (host-79-50-195-5.retail.telecomitalia.it. [79.50.195.5])
-        by smtp.gmail.com with ESMTPSA id q15sm21147833wrr.8.2020.09.21.09.27.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 09:27:22 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 18:27:21 +0200
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Luigi Semenzato <semenzato@google.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
+        Mon, 21 Sep 2020 12:28:05 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAC5CC061755;
+        Mon, 21 Sep 2020 09:28:04 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kKOfR-003EDr-FT; Mon, 21 Sep 2020 16:27:53 +0000
+Date:   Mon, 21 Sep 2020 17:27:53 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Len Brown <len.brown@intel.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [RFC PATCH 2/2] PM: hibernate: introduce opportunistic memory
- reclaim
-Message-ID: <20200921162721.GB3203@xps-13>
-References: <CAA25o9QUtut3+nEs0H8H5qa2H7tQokq+_UoOrAaVGhmYvMTz0Q@mail.gmail.com>
- <20200609061931.GH8413@xps-13>
- <CAJZ5v0jWvQssoajoz2qh3Rbw8gNJSnRxg3NW6R6ayXYeHxodOQ@mail.gmail.com>
+        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-aio@kvack.org" <linux-aio@kvack.org>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+Subject: Re: [PATCH 02/11] mm: call import_iovec() instead of
+ rw_copy_check_uvector() in process_vm_rw()
+Message-ID: <20200921162753.GY3421308@ZenIV.linux.org.uk>
+References: <20200921143434.707844-1-hch@lst.de>
+ <20200921143434.707844-3-hch@lst.de>
+ <20200921150211.GS3421308@ZenIV.linux.org.uk>
+ <ef67787edb2f48548d69caaaff6997ba@AcuMS.aculab.com>
+ <20200921152937.GX3421308@ZenIV.linux.org.uk>
+ <226e03bf941844eba4d64af31633c177@AcuMS.aculab.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJZ5v0jWvQssoajoz2qh3Rbw8gNJSnRxg3NW6R6ayXYeHxodOQ@mail.gmail.com>
+In-Reply-To: <226e03bf941844eba4d64af31633c177@AcuMS.aculab.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 05:36:30PM +0200, Rafael J. Wysocki wrote:
-...
-> > > 3. It is not clear how much mm_reclaim/release is going to help.  If
-> > > the preloading of the swapped-out pages uses some kind of LIFO order,
-> > > and can batch multiple pages, then it might help.  Otherwise demand
-> > > paging is likely to be more effective.  If the preloading does indeed
-> > > help, it may be useful to explain why in the commit message.
-> >
-> > Swap readahead helps a lot in terms of performance if we preload all at
-> > once. But I agree that for the majority of cases on-demand paging just
-> > works fine.
-> >
-> > My specific use-case for mm_reclaim/release is to make sure a VM
-> > that is just resumed is immediately "fast" by preloading the swapped-out
-> > pages back to memory all at once.
-> >
-> > Without mm_reclaim/release I've been using the trick of running swapoff
-> > followed by a swapon to force all the pages back to memory, but it's
-> > kinda ugly and I was looking for a better way to do this. I've been
-> > trying also the ptrace() + reading all the VMAs via /proc/pid/mem, it
-> > works, but it's not as fast as swapoff+swapon or mm_reclaim/release.
-> >
-> > I'll report performance numbers of mm_reclaim/release vs ptrace() +
-> > /proc/pid/mem in the next version of this patch.
+On Mon, Sep 21, 2020 at 03:44:00PM +0000, David Laight wrote:
+> From: Al Viro
+> > Sent: 21 September 2020 16:30
+> > 
+> > On Mon, Sep 21, 2020 at 03:21:35PM +0000, David Laight wrote:
+> > 
+> > > You really don't want to be looping through the array twice.
+> > 
+> > Profiles, please.
 > 
-> Sorry for the huge delay.
+> I did some profiling of send() v sendmsg() much earlier in the year.
+> I can't remember the exact details but the extra cost of sendmsg()
+> is far more than you might expect.
+> (I was timing sending fully built IPv4 UDP packets using a raw socket.)
 > 
-> I'm wondering what your vision regarding the use of this mechanism in
-> practice is?
+> About half the difference does away if you change the
+> copy_from_user() to __copy_from_user() when reading the struct msghdr
+> and iov[] from userspace (user copy hardening is expensive).
+
+Wha...?  So the difference is within 4 times the overhead of the
+hardening checks done for one call of copy_from_user()?
+
+> The rest is just code path, my gut feeling is that a lot of that
+> is in import_iovec().
 > 
-> In the "Testing" part of the changelog you say that "in the
-> 5.7-mm_reclaim case a user-space daemon detects when the system is
-> idle and triggers the opportunistic memory reclaim via
-> /sys/power/mm_reclaim/run", but this may not be entirely practical,
-> because hibernation is not triggered every time the system is idle.
-> 
-> In particular, how much time is required for the opportunistic reclaim
-> to run before hibernation so as to make a significant difference?
-> 
-> Thanks!
+> Remember semdmsg() is likely to be called with an iov count of 1.
 
-Hi Raphael,
-
-the typical use-case for this feature is to hibernate "spot" cloud
-instances (low-priority instances that can be stopped at any time to
-prioritize more privileged instances, see for example [1]). In this
-scenario hibernation can be used as a "nicer" way to stop low priority
-instances, instead of shutting them down.
-
-Opportunistic memory reclaim doesn't really reduce the time to hibernate
-overall: performance wise regular hibernation and hibernation w/
-opportunistic reclaim require pretty much the same time.
-
-But the advantage of opportunistic reclaim is that we can "prepare" a
-system for hibernation using some idle time, so when we really need to
-hibernate a low priority instance, because a high priority instance
-requires to run, hibernation can be significantly faster.
-
-What do you think about it? Do you see a better way to achieve this
-goal?
-
-Thanks,
--Andrea
-
-[1] https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-interruptions.html
+... which makes that loop unlikely to be noticable in the entire
+mess, whether you pass it once or twice.  IOW, unless you can show
+profiles where that loop is sufficiently hot or if you can show
+the timings change from splitting it in two, I'll remain very
+sceptical about that assertion.
