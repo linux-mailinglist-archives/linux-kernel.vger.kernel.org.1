@@ -2,32 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B51B22724D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC922724C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727620AbgIUNLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:11:48 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13806 "EHLO huawei.com"
+        id S1727487AbgIUNLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:11:11 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13807 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727446AbgIUNKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:10:52 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id DE11319AC4F8DDEF2E50;
-        Mon, 21 Sep 2020 21:10:49 +0800 (CST)
+        id S1727451AbgIUNLC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:11:02 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 46D57CD31CBB9DC7C72E;
+        Mon, 21 Sep 2020 21:10:50 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 21 Sep 2020 21:10:39 +0800
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 21 Sep 2020 21:10:41 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Satish Kharat <satishkh@cisco.com>,
-        Sesidhar Baddela <sebaddel@cisco.com>,
-        Karan Tilak Kumar <kartilak@cisco.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+CC:     <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         "Qinglang Miao" <miaoqinglang@huawei.com>
-Subject: [PATCH -next] scsi: fnic: simplify the return expression of vnic_cq_alloc()
-Date:   Mon, 21 Sep 2020 21:11:03 +0800
-Message-ID: <20200921131103.93132-1-miaoqinglang@huawei.com>
+Subject: [PATCH -next] serial: mvebu-uart: simplify the return expression of mvebu_uart_probe()
+Date:   Mon, 21 Sep 2020 21:11:05 +0800
+Message-ID: <20200921131105.93177-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -42,35 +39,25 @@ Simplify the return expression.
 
 Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- drivers/scsi/fnic/vnic_cq.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ drivers/tty/serial/mvebu-uart.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/scsi/fnic/vnic_cq.c b/drivers/scsi/fnic/vnic_cq.c
-index c5db32eda..97f04d3f8 100644
---- a/drivers/scsi/fnic/vnic_cq.c
-+++ b/drivers/scsi/fnic/vnic_cq.c
-@@ -31,8 +31,6 @@ void vnic_cq_free(struct vnic_cq *cq)
- int vnic_cq_alloc(struct vnic_dev *vdev, struct vnic_cq *cq, unsigned int index,
- 	unsigned int desc_count, unsigned int desc_size)
- {
--	int err;
--
- 	cq->index = index;
- 	cq->vdev = vdev;
+diff --git a/drivers/tty/serial/mvebu-uart.c b/drivers/tty/serial/mvebu-uart.c
+index 4e9a59071..7443c0506 100644
+--- a/drivers/tty/serial/mvebu-uart.c
++++ b/drivers/tty/serial/mvebu-uart.c
+@@ -912,10 +912,7 @@ static int mvebu_uart_probe(struct platform_device *pdev)
+ 	udelay(1);
+ 	writel(0, port->membase + UART_CTRL(port));
  
-@@ -42,11 +40,7 @@ int vnic_cq_alloc(struct vnic_dev *vdev, struct vnic_cq *cq, unsigned int index,
- 		return -EINVAL;
- 	}
- 
--	err = vnic_dev_alloc_desc_ring(vdev, &cq->ring, desc_count, desc_size);
--	if (err)
--		return err;
--
+-	ret = uart_add_one_port(&mvebu_uart_driver, port);
+-	if (ret)
+-		return ret;
 -	return 0;
-+	return vnic_dev_alloc_desc_ring(vdev, &cq->ring, desc_count, desc_size);
++	return uart_add_one_port(&mvebu_uart_driver, port);
  }
  
- void vnic_cq_init(struct vnic_cq *cq, unsigned int flow_control_enable,
+ static struct mvebu_uart_driver_data uart_std_driver_data = {
 -- 
 2.23.0
 
