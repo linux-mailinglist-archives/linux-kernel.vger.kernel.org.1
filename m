@@ -2,106 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BAB92725EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 596A92725F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:43:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727136AbgIUNnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:43:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55992 "EHLO mail.kernel.org"
+        id S1727331AbgIUNnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:43:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726471AbgIUNnJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:43:09 -0400
+        id S1726471AbgIUNna (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:43:30 -0400
 Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 335472084C;
-        Mon, 21 Sep 2020 13:43:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D10B52084C;
+        Mon, 21 Sep 2020 13:43:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600695788;
-        bh=ppWgQwIPJFgXvpl5SyaBDqV8l2T0GGovdfeRTgIHCFU=;
+        s=default; t=1600695810;
+        bh=DmCZ7P6LNdCNVX2iURc2Tv+RTbArR0Kg1mI/ej12EbE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WxRp7fNzBJpKQt2ftVmrIe0M00opXLZn+F2d5mDdpSKGn8lUe/l/M4uRs6n6sREdy
-         bW0hA+DLr0AjQqCJBgrHPFgxzbq84ceM4vkef6/Rx84et6Iin19dgiliB/AzP8PonQ
-         4ut8OFK2UunvFo4cAYtKyJOqaJGFdcG9RYMVTRe0=
-Date:   Mon, 21 Sep 2020 14:43:02 +0100
+        b=eNUZiyd9+5I4cLqEMKfuSXtwPRVFP3NRk7NB0oqya/i5QIDgYnbqfsN9qWw0VpSiO
+         J3wuGwe/sY9cVi/OknDUnRC74FuQf99iOQpTLGIF/MyBKc3G4nnCEX9sM2xKK/PSuf
+         dID2QWoDSef6LQt4+jkZjo4oEeIB/T/U85CZd3VM=
+Date:   Mon, 21 Sep 2020 14:43:25 +0100
 From:   Will Deacon <will@kernel.org>
-To:     Alexandru Elisei <alexandru.elisei@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, maz@kernel.org, catalin.marinas@arm.com,
-        swboyd@chromium.org, sumit.garg@linaro.org,
-        Julien Thierry <julien.thierry@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Pouloze <suzuki.poulose@arm.com>,
-        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu
-Subject: Re: [PATCH v6 5/7] KVM: arm64: pmu: Make overflow handler NMI safe
-Message-ID: <20200921134301.GJ2139@willie-the-truck>
-References: <20200819133419.526889-1-alexandru.elisei@arm.com>
- <20200819133419.526889-6-alexandru.elisei@arm.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     robin.murphy@arm.com, joro@8bytes.org,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, maz@kernel.org,
+        linuxarm@huawei.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] iommu/arm-smmu-v3: Improve cmdq lock efficiency
+Message-ID: <20200921134324.GK2139@willie-the-truck>
+References: <1598018062-175608-1-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200819133419.526889-6-alexandru.elisei@arm.com>
+In-Reply-To: <1598018062-175608-1-git-send-email-john.garry@huawei.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 02:34:17PM +0100, Alexandru Elisei wrote:
-> From: Julien Thierry <julien.thierry@arm.com>
+On Fri, Aug 21, 2020 at 09:54:20PM +0800, John Garry wrote:
+> As mentioned in [0], the CPU may consume many cycles processing
+> arm_smmu_cmdq_issue_cmdlist(). One issue we find is the cmpxchg() loop to
+> get space on the queue takes a lot of time once we start getting many
+> CPUs contending - from experiment, for 64 CPUs contending the cmdq,
+> success rate is ~ 1 in 12, which is poor, but not totally awful.
 > 
-> kvm_vcpu_kick() is not NMI safe. When the overflow handler is called from
-> NMI context, defer waking the vcpu to an irq_work queue.
-> 
-> Cc: Julien Thierry <julien.thierry.kdev@gmail.com>
-> Cc: Marc Zyngier <marc.zyngier@arm.com>
-> Cc: Will Deacon <will.deacon@arm.com>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: James Morse <james.morse@arm.com>
-> Cc: Suzuki K Pouloze <suzuki.poulose@arm.com>
-> Cc: kvm@vger.kernel.org
-> Cc: kvmarm@lists.cs.columbia.edu
-> Signed-off-by: Julien Thierry <julien.thierry@arm.com>
-> Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
-> ---
->  arch/arm64/kvm/pmu-emul.c | 25 ++++++++++++++++++++++++-
->  include/kvm/arm_pmu.h     |  1 +
->  2 files changed, 25 insertions(+), 1 deletion(-)
+> This series removes that cmpxchg() and replaces with an atomic_add,
+> same as how the actual cmdq deals with maintaining the prod pointer.
 
-I'd like an Ack from the KVM side on this one, but some minor comments
-inline.
+I'm still not a fan of this. Could you try to adapt the hacks I sent before,
+please? I know they weren't quite right (I have no hardware to test on), but
+the basic idea is to fall back to a spinlock if the cmpxchg() fails. The
+queueing in the spinlock implementation should avoid the contention.
 
-> diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
-> index f0d0312c0a55..30268397ed06 100644
-> --- a/arch/arm64/kvm/pmu-emul.c
-> +++ b/arch/arm64/kvm/pmu-emul.c
-> @@ -433,6 +433,22 @@ void kvm_pmu_sync_hwstate(struct kvm_vcpu *vcpu)
->  	kvm_pmu_update_state(vcpu);
->  }
->  
-> +/**
-> + * When perf interrupt is an NMI, we cannot safely notify the vcpu corresponding
-> + * to the event.
-> + * This is why we need a callback to do it once outside of the NMI context.
-> + */
-> +static void kvm_pmu_perf_overflow_notify_vcpu(struct irq_work *work)
-> +{
-> +	struct kvm_vcpu *vcpu;
-> +	struct kvm_pmu *pmu;
-> +
-> +	pmu = container_of(work, struct kvm_pmu, overflow_work);
-> +	vcpu = kvm_pmc_to_vcpu(&pmu->pmc[0]);
-
-Can you spell this kvm_pmc_to_vcpu(pmu->pmc); ?
-
-> +
-> +	kvm_vcpu_kick(vcpu);
-
-How do we guarantee that the vCPU is still around by the time this runs?
-Sorry to ask such a horrible question, but I don't see anything associating
-the workqueue with the lifetime of the vCPU.
+Thanks,
 
 Will
