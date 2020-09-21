@@ -2,129 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC1B272965
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B7927296B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727648AbgIUPFi convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Sep 2020 11:05:38 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:24728 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726471AbgIUPFh (ORCPT
+        id S1727477AbgIUPFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 11:05:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726471AbgIUPFj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 11:05:37 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-267-pfN4bYDxOjGQU1qcEZSq4g-1; Mon, 21 Sep 2020 16:05:33 +0100
-X-MC-Unique: pfN4bYDxOjGQU1qcEZSq4g-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 21 Sep 2020 16:05:32 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 21 Sep 2020 16:05:32 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Christoph Hellwig' <hch@lst.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-Subject: RE: [PATCH 04/11] iov_iter: explicitly check for CHECK_IOVEC_ONLY in
- rw_copy_check_uvector
-Thread-Topic: [PATCH 04/11] iov_iter: explicitly check for CHECK_IOVEC_ONLY in
- rw_copy_check_uvector
-Thread-Index: AQHWkCRT6PkpgoAV6EexsDeYdekosqlzL1uQ
-Date:   Mon, 21 Sep 2020 15:05:32 +0000
-Message-ID: <7336624280b8444fb4cb00407317741b@AcuMS.aculab.com>
-References: <20200921143434.707844-1-hch@lst.de>
- <20200921143434.707844-5-hch@lst.de>
-In-Reply-To: <20200921143434.707844-5-hch@lst.de>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 21 Sep 2020 11:05:39 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5C27C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 08:05:38 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id b124so9466193pfg.13
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 08:05:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=E3HUZZxUSuYAIS6Josi6Etr5CwzXWiSM9WplOQE3+/4=;
+        b=i0b+v+UewEFdrK1rfJXPeWfXfJmpwcAzHDpTF99JMyh8QjSsAasPCDvGEzq3W7WSrD
+         Ak5HU0JiITR+UAVrXDSiFjakr2vejiRDov67kX6px9IK50hhdqix6gpZmV059no5xG/t
+         PA4PgimoAfeZIs94fRHaDlASikrNScVk9Nnqa8q//9Yt2jBCJNbAgRsfiiFsoGvXOQFn
+         5NYI955SXhslt17AEOq1Bfe7PDtBQ7fzEdZlEEasE0clpHKqFZKaFjsgNh+uZf+VHY3V
+         ClSSS8mSUWxHFVh2B1xubgXCU2A+8S4l8hlof6A03lkItjgg6YuH5LEz4QLk5Jj7KMO6
+         J1sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=E3HUZZxUSuYAIS6Josi6Etr5CwzXWiSM9WplOQE3+/4=;
+        b=i7XE7WjMTHNfEZIta6ACa8aZ4nNC874kY0OB6uuCmXyATFTzQfgaqArep863tSI2dp
+         nNywuIeTwZYfY6BBKBqURrCkUv0GQ30Ac+DSQkYn83OTdj2/ydr33TvNBooI4eYQmMlW
+         upnr2BOBuTOM1tCFtK+J672uOSQgjnOv6ps+U8LYTn4oEYG9l1uVYXlGTzZv59vyhdPz
+         r8HPqyq6S4lG7ydtxktUjSsj9p9hM4fo8zQC9nkXdvJFCxGDqf05DOSK4obGW3OohIVU
+         NNnL/bLQlG/BbmFTN8LhgP7MXllwuV3NfHkU8HO9gFUfKzBYDTKG8uturzbdkXLnQESX
+         N/sA==
+X-Gm-Message-State: AOAM533IwE5R0vfoF4wg4u/PcerygPZfCgR/2qM76uVHQL8i4/hQt8yp
+        Xf4iMghc2y0tcGhF5ze1N2O+5tX+8dKvYw==
+X-Google-Smtp-Source: ABdhPJwDNe6fpLdzsdgYvdrV+5QTOe6R7R2KkNUljRPnUIXsBAaabMQORhFBC7M+iAUC7lSP2h/v/Q==
+X-Received: by 2002:a17:902:b7c4:b029:d2:173:34ba with SMTP id v4-20020a170902b7c4b02900d2017334bamr368738plz.57.1600700738361;
+        Mon, 21 Sep 2020 08:05:38 -0700 (PDT)
+Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
+        by smtp.gmail.com with ESMTPSA id 124sm12169946pfd.132.2020.09.21.08.05.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 08:05:37 -0700 (PDT)
+From:   Kevin Hilman <khilman@baylibre.com>
+To:     Neil Armstrong <narmstrong@baylibre.com>,
+        lorenzo.pieralisi@arm.com, yue.wang@Amlogic.com, robh@kernel.org
+Cc:     linux-pci@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: Re: [PATCH] PCI: dwc/meson: do not fail on wait linkup timeout
+In-Reply-To: <20200921074953.25289-1-narmstrong@baylibre.com>
+References: <20200921074953.25289-1-narmstrong@baylibre.com>
+Date:   Mon, 21 Sep 2020 08:05:37 -0700
+Message-ID: <7himc7cgqm.fsf@baylibre.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-Content-Language: en-US
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig
-> Sent: 21 September 2020 15:34
-> 
-> Explicitly check for the magic value insted of implicitly relying on
-> its numeric representation.   Also drop the rather pointless unlikely
-> annotation.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  lib/iov_iter.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/lib/iov_iter.c b/lib/iov_iter.c
-> index d7e72343c360eb..a64867501a7483 100644
-> --- a/lib/iov_iter.c
-> +++ b/lib/iov_iter.c
-> @@ -1709,8 +1709,7 @@ static ssize_t rw_copy_check_uvector(int type,
->  			ret = -EINVAL;
->  			goto out;
->  		}
-> -		if (type >= 0
-> -		    && unlikely(!access_ok(buf, len))) {
-> +		if (type != CHECK_IOVEC_ONLY && !access_ok(buf, len)) {
->  			ret = -EFAULT;
->  			goto out;
->  		}
-> @@ -1824,7 +1823,7 @@ static ssize_t compat_rw_copy_check_uvector(int type,
->  		}
->  		if (len < 0)	/* size_t not fitting in compat_ssize_t .. */
->  			goto out;
-> -		if (type >= 0 &&
-> +		if (type != CHECK_IOVEC_ONLY &&
->  		    !access_ok(compat_ptr(buf), len)) {
->  			ret = -EFAULT;
->  			goto out;
-> --
-> 2.28.0
+Neil Armstrong <narmstrong@baylibre.com> writes:
 
-I've actually no idea:
-1) Why there is an access_ok() check here.
-   It will be repeated by the user copy functions.
-2) Why it isn't done when called from mm/process_vm_access.c.
-   Ok, the addresses refer to a different process, but they
-   must still be valid user addresses.
+> When establish link timeouts, probe fails but the error is unrelated since
+> the PCIe controller has been probed succesfully.
+>
+> Align with most of the other dw-pcie drivers and ignore return of
+> dw_pcie_wait_for_link() in the host_init callback.
+>
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
 
-Is 2 a legacy from when access_ok() actually checked that the
-addresses were mapped into the process's address space?
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+Tested-by: Kevin Hilman <khilman@baylibre.com>
