@@ -2,122 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CD6327238C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAED4272383
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726775AbgIUMQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 08:16:41 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2903 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726341AbgIUMQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 08:16:40 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id 7FCFE8CEFE2E4464AA92;
-        Mon, 21 Sep 2020 13:16:39 +0100 (IST)
-Received: from localhost (10.52.121.13) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 21 Sep
- 2020 13:16:38 +0100
-Date:   Mon, 21 Sep 2020 13:15:00 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Sean V Kelley <sean.v.kelley@intel.com>
-CC:     <bhelgaas@google.com>, <rafael.j.wysocki@intel.com>,
-        <ashok.raj@intel.com>, <tony.luck@intel.com>,
-        <sathyanarayanan.kuppuswamy@intel.com>, <qiuxu.zhuo@intel.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 09/10] PCI/PME: Add pcie_walk_rcec() to RCEC PME
- handling
-Message-ID: <20200921131500.00004f57@Huawei.com>
-In-Reply-To: <20200918204603.62100-10-sean.v.kelley@intel.com>
-References: <20200918204603.62100-1-sean.v.kelley@intel.com>
-        <20200918204603.62100-10-sean.v.kelley@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1726752AbgIUMPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 08:15:40 -0400
+Received: from crapouillou.net ([89.234.176.41]:56388 "EHLO crapouillou.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726341AbgIUMPj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 08:15:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1600690536; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mGprzFFJYLo0M14pXaYLkW50BlwftPDtwFiBapOegOI=;
+        b=PbNnOhsEZJRJ+6ZpIJp3hyYfB2GUIhUwlOCyHB8EMYs7AsSr0Ww9sv90EA2OM9W0SFYLIx
+        lZJAk7noufQ48+Dtci6Qg30F8/RIoi9g+CUVCtWx6J7Lzup+1ckV4dtUwOSuY1nxUTHbdj
+        X4F/+hwyA8iblmw9tjvhjS7lXko4Bn4=
+Date:   Mon, 21 Sep 2020 14:15:23 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v4 1/2] USB: PHY: JZ4770: Remove unnecessary function
+ calls.
+To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
+Cc:     balbi@kernel.org, gregkh@linuxfoundation.org, kishon@ti.com,
+        vkoul@kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, christophe.jaillet@wanadoo.fr,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
+        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
+Message-Id: <NPC0HQ.G7SR799C7LIL3@crapouillou.net>
+In-Reply-To: <20200919084225.112072-2-zhouyanjie@wanyeetech.com>
+References: <20200919084225.112072-1-zhouyanjie@wanyeetech.com>
+        <20200919084225.112072-2-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.121.13]
-X-ClientProxiedBy: lhreml744-chm.china.huawei.com (10.201.108.194) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Sep 2020 13:46:02 -0700
-Sean V Kelley <sean.v.kelley@intel.com> wrote:
 
-> The Root Complex Event Collectors(RCEC) appear as peers of Root Ports
-> and also have the PME capability. As with AER, there is a need to be
-> able to walk the RCiEPs associated with their RCEC for purposes of
-> acting upon them with callbacks. So add RCEC support through the use
-> of pcie_walk_rcec() to the current PME service driver and attach the
-> PME service driver to the RCEC device.
-> 
-> Co-developed-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
 
-I'm a lot less familiar with this code, but looks
-good to me.
+Le sam. 19 sept. 2020 =C3=A0 16:42, =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanji=
+e)=20
+<zhouyanjie@wanyeetech.com> a =C3=A9crit :
+> Remove unnecessary "of_match_ptr()", because Ingenic SoCs all
+> depend on Device Tree.
+>=20
+> Suggested-by: Paul Cercueil <paul@crapouillou.net>
+> Signed-off-by: =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) <zhouyanjie@wany=
+eetech.com>
 
-Thanks,
+Reviewed-by: Paul Cercueil <paul@crapouillou.net>
 
-Jonathan
+Cheers,
+-Paul
 
 > ---
->  drivers/pci/pcie/pme.c | 15 +++++++++++----
->  1 file changed, 11 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/pci/pcie/pme.c b/drivers/pci/pcie/pme.c
-> index 6a32970bb731..87799166c96a 100644
-> --- a/drivers/pci/pcie/pme.c
-> +++ b/drivers/pci/pcie/pme.c
-> @@ -310,7 +310,10 @@ static int pcie_pme_can_wakeup(struct pci_dev *dev, void *ign)
->  static void pcie_pme_mark_devices(struct pci_dev *port)
->  {
->  	pcie_pme_can_wakeup(port, NULL);
-> -	if (port->subordinate)
-> +
-> +	if (pci_pcie_type(port) == PCI_EXP_TYPE_RC_EC)
-> +		pcie_walk_rcec(port, pcie_pme_can_wakeup, NULL);
-> +	else if (port->subordinate)
->  		pci_walk_bus(port->subordinate, pcie_pme_can_wakeup, NULL);
->  }
->  
-> @@ -320,10 +323,15 @@ static void pcie_pme_mark_devices(struct pci_dev *port)
->   */
->  static int pcie_pme_probe(struct pcie_device *srv)
->  {
-> -	struct pci_dev *port;
-> +	struct pci_dev *port = srv->port;
->  	struct pcie_pme_service_data *data;
->  	int ret;
->  
-> +	/* Limit to Root Ports or Root Complex Event Collectors */
-> +	if ((pci_pcie_type(port) != PCI_EXP_TYPE_RC_EC) &&
-> +	    (pci_pcie_type(port) != PCI_EXP_TYPE_ROOT_PORT))
-> +		return -ENODEV;
-> +
->  	data = kzalloc(sizeof(*data), GFP_KERNEL);
->  	if (!data)
->  		return -ENOMEM;
-> @@ -333,7 +341,6 @@ static int pcie_pme_probe(struct pcie_device *srv)
->  	data->srv = srv;
->  	set_service_data(srv, data);
->  
-> -	port = srv->port;
->  	pcie_pme_interrupt_enable(port, false);
->  	pcie_clear_root_pme_status(port);
->  
-> @@ -445,7 +452,7 @@ static void pcie_pme_remove(struct pcie_device *srv)
->  
->  static struct pcie_port_service_driver pcie_pme_driver = {
->  	.name		= "pcie_pme",
-> -	.port_type	= PCI_EXP_TYPE_ROOT_PORT,
-> +	.port_type	= PCIE_ANY_PORT,
->  	.service	= PCIE_PORT_SERVICE_PME,
->  
->  	.probe		= pcie_pme_probe,
+>=20
+> Notes:
+>     v3:
+>     New patch.
+>=20
+>     v3->v4:
+>     No change.
+>=20
+>  drivers/usb/phy/phy-jz4770.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/usb/phy/phy-jz4770.c=20
+> b/drivers/usb/phy/phy-jz4770.c
+> index f6d3731581eb..4025da20b3fd 100644
+> --- a/drivers/usb/phy/phy-jz4770.c
+> +++ b/drivers/usb/phy/phy-jz4770.c
+> @@ -350,7 +350,7 @@ static struct platform_driver ingenic_phy_driver=20
+> =3D {
+>  	.probe		=3D jz4770_phy_probe,
+>  	.driver		=3D {
+>  		.name	=3D "jz4770-phy",
+> -		.of_match_table =3D of_match_ptr(ingenic_usb_phy_of_matches),
+> +		.of_match_table =3D ingenic_usb_phy_of_matches,
+>  	},
+>  };
+>  module_platform_driver(ingenic_phy_driver);
+> --
+> 2.11.0
+>=20
 
 
