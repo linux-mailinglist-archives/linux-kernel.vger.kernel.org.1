@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3B8E272DF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54D17272D70
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:40:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729709AbgIUQos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:44:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50204 "EHLO mail.kernel.org"
+        id S1729334AbgIUQkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:40:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729702AbgIUQon (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:44:43 -0400
+        id S1729297AbgIUQj6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:39:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC8DF2076B;
-        Mon, 21 Sep 2020 16:44:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 70F92239A1;
+        Mon, 21 Sep 2020 16:39:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706682;
-        bh=QkzFQtbOcFPW+YmrwgpR1H5unI/XIA0Ur6NRyF5Tddo=;
+        s=default; t=1600706397;
+        bh=GjfgUED+UOegiQwuYD4TwHF7x3AJrCwl1b2b4EYm5c0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f/nHvgxE+JSF96kDAZ7QergbT3FkdprpdnexYBNtStEXaCTxh6DeC5q9SqblXVNPi
-         3N1Wv0GD2aCvvb4sSDUfyixx1J8+5ZMx7iuCB+EHi38sbnyGcsl7MAKrCguMwY02/r
-         gKhJqONMCVeHpac1JvA6SC2ZYn9FA7vb6YQaS3Us=
+        b=J3+lXIOR3ST+JYy7OH7RjwvUZAGuSZBsyNC9Ljnvz0sOgJbZIBzyCatiSbI9oEGpW
+         F52LbXNl8WDu0gucCjc5wm5PNxqpsxCij101jIsCKwJw7brCpYKT8V21o0grSQhsXH
+         MGf8sUWwxiwwdr2yO9pggtGQYyshBuzlnQsitZNI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 051/118] ASoC: core: Do not cleanup uninitialized dais on soc_pcm_open failure
+        stable@vger.kernel.org, AceLan Kao <acelan.kao@canonical.com>,
+        Sebastian Sjoholm <ssjoholm@mac.com>,
+        Dan Williams <dcbw@redhat.com>,
+        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.14 56/94] USB: serial: option: support dynamic Quectel USB compositions
 Date:   Mon, 21 Sep 2020 18:27:43 +0200
-Message-Id: <20200921162038.697814598@linuxfoundation.org>
+Message-Id: <20200921162038.119311600@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
-References: <20200921162036.324813383@linuxfoundation.org>
+In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
+References: <20200921162035.541285330@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,57 +45,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cezary Rojewski <cezary.rojewski@intel.com>
+From: Bjørn Mork <bjorn@mork.no>
 
-[ Upstream commit 20244b2a8a8728c63233d33146e007dcacbcc5c4 ]
+commit 2bb70f0a4b238323e4e2f392fc3ddeb5b7208c9e upstream.
 
-Introduce for_each_rtd_dais_rollback macro which behaves exactly like
-for_each_codec_dais_rollback and its cpu_dais equivalent but for all
-dais instead.
+The USB composition, defining the set of exported functions, is dynamic
+in newer Quectel modems.  Default functions can be disabled and
+alternative functions can be enabled instead.  The alternatives
+includes class functions using interface pairs, which should be
+handled by the respective class drivers.
 
-Use newly added macro to fix soc_pcm_open error path and prevent
-uninitialized dais from being cleaned-up.
+Active interfaces are numbered consecutively, so static
+blacklisting based on interface numbers will fail when the
+composition changes.  An example of such an error, where the
+option driver has bound to the CDC ECM data interface,
+preventing cdc_ether from handling this function:
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Fixes: 5d9fa03e6c35 ("ASoC: soc-pcm: tidyup soc_pcm_open() order")
-Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/20200907111939.16169-1-cezary.rojewski@intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+ T: Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#= 2 Spd=480 MxCh= 0
+ D: Ver= 2.00 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs= 1
+ P: Vendor=2c7c ProdID=0125 Rev= 3.18
+ S: Manufacturer=Quectel
+ S: Product=EC25-AF
+ C:* #Ifs= 6 Cfg#= 1 Atr=a0 MxPwr=500mA
+ A: FirstIf#= 4 IfCount= 2 Cls=02(comm.) Sub=06 Prot=00
+ I:* If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+ E: Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+ E: Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+ I:* If#= 1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+ E: Ad=83(I) Atr=03(Int.) MxPS= 10 Ivl=32ms
+ E: Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+ E: Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+ I:* If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+ E: Ad=85(I) Atr=03(Int.) MxPS= 10 Ivl=32ms
+ E: Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+ E: Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+ I:* If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+ E: Ad=87(I) Atr=03(Int.) MxPS= 10 Ivl=32ms
+ E: Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+ E: Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+ I:* If#= 4 Alt= 0 #EPs= 1 Cls=02(comm.) Sub=06 Prot=00 Driver=(none)
+ E: Ad=89(I) Atr=03(Int.) MxPS= 16 Ivl=32ms
+ I:* If#= 5 Alt= 0 #EPs= 0 Cls=0a(data ) Sub=00 Prot=00 Driver=option
+ I: If#= 5 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=option
+ E: Ad=88(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+ E: Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+
+Another device with the same id gets correct drivers, since the
+interface of the network function happens to be blacklisted by option:
+
+ T: Bus=01 Lev=02 Prnt=02 Port=01 Cnt=01 Dev#= 3 Spd=480 MxCh= 0
+ D: Ver= 2.00 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs= 1
+ P: Vendor=2c7c ProdID=0125 Rev= 3.18
+ S: Manufacturer=Android
+ S: Product=Android
+ C:* #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=500mA
+ I:* If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+ E: Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+ E: Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+ I:* If#= 1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+ E: Ad=83(I) Atr=03(Int.) MxPS= 10 Ivl=32ms
+ E: Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+ E: Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+ I:* If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+ E: Ad=85(I) Atr=03(Int.) MxPS= 10 Ivl=32ms
+ E: Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+ E: Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+ I:* If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+ E: Ad=87(I) Atr=03(Int.) MxPS= 10 Ivl=32ms
+ E: Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+ E: Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+ I:* If#= 4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=qmi_wwan
+ E: Ad=89(I) Atr=03(Int.) MxPS= 8 Ivl=32ms
+ E: Ad=88(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+ E: Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+
+Change rules for EC21, EC25, BG96 and EG95 to match vendor specific
+serial functions only, to prevent binding to class functions. Require
+2 endpoints on ff/ff/ff functions, avoiding the 3 endpoint QMI/RMNET
+network functions.
+
+Cc: AceLan Kao <acelan.kao@canonical.com>
+Cc: Sebastian Sjoholm <ssjoholm@mac.com>
+Cc: Dan Williams <dcbw@redhat.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Bjørn Mork <bjorn@mork.no>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- include/sound/soc.h | 2 ++
- sound/soc/soc-pcm.c | 2 +-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ drivers/usb/serial/option.c |   20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index bc6ecb10c7649..ca765062787b0 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1205,6 +1205,8 @@ struct snd_soc_pcm_runtime {
- 	     ((i) < (rtd)->num_cpus + (rtd)->num_codecs) &&		\
- 		     ((dai) = (rtd)->dais[i]);				\
- 	     (i)++)
-+#define for_each_rtd_dais_rollback(rtd, i, dai)		\
-+	for (; (--(i) >= 0) && ((dai) = (rtd)->dais[i]);)
- 
- void snd_soc_close_delayed_work(struct snd_soc_pcm_runtime *rtd);
- 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 74baf1fce053f..918ed77726cc0 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -811,7 +811,7 @@ dynamic:
- 	return 0;
- 
- config_err:
--	for_each_rtd_dais(rtd, i, dai)
-+	for_each_rtd_dais_rollback(rtd, i, dai)
- 		snd_soc_dai_shutdown(dai, substream);
- 
- 	snd_soc_link_shutdown(substream);
--- 
-2.25.1
-
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -1097,14 +1097,18 @@ static const struct usb_device_id option
+ 	{ USB_DEVICE(QUALCOMM_VENDOR_ID, UBLOX_PRODUCT_R410M),
+ 	  .driver_info = RSVD(1) | RSVD(3) },
+ 	/* Quectel products using Quectel vendor ID */
+-	{ USB_DEVICE(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC21),
+-	  .driver_info = RSVD(4) },
+-	{ USB_DEVICE(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC25),
+-	  .driver_info = RSVD(4) },
+-	{ USB_DEVICE(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EG95),
+-	  .driver_info = RSVD(4) },
+-	{ USB_DEVICE(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_BG96),
+-	  .driver_info = RSVD(4) },
++	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC21, 0xff, 0xff, 0xff),
++	  .driver_info = NUMEP2 },
++	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC21, 0xff, 0, 0) },
++	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC25, 0xff, 0xff, 0xff),
++	  .driver_info = NUMEP2 },
++	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC25, 0xff, 0, 0) },
++	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EG95, 0xff, 0xff, 0xff),
++	  .driver_info = NUMEP2 },
++	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EG95, 0xff, 0, 0) },
++	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_BG96, 0xff, 0xff, 0xff),
++	  .driver_info = NUMEP2 },
++	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_BG96, 0xff, 0, 0) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EP06, 0xff, 0xff, 0xff),
+ 	  .driver_info = RSVD(1) | RSVD(2) | RSVD(3) | RSVD(4) | NUMEP2 },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EP06, 0xff, 0, 0) },
 
 
