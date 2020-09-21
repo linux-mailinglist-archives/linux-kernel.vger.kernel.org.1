@@ -2,72 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E23972723D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:23:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E3F2723D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726606AbgIUMXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 08:23:51 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13750 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726460AbgIUMXv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 08:23:51 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 6A4C5BE4391C92E5B691;
-        Mon, 21 Sep 2020 20:23:49 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Mon, 21 Sep 2020
- 20:23:43 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH] mm: swap: Use memset to fill the swap_map with SWAP_HAS_CACHE
-Date:   Mon, 21 Sep 2020 08:22:24 -0400
-Message-ID: <20200921122224.7139-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+        id S1726715AbgIUMZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 08:25:10 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40902 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726537AbgIUMZJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 08:25:09 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1600691108;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Xi88G/T/Ke4IpBIm5Oy0pNETwvmeWGhrwcyE3mpgIIE=;
+        b=TTPAujd9IzUCDyyq2m9ZiMJADYiSSGuQMObA5pjcAdHMUJno4eoD6UihbxnZ5ju75rjP08
+        BgBjVxfWyrXL++9xTbMLEkwTu6hnJR9PT8ltkRSuXUo4s/jO/YGe04Uu0WbPFQzJYMla8Z
+        eEhK4mm0PRDb8DEjIMr9nO2T0UR1RWw=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0F724ACAF;
+        Mon, 21 Sep 2020 12:25:44 +0000 (UTC)
+Message-ID: <1600691092.2424.85.camel@suse.com>
+Subject: Re: [PATCH] usb: yurex: Rearrange code not to need GFP_ATOMIC
+From:   Oliver Neukum <oneukum@suse.com>
+To:     Pavel Machek <pavel@denx.de>, gregkh@linuxfoundation.org,
+        stern@rowland.harvard.edu, johan@kernel.org, gustavoars@kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 21 Sep 2020 14:24:52 +0200
+In-Reply-To: <20200920084452.GA2257@amd>
+References: <20200920084452.GA2257@amd>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We could use helper memset to fill the swap_map with SWAP_HAS_CACHE instead
-of a direct loop here to simplify the code. Also we can remove the local
-variable i and map this way.
+Am Sonntag, den 20.09.2020, 10:44 +0200 schrieb Pavel Machek:
+> Move prepare to wait around, so that normal GFP_KERNEL allocation can
+> be used.
+> 
+> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+> Acked-by: Alan Stern <stern@rowland.harvard.edu>
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- mm/swapfile.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+Ehm. Please recheck.
 
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 8feaab31a3a9..b0b629b24e3a 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -975,8 +975,7 @@ static int swap_alloc_cluster(struct swap_info_struct *si, swp_entry_t *slot)
- {
- 	unsigned long idx;
- 	struct swap_cluster_info *ci;
--	unsigned long offset, i;
--	unsigned char *map;
-+	unsigned long offset;
- 
- 	/*
- 	 * Should not even be attempting cluster allocations when huge
-@@ -996,9 +995,7 @@ static int swap_alloc_cluster(struct swap_info_struct *si, swp_entry_t *slot)
- 	alloc_cluster(si, idx);
- 	cluster_set_count_flag(ci, SWAPFILE_CLUSTER, CLUSTER_FLAG_HUGE);
- 
--	map = si->swap_map + offset;
--	for (i = 0; i < SWAPFILE_CLUSTER; i++)
--		map[i] = SWAP_HAS_CACHE;
-+	memset(si->swap_map + offset, SWAP_HAS_CACHE, SWAPFILE_CLUSTER);
- 	unlock_cluster(ci);
- 	swap_range_alloc(si, offset, SWAPFILE_CLUSTER);
- 	*slot = swp_entry(si->type, offset);
--- 
-2.19.1
+> diff --git a/drivers/usb/misc/yurex.c b/drivers/usb/misc/yurex.c
+> index b2e09883c7e2..071f1debebba 100644
+> --- a/drivers/usb/misc/yurex.c
+> +++ b/drivers/usb/misc/yurex.c
+> @@ -489,10 +489,10 @@ static ssize_t yurex_write(struct file *file, const char __user *user_buffer,
+>  	}
+>  
+>  	/* send the data as the control msg */
+> -	prepare_to_wait(&dev->waitq, &wait, TASK_INTERRUPTIBLE);
+>  	dev_dbg(&dev->interface->dev, "%s - submit %c\n", __func__,
+>  		dev->cntl_buffer[0]);
+> -	retval = usb_submit_urb(dev->cntl_urb, GFP_ATOMIC);
+> +	retval = usb_submit_urb(dev->cntl_urb, GFP_KERNEL);
+
+URB completes here. wake_up() returns the task to RUNNING.
+
+> +	prepare_to_wait(&dev->waitq, &wait, TASK_INTERRUPTIBLE);
+
+Task goes to TASK_INTERRUPTIBLE
+
+>  	if (retval >= 0)
+>  		timeout = schedule_timeout(YUREX_WRITE_TIMEOUT);
+
+Task turns into Sleeping Beauty until timeout
+
+>  	finish_wait(&dev->waitq, &wait);
+
+And here task goes into error reporting as it checks timeout.
+
+	Regards
+		Oliver
 
