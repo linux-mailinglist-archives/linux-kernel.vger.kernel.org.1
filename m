@@ -2,82 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F3C327270C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFD5727270F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727203AbgIUObL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1727290AbgIUObM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Sep 2020 10:31:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726818AbgIUObL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 21 Sep 2020 10:31:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42576 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726395AbgIUObK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:31:10 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 821E721D91;
-        Mon, 21 Sep 2020 14:31:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600698669;
-        bh=krO8zF0GrOs00mBfRnRzTehlbc7iAKlLH4rzrtRfnqc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=w1R8TSnt2fQsxgf5LT0ZPAYzmRGdNdiwFgADCYrRTaz1wiToTEyowHYQJXNP5ZzNz
-         JtZqlGCVDO7fXkQN9g3BMcYql263K3PntOmYEZK7IhNKAkYifPH1Sey8npLsTj/D3p
-         nQCI8p0EgRNpuW7EaQlZVyPY9seG884bExHmNR2U=
-Date:   Mon, 21 Sep 2020 15:31:01 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     akpm@linux-foundation.org, glider@google.com, hpa@zytor.com,
-        paulmck@kernel.org, andreyknvl@google.com, aryabinin@virtuozzo.com,
-        luto@kernel.org, bp@alien8.de, catalin.marinas@arm.com,
-        cl@linux.com, dave.hansen@linux.intel.com, rientjes@google.com,
-        dvyukov@google.com, edumazet@google.com,
-        gregkh@linuxfoundation.org, hdanton@sina.com, mingo@redhat.com,
-        jannh@google.com, Jonathan.Cameron@huawei.com, corbet@lwn.net,
-        iamjoonsoo.kim@lge.com, keescook@chromium.org,
-        mark.rutland@arm.com, penberg@kernel.org, peterz@infradead.org,
-        sjpark@amazon.com, tglx@linutronix.de, vbabka@suse.cz,
-        x86@kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org
-Subject: Re: [PATCH v3 03/10] arm64, kfence: enable KFENCE for ARM64
-Message-ID: <20200921143059.GO2139@willie-the-truck>
-References: <20200921132611.1700350-1-elver@google.com>
- <20200921132611.1700350-4-elver@google.com>
+Received: from mail.nic.cz (mail.nic.cz [IPv6:2001:1488:800:400::400])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A064C061755;
+        Mon, 21 Sep 2020 07:31:10 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
+        by mail.nic.cz (Postfix) with ESMTPSA id C5D4C1409F6;
+        Mon, 21 Sep 2020 16:31:07 +0200 (CEST)
+Date:   Mon, 21 Sep 2020 16:31:07 +0200
+From:   Marek Behun <marek.behun@nic.cz>
+To:     Simon Guinot <simon.guinot@sequanux.org>
+Cc:     linux-leds@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>,
+        =?UTF-8?B?T25kxZllag==?= Jirman <megous@megous.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org, Simon Guinot <sguinot@lacie.com>,
+        Vincent Donnefort <vdonnefort@gmail.com>,
+        Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH leds v1 10/10] leds: ns2: refactor and use struct
+ led_init_data
+Message-ID: <20200921163107.205cd219@nic.cz>
+In-Reply-To: <20200921140322.GB4828@kw.sim.vm.gnt>
+References: <20200916231650.11484-1-marek.behun@nic.cz>
+        <20200916231650.11484-11-marek.behun@nic.cz>
+        <20200918130206.GE29951@kw.sim.vm.gnt>
+        <20200918191405.516b51ff@nic.cz>
+        <20200921125343.GA4828@kw.sim.vm.gnt>
+        <20200921150208.6a296bc7@nic.cz>
+        <20200921140322.GB4828@kw.sim.vm.gnt>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200921132611.1700350-4-elver@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
+        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
+        autolearn=disabled version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 03:26:04PM +0200, Marco Elver wrote:
-> Add architecture specific implementation details for KFENCE and enable
-> KFENCE for the arm64 architecture. In particular, this implements the
-> required interface in <asm/kfence.h>. Currently, the arm64 version does
-> not yet use a statically allocated memory pool, at the cost of a pointer
-> load for each is_kfence_address().
+On Mon, 21 Sep 2020 16:03:22 +0200
+Simon Guinot <simon.guinot@sequanux.org> wrote:
+
+> On Mon, Sep 21, 2020 at 03:02:08PM +0200, Marek Behun wrote:
+> > On Mon, 21 Sep 2020 14:53:43 +0200
+> > Simon Guinot <simon.guinot@sequanux.org> wrote:
+> >   
+> > > On Fri, Sep 18, 2020 at 07:14:05PM +0200, Marek Behun wrote:  
+> > > > On Fri, 18 Sep 2020 15:02:06 +0200
+> > > > Simon Guinot <simon.guinot@sequanux.org> wrote:
+> > > >     
+> > > > > On Thu, Sep 17, 2020 at 01:16:50AM +0200, Marek Behún wrote:
+> > > > > 
+> > > > > Hi Marek,
+> > > > >     
+> > > > > > By using struct led_init_data when registering we do not need to parse
+> > > > > > `label` DT property nor `linux,default-trigger` property.
+> > > > > > 
+> > > > > > Also, move forward from platform data to device tree only:
+> > > > > > since commit c7896490dd1a ("leds: ns2: Absorb platform data") the
+> > > > > > platform data structure is absorbed into the driver, because nothing
+> > > > > > else in the source tree used it. Since nobody complained and all usage      
+> > > > > 
+> > > > > Well, I probably should have...
+> > > > > 
+> > > > > I am using this driver on the Seagate Superbee NAS devices. This devices
+> > > > > are based on a x86 SoC. Since I have been unable to get from the ODM the
+> > > > > LED information written in the ACPI tables, then platform data are used
+> > > > > to pass the LED description to the driver.
+> > > > > 
+> > > > > The support of this boards is not available mainline yet but it is still
+> > > > > on my todo list. So that's why I am complaining right now :) If it is
+> > > > > not too much trouble I'd like to keep platform data support in this
+> > > > > driver.
+> > > > > 
+> > > > > Thanks in advance.
+> > > > > 
+> > > > > Simon
+> > > > >     
+> > > > 
+> > > > Simon, what if we refactored the driver to use fwnode API instead of OF
+> > > > API? Then if it is impossible for you to write DTS for that device,
+> > > > instead of platform data you could implement your device via swnode
+> > > > fwnodes. :)    
+> > > 
+> > > Yes. That would be perfect.
+> > > 
+> > > Simon  
+> > 
+> > BTW if you have access to device schematics I could try to write DTS,
+> > with schematics and the current board source file it should not be that
+> > hard. But I can't test it, since I don't have the board.  
 > 
-> Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
-> Co-developed-by: Alexander Potapenko <glider@google.com>
-> Signed-off-by: Alexander Potapenko <glider@google.com>
-> Signed-off-by: Marco Elver <elver@google.com>
-> ---
-> For ARM64, we would like to solicit feedback on what the best option is
-> to obtain a constant address for __kfence_pool. One option is to declare
-> a memory range in the memory layout to be dedicated to KFENCE (like is
-> done for KASAN), however, it is unclear if this is the best available
-> option. We would like to avoid touching the memory layout.
+> Don't worry, I'll do the writing and the testing of the fwnode in the
+> x86 board files. This boards are not mainlined yet. So it is my problem.
+> 
+> And actually if you don't have the time I can do the writing of the
+> fwnode support in the driver as well. And you can just let the driver
+> with the OF support. That's fine.
+> 
+> But if you are willing to add fwnode support to the driver yourself,
+> then you are more than welcome to do it. On my side, I can help with
+> the testing. I can check that the ARM boards ant their DTB are still
+> supported by the driver. And I can also check the support of the x86
+> boards with the addition of the fwnode properties.
+> 
+> Simon
 
-Sorry for the delay on this.
-
-Given that the pool is relatively small (i.e. when compared with our virtual
-address space), dedicating an area of virtual space sounds like it makes
-the most sense here. How early do you need it to be available?
-
-An alternative approach would be to patch in the address at runtime, with
-something like a static key to swizzle off the direct __kfence_pool load
-once we're up and running.
-
-Will
+Very well, I shall convert the driver to fwnode API and send the patch.
+Marek
