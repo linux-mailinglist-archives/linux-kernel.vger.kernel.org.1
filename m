@@ -2,197 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B604D271E8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 11:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A82A271E97
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 11:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726461AbgIUJJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 05:09:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48054 "EHLO
+        id S1726478AbgIUJKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 05:10:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726341AbgIUJJS (ORCPT
+        with ESMTP id S1726333AbgIUJKe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 05:09:18 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 717FAC061755;
-        Mon, 21 Sep 2020 02:09:18 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id w5so11877762wrp.8;
-        Mon, 21 Sep 2020 02:09:18 -0700 (PDT)
+        Mon, 21 Sep 2020 05:10:34 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01A78C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 02:10:34 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id e23so11675571otk.7
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 02:10:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gPm/DBJ/Ie3GtXrU6BYGUr91B6TnWE9naWQoSMM/miA=;
-        b=LGVgJG9B8/B4qIYgVxOE7j2+jT9FP/FR7IQrRlK0Qi50kUHdFDdL9zbCzGgKUrjpaV
-         GikC86hF0bB1kSCzP6zx0KIoiFDw2S96n8dTYbX3yfmOIrDKhXXqwvKJfcKxVUF2ohWg
-         tUVmpc1tDVNfiY7qO6KKL7YEeoaw3s/BeNYXv7tGwGH1LJk/3kqsfAgf6RXZEiHPH2q2
-         8ljp+fuHKrgk6y8JYWHcLkQ/f18G3xaf+4JG5xIb9+plOyjf4UFVcLy3SZVIriSWNv7F
-         HDyodw7y+qA974ahOa4MerB61SHtW2xfw4rOjoY5Xzv85OVJaRyO+BPTzFB7BmqBAuSe
-         lGcQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Jy0s2USaK+JhHTs7TrcCHTEta2V5dGsxjsWQWazaFrg=;
+        b=Pz6WH6M/BJu89iBBzg4E6J5882Nx/Znsr5EsHYfUQ6GFKTxPBeLOYbpCo7vfJeJpkC
+         77J7q3aewmGbJ95g5OqICNjFyeMY6FvLZzJrM0wlVDwIms9/46dORRQ5117KreK/w4H8
+         ysc0nr2ZFmgBf/A9E3fxOt0xtZHnq72FBx/fQPHanVIvItt5yIEIxKY8wtPFySsmeemd
+         +TZvvP5E2s9+DEsPlo/gbGS15zROAMsjcl3BosN8R6SCMGgKzUCYhh4tGJr79lHTUOwg
+         U/wK4nL04rINlIU5gtjeEPN7bXp47qaVXdwUgGLmP1TijxdS5WxvJj7r9V7xJEA90jVS
+         oK+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gPm/DBJ/Ie3GtXrU6BYGUr91B6TnWE9naWQoSMM/miA=;
-        b=NcN75i+obg5t4q9rF4LOaGyPIlEw8KEi75zuf0xSoxfQeA9DUtX95rghB14gKQ8lDF
-         YorQssFzLSlPPbQ0Lar2/oWnW9WHtQufEF4cyowbZD0EdGounOzU4FCgu+ZfVsbqoMCS
-         R4AtgCgsUo+3SIXKuepxFo9WSbUHHGRYAAr1JBieFi6yxUFl59xZC7fjXEa1U75s9PvI
-         zsS927LFiTRE9FdbrTY4e7CBG2YzpudJ2HTUZapY/7HG0eihGqhAx6ndku7FOchfFCA6
-         nHZJSaQrTqIUp2X8acg/2YrElgIcE85v1B6AAeFTZU5qwTxV/jEiG8i9STQBQGY62ueY
-         nT3A==
-X-Gm-Message-State: AOAM533vEHYyfoF7ckE8l1YWZ6oekomjYKKjX3QxglJ5CnVY8xy9YUkU
-        MdiXvRp5zpoJBwz3041W2fg=
-X-Google-Smtp-Source: ABdhPJyN4JG0y/Qyd6zCVk68IpOQp8nNkexhM0PckQh9DIp+RNN7uXsut8sunKfk6wOQ3qE9u/mmDw==
-X-Received: by 2002:a5d:50cd:: with SMTP id f13mr47192241wrt.211.1600679356948;
-        Mon, 21 Sep 2020 02:09:16 -0700 (PDT)
-Received: from [192.168.8.147] ([37.166.243.203])
-        by smtp.gmail.com with ESMTPSA id k22sm20854757wrd.29.2020.09.21.02.09.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Sep 2020 02:09:16 -0700 (PDT)
-Subject: Re: [PATCH net-next] net: use in_softirq() to indicate the NAPI
- context in napi_consume_skb()
-To:     Yunsheng Lin <linyunsheng@huawei.com>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linmiaohe <linmiaohe@huawei.com>, martin.varghese@nokia.com,
-        Florian Westphal <fw@strlen.de>,
-        Davide Caratti <dcaratti@redhat.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Paolo Abeni <pabeni@redhat.com>, kyk.segfault@gmail.com,
-        Saeed Mahameed <saeed@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linuxarm@huawei.com
-References: <1600653893-206277-1-git-send-email-linyunsheng@huawei.com>
- <CANn89iLHH=CRzz5tavy_KEg0mhgXkhD9DBfh9bhcqSkcZ2xaaA@mail.gmail.com>
- <2102eba1-eeea-bf95-2df5-7fcfa3141694@huawei.com>
- <CANn89i+ADkkEFDM=zpm3nHu6XjcACwPrhvG-eZ8GfWot9eo57w@mail.gmail.com>
- <a5ac987f-eac5-a8c6-59db-aa383eb82598@huawei.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <0c3e9d4c-8560-4409-b3ac-dff991a6094a@gmail.com>
-Date:   Mon, 21 Sep 2020 11:09:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Jy0s2USaK+JhHTs7TrcCHTEta2V5dGsxjsWQWazaFrg=;
+        b=nR6pqvJa1MoHGEMLI0aHl9GVDK7sjVIagdPhUBj5Humjuajs8oR6xknJMADnxF/dXd
+         wSlxS4Lk8QWYdA/lhB6XAF0OkkdW9FPuvtaGKV5MSSs0Nq0myKdgspF0tCgZ3QNbRaa5
+         N7QADQnDcCAwh/TP3nx+fqw1bElEk4xb1JJmS0goXAP1jQGHUzsvrp/bE0t7njIwZmyI
+         UtAa0ghuDUvuAhqsZ/qCCOg5cTEVIXOrf8t/euRvy1GcgSAqroYrAxcLBrNSEDYmooNL
+         ppEYsGlTACWsEw5tZevC8UQJqABLP970Lj96awko4BJmEpg18nZq6k5Hk5JMw47HiHgw
+         LF6g==
+X-Gm-Message-State: AOAM5328XBXX+fQFRAl5gA0hlUN6KuQqncUDeBs3eMq5CMRHSQ1RMTDn
+        3dOlrnQ8dUbN4fmurzKflldZOL3KWTWojLwxgEnxug==
+X-Google-Smtp-Source: ABdhPJxAPoNM9cxvuhL4A0nzgYDZ1C0km3PcNvpJZJweF0+o5ZqHFmqErzFuM4OdOW9fJp2X8AcX+Tf3ctOX4erzkNo=
+X-Received: by 2002:a9d:66a:: with SMTP id 97mr18596488otn.233.1600679433137;
+ Mon, 21 Sep 2020 02:10:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <a5ac987f-eac5-a8c6-59db-aa383eb82598@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200921075131.1334333-1-georgepope@google.com>
+In-Reply-To: <20200921075131.1334333-1-georgepope@google.com>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 21 Sep 2020 11:10:21 +0200
+Message-ID: <CANpmjNO8YNROJsOj+n=hWj=2-LqebBQdZRks1KKQ3Scd05fLjg@mail.gmail.com>
+Subject: Re: [PATCH] ubsan: introducing CONFIG_UBSAN_LOCAL_BOUNDS for Clang
+To:     George-Aurelian Popescu <georgepope@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        David Brazdil <dbrazdil@google.com>,
+        George Popescu <georgepope@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 21 Sep 2020 at 09:51, George-Aurelian Popescu
+<georgepope@google.com> wrote:
+>
+> From: George Popescu <georgepope@android.com>
+>
+> When the kernel is compiled with Clang, -fsanitize=bounds expands to
+> -fsanitize=array-bounds and -fsanitize=local-bounds.
+>
+> Enabling -fsanitize=local-bounds with Clang has the unfortunate
+> side-effect of inserting traps; this goes back to its original intent,
+> which was as a hardening and not a debugging feature [1]. The same feature
+> made its way into -fsanitize=bounds, but the traps remained. For that
+> reason, -fsanitize=bounds was split into 'array-bounds' and
+> 'local-bounds' [2].
+>
+> Since 'local-bounds' doesn't behave like a normal sanitizer, enable
+> it with Clang only if trapping behaviour was requested by
+> CONFIG_UBSAN_TRAP=y.
+>
+> Add the UBSAN_LOCAL_BOUNDS config to Kconfig.ubsan to enable the
+> 'local-bounds' option by default when UBSAN_TRAP is enabled.
+>
+> [1] http://lists.llvm.org/pipermail/llvm-dev/2012-May/049972.html
+> [2] http://lists.llvm.org/pipermail/cfe-commits/Week-of-Mon-20131021/091536.html
+>
+> Suggested-by: Marco Elver <elver@google.com>
+> Reviewed-by: David Brazdil <dbrazdil@google.com>
+> Signed-off-by: George Popescu <georgepope@android.com>
 
+Reviewed-by: Marco Elver <elver@google.com>
 
-On 9/21/20 10:40 AM, Yunsheng Lin wrote:
-> On 2020/9/21 16:17, Eric Dumazet wrote:
->> On Mon, Sep 21, 2020 at 10:10 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>>
->>> On 2020/9/21 15:19, Eric Dumazet wrote:
->>>> On Mon, Sep 21, 2020 at 4:08 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>>>>
->>>>> When napi_consume_skb() is called in the tx desc cleaning process,
->>>>> it is usually in the softirq context(BH disabled, or are processing
->>>>> softirqs), but it may also be in the task context, such as in the
->>>>> netpoll or loopback selftest process.
->>>>>
->>>>> Currently napi_consume_skb() uses non-zero budget to indicate the
->>>>> NAPI context, the driver writer may provide the wrong budget when
->>>>> tx desc cleaning function is reused for both NAPI and non-NAPI
->>>>> context, see [1].
->>>>>
->>>>> So this patch uses in_softirq() to indicate the NAPI context, which
->>>>> doesn't necessarily mean in NAPI context, but it shouldn't care if
->>>>> NAPI context or not as long as it runs in softirq context or with BH
->>>>> disabled, then _kfree_skb_defer() will push the skb to the particular
->>>>> cpu' napi_alloc_cache atomically.
->>>>>
->>>>> [1] https://lkml.org/lkml/2020/9/15/38
->>>>>
->>>>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->>>>> ---
->>>>> note that budget parameter is not removed in this patch because it
->>>>> involves many driver changes, we can remove it in separate patch if
->>>>> this patch is accepted.
->>>>> ---
->>>>>  net/core/skbuff.c | 6 ++++--
->>>>>  1 file changed, 4 insertions(+), 2 deletions(-)
->>>>>
->>>>> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
->>>>> index e077447..03d0d28 100644
->>>>> --- a/net/core/skbuff.c
->>>>> +++ b/net/core/skbuff.c
->>>>> @@ -895,8 +895,10 @@ void __kfree_skb_defer(struct sk_buff *skb)
->>>>>
->>>>>  void napi_consume_skb(struct sk_buff *skb, int budget)
->>>>>  {
->>>>> -       /* Zero budget indicate non-NAPI context called us, like netpoll */
->>>>> -       if (unlikely(!budget)) {
->>>>> +       /* called by non-softirq context, which usually means non-NAPI
->>>>> +        * context, like netpoll.
->>>>> +        */
->>>>> +       if (unlikely(!in_softirq())) {
->>>>>                 dev_consume_skb_any(skb);
->>>>>                 return;
->>>>>         }
->>>>> --
->>>>
->>>>
->>>> I do not think we should add this kind of fuzzy logic, just because
->>>> _one_ driver author made a mistake.
->>>>
->>>> Add a disable_bh() in the driver slow path, and accept the _existing_
->>>> semantic, the one that was understood by dozens.
->>>
->>> As my understanding, this patch did not change _existing_ semantic,
->>> it still only call _kfree_skb_defer() in softirq context. This patch
->>> just remove the requirement that a softirq context hint need to be
->>> provided to decide whether calling _kfree_skb_defer().
->>
->> I do not want to remove the requirement.
->>
->>>
->>> Yes, we can add DEBUG_NET() clauses to catch this kind of error as
->>> you suggested.
->>>
->>> But why we need such a debug clauses, when we can decide if delaying
->>> skb freeing is possible in napi_consume_skb(), why not just use
->>> in_softirq() to make this API more easy to use? Just as __dev_kfree_skb_any()
->>> API use "in_irq() || irqs_disabled()" checking to handle the irq context
->>> and non-irq context.
->>
->>
->> I just do not like your patch.
->>
->> Copying another piece of fuzzy logic, inherited from legacy code is
->> not an excuse.
->>
->> Add a local_bh_disable() in the driver slow path to meet _existing_
->> requirement, so that we can keep the hot path fast.
-> 
-> "!in_softirq()" checking make the napi_consume_skb() slower than
-> "!budget" checking? do I miss something?
+Thank you!
 
-Yes, you missed that we can _remove_ this condition completely, if drivers
-make sure to always have BH disabled.
+> ---
+> v1: changed the name of the config to UBSAN_LOCAL_BOUNDS in Kconfig
 
-> 
-> As a matter of fact, the hns3 driver has fixed this problem by
-> passing zero-budget to napi_consume_skb() in non-NAPI context, this
-> patch is more about how to avoid or catch this kind of error.
+This version is v2, so this should have said "v2: <summary of what
+changed>". The subject should have said "PATCH v2" (you can get this
+by passing --reroll-count=2 to git).
 
-I think I understood this. Having one error in hns3 does not mean we are going
-to slow down the stack.
+(I also see you fixed the the Signed-off-by/From inconsistency.)
 
-> 
-> So your opinion is still to catch this kind of error using something
-> like DEBUG_NET() clauses?
-> 
-
-Yes.
-
-Again, we want to keep fast path fast, not something that is an swiss army knife.
-
-
-
-
+> ---
+> ---
+>  lib/Kconfig.ubsan      | 14 ++++++++++++++
+>  scripts/Makefile.ubsan | 10 +++++++++-
+>  2 files changed, 23 insertions(+), 1 deletion(-)
+>
+> diff --git a/lib/Kconfig.ubsan b/lib/Kconfig.ubsan
+> index 774315de555a..58f8d03d037b 100644
+> --- a/lib/Kconfig.ubsan
+> +++ b/lib/Kconfig.ubsan
+> @@ -47,6 +47,20 @@ config UBSAN_BOUNDS
+>           to the {str,mem}*cpy() family of functions (that is addressed
+>           by CONFIG_FORTIFY_SOURCE).
+>
+> +config UBSAN_LOCAL_BOUNDS
+> +       bool "Perform array local bounds checking"
+> +       depends on UBSAN_TRAP
+> +       depends on CC_IS_CLANG
+> +       depends on !UBSAN_KCOV_BROKEN
+> +       help
+> +         This option enables -fsanitize=local-bounds which traps when an
+> +         exception/error is detected. Therefore, it should be enabled only
+> +         if trapping is expected.
+> +         Enabling this option detects errors due to accesses through a
+> +         pointer that is derived from an object of a statically-known size,
+> +         where an added offset (which may not be known statically) is
+> +         out-of-bounds.
+> +
+>  config UBSAN_MISC
+>         bool "Enable all other Undefined Behavior sanity checks"
+>         default UBSAN
+> diff --git a/scripts/Makefile.ubsan b/scripts/Makefile.ubsan
+> index 27348029b2b8..4e3fff0745e8 100644
+> --- a/scripts/Makefile.ubsan
+> +++ b/scripts/Makefile.ubsan
+> @@ -4,7 +4,15 @@ ifdef CONFIG_UBSAN_ALIGNMENT
+>  endif
+>
+>  ifdef CONFIG_UBSAN_BOUNDS
+> -      CFLAGS_UBSAN += $(call cc-option, -fsanitize=bounds)
+> +      ifdef CONFIG_CC_IS_CLANG
+> +            CFLAGS_UBSAN += -fsanitize=array-bounds
+> +      else
+> +            CFLAGS_UBSAN += $(call cc-option, -fsanitize=bounds)
+> +      endif
+> +endif
+> +
+> +ifdef CONFIG_UBSAN_LOCAL_BOUNDS
+> +      CFLAGS_UBSAN += -fsanitize=local-bounds
+>  endif
+>
+>  ifdef CONFIG_UBSAN_MISC
+> --
+> 2.28.0.681.g6f77f65b4e-goog
+>
