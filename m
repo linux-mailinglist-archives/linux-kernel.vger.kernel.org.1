@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE6DB271CC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 313E8271CA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:00:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726873AbgIUIBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 04:01:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56892 "EHLO mx2.suse.de"
+        id S1726359AbgIUIAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 04:00:37 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56802 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726211AbgIUH7V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 03:59:21 -0400
+        id S1726487AbgIUH7W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 03:59:22 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4774AB506;
-        Mon, 21 Sep 2020 07:59:54 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id B03C1B50E;
+        Mon, 21 Sep 2020 07:59:56 +0000 (UTC)
 From:   Nicolai Stange <nstange@suse.de>
 To:     "Theodore Y. Ts'o" <tytso@mit.edu>
 Cc:     linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
@@ -46,9 +46,9 @@ Cc:     linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
         =?UTF-8?q?Stephan=20M=C3=BCller?= <smueller@chronox.de>,
         Torsten Duwe <duwe@suse.de>, Petr Tesarik <ptesarik@suse.cz>,
         Nicolai Stange <nstange@suse.de>
-Subject: [RFC PATCH 09/41] random: protect ->entropy_count with the pool spinlock
-Date:   Mon, 21 Sep 2020 09:58:25 +0200
-Message-Id: <20200921075857.4424-10-nstange@suse.de>
+Subject: [RFC PATCH 13/41] random: convert try_to_generate_entropy() to queued_entropy API
+Date:   Mon, 21 Sep 2020 09:58:29 +0200
+Message-Id: <20200921075857.4424-14-nstange@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200921075857.4424-1-nstange@suse.de>
 References: <20200921075857.4424-1-nstange@suse.de>
@@ -58,183 +58,136 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, all updates to ->entropy_count are synchronized by means of
-cmpxchg-retry loops found in credit_entropy_bits(),
-__credit_entropy_bits_fast() and account() respectively.
+In an effort to drop __credit_entropy_bits_fast() in favor of the new
+__queue_entropy()/__dispatch_queued_entropy_fast() API, convert
+try_to_generate_entropy() from the former to the latter.
 
-However, all but one __credit_entropy_bits_fast() call sites grap the pool
-->lock already and it would be nice if the potentially costly cmpxchg could
-be avoided in these performance critical paths. In addition to that, future
-patches will introduce new fields to struct entropy_store which will
-required some kinf of synchronization with ->entropy_count updates from
-said producer paths as well.
+Replace the call to __credit_entropy_bits_fast() from the timer callback,
+entropy_timer(), by a queue_entropy() operation. Dispatch it from the loop
+in try_to_generate_entropy() by invoking __dispatch_queued_entropy_fast()
+after the timestamp has been mixed into the input_pool.
 
-Protect ->entropy_count with the pool ->lock.
+In order to provide the timer callback and try_to_generate_entropy() with
+access to a common struct queued_entropy instance, move the currently
+anonymous struct definition from the local 'stack' variable declaration in
+try_to_generate_entropy() to file scope and assign it a name,
+"struct try_to_generate_entropy_stack". Make entropy_timer() obtain a
+pointer to the corresponding instance by means of container_of() on the
+->timer member contained therein. Amend struct
+try_to_generate_entropy_stack by a new member ->q of type struct
+queued_entropy.
 
-- Make callers of __credit_entropy_bits_fast() invoke it with the
-  pool ->lock held. Extend existing critical sections where possible.
-  Drop the cmpxchg-reply loop in __credit_entropy_bits_fast() in favor of
-  a plain assignment.
-- Retain the retry loop in credit_entropy_bits(): the potentially
-  expensive pool_entropy_delta() should not be called under the lock in
-  order to not unnecessarily block contenders. In order to continue to
-  synchronize with  __credit_entropy_bits_fast() and account(), the
-  cmpxchg gets replaced by a plain comparison + store with the ->lock being
-  held.
-- Make account() grab the ->lock and drop the cmpxchg-retry loop in favor
-  of a plain assignent.
+Note that the described scheme alters behaviour a bit: first of all, new
+entropy credit now gets only dispatched to the pool after the actual mixing
+has completed rather than in an unsynchronized manner directly from the
+timer callback. As the mixing loop try_to_generate_entropy() is expected to
+run at higher frequency than the timer, this is unlikely to make any
+difference in practice.
+
+Furthermore, the pool entropy watermark as tracked over the period from
+queuing the entropy in the timer callback and to its subsequent dispatch
+from try_to_generate_entropy() is now taken into account when calculating
+the actual credit at dispatch. In consequence, the amount of new entropy
+dispatched to the pool will potentially be lowered if said period happens
+to overlap with the pool extraction from an initial crng_reseed() on the
+primary_crng. However, as getting the primary_crng seeded is the whole
+point of the try_to_generate_entropy() exercise, this won't matter.
+
+Note that instead of calling queue_entropy() from the timer callback,
+an alternative would have been to maintain an invocation counter and queue
+that up from try_to_generate_entropy() right before the mix operation.
+This would have reduced the described effect of the pool's entropy
+watermark and in fact matched the intended queue_entropy() API usage
+better. However, in this particular case of try_to_generate_entropy(),
+jitter is desired and invoking queue_entropy() with its buffer locking etc.
+from the timer callback could potentially contribute to that.
 
 Signed-off-by: Nicolai Stange <nstange@suse.de>
 ---
- drivers/char/random.c | 44 +++++++++++++++++++++++++++++--------------
- 1 file changed, 30 insertions(+), 14 deletions(-)
+ drivers/char/random.c | 42 +++++++++++++++++++++++++++++-------------
+ 1 file changed, 29 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/char/random.c b/drivers/char/random.c
-index d9e4dd27d45d..9f87332b158f 100644
+index bd3774c6be4b..dfbe49fdbcf1 100644
 --- a/drivers/char/random.c
 +++ b/drivers/char/random.c
-@@ -718,7 +718,7 @@ static unsigned int pool_entropy_delta(struct entropy_store *r,
-  * Credit the entropy store with n bits of entropy.
-  * To be used from hot paths when it is either known that nbits is
-  * smaller than one half of the pool size or losing anything beyond that
-- * doesn't matter.
-+ * doesn't matter. Must be called with r->lock being held.
+@@ -1911,6 +1911,12 @@ void get_random_bytes(void *buf, int nbytes)
+ EXPORT_SYMBOL(get_random_bytes);
+ 
+ 
++struct try_to_generate_entropy_stack {
++	unsigned long now;
++	struct timer_list timer;
++	struct queued_entropy q;
++} stack;
++
+ /*
+  * Each time the timer fires, we expect that we got an unpredictable
+  * jump in the cycle counter. Even if the timer is running on another
+@@ -1926,14 +1932,10 @@ EXPORT_SYMBOL(get_random_bytes);
   */
- static bool __credit_entropy_bits_fast(struct entropy_store *r, int nbits)
- {
-@@ -727,13 +727,11 @@ static bool __credit_entropy_bits_fast(struct entropy_store *r, int nbits)
- 	if (!nbits)
- 		return false;
- 
--retry:
--	orig = READ_ONCE(r->entropy_count);
-+	orig = r->entropy_count;
- 	entropy_count = orig + pool_entropy_delta(r, orig,
- 						  nbits << ENTROPY_SHIFT,
- 						  true);
--	if (cmpxchg(&r->entropy_count, orig, entropy_count) != orig)
--		goto retry;
-+	WRITE_ONCE(r->entropy_count, entropy_count);
- 
- 	trace_credit_entropy_bits(r->name, nbits,
- 				  entropy_count >> ENTROPY_SHIFT, _RET_IP_);
-@@ -755,17 +753,28 @@ static bool __credit_entropy_bits_fast(struct entropy_store *r, int nbits)
- static void credit_entropy_bits(struct entropy_store *r, int nbits)
- {
- 	int entropy_count, orig;
-+	unsigned long flags;
- 
- 	if (!nbits)
- 		return;
- 
- retry:
-+	/*
-+	 * Don't run the potentially expensive pool_entropy_delta()
-+	 * calculations under the spinlock. Instead retry until
-+	 * ->entropy_count becomes stable.
-+	 */
- 	orig = READ_ONCE(r->entropy_count);
- 	entropy_count = orig + pool_entropy_delta(r, orig,
- 						  nbits << ENTROPY_SHIFT,
- 						  false);
--	if (cmpxchg(&r->entropy_count, orig, entropy_count) != orig)
-+	spin_lock_irqsave(&r->lock, flags);
-+	if (r->entropy_count != orig) {
-+		spin_unlock_irqrestore(&r->lock, flags);
- 		goto retry;
-+	}
-+	WRITE_ONCE(r->entropy_count, entropy_count);
-+	spin_unlock_irqrestore(&r->lock, flags);
- 
- 	trace_credit_entropy_bits(r->name, nbits,
- 				  entropy_count >> ENTROPY_SHIFT, _RET_IP_);
-@@ -1203,12 +1212,11 @@ static void add_timer_randomness(struct timer_rand_state *state, unsigned num)
- 	} sample;
- 	long delta, delta2, delta3;
- 	bool reseed;
-+	unsigned long flags;
- 
- 	sample.jiffies = jiffies;
- 	sample.cycles = random_get_entropy();
- 	sample.num = num;
--	r = &input_pool;
--	mix_pool_bytes(r, &sample, sizeof(sample));
- 
- 	/*
- 	 * Calculate number of bits of randomness we probably added.
-@@ -1235,12 +1243,16 @@ static void add_timer_randomness(struct timer_rand_state *state, unsigned num)
- 	if (delta > delta3)
- 		delta = delta3;
- 
-+	r = &input_pool;
-+	spin_lock_irqsave(&r->lock, flags);
-+	__mix_pool_bytes(r, &sample, sizeof(sample));
- 	/*
- 	 * delta is now minimum absolute delta.
- 	 * Round down by 1 bit on general principles,
- 	 * and limit entropy estimate to 12 bits.
- 	 */
- 	reseed = __credit_entropy_bits_fast(r, min_t(int, fls(delta>>1), 11));
-+	spin_unlock_irqrestore(&r->lock, flags);
- 	if (reseed)
- 		crng_reseed(&primary_crng, r);
- }
-@@ -1358,12 +1370,12 @@ void add_interrupt_randomness(int irq, int irq_flags)
- 		__mix_pool_bytes(r, &seed, sizeof(seed));
- 		credit = 1;
- 	}
--	spin_unlock(&r->lock);
- 
- 	fast_pool->count = 0;
- 
- 	/* award one bit for the contents of the fast pool */
- 	reseed = __credit_entropy_bits_fast(r, credit + 1);
-+	spin_unlock(&r->lock);
- 	if (reseed)
- 		crng_reseed(&primary_crng, r);
- }
-@@ -1393,14 +1405,15 @@ EXPORT_SYMBOL_GPL(add_disk_randomness);
-  */
- static size_t account(struct entropy_store *r, size_t nbytes, int min)
- {
--	int entropy_count, orig, have_bytes;
-+	int entropy_count, have_bytes;
- 	size_t ibytes, nfrac;
-+	unsigned long flags;
- 
- 	BUG_ON(r->entropy_count > r->poolinfo->poolfracbits);
- 
-+	spin_lock_irqsave(&r->lock, flags);
- 	/* Can we pull enough? */
--retry:
--	entropy_count = orig = READ_ONCE(r->entropy_count);
-+	entropy_count = r->entropy_count;
- 	ibytes = nbytes;
- 	/* never pull more than available */
- 	have_bytes = entropy_count >> (ENTROPY_SHIFT + 3);
-@@ -1420,8 +1433,8 @@ static size_t account(struct entropy_store *r, size_t nbytes, int min)
- 	else
- 		entropy_count = 0;
- 
--	if (cmpxchg(&r->entropy_count, orig, entropy_count) != orig)
--		goto retry;
-+	WRITE_ONCE(r->entropy_count, entropy_count);
-+	spin_unlock_irqrestore(&r->lock, flags);
- 
- 	trace_debit_entropy(r->name, 8 * ibytes);
- 	if (ibytes && ENTROPY_BITS(r) < random_write_wakeup_bits) {
-@@ -1639,8 +1652,11 @@ EXPORT_SYMBOL(get_random_bytes);
  static void entropy_timer(struct timer_list *t)
  {
- 	bool reseed;
-+	unsigned long flags;
+-	bool reseed;
+-	unsigned long flags;
++	struct try_to_generate_entropy_stack *stack;
  
-+	spin_lock_irqsave(&input_pool.lock, flags);
- 	reseed = __credit_entropy_bits_fast(&input_pool, 1);
-+	spin_unlock_irqrestore(&input_pool.lock, flags);
- 	if (reseed)
- 		crng_reseed(&primary_crng, &input_pool);
+-	spin_lock_irqsave(&input_pool.lock, flags);
+-	reseed = __credit_entropy_bits_fast(&input_pool, 1);
+-	spin_unlock_irqrestore(&input_pool.lock, flags);
+-	if (reseed)
+-		crng_reseed(&primary_crng, &input_pool);
++	stack = container_of(t, struct try_to_generate_entropy_stack, timer);
++	queue_entropy(&input_pool, &stack->q, 1 << ENTROPY_SHIFT);
  }
+ 
+ /*
+@@ -1942,10 +1944,9 @@ static void entropy_timer(struct timer_list *t)
+  */
+ static void try_to_generate_entropy(void)
+ {
+-	struct {
+-		unsigned long now;
+-		struct timer_list timer;
+-	} stack;
++	struct try_to_generate_entropy_stack stack = { 0 };
++	unsigned long flags;
++	bool reseed;
+ 
+ 	stack.now = random_get_entropy();
+ 
+@@ -1957,14 +1958,29 @@ static void try_to_generate_entropy(void)
+ 	while (!crng_ready()) {
+ 		if (!timer_pending(&stack.timer))
+ 			mod_timer(&stack.timer, jiffies+1);
+-		mix_pool_bytes(&input_pool, &stack.now, sizeof(stack.now));
++		spin_lock_irqsave(&input_pool.lock, flags);
++		__mix_pool_bytes(&input_pool, &stack.now, sizeof(stack.now));
++		reseed = __dispatch_queued_entropy_fast(&input_pool, &stack.q);
++		spin_unlock_irqrestore(&input_pool.lock, flags);
++
++		if (reseed)
++			crng_reseed(&primary_crng, &input_pool);
++
+ 		schedule();
+ 		stack.now = random_get_entropy();
+ 	}
+ 
+ 	del_timer_sync(&stack.timer);
+ 	destroy_timer_on_stack(&stack.timer);
+-	mix_pool_bytes(&input_pool, &stack.now, sizeof(stack.now));
++	spin_lock_irqsave(&input_pool.lock, flags);
++	__mix_pool_bytes(&input_pool, &stack.now, sizeof(stack.now));
++	/*
++	 * Must be called here once more in order to complete a
++	 * previously unmatched queue_entropy() from entropy_timer(),
++	 * if any.
++	 */
++	__dispatch_queued_entropy_fast(&input_pool, &stack.q);
++	spin_unlock_irqrestore(&input_pool.lock, flags);
+ }
+ 
+ /*
 -- 
 2.26.2
 
