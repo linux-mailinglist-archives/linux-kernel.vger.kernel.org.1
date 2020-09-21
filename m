@@ -2,304 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 257C72734E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 23:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A651B2734E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 23:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728104AbgIUV0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 17:26:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52288 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727361AbgIUV0x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 17:26:53 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F270A23A5D;
-        Mon, 21 Sep 2020 21:26:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600723613;
-        bh=IV7PGDUgLEoCRfexj4agX3MDocOIODP3V/aEU9GbhMw=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=ybOrtx2xpLaqhS5nTFaAqTrS1S6QjwWw5WMKBdLLbvFzg0I3lx+0GwSbWf0MeXa1L
-         qxbsmQyDIf2yfvQTkLqDju6BRC42pt+k8QF8IIcEpsvMpldJhf7LMtKwCe1m99AH8B
-         f2fb3IBbwQ7l79feNMyekvyYCmLRkJr2QSQF7Daw=
-Content-Type: text/plain; charset="utf-8"
+        id S1728193AbgIUV1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 17:27:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726395AbgIUV1n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 17:27:43 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69706C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 14:27:43 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id md22so430520pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 14:27:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=u8FVHsVgYrbb7FNSvCdJbBQEsePOhdNqr2E1JPJWIsg=;
+        b=RVD73UM5+I5emYaN/zPzfNXAxYjQhCBOCBZ2iAXfs2XDpivTEbB6Rm4XWxc7eWxy5T
+         NSwASDsrqr2WK/kLu1qyEahPr6zRRiu70dbAIReBJkgUcUyiuzEnjmLTTWdUHbF6nS9X
+         m2dxXhhVvaGZiP7M9w1KwnpnXzcKEubDJyhFI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=u8FVHsVgYrbb7FNSvCdJbBQEsePOhdNqr2E1JPJWIsg=;
+        b=fSwzOK56pAOfH9kHlU0zF/VaXhc+8WGAMUfpnbhUG9LsodoLKnVL0YIM1WAx4t/5VM
+         z/jOVLqCEoFX0cb+nU86tmH3mf6+Nqip3mgDrYFIS8zY8SRL+xSWjpGO4nxdhw5ZubUX
+         EEL9L9OerIbgWi4FrrsBrZ2RADgKMifnw9jyOMncFZejpPRrCX7fO5OEBJ/QQBHva79d
+         rNyblf53n4h/PTOl1t9U268AwWkxvwJAfe/EhogyFcXvcxUT0o06PhNVAODHEw8taf24
+         E1Q1J07+Wccgrb5m+MigpMivJu3ugaIMFCq7DkQ7lVRpTv8E5AuSYRXDvJ69kowMcmGu
+         7CrA==
+X-Gm-Message-State: AOAM533W3bmsmnR27MfsnoVc32f8t4ZzvCUNmcIKGX6CYhgsaxzNHZbI
+        pmoJhqWPnGNy8AReoYR1Kqeo3A==
+X-Google-Smtp-Source: ABdhPJyZqGcsxAk9c1aY0WwbIYpkPWfgS+3zQvKdBBovpoVlQJyAJUgoWZYy820x7RBFhBGjAkcKFA==
+X-Received: by 2002:a17:90b:3241:: with SMTP id jy1mr1136122pjb.10.1600723662701;
+        Mon, 21 Sep 2020 14:27:42 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
+        by smtp.gmail.com with ESMTPSA id x62sm3865659pfx.20.2020.09.21.14.27.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 14:27:42 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, akashast@codeaurora.org,
+        swboyd@chromium.org, Douglas Anderson <dianders@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/2] arm64: dts: qcom: sc7180: Provide pinconf for SPI to use GPIO for CS
+Date:   Mon, 21 Sep 2020 14:27:16 -0700
+Message-Id: <20200921142655.v3.1.I997a428f58ef9d48b37a27a028360f34e66c00ec@changeid>
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1598621996-31040-5-git-send-email-shubhrajyoti.datta@xilinx.com>
-References: <1598621996-31040-1-git-send-email-shubhrajyoti.datta@xilinx.com> <1598621996-31040-5-git-send-email-shubhrajyoti.datta@xilinx.com>
-Subject: Re: [PATCH v6 4/8] clk: clock-wizard: Add support for dynamic reconfiguration
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org, robh+dt@kernel.org,
-        gregkh@linuxfoundation.org, mturquette@baylibre.com,
-        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
-        Chirag Parekh <chirag.parekh@xilinx.com>
-To:     Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
-        linux-clk@vger.kernel.org
-Date:   Mon, 21 Sep 2020 14:26:51 -0700
-Message-ID: <160072361167.310579.5552787788001872119@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Shubhrajyoti Datta (2020-08-28 06:39:52)
-> The patch adds support for dynamic reconfiguration of clock output rate.
-> Output clocks are registered as dividers and set rate callback function
-> is used for dynamic reconfiguration.
->=20
-> Based on the initial work from Chirag.
->=20
-> Signed-off-by: Chirag Parekh <chirag.parekh@xilinx.com>
-> Signed-off-by: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
-> ---
+When the chip select line is controlled by the QUP, changing CS is a
+time consuming operation.  We have to send a command over to the geni
+and wait for it to Ack us every time we want to change (both making it
+high and low).  To send this command we have to make a choice in
+software when we want to control the chip select, we have to either:
+A) Wait for the Ack via interrupt which slows down all SPI transfers
+   (and incurrs extra processing associated with interrupts).
+B) Sit in a loop and poll, waiting for the Ack.
 
-A lot of the same comments apply here.
+Neither A) nor B) is a great option.
 
-> v6:
-> Remove the typecast.
-> use min for capping frequency.
-> use polled timeout
->=20
->  drivers/clk/clk-xlnx-clock-wizard.c | 185 ++++++++++++++++++++++++++++++=
-++++--
->  1 file changed, 179 insertions(+), 6 deletions(-)
->=20
-> diff --git a/drivers/clk/clk-xlnx-clock-wizard.c b/drivers/clk/clk-xlnx-c=
-lock-wizard.c
-> index d6577c8..8dfcec8 100644
-> --- a/drivers/clk/clk-xlnx-clock-wizard.c
-> +++ b/drivers/clk/clk-xlnx-clock-wizard.c
-> @@ -31,8 +32,23 @@
->  #define WZRD_DIVCLK_DIVIDE_SHIFT       0
->  #define WZRD_DIVCLK_DIVIDE_MASK                (0xff << WZRD_DIVCLK_DIVI=
-DE_SHIFT)
->  #define WZRD_CLKOUT_DIVIDE_SHIFT       0
-> +#define WZRD_CLKOUT_DIVIDE_WIDTH       8
->  #define WZRD_CLKOUT_DIVIDE_MASK                (0xff << WZRD_DIVCLK_DIVI=
-DE_SHIFT)
-> =20
-> +#define WZRD_DR_MAX_INT_DIV_VALUE      255
-> +#define WZRD_DR_NUM_RETRIES            10000
-> +#define WZRD_DR_STATUS_REG_OFFSET      0x04
-> +#define WZRD_DR_LOCK_BIT_MASK          0x00000001
-> +#define WZRD_DR_INIT_REG_OFFSET                0x25C
-> +#define WZRD_DR_DIV_TO_PHASE_OFFSET    4
-> +#define WZRD_DR_BEGIN_DYNA_RECONF      0x03
-> +
-> +/* Get the mask from width */
-> +#define div_mask(width)                        ((1 << (width)) - 1)
-> +
-> +/* Extract divider instance from clock hardware instance */
-> +#define to_clk_wzrd_divider(_hw) container_of(_hw, struct clk_wzrd_divid=
-er, hw)
-> +
->  enum clk_wzrd_int_clks {
->         wzrd_clk_mul,
->         wzrd_clk_mul_div,
-> @@ -73,6 +112,136 @@ static const unsigned long clk_wzrd_max_freq[] =3D {
->         1066000000UL
->  };
-> =20
-> +/* spin lock variable for clk_wzrd */
-> +static DEFINE_SPINLOCK(clkwzrd_lock);
+We can avoid all of this by realizing that, at least on some boards,
+there is no advantage of considering this line to be a geni line.
+While it's true that geni _can_ control the line, it's also true that
+the line can be a GPIO and there is no downside of viewing it that
+way.  Setting a GPIO is a simple MMIO operation.
 
-What is it protecting?
+This patch provides definitions so a board can easily select the GPIO
+mode.
 
-> +
-> +static unsigned long clk_wzrd_recalc_rate(struct clk_hw *hw,
-> +                                         unsigned long parent_rate)
-> +{
-> +       struct clk_wzrd_divider *divider =3D to_clk_wzrd_divider(hw);
-> +       void __iomem *div_addr =3D divider->base + divider->offset;
-> +       unsigned int val;
-> +
-> +       val =3D readl(div_addr) >> divider->shift;
-> +       val &=3D div_mask(divider->width);
-> +
-> +       return divider_recalc_rate(hw, parent_rate, val, divider->table,
-> +                       divider->flags, divider->width);
-> +}
-> +
-> +static int clk_wzrd_dynamic_reconfig(struct clk_hw *hw, unsigned long ra=
-te,
-> +                                    unsigned long parent_rate)
-> +{
-> +       int err =3D 0;
-> +       u32 value;
-> +       struct clk_wzrd_divider *divider =3D to_clk_wzrd_divider(hw);
-> +       void __iomem *div_addr =3D divider->base + divider->offset;
+NOTE: apparently, it's possible to run the geni in "GSI" mode.  In GSI
+the SPI port is allowed to be controlled by more than one user (like
+firmware and Linux) and also the port can operate sequences of
+operations in one go.  In GSI mode it _would_ be invalid to look at
+the chip select as a GPIO because that would prevent other users from
+using it.  In theory GSI mode would also avoid some overhead by
+allowing us to sequence the chip select better.  However, I'll argue
+GSI is not relevant for all boards (and certainly not any boards
+supported by mainline today).  Why?
+- Apparently to run a SPI chip in GSI mode you need to initialize it
+  (in the bootloader) with a different firmware and then it will
+  always run in GSI mode.  Since there is no support for GSI mode in
+  the current Linux driver, it must be that existing boards don't have
+  firmware that's doing that.  Note that the kernel device tree
+  describes hardware but also firmware, so it is legitimate to make
+  the assumption that we don't have GSI firmware in a given dts file.
+- Some boards with sc7180 have SPI connected to the Chrome OS EC or
+  security chip (Cr50).  The protocols for talking to cros_ec and cr50
+  are extremely complex.  Both drivers in Linux fully lock the bus
+  across several distinct SPI transfers.  While I am not an expert on
+  GSI mode it feels highly unlikely to me that we'd ever be able to
+  enable GSI mode for these devices.
 
-Shouldn't the lock be held here?
+From a testing perspective, running "flashrom -p ec -r /tmp/foo.bin"
+in a loop after this patch shows almost no reduction in time, but the
+number of interrupts per command goes from 32357 down to 30611 (about
+a 5% reduction).
 
-> +
-> +       value =3D DIV_ROUND_CLOSEST(parent_rate, rate);
-> +
-> +       /* Cap the value to max */
-> +       min(value, (u32)WZRD_DR_MAX_INT_DIV_VALUE);
-> +
-> +       /* Set divisor and clear phase offset */
-> +       writel(value, div_addr);
-> +       writel(0x00, div_addr + WZRD_DR_DIV_TO_PHASE_OFFSET);
-> +
-> +       /* Check status register */
-> +       err =3D readl_poll_timeout(divider->base + WZRD_DR_STATUS_REG_OFF=
-SET, value,
-> +                               value & WZRD_DR_LOCK_BIT_MASK,
-> +                               WZRD_USEC_POLL, WZRD_TIMEOUT_POLL);
-> +       if (err)
-> +               return err;
-> +
-> +       /* Initiate reconfiguration */
-> +       writel(WZRD_DR_BEGIN_DYNA_RECONF,
-> +              divider->base + WZRD_DR_INIT_REG_OFFSET);
-> +
-> +       /* Check status register */
-> +       err =3D readl_poll_timeout(divider->base + WZRD_DR_STATUS_REG_OFF=
-SET, value,
-> +                               value & WZRD_DR_LOCK_BIT_MASK,
-> +                               WZRD_USEC_POLL, WZRD_TIMEOUT_POLL);
-> +
-> +       return err;
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+---
 
-return readl_poll_timeout().
+Changes in v3:
+- Add a blank line between pinmux and pinconf.
 
-> +}
-> +
-> +static long clk_wzrd_round_rate(struct clk_hw *hw, unsigned long rate,
-> +                               unsigned long *prate)
-> +{
-> +       u8 div;
-> +
-> +       /*
-> +        * since we don't change parent rate we just round rate to closest
-> +        * achievable
-> +        */
-> +       div =3D DIV_ROUND_CLOSEST(*prate, rate);
-> +
-> +       return (*prate / div);
+Changes in v2:
+- Now just add the pinctrl; let a board use it.
 
-Drop useless parens please.
+ arch/arm64/boot/dts/qcom/sc7180.dtsi | 104 +++++++++++++++++++++++++++
+ 1 file changed, 104 insertions(+)
 
-> +}
-> +
-> +static const struct clk_ops clk_wzrd_clk_divider_ops =3D {
-> +       .round_rate =3D clk_wzrd_round_rate,
-> +       .set_rate =3D clk_wzrd_dynamic_reconfig,
-> +       .recalc_rate =3D clk_wzrd_recalc_rate,
-> +};
-> +
-> +static struct clk *clk_wzrd_register_divider(struct device *dev,
-> +                                            const char *name,
-> +                                            const char *parent_name,
-> +                                            unsigned long flags,
-> +                                            void __iomem *base, u16 offs=
-et,
-> +                                            u8 shift, u8 width,
-> +                                            u8 clk_divider_flags,
-> +                                            const struct clk_div_table *=
-table,
-> +                                            spinlock_t *lock)
-> +{
-> +       struct clk_wzrd_divider *div;
-> +       struct clk_hw *hw;
-> +       struct clk_init_data init;
-> +       int ret;
-> +
-> +       if (clk_divider_flags & CLK_DIVIDER_HIWORD_MASK) {
+diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+index 6678f1e8e395..73b1c17cfe7c 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+@@ -1595,6 +1595,19 @@ pinmux {
+ 				};
+ 			};
+ 
++			qup_spi0_cs_gpio: qup-spi0-cs-gpio {
++				pinmux {
++					pins = "gpio34", "gpio35",
++					       "gpio36";
++					function = "qup00";
++				};
++
++				pinmux-cs {
++					pins = "gpio37";
++					function = "gpio";
++				};
++			};
++
+ 			qup_spi1_default: qup-spi1-default {
+ 				pinmux {
+ 					pins = "gpio0", "gpio1",
+@@ -1603,6 +1616,19 @@ pinmux {
+ 				};
+ 			};
+ 
++			qup_spi1_cs_gpio: qup-spi1-cs-gpio {
++				pinmux {
++					pins = "gpio0", "gpio1",
++					       "gpio2";
++					function = "qup01";
++				};
++
++				pinmux-cs {
++					pins = "gpio3";
++					function = "gpio";
++				};
++			};
++
+ 			qup_spi3_default: qup-spi3-default {
+ 				pinmux {
+ 					pins = "gpio38", "gpio39",
+@@ -1611,6 +1637,19 @@ pinmux {
+ 				};
+ 			};
+ 
++			qup_spi3_cs_gpio: qup-spi3-cs-gpio {
++				pinmux {
++					pins = "gpio38", "gpio39",
++					       "gpio40";
++					function = "qup03";
++				};
++
++				pinmux-cs {
++					pins = "gpio41";
++					function = "gpio";
++				};
++			};
++
+ 			qup_spi5_default: qup-spi5-default {
+ 				pinmux {
+ 					pins = "gpio25", "gpio26",
+@@ -1619,6 +1658,19 @@ pinmux {
+ 				};
+ 			};
+ 
++			qup_spi5_cs_gpio: qup-spi5-cs-gpio {
++				pinmux {
++					pins = "gpio25", "gpio26",
++					       "gpio27";
++					function = "qup05";
++				};
++
++				pinmux-cs {
++					pins = "gpio28";
++					function = "gpio";
++				};
++			};
++
+ 			qup_spi6_default: qup-spi6-default {
+ 				pinmux {
+ 					pins = "gpio59", "gpio60",
+@@ -1627,6 +1679,19 @@ pinmux {
+ 				};
+ 			};
+ 
++			qup_spi6_cs_gpio: qup-spi6-cs-gpio {
++				pinmux {
++					pins = "gpio59", "gpio60",
++					       "gpio61";
++					function = "qup10";
++				};
++
++				pinmux-cs {
++					pins = "gpio62";
++					function = "gpio";
++				};
++			};
++
+ 			qup_spi8_default: qup-spi8-default {
+ 				pinmux {
+ 					pins = "gpio42", "gpio43",
+@@ -1635,6 +1700,19 @@ pinmux {
+ 				};
+ 			};
+ 
++			qup_spi8_cs_gpio: qup-spi8-cs-gpio {
++				pinmux {
++					pins = "gpio42", "gpio43",
++					       "gpio44";
++					function = "qup12";
++				};
++
++				pinmux-cs {
++					pins = "gpio45";
++					function = "gpio";
++				};
++			};
++
+ 			qup_spi10_default: qup-spi10-default {
+ 				pinmux {
+ 					pins = "gpio86", "gpio87",
+@@ -1643,6 +1721,19 @@ pinmux {
+ 				};
+ 			};
+ 
++			qup_spi10_cs_gpio: qup-spi10-cs-gpio {
++				pinmux {
++					pins = "gpio86", "gpio87",
++					       "gpio88";
++					function = "qup14";
++				};
++
++				pinmux-cs {
++					pins = "gpio89";
++					function = "gpio";
++				};
++			};
++
+ 			qup_spi11_default: qup-spi11-default {
+ 				pinmux {
+ 					pins = "gpio53", "gpio54",
+@@ -1651,6 +1742,19 @@ pinmux {
+ 				};
+ 			};
+ 
++			qup_spi11_cs_gpio: qup-spi11-cs-gpio {
++				pinmux {
++					pins = "gpio53", "gpio54",
++					       "gpio55";
++					function = "qup15";
++				};
++
++				pinmux-cs {
++					pins = "gpio56";
++					function = "gpio";
++				};
++			};
++
+ 			qup_uart0_default: qup-uart0-default {
+ 				pinmux {
+ 					pins = "gpio34", "gpio35",
+-- 
+2.28.0.681.g6f77f65b4e-goog
 
-Is it used?
-
-> +               if (width + shift > 16) {
-> +                       pr_warn("divider value exceeds LOWORD field\n");
-> +                       return ERR_PTR(-EINVAL);
-> +               }
-> +       }
-> +
-> +       /* allocate the divider */
-> +       div =3D kzalloc(sizeof(*div), GFP_KERNEL);
-> +       if (!div)
-> +               return ERR_PTR(-ENOMEM);
-> +
-> +       init.name =3D name;
-> +       if (clk_divider_flags & CLK_DIVIDER_READ_ONLY)
-
-Is this used?
-
-> +               init.ops =3D &clk_divider_ro_ops;
-> +       else
-> +               init.ops =3D &clk_wzrd_clk_divider_ops;
-> +       init.flags =3D flags;
-> +       init.parent_names =3D (parent_name ? &parent_name : NULL);
-> +       init.num_parents =3D (parent_name ? 1 : 0);
-
-Doesn't it always have a parent?
-
-> +
-> +       /* struct clk_divider assignments */
-
-Drop useless comments please.
-
-> +       div->base =3D base;
-> +       div->offset =3D offset;
-> +       div->shift =3D shift;
-> +       div->width =3D width;
-> +       div->flags =3D clk_divider_flags;
-> +       div->lock =3D lock;
-> +       div->hw.init =3D &init;
-> +       div->table =3D table;
-> +
-> +       /* register the clock */
-> +       hw =3D &div->hw;
-> +       ret =3D clk_hw_register(dev, hw);
-
-devm_clk_hw_register()?
-
-> +       if (ret) {
-> +               kfree(div);
-
-Why not a devm_kzalloc() and then drop this?
-
-> +               hw =3D ERR_PTR(ret);
-> +       }
-> +
-> +       return hw->clk;
-> +}
-> +
->  static int clk_wzrd_clk_notifier(struct notifier_block *nb, unsigned lon=
-g event,
->                                  void *data)
->  {
-> @@ -243,11 +413,14 @@ static int clk_wzrd_probe(struct platform_device *p=
-dev)
->                         ret =3D -EINVAL;
->                         goto err_rm_int_clks;
->                 }
-> -               reg =3D readl(clk_wzrd->base + WZRD_CLK_CFG_REG(2) + i * =
-12);
-> -               reg &=3D WZRD_CLKOUT_DIVIDE_MASK;
-> -               reg >>=3D WZRD_CLKOUT_DIVIDE_SHIFT;
-> -               clk_wzrd->clkout[i] =3D clk_register_fixed_factor
-> -                       (&pdev->dev, clkout_name, clk_name, 0, 1, reg);
-> +               clk_wzrd->clkout[i] =3D clk_wzrd_register_divider(&pdev->=
-dev,
-> +                                                               clkout_na=
-me,
-> +                               clk_name, 0,
-> +                               clk_wzrd->base, (WZRD_CLK_CFG_REG(2) + i =
-* 12),
-> +                               WZRD_CLKOUT_DIVIDE_SHIFT,
-> +                               WZRD_CLKOUT_DIVIDE_WIDTH,
-> +                               CLK_DIVIDER_ONE_BASED | CLK_DIVIDER_ALLOW=
-_ZERO,
-> +                               NULL, &clkwzrd_lock);
-
-Also wonder if we could have a clk_wzrd_register_divider() API that
-knows most of these things and just takes a number indicating which clk
-it is? Then the caller isn't a bunch of lines of code that has to be
-mentally carried to the callee.
-
->                 if (IS_ERR(clk_wzrd->clkout[i])) {
->                         int j;
->
