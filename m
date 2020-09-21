@@ -2,93 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A79927323F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 20:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A699C27322F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 20:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727701AbgIUSv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 14:51:28 -0400
-Received: from smtpout1.mo804.mail-out.ovh.net ([79.137.123.220]:38347 "EHLO
-        smtpout1.mo804.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726395AbgIUSv1 (ORCPT
+        id S1727470AbgIUSrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 14:47:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726973AbgIUSrw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 14:51:27 -0400
-X-Greylist: delayed 386 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Sep 2020 14:51:26 EDT
-Received: from mxplan5.mail.ovh.net (unknown [10.108.4.188])
-        by mo804.mail-out.ovh.net (Postfix) with ESMTPS id A5CBC6408611;
-        Mon, 21 Sep 2020 20:44:57 +0200 (CEST)
-Received: from kaod.org (37.59.142.101) by DAG4EX1.mxp5.local (172.16.2.31)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Mon, 21 Sep
- 2020 20:44:55 +0200
-Authentication-Results: garm.ovh; auth=pass (GARM-101G004c259a061-5e9c-44f5-ac25-d29eae3b0f6c,
-                    324B8E9709B09D78909ABC18EB833E373A4C8178) smtp.auth=clg@kaod.org
-Subject: Re: [PATCH -next v2] KVM: PPC: Book3S HV: XIVE: Convert to
- DEFINE_SHOW_ATTRIBUTE
-To:     Qinglang Miao <miaoqinglang@huawei.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>
-CC:     <kvm-ppc@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200919012925.174377-1-miaoqinglang@huawei.com>
-From:   =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
-Message-ID: <a92af837-87fe-b324-f71e-e75bd327752a@kaod.org>
-Date:   Mon, 21 Sep 2020 20:44:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Mon, 21 Sep 2020 14:47:52 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B99FCC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 11:47:51 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id j2so13815880eds.9
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 11:47:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pyDbIcQAdvsX0pQDLSC3IzwQOFdxADNEZk7v/eXeHTc=;
+        b=IoHznwPzHOT1/HK/4KdjNbW3VhuKGXl+P/cFZ5oOS8j7l6omlNvRVY+IX6ljbCmS4u
+         Nm7ZCAXl8KTfXvYsSNmXHgC0uian9TgtQxLW+oi0tNX7fNWt89tv2IDtS3IssEV+OiAg
+         mDL8abQO6xKee3Gp++DudPOLquaQrWDV+eRi0yhkTY2YNC9KqOtUuvBwDkwQokWnobrA
+         ydVOgaXnbtflxVXc5lTvukwzoCJv7t73HFLvd0FWJP7GCnXVDWL4a3zlYb3vAavqu2CW
+         tIuGeZj73fNt3triaqANlSDGLTWXI+DgTY2SZXAWF4y1XUb6DBXx4kCdpGDxGZH/LwGh
+         4fLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pyDbIcQAdvsX0pQDLSC3IzwQOFdxADNEZk7v/eXeHTc=;
+        b=QuieqlCOGbRjcVGlviYM74O7doMGuJfUOrOdUk8Q9886/pdRVGpx8L9XI1MyyT6IHl
+         JuhckQVOF389VRYr9EiHwcXs1XwFXdKjVV/FeN57Gem3M5FTrnRG1pq0wh9BZB5YzqW1
+         FuS/OXwlu21oFU4zvVWNjrEyq82UbL9GIW91cQTylHVr1Zsq03cA/rIWFx05RjtxDR+J
+         yRXrvsQukuE4Hwc/gwVKD6j7dTwGUjAlLWWAAR81tF19FqtpXmmlQewayw/cYfHycsNz
+         p4kHPtemMw/LzR54bI/uVChjM7HQBwam+Sqs6jqX5LUxIWRX8n2SCpwH8ZcoZzt1pbuL
+         GZMQ==
+X-Gm-Message-State: AOAM533a80b27h9jCfoV81QP3GJ6pLWJka8sB1mocvhcW5lBkHpWxJSm
+        Coc29ciE8jyelg3yfzNMDpD/QfI8DDIOSwVLbfoVVw==
+X-Google-Smtp-Source: ABdhPJyr3HoCDSaaSE6/nQdSCDm40TS19EV3SXSzVioIoKdk8F7Y7f0V8JbN08ev9d+bgVmhdVvRbDDZMn9JIW+Dx+I=
+X-Received: by 2002:aa7:d04d:: with SMTP id n13mr324028edo.354.1600714069342;
+ Mon, 21 Sep 2020 11:47:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200919012925.174377-1-miaoqinglang@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [37.59.142.101]
-X-ClientProxiedBy: DAG7EX2.mxp5.local (172.16.2.62) To DAG4EX1.mxp5.local
- (172.16.2.31)
-X-Ovh-Tracer-GUID: feffce8a-ddfa-424a-ab9e-8a9452b5cc6b
-X-Ovh-Tracer-Id: 17629622220225219433
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedujedruddvgddufeduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepuffvfhfhkffffgggjggtgfhisehtkeertddtfeejnecuhfhrohhmpeevrogurhhitggpnfgvpgfiohgrthgvrhcuoegtlhhgsehkrghougdrohhrgheqnecuggftrfgrthhtvghrnhepjeekudeuudevleegudeugeekleffveeludejteffiedvledvgfekueefudehheefnecukfhppedtrddtrddtrddtpdefjedrheelrddugedvrddutddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepmhigphhlrghnhedrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpegtlhhgsehkrghougdrohhrghdprhgtphhtthhopehmihgrohhqihhnghhlrghngheshhhurgifvghirdgtohhm
+References: <CAKwvOdkGd6mPw_OKHwmpVs_xxFW2oqAoXyr7M8hu3PCCwkqCEQ@mail.gmail.com>
+In-Reply-To: <CAKwvOdkGd6mPw_OKHwmpVs_xxFW2oqAoXyr7M8hu3PCCwkqCEQ@mail.gmail.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Mon, 21 Sep 2020 11:47:38 -0700
+Message-ID: <CAPcyv4jZfbuS8zHZXBNqRTi_1HzHLUztkxDmsruMk5PGinGhPg@mail.gmail.com>
+Subject: =?UTF-8?B?UmU6IGVycm9yOiByZWRlZmluaXRpb24gb2Yg4oCYZGF4X3N1cHBvcnRlZOKAmQ==?=
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "kernelci.org bot" <bot@kernelci.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/19/20 3:29 AM, Qinglang Miao wrote:
-> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
-> 
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+On Mon, Sep 21, 2020 at 11:35 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> Hello DAX maintainers,
+> I noticed our PPC64LE builds failing last night:
+> https://travis-ci.com/github/ClangBuiltLinux/continuous-integration/jobs/388047043
+> https://travis-ci.com/github/ClangBuiltLinux/continuous-integration/jobs/388047056
+> https://travis-ci.com/github/ClangBuiltLinux/continuous-integration/jobs/388047099
+> and looking on lore, I see a fresh report from KernelCI against arm:
+> https://lore.kernel.org/linux-next/?q=dax_supported
+>
+> Can you all please take a look?  More concerning is that I see this
+> failure on mainline.  It may be interesting to consider how this was
+> not spotted on -next.
 
-Reviewed-by: Cédric Le Goater <clg@kaod.org>
+The failure is fixed with commit 88b67edd7247 ("dax: Fix compilation
+for CONFIG_DAX && !CONFIG_FS_DAX"). I rushed the fixes that led to
+this regression with insufficient exposure because it was crashing all
+users. I thought the 2 kbuild-robot reports I squashed covered all the
+config combinations, but there was a straggling report after I sent my
+-rc6 pull request.
 
-> ---
-> v2: based on linux-next(20200917), and can be applied to
->     mainline cleanly now.
-> 
->  arch/powerpc/kvm/book3s_xive_native.c | 12 +-----------
->  1 file changed, 1 insertion(+), 11 deletions(-)
-> 
-> diff --git a/arch/powerpc/kvm/book3s_xive_native.c b/arch/powerpc/kvm/book3s_xive_native.c
-> index bdea91df1..d0c2db0e0 100644
-> --- a/arch/powerpc/kvm/book3s_xive_native.c
-> +++ b/arch/powerpc/kvm/book3s_xive_native.c
-> @@ -1227,17 +1227,7 @@ static int xive_native_debug_show(struct seq_file *m, void *private)
->  	return 0;
->  }
->  
-> -static int xive_native_debug_open(struct inode *inode, struct file *file)
-> -{
-> -	return single_open(file, xive_native_debug_show, inode->i_private);
-> -}
-> -
-> -static const struct file_operations xive_native_debug_fops = {
-> -	.open = xive_native_debug_open,
-> -	.read = seq_read,
-> -	.llseek = seq_lseek,
-> -	.release = single_release,
-> -};
-> +DEFINE_SHOW_ATTRIBUTE(xive_native_debug);
->  
->  static void xive_native_debugfs_init(struct kvmppc_xive *xive)
->  {
-> 
-
+The baseline process escape for all of this was allowing a unit test
+triggerable insta-crash upstream in the first instance necessitating
+an urgent fix.
