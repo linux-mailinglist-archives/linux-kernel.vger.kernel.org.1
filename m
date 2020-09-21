@@ -2,94 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A25327287A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:44:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B2932727ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728273AbgIUOnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 10:43:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49296 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727847AbgIUOkk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:40:40 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E1F4123447;
-        Mon, 21 Sep 2020 14:40:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600699239;
-        bh=di3yULSM4+hdbZ5tqj+v7wIYucgeKwIWjwz7F8NA8nc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FAQOZ4pClGVlUCtanFVydWrYg8nozVjJUpV98i39PDT5RzbqF1bIe/hhOd2fEuPOx
-         2pwgTSyrFinFNX1JTbd4Y+oTXhh4JCLoRWTjqdKNSsT8BpVqnAutvt7slgAh92iqSw
-         0rxW9L1y5y+PhW0MzPO2zNC76WfpD56u95Fb6Q94=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ilya Leoshkevich <iii@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>, linux-s390@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 09/20] s390/init: add missing __init annotations
-Date:   Mon, 21 Sep 2020 10:40:16 -0400
-Message-Id: <20200921144027.2135390-9-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200921144027.2135390-1-sashal@kernel.org>
-References: <20200921144027.2135390-1-sashal@kernel.org>
+        id S1727756AbgIUOkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 10:40:23 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:35485 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726341AbgIUOkW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 10:40:22 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kKMzJ-0002tN-Ps; Mon, 21 Sep 2020 14:40:17 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Jim Quinlan <jquinlan@broadcom.com>,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] PCI: brcmstb: fix a missing if statement on a return error check
+Date:   Mon, 21 Sep 2020 15:40:17 +0100
+Message-Id: <20200921144017.334602-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ilya Leoshkevich <iii@linux.ibm.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit fcb2b70cdb194157678fb1a75f9ff499aeba3d2a ]
+The error return ret is not being check with an if statement and
+currently the code always returns leaving the following code as
+dead code. Fix this by adding in the missing if statement.
 
-Add __init to reserve_memory_end, reserve_oldmem and remove_oldmem.
-Sometimes these functions are not inlined, and then the build
-complains about section mismatch.
-
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Addresses-Coverity: ("Structurally dead code")
+Fixes: ad3d29c77e1e ("PCI: brcmstb: Add control of rescal reset")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- arch/s390/kernel/setup.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/pci/controller/pcie-brcmstb.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
-index 07aa15ba43b3e..faf30f37c6361 100644
---- a/arch/s390/kernel/setup.c
-+++ b/arch/s390/kernel/setup.c
-@@ -619,7 +619,7 @@ static struct notifier_block kdump_mem_nb = {
- /*
-  * Make sure that the area behind memory_end is protected
-  */
--static void reserve_memory_end(void)
-+static void __init reserve_memory_end(void)
- {
- 	if (memory_end_set)
- 		memblock_reserve(memory_end, ULONG_MAX);
-@@ -628,7 +628,7 @@ static void reserve_memory_end(void)
- /*
-  * Make sure that oldmem, where the dump is stored, is protected
-  */
--static void reserve_oldmem(void)
-+static void __init reserve_oldmem(void)
- {
- #ifdef CONFIG_CRASH_DUMP
- 	if (OLDMEM_BASE)
-@@ -640,7 +640,7 @@ static void reserve_oldmem(void)
- /*
-  * Make sure that oldmem, where the dump is stored, is protected
-  */
--static void remove_oldmem(void)
-+static void __init remove_oldmem(void)
- {
- #ifdef CONFIG_CRASH_DUMP
- 	if (OLDMEM_BASE)
+diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
+index 7a3ff4632e7c..cb0c11b7308e 100644
+--- a/drivers/pci/controller/pcie-brcmstb.c
++++ b/drivers/pci/controller/pcie-brcmstb.c
+@@ -1154,6 +1154,7 @@ static int brcm_pcie_resume(struct device *dev)
+ 	clk_prepare_enable(pcie->clk);
+ 
+ 	ret = brcm_phy_start(pcie);
++	if (ret)
+ 		return ret;
+ 
+ 	/* Take bridge out of reset so we can access the SERDES reg */
 -- 
-2.25.1
+2.27.0
 
