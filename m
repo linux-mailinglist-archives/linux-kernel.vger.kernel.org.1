@@ -2,43 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40503272D20
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D2D8272F79
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729101AbgIUQhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:37:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38242 "EHLO mail.kernel.org"
+        id S1729779AbgIUQ5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:57:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729091AbgIUQhj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:37:39 -0400
+        id S1728652AbgIUQnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:43:18 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D45C6206B7;
-        Mon, 21 Sep 2020 16:37:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 01DDA2076B;
+        Mon, 21 Sep 2020 16:43:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706258;
-        bh=0AsOqjbBkPZykoJS/EiWyx0FA+xrH0LXRfn/2dLrtzc=;
+        s=default; t=1600706597;
+        bh=+hTCQXSoThcQFiyF2kREjmsvdzzXC//BrwpSRW/S5Bo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EaWXP88RKv/xtjuAWXKpu+EUjPGipgLE62AIqIVnqDACbMKlAQ2ncdzcrj+74PkHf
-         SIKgkaFCnRyKTppSIbq5hT0k0q4Yqxb37HPvicoChf9EnrHjxqZqz2FFhVPBgYaEIh
-         B8ls6whm8r4blUP8/I1P3IWDORidoofmhe56U2qs=
+        b=1u5+R9HkSbz3S/cDhOPRzLIeDoG6TWXNQXTAH6eY/M3kZDadkh+ehwTPV5POQIkT1
+         vUH8DYv9rPGyNCSGrPrrhDx3zIXtBdjc3mFXbNnRNrMPOwQvJwXLVi6kVQ8/7Olln/
+         zYyPSRF4BVRxd+t7TEAlPnUELdDGOzcgrise/0ck=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rander Wang <rander.wang@intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 21/94] ALSA: hda: fix a runtime pm issue in SOF when integrated GPU is disabled
-Date:   Mon, 21 Sep 2020 18:27:08 +0200
-Message-Id: <20200921162036.518984044@linuxfoundation.org>
+        stable@vger.kernel.org, Dick Kennedy <dick.kennedy@broadcom.com>,
+        James Smart <james.smart@broadcom.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 017/118] scsi: lpfc: Extend the RDF FPIN Registration descriptor for additional events
+Date:   Mon, 21 Sep 2020 18:27:09 +0200
+Message-Id: <20200921162037.128041751@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
-References: <20200921162035.541285330@linuxfoundation.org>
+In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
+References: <20200921162036.324813383@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,49 +44,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rander Wang <rander.wang@intel.com>
+From: James Smart <james.smart@broadcom.com>
 
-[ Upstream commit 13774d81f38538c5fa2924bdcdfa509155480fa6 ]
+[ Upstream commit 441f6b5b097d74a8aa72ec0d8992ef820e2b3773 ]
 
-In snd_hdac_device_init pm_runtime_set_active is called to
-increase child_count in parent device. But when it is failed
-to build connection with GPU for one case that integrated
-graphic gpu is disabled, snd_hdac_ext_bus_device_exit will be
-invoked to clean up a HD-audio extended codec base device. At
-this time the child_count of parent is not decreased, which
-makes parent device can't get suspended.
+Currently the driver registers for Link Integrity events only.
 
-This patch calls pm_runtime_set_suspended to decrease child_count
-in parent device in snd_hdac_device_exit to match with
-snd_hdac_device_init. pm_runtime_set_suspended can make sure that
-it will not decrease child_count if the device is already suspended.
+This patch adds registration for the following FPIN types:
 
-Signed-off-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Link: https://lore.kernel.org/r/20200902154218.1440441-1-kai.vehmanen@linux.intel.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+ - Delivery Notifications
+ - Congestion Notification
+ - Peer Congestion Notification
+
+Link: https://lore.kernel.org/r/20200828175332.130300-4-james.smart@broadcom.com
+Co-developed-by: Dick Kennedy <dick.kennedy@broadcom.com>
+Signed-off-by: Dick Kennedy <dick.kennedy@broadcom.com>
+Signed-off-by: James Smart <james.smart@broadcom.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/hda/hdac_device.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/scsi/lpfc/lpfc_els.c | 3 +++
+ drivers/scsi/lpfc/lpfc_hw4.h | 2 +-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
-index 19deb306facb7..4a843eb7cc940 100644
---- a/sound/hda/hdac_device.c
-+++ b/sound/hda/hdac_device.c
-@@ -123,6 +123,8 @@ EXPORT_SYMBOL_GPL(snd_hdac_device_init);
- void snd_hdac_device_exit(struct hdac_device *codec)
- {
- 	pm_runtime_put_noidle(&codec->dev);
-+	/* keep balance of runtime PM child_count in parent device */
-+	pm_runtime_set_suspended(&codec->dev);
- 	snd_hdac_bus_remove_device(codec->bus, codec);
- 	kfree(codec->vendor_name);
- 	kfree(codec->chip_name);
+diff --git a/drivers/scsi/lpfc/lpfc_els.c b/drivers/scsi/lpfc/lpfc_els.c
+index 7b6a210825677..519c7be404e75 100644
+--- a/drivers/scsi/lpfc/lpfc_els.c
++++ b/drivers/scsi/lpfc/lpfc_els.c
+@@ -3512,6 +3512,9 @@ lpfc_issue_els_rdf(struct lpfc_vport *vport, uint8_t retry)
+ 				FC_TLV_DESC_LENGTH_FROM_SZ(prdf->reg_d1));
+ 	prdf->reg_d1.reg_desc.count = cpu_to_be32(ELS_RDF_REG_TAG_CNT);
+ 	prdf->reg_d1.desc_tags[0] = cpu_to_be32(ELS_DTAG_LNK_INTEGRITY);
++	prdf->reg_d1.desc_tags[1] = cpu_to_be32(ELS_DTAG_DELIVERY);
++	prdf->reg_d1.desc_tags[2] = cpu_to_be32(ELS_DTAG_PEER_CONGEST);
++	prdf->reg_d1.desc_tags[3] = cpu_to_be32(ELS_DTAG_CONGESTION);
+ 
+ 	lpfc_debugfs_disc_trc(vport, LPFC_DISC_TRC_ELS_CMD,
+ 			      "Issue RDF:       did:x%x",
+diff --git a/drivers/scsi/lpfc/lpfc_hw4.h b/drivers/scsi/lpfc/lpfc_hw4.h
+index 6dfff03765471..c7085769170d7 100644
+--- a/drivers/scsi/lpfc/lpfc_hw4.h
++++ b/drivers/scsi/lpfc/lpfc_hw4.h
+@@ -4797,7 +4797,7 @@ struct send_frame_wqe {
+ 	uint32_t fc_hdr_wd5;           /* word 15 */
+ };
+ 
+-#define ELS_RDF_REG_TAG_CNT		1
++#define ELS_RDF_REG_TAG_CNT		4
+ struct lpfc_els_rdf_reg_desc {
+ 	struct fc_df_desc_fpin_reg	reg_desc;	/* descriptor header */
+ 	__be32				desc_tags[ELS_RDF_REG_TAG_CNT];
 -- 
 2.25.1
 
