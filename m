@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B80CE272CAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:35:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24C6C272D2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728710AbgIUQeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:34:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60580 "EHLO mail.kernel.org"
+        id S1729118AbgIUQhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:37:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728695AbgIUQeC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:34:02 -0400
+        id S1728789AbgIUQho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:37:44 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 15DEC2399C;
-        Mon, 21 Sep 2020 16:34:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 04ACD238EE;
+        Mon, 21 Sep 2020 16:37:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706041;
-        bh=Op2ImCDjXiOB6szDO4ZPWjymWvJC8noR4T906+kM+q8=;
+        s=default; t=1600706263;
+        bh=p7jydHRi2UcpgGqpxPC294TEpk0O700BEyFJFD72Stg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nCW5au4ddfjVljzeIU+mWRlvIYVVB+aTrSJ8hOyrmRlC3SpUPG9Ya534QCL/gjYTu
-         +IrufhHh6oxHggwaapvrbG/KshXl0KhBxqI4g58iW0nTjUTloKNyx1zn4vfQCCJZo2
-         hzImlxzORJbmeBA8avsNdE0aUXJhr5BB/BFiba0M=
+        b=UglwgWwMvQ3lyyYZVv4XHDQR+meiWFN38/9BGxvOkRVnO9hqm0bXqm1DDQDXvCUF6
+         VXYByUVa2QMq9CWGulUUPQVSN2JrHokH7lr/Uv7ZG0CzbPYvDsACbbaSVOfyiXJT/h
+         FcccKqjkNba5dATbNSjuwXIPXOi7kyr2vkWyX4jw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Kochetkov <fido_max@inbox.ru>,
-        Maxim Kiselev <bigunclemax@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.9 17/70] iio: adc: ti-ads1015: fix conversion when CONFIG_PM is not set
-Date:   Mon, 21 Sep 2020 18:27:17 +0200
-Message-Id: <20200921162035.921068979@linuxfoundation.org>
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Stable@vger.kernel.org
+Subject: [PATCH 4.14 31/94] iio:adc:ti-adc081c Fix alignment and data leak issues
+Date:   Mon, 21 Sep 2020 18:27:18 +0200
+Message-Id: <20200921162036.981421718@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
-References: <20200921162035.136047591@linuxfoundation.org>
+In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
+References: <20200921162035.541285330@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,57 +44,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Kochetkov <fido_max@inbox.ru>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-commit e71e6dbe96ac80ac2aebe71a6a942e7bd60e7596 upstream.
+commit 54f82df2ba86e2a8e9cbf4036d192366e3905c89 upstream.
 
-To stop conversion ads1015_set_power_state() function call unimplemented
-function __pm_runtime_suspend() from pm_runtime_put_autosuspend()
-if CONFIG_PM is not set.
-In case of CONFIG_PM is not set: __pm_runtime_suspend() returns -ENOSYS,
-so ads1015_read_raw() failed because ads1015_set_power_state() returns an
-error.
+One of a class of bugs pointed out by Lars in a recent review.
+iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
+to the size of the timestamp (8 bytes).  This is not guaranteed in
+this driver which uses an array of smaller elements on the stack.
+As Lars also noted this anti pattern can involve a leak of data to
+userspace and that indeed can happen here.  We close both issues by
+moving to a suitable structure in the iio_priv().
 
-If CONFIG_PM is disabled, there is no need to start/stop conversion.
-Fix it by adding return 0 function variant if CONFIG_PM is not set.
+This data is allocated with kzalloc so no data can leak apart
+from previous readings.
 
-Signed-off-by: Maxim Kochetkov <fido_max@inbox.ru>
-Fixes: ecc24e72f437 ("iio: adc: Add TI ADS1015 ADC driver support")
-Tested-by: Maxim Kiselev <bigunclemax@gmail.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: <Stable@vger.kernel.org>
+The eplicit alignment of ts is necessary to ensure correct padding
+on x86_32 where s64 is only aligned to 4 bytes.
+
+Fixes: 08e05d1fce5c ("ti-adc081c: Initial triggered buffer support")
+Reported-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: <Stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/adc/ti-ads1015.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/iio/adc/ti-adc081c.c |   11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
---- a/drivers/iio/adc/ti-ads1015.c
-+++ b/drivers/iio/adc/ti-ads1015.c
-@@ -220,6 +220,7 @@ static const struct iio_chan_spec ads111
- 	IIO_CHAN_SOFT_TIMESTAMP(ADS1015_TIMESTAMP),
+--- a/drivers/iio/adc/ti-adc081c.c
++++ b/drivers/iio/adc/ti-adc081c.c
+@@ -36,6 +36,12 @@ struct adc081c {
+ 
+ 	/* 8, 10 or 12 */
+ 	int bits;
++
++	/* Ensure natural alignment of buffer elements */
++	struct {
++		u16 channel;
++		s64 ts __aligned(8);
++	} scan;
  };
  
-+#ifdef CONFIG_PM
- static int ads1015_set_power_state(struct ads1015_data *data, bool on)
- {
+ #define REG_CONV_RES 0x00
+@@ -132,14 +138,13 @@ static irqreturn_t adc081c_trigger_handl
+ 	struct iio_poll_func *pf = p;
+ 	struct iio_dev *indio_dev = pf->indio_dev;
+ 	struct adc081c *data = iio_priv(indio_dev);
+-	u16 buf[8]; /* 2 bytes data + 6 bytes padding + 8 bytes timestamp */
  	int ret;
-@@ -237,6 +238,15 @@ static int ads1015_set_power_state(struc
- 	return ret < 0 ? ret : 0;
- }
  
-+#else /* !CONFIG_PM */
-+
-+static int ads1015_set_power_state(struct ads1015_data *data, bool on)
-+{
-+	return 0;
-+}
-+
-+#endif /* !CONFIG_PM */
-+
- static
- int ads1015_get_adc_result(struct ads1015_data *data, int chan, int *val)
- {
+ 	ret = i2c_smbus_read_word_swapped(data->i2c, REG_CONV_RES);
+ 	if (ret < 0)
+ 		goto out;
+-	buf[0] = ret;
+-	iio_push_to_buffers_with_timestamp(indio_dev, buf,
++	data->scan.channel = ret;
++	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
+ 					   iio_get_time_ns(indio_dev));
+ out:
+ 	iio_trigger_notify_done(indio_dev->trig);
 
 
