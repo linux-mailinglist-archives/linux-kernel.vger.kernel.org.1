@@ -2,156 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E57A2732E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB4AC2732E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728182AbgIUTdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 15:33:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60194 "EHLO
+        id S1728165AbgIUTdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 15:33:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727197AbgIUTdF (ORCPT
+        with ESMTP id S1727197AbgIUTdd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 15:33:05 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D261FC061755;
-        Mon, 21 Sep 2020 12:33:04 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id d1so957992qtr.6;
-        Mon, 21 Sep 2020 12:33:04 -0700 (PDT)
+        Mon, 21 Sep 2020 15:33:33 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A46DC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 12:33:33 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id x23so610350wmi.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 12:33:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version;
-        bh=5zbgEP4qz3pAr7cmiqVB/297RflQwQ/jCBIChTJLB40=;
-        b=FjzoxmTYrzR8Uy+e+7G2SNu64OXtTgLwtyWN8rgSWJEfWo5mfJZtQgdQMIivh75s3+
-         3urIxbOq6AA9vDdDftUfNckYhEnY8dWr5Ma/R/FmZBBGSpYgxbft2iZmj3f2OfWRZ+sE
-         czQeTmH2YBKHdno65kfAX0OGwDX5Fq5KT6//hsYMNltM/vKFJmNFHnU3TNDdUENetmYw
-         0Ru0VgdL2NI6dyH6fEkgxSPrGQpnlrJZW/djHfDhjCHx0bo4sRTDfRlJkuYMrcRADb7n
-         iZlcMKAal27q75krfZj8KiHtbpY3LNGwzeCScBfD7dMVnBagKhZsBcktBPmqwg62wIhz
-         0JYQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tyqvRKFdtD8PMSb4v0LigIpVlIKZ32P+rPNhgG6iABo=;
+        b=dTQiKQxbEPtUs+n52KETE43PkUq3kWFrLO2K1V7yfsGbLkbhi33Nye5NJcd55y9s1A
+         PLJXb0CAjqa96NUyoZWQsPEE10VwZp5yypF+Xf6vj9/UpaHGw1sl9gwqVIirXEkML9S6
+         lZcCbV/WEIlkz89V3iJoIMIUfAfUagbDJ5BqRkpk5/nbLEVvvHczBJ+h+lful/czbpGo
+         dHLKeKsD0Mqp3Yy8ZqDR7l3a/fEC72RgaA4Qv0ugdP2g1L97jDJ1cjk1nc6s0oi5tJIo
+         hVrlfA4JLKhhBSgn+4uQWkdsXUDBndi+CJTtwQN3ING5Wl9XdZeT1N8Z7WpbyZMmatCu
+         d+dA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version;
-        bh=5zbgEP4qz3pAr7cmiqVB/297RflQwQ/jCBIChTJLB40=;
-        b=LvqqVmEl71M4vWhb6gCGR8dLJfHpl6R8rutgwrrL60RRL4Nr1vi5cbDGH9H/gXg4oz
-         J/DyuLODzKrqy1tLLp/lF1YtnZcJU3iEHysOnZI65H65GC7Y2lI2WzlRYvpytYIC1lLl
-         SUGrV0JNTPhdiB6hzetBPWoCw/S9kusQvZWVfIbl8NA8O5qM7HSQQCuJ4RV6hPWrDapo
-         X9dP8qTXy4vmzCtsQ/KNush9WhM6Nkn/HL/jRsXa7y8EryFUzzS/wB25BiE+PjLfJjIc
-         b3GAzvw/1UYJtufzUec/lcIoHJxgD1NMoIBnvGIewlO6ahNf3z4kjBPVX8EcBVLc+qiu
-         9zbQ==
-X-Gm-Message-State: AOAM533qhmf1UXbuNuzlI6UEXE+L+atCjjeYXhPRq/Pn6j6rfWj4Cws0
-        qoqY7C/+LAMXhBGa3Mq/KGqDzbo7wNM=
-X-Google-Smtp-Source: ABdhPJwV+2QeIZiAWuQnwH9SY1JWi+UBQZEOKKk9Ty3rcn920toAaXEPT0BzLpz9iFyrOAGPH/4TLQ==
-X-Received: by 2002:ac8:47d3:: with SMTP id d19mr1142207qtr.263.1600716783894;
-        Mon, 21 Sep 2020 12:33:03 -0700 (PDT)
-Received: from fionn (bras-base-rdwyon0600w-grc-06-184-147-140-180.dsl.bell.ca. [184.147.140.180])
-        by smtp.gmail.com with ESMTPSA id 76sm9894818qkl.127.2020.09.21.12.33.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 12:33:03 -0700 (PDT)
-Sender: John Kacur <jkacur@gmail.com>
-Date:   Mon, 21 Sep 2020 15:32:55 -0400 (EDT)
-From:   John Kacur <jkacur@redhat.com>
-X-X-Sender: jkacur@fionn
-To:     linux-rt-users <linux-rt-users@vger.kernel.org>
-cc:     Clark Williams <williams@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [ANNOUNCE] rt-tests-1.9
-Message-ID: <alpine.LFD.2.23.451.2009211516250.7550@fionn>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tyqvRKFdtD8PMSb4v0LigIpVlIKZ32P+rPNhgG6iABo=;
+        b=lWGJnriw3RFWEk+4Sw4a27BDh61ksOKA4ssHl6H4BzBgpR4FEO22flSY6VNh2WvRDW
+         Omt/JrfEjGmuzDYbYrWAYlaMCEJ8LkfuxZ8MlvARFvuCR25K7vpCkBRRceH10+ojcCEl
+         N6R36hc77AyT8bZuQGMZfScRogWm6ep2fUjyv79OZRxgddSZ45wBrIYvrBOWggagniNj
+         zgHBYNNqU28xXyLSYrrXlTlH+dVaPe4QcKBe6GUw4To7TLflqfLJVg5Axcmv0vPvK+nz
+         hxGrV5ZNLOm2/9qhNx7SMGyFvz8VEIBjC+CSocdikZpDipUPIco28TgAvRQOeinZgDHv
+         FXTw==
+X-Gm-Message-State: AOAM532Pa6mFUsRO3u2z6He9e3AT5X+w0498wdbA70HKKUlBD5xsE1fF
+        uFpjdi81DOuY15FQ8sGv1c6ud41MMq3Rrp6+mOU=
+X-Google-Smtp-Source: ABdhPJz9ExPKuXj4QoQ/WsmFt1o/wLN8n6bfP18yT+wpV/WCvYVUcTDZXQdaVyPM7AYXRszBry3ZzoSD0AdJ9D+X3Ao=
+X-Received: by 2002:a1c:a953:: with SMTP id s80mr885650wme.70.1600716811772;
+ Mon, 21 Sep 2020 12:33:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20200921114244.20506-1-bernard@vivo.com>
+In-Reply-To: <20200921114244.20506-1-bernard@vivo.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 21 Sep 2020 15:33:20 -0400
+Message-ID: <CADnq5_PJrpJpPjexVpN-r_9XZbKDS3NnQ=dBS5RdO1NYjw+8uA@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: optimize code runtime a bit
+To:     Bernard Zhao <bernard@vivo.com>
+Cc:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Jun Lei <Jun.Lei@amd.com>, Aric Cyr <aric.cyr@amd.com>,
+        Wenjing Liu <wenjing.liu@amd.com>,
+        abdoulaye berthe <abdoulaye.berthe@amd.com>,
+        Michael Strauss <michael.strauss@amd.com>,
+        Brandon Syu <Brandon.Syu@amd.com>,
+        Martin Leung <martin.leung@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, opensource.kernel@vivo.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello rt-folks! We're pleased to announce a new release of rt-tests - v1.9
+On Mon, Sep 21, 2020 at 9:14 AM Bernard Zhao <bernard@vivo.com> wrote:
+>
+> Static function dal_ddc_i2c_payloads_destroy is only called
+> in dal_ddc_service_query_ddc_data, the parameter is &payloads
+> , there is no point NULL risk, so no need to check.
+> This change is to make the code run a bit fast.
+>
 
-- There is a new test called oslat from Peter Xu
-- Daniel Wagner started to move some shared functionality into common 
-headers
-- Clark Williams provided a fix to pi_stress, to put a limit on the number 
-of inversion groups.
-- And there are various micellaneous fixes from Yunfeng Ye, and from 
-myself too.
+How about just getting rid of dal_ddc_i2c_payloads_destroy() and just
+call dal_vector_destruct() directly.
 
-To download rt-tests:
-using git, clone one of the following
-git://git.kernel.org/pub/scm/utils/rt-tests/rt-tests.git
-https://git.kernel.org/pub/scm/utils/rt-tests/rt-tests.git
-https://kernel.googlesource.com/pub/scm/utils/rt-tests/rt-tests.git
+Alex
 
-The latest tag is v1.9
 
-Tarballs are also available here:
-https://kernel.org/pub/linux/utils/rt-tests
-
-Older version tarballs are available here:
-https://kernel.org/pub/linux/utils/rt-tests/older
-
-Your fixes, development or just bug reports are always welcome!
-
-Enjoy!
-
-John Kacur
-
-Clark Williams (1):
-  pi_stress: limit the number of inversion groups to the number of
-    online cores
-
-Daniel Wagner (4):
-  rt-utils: Move timestamp calc helper to common header
-  rt-utils: Move time defininitions to common header
-  rt-utils: Move ARRAY_SIZE to common header
-  signaltest: Only print from the first thread stats when quiet
-
-John Kacur (11):
-  cyclictest: Fix setaffinity error on large NUMA machines
-  rt-tests: queuelat: Fix storing unsigned long long in int
-  rt-tests: improvements to the python style in get_cyclictest_snapshot
-  rt-tests: pi_stress.8: Remove unused -t n from the manpage
-  rt-tests: ptsematest.8: Update the ptsematest man page
-  rt-tests: Add a man page for get_cyclictest_snapshot
-  rt-tests: Tweak the cyclictest man page
-  rt-tests: Add some files like get_cyclictest_snapshot to .gitignore
-  rt-tests: get_cyclictest_snapshot: Warn if no cyclictest instance
-    found
-  rt-tests: Install new man page get_cyclictest_snapshot.8
-  rt-tests: Makefile - update version to v1.9
-
-Peter Xu (3):
-  rt-tests: cyclictest: Move ftrace helpers into rt-utils.[ch]
-  rt-tests: oslat: Init commit
-  rt-tests: oslat: Proper reformat of code
-
-Yunfeng Ye (3):
-  rt-tests: cyclictest: Fix -a option fail when max_cpus is more
-  rt-tests: hachbench: Update the usage and man page for -F|--fifo
-    option
-  rt-tests: cyclictest: remove the debug log "pid = xxx" in
-    rstat_shm_open()
-
- .gitignore                                |   7 +
- Makefile                                  |  13 +-
- src/backfire/sendme.c                     |   3 -
- src/cyclictest/cyclictest.8               |   2 +-
- src/cyclictest/cyclictest.c               | 159 +---
- src/cyclictest/get_cyclictest_snapshot.8  |  44 ++
- src/cyclictest/get_cyclictest_snapshot.py |  59 +-
- src/hackbench/hackbench.8                 |   6 +-
- src/hackbench/hackbench.c                 |   2 +-
- src/include/rt-utils.h                    |  51 ++
- src/lib/rt-utils.c                        |  82 ++
- src/oslat/oslat.8                         |  66 ++
- src/oslat/oslat.c                         | 871 ++++++++++++++++++++++
- src/pi_tests/pi_stress.8                  |   6 -
- src/pi_tests/pi_stress.c                  |  23 +-
- src/pmqtest/pmqtest.c                     |   4 -
- src/ptsematest/ptsematest.8               |   6 +-
- src/ptsematest/ptsematest.c               |   2 -
- src/queuelat/queuelat.c                   |  13 +-
- src/signaltest/signaltest.c               |  22 +-
- src/sigwaittest/sigwaittest.c             |   2 -
- src/svsematest/svsematest.c               |   2 -
- 22 files changed, 1216 insertions(+), 229 deletions(-)
- create mode 100644 src/cyclictest/get_cyclictest_snapshot.8
- create mode 100644 src/oslat/oslat.8
- create mode 100644 src/oslat/oslat.c
-
+> Signed-off-by: Bernard Zhao <bernard@vivo.com>
+> ---
+>  drivers/gpu/drm/amd/display/dc/core/dc_link_ddc.c | 3 ---
+>  1 file changed, 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_ddc.c b/drivers/gpu/drm/amd/display/dc/core/dc_link_ddc.c
+> index b984eecca58b..6dcc666738fc 100644
+> --- a/drivers/gpu/drm/amd/display/dc/core/dc_link_ddc.c
+> +++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_ddc.c
+> @@ -150,9 +150,6 @@ static uint32_t dal_ddc_i2c_payloads_get_count(struct i2c_payloads *p)
+>
+>  static void dal_ddc_i2c_payloads_destroy(struct i2c_payloads *p)
+>  {
+> -       if (!p)
+> -               return;
+> -
+>         dal_vector_destruct(&p->payloads);
+>  }
+>
+> --
+> 2.28.0
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
