@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 302A3272DFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3CA5272D29
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729719AbgIUQo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:44:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50280 "EHLO mail.kernel.org"
+        id S1729112AbgIUQhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:37:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729466AbgIUQop (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:44:45 -0400
+        id S1729098AbgIUQhl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:37:41 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 611ED23998;
-        Mon, 21 Sep 2020 16:44:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4C8C3206DC;
+        Mon, 21 Sep 2020 16:37:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706684;
-        bh=R7mR3aLIf2CGGcWqGZaqKCMfrWa7L3YNwpWo4rPGCRg=;
+        s=default; t=1600706260;
+        bh=nLG5hz/X1zlrm0O9qtbq0AnEnLFtbPiptbdPee2Suyo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jRIFqpvgohnZdxqesm1/75AEisWee6FAgkhH2lith647BHc4HDqbeBgnAfbcBTi9/
-         EsvwTjlcN4m4ZlAJbVgUePCNpAcjUKGdNW7KkABtfqxFfNeeO88TU2/w0gYmq7rqFl
-         uQhaRiXMeyYoTpTQQx94jcyvbXHRLa8VApVH7egs=
+        b=mpzWo6Uz0x/3YvNAdbrdAV4ZJZGEhk0NkiDkXy2OriwQ0OmZKm29EtOXdXpqWrRbm
+         Syi/kU33Dvit0jhRTXsT6d2JBKgRcTcZ//QLP9hK1rX32QkRB+x+qn/Tfz2FoqfQUD
+         3UYJEU3zcK9TtDzzSkir7GLk/kNhS7eM9yQakVLM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stafford Horne <shorne@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 025/118] openrisc: Fix cache API compile issue when not inlining
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Stable@vger.kernel.org
+Subject: [PATCH 4.14 30/94] iio:adc:max1118 Fix alignment of timestamp and data leak issues
 Date:   Mon, 21 Sep 2020 18:27:17 +0200
-Message-Id: <20200921162037.477621501@linuxfoundation.org>
+Message-Id: <20200921162036.941209076@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
-References: <20200921162036.324813383@linuxfoundation.org>
+In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
+References: <20200921162035.541285330@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,57 +45,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stafford Horne <shorne@gmail.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit 3ae90d764093dfcd6ab8ab6875377302892c87d4 ]
+commit db8f06d97ec284dc018e2e4890d2e5035fde8630 upstream.
 
-I found this when compiling a kbuild random config with GCC 11.  The
-config enables CONFIG_DEBUG_SECTION_MISMATCH, which sets CFLAGS
--fno-inline-functions-called-once. This causes the call to cache_loop in
-cache.c to not be inlined causing the below compile error.
+One of a class of bugs pointed out by Lars in a recent review.
+iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
+to the size of the timestamp (8 bytes).  This is not guaranteed in
+this driver which uses an array of smaller elements on the stack.
+As Lars also noted this anti pattern can involve a leak of data to
+userspace and that indeed can happen here.  We close both issues by
+moving to a suitable structure in the iio_priv() data.
 
-    In file included from arch/openrisc/mm/cache.c:13:
-    arch/openrisc/mm/cache.c: In function 'cache_loop':
-    ./arch/openrisc/include/asm/spr.h:16:27: warning: 'asm' operand 0 probably does not match constraints
-       16 | #define mtspr(_spr, _val) __asm__ __volatile__ (  \
-	  |                           ^~~~~~~
-    arch/openrisc/mm/cache.c:25:3: note: in expansion of macro 'mtspr'
-       25 |   mtspr(reg, line);
-	  |   ^~~~~
-    ./arch/openrisc/include/asm/spr.h:16:27: error: impossible constraint in 'asm'
-       16 | #define mtspr(_spr, _val) __asm__ __volatile__ (  \
-	  |                           ^~~~~~~
-    arch/openrisc/mm/cache.c:25:3: note: in expansion of macro 'mtspr'
-       25 |   mtspr(reg, line);
-	  |   ^~~~~
-    make[1]: *** [scripts/Makefile.build:283: arch/openrisc/mm/cache.o] Error 1
+This data is allocated with kzalloc so no data can leak apart
+from previous readings.
 
-The asm constraint "K" requires a immediate constant argument to mtspr,
-however because of no inlining a register argument is passed causing a
-failure.  Fix this by using __always_inline.
+The explicit alignment of ts is necessary to ensure correct padding
+on architectures where s64 is only 4 bytes aligned such as x86_32.
 
-Link: https://lore.kernel.org/lkml/202008200453.ohnhqkjQ%25lkp@intel.com/
-Signed-off-by: Stafford Horne <shorne@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: a9e9c7153e96 ("iio: adc: add max1117/max1118/max1119 ADC driver")
+Reported-by: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Akinobu Mita <akinobu.mita@gmail.com>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/openrisc/mm/cache.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iio/adc/max1118.c |   10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/arch/openrisc/mm/cache.c b/arch/openrisc/mm/cache.c
-index 08f56af387ac4..534a52ec5e667 100644
---- a/arch/openrisc/mm/cache.c
-+++ b/arch/openrisc/mm/cache.c
-@@ -16,7 +16,7 @@
- #include <asm/cacheflush.h>
- #include <asm/tlbflush.h>
+--- a/drivers/iio/adc/max1118.c
++++ b/drivers/iio/adc/max1118.c
+@@ -38,6 +38,11 @@ struct max1118 {
+ 	struct spi_device *spi;
+ 	struct mutex lock;
+ 	struct regulator *reg;
++	/* Ensure natural alignment of buffer elements */
++	struct {
++		u8 channels[2];
++		s64 ts __aligned(8);
++	} scan;
  
--static void cache_loop(struct page *page, const unsigned int reg)
-+static __always_inline void cache_loop(struct page *page, const unsigned int reg)
- {
- 	unsigned long paddr = page_to_pfn(page) << PAGE_SHIFT;
- 	unsigned long line = paddr & ~(L1_CACHE_BYTES - 1);
--- 
-2.25.1
-
+ 	u8 data ____cacheline_aligned;
+ };
+@@ -163,7 +168,6 @@ static irqreturn_t max1118_trigger_handl
+ 	struct iio_poll_func *pf = p;
+ 	struct iio_dev *indio_dev = pf->indio_dev;
+ 	struct max1118 *adc = iio_priv(indio_dev);
+-	u8 data[16] = { }; /* 2x 8-bit ADC data + padding + 8 bytes timestamp */
+ 	int scan_index;
+ 	int i = 0;
+ 
+@@ -181,10 +185,10 @@ static irqreturn_t max1118_trigger_handl
+ 			goto out;
+ 		}
+ 
+-		data[i] = ret;
++		adc->scan.channels[i] = ret;
+ 		i++;
+ 	}
+-	iio_push_to_buffers_with_timestamp(indio_dev, data,
++	iio_push_to_buffers_with_timestamp(indio_dev, &adc->scan,
+ 					   iio_get_time_ns(indio_dev));
+ out:
+ 	mutex_unlock(&adc->lock);
 
 
