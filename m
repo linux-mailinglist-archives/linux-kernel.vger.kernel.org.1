@@ -2,116 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C91627293A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED6527293E
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727405AbgIUO5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 10:57:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36916 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726419AbgIUO5k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:57:40 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600700259;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wi7ymOcpFYjdpuVeX/JVEnmGW5RFuMojzVtSTICsBi0=;
-        b=CFoD/5jItiHHwU12A5tvLagpytLD2blip/iNMDFTNuLEDzD+Ftnx0nOTrSM81fZProO760
-        aVL0aoFQJJUtJe3eq6skTdiXZBR5p6c+75UiaHCK54KAPWK4vfrrx/9/8QIhYk045Gk5Da
-        xnsDChPVkKGnZ26ku4wxqMBVlFOUFZQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0559CABC4;
-        Mon, 21 Sep 2020 14:58:15 +0000 (UTC)
-Date:   Mon, 21 Sep 2020 16:57:38 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Peter Xu <peterx@redhat.com>, Tejun Heo <tj@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Maya B . Gokhale" <gokhale2@llnl.gov>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Marty Mcfadden <mcfadden8@llnl.gov>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
-Message-ID: <20200921145738.GN12990@dhcp22.suse.cz>
-References: <e6c352f8-7ee9-0702-10a4-122d2c4422fc@nvidia.com>
- <20200916174804.GC8409@ziepe.ca>
- <20200916184619.GB40154@xz-x1>
- <20200917112538.GD8409@ziepe.ca>
- <CAHk-=wjtfjB3TqTFRzVmOrB9Mii6Yzc-=wKq0fu4ruDE6AsJgg@mail.gmail.com>
- <20200917193824.GL8409@ziepe.ca>
- <CAHk-=wiY_g+SSjncZi8sO=LrxXmMox0NO7K34-Fs653XVXheGg@mail.gmail.com>
- <20200918164032.GA5962@xz-x1>
- <20200921134200.GK12990@dhcp22.suse.cz>
- <20200921144134.fuvkkv6wgrzpbwnv@wittgenstein>
+        id S1727649AbgIUO56 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Sep 2020 10:57:58 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:34127 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726419AbgIUO56 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 10:57:58 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-131-fTlCPAkmNqyVcSMjZfvb1A-1; Mon, 21 Sep 2020 15:57:54 +0100
+X-MC-Unique: fTlCPAkmNqyVcSMjZfvb1A-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Mon, 21 Sep 2020 15:57:53 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Mon, 21 Sep 2020 15:57:53 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Christoph Hellwig' <hch@infradead.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: RE: [PATCH 3/9 next] lib/iov_iter: Improved function for importing
+ iovec[] from userpace.
+Thread-Topic: [PATCH 3/9 next] lib/iov_iter: Improved function for importing
+ iovec[] from userpace.
+Thread-Index: AdaLbgrHxt5yVpCaR/OQiuIAS4DQuQEqpZKAAAOMgSA=
+Date:   Mon, 21 Sep 2020 14:57:53 +0000
+Message-ID: <715ff68740fe4f1eb2c7713584450f1e@AcuMS.aculab.com>
+References: <a24498efacd94e61a2af9df3976b0de6@AcuMS.aculab.com>
+ <20200921141051.GC24515@infradead.org>
+In-Reply-To: <20200921141051.GC24515@infradead.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200921144134.fuvkkv6wgrzpbwnv@wittgenstein>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 21-09-20 16:41:34, Christian Brauner wrote:
-> On Mon, Sep 21, 2020 at 03:42:00PM +0200, Michal Hocko wrote:
-> > [Cc Tejun and Christian - this is a part of a larger discussion which is
-> >  not directly related to this particular question so let me trim the
-> >  original email to the bare minimum.]
-> > 
-> > On Fri 18-09-20 12:40:32, Peter Xu wrote:
-> > [...]
-> > > One issue is when we charge for cgroup we probably can't do that onto the new
-> > > mm/task, since copy_namespaces() is called after copy_mm().  I don't know
-> > > enough about cgroup, I thought the child will inherit the parent's, but I'm not
-> > > sure.  Or, can we change that order of copy_namespaces() && copy_mm()?  I don't
-> > > see a problem so far but I'd like to ask first..
-> > 
-> > I suspect you are referring to CLONE_INTO_CGROUP, right? I have only now
-> > learned about this feature so I am not deeply familiar with all the
-> > details and I might be easily wrong. Normally all the cgroup aware
-> > resources are accounted to the parent's cgroup. For memcg that includes
-> > all the page tables, early CoW and other allocations with __GFP_ACCOUNT.
-> > IIUC CLONE_INTO_CGROUP properly then this hasn't changed as the child is
-> > associated to its new cgroup (and memcg) only in cgroup_post_fork. If
-> > that is correct then we might have quite a lot of resources bound to
-> > child's lifetime but accounted to the parent's memcg which can lead to
-> > all sorts of interesting problems (e.g. unreclaimable memory - even by
-> > the oom killer).
-> > 
-> > Christian, Tejun is this the expected semantic or I am just misreading
-> > the code?
+From: Christoph Hellwig
+> Sent: 21 September 2020 15:11
 > 
-> Hey Michal,
+> On Tue, Sep 15, 2020 at 02:55:17PM +0000, David Laight wrote:
+> >
+> > import_iovec() has a 'pointer by reference' parameter to pass in the
+> > (on-stack) iov[] cache and return the address of a larger copy that
+> > the caller must free.
+> > This is non-intuitive, faffy to setup, and not that efficient.
+> > Instead just pass in the address of the cache and return the address
+> > to free (on success) or PTR_ERR() (on error).
 > 
-> Thanks for the Cc!
-> 
-> If I understand your question correctly, then you are correct. The logic
-> is split in three simple parts:
-> 1. Child gets created and doesn't live in any cset
->    - This should mean that resources are still charged against the
->      parent's memcg which is what you're asking afiu.
-> 1. cgroup_can_fork()
->    - create new or find existing matching cset for the child
-> 3. cgroup_post_fork()
->    - move/attach child to the new or found cset
-> 
-> _Purely from a CLONE_INTO_CGROUP perspective_ you should be ok to
-> reverse the order of copy_mm() and copy_namespaces().
+> To me it seems pretty sensible, and in fact the conversions to your
+> new API seem to add more lines than they remove.
 
-Switching the order wouldn't make much of a difference right. At least
-not for memcg where all the accounted allocations will still go to
-current's memcg.
--- 
-Michal Hocko
-SUSE Labs
+They probably add a line because the two variables get defined on
+separate lines.
+
+The problem is the inefficiency of passing the addresses by 'double
+reference'.
+Although your suggestion of putting the 'address to free' in the
+same structure as the cache does resolve that.
+It also gets rid of all the PTR_ERR() faffing.
+Still probably best to return 0 on success.
+Plenty of code was converting the +ve to 0.
+
+I might to a v2 on top of your compat iovec changes - once they
+hit Linus's tree.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
