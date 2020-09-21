@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DCCF272F74
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E63B272CF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:37:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730216AbgIUQ50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:57:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49052 "EHLO mail.kernel.org"
+        id S1728954AbgIUQgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:36:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729662AbgIUQoD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:44:03 -0400
+        id S1728323AbgIUQgN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:36:13 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2126E2076B;
-        Mon, 21 Sep 2020 16:44:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 90A67206DC;
+        Mon, 21 Sep 2020 16:36:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706641;
-        bh=FJGrFZh/wSlG57bHCjvhePW4NhaqITwdnUviTd90E1o=;
+        s=default; t=1600706173;
+        bh=qDNYlM8YeMo5s9cGUKNDzqtzCoQvf1QIwuSg39MDjxU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OZ3BDEAE6XOtJXRFgqPVZdLiEopPOfi6gYrVVso/iElayoQCPRdyyzE6v34SfOT3J
-         YOHEILxEI4WwwyUIT6XeqPA9wQfQpAzunoIOrLJQy366l2/90X38MKaSbslg+dwrl3
-         fRk1L9IsP0c1ORB/hf4gJ0QokWX/oGsfAwdR3SOg=
+        b=IuJKL+JKOWbk7/f8jKJG5iM4p5U4yoKGzJ7awIi6zaSi/qB1OhqriCiqVY7D8wRPZ
+         1vuelETY+icUuQmWSUYeJmIgMn8ZxJH/5vzlrOWR+DAVwM6b9gTkI7jIsFQE03u/NC
+         voT+ZOeIqIaLtUpky9Iaxz/CoBXnotbCtdseMRdk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 035/118] KVM: MIPS: Change the definition of kvm type
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald <pmeerw@pmeerw.net>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Stable@vger.kernel.org
+Subject: [PATCH 4.9 27/70] iio:accel:mma8452: Fix timestamp alignment and prevent data leak.
 Date:   Mon, 21 Sep 2020 18:27:27 +0200
-Message-Id: <20200921162037.942712069@linuxfoundation.org>
+Message-Id: <20200921162036.356543547@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
-References: <20200921162036.324813383@linuxfoundation.org>
+In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
+References: <20200921162035.136047591@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,81 +45,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huacai Chen <chenhc@lemote.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit 15e9e35cd1dec2bc138464de6bf8ef828df19235 ]
+commit 89226a296d816727405d3fea684ef69e7d388bd8 upstream.
 
-MIPS defines two kvm types:
+One of a class of bugs pointed out by Lars in a recent review.
+iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
+to the size of the timestamp (8 bytes).  This is not guaranteed in
+this driver which uses a 16 byte u8 array on the stack.  As Lars also noted
+this anti pattern can involve a leak of data to userspace and that
+indeed can happen here.  We close both issues by moving to
+a suitable structure in the iio_priv() data with alignment
+ensured by use of an explicit c structure.  This data is allocated
+with kzalloc so no data can leak appart from previous readings.
 
- #define KVM_VM_MIPS_TE          0
- #define KVM_VM_MIPS_VZ          1
+The additional forcing of the 8 byte alignment of the timestamp
+is not strictly necessary but makes the code less fragile by
+making this explicit.
 
-In Documentation/virt/kvm/api.rst it is said that "You probably want to
-use 0 as machine type", which implies that type 0 be the "automatic" or
-"default" type. And, in user-space libvirt use the null-machine (with
-type 0) to detect the kvm capability, which returns "KVM not supported"
-on a VZ platform.
+Fixes: c7eeea93ac60 ("iio: Add Freescale MMA8452Q 3-axis accelerometer driver")
+Reported-by: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Peter Meerwald <pmeerw@pmeerw.net>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-I try to fix it in QEMU but it is ugly:
-https://lists.nongnu.org/archive/html/qemu-devel/2020-08/msg05629.html
-
-And Thomas Huth suggests me to change the definition of kvm type:
-https://lists.nongnu.org/archive/html/qemu-devel/2020-09/msg03281.html
-
-So I define like this:
-
- #define KVM_VM_MIPS_AUTO        0
- #define KVM_VM_MIPS_VZ          1
- #define KVM_VM_MIPS_TE          2
-
-Since VZ and TE cannot co-exists, using type 0 on a TE platform will
-still return success (so old user-space tools have no problems on new
-kernels); the advantage is that using type 0 on a VZ platform will not
-return failure. So, the only problem is "new user-space tools use type
-2 on old kernels", but if we treat this as a kernel bug, we can backport
-this patch to old stable kernels.
-
-Signed-off-by: Huacai Chen <chenhc@lemote.com>
-Message-Id: <1599734031-28746-1-git-send-email-chenhc@lemote.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/kvm/mips.c     | 2 ++
- include/uapi/linux/kvm.h | 5 +++--
- 2 files changed, 5 insertions(+), 2 deletions(-)
+ drivers/iio/accel/mma8452.c |   11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
-index 666d3350b4ac1..6c6836669ce16 100644
---- a/arch/mips/kvm/mips.c
-+++ b/arch/mips/kvm/mips.c
-@@ -137,6 +137,8 @@ extern void kvm_init_loongson_ipi(struct kvm *kvm);
- int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
- {
- 	switch (type) {
-+	case KVM_VM_MIPS_AUTO:
-+		break;
- #ifdef CONFIG_KVM_MIPS_VZ
- 	case KVM_VM_MIPS_VZ:
- #else
-diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-index 4fdf303165827..65fd95f9784ce 100644
---- a/include/uapi/linux/kvm.h
-+++ b/include/uapi/linux/kvm.h
-@@ -789,9 +789,10 @@ struct kvm_ppc_resize_hpt {
- #define KVM_VM_PPC_HV 1
- #define KVM_VM_PPC_PR 2
+--- a/drivers/iio/accel/mma8452.c
++++ b/drivers/iio/accel/mma8452.c
+@@ -105,6 +105,12 @@ struct mma8452_data {
+ 	u8 ctrl_reg1;
+ 	u8 data_cfg;
+ 	const struct mma_chip_info *chip_info;
++
++	/* Ensure correct alignment of time stamp when present */
++	struct {
++		__be16 channels[3];
++		s64 ts __aligned(8);
++	} buffer;
+ };
  
--/* on MIPS, 0 forces trap & emulate, 1 forces VZ ASE */
--#define KVM_VM_MIPS_TE		0
-+/* on MIPS, 0 indicates auto, 1 forces VZ ASE, 2 forces trap & emulate */
-+#define KVM_VM_MIPS_AUTO	0
- #define KVM_VM_MIPS_VZ		1
-+#define KVM_VM_MIPS_TE		2
+ /**
+@@ -985,14 +991,13 @@ static irqreturn_t mma8452_trigger_handl
+ 	struct iio_poll_func *pf = p;
+ 	struct iio_dev *indio_dev = pf->indio_dev;
+ 	struct mma8452_data *data = iio_priv(indio_dev);
+-	u8 buffer[16]; /* 3 16-bit channels + padding + ts */
+ 	int ret;
  
- #define KVM_S390_SIE_PAGE_OFFSET 1
+-	ret = mma8452_read(data, (__be16 *)buffer);
++	ret = mma8452_read(data, data->buffer.channels);
+ 	if (ret < 0)
+ 		goto done;
  
--- 
-2.25.1
-
+-	iio_push_to_buffers_with_timestamp(indio_dev, buffer,
++	iio_push_to_buffers_with_timestamp(indio_dev, &data->buffer,
+ 					   iio_get_time_ns(indio_dev));
+ 
+ done:
 
 
