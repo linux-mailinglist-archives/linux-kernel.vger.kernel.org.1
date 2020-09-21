@@ -2,124 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 091B7272343
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:02:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A608272347
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726785AbgIUMCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 08:02:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46546 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726413AbgIUMCC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 08:02:02 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D76AD214F1;
-        Mon, 21 Sep 2020 12:01:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600689721;
-        bh=VD2smVeL5fKzX8/5BW6movD+/oc7j4uKpSXeujhYnzY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MZhdFO9OycCcCUBnjfiGyIy/JaxKFEtv5Bu/qnbA6rGtTbl+Md/fDkO9tkdYlWS2x
-         Ue0I4niE9CV0W6Ce/vSgHT+BGftRGHA91zmiGR1w4XdB8dStZDOoXbL9hWRe+kgmcg
-         i69yLg7xhanQ5ee4QdS1Rk2Oj3rGOcpj3SLcfY48=
-Date:   Mon, 21 Sep 2020 13:01:54 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>, linux-arch@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Helge Deller <deller@gmx.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Nick Hu <nickhu@andestech.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v2 01/11] asm-generic/tlb: Fix MMU_GATHER_TABLE_FREE
-Message-ID: <20200921120153.GE2139@willie-the-truck>
-References: <20200717111005.024867618@infradead.org>
- <20200717111349.417688532@infradead.org>
+        id S1726794AbgIUMCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 08:02:40 -0400
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:41654 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726413AbgIUMCk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 08:02:40 -0400
+Received: by mail-ed1-f68.google.com with SMTP id ay8so12465614edb.8;
+        Mon, 21 Sep 2020 05:02:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ooMeOqFsTMGGMTe6eBLr2JMOUkuXwIh/FFAOaUcM2v0=;
+        b=k5jlfVQLt8OsxXqlfL9ltdQ4o7rAz+QrGvHWYb9Fqbocc3POYufWgVdz4rrVFMln1q
+         y+2j/jqSN8IbiMi96sHjdYhtJNu9GS+HU5FV5p8hHnThAyi9KXaINFCICnLdy4Rnv8KP
+         09b29gt21bURtg+P6N0tHwvqmquEhpA1IJblnAB4QjpaUpV4g/ImQ1kML2wFHW2wfwYZ
+         1elHm5AVxZXw9rt5ITKj292XGfLlo4yfFL3AmisPp6asCMG0eOJmOSx1fW2zcvhfwpNg
+         lbiby1jiuxb6tIxZuBV5pOJN3/YQj/HnGd03Bpef0xnxZQeByR89mDtHEL9IoiUcbBK7
+         SXXg==
+X-Gm-Message-State: AOAM530+JN1veaIdurvkWWLWjDZTq/3ccvi0rDN8G+ZYCmR1/f2tOkig
+        +1zTJxuGwFD4V3HVJqedYFY=
+X-Google-Smtp-Source: ABdhPJxt7v8AvSUBkvJ6qkwYaOh3b7yjN1eWTtOk3ANPGVwOskaBIoo2jvk2Zg9Tvz2Dpnkz6P6KoA==
+X-Received: by 2002:aa7:d4d2:: with SMTP id t18mr50829445edr.55.1600689757765;
+        Mon, 21 Sep 2020 05:02:37 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.191])
+        by smtp.googlemail.com with ESMTPSA id c8sm8771235ejp.30.2020.09.21.05.02.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 21 Sep 2020 05:02:36 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 14:02:34 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] media: imx258: Get clock from device properties
+ and enable it via runtime PM
+Message-ID: <20200921120234.GB1233@kozik-lap>
+References: <1599031090-21608-1-git-send-email-krzk@kernel.org>
+ <1599031090-21608-3-git-send-email-krzk@kernel.org>
+ <20200902073935.GD32646@paasikivi.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200717111349.417688532@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200902073935.GD32646@paasikivi.fi.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 01:10:06PM +0200, Peter Zijlstra wrote:
-> The first MMU_GATHER_TABLE_FREE user showed a logic error in the
-> tlb_needs_table_invalidate() definition. Make sure any TABLE_FREE has
-> it defined.
-
-Could you elaborate on the logic error, please? It's difficult to see
-through all of the #ifdefs, but afaict we #error if
-tlb_needs_table_invalidate() is defined but not CONFIG_MMU_GATHER_RCU_TABLE_FREE
-with and without this patch. In other words, I'm failing to see what this
-patch changes!
-
-> Fixes: 0d6e24d430ef ("asm-generic/tlb: provide MMU_GATHER_TABLE_FREE")
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  include/asm-generic/tlb.h |   35 +++++++++++++++++++----------------
->  1 file changed, 19 insertions(+), 16 deletions(-)
+On Wed, Sep 02, 2020 at 10:39:35AM +0300, Sakari Ailus wrote:
+> Hi Krzysztof,
 > 
-> --- a/include/asm-generic/tlb.h
-> +++ b/include/asm-generic/tlb.h
-> @@ -172,6 +172,18 @@
->   *  various ptep_get_and_clear() functions.
->   */
->  
-> +#ifndef CONFIG_MMU_GATHER_RCU_TABLE_FREE
-> +
-> +/*
-> + * Only RCU table free can override this; otherwise the TLBI is needed to
-> + * provide existence guarantees for software walkers.
-> + */
-> +#ifdef tlb_needs_table_invalidate
-> +#error tlb_needs_table_invalidate() requires MMU_GATHER_RCU_TABLE_FREE
-> +#endif
-> +
-> +#endif /* CONFIG_MMU_GATHER_RCU_TABLE_FREE */
-> +
->  #ifdef CONFIG_MMU_GATHER_TABLE_FREE
->  
->  struct mmu_table_batch {
-> @@ -187,17 +199,6 @@ struct mmu_table_batch {
->  
->  extern void tlb_remove_table(struct mmu_gather *tlb, void *table);
->  
-> -#else /* !CONFIG_MMU_GATHER_HAVE_TABLE_FREE */
-> -
-> -/*
-> - * Without MMU_GATHER_TABLE_FREE the architecture is assumed to have page based
-> - * page directories and we can use the normal page batching to free them.
-> - */
-> -#define tlb_remove_table(tlb, page) tlb_remove_page((tlb), (page))
-> -
-> -#endif /* CONFIG_MMU_GATHER_TABLE_FREE */
-> -
-> -#ifdef CONFIG_MMU_GATHER_RCU_TABLE_FREE
->  /*
->   * This allows an architecture that does not use the linux page-tables for
->   * hardware to skip the TLBI when freeing page tables.
-> @@ -206,13 +207,15 @@ extern void tlb_remove_table(struct mmu_
->  #define tlb_needs_table_invalidate() (true)
->  #endif
->  
-> -#else
-> +#else /* !CONFIG_MMU_GATHER_HAVE_TABLE_FREE */
+> Thanks for the update.
+> 
+> On Wed, Sep 02, 2020 at 09:18:10AM +0200, Krzysztof Kozlowski wrote:
+> > The IMX258 sensor driver checked in device properties for a
+> > clock-frequency property which actually does not mean that the clock is
+> > really running such frequency or is it even enabled.
+> > 
+> > Get the provided clock and check it frequency.  If none is provided,
+> > fall back to old property.
+> > 
+> > Enable the clock when accessing the IMX258 registers and when streaming
+> > starts with runtime PM.
+> > 
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > 
+> > ---
+> > 
+> > Changes since v1:
+> > 1. Use runtime PM for clock toggling
+> > ---
+> >  drivers/media/i2c/imx258.c | 68 ++++++++++++++++++++++++++++++++++++++++------
+> >  1 file changed, 59 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
+> > index c20bac9b00ec..ee38dafb8450 100644
+> > --- a/drivers/media/i2c/imx258.c
+> > +++ b/drivers/media/i2c/imx258.c
+> > @@ -2,6 +2,7 @@
+> >  // Copyright (C) 2018 Intel Corporation
+> >  
+> >  #include <linux/acpi.h>
+> > +#include <linux/clk.h>
+> >  #include <linux/delay.h>
+> >  #include <linux/i2c.h>
+> >  #include <linux/module.h>
+> > @@ -68,6 +69,9 @@
+> >  #define REG_CONFIG_MIRROR_FLIP		0x03
+> >  #define REG_CONFIG_FLIP_TEST_PATTERN	0x02
+> >  
+> > +/* Input clock frequency in Hz */
+> > +#define IMX258_INPUT_CLOCK_FREQ		19200000
+> > +
+> >  struct imx258_reg {
+> >  	u16 address;
+> >  	u8 val;
+> > @@ -610,6 +614,8 @@ struct imx258 {
+> >  
+> >  	/* Streaming on/off */
+> >  	bool streaming;
+> > +
+> > +	struct clk *clk;
+> >  };
+> >  
+> >  static inline struct imx258 *to_imx258(struct v4l2_subdev *_sd)
+> > @@ -972,6 +978,27 @@ static int imx258_stop_streaming(struct imx258 *imx258)
+> >  	return 0;
+> >  }
+> >  
+> > +static int imx258_power_on(struct device *dev)
+> > +{
+> > +	struct imx258 *imx258 = dev_get_drvdata(dev);
+> > +	int ret;
+> > +
+> > +	ret = clk_prepare_enable(imx258->clk);
+> > +	if (ret)
+> > +		dev_err(dev, "failed to enable clock\n");
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static int imx258_power_off(struct device *dev)
+> > +{
+> > +	struct imx258 *imx258 = dev_get_drvdata(dev);
+> > +
+> > +	clk_disable_unprepare(imx258->clk);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >  static int imx258_set_stream(struct v4l2_subdev *sd, int enable)
+> >  {
+> >  	struct imx258 *imx258 = to_imx258(sd);
+> > @@ -1201,9 +1228,27 @@ static int imx258_probe(struct i2c_client *client)
+> >  	int ret;
+> >  	u32 val = 0;
+> >  
+> > -	device_property_read_u32(&client->dev, "clock-frequency", &val);
+> > -	if (val != 19200000)
+> > -		return -EINVAL;
+> > +	imx258 = devm_kzalloc(&client->dev, sizeof(*imx258), GFP_KERNEL);
+> > +	if (!imx258)
+> > +		return -ENOMEM;
+> > +
+> > +	dev_set_drvdata(&client->dev, imx258);
+> 
+> This you cannot do --- it'll be overwritten by v4l2_i2c_subdev_init().
 
-While you're at it, this comment can be fixed to refer to
-CONFIG_MMU_GATHER_RCU_TABLE_FREE.
+Right, thanks.
 
-Will
+> 
+> > +
+> > +	imx258->clk = devm_clk_get_optional(&client->dev, NULL);
+> > +	if (!imx258->clk) {
+> 
+> You can move declaration of val here (I think).
+
+No, the val is used later in further device_property_read* calls.
+
+> 
+> > +		dev_info(&client->dev, "no clock provided, using clock-frequency property\n");
+> 
+> As this is showing up on all ACPI based systems, I guess dev_dbg() would be
+> more appropriate.
+
+Sure, I'll make it debug.
+
+> 
+> Please also wrap lines over 80 if they reasonably can be.
+
+OK
+
+Thanks for the review.
+
+Best regards,
+Krzysztof
