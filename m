@@ -2,77 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C9527324B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 20:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED2FF273249
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 20:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727526AbgIUS5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 14:57:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42202 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726395AbgIUS5b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 14:57:31 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D86B20888;
-        Mon, 21 Sep 2020 18:57:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600714650;
-        bh=Fpuvc99D3ojSQz0Ih1e/dJpmDNQ5V5OWcXq0uMfacF4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kseT8TpGG26uG5yPWiqpdhbWGZ1/0PmnqYpqJAybACB1zN6tLEHjPIFlErnY3MSqG
-         7DzjQa4BW/y9K5FN75m/60QfvuSeIjopB9brlTSFETy4TSa2JM9dQC0cvrJE5Sx9Ci
-         4vw5PXGLPq+ORUp5nHYa/cvyCmaMta4/CKrJtz84=
-Date:   Mon, 21 Sep 2020 19:56:38 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Aswath Govindraju <a-govindraju@ti.com>
-Cc:     Sekhar Nori <nsekhar@ti.com>, Vignesh R <vigneshr@ti.com>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "spi: omap2-mcspi: Switch to readl_poll_timeout()"
-Message-ID: <20200921185638.GH4792@sirena.org.uk>
-References: <20200910122624.8769-1-a-govindraju@ti.com>
+        id S1727430AbgIUS4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 14:56:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47539 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726395AbgIUS4s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 14:56:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600714607;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type;
+        bh=pWkNANwFp8KVnuJc5tgcb5hxDfStvMJRcSA/c6Kt/yw=;
+        b=HTiguvWWnr7HIylND5tUTgt/4QB8xcaEVbomiKXTVKpJB9MmIarjyR7ef9FzrzIsDhCCH2
+        wt2eKWY7+XASsXjtWiLYzFPXAhluiTpFu5bBC+/7Fd0pI3MEmI32xlmtUUdP7xSWUHqicm
+        9aJd1gXhjlEq2U5qOKgRajhs9E5SmAA=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-176-cKEdUrCwPQOi5uNt57d9hA-1; Mon, 21 Sep 2020 14:56:45 -0400
+X-MC-Unique: cKEdUrCwPQOi5uNt57d9hA-1
+Received: by mail-pj1-f69.google.com with SMTP id gc24so425781pjb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 11:56:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:user-agent:from:to:subject:date:message-id
+         :mime-version;
+        bh=pWkNANwFp8KVnuJc5tgcb5hxDfStvMJRcSA/c6Kt/yw=;
+        b=svSbgvcae70Remr0CV11YdDDpXezwkbWkOM2xRTb8NKR7lupvrEv5XVy3FUKxF/ZvK
+         vvdCzFh1f+y0g1Sz//OlnZRZQFjOcNDpnHoreHy2j/N72y5MiQ2ARXxhLBjGItPS6zNG
+         dbErxaOjx6VIL2ma62jRR/VvvOAngOD4kyo8It6ZkJJBuFBKnQFQCZ06ZHJM08dBflBZ
+         RCpnpTlafIQTCstT6S3hOzOq96Ktd46rDKPuRdUvqhaAVHNhvfqx2gL7hZ7i4jdgB5Cg
+         Gmb583jrZKiWSx5agkuie5VRxIUeZHjuHae02VAg/566/UafaC5+LMwmHmeO8C1aE4Jz
+         kdNA==
+X-Gm-Message-State: AOAM5326C4rL0CShDVluXxm1EICf4OUm5zxwixYIPw/bkJFC4kNjfSGZ
+        ZYHOMkXr79I9WDLf5ZgqJa8AUqlvqHIr60Z3f6uyTkuvFi7QSDGCupJbNlMpz0u2VVQhbg11Xy5
+        DVG8SqyQ0EmLlH6JuJCRteoqx
+X-Received: by 2002:aa7:99c7:0:b029:13e:d13d:a056 with SMTP id v7-20020aa799c70000b029013ed13da056mr1065261pfi.28.1600714604909;
+        Mon, 21 Sep 2020 11:56:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzGtS9wJP1qEjTL2vZQLuVGFgxGjE7bi7YLAPHtKyeJGP8o7s+XsIA0TtINV5U5VfRwMCqwGw==
+X-Received: by 2002:aa7:99c7:0:b029:13e:d13d:a056 with SMTP id v7-20020aa799c70000b029013ed13da056mr1065245pfi.28.1600714604684;
+        Mon, 21 Sep 2020 11:56:44 -0700 (PDT)
+Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
+        by smtp.gmail.com with ESMTPSA id j9sm12285498pfc.175.2020.09.21.11.56.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 11:56:44 -0700 (PDT)
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Jerry Snitselaar <jsnitsel@redhat.com>
+To:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Joerg Roedel <joro@8bytes.org>,
+        Adrian Huang <adrianhuang0701@gmail.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Subject: kdump boot failing with IVRS checksum failure
+Date:   Mon, 21 Sep 2020 11:56:42 -0700
+Message-ID: <87o8lzvtzp.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="LiQwW4YX+w4axhAx"
-Content-Disposition: inline
-In-Reply-To: <20200910122624.8769-1-a-govindraju@ti.com>
-X-Cookie: Love thy neighbor, tune thy piano.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---LiQwW4YX+w4axhAx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hello Joerg,
 
-On Thu, Sep 10, 2020 at 05:56:24PM +0530, Aswath Govindraju wrote:
-> This reverts commit 13d515c796adc49a49b0cd2212ccd7f43a37fc5a.
->=20
-> The amount of time spent polling for the MCSPI_CHSTAT bits to be set on
-> AM335x-icev2 platform is less than 1us (about 0.6us) in most cases, with
+We are seeing a kdump kernel boot failure in test on an HP DL325 Gen10
+and it was tracked down to 387caf0b759a ("iommu/amd: Treat per-device
+exclusion ranges as r/w unity-mapped regions"). Reproduced on 5.9-rc5
+and goes away with revert of the commit. There is a follow on commit
+that depends on this that was reverted as well 2ca6b6dc8512 ("iommu/amd:
+Remove unused variable"). I'm working on getting system access and want
+to see what the IVRS table looks like, but thought I'd give you heads
+up.
 
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
+Regards,
+Jerry
 
---LiQwW4YX+w4axhAx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9o92UACgkQJNaLcl1U
-h9AZYAf/fV6TOg8U++qh08UDGcRasmk50C1XO2QANRr0TYNKvCZ5WOOpyh69y9Wn
-EBrHSEAdvihbb5w8plSKMVpmZDrm5/ttmRSPwfA5OlKQqoz8oqkLZPlXifbr/+DQ
-/iAMttuRGj7eXI1WJoUcpyPFrtrRUbBcJPQHSdhHuToH0aq3SvCMcOA7+JHec9Gf
-Tb/MUKPnq6jl84c5qdojU/FpdKiznAVPPlDBZHnD07laSOxDuz40tVFBEZvHkumN
-8MXSGz6b7mL1I0Z2b+keDDa1jVzZLqnAuRutm2WV6877ykKF2FCa0Zo5sc3znh7k
-qOOqu/SKm+Cdge2ddo+KtEe0b71DVQ==
-=pequ
------END PGP SIGNATURE-----
-
---LiQwW4YX+w4axhAx--
