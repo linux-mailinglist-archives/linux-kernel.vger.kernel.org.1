@@ -2,73 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 288D2271BE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 09:32:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58FB1271BD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 09:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726480AbgIUHcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 03:32:11 -0400
-Received: from kirsty.vergenet.net ([202.4.237.240]:51692 "EHLO
-        kirsty.vergenet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726211AbgIUHcL (ORCPT
+        id S1726526AbgIUHax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 03:30:53 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:32977 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726211AbgIUHaw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 03:32:11 -0400
-X-Greylist: delayed 447 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Sep 2020 03:32:10 EDT
-Received: from reginn.horms.nl (unknown [80.127.179.77])
-        by kirsty.vergenet.net (Postfix) with ESMTPA id C1DC425B7CE;
-        Mon, 21 Sep 2020 17:24:42 +1000 (AEST)
-Received: by reginn.horms.nl (Postfix, from userid 7100)
-        id 90EA89402DE; Mon, 21 Sep 2020 09:24:40 +0200 (CEST)
-Date:   Mon, 21 Sep 2020 09:24:40 +0200
-From:   Simon Horman <horms@verge.net.au>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     wensong@linux-vs.org, ja@ssi.bg, pablo@netfilter.org,
-        kadlec@netfilter.org, fw@strlen.de, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] ipvs: Remove unused macros
-Message-ID: <20200921072436.GA8437@vergenet.net>
-References: <20200918131656.46260-1-yuehaibing@huawei.com>
+        Mon, 21 Sep 2020 03:30:52 -0400
+Received: by mail-oi1-f195.google.com with SMTP id m7so15933045oie.0;
+        Mon, 21 Sep 2020 00:30:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bvT46MVLA1wc77+QBaxqpfVEdVrcHoplawt2ilNveyU=;
+        b=A2oe3ANEBZxhfC77GDz2mQA+UsPCo3vJh70NhyUlSkvk1ByTJ/pHVoKHI6l9LFqeSE
+         226GU2D0N/qw35k5o1NqLLe7nPo0sq5c+ytPwcYjhEyeVP9BWihv119ayxiSwhyvAYwV
+         vPuAt2NcDMNRKGdtCmSaFCcRThQTvFv+wCTBQXYF6tzoEHkqvfUt2uaK+1615I307EAw
+         bxHRMwTCJnSZZDmIKQiCTIVJvJnhOR1V3/LY8eADQI5uIf0Pg9gra6gDCuaj27xjgyKY
+         BvbYqvs10TA7qM28MboExUslHZ6L30JV1xRJy9M4zBEDc2jgOv08uRk5qIayN9TH+mNN
+         ca0w==
+X-Gm-Message-State: AOAM531jLjrhEk5N8kaJ9hzZG5qVEVtLmy83vu6FFqD0397B2wstTAz4
+        yozaNZ0efL+frQiXhidk1hdj/0vkSA46Rp0E2QM=
+X-Google-Smtp-Source: ABdhPJz9xmN9krNVkmFntK1fJCP4SVdiOQdSlUn0glZjdNUu0BDHNFHEgQW2lXttV0KKLloQqhm28dH1yGE42S/hfkE=
+X-Received: by 2002:aca:4441:: with SMTP id r62mr15852660oia.153.1600673451338;
+ Mon, 21 Sep 2020 00:30:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918131656.46260-1-yuehaibing@huawei.com>
-Organisation: Horms Solutions BV
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1594919915-5225-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1594919915-5225-8-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <CA+V-a8vJ2n3KEL8P+XmVob2zjoWaX+s4a6c1TV_WoPFkwdkZmA@mail.gmail.com> <20200920140824.GA2915460@kroah.com>
+In-Reply-To: <20200920140824.GA2915460@kroah.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 21 Sep 2020 09:30:39 +0200
+Message-ID: <CAMuHMdUyXMfZcVKkqaZHJ8tJf-3Kotqg+S2NHMZT0VFO0ZJJww@mail.gmail.com>
+Subject: Re: [PATCH 07/20] dt-bindings: usb: renesas,usb3-peri: Document
+ r8a774e1 support
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Jens Axboe <axboe@kernel.dk>, Rob Herring <robh+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Mark Brown <broonie@kernel.org>,
+        Niklas <niklas.soderlund@ragnatech.se>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-ide@vger.kernel.org,
+        dmaengine <dmaengine@vger.kernel.org>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        alsa-devel <alsa-devel@alsa-project.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 09:16:56PM +0800, YueHaibing wrote:
-> They are not used since commit e4ff67513096 ("ipvs: add
-> sync_maxlen parameter for the sync daemon")
-> 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Hi Greg,
 
-Thanks, this look good to me.
+On Sun, Sep 20, 2020 at 4:08 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+> On Sat, Sep 19, 2020 at 11:50:07AM +0100, Lad, Prabhakar wrote:
+> > On Thu, Jul 16, 2020 at 6:19 PM Lad Prabhakar
+> > <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > >
+> > > Document RZ/G2H (R8A774E1) SoC bindings.
+> > >
+> > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > > Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+> > > ---
+> > >  Documentation/devicetree/bindings/usb/renesas,usb3-peri.yaml | 1 +
+> > >  1 file changed, 1 insertion(+)
+> > >
+> > Could you please pick this patch.
+>
+> Don't DT patches have to be acked by a DT maintainer first?
 
-Acked-by: Simon Horman <horms@verge.net.au>
+https://lore.kernel.org/r/20200721033508.GA3504365@bogus
 
-Pablo, please consider this for nf-next.
+Gr{oetje,eeting}s,
 
-> ---
->  net/netfilter/ipvs/ip_vs_sync.c | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/net/netfilter/ipvs/ip_vs_sync.c b/net/netfilter/ipvs/ip_vs_sync.c
-> index 2b8abbfe018c..16b48064f715 100644
-> --- a/net/netfilter/ipvs/ip_vs_sync.c
-> +++ b/net/netfilter/ipvs/ip_vs_sync.c
-> @@ -242,9 +242,6 @@ struct ip_vs_sync_thread_data {
->        |                    IPVS Sync Connection (1)                   |
->  */
->  
-> -#define SYNC_MESG_HEADER_LEN	4
-> -#define MAX_CONNS_PER_SYNCBUFF	255 /* nr_conns in ip_vs_sync_mesg is 8 bit */
-> -
->  /* Version 0 header */
->  struct ip_vs_sync_mesg_v0 {
->  	__u8                    nr_conns;
-> -- 
-> 2.17.1
-> 
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
