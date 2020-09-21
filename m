@@ -2,59 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10DBC272679
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06AC9272683
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727409AbgIUOAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 10:00:17 -0400
-Received: from verein.lst.de ([213.95.11.211]:40145 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727289AbgIUOAR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:00:17 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id A75DA68AFE; Mon, 21 Sep 2020 16:00:11 +0200 (CEST)
-Date:   Mon, 21 Sep 2020 16:00:10 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Coly Li <colyli@suse.de>
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Song Liu <song@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Richard Weinberger <richard@nod.at>,
-        Minchan Kim <minchan@kernel.org>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Justin Sanders <justin@coraid.com>,
-        linux-mtd@lists.infradead.org, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
-        linux-kernel@vger.kernel.org, drbd-dev@lists.linbit.com,
-        linux-raid@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH 03/13] bcache: inherit the optimal I/O size
-Message-ID: <20200921140010.GA14672@lst.de>
-References: <20200921080734.452759-1-hch@lst.de> <20200921080734.452759-4-hch@lst.de> <b547a1b6-ab03-0520-012d-86d112c83d92@suse.de>
+        id S1727422AbgIUOBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 10:01:04 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2906 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726688AbgIUOBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 10:01:02 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id C85C03125A0D1D39BC16;
+        Mon, 21 Sep 2020 15:01:00 +0100 (IST)
+Received: from [127.0.0.1] (10.210.166.25) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Mon, 21 Sep
+ 2020 15:01:00 +0100
+Subject: Re: [PATCH v2 0/2] iommu/arm-smmu-v3: Improve cmdq lock efficiency
+To:     Will Deacon <will@kernel.org>
+CC:     <robin.murphy@arm.com>, <joro@8bytes.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <maz@kernel.org>,
+        <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>
+References: <1598018062-175608-1-git-send-email-john.garry@huawei.com>
+ <20200921134324.GK2139@willie-the-truck>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <b13d0858-e164-4670-a5c6-ab84e81724b7@huawei.com>
+Date:   Mon, 21 Sep 2020 14:58:10 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b547a1b6-ab03-0520-012d-86d112c83d92@suse.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200921134324.GK2139@willie-the-truck>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.166.25]
+X-ClientProxiedBy: lhreml701-chm.china.huawei.com (10.201.108.50) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 05:54:59PM +0800, Coly Li wrote:
-> I am not sure whether virtual bcache device's optimal request size can
-> be simply set like this.
-> 
-> Most of time inherit backing device's optimal request size is fine, but
-> there are two exceptions,
-> - Read request hits on cache device
-> - User sets sequential_cuttoff as 0, all writing may go into cache
-> device firstly.
-> For the above two conditions, all I/Os goes into cache device, using
-> optimal request size of backing device might be improper.
-> 
-> Just a guess, is it OK to set the optimal request size of the virtual
-> bcache device as the least common multiple of cache device's and backing
-> device's optimal request sizes ?
+On 21/09/2020 14:43, Will Deacon wrote:
+> On Fri, Aug 21, 2020 at 09:54:20PM +0800, John Garry wrote:
+>> As mentioned in [0], the CPU may consume many cycles processing
+>> arm_smmu_cmdq_issue_cmdlist(). One issue we find is the cmpxchg() loop to
+>> get space on the queue takes a lot of time once we start getting many
+>> CPUs contending - from experiment, for 64 CPUs contending the cmdq,
+>> success rate is ~ 1 in 12, which is poor, but not totally awful.
+>>
+>> This series removes that cmpxchg() and replaces with an atomic_add,
+>> same as how the actual cmdq deals with maintaining the prod pointer.
+>  > I'm still not a fan of this.
 
-Well, if the optimal I/O size is wrong, the read ahead size also is
-wrong.  Can we just drop the setting?
+:(
+
+> Could you try to adapt the hacks I sent before,
+> please? I know they weren't quite right (I have no hardware to test on), but
+> the basic idea is to fall back to a spinlock if the cmpxchg() fails. The
+> queueing in the spinlock implementation should avoid the contention.
+
+OK, so if you're asking me to try this again, then I can do that, and 
+see what it gives us.
+
+John
+
