@@ -2,117 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 492752733BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 22:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0219C2733BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 22:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727245AbgIUUoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 16:44:11 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:34345 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726451AbgIUUoK (ORCPT
+        id S1727309AbgIUUot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 16:44:49 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:37470 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726451AbgIUUot (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 16:44:10 -0400
-Received: by mail-il1-f197.google.com with SMTP id i18so3432369ils.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 13:44:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=VxFaPc9OXa6+VO9gz0wrGX7j9K0q34rLiWQ3Al4BndM=;
-        b=CD2o4wqHSzMZKt7g7V5m/SKl4rXtw8gJ8G4vscOz5ZNLxVSttvBTZBcYF5c8rsecyK
-         7s05Qc8z9UNClt2SU6DC5Wl4eMFGiJ/b6Nzb8822CacHWZsEE5RaRggfFgndbA9hY8U6
-         ezu7M0qCTrVk5LlG2t2mPZkDL3GPgPSEOY6fQ/2ADuxOWGCYwIcTb3JbkIGGCXWV9me9
-         gzyX3N23E/VsyeNEfaI28atGNw5SQTKOMKbrwUtNeXFzsMYnSBlace4HCsQnXSglajcX
-         L9kFQHQc1OMXq0J9lberTeCr3R3aMevGOzoHsZYq7M9LGQp/nC4GFQcNXGIzb46UUMrK
-         +z9w==
-X-Gm-Message-State: AOAM530Vrcz0WixHBT3zIwrWLmxIX3UQylrBrHDKK+slLJTLC2fNIX+A
-        4x87K1YRJ0A+U41ZBLrBKkhrICJWmyrIGAc8daUMCScRrquY
-X-Google-Smtp-Source: ABdhPJwXqRYs+DMwN4FVCVTTmtGcukyhBdqC3KHlmzGlRmDnsGdmV56aRGj6GuIpXDBmKFH2kpd1L/cw1NzdVsOtEwEXbu43CQUr
+        Mon, 21 Sep 2020 16:44:49 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08LKdCRp085819;
+        Mon, 21 Sep 2020 20:44:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=7ujMtTvfd+IOkCnn7iI/GoTDPJ8pxvj1u7VSyDhDIiE=;
+ b=TgUfJcvqhnH4X5TErTOA7ctRXSXQGoVSuGYWQLux1TS6gP/EFUFQnZPW1RbI+0E3cL3B
+ in/KONvWNSkpL0McwdWOCYcEE71inohanA9TuEaBwbVsC+zymxPchZWkmSx8xBtSpz45
+ n4nSBlQUHVmHXIe079bdqGiphbvhJyNT4NA7Zc1AGj/hU0sZ8Gjz7k8rSC1nxwxqxoDc
+ M/3OmSs0Xen7YIDCD5IseKHAjxpvC1Wd93RKD+UTZE2zo/tF5x3Gs3ujB2MuqgPbpVVb
+ G2l9kt0/DZBWdfye+7ecmzj4ylCxjUBE6JtHlfJDOmpinNW39aF0e9JhEBK/pXjcS2Z0 kg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 33n9xks3vf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 21 Sep 2020 20:44:24 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08LKdmAx065052;
+        Mon, 21 Sep 2020 20:44:24 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 33nuw1usdt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 21 Sep 2020 20:44:24 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08LKiFvM023808;
+        Mon, 21 Sep 2020 20:44:20 GMT
+Received: from [10.74.86.189] (/10.74.86.189)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 21 Sep 2020 13:44:14 -0700
+Subject: Re: [PATCH 6/6] x86/xen: open code alloc_vm_area in
+ arch_gnttab_valloc
+To:     Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>, x86@kernel.org,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-mm@kvack.org
+References: <20200918163724.2511-1-hch@lst.de>
+ <20200918163724.2511-7-hch@lst.de>
+From:   boris.ostrovsky@oracle.com
+Organization: Oracle Corporation
+Message-ID: <0833b9a8-5096-d105-a850-1336150eada1@oracle.com>
+Date:   Mon, 21 Sep 2020 16:44:10 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.2.1
 MIME-Version: 1.0
-X-Received: by 2002:a92:dc03:: with SMTP id t3mr1459240iln.245.1600721049449;
- Mon, 21 Sep 2020 13:44:09 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 13:44:09 -0700
-In-Reply-To: <20200921170120.GK6756@twin.jikos.cz>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008979ac05afd8e916@google.com>
-Subject: Re: WARNING in close_fs_devices (2)
-From:   syzbot <syzbot+4cfe71a4da060be47502@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, dsterba@suse.cz,
-        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200918163724.2511-7-hch@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9751 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
+ mlxscore=0 suspectscore=2 adultscore=0 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009210152
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9751 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 malwarescore=0
+ suspectscore=2 priorityscore=1501 adultscore=0 spamscore=0 clxscore=1011
+ mlxlogscore=999 bulkscore=0 mlxscore=0 phishscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009210152
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING in close_fs_devices
-
-BTRFS info (device loop5): enabling ssd optimizations
-BTRFS warning (device loop5): failed to read fs tree: -5
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 8915 at fs/btrfs/volumes.c:1166 close_fs_devices.part.0+0x607/0x800 fs/btrfs/volumes.c:1166
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 8915 Comm: syz-executor.4 Not tainted 5.8.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- panic+0x31e/0x797 kernel/panic.c:231
- __warn.cold+0x20/0x4a kernel/panic.c:600
- report_bug+0x1bd/0x210 lib/bug.c:198
- handle_bug+0x38/0x90 arch/x86/kernel/traps.c:235
- exc_invalid_op+0x13/0x40 arch/x86/kernel/traps.c:255
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:540
-RIP: 0010:close_fs_devices.part.0+0x607/0x800 fs/btrfs/volumes.c:1166
-Code: 0f b6 04 02 84 c0 74 02 7e 33 48 8b 44 24 18 c6 80 30 01 00 00 00 48 83 c4 30 5b 5d 41 5c 41 5d 41 5e 41 5f c3 e8 e9 19 4d fe <0f> 0b e9 71 ff ff ff e8 dd 19 4d fe 0f 0b e9 20 ff ff ff e8 e1 33
-RSP: 0018:ffffc90006777818 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffffffffffffffff RCX: ffffffff83288276
-RDX: ffff8880921402c0 RSI: ffffffff83288307 RDI: 0000000000000007
-RBP: dffffc0000000000 R08: 0000000000000001 R09: ffff8880a7206c7f
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff888095742130
-R13: ffff8880957421ec R14: ffff8880a7206d08 R15: ffff888095742050
- close_fs_devices fs/btrfs/volumes.c:1193 [inline]
- btrfs_close_devices+0x95/0x1f0 fs/btrfs/volumes.c:1179
- open_ctree+0x49e6/0x4a96 fs/btrfs/disk-io.c:3456
- btrfs_fill_super fs/btrfs/super.c:1316 [inline]
- btrfs_mount_root.cold+0x14/0x165 fs/btrfs/super.c:1672
- legacy_get_tree+0x105/0x220 fs/fs_context.c:592
- vfs_get_tree+0x89/0x2f0 fs/super.c:1547
- fc_mount fs/namespace.c:978 [inline]
- vfs_kern_mount.part.0+0xd3/0x170 fs/namespace.c:1008
- vfs_kern_mount+0x3c/0x60 fs/namespace.c:995
- btrfs_mount+0x234/0xaa0 fs/btrfs/super.c:1732
- legacy_get_tree+0x105/0x220 fs/fs_context.c:592
- vfs_get_tree+0x89/0x2f0 fs/super.c:1547
- do_new_mount fs/namespace.c:2875 [inline]
- do_mount+0x159c/0x2000 fs/namespace.c:3200
- __do_sys_mount fs/namespace.c:3410 [inline]
- __se_sys_mount fs/namespace.c:3387 [inline]
- __x64_sys_mount+0x18f/0x230 fs/namespace.c:3387
- do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:384
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x46004a
-Code: b8 a6 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 fd 89 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 da 89 fb ff c3 66 0f 1f 84 00 00 00 00 00
-RSP: 002b:00007f5e059b1a88 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007f5e059b1b20 RCX: 000000000046004a
-RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007f5e059b1ae0
-RBP: 00007f5e059b1ae0 R08: 00007f5e059b1b20 R09: 0000000020000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000020000000
-R13: 0000000020000100 R14: 0000000020000200 R15: 0000000020000140
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+On 9/18/20 12:37 PM, Christoph Hellwig wrote:
+>  
+> +static int gnttab_apply(pte_t *pte, unsigned long addr, void *data)
+> +{
+> +	pte_t ***p = data;
+> +
+> +	**p = pte;
+> +	(*p)++;
+> +	return 0;
+> +}
+> +
+>  static int arch_gnttab_valloc(struct gnttab_vm_area *area, unsigned nr_frames)
+>  {
+>  	area->ptes = kmalloc_array(nr_frames, sizeof(*area->ptes), GFP_KERNEL);
+>  	if (area->ptes == NULL)
+>  		return -ENOMEM;
+> -
+> -	area->area = alloc_vm_area(PAGE_SIZE * nr_frames, area->ptes);
+> -	if (area->area == NULL) {
+> -		kfree(area->ptes);
+> -		return -ENOMEM;
+> -	}
+> -
+> +	area->area = get_vm_area(PAGE_SIZE * nr_frames, VM_IOREMAP);
+> +	if (!area->area)
+> +		goto out_free_ptes;
+> +	if (apply_to_page_range(&init_mm, (unsigned long)area->area->addr,
+> +			PAGE_SIZE * nr_frames, gnttab_apply, &area->ptes))
 
 
-Tested on:
+This will end up incrementing area->ptes pointer. So perhaps something like
 
-commit:         d1db82c9 btrfs: move btrfs_rm_dev_replace_free_srcdev outs..
-git tree:       git://github.com/kdave/btrfs-devel.git misc-5.9
-console output: https://syzkaller.appspot.com/x/log.txt?x=1007c6c3900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=72e4ae28d563b993
-dashboard link: https://syzkaller.appspot.com/bug?extid=4cfe71a4da060be47502
-compiler:       gcc (GCC) 10.1.0-syz 20200507
 
+pte_t **ptes = area->ptes;
+
+if (apply_to_page_range(&init_mm, (unsigned long)area->area->addr,
+                        PAGE_SIZE * nr_frames, gnttab_apply, &ptes)) {
+
+       ...
+
+}
+
+
+-boris
