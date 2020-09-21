@@ -2,68 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A832732ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD70B2732F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:37:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728061AbgIUTff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 15:35:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727197AbgIUTff (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 15:35:35 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06D86C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 12:35:34 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f07e30076607a950172f225.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:e300:7660:7a95:172:f225])
+        id S1728180AbgIUThE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 15:37:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60550 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726471AbgIUThE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 15:37:04 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6DE6E1EC0328;
-        Mon, 21 Sep 2020 21:35:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600716933;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=fScbz9wqHd33fI9LUntoRj5Fv18CV5ns+8IWtXmJEUg=;
-        b=E4EqF/30RegUqKTQblKkkD3zU15Jqb3OAVpPxCYHNVKGX1B0X66KAC0kTeyGURH7YNbc0u
-        6aI3HkERpIG7y8k24qEU1p4qF8CTCwu3MDe/vJI1YtVhEfV4HnhrJMa2C4hfmw8u5NNTcz
-        PpybMEiFxDu69lgaCppSu4OBVBFsgoo=
-Date:   Mon, 21 Sep 2020 21:35:27 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Joe Perches <joe@perches.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Marc Zyngier <maz@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ming Lei <ming.lei@redhat.com>, Peter Xu <peterx@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] x86/vector: print_APIC_field - use print_hex_dump_debug
-Message-ID: <20200921193527.GL5901@zn.tnic>
-References: <aa7e8d27a46e3a54a7eb8854134849979bd1eaa0.camel@perches.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id E7B6C2193E;
+        Mon, 21 Sep 2020 19:37:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600717023;
+        bh=NgL5YAUFZqx/UlSr/zVuYuZ4T40KuqDKZFqs9400ZyU=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=V0ly0WIsF1ge5taZVWuI9sNcnf98Wn6I6Vk2k6L/iW7VeZnMjLp5bQBTheaBrHi7Q
+         Fqm66zUELGGc9QnIphBYnGUR35A1/A5q5A6c7kvtIy96ICHBotzRuOvZwx8LVHI7ID
+         YESYhiUmtcm1uX61wAoWuEbzP+3WyX9vMmH0HSxc=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id AF7F3352303A; Mon, 21 Sep 2020 12:37:03 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 12:37:03 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     mingo@kernel.org, tglx@linutronix.de, torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        laurent.pinchart@ideasonboard.com
+Subject: [GIT RFC PULL rcu/urgent] Fix rcu-tasks compilation warning
+Message-ID: <20200921193703.GA20208@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aa7e8d27a46e3a54a7eb8854134849979bd1eaa0.camel@perches.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 12:10:38PM -0700, Joe Perches wrote:
-> Convert the printk(KERN_DEBUG) / pr_cont uses to print_hex_dump_debug.
-> 
-> Output is now single line with spaces between output u32s.
-> 
-> ---
->  arch/x86/kernel/apic/vector.c | 21 +++++++++------------
->  1 file changed, 9 insertions(+), 12 deletions(-)
+Hello!
 
-Forgot to use checkpatch on your patch:
+This pull request contains a single commit that fixes a bug that
+was introduced in the last merge window.  This bug causes a compiler
+warning complaining about show_rcu_tasks_classic_gp_kthread() being an
+unused static function in !SMP kernels.  The fix is straightforward,
+just adding an "inline" to make this a static inline function, thus
+avoiding the warning.  This bug was reported by Laurent Pinchart (CCed),
+who would like it fixed sooner rather than later.  So:
 
-$ ./scripts/checkpatch.pl /tmp/joe
-ERROR: Missing Signed-off-by: line(s)
+The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
 
--- 
-Regards/Gruss,
-    Boris.
+  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
 
-https://people.kernel.org/tglx/notes-about-netiquette
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/urgent
+
+for you to fetch changes up to 78edc005f477a4987ee0a5d96bfe117295c231fd:
+
+  rcu-tasks: Prevent complaints of unused show_rcu_tasks_classic_gp_kthread() (2020-09-16 16:32:36 -0700)
+
+----------------------------------------------------------------
+Paul E. McKenney (1):
+      rcu-tasks: Prevent complaints of unused show_rcu_tasks_classic_gp_kthread()
+
+ kernel/rcu/tasks.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
