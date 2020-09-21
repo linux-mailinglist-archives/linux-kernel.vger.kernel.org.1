@@ -2,246 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B75152723EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D95C72723F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726776AbgIUMc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 08:32:58 -0400
-Received: from crapouillou.net ([89.234.176.41]:41228 "EHLO crapouillou.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726341AbgIUMc6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 08:32:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1600691574; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tVS4ej/3zLZ3sk2zDSTgF5J1k9yrLkihVwDA0T36HJ8=;
-        b=EJgPDLmQYQ55aeVw/XzHq90ypXv8fyF8RuG87VqQ/hav1J1JJbQGX6MT9oe9I8vQGtLUy9
-        kVwXS8PFjRErOBIgKCcg2OgAFE3ntYBegiHb2NDrvlkVGiblEiOX3yg9AXCfpIKX9PXQ25
-        eBNNvk/5ptOb05ypmWczJtE/75Lpu+A=
-Date:   Mon, 21 Sep 2020 14:32:41 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 1/1] MIPS: Ingenic: Add CPU nodes for Ingenic SoCs.
-To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-Cc:     robh+dt@kernel.org, tsbogend@alpha.franken.de,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
-        zhenwenjin@gmail.com
-Message-Id: <HID0HQ.YOE31HIO6RXQ2@crapouillou.net>
-In-Reply-To: <20200919113859.88566-2-zhouyanjie@wanyeetech.com>
-References: <20200919113859.88566-1-zhouyanjie@wanyeetech.com>
-        <20200919113859.88566-2-zhouyanjie@wanyeetech.com>
+        id S1726815AbgIUMdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 08:33:32 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:32978 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726460AbgIUMdb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 08:33:31 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08LCXIis105635;
+        Mon, 21 Sep 2020 07:33:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600691598;
+        bh=Me6JaYxCAj8494EMq4SiU9PetCAowoMjw0t1jk/5Eyo=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=gulmEJv6PG4M5G68jE/eZlTSqbuDuLCxYnndlHlPhED803yuZioiDvgXkJajCRjjz
+         z9gCeGzJq0eHfvwxxDZeUkjaiYV34G9gMtYnfotuQXo8nhmwYudtQiin+f7SU8QhUK
+         +IaTk34IHs648dDlEZQOb11tXgLX9E6+Lty9DzZU=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08LCXIDA074728
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 21 Sep 2020 07:33:18 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 21
+ Sep 2020 07:33:08 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 21 Sep 2020 07:33:08 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08LCX8N6107043;
+        Mon, 21 Sep 2020 07:33:08 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     <peda@axentia.se>, Roger Quadros <rogerq@ti.com>
+CC:     Nishanth Menon <nm@ti.com>, <t-kristo@ti.com>, <nsekhar@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <robh+dt@kernel.org>, <kishon@ti.com>
+Subject: Re: [PATCH v2] arm64: dts: ti: k3-j721e: Rename mux header and update macro names
+Date:   Mon, 21 Sep 2020 07:33:07 -0500
+Message-ID: <160069143453.25898.17991361187968273734.b4-ty@ti.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200918165930.2031-1-rogerq@ti.com>
+References: <20200918165930.2031-1-rogerq@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 18 Sep 2020 19:59:30 +0300, Roger Quadros wrote:
+> We intend to use one header file for SERDES MUX for all
+> TI SoCs so rename the header file.
+> 
+> The exsting macros are too generic. Prefix them with SoC name.
+> 
+> While at that, add the missing configurations for completeness.
 
+Hi Roger Quadros,
 
-Le sam. 19 sept. 2020 =C3=A0 19:38, =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanji=
-e)=20
-<zhouyanjie@wanyeetech.com> a =C3=A9crit :
-> Add 'cpus' node to the jz4725b.dtsi, jz4740.dtsi, jz4770.dtsi,
-> jz4780.dtsi, x1000.dtsi, and x1830.dtsi files.
->=20
-> Tested-by: H. Nikolaus Schaller <hns@goldelico.com>
-> Tested-by: Paul Boddie <paul@boddie.org.uk>
-> Signed-off-by: =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) <zhouyanjie@wany=
-eetech.com>
+I have applied the following to branch for-5.9-dts on [1].
+Thank you!
 
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+[1/1] arm64: dts: ti: k3-j721e: Rename mux header and update macro names
+      commit: c65176fd49f45bd5a5ffaa1790109745d1fa462c
 
-Cheers,
--Paul
+I have also applied ti-k3-dt-fixes-for-v5.9 tag which I will be sending
+for 5.9 in the next few mins.
 
-> ---
->  arch/mips/boot/dts/ingenic/jz4725b.dtsi | 14 ++++++++++++++
->  arch/mips/boot/dts/ingenic/jz4740.dtsi  | 14 ++++++++++++++
->  arch/mips/boot/dts/ingenic/jz4770.dtsi  | 15 ++++++++++++++-
->  arch/mips/boot/dts/ingenic/jz4780.dtsi  | 23 +++++++++++++++++++++++
->  arch/mips/boot/dts/ingenic/x1000.dtsi   | 14 ++++++++++++++
->  arch/mips/boot/dts/ingenic/x1830.dtsi   | 14 ++++++++++++++
->  6 files changed, 93 insertions(+), 1 deletion(-)
->=20
-> diff --git a/arch/mips/boot/dts/ingenic/jz4725b.dtsi=20
-> b/arch/mips/boot/dts/ingenic/jz4725b.dtsi
-> index a8fca560878d..a1f0b71c9223 100644
-> --- a/arch/mips/boot/dts/ingenic/jz4725b.dtsi
-> +++ b/arch/mips/boot/dts/ingenic/jz4725b.dtsi
-> @@ -7,6 +7,20 @@
->  	#size-cells =3D <1>;
->  	compatible =3D "ingenic,jz4725b";
->=20
-> +	cpus {
-> +		#address-cells =3D <1>;
-> +		#size-cells =3D <0>;
-> +
-> +		cpu0: cpu@0 {
-> +			device_type =3D "cpu";
-> +			compatible =3D "ingenic,xburst-mxu1.0";
-> +			reg =3D <0>;
-> +
-> +			clocks =3D <&cgu JZ4725B_CLK_CCLK>;
-> +			clock-names =3D "cpu";
-> +		};
-> +	};
-> +
->  	cpuintc: interrupt-controller {
->  		#address-cells =3D <0>;
->  		#interrupt-cells =3D <1>;
-> diff --git a/arch/mips/boot/dts/ingenic/jz4740.dtsi=20
-> b/arch/mips/boot/dts/ingenic/jz4740.dtsi
-> index 1520585c235c..eee523678ce5 100644
-> --- a/arch/mips/boot/dts/ingenic/jz4740.dtsi
-> +++ b/arch/mips/boot/dts/ingenic/jz4740.dtsi
-> @@ -7,6 +7,20 @@
->  	#size-cells =3D <1>;
->  	compatible =3D "ingenic,jz4740";
->=20
-> +	cpus {
-> +		#address-cells =3D <1>;
-> +		#size-cells =3D <0>;
-> +
-> +		cpu0: cpu@0 {
-> +			device_type =3D "cpu";
-> +			compatible =3D "ingenic,xburst-mxu1.0";
-> +			reg =3D <0>;
-> +
-> +			clocks =3D <&cgu JZ4740_CLK_CCLK>;
-> +			clock-names =3D "cpu";
-> +		};
-> +	};
-> +
->  	cpuintc: interrupt-controller {
->  		#address-cells =3D <0>;
->  		#interrupt-cells =3D <1>;
-> diff --git a/arch/mips/boot/dts/ingenic/jz4770.dtsi=20
-> b/arch/mips/boot/dts/ingenic/jz4770.dtsi
-> index fa11ac950499..018721a9eea9 100644
-> --- a/arch/mips/boot/dts/ingenic/jz4770.dtsi
-> +++ b/arch/mips/boot/dts/ingenic/jz4770.dtsi
-> @@ -1,5 +1,4 @@
->  // SPDX-License-Identifier: GPL-2.0
-> -
->  #include <dt-bindings/clock/jz4770-cgu.h>
->  #include <dt-bindings/clock/ingenic,tcu.h>
->=20
-> @@ -8,6 +7,20 @@
->  	#size-cells =3D <1>;
->  	compatible =3D "ingenic,jz4770";
->=20
-> +	cpus {
-> +		#address-cells =3D <1>;
-> +		#size-cells =3D <0>;
-> +
-> +		cpu0: cpu@0 {
-> +			device_type =3D "cpu";
-> +			compatible =3D "ingenic,xburst-fpu1.0-mxu1.1";
-> +			reg =3D <0>;
-> +
-> +			clocks =3D <&cgu JZ4770_CLK_CCLK>;
-> +			clock-names =3D "cpu";
-> +		};
-> +	};
-> +
->  	cpuintc: interrupt-controller {
->  		#address-cells =3D <0>;
->  		#interrupt-cells =3D <1>;
-> diff --git a/arch/mips/boot/dts/ingenic/jz4780.dtsi=20
-> b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-> index b7f409a7cf5d..dfb5a7e1bb21 100644
-> --- a/arch/mips/boot/dts/ingenic/jz4780.dtsi
-> +++ b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-> @@ -8,6 +8,29 @@
->  	#size-cells =3D <1>;
->  	compatible =3D "ingenic,jz4780";
->=20
-> +	cpus {
-> +		#address-cells =3D <1>;
-> +		#size-cells =3D <0>;
-> +
-> +		cpu0: cpu@0 {
-> +			device_type =3D "cpu";
-> +			compatible =3D "ingenic,xburst-fpu1.0-mxu1.1";
-> +			reg =3D <0>;
-> +
-> +			clocks =3D <&cgu JZ4780_CLK_CPU>;
-> +			clock-names =3D "cpu";
-> +		};
-> +
-> +		cpu1: cpu@1 {
-> +			device_type =3D "cpu";
-> +			compatible =3D "ingenic,xburst-fpu1.0-mxu1.1";
-> +			reg =3D <1>;
-> +
-> +			clocks =3D <&cgu JZ4780_CLK_CORE1>;
-> +			clock-names =3D "cpu";
-> +		};
-> +	};
-> +
->  	cpuintc: interrupt-controller {
->  		#address-cells =3D <0>;
->  		#interrupt-cells =3D <1>;
-> diff --git a/arch/mips/boot/dts/ingenic/x1000.dtsi=20
-> b/arch/mips/boot/dts/ingenic/x1000.dtsi
-> index 9de9e7c2d523..1f1f896dd1f7 100644
-> --- a/arch/mips/boot/dts/ingenic/x1000.dtsi
-> +++ b/arch/mips/boot/dts/ingenic/x1000.dtsi
-> @@ -8,6 +8,20 @@
->  	#size-cells =3D <1>;
->  	compatible =3D "ingenic,x1000", "ingenic,x1000e";
->=20
-> +	cpus {
-> +		#address-cells =3D <1>;
-> +		#size-cells =3D <0>;
-> +
-> +		cpu0: cpu@0 {
-> +			device_type =3D "cpu";
-> +			compatible =3D "ingenic,xburst-fpu1.0-mxu1.1";
-> +			reg =3D <0>;
-> +
-> +			clocks =3D <&cgu X1000_CLK_CPU>;
-> +			clock-names =3D "cpu";
-> +		};
-> +	};
-> +
->  	cpuintc: interrupt-controller {
->  		#address-cells =3D <0>;
->  		#interrupt-cells =3D <1>;
-> diff --git a/arch/mips/boot/dts/ingenic/x1830.dtsi=20
-> b/arch/mips/boot/dts/ingenic/x1830.dtsi
-> index eb1214481a33..b05dac3ae308 100644
-> --- a/arch/mips/boot/dts/ingenic/x1830.dtsi
-> +++ b/arch/mips/boot/dts/ingenic/x1830.dtsi
-> @@ -8,6 +8,20 @@
->  	#size-cells =3D <1>;
->  	compatible =3D "ingenic,x1830";
->=20
-> +	cpus {
-> +		#address-cells =3D <1>;
-> +		#size-cells =3D <0>;
-> +
-> +		cpu0: cpu@0 {
-> +			device_type =3D "cpu";
-> +			compatible =3D "ingenic,xburst-fpu2.0-mxu2.0";
-> +			reg =3D <0>;
-> +
-> +			clocks =3D <&cgu X1830_CLK_CPU>;
-> +			clock-names =3D "cpu";
-> +		};
-> +	};
-> +
->  	cpuintc: interrupt-controller {
->  		#address-cells =3D <0>;
->  		#interrupt-cells =3D <1>;
-> --
-> 2.11.0
->=20
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+[1] git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
