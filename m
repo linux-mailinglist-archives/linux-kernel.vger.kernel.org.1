@@ -2,103 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB5427247D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B5D227247F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726919AbgIUNCN convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Sep 2020 09:02:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726395AbgIUNCL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:02:11 -0400
-Received: from mail.nic.cz (lists.nic.cz [IPv6:2001:1488:800:400::400])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C053C061755;
-        Mon, 21 Sep 2020 06:02:11 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
-        by mail.nic.cz (Postfix) with ESMTPSA id B5654140942;
-        Mon, 21 Sep 2020 15:02:08 +0200 (CEST)
-Date:   Mon, 21 Sep 2020 15:02:08 +0200
-From:   Marek Behun <marek.behun@nic.cz>
-To:     Simon Guinot <simon.guinot@sequanux.org>
-Cc:     linux-leds@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        Dan Murphy <dmurphy@ti.com>,
-        =?UTF-8?B?T25kxZllag==?= Jirman <megous@megous.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org, Simon Guinot <sguinot@lacie.com>,
-        Vincent Donnefort <vdonnefort@gmail.com>,
-        Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH leds v1 10/10] leds: ns2: refactor and use struct
- led_init_data
-Message-ID: <20200921150208.6a296bc7@nic.cz>
-In-Reply-To: <20200921125343.GA4828@kw.sim.vm.gnt>
-References: <20200916231650.11484-1-marek.behun@nic.cz>
-        <20200916231650.11484-11-marek.behun@nic.cz>
-        <20200918130206.GE29951@kw.sim.vm.gnt>
-        <20200918191405.516b51ff@nic.cz>
-        <20200921125343.GA4828@kw.sim.vm.gnt>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726948AbgIUNCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:02:50 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:11646 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726395AbgIUNCu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:02:50 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600693369; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=dvQ8g8G8ZMC0OoVSWlQmLxd3GM1eXbe/mOTaf9do3QU=;
+ b=LOi8KKJ2ut+Cj/83qNkBzy6OlqAQqJuVIQZE+RHIKvIPs2P2KLq+fxvSyysfBLuz5B3/dwzW
+ bKMcFvGk7TlPYQFmR/L3egEeQAphKVBpxP9TuRKDfy9FrSUz4vwYgTdw/37adLj6Q3SlVM2T
+ Sk4DgNnu020Y84PWIJJIc+Ww/Uo=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5f68a4650915d303570f5e3a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 21 Sep 2020 13:02:29
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7C1E1C433CB; Mon, 21 Sep 2020 13:02:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5804BC433F1;
+        Mon, 21 Sep 2020 13:02:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5804BC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
-        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
-        autolearn=disabled version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-X-Virus-Status: Clean
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH net] net: wilc1000: clean up resource in error path of
+ init
+ mon interface
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200917123019.206382-1-huangguobin4@huawei.com>
+References: <20200917123019.206382-1-huangguobin4@huawei.com>
+To:     Huang Guobin <huangguobin4@huawei.com>
+Cc:     <ajay.kathat@microchip.com>, <claudiu.beznea@microchip.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>,
+        <gregkh@linuxfoundation.org>, <linux-wireless@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200921130228.7C1E1C433CB@smtp.codeaurora.org>
+Date:   Mon, 21 Sep 2020 13:02:28 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Sep 2020 14:53:43 +0200
-Simon Guinot <simon.guinot@sequanux.org> wrote:
+Huang Guobin <huangguobin4@huawei.com> wrote:
 
-> On Fri, Sep 18, 2020 at 07:14:05PM +0200, Marek Behun wrote:
-> > On Fri, 18 Sep 2020 15:02:06 +0200
-> > Simon Guinot <simon.guinot@sequanux.org> wrote:
-> >   
-> > > On Thu, Sep 17, 2020 at 01:16:50AM +0200, Marek Behún wrote:
-> > > 
-> > > Hi Marek,
-> > >   
-> > > > By using struct led_init_data when registering we do not need to parse
-> > > > `label` DT property nor `linux,default-trigger` property.
-> > > > 
-> > > > Also, move forward from platform data to device tree only:
-> > > > since commit c7896490dd1a ("leds: ns2: Absorb platform data") the
-> > > > platform data structure is absorbed into the driver, because nothing
-> > > > else in the source tree used it. Since nobody complained and all usage    
-> > > 
-> > > Well, I probably should have...
-> > > 
-> > > I am using this driver on the Seagate Superbee NAS devices. This devices
-> > > are based on a x86 SoC. Since I have been unable to get from the ODM the
-> > > LED information written in the ACPI tables, then platform data are used
-> > > to pass the LED description to the driver.
-> > > 
-> > > The support of this boards is not available mainline yet but it is still
-> > > on my todo list. So that's why I am complaining right now :) If it is
-> > > not too much trouble I'd like to keep platform data support in this
-> > > driver.
-> > > 
-> > > Thanks in advance.
-> > > 
-> > > Simon
-> > >   
-> > 
-> > Simon, what if we refactored the driver to use fwnode API instead of OF
-> > API? Then if it is impossible for you to write DTS for that device,
-> > instead of platform data you could implement your device via swnode
-> > fwnodes. :)  
+> The wilc_wfi_init_mon_int() forgets to clean up resource when
+> register_netdevice() failed. Add the missed call to fix it.
+> And the return value of netdev_priv can't be NULL, so remove
+> the unnecessary error handling.
 > 
-> Yes. That would be perfect.
-> 
-> Simon
+> Fixes: 588713006ea4 ("staging: wilc1000: avoid the use of 'wilc_wfi_mon' static variable")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Huang Guobin <huangguobin4@huawei.com>
 
-BTW if you have access to device schematics I could try to write DTS,
-with schematics and the current board source file it should not be that
-hard. But I can't test it, since I don't have the board.
+Patch applied to wireless-drivers-next.git, thanks.
 
-Marek
+55bd14997867 net: wilc1000: clean up resource in error path of init mon interface
+
+-- 
+https://patchwork.kernel.org/patch/11782369/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
