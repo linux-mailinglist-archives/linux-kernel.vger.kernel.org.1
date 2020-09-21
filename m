@@ -2,156 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 339D8272290
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCC50272295
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726779AbgIULby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 07:31:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726326AbgIULby (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 07:31:54 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1328BC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 04:31:54 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f07e3003590c70b70be4695.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:e300:3590:c70b:70be:4695])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 662611EC03CE;
-        Mon, 21 Sep 2020 13:31:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600687912;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=/91U/5Gy/MHFLfKBLTrSBLDzSEBOu3RDyLYfiSJ1TDc=;
-        b=NzPuYynx+v2qfrisE9nEni7kffRNISz6JtgKZcqwlOvlfpaN4iqzxw63H4QVaNPNf0HBg7
-        u9q6j1ZfKY47cARradObM2aRW0oM825E98OCExce/uzaZSiAxWmSywSCGD8PM2H3zPt2ET
-        /uMNuTnE1NF0fZ4f1PRmiLxkfn8VDb8=
-Date:   Mon, 21 Sep 2020 13:31:44 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tony Luck <tony.luck@intel.com>
-Cc:     Youquan Song <youquan.song@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 8/8] x86/mce: Decode a kernel instruction to determine if
- it is copying from user
-Message-ID: <20200921113144.GD5901@zn.tnic>
-References: <20200908175519.14223-1-tony.luck@intel.com>
- <20200908175519.14223-9-tony.luck@intel.com>
+        id S1726628AbgIULdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 07:33:37 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2901 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726326AbgIULdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 07:33:37 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id A8E56E69047D0A45E599;
+        Mon, 21 Sep 2020 12:33:35 +0100 (IST)
+Received: from localhost (10.52.121.13) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 21 Sep
+ 2020 12:33:35 +0100
+Date:   Mon, 21 Sep 2020 12:31:56 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Sean V Kelley <sean.v.kelley@intel.com>
+CC:     <bhelgaas@google.com>, <rafael.j.wysocki@intel.com>,
+        <ashok.raj@intel.com>, <tony.luck@intel.com>,
+        <sathyanarayanan.kuppuswamy@intel.com>, <qiuxu.zhuo@intel.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 07/10] PCI/RCEC: Add RCiEP's linked RCEC to AER/ERR
+Message-ID: <20200921123156.00000f18@Huawei.com>
+In-Reply-To: <20200918204603.62100-8-sean.v.kelley@intel.com>
+References: <20200918204603.62100-1-sean.v.kelley@intel.com>
+        <20200918204603.62100-8-sean.v.kelley@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200908175519.14223-9-tony.luck@intel.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.121.13]
+X-ClientProxiedBy: lhreml744-chm.china.huawei.com (10.201.108.194) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 10:55:19AM -0700, Tony Luck wrote:
-> +static bool is_copy_from_user(struct pt_regs *regs)
-> +{
-> +	u8 insn_buf[MAX_INSN_SIZE];
-> +	struct insn insn;
-> +
-> +	if (copy_from_kernel_nofault(insn_buf, (void *)regs->ip, MAX_INSN_SIZE))
-> +		return false;
+On Fri, 18 Sep 2020 13:46:00 -0700
+Sean V Kelley <sean.v.kelley@intel.com> wrote:
 
-<---- newline here.
+> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> 
+> When attempting error recovery for an RCiEP associated with an RCEC device,
+> there needs to be a way to update the Root Error Status, the Uncorrectable
+> Error Status and the Uncorrectable Error Severity of the parent RCEC.
+> In some non-native cases in which there is no OS visible device
+> associated with the RCiEP, there is nothing to act upon as the firmware
+> is acting before the OS. So add handling for the linked 'rcec' in AER/ERR
+> while taking into account non-native cases.
+> 
+> Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
+> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+I'll give this a test run later to check I'm not missing anything, but LGTM.
 
-> +	kernel_insn_init(&insn, insn_buf, MAX_INSN_SIZE);
-> +	insn_get_length(&insn);
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-insn_get_opcode() I guess.
+Thanks,
 
-> +
-> +	switch (insn.opcode.value) {
-> +	case 0x8A: case 0x8B:		/* MOV */
-
-No side comments pls - put them ontop.
-
-Also, this comment needs to say that you're looking for MOVs where the
-source operand can also be a memory operand.
-
-Now lemme stare at an example, let's look at this function:
-
-static __always_inline __must_check unsigned long
-raw_copy_to_user(void __user *dst, const void *src, unsigned long size)
-{
-        return copy_user_generic((__force void *)dst, src, size);
-
-In this case, we copy to user memory, so dst is the user pointer.
-
-Comment over copy_user_generic_unrolled() says rsi is the source so
-let's look at some of the insns in there:
-
-ffffffff813accc2:       4c 8b 06                mov    (%rsi),%r8
-ffffffff813accc5:       4c 8b 4e 08             mov    0x8(%rsi),%r9
-ffffffff813accc9:       4c 8b 56 10             mov    0x10(%rsi),%r10
-ffffffff813acccd:       4c 8b 5e 18             mov    0x18(%rsi),%r11
-
-All those are at labels which are exception-handled with the new
-_ASM_EXTABLE_CPY().
-
-So according to the above check, this is a copy *from* user. But it
-ain't. And to confirm that, I added a breakpoint at that insn:
-
-(gdb) break *0xffffffff813accc2
-Breakpoint 1 at 0xffffffff813accc2: file arch/x86/lib/copy_user_64.S, line 66.
-
-and the first time it hit, it has this:
-
-Dump of assembler code from 0xffffffff813accc2 to 0xffffffff813accd6:
-=> 0xffffffff813accc2 <copy_user_generic_unrolled+50>:  4c 8b 06        mov    (%rsi),%r8
-   0xffffffff813accc5 <copy_user_generic_unrolled+53>:  4c 8b 4e 08     mov    0x8(%rsi),%r9
-
-rsi            0xffffc90000013e10
-r8             0x7fff60425120
-
-So this is reading from *kernel* memory and writing to *user* memory.
-And I don't think you want that, according to the whole intent of those
-series.
-
-And it makes sense - getting an MCE while writing is probably going to
-go boom.
-
-> +	case 0xB60F: case 0xB70F:	/* MOVZ */
-
-Ditto.
-
-> +		return true;
-> +	case 0xA4: case 0xA5:		/* MOVS */
-> +		return !fault_in_kernel_space(regs->si);
-> +	}
-> +
-> +	return false;
-> +}
-> +
->  /*
->   * If mcgstatus indicated that ip/cs on the stack were
->   * no good, then "m->cs" will be zero and we will have
-> @@ -215,10 +238,17 @@ static int error_context(struct mce *m, struct pt_regs *regs)
+> ---
+>  drivers/pci/pcie/aer.c |  9 +++++----
+>  drivers/pci/pcie/err.c | 38 ++++++++++++++++++++++++--------------
+>  2 files changed, 29 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+> index 65dff5f3457a..dccdba60b5d9 100644
+> --- a/drivers/pci/pcie/aer.c
+> +++ b/drivers/pci/pcie/aer.c
+> @@ -1358,17 +1358,18 @@ static int aer_probe(struct pcie_device *dev)
+>  static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
+>  {
+>  	int aer = dev->aer_cap;
+> +	int rc = 0;
+>  	u32 reg32;
+> -	int rc;
+> -
 >  
->  	if ((m->cs & 3) == 3)
->  		return IN_USER;
-> +	if (!mc_recoverable(m->mcgstatus))
-> +		return IN_KERNEL;
+>  	/* Disable Root's interrupt in response to error messages */
+>  	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
+>  	reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
+>  	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
 >  
->  	t = ex_fault_handler_type(m->ip);
-> -	if (mc_recoverable(m->mcgstatus) && t == HANDLER_FAULT) {
-> +	if (t == HANDLER_FAULT) {
-> +		m->kflags |= MCE_IN_KERNEL_RECOV;
-> +		return IN_KERNEL_RECOV;
+> -	rc = pci_bus_error_reset(dev);
+> -	pci_info(dev, "Root Port link has been reset\n");
+> +	if (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_EC) {
+> +		rc = pci_bus_error_reset(dev);
+> +		pci_info(dev, "Root Port link has been reset\n");
 > +	}
-> +	if (t == HANDLER_UACCESS && regs && is_copy_from_user(regs)) {
->  		m->kflags |= MCE_IN_KERNEL_RECOV;
-> +		m->kflags |= MCE_IN_KERNEL_COPYIN;
->  		return IN_KERNEL_RECOV;
+>  
+>  	/* Clear Root Error Status */
+>  	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &reg32);
+> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+> index 5380ecc41506..a61a2518163a 100644
+> --- a/drivers/pci/pcie/err.c
+> +++ b/drivers/pci/pcie/err.c
+> @@ -149,7 +149,8 @@ static int report_resume(struct pci_dev *dev, void *data)
+>  /**
+>   * pci_bridge_walk - walk bridges potentially AER affected
+>   * @bridge   bridge which may be an RCEC with associated RCiEPs,
+> - *           an RCiEP associated with an RCEC, or a Port.
+> + *           or a Port.
+> + * @dev      an RCiEP lacking an associated RCEC.
+>   * @cb       callback to be called for each device found
+>   * @userdata arbitrary pointer to be passed to callback.
+>   *
+> @@ -160,13 +161,16 @@ static int report_resume(struct pci_dev *dev, void *data)
+>   * If the device provided has no subordinate bus, call the provided
+>   * callback on the device itself.
+>   */
+> -static void pci_bridge_walk(struct pci_dev *bridge, int (*cb)(struct pci_dev *, void *),
+> +static void pci_bridge_walk(struct pci_dev *bridge, struct pci_dev *dev,
+> +			    int (*cb)(struct pci_dev *, void *),
+>  			    void *userdata)
+>  {
+> -	if (bridge->subordinate)
+> +	if (bridge && bridge->subordinate)
+>  		pci_walk_bus(bridge->subordinate, cb, userdata);
+> -	else
+> +	else if (bridge)
+>  		cb(bridge, userdata);
+> +	else
+> +		cb(dev, userdata);
+>  }
+>  
+>  static pci_ers_result_t flr_on_rciep(struct pci_dev *dev)
+> @@ -196,16 +200,24 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>  	type = pci_pcie_type(dev);
+>  	if (type == PCI_EXP_TYPE_ROOT_PORT ||
+>  	    type == PCI_EXP_TYPE_DOWNSTREAM ||
+> -	    type == PCI_EXP_TYPE_RC_EC ||
+> -	    type == PCI_EXP_TYPE_RC_END)
+> +	    type == PCI_EXP_TYPE_RC_EC)
+>  		bridge = dev;
+> +	else if (type == PCI_EXP_TYPE_RC_END)
+> +		bridge = dev->rcec;
+>  	else
+>  		bridge = pci_upstream_bridge(dev);
+>  
+>  	pci_dbg(dev, "broadcast error_detected message\n");
+>  	if (state == pci_channel_io_frozen) {
+> -		pci_bridge_walk(bridge, report_frozen_detected, &status);
+> +		pci_bridge_walk(bridge, dev, report_frozen_detected, &status);
+>  		if (type == PCI_EXP_TYPE_RC_END) {
+> +			/*
+> +			 * The callback only clears the Root Error Status
+> +			 * of the RCEC (see aer.c).
+> +			 */
+> +			if (bridge)
+> +				reset_subordinate_devices(bridge);
+> +
+>  			status = flr_on_rciep(dev);
+>  			if (status != PCI_ERS_RESULT_RECOVERED) {
+>  				pci_warn(dev, "function level reset failed\n");
+> @@ -219,13 +231,13 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>  			}
+>  		}
+>  	} else {
+> -		pci_bridge_walk(bridge, report_normal_detected, &status);
+> +		pci_bridge_walk(bridge, dev, report_normal_detected, &status);
+>  	}
+>  
+>  	if (status == PCI_ERS_RESULT_CAN_RECOVER) {
+>  		status = PCI_ERS_RESULT_RECOVERED;
+>  		pci_dbg(dev, "broadcast mmio_enabled message\n");
+> -		pci_bridge_walk(bridge, report_mmio_enabled, &status);
+> +		pci_bridge_walk(bridge, dev, report_mmio_enabled, &status);
+>  	}
+>  
+>  	if (status == PCI_ERS_RESULT_NEED_RESET) {
+> @@ -236,18 +248,16 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>  		 */
+>  		status = PCI_ERS_RESULT_RECOVERED;
+>  		pci_dbg(dev, "broadcast slot_reset message\n");
+> -		pci_bridge_walk(bridge, report_slot_reset, &status);
+> +		pci_bridge_walk(bridge, dev, report_slot_reset, &status);
+>  	}
+>  
+>  	if (status != PCI_ERS_RESULT_RECOVERED)
+>  		goto failed;
+>  
+>  	pci_dbg(dev, "broadcast resume message\n");
+> -	pci_bridge_walk(bridge, report_resume, &status);
+> +	pci_bridge_walk(bridge, dev, report_resume, &status);
+>  
+> -	if (type == PCI_EXP_TYPE_ROOT_PORT ||
+> -	    type == PCI_EXP_TYPE_DOWNSTREAM ||
+> -	    type == PCI_EXP_TYPE_RC_EC) {
+> +	if (bridge) {
+>  		if (pcie_aer_is_native(bridge))
+>  			pcie_clear_device_status(bridge);
+>  		pci_aer_clear_nonfatal_status(bridge);
 
-I'm guessing that should be generic enough to do on the other vendors
-too...
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
