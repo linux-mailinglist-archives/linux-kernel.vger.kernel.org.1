@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BAA0272CEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C353272D45
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:39:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728939AbgIUQgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:36:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35320 "EHLO mail.kernel.org"
+        id S1729185AbgIUQin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:38:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728904AbgIUQfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:35:50 -0400
+        id S1728626AbgIUQiR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:38:17 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6F11B206DC;
-        Mon, 21 Sep 2020 16:35:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B01AE206B7;
+        Mon, 21 Sep 2020 16:38:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706149;
-        bh=wplnuxWCd2pMNICUXZz4BZ0Zz8IdDeGsGUY02gMAkyI=;
+        s=default; t=1600706296;
+        bh=wOGQmjX4h89ENxZdVhJDy72GEdbI3DlGxhw+F2HHsW0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r8bjiFYplWumVmUHKgf3/qfuZ0mEtJ3Ca3sya0OlhVrq2RSHy5q4tzifvZPgkQJob
-         y9xMyF94p5R1Nr51jBIUNuTH9lS4JOpI83fq0bzImYT6qEimVSmDRQZ7Bl3AZbe3lw
-         DRRKJZ5UrMTGDvQRv9jgIIMsyD7RSN3TopNRUXC0=
+        b=alVltCbwKQaaOSkibqAwTJl4g/RSI+DHbvg/hs0TQbcrmP97YWOPp2XZtNt3oLlTn
+         tRh8jPfyUDLatxmrC/wx3/z0SqotZgchmwKpgGYPqT/SlyD8goFeqwwnfOoDF4cVMW
+         C3P/8XdMOrNrr34lsGhozyODO7Uyhi1vvxZK/GUE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, A L <mail@lechevalier.se>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 4.9 30/70] btrfs: fix wrong address when faulting in pages in the search ioctl
+        stable@vger.kernel.org,
+        Mike Christie <michael.christie@oralce.com>,
+        Varun Prakash <varun@chelsio.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 4.14 43/94] scsi: target: iscsi: Fix data digest calculation
 Date:   Mon, 21 Sep 2020 18:27:30 +0200
-Message-Id: <20200921162036.491236637@linuxfoundation.org>
+Message-Id: <20200921162037.524819462@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
-References: <20200921162035.136047591@linuxfoundation.org>
+In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
+References: <20200921162035.541285330@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,51 +44,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Varun Prakash <varun@chelsio.com>
 
-commit 1c78544eaa4660096aeb6a57ec82b42cdb3bfe5a upstream.
+commit 5528d03183fe5243416c706f64b1faa518b05130 upstream.
 
-When faulting in the pages for the user supplied buffer for the search
-ioctl, we are passing only the base address of the buffer to the function
-fault_in_pages_writeable(). This means that after the first iteration of
-the while loop that searches for leaves, when we have a non-zero offset,
-stored in 'sk_offset', we try to fault in a wrong page range.
+Current code does not consider 'page_off' in data digest calculation. To
+fix this, add a local variable 'first_sg' and set first_sg.offset to
+sg->offset + page_off.
 
-So fix this by adding the offset in 'sk_offset' to the base address of the
-user supplied buffer when calling fault_in_pages_writeable().
-
-Several users have reported that the applications compsize and bees have
-started to operate incorrectly since commit a48b73eca4ceb9 ("btrfs: fix
-potential deadlock in the search ioctl") was added to stable trees, and
-these applications make heavy use of the search ioctls. This fixes their
-issues.
-
-Link: https://lore.kernel.org/linux-btrfs/632b888d-a3c3-b085-cdf5-f9bb61017d92@lechevalier.se/
-Link: https://github.com/kilobyte/compsize/issues/34
-Fixes: a48b73eca4ceb9 ("btrfs: fix potential deadlock in the search ioctl")
-CC: stable@vger.kernel.org # 4.4+
-Tested-by: A L <mail@lechevalier.se>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Link: https://lore.kernel.org/r/1598358910-3052-1-git-send-email-varun@chelsio.com
+Fixes: e48354ce078c ("iscsi-target: Add iSCSI fabric support for target v4.1")
+Cc: <stable@vger.kernel.org>
+Reviewed-by: Mike Christie <michael.christie@oralce.com>
+Signed-off-by: Varun Prakash <varun@chelsio.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/ioctl.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/target/iscsi/iscsi_target.c |   17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -2151,7 +2151,8 @@ static noinline int search_ioctl(struct
- 	key.offset = sk->min_offset;
+--- a/drivers/target/iscsi/iscsi_target.c
++++ b/drivers/target/iscsi/iscsi_target.c
+@@ -1382,14 +1382,27 @@ static u32 iscsit_do_crypto_hash_sg(
+ 	sg = cmd->first_data_sg;
+ 	page_off = cmd->first_data_sg_off;
  
- 	while (1) {
--		ret = fault_in_pages_writeable(ubuf, *buf_size - sk_offset);
-+		ret = fault_in_pages_writeable(ubuf + sk_offset,
-+					       *buf_size - sk_offset);
- 		if (ret)
- 			break;
++	if (data_length && page_off) {
++		struct scatterlist first_sg;
++		u32 len = min_t(u32, data_length, sg->length - page_off);
++
++		sg_init_table(&first_sg, 1);
++		sg_set_page(&first_sg, sg_page(sg), len, sg->offset + page_off);
++
++		ahash_request_set_crypt(hash, &first_sg, NULL, len);
++		crypto_ahash_update(hash);
++
++		data_length -= len;
++		sg = sg_next(sg);
++	}
++
+ 	while (data_length) {
+-		u32 cur_len = min_t(u32, data_length, (sg->length - page_off));
++		u32 cur_len = min_t(u32, data_length, sg->length);
  
+ 		ahash_request_set_crypt(hash, sg, NULL, cur_len);
+ 		crypto_ahash_update(hash);
+ 
+ 		data_length -= cur_len;
+-		page_off = 0;
+ 		/* iscsit_map_iovec has already checked for invalid sg pointers */
+ 		sg = sg_next(sg);
+ 	}
 
 
