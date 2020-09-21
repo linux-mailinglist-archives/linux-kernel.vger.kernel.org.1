@@ -2,134 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1FBB27328A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C364427328E
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727869AbgIUTMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 15:12:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56948 "EHLO
+        id S1728007AbgIUTMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 15:12:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726969AbgIUTMA (ORCPT
+        with ESMTP id S1726886AbgIUTMQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 15:12:00 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F05C061755;
-        Mon, 21 Sep 2020 12:12:00 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id x14so18189205oic.9;
-        Mon, 21 Sep 2020 12:11:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/y+LkHjWQTZUko9s0+CjWc8l1gB+JOW4CZS5IAT4wnM=;
-        b=P7al9HtzZyEWdlh510LGblrPQfQjscmVoDNeRTxPng6nwexTzcJwZNeBZs0lqOS5u+
-         lV/icK9G5ChiCcCTqTZFnuyuUBRy16ww3x2LOKSi79x+goLpty383gnAj6w9zGbZNjBO
-         zbgQ2X7ClJkJw0eHgrWgX3pc4wFwbMe377Vkw+yREpDXCrGu47beux4+sNJB4gvQ1az8
-         lyPBsRj/M4I7c7nfcbBBVoPsJZKlg5GshdZfuJxrR+KPmp8Ax+d6taeM0UspnTJlzz56
-         gbXFPqKMjd1EmRxn5WdhmDS73x2b3JYCOjOv4WgqdbwU99gH0b9z0wqvepfBGoyodCq3
-         S5jQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/y+LkHjWQTZUko9s0+CjWc8l1gB+JOW4CZS5IAT4wnM=;
-        b=pmMkBSDDk1o2opiJ519OWvZ6f0FaRIrmxsA9SXSH2n3UM3nv658X4cZIiGtl/j1gX0
-         eRnAXySPIExw+ygoMK97yq5Jje6cUHMALDACBfLSW6MWd/wFNkT+ZbBNdvCQi4jbkrOL
-         QIej6oeplCzQzGmjatxNr2vNve2ph6i/qju3lI0E+M+Euo86kt5sCxPyhv1DM/D/kLwq
-         umQIoSiXeUzUPoBskwMFm5Gko71xjmlPPessZSbJKv+JJ3UvEaRHgT2q3DLnCc9SD/Qg
-         lMct/NMF0Pc2l+6txPSn98APs5E3vYOP9MCWjHuj/dlNxftfmwPdPDP2u8mMyCNbEatp
-         rLaQ==
-X-Gm-Message-State: AOAM531YmrIjHP3VDGjpCfvJ59hd82KQX1LO7zSynscyijN3aa9Wwc4r
-        o/5Do09UVcniGyUFJueS/g6JnU2UrEwnyQ==
-X-Google-Smtp-Source: ABdhPJzKgpG7rjqi1AD6iI4rtY2Z5SWOwk5khwHidL1O1jr9w3YDTWMDQyHNNbvX9l2tGp2GfL6KFA==
-X-Received: by 2002:a05:6808:245:: with SMTP id m5mr520988oie.155.1600715519177;
-        Mon, 21 Sep 2020 12:11:59 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([2601:284:8202:10b0:55c1:8bf2:4210:9084])
-        by smtp.googlemail.com with ESMTPSA id h28sm6503773ote.28.2020.09.21.12.11.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Sep 2020 12:11:58 -0700 (PDT)
-Subject: Re: [RFC PATCH v2 0/3] l3mdev icmp error route lookup fixes
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20200918181801.2571-1-mathieu.desnoyers@efficios.com>
- <390b230b-629b-7f96-e7c9-b28f8b592102@gmail.com>
- <1453768496.36855.1600713879236.JavaMail.zimbra@efficios.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <dd1caf15-2ef0-f557-b9a8-26c46739f20b@gmail.com>
-Date:   Mon, 21 Sep 2020 13:11:56 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        Mon, 21 Sep 2020 15:12:16 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E052BC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 12:12:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8o7GVAomh929Hvy+xaXufBwE8CQqTnicVvJhMbCZ9+k=; b=mehcTMqJtwQu3rPUjsEisC7ECq
+        7+58K3Z4EekBFXZ3wYEUeQuCa/fWdcNhiPeHAeErok/v8ZUYK3e3gg5/B4dsAsGOOcHKMJll0ZrgT
+        uIxyCNSUGOAg2UN4gsizGdkbduG7XDlLurQP7j3hPoeoUDi05V5iO3YFhaKjX5x3pQ8mdKFxJmqgA
+        L9SsTOYSux1ZLBO0Whate1mY/A8G4ym2vhOpFFpaMiIWVUAzrHfwOrb8cuL3VnUqrmtLSbCIIumHR
+        mHpwBBr1xVe0+QICrLKcrhz2TwTDJC2BnukZFO6wyPDyqecyMJcK7af7LQwFO3njp1VzvRCXlr6uE
+        ADgc0Q1w==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kKRED-0003Cg-2P; Mon, 21 Sep 2020 19:11:57 +0000
+Date:   Mon, 21 Sep 2020 20:11:57 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>, x86@kernel.org,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 3/6] drm/i915: use vmap in shmem_pin_map
+Message-ID: <20200921191157.GX32101@casper.infradead.org>
+References: <20200918163724.2511-1-hch@lst.de>
+ <20200918163724.2511-4-hch@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <1453768496.36855.1600713879236.JavaMail.zimbra@efficios.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200918163724.2511-4-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/21/20 12:44 PM, Mathieu Desnoyers wrote:
-> ----- On Sep 21, 2020, at 2:36 PM, David Ahern dsahern@gmail.com wrote:
-> 
->> On 9/18/20 12:17 PM, Mathieu Desnoyers wrote:
->>> Hi,
->>>
->>> Here is an updated series of fixes for ipv4 and ipv6 which which ensure
->>> the route lookup is performed on the right routing table in VRF
->>> configurations when sending TTL expired icmp errors (useful for
->>> traceroute).
->>>
->>> It includes tests for both ipv4 and ipv6.
->>>
->>> These fixes address specifically address the code paths involved in
->>> sending TTL expired icmp errors. As detailed in the individual commit
->>> messages, those fixes do not address similar issues related to network
->>> namespaces and unreachable / fragmentation needed messages, which appear
->>> to use different code paths.
->>>
->>
->> New selftests are failing:
->> TEST: Ping received ICMP frag needed                       [FAIL]
->>
->> Both IPv4 and IPv6 versions are failing.
-> 
-> Indeed, this situation is discussed in each patch commit message:
-> 
-> ipv4:
-> 
-> [ It has also been pointed out that a similar issue exists with
->   unreachable / fragmentation needed messages, which can be triggered by
->   changing the MTU of eth1 in r1 to 1400 and running:
-> 
->   ip netns exec h1 ping -s 1450 -Mdo -c1 172.16.2.2
-> 
->   Some investigation points to raw_icmp_error() and raw_err() as being
->   involved in this last scenario. The focus of this patch is TTL expired
->   ICMP messages, which go through icmp_route_lookup.
->   Investigation of failure modes related to raw_icmp_error() is beyond
->   this investigation's scope. ]
-> 
-> ipv6:
-> 
-> [ Testing shows that similar issues exist with ipv6 unreachable /
->   fragmentation needed messages.  However, investigation of this
->   additional failure mode is beyond this investigation's scope. ]
-> 
-> I do not have the time to investigate further unfortunately, so I
-> thought it best to post what I have.
-> 
+On Fri, Sep 18, 2020 at 06:37:21PM +0200, Christoph Hellwig wrote:
+>  void shmem_unpin_map(struct file *file, void *ptr)
+>  {
+> +	long i = shmem_npages(file);
+> +
+>  	mapping_clear_unevictable(file->f_mapping);
+> -	__shmem_unpin_map(file, ptr, shmem_npte(file));
+> +	vunmap(ptr);
+> +
+> +	for (i = 0; i < shmem_npages(file); i++) {
+> +		struct page *page;
+> +
+> +		page = shmem_read_mapping_page_gfp(file->f_mapping, i,
+> +						   GFP_KERNEL);
+> +		if (!WARN_ON(IS_ERR(page))) {
+> +			put_page(page);
+> +			put_page(page);
+> +		}
+> +	}
+>  }
 
-the test setup is bad. You have r1 dropping the MTU in VRF red, but not
-telling VRF red how to send back the ICMP. e.g., for IPv4 add:
+This is awkward.  I'd like it if we had a vfree() variant which called
+put_page() instead of __free_pages().  I'd like it even more if we
+used release_pages() instead of our own loop that called put_page().
 
-    ip -netns r1 ro add vrf red 172.16.1.0/24 dev blue
+Perhaps something like this ...
 
-do the same for v6.
++++ b/mm/vmalloc.c
+@@ -2262,7 +2262,7 @@ static void __vunmap(const void *addr, int deallocate_page
+s)
+ 
+        vm_remove_mappings(area, deallocate_pages);
+ 
+-       if (deallocate_pages) {
++       if (deallocate_pages == 1) {
+                int i;
+ 
+                for (i = 0; i < area->nr_pages; i++) {
+@@ -2271,8 +2271,12 @@ static void __vunmap(const void *addr, int deallocate_pages)
+                        BUG_ON(!page);
+                        __free_pages(page, 0);
+                }
+-               atomic_long_sub(area->nr_pages, &nr_vmalloc_pages);
++       } else if (deallocate_pages == 2) {
++               release_pages(area->pages, area->nr_pages);
++       }
+ 
++       if (deallocate_pages) {
++               atomic_long_sub(area->nr_pages, &nr_vmalloc_pages);
+                kvfree(area->pages);
+        }
+@@ -2369,6 +2373,14 @@ void vunmap(const void *addr)
+ }
+ EXPORT_SYMBOL(vunmap);
+ 
++void vunmap_put_pages(const void *addr)
++{
++       BUG_ON(in_interrupt());
++       might_sleep();
++       if (addr)
++               __vunmap(addr, 2);
++}
++
+ /**
+  * vmap - map an array of pages into virtually contiguous space
+  * @pages: array of page pointers
 
-Also, I do not see a reason for r2; I suggest dropping it. What you are
-testing is icmp crossing VRF with route leaking, so there should not be
-a need for r2 which leads to asymmetrical routing (172.16.1.0 via r1 and
-the return via r2).
+only with kernel-doc and so on.  I bet somebody has a better idea for a name.
