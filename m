@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F1F273063
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC892273051
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730154AbgIUREh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 13:04:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34168 "EHLO mail.kernel.org"
+        id S1730509AbgIUREM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 13:04:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728851AbgIUQfW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:35:22 -0400
+        id S1728259AbgIUQf6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:35:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 494F8239EE;
-        Mon, 21 Sep 2020 16:35:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3B39E238EE;
+        Mon, 21 Sep 2020 16:35:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706121;
-        bh=DMb4kzrUCoEa9cTJ+IPBP2xmnZmQAPxi/Uv/5ddsf3A=;
+        s=default; t=1600706157;
+        bh=28KYJg0fE24gkQosi9nTcNDuSlAc/moBv2YPkZX0E3g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BipIKtxtpBDKVhI2ebQMfqkSuiZPnEZnnwavTj2bhrTeBoV6kkwvlr5TOm59TzMWr
-         Kpxk4tW1IITWufU0MUzjeGFYmUVcubP230hwViQs3pUVH26FSic2Xj9e9/ovKsO3Ms
-         6otcovnIMTxDf7sutdG25vDWalAAtmtAD4ZCQVYs=
+        b=XWtvqM76yzgzvI67tm7rOa/+rYkw3AUJwazSjGNopayD9qhc5woAPLpqV+Ky3R/XT
+         Cso17bFvlAYi9L99OBJTAwOfOeR7+XcC5EMaM5nZguFZKfdX3H/+PGfJlHoNGiCj4C
+         e5aJPFRyA32Q2KEkAESLcWgxssMBEOjzV61SLVuo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rustam Kovhaev <rkovhaev@gmail.com>,
-        syzbot+22794221ab96b0bab53a@syzkaller.appspotmail.com
-Subject: [PATCH 4.9 29/70] staging: wlan-ng: fix out of bounds read in prism2sta_probe_usb()
-Date:   Mon, 21 Sep 2020 18:27:29 +0200
-Message-Id: <20200921162036.443962829@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.9 31/70] regulator: push allocation in set_consumer_device_supply() out of lock
+Date:   Mon, 21 Sep 2020 18:27:31 +0200
+Message-Id: <20200921162036.545540754@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
 References: <20200921162035.136047591@linuxfoundation.org>
@@ -42,84 +43,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rustam Kovhaev <rkovhaev@gmail.com>
+From: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 
-commit fea22e159d51c766ba70473f473a0ec914cc7e92 upstream.
+commit 5c06540165d443c6455123eb48e7f1a9b618ab34 upstream.
 
-let's use usb_find_common_endpoints() to discover endpoints, it does all
-necessary checks for type and xfer direction
+Pull regulator_list_mutex into set_consumer_device_supply() and keep
+allocations outside of it. Fourth of the fs_reclaim deadlock case.
 
-remove memset() in hfa384x_create(), because we now assign endpoints in
-prism2sta_probe_usb() and because create_wlan() uses kzalloc() to
-allocate hfa384x struct before calling hfa384x_create()
-
-Fixes: faaff9765664 ("staging: wlan-ng: properly check endpoint types")
-Reported-and-tested-by: syzbot+22794221ab96b0bab53a@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?extid=22794221ab96b0bab53a
-Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200804145614.104320-1-rkovhaev@gmail.com
+Fixes: 45389c47526d ("regulator: core: Add early supply resolution for regulators")
+Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/f0380bdb3d60aeefa9693c4e234d2dcda7e56747.1597195321.git.mirq-linux@rere.qmqm.pl
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/staging/wlan-ng/hfa384x_usb.c |    5 -----
- drivers/staging/wlan-ng/prism2usb.c   |   19 ++++++-------------
- 2 files changed, 6 insertions(+), 18 deletions(-)
+ drivers/regulator/core.c |   46 ++++++++++++++++++++++++++--------------------
+ 1 file changed, 26 insertions(+), 20 deletions(-)
 
---- a/drivers/staging/wlan-ng/hfa384x_usb.c
-+++ b/drivers/staging/wlan-ng/hfa384x_usb.c
-@@ -523,13 +523,8 @@ static void hfa384x_usb_defer(struct wor
- ----------------------------------------------------------------*/
- void hfa384x_create(struct hfa384x *hw, struct usb_device *usb)
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -1191,7 +1191,7 @@ static int set_consumer_device_supply(st
+ 				      const char *consumer_dev_name,
+ 				      const char *supply)
  {
--	memset(hw, 0, sizeof(struct hfa384x));
- 	hw->usb = usb;
+-	struct regulator_map *node;
++	struct regulator_map *node, *new_node;
+ 	int has_dev;
  
--	/* set up the endpoints */
--	hw->endp_in = usb_rcvbulkpipe(usb, 1);
--	hw->endp_out = usb_sndbulkpipe(usb, 2);
--
- 	/* Set up the waitq */
- 	init_waitqueue_head(&hw->cmdq);
+ 	if (supply == NULL)
+@@ -1202,6 +1202,22 @@ static int set_consumer_device_supply(st
+ 	else
+ 		has_dev = 0;
  
---- a/drivers/staging/wlan-ng/prism2usb.c
-+++ b/drivers/staging/wlan-ng/prism2usb.c
-@@ -60,23 +60,14 @@ static int prism2sta_probe_usb(struct us
- 			       const struct usb_device_id *id)
- {
- 	struct usb_device *dev;
--	const struct usb_endpoint_descriptor *epd;
--	const struct usb_host_interface *iface_desc = interface->cur_altsetting;
-+	struct usb_endpoint_descriptor *bulk_in, *bulk_out;
-+	struct usb_host_interface *iface_desc = interface->cur_altsetting;
- 	struct wlandevice *wlandev = NULL;
- 	struct hfa384x *hw = NULL;
- 	int result = 0;
- 
--	if (iface_desc->desc.bNumEndpoints != 2) {
--		result = -ENODEV;
--		goto failed;
--	}
--
--	result = -EINVAL;
--	epd = &iface_desc->endpoint[1].desc;
--	if (!usb_endpoint_is_bulk_in(epd))
--		goto failed;
--	epd = &iface_desc->endpoint[2].desc;
--	if (!usb_endpoint_is_bulk_out(epd))
-+	result = usb_find_common_endpoints(iface_desc, &bulk_in, &bulk_out, NULL, NULL);
-+	if (result)
- 		goto failed;
- 
- 	dev = interface_to_usbdev(interface);
-@@ -95,6 +86,8 @@ static int prism2sta_probe_usb(struct us
++	new_node = kzalloc(sizeof(struct regulator_map), GFP_KERNEL);
++	if (new_node == NULL)
++		return -ENOMEM;
++
++	new_node->regulator = rdev;
++	new_node->supply = supply;
++
++	if (has_dev) {
++		new_node->dev_name = kstrdup(consumer_dev_name, GFP_KERNEL);
++		if (new_node->dev_name == NULL) {
++			kfree(new_node);
++			return -ENOMEM;
++		}
++	}
++
++	mutex_lock(&regulator_list_mutex);
+ 	list_for_each_entry(node, &regulator_map_list, list) {
+ 		if (node->dev_name && consumer_dev_name) {
+ 			if (strcmp(node->dev_name, consumer_dev_name) != 0)
+@@ -1219,26 +1235,19 @@ static int set_consumer_device_supply(st
+ 			 node->regulator->desc->name,
+ 			 supply,
+ 			 dev_name(&rdev->dev), rdev_get_name(rdev));
+-		return -EBUSY;
++		goto fail;
  	}
  
- 	/* Initialize the hw data */
-+	hw->endp_in = usb_rcvbulkpipe(dev, bulk_in->bEndpointAddress);
-+	hw->endp_out = usb_sndbulkpipe(dev, bulk_out->bEndpointAddress);
- 	hfa384x_create(hw, dev);
- 	hw->wlandev = wlandev;
+-	node = kzalloc(sizeof(struct regulator_map), GFP_KERNEL);
+-	if (node == NULL)
+-		return -ENOMEM;
+-
+-	node->regulator = rdev;
+-	node->supply = supply;
+-
+-	if (has_dev) {
+-		node->dev_name = kstrdup(consumer_dev_name, GFP_KERNEL);
+-		if (node->dev_name == NULL) {
+-			kfree(node);
+-			return -ENOMEM;
+-		}
+-	}
++	list_add(&new_node->list, &regulator_map_list);
++	mutex_unlock(&regulator_list_mutex);
  
+-	list_add(&node->list, &regulator_map_list);
+ 	return 0;
++
++fail:
++	mutex_unlock(&regulator_list_mutex);
++	kfree(new_node->dev_name);
++	kfree(new_node);
++	return -EBUSY;
+ }
+ 
+ static void unset_regulator_supplies(struct regulator_dev *rdev)
+@@ -4034,19 +4043,16 @@ regulator_register(const struct regulato
+ 
+ 	/* add consumers devices */
+ 	if (init_data) {
+-		mutex_lock(&regulator_list_mutex);
+ 		for (i = 0; i < init_data->num_consumer_supplies; i++) {
+ 			ret = set_consumer_device_supply(rdev,
+ 				init_data->consumer_supplies[i].dev_name,
+ 				init_data->consumer_supplies[i].supply);
+ 			if (ret < 0) {
+-				mutex_unlock(&regulator_list_mutex);
+ 				dev_err(dev, "Failed to set supply %s\n",
+ 					init_data->consumer_supplies[i].supply);
+ 				goto unset_supplies;
+ 			}
+ 		}
+-		mutex_unlock(&regulator_list_mutex);
+ 	}
+ 
+ 	if (!rdev->desc->ops->get_voltage &&
 
 
