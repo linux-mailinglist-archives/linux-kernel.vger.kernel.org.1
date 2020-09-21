@@ -2,54 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C7A272479
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2387272482
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726803AbgIUNCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:02:06 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:61209 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726395AbgIUNCG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:02:06 -0400
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 21 Sep 2020 06:02:05 -0700
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 21 Sep 2020 06:02:03 -0700
-Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 21 Sep 2020 18:31:42 +0530
-Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
-        id 31A134DEF; Mon, 21 Sep 2020 18:31:41 +0530 (IST)
-From:   Dikshita Agarwal <dikshita@codeaurora.org>
-To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        ezequiel@collabora.com, stanimir.varbanov@linaro.org,
-        vgarodia@codeaurora.org, majja@codeaurora.org,
-        Dikshita Agarwal <dikshita@codeaurora.org>
-Subject: [PATCH v2 0/2] Add new controls for QP and layer bitrate
-Date:   Mon, 21 Sep 2020 18:31:16 +0530
-Message-Id: <1600693278-2669-1-git-send-email-dikshita@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
+        id S1727012AbgIUNDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:03:49 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:29515 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726355AbgIUNDs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:03:48 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600693428; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=RnNXoGJCqQ4mueFmIJRmRFdNcp/CeeC7DGPBkDYuxBU=;
+ b=ZZCAiTEJe7ijmQqp/srWIB/yVNWn+DoiWvA7fe7z0b5+nb7Mnxh55Fge1lDANtFb3ZVNAxUk
+ UnQp+1KxvTQavu3wBQmjiyLN6qk9sCSjIDFMqNp8yFJ7FZVDEeC5vSCYbfKAnrExfXWzZXcN
+ kXT6RnUnnhhn/t8Mhbpu36EnXxQ=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5f68a440f1e3eb89c70a057e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 21 Sep 2020 13:01:52
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6DFE8C433CA; Mon, 21 Sep 2020 13:01:51 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 94FE4C433C8;
+        Mon, 21 Sep 2020 13:01:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 94FE4C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] ssb: Remove meaningless jump label to simplify the code
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200915020330.96067-1-jingxiangfeng@huawei.com>
+References: <20200915020330.96067-1-jingxiangfeng@huawei.com>
+To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
+Cc:     <m@bues.ch>, <linux-wireless@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <jingxiangfeng@huawei.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200921130151.6DFE8C433CA@smtp.codeaurora.org>
+Date:   Mon, 21 Sep 2020 13:01:51 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds frame specific min/max qp controls for hevc and layer
-wise bitrate control for h264.
+Jing Xiangfeng <jingxiangfeng@huawei.com> wrote:
 
-change since v1:
- corrected email.
+> The out jump label has nothing to do. So remove it to simplify the code.
+> 
+> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
 
-Dikshita Agarwal (2):
-  media: v4l2-ctrl: Add frame-specific min/max qp controls for hevc
-  media: v4l2-ctrl: Add layer wise bitrate controls for h264
+Patch applied to wireless-drivers-next.git, thanks.
 
- .../userspace-api/media/v4l/ext-ctrls-codec.rst    | 74 +++++++++++++++++++++-
- drivers/media/v4l2-core/v4l2-ctrls.c               | 15 +++++
- include/uapi/linux/v4l2-controls.h                 | 17 +++++
- 3 files changed, 104 insertions(+), 2 deletions(-)
+41650c45fbd2 ssb: Remove meaningless jump label to simplify the code
 
 -- 
-1.9.1
+https://patchwork.kernel.org/patch/11775319/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
