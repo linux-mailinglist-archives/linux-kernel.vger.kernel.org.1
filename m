@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A87D1272CC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45065272DDD
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:44:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728785AbgIUQeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:34:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32810 "EHLO mail.kernel.org"
+        id S1729654AbgIUQn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:43:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728729AbgIUQeW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:34:22 -0400
+        id S1729376AbgIUQn4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:43:56 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 154AD2399C;
-        Mon, 21 Sep 2020 16:34:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D6CE235F9;
+        Mon, 21 Sep 2020 16:43:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706061;
-        bh=0eCDlAtE3oWH7png9qpI/kBROX/HBd7Ke+pF6aZ36mc=;
+        s=default; t=1600706634;
+        bh=cIly/5z+st1Uow7ZPenOwpPHPjIa9UBrWv11R6UmPww=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eh6F/zgdOKYsN66R8FWPE6lugGfWOqUtNjnd7VB99+d8gcsGSebBp9CQfFGI4w2ZP
-         DOQ8PRdQGJHzyhjU9UEyQjOciBPNauklayptsPKLO4lJqW2GPj41evOQYVZ3ACqeSF
-         qvOhpc2F//IQozhh4BcDETWApBayViPUOA8sRMOc=
+        b=2oUU+TV+CfckKcwnskkmXG6vHjgTSVpiFdNJeDSrcQVGuiUD6hdmRlG5l8hDG11xF
+         vwyW6DV98neBhIkOACNfCUhO+akdNA8FlAtsTu9rvQe2V1fc2HZL2z9xUTJ9TJfRz4
+         CXj7shxroqXh3Pb/t9Gqc60Aav2qwT40J6Mz8CCQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Stable@vger.kernel.org
-Subject: [PATCH 4.9 24/70] iio:light:max44000 Fix timestamp alignment and prevent data leak.
+        stable@vger.kernel.org,
+        Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 032/118] i2c: algo: pca: Reapply i2c bus settings after reset
 Date:   Mon, 21 Sep 2020 18:27:24 +0200
-Message-Id: <20200921162036.218621523@linuxfoundation.org>
+Message-Id: <20200921162037.804990288@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
-References: <20200921162035.136047591@linuxfoundation.org>
+In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
+References: <20200921162036.324813383@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,77 +45,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
 
-commit 523628852a5f5f34a15252b2634d0498d3cfb347 upstream.
+[ Upstream commit 0a355aeb24081e4538d4d424cd189f16c0bbd983 ]
 
-One of a class of bugs pointed out by Lars in a recent review.
-iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
-to the size of the timestamp (8 bytes).  This is not guaranteed in
-this driver which uses a 16 byte array of smaller elements on the stack.
-As Lars also noted this anti pattern can involve a leak of data to
-userspace and that indeed can happen here.  We close both issues by
-moving to a suitable structure in the iio_priv().
-This data is allocated with kzalloc so no data can leak appart
-from previous readings.
+If something goes wrong (such as the SCL being stuck low) then we need
+to reset the PCA chip. The issue with this is that on reset we lose all
+config settings and the chip ends up in a disabled state which results
+in a lock up/high CPU usage. We need to re-apply any configuration that
+had previously been set and re-enable the chip.
 
-It is necessary to force the alignment of ts to avoid the padding
-on x86_32 being different from 64 bit platorms (it alows for
-4 bytes aligned 8 byte types.
-
-Fixes: 06ad7ea10e2b ("max44000: Initial triggered buffer support")
-Reported-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
+Reviewed-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/light/max44000.c |   12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ drivers/i2c/algos/i2c-algo-pca.c | 35 +++++++++++++++++++++-----------
+ include/linux/i2c-algo-pca.h     | 15 ++++++++++++++
+ 2 files changed, 38 insertions(+), 12 deletions(-)
 
---- a/drivers/iio/light/max44000.c
-+++ b/drivers/iio/light/max44000.c
-@@ -78,6 +78,11 @@
- struct max44000_data {
- 	struct mutex lock;
- 	struct regmap *regmap;
-+	/* Ensure naturally aligned timestamp */
-+	struct {
-+		u16 channels[2];
-+		s64 ts __aligned(8);
-+	} scan;
+diff --git a/drivers/i2c/algos/i2c-algo-pca.c b/drivers/i2c/algos/i2c-algo-pca.c
+index 388978775be04..edc6985c696f0 100644
+--- a/drivers/i2c/algos/i2c-algo-pca.c
++++ b/drivers/i2c/algos/i2c-algo-pca.c
+@@ -41,8 +41,22 @@ static void pca_reset(struct i2c_algo_pca_data *adap)
+ 		pca_outw(adap, I2C_PCA_INDPTR, I2C_PCA_IPRESET);
+ 		pca_outw(adap, I2C_PCA_IND, 0xA5);
+ 		pca_outw(adap, I2C_PCA_IND, 0x5A);
++
++		/*
++		 * After a reset we need to re-apply any configuration
++		 * (calculated in pca_init) to get the bus in a working state.
++		 */
++		pca_outw(adap, I2C_PCA_INDPTR, I2C_PCA_IMODE);
++		pca_outw(adap, I2C_PCA_IND, adap->bus_settings.mode);
++		pca_outw(adap, I2C_PCA_INDPTR, I2C_PCA_ISCLL);
++		pca_outw(adap, I2C_PCA_IND, adap->bus_settings.tlow);
++		pca_outw(adap, I2C_PCA_INDPTR, I2C_PCA_ISCLH);
++		pca_outw(adap, I2C_PCA_IND, adap->bus_settings.thi);
++
++		pca_set_con(adap, I2C_PCA_CON_ENSIO);
+ 	} else {
+ 		adap->reset_chip(adap->data);
++		pca_set_con(adap, I2C_PCA_CON_ENSIO | adap->bus_settings.clock_freq);
+ 	}
+ }
+ 
+@@ -423,13 +437,14 @@ static int pca_init(struct i2c_adapter *adap)
+ 				" Use the nominal frequency.\n", adap->name);
+ 		}
+ 
+-		pca_reset(pca_data);
+-
+ 		clock = pca_clock(pca_data);
+ 		printk(KERN_INFO "%s: Clock frequency is %dkHz\n",
+ 		     adap->name, freqs[clock]);
+ 
+-		pca_set_con(pca_data, I2C_PCA_CON_ENSIO | clock);
++		/* Store settings as these will be needed when the PCA chip is reset */
++		pca_data->bus_settings.clock_freq = clock;
++
++		pca_reset(pca_data);
+ 	} else {
+ 		int clock;
+ 		int mode;
+@@ -496,19 +511,15 @@ static int pca_init(struct i2c_adapter *adap)
+ 			thi = tlow * min_thi / min_tlow;
+ 		}
+ 
++		/* Store settings as these will be needed when the PCA chip is reset */
++		pca_data->bus_settings.mode = mode;
++		pca_data->bus_settings.tlow = tlow;
++		pca_data->bus_settings.thi = thi;
++
+ 		pca_reset(pca_data);
+ 
+ 		printk(KERN_INFO
+ 		     "%s: Clock frequency is %dHz\n", adap->name, clock * 100);
+-
+-		pca_outw(pca_data, I2C_PCA_INDPTR, I2C_PCA_IMODE);
+-		pca_outw(pca_data, I2C_PCA_IND, mode);
+-		pca_outw(pca_data, I2C_PCA_INDPTR, I2C_PCA_ISCLL);
+-		pca_outw(pca_data, I2C_PCA_IND, tlow);
+-		pca_outw(pca_data, I2C_PCA_INDPTR, I2C_PCA_ISCLH);
+-		pca_outw(pca_data, I2C_PCA_IND, thi);
+-
+-		pca_set_con(pca_data, I2C_PCA_CON_ENSIO);
+ 	}
+ 	udelay(500); /* 500 us for oscillator to stabilise */
+ 
+diff --git a/include/linux/i2c-algo-pca.h b/include/linux/i2c-algo-pca.h
+index d03071732db4a..7c522fdd9ea73 100644
+--- a/include/linux/i2c-algo-pca.h
++++ b/include/linux/i2c-algo-pca.h
+@@ -53,6 +53,20 @@
+ #define I2C_PCA_CON_SI		0x08 /* Serial Interrupt */
+ #define I2C_PCA_CON_CR		0x07 /* Clock Rate (MASK) */
+ 
++/**
++ * struct pca_i2c_bus_settings - The configured PCA i2c bus settings
++ * @mode: Configured i2c bus mode
++ * @tlow: Configured SCL LOW period
++ * @thi: Configured SCL HIGH period
++ * @clock_freq: The configured clock frequency
++ */
++struct pca_i2c_bus_settings {
++	int mode;
++	int tlow;
++	int thi;
++	int clock_freq;
++};
++
+ struct i2c_algo_pca_data {
+ 	void 				*data;	/* private low level data */
+ 	void (*write_byte)		(void *data, int reg, int val);
+@@ -64,6 +78,7 @@ struct i2c_algo_pca_data {
+ 	 * For PCA9665, use the frequency you want here. */
+ 	unsigned int			i2c_clock;
+ 	unsigned int			chip;
++	struct pca_i2c_bus_settings		bus_settings;
  };
  
- /* Default scale is set to the minimum of 0.03125 or 1 / (1 << 5) lux */
-@@ -491,7 +496,6 @@ static irqreturn_t max44000_trigger_hand
- 	struct iio_poll_func *pf = p;
- 	struct iio_dev *indio_dev = pf->indio_dev;
- 	struct max44000_data *data = iio_priv(indio_dev);
--	u16 buf[8]; /* 2x u16 + padding + 8 bytes timestamp */
- 	int index = 0;
- 	unsigned int regval;
- 	int ret;
-@@ -501,17 +505,17 @@ static irqreturn_t max44000_trigger_hand
- 		ret = max44000_read_alsval(data);
- 		if (ret < 0)
- 			goto out_unlock;
--		buf[index++] = ret;
-+		data->scan.channels[index++] = ret;
- 	}
- 	if (test_bit(MAX44000_SCAN_INDEX_PRX, indio_dev->active_scan_mask)) {
- 		ret = regmap_read(data->regmap, MAX44000_REG_PRX_DATA, &regval);
- 		if (ret < 0)
- 			goto out_unlock;
--		buf[index] = regval;
-+		data->scan.channels[index] = regval;
- 	}
- 	mutex_unlock(&data->lock);
- 
--	iio_push_to_buffers_with_timestamp(indio_dev, buf,
-+	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
- 					   iio_get_time_ns(indio_dev));
- 	iio_trigger_notify_done(indio_dev->trig);
- 	return IRQ_HANDLED;
+ int i2c_pca_add_bus(struct i2c_adapter *);
+-- 
+2.25.1
+
 
 
