@@ -2,104 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3C35272913
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9BA1272917
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728375AbgIUOuI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Sep 2020 10:50:08 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:38907 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727770AbgIUOuH (ORCPT
+        id S1728322AbgIUOuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 10:50:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727770AbgIUOuM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:50:07 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-86-4QhIQ9m2OJi1xwkLWjnc0A-1; Mon, 21 Sep 2020 15:50:02 +0100
-X-MC-Unique: 4QhIQ9m2OJi1xwkLWjnc0A-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 21 Sep 2020 15:50:01 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 21 Sep 2020 15:50:01 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Christoph Hellwig' <hch@infradead.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: RE: [PATCH 5/9 next] scsi: Use iovec_import() instead of
- import_iovec().
-Thread-Topic: [PATCH 5/9 next] scsi: Use iovec_import() instead of
- import_iovec().
-Thread-Index: AdaLbdBrrJnvb+q4Sa6RtPibF1KBcwErGHIAAAK0UcA=
-Date:   Mon, 21 Sep 2020 14:50:01 +0000
-Message-ID: <ce03301db65f4fee8c9da25a6bc980f7@AcuMS.aculab.com>
-References: <27be46ece36c42d6a7dabf62c6ac7a98@AcuMS.aculab.com>
- <20200921142204.GE24515@infradead.org>
-In-Reply-To: <20200921142204.GE24515@infradead.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 21 Sep 2020 10:50:12 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C96C061755;
+        Mon, 21 Sep 2020 07:50:12 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id n10so12537170qtv.3;
+        Mon, 21 Sep 2020 07:50:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=I0TzWXUmgi2lOEHpdl5qmQ0obP+a5wT/52mUzrc/Cfw=;
+        b=H4Yxk2SPjvLf2Brrla/hrvyq/OarS424J9FV8e1g25bELnn/LLXo44r2kzde5q0I7J
+         mjKpYsrkCTWeDdh8qDWSf00x4bh8CXq+JPKScEkemo4j8xD+q4qfALCjyeqei3pKuLcm
+         Bdr14uL8sNnC7bpzsT03ZCqVKKHeEsK0nTOUBKOKX+Xg+VQanXssvIv1+z4S+PxsIu8i
+         mBxqLYlWeveKSKy74N3HJm/uDVIk+VyzU1dNJ0wKA1Kvz25vFyh8iu/SfcMVxF+GxRyn
+         +0e8YMKCH/andqHfGTX8pEbimG8cSXJhvLiPuWljEK+LItU0WODLZNcFyUswDl+W+6XG
+         i8fA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=I0TzWXUmgi2lOEHpdl5qmQ0obP+a5wT/52mUzrc/Cfw=;
+        b=N9XDpQkw4VdJTEWb12dGJKv23ybRbpY1XRUOQ4xwtkJwARF6E0MgXcTgII0t9MpZM+
+         G+xSRnEev5fO/E6Ym4R+hnvARPIUl6BwB1E1z5gPUO9ZOfJd+1Us38BSfPk7zaZ1gGEV
+         IuAQcVbHYwkw5Dt8Cyfii5p6/96M473cHIVDlQgSTMe+1x/qnfJU96OMlhMHym/LIriu
+         KDZ5lUs4T6sT9+aShNln9aImNFd1YA888776fC810v1fXK/4yPa5qX5Qioo/CggznhSG
+         AXmFVZ4XDe3gVYxiH7JJvWd501790NDYUZDlLi+DJXSML1CLGvey4l7oM24Di2chSw7k
+         XRVQ==
+X-Gm-Message-State: AOAM531uzy28pnT/ZTtvivThq0hF/W1Cx27vT86jVH9hq24y8S7uPRH8
+        aZOBErZ7bg6dC2capoWKTOM=
+X-Google-Smtp-Source: ABdhPJzNNwPI/wJ/7TcWjcBWmRzVQTi9xiWSzOdY27OrIajjhpASkSL5yIN4toFKxhCtgEo3lO+psw==
+X-Received: by 2002:ac8:71c6:: with SMTP id i6mr32876446qtp.318.1600699811627;
+        Mon, 21 Sep 2020 07:50:11 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:54a6])
+        by smtp.gmail.com with ESMTPSA id w36sm10370728qtc.48.2020.09.21.07.50.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 07:50:10 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 21 Sep 2020 10:50:09 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Chengming Zhou <zhouchengming@bytedance.com>
+Cc:     lizefan@huawei.com, hannes@cmpxchg.org, corbet@lwn.net,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luodaowen.backend@bytedance.com,
+        songmuchun@bytedance.com
+Subject: Re: [PATCH] cgroup: Add cgroupstats numbers to cgroup.stat file
+Message-ID: <20200921145009.GD4268@mtj.duckdns.org>
+References: <20200915155349.15181-1-zhouchengming@bytedance.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915155349.15181-1-zhouchengming@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig
-> Sent: 21 September 2020 15:22
-> 
-> So looking at the various callers I'm not sure this API is the
-> best.  If we want to do something fancy I'd hide the struct iovec
-> instances entirely with something like:
-> 
-> struct iov_storage {
-> 	struct iovec stack[UIO_FASTIOV], *vec;
-> }
-> 
-> int iov_iter_import_iovec(struct iov_iter *iter, struct iov_storage *s,
-> 		const struct iovec __user *vec, unsigned long nr_segs,
-> 		int type);
-> 
-> and then add a new helper to free the thing if needed:
-> 
-> void iov_iter_release_iovec(struct iov_storage *s)
-> {
-> 	if (s->vec != s->stack)
-> 		kfree(s->vec);
-> }
+Hello,
 
-I didn't think of going that far.
-There are 2 call sites (in scsi) that don't pass the cache.
+On Tue, Sep 15, 2020 at 11:53:49PM +0800, Chengming Zhou wrote:
+> In the cgroup v1, we can use netlink interface to get cgroupstats for
+> a cgroup. But it has been excluded from cgroup v2 interface intentionally
+> due to the duplication and inconsistencies with other statistics.
+> To make container monitor tool like "cadvisor" continue to work, we add
+> these cgroupstats numbers to the cgroup.stat file, and change the
+> admin-guide doc accordingly.
 
-Given that the 'buffer to free' address probably needs to
-be spilled to stack forcing in into an on-stack structure
-that is already passed by address is probably a good idea.
+So, we can't add O(nr_threads) operations to cgroup.stat reads. There are
+two ways forward that I can see.
 
-The iov_iter_release_iovec() should be static inline and just:
-	if (s->vec)
-		kfree(s->vec);
-You want the test because 99.99% of the time it will be NULL.
-The kernel iov[] to use is iter.iov not part of the cache.
+* Investigate how these counters are being used. If it's used for congestion
+  detection, pressure metrics are likely better indicators to use anyway. If
+  the usage frequency is low enough, maybe querying from userspace should
+  work?
 
-That will be a bigger change on the io_uring code.
-(The patch I didn't write.)
+* If the need for these per-cgroup task state counters is really
+  justifiable, the counters should be maintained from scheduling event
+  directly and summed up using rstat like other statistics.
 
-	David
+Thanks.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+-- 
+tejun
