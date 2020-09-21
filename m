@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80144272152
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 318CD272154
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgIUKiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:38:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33008 "EHLO
+        id S1726633AbgIUKiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:38:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33430 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726367AbgIUKiS (ORCPT
+        by vger.kernel.org with ESMTP id S1726689AbgIUKiY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 06:38:18 -0400
+        Mon, 21 Sep 2020 06:38:24 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600684697;
+        s=mimecast20190719; t=1600684702;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=k37fRmP6IslqoM8RNLxcb8OzcjtWZpkq3yLymvakBU4=;
-        b=AueoSnjJkfxW7RSb0Z5Hyb1MxvQTgtSHZt5IAWWE7T4OJHOeWVa5CjQTaRFTOhg6DNYqXz
-        gI/N6uzv0ZRG7C/brcvbJBNvm5ZnfHWIPWE0NR48mqCvhMROgiRvNMTXmmg8koV/lSR5I1
-        rA5JCKVdjyJ+/TE7YOGistZ19H8pJkE=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ONnIZ3SBrEIJ/yZ6oWe7vybmIgHqvGfE9nXfpRPVygs=;
+        b=KR8CYLPPrfxFTJNcvDxuuBVe7JxVFWILgtEycTZ+MP+ugUUdd2Sdpr3zeGk48dj/BhLn6p
+        PpWfohRtJeSZ4e8oJlAPLRom+rITVvB7c8sgjDaHAyxwNoiPXZK/LbeoT+Y4mSo+oBAen/
+        A2Z0kIjgo/p/+Zxis+KOKwHN/4O3HxM=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-395-YFqMEzMEPRqvidZyzhPt7g-1; Mon, 21 Sep 2020 06:38:15 -0400
-X-MC-Unique: YFqMEzMEPRqvidZyzhPt7g-1
+ us-mta-586-BHYcpO1oM6mJsLJ7ZyS9Pw-1; Mon, 21 Sep 2020 06:38:21 -0400
+X-MC-Unique: BHYcpO1oM6mJsLJ7ZyS9Pw-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 40029801AC3;
-        Mon, 21 Sep 2020 10:38:13 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A94B21007461;
+        Mon, 21 Sep 2020 10:38:19 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.35.206.238])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7513E68D64;
-        Mon, 21 Sep 2020 10:38:06 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A99A46886C;
+        Mon, 21 Sep 2020 10:38:13 +0000 (UTC)
 From:   Maxim Levitsky <mlevitsk@redhat.com>
 To:     kvm@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Jim Mattson <jmattson@google.com>,
@@ -47,84 +48,71 @@ Cc:     linux-kernel@vger.kernel.org, Jim Mattson <jmattson@google.com>,
         Joerg Roedel <joro@8bytes.org>,
         "H. Peter Anvin" <hpa@zytor.com>,
         Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH v2 0/1] KVM: correctly restore the TSC value on nested migration
-Date:   Mon, 21 Sep 2020 13:38:04 +0300
-Message-Id: <20200921103805.9102-1-mlevitsk@redhat.com>
+Subject: [PATCH v2 1/1] KVM: x86: fix MSR_IA32_TSC read for nested migration
+Date:   Mon, 21 Sep 2020 13:38:05 +0300
+Message-Id: <20200921103805.9102-2-mlevitsk@redhat.com>
+In-Reply-To: <20200921103805.9102-1-mlevitsk@redhat.com>
+References: <20200921103805.9102-1-mlevitsk@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is a result of a long investigation I made to understand=0D
-why the nested migration more often than not makes the nested guest hang.=0D
-Sometimes the nested guest recovers and sometimes it hangs forever.=0D
-=0D
-The root cause of this is that reading MSR_IA32_TSC while nested guest is=0D
-running returns its TSC value, that is (assuming no tsc scaling)=0D
-host tsc + L1 tsc offset + L2 tsc offset.=0D
-=0D
-This is correct but it is a result of a nice curiosity of X86 VMX=0D
-(and apparently SVM too, according to my tests) implementation:=0D
-=0D
-As a rule MSR reads done by the guest should either trap to host, or just=0D
-return host value, and therefore kvm_get_msr and friends, should basically=
-=0D
-always return the L1 value of any msr.=0D
-=0D
-Well, MSR_IA32_TSC is an exception. Intel's PRM states that when you disabl=
-e=0D
-its interception, then in guest mode the host adds the TSC offset to=0D
-the read value.=0D
-=0D
-I haven't found anything like that in AMD's PRM but according to the few=0D
-tests I made, it behaves the same.=0D
-=0D
-However, there is no such exception when writing MSR_IA32_TSC, and this=0D
-poses a problem for nested migration.=0D
-=0D
-When MSR_IA32_TSC is read, we read L2 value (smaller since L2 is started=0D
-after L1), and when we restore it after migration, the value is interpreted=
-=0D
-as L1 value, thus resulting in huge TSC jump backward which the guest usual=
-ly=0D
-really doesn't like, especially on AMD with APIC deadline timer, which=0D
-usually just doesn't fire afterward sending the guest into endless wait for=
- it.=0D
-=0D
-The proposed patch fixes this by making read of MSR_IA32_TSC depend on=0D
-'msr_info->host_initiated'=0D
-=0D
-If guest reads the MSR, we add the TSC offset, but when host's qemu reads=0D
-the msr we skip that silly emulation of TSC offset, and return the real val=
-ue=0D
-for the L1 guest which is host tsc + L1 offset.=0D
-=0D
-This patch was tested on both SVM and VMX, and on both it fixes hangs.=0D
-On VMX since it uses VMX preemption timer for APIC deadline, the guest seem=
-s=0D
-to recover after a while without that patch.=0D
-=0D
-To make sure that the nested migration happens I usually used=0D
--overcommit cpu_pm=3Don but I reproduced this with just running an endless =
-loop=0D
-in L2.=0D
-=0D
-This is tested both with and without -invtsc,tsc-frequency=3D...=0D
-=0D
-The migration was done by saving the migration stream to a file, and then=0D
-loading the qemu with '-incoming'=0D
-=0D
-V2: incorporated feedback from Sean Christopherson (thanks!)=0D
-=0D
-Maxim Levitsky (1):=0D
-  KVM: x86: fix MSR_IA32_TSC read for nested migration=0D
-=0D
- arch/x86/kvm/x86.c | 16 ++++++++++++++--=0D
- 1 file changed, 14 insertions(+), 2 deletions(-)=0D
-=0D
--- =0D
-2.26.2=0D
-=0D
+MSR reads/writes should always access the L1 state, since the (nested)
+hypervisor should intercept all the msrs it wants to adjust, and these
+that it doesn't should be read by the guest as if the host had read it.
+
+However IA32_TSC is an exception. Even when not intercepted, guest still
+reads the value + TSC offset.
+The write however does not take any TSC offset into account.
+
+This is documented in Intel's SDM and seems also to happen on AMD as well.
+
+This creates a problem when userspace wants to read the IA32_TSC value and then
+write it. (e.g for migration)
+
+In this case it reads L2 value but write is interpreted as an L1 value.
+To fix this make the userspace initiated reads of IA32_TSC return L1 value
+as well.
+
+Huge thanks to Dave Gilbert for helping me understand this very confusing
+semantic of MSR writes.
+
+Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+---
+ arch/x86/kvm/x86.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 17f4995e80a7e..ed4314641360e 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -3219,9 +3219,21 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 	case MSR_IA32_POWER_CTL:
+ 		msr_info->data = vcpu->arch.msr_ia32_power_ctl;
+ 		break;
+-	case MSR_IA32_TSC:
+-		msr_info->data = kvm_scale_tsc(vcpu, rdtsc()) + vcpu->arch.tsc_offset;
++	case MSR_IA32_TSC: {
++		/*
++		 * Intel SDM states that MSR_IA32_TSC read adds the TSC offset
++		 * even when not intercepted. AMD manual doesn't explicitly
++		 * state this but appears to behave the same.
++		 *
++		 * However when userspace wants to read this MSR, we should
++		 * return it's real L1 value so that its restore will be correct.
++		 */
++		u64 tsc_offset = msr_info->host_initiated ? vcpu->arch.l1_tsc_offset :
++							    vcpu->arch.tsc_offset;
++
++		msr_info->data = kvm_scale_tsc(vcpu, rdtsc()) + tsc_offset;
+ 		break;
++	}
+ 	case MSR_MTRRcap:
+ 	case 0x200 ... 0x2ff:
+ 		return kvm_mtrr_get_msr(vcpu, msr_info->index, &msr_info->data);
+-- 
+2.26.2
 
