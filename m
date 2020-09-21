@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C665272D9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9F6272CE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:36:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729454AbgIUQlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:41:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44494 "EHLO mail.kernel.org"
+        id S1728912AbgIUQfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:35:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728929AbgIUQlJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:41:09 -0400
+        id S1728891AbgIUQfk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:35:40 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 662AD23976;
-        Mon, 21 Sep 2020 16:41:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2CAA723719;
+        Mon, 21 Sep 2020 16:35:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706469;
-        bh=jjgft5yC6WxzGjBIq3kaowD3BfwEqjnNYAh6r6wFbMo=;
+        s=default; t=1600706139;
+        bh=YENuJSCxdVPSTQl4Opz/Nd5o5YFp8k7EbNJZ+Aa/z1Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uwlNpo5fC+kr0Tyk9NKU8sBV+vpUR5X5DtHfDQfaD72fyTUDkUkKBaKSLpNvggtvb
-         O7DdAiq2ubKbfU26qrc/Wh52ZKDJ06jreAFOGVOwDX5xUTbtoP1OWakg5KjpHeL+XK
-         7XwAvVOBgPaHRZpbXNFHSgdV2Tan29acUCZNUBzw=
+        b=rbDGWByavv3xETIRx3a3H0sWuXmrQ4lc55apRklE0FFS6+FSN5LGGDeNxAx7OyYJJ
+         yyuLHhFgaqPrDw7mMYWjMvKlnCmNRWqeeykdZuBdh/9WfE6WtccANuUevsMs5GwBrO
+         T2CUe7bcN2yckqqACFnp1OAfOp5vlY1Ul5cQyUjk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Haiyang Zhang <haiyangz@microsoft.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 08/49] hv_netvsc: Remove "unlikely" from netvsc_select_queue
-Date:   Mon, 21 Sep 2020 18:27:52 +0200
-Message-Id: <20200921162035.038066716@linuxfoundation.org>
+        stable@vger.kernel.org, Zhi Li <yieli@redhat.com>,
+        "J. Bruce Fields" <bfields@redhat.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 53/70] SUNRPC: stop printk reading past end of string
+Date:   Mon, 21 Sep 2020 18:27:53 +0200
+Message-Id: <20200921162037.551874544@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162034.660953761@linuxfoundation.org>
-References: <20200921162034.660953761@linuxfoundation.org>
+In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
+References: <20200921162035.136047591@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,34 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Haiyang Zhang <haiyangz@microsoft.com>
+From: J. Bruce Fields <bfields@redhat.com>
 
-commit 4d820543c54c47a2bd3c95ddbf52f83c89a219a0 upstream.
+[ Upstream commit 8c6b6c793ed32b8f9770ebcdf1ba99af423c303b ]
 
-When using vf_ops->ndo_select_queue, the number of queues of VF is
-usually bigger than the synthetic NIC. This condition may happen
-often.
-Remove "unlikely" from the comparison of ndev->real_num_tx_queues.
+Since p points at raw xdr data, there's no guarantee that it's NULL
+terminated, so we should give a length.  And probably escape any special
+characters too.
 
-Fixes: b3bf5666a510 ("hv_netvsc: defer queue selection to VF")
-Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reported-by: Zhi Li <yieli@redhat.com>
+Signed-off-by: J. Bruce Fields <bfields@redhat.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/hyperv/netvsc_drv.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/sunrpc/rpcb_clnt.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/net/hyperv/netvsc_drv.c
-+++ b/drivers/net/hyperv/netvsc_drv.c
-@@ -378,7 +378,7 @@ static u16 netvsc_select_queue(struct ne
- 	}
- 	rcu_read_unlock();
+diff --git a/net/sunrpc/rpcb_clnt.c b/net/sunrpc/rpcb_clnt.c
+index eafc78e063f1d..185441d7a2814 100644
+--- a/net/sunrpc/rpcb_clnt.c
++++ b/net/sunrpc/rpcb_clnt.c
+@@ -975,8 +975,8 @@ static int rpcb_dec_getaddr(struct rpc_rqst *req, struct xdr_stream *xdr,
+ 	p = xdr_inline_decode(xdr, len);
+ 	if (unlikely(p == NULL))
+ 		goto out_fail;
+-	dprintk("RPC: %5u RPCB_%s reply: %s\n", req->rq_task->tk_pid,
+-			req->rq_task->tk_msg.rpc_proc->p_name, (char *)p);
++	dprintk("RPC: %5u RPCB_%s reply: %*pE\n", req->rq_task->tk_pid,
++			req->rq_task->tk_msg.rpc_proc->p_name, len, (char *)p);
  
--	while (unlikely(txq >= ndev->real_num_tx_queues))
-+	while (txq >= ndev->real_num_tx_queues)
- 		txq -= ndev->real_num_tx_queues;
- 
- 	return txq;
+ 	if (rpc_uaddr2sockaddr(req->rq_xprt->xprt_net, (char *)p, len,
+ 				sap, sizeof(address)) == 0)
+-- 
+2.25.1
+
 
 
