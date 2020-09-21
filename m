@@ -2,184 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C271271C85
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 09:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF81271C74
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 09:59:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726609AbgIUH7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 03:59:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58098 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726550AbgIUH7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 03:59:31 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 32E87B520;
-        Mon, 21 Sep 2020 08:00:04 +0000 (UTC)
-From:   Nicolai Stange <nstange@suse.de>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Willy Tarreau <w@1wt.eu>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Roman Drahtmueller <draht@schaltsekun.de>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andy Lavr <andy.lavr@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        =?UTF-8?q?Stephan=20M=C3=BCller?= <smueller@chronox.de>,
-        Torsten Duwe <duwe@suse.de>, Petr Tesarik <ptesarik@suse.cz>,
-        Nicolai Stange <nstange@suse.de>
-Subject: [RFC PATCH 26/41] random: implement support for evaluating larger fast_pool entropies
-Date:   Mon, 21 Sep 2020 09:58:42 +0200
-Message-Id: <20200921075857.4424-27-nstange@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200921075857.4424-1-nstange@suse.de>
-References: <20200921075857.4424-1-nstange@suse.de>
+        id S1726416AbgIUH7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 03:59:01 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:44146 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726211AbgIUH7B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 03:59:01 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08L7XDJH114862;
+        Mon, 21 Sep 2020 03:58:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Czy5IBsuKiL63vGY+kb5VPoSw3OgpqoynUddwtmiVVk=;
+ b=LxMRd0uxg+OdPFZVq40IpVSGbeUGGd61o4PllGcPo1MWLStTxphpPgNqAgFXBoFmC6n3
+ pahcHEg/pzTCbhyBpISm7h7RTjU0kPendhi/dqxaQGi+uCbi/hP7ML0gc1bgdNogJIw/
+ KrLtKvZjxg35/xmLtqaYCL9W4fvspIgAvyrbbMXcAZZ4DrAUJQ+E06vGnMQXdoO1lgxS
+ 8wbUIu/y1TASrZqq5wyacuxqTRnI/AucHoTnq1n3N05pQyWyzzbHDanPVzv0NoBl2AUF
+ UrToXtClOI8WWDC2JKFR+seGIlD6ARI2zGTXXNI4X+emt44kLsOySQKgQuguxerS65nj Eg== 
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33pqnbrxbv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Sep 2020 03:58:49 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08L7vln8027027;
+        Mon, 21 Sep 2020 07:58:47 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06fra.de.ibm.com with ESMTP id 33n98grx0e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Sep 2020 07:58:47 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08L7wjtB17105312
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 21 Sep 2020 07:58:45 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 077785205A;
+        Mon, 21 Sep 2020 07:58:45 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.187.68])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id CE65952050;
+        Mon, 21 Sep 2020 07:58:44 +0000 (GMT)
+Subject: Re: [PATCH AUTOSEL 5.4 101/330] powerpc/powernv/ioda: Fix ref count
+ for devices with their own PE
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org
+References: <20200918020110.2063155-1-sashal@kernel.org>
+ <20200918020110.2063155-101-sashal@kernel.org>
+ <52532d8a-8e90-8a68-07bd-5a3e08c58475@linux.ibm.com>
+ <20200919181029.GI2431@sasha-vm>
+From:   Frederic Barrat <fbarrat@linux.ibm.com>
+Message-ID: <8eaefe77-8cdf-1da5-f573-633713598eb6@linux.ibm.com>
+Date:   Mon, 21 Sep 2020 09:58:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
+In-Reply-To: <20200919181029.GI2431@sasha-vm>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-21_01:2020-09-21,2020-09-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
+ mlxlogscore=999 priorityscore=1501 spamscore=0 impostorscore=0
+ suspectscore=0 bulkscore=0 malwarescore=0 phishscore=0 adultscore=0
+ clxscore=1031 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009210054
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The fast_pools, mixed into from add_interrupt_randomness(), are 128 bits
-wide and get awarded at most an entropy value as low as one bit in total.
 
-An upcoming patch will significantly increase the estimated entropy per
-event and this will make the fast_pools to receive much larger values
-of successively mixed in event entropy.
 
-In analogy to the reasoning in commit 30e37ec516ae ("random: account for
-entropy loss due to overwrites"), probabilistic collisions will have to get
-accounted for when calculating the total fast_pool entropy.
+Le 19/09/2020 à 20:10, Sasha Levin a écrit :
+> On Fri, Sep 18, 2020 at 08:35:06AM +0200, Frederic Barrat wrote:
+>>
+>>
+>> Le 18/09/2020 à 03:57, Sasha Levin a écrit :
+>>> From: Frederic Barrat <fbarrat@linux.ibm.com>
+>>>
+>>> [ Upstream commit 05dd7da76986937fb288b4213b1fa10dbe0d1b33 ]
+>>>
+>>
+>> This patch is not desirable for stable, for 5.4 and 4.19 (it was 
+>> already flagged by autosel back in April. Not sure why it's showing 
+>> again now)
+> 
+> Hey Fred,
+> 
+> This was a bit of a "lie", it wasn't a run of AUTOSEL, but rather an
+> audit of patches that went into distro/vendor trees but not into the
+> upstream stable trees.
+> 
+> I can see that this patch was pulled into Ubuntu's 5.4 tree, is it not
+> needed in the upstream stable tree?
 
-From said commit, the final fast_pool entropy equals
 
-  e = pool_size * (1 - exp(-num_events * entropy_per_event / pool_size))
+That patch in itself is useless (it replaces a ref counter leak by 
+another one). It was part of a longer series that we backported to 
+Ubuntu's 5.4 tree.
+So it's really not needed on the stable trees. It likely wouldn't hurt 
+or break anything, but there's really no point.
 
-Where pool_size is 128 bits in this case and
-num_events * entropy_per_event equals the sum of all estimated entropy from
-the IRQ events previously mixed in.
-
-Disclaimer: I'm cargo-culting here. That probabilisic overwrites are in
-fact an issue sounds plausible after having read e.g. "Balls into Bins" by
-M.Raab and A. Steger. But I haven't managed to derive this equation by
-myself, nor have I found it in any literature.
-
-Anyway, implement the new fast_pool_entropy() for evaluating the equation
-given above by means of a suitable approximation.
-
-add_interrupt_randomness() empties its fast_pool into the global input_pool
-whenever the number of accumulated events has reached a threshold of 64
-and the input_pool's ->lock is uncontended. Thus, the number of IRQ events
-accumulated at the fast_pool can be assumed to be unlikely to exceed
-larger factors of 64. The maximum estimate supported for per-IRQ entropy
-will be 1 bit and thus, this sets an upper bound on the range where the
-approximation is supposed to work well.
-
-At the same time, estimates for the per-IRQ entropy as low as 1/64 bits
-should be supported and the approximation should not be too coarse in these
-lower regions in order to avoid excessive loss when entropy is likely a
-scarce resource anyway.
-
-Apply a piecewise linear approximation to the fast_pool entropy, with
-the lengths of the resp. intervals getting doubled with increasing input
-values. That is, let the first interval cover 32 bits worth of input
-entropy, the next one 64 bits and stop after a final one of length
-128 bits. Any input entropy beyond 32 + 64 + 128 bits gets discarded in
-order to limit the computations done from interrupt context, but as
-outlined above, this is unlikely to matter in practice. The shorter
-intervals for the regions of smaller values will improve the accuracy of
-the approximation in these areas, i.e. for small estimates for the per-IRQ
-entropy.
-
-Note that the new fast_pool_entropy() is not being used anywhere yet, it
-will be wired up in an upcoming commit.
-
-Signed-off-by: Nicolai Stange <nstange@suse.de>
----
- drivers/char/random.c | 52 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 52 insertions(+)
-
-diff --git a/drivers/char/random.c b/drivers/char/random.c
-index a985ceb22c7c..ac36c56dd135 100644
---- a/drivers/char/random.c
-+++ b/drivers/char/random.c
-@@ -1547,6 +1547,58 @@ static __u32 get_reg(struct fast_pool *f, struct pt_regs *regs)
- 	return *ptr;
- }
- 
-+/*
-+ * Calculate the entropy of a fast_pool after num_events IRQ events of
-+ * assessed entropy 2^-event_entropy_shift each have been mixed in.
-+ */
-+static unsigned int fast_pool_entropy(unsigned int num_events,
-+				      int event_entropy_shift)
-+{
-+	unsigned int result, cur, interval_len;
-+
-+	/*
-+	 * Assume that each event fed into the fast_pool
-+	 * carries h = 2^-event_entropy_shift bits of entropy.
-+	 * In analogy to how entropy deltas are calculated
-+	 * in pool_entropy_delta() for the struct entropy_store
-+	 * input_pool, a fast_pool which received num_events
-+	 * of total entropy num_events * h will contain
-+	 * p * (1 - exp(-num_events * h / p)
-+	 * bits of entropy, where p equals the poolsize of 128 bits.
-+	 *
-+	 * Note that most of the time num_events will be ~64, c.f.
-+	 * add_interrupt_randomness.  Approximate the resulting
-+	 * fast_pool entropy in a piecewise linear manner from below:
-+	 * from 0 to 32, from 32 to 96 and from 96 to 224.
-+	 * Event entropy above 224 gets simply discarded. For p = 128,
-+	 * the calculated fast_pool entropy is ~226 at
-+	 * num_events * h == 32, ~540 at 96 and ~846 at 224, all given
-+	 * in units of 2^-ENTROPY_SHIFT.
-+	 */
-+	BUILD_BUG_ON(sizeof(((struct fast_pool *)NULL)->pool) != 16);
-+	BUILD_BUG_ON(ENTROPY_SHIFT != 3);
-+
-+	/* Interval from 0 to 32. */
-+	interval_len = 32 << event_entropy_shift;
-+	cur = min_t(unsigned int, num_events, interval_len);
-+	result = (226 * cur) >> 5; /* shift is for /32 */
-+	num_events -= cur;
-+
-+	/* Interval of length 64 from 32 to 96. */
-+	interval_len <<= 1;
-+	cur = min_t(unsigned int, num_events, interval_len);
-+	result += ((540 - 226) * cur) >> 6; /* shift is for /64 */
-+	num_events -= cur;
-+
-+	/* Interval of length 128 from 96 to 224. */
-+	interval_len <<= 1;
-+	cur = min_t(unsigned int, num_events, interval_len);
-+	result += ((846 - 540) * cur) >> 7; /* shift is for /128 */
-+
-+	/* Return value is in units of 2^-ENTROPY_SHIFT. */
-+	return result >> event_entropy_shift;
-+}
-+
- void add_interrupt_randomness(int irq, int irq_flags)
- {
- 	struct entropy_store	*r;
--- 
-2.26.2
+   Fred
 
