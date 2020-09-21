@@ -2,95 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEBD8273140
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C79F273143
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:55:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728189AbgIURwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 13:52:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbgIURwx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 13:52:53 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B84CAC061755;
-        Mon, 21 Sep 2020 10:52:53 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id 67so10916816ybt.6;
-        Mon, 21 Sep 2020 10:52:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SKjNQMGb1+nm0CnnDw2aoYSyVGHtiTfWCigjGqfb/+E=;
-        b=d9FHneM2P4UxVk88dAx28UxwPAGxarNtMwaqkCGZua9STsqKgPYHCSfzKYMFYUxmfv
-         wTllfUf5RLgTYGEzyRgNrmP1dblvy/67akSZjOv5RDzjTxc1HLzNHpE+tGCB/8OCOj9e
-         nuEoK8QUMPe+pVI1Id7/TMO+/O048VcoRmQAaL6tH7F9NLejjTLstXtXFjoVBLuFzUXX
-         lhJETWlGd9SLle6CqOjQKaB+pFQ8J2kczK206ZeOYKrijJVDAefJT8ghNqLi4hliCzNA
-         HjhkUvdS+/qqjbaSla3PUyf7ZeT4IigH6moX0lcNey1B+dJWDo9auAh5y+fz5Gx4vl15
-         affQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SKjNQMGb1+nm0CnnDw2aoYSyVGHtiTfWCigjGqfb/+E=;
-        b=tAsn0IajoaRfetQUKbDEDuxZqp7NVTErTmarb52Kq9dc3pisCz3aUMpvBL0vgmSXO/
-         vLW6rjOjkIOPKRjqlFmPrLFqnPketWb/OTuOVUwebelmBW9wKqCNoRmc44UVnQgzteej
-         0eMNB6A1Xd/utijBmMs5/dA6XYkhsS9vLlcY8DrFH2PcSWAiJsEQ8Gt19k6uRVN+XXSy
-         J6tUrWcUO56LsFw1FHkH7Fb4viiyskSIAPZSBi5A/1wey27QYwSYJk5gVtkvSvgCqRbV
-         H4+3nHlNG52Oiy2uBCoGr8TY8Pyx43TciaqXhOlp93IcTkpxXxfkBsms55XSpFFnsgrc
-         On7g==
-X-Gm-Message-State: AOAM530H8hv9Im4DWpfto++ebO3N2JNmsu2HIrMNvP1r9wmvxlmz+nIK
-        n0XhXzWKp7f8C+w1m8MvlxADELsb/mx8VSeMGOc=
-X-Google-Smtp-Source: ABdhPJwG/v5AEvqbf4XjP/SdkJJVKa8hUfCwk70rh1VomyNc7J66rcB333cB+SBTkM5sT7fkWrWYwpitua9D9LujH6Q=
-X-Received: by 2002:a25:9d06:: with SMTP id i6mr1458382ybp.510.1600710772768;
- Mon, 21 Sep 2020 10:52:52 -0700 (PDT)
+        id S1728002AbgIURxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 13:53:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45824 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726436AbgIURxg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 13:53:36 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DAF0B20BED;
+        Mon, 21 Sep 2020 17:53:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600710816;
+        bh=rHqhMXLrc2euBYg5DgO9SILeP95LxH71eqk44hTG9fY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=whrzXfYPbw8odytdwpTt8k+qKtDPsccHgGGWL3LMfjU7nImxPpZdkYj4L5d4A1Hna
+         LYD49Cej2p/1b2Z1Yvz7zj+7a4qaePi+iNj02ULwJDI+quZEN6/H1CSmd38WH/cAc+
+         5C5uUnbagc+d1d+LvDl4mE1CbXGDVSRM+jYSp4SI=
+Date:   Mon, 21 Sep 2020 18:53:31 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Alexandru Elisei <alexandru.elisei@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, maz@kernel.org, catalin.marinas@arm.com,
+        swboyd@chromium.org, sumit.garg@linaro.org
+Subject: Re: [PATCH v6 0/7] arm_pmu: Use NMI for perf interrupt
+Message-ID: <20200921175330.GE3141@willie-the-truck>
+References: <20200819133419.526889-1-alexandru.elisei@arm.com>
+ <20200921135951.GN2139@willie-the-truck>
+ <296304b8-aadd-817d-bb12-dc7524b6f0f5@arm.com>
 MIME-Version: 1.0
-References: <20200916223512.2885524-1-haoluo@google.com> <20200916223512.2885524-3-haoluo@google.com>
-In-Reply-To: <20200916223512.2885524-3-haoluo@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 21 Sep 2020 10:52:41 -0700
-Message-ID: <CAEf4BzbTWGQ4QAOz29Jzj14RwprhsuDSbudU+rrUTaOg9ZP9Zg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/6] bpf/libbpf: BTF support for typed ksyms
-To:     Hao Luo <haoluo@google.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <296304b8-aadd-817d-bb12-dc7524b6f0f5@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 3:38 PM Hao Luo <haoluo@google.com> wrote:
->
-> If a ksym is defined with a type, libbpf will try to find the ksym's btf
-> information from kernel btf. If a valid btf entry for the ksym is found,
-> libbpf can pass in the found btf id to the verifier, which validates the
-> ksym's type and value.
->
-> Typeless ksyms (i.e. those defined as 'void') will not have such btf_id,
-> but it has the symbol's address (read from kallsyms) and its value is
-> treated as a raw pointer.
->
-> Signed-off-by: Hao Luo <haoluo@google.com>
-> ---
+On Mon, Sep 21, 2020 at 04:41:00PM +0100, Alexandru Elisei wrote:
+> On 9/21/20 2:59 PM, Will Deacon wrote:
+> > On Wed, Aug 19, 2020 at 02:34:12PM +0100, Alexandru Elisei wrote:
+> >> The series makes the arm_pmu driver use NMIs for the perf interrupt when
+> >> NMIs are available on the platform (currently, only arm64 + GICv3). To make
+> >> it easier to play with the patches, I've pushed a branch at [1]:
+> > This mostly looks good to me, but see some of the comments I left on the
+> > code. One other thing I'm not sure about is whether or not we should tell
+> > userspace that we're using an NMI for the sampling. Do any other
+> > architectures have a conditional NMI?
+> 
+> I'm not sure about other architectures being able to configure the perf interrupt
+> as NMI or a regular interrupt, I'll try to find out. Regardless of what the other
+> architecture do, I am of the opinion that we should spell out explicitly when the
+> PMU is using pseudo-NMIs, because it makes a huge difference in the accuracy of
+> the instrumentation and the overall usefulness of perf.
+> 
+> If I spin a v7 quickly, is it still time to merge the series for 5.10?
 
-This looks nice and clean, thanks!
+I'm on holiday for the rest of the week, but please post something when you
+have it and I'll queue it if I manage to get to it.
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->  tools/lib/bpf/libbpf.c | 112 ++++++++++++++++++++++++++++++++++++-----
->  1 file changed, 99 insertions(+), 13 deletions(-)
->
-
-[...]
+Will
