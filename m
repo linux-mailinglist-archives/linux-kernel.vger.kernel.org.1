@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2648271C9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E288271C9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726734AbgIUIAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 04:00:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57144 "EHLO mx2.suse.de"
+        id S1726703AbgIUIA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 04:00:28 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56798 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726489AbgIUH7W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726496AbgIUH7W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 21 Sep 2020 03:59:22 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1B007B50A;
-        Mon, 21 Sep 2020 07:59:56 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 3C97DB50F;
+        Mon, 21 Sep 2020 07:59:57 +0000 (UTC)
 From:   Nicolai Stange <nstange@suse.de>
 To:     "Theodore Y. Ts'o" <tytso@mit.edu>
 Cc:     linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
@@ -46,9 +46,9 @@ Cc:     linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
         =?UTF-8?q?Stephan=20M=C3=BCller?= <smueller@chronox.de>,
         Torsten Duwe <duwe@suse.de>, Petr Tesarik <ptesarik@suse.cz>,
         Nicolai Stange <nstange@suse.de>
-Subject: [RFC PATCH 12/41] random: convert add_interrupt_randomness() to queued_entropy API
-Date:   Mon, 21 Sep 2020 09:58:28 +0200
-Message-Id: <20200921075857.4424-13-nstange@suse.de>
+Subject: [RFC PATCH 14/41] random: drop __credit_entropy_bits_fast()
+Date:   Mon, 21 Sep 2020 09:58:30 +0200
+Message-Id: <20200921075857.4424-15-nstange@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200921075857.4424-1-nstange@suse.de>
 References: <20200921075857.4424-1-nstange@suse.de>
@@ -58,71 +58,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In an effort to drop __credit_entropy_bits_fast() in favor of the new
-__queue_entropy()/__dispatch_queued_entropy_fast() API, convert
-add_interrupt_randomness() from the former to the latter.
-
-There is no change in functionality at this point, because
-__credit_entropy_bits_fast() has already been reimplemented on top of the
-new API before.
+All former call sites of __credit_entropy_bits_fast() have been converted
+to the new __dispatch_queued_entropy_fast() API. Drop the now unused
+__credit_entropy_bits_fast().
 
 Signed-off-by: Nicolai Stange <nstange@suse.de>
 ---
- drivers/char/random.c | 28 ++++++++++++++++------------
- 1 file changed, 16 insertions(+), 12 deletions(-)
+ drivers/char/random.c | 14 --------------
+ 1 file changed, 14 deletions(-)
 
 diff --git a/drivers/char/random.c b/drivers/char/random.c
-index e8c86abde901..bd3774c6be4b 100644
+index dfbe49fdbcf1..60ce185d7b2d 100644
 --- a/drivers/char/random.c
 +++ b/drivers/char/random.c
-@@ -1512,6 +1512,7 @@ void add_interrupt_randomness(int irq, int irq_flags)
- 	unsigned long		seed;
- 	int			credit = 0;
- 	bool			reseed;
-+	struct queued_entropy	q = { 0 };
+@@ -900,20 +900,6 @@ static bool __dispatch_queued_entropy_fast(struct entropy_store *r,
+ 	return false;
+ }
  
- 	if (cycles == 0)
- 		cycles = get_reg(fast_pool, regs);
-@@ -1546,24 +1547,27 @@ void add_interrupt_randomness(int irq, int irq_flags)
- 	if (!spin_trylock(&r->lock))
- 		return;
- 
--	fast_pool->last = now;
--	__mix_pool_bytes(r, &fast_pool->pool, sizeof(fast_pool->pool));
+-/*
+- * Credit the entropy store with n bits of entropy.
+- * To be used from hot paths when it is either known that nbits is
+- * smaller than one half of the pool size or losing anything beyond that
+- * doesn't matter. Must be called with r->lock being held.
+- */
+-static bool __credit_entropy_bits_fast(struct entropy_store *r, int nbits)
+-{
+-	struct queued_entropy q = { 0 };
 -
- 	/*
- 	 * If we have architectural seed generator, produce a seed and
--	 * add it to the pool.  For the sake of paranoia don't let the
--	 * architectural seed generator dominate the input from the
--	 * interrupt noise.
-+	 * add it to the pool further below. For the sake of paranoia
-+	 * don't let the architectural seed generator dominate the
-+	 * input from the interrupt noise.
- 	 */
--	if (arch_get_random_seed_long(&seed)) {
--		__mix_pool_bytes(r, &seed, sizeof(seed));
--		credit = 1;
--	}
-+	credit = !!arch_get_random_long(&seed);
- 
-+	fast_pool->last = now;
- 	fast_pool->count = 0;
+-	__queue_entropy(r, &q, nbits << ENTROPY_SHIFT);
+-	return __dispatch_queued_entropy_fast(r, &q);
+-}
 -
- 	/* award one bit for the contents of the fast pool */
--	reseed = __credit_entropy_bits_fast(r, credit + 1);
-+	__queue_entropy(r, &q, (credit + 1) << ENTROPY_SHIFT);
-+	__mix_pool_bytes(r, &fast_pool->pool, sizeof(fast_pool->pool));
-+	if (credit) {
-+		/*
-+		 * A seed has been obtained from
-+		 * arch_get_random_seed_long() above, mix it in.
-+		 */
-+		__mix_pool_bytes(r, &seed, sizeof(seed));
-+	}
-+	reseed = __dispatch_queued_entropy_fast(r, &q);
- 	spin_unlock(&r->lock);
- 	if (reseed)
- 		crng_reseed(&primary_crng, r);
+ /*
+  * Credit the pool with previously queued entropy.
+  *
 -- 
 2.26.2
 
