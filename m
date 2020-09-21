@@ -2,93 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9FE52725EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:42:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BAB92725EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727206AbgIUNmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:42:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56646 "EHLO mx2.suse.de"
+        id S1727136AbgIUNnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:43:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726471AbgIUNmD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:42:03 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600695721;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KvHE3U1LvO1bVCa3Khho6+5CSamK6xUOF4Y3QnJxLf0=;
-        b=ELeLjLwlpBK2v6UX46KlSnK5+qpsIBAJVcb3r4tGfmzE/H0dzwknKl46MJLrI0n19/etBm
-        avZE1bfe4mLUTlx2oXiOSXnaKvBOPegJ90z+F3C6UWSFZ9yTc0d6rdT9k+Ql/4sPpH/Euu
-        KgCmMOsiH/WBo/NBPwkCMXLnQh44RQQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E3750B1B8;
-        Mon, 21 Sep 2020 13:42:37 +0000 (UTC)
-Date:   Mon, 21 Sep 2020 15:42:00 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Peter Xu <peterx@redhat.com>, Tejun Heo <tj@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Maya B . Gokhale" <gokhale2@llnl.gov>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Marty Mcfadden <mcfadden8@llnl.gov>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
-Message-ID: <20200921134200.GK12990@dhcp22.suse.cz>
-References: <20200915213330.GE2949@xz-x1>
- <20200915232238.GO1221970@ziepe.ca>
- <e6c352f8-7ee9-0702-10a4-122d2c4422fc@nvidia.com>
- <20200916174804.GC8409@ziepe.ca>
- <20200916184619.GB40154@xz-x1>
- <20200917112538.GD8409@ziepe.ca>
- <CAHk-=wjtfjB3TqTFRzVmOrB9Mii6Yzc-=wKq0fu4ruDE6AsJgg@mail.gmail.com>
- <20200917193824.GL8409@ziepe.ca>
- <CAHk-=wiY_g+SSjncZi8sO=LrxXmMox0NO7K34-Fs653XVXheGg@mail.gmail.com>
- <20200918164032.GA5962@xz-x1>
+        id S1726471AbgIUNnJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:43:09 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 335472084C;
+        Mon, 21 Sep 2020 13:43:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600695788;
+        bh=ppWgQwIPJFgXvpl5SyaBDqV8l2T0GGovdfeRTgIHCFU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WxRp7fNzBJpKQt2ftVmrIe0M00opXLZn+F2d5mDdpSKGn8lUe/l/M4uRs6n6sREdy
+         bW0hA+DLr0AjQqCJBgrHPFgxzbq84ceM4vkef6/Rx84et6Iin19dgiliB/AzP8PonQ
+         4ut8OFK2UunvFo4cAYtKyJOqaJGFdcG9RYMVTRe0=
+Date:   Mon, 21 Sep 2020 14:43:02 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Alexandru Elisei <alexandru.elisei@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, maz@kernel.org, catalin.marinas@arm.com,
+        swboyd@chromium.org, sumit.garg@linaro.org,
+        Julien Thierry <julien.thierry@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Pouloze <suzuki.poulose@arm.com>,
+        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu
+Subject: Re: [PATCH v6 5/7] KVM: arm64: pmu: Make overflow handler NMI safe
+Message-ID: <20200921134301.GJ2139@willie-the-truck>
+References: <20200819133419.526889-1-alexandru.elisei@arm.com>
+ <20200819133419.526889-6-alexandru.elisei@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200918164032.GA5962@xz-x1>
+In-Reply-To: <20200819133419.526889-6-alexandru.elisei@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Cc Tejun and Christian - this is a part of a larger discussion which is
- not directly related to this particular question so let me trim the
- original email to the bare minimum.]
+On Wed, Aug 19, 2020 at 02:34:17PM +0100, Alexandru Elisei wrote:
+> From: Julien Thierry <julien.thierry@arm.com>
+> 
+> kvm_vcpu_kick() is not NMI safe. When the overflow handler is called from
+> NMI context, defer waking the vcpu to an irq_work queue.
+> 
+> Cc: Julien Thierry <julien.thierry.kdev@gmail.com>
+> Cc: Marc Zyngier <marc.zyngier@arm.com>
+> Cc: Will Deacon <will.deacon@arm.com>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: James Morse <james.morse@arm.com>
+> Cc: Suzuki K Pouloze <suzuki.poulose@arm.com>
+> Cc: kvm@vger.kernel.org
+> Cc: kvmarm@lists.cs.columbia.edu
+> Signed-off-by: Julien Thierry <julien.thierry@arm.com>
+> Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
+> ---
+>  arch/arm64/kvm/pmu-emul.c | 25 ++++++++++++++++++++++++-
+>  include/kvm/arm_pmu.h     |  1 +
+>  2 files changed, 25 insertions(+), 1 deletion(-)
 
-On Fri 18-09-20 12:40:32, Peter Xu wrote:
-[...]
-> One issue is when we charge for cgroup we probably can't do that onto the new
-> mm/task, since copy_namespaces() is called after copy_mm().  I don't know
-> enough about cgroup, I thought the child will inherit the parent's, but I'm not
-> sure.  Or, can we change that order of copy_namespaces() && copy_mm()?  I don't
-> see a problem so far but I'd like to ask first..
+I'd like an Ack from the KVM side on this one, but some minor comments
+inline.
 
-I suspect you are referring to CLONE_INTO_CGROUP, right? I have only now
-learned about this feature so I am not deeply familiar with all the
-details and I might be easily wrong. Normally all the cgroup aware
-resources are accounted to the parent's cgroup. For memcg that includes
-all the page tables, early CoW and other allocations with __GFP_ACCOUNT.
-IIUC CLONE_INTO_CGROUP properly then this hasn't changed as the child is
-associated to its new cgroup (and memcg) only in cgroup_post_fork. If
-that is correct then we might have quite a lot of resources bound to
-child's lifetime but accounted to the parent's memcg which can lead to
-all sorts of interesting problems (e.g. unreclaimable memory - even by
-the oom killer).
+> diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
+> index f0d0312c0a55..30268397ed06 100644
+> --- a/arch/arm64/kvm/pmu-emul.c
+> +++ b/arch/arm64/kvm/pmu-emul.c
+> @@ -433,6 +433,22 @@ void kvm_pmu_sync_hwstate(struct kvm_vcpu *vcpu)
+>  	kvm_pmu_update_state(vcpu);
+>  }
+>  
+> +/**
+> + * When perf interrupt is an NMI, we cannot safely notify the vcpu corresponding
+> + * to the event.
+> + * This is why we need a callback to do it once outside of the NMI context.
+> + */
+> +static void kvm_pmu_perf_overflow_notify_vcpu(struct irq_work *work)
+> +{
+> +	struct kvm_vcpu *vcpu;
+> +	struct kvm_pmu *pmu;
+> +
+> +	pmu = container_of(work, struct kvm_pmu, overflow_work);
+> +	vcpu = kvm_pmc_to_vcpu(&pmu->pmc[0]);
 
-Christian, Tejun is this the expected semantic or I am just misreading
-the code?
--- 
-Michal Hocko
-SUSE Labs
+Can you spell this kvm_pmc_to_vcpu(pmu->pmc); ?
+
+> +
+> +	kvm_vcpu_kick(vcpu);
+
+How do we guarantee that the vCPU is still around by the time this runs?
+Sorry to ask such a horrible question, but I don't see anything associating
+the workqueue with the lifetime of the vCPU.
+
+Will
