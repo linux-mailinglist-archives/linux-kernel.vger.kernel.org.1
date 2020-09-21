@@ -2,138 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 845112736A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 01:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39B5A2736AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 01:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728867AbgIUX3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 19:29:34 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:41018 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728704AbgIUX3e (ORCPT
+        id S1728844AbgIUXcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 19:32:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726457AbgIUXcC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 19:29:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1600730974; x=1632266974;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=jULtCyK5yOSjuWIoTiZSH31CnHkPC9/zZPQoLmAz3SU=;
-  b=etMEHnHL/i1Hvr0SFxW6IEpxYZdqDyONt9SLkuoi4ZmOJiksAAx26DgM
-   unUqpkRnYy2Ag1x5P0rFQphG7Yi1l2BgnLMJ8AxBYhp2/S3NYJueRN7E3
-   kfyeFGE8AZdEj/CamepMRIqqRNAPAu+TaXcQYJtcHgZsdyx1dFEigAwAb
-   VdPGcyxhO0vCUQcuKLysLmNCZ5innYGGkQaiPdRbU7BPx2QidJSl9s6/r
-   uWBBLnRTXS/PEBmQwM4itSIDPvK5/iWLJ7XHPrVDB048NARKEiXVC7Wmz
-   VBriNgx/+xrXhfXHRmM3PtUgXA1RJAHEKTj8Oy4aNtHF9DBxnxur0KfTW
-   Q==;
-IronPort-SDR: p7v9SHT08CSQwswz7ycraWXAO+PnkvpCcB7ur5m4og9aWAGxW7LCVyfbC9Us5q141D5BchmIHg
- mWszIYn6A2zDxlcAkS0YexskvXpSLM9rL0e/Bu6/yduQKhtbKKJGgnB/P8gSlggYgFt/6lhnJn
- XMSkCPNHJPSQQGxZLYh6bLKT31/T/8ze7o/yX3WF69H62iqspEC91wLP00KjULYMDaD3ORJJUW
- /KKY/uYgomccFY+i0mY1iT4diA1j3K/5MQBJak4hGsaSpEZ4n66i9TKZD2ggZFqnQdwbBYvDdj
- dSU=
-X-IronPort-AV: E=Sophos;i="5.77,288,1596470400"; 
-   d="scan'208";a="149163945"
-Received: from mail-bn8nam12lp2169.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.169])
-  by ob1.hgst.iphmx.com with ESMTP; 22 Sep 2020 07:29:32 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=axIOee/+NCYX1oH+JI0aU8qNZc6B44ns6hVrJOKcUOEdIrB1kkAM1WljxPiRmnTQ+vlF/jpQAA72B6wt/MieQlag3O1wBcNpei/u5j33X82f2j+omPOAnej/lZBqRmLxNER1szZ9GWmMdN77qU9SkZdZ4v6FDmblGZlFbipW/JH/HOpWJDO+umO3mEKhCiqJbBc+SLDIGPhyN5dJloB9t40yioEhA/8AB7168i+uSMdSwzmP0YtMZnQaQiTAOTW1te+9Mz0md1kyU4HfIlsNF68oJMqgZv07gtWvEZ0/ZRF/C3O2Qk0Vm9VNPM2bSv38CzTF0+XjNwNsllUuwJPCMQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jULtCyK5yOSjuWIoTiZSH31CnHkPC9/zZPQoLmAz3SU=;
- b=dw0LwuAzcvvny5VkNQr7VeFoucu7TnCrxY7O1zzWciEnVRQMErbLhWPoRt3QMcn+T47+HJpjfjwyMFHEx7iZvxThEpsPh6oGBtiv3svGQSE5LoXvguSptWgB6AwFhLUQh6AddgbEB4PBdEnG31KsjnzVyUkmmHbCfjnVT/YNoSC5y+G0vjhKFw0d2CCrU/TbpMURuCAqJMS7BQyHYhBzc1baNwrRWKH/xgFGPaH6NEPitzByWnFxiCn+Q8HmvlHM9gEPRsQM+g+W5e5eBEk3b5waON0YHYaaJ5AbJhxwBOkoDxhNtYLGLbb8U54dtWKTRsQ1BK8Fqk30iqiI65fUYQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Mon, 21 Sep 2020 19:32:02 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05FA2C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 16:32:01 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id ay8so14435202edb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 16:32:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jULtCyK5yOSjuWIoTiZSH31CnHkPC9/zZPQoLmAz3SU=;
- b=iiDjAT5P7MUdiutgRhUnnYLUOajteaGedZIdPfQLXPXvlpPhtwHz/N9Dtd8AsQ71VHf/mr1dnF4E6RCXQWjjofRZ3LTEONHdku9uGaIIytSOdP3MpXt3ndCBT/i7aFOGnlYF4DXbjOSugmInrq3VdprDzEwK2iF/X8ywlmaCz2k=
-Received: from BYAPR04MB4965.namprd04.prod.outlook.com (2603:10b6:a03:4d::25)
- by BYAPR04MB4327.namprd04.prod.outlook.com (2603:10b6:a02:ff::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.19; Mon, 21 Sep
- 2020 23:29:30 +0000
-Received: from BYAPR04MB4965.namprd04.prod.outlook.com
- ([fe80::e1cb:3a58:d588:d7eb]) by BYAPR04MB4965.namprd04.prod.outlook.com
- ([fe80::e1cb:3a58:d588:d7eb%7]) with mapi id 15.20.3391.022; Mon, 21 Sep 2020
- 23:29:30 +0000
-From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-To:     Logan Gunthorpe <logang@deltatee.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        Omar Sandoval <osandov@osandov.com>
-CC:     Sagi Grimberg <sagi@grimberg.me>,
-        Stephen Bates <sbates@raithlin.com>,
-        Logan Gunthorpe <logan.gunthorpe@eideticom.com>
-Subject: Re: [PATCH blktests 00/11] NVMe Target Passthru Block Tests
-Thread-Topic: [PATCH blktests 00/11] NVMe Target Passthru Block Tests
-Thread-Index: AQHWfKssI7kSe/U/OUi/Jhb3l47wSg==
-Date:   Mon, 21 Sep 2020 23:29:30 +0000
-Message-ID: <BYAPR04MB4965509EEAD6B8C5321BFE6C863A0@BYAPR04MB4965.namprd04.prod.outlook.com>
-References: <20200827194912.6135-1-logang@deltatee.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: deltatee.com; dkim=none (message not signed)
- header.d=none;deltatee.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [199.255.45.62]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 1dac5e8f-32c5-47ba-9c69-08d85e8630b1
-x-ms-traffictypediagnostic: BYAPR04MB4327:
-x-microsoft-antispam-prvs: <BYAPR04MB43275FA60AFB3A8E73AD08BC863A0@BYAPR04MB4327.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: DFkT07x6H1HRfn0qV8guG2fVx/qk8kkRnzFghan1T7sZ3W2N6KM0KUBPbDfcaPHYSDt41UuFdftLToOg8riYUpSGUImoDO9C/SvnUaifWiDmi7CE4ZRL0BBl7Di8ZvtC6REVZOCt1wvKKz2hKHNCaS0AAeixkK4KHPFAZ0+KokMrGGxV40b8u0fZjkPL6XlKOEw87tjDAAdCzzPY/prg07x3N+RHU2NIuKRI/Hm2G1KhvABxIMM0o26JRC9A5BLEKsj+IehVG33XRuMaJsRMhU0i6jzMbNTvurjIiBnINOsBtp+4tgQRhjqHkockJQr9V7zf8woY76k+kh9I9nPir2EvafsEJZTe1w+yf3aCDVyZCdH67lJrGyEfKS73udykEhVB1UASySNMTAvT3/ARIA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB4965.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(346002)(366004)(376002)(396003)(316002)(86362001)(966005)(66446008)(55016002)(2906002)(478600001)(66946007)(71200400001)(110136005)(64756008)(76116006)(66476007)(66556008)(9686003)(52536014)(5660300002)(54906003)(7696005)(53546011)(33656002)(8676002)(8936002)(4326008)(4744005)(26005)(186003)(6506007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: 57ZFoRra3ysBJ1asLrRVP/Z/NTRcVhZW0iu8b6A5VryLh2kbIAm7b339LAK3SXl1jM8i+p6SoxZemdgpVj4AWshNvyIjHDj8iD31yAOKzHpVacbRmPeiUu6tYfUg6CQda5olsMQ+b0HurputeP2QcbXxSTAgmhhY94hxciC+aE9JT+IdYQp9KpQsZslzofy8b76lP6occHupWBGWR9WmjW39DO09IWE3rfq0CfuTygzyLscC/x03j0BrFlBmj55WDYq38vx5xtkviUXxipBJlDVjVxGdnjtNSE1e/i6cXcErUHLWsitbjG8rGy5/QvqoYsEbv5p2NiK5KqovyK9HnRW0/d2pObdAIi3NLMiaIJ45tJPgQbnn/0P0I7YrPWF9e4ImCAdXxRFzZpuxXLseOusZk3C2/JQ6FCRGj02Zkn6qNSx8qtGsVZhq+lkXU8zna5OCNoleFXVY4dCjt8K5xqJZRpVVZkuAzy7wxs61KfgjobrolC0qfiPUxwcSZaMwOffgYbHoIiQmrHuwIxx17PF6Fdx32OC7NY9KjF1PxPzyV4DKmpMThyPxPnz2fMq1AcNkgwr1/IjT2KU+CrqKBkhO8diY5HxO+3OXIzxqLb7YR7QuF+eMOjK3D56JkFf49UaP9tzG8MsvjFodIneNbA==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C+StbR8l+iINKxdKhhC9txI9lzzieJVqBdRCPZv/6Ho=;
+        b=DepQq7shpg7ekeVfm9HNfqa6yN6Jm3pPgP763w0uduaMsldIKXbnVK14rvVfcKKZRD
+         D+VcCmxqHftJcqzasAMsJwEqimKfm1Gj2S4o5ULBsxUScK1tvRsPn0P0QWTBYM6S3+m+
+         lzCGSLHuHBLOhmXHY0+tEcDEoCavDR/ZOHpMhuVxIk55syGVG5UWs7hODFCl22FbIumW
+         B/+TNvbCY27XBKFa12jD8EIZOU0Aen+dUVJNgKloJyZuK0QFa9W3dqlw30t3ugQeH+f2
+         ugsAAg7bqiBCaXrfH7EghxTWfhddvkjfDDEqdLCQYfVwryK9Ah0UgL40JXaSJbfa43Qv
+         ACNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C+StbR8l+iINKxdKhhC9txI9lzzieJVqBdRCPZv/6Ho=;
+        b=TR+u1b8reNpyJe5kbYm6wElDNa8uQzVWPZU5Tawxzyu+i25qNkhN7MbL5iLOYKcZWN
+         fmcsi8grz4NBxJyPUMEWV9iBrr/VYtDftWeBGN4QRUIyIZpPGIGUA8ordPhO4zNBDvp1
+         3rdtNbFAp4b0Xbkt3wQZvDqvuVC5Y6O+RdWFdOxhECVpIqmEAr0Xk01IdsDgkajFIP9L
+         VetQ6u7u1fML7RHA9l+GPfMlRAa0nslprnXW44Ydm47FHImBVC0wO6Apq5uCt14vYC4I
+         1qpmalvZqWowx0+0DL99g9LJ3IIdyaTVht/YEjzn0cgBq1iN8wVCE7P7wTuO7LOyXCaE
+         whjw==
+X-Gm-Message-State: AOAM5318gyn1tAcAZMRPPTcm/G2k05LdrP3B5tZa+JrYIMxWGGzDWhlP
+        j3rp8NcqtZTeD0LXWH6UZr6av/AFlo/sS508Z9RG
+X-Google-Smtp-Source: ABdhPJz/GswSld2uh/zJGMdxdAOo8yrU4fDUXpk2a3TP2x+vmMQJTppKsxJPPBsYwlKJSV0XmbSFDcWI7lcaypeaT5Y=
+X-Received: by 2002:a50:fc0b:: with SMTP id i11mr1283170edr.164.1600731120381;
+ Mon, 21 Sep 2020 16:32:00 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR04MB4965.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1dac5e8f-32c5-47ba-9c69-08d85e8630b1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Sep 2020 23:29:30.7260
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: sjpn81gMvc+aPJv3Udsfaas2Qj3g991eS5RBdCU8rrRX9SDpre+c8YAPI+uS5zcC3sxvyvka5zjA/eEf6PBPoeRD0qM57HkGYExKO9YX70U=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB4327
+References: <35f2b8c69b4b9abbc076dd55a6f0f52cf20abad7.1599687447.git.rgb@redhat.com>
+ <CAHC9VhRN33KcW2dL1KJZZJC_Sg4JEdBJdnecRz6SB+PQ0BSg9A@mail.gmail.com> <20200921195655.GH822320@madcap2.tricolour.ca>
+In-Reply-To: <20200921195655.GH822320@madcap2.tricolour.ca>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 21 Sep 2020 19:31:49 -0400
+Message-ID: <CAHC9VhR2Xqp1wVe6UmLgGryyp_5bGwSHzgpVEdixKP6Y4srewA@mail.gmail.com>
+Subject: Re: [[PATCH V4]] audit: trigger accompanying records when no rules present
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        Eric Paris <eparis@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/27/20 12:49, Logan Gunthorpe wrote:=0A=
-> From: Logan Gunthorpe <logan.gunthorpe@eideticom.com>=0A=
->=0A=
-> Hi,=0A=
->=0A=
-> Now that the passthru patches are in Linus's tree, I wanted to get=0A=
-> the blktest changes that test them out there for some review.=0A=
->=0A=
-> I know that Sagi has a series in progress to allow for running tests=0A=
-> with other transports. These two patch sets will need to be reconciled=0A=
-> at some point.=0A=
->=0A=
-> This series is based off of the current blktests master and a git repo is=
-=0A=
-> available for this here:=0A=
->=0A=
-> https://github.com/Eideticom/blktests nvmet_passthru=0A=
->=0A=
-> Thanks,=0A=
->=0A=
-> Logan=0A=
-=0A=
-It will be great to have this on the top of Sagi's series once Omar=0A=
-=0A=
-applies rdma/tcp series.=0A=
-=0A=
+On Mon, Sep 21, 2020 at 3:57 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+> On 2020-09-15 12:18, Paul Moore wrote:
+> > On Thu, Sep 10, 2020 at 11:03 AM Richard Guy Briggs <rgb@redhat.com> wrote:
+> > >
+> > > When there are no audit rules registered, mandatory records (config,
+> > > etc.) are missing their accompanying records (syscall, proctitle, etc.).
+> > >
+> > > This is due to audit context dummy set on syscall entry based on absence
+> > > of rules that signals that no other records are to be printed.
+> > >
+> > > Clear the dummy bit if any record is generated.
+> > >
+> > > The proctitle context and dummy checks are pointless since the
+> > > proctitle record will not be printed if no syscall records are printed.
+> > >
+> > > The fds array is reset to -1 after the first syscall to indicate it
+> > > isn't valid any more, but was never set to -1 when the context was
+> > > allocated to indicate it wasn't yet valid.
+> > >
+> > > The audit_inode* functions can be called without going through
+> > > getname_flags() or getname_kernel() that sets audit_names and cwd, so
+> > > set the cwd if it has not already been done so due to audit_names being
+> > > valid.
+> > >
+> > > The LSM dump_common_audit_data() LSM_AUDIT_DATA_NET:AF_UNIX case was
+> > > missed with the ghak96 patch, so add that case here.
+> > >
+> > > Thanks to bauen1 <j2468h@googlemail.com> for reporting LSM situations in
+> > > which context->cwd is not valid, inadvertantly fixed by the ghak96 patch.
+> > >
+> > > Please see upstream github issue
+> > > https://github.com/linux-audit/audit-kernel/issues/120
+> > > This is also related to upstream github issue
+> > > https://github.com/linux-audit/audit-kernel/issues/96
+> > >
+> > > Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+> > > ---
+> > > Passes audit-testsuite.
+> > >
+> > > Chagelog:
+> > > v4:
+> > > - rebase on audit/next v5.9-rc1
+> > > - squash v2+v3fix
+> > > - add pwd NULL check in audit_log_name()
+> > > - resubmit after revert
+> > >
+> > > v3:
+> > > - initialize fds[0] to -1
+> > > - init cwd for ghak96 LSM_AUDIT_DATA_NET:AF_UNIX case
+> > > - init cwd for audit_inode{,_child}
+> > >
+> > > v2:
+> > > - unconditionally clear dummy
+> > > - create audit_clear_dummy accessor function
+> > > - remove proctitle context and dummy checks
+> > >
+> > >  kernel/audit.c       |  1 +
+> > >  kernel/audit.h       |  8 ++++++++
+> > >  kernel/auditsc.c     | 11 +++++++----
+> > >  security/lsm_audit.c |  1 +
+> > >  4 files changed, 17 insertions(+), 4 deletions(-)
+> >
+> > Comments below, but can you elaborate on if any testing was done
+> > beyond the audit-testsuite?
+>
+> Yes, it was tested with audit-testsuite and bauen1's reproducer
+>
+> > > diff --git a/kernel/audit.h b/kernel/audit.h
+> > > index 3b9c0945225a..abcfef58435b 100644
+> > > --- a/kernel/audit.h
+> > > +++ b/kernel/audit.h
+> > > @@ -290,6 +290,13 @@ extern int audit_signal_info_syscall(struct task_struct *t);
+> > >  extern void audit_filter_inodes(struct task_struct *tsk,
+> > >                                 struct audit_context *ctx);
+> > >  extern struct list_head *audit_killed_trees(void);
+> > > +
+> > > +static inline void audit_clear_dummy(struct audit_context *ctx)
+> > > +{
+> > > +       if (ctx)
+> > > +               ctx->dummy = 0;
+> > > +}
+> >
+> > With the only caller being audit_log_start(), should this be moved to
+> > kernel/audit.c?  I'm just not sure this is something we would ever
+> > need (or want) to call from elsewhere, thoughts?
+>
+> Yes, move it, or better yet just open code it.
+
+Sure.  It might also help to put a one-liner comment in there about why.
+
+> > > diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+> > > index 8dba8f0983b5..9d2de93f40b3 100644
+> > > --- a/kernel/auditsc.c
+> > > +++ b/kernel/auditsc.c
+> > > @@ -1367,7 +1368,10 @@ static void audit_log_name(struct audit_context *context, struct audit_names *n,
+> > >                         /* name was specified as a relative path and the
+> > >                          * directory component is the cwd
+> > >                          */
+> > > -                       audit_log_d_path(ab, " name=", &context->pwd);
+> > > +                       if (&context->pwd)
+> >
+> > Hmm, I don't think this is going to work the way you are intending; I
+> > believe this will always evaluate to true regardless of the state of
+> > context->pwd.  If you look elsewhere in kernel/auditsc.c you will see
+> > some examples of checking to see if context->pwd is valid (e.g.
+> > _audit_getcwd() and audit_log_exit()).
+>
+> Sorry for the ctx->pwd.dentry/mnt brainfart, the compiler *did*
+> complain.
+
+That begs the question: why did you submit the patch?  I don't want to
+dwell too much on this, but compilers are pretty smart these days,
+it's best not to ignore their warnings unless you are *really* sure
+you are right.
+
+> > > +                               audit_log_d_path(ab, " name=", &context->pwd);
+> > > +                       else
+> > > +                               audit_log_format(ab, " name=(null)");
+> > >                         break;
+> > >                 default:
+> > >                         /* log the name's directory component */...
+> >
+> > > @@ -2079,6 +2080,7 @@ void __audit_inode(struct filename *name, const struct dentry *dentry,
+> > >         }
+> > >         handle_path(dentry);
+> > >         audit_copy_inode(n, dentry, inode, flags & AUDIT_INODE_NOEVAL);
+> > > +       _audit_getcwd(context);
+> > >  }
+> > >
+> > >  void __audit_file(const struct file *file)
+> > > @@ -2197,6 +2199,7 @@ void __audit_inode_child(struct inode *parent,
+> > >                 audit_copy_inode(found_child, dentry, inode, 0);
+> > >         else
+> > >                 found_child->ino = AUDIT_INO_UNSET;
+> > > +       _audit_getcwd(context);
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(__audit_inode_child);
+> > >
+> > > diff --git a/security/lsm_audit.c b/security/lsm_audit.c
+> > > index 53d0d183db8f..e93077612246 100644
+> > > --- a/security/lsm_audit.c
+> > > +++ b/security/lsm_audit.c
+> > > @@ -369,6 +369,7 @@ static void dump_common_audit_data(struct audit_buffer *ab,
+> > >                                         audit_log_untrustedstring(ab, p);
+> > >                                 else
+> > >                                         audit_log_n_hex(ab, p, len);
+> > > +                               audit_getcwd();
+> > >                                 break;
+> > >                         }
+> > >                 }
+> >
+> > I'm starting to wonder if audit is doing this wrong (it is audit after
+> > all) ... why not just fetch the cwd in audit_log_exit() if there are
+> > entries in the context->names_list?  The only time we care about
+> > logging the working dir is when we actually have PATH records, right?
+> > My initial thinking is that we can simplify a lot of code if we just
+> > add a audit_getcwd() call in audit_log_exit() if the
+> > context->names_list is not empty.  We should even be safe in the task
+> > exit case as the fs info appears to get cleaned up *after*
+> > audit_log_exit() is called.
+>
+> > Assuming we go this route, we can probably get rid of all the
+> > audit_getcwd() calls outside of the audit code (e.g. the lsm_audit.c
+> > code).  I guess we would need to make sure things still behave the
+> > same for chdir(2), getcwd(2), etc. but even if we have to insert one
+> > or two audit_getcwd() calls in that case we should still come out on
+> > top (although I suspect the necessary calls are already being made).
+>
+> Or just open code audit_getcwd() in audit_alloc_name() and kill all
+> audit_getcwd() calls since it is audit_names that is populated as the
+> result of a call to audit_alloc_name().
+>
+> How does this look?: 4 files changed, 9 insertions(+), 33 deletions(-)
+
+It looks like a diffstat ... ?  I'm guessing you meant to copy-n-paste
+a diff here?
+
+-- 
+paul moore
+www.paul-moore.com
