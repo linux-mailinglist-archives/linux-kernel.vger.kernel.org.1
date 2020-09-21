@@ -2,246 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE6A271FC0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8830271FBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726537AbgIUKKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:10:54 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2898 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726326AbgIUKKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 06:10:52 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id 78D01D3B24CC3F853F26;
-        Mon, 21 Sep 2020 11:10:49 +0100 (IST)
-Received: from localhost (10.52.121.13) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 21 Sep
- 2020 11:10:49 +0100
-Date:   Mon, 21 Sep 2020 11:09:10 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Sean V Kelley <sean.v.kelley@intel.com>
-CC:     <bhelgaas@google.com>, <rafael.j.wysocki@intel.com>,
-        <ashok.raj@intel.com>, <tony.luck@intel.com>,
-        <sathyanarayanan.kuppuswamy@intel.com>, <qiuxu.zhuo@intel.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 03/10] PCI/RCEC: Cache RCEC capabilities in
- pci_init_capabilities()
-Message-ID: <20200921110910.0000154b@Huawei.com>
-In-Reply-To: <20200918204603.62100-4-sean.v.kelley@intel.com>
-References: <20200918204603.62100-1-sean.v.kelley@intel.com>
-        <20200918204603.62100-4-sean.v.kelley@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1726477AbgIUKKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:10:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726326AbgIUKKS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 06:10:18 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5495AC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:10:18 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id k15so12080803wrn.10
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:10:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OznM7Zj90HA/meLwT6xmjh0/MDazBDua2xOxd2EKGjo=;
+        b=vTyr7riRcE4Q+14HV6OlpcQ9zIhSsTMK2CdculoW85cBJBcvuQuazBuX0wbPRk5dNl
+         EbrXFTKVZhjK0x2ofqf9oZQmBkw8HJU/Le+h+ptrKNq9IZ3lJ6IazCFUVaQPKgGnFN5T
+         xvj6u0ab7S7ytSvZ8GIr8mal7/Q19klax2H9pwHyUdDP4GFJpUaMap5iMuC+OOuOn6sq
+         02BBzkVPIKhFuQwVwRqwCnE3tMhusB3ftp0Y2w4G1gh/nlAsvn7p+fYG+S9xYTUBqmpy
+         uNGysy5gu9sT7W3Giw31j+eWTJ0gquPQ2jmi7fvcX1smkkaQT1L5oQH2in2rxynUYQ16
+         pe4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OznM7Zj90HA/meLwT6xmjh0/MDazBDua2xOxd2EKGjo=;
+        b=i/rmgtzZxi6SJEhx2pVgqE6QO0WvuEBdLDu/snZjzjTIqlfwPogD7xoubahxkeVGNg
+         ZhRtZskfJPoZd9nAqFJiO/z/KKByKRAjWxYkPyUC7AUgu4FEU1atW5wgtmhV2yFrhEU6
+         PmKm5HaoSlSvr6dkgXT1N+i10fNH4hv1/Pj7xUqESEi0Q/k6Be5zVrYmUqMOc0ahSpig
+         YaQj4wW+T7lKBmmSRKwI4bKnKGOCbZTMJxlCc0M6qgGPh3FfqzAyatiNBKbU5zfMAKJk
+         cBNIM42DWDUzaWnNd8Vkq1gAF2oY61GxC4hRAHk8Pq/RDhXtAJ+BuZy2a/+T3hC0KmIO
+         pmMg==
+X-Gm-Message-State: AOAM531bAGh1FYfou5fD7W4ZI3RYjbp6mxJDkM1y6YcYkARAdO2dXwQb
+        sxhqUObDLonbnNSguasDpDKskrKzyYVCE0FFxudh/w==
+X-Google-Smtp-Source: ABdhPJzUrIJANLo8judLuW+VN+2BAHRIzmARBNaK83S4Ex8J42Bc2MydsNkOqCWF40In3VxFA/iPONssAHeQ++q1Q8M=
+X-Received: by 2002:adf:e312:: with SMTP id b18mr30175280wrj.372.1600683016740;
+ Mon, 21 Sep 2020 03:10:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.121.13]
-X-ClientProxiedBy: lhreml744-chm.china.huawei.com (10.201.108.194) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+References: <00000000000056737105afcff247@google.com>
+In-Reply-To: <00000000000056737105afcff247@google.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Mon, 21 Sep 2020 12:10:05 +0200
+Message-ID: <CAG_fn=VnujTeKg9r+b8VoTGCs4OdwR0eHj0+HHtn5UzePy3EmA@mail.gmail.com>
+Subject: Re: KMSAN: uninit-value in search_by_key
+To:     syzbot <syzbot+d94d02749498bb7bab4b@syzkaller.appspotmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        alex.shi@linux.alibaba.com, jack@suse.cz,
+        LKML <linux-kernel@vger.kernel.org>,
+        reiserfs-devel@vger.kernel.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        yeyunfeng@huawei.com, zhengbin13@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Sep 2020 13:45:56 -0700
-Sean V Kelley <sean.v.kelley@intel.com> wrote:
+On Mon, Sep 21, 2020 at 12:02 PM syzbot
+<syzbot+d94d02749498bb7bab4b@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    c5a13b33 kmsan: clang-format core
+> git tree:       https://github.com/google/kmsan.git master
+> console output: https://syzkaller.appspot.com/x/log.txt?x=173525ab900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=20f149ad694ba4be
+> dashboard link: https://syzkaller.appspot.com/bug?extid=d94d02749498bb7bab4b
+> compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+> userspace arch: i386
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+d94d02749498bb7bab4b@syzkaller.appspotmail.com
+>
+> =====================================================
+> BUG: KMSAN: uninit-value in comp_keys fs/reiserfs/stree.c:83 [inline]
+> BUG: KMSAN: uninit-value in bin_search fs/reiserfs/stree.c:173 [inline]
+> BUG: KMSAN: uninit-value in search_by_key+0x2c57/0x60e0 fs/reiserfs/stree.c:743
+> CPU: 1 PID: 28395 Comm: syz-executor.4 Not tainted 5.9.0-rc4-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x21c/0x280 lib/dump_stack.c:118
+>  kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:122
+>  __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:219
+>  comp_keys fs/reiserfs/stree.c:83 [inline]
+>  bin_search fs/reiserfs/stree.c:173 [inline]
+>  search_by_key+0x2c57/0x60e0 fs/reiserfs/stree.c:743
+>  reiserfs_read_locked_inode+0x1fc/0x3260 fs/reiserfs/inode.c:1561
+>  reiserfs_fill_super+0x2c00/0x6170 fs/reiserfs/super.c:2081
+>  mount_bdev+0x622/0x910 fs/super.c:1417
+>  get_super_block+0xc9/0xe0 fs/reiserfs/super.c:2606
+>  legacy_get_tree+0x163/0x2e0 fs/fs_context.c:592
+>  vfs_get_tree+0xd8/0x5d0 fs/super.c:1547
+>  do_new_mount fs/namespace.c:2875 [inline]
+>  path_mount+0x3d1a/0x5d40 fs/namespace.c:3192
+>  do_mount+0x1c6/0x220 fs/namespace.c:3205
+>  __do_compat_sys_mount fs/compat.c:122 [inline]
+>  __se_compat_sys_mount+0x7b5/0xaa0 fs/compat.c:89
+>  __ia32_compat_sys_mount+0x62/0x80 fs/compat.c:89
+>  do_syscall_32_irqs_on arch/x86/entry/common.c:80 [inline]
+>  __do_fast_syscall_32+0x129/0x180 arch/x86/entry/common.c:139
+>  do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:162
+>  do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:205
+>  entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+> RIP: 0023:0xf7fea549
+> Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
+> RSP: 002b:00000000f55e3f20 EFLAGS: 00000292 ORIG_RAX: 0000000000000015
+> RAX: ffffffffffffffda RBX: 00000000f55e3f7c RCX: 0000000020000100
+> RDX: 0000000020000000 RSI: 0000000000000000 RDI: 00000000f55e3fbc
+> RBP: 00000000f55e3f7c R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+>
+> Local variable ----key@reiserfs_read_locked_inode created at:
+>  reiserfs_read_locked_inode+0xb4/0x3260 fs/reiserfs/inode.c:1544
+>  reiserfs_read_locked_inode+0xb4/0x3260 fs/reiserfs/inode.c:1544
+> =====================================================
+>
 
-> Extend support for Root Complex Event Collectors by decoding and
-> caching the RCEC Endpoint Association Extended Capabilities when
-> enumerating. Use that cached information for later error source
-> reporting. See PCI Express Base Specification, version 5.0-1,
-> section 7.9.10.
-> 
-> Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
-> Co-developed-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
-
-Hi Sean,
-
-A few comments inline.
-
-Thanks,
-
-Jonathan
-
-> ---
->  drivers/pci/pci.h         | 18 ++++++++++++++
->  drivers/pci/pcie/Makefile |  2 +-
->  drivers/pci/pcie/rcec.c   | 52 +++++++++++++++++++++++++++++++++++++++
->  drivers/pci/probe.c       |  3 ++-
->  include/linux/pci.h       |  4 +++
->  5 files changed, 77 insertions(+), 2 deletions(-)
->  create mode 100644 drivers/pci/pcie/rcec.c
-> 
-> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> index fa12f7cbc1a0..83670a6425d8 100644
-> --- a/drivers/pci/pci.h
-> +++ b/drivers/pci/pci.h
-> @@ -449,6 +449,16 @@ int aer_get_device_error_info(struct pci_dev *dev, struct aer_err_info *info);
->  void aer_print_error(struct pci_dev *dev, struct aer_err_info *info);
->  #endif	/* CONFIG_PCIEAER */
->  
-> +#ifdef CONFIG_PCIEPORTBUS
-> +/* Cached RCEC Associated Endpoint Extended Capabilities */
-> +struct rcec_ext {
-> +	u8		ver;
-> +	u8		nextbusn;
-> +	u8		lastbusn;
-> +	u32		bitmap;
-> +};
-> +#endif
-> +
->  #ifdef CONFIG_PCIE_DPC
->  void pci_save_dpc_state(struct pci_dev *dev);
->  void pci_restore_dpc_state(struct pci_dev *dev);
-> @@ -461,6 +471,14 @@ static inline void pci_restore_dpc_state(struct pci_dev *dev) {}
->  static inline void pci_dpc_init(struct pci_dev *pdev) {}
->  #endif
->  
-> +#ifdef CONFIG_PCIEPORTBUS
-> +void pci_rcec_init(struct pci_dev *dev);
-> +void pci_rcec_exit(struct pci_dev *dev);
-> +#else
-> +static inline void pci_rcec_init(struct pci_dev *dev) {}
-> +static inline void pci_rcec_exit(struct pci_dev *dev) {}
-> +#endif
-> +
->  #ifdef CONFIG_PCI_ATS
->  /* Address Translation Service */
->  void pci_ats_init(struct pci_dev *dev);
-> diff --git a/drivers/pci/pcie/Makefile b/drivers/pci/pcie/Makefile
-> index 68da9280ff11..d9697892fa3e 100644
-> --- a/drivers/pci/pcie/Makefile
-> +++ b/drivers/pci/pcie/Makefile
-> @@ -2,7 +2,7 @@
->  #
->  # Makefile for PCI Express features and port driver
->  
-> -pcieportdrv-y			:= portdrv_core.o portdrv_pci.o err.o
-> +pcieportdrv-y			:= portdrv_core.o portdrv_pci.o err.o rcec.o
->  
->  obj-$(CONFIG_PCIEPORTBUS)	+= pcieportdrv.o
->  
-> diff --git a/drivers/pci/pcie/rcec.c b/drivers/pci/pcie/rcec.c
-> new file mode 100644
-> index 000000000000..519ae086ff41
-> --- /dev/null
-> +++ b/drivers/pci/pcie/rcec.c
-> @@ -0,0 +1,52 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Root Complex Event Collector Support
-> + *
-> + * Authors:
-> + *  Sean V Kelley <sean.v.kelley@intel.com>
-> + *  Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> + *
-> + * Copyright (C) 2020 Intel Corp.
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/errno.h>
-
-I guess it might come in during later patches, but I can't see any
-use of errno.h in here.  If it does, good to introduce the header
-in the patch where it becomes relevant.
-
-> +#include <linux/bitops.h>
-No obvious use of bitops.h either.
-
-> +#include <linux/pci.h>
-> +#include <linux/pci_regs.h>
-> +
-> +#include "../pci.h"
-> +
-> +void pci_rcec_init(struct pci_dev *dev)
-> +{
-> +	u32 rcec, hdr, busn;
-> +
-> +	/* Only for Root Complex Event Collectors */
-> +	if (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_EC)
-> +		return;
-> +
-> +	dev->rcec_cap = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_RCEC);
-> +	if (!dev->rcec_cap)
-> +		return;
-> +
-> +	dev->rcec_ext = kzalloc(sizeof(*dev->rcec_ext), GFP_KERNEL);
-> +
-> +	rcec = dev->rcec_cap;
-> +	pci_read_config_dword(dev, rcec + PCI_RCEC_RCIEP_BITMAP, &dev->rcec_ext->bitmap);
-
-Given number of uses of dev->rcec_ext perhaps worth a local variable for
-readability?
-
-> +
-> +	/* Check whether RCEC BUSN register is present */
-> +	pci_read_config_dword(dev, rcec, &hdr);
-> +	dev->rcec_ext->ver = PCI_EXT_CAP_VER(hdr);
-> +	if (dev->rcec_ext->ver < PCI_RCEC_BUSN_REG_VER)
-> +		return;
-
-As there are values for nextbusn and lastbusn defined to mean
-that there are no additional bus numbers, could we just fill them
-in with dummy values for the case of the capability version being
-too old? I think it ends up representing the same thing as them not
-being there at all?
-
-nextbusn = 0xFF
-lastbusn = 0 (set by kzalloc anyway).
-
-> +
-> +	pci_read_config_dword(dev, rcec + PCI_RCEC_BUSN, &busn);
-> +	dev->rcec_ext->nextbusn = PCI_RCEC_BUSN_NEXT(busn);
-> +	dev->rcec_ext->lastbusn = PCI_RCEC_BUSN_LAST(busn);
-> +}
-> +
-> +void pci_rcec_exit(struct pci_dev *dev)
-> +{
-> +	kfree(dev->rcec_ext);
-> +	dev->rcec_ext = NULL;
-> +}
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index 03d37128a24f..16bc651fecb7 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -2201,6 +2201,7 @@ static void pci_configure_device(struct pci_dev *dev)
->  static void pci_release_capabilities(struct pci_dev *dev)
->  {
->  	pci_aer_exit(dev);
-> +	pci_rcec_exit(dev);
->  	pci_vpd_release(dev);
->  	pci_iov_release(dev);
->  	pci_free_cap_save_buffers(dev);
-> @@ -2400,7 +2401,7 @@ static void pci_init_capabilities(struct pci_dev *dev)
->  	pci_ptm_init(dev);		/* Precision Time Measurement */
->  	pci_aer_init(dev);		/* Advanced Error Reporting */
->  	pci_dpc_init(dev);		/* Downstream Port Containment */
-> -
-> +	pci_rcec_init(dev);		/* Root Complex Event Collector */
-
-Nice to avoid changing the layout and leave a blank line here.
-Slightly reduces noise in the diff as well!
-
->  	pcie_report_downtraining(dev);
->  
->  	if (pci_probe_reset_function(dev) == 0)
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index 835530605c0d..5c5c4eb642b6 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -326,6 +326,10 @@ struct pci_dev {
->  #ifdef CONFIG_PCIEAER
->  	u16		aer_cap;	/* AER capability offset */
->  	struct aer_stats *aer_stats;	/* AER stats for this device */
-> +#endif
-> +#ifdef CONFIG_PCIEPORTBUS
-> +	u16		rcec_cap;	/* RCEC capability offset */
-> +	struct rcec_ext *rcec_ext;	/* RCEC cached assoc. endpoint extended capabilities */
->  #endif
->  	u8		pcie_cap;	/* PCIe capability offset */
->  	u8		msi_cap;	/* MSI capability offset */
-
-
+Looks like reiserfs_read_locked_inode() fails to initialize cpu_key->key_length.
+Could someone please take a look?
