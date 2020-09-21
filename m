@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC84272C98
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F032D272DF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728635AbgIUQd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:33:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59010 "EHLO mail.kernel.org"
+        id S1729458AbgIUQok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:44:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49188 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728571AbgIUQdH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:33:07 -0400
+        id S1728717AbgIUQoG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:44:06 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C218223998;
-        Mon, 21 Sep 2020 16:33:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8B09323976;
+        Mon, 21 Sep 2020 16:44:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600705986;
-        bh=ZnMOBF5X9pk7vKlo2wALEivGY4W8rWnFNiX4BpkSnLs=;
+        s=default; t=1600706646;
+        bh=t6H5X8XX6SfHijtEEzog3XAQ0+0M39J0cU6lotvOWA4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XcNX6QFm4pxOjoXlOy9UkrMIGLkzmygPI8Ftt663W8Ss3Lhp1IzUvchwXj1gVLhp0
-         uRR3Vfd4A8lL8a2j0dDLtLOwgZD18xsOLbs5WEX52ocXwnxnTtIb7RKpGGJzOrWvnx
-         uOtITsHLGFjzlGNC4VlKYHdIfRRF9CKzOt3e6jVc=
+        b=h0EufIab7Z1bZSM6Af8Jz/2PrS6+5K7uvN9APw/XXzg9srpYEQJn5gkZo4DfpfKWZ
+         wAUeZ41Z39gpKk7+HrXoku7BN9NScZhViU/TwUsguAU3zNYp41ovZ2M7X95FYAHtul
+         HhuQLXWAeq7eFOe+JgGXSYYQop8MKIa3nNuSMYsY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Stable@vger.kernel.org
-Subject: [PATCH 4.4 12/46] iio:light:ltr501 Fix timestamp alignment issue.
-Date:   Mon, 21 Sep 2020 18:27:28 +0200
-Message-Id: <20200921162033.923131993@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 037/118] clk: rockchip: Fix initialization of mux_pll_src_4plls_p
+Date:   Mon, 21 Sep 2020 18:27:29 +0200
+Message-Id: <20200921162038.016330775@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162033.346434578@linuxfoundation.org>
-References: <20200921162033.346434578@linuxfoundation.org>
+In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
+References: <20200921162036.324813383@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,79 +45,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Nathan Chancellor <natechancellor@gmail.com>
 
-commit 2684d5003490df5398aeafe2592ba9d4a4653998 upstream.
+[ Upstream commit e9c006bc782c488f485ffe50de20b44e1e3daa18 ]
 
-One of a class of bugs pointed out by Lars in a recent review.
-iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
-to the size of the timestamp (8 bytes).  This is not guaranteed in
-this driver which uses an array of smaller elements on the stack.
-Here we use a structure on the stack.  The driver already did an
-explicit memset so no data leak was possible.
+A new warning in Clang points out that the initialization of
+mux_pll_src_4plls_p appears incorrect:
 
-Forced alignment of ts is not strictly necessary but probably makes
-the code slightly less fragile.
+../drivers/clk/rockchip/clk-rk3228.c:140:58: warning: suspicious
+concatenation of string literals in an array initialization; did you
+mean to separate the elements with a comma? [-Wstring-concatenation]
+PNAME(mux_pll_src_4plls_p)      = { "cpll", "gpll", "hdmiphy" "usb480m" };
+                                                              ^
+                                                             ,
+../drivers/clk/rockchip/clk-rk3228.c:140:48: note: place parentheses
+around the string literal to silence warning
+PNAME(mux_pll_src_4plls_p)      = { "cpll", "gpll", "hdmiphy" "usb480m" };
+                                                    ^
+1 warning generated.
 
-Note there has been some rework in this driver of the years, so no
-way this will apply cleanly all the way back.
+Given the name of the variable and the same variable name in rv1108, it
+seems that this should have been four distinct elements. Fix it up by
+adding the comma as suggested.
 
-Fixes: 2690be905123 ("iio: Add Lite-On ltr501 ambient light / proximity sensor driver")
-Reported-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 307a2e9ac524 ("clk: rockchip: add clock controller for rk3228")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1123
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Link: https://lore.kernel.org/r/20200810044020.2063350-1-natechancellor@gmail.com
+Reviewed-by: Heiko Stübner <heiko@sntech.de>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/light/ltr501.c |   15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ drivers/clk/rockchip/clk-rk3228.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/iio/light/ltr501.c
-+++ b/drivers/iio/light/ltr501.c
-@@ -1218,13 +1218,16 @@ static irqreturn_t ltr501_trigger_handle
- 	struct iio_poll_func *pf = p;
- 	struct iio_dev *indio_dev = pf->indio_dev;
- 	struct ltr501_data *data = iio_priv(indio_dev);
--	u16 buf[8];
-+	struct {
-+		u16 channels[3];
-+		s64 ts __aligned(8);
-+	} scan;
- 	__le16 als_buf[2];
- 	u8 mask = 0;
- 	int j = 0;
- 	int ret, psdata;
+diff --git a/drivers/clk/rockchip/clk-rk3228.c b/drivers/clk/rockchip/clk-rk3228.c
+index d7243c09cc843..47d6482dda9df 100644
+--- a/drivers/clk/rockchip/clk-rk3228.c
++++ b/drivers/clk/rockchip/clk-rk3228.c
+@@ -137,7 +137,7 @@ PNAME(mux_usb480m_p)		= { "usb480m_phy", "xin24m" };
+ PNAME(mux_hdmiphy_p)		= { "hdmiphy_phy", "xin24m" };
+ PNAME(mux_aclk_cpu_src_p)	= { "cpll_aclk_cpu", "gpll_aclk_cpu", "hdmiphy_aclk_cpu" };
  
--	memset(buf, 0, sizeof(buf));
-+	memset(&scan, 0, sizeof(scan));
- 
- 	/* figure out which data needs to be ready */
- 	if (test_bit(0, indio_dev->active_scan_mask) ||
-@@ -1243,9 +1246,9 @@ static irqreturn_t ltr501_trigger_handle
- 		if (ret < 0)
- 			return ret;
- 		if (test_bit(0, indio_dev->active_scan_mask))
--			buf[j++] = le16_to_cpu(als_buf[1]);
-+			scan.channels[j++] = le16_to_cpu(als_buf[1]);
- 		if (test_bit(1, indio_dev->active_scan_mask))
--			buf[j++] = le16_to_cpu(als_buf[0]);
-+			scan.channels[j++] = le16_to_cpu(als_buf[0]);
- 	}
- 
- 	if (mask & LTR501_STATUS_PS_RDY) {
-@@ -1253,10 +1256,10 @@ static irqreturn_t ltr501_trigger_handle
- 				       &psdata, 2);
- 		if (ret < 0)
- 			goto done;
--		buf[j++] = psdata & LTR501_PS_DATA_MASK;
-+		scan.channels[j++] = psdata & LTR501_PS_DATA_MASK;
- 	}
- 
--	iio_push_to_buffers_with_timestamp(indio_dev, buf, iio_get_time_ns());
-+	iio_push_to_buffers_with_timestamp(indio_dev, &scan, iio_get_time_ns());
- 
- done:
- 	iio_trigger_notify_done(indio_dev->trig);
+-PNAME(mux_pll_src_4plls_p)	= { "cpll", "gpll", "hdmiphy" "usb480m" };
++PNAME(mux_pll_src_4plls_p)	= { "cpll", "gpll", "hdmiphy", "usb480m" };
+ PNAME(mux_pll_src_3plls_p)	= { "cpll", "gpll", "hdmiphy" };
+ PNAME(mux_pll_src_2plls_p)	= { "cpll", "gpll" };
+ PNAME(mux_sclk_hdmi_cec_p)	= { "cpll", "gpll", "xin24m" };
+-- 
+2.25.1
+
 
 
