@@ -2,47 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EBDF2730C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:18:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0342730A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727768AbgIURSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 13:18:15 -0400
-Received: from interkad.alt.ru ([80.247.111.66]:12770 "EHLO interkad.alt.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726419AbgIURSO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 13:18:14 -0400
-X-Greylist: delayed 724 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Sep 2020 13:17:49 EDT
-Received: from User ([41.215.171.206] RDNS failed) by interkad.alt.ru with Microsoft SMTPSVC(6.0.3790.3959);
-         Tue, 22 Sep 2020 00:05:35 +0700
-Reply-To: <smithosdouga@gmail.com>
-From:   "Douglas" <smithdougaa@gmail.com>
-Subject: Re: Abandoned Consignments/Boxes
-Date:   Mon, 21 Sep 2020 10:05:48 -0700
+        id S1728917AbgIURG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 13:06:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728354AbgIURGJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 13:06:09 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92F86C061755;
+        Mon, 21 Sep 2020 10:06:08 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id y17so14859848lfa.8;
+        Mon, 21 Sep 2020 10:06:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=8wJgx44R5NKEt8ZxeLzaDEWfeS0v7G2Y9ErgN5IEyXg=;
+        b=mNzQWgo+B1fYnaeTLARkCvewjZg9HcnUglJrVlEkdaZTsCBIwUdVhKu5NsKRipjeQl
+         +1Wb3BXlWXspQ2UTLhPpdoU9WPdPtcVRDOjY1+OHzOIPtdUKC3zdTjFu8H9kkPgrxw7z
+         2EcpQhxo/HWFLZuFnAdTDEcWg9CAwLZU8KXlDofQqam3nJYziheaG1pj/UunWc8rNMio
+         abvFCVFfgLLT6dMxNQacRIhRtFiYHhHIcjWuS6yhs3ZjH87yQMtBVelNSq13ro/Zai38
+         0fqd0ADEiyc4SFMVvin6lcxWOWmCnUl5oWu34M0fJozt9u0cvg2ZG8TIraFXcnL3jIhu
+         UqCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=8wJgx44R5NKEt8ZxeLzaDEWfeS0v7G2Y9ErgN5IEyXg=;
+        b=ImdNeu/+gTIFGFIWnvlWdT900xsOdn5gtRcK6U6KkjL2KU42O+fOS5XRPWbTmHfaqM
+         SDJ9ontHUJW9yIoa3CaQMPtGE0mocQPSIx/YxKWgFEf9p9eNArt5cKmju+DIcT9lU+4R
+         WoiNDkmq8/FC4R/I+lGboQupSPKusd0PRur2hVhlwaCD3+BQcapubwXlT5H0hXH1KZQF
+         nMmysmQ0rKnFElre5FYsKx3osaX/5w+JMTkLD6WrCNqvDC19gGFeup2+FH60q8iKeFj5
+         6KQf7PsNQkxU8C4K3greU7G1WwfZnEEpjX3AZjFDGf664I07W6HVZosDu28oJ+8azLyr
+         UTbg==
+X-Gm-Message-State: AOAM5315uD3b/Ha97QF8AJR8BbrWLunnCXmX/G0fzqhm3Y9k9XUqrpW6
+        HOma+hBQhcwSqeaHNKp+pjpz1m6J/wDnqp7EtaE=
+X-Google-Smtp-Source: ABdhPJy8Jx5FwPowb4x2/95hAu/YP49gaxE6kf58oAxWBlMcnqfEtK51ywXCEko0zW0B8PeMXMJkQu5o+HuhTqI2OmY=
+X-Received: by 2002:a19:820c:: with SMTP id e12mr262729lfd.215.1600707966915;
+ Mon, 21 Sep 2020 10:06:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-ID: <INTER-FW9YDXXhbbqZn0000802e@interkad.alt.ru>
-X-OriginalArrivalTime: 21 Sep 2020 17:05:36.0354 (UTC) FILETIME=[6C997420:01D69039]
-To:     unlisted-recipients:; (no To-header on input)
+References: <cover.1600707235.git.agx@sigxcpu.org> <71a9108f3472ba9af4bead01b1b770d1e73eb08e.1600707235.git.agx@sigxcpu.org>
+In-Reply-To: <71a9108f3472ba9af4bead01b1b770d1e73eb08e.1600707235.git.agx@sigxcpu.org>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Mon, 21 Sep 2020 14:05:55 -0300
+Message-ID: <CAOMZO5B5ECcConvKej=RcaF8wvOxgq7nUzKJ-ad0aSAOzUqtbQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 3/3] dt-binding: display: Require two rests on
+ mantix panel
+To:     =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello a Request For Partnership.
-I am particularly happy dealing with a person of your caliber who knows what international business is all about. This business is purely base on trust and it's 100% risk free business and I understand your willingness to assist me in actualizing this deal. As I told you in my first email, all I need from you is a confirmation that you can handle this deal in question, and then all the details will be given to you as we progress. My name is Mr.Douglas Smith, a Vault Manager with a Private Security Firm in Ghana. Having worked with this security company for the past 18 Years with dedication and having nothing to write home about. Hence I have to package this deal for our betterment.
+Hi Guido,
 
-There is this UNCLAIMED Consignments/Boxes Deposited in our Company's Vault for the past 15 years ago, and nobody has ever shown up for the claims and collection till date. Having made inquiry and investigation why these Consignments/Boxes has not been claimed by their depositors/Owners,only discovered they are late/dead for the past 10 year ago, no forwarding contact Addresses of these late depositors/Owners and every effort to locate any of their surviving relatives or close family members proof abortive.
+On Mon, Sep 21, 2020 at 1:56 PM Guido G=C3=BCnther <agx@sigxcpu.org> wrote:
+>
+> We need to reset both for the panel to show an image.
 
-Just few Months ago, the Management and board of directors of our company met and resolved to dispose All Unclaimed Consignments/Boxes that has exceeded the period of 9-10 years without their depositors coming for claims and collection be dislodged from the Vault and disposed, So as to create space to accommodate incoming Deposit. Actually, Many Consignments where dislodged from the Vault for disposal but being the Vault Manager, I decided to checkmate and to know the true contents of these boxes/consignments. After scanning these few Consignments electronically, I discovered their contents to be fiscal cash running into Millions of United States of American Dollars in $100 dollars bills/notes.
-
-It may interest you to note that none of the staff or management of our company know anything relating to this development till date, I contacted you believing that you could be of a great assistance and help me to legally secure and claim these Trunk Boxes from our company for collection and further delivery to your country. While I shall join you in your country immediately after the collection and delivery is madeto your country where I shall meet you for the Disbursement/Sharing of the proceeds of the Consignments/ Boxes  50% / 50% with you.
-
-Should you need to see the copies of the deposit Documents covering these Boxes issued to the late depositor by the management of our company, I will not hesitate to present them to your perusal and study. Kindly forward your full contact Address, direct Telephone, cell phone and fax numbers known to me. I can guarantee you that if only you give me a chance and corporate with me within the next fourteen (14) working days from today the consignment will be released and delivered to your doorstep in your country. I know how to handle this and immediately after the completion of this transaction I will personally destroy and delete every information leading to the completion of this transaction this is to assure you that I will not leave any traces.
-Best Regards.
-Douglas Smith.
-Vaul Manager.
+There is a typo in "resets" in the Subject line.
