@@ -2,49 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EDBC2733D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 22:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E65D72733DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 22:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728092AbgIUUtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 16:49:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726471AbgIUUtY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 16:49:24 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF326C061755;
-        Mon, 21 Sep 2020 13:49:24 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 505DD11E49F60;
-        Mon, 21 Sep 2020 13:32:37 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 13:49:23 -0700 (PDT)
-Message-Id: <20200921.134923.529028427401826879.davem@davemloft.net>
-To:     miaoqinglang@huawei.com
-Cc:     vishal@chelsio.com, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] chelsio: simplify the return expression of
- t3_ael2020_phy_prep()
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200921131005.91054-1-miaoqinglang@huawei.com>
-References: <20200921131005.91054-1-miaoqinglang@huawei.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Mon, 21 Sep 2020 13:32:37 -0700 (PDT)
+        id S1727113AbgIUUua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 16:50:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55928 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726427AbgIUUua (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 16:50:30 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.191])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 83C24216C4;
+        Mon, 21 Sep 2020 20:50:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600721429;
+        bh=597brXyKYL9knRl5IXCbOkwWT5omN1r2wldc4AeP01U=;
+        h=From:To:Subject:Date:From;
+        b=BzSIY24V5jzxPB3N1CYINObIL3OJfd86izbjWTwoq2NXiuBa73dXq8JeJYjr52I4W
+         dliiYx+ltUkvOvmSWqMCnJ1KVYIJL0WbE+eVv7ekpf+hkEE1Ftp239JMEFKWmr3pxR
+         9luKEPfvy+Tne5gwf9cABPAKIbFoZKAkInkKoH8Q=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Milo Kim <milo.kim@ti.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sangbeom Kim <sbkim73@samsung.com>,
+        Tony Lindgren <tony@atomide.com>,
+        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org
+Subject: [PATCH 01/42] mfd: arizona: use PLATFORM_DEVID_NONE
+Date:   Mon, 21 Sep 2020 22:49:35 +0200
+Message-Id: <20200921205016.20461-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qinglang Miao <miaoqinglang@huawei.com>
-Date: Mon, 21 Sep 2020 21:10:05 +0800
+Use PLATFORM_DEVID_NONE define instead of "-1" value because:
+ - it brings some meaning,
+ - it might point attention why auto device ID was not used.
 
-> Simplify the return expression.
-> 
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ drivers/mfd/arizona-core.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Applied.
+diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
+index 000cb82023e3..bf48372db605 100644
+--- a/drivers/mfd/arizona-core.c
++++ b/drivers/mfd/arizona-core.c
+@@ -1043,8 +1043,9 @@ int arizona_dev_init(struct arizona *arizona)
+ 	case CS47L24:
+ 		break; /* No LDO1 regulator */
+ 	default:
+-		ret = mfd_add_devices(arizona->dev, -1, early_devs,
+-				      ARRAY_SIZE(early_devs), NULL, 0, NULL);
++		ret = mfd_add_devices(arizona->dev, PLATFORM_DEVID_NONE,
++				      early_devs, ARRAY_SIZE(early_devs),
++				      NULL, 0, NULL);
+ 		if (ret != 0) {
+ 			dev_err(dev, "Failed to add early children: %d\n", ret);
+ 			return ret;
+-- 
+2.17.1
+
