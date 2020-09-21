@@ -2,98 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 937392725F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:44:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCD762725F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:44:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727370AbgIUNoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:44:22 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:26200 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726641AbgIUNoV (ORCPT
+        id S1727355AbgIUNoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:44:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727339AbgIUNn7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:44:21 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08LDVlvQ137138;
-        Mon, 21 Sep 2020 09:43:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type; s=pp1; bh=id9rJErrcsnFHTNf15KR9DYs+NEq1DNwc5GOafgjtyA=;
- b=NQD/UR4MyXTIbT/tRs/cCzgBLdG/YmIyTliRnQcU/th9cDh3Ps1FpRhxwzlRooNjC9Gy
- AoIAB5FvNEhgbJ2gd2H/ekWDcQUfSnFKx3hx3od8BgbxT6u08AZtU35yNH9FwQewTpOh
- zHKTnlu+M10sbkfyYD8kcNtolKmmu4a4mkyPB/t8B90miTTei9J7IGn4djv8aPIofnLA
- GDCIjkQR7iXtjEesojLS4jm+Se59DCxtVkOujxBAGLVgEPuUt5CRVIsf2DLF/+JmQEOY
- VxWalV+GAtM32khwJcXD6XXZ7+0xQvai6GZ+rTY0UDyYfCmTaS2Su+hgwOc2BAa27Sca 3g== 
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33pvvv8yqw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Sep 2020 09:43:54 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08LDh6qS003646;
-        Mon, 21 Sep 2020 13:43:53 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma02dal.us.ibm.com with ESMTP id 33n9m8udkm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Sep 2020 13:43:53 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08LDhqBQ22151560
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 21 Sep 2020 13:43:53 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DED95112062;
-        Mon, 21 Sep 2020 13:43:52 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A9BA1112061;
-        Mon, 21 Sep 2020 13:43:51 +0000 (GMT)
-Received: from localhost (unknown [9.85.203.227])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTPS;
-        Mon, 21 Sep 2020 13:43:51 +0000 (GMT)
-From:   Fabiano Rosas <farosas@linux.ibm.com>
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>, paulus@ozlabs.org,
-        mpe@ellerman.id.au, benh@kernel.crashing.org
-Cc:     kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, jingxiangfeng@huawei.com
-Subject: Re: [PATCH] KVM: PPC: Book3S: Remove redundant initialization of variable ret
-In-Reply-To: <20200919071230.125798-1-jingxiangfeng@huawei.com>
-References: <20200919071230.125798-1-jingxiangfeng@huawei.com>
-Date:   Mon, 21 Sep 2020 10:43:48 -0300
-Message-ID: <87o8lzp7mz.fsf@linux.ibm.com>
+        Mon, 21 Sep 2020 09:43:59 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D1E1C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 06:43:59 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id w5so12820453wrp.8
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 06:43:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PKSAlhSQ9Eh6fSSb1EiKiqDta1PeLzDdGDQlo2aRDw4=;
+        b=PBzsm4CksVIWOwAwH9jC9VQ6MVHjGCDUXFV+y2ttxej8Xuexc6+aKCDyieHrP+XQ6r
+         YXLZHVgtFM8leGT+Gsel61/uWf0Zz/wLwz3EmVcnWB/uk9xw8cvoNZaosyrBcTp6czSn
+         /b4Kqxzo8vqQjA0Gd0WuUt4yNtDcFnoQJXKIHUnGTRPNaWBYlmiRZZkRM40+F6e2Kd1O
+         Oxp/yRU5neltD3kropbYH+zuooXNi8ijWFjVPt38BkmsMGO6oVGBF6Y9lsgGrSZvGwyz
+         8KC52eHwemtmteuByjnIXT6hLwiRh0KKiS6+e8vHDDy7qRkjVf0IOiYsgsfzk2x+eQys
+         xQdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PKSAlhSQ9Eh6fSSb1EiKiqDta1PeLzDdGDQlo2aRDw4=;
+        b=GtlbL5fj5gJruznFLgBNaDzjHcMm93WFYiX5m5wKRB1nZqz2kjVzET9ItX1zMoFByl
+         zWbV0P/18Uy7Cn8puuFGtmi6165cX9MrXzJ6yLcWdT11w4ZdAZz2LYQt3nMaamQNuMCl
+         KuBy19NPHtooEOaRosIESWr0HFs/PEDu0gLtsuicsA9VQ42fKSmgc5eiUluTpXPA75QR
+         kZYeDNKKIz0GO2BPcv3aBKEZOTjTeGodEgK+2rHzRrRGsHDhVBe14V7JCds1G/WoaB5e
+         h3lOKjlwMe5XqvvMZJBZCVyHK6GcTm2WxpQKWlZVIS3Rg+NbSvkwiIfcA99x9MCD0vhF
+         q+QA==
+X-Gm-Message-State: AOAM532x7dO8dR3AnGNp5TTzvyKjBRhdchSLYvN87FgMgSdZ+gLTE2qE
+        dBtYe61VAuljyTgTAAXliWKEMw==
+X-Google-Smtp-Source: ABdhPJz+M60dQM2XcDdmSU16x2fFPZSTR+TQAMTpZYcbvWrpRI6wunJ1bR4T+xWDSV5N+1CvR8M6oA==
+X-Received: by 2002:adf:cf01:: with SMTP id o1mr53523006wrj.421.1600695837833;
+        Mon, 21 Sep 2020 06:43:57 -0700 (PDT)
+Received: from google.com ([2a01:4b00:8523:2d03:e5b6:fa6a:5f89:97d3])
+        by smtp.gmail.com with ESMTPSA id q4sm20497820wru.65.2020.09.21.06.43.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 06:43:57 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 14:43:55 +0100
+From:   David Brazdil <dbrazdil@google.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     kvmarm@lists.cs.columbia.edu,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, Andrew Scull <ascull@google.com>
+Subject: Re: [PATCH v3 04/11] kvm: arm64: Remove __hyp_this_cpu_read
+Message-ID: <20200921134355.5lzma3qzyiexxepd@google.com>
+References: <20200916173439.32265-1-dbrazdil@google.com>
+ <20200916173439.32265-5-dbrazdil@google.com>
+ <20200918090029.GC30834@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-21_05:2020-09-21,2020-09-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- mlxlogscore=999 spamscore=0 malwarescore=0 impostorscore=0
- priorityscore=1501 adultscore=0 bulkscore=0 clxscore=1011 phishscore=0
- mlxscore=0 suspectscore=1 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009210093
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200918090029.GC30834@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jing Xiangfeng <jingxiangfeng@huawei.com> writes:
+Hi Will,
 
-> The variable ret is being initialized with '-ENOMEM' that is meaningless.
-> So remove it.
->
-> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+> > +static inline unsigned long __hyp_my_cpu_offset(void)
+> > +{
+> > +	unsigned long off;
+> > +
+> > +	/*
+> > +	 * We want to allow caching the value, so avoid using volatile and
+> > +	 * instead use a fake stack read to hazard against barrier().
+> > +	 */
+> 
+> I don't think we need to copy/paste the comment...
+> 
+> > +	asm("mrs %0, tpidr_el2" : "=r" (off) :
+> > +		"Q" (*(const unsigned long *)current_stack_pointer));
+> 
+> ... especially given that we're not preemptible at EL2 with nVHE, maybe
+> we don't need to play this trick at all because we're always going to be
+> on the same CPU. So we could actually just do:
+> 
+> 	return read_sysreg(tpidr_el2);
+> 
+> which is much better, and the comment should say something to that effect.
 
-Reviewed-by: Fabiano Rosas <farosas@linux.ibm.com>
+I must be misinterpreting the comment. I understood that it enables the compiler
+optimizing multiple reads of TPIDR by avoiding 'asm volatile' (signaling that
+the value does not change between reads). So what exactly does it do?
 
-> ---
->  arch/powerpc/kvm/book3s_64_vio.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/powerpc/kvm/book3s_64_vio.c b/arch/powerpc/kvm/book3s_64_vio.c
-> index 1a529df0ab44..b277a75cd1be 100644
-> --- a/arch/powerpc/kvm/book3s_64_vio.c
-> +++ b/arch/powerpc/kvm/book3s_64_vio.c
-> @@ -283,7 +283,7 @@ long kvm_vm_ioctl_create_spapr_tce(struct kvm *kvm,
->  	struct kvmppc_spapr_tce_table *siter;
->  	struct mm_struct *mm = kvm->mm;
->  	unsigned long npages, size = args->size;
-> -	int ret = -ENOMEM;
-> +	int ret;
->
->  	if (!args->size || args->page_shift < 12 || args->page_shift > 34 ||
->  		(args->offset + args->size > (ULLONG_MAX >> args->page_shift)))
+read_sysreg expands to 'asm volatile' but I have no problem with priotizing
+readability over a micro-optimization.
+
+> > +#if defined(__KVM_NVHE_HYPERVISOR__) || defined(__KVM_VHE_HYPERVISOR__)
+> > +#define __my_cpu_offset __hyp_my_cpu_offset()
+> 
+> Why would VHE code need to use this? Especially in light of my preemption
+> comments above, shouldn't it now be using __kern_my_cpu_offset()?
+
+During v2 review Andrew Scull pointed out we can avoid alternatives on VHE code
+by using __hyp_my_cpu_offset for it as well. Obviously if __hyp_my_cpu_offset
+becomes nVHE-specific, we can always move VHE back to __kern. This was just
+about saving a few cycles during boot.
+
+David
