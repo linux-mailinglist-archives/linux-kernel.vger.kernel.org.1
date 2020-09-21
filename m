@@ -2,40 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B3A272F0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E11A2272FA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:59:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729598AbgIUQqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:46:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52046 "EHLO mail.kernel.org"
+        id S1730119AbgIUQ6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:58:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728448AbgIUQp4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:45:56 -0400
+        id S1728952AbgIUQll (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:41:41 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5ACCE2223E;
-        Mon, 21 Sep 2020 16:45:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C5CBE235F9;
+        Mon, 21 Sep 2020 16:41:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706755;
-        bh=awV9qEtlN3RW3XQCr+gKb4y+X76hYG80ePS0CIgFqHk=;
+        s=default; t=1600706500;
+        bh=Nz4n7y5tVBMacRjzpmWhoY0JWGL8SRcYrc+5EGfCeKc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SzPBO90htO4b2Yj5STRZbP6LMz1QF9HRTL1/vj8sNNcX6CpXfVgFF/HA+4/Kp3z0o
-         bASsH9EbQeNkklGOuhAy+8BPjshkp8uvPiMgse2MFHykOKKk4CaLdFuT14aq95U/nu
-         YVFGZJhOHo4tJjZ/pnHlnG8xtzl65lINr44VneR0=
+        b=MazVnHz16uVARxH3Q2k79RaNklikQod80UYzG3lwEwSVh79RvmD2mCuwhC05R1TBc
+         yimn9LqE7Qjmwbg8txDv8qjj3rwJT2ASB1R2Kvvgmt3NH3B9H40lCvdaB/MtVKie0/
+         ZOhO43jeZxzD/X1rUIfs8dB4fO5oZdLUNicJ7yEg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hou Tao <houtao1@huawei.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 081/118] locking/percpu-rwsem: Use this_cpu_{inc,dec}() for read_count
-Date:   Mon, 21 Sep 2020 18:28:13 +0200
-Message-Id: <20200921162040.097611100@linuxfoundation.org>
+        stable@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Wang Nan <wangnan0@huawei.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 30/49] perf test: Fix the "signal" test inline assembly
+Date:   Mon, 21 Sep 2020 18:28:14 +0200
+Message-Id: <20200921162035.985776275@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
-References: <20200921162036.324813383@linuxfoundation.org>
+In-Reply-To: <20200921162034.660953761@linuxfoundation.org>
+References: <20200921162034.660953761@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,98 +47,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+From: Jiri Olsa <jolsa@kernel.org>
 
-[ Upstream commit e6b1a44eccfcab5e5e280be376f65478c3b2c7a2 ]
+[ Upstream commit 8a39e8c4d9baf65d88f66d49ac684df381e30055 ]
 
-The __this_cpu*() accessors are (in general) IRQ-unsafe which, given
-that percpu-rwsem is a blocking primitive, should be just fine.
+When compiling with DEBUG=1 on Fedora 32 I'm getting crash for 'perf
+test signal':
 
-However, file_end_write() is used from IRQ context and will cause
-load-store issues on architectures where the per-cpu accessors are not
-natively irq-safe.
+  Program received signal SIGSEGV, Segmentation fault.
+  0x0000000000c68548 in __test_function ()
+  (gdb) bt
+  #0  0x0000000000c68548 in __test_function ()
+  #1  0x00000000004d62e9 in test_function () at tests/bp_signal.c:61
+  #2  0x00000000004d689a in test__bp_signal (test=0xa8e280 <generic_ ...
+  #3  0x00000000004b7d49 in run_test (test=0xa8e280 <generic_tests+1 ...
+  #4  0x00000000004b7e7f in test_and_print (t=0xa8e280 <generic_test ...
+  #5  0x00000000004b8927 in __cmd_test (argc=1, argv=0x7fffffffdce0, ...
+  ...
 
-Fix it by using the IRQ-safe this_cpu_*() for operations on
-read_count. This will generate more expensive code on a number of
-platforms, which might cause a performance regression for some of the
-other percpu-rwsem users.
+It's caused by the symbol __test_function being in the ".bss" section:
 
-If any such is reported, we can consider alternative solutions.
+  $ readelf -a ./perf | less
+    [Nr] Name              Type             Address           Offset
+         Size              EntSize          Flags  Link  Info  Align
+    ...
+    [28] .bss              NOBITS           0000000000c356a0  008346a0
+         00000000000511f8  0000000000000000  WA       0     0     32
 
-Fixes: 70fe2f48152e ("aio: fix freeze protection of aio writes")
-Signed-off-by: Hou Tao <houtao1@huawei.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Will Deacon <will@kernel.org>
-Acked-by: Oleg Nesterov <oleg@redhat.com>
-Link: https://lkml.kernel.org/r/20200915140750.137881-1-houtao1@huawei.com
+  $ nm perf | grep __test_function
+  0000000000c68548 B __test_function
+
+I guess most of the time we're just lucky the inline asm ended up in the
+".text" section, so making it specific explicit with push and pop
+section clauses.
+
+  $ readelf -a ./perf | less
+    [Nr] Name              Type             Address           Offset
+         Size              EntSize          Flags  Link  Info  Align
+    ...
+    [13] .text             PROGBITS         0000000000431240  00031240
+         0000000000306faa  0000000000000000  AX       0     0     16
+
+  $ nm perf | grep __test_function
+  00000000004d62c8 T __test_function
+
+Committer testing:
+
+  $ readelf -wi ~/bin/perf | grep producer -m1
+    <c>   DW_AT_producer    : (indirect string, offset: 0x254a): GNU C99 10.2.1 20200723 (Red Hat 10.2.1-1) -mtune=generic -march=x86-64 -ggdb3 -std=gnu99 -fno-omit-frame-pointer -funwind-tables -fstack-protector-all
+                                                                                                                                         ^^^^^
+                                                                                                                                         ^^^^^
+                                                                                                                                         ^^^^^
+  $
+
+Before:
+
+  $ perf test signal
+  20: Breakpoint overflow signal handler                    : FAILED!
+  $
+
+After:
+
+  $ perf test signal
+  20: Breakpoint overflow signal handler                    : Ok
+  $
+
+Fixes: 8fd34e1cce18 ("perf test: Improve bp_signal")
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Michael Petlan <mpetlan@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Wang Nan <wangnan0@huawei.com>
+Link: http://lore.kernel.org/lkml/20200911130005.1842138-1-jolsa@kernel.org
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/percpu-rwsem.h  | 8 ++++----
- kernel/locking/percpu-rwsem.c | 4 ++--
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ tools/perf/tests/bp_signal.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/percpu-rwsem.h b/include/linux/percpu-rwsem.h
-index 5e033fe1ff4e9..5fda40f97fe91 100644
---- a/include/linux/percpu-rwsem.h
-+++ b/include/linux/percpu-rwsem.h
-@@ -60,7 +60,7 @@ static inline void percpu_down_read(struct percpu_rw_semaphore *sem)
- 	 * anything we did within this RCU-sched read-size critical section.
- 	 */
- 	if (likely(rcu_sync_is_idle(&sem->rss)))
--		__this_cpu_inc(*sem->read_count);
-+		this_cpu_inc(*sem->read_count);
- 	else
- 		__percpu_down_read(sem, false); /* Unconditional memory barrier */
- 	/*
-@@ -79,7 +79,7 @@ static inline bool percpu_down_read_trylock(struct percpu_rw_semaphore *sem)
- 	 * Same as in percpu_down_read().
- 	 */
- 	if (likely(rcu_sync_is_idle(&sem->rss)))
--		__this_cpu_inc(*sem->read_count);
-+		this_cpu_inc(*sem->read_count);
- 	else
- 		ret = __percpu_down_read(sem, true); /* Unconditional memory barrier */
- 	preempt_enable();
-@@ -103,7 +103,7 @@ static inline void percpu_up_read(struct percpu_rw_semaphore *sem)
- 	 * Same as in percpu_down_read().
- 	 */
- 	if (likely(rcu_sync_is_idle(&sem->rss))) {
--		__this_cpu_dec(*sem->read_count);
-+		this_cpu_dec(*sem->read_count);
- 	} else {
- 		/*
- 		 * slowpath; reader will only ever wake a single blocked
-@@ -115,7 +115,7 @@ static inline void percpu_up_read(struct percpu_rw_semaphore *sem)
- 		 * aggregate zero, as that is the only time it matters) they
- 		 * will also see our critical section.
- 		 */
--		__this_cpu_dec(*sem->read_count);
-+		this_cpu_dec(*sem->read_count);
- 		rcuwait_wake_up(&sem->writer);
- 	}
- 	preempt_enable();
-diff --git a/kernel/locking/percpu-rwsem.c b/kernel/locking/percpu-rwsem.c
-index 8bbafe3e5203d..70a32a576f3f2 100644
---- a/kernel/locking/percpu-rwsem.c
-+++ b/kernel/locking/percpu-rwsem.c
-@@ -45,7 +45,7 @@ EXPORT_SYMBOL_GPL(percpu_free_rwsem);
- 
- static bool __percpu_down_read_trylock(struct percpu_rw_semaphore *sem)
+diff --git a/tools/perf/tests/bp_signal.c b/tools/perf/tests/bp_signal.c
+index 6cf00650602ef..697423ce3bdfc 100644
+--- a/tools/perf/tests/bp_signal.c
++++ b/tools/perf/tests/bp_signal.c
+@@ -44,10 +44,13 @@ volatile long the_var;
+ #if defined (__x86_64__)
+ extern void __test_function(volatile long *ptr);
+ asm (
++	".pushsection .text;"
+ 	".globl __test_function\n"
++	".type __test_function, @function;"
+ 	"__test_function:\n"
+ 	"incq (%rdi)\n"
+-	"ret\n");
++	"ret\n"
++	".popsection\n");
+ #else
+ static void __test_function(volatile long *ptr)
  {
--	__this_cpu_inc(*sem->read_count);
-+	this_cpu_inc(*sem->read_count);
- 
- 	/*
- 	 * Due to having preemption disabled the decrement happens on
-@@ -71,7 +71,7 @@ static bool __percpu_down_read_trylock(struct percpu_rw_semaphore *sem)
- 	if (likely(!atomic_read_acquire(&sem->block)))
- 		return true;
- 
--	__this_cpu_dec(*sem->read_count);
-+	this_cpu_dec(*sem->read_count);
- 
- 	/* Prod writer to re-evaluate readers_active_check() */
- 	rcuwait_wake_up(&sem->writer);
 -- 
 2.25.1
 
