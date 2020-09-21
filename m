@@ -2,48 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A86273481
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 23:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31F8727347C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 23:00:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728383AbgIUVAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 17:00:06 -0400
-Received: from elvis.franken.de ([193.175.24.41]:49828 "EHLO elvis.franken.de"
+        id S1728334AbgIUU7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 16:59:54 -0400
+Received: from elvis.franken.de ([193.175.24.41]:49842 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727513AbgIUU7m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 16:59:42 -0400
+        id S1728087AbgIUU7o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 16:59:44 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kKSuS-0001Rx-01; Mon, 21 Sep 2020 22:59:40 +0200
+        id 1kKSuS-0001Rx-03; Mon, 21 Sep 2020 22:59:40 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id E43E1C0FE4; Mon, 21 Sep 2020 22:23:51 +0200 (CEST)
-Date:   Mon, 21 Sep 2020 22:23:51 +0200
+        id 67CF5C0FE4; Mon, 21 Sep 2020 22:25:01 +0200 (CEST)
+Date:   Mon, 21 Sep 2020 22:25:01 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Pujin Shi <shipujin.t@gmail.com>
-Cc:     Huacai Chen <chenhc@lemote.com>,
-        Liangliang Huang <huanglllzu@gmail.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hankinsea@gmail.com, Pujin Shi <shipj@lemote.com>
-Subject: Re: [PATCH v2] MIPS: kernel: include probes-common.h header in
- branch.c
-Message-ID: <20200921202351.GA29322@alpha.franken.de>
-References: <20200921161821.2350-1-shipujin.t@gmail.com>
+To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
+        <zhouyanjie@wanyeetech.com>
+Cc:     robh+dt@kernel.org, paul@crapouillou.net,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
+        zhenwenjin@gmail.com
+Subject: Re: [PATCH 1/1] MIPS: Ingenic: Add CPU nodes for Ingenic SoCs.
+Message-ID: <20200921202501.GC29322@alpha.franken.de>
+References: <20200919113859.88566-1-zhouyanjie@wanyeetech.com>
+ <20200919113859.88566-2-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200921161821.2350-1-shipujin.t@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200919113859.88566-2-zhouyanjie@wanyeetech.com>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 12:18:21AM +0800, Pujin Shi wrote:
-> arch/mips/kernel/branch.c:876:5: error: no previous prototype for '__insn_is_compact_branch' [-Werror=missing-prototypes]
+On Sat, Sep 19, 2020 at 07:38:59PM +0800, 周琰杰 (Zhou Yanjie) wrote:
+> Add 'cpus' node to the jz4725b.dtsi, jz4740.dtsi, jz4770.dtsi,
+> jz4780.dtsi, x1000.dtsi, and x1830.dtsi files.
 > 
-> Signed-off-by: Pujin Shi <shipujin.t@gmail.com>
-> Signed-off-by: Pujin Shi <shipj@lemote.com>
+> Tested-by: H. Nikolaus Schaller <hns@goldelico.com>
+> Tested-by: Paul Boddie <paul@boddie.org.uk>
+> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
 > ---
->  arch/mips/kernel/branch.c | 2 ++
->  1 file changed, 2 insertions(+)
+>  arch/mips/boot/dts/ingenic/jz4725b.dtsi | 14 ++++++++++++++
+>  arch/mips/boot/dts/ingenic/jz4740.dtsi  | 14 ++++++++++++++
+>  arch/mips/boot/dts/ingenic/jz4770.dtsi  | 15 ++++++++++++++-
+>  arch/mips/boot/dts/ingenic/jz4780.dtsi  | 23 +++++++++++++++++++++++
+>  arch/mips/boot/dts/ingenic/x1000.dtsi   | 14 ++++++++++++++
+>  arch/mips/boot/dts/ingenic/x1830.dtsi   | 14 ++++++++++++++
+>  6 files changed, 93 insertions(+), 1 deletion(-)
 
 applied to mips-next.
 
