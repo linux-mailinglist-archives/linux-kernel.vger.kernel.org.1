@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E111F272F90
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA5E272D6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728706AbgIUQ6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:58:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46690 "EHLO mail.kernel.org"
+        id S1728625AbgIUQkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:40:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729262AbgIUQmd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:42:33 -0400
+        id S1728293AbgIUQjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:39:40 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 950C12076B;
-        Mon, 21 Sep 2020 16:42:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E3381206DC;
+        Mon, 21 Sep 2020 16:39:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706553;
-        bh=g4zpzrrrliWT+jhYfAFzGjxB5RGCcotx6aZMPGxQUeM=;
+        s=default; t=1600706380;
+        bh=aTHqhn0lUC0NXQGAZZOLZCbL2Oc38gXnDqkF637fn9s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l2OZis0zEWxpRdd7G8Kbnrl9IXd4birRqVHp2Xmgldt8ptfU7ffrSy4xTxIEdpWhc
-         P2EtR23NYhhcnYNrIm6iX/LCmvvRds6q63YqPG0NavC2aTTk0F22zW8FyWXaQWRTC2
-         UqvVrV99/Y8+K1dqKO4Y2PvaH+sh74Y5c3oq6lCI=
+        b=ClWq+IT126WgTuQt1sIcxS2i476UOFU73D+8+h3qDJ86a5Kdj3U0DclN+o/m06OpM
+         XQ2CJmEAO3EXnOCkF9Ez0b6Crj9leB0YvGMFm45P7UdIk6i36h0b0Vl07PvN248+R9
+         9S41lcdLykHpvm7wHTOB4JgPi4N2f3UOjFjDheTw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Milburn <dmilburn@redhat.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 19/49] nvme-fc: cancel async events before freeing event struct
+        stable@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 76/94] clk: rockchip: Fix initialization of mux_pll_src_4plls_p
 Date:   Mon, 21 Sep 2020 18:28:03 +0200
-Message-Id: <20200921162035.518685688@linuxfoundation.org>
+Message-Id: <20200921162039.018426836@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162034.660953761@linuxfoundation.org>
-References: <20200921162034.660953761@linuxfoundation.org>
+In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
+References: <20200921162035.541285330@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,34 +45,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Milburn <dmilburn@redhat.com>
+From: Nathan Chancellor <natechancellor@gmail.com>
 
-[ Upstream commit e126e8210e950bb83414c4f57b3120ddb8450742 ]
+[ Upstream commit e9c006bc782c488f485ffe50de20b44e1e3daa18 ]
 
-Cancel async event work in case async event has been queued up, and
-nvme_fc_submit_async_event() runs after event has been freed.
+A new warning in Clang points out that the initialization of
+mux_pll_src_4plls_p appears incorrect:
 
-Signed-off-by: David Milburn <dmilburn@redhat.com>
-Reviewed-by: Keith Busch <kbusch@kernel.org>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+../drivers/clk/rockchip/clk-rk3228.c:140:58: warning: suspicious
+concatenation of string literals in an array initialization; did you
+mean to separate the elements with a comma? [-Wstring-concatenation]
+PNAME(mux_pll_src_4plls_p)      = { "cpll", "gpll", "hdmiphy" "usb480m" };
+                                                              ^
+                                                             ,
+../drivers/clk/rockchip/clk-rk3228.c:140:48: note: place parentheses
+around the string literal to silence warning
+PNAME(mux_pll_src_4plls_p)      = { "cpll", "gpll", "hdmiphy" "usb480m" };
+                                                    ^
+1 warning generated.
+
+Given the name of the variable and the same variable name in rv1108, it
+seems that this should have been four distinct elements. Fix it up by
+adding the comma as suggested.
+
+Fixes: 307a2e9ac524 ("clk: rockchip: add clock controller for rk3228")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1123
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Link: https://lore.kernel.org/r/20200810044020.2063350-1-natechancellor@gmail.com
+Reviewed-by: Heiko Stübner <heiko@sntech.de>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/fc.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/clk/rockchip/clk-rk3228.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
-index bb3b447c56468..73db32f97abf3 100644
---- a/drivers/nvme/host/fc.c
-+++ b/drivers/nvme/host/fc.c
-@@ -1791,6 +1791,7 @@ nvme_fc_term_aen_ops(struct nvme_fc_ctrl *ctrl)
- 	struct nvme_fc_fcp_op *aen_op;
- 	int i;
+diff --git a/drivers/clk/rockchip/clk-rk3228.c b/drivers/clk/rockchip/clk-rk3228.c
+index 04f4f3739e3be..8d11d76e1db7c 100644
+--- a/drivers/clk/rockchip/clk-rk3228.c
++++ b/drivers/clk/rockchip/clk-rk3228.c
+@@ -144,7 +144,7 @@ PNAME(mux_usb480m_p)		= { "usb480m_phy", "xin24m" };
+ PNAME(mux_hdmiphy_p)		= { "hdmiphy_phy", "xin24m" };
+ PNAME(mux_aclk_cpu_src_p)	= { "cpll_aclk_cpu", "gpll_aclk_cpu", "hdmiphy_aclk_cpu" };
  
-+	cancel_work_sync(&ctrl->ctrl.async_event_work);
- 	aen_op = ctrl->aen_ops;
- 	for (i = 0; i < NVME_NR_AEN_COMMANDS; i++, aen_op++) {
- 		if (!aen_op->fcp_req.private)
+-PNAME(mux_pll_src_4plls_p)	= { "cpll", "gpll", "hdmiphy" "usb480m" };
++PNAME(mux_pll_src_4plls_p)	= { "cpll", "gpll", "hdmiphy", "usb480m" };
+ PNAME(mux_pll_src_3plls_p)	= { "cpll", "gpll", "hdmiphy" };
+ PNAME(mux_pll_src_2plls_p)	= { "cpll", "gpll" };
+ PNAME(mux_sclk_hdmi_cec_p)	= { "cpll", "gpll", "xin24m" };
 -- 
 2.25.1
 
