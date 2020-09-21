@@ -2,111 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7C78271AA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 08:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DE72271AA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 08:04:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726427AbgIUGEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 02:04:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726149AbgIUGE3 (ORCPT
+        id S1726444AbgIUGEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 02:04:35 -0400
+Received: from dvalin.narfation.org ([213.160.73.56]:48492 "EHLO
+        dvalin.narfation.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726149AbgIUGEf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 02:04:29 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98FD6C061755
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 23:04:29 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id e23so7438837vsk.2
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 23:04:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=gmSKhpFY4kTNF3DPRn/4uO6u6dZbhjoQaX0s9W7i2IM=;
-        b=nYtofNvodxIDAyZLMUI2rcNLFfTMRH1LBcTAJ8HrhbB2NLSx2bVuOCT+QYikoCeA7t
-         Ld15cYB+D7ZgjD2ONWcj2OqcxoABt15HqUl9Wr6vYSziluXmEZd5T/qn3ovoW18lvL+0
-         9GxNFwR95z3amyJLydMsfD6AjbMQNRY46l8GuzszwS1sBkoZnviPU3y9du8fLDYa0aoe
-         oLZVCrvdkuNDAaf5M2iONVk4vbMyHaHmt1SarI1wMSRtfFJ6f5kZ5UTCOfLNm27wjssj
-         Bd8XOiHpUOzpBbsRROFbKkjBZwE0J/LEA8trISJL/3t6GFQldmeWIOWZrSg9BSddoUSc
-         RBpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=gmSKhpFY4kTNF3DPRn/4uO6u6dZbhjoQaX0s9W7i2IM=;
-        b=ZzdWh+uUTic11gDQgeIyuvfK/Ht1VQ4NhyP+Bmm2hNdROVJV0rnu/2LUMDro/l92sE
-         AEUUqHX5eRQ7e6gBjGwJ4YJHyCYp3lxbHbx8gqL9dGN1pDW97xiCZdMg/O0kAq+2VuZf
-         I+oMNkCStONRM3laVUxT/2aM45jijs5M7LM6+j6Z5b91g7p1ikSdH1gzWWGCRFoegFR9
-         LF8DsVHHsjeMdc6oFi427lTGYRwhZunRhwCzZPkZLPgoZUIzt9aEjBhdGfJsOXqtzcIA
-         /yKhwSWWGIcsfroLEEsczAfeXqcRQymlYsJoXpyX/ncos5urH/SZ80sIYWSJV2EPyQT4
-         3Z7A==
-X-Gm-Message-State: AOAM532ZQQ3/vCPBqG4pVxhDdgJGxJjWSmoEqASNaJ6gAFa8JnRBVF5o
-        C6pjV0iqsNIlFlcGde0FlZuu68eTO6OUbaamy8Nivg==
-X-Google-Smtp-Source: ABdhPJzuk1/PiphSwuUvjP6+E5H+PEm5LcR5lGn9Fq1X93k9XatzTGELxhm95y0PWoUFN4sZmwm7EgBxD7/W71hG544=
-X-Received: by 2002:a67:80d2:: with SMTP id b201mr26678854vsd.12.1600668268677;
- Sun, 20 Sep 2020 23:04:28 -0700 (PDT)
+        Mon, 21 Sep 2020 02:04:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=narfation.org;
+        s=20121; t=1600668272;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=b8fQsCvgcnqMQgvxHhj7epbLkU3gFqxiKxz9y0e4wlc=;
+        b=JqaTnaVcg3c5vaxTp9fuoGBCO5CZ3YvkbUnhCKsqdmqoAu8hts5PmKq21SLHsWD478HmGW
+        DWszYPZ1cgDyeHsqU2mX1ytgZZe64b4Fp3QRIP7dHzbfXOqQF+5py186tjK+ZLRun1XLv0
+        Jz+gXgQp8EljnWB7GlAZsLAjWtLkQ5I=
+From:   Sven Eckelmann <sven@narfation.org>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus =?ISO-8859-1?Q?L=FCssing?= <linus.luessing@c0d3.blue>,
+        Simon Wunderlich <sw@simonwunderlich.de>
+Subject: Re: linux-next: Fixes tag needs some work in the net tree
+Date:   Mon, 21 Sep 2020 08:04:30 +0200
+Message-ID: <1845864.bm72gKIjWm@ripper>
+In-Reply-To: <20200921055919.5bf70643@canb.auug.org.au>
+References: <20200921055919.5bf70643@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20200921010359.GO3027113@arch-chirva.localdomain>
-In-Reply-To: <20200921010359.GO3027113@arch-chirva.localdomain>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 21 Sep 2020 11:34:17 +0530
-Message-ID: <CA+G9fYtCg2KjdB2oBUDJ2DKAzUxq3u8ZnMY9Et-RG9Pnrmuf9w@mail.gmail.com>
-Subject: =?UTF-8?B?UmU6IFBST0JMRU06IDUuOS4wLXJjNiBmYWlscyB0byBjb21waWxlIGR1ZSB0byAncmVkZQ==?=
-        =?UTF-8?B?ZmluaXRpb24gb2Yg4oCYZGF4X3N1cHBvcnRlZOKAmSc=?=
-To:     Stuart Little <achirvasub@gmail.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>, linux-nvdimm@lists.01.org,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux- stable <stable@vger.kernel.org>,
-        Adrian Huang <ahuang12@lenovo.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        Ira Weiny <ira.weiny@intel.com>, mpatocka@redhat.com,
-        lkft-triage@lists.linaro.org, Jan Kara <jack@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="nextPart5321733.tfhsDO9XnZ"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Sep 2020 at 06:34, Stuart Little <achirvasub@gmail.com> wrote:
->
-> I am trying to compile for an x86_64 machine (Intel(R) Core(TM) i7-7500U =
-CPU @ 2.70GHz). The config file I am currently using is at
->
-> https://termbin.com/xin7
->
-> The build for 5.9.0-rc6 fails with the following errors:
->
+--nextPart5321733.tfhsDO9XnZ
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-arm and mips allmodconfig build breaks due to this error.
+On Sunday, 20 September 2020 21:59:19 CEST Stephen Rothwell wrote:
+> Hi all,
 
->
-> drivers/dax/super.c:325:6: error: redefinition of =E2=80=98dax_supported=
-=E2=80=99
->   325 | bool dax_supported(struct dax_device *dax_dev, struct block_devic=
-e *bdev,
->       |      ^~~~~~~~~~~~~
-> In file included from drivers/dax/super.c:16:
-> ./include/linux/dax.h:162:20: note: previous definition of =E2=80=98dax_s=
-upported=E2=80=99 was here
->   162 | static inline bool dax_supported(struct dax_device *dax_dev,
->       |                    ^~~~~~~~~~~~~
->   CC      lib/memregion.o
->   CC [M]  drivers/gpu/drm/drm_gem_vram_helper.o
-> make[2]: *** [scripts/Makefile.build:283: drivers/dax/super.o] Error 1
-> make[1]: *** [scripts/Makefile.build:500: drivers/dax] Error 2
-> make[1]: *** Waiting for unfinished jobs....
->
-> --- end ---
->
-> That's earlier on, and then later, at the end of the (failed) build:
->
-> make: *** [Makefile:1784: drivers] Error 2
->
-> The full build log is at
->
-> https://termbin.com/ihxj
->
-> but I do not see anything else amiss. 5.9.0-rc5 built fine last week.
+Yes, I've accidentally swapped the IDs while adding them to the various patches.
 
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+The correct ones should have been:
+
+* 097930e85f90 ("batman-adv: bla: fix type misuse for backbone_gw hash indexing")
+
+  Fixes: 07568d0369f9 ("batman-adv: don't rely on positions in struct for hashing")
+  (seems to be correct)
+
+* 7dda5b338412 ("batman-adv: mcast/TT: fix wrongly dropped or rerouted packets")
+
+  Fixes: 279e89b2281a ("batman-adv: bla: use netif_rx_ni when not in interrupt context")
+  (seems to be correct)
+
+* 4bba9dab86b6 ("batman-adv: Add missing include for in_interrupt()")
+
+  Fixes: 279e89b2281a ("batman-adv: bla: use netif_rx_ni when not in interrupt context")
+  (seems to be correct)
+
+* 3236d215ad38 ("batman-adv: mcast: fix duplicate mcast packets in BLA backbone from LAN")
+
+  Fixes: a44ebeff6bbd ("batman-adv: Fix multicast TT issues with bogus ROAM flags")
+  (this was wrong)
+
+* 74c09b727512 ("batman-adv: mcast: fix duplicate mcast packets in BLA backbone from mesh")
+
+  Fixes: 2d3f6ccc4ea5 ("batman-adv: check incoming packet type for bla")
+  (this was wrong)
+
+* 2369e8270469 ("batman-adv: mcast: fix duplicate mcast packets from BLA backbone to mesh")
+
+  Fixes: fe2da6ff27c7 ("batman-adv: add broadcast duplicate check")
+  (this was wrong)
+
+Kind regards,
+	Sven
+--nextPart5321733.tfhsDO9XnZ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAl9oQm4ACgkQXYcKB8Em
+e0ZYdQ//evajP1e6HFFq7NS/9XZOCyoIOsAvo+FBGaA9uImaBPJY7ekJBdkzpr9y
+i2Hrx4I08Z0a65Ph5VLHWLNao12Gw0XnVKHLWyPf+6vMqjiqRyi6qaddYR78T2P1
+wRNXm72bCG+ZQGpTM7DPmU8BYaANatM56CPI90p6549BW4ts3XTYXrhDp+AuITKp
+SP47rG3j5gx+kK484CQ5URpNzfNxUn2gn9otPVoSsRmcod4X9IzmLiEF8xA0RhO+
+vKkRCBSuC4M2gwltKPLXNzuGbEip7dOP9Re8Z/uOgPp/f5fzC/2lGvUxB0Zt+yR+
+iELJkdulA9wOu59rCFJHrVHi+5CzAPDrqfQS+ZQO2OLDOcY2Ljv3Mk9srmwMdaUg
+7KFo6opjGV9aCYgVSC3s25hhmGjgTgCGhsA45xWeMLIrfLttLYREgAnj9NnStyHN
+KXc1pYb5ZkC5B8eIS2kkrHdns/2Xc3ZWBmY4fEvmHnvCPMaslQPCZf2BJ4JPJ6ko
+FRsQC9F8qmWZuDC96dazWTYseq0+EkW9NBym3QSuxoAifJcD3EPcO7CBI8Y14k7p
+mfnqhOZSufYlJSJYGuuPUusbGnnz6mFSDjBt3u1qg4dK48S3vEKZl933/7xotbmi
+dtBz2c+bjgHRNfzUEyzs9U1nmifWgSn9HsQ/pPbZfBEzABcnD8Q=
+=GCWG
+-----END PGP SIGNATURE-----
+
+--nextPart5321733.tfhsDO9XnZ--
+
+
+
