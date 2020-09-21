@@ -2,81 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E214271E0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E26FF271E12
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726461AbgIUIhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 04:37:18 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:46370 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726326AbgIUIhS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 04:37:18 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08L8YQFY033906;
-        Mon, 21 Sep 2020 08:37:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=62a8UL3OAUMDd3tSQYkh5y5Nekyd00f1dKIe/NrNJ5Q=;
- b=fmPpHWXeFJhzH5FLrx97IwbMvH2hyuqAk5akxn+iPQGM/W+4nXfMA2fqQ6ISCgA1CX8X
- Ouyh+9R7onaGD7QfHTEi3vL10CEozciFkU4Xzcv550wJKwk686Ea+MzzdKjf8CCIzEsM
- IXpIX9XTI5eRZiTkqxFYoJ021HNO8gCaJ6eyhJfiug1EOF9ocG2ic6KZW/m5nOerqDsg
- rE7tjPVQ3X9K5LCf4qGLoWYGvjWT/CQObk7yoRQ6Z5Ih+t+gFe6Xl0rdhy8jrhrkr/B8
- 2xmAoJ5vwJrmQhIaRcF/vXHl1mFDxMP4v54QzvnRArcrTf6oreb8CFmJNwTAMGsl6OgD mg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 33n9dqv91t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 21 Sep 2020 08:37:12 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08L8aHvL049498;
-        Mon, 21 Sep 2020 08:37:11 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 33nujkbysr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 21 Sep 2020 08:37:11 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08L8b7sY002472;
-        Mon, 21 Sep 2020 08:37:09 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 21 Sep 2020 01:37:07 -0700
-Date:   Mon, 21 Sep 2020 11:37:00 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Douglas Gilbert <dgilbert@interlog.com>
-Cc:     Markus Elfring <Markus.Elfring@web.de>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Bart Van Assche <bvanassche@acm.org>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH] lib/scatterlist: Fix memory leak in sgl_alloc_order()
-Message-ID: <20200921083700.GB4282@kadam>
-References: <e69e9865-a599-5bd9-95b1-7d57c7e2e90c@web.de>
- <1608a0b7-6960-afce-aa39-6785036b01e0@interlog.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1608a0b7-6960-afce-aa39-6785036b01e0@interlog.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9750 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0
- mlxlogscore=970 phishscore=0 adultscore=0 spamscore=0 suspectscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009210063
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9750 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- phishscore=0 priorityscore=1501 malwarescore=0 mlxscore=0 impostorscore=0
- clxscore=1011 lowpriorityscore=0 suspectscore=0 spamscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009210063
+        id S1726405AbgIUIhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 04:37:37 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45018 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726236AbgIUIhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 04:37:37 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 12FD5B4FC;
+        Mon, 21 Sep 2020 08:38:12 +0000 (UTC)
+Date:   Mon, 21 Sep 2020 10:37:35 +0200
+Message-ID: <s5htuvrpltc.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        hch@lst.de, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: compat_ioctl: avoid compat_alloc_user_space
+In-Reply-To: <20200918095642.1446243-1-arnd@arndb.de>
+References: <20200918095642.1446243-1-arnd@arndb.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We asked Markus over and over to stop sending these emails but he
-refused so eventually he had to be banned from vger.  Unless you're
-directly mentioned in the CC list then you can't see his emails.
+On Fri, 18 Sep 2020 11:56:19 +0200,
+Arnd Bergmann wrote:
+> 
+> Using compat_alloc_user_space() tends to add complexity
+> to the ioctl handling, so I am trying to remove it everywhere.
+> 
+> The two callers in sound/core can rewritten to just call
+> the same code that operates on a kernel pointer as the
+> native handler.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-regards,
-dan carpenter
+Applied now.  Thanks!
 
+
+Takashi
