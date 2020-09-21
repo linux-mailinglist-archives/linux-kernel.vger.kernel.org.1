@@ -2,49 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 291482727E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:40:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2A82727E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727634AbgIUOkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 10:40:05 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:57404 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726341AbgIUOkF (ORCPT
+        id S1727676AbgIUOkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 10:40:11 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:59442 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726341AbgIUOkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:40:05 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08LEdtbl003117;
-        Mon, 21 Sep 2020 09:39:55 -0500
+        Mon, 21 Sep 2020 10:40:10 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08LEdvkU118062;
+        Mon, 21 Sep 2020 09:39:57 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600699195;
-        bh=Ox9JQ9lfIi6Br9DzqBenHYEJv6uad6xu9fA0mr6q0RY=;
+        s=ti-com-17Q1; t=1600699197;
+        bh=4rexK24o53eZY20Ft/ir+kKYrB1iYco5Nra7VS2tUn4=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=eqd2h7RWsHUG/o3/Ld6AOkSncNkGHfh7/eC5RDShJ/3FQ/Ov9i3GGJhdPr7g7gcon
-         VfvGclUPaj5rMAgdO5efN7eA74fDSrJ6XuQ8b6CBqQZWNMxrxkMqmhz6FeuNFIYgBX
-         LYhs2QNhjNwQ0T8JLQMKcStLZyPw0/Q8TFBloxsE=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08LEdtQn029157;
-        Mon, 21 Sep 2020 09:39:55 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+        b=Z8RsS7/zEIXf+HlJztTnVH0tH3hdmRAcqkAaw5wY5jzexWM1YgpL0gCBtejBh2dd6
+         ELgNqNUTHseLN5l08E6b2aDokwUvYvdlxapM/712QAzvbgIPoEqLMkYwPv6yuZj024
+         dxaMBjwfXX1K/mlLax9/0PLBOrkbDereiN4iAij0=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08LEdvl6014163
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 21 Sep 2020 09:39:57 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 21
- Sep 2020 09:39:54 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ Sep 2020 09:39:57 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 21 Sep 2020 09:39:54 -0500
+ Frontend Transport; Mon, 21 Sep 2020 09:39:57 -0500
 Received: from lta0400828a.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08LEdivo065452;
-        Mon, 21 Sep 2020 09:39:52 -0500
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08LEdivp065452;
+        Mon, 21 Sep 2020 09:39:55 -0500
 From:   Roger Quadros <rogerq@ti.com>
 To:     <peda@axentia.se>, <nm@ti.com>
 CC:     <t-kristo@ti.com>, <nsekhar@ti.com>, <kishon@ti.com>,
         <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, Roger Quadros <rogerq@ti.com>
-Subject: [PATCH v4 3/6] arm64: dts: ti: k3-j7200-main.dtsi: Add USB to SERDES lane MUX
-Date:   Mon, 21 Sep 2020 17:39:38 +0300
-Message-ID: <20200921143941.13905-4-rogerq@ti.com>
+Subject: [PATCH v4 4/6] arm64: dts: ti: k3-j7200-main: Add USB controller
+Date:   Mon, 21 Sep 2020 17:39:39 +0300
+Message-ID: <20200921143941.13905-5-rogerq@ti.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200921143941.13905-1-rogerq@ti.com>
 References: <20200921143941.13905-1-rogerq@ti.com>
@@ -55,31 +56,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The USB controller can be connected to one of the 2 lanes
-of SERDES0 using a MUX. Add a MUX controller node for that.
+j7200 has on USB controller instance. Add that.
 
 Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
- arch/arm64/boot/dts/ti/k3-j7200-main.dtsi | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/arm64/boot/dts/ti/k3-j7200-main.dtsi | 30 +++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-index d6d688efc32a..42f66b8dffa7 100644
+index 42f66b8dffa7..519e6f718363 100644
 --- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
 +++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-@@ -31,6 +31,12 @@
- 			mux-reg-masks = <0x4080 0x3>, <0x4084 0x3>, /* SERDES0 lane0/1 select */
- 					<0x4088 0x3>, <0x408c 0x3>; /* SERDES0 lane2/3 select */
- 		};
-+
-+		usb_serdes_mux: mux-controller@4000 {
-+			compatible = "mmio-mux";
-+			#mux-control-cells = <1>;
-+			mux-reg-masks = <0x4000 0x8000000>; /* USB0 to SERDES0 lane 1/3 mux */
-+		};
+@@ -331,4 +331,34 @@
+ 		no-1-8-v;
+ 		dma-coherent;
  	};
- 
- 	gic500: interrupt-controller@1800000 {
++
++	usbss0: cdns-usb@4104000 {
++		compatible = "ti,j721e-usb";
++		reg = <0x00 0x4104000 0x00 0x100>;
++		dma-coherent;
++		power-domains = <&k3_pds 288 TI_SCI_PD_EXCLUSIVE>;
++		clocks = <&k3_clks 288 12>, <&k3_clks 288 3>;
++		clock-names = "ref", "lpm";
++		assigned-clocks = <&k3_clks 288 12>;	/* USB2_REFCLK */
++		assigned-clock-parents = <&k3_clks 288 13>; /* HFOSC0 */
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++
++		usb0: usb@6000000 {
++			compatible = "cdns,usb3";
++			reg = <0x00 0x6000000 0x00 0x10000>,
++			      <0x00 0x6010000 0x00 0x10000>,
++			      <0x00 0x6020000 0x00 0x10000>;
++			reg-names = "otg", "xhci", "dev";
++			interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_HIGH>,	/* irq.0 */
++				     <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>,	/* irq.6 */
++				     <GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH>;	/* otgirq.0 */
++			interrupt-names = "host",
++					  "peripheral",
++					  "otg";
++			maximum-speed = "super-speed";
++			dr_mode = "otg";
++		};
++	};
+ };
 -- 
 Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
 Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
