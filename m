@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E31A27350E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 23:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7420273510
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 23:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728276AbgIUVlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 17:41:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58266 "EHLO mail.kernel.org"
+        id S1727868AbgIUVls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 17:41:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728043AbgIUVlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 17:41:39 -0400
+        id S1726452AbgIUVls (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 17:41:48 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1CA8723A61;
-        Mon, 21 Sep 2020 21:41:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 148B623A60;
+        Mon, 21 Sep 2020 21:41:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600724499;
-        bh=4Jl1/4OoGFeuOMI2swv5kCfO1u/sDCnxpSb3SMt1cXw=;
+        s=default; t=1600724507;
+        bh=jju9SLxwn4Bjq7abtdJqJjPWwHxsd8XkpO610vWUqIg=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=HHpqEGjlTU9+AD5l8mPZgI6P6bIQ2/Q+Bs5Ni11pnnl6fpV0XgE6dVkdQrXPnNxTE
-         BbyO1equGEeHmRTrMnZmN+SVhDU6Rhi15TyxaLuygKAt5Hjhseo2NHKO+OEDA5WZ0W
-         j0rWjRZ7uQ/J8Rij0kfA7r4zWrDSoq2Ywpjr0i98=
-Date:   Mon, 21 Sep 2020 22:40:47 +0100
+        b=VrMOy/knCTZV2eYk60oKEabmEKHp4PGyd8KckGWL0lpoTWSRD+GAhrvZyIHDGuBNt
+         5gVbxn2XXb6u/5QSkwQJ9h/M8fCrJNJU/5Rj5X8/JofHGeiUI1MN6USGGpEy7iT4y/
+         Lb2YE0gDCGfQOp7fauD5eS6TrJ42YzlIBDQ3JmZU=
+Date:   Mon, 21 Sep 2020 22:40:55 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Ben Whitten <ben.whitten@gmail.com>, linux-kernel@vger.kernel.org
-In-Reply-To: <20200917153405.3139200-1-dmitry.baryshkov@linaro.org>
-References: <20200917153405.3139200-1-dmitry.baryshkov@linaro.org>
-Subject: Re: [PATCH v2 1/2] regmap: fix page selection for noinc reads
-Message-Id: <160072444712.56996.10601329042842573406.b4-ty@kernel.org>
+To:     hkallweit1@gmail.com, npiggin@gmail.com,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        linux-spi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+In-Reply-To: <20200904002812.7300-1-chris.packham@alliedtelesis.co.nz>
+References: <20200904002812.7300-1-chris.packham@alliedtelesis.co.nz>
+Subject: Re: [PATCH] spi: fsl-espi: Only process interrupts for expected events
+Message-Id: <160072445517.57049.9668130965130008187.b4-ty@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Sep 2020 18:34:04 +0300, Dmitry Baryshkov wrote:
-> Non-incrementing reads can fail if register + length crosses page
-> border. However for non-incrementing reads we should not check for page
-> border crossing. Fix this by passing additional flag to _regmap_raw_read
-> and passing length to _regmap_select_page basing on the flag.
+On Fri, 4 Sep 2020 12:28:12 +1200, Chris Packham wrote:
+> The SPIE register contains counts for the TX FIFO so any time the irq
+> handler was invoked we would attempt to process the RX/TX fifos. Use the
+> SPIM value to mask the events so that we only process interrupts that
+> were expected.
+> 
+> This was a latent issue exposed by commit 3282a3da25bd ("powerpc/64:
+> Implement soft interrupt replay in C").
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/2] regmap: fix page selection for noinc reads
-      commit: 4003324856311faebb46cbd56a1616bd3f3b67c2
-[2/2] regmap: fix page selection for noinc writes
-      commit: 05669b63170771d554854c0e465b76dc98fc7c84
+[1/1] spi: fsl-espi: Only process interrupts for expected events
+      commit: b867eef4cf548cd9541225aadcdcee644669b9e1
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
