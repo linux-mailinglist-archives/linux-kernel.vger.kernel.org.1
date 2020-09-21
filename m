@@ -2,172 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 182192729DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89CB22729E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727737AbgIUPU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 11:20:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49436 "EHLO
+        id S1727819AbgIUPVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 11:21:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726537AbgIUPU4 (ORCPT
+        with ESMTP id S1726471AbgIUPVO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 11:20:56 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A425C061755;
-        Mon, 21 Sep 2020 08:20:56 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id a9so13179017wmm.2;
-        Mon, 21 Sep 2020 08:20:56 -0700 (PDT)
+        Mon, 21 Sep 2020 11:21:14 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D68C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 08:21:13 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id b12so14449890lfp.9
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 08:21:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=L4bLRGp7fGx2MknkK1rcPvRD/2kcqQUQu2s4wMlqMkw=;
-        b=XVPz4n/zlQcN4jyMyrNIZ2vLXHT266ErcWI8LLrSqHrsI9fkXIxDApXK6WCh6ZpquF
-         e4/4l/xm6ito5hkBhvL5/m1L3I/IkyNOmF+ueb8PdfAnMHN0vIA1qXxPUH3DVOR5BJYh
-         bJo6zmTNC5ciKMfl7d/TzqyXhNeBcRYzTDToW356D6JdzjYUS0Vvv2NdYm12ev3WpUI/
-         g81slmjWQt54Aw15o+lEyaKQOZzFy39qX2eJ/DC1J4rVPcggWAuVRHqzQwUFz+PK6xeZ
-         tLa5pt8SJWKXjIJrL0z92rR8ElLZx/j6YjsBBp6apetbjE280+NdIf0R2RaXTVj/whvH
-         /UgQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=W2g+NHPMvAe8oIeaRzpgrekfF2bHoNZS4tXAOMzt80k=;
+        b=wKmSf3CRWnLaV/BvmM6ZMxhMr+f24B84Ao1Le9KCI7niOe+fxhQ4jyAQARWuWg1DVK
+         mzGx3E/8bW3rZ61cGg413LJqoJLWd5OG3iKPln2ID59nZSItF7NvgKFXSLFtxRf3+jHL
+         EacbK9VkzsIIrBiyqrce7cMrH5RuILnlnD5QV1GDiKxJTLMG9XVYhxis3Ddaz0ob/LDE
+         RMXK8KAfJc2gJZ5gEFtVGd8HKrwKelwga9tpPMFs+9b2Prt1oygvwFzZl/fyW3P9I5hp
+         UxoltAtvxdOZbztLS2doX0a3FXhziCS63lXk9qg2Bz7vWuE9f9I1NJhoN5ANZ9fD4yRu
+         d2sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=L4bLRGp7fGx2MknkK1rcPvRD/2kcqQUQu2s4wMlqMkw=;
-        b=bcW6eCtcwKupVqPcWr0UNCXxgM5h5eE6tdoUPZY+eEWTNzXpGGczqNf4Cj2h45u0kM
-         Uf4Bsb961sD7LiZsi0/fwCMYrhVxM6s+1icBK4lHR6Q9KN4ya8i8hWgUpD624kLaRL1c
-         C9nbsy6vpXit4JUzL/WJN9ZW5bfV+10IHKAwiS4+6aoj0TH+sQNspkhOAkSueJHO/8hB
-         OG7ZyKkS5M4+T2RG+P/IfgZERx1pv4xcsvOiO2x3ngXGTzO5eypdjtcNT0bzAQev/PHg
-         ktwe/iYBoe+QPeCzFiqN3blqnjv/qGd8obusDut9WlJYI0eSBzv6/qoanMNZRYyoo29e
-         ZXig==
-X-Gm-Message-State: AOAM531TwkVHG3xu1TY5Lw2EB1F2YZ4YDTzO+ZH/8riRmrEmwQO7Hl7A
-        vhvt4iR5E+LrwdlfopvdjpYmK2BWVjo0v5DbR40=
-X-Google-Smtp-Source: ABdhPJwvf88sXA+M0lx6styzoy1Nw4TB6P0u+sDQBGKctBcgrrcjZszU4+Hn1o8vU4wH9LKVhuwRjN1qFEbb+uscRpw=
-X-Received: by 2002:a1c:b388:: with SMTP id c130mr115189wmf.175.1600701654573;
- Mon, 21 Sep 2020 08:20:54 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=W2g+NHPMvAe8oIeaRzpgrekfF2bHoNZS4tXAOMzt80k=;
+        b=fe8y8nhPQpRIHFf60XrJeamlp5ZhkqtXnMhDCfqK5CoMRRkW12fFvqUQNjgCckdp1z
+         3VRL2lnmOb+yR9UmEvWZkHDUKMwSoQ+2LD43776Rfk/RVUUgyf7IGGWErJQsn1v2KBXo
+         FwX94B1ZMOFUScB9UOM+u0HX68VV/6sC+CKUBsrZ0QOIDRruU/BJAz1u5DzFDhA3KxfK
+         QTy1fk0cVwq9mh79vkFMoCdhC6O7bRju7xuR42kMau50soUZnSYMQvuMhvisTP11dgm2
+         LsAr1BhDbdfV2D+nfO4pZiWNv/oxlVWbwNnyS8Ro/IIapf6+1PBoN8EWC4fZG67o+W+Z
+         rMag==
+X-Gm-Message-State: AOAM531Zm7pLfDWNzG75V2NjFpyv0muNtj2Be6oOKj5u1bkaf8UAjR+W
+        k32/7snymiDSlQuqTD+D1Og+5IjWlvqwrTvpV9NB5w==
+X-Google-Smtp-Source: ABdhPJxTLx8DrnYUHRriA84fo5Tl3x/ripGl7E2KX2I/Xn2Q4PJQtPGy7PHDe4J6NG3QpwbSOUA39CZ4E9NPQhwm2kc=
+X-Received: by 2002:a19:604e:: with SMTP id p14mr131755lfk.385.1600701672112;
+ Mon, 21 Sep 2020 08:21:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200919193727.2093945-1-robdclark@gmail.com> <20200921092154.GJ438822@phenom.ffwll.local>
- <CAF6AEGuDRk9D_aqyb6R8N5VHx2rvbZDf4uTqF3gQTrmzno+qtw@mail.gmail.com>
-In-Reply-To: <CAF6AEGuDRk9D_aqyb6R8N5VHx2rvbZDf4uTqF3gQTrmzno+qtw@mail.gmail.com>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Mon, 21 Sep 2020 08:20:42 -0700
-Message-ID: <CAF6AEGumdr5p9Unqnx6xwUeJX81kLGn=iobjjXF=oVd+nhEZ0Q@mail.gmail.com>
-Subject: Re: [PATCH 0/3] drm: commit_work scheduling
-To:     Rob Clark <robdclark@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
+References: <20200916043103.606132-1-aubrey.li@linux.intel.com>
+ <20200916110039.GG3117@suse.de> <78d608f2-b974-e940-da32-b37777bc405a@linux.intel.com>
+ <CAKfTPtAVkg081VEGp3Hx3i7D+jxRJcyBi2=NJypvHH6HVJ8Nwg@mail.gmail.com>
+In-Reply-To: <CAKfTPtAVkg081VEGp3Hx3i7D+jxRJcyBi2=NJypvHH6HVJ8Nwg@mail.gmail.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Mon, 21 Sep 2020 17:21:00 +0200
+Message-ID: <CAKfTPtA2yE_sFfP5MFN=K+ph7rqpYUhapUdDBJ5hFLxnQPktJw@mail.gmail.com>
+Subject: Re: [RFC PATCH v2] sched/fair: select idle cpu from idle cpumask in
+ sched domain
+To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
+Cc:     Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Tim Murray <timmurray@google.com>, Tejun Heo <tj@kernel.org>
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Jiang Biao <benbjiang@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 8:16 AM Rob Clark <robdclark@gmail.com> wrote:
+On Mon, 21 Sep 2020 at 17:14, Vincent Guittot
+<vincent.guittot@linaro.org> wrote:
 >
-> On Mon, Sep 21, 2020 at 2:21 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> On Thu, 17 Sep 2020 at 11:21, Li, Aubrey <aubrey.li@linux.intel.com> wrote:
 > >
-> > On Sat, Sep 19, 2020 at 12:37:23PM -0700, Rob Clark wrote:
-> > > From: Rob Clark <robdclark@chromium.org>
+> > On 2020/9/16 19:00, Mel Gorman wrote:
+> > > On Wed, Sep 16, 2020 at 12:31:03PM +0800, Aubrey Li wrote:
+> > >> Added idle cpumask to track idle cpus in sched domain. When a CPU
+> > >> enters idle, its corresponding bit in the idle cpumask will be set,
+> > >> and when the CPU exits idle, its bit will be cleared.
+> > >>
+> > >> When a task wakes up to select an idle cpu, scanning idle cpumask
+> > >> has low cost than scanning all the cpus in last level cache domain,
+> > >> especially when the system is heavily loaded.
+> > >>
+> > >> The following benchmarks were tested on a x86 4 socket system with
+> > >> 24 cores per socket and 2 hyperthreads per core, total 192 CPUs:
+> > >>
 > > >
-> > > The android userspace treats the display pipeline as a realtime problem.
-> > > And arguably, if your goal is to not miss frame deadlines (ie. vblank),
-> > > it is.  (See https://lwn.net/Articles/809545/ for the best explaination
-> > > that I found.)
+> > > This still appears to be tied to turning the tick off. An idle CPU
+> > > available for computation does not necessarily have the tick turned off
+> > > if it's for short periods of time. When nohz is disabled or a machine is
+> > > active enough that CPUs are not disabling the tick, select_idle_cpu may
+> > > fail to select an idle CPU and instead stack tasks on the old CPU.
 > > >
-> > > But this presents a problem with using workqueues for non-blocking
-> > > atomic commit_work(), because the SCHED_FIFO userspace thread(s) can
-> > > preempt the worker.  Which is not really the outcome you want.. once
-> > > the required fences are scheduled, you want to push the atomic commit
-> > > down to hw ASAP.
+> > > The other subtlety is that select_idle_sibling() currently allows a
+> > > SCHED_IDLE cpu to be used as a wakeup target. The CPU is not really
+> > > idle as such, it's simply running a low priority task that is suitable
+> > > for preemption. I suspect this patch breaks that.
 > > >
-> > > But the decision of whether commit_work should be RT or not really
-> > > depends on what userspace is doing.  For a pure CFS userspace display
-> > > pipeline, commit_work() should remain SCHED_NORMAL.
-> > >
-> > > To handle this, convert non-blocking commit_work() to use per-CRTC
-> > > kthread workers, instead of system_unbound_wq.  Per-CRTC workers are
-> > > used to avoid serializing commits when userspace is using a per-CRTC
-> > > update loop.
-> > >
-> > > A client-cap is introduced so that userspace can opt-in to SCHED_FIFO
-> > > priority commit work.
-> > >
-> > > A potential issue is that since 616d91b68cd ("sched: Remove
-> > > sched_setscheduler*() EXPORTs") we have limited RT priority levels,
-> > > meaning that commit_work() ends up running at the same priority level
-> > > as vblank-work.  This shouldn't be a big problem *yet*, due to limited
-> > > use of vblank-work at this point.  And if it could be arranged that
-> > > vblank-work is scheduled before signaling out-fences and/or sending
-> > > pageflip events, it could probably work ok to use a single priority
-> > > level for both commit-work and vblank-work.
+> > Thanks!
 > >
-> > The part I don't like about this is that it all feels rather hacked
-> > together, and if we add more stuff (or there's some different thing in the
-> > system that also needs rt scheduling) then it doesn't compose.
+> > I shall post a v3 with performance data, I made a quick uperf testing and
+> > found the benefit is still there. So I posted the patch here and looking
+> > forward to your comments before I start the benchmarks.
+> >
+> > Thanks,
+> > -Aubrey
+> >
+> > -----------------------------------------------------------------------
+> > diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+> > index fb11091129b3..43a641d26154 100644
+> > --- a/include/linux/sched/topology.h
+> > +++ b/include/linux/sched/topology.h
+> > @@ -65,8 +65,21 @@ struct sched_domain_shared {
+> >         atomic_t        ref;
+> >         atomic_t        nr_busy_cpus;
+> >         int             has_idle_cores;
+> > +       /*
+> > +        * Span of all idle CPUs in this domain.
+> > +        *
+> > +        * NOTE: this field is variable length. (Allocated dynamically
+> > +        * by attaching extra space to the end of the structure,
+> > +        * depending on how many CPUs the kernel has booted up with)
+> > +        */
+> > +       unsigned long   idle_cpus_span[];
+> >  };
+> >
+> > +static inline struct cpumask *sds_idle_cpus(struct sched_domain_shared *sds)
+> > +{
+> > +       return to_cpumask(sds->idle_cpus_span);
+> > +}
+> > +
+> >  struct sched_domain {
+> >         /* These fields must be setup */
+> >         struct sched_domain __rcu *parent;      /* top domain must be null terminated */
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 6b3b59cc51d6..9a3c82645472 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -6023,6 +6023,26 @@ void __update_idle_core(struct rq *rq)
+> >         rcu_read_unlock();
+> >  }
+> >
+> > +/*
+> > + * Update cpu idle state and record this information
+> > + * in sd_llc_shared->idle_cpus_span.
+> > + */
+> > +void update_idle_cpumask(struct rq *rq)
+> > +{
+> > +       struct sched_domain *sd;
+> > +       int cpu = cpu_of(rq);
+> > +
+> > +       rcu_read_lock();
+> > +       sd = rcu_dereference(per_cpu(sd_llc, cpu));
+> > +       if (!sd || !sd->shared)
+> > +               goto unlock;
+> > +       if (!available_idle_cpu(cpu) || !sched_idle_cpu(cpu))
+> > +               goto unlock;
+> > +       cpumask_set_cpu(cpu, sds_idle_cpus(sd->shared));
+> > +unlock:
+> > +       rcu_read_unlock();
+> > +}
+> > +
+> >  /*
+> >   * Scan the entire LLC domain for idle cores; this dynamically switches off if
+> >   * there are no idle cores left in the system; tracked through
+> > @@ -6136,7 +6156,12 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+> >
+> >         time = cpu_clock(this);
+> >
+> > -       cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+> > +       /*
+> > +        * sched_domain_shared is set only at shared cache level,
+> > +        * this works only because select_idle_cpu is called with
+> > +        * sd_llc.
+> > +        */
+> > +       cpumask_and(cpus, sds_idle_cpus(sd->shared), p->cpus_ptr);
+> >
+> >         for_each_cpu_wrap(cpu, cpus, target) {
+> >                 if (!--nr)
+> > @@ -6712,6 +6737,10 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu, int sd_flag, int wake_f
+> >
+> >                 if (want_affine)
+> >                         current->recent_used_cpu = cpu;
+> > +
+> > +               sd = rcu_dereference(per_cpu(sd_llc, new_cpu));
+> > +               if (sd && sd->shared)
+> > +                       cpumask_clear_cpu(new_cpu, sds_idle_cpus(sd->shared));
 >
-> The ideal thing would be that userspace is in control of the
-> priorities.. the setclientcap approach seemed like a reasonable way to
-> give the drm-master a way to opt in.
+> Why are you clearing the bit only for the fast path ? the slow path
+> can also select an idle CPU
 >
-> I suppose instead userspace could use sched_setscheduler().. but that
-> would require userspace to be root, and would require some way to find
-> the tid.
->
-> Is there some way we could arrange for the per-crtc kthread's to be
-> owned by the drm master?  That would solve the "must be root" issue.
-> And since the target audience is an atomic userspace, I suppose we
-> could expose the tid as a read-only property on the crtc?
+> Then, I'm afraid that updating a cpumask at each and every task wakeup
+> will be far too expensive. That's why we are ot updating
 
-Side-note, we have the same issue with work scheduled when GPU
-completes a batch/submit.. I'm less sure what to do with that, so
-figured I'd start with the commit_work because that was the "easy"
-part ;-)
+That's why we are not updating
 
-The retire_work tends to complete quickly, so maybe sched_set_fifo()
-is sufficient.  (That plus these days things that run android tend to
-have 8 cores so you can kinda get away with multiple things at the
-same RT priority level to some degree..)
-
-> BR,
-> -R
+> nohz.idle_cpus_mask at each and every enter/exit idle but only once
+> per tick.
 >
-> > So question to rt/worker folks: What's the best way to let userspace set
-> > the scheduling mode and priorities of things the kernel does on its
-> > behalf? Surely we're not the first ones where if userspace runs with some
-> > rt priority it'll starve out the kernel workers that it needs. Hardcoding
-> > something behind a subsystem ioctl (which just means every time userspace
-> > changes what it does, we need a new such flag or mode) can't be the right
-> > thing.
+> And a quick test with hackbench on my octo cores arm64 gives for 12
+> iterations of: hackbench -l 2560 -g 1
+> tip/sched/core :  1.324(+/- 1.26%)
+> with this patch :  2.419(+/- 12.31%) -82% regression
+>
+> >         }
+> >         rcu_read_unlock();
 > >
-> > Peter, Tejun?
+> > @@ -10871,6 +10900,9 @@ static void set_next_task_fair(struct rq *rq, struct task_struct *p, bool first)
+> >                 /* ensure bandwidth has been allocated on our new cfs_rq */
+> >                 account_cfs_rq_runtime(cfs_rq, 0);
+> >         }
+> > +       /* Update idle cpumask if task has idle policy */
+> > +       if (unlikely(task_has_idle_policy(p)))
+> > +               update_idle_cpumask(rq);
+>
+> it's wrong because a sched_idle task will run for time to time even
+> when some cfs tasks are runnable
+>
+> >  }
 > >
-> > Thanks, Daniel
+> >  void init_cfs_rq(struct cfs_rq *cfs_rq)
+> > diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+> > index 1ae95b9150d3..876dfdfe35bb 100644
+> > --- a/kernel/sched/idle.c
+> > +++ b/kernel/sched/idle.c
+> > @@ -405,6 +405,7 @@ static void put_prev_task_idle(struct rq *rq, struct task_struct *prev)
+> >  static void set_next_task_idle(struct rq *rq, struct task_struct *next, bool first)
+> >  {
+> >         update_idle_core(rq);
+> > +       update_idle_cpumask(rq);
+> >         schedstat_inc(rq->sched_goidle);
+> >  }
 > >
-> > >
-> > > Rob Clark (3):
-> > >   drm/crtc: Introduce per-crtc kworker
-> > >   drm/atomic: Use kthread worker for nonblocking commits
-> > >   drm: Add a client-cap to set scheduling mode
-> > >
-> > >  drivers/gpu/drm/drm_atomic_helper.c | 13 ++++++----
-> > >  drivers/gpu/drm/drm_auth.c          |  4 ++++
-> > >  drivers/gpu/drm/drm_crtc.c          | 37 +++++++++++++++++++++++++++++
-> > >  drivers/gpu/drm/drm_ioctl.c         | 13 ++++++++++
-> > >  include/drm/drm_atomic.h            | 31 ++++++++++++++++++++++++
-> > >  include/drm/drm_crtc.h              | 10 ++++++++
-> > >  include/uapi/drm/drm.h              | 13 ++++++++++
-> > >  7 files changed, 117 insertions(+), 4 deletions(-)
-> > >
-> > > --
-> > > 2.26.2
-> > >
-> > > _______________________________________________
-> > > dri-devel mailing list
-> > > dri-devel@lists.freedesktop.org
-> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> > diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> > index c82857e2e288..7a3355f61bcf 100644
+> > --- a/kernel/sched/sched.h
+> > +++ b/kernel/sched/sched.h
+> > @@ -1069,6 +1069,7 @@ static inline void update_idle_core(struct rq *rq)
+> >  #else
+> >  static inline void update_idle_core(struct rq *rq) { }
+> >  #endif
+> > +void update_idle_cpumask(struct rq *rq);
 > >
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
+> >  DECLARE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
+> >
+> > diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> > index 9079d865a935..f14a6ef4de57 100644
+> > --- a/kernel/sched/topology.c
+> > +++ b/kernel/sched/topology.c
+> > @@ -1407,6 +1407,7 @@ sd_init(struct sched_domain_topology_level *tl,
+> >                 sd->shared = *per_cpu_ptr(sdd->sds, sd_id);
+> >                 atomic_inc(&sd->shared->ref);
+> >                 atomic_set(&sd->shared->nr_busy_cpus, sd_weight);
+> > +               cpumask_copy(sds_idle_cpus(sd->shared), sched_domain_span(sd));
+> >         }
+> >
+> >         sd->private = sdd;
+> > @@ -1769,7 +1770,7 @@ static int __sdt_alloc(const struct cpumask *cpu_map)
+> >
+> >                         *per_cpu_ptr(sdd->sd, j) = sd;
+> >
+> > -                       sds = kzalloc_node(sizeof(struct sched_domain_shared),
+> > +                       sds = kzalloc_node(sizeof(struct sched_domain_shared) + cpumask_size(),
+> >                                         GFP_KERNEL, cpu_to_node(j));
+> >                         if (!sds)
+> >                                 return -ENOMEM;
+> >
