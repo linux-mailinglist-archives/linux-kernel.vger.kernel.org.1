@@ -2,67 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB686272051
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3672E272073
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:23:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726900AbgIUKVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:21:00 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:18636 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726859AbgIUKUx (ORCPT
+        id S1727080AbgIUKVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:21:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39856 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726457AbgIUKVr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 06:20:53 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f687e280001>; Mon, 21 Sep 2020 03:19:20 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 21 Sep
- 2020 10:20:52 +0000
-Received: from [192.168.22.23] (10.124.1.5) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Mon, 21 Sep 2020 10:20:50 +0000
-From:   Thierry Reding <treding@nvidia.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-CC:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?utf-8?q?Micha=C5=82_Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        <linux-i2c@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 34/34] i2c: tegra: Improve driver module description
-In-Reply-To: <20200908224006.25636-35-digetx@gmail.com>
-References: <20200908224006.25636-35-digetx@gmail.com>
-X-NVConfidentiality: public
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 21 Sep 2020 06:21:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600683706;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nXLSRgJ1NwJlygVsKMNwZZ5/k5tFxWzlJPyhSnYKIn0=;
+        b=JYMtdLldXRBzPrF0ZWGD3BXT/MnkkAeA2eeynBqiy7FveayNfVuaOsIPGAZJJxdCqaoBPn
+        n8h5kcK1/Y5CDMqnIyFnJ18gbwuYcs7SHA+Xp8xau4tHfF+atALBNvJZZDLM1LRAcyz3cK
+        eofRdoAo3ZI6BbVx/zTwJB5O5peOKXo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-376-1nOGtU6IOIqAV3FA_Qw7cw-1; Mon, 21 Sep 2020 06:21:44 -0400
+X-MC-Unique: 1nOGtU6IOIqAV3FA_Qw7cw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EEE77107464F;
+        Mon, 21 Sep 2020 10:21:42 +0000 (UTC)
+Received: from gondolin (ovpn-112-187.ams2.redhat.com [10.36.112.187])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6E42310013D0;
+        Mon, 21 Sep 2020 10:21:37 +0000 (UTC)
+Date:   Mon, 21 Sep 2020 12:21:34 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Zenghui Yu <yuzenghui@huawei.com>
+Cc:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <alex.williamson@redhat.com>, <wanghaibin.wang@huawei.com>
+Subject: Re: [PATCH v2 2/2] vfio/pci: Don't regenerate vconfig for all BARs
+ if !bardirty
+Message-ID: <20200921122134.5c7794f3.cohuck@redhat.com>
+In-Reply-To: <20200921045116.258-2-yuzenghui@huawei.com>
+References: <20200921045116.258-1-yuzenghui@huawei.com>
+        <20200921045116.258-2-yuzenghui@huawei.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-Message-ID: <979bf43ec4464d7eaf1faad1624da909@HQMAIL111.nvidia.com>
-Date:   Mon, 21 Sep 2020 10:20:50 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600683560; bh=r7hV7geTIPWWjapSsPszm7ku9wfmxtyKThkmFc9nZxQ=;
-        h=From:To:CC:Subject:In-Reply-To:References:X-NVConfidentiality:
-         Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:
-         Date;
-        b=q6cX4ZRaIprEJQ3dl7obVBglQPQjM4duT+b+xgNzBjQ3w/FvGobLYPB42IhR/oXdg
-         QHbTlF14c9TfTUOC4X5TbX82P3T+v4iB/iFo0dZ2NgbvG5qvHvpl34PNVCY3AS+h79
-         PMw44smol8ahpoh7N7ZpnFYAN4kF8sl7ib8bo5At9t7HIyQvx7NMPAHVemY001nUFg
-         e0skSZm0aoD8hGSpS36o44G6gMRHaT4Y+PPm3VqC/3fUdIXqFpztwx3FG41mBkUYjH
-         ExN0ksX6KlbHOJW6U55tXraPiyE3SpxrZqt7wQwttndyDaYF86wJv2TKJa+TmpSOFR
-         duSPnuwVq4TxQ==
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 09 Sep 2020 01:40:06 +0300, Dmitry Osipenko wrote:
-> Use proper spelling of "NVIDIA" and don't designate driver as Tegra2-only
-> since newer SoC generations are supported as well.
->=20
-> Reviewed-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> Acked-by: Thierry Reding <treding@nvidia.com>
-> ---
->  drivers/i2c/busses/i2c-tegra.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Mon, 21 Sep 2020 12:51:16 +0800
+Zenghui Yu <yuzenghui@huawei.com> wrote:
 
-Tested-by: Thierry Reding <treding@nvidia.com>
+> Now we regenerate vconfig for all the BARs via vfio_bar_fixup(), every time
+> any offset of any of them are read. Though BARs aren't re-read regularly,
+> the regeneration can be avoid if no BARs had been written since they were
+
+s/avoid/avoided/
+
+> last read, in which case the vdev->bardirty is false.
+
+s/the//
+
+> 
+> Let's predicate the vfio_bar_fixup() on the bardirty so that it can return
+> immediately if !bardirty.
+
+Maybe
+
+"Let's return immediately in vfio_bar_fixup() if bardirty is false." ?
+
+> 
+> Suggested-by: Alex Williamson <alex.williamson@redhat.com>
+> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+> ---
+> * From v1:
+>   - Per Alex's suggestion, let vfio_bar_fixup() test vdev->bardirty to
+>     avoid doing work if bardirty is false, instead of removing it entirely.
+>   - Rewrite the commit message.
+> 
+>  drivers/vfio/pci/vfio_pci_config.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/vfio/pci/vfio_pci_config.c b/drivers/vfio/pci/vfio_pci_config.c
+> index d98843feddce..5e02ba07e8e8 100644
+> --- a/drivers/vfio/pci/vfio_pci_config.c
+> +++ b/drivers/vfio/pci/vfio_pci_config.c
+> @@ -467,6 +467,9 @@ static void vfio_bar_fixup(struct vfio_pci_device *vdev)
+>  	__le32 *vbar;
+>  	u64 mask;
+> 
+> +	if (!vdev->bardirty)
+
+Finally, bardirty can actually affect something :)
+
+> +		return;
+> +
+>  	vbar = (__le32 *)&vdev->vconfig[PCI_BASE_ADDRESS_0];
+>  
+>  	for (i = 0; i < PCI_STD_NUM_BARS; i++, vbar++) {
+
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+
