@@ -2,76 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D87C7272001
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B437D27204D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:23:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726677AbgIUKTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:19:54 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:18491 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726326AbgIUKTx (ORCPT
+        id S1726448AbgIUKUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:20:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726827AbgIUKUs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 06:19:53 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f687dec0002>; Mon, 21 Sep 2020 03:18:20 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 21 Sep
- 2020 10:19:52 +0000
-Received: from [192.168.22.23] (10.124.1.5) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Mon, 21 Sep 2020 10:19:49 +0000
-From:   Thierry Reding <treding@nvidia.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-CC:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?utf-8?q?Micha=C5=82_Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        <linux-i2c@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 20/34] i2c: tegra: Remove "dma" variable from
- tegra_i2c_xfer_msg()
-In-Reply-To: <20200908224006.25636-21-digetx@gmail.com>
-References: <20200908224006.25636-21-digetx@gmail.com>
-X-NVConfidentiality: public
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-MIME-Version: 1.0
-Message-ID: <6df73f9b69434fc38411cd69172d7d57@HQMAIL111.nvidia.com>
-Date:   Mon, 21 Sep 2020 10:19:49 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600683500; bh=PZMqJ0mpdlsSF2NWXXssuKNHeJDSYSa+NGTCLXbuSCU=;
-        h=From:To:CC:Subject:In-Reply-To:References:X-NVConfidentiality:
-         Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:
-         Date;
-        b=LpbK+MdEHG29iXnQSuXVwb+MjbYA0pClsbeCHaj3N2kD7RUlSaNePb/RFzuWyI1VN
-         Vie4zmFXxjVT2qpSxoBWjXir0i19qrcqa2QM3HqY2DP6rwWmhTTSQefAmh8Ng5TV7v
-         Hgb20NfDHJyz8gYQw1EjiobxtFu+3v06xGlhP60vs2QmnejpP4ndrU945Vb9Bh95Tz
-         N6cE8GeX3RjM9ZseO6UCLZCcVExHQwwUYm43gaiLnfTnFA64UuQzTudWWBmVqiKX0u
-         VmlLSrtlJDOUjEcY/8r9S6BphLYcKRxIBi/0yVZQ4xjLbOfV7bXQ+21qLT/nREFlBv
-         mpnnJWPziAWLg==
+        Mon, 21 Sep 2020 06:20:48 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5547EC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:20:48 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id e17so11564475wme.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:20:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=7hg4hkt0xKc+u3OMG6BJG4ab1Qlz/YPXWuTo+eYO1gA=;
+        b=I9A+ozHbjj5JIKiaEWlISCq0H27Pvji2tPH9MWl/bJlBO/XHBY+M9xbil5zUFwme8r
+         RopHc97gNGKXhpYPb2FtNbXH6YJVWex7q8flecpw+CgjEZoGmYW2dFWs3e28zn2RcW8W
+         u0BqgrDL6rfkc5QCTixqui4vUZ9hvKw6oCy5eL5XvLxrzk7xqLe0X3DgrPbLTJ3OyJJu
+         Da7lRhMZXm50cMBW5GS5yE2f5MzK/dNRVh8YnNwIuk8Zh2oa2OGELlicuASRb1HUGg1H
+         xEiveZMZmDXPoJsly6mRcaMfuDoNyFsBP+Bft/kd1lhQArcgu6n7mKb+Ar0zuFmIopv+
+         vMiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=7hg4hkt0xKc+u3OMG6BJG4ab1Qlz/YPXWuTo+eYO1gA=;
+        b=YFYdUiu1QfItdu9g02k1+mDItFhHv+3nUpmvg5ItwRtLx8IFB8oJuVu0PEJSKgzjz2
+         sQYA0MCgWEjwNFoyBjTNTzcR4Mrg+7QJzoxjzkswck9lx9ln/bQCJhF93jdBUZwnq/SQ
+         8eVROmoVgMjtVuxOoCN2fGawhgr8d7fDh+eLRe6KO6EYTnSaEuSN78iej2Dt71XyATKy
+         /jEM5PMz+LGej8p1WGi5qvCjcizBhTcal0mFgT3HXCWjboi7iyGmNtz+w/GDXUd/x0wB
+         y3NkvBnXBPZIuZqrTsW6E/hTP7txSzfnhOR0Y9TIzVDTPGGXu0xCWMoi7SDfC8IiIvdO
+         Ygjg==
+X-Gm-Message-State: AOAM531QhuS4PeVC58woR9PBiribzmIP1/hvtJAuIDZsgiXDFIMvjMWI
+        S71ibSggENeFDslny3CZRvinsA==
+X-Google-Smtp-Source: ABdhPJwJJAhkkByBZiA+u9aw9ZaL1S/4JSy8xlyXdLg6vqMKmmptWk2OW3Tnk20GbyYqMkxkQjAz+w==
+X-Received: by 2002:a7b:c4d9:: with SMTP id g25mr29201004wmk.15.1600683647080;
+        Mon, 21 Sep 2020 03:20:47 -0700 (PDT)
+Received: from localhost.localdomain ([51.15.160.169])
+        by smtp.googlemail.com with ESMTPSA id l17sm18804629wme.11.2020.09.21.03.20.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 21 Sep 2020 03:20:46 -0700 (PDT)
+From:   Corentin Labbe <clabbe@baylibre.com>
+To:     gregkh@linuxfoundation.org, laurent.pinchart@skynet.be,
+        mchehab@kernel.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH RFT/RFC 15/49] staging: media: zoran: use v4l2_buffer_set_timestamp
+Date:   Mon, 21 Sep 2020 10:19:50 +0000
+Message-Id: <1600683624-5863-16-git-send-email-clabbe@baylibre.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1600683624-5863-1-git-send-email-clabbe@baylibre.com>
+References: <1600683624-5863-1-git-send-email-clabbe@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 09 Sep 2020 01:39:52 +0300, Dmitry Osipenko wrote:
-> The "dma" variable of tegra_i2c_xfer_msg() function doesn't bring much in
-> regards to readability and generation of the code.
-> 
-> Besides readability, it's also not very nice that the is_curr_dma_xfer
-> is initialized in tegra_i2c_xfer_msg() and then could be overridden by
-> tegra_i2c_config_fifo_trig(). In a result, the "dma" variable creates
-> slight confusion since it's not instantly obvious why it's set after
-> tegra_i2c_config_fifo_trig().
-> 
-> Hence should be better to have the variable removed. This makes code
-> more consistent.
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> Acked-by: Thierry Reding <treding@nvidia.com>
-> ---
->  drivers/i2c/busses/i2c-tegra.c | 17 ++++++++---------
->  1 file changed, 8 insertions(+), 9 deletions(-)
+The ns_to_timeval function is removed, so replace it with
+v4l2_buffer_set_timestamp().
 
-Tested-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+---
+ drivers/staging/media/zoran/zoran_driver.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/staging/media/zoran/zoran_driver.c b/drivers/staging/media/zoran/zoran_driver.c
+index 31ed36906204..a996161cb276 100644
+--- a/drivers/staging/media/zoran/zoran_driver.c
++++ b/drivers/staging/media/zoran/zoran_driver.c
+@@ -1197,7 +1197,7 @@ static int zoran_v4l2_buffer_status(struct zoran_fh *fh,
+ 		    fh->buffers.buffer[num].state == BUZ_STATE_USER) {
+ 			buf->sequence = fh->buffers.buffer[num].bs.seq;
+ 			buf->flags |= V4L2_BUF_FLAG_DONE;
+-			buf->timestamp = ns_to_timeval(fh->buffers.buffer[num].bs.ts);
++			v4l2_buffer_set_timestamp(buf, fh->buffers.buffer[num].bs.ts);
+ 		} else {
+ 			buf->flags |= V4L2_BUF_FLAG_QUEUED;
+ 		}
+@@ -1228,7 +1228,7 @@ static int zoran_v4l2_buffer_status(struct zoran_fh *fh,
+ 		if (fh->buffers.buffer[num].state == BUZ_STATE_DONE ||
+ 		    fh->buffers.buffer[num].state == BUZ_STATE_USER) {
+ 			buf->sequence = fh->buffers.buffer[num].bs.seq;
+-			buf->timestamp = ns_to_timeval(fh->buffers.buffer[num].bs.ts);
++			v4l2_buffer_set_timestamp(buf, fh->buffers.buffer[num].bs.ts);
+ 			buf->bytesused = fh->buffers.buffer[num].bs.length;
+ 			buf->flags |= V4L2_BUF_FLAG_DONE;
+ 		} else {
+-- 
+2.26.2
+
