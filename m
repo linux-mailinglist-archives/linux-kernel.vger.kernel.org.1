@@ -2,87 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9336B273587
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 00:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B1F4273577
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 00:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728460AbgIUWOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 18:14:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56856 "EHLO
+        id S1728389AbgIUWLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 18:11:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726457AbgIUWO3 (ORCPT
+        with ESMTP id S1726452AbgIUWLD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 18:14:29 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11B9FC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 15:08:40 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id h17so13844525otr.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 15:08:39 -0700 (PDT)
+        Mon, 21 Sep 2020 18:11:03 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82105C0613D0;
+        Mon, 21 Sep 2020 15:11:03 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id y1so10231582pgk.8;
+        Mon, 21 Sep 2020 15:11:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=JGUMSDUiuFrAeiPpx9FqOcOPewDwKw2S1qq1Uii+oBE=;
-        b=Mf84vIYi1/cUdHiIBkoIbDq6bN2+2B0d/lYeNMFAeNJpeppdheNZPNqkOcZwn74RTL
-         fNQFYmz7+oyN4lwaMOaJrNJtz+ydxJrB5s4Unw4F3Xe5H3xB8qGpD70Ce1p5Oq4wnGpg
-         CJc8tFLvuWiEtAe2R1NukNJqCk0jM+iIG0DYs=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2r2b0KPod5OkUOq1IUFI5hozrLOWDCfm+dUGdotpenI=;
+        b=e2fT3Rs3Jc9WVXprfz87UCl8fvvSR1xwSmJDxb8ntg/WIfp27v8Q+2PeGMmtI0pNO+
+         ozVhDQFqv8QjwIVgwxyGOyL11aBA9poO8mEpVh/6rubsfiAM2vQUY78Cqz0UoyEQ7y96
+         SiT64mmZbsHwX8Kxhbs98I08rP2oMee795Rn6CQmqLKJXB0AVgmBlZtQ1BlvIIzviTsz
+         fqT7ttz6W+3xUPmH9eS/Aq0kK0LtZCzn7yAasS2+d4A+5AtmlVXExCOg84sFYzWvUiU6
+         p4/k7f/Q7MN9t4nYg8YOhss+5U4pMXS2bd6zeeyKMR6fFWItCO1jnCr5OKa6231FU071
+         m8Aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=JGUMSDUiuFrAeiPpx9FqOcOPewDwKw2S1qq1Uii+oBE=;
-        b=QN5OpP91eHERo9+1F/zzyixEBdcMJ5CYr5bPvCUQiHZ6NxnThZo6pRpwqqPlSpNaNU
-         gNUAzcyQHRY1iEI4LCPwfGQVMQmjhwJedd+hyrvSiURqPmI8INUCn1ZQWI+MZHcihlPx
-         WfHvvhoW7SHq+WVdBqBGmGTIgAgT2mYuMslfNFKyzU7TL0NWLH4Cr9RQY166hX37p/Y7
-         TkLJZFRWMPI8oG/TW+6R2XhDJfd5ka7bIQpCeyJXj+bhpx7UvmHnahlv1TK6dOqK9ThP
-         lZdw2Yw960Ao96aALlqIsqBJn2PEPz8DiiII1Q2Dx+dDDm8wu5rvB8djjZjWLJZ+HtBI
-         InGg==
-X-Gm-Message-State: AOAM530yYZte0Uxgf1JGbGSuTpwyM4A/3UCcjDcaJnmDK8se+q2j8i4n
-        idfKAWEETSnkZTMi0EhKvlU51Q==
-X-Google-Smtp-Source: ABdhPJxcJJnmaRYS8s9zUSRJadF6CYSn2qaBU1sneIivpTqGdSksjT4CsxwqGkGwGRl+O2/nQ3EdQg==
-X-Received: by 2002:a05:6830:4f:: with SMTP id d15mr1015843otp.7.1600726119284;
-        Mon, 21 Sep 2020 15:08:39 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id s196sm6948293oih.26.2020.09.21.15.08.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Sep 2020 15:08:38 -0700 (PDT)
-To:     oded.gabbay@gmail.com, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        obitton@habana.ai, lee.jones@linaro.org, oshpigelman@habana.ai
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Subject: drivers/misc/habanalabs: atomic_t api usage inconsistencies
-Message-ID: <3dfdda44-3564-1775-c844-f7a2680c9c58@linuxfoundation.org>
-Date:   Mon, 21 Sep 2020 16:08:37 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2r2b0KPod5OkUOq1IUFI5hozrLOWDCfm+dUGdotpenI=;
+        b=X3JNhTdm4fi5C3X57NSTgbAd/hdIKT7ZJ0OxQBf8aJ8re/SQWmrsXmP0X1vUjKCG7V
+         EBg1C1Kah3A0nFeKS3WEVuU5WeoFiDoAlE+Z0G2jLB9EdNhTxfJ8uJKckUucWisLcgWG
+         +H0M0HRU71EPwvWy9Calwi6zh5UiuLWvT464mppOuNQEEUQnCAi23ssRLDMm3RMJHqz8
+         lPl9rR004IA9vhSBsuYXMOGfJPxBm991YZ0jbOoxl/HSd4hjk+CWjPjkd9HxEaENgbHN
+         myW/9R8WUf+rPSgy5K1ZBROHYws9Gz20JY/V6l/30fp5zTXigmRouJ4h67fVG/ic55HM
+         uIOQ==
+X-Gm-Message-State: AOAM530ZfvFYSxNQW3Zc46Nr9py24O5sRCZkp8Hgqu9feLAQL1/8vxNV
+        uFavSXJgPBQYEeu4L6DgilDGkXXcbtCJHw==
+X-Google-Smtp-Source: ABdhPJzivyHMR5wxwkIqLH+bhvIpB9lD0c9i58dW9j8BC8GNUIIvkc+74+rRywg27DztRbYbhMe2dg==
+X-Received: by 2002:a17:902:9694:b029:d2:1b52:f46 with SMTP id n20-20020a1709029694b02900d21b520f46mr1930061plp.78.1600726262563;
+        Mon, 21 Sep 2020 15:11:02 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id w6sm13000643pgf.72.2020.09.21.15.11.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 15:11:01 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM ETHERNET PHY
+        DRIVERS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net-next] net: phy: bcm7xxx: Add an entry for BCM72113
+Date:   Mon, 21 Sep 2020 15:10:53 -0700
+Message-Id: <20200921221053.2506156-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All,
+BCM72113 features a 28nm integrated EPHY, add an entry to the driver for
+it.
 
-While I was looking at the atomic_t api usages for an unrelated issue,
-I noticed free_slots_cnt in struct hl_cq incerment/decrement/reads are
-not consistent.
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ drivers/net/phy/bcm7xxx.c | 2 ++
+ include/linux/brcmphy.h   | 1 +
+ 2 files changed, 3 insertions(+)
 
-atomic_inc() and atomic_set() are used, however instead of atomic_read()
-the value is referenced directly in
-drivers/misc/habanalabs/common/hw_queue.c
+diff --git a/drivers/net/phy/bcm7xxx.c b/drivers/net/phy/bcm7xxx.c
+index 744c24491d63..15812001b3ff 100644
+--- a/drivers/net/phy/bcm7xxx.c
++++ b/drivers/net/phy/bcm7xxx.c
+@@ -611,6 +611,7 @@ static void bcm7xxx_28nm_remove(struct phy_device *phydev)
+ }
+ 
+ static struct phy_driver bcm7xxx_driver[] = {
++	BCM7XXX_28NM_EPHY(PHY_ID_BCM72113, "Broadcom BCM72113"),
+ 	BCM7XXX_28NM_GPHY(PHY_ID_BCM7250, "Broadcom BCM7250"),
+ 	BCM7XXX_28NM_EPHY(PHY_ID_BCM7255, "Broadcom BCM7255"),
+ 	BCM7XXX_28NM_EPHY(PHY_ID_BCM7260, "Broadcom BCM7260"),
+@@ -631,6 +632,7 @@ static struct phy_driver bcm7xxx_driver[] = {
+ };
+ 
+ static struct mdio_device_id __maybe_unused bcm7xxx_tbl[] = {
++	{ PHY_ID_BCM72113, 0xfffffff0 },
+ 	{ PHY_ID_BCM7250, 0xfffffff0, },
+ 	{ PHY_ID_BCM7255, 0xfffffff0, },
+ 	{ PHY_ID_BCM7260, 0xfffffff0, },
+diff --git a/include/linux/brcmphy.h b/include/linux/brcmphy.h
+index 6ad4c000661a..d0bd226d6bd9 100644
+--- a/include/linux/brcmphy.h
++++ b/include/linux/brcmphy.h
+@@ -30,6 +30,7 @@
+ #define PHY_ID_BCM57780			0x03625d90
+ #define PHY_ID_BCM89610			0x03625cd0
+ 
++#define PHY_ID_BCM72113			0x35905310
+ #define PHY_ID_BCM7250			0xae025280
+ #define PHY_ID_BCM7255			0xae025120
+ #define PHY_ID_BCM7260			0xae025190
+-- 
+2.25.1
 
-hl_queue_add_ptr()
-atomic_t *free_slots = &hdev->completion_queue[q->cq_id].free_slots_cnt;
-
-hl_hw_queue_schedule_cs()
-
-atomic_t *free_slots = &hdev->completion_queue[i].free_slots_cnt;
-
-Any reason why this is necessary. I don't know that this is causing
-any problems, it is just odd that access is inconsistent.
-
-thanks,
--- Shuah
