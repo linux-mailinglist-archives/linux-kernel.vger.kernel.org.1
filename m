@@ -2,83 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39060272A99
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E34C272A8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727961AbgIUPpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 11:45:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727770AbgIUPpz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 11:45:55 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5288C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 08:45:54 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id k13so9088499pfg.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 08:45:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=m4CToQzhJGCPsf76V31txgnzK6ZWRX6mgYAAouheShA=;
-        b=TQLj+xIAjAfTPnBavQ42k4AVCfkkhAoFpGyGbUfn112tKk+rsze1UjwiBwA6wsXTRb
-         +ZGSGwS9rZXnOU2XL+2t7ihw8mFaWP3cE69P58bxQDLvuPPuxPBDbA60yrcfvOJFN3wj
-         i9Dq0s39zToBI2wBz9Q5oHyhCensCflvRRNEfuH8NzM9n2mJ2mI93sKe+atdJ31Q3Ktc
-         4EJ0IF/bP+f+mqDEHxpue16KzAeupaqJz+L016I0/2k+WHGmEyaNZYT5xOeWbZhkYd8e
-         ATVTjRUVzD5PWcnx+yI84wH9GtgZk/KQhtD7y41wdLq4jZtA8w/m7FWsCIjtGRosytPH
-         RGRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=m4CToQzhJGCPsf76V31txgnzK6ZWRX6mgYAAouheShA=;
-        b=Q6Zq95xOuGL1lb9LimqhNvi7dE9ALNgTyu1pWew/Mn1eTBa00a0MTiSGA67F60CjSZ
-         NN50plzf/fbcy6pGXzroewx3Y0dJYTAoBFGDC3M8sVIuYlb03vcKt/mWgHjudPgPd3q4
-         Zl37NCDZCRuk3oOQxQUtWXSNUL4raaBSmBnqB8VbSKD6oj2ex9f9bYbThCHcERH3LkzQ
-         q1chDBOoXkOe2SRMKEEOXyj8iiI4IfRBhePI5NIi0M4W0AS+wpm/GuC1F7Oh86vmRsnd
-         xfLSzr1sbdF2dEzAI1QDZboVwwWkHMLMfGIxitqYClaTHhadkAPo7WdumXwAZEAqbAcc
-         ioLw==
-X-Gm-Message-State: AOAM530ULfrCGHMJniOH+bVSDNl1LqnFYKdhOpafnPw8DjlihYe58RhT
-        gXl4er0+JA/D2HuD02QGF7hOOCIiAAGEkMGODsLroQ==
-X-Google-Smtp-Source: ABdhPJz3eHJzIBLoLRHlWEAAxADnXqcdAbbo2gdehznGZIMv5bAZn6qlumPqDj/AH/GXc8yt9GeA0rG1FYlNmQHjDyE=
-X-Received: by 2002:a63:310a:: with SMTP id x10mr234218pgx.10.1600703154282;
- Mon, 21 Sep 2020 08:45:54 -0700 (PDT)
+        id S1727923AbgIUPos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 11:44:48 -0400
+Received: from foss.arm.com ([217.140.110.172]:45688 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726810AbgIUPor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 11:44:47 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A864E147A;
+        Mon, 21 Sep 2020 08:44:46 -0700 (PDT)
+Received: from [192.168.0.110] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B01013F718;
+        Mon, 21 Sep 2020 08:44:44 -0700 (PDT)
+Subject: Re: [PATCH v6 5/7] KVM: arm64: pmu: Make overflow handler NMI safe
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, maz@kernel.org, catalin.marinas@arm.com,
+        swboyd@chromium.org, sumit.garg@linaro.org,
+        Julien Thierry <julien.thierry@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Pouloze <suzuki.poulose@arm.com>,
+        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu
+References: <20200819133419.526889-1-alexandru.elisei@arm.com>
+ <20200819133419.526889-6-alexandru.elisei@arm.com>
+ <20200921134301.GJ2139@willie-the-truck>
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+Message-ID: <a8763d49-d105-3920-8acf-c14d3a723b18@arm.com>
+Date:   Mon, 21 Sep 2020 16:45:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200921075131.1334333-1-georgepope@google.com> <CANpmjNO8YNROJsOj+n=hWj=2-LqebBQdZRks1KKQ3Scd05fLjg@mail.gmail.com>
-In-Reply-To: <CANpmjNO8YNROJsOj+n=hWj=2-LqebBQdZRks1KKQ3Scd05fLjg@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 21 Sep 2020 08:45:43 -0700
-Message-ID: <CAKwvOdmxK7Nd_y+Rqf6j1w0idYhfn4J0aumOOLMJ1fo1zToScQ@mail.gmail.com>
-Subject: Re: [PATCH] ubsan: introducing CONFIG_UBSAN_LOCAL_BOUNDS for Clang
-To:     Marco Elver <elver@google.com>
-Cc:     George-Aurelian Popescu <georgepope@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        David Brazdil <dbrazdil@google.com>,
-        George Popescu <georgepope@android.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200921134301.GJ2139@willie-the-truck>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 2:10 AM Marco Elver <elver@google.com> wrote:
->
-> > v1: changed the name of the config to UBSAN_LOCAL_BOUNDS in Kconfig
->
-> This version is v2, so this should have said "v2: <summary of what
-> changed>". The subject should have said "PATCH v2" (you can get this
-> by passing --reroll-count=2 to git).
+Hi Will,
 
-Prefer `-v2` when using `git format-patch`.
--- 
+On 9/21/20 2:43 PM, Will Deacon wrote:
+> On Wed, Aug 19, 2020 at 02:34:17PM +0100, Alexandru Elisei wrote:
+>> From: Julien Thierry <julien.thierry@arm.com>
+>>
+>> kvm_vcpu_kick() is not NMI safe. When the overflow handler is called from
+>> NMI context, defer waking the vcpu to an irq_work queue.
+>>
+>> Cc: Julien Thierry <julien.thierry.kdev@gmail.com>
+>> Cc: Marc Zyngier <marc.zyngier@arm.com>
+>> Cc: Will Deacon <will.deacon@arm.com>
+>> Cc: Mark Rutland <mark.rutland@arm.com>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: James Morse <james.morse@arm.com>
+>> Cc: Suzuki K Pouloze <suzuki.poulose@arm.com>
+>> Cc: kvm@vger.kernel.org
+>> Cc: kvmarm@lists.cs.columbia.edu
+>> Signed-off-by: Julien Thierry <julien.thierry@arm.com>
+>> Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
+>> ---
+>>  arch/arm64/kvm/pmu-emul.c | 25 ++++++++++++++++++++++++-
+>>  include/kvm/arm_pmu.h     |  1 +
+>>  2 files changed, 25 insertions(+), 1 deletion(-)
+> I'd like an Ack from the KVM side on this one, but some minor comments
+> inline.
+>
+>> diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
+>> index f0d0312c0a55..30268397ed06 100644
+>> --- a/arch/arm64/kvm/pmu-emul.c
+>> +++ b/arch/arm64/kvm/pmu-emul.c
+>> @@ -433,6 +433,22 @@ void kvm_pmu_sync_hwstate(struct kvm_vcpu *vcpu)
+>>  	kvm_pmu_update_state(vcpu);
+>>  }
+>>  
+>> +/**
+>> + * When perf interrupt is an NMI, we cannot safely notify the vcpu corresponding
+>> + * to the event.
+>> + * This is why we need a callback to do it once outside of the NMI context.
+>> + */
+>> +static void kvm_pmu_perf_overflow_notify_vcpu(struct irq_work *work)
+>> +{
+>> +	struct kvm_vcpu *vcpu;
+>> +	struct kvm_pmu *pmu;
+>> +
+>> +	pmu = container_of(work, struct kvm_pmu, overflow_work);
+>> +	vcpu = kvm_pmc_to_vcpu(&pmu->pmc[0]);
+> Can you spell this kvm_pmc_to_vcpu(pmu->pmc); ?
+
+Of course, that is much better.
+
+>
+>> +
+>> +	kvm_vcpu_kick(vcpu);
+> How do we guarantee that the vCPU is still around by the time this runs?
+> Sorry to ask such a horrible question, but I don't see anything associating
+> the workqueue with the lifetime of the vCPU.
+
+That's a very nice catch, indeed the code doesn't guarantee that the VM is still
+around when the work is executed. I will add an irq_work_sync() call to
+kvm_pmu_vcpu_destroy() (which is called by kvm_vcpu_destroy() ->
+kvm_arch_vcpu_destroy()), and to kvm_pmu_vcpu_reset(), similar to how x86 handles it.
+
 Thanks,
-~Nick Desaulniers
+Alex
