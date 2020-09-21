@@ -2,80 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07346271976
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 04:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9250C271966
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 04:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726437AbgIUCsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 22:48:06 -0400
-Received: from mga01.intel.com ([192.55.52.88]:56183 "EHLO mga01.intel.com"
+        id S1726244AbgIUCqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 22:46:50 -0400
+Received: from mga09.intel.com ([134.134.136.24]:53124 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726104AbgIUCsG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 22:48:06 -0400
-IronPort-SDR: syKJTURLJdC6nOuabqVcMJoW24IhxKX+iqhhx7IxqmvsKKKVEU1vx5ujelAW8EXkGsfox+QSC7
- 79sz3awSQqyw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9750"; a="178376024"
+        id S1726104AbgIUCqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 22:46:50 -0400
+IronPort-SDR: w0cYPiPv1X/inuaS5G67yTG+ixW6M3ZH+JL1LgUOuPh8at0IF4bZ1Hb1Z+xQLAwzPUu6vbewbv
+ qhCgTgHoS4Aw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9750"; a="161218607"
 X-IronPort-AV: E=Sophos;i="5.77,285,1596524400"; 
-   d="scan'208";a="178376024"
+   d="scan'208";a="161218607"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2020 19:47:58 -0700
-IronPort-SDR: gak2c7b4wJjDxzUuMDDeaOOyXBKuUuZIGwtSEmZpL0eOLtdzNzFRwebiK6YyfvJTitWsnYA2sD
- GPUwQNIeglew==
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2020 19:46:48 -0700
+IronPort-SDR: oxGsi7TfPjHqrQEOePTcJo/GQ00SlPblOpRlQ8cUZVs+bGaSeU/JX21p+yrIY6hAwibPDoXlhs
+ T18PdUakYCMg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,285,1596524400"; 
-   d="scan'208";a="453794662"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by orsmga004.jf.intel.com with ESMTP; 20 Sep 2020 19:47:56 -0700
-Date:   Mon, 21 Sep 2020 10:43:26 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, trix@redhat.com,
-        matthew.gerlach@linux.intel.com, russell.h.weight@intel.com,
-        lgoncalv@redhat.com, hao.wu@intel.com, mdf@kernel.org,
-        yilun.xu@intel.com
-Subject: Re: [PATCH v2] add the FPGA Device Feature List (DFL) EMIF support
-Message-ID: <20200921024326.GA8971@yilunxu-OptiPlex-7050>
-References: <1600234622-8815-1-git-send-email-yilun.xu@intel.com>
- <20200920162205.GA10210@kozik-lap>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200920162205.GA10210@kozik-lap>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+   d="scan'208";a="321538127"
+Received: from wwanmoha-ilbpg2.png.intel.com ([10.88.227.42])
+  by orsmga002.jf.intel.com with ESMTP; 20 Sep 2020 19:46:45 -0700
+From:   Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
+To:     kishon@ti.com, vkoul@kernel.org, robh+dt@kernel.org,
+        balbi@kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-usb@vger.kernel.org, andriy.shevchenko@linux.intel.com,
+        mgross@linux.intel.com, lakshmi.bai.raja.subramanian@intel.com,
+        wan.ahmad.zainie.wan.mohamad@intel.com
+Subject: [PATCH 0/4] phy: intel: Add Keem Bay USB PHY support
+Date:   Mon, 21 Sep 2020 10:44:55 +0800
+Message-Id: <20200921024459.20899-1-wan.ahmad.zainie.wan.mohamad@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 20, 2020 at 06:22:05PM +0200, Krzysztof Kozlowski wrote:
-> On Wed, Sep 16, 2020 at 01:37:01PM +0800, Xu Yilun wrote:
-> > The patchsets "Modularization of DFL private feature drivers" & "add dfl 
-> > bus support to MODULE_DEVICE_TABLE()" are all queued to linux-next. So
-> > there is no dependency now.
-> 
-> What do you mean there is no dependency? The DFL is required here and it
-> won't compile without these patches:
+Hi.
 
-Sorry, actually I mean the dependencies have been queued to linux-next.
-I didn't realize patch dependency problems across maintainer's trees.
+Intel Keem Bay USB subsystem incorporates DesignWare USB3.1 controller,
+an USB3.1 (Gen1/2) PHY and an USB2.0 PHY. It is a Dual Role Device
+(DRD), operating as either a USB host or a USB device.
 
-I'll try to contact Moritz if this patch could be applied via his tree.
+The patchset is tested on Keem Bay EVM.
 
-Thanks,
-Yilun
+Thank you.
 
-> 
->   CC      drivers/memory/dfl-emif.o
-> ../drivers/memory/dfl-emif.c:10:10: fatal error: linux/fpga/dfl.h: No such file or directory
->  #include <linux/fpga/dfl.h>
->           ^~~~~~~~~~~~~~~~~~
-> compilation terminated.
-> 
-> This simply cannot go in without dependency.
-> 
-> I described in your v1 submission what is needed here:
-> "Anyway I will need a stable tag with mentioned dependencies or this
-> will wait for the next cycle."
-> 
-> Best regards,
-> Krzysztof
+Best regards,
+Zainie
+
+
+Wan Ahmad Zainie (4):
+  dt-bindings: phy: Add Intel Keem Bay USB PHY bindings
+  phy: intel: Add Keem Bay USB PHY support
+  dt-bindings: usb: Add Intel Keem Bay USB controller bindings
+  usb: dwc3: of-simple: Add compatible string for Intel Keem Bay
+    platform
+
+ .../bindings/phy/intel,phy-keembay-usb.yaml   |  44 +++
+ .../bindings/usb/intel,keembay-dwc3.yaml      |  77 +++++
+ drivers/phy/intel/Kconfig                     |  12 +
+ drivers/phy/intel/Makefile                    |   1 +
+ drivers/phy/intel/phy-intel-keembay-usb.c     | 319 ++++++++++++++++++
+ drivers/usb/dwc3/dwc3-of-simple.c             |   1 +
+ 6 files changed, 454 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/phy/intel,phy-keembay-usb.yaml
+ create mode 100644 Documentation/devicetree/bindings/usb/intel,keembay-dwc3.yaml
+ create mode 100644 drivers/phy/intel/phy-intel-keembay-usb.c
+
+-- 
+2.17.1
+
