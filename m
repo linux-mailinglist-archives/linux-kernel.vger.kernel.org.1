@@ -2,91 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD672728B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:46:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 759DE2728BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728098AbgIUOoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 10:44:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727965AbgIUOom (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:44:42 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E225BC061755;
-        Mon, 21 Sep 2020 07:44:41 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id 77so6996365lfj.0;
-        Mon, 21 Sep 2020 07:44:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VBmGKsH4HXBysaC98/3xCnOtRsPHJTpyWV8wSKmKAjM=;
-        b=BFVZcoCXkbqbquKK2sSGrqLtZKU9hzgIVQ2eHQpno/78sfx38zmfBEIhAH1oOuaatm
-         lX7GOmadwj/QomMTDwgUyLyExg3FoHj9ReuFspSZ8IyUmt4YBN3NEMi+mScNFnEg8gtK
-         4i5re2ZtmX2gYb2MANPMa3upP1zoLp3CFzZI6PTnBuhH6DNKdeLs2f6e8/buiPyfMA/P
-         0Wof0+d7k2Gs33gLKi16XEihTtQa8nhfqQ5p3WBJjmYa9MwZeeqEsQyMhLuLvY8MHbHI
-         V+EK2A+4HlnMfzeu7lygDLb7KCjca8QCFnR//FPG56cetY8StplXI7REZUHw3JQ2VlyD
-         u4Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VBmGKsH4HXBysaC98/3xCnOtRsPHJTpyWV8wSKmKAjM=;
-        b=dBd0idAccgsOt+tbUfbgWH3RekJ+ZDJ8/ERJQcFzwmCzmcudISwzjaZFSPS0UImJHO
-         4YPEeabfmDwezU607MGVXOTbdKetYen+yusw9+C8XT/L38VMHxqKisPJg+Wm9x9qGS0i
-         xEpgaaY3O0FyvUMmUiOAVClHO/EHb9XdBXPZeWdwJ6JHyKbBrfNvu5awxclSczPceHuT
-         PQ112Zmamqoa0lOBJauQTHeaHaYxFMMdZ+WiglFIrjfhGDyISrr5PNFQc+524g3osoZ7
-         sanqceddodN3nvIbDcNhodhmISp1zrXdf4/M6nA+dDQTf3gHaY5K702ZaGPoBIf7XUsh
-         yK1Q==
-X-Gm-Message-State: AOAM532rGqWEWilRcEh7cdDx+UPU0Tz2trKrnfIQLOPpj/Q6zC7eYqph
-        tyqMZg/dvQ0n1lqX5jFsfNXCqTa7H4A=
-X-Google-Smtp-Source: ABdhPJz5SLAxXZRgZVYvNQwvj6rRLaz1d+7HanqGVKxv0Y8w2q0awvZO/dcXQiZTg5zyIAQogBIZTg==
-X-Received: by 2002:ac2:593b:: with SMTP id v27mr116180lfi.338.1600699480014;
-        Mon, 21 Sep 2020 07:44:40 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id x5sm2765162ljh.127.2020.09.21.07.44.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Sep 2020 07:44:39 -0700 (PDT)
-Subject: Re: [PATCH v7 12/34] i2c: tegra: Use clk-bulk helpers
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200908224006.25636-1-digetx@gmail.com>
- <20200908224006.25636-13-digetx@gmail.com> <20200917113846.GX3515672@ulmo>
- <175e7f54-36f0-32c6-35a3-14c5b5e89e95@gmail.com>
- <20200921111257.GF3950626@ulmo>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <7b3b9e21-f8c8-eebb-85bb-af62fc204f10@gmail.com>
-Date:   Mon, 21 Sep 2020 17:44:38 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200921111257.GF3950626@ulmo>
-Content-Type: text/plain; charset=utf-8
+        id S1728331AbgIUOpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 10:45:19 -0400
+Received: from mga04.intel.com ([192.55.52.120]:47344 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727782AbgIUOpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 10:45:10 -0400
+IronPort-SDR: phKSgqcMCRQBHIWLg6j96d9u8k9YxBFlfVclbQ3tmX8rdY2x2AZgD5LxzCUaGSRPzqAaF75Bwk
+ wln5/2Li8zmQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="157777807"
+X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; 
+   d="scan'208";a="157777807"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 07:45:06 -0700
+IronPort-SDR: 8DUjGiPnGeN6AciKCMuyeW3uwQeJCvcnqGdo9BhLjLd7/UHqoR3F3GyMBZaI6aCKOLaWDPfq4y
+ hohn7jr1z1+A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; 
+   d="scan'208";a="341604466"
+Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
+  by fmsmga002.fm.intel.com with ESMTP; 21 Sep 2020 07:45:05 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 21 Sep 2020 07:45:04 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 21 Sep 2020 07:45:04 -0700
+Received: from orsmsx610.amr.corp.intel.com ([10.22.229.23]) by
+ ORSMSX610.amr.corp.intel.com ([10.22.229.23]) with mapi id 15.01.1713.004;
+ Mon, 21 Sep 2020 07:45:04 -0700
+From:   "Pandruvada, Srinivas" <srinivas.pandruvada@intel.com>
+To:     "jikos@kernel.org" <jikos@kernel.org>,
+        "benjamin.tissoires@redhat.com" <benjamin.tissoires@redhat.com>,
+        "miaoqinglang@huawei.com" <miaoqinglang@huawei.com>
+CC:     "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] HID: intel-ish-hid: simplify the return expression
+ of ishtp_bus_remove_device()
+Thread-Topic: [PATCH -next] HID: intel-ish-hid: simplify the return expression
+ of ishtp_bus_remove_device()
+Thread-Index: AQHWkCXKtK5BXobwTUa9QkzzJLpciQ==
+Date:   Mon, 21 Sep 2020 14:45:04 +0000
+Message-ID: <ca452e8f61c2e828bc3ec2dc5993f87d251e5e38.camel@intel.com>
+References: <20200921131033.92017-1-miaoqinglang@huawei.com>
+In-Reply-To: <20200921131033.92017-1-miaoqinglang@huawei.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+x-originating-ip: [10.22.254.132]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <001ABCCBE88C0340A153033F12F751DB@intel.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-21.09.2020 14:12, Thierry Reding пишет:
-> On Thu, Sep 17, 2020 at 06:01:56PM +0300, Dmitry Osipenko wrote:
-> [...]
->> It's still possible to add the clk-num checking, but it should be
->> unpractical. We could always add it later on if there will be a real
->> incident. Do you agree?
-> 
-> There's also clk_bulk_get(), which allows you to specify the number of
-> clocks and their consumer IDs that you want to request. That seems like
-> it would allow us to both avoid the repetitive calls to clk APIs and at
-> the same time allows us to specify exactly which clocks we need. Would
-> that not work as a compromise?
-
-I'll change to use clk_bulk_get(), thanks.
+T24gTW9uLCAyMDIwLTA5LTIxIGF0IDIxOjEwICswODAwLCBRaW5nbGFuZyBNaWFvIHdyb3RlOg0K
+PiBTaW1wbGlmeSB0aGUgcmV0dXJuIGV4cHJlc3Npb24uDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBR
+aW5nbGFuZyBNaWFvIDxtaWFvcWluZ2xhbmdAaHVhd2VpLmNvbT4NCkFja2VkLWJ5OiBTcmluaXZh
+cyBQYW5kcnV2YWRhIDxzcmluaXZhcy5wYW5kcnV2YWRhQGxpbnV4LmludGVsLmNvbT4NCg0KPiAt
+LS0NCj4gIGRyaXZlcnMvaGlkL2ludGVsLWlzaC1oaWQvaXNodHAvYnVzLmMgfCA4ICstLS0tLS0t
+DQo+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDcgZGVsZXRpb25zKC0pDQo+IA0K
+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9oaWQvaW50ZWwtaXNoLWhpZC9pc2h0cC9idXMuYw0KPiBi
+L2RyaXZlcnMvaGlkL2ludGVsLWlzaC1oaWQvaXNodHAvYnVzLmMNCj4gaW5kZXggYzQ3YzMzMjhh
+Li5iYmEyOWNkMzYgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvaGlkL2ludGVsLWlzaC1oaWQvaXNo
+dHAvYnVzLmMNCj4gKysrIGIvZHJpdmVycy9oaWQvaW50ZWwtaXNoLWhpZC9pc2h0cC9idXMuYw0K
+PiBAQCAtNTAyLDggKzUwMiw2IEBAIHN0YXRpYyB2b2lkIGlzaHRwX2J1c19yZW1vdmVfZGV2aWNl
+KHN0cnVjdA0KPiBpc2h0cF9jbF9kZXZpY2UgKmRldmljZSkNCj4gIGludCBpc2h0cF9jbF9kcml2
+ZXJfcmVnaXN0ZXIoc3RydWN0IGlzaHRwX2NsX2RyaXZlciAqZHJpdmVyLA0KPiAgCQkJICAgICBz
+dHJ1Y3QgbW9kdWxlICpvd25lcikNCj4gIHsNCj4gLQlpbnQgZXJyOw0KPiAtDQo+ICAJaWYgKCFp
+c2h0cF9kZXZpY2VfcmVhZHkpDQo+ICAJCXJldHVybiAtRU5PREVWOw0KPiAgDQo+IEBAIC01MTEs
+MTEgKzUwOSw3IEBAIGludCBpc2h0cF9jbF9kcml2ZXJfcmVnaXN0ZXIoc3RydWN0DQo+IGlzaHRw
+X2NsX2RyaXZlciAqZHJpdmVyLA0KPiAgCWRyaXZlci0+ZHJpdmVyLm93bmVyID0gb3duZXI7DQo+
+ICAJZHJpdmVyLT5kcml2ZXIuYnVzID0gJmlzaHRwX2NsX2J1c190eXBlOw0KPiAgDQo+IC0JZXJy
+ID0gZHJpdmVyX3JlZ2lzdGVyKCZkcml2ZXItPmRyaXZlcik7DQo+IC0JaWYgKGVycikNCj4gLQkJ
+cmV0dXJuIGVycjsNCj4gLQ0KPiAtCXJldHVybiAwOw0KPiArCXJldHVybiBkcml2ZXJfcmVnaXN0
+ZXIoJmRyaXZlci0+ZHJpdmVyKTsNCj4gIH0NCj4gIEVYUE9SVF9TWU1CT0woaXNodHBfY2xfZHJp
+dmVyX3JlZ2lzdGVyKTsNCj4gIA0K
