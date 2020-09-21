@@ -2,69 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61DF32720CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:26:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 591E227206F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726634AbgIUKZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:25:22 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:9234 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726343AbgIUKZV (ORCPT
+        id S1727068AbgIUKVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:21:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727014AbgIUKVP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 06:25:21 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f687e370001>; Mon, 21 Sep 2020 03:19:35 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 21 Sep
- 2020 10:20:21 +0000
-Received: from [192.168.22.23] (10.124.1.5) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Mon, 21 Sep 2020 10:20:18 +0000
-From:   Thierry Reding <treding@nvidia.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-CC:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?utf-8?q?Micha=C5=82_Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        <linux-i2c@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 26/34] i2c: tegra: Factor out hardware initialization
- into separate function
-In-Reply-To: <20200908224006.25636-27-digetx@gmail.com>
-References: <20200908224006.25636-27-digetx@gmail.com>
-X-NVConfidentiality: public
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-MIME-Version: 1.0
-Message-ID: <c43429ecf87e46479fd9845eb1e92a38@HQMAIL111.nvidia.com>
-Date:   Mon, 21 Sep 2020 10:20:18 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600683575; bh=z5UvWyt1/Ey1+Ib6ltESDj67xyNJ+4zyx4L9BW4flVI=;
-        h=From:To:CC:Subject:In-Reply-To:References:X-NVConfidentiality:
-         Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:
-         Date;
-        b=VSAdqYKJzMD8K6Gbr+k4hh5uVKn67Jd/CpUVWT1rHx0hFrY+OnEDRSmA61Vrpmka2
-         4wA1nP0cLobkkK38VpJr7/lApdz8EZeF2SYmeo8LMLzU6aEEe+pst2+xUBifya8Ome
-         +mI8V9Jig0I81ChSOJXZib6y9wV1ilarXjdwxuWNe3WPDsHhHTnNO3eC48acXIgvn2
-         OZP2XOlU0bj7eE0rAS+AK0nRWR7SRUOdHbHSj12TGCOhvaXCg+kFCfLZULldhKzzHq
-         XvIbDmPAWywD6nwsQtrS87AXSwF3TwIIzviiO/wSq9Ee+I+1+yw8Q0Bl6yCRKBEyc4
-         FqK+xbwtyMXkw==
+        Mon, 21 Sep 2020 06:21:15 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 347C5C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:21:15 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id s12so12109455wrw.11
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:21:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=sOh/fuRlI8qlQg+fgdSuZVy6p6bRoxDpMLJTeOc7Koo=;
+        b=LwiurPKOmEqXhztg9TMFEyI242yu+8OFMUyjAYGsQZPDPImkPtTxgpYAAVr2HBuVJ/
+         UGCshQPhRNLV9rYayy+AX9660EnfMnGMbKOWXSeFfVJJSI0GQCMKZr1b/AyyDWoaqHQo
+         XU3ee+W0R2SuKCu8ocweH4Qd4AZRNxkVtSzEdQ6kK7Mr7u+A5eFIHxl2aOyAVj8Te+RP
+         YYkRQFcFiFniXJRAdbYMbC+5o5Mj0lQBOe/wadRjo9twvQ/RSS9ECstG6RoHdoef+AoD
+         tSd8d929TY08MFValWTPwoDcrIN07zTblp0P2TYx0+ikQyG8w+kmFwKgWD23oisU9rjm
+         6tLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=sOh/fuRlI8qlQg+fgdSuZVy6p6bRoxDpMLJTeOc7Koo=;
+        b=rtJdI1deNwMjj/s5kgdkam/TIAsrQUeL54Ti81wQI0bV2Vsf/1SiMzuI3VO9OrvJpU
+         9/NPNAkXkiWq+OIUosy/vaHY2IfyhdgUfkEOqlHhFeyKM7X/wVFIi7i4rMPX81SJkIBM
+         pfiz57fxWo7M23LgmrBiTn6cDmLJdaH/xDoZzaJPWuENB0mRzlUMMbm/AoZicrmNsUX0
+         cA77HLULcyF95KMYJgvIRRZpRWY3IuOVsINvVljDm9cZhulvR7qOq+JkwP42HS1z+i3S
+         yIQRQbtqxmaheFt2LyDrBkpoKdkx2skTtHBSuvupBRAWC7B/CChoILAiBW5J7vu1zjqa
+         Jqiw==
+X-Gm-Message-State: AOAM530zuQ/W1h0WUuocItUyE2CTOwQlyQPp161ed3lef8+PSj4155UB
+        s696sFjh2IVBDQ7vLew9M1KiZQ==
+X-Google-Smtp-Source: ABdhPJymLhcwt/2MaCggWT4sUMlRzaTZDXU6fyW9fB7vZR+MvUkylpjPXPgY+UtH5DO/P4oPhHw2PQ==
+X-Received: by 2002:a5d:4c52:: with SMTP id n18mr50621581wrt.267.1600683673869;
+        Mon, 21 Sep 2020 03:21:13 -0700 (PDT)
+Received: from localhost.localdomain ([51.15.160.169])
+        by smtp.googlemail.com with ESMTPSA id l17sm18804629wme.11.2020.09.21.03.21.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 21 Sep 2020 03:21:13 -0700 (PDT)
+From:   Corentin Labbe <clabbe@baylibre.com>
+To:     gregkh@linuxfoundation.org, laurent.pinchart@skynet.be,
+        mchehab@kernel.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH RFT/RFC 44/49] staging: media: zoran: remove test_interrupts
+Date:   Mon, 21 Sep 2020 10:20:19 +0000
+Message-Id: <1600683624-5863-45-git-send-email-clabbe@baylibre.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1600683624-5863-1-git-send-email-clabbe@baylibre.com>
+References: <1600683624-5863-1-git-send-email-clabbe@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 09 Sep 2020 01:39:58 +0300, Dmitry Osipenko wrote:
-> Factor out hardware initialization into a separate function from the probe
-> function. The only place where runtime PM needs to be resumed during probe
-> is the place of hardware initialization, hence it makes sense to factor
-> out it in order to have a bit cleaner error handling in tegra_i2c_probe().
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> Acked-by: Thierry Reding <treding@nvidia.com>
-> ---
->  drivers/i2c/busses/i2c-tegra.c | 32 +++++++++++++++++++-------------
->  1 file changed, 19 insertions(+), 13 deletions(-)
+The test_interrupts function is useless, remove it.
 
-Tested-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+---
+ drivers/staging/media/zoran/zoran.h        |  3 ---
+ drivers/staging/media/zoran/zoran_card.c   | 27 ----------------------
+ drivers/staging/media/zoran/zoran_device.c | 16 -------------
+ 3 files changed, 46 deletions(-)
+
+diff --git a/drivers/staging/media/zoran/zoran.h b/drivers/staging/media/zoran/zoran.h
+index 0246635e0eac..fd27d1968e60 100644
+--- a/drivers/staging/media/zoran/zoran.h
++++ b/drivers/staging/media/zoran/zoran.h
+@@ -345,7 +345,6 @@ struct zoran {
+ 	struct zoran_buffer_col jpg_buffers;	/* MJPEG buffers' info */
+ 
+ 	/* Additional stuff for testing */
+-	int testing;
+ 	int jpeg_error;
+ 	int intr_counter_GIRQ1;
+ 	int intr_counter_GIRQ0;
+@@ -372,8 +371,6 @@ struct zoran {
+ 	int running;
+ 	int buf_in_reserve;
+ 
+-	wait_queue_head_t test_q;
+-
+ 	dma_addr_t p_sc;
+ 	__le32 *stat_comb;
+ 	dma_addr_t p_scb;
+diff --git a/drivers/staging/media/zoran/zoran_card.c b/drivers/staging/media/zoran/zoran_card.c
+index 530dd326ad94..3bfeb1e00563 100644
+--- a/drivers/staging/media/zoran/zoran_card.c
++++ b/drivers/staging/media/zoran/zoran_card.c
+@@ -853,31 +853,6 @@ void zoran_open_init_params(struct zoran *zr)
+ 		pci_err(zr->pci_dev, "%s internal error\n", __func__);
+ 
+ 	clear_interrupt_counters(zr);
+-	zr->testing = 0;
+-}
+-
+-static void test_interrupts(struct zoran *zr)
+-{
+-	DEFINE_WAIT(wait);
+-	int timeout, icr;
+-
+-	clear_interrupt_counters(zr);
+-
+-	zr->testing = 1;
+-	icr = btread(ZR36057_ICR);
+-	btwrite(0x78000000 | ZR36057_ICR_IntPinEn, ZR36057_ICR);
+-	prepare_to_wait(&zr->test_q, &wait, TASK_INTERRUPTIBLE);
+-	timeout = schedule_timeout(HZ);
+-	finish_wait(&zr->test_q, &wait);
+-	btwrite(0, ZR36057_ICR);
+-	btwrite(0x78000000, ZR36057_ISR);
+-	zr->testing = 0;
+-	pci_info(zr->pci_dev, "Testing interrupts...\n");
+-	if (timeout)
+-		pci_info(zr->pci_dev, ": time spent: %d\n", 1 * HZ - timeout);
+-	if (zr36067_debug > 1)
+-		print_interrupts(zr);
+-	btwrite(icr, ZR36057_ICR);
+ }
+ 
+ static int zr36057_init(struct zoran *zr)
+@@ -891,7 +866,6 @@ static int zr36057_init(struct zoran *zr)
+ 
+ 	init_waitqueue_head(&zr->v4l_capq);
+ 	init_waitqueue_head(&zr->jpg_capq);
+-	init_waitqueue_head(&zr->test_q);
+ 	zr->jpg_buffers.allocated = 0;
+ 	zr->v4l_buffers.allocated = 0;
+ 
+@@ -968,7 +942,6 @@ static int zr36057_init(struct zoran *zr)
+ 	zoran_init_hardware(zr);
+ 	if (zr36067_debug > 2)
+ 		detect_guest_activity(zr);
+-	test_interrupts(zr);
+ 	if (!pass_through) {
+ 		decoder_call(zr, video, s_stream, 0);
+ 		encoder_call(zr, video, s_routing, 2, 0, 0);
+diff --git a/drivers/staging/media/zoran/zoran_device.c b/drivers/staging/media/zoran/zoran_device.c
+index 7634d94f9359..ae4abf8ffa36 100644
+--- a/drivers/staging/media/zoran/zoran_device.c
++++ b/drivers/staging/media/zoran/zoran_device.c
+@@ -1099,22 +1099,6 @@ irqreturn_t zoran_irq(int irq, void *dev_id)
+ 	struct zoran *zr = dev_id;
+ 	unsigned long flags;
+ 
+-	if (zr->testing) {
+-		/* Testing interrupts */
+-		spin_lock_irqsave(&zr->spinlock, flags);
+-		while ((stat = count_reset_interrupt(zr))) {
+-			if (count++ > 100) {
+-				btand(~ZR36057_ICR_IntPinEn, ZR36057_ICR);
+-				pci_err(zr->pci_dev, "IRQ lockup while testing, isr=0x%08x, cleared int mask\n",
+-					stat);
+-				wake_up_interruptible(&zr->test_q);
+-			}
+-		}
+-		zr->last_isr = stat;
+-		spin_unlock_irqrestore(&zr->spinlock, flags);
+-		return IRQ_HANDLED;
+-	}
+-
+ 	spin_lock_irqsave(&zr->spinlock, flags);
+ 	while (1) {
+ 		/* get/clear interrupt status bits */
+-- 
+2.26.2
+
