@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C85272CEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:36:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50E18272E12
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728927AbgIUQf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:35:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35474 "EHLO mail.kernel.org"
+        id S1728469AbgIUQph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:45:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728485AbgIUQfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:35:55 -0400
+        id S1727786AbgIUQpR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:45:17 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A66C6238E6;
-        Mon, 21 Sep 2020 16:35:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 993C523976;
+        Mon, 21 Sep 2020 16:45:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706155;
-        bh=GjALsfRYjiMJiSBXGc+3curpjbP0HUPwfxQDL0wKHeE=;
+        s=default; t=1600706716;
+        bh=uxn+vifcUCbs6sUzwHZTXL3zOxxnZDWfueru5hSQy5c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c3Klt5tXgwCP1rWzHWPgsU7v8CktAUDWJCErQd2NkMaasclJI2dWeG5+vzcaxcgx5
-         fnRim2ptgsMiSbv89DIEwVOx6bzJOa70ZrvIkKUyhD+2wed5WsCX6wI/KCZVHsoVXf
-         LCCBlzwYQP1DVb2hh/qxGf/oocLa3z/5hXXj817g=
+        b=HhlmQu+bhalCouapldiXXMPUaRVnGUrHLJX4Mw1f4M7kc8RrPJYFOVCuAwRo6CBOw
+         rUOebt+MsmyXuBvAeKfo/UDy+IcCt/+4ArBG5mf3c3oc34Wr2eXHXuI1sUwcfaVqMb
+         Rq1llMX5XPSt4xAj0x5HlNoBbI7icXEnVGt+3GyA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 58/70] MIPS: SNI: Fix MIPS_L1_CACHE_SHIFT
+Subject: [PATCH 5.8 066/118] MIPS: SNI: Fix spurious interrupts
 Date:   Mon, 21 Sep 2020 18:27:58 +0200
-Message-Id: <20200921162037.783584873@linuxfoundation.org>
+Message-Id: <20200921162039.418633195@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
-References: <20200921162035.136047591@linuxfoundation.org>
+In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
+References: <20200921162036.324813383@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,31 +45,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
-[ Upstream commit 564c836fd945a94b5dd46597d6b7adb464092650 ]
+[ Upstream commit b959b97860d0fee8c8f6a3e641d3c2ad76eab6be ]
 
-Commit 930beb5ac09a ("MIPS: introduce MIPS_L1_CACHE_SHIFT_<N>") forgot
-to select the correct MIPS_L1_CACHE_SHIFT for SNI RM. This breaks non
-coherent DMA because of a wrong allocation alignment.
+On A20R machines the interrupt pending bits in cause register need to be
+updated by requesting the chipset to do it. This needs to be done to
+find the interrupt cause and after interrupt service. In
+commit 0b888c7f3a03 ("MIPS: SNI: Convert to new irq_chip functions") the
+function to do after service update got lost, which caused spurious
+interrupts.
 
-Fixes: 930beb5ac09a ("MIPS: introduce MIPS_L1_CACHE_SHIFT_<N>")
+Fixes: 0b888c7f3a03 ("MIPS: SNI: Convert to new irq_chip functions")
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ arch/mips/sni/a20r.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index f8a529c852795..24eb7fe7922e6 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -848,6 +848,7 @@ config SNI_RM
- 	select I8253
- 	select I8259
- 	select ISA
-+	select MIPS_L1_CACHE_SHIFT_6
- 	select SWAP_IO_SPACE if CPU_BIG_ENDIAN
- 	select SYS_HAS_CPU_R4X00
- 	select SYS_HAS_CPU_R5000
+diff --git a/arch/mips/sni/a20r.c b/arch/mips/sni/a20r.c
+index b09dc844985a8..eeeec18c420a6 100644
+--- a/arch/mips/sni/a20r.c
++++ b/arch/mips/sni/a20r.c
+@@ -143,7 +143,10 @@ static struct platform_device sc26xx_pdev = {
+ 	},
+ };
+ 
+-static u32 a20r_ack_hwint(void)
++/*
++ * Trigger chipset to update CPU's CAUSE IP field
++ */
++static u32 a20r_update_cause_ip(void)
+ {
+ 	u32 status = read_c0_status();
+ 
+@@ -205,12 +208,14 @@ static void a20r_hwint(void)
+ 	int irq;
+ 
+ 	clear_c0_status(IE_IRQ0);
+-	status = a20r_ack_hwint();
++	status = a20r_update_cause_ip();
+ 	cause = read_c0_cause();
+ 
+ 	irq = ffs(((cause & status) >> 8) & 0xf8);
+ 	if (likely(irq > 0))
+ 		do_IRQ(SNI_A20R_IRQ_BASE + irq - 1);
++
++	a20r_update_cause_ip();
+ 	set_c0_status(IE_IRQ0);
+ }
+ 
 -- 
 2.25.1
 
