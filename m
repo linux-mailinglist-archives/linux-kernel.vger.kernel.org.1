@@ -2,89 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D20FB2726CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0832726CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727110AbgIUOR3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Sep 2020 10:17:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726395AbgIUOR2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:17:28 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 679BDC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 07:17:28 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kKMd5-0000fA-4c; Mon, 21 Sep 2020 16:17:19 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kKMcu-0001GY-Vp; Mon, 21 Sep 2020 16:17:08 +0200
-Message-ID: <339d90457a08694b24df09afa62cfa0dd185f76b.camel@pengutronix.de>
-Subject: Re: [PATCH -next] drm/panfrost: simplify the return expression of
- cz_ih_hw_init()
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Qinglang Miao <miaoqinglang@huawei.com>,
-        Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Steven Price <steven.price@arm.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Date:   Mon, 21 Sep 2020 16:17:08 +0200
-In-Reply-To: <20200921131019.91558-1-miaoqinglang@huawei.com>
-References: <20200921131019.91558-1-miaoqinglang@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        id S1727226AbgIUOSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 10:18:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39738 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726395AbgIUOSX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 10:18:23 -0400
+Received: from gaia (unknown [31.124.44.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E1DF020BED;
+        Mon, 21 Sep 2020 14:18:21 +0000 (UTC)
+Date:   Mon, 21 Sep 2020 15:18:19 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Amit Daniel Kachhap <amit.kachhap@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <shuah@kernel.org>, Will Deacon <will@kernel.org>,
+        Vincenzo Frascino <Vincenzo.Frascino@arm.com>,
+        Gabor Kertesz <gabor.kertesz@arm.com>
+Subject: Re: [PATCH 1/6] kselftest/arm64: Add utilities and a test to
+ validate mte memory
+Message-ID: <20200921141817.GC13882@gaia>
+References: <20200901092719.9918-1-amit.kachhap@arm.com>
+ <20200901092719.9918-2-amit.kachhap@arm.com>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200901092719.9918-2-amit.kachhap@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-09-21 at 21:10 +0800, Qinglang Miao wrote:
-> Simplify the return expression.
-> 
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-> ---
->  drivers/gpu/drm/panfrost/panfrost_device.c | 8 +-------
->  1 file changed, 1 insertion(+), 7 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
-> index e68967338..ea8d31863 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_device.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
-> @@ -18,19 +18,13 @@
->  
->  static int panfrost_reset_init(struct panfrost_device *pfdev)
->  {
-> -	int err;
-> -
->  	pfdev->rstc = devm_reset_control_array_get(pfdev->dev, false, true);
->  	if (IS_ERR(pfdev->rstc)) {
->  		dev_err(pfdev->dev, "get reset failed %ld\n", PTR_ERR(pfdev->rstc));
->  		return PTR_ERR(pfdev->rstc);
->  	}
->  
-> -	err = reset_control_deassert(pfdev->rstc);
-> -	if (err)
-> -		return err;
-> -
-> -	return 0;
-> +	return reset_control_deassert(pfdev->rstc);
->  }
->  
->  static void panfrost_reset_fini(struct panfrost_device *pfdev)
+On Tue, Sep 01, 2020 at 02:57:14PM +0530, Amit Daniel Kachhap wrote:
+> diff --git a/tools/testing/selftests/arm64/mte/mte_helper.S b/tools/testing/selftests/arm64/mte/mte_helper.S
+> new file mode 100644
+> index 000000000000..91af6d1293f8
+> --- /dev/null
+> +++ b/tools/testing/selftests/arm64/mte/mte_helper.S
+> @@ -0,0 +1,116 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/* Copyright (C) 2020 ARM Limited */
+> +
+> +#include "mte_def.h"
+> +
+> +#define ENTRY(name) \
+> +	.globl name ;\
+> +	.p2align 2;\
+> +	.type name, @function ;\
+> +name:
+> +
+> +#define ENDPROC(name) \
+> +	.size name, .-name ;
+> +
+> +	.text
+> +/*
+> + * mte_insert_random_tag: Insert random tag and different from
+> + *			 the orginal tag if source pointer has it.
+> + * Input:
+> + *		x0 - source pointer with a tag/no-tag
+> + * Return:
+> + *		x0 - pointer with random tag
+> + */
+> +ENTRY(mte_insert_random_tag)
+> +	mov	x1, #0x0
+> +	gmi	x1, x0, x1
+> +	irg	x0, x0, x1
+> +	ret
+> +ENDPROC(mte_insert_random_tag)
 
-Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+What was the reason for gmi here? The test fails when you have an
+include mask of 0x8000 (exclude mask 0x7fff) and x0 has tag 0xf. In this
+case we exclude the only allowed tag here, so the CPU falls back to the
+default tag 0.
 
-regards
-Philipp
+You can (a) stop the check_multiple_included_tags() earlier to have two
+allowed tags here, (b) clear the pointer old tag so that you don't end
+up in this scenario or (c) simply remove the gmi. My preference is the
+latter, we don't test the hardware here, we only want to check whether
+the kernel sets the GCR_EL1 correctly.
+
+BTW, you also remove mov x1, #0, just:
+
+	irg	x0, x0, xzr
+
+-- 
+Catalin
