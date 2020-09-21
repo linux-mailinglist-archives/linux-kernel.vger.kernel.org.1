@@ -2,183 +2,509 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 004D027269D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35BFA2726A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:08:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727179AbgIUOHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 10:07:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726950AbgIUOHT (ORCPT
+        id S1727210AbgIUOIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 10:08:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44873 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726950AbgIUOIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:07:19 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA69C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 07:07:19 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id k133so4377102pgc.7
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 07:07:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=KG0Wug7W8VnBXyhL64NP/YPzyqdGwCSVxq+fJyR9sHs=;
-        b=y33E1MBopdSaJPSwM2GmSmxeKucim8p2riwdrHETCYrrcCF8Q3LACd8YWaD/Efr4nh
-         1vCP+NGq3hQ0wdd7Wa5gRyRZLeD6gQ7Efhk8CjDYncf3ZCvftIXTey7A6qrSnTTTeRdF
-         gGZ/N8kwWAWpj+RlMfSPj+Kck7sHP0W0G89mFtYVAN+tXMWa3Lr8cBrJv8zfct/e2Oey
-         5etCDvfbG3CmJuKYgyXxuazbNvh/7n5q4QZxK9sHS3eOPFup6zQkmp0i78TeE2i37AHu
-         DnrVX7GzvxBUzaJrHDwmcPWPfMcTF9ueatP3uV21tx11eqLJFIflKLylefQGymrvU1wn
-         Tnyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=KG0Wug7W8VnBXyhL64NP/YPzyqdGwCSVxq+fJyR9sHs=;
-        b=D3vaBQ7b5TY9cekGkagSLSvJXEXbIATmxMV2K1JtRkgqUqI0d23RbbZ3KmvvadkZu6
-         O8lh/PopB2gB+kRDSysIorRwrd+RcdPFiu+U1MCyv3ok0dGoDzDJmlYsLHRX5m4McU6/
-         caEf9M2JI0sqS+hSt38rbbwNBO/yD7GwBP7rgMrzAbrd/Xspvv2pgXY+q9T3FVZwoZfA
-         nmzu6hv1nUmCOTx3kZtmDbFj5QwlwcQJXCCq1IVlchXbNqqxG5o9XRXz12w+2I3aS/Ce
-         /RybPLz+tdPkCuZ6WYjxEfe7WqTuK1niNiUkjkN38vDhdDR5dmHEalYN1bn2N9Zr7wux
-         MQKw==
-X-Gm-Message-State: AOAM533xKSHK9nuwjrFSjS9IY5E5Eo2yEV9OLvUQsSmhH+wyF7lTSsFK
-        +7FaeU/06Ns1xtampOmOA2zQWa8jMJJR
-X-Google-Smtp-Source: ABdhPJwwp+iiq2mUpwHisXRydKHSLtiV4qs04Bi+TawfPcFVxHctkRk7CGKPcnVbUrf0AevaBivuiQ==
-X-Received: by 2002:a63:ec4c:: with SMTP id r12mr36284072pgj.74.1600697238644;
-        Mon, 21 Sep 2020 07:07:18 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([2409:4072:6d03:bd12:1004:2ccf:6900:b97])
-        by smtp.gmail.com with ESMTPSA id i9sm12101743pfq.53.2020.09.21.07.07.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 21 Sep 2020 07:07:17 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 19:37:13 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     bbhatt@codeaurora.org
-Cc:     Jeffrey Hugo <jhugo@codeaurora.org>, linux-arm-msm@vger.kernel.org,
-        hemantk@codeaurora.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/3] bus: mhi: core: Remove warnings for missing
- MODULE_LICENSE()
-Message-ID: <20200921140713.GE3262@Mani-XPS-13-9360>
-References: <1600381176-37604-1-git-send-email-bbhatt@codeaurora.org>
- <1600381176-37604-2-git-send-email-bbhatt@codeaurora.org>
- <6f7b6be3-f52d-b082-6065-c75e3d89d252@codeaurora.org>
- <0e34b5a2562b776ea410c80479107581@codeaurora.org>
- <20200918171809.GA3410@Mani-XPS-13-9360>
- <4506782e8bb9a50d80b4a40575ae532e@codeaurora.org>
+        Mon, 21 Sep 2020 10:08:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600697294;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Nc6ncsk8H8zrriASMgYYRhes+1UGjbcgH6uS1scItCE=;
+        b=gSzcHeSW+pbekpVDG+4FtZVC1H0I45sDdbT12IDDcYy1hKvjKuvDR28tFz3227AAGWWT1q
+        BU6AQwKXGpSnNgg92pAR9DlrD2BT/2p/vI6NNdtH4Cw4IXbQzBLZWazT1KF7pACU4tDb6u
+        Y0v/pwiAgOz22MJMrgjN9gRTh1I514I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-583-YjYsxfE2P9KJ6lsga-uxUw-1; Mon, 21 Sep 2020 10:07:58 -0400
+X-MC-Unique: YjYsxfE2P9KJ6lsga-uxUw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9641C186DD24;
+        Mon, 21 Sep 2020 14:07:57 +0000 (UTC)
+Received: from localhost.localdomain (ovpn-112-98.rdu2.redhat.com [10.10.112.98])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 930762635C;
+        Mon, 21 Sep 2020 14:07:54 +0000 (UTC)
+Subject: Re: [PATCH] KVM: SVM: Use a separate vmcb for the nested L2 guest
+To:     Wei Huang <wei.huang2@amd.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        pbonzini@redhat.com, vkuznets@redhat.com
+References: <20200917192306.2080-1-cavery@redhat.com>
+ <20200918211109.GA803484@weilap>
+From:   Cathy Avery <cavery@redhat.com>
+Message-ID: <7549df39-b00b-0b0e-9f25-f64cdf6db366@redhat.com>
+Date:   Mon, 21 Sep 2020 10:07:54 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4506782e8bb9a50d80b4a40575ae532e@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200918211109.GA803484@weilap>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 11:48:21AM -0700, bbhatt@codeaurora.org wrote:
-> On 2020-09-18 10:18, Manivannan Sadhasivam wrote:
-> > On Fri, Sep 18, 2020 at 09:49:05AM -0700, bbhatt@codeaurora.org wrote:
-> > > On 2020-09-18 07:27, Jeffrey Hugo wrote:
-> > > > On 9/17/2020 4:19 PM, Bhaumik Bhatt wrote:
-> > > > > When building MHI as a module, missing MODULE_LICENSE() warnings
-> > > > > are seen. Avoid them by adding the license and description
-> > > > > information for the files where the warnings are seen.
-> > > > >
-> > > > > Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> > > > > ---
-> > > > >   drivers/bus/mhi/core/boot.c | 3 +++
-> > > > >   drivers/bus/mhi/core/main.c | 3 +++
-> > > > >   drivers/bus/mhi/core/pm.c   | 3 +++
-> > > > >   3 files changed, 9 insertions(+)
-> > > > >
-> > > > > diff --git a/drivers/bus/mhi/core/boot.c b/drivers/bus/mhi/core/boot.c
-> > > > > index 24422f5..78140cc 100644
-> > > > > --- a/drivers/bus/mhi/core/boot.c
-> > > > > +++ b/drivers/bus/mhi/core/boot.c
-> > > > > @@ -523,3 +523,6 @@ void mhi_fw_load_handler(struct mhi_controller
-> > > > > *mhi_cntrl)
-> > > > >   error_alloc_fw_table:
-> > > > >   	release_firmware(firmware);
-> > > > >   }
-> > > > > +
-> > > > > +MODULE_LICENSE("GPL v2");
-> > > > > +MODULE_DESCRIPTION("MHI Host Interface");
-> > > > > diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-> > > > > index 2cff5dd..172026f 100644
-> > > > > --- a/drivers/bus/mhi/core/main.c
-> > > > > +++ b/drivers/bus/mhi/core/main.c
-> > > > > @@ -1533,3 +1533,6 @@ int mhi_poll(struct mhi_device *mhi_dev, u32
-> > > > > budget)
-> > > > >   	return ret;
-> > > > >   }
-> > > > >   EXPORT_SYMBOL_GPL(mhi_poll);
-> > > > > +
-> > > > > +MODULE_LICENSE("GPL v2");
-> > > > > +MODULE_DESCRIPTION("MHI Host Interface");
-> > > > > diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-> > > > > index ce4d969..72c3dbc 100644
-> > > > > --- a/drivers/bus/mhi/core/pm.c
-> > > > > +++ b/drivers/bus/mhi/core/pm.c
-> > > > > @@ -1150,3 +1150,6 @@ void mhi_device_put(struct mhi_device *mhi_dev)
-> > > > >   	read_unlock_bh(&mhi_cntrl->pm_lock);
-> > > > >   }
-> > > > >   EXPORT_SYMBOL_GPL(mhi_device_put);
-> > > > > +
-> > > > > +MODULE_LICENSE("GPL v2");
-> > > > > +MODULE_DESCRIPTION("MHI Host Interface");
-> > > > >
-> > > >
-> > > > I would expect you only need to add the MODULE_* once per module, in
-> > > > which case main.c is probably the only place that needs it.
-> > > 
-> > > Hi Jeff,
-> > > 
-> > > I thought so too. This is to fix below warnings seen when building
-> > > MHI as a
-> > > MODULE:
-> > > 
-> > > WARNING: modpost: missing MODULE_LICENSE() in
-> > > drivers/bus/mhi/core/main.o
-> > > WARNING: modpost: missing MODULE_LICENSE() in
-> > > drivers/bus/mhi/core/pm.o
-> > > WARNING: modpost: missing MODULE_LICENSE() in
-> > > drivers/bus/mhi/core/boot.o
-> > > 
-> > > We've only had those in init.c so far.
-> > > 
-> > 
-> > Can you please test below diff to see if it fixes the warning?
-> > 
-> > diff --git a/drivers/bus/mhi/core/Makefile
-> > b/drivers/bus/mhi/core/Makefile
-> > index 66e2700c9032..bc1469778cf8 100644
-> > --- a/drivers/bus/mhi/core/Makefile
-> > +++ b/drivers/bus/mhi/core/Makefile
-> > @@ -1,3 +1,3 @@
-> > -obj-$(CONFIG_MHI_BUS) := mhi.o
-> > +obj-$(CONFIG_MHI_BUS) += mhi.o
-> > 
-> >  mhi-y := init.o main.o pm.o boot.o
-> > 
-> > Thanks,
-> > Mani
-> > 
-> > > Thanks,
-> > > Bhaumik
-> > > 
-> > > 'The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
-> > > Forum,\na Linux Foundation Collaborative Project'
-> Hi Mani,
-> 
-> Yes I was just about to reply. I realized it was due to the Makefile change.
-> I have fixed and
-> tested it. The warnings are gone now. I will remove the patch.
-> 
+On 9/18/20 5:11 PM, Wei Huang wrote:
+> On 09/17 03:23, Cathy Avery wrote:
+>> svm->vmcb will now point to either a separate vmcb L1 ( not nested ) or L2 vmcb ( nested ).
+>>
+>> Issues:
+>>
+>> 1) There is some wholesale copying of vmcb.save and vmcb.contol
+>>     areas which will need to be refined.
+>>
+>> 2) There is a workaround in nested_svm_vmexit() where
+>>
+>>     if (svm->vmcb01->control.asid == 0)
+>>         svm->vmcb01->control.asid = svm->nested.vmcb02->control.asid;
+>>
+>>     This was done as a result of the kvm selftest 'state_test'. In that
+>>     test svm_set_nested_state() is called before svm_vcpu_run().
+>>     The asid is assigned by svm_vcpu_run -> pre_svm_run for the current
+>>     vmcb which is now vmcb02 as we are in nested mode subsequently
+>>     vmcb01.control.asid is never set as it should be.
+>>
+>> Tested:
+>> kvm-unit-tests
+>> kvm self tests
+> I was able to run some basic nested SVM tests using this patch. Full L2 VM
+> (Fedora) had some problem to boot after grub loading kernel.
+Thanks for the feedback and my responses are below.  I am looking into 
+the load issue.
+>
+> Comments below.
+>
+>> Signed-off-by: Cathy Avery <cavery@redhat.com>
+>> ---
+>>   arch/x86/kvm/svm/nested.c | 116 ++++++++++++++++++--------------------
+>>   arch/x86/kvm/svm/svm.c    |  41 +++++++-------
+>>   arch/x86/kvm/svm/svm.h    |  10 ++--
+>>   3 files changed, 81 insertions(+), 86 deletions(-)
+>>
+>> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+>> index e90bc436f584..0a06e62010d8 100644
+>> --- a/arch/x86/kvm/svm/nested.c
+>> +++ b/arch/x86/kvm/svm/nested.c
+>> @@ -75,12 +75,12 @@ static unsigned long nested_svm_get_tdp_cr3(struct kvm_vcpu *vcpu)
+>>   static void nested_svm_init_mmu_context(struct kvm_vcpu *vcpu)
+>>   {
+>>   	struct vcpu_svm *svm = to_svm(vcpu);
+>> -	struct vmcb *hsave = svm->nested.hsave;
+>>   
+>>   	WARN_ON(mmu_is_nested(vcpu));
+>>   
+>>   	vcpu->arch.mmu = &vcpu->arch.guest_mmu;
+>> -	kvm_init_shadow_npt_mmu(vcpu, X86_CR0_PG, hsave->save.cr4, hsave->save.efer,
+>> +	kvm_init_shadow_npt_mmu(vcpu, X86_CR0_PG, svm->vmcb01->save.cr4,
+>> +				svm->vmcb01->save.efer,
+>>   				svm->nested.ctl.nested_cr3);
+>>   	vcpu->arch.mmu->get_guest_pgd     = nested_svm_get_tdp_cr3;
+>>   	vcpu->arch.mmu->get_pdptr         = nested_svm_get_tdp_pdptr;
+>> @@ -105,7 +105,7 @@ void recalc_intercepts(struct vcpu_svm *svm)
+>>   		return;
+>>   
+>>   	c = &svm->vmcb->control;
+>> -	h = &svm->nested.hsave->control;
+>> +	h = &svm->vmcb01->control;
+>>   	g = &svm->nested.ctl;
+>>   
+>>   	svm->nested.host_intercept_exceptions = h->intercept_exceptions;
+>> @@ -403,7 +403,7 @@ static void nested_prepare_vmcb_control(struct vcpu_svm *svm)
+>>   
+>>   	svm->vmcb->control.int_ctl             =
+>>   		(svm->nested.ctl.int_ctl & ~mask) |
+>> -		(svm->nested.hsave->control.int_ctl & mask);
+>> +		(svm->vmcb01->control.int_ctl & mask);
+>>   
+>>   	svm->vmcb->control.virt_ext            = svm->nested.ctl.virt_ext;
+>>   	svm->vmcb->control.int_vector          = svm->nested.ctl.int_vector;
+>> @@ -432,6 +432,12 @@ int enter_svm_guest_mode(struct vcpu_svm *svm, u64 vmcb_gpa,
+>>   	int ret;
+>>   
+>>   	svm->nested.vmcb = vmcb_gpa;
+>> +
+>> +	WARN_ON(svm->vmcb == svm->nested.vmcb02);
+>> +
+>> +	svm->nested.vmcb02->control = svm->vmcb01->control;
+> This part is a bit confusing. svm->vmcb01->control contains the control
+> info from L0 hypervisor to L1 VM. Shouldn't vmcb02->control use the info
+> from the control info contained in nested_vmcb?
+It does during nested_prepare_vmcb_control().  Now that there is a 
+separate vmcb01 and vmcb02 vmcb02.control still relies on the original 
+contents of vmcb01.control so vmcb02.control is initialized by a whole 
+sale copy of vmcb01.control which is admittedly excessive ( patch issues 
+section ) and needs to be refined to just what is needed.
+>
+>> +	svm->vmcb = svm->nested.vmcb02;
+>> +	svm->vmcb_pa = svm->nested.vmcb02_pa;
+>>   	load_nested_vmcb_control(svm, &nested_vmcb->control);
+>>   	nested_prepare_vmcb_save(svm, nested_vmcb);
+>>   	nested_prepare_vmcb_control(svm);
+>> @@ -450,8 +456,6 @@ int nested_svm_vmrun(struct vcpu_svm *svm)
+>>   {
+>>   	int ret;
+>>   	struct vmcb *nested_vmcb;
+>> -	struct vmcb *hsave = svm->nested.hsave;
+>> -	struct vmcb *vmcb = svm->vmcb;
+>>   	struct kvm_host_map map;
+>>   	u64 vmcb_gpa;
+>>   
+>> @@ -496,29 +500,17 @@ int nested_svm_vmrun(struct vcpu_svm *svm)
+>>   	kvm_clear_exception_queue(&svm->vcpu);
+>>   	kvm_clear_interrupt_queue(&svm->vcpu);
+>>   
+>> -	/*
+>> -	 * Save the old vmcb, so we don't need to pick what we save, but can
+>> -	 * restore everything when a VMEXIT occurs
+>> -	 */
+>> -	hsave->save.es     = vmcb->save.es;
+>> -	hsave->save.cs     = vmcb->save.cs;
+>> -	hsave->save.ss     = vmcb->save.ss;
+>> -	hsave->save.ds     = vmcb->save.ds;
+>> -	hsave->save.gdtr   = vmcb->save.gdtr;
+>> -	hsave->save.idtr   = vmcb->save.idtr;
+>> -	hsave->save.efer   = svm->vcpu.arch.efer;
+>> -	hsave->save.cr0    = kvm_read_cr0(&svm->vcpu);
+>> -	hsave->save.cr4    = svm->vcpu.arch.cr4;
+>> -	hsave->save.rflags = kvm_get_rflags(&svm->vcpu);
+>> -	hsave->save.rip    = kvm_rip_read(&svm->vcpu);
+>> -	hsave->save.rsp    = vmcb->save.rsp;
+>> -	hsave->save.rax    = vmcb->save.rax;
+>> -	if (npt_enabled)
+>> -		hsave->save.cr3    = vmcb->save.cr3;
+>> -	else
+>> -		hsave->save.cr3    = kvm_read_cr3(&svm->vcpu);
+>> -
+>> -	copy_vmcb_control_area(&hsave->control, &vmcb->control);
+>> +
+>> +	/* Update vmcb0. We will restore everything when a VMEXIT occurs */
+>> +
+>> +	svm->vmcb01->save.efer   = svm->vcpu.arch.efer;
+>> +	svm->vmcb01->save.cr0    = kvm_read_cr0(&svm->vcpu);
+>> +	svm->vmcb01->save.cr4    = svm->vcpu.arch.cr4;
+>> +	svm->vmcb01->save.rflags = kvm_get_rflags(&svm->vcpu);
+>> +	svm->vmcb01->save.rip    = kvm_rip_read(&svm->vcpu);
+>> +
+>> +	if (!npt_enabled)
+>> +		svm->vmcb01->save.cr3 = kvm_read_cr3(&svm->vcpu);
+> We do save some copying time here, which is always a good thing especially
+> for nested virt.
+>
+>>   	svm->nested.nested_run_pending = 1;
+>>   
+>> @@ -564,7 +556,6 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
+>>   {
+>>   	int rc;
+>>   	struct vmcb *nested_vmcb;
+>> -	struct vmcb *hsave = svm->nested.hsave;
+>>   	struct vmcb *vmcb = svm->vmcb;
+>>   	struct kvm_host_map map;
+>>   
+>> @@ -628,8 +619,11 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
+>>   	nested_vmcb->control.pause_filter_thresh =
+>>   		svm->vmcb->control.pause_filter_thresh;
+>>   
+>> -	/* Restore the original control entries */
+>> -	copy_vmcb_control_area(&vmcb->control, &hsave->control);
+>> +	if (svm->vmcb01->control.asid == 0)
+>> +		svm->vmcb01->control.asid = svm->nested.vmcb02->control.asid;
+>> +
+>> +	svm->vmcb = svm->vmcb01;
+>> +	svm->vmcb_pa = svm->nested.vmcb01_pa;
+>>   
+>>   	/* On vmexit the  GIF is set to false */
+>>   	svm_set_gif(svm, false);
+>> @@ -640,19 +634,13 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
+>>   	svm->nested.ctl.nested_cr3 = 0;
+>>   
+>>   	/* Restore selected save entries */
+>> -	svm->vmcb->save.es = hsave->save.es;
+>> -	svm->vmcb->save.cs = hsave->save.cs;
+>> -	svm->vmcb->save.ss = hsave->save.ss;
+>> -	svm->vmcb->save.ds = hsave->save.ds;
+>> -	svm->vmcb->save.gdtr = hsave->save.gdtr;
+>> -	svm->vmcb->save.idtr = hsave->save.idtr;
+>> -	kvm_set_rflags(&svm->vcpu, hsave->save.rflags);
+>> -	svm_set_efer(&svm->vcpu, hsave->save.efer);
+>> -	svm_set_cr0(&svm->vcpu, hsave->save.cr0 | X86_CR0_PE);
+>> -	svm_set_cr4(&svm->vcpu, hsave->save.cr4);
+>> -	kvm_rax_write(&svm->vcpu, hsave->save.rax);
+>> -	kvm_rsp_write(&svm->vcpu, hsave->save.rsp);
+>> -	kvm_rip_write(&svm->vcpu, hsave->save.rip);
+>> +	kvm_set_rflags(&svm->vcpu, svm->vmcb->save.rflags);
+>> +	svm_set_efer(&svm->vcpu, svm->vmcb->save.efer);
+>> +	svm_set_cr0(&svm->vcpu, svm->vmcb->save.cr0 | X86_CR0_PE);
+>> +	svm_set_cr4(&svm->vcpu, svm->vmcb->save.cr4);
+>> +	kvm_rax_write(&svm->vcpu, svm->vmcb->save.rax);
+>> +	kvm_rsp_write(&svm->vcpu, svm->vmcb->save.rsp);
+>> +	kvm_rip_write(&svm->vcpu, svm->vmcb->save.rip);
+>>   	svm->vmcb->save.dr7 = 0;
+>>   	svm->vmcb->save.cpl = 0;
+>>   	svm->vmcb->control.exit_int_info = 0;
+>> @@ -670,12 +658,12 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
+>>   
+>>   	nested_svm_uninit_mmu_context(&svm->vcpu);
+>>   
+>> -	rc = nested_svm_load_cr3(&svm->vcpu, hsave->save.cr3, false);
+>> +	rc = nested_svm_load_cr3(&svm->vcpu, svm->vmcb->save.cr3, false);
+>>   	if (rc)
+>>   		return 1;
+>>   
+>> -	if (npt_enabled)
+>> -		svm->vmcb->save.cr3 = hsave->save.cr3;
+>> +	if (!npt_enabled)
+>> +		svm->vmcb01->save.cr3 = kvm_read_cr3(&svm->vcpu);
+> Does this mean the original code is missing the following?
+>
+>          else
+> 		svm->vmcb01->save.cr3 = kvm_read_cr3(&svm->vcpu);
+No it means I made an assumption here. I'll look at this again.
+>
+>>   
+>>   	/*
+>>   	 * Drop what we picked up for L2 via svm_complete_interrupts() so it
+>> @@ -694,12 +682,10 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
+>>   void svm_leave_nested(struct vcpu_svm *svm)
+>>   {
+>>   	if (is_guest_mode(&svm->vcpu)) {
+>> -		struct vmcb *hsave = svm->nested.hsave;
+>> -		struct vmcb *vmcb = svm->vmcb;
+>> -
+>>   		svm->nested.nested_run_pending = 0;
+>>   		leave_guest_mode(&svm->vcpu);
+>> -		copy_vmcb_control_area(&vmcb->control, &hsave->control);
+>> +		svm->vmcb = svm->vmcb01;
+>> +		svm->vmcb_pa = svm->nested.vmcb01_pa;
+>>   		nested_svm_uninit_mmu_context(&svm->vcpu);
+>>   	}
+>>   }
+>> @@ -1046,10 +1032,9 @@ static int svm_get_nested_state(struct kvm_vcpu *vcpu,
+>>   	if (copy_to_user(&user_vmcb->control, &svm->nested.ctl,
+>>   			 sizeof(user_vmcb->control)))
+>>   		return -EFAULT;
+>> -	if (copy_to_user(&user_vmcb->save, &svm->nested.hsave->save,
+>> +	if (copy_to_user(&user_vmcb->save, &svm->vmcb01->save,
+>>   			 sizeof(user_vmcb->save)))
+>>   		return -EFAULT;
+>> -
+>>   out:
+>>   	return kvm_state.size;
+>>   }
+>> @@ -1059,7 +1044,6 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
+>>   				struct kvm_nested_state *kvm_state)
+>>   {
+>>   	struct vcpu_svm *svm = to_svm(vcpu);
+>> -	struct vmcb *hsave = svm->nested.hsave;
+>>   	struct vmcb __user *user_vmcb = (struct vmcb __user *)
+>>   		&user_kvm_nested_state->data.svm[0];
+>>   	struct vmcb_control_area ctl;
+>> @@ -1121,16 +1105,24 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
+>>   	if (!(save.cr0 & X86_CR0_PG))
+>>   		return -EINVAL;
+>>   
+>> +	svm->nested.vmcb02->control = svm->vmcb01->control;
+>> +	svm->nested.vmcb02->save = svm->vmcb01->save;
+>> +	svm->vmcb01->save = save;
+>> +
+>> +	WARN_ON(svm->vmcb == svm->nested.vmcb02);
+>> +
+>> +	svm->nested.vmcb = kvm_state->hdr.svm.vmcb_pa;
+>> +
+>> +	svm->vmcb = svm->nested.vmcb02;
+>> +	svm->vmcb_pa = svm->nested.vmcb02_pa;
+>> +
+>>   	/*
+>> -	 * All checks done, we can enter guest mode.  L1 control fields
+>> -	 * come from the nested save state.  Guest state is already
+>> -	 * in the registers, the save area of the nested state instead
+>> -	 * contains saved L1 state.
+>> +	 * All checks done, we can enter guest mode. L2 control fields will
+>> +	 * be the result of a combination of L1 and userspace indicated
+>> +	 * L12.control. The save area of L1 vmcb now contains the userspace
+>> +	 * indicated L1.save.
+>>   	 */
+>> -	copy_vmcb_control_area(&hsave->control, &svm->vmcb->control);
+>> -	hsave->save = save;
+>>   
+>> -	svm->nested.vmcb = kvm_state->hdr.svm.vmcb_pa;
+>>   	load_nested_vmcb_control(svm, &ctl);
+>>   	nested_prepare_vmcb_control(svm);
+>>   
+>> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+>> index 5764b87379cf..d8022f989ffb 100644
+>> --- a/arch/x86/kvm/svm/svm.c
+>> +++ b/arch/x86/kvm/svm/svm.c
+>> @@ -971,8 +971,8 @@ static u64 svm_write_l1_tsc_offset(struct kvm_vcpu *vcpu, u64 offset)
+>>   	if (is_guest_mode(vcpu)) {
+>>   		/* Write L1's TSC offset.  */
+>>   		g_tsc_offset = svm->vmcb->control.tsc_offset -
+>> -			       svm->nested.hsave->control.tsc_offset;
+>> -		svm->nested.hsave->control.tsc_offset = offset;
+>> +			       svm->vmcb01->control.tsc_offset;
+>> +		svm->vmcb01->control.tsc_offset = offset;
+>>   	}
+>>   
+>>   	trace_kvm_write_tsc_offset(vcpu->vcpu_id,
+>> @@ -1171,9 +1171,9 @@ static void svm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+>>   static int svm_create_vcpu(struct kvm_vcpu *vcpu)
+>>   {
+>>   	struct vcpu_svm *svm;
+>> -	struct page *page;
+>> +	struct page *vmcb01_page;
+>> +	struct page *vmcb02_page;
+>>   	struct page *msrpm_pages;
+>> -	struct page *hsave_page;
+>>   	struct page *nested_msrpm_pages;
+>>   	int err;
+>>   
+>> @@ -1181,8 +1181,8 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
+>>   	svm = to_svm(vcpu);
+>>   
+>>   	err = -ENOMEM;
+>> -	page = alloc_page(GFP_KERNEL_ACCOUNT);
+>> -	if (!page)
+>> +	vmcb01_page = alloc_page(GFP_KERNEL_ACCOUNT);
+>> +	if (!vmcb01_page)
+>>   		goto out;
+>>   
+>>   	msrpm_pages = alloc_pages(GFP_KERNEL_ACCOUNT, MSRPM_ALLOC_ORDER);
+>> @@ -1193,8 +1193,8 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
+>>   	if (!nested_msrpm_pages)
+>>   		goto free_page2;
+>>   
+>> -	hsave_page = alloc_page(GFP_KERNEL_ACCOUNT);
+>> -	if (!hsave_page)
+>> +	vmcb02_page = alloc_page(GFP_KERNEL_ACCOUNT);
+>> +	if (!vmcb02_page)
+>>   		goto free_page3;
+>>   
+>>   	err = avic_init_vcpu(svm);
+>> @@ -1207,8 +1207,9 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
+>>   	if (irqchip_in_kernel(vcpu->kvm) && kvm_apicv_activated(vcpu->kvm))
+>>   		svm->avic_is_running = true;
+>>   
+>> -	svm->nested.hsave = page_address(hsave_page);
+>> -	clear_page(svm->nested.hsave);
+>> +	svm->nested.vmcb02 = page_address(vmcb02_page);
+>> +	clear_page(svm->nested.vmcb02);
+>> +	svm->nested.vmcb02_pa = __sme_set(page_to_pfn(vmcb02_page) << PAGE_SHIFT);
+>>   
+>>   	svm->msrpm = page_address(msrpm_pages);
+>>   	svm_vcpu_init_msrpm(svm->msrpm);
+>> @@ -1216,9 +1217,11 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
+>>   	svm->nested.msrpm = page_address(nested_msrpm_pages);
+>>   	svm_vcpu_init_msrpm(svm->nested.msrpm);
+>>   
+>> -	svm->vmcb = page_address(page);
+>> +	svm->vmcb = svm->vmcb01 = page_address(vmcb01_page);
+>>   	clear_page(svm->vmcb);
+>> -	svm->vmcb_pa = __sme_set(page_to_pfn(page) << PAGE_SHIFT);
+>> +	svm->vmcb_pa = __sme_set(page_to_pfn(vmcb01_page) << PAGE_SHIFT);
+>> +	svm->nested.vmcb01_pa = svm->vmcb_pa;
+>> +
+>>   	svm->asid_generation = 0;
+>>   	init_vmcb(svm);
+>>   
+>> @@ -1228,13 +1231,13 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
+>>   	return 0;
+>>   
+>>   free_page4:
+>> -	__free_page(hsave_page);
+>> +	__free_page(vmcb02_page);
+>>   free_page3:
+>>   	__free_pages(nested_msrpm_pages, MSRPM_ALLOC_ORDER);
+>>   free_page2:
+>>   	__free_pages(msrpm_pages, MSRPM_ALLOC_ORDER);
+>>   free_page1:
+>> -	__free_page(page);
+>> +	__free_page(vmcb01_page);
+>>   out:
+>>   	return err;
+>>   }
+>> @@ -1256,11 +1259,11 @@ static void svm_free_vcpu(struct kvm_vcpu *vcpu)
+>>   	 * svm_vcpu_load(). So, ensure that no logical CPU has this
+>>   	 * vmcb page recorded as its current vmcb.
+>>   	 */
+>> -	svm_clear_current_vmcb(svm->vmcb);
+>>   
+>> -	__free_page(pfn_to_page(__sme_clr(svm->vmcb_pa) >> PAGE_SHIFT));
+>> +	svm_clear_current_vmcb(svm->vmcb);
+>> +	__free_page(pfn_to_page(__sme_clr(svm->nested.vmcb01_pa) >> PAGE_SHIFT));
+>> +	__free_page(pfn_to_page(__sme_clr(svm->nested.vmcb02_pa) >> PAGE_SHIFT));
+>>   	__free_pages(virt_to_page(svm->msrpm), MSRPM_ALLOC_ORDER);
+>> -	__free_page(virt_to_page(svm->nested.hsave));
+>>   	__free_pages(virt_to_page(svm->nested.msrpm), MSRPM_ALLOC_ORDER);
+>>   }
+>>   
+>> @@ -1393,7 +1396,7 @@ static void svm_clear_vintr(struct vcpu_svm *svm)
+>>   	/* Drop int_ctl fields related to VINTR injection.  */
+>>   	svm->vmcb->control.int_ctl &= mask;
+>>   	if (is_guest_mode(&svm->vcpu)) {
+>> -		svm->nested.hsave->control.int_ctl &= mask;
+>> +		svm->vmcb01->control.int_ctl &= mask;
+>>   
+>>   		WARN_ON((svm->vmcb->control.int_ctl & V_TPR_MASK) !=
+>>   			(svm->nested.ctl.int_ctl & V_TPR_MASK));
+>> @@ -3127,7 +3130,7 @@ bool svm_interrupt_blocked(struct kvm_vcpu *vcpu)
+>>   	if (is_guest_mode(vcpu)) {
+>>   		/* As long as interrupts are being delivered...  */
+>>   		if ((svm->nested.ctl.int_ctl & V_INTR_MASKING_MASK)
+>> -		    ? !(svm->nested.hsave->save.rflags & X86_EFLAGS_IF)
+>> +		    ? !(svm->vmcb01->save.rflags & X86_EFLAGS_IF)
+>>   		    : !(kvm_get_rflags(vcpu) & X86_EFLAGS_IF))
+>>   			return true;
+>>   
+>> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+>> index a798e1731709..e908b83bfa69 100644
+>> --- a/arch/x86/kvm/svm/svm.h
+>> +++ b/arch/x86/kvm/svm/svm.h
+>> @@ -82,7 +82,9 @@ struct kvm_svm {
+>>   struct kvm_vcpu;
+>>   
+>>   struct svm_nested_state {
+>> -	struct vmcb *hsave;
+>> +	struct vmcb *vmcb02;
+>> +	unsigned long vmcb01_pa;
+> Any reason that vmcb01_pa can't be placed in "struct vcpu_svm" below, along
+> with vmcb01?
+I just grouped it with the other nesting components. I can move it.
+>
+>> +	unsigned long vmcb02_pa;
+>>   	u64 hsave_msr;
+>>   	u64 vm_cr_msr;
+>>   	u64 vmcb;
+>> @@ -102,6 +104,7 @@ struct svm_nested_state {
+>>   struct vcpu_svm {
+>>   	struct kvm_vcpu vcpu;
+>>   	struct vmcb *vmcb;
+>> +	struct vmcb *vmcb01;
+>>   	unsigned long vmcb_pa;
+>>   	struct svm_cpu_data *svm_data;
+>>   	uint64_t asid_generation;
+>> @@ -208,10 +211,7 @@ static inline struct vcpu_svm *to_svm(struct kvm_vcpu *vcpu)
+>>   
+>>   static inline struct vmcb *get_host_vmcb(struct vcpu_svm *svm)
+>>   {
+>> -	if (is_guest_mode(&svm->vcpu))
+>> -		return svm->nested.hsave;
+>> -	else
+>> -		return svm->vmcb;
+>> +	return svm->vmcb01;
+>>   }
+>>   
+>>   static inline void set_cr_intercept(struct vcpu_svm *svm, int bit)
+>> -- 
+>> 2.20.1
+>>
 
-Where is the patch fixing this issue? I couldn't find it in my inbox.
-I'll just post one as I need to send out the PR today.
-
-Thanks,
-Mani
-
-> Thanks,
-> Bhaumik
-> 
-> 'The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
-> Forum,\na Linux Foundation Collaborative Project'
