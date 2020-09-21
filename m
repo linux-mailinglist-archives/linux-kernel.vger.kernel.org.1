@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54D9C272C82
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE2CB272D30
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728477AbgIUQcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:32:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57700 "EHLO mail.kernel.org"
+        id S1728714AbgIUQiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:38:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38750 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728437AbgIUQcS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:32:18 -0400
+        id S1729117AbgIUQhz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:37:55 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4FE2D23976;
-        Mon, 21 Sep 2020 16:32:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EE5C5239D2;
+        Mon, 21 Sep 2020 16:37:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600705937;
-        bh=WR+g6BJmosRtwJSoMvEhD8ZZWYEATjLLIsh6e4mzX3M=;
+        s=default; t=1600706274;
+        bh=6ttQ1q99cwkgnU2fv5srLVz3lazMI9eFX5Ivf1tdbFo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s5MJhiasE486khI8/3p+wtGZrEAMWRF8wvpPJDa9RL7jj4LfFYkDNNDP+jXICh9nF
-         SD1j9Yyl9CJoBVqzlAoRdB8S0/jMFSjbNdRG+FXqSSGjvZ7I7inpu6W55A8n5gPLfO
-         c0Delyx/0820DOg9SnlZC7Bn/aTYynbxil2hgmBo=
+        b=jU1zI5iGEfjvHNZcRGdrOwQKKkHcPCBfsWdNwLkUtNgsLT7OJEC/eMkpfgtzL0Jfz
+         iGoEuUvLssolZpjLbVM48XI8XcG/SEdwO65ydem+5YNQnkg38I0CEs6w1osy+PSoQP
+         jytjP5zE6xvmXC9iHUYPCoX+PgAftGIPJ6egakU0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Martin Schiller <ms@dev.tdt.de>,
-        Xie He <xie.he.0141@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 05/46] drivers/net/wan/lapbether: Set network_header before transmitting
-Date:   Mon, 21 Sep 2020 18:27:21 +0200
-Message-Id: <20200921162033.607039773@linuxfoundation.org>
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Stable@vger.kernel.org
+Subject: [PATCH 4.14 35/94] iio: accel: kxsd9: Fix alignment of local buffer.
+Date:   Mon, 21 Sep 2020 18:27:22 +0200
+Message-Id: <20200921162037.165444162@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162033.346434578@linuxfoundation.org>
-References: <20200921162033.346434578@linuxfoundation.org>
+In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
+References: <20200921162035.541285330@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,53 +44,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie He <xie.he.0141@gmail.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit 91244d108441013b7367b3b4dcc6869998676473 ]
+commit 95ad67577de4ea08eb8e441394e698aa4addcc0b upstream.
 
-Set the skb's network_header before it is passed to the underlying
-Ethernet device for transmission.
+iio_push_to_buffers_with_timestamp assumes 8 byte alignment which
+is not guaranteed by an array of smaller elements.
 
-This patch fixes the following issue:
+Note that whilst in this particular case the alignment forcing
+of the ts element is not strictly necessary it acts as good
+documentation.  Doing this where not necessary should cut
+down on the number of cut and paste introduced errors elsewhere.
 
-When we use this driver with AF_PACKET sockets, there would be error
-messages of:
-   protocol 0805 is buggy, dev (Ethernet interface name)
-printed in the system "dmesg" log.
+Fixes: 0427a106a98a ("iio: accel: kxsd9: Add triggered buffer handling")
+Reported-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-This is because skbs passed down to the Ethernet device for transmission
-don't have their network_header properly set, and the dev_queue_xmit_nit
-function in net/core/dev.c complains about this.
-
-Reason of setting the network_header to this place (at the end of the
-Ethernet header, and at the beginning of the Ethernet payload):
-
-Because when this driver receives an skb from the Ethernet device, the
-network_header is also set at this place.
-
-Cc: Martin Schiller <ms@dev.tdt.de>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wan/lapbether.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/iio/accel/kxsd9.c |   16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/wan/lapbether.c b/drivers/net/wan/lapbether.c
-index 5befc7f3f0e7a..c6db9a4e7c457 100644
---- a/drivers/net/wan/lapbether.c
-+++ b/drivers/net/wan/lapbether.c
-@@ -213,6 +213,8 @@ static void lapbeth_data_transmit(struct net_device *ndev, struct sk_buff *skb)
+--- a/drivers/iio/accel/kxsd9.c
++++ b/drivers/iio/accel/kxsd9.c
+@@ -212,14 +212,20 @@ static irqreturn_t kxsd9_trigger_handler
+ 	const struct iio_poll_func *pf = p;
+ 	struct iio_dev *indio_dev = pf->indio_dev;
+ 	struct kxsd9_state *st = iio_priv(indio_dev);
++	/*
++	 * Ensure correct positioning and alignment of timestamp.
++	 * No need to zero initialize as all elements written.
++	 */
++	struct {
++		__be16 chan[4];
++		s64 ts __aligned(8);
++	} hw_values;
+ 	int ret;
+-	/* 4 * 16bit values AND timestamp */
+-	__be16 hw_values[8];
  
- 	skb->dev = dev = lapbeth->ethdev;
+ 	ret = regmap_bulk_read(st->map,
+ 			       KXSD9_REG_X,
+-			       &hw_values,
+-			       8);
++			       hw_values.chan,
++			       sizeof(hw_values.chan));
+ 	if (ret) {
+ 		dev_err(st->dev,
+ 			"error reading data\n");
+@@ -227,7 +233,7 @@ static irqreturn_t kxsd9_trigger_handler
+ 	}
  
-+	skb_reset_network_header(skb);
-+
- 	dev_hard_header(skb, dev, ETH_P_DEC, bcast_addr, NULL, 0);
+ 	iio_push_to_buffers_with_timestamp(indio_dev,
+-					   hw_values,
++					   &hw_values,
+ 					   iio_get_time_ns(indio_dev));
+ 	iio_trigger_notify_done(indio_dev->trig);
  
- 	dev_queue_xmit(skb);
--- 
-2.25.1
-
 
 
