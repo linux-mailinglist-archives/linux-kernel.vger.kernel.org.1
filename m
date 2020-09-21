@@ -2,77 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E74AF271D00
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E916271D16
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727058AbgIUIDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 04:03:39 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:40098 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727000AbgIUIDG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 04:03:06 -0400
-Received: from zn.tnic (p200300ec2f07e300bb1cec778fd9588d.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:e300:bb1c:ec77:8fd9:588d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 25AA91EC0323;
-        Mon, 21 Sep 2020 10:03:05 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600675385;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=u0PtQQQAXwkJj9Jp5bddDDAFJrRvVWthWJTVhvKTM7s=;
-        b=etuMCjtHT365s0kjpzNibtHMLsfFTib1t+oubn7NL5L+cPtT/CKb30gyZr1Uu8P8/cqP5c
-        +pGho+L/5ItOAc1KLuBZm8FMGKk/ykiQ8swoBW45OgVUbww/2GhytoFn171dVogeGW+lVo
-        RKMHi5MCgnCm7uN1XEUkmzJ+vn8GslY=
-Date:   Mon, 21 Sep 2020 10:02:58 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Stuart Little <achirvasub@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>, linux-nvdimm@lists.01.org,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux- stable <stable@vger.kernel.org>,
-        Adrian Huang <ahuang12@lenovo.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        Ira Weiny <ira.weiny@intel.com>, mpatocka@redhat.com,
-        lkft-triage@lists.linaro.org, Jan Kara <jack@suse.cz>
-Subject: Re: PROBLEM: 5.9.0-rc6 fails =?utf-8?Q?to_?=
- =?utf-8?Q?compile_due_to_'redefinition_of_=E2=80=98dax=5Fsupported?=
- =?utf-8?B?4oCZJw==?=
-Message-ID: <20200921080258.GA5947@zn.tnic>
-References: <20200921010359.GO3027113@arch-chirva.localdomain>
- <CA+G9fYtCg2KjdB2oBUDJ2DKAzUxq3u8ZnMY9Et-RG9Pnrmuf9w@mail.gmail.com>
- <20200921073218.GA3142611@kroah.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200921073218.GA3142611@kroah.com>
+        id S1726515AbgIUIFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 04:05:09 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:19715 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726347AbgIUIFH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 04:05:07 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200921080503epoutp01ac4296d5ef59eebd2558193f297f95d0~2vePcgVTt2728227282epoutp01B
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 08:05:03 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200921080503epoutp01ac4296d5ef59eebd2558193f297f95d0~2vePcgVTt2728227282epoutp01B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1600675503;
+        bh=jPMF6ttwhjh6Gz0Gb/xu2AZVqN/bOzkzOlaHhccbTdI=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=Qlmr38hTllM1bsiMyG8uIlWCXyfOvq3YWIKCfLcSrE2JTF/IYMjiAaTa5u/f4dsz8
+         gGx6AbQuhzFfTd7fsvBDu+4uM7EbFGvpg9oJ97ZjrfOJg4/+SL98hH6qCe0ZTeTSCt
+         DQBrBQXIaOyKXq7d7kZXVM+9BR5Cw1u1zNWBOyH4=
+Received: from epcpadp1 (unknown [182.195.40.11]) by epcas1p1.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200921080503epcas1p15266b69b4a59405cdcc7685635c6cc43~2veO9sQck2448624486epcas1p1p;
+        Mon, 21 Sep 2020 08:05:03 +0000 (GMT)
+Mime-Version: 1.0
+Subject: RE: [PATCH v11 0/4] scsi: ufs: Add Host Performance Booster Support
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Daejun Park <daejun7.park@samsung.com>
+CC:     "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <2aecb02b-f845-b860-facd-e31bd964ac64@acm.org>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <1087081975.11600675503396.JavaMail.epsvc@epcpadp1>
+Date:   Mon, 21 Sep 2020 17:03:36 +0900
+X-CMS-MailID: 20200921080336epcms2p109f08924c333c8d7d87ef6f3f64d9b18
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200902031713epcms2p664cebf386ba19d3d05895fec89aaf4fe
+References: <2aecb02b-f845-b860-facd-e31bd964ac64@acm.org>
+        <231786897.01599016802080.JavaMail.epsvc@epcpadp1>
+        <231786897.01600211401846.JavaMail.epsvc@epcpadp1>
+        <20200916052208.GB12923@infradead.org>
+        <CGME20200902031713epcms2p664cebf386ba19d3d05895fec89aaf4fe@epcms2p1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 09:32:18AM +0200, Greg KH wrote:
-> all my local builds are breaking now too with this :(
+>> On Wed, Sep 16, 2020 at 08:05:17AM +0900, Daejun Park wrote:
+>>> Hi All,
+>>>
+>>> I want to know how to improve this patch.
+>> 
+>> Drop it and fix the actual UFS feature to not be so horrible?
 > 
-> Was there a proposed patch anywhere for this?
+> A new UFS specification could be defined and could be implemented for future UFS
+> devices. I think this patch series is intended to support the millions of UFS
+> devices that are already in use, e.g. in Android smartphones.
 
-I've disabled CONFIG_BLK_DEV_PMEM which allowed me to de-select those
-two:
+It is important point. 
 
-# CONFIG_DAX is not set
-# CONFIG_FS_DAX is not set
+I am not suggesting a strange feature, but want to make mainline the HPB
+feature that is already widely used in Android smartphones.
 
-and now it at least builds.
+Thanks,
 
-In order to avoid such breakage in the future, I'd suggest you guys to
-run randconfigs on your stuff before sending, especially if the Kconfig
-ifdeffery is not a trivial one like the DAX maze.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Daejun.
