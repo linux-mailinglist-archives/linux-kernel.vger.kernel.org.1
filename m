@@ -2,76 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A177C272FC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:00:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E52D9273035
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730336AbgIUQ71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:59:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40096 "EHLO mail.kernel.org"
+        id S1729384AbgIURD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 13:03:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730308AbgIUQ7O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:59:14 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        id S1729048AbgIUQhW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:37:22 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4CAA5235FD;
-        Mon, 21 Sep 2020 16:59:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D0979206DC;
+        Mon, 21 Sep 2020 16:37:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600707553;
-        bh=ilYPXYXOrK02dbgWO785dFtleHl2+7nPjk6K0R/PBvw=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=yyPOpwzx1pKltzf4H+v0LidZoBubumrt/74zHAY5TzeAVoIQ8re/YX4A1pDxLKPo6
-         Vv1/tJnpF8BhoP6or7Ck079oNkAaG4N9D7DU/T8PUoATLp0KQqEJ2DLkYD20jr0P0O
-         GwH9D2LvhnnnkrNBzbXQKA7gy9dil44xEFwmKaEQ=
-Date:   Mon, 21 Sep 2020 17:58:21 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     linux-spi@vger.kernel.org, Julia Lawall <Julia.Lawall@inria.fr>
-Cc:     linux-serial@vger.kernel.org, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-block@vger.kernel.org,
-        Yossi Leybovich <sleybo@amazon.com>,
-        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        dmaengine@vger.kernel.org, linux-pci@vger.kernel.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-rdma@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        rds-devel@oss.oracle.com
-In-Reply-To: <1600601186-7420-1-git-send-email-Julia.Lawall@inria.fr>
-References: <1600601186-7420-1-git-send-email-Julia.Lawall@inria.fr>
-Subject: Re: [PATCH 00/14] drop double zeroing
-Message-Id: <160070750168.56292.17961674601916397869.b4-ty@kernel.org>
+        s=default; t=1600706241;
+        bh=Qk1F+8T1O/m6aOES3ena+I+4B8zXgQcdetoovsw0sro=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=J55tidmCLzPnyp87EMCWtF0TlJCEKK7AKut3WJTmoYio9l1mzmdU+RRjWR20V7RwX
+         WwsNtCE75YGKqyVJx6NxIzfZkZECj089/QLIa9nyYEP4ju+whXkaP6UNJCpCmYLgOk
+         v2dOePmZ1enqL6YbmH0/Xg7Ke6OoEjUxpM0E4d7A=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, John Garry <john.garry@huawei.com>,
+        Jason Yan <yanaijie@huawei.com>,
+        Luo Jiaxing <luojiaxing@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 04/94] scsi: libsas: Set data_dir as DMA_NONE if libata marks qc as NODATA
+Date:   Mon, 21 Sep 2020 18:26:51 +0200
+Message-Id: <20200921162035.743513463@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
+References: <20200921162035.541285330@linuxfoundation.org>
+User-Agent: quilt/0.66
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 20 Sep 2020 13:26:12 +0200, Julia Lawall wrote:
-> sg_init_table zeroes its first argument, so the allocation of that argument
-> doesn't have to.
+From: Luo Jiaxing <luojiaxing@huawei.com>
 
-Applied to
+[ Upstream commit 53de092f47ff40e8d4d78d590d95819d391bf2e0 ]
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+It was discovered that sdparm will fail when attempting to disable write
+cache on a SATA disk connected via libsas.
 
-Thanks!
+In the ATA command set the write cache state is controlled through the SET
+FEATURES operation. This is roughly corresponds to MODE SELECT in SCSI and
+the latter command is what is used in the SCSI-ATA translation layer. A
+subtle difference is that a MODE SELECT carries data whereas SET FEATURES
+is defined as a non-data command in ATA.
 
-[1/1] spi/topcliff-pch: drop double zeroing
-      commit: ca03dba30f2b8ff45a2972c6691e4c96d8c52b3b
+Set the DMA data direction to DMA_NONE if the requested ATA command is
+identified as non-data.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+[mkp: commit desc]
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Fixes: fa1c1e8f1ece ("[SCSI] Add SATA support to libsas")
+Link: https://lore.kernel.org/r/1598426666-54544-1-git-send-email-luojiaxing@huawei.com
+Reviewed-by: John Garry <john.garry@huawei.com>
+Reviewed-by: Jason Yan <yanaijie@huawei.com>
+Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/scsi/libsas/sas_ata.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+diff --git a/drivers/scsi/libsas/sas_ata.c b/drivers/scsi/libsas/sas_ata.c
+index 70be4425ae0be..470e11b428208 100644
+--- a/drivers/scsi/libsas/sas_ata.c
++++ b/drivers/scsi/libsas/sas_ata.c
+@@ -227,7 +227,10 @@ static unsigned int sas_ata_qc_issue(struct ata_queued_cmd *qc)
+ 		task->num_scatter = si;
+ 	}
+ 
+-	task->data_dir = qc->dma_dir;
++	if (qc->tf.protocol == ATA_PROT_NODATA)
++		task->data_dir = DMA_NONE;
++	else
++		task->data_dir = qc->dma_dir;
+ 	task->scatter = qc->sg;
+ 	task->ata_task.retry_count = 1;
+ 	task->task_state_flags = SAS_TASK_STATE_PENDING;
+-- 
+2.25.1
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
 
-Thanks,
-Mark
+
