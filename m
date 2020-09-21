@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EFE9273091
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16FA9272FF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730536AbgIURF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 13:05:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59458 "EHLO mail.kernel.org"
+        id S1730325AbgIURBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 13:01:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728599AbgIUQdV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:33:21 -0400
+        id S1728615AbgIUQjR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:39:17 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9108C2399C;
-        Mon, 21 Sep 2020 16:33:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A799623998;
+        Mon, 21 Sep 2020 16:39:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706001;
-        bh=d3XFlJeZ5FcVRMjyET295KfplhHWKUPA6e5DSv4GAcE=;
+        s=default; t=1600706355;
+        bh=PLDnCob4qOnx8MoDAzF8jK/Lj2hpnJ6NEWBajDcMRJ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k8Ex2r1tXdmvxlywiOYVkp+7d+0ZjBMgNWrEFMwrhQe6TWd3CRE8c1DIIPZlOOQmI
-         VgNSa1/nPyrtoOfeU/cOysIgztJBKHvlsSpTc/8bzJKfQAM1cXAuWNGTU/Z+95lc8T
-         BuL7c8JJXsfb8uPcGl1a27V45QaAYlqBKxd9NFmw=
+        b=msaaB46PlBEtPnb8x9Lfyxbf9tUy9FE3gwbbBzVnJnELOnHohqMtBoQIxDChR+P0c
+         4kByXC3xBWgBcXD0KCWMs5n7Po7Or+LhXkg7u4Hvx9qPUhGq5GiJXjKrwptaJyD0lT
+         fceWQrVp98opGClbnsKwJJc3gFKZtXwDpFB2w0QY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        stable@vger.kernel.org, Dick Kennedy <dick.kennedy@broadcom.com>,
+        James Smart <james.smart@broadcom.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 38/46] MIPS: SNI: Fix spurious interrupts
+Subject: [PATCH 4.14 67/94] scsi: lpfc: Fix FLOGI/PLOGI receive race condition in pt2pt discovery
 Date:   Mon, 21 Sep 2020 18:27:54 +0200
-Message-Id: <20200921162035.034931409@linuxfoundation.org>
+Message-Id: <20200921162038.598297409@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162033.346434578@linuxfoundation.org>
-References: <20200921162033.346434578@linuxfoundation.org>
+In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
+References: <20200921162035.541285330@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,56 +44,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+From: James Smart <james.smart@broadcom.com>
 
-[ Upstream commit b959b97860d0fee8c8f6a3e641d3c2ad76eab6be ]
+[ Upstream commit 7b08e89f98cee9907895fabb64cf437bc505ce9a ]
 
-On A20R machines the interrupt pending bits in cause register need to be
-updated by requesting the chipset to do it. This needs to be done to
-find the interrupt cause and after interrupt service. In
-commit 0b888c7f3a03 ("MIPS: SNI: Convert to new irq_chip functions") the
-function to do after service update got lost, which caused spurious
-interrupts.
+The driver is unable to successfully login with remote device. During pt2pt
+login, the driver completes its FLOGI request with the remote device having
+WWN precedence.  The remote device issues its own (delayed) FLOGI after
+accepting the driver's and, upon transmitting the FLOGI, immediately
+recognizes it has already processed the driver's FLOGI thus it transitions
+to sending a PLOGI before waiting for an ACC to its FLOGI.
 
-Fixes: 0b888c7f3a03 ("MIPS: SNI: Convert to new irq_chip functions")
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+In the driver, the FLOGI is received and an ACC sent, followed by the PLOGI
+being received and an ACC sent. The issue is that the PLOGI reception
+occurs before the response from the adapter from the FLOGI ACC is
+received. Processing of the PLOGI sets state flags to perform the REG_RPI
+mailbox command and proceed with the rest of discovery on the port. The
+same completion routine used by both FLOGI and PLOGI is generic in
+nature. One of the things it does is clear flags, and those flags happen to
+drive the rest of discovery.  So what happened was the PLOGI processing set
+the flags, the FLOGI ACC completion cleared them, thus when the PLOGI ACC
+completes it doesn't see the flags and stops.
+
+Fix by modifying the generic completion routine to not clear the rest of
+discovery flag (NLP_ACC_REGLOGIN) unless the completion is also associated
+with performing a mailbox command as part of its handling.  For things such
+as FLOGI ACC, there isn't a subsequent action to perform with the adapter,
+thus there is no mailbox cmd ptr. PLOGI ACC though will perform REG_RPI
+upon completion, thus there is a mailbox cmd ptr.
+
+Link: https://lore.kernel.org/r/20200828175332.130300-3-james.smart@broadcom.com
+Co-developed-by: Dick Kennedy <dick.kennedy@broadcom.com>
+Signed-off-by: Dick Kennedy <dick.kennedy@broadcom.com>
+Signed-off-by: James Smart <james.smart@broadcom.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/sni/a20r.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/scsi/lpfc/lpfc_els.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/sni/a20r.c b/arch/mips/sni/a20r.c
-index f9407e1704762..c6af7047eb0d2 100644
---- a/arch/mips/sni/a20r.c
-+++ b/arch/mips/sni/a20r.c
-@@ -143,7 +143,10 @@ static struct platform_device sc26xx_pdev = {
- 	},
- };
+diff --git a/drivers/scsi/lpfc/lpfc_els.c b/drivers/scsi/lpfc/lpfc_els.c
+index db1111f7e85ae..566e8d07cb058 100644
+--- a/drivers/scsi/lpfc/lpfc_els.c
++++ b/drivers/scsi/lpfc/lpfc_els.c
+@@ -4104,7 +4104,9 @@ lpfc_cmpl_els_rsp(struct lpfc_hba *phba, struct lpfc_iocbq *cmdiocb,
+ out:
+ 	if (ndlp && NLP_CHK_NODE_ACT(ndlp) && shost) {
+ 		spin_lock_irq(shost->host_lock);
+-		ndlp->nlp_flag &= ~(NLP_ACC_REGLOGIN | NLP_RM_DFLT_RPI);
++		if (mbox)
++			ndlp->nlp_flag &= ~NLP_ACC_REGLOGIN;
++		ndlp->nlp_flag &= ~NLP_RM_DFLT_RPI;
+ 		spin_unlock_irq(shost->host_lock);
  
--static u32 a20r_ack_hwint(void)
-+/*
-+ * Trigger chipset to update CPU's CAUSE IP field
-+ */
-+static u32 a20r_update_cause_ip(void)
- {
- 	u32 status = read_c0_status();
- 
-@@ -205,12 +208,14 @@ static void a20r_hwint(void)
- 	int irq;
- 
- 	clear_c0_status(IE_IRQ0);
--	status = a20r_ack_hwint();
-+	status = a20r_update_cause_ip();
- 	cause = read_c0_cause();
- 
- 	irq = ffs(((cause & status) >> 8) & 0xf8);
- 	if (likely(irq > 0))
- 		do_IRQ(SNI_A20R_IRQ_BASE + irq - 1);
-+
-+	a20r_update_cause_ip();
- 	set_c0_status(IE_IRQ0);
- }
- 
+ 		/* If the node is not being used by another discovery thread,
 -- 
 2.25.1
 
