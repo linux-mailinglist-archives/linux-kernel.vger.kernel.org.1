@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E5DD272FCF
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 999C1272CE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728707AbgIUQ76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:59:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43924 "EHLO mail.kernel.org"
+        id S1728900AbgIUQfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:35:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35130 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729377AbgIUQkv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:40:51 -0400
+        id S1728532AbgIUQfm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:35:42 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 660832067D;
-        Mon, 21 Sep 2020 16:40:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9890F23730;
+        Mon, 21 Sep 2020 16:35:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706450;
-        bh=iW7SGnrfadHKhWqhCj6r9zF7flddMAv36Lz03IPT0Hg=;
+        s=default; t=1600706142;
+        bh=zolZwzTxEfBeTWyu+h7YHfETfQ/DiytX4nDIsqj6itw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CpYGinWc0ZwAHiai13kvGkLaixNkrcTmOtiI0JsF80EeTK9mDIGGWpsGjrYHb1nOf
-         wiXqHZTqF+b+sYvlV5QXA6J/MmjdNI1029TuEKQ0BgXkRlrr6S07+vd90Zd6JCnJAL
-         7OHM39TStqfrW+fDBs/cLXruJuaQx1zfuuRpdr38=
+        b=1PdFIUW+GURyOY/T2mS3JxFHTNcb1hhuxHUaeuUVXkCZKxIxTL4zxXV2CVWfokIdg
+         3yCg4eiolhu6WxnfrCwWmddkm+esi5mEP9RIhNI3RCt8nStlbQidyyrKIverBCW1LJ
+         mNfOMrfvVoePJlHjshIRUZjRbD+uHdmui5JrJbG0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 10/49] scsi: pm8001: Fix memleak in pm8001_exec_internal_task_abort
+Subject: [PATCH 4.9 54/70] rapidio: Replace select DMAENGINES with depends on
 Date:   Mon, 21 Sep 2020 18:27:54 +0200
-Message-Id: <20200921162035.126920567@linuxfoundation.org>
+Message-Id: <20200921162037.601946943@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162034.660953761@linuxfoundation.org>
-References: <20200921162034.660953761@linuxfoundation.org>
+In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
+References: <20200921162035.136047591@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,35 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-[ Upstream commit ea403fde7552bd61bad6ea45e3feb99db77cb31e ]
+[ Upstream commit d2b86100245080cfdf1e95e9e07477474c1be2bd ]
 
-When pm8001_tag_alloc() fails, task should be freed just like it is done in
-the subsequent error paths.
+Enabling a whole subsystem from a single driver 'select' is frowned
+upon and won't be accepted in new drivers, that need to use 'depends on'
+instead. Existing selection of DMAENGINES will then cause circular
+dependencies. Replace them with a dependency.
 
-Link: https://lore.kernel.org/r/20200823091453.4782-1-dinghao.liu@zju.edu.cn
-Acked-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/pm8001/pm8001_sas.c | 2 +-
+ drivers/rapidio/Kconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/pm8001/pm8001_sas.c b/drivers/scsi/pm8001/pm8001_sas.c
-index 5be4212312cb0..ba79b37d8cf7e 100644
---- a/drivers/scsi/pm8001/pm8001_sas.c
-+++ b/drivers/scsi/pm8001/pm8001_sas.c
-@@ -794,7 +794,7 @@ pm8001_exec_internal_task_abort(struct pm8001_hba_info *pm8001_ha,
- 
- 		res = pm8001_tag_alloc(pm8001_ha, &ccb_tag);
- 		if (res)
--			return res;
-+			goto ex_err;
- 		ccb = &pm8001_ha->ccb_info[ccb_tag];
- 		ccb->device = pm8001_dev;
- 		ccb->ccb_tag = ccb_tag;
+diff --git a/drivers/rapidio/Kconfig b/drivers/rapidio/Kconfig
+index d6d2f20c45977..21df2816def76 100644
+--- a/drivers/rapidio/Kconfig
++++ b/drivers/rapidio/Kconfig
+@@ -25,7 +25,7 @@ config RAPIDIO_ENABLE_RX_TX_PORTS
+ config RAPIDIO_DMA_ENGINE
+ 	bool "DMA Engine support for RapidIO"
+ 	depends on RAPIDIO
+-	select DMADEVICES
++	depends on DMADEVICES
+ 	select DMA_ENGINE
+ 	help
+ 	  Say Y here if you want to use DMA Engine frameork for RapidIO data
 -- 
 2.25.1
 
