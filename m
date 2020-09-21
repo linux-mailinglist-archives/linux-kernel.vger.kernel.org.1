@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1CE1272D17
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EFB5272CCD
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:36:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728716AbgIUQhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:37:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37280 "EHLO mail.kernel.org"
+        id S1728810AbgIUQeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:34:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729034AbgIUQhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:37:09 -0400
+        id S1728742AbgIUQef (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:34:35 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2696E206DC;
-        Mon, 21 Sep 2020 16:37:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8643E2396F;
+        Mon, 21 Sep 2020 16:34:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706228;
-        bh=Y7DfL2QIoK+7AlOig5I7K0jPWLIoatifmL4WfTHq3TM=;
+        s=default; t=1600706075;
+        bh=HPVoBkwWM2VEuHSnaDmJ4BHUWkB/Y6RRhjh/6SvnQNY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PiNFUrfH6TZmu+ZeTMhrmM4szmyh0XyUARs5klJCGgTBKyqig2/4DCZ3s+NQPrkhZ
-         jfYCX7c0Zz2oNJ5VQuyqwurpnnmWuSQdgqNQdiSe0NXJTSY9LOxyQqZwHhqd7C4a5K
-         4Jbri4A1LBFqJ07wIjK6tylkIx32tzr3VFrkQvwY=
+        b=RAntGNmItaotIFct7Fu/VBb2i2S8T1jI0+BbP6b4IIOIt6HIhYdWfGenLzpl43azt
+         w6g6vIgelHhqHA4GKtWLERETuFhwpQ6rTS65E7+uEX8BpI+uWc2OaiH3ShtcIP49tX
+         8MowHAkTLiRd5s+FjSL/E7Q5V3YXpNgvDGkNiijA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vineet Gupta <vgupta@synopsys.com>,
+        stable@vger.kernel.org,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Martin Schiller <ms@dev.tdt.de>,
+        Xie He <xie.he.0141@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 17/94] irqchip/eznps: Fix build error for !ARC700 builds
-Date:   Mon, 21 Sep 2020 18:27:04 +0200
-Message-Id: <20200921162036.345007680@linuxfoundation.org>
+Subject: [PATCH 4.9 05/70] drivers/net/wan/lapbether: Added needed_tailroom
+Date:   Mon, 21 Sep 2020 18:27:05 +0200
+Message-Id: <20200921162035.366761395@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
-References: <20200921162035.541285330@linuxfoundation.org>
+In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
+References: <20200921162035.136047591@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,58 +46,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vineet Gupta <vgupta@synopsys.com>
+From: Xie He <xie.he.0141@gmail.com>
 
-[ Upstream commit 89d29997f103d08264b0685796b420d911658b96 ]
+[ Upstream commit 1ee39c1448c4e0d480c5b390e2db1987561fb5c2 ]
 
-eznps driver is supposed to be platform independent however it ends up
-including stuff from inside arch/arc headers leading to rand config
-build errors.
+The underlying Ethernet device may request necessary tailroom to be
+allocated by setting needed_tailroom. This driver should also set
+needed_tailroom to request the tailroom needed by the underlying
+Ethernet device to be allocated.
 
-The quick hack to fix this (proper fix is too much chrun for non active
-user-base) is to add following to nps platform agnostic header.
- - copy AUX_IENABLE from arch/arc header
- - move CTOP_AUX_IACK from arch/arc/plat-eznps/*/**
-
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Link: https://lkml.kernel.org/r/20200824095831.5lpkmkafelnvlpi2@linutronix.de
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: Martin Schiller <ms@dev.tdt.de>
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arc/plat-eznps/include/plat/ctop.h | 1 -
- include/soc/nps/common.h                | 6 ++++++
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ drivers/net/wan/lapbether.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arc/plat-eznps/include/plat/ctop.h b/arch/arc/plat-eznps/include/plat/ctop.h
-index 4f6a1673b3a6e..ddfca2c3357a0 100644
---- a/arch/arc/plat-eznps/include/plat/ctop.h
-+++ b/arch/arc/plat-eznps/include/plat/ctop.h
-@@ -43,7 +43,6 @@
- #define CTOP_AUX_DPC				(CTOP_AUX_BASE + 0x02C)
- #define CTOP_AUX_LPC				(CTOP_AUX_BASE + 0x030)
- #define CTOP_AUX_EFLAGS				(CTOP_AUX_BASE + 0x080)
--#define CTOP_AUX_IACK				(CTOP_AUX_BASE + 0x088)
- #define CTOP_AUX_GPA1				(CTOP_AUX_BASE + 0x08C)
- #define CTOP_AUX_UDMC				(CTOP_AUX_BASE + 0x300)
+diff --git a/drivers/net/wan/lapbether.c b/drivers/net/wan/lapbether.c
+index 6eb0f7a85e531..5befc7f3f0e7a 100644
+--- a/drivers/net/wan/lapbether.c
++++ b/drivers/net/wan/lapbether.c
+@@ -343,6 +343,7 @@ static int lapbeth_new_device(struct net_device *dev)
+ 	 */
+ 	ndev->needed_headroom = -1 + 3 + 2 + dev->hard_header_len
+ 					   + dev->needed_headroom;
++	ndev->needed_tailroom = dev->needed_tailroom;
  
-diff --git a/include/soc/nps/common.h b/include/soc/nps/common.h
-index 9b1d43d671a3f..8c18dc6d3fde5 100644
---- a/include/soc/nps/common.h
-+++ b/include/soc/nps/common.h
-@@ -45,6 +45,12 @@
- #define CTOP_INST_MOV2B_FLIP_R3_B1_B2_INST	0x5B60
- #define CTOP_INST_MOV2B_FLIP_R3_B1_B2_LIMM	0x00010422
- 
-+#ifndef AUX_IENABLE
-+#define AUX_IENABLE				0x40c
-+#endif
-+
-+#define CTOP_AUX_IACK				(0xFFFFF800 + 0x088)
-+
- #ifndef __ASSEMBLY__
- 
- /* In order to increase compilation test coverage */
+ 	lapbeth = netdev_priv(ndev);
+ 	lapbeth->axdev = ndev;
 -- 
 2.25.1
 
